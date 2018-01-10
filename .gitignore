@@ -1,0 +1,18 @@
+# Intellij
+.idea/
+*.iml
+*.iws
+*.ipr
+*.class
+
+# Mac
+.DS_Store
+
+# Maven
+log/
+target/
+out/
+
+# Gradle
+.gradle
+build
