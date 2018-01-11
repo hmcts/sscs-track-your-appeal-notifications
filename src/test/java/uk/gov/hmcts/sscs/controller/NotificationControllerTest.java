@@ -1,13 +1,13 @@
 package uk.gov.hmcts.sscs.controller;
 
-import static org.mockito.Mockito.verify;
-import static org.mockito.MockitoAnnotations.initMocks;
-
 import org.junit.Before;
 import org.junit.Test;
 import org.mockito.Mock;
-import uk.gov.hmcts.sscs.model.CcdCase;
+import uk.gov.hmcts.sscs.domain.CcdCase;
 import uk.gov.hmcts.sscs.service.NotificationService;
+
+import static org.mockito.Mockito.verify;
+import static org.mockito.MockitoAnnotations.initMocks;
 
 
 public class NotificationControllerTest {

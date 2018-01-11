@@ -1,4 +1,4 @@
-package uk.gov.hmcts.sscs.model;
+package uk.gov.hmcts.sscs.domain;
 
 public class CcdCase {
 
