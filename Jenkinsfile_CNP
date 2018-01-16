@@ -1,0 +1,18 @@
+#!groovy
+properties([
+        [$class: 'GithubProjectProperty', projectUrlStr: 'https://github.com/hmcts/track-your-appeal-notifications.git'],
+        pipelineTriggers([[$class: 'GitHubPushTrigger']])
+])
+
+@Library("Infrastructure")
+
+def type = "java"
+
+def product = "sscs"
+
+def app = "track-your-appeal-notifications"
+
+withPipeline(type, product, app) {
+    enableSlackNotifications('#sscs-tech')
+}
+

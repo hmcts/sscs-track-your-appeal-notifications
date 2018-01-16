@@ -2,6 +2,7 @@ plugins {
     id 'application'
     id 'checkstyle'
     id 'pmd'
+    id  'org.sonarqube' version '2.5'
     id 'jacoco'
     id 'io.spring.dependency-management' version '1.0.4.RELEASE'
     id 'org.springframework.boot' version '1.5.9.RELEASE'
@@ -14,6 +15,14 @@ version = '1.0.0'
 
 sourceCompatibility = 1.8
 targetCompatibility = 1.8
+
+jar {
+    baseName 'track-your-appeal-notifications'
+    manifest {
+        attributes 'Implementation-Title': project.name,
+                'Implementation-Version': project.version
+    }
+}
 
 checkstyle {
     maxWarnings = 0
@@ -83,4 +92,13 @@ dependencies {
     compile group: 'uk.gov.service.notify', name: 'notifications-java-client', version: '3.0.0-RELEASE'
 
     testCompile group: 'org.springframework.boot', name: 'spring-boot-starter-test', version: springBootVersion
+}
+
+sonarqube {
+    properties {
+        property "sonar.projectName", "SSCS - Track Your Appeal Notifications"
+        property "sonar.exclusions", "src/main/java/uk/gov/hmcts/sscs/domain/**," +
+                "src/main/java/uk/gov/hmcts/sscs/TrackYourAppealNotificationsApplication.java," +
+                "src/main/java/uk/gov/hmcts/sscs/config/*,"
+    }
 }
