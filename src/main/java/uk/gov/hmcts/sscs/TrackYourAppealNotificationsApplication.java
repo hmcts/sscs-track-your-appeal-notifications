@@ -8,6 +8,7 @@ import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.context.MessageSource;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.support.ReloadableResourceBundleMessageSource;
+import uk.gov.hmcts.sscs.deserialize.CcdResponseDeserializer;
 import uk.gov.service.notify.NotificationClient;
 
 @SpringBootApplication
@@ -30,6 +31,11 @@ public class TrackYourAppealNotificationsApplication {
     @Bean
     public NotificationClient notificationClient() throws MalformedURLException {
         return new NotificationClient(apiKey);
+    }
+
+    @Bean
+     public CcdResponseDeserializer ccdResponseDeserializer() {
+        return new CcdResponseDeserializer();
     }
 
     @Bean

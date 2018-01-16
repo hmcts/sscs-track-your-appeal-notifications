@@ -1,36 +1,34 @@
 package uk.gov.hmcts.sscs.controller;
 
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
+import static org.springframework.test.web.servlet.setup.MockMvcBuilders.standaloneSetup;
+
 import org.junit.Before;
 import org.junit.Test;
-import org.mockito.Mock;
-import uk.gov.hmcts.sscs.domain.CcdCase;
-import uk.gov.hmcts.sscs.service.NotificationService;
-
-import static org.mockito.Mockito.verify;
-import static org.mockito.MockitoAnnotations.initMocks;
+import org.springframework.http.MediaType;
+import org.springframework.test.web.servlet.MockMvc;
 
 
 public class NotificationControllerTest {
 
-    @Mock
-    private CcdCase ccdCase;
-
-    @Mock
-    private NotificationService notificationService;
-
     private NotificationController notificationController;
 
-    @Before
-    public void setUp() throws Exception {
+    private MockMvc mockMvc;
 
-        initMocks(this);
-        notificationController = new NotificationController(notificationService);
+    @Before
+    public void setUp() {
+        notificationController = new NotificationController();
+        mockMvc = standaloneSetup(notificationController).build();
     }
 
     @Test
-    public void shouldSendNotificationForSendRequest() throws Exception {
-        notificationController.sendNotification(ccdCase);
+    public void shouldReturnHttpStatusCode200ForTheCcdResponse() throws Exception {
+        String json = "{\"state\":\"ResponseRequested\",\"case_data\":{\"id\":{\"tya\":\"755TY68876\"},\"appellant\":{\"name\":{\"title\":\"Mr\",\"lastName\":\"Maloney\",\"firstName\":\"J\"},\"contact\":{\"email\":\"test@testing.com\",\"mobile\":\"01234556634\",\"phone\":\"07998445858\"}}}}";
 
-        verify(notificationService).createAndSendNofitication(ccdCase);
+        mockMvc.perform(post("/send")
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(json))
+                .andExpect(status().isOk());
     }
 }
