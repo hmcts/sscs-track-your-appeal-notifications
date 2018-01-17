@@ -2,6 +2,8 @@ package uk.gov.hmcts.sscs.domain;
 
 import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
 import uk.gov.hmcts.sscs.deserialize.CcdResponseDeserializer;
+import uk.gov.hmcts.sscs.domain.notify.Destination;
+import uk.gov.hmcts.sscs.domain.notify.NotificationType;
 
 @JsonDeserialize(using = CcdResponseDeserializer.class)
 public class CcdResponse {
@@ -10,10 +12,27 @@ public class CcdResponse {
     private String appellantSurname;
     private String appellantTitle;
     private String appealNumber;
-    private String appealStatus;
+    private String caseReference;
     private String email;
-    private String phoneNumber;
     private String mobileNumber;
+    private NotificationType notificationType;
+
+
+    public CcdResponse() {
+        //
+    }
+
+    public CcdResponse(String appellantFirstName, String appellantSurname, String appellantTitle, String appealNumber,
+                       String caseReference, String email, String mobileNumber, NotificationType notificationType) {
+        this.appellantFirstName = appellantFirstName;
+        this.appellantSurname = appellantSurname;
+        this.appellantTitle = appellantTitle;
+        this.appealNumber = appealNumber;
+        this.caseReference = caseReference;
+        this.email = email;
+        this.mobileNumber = mobileNumber;
+        this.notificationType = notificationType;
+    }
 
     public String getAppellantFirstName() {
         return appellantFirstName;
@@ -39,28 +58,12 @@ public class CcdResponse {
         this.appealNumber = appealNumber;
     }
 
-    public String getAppealStatus() {
-        return appealStatus;
-    }
-
-    public void setAppealStatus(String appealStatus) {
-        this.appealStatus = appealStatus;
-    }
-
     public String getEmail() {
         return email;
     }
 
     public void setEmail(String email) {
         this.email = email;
-    }
-
-    public String getPhoneNumber() {
-        return phoneNumber;
-    }
-
-    public void setPhoneNumber(String phoneNumber) {
-        this.phoneNumber = phoneNumber;
     }
 
     public String getMobileNumber() {
@@ -79,6 +82,18 @@ public class CcdResponse {
         this.appellantTitle = appellantTitle;
     }
 
+    public String getCaseReference() {
+        return caseReference;
+    }
+
+    public void setCaseReference(String caseReference) {
+        this.caseReference = caseReference;
+    }
+
+    public Destination getDestination() {
+        return new Destination(email, mobileNumber);
+    }
+
     @Override
     public String toString() {
         return "CcdResponse{"
@@ -86,10 +101,18 @@ public class CcdResponse {
                 + ", appellantSurname='" + appellantSurname + '\''
                 + ", appellantTitle='" + appellantTitle + '\''
                 + ", appealNumber='" + appealNumber + '\''
-                + ", appealStatus='" + appealStatus + '\''
+                + ", caseReference='" + caseReference + '\''
+                + ", notificationType='" + notificationType + '\''
                 + ", email='" + email + '\''
-                + ", phoneNumber='" + phoneNumber + '\''
                 + ", mobileNumber='" + mobileNumber + '\''
                 + '}';
+    }
+
+    public NotificationType getNotificationType() {
+        return notificationType;
+    }
+
+    public void setNotificationType(NotificationType notificationType) {
+        this.notificationType = notificationType;
     }
 }
