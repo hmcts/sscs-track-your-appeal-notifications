@@ -6,7 +6,7 @@ module "track-your-appeal-notifications" {
   asename  = "${data.terraform_remote_state.core_apps_compute.ase_name[0]}"
 
   app_settings = {
-    PORT="${var.tya_notfications_server_port}"
-    MANAGEMENT_SECURITY_ENABLED="${var.management_security_enabled}"
+    TYA_NOTIFICATIONS_PORT = "${var.tya_notfications_server_port}"
+    MANAGEMENT_SECURITY_ENABLED = "${var.management_security_enabled}"
   }
 }

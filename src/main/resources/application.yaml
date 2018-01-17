@@ -1,5 +1,5 @@
 server:
-  port: ${PORT:8081}
+  port: ${TYA_NOTIFICATIONS_PORT:8081}
 
 management:
   security:
