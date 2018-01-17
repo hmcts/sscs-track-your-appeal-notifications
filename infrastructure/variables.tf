@@ -19,7 +19,7 @@ variable "infrastructure_env" {
 
 variable "tya_notfications_server_port" {
   type    = "string"
-  default = "8081"
+  default = "8080"
 }
 
 
