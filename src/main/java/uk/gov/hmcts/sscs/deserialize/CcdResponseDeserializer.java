@@ -8,6 +8,7 @@ import com.fasterxml.jackson.databind.deser.std.StdDeserializer;
 import java.io.IOException;
 import org.springframework.stereotype.Service;
 import uk.gov.hmcts.sscs.domain.CcdResponse;
+import uk.gov.hmcts.sscs.domain.notify.NotificationType;
 
 @Service
 public class CcdResponseDeserializer extends StdDeserializer<CcdResponse> {
@@ -32,7 +33,7 @@ public class CcdResponseDeserializer extends StdDeserializer<CcdResponse> {
     public CcdResponse deserializeCcdJson(JsonNode node) {
         CcdResponse ccdResponse = new CcdResponse();
 
-        ccdResponse.setAppealStatus(getField(node, "state"));
+        ccdResponse.setNotificationType(NotificationType.getNotificationById(getField(node, "state")));
 
         JsonNode caseNode = getNode(node, "case_data");
 
@@ -70,7 +71,6 @@ public class CcdResponseDeserializer extends StdDeserializer<CcdResponse> {
         if (contactNode != null) {
             ccdResponse.setEmail(getField(contactNode, "email"));
             ccdResponse.setMobileNumber(getField(contactNode, "mobile"));
-            ccdResponse.setPhoneNumber(getField(contactNode, "phone"));
         }
 
         return ccdResponse;
@@ -81,6 +81,7 @@ public class CcdResponseDeserializer extends StdDeserializer<CcdResponse> {
 
         if (idNode != null) {
             ccdResponse.setAppealNumber(getField(idNode, "tya"));
+            ccdResponse.setCaseReference(getField(idNode, "gaps2"));
         }
 
         return ccdResponse;

@@ -17,7 +17,7 @@ public class TrackYourAppealNotificationsApplication {
     public static final String UTC = "UTC";
 
     //  @Value("${gov.uk.notification.api.key}")
-    private String apiKey = "test";
+    private static final String apiKey = "test";
 
     @PostConstruct
     public void started() {

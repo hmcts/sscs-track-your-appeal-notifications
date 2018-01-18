@@ -1,0 +1,30 @@
+package uk.gov.hmcts.sscs.placeholders;
+
+import static org.junit.Assert.assertEquals;
+import static uk.gov.hmcts.sscs.placeholders.AppealReceivedPersonalisation.*;
+
+import java.util.HashMap;
+import java.util.Map;
+import org.junit.Before;
+import org.junit.Test;
+import uk.gov.hmcts.sscs.domain.CcdResponse;
+
+public class AppealReceivedPersonalisationTest {
+
+    private AppealReceivedPersonalisation personalisation;
+
+    @Before
+    public void setup() {
+        personalisation = new AppealReceivedPersonalisation(null);
+    }
+
+    @Test
+    public void customiseAppealReceivedPersonalisation() {
+        Map<String, String> personalisationMap = new HashMap<>();
+
+        Map<String, String> result = personalisation.customise(new CcdResponse(), personalisationMap);
+
+        assertEquals(result.get(FIRST_TIER_AGENCY_ACRONYM), DWP_ACRONYM);
+        assertEquals(result.get(FIRST_TIER_AGENCY_FULL_NAME), DWP_FUL_NAME);
+    }
+}
