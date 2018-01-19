@@ -28,11 +28,11 @@ public class CcdResponseDeserializerTest {
 
         CcdResponse ccdResponse = ccdResponseDeserializer.deserializeAppellantJson(mapper.readTree(json), new CcdResponse());
 
-        assertEquals(ccdResponse.getAppellantFirstName(), "J");
-        assertEquals(ccdResponse.getAppellantSurname(), "Maloney");
-        assertEquals(ccdResponse.getAppellantTitle(), "Mr");
-        assertEquals(ccdResponse.getEmail(), "test@testing.com");
-        assertEquals(ccdResponse.getMobileNumber(), "01234556634");
+        assertEquals("J", ccdResponse.getAppellantFirstName());
+        assertEquals("Maloney", ccdResponse.getAppellantSurname());
+        assertEquals("Mr", ccdResponse.getAppellantTitle());
+        assertEquals("test@testing.com", ccdResponse.getEmail());
+        assertEquals("01234556634", ccdResponse.getMobileNumber());
     }
 
     @Test
@@ -42,7 +42,7 @@ public class CcdResponseDeserializerTest {
 
         CcdResponse ccdResponse = ccdResponseDeserializer.deserializeCaseIdJson(mapper.readTree(json), new CcdResponse());
 
-        assertEquals(ccdResponse.getAppealNumber(), "755TY68876");
+        assertEquals("755TY68876", ccdResponse.getAppealNumber());
     }
 
     @Test
@@ -52,14 +52,14 @@ public class CcdResponseDeserializerTest {
 
         CcdResponse ccdResponse = mapper.readValue(json, CcdResponse.class);
 
-        assertEquals(ccdResponse.getNotificationType(), APPEAL_RECEIVED);
-        assertEquals(ccdResponse.getAppellantFirstName(), "J");
-        assertEquals(ccdResponse.getAppellantSurname(), "Maloney");
-        assertEquals(ccdResponse.getAppellantTitle(), "Mr");
-        assertEquals(ccdResponse.getEmail(), "test@testing.com");
-        assertEquals(ccdResponse.getMobileNumber(), "01234556634");
-        assertEquals(ccdResponse.getAppealNumber(), "755TY68876");
-        assertEquals(ccdResponse.getCaseReference(), "SC001/0000/0000");
+        assertEquals(APPEAL_RECEIVED, ccdResponse.getNotificationType());
+        assertEquals("J", ccdResponse.getAppellantFirstName());
+        assertEquals("Maloney", ccdResponse.getAppellantSurname());
+        assertEquals("Mr", ccdResponse.getAppellantTitle());
+        assertEquals("test@testing.com", ccdResponse.getEmail());
+        assertEquals("01234556634", ccdResponse.getMobileNumber());
+        assertEquals("755TY68876", ccdResponse.getAppealNumber());
+        assertEquals("SC001/0000/0000", ccdResponse.getCaseReference());
     }
 
     @Test

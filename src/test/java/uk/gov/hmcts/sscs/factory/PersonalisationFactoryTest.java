@@ -28,7 +28,7 @@ public class PersonalisationFactoryTest {
     public void createAppealReceivedPersonalisationWhenAppealReceivedNotification() {
         Personalisation personalisation = factory.apply(APPEAL_RECEIVED);
 
-        assertEquals(personalisation.getTemplate().getEmailTemplateId(), "dd955503-42f4-45f8-a692-39377a0f340f");
+        assertEquals("dd955503-42f4-45f8-a692-39377a0f340f", personalisation.getTemplate().getEmailTemplateId());
     }
 
     @Test

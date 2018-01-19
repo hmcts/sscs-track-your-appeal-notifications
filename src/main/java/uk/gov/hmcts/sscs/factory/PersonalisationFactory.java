@@ -31,7 +31,7 @@ public class PersonalisationFactory implements Function<NotificationType, Person
                 case APPEAL_RECEIVED:
                     return new AppealReceivedPersonalisation(config);
                 default:
-                    String error ="Unknown Notification type received: " + notificationType;
+                    String error = "Unknown Notification type received: " + notificationType;
                     LOG.error(error);
                     throw new NotificationClientRuntimeException(new Exception(error));
             }

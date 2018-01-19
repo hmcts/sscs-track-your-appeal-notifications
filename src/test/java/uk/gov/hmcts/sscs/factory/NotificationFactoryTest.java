@@ -40,9 +40,9 @@ public class NotificationFactoryTest {
         when(personalisation.getTemplate()).thenReturn(new Template("123", null));
         Notification result = factory.create(ccdResponse);
 
-        assertEquals(result.getEmailTemplate(), "123");
-        assertEquals(result.getEmail(), "test@testing.com");
-        assertEquals(result.getAppealNumber(), "ABC");
+        assertEquals("123", result.getEmailTemplate());
+        assertEquals("test@testing.com", result.getEmail());
+        assertEquals("ABC", result.getAppealNumber());
     }
 
     @Test

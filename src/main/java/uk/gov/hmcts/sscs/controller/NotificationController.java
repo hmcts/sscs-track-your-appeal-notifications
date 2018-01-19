@@ -9,6 +9,7 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 import uk.gov.hmcts.sscs.domain.CcdResponse;
+import uk.gov.hmcts.sscs.exception.NotificationServiceException;
 import uk.gov.hmcts.sscs.service.NotificationService;
 
 @RestController
@@ -24,8 +25,8 @@ public class NotificationController {
     }
 
     @RequestMapping(value = "/send", method = POST, produces = APPLICATION_JSON_VALUE)
-    public void sendNotification(@RequestBody CcdResponse ccdResponse) throws Exception {
-        LOG.info("Ccd Response received: " + ccdResponse);
+    public void sendNotification(@RequestBody CcdResponse ccdResponse) throws NotificationServiceException {
+        LOG.info("Ccd Response received: ", ccdResponse);
         service.createAndSendNotification(ccdResponse);
     }
 }

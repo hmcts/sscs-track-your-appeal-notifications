@@ -15,6 +15,7 @@ import uk.gov.hmcts.sscs.domain.notify.Notification;
 import uk.gov.hmcts.sscs.domain.notify.Reference;
 import uk.gov.hmcts.sscs.domain.notify.Template;
 import uk.gov.hmcts.sscs.exception.NotificationClientRuntimeException;
+import uk.gov.hmcts.sscs.exception.NotificationServiceException;
 import uk.gov.hmcts.sscs.factory.NotificationFactory;
 import uk.gov.service.notify.NotificationClient;
 import uk.gov.service.notify.NotificationClientException;
@@ -95,7 +96,7 @@ public class NotificationServiceTest {
     }
 
     @Test
-    public void doNotSendSmsToGovNotifyWhenSmsTemplateIsBlank() throws Exception{
+    public void doNotSendSmsToGovNotifyWhenSmsTemplateIsBlank() throws Exception {
         Notification notification = new Notification(new Template("abc", null), new Destination("test@testing.com", "07823456746"), null, new Reference(), null);
         when(factory.create(ccdResponse)).thenReturn(notification);
         notificationService.createAndSendNotification(ccdResponse);
@@ -115,8 +116,8 @@ public class NotificationServiceTest {
         notificationService.createAndSendNotification(ccdResponse);
     }
 
-    @Test(expected = Exception.class)
-    public void shouldCorrectlyHandleAGenericException() throws Exception {
+    @Test(expected = NotificationServiceException.class)
+    public void shouldCorrectlyHandleAGovNotifyException() throws Exception {
         Notification notification = new Notification(new Template("abc", null), new Destination("test@testing.com", null), null, new Reference(), null);
         when(factory.create(ccdResponse)).thenReturn(notification);
 

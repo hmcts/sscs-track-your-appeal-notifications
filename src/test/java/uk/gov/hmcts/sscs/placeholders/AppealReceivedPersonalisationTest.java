@@ -24,7 +24,7 @@ public class AppealReceivedPersonalisationTest {
 
         Map<String, String> result = personalisation.customise(new CcdResponse(), personalisationMap);
 
-        assertEquals(result.get(FIRST_TIER_AGENCY_ACRONYM), DWP_ACRONYM);
-        assertEquals(result.get(FIRST_TIER_AGENCY_FULL_NAME), DWP_FUL_NAME);
+        assertEquals(DWP_ACRONYM, result.get(FIRST_TIER_AGENCY_ACRONYM));
+        assertEquals(DWP_FUL_NAME, result.get(FIRST_TIER_AGENCY_FULL_NAME));
     }
 }

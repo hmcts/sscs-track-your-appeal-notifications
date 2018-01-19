@@ -10,6 +10,7 @@ import org.springframework.stereotype.Service;
 import uk.gov.hmcts.sscs.domain.CcdResponse;
 import uk.gov.hmcts.sscs.domain.notify.Notification;
 import uk.gov.hmcts.sscs.exception.NotificationClientRuntimeException;
+import uk.gov.hmcts.sscs.exception.NotificationServiceException;
 import uk.gov.hmcts.sscs.factory.NotificationFactory;
 import uk.gov.service.notify.NotificationClient;
 
@@ -26,7 +27,7 @@ public class NotificationService {
         this.client = client;
     }
 
-    public void createAndSendNotification(CcdResponse response) throws Exception {
+    public void createAndSendNotification(CcdResponse response) throws NotificationServiceException {
 
         Notification notification = factory.create(response);
 
@@ -41,9 +42,8 @@ public class NotificationService {
             if (ex.getCause() instanceof UnknownHostException) {
                 throw new NotificationClientRuntimeException(ex);
             }
-            String errorMessage = "Error on GovUKNotify for AppealNumber " +  notification.getAppealNumber() + ", " + ex.getStackTrace();
-            LOG.error(errorMessage);
-            throw new Exception(errorMessage);
+            LOG.error("Error on GovUKNotify for AppealNumber " +  notification.getAppealNumber() + ", " + ex.getStackTrace());
+            throw new NotificationServiceException(ex);
         }
     }
 }
