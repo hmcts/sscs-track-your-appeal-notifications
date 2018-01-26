@@ -17,15 +17,13 @@ variable "infrastructure_env" {
   description = "Infrastructure environment to point to"
 }
 
-variable "tya_notfications_server_port" {
-  type    = "string"
-  default = "8080"
-}
-
-
 variable "management_security_enabled" {
   type    = "string"
   default = "true"
 }
 
+variable "ilbIp"{}
 
+variable "subscription" {
+  type = "string"
+}
