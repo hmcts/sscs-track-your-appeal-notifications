@@ -1,6 +1,0 @@
-server:
-  port: ${PORT:8081}
-
-management:
-  security:
-    enabled: ${MANAGEMENT_SECURITY_ENABLED:true}
