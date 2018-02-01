@@ -17,7 +17,7 @@ sourceCompatibility = 1.8
 targetCompatibility = 1.8
 
 jar {
-    baseName 'track-your-appeal-notifications'
+    archiveName 'track-your-appeal-notifications.jar'
     manifest {
         attributes 'Implementation-Title': project.name,
                 'Implementation-Version': project.version
