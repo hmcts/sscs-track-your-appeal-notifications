@@ -8,6 +8,7 @@ import com.fasterxml.jackson.databind.deser.std.StdDeserializer;
 import java.io.IOException;
 import org.springframework.stereotype.Service;
 import uk.gov.hmcts.sscs.domain.CcdResponse;
+import uk.gov.hmcts.sscs.domain.Subscription;
 import uk.gov.hmcts.sscs.domain.notify.NotificationType;
 
 @Service
@@ -33,66 +34,94 @@ public class CcdResponseDeserializer extends StdDeserializer<CcdResponse> {
     public CcdResponse deserializeCcdJson(JsonNode node) {
         CcdResponse ccdResponse = new CcdResponse();
 
-        ccdResponse.setNotificationType(NotificationType.getNotificationById(getField(node, "state")));
+        ccdResponse.setNotificationType(NotificationType.getNotificationById(getField(node, "event_id")));
 
-        JsonNode caseNode = getNode(node, "case_data");
+        JsonNode caseDetailsNode = getNode(node, "case_details");
+        JsonNode caseNode = getNode(caseDetailsNode, "case_data");
+        JsonNode appealNode = getNode(caseNode, "appeal");
+        JsonNode subscriptionsNode = getNode(caseNode, "subscriptions");
 
-        deserializeAppellantJson(caseNode, ccdResponse);
+        ccdResponse.setCaseReference(getField(caseNode, "caseReference"));
 
-        deserializeCaseIdJson(caseNode, ccdResponse);
+        deserializeAppellantDetailsJson(appealNode, subscriptionsNode, ccdResponse);
+        deserializeSupporterDetailsJson(appealNode, subscriptionsNode, ccdResponse);
 
         return ccdResponse;
     }
 
-    public CcdResponse deserializeAppellantJson(JsonNode node, CcdResponse ccdResponse) {
-        JsonNode appellantNode = getNode(node, "appellant");
+    public CcdResponse deserializeAppellantDetailsJson(JsonNode appealNode, JsonNode subscriptionsNode, CcdResponse ccdResponse) {
+        JsonNode appellantNode = getNode(appealNode, "appellant");
+        JsonNode appellantSubscriptionNode = getNode(subscriptionsNode, "appellantSubscription");
+
+        Subscription appellantSubscription = new Subscription();
+
         if (appellantNode != null) {
-            deserializeAppellantNameJson(appellantNode, ccdResponse);
-            deserializeAppellantContactJson(appellantNode, ccdResponse);
+            deserializeNameJson(appellantNode, appellantSubscription);
         }
+
+        if (appellantSubscriptionNode != null) {
+            deserializeSubscriberJson(appellantSubscriptionNode, appellantSubscription);
+        }
+
+        ccdResponse.setAppellantSubscription(appellantSubscription);
+
         return ccdResponse;
     }
 
-    private CcdResponse deserializeAppellantNameJson(JsonNode node, CcdResponse ccdResponse) {
+    public CcdResponse deserializeSupporterDetailsJson(JsonNode appealNode, JsonNode subscriptionsNode, CcdResponse ccdResponse) {
+        JsonNode supporterNode = getNode(appealNode, "supporter");
+        JsonNode supporterSubscriptionNode = getNode(subscriptionsNode, "supporterSubscription");
+
+        Subscription supporterSubscription = new Subscription();
+
+        if (supporterNode != null) {
+            deserializeNameJson(supporterNode, supporterSubscription);
+        }
+
+        if (supporterSubscriptionNode != null) {
+            deserializeSubscriberJson(supporterSubscriptionNode, supporterSubscription);
+        }
+
+        ccdResponse.setSupporterSubscription(supporterSubscription);
+
+        return ccdResponse;
+    }
+
+
+    private Subscription deserializeNameJson(JsonNode node, Subscription subscription) {
         JsonNode nameNode = getNode(node, "name");
 
         if (nameNode != null) {
-            ccdResponse.setAppellantFirstName(getField(nameNode, "firstName"));
-            ccdResponse.setAppellantSurname(getField(nameNode, "lastName"));
-            ccdResponse.setAppellantTitle(getField(nameNode, "title"));
+            subscription.setFirstName(getField(nameNode, "firstName"));
+            subscription.setSurname(getField(nameNode, "lastName"));
+            subscription.setTitle(getField(nameNode, "title"));
         }
 
-        return ccdResponse;
+        return subscription;
     }
 
-    private CcdResponse deserializeAppellantContactJson(JsonNode node, CcdResponse ccdResponse) {
-        JsonNode contactNode = getNode(node, "contact");
-
-        if (contactNode != null) {
-            ccdResponse.setEmail(getField(contactNode, "email"));
-            ccdResponse.setMobileNumber(getField(contactNode, "mobile"));
+    private Subscription deserializeSubscriberJson(JsonNode node, Subscription subscription) {
+        if (node != null) {
+            subscription.setAppealNumber(getField(node, "tya"));
+            subscription.setEmail(getField(node, "email"));
+            subscription.setMobileNumber(getField(node, "mobile"));
+            subscription.setSubscribeSms(convertYesNoToBoolean(getField(node, "subscribeSms")));
+            subscription.setSubscribeEmail(convertYesNoToBoolean(getField(node, "subscribeEmail")));
         }
 
-        return ccdResponse;
+        return subscription;
     }
 
-    public CcdResponse deserializeCaseIdJson(JsonNode node, CcdResponse ccdResponse) {
-        JsonNode idNode = getNode(node, "id");
-
-        if (idNode != null) {
-            ccdResponse.setAppealNumber(getField(idNode, "tya"));
-            ccdResponse.setCaseReference(getField(idNode, "gaps2"));
-        }
-
-        return ccdResponse;
+    public JsonNode getNode(JsonNode node, String field) {
+        return node != null && node.has(field) ? node.get(field) : null;
     }
 
-    private JsonNode getNode(JsonNode node, String field) {
-        return node.has(field) ? node.get(field) : null;
+    public String getField(JsonNode node, String field) {
+        return node != null && node.has(field) ? node.get(field).asText() : null;
     }
 
-    private String getField(JsonNode node, String field) {
-        return node.has(field) ? node.get(field).asText() : null;
+    public Boolean convertYesNoToBoolean(String text) {
+        return text != null && text.equals("Yes") ? true : false;
     }
 
 }

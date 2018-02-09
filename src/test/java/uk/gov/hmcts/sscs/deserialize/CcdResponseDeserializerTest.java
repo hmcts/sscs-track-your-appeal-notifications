@@ -1,10 +1,11 @@
 package uk.gov.hmcts.sscs.deserialize;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNull;
+import static org.junit.Assert.*;
 import static uk.gov.hmcts.sscs.domain.notify.NotificationType.APPEAL_RECEIVED;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.databind.node.JsonNodeFactory;
+import com.fasterxml.jackson.databind.node.ObjectNode;
 import java.io.IOException;
 import org.junit.Before;
 import org.junit.Test;
@@ -24,78 +25,169 @@ public class CcdResponseDeserializerTest {
     @Test
     public void deserializeAppellantJson() throws IOException {
 
-        String json = "{\"appellant\":{\"name\":{\"title\":\"Mr\",\"lastName\":\"Maloney\",\"firstName\":\"J\"},\"contact\":{\"email\":\"test@testing.com\",\"mobile\":\"01234556634\"}}}";
+        String appealJson = "{\"appellant\":{\"name\":{\"title\":\"Mr\",\"lastName\":\"Vasquez\",\"firstName\":\"Dexter\",\"middleName\":\"Ali Sosa\"}}}";
+        String subscriptionJson = "{\"appellantSubscription\":{\"tya\":\"543212345\",\"email\":\"test@testing.com\",\"mobile\":\"01234556634\",\"reason\":null,\"subscribeSms\":\"No\",\"subscribeEmail\":\"Yes\"}}";
 
-        CcdResponse ccdResponse = ccdResponseDeserializer.deserializeAppellantJson(mapper.readTree(json), new CcdResponse());
+        CcdResponse ccdResponse = ccdResponseDeserializer.deserializeAppellantDetailsJson(mapper.readTree(appealJson), mapper.readTree(subscriptionJson), new CcdResponse());
 
-        assertEquals("J", ccdResponse.getAppellantFirstName());
-        assertEquals("Maloney", ccdResponse.getAppellantSurname());
-        assertEquals("Mr", ccdResponse.getAppellantTitle());
-        assertEquals("test@testing.com", ccdResponse.getEmail());
-        assertEquals("01234556634", ccdResponse.getMobileNumber());
+        assertEquals("Dexter", ccdResponse.getAppellantSubscription().getFirstName());
+        assertEquals("Vasquez", ccdResponse.getAppellantSubscription().getSurname());
+        assertEquals("Mr", ccdResponse.getAppellantSubscription().getTitle());
+        assertEquals("test@testing.com", ccdResponse.getAppellantSubscription().getEmail());
+        assertEquals("01234556634", ccdResponse.getAppellantSubscription().getMobileNumber());
+        assertFalse(ccdResponse.getAppellantSubscription().isSubscribeSms());
+        assertTrue(ccdResponse.getAppellantSubscription().isSubscribeEmail());
     }
 
     @Test
-    public void deserializeCaseIdJson() throws IOException {
+    public void deserializeSupporterJson() throws IOException {
 
-        String json = "{\"id\":{\"tya\":\"755TY68876\"}}";
+        String appealJson = "{\"supporter\":{\"name\":{\"title\":\"Mrs\",\"lastName\":\"Wilder\",\"firstName\":\"Amber\",\"middleName\":\"Eaton\"}}}";
+        String subscriptionJson = "{\"supporterSubscription\":{\"tya\":\"232929249492\",\"email\":\"supporter@live.co.uk\",\"mobile\":\"07925289702\",\"reason\":null,\"subscribeSms\":\"Yes\",\"subscribeEmail\":\"No\"}}";
 
-        CcdResponse ccdResponse = ccdResponseDeserializer.deserializeCaseIdJson(mapper.readTree(json), new CcdResponse());
+        CcdResponse ccdResponse = ccdResponseDeserializer.deserializeSupporterDetailsJson(mapper.readTree(appealJson), mapper.readTree(subscriptionJson), new CcdResponse());
 
-        assertEquals("755TY68876", ccdResponse.getAppealNumber());
+        assertEquals("Amber", ccdResponse.getSupporterSubscription().getFirstName());
+        assertEquals("Wilder", ccdResponse.getSupporterSubscription().getSurname());
+        assertEquals("Mrs", ccdResponse.getSupporterSubscription().getTitle());
+        assertEquals("supporter@live.co.uk", ccdResponse.getSupporterSubscription().getEmail());
+        assertEquals("07925289702", ccdResponse.getSupporterSubscription().getMobileNumber());
+        assertTrue(ccdResponse.getSupporterSubscription().isSubscribeSms());
+        assertFalse(ccdResponse.getSupporterSubscription().isSubscribeEmail());
     }
 
     @Test
     public void deserializeAllCcdResponseJson() throws IOException {
 
-        String json = "{\"state\":\"appealReceivedNotification\",\"case_data\":{\"id\":{\"tya\":\"755TY68876\",\"gaps2\":\"SC001/0000/0000\"},\"appellant\":{\"name\":{\"title\":\"Mr\",\"lastName\":\"Maloney\",\"firstName\":\"J\"},\"contact\":{\"email\":\"test@testing.com\",\"mobile\":\"01234556634\"}}}}";
+        String json = "{\"case_details\":{\"case_data\":{\"subscriptions\":{"
+                + "\"appellantSubscription\":{\"tya\":\"543212345\",\"email\":\"test@testing.com\",\"mobile\":\"01234556634\",\"reason\":null,\"subscribeSms\":\"No\",\"subscribeEmail\":\"Yes\"},"
+                + "\"supporterSubscription\":{\"tya\":\"232929249492\",\"email\":\"supporter@live.co.uk\",\"mobile\":\"07925289702\",\"reason\":null,\"subscribeSms\":\"Yes\",\"subscribeEmail\":\"No\"}},"
+                + "\"caseReference\":\"SC/1234/23\",\"appeal\":{"
+                + "\"appellant\":{\"name\":{\"title\":\"Mr\",\"lastName\":\"Vasquez\",\"firstName\":\"Dexter\",\"middleName\":\"Ali Sosa\"}},"
+                + "\"supporter\":{\"name\":{\"title\":\"Mrs\",\"lastName\":\"Wilder\",\"firstName\":\"Amber\",\"middleName\":\"Clark Eaton\"}}}}},\"event_id\": \"appealReceived\"\n}";
 
         CcdResponse ccdResponse = mapper.readValue(json, CcdResponse.class);
 
         assertEquals(APPEAL_RECEIVED, ccdResponse.getNotificationType());
-        assertEquals("J", ccdResponse.getAppellantFirstName());
-        assertEquals("Maloney", ccdResponse.getAppellantSurname());
-        assertEquals("Mr", ccdResponse.getAppellantTitle());
-        assertEquals("test@testing.com", ccdResponse.getEmail());
-        assertEquals("01234556634", ccdResponse.getMobileNumber());
-        assertEquals("755TY68876", ccdResponse.getAppealNumber());
-        assertEquals("SC001/0000/0000", ccdResponse.getCaseReference());
-    }
-
-    @Test
-    public void deserializeWithMissingAppellant() throws IOException {
-        String json = "{\"state\":\"appealReceivedNotification\",\"case_data\":{\"id\":{\"tya\":\"755TY68876\"}}}";
-
-        CcdResponse ccdResponse = mapper.readValue(json, CcdResponse.class);
-
-        assertNull(ccdResponse.getAppellantSurname());
+        assertEquals("Dexter", ccdResponse.getAppellantSubscription().getFirstName());
+        assertEquals("Vasquez", ccdResponse.getAppellantSubscription().getSurname());
+        assertEquals("Mr", ccdResponse.getAppellantSubscription().getTitle());
+        assertEquals("test@testing.com", ccdResponse.getAppellantSubscription().getEmail());
+        assertEquals("01234556634", ccdResponse.getAppellantSubscription().getMobileNumber());
+        assertFalse(ccdResponse.getAppellantSubscription().isSubscribeSms());
+        assertTrue(ccdResponse.getAppellantSubscription().isSubscribeEmail());
+        assertEquals("Amber", ccdResponse.getSupporterSubscription().getFirstName());
+        assertEquals("Wilder", ccdResponse.getSupporterSubscription().getSurname());
+        assertEquals("Mrs", ccdResponse.getSupporterSubscription().getTitle());
+        assertEquals("supporter@live.co.uk", ccdResponse.getSupporterSubscription().getEmail());
+        assertEquals("07925289702", ccdResponse.getSupporterSubscription().getMobileNumber());
+        assertTrue(ccdResponse.getSupporterSubscription().isSubscribeSms());
+        assertFalse(ccdResponse.getSupporterSubscription().isSubscribeEmail());
+        assertEquals("SC/1234/23", ccdResponse.getCaseReference());
     }
 
     @Test
     public void deserializeWithMissingAppellantName() throws IOException {
-        String json = "{\"state\":\"appealReceivedNotification\",\"case_data\":{\"id\":{\"tya\":\"755TY68876\"},\"appellant\":{\"contact\":{\"email\":\"test@testing.com\",\"mobile\":\"01234556634\"}}}}";
+        String json = "{\"case_details\":{\"case_data\":{\"subscriptions\":{"
+                + "\"appellantSubscription\":{\"tya\":\"543212345\",\"email\":\"test@testing.com\",\"mobile\":\"01234556634\",\"reason\":null,\"subscribeSms\":\"No\",\"subscribeEmail\":\"Yes\"},"
+                + "\"supporterSubscription\":{\"tya\":\"232929249492\",\"email\":\"supporter@live.co.uk\",\"mobile\":\"07925289702\",\"reason\":null,\"subscribeSms\":\"Yes\",\"subscribeEmail\":\"No\"}},"
+                + "\"caseReference\":\"SC/1234/23\",\"appeal\":{"
+                + "\"supporter\":{\"name\":{\"title\":\"Mrs\",\"lastName\":\"Wilder\",\"firstName\":\"Amber\",\"middleName\":\"Clark Eaton\"}}}}},\"event_id\": \"appealReceived\"\n}";
 
         CcdResponse ccdResponse = mapper.readValue(json, CcdResponse.class);
 
-        assertNull(ccdResponse.getAppellantSurname());
+        assertNull(ccdResponse.getAppellantSubscription().getSurname());
+        assertEquals("test@testing.com", ccdResponse.getAppellantSubscription().getEmail());
     }
 
     @Test
-    public void deserializeWithMissingAppellantContact() throws IOException {
-        String json = "{\"state\":\"appealReceivedNotification\",\"case_data\":{\"id\":{\"tya\":\"755TY68876\"},\"appellant\":{\"name\":{\"title\":\"Mr\",\"lastName\":\"Maloney\",\"firstName\":\"J\"}}}}";
+    public void deserializeWithMissingAppellantSubscription() throws IOException {
+        String json = "{\"case_details\":{\"case_data\":{\"subscriptions\":{"
+                + "\"supporterSubscription\":{\"tya\":\"232929249492\",\"email\":\"supporter@live.co.uk\",\"mobile\":\"07925289702\",\"reason\":null,\"subscribeSms\":\"Yes\",\"subscribeEmail\":\"No\"}},"
+                + "\"caseReference\":\"SC/1234/23\",\"appeal\":{"
+                + "\"appellant\":{\"name\":{\"title\":\"Mr\",\"lastName\":\"Vasquez\",\"firstName\":\"Dexter\",\"middleName\":\"Ali Sosa\"}},"
+                + "\"supporter\":{\"name\":{\"title\":\"Mrs\",\"lastName\":\"Wilder\",\"firstName\":\"Amber\",\"middleName\":\"Clark Eaton\"}}}}},\"event_id\": \"appealReceived\"\n}";
 
         CcdResponse ccdResponse = mapper.readValue(json, CcdResponse.class);
 
-        assertNull(ccdResponse.getEmail());
+        assertNull(ccdResponse.getAppellantSubscription().getEmail());
+        assertEquals("Vasquez", ccdResponse.getAppellantSubscription().getSurname());
     }
 
     @Test
-    public void deserializeWithMissingCaseId() throws IOException {
-        String json = "{\"state\":\"appealReceivedNotification\",\"case_data\":{\"appellant\":{\"name\":{\"title\":\"Mr\",\"lastName\":\"Maloney\",\"firstName\":\"J\"},\"contact\":{\"email\":\"test@testing.com\",\"mobile\":\"01234556634\"}}}}";
+    public void deserializeWithMissingCaseReference() throws IOException {
+        String json = "{\"case_details\":{\"case_data\":{\"subscriptions\":{"
+                + "\"appellantSubscription\":{\"tya\":\"543212345\",\"email\":\"test@testing.com\",\"mobile\":\"01234556634\",\"reason\":null,\"subscribeSms\":\"No\",\"subscribeEmail\":\"Yes\"},"
+                + "\"supporterSubscription\":{\"tya\":\"232929249492\",\"email\":\"supporter@live.co.uk\",\"mobile\":\"07925289702\",\"reason\":null,\"subscribeSms\":\"Yes\",\"subscribeEmail\":\"No\"}},"
+                + "\"appeal\":{"
+                + "\"appellant\":{\"name\":{\"title\":\"Mr\",\"lastName\":\"Vasquez\",\"firstName\":\"Dexter\",\"middleName\":\"Ali Sosa\"}},"
+                + "\"supporter\":{\"name\":{\"title\":\"Mrs\",\"lastName\":\"Wilder\",\"firstName\":\"Amber\",\"middleName\":\"Clark Eaton\"}}}}},\"event_id\": \"appealReceived\"\n}";
 
         CcdResponse ccdResponse = mapper.readValue(json, CcdResponse.class);
 
-        assertNull(ccdResponse.getAppealNumber());
+        assertNull(ccdResponse.getCaseReference());
+    }
 
+    @Test
+    public void returnNodeWhenNodeIsPresent() {
+        final JsonNodeFactory factory = JsonNodeFactory.instance;
+        final ObjectNode node = factory.objectNode();
+        final ObjectNode child = factory.objectNode();
+
+        node.put("message", "test");
+        child.set("child", node);
+        assertEquals(node, ccdResponseDeserializer.getNode(child, "child"));
+    }
+
+    @Test
+    public void returnNullWhenNodeIsNotPresent() {
+        final JsonNodeFactory factory = JsonNodeFactory.instance;
+        final ObjectNode child = factory.objectNode();
+
+        child.put("message", "test");
+        assertEquals(null, ccdResponseDeserializer.getNode(child, "somethingelse"));
+    }
+
+    @Test
+    public void returnNullWhenNodeIsNull() {
+        assertEquals(null, ccdResponseDeserializer.getNode(null, "somethingelse"));
+    }
+
+    @Test
+    public void returnTextWhenFieldIsPresent() {
+        final JsonNodeFactory factory = JsonNodeFactory.instance;
+        final ObjectNode node = factory.objectNode();
+
+        node.put("message", "test");
+        assertEquals("test", ccdResponseDeserializer.getField(node, "message"));
+    }
+
+    @Test
+    public void returnNullWhenFieldIsNotPresent() {
+        final JsonNodeFactory factory = JsonNodeFactory.instance;
+        final ObjectNode child = factory.objectNode();
+
+        child.put("message", "test");
+        assertEquals(null, ccdResponseDeserializer.getField(child, "somethingelse"));
+    }
+
+    @Test
+    public void returnNullWhenFieldIsNull() {
+        assertEquals(null, ccdResponseDeserializer.getField(null, "somethingelse"));
+    }
+
+    @Test
+    public void returnTrueForYes() {
+        assertTrue(ccdResponseDeserializer.convertYesNoToBoolean("Yes"));
+    }
+
+    @Test
+    public void returnFalseForNo() {
+        assertFalse(ccdResponseDeserializer.convertYesNoToBoolean("No"));
+    }
+
+    @Test
+    public void returnFalseForNull() {
+        assertFalse(ccdResponseDeserializer.convertYesNoToBoolean(null));
     }
 }

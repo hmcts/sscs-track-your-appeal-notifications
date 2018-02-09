@@ -10,6 +10,7 @@ import org.junit.Before;
 import org.junit.Test;
 import org.mockito.Mock;
 import uk.gov.hmcts.sscs.domain.CcdResponse;
+import uk.gov.hmcts.sscs.domain.Subscription;
 import uk.gov.hmcts.sscs.domain.notify.Notification;
 import uk.gov.hmcts.sscs.domain.notify.Template;
 import uk.gov.hmcts.sscs.placeholders.AppealReceivedPersonalisation;
@@ -30,8 +31,8 @@ public class NotificationFactoryTest {
     public void setup() {
         initMocks(this);
         factory = new NotificationFactory(personalisationFactory);
-        ccdResponse = new CcdResponse("Ronnie","Scott", "Mr", "ABC", "1234/5", "test@testing.com",
-                "07985858594", APPEAL_RECEIVED);
+        ccdResponse = new CcdResponse("SC/1234/5", new Subscription("Ronnie", "Scott", "Mr", "ABC",
+                "test@testing.com", "07985858594", true, false), null, APPEAL_RECEIVED);
     }
 
     @Test

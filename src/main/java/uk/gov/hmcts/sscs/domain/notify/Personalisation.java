@@ -21,10 +21,10 @@ public abstract class Personalisation {
         personalisation.put(BENEFIT_NAME_ACRONYM_LITERAL, BENEFIT_NAME_ACRONYM);
         personalisation.put(BENEFIT_FULL_NAME_LITERAL, BENEFIT_FULL_NAME);
         personalisation.put(APPEAL_REF, ccdResponse.getCaseReference());
-        personalisation.put(APPEAL_ID, ccdResponse.getAppealNumber());
-        personalisation.put(APPELLANT_NAME, String.format("%s %s", ccdResponse.getAppellantFirstName(), ccdResponse.getAppellantSurname()));
+        personalisation.put(APPEAL_ID, ccdResponse.getAppellantSubscription().getAppealNumber());
+        personalisation.put(APPELLANT_NAME, String.format("%s %s", ccdResponse.getAppellantSubscription().getFirstName(), ccdResponse.getAppellantSubscription().getSurname()));
         personalisation.put(PHONE_NUMBER, config.getHmctsPhoneNumber());
-        personalisation.put(TRACK_APPEAL_LINK_LITERAL, config.getTrackAppealLink() != null ? config.getTrackAppealLink().replace(APPEAL_ID_LITERAL, ccdResponse.getAppealNumber()) : null);
+        personalisation.put(TRACK_APPEAL_LINK_LITERAL, config.getTrackAppealLink() != null ? config.getTrackAppealLink().replace(APPEAL_ID_LITERAL, ccdResponse.getAppellantSubscription().getAppealNumber()) : null);
 
         personalisation = customise(ccdResponse, personalisation);
         return personalisation;

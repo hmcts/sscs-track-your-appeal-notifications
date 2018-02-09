@@ -69,3 +69,29 @@ To run all unit tests execute the following command:
 ```
 ./gradlew test
 ```
+
+### Debugging locally with CCD
+
+Setup callbacks by finding out IP address:
+```
+ifconfig
+```
+Copy the inet value from en0 and place this value in the callback column in the definition spreadsheet.
+
+Start CCD application 
+```
+./compose-frontend.sh up -d
+```
+In IDE, start the application in Debug mode and put a breakpoint in the appropriate place. Then login to CCD and start an event which would trigger a callback.
+
+### Run locally in Docker with CCD using an alias
+
+Create an alias
+```
+alias run-notify='docker-compose -f compose/backend.yml -f compose/frontend.yml -f ../track-your-appeal-notifications/docker-compose.yml'
+```
+Run the alias
+```
+run-notify up -d
+```
+This starts the CCD applications with Track-your-appeal-notifications in Docker with just one command
