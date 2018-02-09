@@ -3,6 +3,7 @@ package uk.gov.hmcts.sscs;
 import java.net.MalformedURLException;
 import java.util.TimeZone;
 import javax.annotation.PostConstruct;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.context.MessageSource;
@@ -16,8 +17,8 @@ public class TrackYourAppealNotificationsApplication {
 
     public static final String UTC = "UTC";
 
-    //  @Value("${gov.uk.notification.api.key}")
-    private static final String apiKey = "test";
+    @Value("${gov.uk.notification.api.key}")
+    private String apiKey;
 
     @PostConstruct
     public void started() {

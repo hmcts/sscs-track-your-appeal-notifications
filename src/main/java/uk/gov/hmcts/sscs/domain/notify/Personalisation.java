@@ -24,6 +24,8 @@ public abstract class Personalisation {
         personalisation.put(APPEAL_ID, ccdResponse.getAppellantSubscription().getAppealNumber());
         personalisation.put(APPELLANT_NAME, String.format("%s %s", ccdResponse.getAppellantSubscription().getFirstName(), ccdResponse.getAppellantSubscription().getSurname()));
         personalisation.put(PHONE_NUMBER, config.getHmctsPhoneNumber());
+        //TODO: Replace hardcoded mactoken with an actual mac token
+        personalisation.put(MANAGE_EMAILS_LINK, config.getManageEmailsLink().replace(MAC_LITERAL, "Mactoken"));
         personalisation.put(TRACK_APPEAL_LINK_LITERAL, config.getTrackAppealLink() != null ? config.getTrackAppealLink().replace(APPEAL_ID_LITERAL, ccdResponse.getAppellantSubscription().getAppealNumber()) : null);
 
         personalisation = customise(ccdResponse, personalisation);

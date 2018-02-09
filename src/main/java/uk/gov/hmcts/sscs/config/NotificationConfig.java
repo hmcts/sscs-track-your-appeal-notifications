@@ -7,6 +7,8 @@ import uk.gov.hmcts.sscs.domain.notify.Link;
 @Component
 public class NotificationConfig {
 
+    @Value("${manage.emails.link}")
+    private String manageEmailsLink;
     @Value("${hmcts.phone.number}")
     private String hmctsPhoneNumber;
     @Value("${track.appeal.link}")
@@ -14,6 +16,10 @@ public class NotificationConfig {
 
     public String getHmctsPhoneNumber() {
         return hmctsPhoneNumber;
+    }
+
+    public Link getManageEmailsLink() {
+        return new Link(manageEmailsLink);
     }
 
     public Link getTrackAppealLink() {
