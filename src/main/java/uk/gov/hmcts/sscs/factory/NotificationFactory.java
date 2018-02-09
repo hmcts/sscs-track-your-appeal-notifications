@@ -32,9 +32,9 @@ public class NotificationFactory {
         }
 
         Template template = personalisation.getTemplate();
-        Destination destination = ccdResponse.getDestination();
+        Destination destination = ccdResponse.getAppellantSubscription().getDestination();
         Reference reference = new Reference();
-        String appealNumber = ccdResponse.getAppealNumber();
+        String appealNumber = ccdResponse.getAppellantSubscription().getAppealNumber();
         return new Notification(template, destination, placeholders, reference, appealNumber);
     }
 }

@@ -2,84 +2,26 @@ package uk.gov.hmcts.sscs.domain;
 
 import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
 import uk.gov.hmcts.sscs.deserialize.CcdResponseDeserializer;
-import uk.gov.hmcts.sscs.domain.notify.Destination;
 import uk.gov.hmcts.sscs.domain.notify.NotificationType;
 
 @JsonDeserialize(using = CcdResponseDeserializer.class)
 public class CcdResponse {
 
-    private String appellantFirstName;
-    private String appellantSurname;
-    private String appellantTitle;
-    private String appealNumber;
     private String caseReference;
-    private String email;
-    private String mobileNumber;
+    private Subscription appellantSubscription;
+    private Subscription supporterSubscription;
     private NotificationType notificationType;
-
 
     public CcdResponse() {
         //
     }
 
-    public CcdResponse(String appellantFirstName, String appellantSurname, String appellantTitle, String appealNumber,
-                       String caseReference, String email, String mobileNumber, NotificationType notificationType) {
-        this.appellantFirstName = appellantFirstName;
-        this.appellantSurname = appellantSurname;
-        this.appellantTitle = appellantTitle;
-        this.appealNumber = appealNumber;
+    public CcdResponse(String caseReference, Subscription appellantSubscription, Subscription supporterSubscription,
+                       NotificationType notificationType) {
         this.caseReference = caseReference;
-        this.email = email;
-        this.mobileNumber = mobileNumber;
+        this.appellantSubscription = appellantSubscription;
+        this.supporterSubscription = supporterSubscription;
         this.notificationType = notificationType;
-    }
-
-    public String getAppellantFirstName() {
-        return appellantFirstName;
-    }
-
-    public void setAppellantFirstName(String appellantFirstName) {
-        this.appellantFirstName = appellantFirstName;
-    }
-
-    public String getAppellantSurname() {
-        return appellantSurname;
-    }
-
-    public void setAppellantSurname(String appellantSurname) {
-        this.appellantSurname = appellantSurname;
-    }
-
-    public String getAppealNumber() {
-        return appealNumber;
-    }
-
-    public void setAppealNumber(String appealNumber) {
-        this.appealNumber = appealNumber;
-    }
-
-    public String getEmail() {
-        return email;
-    }
-
-    public void setEmail(String email) {
-        this.email = email;
-    }
-
-    public String getMobileNumber() {
-        return mobileNumber;
-    }
-
-    public void setMobileNumber(String mobileNumber) {
-        this.mobileNumber = mobileNumber;
-    }
-
-    public String getAppellantTitle() {
-        return appellantTitle;
-    }
-
-    public void setAppellantTitle(String appellantTitle) {
-        this.appellantTitle = appellantTitle;
     }
 
     public String getCaseReference() {
@@ -90,22 +32,20 @@ public class CcdResponse {
         this.caseReference = caseReference;
     }
 
-    public Destination getDestination() {
-        return new Destination(email, mobileNumber);
+    public Subscription getAppellantSubscription() {
+        return appellantSubscription;
     }
 
-    @Override
-    public String toString() {
-        return "CcdResponse{"
-                + " appellantFirstName='" + appellantFirstName + '\''
-                + ", appellantSurname='" + appellantSurname + '\''
-                + ", appellantTitle='" + appellantTitle + '\''
-                + ", appealNumber='" + appealNumber + '\''
-                + ", caseReference='" + caseReference + '\''
-                + ", notificationType='" + notificationType + '\''
-                + ", email='" + email + '\''
-                + ", mobileNumber='" + mobileNumber + '\''
-                + '}';
+    public void setAppellantSubscription(Subscription appellantSubscription) {
+        this.appellantSubscription = appellantSubscription;
+    }
+
+    public Subscription getSupporterSubscription() {
+        return supporterSubscription;
+    }
+
+    public void setSupporterSubscription(Subscription supporterSubscription) {
+        this.supporterSubscription = supporterSubscription;
     }
 
     public NotificationType getNotificationType() {
@@ -114,5 +54,15 @@ public class CcdResponse {
 
     public void setNotificationType(NotificationType notificationType) {
         this.notificationType = notificationType;
+    }
+
+    @Override
+    public String toString() {
+        return "CcdResponse{"
+                + " caseReference='" + caseReference + '\''
+                + ", appellantSubscription=" + appellantSubscription
+                + ", supporterSubscription=" + supporterSubscription
+                + ", notificationType=" + notificationType
+                + '}';
     }
 }

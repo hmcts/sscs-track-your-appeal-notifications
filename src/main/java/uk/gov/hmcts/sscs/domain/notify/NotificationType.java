@@ -2,7 +2,7 @@ package uk.gov.hmcts.sscs.domain.notify;
 
 
 public enum NotificationType {
-    APPEAL_RECEIVED("appealReceivedNotification", 1, true);
+    APPEAL_RECEIVED("appealReceived", 1, true);
 
     private String id;
     private final int order;
