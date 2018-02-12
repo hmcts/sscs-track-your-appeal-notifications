@@ -2,16 +2,13 @@ package uk.gov.hmcts.sscs.domain.notify;
 
 
 public enum NotificationType {
-    APPEAL_RECEIVED("appealReceived", 1, true);
+    APPEAL_RECEIVED("appealReceived"),
+    DWP_RESPONSE_RECEIVED("responseReceived");
 
     private String id;
-    private final int order;
-    private boolean notifiable;
 
-    NotificationType(String id, int order, boolean notifiable) {
+    NotificationType(String id) {
         this.id = id;
-        this.order = order;
-        this.notifiable = notifiable;
     }
 
     public static NotificationType getNotificationById(String id) {
@@ -28,15 +25,4 @@ public enum NotificationType {
         return id;
     }
 
-    public int getOrder() {
-        return order;
-    }
-
-    public boolean isStatusEvent() {
-        return order > 0;
-    }
-
-    public boolean isNotifiable() {
-        return notifiable;
-    }
 }

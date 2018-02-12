@@ -4,12 +4,15 @@ import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNull;
 import static org.mockito.MockitoAnnotations.initMocks;
 import static uk.gov.hmcts.sscs.domain.notify.NotificationType.APPEAL_RECEIVED;
+import static uk.gov.hmcts.sscs.domain.notify.NotificationType.DWP_RESPONSE_RECEIVED;
 
 import org.junit.Before;
 import org.junit.Test;
 import org.mockito.Mock;
 import uk.gov.hmcts.sscs.config.NotificationConfig;
 import uk.gov.hmcts.sscs.domain.notify.Personalisation;
+import uk.gov.hmcts.sscs.placeholders.AppealReceivedPersonalisation;
+import uk.gov.hmcts.sscs.placeholders.ResponseReceivedPersonalisation;
 
 public class PersonalisationFactoryTest {
 
@@ -26,15 +29,19 @@ public class PersonalisationFactoryTest {
 
     @Test
     public void createAppealReceivedPersonalisationWhenAppealReceivedNotification() {
-        Personalisation personalisation = factory.apply(APPEAL_RECEIVED);
+        Personalisation result = factory.apply(APPEAL_RECEIVED);
+        assertEquals(AppealReceivedPersonalisation.class, result.getClass());
+    }
 
-        assertEquals("dd955503-42f4-45f8-a692-39377a0f340f", personalisation.getTemplate().getEmailTemplateId());
+    @Test
+    public void createDwpResponseReceivedPersonalisationWhenDwpResponseReceivedNotification() {
+        Personalisation result = factory.apply(DWP_RESPONSE_RECEIVED);
+        assertEquals(ResponseReceivedPersonalisation.class, result.getClass());
     }
 
     @Test
     public void shouldReturnNullWhenNotificationTypeIsNull() {
         Personalisation personalisation = factory.apply(null);
-
         assertNull(personalisation);
     }
 }
