@@ -3,15 +3,15 @@ package uk.gov.hmcts.sscs.factory;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNull;
 import static org.mockito.MockitoAnnotations.initMocks;
-import static uk.gov.hmcts.sscs.domain.notify.NotificationType.APPEAL_RECEIVED;
-import static uk.gov.hmcts.sscs.domain.notify.NotificationType.DWP_RESPONSE_RECEIVED;
+import static uk.gov.hmcts.sscs.domain.notify.NotificationType.*;
 
 import org.junit.Before;
 import org.junit.Test;
 import org.mockito.Mock;
 import uk.gov.hmcts.sscs.config.NotificationConfig;
-import uk.gov.hmcts.sscs.domain.notify.Personalisation;
 import uk.gov.hmcts.sscs.placeholders.AppealReceivedPersonalisation;
+import uk.gov.hmcts.sscs.placeholders.EvidenceReceivedPersonalisation;
+import uk.gov.hmcts.sscs.placeholders.Personalisation;
 import uk.gov.hmcts.sscs.placeholders.ResponseReceivedPersonalisation;
 
 public class PersonalisationFactoryTest {
@@ -37,6 +37,12 @@ public class PersonalisationFactoryTest {
     public void createDwpResponseReceivedPersonalisationWhenDwpResponseReceivedNotification() {
         Personalisation result = factory.apply(DWP_RESPONSE_RECEIVED);
         assertEquals(ResponseReceivedPersonalisation.class, result.getClass());
+    }
+
+    @Test
+    public void createEvidenceReceivedPersonalisationWhenDwpResponseReceivedNotification() {
+        Personalisation result = factory.apply(EVIDENCE_RECEIVED);
+        assertEquals(EvidenceReceivedPersonalisation.class, result.getClass());
     }
 
     @Test
