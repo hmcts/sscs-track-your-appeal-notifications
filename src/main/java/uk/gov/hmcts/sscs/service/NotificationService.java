@@ -1,6 +1,5 @@
 package uk.gov.hmcts.sscs.service;
 
-import static org.apache.commons.lang3.StringUtils.isNotBlank;
 import static org.slf4j.LoggerFactory.getLogger;
 
 import java.net.UnknownHostException;
@@ -32,10 +31,10 @@ public class NotificationService {
         Notification notification = factory.create(response);
 
         try {
-            if (notification.isEmail() && isNotBlank(notification.getEmailTemplate())) {
+            if (notification.isEmail() && notification.getEmailTemplate() != null) {
                 client.sendEmail(notification.getEmailTemplate(), notification.getEmail(), notification.getPlaceholders(), notification.getReference());
             }
-            if (notification.isSms() && isNotBlank(notification.getSmsTemplate())) {
+            if (notification.isSms() && notification.getSmsTemplate() != null) {
                 client.sendSms(notification.getSmsTemplate(), notification.getMobile(), notification.getPlaceholders(), notification.getReference());
             }
         } catch (Exception ex) {

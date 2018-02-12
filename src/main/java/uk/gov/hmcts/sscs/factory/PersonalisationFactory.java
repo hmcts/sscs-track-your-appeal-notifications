@@ -11,6 +11,7 @@ import uk.gov.hmcts.sscs.domain.notify.NotificationType;
 import uk.gov.hmcts.sscs.domain.notify.Personalisation;
 import uk.gov.hmcts.sscs.exception.NotificationClientRuntimeException;
 import uk.gov.hmcts.sscs.placeholders.AppealReceivedPersonalisation;
+import uk.gov.hmcts.sscs.placeholders.ResponseReceivedPersonalisation;
 
 @Component
 public class PersonalisationFactory implements Function<NotificationType, Personalisation> {
@@ -30,6 +31,8 @@ public class PersonalisationFactory implements Function<NotificationType, Person
             switch (notificationType) {
                 case APPEAL_RECEIVED:
                     return new AppealReceivedPersonalisation(config);
+                case DWP_RESPONSE_RECEIVED:
+                    return new ResponseReceivedPersonalisation(config);
                 default:
                     String error = "Unknown Notification type received: " + notificationType;
                     LOG.error(error);
