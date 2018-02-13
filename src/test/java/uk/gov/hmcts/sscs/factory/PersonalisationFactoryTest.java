@@ -9,7 +9,7 @@ import org.junit.Before;
 import org.junit.Test;
 import org.mockito.Mock;
 import uk.gov.hmcts.sscs.config.NotificationConfig;
-import uk.gov.hmcts.sscs.placeholders.*;
+import uk.gov.hmcts.sscs.personalisation.Personalisation;
 
 public class PersonalisationFactoryTest {
 
@@ -25,33 +25,9 @@ public class PersonalisationFactoryTest {
     }
 
     @Test
-    public void createAppealReceivedPersonalisationWhenAppealReceivedNotification() {
+    public void createPersonalisationWhenNotificationApplied() {
         Personalisation result = factory.apply(APPEAL_RECEIVED);
-        assertEquals(AppealReceivedPersonalisation.class, result.getClass());
-    }
-
-    @Test
-    public void createDwpResponseReceivedPersonalisationWhenDwpResponseReceivedNotification() {
-        Personalisation result = factory.apply(DWP_RESPONSE_RECEIVED);
-        assertEquals(ResponseReceivedPersonalisation.class, result.getClass());
-    }
-
-    @Test
-    public void createEvidenceReceivedPersonalisationWhenDwpResponseReceivedNotification() {
-        Personalisation result = factory.apply(EVIDENCE_RECEIVED);
-        assertEquals(EvidenceReceivedPersonalisation.class, result.getClass());
-    }
-
-    @Test
-    public void createDefaultPersonalisationWhenHearingAdjournedNotification() {
-        Personalisation result = factory.apply(ADJOURNED);
-        assertEquals(DefaultPersonalisation.class, result.getClass());
-    }
-
-    @Test
-    public void createPostponementPersonalisationWhenHearingPostponedNotification() {
-        Personalisation result = factory.apply(POSTPONEMENT);
-        assertEquals(PostponementPersonalisation.class, result.getClass());
+        assertEquals(Personalisation.class, result.getClass());
     }
 
     @Test

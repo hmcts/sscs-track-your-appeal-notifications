@@ -19,6 +19,7 @@ public final class AppConstants {
     public static final String HEARING_CONTACT_DATE = "hearing_contact_date";
     public static final String MAC_LITERAL = "mac";
     public static final String MANAGE_EMAILS_LINK_LITERAL = "manage_emails_link";
+    public static final int MAX_DWP_RESPONSE_DAYS = 35;
     public static final String PHONE_NUMBER = "phone_number";
     public static final String RESPONSE_DATE_FORMAT = "dd MMMM yyyy";
     public static final String SUBMIT_EVIDENCE_LINK_LITERAL = "submit_evidence_link";

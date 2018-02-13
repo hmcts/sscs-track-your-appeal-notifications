@@ -7,7 +7,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 import uk.gov.hmcts.sscs.domain.CcdResponse;
 import uk.gov.hmcts.sscs.domain.notify.*;
-import uk.gov.hmcts.sscs.placeholders.Personalisation;
+import uk.gov.hmcts.sscs.personalisation.Personalisation;
 
 @Component
 public class NotificationFactory {
@@ -32,7 +32,7 @@ public class NotificationFactory {
             return null;
         }
 
-        Template template = personalisation.getTemplate();
+        Template template = personalisation.getTemplate(ccdResponse.getNotificationType());
         Destination destination = ccdResponse.getAppellantSubscription().getDestination();
         Reference reference = new Reference();
         String appealNumber = ccdResponse.getAppellantSubscription().getAppealNumber();
