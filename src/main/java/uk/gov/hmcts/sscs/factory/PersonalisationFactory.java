@@ -36,6 +36,8 @@ public class PersonalisationFactory implements Function<NotificationType, Person
                     return new ResponseReceivedPersonalisation(config);
                 case EVIDENCE_RECEIVED:
                     return new EvidenceReceivedPersonalisation(config);
+                case POSTPONEMENT:
+                    return new PostponementPersonalisation(config);
                 default:
                     String error = "Unknown Notification type received: " + notificationType;
                     LOG.error(error);
