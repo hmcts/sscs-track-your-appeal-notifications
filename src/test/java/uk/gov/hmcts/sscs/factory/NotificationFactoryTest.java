@@ -13,7 +13,7 @@ import uk.gov.hmcts.sscs.domain.CcdResponse;
 import uk.gov.hmcts.sscs.domain.Subscription;
 import uk.gov.hmcts.sscs.domain.notify.Notification;
 import uk.gov.hmcts.sscs.domain.notify.Template;
-import uk.gov.hmcts.sscs.placeholders.AppealReceivedPersonalisation;
+import uk.gov.hmcts.sscs.personalisation.Personalisation;
 
 public class NotificationFactoryTest {
 
@@ -25,7 +25,7 @@ public class NotificationFactoryTest {
     private PersonalisationFactory personalisationFactory;
 
     @Mock
-    private AppealReceivedPersonalisation personalisation;
+    private Personalisation personalisation;
 
     @Before
     public void setup() {
@@ -38,7 +38,7 @@ public class NotificationFactoryTest {
     @Test
     public void buildNotificationFromCcdResponse() {
         when(personalisationFactory.apply(APPEAL_RECEIVED)).thenReturn(personalisation);
-        when(personalisation.getTemplate()).thenReturn(new Template("123", null));
+        when(personalisation.getTemplate(APPEAL_RECEIVED)).thenReturn(new Template("123", null));
         Notification result = factory.create(ccdResponse);
 
         assertEquals("123", result.getEmailTemplate());

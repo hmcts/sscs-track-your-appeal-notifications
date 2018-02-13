@@ -1,4 +1,4 @@
-package uk.gov.hmcts.sscs.placeholders;
+package uk.gov.hmcts.sscs.personalisation;
 
 import static org.junit.Assert.assertEquals;
 import static org.mockito.Mockito.when;
@@ -25,10 +25,11 @@ public class PersonalisationTest {
     @Before
     public void setup() {
         initMocks(this);
-        personalisation = new AppealReceivedPersonalisation(config);
+        personalisation = new Personalisation(config);
         when(config.getHmctsPhoneNumber()).thenReturn("01234543225");
         when(config.getManageEmailsLink()).thenReturn(new Link("http://manageemails.com/mac"));
         when(config.getTrackAppealLink()).thenReturn(new Link("http://tyalink.com/appeal_id"));
+        when(config.getEvidenceSubmissionInfoLink()).thenReturn(new Link("http://link.com/appeal_id"));
     }
 
     @Test
@@ -46,5 +47,13 @@ public class PersonalisationTest {
         assertEquals("01234543225", result.get(PHONE_NUMBER));
         assertEquals("http://manageemails.com/Mactoken", result.get(MANAGE_EMAILS_LINK_LITERAL));
         assertEquals("http://tyalink.com/GLSCRR", result.get(TRACK_APPEAL_LINK_LITERAL));
+        assertEquals(DWP_ACRONYM, result.get(FIRST_TIER_AGENCY_ACRONYM));
+        assertEquals(DWP_FUL_NAME, result.get(FIRST_TIER_AGENCY_FULL_NAME));
+        assertEquals("05 February 1900", result.get(APPEAL_RESPOND_DATE));
+        assertEquals("01 January 1900", result.get(EVIDENCE_RECEIVED_DATE_LITERAL));
+        assertEquals("12 February 1900", result.get(HEARING_CONTACT_DATE));
+        assertEquals("http://link.com/GLSCRR", result.get(SUBMIT_EVIDENCE_LINK_LITERAL));
+
+
     }
 }
