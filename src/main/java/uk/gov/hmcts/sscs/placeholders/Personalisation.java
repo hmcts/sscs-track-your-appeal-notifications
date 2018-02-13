@@ -2,6 +2,8 @@ package uk.gov.hmcts.sscs.placeholders;
 
 import static uk.gov.hmcts.sscs.config.AppConstants.*;
 
+import java.time.ZonedDateTime;
+import java.time.format.DateTimeFormatter;
 import java.util.HashMap;
 import java.util.Map;
 import uk.gov.hmcts.sscs.config.NotificationConfig;
@@ -31,6 +33,10 @@ public abstract class Personalisation {
 
         personalisation = customise(ccdResponse, personalisation);
         return personalisation;
+    }
+
+    protected String formatDate(ZonedDateTime date) {
+        return date.format(DateTimeFormatter.ofPattern(RESPONSE_DATE_FORMAT));
     }
 
     protected abstract Map<String, String> customise(CcdResponse event, Map<String, String> personalisation);

@@ -5,7 +5,8 @@ public enum NotificationType {
     ADJOURNED("hearingAdjourned"),
     APPEAL_RECEIVED("appealReceived"),
     DWP_RESPONSE_RECEIVED("responseReceived"),
-    EVIDENCE_RECEIVED("evidenceReceived");
+    EVIDENCE_RECEIVED("evidenceReceived"),
+    POSTPONEMENT("hearingPostponed");
 
     private String id;
 

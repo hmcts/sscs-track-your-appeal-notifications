@@ -55,7 +55,6 @@ public class NotificationServiceTest {
         notificationService.createAndSendNotification(ccdResponse);
 
         verify(client).sendSms(notification.getSmsTemplate(), notification.getMobile(), notification.getPlaceholders(), notification.getReference());
-
     }
 
     @Test

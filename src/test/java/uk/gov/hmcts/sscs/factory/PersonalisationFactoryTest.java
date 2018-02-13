@@ -49,6 +49,12 @@ public class PersonalisationFactoryTest {
     }
 
     @Test
+    public void createPostponementPersonalisationWhenHearingPostponedNotification() {
+        Personalisation result = factory.apply(POSTPONEMENT);
+        assertEquals(PostponementPersonalisation.class, result.getClass());
+    }
+
+    @Test
     public void shouldReturnNullWhenNotificationTypeIsNull() {
         Personalisation personalisation = factory.apply(null);
         assertNull(personalisation);
