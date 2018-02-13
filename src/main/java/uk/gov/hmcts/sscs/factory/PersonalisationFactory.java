@@ -1,6 +1,7 @@
 package uk.gov.hmcts.sscs.factory;
 
 import static org.slf4j.LoggerFactory.getLogger;
+import static uk.gov.hmcts.sscs.domain.notify.NotificationType.ADJOURNED;
 
 import java.util.function.Function;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -9,10 +10,7 @@ import uk.gov.hmcts.sscs.config.NotificationConfig;
 import uk.gov.hmcts.sscs.controller.NotificationController;
 import uk.gov.hmcts.sscs.domain.notify.NotificationType;
 import uk.gov.hmcts.sscs.exception.NotificationClientRuntimeException;
-import uk.gov.hmcts.sscs.placeholders.AppealReceivedPersonalisation;
-import uk.gov.hmcts.sscs.placeholders.EvidenceReceivedPersonalisation;
-import uk.gov.hmcts.sscs.placeholders.Personalisation;
-import uk.gov.hmcts.sscs.placeholders.ResponseReceivedPersonalisation;
+import uk.gov.hmcts.sscs.placeholders.*;
 
 @Component
 public class PersonalisationFactory implements Function<NotificationType, Personalisation> {
@@ -30,6 +28,8 @@ public class PersonalisationFactory implements Function<NotificationType, Person
     public Personalisation apply(NotificationType notificationType) {
         if (notificationType != null) {
             switch (notificationType) {
+                case ADJOURNED:
+                    return new DefaultPersonalisation(config, ADJOURNED);
                 case APPEAL_RECEIVED:
                     return new AppealReceivedPersonalisation(config);
                 case DWP_RESPONSE_RECEIVED:

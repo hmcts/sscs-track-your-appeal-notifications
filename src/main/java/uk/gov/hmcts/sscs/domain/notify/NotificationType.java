@@ -2,6 +2,7 @@ package uk.gov.hmcts.sscs.domain.notify;
 
 
 public enum NotificationType {
+    ADJOURNED("hearingAdjourned"),
     APPEAL_RECEIVED("appealReceived"),
     DWP_RESPONSE_RECEIVED("responseReceived"),
     EVIDENCE_RECEIVED("evidenceReceived");
