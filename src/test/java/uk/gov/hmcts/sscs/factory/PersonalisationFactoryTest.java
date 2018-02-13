@@ -9,10 +9,7 @@ import org.junit.Before;
 import org.junit.Test;
 import org.mockito.Mock;
 import uk.gov.hmcts.sscs.config.NotificationConfig;
-import uk.gov.hmcts.sscs.placeholders.AppealReceivedPersonalisation;
-import uk.gov.hmcts.sscs.placeholders.EvidenceReceivedPersonalisation;
-import uk.gov.hmcts.sscs.placeholders.Personalisation;
-import uk.gov.hmcts.sscs.placeholders.ResponseReceivedPersonalisation;
+import uk.gov.hmcts.sscs.placeholders.*;
 
 public class PersonalisationFactoryTest {
 
@@ -43,6 +40,12 @@ public class PersonalisationFactoryTest {
     public void createEvidenceReceivedPersonalisationWhenDwpResponseReceivedNotification() {
         Personalisation result = factory.apply(EVIDENCE_RECEIVED);
         assertEquals(EvidenceReceivedPersonalisation.class, result.getClass());
+    }
+
+    @Test
+    public void createDefaultPersonalisationWhenHearingAdjournedNotification() {
+        Personalisation result = factory.apply(ADJOURNED);
+        assertEquals(DefaultPersonalisation.class, result.getClass());
     }
 
     @Test
