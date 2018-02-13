@@ -1,4 +1,4 @@
-package uk.gov.hmcts.sscs.domain.notify;
+package uk.gov.hmcts.sscs.placeholders;
 
 import static uk.gov.hmcts.sscs.config.AppConstants.*;
 
@@ -6,6 +6,7 @@ import java.util.HashMap;
 import java.util.Map;
 import uk.gov.hmcts.sscs.config.NotificationConfig;
 import uk.gov.hmcts.sscs.domain.CcdResponse;
+import uk.gov.hmcts.sscs.domain.notify.Template;
 
 public abstract class Personalisation {
 

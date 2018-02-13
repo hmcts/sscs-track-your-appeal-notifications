@@ -3,7 +3,8 @@ package uk.gov.hmcts.sscs.domain.notify;
 
 public enum NotificationType {
     APPEAL_RECEIVED("appealReceived"),
-    DWP_RESPONSE_RECEIVED("responseReceived");
+    DWP_RESPONSE_RECEIVED("responseReceived"),
+    EVIDENCE_RECEIVED("evidenceReceived");
 
     private String id;
 

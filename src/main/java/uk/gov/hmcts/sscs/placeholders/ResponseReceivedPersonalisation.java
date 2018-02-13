@@ -7,7 +7,6 @@ import static uk.gov.hmcts.sscs.domain.notify.NotificationType.DWP_RESPONSE_RECE
 import java.util.Map;
 import uk.gov.hmcts.sscs.config.NotificationConfig;
 import uk.gov.hmcts.sscs.domain.CcdResponse;
-import uk.gov.hmcts.sscs.domain.notify.Personalisation;
 import uk.gov.hmcts.sscs.domain.notify.Template;
 
 public class ResponseReceivedPersonalisation extends Personalisation {

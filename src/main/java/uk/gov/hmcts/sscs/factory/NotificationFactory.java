@@ -7,6 +7,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 import uk.gov.hmcts.sscs.domain.CcdResponse;
 import uk.gov.hmcts.sscs.domain.notify.*;
+import uk.gov.hmcts.sscs.placeholders.Personalisation;
 
 @Component
 public class NotificationFactory {
