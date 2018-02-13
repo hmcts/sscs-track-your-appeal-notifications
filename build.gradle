@@ -97,6 +97,7 @@ dependencies {
 sonarqube {
     properties {
         property "sonar.projectName", "SSCS - Track Your Appeal Notifications"
+        property "sonar.projectKey", "SSCSTYANS"
         property "sonar.exclusions", "src/main/java/uk/gov/hmcts/sscs/domain/**," +
                 "src/main/java/uk/gov/hmcts/sscs/TrackYourAppealNotificationsApplication.java," +
                 "src/main/java/uk/gov/hmcts/sscs/config/*,"
