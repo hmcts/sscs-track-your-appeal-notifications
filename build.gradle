@@ -66,6 +66,11 @@ repositories {
     jcenter()
 }
 
+configurations {
+    integrationTestCompile.extendsFrom(testCompile)
+    integrationTestRuntime.extendsFrom(testRuntime)
+}
+
 def versions = [
         springfoxSwagger: '2.7.0'
 ]
@@ -79,6 +84,7 @@ dependencies {
     compile group: 'org.springframework.boot', name: 'spring-boot-starter-actuator', version: springBootVersion
     compile group: 'org.springframework.boot', name: 'spring-boot-starter-aop', version: springBootVersion
     compile group: 'com.googlecode.json-simple', name: 'json-simple', version: '1.1.1'
+    compile group: 'commons-io', name: 'commons-io', version: '2.6'
 
     compile group: 'io.springfox', name: 'springfox-swagger2', version: versions.springfoxSwagger
     compile group: 'io.springfox', name: 'springfox-swagger-ui', version: versions.springfoxSwagger
@@ -92,6 +98,29 @@ dependencies {
     compile group: 'uk.gov.service.notify', name: 'notifications-java-client', version: '3.0.0-RELEASE'
 
     testCompile group: 'org.springframework.boot', name: 'spring-boot-starter-test', version: springBootVersion
+}
+
+sourceSets {
+    integrationTest {
+        java {
+            compileClasspath += main.output + test.output
+            runtimeClasspath += main.output + test.output
+            srcDir('src/IntegrationTests/java')
+        }
+        resources {
+            srcDir('src/IntegrationTests/resources')
+        }
+    }
+}
+
+dependencies {
+    integrationTestCompile(sourceSets.test.output)
+}
+
+task integrationTest(type: Test) {
+    description = 'Runs the integration tests'
+    setTestClassesDirs(sourceSets.integrationTest.output.classesDirs)
+    setClasspath(sourceSets.integrationTest.runtimeClasspath)
 }
 
 sonarqube {
