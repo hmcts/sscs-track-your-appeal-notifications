@@ -1,13 +1,39 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <suppressions xmlns="https://jeremylong.github.io/DependencyCheck/dependency-suppression.1.1.xsd">
-
-  <!--
-
-  Add dependency check suppression rules here, in accordance with
-  https://jeremylong.github.io/DependencyCheck/general/suppression.html
-
-  Example:
-
+  <suppress>
+    <notes><![CDATA[
+      This has nothing to do with this artifact, it detects nexus in the pom file
+      and thinks that it has something to do with a nexus vulnerability
+      ]]></notes>
+    <gav regex="true">^io\.jsonwebtoken:jjwt:.*$</gav>
+    <cpe>cpe:/a:sonatype:nexus</cpe>
+  </suppress>
+  <suppress>
+    <notes>Does not apply as tomcat is not installed as a service</notes>
+    <gav regex="true">^org\.apache\.tomcat\.embed:tomcat-embed.*:.*$</gav>
+    <cve>CVE-2016-6325</cve>
+  </suppress>
+  <suppress>
+    <notes>Does not apply as tomcat is not installed as a service</notes>
+    <gav regex="true">^org\.apache\.tomcat\.embed:tomcat-embed.*:.*$</gav>
+    <cve>CVE-2016-5425</cve>
+  </suppress>
+  <suppress>
+    <notes><![CDATA[
+      only effects distribution based tomcat that has been backported.
+      our tomcat version has the fix in it
+      ]]></notes>
+    <gav regex="true">^org\.apache\.tomcat\.embed:tomcat-embed-websocket:.*$</gav>
+    <cve>CVE-2017-6056</cve>
+  </suppress>
+  <suppress>
+    <notes><![CDATA[
+      only effects distribution based tomcat that has been backported.
+      our tomcat version has the fix in it
+      ]]></notes>
+    <gav regex="true">^org\.apache\.tomcat\.embed:tomcat-embed-core:.*$</gav>
+    <cve>CVE-2017-6056</cve>
+  </suppress>
   <suppress>
     <notes><![CDATA[
       Does not apply as we're not using the XmlMapper.
@@ -15,7 +41,89 @@
     <gav regex="true">^com\.fasterxml\.jackson\.(core|datatype|module):jackson-.*:.*$</gav>
     <cve>CVE-2016-7051</cve>
   </suppress>
-
-  -->
-
+  <suppress>
+    <notes><![CDATA[
+      Applies to Mac OS X implementation of Java only.
+    ]]></notes>
+    <gav regex="true">^com\.apple:AppleJavaExtensions:.*$</gav>
+    <cve>CVE-2010-0538</cve>
+  </suppress>
+  <suppress>
+    <notes><![CDATA[
+      This vulnerability is related to a Ruby Gem, not Spring Boot Mail.
+    ]]></notes>
+    <gav regex="true">^org\.springframework\.boot:spring-boot-starter-mail:.*$</gav>
+    <cve>CVE-2015-9097</cve>
+  </suppress>
+  <suppress>
+    <notes><![CDATA[
+      jackson library
+    ]]></notes>
+    <gav regex="true">^com\.fasterxml\.jackson\.core:jackson-databind:.*$</gav>
+    <cve>CVE-2018-5968</cve>
+  </suppress>
+  <suppress>
+    <notes><![CDATA[
+      jackson library
+    ]]></notes>
+    <gav regex="true">^com\.fasterxml\.jackson\.core:jackson-databind:.*$</gav>
+    <cve>CVE-2017-17485</cve>
+  </suppress>
+  <suppress>
+    <notes><![CDATA[
+      netty library
+    ]]></notes>
+    <gav regex="true">^io\.netty:.*$</gav>
+    <cve>CVE-2016-4970</cve>
+  </suppress>
+  <suppress>
+    <notes><![CDATA[
+      netty library
+    ]]></notes>
+    <gav regex="true">^io\.netty:.*$</gav>
+    <cve>CVE-2015-2156</cve>
+  </suppress>
+  <suppress>
+    <notes><![CDATA[
+   file name: tomcat-embed-core-8.5.27.jar
+   ]]></notes>
+    <sha1>a10612f0af27c7bfcc4e8d88393adad1fc5b4ece</sha1>
+    <cve>CVE-2017-6056</cve>
+    <cve>CVE-2016-6325</cve>
+    <cve>CVE-2016-5425</cve>
+  </suppress>
+  <suppress>
+    <notes><![CDATA[
+   file name: tomcat-embed-el-8.5.27.jar
+   ]]></notes>
+    <sha1>5a591bcf5c930d2b37bb40c0f95180604a3b1a57</sha1>
+    <cve>CVE-2017-6056</cve>
+    <cve>CVE-2016-6325</cve>
+    <cve>CVE-2016-5425</cve>
+  </suppress>
+  <suppress>
+    <notes><![CDATA[
+   file name: tomcat-embed-websocket-8.5.27.jar
+   ]]></notes>
+    <sha1>3cba1c5187a17b0233de5712024d6e144036ba9a</sha1>
+    <cve>CVE-2017-6056</cve>
+    <cve>CVE-2016-6325</cve>
+    <cve>CVE-2016-5425</cve>
+  </suppress>
+  <suppress>
+    <notes><![CDATA[
+   file name: tomcat-annotations-api-8.5.27.jar
+   ]]></notes>
+    <sha1>122c0a4acaba72bf4590e83c9fbcb3475c46edc5</sha1>
+    <cpe>cpe:/a:apache:tomcat</cpe>
+    <cpe>cpe:/a:apache_software_foundation:tomcat</cpe>
+  </suppress>
+  <suppress>
+    <notes><![CDATA[
+   file name: spring-cloud-commons-1.3.1.RELEASE.jar
+   ]]></notes>
+    <gav regex="true">^org\.springframework\.cloud:.*$</gav>
+    <cpe>cpe:/a:pivotal:spring_framework</cpe>
+    <cpe>cpe:/a:pivotal_software:spring_framework</cpe>
+  </suppress>
 </suppressions>
