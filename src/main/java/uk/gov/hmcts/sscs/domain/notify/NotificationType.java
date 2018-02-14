@@ -9,6 +9,7 @@ public enum NotificationType {
     DWP_RESPONSE_RECEIVED("responseReceived"),
     EVIDENCE_RECEIVED("evidenceReceived"),
     POSTPONEMENT("hearingPostponed"),
+    SUBSCRIPTION_CREATED("subscriptionCreated"),
     SUBSCRIPTION_UPDATED("subscriptionUpdated");
 
     private String id;
