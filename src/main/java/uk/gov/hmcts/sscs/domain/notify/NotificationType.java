@@ -8,7 +8,8 @@ public enum NotificationType {
     APPEAL_WITHDRAWN("appealWithdrawn"),
     DWP_RESPONSE_RECEIVED("responseReceived"),
     EVIDENCE_RECEIVED("evidenceReceived"),
-    POSTPONEMENT("hearingPostponed");
+    POSTPONEMENT("hearingPostponed"),
+    SUBSCRIPTION_UPDATED("subscriptionUpdated");
 
     private String id;
 
