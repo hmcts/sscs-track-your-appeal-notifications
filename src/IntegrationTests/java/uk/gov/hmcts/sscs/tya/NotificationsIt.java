@@ -123,4 +123,17 @@ public class NotificationsIt {
                 .content(json))
                 .andExpect(status().isOk());
     }
+
+    @Test
+    public void shouldSendNotificationForAppealWithdrawnRequest() throws Exception {
+
+        String json = FileUtils.readFileToString(new File(path), StandardCharsets.UTF_8.name());
+
+        json = json.replace("appealReceived", "appealWithdrawn");
+
+        mockMvc.perform(post("/send")
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(json))
+                .andExpect(status().isOk());
+    }
 }

@@ -5,6 +5,7 @@ public enum NotificationType {
     ADJOURNED("hearingAdjourned"),
     APPEAL_LAPSED("appealLapsed"),
     APPEAL_RECEIVED("appealReceived"),
+    APPEAL_WITHDRAWN("appealWithdrawn"),
     DWP_RESPONSE_RECEIVED("responseReceived"),
     EVIDENCE_RECEIVED("evidenceReceived"),
     POSTPONEMENT("hearingPostponed");
