@@ -32,6 +32,9 @@ public class NotificationFactory {
             return null;
         }
 
+        //TODO: If SubscriptionUpdated Notification then check what type of notification to send
+        //subscription.generateSubscriptionNotificationType();
+
         Template template = personalisation.getTemplate(ccdResponse.getNotificationType());
         Destination destination = ccdResponse.getAppellantSubscription().getDestination();
         Reference reference = new Reference();
