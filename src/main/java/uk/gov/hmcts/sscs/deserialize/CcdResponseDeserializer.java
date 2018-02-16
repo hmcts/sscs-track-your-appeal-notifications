@@ -8,11 +8,12 @@ import com.fasterxml.jackson.databind.deser.std.StdDeserializer;
 import java.io.IOException;
 import org.springframework.stereotype.Service;
 import uk.gov.hmcts.sscs.domain.CcdResponse;
+import uk.gov.hmcts.sscs.domain.CcdResponseWrapper;
 import uk.gov.hmcts.sscs.domain.Subscription;
 import uk.gov.hmcts.sscs.domain.notify.NotificationType;
 
 @Service
-public class CcdResponseDeserializer extends StdDeserializer<CcdResponse> {
+public class CcdResponseDeserializer extends StdDeserializer<CcdResponseWrapper> {
 
     public CcdResponseDeserializer() {
         this(null);
@@ -23,21 +24,40 @@ public class CcdResponseDeserializer extends StdDeserializer<CcdResponse> {
     }
 
     @Override
-    public CcdResponse deserialize(JsonParser jp, DeserializationContext ctxt) throws IOException {
+    public CcdResponseWrapper deserialize(JsonParser jp, DeserializationContext ctxt) throws IOException {
         @SuppressWarnings("unchecked")
         ObjectCodec oc = jp.getCodec();
         JsonNode node = oc.readTree(jp);
 
-        return deserializeCcdJson(node);
+        return buildCcdResponseWrapper(node);
     }
 
-    public CcdResponse deserializeCcdJson(JsonNode node) {
-        CcdResponse ccdResponse = new CcdResponse();
-
-        ccdResponse.setNotificationType(NotificationType.getNotificationById(getField(node, "event_id")));
+    public CcdResponseWrapper buildCcdResponseWrapper(JsonNode node) {
+        CcdResponse newCcdResponse = null;
+        CcdResponse oldCcdResponse = null;
 
         JsonNode caseDetailsNode = getNode(node, "case_details");
         JsonNode caseNode = getNode(caseDetailsNode, "case_data");
+
+        if (caseNode != null) {
+            newCcdResponse = deserializeCaseNode(caseNode);
+            newCcdResponse.setNotificationType(NotificationType.getNotificationById(getField(node, "event_id")));
+        }
+
+        JsonNode oldCaseDetailsNode = getNode(node, "case_details_before");
+        JsonNode oldCaseNode = getNode(oldCaseDetailsNode, "case_data");
+
+        if (oldCaseNode != null) {
+            oldCcdResponse = deserializeCaseNode(oldCaseNode);
+            oldCcdResponse.setNotificationType(NotificationType.getNotificationById(getField(node, "event_id")));
+        }
+
+        return new CcdResponseWrapper(newCcdResponse, oldCcdResponse);
+    }
+
+    public CcdResponse deserializeCaseNode(JsonNode caseNode) {
+        CcdResponse ccdResponse = new CcdResponse();
+
         JsonNode appealNode = getNode(caseNode, "appeal");
         JsonNode subscriptionsNode = getNode(caseNode, "subscriptions");
 

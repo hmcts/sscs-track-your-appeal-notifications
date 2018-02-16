@@ -35,7 +35,7 @@ public class TrackYourAppealNotificationsApplication {
     }
 
     @Bean
-     public CcdResponseDeserializer ccdResponseDeserializer() {
+    public CcdResponseDeserializer ccdResponseDeserializer() {
         return new CcdResponseDeserializer();
     }
 

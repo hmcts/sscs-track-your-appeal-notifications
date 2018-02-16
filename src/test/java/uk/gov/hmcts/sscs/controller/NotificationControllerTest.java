@@ -12,8 +12,8 @@ import org.mockito.Mock;
 import org.springframework.http.MediaType;
 import org.springframework.test.web.servlet.MockMvc;
 import uk.gov.hmcts.sscs.domain.CcdResponse;
+import uk.gov.hmcts.sscs.domain.CcdResponseWrapper;
 import uk.gov.hmcts.sscs.service.NotificationService;
-
 
 public class NotificationControllerTest {
 
@@ -21,11 +21,10 @@ public class NotificationControllerTest {
 
     private MockMvc mockMvc;
 
-    private CcdResponse ccdResponse;
+    private CcdResponseWrapper ccdResponseWrapper;
 
     @Mock
     NotificationService service;
-
 
     @Before
     public void setUp() {
@@ -33,11 +32,11 @@ public class NotificationControllerTest {
 
         notificationController = new NotificationController(service);
         mockMvc = standaloneSetup(notificationController).build();
-        ccdResponse = new CcdResponse();
+        ccdResponseWrapper = new CcdResponseWrapper(new CcdResponse(), new CcdResponse());
     }
 
     @Test
-    public void shouldReturnHttpStatusCode200ForTheCcdResponse() throws Exception {
+    public void shouldReturnHttpStatusCode200ForTheCcdResponseSendEndpoint() throws Exception {
         String json = "{\"case_details\":{\"case_data\":{\"subscriptions\":{"
                 + "\"appellantSubscription\":{\"tya\":\"543212345\",\"email\":\"test@testing.com\",\"mobile\":\"01234556634\",\"reason\":null,\"subscribeSms\":\"No\",\"subscribeEmail\":\"Yes\"},"
                 + "\"supporterSubscription\":{\"tya\":\"232929249492\",\"email\":\"supporter@live.co.uk\",\"mobile\":\"07925289702\",\"reason\":null,\"subscribeSms\":\"Yes\",\"subscribeEmail\":\"No\"}},"
@@ -53,7 +52,7 @@ public class NotificationControllerTest {
 
     @Test
     public void shouldCreateAndSendNotificationForCcdResponse() throws Exception {
-        notificationController.sendNotification(ccdResponse);
-        verify(service).createAndSendNotification(ccdResponse);
+        notificationController.sendNotification(ccdResponseWrapper);
+        verify(service).createAndSendNotification(ccdResponseWrapper);
     }
 }
