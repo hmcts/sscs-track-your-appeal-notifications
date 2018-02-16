@@ -9,7 +9,7 @@ import java.net.UnknownHostException;
 import org.junit.Before;
 import org.junit.Test;
 import org.mockito.Mock;
-import uk.gov.hmcts.sscs.domain.CcdResponse;
+import uk.gov.hmcts.sscs.domain.CcdResponseWrapper;
 import uk.gov.hmcts.sscs.domain.notify.Destination;
 import uk.gov.hmcts.sscs.domain.notify.Notification;
 import uk.gov.hmcts.sscs.domain.notify.Reference;
@@ -24,7 +24,7 @@ public class NotificationServiceTest {
 
     private NotificationService notificationService;
 
-    private CcdResponse ccdResponse;
+    private CcdResponseWrapper wrapper;
 
     @Mock
     private NotificationClient client;
@@ -36,14 +36,14 @@ public class NotificationServiceTest {
     public void setup() {
         initMocks(this);
         notificationService = new NotificationService(client, factory);
-        ccdResponse = new CcdResponse();
+        wrapper = new CcdResponseWrapper();
     }
 
     @Test
     public void sendEmailToGovNotifyWhenNotificationIsAnEmailAndTemplateNotBlank() throws Exception {
         Notification notification = new Notification(new Template("abc", null), new Destination("test@testing.com", null), null, new Reference(), null);
-        when(factory.create(ccdResponse)).thenReturn(notification);
-        notificationService.createAndSendNotification(ccdResponse);
+        when(factory.create(wrapper)).thenReturn(notification);
+        notificationService.createAndSendNotification(wrapper);
 
         verify(client).sendEmail(notification.getEmailTemplate(), notification.getEmail(), notification.getPlaceholders(), notification.getReference());
     }
@@ -51,8 +51,8 @@ public class NotificationServiceTest {
     @Test
     public void sendSmsToGovNotifyWhenNotificationIsAnSmsAndTemplateNotBlank() throws Exception {
         Notification notification = new Notification(new Template(null, "123"), new Destination(null, "07823456746"), null, new Reference(), null);
-        when(factory.create(ccdResponse)).thenReturn(notification);
-        notificationService.createAndSendNotification(ccdResponse);
+        when(factory.create(wrapper)).thenReturn(notification);
+        notificationService.createAndSendNotification(wrapper);
 
         verify(client).sendSms(notification.getSmsTemplate(), notification.getMobile(), notification.getPlaceholders(), notification.getReference());
     }
@@ -60,8 +60,8 @@ public class NotificationServiceTest {
     @Test
     public void sendSmsAndEmailToGovNotifyWhenNotificationIsAnSmsAndEmailAndTemplateNotBlank() throws Exception {
         Notification notification = new Notification(new Template("abc", "123"), new Destination("test@testing.com", "07823456746"), null, new Reference(), null);
-        when(factory.create(ccdResponse)).thenReturn(notification);
-        notificationService.createAndSendNotification(ccdResponse);
+        when(factory.create(wrapper)).thenReturn(notification);
+        notificationService.createAndSendNotification(wrapper);
 
         verify(client).sendEmail(notification.getEmailTemplate(), notification.getEmail(), notification.getPlaceholders(), notification.getReference());
         verify(client).sendSms(notification.getSmsTemplate(), notification.getMobile(), notification.getPlaceholders(), notification.getReference());
@@ -70,8 +70,8 @@ public class NotificationServiceTest {
     @Test
     public void doNotSendEmailToGovNotifyWhenNotificationIsNotAnEmail() throws Exception {
         Notification notification = new Notification(new Template("abc", "123"), new Destination(null, "07823456746"), null, new Reference(), null);
-        when(factory.create(ccdResponse)).thenReturn(notification);
-        notificationService.createAndSendNotification(ccdResponse);
+        when(factory.create(wrapper)).thenReturn(notification);
+        notificationService.createAndSendNotification(wrapper);
 
         verify(client, never()).sendEmail(notification.getEmailTemplate(), notification.getEmail(), notification.getPlaceholders(), notification.getReference());
     }
@@ -79,8 +79,8 @@ public class NotificationServiceTest {
     @Test
     public void doNotSendSmsToGovNotifyWhenNotificationIsNotAnSms() throws Exception {
         Notification notification = new Notification(new Template("abc", "123"), new Destination("test@testing.com", null), null, new Reference(), null);
-        when(factory.create(ccdResponse)).thenReturn(notification);
-        notificationService.createAndSendNotification(ccdResponse);
+        when(factory.create(wrapper)).thenReturn(notification);
+        notificationService.createAndSendNotification(wrapper);
 
         verify(client, never()).sendSms(notification.getSmsTemplate(), notification.getMobile(), notification.getPlaceholders(), notification.getReference());
     }
@@ -88,8 +88,8 @@ public class NotificationServiceTest {
     @Test
     public void doNotSendEmailToGovNotifyWhenEmailTemplateIsBlank() throws Exception {
         Notification notification = new Notification(new Template(null, "123"), new Destination("test@testing.com", "07823456746"), null, new Reference(), null);
-        when(factory.create(ccdResponse)).thenReturn(notification);
-        notificationService.createAndSendNotification(ccdResponse);
+        when(factory.create(wrapper)).thenReturn(notification);
+        notificationService.createAndSendNotification(wrapper);
 
         verify(client, never()).sendEmail(notification.getEmailTemplate(), notification.getEmail(), notification.getPlaceholders(), notification.getReference());
     }
@@ -97,8 +97,8 @@ public class NotificationServiceTest {
     @Test
     public void doNotSendSmsToGovNotifyWhenSmsTemplateIsBlank() throws Exception {
         Notification notification = new Notification(new Template("abc", null), new Destination("test@testing.com", "07823456746"), null, new Reference(), null);
-        when(factory.create(ccdResponse)).thenReturn(notification);
-        notificationService.createAndSendNotification(ccdResponse);
+        when(factory.create(wrapper)).thenReturn(notification);
+        notificationService.createAndSendNotification(wrapper);
 
         verify(client, never()).sendSms(notification.getSmsTemplate(), notification.getMobile(), notification.getPlaceholders(), notification.getReference());
     }
@@ -106,25 +106,25 @@ public class NotificationServiceTest {
     @Test(expected = NotificationClientRuntimeException.class)
     public void shouldThrowNotificationClientRuntimeExceptionForAnyNotificationException() throws Exception {
         Notification notification = new Notification(new Template("abc", null), new Destination("test@testing.com", null), null, new Reference(), null);
-        when(factory.create(ccdResponse)).thenReturn(notification);
+        when(factory.create(wrapper)).thenReturn(notification);
 
         when(client.sendEmail(
                 notification.getEmailTemplate(), notification.getEmail(), notification.getPlaceholders(), notification.getReference()))
                 .thenThrow(new NotificationClientException(new UnknownHostException()));
 
-        notificationService.createAndSendNotification(ccdResponse);
+        notificationService.createAndSendNotification(wrapper);
     }
 
     @Test(expected = NotificationServiceException.class)
     public void shouldCorrectlyHandleAGovNotifyException() throws Exception {
         Notification notification = new Notification(new Template("abc", null), new Destination("test@testing.com", null), null, new Reference(), null);
-        when(factory.create(ccdResponse)).thenReturn(notification);
+        when(factory.create(wrapper)).thenReturn(notification);
 
         when(client.sendEmail(
                 notification.getEmailTemplate(), notification.getEmail(), notification.getPlaceholders(), notification.getReference()))
                 .thenThrow(new RuntimeException());
 
-        notificationService.createAndSendNotification(ccdResponse);
+        notificationService.createAndSendNotification(wrapper);
     }
 
 }

@@ -10,6 +10,7 @@ import java.io.IOException;
 import org.junit.Before;
 import org.junit.Test;
 import uk.gov.hmcts.sscs.domain.CcdResponse;
+import uk.gov.hmcts.sscs.domain.CcdResponseWrapper;
 
 public class CcdResponseDeserializerTest {
 
@@ -66,7 +67,8 @@ public class CcdResponseDeserializerTest {
                 + "\"appellant\":{\"name\":{\"title\":\"Mr\",\"lastName\":\"Vasquez\",\"firstName\":\"Dexter\",\"middleName\":\"Ali Sosa\"}},"
                 + "\"supporter\":{\"name\":{\"title\":\"Mrs\",\"lastName\":\"Wilder\",\"firstName\":\"Amber\",\"middleName\":\"Clark Eaton\"}}}}},\"event_id\": \"appealReceived\"\n}";
 
-        CcdResponse ccdResponse = mapper.readValue(json, CcdResponse.class);
+        CcdResponseWrapper wrapper = mapper.readValue(json, CcdResponseWrapper.class);
+        CcdResponse ccdResponse = wrapper.getNewCcdResponse();
 
         assertEquals(APPEAL_RECEIVED, ccdResponse.getNotificationType());
         assertEquals("Dexter", ccdResponse.getAppellantSubscription().getFirstName());
@@ -87,6 +89,62 @@ public class CcdResponseDeserializerTest {
     }
 
     @Test
+    public void deserializeAllCcdResponseJsonWithNewAndOldCcdData() throws IOException {
+
+        String json = "{\"case_details\":{\"case_data\":{\"subscriptions\":{"
+                + "\"appellantSubscription\":{\"tya\":\"543212345\",\"email\":\"test@testing.com\",\"mobile\":\"01234556634\",\"reason\":null,\"subscribeSms\":\"No\",\"subscribeEmail\":\"Yes\"},"
+                + "\"supporterSubscription\":{\"tya\":\"232929249492\",\"email\":\"supporter@live.co.uk\",\"mobile\":\"07925289702\",\"reason\":null,\"subscribeSms\":\"Yes\",\"subscribeEmail\":\"No\"}},"
+                + "\"caseReference\":\"SC/1234/23\",\"appeal\":{"
+                + "\"appellant\":{\"name\":{\"title\":\"Mr\",\"lastName\":\"Vasquez\",\"firstName\":\"Dexter\",\"middleName\":\"Ali Sosa\"}},"
+                + "\"supporter\":{\"name\":{\"title\":\"Mrs\",\"lastName\":\"Wilder\",\"firstName\":\"Amber\",\"middleName\":\"Clark Eaton\"}}}}},"
+                + "\"case_details_before\":{\"case_data\":{\"subscriptions\":{"
+                + "\"appellantSubscription\":{\"tya\":\"123456\",\"email\":\"old@email.com\",\"mobile\":\"07543534345\",\"reason\":null,\"subscribeSms\":\"No\",\"subscribeEmail\":\"Yes\"},"
+                + "\"supporterSubscription\":{\"tya\":\"232929249492\",\"email\":\"supporter@gmail.co.uk\",\"mobile\":\"07925267702\",\"reason\":null,\"subscribeSms\":\"Yes\",\"subscribeEmail\":\"No\"}},"
+                + "\"caseReference\":\"SC/5432/89\",\"appeal\":{"
+                + "\"appellant\":{\"name\":{\"title\":\"Mr\",\"lastName\":\"Smith\",\"firstName\":\"Jeremy\",\"middleName\":\"Rupert\"}},"
+                + "\"supporter\":{\"name\":{\"title\":\"Mr\",\"lastName\":\"Redknapp\",\"firstName\":\"Harry\",\"middleName\":\"Winston\"}}}}},"
+                + "\"event_id\": \"appealReceived\"\n}";
+
+        CcdResponseWrapper wrapper = mapper.readValue(json, CcdResponseWrapper.class);
+        CcdResponse newCcdResponse = wrapper.getNewCcdResponse();
+
+        assertEquals(APPEAL_RECEIVED, newCcdResponse.getNotificationType());
+        assertEquals("Dexter", newCcdResponse.getAppellantSubscription().getFirstName());
+        assertEquals("Vasquez", newCcdResponse.getAppellantSubscription().getSurname());
+        assertEquals("Mr", newCcdResponse.getAppellantSubscription().getTitle());
+        assertEquals("test@testing.com", newCcdResponse.getAppellantSubscription().getEmail());
+        assertEquals("01234556634", newCcdResponse.getAppellantSubscription().getMobileNumber());
+        assertFalse(newCcdResponse.getAppellantSubscription().isSubscribeSms());
+        assertTrue(newCcdResponse.getAppellantSubscription().isSubscribeEmail());
+        assertEquals("Amber", newCcdResponse.getSupporterSubscription().getFirstName());
+        assertEquals("Wilder", newCcdResponse.getSupporterSubscription().getSurname());
+        assertEquals("Mrs", newCcdResponse.getSupporterSubscription().getTitle());
+        assertEquals("supporter@live.co.uk", newCcdResponse.getSupporterSubscription().getEmail());
+        assertEquals("07925289702", newCcdResponse.getSupporterSubscription().getMobileNumber());
+        assertTrue(newCcdResponse.getSupporterSubscription().isSubscribeSms());
+        assertFalse(newCcdResponse.getSupporterSubscription().isSubscribeEmail());
+        assertEquals("SC/1234/23", newCcdResponse.getCaseReference());
+
+        CcdResponse oldCcdResponse = wrapper.getOldCcdResponse();
+
+        assertEquals("Jeremy", oldCcdResponse.getAppellantSubscription().getFirstName());
+        assertEquals("Smith", oldCcdResponse.getAppellantSubscription().getSurname());
+        assertEquals("Mr", oldCcdResponse.getAppellantSubscription().getTitle());
+        assertEquals("old@email.com", oldCcdResponse.getAppellantSubscription().getEmail());
+        assertEquals("07543534345", oldCcdResponse.getAppellantSubscription().getMobileNumber());
+        assertFalse(oldCcdResponse.getAppellantSubscription().isSubscribeSms());
+        assertTrue(oldCcdResponse.getAppellantSubscription().isSubscribeEmail());
+        assertEquals("Harry", oldCcdResponse.getSupporterSubscription().getFirstName());
+        assertEquals("Redknapp", oldCcdResponse.getSupporterSubscription().getSurname());
+        assertEquals("Mr", oldCcdResponse.getSupporterSubscription().getTitle());
+        assertEquals("supporter@gmail.co.uk", oldCcdResponse.getSupporterSubscription().getEmail());
+        assertEquals("07925267702", oldCcdResponse.getSupporterSubscription().getMobileNumber());
+        assertTrue(oldCcdResponse.getSupporterSubscription().isSubscribeSms());
+        assertFalse(oldCcdResponse.getSupporterSubscription().isSubscribeEmail());
+        assertEquals("SC/5432/89", oldCcdResponse.getCaseReference());
+    }
+
+    @Test
     public void deserializeWithMissingAppellantName() throws IOException {
         String json = "{\"case_details\":{\"case_data\":{\"subscriptions\":{"
                 + "\"appellantSubscription\":{\"tya\":\"543212345\",\"email\":\"test@testing.com\",\"mobile\":\"01234556634\",\"reason\":null,\"subscribeSms\":\"No\",\"subscribeEmail\":\"Yes\"},"
@@ -94,10 +152,10 @@ public class CcdResponseDeserializerTest {
                 + "\"caseReference\":\"SC/1234/23\",\"appeal\":{"
                 + "\"supporter\":{\"name\":{\"title\":\"Mrs\",\"lastName\":\"Wilder\",\"firstName\":\"Amber\",\"middleName\":\"Clark Eaton\"}}}}},\"event_id\": \"appealReceived\"\n}";
 
-        CcdResponse ccdResponse = mapper.readValue(json, CcdResponse.class);
+        CcdResponseWrapper wrapper = mapper.readValue(json, CcdResponseWrapper.class);
 
-        assertNull(ccdResponse.getAppellantSubscription().getSurname());
-        assertEquals("test@testing.com", ccdResponse.getAppellantSubscription().getEmail());
+        assertNull(wrapper.getNewCcdResponse().getAppellantSubscription().getSurname());
+        assertEquals("test@testing.com", wrapper.getNewCcdResponse().getAppellantSubscription().getEmail());
     }
 
     @Test
@@ -108,10 +166,10 @@ public class CcdResponseDeserializerTest {
                 + "\"appellant\":{\"name\":{\"title\":\"Mr\",\"lastName\":\"Vasquez\",\"firstName\":\"Dexter\",\"middleName\":\"Ali Sosa\"}},"
                 + "\"supporter\":{\"name\":{\"title\":\"Mrs\",\"lastName\":\"Wilder\",\"firstName\":\"Amber\",\"middleName\":\"Clark Eaton\"}}}}},\"event_id\": \"appealReceived\"\n}";
 
-        CcdResponse ccdResponse = mapper.readValue(json, CcdResponse.class);
+        CcdResponseWrapper wrapper = mapper.readValue(json, CcdResponseWrapper.class);
 
-        assertNull(ccdResponse.getAppellantSubscription().getEmail());
-        assertEquals("Vasquez", ccdResponse.getAppellantSubscription().getSurname());
+        assertNull(wrapper.getNewCcdResponse().getAppellantSubscription().getEmail());
+        assertEquals("Vasquez", wrapper.getNewCcdResponse().getAppellantSubscription().getSurname());
     }
 
     @Test
@@ -123,9 +181,9 @@ public class CcdResponseDeserializerTest {
                 + "\"appellant\":{\"name\":{\"title\":\"Mr\",\"lastName\":\"Vasquez\",\"firstName\":\"Dexter\",\"middleName\":\"Ali Sosa\"}},"
                 + "\"supporter\":{\"name\":{\"title\":\"Mrs\",\"lastName\":\"Wilder\",\"firstName\":\"Amber\",\"middleName\":\"Clark Eaton\"}}}}},\"event_id\": \"appealReceived\"\n}";
 
-        CcdResponse ccdResponse = mapper.readValue(json, CcdResponse.class);
+        CcdResponseWrapper wrapper = mapper.readValue(json, CcdResponseWrapper.class);
 
-        assertNull(ccdResponse.getCaseReference());
+        assertNull(wrapper.getNewCcdResponse().getCaseReference());
     }
 
     @Test

@@ -1,10 +1,7 @@
 package uk.gov.hmcts.sscs.domain;
 
-import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
-import uk.gov.hmcts.sscs.deserialize.CcdResponseDeserializer;
 import uk.gov.hmcts.sscs.domain.notify.NotificationType;
 
-@JsonDeserialize(using = CcdResponseDeserializer.class)
 public class CcdResponse {
 
     private String caseReference;

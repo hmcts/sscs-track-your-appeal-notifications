@@ -10,6 +10,7 @@ import org.junit.Test;
 import org.mockito.Mock;
 import uk.gov.hmcts.sscs.config.NotificationConfig;
 import uk.gov.hmcts.sscs.personalisation.Personalisation;
+import uk.gov.hmcts.sscs.personalisation.SubscriptionPersonalisation;
 
 public class PersonalisationFactoryTest {
 
@@ -28,6 +29,12 @@ public class PersonalisationFactoryTest {
     public void createPersonalisationWhenNotificationApplied() {
         Personalisation result = factory.apply(APPEAL_RECEIVED);
         assertEquals(Personalisation.class, result.getClass());
+    }
+
+    @Test
+    public void createSubscriptionPersonalisationWhenSubscriptionUpdatedNotificationApplied() {
+        Personalisation result = factory.apply(SUBSCRIPTION_UPDATED);
+        assertEquals(SubscriptionPersonalisation.class, result.getClass());
     }
 
     @Test
