@@ -3,6 +3,7 @@ package uk.gov.hmcts.sscs.domain.notify;
 
 public enum NotificationType {
     ADJOURNED("hearingAdjourned"),
+    APPEAL_CREATED("appealCreated"),
     APPEAL_LAPSED("appealLapsed"),
     APPEAL_RECEIVED("appealReceived"),
     APPEAL_WITHDRAWN("appealWithdrawn"),

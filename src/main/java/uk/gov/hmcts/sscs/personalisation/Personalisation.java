@@ -33,7 +33,12 @@ public class Personalisation {
         personalisation.put(PHONE_NUMBER, config.getHmctsPhoneNumber());
         //TODO: Replace hardcoded mactoken with an actual mac token
         personalisation.put(MANAGE_EMAILS_LINK_LITERAL, config.getManageEmailsLink().replace(MAC_LITERAL, "Mactoken"));
-        personalisation.put(TRACK_APPEAL_LINK_LITERAL, config.getTrackAppealLink() != null ? config.getTrackAppealLink().replace(APPEAL_ID_LITERAL, ccdResponse.getAppellantSubscription().getAppealNumber()) : null);
+
+        if (ccdResponse.getAppellantSubscription().getAppealNumber() != null) {
+            personalisation.put(TRACK_APPEAL_LINK_LITERAL, config.getTrackAppealLink() != null ? config.getTrackAppealLink().replace(APPEAL_ID_LITERAL, ccdResponse.getAppellantSubscription().getAppealNumber()) : null);
+            personalisation.put(SUBMIT_EVIDENCE_LINK_LITERAL, config.getEvidenceSubmissionInfoLink().replace(APPEAL_ID, ccdResponse.getAppellantSubscription().getAppealNumber()));
+        }
+
         personalisation.put(FIRST_TIER_AGENCY_ACRONYM, DWP_ACRONYM);
         personalisation.put(FIRST_TIER_AGENCY_FULL_NAME, DWP_FUL_NAME);
         // TODO: Set this to the actual event date once event story has been implemented
@@ -47,7 +52,6 @@ public class Personalisation {
         // TODO: Set this to the actual event date once event story has been implemented
         ZonedDateTime z = ZonedDateTime.of(1900, 1, 1, 0, 0, 0, 0, ZoneId.of("GMT"));
         personalisation.put(HEARING_CONTACT_DATE, formatDate(z.plusWeeks(6)));
-        personalisation.put(SUBMIT_EVIDENCE_LINK_LITERAL, config.getEvidenceSubmissionInfoLink().replace(APPEAL_ID, ccdResponse.getAppellantSubscription().getAppealNumber()));
 
         return personalisation;
     }

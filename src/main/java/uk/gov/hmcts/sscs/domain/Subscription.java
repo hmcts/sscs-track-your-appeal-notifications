@@ -78,6 +78,9 @@ public class Subscription {
     }
 
     public Boolean isSubscribeSms() {
+        if (subscribeSms == null) {
+            subscribeSms = false;
+        }
         return subscribeSms;
     }
 
@@ -86,6 +89,9 @@ public class Subscription {
     }
 
     public Boolean isSubscribeEmail() {
+        if (subscribeEmail == null) {
+            subscribeEmail = false;
+        }
         return subscribeEmail;
     }
 
