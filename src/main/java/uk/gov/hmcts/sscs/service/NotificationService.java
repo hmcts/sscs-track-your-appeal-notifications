@@ -7,6 +7,7 @@ import org.slf4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import uk.gov.hmcts.sscs.domain.CcdResponse;
+import uk.gov.hmcts.sscs.domain.CcdResponseWrapper;
 import uk.gov.hmcts.sscs.domain.notify.Notification;
 import uk.gov.hmcts.sscs.exception.NotificationClientRuntimeException;
 import uk.gov.hmcts.sscs.exception.NotificationServiceException;
@@ -26,9 +27,9 @@ public class NotificationService {
         this.client = client;
     }
 
-    public void createAndSendNotification(CcdResponse response) throws NotificationServiceException {
+    public void createAndSendNotification(CcdResponseWrapper responseWrapper) throws NotificationServiceException {
 
-        Notification notification = factory.create(response);
+        Notification notification = factory.create(responseWrapper);
 
         try {
             if (notification.isEmail() && notification.getEmailTemplate() != null) {

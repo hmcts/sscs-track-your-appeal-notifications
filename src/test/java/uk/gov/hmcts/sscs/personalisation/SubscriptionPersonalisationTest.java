@@ -5,6 +5,7 @@ import static org.mockito.Mockito.when;
 import static org.mockito.MockitoAnnotations.initMocks;
 import static uk.gov.hmcts.sscs.config.AppConstants.*;
 import static uk.gov.hmcts.sscs.domain.notify.NotificationType.DWP_RESPONSE_RECEIVED;
+import static uk.gov.hmcts.sscs.domain.notify.NotificationType.SUBSCRIPTION_CREATED;
 
 import java.util.Map;
 import org.junit.Before;
@@ -16,9 +17,13 @@ import uk.gov.hmcts.sscs.domain.CcdResponseWrapper;
 import uk.gov.hmcts.sscs.domain.Subscription;
 import uk.gov.hmcts.sscs.domain.notify.Link;
 
-public class PersonalisationTest {
+public class SubscriptionPersonalisationTest {
 
-    public Personalisation personalisation;
+    SubscriptionPersonalisation personalisation;
+
+    Subscription newAppellantSubscription;
+
+    Subscription oldAppellantSubscription;
 
     @Mock
     private NotificationConfig config;
@@ -26,19 +31,24 @@ public class PersonalisationTest {
     @Before
     public void setup() {
         initMocks(this);
-        personalisation = new Personalisation(config);
+        personalisation = new SubscriptionPersonalisation(config);
         when(config.getHmctsPhoneNumber()).thenReturn("01234543225");
         when(config.getManageEmailsLink()).thenReturn(new Link("http://manageemails.com/mac"));
         when(config.getTrackAppealLink()).thenReturn(new Link("http://tyalink.com/appeal_id"));
         when(config.getEvidenceSubmissionInfoLink()).thenReturn(new Link("http://link.com/appeal_id"));
+
+        newAppellantSubscription = new Subscription("Harry", "Kane", "Mr", "GLSCRR", "test@email.com",
+                "07983495065", true, false);
+
+        oldAppellantSubscription = new Subscription("Harry", "Kane", "Mr", "GLSCRR", "test@email.com",
+                "07983495065", false, false);
     }
 
     @Test
     public void customisePersonalisation() {
-        Subscription appellantSubscription = new Subscription("Harry", "Kane", "Mr", "GLSCRR", "test@email.com",
-                "07983495065", true, false);
-
-        Map<String, String> result = personalisation.create(new CcdResponseWrapper(new CcdResponse("1234", appellantSubscription, null, DWP_RESPONSE_RECEIVED), null));
+        Map<String, String> result = personalisation.create(new CcdResponseWrapper(
+                new CcdResponse("1234", newAppellantSubscription, null, DWP_RESPONSE_RECEIVED),
+                new CcdResponse("5432", oldAppellantSubscription, null, DWP_RESPONSE_RECEIVED)));
 
         assertEquals(BENEFIT_NAME_ACRONYM, result.get(BENEFIT_NAME_ACRONYM_LITERAL));
         assertEquals(BENEFIT_FULL_NAME, result.get(BENEFIT_FULL_NAME_LITERAL));
@@ -54,7 +64,25 @@ public class PersonalisationTest {
         assertEquals("01 January 1900", result.get(EVIDENCE_RECEIVED_DATE_LITERAL));
         assertEquals("12 February 1900", result.get(HEARING_CONTACT_DATE));
         assertEquals("http://link.com/GLSCRR", result.get(SUBMIT_EVIDENCE_LINK_LITERAL));
+    }
 
+    @Test
+    public void checkSubscriptionCreatedNotificationTypeWhenSmsSubscribedIsFirstSet() {
+        CcdResponse result = personalisation.checkSubscriptionCreated(
+                new CcdResponse("1234", newAppellantSubscription, null, DWP_RESPONSE_RECEIVED),
+                new CcdResponse("5432", oldAppellantSubscription, null, DWP_RESPONSE_RECEIVED));
 
+        assertEquals(SUBSCRIPTION_CREATED, result.getNotificationType());
+    }
+
+    @Test
+    public void checkSubscriptionCreatedNotificationTypeNotChangedWhenSmsSubscribedIsAlreadySet() {
+        oldAppellantSubscription.setSubscribeSms(true);
+
+        CcdResponse result = personalisation.checkSubscriptionCreated(
+                new CcdResponse("1234", newAppellantSubscription, null, DWP_RESPONSE_RECEIVED),
+                new CcdResponse("5432", oldAppellantSubscription, null, DWP_RESPONSE_RECEIVED));
+
+        assertEquals(DWP_RESPONSE_RECEIVED, result.getNotificationType());
     }
 }

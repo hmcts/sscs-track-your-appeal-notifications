@@ -10,6 +10,7 @@ import java.util.HashMap;
 import java.util.Map;
 import uk.gov.hmcts.sscs.config.NotificationConfig;
 import uk.gov.hmcts.sscs.domain.CcdResponse;
+import uk.gov.hmcts.sscs.domain.CcdResponseWrapper;
 import uk.gov.hmcts.sscs.domain.notify.NotificationType;
 import uk.gov.hmcts.sscs.domain.notify.Template;
 
@@ -21,8 +22,8 @@ public class Personalisation {
         this.config = config;
     }
 
-    public Map<String, String> create(CcdResponse ccdResponse) {
-
+    public Map<String, String> create(CcdResponseWrapper responseWrapper) {
+        CcdResponse ccdResponse = responseWrapper.getNewCcdResponse();
         Map<String, String> personalisation = new HashMap<>();
         personalisation.put(BENEFIT_NAME_ACRONYM_LITERAL, BENEFIT_NAME_ACRONYM);
         personalisation.put(BENEFIT_FULL_NAME_LITERAL, BENEFIT_FULL_NAME);
