@@ -86,16 +86,12 @@ public class CcdResponseDeserializerTest {
         assertEquals(APPEAL_RECEIVED, ccdResponse.getEvents().get(2).getEventType());
     }
 
-    @Test
-    public void deserializeEventJsonWhenOneEventHasInvalidDateWhichIsIgnored() throws IOException {
+    @Test(expected = IOException.class)
+    public void throwsIOExceptionWhenDeserializeInvalidEventDateJson() throws IOException {
         String eventJson = "{\"events\": [{\"id\": \"bad54ab0\",\"value\": {\"date\": \"bla-01-19\",\"description\": null,\"type\": \"appealReceived\"}},\n"
                 + "{\"id\": \"87564ab0\",\"value\": {\"date\": \"2018-01-20\",\"description\": null,\"type\": \"appealLapsed\"}}]}";
 
-        CcdResponse ccdResponse = ccdResponseDeserializer.deserializeEventDetailsJson(mapper.readTree(eventJson), new CcdResponse());
-
-        assertEquals(1, ccdResponse.getEvents().size());
-        assertEquals(new DateTime(2018, 1, 20, 0, 0).toDate(), ccdResponse.getEvents().get(0).getDate());
-        assertEquals(APPEAL_LAPSED, ccdResponse.getEvents().get(0).getEventType());
+        ccdResponseDeserializer.deserializeEventDetailsJson(mapper.readTree(eventJson), new CcdResponse());
     }
 
     @Test

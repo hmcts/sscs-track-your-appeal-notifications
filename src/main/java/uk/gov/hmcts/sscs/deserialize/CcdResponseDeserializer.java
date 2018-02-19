@@ -22,6 +22,7 @@ import uk.gov.hmcts.sscs.domain.CcdResponseWrapper;
 import uk.gov.hmcts.sscs.domain.Subscription;
 import uk.gov.hmcts.sscs.domain.notify.Event;
 import uk.gov.hmcts.sscs.domain.notify.EventType;
+import uk.gov.hmcts.sscs.exception.NotificationServiceException;
 
 @Service
 public class CcdResponseDeserializer extends StdDeserializer<CcdResponseWrapper> {
@@ -44,7 +45,7 @@ public class CcdResponseDeserializer extends StdDeserializer<CcdResponseWrapper>
         return buildCcdResponseWrapper(node);
     }
 
-    public CcdResponseWrapper buildCcdResponseWrapper(JsonNode node) {
+    public CcdResponseWrapper buildCcdResponseWrapper(JsonNode node) throws IOException {
         CcdResponse newCcdResponse = null;
         CcdResponse oldCcdResponse = null;
 
@@ -67,7 +68,7 @@ public class CcdResponseDeserializer extends StdDeserializer<CcdResponseWrapper>
         return new CcdResponseWrapper(newCcdResponse, oldCcdResponse);
     }
 
-    public CcdResponse deserializeCaseNode(JsonNode caseNode) {
+    public CcdResponse deserializeCaseNode(JsonNode caseNode) throws IOException {
         CcdResponse ccdResponse = new CcdResponse();
 
         JsonNode appealNode = getNode(caseNode, "appeal");
@@ -120,7 +121,7 @@ public class CcdResponseDeserializer extends StdDeserializer<CcdResponseWrapper>
         return ccdResponse;
     }
 
-    public CcdResponse deserializeEventDetailsJson(JsonNode caseNode, CcdResponse ccdResponse) {
+    public CcdResponse deserializeEventDetailsJson(JsonNode caseNode, CcdResponse ccdResponse) throws IOException {
         final JsonNode eventNode =  caseNode.get("events");
 
         if (eventNode != null && eventNode.isArray()) {
@@ -136,7 +137,7 @@ public class CcdResponseDeserializer extends StdDeserializer<CcdResponseWrapper>
                     EventType eventType = EventType.getNotificationById(getField(valueNode, "type"));
                     events.add(new Event(date, eventType));
                 } catch (ParseException e) {
-                    LOG.error("Error parsing event date: " + e.getStackTrace());
+                    throw new IOException("Error parsing event date: ", e);
                 }
             }
             Collections.sort(events, Collections.reverseOrder());
