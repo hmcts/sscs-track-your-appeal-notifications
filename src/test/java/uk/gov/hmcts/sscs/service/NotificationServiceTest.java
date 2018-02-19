@@ -126,5 +126,4 @@ public class NotificationServiceTest {
 
         notificationService.createAndSendNotification(wrapper);
     }
-
 }

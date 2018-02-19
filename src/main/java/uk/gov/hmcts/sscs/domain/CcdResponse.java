@@ -1,20 +1,23 @@
 package uk.gov.hmcts.sscs.domain;
 
-import uk.gov.hmcts.sscs.domain.notify.NotificationType;
+import java.util.List;
+import uk.gov.hmcts.sscs.domain.notify.Event;
+import uk.gov.hmcts.sscs.domain.notify.EventType;
 
 public class CcdResponse {
 
     private String caseReference;
     private Subscription appellantSubscription;
     private Subscription supporterSubscription;
-    private NotificationType notificationType;
+    private EventType notificationType;
+    private List<Event> events;
 
     public CcdResponse() {
         //
     }
 
     public CcdResponse(String caseReference, Subscription appellantSubscription, Subscription supporterSubscription,
-                       NotificationType notificationType) {
+                       EventType notificationType) {
         this.caseReference = caseReference;
         this.appellantSubscription = appellantSubscription;
         this.supporterSubscription = supporterSubscription;
@@ -45,12 +48,20 @@ public class CcdResponse {
         this.supporterSubscription = supporterSubscription;
     }
 
-    public NotificationType getNotificationType() {
+    public EventType getNotificationType() {
         return notificationType;
     }
 
-    public void setNotificationType(NotificationType notificationType) {
+    public void setNotificationType(EventType notificationType) {
         this.notificationType = notificationType;
+    }
+
+    public List<Event> getEvents() {
+        return events;
+    }
+
+    public void setEvents(List<Event> events) {
+        this.events = events;
     }
 
     @Override
@@ -60,6 +71,7 @@ public class CcdResponse {
                 + ", appellantSubscription=" + appellantSubscription
                 + ", supporterSubscription=" + supporterSubscription
                 + ", notificationType=" + notificationType
+                + ", events=" + events
                 + '}';
     }
 }

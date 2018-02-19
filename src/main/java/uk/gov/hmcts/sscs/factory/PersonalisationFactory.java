@@ -1,15 +1,17 @@
 package uk.gov.hmcts.sscs.factory;
 
+import static uk.gov.hmcts.sscs.domain.notify.EventType.SUBSCRIPTION_UPDATED;
+
 import java.util.function.Function;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 import uk.gov.hmcts.sscs.config.NotificationConfig;
-import uk.gov.hmcts.sscs.domain.notify.NotificationType;
+import uk.gov.hmcts.sscs.domain.notify.EventType;
 import uk.gov.hmcts.sscs.personalisation.Personalisation;
 import uk.gov.hmcts.sscs.personalisation.SubscriptionPersonalisation;
 
 @Component
-public class PersonalisationFactory implements Function<NotificationType, Personalisation> {
+public class PersonalisationFactory implements Function<EventType, Personalisation> {
 
     private final NotificationConfig config;
 
@@ -19,14 +21,12 @@ public class PersonalisationFactory implements Function<NotificationType, Person
     }
 
     @Override
-    public Personalisation apply(NotificationType notificationType) {
+    public Personalisation apply(EventType notificationType) {
         if (notificationType != null) {
-            switch (notificationType) {
-                case SUBSCRIPTION_UPDATED: {
-                    return new SubscriptionPersonalisation(config);
-                }
-                default: return new Personalisation(config);
-
+            if (notificationType.equals(SUBSCRIPTION_UPDATED)) {
+                return new SubscriptionPersonalisation(config);
+            } else {
+                return new Personalisation(config);
             }
         }
         return null;

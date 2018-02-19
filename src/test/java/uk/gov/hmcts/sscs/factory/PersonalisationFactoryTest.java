@@ -3,7 +3,7 @@ package uk.gov.hmcts.sscs.factory;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNull;
 import static org.mockito.MockitoAnnotations.initMocks;
-import static uk.gov.hmcts.sscs.domain.notify.NotificationType.*;
+import static uk.gov.hmcts.sscs.domain.notify.EventType.*;
 
 import org.junit.Before;
 import org.junit.Test;

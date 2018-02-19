@@ -37,8 +37,8 @@ public class NotificationConfig {
         return new Link(evidenceSubmissionInfoLink);
     }
 
-    public Template getTemplate(String templateName) {
-        return new Template(env.getProperty("notification." + templateName + ".emailId"),
-                env.getProperty("notification." + templateName + ".smsId"));
+    public Template getTemplate(String emailTemplateName, String smsTemplateName) {
+        return new Template(env.getProperty("notification." + emailTemplateName + ".emailId"),
+                env.getProperty("notification." + smsTemplateName + ".smsId"));
     }
 }

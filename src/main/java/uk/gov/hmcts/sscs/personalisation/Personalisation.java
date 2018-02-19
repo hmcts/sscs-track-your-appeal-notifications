@@ -2,6 +2,7 @@ package uk.gov.hmcts.sscs.personalisation;
 
 import static java.time.temporal.ChronoUnit.DAYS;
 import static uk.gov.hmcts.sscs.config.AppConstants.*;
+import static uk.gov.hmcts.sscs.domain.notify.EventType.SUBSCRIPTION_CREATED;
 
 import java.time.ZoneId;
 import java.time.ZonedDateTime;
@@ -11,12 +12,14 @@ import java.util.Map;
 import uk.gov.hmcts.sscs.config.NotificationConfig;
 import uk.gov.hmcts.sscs.domain.CcdResponse;
 import uk.gov.hmcts.sscs.domain.CcdResponseWrapper;
-import uk.gov.hmcts.sscs.domain.notify.NotificationType;
+import uk.gov.hmcts.sscs.domain.notify.EventType;
 import uk.gov.hmcts.sscs.domain.notify.Template;
 
 public class Personalisation {
 
     protected NotificationConfig config;
+
+    private boolean sendSmsSubscriptionConfirmation;
 
     public Personalisation(NotificationConfig config) {
         this.config = config;
@@ -60,7 +63,16 @@ public class Personalisation {
         return date.format(DateTimeFormatter.ofPattern(RESPONSE_DATE_FORMAT));
     }
 
-    public Template getTemplate(NotificationType type) {
-        return config.getTemplate(type.getId());
+    public Template getTemplate(EventType type) {
+        String smsTemplateId = isSendSmsSubscriptionConfirmation() ? SUBSCRIPTION_CREATED.getId() : type.getId();
+        return config.getTemplate(type.getId(), smsTemplateId);
+    }
+
+    public Boolean isSendSmsSubscriptionConfirmation() {
+        return sendSmsSubscriptionConfirmation;
+    }
+
+    public void setSendSmsSubscriptionConfirmation(Boolean sendSmsSubscriptionConfirmation) {
+        this.sendSmsSubscriptionConfirmation = sendSmsSubscriptionConfirmation;
     }
 }

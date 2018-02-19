@@ -15,7 +15,7 @@ public class NotificationFactory {
 
     private final PersonalisationFactory personalisationFactory;
 
-    private final Map<NotificationType, Personalisation> map = newHashMap();
+    private final Map<EventType, Personalisation> map = newHashMap();
 
     @Autowired
     public NotificationFactory(PersonalisationFactory personalisationFactory) {

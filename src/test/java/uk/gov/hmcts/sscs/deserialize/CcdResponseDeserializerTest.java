@@ -1,12 +1,13 @@
 package uk.gov.hmcts.sscs.deserialize;
 
 import static org.junit.Assert.*;
-import static uk.gov.hmcts.sscs.domain.notify.NotificationType.APPEAL_RECEIVED;
+import static uk.gov.hmcts.sscs.domain.notify.EventType.*;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.node.JsonNodeFactory;
 import com.fasterxml.jackson.databind.node.ObjectNode;
 import java.io.IOException;
+import org.joda.time.DateTime;
 import org.junit.Before;
 import org.junit.Test;
 import uk.gov.hmcts.sscs.domain.CcdResponse;
@@ -55,6 +56,46 @@ public class CcdResponseDeserializerTest {
         assertEquals("07925289702", ccdResponse.getSupporterSubscription().getMobileNumber());
         assertTrue(ccdResponse.getSupporterSubscription().isSubscribeSms());
         assertFalse(ccdResponse.getSupporterSubscription().isSubscribeEmail());
+    }
+
+    @Test
+    public void deserializeEventJson() throws IOException {
+        String eventJson = "{\"events\": [{\"id\": \"bad54ab0-5d09-47ab-b9fd-c3d55cbaf56f\",\"value\": {\"date\": \"2018-01-19\",\"description\": null,\"type\": \"appealReceived\"}}]}";
+
+        CcdResponse ccdResponse = ccdResponseDeserializer.deserializeEventDetailsJson(mapper.readTree(eventJson), new CcdResponse());
+
+        assertEquals(1, ccdResponse.getEvents().size());
+        assertEquals(new DateTime(2018, 1, 19, 0, 0).toDate(), ccdResponse.getEvents().get(0).getDate());
+        assertEquals(APPEAL_RECEIVED, ccdResponse.getEvents().get(0).getEventType());
+    }
+
+    @Test
+    public void deserializeMultipleEventJsonInDescendingEventDateOrder() throws IOException {
+        String eventJson = "{\"events\": [{\"id\": \"bad54ab0\",\"value\": {\"date\": \"2018-01-19\",\"description\": null,\"type\": \"appealReceived\"}},\n"
+                + "{\"id\": \"12354ab0\",\"value\": {\"date\": \"2018-01-21\",\"description\": null,\"type\": \"appealWithdrawn\"}},\n"
+                + "{\"id\": \"87564ab0\",\"value\": {\"date\": \"2018-01-20\",\"description\": null,\"type\": \"appealLapsed\"}}]}";
+
+        CcdResponse ccdResponse = ccdResponseDeserializer.deserializeEventDetailsJson(mapper.readTree(eventJson), new CcdResponse());
+
+        assertEquals(3, ccdResponse.getEvents().size());
+        assertEquals(new DateTime(2018, 1, 21, 0, 0).toDate(), ccdResponse.getEvents().get(0).getDate());
+        assertEquals(APPEAL_WITHDRAWN, ccdResponse.getEvents().get(0).getEventType());
+        assertEquals(new DateTime(2018, 1, 20, 0, 0).toDate(), ccdResponse.getEvents().get(1).getDate());
+        assertEquals(APPEAL_LAPSED, ccdResponse.getEvents().get(1).getEventType());
+        assertEquals(new DateTime(2018, 1, 19, 0, 0).toDate(), ccdResponse.getEvents().get(2).getDate());
+        assertEquals(APPEAL_RECEIVED, ccdResponse.getEvents().get(2).getEventType());
+    }
+
+    @Test
+    public void deserializeEventJsonWhenOneEventHasInvalidDateWhichIsIgnored() throws IOException {
+        String eventJson = "{\"events\": [{\"id\": \"bad54ab0\",\"value\": {\"date\": \"bla-01-19\",\"description\": null,\"type\": \"appealReceived\"}},\n"
+                + "{\"id\": \"87564ab0\",\"value\": {\"date\": \"2018-01-20\",\"description\": null,\"type\": \"appealLapsed\"}}]}";
+
+        CcdResponse ccdResponse = ccdResponseDeserializer.deserializeEventDetailsJson(mapper.readTree(eventJson), new CcdResponse());
+
+        assertEquals(1, ccdResponse.getEvents().size());
+        assertEquals(new DateTime(2018, 1, 20, 0, 0).toDate(), ccdResponse.getEvents().get(0).getDate());
+        assertEquals(APPEAL_LAPSED, ccdResponse.getEvents().get(0).getEventType());
     }
 
     @Test
