@@ -4,11 +4,12 @@ import java.util.Map;
 import uk.gov.hmcts.sscs.config.NotificationConfig;
 import uk.gov.hmcts.sscs.domain.CcdResponse;
 import uk.gov.hmcts.sscs.domain.CcdResponseWrapper;
+import uk.gov.hmcts.sscs.service.MessageAuthenticationServiceImpl;
 
 public class SubscriptionPersonalisation extends Personalisation {
 
-    public SubscriptionPersonalisation(NotificationConfig config) {
-        super(config);
+    public SubscriptionPersonalisation(NotificationConfig config, MessageAuthenticationServiceImpl macService) {
+        super(config, macService);
     }
 
     @Override

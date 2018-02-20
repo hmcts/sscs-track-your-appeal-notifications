@@ -21,6 +21,7 @@ import uk.gov.hmcts.sscs.domain.notify.Notification;
 import uk.gov.hmcts.sscs.domain.notify.Template;
 import uk.gov.hmcts.sscs.personalisation.Personalisation;
 import uk.gov.hmcts.sscs.personalisation.SubscriptionPersonalisation;
+import uk.gov.hmcts.sscs.service.MessageAuthenticationServiceImpl;
 
 public class NotificationFactoryTest {
 
@@ -38,12 +39,14 @@ public class NotificationFactoryTest {
     @Mock
     private NotificationConfig config;
 
+    @Mock
+    private MessageAuthenticationServiceImpl macService;
 
     @Before
     public void setup() {
         initMocks(this);
-        personalisation = new Personalisation(config);
-        subscriptionPersonalisation = new SubscriptionPersonalisation(config);
+        personalisation = new Personalisation(config, macService);
+        subscriptionPersonalisation = new SubscriptionPersonalisation(config, macService);
         factory = new NotificationFactory(personalisationFactory);
         wrapper = new CcdResponseWrapper(new CcdResponse("SC/1234/5", new Subscription("Ronnie", "Scott", "Mr", "ABC",
                 "test@testing.com", "07985858594", true, false), null, APPEAL_RECEIVED), null);
@@ -51,6 +54,8 @@ public class NotificationFactoryTest {
         when(config.getManageEmailsLink()).thenReturn(new Link("http://manageemails.com/mac"));
         when(config.getTrackAppealLink()).thenReturn(new Link("http://tyalink.com/appeal_id"));
         when(config.getEvidenceSubmissionInfoLink()).thenReturn(new Link("http://link.com/appeal_id"));
+        when(config.getManageEmailsLink()).thenReturn(new Link("http://link.com/manage-email-notifications/mac"));
+        when(macService.generateToken("ABC")).thenReturn("ZYX");
     }
 
     @Test

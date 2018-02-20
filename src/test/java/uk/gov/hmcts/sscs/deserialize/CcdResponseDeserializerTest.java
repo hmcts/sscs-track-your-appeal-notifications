@@ -87,7 +87,7 @@ public class CcdResponseDeserializerTest {
     }
 
     @Test(expected = IOException.class)
-    public void throwsIOExceptionWhenDeserializeInvalidEventDateJson() throws IOException {
+    public void throwsIoExceptionWhenDeserializeInvalidEventDateJson() throws IOException {
         String eventJson = "{\"events\": [{\"id\": \"bad54ab0\",\"value\": {\"date\": \"bla-01-19\",\"description\": null,\"type\": \"appealReceived\"}},\n"
                 + "{\"id\": \"87564ab0\",\"value\": {\"date\": \"2018-01-20\",\"description\": null,\"type\": \"appealLapsed\"}}]}";
 
