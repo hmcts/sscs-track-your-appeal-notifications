@@ -1,7 +1,5 @@
 package uk.gov.hmcts.sscs.personalisation;
 
-import static uk.gov.hmcts.sscs.domain.notify.NotificationType.SUBSCRIPTION_CREATED;
-
 import java.util.Map;
 import uk.gov.hmcts.sscs.config.NotificationConfig;
 import uk.gov.hmcts.sscs.domain.CcdResponse;
@@ -15,18 +13,28 @@ public class SubscriptionPersonalisation extends Personalisation {
 
     @Override
     public Map<String, String> create(CcdResponseWrapper responseWrapper) {
-        checkSubscriptionCreated(responseWrapper.getNewCcdResponse(), responseWrapper.getOldCcdResponse());
+        setSendSmsSubscriptionConfirmation(shouldSendSmsSubscriptionConfirmation(responseWrapper.getNewCcdResponse(), responseWrapper.getOldCcdResponse()));
+        setMostRecentEventTypeNotification(responseWrapper.getNewCcdResponse(), responseWrapper.getOldCcdResponse());
 
         return super.create(responseWrapper);
     }
 
-    public CcdResponse checkSubscriptionCreated(CcdResponse newCcdResponse, CcdResponse oldCcdResponse) {
-        if (oldCcdResponse.getAppellantSubscription() != null
+    public Boolean shouldSendSmsSubscriptionConfirmation(CcdResponse newCcdResponse, CcdResponse oldCcdResponse) {
+        return (oldCcdResponse.getAppellantSubscription() != null
                 && !oldCcdResponse.getAppellantSubscription().isSubscribeSms()
                 && newCcdResponse.getAppellantSubscription() != null
-                && newCcdResponse.getAppellantSubscription().isSubscribeSms()) {
+                && newCcdResponse.getAppellantSubscription().isSubscribeSms());
+    }
 
-            newCcdResponse.setNotificationType(SUBSCRIPTION_CREATED);
+    public CcdResponse setMostRecentEventTypeNotification(CcdResponse newCcdResponse, CcdResponse oldCcdResponse) {
+        if (oldCcdResponse.getAppellantSubscription() != null
+                && !oldCcdResponse.getAppellantSubscription().isSubscribeEmail()
+                && newCcdResponse.getAppellantSubscription() != null
+                && newCcdResponse.getAppellantSubscription().isSubscribeEmail()
+                && newCcdResponse.getEvents() != null
+                && !newCcdResponse.getEvents().isEmpty()) {
+
+            newCcdResponse.setNotificationType(newCcdResponse.getEvents().get(0).getEventType());
         }
         return newCcdResponse;
     }

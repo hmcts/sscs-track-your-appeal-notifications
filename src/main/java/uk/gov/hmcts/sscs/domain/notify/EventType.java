@@ -1,7 +1,7 @@
 package uk.gov.hmcts.sscs.domain.notify;
 
 
-public enum NotificationType {
+public enum EventType {
     ADJOURNED("hearingAdjourned"),
     APPEAL_CREATED("appealCreated"),
     APPEAL_LAPSED("appealLapsed"),
@@ -15,13 +15,13 @@ public enum NotificationType {
 
     private String id;
 
-    NotificationType(String id) {
+    EventType(String id) {
         this.id = id;
     }
 
-    public static NotificationType getNotificationById(String id) {
-        NotificationType b = null;
-        for (NotificationType type : NotificationType.values()) {
+    public static EventType getNotificationById(String id) {
+        EventType b = null;
+        for (EventType type : EventType.values()) {
             if (type.getId().equals(id)) {
                 b = type;
             }
