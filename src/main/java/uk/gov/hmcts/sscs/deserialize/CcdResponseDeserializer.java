@@ -1,7 +1,5 @@
 package uk.gov.hmcts.sscs.deserialize;
 
-import static org.slf4j.LoggerFactory.getLogger;
-
 import com.fasterxml.jackson.core.JsonParser;
 import com.fasterxml.jackson.core.ObjectCodec;
 import com.fasterxml.jackson.databind.DeserializationContext;
@@ -15,18 +13,15 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Date;
 import java.util.List;
-import org.slf4j.Logger;
 import org.springframework.stereotype.Service;
 import uk.gov.hmcts.sscs.domain.CcdResponse;
 import uk.gov.hmcts.sscs.domain.CcdResponseWrapper;
 import uk.gov.hmcts.sscs.domain.Subscription;
 import uk.gov.hmcts.sscs.domain.notify.Event;
 import uk.gov.hmcts.sscs.domain.notify.EventType;
-import uk.gov.hmcts.sscs.exception.NotificationServiceException;
 
 @Service
 public class CcdResponseDeserializer extends StdDeserializer<CcdResponseWrapper> {
-    private static final Logger LOG = getLogger(CcdResponseDeserializer.class);
 
     public CcdResponseDeserializer() {
         this(null);

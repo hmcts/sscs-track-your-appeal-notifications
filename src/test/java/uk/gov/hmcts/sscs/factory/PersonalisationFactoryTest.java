@@ -11,6 +11,7 @@ import org.mockito.Mock;
 import uk.gov.hmcts.sscs.config.NotificationConfig;
 import uk.gov.hmcts.sscs.personalisation.Personalisation;
 import uk.gov.hmcts.sscs.personalisation.SubscriptionPersonalisation;
+import uk.gov.hmcts.sscs.service.MessageAuthenticationServiceImpl;
 
 public class PersonalisationFactoryTest {
 
@@ -19,10 +20,13 @@ public class PersonalisationFactoryTest {
     @Mock
     private NotificationConfig config;
 
+    @Mock
+    private MessageAuthenticationServiceImpl macService;
+
     @Before
     public void setup() {
         initMocks(this);
-        factory = new PersonalisationFactory(config);
+        factory = new PersonalisationFactory(config, macService);
     }
 
     @Test

@@ -15,6 +15,7 @@ import uk.gov.hmcts.sscs.domain.CcdResponse;
 import uk.gov.hmcts.sscs.domain.CcdResponseWrapper;
 import uk.gov.hmcts.sscs.domain.Subscription;
 import uk.gov.hmcts.sscs.domain.notify.Link;
+import uk.gov.hmcts.sscs.service.MessageAuthenticationServiceImpl;
 
 public class PersonalisationTest {
 
@@ -23,14 +24,19 @@ public class PersonalisationTest {
     @Mock
     private NotificationConfig config;
 
+    @Mock
+    private MessageAuthenticationServiceImpl macService;
+
     @Before
     public void setup() {
         initMocks(this);
-        personalisation = new Personalisation(config);
+        personalisation = new Personalisation(config, macService);
         when(config.getHmctsPhoneNumber()).thenReturn("01234543225");
         when(config.getManageEmailsLink()).thenReturn(new Link("http://manageemails.com/mac"));
         when(config.getTrackAppealLink()).thenReturn(new Link("http://tyalink.com/appeal_id"));
         when(config.getEvidenceSubmissionInfoLink()).thenReturn(new Link("http://link.com/appeal_id"));
+        when(config.getManageEmailsLink()).thenReturn(new Link("http://link.com/manage-email-notifications/mac"));
+        when(macService.generateToken("GLSCRR")).thenReturn("ZYX");
     }
 
     @Test
@@ -46,7 +52,7 @@ public class PersonalisationTest {
         assertEquals("GLSCRR", result.get(APPEAL_ID));
         assertEquals("Harry Kane", result.get(APPELLANT_NAME));
         assertEquals("01234543225", result.get(PHONE_NUMBER));
-        assertEquals("http://manageemails.com/Mactoken", result.get(MANAGE_EMAILS_LINK_LITERAL));
+        assertEquals("http://link.com/manage-email-notifications/ZYX", result.get(MANAGE_EMAILS_LINK_LITERAL));
         assertEquals("http://tyalink.com/GLSCRR", result.get(TRACK_APPEAL_LINK_LITERAL));
         assertEquals(DWP_ACRONYM, result.get(FIRST_TIER_AGENCY_ACRONYM));
         assertEquals(DWP_FUL_NAME, result.get(FIRST_TIER_AGENCY_FULL_NAME));
@@ -54,7 +60,5 @@ public class PersonalisationTest {
         assertEquals("01 January 1900", result.get(EVIDENCE_RECEIVED_DATE_LITERAL));
         assertEquals("12 February 1900", result.get(HEARING_CONTACT_DATE));
         assertEquals("http://link.com/GLSCRR", result.get(SUBMIT_EVIDENCE_LINK_LITERAL));
-
-
     }
 }

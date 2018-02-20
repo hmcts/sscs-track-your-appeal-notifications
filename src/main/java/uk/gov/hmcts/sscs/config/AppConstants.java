@@ -17,6 +17,7 @@ public final class AppConstants {
     public static final String FIRST_TIER_AGENCY_ACRONYM = "first_tier_agency_acronym";
     public static final String FIRST_TIER_AGENCY_FULL_NAME = "first_tier_agency_full_name";
     public static final String HEARING_CONTACT_DATE = "hearing_contact_date";
+    public static final String MAC_ALGO = "HmacSHA256";
     public static final String MAC_LITERAL = "mac";
     public static final String MANAGE_EMAILS_LINK_LITERAL = "manage_emails_link";
     public static final int MAX_DWP_RESPONSE_DAYS = 35;
@@ -24,6 +25,7 @@ public final class AppConstants {
     public static final String RESPONSE_DATE_FORMAT = "dd MMMM yyyy";
     public static final String SUBMIT_EVIDENCE_LINK_LITERAL = "submit_evidence_link";
     public static final String TRACK_APPEAL_LINK_LITERAL = "track_appeal_link";
+    public static final String ZONE_ID = "Europe/London";
 
     private AppConstants(){
         //

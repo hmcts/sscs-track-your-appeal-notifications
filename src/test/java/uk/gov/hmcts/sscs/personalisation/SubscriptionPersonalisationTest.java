@@ -20,6 +20,7 @@ import uk.gov.hmcts.sscs.domain.CcdResponseWrapper;
 import uk.gov.hmcts.sscs.domain.Subscription;
 import uk.gov.hmcts.sscs.domain.notify.Event;
 import uk.gov.hmcts.sscs.domain.notify.Link;
+import uk.gov.hmcts.sscs.service.MessageAuthenticationServiceImpl;
 
 public class SubscriptionPersonalisationTest {
 
@@ -36,14 +37,19 @@ public class SubscriptionPersonalisationTest {
     @Mock
     private NotificationConfig config;
 
+    @Mock
+    private MessageAuthenticationServiceImpl macService;
+
     @Before
     public void setup() {
         initMocks(this);
-        personalisation = new SubscriptionPersonalisation(config);
+        personalisation = new SubscriptionPersonalisation(config, macService);
         when(config.getHmctsPhoneNumber()).thenReturn("01234543225");
         when(config.getManageEmailsLink()).thenReturn(new Link("http://manageemails.com/mac"));
         when(config.getTrackAppealLink()).thenReturn(new Link("http://tyalink.com/appeal_id"));
         when(config.getEvidenceSubmissionInfoLink()).thenReturn(new Link("http://link.com/appeal_id"));
+        when(config.getManageEmailsLink()).thenReturn(new Link("http://link.com/manage-email-notifications/mac"));
+        when(macService.generateToken("GLSCRR")).thenReturn("ZYX");
 
         newAppellantSubscription = new Subscription("Harry", "Kane", "Mr", "GLSCRR", "test@email.com",
                 "07983495065", true, true);
@@ -67,7 +73,7 @@ public class SubscriptionPersonalisationTest {
         assertEquals("GLSCRR", result.get(APPEAL_ID));
         assertEquals("Harry Kane", result.get(APPELLANT_NAME));
         assertEquals("01234543225", result.get(PHONE_NUMBER));
-        assertEquals("http://manageemails.com/Mactoken", result.get(MANAGE_EMAILS_LINK_LITERAL));
+        assertEquals("http://link.com/manage-email-notifications/ZYX", result.get(MANAGE_EMAILS_LINK_LITERAL));
         assertEquals("http://tyalink.com/GLSCRR", result.get(TRACK_APPEAL_LINK_LITERAL));
         assertEquals(DWP_ACRONYM, result.get(FIRST_TIER_AGENCY_ACRONYM));
         assertEquals(DWP_FUL_NAME, result.get(FIRST_TIER_AGENCY_FULL_NAME));

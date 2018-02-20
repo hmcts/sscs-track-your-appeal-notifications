@@ -14,15 +14,18 @@ import uk.gov.hmcts.sscs.domain.CcdResponse;
 import uk.gov.hmcts.sscs.domain.CcdResponseWrapper;
 import uk.gov.hmcts.sscs.domain.notify.EventType;
 import uk.gov.hmcts.sscs.domain.notify.Template;
+import uk.gov.hmcts.sscs.service.MessageAuthenticationServiceImpl;
 
 public class Personalisation {
 
     protected NotificationConfig config;
 
     private boolean sendSmsSubscriptionConfirmation;
+    private final MessageAuthenticationServiceImpl macService;
 
-    public Personalisation(NotificationConfig config) {
+    public Personalisation(NotificationConfig config, MessageAuthenticationServiceImpl macService) {
         this.config = config;
+        this.macService = macService;
     }
 
     public Map<String, String> create(CcdResponseWrapper responseWrapper) {
@@ -34,10 +37,9 @@ public class Personalisation {
         personalisation.put(APPEAL_ID, ccdResponse.getAppellantSubscription().getAppealNumber());
         personalisation.put(APPELLANT_NAME, String.format("%s %s", ccdResponse.getAppellantSubscription().getFirstName(), ccdResponse.getAppellantSubscription().getSurname()));
         personalisation.put(PHONE_NUMBER, config.getHmctsPhoneNumber());
-        //TODO: Replace hardcoded mactoken with an actual mac token
-        personalisation.put(MANAGE_EMAILS_LINK_LITERAL, config.getManageEmailsLink().replace(MAC_LITERAL, "Mactoken"));
 
         if (ccdResponse.getAppellantSubscription().getAppealNumber() != null) {
+            personalisation.put(MANAGE_EMAILS_LINK_LITERAL, config.getManageEmailsLink().replace(MAC_LITERAL, getMacToken(ccdResponse.getAppellantSubscription().getAppealNumber())));
             personalisation.put(TRACK_APPEAL_LINK_LITERAL, config.getTrackAppealLink() != null ? config.getTrackAppealLink().replace(APPEAL_ID_LITERAL, ccdResponse.getAppellantSubscription().getAppealNumber()) : null);
             personalisation.put(SUBMIT_EVIDENCE_LINK_LITERAL, config.getEvidenceSubmissionInfoLink().replace(APPEAL_ID, ccdResponse.getAppellantSubscription().getAppealNumber()));
         }
@@ -57,6 +59,10 @@ public class Personalisation {
         personalisation.put(HEARING_CONTACT_DATE, formatDate(z.plusWeeks(6)));
 
         return personalisation;
+    }
+
+    public String getMacToken(String id) {
+        return macService.generateToken(id);
     }
 
     protected String formatDate(ZonedDateTime date) {
