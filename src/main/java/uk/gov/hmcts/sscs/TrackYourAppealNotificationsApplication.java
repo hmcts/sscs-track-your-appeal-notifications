@@ -6,12 +6,15 @@ import javax.annotation.PostConstruct;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
+import org.springframework.cloud.netflix.feign.EnableFeignClients;
 import org.springframework.context.MessageSource;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.support.ReloadableResourceBundleMessageSource;
+import uk.gov.hmcts.reform.authorisation.ServiceAuthorisationApi;
 import uk.gov.hmcts.sscs.deserialize.CcdResponseDeserializer;
 import uk.gov.service.notify.NotificationClient;
 
+@EnableFeignClients(basePackageClasses = ServiceAuthorisationApi.class)
 @SpringBootApplication
 public class TrackYourAppealNotificationsApplication {
 

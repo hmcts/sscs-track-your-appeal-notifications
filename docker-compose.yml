@@ -11,6 +11,7 @@ services:
     image: docker.artifactory.reform.hmcts.net/reform/track-your-appeal-notifications
     container_name: track-your-appeal-notifications
     environment:
+      - S2S_URL
       # these environment variables are used by java-logging library
       - ROOT_APPENDER
       - JSON_CONSOLE_PRETTY_PRINT
