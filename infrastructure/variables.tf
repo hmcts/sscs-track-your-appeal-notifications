@@ -1,6 +1,6 @@
 variable "product" {
   type    = "string"
-  default = "sscs-track-your-appeal"
+  default = "track-your-appeal-notifications"
 }
 
 variable "location" {
@@ -13,17 +13,13 @@ variable "env" {
 }
 
 variable "infrastructure_env" {
-  default     = "dev"
+  default     = "test"
   description = "Infrastructure environment to point to"
 }
 
 variable "management_security_enabled" {
   type    = "string"
   default = "true"
-}
-
-variable "s2s-url" {
-  default = "http://betaDevBccidamS2SLB.reform.hmcts.net"
 }
 
 variable "ilbIp"{}
