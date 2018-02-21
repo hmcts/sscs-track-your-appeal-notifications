@@ -22,6 +22,10 @@ variable "management_security_enabled" {
   default = "true"
 }
 
+variable "s2s-url" {
+  default = "http://betaDevBccidamS2SLB.reform.hmcts.net"
+}
+
 variable "ilbIp"{}
 
 variable "subscription" {

@@ -22,6 +22,7 @@ module "track-your-appeal-notifications" {
   ilbIp    = "${var.ilbIp}"
 
   app_settings = {
+    S2S_URL = "${var.s2s-url}"
     MANAGEMENT_SECURITY_ENABLED = "${var.management_security_enabled}"
     NOTIFICATION_API_KEY = "${data.vault_generic_secret.sscs_notify_api_key.data["value"]}"
   }
