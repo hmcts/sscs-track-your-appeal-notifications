@@ -77,9 +77,6 @@ public class SubscriptionPersonalisationTest {
         assertEquals("http://tyalink.com/GLSCRR", result.get(TRACK_APPEAL_LINK_LITERAL));
         assertEquals(DWP_ACRONYM, result.get(FIRST_TIER_AGENCY_ACRONYM));
         assertEquals(DWP_FUL_NAME, result.get(FIRST_TIER_AGENCY_FULL_NAME));
-        assertEquals("05 February 1900", result.get(APPEAL_RESPOND_DATE));
-        assertEquals("01 January 1900", result.get(EVIDENCE_RECEIVED_DATE_LITERAL));
-        assertEquals("12 February 1900", result.get(HEARING_CONTACT_DATE));
         assertEquals("http://link.com/GLSCRR", result.get(SUBMIT_EVIDENCE_LINK_LITERAL));
     }
 
