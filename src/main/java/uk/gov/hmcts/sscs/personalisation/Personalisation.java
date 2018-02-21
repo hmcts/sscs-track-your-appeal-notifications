@@ -57,7 +57,7 @@ public class Personalisation {
             Event event = ccdResponse.getEvents().get(0);
 
             switch (event.getEventType()) {
-                case DWP_RESPONSE_RECEIVED : {
+                case APPEAL_RECEIVED: {
                     String dwpResponseDateString = formatDate(addDays(event.getDate(), MAX_DWP_RESPONSE_DAYS));
                     personalisation.put(APPEAL_RESPOND_DATE, dwpResponseDateString);
                     setHearingContactDate(personalisation, event);
