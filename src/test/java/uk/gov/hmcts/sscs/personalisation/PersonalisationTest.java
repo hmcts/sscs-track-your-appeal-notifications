@@ -46,7 +46,7 @@ public class PersonalisationTest {
 
     @Test
     public void customisePersonalisation() {
-        Event event = new Event(c1.getTime(), DWP_RESPONSE_RECEIVED);
+        Event event = new Event(c1.getTime(), APPEAL_RECEIVED);
 
         Subscription appellantSubscription = new Subscription("Harry", "Kane", "Mr", "GLSCRR", "test@email.com",
                 "07983495065", true, false);
@@ -75,8 +75,8 @@ public class PersonalisationTest {
     }
 
     @Test
-    public void setDwpResponseReceivedEventData() {
-        Event event = new Event(c1.getTime(), DWP_RESPONSE_RECEIVED);
+    public void setAppealReceivedEventData() {
+        Event event = new Event(c1.getTime(), APPEAL_RECEIVED);
 
         CcdResponse response = new CcdResponse("1234", null, null, DWP_RESPONSE_RECEIVED);
 
