@@ -1,10 +1,4 @@
 provider "vault" {
-  //  # It is strongly recommended to configure this provider through the
-  //  # environment variables described above, so that each user can have
-  //  # separate credentials set in the environment.
-  //  #
-  //  # This will default to using $VAULT_ADDR
-  //  # But can be set explicitly
   address = "https://vault.reform.hmcts.net:6200"
 }
 
@@ -14,6 +8,10 @@ data "vault_generic_secret" "sscs_notify_api_key" {
 
 data "valut_generic_secret" "s2s_url" {
   path = "secret/${var.infrastructure_env}/sscs/idam_s2s_api"
+}
+
+locals {
+  aseName = "${data.terraform_remote_state.core_apps_compute.ase_name[0]}"
 }
 
 module "track-your-appeal-notifications" {
