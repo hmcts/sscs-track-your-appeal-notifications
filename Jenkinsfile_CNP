@@ -6,13 +6,10 @@ properties([
 
 @Library("Infrastructure")
 
-def type = "java"
+def product = "sscs-track-your-appeal"
+def component = "notifications"
 
-def product = "sscs"
-
-def app = "track-your-appeal-notifications"
-
-withPipeline(type, product, app) {
+withPipeline("java", product, component) {
     enableSlackNotifications('#sscs-tech')
 }
 
