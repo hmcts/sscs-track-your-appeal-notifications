@@ -12,7 +12,7 @@ data "vault_generic_secret" "s2s_url" {
 
 module "track-your-appeal-notifications" {
   source   = "git@github.com:contino/moj-module-webapp?ref=master"
-  product  = "${var.product}-notifications"
+  product  = "${var.product}-notif"
   location = "${var.location}"
   env      = "${var.env}"
   ilbIp    = "${var.ilbIp}"
