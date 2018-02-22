@@ -10,10 +10,6 @@ data "valut_generic_secret" "s2s_url" {
   path = "secret/${var.infrastructure_env}/sscs/idam_s2s_api"
 }
 
-locals {
-  aseName = "${data.terraform_remote_state.core_apps_compute.ase_name[0]}"
-}
-
 module "track-your-appeal-notifications" {
   source   = "git@github.com:contino/moj-module-webapp?ref=master"
   product  = "${var.product}-notifications"
