@@ -6,7 +6,7 @@ data "vault_generic_secret" "sscs_notify_api_key" {
   path = "secret/${var.infrastructure_env}/sscs/sscs_notify_api_new_key"
 }
 
-data "valut_generic_secret" "s2s_url" {
+data "vault_generic_secret" "s2s_url" {
   path = "secret/${var.infrastructure_env}/sscs/idam_s2s_api"
 }
 
