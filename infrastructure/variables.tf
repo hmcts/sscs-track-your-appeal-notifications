@@ -1,6 +1,6 @@
 variable "product" {
   type    = "string"
-  default = "track-your-appeal"
+  default = "track-your-appeal-notifications"
 }
 
 variable "location" {
