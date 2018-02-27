@@ -39,7 +39,9 @@ public class Personalisation {
         personalisation.put(PHONE_NUMBER, config.getHmctsPhoneNumber());
 
         if (ccdResponse.getAppellantSubscription().getAppealNumber() != null) {
-            personalisation.put(MANAGE_EMAILS_LINK_LITERAL, config.getManageEmailsLink().replace(MAC_LITERAL, getMacToken(ccdResponse.getAppellantSubscription().getAppealNumber())));
+            personalisation.put(MANAGE_EMAILS_LINK_LITERAL, config.getManageEmailsLink().replace(MAC_LITERAL,
+                    getMacToken(ccdResponse.getAppellantSubscription().getAppealNumber(),
+                            ccdResponse.getBenefitType())));
             personalisation.put(TRACK_APPEAL_LINK_LITERAL, config.getTrackAppealLink() != null ? config.getTrackAppealLink().replace(APPEAL_ID_LITERAL, ccdResponse.getAppellantSubscription().getAppealNumber()) : null);
             personalisation.put(SUBMIT_EVIDENCE_LINK_LITERAL, config.getEvidenceSubmissionInfoLink().replace(APPEAL_ID, ccdResponse.getAppellantSubscription().getAppealNumber()));
         }
@@ -91,8 +93,8 @@ public class Personalisation {
         return cal.getTime();
     }
 
-    public String getMacToken(String id) {
-        return macService.generateToken(id);
+    public String getMacToken(String id, String benefitType) {
+        return macService.generateToken(id, benefitType);
     }
 
     protected String formatDate(Date date) {

@@ -25,6 +25,16 @@ public class CcdResponseDeserializerTest {
     }
 
     @Test
+    public void deserializeBenefitJson() throws IOException {
+
+        String appealJson = "{\"benefitType\":{\"code\":\"002\"}}";
+
+        CcdResponse ccdResponse = ccdResponseDeserializer.deserializeBenefitDetailsJson(mapper.readTree(appealJson), new CcdResponse());
+
+        assertEquals("002", ccdResponse.getBenefitType());
+    }
+
+    @Test
     public void deserializeAppellantJson() throws IOException {
 
         String appealJson = "{\"appellant\":{\"name\":{\"title\":\"Mr\",\"lastName\":\"Vasquez\",\"firstName\":\"Dexter\",\"middleName\":\"Ali Sosa\"}}}";
