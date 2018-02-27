@@ -27,21 +27,26 @@ public class NotificationService {
     }
 
     public void createAndSendNotification(CcdResponseWrapper responseWrapper) throws NotificationServiceException {
+        LOG.info("Start to create notification for case reference "  + responseWrapper.getNewCcdResponse().getCaseReference());
 
         Notification notification = factory.create(responseWrapper);
 
         try {
             if (notification.isEmail() && notification.getEmailTemplate() != null) {
+                LOG.info("Sending email for case reference "  + responseWrapper.getNewCcdResponse().getCaseReference());
                 client.sendEmail(notification.getEmailTemplate(), notification.getEmail(), notification.getPlaceholders(), notification.getReference());
+                LOG.info("Email sent for case reference "  + responseWrapper.getNewCcdResponse().getCaseReference());
             }
             if (notification.isSms() && notification.getSmsTemplate() != null) {
+                LOG.info("Sending SMS for case reference "  + responseWrapper.getNewCcdResponse().getCaseReference());
                 client.sendSms(notification.getSmsTemplate(), notification.getMobile(), notification.getPlaceholders(), notification.getReference());
+                LOG.info("SMS sent for case reference "  + responseWrapper.getNewCcdResponse().getCaseReference());
             }
         } catch (Exception ex) {
+            LOG.error("Error on GovUKNotify for case reference " + responseWrapper.getNewCcdResponse().getCaseReference() + ", " + ex.getStackTrace());
             if (ex.getCause() instanceof UnknownHostException) {
                 throw new NotificationClientRuntimeException(ex);
             }
-            LOG.error("Error on GovUKNotify for AppealNumber " +  notification.getAppealNumber() + ", " + ex.getStackTrace());
             throw new NotificationServiceException(ex);
         }
     }
