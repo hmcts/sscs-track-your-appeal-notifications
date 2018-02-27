@@ -71,9 +71,20 @@ public class CcdResponseDeserializer extends StdDeserializer<CcdResponseWrapper>
 
         ccdResponse.setCaseReference(getField(caseNode, "caseReference"));
 
+        deserializeBenefitDetailsJson(appealNode, ccdResponse);
         deserializeAppellantDetailsJson(appealNode, subscriptionsNode, ccdResponse);
         deserializeSupporterDetailsJson(appealNode, subscriptionsNode, ccdResponse);
         deserializeEventDetailsJson(caseNode, ccdResponse);
+
+        return ccdResponse;
+    }
+
+    public CcdResponse deserializeBenefitDetailsJson(JsonNode appealNode, CcdResponse ccdResponse) {
+        JsonNode benefitTypeNode = getNode(appealNode, "benefitType");
+
+        if (benefitTypeNode != null) {
+            ccdResponse.setBenefitType(getField(benefitTypeNode, "code"));
+        }
 
         return ccdResponse;
     }

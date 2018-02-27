@@ -24,8 +24,8 @@ public class MessageAuthenticationServiceImplTest {
         Subscription subscription = new Subscription();
         subscription.setAppealNumber("u6ml9e");
 
-        String startEncryptedToken = service.generateToken("3").substring(0, 9);
+        String startEncryptedToken = service.generateToken("3", "002").substring(0, 9);
 
-        assertEquals("M3wxNTE5M", startEncryptedToken);
+        assertEquals("M3wwMDJ8M", startEncryptedToken);
     }
 }

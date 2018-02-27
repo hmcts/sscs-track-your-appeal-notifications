@@ -48,14 +48,14 @@ public class NotificationFactoryTest {
         personalisation = new Personalisation(config, macService);
         subscriptionPersonalisation = new SubscriptionPersonalisation(config, macService);
         factory = new NotificationFactory(personalisationFactory);
-        wrapper = new CcdResponseWrapper(new CcdResponse("SC/1234/5", new Subscription("Ronnie", "Scott", "Mr", "ABC",
-                "test@testing.com", "07985858594", true, false), null, APPEAL_RECEIVED), null);
+        wrapper = new CcdResponseWrapper(new CcdResponse("002","SC/1234/5", new Subscription("Ronnie", "Scott", "Mr",
+                "ABC","test@testing.com", "07985858594", true, false), null, APPEAL_RECEIVED), null);
         when(config.getHmctsPhoneNumber()).thenReturn("01234543225");
         when(config.getManageEmailsLink()).thenReturn(new Link("http://manageemails.com/mac"));
         when(config.getTrackAppealLink()).thenReturn(new Link("http://tyalink.com/appeal_id"));
         when(config.getEvidenceSubmissionInfoLink()).thenReturn(new Link("http://link.com/appeal_id"));
         when(config.getManageEmailsLink()).thenReturn(new Link("http://link.com/manage-email-notifications/mac"));
-        when(macService.generateToken("ABC")).thenReturn("ZYX");
+        when(macService.generateToken("ABC", "002")).thenReturn("ZYX");
     }
 
     @Test
@@ -74,9 +74,9 @@ public class NotificationFactoryTest {
         when(personalisationFactory.apply(SUBSCRIPTION_UPDATED)).thenReturn(subscriptionPersonalisation);
         when(config.getTemplate(SUBSCRIPTION_UPDATED.getId(), SUBSCRIPTION_CREATED.getId())).thenReturn(new Template(null, "123"));
 
-        wrapper = new CcdResponseWrapper(new CcdResponse("SC/1234/5", new Subscription("Ronnie", "Scott", "Mr", "ABC",
-                "test@testing.com", "07985858594", true, false), null, SUBSCRIPTION_UPDATED),
-                new CcdResponse("SC/1234/5", new Subscription("Ronnie", "Scott", "Mr", "ABC",
+        wrapper = new CcdResponseWrapper(new CcdResponse("002","SC/1234/5", new Subscription("Ronnie", "Scott", "Mr",
+                "ABC", "test@testing.com", "07985858594", true, false), null, SUBSCRIPTION_UPDATED),
+                new CcdResponse("002", "SC/1234/5", new Subscription("Ronnie", "Scott", "Mr", "ABC",
                 "test@testing.com", "07985858594", false, false), null, SUBSCRIPTION_UPDATED));
 
         Notification result = factory.create(wrapper);
@@ -89,9 +89,10 @@ public class NotificationFactoryTest {
         when(personalisationFactory.apply(SUBSCRIPTION_UPDATED)).thenReturn(subscriptionPersonalisation);
         when(config.getTemplate(SUBSCRIPTION_UPDATED.getId(), SUBSCRIPTION_UPDATED.getId())).thenReturn(new Template(null, "123"));
 
-        wrapper = new CcdResponseWrapper(new CcdResponse("SC/1234/5", new Subscription("Ronnie", "Scott", "Mr", "ABC",
+        wrapper = new CcdResponseWrapper(new CcdResponse("002", "SC/1234/5", new Subscription("Ronnie", "Scott",
+                "Mr", "ABC",
                 "test@testing.com", "07985858594", true, false), null, SUBSCRIPTION_UPDATED),
-                new CcdResponse("SC/1234/5", new Subscription("Ronnie", "Scott", "Mr", "ABC",
+                new CcdResponse("002","SC/1234/5", new Subscription("Ronnie", "Scott", "Mr", "ABC",
                         "test@testing.com", "07985858594", true, false), null, SUBSCRIPTION_UPDATED));
 
         Notification result = factory.create(wrapper);
@@ -104,10 +105,12 @@ public class NotificationFactoryTest {
         when(personalisationFactory.apply(SUBSCRIPTION_UPDATED)).thenReturn(subscriptionPersonalisation);
         when(config.getTemplate(APPEAL_RECEIVED.getId(), SUBSCRIPTION_CREATED.getId())).thenReturn(new Template("123", null));
 
-        CcdResponse newResponse = new CcdResponse("SC/1234/5", new Subscription("Ronnie", "Scott", "Mr", "ABC",
+        CcdResponse newResponse = new CcdResponse("002", "SC/1234/5", new Subscription("Ronnie", "Scott", "Mr",
+                "ABC",
                 "test@testing.com", "07985858594", true, true), null, SUBSCRIPTION_UPDATED);
 
-        CcdResponse oldResponse = new CcdResponse("SC/1234/5", new Subscription("Ronnie", "Scott", "Mr", "ABC",
+        CcdResponse oldResponse = new CcdResponse("002","SC/1234/5", new Subscription("Ronnie", "Scott", "Mr",
+                "ABC",
                         "test@testing.com", "07985858594", false, false), null, SUBSCRIPTION_UPDATED);
 
         Event event = new Event(new Date(), APPEAL_RECEIVED);
@@ -128,10 +131,12 @@ public class NotificationFactoryTest {
         when(personalisationFactory.apply(SUBSCRIPTION_UPDATED)).thenReturn(subscriptionPersonalisation);
         when(config.getTemplate(SUBSCRIPTION_UPDATED.getId(), SUBSCRIPTION_CREATED.getId())).thenReturn(new Template("123", null));
 
-        CcdResponse newResponse = new CcdResponse("SC/1234/5", new Subscription("Ronnie", "Scott", "Mr", "ABC",
+        CcdResponse newResponse = new CcdResponse("002","SC/1234/5", new Subscription("Ronnie", "Scott", "Mr",
+                "ABC",
                 "test@testing.com", "07985858594", true, true), null, SUBSCRIPTION_UPDATED);
 
-        CcdResponse oldResponse = new CcdResponse("SC/1234/5", new Subscription("Ronnie", "Scott", "Mr", "ABC",
+        CcdResponse oldResponse = new CcdResponse("002","SC/1234/5", new Subscription("Ronnie", "Scott", "Mr",
+                "ABC",
                 "test@testing.com", "07985858594", false, true), null, SUBSCRIPTION_UPDATED);
 
         Event event = new Event(new Date(), APPEAL_RECEIVED);

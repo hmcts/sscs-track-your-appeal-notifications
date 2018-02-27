@@ -39,7 +39,7 @@ public class PersonalisationTest {
         when(config.getTrackAppealLink()).thenReturn(new Link("http://tyalink.com/appeal_id"));
         when(config.getEvidenceSubmissionInfoLink()).thenReturn(new Link("http://link.com/appeal_id"));
         when(config.getManageEmailsLink()).thenReturn(new Link("http://link.com/manage-email-notifications/mac"));
-        when(macService.generateToken("GLSCRR")).thenReturn("ZYX");
+        when(macService.generateToken("GLSCRR", "002")).thenReturn("ZYX");
         c1 = GregorianCalendar.getInstance();
         c1.set(2018, Calendar.JANUARY, 01);
     }
@@ -51,7 +51,7 @@ public class PersonalisationTest {
         Subscription appellantSubscription = new Subscription("Harry", "Kane", "Mr", "GLSCRR", "test@email.com",
                 "07983495065", true, false);
 
-        CcdResponse response = new CcdResponse("1234", appellantSubscription, null, DWP_RESPONSE_RECEIVED);
+        CcdResponse response = new CcdResponse("002", "1234", appellantSubscription, null, DWP_RESPONSE_RECEIVED);
         response.setEvents(new ArrayList() {{
                 add(event);
             }
@@ -78,7 +78,7 @@ public class PersonalisationTest {
     public void setAppealReceivedEventData() {
         Event event = new Event(c1.getTime(), APPEAL_RECEIVED);
 
-        CcdResponse response = new CcdResponse("1234", null, null, DWP_RESPONSE_RECEIVED);
+        CcdResponse response = new CcdResponse("002","1234", null, null, DWP_RESPONSE_RECEIVED);
 
         response.setEvents(new ArrayList() {{
                 add(event);
@@ -95,7 +95,7 @@ public class PersonalisationTest {
     public void setEvidenceReceivedEventData() {
         Event event = new Event(c1.getTime(), EVIDENCE_RECEIVED);
 
-        CcdResponse response = new CcdResponse("1234", null, null, EVIDENCE_RECEIVED);
+        CcdResponse response = new CcdResponse("002","1234", null, null, EVIDENCE_RECEIVED);
 
         response.setEvents(new ArrayList() {{
                 add(event);
@@ -111,7 +111,7 @@ public class PersonalisationTest {
     public void setPostponementEventData() {
         Event event = new Event(c1.getTime(), POSTPONEMENT);
 
-        CcdResponse response = new CcdResponse("1234", null, null, POSTPONEMENT);
+        CcdResponse response = new CcdResponse("002","1234", null, null, POSTPONEMENT);
 
         response.setEvents(new ArrayList() {{
                 add(event);
@@ -125,7 +125,7 @@ public class PersonalisationTest {
 
     @Test
     public void handleNullEventWhenPopulatingEventData() {
-        CcdResponse response = new CcdResponse("1234", null, null, POSTPONEMENT);
+        CcdResponse response = new CcdResponse("002","1234", null, null, POSTPONEMENT);
 
         Map<String, String> result = personalisation.setEventData(new HashMap<>(), response);
 
@@ -134,7 +134,7 @@ public class PersonalisationTest {
 
     @Test
     public void handleEmptyEventsWhenPopulatingEventData() {
-        CcdResponse response = new CcdResponse("1234", null, null, POSTPONEMENT);
+        CcdResponse response = new CcdResponse("002","1234", null, null, POSTPONEMENT);
 
         response.setEvents(new ArrayList());
 

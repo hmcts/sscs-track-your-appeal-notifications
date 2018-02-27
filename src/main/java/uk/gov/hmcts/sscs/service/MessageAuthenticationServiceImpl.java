@@ -47,10 +47,10 @@ public class MessageAuthenticationServiceImpl {
         }
     }
 
-    public String generateToken(String appealNumber)  {
+    public String generateToken(String appealNumber, String benefitType)  {
         try {
             long timestamp = now(of(ZONE_ID)).toInstant().toEpochMilli() / 1000;
-            String originalMessage = format("%s|%d", appealNumber, timestamp);
+            String originalMessage = format("%s|%s|%d", appealNumber, benefitType, timestamp);
             byte[] digest = mac.doFinal(originalMessage.getBytes(CHARSET));
             String macSubString =  printBase64Binary(digest).substring(0,10);
             String macToken = format("%s|%s", originalMessage, macSubString);
