@@ -9,6 +9,7 @@ import java.net.UnknownHostException;
 import org.junit.Before;
 import org.junit.Test;
 import org.mockito.Mock;
+import uk.gov.hmcts.sscs.domain.CcdResponse;
 import uk.gov.hmcts.sscs.domain.CcdResponseWrapper;
 import uk.gov.hmcts.sscs.domain.notify.Destination;
 import uk.gov.hmcts.sscs.domain.notify.Notification;
@@ -36,7 +37,9 @@ public class NotificationServiceTest {
     public void setup() {
         initMocks(this);
         notificationService = new NotificationService(client, factory);
-        wrapper = new CcdResponseWrapper();
+        CcdResponse response = new CcdResponse();
+        response.setCaseReference("ABC123");
+        wrapper = new CcdResponseWrapper(response, response);
     }
 
     @Test
