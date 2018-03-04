@@ -8,8 +8,8 @@ import static org.mockito.MockitoAnnotations.initMocks;
 import static uk.gov.hmcts.sscs.config.AppConstants.*;
 import static uk.gov.hmcts.sscs.domain.notify.EventType.*;
 
+import java.time.ZonedDateTime;
 import java.util.ArrayList;
-import java.util.Date;
 import java.util.Map;
 import org.junit.Before;
 import org.junit.Test;
@@ -126,7 +126,7 @@ public class SubscriptionPersonalisationTest {
         newCcdResponse.setNotificationType(SUBSCRIPTION_UPDATED);
         oldCcdResponse.setNotificationType(SUBSCRIPTION_UPDATED);
 
-        Event event = new Event(new Date(), APPEAL_RECEIVED);
+        Event event = new Event(ZonedDateTime.now(), APPEAL_RECEIVED);
         newCcdResponse.setEvents(new ArrayList() {{
                 add(event);
             }
@@ -144,7 +144,7 @@ public class SubscriptionPersonalisationTest {
         newCcdResponse.setNotificationType(SUBSCRIPTION_UPDATED);
         oldCcdResponse.setNotificationType(SUBSCRIPTION_UPDATED);
 
-        Event event = new Event(new Date(), APPEAL_RECEIVED);
+        Event event = new Event(ZonedDateTime.now(), APPEAL_RECEIVED);
         newCcdResponse.setEvents(new ArrayList() {{
                 add(event);
             }
@@ -162,7 +162,7 @@ public class SubscriptionPersonalisationTest {
 
         oldCcdResponse.setAppellantSubscription(null);
 
-        Event event = new Event(new Date(), APPEAL_RECEIVED);
+        Event event = new Event(ZonedDateTime.now(), APPEAL_RECEIVED);
         newCcdResponse.setEvents(new ArrayList() {{
                 add(event);
             }
@@ -180,7 +180,7 @@ public class SubscriptionPersonalisationTest {
 
         newCcdResponse.setAppellantSubscription(null);
 
-        Event event = new Event(new Date(), APPEAL_RECEIVED);
+        Event event = new Event(ZonedDateTime.now(), APPEAL_RECEIVED);
         newCcdResponse.setEvents(new ArrayList() {{
                 add(event);
             }

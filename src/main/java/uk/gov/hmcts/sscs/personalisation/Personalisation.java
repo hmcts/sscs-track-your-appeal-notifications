@@ -3,9 +3,8 @@ package uk.gov.hmcts.sscs.personalisation;
 import static uk.gov.hmcts.sscs.config.AppConstants.*;
 import static uk.gov.hmcts.sscs.domain.notify.EventType.SUBSCRIPTION_CREATED;
 
-import java.text.SimpleDateFormat;
-import java.util.Calendar;
-import java.util.Date;
+import java.time.ZonedDateTime;
+import java.time.format.DateTimeFormatter;
 import java.util.HashMap;
 import java.util.Map;
 import uk.gov.hmcts.sscs.config.NotificationConfig;
@@ -60,13 +59,13 @@ public class Personalisation {
 
             switch (event.getEventType()) {
                 case APPEAL_RECEIVED: {
-                    String dwpResponseDateString = formatDate(addDays(event.getDate(), MAX_DWP_RESPONSE_DAYS));
+                    String dwpResponseDateString = formatDate(event.getDateTime().plusDays(MAX_DWP_RESPONSE_DAYS));
                     personalisation.put(APPEAL_RESPOND_DATE, dwpResponseDateString);
                     setHearingContactDate(personalisation, event);
                     break;
                 }
                 case EVIDENCE_RECEIVED : {
-                    personalisation.put(EVIDENCE_RECEIVED_DATE_LITERAL, formatDate(event.getDate()));
+                    personalisation.put(EVIDENCE_RECEIVED_DATE_LITERAL, formatDate(event.getDateTime()));
                     break;
                 }
                 case POSTPONEMENT : {
@@ -80,26 +79,18 @@ public class Personalisation {
     }
 
     private  Map<String, String> setHearingContactDate(Map<String, String> personalisation, Event event) {
-        String hearingContactDate = formatDate(addDays(event.getDate(), 42));
+        String hearingContactDate = formatDate(event.getDateTime().plusDays(42));
         personalisation.put(HEARING_CONTACT_DATE, hearingContactDate);
 
         return personalisation;
-    }
-
-    private static Date addDays(Date date, int days) {
-        Calendar cal = Calendar.getInstance();
-        cal.setTime(date);
-        cal.add(Calendar.DATE, days);
-        return cal.getTime();
     }
 
     public String getMacToken(String id, String benefitType) {
         return macService.generateToken(id, benefitType);
     }
 
-    protected String formatDate(Date date) {
-        SimpleDateFormat dt = new SimpleDateFormat(RESPONSE_DATE_FORMAT);
-        return dt.format(date);
+    public String formatDate(ZonedDateTime date) {
+        return date.format(DateTimeFormatter.ofPattern(RESPONSE_DATE_FORMAT));
     }
 
     public Template getTemplate(EventType type) {

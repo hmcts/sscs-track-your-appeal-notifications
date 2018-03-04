@@ -1,17 +1,17 @@
 package uk.gov.hmcts.sscs.deserialize;
 
+import static uk.gov.hmcts.sscs.config.AppConstants.ZONE_ID;
+
 import com.fasterxml.jackson.core.JsonParser;
 import com.fasterxml.jackson.core.ObjectCodec;
 import com.fasterxml.jackson.databind.DeserializationContext;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.deser.std.StdDeserializer;
 import java.io.IOException;
-import java.text.DateFormat;
-import java.text.ParseException;
-import java.text.SimpleDateFormat;
+import java.time.ZoneId;
+import java.time.ZonedDateTime;
 import java.util.ArrayList;
 import java.util.Collections;
-import java.util.Date;
 import java.util.List;
 import org.springframework.stereotype.Service;
 import uk.gov.hmcts.sscs.domain.CcdResponse;
@@ -127,7 +127,7 @@ public class CcdResponseDeserializer extends StdDeserializer<CcdResponseWrapper>
         return ccdResponse;
     }
 
-    public CcdResponse deserializeEventDetailsJson(JsonNode caseNode, CcdResponse ccdResponse) throws IOException {
+    public CcdResponse deserializeEventDetailsJson(JsonNode caseNode, CcdResponse ccdResponse) {
         final JsonNode eventNode =  caseNode.get("events");
 
         if (eventNode != null && eventNode.isArray()) {
@@ -136,22 +136,21 @@ public class CcdResponseDeserializer extends StdDeserializer<CcdResponseWrapper>
             for (final JsonNode objNode : eventNode) {
                 JsonNode valueNode = getNode(objNode, "value");
 
-                DateFormat format = new SimpleDateFormat("yyyy-MM-dd");
+                ZonedDateTime date = convertToUkLocalDateTime(getField(valueNode, "date"));
 
-                try {
-                    Date date = format.parse(getField(valueNode, "date"));
-                    EventType eventType = EventType.getNotificationById(getField(valueNode, "type"));
-                    events.add(new Event(date, eventType));
-                } catch (ParseException e) {
-                    throw new IOException("Error parsing event date: ", e);
-                }
+                EventType eventType = EventType.getNotificationById(getField(valueNode, "type"));
+                events.add(new Event(date, eventType));
+
             }
             Collections.sort(events, Collections.reverseOrder());
             ccdResponse.setEvents(events);
         }
 
-
         return ccdResponse;
+    }
+
+    public static ZonedDateTime convertToUkLocalDateTime(String bstDateTimeinUtc) {
+        return ZonedDateTime.parse(bstDateTimeinUtc + "Z").toInstant().atZone(ZoneId.of(ZONE_ID));
     }
 
     private Subscription deserializeNameJson(JsonNode node, Subscription subscription) {
