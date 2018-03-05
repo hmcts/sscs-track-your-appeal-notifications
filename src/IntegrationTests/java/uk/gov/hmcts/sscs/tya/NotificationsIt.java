@@ -141,6 +141,17 @@ public class NotificationsIt {
     }
 
     @Test
+    public void shouldSendNotificationForHearingBookedRequest() throws Exception {
+        json = json.replace("appealReceived", "hearingBooked");
+
+        HttpServletResponse response = getResponse(getRequestWithAuthHeader(json));
+
+        assertHttpStatus(response, HttpStatus.OK);
+        verify(client, times(1)).sendEmail(any(), any(), any(), any());
+        verify(client, never()).sendSms(any(), any(), any(), any());
+    }
+
+    @Test
     public void shouldSendSubscriptionCreatedNotificationForSubscriptionUpdatedRequestWithNewSubscribeSmsRequest() throws Exception {
         json = json.replace("appealReceived", "subscriptionUpdated");
 

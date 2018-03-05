@@ -16,6 +16,7 @@ import java.util.List;
 import org.springframework.stereotype.Service;
 import uk.gov.hmcts.sscs.domain.CcdResponse;
 import uk.gov.hmcts.sscs.domain.CcdResponseWrapper;
+import uk.gov.hmcts.sscs.domain.Hearing;
 import uk.gov.hmcts.sscs.domain.Subscription;
 import uk.gov.hmcts.sscs.domain.notify.Event;
 import uk.gov.hmcts.sscs.domain.notify.EventType;
@@ -75,6 +76,7 @@ public class CcdResponseDeserializer extends StdDeserializer<CcdResponseWrapper>
         deserializeAppellantDetailsJson(appealNode, subscriptionsNode, ccdResponse);
         deserializeSupporterDetailsJson(appealNode, subscriptionsNode, ccdResponse);
         deserializeEventDetailsJson(caseNode, ccdResponse);
+        deserializeHearingDetailsJson(caseNode, ccdResponse);
 
         return ccdResponse;
     }
@@ -149,7 +151,40 @@ public class CcdResponseDeserializer extends StdDeserializer<CcdResponseWrapper>
         return ccdResponse;
     }
 
-    public static ZonedDateTime convertToUkLocalDateTime(String bstDateTimeinUtc) {
+    public CcdResponse deserializeHearingDetailsJson(JsonNode caseNode, CcdResponse ccdResponse) {
+        final JsonNode hearingNode = caseNode.get("hearings");
+
+        if (hearingNode != null && hearingNode.isArray()) {
+            List<Hearing> hearings = new ArrayList<>();
+
+            for (final JsonNode objNode : hearingNode) {
+                Hearing hearing = new Hearing();
+                JsonNode valueNode = getNode(objNode, "value");
+                JsonNode venueNode = getNode(valueNode, "venue");
+                JsonNode addressNode = getNode(venueNode, "address");
+
+                hearing.setHearingDateTime(buildHearingDateTime(getField(valueNode, "hearingDate"), getField(valueNode, "time")));
+                hearing.setVenueName(getField(valueNode, "name"));
+                hearing.setVenueAddressLine1(getField(addressNode, "line1"));
+                hearing.setVenueAddressLine2(getField(addressNode, "line2"));
+                hearing.setVenueTown(getField(addressNode, "town"));
+                hearing.setVenueCounty(getField(addressNode, "county"));
+                hearing.setVenuePostcode(getField(addressNode, "postcode"));
+                hearing.setVenueGoogleMapUrl(getField(venueNode, "googleMapLink"));
+
+                hearings.add(hearing);
+            }
+            ccdResponse.setHearings(hearings);
+        }
+
+        return ccdResponse;
+    }
+
+    private ZonedDateTime buildHearingDateTime(String hearingDate, String hearingTime) {
+        return convertToUkLocalDateTime(hearingDate + "T" + hearingTime);
+    }
+
+    private static ZonedDateTime convertToUkLocalDateTime(String bstDateTimeinUtc) {
         return ZonedDateTime.parse(bstDateTimeinUtc + "Z").toInstant().atZone(ZoneId.of(ZONE_ID));
     }
 
