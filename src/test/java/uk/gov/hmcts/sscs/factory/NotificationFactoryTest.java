@@ -6,8 +6,8 @@ import static org.mockito.Mockito.when;
 import static org.mockito.MockitoAnnotations.initMocks;
 import static uk.gov.hmcts.sscs.domain.notify.EventType.*;
 
+import java.time.ZonedDateTime;
 import java.util.ArrayList;
-import java.util.Date;
 import org.junit.Before;
 import org.junit.Test;
 import org.mockito.Mock;
@@ -113,7 +113,7 @@ public class NotificationFactoryTest {
                 "ABC",
                         "test@testing.com", "07985858594", false, false), null, SUBSCRIPTION_UPDATED);
 
-        Event event = new Event(new Date(), APPEAL_RECEIVED);
+        Event event = new Event(ZonedDateTime.now(), APPEAL_RECEIVED);
         newResponse.setEvents(new ArrayList() {{
                 add(event);
             }
@@ -139,7 +139,7 @@ public class NotificationFactoryTest {
                 "ABC",
                 "test@testing.com", "07985858594", false, true), null, SUBSCRIPTION_UPDATED);
 
-        Event event = new Event(new Date(), APPEAL_RECEIVED);
+        Event event = new Event(ZonedDateTime.now(), APPEAL_RECEIVED);
 
         newResponse.setEvents(new ArrayList() {{
                 add(event);

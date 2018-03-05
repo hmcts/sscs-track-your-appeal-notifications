@@ -1,19 +1,19 @@
 package uk.gov.hmcts.sscs.domain.notify;
 
-import java.util.Date;
+import java.time.ZonedDateTime;
 
 public class Event implements Comparable<Event> {
 
-    private Date date;
+    private ZonedDateTime dateTime;
     private EventType eventType;
 
-    public Event(Date date, EventType eventType) {
-        this.date = date;
+    public Event(ZonedDateTime date, EventType eventType) {
+        this.dateTime = date;
         this.eventType = eventType;
     }
 
-    public Date getDate() {
-        return date;
+    public ZonedDateTime getDateTime() {
+        return dateTime;
     }
 
     public EventType getEventType() {
@@ -22,6 +22,6 @@ public class Event implements Comparable<Event> {
 
     @Override
     public int compareTo(Event o) {
-        return getDate().compareTo(o.getDate());
+        return getDateTime().compareTo(o.getDateTime());
     }
 }

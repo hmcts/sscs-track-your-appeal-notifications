@@ -6,7 +6,13 @@ import static org.mockito.MockitoAnnotations.initMocks;
 import static uk.gov.hmcts.sscs.config.AppConstants.*;
 import static uk.gov.hmcts.sscs.domain.notify.EventType.*;
 
-import java.util.*;
+import java.time.LocalDate;
+import java.time.LocalTime;
+import java.time.ZoneId;
+import java.time.ZonedDateTime;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.Map;
 import org.junit.Before;
 import org.junit.Test;
 import org.mockito.Mock;
@@ -28,7 +34,7 @@ public class PersonalisationTest {
     @Mock
     private MessageAuthenticationServiceImpl macService;
 
-    Calendar c1;
+    ZonedDateTime dateTime;
 
     @Before
     public void setup() {
@@ -40,13 +46,13 @@ public class PersonalisationTest {
         when(config.getEvidenceSubmissionInfoLink()).thenReturn(new Link("http://link.com/appeal_id"));
         when(config.getManageEmailsLink()).thenReturn(new Link("http://link.com/manage-email-notifications/mac"));
         when(macService.generateToken("GLSCRR", "002")).thenReturn("ZYX");
-        c1 = GregorianCalendar.getInstance();
-        c1.set(2018, Calendar.JANUARY, 01);
+
+        dateTime = ZonedDateTime.of(LocalDate.of(2018, 1, 1), LocalTime.of(0, 0), ZoneId.of(ZONE_ID));
     }
 
     @Test
     public void customisePersonalisation() {
-        Event event = new Event(c1.getTime(), APPEAL_RECEIVED);
+        Event event = new Event(dateTime, APPEAL_RECEIVED);
 
         Subscription appellantSubscription = new Subscription("Harry", "Kane", "Mr", "GLSCRR", "test@email.com",
                 "07983495065", true, false);
@@ -76,7 +82,7 @@ public class PersonalisationTest {
 
     @Test
     public void setAppealReceivedEventData() {
-        Event event = new Event(c1.getTime(), APPEAL_RECEIVED);
+        Event event = new Event(dateTime, APPEAL_RECEIVED);
 
         CcdResponse response = new CcdResponse("002","1234", null, null, DWP_RESPONSE_RECEIVED);
 
@@ -93,7 +99,7 @@ public class PersonalisationTest {
 
     @Test
     public void setEvidenceReceivedEventData() {
-        Event event = new Event(c1.getTime(), EVIDENCE_RECEIVED);
+        Event event = new Event(dateTime, EVIDENCE_RECEIVED);
 
         CcdResponse response = new CcdResponse("002","1234", null, null, EVIDENCE_RECEIVED);
 
@@ -109,7 +115,7 @@ public class PersonalisationTest {
 
     @Test
     public void setPostponementEventData() {
-        Event event = new Event(c1.getTime(), POSTPONEMENT);
+        Event event = new Event(dateTime, POSTPONEMENT);
 
         CcdResponse response = new CcdResponse("002","1234", null, null, POSTPONEMENT);
 
