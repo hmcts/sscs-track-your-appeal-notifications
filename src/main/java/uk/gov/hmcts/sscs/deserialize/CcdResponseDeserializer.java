@@ -164,7 +164,7 @@ public class CcdResponseDeserializer extends StdDeserializer<CcdResponseWrapper>
                 JsonNode addressNode = getNode(venueNode, "address");
 
                 hearing.setHearingDateTime(buildHearingDateTime(getField(valueNode, "hearingDate"), getField(valueNode, "time")));
-                hearing.setVenueName(getField(valueNode, "name"));
+                hearing.setVenueName(getField(venueNode, "name"));
                 hearing.setVenueAddressLine1(getField(addressNode, "line1"));
                 hearing.setVenueAddressLine2(getField(addressNode, "line2"));
                 hearing.setVenueTown(getField(addressNode, "town"));
@@ -174,6 +174,7 @@ public class CcdResponseDeserializer extends StdDeserializer<CcdResponseWrapper>
 
                 hearings.add(hearing);
             }
+            Collections.sort(hearings, Collections.reverseOrder());
             ccdResponse.setHearings(hearings);
         }
 

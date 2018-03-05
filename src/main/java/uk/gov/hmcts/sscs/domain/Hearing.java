@@ -2,7 +2,7 @@ package uk.gov.hmcts.sscs.domain;
 
 import java.time.ZonedDateTime;
 
-public class Hearing {
+public class Hearing implements Comparable<Hearing> {
 
     private ZonedDateTime hearingDateTime;
     private String venueName;
@@ -89,5 +89,10 @@ public class Hearing {
                 + ", venuePostcode='" + venuePostcode + '\''
                 + ", venueGoogleMapUrl='" + venueGoogleMapUrl + '\''
                 + '}';
+    }
+
+    @Override
+    public int compareTo(Hearing o) {
+        return getHearingDateTime().compareTo(o.getHearingDateTime());
     }
 }
