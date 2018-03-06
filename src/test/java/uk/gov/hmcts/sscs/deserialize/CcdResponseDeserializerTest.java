@@ -16,6 +16,7 @@ import org.junit.Before;
 import org.junit.Test;
 import uk.gov.hmcts.sscs.domain.CcdResponse;
 import uk.gov.hmcts.sscs.domain.CcdResponseWrapper;
+import uk.gov.hmcts.sscs.domain.Hearing;
 
 public class CcdResponseDeserializerTest {
 
@@ -102,14 +103,77 @@ public class CcdResponseDeserializerTest {
     }
 
     @Test
+    public void deserializeHearingJson() throws IOException {
+        String hearingJson = "{\"hearings\": [{\"id\": \"1234\",\"value\": {"
+                + "\"hearingDate\": \"2018-01-12\",\"time\": \"11:00\",\"venue\": {"
+                + "\"name\": \"Prudential House\",\"address\": {\"line1\": \"36 Dale Street\",\"line2\": \"\","
+                + "\"town\": \"Liverpool\",\"county\": \"Merseyside\",\"postcode\": \"L2 5UZ\"},"
+                + "\"googleMapLink\": \"https://www.google.com/theAddress\"}}}]}";
+
+        CcdResponse ccdResponse = ccdResponseDeserializer.deserializeHearingDetailsJson(mapper.readTree(hearingJson), new CcdResponse());
+
+        assertEquals(1, ccdResponse.getHearings().size());
+
+        Hearing hearing = ccdResponse.getHearings().get(0);
+        assertEquals(ZonedDateTime.of(LocalDate.of(2018, 1, 12), LocalTime.of(11, 00, 00), ZoneId.of(ZONE_ID)), hearing.getHearingDateTime());
+        assertEquals("Prudential House", hearing.getVenueName());
+        assertEquals("36 Dale Street", hearing.getVenueAddressLine1());
+        assertEquals("Liverpool", hearing.getVenueTown());
+        assertEquals("Merseyside", hearing.getVenueCounty());
+        assertEquals("L2 5UZ", hearing.getVenuePostcode());
+        assertEquals("https://www.google.com/theAddress", hearing.getVenueGoogleMapUrl());
+    }
+
+    @Test
+    public void deserializeMultipleHearingJsonInDescendingHearingDateOrder() throws IOException {
+        String hearingJson = "{\"hearings\": [{\"id\": \"1234\",\"value\": {"
+                + "\"hearingDate\": \"2018-01-12\",\"time\": \"11:00\",\"venue\": {"
+                + "\"name\": \"Prudential House\",\"address\": {\"line1\": \"36 Dale Street\",\"line2\": \"\","
+                + "\"town\": \"Liverpool\",\"county\": \"Merseyside\",\"postcode\": \"L2 5UZ\"},"
+                + "\"googleMapLink\": \"https://www.google.com/theAddress\"}}},"
+                + "{\"id\": \"4567\",\"value\": {"
+                + "\"hearingDate\": \"2018-01-12\",\"time\": \"13:00\",\"venue\": {"
+                + "\"name\": \"Prudential House\",\"address\": {\"line1\": \"36 Dale Street\",\"line2\": \"\","
+                + "\"town\": \"Liverpool\",\"county\": \"Merseyside\",\"postcode\": \"L2 5UZ\"},"
+                + "\"googleMapLink\": \"https://www.google.com/theAddress\"}}},"
+                + "{\"id\": \"9875\",\"value\": {"
+                + "\"hearingDate\": \"2018-01-12\",\"time\": \"12:00\",\"venue\": {"
+                + "\"name\": \"Prudential House\",\"address\": {\"line1\": \"36 Dale Street\",\"line2\": \"\","
+                + "\"town\": \"Liverpool\",\"county\": \"Merseyside\",\"postcode\": \"L2 5UZ\"},"
+                + "\"googleMapLink\": \"https://www.google.com/theAddress\"}}}"
+                + "]}";
+        CcdResponse ccdResponse = ccdResponseDeserializer.deserializeHearingDetailsJson(mapper.readTree(hearingJson), new CcdResponse());
+
+        assertEquals(3, ccdResponse.getHearings().size());
+
+        assertEquals(ZonedDateTime.of(LocalDate.of(2018, 1, 12), LocalTime.of(13, 0), ZoneId.of(ZONE_ID)), ccdResponse.getHearings().get(0).getHearingDateTime());
+        assertEquals(ZonedDateTime.of(LocalDate.of(2018, 1, 12), LocalTime.of(12, 0), ZoneId.of(ZONE_ID)), ccdResponse.getHearings().get(1).getHearingDateTime());
+        assertEquals(ZonedDateTime.of(LocalDate.of(2018, 1, 12), LocalTime.of(11, 0), ZoneId.of(ZONE_ID)), ccdResponse.getHearings().get(2).getHearingDateTime());
+    }
+
+    @Test
     public void deserializeAllCcdResponseJson() throws IOException {
 
-        String json = "{\"case_details\":{\"case_data\":{\"subscriptions\":{"
-                + "\"appellantSubscription\":{\"tya\":\"543212345\",\"email\":\"test@testing.com\",\"mobile\":\"01234556634\",\"reason\":null,\"subscribeSms\":\"No\",\"subscribeEmail\":\"Yes\"},"
-                + "\"supporterSubscription\":{\"tya\":\"232929249492\",\"email\":\"supporter@live.co.uk\",\"mobile\":\"07925289702\",\"reason\":null,\"subscribeSms\":\"Yes\",\"subscribeEmail\":\"No\"}},"
-                + "\"caseReference\":\"SC/1234/23\",\"appeal\":{"
-                + "\"appellant\":{\"name\":{\"title\":\"Mr\",\"lastName\":\"Vasquez\",\"firstName\":\"Dexter\",\"middleName\":\"Ali Sosa\"}},"
-                + "\"supporter\":{\"name\":{\"title\":\"Mrs\",\"lastName\":\"Wilder\",\"firstName\":\"Amber\",\"middleName\":\"Clark Eaton\"}}}}},\"event_id\": \"appealReceived\"\n}";
+        String json =
+            "{\"case_details\":{"
+                + "\"case_data\":{"
+                    + "\"subscriptions\":{"
+                        + "\"appellantSubscription\":{\"tya\":\"543212345\",\"email\":\"test@testing.com\",\"mobile\":\"01234556634\",\"reason\":null,\"subscribeSms\":\"No\",\"subscribeEmail\":\"Yes\"},"
+                        + "\"supporterSubscription\":{\"tya\":\"232929249492\",\"email\":\"supporter@live.co.uk\",\"mobile\":\"07925289702\",\"reason\":null,\"subscribeSms\":\"Yes\",\"subscribeEmail\":\"No\"}"
+                    + "},"
+                    + "\"caseReference\":\"SC/1234/23\","
+                    + "\"appeal\":{"
+                        + "\"appellant\":{\"name\":{\"title\":\"Mr\",\"lastName\":\"Vasquez\",\"firstName\":\"Dexter\",\"middleName\":\"Ali Sosa\"}},"
+                        + "\"supporter\":{\"name\":{\"title\":\"Mrs\",\"lastName\":\"Wilder\",\"firstName\":\"Amber\",\"middleName\":\"Clark Eaton\"}}"
+                    + "},"
+                    + "\"hearings\": [{\"id\": \"1234\",\"value\": {"
+                        + "\"hearingDate\": \"2018-01-12\",\"time\": \"11:00\",\"venue\": {"
+                            + "\"name\": \"Prudential House\",\"address\": {\"line1\": \"36 Dale Street\",\"line2\": \"\","
+                            + "\"town\": \"Liverpool\",\"county\": \"Merseyside\",\"postcode\": \"L2 5UZ\"},"
+                        + "\"googleMapLink\": \"https://www.google.com/theAddress\"}}}]"
+                + "}"
+            + "},"
+            + "\"event_id\": \"appealReceived\"}";
 
         CcdResponseWrapper wrapper = mapper.readValue(json, CcdResponseWrapper.class);
         CcdResponse ccdResponse = wrapper.getNewCcdResponse();
@@ -130,6 +194,13 @@ public class CcdResponseDeserializerTest {
         assertTrue(ccdResponse.getSupporterSubscription().isSubscribeSms());
         assertFalse(ccdResponse.getSupporterSubscription().isSubscribeEmail());
         assertEquals("SC/1234/23", ccdResponse.getCaseReference());
+        Hearing hearing = ccdResponse.getHearings().get(0);
+        assertEquals("Prudential House", hearing.getVenueName());
+        assertEquals("36 Dale Street", hearing.getVenueAddressLine1());
+        assertEquals("Liverpool", hearing.getVenueTown());
+        assertEquals("Merseyside", hearing.getVenueCounty());
+        assertEquals("L2 5UZ", hearing.getVenuePostcode());
+        assertEquals("https://www.google.com/theAddress", hearing.getVenueGoogleMapUrl());
     }
 
     @Test

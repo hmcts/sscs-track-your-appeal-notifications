@@ -45,6 +45,8 @@ public class PersonalisationTest {
         when(config.getTrackAppealLink()).thenReturn(new Link("http://tyalink.com/appeal_id"));
         when(config.getEvidenceSubmissionInfoLink()).thenReturn(new Link("http://link.com/appeal_id"));
         when(config.getManageEmailsLink()).thenReturn(new Link("http://link.com/manage-email-notifications/mac"));
+        when(config.getClaimingExpensesLink()).thenReturn(new Link("http://link.com/progress/appeal_id/expenses"));
+        when(config.getHearingInfoLink()).thenReturn(new Link("http://link.com/progress/appeal_id/abouthearing"));
         when(macService.generateToken("GLSCRR", "002")).thenReturn("ZYX");
 
         dateTime = ZonedDateTime.of(LocalDate.of(2018, 1, 1), LocalTime.of(0, 0), ZoneId.of(ZONE_ID));
@@ -57,7 +59,7 @@ public class PersonalisationTest {
         Subscription appellantSubscription = new Subscription("Harry", "Kane", "Mr", "GLSCRR", "test@email.com",
                 "07983495065", true, false);
 
-        CcdResponse response = new CcdResponse("002", "1234", appellantSubscription, null, DWP_RESPONSE_RECEIVED);
+        CcdResponse response = new CcdResponse("002", "1234", appellantSubscription, null, DWP_RESPONSE_RECEIVED, null);
         response.setEvents(new ArrayList() {{
                 add(event);
             }
@@ -78,13 +80,15 @@ public class PersonalisationTest {
         assertEquals("05 February 2018", result.get(APPEAL_RESPOND_DATE));
         assertEquals("12 February 2018", result.get(HEARING_CONTACT_DATE));
         assertEquals("http://link.com/GLSCRR", result.get(SUBMIT_EVIDENCE_LINK_LITERAL));
+        assertEquals("http://link.com/progress/GLSCRR/expenses", result.get(CLAIMING_EXPENSES_LINK_LITERAL));
+        assertEquals("http://link.com/progress/GLSCRR/abouthearing", result.get(HEARING_INFO_LINK_LITERAL));
     }
 
     @Test
     public void setAppealReceivedEventData() {
         Event event = new Event(dateTime, APPEAL_RECEIVED);
 
-        CcdResponse response = new CcdResponse("002","1234", null, null, DWP_RESPONSE_RECEIVED);
+        CcdResponse response = new CcdResponse("002","1234", null, null, DWP_RESPONSE_RECEIVED, null);
 
         response.setEvents(new ArrayList() {{
                 add(event);
@@ -101,7 +105,7 @@ public class PersonalisationTest {
     public void setEvidenceReceivedEventData() {
         Event event = new Event(dateTime, EVIDENCE_RECEIVED);
 
-        CcdResponse response = new CcdResponse("002","1234", null, null, EVIDENCE_RECEIVED);
+        CcdResponse response = new CcdResponse("002","1234", null, null, EVIDENCE_RECEIVED, null);
 
         response.setEvents(new ArrayList() {{
                 add(event);
@@ -117,7 +121,7 @@ public class PersonalisationTest {
     public void setPostponementEventData() {
         Event event = new Event(dateTime, POSTPONEMENT);
 
-        CcdResponse response = new CcdResponse("002","1234", null, null, POSTPONEMENT);
+        CcdResponse response = new CcdResponse("002","1234", null, null, POSTPONEMENT, null);
 
         response.setEvents(new ArrayList() {{
                 add(event);
@@ -131,7 +135,7 @@ public class PersonalisationTest {
 
     @Test
     public void handleNullEventWhenPopulatingEventData() {
-        CcdResponse response = new CcdResponse("002","1234", null, null, POSTPONEMENT);
+        CcdResponse response = new CcdResponse("002","1234", null, null, POSTPONEMENT, null);
 
         Map<String, String> result = personalisation.setEventData(new HashMap<>(), response);
 
@@ -140,7 +144,7 @@ public class PersonalisationTest {
 
     @Test
     public void handleEmptyEventsWhenPopulatingEventData() {
-        CcdResponse response = new CcdResponse("002","1234", null, null, POSTPONEMENT);
+        CcdResponse response = new CcdResponse("002","1234", null, null, POSTPONEMENT, null);
 
         response.setEvents(new ArrayList());
 

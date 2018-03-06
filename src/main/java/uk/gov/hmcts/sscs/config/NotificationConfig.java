@@ -18,6 +18,10 @@ public class NotificationConfig {
     private String trackAppealLink;
     @Value("${evidence.submission.info.link}")
     private String evidenceSubmissionInfoLink;
+    @Value("${claiming.expenses.link}")
+    private String claimingExpensesLink;
+    @Value("${hearing.info.link}")
+    private String hearingInfoLink;
     @Autowired
     private Environment env;
 
@@ -35,6 +39,14 @@ public class NotificationConfig {
 
     public Link getEvidenceSubmissionInfoLink() {
         return new Link(evidenceSubmissionInfoLink);
+    }
+
+    public Link getClaimingExpensesLink() {
+        return new Link(claimingExpensesLink);
+    }
+
+    public Link getHearingInfoLink() {
+        return new Link(hearingInfoLink);
     }
 
     public Template getTemplate(String emailTemplateName, String smsTemplateName) {

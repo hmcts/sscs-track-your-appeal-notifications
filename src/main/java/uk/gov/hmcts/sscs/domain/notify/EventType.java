@@ -9,6 +9,7 @@ public enum EventType {
     APPEAL_WITHDRAWN("appealWithdrawn"),
     DWP_RESPONSE_RECEIVED("responseReceived"),
     EVIDENCE_RECEIVED("evidenceReceived"),
+    HEARING_BOOKED("hearingBooked"),
     POSTPONEMENT("hearingPostponed"),
     SUBSCRIPTION_CREATED("subscriptionCreated"),
     SUBSCRIPTION_UPDATED("subscriptionUpdated");
