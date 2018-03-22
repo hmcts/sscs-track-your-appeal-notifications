@@ -10,6 +10,10 @@ data "vault_generic_secret" "s2s_url" {
   path = "secret/${var.infrastructure_env}/sscs/idam_s2s_api"
 }
 
+data "vault_generic_secret" "mac_secret" {
+  path = "secret/${var.infrastructure_env}/sscs/sscs_email_mac_secret_text"
+}
+
 module "track-your-appeal-notifications" {
   source       = "git@github.com:contino/moj-module-webapp?ref=master"
   product      = "${var.product}-notif"
@@ -40,5 +44,6 @@ module "track-your-appeal-notifications" {
     APPEAL_WITHDRAWN_EMAIL_TEMPLATE_ID = "8620e023-f663-477e-a771-9cfad50ee30f"
     SUBSCRIPTION_CREATED_SMS_TEMPLATE_ID = "18444f5f-8834-49e9-a6ae-bfe7f50db2b8"
     HEARING_BOOKED_EMAIL_TEMPLATE_ID = "fee16753-0bdb-43f1-9abb-b14b826e3b26"
+    EMAIL_MAC_SECRET_TEXT = "${data.vault_generic_secret.mac_secret.data["value"]}"
   }
 }
