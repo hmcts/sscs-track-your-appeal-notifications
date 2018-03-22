@@ -127,9 +127,9 @@ public class PersonalisationTest {
 
         CcdResponse response = new CcdResponse("002", "1234", appellantSubscription, null, EVIDENCE_RECEIVED, null);
         response.setEvents(new ArrayList() {{
-            add(event1);
-            add(event2);
-        }
+                add(event1);
+                add(event2);
+            }
         });
 
         Map<String, String> result = personalisation.setEventData(new HashMap<>(), response);
