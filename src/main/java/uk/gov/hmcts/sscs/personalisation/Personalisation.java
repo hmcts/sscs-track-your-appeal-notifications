@@ -2,7 +2,7 @@ package uk.gov.hmcts.sscs.personalisation;
 
 import static com.google.common.collect.Lists.newArrayList;
 import static uk.gov.hmcts.sscs.config.AppConstants.*;
-import static uk.gov.hmcts.sscs.domain.notify.EventType.SUBSCRIPTION_CREATED;
+import static uk.gov.hmcts.sscs.domain.notify.EventType.*;
 
 import java.time.ZonedDateTime;
 import java.time.format.DateTimeFormatter;
@@ -70,23 +70,31 @@ public class Personalisation {
     }
 
     public Map<String, String> setEventData(Map<String, String> personalisation, CcdResponse ccdResponse) {
-        if (ccdResponse.getEvents() != null && !ccdResponse.getEvents().isEmpty()) {
-            Event event = ccdResponse.getEvents().get(0);
+        if (ccdResponse.getEvents() != null) {
 
-            if (event.getEventType() != null) {
-                switch (event.getEventType()) {
+            for (Event event : ccdResponse.getEvents()) {
+                switch (ccdResponse.getNotificationType()) {
                     case APPEAL_RECEIVED: {
-                        String dwpResponseDateString = formatDate(event.getDateTime().plusDays(MAX_DWP_RESPONSE_DAYS));
-                        personalisation.put(APPEAL_RESPOND_DATE, dwpResponseDateString);
-                        setHearingContactDate(personalisation, event);
+                        if (event.getEventType().equals(APPEAL_RECEIVED)) {
+                            String dwpResponseDateString = formatDate(event.getDateTime().plusDays(MAX_DWP_RESPONSE_DAYS));
+                            personalisation.put(APPEAL_RESPOND_DATE, dwpResponseDateString);
+                            setHearingContactDate(personalisation, event);
+                            return personalisation;
+                        }
                         break;
                     }
                     case EVIDENCE_RECEIVED: {
-                        personalisation.put(EVIDENCE_RECEIVED_DATE_LITERAL, formatDate(event.getDateTime()));
-                        break;
+                        if (event.getEventType().equals(EVIDENCE_RECEIVED)) {
+                            personalisation.put(EVIDENCE_RECEIVED_DATE_LITERAL, formatDate(event.getDateTime()));
+                            return personalisation;
+                        }
+                         break;
                     }
                     case POSTPONEMENT: {
-                        setHearingContactDate(personalisation, event);
+                        if (event.getEventType().equals(POSTPONEMENT)) {
+                            setHearingContactDate(personalisation, event);
+                            return personalisation;
+                        }
                         break;
                     }
                     default:
