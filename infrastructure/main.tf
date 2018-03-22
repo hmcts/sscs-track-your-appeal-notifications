@@ -10,6 +10,10 @@ data "vault_generic_secret" "s2s_url" {
   path = "secret/${var.infrastructure_env}/sscs/idam_s2s_api"
 }
 
+data "vault_generic_secret" "mac_secret" {
+  path = "secret/${var.infrastructure_env}/sscs/sscs_email_mac_secret_text"
+}
+
 module "track-your-appeal-notifications" {
   source       = "git@github.com:contino/moj-module-webapp?ref=master"
   product      = "${var.product}-notif"
@@ -29,5 +33,6 @@ module "track-your-appeal-notifications" {
     SSCS_TRACK_YOUR_APPEAL_LINK = "${var.sscs_track_your_appeal_link}"
     HEARING_INFO_LINK = "${var.hearing_info_link}"
     CLAIMING_EXPENSES_LINK = "${var.claiming_expenses_link}"
+    EMAIL_MAC_SECRET_TEXT = "${data.vault_generic_secret.mac_secret.data["value"]}"
   }
 }
