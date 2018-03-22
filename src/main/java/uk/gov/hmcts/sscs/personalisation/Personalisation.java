@@ -88,7 +88,7 @@ public class Personalisation {
                             personalisation.put(EVIDENCE_RECEIVED_DATE_LITERAL, formatDate(event.getDateTime()));
                             return personalisation;
                         }
-                         break;
+                        break;
                     }
                     case POSTPONEMENT: {
                         if (event.getEventType().equals(POSTPONEMENT)) {
