@@ -59,7 +59,7 @@ public class PersonalisationTest {
         Subscription appellantSubscription = new Subscription("Harry", "Kane", "Mr", "GLSCRR", "test@email.com",
                 "07983495065", true, false);
 
-        CcdResponse response = new CcdResponse("002", "1234", appellantSubscription, null, DWP_RESPONSE_RECEIVED, null);
+        CcdResponse response = new CcdResponse("002", "1234", appellantSubscription, null, APPEAL_RECEIVED, null);
         response.setEvents(new ArrayList() {{
                 add(event);
             }
@@ -88,7 +88,7 @@ public class PersonalisationTest {
     public void setAppealReceivedEventData() {
         Event event = new Event(dateTime, APPEAL_RECEIVED);
 
-        CcdResponse response = new CcdResponse("002","1234", null, null, DWP_RESPONSE_RECEIVED, null);
+        CcdResponse response = new CcdResponse("002","1234", null, null, APPEAL_RECEIVED, null);
 
         response.setEvents(new ArrayList() {{
                 add(event);
@@ -115,6 +115,26 @@ public class PersonalisationTest {
         Map<String, String> result = personalisation.setEventData(new HashMap<>(), response);
 
         assertEquals("01 January 2018", result.get(EVIDENCE_RECEIVED_DATE_LITERAL));
+    }
+
+    @Test
+    public void setEvidenceReceivedEventDataWhenNotLatestEvent() {
+        Event event1 = new Event(dateTime, APPEAL_RECEIVED);
+        Event event2 = new Event(dateTime.minusDays(1), EVIDENCE_RECEIVED);
+
+        Subscription appellantSubscription = new Subscription("Harry", "Kane", "Mr", "GLSCRR", "test@email.com",
+                "07983495065", true, false);
+
+        CcdResponse response = new CcdResponse("002", "1234", appellantSubscription, null, EVIDENCE_RECEIVED, null);
+        response.setEvents(new ArrayList() {{
+            add(event1);
+            add(event2);
+        }
+        });
+
+        Map<String, String> result = personalisation.setEventData(new HashMap<>(), response);
+
+        assertEquals("31 December 2017", result.get(EVIDENCE_RECEIVED_DATE_LITERAL));
     }
 
     @Test
