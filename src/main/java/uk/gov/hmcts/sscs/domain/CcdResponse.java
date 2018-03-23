@@ -6,7 +6,7 @@ import uk.gov.hmcts.sscs.domain.notify.EventType;
 
 public class CcdResponse {
 
-    private String benefitType;
+    private Benefit benefitType;
     private String caseReference;
     private Subscription appellantSubscription;
     private Subscription supporterSubscription;
@@ -18,7 +18,7 @@ public class CcdResponse {
         //
     }
 
-    public CcdResponse(String benefitType,
+    public CcdResponse(Benefit benefitType,
                        String caseReference,
                        Subscription appellantSubscription,
                        Subscription supporterSubscription,
@@ -32,11 +32,11 @@ public class CcdResponse {
         this.hearings = hearings;
     }
 
-    public String getBenefitType() {
+    public Benefit getBenefitType() {
         return benefitType;
     }
 
-    public void setBenefitType(String benefitType) {
+    public void setBenefitType(Benefit benefitType) {
         this.benefitType = benefitType;
     }
 
@@ -91,7 +91,8 @@ public class CcdResponse {
     @Override
     public String toString() {
         return "CcdResponse{"
-                + " caseReference='" + caseReference + '\''
+                + " benefitType='" + benefitType + '\''
+                + ", caseReference='" + caseReference + '\''
                 + ", appellantSubscription=" + appellantSubscription
                 + ", supporterSubscription=" + supporterSubscription
                 + ", notificationType=" + notificationType
