@@ -2,6 +2,7 @@ package uk.gov.hmcts.sscs.deserialize;
 
 import static org.junit.Assert.*;
 import static uk.gov.hmcts.sscs.config.AppConstants.ZONE_ID;
+import static uk.gov.hmcts.sscs.domain.Benefit.PIP;
 import static uk.gov.hmcts.sscs.domain.notify.EventType.*;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -32,11 +33,11 @@ public class CcdResponseDeserializerTest {
     @Test
     public void deserializeBenefitJson() throws IOException {
 
-        String appealJson = "{\"benefitType\":{\"code\":\"002\"}}";
+        String appealJson = "{\"benefitType\":{\"code\":\"PIP\"}}";
 
         CcdResponse ccdResponse = ccdResponseDeserializer.deserializeBenefitDetailsJson(mapper.readTree(appealJson), new CcdResponse());
 
-        assertEquals("002", ccdResponse.getBenefitType());
+        assertEquals(PIP, ccdResponse.getBenefitType());
     }
 
     @Test

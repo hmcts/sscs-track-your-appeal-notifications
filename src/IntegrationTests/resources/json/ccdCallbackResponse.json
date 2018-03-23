@@ -34,8 +34,7 @@
           }
         },
         "benefitType": {
-          "code": "JSA",
-          "description": "Job Seekers"
+          "code": "JSA"
         },
         "hearingOptions": {
           "arrangements": [
@@ -140,8 +139,7 @@
           }
         },
         "benefitType": {
-          "code": "JSA",
-          "description": "Job Seekers"
+          "code": "JSA"
         },
         "hearingOptions": {
           "arrangements": [

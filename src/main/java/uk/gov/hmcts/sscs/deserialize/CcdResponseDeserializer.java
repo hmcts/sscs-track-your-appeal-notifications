@@ -14,10 +14,7 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 import org.springframework.stereotype.Service;
-import uk.gov.hmcts.sscs.domain.CcdResponse;
-import uk.gov.hmcts.sscs.domain.CcdResponseWrapper;
-import uk.gov.hmcts.sscs.domain.Hearing;
-import uk.gov.hmcts.sscs.domain.Subscription;
+import uk.gov.hmcts.sscs.domain.*;
 import uk.gov.hmcts.sscs.domain.notify.Event;
 import uk.gov.hmcts.sscs.domain.notify.EventType;
 
@@ -85,7 +82,8 @@ public class CcdResponseDeserializer extends StdDeserializer<CcdResponseWrapper>
         JsonNode benefitTypeNode = getNode(appealNode, "benefitType");
 
         if (benefitTypeNode != null) {
-            ccdResponse.setBenefitType(getField(benefitTypeNode, "code"));
+            String benefitCode = getField(benefitTypeNode, "code");
+            ccdResponse.setBenefitType(Benefit.getBenefitByCode(benefitCode));
         }
 
         return ccdResponse;

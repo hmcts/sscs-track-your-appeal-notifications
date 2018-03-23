@@ -7,8 +7,6 @@ public final class AppConstants {
     public static final String APPEAL_ID_LITERAL = "appeal_id";
     public static final String APPEAL_RESPOND_DATE = "appeal_respond_date";
     public static final String APPELLANT_NAME = "name";
-    public static final String BENEFIT_NAME_ACRONYM = "ESA benefit";
-    public static final String BENEFIT_FULL_NAME = "Employment Support Allowance";
     public static final String BENEFIT_NAME_ACRONYM_LITERAL = "benefit_name_acronym";
     public static final String BENEFIT_FULL_NAME_LITERAL = "benefit_full_name";
     public static final String CLAIMING_EXPENSES_LINK_LITERAL = "claiming_expenses_link";
