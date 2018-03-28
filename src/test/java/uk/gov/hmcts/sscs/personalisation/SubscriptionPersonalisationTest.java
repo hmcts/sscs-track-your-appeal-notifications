@@ -60,15 +60,13 @@ public class SubscriptionPersonalisationTest {
         oldAppellantSubscription = new Subscription("Harry", "Kane", "Mr", "GLSCRR", "test@email.com",
                 "07983495065", false, false);
 
-        newCcdResponse = new CcdResponse(PIP,"1234", newAppellantSubscription, null, DWP_RESPONSE_RECEIVED, null);
-        oldCcdResponse = new CcdResponse(PIP,"5432", oldAppellantSubscription, null, DWP_RESPONSE_RECEIVED, null);
+        newCcdResponse = new CcdResponse(PIP,"1234", newAppellantSubscription, null, SUBSCRIPTION_UPDATED, null);
+        oldCcdResponse = new CcdResponse(PIP,"5432", oldAppellantSubscription, null, SUBSCRIPTION_UPDATED, null);
     }
 
     @Test
     public void customisePersonalisation() {
-        Map<String, String> result = personalisation.create(new CcdResponseWrapper(
-                new CcdResponse(PIP,"1234", newAppellantSubscription, null, DWP_RESPONSE_RECEIVED, null),
-                new CcdResponse(PIP,"5432", oldAppellantSubscription, null, DWP_RESPONSE_RECEIVED, null)));
+        Map<String, String> result = personalisation.create(new CcdResponseWrapper(newCcdResponse, oldCcdResponse));
 
         assertEquals("PIP benefit", result.get(BENEFIT_NAME_ACRONYM_LITERAL));
         assertEquals("Personal Independence Payment", result.get(BENEFIT_FULL_NAME_LITERAL));
@@ -81,6 +79,40 @@ public class SubscriptionPersonalisationTest {
         assertEquals(DWP_ACRONYM, result.get(FIRST_TIER_AGENCY_ACRONYM));
         assertEquals(DWP_FUL_NAME, result.get(FIRST_TIER_AGENCY_FULL_NAME));
         assertEquals("http://link.com/GLSCRR", result.get(SUBMIT_EVIDENCE_LINK_LITERAL));
+    }
+
+    @Test
+    public void customisePersonalisationSetsNotificationTypeToMostRecentWhenNewSubscription() {
+        Event event = new Event(ZonedDateTime.now(), APPEAL_RECEIVED);
+        newCcdResponse.setEvents(new ArrayList() {{
+                add(event);
+            }
+        });
+
+        personalisation.create(new CcdResponseWrapper(newCcdResponse, oldCcdResponse));
+
+        assertEquals(APPEAL_RECEIVED, newCcdResponse.getNotificationType());
+    }
+
+    @Test
+    public void customisePersonalisationSetsNotificationTypeToDoNotSendWhenEmailHasNotChanged() {
+        newAppellantSubscription.setSubscribeEmail(true);
+        oldAppellantSubscription.setSubscribeEmail(true);
+
+        personalisation.create(new CcdResponseWrapper(newCcdResponse, oldCcdResponse));
+
+        assertEquals(DO_NOT_SEND, newCcdResponse.getNotificationType());
+    }
+
+    @Test
+    public void customisePersonalisationShouldLeaveNotificationTypeAsSubscriptionUpdatedWhenEmailHasChanged() {
+        newAppellantSubscription.setSubscribeEmail(true);
+        newAppellantSubscription.setEmail("changed@test.com");
+        oldAppellantSubscription.setSubscribeEmail(true);
+
+        personalisation.create(new CcdResponseWrapper(newCcdResponse, oldCcdResponse));
+
+        assertEquals(SUBSCRIPTION_UPDATED, newCcdResponse.getNotificationType());
     }
 
     @Test
@@ -110,25 +142,24 @@ public class SubscriptionPersonalisationTest {
 
     @Test
     public void emptyOldAppellantSubscriptionReturnsFalseForSubscriptionCreatedNotificationType() {
-        Boolean result = personalisation.shouldSendSmsSubscriptionConfirmation(
-                newCcdResponse, new CcdResponse(PIP,"5432", null, null, DWP_RESPONSE_RECEIVED, null));
+        oldCcdResponse.setAppellantSubscription(null);
+
+        Boolean result = personalisation.shouldSendSmsSubscriptionConfirmation(newCcdResponse, oldCcdResponse);
 
         assertFalse(result);
     }
 
     @Test
     public void emptyNewAppellantSubscriptionReturnsFalseForSubscriptionCreatedNotificationType() {
-        Boolean result = personalisation.shouldSendSmsSubscriptionConfirmation(
-                new CcdResponse(PIP,"1234", null, null, DWP_RESPONSE_RECEIVED, null), oldCcdResponse);
+        newCcdResponse.setAppellantSubscription(null);
+
+        Boolean result = personalisation.shouldSendSmsSubscriptionConfirmation(newCcdResponse, oldCcdResponse);
 
         assertFalse(result);
     }
 
     @Test
     public void setMostRecentEventTypeNotificationWhenEmailSubscribedIsFirstSet() {
-        newCcdResponse.setNotificationType(SUBSCRIPTION_UPDATED);
-        oldCcdResponse.setNotificationType(SUBSCRIPTION_UPDATED);
-
         Event event = new Event(ZonedDateTime.now(), APPEAL_RECEIVED);
         newCcdResponse.setEvents(new ArrayList() {{
                 add(event);
@@ -144,9 +175,6 @@ public class SubscriptionPersonalisationTest {
     public void doNotUpdateMostRecentEventTypeNotificationWhenEmailSubscribedIsAlreadySet() {
         oldAppellantSubscription.setSubscribeEmail(true);
 
-        newCcdResponse.setNotificationType(SUBSCRIPTION_UPDATED);
-        oldCcdResponse.setNotificationType(SUBSCRIPTION_UPDATED);
-
         Event event = new Event(ZonedDateTime.now(), APPEAL_RECEIVED);
         newCcdResponse.setEvents(new ArrayList() {{
                 add(event);
@@ -160,9 +188,6 @@ public class SubscriptionPersonalisationTest {
 
     @Test
     public void emptyOldAppellantSubscriptionDoesNotUpdateNotificationType() {
-        newCcdResponse.setNotificationType(SUBSCRIPTION_UPDATED);
-        oldCcdResponse.setNotificationType(SUBSCRIPTION_UPDATED);
-
         oldCcdResponse.setAppellantSubscription(null);
 
         Event event = new Event(ZonedDateTime.now(), APPEAL_RECEIVED);
@@ -178,9 +203,6 @@ public class SubscriptionPersonalisationTest {
 
     @Test
     public void emptyNewAppellantSubscriptionDoesNotUpdateNotificationType() {
-        newCcdResponse.setNotificationType(SUBSCRIPTION_UPDATED);
-        oldCcdResponse.setNotificationType(SUBSCRIPTION_UPDATED);
-
         newCcdResponse.setAppellantSubscription(null);
 
         Event event = new Event(ZonedDateTime.now(), APPEAL_RECEIVED);
@@ -196,13 +218,43 @@ public class SubscriptionPersonalisationTest {
 
     @Test
     public void emptyEventsDoesNotUpdateNotificationType() {
-        newCcdResponse.setNotificationType(SUBSCRIPTION_UPDATED);
-        oldCcdResponse.setNotificationType(SUBSCRIPTION_UPDATED);
-
         newCcdResponse.setEvents(new ArrayList<>());
 
         CcdResponse result = personalisation.setMostRecentEventTypeNotification(newCcdResponse, oldCcdResponse);
 
         assertEquals(SUBSCRIPTION_UPDATED, result.getNotificationType());
+    }
+
+    @Test
+    public void setNotificationTypeToDoNotSendWhenEmailNotChangedAndSubscriptionWasAndStillIsSubscribed() {
+        newAppellantSubscription.setSubscribeEmail(true);
+        oldAppellantSubscription.setSubscribeEmail(true);
+
+        CcdResponse result = personalisation.doNotSendEmailUpdatedNotificationWhenEmailNotChanged(newCcdResponse, oldCcdResponse);
+
+        assertEquals(DO_NOT_SEND, result.getNotificationType());
+    }
+
+    @Test
+    public void leaveNotificationTypeAsSubscriptionUpdatedWhenEmailChangedAndSubscriptionWasAndStillIsSubscribed() {
+        newAppellantSubscription.setSubscribeEmail(true);
+        newAppellantSubscription.setEmail("changed@test.com");
+        oldAppellantSubscription.setSubscribeEmail(true);
+
+        CcdResponse result = personalisation.doNotSendEmailUpdatedNotificationWhenEmailNotChanged(newCcdResponse, oldCcdResponse);
+
+        assertEquals(SUBSCRIPTION_UPDATED, result.getNotificationType());
+    }
+
+    @Test
+    public void doNotChangeNotificationTypeWhenEmailNotChangedAndNowUnsubscribed() {
+        newAppellantSubscription.setSubscribeEmail(true);
+        newAppellantSubscription.setEmail("changed@test.com");
+        oldAppellantSubscription.setSubscribeEmail(false);
+        newCcdResponse.setNotificationType(APPEAL_RECEIVED);
+
+        CcdResponse result = personalisation.doNotSendEmailUpdatedNotificationWhenEmailNotChanged(newCcdResponse, oldCcdResponse);
+
+        assertEquals(APPEAL_RECEIVED, result.getNotificationType());
     }
 }

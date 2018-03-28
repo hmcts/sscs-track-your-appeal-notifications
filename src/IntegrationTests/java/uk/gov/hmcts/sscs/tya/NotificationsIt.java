@@ -9,9 +9,11 @@ import static org.springframework.http.MediaType.APPLICATION_JSON;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import java.io.File;
 import java.io.IOException;
 import java.nio.charset.StandardCharsets;
+import java.util.Map;
 import javax.servlet.http.HttpServletResponse;
 import org.apache.commons.io.FileUtils;
 import org.junit.Before;
@@ -154,12 +156,40 @@ public class NotificationsIt {
     @Test
     public void shouldSendSubscriptionCreatedNotificationForSubscriptionUpdatedRequestWithNewSubscribeSmsRequest() throws Exception {
         json = json.replace("appealReceived", "subscriptionUpdated");
+        json = updateEmbeddedJson(json, "No", "case_details", "case_data", "subscriptions", "appellantSubscription", "subscribeEmail");
 
         HttpServletResponse response = getResponse(getRequestWithAuthHeader(json));
 
         assertHttpStatus(response, HttpStatus.OK);
         verify(client, never()).sendEmail(any(), any(), any(), any());
         verify(client, times(1)).sendSms(any(), any(), any(), any());
+    }
+
+    @Test
+    public void shouldSendSubscriptionUpdatedNotificationForSubscriptionUpdatedRequestWithNewEmailAddress() throws Exception {
+        json = json.replace("appealReceived", "subscriptionUpdated");
+        json = updateEmbeddedJson(json, "No", "case_details", "case_data", "subscriptions", "appellantSubscription", "subscribeSms");
+
+        HttpServletResponse response = getResponse(getRequestWithAuthHeader(json));
+
+        assertHttpStatus(response, HttpStatus.OK);
+        verify(client, times(1)).sendEmail(any(), any(), any(), any());
+        verify(client, never()).sendSms(any(), any(), any(), any());
+    }
+
+    @Test
+    public void shouldNotSendSubscriptionUpdatedNotificationForSubscriptionUpdatedRequestWithSameEmailAddress() throws Exception {
+        json = json.replace("appealReceived", "subscriptionUpdated");
+        json = json.replace("updatedemail@hmcts.net", "tester@hmcts.net");
+
+        json = updateEmbeddedJson(json, "Yes", "case_details_before", "case_data", "subscriptions", "appellantSubscription", "subscribeEmail");
+        json = updateEmbeddedJson(json, "No", "case_details", "case_data", "subscriptions", "appellantSubscription", "subscribeSms");
+
+        HttpServletResponse response = getResponse(getRequestWithAuthHeader(json));
+
+        assertHttpStatus(response, HttpStatus.OK);
+        verify(client, never()).sendEmail(any(), any(), any(), any());
+        verify(client, never()).sendSms(any(), any(), any(), any());
     }
 
     @Test
@@ -191,5 +221,19 @@ public class NotificationsIt {
 
     private void assertHttpStatus(HttpServletResponse response, HttpStatus status) {
         assertThat(response.getStatus()).isEqualTo(status.value());
+    }
+
+    private String updateEmbeddedJson(String json, String value, String... keys) throws IOException {
+        ObjectMapper objectMapper = new ObjectMapper();
+
+        Map map = objectMapper.readValue(json, Map.class);
+        Map t = map;
+        for (int i = 0; i < keys.length - 1; i++) {
+            t = (Map) t.get(keys[i]);
+        }
+
+        t.put(keys[keys.length - 1], value);
+
+        return objectMapper.writeValueAsString(map);
     }
 }

@@ -32,12 +32,12 @@ public class NotificationService {
         Notification notification = factory.create(responseWrapper);
 
         try {
-            if (notification.isEmail() && notification.getEmailTemplate() != null) {
+            if (responseWrapper.getNewCcdResponse().getAppellantSubscription().isSubscribeEmail() && notification.isEmail() && notification.getEmailTemplate() != null) {
                 LOG.info("Sending email for case reference "  + responseWrapper.getNewCcdResponse().getCaseReference());
                 client.sendEmail(notification.getEmailTemplate(), notification.getEmail(), notification.getPlaceholders(), notification.getReference());
                 LOG.info("Email sent for case reference "  + responseWrapper.getNewCcdResponse().getCaseReference());
             }
-            if (notification.isSms() && notification.getSmsTemplate() != null) {
+            if (responseWrapper.getNewCcdResponse().getAppellantSubscription().isSubscribeSms() && notification.isSms() && notification.getSmsTemplate() != null) {
                 LOG.info("Sending SMS for case reference "  + responseWrapper.getNewCcdResponse().getCaseReference());
                 client.sendSms(notification.getSmsTemplate(), notification.getMobile(), notification.getPlaceholders(), notification.getReference());
                 LOG.info("SMS sent for case reference "  + responseWrapper.getNewCcdResponse().getCaseReference());
