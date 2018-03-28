@@ -34,10 +34,13 @@ public class NotificationServiceTest {
     @Mock
     private NotificationFactory factory;
 
+    @Mock
+    private ReminderService reminderService;
+
     @Before
     public void setup() {
         initMocks(this);
-        notificationService = new NotificationService(client, factory);
+        notificationService = new NotificationService(client, factory, reminderService);
         CcdResponse response = new CcdResponse();
         response.setAppellantSubscription(new Subscription("", "", "", "", "", "", true, true));
         response.setCaseReference("ABC123");

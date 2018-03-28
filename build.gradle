@@ -103,6 +103,9 @@ dependencies {
 
     compile group: 'uk.gov.service.notify', name: 'notifications-java-client', version: '3.8.0-RELEASE'
 
+    compile group: 'com.sun.jersey', name: 'jersey-server', version: '1.19.4'
+    compile group: 'com.sun.jersey', name: 'jersey-json', version: '1.19.4'
+
     testCompile group: 'org.springframework.boot', name: 'spring-boot-starter-test', version: springBootVersion
 }
 
