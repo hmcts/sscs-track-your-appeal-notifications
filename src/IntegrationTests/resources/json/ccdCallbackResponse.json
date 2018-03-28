@@ -84,7 +84,7 @@
       "region": "Liverpool",
       "subscriptions": {
         "appellantSubscription": {
-          "email": "tester@hmcts.net",
+          "email": "updatedemail@hmcts.net",
           "mobile": "07985233301",
           "reason": null,
           "subscribeEmail": "Yes",

@@ -12,7 +12,8 @@ public enum EventType {
     HEARING_BOOKED("hearingBooked"),
     POSTPONEMENT("hearingPostponed"),
     SUBSCRIPTION_CREATED("subscriptionCreated"),
-    SUBSCRIPTION_UPDATED("subscriptionUpdated");
+    SUBSCRIPTION_UPDATED("subscriptionUpdated"),
+    DO_NOT_SEND("");
 
     private String id;
 

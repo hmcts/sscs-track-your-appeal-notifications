@@ -11,6 +11,7 @@ import org.junit.Test;
 import org.mockito.Mock;
 import uk.gov.hmcts.sscs.domain.CcdResponse;
 import uk.gov.hmcts.sscs.domain.CcdResponseWrapper;
+import uk.gov.hmcts.sscs.domain.Subscription;
 import uk.gov.hmcts.sscs.domain.notify.Destination;
 import uk.gov.hmcts.sscs.domain.notify.Notification;
 import uk.gov.hmcts.sscs.domain.notify.Reference;
@@ -38,6 +39,7 @@ public class NotificationServiceTest {
         initMocks(this);
         notificationService = new NotificationService(client, factory);
         CcdResponse response = new CcdResponse();
+        response.setAppellantSubscription(new Subscription("", "", "", "", "", "", true, true));
         response.setCaseReference("ABC123");
         wrapper = new CcdResponseWrapper(response, response);
     }

@@ -130,13 +130,40 @@ public class NotificationFactoryTest {
     }
 
     @Test
-    public void buildSubscriptionUpdatedNotificationFromCcdResponseWhenEmailAlreadySubscribed() {
+    public void buildNoNotificationFromCcdResponseWhenSubscriptionUpdateReceivedWithNoChangeInEmailAddress() {
+        when(personalisationFactory.apply(SUBSCRIPTION_UPDATED)).thenReturn(subscriptionPersonalisation);
+        when(config.getTemplate(DO_NOT_SEND.getId(), SUBSCRIPTION_CREATED.getId())).thenReturn(new Template(null, null));
+
+        CcdResponse newResponse = new CcdResponse(PIP,"SC/1234/5", new Subscription("Ronnie", "Scott", "Mr",
+                "ABC",
+                "test@testing.com", "07985858594", true, true), null, SUBSCRIPTION_UPDATED, null);
+
+        CcdResponse oldResponse = new CcdResponse(PIP,"SC/1234/5", new Subscription("Ronnie", "Scott", "Mr",
+                "ABC",
+                "test@testing.com", "07985858594", false, true), null, SUBSCRIPTION_UPDATED, null);
+
+        Event event = new Event(ZonedDateTime.now(), APPEAL_RECEIVED);
+
+        newResponse.setEvents(new ArrayList() {{
+                add(event);
+            }
+        });
+
+        wrapper = new CcdResponseWrapper(newResponse, oldResponse);
+
+        Notification result = factory.create(wrapper);
+
+        assertNull(result.getEmailTemplate());
+    }
+
+    @Test
+    public void buildSubscriptionUpdatedNotificationFromCcdResponseWhenEmailIsChanged() {
         when(personalisationFactory.apply(SUBSCRIPTION_UPDATED)).thenReturn(subscriptionPersonalisation);
         when(config.getTemplate(SUBSCRIPTION_UPDATED.getId(), SUBSCRIPTION_CREATED.getId())).thenReturn(new Template("123", null));
 
         CcdResponse newResponse = new CcdResponse(PIP,"SC/1234/5", new Subscription("Ronnie", "Scott", "Mr",
                 "ABC",
-                "test@testing.com", "07985858594", true, true), null, SUBSCRIPTION_UPDATED, null);
+                "changed@testing.com", "07985858594", true, true), null, SUBSCRIPTION_UPDATED, null);
 
         CcdResponse oldResponse = new CcdResponse(PIP,"SC/1234/5", new Subscription("Ronnie", "Scott", "Mr",
                 "ABC",
