@@ -9,10 +9,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.node.JsonNodeFactory;
 import com.fasterxml.jackson.databind.node.ObjectNode;
 import java.io.IOException;
-import java.time.LocalDate;
-import java.time.LocalTime;
-import java.time.ZoneId;
-import java.time.ZonedDateTime;
+import java.time.*;
 import org.junit.Before;
 import org.junit.Test;
 import uk.gov.hmcts.sscs.domain.CcdResponse;
@@ -104,7 +101,7 @@ public class CcdResponseDeserializerTest {
     }
 
     @Test
-    public void deserializeHearingJson() throws IOException {
+    public void deserializeHearingJsonWithWinterHearingTime() throws IOException {
         String hearingJson = "{\"hearings\": [{\"id\": \"1234\",\"value\": {"
                 + "\"hearingDate\": \"2018-01-12\",\"time\": \"11:00\",\"venue\": {"
                 + "\"name\": \"Prudential House\",\"address\": {\"line1\": \"36 Dale Street\",\"line2\": \"\","
@@ -116,13 +113,29 @@ public class CcdResponseDeserializerTest {
         assertEquals(1, ccdResponse.getHearings().size());
 
         Hearing hearing = ccdResponse.getHearings().get(0);
-        assertEquals(ZonedDateTime.of(LocalDate.of(2018, 1, 12), LocalTime.of(11, 00, 00), ZoneId.of(ZONE_ID)), hearing.getHearingDateTime());
+        assertEquals(LocalDateTime.of(LocalDate.of(2018, 1, 12), LocalTime.of(11, 00, 00)), hearing.getHearingDateTime());
         assertEquals("Prudential House", hearing.getVenueName());
         assertEquals("36 Dale Street", hearing.getVenueAddressLine1());
         assertEquals("Liverpool", hearing.getVenueTown());
         assertEquals("Merseyside", hearing.getVenueCounty());
         assertEquals("L2 5UZ", hearing.getVenuePostcode());
         assertEquals("https://www.google.com/theAddress", hearing.getVenueGoogleMapUrl());
+    }
+
+    @Test
+    public void deserializeHearingJsonWithSummerHearingTime() throws IOException {
+        String hearingJson = "{\"hearings\": [{\"id\": \"1234\",\"value\": {"
+                + "\"hearingDate\": \"2018-07-12\",\"time\": \"11:00\",\"venue\": {"
+                + "\"name\": \"Prudential House\",\"address\": {\"line1\": \"36 Dale Street\",\"line2\": \"\","
+                + "\"town\": \"Liverpool\",\"county\": \"Merseyside\",\"postcode\": \"L2 5UZ\"},"
+                + "\"googleMapLink\": \"https://www.google.com/theAddress\"}}}]}";
+
+        CcdResponse ccdResponse = ccdResponseDeserializer.deserializeHearingDetailsJson(mapper.readTree(hearingJson), new CcdResponse());
+
+        assertEquals(1, ccdResponse.getHearings().size());
+
+        Hearing hearing = ccdResponse.getHearings().get(0);
+        assertEquals(LocalDateTime.of(LocalDate.of(2018, 7, 12), LocalTime.of(11, 00, 00)), hearing.getHearingDateTime());
     }
 
     @Test
@@ -147,9 +160,9 @@ public class CcdResponseDeserializerTest {
 
         assertEquals(3, ccdResponse.getHearings().size());
 
-        assertEquals(ZonedDateTime.of(LocalDate.of(2018, 1, 12), LocalTime.of(13, 0), ZoneId.of(ZONE_ID)), ccdResponse.getHearings().get(0).getHearingDateTime());
-        assertEquals(ZonedDateTime.of(LocalDate.of(2018, 1, 12), LocalTime.of(12, 0), ZoneId.of(ZONE_ID)), ccdResponse.getHearings().get(1).getHearingDateTime());
-        assertEquals(ZonedDateTime.of(LocalDate.of(2018, 1, 12), LocalTime.of(11, 0), ZoneId.of(ZONE_ID)), ccdResponse.getHearings().get(2).getHearingDateTime());
+        assertEquals(LocalDateTime.of(LocalDate.of(2018, 1, 12), LocalTime.of(13, 0)), ccdResponse.getHearings().get(0).getHearingDateTime());
+        assertEquals(LocalDateTime.of(LocalDate.of(2018, 1, 12), LocalTime.of(12, 0)), ccdResponse.getHearings().get(1).getHearingDateTime());
+        assertEquals(LocalDateTime.of(LocalDate.of(2018, 1, 12), LocalTime.of(11, 0)), ccdResponse.getHearings().get(2).getHearingDateTime());
     }
 
     @Test

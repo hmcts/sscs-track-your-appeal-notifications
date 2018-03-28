@@ -50,7 +50,7 @@ public class PersonalisationTest {
         when(config.getHearingInfoLink()).thenReturn(new Link("http://link.com/progress/appeal_id/abouthearing"));
         when(macService.generateToken("GLSCRR", PIP.name())).thenReturn("ZYX");
 
-        dateTime = ZonedDateTime.of(LocalDate.of(2018, 1, 1), LocalTime.of(0, 0), ZoneId.of(ZONE_ID));
+        dateTime = ZonedDateTime.of(LocalDate.of(2018, 7, 1), LocalTime.of(0, 0), ZoneId.of(ZONE_ID));
     }
 
     @Test
@@ -78,8 +78,8 @@ public class PersonalisationTest {
         assertEquals("http://tyalink.com/GLSCRR", result.get(TRACK_APPEAL_LINK_LITERAL));
         assertEquals(DWP_ACRONYM, result.get(FIRST_TIER_AGENCY_ACRONYM));
         assertEquals(DWP_FUL_NAME, result.get(FIRST_TIER_AGENCY_FULL_NAME));
-        assertEquals("05 February 2018", result.get(APPEAL_RESPOND_DATE));
-        assertEquals("12 February 2018", result.get(HEARING_CONTACT_DATE));
+        assertEquals("05 August 2018", result.get(APPEAL_RESPOND_DATE));
+        assertEquals("12 August 2018", result.get(HEARING_CONTACT_DATE));
         assertEquals("http://link.com/GLSCRR", result.get(SUBMIT_EVIDENCE_LINK_LITERAL));
         assertEquals("http://link.com/progress/GLSCRR/expenses", result.get(CLAIMING_EXPENSES_LINK_LITERAL));
         assertEquals("http://link.com/progress/GLSCRR/abouthearing", result.get(HEARING_INFO_LINK_LITERAL));
@@ -98,8 +98,8 @@ public class PersonalisationTest {
 
         Map<String, String> result = personalisation.setEventData(new HashMap<>(), response);
 
-        assertEquals("05 February 2018", result.get(APPEAL_RESPOND_DATE));
-        assertEquals("12 February 2018", result.get(HEARING_CONTACT_DATE));
+        assertEquals("05 August 2018", result.get(APPEAL_RESPOND_DATE));
+        assertEquals("12 August 2018", result.get(HEARING_CONTACT_DATE));
     }
 
     @Test
@@ -115,7 +115,7 @@ public class PersonalisationTest {
 
         Map<String, String> result = personalisation.setEventData(new HashMap<>(), response);
 
-        assertEquals("01 January 2018", result.get(EVIDENCE_RECEIVED_DATE_LITERAL));
+        assertEquals("01 July 2018", result.get(EVIDENCE_RECEIVED_DATE_LITERAL));
     }
 
     @Test
@@ -135,7 +135,7 @@ public class PersonalisationTest {
 
         Map<String, String> result = personalisation.setEventData(new HashMap<>(), response);
 
-        assertEquals("31 December 2017", result.get(EVIDENCE_RECEIVED_DATE_LITERAL));
+        assertEquals("30 June 2018", result.get(EVIDENCE_RECEIVED_DATE_LITERAL));
     }
 
     @Test
@@ -151,7 +151,7 @@ public class PersonalisationTest {
 
         Map<String, String> result = personalisation.setEventData(new HashMap<>(), response);
 
-        assertEquals("12 February 2018", result.get(HEARING_CONTACT_DATE));
+        assertEquals("12 August 2018", result.get(HEARING_CONTACT_DATE));
     }
 
     @Test

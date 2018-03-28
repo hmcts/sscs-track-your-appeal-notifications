@@ -1,10 +1,10 @@
 package uk.gov.hmcts.sscs.domain;
 
-import java.time.ZonedDateTime;
+import java.time.LocalDateTime;
 
 public class Hearing implements Comparable<Hearing> {
 
-    private ZonedDateTime hearingDateTime;
+    private LocalDateTime hearingDateTime;
     private String venueName;
     private String venueAddressLine1;
     private String venueAddressLine2;
@@ -13,11 +13,11 @@ public class Hearing implements Comparable<Hearing> {
     private String venuePostcode;
     private String venueGoogleMapUrl;
 
-    public ZonedDateTime getHearingDateTime() {
+    public LocalDateTime getHearingDateTime() {
         return hearingDateTime;
     }
 
-    public void setHearingDateTime(ZonedDateTime hearingDateTime) {
+    public void setHearingDateTime(LocalDateTime hearingDateTime) {
         this.hearingDateTime = hearingDateTime;
     }
 

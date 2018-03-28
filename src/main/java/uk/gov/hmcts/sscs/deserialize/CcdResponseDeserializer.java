@@ -8,8 +8,7 @@ import com.fasterxml.jackson.databind.DeserializationContext;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.deser.std.StdDeserializer;
 import java.io.IOException;
-import java.time.ZoneId;
-import java.time.ZonedDateTime;
+import java.time.*;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
@@ -179,8 +178,8 @@ public class CcdResponseDeserializer extends StdDeserializer<CcdResponseWrapper>
         return ccdResponse;
     }
 
-    private ZonedDateTime buildHearingDateTime(String hearingDate, String hearingTime) {
-        return convertToUkLocalDateTime(hearingDate + "T" + hearingTime);
+    private LocalDateTime buildHearingDateTime(String hearingDate, String hearingTime) {
+        return LocalDateTime.of(LocalDate.parse(hearingDate), LocalTime.parse(hearingTime));
     }
 
     private static ZonedDateTime convertToUkLocalDateTime(String bstDateTimeinUtc) {
