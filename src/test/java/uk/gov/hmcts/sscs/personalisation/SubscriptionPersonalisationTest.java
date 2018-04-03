@@ -187,6 +187,19 @@ public class SubscriptionPersonalisationTest {
     }
 
     @Test
+    public void doNotUpdateMostRecentEventTypeNotificationWhenEventTypeIsNotKnown() {
+        Event event = new Event(ZonedDateTime.now(), null);
+        newCcdResponse.setEvents(new ArrayList() {{
+                add(event);
+            }
+        });
+
+        CcdResponse result = personalisation.setMostRecentEventTypeNotification(newCcdResponse, oldCcdResponse);
+
+        assertEquals(SUBSCRIPTION_UPDATED, result.getNotificationType());
+    }
+
+    @Test
     public void emptyOldAppellantSubscriptionDoesNotUpdateNotificationType() {
         oldCcdResponse.setAppellantSubscription(null);
 

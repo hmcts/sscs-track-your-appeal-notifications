@@ -35,7 +35,8 @@ public class SubscriptionPersonalisation extends Personalisation {
                 && newCcdResponse.getAppellantSubscription() != null
                 && newCcdResponse.getAppellantSubscription().isSubscribeEmail()
                 && newCcdResponse.getEvents() != null
-                && !newCcdResponse.getEvents().isEmpty()) {
+                && !newCcdResponse.getEvents().isEmpty()
+                && newCcdResponse.getEvents().get(0).getEventType() != null) {
 
             newCcdResponse.setNotificationType(newCcdResponse.getEvents().get(0).getEventType());
         }
