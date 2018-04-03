@@ -1,7 +1,6 @@
 package uk.gov.hmcts.sscs;
 
 import com.sun.jersey.api.client.Client;
-import java.net.MalformedURLException;
 import java.util.TimeZone;
 import javax.annotation.PostConstruct;
 import org.springframework.beans.factory.annotation.Value;

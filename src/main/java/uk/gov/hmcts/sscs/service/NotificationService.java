@@ -5,12 +5,11 @@ import static org.slf4j.LoggerFactory.getLogger;
 import java.net.UnknownHostException;
 import org.slf4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 import uk.gov.hmcts.sscs.domain.CcdResponse;
 import uk.gov.hmcts.sscs.domain.CcdResponseWrapper;
-import uk.gov.hmcts.sscs.domain.notify.EventType;
 import uk.gov.hmcts.sscs.domain.notify.Notification;
-import uk.gov.hmcts.sscs.domain.reminder.Reminder;
 import uk.gov.hmcts.sscs.exception.NotificationClientRuntimeException;
 import uk.gov.hmcts.sscs.exception.NotificationServiceException;
 import uk.gov.hmcts.sscs.factory.NotificationFactory;
@@ -23,6 +22,9 @@ public class NotificationService {
     private final NotificationClient client;
     private final NotificationFactory factory;
     private final ReminderService reminderService;
+
+    @Value("${job.scheduler.enabled}")
+    private boolean isJobSchedulerEnabled;
 
     @Autowired
     public NotificationService(NotificationClient client, NotificationFactory factory, ReminderService reminderService) {
@@ -58,9 +60,14 @@ public class NotificationService {
     }
 
     public void createReminders(CcdResponse ccdResponse) throws Exception {
-        switch (ccdResponse.getNotificationType()) {
-            case APPEAL_RECEIVED: reminderService.createJob(ccdResponse);
-            default: return;
+        if (isJobSchedulerEnabled) {
+            switch (ccdResponse.getNotificationType()) {
+                case DWP_RESPONSE_RECEIVED:
+                    reminderService.createJob(ccdResponse);
+                    break;
+                default:
+                    return;
+            }
         }
     }
 }

@@ -1,9 +1,7 @@
 package uk.gov.hmcts.sscs.service;
 
 import static org.junit.Assert.assertEquals;
-import static org.mockito.Matchers.any;
 import static org.mockito.Matchers.eq;
-import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 import static org.mockito.MockitoAnnotations.initMocks;
 import static uk.gov.hmcts.sscs.config.AppConstants.ZONE_ID;
@@ -16,7 +14,6 @@ import java.util.ArrayList;
 import java.util.List;
 import org.json.JSONObject;
 import org.junit.Before;
-import org.junit.BeforeClass;
 import org.junit.Test;
 import org.mockito.ArgumentCaptor;
 import org.mockito.Mock;
@@ -26,10 +23,6 @@ import uk.gov.hmcts.sscs.domain.CcdResponse;
 import uk.gov.hmcts.sscs.domain.Subscription;
 import uk.gov.hmcts.sscs.domain.notify.Event;
 import uk.gov.hmcts.sscs.domain.notify.EventType;
-import uk.gov.hmcts.sscs.domain.reminder.Action;
-import uk.gov.hmcts.sscs.domain.reminder.Reminder;
-import uk.gov.hmcts.sscs.domain.reminder.Trigger;
-import uk.gov.hmcts.sscs.exception.ReminderException;
 
 public class ReminderServiceTest {
 
@@ -46,13 +39,12 @@ public class ReminderServiceTest {
 
     @Test
     public void createReminderFromCcdResponse() throws Exception {
-        ZonedDateTime dateTime = ZonedDateTime.of(LocalDate.of(2018, 4, 1), LocalTime.of(0, 0), ZoneId.of(ZONE_ID));
-
         CcdResponse ccdResponse = new CcdResponse();
         Subscription subscription = new Subscription();
         subscription.setAppealNumber("123456");
         ccdResponse.setAppellantSubscription(subscription);
         ccdResponse.setNotificationType(EventType.DWP_RESPONSE_RECEIVED);
+        ZonedDateTime dateTime = ZonedDateTime.of(LocalDate.of(2018, 4, 1), LocalTime.of(0, 0), ZoneId.of(ZONE_ID));
 
         Event event = new Event(dateTime, EventType.DWP_RESPONSE_RECEIVED);
         List<Event> events = new ArrayList();

@@ -4,7 +4,6 @@ import static uk.gov.hmcts.sscs.domain.notify.EventType.DWP_RESPONSE_RECEIVED;
 import static uk.gov.hmcts.sscs.domain.notify.EventType.EVIDENCE_REMINDER;
 
 import java.time.ZonedDateTime;
-import java.util.Objects;
 import uk.gov.hmcts.sscs.domain.CcdResponse;
 import uk.gov.hmcts.sscs.domain.notify.Event;
 import uk.gov.hmcts.sscs.domain.notify.EventType;
@@ -14,7 +13,7 @@ public class Reminder {
     private String name;
     private Action action;
     private Trigger trigger;
-    private final String NAME_PREFIX = "SSCS_";
+    private static final String NAME_PREFIX = "SSCS_";
 
     public Reminder(CcdResponse ccdResponse, String callbackUrl) throws Exception {
         String reminderType = findReminderType(ccdResponse.getNotificationType()).getId();
@@ -24,7 +23,7 @@ public class Reminder {
     }
 
     public EventType findReminderType(EventType eventType) throws Exception {
-        switch(eventType) {
+        switch (eventType) {
             case DWP_RESPONSE_RECEIVED: return EVIDENCE_REMINDER;
             default: break;
         }
@@ -38,6 +37,7 @@ public class Reminder {
                     if (event.getEventType().equals(DWP_RESPONSE_RECEIVED)) {
                         return event.getDateTime().plusDays(2);
                     }
+                    break;
                 }
                 default: break;
             }
@@ -57,18 +57,4 @@ public class Reminder {
         return trigger;
     }
 
-    @Override
-    public boolean equals(Object o) {
-        if (this == o) return true;
-        if (o == null || getClass() != o.getClass()) return false;
-        Reminder reminder = (Reminder) o;
-        return Objects.equals(name, reminder.name)
-                && Objects.equals(action, reminder.action)
-                && Objects.equals(trigger, reminder.trigger);
-    }
-
-    @Override
-    public int hashCode() {
-        return Objects.hash(name, action, trigger);
-    }
 }

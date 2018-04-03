@@ -1,8 +1,6 @@
 package uk.gov.hmcts.sscs.domain.reminder;
 
-import java.util.Objects;
 import org.json.JSONObject;
-import org.springframework.beans.factory.annotation.Value;
 
 public class Action {
 
@@ -36,18 +34,4 @@ public class Action {
         return method;
     }
 
-    @Override
-    public boolean equals(Object o) {
-        if (this == o) return true;
-        if (o == null || getClass() != o.getClass()) return false;
-        Action action = (Action) o;
-        return Objects.equals(url, action.url)
-                && Objects.equals(body, action.body)
-                && Objects.equals(method, action.method);
-    }
-
-    @Override
-    public int hashCode() {
-        return Objects.hash(url, body, method);
-    }
 }

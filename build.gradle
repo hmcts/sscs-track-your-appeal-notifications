@@ -127,7 +127,7 @@ dependencies {
 }
 
 task functional(type: Test, description: 'Runs the functional tests.', group: 'Verification') {
-    description = 'Runs the integration tests tests'
+    description = 'Runs the integration tests'
     setTestClassesDirs(sourceSets.functional.output.classesDirs)
     setClasspath(sourceSets.functional.runtimeClasspath)
 }

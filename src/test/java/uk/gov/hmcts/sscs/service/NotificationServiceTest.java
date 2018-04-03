@@ -4,13 +4,14 @@ import static org.mockito.Mockito.never;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 import static org.mockito.MockitoAnnotations.initMocks;
-import static uk.gov.hmcts.sscs.domain.notify.EventType.APPEAL_RECEIVED;
 import static uk.gov.hmcts.sscs.domain.notify.EventType.APPEAL_WITHDRAWN;
+import static uk.gov.hmcts.sscs.domain.notify.EventType.DWP_RESPONSE_RECEIVED;
 
 import java.net.UnknownHostException;
 import org.junit.Before;
 import org.junit.Test;
 import org.mockito.Mock;
+import org.springframework.test.util.ReflectionTestUtils;
 import uk.gov.hmcts.sscs.domain.CcdResponse;
 import uk.gov.hmcts.sscs.domain.CcdResponseWrapper;
 import uk.gov.hmcts.sscs.domain.Subscription;
@@ -138,14 +139,29 @@ public class NotificationServiceTest {
     }
 
     @Test
-    public void createAReminderJobWhenNotificationIsAppealReceived() throws Exception {
-        response.setNotificationType(APPEAL_RECEIVED);
+    public void createAReminderJobWhenNotificationIsDwpResponseReceived() throws Exception {
+        ReflectionTestUtils.setField(notificationService, "isJobSchedulerEnabled", true);
+
+        response.setNotificationType(DWP_RESPONSE_RECEIVED);
 
         Notification notification = new Notification(new Template(null, "123"), new Destination(null, "07823456746"), null, new Reference(), null);
         when(factory.create(wrapper)).thenReturn(notification);
         notificationService.createAndSendNotification(wrapper);
 
         verify(reminderService).createJob(response);
+    }
+
+    @Test
+    public void doNotCreateAReminderJobWhenNotificationIsDwpResponseReceivedAndJobSchedulerIsNotEnabled() throws Exception {
+        ReflectionTestUtils.setField(notificationService, "isJobSchedulerEnabled", false);
+
+        response.setNotificationType(DWP_RESPONSE_RECEIVED);
+
+        Notification notification = new Notification(new Template(null, "123"), new Destination(null, "07823456746"), null, new Reference(), null);
+        when(factory.create(wrapper)).thenReturn(notification);
+        notificationService.createAndSendNotification(wrapper);
+
+        verify(reminderService, never()).createJob(response);
     }
 
     @Test
