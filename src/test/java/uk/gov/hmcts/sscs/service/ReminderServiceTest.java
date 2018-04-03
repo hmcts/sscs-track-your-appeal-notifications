@@ -38,11 +38,6 @@ public class ReminderServiceTest {
     @Mock
     private RestClient client;
 
-    @BeforeClass
-    public static void beforeClass() {
-        System.setProperty("job.scheduler.callbackUrl", "bla");
-    }
-
     @Before
     public void setup() {
         initMocks(this);

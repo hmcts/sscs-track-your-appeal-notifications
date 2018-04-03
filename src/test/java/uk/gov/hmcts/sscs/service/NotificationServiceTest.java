@@ -4,6 +4,8 @@ import static org.mockito.Mockito.never;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 import static org.mockito.MockitoAnnotations.initMocks;
+import static uk.gov.hmcts.sscs.domain.notify.EventType.APPEAL_RECEIVED;
+import static uk.gov.hmcts.sscs.domain.notify.EventType.APPEAL_WITHDRAWN;
 
 import java.net.UnknownHostException;
 import org.junit.Before;
@@ -12,10 +14,7 @@ import org.mockito.Mock;
 import uk.gov.hmcts.sscs.domain.CcdResponse;
 import uk.gov.hmcts.sscs.domain.CcdResponseWrapper;
 import uk.gov.hmcts.sscs.domain.Subscription;
-import uk.gov.hmcts.sscs.domain.notify.Destination;
-import uk.gov.hmcts.sscs.domain.notify.Notification;
-import uk.gov.hmcts.sscs.domain.notify.Reference;
-import uk.gov.hmcts.sscs.domain.notify.Template;
+import uk.gov.hmcts.sscs.domain.notify.*;
 import uk.gov.hmcts.sscs.exception.NotificationClientRuntimeException;
 import uk.gov.hmcts.sscs.exception.NotificationServiceException;
 import uk.gov.hmcts.sscs.factory.NotificationFactory;
@@ -37,13 +36,16 @@ public class NotificationServiceTest {
     @Mock
     private ReminderService reminderService;
 
+    CcdResponse response;
+
     @Before
     public void setup() {
         initMocks(this);
         notificationService = new NotificationService(client, factory, reminderService);
-        CcdResponse response = new CcdResponse();
+        response = new CcdResponse();
         response.setAppellantSubscription(new Subscription("", "", "", "", "", "", true, true));
         response.setCaseReference("ABC123");
+        response.setNotificationType(APPEAL_WITHDRAWN);
         wrapper = new CcdResponseWrapper(response, response);
     }
 
@@ -133,5 +135,25 @@ public class NotificationServiceTest {
                 .thenThrow(new RuntimeException());
 
         notificationService.createAndSendNotification(wrapper);
+    }
+
+    @Test
+    public void createAReminderJobWhenNotificationIsAppealReceived() throws Exception {
+        response.setNotificationType(APPEAL_RECEIVED);
+
+        Notification notification = new Notification(new Template(null, "123"), new Destination(null, "07823456746"), null, new Reference(), null);
+        when(factory.create(wrapper)).thenReturn(notification);
+        notificationService.createAndSendNotification(wrapper);
+
+        verify(reminderService).createJob(response);
+    }
+
+    @Test
+    public void doNotCreateAReminderJobWhenReminderIsNotRequired() throws Exception {
+        Notification notification = new Notification(new Template(null, "123"), new Destination(null, "07823456746"), null, new Reference(), null);
+        when(factory.create(wrapper)).thenReturn(notification);
+        notificationService.createAndSendNotification(wrapper);
+
+        verify(reminderService, never()).createJob(response);
     }
 }

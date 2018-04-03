@@ -1,9 +1,6 @@
 package uk.gov.hmcts.sscs.client;
 
-import static org.mockito.Matchers.eq;
-import static org.mockito.Mockito.doReturn;
-import static org.mockito.Mockito.times;
-import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.*;
 import static org.mockito.MockitoAnnotations.initMocks;
 
 import com.sun.jersey.api.client.Client;
@@ -13,6 +10,7 @@ import org.json.JSONObject;
 import org.junit.Before;
 import org.junit.Test;
 import org.mockito.Mock;
+import org.springframework.test.util.ReflectionTestUtils;
 import uk.gov.hmcts.sscs.exception.ReminderException;
 
 public class RestClientTest {
@@ -31,7 +29,6 @@ public class RestClientTest {
 
     private RestClient restClient;
 
-    private String url = "http://test.com";
     private JSONObject json =  new JSONObject("{\"test\":\"name\"}");
 
     @Before
@@ -39,8 +36,9 @@ public class RestClientTest {
         initMocks(this);
 
         restClient = new RestClient(jerseyClient);
+        ReflectionTestUtils.setField(restClient, "url", "http://test.com");
 
-        doReturn(webResource).when(jerseyClient).resource(url + "/jobs");
+        doReturn(webResource).when(jerseyClient).resource("http://test.com/jobs");
         doReturn(builder).when(webResource).type("application/json");
         doReturn(builder).when(builder).header("ServiceAuthorization", "sscs");
         doReturn(response).when(builder).post(ClientResponse.class, json);
