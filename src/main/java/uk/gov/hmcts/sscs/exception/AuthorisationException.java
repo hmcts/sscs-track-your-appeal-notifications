@@ -1,8 +1,11 @@
 package uk.gov.hmcts.sscs.exception;
 
-public class AuthorisationException extends RuntimeException {
+import uk.gov.hmcts.reform.logging.exception.AlertLevel;
+import uk.gov.hmcts.reform.logging.exception.UnknownErrorCodeException;
 
-    public AuthorisationException(String message, Throwable cause) {
-        super(message, cause);
+public class AuthorisationException extends UnknownErrorCodeException {
+
+    public AuthorisationException(Exception ex) {
+        super(AlertLevel.P1, ex);
     }
 }

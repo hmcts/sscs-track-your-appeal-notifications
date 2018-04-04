@@ -11,6 +11,7 @@ import org.junit.Test;
 import org.mockito.Mock;
 import uk.gov.hmcts.reform.authorisation.ServiceAuthorisationApi;
 import uk.gov.hmcts.sscs.exception.AuthorisationException;
+import uk.gov.hmcts.sscs.exception.ClientAuthorisationException;
 
 public class AuthorisationServiceTest {
 
@@ -34,19 +35,19 @@ public class AuthorisationServiceTest {
         assertTrue(service.authorise(SERVICE_NAME));
     }
 
-    @Test(expected = AuthorisationException.class)
+    @Test(expected = ClientAuthorisationException.class)
     public void shouldHandleAnAuthorisationException() {
         when(serviceAuthorisationApi.getServiceName(any())).thenThrow(new CustomFeignException(400, ""));
         service.authorise(SERVICE_NAME);
     }
 
-    @Test(expected = FeignException.class)
+    @Test(expected = AuthorisationException.class)
     public void shouldHandleAnUnknownFeignException() {
         when(serviceAuthorisationApi.getServiceName(any())).thenThrow(new CustomFeignException(501, ""));
         service.authorise(SERVICE_NAME);
     }
 
-    @Test(expected = FeignException.class)
+    @Test(expected = AuthorisationException.class)
     public void shouldHandleAnUnknownFeignException2() {
         when(serviceAuthorisationApi.getServiceName(any())).thenThrow(new CustomFeignException(399, ""));
         service.authorise(SERVICE_NAME);
