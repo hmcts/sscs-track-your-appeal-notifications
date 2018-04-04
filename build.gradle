@@ -103,6 +103,9 @@ dependencies {
 
     compile group: 'uk.gov.service.notify', name: 'notifications-java-client', version: '3.9.1-RELEASE'
 
+    compile group: 'com.sun.jersey', name: 'jersey-server', version: '1.19.4'
+    compile group: 'com.sun.jersey', name: 'jersey-json', version: '1.19.4'
+
     testCompile group: 'org.springframework.boot', name: 'spring-boot-starter-test', version: springBootVersion
 }
 
@@ -124,7 +127,7 @@ dependencies {
 }
 
 task functional(type: Test, description: 'Runs the functional tests.', group: 'Verification') {
-    description = 'Runs the integration tests tests'
+    description = 'Runs the integration tests'
     setTestClassesDirs(sourceSets.functional.output.classesDirs)
     setClasspath(sourceSets.functional.runtimeClasspath)
 }

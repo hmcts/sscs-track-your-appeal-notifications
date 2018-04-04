@@ -4,18 +4,18 @@ import static org.mockito.Mockito.never;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 import static org.mockito.MockitoAnnotations.initMocks;
+import static uk.gov.hmcts.sscs.domain.notify.EventType.APPEAL_WITHDRAWN;
+import static uk.gov.hmcts.sscs.domain.notify.EventType.DWP_RESPONSE_RECEIVED;
 
 import java.net.UnknownHostException;
 import org.junit.Before;
 import org.junit.Test;
 import org.mockito.Mock;
+import org.springframework.test.util.ReflectionTestUtils;
 import uk.gov.hmcts.sscs.domain.CcdResponse;
 import uk.gov.hmcts.sscs.domain.CcdResponseWrapper;
 import uk.gov.hmcts.sscs.domain.Subscription;
-import uk.gov.hmcts.sscs.domain.notify.Destination;
-import uk.gov.hmcts.sscs.domain.notify.Notification;
-import uk.gov.hmcts.sscs.domain.notify.Reference;
-import uk.gov.hmcts.sscs.domain.notify.Template;
+import uk.gov.hmcts.sscs.domain.notify.*;
 import uk.gov.hmcts.sscs.exception.NotificationClientRuntimeException;
 import uk.gov.hmcts.sscs.exception.NotificationServiceException;
 import uk.gov.hmcts.sscs.factory.NotificationFactory;
@@ -34,13 +34,19 @@ public class NotificationServiceTest {
     @Mock
     private NotificationFactory factory;
 
+    @Mock
+    private ReminderService reminderService;
+
+    CcdResponse response;
+
     @Before
     public void setup() {
         initMocks(this);
-        notificationService = new NotificationService(client, factory);
-        CcdResponse response = new CcdResponse();
+        notificationService = new NotificationService(client, factory, reminderService);
+        response = new CcdResponse();
         response.setAppellantSubscription(new Subscription("", "", "", "", "", "", true, true));
         response.setCaseReference("ABC123");
+        response.setNotificationType(APPEAL_WITHDRAWN);
         wrapper = new CcdResponseWrapper(response, response);
     }
 
@@ -130,5 +136,40 @@ public class NotificationServiceTest {
                 .thenThrow(new RuntimeException());
 
         notificationService.createAndSendNotification(wrapper);
+    }
+
+    @Test
+    public void createAReminderJobWhenNotificationIsDwpResponseReceived() throws Exception {
+        ReflectionTestUtils.setField(notificationService, "isJobSchedulerEnabled", true);
+
+        response.setNotificationType(DWP_RESPONSE_RECEIVED);
+
+        Notification notification = new Notification(new Template(null, "123"), new Destination(null, "07823456746"), null, new Reference(), null);
+        when(factory.create(wrapper)).thenReturn(notification);
+        notificationService.createAndSendNotification(wrapper);
+
+        verify(reminderService).createJob(response);
+    }
+
+    @Test
+    public void doNotCreateAReminderJobWhenNotificationIsDwpResponseReceivedAndJobSchedulerIsNotEnabled() throws Exception {
+        ReflectionTestUtils.setField(notificationService, "isJobSchedulerEnabled", false);
+
+        response.setNotificationType(DWP_RESPONSE_RECEIVED);
+
+        Notification notification = new Notification(new Template(null, "123"), new Destination(null, "07823456746"), null, new Reference(), null);
+        when(factory.create(wrapper)).thenReturn(notification);
+        notificationService.createAndSendNotification(wrapper);
+
+        verify(reminderService, never()).createJob(response);
+    }
+
+    @Test
+    public void doNotCreateAReminderJobWhenReminderIsNotRequired() throws Exception {
+        Notification notification = new Notification(new Template(null, "123"), new Destination(null, "07823456746"), null, new Reference(), null);
+        when(factory.create(wrapper)).thenReturn(notification);
+        notificationService.createAndSendNotification(wrapper);
+
+        verify(reminderService, never()).createJob(response);
     }
 }

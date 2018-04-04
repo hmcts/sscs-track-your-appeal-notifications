@@ -1,19 +1,14 @@
 package uk.gov.hmcts.sscs.tya;
 
-import static org.assertj.core.api.Assertions.assertThat;
+import static helper.IntegrationTestHelper.*;
 import static org.mockito.Matchers.any;
 import static org.mockito.Matchers.anyString;
 import static org.mockito.Mockito.*;
 import static org.mockito.MockitoAnnotations.initMocks;
-import static org.springframework.http.MediaType.APPLICATION_JSON;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 
-import com.fasterxml.jackson.core.JsonProcessingException;
-import com.fasterxml.jackson.databind.ObjectMapper;
 import java.io.File;
 import java.io.IOException;
 import java.nio.charset.StandardCharsets;
-import java.util.Map;
 import javax.servlet.http.HttpServletResponse;
 import org.apache.commons.io.FileUtils;
 import org.junit.Before;
@@ -34,6 +29,7 @@ import uk.gov.hmcts.sscs.controller.NotificationController;
 import uk.gov.hmcts.sscs.factory.NotificationFactory;
 import uk.gov.hmcts.sscs.service.AuthorisationService;
 import uk.gov.hmcts.sscs.service.NotificationService;
+import uk.gov.hmcts.sscs.service.ReminderService;
 import uk.gov.service.notify.NotificationClient;
 
 @RunWith(SpringRunner.class)
@@ -48,6 +44,9 @@ public class NotificationsIt {
     @Mock
     NotificationClient client;
 
+    @Mock
+    ReminderService reminderService;
+
     @MockBean
     private AuthorisationService authorisationService;
 
@@ -61,7 +60,7 @@ public class NotificationsIt {
     @Before
     public void setup() throws IOException {
         initMocks(this);
-        NotificationService service = new NotificationService(client, factory);
+        NotificationService service = new NotificationService(client, factory, reminderService);
         controller = new NotificationController(service, authorisationService);
         this.mockMvc = MockMvcBuilders.standaloneSetup(controller).build();
         json = FileUtils.readFileToString(new File(path), StandardCharsets.UTF_8.name());
@@ -201,39 +200,7 @@ public class NotificationsIt {
         verify(client, never()).sendEmail(any(), any(), any(), any());
     }
 
-    private MockHttpServletRequestBuilder getRequestWithAuthHeader(String json)
-            throws JsonProcessingException {
-
-        return getRequestWithoutAuthHeader(json)
-                .header(AuthorisationService.SERVICE_AUTHORISATION_HEADER, "some-auth-header");
-    }
-
-    private MockHttpServletRequestBuilder getRequestWithoutAuthHeader(String json) throws JsonProcessingException {
-
-        return post("/send")
-                .contentType(APPLICATION_JSON)
-                .content(json);
-    }
-
     private MockHttpServletResponse getResponse(MockHttpServletRequestBuilder requestBuilder) throws Exception {
         return mockMvc.perform(requestBuilder).andReturn().getResponse();
-    }
-
-    private void assertHttpStatus(HttpServletResponse response, HttpStatus status) {
-        assertThat(response.getStatus()).isEqualTo(status.value());
-    }
-
-    private String updateEmbeddedJson(String json, String value, String... keys) throws IOException {
-        ObjectMapper objectMapper = new ObjectMapper();
-
-        Map map = objectMapper.readValue(json, Map.class);
-        Map t = map;
-        for (int i = 0; i < keys.length - 1; i++) {
-            t = (Map) t.get(keys[i]);
-        }
-
-        t.put(keys[keys.length - 1], value);
-
-        return objectMapper.writeValueAsString(map);
     }
 }

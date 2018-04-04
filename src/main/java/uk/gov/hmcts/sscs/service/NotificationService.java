@@ -5,7 +5,9 @@ import static org.slf4j.LoggerFactory.getLogger;
 import java.net.UnknownHostException;
 import org.slf4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
+import uk.gov.hmcts.sscs.domain.CcdResponse;
 import uk.gov.hmcts.sscs.domain.CcdResponseWrapper;
 import uk.gov.hmcts.sscs.domain.notify.Notification;
 import uk.gov.hmcts.sscs.exception.NotificationClientRuntimeException;
@@ -19,11 +21,16 @@ public class NotificationService {
 
     private final NotificationClient client;
     private final NotificationFactory factory;
+    private final ReminderService reminderService;
+
+    @Value("${job.scheduler.enabled}")
+    private boolean isJobSchedulerEnabled;
 
     @Autowired
-    public NotificationService(NotificationClient client, NotificationFactory factory) {
+    public NotificationService(NotificationClient client, NotificationFactory factory, ReminderService reminderService) {
         this.factory = factory;
         this.client = client;
+        this.reminderService = reminderService;
     }
 
     public void createAndSendNotification(CcdResponseWrapper responseWrapper) throws NotificationServiceException {
@@ -42,12 +49,25 @@ public class NotificationService {
                 client.sendSms(notification.getSmsTemplate(), notification.getMobile(), notification.getPlaceholders(), notification.getReference());
                 LOG.info("SMS sent for case reference "  + responseWrapper.getNewCcdResponse().getCaseReference());
             }
+            createReminders(responseWrapper.getNewCcdResponse());
         } catch (Exception ex) {
             LOG.error("Error on GovUKNotify for case reference " + responseWrapper.getNewCcdResponse().getCaseReference() + ", " + ex.getStackTrace());
             if (ex.getCause() instanceof UnknownHostException) {
                 throw new NotificationClientRuntimeException(ex);
             }
             throw new NotificationServiceException(ex);
+        }
+    }
+
+    public void createReminders(CcdResponse ccdResponse) throws Exception {
+        if (isJobSchedulerEnabled) {
+            switch (ccdResponse.getNotificationType()) {
+                case DWP_RESPONSE_RECEIVED:
+                    reminderService.createJob(ccdResponse);
+                    break;
+                default:
+                    return;
+            }
         }
     }
 }

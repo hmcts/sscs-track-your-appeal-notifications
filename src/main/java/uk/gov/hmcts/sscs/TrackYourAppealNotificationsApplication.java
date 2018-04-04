@@ -1,6 +1,6 @@
 package uk.gov.hmcts.sscs;
 
-import java.net.MalformedURLException;
+import com.sun.jersey.api.client.Client;
 import java.util.TimeZone;
 import javax.annotation.PostConstruct;
 import org.springframework.beans.factory.annotation.Value;
@@ -11,6 +11,7 @@ import org.springframework.context.MessageSource;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.support.ReloadableResourceBundleMessageSource;
 import uk.gov.hmcts.reform.authorisation.ServiceAuthorisationApi;
+import uk.gov.hmcts.sscs.client.RestClient;
 import uk.gov.hmcts.sscs.deserialize.CcdResponseDeserializer;
 import uk.gov.service.notify.NotificationClient;
 
@@ -33,8 +34,13 @@ public class TrackYourAppealNotificationsApplication {
     }
 
     @Bean
-    public NotificationClient notificationClient() throws MalformedURLException {
+    public NotificationClient notificationClient() {
         return new NotificationClient(apiKey);
+    }
+
+    @Bean
+    public RestClient jobSchedulerClient() {
+        return new RestClient(Client.create());
     }
 
     @Bean

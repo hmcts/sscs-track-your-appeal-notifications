@@ -13,6 +13,7 @@ public enum EventType {
     POSTPONEMENT("hearingPostponed"),
     SUBSCRIPTION_CREATED("subscriptionCreated"),
     SUBSCRIPTION_UPDATED("subscriptionUpdated"),
+    EVIDENCE_REMINDER("evidenceReminder"),
     DO_NOT_SEND("");
 
     private String id;

@@ -52,3 +52,18 @@ variable "claiming_expenses_link" {
   type = "string"
   default = "http://localhost:3000/expenses/appeal_id"
 }
+
+variable "job_scheduler_enabled" {
+  type = "boolean"
+  default = false
+}
+
+variable "job_scheduler_url" {
+  type = "string"
+  default = "http://localhost:8484"
+}
+
+variable "job_scheduler_callbackUrl" {
+  type = "string"
+  default = "http://localhost:8080"
+}

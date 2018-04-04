@@ -79,6 +79,24 @@
           }
         }
       },
+      "events": [
+        {
+          "id": "960c715a-e24e-46de-b4b6-33dfbecccddc",
+          "value": {
+            "date": "2017-05-24T14:01:18.243",
+            "description": "DWP response received",
+            "type": "responseReceived"
+          }
+        },
+        {
+          "id": "208d1978-3434-4719-8c8a-5a613364e17e",
+          "value": {
+            "date": "2017-05-24T13:54:06.637",
+            "description": "Hearing booked",
+            "type": "hearingBooked"
+          }
+        }
+      ],
       "caseCreated": "2018-02-13",
       "caseReference": "SC/1234/23",
       "region": "Liverpool",
