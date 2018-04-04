@@ -6,6 +6,6 @@ import uk.gov.hmcts.reform.logging.exception.UnknownErrorCodeException;
 public class MacException extends UnknownErrorCodeException {
 
     public MacException(Exception ex) {
-        super(AlertLevel.P1, ex);
+        super(AlertLevel.P4, ex);
     }
 }
