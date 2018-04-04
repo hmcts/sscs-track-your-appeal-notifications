@@ -5,7 +5,7 @@ plugins {
     id 'org.sonarqube' version '2.6.2'
     id 'jacoco'
     id 'io.spring.dependency-management' version '1.0.4.RELEASE'
-    id 'org.springframework.boot' version '1.5.9.RELEASE'
+    id 'org.springframework.boot' version '1.5.10.RELEASE'
     id 'org.owasp.dependencycheck' version '3.1.1'
     id 'com.github.ben-manes.versions' version '0.17.0'
 }
@@ -16,23 +16,25 @@ version = '1.0.0'
 sourceCompatibility = 1.8
 targetCompatibility = 1.8
 
-check.dependsOn dependencyCheckAnalyze
-
-
-jar {
-    archiveName 'track-your-appeal-notifications.jar'
-    manifest {
-        attributes 'Implementation-Title': project.name,
-                'Implementation-Version': project.version
-    }
+compileJava {
+    options.compilerArgs << '-parameters' << '-Xlint:deprecation'
 }
+
+compileTestJava {
+    options.compilerArgs << '-Xlint:deprecation'
+}
+
+mainClassName = 'uk.gov.hmcts.reform.sscs.TrackYourAppealNotificationsApplication'
+
+check.dependsOn dependencyCheckAnalyze
 
 checkstyle {
     maxWarnings = 0
-    toolVersion = '8.7'
+    toolVersion = '8.8'
     // need to set configDir to rootDir otherwise submodule will use submodule/config/checkstyle
     configDir = new File(rootDir, 'config/checkstyle')
 }
+
 
 pmd {
     toolVersion = "5.8.1"
@@ -40,6 +42,25 @@ pmd {
     sourceSets = [sourceSets.main, sourceSets.test]
     reportsDir = file("$project.buildDir/reports/pmd")
     ruleSetFiles = files("config/pmd/ruleset.xml")
+}
+
+sourceSets {
+    integrationTest {
+        java {
+            compileClasspath += main.output + test.output
+            runtimeClasspath += main.output + test.output
+            srcDir('src/IntegrationTests/java')
+        }
+    }
+}
+
+dependencies {
+    integrationTestCompile(sourceSets.test.output)
+}
+
+task functional(type: Test) {
+    setTestClassesDirs(sourceSets.integrationTest.output.classesDirs)
+    setClasspath(sourceSets.integrationTest.runtimeClasspath)
 }
 
 dependencyUpdates.resolutionStrategy = {
@@ -61,76 +82,32 @@ dependencyCheck {
     // range of 0-10 fails the build, anything greater and it doesn't fail the build
     failBuildOnCVSS = System.getProperty('dependencyCheck.failBuild') == 'true' ? 0 : 11
     suppressionFile = 'dependency-check-suppressions.xml'
+    analyzers {
+        // Disable scanning of .NET related binaries
+        assemblyEnabled = false
+    }
+    cve {
+        url20Modified = 'https://nvd.nist.gov/feeds/xml/cve/2.0/nvdcve-2.0-modified.xml.gz'
+        url20Base = 'https://nvd.nist.gov/feeds/xml/cve/2.0/nvdcve-2.0-%d.xml.gz'
+        url12Modified = 'https://nvd.nist.gov/feeds/xml/cve/1.2/nvdcve-modified.xml.gz'
+        url12Base = 'https://nvd.nist.gov/feeds/xml/cve/1.2/nvdcve-%d.xml.gz'
+    }
 }
-
-def springBootVersion = plugins.getPlugin('org.springframework.boot').class.package.implementationVersion
 
 repositories {
     maven {
-        url  "https://dl.bintray.com/hmcts/hmcts-maven"
+        url "https://dl.bintray.com/hmcts/hmcts-maven"
     }
 
     jcenter()
 }
 
-configurations {
-    functionalCompile.extendsFrom(testCompile)
-    functionalRuntime.extendsFrom(testRuntime)
-}
-
-bootRun {
-    systemProperty 'server.port', '8081'
-}
-
-dependencies {
-    compile group: 'org.springframework.boot', name: 'spring-boot-starter-web', version: springBootVersion
-    compile group: 'org.springframework.boot', name: 'spring-boot-starter-actuator', version: springBootVersion
-    compile group: 'org.springframework.boot', name: 'spring-boot-starter-aop', version: springBootVersion
-    compile group: 'com.googlecode.json-simple', name: 'json-simple', version: '1.1.1'
-    compile group: 'commons-io', name: 'commons-io', version: '2.6'
-
-    compile group: 'io.springfox', name: 'springfox-swagger2', version: '2.8.0'
-    compile group: 'io.springfox', name: 'springfox-swagger-ui', version: '2.8.0'
-
-    compile group: 'uk.gov.hmcts.reform', name: 'java-logging-spring', version: '2.0.2'
-    compile group: 'uk.gov.hmcts.reform', name: 'java-logging-httpcomponents', version: '2.0.2'
-    compile group: 'uk.gov.hmcts.reform', name: 'java-logging-appinsights', version: '2.0.2'
-    compile group: 'uk.gov.hmcts.reform', name: 'http-proxy-spring-boot-autoconfigure', version: '1.1.0'
-    compile group: 'uk.gov.hmcts.reform', name: 'service-auth-provider-client', version: '0.4.2'
-
-    compile group: 'org.springframework.cloud', name: 'spring-cloud-starter-hystrix', version: '1.4.0.RELEASE'
-    compile group: 'org.springframework.cloud', name: 'spring-cloud-starter-hystrix-dashboard', version: '1.4.0.RELEASE'
-
-    compile group: 'uk.gov.service.notify', name: 'notifications-java-client', version: '3.9.1-RELEASE'
-
-    compile group: 'com.sun.jersey', name: 'jersey-server', version: '1.19.4'
-    compile group: 'com.sun.jersey', name: 'jersey-json', version: '1.19.4'
-
-    testCompile group: 'org.springframework.boot', name: 'spring-boot-starter-test', version: springBootVersion
-}
-
-sourceSets {
-    functional {
-        java {
-            compileClasspath += main.output + test.output
-            runtimeClasspath += main.output + test.output
-            srcDir('src/IntegrationTests/java')
-        }
-        resources {
-            srcDir('src/IntegrationTests/resources')
-        }
-    }
-}
-
-dependencies {
-    functionalCompile(sourceSets.test.output)
-}
-
-task functional(type: Test, description: 'Runs the functional tests.', group: 'Verification') {
-    description = 'Runs the integration tests'
-    setTestClassesDirs(sourceSets.functional.output.classesDirs)
-    setClasspath(sourceSets.functional.runtimeClasspath)
-}
+project.tasks['sonarqube'].dependsOn test, functional
+check.dependsOn functional
+checkstyleMain.shouldRunAfter(compileJava)
+test.shouldRunAfter(checkstyleTest)
+functional.shouldRunAfter(checkstyleIntegrationTest)
+functional.shouldRunAfter(test)
 
 sonarqube {
     properties {
@@ -139,6 +116,74 @@ sonarqube {
         property "sonar.exclusions", "src/main/java/uk/gov/hmcts/sscs/domain/**," +
                 "src/main/java/uk/gov/hmcts/sscs/TrackYourAppealNotificationsApplication.java," +
                 "src/main/java/uk/gov/hmcts/sscs/config/*,"
+    }
+}
+
+configurations {
+    integrationTestCompile.extendsFrom(testCompile)
+    integrationTestRuntime.extendsFrom(testRuntime)
+}
+
+bootRun {
+    systemProperty 'server.port', '8081'
+}
+
+def springBootVersion = '1.5.10.RELEASE'
+
+dependencyManagement {
+    imports {
+        mavenBom "org.springframework.boot:spring-boot-starter-parent:${springBootVersion}"
+    }
+}
+
+def versions = [
+  logback: '1.2.3',
+  reformLogging: '2.0.2',
+  springBoot: springBootVersion,
+  springHystrix: '1.4.2.RELEASE',
+  springfoxSwagger: '2.8.0'
+]
+
+dependencies {
+    compile group: 'org.springframework.boot', name: 'spring-boot-starter-web', version: versions.springBoot
+    compile group: 'org.springframework.boot', name: 'spring-boot-starter-actuator', version: versions.springBoot
+    compile group: 'org.springframework.boot', name: 'spring-boot-starter-aop', version: versions.springBoot
+
+    compile group: 'com.googlecode.json-simple', name: 'json-simple', version: '1.1.1'
+    compile group: 'commons-io', name: 'commons-io', version: '2.6'
+
+    compile group: 'io.springfox', name: 'springfox-swagger2', version: versions.springfoxSwagger
+    compile group: 'io.springfox', name: 'springfox-swagger-ui', version: versions.springfoxSwagger
+
+    compile group: 'uk.gov.hmcts.reform', name: 'java-logging-spring', version: versions.reformLogging
+    compile group: 'uk.gov.hmcts.reform', name: 'java-logging-httpcomponents', version: versions.reformLogging
+    compile group: 'uk.gov.hmcts.reform', name: 'java-logging-appinsights', version: versions.reformLogging
+    compile group: 'uk.gov.hmcts.reform', name: 'http-proxy-spring-boot-autoconfigure', version: '1.1.0'
+    compile group: 'uk.gov.hmcts.reform', name: 'service-auth-provider-client', version: '0.4.2'
+
+    compile group: 'org.springframework.cloud', name: 'spring-cloud-starter-hystrix', version: versions.springHystrix
+    compile group: 'org.springframework.cloud', name: 'spring-cloud-starter-hystrix-dashboard', version: versions.springHystrix
+
+    compile group: 'uk.gov.service.notify', name: 'notifications-java-client', version: '3.9.1-RELEASE'
+
+    compile group: 'com.sun.jersey', name: 'jersey-server', version: '1.19.4'
+    compile group: 'com.sun.jersey', name: 'jersey-json', version: '1.19.4'
+
+    testCompile group: 'org.springframework.boot', name: 'spring-boot-starter-test', version: versions.springBoot
+}
+
+jar {
+    archiveName 'track-your-appeal-notifications.jar'
+    manifest {
+        attributes 'Implementation-Title': project.name,
+                'Implementation-Version': project.version
+    }
+}
+
+run {
+    def debug = System.getProperty("debug")
+    if (debug == 'true') {
+        jvmArgs = ['-agentlib:jdwp=transport=dt_socket,server=y,suspend=y,address=5005']
     }
 }
 
