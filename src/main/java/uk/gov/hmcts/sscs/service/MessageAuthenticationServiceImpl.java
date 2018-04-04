@@ -20,6 +20,8 @@ import org.slf4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
+import uk.gov.hmcts.sscs.exception.MacException;
+import uk.gov.hmcts.sscs.exception.TokenException;
 
 @Service
 public class MessageAuthenticationServiceImpl {
@@ -35,15 +37,16 @@ public class MessageAuthenticationServiceImpl {
         this.mac = initializeMac();
     }
 
-    protected Mac initializeMac() throws NoSuchAlgorithmException, InvalidKeyException {
+    protected Mac initializeMac() {
         try {
             SecretKeySpec key = new SecretKeySpec(macString.getBytes(CHARSET), MAC_ALGO);
             mac = getInstance(MAC_ALGO);
             mac.init(key);
             return mac;
         } catch (NoSuchAlgorithmException | InvalidKeyException ex) {
-            LOG.error("Error while initializing MAC Key: ", ex);
-            throw ex;
+            MacException macException = new MacException(ex);
+            LOG.error("Error while initializing MAC Key: ", macException);
+            throw macException;
         }
     }
 
@@ -56,8 +59,9 @@ public class MessageAuthenticationServiceImpl {
             String macToken = format("%s|%s", originalMessage, macSubString);
             return getEncoder().withoutPadding().encodeToString(macToken.getBytes(CHARSET));
         } catch (Exception ex) {
-            LOG.error("Error while generating MAC: ", ex);
-            throw ex;
+            TokenException tokenException = new TokenException(ex);
+            LOG.error("Error while generating MAC: ", tokenException);
+            throw tokenException;
         }
     }
 }

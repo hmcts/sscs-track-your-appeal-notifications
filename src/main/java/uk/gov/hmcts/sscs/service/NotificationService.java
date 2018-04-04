@@ -51,11 +51,15 @@ public class NotificationService {
             }
             createReminders(responseWrapper.getNewCcdResponse());
         } catch (Exception ex) {
-            LOG.error("Error on GovUKNotify for case reference " + responseWrapper.getNewCcdResponse().getCaseReference() + ", " + ex.getStackTrace());
             if (ex.getCause() instanceof UnknownHostException) {
-                throw new NotificationClientRuntimeException(ex);
+                NotificationClientRuntimeException exception = new NotificationClientRuntimeException(ex);
+                LOG.error("Runtime error on GovUKNotify for case reference {}", responseWrapper.getNewCcdResponse().getCaseReference(), exception);
+                throw exception;
+            } else {
+                NotificationServiceException exception = new NotificationServiceException(ex);
+                LOG.error("Error on GovUKNotify for case reference {}", responseWrapper.getNewCcdResponse().getCaseReference(), exception);
+                throw exception;
             }
-            throw new NotificationServiceException(ex);
         }
     }
 

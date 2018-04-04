@@ -6,6 +6,7 @@ import feign.FeignException;
 import org.springframework.stereotype.Service;
 import uk.gov.hmcts.reform.authorisation.ServiceAuthorisationApi;
 import uk.gov.hmcts.sscs.exception.AuthorisationException;
+import uk.gov.hmcts.sscs.exception.ClientAuthorisationException;
 
 @Service
 public class AuthorisationService {
@@ -28,9 +29,9 @@ public class AuthorisationService {
         } catch (FeignException exc) {
             boolean isClientError = exc.status() >= 400 && exc.status() <= 499;
 
-            LOG.error("Authorisation failed for Notification request with status: " + exc.status(), exc);
+            LOG.error("Authorisation failed for Notification request with status: {}", exc.status(), exc);
 
-            throw isClientError ? new AuthorisationException(exc.getMessage(), exc) : exc;
+                throw isClientError ? new ClientAuthorisationException(exc) : new AuthorisationException(exc);
         }
     }
 }
