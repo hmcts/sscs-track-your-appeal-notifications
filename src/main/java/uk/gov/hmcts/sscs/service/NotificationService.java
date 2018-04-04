@@ -53,11 +53,11 @@ public class NotificationService {
         } catch (Exception ex) {
             if (ex.getCause() instanceof UnknownHostException) {
                 NotificationClientRuntimeException exception = new NotificationClientRuntimeException(ex);
-                LOG.error("Runtime error on GovUKNotify for case reference {}", responseWrapper.getNewCcdResponse().getCaseReference(), exception);
+                LOG.error("Runtime error on GovUKNotify for case reference " + responseWrapper.getNewCcdResponse().getCaseReference(), exception);
                 throw exception;
             } else {
                 NotificationServiceException exception = new NotificationServiceException(ex);
-                LOG.error("Error on GovUKNotify for case reference {}", responseWrapper.getNewCcdResponse().getCaseReference(), exception);
+                LOG.error("Error on GovUKNotify for case reference " + responseWrapper.getNewCcdResponse().getCaseReference(), exception);
                 throw exception;
             }
         }

@@ -37,16 +37,15 @@ public class MessageAuthenticationServiceImpl {
         this.mac = initializeMac();
     }
 
-    protected Mac initializeMac() {
+    protected Mac initializeMac() throws NoSuchAlgorithmException, InvalidKeyException {
         try {
             SecretKeySpec key = new SecretKeySpec(macString.getBytes(CHARSET), MAC_ALGO);
             mac = getInstance(MAC_ALGO);
             mac.init(key);
             return mac;
         } catch (NoSuchAlgorithmException | InvalidKeyException ex) {
-            MacException macException = new MacException(ex);
-            LOG.error("Error while initializing MAC Key: ", macException);
-            throw macException;
+            LOG.error("Error while initializing MAC Key", new MacException(ex));
+            throw ex;
         }
     }
 
@@ -60,7 +59,7 @@ public class MessageAuthenticationServiceImpl {
             return getEncoder().withoutPadding().encodeToString(macToken.getBytes(CHARSET));
         } catch (Exception ex) {
             TokenException tokenException = new TokenException(ex);
-            LOG.error("Error while generating MAC: ", tokenException);
+            LOG.error("Error while generating MAC", tokenException);
             throw tokenException;
         }
     }

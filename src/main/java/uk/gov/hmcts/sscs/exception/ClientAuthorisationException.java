@@ -6,6 +6,6 @@ import uk.gov.hmcts.reform.logging.exception.UnknownErrorCodeException;
 public class ClientAuthorisationException extends UnknownErrorCodeException {
 
     public ClientAuthorisationException(Exception ex) {
-        super(AlertLevel.P1, ex);
+        super(AlertLevel.P4, ex);
     }
 }

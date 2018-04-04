@@ -27,11 +27,11 @@ public class AuthorisationService {
             LOG.info("Notification request authorised");
             return true;
         } catch (FeignException exc) {
-            boolean isClientError = exc.status() >= 400 && exc.status() <= 499;
+            RuntimeException authExc = (exc.status() >= 400 && exc.status() <= 499) ? new ClientAuthorisationException(exc) : new AuthorisationException(exc);
 
-            LOG.error("Authorisation failed for Notification request with status: {}", exc.status(), exc);
+            LOG.error("Authorisation failed for Notification request with status " + exc.status(), authExc);
 
-                throw isClientError ? new ClientAuthorisationException(exc) : new AuthorisationException(exc);
+            throw authExc;
         }
     }
 }
