@@ -10,7 +10,6 @@ import org.springframework.web.bind.annotation.RequestHeader;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 import uk.gov.hmcts.sscs.domain.CcdResponseWrapper;
-import uk.gov.hmcts.sscs.exception.NotificationServiceException;
 import uk.gov.hmcts.sscs.service.AuthorisationService;
 import uk.gov.hmcts.sscs.service.NotificationService;
 
@@ -31,7 +30,7 @@ public class NotificationController {
     @RequestMapping(value = "/send", method = POST, produces = APPLICATION_JSON_VALUE)
     public void sendNotification(
             @RequestHeader(AuthorisationService.SERVICE_AUTHORISATION_HEADER) String serviceAuthHeader,
-            @RequestBody CcdResponseWrapper ccdResponseWrapper) throws NotificationServiceException {
+            @RequestBody CcdResponseWrapper ccdResponseWrapper) {
         LOG.info("Ccd Response received: ", ccdResponseWrapper);
 
         authorisationService.authorise(serviceAuthHeader);

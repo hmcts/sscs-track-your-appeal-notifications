@@ -21,7 +21,7 @@ public class ReminderService {
         this.client = client;
     }
 
-    public void createJob(CcdResponse ccdResponse) throws Exception {
+    public void createJob(CcdResponse ccdResponse) {
         Reminder reminder = new Reminder(ccdResponse, callbackUrl);
 
         JSONObject result = new JSONObject(reminder);
