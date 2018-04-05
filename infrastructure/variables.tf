@@ -54,8 +54,8 @@ variable "claiming_expenses_link" {
 }
 
 variable "job_scheduler_enabled" {
-  type = "boolean"
-  default = false
+  type = "string"
+  default = "false"
 }
 
 variable "job_scheduler_url" {
