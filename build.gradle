@@ -24,7 +24,7 @@ compileTestJava {
     options.compilerArgs << '-Xlint:deprecation'
 }
 
-mainClassName = 'uk.gov.hmcts.reform.sscs.TrackYourAppealNotificationsApplication'
+mainClassName = 'uk.gov.hmcts.sscs.TrackYourAppealNotificationsApplication'
 
 check.dependsOn dependencyCheckAnalyze
 
