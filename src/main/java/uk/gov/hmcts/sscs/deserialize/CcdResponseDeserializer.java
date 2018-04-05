@@ -37,7 +37,7 @@ public class CcdResponseDeserializer extends StdDeserializer<CcdResponseWrapper>
         return buildCcdResponseWrapper(node);
     }
 
-    public CcdResponseWrapper buildCcdResponseWrapper(JsonNode node) throws IOException {
+    public CcdResponseWrapper buildCcdResponseWrapper(JsonNode node) {
         CcdResponse newCcdResponse = null;
         CcdResponse oldCcdResponse = null;
 
@@ -60,7 +60,7 @@ public class CcdResponseDeserializer extends StdDeserializer<CcdResponseWrapper>
         return new CcdResponseWrapper(newCcdResponse, oldCcdResponse);
     }
 
-    public CcdResponse deserializeCaseNode(JsonNode caseNode) throws IOException {
+    public CcdResponse deserializeCaseNode(JsonNode caseNode) {
         CcdResponse ccdResponse = new CcdResponse();
 
         JsonNode appealNode = getNode(caseNode, "appeal");

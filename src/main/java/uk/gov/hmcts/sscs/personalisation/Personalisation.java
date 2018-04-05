@@ -55,7 +55,7 @@ public class Personalisation {
         personalisation.put(FIRST_TIER_AGENCY_ACRONYM, DWP_ACRONYM);
         personalisation.put(FIRST_TIER_AGENCY_FULL_NAME, DWP_FUL_NAME);
 
-        if (ccdResponse.getHearings() != null && ccdResponse.getHearings().size() > 0) {
+        if (ccdResponse.getHearings() != null && !ccdResponse.getHearings().isEmpty()) {
             Hearing latestHearing = ccdResponse.getHearings().get(0);
 
             personalisation.put(HEARING_DATE, formatLocalDate(latestHearing.getHearingDateTime()));
@@ -73,35 +73,32 @@ public class Personalisation {
         if (ccdResponse.getEvents() != null) {
 
             for (Event event : ccdResponse.getEvents()) {
-                switch (ccdResponse.getNotificationType()) {
-                    case APPEAL_RECEIVED: {
-                        if (event.getEventType().equals(APPEAL_RECEIVED)) {
-                            String dwpResponseDateString = formatLocalDate(event.getDateTime().plusDays(MAX_DWP_RESPONSE_DAYS).toLocalDateTime());
-                            personalisation.put(APPEAL_RESPOND_DATE, dwpResponseDateString);
-                            setHearingContactDate(personalisation, event);
-                            return personalisation;
-                        }
-                        break;
-                    }
-                    case EVIDENCE_RECEIVED: {
-                        if (event.getEventType().equals(EVIDENCE_RECEIVED)) {
-                            personalisation.put(EVIDENCE_RECEIVED_DATE_LITERAL, formatLocalDate(event.getDateTime().toLocalDateTime()));
-                            return personalisation;
-                        }
-                        break;
-                    }
-                    case POSTPONEMENT: {
-                        if (event.getEventType().equals(POSTPONEMENT)) {
-                            setHearingContactDate(personalisation, event);
-                            return personalisation;
-                        }
-                        break;
-                    }
-                    default:
-                        break;
+                if (ccdResponse.getNotificationType().equals(APPEAL_RECEIVED) && event.getEventType().equals(APPEAL_RECEIVED)) {
+                    return setAppealReceivedDetails(personalisation, event);
+                } else if (ccdResponse.getNotificationType().equals(EVIDENCE_RECEIVED) && event.getEventType().equals(EVIDENCE_RECEIVED)) {
+                    return setEvidenceReceivedDetails(personalisation, event);
+                } else if (ccdResponse.getNotificationType().equals(POSTPONEMENT) && event.getEventType().equals(POSTPONEMENT)) {
+                    return setPostponementDetails(personalisation, event);
                 }
             }
         }
+        return personalisation;
+    }
+
+    private Map<String, String> setAppealReceivedDetails(Map<String, String> personalisation, Event event) {
+        String dwpResponseDateString = formatLocalDate(event.getDateTime().plusDays(MAX_DWP_RESPONSE_DAYS).toLocalDateTime());
+        personalisation.put(APPEAL_RESPOND_DATE, dwpResponseDateString);
+        setHearingContactDate(personalisation, event);
+        return personalisation;
+    }
+
+    private Map<String, String> setEvidenceReceivedDetails(Map<String, String> personalisation, Event event) {
+        personalisation.put(EVIDENCE_RECEIVED_DATE_LITERAL, formatLocalDate(event.getDateTime().toLocalDateTime()));
+        return personalisation;
+    }
+
+    private Map<String, String> setPostponementDetails(Map<String, String> personalisation, Event event) {
+        setHearingContactDate(personalisation, event);
         return personalisation;
     }
 

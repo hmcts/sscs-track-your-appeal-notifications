@@ -1,6 +1,7 @@
 package uk.gov.hmcts.sscs.service;
 
 import static org.slf4j.LoggerFactory.getLogger;
+import static uk.gov.hmcts.sscs.domain.notify.EventType.DWP_RESPONSE_RECEIVED;
 
 import java.net.UnknownHostException;
 import org.slf4j.Logger;
@@ -33,7 +34,7 @@ public class NotificationService {
         this.reminderService = reminderService;
     }
 
-    public void createAndSendNotification(CcdResponseWrapper responseWrapper) throws NotificationServiceException {
+    public void createAndSendNotification(CcdResponseWrapper responseWrapper) {
         LOG.info("Start to create notification for case reference "  + responseWrapper.getNewCcdResponse().getCaseReference());
 
         Notification notification = factory.create(responseWrapper);
@@ -63,15 +64,9 @@ public class NotificationService {
         }
     }
 
-    public void createReminders(CcdResponse ccdResponse) throws Exception {
-        if (isJobSchedulerEnabled) {
-            switch (ccdResponse.getNotificationType()) {
-                case DWP_RESPONSE_RECEIVED:
-                    reminderService.createJob(ccdResponse);
-                    break;
-                default:
-                    return;
-            }
+    public void createReminders(CcdResponse ccdResponse) {
+        if (isJobSchedulerEnabled && ccdResponse.getNotificationType().equals(DWP_RESPONSE_RECEIVED)) {
+            reminderService.createJob(ccdResponse);
         }
     }
 }

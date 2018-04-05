@@ -20,11 +20,11 @@ public class RestClient {
         this.jerseyClient = client;
     }
 
-    public void post(JSONObject json, String endpoint) throws ReminderException {
+    public void post(JSONObject json, String endpoint) {
 
         WebResource webResource = jerseyClient.resource(url + "/" + endpoint);
 
-        LOG.info("Attempting to post to reminder service with json: ", json.toString());
+        LOG.info("Attempting to post to reminder service with json: ", json);
 
         try {
             ClientResponse response = webResource.type("application/json")
