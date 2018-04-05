@@ -15,6 +15,7 @@ import org.junit.Test;
 import uk.gov.hmcts.sscs.domain.CcdResponse;
 import uk.gov.hmcts.sscs.domain.CcdResponseWrapper;
 import uk.gov.hmcts.sscs.domain.Hearing;
+import uk.gov.hmcts.sscs.exception.BenefitMappingException;
 
 public class CcdResponseDeserializerTest {
 
@@ -35,6 +36,14 @@ public class CcdResponseDeserializerTest {
         CcdResponse ccdResponse = ccdResponseDeserializer.deserializeBenefitDetailsJson(mapper.readTree(appealJson), new CcdResponse());
 
         assertEquals(PIP, ccdResponse.getBenefitType());
+    }
+
+    @Test(expected = BenefitMappingException.class)
+    public void throwBenefitMappingExceptionWhenBenefitTypeUnknown() throws IOException {
+
+        String appealJson = "{\"benefitType\":{\"code\":\"UNK\"}}";
+
+        ccdResponseDeserializer.deserializeBenefitDetailsJson(mapper.readTree(appealJson), new CcdResponse());
     }
 
     @Test
