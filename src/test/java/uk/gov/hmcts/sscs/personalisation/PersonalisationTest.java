@@ -27,6 +27,8 @@ import uk.gov.hmcts.sscs.service.MessageAuthenticationServiceImpl;
 
 public class PersonalisationTest {
 
+    private static final String CASE_ID = "54321";
+
     public Personalisation personalisation;
 
     @Mock
@@ -60,7 +62,7 @@ public class PersonalisationTest {
         Subscription appellantSubscription = new Subscription("Harry", "Kane", "Mr", "GLSCRR", "test@email.com",
                 "07983495065", true, false);
 
-        CcdResponse response = new CcdResponse(PIP, "1234", appellantSubscription, null, APPEAL_RECEIVED, null);
+        CcdResponse response = new CcdResponse(CASE_ID, PIP, "1234", appellantSubscription, null, APPEAL_RECEIVED, null);
         response.setEvents(new ArrayList() {{
                 add(event);
             }
@@ -89,7 +91,7 @@ public class PersonalisationTest {
     public void setAppealReceivedEventData() {
         Event event = new Event(dateTime, APPEAL_RECEIVED);
 
-        CcdResponse response = new CcdResponse(PIP,"1234", null, null, APPEAL_RECEIVED, null);
+        CcdResponse response = new CcdResponse(CASE_ID, PIP,"1234", null, null, APPEAL_RECEIVED, null);
 
         response.setEvents(new ArrayList() {{
                 add(event);
@@ -106,7 +108,7 @@ public class PersonalisationTest {
     public void setEvidenceReceivedEventData() {
         Event event = new Event(dateTime, EVIDENCE_RECEIVED);
 
-        CcdResponse response = new CcdResponse(PIP,"1234", null, null, EVIDENCE_RECEIVED, null);
+        CcdResponse response = new CcdResponse(CASE_ID, PIP,"1234", null, null, EVIDENCE_RECEIVED, null);
 
         response.setEvents(new ArrayList() {{
                 add(event);
@@ -126,7 +128,7 @@ public class PersonalisationTest {
         Subscription appellantSubscription = new Subscription("Harry", "Kane", "Mr", "GLSCRR", "test@email.com",
                 "07983495065", true, false);
 
-        CcdResponse response = new CcdResponse(PIP, "1234", appellantSubscription, null, EVIDENCE_RECEIVED, null);
+        CcdResponse response = new CcdResponse(CASE_ID, PIP, "1234", appellantSubscription, null, EVIDENCE_RECEIVED, null);
         response.setEvents(new ArrayList() {{
                 add(event1);
                 add(event2);
@@ -142,7 +144,7 @@ public class PersonalisationTest {
     public void setPostponementEventData() {
         Event event = new Event(dateTime, POSTPONEMENT);
 
-        CcdResponse response = new CcdResponse(PIP,"1234", null, null, POSTPONEMENT, null);
+        CcdResponse response = new CcdResponse(CASE_ID, PIP,"1234", null, null, POSTPONEMENT, null);
 
         response.setEvents(new ArrayList() {{
                 add(event);
@@ -156,7 +158,7 @@ public class PersonalisationTest {
 
     @Test
     public void handleNullEventWhenPopulatingEventData() {
-        CcdResponse response = new CcdResponse(PIP,"1234", null, null, POSTPONEMENT, null);
+        CcdResponse response = new CcdResponse(CASE_ID, PIP,"1234", null, null, POSTPONEMENT, null);
 
         Map<String, String> result = personalisation.setEventData(new HashMap<>(), response);
 
@@ -165,7 +167,7 @@ public class PersonalisationTest {
 
     @Test
     public void handleEmptyEventsWhenPopulatingEventData() {
-        CcdResponse response = new CcdResponse(PIP,"1234", null, null, POSTPONEMENT, null);
+        CcdResponse response = new CcdResponse(CASE_ID, PIP,"1234", null, null, POSTPONEMENT, null);
 
         response.setEvents(new ArrayList());
 

@@ -194,7 +194,8 @@ public class CcdResponseDeserializerTest {
                             + "\"name\": \"Prudential House\",\"address\": {\"line1\": \"36 Dale Street\",\"line2\": \"\","
                             + "\"town\": \"Liverpool\",\"county\": \"Merseyside\",\"postcode\": \"L2 5UZ\"},"
                         + "\"googleMapLink\": \"https://www.google.com/theAddress\"}}}]"
-                + "}"
+                + "},"
+                + "\"id\": \"123456789\""
             + "},"
             + "\"event_id\": \"appealReceived\"}";
 
@@ -224,6 +225,7 @@ public class CcdResponseDeserializerTest {
         assertEquals("Merseyside", hearing.getVenueCounty());
         assertEquals("L2 5UZ", hearing.getVenuePostcode());
         assertEquals("https://www.google.com/theAddress", hearing.getVenueGoogleMapUrl());
+        assertEquals("123456789", ccdResponse.getCaseId());
     }
 
     @Test
@@ -234,13 +236,15 @@ public class CcdResponseDeserializerTest {
                 + "\"supporterSubscription\":{\"tya\":\"232929249492\",\"email\":\"supporter@live.co.uk\",\"mobile\":\"07925289702\",\"reason\":null,\"subscribeSms\":\"Yes\",\"subscribeEmail\":\"No\"}},"
                 + "\"caseReference\":\"SC/1234/23\",\"appeal\":{"
                 + "\"appellant\":{\"name\":{\"title\":\"Mr\",\"lastName\":\"Vasquez\",\"firstName\":\"Dexter\",\"middleName\":\"Ali Sosa\"}},"
-                + "\"supporter\":{\"name\":{\"title\":\"Mrs\",\"lastName\":\"Wilder\",\"firstName\":\"Amber\",\"middleName\":\"Clark Eaton\"}}}}},"
+                + "\"supporter\":{\"name\":{\"title\":\"Mrs\",\"lastName\":\"Wilder\",\"firstName\":\"Amber\",\"middleName\":\"Clark Eaton\"}}}},"
+                + "\"id\": \"123456789\"},"
                 + "\"case_details_before\":{\"case_data\":{\"subscriptions\":{"
                 + "\"appellantSubscription\":{\"tya\":\"123456\",\"email\":\"old@email.com\",\"mobile\":\"07543534345\",\"reason\":null,\"subscribeSms\":\"No\",\"subscribeEmail\":\"Yes\"},"
                 + "\"supporterSubscription\":{\"tya\":\"232929249492\",\"email\":\"supporter@gmail.co.uk\",\"mobile\":\"07925267702\",\"reason\":null,\"subscribeSms\":\"Yes\",\"subscribeEmail\":\"No\"}},"
                 + "\"caseReference\":\"SC/5432/89\",\"appeal\":{"
                 + "\"appellant\":{\"name\":{\"title\":\"Mr\",\"lastName\":\"Smith\",\"firstName\":\"Jeremy\",\"middleName\":\"Rupert\"}},"
-                + "\"supporter\":{\"name\":{\"title\":\"Mr\",\"lastName\":\"Redknapp\",\"firstName\":\"Harry\",\"middleName\":\"Winston\"}}}}},"
+                + "\"supporter\":{\"name\":{\"title\":\"Mr\",\"lastName\":\"Redknapp\",\"firstName\":\"Harry\",\"middleName\":\"Winston\"}}}},"
+                + "\"id\": \"523456789\"},"
                 + "\"event_id\": \"appealReceived\"\n}";
 
         CcdResponseWrapper wrapper = mapper.readValue(json, CcdResponseWrapper.class);
@@ -262,6 +266,7 @@ public class CcdResponseDeserializerTest {
         assertTrue(newCcdResponse.getSupporterSubscription().isSubscribeSms());
         assertFalse(newCcdResponse.getSupporterSubscription().isSubscribeEmail());
         assertEquals("SC/1234/23", newCcdResponse.getCaseReference());
+        assertEquals("123456789", newCcdResponse.getCaseId());
 
         CcdResponse oldCcdResponse = wrapper.getOldCcdResponse();
 
@@ -280,6 +285,7 @@ public class CcdResponseDeserializerTest {
         assertTrue(oldCcdResponse.getSupporterSubscription().isSubscribeSms());
         assertFalse(oldCcdResponse.getSupporterSubscription().isSubscribeEmail());
         assertEquals("SC/5432/89", oldCcdResponse.getCaseReference());
+        assertEquals("523456789", oldCcdResponse.getCaseId());
     }
 
     @Test

@@ -45,19 +45,24 @@ public class CcdResponseDeserializer extends StdDeserializer<CcdResponseWrapper>
         JsonNode caseNode = getNode(caseDetailsNode, "case_data");
 
         if (caseNode != null) {
-            newCcdResponse = deserializeCaseNode(caseNode);
-            newCcdResponse.setNotificationType(EventType.getNotificationById(getField(node, "event_id")));
+            newCcdResponse = createCcdResponseFromNode(caseNode, node, caseDetailsNode);
         }
 
         JsonNode oldCaseDetailsNode = getNode(node, "case_details_before");
         JsonNode oldCaseNode = getNode(oldCaseDetailsNode, "case_data");
 
         if (oldCaseNode != null) {
-            oldCcdResponse = deserializeCaseNode(oldCaseNode);
-            oldCcdResponse.setNotificationType(EventType.getNotificationById(getField(node, "event_id")));
+            oldCcdResponse = createCcdResponseFromNode(oldCaseNode, node, oldCaseDetailsNode);
         }
 
         return new CcdResponseWrapper(newCcdResponse, oldCcdResponse);
+    }
+
+    private CcdResponse createCcdResponseFromNode(JsonNode caseNode, JsonNode node, JsonNode caseDetailsNode) {
+        CcdResponse ccdResponse = deserializeCaseNode(caseNode);
+        ccdResponse.setNotificationType(EventType.getNotificationById(getField(node, "event_id")));
+        ccdResponse.setCaseId(getField(caseDetailsNode, "id"));
+        return ccdResponse;
     }
 
     public CcdResponse deserializeCaseNode(JsonNode caseNode) {
