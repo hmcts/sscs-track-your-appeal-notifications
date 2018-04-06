@@ -20,7 +20,6 @@ import org.mockito.Mock;
 import org.springframework.test.util.ReflectionTestUtils;
 import uk.gov.hmcts.sscs.client.RestClient;
 import uk.gov.hmcts.sscs.domain.CcdResponse;
-import uk.gov.hmcts.sscs.domain.Subscription;
 import uk.gov.hmcts.sscs.domain.notify.Event;
 import uk.gov.hmcts.sscs.domain.notify.EventType;
 
@@ -40,9 +39,7 @@ public class ReminderServiceTest {
     @Test
     public void createReminderFromCcdResponse() throws Exception {
         CcdResponse ccdResponse = new CcdResponse();
-        Subscription subscription = new Subscription();
-        subscription.setAppealNumber("123456");
-        ccdResponse.setAppellantSubscription(subscription);
+        ccdResponse.setCaseId("123456");
         ccdResponse.setNotificationType(EventType.DWP_RESPONSE_RECEIVED);
         ZonedDateTime dateTime = ZonedDateTime.of(LocalDate.of(2018, 4, 1), LocalTime.of(0, 0), ZoneId.of(ZONE_ID));
 
@@ -62,8 +59,8 @@ public class ReminderServiceTest {
         JSONObject j = (JSONObject) captor.getValue();
 
         JSONObject expectedBodyJson = new JSONObject();
-        expectedBodyJson.put("appealNumber", "123456");
-        expectedBodyJson.put("reminderType", "evidenceReminder");
+        expectedBodyJson.put("caseId", "123456");
+        expectedBodyJson.put("eventId", "evidenceReminder");
 
         assertEquals("SSCS_evidenceReminder", j.get("name"));
         assertEquals("www.test.com", ((JSONObject) j.get("action")).get("url"));

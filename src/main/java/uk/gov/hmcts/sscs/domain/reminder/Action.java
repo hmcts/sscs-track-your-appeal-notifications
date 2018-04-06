@@ -14,10 +14,10 @@ public class Action {
         this.method = "POST";
     }
 
-    private String createJsonBody(String appealNumber, String reminderType) {
+    private String createJsonBody(String caseId, String reminderType) {
         JSONObject json = new JSONObject();
-        json.put("appealNumber", appealNumber);
-        json.put("reminderType", reminderType);
+        json.put("caseId", caseId);
+        json.put("eventId", reminderType);
 
         return json.toString();
     }
