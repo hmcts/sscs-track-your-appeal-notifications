@@ -60,8 +60,8 @@ public class SubscriptionPersonalisationTest {
         oldAppellantSubscription = new Subscription("Harry", "Kane", "Mr", "GLSCRR", "test@email.com",
                 "07983495065", false, false);
 
-        newCcdResponse = new CcdResponse(PIP,"1234", newAppellantSubscription, null, SUBSCRIPTION_UPDATED, null);
-        oldCcdResponse = new CcdResponse(PIP,"5432", oldAppellantSubscription, null, SUBSCRIPTION_UPDATED, null);
+        newCcdResponse = new CcdResponse("54321", PIP,"1234", newAppellantSubscription, null, SUBSCRIPTION_UPDATED, null);
+        oldCcdResponse = new CcdResponse("54321", PIP,"5432", oldAppellantSubscription, null, SUBSCRIPTION_UPDATED, null);
     }
 
     @Test

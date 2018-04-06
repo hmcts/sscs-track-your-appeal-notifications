@@ -120,7 +120,8 @@
       }
     },
     "case_type_id": "Benefit",
-    "state": "appealCreated"
+    "state": "appealCreated",
+    "id": "12345656789"
   },
   "case_details_before": {
     "after_submit_callback_response": null,
@@ -225,7 +226,8 @@
       }
     },
     "case_type_id": "Benefit",
-    "state": "appealCreated"
+    "state": "appealCreated",
+    "id": "12345656789"
   },
   "event_id": "appealReceived"
 }

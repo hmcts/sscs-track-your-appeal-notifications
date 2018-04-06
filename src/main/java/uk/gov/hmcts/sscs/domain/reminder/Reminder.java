@@ -21,7 +21,7 @@ public class Reminder {
     public Reminder(CcdResponse ccdResponse, String callbackUrl) {
         String reminderType = findReminderType(ccdResponse.getNotificationType()).getId();
         this.name = NAME_PREFIX + reminderType;
-        this.action = new Action(ccdResponse.getAppellantSubscription().getAppealNumber(), reminderType, callbackUrl);
+        this.action = new Action(ccdResponse.getCaseId(), reminderType, callbackUrl);
         this.trigger = new Trigger(findReminderDate(ccdResponse));
     }
 
