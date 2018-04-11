@@ -41,15 +41,15 @@ public class UpdateExistingCaseTest {
                 .idamOauth2Token(idamService.getIdamOauth2Token())
                 .build();
 
-        String requestBody = generateString("UpdateCase.json");
-
-        RestAssured.baseURI = "https://ccd-data-store-api-aat.service.core-compute-aat.internal";
-                given().
-                contentType(ContentType.JSON).
-                body(requestBody).
-                when().
-                post("\"caseworkers/6687/jurisdictions/SSCS/case-types/Benefit/cases/:case_reference\"").
-                then().assertThat().statusCode(200);
+//        String requestBody = generateString("UpdateCase.json");
+//
+//        RestAssured.baseURI = "https://ccd-data-store-api-aat.service.core-compute-aat.internal";
+//                given().
+//                contentType(ContentType.JSON).
+//                body(requestBody).
+//                when().
+//                post("\"caseworkers/6687/jurisdictions/SSCS/case-types/Benefit/cases/:case_reference\"").
+//                then().assertThat().statusCode(200);
 
 
     }
