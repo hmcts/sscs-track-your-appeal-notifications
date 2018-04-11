@@ -168,6 +168,8 @@ dependencies {
 
     compile group: 'com.sun.jersey', name: 'jersey-server', version: '1.19.4'
     compile group: 'com.sun.jersey', name: 'jersey-json', version: '1.19.4'
+    compile group: 'io.rest-assured', name: 'rest-assured', version: '3.0.0'
+    compile group: 'org.projectlombok', name: 'lombok', version: '1.16.20'
 
     testCompile group: 'org.springframework.boot', name: 'spring-boot-starter-test', version: versions.springBoot
 }
