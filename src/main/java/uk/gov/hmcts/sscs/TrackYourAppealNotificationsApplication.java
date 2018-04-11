@@ -15,7 +15,8 @@ import uk.gov.hmcts.sscs.client.RestClient;
 import uk.gov.hmcts.sscs.deserialize.CcdResponseDeserializer;
 import uk.gov.service.notify.NotificationClient;
 
-@EnableFeignClients(basePackageClasses = ServiceAuthorisationApi.class)
+//@EnableFeignClients(basePackageClasses = ServiceAuthorisationApi.class)
+@EnableFeignClients()
 @SpringBootApplication
 public class TrackYourAppealNotificationsApplication {
 
