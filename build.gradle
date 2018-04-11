@@ -163,6 +163,7 @@ dependencies {
 
     compile group: 'com.sun.jersey', name: 'jersey-server', version: '1.19.4'
     compile group: 'com.sun.jersey', name: 'jersey-json', version: '1.19.4'
+    compile group: 'io.rest-assured', name: 'rest-assured', version: '3.0.0'
     compile group: 'com.opencsv', name: 'opencsv', version: '4.1'
 
     compileOnly 'org.projectlombok:lombok:1.16.20'
