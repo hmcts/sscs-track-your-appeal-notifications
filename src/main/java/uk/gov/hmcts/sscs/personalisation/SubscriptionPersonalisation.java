@@ -6,11 +6,13 @@ import uk.gov.hmcts.sscs.domain.CcdResponse;
 import uk.gov.hmcts.sscs.domain.CcdResponseWrapper;
 import uk.gov.hmcts.sscs.domain.notify.EventType;
 import uk.gov.hmcts.sscs.service.MessageAuthenticationServiceImpl;
+import uk.gov.hmcts.sscs.service.RegionalProcessingCenterService;
 
 public class SubscriptionPersonalisation extends Personalisation {
 
-    public SubscriptionPersonalisation(NotificationConfig config, MessageAuthenticationServiceImpl macService) {
-        super(config, macService);
+    public SubscriptionPersonalisation(NotificationConfig config, MessageAuthenticationServiceImpl macService,
+                                       RegionalProcessingCenterService regionalProcessingCenterService) {
+        super(config, macService, regionalProcessingCenterService);
     }
 
     @Override

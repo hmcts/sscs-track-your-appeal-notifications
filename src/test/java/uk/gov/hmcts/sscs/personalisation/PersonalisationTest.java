@@ -23,16 +23,21 @@ import uk.gov.hmcts.sscs.config.NotificationConfig;
 import uk.gov.hmcts.sscs.domain.CcdResponse;
 import uk.gov.hmcts.sscs.domain.CcdResponseWrapper;
 import uk.gov.hmcts.sscs.domain.Evidence;
+import uk.gov.hmcts.sscs.domain.RegionalProcessingCenter;
 import uk.gov.hmcts.sscs.domain.Subscription;
 import uk.gov.hmcts.sscs.domain.notify.Event;
 import uk.gov.hmcts.sscs.domain.notify.Link;
 import uk.gov.hmcts.sscs.service.MessageAuthenticationServiceImpl;
+import uk.gov.hmcts.sscs.service.RegionalProcessingCenterService;
 
 public class PersonalisationTest {
 
     private static final String CASE_ID = "54321";
 
     public Personalisation personalisation;
+
+    @Mock
+    private RegionalProcessingCenterService regionalProcessingCenterService;
 
     @Mock
     private NotificationConfig config;
@@ -45,7 +50,7 @@ public class PersonalisationTest {
     @Before
     public void setup() {
         initMocks(this);
-        personalisation = new Personalisation(config, macService);
+        personalisation = new Personalisation(config, macService, regionalProcessingCenterService);
         when(config.getHmctsPhoneNumber()).thenReturn("01234543225");
         when(config.getManageEmailsLink()).thenReturn(new Link("http://manageemails.com/mac"));
         when(config.getTrackAppealLink()).thenReturn(new Link("http://tyalink.com/appeal_id"));
@@ -54,6 +59,10 @@ public class PersonalisationTest {
         when(config.getClaimingExpensesLink()).thenReturn(new Link("http://link.com/progress/appeal_id/expenses"));
         when(config.getHearingInfoLink()).thenReturn(new Link("http://link.com/progress/appeal_id/abouthearing"));
         when(macService.generateToken("GLSCRR", PIP.name())).thenReturn("ZYX");
+
+        RegionalProcessingCenter rpc = new RegionalProcessingCenter("LIVERPOOL", "HM Courts & Tribunals Service",
+                "Social Security & Child Support Appeals", "Prudential Buildings", "36 Dale Street", "L2 5UZ", "LIVERPOOL");
+        when(regionalProcessingCenterService.getByScReferenceCode("1234")).thenReturn(rpc);
 
         dateTime = ZonedDateTime.of(LocalDate.of(2018, 7, 1), LocalTime.of(0, 0), ZoneId.of(ZONE_ID));
     }
@@ -89,6 +98,14 @@ public class PersonalisationTest {
         assertEquals("http://link.com/progress/GLSCRR/expenses", result.get(CLAIMING_EXPENSES_LINK_LITERAL));
         assertEquals("http://link.com/progress/GLSCRR/abouthearing", result.get(HEARING_INFO_LINK_LITERAL));
         assertNull(result.get(EVIDENCE_RECEIVED_DATE_LITERAL));
+
+        assertEquals("HM Courts & Tribunals Service", result.get(REGIONAL_OFFICE_NAME_LITERAL));
+        assertEquals(DEPARTMENT_NAME_STRING, result.get(DEPARTMENT_NAME_LITERAL));
+        assertEquals("Social Security & Child Support Appeals", result.get(SUPPORT_CENTRE_NAME_LITERAL));
+        assertEquals("Prudential Buildings", result.get(ADDRESS_LINE_LITERAL));
+        assertEquals("36 Dale Street", result.get(TOWN_LITERAL));
+        assertEquals("LIVERPOOL", result.get(COUNTY_LITERAL));
+        assertEquals("L2 5UZ", result.get(POSTCODE_LITERAL));
     }
 
     @Test

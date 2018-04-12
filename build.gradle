@@ -168,6 +168,7 @@ dependencies {
 
     compile group: 'com.sun.jersey', name: 'jersey-server', version: '1.19.4'
     compile group: 'com.sun.jersey', name: 'jersey-json', version: '1.19.4'
+    compile group: 'com.opencsv', name: 'opencsv', version: '4.1'
 
     testCompile group: 'org.springframework.boot', name: 'spring-boot-starter-test', version: versions.springBoot
 }
