@@ -5,6 +5,7 @@ import lombok.Setter;
 import lombok.ToString;
 import org.springframework.boot.context.properties.ConfigurationProperties;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.http.MediaType;
 import org.springframework.validation.annotation.Validated;
 
 @Configuration
@@ -23,6 +24,7 @@ public class IdamProperties {
         private User user;
         private Client client;
         private String redirectUrl;
+        private MediaType contenttype;
 
         @Getter
         @Setter

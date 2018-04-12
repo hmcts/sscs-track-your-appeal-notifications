@@ -1,13 +1,14 @@
 package uk.gov.hmcts.sscs.service.idam;
 
+import java.util.Base64;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.MediaType;
 import org.springframework.stereotype.Service;
 import uk.gov.hmcts.reform.authorisation.generators.AuthTokenGenerator;
 import uk.gov.hmcts.sscs.config.properties.IdamProperties;
 import uk.gov.hmcts.sscs.models.idam.Authorize;
 
-import java.util.Base64;
 
 @Service
 @Slf4j
@@ -41,11 +42,12 @@ public class IdamService {
         );
 
         Authorize authorizeToken = idamApiClient.authorizeToken(
-            authorize.getCode(),
-            "authorization_code",
-            idamProperties.getOauth2().getRedirectUrl(),
-            idamProperties.getOauth2().getClient().getId(),
-            idamProperties.getOauth2().getClient().getSecret()
+                MediaType.APPLICATION_FORM_URLENCODED,
+                authorize.getCode(),
+                "authorization_code",
+                idamProperties.getOauth2().getRedirectUrl(),
+                idamProperties.getOauth2().getClient().getId(),
+                idamProperties.getOauth2().getClient().getSecret()
         );
 
         return "Bearer " + authorizeToken.getAccessToken();
