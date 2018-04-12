@@ -15,10 +15,12 @@ import uk.gov.hmcts.sscs.config.NotificationConfig;
 import uk.gov.hmcts.sscs.domain.CcdResponse;
 import uk.gov.hmcts.sscs.domain.CcdResponseWrapper;
 import uk.gov.hmcts.sscs.domain.Hearing;
+import uk.gov.hmcts.sscs.domain.RegionalProcessingCenter;
 import uk.gov.hmcts.sscs.domain.notify.Event;
 import uk.gov.hmcts.sscs.domain.notify.EventType;
 import uk.gov.hmcts.sscs.domain.notify.Template;
 import uk.gov.hmcts.sscs.service.MessageAuthenticationServiceImpl;
+import uk.gov.hmcts.sscs.service.RegionalProcessingCenterService;
 
 public class Personalisation {
 
@@ -26,10 +28,13 @@ public class Personalisation {
 
     private boolean sendSmsSubscriptionConfirmation;
     private final MessageAuthenticationServiceImpl macService;
+    private final RegionalProcessingCenterService regionalProcessingCenterService;
 
-    public Personalisation(NotificationConfig config, MessageAuthenticationServiceImpl macService) {
+    public Personalisation(NotificationConfig config, MessageAuthenticationServiceImpl macService,
+                           RegionalProcessingCenterService regionalProcessingCenterService) {
         this.config = config;
         this.macService = macService;
+        this.regionalProcessingCenterService = regionalProcessingCenterService;
     }
 
     public Map<String, String> create(CcdResponseWrapper responseWrapper) {
@@ -48,6 +53,7 @@ public class Personalisation {
                             ccdResponse.getBenefitType().name())));
             personalisation.put(TRACK_APPEAL_LINK_LITERAL, config.getTrackAppealLink() != null ? config.getTrackAppealLink().replace(APPEAL_ID_LITERAL, ccdResponse.getAppellantSubscription().getAppealNumber()) : null);
             personalisation.put(SUBMIT_EVIDENCE_LINK_LITERAL, config.getEvidenceSubmissionInfoLink().replace(APPEAL_ID, ccdResponse.getAppellantSubscription().getAppealNumber()));
+            personalisation.put(SUBMIT_EVIDENCE_INFO_LINK_LITERAL, config.getEvidenceSubmissionInfoLink().replace(APPEAL_ID_LITERAL, ccdResponse.getAppellantSubscription().getAppealNumber()));
             personalisation.put(CLAIMING_EXPENSES_LINK_LITERAL, config.getClaimingExpensesLink().replace(APPEAL_ID, ccdResponse.getAppellantSubscription().getAppealNumber()));
             personalisation.put(HEARING_INFO_LINK_LITERAL,
                     config.getHearingInfoLink().replace(APPEAL_ID_LITERAL, ccdResponse.getAppellantSubscription().getAppealNumber()));
@@ -65,6 +71,7 @@ public class Personalisation {
             personalisation.put(VENUE_MAP_LINK_LITERAL, latestHearing.getVenueGoogleMapUrl());
         }
 
+        setEvidenceProcessingAddress(personalisation, ccdResponse.getCaseReference());
         setEventData(personalisation, ccdResponse);
         setEvidenceReceivedNotificationData(personalisation, ccdResponse);
 
@@ -103,6 +110,19 @@ public class Personalisation {
 
     private Map<String, String> setPostponementDetails(Map<String, String> personalisation, Event event) {
         setHearingContactDate(personalisation, event);
+        return personalisation;
+    }
+
+    private Map<String, String> setEvidenceProcessingAddress(Map<String, String> personalisation, String appealNumber) {
+        RegionalProcessingCenter rpc = regionalProcessingCenterService.getByScReferenceCode(appealNumber);
+        personalisation.put(REGIONAL_OFFICE_NAME_LITERAL, rpc.getAddress1());
+        personalisation.put(DEPARTMENT_NAME_LITERAL, DEPARTMENT_NAME_STRING);
+        personalisation.put(SUPPORT_CENTRE_NAME_LITERAL, rpc.getAddress2());
+        personalisation.put(ADDRESS_LINE_LITERAL, rpc.getAddress3());
+        personalisation.put(TOWN_LITERAL, rpc.getAddress4());
+        personalisation.put(COUNTY_LITERAL, rpc.getCity());
+        personalisation.put(POSTCODE_LITERAL, rpc.getPostcode());
+
         return personalisation;
     }
 

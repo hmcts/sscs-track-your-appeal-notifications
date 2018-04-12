@@ -15,6 +15,7 @@ import org.mockito.Mock;
 import uk.gov.hmcts.sscs.config.NotificationConfig;
 import uk.gov.hmcts.sscs.domain.CcdResponse;
 import uk.gov.hmcts.sscs.domain.CcdResponseWrapper;
+import uk.gov.hmcts.sscs.domain.RegionalProcessingCenter;
 import uk.gov.hmcts.sscs.domain.Subscription;
 import uk.gov.hmcts.sscs.domain.notify.Event;
 import uk.gov.hmcts.sscs.domain.notify.Link;
@@ -23,6 +24,7 @@ import uk.gov.hmcts.sscs.domain.notify.Template;
 import uk.gov.hmcts.sscs.personalisation.Personalisation;
 import uk.gov.hmcts.sscs.personalisation.SubscriptionPersonalisation;
 import uk.gov.hmcts.sscs.service.MessageAuthenticationServiceImpl;
+import uk.gov.hmcts.sscs.service.RegionalProcessingCenterService;
 
 public class NotificationFactoryTest {
 
@@ -40,6 +42,9 @@ public class NotificationFactoryTest {
     private PersonalisationFactory personalisationFactory;
 
     @Mock
+    private RegionalProcessingCenterService regionalProcessingCenterService;
+
+    @Mock
     private NotificationConfig config;
 
     @Mock
@@ -48,8 +53,8 @@ public class NotificationFactoryTest {
     @Before
     public void setup() {
         initMocks(this);
-        personalisation = new Personalisation(config, macService);
-        subscriptionPersonalisation = new SubscriptionPersonalisation(config, macService);
+        personalisation = new Personalisation(config, macService, regionalProcessingCenterService);
+        subscriptionPersonalisation = new SubscriptionPersonalisation(config, macService, regionalProcessingCenterService);
         factory = new NotificationFactory(personalisationFactory);
         wrapper = new CcdResponseWrapper(new CcdResponse(CASE_ID, PIP,"SC/1234/5", new Subscription("Ronnie", "Scott", "Mr",
                 "ABC","test@testing.com", "07985858594", true, false), null, APPEAL_RECEIVED, null, null), null);
@@ -61,6 +66,9 @@ public class NotificationFactoryTest {
         when(config.getClaimingExpensesLink()).thenReturn(new Link("http://link.com/progress/appeal_id/expenses"));
         when(config.getHearingInfoLink()).thenReturn(new Link("http://link.com/progress/appeal_id/abouthearing"));
         when(macService.generateToken("ABC", PIP.name())).thenReturn("ZYX");
+
+        RegionalProcessingCenter rpc = new RegionalProcessingCenter("Venue", "HMCTS", "The Road", "Town", "City", "B23 1EH", "Birmingham");
+        when(regionalProcessingCenterService.getByScReferenceCode("SC/1234/5")).thenReturn(rpc);
     }
 
     @Test

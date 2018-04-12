@@ -26,7 +26,7 @@ public class PersonalisationFactoryTest {
     @Before
     public void setup() {
         initMocks(this);
-        factory = new PersonalisationFactory(config, macService);
+        factory = new PersonalisationFactory(config, macService, null);
     }
 
     @Test
