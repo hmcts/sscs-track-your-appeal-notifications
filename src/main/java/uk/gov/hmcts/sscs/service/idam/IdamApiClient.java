@@ -2,6 +2,7 @@ package uk.gov.hmcts.sscs.service.idam;
 
 import org.apache.http.HttpHeaders;
 import org.springframework.cloud.netflix.feign.FeignClient;
+import org.springframework.http.MediaType;
 import org.springframework.web.bind.annotation.RequestHeader;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
@@ -27,6 +28,7 @@ public interface IdamApiClient {
         value = "/oauth2/token"
     )
     Authorize authorizeToken(
+            @RequestHeader(HttpHeaders.CONTENT_TYPE) final MediaType contentType,
             @RequestParam("code") final String code,
             @RequestParam("grant_type") final String grantType,
             @RequestParam("redirect_uri") final String redirectUri,
