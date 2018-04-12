@@ -1,6 +1,7 @@
 package uk.gov.hmcts.sscs.personalisation;
 
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNull;
 import static org.mockito.Mockito.when;
 import static org.mockito.MockitoAnnotations.initMocks;
 import static uk.gov.hmcts.sscs.config.AppConstants.*;
@@ -13,6 +14,7 @@ import java.time.ZoneId;
 import java.time.ZonedDateTime;
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 import org.junit.Before;
 import org.junit.Test;
@@ -20,6 +22,7 @@ import org.mockito.Mock;
 import uk.gov.hmcts.sscs.config.NotificationConfig;
 import uk.gov.hmcts.sscs.domain.CcdResponse;
 import uk.gov.hmcts.sscs.domain.CcdResponseWrapper;
+import uk.gov.hmcts.sscs.domain.Evidence;
 import uk.gov.hmcts.sscs.domain.Subscription;
 import uk.gov.hmcts.sscs.domain.notify.Event;
 import uk.gov.hmcts.sscs.domain.notify.Link;
@@ -62,7 +65,7 @@ public class PersonalisationTest {
         Subscription appellantSubscription = new Subscription("Harry", "Kane", "Mr", "GLSCRR", "test@email.com",
                 "07983495065", true, false);
 
-        CcdResponse response = new CcdResponse(CASE_ID, PIP, "1234", appellantSubscription, null, APPEAL_RECEIVED, null);
+        CcdResponse response = new CcdResponse(CASE_ID, PIP, "1234", appellantSubscription, null, APPEAL_RECEIVED, null, null);
         response.setEvents(new ArrayList() {{
                 add(event);
             }
@@ -85,13 +88,37 @@ public class PersonalisationTest {
         assertEquals("http://link.com/GLSCRR", result.get(SUBMIT_EVIDENCE_LINK_LITERAL));
         assertEquals("http://link.com/progress/GLSCRR/expenses", result.get(CLAIMING_EXPENSES_LINK_LITERAL));
         assertEquals("http://link.com/progress/GLSCRR/abouthearing", result.get(HEARING_INFO_LINK_LITERAL));
+        assertNull(result.get(EVIDENCE_RECEIVED_DATE_LITERAL));
+    }
+
+    @Test
+    public void givenEvidenceReceivedNotification_customisePersonalisation() {
+        Event event = new Event(dateTime, APPEAL_RECEIVED);
+
+        Evidence evidence = new Evidence(dateTime.toLocalDate(), "Medical", "Caseworker");
+
+        List<Evidence> evidenceList = new ArrayList<>();
+        evidenceList.add(evidence);
+
+        Subscription appellantSubscription = new Subscription("Harry", "Kane", "Mr", "GLSCRR", "test@email.com",
+                "07983495065", true, false);
+
+        CcdResponse response = new CcdResponse(CASE_ID, PIP, "1234", appellantSubscription, null, EVIDENCE_RECEIVED, null, evidenceList);
+        response.setEvents(new ArrayList() {{
+                add(event);
+            }
+        });
+
+        Map<String, String> result = personalisation.create(new CcdResponseWrapper(response, null));
+
+        assertEquals("01 July 2018", result.get(EVIDENCE_RECEIVED_DATE_LITERAL));
     }
 
     @Test
     public void setAppealReceivedEventData() {
         Event event = new Event(dateTime, APPEAL_RECEIVED);
 
-        CcdResponse response = new CcdResponse(CASE_ID, PIP,"1234", null, null, APPEAL_RECEIVED, null);
+        CcdResponse response = new CcdResponse(CASE_ID, PIP,"1234", null, null, APPEAL_RECEIVED, null, null);
 
         response.setEvents(new ArrayList() {{
                 add(event);
@@ -106,45 +133,23 @@ public class PersonalisationTest {
 
     @Test
     public void setEvidenceReceivedEventData() {
-        Event event = new Event(dateTime, EVIDENCE_RECEIVED);
+        Evidence evidence = new Evidence(dateTime.toLocalDate(), "Medical", "Caseworker");
 
-        CcdResponse response = new CcdResponse(CASE_ID, PIP,"1234", null, null, EVIDENCE_RECEIVED, null);
+        List<Evidence> evidenceList = new ArrayList<>();
+        evidenceList.add(evidence);
 
-        response.setEvents(new ArrayList() {{
-                add(event);
-            }
-        });
+        CcdResponse response = new CcdResponse(CASE_ID, PIP,"1234", null, null, EVIDENCE_RECEIVED, null, evidenceList);
 
-        Map<String, String> result = personalisation.setEventData(new HashMap<>(), response);
+        Map<String, String> result = personalisation.setEvidenceReceivedNotificationData(new HashMap<>(), response);
 
         assertEquals("01 July 2018", result.get(EVIDENCE_RECEIVED_DATE_LITERAL));
-    }
-
-    @Test
-    public void setEvidenceReceivedEventDataWhenNotLatestEvent() {
-        Event event1 = new Event(dateTime, APPEAL_RECEIVED);
-        Event event2 = new Event(dateTime.minusDays(1), EVIDENCE_RECEIVED);
-
-        Subscription appellantSubscription = new Subscription("Harry", "Kane", "Mr", "GLSCRR", "test@email.com",
-                "07983495065", true, false);
-
-        CcdResponse response = new CcdResponse(CASE_ID, PIP, "1234", appellantSubscription, null, EVIDENCE_RECEIVED, null);
-        response.setEvents(new ArrayList() {{
-                add(event1);
-                add(event2);
-            }
-        });
-
-        Map<String, String> result = personalisation.setEventData(new HashMap<>(), response);
-
-        assertEquals("30 June 2018", result.get(EVIDENCE_RECEIVED_DATE_LITERAL));
     }
 
     @Test
     public void setPostponementEventData() {
         Event event = new Event(dateTime, POSTPONEMENT);
 
-        CcdResponse response = new CcdResponse(CASE_ID, PIP,"1234", null, null, POSTPONEMENT, null);
+        CcdResponse response = new CcdResponse(CASE_ID, PIP,"1234", null, null, POSTPONEMENT, null, null);
 
         response.setEvents(new ArrayList() {{
                 add(event);
@@ -158,7 +163,7 @@ public class PersonalisationTest {
 
     @Test
     public void handleNullEventWhenPopulatingEventData() {
-        CcdResponse response = new CcdResponse(CASE_ID, PIP,"1234", null, null, POSTPONEMENT, null);
+        CcdResponse response = new CcdResponse(CASE_ID, PIP,"1234", null, null, POSTPONEMENT, null, null);
 
         Map<String, String> result = personalisation.setEventData(new HashMap<>(), response);
 
@@ -167,7 +172,7 @@ public class PersonalisationTest {
 
     @Test
     public void handleEmptyEventsWhenPopulatingEventData() {
-        CcdResponse response = new CcdResponse(CASE_ID, PIP,"1234", null, null, POSTPONEMENT, null);
+        CcdResponse response = new CcdResponse(CASE_ID, PIP,"1234", null, null, POSTPONEMENT, null, null);
 
         response.setEvents(new ArrayList());
 

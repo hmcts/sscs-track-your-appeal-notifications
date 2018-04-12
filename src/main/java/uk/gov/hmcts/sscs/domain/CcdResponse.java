@@ -14,6 +14,7 @@ public class CcdResponse {
     private EventType notificationType;
     private List<Event> events;
     private List<Hearing> hearings;
+    private List<Evidence> evidences;
 
     public CcdResponse() {
         //
@@ -25,7 +26,8 @@ public class CcdResponse {
                        Subscription appellantSubscription,
                        Subscription supporterSubscription,
                        EventType notificationType,
-                       List<Hearing> hearings) {
+                       List<Hearing> hearings,
+                       List<Evidence> evidences) {
         this.caseId = caseId;
         this.benefitType = benefitType;
         this.caseReference = caseReference;
@@ -33,6 +35,7 @@ public class CcdResponse {
         this.supporterSubscription = supporterSubscription;
         this.notificationType = notificationType;
         this.hearings = hearings;
+        this.evidences = evidences;
     }
 
     public String getCaseId() {
@@ -99,6 +102,14 @@ public class CcdResponse {
         this.hearings = hearings;
     }
 
+    public List<Evidence> getEvidences() {
+        return evidences;
+    }
+
+    public void setEvidences(List<Evidence> evidences) {
+        this.evidences = evidences;
+    }
+
     @Override
     public String toString() {
         return "CcdResponse{"
@@ -109,6 +120,7 @@ public class CcdResponse {
                 + ", notificationType=" + notificationType
                 + ", events=" + events
                 + ", hearings=" + hearings
+                + ", evidences=" + evidences
                 + '}';
     }
 }

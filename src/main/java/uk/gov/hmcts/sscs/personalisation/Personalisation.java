@@ -4,6 +4,7 @@ import static com.google.common.collect.Lists.newArrayList;
 import static uk.gov.hmcts.sscs.config.AppConstants.*;
 import static uk.gov.hmcts.sscs.domain.notify.EventType.*;
 
+import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.HashMap;
@@ -58,13 +59,14 @@ public class Personalisation {
         if (ccdResponse.getHearings() != null && !ccdResponse.getHearings().isEmpty()) {
             Hearing latestHearing = ccdResponse.getHearings().get(0);
 
-            personalisation.put(HEARING_DATE, formatLocalDate(latestHearing.getHearingDateTime()));
+            personalisation.put(HEARING_DATE, formatLocalDate(latestHearing.getHearingDateTime().toLocalDate()));
             personalisation.put(HEARING_TIME, formatLocalTime(latestHearing.getHearingDateTime()));
             personalisation.put(VENUE_ADDRESS_LITERAL, formatAddress(latestHearing));
             personalisation.put(VENUE_MAP_LINK_LITERAL, latestHearing.getVenueGoogleMapUrl());
         }
 
         setEventData(personalisation, ccdResponse);
+        setEvidenceReceivedNotificationData(personalisation, ccdResponse);
 
         return personalisation;
     }
@@ -75,8 +77,6 @@ public class Personalisation {
             for (Event event : ccdResponse.getEvents()) {
                 if (ccdResponse.getNotificationType().equals(APPEAL_RECEIVED) && event.getEventType().equals(APPEAL_RECEIVED)) {
                     return setAppealReceivedDetails(personalisation, event);
-                } else if (ccdResponse.getNotificationType().equals(EVIDENCE_RECEIVED) && event.getEventType().equals(EVIDENCE_RECEIVED)) {
-                    return setEvidenceReceivedDetails(personalisation, event);
                 } else if (ccdResponse.getNotificationType().equals(POSTPONEMENT) && event.getEventType().equals(POSTPONEMENT)) {
                     return setPostponementDetails(personalisation, event);
                 }
@@ -85,15 +85,19 @@ public class Personalisation {
         return personalisation;
     }
 
-    private Map<String, String> setAppealReceivedDetails(Map<String, String> personalisation, Event event) {
-        String dwpResponseDateString = formatLocalDate(event.getDateTime().plusDays(MAX_DWP_RESPONSE_DAYS).toLocalDateTime());
-        personalisation.put(APPEAL_RESPOND_DATE, dwpResponseDateString);
-        setHearingContactDate(personalisation, event);
+    public Map<String, String> setEvidenceReceivedNotificationData(Map<String, String> personalisation, CcdResponse ccdResponse) {
+        if (ccdResponse.getNotificationType().equals(EVIDENCE_RECEIVED)) {
+            if (ccdResponse.getEvidences() != null && !ccdResponse.getEvidences().isEmpty()) {
+                personalisation.put(EVIDENCE_RECEIVED_DATE_LITERAL, formatLocalDate(ccdResponse.getEvidences().get(0).getDateReceived()));
+            }
+        }
         return personalisation;
     }
 
-    private Map<String, String> setEvidenceReceivedDetails(Map<String, String> personalisation, Event event) {
-        personalisation.put(EVIDENCE_RECEIVED_DATE_LITERAL, formatLocalDate(event.getDateTime().toLocalDateTime()));
+    private Map<String, String> setAppealReceivedDetails(Map<String, String> personalisation, Event event) {
+        String dwpResponseDateString = formatLocalDate(event.getDateTime().plusDays(MAX_DWP_RESPONSE_DAYS).toLocalDate());
+        personalisation.put(APPEAL_RESPOND_DATE, dwpResponseDateString);
+        setHearingContactDate(personalisation, event);
         return personalisation;
     }
 
@@ -115,7 +119,7 @@ public class Personalisation {
     }
 
     private  Map<String, String> setHearingContactDate(Map<String, String> personalisation, Event event) {
-        String hearingContactDate = formatLocalDate(event.getDateTime().plusDays(42).toLocalDateTime());
+        String hearingContactDate = formatLocalDate(event.getDateTime().plusDays(42).toLocalDate());
         personalisation.put(HEARING_CONTACT_DATE, hearingContactDate);
 
         return personalisation;
@@ -125,7 +129,7 @@ public class Personalisation {
         return macService.generateToken(id, benefitType);
     }
 
-    private String formatLocalDate(LocalDateTime date) {
+    private String formatLocalDate(LocalDate date) {
         return date.format(DateTimeFormatter.ofPattern(RESPONSE_DATE_FORMAT));
     }
 
