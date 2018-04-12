@@ -79,6 +79,8 @@ public class CcdResponseDeserializer extends StdDeserializer<CcdResponseWrapper>
         deserializeEventDetailsJson(caseNode, ccdResponse);
         deserializeHearingDetailsJson(caseNode, ccdResponse);
 
+        deserializeEvidenceDetailsJson(caseNode, ccdResponse);
+
         return ccdResponse;
     }
 
@@ -178,6 +180,33 @@ public class CcdResponseDeserializer extends StdDeserializer<CcdResponseWrapper>
             }
             Collections.sort(hearings, Collections.reverseOrder());
             ccdResponse.setHearings(hearings);
+        }
+
+        return ccdResponse;
+    }
+
+    public CcdResponse deserializeEvidenceDetailsJson(JsonNode caseNode, CcdResponse ccdResponse) {
+        JsonNode evidenceNode = getNode(caseNode, "evidence");
+
+        if (evidenceNode != null) {
+            final JsonNode documentsNode = evidenceNode.get("documents");
+
+            if (documentsNode != null && documentsNode.isArray()) {
+                List<Evidence> evidences = new ArrayList<>();
+                for (final JsonNode objNode : documentsNode) {
+
+                    Evidence evidence = new Evidence();
+                    JsonNode valueNode = getNode(objNode, "value");
+
+                    evidence.setDateReceived(LocalDate.parse(getField(valueNode, "dateReceived")));
+                    evidence.setEvidenceType(getField(valueNode, "evidenceType"));
+                    evidence.setEvidenceProvidedBy(getField(valueNode, "evidenceProvidedBy"));
+
+                    evidences.add(evidence);
+                }
+                Collections.sort(evidences, Collections.reverseOrder());
+                ccdResponse.setEvidences(evidences);
+            }
         }
 
         return ccdResponse;

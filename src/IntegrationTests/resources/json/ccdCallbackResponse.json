@@ -79,6 +79,17 @@
           }
         }
       },
+      "evidence": {
+        "documents":[
+          {
+            "value": {
+              "dateReceived":"2018-01-04",
+              "evidenceType":"Medical Evidence",
+              "evidenceProvidedBy":"Appellant"
+            }
+          }
+        ]
+      },
       "events": [
         {
           "id": "960c715a-e24e-46de-b4b6-33dfbecccddc",

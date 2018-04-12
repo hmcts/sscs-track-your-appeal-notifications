@@ -52,7 +52,7 @@ public class NotificationFactoryTest {
         subscriptionPersonalisation = new SubscriptionPersonalisation(config, macService);
         factory = new NotificationFactory(personalisationFactory);
         wrapper = new CcdResponseWrapper(new CcdResponse(CASE_ID, PIP,"SC/1234/5", new Subscription("Ronnie", "Scott", "Mr",
-                "ABC","test@testing.com", "07985858594", true, false), null, APPEAL_RECEIVED, null), null);
+                "ABC","test@testing.com", "07985858594", true, false), null, APPEAL_RECEIVED, null, null), null);
         when(config.getHmctsPhoneNumber()).thenReturn("01234543225");
         when(config.getManageEmailsLink()).thenReturn(new Link("http://manageemails.com/mac"));
         when(config.getTrackAppealLink()).thenReturn(new Link("http://tyalink.com/appeal_id"));
@@ -80,9 +80,9 @@ public class NotificationFactoryTest {
         when(config.getTemplate(SUBSCRIPTION_UPDATED.getId(), SUBSCRIPTION_CREATED.getId())).thenReturn(new Template(null, "123"));
 
         wrapper = new CcdResponseWrapper(new CcdResponse(CASE_ID, PIP,"SC/1234/5", new Subscription("Ronnie", "Scott", "Mr",
-                "ABC", "test@testing.com", "07985858594", true, false), null, SUBSCRIPTION_UPDATED, null),
+                "ABC", "test@testing.com", "07985858594", true, false), null, SUBSCRIPTION_UPDATED, null, null),
                 new CcdResponse(CASE_ID, PIP, "SC/1234/5", new Subscription("Ronnie", "Scott", "Mr", "ABC",
-                        "test@testing.com", "07985858594", false, false), null, SUBSCRIPTION_UPDATED, null));
+                        "test@testing.com", "07985858594", false, false), null, SUBSCRIPTION_UPDATED, null, null));
 
         Notification result = factory.create(wrapper);
 
@@ -96,9 +96,9 @@ public class NotificationFactoryTest {
 
         wrapper = new CcdResponseWrapper(new CcdResponse(CASE_ID, PIP, "SC/1234/5", new Subscription("Ronnie", "Scott",
                 "Mr", "ABC",
-                "test@testing.com", "07985858594", true, false), null, SUBSCRIPTION_UPDATED, null),
+                "test@testing.com", "07985858594", true, false), null, SUBSCRIPTION_UPDATED, null, null),
                 new CcdResponse(CASE_ID, PIP,"SC/1234/5", new Subscription("Ronnie", "Scott", "Mr", "ABC",
-                        "test@testing.com", "07985858594", true, false), null, SUBSCRIPTION_UPDATED, null));
+                        "test@testing.com", "07985858594", true, false), null, SUBSCRIPTION_UPDATED, null, null));
 
         Notification result = factory.create(wrapper);
 
@@ -112,11 +112,11 @@ public class NotificationFactoryTest {
 
         CcdResponse newResponse = new CcdResponse(CASE_ID, PIP, "SC/1234/5", new Subscription("Ronnie", "Scott", "Mr",
                 "ABC",
-                "test@testing.com", "07985858594", true, true), null, SUBSCRIPTION_UPDATED, null);
+                "test@testing.com", "07985858594", true, true), null, SUBSCRIPTION_UPDATED, null, null);
 
         CcdResponse oldResponse = new CcdResponse(CASE_ID, PIP,"SC/1234/5", new Subscription("Ronnie", "Scott", "Mr",
                 "ABC",
-                "test@testing.com", "07985858594", false, false), null, SUBSCRIPTION_UPDATED, null);
+                "test@testing.com", "07985858594", false, false), null, SUBSCRIPTION_UPDATED, null, null);
 
         Event event = new Event(ZonedDateTime.now(), APPEAL_RECEIVED);
         newResponse.setEvents(new ArrayList() {{
@@ -138,11 +138,11 @@ public class NotificationFactoryTest {
 
         CcdResponse newResponse = new CcdResponse(CASE_ID, PIP,"SC/1234/5", new Subscription("Ronnie", "Scott", "Mr",
                 "ABC",
-                "test@testing.com", "07985858594", true, true), null, SUBSCRIPTION_UPDATED, null);
+                "test@testing.com", "07985858594", true, true), null, SUBSCRIPTION_UPDATED, null, null);
 
         CcdResponse oldResponse = new CcdResponse(CASE_ID, PIP,"SC/1234/5", new Subscription("Ronnie", "Scott", "Mr",
                 "ABC",
-                "test@testing.com", "07985858594", false, true), null, SUBSCRIPTION_UPDATED, null);
+                "test@testing.com", "07985858594", false, true), null, SUBSCRIPTION_UPDATED, null, null);
 
         Event event = new Event(ZonedDateTime.now(), APPEAL_RECEIVED);
 
@@ -165,11 +165,11 @@ public class NotificationFactoryTest {
 
         CcdResponse newResponse = new CcdResponse(CASE_ID, PIP,"SC/1234/5", new Subscription("Ronnie", "Scott", "Mr",
                 "ABC",
-                "changed@testing.com", "07985858594", true, true), null, SUBSCRIPTION_UPDATED, null);
+                "changed@testing.com", "07985858594", true, true), null, SUBSCRIPTION_UPDATED, null, null);
 
         CcdResponse oldResponse = new CcdResponse(CASE_ID, PIP,"SC/1234/5", new Subscription("Ronnie", "Scott", "Mr",
                 "ABC",
-                "test@testing.com", "07985858594", false, true), null, SUBSCRIPTION_UPDATED, null);
+                "test@testing.com", "07985858594", false, true), null, SUBSCRIPTION_UPDATED, null, null);
 
         Event event = new Event(ZonedDateTime.now(), APPEAL_RECEIVED);
 
