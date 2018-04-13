@@ -33,27 +33,44 @@ public class UpdateExistingCaseTest {
         String eventId = "updateContactDetails";
 
 
-        IdamTokens idamTokens = IdamTokens.builder()
-                .authenticationService(idamService.generateServiceAuthorization())
-                .idamOauth2Token(idamService.getIdamOauth2Token())
-                .build();
+//        IdamTokens idamTokens = IdamTokens.builder()
+//                .authenticationService(idamService.generateServiceAuthorization())
+//                .idamOauth2Token(idamService.getIdamOauth2Token())
+//                .build();
+//
+//
 
 
-        String requestBody = generateString("UpdateCase.json");
+        String code = RestAssured
+                .given()
+                .headers("Authorization", "Basic ZWR3YXJkLmJlbnNvbkBobWN0cy5uZXQ6cGFzc3dvcmQ=")
+                .when().post("http://localhost:4501/oauth2/authorize?response_type=code&client_id=sscs&redirect_uri=https://localhost:9000/poc&continue-url=https://localhost:9000/poc")
+                .then().extract().jsonPath().get("code");
+
+        System.out.println("Jwt token is....." + code);
+
+         String accessToken = RestAssured
+                .given()
+                 .headers("Content-Type", "application/x-www-form-urlencoded")
+                .when().post("http://localhost:4501/oauth2/token?code=" + code + "&client_secret=QM5RQQ53LZFOSIXJ&client_id=sscs&redirect_uri=https://localhost:9000/poc&grant_type=authorization_code")
+                .then().extract().jsonPath().get("access_token");
+
+         System.out.println("The value of token is: ....." + accessToken );
+
+//        String requestBody = generateString("UpdateCase.json");
 
         RestAssured.baseURI = "http://localhost:4451";
         given()
-        .header("idamOauth2Token", idamTokens.getIdamOauth2Token())
-        .header("serviceAuthorization", idamTokens.getAuthenticationService())
-        .contentType(ContentType.JSON)
-        .body(requestBody)
-        .when()
-        .get("/caseworkers/{userId}/jurisdictions/{jurisdictionId}/case-types/{caseType}/event-triggers/" + eventId + "/tokens")
-        .then().assertThat().statusCode(200).log().all();
+                .header("idamOauth2Token", accessToken)
+                .header("serviceAuthorization", "AAAAAAAAAAAAAAAC")
+                .when()
+                .get("/caseworkers/16/jurisdictions/sscs/case-types/benefit/cases/1523358358599932")
+                .then().assertThat().statusCode(200).log().all();
+
     }
 
-    public static String generateString(String filename) throws IOException {
-        String filePath = System.getProperty("user.dir") + "\\json\\" + filename;
-        return new String(Files.readAllBytes(Paths.get(filePath)));
-    }
+//    public static String generateString(String filename) throws IOException {
+//        String filePath = System.getProperty("user.dir") + "\\json\\" + filename;
+//        return new String(Files.readAllBytes(Paths.get(filePath)));
+//    }
 }
