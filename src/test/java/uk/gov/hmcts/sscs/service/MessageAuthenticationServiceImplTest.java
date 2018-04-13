@@ -6,7 +6,6 @@ import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.runners.MockitoJUnitRunner;
-import uk.gov.hmcts.sscs.domain.Subscription;
 
 @RunWith(MockitoJUnitRunner.class)
 public class MessageAuthenticationServiceImplTest {
@@ -20,9 +19,6 @@ public class MessageAuthenticationServiceImplTest {
 
     @Test
     public void shouldGenerateMacUsingSecureAlgorithmAndReturnBenefitType() {
-
-        Subscription subscription = new Subscription();
-        subscription.setAppealNumber("u6ml9e");
 
         String startEncryptedToken = service.generateToken("3", "002").substring(0, 9);
 

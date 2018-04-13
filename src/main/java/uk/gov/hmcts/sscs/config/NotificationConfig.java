@@ -30,27 +30,27 @@ public class NotificationConfig {
     }
 
     public Link getManageEmailsLink() {
-        return new Link(manageEmailsLink);
+        return Link.builder().linkUrl(manageEmailsLink).build();
     }
 
     public Link getTrackAppealLink() {
-        return new Link(trackAppealLink);
+        return Link.builder().linkUrl(trackAppealLink).build();
     }
 
     public Link getEvidenceSubmissionInfoLink() {
-        return new Link(evidenceSubmissionInfoLink);
+        return Link.builder().linkUrl(evidenceSubmissionInfoLink).build();
     }
 
     public Link getClaimingExpensesLink() {
-        return new Link(claimingExpensesLink);
+        return Link.builder().linkUrl(claimingExpensesLink).build();
     }
 
     public Link getHearingInfoLink() {
-        return new Link(hearingInfoLink);
+        return Link.builder().linkUrl(hearingInfoLink).build();
     }
 
     public Template getTemplate(String emailTemplateName, String smsTemplateName) {
-        return new Template(env.getProperty("notification." + emailTemplateName + ".emailId"),
-                env.getProperty("notification." + smsTemplateName + ".smsId"));
+        return Template.builder().emailTemplateId(env.getProperty("notification." + emailTemplateName + ".emailId"))
+                .smsTemplateId(env.getProperty("notification." + smsTemplateName + ".smsId")).build();
     }
 }

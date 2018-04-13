@@ -5,11 +5,13 @@ import static uk.gov.hmcts.sscs.domain.notify.EventType.DWP_RESPONSE_RECEIVED;
 import static uk.gov.hmcts.sscs.domain.notify.EventType.EVIDENCE_REMINDER;
 
 import java.time.ZonedDateTime;
+import lombok.Value;
 import uk.gov.hmcts.sscs.domain.CcdResponse;
 import uk.gov.hmcts.sscs.domain.notify.Event;
 import uk.gov.hmcts.sscs.domain.notify.EventType;
 import uk.gov.hmcts.sscs.exception.ReminderException;
 
+@Value
 public class Reminder {
 
     private String name;
@@ -52,17 +54,4 @@ public class Reminder {
         LOG.error("Reminder date not found", reminderException);
         throw reminderException;
     }
-
-    public String getName() {
-        return name;
-    }
-
-    public Action getAction() {
-        return action;
-    }
-
-    public Trigger getTrigger() {
-        return trigger;
-    }
-
 }
