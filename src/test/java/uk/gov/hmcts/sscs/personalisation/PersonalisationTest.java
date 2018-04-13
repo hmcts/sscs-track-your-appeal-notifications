@@ -60,9 +60,11 @@ public class PersonalisationTest {
         when(config.getHearingInfoLink()).thenReturn(Link.builder().linkUrl("http://link.com/progress/appeal_id/abouthearing").build());
         when(macService.generateToken("GLSCRR", PIP.name())).thenReturn("ZYX");
 
-        RegionalProcessingCenter rpc = new RegionalProcessingCenter("LIVERPOOL", "HM Courts & Tribunals Service",
-                "Social Security & Child Support Appeals", "Prudential Buildings", "36 Dale Street", "L2 5UZ", "LIVERPOOL");
-        when(regionalProcessingCenterService.getByScReferenceCode("1234")).thenReturn(rpc);
+        RegionalProcessingCenter rpc = new RegionalProcessingCenter();
+        rpc.createRegionalProcessingCenter("LIVERPOOL", "HM Courts & Tribunals Service", "Social Security & Child Support Appeals",
+                "Prudential Buildings", "36 Dale Street", "L2 5UZ", "LIVERPOOL");
+
+        when(regionalProcessingCenterService.getByScReferenceCode("SC/1234/5")).thenReturn(rpc);
 
         dateTime = ZonedDateTime.of(LocalDate.of(2018, 7, 1), LocalTime.of(0, 0), ZoneId.of(ZONE_ID));
     }

@@ -55,7 +55,6 @@ public class NotificationFactoryTest {
 
     private Subscription subscription;
 
-    //TODO: Maybe sort out these objects as repeating stuff
     @Before
     public void setup() {
         initMocks(this);
@@ -81,7 +80,8 @@ public class NotificationFactoryTest {
         when(config.getHearingInfoLink()).thenReturn(Link.builder().linkUrl("http://link.com/progress/appeal_id/abouthearing").build());
         when(macService.generateToken("ABC", PIP.name())).thenReturn("ZYX");
 
-        RegionalProcessingCenter rpc = new RegionalProcessingCenter("Venue", "HMCTS", "The Road", "Town", "City", "B23 1EH", "Birmingham");
+        RegionalProcessingCenter rpc = new RegionalProcessingCenter();
+        rpc.createRegionalProcessingCenter("Venue", "HMCTS", "The Road", "Town", "City", "B23 1EH", "Birmingham");
         when(regionalProcessingCenterService.getByScReferenceCode("SC/1234/5")).thenReturn(rpc);
     }
 

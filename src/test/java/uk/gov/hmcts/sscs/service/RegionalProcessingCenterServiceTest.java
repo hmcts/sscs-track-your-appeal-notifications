@@ -26,12 +26,11 @@ public class RegionalProcessingCenterServiceTest {
         regionalProcessingCenterService.init();
 
         //Then
-        Map<String, String> sccodeRegionalProcessingCentermap
-                = regionalProcessingCenterService.getSccodeRegionalProcessingCentermap();
-        assertThat(sccodeRegionalProcessingCentermap.size(), equalTo(244));
-        assertThat(sccodeRegionalProcessingCentermap.get("SC038"), equalTo("SSCS Birmingham"));
-        assertThat(sccodeRegionalProcessingCentermap.get("SC001"), equalTo("SSCS Leeds"));
-        assertThat(sccodeRegionalProcessingCentermap.get("SC293"), equalTo("SSCS Cardiff"));
+        Map<String, String> scCodeRegionalProcessingCenterMap = regionalProcessingCenterService.getScCodeRegionalProcessingCenterMap();
+        assertThat(scCodeRegionalProcessingCenterMap.size(), equalTo(244));
+        assertThat(scCodeRegionalProcessingCenterMap.get("SC038"), equalTo("SSCS Birmingham"));
+        assertThat(scCodeRegionalProcessingCenterMap.get("SC001"), equalTo("SSCS Leeds"));
+        assertThat(scCodeRegionalProcessingCenterMap.get("SC293"), equalTo("SSCS Cardiff"));
     }
 
     @Test
@@ -40,8 +39,7 @@ public class RegionalProcessingCenterServiceTest {
         regionalProcessingCenterService.init();
 
         //Then
-        Map<String, RegionalProcessingCenter> regionalProcessingCenterMap
-                = regionalProcessingCenterService.getRegionalProcessingCenterMap();
+        Map<String, RegionalProcessingCenter> regionalProcessingCenterMap = regionalProcessingCenterService.getRegionalProcessingCenterMap();
 
         assertThat(regionalProcessingCenterMap.size(), equalTo(6));
         RegionalProcessingCenter regionalProcessingCenter = regionalProcessingCenterMap.get(SSCS_LIVERPOOL);
@@ -61,8 +59,7 @@ public class RegionalProcessingCenterServiceTest {
         regionalProcessingCenterService.init();
 
         //When
-        RegionalProcessingCenter regionalProcessingCenter =
-                regionalProcessingCenterService.getByScReferenceCode(referenceNumber);
+        RegionalProcessingCenter regionalProcessingCenter = regionalProcessingCenterService.getByScReferenceCode(referenceNumber);
 
         //Then
         assertThat(regionalProcessingCenter.getName(), equalTo("LIVERPOOL"));
@@ -82,8 +79,7 @@ public class RegionalProcessingCenterServiceTest {
         regionalProcessingCenterService.init();
 
         //When
-        RegionalProcessingCenter regionalProcessingCenter =
-                regionalProcessingCenterService.getByScReferenceCode(referenceNumber);
+        RegionalProcessingCenter regionalProcessingCenter = regionalProcessingCenterService.getByScReferenceCode(referenceNumber);
 
         //Then
         assertThat(regionalProcessingCenter.getName(), equalTo("BIRMINGHAM"));
