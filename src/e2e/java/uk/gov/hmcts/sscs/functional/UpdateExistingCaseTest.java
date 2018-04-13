@@ -1,8 +1,13 @@
-package uk.gov.hmcts.reform.sscs.functional;
+package uk.gov.hmcts.sscs.functional;
 
+import static io.restassured.RestAssured.given;
+
+import io.restassured.RestAssured;
+import io.restassured.http.ContentType;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Paths;
+
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -21,27 +26,30 @@ public class UpdateExistingCaseTest {
     @Autowired
     private IdamService idamService;
 
+
     @Test
     public void updateCase() throws IOException {
+
+        String eventId = "updateContactDetails";
+
 
         IdamTokens idamTokens = IdamTokens.builder()
                 .authenticationService(idamService.generateServiceAuthorization())
                 .idamOauth2Token(idamService.getIdamOauth2Token())
                 .build();
 
-        //        String requestBody = generateString("UpdateCase.json");
-        //
-        //        RestAssured.baseURI = "https://ccd-data-store-api-aat.service.core-compute-aat.internal";
-        //        given().
-        //                relaxedHTTPSValidation().
-        //                header("Authorization", idamTokens).
-        //                contentType(ContentType.JSON).
-        //                body(requestBody).
-        //                when().
-        //                post("\"caseworkers/6687/jurisdictions/SSCS/case-types/Benefit/cases/:case_reference\"").
-        //                then().assertThat().statusCode(200);
 
+        String requestBody = generateString("UpdateCase.json");
 
+        RestAssured.baseURI = "http://localhost:4451";
+        given()
+        .header("idamOauth2Token", idamTokens.getIdamOauth2Token())
+        .header("serviceAuthorization", idamTokens.getAuthenticationService())
+        .contentType(ContentType.JSON)
+        .body(requestBody)
+        .when()
+        .get("/caseworkers/{userId}/jurisdictions/{jurisdictionId}/case-types/{caseType}/event-triggers/" + eventId + "/tokens")
+        .then().assertThat().statusCode(200).log().all();
     }
 
     public static String generateString(String filename) throws IOException {
