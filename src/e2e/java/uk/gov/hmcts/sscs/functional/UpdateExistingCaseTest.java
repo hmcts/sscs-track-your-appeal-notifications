@@ -7,12 +7,14 @@ import io.restassured.http.ContentType;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Paths;
+import java.util.Properties;
 
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.junit4.SpringRunner;
+import springfox.documentation.spring.web.json.Json;
 import uk.gov.hmcts.sscs.models.idam.IdamTokens;
 import uk.gov.hmcts.sscs.service.idam.IdamService;
 
@@ -58,14 +60,28 @@ public class UpdateExistingCaseTest {
          System.out.println("The value of token is: ....." + accessToken );
 
 //        String requestBody = generateString("UpdateCase.json");
+        String s2sAuth = RestAssured
+                .given()
+//                .headers("Authorization", "Basic ZWR3YXJkLmJlbnNvbkBobWN0cy5uZXQ6cGFzc3dvcmQ=")
+                .when().post("http://localhost:4502/testing-support/lease?microservice=ccd_gw")
+                .then().extract().asString();
 
-        RestAssured.baseURI = "http://localhost:4451";
-        given()
-                .header("idamOauth2Token", accessToken)
-                .header("serviceAuthorization", "AAAAAAAAAAAAAAAC")
+        System.out.println("s2s token is....." + s2sAuth);
+
+
+        RestAssured.baseURI = "http://localhost:4452";
+      String ccdRespond =  RestAssured.given()
+                .header("authorization", "Bearer " + accessToken)
+                .header("Content-Type", "application/json")
+                .header("ServiceAuthorization", s2sAuth)
                 .when()
-                .get("/caseworkers/16/jurisdictions/sscs/case-types/benefit/cases/1523358358599932")
-                .then().assertThat().statusCode(200).log().all();
+                .get("/caseworkers/23/jurisdictions/SSCS/case-types/Benefit/cases/1523358358599932")
+                .then().assertThat().statusCode(200).log().all()
+              .extract().jsonPath().get().toString();
+
+      System.out.println("This is the ccd response body" + ccdRespond);
+
+
 
     }
 
