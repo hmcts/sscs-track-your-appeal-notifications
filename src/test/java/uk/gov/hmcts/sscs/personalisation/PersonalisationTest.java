@@ -58,6 +58,7 @@ public class PersonalisationTest {
         when(config.getManageEmailsLink()).thenReturn(Link.builder().linkUrl("http://link.com/manage-email-notifications/mac").build());
         when(config.getClaimingExpensesLink()).thenReturn(Link.builder().linkUrl("http://link.com/progress/appeal_id/expenses").build());
         when(config.getHearingInfoLink()).thenReturn(Link.builder().linkUrl("http://link.com/progress/appeal_id/abouthearing").build());
+        when(config.isJobSchedulerEnabled()).thenReturn(true);
         when(macService.generateToken("GLSCRR", PIP.name())).thenReturn("ZYX");
 
         RegionalProcessingCenter rpc = new RegionalProcessingCenter();
