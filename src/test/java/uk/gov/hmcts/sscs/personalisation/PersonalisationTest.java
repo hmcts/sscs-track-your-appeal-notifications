@@ -52,39 +52,51 @@ public class PersonalisationTest {
         initMocks(this);
         personalisation = new Personalisation(config, macService, regionalProcessingCenterService);
         when(config.getHmctsPhoneNumber()).thenReturn("01234543225");
-        when(config.getManageEmailsLink()).thenReturn(new Link("http://manageemails.com/mac"));
-        when(config.getTrackAppealLink()).thenReturn(new Link("http://tyalink.com/appeal_id"));
-        when(config.getEvidenceSubmissionInfoLink()).thenReturn(new Link("http://link.com/appeal_id"));
-        when(config.getManageEmailsLink()).thenReturn(new Link("http://link.com/manage-email-notifications/mac"));
-        when(config.getClaimingExpensesLink()).thenReturn(new Link("http://link.com/progress/appeal_id/expenses"));
-        when(config.getHearingInfoLink()).thenReturn(new Link("http://link.com/progress/appeal_id/abouthearing"));
+        when(config.getManageEmailsLink()).thenReturn(Link.builder().linkUrl("http://manageemails.com/mac").build());
+        when(config.getTrackAppealLink()).thenReturn(Link.builder().linkUrl("http://tyalink.com/appeal_id").build());
+        when(config.getEvidenceSubmissionInfoLink()).thenReturn(Link.builder().linkUrl("http://link.com/appeal_id").build());
+        when(config.getManageEmailsLink()).thenReturn(Link.builder().linkUrl("http://link.com/manage-email-notifications/mac").build());
+        when(config.getClaimingExpensesLink()).thenReturn(Link.builder().linkUrl("http://link.com/progress/appeal_id/expenses").build());
+        when(config.getHearingInfoLink()).thenReturn(Link.builder().linkUrl("http://link.com/progress/appeal_id/abouthearing").build());
         when(macService.generateToken("GLSCRR", PIP.name())).thenReturn("ZYX");
 
-        RegionalProcessingCenter rpc = new RegionalProcessingCenter("LIVERPOOL", "HM Courts & Tribunals Service",
-                "Social Security & Child Support Appeals", "Prudential Buildings", "36 Dale Street", "L2 5UZ", "LIVERPOOL");
-        when(regionalProcessingCenterService.getByScReferenceCode("1234")).thenReturn(rpc);
+        RegionalProcessingCenter rpc = new RegionalProcessingCenter();
+        rpc.createRegionalProcessingCenter("LIVERPOOL", "HM Courts & Tribunals Service", "Social Security & Child Support Appeals",
+                "Prudential Buildings", "36 Dale Street", "L2 5UZ", "LIVERPOOL");
+
+        when(regionalProcessingCenterService.getByScReferenceCode("SC/1234/5")).thenReturn(rpc);
 
         dateTime = ZonedDateTime.of(LocalDate.of(2018, 7, 1), LocalTime.of(0, 0), ZoneId.of(ZONE_ID));
     }
 
     @Test
     public void customisePersonalisation() {
-        Event event = new Event(dateTime, APPEAL_RECEIVED);
+        List<Event> events = new ArrayList<>();
+        events.add(Event.builder().dateTime(dateTime).eventType(APPEAL_RECEIVED).build());
 
-        Subscription appellantSubscription = new Subscription("Harry", "Kane", "Mr", "GLSCRR", "test@email.com",
-                "07983495065", true, false);
+        Subscription appellantSubscription = Subscription.builder()
+            .firstName("Harry")
+            .surname("Kane")
+            .title("Mr")
+            .appealNumber("GLSCRR")
+            .email("test@email.com")
+            .mobileNumber("07983495065")
+            .subscribeEmail(true)
+            .subscribeSms(false)
+            .build();
 
-        CcdResponse response = new CcdResponse(CASE_ID, PIP, "1234", appellantSubscription, null, APPEAL_RECEIVED, null, null);
-        response.setEvents(new ArrayList() {{
-                add(event);
-            }
-        });
+        CcdResponse response = CcdResponse.builder()
+            .caseId(CASE_ID).benefitType(PIP).caseReference("SC/1234/5")
+            .appellantSubscription(appellantSubscription)
+            .notificationType(APPEAL_RECEIVED)
+            .events(events)
+            .build();
 
-        Map<String, String> result = personalisation.create(new CcdResponseWrapper(response, null));
+        Map<String, String> result = personalisation.create(CcdResponseWrapper.builder().newCcdResponse(response).build());
 
         assertEquals("PIP benefit", result.get(BENEFIT_NAME_ACRONYM_LITERAL));
         assertEquals("Personal Independence Payment", result.get(BENEFIT_FULL_NAME_LITERAL));
-        assertEquals("1234", result.get(APPEAL_REF));
+        assertEquals("SC/1234/5", result.get(APPEAL_REF));
         assertEquals("GLSCRR", result.get(APPEAL_ID));
         assertEquals("Harry Kane", result.get(APPELLANT_NAME));
         assertEquals("01234543225", result.get(PHONE_NUMBER));
@@ -110,37 +122,51 @@ public class PersonalisationTest {
 
     @Test
     public void givenEvidenceReceivedNotification_customisePersonalisation() {
-        Event event = new Event(dateTime, APPEAL_RECEIVED);
+        List<Event> events = new ArrayList<>();
+        events.add(Event.builder().dateTime(dateTime).eventType(APPEAL_RECEIVED).build());
 
-        Evidence evidence = new Evidence(dateTime.toLocalDate(), "Medical", "Caseworker");
+        Evidence evidence = Evidence.builder()
+                .dateReceived(dateTime.toLocalDate())
+                .evidenceType("Medical")
+                .evidenceProvidedBy("Caseworker").build();
 
         List<Evidence> evidenceList = new ArrayList<>();
         evidenceList.add(evidence);
 
-        Subscription appellantSubscription = new Subscription("Harry", "Kane", "Mr", "GLSCRR", "test@email.com",
-                "07983495065", true, false);
+        Subscription appellantSubscription = Subscription.builder()
+                .firstName("Harry")
+                .surname("Kane")
+                .title("Mr")
+                .appealNumber("GLSCRR")
+                .email("test@email.com")
+                .mobileNumber("07983495065")
+                .subscribeEmail(true)
+                .subscribeSms(false)
+                .build();
 
-        CcdResponse response = new CcdResponse(CASE_ID, PIP, "1234", appellantSubscription, null, EVIDENCE_RECEIVED, null, evidenceList);
-        response.setEvents(new ArrayList() {{
-                add(event);
-            }
-        });
+        CcdResponse response = CcdResponse.builder()
+                .caseId(CASE_ID).benefitType(PIP).caseReference("SC/1234/5")
+                .appellantSubscription(appellantSubscription)
+                .notificationType(EVIDENCE_RECEIVED)
+                .events(events)
+                .evidences(evidenceList)
+                .build();
 
-        Map<String, String> result = personalisation.create(new CcdResponseWrapper(response, null));
+        Map<String, String> result = personalisation.create(CcdResponseWrapper.builder().newCcdResponse(response).build());
 
         assertEquals("01 July 2018", result.get(EVIDENCE_RECEIVED_DATE_LITERAL));
     }
 
     @Test
     public void setAppealReceivedEventData() {
-        Event event = new Event(dateTime, APPEAL_RECEIVED);
+        List<Event> events = new ArrayList<>();
+        events.add(Event.builder().dateTime(dateTime).eventType(APPEAL_RECEIVED).build());
 
-        CcdResponse response = new CcdResponse(CASE_ID, PIP,"1234", null, null, APPEAL_RECEIVED, null, null);
-
-        response.setEvents(new ArrayList() {{
-                add(event);
-            }
-        });
+        CcdResponse response = CcdResponse.builder()
+                .caseId(CASE_ID).benefitType(PIP).caseReference("SC/1234/5")
+                .notificationType(APPEAL_RECEIVED)
+                .events(events)
+                .build();
 
         Map<String, String> result = personalisation.setEventData(new HashMap<>(), response);
 
@@ -150,12 +176,19 @@ public class PersonalisationTest {
 
     @Test
     public void setEvidenceReceivedEventData() {
-        Evidence evidence = new Evidence(dateTime.toLocalDate(), "Medical", "Caseworker");
+        Evidence evidence = Evidence.builder()
+                .dateReceived(dateTime.toLocalDate())
+                .evidenceType("Medical")
+                .evidenceProvidedBy("Caseworker").build();
 
         List<Evidence> evidenceList = new ArrayList<>();
         evidenceList.add(evidence);
 
-        CcdResponse response = new CcdResponse(CASE_ID, PIP,"1234", null, null, EVIDENCE_RECEIVED, null, evidenceList);
+        CcdResponse response = CcdResponse.builder()
+                .caseId(CASE_ID).benefitType(PIP).caseReference("SC/1234/5")
+                .notificationType(EVIDENCE_RECEIVED)
+                .evidences(evidenceList)
+                .build();
 
         Map<String, String> result = personalisation.setEvidenceReceivedNotificationData(new HashMap<>(), response);
 
@@ -164,14 +197,14 @@ public class PersonalisationTest {
 
     @Test
     public void setPostponementEventData() {
-        Event event = new Event(dateTime, POSTPONEMENT);
+        List<Event> events = new ArrayList<>();
+        events.add(Event.builder().dateTime(dateTime).eventType(POSTPONEMENT).build());
 
-        CcdResponse response = new CcdResponse(CASE_ID, PIP,"1234", null, null, POSTPONEMENT, null, null);
-
-        response.setEvents(new ArrayList() {{
-                add(event);
-            }
-        });
+        CcdResponse response = CcdResponse.builder()
+                .caseId(CASE_ID).benefitType(PIP).caseReference("SC/1234/5")
+                .notificationType(POSTPONEMENT)
+                .events(events)
+                .build();
 
         Map<String, String> result = personalisation.setEventData(new HashMap<>(), response);
 
@@ -180,7 +213,10 @@ public class PersonalisationTest {
 
     @Test
     public void handleNullEventWhenPopulatingEventData() {
-        CcdResponse response = new CcdResponse(CASE_ID, PIP,"1234", null, null, POSTPONEMENT, null, null);
+        CcdResponse response = CcdResponse.builder()
+                .caseId(CASE_ID).benefitType(PIP).caseReference("SC/1234/5")
+                .notificationType(POSTPONEMENT)
+                .build();
 
         Map<String, String> result = personalisation.setEventData(new HashMap<>(), response);
 
@@ -189,9 +225,11 @@ public class PersonalisationTest {
 
     @Test
     public void handleEmptyEventsWhenPopulatingEventData() {
-        CcdResponse response = new CcdResponse(CASE_ID, PIP,"1234", null, null, POSTPONEMENT, null, null);
-
-        response.setEvents(new ArrayList());
+        CcdResponse response = CcdResponse.builder()
+                .caseId(CASE_ID).benefitType(PIP).caseReference("SC/1234/5")
+                .notificationType(POSTPONEMENT)
+                .events(new ArrayList())
+                .build();
 
         Map<String, String> result = personalisation.setEventData(new HashMap<>(), response);
 

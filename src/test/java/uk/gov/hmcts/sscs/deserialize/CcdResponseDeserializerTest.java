@@ -33,7 +33,9 @@ public class CcdResponseDeserializerTest {
 
         String appealJson = "{\"benefitType\":{\"code\":\"PIP\"}}";
 
-        CcdResponse ccdResponse = ccdResponseDeserializer.deserializeBenefitDetailsJson(mapper.readTree(appealJson), new CcdResponse());
+        CcdResponse ccdResponse = CcdResponse.builder().build();
+
+        ccdResponseDeserializer.deserializeBenefitDetailsJson(mapper.readTree(appealJson), ccdResponse);
 
         assertEquals(PIP, ccdResponse.getBenefitType());
     }
@@ -43,7 +45,7 @@ public class CcdResponseDeserializerTest {
 
         String appealJson = "{\"benefitType\":{\"code\":\"UNK\"}}";
 
-        ccdResponseDeserializer.deserializeBenefitDetailsJson(mapper.readTree(appealJson), new CcdResponse());
+        ccdResponseDeserializer.deserializeBenefitDetailsJson(mapper.readTree(appealJson), CcdResponse.builder().build());
     }
 
     @Test
@@ -52,7 +54,9 @@ public class CcdResponseDeserializerTest {
         String appealJson = "{\"appellant\":{\"name\":{\"title\":\"Mr\",\"lastName\":\"Vasquez\",\"firstName\":\"Dexter\",\"middleName\":\"Ali Sosa\"}}}";
         String subscriptionJson = "{\"appellantSubscription\":{\"tya\":\"543212345\",\"email\":\"test@testing.com\",\"mobile\":\"01234556634\",\"reason\":null,\"subscribeSms\":\"No\",\"subscribeEmail\":\"Yes\"}}";
 
-        CcdResponse ccdResponse = ccdResponseDeserializer.deserializeAppellantDetailsJson(mapper.readTree(appealJson), mapper.readTree(subscriptionJson), new CcdResponse());
+        CcdResponse ccdResponse = CcdResponse.builder().build();
+
+        ccdResponseDeserializer.deserializeAppellantDetailsJson(mapper.readTree(appealJson), mapper.readTree(subscriptionJson), ccdResponse);
 
         assertEquals("Dexter", ccdResponse.getAppellantSubscription().getFirstName());
         assertEquals("Vasquez", ccdResponse.getAppellantSubscription().getSurname());
@@ -69,7 +73,9 @@ public class CcdResponseDeserializerTest {
         String appealJson = "{\"supporter\":{\"name\":{\"title\":\"Mrs\",\"lastName\":\"Wilder\",\"firstName\":\"Amber\",\"middleName\":\"Eaton\"}}}";
         String subscriptionJson = "{\"supporterSubscription\":{\"tya\":\"232929249492\",\"email\":\"supporter@live.co.uk\",\"mobile\":\"07925289702\",\"reason\":null,\"subscribeSms\":\"Yes\",\"subscribeEmail\":\"No\"}}";
 
-        CcdResponse ccdResponse = ccdResponseDeserializer.deserializeSupporterDetailsJson(mapper.readTree(appealJson), mapper.readTree(subscriptionJson), new CcdResponse());
+        CcdResponse ccdResponse = CcdResponse.builder().build();
+
+        ccdResponseDeserializer.deserializeSupporterDetailsJson(mapper.readTree(appealJson), mapper.readTree(subscriptionJson), ccdResponse);
 
         assertEquals("Amber", ccdResponse.getSupporterSubscription().getFirstName());
         assertEquals("Wilder", ccdResponse.getSupporterSubscription().getSurname());
@@ -84,7 +90,9 @@ public class CcdResponseDeserializerTest {
     public void deserializeEventJson() throws IOException {
         String eventJson = "{\"events\": [{\"id\": \"bad54ab0-5d09-47ab-b9fd-c3d55cbaf56f\",\"value\": {\"date\": \"2018-01-19T12:54:12.000\",\"description\": null,\"type\": \"appealReceived\"}}]}";
 
-        CcdResponse ccdResponse = ccdResponseDeserializer.deserializeEventDetailsJson(mapper.readTree(eventJson), new CcdResponse());
+        CcdResponse ccdResponse = CcdResponse.builder().build();
+
+        ccdResponseDeserializer.deserializeEventDetailsJson(mapper.readTree(eventJson), ccdResponse);
 
         assertEquals(1, ccdResponse.getEvents().size());
         assertEquals(ZonedDateTime.of(LocalDate.of(2018, 1, 19), LocalTime.of(12, 54, 12), ZoneId.of(ZONE_ID)), ccdResponse.getEvents().get(0).getDateTime());
@@ -97,7 +105,9 @@ public class CcdResponseDeserializerTest {
                 + "{\"id\": \"12354ab0\",\"value\": {\"date\": \"2018-01-19T14:00:00.000\",\"description\": null,\"type\": \"appealWithdrawn\"}},\n"
                 + "{\"id\": \"87564ab0\",\"value\": {\"date\": \"2018-01-19T13:00:00.000\",\"description\": null,\"type\": \"appealLapsed\"}}]}";
 
-        CcdResponse ccdResponse = ccdResponseDeserializer.deserializeEventDetailsJson(mapper.readTree(eventJson), new CcdResponse());
+        CcdResponse ccdResponse = CcdResponse.builder().build();
+
+        ccdResponseDeserializer.deserializeEventDetailsJson(mapper.readTree(eventJson), ccdResponse);
 
         assertEquals(3, ccdResponse.getEvents().size());
 
@@ -117,7 +127,9 @@ public class CcdResponseDeserializerTest {
                 + "\"town\": \"Liverpool\",\"county\": \"Merseyside\",\"postcode\": \"L2 5UZ\"},"
                 + "\"googleMapLink\": \"https://www.google.com/theAddress\"}}}]}";
 
-        CcdResponse ccdResponse = ccdResponseDeserializer.deserializeHearingDetailsJson(mapper.readTree(hearingJson), new CcdResponse());
+        CcdResponse ccdResponse = CcdResponse.builder().build();
+
+        ccdResponseDeserializer.deserializeHearingDetailsJson(mapper.readTree(hearingJson), ccdResponse);
 
         assertEquals(1, ccdResponse.getHearings().size());
 
@@ -139,7 +151,9 @@ public class CcdResponseDeserializerTest {
                 + "\"town\": \"Liverpool\",\"county\": \"Merseyside\",\"postcode\": \"L2 5UZ\"},"
                 + "\"googleMapLink\": \"https://www.google.com/theAddress\"}}}]}";
 
-        CcdResponse ccdResponse = ccdResponseDeserializer.deserializeHearingDetailsJson(mapper.readTree(hearingJson), new CcdResponse());
+        CcdResponse ccdResponse = CcdResponse.builder().build();
+
+        ccdResponseDeserializer.deserializeHearingDetailsJson(mapper.readTree(hearingJson), ccdResponse);
 
         assertEquals(1, ccdResponse.getHearings().size());
 
@@ -165,7 +179,9 @@ public class CcdResponseDeserializerTest {
                 + "\"town\": \"Liverpool\",\"county\": \"Merseyside\",\"postcode\": \"L2 5UZ\"},"
                 + "\"googleMapLink\": \"https://www.google.com/theAddress\"}}}"
                 + "]}";
-        CcdResponse ccdResponse = ccdResponseDeserializer.deserializeHearingDetailsJson(mapper.readTree(hearingJson), new CcdResponse());
+        CcdResponse ccdResponse = CcdResponse.builder().build();
+
+        ccdResponseDeserializer.deserializeHearingDetailsJson(mapper.readTree(hearingJson), ccdResponse);
 
         assertEquals(3, ccdResponse.getHearings().size());
 

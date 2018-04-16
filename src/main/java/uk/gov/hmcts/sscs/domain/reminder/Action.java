@@ -1,7 +1,9 @@
 package uk.gov.hmcts.sscs.domain.reminder;
 
+import lombok.Value;
 import org.json.JSONObject;
 
+@Value
 public class Action {
 
     private String url;
@@ -21,17 +23,4 @@ public class Action {
 
         return json.toString();
     }
-
-    public String getUrl() {
-        return url;
-    }
-
-    public String getBody() {
-        return body;
-    }
-
-    public String getMethod() {
-        return method;
-    }
-
 }

@@ -28,11 +28,11 @@ public class NotificationControllerTest {
         initMocks(this);
 
         notificationController = new NotificationController(notificationService, authorisationService);
-        ccdResponseWrapper = new CcdResponseWrapper(new CcdResponse(), new CcdResponse());
+        ccdResponseWrapper = CcdResponseWrapper.builder().newCcdResponse(CcdResponse.builder().build()).oldCcdResponse(CcdResponse.builder().build()).build();
     }
 
     @Test
-    public void shouldCreateAndSendNotificationForCcdResponse() throws Exception {
+    public void shouldCreateAndSendNotificationForCcdResponse() {
         notificationController.sendNotification("", ccdResponseWrapper);
         verify(notificationService).createAndSendNotification(ccdResponseWrapper);
     }

@@ -5,6 +5,7 @@ import static org.mockito.Matchers.eq;
 import static org.mockito.Mockito.verify;
 import static org.mockito.MockitoAnnotations.initMocks;
 import static uk.gov.hmcts.sscs.config.AppConstants.ZONE_ID;
+import static uk.gov.hmcts.sscs.domain.notify.EventType.DWP_RESPONSE_RECEIVED;
 
 import java.time.LocalDate;
 import java.time.LocalTime;
@@ -21,7 +22,6 @@ import org.springframework.test.util.ReflectionTestUtils;
 import uk.gov.hmcts.sscs.client.RestClient;
 import uk.gov.hmcts.sscs.domain.CcdResponse;
 import uk.gov.hmcts.sscs.domain.notify.Event;
-import uk.gov.hmcts.sscs.domain.notify.EventType;
 
 public class ReminderServiceTest {
 
@@ -37,16 +37,15 @@ public class ReminderServiceTest {
     }
 
     @Test
-    public void createReminderFromCcdResponse() throws Exception {
-        CcdResponse ccdResponse = new CcdResponse();
-        ccdResponse.setCaseId("123456");
-        ccdResponse.setNotificationType(EventType.DWP_RESPONSE_RECEIVED);
+    public void createReminderFromCcdResponse() {
         ZonedDateTime dateTime = ZonedDateTime.of(LocalDate.of(2018, 4, 1), LocalTime.of(0, 0), ZoneId.of(ZONE_ID));
 
-        Event event = new Event(dateTime, EventType.DWP_RESPONSE_RECEIVED);
-        List<Event> events = new ArrayList();
-        events.add(event);
-        ccdResponse.setEvents(events);
+        List<Event> events = new ArrayList<>();
+        events.add(Event.builder().dateTime(dateTime).eventType(DWP_RESPONSE_RECEIVED).build());
+
+        CcdResponse ccdResponse = CcdResponse.builder()
+                .caseId("123456").notificationType(DWP_RESPONSE_RECEIVED).events(events)
+                .build();
 
         ReflectionTestUtils.setField(service, "callbackUrl", "www.test.com");
 

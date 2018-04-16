@@ -3,7 +3,11 @@ package uk.gov.hmcts.sscs.domain.notify;
 import static org.apache.commons.lang3.StringUtils.isNotBlank;
 
 import java.util.Map;
+import lombok.Builder;
+import lombok.Value;
 
+@Value
+@Builder
 public class Notification {
 
     private final Template template;

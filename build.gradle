@@ -8,6 +8,7 @@ plugins {
     id 'org.springframework.boot' version '1.5.10.RELEASE'
     id 'org.owasp.dependencycheck' version '3.1.1'
     id 'com.github.ben-manes.versions' version '0.17.0'
+    id 'net.ltgt.apt' version '0.14'
 }
 
 group = 'uk.gov.hmcts.reform'
@@ -169,6 +170,9 @@ dependencies {
     compile group: 'com.sun.jersey', name: 'jersey-server', version: '1.19.4'
     compile group: 'com.sun.jersey', name: 'jersey-json', version: '1.19.4'
     compile group: 'com.opencsv', name: 'opencsv', version: '4.1'
+
+    compileOnly 'org.projectlombok:lombok:1.16.20'
+    apt "org.projectlombok:lombok:1.16.20"
 
     testCompile group: 'org.springframework.boot', name: 'spring-boot-starter-test', version: versions.springBoot
 }

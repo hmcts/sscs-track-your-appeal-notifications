@@ -43,16 +43,18 @@ public class NotificationServiceTest {
     public void setup() {
         initMocks(this);
         notificationService = new NotificationService(client, factory, reminderService);
-        response = new CcdResponse();
-        response.setAppellantSubscription(new Subscription("", "", "", "", "", "", true, true));
-        response.setCaseReference("ABC123");
-        response.setNotificationType(APPEAL_WITHDRAWN);
-        wrapper = new CcdResponseWrapper(response, response);
+
+        Subscription appellantSubscription = Subscription.builder()
+                .firstName("Harry").surname("Kane").title("Mr").appealNumber("GLSCRR").email("test@email.com")
+                .mobileNumber("07983495065").subscribeEmail(true).subscribeSms(true).build();
+
+        response = CcdResponse.builder().appellantSubscription(appellantSubscription).caseReference("ABC123").notificationType(APPEAL_WITHDRAWN).build();
+        wrapper = CcdResponseWrapper.builder().newCcdResponse(response).oldCcdResponse(response).build();
     }
 
     @Test
     public void sendEmailToGovNotifyWhenNotificationIsAnEmailAndTemplateNotBlank() throws Exception {
-        Notification notification = new Notification(new Template("abc", null), new Destination("test@testing.com", null), null, new Reference(), null);
+        Notification notification = new Notification(Template.builder().emailTemplateId("abc").smsTemplateId(null).build(), Destination.builder().email("test@testing.com").sms(null).build(), null, new Reference(), null);
         when(factory.create(wrapper)).thenReturn(notification);
         notificationService.createAndSendNotification(wrapper);
 
@@ -61,7 +63,7 @@ public class NotificationServiceTest {
 
     @Test
     public void sendSmsToGovNotifyWhenNotificationIsAnSmsAndTemplateNotBlank() throws Exception {
-        Notification notification = new Notification(new Template(null, "123"), new Destination(null, "07823456746"), null, new Reference(), null);
+        Notification notification = new Notification(Template.builder().emailTemplateId(null).smsTemplateId("123").build(), Destination.builder().email(null).sms("07823456746").build(), null, new Reference(), null);
         when(factory.create(wrapper)).thenReturn(notification);
         notificationService.createAndSendNotification(wrapper);
 
@@ -70,7 +72,7 @@ public class NotificationServiceTest {
 
     @Test
     public void sendSmsAndEmailToGovNotifyWhenNotificationIsAnSmsAndEmailAndTemplateNotBlank() throws Exception {
-        Notification notification = new Notification(new Template("abc", "123"), new Destination("test@testing.com", "07823456746"), null, new Reference(), null);
+        Notification notification = new Notification(Template.builder().emailTemplateId("abc").smsTemplateId("123").build(), Destination.builder().email("test@testing.com").sms("07823456746").build(), null, new Reference(), null);
         when(factory.create(wrapper)).thenReturn(notification);
         notificationService.createAndSendNotification(wrapper);
 
@@ -80,7 +82,7 @@ public class NotificationServiceTest {
 
     @Test
     public void doNotSendEmailToGovNotifyWhenNotificationIsNotAnEmail() throws Exception {
-        Notification notification = new Notification(new Template("abc", "123"), new Destination(null, "07823456746"), null, new Reference(), null);
+        Notification notification = new Notification(Template.builder().emailTemplateId("abc").smsTemplateId("123").build(), Destination.builder().email(null).sms("07823456746").build(), null, new Reference(), null);
         when(factory.create(wrapper)).thenReturn(notification);
         notificationService.createAndSendNotification(wrapper);
 
@@ -89,7 +91,7 @@ public class NotificationServiceTest {
 
     @Test
     public void doNotSendSmsToGovNotifyWhenNotificationIsNotAnSms() throws Exception {
-        Notification notification = new Notification(new Template("abc", "123"), new Destination("test@testing.com", null), null, new Reference(), null);
+        Notification notification = new Notification(Template.builder().emailTemplateId("abc").smsTemplateId("123").build(), Destination.builder().email("test@testing.com").sms(null).build(), null, new Reference(), null);
         when(factory.create(wrapper)).thenReturn(notification);
         notificationService.createAndSendNotification(wrapper);
 
@@ -98,7 +100,7 @@ public class NotificationServiceTest {
 
     @Test
     public void doNotSendEmailToGovNotifyWhenEmailTemplateIsBlank() throws Exception {
-        Notification notification = new Notification(new Template(null, "123"), new Destination("test@testing.com", "07823456746"), null, new Reference(), null);
+        Notification notification = new Notification(Template.builder().emailTemplateId(null).smsTemplateId("123").build(), Destination.builder().email("test@testing.com").sms("07823456746").build(), null, new Reference(), null);
         when(factory.create(wrapper)).thenReturn(notification);
         notificationService.createAndSendNotification(wrapper);
 
@@ -107,7 +109,7 @@ public class NotificationServiceTest {
 
     @Test
     public void doNotSendSmsToGovNotifyWhenSmsTemplateIsBlank() throws Exception {
-        Notification notification = new Notification(new Template("abc", null), new Destination("test@testing.com", "07823456746"), null, new Reference(), null);
+        Notification notification = new Notification(Template.builder().emailTemplateId("abc").smsTemplateId(null).build(), Destination.builder().email("test@testing.com").sms("07823456746").build(), null, new Reference(), null);
         when(factory.create(wrapper)).thenReturn(notification);
         notificationService.createAndSendNotification(wrapper);
 
@@ -116,7 +118,7 @@ public class NotificationServiceTest {
 
     @Test(expected = NotificationClientRuntimeException.class)
     public void shouldThrowNotificationClientRuntimeExceptionForAnyNotificationException() throws Exception {
-        Notification notification = new Notification(new Template("abc", null), new Destination("test@testing.com", null), null, new Reference(), null);
+        Notification notification = new Notification(Template.builder().emailTemplateId("abc").smsTemplateId(null).build(), Destination.builder().email("test@testing.com").sms(null).build(), null, new Reference(), null);
         when(factory.create(wrapper)).thenReturn(notification);
 
         when(client.sendEmail(
@@ -128,7 +130,7 @@ public class NotificationServiceTest {
 
     @Test(expected = NotificationServiceException.class)
     public void shouldCorrectlyHandleAGovNotifyException() throws Exception {
-        Notification notification = new Notification(new Template("abc", null), new Destination("test@testing.com", null), null, new Reference(), null);
+        Notification notification = new Notification(Template.builder().emailTemplateId("abc").smsTemplateId(null).build(), Destination.builder().email("test@testing.com").sms(null).build(), null, new Reference(), null);
         when(factory.create(wrapper)).thenReturn(notification);
 
         when(client.sendEmail(
@@ -144,7 +146,7 @@ public class NotificationServiceTest {
 
         response.setNotificationType(DWP_RESPONSE_RECEIVED);
 
-        Notification notification = new Notification(new Template(null, "123"), new Destination(null, "07823456746"), null, new Reference(), null);
+        Notification notification = new Notification(Template.builder().emailTemplateId(null).smsTemplateId("123").build(), Destination.builder().email(null).sms("07823456746").build(), null, new Reference(), null);
         when(factory.create(wrapper)).thenReturn(notification);
         notificationService.createAndSendNotification(wrapper);
 
@@ -157,7 +159,7 @@ public class NotificationServiceTest {
 
         response.setNotificationType(DWP_RESPONSE_RECEIVED);
 
-        Notification notification = new Notification(new Template(null, "123"), new Destination(null, "07823456746"), null, new Reference(), null);
+        Notification notification = new Notification(Template.builder().emailTemplateId(null).smsTemplateId("123").build(), Destination.builder().email(null).sms("07823456746").build(), null, new Reference(), null);
         when(factory.create(wrapper)).thenReturn(notification);
         notificationService.createAndSendNotification(wrapper);
 
@@ -166,7 +168,7 @@ public class NotificationServiceTest {
 
     @Test
     public void doNotCreateAReminderJobWhenReminderIsNotRequired() throws Exception {
-        Notification notification = new Notification(new Template(null, "123"), new Destination(null, "07823456746"), null, new Reference(), null);
+        Notification notification = new Notification(Template.builder().emailTemplateId(null).smsTemplateId("123").build(), Destination.builder().email(null).sms("07823456746").build(), null, new Reference(), null);
         when(factory.create(wrapper)).thenReturn(notification);
         notificationService.createAndSendNotification(wrapper);
 

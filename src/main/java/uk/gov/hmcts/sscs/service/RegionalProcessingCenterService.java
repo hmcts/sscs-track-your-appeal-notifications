@@ -29,22 +29,22 @@ public class RegionalProcessingCenterService {
     public static final String SSCS_BIRMINGHAM = "SSCS Birmingham";
 
     private Map<String, RegionalProcessingCenter>  regionalProcessingCenterMap  = newHashMap();
-    private final Map<String, String> sccodeRegionalProcessingCentermap = newHashMap();
+    private final Map<String, String> scCodeRegionalProcessingCenterMap = newHashMap();
 
 
     @PostConstruct
     public void init() {
-        loadSccodeRpcMetadata();
+        loadScCodeRpcMetadata();
         populateRpcMetadata();
     }
 
-    private void loadSccodeRpcMetadata() {
+    private void loadScCodeRpcMetadata() {
         ClassPathResource classPathResource = new ClassPathResource(CSV_FILE_PATH);
         try (CSVReader reader = new CSVReader(new InputStreamReader(classPathResource.getInputStream()))) {
 
             List<String[]> linesList = reader.readAll();
             linesList.forEach(line ->
-                    sccodeRegionalProcessingCentermap.put(line[1], line[2])
+                    scCodeRegionalProcessingCenterMap.put(line[1], line[2])
             );
         } catch (IOException e) {
             LOG.error("Error occurred while loading the sscs venues reference data file: " + CSV_FILE_PATH, new RegionalProcessingCenterServiceException(e));
@@ -66,7 +66,7 @@ public class RegionalProcessingCenterService {
 
     public RegionalProcessingCenter getByScReferenceCode(String referenceNumber) {
         String[] splitReferenceNumber = StringUtils.split(referenceNumber, SEPARATOR_CHAR);
-        String regionalProcessingCenter = sccodeRegionalProcessingCentermap.get(splitReferenceNumber[0]);
+        String regionalProcessingCenter = scCodeRegionalProcessingCenterMap.get(splitReferenceNumber[0]);
 
         if (null != regionalProcessingCenter) {
             return regionalProcessingCenterMap.get(regionalProcessingCenter);
@@ -79,8 +79,8 @@ public class RegionalProcessingCenterService {
         return regionalProcessingCenterMap;
     }
 
-    public Map<String, String> getSccodeRegionalProcessingCentermap() {
-        return sccodeRegionalProcessingCentermap;
+    public Map<String, String> getScCodeRegionalProcessingCenterMap() {
+        return scCodeRegionalProcessingCenterMap;
     }
 
 }
