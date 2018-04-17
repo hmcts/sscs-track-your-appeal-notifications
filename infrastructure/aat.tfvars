@@ -1,4 +1,4 @@
-infrastructure_env = "test"
+infrastructure_env = "preprod"
 
 evidence_submission_info_link = "https://track-appeal.nonprod.platform.hmcts.net/evidence/appeal_id"
 sscs_manage_emails_link = "https://track-appeal.nonprod.platform.hmcts.net/manage-email-notifications/mac"

@@ -16,7 +16,7 @@ data "vault_generic_secret" "mac_secret" {
 
 module "track-your-appeal-notifications" {
   source       = "git@github.com:contino/moj-module-webapp?ref=master"
-  product      = "${var.product}-notif"
+  product      = "${var.product}-${var.component}"
   location     = "${var.location}"
   env          = "${var.env}"
   ilbIp        = "${var.ilbIp}"

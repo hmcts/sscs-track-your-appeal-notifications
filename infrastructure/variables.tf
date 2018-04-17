@@ -1,6 +1,9 @@
 variable "product" {
   type    = "string"
-  default = "sscs-track-your-appeal"
+}
+
+variable "component" {
+  type    = "string"
 }
 
 variable "location" {
