@@ -12,6 +12,7 @@ import java.util.Properties;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.junit4.SpringRunner;
 import springfox.documentation.spring.web.json.Json;
@@ -27,62 +28,69 @@ public class UpdateExistingCaseTest {
 
     @Autowired
     private IdamService idamService;
+    @Value("${idam.jwt.url}")
+    private String idamJwtCodeUrl;
+    @Value("${idam.code.authorization.header.value}")
+    private String idamJwtCodeauthheader;
+    @Value("${idam.url}")
+    private String idamUrl;
+    @Value("${idam.oauth2.client.id}")
+    private String idamClientId;
+    @Value("${idam.oauth2.redirectUrl}")
+    private String idamRedirectUrl;
+    @Value("${idam.oauth2.client.secret}")
+    private String idamClientSecret;
+    @Value("${idam.grant-type}")
+    private String idamGrantType;
+    @Value("${s2s.url}")
+    private String s2sUrl;
+    @Value("${s2s.token.endpoint}")
+    private String s2sEndpoint;
+    @Value("${ccd.datastore.url}")
+    private String ccdDataStoreUrl;
+    @Value("${ccd.update.endpoint}")
+    private String ccdUpdateEndpoint;
+
+
 
 
     @Test
     public void updateCase() throws IOException {
 
-        String eventId = "updateContactDetails";
-
-
-//        IdamTokens idamTokens = IdamTokens.builder()
-//                .authenticationService(idamService.generateServiceAuthorization())
-//                .idamOauth2Token(idamService.getIdamOauth2Token())
-//                .build();
-//
-//
+        String caseId = "1523358358599932";
 
 
         String code = RestAssured
                 .given()
-                .headers("Authorization", "Basic ZWR3YXJkLmJlbnNvbkBobWN0cy5uZXQ6cGFzc3dvcmQ=")
-                .when().post("http://localhost:4501/oauth2/authorize?response_type=code&client_id=sscs&redirect_uri=https://localhost:9000/poc&continue-url=https://localhost:9000/poc")
+                .headers("Authorization", "Basic" + " " + idamJwtCodeauthheader)
+                .when().post(idamUrl + idamJwtCodeUrl + "&client_id=" + idamClientId + "&redirect_uri="
+                        + idamRedirectUrl + "&continue-url=" + idamRedirectUrl)
                 .then().extract().jsonPath().get("code");
 
-        System.out.println("Jwt token is....." + code);
 
          String accessToken = RestAssured
                 .given()
                  .headers("Content-Type", "application/x-www-form-urlencoded")
-                .when().post("http://localhost:4501/oauth2/token?code=" + code + "&client_secret=QM5RQQ53LZFOSIXJ&client_id=sscs&redirect_uri=https://localhost:9000/poc&grant_type=authorization_code")
+                .when().post(idamUrl + "/oauth2/token?code=" + code + "&client_secret=" + idamClientSecret +
+                         "&client_id=" + idamClientId + "&redirect_uri=" + idamRedirectUrl + "&grant_type=" + idamGrantType)
                 .then().extract().jsonPath().get("access_token");
 
-         System.out.println("The value of token is: ....." + accessToken );
 
-//        String requestBody = generateString("UpdateCase.json");
         String s2sAuth = RestAssured
                 .given()
-//                .headers("Authorization", "Basic ZWR3YXJkLmJlbnNvbkBobWN0cy5uZXQ6cGFzc3dvcmQ=")
-                .when().post("http://localhost:4502/testing-support/lease?microservice=ccd_gw")
+                .when().post(s2sUrl + s2sEndpoint)
                 .then().extract().asString();
 
-        System.out.println("s2s token is....." + s2sAuth);
 
-
-        RestAssured.baseURI = "http://localhost:4452";
+        RestAssured.baseURI = ccdDataStoreUrl;
       String ccdRespond =  RestAssured.given()
                 .header("authorization", "Bearer " + accessToken)
                 .header("Content-Type", "application/json")
                 .header("ServiceAuthorization", s2sAuth)
                 .when()
-                .get("/caseworkers/23/jurisdictions/SSCS/case-types/Benefit/cases/1523358358599932")
-                .then().assertThat().statusCode(200).log().all()
+                .get(ccdUpdateEndpoint + caseId)
+                .then().assertThat().statusCode(200)
               .extract().jsonPath().get().toString();
-
-      System.out.println("This is the ccd response body" + ccdRespond);
-
-
-
     }
 
 //    public static String generateString(String filename) throws IOException {
