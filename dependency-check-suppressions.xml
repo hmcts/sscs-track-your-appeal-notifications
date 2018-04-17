@@ -210,4 +210,18 @@
     <gav regex="true">^javax\.xml\.bind:jaxb-api:.*$</gav>
     <cve>CVE-2013-2566</cve>
   </suppress>
+  <suppress>
+    <notes><![CDATA[
+   file name: jaxb-api-2.2.2.jar
+   ]]></notes>
+    <gav regex="true">^javax\.xml\.bind:jaxb-api:.*$</gav>
+    <cpe>cpe:/a:oracle:glassfish</cpe>
+  </suppress>
+  <suppress>
+    <notes><![CDATA[
+   file name: jaxb-api-2.2.2.jar
+   ]]></notes>
+    <gav regex="true">^javax\.xml\.bind:jaxb-api:.*$</gav>
+    <cve>CVE-2015-2808</cve>
+  </suppress>
 </suppressions>
