@@ -71,7 +71,10 @@ public class Personalisation {
             personalisation.put(VENUE_MAP_LINK_LITERAL, latestHearing.getVenueGoogleMapUrl());
         }
 
-        setEvidenceProcessingAddress(personalisation, ccdResponse.getCaseReference());
+        if (config.isJobSchedulerEnabled()) {
+            setEvidenceProcessingAddress(personalisation, ccdResponse.getCaseReference());
+        }
+
         setEventData(personalisation, ccdResponse);
         setEvidenceReceivedNotificationData(personalisation, ccdResponse);
 

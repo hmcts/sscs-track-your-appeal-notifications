@@ -22,6 +22,8 @@ public class NotificationConfig {
     private String claimingExpensesLink;
     @Value("${hearing.info.link}")
     private String hearingInfoLink;
+    @Value("${job.scheduler.enabled}")
+    private Boolean jobSchedulerEnabled;
     @Autowired
     private Environment env;
 
@@ -52,5 +54,9 @@ public class NotificationConfig {
     public Template getTemplate(String emailTemplateName, String smsTemplateName) {
         return Template.builder().emailTemplateId(env.getProperty("notification." + emailTemplateName + ".emailId"))
                 .smsTemplateId(env.getProperty("notification." + smsTemplateName + ".smsId")).build();
+    }
+
+    public Boolean isJobSchedulerEnabled() {
+        return jobSchedulerEnabled;
     }
 }
