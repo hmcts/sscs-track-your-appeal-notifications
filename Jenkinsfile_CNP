@@ -6,7 +6,7 @@ properties([
 
 @Library("Infrastructure")
 
-def product = "sscs-track-your-appeal"
+def product = "sscs-tya"
 def component = "notif"
 
 withPipeline("java", product, component) {
