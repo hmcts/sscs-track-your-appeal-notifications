@@ -1,19 +1,13 @@
 package uk.gov.hmcts.sscs.personalisation;
 
 import java.util.Map;
-import uk.gov.hmcts.sscs.config.NotificationConfig;
+import org.springframework.stereotype.Component;
 import uk.gov.hmcts.sscs.domain.CcdResponse;
 import uk.gov.hmcts.sscs.domain.CcdResponseWrapper;
 import uk.gov.hmcts.sscs.domain.notify.EventType;
-import uk.gov.hmcts.sscs.service.MessageAuthenticationServiceImpl;
-import uk.gov.hmcts.sscs.service.RegionalProcessingCenterService;
 
+@Component
 public class SubscriptionPersonalisation extends Personalisation {
-
-    public SubscriptionPersonalisation(NotificationConfig config, MessageAuthenticationServiceImpl macService,
-                                       RegionalProcessingCenterService regionalProcessingCenterService) {
-        super(config, macService, regionalProcessingCenterService);
-    }
 
     @Override
     public Map<String, String> create(CcdResponseWrapper responseWrapper) {
