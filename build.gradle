@@ -184,6 +184,9 @@ dependencies {
     compile group: 'org.flywaydb', name: 'flyway-core', version: '5.0.2'
     compile group: 'org.postgresql', name: 'postgresql', version: '42.1.4'
 
+    testCompile group: 'com.github.tomakehurst', name: 'wiremock-standalone', version: '2.12.0'
+    testCompile group: 'org.assertj', name: 'assertj-core', version: '3.9.0'
+
     testCompile group: 'org.springframework.boot', name: 'spring-boot-starter-test', version: versions.springBoot
 }
 
