@@ -16,7 +16,7 @@ data "vault_generic_secret" "mac_secret" {
 
 locals {
   localProductName = "${var.product}-${var.component}"
-  ProductName = "${var.env == "preview" ? "sscs-tya-notif" : local:localProductName}" 
+  ProductName = "${var.env == "preview" ? "sscs-tya-notif" : local.localProductName}" 
 }
 
 module "track-your-appeal-notifications" {
