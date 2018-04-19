@@ -14,9 +14,14 @@ data "vault_generic_secret" "mac_secret" {
   path = "secret/${var.infrastructure_env}/sscs/sscs_email_mac_secret_text"
 }
 
+locals {
+  localProductName = "${var.product}-${var.component}"
+  ProductName = "${var.env == "preview" ? "sscs-tya-notif" : local:localProductName}" 
+}
+
 module "track-your-appeal-notifications" {
   source       = "git@github.com:contino/moj-module-webapp?ref=master"
-  product      = "${var.product}-${var.component}"
+  product      = "${local.ProductName}"
   location     = "${var.location}"
   env          = "${var.env}"
   ilbIp        = "${var.ilbIp}"
