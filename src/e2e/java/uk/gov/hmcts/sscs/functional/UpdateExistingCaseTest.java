@@ -68,11 +68,11 @@ public class UpdateExistingCaseTest {
                 .then().extract().jsonPath().get("code");
 
 
-         String accessToken = RestAssured
+        String accessToken = RestAssured
                 .given()
-                 .headers("Content-Type", "application/x-www-form-urlencoded")
+                .headers("Content-Type", "application/x-www-form-urlencoded")
                 .when().post(idamUrl + "/oauth2/token?code=" + code + "&client_secret=" + idamClientSecret +
-                         "&client_id=" + idamClientId + "&redirect_uri=" + idamRedirectUrl + "&grant_type=" + idamGrantType)
+                        "&client_id=" + idamClientId + "&redirect_uri=" + idamRedirectUrl + "&grant_type=" + idamGrantType)
                 .then().extract().jsonPath().get("access_token");
 
 
@@ -83,14 +83,14 @@ public class UpdateExistingCaseTest {
 
 
         RestAssured.baseURI = ccdDataStoreUrl;
-      String ccdRespond =  RestAssured.given()
+        String ccdRespond =  RestAssured.given()
                 .header("authorization", "Bearer " + accessToken)
                 .header("Content-Type", "application/json")
                 .header("ServiceAuthorization", s2sAuth)
                 .when()
                 .get(ccdUpdateEndpoint + caseId)
                 .then().assertThat().statusCode(200)
-              .extract().jsonPath().get().toString();
+                .extract().jsonPath().get().toString();
     }
 
 //    public static String generateString(String filename) throws IOException {
