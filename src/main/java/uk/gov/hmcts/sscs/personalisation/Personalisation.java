@@ -12,10 +12,7 @@ import java.util.Map;
 import java.util.stream.Collectors;
 import org.apache.commons.lang3.StringUtils;
 import uk.gov.hmcts.sscs.config.NotificationConfig;
-import uk.gov.hmcts.sscs.domain.CcdResponse;
-import uk.gov.hmcts.sscs.domain.CcdResponseWrapper;
-import uk.gov.hmcts.sscs.domain.Hearing;
-import uk.gov.hmcts.sscs.domain.RegionalProcessingCenter;
+import uk.gov.hmcts.sscs.domain.*;
 import uk.gov.hmcts.sscs.domain.notify.Event;
 import uk.gov.hmcts.sscs.domain.notify.EventType;
 import uk.gov.hmcts.sscs.domain.notify.Template;
@@ -40,23 +37,24 @@ public class Personalisation {
     public Map<String, String> create(CcdResponseWrapper responseWrapper) {
         CcdResponse ccdResponse = responseWrapper.getNewCcdResponse();
         Map<String, String> personalisation = new HashMap<>();
+        Subscription appellantSubscription = ccdResponse.getSubscriptions().getAppellantSubscription();
         personalisation.put(BENEFIT_NAME_ACRONYM_LITERAL, ccdResponse.getBenefitType().name() + " benefit");
         personalisation.put(BENEFIT_FULL_NAME_LITERAL, ccdResponse.getBenefitType().getDescription());
         personalisation.put(APPEAL_REF, ccdResponse.getCaseReference());
-        personalisation.put(APPELLANT_NAME, String.format("%s %s", ccdResponse.getAppellantSubscription().getFirstName(), ccdResponse.getAppellantSubscription().getSurname()));
+        personalisation.put(APPELLANT_NAME, String.format("%s %s", appellantSubscription.getFirstName(), appellantSubscription.getSurname()));
         personalisation.put(PHONE_NUMBER, config.getHmctsPhoneNumber());
 
-        if (ccdResponse.getAppellantSubscription().getAppealNumber() != null) {
-            personalisation.put(APPEAL_ID, ccdResponse.getAppellantSubscription().getAppealNumber());
+        if (ccdResponse.getSubscriptions().getAppellantSubscription().getAppealNumber() != null) {
+            personalisation.put(APPEAL_ID, ccdResponse.getSubscriptions().getAppellantSubscription().getAppealNumber());
             personalisation.put(MANAGE_EMAILS_LINK_LITERAL, config.getManageEmailsLink().replace(MAC_LITERAL,
-                    getMacToken(ccdResponse.getAppellantSubscription().getAppealNumber(),
+                    getMacToken(ccdResponse.getSubscriptions().getAppellantSubscription().getAppealNumber(),
                             ccdResponse.getBenefitType().name())));
-            personalisation.put(TRACK_APPEAL_LINK_LITERAL, config.getTrackAppealLink() != null ? config.getTrackAppealLink().replace(APPEAL_ID_LITERAL, ccdResponse.getAppellantSubscription().getAppealNumber()) : null);
-            personalisation.put(SUBMIT_EVIDENCE_LINK_LITERAL, config.getEvidenceSubmissionInfoLink().replace(APPEAL_ID, ccdResponse.getAppellantSubscription().getAppealNumber()));
-            personalisation.put(SUBMIT_EVIDENCE_INFO_LINK_LITERAL, config.getEvidenceSubmissionInfoLink().replace(APPEAL_ID_LITERAL, ccdResponse.getAppellantSubscription().getAppealNumber()));
-            personalisation.put(CLAIMING_EXPENSES_LINK_LITERAL, config.getClaimingExpensesLink().replace(APPEAL_ID, ccdResponse.getAppellantSubscription().getAppealNumber()));
+            personalisation.put(TRACK_APPEAL_LINK_LITERAL, config.getTrackAppealLink() != null ? config.getTrackAppealLink().replace(APPEAL_ID_LITERAL, appellantSubscription.getAppealNumber()) : null);
+            personalisation.put(SUBMIT_EVIDENCE_LINK_LITERAL, config.getEvidenceSubmissionInfoLink().replace(APPEAL_ID, appellantSubscription.getAppealNumber()));
+            personalisation.put(SUBMIT_EVIDENCE_INFO_LINK_LITERAL, config.getEvidenceSubmissionInfoLink().replace(APPEAL_ID_LITERAL, appellantSubscription.getAppealNumber()));
+            personalisation.put(CLAIMING_EXPENSES_LINK_LITERAL, config.getClaimingExpensesLink().replace(APPEAL_ID, appellantSubscription.getAppealNumber()));
             personalisation.put(HEARING_INFO_LINK_LITERAL,
-                    config.getHearingInfoLink().replace(APPEAL_ID_LITERAL, ccdResponse.getAppellantSubscription().getAppealNumber()));
+                    config.getHearingInfoLink().replace(APPEAL_ID_LITERAL, appellantSubscription.getAppealNumber()));
         }
 
         personalisation.put(FIRST_TIER_AGENCY_ACRONYM, DWP_ACRONYM);

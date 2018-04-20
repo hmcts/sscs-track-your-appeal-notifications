@@ -23,10 +23,10 @@ public class SubscriptionPersonalisation extends Personalisation {
     }
 
     public Boolean shouldSendSmsSubscriptionConfirmation(CcdResponse newCcdResponse, CcdResponse oldCcdResponse) {
-        return (oldCcdResponse.getAppellantSubscription() != null
-                && !oldCcdResponse.getAppellantSubscription().isSubscribeSms()
-                && newCcdResponse.getAppellantSubscription() != null
-                && newCcdResponse.getAppellantSubscription().isSubscribeSms());
+        return (oldCcdResponse.getSubscriptions().getAppellantSubscription() != null
+                && !oldCcdResponse.getSubscriptions().getAppellantSubscription().isSubscribeSms()
+                && newCcdResponse.getSubscriptions().getAppellantSubscription() != null
+                && newCcdResponse.getSubscriptions().getAppellantSubscription().isSubscribeSms());
     }
 
     public EventType setEventTypeNotification(CcdResponse newCcdResponse, CcdResponse oldCcdResponse) {
@@ -40,20 +40,20 @@ public class SubscriptionPersonalisation extends Personalisation {
     }
 
     private Boolean shouldSetMostRecentEventTypeNotification(CcdResponse newCcdResponse, CcdResponse oldCcdResponse) {
-        return (oldCcdResponse.getAppellantSubscription() != null
-                && !oldCcdResponse.getAppellantSubscription().isSubscribeEmail()
-                && newCcdResponse.getAppellantSubscription() != null
-                && newCcdResponse.getAppellantSubscription().isSubscribeEmail()
+        return (oldCcdResponse.getSubscriptions().getAppellantSubscription() != null
+                && !oldCcdResponse.getSubscriptions().getAppellantSubscription().isSubscribeEmail()
+                && newCcdResponse.getSubscriptions().getAppellantSubscription() != null
+                && newCcdResponse.getSubscriptions().getAppellantSubscription().isSubscribeEmail()
                 && newCcdResponse.getEvents() != null
                 && !newCcdResponse.getEvents().isEmpty()
                 && newCcdResponse.getEvents().get(0).getEventType() != null);
     }
 
     public Boolean doNotSendEmailUpdatedNotificationWhenEmailNotChanged(CcdResponse newCcdResponse, CcdResponse oldCcdResponse) {
-        return (oldCcdResponse.getAppellantSubscription() != null
-                && oldCcdResponse.getAppellantSubscription().isSubscribeEmail()
-                && newCcdResponse.getAppellantSubscription() != null
-                && newCcdResponse.getAppellantSubscription().isSubscribeEmail()
-                && oldCcdResponse.getAppellantSubscription().getEmail().equals(newCcdResponse.getAppellantSubscription().getEmail()));
+        return (oldCcdResponse.getSubscriptions().getAppellantSubscription() != null
+                && oldCcdResponse.getSubscriptions().getAppellantSubscription().isSubscribeEmail()
+                && newCcdResponse.getSubscriptions().getAppellantSubscription() != null
+                && newCcdResponse.getSubscriptions().getAppellantSubscription().isSubscribeEmail()
+                && oldCcdResponse.getSubscriptions().getAppellantSubscription().getEmail().equals(newCcdResponse.getSubscriptions().getAppellantSubscription().getEmail()));
     }
 }

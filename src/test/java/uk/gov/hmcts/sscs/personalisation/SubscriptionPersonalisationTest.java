@@ -17,10 +17,7 @@ import org.junit.Before;
 import org.junit.Test;
 import org.mockito.Mock;
 import uk.gov.hmcts.sscs.config.NotificationConfig;
-import uk.gov.hmcts.sscs.domain.CcdResponse;
-import uk.gov.hmcts.sscs.domain.CcdResponseWrapper;
-import uk.gov.hmcts.sscs.domain.RegionalProcessingCenter;
-import uk.gov.hmcts.sscs.domain.Subscription;
+import uk.gov.hmcts.sscs.domain.*;
 import uk.gov.hmcts.sscs.domain.notify.Event;
 import uk.gov.hmcts.sscs.domain.notify.Link;
 import uk.gov.hmcts.sscs.service.MessageAuthenticationServiceImpl;
@@ -74,10 +71,10 @@ public class SubscriptionPersonalisationTest {
                 .mobileNumber("07983495065").subscribeEmail(false).subscribeSms(false).build();
 
         newCcdResponse = CcdResponse.builder().caseId("54321").benefitType(PIP).caseReference("1234")
-                .appellantSubscription(newAppellantSubscription).notificationType(SUBSCRIPTION_UPDATED).build();
+                .subscriptions(Subscriptions.builder().appellantSubscription(newAppellantSubscription).build()).notificationType(SUBSCRIPTION_UPDATED).build();
 
         oldCcdResponse = CcdResponse.builder().caseId("54321").benefitType(PIP).caseReference("5432")
-                .appellantSubscription(oldAppellantSubscription).notificationType(SUBSCRIPTION_UPDATED).build();
+                .subscriptions(Subscriptions.builder().appellantSubscription(oldAppellantSubscription).build()).notificationType(SUBSCRIPTION_UPDATED).build();
     }
 
     @Test
@@ -156,7 +153,7 @@ public class SubscriptionPersonalisationTest {
 
     @Test
     public void emptyOldAppellantSubscriptionReturnsFalseForSubscriptionCreatedNotificationType() {
-        oldCcdResponse.setAppellantSubscription(null);
+        oldCcdResponse.setSubscriptions(Subscriptions.builder().appellantSubscription(null).build());
 
         Boolean result = personalisation.shouldSendSmsSubscriptionConfirmation(newCcdResponse, oldCcdResponse);
 
@@ -165,7 +162,7 @@ public class SubscriptionPersonalisationTest {
 
     @Test
     public void emptyNewAppellantSubscriptionReturnsFalseForSubscriptionCreatedNotificationType() {
-        newCcdResponse.setAppellantSubscription(null);
+        newCcdResponse.setSubscriptions(Subscriptions.builder().appellantSubscription(null).build());
 
         Boolean result = personalisation.shouldSendSmsSubscriptionConfirmation(newCcdResponse, oldCcdResponse);
 
@@ -203,7 +200,7 @@ public class SubscriptionPersonalisationTest {
 
     @Test
     public void emptyOldAppellantSubscriptionDoesNotUpdateNotificationType() {
-        oldCcdResponse.setAppellantSubscription(null);
+        oldCcdResponse.setSubscriptions(Subscriptions.builder().appellantSubscription(null).build());
 
         List<Event> events = new ArrayList<>();
         events.add(Event.builder().dateTime(ZonedDateTime.now()).eventType(APPEAL_RECEIVED).build());
@@ -214,7 +211,7 @@ public class SubscriptionPersonalisationTest {
 
     @Test
     public void emptyNewAppellantSubscriptionDoesNotUpdateNotificationType() {
-        newCcdResponse.setAppellantSubscription(null);
+        newCcdResponse.setSubscriptions(Subscriptions.builder().appellantSubscription(null).build());
 
         List<Event> events = new ArrayList<>();
         events.add(Event.builder().dateTime(ZonedDateTime.now()).eventType(APPEAL_RECEIVED).build());

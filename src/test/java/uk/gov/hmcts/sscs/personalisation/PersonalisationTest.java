@@ -20,11 +20,7 @@ import org.junit.Before;
 import org.junit.Test;
 import org.mockito.Mock;
 import uk.gov.hmcts.sscs.config.NotificationConfig;
-import uk.gov.hmcts.sscs.domain.CcdResponse;
-import uk.gov.hmcts.sscs.domain.CcdResponseWrapper;
-import uk.gov.hmcts.sscs.domain.Evidence;
-import uk.gov.hmcts.sscs.domain.RegionalProcessingCenter;
-import uk.gov.hmcts.sscs.domain.Subscription;
+import uk.gov.hmcts.sscs.domain.*;
 import uk.gov.hmcts.sscs.domain.notify.Event;
 import uk.gov.hmcts.sscs.domain.notify.Link;
 import uk.gov.hmcts.sscs.service.MessageAuthenticationServiceImpl;
@@ -86,9 +82,11 @@ public class PersonalisationTest {
             .subscribeSms(false)
             .build();
 
+        Subscriptions subscriptions = Subscriptions.builder().appellantSubscription(appellantSubscription).build();
+
         CcdResponse response = CcdResponse.builder()
             .caseId(CASE_ID).benefitType(PIP).caseReference("SC/1234/5")
-            .appellantSubscription(appellantSubscription)
+            .subscriptions(subscriptions)
             .notificationType(APPEAL_RECEIVED)
             .events(events)
             .build();
@@ -145,9 +143,11 @@ public class PersonalisationTest {
                 .subscribeSms(false)
                 .build();
 
+        Subscriptions subscriptions = Subscriptions.builder().appellantSubscription(appellantSubscription).build();
+
         CcdResponse response = CcdResponse.builder()
                 .caseId(CASE_ID).benefitType(PIP).caseReference("SC/1234/5")
-                .appellantSubscription(appellantSubscription)
+                .subscriptions(subscriptions)
                 .notificationType(EVIDENCE_RECEIVED)
                 .events(events)
                 .evidences(evidenceList)

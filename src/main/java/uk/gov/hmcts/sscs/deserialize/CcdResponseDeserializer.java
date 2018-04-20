@@ -72,6 +72,7 @@ public class CcdResponseDeserializer extends StdDeserializer<CcdResponseWrapper>
         CcdResponse ccdResponse = CcdResponse.builder().caseReference(getField(caseNode, "caseReference")).build();
 
         deserializeBenefitDetailsJson(appealNode, ccdResponse);
+        deserializeSubscriptionJson(appealNode, subscriptionsNode, ccdResponse);
         deserializeAppellantDetailsJson(appealNode, subscriptionsNode, ccdResponse);
         deserializeSupporterDetailsJson(appealNode, subscriptionsNode, ccdResponse);
         deserializeEventDetailsJson(caseNode, ccdResponse);
@@ -90,7 +91,16 @@ public class CcdResponseDeserializer extends StdDeserializer<CcdResponseWrapper>
         }
     }
 
-    public void deserializeAppellantDetailsJson(JsonNode appealNode, JsonNode subscriptionsNode, CcdResponse ccdResponse) {
+    public void deserializeSubscriptionJson(JsonNode appealNode, JsonNode subscriptionsNode, CcdResponse ccdResponse) {
+        Subscription appellantSubscription = deserializeAppellantDetailsJson(appealNode, subscriptionsNode, ccdResponse);
+        Subscription supporterSubscription = deserializeSupporterDetailsJson(appealNode, subscriptionsNode, ccdResponse);
+
+        ccdResponse.setSubscriptions(Subscriptions.builder()
+                .appellantSubscription(appellantSubscription)
+                .supporterSubscription(supporterSubscription).build());
+    }
+
+    private Subscription deserializeAppellantDetailsJson(JsonNode appealNode, JsonNode subscriptionsNode, CcdResponse ccdResponse) {
         JsonNode appellantNode = getNode(appealNode, "appellant");
         JsonNode appellantSubscriptionNode = getNode(subscriptionsNode, "appellantSubscription");
 
@@ -104,10 +114,10 @@ public class CcdResponseDeserializer extends StdDeserializer<CcdResponseWrapper>
             appellantSubscription = deserializeSubscriberJson(appellantSubscriptionNode, appellantSubscription);
         }
 
-        ccdResponse.setAppellantSubscription(appellantSubscription);
+        return appellantSubscription;
     }
 
-    public void deserializeSupporterDetailsJson(JsonNode appealNode, JsonNode subscriptionsNode, CcdResponse ccdResponse) {
+    private Subscription deserializeSupporterDetailsJson(JsonNode appealNode, JsonNode subscriptionsNode, CcdResponse ccdResponse) {
         JsonNode supporterNode = getNode(appealNode, "supporter");
         JsonNode supporterSubscriptionNode = getNode(subscriptionsNode, "supporterSubscription");
 
@@ -121,7 +131,7 @@ public class CcdResponseDeserializer extends StdDeserializer<CcdResponseWrapper>
             supporterSubscription = deserializeSubscriberJson(supporterSubscriptionNode, supporterSubscription);
         }
 
-        ccdResponse.setSupporterSubscription(supporterSubscription);
+        return supporterSubscription;
     }
 
     public void deserializeEventDetailsJson(JsonNode caseNode, CcdResponse ccdResponse) {
