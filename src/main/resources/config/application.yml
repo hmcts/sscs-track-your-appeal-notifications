@@ -1,0 +1,114 @@
+claiming:
+    expenses:
+        link: ${CLAIMING_EXPENSES_LINK:http://localhost:3000/expenses/appeal_id}
+evidence:
+    submission:
+        info:
+            link: ${EVIDENCE_SUBMISSION_INFO_LINK:http://localhost:3000/evidence/appeal_id}
+gov:
+    uk:
+        notification:
+            api:
+                key: ${NOTIFICATION_API_KEY:emailnotificationkey}
+hearing:
+    info:
+        link: ${HEARING_INFO_LINK:http://localhost:3000/abouthearing/appeal_id}
+hmcts:
+    phone:
+        number: 0300 123 1142
+idam:
+    s2s-auth:
+        url: ${S2S_URL:}
+job:
+    scheduler:
+        callbackUrl: ${JOB_SCHEDULER_CALLBACK_URL:http://localhost:8080}
+        enabled: ${JOB_SCHEDULER_ENABLED:false}
+        url: ${JOB_SCHEDULER_URL:http://localhost:8484}
+manage:
+    emails:
+        link: ${SSCS_MANAGE_EMAILS_LINK:http://localhost:3000/manage-email-notifications/mac}
+management:
+    enabled: ${MANAGEMENT_SECURITY_ENABLED:true}
+notification:
+    appealLapsed:
+        emailId: ${APPEAL_LAPSED_EMAIL_TEMPLATE_ID:8ce8d794-75e8-49a0-b4d2-0c6cd2061c11}
+    appealReceived:
+        emailId: ${APPEAL_RECEIVED_EMAIL_TEMPLATE_ID:dd955503-42f4-45f8-a692-39377a0f340f}
+    appealWithdrawn:
+        emailId: ${APPEAL_WITHDRAWN_EMAIL_TEMPLATE_ID:8620e023-f663-477e-a771-9cfad50ee30f}
+    evidenceReceived:
+        emailId: ${EVIDENCE_RECEIVED_EMAIL_TEMPLATE_ID:c5654134-2e13-4541-ac73-334a5b5cdbb6}
+        smsId: ${EVIDENCE_RECEIVED_SMS_TEMPLATE_ID:74bda35f-040b-4355-bda3-faf0e4f5ae6e}
+    evidenceReminder:
+        emailId: ${EVIDENCE_REMINDER_EMAIL_TEMPLATE_ID:b9e47ec4-3b58-4b8d-9304-f77ac27fb7f2}
+        smsId: ${EVIDENCE_REMINDER_SMS_TEMPLATE_ID:e3f71440-d1ac-43c8-a8cc-a088c4f3c959}
+    hearingAdjourned:
+        emailId: ${HEARING_ADJOURNED_EMAIL_TEMPLATE_ID:07b9738d-d6ba-4736-86f6-7102776f57a2}
+        smsId: ${HEARING_ADJOURNED_SMS_TEMPLATE_ID:31d9ff36-ca22-4a22-b794-c53904f614c4}
+    hearingBooked:
+        emailId: ${HEARING_BOOKED_EMAIL_TEMPLATE_ID:fee16753-0bdb-43f1-9abb-b14b826e3b26}
+    hearingPostponed:
+        emailId: ${HEARING_POSTPONED_EMAIL_TEMPLATE_ID:08959288-e09a-472d-80b8-af79bfcbb437}
+    responseReceived:
+        emailId: ${RESPONSE_RECEIVED_EMAIL_TEMPLATE_ID:1e13bd2d-9ae0-4030-89b9-a0ef65ec36ef}
+    subscriptionCreated:
+        smsId: ${SUBSCRIPTION_CREATED_SMS_TEMPLATE_ID:18444f5f-8834-49e9-a6ae-bfe7f50db2b8}
+    subscriptionUpdated:
+        emailId: ${SUBSCRIPTION_UPDATED_EMAIL_TEMPLATE_ID:820901f0-15a9-4796-bdec-0cef42922531}
+quartzProperties:
+    org:
+        quartz:
+            dataSource:
+                jobscheduler:
+                    URL: ${spring.datasource.url}
+                    driver: org.postgresql.Driver
+                    password: ${spring.datasource.password}
+                    user: ${spring.datasource.username}
+            jobStore:
+                class: org.quartz.impl.jdbcjobstore.JobStoreTX
+                dataSource: jobscheduler
+                driverDelegateClass: org.quartz.impl.jdbcjobstore.PostgreSQLDelegate
+                isClustered: true
+            scheduler:
+                instanceId: AUTO
+            threadPool:
+                class: org.quartz.simpl.SimpleThreadPool
+                threadCount: 8
+retryPolicy:
+    delayBetweenAttemptsInMs: ${DELAY_BETWEEN_JOB_ATTEMPTS_MS:15000}
+    maxNumberOfJobExecutions: ${MAX_NUMBER_OF_JOB_EXECUTIONS:5}
+server:
+    port: ${PORT:8081}
+spring:
+    application:
+        name: TyaNotificationsService
+    datasource:
+        driverClassName: org.postgresql.Driver
+        password: ${JOB_SCHEDULER_DB_PASSWORD:postgres}
+        properties:
+            charSet: UTF-8
+        tomcat:
+            abandon-when-percentage-full: 0
+            log-abandoned: true
+            max-active: 10
+            max-idle: 10
+            max-wait: 10000
+            min-idle: 2
+            remove-abandoned: true
+            remove-abandoned-timeout: 60
+            test-on-borrow: true
+            test-on-connect: true
+            test-on-idle: true
+            test-on-return: true
+            test-while-idle: true
+            time-between-eviction-runs-millis: 10000
+            validation-query: SELECT 1
+        url: jdbc:postgresql://${JOB_SCHEDULER_DB_HOST:localhost}:${JOB_SCHEDULER_DB_PORT:5432}/${JOB_SCHEDULER_DB_NAME:jobscheduler}${JOB_SCHEDULER_DB_CONNECTION_OPTIONS:}
+        username: ${JOB_SCHEDULER_DB_USERNAME:postgres}
+subscription:
+    hmac:
+        secret:
+            text: ${EMAIL_MAC_SECRET_TEXT:our-big-secret}
+track:
+    appeal:
+        link: ${SSCS_TRACK_YOUR_APPEAL_LINK:http://localhost:3000/trackyourappeal/appeal_id}
