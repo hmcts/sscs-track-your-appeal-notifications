@@ -188,6 +188,8 @@ dependencies {
     testCompile group: 'org.assertj', name: 'assertj-core', version: '3.9.0'
 
     testCompile group: 'org.springframework.boot', name: 'spring-boot-starter-test', version: versions.springBoot
+
+    integrationTestCompile group: 'org.testcontainers', name: 'testcontainers', version: '1.7.0'
 }
 
 jar {
