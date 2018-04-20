@@ -53,6 +53,7 @@ sourceSets {
             runtimeClasspath += main.output + test.output
             srcDir('src/IntegrationTests/java')
         }
+        resources.srcDir file('src/IntegrationTests/resources')
     }
 }
 
