@@ -10,8 +10,10 @@ import static uk.gov.hmcts.sscs.domain.notify.EventType.*;
 import java.time.ZonedDateTime;
 import java.util.ArrayList;
 import java.util.List;
+import javax.annotation.Resource;
 import org.junit.Before;
 import org.junit.Test;
+import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import uk.gov.hmcts.sscs.config.NotificationConfig;
 import uk.gov.hmcts.sscs.domain.CcdResponse;
@@ -37,10 +39,6 @@ public class NotificationFactoryTest {
 
     private CcdResponse ccdResponse;
 
-    private Personalisation personalisation;
-
-    private SubscriptionPersonalisation subscriptionPersonalisation;
-
     @Mock
     private PersonalisationFactory personalisationFactory;
 
@@ -50,6 +48,14 @@ public class NotificationFactoryTest {
     @Mock
     private NotificationConfig config;
 
+    @InjectMocks
+    @Resource
+    private Personalisation personalisation;
+
+    @InjectMocks
+    @Resource
+    private SubscriptionPersonalisation subscriptionPersonalisation;
+
     @Mock
     private MessageAuthenticationServiceImpl macService;
 
@@ -58,8 +64,6 @@ public class NotificationFactoryTest {
     @Before
     public void setup() {
         initMocks(this);
-        personalisation = new Personalisation(config, macService, regionalProcessingCenterService);
-        subscriptionPersonalisation = new SubscriptionPersonalisation(config, macService, regionalProcessingCenterService);
         factory = new NotificationFactory(personalisationFactory);
 
         subscription = Subscription.builder()

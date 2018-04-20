@@ -1,6 +1,7 @@
 package uk.gov.hmcts.sscs.personalisation;
 
 import static com.google.common.collect.Lists.newArrayList;
+import static org.slf4j.LoggerFactory.getLogger;
 import static uk.gov.hmcts.sscs.config.AppConstants.*;
 import static uk.gov.hmcts.sscs.domain.notify.EventType.*;
 
@@ -11,6 +12,8 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.stream.Collectors;
 import org.apache.commons.lang3.StringUtils;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Component;
 import uk.gov.hmcts.sscs.config.NotificationConfig;
 import uk.gov.hmcts.sscs.domain.CcdResponse;
 import uk.gov.hmcts.sscs.domain.CcdResponseWrapper;
@@ -22,20 +25,21 @@ import uk.gov.hmcts.sscs.domain.notify.Template;
 import uk.gov.hmcts.sscs.service.MessageAuthenticationServiceImpl;
 import uk.gov.hmcts.sscs.service.RegionalProcessingCenterService;
 
+@Component
 public class Personalisation {
 
-    protected NotificationConfig config;
-
     private boolean sendSmsSubscriptionConfirmation;
-    private final MessageAuthenticationServiceImpl macService;
-    private final RegionalProcessingCenterService regionalProcessingCenterService;
 
-    public Personalisation(NotificationConfig config, MessageAuthenticationServiceImpl macService,
-                           RegionalProcessingCenterService regionalProcessingCenterService) {
-        this.config = config;
-        this.macService = macService;
-        this.regionalProcessingCenterService = regionalProcessingCenterService;
-    }
+    private static final org.slf4j.Logger LOG = getLogger(Personalisation.class);
+
+    @Autowired
+    private NotificationConfig config;
+
+    @Autowired
+    private MessageAuthenticationServiceImpl macService;
+
+    @Autowired
+    private RegionalProcessingCenterService regionalProcessingCenterService;
 
     public Map<String, String> create(CcdResponseWrapper responseWrapper) {
         CcdResponse ccdResponse = responseWrapper.getNewCcdResponse();
@@ -71,6 +75,8 @@ public class Personalisation {
             personalisation.put(VENUE_MAP_LINK_LITERAL, latestHearing.getVenueGoogleMapUrl());
         }
 
+        //FIXME: Random NPE being thrown so logging the object value
+        LOG.info("regionalProcessingCenterService value: " + regionalProcessingCenterService);
         if (config.isJobSchedulerEnabled()) {
             setEvidenceProcessingAddress(personalisation, ccdResponse.getCaseReference());
         }

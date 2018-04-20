@@ -13,8 +13,10 @@ import java.time.ZonedDateTime;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
+import javax.annotation.Resource;
 import org.junit.Before;
 import org.junit.Test;
+import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import uk.gov.hmcts.sscs.config.NotificationConfig;
 import uk.gov.hmcts.sscs.domain.CcdResponse;
@@ -27,8 +29,6 @@ import uk.gov.hmcts.sscs.service.MessageAuthenticationServiceImpl;
 import uk.gov.hmcts.sscs.service.RegionalProcessingCenterService;
 
 public class SubscriptionPersonalisationTest {
-
-    SubscriptionPersonalisation personalisation;
 
     Subscription newAppellantSubscription;
 
@@ -47,10 +47,13 @@ public class SubscriptionPersonalisationTest {
     @Mock
     private MessageAuthenticationServiceImpl macService;
 
+    @InjectMocks
+    @Resource
+    SubscriptionPersonalisation personalisation;
+
     @Before
     public void setup() {
         initMocks(this);
-        personalisation = new SubscriptionPersonalisation(config, macService, regionalProcessingCenterService);
         when(config.getHmctsPhoneNumber()).thenReturn("01234543225");
         when(config.getManageEmailsLink()).thenReturn(Link.builder().linkUrl("http://manageemails.com/mac").build());
         when(config.getTrackAppealLink()).thenReturn(Link.builder().linkUrl("http://tyalink.com/appeal_id").build());
