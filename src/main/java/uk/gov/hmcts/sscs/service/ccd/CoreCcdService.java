@@ -45,7 +45,7 @@ public class CoreCcdService {
             eventType);
     }
 
-    public CaseDetails submitForCaseworker(CcdResponse caseData, IdamTokens idamTokens, StartEventResponse startEventResponse) {
+    public CaseDetails submitForCaseworker(CcdResponse ccdResponse, IdamTokens idamTokens, StartEventResponse startEventResponse) {
         CaseDataContent caseDataContent = CaseDataContent.builder()
                 .eventToken(startEventResponse.getToken())
                 .event(Event.builder()
@@ -53,7 +53,7 @@ public class CoreCcdService {
                         .summary("GAPS2 Case")
                         .description("CaseLoader Case created")
                         .build())
-                .data(caseData)
+                .data(ccdResponse)
                 .build();
         return coreCaseDataApi.submitForCaseworker(
                 idamTokens.getIdamOauth2Token(),
@@ -65,7 +65,7 @@ public class CoreCcdService {
                 caseDataContent);
     }
 
-    public CaseDetails submitEventForCaseworker(CcdResponse caseData, Long caseId, IdamTokens idamTokens, StartEventResponse startEventResponse) {
+    public CaseDetails submitEventForCaseworker(CcdResponse ccdResponse, Long caseId, IdamTokens idamTokens, StartEventResponse startEventResponse) {
         CaseDataContent caseDataContent = CaseDataContent.builder()
                 .eventToken(startEventResponse.getToken())
                 .event(Event.builder()
@@ -73,7 +73,7 @@ public class CoreCcdService {
                         .summary("GAPS2 Case")
                         .description("CaseLoader Case updated")
                         .build())
-                .data(caseData)
+                .data(ccdResponse)
                 .build();
         return coreCaseDataApi.submitEventForCaseWorker(
                 idamTokens.getIdamOauth2Token(),
