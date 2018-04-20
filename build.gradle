@@ -190,7 +190,7 @@ dependencies {
 
     testCompile group: 'org.springframework.boot', name: 'spring-boot-starter-test', version: versions.springBoot
 
-    integrationTestCompile group: 'org.testcontainers', name: 'testcontainers', version: '1.7.0'
+    integrationTestCompile group: 'org.testcontainers', name: 'postgresql', version: '1.7.0'
 }
 
 jar {
