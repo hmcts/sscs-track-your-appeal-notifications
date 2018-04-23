@@ -16,8 +16,10 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import javax.annotation.Resource;
 import org.junit.Before;
 import org.junit.Test;
+import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import uk.gov.hmcts.sscs.config.NotificationConfig;
 import uk.gov.hmcts.sscs.domain.*;
@@ -30,23 +32,24 @@ public class PersonalisationTest {
 
     private static final String CASE_ID = "54321";
 
-    public Personalisation personalisation;
-
-    @Mock
-    private RegionalProcessingCenterService regionalProcessingCenterService;
-
     @Mock
     private NotificationConfig config;
 
     @Mock
     private MessageAuthenticationServiceImpl macService;
 
+    @Mock
+    private RegionalProcessingCenterService regionalProcessingCenterService;
+
+    @InjectMocks
+    @Resource
+    public Personalisation personalisation;
+
     ZonedDateTime dateTime;
 
     @Before
     public void setup() {
         initMocks(this);
-        personalisation = new Personalisation(config, macService, regionalProcessingCenterService);
         when(config.getHmctsPhoneNumber()).thenReturn("01234543225");
         when(config.getManageEmailsLink()).thenReturn(Link.builder().linkUrl("http://manageemails.com/mac").build());
         when(config.getTrackAppealLink()).thenReturn(Link.builder().linkUrl("http://tyalink.com/appeal_id").build());

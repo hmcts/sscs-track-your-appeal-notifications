@@ -4,7 +4,6 @@ import static helper.IntegrationTestHelper.*;
 import static org.mockito.Matchers.any;
 import static org.mockito.Matchers.anyString;
 import static org.mockito.Mockito.*;
-import static org.mockito.MockitoAnnotations.initMocks;
 
 import java.io.File;
 import java.io.IOException;
@@ -59,7 +58,6 @@ public class NotificationsIt {
 
     @Before
     public void setup() throws IOException {
-        initMocks(this);
         NotificationService service = new NotificationService(client, factory, reminderService);
         controller = new NotificationController(service, authorisationService);
         this.mockMvc = MockMvcBuilders.standaloneSetup(controller).build();
