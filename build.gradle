@@ -198,7 +198,7 @@ run {
 
 task smoke(type: Test) {
     group = 'verification'
-    description = 'Executes non-destructive smoke tests against a running case loader'
+    description = 'Executes non-destructive smoke tests against a running notifcation service'
     setTestClassesDirs(sourceSets.e2e.output.classesDirs)
     setClasspath(sourceSets.e2e.runtimeClasspath)
     include "uk/gov/hmcts/reform/sscs/smoke/**"

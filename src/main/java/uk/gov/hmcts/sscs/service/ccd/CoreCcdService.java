@@ -50,8 +50,8 @@ public class CoreCcdService {
                 .eventToken(startEventResponse.getToken())
                 .event(Event.builder()
                         .id(startEventResponse.getEventId())
-                        .summary("GAPS2 Case")
-                        .description("CaseLoader Case created")
+                        .summary("CCD Case")
+                        .description("Notification Service created case")
                         .build())
                 .data(ccdResponse)
                 .build();
@@ -70,8 +70,8 @@ public class CoreCcdService {
                 .eventToken(startEventResponse.getToken())
                 .event(Event.builder()
                         .id(startEventResponse.getEventId())
-                        .summary("GAPS2 Case")
-                        .description("CaseLoader Case updated")
+                        .summary("CCD Case")
+                        .description("Notification Service updated case")
                         .build())
                 .data(ccdResponse)
                 .build();
