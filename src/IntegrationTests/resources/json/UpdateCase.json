@@ -1,9 +1,0 @@
-{
-  "event": {
-    "description": "test update case",
-    "id": "${EventId}",
-    "summary": "Performance testing"
-  },
-  "event_token": "${eventToken}",
-  "data": {}
-}
