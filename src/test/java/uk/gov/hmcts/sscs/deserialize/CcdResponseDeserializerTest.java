@@ -128,13 +128,13 @@ public class CcdResponseDeserializerTest {
         assertEquals(1, ccdResponse.getHearings().size());
 
         Hearing hearing = ccdResponse.getHearings().get(0);
-        assertEquals(LocalDateTime.of(LocalDate.of(2018, 1, 12), LocalTime.of(11, 00, 00)), hearing.getHearingDateTime());
-        assertEquals("Prudential House", hearing.getVenueName());
-        assertEquals("36 Dale Street", hearing.getVenueAddressLine1());
-        assertEquals("Liverpool", hearing.getVenueTown());
-        assertEquals("Merseyside", hearing.getVenueCounty());
-        assertEquals("L2 5UZ", hearing.getVenuePostcode());
-        assertEquals("https://www.google.com/theAddress", hearing.getVenueGoogleMapUrl());
+        assertEquals(LocalDateTime.of(LocalDate.of(2018, 1, 12), LocalTime.of(11, 00, 00)), hearing.getValue().getHearingDateTime());
+        assertEquals("Prudential House", hearing.getValue().getVenue().getName());
+        assertEquals("36 Dale Street", hearing.getValue().getVenue().getAddress().getLine1());
+        assertEquals("Liverpool", hearing.getValue().getVenue().getAddress().getTown());
+        assertEquals("Merseyside", hearing.getValue().getVenue().getAddress().getCounty());
+        assertEquals("L2 5UZ", hearing.getValue().getVenue().getAddress().getPostcode());
+        assertEquals("https://www.google.com/theAddress", hearing.getValue().getVenue().getGoogleMapLink());
     }
 
     @Test
@@ -152,7 +152,7 @@ public class CcdResponseDeserializerTest {
         assertEquals(1, ccdResponse.getHearings().size());
 
         Hearing hearing = ccdResponse.getHearings().get(0);
-        assertEquals(LocalDateTime.of(LocalDate.of(2018, 7, 12), LocalTime.of(11, 00, 00)), hearing.getHearingDateTime());
+        assertEquals(LocalDateTime.of(LocalDate.of(2018, 7, 12), LocalTime.of(11, 00, 00)), hearing.getValue().getHearingDateTime());
     }
 
     @Test
@@ -179,9 +179,9 @@ public class CcdResponseDeserializerTest {
 
         assertEquals(3, ccdResponse.getHearings().size());
 
-        assertEquals(LocalDateTime.of(LocalDate.of(2018, 1, 12), LocalTime.of(13, 0)), ccdResponse.getHearings().get(0).getHearingDateTime());
-        assertEquals(LocalDateTime.of(LocalDate.of(2018, 1, 12), LocalTime.of(12, 0)), ccdResponse.getHearings().get(1).getHearingDateTime());
-        assertEquals(LocalDateTime.of(LocalDate.of(2018, 1, 12), LocalTime.of(11, 0)), ccdResponse.getHearings().get(2).getHearingDateTime());
+        assertEquals(LocalDateTime.of(LocalDate.of(2018, 1, 12), LocalTime.of(13, 0)), ccdResponse.getHearings().get(0).getValue().getHearingDateTime());
+        assertEquals(LocalDateTime.of(LocalDate.of(2018, 1, 12), LocalTime.of(12, 0)), ccdResponse.getHearings().get(1).getValue().getHearingDateTime());
+        assertEquals(LocalDateTime.of(LocalDate.of(2018, 1, 12), LocalTime.of(11, 0)), ccdResponse.getHearings().get(2).getValue().getHearingDateTime());
     }
 
     @Test
@@ -232,12 +232,12 @@ public class CcdResponseDeserializerTest {
         assertFalse(supporterSubscription.isSubscribeEmail());
         assertEquals("SC/1234/23", ccdResponse.getCaseReference());
         Hearing hearing = ccdResponse.getHearings().get(0);
-        assertEquals("Prudential House", hearing.getVenueName());
-        assertEquals("36 Dale Street", hearing.getVenueAddressLine1());
-        assertEquals("Liverpool", hearing.getVenueTown());
-        assertEquals("Merseyside", hearing.getVenueCounty());
-        assertEquals("L2 5UZ", hearing.getVenuePostcode());
-        assertEquals("https://www.google.com/theAddress", hearing.getVenueGoogleMapUrl());
+        assertEquals("Prudential House", hearing.getValue().getVenue().getName());
+        assertEquals("36 Dale Street", hearing.getValue().getVenue().getAddress().getLine1());
+        assertEquals("Liverpool", hearing.getValue().getVenue().getAddress().getTown());
+        assertEquals("Merseyside", hearing.getValue().getVenue().getAddress().getCounty());
+        assertEquals("L2 5UZ", hearing.getValue().getVenue().getAddress().getPostcode());
+        assertEquals("https://www.google.com/theAddress", hearing.getValue().getVenue().getGoogleMapLink());
         assertEquals("123456789", ccdResponse.getCaseId());
     }
 

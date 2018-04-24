@@ -15,16 +15,20 @@ public final class CcdResponseUtils {
 
     public static CcdResponse buildCcdResponse(String caseReference) {
 
-        Hearing hearing = Hearing.builder()
-            .venueName("The venue")
-            .venueAddressLine1("12 The Road Avenue")
-            .venueAddressLine2("Village")
-            .venueTown("Aberdeen")
-            .venueCounty("Aberdeenshire")
-            .venuePostcode("AB12 0HN")
-            .venueGoogleMapUrl("http://www.googlemaps.com/aberdeenvenue")
-            .hearingDateTime(LocalDateTime.now())
-            .build();
+        Hearing hearing = Hearing.builder().value(HearingDetails.builder()
+            .hearingDate("2018-01-01")
+            .time("12:00")
+            .venue(Venue.builder()
+                .name("The venue")
+                .address(Address.builder()
+                    .line1("12 The Road Avenue")
+                    .line2("Village")
+                    .town("Aberdeen")
+                    .county("Aberdeenshire")
+                    .postcode("AB12 0HN").build())
+                .googleMapLink("http://www.googlemaps.com/aberdeenvenue")
+                .build()).build()).build();
+
 
         List<Hearing> hearingsList = new ArrayList<>();
         hearingsList.add(hearing);
@@ -55,7 +59,7 @@ public final class CcdResponseUtils {
 
         return CcdResponse.builder()
             .caseReference(caseReference)
-//            .hearings(hearingsList)
+            .hearings(hearingsList)
 //            .events(Collections.singletonList(event))
             .subscriptions(subscriptions)
             .build();

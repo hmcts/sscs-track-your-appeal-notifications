@@ -67,10 +67,10 @@ public class Personalisation {
         if (ccdResponse.getHearings() != null && !ccdResponse.getHearings().isEmpty()) {
             Hearing latestHearing = ccdResponse.getHearings().get(0);
 
-            personalisation.put(HEARING_DATE, formatLocalDate(latestHearing.getHearingDateTime().toLocalDate()));
-            personalisation.put(HEARING_TIME, formatLocalTime(latestHearing.getHearingDateTime()));
+            personalisation.put(HEARING_DATE, formatLocalDate(latestHearing.getValue().getHearingDateTime().toLocalDate()));
+            personalisation.put(HEARING_TIME, formatLocalTime(latestHearing.getValue().getHearingDateTime()));
             personalisation.put(VENUE_ADDRESS_LITERAL, formatAddress(latestHearing));
-            personalisation.put(VENUE_MAP_LINK_LITERAL, latestHearing.getVenueGoogleMapUrl());
+            personalisation.put(VENUE_MAP_LINK_LITERAL, latestHearing.getValue().getVenue().getGoogleMapLink());
         }
 
         //FIXME: Random NPE being thrown so logging the object value
@@ -134,12 +134,12 @@ public class Personalisation {
     }
 
     private String formatAddress(Hearing hearing) {
-        return newArrayList(hearing.getVenueName(),
-                hearing.getVenueAddressLine1(),
-                hearing.getVenueAddressLine2(),
-                hearing.getVenueTown(),
-                hearing.getVenueCounty(),
-                hearing.getVenuePostcode())
+        return newArrayList(hearing.getValue().getVenue().getName(),
+                hearing.getValue().getVenue().getAddress().getLine1(),
+                hearing.getValue().getVenue().getAddress().getLine2(),
+                hearing.getValue().getVenue().getAddress().getTown(),
+                hearing.getValue().getVenue().getAddress().getCounty(),
+                hearing.getValue().getVenue().getAddress().getPostcode())
                 .stream()
                 .filter(StringUtils::isNotBlank)
                 .collect(Collectors.joining(", "));

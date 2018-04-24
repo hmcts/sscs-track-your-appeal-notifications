@@ -165,16 +165,19 @@ public class CcdResponseDeserializer extends StdDeserializer<CcdResponseWrapper>
                 JsonNode venueNode = getNode(valueNode, "venue");
                 JsonNode addressNode = getNode(venueNode, "address");
 
-                Hearing hearing = Hearing.builder()
-                    .hearingDateTime(buildHearingDateTime(getField(valueNode, "hearingDate"), getField(valueNode, "time")))
-                    .venueName(getField(venueNode, "name"))
-                    .venueAddressLine1(getField(addressNode, "line1"))
-                    .venueAddressLine2(getField(addressNode, "line2"))
-                    .venueTown(getField(addressNode, "town"))
-                    .venueCounty(getField(addressNode, "county"))
-                    .venuePostcode(getField(addressNode, "postcode"))
-                    .venueGoogleMapUrl(getField(venueNode, "googleMapLink"))
-                    .build();
+                Hearing hearing = Hearing.builder().value(HearingDetails.builder()
+                    .hearingDate(getField(valueNode, "hearingDate"))
+                    .time(getField(valueNode, "time"))
+                    .venue(Venue.builder()
+                    .name(getField(venueNode, "name"))
+                    .address(Address.builder()
+                    .line1(getField(addressNode, "line1"))
+                    .line2(getField(addressNode, "line2"))
+                    .town(getField(addressNode, "town"))
+                    .county(getField(addressNode, "county"))
+                    .postcode(getField(addressNode, "postcode")).build())
+                    .googleMapLink(getField(venueNode, "googleMapLink"))
+                    .build()).build()).build();
 
                 hearings.add(hearing);
             }
@@ -208,9 +211,9 @@ public class CcdResponseDeserializer extends StdDeserializer<CcdResponseWrapper>
         }
     }
 
-    private LocalDateTime buildHearingDateTime(String hearingDate, String hearingTime) {
-        return LocalDateTime.of(LocalDate.parse(hearingDate), LocalTime.parse(hearingTime));
-    }
+//    private LocalDateTime buildHearingDateTime(String hearingDate, String hearingTime) {
+//        return LocalDateTime.of(LocalDate.parse(hearingDate), LocalTime.parse(hearingTime));
+//    }
 
     private static ZonedDateTime convertToUkLocalDateTime(String bstDateTimeinUtc) {
         return ZonedDateTime.parse(bstDateTimeinUtc + "Z").toInstant().atZone(ZoneId.of(ZONE_ID));

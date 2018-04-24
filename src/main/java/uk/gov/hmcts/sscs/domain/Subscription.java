@@ -22,14 +22,14 @@ public class Subscription {
 
     @JsonIgnore
     public Boolean isSubscribeSms() {
-        if (subscribeSms == null || subscribeSms.toLowerCase() == "no") {
+        if (subscribeSms == null || subscribeSms.toLowerCase().equals("no")) {
             return false;
         }
         return true;
     }
     @JsonIgnore
     public Boolean isSubscribeEmail() {
-        if (subscribeEmail == null || subscribeEmail.toLowerCase() == "no") {
+        if (subscribeEmail == null || subscribeEmail.toLowerCase().equals("no"))  {
             return false;
         }
         return true;
