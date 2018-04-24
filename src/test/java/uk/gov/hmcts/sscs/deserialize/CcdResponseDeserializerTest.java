@@ -404,7 +404,7 @@ public class CcdResponseDeserializerTest {
     }
 
     @Test
-    public void shouldDeseriliazeRegionalProcessingCenterIfPresent() throws Exception {
+    public void shouldDeserializeRegionalProcessingCenterIfPresent() throws Exception {
         String rpcJson = "{\"regionalProcessingCenter\":{\"name\":\"CARDIFF\",\"address1\":\"HM Courts & Tribunals Service\","
                 + "\"address2\":\"Social Security & Child Support Appeals\",\"address3\":\"Eastgate House\",\n"
                 + "\"address4\":\"Newport Road\",\"city\":\"CARDIFF\",\"postcode\":\"CF24 0AB\",\"phoneNumber\":\"0300 123 1142\",\"faxNumber\":\"0870 739 4438\"}}";
