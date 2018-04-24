@@ -1,7 +1,10 @@
 package uk.gov.hmcts.sscs.domain;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
-import lombok.*;
+import lombok.AccessLevel;
+import lombok.Builder;
+import lombok.Data;
+import lombok.Getter;
 import uk.gov.hmcts.sscs.domain.notify.Destination;
 
 @Data
@@ -27,6 +30,7 @@ public class Subscription {
         }
         return true;
     }
+
     @JsonIgnore
     public Boolean isSubscribeEmail() {
         if (subscribeEmail == null || subscribeEmail.toLowerCase().equals("no"))  {

@@ -138,15 +138,15 @@ public class CcdResponseDeserializer extends StdDeserializer<CcdResponseWrapper>
         final JsonNode eventNode =  caseNode.get("events");
 
         if (eventNode != null && eventNode.isArray()) {
-            List<Event> events = new ArrayList<>();
+            List<Events> events = new ArrayList<>();
 
             for (final JsonNode objNode : eventNode) {
                 JsonNode valueNode = getNode(objNode, "value");
 
-                ZonedDateTime date = convertToUkLocalDateTime(getField(valueNode, "date"));
+                String date = getField(valueNode, "date");
+                String eventType = getField(valueNode, "type");
 
-                EventType eventType = EventType.getNotificationById(getField(valueNode, "type"));
-                events.add(Event.builder().dateTime(date).eventType(eventType).build());
+                events.add(Events.builder().value(Event.builder().date(date).type(eventType).build()).build());
 
             }
             Collections.sort(events, Collections.reverseOrder());
@@ -210,10 +210,6 @@ public class CcdResponseDeserializer extends StdDeserializer<CcdResponseWrapper>
             }
         }
     }
-
-//    private LocalDateTime buildHearingDateTime(String hearingDate, String hearingTime) {
-//        return LocalDateTime.of(LocalDate.parse(hearingDate), LocalTime.parse(hearingTime));
-//    }
 
     private static ZonedDateTime convertToUkLocalDateTime(String bstDateTimeinUtc) {
         return ZonedDateTime.parse(bstDateTimeinUtc + "Z").toInstant().atZone(ZoneId.of(ZONE_ID));

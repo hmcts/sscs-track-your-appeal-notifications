@@ -1,7 +1,5 @@
 package uk.gov.hmcts.sscs;
 
-import java.time.LocalDateTime;
-import java.time.ZonedDateTime;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
@@ -33,9 +31,12 @@ public final class CcdResponseUtils {
         List<Hearing> hearingsList = new ArrayList<>();
         hearingsList.add(hearing);
 
-        Event event = Event.builder()
-            .eventType(EventType.APPEAL_CREATED)
-            .dateTime(ZonedDateTime.now())
+        Events event = Events.builder()
+            .value(Event.builder()
+            .type(EventType.APPEAL_CREATED.getId())
+            .description("Appeal Created")
+            .date("2018-01-14T21:59:43.10")
+            .build())
             .build();
 
         Subscription appellantSubscription = Subscription.builder()
@@ -60,7 +61,7 @@ public final class CcdResponseUtils {
         return CcdResponse.builder()
             .caseReference(caseReference)
             .hearings(hearingsList)
-//            .events(Collections.singletonList(event))
+            .events(Collections.singletonList(event))
             .subscriptions(subscriptions)
             .build();
     }

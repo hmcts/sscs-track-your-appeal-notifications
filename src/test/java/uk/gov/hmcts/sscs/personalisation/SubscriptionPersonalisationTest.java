@@ -9,7 +9,6 @@ import static uk.gov.hmcts.sscs.config.AppConstants.*;
 import static uk.gov.hmcts.sscs.domain.Benefit.PIP;
 import static uk.gov.hmcts.sscs.domain.notify.EventType.*;
 
-import java.time.ZonedDateTime;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
@@ -47,6 +46,8 @@ public class SubscriptionPersonalisationTest {
     @InjectMocks
     @Resource
     SubscriptionPersonalisation personalisation;
+
+    private String date = "2018-01-01T14:01:18.243";
 
     @Before
     public void setup() {
@@ -99,8 +100,8 @@ public class SubscriptionPersonalisationTest {
 
     @Test
     public void customisePersonalisationSetsNotificationTypeToMostRecentWhenNewSubscription() {
-        List<Event> events = new ArrayList<>();
-        events.add(Event.builder().dateTime(ZonedDateTime.now()).eventType(APPEAL_RECEIVED).build());
+        List<Events> events = new ArrayList<>();
+        events.add(Events.builder().value(Event.builder().date(date).type(APPEAL_RECEIVED.getId()).build()).build());
         newCcdResponse.setEvents(events);
 
         personalisation.create(CcdResponseWrapper.builder().newCcdResponse(newCcdResponse).oldCcdResponse(oldCcdResponse).build());
@@ -174,8 +175,8 @@ public class SubscriptionPersonalisationTest {
 
     @Test
     public void setMostRecentEventTypeNotificationWhenEmailSubscribedIsFirstSet() {
-        List<Event> events = new ArrayList<>();
-        events.add(Event.builder().dateTime(ZonedDateTime.now()).eventType(APPEAL_RECEIVED).build());
+        List<Events> events = new ArrayList<>();
+        events.add(Events.builder().value(Event.builder().date(date).type(APPEAL_RECEIVED.getId()).build()).build());
         newCcdResponse.setEvents(events);
 
         assertEquals(APPEAL_RECEIVED, personalisation.setEventTypeNotification(newCcdResponse, oldCcdResponse));
@@ -185,8 +186,8 @@ public class SubscriptionPersonalisationTest {
     public void doNotSendEventTypeNotificationWhenEmailSubscribedIsAlreadySet() {
         oldAppellantSubscription.setSubscribeEmail("Yes");
 
-        List<Event> events = new ArrayList<>();
-        events.add(Event.builder().dateTime(ZonedDateTime.now()).eventType(APPEAL_RECEIVED).build());
+        List<Events> events = new ArrayList<>();
+        events.add(Events.builder().value(Event.builder().date(date).type(APPEAL_RECEIVED.getId()).build()).build());
         newCcdResponse.setEvents(events);
 
         assertEquals(DO_NOT_SEND, personalisation.setEventTypeNotification(newCcdResponse, oldCcdResponse));
@@ -194,8 +195,8 @@ public class SubscriptionPersonalisationTest {
 
     @Test
     public void doNotUpdateMostRecentEventTypeNotificationWhenEventTypeIsNotKnown() {
-        List<Event> events = new ArrayList<>();
-        events.add(Event.builder().dateTime(ZonedDateTime.now()).eventType(null).build());
+        List<Events> events = new ArrayList<>();
+        events.add(Events.builder().value(Event.builder().date(date).type(null).build()).build());
         newCcdResponse.setEvents(events);
 
         assertEquals(SUBSCRIPTION_UPDATED, personalisation.setEventTypeNotification(newCcdResponse, oldCcdResponse));
@@ -205,8 +206,8 @@ public class SubscriptionPersonalisationTest {
     public void emptyOldAppellantSubscriptionDoesNotUpdateNotificationType() {
         oldCcdResponse.setSubscriptions(Subscriptions.builder().appellantSubscription(null).build());
 
-        List<Event> events = new ArrayList<>();
-        events.add(Event.builder().dateTime(ZonedDateTime.now()).eventType(APPEAL_RECEIVED).build());
+        List<Events> events = new ArrayList<>();
+        events.add(Events.builder().value(Event.builder().date(date).type(APPEAL_RECEIVED.getId()).build()).build());
         newCcdResponse.setEvents(events);
 
         assertEquals(SUBSCRIPTION_UPDATED, personalisation.setEventTypeNotification(newCcdResponse, oldCcdResponse));
@@ -216,8 +217,8 @@ public class SubscriptionPersonalisationTest {
     public void emptyNewAppellantSubscriptionDoesNotUpdateNotificationType() {
         newCcdResponse.setSubscriptions(Subscriptions.builder().appellantSubscription(null).build());
 
-        List<Event> events = new ArrayList<>();
-        events.add(Event.builder().dateTime(ZonedDateTime.now()).eventType(APPEAL_RECEIVED).build());
+        List<Events> events = new ArrayList<>();
+        events.add(Events.builder().value(Event.builder().date(date).type(APPEAL_RECEIVED.getId()).build()).build());
         newCcdResponse.setEvents(events);
 
         assertEquals(SUBSCRIPTION_UPDATED, personalisation.setEventTypeNotification(newCcdResponse, oldCcdResponse));

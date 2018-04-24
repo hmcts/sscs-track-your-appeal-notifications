@@ -27,7 +27,7 @@ public class SubscriptionPersonalisation extends Personalisation {
         if (doNotSendEmailUpdatedNotificationWhenEmailNotChanged(newCcdResponse, oldCcdResponse)) {
             return EventType.DO_NOT_SEND;
         } else if (shouldSetMostRecentEventTypeNotification(newCcdResponse, oldCcdResponse)) {
-            return newCcdResponse.getEvents().get(0).getEventType();
+            return newCcdResponse.getEvents().get(0).getValue().getEventType();
         } else {
             return newCcdResponse.getNotificationType();
         }
@@ -40,7 +40,7 @@ public class SubscriptionPersonalisation extends Personalisation {
                 && newCcdResponse.getSubscriptions().getAppellantSubscription().isSubscribeEmail()
                 && newCcdResponse.getEvents() != null
                 && !newCcdResponse.getEvents().isEmpty()
-                && newCcdResponse.getEvents().get(0).getEventType() != null);
+                && newCcdResponse.getEvents().get(0).getValue().getEventType() != null);
     }
 
     public Boolean doNotSendEmailUpdatedNotificationWhenEmailNotChanged(CcdResponse newCcdResponse, CcdResponse oldCcdResponse) {

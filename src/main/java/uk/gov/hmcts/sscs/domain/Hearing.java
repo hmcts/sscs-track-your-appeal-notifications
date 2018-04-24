@@ -1,6 +1,5 @@
 package uk.gov.hmcts.sscs.domain;
 
-import java.time.LocalDateTime;
 import lombok.Builder;
 import lombok.Value;
 

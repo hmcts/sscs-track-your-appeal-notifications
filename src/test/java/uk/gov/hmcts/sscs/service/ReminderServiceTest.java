@@ -4,13 +4,8 @@ import static org.junit.Assert.assertEquals;
 import static org.mockito.Matchers.eq;
 import static org.mockito.Mockito.verify;
 import static org.mockito.MockitoAnnotations.initMocks;
-import static uk.gov.hmcts.sscs.config.AppConstants.ZONE_ID;
 import static uk.gov.hmcts.sscs.domain.notify.EventType.DWP_RESPONSE_RECEIVED;
 
-import java.time.LocalDate;
-import java.time.LocalTime;
-import java.time.ZoneId;
-import java.time.ZonedDateTime;
 import java.util.ArrayList;
 import java.util.List;
 import org.json.JSONObject;
@@ -21,6 +16,7 @@ import org.mockito.Mock;
 import org.springframework.test.util.ReflectionTestUtils;
 import uk.gov.hmcts.sscs.client.RestClient;
 import uk.gov.hmcts.sscs.domain.CcdResponse;
+import uk.gov.hmcts.sscs.domain.Events;
 import uk.gov.hmcts.sscs.domain.notify.Event;
 
 public class ReminderServiceTest {
@@ -38,10 +34,10 @@ public class ReminderServiceTest {
 
     @Test
     public void createReminderFromCcdResponse() {
-        ZonedDateTime dateTime = ZonedDateTime.of(LocalDate.of(2018, 4, 1), LocalTime.of(0, 0), ZoneId.of(ZONE_ID));
+        String date = "2018-04-01T00:00:00.000";
 
-        List<Event> events = new ArrayList<>();
-        events.add(Event.builder().dateTime(dateTime).eventType(DWP_RESPONSE_RECEIVED).build());
+        List<Events> events = new ArrayList<>();
+        events.add(Events.builder().value(Event.builder().date(date).type(DWP_RESPONSE_RECEIVED.getId()).build()).build());
 
         CcdResponse ccdResponse = CcdResponse.builder()
                 .caseId("123456").notificationType(DWP_RESPONSE_RECEIVED).events(events)
@@ -65,6 +61,6 @@ public class ReminderServiceTest {
         assertEquals("www.test.com", ((JSONObject) j.get("action")).get("url"));
         assertEquals("POST", ((JSONObject) j.get("action")).get("method"));
         assertEquals(expectedBodyJson.toString(), ((JSONObject) j.get("action")).get("body"));
-        assertEquals("2018-04-03T00:00:00+01:00", ((JSONObject) j.get("trigger")).get("start_date_time"));
+        assertEquals("2018-04-03T01:00:00+01:00", ((JSONObject) j.get("trigger")).get("start_date_time"));
     }
 }

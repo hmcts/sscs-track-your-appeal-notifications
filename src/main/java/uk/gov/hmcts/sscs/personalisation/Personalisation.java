@@ -88,11 +88,13 @@ public class Personalisation {
     public Map<String, String> setEventData(Map<String, String> personalisation, CcdResponse ccdResponse) {
         if (ccdResponse.getEvents() != null) {
 
-            for (Event event : ccdResponse.getEvents()) {
-                if (ccdResponse.getNotificationType().equals(APPEAL_RECEIVED) && event.getEventType().equals(APPEAL_RECEIVED)) {
-                    return setAppealReceivedDetails(personalisation, event);
-                } else if (ccdResponse.getNotificationType().equals(POSTPONEMENT) && event.getEventType().equals(POSTPONEMENT)) {
-                    return setPostponementDetails(personalisation, event);
+            for (Events events : ccdResponse.getEvents()) {
+                if (events.getValue() != null) {
+                    if (ccdResponse.getNotificationType().equals(APPEAL_RECEIVED) && events.getValue().getEventType().equals(APPEAL_RECEIVED)) {
+                        return setAppealReceivedDetails(personalisation, events.getValue());
+                    } else if (ccdResponse.getNotificationType().equals(POSTPONEMENT) && events.getValue().getEventType().equals(POSTPONEMENT)) {
+                        return setPostponementDetails(personalisation, events.getValue());
+                    }
                 }
             }
         }

@@ -7,7 +7,6 @@ import static org.mockito.MockitoAnnotations.initMocks;
 import static uk.gov.hmcts.sscs.domain.Benefit.PIP;
 import static uk.gov.hmcts.sscs.domain.notify.EventType.*;
 
-import java.time.ZonedDateTime;
 import java.util.ArrayList;
 import java.util.List;
 import javax.annotation.Resource;
@@ -57,6 +56,8 @@ public class NotificationFactoryTest {
     private MessageAuthenticationServiceImpl macService;
 
     private Subscription subscription;
+
+    private String date = "2018-01-01T14:01:18.243";
 
     @Before
     public void setup() {
@@ -148,8 +149,8 @@ public class NotificationFactoryTest {
         when(personalisationFactory.apply(SUBSCRIPTION_UPDATED)).thenReturn(subscriptionPersonalisation);
         when(config.getTemplate(APPEAL_RECEIVED.getId(), SUBSCRIPTION_CREATED.getId())).thenReturn(Template.builder().emailTemplateId("123").smsTemplateId(null).build());
 
-        List<Event> events = new ArrayList<>();
-        events.add(Event.builder().dateTime(ZonedDateTime.now()).eventType(APPEAL_RECEIVED).build());
+        List<Events> events = new ArrayList<>();
+        events.add(Events.builder().value(Event.builder().date(date).type(APPEAL_RECEIVED.getId()).build()).build());
 
         wrapper = CcdResponseWrapper.builder()
                 .newCcdResponse(
@@ -175,8 +176,8 @@ public class NotificationFactoryTest {
         when(personalisationFactory.apply(SUBSCRIPTION_UPDATED)).thenReturn(subscriptionPersonalisation);
         when(config.getTemplate(DO_NOT_SEND.getId(), SUBSCRIPTION_CREATED.getId())).thenReturn(Template.builder().emailTemplateId(null).smsTemplateId(null).build());
 
-        List<Event> events = new ArrayList<>();
-        events.add(Event.builder().dateTime(ZonedDateTime.now()).eventType(APPEAL_RECEIVED).build());
+        List<Events> events = new ArrayList<>();
+        events.add(Events.builder().value(Event.builder().date(date).type(APPEAL_RECEIVED.getId()).build()).build());
 
         wrapper = CcdResponseWrapper.builder()
             .newCcdResponse(
@@ -202,8 +203,8 @@ public class NotificationFactoryTest {
         when(personalisationFactory.apply(SUBSCRIPTION_UPDATED)).thenReturn(subscriptionPersonalisation);
         when(config.getTemplate(SUBSCRIPTION_UPDATED.getId(), SUBSCRIPTION_CREATED.getId())).thenReturn(Template.builder().emailTemplateId("123").smsTemplateId(null).build());
 
-        List<Event> events = new ArrayList<>();
-        events.add(Event.builder().dateTime(ZonedDateTime.now()).eventType(APPEAL_RECEIVED).build());
+        List<Events> events = new ArrayList<>();
+        events.add(Events.builder().value(Event.builder().date(date).type(APPEAL_RECEIVED.getId()).build()).build());
 
         wrapper = CcdResponseWrapper.builder()
             .newCcdResponse(
