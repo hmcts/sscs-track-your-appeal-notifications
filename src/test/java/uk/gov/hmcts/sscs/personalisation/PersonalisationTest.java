@@ -2,6 +2,9 @@ package uk.gov.hmcts.sscs.personalisation;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNull;
+import static org.mockito.Matchers.anyString;
+import static org.mockito.Mockito.never;
+import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 import static org.mockito.MockitoAnnotations.initMocks;
 import static uk.gov.hmcts.sscs.config.AppConstants.*;
@@ -31,6 +34,12 @@ import uk.gov.hmcts.sscs.service.RegionalProcessingCenterService;
 public class PersonalisationTest {
 
     private static final String CASE_ID = "54321";
+    public static final String ADDRESS1 = "HM Courts & Tribunals Service";
+    public static final String ADDRESS2 = "Social Security & Child Support Appeals";
+    public static final String ADDRESS3 = "Prudential Buildings";
+    public static final String ADDRESS4 = "36 Dale Street";
+    public static final String CITY = "LIVERPOOL";
+    public static final String POSTCODE = "L2 5UZ";
 
     @Mock
     private NotificationConfig config;
@@ -65,8 +74,8 @@ public class PersonalisationTest {
         when(macService.generateToken("GLSCRR", PIP.name())).thenReturn("ZYX");
 
         RegionalProcessingCenter rpc = new RegionalProcessingCenter();
-        rpc.createRegionalProcessingCenter("LIVERPOOL", "HM Courts & Tribunals Service", "Social Security & Child Support Appeals",
-                "Prudential Buildings", "36 Dale Street", "L2 5UZ", "LIVERPOOL");
+        rpc.createRegionalProcessingCenter("LIVERPOOL", "HM Courts & Tribunals Service", ADDRESS2,
+                ADDRESS3, "36 Dale Street", POSTCODE, "LIVERPOOL");
 
         when(regionalProcessingCenterService.getByScReferenceCode("SC/1234/5")).thenReturn(rpc);
 
@@ -118,13 +127,13 @@ public class PersonalisationTest {
         assertEquals("http://link.com/progress/GLSCRR/abouthearing", result.get(HEARING_INFO_LINK_LITERAL));
         assertNull(result.get(EVIDENCE_RECEIVED_DATE_LITERAL));
 
-        assertEquals("HM Courts & Tribunals Service", result.get(REGIONAL_OFFICE_NAME_LITERAL));
+        assertEquals(ADDRESS1, result.get(REGIONAL_OFFICE_NAME_LITERAL));
         assertEquals(DEPARTMENT_NAME_STRING, result.get(DEPARTMENT_NAME_LITERAL));
-        assertEquals("Social Security & Child Support Appeals", result.get(SUPPORT_CENTRE_NAME_LITERAL));
-        assertEquals("Prudential Buildings", result.get(ADDRESS_LINE_LITERAL));
-        assertEquals("36 Dale Street", result.get(TOWN_LITERAL));
-        assertEquals("LIVERPOOL", result.get(COUNTY_LITERAL));
-        assertEquals("L2 5UZ", result.get(POSTCODE_LITERAL));
+        assertEquals(ADDRESS2, result.get(SUPPORT_CENTRE_NAME_LITERAL));
+        assertEquals(ADDRESS3, result.get(ADDRESS_LINE_LITERAL));
+        assertEquals(ADDRESS4, result.get(TOWN_LITERAL));
+        assertEquals(CITY, result.get(COUNTY_LITERAL));
+        assertEquals(POSTCODE, result.get(POSTCODE_LITERAL));
     }
 
     @Test
@@ -277,5 +286,49 @@ public class PersonalisationTest {
         Map<String, String> result = personalisation.setEventData(new HashMap<>(), response);
 
         assertEquals(new HashMap<>(), result);
+    }
+
+    @Test
+    public void shouldPopulateRegionalProcessingCenterFromCcdCaseIfItsPresent() {
+        List<Event> events = new ArrayList<>();
+        events.add(Event.builder().dateTime(dateTime).eventType(APPEAL_RECEIVED).build());
+
+        Subscription appellantSubscription = Subscription.builder()
+                .firstName("Harry")
+                .surname("Kane")
+                .title("Mr")
+                .appealNumber("GLSCRR")
+                .email("test@email.com")
+                .mobileNumber("07983495065")
+                .subscribeEmail(true)
+                .subscribeSms(false)
+                .build();
+
+        RegionalProcessingCenter rpc = new RegionalProcessingCenter();
+        rpc.createRegionalProcessingCenter("LIVERPOOL", ADDRESS1,
+                ADDRESS2, ADDRESS3,
+                ADDRESS4, POSTCODE,
+                CITY);
+
+        CcdResponse response = CcdResponse.builder()
+                .caseId(CASE_ID).benefitType(PIP).caseReference("SC/1234/5")
+                .appellantSubscription(appellantSubscription)
+                .notificationType(APPEAL_RECEIVED)
+                .events(events)
+                .regionalProcessingCenter(rpc)
+                .build();
+
+        Map<String, String> result = personalisation.create(CcdResponseWrapper.builder().newCcdResponse(response).build());
+
+        verify(regionalProcessingCenterService, never()).getByScReferenceCode(anyString());
+
+        assertEquals(ADDRESS1, result.get(REGIONAL_OFFICE_NAME_LITERAL));
+        assertEquals(ADDRESS2, result.get(SUPPORT_CENTRE_NAME_LITERAL));
+        assertEquals(ADDRESS3, result.get(ADDRESS_LINE_LITERAL));
+        assertEquals(ADDRESS4, result.get(TOWN_LITERAL));
+        assertEquals(CITY, result.get(COUNTY_LITERAL));
+        assertEquals(POSTCODE, result.get(POSTCODE_LITERAL));
+
+
     }
 }

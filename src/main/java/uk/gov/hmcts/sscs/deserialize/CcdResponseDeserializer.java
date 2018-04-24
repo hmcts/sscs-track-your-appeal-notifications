@@ -78,6 +78,7 @@ public class CcdResponseDeserializer extends StdDeserializer<CcdResponseWrapper>
         deserializeEventDetailsJson(caseNode, ccdResponse);
         deserializeHearingDetailsJson(caseNode, ccdResponse);
         deserializeEvidenceDetailsJson(caseNode, ccdResponse);
+        deserializeRegionalProcessingCenterJson(caseNode, ccdResponse);
 
         return ccdResponse;
     }
@@ -249,4 +250,22 @@ public class CcdResponseDeserializer extends StdDeserializer<CcdResponseWrapper>
         return node != null && node.has(field) ? node.get(field).asText() : null;
     }
 
+    public void deserializeRegionalProcessingCenterJson(JsonNode rpcNode, CcdResponse ccdResponse) {
+        JsonNode regionalProcessingCenterNode = getNode(rpcNode, "regionalProcessingCenter");
+
+        if (null != regionalProcessingCenterNode) {
+            RegionalProcessingCenter regionalProcessingCenter = new RegionalProcessingCenter();
+            regionalProcessingCenter.setName(getField(regionalProcessingCenterNode, "name"));
+            regionalProcessingCenter.setAddress1(getField(regionalProcessingCenterNode, "address1"));
+            regionalProcessingCenter.setAddress2(getField(regionalProcessingCenterNode, "address2"));
+            regionalProcessingCenter.setAddress3(getField(regionalProcessingCenterNode, "address3"));
+            regionalProcessingCenter.setAddress4(getField(regionalProcessingCenterNode, "address4"));
+            regionalProcessingCenter.setCity(getField(regionalProcessingCenterNode, "city"));
+            regionalProcessingCenter.setPostcode(getField(regionalProcessingCenterNode, "postcode"));
+            regionalProcessingCenter.setPhoneNumber(getField(regionalProcessingCenterNode, "phoneNumber"));
+            regionalProcessingCenter.setFaxNumber(getField(regionalProcessingCenterNode, "faxNumber"));
+
+            ccdResponse.setRegionalProcessingCenter(regionalProcessingCenter);
+        }
+    }
 }

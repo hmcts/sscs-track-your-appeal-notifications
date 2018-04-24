@@ -19,5 +19,6 @@ public class CcdResponse {
     private List<Events> events;
     private List<Hearing> hearings;
     private List<Evidence> evidences;
+    private RegionalProcessingCenter regionalProcessingCenter;
 
 }
