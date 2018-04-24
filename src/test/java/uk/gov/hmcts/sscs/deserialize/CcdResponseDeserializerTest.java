@@ -68,14 +68,14 @@ public class CcdResponseDeserializerTest {
         assertEquals("Vasquez", appellantSubscription.getSurname());
         assertEquals("Mr", appellantSubscription.getTitle());
         assertEquals("test@testing.com", appellantSubscription.getEmail());
-        assertEquals("01234556634", appellantSubscription.getMobileNumber());
+        assertEquals("01234556634", appellantSubscription.getMobile());
         assertFalse(appellantSubscription.isSubscribeSms());
         assertTrue(appellantSubscription.isSubscribeEmail());
         assertEquals("Amber", supporterSubscription.getFirstName());
         assertEquals("Wilder", supporterSubscription.getSurname());
         assertEquals("Mrs", supporterSubscription.getTitle());
         assertEquals("supporter@live.co.uk", supporterSubscription.getEmail());
-        assertEquals("07925289702", supporterSubscription.getMobileNumber());
+        assertEquals("07925289702", supporterSubscription.getMobile());
         assertTrue(supporterSubscription.isSubscribeSms());
         assertFalse(supporterSubscription.isSubscribeEmail());
     }
@@ -220,14 +220,14 @@ public class CcdResponseDeserializerTest {
         assertEquals("Vasquez", appellantSubscription.getSurname());
         assertEquals("Mr", appellantSubscription.getTitle());
         assertEquals("test@testing.com", appellantSubscription.getEmail());
-        assertEquals("01234556634", appellantSubscription.getMobileNumber());
+        assertEquals("01234556634", appellantSubscription.getMobile());
         assertFalse(appellantSubscription.isSubscribeSms());
         assertTrue(appellantSubscription.isSubscribeEmail());
         assertEquals("Amber", supporterSubscription.getFirstName());
         assertEquals("Wilder", supporterSubscription.getSurname());
         assertEquals("Mrs", supporterSubscription.getTitle());
         assertEquals("supporter@live.co.uk", supporterSubscription.getEmail());
-        assertEquals("07925289702", supporterSubscription.getMobileNumber());
+        assertEquals("07925289702", supporterSubscription.getMobile());
         assertTrue(supporterSubscription.isSubscribeSms());
         assertFalse(supporterSubscription.isSubscribeEmail());
         assertEquals("SC/1234/23", ccdResponse.getCaseReference());
@@ -270,14 +270,14 @@ public class CcdResponseDeserializerTest {
         assertEquals("Vasquez", newAppellantSubscription.getSurname());
         assertEquals("Mr", newAppellantSubscription.getTitle());
         assertEquals("test@testing.com", newAppellantSubscription.getEmail());
-        assertEquals("01234556634", newAppellantSubscription.getMobileNumber());
+        assertEquals("01234556634", newAppellantSubscription.getMobile());
         assertFalse(newAppellantSubscription.isSubscribeSms());
         assertTrue(newAppellantSubscription.isSubscribeEmail());
         assertEquals("Amber", newSupporterSubscription.getFirstName());
         assertEquals("Wilder", newSupporterSubscription.getSurname());
         assertEquals("Mrs", newSupporterSubscription.getTitle());
         assertEquals("supporter@live.co.uk", newSupporterSubscription.getEmail());
-        assertEquals("07925289702", newSupporterSubscription.getMobileNumber());
+        assertEquals("07925289702", newSupporterSubscription.getMobile());
         assertTrue(newSupporterSubscription.isSubscribeSms());
         assertFalse(newSupporterSubscription.isSubscribeEmail());
         assertEquals("SC/1234/23", newCcdResponse.getCaseReference());
@@ -291,14 +291,14 @@ public class CcdResponseDeserializerTest {
         assertEquals("Smith", oldAppellantSubscription.getSurname());
         assertEquals("Mr", oldAppellantSubscription.getTitle());
         assertEquals("old@email.com", oldAppellantSubscription.getEmail());
-        assertEquals("07543534345", oldAppellantSubscription.getMobileNumber());
+        assertEquals("07543534345", oldAppellantSubscription.getMobile());
         assertFalse(oldAppellantSubscription.isSubscribeSms());
         assertTrue(oldAppellantSubscription.isSubscribeEmail());
         assertEquals("Harry", oldSupporterSubscription.getFirstName());
         assertEquals("Redknapp", oldSupporterSubscription.getSurname());
         assertEquals("Mr", oldSupporterSubscription.getTitle());
         assertEquals("supporter@gmail.co.uk", oldSupporterSubscription.getEmail());
-        assertEquals("07925267702", oldSupporterSubscription.getMobileNumber());
+        assertEquals("07925267702", oldSupporterSubscription.getMobile());
         assertTrue(oldSupporterSubscription.isSubscribeSms());
         assertFalse(oldSupporterSubscription.isSubscribeEmail());
         assertEquals("SC/5432/89", oldCcdResponse.getCaseReference());
@@ -395,18 +395,4 @@ public class CcdResponseDeserializerTest {
         assertEquals(null, ccdResponseDeserializer.getField(null, "somethingelse"));
     }
 
-    @Test
-    public void returnTrueForYes() {
-        assertTrue(ccdResponseDeserializer.convertYesNoToBoolean("Yes"));
-    }
-
-    @Test
-    public void returnFalseForNo() {
-        assertFalse(ccdResponseDeserializer.convertYesNoToBoolean("No"));
-    }
-
-    @Test
-    public void returnFalseForNull() {
-        assertFalse(ccdResponseDeserializer.convertYesNoToBoolean(null));
-    }
 }

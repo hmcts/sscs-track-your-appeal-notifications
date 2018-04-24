@@ -66,12 +66,12 @@ public class SubscriptionPersonalisationTest {
         when(regionalProcessingCenterService.getByScReferenceCode("1234")).thenReturn(rpc);
 
         newAppellantSubscription = Subscription.builder()
-                .firstName("Harry").surname("Kane").title("Mr").appealNumber("GLSCRR").email("test@email.com")
-                .mobileNumber("07983495065").subscribeEmail(true).subscribeSms(true).build();
+                .firstName("Harry").surname("Kane").title("Mr").tya("GLSCRR").email("test@email.com")
+                .mobile("07983495065").subscribeEmail("Yes").subscribeSms("Yes").build();
 
         oldAppellantSubscription = Subscription.builder()
-                .firstName("Harry").surname("Kane").title("Mr").appealNumber("GLSCRR").email("test@email.com")
-                .mobileNumber("07983495065").subscribeEmail(false).subscribeSms(false).build();
+                .firstName("Harry").surname("Kane").title("Mr").tya("GLSCRR").email("test@email.com")
+                .mobile("07983495065").subscribeEmail("No").subscribeSms("No").build();
 
         newCcdResponse = CcdResponse.builder().caseId("54321").benefitType(PIP).caseReference("1234")
                 .subscriptions(Subscriptions.builder().appellantSubscription(newAppellantSubscription).build()).notificationType(SUBSCRIPTION_UPDATED).build();
@@ -110,8 +110,8 @@ public class SubscriptionPersonalisationTest {
 
     @Test
     public void customisePersonalisationSetsNotificationTypeToDoNotSendWhenEmailHasNotChanged() {
-        newAppellantSubscription.setSubscribeEmail(true);
-        oldAppellantSubscription.setSubscribeEmail(true);
+        newAppellantSubscription.setSubscribeEmail("Yes");
+        oldAppellantSubscription.setSubscribeEmail("Yes");
 
         personalisation.create(CcdResponseWrapper.builder().newCcdResponse(newCcdResponse).oldCcdResponse(oldCcdResponse).build());
 
@@ -120,9 +120,9 @@ public class SubscriptionPersonalisationTest {
 
     @Test
     public void customisePersonalisationShouldLeaveNotificationTypeAsSubscriptionUpdatedWhenEmailHasChanged() {
-        newAppellantSubscription.setSubscribeEmail(true);
+        newAppellantSubscription.setSubscribeEmail("Yes");
         newAppellantSubscription.setEmail("changed@test.com");
-        oldAppellantSubscription.setSubscribeEmail(true);
+        oldAppellantSubscription.setSubscribeEmail("Yes");
 
         personalisation.create(CcdResponseWrapper.builder().newCcdResponse(newCcdResponse).oldCcdResponse(oldCcdResponse).build());
 
@@ -138,7 +138,7 @@ public class SubscriptionPersonalisationTest {
 
     @Test
     public void checkSubscriptionCreatedNotificationTypeNotChangedWhenSmsSubscribedIsAlreadySet() {
-        oldAppellantSubscription.setSubscribeSms(true);
+        oldAppellantSubscription.setSubscribeSms("Yes");
 
         Boolean result = personalisation.shouldSendSmsSubscriptionConfirmation(newCcdResponse, oldCcdResponse);
 
@@ -147,7 +147,7 @@ public class SubscriptionPersonalisationTest {
 
     @Test
     public void checkSubscriptionCreatedNotificationTypeNotChangedWhenSmsSubscribedIsNotSet() {
-        newAppellantSubscription.setSubscribeSms(false);
+        newAppellantSubscription.setSubscribeSms("No");
 
         Boolean result = personalisation.shouldSendSmsSubscriptionConfirmation(newCcdResponse, oldCcdResponse);
 
@@ -183,7 +183,7 @@ public class SubscriptionPersonalisationTest {
 
     @Test
     public void doNotSendEventTypeNotificationWhenEmailSubscribedIsAlreadySet() {
-        oldAppellantSubscription.setSubscribeEmail(true);
+        oldAppellantSubscription.setSubscribeEmail("Yes");
 
         List<Event> events = new ArrayList<>();
         events.add(Event.builder().dateTime(ZonedDateTime.now()).eventType(APPEAL_RECEIVED).build());
@@ -232,26 +232,26 @@ public class SubscriptionPersonalisationTest {
 
     @Test
     public void givenEmailNotChangedAndSubscriptionWasAndStillIsSubscribed_thenReturnTrue() {
-        newAppellantSubscription.setSubscribeEmail(true);
-        oldAppellantSubscription.setSubscribeEmail(true);
+        newAppellantSubscription.setSubscribeEmail("Yes");
+        oldAppellantSubscription.setSubscribeEmail("Yes");
 
         assertEquals(true, personalisation.doNotSendEmailUpdatedNotificationWhenEmailNotChanged(newCcdResponse, oldCcdResponse));
     }
 
     @Test
     public void givenEmailChangedAndSubscriptionWasAndStillIsSubscribed_thenReturnFalse() {
-        newAppellantSubscription.setSubscribeEmail(true);
+        newAppellantSubscription.setSubscribeEmail("Yes");
         newAppellantSubscription.setEmail("changed@test.com");
-        oldAppellantSubscription.setSubscribeEmail(true);
+        oldAppellantSubscription.setSubscribeEmail("Yes");
 
         assertEquals(false, personalisation.doNotSendEmailUpdatedNotificationWhenEmailNotChanged(newCcdResponse, oldCcdResponse));
     }
 
     @Test
     public void givenEmailChangedAndNowSubscribed_thenReturnFalse() {
-        newAppellantSubscription.setSubscribeEmail(true);
+        newAppellantSubscription.setSubscribeEmail("Yes");
         newAppellantSubscription.setEmail("changed@test.com");
-        oldAppellantSubscription.setSubscribeEmail(false);
+        oldAppellantSubscription.setSubscribeEmail("No");
 
         assertEquals(false, personalisation.doNotSendEmailUpdatedNotificationWhenEmailNotChanged(newCcdResponse, oldCcdResponse));
     }

@@ -64,8 +64,8 @@ public class NotificationFactoryTest {
         factory = new NotificationFactory(personalisationFactory);
 
         subscription = Subscription.builder()
-                .firstName("Ronnie").surname("Scott").title("Mr").appealNumber("ABC").email("test@testing.com")
-                .mobileNumber("07985858594").subscribeEmail(true).subscribeSms(false).build();
+                .firstName("Ronnie").surname("Scott").title("Mr").tya("ABC").email("test@testing.com")
+                .mobile("07985858594").subscribeEmail("Yes").subscribeSms("No").build();
 
         ccdResponse = CcdResponse.builder().caseId(CASE_ID).benefitType(PIP).caseReference("SC/1234/5")
                 .subscriptions(Subscriptions.builder().appellantSubscription(subscription).build()).notificationType(APPEAL_RECEIVED).build();
@@ -105,12 +105,12 @@ public class NotificationFactoryTest {
         wrapper = CcdResponseWrapper.builder()
                 .newCcdResponse(
                     ccdResponse.toBuilder()
-                        .subscriptions(Subscriptions.builder().appellantSubscription(subscription.toBuilder().subscribeSms(true).subscribeEmail(false).build()).build())
+                        .subscriptions(Subscriptions.builder().appellantSubscription(subscription.toBuilder().subscribeSms("Yes").subscribeEmail("No").build()).build())
                         .notificationType(SUBSCRIPTION_UPDATED)
                     .build())
                 .oldCcdResponse(
                     ccdResponse.toBuilder()
-                        .subscriptions(Subscriptions.builder().appellantSubscription(subscription.toBuilder().subscribeSms(false).subscribeEmail(false).build()).build())
+                        .subscriptions(Subscriptions.builder().appellantSubscription(subscription.toBuilder().subscribeSms("No").subscribeEmail("No").build()).build())
                         .notificationType(SUBSCRIPTION_UPDATED)
                     .build())
                 .build();
@@ -128,12 +128,12 @@ public class NotificationFactoryTest {
         wrapper = CcdResponseWrapper.builder()
                 .newCcdResponse(
                     ccdResponse.toBuilder()
-                        .subscriptions(Subscriptions.builder().appellantSubscription(subscription.toBuilder().subscribeSms(true).subscribeEmail(false).build()).build())
+                        .subscriptions(Subscriptions.builder().appellantSubscription(subscription.toBuilder().subscribeSms("Yes").subscribeEmail("No").build()).build())
                         .notificationType(SUBSCRIPTION_UPDATED)
                     .build())
                 .oldCcdResponse(
                     ccdResponse.toBuilder()
-                        .subscriptions(Subscriptions.builder().appellantSubscription(subscription.toBuilder().subscribeSms(true).subscribeEmail(true).build()).build())
+                        .subscriptions(Subscriptions.builder().appellantSubscription(subscription.toBuilder().subscribeSms("Yes").subscribeEmail("Yes").build()).build())
                         .notificationType(SUBSCRIPTION_UPDATED)
                     .build())
                 .build();
@@ -154,13 +154,13 @@ public class NotificationFactoryTest {
         wrapper = CcdResponseWrapper.builder()
                 .newCcdResponse(
                     ccdResponse.toBuilder()
-                        .subscriptions(Subscriptions.builder().appellantSubscription(subscription.toBuilder().subscribeSms(true).subscribeEmail(true).build()).build())
+                        .subscriptions(Subscriptions.builder().appellantSubscription(subscription.toBuilder().subscribeSms("Yes").subscribeEmail("Yes").build()).build())
                         .notificationType(SUBSCRIPTION_UPDATED)
                         .events(events)
                         .build())
                 .oldCcdResponse(
                     ccdResponse.toBuilder()
-                        .subscriptions(Subscriptions.builder().appellantSubscription(subscription.toBuilder().subscribeSms(false).subscribeEmail(false).build()).build())
+                        .subscriptions(Subscriptions.builder().appellantSubscription(subscription.toBuilder().subscribeSms("No").subscribeEmail("No").build()).build())
                         .notificationType(SUBSCRIPTION_UPDATED)
                         .build())
                 .build();
@@ -181,13 +181,13 @@ public class NotificationFactoryTest {
         wrapper = CcdResponseWrapper.builder()
             .newCcdResponse(
                 ccdResponse.toBuilder()
-                    .subscriptions(Subscriptions.builder().appellantSubscription(subscription.toBuilder().subscribeSms(true).subscribeEmail(true).build()).build())
+                    .subscriptions(Subscriptions.builder().appellantSubscription(subscription.toBuilder().subscribeSms("Yes").subscribeEmail("Yes").build()).build())
                     .notificationType(SUBSCRIPTION_UPDATED)
                     .events(events)
                     .build())
             .oldCcdResponse(
                 ccdResponse.toBuilder()
-                    .subscriptions(Subscriptions.builder().appellantSubscription(subscription.toBuilder().subscribeSms(false).subscribeEmail(true).build()).build())
+                    .subscriptions(Subscriptions.builder().appellantSubscription(subscription.toBuilder().subscribeSms("No").subscribeEmail("Yes").build()).build())
                     .notificationType(SUBSCRIPTION_UPDATED)
                     .build())
             .build();
@@ -208,13 +208,13 @@ public class NotificationFactoryTest {
         wrapper = CcdResponseWrapper.builder()
             .newCcdResponse(
                 ccdResponse.toBuilder()
-                    .subscriptions(Subscriptions.builder().appellantSubscription(subscription.toBuilder().email("changed@testing.com").subscribeSms(true).subscribeEmail(true).build()).build())
+                    .subscriptions(Subscriptions.builder().appellantSubscription(subscription.toBuilder().email("changed@testing.com").subscribeSms("Yes").subscribeEmail("Yes").build()).build())
                     .notificationType(SUBSCRIPTION_UPDATED)
                     .events(events)
                     .build())
             .oldCcdResponse(
                 ccdResponse.toBuilder()
-                    .subscriptions(Subscriptions.builder().appellantSubscription(subscription.toBuilder().subscribeSms(false).subscribeEmail(true).build()).build())
+                    .subscriptions(Subscriptions.builder().appellantSubscription(subscription.toBuilder().subscribeSms("No").subscribeEmail("Yes").build()).build())
                     .notificationType(SUBSCRIPTION_UPDATED)
                     .build())
             .build();

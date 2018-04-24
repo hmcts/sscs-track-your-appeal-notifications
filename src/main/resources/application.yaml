@@ -1,0 +1,94 @@
+server.port: ${PORT:8082}
+
+core_case_data:
+  api:
+    url: ${CORE_CASE_DATA_API_URL:http://localhost:4452}
+  userId: ${CORE_CASE_DATA_USER_ID:16}
+  jurisdictionId: ${CORE_CASE_DATA_JURISDICTION_ID:SSCS}
+  caseTypeId: ${CORE_CASE_DATA_CASE_TYPE_ID:Benefit}
+
+idam:
+  url: ${IDAM_URL:http://localhost:4501}
+  s2s-auth:
+    totp_secret: ${IDAM.S2S-AUTH.TOTP_SECRET:AAAAAAAAAAAAAAAC}
+    microservice: ${IDAM.S2S-AUTH.MICROSERVICE:sscs}
+    url: ${IDAM.S2S-AUTH:http://localhost:4502}
+  oauth2:
+    user:
+      email: ${IDAM_SSCS_SYSTEMUPDATE_USER:SSCS_SYSTEM_UPDATE}
+      password: ${IDAM_SSCS_SYSTEMUPDATE_PASSWORD:SSCS_SYSTEM_UPDATE}
+    client:
+      id: ${IDAM_OAUTH2_CLIENT_ID:sscs}
+      secret: ${IDAM_OAUTH2_CLIENT_SECRET:QM5RQQ53LZFOSIXJ}
+    redirectUrl: ${IDAM_SSCS_URL:https://localhost:9000/poc}
+
+management.security.enabled: ${MANAGEMENT_SECURITY_ENABLED:false}
+
+gov.uk.notification.api.key: ${NOTIFICATION_API_KEY:emailnotificationkey}
+subscription.hmac.secret.text: ${EMAIL_MAC_SECRET_TEXT:our-big-secret}
+
+hmcts.phone.number: 0300 123 1142
+
+evidence.submission.info.link: ${EVIDENCE_SUBMISSION_INFO_LINK:http://localhost:3000/evidence/appeal_id}
+manage.emails.link: ${SSCS_MANAGE_EMAILS_LINK:http://localhost:3000/manage-email-notifications/mac}
+track.appeal.link: ${SSCS_TRACK_YOUR_APPEAL_LINK:http://localhost:3000/trackyourappeal/appeal_id}
+hearing.info.link: ${HEARING_INFO_LINK:http://localhost:3000/abouthearing/appeal_id}
+claiming.expenses.link: ${CLAIMING_EXPENSES_LINK:http://localhost:3000/expenses/appeal_id}
+
+job.scheduler.enabled: ${JOB_SCHEDULER_ENABLED:false}
+job.scheduler.url: ${JOB_SCHEDULER_URL:http://localhost:8484}
+job.scheduler.callbackUrl: ${JOB_SCHEDULER_CALLBACK_URL:http://localhost:8080}
+
+sftp:
+  keyLocation:  |
+                -----BEGIN RSA PRIVATE KEY-----
+                MIIEpgIBAAKCAQEAuB64U0n99/0/IuJM3SeiQaNLnWCKy+qMy+06D9UkpOrLHXpl
+                6DkEQsTEZ58Xs00j+T/xlf6wfyl2qJn9B/ZtkdGeGAsdrmGtGQZ6tQLTPP1f0q7P
+                DC568Rno5Y3r780VYC6+QQcLSgC5E+45jW52CS3sJuZTJ+4vt6huG+m5MbKMPOVe
+                /QKnb20gNRsOGoX8oIHlbcogX62huUbAKgB9/eSj8kBSh1il19Xu6/WpBYORIZZM
+                0Bh5DDQIMULNc965X9BlO50N15er3fftfIjv1pl91i4E1v/Rv6W5qIM3rgzLEjP2
+                6n0+Lbhgpfc7yR/GoycUHJQrtd2PDKPjcv052wIDAQABAoIBAQCVxD9RWKWiXDhI
+                KuY1GrEsTSULveUI3CBtHOmWyVzGXUqdDtvoGsDxgtb0JwADVGNHsxDTXtm4hkTD
+                /oZJPNWBwI2lpx0cpM1FxvR3WvXy7XNNj+5RTVmp1taQK3JYnGyf0UXm5VD0gEQM
+                B0J/XfPboaQvPDk2CNR9wx7Vy7ddySnyc0q9QEDo+Hb30QiacZDvvM2H08AXgegm
+                FJTgR0xOgTncz/2Iw0xNL5rUA2+xnFvMeBqfOMLvSSvtTbwr4BQbup3r9uc5BYFC
+                4NASRRh7ZLjzzAE2IOrv64/j0kjhSTliEsxLuhaVZgbhFVKuMW3ZwbG+7VVfY5ra
+                IbErIPZZAoGBAOWeXHMGwzq8fPTKaHRRRpZ0Kk3DOWaLh2GuYn+XbjbfJTximzD9
+                TgFXUhKau8wsvQ3t2udc9BbWX1mTFKUo/JJJPzp6HVHRSCozk4KFB3zdT2Lz45yA
+                8jxaJFkGYiszpv+5tKU//cEHPr4pA+w7CPMk7RCe2VUkEXSHYXPA18TlAoGBAM1G
+                Io1xTJO4cwPje3vlHmbEaNrjnTAere7T9LH1Lv1dPGxKhKlnbGLVo6CFsYjhV6DB
+                bkSSiXlLT3uSuBakO1WRya0TLiYup7PCnTkjjivbFSxxbMqMxzi4RMx6pQde4qhd
+                d3wf3JjY1JPIgw5OINVtbkTHW01LoLW4EaKPwde/AoGBAMPzuQGQq9rcL+bXNPzO
+                v2Z2DAQArmOMfyQlJXmtSSkalTRLEhVklcUfN7MYyVscctoIOd9nvAYhO429rsij
+                iadtSsAkphDEgMlC6odf71vnoW/Yok1U3WQTqSEwCWbE1ac2W6sKSQsJm8m8RtS6
+                LJES2hxs8xtthFflkIyv7XLhAoGBAJZpHqZPb5IKJFSkGfZFg0o//qjtAV+iC0al
+                jnXbNyw1ZjHfRGewva2J51SWweiPXZsQQRED4rG66imc70C/5C4mHgWwuS8HHqDM
+                KFIW6HTgGhqvncyo7M110AuYjlXhQ+mkWwnbetOQhesnkEgqHUrl3VeOUCtKEB83
+                Gczo01uXAoGBAIx3md2Bpj2q1320y6HDkfiTeBHBiO0lAmRUlxBYDD8j38voXgbc
+                fVIJ9ZmQlS1z1kvWUf1hVR3DGFj+81i6mdfQvwIBrHVqjY21gXH4QnsMUd/f9K/V
+                jExsyE94Udj65VZ9Jky5WEnEmicFE7JPaZm8Mnb67rMur93siXQ3oyL+
+                -----END RSA PRIVATE KEY-----
+  host: ${GAPS2_SFTP_HOST:localhost}
+  port: ${GAPS2_SFTP_PORT:2222}
+  username: ${GAPS2_SFTP_USER:sftp}
+  inputDirectory: ${GAPS2_SFTP_DIR:incoming}
+
+spring.application.name: CaseLoader Insights WebApp
+
+sscs.case.loader:
+  cron.schedule: ${SSCS_CASE_LOADER_CRON_SCHEDULE:0 0/5 * * * ?}
+  ignoreCasesBeforeDate: ${IGNORE_CASES_BEFORE_DATE:1017-07-01}
+  url: ${SSCS_CASE_LOADER_URL:http://localhost:8082}
+
+logging.level:
+    org.springframework.web: ${LOG_LEVEL_SPRING_WEB:INFO}
+    uk.gov.hmcts.reform.sscs: ${LOG_LEVEL_SSCS:INFO}
+
+process.data: ${CASE_LOADER_PROCESS_DATA:true}
+
+---
+spring:
+    profiles: development
+
+scheduling.enabled: false
+

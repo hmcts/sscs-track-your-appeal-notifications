@@ -5,10 +5,7 @@ import java.time.ZonedDateTime;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
-import uk.gov.hmcts.sscs.domain.CcdResponse;
-import uk.gov.hmcts.sscs.domain.Hearing;
-import uk.gov.hmcts.sscs.domain.Subscription;
-import uk.gov.hmcts.sscs.domain.Subscriptions;
+import uk.gov.hmcts.sscs.domain.*;
 import uk.gov.hmcts.sscs.domain.notify.Event;
 import uk.gov.hmcts.sscs.domain.notify.EventType;
 
@@ -38,18 +35,18 @@ public final class CcdResponseUtils {
             .build();
 
         Subscription appellantSubscription = Subscription.builder()
-            .appealNumber("")
+            .tya("")
             .email("")
-            .mobileNumber("")
-            .subscribeEmail(false)
-            .subscribeSms(false)
+            .mobile("")
+            .subscribeEmail("No")
+            .subscribeSms("No")
             .build();
         Subscription supporterSubscription = Subscription.builder()
-            .appealNumber("")
+            .tya("")
             .email("")
-            .mobileNumber("")
-            .subscribeEmail(false)
-            .subscribeSms(false)
+            .mobile("")
+            .subscribeEmail("No")
+            .subscribeSms("No")
             .build();
         Subscriptions subscriptions = Subscriptions.builder()
             .appellantSubscription(appellantSubscription)
@@ -58,8 +55,8 @@ public final class CcdResponseUtils {
 
         return CcdResponse.builder()
             .caseReference(caseReference)
-            .hearings(hearingsList)
-            .events(Collections.singletonList(event))
+//            .hearings(hearingsList)
+//            .events(Collections.singletonList(event))
             .subscriptions(subscriptions)
             .build();
     }

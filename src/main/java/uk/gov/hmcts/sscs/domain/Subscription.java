@@ -1,5 +1,6 @@
 package uk.gov.hmcts.sscs.domain;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import lombok.*;
 import uk.gov.hmcts.sscs.domain.notify.Destination;
 
@@ -7,30 +8,35 @@ import uk.gov.hmcts.sscs.domain.notify.Destination;
 @Builder(toBuilder = true)
 public class Subscription {
 
+    @JsonIgnore
     private String firstName;
+    @JsonIgnore
     private String surname;
+    @JsonIgnore
     private String title;
-    private String appealNumber;
+    private String tya;
     private String email;
-    private String mobileNumber;
-    @Getter(AccessLevel.NONE) private Boolean subscribeSms;
-    @Getter(AccessLevel.NONE) private Boolean subscribeEmail;
+    private String mobile;
+    @Getter(AccessLevel.NONE) private String subscribeSms;
+    @Getter(AccessLevel.NONE) private String subscribeEmail;
 
+    @JsonIgnore
     public Boolean isSubscribeSms() {
-        if (subscribeSms == null) {
+        if (subscribeSms == null || subscribeSms.toLowerCase() == "no") {
             return false;
         }
-        return subscribeSms;
+        return true;
     }
-
+    @JsonIgnore
     public Boolean isSubscribeEmail() {
-        if (subscribeEmail == null) {
+        if (subscribeEmail == null || subscribeEmail.toLowerCase() == "no") {
             return false;
         }
-        return subscribeEmail;
+        return true;
     }
 
+    @JsonIgnore
     public Destination getDestination() {
-        return Destination.builder().email(email).sms(mobileNumber).build();
+        return Destination.builder().email(email).sms(mobile).build();
     }
 }

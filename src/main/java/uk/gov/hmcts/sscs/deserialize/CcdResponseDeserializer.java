@@ -232,11 +232,11 @@ public class CcdResponseDeserializer extends StdDeserializer<CcdResponseWrapper>
     private Subscription deserializeSubscriberJson(JsonNode node, Subscription subscription) {
         if (node != null) {
             subscription = subscription.toBuilder()
-                .appealNumber(getField(node, "tya"))
+                .tya(getField(node, "tya"))
                 .email(getField(node, "email"))
-                .mobileNumber(getField(node, "mobile"))
-                .subscribeSms(convertYesNoToBoolean(getField(node, "subscribeSms")))
-                .subscribeEmail(convertYesNoToBoolean(getField(node, "subscribeEmail"))).build();
+                .mobile(getField(node, "mobile"))
+                .subscribeSms(getField(node, "subscribeSms"))
+                .subscribeEmail(getField(node, "subscribeEmail")).build();
         }
 
         return subscription;
@@ -248,10 +248,6 @@ public class CcdResponseDeserializer extends StdDeserializer<CcdResponseWrapper>
 
     public String getField(JsonNode node, String field) {
         return node != null && node.has(field) ? node.get(field).asText() : null;
-    }
-
-    public Boolean convertYesNoToBoolean(String text) {
-        return text != null && text.equals("Yes") ? true : false;
     }
 
 }

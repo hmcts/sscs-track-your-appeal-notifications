@@ -78,11 +78,11 @@ public class PersonalisationTest {
             .firstName("Harry")
             .surname("Kane")
             .title("Mr")
-            .appealNumber("GLSCRR")
+            .tya("GLSCRR")
             .email("test@email.com")
-            .mobileNumber("07983495065")
-            .subscribeEmail(true)
-            .subscribeSms(false)
+            .mobile("07983495065")
+            .subscribeEmail("Yes")
+            .subscribeSms("No")
             .build();
 
         Subscriptions subscriptions = Subscriptions.builder().appellantSubscription(appellantSubscription).build();
@@ -139,11 +139,11 @@ public class PersonalisationTest {
                 .firstName("Harry")
                 .surname("Kane")
                 .title("Mr")
-                .appealNumber("GLSCRR")
+                .tya("GLSCRR")
                 .email("test@email.com")
-                .mobileNumber("07983495065")
-                .subscribeEmail(true)
-                .subscribeSms(false)
+                .mobile("07983495065")
+                .subscribeEmail("Yes")
+                .subscribeSms("No")
                 .build();
 
         Subscriptions subscriptions = Subscriptions.builder().appellantSubscription(appellantSubscription).build();
