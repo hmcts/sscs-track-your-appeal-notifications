@@ -2,12 +2,32 @@ provider "vault" {
   address = "https://vault.reform.hmcts.net:6200"
 }
 
-data "vault_generic_secret" "sscs_notify_api_key" {
-  path = "secret/${var.infrastructure_env}/sscs/sscs_notify_api_new_key"
+data "vault_generic_secret" "sscs_s2s_secret" {
+  path = "secret/${var.infrastructure_env}/ccidam/service-auth-provider/api/microservice-keys/sscs"
 }
 
-data "vault_generic_secret" "s2s_url" {
+data "vault_generic_secret" "idam_sscs_systemupdate_user" {
+  path = "secret/${var.infrastructure_env}/ccidam/idam-api/sscs/systemupdate/user"
+}
+
+data "vault_generic_secret" "idam_sscs_systemupdate_password" {
+  path = "secret/${var.infrastructure_env}/ccidam/idam-api/sscs/systemupdate/password"
+}
+
+data "vault_generic_secret" "idam_oauth2_client_secret" {
+  path = "secret/${var.infrastructure_env}/ccidam/idam-api/oauth2/client-secrets/sscs"
+}
+
+data "vault_generic_secret" "idam_api" {
+  path = "secret/${var.infrastructure_env}/sscs/idam_api"
+}
+
+data "vault_generic_secret" "idam_s2s_api" {
   path = "secret/${var.infrastructure_env}/sscs/idam_s2s_api"
+}
+
+data "vault_generic_secret" "sscs_notify_api_key" {
+  path = "secret/${var.infrastructure_env}/sscs/sscs_notify_api_new_key"
 }
 
 data "vault_generic_secret" "mac_secret" {
@@ -25,8 +45,25 @@ module "track-your-appeal-notifications" {
 
 
   app_settings = {
-    S2S_URL = "${data.vault_generic_secret.s2s_url.data["value"]}"
     MANAGEMENT_SECURITY_ENABLED = "${var.management_security_enabled}"
+
+    CORE_CASE_DATA_API_URL = "${local.CcdApi}"
+    CORE_CASE_DATA_USER_ID = "${var.core_case_data_user_id}"
+    CORE_CASE_DATA_JURISDICTION_ID = "${var.core_case_data_jurisdiction_id}"
+    CORE_CASE_DATA_CASE_TYPE_ID = "${var.core_case_data_case_type_id}"
+
+    IDAM_URL = "${data.vault_generic_secret.idam_api.data["value"]}"
+
+    IDAM.S2S-AUTH.TOTP_SECRET = "${data.vault_generic_secret.sscs_s2s_secret.data["value"]}"
+    IDAM.S2S-AUTH = "${data.vault_generic_secret.idam_s2s_api.data["value"]}"
+    IDAM.S2S-AUTH.MICROSERVICE = "${var.idam_s2s_auth_microservice}"
+
+    IDAM_SSCS_SYSTEMUPDATE_USER = "${data.vault_generic_secret.idam_sscs_systemupdate_user.data["value"]}"
+    IDAM_SSCS_SYSTEMUPDATE_PASSWORD = "${data.vault_generic_secret.idam_sscs_systemupdate_password.data["value"]}"
+
+    IDAM_OAUTH2_CLIENT_ID = "${var.idam_oauth2_client_id}"
+    IDAM_OAUTH2_CLIENT_SECRET = "${data.vault_generic_secret.idam_oauth2_client_secret.data["value"]}"
+
     NOTIFICATION_API_KEY = "${data.vault_generic_secret.sscs_notify_api_key.data["value"]}"
     EVIDENCE_SUBMISSION_INFO_LINK = "${var.evidence_submission_info_link}"
     SSCS_MANAGE_EMAILS_LINK = "${var.sscs_manage_emails_link}"
