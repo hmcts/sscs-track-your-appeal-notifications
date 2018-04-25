@@ -12,7 +12,7 @@ import uk.gov.hmcts.sscs.service.idam.IdamService;
 import java.util.List;
 
 @Controller
-public class Smoke {
+public class SmokeController {
 
     @Autowired
     private SearchCcdService searchCcdService;
@@ -24,9 +24,9 @@ public class Smoke {
     public List<CaseDetails> smoke() {
         IdamTokens idamTokens = IdamTokens.builder()
             .idamOauth2Token(idamService.getIdamOauth2Token())
-            .idamOauth2Token(idamService.generateServiceAuthorization())
+            .authenticationService(idamService.generateServiceAuthorization())
             .build();
-        return searchCcdService.findCaseByCaseRef("SC2656/18/0266", idamTokens);
+        return searchCcdService.findCaseByCaseRef("SC068/18/01217", idamTokens);
     }
 
 }

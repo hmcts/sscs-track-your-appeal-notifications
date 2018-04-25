@@ -4,13 +4,13 @@ import io.restassured.RestAssured;
 import org.junit.Test;
 import org.springframework.http.HttpStatus;
 
-public class GetSavedCase {
+public class GetSmokeCase {
 
-    private final String caseloaderinstance = System.getenv("TEST_URL");
+    private final String caseLoaderInstance = System.getenv("TEST_URL");
 
     @Test
-    public void retrievecasefromCcd() {
-        RestAssured.baseURI = caseloaderinstance;
+    public void givenASmokeCase_retrieveFromCcd() {
+        RestAssured.baseURI = caseLoaderInstance;
         RestAssured.useRelaxedHTTPSValidation();
 
         RestAssured
