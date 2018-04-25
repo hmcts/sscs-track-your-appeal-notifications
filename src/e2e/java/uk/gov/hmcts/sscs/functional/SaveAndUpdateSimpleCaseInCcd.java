@@ -11,7 +11,7 @@ import org.springframework.test.context.junit4.SpringRunner;
 import uk.gov.hmcts.reform.ccd.client.model.CaseDetails;
 import uk.gov.hmcts.sscs.CcdResponseUtils;
 import uk.gov.hmcts.sscs.domain.CcdResponse;
-import uk.gov.hmcts.sscs.models.idam.IdamTokens;
+import uk.gov.hmcts.sscs.domain.idam.IdamTokens;
 import uk.gov.hmcts.sscs.service.ccd.CreateCcdService;
 import uk.gov.hmcts.sscs.service.ccd.UpdateCcdService;
 import uk.gov.hmcts.sscs.service.idam.IdamService;

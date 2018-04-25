@@ -1,4 +1,4 @@
-package uk.gov.hmcts.sscs.models.idam;
+package uk.gov.hmcts.sscs.domain.idam;
 
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonProperty;

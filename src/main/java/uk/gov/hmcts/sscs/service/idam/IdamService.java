@@ -6,7 +6,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import uk.gov.hmcts.reform.authorisation.generators.AuthTokenGenerator;
 import uk.gov.hmcts.sscs.config.properties.IdamProperties;
-import uk.gov.hmcts.sscs.models.idam.Authorize;
+import uk.gov.hmcts.sscs.domain.idam.Authorize;
 
 @Service
 @Slf4j

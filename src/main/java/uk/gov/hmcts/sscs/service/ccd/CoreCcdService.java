@@ -9,7 +9,7 @@ import uk.gov.hmcts.reform.ccd.client.model.Event;
 import uk.gov.hmcts.reform.ccd.client.model.StartEventResponse;
 import uk.gov.hmcts.sscs.config.properties.CoreCaseDataProperties;
 import uk.gov.hmcts.sscs.domain.CcdResponse;
-import uk.gov.hmcts.sscs.models.idam.IdamTokens;
+import uk.gov.hmcts.sscs.domain.idam.IdamTokens;
 
 @Service
 public class CoreCcdService {

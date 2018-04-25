@@ -6,7 +6,7 @@ import org.springframework.web.bind.annotation.RequestHeader;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
-import uk.gov.hmcts.sscs.models.idam.Authorize;
+import uk.gov.hmcts.sscs.domain.idam.Authorize;
 
 @FeignClient(name = "idam-api", url = "${idam.url}")
 public interface IdamApiClient {

@@ -1,4 +1,4 @@
-package uk.gov.hmcts.sscs.models.idam;
+package uk.gov.hmcts.sscs.domain.idam;
 
 import lombok.Builder;
 import lombok.Data;

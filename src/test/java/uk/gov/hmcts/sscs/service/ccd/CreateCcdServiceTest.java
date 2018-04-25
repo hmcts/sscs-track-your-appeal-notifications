@@ -10,11 +10,10 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.Mock;
 import org.mockito.runners.MockitoJUnitRunner;
-import uk.gov.hmcts.reform.ccd.client.CoreCaseDataApi;
 import uk.gov.hmcts.reform.ccd.client.model.CaseDetails;
 import uk.gov.hmcts.reform.ccd.client.model.StartEventResponse;
 import uk.gov.hmcts.sscs.domain.CcdResponse;
-import uk.gov.hmcts.sscs.models.idam.IdamTokens;
+import uk.gov.hmcts.sscs.domain.idam.IdamTokens;
 import uk.gov.hmcts.sscs.service.idam.IdamService;
 
 @RunWith(MockitoJUnitRunner.class)
@@ -23,13 +22,9 @@ public class CreateCcdServiceTest {
     private static final String OAUTH2 = "token";
     private static final String S2SAUTH = "auth";
     private static final String EVENT_ID = "appealCreated";
-    private static final String CCD_TOKEN = "ccdToken";
-    private static final String CCD_EVENT = "ccdEvent";
 
     @Mock
     private IdamService idamService;
-    @Mock
-    private CoreCaseDataApi ccdApi;
     @Mock
     private StartEventResponse response;
     @Mock
