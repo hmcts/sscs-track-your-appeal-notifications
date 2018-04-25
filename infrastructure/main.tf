@@ -35,6 +35,8 @@ data "vault_generic_secret" "mac_secret" {
 }
 
 locals {
+  aseName = "${data.terraform_remote_state.core_apps_compute.ase_name[0]}"
+
   localCcdApi = "http://ccd-data-store-api-${var.env}.service.${local.aseName}.internal"
   CcdApi = "${var.env == "preview" ? "http://ccd-data-store-api-aat.service.core-compute-aat.internal" : local.localCcdApi}"
 }
