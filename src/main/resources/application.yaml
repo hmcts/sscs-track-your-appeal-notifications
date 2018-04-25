@@ -14,7 +14,7 @@ idam:
   s2s-auth:
     totp_secret: ${IDAM.S2S-AUTH.TOTP_SECRET:AAAAAAAAAAAAAAAC}
     microservice: ${IDAM.S2S-AUTH.MICROSERVICE:sscs}
-    url: ${IDAM.S2S-AUTH:http://localhost:4502}
+    url: ${S2S_URL:http://localhost:4502}
   oauth2:
     user:
       email: ${IDAM_SSCS_SYSTEMUPDATE_USER:SSCS_SYSTEM_UPDATE}
