@@ -1,5 +1,6 @@
 package uk.gov.hmcts.sscs.controller.test.smoke;
 
+import java.util.List;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -8,8 +9,6 @@ import uk.gov.hmcts.reform.ccd.client.model.CaseDetails;
 import uk.gov.hmcts.sscs.domain.idam.IdamTokens;
 import uk.gov.hmcts.sscs.service.ccd.SearchCcdService;
 import uk.gov.hmcts.sscs.service.idam.IdamService;
-
-import java.util.List;
 
 @Controller
 public class SmokeController {
