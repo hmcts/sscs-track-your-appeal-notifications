@@ -34,6 +34,11 @@ data "vault_generic_secret" "mac_secret" {
   path = "secret/${var.infrastructure_env}/sscs/sscs_email_mac_secret_text"
 }
 
+locals {
+  localCcdApi = "http://ccd-data-store-api-${var.env}.service.${local.aseName}.internal"
+  CcdApi = "${var.env == "preview" ? "http://ccd-data-store-api-aat.service.core-compute-aat.internal" : local.localCcdApi}"
+}
+
 module "track-your-appeal-notifications" {
   source       = "git@github.com:contino/moj-module-webapp?ref=master"
   product      = "${var.product}-${var.component}"
