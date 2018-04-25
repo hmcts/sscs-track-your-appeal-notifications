@@ -10,12 +10,12 @@ import org.springframework.cloud.netflix.feign.EnableFeignClients;
 import org.springframework.context.MessageSource;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.support.ReloadableResourceBundleMessageSource;
-import uk.gov.hmcts.reform.authorisation.ServiceAuthorisationApi;
 import uk.gov.hmcts.sscs.client.RestClient;
 import uk.gov.hmcts.sscs.deserialize.CcdResponseDeserializer;
 import uk.gov.service.notify.NotificationClient;
 
-@EnableFeignClients(basePackageClasses = ServiceAuthorisationApi.class)
+
+@EnableFeignClients
 @SpringBootApplication
 public class TrackYourAppealNotificationsApplication {
 

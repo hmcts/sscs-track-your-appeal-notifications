@@ -1,18 +1,28 @@
 package uk.gov.hmcts.sscs.domain.notify;
 
-import java.time.ZonedDateTime;
+import static uk.gov.hmcts.sscs.config.AppConstants.ZONE_ID;
+
+import com.fasterxml.jackson.annotation.JsonIgnore;
+import java.time.*;
 import lombok.Builder;
 import lombok.Value;
 
 @Value
 @Builder
-public class Event implements Comparable<Event> {
+public class Event {
 
-    private ZonedDateTime dateTime;
-    private EventType eventType;
+    String date;
+    String type;
+    String description;
 
-    @Override
-    public int compareTo(Event o) {
-        return getDateTime().compareTo(o.getDateTime());
+    @JsonIgnore
+    public ZonedDateTime getDateTime() {
+        return ZonedDateTime.parse(date + "Z").toInstant().atZone(ZoneId.of(ZONE_ID));
     }
+
+    @JsonIgnore
+    public EventType getEventType() {
+        return EventType.getNotificationById(type);
+    }
+
 }

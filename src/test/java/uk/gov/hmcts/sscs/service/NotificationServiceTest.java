@@ -15,6 +15,7 @@ import org.springframework.test.util.ReflectionTestUtils;
 import uk.gov.hmcts.sscs.domain.CcdResponse;
 import uk.gov.hmcts.sscs.domain.CcdResponseWrapper;
 import uk.gov.hmcts.sscs.domain.Subscription;
+import uk.gov.hmcts.sscs.domain.Subscriptions;
 import uk.gov.hmcts.sscs.domain.notify.*;
 import uk.gov.hmcts.sscs.exception.NotificationClientRuntimeException;
 import uk.gov.hmcts.sscs.exception.NotificationServiceException;
@@ -45,10 +46,10 @@ public class NotificationServiceTest {
         notificationService = new NotificationService(client, factory, reminderService);
 
         Subscription appellantSubscription = Subscription.builder()
-                .firstName("Harry").surname("Kane").title("Mr").appealNumber("GLSCRR").email("test@email.com")
-                .mobileNumber("07983495065").subscribeEmail(true).subscribeSms(true).build();
+                .firstName("Harry").surname("Kane").title("Mr").tya("GLSCRR").email("test@email.com")
+                .mobile("07983495065").subscribeEmail("Yes").subscribeSms("Yes").build();
 
-        response = CcdResponse.builder().appellantSubscription(appellantSubscription).caseReference("ABC123").notificationType(APPEAL_WITHDRAWN).build();
+        response = CcdResponse.builder().subscriptions(Subscriptions.builder().appellantSubscription(appellantSubscription).build()).caseReference("ABC123").notificationType(APPEAL_WITHDRAWN).build();
         wrapper = CcdResponseWrapper.builder().newCcdResponse(response).oldCcdResponse(response).build();
     }
 

@@ -72,6 +72,7 @@ public class CcdResponseDeserializer extends StdDeserializer<CcdResponseWrapper>
         CcdResponse ccdResponse = CcdResponse.builder().caseReference(getField(caseNode, "caseReference")).build();
 
         deserializeBenefitDetailsJson(appealNode, ccdResponse);
+        deserializeSubscriptionJson(appealNode, subscriptionsNode, ccdResponse);
         deserializeAppellantDetailsJson(appealNode, subscriptionsNode, ccdResponse);
         deserializeSupporterDetailsJson(appealNode, subscriptionsNode, ccdResponse);
         deserializeEventDetailsJson(caseNode, ccdResponse);
@@ -90,7 +91,16 @@ public class CcdResponseDeserializer extends StdDeserializer<CcdResponseWrapper>
         }
     }
 
-    public void deserializeAppellantDetailsJson(JsonNode appealNode, JsonNode subscriptionsNode, CcdResponse ccdResponse) {
+    public void deserializeSubscriptionJson(JsonNode appealNode, JsonNode subscriptionsNode, CcdResponse ccdResponse) {
+        Subscription appellantSubscription = deserializeAppellantDetailsJson(appealNode, subscriptionsNode, ccdResponse);
+        Subscription supporterSubscription = deserializeSupporterDetailsJson(appealNode, subscriptionsNode, ccdResponse);
+
+        ccdResponse.setSubscriptions(Subscriptions.builder()
+                .appellantSubscription(appellantSubscription)
+                .supporterSubscription(supporterSubscription).build());
+    }
+
+    private Subscription deserializeAppellantDetailsJson(JsonNode appealNode, JsonNode subscriptionsNode, CcdResponse ccdResponse) {
         JsonNode appellantNode = getNode(appealNode, "appellant");
         JsonNode appellantSubscriptionNode = getNode(subscriptionsNode, "appellantSubscription");
 
@@ -104,10 +114,10 @@ public class CcdResponseDeserializer extends StdDeserializer<CcdResponseWrapper>
             appellantSubscription = deserializeSubscriberJson(appellantSubscriptionNode, appellantSubscription);
         }
 
-        ccdResponse.setAppellantSubscription(appellantSubscription);
+        return appellantSubscription;
     }
 
-    public void deserializeSupporterDetailsJson(JsonNode appealNode, JsonNode subscriptionsNode, CcdResponse ccdResponse) {
+    private Subscription deserializeSupporterDetailsJson(JsonNode appealNode, JsonNode subscriptionsNode, CcdResponse ccdResponse) {
         JsonNode supporterNode = getNode(appealNode, "supporter");
         JsonNode supporterSubscriptionNode = getNode(subscriptionsNode, "supporterSubscription");
 
@@ -121,22 +131,22 @@ public class CcdResponseDeserializer extends StdDeserializer<CcdResponseWrapper>
             supporterSubscription = deserializeSubscriberJson(supporterSubscriptionNode, supporterSubscription);
         }
 
-        ccdResponse.setSupporterSubscription(supporterSubscription);
+        return supporterSubscription;
     }
 
     public void deserializeEventDetailsJson(JsonNode caseNode, CcdResponse ccdResponse) {
         final JsonNode eventNode =  caseNode.get("events");
 
         if (eventNode != null && eventNode.isArray()) {
-            List<Event> events = new ArrayList<>();
+            List<Events> events = new ArrayList<>();
 
             for (final JsonNode objNode : eventNode) {
                 JsonNode valueNode = getNode(objNode, "value");
 
-                ZonedDateTime date = convertToUkLocalDateTime(getField(valueNode, "date"));
+                String date = getField(valueNode, "date");
+                String eventType = getField(valueNode, "type");
 
-                EventType eventType = EventType.getNotificationById(getField(valueNode, "type"));
-                events.add(Event.builder().dateTime(date).eventType(eventType).build());
+                events.add(Events.builder().value(Event.builder().date(date).type(eventType).build()).build());
 
             }
             Collections.sort(events, Collections.reverseOrder());
@@ -155,16 +165,19 @@ public class CcdResponseDeserializer extends StdDeserializer<CcdResponseWrapper>
                 JsonNode venueNode = getNode(valueNode, "venue");
                 JsonNode addressNode = getNode(venueNode, "address");
 
-                Hearing hearing = Hearing.builder()
-                    .hearingDateTime(buildHearingDateTime(getField(valueNode, "hearingDate"), getField(valueNode, "time")))
-                    .venueName(getField(venueNode, "name"))
-                    .venueAddressLine1(getField(addressNode, "line1"))
-                    .venueAddressLine2(getField(addressNode, "line2"))
-                    .venueTown(getField(addressNode, "town"))
-                    .venueCounty(getField(addressNode, "county"))
-                    .venuePostcode(getField(addressNode, "postcode"))
-                    .venueGoogleMapUrl(getField(venueNode, "googleMapLink"))
-                    .build();
+                Hearing hearing = Hearing.builder().value(HearingDetails.builder()
+                    .hearingDate(getField(valueNode, "hearingDate"))
+                    .time(getField(valueNode, "time"))
+                    .venue(Venue.builder()
+                    .name(getField(venueNode, "name"))
+                    .address(Address.builder()
+                    .line1(getField(addressNode, "line1"))
+                    .line2(getField(addressNode, "line2"))
+                    .town(getField(addressNode, "town"))
+                    .county(getField(addressNode, "county"))
+                    .postcode(getField(addressNode, "postcode")).build())
+                    .googleMapLink(getField(venueNode, "googleMapLink"))
+                    .build()).build()).build();
 
                 hearings.add(hearing);
             }
@@ -198,10 +211,6 @@ public class CcdResponseDeserializer extends StdDeserializer<CcdResponseWrapper>
         }
     }
 
-    private LocalDateTime buildHearingDateTime(String hearingDate, String hearingTime) {
-        return LocalDateTime.of(LocalDate.parse(hearingDate), LocalTime.parse(hearingTime));
-    }
-
     private static ZonedDateTime convertToUkLocalDateTime(String bstDateTimeinUtc) {
         return ZonedDateTime.parse(bstDateTimeinUtc + "Z").toInstant().atZone(ZoneId.of(ZONE_ID));
     }
@@ -222,11 +231,11 @@ public class CcdResponseDeserializer extends StdDeserializer<CcdResponseWrapper>
     private Subscription deserializeSubscriberJson(JsonNode node, Subscription subscription) {
         if (node != null) {
             subscription = subscription.toBuilder()
-                .appealNumber(getField(node, "tya"))
+                .tya(getField(node, "tya"))
                 .email(getField(node, "email"))
-                .mobileNumber(getField(node, "mobile"))
-                .subscribeSms(convertYesNoToBoolean(getField(node, "subscribeSms")))
-                .subscribeEmail(convertYesNoToBoolean(getField(node, "subscribeEmail"))).build();
+                .mobile(getField(node, "mobile"))
+                .subscribeSms(getField(node, "subscribeSms"))
+                .subscribeEmail(getField(node, "subscribeEmail")).build();
         }
 
         return subscription;
@@ -238,10 +247,6 @@ public class CcdResponseDeserializer extends StdDeserializer<CcdResponseWrapper>
 
     public String getField(JsonNode node, String field) {
         return node != null && node.has(field) ? node.get(field).asText() : null;
-    }
-
-    public Boolean convertYesNoToBoolean(String text) {
-        return text != null && text.equals("Yes") ? true : false;
     }
 
 }

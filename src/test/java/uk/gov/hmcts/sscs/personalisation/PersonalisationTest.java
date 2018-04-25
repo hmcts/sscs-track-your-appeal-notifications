@@ -45,7 +45,11 @@ public class PersonalisationTest {
     @Resource
     public Personalisation personalisation;
 
-    ZonedDateTime dateTime;
+    String date = "2018-07-01T14:01:18.243";
+
+    ZonedDateTime zonedDateTime;
+
+    Subscriptions subscriptions;
 
     @Before
     public void setup() {
@@ -66,28 +70,31 @@ public class PersonalisationTest {
 
         when(regionalProcessingCenterService.getByScReferenceCode("SC/1234/5")).thenReturn(rpc);
 
-        dateTime = ZonedDateTime.of(LocalDate.of(2018, 7, 1), LocalTime.of(0, 0), ZoneId.of(ZONE_ID));
+        zonedDateTime = ZonedDateTime.of(LocalDate.of(2018, 7, 1), LocalTime.of(0, 0), ZoneId.of(ZONE_ID));
+
+        Subscription appellantSubscription = Subscription.builder()
+                .firstName("Harry")
+                .surname("Kane")
+                .title("Mr")
+                .tya("GLSCRR")
+                .email("test@email.com")
+                .mobile("07983495065")
+                .subscribeEmail("Yes")
+                .subscribeSms("No")
+                .build();
+
+        subscriptions = Subscriptions.builder().appellantSubscription(appellantSubscription).build();
+
     }
 
     @Test
     public void customisePersonalisation() {
-        List<Event> events = new ArrayList<>();
-        events.add(Event.builder().dateTime(dateTime).eventType(APPEAL_RECEIVED).build());
-
-        Subscription appellantSubscription = Subscription.builder()
-            .firstName("Harry")
-            .surname("Kane")
-            .title("Mr")
-            .appealNumber("GLSCRR")
-            .email("test@email.com")
-            .mobileNumber("07983495065")
-            .subscribeEmail(true)
-            .subscribeSms(false)
-            .build();
+        List<Events> events = new ArrayList<>();
+        events.add(Events.builder().value(Event.builder().date(date).type(APPEAL_RECEIVED.getId()).build()).build());
 
         CcdResponse response = CcdResponse.builder()
             .caseId(CASE_ID).benefitType(PIP).caseReference("SC/1234/5")
-            .appellantSubscription(appellantSubscription)
+            .subscriptions(subscriptions)
             .notificationType(APPEAL_RECEIVED)
             .events(events)
             .build();
@@ -122,11 +129,11 @@ public class PersonalisationTest {
 
     @Test
     public void givenEvidenceReceivedNotification_customisePersonalisation() {
-        List<Event> events = new ArrayList<>();
-        events.add(Event.builder().dateTime(dateTime).eventType(APPEAL_RECEIVED).build());
+        List<Events> events = new ArrayList<>();
+        events.add(Events.builder().value(Event.builder().date(date).type(APPEAL_RECEIVED.getId()).build()).build());
 
         Evidence evidence = Evidence.builder()
-                .dateReceived(dateTime.toLocalDate())
+                .dateReceived(zonedDateTime.toLocalDate())
                 .evidenceType("Medical")
                 .evidenceProvidedBy("Caseworker").build();
 
@@ -137,16 +144,18 @@ public class PersonalisationTest {
                 .firstName("Harry")
                 .surname("Kane")
                 .title("Mr")
-                .appealNumber("GLSCRR")
+                .tya("GLSCRR")
                 .email("test@email.com")
-                .mobileNumber("07983495065")
-                .subscribeEmail(true)
-                .subscribeSms(false)
+                .mobile("07983495065")
+                .subscribeEmail("Yes")
+                .subscribeSms("No")
                 .build();
+
+        Subscriptions subscriptions = Subscriptions.builder().appellantSubscription(appellantSubscription).build();
 
         CcdResponse response = CcdResponse.builder()
                 .caseId(CASE_ID).benefitType(PIP).caseReference("SC/1234/5")
-                .appellantSubscription(appellantSubscription)
+                .subscriptions(subscriptions)
                 .notificationType(EVIDENCE_RECEIVED)
                 .events(events)
                 .evidences(evidenceList)
@@ -159,8 +168,8 @@ public class PersonalisationTest {
 
     @Test
     public void setAppealReceivedEventData() {
-        List<Event> events = new ArrayList<>();
-        events.add(Event.builder().dateTime(dateTime).eventType(APPEAL_RECEIVED).build());
+        List<Events> events = new ArrayList<>();
+        events.add(Events.builder().value(Event.builder().date(date).type(APPEAL_RECEIVED.getId()).build()).build());
 
         CcdResponse response = CcdResponse.builder()
                 .caseId(CASE_ID).benefitType(PIP).caseReference("SC/1234/5")
@@ -177,7 +186,7 @@ public class PersonalisationTest {
     @Test
     public void setEvidenceReceivedEventData() {
         Evidence evidence = Evidence.builder()
-                .dateReceived(dateTime.toLocalDate())
+                .dateReceived(zonedDateTime.toLocalDate())
                 .evidenceType("Medical")
                 .evidenceProvidedBy("Caseworker").build();
 
@@ -196,9 +205,43 @@ public class PersonalisationTest {
     }
 
     @Test
+    public void givenHearingData_correctlySetTheHearingDetails() {
+        Hearing hearing = Hearing.builder().value(HearingDetails.builder()
+                .hearingDate("2018-01-01")
+                .time("12:00")
+                .venue(Venue.builder()
+                        .name("The venue")
+                        .address(Address.builder()
+                                .line1("12 The Road Avenue")
+                                .line2("Village")
+                                .town("Aberdeen")
+                                .county("Aberdeenshire")
+                                .postcode("AB12 0HN").build())
+                        .googleMapLink("http://www.googlemaps.com/aberdeenvenue")
+                        .build()).build()).build();
+
+        List<Hearing> hearingList = new ArrayList<>();
+        hearingList.add(hearing);
+
+        CcdResponse response = CcdResponse.builder()
+                .caseId(CASE_ID).benefitType(PIP).caseReference("SC/1234/5")
+                .notificationType(HEARING_BOOKED)
+                .subscriptions(subscriptions)
+                .hearings(hearingList)
+                .build();
+
+        Map<String, String> result = personalisation.create(CcdResponseWrapper.builder().newCcdResponse(response).build());
+
+        assertEquals("01 January 2018", result.get(HEARING_DATE));
+        assertEquals("12:00 PM", result.get(HEARING_TIME));
+        assertEquals("The venue, 12 The Road Avenue, Village, Aberdeen, Aberdeenshire, AB12 0HN", result.get(VENUE_ADDRESS_LITERAL));
+        assertEquals("http://www.googlemaps.com/aberdeenvenue", result.get(VENUE_MAP_LINK_LITERAL));
+    }
+
+    @Test
     public void setPostponementEventData() {
-        List<Event> events = new ArrayList<>();
-        events.add(Event.builder().dateTime(dateTime).eventType(POSTPONEMENT).build());
+        List<Events> events = new ArrayList<>();
+        events.add(Events.builder().value(Event.builder().date(date).type(POSTPONEMENT.getId()).build()).build());
 
         CcdResponse response = CcdResponse.builder()
                 .caseId(CASE_ID).benefitType(PIP).caseReference("SC/1234/5")
