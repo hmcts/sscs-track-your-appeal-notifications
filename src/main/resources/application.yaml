@@ -24,7 +24,11 @@ idam:
       secret: ${IDAM_OAUTH2_CLIENT_SECRET:QM5RQQ53LZFOSIXJ}
     redirectUrl: ${IDAM_SSCS_URL:https://localhost:9000/poc}
 
-management.security.enabled: ${MANAGEMENT_SECURITY_ENABLED:false}
+management:
+  security.enabled: ${MANAGEMENT_SECURITY_ENABLED:false}
+  info.git.mode: full
+  endpoints:
+    health.show-details: always
 
 gov.uk.notification.api.key: ${NOTIFICATION_API_KEY:emailnotificationkey}
 subscription.hmac.secret.text: ${EMAIL_MAC_SECRET_TEXT:our-big-secret}
