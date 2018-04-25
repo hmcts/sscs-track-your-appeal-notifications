@@ -170,6 +170,7 @@ dependencies {
 
     compile group: 'org.springframework.cloud', name: 'spring-cloud-starter-hystrix', version: versions.springHystrix
     compile group: 'org.springframework.cloud', name: 'spring-cloud-starter-hystrix-dashboard', version: versions.springHystrix
+    compile group: 'io.rest-assured', name: 'rest-assured', version: '3.0.7'
 
     compile group: 'uk.gov.service.notify', name: 'notifications-java-client', version: '3.9.1-RELEASE'
 
