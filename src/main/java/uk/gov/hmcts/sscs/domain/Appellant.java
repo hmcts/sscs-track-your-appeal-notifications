@@ -1,12 +1,8 @@
 package uk.gov.hmcts.sscs.domain;
 
-import com.fasterxml.jackson.annotation.JsonCreator;
-import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
-import com.fasterxml.jackson.annotation.JsonProperty;
 import lombok.Builder;
 import lombok.Value;
 
-@JsonIgnoreProperties(ignoreUnknown = true)
 @Value
 @Builder
 public class Appellant {
@@ -15,15 +11,17 @@ public class Appellant {
     private Address address;
     private Contact contact;
     private Identity identity;
+    private String isAppointee;
 
-    @JsonCreator
-    public Appellant(@JsonProperty("name") Name name,
-                     @JsonProperty("address") Address address,
-                     @JsonProperty("contact") Contact contact,
-                     @JsonProperty("identity") Identity identity) {
+    public Appellant(Name name,
+                     Address address,
+                     Contact contact,
+                     Identity identity,
+                     String isAppointee) {
         this.name = name;
         this.address = address;
         this.contact = contact;
         this.identity = identity;
+        this.isAppointee = isAppointee;
     }
 }

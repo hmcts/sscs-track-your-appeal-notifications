@@ -1,13 +1,9 @@
 package uk.gov.hmcts.sscs.domain;
 
-import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonIgnore;
-import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
-import com.fasterxml.jackson.annotation.JsonProperty;
 import lombok.Builder;
 import lombok.Value;
 
-@JsonIgnoreProperties(ignoreUnknown = true)
 @Value
 @Builder
 public class Name {
@@ -15,10 +11,9 @@ public class Name {
     private String firstName;
     private String lastName;
 
-    @JsonCreator
-    public Name(@JsonProperty("title") String title,
-                @JsonProperty("firstName") String firstName,
-                @JsonProperty("lastName") String lastName) {
+    public Name(String title,
+                String firstName,
+                String lastName) {
         this.title = title;
         this.firstName = firstName;
         this.lastName = lastName;
@@ -27,5 +22,10 @@ public class Name {
     @JsonIgnore
     public String getFullName() {
         return title + " " + firstName + " " + lastName;
+    }
+
+    @JsonIgnore
+    public String getFullNameNoTitle() {
+        return firstName + " " + lastName;
     }
 }

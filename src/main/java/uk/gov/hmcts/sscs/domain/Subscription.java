@@ -20,8 +20,8 @@ public class Subscription {
     private String tya;
     private String email;
     private String mobile;
-    @Getter(AccessLevel.NONE) private String subscribeSms;
-    @Getter(AccessLevel.NONE) private String subscribeEmail;
+    private String subscribeSms;
+    private String subscribeEmail;
 
     @JsonIgnore
     public Boolean isSubscribeSms() {

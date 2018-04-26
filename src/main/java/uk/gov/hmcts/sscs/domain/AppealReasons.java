@@ -1,22 +1,17 @@
 package uk.gov.hmcts.sscs.domain;
 
-import com.fasterxml.jackson.annotation.JsonCreator;
-import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
-import com.fasterxml.jackson.annotation.JsonProperty;
 import java.util.List;
 import lombok.Builder;
 import lombok.Value;
 
-@JsonIgnoreProperties(ignoreUnknown = true)
 @Value
 @Builder
 public class AppealReasons {
     private List<AppealReason> reasons;
     private String otherReasons;
 
-    @JsonCreator
-    public AppealReasons(@JsonProperty("reasons") List<AppealReason> reasons,
-                         @JsonProperty("otherReasons") String otherReasons) {
+    public AppealReasons(List<AppealReason> reasons,
+                         String otherReasons) {
         this.reasons = reasons;
         this.otherReasons = otherReasons;
     }

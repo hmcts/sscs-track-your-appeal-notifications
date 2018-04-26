@@ -1,12 +1,8 @@
 package uk.gov.hmcts.sscs.domain;
 
-import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
-import com.fasterxml.jackson.annotation.JsonProperty;
-
 import lombok.Builder;
 import lombok.Value;
 
-@JsonIgnoreProperties(ignoreUnknown = true)
 @Value
 @Builder
 public class Appeal {
@@ -20,15 +16,15 @@ public class Appeal {
     private Representative rep;
     private String signer;
 
-    public Appeal(@JsonProperty("mrnDate") String mrnDate,
-                  @JsonProperty("mrnLateReason") String mrnLateReason,
-                  @JsonProperty("mrnMissingReason") String mrnMissingReason,
-                  @JsonProperty("appellant") Appellant appellant,
-                  @JsonProperty("benefitType") Benefit benefit,
-                  @JsonProperty("hearingOptions") HearingOptions hearingOptions,
-                  @JsonProperty("appealReasons") AppealReasons appealReasons,
-                  @JsonProperty("rep") Representative rep,
-                  @JsonProperty("signer") String signer) {
+    public Appeal(String mrnDate,
+                  String mrnLateReason,
+                  String mrnMissingReason,
+                  Appellant appellant,
+                  Benefit benefit,
+                  HearingOptions hearingOptions,
+                  AppealReasons appealReasons,
+                  Representative rep,
+                  String signer) {
         this.mrnDate = mrnDate;
         this.mrnLateReason = mrnLateReason;
         this.mrnMissingReason = mrnMissingReason;

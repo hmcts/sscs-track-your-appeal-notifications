@@ -1,12 +1,9 @@
 package uk.gov.hmcts.sscs.domain;
 
 import com.fasterxml.jackson.annotation.JsonCreator;
-import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
-import com.fasterxml.jackson.annotation.JsonProperty;
 import lombok.Builder;
 import lombok.Value;
 
-@JsonIgnoreProperties(ignoreUnknown = true)
 @Value
 @Builder
 public class Representative {
@@ -17,10 +14,10 @@ public class Representative {
     private Contact contact;
 
     @JsonCreator
-    public Representative(@JsonProperty("organisation") String organisation,
-                          @JsonProperty("name") Name name,
-                          @JsonProperty("address") Address address,
-                          @JsonProperty("contact") Contact contact) {
+    public Representative(String organisation,
+                          Name name,
+                          Address address,
+                          Contact contact) {
         this.organisation = organisation;
         this.name = name;
         this.address = address;

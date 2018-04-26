@@ -1,13 +1,10 @@
 package uk.gov.hmcts.sscs.domain;
 
 import com.fasterxml.jackson.annotation.JsonCreator;
-import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
-import com.fasterxml.jackson.annotation.JsonProperty;
 import java.util.List;
 import lombok.Builder;
 import lombok.Value;
 
-@JsonIgnoreProperties(ignoreUnknown = true)
 @Value
 @Builder
 public class HearingOptions {
@@ -18,11 +15,11 @@ public class HearingOptions {
     private String other;
 
     @JsonCreator
-    public HearingOptions(@JsonProperty("languageInterpreter") String languageInterpreter,
-                          @JsonProperty("languages") String languages,
-                          @JsonProperty("arrangements") List<String> arrangements,
-                          @JsonProperty("excludeDates") List<ExcludeDate> excludeDates,
-                          @JsonProperty("other") String other) {
+    public HearingOptions(String languageInterpreter,
+                          String languages,
+                          List<String> arrangements,
+                          List<ExcludeDate> excludeDates,
+                          String other) {
         this.languageInterpreter = languageInterpreter;
         this.languages = languages;
         this.arrangements = arrangements;
