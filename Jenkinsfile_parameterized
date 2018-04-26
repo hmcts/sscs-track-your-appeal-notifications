@@ -13,7 +13,33 @@ properties([
   pipelineTriggers([[$class: 'GitHubPushTrigger']])
 ])
 
+List<LinkedHashMap<String, Object>> secrets = [
+        secret('ManagementSecEnabled', 'MANAGEMENT_SECURITY_ENABLED'),
+        secret('CcdApi', 'CORE_CASE_DATA_API_URL'),
+        secret('CcdUid', 'CORE_CASE_DATA_USER_ID'),
+        secret('CcdJid', 'CORE_CASE_DATA_JURISDICTION_ID'),
+        secret('CcdCtid', 'CORE_CASE_DATA_CASE_TYPE_ID'),
+        secret('IdamUrl', 'IDAM_URL'),
+        secret('IdamS2sSecret', 'IDAM.S2S-AUTH.TOTP_SECRET'),
+        secret('IdamS2sAuth', 'S2S_URL'),
+        secret('IdamS2sAuthMicro', 'IDAM.S2S-AUTH.MICROSERVICE'),
+        secret('IdamSscsUser', 'IDAM_SSCS_SYSTEMUPDATE_USER'),
+        secret('IdamSscsPass', 'IDAM_SSCS_SYSTEMUPDATE_PASSWORD'),
+        secret('IdamAuthCid','IDAM_OAUTH2_CLIENT_ID'),
+        secret('IdamAuthSecret','IDAM_OAUTH2_CLIENT_SECRET')
+]
+
+static LinkedHashMap<String, Object> secret(String secretName, String envVar) {
+    [ $class: 'AzureKeyVaultSecret',
+      secretType: 'Secret',
+      name: secretName,
+      version: '',
+      envVariable: envVar
+    ]
+}
+
 withParameterizedPipeline(params.TYPE, params.PRODUCT_NAME, params.APP, params.ENVIRONMENT, params.SUBSCRIPTION) {
     enableSlackNotifications('#sscs-tech')
+    loadVaultSecrets(secrets)
 }
 

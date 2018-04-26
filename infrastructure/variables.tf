@@ -31,6 +31,26 @@ variable "subscription" {
   type = "string"
 }
 
+variable "core_case_data_user_id"{
+  default = "16"
+}
+
+variable "core_case_data_jurisdiction_id"{
+  default = "SSCS"
+}
+
+variable "core_case_data_case_type_id"{
+  default = "Benefit"
+}
+
+variable "idam_s2s_auth_microservice"{
+  default = "sscs"
+}
+
+variable "idam_oauth2_client_id"{
+  default = "sscs"
+}
+
 variable "evidence_submission_info_link" {
   type = "string"
   default = "http://localhost:3000/evidence/appeal_id"
