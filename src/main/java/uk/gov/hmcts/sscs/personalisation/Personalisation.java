@@ -138,11 +138,7 @@ public class Personalisation {
 
     private String formatAddress(Hearing hearing) {
         return newArrayList(hearing.getValue().getVenue().getName(),
-                hearing.getValue().getVenue().getAddress().getLine1(),
-                hearing.getValue().getVenue().getAddress().getLine2(),
-                hearing.getValue().getVenue().getAddress().getTown(),
-                hearing.getValue().getVenue().getAddress().getCounty(),
-                hearing.getValue().getVenue().getAddress().getPostcode())
+                hearing.getValue().getVenue().getAddress().getFullAddress())
                 .stream()
                 .filter(StringUtils::isNotBlank)
                 .collect(Collectors.joining(", "));
