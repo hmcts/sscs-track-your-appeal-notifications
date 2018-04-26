@@ -70,6 +70,7 @@ module "track-your-appeal-notifications" {
 
     IDAM_OAUTH2_CLIENT_ID = "${var.idam_oauth2_client_id}"
     IDAM_OAUTH2_CLIENT_SECRET = "${data.vault_generic_secret.idam_oauth2_client_secret.data["value"]}"
+    IDAM_OAUTH2_REDIRECT_URL = "${var.idam_redirect_url}"
 
     NOTIFICATION_API_KEY = "${data.vault_generic_secret.sscs_notify_api_key.data["value"]}"
     EVIDENCE_SUBMISSION_INFO_LINK = "${var.evidence_submission_info_link}"
