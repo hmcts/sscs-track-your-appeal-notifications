@@ -290,18 +290,18 @@ public class PersonalisationTest {
 
     @Test
     public void shouldPopulateRegionalProcessingCenterFromCcdCaseIfItsPresent() {
-        List<Event> events = new ArrayList<>();
-        events.add(Event.builder().dateTime(dateTime).eventType(APPEAL_RECEIVED).build());
+        List<Events> events = new ArrayList<>();
+        events.add(Events.builder().value(Event.builder().date(date).type(APPEAL_RECEIVED.getId()).build()).build());
 
         Subscription appellantSubscription = Subscription.builder()
                 .firstName("Harry")
                 .surname("Kane")
                 .title("Mr")
-                .appealNumber("GLSCRR")
+                .tya("GLSCRR")
                 .email("test@email.com")
-                .mobileNumber("07983495065")
-                .subscribeEmail(true)
-                .subscribeSms(false)
+                .mobile("07983495065")
+                .subscribeEmail("Yes")
+                .subscribeSms("No")
                 .build();
 
         RegionalProcessingCenter rpc = new RegionalProcessingCenter();
@@ -312,7 +312,7 @@ public class PersonalisationTest {
 
         CcdResponse response = CcdResponse.builder()
                 .caseId(CASE_ID).benefitType(PIP).caseReference("SC/1234/5")
-                .appellantSubscription(appellantSubscription)
+                .subscriptions(Subscriptions.builder().appellantSubscription(appellantSubscription).build())
                 .notificationType(APPEAL_RECEIVED)
                 .events(events)
                 .regionalProcessingCenter(rpc)
@@ -328,7 +328,5 @@ public class PersonalisationTest {
         assertEquals(ADDRESS4, result.get(TOWN_LITERAL));
         assertEquals(CITY, result.get(COUNTY_LITERAL));
         assertEquals(POSTCODE, result.get(POSTCODE_LITERAL));
-
-
     }
 }
