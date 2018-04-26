@@ -15,6 +15,7 @@ import org.junit.Test;
 import uk.gov.hmcts.sscs.domain.CcdResponse;
 import uk.gov.hmcts.sscs.domain.CcdResponseWrapper;
 import uk.gov.hmcts.sscs.domain.Hearing;
+import uk.gov.hmcts.sscs.domain.RegionalProcessingCenter;
 import uk.gov.hmcts.sscs.domain.Subscription;
 import uk.gov.hmcts.sscs.exception.BenefitMappingException;
 
@@ -200,6 +201,8 @@ public class CcdResponseDeserializerTest {
                         + "\"appellant\":{\"name\":{\"title\":\"Mr\",\"lastName\":\"Vasquez\",\"firstName\":\"Dexter\",\"middleName\":\"Ali Sosa\"}},"
                         + "\"supporter\":{\"name\":{\"title\":\"Mrs\",\"lastName\":\"Wilder\",\"firstName\":\"Amber\",\"middleName\":\"Clark Eaton\"}}"
                     + "},"
+                    + "\"regionalProcessingCenter\":{\"name\":\"CARDIFF\",\"address1\":\"HM Courts & Tribunals Service\",\"address2\":\"Social Security & Child Support Appeals\",\"address3\":\"Eastgate House\",\n"
+                    + "\"address4\":\"Newport Road\",\"city\":\"CARDIFF\",\"postcode\":\"CF24 0AB\",\"phoneNumber\":\"0300 123 1142\",\"faxNumber\":\"0870 739 4438\"},"
                     + "\"hearings\": [{\"id\": \"1234\",\"value\": {"
                         + "\"hearingDate\": \"2018-01-12\",\"time\": \"11:00\",\"venue\": {"
                             + "\"name\": \"Prudential House\",\"address\": {\"line1\": \"36 Dale Street\",\"line2\": \"\","
@@ -241,6 +244,7 @@ public class CcdResponseDeserializerTest {
         assertEquals("L2 5UZ", hearing.getValue().getVenue().getAddress().getPostcode());
         assertEquals("https://www.google.com/theAddress", hearing.getValue().getVenue().getGoogleMapLink());
         assertEquals("123456789", ccdResponse.getCaseId());
+        assertNotNull(ccdResponse.getRegionalProcessingCenter());
     }
 
     @Test
@@ -399,4 +403,40 @@ public class CcdResponseDeserializerTest {
         assertEquals(null, ccdResponseDeserializer.getField(null, "somethingelse"));
     }
 
+    @Test
+    public void shouldDeserializeRegionalProcessingCenterIfPresent() throws Exception {
+        String rpcJson = "{\"regionalProcessingCenter\":{\"name\":\"CARDIFF\",\"address1\":\"HM Courts & Tribunals Service\","
+                + "\"address2\":\"Social Security & Child Support Appeals\",\"address3\":\"Eastgate House\",\n"
+                + "\"address4\":\"Newport Road\",\"city\":\"CARDIFF\",\"postcode\":\"CF24 0AB\",\"phoneNumber\":\"0300 123 1142\",\"faxNumber\":\"0870 739 4438\"}}";
+
+        CcdResponse ccdResponse = CcdResponse.builder().build();
+        ccdResponseDeserializer.deserializeRegionalProcessingCenterJson(mapper.readTree(rpcJson), ccdResponse);
+
+
+        assertNotNull(ccdResponse.getRegionalProcessingCenter());
+
+        RegionalProcessingCenter regionalProcessingCenter = ccdResponse.getRegionalProcessingCenter();
+
+        assertEquals(regionalProcessingCenter.getName(), "CARDIFF");
+        assertEquals(regionalProcessingCenter.getAddress1(), "HM Courts & Tribunals Service");
+        assertEquals(regionalProcessingCenter.getAddress2(), "Social Security & Child Support Appeals");
+        assertEquals(regionalProcessingCenter.getAddress3(), "Eastgate House");
+        assertEquals(regionalProcessingCenter.getAddress4(), "Newport Road");
+        assertEquals(regionalProcessingCenter.getCity(), "CARDIFF");
+        assertEquals(regionalProcessingCenter.getPostcode(), "CF24 0AB");
+        assertEquals(regionalProcessingCenter.getPhoneNumber(), "0300 123 1142");
+        assertEquals(regionalProcessingCenter.getFaxNumber(), "0870 739 4438");
+
+    }
+
+    @Test
+    public void shouldNotDeserializeRegionalProcessingCenterIfItsNotPresent() throws Exception {
+        String json = "{\"benefitType\":{\"code\":\"UNK\"}}";
+        CcdResponse ccdResponse = CcdResponse.builder().build();
+
+        ccdResponseDeserializer.deserializeRegionalProcessingCenterJson(mapper.readTree(json), ccdResponse);
+
+        assertNull(ccdResponse.getRegionalProcessingCenter());
+
+    }
 }

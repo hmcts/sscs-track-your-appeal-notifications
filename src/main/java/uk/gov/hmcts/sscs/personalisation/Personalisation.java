@@ -76,7 +76,7 @@ public class Personalisation {
         //FIXME: Random NPE being thrown so logging the object value
         LOG.info("regionalProcessingCenterService value: " + regionalProcessingCenterService);
         if (config.isJobSchedulerEnabled()) {
-            setEvidenceProcessingAddress(personalisation, ccdResponse.getCaseReference());
+            setEvidenceProcessingAddress(personalisation, ccdResponse);
         }
 
         setEventData(personalisation, ccdResponse);
@@ -122,8 +122,14 @@ public class Personalisation {
         return personalisation;
     }
 
-    private Map<String, String> setEvidenceProcessingAddress(Map<String, String> personalisation, String appealNumber) {
-        RegionalProcessingCenter rpc = regionalProcessingCenterService.getByScReferenceCode(appealNumber);
+    private Map<String, String> setEvidenceProcessingAddress(Map<String, String> personalisation, CcdResponse ccdResponse) {
+        RegionalProcessingCenter rpc;
+
+        if (null != ccdResponse.getRegionalProcessingCenter()) {
+            rpc = ccdResponse.getRegionalProcessingCenter();
+        } else {
+            rpc = regionalProcessingCenterService.getByScReferenceCode(ccdResponse.getCaseReference());
+        }
         personalisation.put(REGIONAL_OFFICE_NAME_LITERAL, rpc.getAddress1());
         personalisation.put(DEPARTMENT_NAME_LITERAL, DEPARTMENT_NAME_STRING);
         personalisation.put(SUPPORT_CENTRE_NAME_LITERAL, rpc.getAddress2());
