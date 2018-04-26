@@ -9,11 +9,11 @@ import lombok.Value;
 @JsonIgnoreProperties(ignoreUnknown = true)
 @Value
 @Builder
-public class AppealReason {
-    private AppealReasonDetails value;
+public class ExcludeDate {
+    private DateRange value;
 
     @JsonCreator
-    public AppealReason(@JsonProperty("value") AppealReasonDetails value) {
+    public ExcludeDate(@JsonProperty("value") DateRange value) {
         this.value = value;
     }
 

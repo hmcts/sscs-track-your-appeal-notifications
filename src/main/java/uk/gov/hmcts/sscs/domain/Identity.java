@@ -9,12 +9,14 @@ import lombok.Value;
 @JsonIgnoreProperties(ignoreUnknown = true)
 @Value
 @Builder
-public class AppealReason {
-    private AppealReasonDetails value;
+public class Identity {
+    private String dob;
+    private String nino;
 
     @JsonCreator
-    public AppealReason(@JsonProperty("value") AppealReasonDetails value) {
-        this.value = value;
+    public Identity(@JsonProperty("dob") String dob,
+                    @JsonProperty("nino") String nino) {
+        this.dob = dob;
+        this.nino = nino;
     }
-
 }

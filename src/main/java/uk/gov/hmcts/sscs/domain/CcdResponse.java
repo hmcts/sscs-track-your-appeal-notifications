@@ -12,6 +12,7 @@ import uk.gov.hmcts.sscs.domain.notify.EventType;
 public class CcdResponse {
 
     private String caseId;
+    private Appeal appeal;
     private Benefit benefitType;
     private String caseReference;
     private Subscriptions subscriptions;

@@ -19,8 +19,10 @@ public final class AppConstants {
     public static final String EVIDENCE_RECEIVED_DATE_LITERAL = "evidence_received_date";
     public static final String FIRST_TIER_AGENCY_ACRONYM = "first_tier_agency_acronym";
     public static final String FIRST_TIER_AGENCY_FULL_NAME = "first_tier_agency_full_name";
+    public static final String HEARING_ARRANGEMENT_DETAILS_LITERAL = "hearing_arrangement_details";
     public static final String HEARING_CONTACT_DATE = "hearing_contact_date";
     public static final String HEARING_DATE = "hearing_date";
+    public static final String HEARING_DETAILS_LITERAL = "hearing_details";
     public static final String HEARING_TIME = "hearing_time";
     public static final String HEARING_TIME_FORMAT = "hh:mm a";
     public static final String HEARING_INFO_LINK_LITERAL = "hearing_info_link";
@@ -28,17 +30,22 @@ public final class AppConstants {
     public static final String MAC_LITERAL = "mac";
     public static final String MANAGE_EMAILS_LINK_LITERAL = "manage_emails_link";
     public static final int MAX_DWP_RESPONSE_DAYS = 35;
+    public static final String MRN_DETAILS_LITERAL = "mrn_details";
     public static final String PHONE_NUMBER = "phone_number";
     public static final String POSTCODE_LITERAL = "postcode";
+    public static final String REASONS_FOR_APPEALING_DETAILS_LITERAL = "reasons_for_appealing_details";
     public static final String REGIONAL_OFFICE_NAME_LITERAL = "regional_office_name";
+    public static final String REPRESENTATIVE_DETAILS_LITERAL = "representative_details";
     public static final String RESPONSE_DATE_FORMAT = "dd MMMM yyyy";
     public static final String SUBMIT_EVIDENCE_INFO_LINK_LITERAL = "submit_evidence_info_link";
     public static final String SUBMIT_EVIDENCE_LINK_LITERAL = "submit_evidence_link";
     public static final String SUPPORT_CENTRE_NAME_LITERAL = "support_centre_name";
+    public static final String TEXT_MESSAGE_REMINDER_DETAILS_LITERAL = "text_message_reminder_details";
     public static final String TOWN_LITERAL = "town";
     public static final String TRACK_APPEAL_LINK_LITERAL = "track_appeal_link";
     public static final String VENUE_ADDRESS_LITERAL = "venue_address";
     public static final String VENUE_MAP_LINK_LITERAL = "venue_map_link";
+    public static final String YOUR_DETAILS_LITERAL = "your_details";
     public static final String ZONE_ID = "Europe/London";
 
     private AppConstants(){

@@ -14,6 +14,7 @@ public enum EventType {
     SUBSCRIPTION_CREATED("subscriptionCreated"),
     SUBSCRIPTION_UPDATED("subscriptionUpdated"),
     EVIDENCE_REMINDER("evidenceReminder"),
+    SYA_APPEAL_CREATED("syaAppealCreated"),
     DO_NOT_SEND("");
 
     private String id;

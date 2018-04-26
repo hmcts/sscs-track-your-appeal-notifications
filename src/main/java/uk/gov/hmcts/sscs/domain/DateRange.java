@@ -9,12 +9,15 @@ import lombok.Value;
 @JsonIgnoreProperties(ignoreUnknown = true)
 @Value
 @Builder
-public class AppealReason {
-    private AppealReasonDetails value;
+public class DateRange {
+    private String start;
+    private String end;
 
     @JsonCreator
-    public AppealReason(@JsonProperty("value") AppealReasonDetails value) {
-        this.value = value;
+    public DateRange(@JsonProperty("start") String start,
+                     @JsonProperty("end") String end) {
+        this.start = start;
+        this.end = end;
     }
 
 }
