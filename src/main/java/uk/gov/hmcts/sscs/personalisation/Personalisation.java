@@ -73,12 +73,7 @@ public class Personalisation {
             personalisation.put(VENUE_MAP_LINK_LITERAL, latestHearing.getValue().getVenue().getGoogleMapLink());
         }
 
-        //FIXME: Random NPE being thrown so logging the object value
-        LOG.info("regionalProcessingCenterService value: " + regionalProcessingCenterService);
-        if (config.isJobSchedulerEnabled()) {
-            setEvidenceProcessingAddress(personalisation, ccdResponse);
-        }
-
+        setEvidenceProcessingAddress(personalisation, ccdResponse);
         setEventData(personalisation, ccdResponse);
         setEvidenceReceivedNotificationData(personalisation, ccdResponse);
 
