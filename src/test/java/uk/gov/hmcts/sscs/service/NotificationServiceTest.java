@@ -175,4 +175,22 @@ public class NotificationServiceTest {
 
         verify(reminderService, never()).createJob(response);
     }
+
+    @Test
+    public void doNotSendEmailOrSmsWhenNoActiveSubscription() throws Exception {
+        Subscription appellantSubscription = Subscription.builder()
+                .firstName("Harry").surname("Kane").title("Mr").tya("GLSCRR").email("test@email.com")
+                .mobile("07983495065").subscribeEmail("No").subscribeSms("No").build();
+
+        response = CcdResponse.builder().subscriptions(Subscriptions.builder().appellantSubscription(appellantSubscription).build()).caseReference("ABC123").notificationType(APPEAL_WITHDRAWN).build();
+        wrapper = CcdResponseWrapper.builder().newCcdResponse(response).oldCcdResponse(response).build();
+
+        Notification notification = new Notification(Template.builder().emailTemplateId(null).smsTemplateId("123").build(), Destination.builder().email(null).sms("07823456746").build(), null, new Reference(), null);
+        when(factory.create(wrapper)).thenReturn(notification);
+
+        notificationService.createAndSendNotification(wrapper);
+
+        verify(client, never()).sendSms(notification.getSmsTemplate(), notification.getMobile(), notification.getPlaceholders(), notification.getReference());
+        verify(client, never()).sendEmail(notification.getEmailTemplate(), notification.getEmail(), notification.getPlaceholders(), notification.getReference());
+    }
 }
