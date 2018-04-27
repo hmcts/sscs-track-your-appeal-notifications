@@ -40,6 +40,11 @@ public class Subscription {
     }
 
     @JsonIgnore
+    public Boolean isSubscribed() {
+        return (isSubscribeSms() || isSubscribeEmail()) ? true : false;
+    }
+
+    @JsonIgnore
     public Destination getDestination() {
         return Destination.builder().email(email).sms(mobile).build();
     }
