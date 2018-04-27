@@ -151,6 +151,17 @@ public class NotificationsIt {
     }
 
     @Test
+    public void shouldSendNotificationForSyaAppealCreated() throws Exception {
+        json = json.replace("appealReceived", "syaAppealCreated");
+
+        HttpServletResponse response = getResponse(getRequestWithAuthHeader(json));
+
+        assertHttpStatus(response, HttpStatus.OK);
+        verify(client, times(1)).sendEmail(any(), any(), any(), any());
+        verify(client, never()).sendSms(any(), any(), any(), any());
+    }
+
+    @Test
     public void shouldSendSubscriptionCreatedNotificationForSubscriptionUpdatedRequestWithNewSubscribeSmsRequest() throws Exception {
         json = json.replace("appealReceived", "subscriptionUpdated");
         json = updateEmbeddedJson(json, "No", "case_details", "case_data", "subscriptions", "appellantSubscription", "subscribeEmail");

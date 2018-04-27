@@ -212,10 +212,6 @@ public class CcdResponseDeserializer extends StdDeserializer<CcdResponseWrapper>
         }
     }
 
-    private static ZonedDateTime convertToUkLocalDateTime(String bstDateTimeinUtc) {
-        return ZonedDateTime.parse(bstDateTimeinUtc + "Z").toInstant().atZone(ZoneId.of(ZONE_ID));
-    }
-
     private Subscription deserializeNameJson(JsonNode node, Subscription subscription) {
         JsonNode nameNode = getNode(node, "name");
 
