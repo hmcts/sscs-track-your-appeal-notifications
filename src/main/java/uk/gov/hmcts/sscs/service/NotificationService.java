@@ -37,7 +37,7 @@ public class NotificationService {
     public void createAndSendNotification(CcdResponseWrapper responseWrapper) {
         LOG.info("Start to create notification for case reference "  + responseWrapper.getNewCcdResponse().getCaseReference());
 
-        if (responseWrapper.getNewCcdResponse().getSubscriptions().getAppellantSubscription() != null) {
+        if (responseWrapper.getNewCcdResponse().getSubscriptions().getAppellantSubscription() != null && responseWrapper.getNewCcdResponse().getSubscriptions().getAppellantSubscription().isSubscribed()) {
 
             Notification notification = factory.create(responseWrapper);
 

@@ -235,11 +235,15 @@ public class CcdResponseDeserializer extends StdDeserializer<CcdResponseWrapper>
                 .tya(getField(node, "tya"))
                 .email(getField(node, "email"))
                 .mobile(getField(node, "mobile"))
-                .subscribeSms(getField(node, "subscribeSms"))
-                .subscribeEmail(getField(node, "subscribeEmail")).build();
+                .subscribeSms(convertEmptyToNo(getField(node, "subscribeSms")))
+                .subscribeEmail(convertEmptyToNo(getField(node, "subscribeEmail"))).build();
         }
 
         return subscription;
+    }
+
+    private String convertEmptyToNo(String field) {
+        return field.equals("") ? "No" : field;
     }
 
     public JsonNode getNode(JsonNode node, String field) {
