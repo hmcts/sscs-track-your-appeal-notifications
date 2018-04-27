@@ -318,5 +318,54 @@ public class SyaAppealCreatedPersonalisationTest {
                 result.get(HEARING_DETAILS_LITERAL));
     }
 
+    @Test
+    public void givenASyaAppealWithHearingArrangements_setHearingArrangementsForTemplate() {
+
+        List<String> arrangementList = new ArrayList<>();
+
+        arrangementList.add("signLanguageInterpreter");
+        arrangementList.add("hearingLoop");
+        arrangementList.add("disabledAccess");
+
+        response = CcdResponse.builder()
+                .caseId(CASE_ID).benefitType(PIP).caseReference("SC/1234/5")
+                .appeal(Appeal.builder().hearingOptions(HearingOptions.builder()
+                        .arrangements(arrangementList)
+                        .languageInterpreter("Yes")
+                        .other("Other")
+                        .build()).build())
+                .notificationType(SYA_APPEAL_CREATED)
+                .build();
+
+        Map<String, String> result = personalisation.setHearingArrangementDetails(new HashMap<>(), response);
+
+        assertEquals("Language interpreter: Required\n" +
+                        "\nSign interpreter: Required\n" +
+                        "\nHearing loop: Required\n" +
+                        "\nDisabled access: Required\n" +
+                        "\nAny other arrangements: Other",
+                result.get(HEARING_ARRANGEMENT_DETAILS_LITERAL));
+    }
+
+    @Test
+    public void givenASyaAppealWithNoHearingArrangements_setHearingArrangementsForTemplate() {
+
+        response = CcdResponse.builder()
+                .caseId(CASE_ID).benefitType(PIP).caseReference("SC/1234/5")
+                .appeal(Appeal.builder().hearingOptions(HearingOptions.builder()
+                        .languageInterpreter("No")
+                        .build()).build())
+                .notificationType(SYA_APPEAL_CREATED)
+                .build();
+
+        Map<String, String> result = personalisation.setHearingArrangementDetails(new HashMap<>(), response);
+
+        assertEquals("Language interpreter: Not required\n" +
+                        "\nSign interpreter: Not required\n" +
+                        "\nHearing loop: Not required\n" +
+                        "\nDisabled access: Not required\n" +
+                        "\nAny other arrangements: Not required",
+                result.get(HEARING_ARRANGEMENT_DETAILS_LITERAL));
+    }
 
 }

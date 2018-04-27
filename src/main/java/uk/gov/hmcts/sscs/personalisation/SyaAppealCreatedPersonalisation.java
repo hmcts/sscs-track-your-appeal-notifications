@@ -2,6 +2,7 @@ package uk.gov.hmcts.sscs.personalisation;
 
 import static uk.gov.hmcts.sscs.config.AppConstants.*;
 
+import java.util.List;
 import java.util.Map;
 import java.util.StringJoiner;
 import org.springframework.stereotype.Component;
@@ -60,9 +61,9 @@ public class SyaAppealCreatedPersonalisation extends Personalisation {
             .append("Address: ")
             .append(appeal.getAppellant().getAddress().getFullAddress() + "\n\n")
             .append("Email: ")
-            .append(getOptionalField(appeal.getAppellant().getContact().getEmail()) + "\n\n")
+            .append(getOptionalField(appeal.getAppellant().getContact().getEmail(), "Not provided") + "\n\n")
             .append("Phone: ")
-            .append(getOptionalField(appeal.getAppellant().getContact().getPhone()))
+            .append(getOptionalField(appeal.getAppellant().getContact().getPhone(), "Not provided"))
             .toString();
     }
 
@@ -101,13 +102,13 @@ public class SyaAppealCreatedPersonalisation extends Personalisation {
             representativeBuilder.append("\n\nName: ")
                 .append(representative.getName().getFullNameNoTitle() + "\n\n")
                 .append("Organisation: ")
-                .append(getOptionalField(representative.getOrganisation()) + "\n\n")
+                .append(getOptionalField(representative.getOrganisation(), "Not provided") + "\n\n")
                 .append("Address: ")
                 .append(representative.getAddress().getFullAddress() + "\n\n")
                 .append("Email: ")
-                .append(getOptionalField(representative.getContact().getEmail()) + "\n\n")
+                .append(getOptionalField(representative.getContact().getEmail(), "Not provided") + "\n\n")
                 .append("Phone: ")
-                .append(getOptionalField(representative.getContact().getPhone()))
+                .append(getOptionalField(representative.getContact().getPhone(), "Not provided"))
                 .toString();
         }
         return representativeBuilder.toString();
@@ -132,7 +133,7 @@ public class SyaAppealCreatedPersonalisation extends Personalisation {
         }
 
         appealReasonsBuilder.append("Anything else you want to tell the tribunal: ")
-                .append(getOptionalField(appealReasons.getOtherReasons()));
+                .append(getOptionalField(appealReasons.getOtherReasons(), "Not provided"));
 
         return appealReasonsBuilder.toString();
     }
@@ -179,21 +180,32 @@ public class SyaAppealCreatedPersonalisation extends Personalisation {
     }
 
     private String buildHearingArrangements(HearingOptions hearingOptions) {
+        String languagueInterpreterRequired = convertBooleanToRequiredText(hearingOptions.getLanguageInterpreter().toLowerCase().equals("yes") ? true : false);
+
         return new StringBuilder()
                 .append("Language interpreter: ")
-                .append(hearingOptions.getLanguageInterpreter() + "\n\n")
+                .append(languagueInterpreterRequired + "\n\n")
                 .append("Sign interpreter: ")
-                .append(hearingOptions.() + "\n\n")
+                .append(convertBooleanToRequiredText(findHearingArrangement("signLanguageInterpreter", hearingOptions.getArrangements())) + "\n\n")
                 .append("Hearing loop: ")
-                .append(appeal.getAppellant().getIdentity().getDob() + "\n\n")
+                .append(convertBooleanToRequiredText(findHearingArrangement("hearingLoop", hearingOptions.getArrangements())) + "\n\n")
                 .append("Disabled access: ")
-                .append(appeal.getAppellant().getIdentity().getNino() + "\n\n")
-                .append("Anything other arrangements: ")
-                .append(hearingOptions.getOther() + "\n\n"
+                .append(convertBooleanToRequiredText(findHearingArrangement("disabledAccess", hearingOptions.getArrangements())) + "\n\n")
+                .append("Any other arrangements: ")
+                .append(getOptionalField(hearingOptions.getOther(), "Not required"))
                 .toString();
     }
 
-    private String getOptionalField(String field) {
-        return field == null || field.isEmpty() ? "Not provided" : field;
+    private Boolean findHearingArrangement(String field, List<String> arrangements) {
+        return (arrangements != null && arrangements.contains(field)) ? true : false;
+    }
+
+    private String convertBooleanToRequiredText(Boolean value) {
+        return value ? "Required" : "Not required";
+    }
+
+
+    private String getOptionalField(String field, String text) {
+        return field == null || field.isEmpty() ? text : field;
     }
 }
