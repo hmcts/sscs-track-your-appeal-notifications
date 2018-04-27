@@ -173,7 +173,24 @@ public class SyaAppealCreatedPersonalisation extends Personalisation {
     }
 
     public Map<String, String> setHearingArrangementDetails(Map<String, String> personalisation, CcdResponse ccdResponse) {
+        personalisation.put(HEARING_ARRANGEMENT_DETAILS_LITERAL, buildHearingArrangements(ccdResponse.getAppeal().getHearingOptions()));
+
         return personalisation;
+    }
+
+    private String buildHearingArrangements(HearingOptions hearingOptions) {
+        return new StringBuilder()
+                .append("Language interpreter: ")
+                .append(hearingOptions.getLanguageInterpreter() + "\n\n")
+                .append("Sign interpreter: ")
+                .append(hearingOptions.() + "\n\n")
+                .append("Hearing loop: ")
+                .append(appeal.getAppellant().getIdentity().getDob() + "\n\n")
+                .append("Disabled access: ")
+                .append(appeal.getAppellant().getIdentity().getNino() + "\n\n")
+                .append("Anything other arrangements: ")
+                .append(hearingOptions.getOther() + "\n\n"
+                .toString();
     }
 
     private String getOptionalField(String field) {
