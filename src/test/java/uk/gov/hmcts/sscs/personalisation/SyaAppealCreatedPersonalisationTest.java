@@ -257,5 +257,66 @@ public class SyaAppealCreatedPersonalisationTest {
                 result.get(REASONS_FOR_APPEALING_DETAILS_LITERAL));
     }
 
+    @Test
+    public void givenASyaAppealAttendingHearingWithNoExcludedDates_setHearingDetailsForTemplate() {
+
+        response = CcdResponse.builder()
+                .caseId(CASE_ID).benefitType(PIP).caseReference("SC/1234/5")
+                .appeal(Appeal.builder().hearingOptions(HearingOptions.builder().attendingHearing("yes")
+                        .build()).build())
+                .notificationType(SYA_APPEAL_CREATED)
+                .build();
+
+        Map<String, String> result = personalisation.setHearingDetails(new HashMap<>(), response);
+
+        assertEquals("Attending the hearing: yes",
+                result.get(HEARING_DETAILS_LITERAL));
+    }
+
+    @Test
+    public void givenASyaAppealAttendingHearingWithOneExcludedDate_setHearingDetailsForTemplate() {
+
+        List<ExcludeDate> excludeDates = new ArrayList<>();
+
+        excludeDates.add(ExcludeDate.builder().value(DateRange.builder().start("3 January 2018").build()).build());
+
+        response = CcdResponse.builder()
+                .caseId(CASE_ID).benefitType(PIP).caseReference("SC/1234/5")
+                .appeal(Appeal.builder().hearingOptions(HearingOptions.builder().attendingHearing("yes")
+                        .excludeDates(excludeDates)
+                        .build()).build())
+                .notificationType(SYA_APPEAL_CREATED)
+                .build();
+
+        Map<String, String> result = personalisation.setHearingDetails(new HashMap<>(), response);
+
+        assertEquals("Attending the hearing: yes\n" +
+                "\nDates you can't attend: 3 January 2018",
+                result.get(HEARING_DETAILS_LITERAL));
+    }
+
+    @Test
+    public void givenASyaAppealAttendingHearingWithMultipleExcludedDates_setHearingDetailsForTemplate() {
+
+        List<ExcludeDate> excludeDates = new ArrayList<>();
+
+        excludeDates.add(ExcludeDate.builder().value(DateRange.builder().start("3 January 2018").build()).build());
+        excludeDates.add(ExcludeDate.builder().value(DateRange.builder().start("5 January 2018").end("7 January 2018").build()).build());
+
+        response = CcdResponse.builder()
+                .caseId(CASE_ID).benefitType(PIP).caseReference("SC/1234/5")
+                .appeal(Appeal.builder().hearingOptions(HearingOptions.builder().attendingHearing("yes")
+                        .excludeDates(excludeDates)
+                        .build()).build())
+                .notificationType(SYA_APPEAL_CREATED)
+                .build();
+
+        Map<String, String> result = personalisation.setHearingDetails(new HashMap<>(), response);
+
+        assertEquals("Attending the hearing: yes\n" +
+                        "\nDates you can't attend: 3 January 2018, 5 January 2018 to 7 January 2018",
+                result.get(HEARING_DETAILS_LITERAL));
+    }
+
 
 }

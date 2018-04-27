@@ -3,6 +3,7 @@ package uk.gov.hmcts.sscs.personalisation;
 import static uk.gov.hmcts.sscs.config.AppConstants.*;
 
 import java.util.Map;
+import java.util.StringJoiner;
 import org.springframework.stereotype.Component;
 import uk.gov.hmcts.sscs.domain.*;
 
@@ -137,7 +138,38 @@ public class SyaAppealCreatedPersonalisation extends Personalisation {
     }
 
     public Map<String, String> setHearingDetails(Map<String, String> personalisation, CcdResponse ccdResponse) {
+        personalisation.put(HEARING_DETAILS_LITERAL, buildHearingDetails(ccdResponse.getAppeal().getHearingOptions()));
+
         return personalisation;
+    }
+
+    private String buildHearingDetails(HearingOptions hearingOptions) {
+        StringBuilder hearingOptionsBuilder = new StringBuilder()
+                .append("Attending the hearing: ")
+                .append(hearingOptions.getAttendingHearing().toLowerCase());
+
+        if (hearingOptions.getAttendingHearing().toLowerCase().equals("yes") && hearingOptions.getExcludeDates() != null && hearingOptions.getExcludeDates().size() > 0) {
+            hearingOptionsBuilder.append("\n\nDates you can't attend: ");
+
+            StringJoiner joiner = new StringJoiner(", ");
+
+            //FIXME: Check with Santhosh about how dates are stored
+            for (ExcludeDate excludeDate : hearingOptions.getExcludeDates()) {
+                joiner.add((buildDateRangeString(excludeDate.getValue())));
+            }
+            hearingOptionsBuilder.append(joiner.toString());
+        }
+        return hearingOptionsBuilder.toString();
+    }
+
+    private String buildDateRangeString(DateRange range) {
+
+        if (range.getStart() != null && range.getEnd() != null) {
+            return range.getStart() + " to " + range.getEnd();
+        } else if (range.getStart() != null && range.getEnd() == null) {
+            return range.getStart();
+        }
+        return "";
     }
 
     public Map<String, String> setHearingArrangementDetails(Map<String, String> personalisation, CcdResponse ccdResponse) {

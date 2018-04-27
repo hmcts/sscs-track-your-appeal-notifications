@@ -13,17 +13,20 @@ public class HearingOptions {
     private List<String> arrangements;
     private List<ExcludeDate> excludeDates;
     private String other;
+    private String attendingHearing;
 
     @JsonCreator
     public HearingOptions(String languageInterpreter,
                           String languages,
                           List<String> arrangements,
                           List<ExcludeDate> excludeDates,
-                          String other) {
+                          String other,
+                          String attendingHearing) {
         this.languageInterpreter = languageInterpreter;
         this.languages = languages;
         this.arrangements = arrangements;
         this.excludeDates = excludeDates;
         this.other = other;
+        this.attendingHearing = attendingHearing;
     }
 }
