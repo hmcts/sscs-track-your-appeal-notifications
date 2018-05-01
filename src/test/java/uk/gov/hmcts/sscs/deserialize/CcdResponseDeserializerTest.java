@@ -474,7 +474,7 @@ public class CcdResponseDeserializerTest {
     @Test
     public void deserializeAllCcdResponseJson() throws IOException {
 
-        String path = getClass().getClassLoader().getResource("json/ccdCallbackResponse.json").getFile();
+        String path = getClass().getClassLoader().getResource("json/ccdResponse.json").getFile();
         String json = FileUtils.readFileToString(new File(path), StandardCharsets.UTF_8.name());
 
         CcdResponseWrapper wrapper = mapper.readValue(json, CcdResponseWrapper.class);

@@ -59,7 +59,7 @@ public class NotificationsIt {
         NotificationService service = new NotificationService(client, factory, reminderService);
         controller = new NotificationController(service, authorisationService);
         this.mockMvc = MockMvcBuilders.standaloneSetup(controller).build();
-        String path = getClass().getClassLoader().getResource("json/ccdCallbackResponse.json").getFile();
+        String path = getClass().getClassLoader().getResource("json/ccdResponse.json").getFile();
         json = FileUtils.readFileToString(new File(path), StandardCharsets.UTF_8.name());
     }
 
