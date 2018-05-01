@@ -1,10 +1,8 @@
 package uk.gov.hmcts.sscs.domain;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
-import lombok.AccessLevel;
 import lombok.Builder;
 import lombok.Data;
-import lombok.Getter;
 import uk.gov.hmcts.sscs.domain.notify.Destination;
 
 @Data

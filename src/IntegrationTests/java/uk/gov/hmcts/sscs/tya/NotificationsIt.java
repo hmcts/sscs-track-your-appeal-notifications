@@ -151,7 +151,7 @@ public class NotificationsIt {
 
     @Test
     public void shouldSendNotificationForSyaAppealCreated() throws Exception {
-        json = json.replace("appealReceived", "syaAppealCreated");
+        json = json.replace("appealReceived", "appealCreated");
 
         HttpServletResponse response = getResponse(getRequestWithAuthHeader(json));
 

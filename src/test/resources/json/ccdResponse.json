@@ -26,7 +26,6 @@
           },
           "contact": {
             "email": "test@tester.com",
-            "phone": "01435550606",
             "mobile": "07848484848"
           },
           "identity": {
@@ -96,7 +95,6 @@
           },
           "contact": {
             "email": "harry.potter@wizards.com",
-            "phone": "07987877873",
             "mobile": "07411999999"
           },
           "organisation": "HP Ltd"
@@ -105,8 +103,7 @@
         "supporter": {
           "contact": {
             "email": "pacetest@yahoo.com",
-            "mobile": "07985223409",
-            "phone": "0127532025"
+            "mobile": "07985223409"
           },
           "name": {
             "firstName": "Guy",
@@ -227,7 +224,6 @@
           },
           "contact": {
             "email": "test@tester.com",
-            "phone": "01435550606",
             "mobile": "07848484848"
           },
           "identity": {
@@ -297,7 +293,6 @@
           },
           "contact": {
             "email": "harry.potter@wizards.com",
-            "phone": "07987877873",
             "mobile": "07411999999"
           },
           "organisation": "HP Ltd"
@@ -306,8 +301,7 @@
         "supporter": {
           "contact": {
             "email": "pacetest@yahoo.com",
-            "mobile": "07985223409",
-            "phone": "0127532025"
+            "mobile": "07985223409"
           },
           "name": {
             "firstName": "Guy",

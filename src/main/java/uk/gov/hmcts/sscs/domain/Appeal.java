@@ -2,7 +2,6 @@ package uk.gov.hmcts.sscs.domain;
 
 import lombok.Builder;
 import lombok.Data;
-import lombok.Value;
 
 @Data
 @Builder

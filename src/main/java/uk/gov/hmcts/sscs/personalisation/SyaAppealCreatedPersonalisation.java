@@ -2,12 +2,11 @@ package uk.gov.hmcts.sscs.personalisation;
 
 import static uk.gov.hmcts.sscs.config.AppConstants.*;
 
-import java.text.DateFormat;
-import java.text.ParseException;
-import java.text.SimpleDateFormat;
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
-import java.util.*;
+import java.util.List;
+import java.util.Map;
+import java.util.StringJoiner;
 import org.springframework.stereotype.Component;
 import uk.gov.hmcts.sscs.domain.*;
 

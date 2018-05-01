@@ -6,9 +6,8 @@ import com.fasterxml.jackson.databind.DeserializationContext;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.deser.std.StdDeserializer;
 import com.fasterxml.jackson.databind.node.JsonNodeType;
-import com.fasterxml.jackson.databind.node.NullNode;
 import java.io.IOException;
-import java.time.*;
+import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
@@ -129,7 +128,7 @@ public class CcdResponseDeserializer extends StdDeserializer<CcdResponseWrapper>
     private Contact deserializeContactJson(JsonNode node) {
         JsonNode contactNode = getNode(node, "contact");
 
-        String phone = getField(contactNode, "phone").equals(null) ? getField(contactNode, "phone") : getField(contactNode, "mobile");
+        String phone = getField(contactNode, "phone") != null ? getField(contactNode, "phone") : getField(contactNode, "mobile");
 
         return Contact.builder()
             .email(getField(contactNode, "email"))
@@ -182,7 +181,7 @@ public class CcdResponseDeserializer extends StdDeserializer<CcdResponseWrapper>
     private List<String> buildArrangements(JsonNode hearingOptionsNode) {
         List<String> arrangements = new ArrayList<>();
 
-        if (hearingOptionsNode!= null) {
+        if (hearingOptionsNode != null) {
             final JsonNode arrangementsNode = hearingOptionsNode.get("arrangements");
 
             if (arrangementsNode != null && arrangementsNode.isArray()) {
@@ -382,12 +381,10 @@ public class CcdResponseDeserializer extends StdDeserializer<CcdResponseWrapper>
         if (node != null) {
             subscription = subscription.toBuilder()
                 .tya(getField(node, "tya"))
-//                .email(getField(node, "email"))
-                .email("jack.maloney@hmcts.net")
+                .email(getField(node, "email"))
                 .mobile(getField(node, "mobile"))
                 .subscribeSms(convertEmptyToNo(getField(node, "subscribeSms")))
-//                .subscribeEmail(convertEmptyToNo(getField(node, "subscribeEmail")))
-                .subscribeEmail("Yes")
+                .subscribeEmail(convertEmptyToNo(getField(node, "subscribeEmail")))
                     .build();
         }
 

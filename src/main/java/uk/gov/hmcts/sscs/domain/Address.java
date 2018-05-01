@@ -2,6 +2,7 @@ package uk.gov.hmcts.sscs.domain;
 
 import static com.google.common.collect.Lists.newArrayList;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonInclude;
 import java.util.stream.Collectors;
 import lombok.Builder;
@@ -18,6 +19,7 @@ public class Address {
     private String county;
     private String postcode;
 
+    @JsonIgnore
     public String getFullAddress() {
         return newArrayList(
                 line1,

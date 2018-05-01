@@ -200,14 +200,15 @@ public class CcdResponseDeserializerTest {
 
         CcdResponseWrapper wrapper = mapper.readValue(json, CcdResponseWrapper.class);
         CcdResponse newCcdResponse = wrapper.getNewCcdResponse();
-        Subscription newAppellantSubscription = newCcdResponse.getSubscriptions().getAppellantSubscription();
+
+        assertEquals(APPEAL_RECEIVED, newCcdResponse.getNotificationType());
 
         Appellant newAppellant = newCcdResponse.getAppeal().getAppellant();
         assertEquals("Dexter", newAppellant.getName().getFirstName());
         assertEquals("Vasquez", newAppellant.getName().getLastName());
         assertEquals("Mr", newAppellant.getName().getTitle());
 
-        assertEquals(APPEAL_RECEIVED, newCcdResponse.getNotificationType());
+        Subscription newAppellantSubscription = newCcdResponse.getSubscriptions().getAppellantSubscription();
         assertEquals("test@testing.com", newAppellantSubscription.getEmail());
         assertEquals("01234556634", newAppellantSubscription.getMobile());
         assertFalse(newAppellantSubscription.isSubscribeSms());
@@ -360,7 +361,7 @@ public class CcdResponseDeserializerTest {
         String appellantJson = "{\"appellant\":{\"name\":{\"title\":\"Mr\",\"lastName\":\"Vasquez\",\"firstName\":\"Dexter\"},"
                 + "\"address\": {\"line1\": \"36 Dale Street\",\"line2\": \"Village\","
                 + "\"town\": \"Liverpool\",\"county\": \"Merseyside\",\"postcode\": \"L2 5UZ\"},"
-                + "\"contact\": {\"email\": \"test@tester.com\", \"phone\": \"01435550606\", \"mobile\": \"07848484848\"},"
+                + "\"contact\": {\"email\": \"test@tester.com\", \"mobile\": \"07848484848\"},"
                 + "\"identity\": {\"dob\": \"1998-07-01\", \"nino\": \"JT098230B\"},"
                 + "\"isAppointee\": \"Yes\"}}";
 
@@ -378,8 +379,7 @@ public class CcdResponseDeserializerTest {
         assertEquals("Merseyside", appellant.getAddress().getCounty());
         assertEquals("L2 5UZ", appellant.getAddress().getPostcode());
         assertEquals("test@tester.com", appellant.getContact().getEmail());
-        assertEquals("01435550606", appellant.getContact().getPhone());
-        assertEquals("07848484848", appellant.getContact().getMobile());
+        assertEquals("07848484848", appellant.getContact().getPhone());
         assertEquals("1998-07-01", appellant.getIdentity().getDob());
         assertEquals("JT098230B", appellant.getIdentity().getNino());
         assertEquals("Yes", appellant.getIsAppointee());
@@ -419,7 +419,7 @@ public class CcdResponseDeserializerTest {
     @Test
     public void shouldDeserializeAppealReasonDetails() throws Exception {
         String appealReasonsJson = "{\"appealReasons\": {\"reasons\": [{\"value\": {\"reason\": \"reason1\",\"description\": \"description1\"}},"
-                +"{\"value\": {\"reason\": \"reason2\",\"description\": \"description2\"}}],\"otherReasons\": \"Another reason\"}}";
+                + "{\"value\": {\"reason\": \"reason2\",\"description\": \"description2\"}}],\"otherReasons\": \"Another reason\"}}";
 
         Appeal appeal = Appeal.builder().build();
         ccdResponseDeserializer.deserializeAppealReasonsJson(mapper.readTree(appealReasonsJson), appeal);
@@ -439,7 +439,7 @@ public class CcdResponseDeserializerTest {
                 + "\"title\": \"Mr\",\"firstName\": \"Harry\",\"lastName\": \"Potter\"},\n"
                 + "\"address\": {\"line1\": \"123 Hairy Lane\",\"line2\": \"Off Hairy Park\",\"town\": \"Town\",\n"
                 + "\"county\": \"County\",\"postcode\": \"CM14 4LQ\"},\n"
-                + "\"contact\": {\"email\": \"harry.potter@wizards.com\",\"phone\": \"07987877873\",\"mobile\": \"07411999999\"},"
+                + "\"contact\": {\"email\": \"harry.potter@wizards.com\",\"mobile\": \"07411999999\"},"
                 + "\"organisation\": \"HP Ltd\"}}}";
 
         Appeal appeal = Appeal.builder().build();
@@ -455,20 +455,9 @@ public class CcdResponseDeserializerTest {
         assertEquals("Town", rep.getAddress().getTown());
         assertEquals("County", rep.getAddress().getCounty());
         assertEquals("CM14 4LQ", rep.getAddress().getPostcode());
-        assertEquals("07987877873", rep.getContact().getPhone());
-        assertEquals("07411999999", rep.getContact().getMobile());
+        assertEquals("07411999999", rep.getContact().getPhone());
         assertEquals("harry.potter@wizards.com", rep.getContact().getEmail());
         assertEquals("HP Ltd", rep.getOrganisation());
-    }
-
-    @Test
-    public void shouldDeserializeAppealSignerDetails() throws Exception {
-        String appealJson = "{\"signer\":\"Yes\"}";
-
-        CcdResponse ccdResponse = CcdResponse.builder().build();
-        ccdResponseDeserializer.deserializeAppealDetailsJson(mapper.readTree(appealJson), ccdResponse);
-
-        assertEquals("Yes", ccdResponse.getAppeal().getSigner());
     }
 
     @Test
@@ -507,8 +496,7 @@ public class CcdResponseDeserializerTest {
         assertEquals("Merseyside", appellant.getAddress().getCounty());
         assertEquals("L2 5UZ", appellant.getAddress().getPostcode());
         assertEquals("test@tester.com", appellant.getContact().getEmail());
-        assertEquals("07848484848", appellant.getContact().getMobile());
-        assertEquals("01435550606", appellant.getContact().getPhone());
+        assertEquals("07848484848", appellant.getContact().getPhone());
         assertEquals("JT098230B", appellant.getIdentity().getNino());
         assertEquals("1998-07-01", appellant.getIdentity().getDob());
         assertEquals("Yes", appellant.getIsAppointee());
@@ -548,8 +536,7 @@ public class CcdResponseDeserializerTest {
         assertEquals("Town", rep.getAddress().getTown());
         assertEquals("County", rep.getAddress().getCounty());
         assertEquals("CM14 4LQ", rep.getAddress().getPostcode());
-        assertEquals("07987877873", rep.getContact().getPhone());
-        assertEquals("07411999999", rep.getContact().getMobile());
+        assertEquals("07411999999", rep.getContact().getPhone());
         assertEquals("harry.potter@wizards.com", rep.getContact().getEmail());
         assertEquals("HP Ltd", rep.getOrganisation());
 

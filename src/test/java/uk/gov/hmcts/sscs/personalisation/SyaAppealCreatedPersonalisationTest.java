@@ -42,9 +42,9 @@ public class SyaAppealCreatedPersonalisationTest {
 
         Map<String, String> result = personalisation.setMrnDetails(new HashMap<>(), response);
 
-        assertEquals("Date of MRN: 3 May 2018\n" +
-                "\nReason for late appeal: My train was cancelled.\n" +
-                "\nReason for no MRN: My dog ate my homework.",
+        assertEquals("Date of MRN: 3 May 2018\n"
+                        + "\nReason for late appeal: My train was cancelled.\n"
+                        + "\nReason for no MRN: My dog ate my homework.",
                 result.get(MRN_DETAILS_LITERAL));
     }
 
@@ -65,13 +65,13 @@ public class SyaAppealCreatedPersonalisationTest {
 
         Map<String, String> result = personalisation.setYourDetails(new HashMap<>(), response);
 
-        assertEquals("Appointee: No\n" +
-                        "\nName: Manish Sharma\n" +
-                        "\nDate of birth: 12 March 1971\n" +
-                        "\nNational Insurance number: NP 27 28 67 B\n" +
-                        "\nAddress: 122 Breach Street, The Village, My town, Cardiff, CF11 2HB\n" +
-                        "\nEmail: manish.sharma@gmail.com\n" +
-                        "\nPhone: 0797 243 8179",
+        assertEquals("Appointee: No\n"
+                        + "\nName: Manish Sharma\n"
+                        + "\nDate of birth: 12 March 1971\n"
+                        + "\nNational Insurance number: NP 27 28 67 B\n"
+                        + "\nAddress: 122 Breach Street, The Village, My town, Cardiff, CF11 2HB\n"
+                        + "\nEmail: manish.sharma@gmail.com\n"
+                        + "\nPhone: 0797 243 8179",
                 result.get(YOUR_DETAILS_LITERAL));
     }
 
@@ -92,13 +92,13 @@ public class SyaAppealCreatedPersonalisationTest {
 
         Map<String, String> result = personalisation.setYourDetails(new HashMap<>(), response);
 
-        assertEquals("Appointee: No\n" +
-                        "\nName: Manish Sharma\n" +
-                        "\nDate of birth: 12 March 1971\n" +
-                        "\nNational Insurance number: NP 27 28 67 B\n" +
-                        "\nAddress: 122 Breach Street, My town, Cardiff, CF11 2HB\n" +
-                        "\nEmail: Not provided\n" +
-                        "\nPhone: Not provided",
+        assertEquals("Appointee: No\n"
+                        + "\nName: Manish Sharma\n"
+                        + "\nDate of birth: 12 March 1971\n"
+                        + "\nNational Insurance number: NP 27 28 67 B\n"
+                        + "\nAddress: 122 Breach Street, My town, Cardiff, CF11 2HB\n"
+                        + "\nEmail: Not provided\n"
+                        + "\nPhone: Not provided",
                 result.get(YOUR_DETAILS_LITERAL));
     }
 
@@ -115,8 +115,8 @@ public class SyaAppealCreatedPersonalisationTest {
 
         Map<String, String> result = personalisation.setTextMessageReminderDetails(new HashMap<>(), response);
 
-        assertEquals("Receive text message reminders: yes\n" +
-                        "\nMobile number: 07955555708",
+        assertEquals("Receive text message reminders: yes\n"
+                        + "\nMobile number: 07955555708",
                 result.get(TEXT_MESSAGE_REMINDER_DETAILS_LITERAL));
     }
 
@@ -151,12 +151,12 @@ public class SyaAppealCreatedPersonalisationTest {
 
         Map<String, String> result = personalisation.setRepresentativeDetails(new HashMap<>(), response);
 
-        assertEquals("Have a representative: yes\n" +
-                        "\nName: Peter Smith\n" +
-                        "\nOrganisation: Citizens Advice\n" +
-                        "\nAddress: Ground Floor, Gazette Buildings, 168 Corporation Street, Cardiff, CF11 6TF\n" +
-                        "\nEmail: peter.smith@cab.org.uk\n" +
-                        "\nPhone: 03444 77 1010",
+        assertEquals("Have a representative: yes\n"
+                        + "\nName: Peter Smith\n"
+                        + "\nOrganisation: Citizens Advice\n"
+                        + "\nAddress: Ground Floor, Gazette Buildings, 168 Corporation Street, Cardiff, CF11 6TF\n"
+                        + "\nEmail: peter.smith@cab.org.uk\n"
+                        + "\nPhone: 03444 77 1010",
                 result.get(REPRESENTATIVE_DETAILS_LITERAL));
     }
 
@@ -174,12 +174,12 @@ public class SyaAppealCreatedPersonalisationTest {
 
         Map<String, String> result = personalisation.setRepresentativeDetails(new HashMap<>(), response);
 
-        assertEquals("Have a representative: yes\n" +
-                        "\nName: Peter Smith\n" +
-                        "\nOrganisation: Not provided\n" +
-                        "\nAddress: Ground Floor, Gazette Buildings, 168 Corporation Street, Cardiff, CF11 6TF\n" +
-                        "\nEmail: Not provided\n" +
-                        "\nPhone: Not provided",
+        assertEquals("Have a representative: yes\n"
+                        + "\nName: Peter Smith\n"
+                        + "\nOrganisation: Not provided\n"
+                        + "\nAddress: Ground Floor, Gazette Buildings, 168 Corporation Street, Cardiff, CF11 6TF\n"
+                        + "\nEmail: Not provided\n"
+                        + "\nPhone: Not provided",
                 result.get(REPRESENTATIVE_DETAILS_LITERAL));
     }
 
@@ -213,9 +213,9 @@ public class SyaAppealCreatedPersonalisationTest {
 
         Map<String, String> result = personalisation.setReasonsForAppealingDetails(new HashMap<>(), response);
 
-        assertEquals("What you disagree with: I want to appeal\n" +
-                        "\nWhy you disagree with it: Because I do\n" +
-                        "\nAnything else you want to tell the tribunal: Some other reason",
+        assertEquals("What you disagree with: I want to appeal\n"
+                + "\nWhy you disagree with it: Because I do\n"
+                + "\nAnything else you want to tell the tribunal: Some other reason",
                 result.get(REASONS_FOR_APPEALING_DETAILS_LITERAL));
     }
 
@@ -236,11 +236,11 @@ public class SyaAppealCreatedPersonalisationTest {
 
         Map<String, String> result = personalisation.setReasonsForAppealingDetails(new HashMap<>(), response);
 
-        assertEquals("What you disagree with: I want to appeal\n" +
-                        "\nWhy you disagree with it: Because I do\n" +
-                        "\nWhat you disagree with: I want to appeal again\n" +
-                        "\nWhy you disagree with it: I'm in the mood\n" +
-                        "\nAnything else you want to tell the tribunal: Some other reason",
+        assertEquals("What you disagree with: I want to appeal\n"
+                        + "\nWhy you disagree with it: Because I do\n"
+                        + "\nWhat you disagree with: I want to appeal again\n"
+                        + "\nWhy you disagree with it: I'm in the mood\n"
+                        + "\nAnything else you want to tell the tribunal: Some other reason",
                 result.get(REASONS_FOR_APPEALING_DETAILS_LITERAL));
     }
 
@@ -293,8 +293,8 @@ public class SyaAppealCreatedPersonalisationTest {
 
         Map<String, String> result = personalisation.setHearingDetails(new HashMap<>(), response);
 
-        assertEquals("Attending the hearing: yes\n" +
-                "\nDates you can't attend: 3 January 2018",
+        assertEquals("Attending the hearing: yes\n"
+                        + "\nDates you can't attend: 3 January 2018",
                 result.get(HEARING_DETAILS_LITERAL));
     }
 
@@ -316,8 +316,8 @@ public class SyaAppealCreatedPersonalisationTest {
 
         Map<String, String> result = personalisation.setHearingDetails(new HashMap<>(), response);
 
-        assertEquals("Attending the hearing: yes\n" +
-                        "\nDates you can't attend: 3 January 2018, 5 January 2018 to 7 January 2018",
+        assertEquals("Attending the hearing: yes\n"
+                        + "\nDates you can't attend: 3 January 2018, 5 January 2018 to 7 January 2018",
                 result.get(HEARING_DETAILS_LITERAL));
     }
 
@@ -342,11 +342,11 @@ public class SyaAppealCreatedPersonalisationTest {
 
         Map<String, String> result = personalisation.setHearingArrangementDetails(new HashMap<>(), response);
 
-        assertEquals("Language interpreter: Required\n" +
-                        "\nSign interpreter: Required\n" +
-                        "\nHearing loop: Required\n" +
-                        "\nDisabled access: Required\n" +
-                        "\nAny other arrangements: Other",
+        assertEquals("Language interpreter: Required\n"
+                        + "\nSign interpreter: Required\n"
+                        + "\nHearing loop: Required\n"
+                        + "\nDisabled access: Required\n"
+                        + "\nAny other arrangements: Other",
                 result.get(HEARING_ARRANGEMENT_DETAILS_LITERAL));
     }
 
@@ -363,11 +363,11 @@ public class SyaAppealCreatedPersonalisationTest {
 
         Map<String, String> result = personalisation.setHearingArrangementDetails(new HashMap<>(), response);
 
-        assertEquals("Language interpreter: Not required\n" +
-                        "\nSign interpreter: Not required\n" +
-                        "\nHearing loop: Not required\n" +
-                        "\nDisabled access: Not required\n" +
-                        "\nAny other arrangements: Not required",
+        assertEquals("Language interpreter: Not required\n"
+                        + "\nSign interpreter: Not required\n"
+                        + "\nHearing loop: Not required\n"
+                        + "\nDisabled access: Not required\n"
+                        + "\nAny other arrangements: Not required",
                 result.get(HEARING_ARRANGEMENT_DETAILS_LITERAL));
     }
 
