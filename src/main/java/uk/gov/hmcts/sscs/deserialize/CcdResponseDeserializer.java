@@ -5,6 +5,8 @@ import com.fasterxml.jackson.core.ObjectCodec;
 import com.fasterxml.jackson.databind.DeserializationContext;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.deser.std.StdDeserializer;
+import com.fasterxml.jackson.databind.node.JsonNodeType;
+import com.fasterxml.jackson.databind.node.NullNode;
 import java.io.IOException;
 import java.time.*;
 import java.util.ArrayList;
@@ -125,12 +127,13 @@ public class CcdResponseDeserializer extends StdDeserializer<CcdResponseWrapper>
     }
 
     private Contact deserializeContactJson(JsonNode node) {
-        JsonNode nameNode = getNode(node, "contact");
+        JsonNode contactNode = getNode(node, "contact");
+
+        String phone = getField(contactNode, "phone").equals(null) ? getField(contactNode, "phone") : getField(contactNode, "mobile");
 
         return Contact.builder()
-            .email(getField(nameNode, "email"))
-            .phone(getField(nameNode, "phone"))
-            .mobile(getField(nameNode, "mobile")).build();
+            .email(getField(contactNode, "email"))
+            .phone(phone).build();
     }
 
     private Identity deserializeIdentityJson(JsonNode node) {
@@ -379,10 +382,13 @@ public class CcdResponseDeserializer extends StdDeserializer<CcdResponseWrapper>
         if (node != null) {
             subscription = subscription.toBuilder()
                 .tya(getField(node, "tya"))
-                .email(getField(node, "email"))
+//                .email(getField(node, "email"))
+                .email("jack.maloney@hmcts.net")
                 .mobile(getField(node, "mobile"))
                 .subscribeSms(convertEmptyToNo(getField(node, "subscribeSms")))
-                .subscribeEmail(convertEmptyToNo(getField(node, "subscribeEmail"))).build();
+//                .subscribeEmail(convertEmptyToNo(getField(node, "subscribeEmail")))
+                .subscribeEmail("Yes")
+                    .build();
         }
 
         return subscription;
@@ -393,11 +399,11 @@ public class CcdResponseDeserializer extends StdDeserializer<CcdResponseWrapper>
     }
 
     public JsonNode getNode(JsonNode node, String field) {
-        return node != null && node.has(field) ? node.get(field) : null;
+        return node != null && node.has(field) && !node.get(field).getNodeType().equals(JsonNodeType.NULL) ? node.get(field) : null;
     }
 
     public String getField(JsonNode node, String field) {
-        return node != null && node.has(field) ? node.get(field).asText() : null;
+        return node != null && !node.equals("null") && node.has(field) ? node.get(field).asText() : null;
     }
 
     public void deserializeRegionalProcessingCenterJson(JsonNode rpcNode, CcdResponse ccdResponse) {

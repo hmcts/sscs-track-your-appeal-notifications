@@ -8,13 +8,10 @@ import lombok.Value;
 public class Contact {
     private String email;
     private String phone;
-    private String mobile;
 
     public Contact(String email,
-                   String phone,
-                   String mobile) {
+                   String phone) {
         this.email = email;
         this.phone = phone;
-        this.mobile = mobile;
     }
 }

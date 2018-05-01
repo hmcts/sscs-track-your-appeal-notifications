@@ -3,7 +3,7 @@ package uk.gov.hmcts.sscs.domain.notify;
 
 public enum EventType {
     ADJOURNED("hearingAdjourned"),
-    APPEAL_CREATED("appealCreated"),
+    SYA_APPEAL_CREATED("appealCreated"),
     APPEAL_LAPSED("appealLapsed"),
     APPEAL_RECEIVED("appealReceived"),
     APPEAL_WITHDRAWN("appealWithdrawn"),
@@ -14,7 +14,6 @@ public enum EventType {
     SUBSCRIPTION_CREATED("subscriptionCreated"),
     SUBSCRIPTION_UPDATED("subscriptionUpdated"),
     EVIDENCE_REMINDER("evidenceReminder"),
-    SYA_APPEAL_CREATED("syaAppealCreated"),
     DO_NOT_SEND("");
 
     private String id;
