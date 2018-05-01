@@ -2,9 +2,12 @@ package uk.gov.hmcts.sscs.personalisation;
 
 import static uk.gov.hmcts.sscs.config.AppConstants.*;
 
-import java.util.List;
-import java.util.Map;
-import java.util.StringJoiner;
+import java.text.DateFormat;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
+import java.time.LocalDate;
+import java.time.format.DateTimeFormatter;
+import java.util.*;
 import org.springframework.stereotype.Component;
 import uk.gov.hmcts.sscs.domain.*;
 
@@ -149,13 +152,11 @@ public class SyaAppealCreatedPersonalisation extends Personalisation {
                 .append("Attending the hearing: ")
                 .append(hearingOptions.getWantsToAttend().toLowerCase());
 
-        //FIXME: Use wants to attend etc
         if (hearingOptions.getWantsToAttend().toLowerCase().equals("yes") && hearingOptions.getExcludeDates() != null && hearingOptions.getExcludeDates().size() > 0) {
             hearingOptionsBuilder.append("\n\nDates you can't attend: ");
 
             StringJoiner joiner = new StringJoiner(", ");
 
-            //FIXME: Check with Santhosh about how dates are stored
             for (ExcludeDate excludeDate : hearingOptions.getExcludeDates()) {
                 joiner.add((buildDateRangeString(excludeDate.getValue())));
             }
@@ -167,11 +168,20 @@ public class SyaAppealCreatedPersonalisation extends Personalisation {
     private String buildDateRangeString(DateRange range) {
 
         if (range.getStart() != null && range.getEnd() != null) {
-            return range.getStart() + " to " + range.getEnd();
+            return convertLocalDateToLongDateString(range.getStart()) + " to " + convertLocalDateToLongDateString(range.getEnd());
         } else if (range.getStart() != null && range.getEnd() == null) {
-            return range.getStart();
+            return convertLocalDateToLongDateString(range.getStart());
         }
         return "";
+    }
+
+    private String convertLocalDateToLongDateString(String localDateString) {
+        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd");
+        DateTimeFormatter longFormatter = DateTimeFormatter.ofPattern("d MMMM yyyy");
+
+        LocalDate localDate = LocalDate.parse(localDateString, formatter);
+
+        return localDate.format(longFormatter);
     }
 
     public Map<String, String> setHearingArrangementDetails(Map<String, String> personalisation, CcdResponse ccdResponse) {

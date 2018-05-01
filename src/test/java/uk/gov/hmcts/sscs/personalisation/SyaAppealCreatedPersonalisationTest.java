@@ -281,7 +281,7 @@ public class SyaAppealCreatedPersonalisationTest {
 
         List<ExcludeDate> excludeDates = new ArrayList<>();
 
-        excludeDates.add(ExcludeDate.builder().value(DateRange.builder().start("3 January 2018").build()).build());
+        excludeDates.add(ExcludeDate.builder().value(DateRange.builder().start("2018-01-03").build()).build());
 
         response = CcdResponse.builder()
                 .caseId(CASE_ID).caseReference("SC/1234/5")
@@ -303,8 +303,8 @@ public class SyaAppealCreatedPersonalisationTest {
 
         List<ExcludeDate> excludeDates = new ArrayList<>();
 
-        excludeDates.add(ExcludeDate.builder().value(DateRange.builder().start("3 January 2018").build()).build());
-        excludeDates.add(ExcludeDate.builder().value(DateRange.builder().start("5 January 2018").end("7 January 2018").build()).build());
+        excludeDates.add(ExcludeDate.builder().value(DateRange.builder().start("2018-01-03").build()).build());
+        excludeDates.add(ExcludeDate.builder().value(DateRange.builder().start("2018-01-05").end("2018-01-07").build()).build());
 
         response = CcdResponse.builder()
                 .caseId(CASE_ID).caseReference("SC/1234/5")
