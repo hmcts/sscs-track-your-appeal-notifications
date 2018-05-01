@@ -67,17 +67,25 @@ public class SubscriptionPersonalisationTest {
         when(regionalProcessingCenterService.getByScReferenceCode("1234")).thenReturn(rpc);
 
         newAppellantSubscription = Subscription.builder()
-                .firstName("Harry").surname("Kane").title("Mr").tya("GLSCRR").email("test@email.com")
+                .tya("GLSCRR").email("test@email.com")
                 .mobile("07983495065").subscribeEmail("Yes").subscribeSms("Yes").build();
 
         oldAppellantSubscription = Subscription.builder()
-                .firstName("Harry").surname("Kane").title("Mr").tya("GLSCRR").email("test@email.com")
+                .tya("GLSCRR").email("test@email.com")
                 .mobile("07983495065").subscribeEmail("No").subscribeSms("No").build();
 
-        newCcdResponse = CcdResponse.builder().caseId("54321").benefitType(PIP).caseReference("1234")
+        newCcdResponse = CcdResponse.builder().caseId("54321")
+                .appeal(Appeal.builder()
+                    .benefit(PIP)
+                    .appellant(Appellant.builder().name(Name.builder().firstName("Harry").lastName("Kane").title("Mr").build()).build()).build())
+                .caseReference("1234")
                 .subscriptions(Subscriptions.builder().appellantSubscription(newAppellantSubscription).build()).notificationType(SUBSCRIPTION_UPDATED).build();
 
-        oldCcdResponse = CcdResponse.builder().caseId("54321").benefitType(PIP).caseReference("5432")
+        oldCcdResponse = CcdResponse.builder().caseId("54321")
+                .appeal(Appeal.builder()
+                        .benefit(PIP)
+                        .appellant(Appellant.builder().name(Name.builder().firstName("Harry").lastName("Kane").title("Mr").build()).build()).build())
+                .caseReference("5432")
                 .subscriptions(Subscriptions.builder().appellantSubscription(oldAppellantSubscription).build()).notificationType(SUBSCRIPTION_UPDATED).build();
     }
 

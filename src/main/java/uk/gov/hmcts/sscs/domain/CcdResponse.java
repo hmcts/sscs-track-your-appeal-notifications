@@ -13,7 +13,6 @@ public class CcdResponse {
 
     private String caseId;
     private Appeal appeal;
-    private Benefit benefitType;
     private String caseReference;
     private Subscriptions subscriptions;
     private EventType notificationType;

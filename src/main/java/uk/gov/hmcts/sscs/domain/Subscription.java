@@ -11,12 +11,6 @@ import uk.gov.hmcts.sscs.domain.notify.Destination;
 @Builder(toBuilder = true)
 public class Subscription {
 
-    @JsonIgnore
-    private String firstName;
-    @JsonIgnore
-    private String surname;
-    @JsonIgnore
-    private String title;
     private String tya;
     private String email;
     private String mobile;

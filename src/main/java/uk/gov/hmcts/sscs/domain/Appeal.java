@@ -1,14 +1,13 @@
 package uk.gov.hmcts.sscs.domain;
 
 import lombok.Builder;
+import lombok.Data;
 import lombok.Value;
 
-@Value
+@Data
 @Builder
 public class Appeal {
-    private String mrnDate;
-    private String mrnLateReason;
-    private String mrnMissingReason;
+    private MrnDetails mrnDetails;
     private Appellant appellant;
     private Benefit benefit;
     private HearingOptions hearingOptions;
@@ -16,18 +15,14 @@ public class Appeal {
     private Representative rep;
     private String signer;
 
-    public Appeal(String mrnDate,
-                  String mrnLateReason,
-                  String mrnMissingReason,
+    public Appeal(MrnDetails mrnDetails,
                   Appellant appellant,
                   Benefit benefit,
                   HearingOptions hearingOptions,
                   AppealReasons appealReasons,
                   Representative rep,
                   String signer) {
-        this.mrnDate = mrnDate;
-        this.mrnLateReason = mrnLateReason;
-        this.mrnMissingReason = mrnMissingReason;
+        this.mrnDetails = mrnDetails;
         this.appellant = appellant;
         this.benefit = benefit;
         this.hearingOptions = hearingOptions;

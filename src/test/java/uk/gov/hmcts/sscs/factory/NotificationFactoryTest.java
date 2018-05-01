@@ -65,10 +65,12 @@ public class NotificationFactoryTest {
         factory = new NotificationFactory(personalisationFactory);
 
         subscription = Subscription.builder()
-                .firstName("Ronnie").surname("Scott").title("Mr").tya("ABC").email("test@testing.com")
+                .tya("ABC").email("test@testing.com")
                 .mobile("07985858594").subscribeEmail("Yes").subscribeSms("No").build();
 
-        ccdResponse = CcdResponse.builder().caseId(CASE_ID).benefitType(PIP).caseReference("SC/1234/5")
+        ccdResponse = CcdResponse.builder().caseId(CASE_ID).caseReference("SC/1234/5").appeal(Appeal.builder()
+                .appellant(Appellant.builder().name(Name.builder().firstName("Ronnie").lastName("Scott").title("Mr").build()).build())
+                .benefit(PIP).build())
                 .subscriptions(Subscriptions.builder().appellantSubscription(subscription).build()).notificationType(APPEAL_RECEIVED).build();
 
         wrapper = CcdResponseWrapper.builder().newCcdResponse(ccdResponse).build();

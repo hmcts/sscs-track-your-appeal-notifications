@@ -12,10 +12,7 @@ import org.junit.Before;
 import org.junit.Test;
 import org.mockito.Mock;
 import org.springframework.test.util.ReflectionTestUtils;
-import uk.gov.hmcts.sscs.domain.CcdResponse;
-import uk.gov.hmcts.sscs.domain.CcdResponseWrapper;
-import uk.gov.hmcts.sscs.domain.Subscription;
-import uk.gov.hmcts.sscs.domain.Subscriptions;
+import uk.gov.hmcts.sscs.domain.*;
 import uk.gov.hmcts.sscs.domain.notify.*;
 import uk.gov.hmcts.sscs.exception.NotificationClientRuntimeException;
 import uk.gov.hmcts.sscs.exception.NotificationServiceException;
@@ -45,8 +42,7 @@ public class NotificationServiceTest {
         initMocks(this);
         notificationService = new NotificationService(client, factory, reminderService);
 
-        Subscription appellantSubscription = Subscription.builder()
-                .firstName("Harry").surname("Kane").title("Mr").tya("GLSCRR").email("test@email.com")
+        Subscription appellantSubscription = Subscription.builder().tya("GLSCRR").email("test@email.com")
                 .mobile("07983495065").subscribeEmail("Yes").subscribeSms("Yes").build();
 
         response = CcdResponse.builder().subscriptions(Subscriptions.builder().appellantSubscription(appellantSubscription).build()).caseReference("ABC123").notificationType(APPEAL_WITHDRAWN).build();
@@ -178,8 +174,7 @@ public class NotificationServiceTest {
 
     @Test
     public void doNotSendEmailOrSmsWhenNoActiveSubscription() throws Exception {
-        Subscription appellantSubscription = Subscription.builder()
-                .firstName("Harry").surname("Kane").title("Mr").tya("GLSCRR").email("test@email.com")
+        Subscription appellantSubscription = Subscription.builder().tya("GLSCRR").email("test@email.com")
                 .mobile("07983495065").subscribeEmail("No").subscribeSms("No").build();
 
         response = CcdResponse.builder().subscriptions(Subscriptions.builder().appellantSubscription(appellantSubscription).build()).caseReference("ABC123").notificationType(APPEAL_WITHDRAWN).build();

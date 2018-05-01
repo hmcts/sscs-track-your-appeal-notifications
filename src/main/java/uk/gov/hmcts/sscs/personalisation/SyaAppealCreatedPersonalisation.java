@@ -28,19 +28,19 @@ public class SyaAppealCreatedPersonalisation extends Personalisation {
     }
 
     public Map<String, String> setMrnDetails(Map<String, String> personalisation, CcdResponse ccdResponse) {
-        personalisation.put(MRN_DETAILS_LITERAL, buildMrnDetails(ccdResponse.getAppeal()));
+        personalisation.put(MRN_DETAILS_LITERAL, buildMrnDetails(ccdResponse.getAppeal().getMrnDetails()));
         return personalisation;
     }
 
-    private String buildMrnDetails(Appeal appeal) {
+    private String buildMrnDetails(MrnDetails mrnDetails) {
         return new StringBuilder()
-            .append("Date of MRN: ")
-            .append(appeal.getMrnDate() + "\n\n")
-            .append("Reason for late appeal: ")
-            .append(appeal.getMrnLateReason()  + "\n\n")
-            .append("Reason for no MRN: ")
-            .append(appeal.getMrnMissingReason())
-            .toString();
+                .append("Date of MRN: ")
+                .append(mrnDetails.getMrnDate() + "\n\n")
+                .append("Reason for late appeal: ")
+                .append(mrnDetails.getMrnLateReason() + "\n\n")
+                .append("Reason for no MRN: ")
+                .append(mrnDetails.getMrnMissingReason())
+                .toString();
     }
 
     public Map<String, String> setYourDetails(Map<String, String> personalisation, CcdResponse ccdResponse) {
@@ -147,9 +147,10 @@ public class SyaAppealCreatedPersonalisation extends Personalisation {
     private String buildHearingDetails(HearingOptions hearingOptions) {
         StringBuilder hearingOptionsBuilder = new StringBuilder()
                 .append("Attending the hearing: ")
-                .append(hearingOptions.getAttendingHearing().toLowerCase());
+                .append(hearingOptions.getWantsToAttend().toLowerCase());
 
-        if (hearingOptions.getAttendingHearing().toLowerCase().equals("yes") && hearingOptions.getExcludeDates() != null && hearingOptions.getExcludeDates().size() > 0) {
+        //FIXME: Use wants to attend etc
+        if (hearingOptions.getWantsToAttend().toLowerCase().equals("yes") && hearingOptions.getExcludeDates() != null && hearingOptions.getExcludeDates().size() > 0) {
             hearingOptionsBuilder.append("\n\nDates you can't attend: ");
 
             StringJoiner joiner = new StringJoiner(", ");

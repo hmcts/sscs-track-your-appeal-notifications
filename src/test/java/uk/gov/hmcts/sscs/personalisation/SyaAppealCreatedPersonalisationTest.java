@@ -34,8 +34,9 @@ public class SyaAppealCreatedPersonalisationTest {
     @Test
     public void givenASyaAppealCreated_setMrnDetailsForTemplate() {
         response = CcdResponse.builder()
-                .caseId(CASE_ID).benefitType(PIP).caseReference("SC/1234/5")
-                .appeal(Appeal.builder().mrnDate("3 May 2018").mrnLateReason("My train was cancelled.").mrnMissingReason("My dog ate my homework.").build())
+                .caseId(CASE_ID).caseReference("SC/1234/5")
+                .appeal(Appeal.builder().benefit(PIP)
+                .mrnDetails(MrnDetails.builder().mrnDate("3 May 2018").mrnLateReason("My train was cancelled.").mrnMissingReason("My dog ate my homework.").build()).build())
                 .notificationType(SYA_APPEAL_CREATED)
                 .build();
 
@@ -50,8 +51,9 @@ public class SyaAppealCreatedPersonalisationTest {
     @Test
     public void givenASyaAppealCreated_setYourDetailsForTemplate() {
         response = CcdResponse.builder()
-                .caseId(CASE_ID).benefitType(PIP).caseReference("SC/1234/5")
-                .appeal(Appeal.builder().appellant(Appellant.builder()
+                .caseId(CASE_ID).caseReference("SC/1234/5")
+                .appeal(Appeal.builder().benefit(PIP)
+                        .appellant(Appellant.builder()
                         .isAppointee("No")
                         .name(Name.builder().firstName("Manish").lastName("Sharma").title("Mrs").build())
                         .identity(Identity.builder().nino("NP 27 28 67 B").dob("12 March 1971").build())
@@ -76,8 +78,9 @@ public class SyaAppealCreatedPersonalisationTest {
     @Test
     public void givenASyaAppealCreatedWithNoEmailOrPhoneProvided_setYourDetailsForTemplate() {
         response = CcdResponse.builder()
-                .caseId(CASE_ID).benefitType(PIP).caseReference("SC/1234/5")
-                .appeal(Appeal.builder().appellant(Appellant.builder()
+                .caseId(CASE_ID).caseReference("SC/1234/5")
+                .appeal(Appeal.builder().benefit(PIP)
+                        .appellant(Appellant.builder()
                         .isAppointee("No")
                         .name(Name.builder().firstName("Manish").lastName("Sharma").title("Mrs").build())
                         .identity(Identity.builder().nino("NP 27 28 67 B").dob("12 March 1971").build())
@@ -102,7 +105,7 @@ public class SyaAppealCreatedPersonalisationTest {
     @Test
     public void givenASyaAppealCreatedWithTextMessageReminders_setTextMessageReminderDetailsForTemplate() {
         response = CcdResponse.builder()
-                .caseId(CASE_ID).benefitType(PIP).caseReference("SC/1234/5")
+                .caseId(CASE_ID).caseReference("SC/1234/5")
                 .subscriptions(Subscriptions.builder()
                         .appellantSubscription(Subscription.builder()
                         .subscribeSms("Yes")
@@ -120,7 +123,7 @@ public class SyaAppealCreatedPersonalisationTest {
     @Test
     public void givenASyaAppealCreatedWithNoTextMessageReminders_setTextMessageReminderDetailsForTemplate() {
         response = CcdResponse.builder()
-                .caseId(CASE_ID).benefitType(PIP).caseReference("SC/1234/5")
+                .caseId(CASE_ID).caseReference("SC/1234/5")
                 .subscriptions(Subscriptions.builder()
                         .appellantSubscription(Subscription.builder()
                                 .subscribeSms("No").build()).build())
@@ -136,7 +139,7 @@ public class SyaAppealCreatedPersonalisationTest {
     @Test
     public void givenASyaAppealCreatedWithRepresentative_setRepresentativeDetailsForTemplate() {
         response = CcdResponse.builder()
-                .caseId(CASE_ID).benefitType(PIP).caseReference("SC/1234/5")
+                .caseId(CASE_ID).caseReference("SC/1234/5")
                 .appeal(Appeal.builder().rep(Representative.builder()
                         .name(Name.builder().firstName("Peter").lastName("Smith").build())
                         .organisation("Citizens Advice")
@@ -160,7 +163,7 @@ public class SyaAppealCreatedPersonalisationTest {
     @Test
     public void givenASyaAppealCreatedWithRepresentativeAndNoEmailOrPhoneOrOrganisationProvided_setRepresentativeDetailsForTemplate() {
         response = CcdResponse.builder()
-                .caseId(CASE_ID).benefitType(PIP).caseReference("SC/1234/5")
+                .caseId(CASE_ID).caseReference("SC/1234/5")
                 .appeal(Appeal.builder().rep(Representative.builder()
                         .name(Name.builder().firstName("Peter").lastName("Smith").build())
                         .address(Address.builder().line1("Ground Floor").line2("Gazette Buildings").town("168 Corporation Street").county("Cardiff").postcode("CF11 6TF").build())
@@ -183,7 +186,7 @@ public class SyaAppealCreatedPersonalisationTest {
     @Test
     public void givenASyaAppealCreatedWithNoRepresentative_setRepresentativeDetailsForTemplate() {
         response = CcdResponse.builder()
-                .caseId(CASE_ID).benefitType(PIP).caseReference("SC/1234/5")
+                .caseId(CASE_ID).caseReference("SC/1234/5")
                 .appeal(Appeal.builder()
                         .build())
                 .notificationType(SYA_APPEAL_CREATED)
@@ -202,7 +205,7 @@ public class SyaAppealCreatedPersonalisationTest {
         appealReasonList.add(reason);
 
         response = CcdResponse.builder()
-                .caseId(CASE_ID).benefitType(PIP).caseReference("SC/1234/5")
+                .caseId(CASE_ID).caseReference("SC/1234/5")
                 .appeal(Appeal.builder().appealReasons(AppealReasons.builder().reasons(appealReasonList).otherReasons("Some other reason").build())
                         .build())
                 .notificationType(SYA_APPEAL_CREATED)
@@ -225,7 +228,7 @@ public class SyaAppealCreatedPersonalisationTest {
         appealReasonList.add(reason2);
 
         response = CcdResponse.builder()
-                .caseId(CASE_ID).benefitType(PIP).caseReference("SC/1234/5")
+                .caseId(CASE_ID).caseReference("SC/1234/5")
                 .appeal(Appeal.builder().appealReasons(AppealReasons.builder().reasons(appealReasonList).otherReasons("Some other reason").build())
                         .build())
                 .notificationType(SYA_APPEAL_CREATED)
@@ -245,7 +248,7 @@ public class SyaAppealCreatedPersonalisationTest {
     public void givenASyaAppealWithNoAppealReasons_setReasonForAppealingDetailsForTemplate() {
 
         response = CcdResponse.builder()
-                .caseId(CASE_ID).benefitType(PIP).caseReference("SC/1234/5")
+                .caseId(CASE_ID).caseReference("SC/1234/5")
                 .appeal(Appeal.builder().appealReasons(AppealReasons.builder().build())
                         .build())
                 .notificationType(SYA_APPEAL_CREATED)
@@ -261,8 +264,8 @@ public class SyaAppealCreatedPersonalisationTest {
     public void givenASyaAppealAttendingHearingWithNoExcludedDates_setHearingDetailsForTemplate() {
 
         response = CcdResponse.builder()
-                .caseId(CASE_ID).benefitType(PIP).caseReference("SC/1234/5")
-                .appeal(Appeal.builder().hearingOptions(HearingOptions.builder().attendingHearing("yes")
+                .caseId(CASE_ID).caseReference("SC/1234/5")
+                .appeal(Appeal.builder().hearingOptions(HearingOptions.builder().wantsToAttend("yes")
                         .build()).build())
                 .notificationType(SYA_APPEAL_CREATED)
                 .build();
@@ -281,8 +284,8 @@ public class SyaAppealCreatedPersonalisationTest {
         excludeDates.add(ExcludeDate.builder().value(DateRange.builder().start("3 January 2018").build()).build());
 
         response = CcdResponse.builder()
-                .caseId(CASE_ID).benefitType(PIP).caseReference("SC/1234/5")
-                .appeal(Appeal.builder().hearingOptions(HearingOptions.builder().attendingHearing("yes")
+                .caseId(CASE_ID).caseReference("SC/1234/5")
+                .appeal(Appeal.builder().hearingOptions(HearingOptions.builder().wantsToAttend("yes")
                         .excludeDates(excludeDates)
                         .build()).build())
                 .notificationType(SYA_APPEAL_CREATED)
@@ -304,8 +307,8 @@ public class SyaAppealCreatedPersonalisationTest {
         excludeDates.add(ExcludeDate.builder().value(DateRange.builder().start("5 January 2018").end("7 January 2018").build()).build());
 
         response = CcdResponse.builder()
-                .caseId(CASE_ID).benefitType(PIP).caseReference("SC/1234/5")
-                .appeal(Appeal.builder().hearingOptions(HearingOptions.builder().attendingHearing("yes")
+                .caseId(CASE_ID).caseReference("SC/1234/5")
+                .appeal(Appeal.builder().hearingOptions(HearingOptions.builder().wantsToAttend("yes")
                         .excludeDates(excludeDates)
                         .build()).build())
                 .notificationType(SYA_APPEAL_CREATED)
@@ -328,7 +331,7 @@ public class SyaAppealCreatedPersonalisationTest {
         arrangementList.add("disabledAccess");
 
         response = CcdResponse.builder()
-                .caseId(CASE_ID).benefitType(PIP).caseReference("SC/1234/5")
+                .caseId(CASE_ID).caseReference("SC/1234/5")
                 .appeal(Appeal.builder().hearingOptions(HearingOptions.builder()
                         .arrangements(arrangementList)
                         .languageInterpreter("Yes")
@@ -351,7 +354,7 @@ public class SyaAppealCreatedPersonalisationTest {
     public void givenASyaAppealWithNoHearingArrangements_setHearingArrangementsForTemplate() {
 
         response = CcdResponse.builder()
-                .caseId(CASE_ID).benefitType(PIP).caseReference("SC/1234/5")
+                .caseId(CASE_ID).caseReference("SC/1234/5")
                 .appeal(Appeal.builder().hearingOptions(HearingOptions.builder()
                         .languageInterpreter("No")
                         .build()).build())
