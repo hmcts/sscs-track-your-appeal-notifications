@@ -170,6 +170,7 @@ dependencies {
 
     compile group: 'org.springframework.cloud', name: 'spring-cloud-starter-hystrix', version: versions.springHystrix
     compile group: 'org.springframework.cloud', name: 'spring-cloud-starter-hystrix-dashboard', version: versions.springHystrix
+    compile group: 'io.rest-assured', name: 'rest-assured', version: '3.0.7'
 
     compile group: 'uk.gov.service.notify', name: 'notifications-java-client', version: '3.9.1-RELEASE'
 
@@ -197,5 +198,10 @@ run {
 }
 
 task smoke(type: Test, description: 'Runs the smoke tests.', group: 'Verification') {
-
+    group = 'verification'
+    description = 'Executes non-destructive smoke tests against a running notification service'
+    setTestClassesDirs(sourceSets.e2e.output.classesDirs)
+    setClasspath(sourceSets.e2e.runtimeClasspath)
+    include "uk/gov/hmcts/sscs/smoke/**"
+    exclude "uk/gov/hmcts/sscs/functional/**"
 }
