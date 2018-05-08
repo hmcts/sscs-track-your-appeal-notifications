@@ -81,7 +81,7 @@ module "track-your-appeal-notifications" {
     JOB_SCHEDULER_ENABLED = "${var.job_scheduler_enabled}"
     JOB_SCHEDULER_URL = "${var.job_scheduler_url}"
     JOB_SCHEDULER_CALLBACK_URL = "${var.job_scheduler_callbackUrl}"
-    APPEAL_RECEIVED_EMAIL_TEMPLATE_ID = "dd955503-42f4-45f8-a692-39377a0f340f"
+    APPEAL_RECEIVED_EMAIL_TEMPLATE_ID = "b90df52f-c628-409c-8875-4b0b9663a053"
     RESPONSE_RECEIVED_EMAIL_TEMPLATE_ID = "1e13bd2d-9ae0-4030-89b9-a0ef65ec36ef"
     EVIDENCE_RECEIVED_EMAIL_TEMPLATE_ID = "c5654134-2e13-4541-ac73-334a5b5cdbb6"
     EVIDENCE_RECEIVED_SMS_TEMPLATE_ID = "74bda35f-040b-4355-bda3-faf0e4f5ae6e"

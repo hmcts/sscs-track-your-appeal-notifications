@@ -47,7 +47,7 @@ job.scheduler:
   callbackUrl: ${JOB_SCHEDULER_CALLBACK_URL:http://localhost:8080}
 
 notification:
-  appealReceived.emailId: ${APPEAL_RECEIVED_EMAIL_TEMPLATE_ID:dd955503-42f4-45f8-a692-39377a0f340f}
+  appealReceived.emailId: ${APPEAL_RECEIVED_EMAIL_TEMPLATE_ID:b90df52f-c628-409c-8875-4b0b9663a053}
   responseReceived.emailId: ${RESPONSE_RECEIVED_EMAIL_TEMPLATE_ID:1e13bd2d-9ae0-4030-89b9-a0ef65ec36ef}
   evidenceReceived:
     emailId: ${EVIDENCE_RECEIVED_EMAIL_TEMPLATE_ID:c5654134-2e13-4541-ac73-334a5b5cdbb6}
