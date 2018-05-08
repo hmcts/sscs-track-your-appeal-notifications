@@ -299,7 +299,7 @@ public class SyaAppealCreatedPersonalisationTest {
     }
 
     @Test
-    public void givenASyaAppealAttendingHearingWithMultipleExcludedDates_setHearingDetailsForTemplate() {
+    public void givenASyaAppealAttendingHearingWithMultipleExcludedDates_setHearingDetailsForTemplateAndIgnoreEndDateRange() {
 
         List<ExcludeDate> excludeDates = new ArrayList<>();
 
@@ -317,7 +317,7 @@ public class SyaAppealCreatedPersonalisationTest {
         Map<String, String> result = personalisation.setHearingDetails(new HashMap<>(), response);
 
         assertEquals("Attending the hearing: yes\n"
-                        + "\nDates you can't attend: 3 January 2018, 5 January 2018 to 7 January 2018",
+                        + "\nDates you can't attend: 3 January 2018, 5 January 2018",
                 result.get(HEARING_DETAILS_LITERAL));
     }
 

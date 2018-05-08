@@ -166,9 +166,7 @@ public class SyaAppealCreatedPersonalisation extends Personalisation {
 
     private String buildDateRangeString(DateRange range) {
 
-        if (range.getStart() != null && range.getEnd() != null) {
-            return convertLocalDateToLongDateString(range.getStart()) + " to " + convertLocalDateToLongDateString(range.getEnd());
-        } else if (range.getStart() != null && range.getEnd() == null) {
+        if (range.getStart() != null) {
             return convertLocalDateToLongDateString(range.getStart());
         }
         return "";
