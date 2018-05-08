@@ -214,6 +214,6 @@ public class SyaAppealCreatedPersonalisation extends Personalisation {
 
 
     private String getOptionalField(String field, String text) {
-        return field == null || field.equals(null) || field.isEmpty() ? text : field;
+        return field == null || field.equals("null") || field.isEmpty() ? text : field;
     }
 }
