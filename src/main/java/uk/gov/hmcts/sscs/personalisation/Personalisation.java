@@ -3,6 +3,7 @@ package uk.gov.hmcts.sscs.personalisation;
 import static com.google.common.collect.Lists.newArrayList;
 import static org.slf4j.LoggerFactory.getLogger;
 import static uk.gov.hmcts.sscs.config.AppConstants.*;
+import static uk.gov.hmcts.sscs.domain.Benefit.getBenefitByCode;
 import static uk.gov.hmcts.sscs.domain.notify.EventType.*;
 
 import java.time.LocalDate;
@@ -42,8 +43,10 @@ public class Personalisation {
         CcdResponse ccdResponse = responseWrapper.getNewCcdResponse();
         Map<String, String> personalisation = new HashMap<>();
         Subscription appellantSubscription = ccdResponse.getSubscriptions().getAppellantSubscription();
-        personalisation.put(BENEFIT_NAME_ACRONYM_LITERAL, ccdResponse.getAppeal().getBenefit().name() + " benefit");
-        personalisation.put(BENEFIT_FULL_NAME_LITERAL, ccdResponse.getAppeal().getBenefit().getDescription());
+        Benefit benefit = getBenefitByCode(ccdResponse.getAppeal().getBenefitType().getCode());
+
+        personalisation.put(BENEFIT_NAME_ACRONYM_LITERAL, benefit.name() + " benefit");
+        personalisation.put(BENEFIT_FULL_NAME_LITERAL, benefit.getDescription());
         personalisation.put(APPEAL_REF, ccdResponse.getCaseReference());
         personalisation.put(APPELLANT_NAME, String.format("%s %s",
                 ccdResponse.getAppeal().getAppellant().getName().getFirstName(), ccdResponse.getAppeal().getAppellant().getName().getLastName()));
@@ -53,7 +56,7 @@ public class Personalisation {
             personalisation.put(APPEAL_ID, ccdResponse.getSubscriptions().getAppellantSubscription().getTya());
             personalisation.put(MANAGE_EMAILS_LINK_LITERAL, config.getManageEmailsLink().replace(MAC_LITERAL,
                     getMacToken(ccdResponse.getSubscriptions().getAppellantSubscription().getTya(),
-                            ccdResponse.getAppeal().getBenefit().name())));
+                            benefit.name())));
             personalisation.put(TRACK_APPEAL_LINK_LITERAL, config.getTrackAppealLink() != null ? config.getTrackAppealLink().replace(APPEAL_ID_LITERAL, appellantSubscription.getTya()) : null);
             personalisation.put(SUBMIT_EVIDENCE_LINK_LITERAL, config.getEvidenceSubmissionInfoLink().replace(APPEAL_ID, appellantSubscription.getTya()));
             personalisation.put(SUBMIT_EVIDENCE_INFO_LINK_LITERAL, config.getEvidenceSubmissionInfoLink().replace(APPEAL_ID_LITERAL, appellantSubscription.getTya()));

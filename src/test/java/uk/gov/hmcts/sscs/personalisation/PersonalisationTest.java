@@ -102,7 +102,7 @@ public class PersonalisationTest {
 
         CcdResponse response = CcdResponse.builder()
             .caseId(CASE_ID).caseReference("SC/1234/5")
-            .appeal(Appeal.builder().benefit(PIP)
+            .appeal(Appeal.builder().benefitType(BenefitType.builder().code("PIP").build())
                 .appellant(Appellant.builder().name(name).build())
             .build())
             .subscriptions(subscriptions)
@@ -163,7 +163,7 @@ public class PersonalisationTest {
 
         CcdResponse response = CcdResponse.builder()
                 .caseId(CASE_ID).caseReference("SC/1234/5")
-                .appeal(Appeal.builder().benefit(PIP)
+                .appeal(Appeal.builder().benefitType(BenefitType.builder().code("PIP").build())
                         .appellant(Appellant.builder().name(name).build())
                         .build())
                 .subscriptions(subscriptions)
@@ -184,7 +184,7 @@ public class PersonalisationTest {
 
         CcdResponse response = CcdResponse.builder()
                 .caseId(CASE_ID).caseReference("SC/1234/5")
-                .appeal(Appeal.builder().benefit(PIP).build())
+                .appeal(Appeal.builder().benefitType(BenefitType.builder().code("PIP").build()).build())
                 .notificationType(APPEAL_RECEIVED)
                 .events(events)
                 .build();
@@ -207,7 +207,7 @@ public class PersonalisationTest {
 
         CcdResponse response = CcdResponse.builder()
                 .caseId(CASE_ID).caseReference("SC/1234/5")
-                .appeal(Appeal.builder().benefit(PIP).build())
+                .appeal(Appeal.builder().benefitType(BenefitType.builder().code("PIP").build()).build())
                 .notificationType(EVIDENCE_RECEIVED)
                 .evidences(evidenceList)
                 .build();
@@ -238,7 +238,7 @@ public class PersonalisationTest {
 
         CcdResponse response = CcdResponse.builder()
                 .caseId(CASE_ID).caseReference("SC/1234/5")
-                .appeal(Appeal.builder().benefit(PIP)
+                .appeal(Appeal.builder().benefitType(BenefitType.builder().code("PIP").build())
                 .appellant(Appellant.builder().name(name).build())
                 .build())
                 .notificationType(HEARING_BOOKED)
@@ -261,7 +261,7 @@ public class PersonalisationTest {
 
         CcdResponse response = CcdResponse.builder()
                 .caseId(CASE_ID).caseReference("SC/1234/5")
-                .appeal(Appeal.builder().benefit(PIP).build())
+                .appeal(Appeal.builder().benefitType(BenefitType.builder().code("PIP").build()).build())
                 .notificationType(POSTPONEMENT)
                 .events(events)
                 .build();
@@ -275,7 +275,7 @@ public class PersonalisationTest {
     public void handleNullEventWhenPopulatingEventData() {
         CcdResponse response = CcdResponse.builder()
                 .caseId(CASE_ID).caseReference("SC/1234/5")
-                .appeal(Appeal.builder().benefit(PIP).build())
+                .appeal(Appeal.builder().benefitType(BenefitType.builder().code("PIP").build()).build())
                 .notificationType(POSTPONEMENT)
                 .build();
 
@@ -288,7 +288,7 @@ public class PersonalisationTest {
     public void handleEmptyEventsWhenPopulatingEventData() {
         CcdResponse response = CcdResponse.builder()
                 .caseId(CASE_ID).caseReference("SC/1234/5")
-                .appeal(Appeal.builder().benefit(PIP).build())
+                .appeal(Appeal.builder().benefitType(BenefitType.builder().code("PIP").build()).build())
                 .notificationType(POSTPONEMENT)
                 .events(new ArrayList())
                 .build();

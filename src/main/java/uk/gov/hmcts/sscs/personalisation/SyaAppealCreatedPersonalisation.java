@@ -79,7 +79,7 @@ public class SyaAppealCreatedPersonalisation extends Personalisation {
                 .append("Receive text message reminders: ")
                 .append(subscription.getSubscribeSms().toLowerCase());
 
-        if (subscription.isSubscribeSms()) {
+        if (subscription.isSmsSubscribed()) {
             buildTextMessage
                     .append("\n\nMobile number: ")
                     .append(subscription.getMobile());

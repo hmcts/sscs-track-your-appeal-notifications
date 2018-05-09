@@ -70,7 +70,7 @@ public class NotificationFactoryTest {
 
         ccdResponse = CcdResponse.builder().caseId(CASE_ID).caseReference("SC/1234/5").appeal(Appeal.builder()
                 .appellant(Appellant.builder().name(Name.builder().firstName("Ronnie").lastName("Scott").title("Mr").build()).build())
-                .benefit(PIP).build())
+                .benefitType(BenefitType.builder().code("PIP").build()).build())
                 .subscriptions(Subscriptions.builder().appellantSubscription(subscription).build()).notificationType(APPEAL_RECEIVED).build();
 
         wrapper = CcdResponseWrapper.builder().newCcdResponse(ccdResponse).build();

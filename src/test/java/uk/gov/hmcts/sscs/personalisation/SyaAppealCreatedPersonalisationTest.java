@@ -3,7 +3,6 @@ package uk.gov.hmcts.sscs.personalisation;
 import static org.junit.Assert.assertEquals;
 import static org.mockito.MockitoAnnotations.initMocks;
 import static uk.gov.hmcts.sscs.config.AppConstants.*;
-import static uk.gov.hmcts.sscs.domain.Benefit.PIP;
 import static uk.gov.hmcts.sscs.domain.notify.EventType.SYA_APPEAL_CREATED;
 
 import java.util.ArrayList;
@@ -35,7 +34,7 @@ public class SyaAppealCreatedPersonalisationTest {
     public void givenASyaAppealCreated_setMrnDetailsForTemplate() {
         response = CcdResponse.builder()
                 .caseId(CASE_ID).caseReference("SC/1234/5")
-                .appeal(Appeal.builder().benefit(PIP)
+                .appeal(Appeal.builder().benefitType(BenefitType.builder().code("PIP").build())
                 .mrnDetails(MrnDetails.builder().mrnDate("3 May 2018").mrnLateReason("My train was cancelled.").mrnMissingReason("My dog ate my homework.").build()).build())
                 .notificationType(SYA_APPEAL_CREATED)
                 .build();
@@ -52,7 +51,7 @@ public class SyaAppealCreatedPersonalisationTest {
     public void givenASyaAppealCreated_setYourDetailsForTemplate() {
         response = CcdResponse.builder()
                 .caseId(CASE_ID).caseReference("SC/1234/5")
-                .appeal(Appeal.builder().benefit(PIP)
+                .appeal(Appeal.builder().benefitType(BenefitType.builder().code("PIP").build())
                         .appellant(Appellant.builder()
                         .isAppointee("No")
                         .name(Name.builder().firstName("Manish").lastName("Sharma").title("Mrs").build())
@@ -79,7 +78,7 @@ public class SyaAppealCreatedPersonalisationTest {
     public void givenASyaAppealCreatedWithNoEmailOrPhoneProvided_setYourDetailsForTemplate() {
         response = CcdResponse.builder()
                 .caseId(CASE_ID).caseReference("SC/1234/5")
-                .appeal(Appeal.builder().benefit(PIP)
+                .appeal(Appeal.builder().benefitType(BenefitType.builder().code("PIP").build())
                         .appellant(Appellant.builder()
                         .isAppointee("No")
                         .name(Name.builder().firstName("Manish").lastName("Sharma").title("Mrs").build())

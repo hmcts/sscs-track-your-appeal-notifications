@@ -13,6 +13,38 @@ public final class CcdResponseUtils {
 
     public static CcdResponse buildCcdResponse(String caseReference) {
 
+        Name name = Name.builder()
+                .title("Mr")
+                .firstName("User")
+                .lastName("Test")
+                .build();
+        Contact contact = Contact.builder()
+                .email("mail@email.com")
+                .phone("01234567890")
+                .build();
+        Identity identity = Identity.builder()
+                .dob("1904-03-10")
+                .nino("AB 22 55 66 B")
+                .build();
+        Appellant appellant = Appellant.builder()
+                .name(name)
+                .contact(contact)
+                .identity(identity)
+                .build();
+
+        HearingOptions hearingOptions = HearingOptions.builder()
+                .wantsToAttend("Yes")
+                .wantsSupport("Yes")
+                .languageInterpreter("Yes")
+                .other("No")
+                .build();
+
+        final Appeal appeal = Appeal.builder()
+                .appellant(appellant)
+                .benefitType(BenefitType.builder().code("ESA").build())
+                .hearingOptions(hearingOptions)
+                .build();
+
         Hearing hearing = Hearing.builder().value(HearingDetails.builder()
             .hearingDate("2018-01-01")
             .time("12:00")
@@ -33,18 +65,18 @@ public final class CcdResponseUtils {
 
         Events event = Events.builder()
             .value(Event.builder()
-            .type(EventType.SYA_APPEAL_CREATED.getId())
-            .description("Appeal Created")
+            .type(EventType.APPEAL_RECEIVED.getId())
+            .description("Appeal received")
             .date("2018-01-14T21:59:43.10")
             .build())
             .build();
 
         Subscription appellantSubscription = Subscription.builder()
             .tya("")
-            .email("")
+            .email("sscstest@greencroftconsulting.com")
             .mobile("")
-            .subscribeEmail("No")
-            .subscribeSms("No")
+            .subscribeEmail("Yes")
+            .subscribeSms("Yes")
             .build();
         Subscription supporterSubscription = Subscription.builder()
             .tya("")
@@ -60,6 +92,7 @@ public final class CcdResponseUtils {
 
         return CcdResponse.builder()
             .caseReference(caseReference)
+            .appeal(appeal)
             .hearings(hearingsList)
             .events(Collections.singletonList(event))
             .subscriptions(subscriptions)

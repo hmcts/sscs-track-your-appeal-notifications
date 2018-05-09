@@ -2,7 +2,10 @@ package uk.gov.hmcts.sscs.functional;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertNull;
+import static uk.gov.hmcts.sscs.domain.notify.EventType.APPEAL_RECEIVED;
 
+import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -18,7 +21,7 @@ import uk.gov.hmcts.sscs.service.idam.IdamService;
 
 @RunWith(SpringRunner.class)
 @SpringBootTest
-public class SaveAndUpdateSimpleCaseInCcd {
+public class SendNotificationsFunctionalTest {
 
     @Autowired
     private CreateCcdService createCcdService;
@@ -27,19 +30,31 @@ public class SaveAndUpdateSimpleCaseInCcd {
     @Autowired
     private IdamService idamService;
 
-    @Test
-    public void shouldBeSavedAndThenUpdatedIntoCcdGivenACase() {
-        CcdResponse caseData = CcdResponseUtils.buildCcdResponse("SC068/17/00021");
-        IdamTokens idamTokens = IdamTokens.builder()
-            .authenticationService(idamService.generateServiceAuthorization())
-            .idamOauth2Token(idamService.getIdamOauth2Token())
-            .build();
+    private CcdResponse caseData;
+    private IdamTokens idamTokens;
+    private Long caseId;
+
+    @Before
+    public void setup() {
+        idamTokens = IdamTokens.builder()
+                .authenticationService(idamService.generateServiceAuthorization())
+                .idamOauth2Token(idamService.getIdamOauth2Token())
+                .build();
+
+        caseData = CcdResponseUtils.buildCcdResponse("SC068/17/00022");
+
         CaseDetails caseDetails = createCcdService.create(caseData, idamTokens);
+
         assertNotNull(caseDetails);
-        CcdResponse updatedCaseData = CcdResponseUtils.buildCcdResponse("SC123/12/78721");
-        CaseDetails updatedCaseDetails = updateCcdService.update(updatedCaseData, caseDetails.getId(),
-            "appealReceived", idamTokens);
-        assertEquals("SC123/12/78721", updatedCaseDetails.getData().get("caseReference"));
+        assertEquals("COMPLETED", caseDetails.getCallbackResponseStatus());
+        caseId = caseDetails.getId();
+    }
+
+    @Test
+    public void shouldSendAppealReceivedNotification() {
+        CaseDetails updatedCaseDetails = updateCcdService.update(caseData, caseId, APPEAL_RECEIVED.getId(), idamTokens);
+
+        assertNull(updatedCaseDetails.getCallbackResponseStatus());
     }
 
 }

@@ -76,14 +76,14 @@ public class SubscriptionPersonalisationTest {
 
         newCcdResponse = CcdResponse.builder().caseId("54321")
                 .appeal(Appeal.builder()
-                    .benefit(PIP)
+                    .benefitType(BenefitType.builder().code("PIP").build())
                     .appellant(Appellant.builder().name(Name.builder().firstName("Harry").lastName("Kane").title("Mr").build()).build()).build())
                 .caseReference("1234")
                 .subscriptions(Subscriptions.builder().appellantSubscription(newAppellantSubscription).build()).notificationType(SUBSCRIPTION_UPDATED).build();
 
         oldCcdResponse = CcdResponse.builder().caseId("54321")
                 .appeal(Appeal.builder()
-                        .benefit(PIP)
+                        .benefitType(BenefitType.builder().code("PIP").build())
                         .appellant(Appellant.builder().name(Name.builder().firstName("Harry").lastName("Kane").title("Mr").build()).build()).build())
                 .caseReference("5432")
                 .subscriptions(Subscriptions.builder().appellantSubscription(oldAppellantSubscription).build()).notificationType(SUBSCRIPTION_UPDATED).build();

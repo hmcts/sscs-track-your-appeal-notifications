@@ -16,7 +16,7 @@ public class Subscription {
     private String subscribeEmail;
 
     @JsonIgnore
-    public Boolean isSubscribeSms() {
+    public Boolean isSmsSubscribed() {
         if (subscribeSms == null || subscribeSms.toLowerCase().equals("no")) {
             return false;
         }
@@ -24,7 +24,7 @@ public class Subscription {
     }
 
     @JsonIgnore
-    public Boolean isSubscribeEmail() {
+    public Boolean isEmailSubscribed() {
         if (subscribeEmail == null || subscribeEmail.toLowerCase().equals("no"))  {
             return false;
         }
@@ -32,8 +32,8 @@ public class Subscription {
     }
 
     @JsonIgnore
-    public Boolean isSubscribed() {
-        return (isSubscribeSms() || isSubscribeEmail()) ? true : false;
+    public Boolean doesCaseHaveSubscriptions() {
+        return (isSmsSubscribed() || isEmailSubscribed()) ? true : false;
     }
 
     @JsonIgnore

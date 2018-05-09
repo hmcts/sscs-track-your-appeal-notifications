@@ -148,7 +148,7 @@ public class CcdResponseDeserializer extends StdDeserializer<CcdResponseWrapper>
 
         if (benefitTypeNode != null) {
             String benefitCode = getField(benefitTypeNode, "code");
-            appeal.setBenefit(Benefit.getBenefitByCode(benefitCode));
+            appeal.setBenefitType(BenefitType.builder().code(benefitCode).build());
         }
     }
 
@@ -392,7 +392,7 @@ public class CcdResponseDeserializer extends StdDeserializer<CcdResponseWrapper>
     }
 
     private String convertEmptyToNo(String field) {
-        return field.equals("") ? "No" : field;
+        return field == null || field.equals("") ? "No" : field;
     }
 
     public JsonNode getNode(JsonNode node, String field) {
