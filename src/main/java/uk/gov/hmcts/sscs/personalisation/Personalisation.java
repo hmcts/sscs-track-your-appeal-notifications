@@ -42,17 +42,18 @@ public class Personalisation {
         CcdResponse ccdResponse = responseWrapper.getNewCcdResponse();
         Map<String, String> personalisation = new HashMap<>();
         Subscription appellantSubscription = ccdResponse.getSubscriptions().getAppellantSubscription();
-        personalisation.put(BENEFIT_NAME_ACRONYM_LITERAL, ccdResponse.getBenefitType().name() + " benefit");
-        personalisation.put(BENEFIT_FULL_NAME_LITERAL, ccdResponse.getBenefitType().getDescription());
+        personalisation.put(BENEFIT_NAME_ACRONYM_LITERAL, ccdResponse.getAppeal().getBenefit().name() + " benefit");
+        personalisation.put(BENEFIT_FULL_NAME_LITERAL, ccdResponse.getAppeal().getBenefit().getDescription());
         personalisation.put(APPEAL_REF, ccdResponse.getCaseReference());
-        personalisation.put(APPELLANT_NAME, String.format("%s %s", appellantSubscription.getFirstName(), appellantSubscription.getSurname()));
+        personalisation.put(APPELLANT_NAME, String.format("%s %s",
+                ccdResponse.getAppeal().getAppellant().getName().getFirstName(), ccdResponse.getAppeal().getAppellant().getName().getLastName()));
         personalisation.put(PHONE_NUMBER, config.getHmctsPhoneNumber());
 
         if (ccdResponse.getSubscriptions().getAppellantSubscription().getTya() != null) {
             personalisation.put(APPEAL_ID, ccdResponse.getSubscriptions().getAppellantSubscription().getTya());
             personalisation.put(MANAGE_EMAILS_LINK_LITERAL, config.getManageEmailsLink().replace(MAC_LITERAL,
                     getMacToken(ccdResponse.getSubscriptions().getAppellantSubscription().getTya(),
-                            ccdResponse.getBenefitType().name())));
+                            ccdResponse.getAppeal().getBenefit().name())));
             personalisation.put(TRACK_APPEAL_LINK_LITERAL, config.getTrackAppealLink() != null ? config.getTrackAppealLink().replace(APPEAL_ID_LITERAL, appellantSubscription.getTya()) : null);
             personalisation.put(SUBMIT_EVIDENCE_LINK_LITERAL, config.getEvidenceSubmissionInfoLink().replace(APPEAL_ID, appellantSubscription.getTya()));
             personalisation.put(SUBMIT_EVIDENCE_INFO_LINK_LITERAL, config.getEvidenceSubmissionInfoLink().replace(APPEAL_ID_LITERAL, appellantSubscription.getTya()));
@@ -117,7 +118,7 @@ public class Personalisation {
         return personalisation;
     }
 
-    private Map<String, String> setEvidenceProcessingAddress(Map<String, String> personalisation, CcdResponse ccdResponse) {
+    public Map<String, String> setEvidenceProcessingAddress(Map<String, String> personalisation, CcdResponse ccdResponse) {
         RegionalProcessingCenter rpc;
 
         if (null != ccdResponse.getRegionalProcessingCenter()) {
@@ -138,11 +139,7 @@ public class Personalisation {
 
     private String formatAddress(Hearing hearing) {
         return newArrayList(hearing.getValue().getVenue().getName(),
-                hearing.getValue().getVenue().getAddress().getLine1(),
-                hearing.getValue().getVenue().getAddress().getLine2(),
-                hearing.getValue().getVenue().getAddress().getTown(),
-                hearing.getValue().getVenue().getAddress().getCounty(),
-                hearing.getValue().getVenue().getAddress().getPostcode())
+                hearing.getValue().getVenue().getAddress().getFullAddress())
                 .stream()
                 .filter(StringUtils::isNotBlank)
                 .collect(Collectors.joining(", "));

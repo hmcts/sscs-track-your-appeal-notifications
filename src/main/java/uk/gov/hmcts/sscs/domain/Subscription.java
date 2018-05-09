@@ -1,27 +1,19 @@
 package uk.gov.hmcts.sscs.domain;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
-import lombok.AccessLevel;
 import lombok.Builder;
 import lombok.Data;
-import lombok.Getter;
 import uk.gov.hmcts.sscs.domain.notify.Destination;
 
 @Data
 @Builder(toBuilder = true)
 public class Subscription {
 
-    @JsonIgnore
-    private String firstName;
-    @JsonIgnore
-    private String surname;
-    @JsonIgnore
-    private String title;
     private String tya;
     private String email;
     private String mobile;
-    @Getter(AccessLevel.NONE) private String subscribeSms;
-    @Getter(AccessLevel.NONE) private String subscribeEmail;
+    private String subscribeSms;
+    private String subscribeEmail;
 
     @JsonIgnore
     public Boolean isSubscribeSms() {

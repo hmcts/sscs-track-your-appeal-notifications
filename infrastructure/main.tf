@@ -92,6 +92,7 @@ module "track-your-appeal-notifications" {
     APPEAL_WITHDRAWN_EMAIL_TEMPLATE_ID = "8620e023-f663-477e-a771-9cfad50ee30f"
     SUBSCRIPTION_CREATED_SMS_TEMPLATE_ID = "18444f5f-8834-49e9-a6ae-bfe7f50db2b8"
     HEARING_BOOKED_EMAIL_TEMPLATE_ID = "fee16753-0bdb-43f1-9abb-b14b826e3b26"
+    SYA_APPEAL_CREATED_EMAIL_TEMPLATE_ID = "01293b93-b23e-40a3-ad78-2c6cd01cd21c"
     EMAIL_MAC_SECRET_TEXT = "${data.vault_generic_secret.mac_secret.data["value"]}"
   }
 }

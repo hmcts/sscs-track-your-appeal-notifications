@@ -64,3 +64,5 @@ notification:
   evidenceReminder:
     emailId: ${EVIDENCE_REMINDER_EMAIL_TEMPLATE_ID:b9e47ec4-3b58-4b8d-9304-f77ac27fb7f2}
     smsId: ${EVIDENCE_REMINDER_SMS_TEMPLATE_ID:e3f71440-d1ac-43c8-a8cc-a088c4f3c959}
+  appealCreated.emailId: ${SYA_APPEAL_CREATED_EMAIL_TEMPLATE_ID:01293b93-b23e-40a3-ad78-2c6cd01cd21c}
+

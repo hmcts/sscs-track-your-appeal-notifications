@@ -33,7 +33,7 @@ public final class CcdResponseUtils {
 
         Events event = Events.builder()
             .value(Event.builder()
-            .type(EventType.APPEAL_CREATED.getId())
+            .type(EventType.SYA_APPEAL_CREATED.getId())
             .description("Appeal Created")
             .date("2018-01-14T21:59:43.10")
             .build())
