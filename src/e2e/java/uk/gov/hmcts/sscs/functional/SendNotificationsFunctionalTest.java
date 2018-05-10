@@ -54,7 +54,7 @@ public class SendNotificationsFunctionalTest {
     public void shouldSendAppealReceivedNotification() {
         CaseDetails updatedCaseDetails = updateCcdService.update(caseData, caseId, APPEAL_RECEIVED.getId(), idamTokens);
 
+        //FIXME: Bug in CCD tracked in ticket RDM-2189 which returns null for a success when it is an update. Should be COMPLETED
         assertNull(updatedCaseDetails.getCallbackResponseStatus());
     }
-
 }

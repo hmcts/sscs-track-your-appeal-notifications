@@ -68,9 +68,27 @@ dependencies {
     e2eCompile(sourceSets.test.output)
 }
 
-task functional(type: Test) {
+task integration(type: Test) {
     setTestClassesDirs(sourceSets.integrationTest.output.classesDirs)
     setClasspath(sourceSets.integrationTest.runtimeClasspath)
+}
+
+task smoke(type: Test) {
+    group = 'verification'
+    description = 'Executes non-destructive smoke tests against a running CCD and notification service'
+    setTestClassesDirs(sourceSets.e2e.output.classesDirs)
+    setClasspath(sourceSets.e2e.runtimeClasspath)
+    include "uk/gov/hmcts/sscs/smoke/**"
+    exclude "uk/gov/hmcts/sscs/functional/**"
+}
+
+task functional(type: Test) {
+    group = 'Functional Tests'
+    description = 'Executes non-destructive functional tests in AAT against a running CCD and notification service'
+    setTestClassesDirs(sourceSets.e2e.output.classesDirs)
+    setClasspath(sourceSets.e2e.runtimeClasspath)
+    include "uk/gov/hmcts/sscs/functional/**"
+    exclude "uk/gov/hmcts/sscs/smoke/**"
 }
 
 dependencyUpdates.resolutionStrategy = {
@@ -106,8 +124,8 @@ repositories {
     jcenter()
 }
 
-project.tasks['sonarqube'].dependsOn test, functional
-check.dependsOn functional
+project.tasks['sonarqube'].dependsOn test, integration
+check.dependsOn integration
 checkstyleMain.shouldRunAfter(compileJava)
 test.shouldRunAfter(checkstyleTest)
 functional.shouldRunAfter(checkstyleIntegrationTest)
@@ -195,13 +213,4 @@ run {
     if (debug == 'true') {
         jvmArgs = ['-agentlib:jdwp=transport=dt_socket,server=y,suspend=y,address=5005']
     }
-}
-
-task smoke(type: Test, description: 'Runs the smoke tests.', group: 'Verification') {
-    group = 'verification'
-    description = 'Executes non-destructive smoke tests against a running notification service'
-    setTestClassesDirs(sourceSets.e2e.output.classesDirs)
-    setClasspath(sourceSets.e2e.runtimeClasspath)
-    include "uk/gov/hmcts/sscs/smoke/**"
-    exclude "uk/gov/hmcts/sscs/functional/**"
 }

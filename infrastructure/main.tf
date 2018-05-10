@@ -2,11 +2,6 @@ provider "vault" {
   address = "https://vault.reform.hmcts.net:6200"
 }
 
-resource "azurerm_resource_group" "rg" {
-  name     = "${var.product}-${var.component}-${var.env}"
-  location = "${var.location}"
-}
-
 data "vault_generic_secret" "sscs_s2s_secret" {
   path = "secret/${var.infrastructure_env}/ccidam/service-auth-provider/api/microservice-keys/sscs"
 }
@@ -116,3 +111,4 @@ module "sscs-tya-notif-key-vault" {
   resource_group_name = "${azurerm_resource_group.rg.name}"
   product_group_object_id = "300e771f-856c-45cc-b899-40d78281e9c1"
 }
+
