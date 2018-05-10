@@ -84,6 +84,6 @@ resource "azurerm_key_vault_secret" "s2s-micro" {
 
 resource "azurerm_key_vault_secret" "idam-redirect" {
   name      = "idam-redirect"
-  value     = "${var.idam_redicret_url}"
+  value     = "${var.idam_redirect_url}"
   vault_uri = "${module.sscs-tya-notif-key-vault.key_vault_uri}"
 }
