@@ -1,8 +1,6 @@
 package uk.gov.hmcts.sscs.functional;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertNull;
+import static org.junit.Assert.*;
 import static uk.gov.hmcts.sscs.CcdResponseUtils.*;
 import static uk.gov.hmcts.sscs.domain.notify.EventType.*;
 
@@ -13,7 +11,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.junit4.SpringRunner;
 import uk.gov.hmcts.reform.ccd.client.model.CaseDetails;
-import uk.gov.hmcts.sscs.CcdResponseUtils;
 import uk.gov.hmcts.sscs.domain.CcdResponse;
 import uk.gov.hmcts.sscs.domain.idam.IdamTokens;
 import uk.gov.hmcts.sscs.service.ccd.CreateCcdService;
@@ -29,8 +26,6 @@ public class SendNotificationsFunctionalTest {
     private CreateCcdService createCcdService;
     @Autowired
     private UpdateCcdService updateCcdService;
-    @Autowired
-    private SearchCcdService searchCcdService;
 
     @Autowired
     private IdamService idamService;
@@ -46,15 +41,12 @@ public class SendNotificationsFunctionalTest {
                 .idamOauth2Token(idamService.getIdamOauth2Token())
                 .build();
 
-        caseData = buildCcdResponse("SC068/17/00022");
+        caseData = buildCcdResponse("SC068/17/00022", "Yes", "Yes");
 
-        CaseDetails caseDetails = searchCcdService.findCaseByCaseRef("SC068/17/00022", idamTokens).get(0);
-//        caseData = buildCcdResponse("SC068/17/00022");
-
-//        CaseDetails caseDetails = createCcdService.create(caseData, idamTokens);
+        CaseDetails caseDetails = createCcdService.create(caseData, idamTokens);
 
         assertNotNull(caseDetails);
-//        assertEquals("COMPLETED", caseDetails.getCallbackResponseStatus());
+        assertEquals("COMPLETED", caseDetails.getCallbackResponseStatus());
         caseId = caseDetails.getId();
     }
 
@@ -119,22 +111,6 @@ public class SendNotificationsFunctionalTest {
         assertNull(updatedCaseDetails.getCallbackResponseStatus());
     }
 
-    //FIXME
-    @Test
-    public void shouldSendSubscriptionCreatedNotification() {
-        CaseDetails updatedCaseDetails = updateCcdService.update(caseData, caseId, SUBSCRIPTION_CREATED.getId(), idamTokens);
-
-        assertNull(updatedCaseDetails.getCallbackResponseStatus());
-    }
-
-    @Test
-    public void shouldSendSubscriptionUpdatedNotification() {
-        CaseDetails updatedCaseDetails = updateCcdService.update(caseData, caseId, SUBSCRIPTION_UPDATED.getId(), idamTokens);
-
-        assertNull(updatedCaseDetails.getCallbackResponseStatus());
-    }
-
-    //FIXME
     @Test
     public void shouldSendHearingBookedNotification() {
         addEventTypeToCase(caseData, HEARING_BOOKED);
@@ -144,7 +120,4 @@ public class SendNotificationsFunctionalTest {
 
         assertNull(updatedCaseDetails.getCallbackResponseStatus());
     }
-
-
-
 }

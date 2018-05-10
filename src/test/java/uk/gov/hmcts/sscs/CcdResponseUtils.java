@@ -16,7 +16,7 @@ public final class CcdResponseUtils {
     private CcdResponseUtils() {
     }
 
-    public static CcdResponse buildCcdResponse(String caseReference) {
+    public static CcdResponse buildCcdResponse(String caseReference, String subscribeEmail, String subscribeSms) {
 
         Name name = Name.builder()
                 .title("Mr")
@@ -62,8 +62,8 @@ public final class CcdResponseUtils {
             .tya("")
             .email("jack.maloney@hmcts.net")
             .mobile("07985289708")
-            .subscribeEmail("Yes")
-            .subscribeSms("Yes")
+            .subscribeEmail(subscribeEmail)
+            .subscribeSms(subscribeSms)
             .build();
         Subscription supporterSubscription = Subscription.builder()
             .tya("")
