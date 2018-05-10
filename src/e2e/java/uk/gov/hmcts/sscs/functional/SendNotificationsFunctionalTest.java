@@ -3,7 +3,8 @@ package uk.gov.hmcts.sscs.functional;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertNull;
-import static uk.gov.hmcts.sscs.domain.notify.EventType.APPEAL_RECEIVED;
+import static uk.gov.hmcts.sscs.CcdResponseUtils.*;
+import static uk.gov.hmcts.sscs.domain.notify.EventType.*;
 
 import org.junit.Before;
 import org.junit.Test;
@@ -16,6 +17,7 @@ import uk.gov.hmcts.sscs.CcdResponseUtils;
 import uk.gov.hmcts.sscs.domain.CcdResponse;
 import uk.gov.hmcts.sscs.domain.idam.IdamTokens;
 import uk.gov.hmcts.sscs.service.ccd.CreateCcdService;
+import uk.gov.hmcts.sscs.service.ccd.SearchCcdService;
 import uk.gov.hmcts.sscs.service.ccd.UpdateCcdService;
 import uk.gov.hmcts.sscs.service.idam.IdamService;
 
@@ -27,6 +29,9 @@ public class SendNotificationsFunctionalTest {
     private CreateCcdService createCcdService;
     @Autowired
     private UpdateCcdService updateCcdService;
+    @Autowired
+    private SearchCcdService searchCcdService;
+
     @Autowired
     private IdamService idamService;
 
@@ -41,12 +46,15 @@ public class SendNotificationsFunctionalTest {
                 .idamOauth2Token(idamService.getIdamOauth2Token())
                 .build();
 
-        caseData = CcdResponseUtils.buildCcdResponse("SC068/17/00022");
+        caseData = buildCcdResponse("SC068/17/00022");
 
-        CaseDetails caseDetails = createCcdService.create(caseData, idamTokens);
+        CaseDetails caseDetails = searchCcdService.findCaseByCaseRef("SC068/17/00022", idamTokens).get(0);
+//        caseData = buildCcdResponse("SC068/17/00022");
+
+//        CaseDetails caseDetails = createCcdService.create(caseData, idamTokens);
 
         assertNotNull(caseDetails);
-        assertEquals("COMPLETED", caseDetails.getCallbackResponseStatus());
+//        assertEquals("COMPLETED", caseDetails.getCallbackResponseStatus());
         caseId = caseDetails.getId();
     }
 
@@ -54,7 +62,89 @@ public class SendNotificationsFunctionalTest {
     public void shouldSendAppealReceivedNotification() {
         CaseDetails updatedCaseDetails = updateCcdService.update(caseData, caseId, APPEAL_RECEIVED.getId(), idamTokens);
 
-        //FIXME: Bug in CCD tracked in ticket RDM-2189 which returns null for a success when it is an update. Should be COMPLETED
+        //FIXME: Bug in CCD tracked in ticket RDM-2189 which returns null for a success when it is an update. Should be COMPLETED. Fix for all tests
         assertNull(updatedCaseDetails.getCallbackResponseStatus());
     }
+
+    @Test
+    public void shouldSendResponseReceivedNotification() {
+        CaseDetails updatedCaseDetails = updateCcdService.update(caseData, caseId, DWP_RESPONSE_RECEIVED.getId(), idamTokens);
+
+        assertNull(updatedCaseDetails.getCallbackResponseStatus());
+    }
+
+//    @Test
+//    public void shouldSendEvidenceReceivedNotification() {
+//        //FIXME: Think need to add correct evidence structure
+//        addEvidence(caseData);
+//        CaseDetails updatedCaseDetails = updateCcdService.update(caseData, caseId, EVIDENCE_RECEIVED.getId(), idamTokens);
+//
+//        assertNull(updatedCaseDetails.getCallbackResponseStatus());
+//    }
+
+//    addEventTypeToCase(caseData, APPEAL_WITHDRAWN);
+
+
+    @Test
+    public void shouldSendHearingAdjournedNotification() {
+        CaseDetails updatedCaseDetails = updateCcdService.update(caseData, caseId, ADJOURNED.getId(), idamTokens);
+
+        assertNull(updatedCaseDetails.getCallbackResponseStatus());
+    }
+
+    @Test
+    public void shouldSendHearingPostponedNotification() {
+        addEventTypeToCase(caseData, POSTPONEMENT);
+
+        CaseDetails updatedCaseDetails = updateCcdService.update(caseData, caseId, POSTPONEMENT.getId(), idamTokens);
+
+        assertNull(updatedCaseDetails.getCallbackResponseStatus());
+    }
+
+    @Test
+    public void shouldSendAppealLapsedNotification() {
+        addEventTypeToCase(caseData, APPEAL_LAPSED);
+
+        CaseDetails updatedCaseDetails = updateCcdService.update(caseData, caseId, APPEAL_LAPSED.getId(), idamTokens);
+
+        assertNull(updatedCaseDetails.getCallbackResponseStatus());
+    }
+
+    @Test
+    public void shouldSendAppealWithdrawnNotification() {
+        addEventTypeToCase(caseData, APPEAL_WITHDRAWN);
+
+        CaseDetails updatedCaseDetails = updateCcdService.update(caseData, caseId, APPEAL_WITHDRAWN.getId(), idamTokens);
+
+        assertNull(updatedCaseDetails.getCallbackResponseStatus());
+    }
+
+    //FIXME
+    @Test
+    public void shouldSendSubscriptionCreatedNotification() {
+        CaseDetails updatedCaseDetails = updateCcdService.update(caseData, caseId, SUBSCRIPTION_CREATED.getId(), idamTokens);
+
+        assertNull(updatedCaseDetails.getCallbackResponseStatus());
+    }
+
+    @Test
+    public void shouldSendSubscriptionUpdatedNotification() {
+        CaseDetails updatedCaseDetails = updateCcdService.update(caseData, caseId, SUBSCRIPTION_UPDATED.getId(), idamTokens);
+
+        assertNull(updatedCaseDetails.getCallbackResponseStatus());
+    }
+
+    //FIXME
+    @Test
+    public void shouldSendHearingBookedNotification() {
+        addEventTypeToCase(caseData, HEARING_BOOKED);
+        addHearing(caseData);
+
+        CaseDetails updatedCaseDetails = updateCcdService.update(caseData, caseId, HEARING_BOOKED.getId(), idamTokens);
+
+        assertNull(updatedCaseDetails.getCallbackResponseStatus());
+    }
+
+
+
 }
