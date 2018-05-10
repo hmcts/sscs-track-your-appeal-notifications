@@ -108,7 +108,7 @@ module "sscs-tya-notif-key-vault" {
   env                 = "${var.env}"
   tenant_id           = "${var.tenant_id}"
   object_id           = "${var.jenkins_AAD_objectId}"
-  resource_group_name = "${azurerm_resource_group.rg.name}"
+  resource_group_name = "${module.track-your-appeal-notifications.resource_group_name}"
   product_group_object_id = "300e771f-856c-45cc-b899-40d78281e9c1"
 }
 
