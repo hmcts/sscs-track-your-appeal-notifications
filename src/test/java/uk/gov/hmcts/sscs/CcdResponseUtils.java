@@ -1,7 +1,6 @@
 package uk.gov.hmcts.sscs;
 
 import java.text.SimpleDateFormat;
-import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Date;
@@ -58,8 +57,8 @@ public final class CcdResponseUtils {
 
         Subscription appellantSubscription = Subscription.builder()
             .tya("")
-            .email("jack.maloney@hmcts.net")
-            .mobile("07985289708")
+            .email("sscstest+notify@greencroftconsulting.com")
+            .mobile("07398785050")
             .subscribeEmail(subscribeEmail)
             .subscribeSms(subscribeSms)
             .build();
@@ -85,7 +84,7 @@ public final class CcdResponseUtils {
 
     public static void addEventTypeToCase(CcdResponse response, EventType eventType) {
         Date now = new Date();
-        SimpleDateFormat dt1 = new SimpleDateFormat("yyyy-mm-dd'T'hh:MM:ss.SSS");
+        SimpleDateFormat dt1 = new SimpleDateFormat("yyyy-MM-dd'T'hh:mm:ss.SSS");
 
         Events events = Events.builder()
             .value(Event.builder()

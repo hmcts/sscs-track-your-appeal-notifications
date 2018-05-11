@@ -45,7 +45,6 @@ public class SendNotificationsFunctionalTest {
         CaseDetails caseDetails = createCcdService.create(caseData, idamTokens);
 
         assertNotNull(caseDetails);
-        assertEquals("COMPLETED", caseDetails.getCallbackResponseStatus());
         caseId = caseDetails.getId();
     }
 
@@ -53,15 +52,14 @@ public class SendNotificationsFunctionalTest {
     public void shouldSendAppealReceivedNotification() {
         CaseDetails updatedCaseDetails = updateCcdService.update(caseData, caseId, APPEAL_RECEIVED.getId(), idamTokens);
 
-        //FIXME: Bug in CCD tracked in ticket RDM-2189 which returns null for a success when it is an update. Should be COMPLETED. Fix for all tests
-        assertNull(updatedCaseDetails.getCallbackResponseStatus());
+        assertEquals("COMPLETED", updatedCaseDetails.getCallbackResponseStatus());
     }
 
     @Test
     public void shouldSendResponseReceivedNotification() {
         CaseDetails updatedCaseDetails = updateCcdService.update(caseData, caseId, DWP_RESPONSE_RECEIVED.getId(), idamTokens);
 
-        assertNull(updatedCaseDetails.getCallbackResponseStatus());
+        assertEquals("COMPLETED", updatedCaseDetails.getCallbackResponseStatus());
     }
 
     @Test
@@ -69,14 +67,14 @@ public class SendNotificationsFunctionalTest {
         addEvidence(caseData);
         CaseDetails updatedCaseDetails = updateCcdService.update(caseData, caseId, EVIDENCE_RECEIVED.getId(), idamTokens);
 
-        assertNull(updatedCaseDetails.getCallbackResponseStatus());
+        assertEquals("COMPLETED", updatedCaseDetails.getCallbackResponseStatus());
     }
 
     @Test
     public void shouldSendHearingAdjournedNotification() {
         CaseDetails updatedCaseDetails = updateCcdService.update(caseData, caseId, ADJOURNED.getId(), idamTokens);
 
-        assertNull(updatedCaseDetails.getCallbackResponseStatus());
+        assertEquals("COMPLETED", updatedCaseDetails.getCallbackResponseStatus());
     }
 
     @Test
@@ -85,7 +83,7 @@ public class SendNotificationsFunctionalTest {
 
         CaseDetails updatedCaseDetails = updateCcdService.update(caseData, caseId, POSTPONEMENT.getId(), idamTokens);
 
-        assertNull(updatedCaseDetails.getCallbackResponseStatus());
+        assertEquals("COMPLETED", updatedCaseDetails.getCallbackResponseStatus());
     }
 
     @Test
@@ -94,7 +92,7 @@ public class SendNotificationsFunctionalTest {
 
         CaseDetails updatedCaseDetails = updateCcdService.update(caseData, caseId, APPEAL_LAPSED.getId(), idamTokens);
 
-        assertNull(updatedCaseDetails.getCallbackResponseStatus());
+        assertEquals("COMPLETED", updatedCaseDetails.getCallbackResponseStatus());
     }
 
     @Test
@@ -103,7 +101,7 @@ public class SendNotificationsFunctionalTest {
 
         CaseDetails updatedCaseDetails = updateCcdService.update(caseData, caseId, APPEAL_WITHDRAWN.getId(), idamTokens);
 
-        assertNull(updatedCaseDetails.getCallbackResponseStatus());
+        assertEquals("COMPLETED", updatedCaseDetails.getCallbackResponseStatus());
     }
 
     @Test
@@ -113,6 +111,6 @@ public class SendNotificationsFunctionalTest {
 
         CaseDetails updatedCaseDetails = updateCcdService.update(caseData, caseId, HEARING_BOOKED.getId(), idamTokens);
 
-        assertNull(updatedCaseDetails.getCallbackResponseStatus());
+        assertEquals("COMPLETED", updatedCaseDetails.getCallbackResponseStatus());
     }
 }

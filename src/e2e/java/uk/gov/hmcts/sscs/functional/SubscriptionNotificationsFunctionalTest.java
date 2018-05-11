@@ -1,7 +1,7 @@
 package uk.gov.hmcts.sscs.functional;
 
+import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertNull;
 import static uk.gov.hmcts.sscs.CcdResponseUtils.buildCcdResponse;
 import static uk.gov.hmcts.sscs.domain.notify.EventType.SUBSCRIPTION_UPDATED;
 
@@ -48,7 +48,6 @@ public class SubscriptionNotificationsFunctionalTest {
         caseId = caseDetails.getId();
     }
 
-
     @Test
     public void shouldSendSubscriptionCreatedNotification() {
         createCase("SC068/17/00023", "No", "No");
@@ -59,7 +58,7 @@ public class SubscriptionNotificationsFunctionalTest {
 
         CaseDetails updatedCaseDetails = updateCcdService.update(caseData, caseId, SUBSCRIPTION_UPDATED.getId(), idamTokens);
 
-        assertNull(updatedCaseDetails.getCallbackResponseStatus());
+        assertEquals("COMPLETED", updatedCaseDetails.getCallbackResponseStatus());
     }
 
     @Test
@@ -67,10 +66,10 @@ public class SubscriptionNotificationsFunctionalTest {
         createCase("SC068/17/00024", "Yes", "Yes");
 
         Subscriptions subscriptions = caseData.getSubscriptions();
-        subscriptions.getAppellantSubscription().setEmail(" sscstest@greencroftconsulting.com");
+        subscriptions.getAppellantSubscription().setEmail("sscstest+notify2@greencroftconsulting.com");
 
         CaseDetails updatedCaseDetails = updateCcdService.update(caseData, caseId, SUBSCRIPTION_UPDATED.getId(), idamTokens);
 
-        assertNull(updatedCaseDetails.getCallbackResponseStatus());
+        assertEquals("COMPLETED", updatedCaseDetails.getCallbackResponseStatus());
     }
 }

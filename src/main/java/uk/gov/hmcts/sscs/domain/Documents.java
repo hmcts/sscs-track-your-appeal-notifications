@@ -3,18 +3,22 @@ package uk.gov.hmcts.sscs.domain;
 import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonProperty;
-import java.util.List;
 import lombok.Builder;
 import lombok.Value;
 
 @JsonIgnoreProperties(ignoreUnknown = true)
 @Value
 @Builder
-public class Evidence  {
-    private List<Documents> documents;
+public class Documents implements Comparable<Documents> {
+    private Doc value;
+
+    @Override
+    public int compareTo(Documents o) {
+        return value.getEvidenceDateTimeFormatted().compareTo(o.getValue().getEvidenceDateTimeFormatted());
+    }
 
     @JsonCreator
-    public Evidence(@JsonProperty("documents") List<Documents> documents) {
-        this.documents = documents;
+    public Documents(@JsonProperty("value") Doc value) {
+        this.value = value;
     }
 }
