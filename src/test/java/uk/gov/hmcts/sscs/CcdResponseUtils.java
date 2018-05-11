@@ -1,13 +1,11 @@
 package uk.gov.hmcts.sscs;
 
-import static java.time.ZoneId.of;
-import static java.time.ZonedDateTime.now;
-import static uk.gov.hmcts.sscs.config.AppConstants.ZONE_ID;
-
 import java.text.SimpleDateFormat;
 import java.time.LocalDate;
-import java.time.ZonedDateTime;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Date;
+import java.util.List;
 import uk.gov.hmcts.sscs.domain.*;
 import uk.gov.hmcts.sscs.domain.notify.Event;
 import uk.gov.hmcts.sscs.domain.notify.EventType;

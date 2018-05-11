@@ -14,7 +14,6 @@ import uk.gov.hmcts.reform.ccd.client.model.CaseDetails;
 import uk.gov.hmcts.sscs.domain.CcdResponse;
 import uk.gov.hmcts.sscs.domain.idam.IdamTokens;
 import uk.gov.hmcts.sscs.service.ccd.CreateCcdService;
-import uk.gov.hmcts.sscs.service.ccd.SearchCcdService;
 import uk.gov.hmcts.sscs.service.ccd.UpdateCcdService;
 import uk.gov.hmcts.sscs.service.idam.IdamService;
 
@@ -64,18 +63,6 @@ public class SendNotificationsFunctionalTest {
 
         assertNull(updatedCaseDetails.getCallbackResponseStatus());
     }
-
-//    @Test
-//    public void shouldSendEvidenceReceivedNotification() {
-//        //FIXME: Think need to add correct evidence structure
-//        addEvidence(caseData);
-//        CaseDetails updatedCaseDetails = updateCcdService.update(caseData, caseId, EVIDENCE_RECEIVED.getId(), idamTokens);
-//
-//        assertNull(updatedCaseDetails.getCallbackResponseStatus());
-//    }
-
-//    addEventTypeToCase(caseData, APPEAL_WITHDRAWN);
-
 
     @Test
     public void shouldSendHearingAdjournedNotification() {
