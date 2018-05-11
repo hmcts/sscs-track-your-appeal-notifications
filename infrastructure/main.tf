@@ -2,6 +2,11 @@ provider "vault" {
   address = "https://vault.reform.hmcts.net:6200"
 }
 
+resource "azurerm_resource_group" "rg" {
+  name     = "${var.product}-${var.component}-${var.env}"
+  location = "${var.location}"
+}
+
 data "vault_generic_secret" "sscs_s2s_secret" {
   path = "secret/${var.infrastructure_env}/ccidam/service-auth-provider/api/microservice-keys/sscs"
 }
@@ -39,6 +44,10 @@ locals {
 
   localCcdApi = "http://ccd-data-store-api-${var.env}.service.${local.aseName}.internal"
   CcdApi = "${var.env == "preview" ? "http://ccd-data-store-api-aat.service.core-compute-aat.internal" : local.localCcdApi}"
+
+  previewVaultName       = "${var.product}-${var.component}"
+  nonPreviewVaultName    = "${var.product}-${var.component}-${var.env}"
+  vaultName              = "${(var.env == "preview") ? local.previewVaultName : local.nonPreviewVaultName}"
 }
 
 module "track-your-appeal-notifications" {
@@ -95,4 +104,15 @@ module "track-your-appeal-notifications" {
     SYA_APPEAL_CREATED_EMAIL_TEMPLATE_ID = "01293b93-b23e-40a3-ad78-2c6cd01cd21c"
     EMAIL_MAC_SECRET_TEXT = "${data.vault_generic_secret.mac_secret.data["value"]}"
   }
+}
+
+module "sscs-tya-notif-key-vault" {
+  source              = "git@github.com:hmcts/moj-module-key-vault?ref=master"
+  name                = "${local.vaultName}"
+  product             = "${var.product}"
+  env                 = "${var.env}"
+  tenant_id           = "${var.tenant_id}"
+  object_id           = "${var.jenkins_AAD_objectId}"
+  resource_group_name = "${azurerm_resource_group.rg.name}"
+  product_group_object_id = "300e771f-856c-45cc-b899-40d78281e9c1"
 }
