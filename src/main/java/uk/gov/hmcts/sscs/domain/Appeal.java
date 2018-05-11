@@ -8,7 +8,7 @@ import lombok.Data;
 public class Appeal {
     private MrnDetails mrnDetails;
     private Appellant appellant;
-    private Benefit benefit;
+    private BenefitType benefitType;
     private HearingOptions hearingOptions;
     private AppealReasons appealReasons;
     private Representative rep;
@@ -16,14 +16,14 @@ public class Appeal {
 
     public Appeal(MrnDetails mrnDetails,
                   Appellant appellant,
-                  Benefit benefit,
+                  BenefitType benefitType,
                   HearingOptions hearingOptions,
                   AppealReasons appealReasons,
                   Representative rep,
                   String signer) {
         this.mrnDetails = mrnDetails;
         this.appellant = appellant;
-        this.benefit = benefit;
+        this.benefitType = benefitType;
         this.hearingOptions = hearingOptions;
         this.appealReasons = appealReasons;
         this.rep = rep;

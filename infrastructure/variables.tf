@@ -100,4 +100,3 @@ variable "tenant_id" {}
 variable "jenkins_AAD_objectId" {
   type        = "string"
 }
-

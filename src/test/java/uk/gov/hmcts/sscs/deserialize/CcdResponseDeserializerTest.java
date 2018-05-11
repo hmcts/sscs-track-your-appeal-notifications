@@ -18,7 +18,6 @@ import org.apache.commons.io.FileUtils;
 import org.junit.Before;
 import org.junit.Test;
 import uk.gov.hmcts.sscs.domain.*;
-import uk.gov.hmcts.sscs.exception.BenefitMappingException;
 
 public class CcdResponseDeserializerTest {
 
@@ -40,15 +39,7 @@ public class CcdResponseDeserializerTest {
 
         ccdResponseDeserializer.deserializeBenefitDetailsJson(mapper.readTree(appealJson), appeal);
 
-        assertEquals(PIP, appeal.getBenefit());
-    }
-
-    @Test(expected = BenefitMappingException.class)
-    public void throwBenefitMappingExceptionWhenBenefitTypeUnknown() throws IOException {
-
-        String appealJson = "{\"benefitType\":{\"code\":\"UNK\"}}";
-
-        ccdResponseDeserializer.deserializeBenefitDetailsJson(mapper.readTree(appealJson), Appeal.builder().build());
+        assertEquals(PIP.name(), appeal.getBenefitType().getCode());
     }
 
     @Test
@@ -65,14 +56,14 @@ public class CcdResponseDeserializerTest {
 
         assertEquals("test@testing.com", appellantSubscription.getEmail());
         assertEquals("01234556634", appellantSubscription.getMobile());
-        assertFalse(appellantSubscription.isSubscribeSms());
-        assertTrue(appellantSubscription.isSubscribeEmail());
+        assertFalse(appellantSubscription.isSmsSubscribed());
+        assertTrue(appellantSubscription.isEmailSubscribed());
 
         Subscription supporterSubscription = ccdResponse.getSubscriptions().getSupporterSubscription();
         assertEquals("supporter@live.co.uk", supporterSubscription.getEmail());
         assertEquals("07925289702", supporterSubscription.getMobile());
-        assertTrue(supporterSubscription.isSubscribeSms());
-        assertFalse(supporterSubscription.isSubscribeEmail());
+        assertTrue(supporterSubscription.isSmsSubscribed());
+        assertFalse(supporterSubscription.isEmailSubscribed());
     }
 
     @Test
@@ -211,14 +202,14 @@ public class CcdResponseDeserializerTest {
         Subscription newAppellantSubscription = newCcdResponse.getSubscriptions().getAppellantSubscription();
         assertEquals("test@testing.com", newAppellantSubscription.getEmail());
         assertEquals("01234556634", newAppellantSubscription.getMobile());
-        assertFalse(newAppellantSubscription.isSubscribeSms());
-        assertTrue(newAppellantSubscription.isSubscribeEmail());
+        assertFalse(newAppellantSubscription.isSmsSubscribed());
+        assertTrue(newAppellantSubscription.isEmailSubscribed());
 
         Subscription newSupporterSubscription = newCcdResponse.getSubscriptions().getSupporterSubscription();
         assertEquals("supporter@live.co.uk", newSupporterSubscription.getEmail());
         assertEquals("07925289702", newSupporterSubscription.getMobile());
-        assertTrue(newSupporterSubscription.isSubscribeSms());
-        assertFalse(newSupporterSubscription.isSubscribeEmail());
+        assertTrue(newSupporterSubscription.isSmsSubscribed());
+        assertFalse(newSupporterSubscription.isEmailSubscribed());
         assertEquals("SC/1234/23", newCcdResponse.getCaseReference());
         assertEquals("123456789", newCcdResponse.getCaseId());
 
@@ -232,14 +223,14 @@ public class CcdResponseDeserializerTest {
         Subscription oldAppellantSubscription = oldCcdResponse.getSubscriptions().getAppellantSubscription();
         assertEquals("old@email.com", oldAppellantSubscription.getEmail());
         assertEquals("07543534345", oldAppellantSubscription.getMobile());
-        assertFalse(oldAppellantSubscription.isSubscribeSms());
-        assertTrue(oldAppellantSubscription.isSubscribeEmail());
+        assertFalse(oldAppellantSubscription.isSmsSubscribed());
+        assertTrue(oldAppellantSubscription.isEmailSubscribed());
 
         Subscription oldSupporterSubscription = oldCcdResponse.getSubscriptions().getSupporterSubscription();
         assertEquals("supporter@gmail.co.uk", oldSupporterSubscription.getEmail());
         assertEquals("07925267702", oldSupporterSubscription.getMobile());
-        assertTrue(oldSupporterSubscription.isSubscribeSms());
-        assertFalse(oldSupporterSubscription.isSubscribeEmail());
+        assertTrue(oldSupporterSubscription.isSmsSubscribed());
+        assertFalse(oldSupporterSubscription.isEmailSubscribed());
         assertEquals("SC/5432/89", oldCcdResponse.getCaseReference());
         assertEquals("523456789", oldCcdResponse.getCaseId());
     }
@@ -474,11 +465,11 @@ public class CcdResponseDeserializerTest {
         assertEquals(APPEAL_RECEIVED, ccdResponse.getNotificationType());
         assertEquals("updatedemail@hmcts.net", appellantSubscription.getEmail());
         assertEquals("07985233301", appellantSubscription.getMobile());
-        assertTrue(appellantSubscription.isSubscribeSms());
-        assertTrue(appellantSubscription.isSubscribeEmail());
+        assertTrue(appellantSubscription.isSmsSubscribed());
+        assertTrue(appellantSubscription.isEmailSubscribed());
 
         Appeal appeal = ccdResponse.getAppeal();
-        assertEquals(PIP, appeal.getBenefit());
+        assertEquals(PIP.name(), appeal.getBenefitType().getCode());
 
         MrnDetails mrnDetails = appeal.getMrnDetails();
         assertEquals("Birmingham", mrnDetails.getDwpIssuingOffice());
@@ -545,8 +536,8 @@ public class CcdResponseDeserializerTest {
         Subscription supporterSubscription = ccdResponse.getSubscriptions().getSupporterSubscription();
         assertEquals("supporter@hmcts.net", supporterSubscription.getEmail());
         assertEquals("07983469702", supporterSubscription.getMobile());
-        assertTrue(supporterSubscription.isSubscribeSms());
-        assertFalse(supporterSubscription.isSubscribeEmail());
+        assertTrue(supporterSubscription.isSmsSubscribed());
+        assertFalse(supporterSubscription.isEmailSubscribed());
         assertEquals("SC/1234/23", ccdResponse.getCaseReference());
 
         Hearing hearing = ccdResponse.getHearings().get(0);

@@ -18,7 +18,7 @@ public class CcdResponse {
     private EventType notificationType;
     private List<Events> events;
     private List<Hearing> hearings;
-    private List<Evidence> evidences;
+    private Evidence evidence;
     private RegionalProcessingCenter regionalProcessingCenter;
 
 }

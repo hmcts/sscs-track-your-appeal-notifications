@@ -7,7 +7,6 @@ import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.deser.std.StdDeserializer;
 import com.fasterxml.jackson.databind.node.JsonNodeType;
 import java.io.IOException;
-import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
@@ -148,7 +147,7 @@ public class CcdResponseDeserializer extends StdDeserializer<CcdResponseWrapper>
 
         if (benefitTypeNode != null) {
             String benefitCode = getField(benefitTypeNode, "code");
-            appeal.setBenefit(Benefit.getBenefitByCode(benefitCode));
+            appeal.setBenefitType(BenefitType.builder().code(benefitCode).build());
         }
     }
 
@@ -339,22 +338,22 @@ public class CcdResponseDeserializer extends StdDeserializer<CcdResponseWrapper>
         if (evidenceNode != null) {
             final JsonNode documentsNode = evidenceNode.get("documents");
 
+            List<Documents> documents = new ArrayList<>();
             if (documentsNode != null && documentsNode.isArray()) {
-                List<Evidence> evidences = new ArrayList<>();
                 for (final JsonNode objNode : documentsNode) {
 
                     JsonNode valueNode = getNode(objNode, "value");
 
-                    Evidence evidence = Evidence.builder()
-                            .dateReceived(LocalDate.parse(getField(valueNode, "dateReceived")))
+                    Documents document = Documents.builder().value(Doc.builder()
+                            .dateReceived(getField(valueNode, "dateReceived"))
                             .evidenceType(getField(valueNode, "evidenceType"))
-                            .evidenceProvidedBy(getField(valueNode, "evidenceProvidedBy")).build();
+                            .evidenceProvidedBy(getField(valueNode, "evidenceProvidedBy")).build()).build();
 
-                    evidences.add(evidence);
+                    documents.add(document);
                 }
-                Collections.sort(evidences, Collections.reverseOrder());
-                ccdResponse.setEvidences(evidences);
+                Collections.sort(documents, Collections.reverseOrder());
             }
+            ccdResponse.setEvidence(Evidence.builder().documents(documents).build());
         }
     }
 
@@ -392,7 +391,7 @@ public class CcdResponseDeserializer extends StdDeserializer<CcdResponseWrapper>
     }
 
     private String convertEmptyToNo(String field) {
-        return field.equals("") ? "No" : field;
+        return field == null || field.equals("") ? "No" : field;
     }
 
     public JsonNode getNode(JsonNode node, String field) {

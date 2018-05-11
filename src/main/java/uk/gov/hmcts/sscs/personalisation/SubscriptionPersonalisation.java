@@ -18,9 +18,9 @@ public class SubscriptionPersonalisation extends Personalisation {
 
     public Boolean shouldSendSmsSubscriptionConfirmation(CcdResponse newCcdResponse, CcdResponse oldCcdResponse) {
         return (oldCcdResponse.getSubscriptions().getAppellantSubscription() != null
-                && !oldCcdResponse.getSubscriptions().getAppellantSubscription().isSubscribeSms()
+                && !oldCcdResponse.getSubscriptions().getAppellantSubscription().isSmsSubscribed()
                 && newCcdResponse.getSubscriptions().getAppellantSubscription() != null
-                && newCcdResponse.getSubscriptions().getAppellantSubscription().isSubscribeSms());
+                && newCcdResponse.getSubscriptions().getAppellantSubscription().isSmsSubscribed());
     }
 
     public EventType setEventTypeNotification(CcdResponse newCcdResponse, CcdResponse oldCcdResponse) {
@@ -35,9 +35,9 @@ public class SubscriptionPersonalisation extends Personalisation {
 
     private Boolean shouldSetMostRecentEventTypeNotification(CcdResponse newCcdResponse, CcdResponse oldCcdResponse) {
         return (oldCcdResponse.getSubscriptions().getAppellantSubscription() != null
-                && !oldCcdResponse.getSubscriptions().getAppellantSubscription().isSubscribeEmail()
+                && !oldCcdResponse.getSubscriptions().getAppellantSubscription().isEmailSubscribed()
                 && newCcdResponse.getSubscriptions().getAppellantSubscription() != null
-                && newCcdResponse.getSubscriptions().getAppellantSubscription().isSubscribeEmail()
+                && newCcdResponse.getSubscriptions().getAppellantSubscription().isEmailSubscribed()
                 && newCcdResponse.getEvents() != null
                 && !newCcdResponse.getEvents().isEmpty()
                 && newCcdResponse.getEvents().get(0).getValue().getEventType() != null);
@@ -45,9 +45,9 @@ public class SubscriptionPersonalisation extends Personalisation {
 
     public Boolean doNotSendEmailUpdatedNotificationWhenEmailNotChanged(CcdResponse newCcdResponse, CcdResponse oldCcdResponse) {
         return (oldCcdResponse.getSubscriptions().getAppellantSubscription() != null
-                && oldCcdResponse.getSubscriptions().getAppellantSubscription().isSubscribeEmail()
+                && oldCcdResponse.getSubscriptions().getAppellantSubscription().isEmailSubscribed()
                 && newCcdResponse.getSubscriptions().getAppellantSubscription() != null
-                && newCcdResponse.getSubscriptions().getAppellantSubscription().isSubscribeEmail()
+                && newCcdResponse.getSubscriptions().getAppellantSubscription().isEmailSubscribed()
                 && oldCcdResponse.getSubscriptions().getAppellantSubscription().getEmail().equals(newCcdResponse.getSubscriptions().getAppellantSubscription().getEmail()));
     }
 }

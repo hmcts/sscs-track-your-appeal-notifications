@@ -3,18 +3,12 @@ package uk.gov.hmcts.sscs.personalisation;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNull;
 import static org.mockito.Matchers.anyString;
-import static org.mockito.Mockito.never;
-import static org.mockito.Mockito.verify;
-import static org.mockito.Mockito.when;
+import static org.mockito.Mockito.*;
 import static org.mockito.MockitoAnnotations.initMocks;
 import static uk.gov.hmcts.sscs.config.AppConstants.*;
 import static uk.gov.hmcts.sscs.domain.Benefit.PIP;
 import static uk.gov.hmcts.sscs.domain.notify.EventType.*;
 
-import java.time.LocalDate;
-import java.time.LocalTime;
-import java.time.ZoneId;
-import java.time.ZonedDateTime;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -56,8 +50,6 @@ public class PersonalisationTest {
 
     String date = "2018-07-01T14:01:18.243";
 
-    ZonedDateTime zonedDateTime;
-
     Subscriptions subscriptions;
 
     Name name;
@@ -81,8 +73,6 @@ public class PersonalisationTest {
 
         when(regionalProcessingCenterService.getByScReferenceCode("SC/1234/5")).thenReturn(rpc);
 
-        zonedDateTime = ZonedDateTime.of(LocalDate.of(2018, 7, 1), LocalTime.of(0, 0), ZoneId.of(ZONE_ID));
-
         Subscription appellantSubscription = Subscription.builder()
                 .tya("GLSCRR")
                 .email("test@email.com")
@@ -102,7 +92,7 @@ public class PersonalisationTest {
 
         CcdResponse response = CcdResponse.builder()
             .caseId(CASE_ID).caseReference("SC/1234/5")
-            .appeal(Appeal.builder().benefit(PIP)
+            .appeal(Appeal.builder().benefitType(BenefitType.builder().code("PIP").build())
                 .appellant(Appellant.builder().name(name).build())
             .build())
             .subscriptions(subscriptions)
@@ -143,13 +133,16 @@ public class PersonalisationTest {
         List<Events> events = new ArrayList<>();
         events.add(Events.builder().value(Event.builder().date(date).type(APPEAL_RECEIVED.getId()).build()).build());
 
-        Evidence evidence = Evidence.builder()
-                .dateReceived(zonedDateTime.toLocalDate())
-                .evidenceType("Medical")
-                .evidenceProvidedBy("Caseworker").build();
+        List<Documents> documents = new ArrayList<>();
 
-        List<Evidence> evidenceList = new ArrayList<>();
-        evidenceList.add(evidence);
+        Documents doc = Documents.builder().value(Doc.builder()
+                .dateReceived("2018-07-01")
+                .evidenceType("Medical")
+                .evidenceProvidedBy("Caseworker").build()).build();
+
+        documents.add(doc);
+
+        Evidence evidence = Evidence.builder().documents(documents).build();
 
         Subscription appellantSubscription = Subscription.builder()
                 .tya("GLSCRR")
@@ -163,13 +156,13 @@ public class PersonalisationTest {
 
         CcdResponse response = CcdResponse.builder()
                 .caseId(CASE_ID).caseReference("SC/1234/5")
-                .appeal(Appeal.builder().benefit(PIP)
+                .appeal(Appeal.builder().benefitType(BenefitType.builder().code("PIP").build())
                         .appellant(Appellant.builder().name(name).build())
                         .build())
                 .subscriptions(subscriptions)
                 .notificationType(EVIDENCE_RECEIVED)
                 .events(events)
-                .evidences(evidenceList)
+                .evidence(evidence)
                 .build();
 
         Map<String, String> result = personalisation.create(CcdResponseWrapper.builder().newCcdResponse(response).build());
@@ -184,7 +177,7 @@ public class PersonalisationTest {
 
         CcdResponse response = CcdResponse.builder()
                 .caseId(CASE_ID).caseReference("SC/1234/5")
-                .appeal(Appeal.builder().benefit(PIP).build())
+                .appeal(Appeal.builder().benefitType(BenefitType.builder().code("PIP").build()).build())
                 .notificationType(APPEAL_RECEIVED)
                 .events(events)
                 .build();
@@ -197,19 +190,22 @@ public class PersonalisationTest {
 
     @Test
     public void setEvidenceReceivedEventData() {
-        Evidence evidence = Evidence.builder()
-                .dateReceived(zonedDateTime.toLocalDate())
-                .evidenceType("Medical")
-                .evidenceProvidedBy("Caseworker").build();
+        List<Documents> documents = new ArrayList<>();
 
-        List<Evidence> evidenceList = new ArrayList<>();
-        evidenceList.add(evidence);
+        Documents doc = Documents.builder().value(Doc.builder()
+                .dateReceived("2018-07-01")
+                .evidenceType("Medical")
+                .evidenceProvidedBy("Caseworker").build()).build();
+
+        documents.add(doc);
+
+        Evidence evidence = Evidence.builder().documents(documents).build();
 
         CcdResponse response = CcdResponse.builder()
                 .caseId(CASE_ID).caseReference("SC/1234/5")
-                .appeal(Appeal.builder().benefit(PIP).build())
+                .appeal(Appeal.builder().benefitType(BenefitType.builder().code("PIP").build()).build())
                 .notificationType(EVIDENCE_RECEIVED)
-                .evidences(evidenceList)
+                .evidence(evidence)
                 .build();
 
         Map<String, String> result = personalisation.setEvidenceReceivedNotificationData(new HashMap<>(), response);
@@ -238,7 +234,7 @@ public class PersonalisationTest {
 
         CcdResponse response = CcdResponse.builder()
                 .caseId(CASE_ID).caseReference("SC/1234/5")
-                .appeal(Appeal.builder().benefit(PIP)
+                .appeal(Appeal.builder().benefitType(BenefitType.builder().code("PIP").build())
                 .appellant(Appellant.builder().name(name).build())
                 .build())
                 .notificationType(HEARING_BOOKED)
@@ -261,7 +257,7 @@ public class PersonalisationTest {
 
         CcdResponse response = CcdResponse.builder()
                 .caseId(CASE_ID).caseReference("SC/1234/5")
-                .appeal(Appeal.builder().benefit(PIP).build())
+                .appeal(Appeal.builder().benefitType(BenefitType.builder().code("PIP").build()).build())
                 .notificationType(POSTPONEMENT)
                 .events(events)
                 .build();
@@ -275,7 +271,7 @@ public class PersonalisationTest {
     public void handleNullEventWhenPopulatingEventData() {
         CcdResponse response = CcdResponse.builder()
                 .caseId(CASE_ID).caseReference("SC/1234/5")
-                .appeal(Appeal.builder().benefit(PIP).build())
+                .appeal(Appeal.builder().benefitType(BenefitType.builder().code("PIP").build()).build())
                 .notificationType(POSTPONEMENT)
                 .build();
 
@@ -288,7 +284,7 @@ public class PersonalisationTest {
     public void handleEmptyEventsWhenPopulatingEventData() {
         CcdResponse response = CcdResponse.builder()
                 .caseId(CASE_ID).caseReference("SC/1234/5")
-                .appeal(Appeal.builder().benefit(PIP).build())
+                .appeal(Appeal.builder().benefitType(BenefitType.builder().code("PIP").build()).build())
                 .notificationType(POSTPONEMENT)
                 .events(new ArrayList())
                 .build();
