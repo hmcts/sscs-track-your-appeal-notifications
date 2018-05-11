@@ -56,8 +56,6 @@ public class PersonalisationTest {
 
     String date = "2018-07-01T14:01:18.243";
 
-    ZonedDateTime zonedDateTime;
-
     Subscriptions subscriptions;
 
     Name name;
@@ -80,8 +78,6 @@ public class PersonalisationTest {
                 ADDRESS3, "36 Dale Street", POSTCODE, "LIVERPOOL");
 
         when(regionalProcessingCenterService.getByScReferenceCode("SC/1234/5")).thenReturn(rpc);
-
-        zonedDateTime = ZonedDateTime.of(LocalDate.of(2018, 7, 1), LocalTime.of(0, 0), ZoneId.of(ZONE_ID));
 
         Subscription appellantSubscription = Subscription.builder()
                 .tya("GLSCRR")
@@ -143,13 +139,16 @@ public class PersonalisationTest {
         List<Events> events = new ArrayList<>();
         events.add(Events.builder().value(Event.builder().date(date).type(APPEAL_RECEIVED.getId()).build()).build());
 
-        Evidence evidence = Evidence.builder()
-                .dateReceived(zonedDateTime.toLocalDate())
-                .evidenceType("Medical")
-                .evidenceProvidedBy("Caseworker").build();
+        List<Documents> documents = new ArrayList<>();
 
-        List<Evidence> evidenceList = new ArrayList<>();
-        evidenceList.add(evidence);
+        Documents doc = Documents.builder().value(Doc.builder()
+                .dateReceived("2018-07-01")
+                .evidenceType("Medical")
+                .evidenceProvidedBy("Caseworker").build()).build();
+
+        documents.add(doc);
+
+        Evidence evidence = Evidence.builder().documents(documents).build();
 
         Subscription appellantSubscription = Subscription.builder()
                 .tya("GLSCRR")
@@ -169,7 +168,7 @@ public class PersonalisationTest {
                 .subscriptions(subscriptions)
                 .notificationType(EVIDENCE_RECEIVED)
                 .events(events)
-                .evidences(evidenceList)
+                .evidence(evidence)
                 .build();
 
         Map<String, String> result = personalisation.create(CcdResponseWrapper.builder().newCcdResponse(response).build());
@@ -197,19 +196,22 @@ public class PersonalisationTest {
 
     @Test
     public void setEvidenceReceivedEventData() {
-        Evidence evidence = Evidence.builder()
-                .dateReceived(zonedDateTime.toLocalDate())
-                .evidenceType("Medical")
-                .evidenceProvidedBy("Caseworker").build();
+        List<Documents> documents = new ArrayList<>();
 
-        List<Evidence> evidenceList = new ArrayList<>();
-        evidenceList.add(evidence);
+        Documents doc = Documents.builder().value(Doc.builder()
+                .dateReceived("2018-07-01")
+                .evidenceType("Medical")
+                .evidenceProvidedBy("Caseworker").build()).build();
+
+        documents.add(doc);
+
+        Evidence evidence = Evidence.builder().documents(documents).build();
 
         CcdResponse response = CcdResponse.builder()
                 .caseId(CASE_ID).caseReference("SC/1234/5")
                 .appeal(Appeal.builder().benefitType(BenefitType.builder().code("PIP").build()).build())
                 .notificationType(EVIDENCE_RECEIVED)
-                .evidences(evidenceList)
+                .evidence(evidence)
                 .build();
 
         Map<String, String> result = personalisation.setEvidenceReceivedNotificationData(new HashMap<>(), response);

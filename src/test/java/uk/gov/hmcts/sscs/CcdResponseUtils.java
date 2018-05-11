@@ -101,15 +101,18 @@ public final class CcdResponseUtils {
     }
 
     public static void addEvidence(CcdResponse response) {
-        Evidence evidence = Evidence.builder()
-                .dateReceived(LocalDate.now())
+        List<Documents> documents = new ArrayList<>();
+
+        Documents doc = Documents.builder().value(Doc.builder()
+                .dateReceived("2018-01-01")
                 .evidenceType("Medical")
-                .evidenceProvidedBy("Caseworker").build();
+                .evidenceProvidedBy("Caseworker").build()).build();
 
-        List<Evidence> evidenceList = new ArrayList<>();
-        evidenceList.add(evidence);
+        documents.add(doc);
 
-        response.setEvidences(evidenceList);
+        Evidence evidence = Evidence.builder().documents(documents).build();
+
+        response.setEvidence(evidence);
     }
 
     public static void addHearing(CcdResponse response) {

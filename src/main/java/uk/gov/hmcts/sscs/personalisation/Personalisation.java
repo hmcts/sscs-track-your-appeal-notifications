@@ -102,8 +102,8 @@ public class Personalisation {
 
     public Map<String, String> setEvidenceReceivedNotificationData(Map<String, String> personalisation, CcdResponse ccdResponse) {
         if (ccdResponse.getNotificationType().equals(EVIDENCE_RECEIVED)) {
-            if (ccdResponse.getEvidences() != null && !ccdResponse.getEvidences().isEmpty()) {
-                personalisation.put(EVIDENCE_RECEIVED_DATE_LITERAL, formatLocalDate(ccdResponse.getEvidences().get(0).getDateReceived()));
+            if (ccdResponse.getEvidence() != null && ccdResponse.getEvidence().getDocuments() != null && !ccdResponse.getEvidence().getDocuments().isEmpty()) {
+                personalisation.put(EVIDENCE_RECEIVED_DATE_LITERAL, formatLocalDate(ccdResponse.getEvidence().getDocuments().get(0).getValue().getEvidenceDateTimeFormatted()));
             }
         }
         return personalisation;

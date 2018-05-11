@@ -65,6 +65,14 @@ public class SendNotificationsFunctionalTest {
     }
 
     @Test
+    public void shouldSendEvidenceReceivedNotification() {
+        addEvidence(caseData);
+        CaseDetails updatedCaseDetails = updateCcdService.update(caseData, caseId, EVIDENCE_RECEIVED.getId(), idamTokens);
+
+        assertNull(updatedCaseDetails.getCallbackResponseStatus());
+    }
+
+    @Test
     public void shouldSendHearingAdjournedNotification() {
         CaseDetails updatedCaseDetails = updateCcdService.update(caseData, caseId, ADJOURNED.getId(), idamTokens);
 

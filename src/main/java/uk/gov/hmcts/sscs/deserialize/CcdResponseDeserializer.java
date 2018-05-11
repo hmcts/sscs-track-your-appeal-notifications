@@ -339,22 +339,22 @@ public class CcdResponseDeserializer extends StdDeserializer<CcdResponseWrapper>
         if (evidenceNode != null) {
             final JsonNode documentsNode = evidenceNode.get("documents");
 
+            List<Documents> documents = new ArrayList<>();
             if (documentsNode != null && documentsNode.isArray()) {
-                List<Evidence> evidences = new ArrayList<>();
                 for (final JsonNode objNode : documentsNode) {
 
                     JsonNode valueNode = getNode(objNode, "value");
 
-                    Evidence evidence = Evidence.builder()
-                            .dateReceived(LocalDate.parse(getField(valueNode, "dateReceived")))
+                    Documents document = Documents.builder().value(Doc.builder()
+                            .dateReceived(getField(valueNode, "dateReceived"))
                             .evidenceType(getField(valueNode, "evidenceType"))
-                            .evidenceProvidedBy(getField(valueNode, "evidenceProvidedBy")).build();
+                            .evidenceProvidedBy(getField(valueNode, "evidenceProvidedBy")).build()).build();
 
-                    evidences.add(evidence);
+                    documents.add(document);
                 }
-                Collections.sort(evidences, Collections.reverseOrder());
-                ccdResponse.setEvidences(evidences);
+                Collections.sort(documents, Collections.reverseOrder());
             }
+            ccdResponse.setEvidence(Evidence.builder().documents(documents).build());
         }
     }
 
