@@ -42,12 +42,15 @@ data "vault_generic_secret" "mac_secret" {
 locals {
   aseName = "${data.terraform_remote_state.core_apps_compute.ase_name[0]}"
 
-  localCcdApi = "http://ccd-data-store-api-${var.env}.service.${local.aseName}.internal"
-  CcdApi = "${var.env == "preview" ? "http://ccd-data-store-api-aat.service.core-compute-aat.internal" : local.localCcdApi}"
-
   previewVaultName       = "${var.product}-${var.component}"
   nonPreviewVaultName    = "${var.product}-${var.component}-${var.env}"
   vaultName              = "${(var.env == "preview") ? local.previewVaultName : local.nonPreviewVaultName}"
+  
+  local_env = "${(var.env == "preview" || var.env == "spreview") ? (var.env == "preview" ) ? "aat" : "saat" : var.env}"
+  local_ase = "${(var.env == "preview" || var.env == "spreview") ? (var.env == "preview" ) ? "core-compute-aat" : "core-compute-saat" : local.aseName}"
+
+  CcdApi = "http://ccd-data-store-api-${local.local_env}.service.${local.local_ase}.internal"
+  s2sCnpUrl = "http://rpe-service-auth-provider-${local.local_env}.service.${local.local_ase}.internal"
 }
 
 module "track-your-appeal-notifications" {
@@ -71,7 +74,7 @@ module "track-your-appeal-notifications" {
     IDAM_URL = "${data.vault_generic_secret.idam_api.data["value"]}"
 
     IDAM.S2S-AUTH.TOTP_SECRET = "${data.vault_generic_secret.sscs_s2s_secret.data["value"]}"
-    IDAM.S2S-AUTH = "${data.vault_generic_secret.idam_s2s_api.data["value"]}"
+    IDAM.S2S-AUTH = "${var.env == "prod" ? data.vault_generic_secret.idam_s2s_api.data["value"] : local.s2sCnpUrl}"
     IDAM.S2S-AUTH.MICROSERVICE = "${var.idam_s2s_auth_microservice}"
 
     IDAM_SSCS_SYSTEMUPDATE_USER = "${data.vault_generic_secret.idam_sscs_systemupdate_user.data["value"]}"
