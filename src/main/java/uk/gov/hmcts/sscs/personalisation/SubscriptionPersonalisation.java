@@ -1,19 +1,13 @@
 package uk.gov.hmcts.sscs.personalisation;
 
 import java.util.Map;
-import uk.gov.hmcts.sscs.config.NotificationConfig;
+import org.springframework.stereotype.Component;
 import uk.gov.hmcts.sscs.domain.CcdResponse;
 import uk.gov.hmcts.sscs.domain.CcdResponseWrapper;
 import uk.gov.hmcts.sscs.domain.notify.EventType;
-import uk.gov.hmcts.sscs.service.MessageAuthenticationServiceImpl;
-import uk.gov.hmcts.sscs.service.RegionalProcessingCenterService;
 
+@Component
 public class SubscriptionPersonalisation extends Personalisation {
-
-    public SubscriptionPersonalisation(NotificationConfig config, MessageAuthenticationServiceImpl macService,
-                                       RegionalProcessingCenterService regionalProcessingCenterService) {
-        super(config, macService, regionalProcessingCenterService);
-    }
 
     @Override
     public Map<String, String> create(CcdResponseWrapper responseWrapper) {
@@ -23,37 +17,37 @@ public class SubscriptionPersonalisation extends Personalisation {
     }
 
     public Boolean shouldSendSmsSubscriptionConfirmation(CcdResponse newCcdResponse, CcdResponse oldCcdResponse) {
-        return (oldCcdResponse.getAppellantSubscription() != null
-                && !oldCcdResponse.getAppellantSubscription().isSubscribeSms()
-                && newCcdResponse.getAppellantSubscription() != null
-                && newCcdResponse.getAppellantSubscription().isSubscribeSms());
+        return (oldCcdResponse.getSubscriptions().getAppellantSubscription() != null
+                && !oldCcdResponse.getSubscriptions().getAppellantSubscription().isSmsSubscribed()
+                && newCcdResponse.getSubscriptions().getAppellantSubscription() != null
+                && newCcdResponse.getSubscriptions().getAppellantSubscription().isSmsSubscribed());
     }
 
     public EventType setEventTypeNotification(CcdResponse newCcdResponse, CcdResponse oldCcdResponse) {
         if (doNotSendEmailUpdatedNotificationWhenEmailNotChanged(newCcdResponse, oldCcdResponse)) {
             return EventType.DO_NOT_SEND;
         } else if (shouldSetMostRecentEventTypeNotification(newCcdResponse, oldCcdResponse)) {
-            return newCcdResponse.getEvents().get(0).getEventType();
+            return newCcdResponse.getEvents().get(0).getValue().getEventType();
         } else {
             return newCcdResponse.getNotificationType();
         }
     }
 
     private Boolean shouldSetMostRecentEventTypeNotification(CcdResponse newCcdResponse, CcdResponse oldCcdResponse) {
-        return (oldCcdResponse.getAppellantSubscription() != null
-                && !oldCcdResponse.getAppellantSubscription().isSubscribeEmail()
-                && newCcdResponse.getAppellantSubscription() != null
-                && newCcdResponse.getAppellantSubscription().isSubscribeEmail()
+        return (oldCcdResponse.getSubscriptions().getAppellantSubscription() != null
+                && !oldCcdResponse.getSubscriptions().getAppellantSubscription().isEmailSubscribed()
+                && newCcdResponse.getSubscriptions().getAppellantSubscription() != null
+                && newCcdResponse.getSubscriptions().getAppellantSubscription().isEmailSubscribed()
                 && newCcdResponse.getEvents() != null
                 && !newCcdResponse.getEvents().isEmpty()
-                && newCcdResponse.getEvents().get(0).getEventType() != null);
+                && newCcdResponse.getEvents().get(0).getValue().getEventType() != null);
     }
 
     public Boolean doNotSendEmailUpdatedNotificationWhenEmailNotChanged(CcdResponse newCcdResponse, CcdResponse oldCcdResponse) {
-        return (oldCcdResponse.getAppellantSubscription() != null
-                && oldCcdResponse.getAppellantSubscription().isSubscribeEmail()
-                && newCcdResponse.getAppellantSubscription() != null
-                && newCcdResponse.getAppellantSubscription().isSubscribeEmail()
-                && oldCcdResponse.getAppellantSubscription().getEmail().equals(newCcdResponse.getAppellantSubscription().getEmail()));
+        return (oldCcdResponse.getSubscriptions().getAppellantSubscription() != null
+                && oldCcdResponse.getSubscriptions().getAppellantSubscription().isEmailSubscribed()
+                && newCcdResponse.getSubscriptions().getAppellantSubscription() != null
+                && newCcdResponse.getSubscriptions().getAppellantSubscription().isEmailSubscribed()
+                && oldCcdResponse.getSubscriptions().getAppellantSubscription().getEmail().equals(newCcdResponse.getSubscriptions().getAppellantSubscription().getEmail()));
     }
 }

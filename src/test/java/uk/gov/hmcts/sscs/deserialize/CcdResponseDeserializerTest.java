@@ -8,14 +8,16 @@ import static uk.gov.hmcts.sscs.domain.notify.EventType.*;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.node.JsonNodeFactory;
 import com.fasterxml.jackson.databind.node.ObjectNode;
+import java.io.File;
 import java.io.IOException;
+import java.nio.charset.StandardCharsets;
 import java.time.*;
+import java.util.ArrayList;
+import java.util.List;
+import org.apache.commons.io.FileUtils;
 import org.junit.Before;
 import org.junit.Test;
-import uk.gov.hmcts.sscs.domain.CcdResponse;
-import uk.gov.hmcts.sscs.domain.CcdResponseWrapper;
-import uk.gov.hmcts.sscs.domain.Hearing;
-import uk.gov.hmcts.sscs.exception.BenefitMappingException;
+import uk.gov.hmcts.sscs.domain.*;
 
 public class CcdResponseDeserializerTest {
 
@@ -33,57 +35,35 @@ public class CcdResponseDeserializerTest {
 
         String appealJson = "{\"benefitType\":{\"code\":\"PIP\"}}";
 
-        CcdResponse ccdResponse = CcdResponse.builder().build();
+        Appeal appeal = Appeal.builder().build();
 
-        ccdResponseDeserializer.deserializeBenefitDetailsJson(mapper.readTree(appealJson), ccdResponse);
+        ccdResponseDeserializer.deserializeBenefitDetailsJson(mapper.readTree(appealJson), appeal);
 
-        assertEquals(PIP, ccdResponse.getBenefitType());
-    }
-
-    @Test(expected = BenefitMappingException.class)
-    public void throwBenefitMappingExceptionWhenBenefitTypeUnknown() throws IOException {
-
-        String appealJson = "{\"benefitType\":{\"code\":\"UNK\"}}";
-
-        ccdResponseDeserializer.deserializeBenefitDetailsJson(mapper.readTree(appealJson), CcdResponse.builder().build());
+        assertEquals(PIP.name(), appeal.getBenefitType().getCode());
     }
 
     @Test
     public void deserializeAppellantJson() throws IOException {
 
-        String appealJson = "{\"appellant\":{\"name\":{\"title\":\"Mr\",\"lastName\":\"Vasquez\",\"firstName\":\"Dexter\",\"middleName\":\"Ali Sosa\"}}}";
-        String subscriptionJson = "{\"appellantSubscription\":{\"tya\":\"543212345\",\"email\":\"test@testing.com\",\"mobile\":\"01234556634\",\"reason\":null,\"subscribeSms\":\"No\",\"subscribeEmail\":\"Yes\"}}";
+        String subscriptionJson = "{\"appellantSubscription\":{\"tya\":\"543212345\",\"email\":\"test@testing.com\",\"mobile\":\"01234556634\",\"reason\":null,\"subscribeSms\":\"No\",\"subscribeEmail\":\"Yes\"},"
+                + "\"supporterSubscription\":{\"tya\":\"232929249492\",\"email\":\"supporter@live.co.uk\",\"mobile\":\"07925289702\",\"reason\":null,\"subscribeSms\":\"Yes\",\"subscribeEmail\":\"No\"}}";
 
         CcdResponse ccdResponse = CcdResponse.builder().build();
 
-        ccdResponseDeserializer.deserializeAppellantDetailsJson(mapper.readTree(appealJson), mapper.readTree(subscriptionJson), ccdResponse);
+        ccdResponseDeserializer.deserializeSubscriptionJson(mapper.readTree(subscriptionJson), ccdResponse);
 
-        assertEquals("Dexter", ccdResponse.getAppellantSubscription().getFirstName());
-        assertEquals("Vasquez", ccdResponse.getAppellantSubscription().getSurname());
-        assertEquals("Mr", ccdResponse.getAppellantSubscription().getTitle());
-        assertEquals("test@testing.com", ccdResponse.getAppellantSubscription().getEmail());
-        assertEquals("01234556634", ccdResponse.getAppellantSubscription().getMobileNumber());
-        assertFalse(ccdResponse.getAppellantSubscription().isSubscribeSms());
-        assertTrue(ccdResponse.getAppellantSubscription().isSubscribeEmail());
-    }
+        Subscription appellantSubscription = ccdResponse.getSubscriptions().getAppellantSubscription();
 
-    @Test
-    public void deserializeSupporterJson() throws IOException {
+        assertEquals("test@testing.com", appellantSubscription.getEmail());
+        assertEquals("01234556634", appellantSubscription.getMobile());
+        assertFalse(appellantSubscription.isSmsSubscribed());
+        assertTrue(appellantSubscription.isEmailSubscribed());
 
-        String appealJson = "{\"supporter\":{\"name\":{\"title\":\"Mrs\",\"lastName\":\"Wilder\",\"firstName\":\"Amber\",\"middleName\":\"Eaton\"}}}";
-        String subscriptionJson = "{\"supporterSubscription\":{\"tya\":\"232929249492\",\"email\":\"supporter@live.co.uk\",\"mobile\":\"07925289702\",\"reason\":null,\"subscribeSms\":\"Yes\",\"subscribeEmail\":\"No\"}}";
-
-        CcdResponse ccdResponse = CcdResponse.builder().build();
-
-        ccdResponseDeserializer.deserializeSupporterDetailsJson(mapper.readTree(appealJson), mapper.readTree(subscriptionJson), ccdResponse);
-
-        assertEquals("Amber", ccdResponse.getSupporterSubscription().getFirstName());
-        assertEquals("Wilder", ccdResponse.getSupporterSubscription().getSurname());
-        assertEquals("Mrs", ccdResponse.getSupporterSubscription().getTitle());
-        assertEquals("supporter@live.co.uk", ccdResponse.getSupporterSubscription().getEmail());
-        assertEquals("07925289702", ccdResponse.getSupporterSubscription().getMobileNumber());
-        assertTrue(ccdResponse.getSupporterSubscription().isSubscribeSms());
-        assertFalse(ccdResponse.getSupporterSubscription().isSubscribeEmail());
+        Subscription supporterSubscription = ccdResponse.getSubscriptions().getSupporterSubscription();
+        assertEquals("supporter@live.co.uk", supporterSubscription.getEmail());
+        assertEquals("07925289702", supporterSubscription.getMobile());
+        assertTrue(supporterSubscription.isSmsSubscribed());
+        assertFalse(supporterSubscription.isEmailSubscribed());
     }
 
     @Test
@@ -95,8 +75,8 @@ public class CcdResponseDeserializerTest {
         ccdResponseDeserializer.deserializeEventDetailsJson(mapper.readTree(eventJson), ccdResponse);
 
         assertEquals(1, ccdResponse.getEvents().size());
-        assertEquals(ZonedDateTime.of(LocalDate.of(2018, 1, 19), LocalTime.of(12, 54, 12), ZoneId.of(ZONE_ID)), ccdResponse.getEvents().get(0).getDateTime());
-        assertEquals(APPEAL_RECEIVED, ccdResponse.getEvents().get(0).getEventType());
+        assertEquals(ZonedDateTime.of(LocalDate.of(2018, 1, 19), LocalTime.of(12, 54, 12), ZoneId.of(ZONE_ID)), ccdResponse.getEvents().get(0).getValue().getDateTime());
+        assertEquals(APPEAL_RECEIVED, ccdResponse.getEvents().get(0).getValue().getEventType());
     }
 
     @Test
@@ -111,12 +91,12 @@ public class CcdResponseDeserializerTest {
 
         assertEquals(3, ccdResponse.getEvents().size());
 
-        assertEquals(ZonedDateTime.of(LocalDate.of(2018, 1, 19), LocalTime.of(14, 0), ZoneId.of(ZONE_ID)), ccdResponse.getEvents().get(0).getDateTime());
-        assertEquals(APPEAL_WITHDRAWN, ccdResponse.getEvents().get(0).getEventType());
-        assertEquals(ZonedDateTime.of(LocalDate.of(2018, 1, 19), LocalTime.of(13, 0), ZoneId.of(ZONE_ID)), ccdResponse.getEvents().get(1).getDateTime());
-        assertEquals(APPEAL_LAPSED, ccdResponse.getEvents().get(1).getEventType());
-        assertEquals(ZonedDateTime.of(LocalDate.of(2018, 1, 19), LocalTime.of(12, 0), ZoneId.of(ZONE_ID)), ccdResponse.getEvents().get(2).getDateTime());
-        assertEquals(APPEAL_RECEIVED, ccdResponse.getEvents().get(2).getEventType());
+        assertEquals(ZonedDateTime.of(LocalDate.of(2018, 1, 19), LocalTime.of(14, 0), ZoneId.of(ZONE_ID)), ccdResponse.getEvents().get(0).getValue().getDateTime());
+        assertEquals(APPEAL_WITHDRAWN, ccdResponse.getEvents().get(0).getValue().getEventType());
+        assertEquals(ZonedDateTime.of(LocalDate.of(2018, 1, 19), LocalTime.of(13, 0), ZoneId.of(ZONE_ID)), ccdResponse.getEvents().get(1).getValue().getDateTime());
+        assertEquals(APPEAL_LAPSED, ccdResponse.getEvents().get(1).getValue().getEventType());
+        assertEquals(ZonedDateTime.of(LocalDate.of(2018, 1, 19), LocalTime.of(12, 0), ZoneId.of(ZONE_ID)), ccdResponse.getEvents().get(2).getValue().getDateTime());
+        assertEquals(APPEAL_RECEIVED, ccdResponse.getEvents().get(2).getValue().getEventType());
     }
 
     @Test
@@ -134,13 +114,13 @@ public class CcdResponseDeserializerTest {
         assertEquals(1, ccdResponse.getHearings().size());
 
         Hearing hearing = ccdResponse.getHearings().get(0);
-        assertEquals(LocalDateTime.of(LocalDate.of(2018, 1, 12), LocalTime.of(11, 00, 00)), hearing.getHearingDateTime());
-        assertEquals("Prudential House", hearing.getVenueName());
-        assertEquals("36 Dale Street", hearing.getVenueAddressLine1());
-        assertEquals("Liverpool", hearing.getVenueTown());
-        assertEquals("Merseyside", hearing.getVenueCounty());
-        assertEquals("L2 5UZ", hearing.getVenuePostcode());
-        assertEquals("https://www.google.com/theAddress", hearing.getVenueGoogleMapUrl());
+        assertEquals(LocalDateTime.of(LocalDate.of(2018, 1, 12), LocalTime.of(11, 00, 00)), hearing.getValue().getHearingDateTime());
+        assertEquals("Prudential House", hearing.getValue().getVenue().getName());
+        assertEquals("36 Dale Street", hearing.getValue().getVenue().getAddress().getLine1());
+        assertEquals("Liverpool", hearing.getValue().getVenue().getAddress().getTown());
+        assertEquals("Merseyside", hearing.getValue().getVenue().getAddress().getCounty());
+        assertEquals("L2 5UZ", hearing.getValue().getVenue().getAddress().getPostcode());
+        assertEquals("https://www.google.com/theAddress", hearing.getValue().getVenue().getGoogleMapLink());
     }
 
     @Test
@@ -158,7 +138,7 @@ public class CcdResponseDeserializerTest {
         assertEquals(1, ccdResponse.getHearings().size());
 
         Hearing hearing = ccdResponse.getHearings().get(0);
-        assertEquals(LocalDateTime.of(LocalDate.of(2018, 7, 12), LocalTime.of(11, 00, 00)), hearing.getHearingDateTime());
+        assertEquals(LocalDateTime.of(LocalDate.of(2018, 7, 12), LocalTime.of(11, 00, 00)), hearing.getValue().getHearingDateTime());
     }
 
     @Test
@@ -185,63 +165,9 @@ public class CcdResponseDeserializerTest {
 
         assertEquals(3, ccdResponse.getHearings().size());
 
-        assertEquals(LocalDateTime.of(LocalDate.of(2018, 1, 12), LocalTime.of(13, 0)), ccdResponse.getHearings().get(0).getHearingDateTime());
-        assertEquals(LocalDateTime.of(LocalDate.of(2018, 1, 12), LocalTime.of(12, 0)), ccdResponse.getHearings().get(1).getHearingDateTime());
-        assertEquals(LocalDateTime.of(LocalDate.of(2018, 1, 12), LocalTime.of(11, 0)), ccdResponse.getHearings().get(2).getHearingDateTime());
-    }
-
-    @Test
-    public void deserializeAllCcdResponseJson() throws IOException {
-
-        String json =
-            "{\"case_details\":{"
-                + "\"case_data\":{"
-                    + "\"subscriptions\":{"
-                        + "\"appellantSubscription\":{\"tya\":\"543212345\",\"email\":\"test@testing.com\",\"mobile\":\"01234556634\",\"reason\":null,\"subscribeSms\":\"No\",\"subscribeEmail\":\"Yes\"},"
-                        + "\"supporterSubscription\":{\"tya\":\"232929249492\",\"email\":\"supporter@live.co.uk\",\"mobile\":\"07925289702\",\"reason\":null,\"subscribeSms\":\"Yes\",\"subscribeEmail\":\"No\"}"
-                    + "},"
-                    + "\"caseReference\":\"SC/1234/23\","
-                    + "\"appeal\":{"
-                        + "\"appellant\":{\"name\":{\"title\":\"Mr\",\"lastName\":\"Vasquez\",\"firstName\":\"Dexter\",\"middleName\":\"Ali Sosa\"}},"
-                        + "\"supporter\":{\"name\":{\"title\":\"Mrs\",\"lastName\":\"Wilder\",\"firstName\":\"Amber\",\"middleName\":\"Clark Eaton\"}}"
-                    + "},"
-                    + "\"hearings\": [{\"id\": \"1234\",\"value\": {"
-                        + "\"hearingDate\": \"2018-01-12\",\"time\": \"11:00\",\"venue\": {"
-                            + "\"name\": \"Prudential House\",\"address\": {\"line1\": \"36 Dale Street\",\"line2\": \"\","
-                            + "\"town\": \"Liverpool\",\"county\": \"Merseyside\",\"postcode\": \"L2 5UZ\"},"
-                        + "\"googleMapLink\": \"https://www.google.com/theAddress\"}}}]"
-                + "},"
-                + "\"id\": \"123456789\""
-            + "},"
-            + "\"event_id\": \"appealReceived\"}";
-
-        CcdResponseWrapper wrapper = mapper.readValue(json, CcdResponseWrapper.class);
-        CcdResponse ccdResponse = wrapper.getNewCcdResponse();
-
-        assertEquals(APPEAL_RECEIVED, ccdResponse.getNotificationType());
-        assertEquals("Dexter", ccdResponse.getAppellantSubscription().getFirstName());
-        assertEquals("Vasquez", ccdResponse.getAppellantSubscription().getSurname());
-        assertEquals("Mr", ccdResponse.getAppellantSubscription().getTitle());
-        assertEquals("test@testing.com", ccdResponse.getAppellantSubscription().getEmail());
-        assertEquals("01234556634", ccdResponse.getAppellantSubscription().getMobileNumber());
-        assertFalse(ccdResponse.getAppellantSubscription().isSubscribeSms());
-        assertTrue(ccdResponse.getAppellantSubscription().isSubscribeEmail());
-        assertEquals("Amber", ccdResponse.getSupporterSubscription().getFirstName());
-        assertEquals("Wilder", ccdResponse.getSupporterSubscription().getSurname());
-        assertEquals("Mrs", ccdResponse.getSupporterSubscription().getTitle());
-        assertEquals("supporter@live.co.uk", ccdResponse.getSupporterSubscription().getEmail());
-        assertEquals("07925289702", ccdResponse.getSupporterSubscription().getMobileNumber());
-        assertTrue(ccdResponse.getSupporterSubscription().isSubscribeSms());
-        assertFalse(ccdResponse.getSupporterSubscription().isSubscribeEmail());
-        assertEquals("SC/1234/23", ccdResponse.getCaseReference());
-        Hearing hearing = ccdResponse.getHearings().get(0);
-        assertEquals("Prudential House", hearing.getVenueName());
-        assertEquals("36 Dale Street", hearing.getVenueAddressLine1());
-        assertEquals("Liverpool", hearing.getVenueTown());
-        assertEquals("Merseyside", hearing.getVenueCounty());
-        assertEquals("L2 5UZ", hearing.getVenuePostcode());
-        assertEquals("https://www.google.com/theAddress", hearing.getVenueGoogleMapUrl());
-        assertEquals("123456789", ccdResponse.getCaseId());
+        assertEquals(LocalDateTime.of(LocalDate.of(2018, 1, 12), LocalTime.of(13, 0)), ccdResponse.getHearings().get(0).getValue().getHearingDateTime());
+        assertEquals(LocalDateTime.of(LocalDate.of(2018, 1, 12), LocalTime.of(12, 0)), ccdResponse.getHearings().get(1).getValue().getHearingDateTime());
+        assertEquals(LocalDateTime.of(LocalDate.of(2018, 1, 12), LocalTime.of(11, 0)), ccdResponse.getHearings().get(2).getValue().getHearingDateTime());
     }
 
     @Test
@@ -267,69 +193,46 @@ public class CcdResponseDeserializerTest {
         CcdResponse newCcdResponse = wrapper.getNewCcdResponse();
 
         assertEquals(APPEAL_RECEIVED, newCcdResponse.getNotificationType());
-        assertEquals("Dexter", newCcdResponse.getAppellantSubscription().getFirstName());
-        assertEquals("Vasquez", newCcdResponse.getAppellantSubscription().getSurname());
-        assertEquals("Mr", newCcdResponse.getAppellantSubscription().getTitle());
-        assertEquals("test@testing.com", newCcdResponse.getAppellantSubscription().getEmail());
-        assertEquals("01234556634", newCcdResponse.getAppellantSubscription().getMobileNumber());
-        assertFalse(newCcdResponse.getAppellantSubscription().isSubscribeSms());
-        assertTrue(newCcdResponse.getAppellantSubscription().isSubscribeEmail());
-        assertEquals("Amber", newCcdResponse.getSupporterSubscription().getFirstName());
-        assertEquals("Wilder", newCcdResponse.getSupporterSubscription().getSurname());
-        assertEquals("Mrs", newCcdResponse.getSupporterSubscription().getTitle());
-        assertEquals("supporter@live.co.uk", newCcdResponse.getSupporterSubscription().getEmail());
-        assertEquals("07925289702", newCcdResponse.getSupporterSubscription().getMobileNumber());
-        assertTrue(newCcdResponse.getSupporterSubscription().isSubscribeSms());
-        assertFalse(newCcdResponse.getSupporterSubscription().isSubscribeEmail());
+
+        Appellant newAppellant = newCcdResponse.getAppeal().getAppellant();
+        assertEquals("Dexter", newAppellant.getName().getFirstName());
+        assertEquals("Vasquez", newAppellant.getName().getLastName());
+        assertEquals("Mr", newAppellant.getName().getTitle());
+
+        Subscription newAppellantSubscription = newCcdResponse.getSubscriptions().getAppellantSubscription();
+        assertEquals("test@testing.com", newAppellantSubscription.getEmail());
+        assertEquals("01234556634", newAppellantSubscription.getMobile());
+        assertFalse(newAppellantSubscription.isSmsSubscribed());
+        assertTrue(newAppellantSubscription.isEmailSubscribed());
+
+        Subscription newSupporterSubscription = newCcdResponse.getSubscriptions().getSupporterSubscription();
+        assertEquals("supporter@live.co.uk", newSupporterSubscription.getEmail());
+        assertEquals("07925289702", newSupporterSubscription.getMobile());
+        assertTrue(newSupporterSubscription.isSmsSubscribed());
+        assertFalse(newSupporterSubscription.isEmailSubscribed());
         assertEquals("SC/1234/23", newCcdResponse.getCaseReference());
         assertEquals("123456789", newCcdResponse.getCaseId());
 
         CcdResponse oldCcdResponse = wrapper.getOldCcdResponse();
 
-        assertEquals("Jeremy", oldCcdResponse.getAppellantSubscription().getFirstName());
-        assertEquals("Smith", oldCcdResponse.getAppellantSubscription().getSurname());
-        assertEquals("Mr", oldCcdResponse.getAppellantSubscription().getTitle());
-        assertEquals("old@email.com", oldCcdResponse.getAppellantSubscription().getEmail());
-        assertEquals("07543534345", oldCcdResponse.getAppellantSubscription().getMobileNumber());
-        assertFalse(oldCcdResponse.getAppellantSubscription().isSubscribeSms());
-        assertTrue(oldCcdResponse.getAppellantSubscription().isSubscribeEmail());
-        assertEquals("Harry", oldCcdResponse.getSupporterSubscription().getFirstName());
-        assertEquals("Redknapp", oldCcdResponse.getSupporterSubscription().getSurname());
-        assertEquals("Mr", oldCcdResponse.getSupporterSubscription().getTitle());
-        assertEquals("supporter@gmail.co.uk", oldCcdResponse.getSupporterSubscription().getEmail());
-        assertEquals("07925267702", oldCcdResponse.getSupporterSubscription().getMobileNumber());
-        assertTrue(oldCcdResponse.getSupporterSubscription().isSubscribeSms());
-        assertFalse(oldCcdResponse.getSupporterSubscription().isSubscribeEmail());
+        Appellant oldAppellant = oldCcdResponse.getAppeal().getAppellant();
+        assertEquals("Jeremy", oldAppellant.getName().getFirstName());
+        assertEquals("Smith", oldAppellant.getName().getLastName());
+        assertEquals("Mr", oldAppellant.getName().getTitle());
+
+        Subscription oldAppellantSubscription = oldCcdResponse.getSubscriptions().getAppellantSubscription();
+        assertEquals("old@email.com", oldAppellantSubscription.getEmail());
+        assertEquals("07543534345", oldAppellantSubscription.getMobile());
+        assertFalse(oldAppellantSubscription.isSmsSubscribed());
+        assertTrue(oldAppellantSubscription.isEmailSubscribed());
+
+        Subscription oldSupporterSubscription = oldCcdResponse.getSubscriptions().getSupporterSubscription();
+        assertEquals("supporter@gmail.co.uk", oldSupporterSubscription.getEmail());
+        assertEquals("07925267702", oldSupporterSubscription.getMobile());
+        assertTrue(oldSupporterSubscription.isSmsSubscribed());
+        assertFalse(oldSupporterSubscription.isEmailSubscribed());
         assertEquals("SC/5432/89", oldCcdResponse.getCaseReference());
         assertEquals("523456789", oldCcdResponse.getCaseId());
-    }
-
-    @Test
-    public void deserializeWithMissingAppellantName() throws IOException {
-        String json = "{\"case_details\":{\"case_data\":{\"subscriptions\":{"
-                + "\"appellantSubscription\":{\"tya\":\"543212345\",\"email\":\"test@testing.com\",\"mobile\":\"01234556634\",\"reason\":null,\"subscribeSms\":\"No\",\"subscribeEmail\":\"Yes\"},"
-                + "\"supporterSubscription\":{\"tya\":\"232929249492\",\"email\":\"supporter@live.co.uk\",\"mobile\":\"07925289702\",\"reason\":null,\"subscribeSms\":\"Yes\",\"subscribeEmail\":\"No\"}},"
-                + "\"caseReference\":\"SC/1234/23\",\"appeal\":{"
-                + "\"supporter\":{\"name\":{\"title\":\"Mrs\",\"lastName\":\"Wilder\",\"firstName\":\"Amber\",\"middleName\":\"Clark Eaton\"}}}}},\"event_id\": \"appealReceived\"\n}";
-
-        CcdResponseWrapper wrapper = mapper.readValue(json, CcdResponseWrapper.class);
-
-        assertNull(wrapper.getNewCcdResponse().getAppellantSubscription().getSurname());
-        assertEquals("test@testing.com", wrapper.getNewCcdResponse().getAppellantSubscription().getEmail());
-    }
-
-    @Test
-    public void deserializeWithMissingAppellantSubscription() throws IOException {
-        String json = "{\"case_details\":{\"case_data\":{\"subscriptions\":{"
-                + "\"supporterSubscription\":{\"tya\":\"232929249492\",\"email\":\"supporter@live.co.uk\",\"mobile\":\"07925289702\",\"reason\":null,\"subscribeSms\":\"Yes\",\"subscribeEmail\":\"No\"}},"
-                + "\"caseReference\":\"SC/1234/23\",\"appeal\":{"
-                + "\"appellant\":{\"name\":{\"title\":\"Mr\",\"lastName\":\"Vasquez\",\"firstName\":\"Dexter\",\"middleName\":\"Ali Sosa\"}},"
-                + "\"supporter\":{\"name\":{\"title\":\"Mrs\",\"lastName\":\"Wilder\",\"firstName\":\"Amber\",\"middleName\":\"Clark Eaton\"}}}}},\"event_id\": \"appealReceived\"\n}";
-
-        CcdResponseWrapper wrapper = mapper.readValue(json, CcdResponseWrapper.class);
-
-        assertNull(wrapper.getNewCcdResponse().getAppellantSubscription().getEmail());
-        assertEquals("Vasquez", wrapper.getNewCcdResponse().getAppellantSubscription().getSurname());
     }
 
     @Test
@@ -395,17 +298,256 @@ public class CcdResponseDeserializerTest {
     }
 
     @Test
-    public void returnTrueForYes() {
-        assertTrue(ccdResponseDeserializer.convertYesNoToBoolean("Yes"));
+    public void shouldDeserializeRegionalProcessingCenterIfPresent() throws Exception {
+        String rpcJson = "{\"regionalProcessingCenter\":{\"name\":\"CARDIFF\",\"address1\":\"HM Courts & Tribunals Service\","
+                + "\"address2\":\"Social Security & Child Support Appeals\",\"address3\":\"Eastgate House\",\n"
+                + "\"address4\":\"Newport Road\",\"city\":\"CARDIFF\",\"postcode\":\"CF24 0AB\",\"phoneNumber\":\"0300 123 1142\",\"faxNumber\":\"0870 739 4438\"}}";
+
+        CcdResponse ccdResponse = CcdResponse.builder().build();
+        ccdResponseDeserializer.deserializeRegionalProcessingCenterJson(mapper.readTree(rpcJson), ccdResponse);
+
+        assertNotNull(ccdResponse.getRegionalProcessingCenter());
+
+        RegionalProcessingCenter regionalProcessingCenter = ccdResponse.getRegionalProcessingCenter();
+
+        assertEquals(regionalProcessingCenter.getName(), "CARDIFF");
+        assertEquals(regionalProcessingCenter.getAddress1(), "HM Courts & Tribunals Service");
+        assertEquals(regionalProcessingCenter.getAddress2(), "Social Security & Child Support Appeals");
+        assertEquals(regionalProcessingCenter.getAddress3(), "Eastgate House");
+        assertEquals(regionalProcessingCenter.getAddress4(), "Newport Road");
+        assertEquals(regionalProcessingCenter.getCity(), "CARDIFF");
+        assertEquals(regionalProcessingCenter.getPostcode(), "CF24 0AB");
+        assertEquals(regionalProcessingCenter.getPhoneNumber(), "0300 123 1142");
+        assertEquals(regionalProcessingCenter.getFaxNumber(), "0870 739 4438");
     }
 
     @Test
-    public void returnFalseForNo() {
-        assertFalse(ccdResponseDeserializer.convertYesNoToBoolean("No"));
+    public void shouldNotDeserializeRegionalProcessingCenterIfItsNotPresent() throws Exception {
+        String json = "{\"benefitType\":{\"code\":\"UNK\"}}";
+        CcdResponse ccdResponse = CcdResponse.builder().build();
+
+        ccdResponseDeserializer.deserializeRegionalProcessingCenterJson(mapper.readTree(json), ccdResponse);
+
+        assertNull(ccdResponse.getRegionalProcessingCenter());
     }
 
     @Test
-    public void returnFalseForNull() {
-        assertFalse(ccdResponseDeserializer.convertYesNoToBoolean(null));
+    public void shouldDeserializeMrnDetails() throws Exception {
+        String mrnJson = "{\"mrnDetails\":{\"dwpIssuingOffice\":\"Birmingham\",\"mrnDate\":\"2018-01-01\","
+                + "\"mrnLateReason\":\"It is late\",\"mrnMissingReason\":\"It went missing\"}}";
+
+        Appeal appeal = Appeal.builder().build();
+        ccdResponseDeserializer.deserializeMrnDetailsJson(mapper.readTree(mrnJson), appeal);
+
+        MrnDetails mrnDetails = appeal.getMrnDetails();
+
+        assertEquals("Birmingham", mrnDetails.getDwpIssuingOffice());
+        assertEquals("2018-01-01", mrnDetails.getMrnDate());
+        assertEquals("It is late", mrnDetails.getMrnLateReason());
+        assertEquals("It went missing", mrnDetails.getMrnMissingReason());
+    }
+
+    @Test
+    public void shouldDeserializeAppellantDetails() throws Exception {
+        String appellantJson = "{\"appellant\":{\"name\":{\"title\":\"Mr\",\"lastName\":\"Vasquez\",\"firstName\":\"Dexter\"},"
+                + "\"address\": {\"line1\": \"36 Dale Street\",\"line2\": \"Village\","
+                + "\"town\": \"Liverpool\",\"county\": \"Merseyside\",\"postcode\": \"L2 5UZ\"},"
+                + "\"contact\": {\"email\": \"test@tester.com\", \"mobile\": \"07848484848\"},"
+                + "\"identity\": {\"dob\": \"1998-07-01\", \"nino\": \"JT098230B\"},"
+                + "\"isAppointee\": \"Yes\"}}";
+
+        Appeal appeal = Appeal.builder().build();
+        ccdResponseDeserializer.deserializeAppellantDetailsJson(mapper.readTree(appellantJson), appeal);
+
+        Appellant appellant = appeal.getAppellant();
+
+        assertEquals("Mr", appellant.getName().getTitle());
+        assertEquals("Dexter", appellant.getName().getFirstName());
+        assertEquals("Vasquez", appellant.getName().getLastName());
+        assertEquals("36 Dale Street", appellant.getAddress().getLine1());
+        assertEquals("Village", appellant.getAddress().getLine2());
+        assertEquals("Liverpool", appellant.getAddress().getTown());
+        assertEquals("Merseyside", appellant.getAddress().getCounty());
+        assertEquals("L2 5UZ", appellant.getAddress().getPostcode());
+        assertEquals("test@tester.com", appellant.getContact().getEmail());
+        assertEquals("07848484848", appellant.getContact().getPhone());
+        assertEquals("1998-07-01", appellant.getIdentity().getDob());
+        assertEquals("JT098230B", appellant.getIdentity().getNino());
+        assertEquals("Yes", appellant.getIsAppointee());
+    }
+
+    @Test
+    public void shouldDeserializeHearingOptionsDetails() throws Exception {
+        String hearingOptionsDetailsJson = "{\"hearingOptions\":{\"wantsToAttend\":\"Yes\",\"wantsSupport\":\"No\",\"languageInterpreter\":\"Yes\","
+                + "\"languages\": \"French\",\"scheduleHearing\": \"Yes\","
+                + "\"other\": \"Bla\",\"arrangements\": [\"signLanguageInterpreter\",\"hearingLoop\"],"
+                + "\"excludeDates\": [{\"value\": {\"start\": \"2018-04-04\",\"end\": \"2018-04-06\"}},"
+                + "{\"value\": {\"start\": \"2018-04-10\"}}]}}";
+
+        Appeal appeal = Appeal.builder().build();
+        ccdResponseDeserializer.deserializeHearingOptionsJson(mapper.readTree(hearingOptionsDetailsJson), appeal);
+
+        HearingOptions hearingOptions = appeal.getHearingOptions();
+
+        List<String> arrangements = new ArrayList<>();
+        arrangements.add("signLanguageInterpreter");
+        arrangements.add("hearingLoop");
+
+        assertEquals("Yes", hearingOptions.getWantsToAttend());
+        assertEquals("No", hearingOptions.getWantsSupport());
+        assertEquals("Yes", hearingOptions.getLanguageInterpreter());
+        assertEquals("French", hearingOptions.getLanguages());
+        assertEquals("Yes", hearingOptions.getScheduleHearing());
+        assertEquals("Bla", hearingOptions.getOther());
+        assertEquals(arrangements, hearingOptions.getArrangements());
+
+        assertEquals("2018-04-04", hearingOptions.getExcludeDates().get(0).getValue().getStart());
+        assertEquals("2018-04-06", hearingOptions.getExcludeDates().get(0).getValue().getEnd());
+        assertEquals("2018-04-10", hearingOptions.getExcludeDates().get(1).getValue().getStart());
+        assertNull(hearingOptions.getExcludeDates().get(1).getValue().getEnd());
+    }
+
+    @Test
+    public void shouldDeserializeAppealReasonDetails() throws Exception {
+        String appealReasonsJson = "{\"appealReasons\": {\"reasons\": [{\"value\": {\"reason\": \"reason1\",\"description\": \"description1\"}},"
+                + "{\"value\": {\"reason\": \"reason2\",\"description\": \"description2\"}}],\"otherReasons\": \"Another reason\"}}";
+
+        Appeal appeal = Appeal.builder().build();
+        ccdResponseDeserializer.deserializeAppealReasonsJson(mapper.readTree(appealReasonsJson), appeal);
+
+        AppealReasons appealReasons = appeal.getAppealReasons();
+
+        assertEquals("reason1", appealReasons.getReasons().get(0).getValue().getReason());
+        assertEquals("description1", appealReasons.getReasons().get(0).getValue().getDescription());
+        assertEquals("reason2", appealReasons.getReasons().get(1).getValue().getReason());
+        assertEquals("description2", appealReasons.getReasons().get(1).getValue().getDescription());
+        assertEquals("Another reason", appealReasons.getOtherReasons());
+    }
+
+    @Test
+    public void shouldDeserializeRepresentativeDetails() throws Exception {
+        String appealReasonsJson = "{\"rep\": {\"hasRepresentative\": \"Yes\",\"name\": {"
+                + "\"title\": \"Mr\",\"firstName\": \"Harry\",\"lastName\": \"Potter\"},\n"
+                + "\"address\": {\"line1\": \"123 Hairy Lane\",\"line2\": \"Off Hairy Park\",\"town\": \"Town\",\n"
+                + "\"county\": \"County\",\"postcode\": \"CM14 4LQ\"},\n"
+                + "\"contact\": {\"email\": \"harry.potter@wizards.com\",\"mobile\": \"07411999999\"},"
+                + "\"organisation\": \"HP Ltd\"}}}";
+
+        Appeal appeal = Appeal.builder().build();
+        ccdResponseDeserializer.deserializeRepresentativeReasons(mapper.readTree(appealReasonsJson), appeal);
+
+        Representative rep = appeal.getRep();
+
+        assertEquals("Mr", rep.getName().getTitle());
+        assertEquals("Harry", rep.getName().getFirstName());
+        assertEquals("Potter", rep.getName().getLastName());
+        assertEquals("123 Hairy Lane", rep.getAddress().getLine1());
+        assertEquals("Off Hairy Park", rep.getAddress().getLine2());
+        assertEquals("Town", rep.getAddress().getTown());
+        assertEquals("County", rep.getAddress().getCounty());
+        assertEquals("CM14 4LQ", rep.getAddress().getPostcode());
+        assertEquals("07411999999", rep.getContact().getPhone());
+        assertEquals("harry.potter@wizards.com", rep.getContact().getEmail());
+        assertEquals("HP Ltd", rep.getOrganisation());
+    }
+
+    @Test
+    public void deserializeAllCcdResponseJson() throws IOException {
+
+        String path = getClass().getClassLoader().getResource("json/ccdResponse.json").getFile();
+        String json = FileUtils.readFileToString(new File(path), StandardCharsets.UTF_8.name());
+
+        CcdResponseWrapper wrapper = mapper.readValue(json, CcdResponseWrapper.class);
+        CcdResponse ccdResponse = wrapper.getNewCcdResponse();
+
+        Subscription appellantSubscription = ccdResponse.getSubscriptions().getAppellantSubscription();
+
+        assertEquals(APPEAL_RECEIVED, ccdResponse.getNotificationType());
+        assertEquals("updatedemail@hmcts.net", appellantSubscription.getEmail());
+        assertEquals("07985233301", appellantSubscription.getMobile());
+        assertTrue(appellantSubscription.isSmsSubscribed());
+        assertTrue(appellantSubscription.isEmailSubscribed());
+
+        Appeal appeal = ccdResponse.getAppeal();
+        assertEquals(PIP.name(), appeal.getBenefitType().getCode());
+
+        MrnDetails mrnDetails = appeal.getMrnDetails();
+        assertEquals("Birmingham", mrnDetails.getDwpIssuingOffice());
+        assertEquals("2018-01-01", mrnDetails.getMrnDate());
+        assertEquals("It is late", mrnDetails.getMrnLateReason());
+        assertEquals("It went missing", mrnDetails.getMrnMissingReason());
+
+        Appellant appellant = appeal.getAppellant();
+        assertEquals("Dexter", appellant.getName().getFirstName());
+        assertEquals("Vasquez", appellant.getName().getLastName());
+        assertEquals("Mr", appellant.getName().getTitle());
+        assertEquals("36 Dale Street", appellant.getAddress().getLine1());
+        assertEquals("Village", appellant.getAddress().getLine2());
+        assertEquals("Liverpool", appellant.getAddress().getTown());
+        assertEquals("Merseyside", appellant.getAddress().getCounty());
+        assertEquals("L2 5UZ", appellant.getAddress().getPostcode());
+        assertEquals("test@tester.com", appellant.getContact().getEmail());
+        assertEquals("07848484848", appellant.getContact().getPhone());
+        assertEquals("JT098230B", appellant.getIdentity().getNino());
+        assertEquals("1998-07-01", appellant.getIdentity().getDob());
+        assertEquals("Yes", appellant.getIsAppointee());
+
+        List<String> arrangements = new ArrayList<>();
+        arrangements.add("signLanguageInterpreter");
+        arrangements.add("hearingLoop");
+
+        HearingOptions hearingOptions = appeal.getHearingOptions();
+        assertEquals("Yes", hearingOptions.getWantsToAttend());
+        assertEquals("No", hearingOptions.getWantsSupport());
+        assertEquals("Yes", hearingOptions.getLanguageInterpreter());
+        assertEquals("French", hearingOptions.getLanguages());
+        assertEquals("Yes", hearingOptions.getScheduleHearing());
+        assertEquals("Bla", hearingOptions.getOther());
+        assertEquals(arrangements, hearingOptions.getArrangements());
+
+        assertEquals("2018-04-04", hearingOptions.getExcludeDates().get(0).getValue().getStart());
+        assertEquals("2018-04-06", hearingOptions.getExcludeDates().get(0).getValue().getEnd());
+        assertEquals("2018-04-10", hearingOptions.getExcludeDates().get(1).getValue().getStart());
+        assertNull(hearingOptions.getExcludeDates().get(1).getValue().getEnd());
+
+        AppealReasons appealReasons = appeal.getAppealReasons();
+        assertEquals("reason1", appealReasons.getReasons().get(0).getValue().getReason());
+        assertEquals("description1", appealReasons.getReasons().get(0).getValue().getDescription());
+        assertEquals("reason2", appealReasons.getReasons().get(1).getValue().getReason());
+        assertEquals("description2", appealReasons.getReasons().get(1).getValue().getDescription());
+        assertEquals("Another reason", appealReasons.getOtherReasons());
+
+        Representative rep = appeal.getRep();
+
+        assertEquals("Mr", rep.getName().getTitle());
+        assertEquals("Harry", rep.getName().getFirstName());
+        assertEquals("Potter", rep.getName().getLastName());
+        assertEquals("123 Hairy Lane", rep.getAddress().getLine1());
+        assertEquals("Off Hairy Park", rep.getAddress().getLine2());
+        assertEquals("Town", rep.getAddress().getTown());
+        assertEquals("County", rep.getAddress().getCounty());
+        assertEquals("CM14 4LQ", rep.getAddress().getPostcode());
+        assertEquals("07411999999", rep.getContact().getPhone());
+        assertEquals("harry.potter@wizards.com", rep.getContact().getEmail());
+        assertEquals("HP Ltd", rep.getOrganisation());
+
+        assertEquals("Yes", ccdResponse.getAppeal().getSigner());
+
+        Subscription supporterSubscription = ccdResponse.getSubscriptions().getSupporterSubscription();
+        assertEquals("supporter@hmcts.net", supporterSubscription.getEmail());
+        assertEquals("07983469702", supporterSubscription.getMobile());
+        assertTrue(supporterSubscription.isSmsSubscribed());
+        assertFalse(supporterSubscription.isEmailSubscribed());
+        assertEquals("SC/1234/23", ccdResponse.getCaseReference());
+
+        Hearing hearing = ccdResponse.getHearings().get(0);
+        assertEquals("Prudential House", hearing.getValue().getVenue().getName());
+        assertEquals("36 Dale Street", hearing.getValue().getVenue().getAddress().getLine1());
+        assertEquals("Liverpool", hearing.getValue().getVenue().getAddress().getTown());
+        assertEquals("Merseyside", hearing.getValue().getVenue().getAddress().getCounty());
+        assertEquals("L2 5UZ", hearing.getValue().getVenue().getAddress().getPostcode());
+        assertEquals("https://www.google.com/theAddress", hearing.getValue().getVenue().getGoogleMapLink());
+        assertEquals("12345656789", ccdResponse.getCaseId());
+        assertNotNull(ccdResponse.getRegionalProcessingCenter());
     }
 }

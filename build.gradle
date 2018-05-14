@@ -55,15 +55,42 @@ sourceSets {
         }
         resources.srcDir file('src/IntegrationTests/resources')
     }
+    e2e {
+        java {
+            compileClasspath += main.output + test.output
+            runtimeClasspath += main.output + test.output
+            srcDir('src/e2e/java')
+        }
+    }
+
 }
 
 dependencies {
     integrationTestCompile(sourceSets.test.output)
+    e2eCompile(sourceSets.test.output)
+}
+
+task integration(type: Test) {
+    setTestClassesDirs(sourceSets.integrationTest.output.classesDirs)
+    setClasspath(sourceSets.integrationTest.runtimeClasspath)
+}
+
+task smoke(type: Test) {
+    group = 'verification'
+    description = 'Executes non-destructive smoke tests against a running CCD and notification service'
+    setTestClassesDirs(sourceSets.e2e.output.classesDirs)
+    setClasspath(sourceSets.e2e.runtimeClasspath)
+    include "uk/gov/hmcts/sscs/smoke/**"
+    exclude "uk/gov/hmcts/sscs/functional/**"
 }
 
 task functional(type: Test) {
-    setTestClassesDirs(sourceSets.integrationTest.output.classesDirs)
-    setClasspath(sourceSets.integrationTest.runtimeClasspath)
+    group = 'Functional Tests'
+    description = 'Executes non-destructive functional tests in AAT against a running CCD and notification service'
+    setTestClassesDirs(sourceSets.e2e.output.classesDirs)
+    setClasspath(sourceSets.e2e.runtimeClasspath)
+    include "uk/gov/hmcts/sscs/functional/**"
+    exclude "uk/gov/hmcts/sscs/smoke/**"
 }
 
 dependencyUpdates.resolutionStrategy = {
@@ -99,8 +126,8 @@ repositories {
     jcenter()
 }
 
-project.tasks['sonarqube'].dependsOn test, functional
-check.dependsOn functional
+project.tasks['sonarqube'].dependsOn test, integration
+check.dependsOn integration
 checkstyleMain.shouldRunAfter(compileJava)
 test.shouldRunAfter(checkstyleTest)
 functional.shouldRunAfter(checkstyleIntegrationTest)
@@ -112,7 +139,7 @@ sonarqube {
         property "sonar.projectKey", "SSCSTYANS"
         property "sonar.exclusions", "src/main/java/uk/gov/hmcts/sscs/domain/**," +
                 "src/main/java/uk/gov/hmcts/sscs/TrackYourAppealNotificationsApplication.java," +
-                "src/main/java/uk/gov/hmcts/sscs/config/*,"
+                "src/main/java/uk/gov/hmcts/sscs/config/**,"
     }
 }
 
@@ -126,6 +153,8 @@ task migratePostgresDatabase(type: org.flywaydb.gradle.task.FlywayMigrateTask) {
 configurations {
     integrationTestCompile.extendsFrom(testCompile)
     integrationTestRuntime.extendsFrom(testRuntime)
+    e2eRuntime.extendsFrom(testRuntime)
+    e2eCompile.extendsFrom(testCompile)
 }
 
 bootRun {
@@ -166,16 +195,16 @@ dependencies {
     compile group: 'uk.gov.hmcts.reform', name: 'java-logging-httpcomponents', version: versions.reformLogging
     compile group: 'uk.gov.hmcts.reform', name: 'java-logging-appinsights', version: versions.reformLogging
     compile group: 'uk.gov.hmcts.reform', name: 'http-proxy-spring-boot-autoconfigure', version: '1.1.0'
+    compile group: 'uk.gov.hmcts.reform', name: 'core-case-data-store-client', version: '2.5.1'
     compile group: 'uk.gov.hmcts.reform', name: 'service-auth-provider-client', version: '0.4.2'
     compile group: 'uk.gov.hmcts.reform', name: 'reform-api-standards', version: '0.3.0'
 
     compile group: 'org.springframework.cloud', name: 'spring-cloud-starter-hystrix', version: versions.springHystrix
     compile group: 'org.springframework.cloud', name: 'spring-cloud-starter-hystrix-dashboard', version: versions.springHystrix
+    compile group: 'io.rest-assured', name: 'rest-assured', version: '3.0.7'
 
     compile group: 'uk.gov.service.notify', name: 'notifications-java-client', version: '3.9.1-RELEASE'
 
-    compile group: 'com.sun.jersey', name: 'jersey-server', version: '1.19.4'
-    compile group: 'com.sun.jersey', name: 'jersey-json', version: '1.19.4'
     compile group: 'com.opencsv', name: 'opencsv', version: '4.1'
 
     compileOnly 'org.projectlombok:lombok:1.16.20'
@@ -206,8 +235,4 @@ run {
     if (debug == 'true') {
         jvmArgs = ['-agentlib:jdwp=transport=dt_socket,server=y,suspend=y,address=5005']
     }
-}
-
-task smoke(type: Test, description: 'Runs the smoke tests.', group: 'Verification') {
-
 }

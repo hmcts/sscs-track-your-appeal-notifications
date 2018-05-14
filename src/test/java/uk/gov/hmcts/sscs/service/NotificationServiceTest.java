@@ -12,9 +12,7 @@ import org.junit.Before;
 import org.junit.Test;
 import org.mockito.Mock;
 import org.springframework.test.util.ReflectionTestUtils;
-import uk.gov.hmcts.sscs.domain.CcdResponse;
-import uk.gov.hmcts.sscs.domain.CcdResponseWrapper;
-import uk.gov.hmcts.sscs.domain.Subscription;
+import uk.gov.hmcts.sscs.domain.*;
 import uk.gov.hmcts.sscs.domain.notify.*;
 import uk.gov.hmcts.sscs.exception.NotificationClientRuntimeException;
 import uk.gov.hmcts.sscs.exception.NotificationServiceException;
@@ -44,11 +42,10 @@ public class NotificationServiceTest {
         initMocks(this);
         notificationService = new NotificationService(client, factory, reminderService);
 
-        Subscription appellantSubscription = Subscription.builder()
-                .firstName("Harry").surname("Kane").title("Mr").appealNumber("GLSCRR").email("test@email.com")
-                .mobileNumber("07983495065").subscribeEmail(true).subscribeSms(true).build();
+        Subscription appellantSubscription = Subscription.builder().tya("GLSCRR").email("test@email.com")
+                .mobile("07983495065").subscribeEmail("Yes").subscribeSms("Yes").build();
 
-        response = CcdResponse.builder().appellantSubscription(appellantSubscription).caseReference("ABC123").notificationType(APPEAL_WITHDRAWN).build();
+        response = CcdResponse.builder().subscriptions(Subscriptions.builder().appellantSubscription(appellantSubscription).build()).caseReference("ABC123").notificationType(APPEAL_WITHDRAWN).build();
         wrapper = CcdResponseWrapper.builder().newCcdResponse(response).oldCcdResponse(response).build();
     }
 
@@ -173,5 +170,22 @@ public class NotificationServiceTest {
         notificationService.createAndSendNotification(wrapper);
 
         verify(reminderService, never()).createJob(response);
+    }
+
+    @Test
+    public void doNotSendEmailOrSmsWhenNoActiveSubscription() throws Exception {
+        Subscription appellantSubscription = Subscription.builder().tya("GLSCRR").email("test@email.com")
+                .mobile("07983495065").subscribeEmail("No").subscribeSms("No").build();
+
+        response = CcdResponse.builder().subscriptions(Subscriptions.builder().appellantSubscription(appellantSubscription).build()).caseReference("ABC123").notificationType(APPEAL_WITHDRAWN).build();
+        wrapper = CcdResponseWrapper.builder().newCcdResponse(response).oldCcdResponse(response).build();
+
+        Notification notification = new Notification(Template.builder().emailTemplateId(null).smsTemplateId("123").build(), Destination.builder().email(null).sms("07823456746").build(), null, new Reference(), null);
+        when(factory.create(wrapper)).thenReturn(notification);
+
+        notificationService.createAndSendNotification(wrapper);
+
+        verify(client, never()).sendSms(notification.getSmsTemplate(), notification.getMobile(), notification.getPlaceholders(), notification.getReference());
+        verify(client, never()).sendEmail(notification.getEmailTemplate(), notification.getEmail(), notification.getPlaceholders(), notification.getReference());
     }
 }

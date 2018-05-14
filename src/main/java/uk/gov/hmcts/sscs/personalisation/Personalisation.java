@@ -1,7 +1,9 @@
 package uk.gov.hmcts.sscs.personalisation;
 
 import static com.google.common.collect.Lists.newArrayList;
+import static org.slf4j.LoggerFactory.getLogger;
 import static uk.gov.hmcts.sscs.config.AppConstants.*;
+import static uk.gov.hmcts.sscs.domain.Benefit.getBenefitByCode;
 import static uk.gov.hmcts.sscs.domain.notify.EventType.*;
 
 import java.time.LocalDate;
@@ -11,52 +13,56 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.stream.Collectors;
 import org.apache.commons.lang3.StringUtils;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Component;
 import uk.gov.hmcts.sscs.config.NotificationConfig;
-import uk.gov.hmcts.sscs.domain.CcdResponse;
-import uk.gov.hmcts.sscs.domain.CcdResponseWrapper;
-import uk.gov.hmcts.sscs.domain.Hearing;
-import uk.gov.hmcts.sscs.domain.RegionalProcessingCenter;
+import uk.gov.hmcts.sscs.domain.*;
 import uk.gov.hmcts.sscs.domain.notify.Event;
 import uk.gov.hmcts.sscs.domain.notify.EventType;
 import uk.gov.hmcts.sscs.domain.notify.Template;
 import uk.gov.hmcts.sscs.service.MessageAuthenticationServiceImpl;
 import uk.gov.hmcts.sscs.service.RegionalProcessingCenterService;
 
+@Component
 public class Personalisation {
 
-    protected NotificationConfig config;
-
     private boolean sendSmsSubscriptionConfirmation;
-    private final MessageAuthenticationServiceImpl macService;
-    private final RegionalProcessingCenterService regionalProcessingCenterService;
 
-    public Personalisation(NotificationConfig config, MessageAuthenticationServiceImpl macService,
-                           RegionalProcessingCenterService regionalProcessingCenterService) {
-        this.config = config;
-        this.macService = macService;
-        this.regionalProcessingCenterService = regionalProcessingCenterService;
-    }
+    private static final org.slf4j.Logger LOG = getLogger(Personalisation.class);
+
+    @Autowired
+    private NotificationConfig config;
+
+    @Autowired
+    private MessageAuthenticationServiceImpl macService;
+
+    @Autowired
+    private RegionalProcessingCenterService regionalProcessingCenterService;
 
     public Map<String, String> create(CcdResponseWrapper responseWrapper) {
         CcdResponse ccdResponse = responseWrapper.getNewCcdResponse();
         Map<String, String> personalisation = new HashMap<>();
-        personalisation.put(BENEFIT_NAME_ACRONYM_LITERAL, ccdResponse.getBenefitType().name() + " benefit");
-        personalisation.put(BENEFIT_FULL_NAME_LITERAL, ccdResponse.getBenefitType().getDescription());
+        Subscription appellantSubscription = ccdResponse.getSubscriptions().getAppellantSubscription();
+        Benefit benefit = getBenefitByCode(ccdResponse.getAppeal().getBenefitType().getCode());
+
+        personalisation.put(BENEFIT_NAME_ACRONYM_LITERAL, benefit.name() + " benefit");
+        personalisation.put(BENEFIT_FULL_NAME_LITERAL, benefit.getDescription());
         personalisation.put(APPEAL_REF, ccdResponse.getCaseReference());
-        personalisation.put(APPELLANT_NAME, String.format("%s %s", ccdResponse.getAppellantSubscription().getFirstName(), ccdResponse.getAppellantSubscription().getSurname()));
+        personalisation.put(APPELLANT_NAME, String.format("%s %s",
+                ccdResponse.getAppeal().getAppellant().getName().getFirstName(), ccdResponse.getAppeal().getAppellant().getName().getLastName()));
         personalisation.put(PHONE_NUMBER, config.getHmctsPhoneNumber());
 
-        if (ccdResponse.getAppellantSubscription().getAppealNumber() != null) {
-            personalisation.put(APPEAL_ID, ccdResponse.getAppellantSubscription().getAppealNumber());
+        if (ccdResponse.getSubscriptions().getAppellantSubscription().getTya() != null) {
+            personalisation.put(APPEAL_ID, ccdResponse.getSubscriptions().getAppellantSubscription().getTya());
             personalisation.put(MANAGE_EMAILS_LINK_LITERAL, config.getManageEmailsLink().replace(MAC_LITERAL,
-                    getMacToken(ccdResponse.getAppellantSubscription().getAppealNumber(),
-                            ccdResponse.getBenefitType().name())));
-            personalisation.put(TRACK_APPEAL_LINK_LITERAL, config.getTrackAppealLink() != null ? config.getTrackAppealLink().replace(APPEAL_ID_LITERAL, ccdResponse.getAppellantSubscription().getAppealNumber()) : null);
-            personalisation.put(SUBMIT_EVIDENCE_LINK_LITERAL, config.getEvidenceSubmissionInfoLink().replace(APPEAL_ID, ccdResponse.getAppellantSubscription().getAppealNumber()));
-            personalisation.put(SUBMIT_EVIDENCE_INFO_LINK_LITERAL, config.getEvidenceSubmissionInfoLink().replace(APPEAL_ID_LITERAL, ccdResponse.getAppellantSubscription().getAppealNumber()));
-            personalisation.put(CLAIMING_EXPENSES_LINK_LITERAL, config.getClaimingExpensesLink().replace(APPEAL_ID, ccdResponse.getAppellantSubscription().getAppealNumber()));
+                    getMacToken(ccdResponse.getSubscriptions().getAppellantSubscription().getTya(),
+                            benefit.name())));
+            personalisation.put(TRACK_APPEAL_LINK_LITERAL, config.getTrackAppealLink() != null ? config.getTrackAppealLink().replace(APPEAL_ID_LITERAL, appellantSubscription.getTya()) : null);
+            personalisation.put(SUBMIT_EVIDENCE_LINK_LITERAL, config.getEvidenceSubmissionInfoLink().replace(APPEAL_ID, appellantSubscription.getTya()));
+            personalisation.put(SUBMIT_EVIDENCE_INFO_LINK_LITERAL, config.getEvidenceSubmissionInfoLink().replace(APPEAL_ID_LITERAL, appellantSubscription.getTya()));
+            personalisation.put(CLAIMING_EXPENSES_LINK_LITERAL, config.getClaimingExpensesLink().replace(APPEAL_ID, appellantSubscription.getTya()));
             personalisation.put(HEARING_INFO_LINK_LITERAL,
-                    config.getHearingInfoLink().replace(APPEAL_ID_LITERAL, ccdResponse.getAppellantSubscription().getAppealNumber()));
+                    config.getHearingInfoLink().replace(APPEAL_ID_LITERAL, appellantSubscription.getTya()));
         }
 
         personalisation.put(FIRST_TIER_AGENCY_ACRONYM, DWP_ACRONYM);
@@ -65,16 +71,13 @@ public class Personalisation {
         if (ccdResponse.getHearings() != null && !ccdResponse.getHearings().isEmpty()) {
             Hearing latestHearing = ccdResponse.getHearings().get(0);
 
-            personalisation.put(HEARING_DATE, formatLocalDate(latestHearing.getHearingDateTime().toLocalDate()));
-            personalisation.put(HEARING_TIME, formatLocalTime(latestHearing.getHearingDateTime()));
+            personalisation.put(HEARING_DATE, formatLocalDate(latestHearing.getValue().getHearingDateTime().toLocalDate()));
+            personalisation.put(HEARING_TIME, formatLocalTime(latestHearing.getValue().getHearingDateTime()));
             personalisation.put(VENUE_ADDRESS_LITERAL, formatAddress(latestHearing));
-            personalisation.put(VENUE_MAP_LINK_LITERAL, latestHearing.getVenueGoogleMapUrl());
+            personalisation.put(VENUE_MAP_LINK_LITERAL, latestHearing.getValue().getVenue().getGoogleMapLink());
         }
 
-        if (config.isJobSchedulerEnabled()) {
-            setEvidenceProcessingAddress(personalisation, ccdResponse.getCaseReference());
-        }
-
+        setEvidenceProcessingAddress(personalisation, ccdResponse);
         setEventData(personalisation, ccdResponse);
         setEvidenceReceivedNotificationData(personalisation, ccdResponse);
 
@@ -84,11 +87,13 @@ public class Personalisation {
     public Map<String, String> setEventData(Map<String, String> personalisation, CcdResponse ccdResponse) {
         if (ccdResponse.getEvents() != null) {
 
-            for (Event event : ccdResponse.getEvents()) {
-                if (ccdResponse.getNotificationType().equals(APPEAL_RECEIVED) && event.getEventType().equals(APPEAL_RECEIVED)) {
-                    return setAppealReceivedDetails(personalisation, event);
-                } else if (ccdResponse.getNotificationType().equals(POSTPONEMENT) && event.getEventType().equals(POSTPONEMENT)) {
-                    return setPostponementDetails(personalisation, event);
+            for (Events events : ccdResponse.getEvents()) {
+                if (events.getValue() != null) {
+                    if (ccdResponse.getNotificationType().equals(APPEAL_RECEIVED) && events.getValue().getEventType().equals(APPEAL_RECEIVED)) {
+                        return setAppealReceivedDetails(personalisation, events.getValue());
+                    } else if (ccdResponse.getNotificationType().equals(POSTPONEMENT) && events.getValue().getEventType().equals(POSTPONEMENT)) {
+                        return setPostponementDetails(personalisation, events.getValue());
+                    }
                 }
             }
         }
@@ -97,8 +102,8 @@ public class Personalisation {
 
     public Map<String, String> setEvidenceReceivedNotificationData(Map<String, String> personalisation, CcdResponse ccdResponse) {
         if (ccdResponse.getNotificationType().equals(EVIDENCE_RECEIVED)) {
-            if (ccdResponse.getEvidences() != null && !ccdResponse.getEvidences().isEmpty()) {
-                personalisation.put(EVIDENCE_RECEIVED_DATE_LITERAL, formatLocalDate(ccdResponse.getEvidences().get(0).getDateReceived()));
+            if (ccdResponse.getEvidence() != null && ccdResponse.getEvidence().getDocuments() != null && !ccdResponse.getEvidence().getDocuments().isEmpty()) {
+                personalisation.put(EVIDENCE_RECEIVED_DATE_LITERAL, formatLocalDate(ccdResponse.getEvidence().getDocuments().get(0).getValue().getEvidenceDateTimeFormatted()));
             }
         }
         return personalisation;
@@ -116,8 +121,14 @@ public class Personalisation {
         return personalisation;
     }
 
-    private Map<String, String> setEvidenceProcessingAddress(Map<String, String> personalisation, String appealNumber) {
-        RegionalProcessingCenter rpc = regionalProcessingCenterService.getByScReferenceCode(appealNumber);
+    public Map<String, String> setEvidenceProcessingAddress(Map<String, String> personalisation, CcdResponse ccdResponse) {
+        RegionalProcessingCenter rpc;
+
+        if (null != ccdResponse.getRegionalProcessingCenter()) {
+            rpc = ccdResponse.getRegionalProcessingCenter();
+        } else {
+            rpc = regionalProcessingCenterService.getByScReferenceCode(ccdResponse.getCaseReference());
+        }
         personalisation.put(REGIONAL_OFFICE_NAME_LITERAL, rpc.getAddress1());
         personalisation.put(DEPARTMENT_NAME_LITERAL, DEPARTMENT_NAME_STRING);
         personalisation.put(SUPPORT_CENTRE_NAME_LITERAL, rpc.getAddress2());
@@ -130,12 +141,8 @@ public class Personalisation {
     }
 
     private String formatAddress(Hearing hearing) {
-        return newArrayList(hearing.getVenueName(),
-                hearing.getVenueAddressLine1(),
-                hearing.getVenueAddressLine2(),
-                hearing.getVenueTown(),
-                hearing.getVenueCounty(),
-                hearing.getVenuePostcode())
+        return newArrayList(hearing.getValue().getVenue().getName(),
+                hearing.getValue().getVenue().getAddress().getFullAddress())
                 .stream()
                 .filter(StringUtils::isNotBlank)
                 .collect(Collectors.joining(", "));

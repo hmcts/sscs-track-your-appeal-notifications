@@ -71,8 +71,6 @@ public class RemindersIt {
     @Autowired
     NotificationFactory factory;
 
-    String path = "src/IntegrationTests/resources/json/ccdCallbackResponse.json";
-
     String json;
 
     @Before
@@ -83,6 +81,8 @@ public class RemindersIt {
         NotificationService service = new NotificationService(client, factory, reminderService);
         controller = new NotificationController(service, authorisationService);
         this.mockMvc = MockMvcBuilders.standaloneSetup(controller).build();
+
+        String path = getClass().getClassLoader().getResource("json/ccdResponse.json").getFile();
         json = FileUtils.readFileToString(new File(path), StandardCharsets.UTF_8.name());
 
         ReflectionTestUtils.setField(service, "isJobSchedulerEnabled", true);

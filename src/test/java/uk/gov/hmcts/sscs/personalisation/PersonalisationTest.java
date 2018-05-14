@@ -2,29 +2,24 @@ package uk.gov.hmcts.sscs.personalisation;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNull;
-import static org.mockito.Mockito.when;
+import static org.mockito.Matchers.anyString;
+import static org.mockito.Mockito.*;
 import static org.mockito.MockitoAnnotations.initMocks;
 import static uk.gov.hmcts.sscs.config.AppConstants.*;
 import static uk.gov.hmcts.sscs.domain.Benefit.PIP;
 import static uk.gov.hmcts.sscs.domain.notify.EventType.*;
 
-import java.time.LocalDate;
-import java.time.LocalTime;
-import java.time.ZoneId;
-import java.time.ZonedDateTime;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import javax.annotation.Resource;
 import org.junit.Before;
 import org.junit.Test;
+import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import uk.gov.hmcts.sscs.config.NotificationConfig;
-import uk.gov.hmcts.sscs.domain.CcdResponse;
-import uk.gov.hmcts.sscs.domain.CcdResponseWrapper;
-import uk.gov.hmcts.sscs.domain.Evidence;
-import uk.gov.hmcts.sscs.domain.RegionalProcessingCenter;
-import uk.gov.hmcts.sscs.domain.Subscription;
+import uk.gov.hmcts.sscs.domain.*;
 import uk.gov.hmcts.sscs.domain.notify.Event;
 import uk.gov.hmcts.sscs.domain.notify.Link;
 import uk.gov.hmcts.sscs.service.MessageAuthenticationServiceImpl;
@@ -33,11 +28,12 @@ import uk.gov.hmcts.sscs.service.RegionalProcessingCenterService;
 public class PersonalisationTest {
 
     private static final String CASE_ID = "54321";
-
-    public Personalisation personalisation;
-
-    @Mock
-    private RegionalProcessingCenterService regionalProcessingCenterService;
+    public static final String ADDRESS1 = "HM Courts & Tribunals Service";
+    public static final String ADDRESS2 = "Social Security & Child Support Appeals";
+    public static final String ADDRESS3 = "Prudential Buildings";
+    public static final String ADDRESS4 = "36 Dale Street";
+    public static final String CITY = "LIVERPOOL";
+    public static final String POSTCODE = "L2 5UZ";
 
     @Mock
     private NotificationConfig config;
@@ -45,12 +41,22 @@ public class PersonalisationTest {
     @Mock
     private MessageAuthenticationServiceImpl macService;
 
-    ZonedDateTime dateTime;
+    @Mock
+    private RegionalProcessingCenterService regionalProcessingCenterService;
+
+    @InjectMocks
+    @Resource
+    public Personalisation personalisation;
+
+    String date = "2018-07-01T14:01:18.243";
+
+    Subscriptions subscriptions;
+
+    Name name;
 
     @Before
     public void setup() {
         initMocks(this);
-        personalisation = new Personalisation(config, macService, regionalProcessingCenterService);
         when(config.getHmctsPhoneNumber()).thenReturn("01234543225");
         when(config.getManageEmailsLink()).thenReturn(Link.builder().linkUrl("http://manageemails.com/mac").build());
         when(config.getTrackAppealLink()).thenReturn(Link.builder().linkUrl("http://tyalink.com/appeal_id").build());
@@ -62,33 +68,34 @@ public class PersonalisationTest {
         when(macService.generateToken("GLSCRR", PIP.name())).thenReturn("ZYX");
 
         RegionalProcessingCenter rpc = new RegionalProcessingCenter();
-        rpc.createRegionalProcessingCenter("LIVERPOOL", "HM Courts & Tribunals Service", "Social Security & Child Support Appeals",
-                "Prudential Buildings", "36 Dale Street", "L2 5UZ", "LIVERPOOL");
+        rpc.createRegionalProcessingCenter("LIVERPOOL", "HM Courts & Tribunals Service", ADDRESS2,
+                ADDRESS3, "36 Dale Street", POSTCODE, "LIVERPOOL");
 
         when(regionalProcessingCenterService.getByScReferenceCode("SC/1234/5")).thenReturn(rpc);
 
-        dateTime = ZonedDateTime.of(LocalDate.of(2018, 7, 1), LocalTime.of(0, 0), ZoneId.of(ZONE_ID));
+        Subscription appellantSubscription = Subscription.builder()
+                .tya("GLSCRR")
+                .email("test@email.com")
+                .mobile("07983495065")
+                .subscribeEmail("Yes")
+                .subscribeSms("No")
+                .build();
+
+        subscriptions = Subscriptions.builder().appellantSubscription(appellantSubscription).build();
+        name = Name.builder().firstName("Harry").lastName("Kane").title("Mr").build();
     }
 
     @Test
     public void customisePersonalisation() {
-        List<Event> events = new ArrayList<>();
-        events.add(Event.builder().dateTime(dateTime).eventType(APPEAL_RECEIVED).build());
-
-        Subscription appellantSubscription = Subscription.builder()
-            .firstName("Harry")
-            .surname("Kane")
-            .title("Mr")
-            .appealNumber("GLSCRR")
-            .email("test@email.com")
-            .mobileNumber("07983495065")
-            .subscribeEmail(true)
-            .subscribeSms(false)
-            .build();
+        List<Events> events = new ArrayList<>();
+        events.add(Events.builder().value(Event.builder().date(date).type(APPEAL_RECEIVED.getId()).build()).build());
 
         CcdResponse response = CcdResponse.builder()
-            .caseId(CASE_ID).benefitType(PIP).caseReference("SC/1234/5")
-            .appellantSubscription(appellantSubscription)
+            .caseId(CASE_ID).caseReference("SC/1234/5")
+            .appeal(Appeal.builder().benefitType(BenefitType.builder().code("PIP").build())
+                .appellant(Appellant.builder().name(name).build())
+            .build())
+            .subscriptions(subscriptions)
             .notificationType(APPEAL_RECEIVED)
             .events(events)
             .build();
@@ -112,45 +119,50 @@ public class PersonalisationTest {
         assertEquals("http://link.com/progress/GLSCRR/abouthearing", result.get(HEARING_INFO_LINK_LITERAL));
         assertNull(result.get(EVIDENCE_RECEIVED_DATE_LITERAL));
 
-        assertEquals("HM Courts & Tribunals Service", result.get(REGIONAL_OFFICE_NAME_LITERAL));
+        assertEquals(ADDRESS1, result.get(REGIONAL_OFFICE_NAME_LITERAL));
         assertEquals(DEPARTMENT_NAME_STRING, result.get(DEPARTMENT_NAME_LITERAL));
-        assertEquals("Social Security & Child Support Appeals", result.get(SUPPORT_CENTRE_NAME_LITERAL));
-        assertEquals("Prudential Buildings", result.get(ADDRESS_LINE_LITERAL));
-        assertEquals("36 Dale Street", result.get(TOWN_LITERAL));
-        assertEquals("LIVERPOOL", result.get(COUNTY_LITERAL));
-        assertEquals("L2 5UZ", result.get(POSTCODE_LITERAL));
+        assertEquals(ADDRESS2, result.get(SUPPORT_CENTRE_NAME_LITERAL));
+        assertEquals(ADDRESS3, result.get(ADDRESS_LINE_LITERAL));
+        assertEquals(ADDRESS4, result.get(TOWN_LITERAL));
+        assertEquals(CITY, result.get(COUNTY_LITERAL));
+        assertEquals(POSTCODE, result.get(POSTCODE_LITERAL));
     }
 
     @Test
     public void givenEvidenceReceivedNotification_customisePersonalisation() {
-        List<Event> events = new ArrayList<>();
-        events.add(Event.builder().dateTime(dateTime).eventType(APPEAL_RECEIVED).build());
+        List<Events> events = new ArrayList<>();
+        events.add(Events.builder().value(Event.builder().date(date).type(APPEAL_RECEIVED.getId()).build()).build());
 
-        Evidence evidence = Evidence.builder()
-                .dateReceived(dateTime.toLocalDate())
+        List<Documents> documents = new ArrayList<>();
+
+        Documents doc = Documents.builder().value(Doc.builder()
+                .dateReceived("2018-07-01")
                 .evidenceType("Medical")
-                .evidenceProvidedBy("Caseworker").build();
+                .evidenceProvidedBy("Caseworker").build()).build();
 
-        List<Evidence> evidenceList = new ArrayList<>();
-        evidenceList.add(evidence);
+        documents.add(doc);
+
+        Evidence evidence = Evidence.builder().documents(documents).build();
 
         Subscription appellantSubscription = Subscription.builder()
-                .firstName("Harry")
-                .surname("Kane")
-                .title("Mr")
-                .appealNumber("GLSCRR")
+                .tya("GLSCRR")
                 .email("test@email.com")
-                .mobileNumber("07983495065")
-                .subscribeEmail(true)
-                .subscribeSms(false)
+                .mobile("07983495065")
+                .subscribeEmail("Yes")
+                .subscribeSms("No")
                 .build();
 
+        Subscriptions subscriptions = Subscriptions.builder().appellantSubscription(appellantSubscription).build();
+
         CcdResponse response = CcdResponse.builder()
-                .caseId(CASE_ID).benefitType(PIP).caseReference("SC/1234/5")
-                .appellantSubscription(appellantSubscription)
+                .caseId(CASE_ID).caseReference("SC/1234/5")
+                .appeal(Appeal.builder().benefitType(BenefitType.builder().code("PIP").build())
+                        .appellant(Appellant.builder().name(name).build())
+                        .build())
+                .subscriptions(subscriptions)
                 .notificationType(EVIDENCE_RECEIVED)
                 .events(events)
-                .evidences(evidenceList)
+                .evidence(evidence)
                 .build();
 
         Map<String, String> result = personalisation.create(CcdResponseWrapper.builder().newCcdResponse(response).build());
@@ -160,11 +172,12 @@ public class PersonalisationTest {
 
     @Test
     public void setAppealReceivedEventData() {
-        List<Event> events = new ArrayList<>();
-        events.add(Event.builder().dateTime(dateTime).eventType(APPEAL_RECEIVED).build());
+        List<Events> events = new ArrayList<>();
+        events.add(Events.builder().value(Event.builder().date(date).type(APPEAL_RECEIVED.getId()).build()).build());
 
         CcdResponse response = CcdResponse.builder()
-                .caseId(CASE_ID).benefitType(PIP).caseReference("SC/1234/5")
+                .caseId(CASE_ID).caseReference("SC/1234/5")
+                .appeal(Appeal.builder().benefitType(BenefitType.builder().code("PIP").build()).build())
                 .notificationType(APPEAL_RECEIVED)
                 .events(events)
                 .build();
@@ -177,18 +190,22 @@ public class PersonalisationTest {
 
     @Test
     public void setEvidenceReceivedEventData() {
-        Evidence evidence = Evidence.builder()
-                .dateReceived(dateTime.toLocalDate())
-                .evidenceType("Medical")
-                .evidenceProvidedBy("Caseworker").build();
+        List<Documents> documents = new ArrayList<>();
 
-        List<Evidence> evidenceList = new ArrayList<>();
-        evidenceList.add(evidence);
+        Documents doc = Documents.builder().value(Doc.builder()
+                .dateReceived("2018-07-01")
+                .evidenceType("Medical")
+                .evidenceProvidedBy("Caseworker").build()).build();
+
+        documents.add(doc);
+
+        Evidence evidence = Evidence.builder().documents(documents).build();
 
         CcdResponse response = CcdResponse.builder()
-                .caseId(CASE_ID).benefitType(PIP).caseReference("SC/1234/5")
+                .caseId(CASE_ID).caseReference("SC/1234/5")
+                .appeal(Appeal.builder().benefitType(BenefitType.builder().code("PIP").build()).build())
                 .notificationType(EVIDENCE_RECEIVED)
-                .evidences(evidenceList)
+                .evidence(evidence)
                 .build();
 
         Map<String, String> result = personalisation.setEvidenceReceivedNotificationData(new HashMap<>(), response);
@@ -197,12 +214,50 @@ public class PersonalisationTest {
     }
 
     @Test
-    public void setPostponementEventData() {
-        List<Event> events = new ArrayList<>();
-        events.add(Event.builder().dateTime(dateTime).eventType(POSTPONEMENT).build());
+    public void givenHearingData_correctlySetTheHearingDetails() {
+        Hearing hearing = Hearing.builder().value(HearingDetails.builder()
+                .hearingDate("2018-01-01")
+                .time("12:00")
+                .venue(Venue.builder()
+                        .name("The venue")
+                        .address(Address.builder()
+                                .line1("12 The Road Avenue")
+                                .line2("Village")
+                                .town("Aberdeen")
+                                .county("Aberdeenshire")
+                                .postcode("AB12 0HN").build())
+                        .googleMapLink("http://www.googlemaps.com/aberdeenvenue")
+                        .build()).build()).build();
+
+        List<Hearing> hearingList = new ArrayList<>();
+        hearingList.add(hearing);
 
         CcdResponse response = CcdResponse.builder()
-                .caseId(CASE_ID).benefitType(PIP).caseReference("SC/1234/5")
+                .caseId(CASE_ID).caseReference("SC/1234/5")
+                .appeal(Appeal.builder().benefitType(BenefitType.builder().code("PIP").build())
+                .appellant(Appellant.builder().name(name).build())
+                .build())
+                .notificationType(HEARING_BOOKED)
+                .subscriptions(subscriptions)
+                .hearings(hearingList)
+                .build();
+
+        Map<String, String> result = personalisation.create(CcdResponseWrapper.builder().newCcdResponse(response).build());
+
+        assertEquals("01 January 2018", result.get(HEARING_DATE));
+        assertEquals("12:00 PM", result.get(HEARING_TIME));
+        assertEquals("The venue, 12 The Road Avenue, Village, Aberdeen, Aberdeenshire, AB12 0HN", result.get(VENUE_ADDRESS_LITERAL));
+        assertEquals("http://www.googlemaps.com/aberdeenvenue", result.get(VENUE_MAP_LINK_LITERAL));
+    }
+
+    @Test
+    public void setPostponementEventData() {
+        List<Events> events = new ArrayList<>();
+        events.add(Events.builder().value(Event.builder().date(date).type(POSTPONEMENT.getId()).build()).build());
+
+        CcdResponse response = CcdResponse.builder()
+                .caseId(CASE_ID).caseReference("SC/1234/5")
+                .appeal(Appeal.builder().benefitType(BenefitType.builder().code("PIP").build()).build())
                 .notificationType(POSTPONEMENT)
                 .events(events)
                 .build();
@@ -215,7 +270,8 @@ public class PersonalisationTest {
     @Test
     public void handleNullEventWhenPopulatingEventData() {
         CcdResponse response = CcdResponse.builder()
-                .caseId(CASE_ID).benefitType(PIP).caseReference("SC/1234/5")
+                .caseId(CASE_ID).caseReference("SC/1234/5")
+                .appeal(Appeal.builder().benefitType(BenefitType.builder().code("PIP").build()).build())
                 .notificationType(POSTPONEMENT)
                 .build();
 
@@ -227,7 +283,8 @@ public class PersonalisationTest {
     @Test
     public void handleEmptyEventsWhenPopulatingEventData() {
         CcdResponse response = CcdResponse.builder()
-                .caseId(CASE_ID).benefitType(PIP).caseReference("SC/1234/5")
+                .caseId(CASE_ID).caseReference("SC/1234/5")
+                .appeal(Appeal.builder().benefitType(BenefitType.builder().code("PIP").build()).build())
                 .notificationType(POSTPONEMENT)
                 .events(new ArrayList())
                 .build();
@@ -235,5 +292,27 @@ public class PersonalisationTest {
         Map<String, String> result = personalisation.setEventData(new HashMap<>(), response);
 
         assertEquals(new HashMap<>(), result);
+    }
+
+    @Test
+    public void shouldPopulateRegionalProcessingCenterFromCcdCaseIfItsPresent() {
+        RegionalProcessingCenter rpc = new RegionalProcessingCenter();
+        rpc.createRegionalProcessingCenter("LIVERPOOL", ADDRESS1,
+                ADDRESS2, ADDRESS3,
+                ADDRESS4, POSTCODE,
+                CITY);
+
+        CcdResponse response = CcdResponse.builder().regionalProcessingCenter(rpc).build();
+
+        Map<String, String> result = personalisation.setEvidenceProcessingAddress(new HashMap<>(), response);
+
+        verify(regionalProcessingCenterService, never()).getByScReferenceCode(anyString());
+
+        assertEquals(ADDRESS1, result.get(REGIONAL_OFFICE_NAME_LITERAL));
+        assertEquals(ADDRESS2, result.get(SUPPORT_CENTRE_NAME_LITERAL));
+        assertEquals(ADDRESS3, result.get(ADDRESS_LINE_LITERAL));
+        assertEquals(ADDRESS4, result.get(TOWN_LITERAL));
+        assertEquals(CITY, result.get(COUNTY_LITERAL));
+        assertEquals(POSTCODE, result.get(POSTCODE_LITERAL));
     }
 }

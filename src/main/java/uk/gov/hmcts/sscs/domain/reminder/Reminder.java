@@ -7,7 +7,7 @@ import static uk.gov.hmcts.sscs.domain.notify.EventType.EVIDENCE_REMINDER;
 import java.time.ZonedDateTime;
 import lombok.Value;
 import uk.gov.hmcts.sscs.domain.CcdResponse;
-import uk.gov.hmcts.sscs.domain.notify.Event;
+import uk.gov.hmcts.sscs.domain.Events;
 import uk.gov.hmcts.sscs.domain.notify.EventType;
 import uk.gov.hmcts.sscs.exception.ReminderException;
 
@@ -38,15 +38,18 @@ public class Reminder {
     }
 
     public ZonedDateTime findReminderDate(CcdResponse ccdResponse) {
-        for (Event event : ccdResponse.getEvents()) {
-            switch (ccdResponse.getNotificationType()) {
-                case DWP_RESPONSE_RECEIVED: {
-                    if (event.getEventType().equals(DWP_RESPONSE_RECEIVED)) {
-                        return event.getDateTime().plusDays(2);
+        for (Events events : ccdResponse.getEvents()) {
+            if (events.getValue() != null) {
+                switch (ccdResponse.getNotificationType()) {
+                    case DWP_RESPONSE_RECEIVED: {
+                        if (events.getValue().getEventType().equals(DWP_RESPONSE_RECEIVED)) {
+                            return events.getValue().getDateTime().plusDays(2);
+                        }
+                        break;
                     }
-                    break;
+                    default:
+                        break;
                 }
-                default: break;
             }
         }
         ReminderException reminderException = new ReminderException(

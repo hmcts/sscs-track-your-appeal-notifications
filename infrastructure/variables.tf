@@ -1,6 +1,9 @@
 variable "product" {
   type    = "string"
-  default = "sscs-track-your-appeal"
+}
+
+variable "component" {
+  type    = "string"
 }
 
 variable "location" {
@@ -26,6 +29,26 @@ variable "ilbIp"{}
 
 variable "subscription" {
   type = "string"
+}
+
+variable "core_case_data_user_id"{
+  default = "16"
+}
+
+variable "core_case_data_jurisdiction_id"{
+  default = "SSCS"
+}
+
+variable "core_case_data_case_type_id"{
+  default = "Benefit"
+}
+
+variable "idam_s2s_auth_microservice"{
+  default = "sscs"
+}
+
+variable "idam_oauth2_client_id"{
+  default = "sscs"
 }
 
 variable "evidence_submission_info_link" {
@@ -66,4 +89,14 @@ variable "job_scheduler_url" {
 variable "job_scheduler_callbackUrl" {
   type = "string"
   default = "http://localhost:8080"
+}
+
+variable "idam_redirect_url" {
+  default = "https://sscs-case-loader-sandbox.service.core-compute-sandbox.internal"
+}
+
+variable "tenant_id" {}
+
+variable "jenkins_AAD_objectId" {
+  type        = "string"
 }

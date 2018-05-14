@@ -4,7 +4,6 @@ import static helper.IntegrationTestHelper.*;
 import static org.mockito.Matchers.any;
 import static org.mockito.Matchers.anyString;
 import static org.mockito.Mockito.*;
-import static org.mockito.MockitoAnnotations.initMocks;
 
 import java.io.File;
 import java.io.IOException;
@@ -53,16 +52,14 @@ public class NotificationsIt {
     @Autowired
     NotificationFactory factory;
 
-    String path = "src/IntegrationTests/resources/json/ccdCallbackResponse.json";
-
     String json;
 
     @Before
     public void setup() throws IOException {
-        initMocks(this);
         NotificationService service = new NotificationService(client, factory, reminderService);
         controller = new NotificationController(service, authorisationService);
         this.mockMvc = MockMvcBuilders.standaloneSetup(controller).build();
+        String path = getClass().getClassLoader().getResource("json/ccdResponse.json").getFile();
         json = FileUtils.readFileToString(new File(path), StandardCharsets.UTF_8.name());
     }
 
@@ -144,6 +141,17 @@ public class NotificationsIt {
     @Test
     public void shouldSendNotificationForHearingBookedRequest() throws Exception {
         json = json.replace("appealReceived", "hearingBooked");
+
+        HttpServletResponse response = getResponse(getRequestWithAuthHeader(json));
+
+        assertHttpStatus(response, HttpStatus.OK);
+        verify(client, times(1)).sendEmail(any(), any(), any(), any());
+        verify(client, never()).sendSms(any(), any(), any(), any());
+    }
+
+    @Test
+    public void shouldSendNotificationForSyaAppealCreated() throws Exception {
+        json = json.replace("appealReceived", "appealCreated");
 
         HttpServletResponse response = getResponse(getRequestWithAuthHeader(json));
 
