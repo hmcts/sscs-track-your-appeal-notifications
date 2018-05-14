@@ -1,7 +1,5 @@
 server.port: ${PORT:8081}
 
-spring.application.name: TyaNotificationsService
-
 core_case_data:
   api:
     url: ${CORE_CASE_DATA_API_URL:http://localhost:4452}
@@ -66,3 +64,51 @@ notification:
     smsId: ${EVIDENCE_REMINDER_SMS_TEMPLATE_ID:e3f71440-d1ac-43c8-a8cc-a088c4f3c959}
   appealCreated.emailId: ${SYA_APPEAL_CREATED_EMAIL_TEMPLATE_ID:01293b93-b23e-40a3-ad78-2c6cd01cd21c}
 
+quartzProperties:
+  org:
+    quartz:
+      dataSource:
+        jobscheduler:
+          URL: ${spring.datasource.url}
+          driver: org.postgresql.Driver
+          password: ${spring.datasource.password}
+          user: ${spring.datasource.username}
+      jobStore:
+        class: org.quartz.impl.jdbcjobstore.JobStoreTX
+        dataSource: jobscheduler
+        driverDelegateClass: org.quartz.impl.jdbcjobstore.PostgreSQLDelegate
+        isClustered: true
+      scheduler:
+        instanceId: AUTO
+      threadPool:
+        class: org.quartz.simpl.SimpleThreadPool
+        threadCount: 8
+retryPolicy:
+  delayBetweenAttemptsInMs: ${DELAY_BETWEEN_JOB_ATTEMPTS_MS:15000}
+  maxNumberOfJobExecutions: ${MAX_NUMBER_OF_JOB_EXECUTIONS:5}
+spring:
+  application:
+    name: TyaNotificationsService
+  datasource:
+    driverClassName: org.postgresql.Driver
+    password: ${JOB_SCHEDULER_DB_PASSWORD:postgres}
+    properties:
+      charSet: UTF-8
+    tomcat:
+      abandon-when-percentage-full: 0
+      log-abandoned: true
+      max-active: 10
+      max-idle: 10
+      max-wait: 10000
+      min-idle: 2
+      remove-abandoned: true
+      remove-abandoned-timeout: 60
+      test-on-borrow: true
+      test-on-connect: true
+      test-on-idle: true
+      test-on-return: true
+      test-while-idle: true
+      time-between-eviction-runs-millis: 10000
+      validation-query: SELECT 1
+    url: jdbc:postgresql://${JOB_SCHEDULER_DB_HOST:localhost}:${JOB_SCHEDULER_DB_PORT:5432}/${JOB_SCHEDULER_DB_NAME:jobscheduler}${JOB_SCHEDULER_DB_CONNECTION_OPTIONS:}
+    username: ${JOB_SCHEDULER_DB_USERNAME:postgres}
