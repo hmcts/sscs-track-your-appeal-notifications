@@ -83,9 +83,11 @@ quartzProperties:
       threadPool:
         class: org.quartz.simpl.SimpleThreadPool
         threadCount: 8
+
 retryPolicy:
   delayBetweenAttemptsInMs: ${DELAY_BETWEEN_JOB_ATTEMPTS_MS:15000}
   maxNumberOfJobExecutions: ${MAX_NUMBER_OF_JOB_EXECUTIONS:5}
+
 spring:
   application:
     name: TyaNotificationsService
