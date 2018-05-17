@@ -3,30 +3,28 @@
 
 properties([
   parameters([
-    string(name: 'PRODUCT_NAME', defaultValue: 'sscs', description: ''),
-    string(name: 'APP', defaultValue: 'track-your-appeal-notif', description: ''),
-    string(name: 'TYPE', defaultValue: 'java', description: ''),
-    string(name: 'ENVIRONMENT', defaultValue: 'sandbox', description: 'Environment where code should be build and deployed'),
-    choice(name: 'SUBSCRIPTION', choices: 'sandbox\nnonprod\nprod', description: 'Azure subscriptions available to build in')
+    string(name: 'ENVIRONMENT', defaultValue: 'saat', description: 'Environment where code should be build and deployed'),
   ]),
   [$class: 'GithubProjectProperty', projectUrlStr: 'https://github.com/hmcts/track-your-appeal-notifications.git'],
   pipelineTriggers([[$class: 'GitHubPushTrigger']])
 ])
 
 List<LinkedHashMap<String, Object>> secrets = [
-        secret('ManagementSecEnabled', 'MANAGEMENT_SECURITY_ENABLED'),
-        secret('CcdApi', 'CORE_CASE_DATA_API_URL'),
-        secret('CcdJid', 'CORE_CASE_DATA_JURISDICTION_ID'),
-        secret('CcdCtid', 'CORE_CASE_DATA_CASE_TYPE_ID'),
-        secret('IdamUrl', 'IDAM_URL'),
-        secret('IdamS2sSecret', 'IDAM.S2S-AUTH.TOTP_SECRET'),
-        secret('IdamS2sAuth', 'S2S_URL'),
-        secret('IdamS2sAuthMicro', 'IDAM.S2S-AUTH.MICROSERVICE'),
-        secret('IdamSscsUser', 'IDAM_SSCS_SYSTEMUPDATE_USER'),
-        secret('IdamSscsPass', 'IDAM_SSCS_SYSTEMUPDATE_PASSWORD'),
-        secret('IdamAuthCid','IDAM_OAUTH2_CLIENT_ID'),
-        secret('IdamAuthSecret','IDAM_OAUTH2_CLIENT_SECRET'),
-        secret('IdamAuthUrl','IDAM_OAUTH2_REDIRECT_URL')
+  secret('idam-url', 'IDAM_URL'),
+  secret('s2s-api', 'IDAM.S2S-AUTH'),
+  secret('s2s-auth', 'IDAM.S2S-AUTH.TOTP_SECRET'),
+  secret('sysupdate-user', 'IDAM_SSCS_SYSTEMUPDATE_USER'),
+  secret('sysupdate-pass', 'IDAM_SSCS_SYSTEMUPDATE_PASSWORD'),
+  secret('notif-api', 'NOTIFICATION_API_KEY'),
+  secret('mac-secret', 'EMAIL_MAC_SECRET_TEXT'),
+  secret('idam-oauth-secret', 'IDAM_OAUTH2_CLIENT_SECRET'),
+  secret('idam-oauth-user', 'IDAM_OAUTH2_CLIENT_ID'),
+  secret('ccd-api', 'CORE_CASE_DATA_API_URL'),
+  secret('ccd-uid', 'CORE_CASE_DATA_USER_ID'),
+  secret('ccd-jid', 'CORE_CASE_DATA_JURISDICTION_ID'),
+  secret('ccd-tid', 'CORE_CASE_DATA_CASE_TYPE_ID'),
+  secret('s2s-micro', 'IDAM.S2S-AUTH.MICROSERVICE'),
+  secret('idam-redirect', 'IDAM_OAUTH2_REDIRECT_URL'),
 ]
 
 static LinkedHashMap<String, Object> secret(String secretName, String envVar) {
@@ -38,7 +36,7 @@ static LinkedHashMap<String, Object> secret(String secretName, String envVar) {
     ]
 }
 
-withParameterizedPipeline(params.TYPE, params.PRODUCT_NAME, params.APP, params.ENVIRONMENT, params.SUBSCRIPTION) {
+withParameterizedPipeline('java', 'sscs-tya', 'notif', params.ENVIRONMENT, 'sandbox') {
     enableSlackNotifications('#sscs-tech')
     loadVaultSecrets(secrets)
 }
