@@ -6,7 +6,7 @@ resource "azurerm_key_vault_secret" "idam-url" {
 
 resource "azurerm_key_vault_secret" "s2s-api" {
   name      = "s2s-api"
-  value     = "${data.vault_generic_secret.idam_s2s_api.data["value"]}"
+  value     = "${local.s2sCnpUrl}"
   vault_uri = "${module.sscs-tya-notif-key-vault.key_vault_uri}"
 }
 
