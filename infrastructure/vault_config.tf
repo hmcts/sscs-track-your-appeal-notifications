@@ -54,7 +54,7 @@ resource "azurerm_key_vault_secret" "idam-oauth-user" {
 
 resource "azurerm_key_vault_secret" "ccd-api" {
   name      = "ccd-api"
-  value     = "${local.CcdApi}"
+  value     = "${local.ccdApi}"
   vault_uri = "${module.sscs-tya-notif-key-vault.key_vault_uri}"
 }
 
