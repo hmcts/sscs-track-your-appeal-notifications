@@ -16,7 +16,6 @@ properties([
 List<LinkedHashMap<String, Object>> secrets = [
         secret('ManagementSecEnabled', 'MANAGEMENT_SECURITY_ENABLED'),
         secret('CcdApi', 'CORE_CASE_DATA_API_URL'),
-        secret('CcdUid', 'CORE_CASE_DATA_USER_ID'),
         secret('CcdJid', 'CORE_CASE_DATA_JURISDICTION_ID'),
         secret('CcdCtid', 'CORE_CASE_DATA_CASE_TYPE_ID'),
         secret('IdamUrl', 'IDAM_URL'),

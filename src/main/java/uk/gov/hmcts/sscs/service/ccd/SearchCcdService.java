@@ -24,8 +24,8 @@ public class SearchCcdService {
     public List<CaseDetails> findCaseByCaseRef(String caseRef, IdamTokens idamTokens) {
         return coreCaseDataApi.searchForCaseworker(
             idamTokens.getIdamOauth2Token(),
-            idamTokens.getAuthenticationService(),
-            coreCaseDataProperties.getUserId(),
+            idamTokens.getServiceAuthorization(),
+            idamTokens.getUserId(),
             coreCaseDataProperties.getJurisdictionId(),
             coreCaseDataProperties.getCaseTypeId(),
             ImmutableMap.of("case.caseReference", caseRef)
@@ -35,12 +35,12 @@ public class SearchCcdService {
     public CaseDetails getByCaseId(String caseId, IdamTokens idamTokens) {
         log.info("Get getByCaseId...");
         return coreCaseDataApi.readForCaseWorker(
-                idamTokens.getIdamOauth2Token(),
-                idamTokens.getAuthenticationService(),
-                coreCaseDataProperties.getUserId(),
-                coreCaseDataProperties.getJurisdictionId(),
-                coreCaseDataProperties.getCaseTypeId(),
-                caseId
+            idamTokens.getIdamOauth2Token(),
+            idamTokens.getServiceAuthorization(),
+            idamTokens.getUserId(),
+            coreCaseDataProperties.getJurisdictionId(),
+            coreCaseDataProperties.getCaseTypeId(),
+            caseId
         );
     }
 

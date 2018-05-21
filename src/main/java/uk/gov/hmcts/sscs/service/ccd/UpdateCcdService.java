@@ -20,8 +20,7 @@ public class UpdateCcdService {
     }
 
     public CaseDetails update(CcdResponse caseData, Long caseId, String eventType, IdamTokens idamTokens) {
-        StartEventResponse startEventResponse = coreCcdService.startEvent(idamTokens.getAuthenticationService(),
-            idamTokens.getIdamOauth2Token(), caseId.toString(), eventType);
+        StartEventResponse startEventResponse = coreCcdService.startEvent(idamTokens, caseId.toString(), eventType);
         return coreCcdService.submitEventForCaseworker(caseData, caseId, idamTokens, startEventResponse);
     }
 

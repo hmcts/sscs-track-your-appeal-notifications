@@ -21,6 +21,7 @@ public class CreateCcdServiceTest {
 
     private static final String OAUTH2 = "token";
     private static final String S2SAUTH = "auth";
+    private static final String USER_ID = "16";
     private static final String EVENT_ID = "appealCreated";
 
     @Mock
@@ -42,20 +43,21 @@ public class CreateCcdServiceTest {
         stub(idamService.generateServiceAuthorization()).toReturn(S2SAUTH);
         stub(idamService.getIdamOauth2Token()).toReturn(OAUTH2);
 
-        when(coreCcdService.startCase(S2SAUTH, OAUTH2, EVENT_ID))
-            .thenReturn(response);
-
         idamTokens = IdamTokens.builder()
-                .idamOauth2Token(OAUTH2)
-                .authenticationService(S2SAUTH)
-                .build();
+            .idamOauth2Token(OAUTH2)
+            .serviceAuthorization(S2SAUTH)
+            .userId(USER_ID)
+            .build();
+
+        when(coreCcdService.startCase(idamTokens, EVENT_ID))
+            .thenReturn(response);
 
         ccdResponse = CcdResponse.builder().build();
 
         caseDetails = CaseDetails.builder().caseTypeId("123").build();
 
         when(coreCcdService.submitForCaseworker(ccdResponse, idamTokens, response))
-                .thenReturn(caseDetails);
+            .thenReturn(caseDetails);
 
         createCcdService = new CreateCcdService(coreCcdService);
 

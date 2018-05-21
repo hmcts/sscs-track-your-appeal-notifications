@@ -21,19 +21,21 @@ public class IdamServiceTest {
     @Mock
     private AuthTokenGenerator authTokenGenerator;
     @Mock
+    private AuthTokenSubjectExtractor authTokenSubjectExtractor;
+    @Mock
     private IdamApiClient idamApiClient;
 
     private Authorize authToken;
-
     private IdamProperties idamProperties;
-
     private IdamService idamService;
 
     @Before
     public void setUp() {
         authToken = new Authorize("redirect/", "authCode", "access");
         idamProperties = new IdamProperties();
-        idamService = new IdamService(authTokenGenerator, idamApiClient, idamProperties);
+        idamService = new IdamService(
+            authTokenGenerator, authTokenSubjectExtractor, idamApiClient, idamProperties
+        );
     }
 
     @Test
@@ -41,6 +43,14 @@ public class IdamServiceTest {
         String auth = "auth";
         when(authTokenGenerator.generate()).thenReturn(auth);
         assertThat(idamService.generateServiceAuthorization(), is(auth));
+    }
+
+    @Test
+    public void shouldReturnServiceUserIdGivenAuthToken() {
+        String auth = "token_with_sub_16";
+        String userId = "16";
+        when(authTokenSubjectExtractor.extract(auth)).thenReturn(userId);
+        assertThat(idamService.getUserId(auth), is(userId));
     }
 
     @Test
@@ -74,4 +84,5 @@ public class IdamServiceTest {
 
         assertThat(token, containsString("Bearer access"));
     }
+
 }

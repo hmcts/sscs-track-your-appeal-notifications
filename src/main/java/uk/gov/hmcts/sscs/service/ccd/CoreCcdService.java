@@ -23,22 +23,21 @@ public class CoreCcdService {
         this.coreCaseDataProperties = coreCaseDataProperties;
     }
 
-    public StartEventResponse startCase(String serviceAuthorization, String idamOauth2Token, String eventType) {
+    public StartEventResponse startCase(IdamTokens idamTokens, String eventType) {
         return coreCaseDataApi.startForCaseworker(
-            idamOauth2Token,
-            serviceAuthorization,
-            coreCaseDataProperties.getUserId(),
+            idamTokens.getIdamOauth2Token(),
+            idamTokens.getServiceAuthorization(),
+            idamTokens.getUserId(),
             coreCaseDataProperties.getJurisdictionId(),
             coreCaseDataProperties.getCaseTypeId(),
             eventType);
     }
 
-    public StartEventResponse startEvent(String serviceAuthorization, String idamOauth2Token, String caseId,
-                                         String eventType) {
+    public StartEventResponse startEvent(IdamTokens idamTokens, String caseId, String eventType) {
         return coreCaseDataApi.startEventForCaseWorker(
-            idamOauth2Token,
-            serviceAuthorization,
-            coreCaseDataProperties.getUserId(),
+            idamTokens.getIdamOauth2Token(),
+            idamTokens.getServiceAuthorization(),
+            idamTokens.getUserId(),
             coreCaseDataProperties.getJurisdictionId(),
             coreCaseDataProperties.getCaseTypeId(),
             caseId,
@@ -46,44 +45,46 @@ public class CoreCcdService {
     }
 
     public CaseDetails submitForCaseworker(CcdResponse ccdResponse, IdamTokens idamTokens, StartEventResponse startEventResponse) {
-        CaseDataContent caseDataContent = CaseDataContent.builder()
-                .eventToken(startEventResponse.getToken())
-                .event(Event.builder()
-                        .id(startEventResponse.getEventId())
-                        .summary("CCD Case")
-                        .description("Notification service created case")
-                        .build())
-                .data(ccdResponse)
-                .build();
+
+        CaseDataContent caseDataContent = buildCaseDataContent(ccdResponse, startEventResponse, "Notification Service created case");
+
         return coreCaseDataApi.submitForCaseworker(
-                idamTokens.getIdamOauth2Token(),
-                idamTokens.getAuthenticationService(),
-                coreCaseDataProperties.getUserId(),
-                coreCaseDataProperties.getJurisdictionId(),
-                coreCaseDataProperties.getCaseTypeId(),
-                true,
-                caseDataContent);
+            idamTokens.getIdamOauth2Token(),
+            idamTokens.getServiceAuthorization(),
+            idamTokens.getUserId(),
+            coreCaseDataProperties.getJurisdictionId(),
+            coreCaseDataProperties.getCaseTypeId(),
+            true,
+            caseDataContent);
     }
 
     public CaseDetails submitEventForCaseworker(CcdResponse ccdResponse, Long caseId, IdamTokens idamTokens, StartEventResponse startEventResponse) {
-        CaseDataContent caseDataContent = CaseDataContent.builder()
-                .eventToken(startEventResponse.getToken())
-                .event(Event.builder()
-                        .id(startEventResponse.getEventId())
-                        .summary("CCD Case")
-                        .description("Notification service updated case")
-                        .build())
-                .data(ccdResponse)
-                .build();
+
+        CaseDataContent caseDataContent = buildCaseDataContent(ccdResponse, startEventResponse, "Notification Service updated case");
+
         return coreCaseDataApi.submitEventForCaseWorker(
-                idamTokens.getIdamOauth2Token(),
-                idamTokens.getAuthenticationService(),
-                coreCaseDataProperties.getUserId(),
-                coreCaseDataProperties.getJurisdictionId(),
-                coreCaseDataProperties.getCaseTypeId(),
-                caseId.toString(),
-                true,
-                caseDataContent);
+            idamTokens.getIdamOauth2Token(),
+            idamTokens.getServiceAuthorization(),
+            idamTokens.getUserId(),
+            coreCaseDataProperties.getJurisdictionId(),
+            coreCaseDataProperties.getCaseTypeId(),
+            caseId.toString(),
+            true,
+            caseDataContent);
+    }
+
+    private CaseDataContent buildCaseDataContent(CcdResponse ccdResponse,
+                                                 StartEventResponse startEventResponse,
+                                                 String description) {
+        return CaseDataContent.builder()
+            .eventToken(startEventResponse.getToken())
+            .event(Event.builder()
+                .id(startEventResponse.getEventId())
+                .summary("CCD Case")
+                .description(description)
+                .build())
+            .data(ccdResponse)
+            .build();
     }
 
 }

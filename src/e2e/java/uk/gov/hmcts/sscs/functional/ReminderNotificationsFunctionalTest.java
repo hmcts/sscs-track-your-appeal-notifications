@@ -89,9 +89,11 @@ public class ReminderNotificationsFunctionalTest {
 
         caseData = buildCcdResponse(testCaseReference, "Yes", "Yes", eventType);
 
+        String oauth2Token = idamService.getIdamOauth2Token();
         idamTokens = IdamTokens.builder()
-            .authenticationService(idamService.generateServiceAuthorization())
-            .idamOauth2Token(idamService.getIdamOauth2Token())
+            .idamOauth2Token(oauth2Token)
+            .serviceAuthorization(idamService.generateServiceAuthorization())
+            .userId(idamService.getUserId(oauth2Token))
             .build();
 
         CaseDetails caseDetails = createCcdService.create(caseData, idamTokens);
@@ -162,7 +164,7 @@ public class ReminderNotificationsFunctionalTest {
         RestAssured.useRelaxedHTTPSValidation();
         RestAssured
             .given()
-            .header("ServiceAuthorization", "" + idamTokens.getAuthenticationService())
+            .header("ServiceAuthorization", "" + idamTokens.getServiceAuthorization())
             .contentType("application/json")
             .body(json)
             .when()

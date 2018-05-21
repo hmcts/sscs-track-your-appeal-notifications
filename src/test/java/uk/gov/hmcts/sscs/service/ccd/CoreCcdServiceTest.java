@@ -23,6 +23,7 @@ public class CoreCcdServiceTest {
 
     private static final String OAUTH2 = "token";
     private static final String S2SAUTH = "auth";
+    private static final String USER_ID = "16";
     private static final Long CASE_ID = 989897L;
     private static final String EVENT_ID = "appealCreated";
     private static final String CCD_TOKEN = "ccdToken";
@@ -45,7 +46,6 @@ public class CoreCcdServiceTest {
     @Before
     public void setUp() {
         ccdProperties = new CoreCaseDataProperties();
-        ccdProperties.setUserId("USER");
         ccdProperties.setJurisdictionId("SSCS");
         ccdProperties.setCaseTypeId("Benefits");
 
@@ -53,25 +53,29 @@ public class CoreCcdServiceTest {
         when(response.getEventId()).thenReturn(CCD_EVENT);
 
         coreCcdService = new CoreCcdService(ccdApi, ccdProperties);
-        idamTokens = IdamTokens.builder().idamOauth2Token(OAUTH2).authenticationService(S2SAUTH).build();
+        idamTokens = IdamTokens.builder()
+            .idamOauth2Token(OAUTH2)
+            .serviceAuthorization(S2SAUTH)
+            .userId(USER_ID)
+            .build();
     }
 
     @Test
     public void givenANewCase_shouldCallStartForCaseworkerInCcd() {
 
         StartEventResponse expectedStartEventResponse =
-                StartEventResponse.builder().eventId(EVENT_ID).caseDetails(caseDetails).token("1234").build();
+            StartEventResponse.builder().eventId(EVENT_ID).caseDetails(caseDetails).token("1234").build();
 
         when(ccdApi.startForCaseworker(
-                eq(OAUTH2),
-                eq(S2SAUTH),
-                eq(ccdProperties.getUserId()),
-                eq(ccdProperties.getJurisdictionId()),
-                eq(ccdProperties.getCaseTypeId()),
-                eq(EVENT_ID)))
-                .thenReturn(expectedStartEventResponse);
+            eq(OAUTH2),
+            eq(S2SAUTH),
+            eq(USER_ID),
+            eq(ccdProperties.getJurisdictionId()),
+            eq(ccdProperties.getCaseTypeId()),
+            eq(EVENT_ID)))
+            .thenReturn(expectedStartEventResponse);
 
-        StartEventResponse eventResponse = coreCcdService.startCase(S2SAUTH, OAUTH2, EVENT_ID);
+        StartEventResponse eventResponse = coreCcdService.startCase(idamTokens, EVENT_ID);
 
         assertThat(eventResponse, is(expectedStartEventResponse));
     }
@@ -80,17 +84,17 @@ public class CoreCcdServiceTest {
     public void givenANewCaseWithStartEventResponse_shouldCallSubmitForCaseworkerInCcd() {
 
         StartEventResponse expectedStartEventResponse =
-                StartEventResponse.builder().eventId(EVENT_ID).caseDetails(caseDetails).token("1234").build();
+            StartEventResponse.builder().eventId(EVENT_ID).caseDetails(caseDetails).token("1234").build();
 
         when(ccdApi.submitForCaseworker(
-                eq(OAUTH2),
-                eq(S2SAUTH),
-                eq(ccdProperties.getUserId()),
-                eq(ccdProperties.getJurisdictionId()),
-                eq(ccdProperties.getCaseTypeId()),
-                eq(true),
-                any()))
-                .thenReturn(caseDetails);
+            eq(OAUTH2),
+            eq(S2SAUTH),
+            eq(USER_ID),
+            eq(ccdProperties.getJurisdictionId()),
+            eq(ccdProperties.getCaseTypeId()),
+            eq(true),
+            any()))
+            .thenReturn(caseDetails);
 
         CaseDetails actual = coreCcdService.submitForCaseworker(ccdResponse, idamTokens, expectedStartEventResponse);
 
@@ -101,19 +105,19 @@ public class CoreCcdServiceTest {
     public void givenAnUpdateToACase_shouldCallStartEventForCaseworkerInCcd() {
 
         StartEventResponse expectedStartEventResponse =
-                StartEventResponse.builder().eventId(EVENT_ID).caseDetails(caseDetails).token("1234").build();
+            StartEventResponse.builder().eventId(EVENT_ID).caseDetails(caseDetails).token("1234").build();
 
         when(ccdApi.startEventForCaseWorker(
-                eq(OAUTH2),
-                eq(S2SAUTH),
-                eq(ccdProperties.getUserId()),
-                eq(ccdProperties.getJurisdictionId()),
-                eq(ccdProperties.getCaseTypeId()),
-                eq(CASE_ID.toString()),
-                eq(EVENT_ID)))
-                .thenReturn(expectedStartEventResponse);
+            eq(OAUTH2),
+            eq(S2SAUTH),
+            eq(USER_ID),
+            eq(ccdProperties.getJurisdictionId()),
+            eq(ccdProperties.getCaseTypeId()),
+            eq(CASE_ID.toString()),
+            eq(EVENT_ID)))
+            .thenReturn(expectedStartEventResponse);
 
-        StartEventResponse eventResponse = coreCcdService.startEvent(S2SAUTH, OAUTH2, CASE_ID.toString(), EVENT_ID);
+        StartEventResponse eventResponse = coreCcdService.startEvent(idamTokens, CASE_ID.toString(), EVENT_ID);
 
         assertThat(eventResponse, is(expectedStartEventResponse));
     }
@@ -122,18 +126,18 @@ public class CoreCcdServiceTest {
     public void givenAnUpdateToACaseWithStartEventResponse_shouldCallSubmitEventForCaseworkerInCcd() {
 
         StartEventResponse expectedStartEventResponse =
-                StartEventResponse.builder().eventId(EVENT_ID).caseDetails(caseDetails).token("1234").build();
+            StartEventResponse.builder().eventId(EVENT_ID).caseDetails(caseDetails).token("1234").build();
 
         when(ccdApi.submitEventForCaseWorker(
-                eq(OAUTH2),
-                eq(S2SAUTH),
-                eq(ccdProperties.getUserId()),
-                eq(ccdProperties.getJurisdictionId()),
-                eq(ccdProperties.getCaseTypeId()),
-                eq(CASE_ID.toString()),
-                eq(true),
-                any()))
-                .thenReturn(caseDetails);
+            eq(OAUTH2),
+            eq(S2SAUTH),
+            eq(USER_ID),
+            eq(ccdProperties.getJurisdictionId()),
+            eq(ccdProperties.getCaseTypeId()),
+            eq(CASE_ID.toString()),
+            eq(true),
+            any()))
+            .thenReturn(caseDetails);
 
         CaseDetails actual = coreCcdService.submitEventForCaseworker(ccdResponse, CASE_ID, idamTokens, expectedStartEventResponse);
 

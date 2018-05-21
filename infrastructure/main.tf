@@ -68,7 +68,6 @@ module "track-your-appeal-notifications" {
     MANAGEMENT_SECURITY_ENABLED = "${var.management_security_enabled}"
 
     CORE_CASE_DATA_API_URL = "${local.ccdApi}"
-    CORE_CASE_DATA_USER_ID = "${var.core_case_data_user_id}"
     CORE_CASE_DATA_JURISDICTION_ID = "${var.core_case_data_jurisdiction_id}"
     CORE_CASE_DATA_CASE_TYPE_ID = "${var.core_case_data_case_type_id}"
 
