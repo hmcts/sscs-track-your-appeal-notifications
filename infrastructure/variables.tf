@@ -31,10 +31,6 @@ variable "subscription" {
   type = "string"
 }
 
-variable "core_case_data_user_id"{
-  default = "16"
-}
-
 variable "core_case_data_jurisdiction_id"{
   default = "SSCS"
 }

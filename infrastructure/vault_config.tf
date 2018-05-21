@@ -58,12 +58,6 @@ resource "azurerm_key_vault_secret" "ccd-api" {
   vault_uri = "${module.sscs-tya-notif-key-vault.key_vault_uri}"
 }
 
-resource "azurerm_key_vault_secret" "ccd-uid" {
-  name      = "ccd-uid"
-  value     = "${var.core_case_data_user_id}"
-  vault_uri = "${module.sscs-tya-notif-key-vault.key_vault_uri}"
-}
-
 resource "azurerm_key_vault_secret" "ccd-jid" {
   name      = "ccd-jid"
   value     = "${var.core_case_data_jurisdiction_id}"

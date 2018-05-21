@@ -11,20 +11,27 @@ import uk.gov.hmcts.sscs.domain.idam.Authorize;
 @Service
 @Slf4j
 public class IdamService {
+
     private final AuthTokenGenerator authTokenGenerator;
+    private final AuthTokenSubjectExtractor authTokenSubjectExtractor;
     private final IdamApiClient idamApiClient;
     private final IdamProperties idamProperties;
 
     @Autowired
-    public IdamService(AuthTokenGenerator authTokenGenerator, IdamApiClient idamApiClient,
-                       IdamProperties idamProperties) {
+    public IdamService(AuthTokenGenerator authTokenGenerator, AuthTokenSubjectExtractor authTokenSubjectExtractor,
+                       IdamApiClient idamApiClient, IdamProperties idamProperties) {
         this.authTokenGenerator = authTokenGenerator;
+        this.authTokenSubjectExtractor = authTokenSubjectExtractor;
         this.idamApiClient = idamApiClient;
         this.idamProperties = idamProperties;
     }
 
     public String generateServiceAuthorization() {
         return authTokenGenerator.generate();
+    }
+
+    public String getUserId(String oauth2Token) {
+        return authTokenSubjectExtractor.extract(oauth2Token);
     }
 
     public String getIdamOauth2Token() {

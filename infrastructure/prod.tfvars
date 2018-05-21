@@ -7,4 +7,3 @@ hearing_info_link = "https://track-appeal.platform.hmcts.net/abouthearing/appeal
 claiming_expenses_link = "https://track-appeal.platform.hmcts.net/expenses/appeal_id"
 
 idam_redirect_url = "https://sscs-case-loader-prod.service.core-compute-prod.internal"
-core_case_data_user_id = "11289"

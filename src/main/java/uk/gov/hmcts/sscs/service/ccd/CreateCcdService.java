@@ -18,8 +18,7 @@ public class CreateCcdService {
     }
 
     public CaseDetails create(CcdResponse caseData, IdamTokens idamTokens) {
-        StartEventResponse startEventResponse = coreCcdService.startCase(idamTokens.getAuthenticationService(),
-            idamTokens.getIdamOauth2Token(), "appealCreated");
+        StartEventResponse startEventResponse = coreCcdService.startCase(idamTokens, "appealCreated");
         return coreCcdService.submitForCaseworker(caseData, idamTokens, startEventResponse);
     }
 

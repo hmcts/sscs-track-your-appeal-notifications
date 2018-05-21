@@ -45,9 +45,11 @@ public class SendNotificationsFunctionalTest {
 
     @Before
     public void setup() {
+        String oauth2Token = idamService.getIdamOauth2Token();
         idamTokens = IdamTokens.builder()
-            .authenticationService(idamService.generateServiceAuthorization())
-            .idamOauth2Token(idamService.getIdamOauth2Token())
+            .idamOauth2Token(oauth2Token)
+            .serviceAuthorization(idamService.generateServiceAuthorization())
+            .userId(idamService.getUserId(oauth2Token))
             .build();
 
         caseData = buildCcdResponse("SC068/17/00022", "Yes", "Yes");

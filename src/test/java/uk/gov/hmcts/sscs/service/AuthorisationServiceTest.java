@@ -58,4 +58,5 @@ public class AuthorisationServiceTest {
             super(status, message);
         }
     }
+
 }

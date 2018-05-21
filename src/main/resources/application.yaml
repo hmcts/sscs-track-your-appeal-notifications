@@ -31,7 +31,6 @@ spring:
 core_case_data:
   api:
     url: ${CORE_CASE_DATA_API_URL:http://localhost:4452}
-  userId: ${CORE_CASE_DATA_USER_ID:16}
   jurisdictionId: ${CORE_CASE_DATA_JURISDICTION_ID:SSCS}
   caseTypeId: ${CORE_CASE_DATA_CASE_TYPE_ID:Benefit}
 

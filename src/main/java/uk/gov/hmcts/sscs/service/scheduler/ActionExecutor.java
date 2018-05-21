@@ -45,9 +45,11 @@ public class ActionExecutor implements JobExecutor<String> {
 
         LOG.info("Scheduled event: " + eventId + " triggered for case: " + caseId);
 
+        String oauth2Token = idamService.getIdamOauth2Token();
         IdamTokens idamTokens = IdamTokens.builder()
-            .idamOauth2Token(idamService.getIdamOauth2Token())
-            .authenticationService(idamService.generateServiceAuthorization())
+            .idamOauth2Token(oauth2Token)
+            .serviceAuthorization(idamService.generateServiceAuthorization())
+            .userId(idamService.getUserId(oauth2Token))
             .build();
 
         CaseDetails caseDetails = searchCcdService.getByCaseId(caseId, idamTokens);
