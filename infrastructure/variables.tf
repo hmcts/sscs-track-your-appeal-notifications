@@ -100,3 +100,11 @@ variable "tenant_id" {}
 variable "jenkins_AAD_objectId" {
   type        = "string"
 }
+
+variable "postgresql_user" {
+  default = "notification"
+}
+
+variable "database_name" {
+  default = "notification"
+}

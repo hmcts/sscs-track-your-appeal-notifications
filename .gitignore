@@ -16,3 +16,6 @@ out/
 # Gradle
 .gradle
 build
+
+# vim
+.*.swp
