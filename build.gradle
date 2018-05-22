@@ -9,6 +9,7 @@ plugins {
     id 'org.owasp.dependencycheck' version '3.1.2'
     id 'com.github.ben-manes.versions' version '0.17.0'
     id 'net.ltgt.apt' version '0.14'
+    id "org.flywaydb.flyway" version "5.0.7"
 }
 
 group = 'uk.gov.hmcts.reform'
@@ -52,6 +53,7 @@ sourceSets {
             runtimeClasspath += main.output + test.output
             srcDir('src/IntegrationTests/java')
         }
+        resources.srcDir file('src/IntegrationTests/resources')
     }
     e2e {
         java {
@@ -141,6 +143,13 @@ sonarqube {
     }
 }
 
+task migratePostgresDatabase(type: org.flywaydb.gradle.task.FlywayMigrateTask) {
+    baselineOnMigrate = true
+    if (project.hasProperty("dburl")) {
+        url = "jdbc:postgresql://${dburl}"
+    }
+}
+
 configurations {
     integrationTestCompile.extendsFrom(testCompile)
     integrationTestRuntime.extendsFrom(testRuntime)
@@ -172,6 +181,9 @@ dependencies {
     compile group: 'org.springframework.boot', name: 'spring-boot-starter-web', version: versions.springBoot
     compile group: 'org.springframework.boot', name: 'spring-boot-starter-actuator', version: versions.springBoot
     compile group: 'org.springframework.boot', name: 'spring-boot-starter-aop', version: versions.springBoot
+    compile group: 'org.springframework.boot', name: 'spring-boot-starter-jdbc', version: versions.springBoot
+
+    compile group: 'org.springframework.data', name: 'spring-data-commons', version: '1.13.9.RELEASE'
 
     compile group: 'com.googlecode.json-simple', name: 'json-simple', version: '1.1.1'
     compile group: 'commons-io', name: 'commons-io', version: '2.6'
@@ -185,6 +197,7 @@ dependencies {
     compile group: 'uk.gov.hmcts.reform', name: 'http-proxy-spring-boot-autoconfigure', version: '1.1.0'
     compile group: 'uk.gov.hmcts.reform', name: 'core-case-data-store-client', version: '2.5.1'
     compile group: 'uk.gov.hmcts.reform', name: 'service-auth-provider-client', version: '0.6.0'
+    compile group: 'uk.gov.hmcts.reform', name: 'reform-api-standards', version: '0.3.0'
 
     compile group: 'org.springframework.cloud', name: 'spring-cloud-starter-hystrix', version: versions.springHystrix
     compile group: 'org.springframework.cloud', name: 'spring-cloud-starter-hystrix-dashboard', version: versions.springHystrix
@@ -197,7 +210,16 @@ dependencies {
     compileOnly 'org.projectlombok:lombok:1.16.20'
     apt "org.projectlombok:lombok:1.16.20"
 
+    compile group: 'org.quartz-scheduler', name: 'quartz', version: '2.3.0'
+    compile group: 'org.flywaydb', name: 'flyway-core', version: '5.0.2'
+    compile group: 'org.postgresql', name: 'postgresql', version: '42.1.4'
+
+    testCompile group: 'com.github.tomakehurst', name: 'wiremock-standalone', version: '2.12.0'
+    testCompile group: 'org.assertj', name: 'assertj-core', version: '3.9.0'
+
     testCompile group: 'org.springframework.boot', name: 'spring-boot-starter-test', version: versions.springBoot
+
+    integrationTestCompile group: 'org.testcontainers', name: 'postgresql', version: '1.7.0'
 }
 
 jar {
