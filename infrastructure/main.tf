@@ -64,6 +64,13 @@ module "track-your-appeal-notifications" {
 
 
   app_settings = {
+    POSTGRES_HOST = "${module.db-notif.host_name}"
+    POSTGRES_PORT = "${module.db-notif.postgresql_listen_port}"
+    POSTGRES_DATABASE = "${module.db-notif.postgresql_database}"
+    POSTGRES_USER = "${module.db-notif.user_name}"
+    POSTGRES_PASSWORD = "${module.db-notif.postgresql_password}"
+    MAX_ACTIVE_DB_CONNECTIONS = 70
+
     MANAGEMENT_SECURITY_ENABLED = "${var.management_security_enabled}"
 
     CORE_CASE_DATA_API_URL = "${local.ccdApi}"
@@ -120,3 +127,11 @@ module "sscs-tya-notif-key-vault" {
   product_group_object_id = "300e771f-856c-45cc-b899-40d78281e9c1"
 }
 
+module "db-notif" {
+  source          = "git@github.com:hmcts/moj-module-postgres?ref=cnp-449-tactical"
+  product         = "${var.product}-${var.component}-postgres-db"
+  location        = "${var.location}"
+  env             = "${var.env}"
+  postgresql_user = "${var.postgresql_user}"
+  database_name   = "${var.database_name}"
+}
