@@ -1,3 +1,5 @@
+FROM postgres:9.6
+
 FROM openjdk:8-jre
 
 COPY build/install/track-your-appeal-notifications /opt/app/

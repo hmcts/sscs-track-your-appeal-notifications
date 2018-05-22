@@ -12,6 +12,10 @@ services:
     container_name: track-your-appeal-notifications
     environment:
       - S2S_URL
+      - JOB_SCHEDULER_DB_USERNAME=sscsjobscheduler
+      - JOB_SCHEDULER_DB_PASSWORD
+      - JOB_SCHEDULER_DB_HOST=sscs-job-scheduler-database
+      - JOB_SCHEDULER_DB_PORT=5432
       # these environment variables are used by java-logging library
       - ROOT_APPENDER
       - JSON_CONSOLE_PRETTY_PRINT
@@ -22,3 +26,20 @@ services:
     ports:
       # check .env
       - $SERVER_PORT:$SERVER_PORT
+    depends_on:
+      sscs-job-scheduler-database:
+        condition: service_healthy
+  sscs-job-scheduler-database:
+    build:
+      context: docker/database
+    image: docker.artifactory.reform.hmcts.net/reform/sscs-job-scheduler-database
+    container_name: sscs-job-scheduler-database
+    environment:
+      - JOB_SCHEDULER_DB_PASSWORD
+    ports:
+      - 5428:5432
+    volumes:
+      - sscs-job-scheduler-database-data:/var/lib/postgresql/data
+
+volumes:
+  sscs-job-scheduler-database-data:
