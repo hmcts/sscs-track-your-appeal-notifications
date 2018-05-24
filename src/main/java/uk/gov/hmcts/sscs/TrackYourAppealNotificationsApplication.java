@@ -12,10 +12,7 @@ import org.springframework.context.annotation.ComponentScan;
 import org.springframework.context.annotation.Import;
 import org.springframework.context.support.ReloadableResourceBundleMessageSource;
 import uk.gov.hmcts.reform.sscs.jobscheduler.config.QuartzConfiguration;
-import uk.gov.hmcts.reform.sscs.jobscheduler.services.JobScheduler;
-import uk.gov.hmcts.reform.sscs.jobscheduler.services.quartz.QuartzJobScheduler;
 import uk.gov.hmcts.sscs.deserialize.CcdResponseDeserializer;
-import uk.gov.hmcts.sscs.domain.reminder.Action;
 import uk.gov.service.notify.NotificationClient;
 
 

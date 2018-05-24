@@ -16,22 +16,21 @@ import java.util.List;
 import org.junit.Before;
 import org.junit.Test;
 import org.mockito.ArgumentCaptor;
-import org.springframework.boot.test.mock.mockito.MockBean;
+import org.mockito.Mock;
 import uk.gov.hmcts.reform.sscs.jobscheduler.model.Job;
 import uk.gov.hmcts.reform.sscs.jobscheduler.services.JobScheduler;
 import uk.gov.hmcts.sscs.domain.CcdResponse;
 import uk.gov.hmcts.sscs.domain.Events;
 import uk.gov.hmcts.sscs.domain.notify.Event;
 import uk.gov.hmcts.sscs.domain.notify.EventType;
-import uk.gov.hmcts.sscs.domain.reminder.Action;
 import uk.gov.hmcts.sscs.exception.ReminderException;
 
 public class ReminderServiceTest {
 
     private ReminderService service;
 
-    @MockBean
-    private JobScheduler<Action> jobScheduler;
+    @Mock
+    private JobScheduler<String> jobScheduler;
 
     @Before
     public void setup() {
@@ -53,7 +52,17 @@ public class ReminderServiceTest {
         ArgumentCaptor captor = ArgumentCaptor.forClass(Job.class);
         service.createJob(ccdResponse);
 
-        verify(jobScheduler).schedule((Job<Action>) captor.capture());
+        verify(jobScheduler).schedule((Job<String>) captor.capture());
+
+        Job<String> actualJob = (Job<String>) captor.getValue();
+
+        ZonedDateTime expectedDateTrigger = ZonedDateTime.of(LocalDate.of(2018, 1, 3), LocalTime.of(0, 0, 0), ZoneId.of(ZONE_ID));
+
+        Job<String> expected = new Job(EVIDENCE_REMINDER.getId(), new String("123456"), expectedDateTrigger);
+
+        assertEquals(expected.name, actualJob.name);
+        assertEquals(expected.payload, actualJob.payload);
+        assertEquals(expected.triggerAt, actualJob.triggerAt);
     }
 
     @Test
@@ -70,7 +79,7 @@ public class ReminderServiceTest {
 
     @Test
     public void findReminderDateForEventWithDwpResponseReceived() {
-        String date = "2018-01-01T14:01:18.243";
+        String date = "2018-01-01T14:01:18";
         List<Events> events = new ArrayList<>();
         events.add(Events.builder().value(Event.builder().date(date).type(DWP_RESPONSE_RECEIVED.getId()).build()).build());
 
@@ -78,12 +87,12 @@ public class ReminderServiceTest {
 
         ZonedDateTime result = service.findReminderDate(ccdResponse);
 
-        assertEquals(ZonedDateTime.of(LocalDate.of(2018, 1, 1), LocalTime.of(14, 01, 18, 243), ZoneId.of(ZONE_ID)), result);
+        assertEquals(ZonedDateTime.of(LocalDate.of(2018, 1, 3), LocalTime.of(14, 01, 18), ZoneId.of(ZONE_ID)), result);
     }
 
     @Test(expected = ReminderException.class)
     public void throwExceptionWhenCannotFindEventDateForDwpResponseReceivedEvent() {
-        String date = "2018-01-01T14:01:18.243";
+        String date = "2018-01-01T14:01:18";
         List<Events> events = new ArrayList<>();
         events.add(Events.builder().value(Event.builder().date(date).type(APPEAL_WITHDRAWN.getId()).build()).build());
 
@@ -94,7 +103,7 @@ public class ReminderServiceTest {
 
     @Test(expected = ReminderException.class)
     public void throwExceptionForUnrecognisedReminderEvent() {
-        String date = "2018-01-01T14:01:18.243";
+        String date = "2018-01-01T14:01:18";
         List<Events> events = new ArrayList<>();
         events.add(Events.builder().value(Event.builder().date(date).type(DWP_RESPONSE_RECEIVED.getId()).build()).build());
 

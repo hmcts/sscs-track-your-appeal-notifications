@@ -8,14 +8,13 @@ import uk.gov.hmcts.reform.sscs.jobscheduler.services.JobExecutor;
 import uk.gov.hmcts.sscs.domain.CcdResponse;
 import uk.gov.hmcts.sscs.domain.CcdResponseWrapper;
 import uk.gov.hmcts.sscs.domain.idam.IdamTokens;
-import uk.gov.hmcts.sscs.domain.reminder.Action;
 import uk.gov.hmcts.sscs.service.NotificationService;
 import uk.gov.hmcts.sscs.service.ccd.CcdUtil;
 import uk.gov.hmcts.sscs.service.ccd.SearchCcdService;
 import uk.gov.hmcts.sscs.service.idam.IdamService;
 
 @Component
-public class ActionExecutor implements JobExecutor<Action> {
+public class ActionExecutor implements JobExecutor<String> {
 
     private final NotificationService notificationService;
     private final SearchCcdService searchCcdService;
@@ -30,14 +29,14 @@ public class ActionExecutor implements JobExecutor<Action> {
     }
 
     @Override
-    public void execute(String jobId, Action payload) {
+    public void execute(String jobId, String caseId) {
 
         IdamTokens idamTokens = IdamTokens.builder()
                 .idamOauth2Token(idamService.getIdamOauth2Token())
                 .authenticationService(idamService.generateServiceAuthorization())
                 .build();
 
-        List<CaseDetails> caseDetails = searchCcdService.findCaseByCaseRef(payload.getCaseId(), idamTokens);
+        List<CaseDetails> caseDetails = searchCcdService.findCaseByCaseRef(caseId, idamTokens);
 
         if (!caseDetails.isEmpty()) {
             CcdResponse ccdResponse = CcdUtil.getCcdResponse(caseDetails.get(0));

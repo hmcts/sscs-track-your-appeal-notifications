@@ -2,13 +2,12 @@ package uk.gov.hmcts.sscs.service.scheduler;
 
 import org.springframework.stereotype.Component;
 import uk.gov.hmcts.reform.sscs.jobscheduler.services.JobPayloadSerializer;
-import uk.gov.hmcts.sscs.domain.reminder.Action;
 
 @Component
-public class ActionSerializer2 implements JobPayloadSerializer<Action> {
+public class ActionSerializer2 implements JobPayloadSerializer<String> {
 
     @Override
-    public String serialize(Action payload) {
+    public String serialize(String payload) {
         return null;
     }
 }
