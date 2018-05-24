@@ -8,6 +8,7 @@ import uk.gov.hmcts.reform.sscs.jobscheduler.services.JobExecutor;
 import uk.gov.hmcts.sscs.domain.CcdResponse;
 import uk.gov.hmcts.sscs.domain.CcdResponseWrapper;
 import uk.gov.hmcts.sscs.domain.idam.IdamTokens;
+import uk.gov.hmcts.sscs.domain.notify.EventType;
 import uk.gov.hmcts.sscs.service.NotificationService;
 import uk.gov.hmcts.sscs.service.ccd.CcdUtil;
 import uk.gov.hmcts.sscs.service.ccd.SearchCcdService;
@@ -29,7 +30,7 @@ public class ActionExecutor implements JobExecutor<String> {
     }
 
     @Override
-    public void execute(String jobId, String caseId) {
+    public void execute(String jobId, String jobName, String caseId) {
 
         IdamTokens idamTokens = IdamTokens.builder()
                 .idamOauth2Token(idamService.getIdamOauth2Token())
@@ -40,6 +41,8 @@ public class ActionExecutor implements JobExecutor<String> {
 
         if (!caseDetails.isEmpty()) {
             CcdResponse ccdResponse = CcdUtil.getCcdResponse(caseDetails.get(0));
+
+            ccdResponse.setNotificationType(EventType.getNotificationById(jobName));
 
             CcdResponseWrapper wrapper = CcdResponseWrapper.builder().newCcdResponse(ccdResponse).build();
 

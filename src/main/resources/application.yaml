@@ -69,6 +69,16 @@ claiming.expenses.link: ${CLAIMING_EXPENSES_LINK:http://localhost:3000/expenses/
 
 job.scheduler:
   enabled: ${JOB_SCHEDULER_ENABLED:false}
+  retryPolicy:
+    maxNumberOfJobExecutions: 2
+    delayBetweenAttemptsInMs: 1000
+
+quartzProperties:
+  org.quartz:
+    scheduler:
+      instanceId: AUTO
+    jobStore:
+      class: org.quartz.simpl.RAMJobStore
 
 notification:
   appealReceived.emailId: ${APPEAL_RECEIVED_EMAIL_TEMPLATE_ID:b90df52f-c628-409c-8875-4b0b9663a053}
@@ -89,14 +99,3 @@ notification:
     emailId: ${EVIDENCE_REMINDER_EMAIL_TEMPLATE_ID:b9e47ec4-3b58-4b8d-9304-f77ac27fb7f2}
     smsId: ${EVIDENCE_REMINDER_SMS_TEMPLATE_ID:e3f71440-d1ac-43c8-a8cc-a088c4f3c959}
   appealCreated.emailId: ${SYA_APPEAL_CREATED_EMAIL_TEMPLATE_ID:01293b93-b23e-40a3-ad78-2c6cd01cd21c}
-
-quartzProperties:
-  org.quartz:
-    scheduler:
-      instanceId: AUTO
-    jobStore:
-      class: org.quartz.simpl.RAMJobStore
-
-retryPolicy:
-  maxNumberOfJobExecutions: 2
-  delayBetweenAttemptsInMs: 1000
