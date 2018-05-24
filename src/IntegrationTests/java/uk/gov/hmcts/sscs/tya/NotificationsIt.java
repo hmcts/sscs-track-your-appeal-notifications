@@ -150,6 +150,17 @@ public class NotificationsIt {
     }
 
     @Test
+    public void shouldSendNotificationForEvidenceReminder() throws Exception {
+        json = json.replace("appealReceived", "evidenceReminder");
+
+        HttpServletResponse response = getResponse(getRequestWithAuthHeader(json));
+
+        assertHttpStatus(response, HttpStatus.OK);
+        verify(client, times(1)).sendEmail(any(), any(), any(), any());
+        verify(client, times(1)).sendSms(any(), any(), any(), any());
+    }
+
+    @Test
     public void shouldSendNotificationForSyaAppealCreated() throws Exception {
         json = json.replace("appealReceived", "appealCreated");
 

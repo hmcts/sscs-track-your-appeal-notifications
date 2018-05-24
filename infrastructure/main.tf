@@ -106,8 +106,6 @@ module "track-your-appeal-notifications" {
     HEARING_INFO_LINK = "${var.hearing_info_link}"
     CLAIMING_EXPENSES_LINK = "${var.claiming_expenses_link}"
     JOB_SCHEDULER_ENABLED = "${var.job_scheduler_enabled}"
-    JOB_SCHEDULER_URL = "${var.job_scheduler_url}"
-    JOB_SCHEDULER_CALLBACK_URL = "${var.job_scheduler_callbackUrl}"
     APPEAL_RECEIVED_EMAIL_TEMPLATE_ID = "b90df52f-c628-409c-8875-4b0b9663a053"
     RESPONSE_RECEIVED_EMAIL_TEMPLATE_ID = "1e13bd2d-9ae0-4030-89b9-a0ef65ec36ef"
     EVIDENCE_RECEIVED_EMAIL_TEMPLATE_ID = "c5654134-2e13-4541-ac73-334a5b5cdbb6"
