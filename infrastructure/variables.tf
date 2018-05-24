@@ -81,16 +81,6 @@ variable "job_scheduler_enabled" {
   default = "false"
 }
 
-variable "job_scheduler_url" {
-  type = "string"
-  default = "http://localhost:8484"
-}
-
-variable "job_scheduler_callbackUrl" {
-  type = "string"
-  default = "http://localhost:8080"
-}
-
 variable "idam_redirect_url" {
   default = "https://sscs-case-loader-sandbox.service.core-compute-sandbox.internal"
 }

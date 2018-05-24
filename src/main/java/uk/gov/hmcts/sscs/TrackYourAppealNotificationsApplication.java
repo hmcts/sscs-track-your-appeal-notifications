@@ -1,6 +1,5 @@
 package uk.gov.hmcts.sscs;
 
-import com.sun.jersey.api.client.Client;
 import java.util.TimeZone;
 import javax.annotation.PostConstruct;
 import org.springframework.beans.factory.annotation.Value;
@@ -9,14 +8,21 @@ import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.cloud.netflix.feign.EnableFeignClients;
 import org.springframework.context.MessageSource;
 import org.springframework.context.annotation.Bean;
+import org.springframework.context.annotation.ComponentScan;
+import org.springframework.context.annotation.Import;
 import org.springframework.context.support.ReloadableResourceBundleMessageSource;
-import uk.gov.hmcts.sscs.client.RestClient;
+import uk.gov.hmcts.reform.sscs.jobscheduler.config.QuartzConfiguration;
+import uk.gov.hmcts.reform.sscs.jobscheduler.services.JobScheduler;
+import uk.gov.hmcts.reform.sscs.jobscheduler.services.quartz.QuartzJobScheduler;
 import uk.gov.hmcts.sscs.deserialize.CcdResponseDeserializer;
+import uk.gov.hmcts.sscs.domain.reminder.Action;
 import uk.gov.service.notify.NotificationClient;
 
 
 @EnableFeignClients
 @SpringBootApplication
+@ComponentScan(basePackageClasses = TrackYourAppealNotificationsApplication.class, lazyInit = true)
+@Import(QuartzConfiguration.class)
 public class TrackYourAppealNotificationsApplication {
 
     public static final String UTC = "UTC";
@@ -36,11 +42,6 @@ public class TrackYourAppealNotificationsApplication {
     @Bean
     public NotificationClient notificationClient() {
         return new NotificationClient(apiKey);
-    }
-
-    @Bean
-    public RestClient jobSchedulerClient() {
-        return new RestClient(Client.create());
     }
 
     @Bean
