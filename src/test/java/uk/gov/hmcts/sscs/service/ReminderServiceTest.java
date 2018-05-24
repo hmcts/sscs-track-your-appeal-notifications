@@ -17,6 +17,7 @@ import org.junit.Before;
 import org.junit.Test;
 import org.mockito.ArgumentCaptor;
 import org.mockito.Mock;
+import org.springframework.test.util.ReflectionTestUtils;
 import uk.gov.hmcts.reform.sscs.jobscheduler.model.Job;
 import uk.gov.hmcts.reform.sscs.jobscheduler.services.JobScheduler;
 import uk.gov.hmcts.sscs.domain.CcdResponse;
@@ -36,6 +37,7 @@ public class ReminderServiceTest {
     public void setup() {
         initMocks(this);
         service = new ReminderService(jobScheduler);
+        ReflectionTestUtils.setField(service, "evidenceReminderDelay", "172800");
     }
 
     @Test
