@@ -29,7 +29,7 @@ import org.springframework.test.util.ReflectionTestUtils;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.request.MockHttpServletRequestBuilder;
 import org.springframework.test.web.servlet.setup.MockMvcBuilders;
-import uk.gov.hmcts.sscs.client.RestClient;
+import uk.gov.hmcts.reform.sscs.jobscheduler.services.JobScheduler;
 import uk.gov.hmcts.sscs.controller.NotificationController;
 import uk.gov.hmcts.sscs.factory.NotificationFactory;
 import uk.gov.hmcts.sscs.service.AuthorisationService;
@@ -48,7 +48,7 @@ public class RemindersIt {
 
     ReminderService reminderService;
 
-    RestClient restClient;
+    JobScheduler<String> jobScheduler;
 
     @Mock
     NotificationClient client;
@@ -76,8 +76,7 @@ public class RemindersIt {
     @Before
     public void setup() throws IOException {
         initMocks(this);
-        restClient = new RestClient(jerseyClient);
-        reminderService = new ReminderService(restClient);
+        reminderService = new ReminderService(jobScheduler);
         NotificationService service = new NotificationService(client, factory, reminderService);
         controller = new NotificationController(service, authorisationService);
         this.mockMvc = MockMvcBuilders.standaloneSetup(controller).build();
@@ -91,9 +90,6 @@ public class RemindersIt {
     @Test
     public void shouldSendReminderForAResponseReceivedRequest() throws Exception {
         json = json.replace("appealReceived", "responseReceived");
-
-        ReflectionTestUtils.setField(reminderService, "callbackUrl", "www.callback.com");
-        ReflectionTestUtils.setField(restClient, "url", "www.test.com");
 
         doReturn(webResource).when(jerseyClient).resource("www.test.com/jobs");
         doReturn(builder).when(webResource).type("application/json");

@@ -12,18 +12,17 @@ import uk.gov.hmcts.reform.sscs.jobscheduler.services.JobScheduler;
 import uk.gov.hmcts.sscs.domain.CcdResponse;
 import uk.gov.hmcts.sscs.domain.Events;
 import uk.gov.hmcts.sscs.domain.notify.EventType;
-import uk.gov.hmcts.sscs.domain.reminder.Action;
 import uk.gov.hmcts.sscs.exception.ReminderException;
 
 @Service
 public class ReminderService {
 
-    private JobScheduler<Action> jobScheduler;
+    private JobScheduler<String> jobScheduler;
 
     private static final org.slf4j.Logger LOG = getLogger(ReminderService.class);
 
     @Autowired
-    public ReminderService(JobScheduler<Action> jobScheduler) {
+    public ReminderService(JobScheduler<String> jobScheduler) {
         this.jobScheduler = jobScheduler;
     }
 
@@ -31,10 +30,9 @@ public class ReminderService {
         String reminderType = findReminderType(ccdResponse.getNotificationType()).getId();
 
         if (reminderType != null) {
-            Action action = new Action(ccdResponse.getCaseId(), reminderType);
             ZonedDateTime triggerAt = findReminderDate(ccdResponse);
 
-            Job<Action> job = new Job(reminderType, action, triggerAt);
+            Job<String> job = new Job(reminderType, ccdResponse.getCaseId(), triggerAt);
 
             jobScheduler.schedule(job);
         }
@@ -55,6 +53,7 @@ public class ReminderService {
                         if (events.getValue().getEventType().equals(DWP_RESPONSE_RECEIVED)) {
                             return events.getValue().getDateTime().plusDays(2);
                         }
+                        break;
                     }
                     default: break;
                 }
