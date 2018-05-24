@@ -6,11 +6,13 @@ import static uk.gov.hmcts.sscs.domain.notify.EventType.EVIDENCE_REMINDER;
 
 import java.time.ZonedDateTime;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 import uk.gov.hmcts.reform.sscs.jobscheduler.model.Job;
 import uk.gov.hmcts.reform.sscs.jobscheduler.services.JobScheduler;
 import uk.gov.hmcts.sscs.domain.CcdResponse;
 import uk.gov.hmcts.sscs.domain.Events;
+import uk.gov.hmcts.sscs.domain.notify.Event;
 import uk.gov.hmcts.sscs.domain.notify.EventType;
 import uk.gov.hmcts.sscs.exception.ReminderException;
 
@@ -18,6 +20,9 @@ import uk.gov.hmcts.sscs.exception.ReminderException;
 public class ReminderService {
 
     private JobScheduler<String> jobScheduler;
+
+    @Value("${reminder.evidenceReminder.delay.seconds}")
+    private String evidenceReminderDelay;
 
     private static final org.slf4j.Logger LOG = getLogger(ReminderService.class);
 
@@ -46,22 +51,24 @@ public class ReminderService {
     }
 
     public ZonedDateTime findReminderDate(CcdResponse ccdResponse) {
-        for (Events events : ccdResponse.getEvents()) {
-            if (events.getValue() != null) {
-                switch (ccdResponse.getNotificationType()) {
-                    case DWP_RESPONSE_RECEIVED: {
-                        if (events.getValue().getEventType().equals(DWP_RESPONSE_RECEIVED)) {
-                            return events.getValue().getDateTime().plusDays(2);
-                        }
-                        break;
-                    }
-                    default: break;
-                }
+        switch (ccdResponse.getNotificationType()) {
+            case DWP_RESPONSE_RECEIVED: {
+                return calculateDate(ccdResponse, DWP_RESPONSE_RECEIVED, evidenceReminderDelay);
             }
+            default: break;
         }
         ReminderException reminderException = new ReminderException(
                 new Exception("Could not find reminder date for case reference" + ccdResponse.getCaseReference()));
         LOG.error("Reminder date not found", reminderException);
         throw reminderException;
+    }
+
+    private ZonedDateTime calculateDate(CcdResponse ccdResponse, EventType eventType, String delay) {
+        for (Events events : ccdResponse.getEvents()) {
+            if (events.getValue() != null && events.getValue().getEventType().equals(eventType)) {
+                return events.getValue().getDateTime().plusSeconds(Long.parseLong(delay));
+            }
+        }
+        return null;
     }
 }
