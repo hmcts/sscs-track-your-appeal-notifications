@@ -16,7 +16,6 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import uk.gov.hmcts.sscs.config.NotificationConfig;
 import uk.gov.hmcts.sscs.domain.*;
-import uk.gov.hmcts.sscs.domain.notify.Event;
 import uk.gov.hmcts.sscs.domain.notify.Link;
 import uk.gov.hmcts.sscs.domain.notify.Notification;
 import uk.gov.hmcts.sscs.domain.notify.Template;
@@ -151,8 +150,8 @@ public class NotificationFactoryTest {
         when(personalisationFactory.apply(SUBSCRIPTION_UPDATED)).thenReturn(subscriptionPersonalisation);
         when(config.getTemplate(APPEAL_RECEIVED.getId(), SUBSCRIPTION_CREATED.getId())).thenReturn(Template.builder().emailTemplateId("123").smsTemplateId(null).build());
 
-        List<Events> events = new ArrayList<>();
-        events.add(Events.builder().value(Event.builder().date(date).type(APPEAL_RECEIVED.getId()).build()).build());
+        List<Event> events = new ArrayList<>();
+        events.add(Event.builder().value(uk.gov.hmcts.sscs.domain.notify.Event.builder().date(date).type(APPEAL_RECEIVED.getId()).build()).build());
 
         wrapper = CcdResponseWrapper.builder()
                 .newCcdResponse(
@@ -178,8 +177,8 @@ public class NotificationFactoryTest {
         when(personalisationFactory.apply(SUBSCRIPTION_UPDATED)).thenReturn(subscriptionPersonalisation);
         when(config.getTemplate(DO_NOT_SEND.getId(), SUBSCRIPTION_CREATED.getId())).thenReturn(Template.builder().emailTemplateId(null).smsTemplateId(null).build());
 
-        List<Events> events = new ArrayList<>();
-        events.add(Events.builder().value(Event.builder().date(date).type(APPEAL_RECEIVED.getId()).build()).build());
+        List<Event> events = new ArrayList<>();
+        events.add(Event.builder().value(uk.gov.hmcts.sscs.domain.notify.Event.builder().date(date).type(APPEAL_RECEIVED.getId()).build()).build());
 
         wrapper = CcdResponseWrapper.builder()
             .newCcdResponse(
@@ -205,8 +204,8 @@ public class NotificationFactoryTest {
         when(personalisationFactory.apply(SUBSCRIPTION_UPDATED)).thenReturn(subscriptionPersonalisation);
         when(config.getTemplate(SUBSCRIPTION_UPDATED.getId(), SUBSCRIPTION_CREATED.getId())).thenReturn(Template.builder().emailTemplateId("123").smsTemplateId(null).build());
 
-        List<Events> events = new ArrayList<>();
-        events.add(Events.builder().value(Event.builder().date(date).type(APPEAL_RECEIVED.getId()).build()).build());
+        List<Event> events = new ArrayList<>();
+        events.add(Event.builder().value(uk.gov.hmcts.sscs.domain.notify.Event.builder().date(date).type(APPEAL_RECEIVED.getId()).build()).build());
 
         wrapper = CcdResponseWrapper.builder()
             .newCcdResponse(

@@ -19,7 +19,6 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import uk.gov.hmcts.sscs.config.NotificationConfig;
 import uk.gov.hmcts.sscs.domain.*;
-import uk.gov.hmcts.sscs.domain.notify.Event;
 import uk.gov.hmcts.sscs.domain.notify.Link;
 import uk.gov.hmcts.sscs.service.MessageAuthenticationServiceImpl;
 import uk.gov.hmcts.sscs.service.RegionalProcessingCenterService;
@@ -108,8 +107,8 @@ public class SubscriptionPersonalisationTest {
 
     @Test
     public void customisePersonalisationSetsNotificationTypeToMostRecentWhenNewSubscription() {
-        List<Events> events = new ArrayList<>();
-        events.add(Events.builder().value(Event.builder().date(date).type(APPEAL_RECEIVED.getId()).build()).build());
+        List<Event> events = new ArrayList<>();
+        events.add(Event.builder().value(uk.gov.hmcts.sscs.domain.notify.Event.builder().date(date).type(APPEAL_RECEIVED.getId()).build()).build());
         newCcdResponse.setEvents(events);
 
         personalisation.create(CcdResponseWrapper.builder().newCcdResponse(newCcdResponse).oldCcdResponse(oldCcdResponse).build());
@@ -183,8 +182,8 @@ public class SubscriptionPersonalisationTest {
 
     @Test
     public void setMostRecentEventTypeNotificationWhenEmailSubscribedIsFirstSet() {
-        List<Events> events = new ArrayList<>();
-        events.add(Events.builder().value(Event.builder().date(date).type(APPEAL_RECEIVED.getId()).build()).build());
+        List<Event> events = new ArrayList<>();
+        events.add(Event.builder().value(uk.gov.hmcts.sscs.domain.notify.Event.builder().date(date).type(APPEAL_RECEIVED.getId()).build()).build());
         newCcdResponse.setEvents(events);
 
         assertEquals(APPEAL_RECEIVED, personalisation.setEventTypeNotification(newCcdResponse, oldCcdResponse));
@@ -194,8 +193,8 @@ public class SubscriptionPersonalisationTest {
     public void doNotSendEventTypeNotificationWhenEmailSubscribedIsAlreadySet() {
         oldAppellantSubscription.setSubscribeEmail("Yes");
 
-        List<Events> events = new ArrayList<>();
-        events.add(Events.builder().value(Event.builder().date(date).type(APPEAL_RECEIVED.getId()).build()).build());
+        List<Event> events = new ArrayList<>();
+        events.add(Event.builder().value(uk.gov.hmcts.sscs.domain.notify.Event.builder().date(date).type(APPEAL_RECEIVED.getId()).build()).build());
         newCcdResponse.setEvents(events);
 
         assertEquals(DO_NOT_SEND, personalisation.setEventTypeNotification(newCcdResponse, oldCcdResponse));
@@ -203,8 +202,8 @@ public class SubscriptionPersonalisationTest {
 
     @Test
     public void doNotUpdateMostRecentEventTypeNotificationWhenEventTypeIsNotKnown() {
-        List<Events> events = new ArrayList<>();
-        events.add(Events.builder().value(Event.builder().date(date).type(null).build()).build());
+        List<Event> events = new ArrayList<>();
+        events.add(Event.builder().value(uk.gov.hmcts.sscs.domain.notify.Event.builder().date(date).type(null).build()).build());
         newCcdResponse.setEvents(events);
 
         assertEquals(SUBSCRIPTION_UPDATED, personalisation.setEventTypeNotification(newCcdResponse, oldCcdResponse));
@@ -214,8 +213,8 @@ public class SubscriptionPersonalisationTest {
     public void emptyOldAppellantSubscriptionDoesNotUpdateNotificationType() {
         oldCcdResponse.setSubscriptions(Subscriptions.builder().appellantSubscription(null).build());
 
-        List<Events> events = new ArrayList<>();
-        events.add(Events.builder().value(Event.builder().date(date).type(APPEAL_RECEIVED.getId()).build()).build());
+        List<Event> events = new ArrayList<>();
+        events.add(Event.builder().value(uk.gov.hmcts.sscs.domain.notify.Event.builder().date(date).type(APPEAL_RECEIVED.getId()).build()).build());
         newCcdResponse.setEvents(events);
 
         assertEquals(SUBSCRIPTION_UPDATED, personalisation.setEventTypeNotification(newCcdResponse, oldCcdResponse));
@@ -225,8 +224,8 @@ public class SubscriptionPersonalisationTest {
     public void emptyNewAppellantSubscriptionDoesNotUpdateNotificationType() {
         newCcdResponse.setSubscriptions(Subscriptions.builder().appellantSubscription(null).build());
 
-        List<Events> events = new ArrayList<>();
-        events.add(Events.builder().value(Event.builder().date(date).type(APPEAL_RECEIVED.getId()).build()).build());
+        List<Event> events = new ArrayList<>();
+        events.add(Event.builder().value(uk.gov.hmcts.sscs.domain.notify.Event.builder().date(date).type(APPEAL_RECEIVED.getId()).build()).build());
         newCcdResponse.setEvents(events);
 
         assertEquals(SUBSCRIPTION_UPDATED, personalisation.setEventTypeNotification(newCcdResponse, oldCcdResponse));

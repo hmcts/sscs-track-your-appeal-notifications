@@ -12,7 +12,6 @@ import java.util.Collections;
 import java.util.List;
 import org.springframework.stereotype.Service;
 import uk.gov.hmcts.sscs.domain.*;
-import uk.gov.hmcts.sscs.domain.notify.Event;
 import uk.gov.hmcts.sscs.domain.notify.EventType;
 
 @Service
@@ -290,7 +289,7 @@ public class CcdResponseDeserializer extends StdDeserializer<CcdResponseWrapper>
         final JsonNode eventNode =  caseNode.get("events");
 
         if (eventNode != null && eventNode.isArray()) {
-            List<Events> events = new ArrayList<>();
+            List<Event> events = new ArrayList<>();
 
             for (final JsonNode objNode : eventNode) {
                 JsonNode valueNode = getNode(objNode, "value");
@@ -298,7 +297,7 @@ public class CcdResponseDeserializer extends StdDeserializer<CcdResponseWrapper>
                 String date = getField(valueNode, "date");
                 String eventType = getField(valueNode, "type");
 
-                events.add(Events.builder().value(Event.builder().date(date).type(eventType).build()).build());
+                events.add(Event.builder().value(uk.gov.hmcts.sscs.domain.notify.Event.builder().date(date).type(eventType).build()).build());
 
             }
             Collections.sort(events, Collections.reverseOrder());

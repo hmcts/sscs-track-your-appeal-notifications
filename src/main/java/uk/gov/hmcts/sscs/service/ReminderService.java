@@ -11,8 +11,7 @@ import org.springframework.stereotype.Service;
 import uk.gov.hmcts.reform.sscs.jobscheduler.model.Job;
 import uk.gov.hmcts.reform.sscs.jobscheduler.services.JobScheduler;
 import uk.gov.hmcts.sscs.domain.CcdResponse;
-import uk.gov.hmcts.sscs.domain.Events;
-import uk.gov.hmcts.sscs.domain.notify.Event;
+import uk.gov.hmcts.sscs.domain.Event;
 import uk.gov.hmcts.sscs.domain.notify.EventType;
 import uk.gov.hmcts.sscs.exception.ReminderException;
 
@@ -64,9 +63,9 @@ public class ReminderService {
     }
 
     private ZonedDateTime calculateDate(CcdResponse ccdResponse, EventType eventType, String delay) {
-        for (Events events : ccdResponse.getEvents()) {
-            if (events.getValue() != null && events.getValue().getEventType().equals(eventType)) {
-                return events.getValue().getDateTime().plusSeconds(Long.parseLong(delay));
+        for (Event event : ccdResponse.getEvents()) {
+            if (event.getValue() != null && event.getValue().getEventType().equals(eventType)) {
+                return event.getValue().getDateTime().plusSeconds(Long.parseLong(delay));
             }
         }
         return null;

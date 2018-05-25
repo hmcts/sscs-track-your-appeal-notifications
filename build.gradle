@@ -192,7 +192,7 @@ dependencies {
     compile group: 'uk.gov.hmcts.reform', name: 'java-logging-appinsights', version: versions.reformLogging
     compile group: 'uk.gov.hmcts.reform', name: 'http-proxy-spring-boot-autoconfigure', version: '1.1.0'
     compile group: 'uk.gov.hmcts.reform', name: 'core-case-data-store-client', version: '2.5.1'
-    compile group: 'uk.gov.hmcts.reform', name: 'sscs-job-scheduler', version: '1.1.1'
+    compile group: 'uk.gov.hmcts.reform', name: 'sscs-job-scheduler', version: '1.1.2'
     compile group: 'uk.gov.hmcts.reform', name: 'service-auth-provider-client', version: '0.6.0'
 
     compile group: 'org.springframework.cloud', name: 'spring-cloud-starter-hystrix', version: versions.springHystrix
