@@ -46,11 +46,13 @@ public class CcdResponseWrapperDeserializer extends StdDeserializer<CcdResponseW
             newCcdResponse = createCcdResponseFromNode(caseNode, node, caseDetailsNode);
         }
 
-        JsonNode oldCaseDetailsNode = getNode(node, "case_details_before");
-        JsonNode oldCaseNode = getNode(oldCaseDetailsNode, "case_data");
+        if (getNode(node, "case_details_before") != null) {
+            JsonNode oldCaseDetailsNode = getNode(node, "case_details_before");
+            JsonNode oldCaseNode = getNode(oldCaseDetailsNode, "case_data");
 
-        if (oldCaseNode != null) {
-            oldCcdResponse = createCcdResponseFromNode(oldCaseNode, node, oldCaseDetailsNode);
+            if (oldCaseNode != null) {
+                oldCcdResponse = createCcdResponseFromNode(oldCaseNode, node, oldCaseDetailsNode);
+            }
         }
 
         return CcdResponseWrapper.builder().newCcdResponse(newCcdResponse).oldCcdResponse(oldCcdResponse).build();
