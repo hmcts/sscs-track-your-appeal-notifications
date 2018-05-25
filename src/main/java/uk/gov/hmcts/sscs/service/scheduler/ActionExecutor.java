@@ -45,22 +45,24 @@ public class ActionExecutor implements JobExecutor<String> {
         CaseDetails caseDetails = searchCcdService.getByCaseId(caseId, idamTokens);
 
         if (caseDetails != null) {
-            ObjectMapper mapper = new ObjectMapper();
-
-            JsonNode jsonNode = mapper.valueToTree(caseDetails);
-
-            ObjectNode node = JsonNodeFactory.instance.objectNode();
-
-            node.set("case_details", jsonNode);
-
-            CcdResponse ccdResponse = deserializer.buildCcdResponseWrapper(node);
-
+            CcdResponse ccdResponse = deserializer.buildCcdResponseWrapper(buildCcdNode(caseDetails));
             ccdResponse.setNotificationType(EventType.getNotificationById(jobName));
 
             CcdResponseWrapper wrapper = CcdResponseWrapper.builder().newCcdResponse(ccdResponse).build();
 
             notificationService.createAndSendNotification(wrapper);
         }
+    }
+
+    private JsonNode buildCcdNode(CaseDetails caseDetails) {
+
+        ObjectMapper mapper = new ObjectMapper();
+        JsonNode jsonNode = mapper.valueToTree(caseDetails);
+        ObjectNode node = JsonNodeFactory.instance.objectNode();
+
+        node.set("case_details", jsonNode);
+
+        return node;
     }
 }
 
