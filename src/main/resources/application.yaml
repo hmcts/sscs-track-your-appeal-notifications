@@ -68,7 +68,7 @@ hearing.info.link: ${HEARING_INFO_LINK:http://localhost:3000/abouthearing/appeal
 claiming.expenses.link: ${CLAIMING_EXPENSES_LINK:http://localhost:3000/expenses/appeal_id}
 
 job.scheduler:
-  enabled: ${JOB_SCHEDULER_ENABLED:false}
+  enabled: ${JOB_SCHEDULER_ENABLED:true}
   retryPolicy:
     maxNumberOfJobExecutions: 2
     delayBetweenAttemptsInMs: 1000

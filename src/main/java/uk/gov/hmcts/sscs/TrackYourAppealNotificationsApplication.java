@@ -18,7 +18,11 @@ import uk.gov.service.notify.NotificationClient;
 
 @EnableFeignClients
 @SpringBootApplication
-@ComponentScan(basePackageClasses = TrackYourAppealNotificationsApplication.class, lazyInit = true)
+@ComponentScan(
+    basePackages = "uk.gov.hmcts.reform.sscs",
+    basePackageClasses = TrackYourAppealNotificationsApplication.class,
+    lazyInit = true
+)
 @Import(QuartzConfiguration.class)
 public class TrackYourAppealNotificationsApplication {
 

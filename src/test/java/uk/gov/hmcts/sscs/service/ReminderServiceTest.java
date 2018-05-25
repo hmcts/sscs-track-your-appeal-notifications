@@ -21,8 +21,7 @@ import org.springframework.test.util.ReflectionTestUtils;
 import uk.gov.hmcts.reform.sscs.jobscheduler.model.Job;
 import uk.gov.hmcts.reform.sscs.jobscheduler.services.JobScheduler;
 import uk.gov.hmcts.sscs.domain.CcdResponse;
-import uk.gov.hmcts.sscs.domain.Events;
-import uk.gov.hmcts.sscs.domain.notify.Event;
+import uk.gov.hmcts.sscs.domain.Event;
 import uk.gov.hmcts.sscs.domain.notify.EventType;
 import uk.gov.hmcts.sscs.exception.ReminderException;
 
@@ -44,8 +43,8 @@ public class ReminderServiceTest {
     public void createReminderFromCcdResponse() {
         String date = "2018-01-01T00:00:00.000";
 
-        List<Events> events = new ArrayList<>();
-        events.add(Events.builder().value(Event.builder().date(date).type(DWP_RESPONSE_RECEIVED.getId()).build()).build());
+        List<Event> events = new ArrayList<>();
+        events.add(Event.builder().value(uk.gov.hmcts.sscs.domain.notify.Event.builder().date(date).type(DWP_RESPONSE_RECEIVED.getId()).build()).build());
 
         CcdResponse ccdResponse = CcdResponse.builder()
                 .caseId("123456").notificationType(DWP_RESPONSE_RECEIVED).events(events)
@@ -82,8 +81,8 @@ public class ReminderServiceTest {
     @Test
     public void findReminderDateForEventWithDwpResponseReceived() {
         String date = "2018-01-01T14:01:18";
-        List<Events> events = new ArrayList<>();
-        events.add(Events.builder().value(Event.builder().date(date).type(DWP_RESPONSE_RECEIVED.getId()).build()).build());
+        List<Event> events = new ArrayList<>();
+        events.add(Event.builder().value(uk.gov.hmcts.sscs.domain.notify.Event.builder().date(date).type(DWP_RESPONSE_RECEIVED.getId()).build()).build());
 
         CcdResponse ccdResponse = CcdResponse.builder().notificationType(DWP_RESPONSE_RECEIVED).events(events).build();
 
@@ -95,8 +94,8 @@ public class ReminderServiceTest {
     @Test(expected = ReminderException.class)
     public void throwExceptionWhenCannotFindEventDateForDwpResponseReceivedEvent() {
         String date = "2018-01-01T14:01:18";
-        List<Events> events = new ArrayList<>();
-        events.add(Events.builder().value(Event.builder().date(date).type(APPEAL_WITHDRAWN.getId()).build()).build());
+        List<Event> events = new ArrayList<>();
+        events.add(Event.builder().value(uk.gov.hmcts.sscs.domain.notify.Event.builder().date(date).type(APPEAL_WITHDRAWN.getId()).build()).build());
 
         CcdResponse ccdResponse = CcdResponse.builder().notificationType(DWP_RESPONSE_RECEIVED).events(events).build();
 
@@ -106,8 +105,8 @@ public class ReminderServiceTest {
     @Test(expected = ReminderException.class)
     public void throwExceptionForUnrecognisedReminderEvent() {
         String date = "2018-01-01T14:01:18";
-        List<Events> events = new ArrayList<>();
-        events.add(Events.builder().value(Event.builder().date(date).type(DWP_RESPONSE_RECEIVED.getId()).build()).build());
+        List<Event> events = new ArrayList<>();
+        events.add(Event.builder().value(uk.gov.hmcts.sscs.domain.notify.Event.builder().date(date).type(DWP_RESPONSE_RECEIVED.getId()).build()).build());
 
         CcdResponse ccdResponse = CcdResponse.builder().notificationType(APPEAL_WITHDRAWN).events(events).build();
 

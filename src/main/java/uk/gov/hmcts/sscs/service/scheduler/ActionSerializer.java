@@ -4,10 +4,10 @@ import org.springframework.stereotype.Component;
 import uk.gov.hmcts.reform.sscs.jobscheduler.services.JobPayloadSerializer;
 
 @Component
-public class ActionSerializer2 implements JobPayloadSerializer<String> {
+public class ActionSerializer implements JobPayloadSerializer<String> {
 
     @Override
     public String serialize(String payload) {
-        return null;
+        return payload;
     }
 }

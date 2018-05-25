@@ -16,7 +16,7 @@ public class CcdResponse {
     private String caseReference;
     private Subscriptions subscriptions;
     private EventType notificationType;
-    private List<Events> events;
+    private List<Event> events;
     private List<Hearing> hearings;
     private Evidence evidence;
     private RegionalProcessingCenter regionalProcessingCenter;

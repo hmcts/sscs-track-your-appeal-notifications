@@ -8,6 +8,6 @@ public class ActionDeserializer implements JobPayloadDeserializer<String> {
 
     @Override
     public String deserialize(String payload) {
-        return null;
+        return payload;
     }
 }
