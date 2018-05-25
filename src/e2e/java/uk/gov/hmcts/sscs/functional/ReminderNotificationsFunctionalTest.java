@@ -5,7 +5,9 @@ import static uk.gov.hmcts.sscs.CcdResponseUtils.buildCcdResponse;
 import static uk.gov.hmcts.sscs.domain.notify.EventType.DWP_RESPONSE_RECEIVED;
 
 import java.time.Instant;
-import org.joda.time.DateTime;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Set;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -40,6 +42,9 @@ public class ReminderNotificationsFunctionalTest {
     private IdamTokens idamTokens;
     private Long caseId;
 
+    @Value("${notification.responseReceived.emailId}")
+    private String evidenceResponseReceivedTemplateId;
+
     @Value("${notification.evidenceReminder.emailId}")
     private String evidenceReminderEmailTemplateId;
 
@@ -50,6 +55,9 @@ public class ReminderNotificationsFunctionalTest {
     private NotificationClient client;
 
     String testCaseReference;
+
+    private static final int EXPECTED_EMAIL_NOTIFICATIONS = 2;
+    private static final int EXPECTED_SMS_NOTIFICATIONS = 1;
 
     @Before
     public void setup() {
@@ -79,15 +87,13 @@ public class ReminderNotificationsFunctionalTest {
     @Test
     public void shouldSendResponseReceivedNotification() throws NotificationClientException {
 
-        final DateTime testStartTime = new DateTime();
-
         CaseDetails updatedCaseDetails = updateCcdService.update(caseData, caseId, DWP_RESPONSE_RECEIVED.getId(), idamTokens);
 
         assertEquals("COMPLETED", updatedCaseDetails.getCallbackResponseStatus());
 
-        int secondsToWaitForNotification = 30;
-        while (!testCaseReferenceNotificationObserved()
-               && secondsToWaitForNotification-- > 0) {
+        int maxSecondsToWaitForNotification = 30;
+        while (!testCaseReferenceNotificationsObserved()
+               && maxSecondsToWaitForNotification-- > 0) {
 
             try {
                 Thread.sleep(1000);
@@ -96,25 +102,31 @@ public class ReminderNotificationsFunctionalTest {
             }
         }
 
-        Notification sentEmailNotification = client.getNotifications("delivered", "email", "", "").getNotifications().get(0);
+        List<Notification> sentEmailNotifications = client.getNotifications("delivered", "email", testCaseReference, "").getNotifications();
 
-        assertEquals(evidenceReminderEmailTemplateId, sentEmailNotification.getTemplateId().toString());
-        assertTrue(sentEmailNotification.getBody().contains(testCaseReference));
-        assertTrue(sentEmailNotification.getCreatedAt().isAfter(testStartTime));
+        assertEquals(EXPECTED_EMAIL_NOTIFICATIONS, sentEmailNotifications.size());
 
-        Notification sentSmsNotification = client.getNotifications("delivered", "sms", "", "").getNotifications().get(0);
+        Set<String> actualTemplateIds = new HashSet<>();
+        actualTemplateIds.add(sentEmailNotifications.get(0).getTemplateId().toString());
+        actualTemplateIds.add(sentEmailNotifications.get(1).getTemplateId().toString());
 
-        assertEquals(evidenceReminderSmsTemplateId, sentSmsNotification.getTemplateId().toString());
-        assertTrue(sentSmsNotification.getCreatedAt().isAfter(testStartTime));
+        assertTrue(sentEmailNotifications.get(0).getBody().contains(testCaseReference));
+        assertTrue(sentEmailNotifications.get(1).getBody().contains(testCaseReference));
+
+        List<Notification> sentSmsNotifications = client.getNotifications("delivered", "sms", testCaseReference, "").getNotifications();
+
+        assertEquals(EXPECTED_SMS_NOTIFICATIONS, sentSmsNotifications.size());
+        assertEquals(evidenceReminderSmsTemplateId, sentSmsNotifications.get(0).getTemplateId().toString());
     }
 
-    private boolean testCaseReferenceNotificationObserved() throws NotificationClientException {
+    private boolean testCaseReferenceNotificationsObserved() throws NotificationClientException {
 
-        return client
-            .getNotifications("delivered", "", "", "")
+        return client.getNotifications("delivered", "email", testCaseReference, "")
             .getNotifications()
-            .stream()
-            .anyMatch(n -> n.getBody().contains(testCaseReference));
+            .size() >= EXPECTED_EMAIL_NOTIFICATIONS
+               && client.getNotifications("delivered", "sms", testCaseReference, "")
+            .getNotifications()
+            .size() >= EXPECTED_SMS_NOTIFICATIONS;
     }
 
 }
