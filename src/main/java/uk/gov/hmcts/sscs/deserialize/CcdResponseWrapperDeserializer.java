@@ -16,18 +16,18 @@ import uk.gov.hmcts.sscs.domain.notify.Event;
 import uk.gov.hmcts.sscs.domain.notify.EventType;
 
 @Service
-public class CcdResponseDeserializer extends StdDeserializer<CcdResponse> {
+public class CcdResponseWrapperDeserializer extends StdDeserializer<CcdResponseWrapper> {
 
-    public CcdResponseDeserializer() {
+    public CcdResponseWrapperDeserializer() {
         this(null);
     }
 
-    public CcdResponseDeserializer(Class<?> vc) {
+    public CcdResponseWrapperDeserializer(Class<?> vc) {
         super(vc);
     }
 
     @Override
-    public CcdResponse deserialize(JsonParser jp, DeserializationContext ctxt) throws IOException {
+    public CcdResponseWrapper deserialize(JsonParser jp, DeserializationContext ctxt) throws IOException {
         @SuppressWarnings("unchecked")
         ObjectCodec oc = jp.getCodec();
         JsonNode node = oc.readTree(jp);
@@ -35,8 +35,9 @@ public class CcdResponseDeserializer extends StdDeserializer<CcdResponse> {
         return buildCcdResponseWrapper(node);
     }
 
-    public CcdResponse buildCcdResponseWrapper(JsonNode node) {
+    public CcdResponseWrapper buildCcdResponseWrapper(JsonNode node) {
         CcdResponse newCcdResponse = null;
+        CcdResponse oldCcdResponse = null;
 
         JsonNode caseDetailsNode = getNode(node, "case_details");
         JsonNode caseNode = getNode(caseDetailsNode, "case_data");
@@ -45,7 +46,14 @@ public class CcdResponseDeserializer extends StdDeserializer<CcdResponse> {
             newCcdResponse = createCcdResponseFromNode(caseNode, node, caseDetailsNode);
         }
 
-        return newCcdResponse;
+        JsonNode oldCaseDetailsNode = getNode(node, "case_details_before");
+        JsonNode oldCaseNode = getNode(oldCaseDetailsNode, "case_data");
+
+        if (oldCaseNode != null) {
+            oldCcdResponse = createCcdResponseFromNode(oldCaseNode, node, oldCaseDetailsNode);
+        }
+
+        return CcdResponseWrapper.builder().newCcdResponse(newCcdResponse).oldCcdResponse(oldCcdResponse).build();
     }
 
     private CcdResponse createCcdResponseFromNode(JsonNode caseNode, JsonNode node, JsonNode caseDetailsNode) {

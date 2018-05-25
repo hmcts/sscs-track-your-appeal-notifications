@@ -19,14 +19,14 @@ import org.junit.Before;
 import org.junit.Test;
 import uk.gov.hmcts.sscs.domain.*;
 
-public class CcdResponseDeserializerTest {
+public class CcdResponseWrapperDeserializerTest {
 
-    private CcdResponseDeserializer ccdResponseDeserializer;
+    private CcdResponseWrapperDeserializer ccdResponseDeserializer;
     private ObjectMapper mapper;
 
     @Before
     public void setup() {
-        ccdResponseDeserializer = new CcdResponseDeserializer();
+        ccdResponseDeserializer = new CcdResponseWrapperDeserializer();
         mapper = new ObjectMapper();
     }
 

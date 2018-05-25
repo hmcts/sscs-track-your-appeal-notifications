@@ -6,6 +6,7 @@ import java.util.Collections;
 import java.util.Date;
 import java.util.List;
 import uk.gov.hmcts.sscs.domain.*;
+import uk.gov.hmcts.sscs.domain.notify.Event;
 import uk.gov.hmcts.sscs.domain.notify.EventType;
 
 public final class CcdResponseUtils {
@@ -59,10 +60,10 @@ public final class CcdResponseUtils {
             .hearingOptions(hearingOptions)
             .build();
 
-        Event event = Event.builder()
-            .value(uk.gov.hmcts.sscs.domain.notify.Event.builder()
+        Events events = Events.builder()
+            .value(Event.builder()
                 .type(eventType.getId())
-                .description("Some Event")
+                .description("Some Events")
                 .date("2018-01-14T21:59:43.10")
                 .build())
             .build();
@@ -89,7 +90,7 @@ public final class CcdResponseUtils {
         return CcdResponse.builder()
             .caseReference(caseReference)
             .appeal(appeal)
-            .events(Collections.singletonList(event))
+            .events(Collections.singletonList(events))
             .subscriptions(subscriptions)
             .build();
     }
@@ -98,16 +99,16 @@ public final class CcdResponseUtils {
         Date now = new Date();
         SimpleDateFormat dt1 = new SimpleDateFormat("yyyy-MM-dd'T'hh:mm:ss.SSS");
 
-        Event event = Event.builder()
-            .value(uk.gov.hmcts.sscs.domain.notify.Event.builder()
+        Events events = Events.builder()
+            .value(Event.builder()
                 .type(eventType.getId())
                 .description(eventType.getId())
                 .date(dt1.format(now))
                 .build())
             .build();
 
-        List<Event> addedEvents = new ArrayList<>(response.getEvents());
-        addedEvents.add(event);
+        List<Events> addedEvents = new ArrayList<>(response.getEvents());
+        addedEvents.add(events);
         response.setEvents(addedEvents);
     }
 

@@ -56,13 +56,6 @@ public class SendNotificationsFunctionalTest {
     }
 
     @Test
-    public void shouldSendResponseReceivedNotification() {
-        CaseDetails updatedCaseDetails = updateCcdService.update(caseData, caseId, DWP_RESPONSE_RECEIVED.getId(), idamTokens);
-
-        assertEquals("COMPLETED", updatedCaseDetails.getCallbackResponseStatus());
-    }
-
-    @Test
     public void shouldSendEvidenceReceivedNotification() {
         addEvidence(caseData);
         CaseDetails updatedCaseDetails = updateCcdService.update(caseData, caseId, EVIDENCE_RECEIVED.getId(), idamTokens);
