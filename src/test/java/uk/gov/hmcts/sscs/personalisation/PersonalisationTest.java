@@ -20,6 +20,7 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import uk.gov.hmcts.sscs.config.NotificationConfig;
 import uk.gov.hmcts.sscs.domain.*;
+import uk.gov.hmcts.sscs.domain.notify.Event;
 import uk.gov.hmcts.sscs.domain.notify.Link;
 import uk.gov.hmcts.sscs.service.MessageAuthenticationServiceImpl;
 import uk.gov.hmcts.sscs.service.RegionalProcessingCenterService;
@@ -86,8 +87,8 @@ public class PersonalisationTest {
 
     @Test
     public void customisePersonalisation() {
-        List<Event> events = new ArrayList<>();
-        events.add(Event.builder().value(uk.gov.hmcts.sscs.domain.notify.Event.builder().date(date).type(APPEAL_RECEIVED.getId()).build()).build());
+        List<Events> events = new ArrayList<>();
+        events.add(Events.builder().value(Event.builder().date(date).type(APPEAL_RECEIVED.getId()).build()).build());
 
         CcdResponse response = CcdResponse.builder()
             .caseId(CASE_ID).caseReference("SC/1234/5")
@@ -129,8 +130,8 @@ public class PersonalisationTest {
 
     @Test
     public void givenEvidenceReceivedNotification_customisePersonalisation() {
-        List<Event> events = new ArrayList<>();
-        events.add(Event.builder().value(uk.gov.hmcts.sscs.domain.notify.Event.builder().date(date).type(APPEAL_RECEIVED.getId()).build()).build());
+        List<Events> events = new ArrayList<>();
+        events.add(Events.builder().value(Event.builder().date(date).type(APPEAL_RECEIVED.getId()).build()).build());
 
         List<Documents> documents = new ArrayList<>();
 
@@ -171,8 +172,8 @@ public class PersonalisationTest {
 
     @Test
     public void setAppealReceivedEventData() {
-        List<Event> events = new ArrayList<>();
-        events.add(Event.builder().value(uk.gov.hmcts.sscs.domain.notify.Event.builder().date(date).type(APPEAL_RECEIVED.getId()).build()).build());
+        List<Events> events = new ArrayList<>();
+        events.add(Events.builder().value(Event.builder().date(date).type(APPEAL_RECEIVED.getId()).build()).build());
 
         CcdResponse response = CcdResponse.builder()
                 .caseId(CASE_ID).caseReference("SC/1234/5")
@@ -251,8 +252,8 @@ public class PersonalisationTest {
 
     @Test
     public void setPostponementEventData() {
-        List<Event> events = new ArrayList<>();
-        events.add(Event.builder().value(uk.gov.hmcts.sscs.domain.notify.Event.builder().date(date).type(POSTPONEMENT.getId()).build()).build());
+        List<Events> events = new ArrayList<>();
+        events.add(Events.builder().value(Event.builder().date(date).type(POSTPONEMENT.getId()).build()).build());
 
         CcdResponse response = CcdResponse.builder()
                 .caseId(CASE_ID).caseReference("SC/1234/5")

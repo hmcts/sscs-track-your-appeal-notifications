@@ -13,6 +13,7 @@ import org.springframework.context.annotation.Import;
 import org.springframework.context.support.ReloadableResourceBundleMessageSource;
 import uk.gov.hmcts.reform.sscs.jobscheduler.config.QuartzConfiguration;
 import uk.gov.hmcts.sscs.deserialize.CcdResponseDeserializer;
+import uk.gov.hmcts.sscs.deserialize.CcdResponseWrapperDeserializer;
 import uk.gov.service.notify.NotificationClient;
 
 
@@ -43,6 +44,11 @@ public class TrackYourAppealNotificationsApplication {
     @Bean
     public NotificationClient notificationClient() {
         return new NotificationClient(apiKey);
+    }
+
+    @Bean
+    public CcdResponseWrapperDeserializer ccdResponseWrapperDeserializer() {
+        return new CcdResponseWrapperDeserializer();
     }
 
     @Bean

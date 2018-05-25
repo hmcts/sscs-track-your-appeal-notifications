@@ -32,6 +32,16 @@ public class SearchCcdService {
         );
     }
 
-
+    public CaseDetails getByCaseId(String caseId, IdamTokens idamTokens) {
+        log.info("Get getByCaseId...");
+        return coreCaseDataApi.readForCaseWorker(
+                idamTokens.getIdamOauth2Token(),
+                idamTokens.getAuthenticationService(),
+                coreCaseDataProperties.getUserId(),
+                coreCaseDataProperties.getJurisdictionId(),
+                coreCaseDataProperties.getCaseTypeId(),
+                caseId
+        );
+    }
 
 }

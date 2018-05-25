@@ -17,6 +17,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 import uk.gov.hmcts.sscs.config.NotificationConfig;
 import uk.gov.hmcts.sscs.domain.*;
+import uk.gov.hmcts.sscs.domain.notify.Event;
 import uk.gov.hmcts.sscs.domain.notify.EventType;
 import uk.gov.hmcts.sscs.domain.notify.Template;
 import uk.gov.hmcts.sscs.service.MessageAuthenticationServiceImpl;
@@ -86,12 +87,12 @@ public class Personalisation {
     public Map<String, String> setEventData(Map<String, String> personalisation, CcdResponse ccdResponse) {
         if (ccdResponse.getEvents() != null) {
 
-            for (Event event : ccdResponse.getEvents()) {
-                if (event.getValue() != null) {
-                    if (ccdResponse.getNotificationType().equals(APPEAL_RECEIVED) && event.getValue().getEventType().equals(APPEAL_RECEIVED)) {
-                        return setAppealReceivedDetails(personalisation, event.getValue());
-                    } else if (ccdResponse.getNotificationType().equals(POSTPONEMENT) && event.getValue().getEventType().equals(POSTPONEMENT)) {
-                        return setPostponementDetails(personalisation, event.getValue());
+            for (Events events : ccdResponse.getEvents()) {
+                if (events.getValue() != null) {
+                    if (ccdResponse.getNotificationType().equals(APPEAL_RECEIVED) && events.getValue().getEventType().equals(APPEAL_RECEIVED)) {
+                        return setAppealReceivedDetails(personalisation, events.getValue());
+                    } else if (ccdResponse.getNotificationType().equals(POSTPONEMENT) && events.getValue().getEventType().equals(POSTPONEMENT)) {
+                        return setPostponementDetails(personalisation, events.getValue());
                     }
                 }
             }
@@ -108,14 +109,14 @@ public class Personalisation {
         return personalisation;
     }
 
-    private Map<String, String> setAppealReceivedDetails(Map<String, String> personalisation, uk.gov.hmcts.sscs.domain.notify.Event event) {
+    private Map<String, String> setAppealReceivedDetails(Map<String, String> personalisation, Event event) {
         String dwpResponseDateString = formatLocalDate(event.getDateTime().plusDays(MAX_DWP_RESPONSE_DAYS).toLocalDate());
         personalisation.put(APPEAL_RESPOND_DATE, dwpResponseDateString);
         setHearingContactDate(personalisation, event);
         return personalisation;
     }
 
-    private Map<String, String> setPostponementDetails(Map<String, String> personalisation, uk.gov.hmcts.sscs.domain.notify.Event event) {
+    private Map<String, String> setPostponementDetails(Map<String, String> personalisation, Event event) {
         setHearingContactDate(personalisation, event);
         return personalisation;
     }
@@ -147,7 +148,7 @@ public class Personalisation {
                 .collect(Collectors.joining(", "));
     }
 
-    private  Map<String, String> setHearingContactDate(Map<String, String> personalisation, uk.gov.hmcts.sscs.domain.notify.Event event) {
+    private  Map<String, String> setHearingContactDate(Map<String, String> personalisation, Event event) {
         String hearingContactDate = formatLocalDate(event.getDateTime().plusDays(42).toLocalDate());
         personalisation.put(HEARING_CONTACT_DATE, hearingContactDate);
 

@@ -3,11 +3,11 @@ package uk.gov.hmcts.sscs.domain;
 import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
 import lombok.Builder;
 import lombok.Value;
-import uk.gov.hmcts.sscs.deserialize.CcdResponseDeserializer;
+import uk.gov.hmcts.sscs.deserialize.CcdResponseWrapperDeserializer;
 
 @Value
 @Builder
-@JsonDeserialize(using = CcdResponseDeserializer.class)
+@JsonDeserialize(using = CcdResponseWrapperDeserializer.class)
 public class CcdResponseWrapper {
 
     private CcdResponse newCcdResponse;

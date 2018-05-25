@@ -82,7 +82,7 @@ Start CCD application
 ```
 ./compose-frontend.sh up -d
 ```
-In IDE, start the application in Debug mode and put a breakpoint in the appropriate place. Then login to CCD and start an event which would trigger a callback.
+In IDE, start the application in Debug mode and put a breakpoint in the appropriate place. Then login to CCD and start an events which would trigger a callback.
 
 ### Run locally in Docker with CCD using an alias
 
