@@ -110,6 +110,9 @@ public class ReminderNotificationsFunctionalTest {
         actualTemplateIds.add(sentEmailNotifications.get(0).getTemplateId().toString());
         actualTemplateIds.add(sentEmailNotifications.get(1).getTemplateId().toString());
 
+        assertTrue(actualTemplateIds.contains(evidenceResponseReceivedTemplateId));
+        assertTrue(actualTemplateIds.contains(evidenceReminderEmailTemplateId));
+
         assertTrue(sentEmailNotifications.get(0).getBody().contains(testCaseReference));
         assertTrue(sentEmailNotifications.get(1).getBody().contains(testCaseReference));
 
