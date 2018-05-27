@@ -2,6 +2,14 @@
 <suppressions xmlns="https://jeremylong.github.io/DependencyCheck/dependency-suppression.1.1.xsd">
   <suppress>
     <notes><![CDATA[
+      False positive for JDBC client
+      See: https://github.com/jeremylong/DependencyCheck/pull/1226/files
+      ]]></notes>
+    <gav regex="true">^org\.postgresql:postgresql:.*$</gav>
+    <cve>CVE-2017-14798</cve>
+  </suppress>
+  <suppress>
+    <notes><![CDATA[
       This has nothing to do with this artifact, it detects nexus in the pom file
       and thinks that it has something to do with a nexus vulnerability
       ]]></notes>

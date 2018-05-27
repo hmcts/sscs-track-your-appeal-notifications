@@ -28,8 +28,6 @@ compileTestJava {
 
 mainClassName = 'uk.gov.hmcts.sscs.TrackYourAppealNotificationsApplication'
 
-check.dependsOn dependencyCheckAnalyze
-
 checkstyle {
     maxWarnings = 0
     toolVersion = '8.8'
@@ -126,9 +124,12 @@ repositories {
 }
 
 project.tasks['sonarqube'].dependsOn test, integration
+check.dependsOn dependencyCheckAnalyze
 check.dependsOn integration
 checkstyleMain.shouldRunAfter(compileJava)
 test.shouldRunAfter(checkstyleTest)
+integration.shouldRunAfter(checkstyleIntegrationTest)
+integration.shouldRunAfter(test)
 functional.shouldRunAfter(checkstyleIntegrationTest)
 functional.shouldRunAfter(test)
 
@@ -142,18 +143,11 @@ sonarqube {
     }
 }
 
-task migratePostgresDatabase(type: org.flywaydb.gradle.task.FlywayMigrateTask) {
-    baselineOnMigrate = true
-    if (project.hasProperty("dburl")) {
-        url = "jdbc:postgresql://${dburl}"
-    }
-}
-
 configurations {
     integrationTestCompile.extendsFrom(testCompile)
     integrationTestRuntime.extendsFrom(testRuntime)
-    e2eRuntime.extendsFrom(testRuntime)
     e2eCompile.extendsFrom(testCompile)
+    e2eRuntime.extendsFrom(testRuntime)
 }
 
 bootRun {
@@ -177,13 +171,22 @@ def versions = [
 ]
 
 dependencies {
-    compile group: 'org.springframework.boot', name: 'spring-boot-starter-web', version: versions.springBoot
-    compile group: 'org.springframework.boot', name: 'spring-boot-starter-actuator', version: versions.springBoot
-    compile group: 'org.springframework.boot', name: 'spring-boot-starter-aop', version: versions.springBoot
-
     compile group: 'com.googlecode.json-simple', name: 'json-simple', version: '1.1.1'
+    compile group: 'com.opencsv', name: 'opencsv', version: '4.1'
     compile group: 'commons-io', name: 'commons-io', version: '2.6'
 
+    compile group: 'org.flywaydb', name: 'flyway-core', version: '5.1.0'
+    compile group: 'org.postgresql', name: 'postgresql', version: '42.2.2'
+
+    compile group: 'org.springframework.boot', name: 'spring-boot-starter-actuator', version: versions.springBoot
+    compile group: 'org.springframework.boot', name: 'spring-boot-starter-aop', version: versions.springBoot
+    compile group: 'org.springframework.boot', name: 'spring-boot-starter-jdbc', version: springBootVersion
+    compile group: 'org.springframework.boot', name: 'spring-boot-starter-web', version: versions.springBoot
+
+    compile group: 'org.springframework.cloud', name: 'spring-cloud-starter-hystrix', version: versions.springHystrix
+    compile group: 'org.springframework.cloud', name: 'spring-cloud-starter-hystrix-dashboard', version: versions.springHystrix
+
+    compile group: 'io.rest-assured', name: 'rest-assured', version: '3.0.7'
     compile group: 'io.springfox', name: 'springfox-swagger2', version: versions.springfoxSwagger
     compile group: 'io.springfox', name: 'springfox-swagger-ui', version: versions.springfoxSwagger
 
@@ -195,24 +198,12 @@ dependencies {
     compile group: 'uk.gov.hmcts.reform', name: 'sscs-job-scheduler', version: '1.1.2'
     compile group: 'uk.gov.hmcts.reform', name: 'service-auth-provider-client', version: '0.6.0'
 
-    compile group: 'org.springframework.cloud', name: 'spring-cloud-starter-hystrix', version: versions.springHystrix
-    compile group: 'org.springframework.cloud', name: 'spring-cloud-starter-hystrix-dashboard', version: versions.springHystrix
-    compile group: 'io.rest-assured', name: 'rest-assured', version: '3.0.7'
-
     compile group: 'uk.gov.service.notify', name: 'notifications-java-client', version: '3.9.1-RELEASE'
-
-    compile group: 'com.opencsv', name: 'opencsv', version: '4.1'
 
     compileOnly 'org.projectlombok:lombok:1.16.20'
     apt "org.projectlombok:lombok:1.16.20"
 
-    compile group: 'org.flywaydb', name: 'flyway-core', version: '5.0.2'
-    compile group: 'org.postgresql', name: 'postgresql', version: '42.1.4'
-
     testCompile group: 'org.springframework.boot', name: 'spring-boot-starter-test', version: versions.springBoot
-
-    integrationTestCompile group: 'org.springframework.boot', name: 'spring-boot-starter-test', version: versions.springBoot
-    integrationTestCompile group: 'org.testcontainers', name: 'postgresql', version: '1.7.0'
 }
 
 jar {
