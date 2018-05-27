@@ -3,11 +3,14 @@ server.port: ${PORT:8081}
 spring:
   application:
     name: TyaNotificationsService
+  flyway:
+    enabled: true
+    baseline-on-migrate: true
   datasource:
     driverClassName: org.postgresql.Driver
-    url: jdbc:postgresql://${JOB_SCHEDULER_DB_HOST:sscs-job-scheduler-database}:${JOB_SCHEDULER_DB_PORT:5432}/${JOB_SCHEDULER_DB_NAME:sscsjobscheduler}${JOB_SCHEDULER_DB_CONNECTION_OPTIONS:}
+    url: jdbc:postgresql://${JOB_SCHEDULER_DB_HOST:localhost}:${JOB_SCHEDULER_DB_PORT:5432}/${JOB_SCHEDULER_DB_NAME:sscsjobscheduler}${JOB_SCHEDULER_DB_CONNECTION_OPTIONS:}
     username: ${JOB_SCHEDULER_DB_USERNAME:sscsjobscheduler}
-    password: ${JOB_SCHEDULER_DB_PASSWORD:}
+    password: ${JOB_SCHEDULER_DB_PASSWORD:sscsjobscheduler}
     properties:
       charSet: UTF-8
     # http://tomcat.apache.org/tomcat-7.0-doc/jdbc-pool.html#Common_Attributes
@@ -76,8 +79,26 @@ job.scheduler:
     org.quartz:
       scheduler:
         instanceId: AUTO
+      dataSource:
+        jobscheduler:
+          driver: org.postgresql.Driver
+          URL: ${spring.datasource.url}
+          user: ${spring.datasource.username}
+          password: ${spring.datasource.password}
       jobStore:
-        class: org.quartz.simpl.RAMJobStore
+        class: org.quartz.impl.jdbcjobstore.JobStoreTX
+        isClustered: true
+        driverDelegateClass: org.quartz.impl.jdbcjobstore.PostgreSQLDelegate
+        dataSource: jobscheduler
+      threadPool:
+        class: org.quartz.simpl.SimpleThreadPool
+        threadCount: 8
+#  quartzProperties:
+#    org.quartz:
+#      scheduler:
+#        instanceId: AUTO
+#      jobStore:
+#        class: org.quartz.simpl.RAMJobStore
 
 notification:
   appealReceived.emailId: ${APPEAL_RECEIVED_EMAIL_TEMPLATE_ID:b90df52f-c628-409c-8875-4b0b9663a053}
