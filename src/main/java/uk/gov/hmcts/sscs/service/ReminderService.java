@@ -36,7 +36,7 @@ public class ReminderService {
         if (reminderType != null) {
             ZonedDateTime triggerAt = findReminderDate(ccdResponse);
 
-            Job<String> job = new Job(reminderType, ccdResponse.getCaseId(), triggerAt);
+            Job<String> job = new Job<>(reminderType, ccdResponse.getCaseId(), triggerAt);
 
             jobScheduler.schedule(job);
         }
