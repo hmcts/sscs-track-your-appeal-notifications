@@ -1,13 +1,15 @@
 package uk.gov.hmcts.sscs.functional;
 
 import static org.junit.Assert.*;
+import static org.slf4j.LoggerFactory.getLogger;
 import static uk.gov.hmcts.sscs.CcdResponseUtils.buildCcdResponse;
 import static uk.gov.hmcts.sscs.domain.notify.EventType.DWP_RESPONSE_RECEIVED;
 
 import java.time.Instant;
-import java.util.HashSet;
 import java.util.List;
-import java.util.Set;
+import java.util.Optional;
+import java.util.UUID;
+import org.apache.commons.lang3.tuple.Pair;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -27,8 +29,14 @@ import uk.gov.service.notify.NotificationClient;
 import uk.gov.service.notify.NotificationClientException;
 
 @RunWith(SpringRunner.class)
-@SpringBootTest
+@SpringBootTest(
+    properties = {
+        "org.quartz.scheduler.idleWaitTime=5000"
+    }
+)
 public class ReminderNotificationsFunctionalTest {
+
+    private static final org.slf4j.Logger LOG = getLogger(ReminderNotificationsFunctionalTest.class);
 
     @Autowired
     private CreateCcdService createCcdService;
@@ -41,9 +49,6 @@ public class ReminderNotificationsFunctionalTest {
     private CcdResponse caseData;
     private IdamTokens idamTokens;
     private Long caseId;
-
-    @Value("${notification.responseReceived.emailId}")
-    private String evidenceResponseReceivedTemplateId;
 
     @Value("${notification.evidenceReminder.emailId}")
     private String evidenceReminderEmailTemplateId;
@@ -58,6 +63,7 @@ public class ReminderNotificationsFunctionalTest {
 
     private static final int EXPECTED_EMAIL_NOTIFICATIONS = 2;
     private static final int EXPECTED_SMS_NOTIFICATIONS = 1;
+    private static final int MAX_SECONDS_TO_WAIT_FOR_NOTIFICATIONS = 120;
 
     @Before
     public void setup() {
@@ -91,45 +97,84 @@ public class ReminderNotificationsFunctionalTest {
 
         assertEquals("COMPLETED", updatedCaseDetails.getCallbackResponseStatus());
 
-        int maxSecondsToWaitForNotification = 30;
-        while (!testCaseReferenceNotificationsObserved()
-               && maxSecondsToWaitForNotification-- > 0) {
+        Optional<Pair<List<Notification>, List<Notification>>> notifications;
+
+        int maxSecondsToWaitForNotification = MAX_SECONDS_TO_WAIT_FOR_NOTIFICATIONS;
+
+        do {
+
+            if (maxSecondsToWaitForNotification-- == 0) {
+                throw new RuntimeException(
+                    "Timed out fetching notifications after " + MAX_SECONDS_TO_WAIT_FOR_NOTIFICATIONS + " seconds"
+                );
+            }
 
             try {
                 Thread.sleep(1000);
             } catch (InterruptedException e) {
                 // noop
             }
-        }
 
-        List<Notification> sentEmailNotifications = client.getNotifications("delivered", "email", testCaseReference, "").getNotifications();
+            notifications = tryFetchNotificationsForTestCase();
 
-        assertEquals(EXPECTED_EMAIL_NOTIFICATIONS, sentEmailNotifications.size());
+        } while (!notifications.isPresent());
 
-        Set<String> actualTemplateIds = new HashSet<>();
-        actualTemplateIds.add(sentEmailNotifications.get(0).getTemplateId().toString());
-        actualTemplateIds.add(sentEmailNotifications.get(1).getTemplateId().toString());
+        List<Notification> sentEmailNotifications = notifications.get().getLeft();
 
-        assertTrue(actualTemplateIds.contains(evidenceResponseReceivedTemplateId));
-        assertTrue(actualTemplateIds.contains(evidenceReminderEmailTemplateId));
+        assertTrue(sentEmailNotifications.size() >= EXPECTED_EMAIL_NOTIFICATIONS);
 
-        assertTrue(sentEmailNotifications.get(0).getBody().contains(testCaseReference));
-        assertTrue(sentEmailNotifications.get(1).getBody().contains(testCaseReference));
+        assertTrue(
+            sentEmailNotifications.stream()
+                .anyMatch(sentEmailNotification ->
+                    sentEmailNotification.getTemplateId().equals(UUID.fromString(evidenceReminderEmailTemplateId))
+                )
+        );
 
-        List<Notification> sentSmsNotifications = client.getNotifications("delivered", "sms", testCaseReference, "").getNotifications();
+        assertTrue(
+            sentEmailNotifications.stream()
+                .anyMatch(sentEmailNotification ->
+                    sentEmailNotification.getBody().contains(testCaseReference)
+                )
+        );
 
-        assertEquals(EXPECTED_SMS_NOTIFICATIONS, sentSmsNotifications.size());
-        assertEquals(evidenceReminderSmsTemplateId, sentSmsNotifications.get(0).getTemplateId().toString());
+        List<Notification> sentSmsNotifications = notifications.get().getRight();
+
+        assertTrue(sentSmsNotifications.size() >= EXPECTED_SMS_NOTIFICATIONS);
+
+        assertTrue(
+            sentSmsNotifications.stream()
+                .anyMatch(sentSmsNotification ->
+                    sentSmsNotification.getTemplateId().equals(UUID.fromString(evidenceReminderSmsTemplateId))
+                )
+        );
     }
 
-    private boolean testCaseReferenceNotificationsObserved() throws NotificationClientException {
+    private Optional<Pair<List<Notification>, List<Notification>>> tryFetchNotificationsForTestCase() throws NotificationClientException {
 
-        return client.getNotifications("delivered", "email", testCaseReference, "")
-            .getNotifications()
-            .size() >= EXPECTED_EMAIL_NOTIFICATIONS
-               && client.getNotifications("delivered", "sms", testCaseReference, "")
-            .getNotifications()
-            .size() >= EXPECTED_SMS_NOTIFICATIONS;
+        List<Notification> emailNotifications =
+            client
+                .getNotifications("delivered", "email", testCaseReference, "")
+                .getNotifications();
+
+        List<Notification> smsNotifications =
+            client
+                .getNotifications("delivered", "sms", testCaseReference, "")
+                .getNotifications();
+
+        if (emailNotifications.size() >= EXPECTED_EMAIL_NOTIFICATIONS
+            && smsNotifications.size() >= EXPECTED_SMS_NOTIFICATIONS) {
+
+            return Optional.of(
+                Pair.of(
+                    emailNotifications,
+                    smsNotifications
+                )
+            );
+        }
+
+        LOG.info("Waiting for all test case notifications to be delivered...");
+
+        return Optional.empty();
     }
 
 }
