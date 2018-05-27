@@ -1,6 +1,7 @@
 version: '3.0'
 
 services:
+
   track-your-appeal-notifications:
     build:
       context: .
@@ -13,7 +14,7 @@ services:
     environment:
       - S2S_URL
       - JOB_SCHEDULER_DB_USERNAME=sscsjobscheduler
-      - JOB_SCHEDULER_DB_PASSWORD
+      - JOB_SCHEDULER_DB_PASSWORD=sscsjobscheduler
       - JOB_SCHEDULER_DB_HOST=sscs-job-scheduler-database
       - JOB_SCHEDULER_DB_PORT=5432
       # these environment variables are used by java-logging library
@@ -24,11 +25,10 @@ services:
       - REFORM_TEAM
       - REFORM_ENVIRONMENT
     ports:
-      # check .env
       - $SERVER_PORT:$SERVER_PORT
     depends_on:
-      sscs-job-scheduler-database:
-        condition: service_healthy
+      - sscs-job-scheduler-database
+
   sscs-job-scheduler-database:
     build:
       context: docker/database
