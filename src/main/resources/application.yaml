@@ -3,9 +3,6 @@ server.port: ${PORT:8081}
 spring:
   application:
     name: TyaNotificationsService
-  flyway:
-    enabled: true
-    baseline-on-migrate: true
   datasource:
     driverClassName: org.postgresql.Driver
     url: jdbc:postgresql://${JOB_SCHEDULER_DB_HOST:localhost}:${JOB_SCHEDULER_DB_PORT:5432}/${JOB_SCHEDULER_DB_NAME:sscsjobscheduler}${JOB_SCHEDULER_DB_CONNECTION_OPTIONS:}
@@ -75,30 +72,6 @@ job.scheduler:
   retryPolicy:
     maxNumberOfJobExecutions: 2
     delayBetweenAttemptsInMs: 1000
-  quartzProperties:
-    org.quartz:
-      scheduler:
-        instanceId: AUTO
-      dataSource:
-        jobscheduler:
-          driver: org.postgresql.Driver
-          URL: ${spring.datasource.url}
-          user: ${spring.datasource.username}
-          password: ${spring.datasource.password}
-      jobStore:
-        class: org.quartz.impl.jdbcjobstore.JobStoreTX
-        isClustered: true
-        driverDelegateClass: org.quartz.impl.jdbcjobstore.PostgreSQLDelegate
-        dataSource: jobscheduler
-      threadPool:
-        class: org.quartz.simpl.SimpleThreadPool
-        threadCount: 8
-#  quartzProperties:
-#    org.quartz:
-#      scheduler:
-#        instanceId: AUTO
-#      jobStore:
-#        class: org.quartz.simpl.RAMJobStore
 
 notification:
   appealReceived.emailId: ${APPEAL_RECEIVED_EMAIL_TEMPLATE_ID:b90df52f-c628-409c-8875-4b0b9663a053}
@@ -122,3 +95,43 @@ notification:
 
 reminder:
   evidenceReminder.delay.seconds: 172800
+
+---
+# default profile (development, functional, smoke, production etc.)
+spring:
+  profiles: default
+flyway:
+  enabled: true
+job.scheduler:
+  quartzProperties:
+    org.quartz:
+      scheduler:
+        instanceId: AUTO
+      dataSource:
+        jobscheduler:
+          driver: org.postgresql.Driver
+          URL: ${spring.datasource.url}
+          user: ${spring.datasource.username}
+          password: ${spring.datasource.password}
+      jobStore:
+        class: org.quartz.impl.jdbcjobstore.JobStoreTX
+        isClustered: true
+        driverDelegateClass: org.quartz.impl.jdbcjobstore.PostgreSQLDelegate
+        dataSource: jobscheduler
+      threadPool:
+        class: org.quartz.simpl.SimpleThreadPool
+        threadCount: 8
+---
+# integration profile
+spring:
+  profiles: integration
+flyway:
+  enabled: false
+job.scheduler:
+  quartzProperties:
+    org.quartz:
+      scheduler:
+        instanceId: AUTO
+      jobStore:
+        class: org.quartz.simpl.RAMJobStore
+---
