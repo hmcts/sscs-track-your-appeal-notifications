@@ -6,11 +6,13 @@ import static org.mockito.MockitoAnnotations.initMocks;
 import org.junit.Before;
 import org.junit.Test;
 import org.mockito.Mock;
+import org.springframework.test.context.ActiveProfiles;
 import uk.gov.hmcts.sscs.domain.CcdResponse;
 import uk.gov.hmcts.sscs.domain.CcdResponseWrapper;
 import uk.gov.hmcts.sscs.service.AuthorisationService;
 import uk.gov.hmcts.sscs.service.NotificationService;
 
+@ActiveProfiles("integration")
 public class NotificationControllerTest {
 
     private NotificationController notificationController;
