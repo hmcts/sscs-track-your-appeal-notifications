@@ -64,6 +64,7 @@ module "track-your-appeal-notifications" {
 
 
   app_settings = {
+    INFRASTRUCTURE_ENV = "${var.env}"
     MANAGEMENT_SECURITY_ENABLED = "${var.management_security_enabled}"
 
     CORE_CASE_DATA_API_URL = "${local.ccdApi}"
