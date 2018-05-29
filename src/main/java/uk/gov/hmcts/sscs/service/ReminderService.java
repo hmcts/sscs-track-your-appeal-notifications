@@ -52,7 +52,11 @@ public class ReminderService {
     public ZonedDateTime findReminderDate(CcdResponse ccdResponse) {
         switch (ccdResponse.getNotificationType()) {
             case DWP_RESPONSE_RECEIVED: {
-                return calculateDate(ccdResponse, DWP_RESPONSE_RECEIVED, evidenceReminderDelay);
+                ZonedDateTime date = calculateDate(ccdResponse, DWP_RESPONSE_RECEIVED, evidenceReminderDelay);
+                if (date != null) {
+                    return date;
+                }
+                break;
             }
             default: break;
         }
