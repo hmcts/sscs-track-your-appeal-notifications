@@ -92,16 +92,16 @@ public class ReminderServiceTest {
         assertEquals(ZonedDateTime.of(LocalDate.of(2018, 1, 3), LocalTime.of(14, 01, 18), ZoneId.of(ZONE_ID)), result);
     }
 
-    //@Test(expected = ReminderException.class)
-    //public void throwExceptionWhenCannotFindEventDateForDwpResponseReceivedEvent() {
-    //    String date = "2018-01-01T14:01:18";
-    //    List<Events> events = new ArrayList<>();
-    //    events.add(Events.builder().value(Event.builder().date(date).type(APPEAL_WITHDRAWN.getId()).build()).build());
-    //
-    //    CcdResponse ccdResponse = CcdResponse.builder().notificationType(DWP_RESPONSE_RECEIVED).events(events).build();
-    //
-    //    service.findReminderDate(ccdResponse);
-    //}
+    @Test(expected = ReminderException.class)
+    public void throwExceptionWhenCannotFindEventDateForDwpResponseReceivedEvent() {
+        String date = "2018-01-01T14:01:18";
+        List<Events> events = new ArrayList<>();
+        events.add(Events.builder().value(Event.builder().date(date).type(APPEAL_WITHDRAWN.getId()).build()).build());
+
+        CcdResponse ccdResponse = CcdResponse.builder().notificationType(DWP_RESPONSE_RECEIVED).events(events).build();
+
+        service.findReminderDate(ccdResponse);
+    }
 
     @Test(expected = ReminderException.class)
     public void throwExceptionForUnrecognisedReminderEvent() {
