@@ -53,14 +53,6 @@ locals {
   s2sCnpUrl = "http://rpe-service-auth-provider-${local.local_env}.service.${local.local_ase}.internal"
 }
 
-module "sscs-job-scheduler-database" {
-  source              = "git@github.com:contino/moj-module-postgres.git?ref=master"
-  product             = "${var.product}-${var.microservice}-db"
-  location            = "${var.location_db}"
-  env                 = "${var.env}"
-  postgresql_user     = "sscsjobscheduler"
-}
-
 module "track-your-appeal-notifications" {
   source       = "git@github.com:contino/moj-module-webapp?ref=master"
   product      = "${var.product}-${var.component}"
@@ -72,13 +64,6 @@ module "track-your-appeal-notifications" {
 
 
   app_settings = {
-    POSTGRES_HOST = "${module.db-notif.host_name}"
-    POSTGRES_PORT = "${module.db-notif.postgresql_listen_port}"
-    POSTGRES_DATABASE = "${module.db-notif.postgresql_database}"
-    POSTGRES_USER = "${module.db-notif.user_name}"
-    POSTGRES_PASSWORD = "${module.db-notif.postgresql_password}"
-    MAX_ACTIVE_DB_CONNECTIONS = 70
-
     MANAGEMENT_SECURITY_ENABLED = "${var.management_security_enabled}"
 
     CORE_CASE_DATA_API_URL = "${local.ccdApi}"
@@ -121,12 +106,13 @@ module "track-your-appeal-notifications" {
     EMAIL_MAC_SECRET_TEXT = "${data.vault_generic_secret.mac_secret.data["value"]}"
 
     // db vars
-    JOB_SCHEDULER_DB_HOST     = "${module.sscs-job-scheduler-database.host_name}"
-    JOB_SCHEDULER_DB_PORT     = "${module.sscs-job-scheduler-database.postgresql_listen_port}"
-    JOB_SCHEDULER_DB_PASSWORD = "${module.sscs-job-scheduler-database.postgresql_password}"
-    JOB_SCHEDULER_DB_USERNAME = "${module.sscs-job-scheduler-database.user_name}"
-    JOB_SCHEDULER_DB_NAME     = "postgres"
+    JOB_SCHEDULER_DB_HOST     = "${module.db-notif.host_name}"
+    JOB_SCHEDULER_DB_PORT     = "${module.db-notif.postgresql_listen_port}"
+    JOB_SCHEDULER_DB_PASSWORD = "${module.db-notif.postgresql_password}"
+    JOB_SCHEDULER_DB_USERNAME = "${module.db-notif.user_name}"
+    JOB_SCHEDULER_DB_NAME     = "${module.db-notif.postgresql_database}"
     JOB_SCHEDULER_DB_CONNECTION_OPTIONS = "?ssl"
+    MAX_ACTIVE_DB_CONNECTIONS = 70
   }
 }
 
