@@ -62,6 +62,16 @@ You should get a response similar to this:
 ```
 
 
+###DB initialisation
+
+Running the application will apply db migration scripts automatically.
+
+They can also run on demand using the following Gradle task:
+
+```
+./gradlew flywayMigrate
+```
+
 ###Unit tests
 
 To run all unit tests execute the following command:
