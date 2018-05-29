@@ -6,11 +6,11 @@ import org.springframework.http.HttpStatus;
 
 public class GetSmokeCase {
 
-    private final String caseLoaderInstance = System.getenv("TEST_URL");
+    private final String appUrl = System.getenv("TEST_URL");
 
     @Test
     public void givenASmokeCase_retrieveFromCcd() {
-        RestAssured.baseURI = caseLoaderInstance;
+        RestAssured.baseURI = appUrl;
         RestAssured.useRelaxedHTTPSValidation();
 
         RestAssured

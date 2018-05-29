@@ -5,10 +5,15 @@ import static org.slf4j.LoggerFactory.getLogger;
 import static uk.gov.hmcts.sscs.CcdResponseUtils.buildCcdResponse;
 import static uk.gov.hmcts.sscs.domain.notify.EventType.DWP_RESPONSE_RECEIVED;
 
+import io.restassured.RestAssured;
+import java.io.File;
+import java.io.IOException;
+import java.nio.charset.StandardCharsets;
 import java.time.Instant;
 import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
+import org.apache.commons.io.FileUtils;
 import org.apache.commons.lang3.tuple.Pair;
 import org.junit.Before;
 import org.junit.Test;
@@ -16,12 +21,12 @@ import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.http.HttpStatus;
 import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.context.junit4.SpringRunner;
 import uk.gov.hmcts.reform.ccd.client.model.CaseDetails;
 import uk.gov.hmcts.sscs.domain.CcdResponse;
 import uk.gov.hmcts.sscs.domain.idam.IdamTokens;
-import uk.gov.hmcts.sscs.domain.notify.EventType;
 import uk.gov.hmcts.sscs.service.ccd.CreateCcdService;
 import uk.gov.hmcts.sscs.service.ccd.UpdateCcdService;
 import uk.gov.hmcts.sscs.service.idam.IdamService;
@@ -75,7 +80,7 @@ public class ReminderNotificationsFunctionalTest {
             + "/"
             + epoch.substring(8, 13);
 
-        caseData = buildCcdResponse(testCaseReference, "Yes", "Yes", EventType.DWP_RESPONSE_RECEIVED);
+        caseData = buildCcdResponse(testCaseReference, "Yes", "Yes", DWP_RESPONSE_RECEIVED);
 
         idamTokens = IdamTokens.builder()
             .authenticationService(idamService.generateServiceAuthorization())
@@ -89,11 +94,13 @@ public class ReminderNotificationsFunctionalTest {
     }
 
     @Test
-    public void shouldSendResponseReceivedNotification() throws NotificationClientException {
+    public void shouldSendResponseReceivedNotification() throws IOException, NotificationClientException {
 
         CaseDetails updatedCaseDetails = updateCcdService.update(caseData, caseId, DWP_RESPONSE_RECEIVED.getId(), idamTokens);
 
         assertEquals("COMPLETED", updatedCaseDetails.getCallbackResponseStatus());
+
+        ifPreviewEnvSimulateCcdCallback();
 
         Optional<Pair<List<Notification>, List<Notification>>> notifications;
 
@@ -147,6 +154,43 @@ public class ReminderNotificationsFunctionalTest {
         );
     }
 
+    /*
+     this method simulates the ccd callback in preview,
+     because ccd callbacks cannot be configured in preview env
+     */
+    private void ifPreviewEnvSimulateCcdCallback() throws IOException {
+
+        if (!getEnvOrEmpty("INFRASTRUCTURE_ENV").equals("preview")
+            || getEnvOrEmpty("HTTP_HOST").isEmpty()) {
+            LOG.info("Is *not* preview environment -- expecting CCD to callback");
+            return;
+        }
+
+        final String previewHttpHost = getEnvOrEmpty("HTTP_HOST");
+        final boolean isSecureConnection = getEnvOrEmpty("SERVER_PORT_SECURE").equals("1");
+        final String callbackUrl = "http" + (isSecureConnection ? "s" : "") + "://" + previewHttpHost + "/send";
+
+        LOG.info("Is preview environment -- simulating a CCD callback to: " + callbackUrl);
+
+        String path = getClass().getClassLoader().getResource("dwpResponseReceivedCallback.json").getFile();
+        String json = FileUtils.readFileToString(new File(path), StandardCharsets.UTF_8.name());
+
+        json = json.replace("1527603347855358", caseId.toString());
+        json = json.replace("SC760/33/47564", testCaseReference);
+        json = json.replace("\r\n", "\n");
+
+        RestAssured.useRelaxedHTTPSValidation();
+        RestAssured
+            .given()
+            .header("ServiceAuthorization", "" + idamTokens.getAuthenticationService())
+            .contentType("application/json")
+            .body(json)
+            .when()
+            .post(callbackUrl)
+            .then()
+            .statusCode(HttpStatus.OK.value());
+    }
+
     private Optional<Pair<List<Notification>, List<Notification>>> tryFetchNotificationsForTestCase() throws NotificationClientException {
 
         List<Notification> emailNotifications =
@@ -173,6 +217,17 @@ public class ReminderNotificationsFunctionalTest {
         LOG.info("Waiting for all test case notifications to be delivered...");
 
         return Optional.empty();
+    }
+
+    private String getEnvOrEmpty(
+        String name
+    ) {
+        String value = System.getenv(name);
+        if (value == null) {
+            return "";
+        }
+
+        return value;
     }
 
 }
