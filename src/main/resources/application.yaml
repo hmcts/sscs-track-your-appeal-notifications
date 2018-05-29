@@ -97,7 +97,7 @@ reminder:
   evidenceReminder.delay.seconds: 172800
 
 ---
-# default profile (development, functional, smoke, production etc.)
+# default profile (development, production etc.)
 spring:
   profiles: default
 flyway:
@@ -122,9 +122,9 @@ job.scheduler:
         class: org.quartz.simpl.SimpleThreadPool
         threadCount: 8
 ---
-# integration profile
+# integration & functional profile
 spring:
-  profiles: integration
+  profiles: integration, functional
 flyway:
   enabled: false
 job.scheduler:

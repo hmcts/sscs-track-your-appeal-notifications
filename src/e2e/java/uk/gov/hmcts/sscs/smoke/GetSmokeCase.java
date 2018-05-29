@@ -23,6 +23,3 @@ public class GetSmokeCase {
             .extract().body().asString();
     }
 }
-
-
-

@@ -16,6 +16,7 @@ import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.context.junit4.SpringRunner;
 import uk.gov.hmcts.reform.ccd.client.model.CaseDetails;
 import uk.gov.hmcts.sscs.domain.CcdResponse;
@@ -29,11 +30,8 @@ import uk.gov.service.notify.NotificationClient;
 import uk.gov.service.notify.NotificationClientException;
 
 @RunWith(SpringRunner.class)
-@SpringBootTest(
-    properties = {
-        "org.quartz.scheduler.idleWaitTime=5000"
-    }
-)
+@SpringBootTest
+@ActiveProfiles("functional")
 public class ReminderNotificationsFunctionalTest {
 
     private static final org.slf4j.Logger LOG = getLogger(ReminderNotificationsFunctionalTest.class);
