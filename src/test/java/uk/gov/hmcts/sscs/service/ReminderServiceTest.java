@@ -22,6 +22,8 @@ import uk.gov.hmcts.reform.sscs.jobscheduler.model.Job;
 import uk.gov.hmcts.reform.sscs.jobscheduler.services.JobScheduler;
 import uk.gov.hmcts.sscs.domain.CcdResponse;
 import uk.gov.hmcts.sscs.domain.Events;
+import uk.gov.hmcts.sscs.domain.Hearing;
+import uk.gov.hmcts.sscs.domain.HearingDetails;
 import uk.gov.hmcts.sscs.domain.notify.Event;
 import uk.gov.hmcts.sscs.domain.notify.EventType;
 import uk.gov.hmcts.sscs.exception.ReminderException;
@@ -87,9 +89,24 @@ public class ReminderServiceTest {
 
         CcdResponse ccdResponse = CcdResponse.builder().notificationType(DWP_RESPONSE_RECEIVED).events(events).build();
 
-        ZonedDateTime result = service.findReminderDate(ccdResponse);
+        ZonedDateTime result = service.findReminderDate(ccdResponse, "172800");
 
         assertEquals(ZonedDateTime.of(LocalDate.of(2018, 1, 3), LocalTime.of(14, 01, 18), ZoneId.of(ZONE_ID)), result);
+    }
+
+    @Test
+    public void findReminderDateForHearingBookedEvent() {
+        List<Hearing> hearings = new ArrayList<>();
+        hearings.add(Hearing.builder().value(HearingDetails.builder()
+                .hearingDate("2018-01-10")
+                .time("12:00")
+                .build()).build());
+
+        CcdResponse ccdResponse = CcdResponse.builder().notificationType(HEARING_BOOKED).hearings(hearings).build();
+
+        ZonedDateTime result = service.findReminderDate(ccdResponse, "172800");
+
+        assertEquals(ZonedDateTime.of(LocalDate.of(2018, 1, 8), LocalTime.of(12, 00, 00), ZoneId.of(ZONE_ID)), result);
     }
 
     @Test(expected = ReminderException.class)
@@ -100,7 +117,16 @@ public class ReminderServiceTest {
 
         CcdResponse ccdResponse = CcdResponse.builder().notificationType(DWP_RESPONSE_RECEIVED).events(events).build();
 
-        service.findReminderDate(ccdResponse);
+        service.findReminderDate(ccdResponse, "1");
+    }
+
+    @Test(expected = ReminderException.class)
+    public void throwExceptionWhenCannotFindEventDateFoHearingBookedEvent() {
+        List<Hearing> hearings = new ArrayList<>();
+
+        CcdResponse ccdResponse = CcdResponse.builder().notificationType(HEARING_BOOKED).hearings(hearings).build();
+
+        service.findReminderDate(ccdResponse, "1");
     }
 
     @Test(expected = ReminderException.class)
@@ -111,6 +137,6 @@ public class ReminderServiceTest {
 
         CcdResponse ccdResponse = CcdResponse.builder().notificationType(APPEAL_WITHDRAWN).events(events).build();
 
-        service.findReminderDate(ccdResponse);
+        service.findReminderDate(ccdResponse, "1");
     }
 }

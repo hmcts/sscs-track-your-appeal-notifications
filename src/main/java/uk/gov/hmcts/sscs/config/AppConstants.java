@@ -12,6 +12,9 @@ public final class AppConstants {
     public static final String BENEFIT_FULL_NAME_LITERAL = "benefit_full_name";
     public static final String CLAIMING_EXPENSES_LINK_LITERAL = "claiming_expenses_link";
     public static final String COUNTY_LITERAL = "county";
+    public static final String DAY_STRING = " day";
+    public static final String DAYS_STRING = " days";
+    public static final String DAYS_TO_HEARING_LITERAL = "days_to_hearing_text";
     public static final String DEPARTMENT_NAME_LITERAL = "department_name";
     public static final String DEPARTMENT_NAME_STRING = "Regional Processing Centre";
     public static final String DWP_ACRONYM = "DWP";
