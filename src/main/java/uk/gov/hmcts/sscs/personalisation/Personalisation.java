@@ -9,6 +9,7 @@ import static uk.gov.hmcts.sscs.domain.notify.EventType.*;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
+import java.time.temporal.ChronoUnit;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.stream.Collectors;
@@ -71,10 +72,12 @@ public class Personalisation {
         if (ccdResponse.getHearings() != null && !ccdResponse.getHearings().isEmpty()) {
             Hearing latestHearing = ccdResponse.getHearings().get(0);
 
-            personalisation.put(HEARING_DATE, formatLocalDate(latestHearing.getValue().getHearingDateTime().toLocalDate()));
-            personalisation.put(HEARING_TIME, formatLocalTime(latestHearing.getValue().getHearingDateTime()));
+            LocalDateTime hearingDateTime = latestHearing.getValue().getHearingDateTime();
+            personalisation.put(HEARING_DATE, formatLocalDate(hearingDateTime.toLocalDate()));
+            personalisation.put(HEARING_TIME, formatLocalTime(hearingDateTime));
             personalisation.put(VENUE_ADDRESS_LITERAL, formatAddress(latestHearing));
             personalisation.put(VENUE_MAP_LINK_LITERAL, latestHearing.getValue().getVenue().getGoogleMapLink());
+            personalisation.put(DAYS_TO_HEARING_LITERAL, calculateDaysToHearingText(hearingDateTime.toLocalDate()));
         }
 
         setEvidenceProcessingAddress(personalisation, ccdResponse);
@@ -148,11 +151,19 @@ public class Personalisation {
                 .collect(Collectors.joining(", "));
     }
 
-    private  Map<String, String> setHearingContactDate(Map<String, String> personalisation, Event event) {
+    private Map<String, String> setHearingContactDate(Map<String, String> personalisation, Event event) {
         String hearingContactDate = formatLocalDate(event.getDateTime().plusDays(42).toLocalDate());
         personalisation.put(HEARING_CONTACT_DATE, hearingContactDate);
 
         return personalisation;
+    }
+
+    private String calculateDaysToHearingText(LocalDate hearingDate) {
+        Long daysBetween = ChronoUnit.DAYS.between(LocalDate.now(), hearingDate);
+
+        String daysText = daysBetween == 1 ? DAY_STRING : DAYS_STRING;
+
+        return "in " + daysBetween + daysText;
     }
 
     public String getMacToken(String id, String benefitType) {

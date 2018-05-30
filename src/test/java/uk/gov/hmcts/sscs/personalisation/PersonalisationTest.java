@@ -9,6 +9,8 @@ import static uk.gov.hmcts.sscs.config.AppConstants.*;
 import static uk.gov.hmcts.sscs.domain.Benefit.PIP;
 import static uk.gov.hmcts.sscs.domain.notify.EventType.*;
 
+import java.time.LocalDate;
+import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -215,8 +217,10 @@ public class PersonalisationTest {
 
     @Test
     public void givenHearingData_correctlySetTheHearingDetails() {
+        LocalDate hearingDate = LocalDate.now().plusDays(7);
+
         Hearing hearing = Hearing.builder().value(HearingDetails.builder()
-                .hearingDate("2018-01-01")
+                .hearingDate(hearingDate.format(DateTimeFormatter.ofPattern("yyyy-MM-dd")))
                 .time("12:00")
                 .venue(Venue.builder()
                         .name("The venue")
@@ -244,10 +248,47 @@ public class PersonalisationTest {
 
         Map<String, String> result = personalisation.create(CcdResponseWrapper.builder().newCcdResponse(response).build());
 
-        assertEquals("01 January 2018", result.get(HEARING_DATE));
+        assertEquals(hearingDate.format(DateTimeFormatter.ofPattern(RESPONSE_DATE_FORMAT)), result.get(HEARING_DATE));
         assertEquals("12:00 PM", result.get(HEARING_TIME));
         assertEquals("The venue, 12 The Road Avenue, Village, Aberdeen, Aberdeenshire, AB12 0HN", result.get(VENUE_ADDRESS_LITERAL));
         assertEquals("http://www.googlemaps.com/aberdeenvenue", result.get(VENUE_MAP_LINK_LITERAL));
+        assertEquals("in 7 days", result.get(DAYS_TO_HEARING_LITERAL));
+    }
+
+    @Test
+    public void givenOnlyOneDayUntilHearing_correctlySetTheDaysToHearingText() {
+        LocalDate hearingDate = LocalDate.now().plusDays(1);
+
+        Hearing hearing = Hearing.builder().value(HearingDetails.builder()
+                .hearingDate(hearingDate.format(DateTimeFormatter.ofPattern("yyyy-MM-dd")))
+                .time("12:00")
+                .venue(Venue.builder()
+                        .name("The venue")
+                        .address(Address.builder()
+                                .line1("12 The Road Avenue")
+                                .line2("Village")
+                                .town("Aberdeen")
+                                .county("Aberdeenshire")
+                                .postcode("AB12 0HN").build())
+                        .googleMapLink("http://www.googlemaps.com/aberdeenvenue")
+                        .build()).build()).build();
+
+        List<Hearing> hearingList = new ArrayList<>();
+        hearingList.add(hearing);
+
+        CcdResponse response = CcdResponse.builder()
+                .caseId(CASE_ID).caseReference("SC/1234/5")
+                .appeal(Appeal.builder().benefitType(BenefitType.builder().code("PIP").build())
+                        .appellant(Appellant.builder().name(name).build())
+                        .build())
+                .notificationType(HEARING_BOOKED)
+                .subscriptions(subscriptions)
+                .hearings(hearingList)
+                .build();
+
+        Map<String, String> result = personalisation.create(CcdResponseWrapper.builder().newCcdResponse(response).build());
+
+        assertEquals("in 1 day", result.get(DAYS_TO_HEARING_LITERAL));
     }
 
     @Test

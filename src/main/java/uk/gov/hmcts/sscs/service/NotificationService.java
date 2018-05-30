@@ -1,7 +1,6 @@
 package uk.gov.hmcts.sscs.service;
 
 import static org.slf4j.LoggerFactory.getLogger;
-import static uk.gov.hmcts.sscs.domain.notify.EventType.DWP_RESPONSE_RECEIVED;
 
 import java.net.UnknownHostException;
 import org.slf4j.Logger;
@@ -68,7 +67,7 @@ public class NotificationService {
     }
 
     public void createReminders(CcdResponse ccdResponse) {
-        if (isJobSchedulerEnabled && ccdResponse.getNotificationType().equals(DWP_RESPONSE_RECEIVED)) {
+        if (isJobSchedulerEnabled && ccdResponse.getNotificationType().isScheduleReminder()) {
             reminderService.createJob(ccdResponse);
         }
     }
