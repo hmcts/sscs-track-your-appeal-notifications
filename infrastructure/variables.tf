@@ -108,3 +108,7 @@ variable "postgresql_user" {
 variable "database_name" {
   default = "notification"
 }
+
+variable "notification_key" {
+  default = "sscs_notify_api_new_key"
+}

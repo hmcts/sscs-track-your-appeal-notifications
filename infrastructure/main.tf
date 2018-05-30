@@ -32,7 +32,7 @@ data "vault_generic_secret" "idam_s2s_api" {
 }
 
 data "vault_generic_secret" "sscs_notify_api_key" {
-  path = "secret/${var.infrastructure_env}/sscs/sscs_notify_api_new_key"
+  path = "secret/${var.infrastructure_env}/sscs/${var.notification_key}"
 }
 
 data "vault_generic_secret" "mac_secret" {
