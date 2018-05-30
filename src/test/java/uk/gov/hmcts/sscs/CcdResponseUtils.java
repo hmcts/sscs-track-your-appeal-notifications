@@ -10,6 +10,9 @@ import uk.gov.hmcts.sscs.domain.notify.Event;
 import uk.gov.hmcts.sscs.domain.notify.EventType;
 
 public final class CcdResponseUtils {
+
+    public static final String CASE_ID = "1234";
+
     private CcdResponseUtils() {
     }
 
@@ -95,6 +98,61 @@ public final class CcdResponseUtils {
             .build();
     }
 
+    public static CcdResponse buildBasicCcdResponse(EventType notificationType) {
+        return CcdResponse.builder()
+            .caseId(CASE_ID)
+            .notificationType(notificationType)
+            .events(Collections.emptyList())
+            .hearings(Collections.emptyList())
+            .build();
+    }
+
+    public static CcdResponse buildBasicCcdResponseWithEvent(
+        EventType notificationType,
+        EventType eventType,
+        String eventDate
+    ) {
+        Events event = Events
+            .builder()
+            .value(Event
+                .builder()
+                .date(eventDate)
+                .type(eventType.getId())
+                .build()
+            )
+            .build();
+
+        return CcdResponse.builder()
+            .caseId(CASE_ID)
+            .notificationType(notificationType)
+            .events(Collections.singletonList(event))
+            .hearings(Collections.emptyList())
+            .build();
+    }
+
+    public static CcdResponse buildBasicCcdResponseWithHearing(
+        EventType notificationType,
+        String hearingDate,
+        String hearingTime
+    ) {
+        Hearing hearing = Hearing
+            .builder()
+            .value(HearingDetails
+                .builder()
+                .hearingDate(hearingDate)
+                .time(hearingTime)
+                .build()
+            )
+            .build();
+
+        return CcdResponse.builder()
+            .caseId(CASE_ID)
+            .notificationType(notificationType)
+            .events(Collections.emptyList())
+            .hearings(Collections.singletonList(hearing))
+            .build();
+    }
+
     public static void addEventTypeToCase(CcdResponse response, EventType eventType) {
         Date now = new Date();
         SimpleDateFormat dt1 = new SimpleDateFormat("yyyy-MM-dd'T'hh:mm:ss.SSS");
@@ -142,10 +200,10 @@ public final class CcdResponseUtils {
                 .googleMapLink("http://www.googlemaps.com/aberdeenvenue")
                 .build()).build()).build();
 
-
         List<Hearing> hearingsList = new ArrayList<>();
         hearingsList.add(hearing);
 
         response.setHearings(hearingsList);
     }
+
 }
