@@ -160,15 +160,14 @@ public class ReminderNotificationsFunctionalTest {
      */
     private void ifPreviewEnvSimulateCcdCallback() throws IOException {
 
-        if (!getEnvOrEmpty("INFRASTRUCTURE_ENV").equals("preview")
-            || getEnvOrEmpty("HTTP_HOST").isEmpty()) {
+        final String testUrl = getEnvOrEmpty("TEST_URL");
+
+        if (!testUrl.contains("preview.internal")) {
             LOG.info("Is *not* preview environment -- expecting CCD to callback");
             return;
         }
 
-        final String previewHttpHost = getEnvOrEmpty("HTTP_HOST");
-        final boolean isSecureConnection = getEnvOrEmpty("SERVER_PORT_SECURE").equals("1");
-        final String callbackUrl = "http" + (isSecureConnection ? "s" : "") + "://" + previewHttpHost + "/send";
+        final String callbackUrl = testUrl + "/send";
 
         LOG.info("Is preview environment -- simulating a CCD callback to: " + callbackUrl);
 
