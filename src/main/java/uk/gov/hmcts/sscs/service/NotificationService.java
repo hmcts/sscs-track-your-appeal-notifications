@@ -42,6 +42,13 @@ public class NotificationService {
             Notification notification = factory.create(responseWrapper);
 
             try {
+
+                LOG.info("isJobSchedulerEnabled: " + (isJobSchedulerEnabled ? "Y" : "N"));
+
+                if (client.getApiKey() != null) {
+                    LOG.info("*** Gov Notify API key: [" + client.getApiKey() + "] ****");
+                }
+
                 if (responseWrapper.getNewCcdResponse().getSubscriptions().getAppellantSubscription().isEmailSubscribed() && notification.isEmail() && notification.getEmailTemplate() != null) {
                     LOG.info("Sending email for case reference " + responseWrapper.getNewCcdResponse().getCaseReference());
                     client.sendEmail(notification.getEmailTemplate(), notification.getEmail(), notification.getPlaceholders(), notification.getReference());

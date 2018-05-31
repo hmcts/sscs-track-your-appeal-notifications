@@ -66,7 +66,7 @@ public class ReminderNotificationsFunctionalTest {
 
     private static final int EXPECTED_EMAIL_NOTIFICATIONS = 2;
     private static final int EXPECTED_SMS_NOTIFICATIONS = 1;
-    private static final int MAX_SECONDS_TO_WAIT_FOR_NOTIFICATIONS = 120;
+    private static final int MAX_SECONDS_TO_WAIT_FOR_NOTIFICATIONS = 360;
 
     @Before
     public void setup() {
@@ -162,14 +162,18 @@ public class ReminderNotificationsFunctionalTest {
 
         final String testUrl = getEnvOrEmpty("TEST_URL");
 
-        if (!testUrl.contains("preview.internal")) {
-            LOG.info("Is *not* preview environment -- expecting CCD to callback");
-            return;
-        }
+        //if (!testUrl.contains("preview.internal")) {
+        //    LOG.info("Is *not* preview environment -- expecting CCD to callback");
+        //    return;
+        //}
+        //
+        //if (client.getApiKey() != null) {
+        //    LOG.info("*** Gov Notify API key: [" + client.getApiKey() + "] ****");
+        //}
 
         final String callbackUrl = testUrl + "/send";
 
-        LOG.info("Is preview environment -- simulating a CCD callback to: " + callbackUrl);
+        LOG.info("Is preview environment -- simulating a CCD callback to: " + callbackUrl + " for case " + testCaseReference);
 
         String path = getClass().getClassLoader().getResource("dwpResponseReceivedCallback.json").getFile();
         String json = FileUtils.readFileToString(new File(path), StandardCharsets.UTF_8.name());
@@ -201,6 +205,9 @@ public class ReminderNotificationsFunctionalTest {
             client
                 .getNotifications("delivered", "sms", testCaseReference, "")
                 .getNotifications();
+
+        LOG.info("*** Gov Notify #Email: [" + emailNotifications.size() + "] ****");
+        LOG.info("*** Gov Notify #Sms: [" + smsNotifications.size() + "] ****");
 
         if (emailNotifications.size() >= EXPECTED_EMAIL_NOTIFICATIONS
             && smsNotifications.size() >= EXPECTED_SMS_NOTIFICATIONS) {
