@@ -147,7 +147,7 @@ public class ReminderNotificationsFunctionalTest {
 
         LOG.info("Is preview or AAT environment -- simulating a CCD callback to: " + callbackUrl + " for case " + testCaseReference);
 
-        String path = getClass().getClassLoader().getResource("ccdResponse.json").getFile();
+        String path = getClass().getClassLoader().getResource("json/ccdResponse.json").getFile();
         String json = FileUtils.readFileToString(new File(path), StandardCharsets.UTF_8.name());
 
         json = json.replace("appealReceived", eventType.getId());
