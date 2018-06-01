@@ -9,4 +9,3 @@ claiming_expenses_link = "https://track-appeal.nonprod.platform.hmcts.net/expens
 
 idam_redirect_url = "https://evidence-sharing-preprod.sscs.reform.hmcts.net"
 core_case_data_user_id = "506"
-scheduler_enabled = "false"

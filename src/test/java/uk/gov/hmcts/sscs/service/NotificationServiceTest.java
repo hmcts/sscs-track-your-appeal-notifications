@@ -1,8 +1,6 @@
 package uk.gov.hmcts.sscs.service;
 
-import static org.mockito.Mockito.never;
-import static org.mockito.Mockito.verify;
-import static org.mockito.Mockito.when;
+import static org.mockito.Mockito.*;
 import static org.mockito.MockitoAnnotations.initMocks;
 import static uk.gov.hmcts.sscs.domain.notify.EventType.APPEAL_WITHDRAWN;
 import static uk.gov.hmcts.sscs.domain.notify.EventType.DWP_RESPONSE_RECEIVED;
@@ -11,9 +9,14 @@ import java.net.UnknownHostException;
 import org.junit.Before;
 import org.junit.Test;
 import org.mockito.Mock;
-import org.springframework.test.util.ReflectionTestUtils;
-import uk.gov.hmcts.sscs.domain.*;
-import uk.gov.hmcts.sscs.domain.notify.*;
+import uk.gov.hmcts.sscs.domain.CcdResponse;
+import uk.gov.hmcts.sscs.domain.CcdResponseWrapper;
+import uk.gov.hmcts.sscs.domain.Subscription;
+import uk.gov.hmcts.sscs.domain.Subscriptions;
+import uk.gov.hmcts.sscs.domain.notify.Destination;
+import uk.gov.hmcts.sscs.domain.notify.Notification;
+import uk.gov.hmcts.sscs.domain.notify.Reference;
+import uk.gov.hmcts.sscs.domain.notify.Template;
 import uk.gov.hmcts.sscs.exception.NotificationClientRuntimeException;
 import uk.gov.hmcts.sscs.exception.NotificationServiceException;
 import uk.gov.hmcts.sscs.factory.NotificationFactory;
@@ -138,9 +141,7 @@ public class NotificationServiceTest {
     }
 
     @Test
-    public void createAReminderJobWhenNotificationIsDwpResponseReceived() throws Exception {
-        ReflectionTestUtils.setField(notificationService, "isJobSchedulerEnabled", true);
-
+    public void createAReminderJobWhenNotificationIsDwpResponseReceived() {
         response.setNotificationType(DWP_RESPONSE_RECEIVED);
 
         Notification notification = new Notification(Template.builder().emailTemplateId(null).smsTemplateId("123").build(), Destination.builder().email(null).sms("07823456746").build(), null, new Reference(), null);
@@ -148,19 +149,6 @@ public class NotificationServiceTest {
         notificationService.createAndSendNotification(wrapper);
 
         verify(reminderService).createJob(response);
-    }
-
-    @Test
-    public void doNotCreateAReminderJobWhenNotificationIsDwpResponseReceivedAndJobSchedulerIsNotEnabled() throws Exception {
-        ReflectionTestUtils.setField(notificationService, "isJobSchedulerEnabled", false);
-
-        response.setNotificationType(DWP_RESPONSE_RECEIVED);
-
-        Notification notification = new Notification(Template.builder().emailTemplateId(null).smsTemplateId("123").build(), Destination.builder().email(null).sms("07823456746").build(), null, new Reference(), null);
-        when(factory.create(wrapper)).thenReturn(notification);
-        notificationService.createAndSendNotification(wrapper);
-
-        verify(reminderService, never()).createJob(response);
     }
 
     @Test
