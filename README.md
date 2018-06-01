@@ -62,6 +62,16 @@ You should get a response similar to this:
 ```
 
 
+###DB initialisation
+
+Running the application will apply db migration scripts automatically.
+
+They can also run on demand using the following Gradle task:
+
+```
+./gradlew flywayMigrate
+```
+
 ###Unit tests
 
 To run all unit tests execute the following command:
@@ -96,3 +106,7 @@ run-notify up -d
 ```
 This starts the CCD applications with Track-your-appeal-notifications in Docker with just one command
 
+##Job scheduler service
+This project imports the sscs job scheduler service JAR (https://github.com/hmcts/sscs-job-scheduler).
+This is used to schedule reminders in the future. The management of the database is handled within this 
+project using a PostgreSQL database. 

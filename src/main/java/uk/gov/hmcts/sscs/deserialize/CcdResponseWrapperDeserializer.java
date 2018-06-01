@@ -16,13 +16,13 @@ import uk.gov.hmcts.sscs.domain.notify.Event;
 import uk.gov.hmcts.sscs.domain.notify.EventType;
 
 @Service
-public class CcdResponseDeserializer extends StdDeserializer<CcdResponseWrapper> {
+public class CcdResponseWrapperDeserializer extends StdDeserializer<CcdResponseWrapper> {
 
-    public CcdResponseDeserializer() {
+    public CcdResponseWrapperDeserializer() {
         this(null);
     }
 
-    public CcdResponseDeserializer(Class<?> vc) {
+    public CcdResponseWrapperDeserializer(Class<?> vc) {
         super(vc);
     }
 
@@ -46,11 +46,13 @@ public class CcdResponseDeserializer extends StdDeserializer<CcdResponseWrapper>
             newCcdResponse = createCcdResponseFromNode(caseNode, node, caseDetailsNode);
         }
 
-        JsonNode oldCaseDetailsNode = getNode(node, "case_details_before");
-        JsonNode oldCaseNode = getNode(oldCaseDetailsNode, "case_data");
+        if (getNode(node, "case_details_before") != null) {
+            JsonNode oldCaseDetailsNode = getNode(node, "case_details_before");
+            JsonNode oldCaseNode = getNode(oldCaseDetailsNode, "case_data");
 
-        if (oldCaseNode != null) {
-            oldCcdResponse = createCcdResponseFromNode(oldCaseNode, node, oldCaseDetailsNode);
+            if (oldCaseNode != null) {
+                oldCcdResponse = createCcdResponseFromNode(oldCaseNode, node, oldCaseDetailsNode);
+            }
         }
 
         return CcdResponseWrapper.builder().newCcdResponse(newCcdResponse).oldCcdResponse(oldCcdResponse).build();

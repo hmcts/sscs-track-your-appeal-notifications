@@ -36,7 +36,7 @@ public class NotificationFactory {
 
         Template template = personalisation.getTemplate(ccdResponse.getNotificationType());
         Destination destination = ccdResponse.getSubscriptions().getAppellantSubscription().getDestination();
-        Reference reference = new Reference();
+        Reference reference = new Reference(ccdResponse.getCaseReference());
         String appealNumber = ccdResponse.getSubscriptions().getAppellantSubscription().getTya();
         return new Notification(template, destination, placeholders, reference, appealNumber);
     }

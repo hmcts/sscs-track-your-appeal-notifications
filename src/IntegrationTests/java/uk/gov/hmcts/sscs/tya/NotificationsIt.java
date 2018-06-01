@@ -2,7 +2,6 @@ package uk.gov.hmcts.sscs.tya;
 
 import static helper.IntegrationTestHelper.*;
 import static org.mockito.Matchers.any;
-import static org.mockito.Matchers.anyString;
 import static org.mockito.Mockito.*;
 
 import java.io.File;
@@ -20,6 +19,7 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.http.HttpStatus;
 import org.springframework.mock.web.MockHttpServletResponse;
+import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.context.junit4.SpringRunner;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.request.MockHttpServletRequestBuilder;
@@ -33,6 +33,7 @@ import uk.gov.service.notify.NotificationClient;
 
 @RunWith(SpringRunner.class)
 @SpringBootTest
+@ActiveProfiles("integration")
 @AutoConfigureMockMvc
 public class NotificationsIt {
 
@@ -150,6 +151,17 @@ public class NotificationsIt {
     }
 
     @Test
+    public void shouldSendNotificationForEvidenceReminder() throws Exception {
+        json = json.replace("appealReceived", "evidenceReminder");
+
+        HttpServletResponse response = getResponse(getRequestWithAuthHeader(json));
+
+        assertHttpStatus(response, HttpStatus.OK);
+        verify(client, times(1)).sendEmail(any(), any(), any(), any());
+        verify(client, times(1)).sendSms(any(), any(), any(), any());
+    }
+
+    @Test
     public void shouldSendNotificationForSyaAppealCreated() throws Exception {
         json = json.replace("appealReceived", "appealCreated");
 
@@ -211,4 +223,5 @@ public class NotificationsIt {
     private MockHttpServletResponse getResponse(MockHttpServletRequestBuilder requestBuilder) throws Exception {
         return mockMvc.perform(requestBuilder).andReturn().getResponse();
     }
+
 }

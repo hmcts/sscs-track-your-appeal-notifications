@@ -64,13 +64,7 @@ module "track-your-appeal-notifications" {
 
 
   app_settings = {
-    POSTGRES_HOST = "${module.db-notif.host_name}"
-    POSTGRES_PORT = "${module.db-notif.postgresql_listen_port}"
-    POSTGRES_DATABASE = "${module.db-notif.postgresql_database}"
-    POSTGRES_USER = "${module.db-notif.user_name}"
-    POSTGRES_PASSWORD = "${module.db-notif.postgresql_password}"
-    MAX_ACTIVE_DB_CONNECTIONS = 70
-
+    INFRASTRUCTURE_ENV = "${var.env}"
     MANAGEMENT_SECURITY_ENABLED = "${var.management_security_enabled}"
 
     CORE_CASE_DATA_API_URL = "${local.ccdApi}"
@@ -97,9 +91,7 @@ module "track-your-appeal-notifications" {
     SSCS_TRACK_YOUR_APPEAL_LINK = "${var.sscs_track_your_appeal_link}"
     HEARING_INFO_LINK = "${var.hearing_info_link}"
     CLAIMING_EXPENSES_LINK = "${var.claiming_expenses_link}"
-    JOB_SCHEDULER_ENABLED = "${var.job_scheduler_enabled}"
-    JOB_SCHEDULER_URL = "${var.job_scheduler_url}"
-    JOB_SCHEDULER_CALLBACK_URL = "${var.job_scheduler_callbackUrl}"
+    JOB_SCHEDULER_POLL_INTERVAL = "${var.job_scheduler_poll_interval}"
     APPEAL_RECEIVED_EMAIL_TEMPLATE_ID = "b90df52f-c628-409c-8875-4b0b9663a053"
     RESPONSE_RECEIVED_EMAIL_TEMPLATE_ID = "1e13bd2d-9ae0-4030-89b9-a0ef65ec36ef"
     EVIDENCE_RECEIVED_EMAIL_TEMPLATE_ID = "c5654134-2e13-4541-ac73-334a5b5cdbb6"
@@ -113,6 +105,15 @@ module "track-your-appeal-notifications" {
     HEARING_BOOKED_EMAIL_TEMPLATE_ID = "fee16753-0bdb-43f1-9abb-b14b826e3b26"
     SYA_APPEAL_CREATED_EMAIL_TEMPLATE_ID = "01293b93-b23e-40a3-ad78-2c6cd01cd21c"
     EMAIL_MAC_SECRET_TEXT = "${data.vault_generic_secret.mac_secret.data["value"]}"
+
+    // db vars
+    JOB_SCHEDULER_DB_HOST     = "${module.db-notif.host_name}"
+    JOB_SCHEDULER_DB_PORT     = "${module.db-notif.postgresql_listen_port}"
+    JOB_SCHEDULER_DB_PASSWORD = "${module.db-notif.postgresql_password}"
+    JOB_SCHEDULER_DB_USERNAME = "${module.db-notif.user_name}"
+    JOB_SCHEDULER_DB_NAME     = "${module.db-notif.postgresql_database}"
+    JOB_SCHEDULER_DB_CONNECTION_OPTIONS = "?ssl"
+    MAX_ACTIVE_DB_CONNECTIONS = 70
   }
 }
 

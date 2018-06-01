@@ -76,19 +76,9 @@ variable "claiming_expenses_link" {
   default = "http://localhost:3000/expenses/appeal_id"
 }
 
-variable "job_scheduler_enabled" {
+variable "job_scheduler_poll_interval" {
   type = "string"
-  default = "false"
-}
-
-variable "job_scheduler_url" {
-  type = "string"
-  default = "http://localhost:8484"
-}
-
-variable "job_scheduler_callbackUrl" {
-  type = "string"
-  default = "http://localhost:8080"
+  default = "30000"
 }
 
 variable "idam_redirect_url" {

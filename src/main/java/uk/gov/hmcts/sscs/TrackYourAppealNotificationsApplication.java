@@ -1,22 +1,30 @@
 package uk.gov.hmcts.sscs;
 
-import com.sun.jersey.api.client.Client;
 import java.util.TimeZone;
 import javax.annotation.PostConstruct;
+import org.quartz.spi.JobFactory;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
+import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
+import org.springframework.boot.autoconfigure.flyway.FlywayMigrationInitializer;
 import org.springframework.cloud.netflix.feign.EnableFeignClients;
+import org.springframework.context.ApplicationContext;
 import org.springframework.context.MessageSource;
 import org.springframework.context.annotation.Bean;
+import org.springframework.context.annotation.ComponentScan;
 import org.springframework.context.support.ReloadableResourceBundleMessageSource;
-import uk.gov.hmcts.sscs.client.RestClient;
-import uk.gov.hmcts.sscs.deserialize.CcdResponseDeserializer;
+import uk.gov.hmcts.reform.sscs.jobscheduler.config.QuartzConfiguration;
+import uk.gov.hmcts.sscs.deserialize.CcdResponseWrapperDeserializer;
 import uk.gov.service.notify.NotificationClient;
-
 
 @EnableFeignClients
 @SpringBootApplication
+@ComponentScan(
+    basePackages = "uk.gov.hmcts.reform.sscs",
+    basePackageClasses = TrackYourAppealNotificationsApplication.class,
+    lazyInit = true
+)
 public class TrackYourAppealNotificationsApplication {
 
     public static final String UTC = "UTC";
@@ -39,13 +47,8 @@ public class TrackYourAppealNotificationsApplication {
     }
 
     @Bean
-    public RestClient jobSchedulerClient() {
-        return new RestClient(Client.create());
-    }
-
-    @Bean
-    public CcdResponseDeserializer ccdResponseDeserializer() {
-        return new CcdResponseDeserializer();
+    public CcdResponseWrapperDeserializer ccdResponseWrapperDeserializer() {
+        return new CcdResponseWrapperDeserializer();
     }
 
     @Bean
@@ -54,6 +57,12 @@ public class TrackYourAppealNotificationsApplication {
         bean.setBasename("classpath:application");
         bean.setDefaultEncoding("UTF-8");
         return bean;
+    }
+
+    @Bean
+    @ConditionalOnProperty("flyway.enabled")
+    public JobFactory jobFactory(ApplicationContext context, FlywayMigrationInitializer flywayInitializer) {
+        return (new QuartzConfiguration()).jobFactory(context);
     }
 
 }

@@ -36,4 +36,5 @@ public class NotificationController {
         authorisationService.authorise(serviceAuthHeader);
         service.createAndSendNotification(ccdResponseWrapper);
     }
+
 }
