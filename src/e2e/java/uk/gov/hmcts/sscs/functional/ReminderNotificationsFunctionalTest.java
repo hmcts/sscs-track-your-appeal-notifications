@@ -161,15 +161,10 @@ public class ReminderNotificationsFunctionalTest {
     private void ifPreviewEnvSimulateCcdCallback() throws IOException {
 
         final String testUrl = getEnvOrEmpty("TEST_URL");
-
-        //if (!testUrl.contains("preview.internal")) {
-        //    LOG.info("Is *not* preview environment -- expecting CCD to callback");
-        //    return;
-        //}
-        //
-        //if (client.getApiKey() != null) {
-        //    LOG.info("*** Gov Notify API key: [" + client.getApiKey() + "] ****");
-        //}
+        if (!testUrl.contains("preview.internal")) {
+            LOG.info("Is *not* preview environment -- expecting CCD to callback");
+            return;
+        }
 
         final String callbackUrl = testUrl + "/send";
 
@@ -180,7 +175,6 @@ public class ReminderNotificationsFunctionalTest {
 
         json = json.replace("1527603347855358", caseId.toString());
         json = json.replace("SC760/33/47564", testCaseReference);
-        json = json.replace("\r\n", "\n");
 
         RestAssured.useRelaxedHTTPSValidation();
         RestAssured
@@ -206,9 +200,6 @@ public class ReminderNotificationsFunctionalTest {
                 .getNotifications("delivered", "sms", testCaseReference, "")
                 .getNotifications();
 
-        LOG.info("*** Gov Notify #Email: [" + emailNotifications.size() + "] ****");
-        LOG.info("*** Gov Notify #Sms: [" + smsNotifications.size() + "] ****");
-
         if (emailNotifications.size() >= EXPECTED_EMAIL_NOTIFICATIONS
             && smsNotifications.size() >= EXPECTED_SMS_NOTIFICATIONS) {
 
@@ -220,7 +211,11 @@ public class ReminderNotificationsFunctionalTest {
             );
         }
 
-        LOG.info("Waiting for all test case notifications to be delivered...");
+        LOG.info(
+            "Waiting for all test case notifications to be delivered "
+            + "[" + emailNotifications.size() + "] "
+            + "[" + smsNotifications.size() + "]..."
+        );
 
         return Optional.empty();
     }
