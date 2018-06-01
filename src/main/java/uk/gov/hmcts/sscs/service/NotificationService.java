@@ -5,7 +5,6 @@ import static org.slf4j.LoggerFactory.getLogger;
 import java.net.UnknownHostException;
 import org.slf4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 import uk.gov.hmcts.sscs.domain.CcdResponse;
 import uk.gov.hmcts.sscs.domain.CcdResponseWrapper;
@@ -23,9 +22,6 @@ public class NotificationService {
     private final NotificationFactory factory;
     private final ReminderService reminderService;
 
-    @Value("${job.scheduler.enabled}")
-    private boolean isJobSchedulerEnabled;
-
     @Autowired
     public NotificationService(NotificationClient client, NotificationFactory factory, ReminderService reminderService) {
         this.factory = factory;
@@ -41,6 +37,7 @@ public class NotificationService {
             Notification notification = factory.create(responseWrapper);
 
             try {
+
                 if (responseWrapper.getNewCcdResponse().getSubscriptions().getAppellantSubscription().isEmailSubscribed() && notification.isEmail() && notification.getEmailTemplate() != null) {
                     LOG.info("Sending email for case reference " + responseWrapper.getNewCcdResponse().getCaseReference());
                     client.sendEmail(notification.getEmailTemplate(), notification.getEmail(), notification.getPlaceholders(), notification.getReference());
@@ -67,7 +64,7 @@ public class NotificationService {
     }
 
     public void createReminders(CcdResponse ccdResponse) {
-        if (isJobSchedulerEnabled && ccdResponse.getNotificationType().isScheduleReminder()) {
+        if (ccdResponse.getNotificationType().isScheduleReminder()) {
             reminderService.createJob(ccdResponse);
         }
     }

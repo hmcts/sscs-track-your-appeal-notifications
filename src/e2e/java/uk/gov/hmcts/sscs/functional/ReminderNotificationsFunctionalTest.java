@@ -17,6 +17,7 @@ import java.util.Optional;
 import java.util.UUID;
 import org.apache.commons.io.FileUtils;
 import org.apache.commons.lang3.tuple.Pair;
+import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -98,7 +99,7 @@ public class ReminderNotificationsFunctionalTest {
     }
 
     @Test
-    public void shouldSendResponseReceivedNotification() throws IOException, NotificationClientException {
+    public void shouldSendEvidenceReminderNotification() throws IOException, NotificationClientException {
         EXPECTED_EMAIL_NOTIFICATIONS = 2;
         EXPECTED_SMS_NOTIFICATIONS = 1;
 
@@ -137,8 +138,8 @@ public class ReminderNotificationsFunctionalTest {
      */
     private void ifPreviewEnvSimulateCcdCallback(EventType eventType) throws IOException {
 
-        if (!getEnvOrEmpty("INFRASTRUCTURE_ENV").equals("preview")
-            || getEnvOrEmpty("HTTP_HOST").isEmpty()) {
+        final String testUrl = getEnvOrEmpty("TEST_URL");
+        if (!testUrl.contains("preview.internal")) {
             LOG.info("Is *not* preview environment -- expecting CCD to callback");
             return;
         }
@@ -156,6 +157,8 @@ public class ReminderNotificationsFunctionalTest {
         json = json.replace("1527603347855358", caseId.toString());
         json = json.replace("SC760/33/47564", testCaseReference);
         json = json.replace("\r\n", "\n");
+
+        LOG.info("Is preview environment -- simulating a CCD callback to: " + callbackUrl + " for case " + testCaseReference);
 
         RestAssured.useRelaxedHTTPSValidation();
         RestAssured
@@ -247,7 +250,11 @@ public class ReminderNotificationsFunctionalTest {
             );
         }
 
-        LOG.info("Waiting for all test case notifications to be delivered...");
+        LOG.info(
+            "Waiting for all test case notifications to be delivered "
+            + "[" + emailNotifications.size() + "] "
+            + "[" + smsNotifications.size() + "]..."
+        );
 
         return Optional.empty();
     }

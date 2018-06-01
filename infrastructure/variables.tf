@@ -76,11 +76,6 @@ variable "claiming_expenses_link" {
   default = "http://localhost:3000/expenses/appeal_id"
 }
 
-variable "job_scheduler_enabled" {
-  type = "string"
-  default = "false"
-}
-
 variable "job_scheduler_poll_interval" {
   type = "string"
   default = "30000"
@@ -102,4 +97,8 @@ variable "postgresql_user" {
 
 variable "database_name" {
   default = "notification"
+}
+
+variable "notification_key" {
+  default = "sscs_notify_api_new_key"
 }

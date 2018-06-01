@@ -32,7 +32,7 @@ data "vault_generic_secret" "idam_s2s_api" {
 }
 
 data "vault_generic_secret" "sscs_notify_api_key" {
-  path = "secret/${var.infrastructure_env}/sscs/sscs_notify_api_new_key"
+  path = "secret/${var.infrastructure_env}/sscs/${var.notification_key}"
 }
 
 data "vault_generic_secret" "mac_secret" {
@@ -91,7 +91,6 @@ module "track-your-appeal-notifications" {
     SSCS_TRACK_YOUR_APPEAL_LINK = "${var.sscs_track_your_appeal_link}"
     HEARING_INFO_LINK = "${var.hearing_info_link}"
     CLAIMING_EXPENSES_LINK = "${var.claiming_expenses_link}"
-    JOB_SCHEDULER_ENABLED = "${var.job_scheduler_enabled}"
     JOB_SCHEDULER_POLL_INTERVAL = "${var.job_scheduler_poll_interval}"
     APPEAL_RECEIVED_EMAIL_TEMPLATE_ID = "b90df52f-c628-409c-8875-4b0b9663a053"
     RESPONSE_RECEIVED_EMAIL_TEMPLATE_ID = "1e13bd2d-9ae0-4030-89b9-a0ef65ec36ef"
