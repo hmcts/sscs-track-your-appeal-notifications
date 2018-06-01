@@ -176,7 +176,7 @@ public class CcdResponseWrapperDeserializerTest {
         String json = "{\"case_details\":{\"case_data\":{\"subscriptions\":{"
                 + "\"appellantSubscription\":{\"tya\":\"543212345\",\"email\":\"test@testing.com\",\"mobile\":\"01234556634\",\"reason\":null,\"subscribeSms\":\"No\",\"subscribeEmail\":\"Yes\"},"
                 + "\"supporterSubscription\":{\"tya\":\"232929249492\",\"email\":\"supporter@live.co.uk\",\"mobile\":\"07925289702\",\"reason\":null,\"subscribeSms\":\"Yes\",\"subscribeEmail\":\"No\"}},"
-                + "\"caseReference\":\"SC/1234/23\",\"appeal\":{"
+                + "\"caseReference\":\"SC022/14/12423\",\"appeal\":{"
                 + "\"appellant\":{\"name\":{\"title\":\"Mr\",\"lastName\":\"Vasquez\",\"firstName\":\"Dexter\",\"middleName\":\"Ali Sosa\"}},"
                 + "\"supporter\":{\"name\":{\"title\":\"Mrs\",\"lastName\":\"Wilder\",\"firstName\":\"Amber\",\"middleName\":\"Clark Eaton\"}}}},"
                 + "\"id\": \"123456789\"},"
@@ -210,7 +210,7 @@ public class CcdResponseWrapperDeserializerTest {
         assertEquals("07925289702", newSupporterSubscription.getMobile());
         assertTrue(newSupporterSubscription.isSmsSubscribed());
         assertFalse(newSupporterSubscription.isEmailSubscribed());
-        assertEquals("SC/1234/23", newCcdResponse.getCaseReference());
+        assertEquals("SC022/14/12423", newCcdResponse.getCaseReference());
         assertEquals("123456789", newCcdResponse.getCaseId());
 
         CcdResponse oldCcdResponse = wrapper.getOldCcdResponse();
@@ -538,7 +538,7 @@ public class CcdResponseWrapperDeserializerTest {
         assertEquals("07983469702", supporterSubscription.getMobile());
         assertTrue(supporterSubscription.isSmsSubscribed());
         assertFalse(supporterSubscription.isEmailSubscribed());
-        assertEquals("SC/1234/23", ccdResponse.getCaseReference());
+        assertEquals("SC022/14/12423", ccdResponse.getCaseReference());
 
         Hearing hearing = ccdResponse.getHearings().get(0);
         assertEquals("Prudential House", hearing.getValue().getVenue().getName());
