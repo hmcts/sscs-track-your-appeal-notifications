@@ -151,7 +151,7 @@ public class ReminderNotificationsFunctionalTest {
         String json = FileUtils.readFileToString(new File(path), StandardCharsets.UTF_8.name());
 
         json = json.replace("appealReceived", eventType.getId());
-        json = json.replace("1527603347855358", caseId.toString());
+        json = json.replace("12345656789", caseId.toString());
         json = json.replace("SC022/14/12423", testCaseReference);
 
         RestAssured.useRelaxedHTTPSValidation();
