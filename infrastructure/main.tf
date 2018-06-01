@@ -113,6 +113,7 @@ module "track-your-appeal-notifications" {
     HEARING_BOOKED_EMAIL_TEMPLATE_ID = "fee16753-0bdb-43f1-9abb-b14b826e3b26"
     SYA_APPEAL_CREATED_EMAIL_TEMPLATE_ID = "01293b93-b23e-40a3-ad78-2c6cd01cd21c"
     EMAIL_MAC_SECRET_TEXT = "${data.vault_generic_secret.mac_secret.data["value"]}"
+    SCHEDULER_ENABLED = "${var.scheduler_enabled}"
   }
 }
 
