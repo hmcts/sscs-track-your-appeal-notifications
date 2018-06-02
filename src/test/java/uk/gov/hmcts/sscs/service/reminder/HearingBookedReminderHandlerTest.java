@@ -4,6 +4,7 @@ import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.junit.Assert.*;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.when;
 import static uk.gov.hmcts.sscs.domain.notify.EventType.*;
 
 import org.junit.Before;
@@ -23,17 +24,24 @@ import uk.gov.hmcts.sscs.exception.ReminderException;
 public class HearingBookedReminderHandlerTest {
 
     @Mock
+    private JobGroupGenerator jobGroupGenerator;
+    @Mock
     private JobScheduler<String> jobScheduler;
 
     private HearingBookedReminderHandler hearingBookedReminderHandler;
 
     @Before
     public void setup() {
-        hearingBookedReminderHandler = new HearingBookedReminderHandler(jobScheduler, 172800, (172800 * 2));
+        hearingBookedReminderHandler = new HearingBookedReminderHandler(
+            jobGroupGenerator,
+            jobScheduler,
+            172800,
+            (172800 * 2)
+        );
     }
 
     @Test
-    public void canHandleDwpResponseReceivedEvent() {
+    public void canHandleEvent() {
 
         for (EventType eventType : EventType.values()) {
 
@@ -52,19 +60,22 @@ public class HearingBookedReminderHandlerTest {
     }
 
     @Test
-    public void schedulesEvidenceReminder() {
+    public void schedulesReminder() {
+
+        final String expectedJobGroup = "ID_EVENT";
+        final String expectedFirstTriggerAt = "2017-12-30T14:01:18Z[Europe/London]";
+        final String expectedSecondTriggerAt = "2017-12-28T14:01:18Z[Europe/London]";
 
         String hearingDate = "2018-01-01";
         String hearingTime = "14:01:18";
-
-        final String expectedFirstTriggerAt = "2017-12-30T14:01:18Z[Europe/London]";
-        final String expectedSecondTriggerAt = "2017-12-28T14:01:18Z[Europe/London]";
 
         CcdResponse ccdResponse = CcdResponseUtils.buildBasicCcdResponseWithHearing(
             HEARING_BOOKED,
             hearingDate,
             hearingTime
         );
+
+        when(jobGroupGenerator.generate(ccdResponse.getCaseId(), HEARING_REMINDER)).thenReturn(expectedJobGroup);
 
         hearingBookedReminderHandler.handle(ccdResponse);
 
@@ -75,11 +86,13 @@ public class HearingBookedReminderHandlerTest {
         );
 
         Job<String> firstJob = jobCaptor.getAllValues().get(0);
+        assertEquals(expectedJobGroup, firstJob.group);
         assertEquals(HEARING_REMINDER.getId(), firstJob.name);
         assertEquals(CcdResponseUtils.CASE_ID, firstJob.payload);
         assertEquals(expectedFirstTriggerAt, firstJob.triggerAt.toString());
 
         Job<String> secondJob = jobCaptor.getAllValues().get(1);
+        assertEquals(expectedJobGroup, secondJob.group);
         assertEquals(HEARING_REMINDER.getId(), secondJob.name);
         assertEquals(CcdResponseUtils.CASE_ID, secondJob.payload);
         assertEquals(expectedSecondTriggerAt, secondJob.triggerAt.toString());

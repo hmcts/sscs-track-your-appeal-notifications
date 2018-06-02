@@ -37,7 +37,7 @@ public class ActionExecutor implements JobExecutor<String> {
     }
 
     @Override
-    public void execute(String jobId, String jobName, String caseId) {
+    public void execute(String jobId, String jobGroup, String jobName, String caseId) {
 
         IdamTokens idamTokens = IdamTokens.builder()
                 .idamOauth2Token(idamService.getIdamOauth2Token())

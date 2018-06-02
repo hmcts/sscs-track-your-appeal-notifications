@@ -22,6 +22,7 @@ public class HearingBookedReminderHandler implements ReminderHandler {
 
     private static final org.slf4j.Logger LOG = getLogger(HearingBookedReminderHandler.class);
 
+    private final JobGroupGenerator jobGroupGenerator;
     private JobScheduler<String> jobScheduler;
 
     private long beforeFirstHearingReminder;
@@ -29,10 +30,12 @@ public class HearingBookedReminderHandler implements ReminderHandler {
 
     @Autowired
     public HearingBookedReminderHandler(
+        JobGroupGenerator jobGroupGenerator,
         JobScheduler<String> jobScheduler,
         @Value("${reminder.hearingReminder.beforeFirst.seconds}") long beforeFirstHearingReminder,
         @Value("${reminder.hearingReminder.beforeSecond.seconds}") long beforeSecondHearingReminder
     ) {
+        this.jobGroupGenerator = jobGroupGenerator;
         this.jobScheduler = jobScheduler;
         this.beforeFirstHearingReminder = beforeFirstHearingReminder;
         this.beforeSecondHearingReminder = beforeSecondHearingReminder;
@@ -55,11 +58,15 @@ public class HearingBookedReminderHandler implements ReminderHandler {
 
     private void scheduleReminder(CcdResponse ccdResponse, long secondsBeforeHearing) {
 
+        String caseId = ccdResponse.getCaseId();
+        String eventId = HEARING_REMINDER.getId();
+        String jobGroup = jobGroupGenerator.generate(caseId, HEARING_REMINDER);
         ZonedDateTime reminderDate = calculateReminderDate(ccdResponse, secondsBeforeHearing);
 
         jobScheduler.schedule(new Job<>(
-            HEARING_REMINDER.getId(),
-            ccdResponse.getCaseId(),
+            jobGroup,
+            eventId,
+            caseId,
             reminderDate
         ));
     }

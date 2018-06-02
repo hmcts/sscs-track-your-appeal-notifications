@@ -19,14 +19,17 @@ public class DwpResponseReceivedReminderHandler implements ReminderHandler {
 
     private static final org.slf4j.Logger LOG = getLogger(DwpResponseReceivedReminderHandler.class);
 
+    private final JobGroupGenerator jobGroupGenerator;
     private final JobScheduler<String> jobScheduler;
     private final long evidenceReminderDelay;
 
     @Autowired
     public DwpResponseReceivedReminderHandler(
+        JobGroupGenerator jobGroupGenerator,
         JobScheduler<String> jobScheduler,
         @Value("${reminder.evidenceReminder.delay.seconds}") long evidenceReminderDelay
     ) {
+        this.jobGroupGenerator = jobGroupGenerator;
         this.jobScheduler = jobScheduler;
         this.evidenceReminderDelay = evidenceReminderDelay;
     }
@@ -42,11 +45,15 @@ public class DwpResponseReceivedReminderHandler implements ReminderHandler {
             throw new IllegalArgumentException("cannot handle ccdResponse");
         }
 
+        String caseId = ccdResponse.getCaseId();
+        String eventId = EVIDENCE_REMINDER.getId();
+        String jobGroup = jobGroupGenerator.generate(caseId, EVIDENCE_REMINDER);
         ZonedDateTime reminderDate = calculateReminderDate(ccdResponse);
 
         jobScheduler.schedule(new Job<>(
-            EVIDENCE_REMINDER.getId(),
-            ccdResponse.getCaseId(),
+            jobGroup,
+            eventId,
+            caseId,
             reminderDate
         ));
     }

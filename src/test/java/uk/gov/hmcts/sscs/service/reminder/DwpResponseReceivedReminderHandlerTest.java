@@ -4,6 +4,7 @@ import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.junit.Assert.*;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.when;
 import static uk.gov.hmcts.sscs.domain.notify.EventType.*;
 
 import org.junit.Before;
@@ -23,17 +24,23 @@ import uk.gov.hmcts.sscs.exception.ReminderException;
 public class DwpResponseReceivedReminderHandlerTest {
 
     @Mock
+    private JobGroupGenerator jobGroupGenerator;
+    @Mock
     private JobScheduler<String> jobScheduler;
 
     private DwpResponseReceivedReminderHandler dwpResponseReceivedReminderHandler;
 
     @Before
     public void setup() {
-        dwpResponseReceivedReminderHandler = new DwpResponseReceivedReminderHandler(jobScheduler, 172800);
+        dwpResponseReceivedReminderHandler = new DwpResponseReceivedReminderHandler(
+            jobGroupGenerator,
+            jobScheduler,
+            172800
+        );
     }
 
     @Test
-    public void canHandleDwpResponseReceivedEvent() {
+    public void canHandleEvent() {
 
         for (EventType eventType : EventType.values()) {
 
@@ -52,17 +59,20 @@ public class DwpResponseReceivedReminderHandlerTest {
     }
 
     @Test
-    public void schedulesEvidenceReminder() {
+    public void schedulesReminder() {
+
+        final String expectedJobGroup = "ID_EVENT";
+        final String expectedTriggerAt = "2018-01-03T14:01:18Z[Europe/London]";
 
         String eventDate = "2018-01-01T14:01:18";
-
-        final String expectedTriggerAt = "2018-01-03T14:01:18Z[Europe/London]";
 
         CcdResponse ccdResponse = CcdResponseUtils.buildBasicCcdResponseWithEvent(
             DWP_RESPONSE_RECEIVED,
             DWP_RESPONSE_RECEIVED,
             eventDate
         );
+
+        when(jobGroupGenerator.generate(ccdResponse.getCaseId(), EVIDENCE_REMINDER)).thenReturn(expectedJobGroup);
 
         dwpResponseReceivedReminderHandler.handle(ccdResponse);
 
@@ -73,6 +83,7 @@ public class DwpResponseReceivedReminderHandlerTest {
         );
 
         Job<String> job = jobCaptor.getValue();
+        assertEquals(expectedJobGroup, job.group);
         assertEquals(EVIDENCE_REMINDER.getId(), job.name);
         assertEquals(CcdResponseUtils.CASE_ID, job.payload);
         assertEquals(expectedTriggerAt, job.triggerAt.toString());
