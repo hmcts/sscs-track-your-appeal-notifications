@@ -162,7 +162,7 @@ public class ReminderNotificationsFunctionalTest {
 
         final String testUrl = getEnvOrEmpty("TEST_URL");
         if (!testUrl.contains("preview.internal")) {
-            LOG.info("Is *not* preview environment -- expecting CCD to callback");
+            LOG.info("Is *not* preview environment -- expecting CCD to callback for case " + testCaseReference);
             return;
         }
 
