@@ -161,14 +161,14 @@ public class ReminderNotificationsFunctionalTest {
     private void ifPreviewEnvSimulateCcdCallback() throws IOException {
 
         final String testUrl = getEnvOrEmpty("TEST_URL");
-        if (!testUrl.contains("preview.internal")) {
-            LOG.info("Is *not* preview environment -- expecting CCD to callback");
+        if (!testUrl.contains("preview.internal") && !testUrl.contains("aat.internal")) {
+            LOG.info("Is *not* preview or AAT environment -- expecting CCD to callback for case " + testCaseReference);
             return;
         }
 
         final String callbackUrl = testUrl + "/send";
 
-        LOG.info("Is preview environment -- simulating a CCD callback to: " + callbackUrl + " for case " + testCaseReference);
+        LOG.info("Is preview or AAT environment -- simulating a CCD callback to: " + callbackUrl + " for case " + testCaseReference);
 
         String path = getClass().getClassLoader().getResource("dwpResponseReceivedCallback.json").getFile();
         String json = FileUtils.readFileToString(new File(path), StandardCharsets.UTF_8.name());
