@@ -94,6 +94,8 @@ public class Personalisation {
                 if (events.getValue() != null) {
                     if (ccdResponse.getNotificationType().equals(APPEAL_RECEIVED) && events.getValue().getEventType().equals(APPEAL_RECEIVED)) {
                         return setAppealReceivedDetails(personalisation, events.getValue());
+                    } else if (ccdResponse.getNotificationType().equals(DWP_RESPONSE_RECEIVED) && events.getValue().getEventType().equals(DWP_RESPONSE_RECEIVED)) {
+                        return setHearingContactDate(personalisation, events.getValue());
                     } else if (ccdResponse.getNotificationType().equals(POSTPONEMENT) && events.getValue().getEventType().equals(POSTPONEMENT)) {
                         return setPostponementDetails(personalisation, events.getValue());
                     }
@@ -115,7 +117,6 @@ public class Personalisation {
     private Map<String, String> setAppealReceivedDetails(Map<String, String> personalisation, Event event) {
         String dwpResponseDateString = formatLocalDate(event.getDateTime().plusDays(MAX_DWP_RESPONSE_DAYS).toLocalDate());
         personalisation.put(APPEAL_RESPOND_DATE, dwpResponseDateString);
-        setHearingContactDate(personalisation, event);
         return personalisation;
     }
 
@@ -152,7 +153,7 @@ public class Personalisation {
     }
 
     private Map<String, String> setHearingContactDate(Map<String, String> personalisation, Event event) {
-        String hearingContactDate = formatLocalDate(event.getDateTime().plusDays(42).toLocalDate());
+        String hearingContactDate = formatLocalDate(event.getDateTime().plusDays(MAX_HEARING_BOOKED_DAYS).toLocalDate());
         personalisation.put(HEARING_CONTACT_DATE, hearingContactDate);
 
         return personalisation;

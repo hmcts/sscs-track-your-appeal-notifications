@@ -73,8 +73,12 @@ job.scheduler:
     delayBetweenAttemptsInMs: 1000
 
 notification:
-  appealReceived.emailId: ${APPEAL_RECEIVED_EMAIL_TEMPLATE_ID:b90df52f-c628-409c-8875-4b0b9663a053}
-  responseReceived.emailId: ${RESPONSE_RECEIVED_EMAIL_TEMPLATE_ID:1e13bd2d-9ae0-4030-89b9-a0ef65ec36ef}
+  appealReceived:
+    emailId: ${APPEAL_RECEIVED_EMAIL_TEMPLATE_ID:b90df52f-c628-409c-8875-4b0b9663a053}
+    smsId: ${APPEAL_RECEIVED_SMS_TEMPLATE_ID:ede384aa-0b6e-4311-9f01-ee547573a07b}
+  responseReceived:
+    emailId: ${RESPONSE_RECEIVED_EMAIL_TEMPLATE_ID:1e13bd2d-9ae0-4030-89b9-a0ef65ec36ef}
+    smsId: ${RESPONSE_RECEIVED_SMS_TEMPLATE_ID:4bba0b5d-a3f3-4fd9-a845-26af5eda042e}
   evidenceReceived:
     emailId: ${EVIDENCE_RECEIVED_EMAIL_TEMPLATE_ID:c5654134-2e13-4541-ac73-334a5b5cdbb6}
     smsId: ${EVIDENCE_RECEIVED_SMS_TEMPLATE_ID:74bda35f-040b-4355-bda3-faf0e4f5ae6e}
@@ -86,11 +90,15 @@ notification:
   appealWithdrawn.emailId: ${APPEAL_WITHDRAWN_EMAIL_TEMPLATE_ID:8620e023-f663-477e-a771-9cfad50ee30f}
   subscriptionCreated.smsId: ${SUBSCRIPTION_CREATED_SMS_TEMPLATE_ID:18444f5f-8834-49e9-a6ae-bfe7f50db2b8}
   subscriptionUpdated.emailId: ${SUBSCRIPTION_UPDATED_EMAIL_TEMPLATE_ID:820901f0-15a9-4796-bdec-0cef42922531}
-  hearingBooked.emailId: ${HEARING_BOOKED_EMAIL_TEMPLATE_ID:fee16753-0bdb-43f1-9abb-b14b826e3b26}
+  hearingBooked:
+    emailId: ${HEARING_BOOKED_EMAIL_TEMPLATE_ID:fee16753-0bdb-43f1-9abb-b14b826e3b26}
+    smsId: ${HEARING_BOOKED_SMS_TEMPLATE_ID:f900174a-a556-43b2-8042-bbf3e6090071}
   evidenceReminder:
     emailId: ${EVIDENCE_REMINDER_EMAIL_TEMPLATE_ID:b9e47ec4-3b58-4b8d-9304-f77ac27fb7f2}
     smsId: ${EVIDENCE_REMINDER_SMS_TEMPLATE_ID:e3f71440-d1ac-43c8-a8cc-a088c4f3c959}
-  appealCreated.emailId: ${SYA_APPEAL_CREATED_EMAIL_TEMPLATE_ID:01293b93-b23e-40a3-ad78-2c6cd01cd21c}
+  appealCreated:
+    emailId: ${SYA_APPEAL_CREATED_EMAIL_TEMPLATE_ID:01293b93-b23e-40a3-ad78-2c6cd01cd21c}
+    smsId: ${SYA_APPEAL_CREATED_SMS_TEMPLATE_ID:f41222ef-c05c-4682-9634-6b034a166368}
   hearingReminder:
     emailId: ${HEARING_REMINDER_EMAIL_TEMPLATE_ID:774a5cba-fab6-4b8c-a9d9-03f913ed2dca}
     smsId: ${HEARING_REMINDER_SMS_TEMPLATE_ID:404e9a43-6318-492c-b5c2-e34ddfbbdde9}
