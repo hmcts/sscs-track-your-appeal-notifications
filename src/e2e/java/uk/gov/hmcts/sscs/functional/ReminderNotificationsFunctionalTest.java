@@ -192,16 +192,24 @@ public class ReminderNotificationsFunctionalTest {
 
         List<Notification> emailNotifications =
             client
-                .getNotifications("delivered", "email", testCaseReference, "")
+                .getNotifications("", "email", testCaseReference, "")
                 .getNotifications();
 
         List<Notification> smsNotifications =
             client
-                .getNotifications("delivered", "sms", testCaseReference, "")
+                .getNotifications("", "sms", testCaseReference, "")
                 .getNotifications();
 
         if (emailNotifications.size() >= EXPECTED_EMAIL_NOTIFICATIONS
             && smsNotifications.size() >= EXPECTED_SMS_NOTIFICATIONS) {
+
+            for (Notification n : emailNotifications) {
+                assertFalse(n.getStatus().contains("fail"));
+            }
+
+            for (Notification n : smsNotifications) {
+                assertFalse(n.getStatus().contains("fail"));
+            }
 
             return Optional.of(
                 Pair.of(
