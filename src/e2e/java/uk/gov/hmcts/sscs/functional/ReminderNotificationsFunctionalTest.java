@@ -116,7 +116,7 @@ public class ReminderNotificationsFunctionalTest {
     @Test
     public void shouldSendHearingReminderNotification() throws IOException, NotificationClientException {
         EXPECTED_EMAIL_NOTIFICATIONS = 3;
-        EXPECTED_SMS_NOTIFICATIONS = 0;
+        EXPECTED_SMS_NOTIFICATIONS = 2;
 
         setup(HEARING_BOOKED);
 

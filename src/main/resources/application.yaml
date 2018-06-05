@@ -91,7 +91,9 @@ notification:
     emailId: ${EVIDENCE_REMINDER_EMAIL_TEMPLATE_ID:b9e47ec4-3b58-4b8d-9304-f77ac27fb7f2}
     smsId: ${EVIDENCE_REMINDER_SMS_TEMPLATE_ID:e3f71440-d1ac-43c8-a8cc-a088c4f3c959}
   appealCreated.emailId: ${SYA_APPEAL_CREATED_EMAIL_TEMPLATE_ID:01293b93-b23e-40a3-ad78-2c6cd01cd21c}
-  hearingReminder.emailId: ${HEARING_REMINDER_EMAIL_TEMPLATE_ID:774a5cba-fab6-4b8c-a9d9-03f913ed2dca}
+  hearingReminder:
+    emailId: ${HEARING_REMINDER_EMAIL_TEMPLATE_ID:774a5cba-fab6-4b8c-a9d9-03f913ed2dca}
+    smsId: ${HEARING_REMINDER_SMS_TEMPLATE_ID:404e9a43-6318-492c-b5c2-e34ddfbbdde9}
 
 reminder:
   evidenceReminder.delay.seconds: 172800
