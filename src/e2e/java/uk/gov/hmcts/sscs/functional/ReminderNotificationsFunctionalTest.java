@@ -2,8 +2,10 @@ package uk.gov.hmcts.sscs.functional;
 
 import static org.junit.Assert.*;
 import static org.slf4j.LoggerFactory.getLogger;
+import static uk.gov.hmcts.sscs.CcdResponseUtils.addHearing;
 import static uk.gov.hmcts.sscs.CcdResponseUtils.buildCcdResponse;
 import static uk.gov.hmcts.sscs.domain.notify.EventType.DWP_RESPONSE_RECEIVED;
+import static uk.gov.hmcts.sscs.domain.notify.EventType.HEARING_BOOKED;
 
 import io.restassured.RestAssured;
 import java.io.File;
@@ -15,7 +17,6 @@ import java.util.Optional;
 import java.util.UUID;
 import org.apache.commons.io.FileUtils;
 import org.apache.commons.lang3.tuple.Pair;
-import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -27,6 +28,7 @@ import org.springframework.test.context.junit4.SpringRunner;
 import uk.gov.hmcts.reform.ccd.client.model.CaseDetails;
 import uk.gov.hmcts.sscs.domain.CcdResponse;
 import uk.gov.hmcts.sscs.domain.idam.IdamTokens;
+import uk.gov.hmcts.sscs.domain.notify.EventType;
 import uk.gov.hmcts.sscs.service.ccd.CreateCcdService;
 import uk.gov.hmcts.sscs.service.ccd.UpdateCcdService;
 import uk.gov.hmcts.sscs.service.idam.IdamService;
@@ -59,17 +61,19 @@ public class ReminderNotificationsFunctionalTest {
     @Value("${notification.evidenceReminder.smsId}")
     private String evidenceReminderSmsTemplateId;
 
+    @Value("${notification.hearingReminder.emailId}")
+    private String hearingReminderEmailTemplateId;
+
     @Autowired
     private NotificationClient client;
 
     String testCaseReference;
 
-    private static final int EXPECTED_EMAIL_NOTIFICATIONS = 2;
-    private static final int EXPECTED_SMS_NOTIFICATIONS = 1;
-    private static final int MAX_SECONDS_TO_WAIT_FOR_NOTIFICATIONS = 360;
+    private static int EXPECTED_EMAIL_NOTIFICATIONS;
+    private static int EXPECTED_SMS_NOTIFICATIONS;
+    private static final int MAX_SECONDS_TO_WAIT_FOR_NOTIFICATIONS = 120;
 
-    @Before
-    public void setup() {
+    public void setup(EventType eventType) {
 
         String epoch = String.valueOf(Instant.now().toEpochMilli());
         testCaseReference =
@@ -80,7 +84,7 @@ public class ReminderNotificationsFunctionalTest {
             + "/"
             + epoch.substring(8, 13);
 
-        caseData = buildCcdResponse(testCaseReference, "Yes", "Yes", DWP_RESPONSE_RECEIVED);
+        caseData = buildCcdResponse(testCaseReference, "Yes", "Yes", eventType);
 
         idamTokens = IdamTokens.builder()
             .authenticationService(idamService.generateServiceAuthorization())
@@ -94,14 +98,75 @@ public class ReminderNotificationsFunctionalTest {
     }
 
     @Test
-    public void shouldSendResponseReceivedNotification() throws IOException, NotificationClientException {
+    public void shouldSendEvidenceReceivedNotification() throws IOException, NotificationClientException {
+        EXPECTED_EMAIL_NOTIFICATIONS = 2;
+        EXPECTED_SMS_NOTIFICATIONS = 1;
+
+        setup(DWP_RESPONSE_RECEIVED);
 
         CaseDetails updatedCaseDetails = updateCcdService.update(caseData, caseId, DWP_RESPONSE_RECEIVED.getId(), idamTokens);
 
-        assertEquals("COMPLETED", updatedCaseDetails.getCallbackResponseStatus());
+        // assertEquals("COMPLETED", updatedCaseDetails.getCallbackResponseStatus());
 
-        ifPreviewEnvSimulateCcdCallback();
+        ifPreviewEnvSimulateCcdCallback(DWP_RESPONSE_RECEIVED);
 
+        assertNotificationsSent(evidenceReminderEmailTemplateId, evidenceReminderSmsTemplateId);
+    }
+
+    @Test
+    public void shouldSendHearingReminderNotification() throws IOException, NotificationClientException {
+        EXPECTED_EMAIL_NOTIFICATIONS = 3;
+        EXPECTED_SMS_NOTIFICATIONS = 2;
+
+        setup(HEARING_BOOKED);
+
+        addHearing(caseData);
+
+        CaseDetails updatedCaseDetails = updateCcdService.update(caseData, caseId, HEARING_BOOKED.getId(), idamTokens);
+
+        // assertEquals("COMPLETED", updatedCaseDetails.getCallbackResponseStatus());
+
+        ifPreviewEnvSimulateCcdCallback(HEARING_BOOKED);
+
+        assertNotificationsSent(hearingReminderEmailTemplateId, null);
+    }
+
+    /*
+     this method simulates the ccd callback in preview,
+     because ccd callbacks cannot be configured in preview env
+     */
+    private void ifPreviewEnvSimulateCcdCallback(EventType eventType) throws IOException {
+
+        final String testUrl = getEnvOrEmpty("TEST_URL");
+        if (!testUrl.contains("preview.internal") && !testUrl.contains("aat.internal")) {
+            LOG.info("Is *not* preview or AAT environment -- expecting CCD to callback for case " + testCaseReference);
+            return;
+        }
+
+        final String callbackUrl = testUrl + "/send";
+
+        LOG.info("Is preview or AAT environment -- simulating a CCD callback to: " + callbackUrl + " for case " + testCaseReference);
+
+        String path = getClass().getClassLoader().getResource("json/ccdResponse.json").getFile();
+        String json = FileUtils.readFileToString(new File(path), StandardCharsets.UTF_8.name());
+
+        json = json.replace("appealReceived", eventType.getId());
+        json = json.replace("12345656789", caseId.toString());
+        json = json.replace("SC022/14/12423", testCaseReference);
+
+        RestAssured.useRelaxedHTTPSValidation();
+        RestAssured
+            .given()
+            .header("ServiceAuthorization", "" + idamTokens.getAuthenticationService())
+            .contentType("application/json")
+            .body(json)
+            .when()
+            .post(callbackUrl)
+            .then()
+            .statusCode(HttpStatus.OK.value());
+    }
+
+    private void assertNotificationsSent(String emailTemplateId, String smsTemplateId) throws NotificationClientException {
         Optional<Pair<List<Notification>, List<Notification>>> notifications;
 
         int maxSecondsToWaitForNotification = MAX_SECONDS_TO_WAIT_FOR_NOTIFICATIONS;
@@ -110,7 +175,7 @@ public class ReminderNotificationsFunctionalTest {
 
             if (maxSecondsToWaitForNotification-- == 0) {
                 throw new RuntimeException(
-                    "Timed out fetching notifications after " + MAX_SECONDS_TO_WAIT_FOR_NOTIFICATIONS + " seconds"
+                        "Timed out fetching notifications after " + MAX_SECONDS_TO_WAIT_FOR_NOTIFICATIONS + " seconds"
                 );
             }
 
@@ -129,63 +194,31 @@ public class ReminderNotificationsFunctionalTest {
         assertTrue(sentEmailNotifications.size() >= EXPECTED_EMAIL_NOTIFICATIONS);
 
         assertTrue(
-            sentEmailNotifications.stream()
-                .anyMatch(sentEmailNotification ->
-                    sentEmailNotification.getTemplateId().equals(UUID.fromString(evidenceReminderEmailTemplateId))
-                )
+                sentEmailNotifications.stream()
+                        .anyMatch(sentEmailNotification ->
+                                sentEmailNotification.getTemplateId().equals(UUID.fromString(emailTemplateId))
+                        )
         );
 
         assertTrue(
-            sentEmailNotifications.stream()
-                .anyMatch(sentEmailNotification ->
-                    sentEmailNotification.getBody().contains(testCaseReference)
-                )
+                sentEmailNotifications.stream()
+                        .anyMatch(sentEmailNotification ->
+                                sentEmailNotification.getBody().contains(testCaseReference)
+                        )
         );
 
-        List<Notification> sentSmsNotifications = notifications.get().getRight();
+        if (smsTemplateId != null) {
+            List<Notification> sentSmsNotifications = notifications.get().getRight();
 
-        assertTrue(sentSmsNotifications.size() >= EXPECTED_SMS_NOTIFICATIONS);
+            assertTrue(sentSmsNotifications.size() >= EXPECTED_SMS_NOTIFICATIONS);
 
-        assertTrue(
-            sentSmsNotifications.stream()
-                .anyMatch(sentSmsNotification ->
-                    sentSmsNotification.getTemplateId().equals(UUID.fromString(evidenceReminderSmsTemplateId))
-                )
-        );
-    }
-
-    /*
-     this method simulates the ccd callback in preview,
-     because ccd callbacks cannot be configured in preview env
-     */
-    private void ifPreviewEnvSimulateCcdCallback() throws IOException {
-
-        final String testUrl = getEnvOrEmpty("TEST_URL");
-        if (!testUrl.contains("preview.internal") && !testUrl.contains("aat.internal")) {
-            LOG.info("Is *not* preview or AAT environment -- expecting CCD to callback for case " + testCaseReference);
-            return;
+            assertTrue(
+                    sentSmsNotifications.stream()
+                            .anyMatch(sentSmsNotification ->
+                                    sentSmsNotification.getTemplateId().equals(UUID.fromString(smsTemplateId))
+                            )
+            );
         }
-
-        final String callbackUrl = testUrl + "/send";
-
-        LOG.info("Is preview or AAT environment -- simulating a CCD callback to: " + callbackUrl + " for case " + testCaseReference);
-
-        String path = getClass().getClassLoader().getResource("dwpResponseReceivedCallback.json").getFile();
-        String json = FileUtils.readFileToString(new File(path), StandardCharsets.UTF_8.name());
-
-        json = json.replace("1527603347855358", caseId.toString());
-        json = json.replace("SC760/33/47564", testCaseReference);
-
-        RestAssured.useRelaxedHTTPSValidation();
-        RestAssured
-            .given()
-            .header("ServiceAuthorization", "" + idamTokens.getAuthenticationService())
-            .contentType("application/json")
-            .body(json)
-            .when()
-            .post(callbackUrl)
-            .then()
-            .statusCode(HttpStatus.OK.value());
     }
 
     private Optional<Pair<List<Notification>, List<Notification>>> tryFetchNotificationsForTestCase() throws NotificationClientException {

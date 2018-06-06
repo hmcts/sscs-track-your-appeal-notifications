@@ -4,6 +4,7 @@ import java.util.Map;
 import org.springframework.stereotype.Component;
 import uk.gov.hmcts.sscs.domain.CcdResponse;
 import uk.gov.hmcts.sscs.domain.CcdResponseWrapper;
+import uk.gov.hmcts.sscs.domain.Subscription;
 import uk.gov.hmcts.sscs.domain.notify.EventType;
 
 @Component
@@ -34,13 +35,16 @@ public class SubscriptionPersonalisation extends Personalisation {
     }
 
     private Boolean shouldSetMostRecentEventTypeNotification(CcdResponse newCcdResponse, CcdResponse oldCcdResponse) {
-        return (oldCcdResponse.getSubscriptions().getAppellantSubscription() != null
-                && !oldCcdResponse.getSubscriptions().getAppellantSubscription().isEmailSubscribed()
-                && newCcdResponse.getSubscriptions().getAppellantSubscription() != null
-                && newCcdResponse.getSubscriptions().getAppellantSubscription().isEmailSubscribed()
+        return (hasCaseJustSubscribed(oldCcdResponse.getSubscriptions().getAppellantSubscription(), newCcdResponse.getSubscriptions().getAppellantSubscription())
                 && newCcdResponse.getEvents() != null
                 && !newCcdResponse.getEvents().isEmpty()
                 && newCcdResponse.getEvents().get(0).getValue().getEventType() != null);
+    }
+
+    private Boolean hasCaseJustSubscribed(Subscription oldSubscription, Subscription newSubscription) {
+        return oldSubscription != null && newSubscription != null
+             && ((!oldSubscription.isEmailSubscribed() && newSubscription.isEmailSubscribed())
+             || (!oldSubscription.isSmsSubscribed() && newSubscription.isSmsSubscribed()));
     }
 
     public Boolean doNotSendEmailUpdatedNotificationWhenEmailNotChanged(CcdResponse newCcdResponse, CcdResponse oldCcdResponse) {
