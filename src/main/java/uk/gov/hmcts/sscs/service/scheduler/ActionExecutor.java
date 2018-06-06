@@ -1,5 +1,7 @@
 package uk.gov.hmcts.sscs.service.scheduler;
 
+import static org.slf4j.LoggerFactory.getLogger;
+
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.node.JsonNodeFactory;
@@ -19,6 +21,8 @@ import uk.gov.hmcts.sscs.service.idam.IdamService;
 @Component
 public class ActionExecutor implements JobExecutor<String> {
 
+    private static final org.slf4j.Logger LOG = getLogger(ActionExecutor.class);
+
     private final NotificationService notificationService;
     private final SearchCcdService searchCcdService;
     private final UpdateCcdService updateCcdService;
@@ -37,17 +41,19 @@ public class ActionExecutor implements JobExecutor<String> {
     }
 
     @Override
-    public void execute(String jobId, String jobGroup, String jobName, String caseId) {
+    public void execute(String jobId, String jobGroup, String eventId, String caseId) {
+
+        LOG.info("Scheduled event: " + eventId + " triggered for case: " + caseId);
 
         IdamTokens idamTokens = IdamTokens.builder()
-                .idamOauth2Token(idamService.getIdamOauth2Token())
-                .authenticationService(idamService.generateServiceAuthorization())
-                .build();
+            .idamOauth2Token(idamService.getIdamOauth2Token())
+            .authenticationService(idamService.generateServiceAuthorization())
+            .build();
 
         CaseDetails caseDetails = searchCcdService.getByCaseId(caseId, idamTokens);
 
         if (caseDetails != null) {
-            CcdResponseWrapper wrapper = deserializer.buildCcdResponseWrapper(buildCcdNode(caseDetails, jobName));
+            CcdResponseWrapper wrapper = deserializer.buildCcdResponseWrapper(buildCcdNode(caseDetails, eventId));
 
             notificationService.createAndSendNotification(wrapper);
 
@@ -67,4 +73,3 @@ public class ActionExecutor implements JobExecutor<String> {
         return node;
     }
 }
-

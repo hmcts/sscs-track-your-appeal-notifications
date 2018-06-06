@@ -69,6 +69,8 @@ public class HearingBookedReminderHandler implements ReminderHandler {
             caseId,
             reminderDate
         ));
+
+        LOG.info("Scheduled hearing reminder for case: " + caseId + " @ " + reminderDate.toString());
     }
 
     private ZonedDateTime calculateReminderDate(CcdResponse ccdResponse, long secondsBeforeHearing) {

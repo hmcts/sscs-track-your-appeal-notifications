@@ -95,6 +95,8 @@ public class ReminderNotificationsFunctionalTest {
 
         assertNotNull(caseDetails);
         caseId = caseDetails.getId();
+
+        LOG.info("Built case with ID: " + caseId + " and reference: " + testCaseReference);
     }
 
     @Test
@@ -175,7 +177,7 @@ public class ReminderNotificationsFunctionalTest {
 
             if (maxSecondsToWaitForNotification-- == 0) {
                 throw new RuntimeException(
-                        "Timed out fetching notifications after " + MAX_SECONDS_TO_WAIT_FOR_NOTIFICATIONS + " seconds"
+                    "Timed out fetching notifications after " + MAX_SECONDS_TO_WAIT_FOR_NOTIFICATIONS + " seconds"
                 );
             }
 
@@ -194,17 +196,17 @@ public class ReminderNotificationsFunctionalTest {
         assertTrue(sentEmailNotifications.size() >= EXPECTED_EMAIL_NOTIFICATIONS);
 
         assertTrue(
-                sentEmailNotifications.stream()
-                        .anyMatch(sentEmailNotification ->
-                                sentEmailNotification.getTemplateId().equals(UUID.fromString(emailTemplateId))
-                        )
+            sentEmailNotifications.stream()
+                .anyMatch(sentEmailNotification ->
+                    sentEmailNotification.getTemplateId().equals(UUID.fromString(emailTemplateId))
+                )
         );
 
         assertTrue(
-                sentEmailNotifications.stream()
-                        .anyMatch(sentEmailNotification ->
-                                sentEmailNotification.getBody().contains(testCaseReference)
-                        )
+            sentEmailNotifications.stream()
+                .anyMatch(sentEmailNotification ->
+                    sentEmailNotification.getBody().contains(testCaseReference)
+                )
         );
 
         if (smsTemplateId != null) {
@@ -213,10 +215,10 @@ public class ReminderNotificationsFunctionalTest {
             assertTrue(sentSmsNotifications.size() >= EXPECTED_SMS_NOTIFICATIONS);
 
             assertTrue(
-                    sentSmsNotifications.stream()
-                            .anyMatch(sentSmsNotification ->
-                                    sentSmsNotification.getTemplateId().equals(UUID.fromString(smsTemplateId))
-                            )
+                sentSmsNotifications.stream()
+                    .anyMatch(sentSmsNotification ->
+                        sentSmsNotification.getTemplateId().equals(UUID.fromString(smsTemplateId))
+                    )
             );
         }
     }

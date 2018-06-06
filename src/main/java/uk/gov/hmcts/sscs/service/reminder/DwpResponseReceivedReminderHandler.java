@@ -56,6 +56,8 @@ public class DwpResponseReceivedReminderHandler implements ReminderHandler {
             caseId,
             reminderDate
         ));
+
+        LOG.info("Scheduled evidence reminder for case: " + caseId + " @ " + reminderDate.toString());
     }
 
     private ZonedDateTime calculateReminderDate(CcdResponse ccdResponse) {

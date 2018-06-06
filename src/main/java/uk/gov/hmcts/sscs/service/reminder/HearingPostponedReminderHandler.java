@@ -42,7 +42,10 @@ public class HearingPostponedReminderHandler implements ReminderHandler {
         String jobGroup = jobGroupGenerator.generate(caseId, HEARING_REMINDER);
 
         try {
+
             jobRemover.removeGroup(jobGroup);
+            LOG.info("Removed hearing reminders from case: " + caseId);
+
         } catch (JobNotFoundException ignore) {
             LOG.warn("Hearing reminder for case ID: " + caseId + " could not be found");
         }
