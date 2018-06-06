@@ -21,7 +21,7 @@ import uk.gov.hmcts.sscs.service.idam.IdamService;
 
 @RunWith(SpringRunner.class)
 @SpringBootTest
-@ActiveProfiles("functional")
+@ActiveProfiles("development")
 public class SendNotificationsFunctionalTest {
 
     @Autowired

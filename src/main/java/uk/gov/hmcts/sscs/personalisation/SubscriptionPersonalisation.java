@@ -42,10 +42,9 @@ public class SubscriptionPersonalisation extends Personalisation {
     }
 
     private Boolean hasCaseJustSubscribed(Subscription oldSubscription, Subscription newSubscription) {
-         return oldSubscription != null && newSubscription != null &&
-                 ((!oldSubscription.isEmailSubscribed() && newSubscription.isEmailSubscribed()) ||
-                 (!oldSubscription.isSmsSubscribed() && newSubscription.isSmsSubscribed()));
-
+        return oldSubscription != null && newSubscription != null
+             && ((!oldSubscription.isEmailSubscribed() && newSubscription.isEmailSubscribed())
+             || (!oldSubscription.isSmsSubscribed() && newSubscription.isSmsSubscribed()));
     }
 
     public Boolean doNotSendEmailUpdatedNotificationWhenEmailNotChanged(CcdResponse newCcdResponse, CcdResponse oldCcdResponse) {
