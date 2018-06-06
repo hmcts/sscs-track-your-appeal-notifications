@@ -13,6 +13,7 @@ import uk.gov.hmcts.sscs.domain.CcdResponseWrapper;
 import uk.gov.hmcts.sscs.domain.idam.IdamTokens;
 import uk.gov.hmcts.sscs.service.NotificationService;
 import uk.gov.hmcts.sscs.service.ccd.SearchCcdService;
+import uk.gov.hmcts.sscs.service.ccd.UpdateCcdService;
 import uk.gov.hmcts.sscs.service.idam.IdamService;
 
 @Component
@@ -20,14 +21,17 @@ public class ActionExecutor implements JobExecutor<String> {
 
     private final NotificationService notificationService;
     private final SearchCcdService searchCcdService;
+    private final UpdateCcdService updateCcdService;
     private final IdamService idamService;
     private final CcdResponseWrapperDeserializer deserializer;
 
     @Autowired
     public ActionExecutor(NotificationService notificationService,
-                          SearchCcdService searchCcdService, IdamService idamService, CcdResponseWrapperDeserializer deserializer) {
+                          SearchCcdService searchCcdService, UpdateCcdService updateCcdService,
+                          IdamService idamService, CcdResponseWrapperDeserializer deserializer) {
         this.notificationService = notificationService;
         this.searchCcdService = searchCcdService;
+        this.updateCcdService = updateCcdService;
         this.idamService = idamService;
         this.deserializer = deserializer;
     }
@@ -46,6 +50,8 @@ public class ActionExecutor implements JobExecutor<String> {
             CcdResponseWrapper wrapper = deserializer.buildCcdResponseWrapper(buildCcdNode(caseDetails, jobName));
 
             notificationService.createAndSendNotification(wrapper);
+
+            updateCcdService.update(null, Long.valueOf(caseId), wrapper.getNewCcdResponse().getNotificationType().getId(), idamTokens);
         }
     }
 

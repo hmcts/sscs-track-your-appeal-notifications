@@ -51,7 +51,7 @@ public class CoreCcdService {
                 .event(Event.builder()
                         .id(startEventResponse.getEventId())
                         .summary("CCD Case")
-                        .description("Notification Service created case")
+                        .description("Notification service created case")
                         .build())
                 .data(ccdResponse)
                 .build();
@@ -71,7 +71,7 @@ public class CoreCcdService {
                 .event(Event.builder()
                         .id(startEventResponse.getEventId())
                         .summary("CCD Case")
-                        .description("Notification Service updated case")
+                        .description("Notification service updated case")
                         .build())
                 .data(ccdResponse)
                 .build();
