@@ -127,9 +127,9 @@ job.scheduler:
         class: org.quartz.simpl.SimpleThreadPool
         threadCount: 8
 ---
-# integration & functional profile
+# spring profiles
 spring:
-  profiles: integration, functional
+  profiles: integration, functional, development
 flyway:
   enabled: false
 job.scheduler:
