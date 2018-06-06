@@ -1,4 +1,4 @@
-package uk.gov.hmcts.sscs.functional;
+package uk.gov.hmcts.sscs.wip;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
@@ -23,6 +23,8 @@ import uk.gov.hmcts.sscs.service.idam.IdamService;
 @SpringBootTest
 @ActiveProfiles("development")
 public class SendNotificationsFunctionalTest {
+
+    // These tests need to fixed to work with the relevant CCD environments
 
     @Autowired
     private CreateCcdService createCcdService;
