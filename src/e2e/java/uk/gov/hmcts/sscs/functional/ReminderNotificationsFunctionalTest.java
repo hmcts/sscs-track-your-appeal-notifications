@@ -72,6 +72,12 @@ public class ReminderNotificationsFunctionalTest {
     @Value("${notification.hearingReminder.smsId}")
     private String hearingReminderSmsTemplateId;
 
+    @Value("${notification.hearingHoldingReminder.emailId}")
+    private String hearingHoldingReminderEmailTemplateId;
+
+    @Value("${notification.hearingHoldingReminder.smsId}")
+    private String hearingHoldingReminderSmsTemplateId;
+
     @Autowired
     private NotificationClient client;
 
@@ -108,7 +114,7 @@ public class ReminderNotificationsFunctionalTest {
     }
 
     @Test
-    public void shouldSendEvidenceReminderNotification() throws IOException, NotificationClientException {
+    public void shouldSendEvidenceReminderAndHearingHoldingNotification() throws IOException, NotificationClientException {
 
         setup(DWP_RESPONSE_RECEIVED);
 
@@ -122,7 +128,9 @@ public class ReminderNotificationsFunctionalTest {
         List<Notification> notifications =
             tryFetchNotificationsForTestCase(
                 evidenceReminderEmailTemplateId,
-                evidenceReminderSmsTemplateId
+                evidenceReminderSmsTemplateId,
+                hearingHoldingReminderEmailTemplateId,
+                hearingHoldingReminderSmsTemplateId
             );
 
         assertNotificationTemplateSubjectContains(notifications, evidenceReminderEmailTemplateId, "ESA benefit appeal");
@@ -132,6 +140,17 @@ public class ReminderNotificationsFunctionalTest {
         assertNotificationTemplateBodyContains(notifications, evidenceReminderEmailTemplateId, "/evidence");
 
         assertNotificationTemplateBodyContains(notifications, evidenceReminderSmsTemplateId, "ESA benefit appeal");
+
+        assertNotificationTemplateSubjectContains(notifications, hearingHoldingReminderEmailTemplateId, "ESA benefit appeal");
+        assertNotificationTemplateBodyContains(notifications, hearingHoldingReminderEmailTemplateId, testCaseReference);
+        assertNotificationTemplateBodyContains(notifications, hearingHoldingReminderEmailTemplateId, "User Test");
+        assertNotificationTemplateBodyContains(notifications, hearingHoldingReminderEmailTemplateId, "ESA benefit appeal");
+        assertNotificationTemplateBodyContains(notifications, hearingHoldingReminderEmailTemplateId, "/trackyourappeal");
+        assertNotificationTemplateBodyContains(notifications, hearingHoldingReminderEmailTemplateId, "22 April 2018");
+
+        assertNotificationTemplateBodyContains(notifications, hearingHoldingReminderSmsTemplateId, "ESA benefit appeal");
+        assertNotificationTemplateBodyContains(notifications, hearingHoldingReminderSmsTemplateId, "/trackyourappeal");
+        assertNotificationTemplateBodyContains(notifications, hearingHoldingReminderSmsTemplateId, "22 April 2018");
     }
 
     @Test

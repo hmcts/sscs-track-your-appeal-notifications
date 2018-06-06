@@ -11,15 +11,15 @@ import uk.gov.hmcts.reform.sscs.jobscheduler.services.JobRemover;
 import uk.gov.hmcts.sscs.domain.CcdResponse;
 
 @Component
-public class HearingPostponedReminderHandler implements ReminderHandler {
+public class HearingReminderRemover implements ReminderHandler {
 
-    private static final org.slf4j.Logger LOG = getLogger(HearingPostponedReminderHandler.class);
+    private static final org.slf4j.Logger LOG = getLogger(HearingReminderRemover.class);
 
     private final JobGroupGenerator jobGroupGenerator;
     private final JobRemover jobRemover;
 
     @Autowired
-    public HearingPostponedReminderHandler(
+    public HearingReminderRemover(
         JobGroupGenerator jobGroupGenerator,
         JobRemover jobRemover
     ) {
@@ -39,15 +39,15 @@ public class HearingPostponedReminderHandler implements ReminderHandler {
         }
 
         String caseId = ccdResponse.getCaseId();
-        String jobGroup = jobGroupGenerator.generate(caseId, HEARING_REMINDER);
+        String jobGroup = jobGroupGenerator.generate(caseId, HEARING_REMINDER.getId());
 
         try {
 
             jobRemover.removeGroup(jobGroup);
-            LOG.info("Removed hearing reminders from case: " + caseId);
+            LOG.info("Removed hearing reminders from case: {}", caseId);
 
         } catch (JobNotFoundException ignore) {
-            LOG.warn("Hearing reminder for case ID: " + caseId + " could not be found");
+            LOG.warn("Hearing reminder for case: {} could not be found", caseId);
         }
     }
 
