@@ -7,6 +7,7 @@ import static uk.gov.hmcts.sscs.CcdResponseUtils.buildCcdResponse;
 import static uk.gov.hmcts.sscs.domain.notify.EventType.DWP_RESPONSE_RECEIVED;
 import static uk.gov.hmcts.sscs.domain.notify.EventType.HEARING_BOOKED;
 
+import helper.EnvironmentProfileValueSource;
 import io.restassured.RestAssured;
 import java.io.File;
 import java.io.IOException;
@@ -23,6 +24,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.http.HttpStatus;
+import org.springframework.test.annotation.ProfileValueSourceConfiguration;
 import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.context.junit4.SpringRunner;
 import uk.gov.hmcts.reform.ccd.client.model.CaseDetails;
@@ -39,6 +41,7 @@ import uk.gov.service.notify.NotificationClientException;
 @RunWith(SpringRunner.class)
 @SpringBootTest
 @ActiveProfiles("functional")
+@ProfileValueSourceConfiguration(EnvironmentProfileValueSource.class)
 public class ReminderNotificationsFunctionalTest {
 
     private static final org.slf4j.Logger LOG = getLogger(ReminderNotificationsFunctionalTest.class);

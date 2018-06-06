@@ -1,14 +1,18 @@
-package uk.gov.hmcts.sscs.wip;
+package uk.gov.hmcts.sscs.functional;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
 import static uk.gov.hmcts.sscs.CcdResponseUtils.buildCcdResponse;
 import static uk.gov.hmcts.sscs.domain.notify.EventType.SUBSCRIPTION_UPDATED;
 
+import helper.EnvironmentProfileValueSource;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.test.annotation.IfProfileValue;
+import org.springframework.test.annotation.ProfileValueSourceConfiguration;
+import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.context.junit4.SpringRunner;
 import uk.gov.hmcts.reform.ccd.client.model.CaseDetails;
 import uk.gov.hmcts.sscs.domain.CcdResponse;
@@ -20,6 +24,9 @@ import uk.gov.hmcts.sscs.service.idam.IdamService;
 
 @RunWith(SpringRunner.class)
 @SpringBootTest
+@ActiveProfiles("functional")
+@ProfileValueSourceConfiguration(EnvironmentProfileValueSource.class)
+@IfProfileValue(name = "environment.shared-ccd", value = "false")
 public class SubscriptionNotificationsFunctionalTest {
 
     // These tests need to fixed to work with the relevant CCD environments
@@ -38,9 +45,9 @@ public class SubscriptionNotificationsFunctionalTest {
 
     public void createCase(String caseRef, String subscribeEmail, String subscribeSms) {
         idamTokens = IdamTokens.builder()
-                .authenticationService(idamService.generateServiceAuthorization())
-                .idamOauth2Token(idamService.getIdamOauth2Token())
-                .build();
+            .authenticationService(idamService.generateServiceAuthorization())
+            .idamOauth2Token(idamService.getIdamOauth2Token())
+            .build();
 
         caseData = buildCcdResponse(caseRef, subscribeEmail, subscribeSms);
 
