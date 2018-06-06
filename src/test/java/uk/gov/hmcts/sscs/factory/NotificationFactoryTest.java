@@ -147,9 +147,9 @@ public class NotificationFactoryTest {
     }
 
     @Test
-    public void buildLastEmailNotificationFromCcdResponseEventWhenEmailFirstSubscribed() {
+    public void buildLastNotificationFromCcdResponseEventWhenEmailFirstSubscribed() {
         when(personalisationFactory.apply(SUBSCRIPTION_UPDATED)).thenReturn(subscriptionPersonalisation);
-        when(config.getTemplate(APPEAL_RECEIVED.getId(), SUBSCRIPTION_CREATED.getId())).thenReturn(Template.builder().emailTemplateId("123").smsTemplateId(null).build());
+        when(config.getTemplate(APPEAL_RECEIVED.getId(), APPEAL_RECEIVED.getId())).thenReturn(Template.builder().emailTemplateId("123").smsTemplateId(null).build());
 
         List<Events> events = new ArrayList<>();
         events.add(Events.builder().value(Event.builder().date(date).type(APPEAL_RECEIVED.getId()).build()).build());
@@ -163,7 +163,7 @@ public class NotificationFactoryTest {
                         .build())
                 .oldCcdResponse(
                     ccdResponse.toBuilder()
-                        .subscriptions(Subscriptions.builder().appellantSubscription(subscription.toBuilder().subscribeSms("No").subscribeEmail("No").build()).build())
+                        .subscriptions(Subscriptions.builder().appellantSubscription(subscription.toBuilder().subscribeSms("Yes").subscribeEmail("No").build()).build())
                         .notificationType(SUBSCRIPTION_UPDATED)
                         .build())
                 .build();
@@ -171,6 +171,33 @@ public class NotificationFactoryTest {
         Notification result = factory.create(wrapper);
 
         assertEquals("123", result.getEmailTemplate());
+    }
+
+    @Test
+    public void buildLastNotificationFromCcdResponseEventWhenSmsFirstSubscribed() {
+        when(personalisationFactory.apply(SUBSCRIPTION_UPDATED)).thenReturn(subscriptionPersonalisation);
+        when(config.getTemplate(DO_NOT_SEND.getId(), SUBSCRIPTION_CREATED.getId())).thenReturn(Template.builder().emailTemplateId(null).smsTemplateId("123").build());
+
+        List<Events> events = new ArrayList<>();
+        events.add(Events.builder().value(Event.builder().date(date).type(APPEAL_RECEIVED.getId()).build()).build());
+
+        wrapper = CcdResponseWrapper.builder()
+                .newCcdResponse(
+                        ccdResponse.toBuilder()
+                                .subscriptions(Subscriptions.builder().appellantSubscription(subscription.toBuilder().subscribeSms("Yes").subscribeEmail("Yes").build()).build())
+                                .notificationType(SUBSCRIPTION_UPDATED)
+                                .events(events)
+                                .build())
+                .oldCcdResponse(
+                        ccdResponse.toBuilder()
+                                .subscriptions(Subscriptions.builder().appellantSubscription(subscription.toBuilder().subscribeSms("No").subscribeEmail("Yes").build()).build())
+                                .notificationType(SUBSCRIPTION_UPDATED)
+                                .build())
+                .build();
+
+        Notification result = factory.create(wrapper);
+
+        assertEquals("123", result.getSmsTemplate());
     }
 
     @Test
@@ -203,7 +230,7 @@ public class NotificationFactoryTest {
     @Test
     public void buildSubscriptionUpdatedNotificationFromCcdResponseWhenEmailIsChanged() {
         when(personalisationFactory.apply(SUBSCRIPTION_UPDATED)).thenReturn(subscriptionPersonalisation);
-        when(config.getTemplate(SUBSCRIPTION_UPDATED.getId(), SUBSCRIPTION_CREATED.getId())).thenReturn(Template.builder().emailTemplateId("123").smsTemplateId(null).build());
+        when(config.getTemplate(SUBSCRIPTION_UPDATED.getId(), SUBSCRIPTION_UPDATED.getId())).thenReturn(Template.builder().emailTemplateId("123").smsTemplateId(null).build());
 
         List<Events> events = new ArrayList<>();
         events.add(Events.builder().value(Event.builder().date(date).type(APPEAL_RECEIVED.getId()).build()).build());
@@ -217,7 +244,7 @@ public class NotificationFactoryTest {
                     .build())
             .oldCcdResponse(
                 ccdResponse.toBuilder()
-                    .subscriptions(Subscriptions.builder().appellantSubscription(subscription.toBuilder().subscribeSms("No").subscribeEmail("Yes").build()).build())
+                    .subscriptions(Subscriptions.builder().appellantSubscription(subscription.toBuilder().subscribeSms("Yes").subscribeEmail("Yes").build()).build())
                     .notificationType(SUBSCRIPTION_UPDATED)
                     .build())
             .build();
