@@ -56,7 +56,7 @@ public class ActionExecutorTest {
         when(deserializer.buildCcdResponseWrapper(any())).thenReturn(wrapper);
         when(updateCcdService.update(eq(newCcdResponse), eq(123456L), eq(EVIDENCE_REMINDER.getId()), any())).thenReturn(caseDetails);
 
-        actionExecutor.execute("1", "jobName", "123456");
+        actionExecutor.execute("1", EVIDENCE_REMINDER.getId(), "123456");
 
         verify(notificationService, times(1)).createAndSendNotification(wrapper);
         verify(updateCcdService, times(1)).update(any(), any(), any(), any());
