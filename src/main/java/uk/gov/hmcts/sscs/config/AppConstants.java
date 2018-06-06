@@ -26,9 +26,10 @@ public final class AppConstants {
     public static final String HEARING_CONTACT_DATE = "hearing_contact_date";
     public static final String HEARING_DATE = "hearing_date";
     public static final String HEARING_DETAILS_LITERAL = "hearing_details";
+    public static final String HEARING_INFO_LINK_LITERAL = "hearing_info_link";
     public static final String HEARING_TIME = "hearing_time";
     public static final String HEARING_TIME_FORMAT = "hh:mm a";
-    public static final String HEARING_INFO_LINK_LITERAL = "hearing_info_link";
+    public static final String HEARING_UPDATE_DATE_LITERAL = "hearing_update_date";
     public static final String MAC_ALGO = "HmacSHA256";
     public static final String MAC_LITERAL = "mac";
     public static final String MANAGE_EMAILS_LINK_LITERAL = "manage_emails_link";

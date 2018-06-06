@@ -7,6 +7,7 @@ import org.slf4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import uk.gov.hmcts.sscs.domain.CcdResponseWrapper;
+import uk.gov.hmcts.sscs.domain.Subscription;
 import uk.gov.hmcts.sscs.domain.notify.Notification;
 import uk.gov.hmcts.sscs.exception.NotificationClientRuntimeException;
 import uk.gov.hmcts.sscs.exception.NotificationServiceException;
@@ -31,18 +32,21 @@ public class NotificationService {
     public void createAndSendNotification(CcdResponseWrapper responseWrapper) {
         LOG.info("Start to create notification for case reference " + responseWrapper.getNewCcdResponse().getCaseReference());
 
-        if (responseWrapper.getNewCcdResponse().getSubscriptions().getAppellantSubscription() != null && responseWrapper.getNewCcdResponse().getSubscriptions().getAppellantSubscription().doesCaseHaveSubscriptions()) {
+        Subscription appellantSubscription = responseWrapper.getNewCcdResponse().getSubscriptions().getAppellantSubscription();
+
+        if (appellantSubscription != null && appellantSubscription.doesCaseHaveSubscriptions()) {
 
             Notification notification = factory.create(responseWrapper);
 
             try {
 
-                if (responseWrapper.getNewCcdResponse().getSubscriptions().getAppellantSubscription().isEmailSubscribed() && notification.isEmail() && notification.getEmailTemplate() != null) {
+                if (appellantSubscription.isEmailSubscribed() && notification.isEmail() && notification.getEmailTemplate() != null) {
                     LOG.info("Sending email for case reference " + responseWrapper.getNewCcdResponse().getCaseReference());
                     client.sendEmail(notification.getEmailTemplate(), notification.getEmail(), notification.getPlaceholders(), notification.getReference());
                     LOG.info("Email sent for case reference " + responseWrapper.getNewCcdResponse().getCaseReference());
                 }
-                if (responseWrapper.getNewCcdResponse().getSubscriptions().getAppellantSubscription().isSmsSubscribed() && notification.isSms() && notification.getSmsTemplate() != null) {
+
+                if (appellantSubscription.isSmsSubscribed() && notification.isSms() && notification.getSmsTemplate() != null) {
                     LOG.info("Sending SMS for case reference " + responseWrapper.getNewCcdResponse().getCaseReference());
                     client.sendSms(notification.getSmsTemplate(), notification.getMobile(), notification.getPlaceholders(), notification.getReference());
                     LOG.info("SMS sent for case reference " + responseWrapper.getNewCcdResponse().getCaseReference());

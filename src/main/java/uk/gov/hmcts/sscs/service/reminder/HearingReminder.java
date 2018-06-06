@@ -18,9 +18,9 @@ import uk.gov.hmcts.sscs.domain.Hearing;
 import uk.gov.hmcts.sscs.exception.ReminderException;
 
 @Component
-public class HearingBookedReminderHandler implements ReminderHandler {
+public class HearingReminder implements ReminderHandler {
 
-    private static final org.slf4j.Logger LOG = getLogger(HearingBookedReminderHandler.class);
+    private static final org.slf4j.Logger LOG = getLogger(HearingReminder.class);
 
     private final JobGroupGenerator jobGroupGenerator;
     private JobScheduler<String> jobScheduler;
@@ -29,7 +29,7 @@ public class HearingBookedReminderHandler implements ReminderHandler {
     private long beforeSecondHearingReminder;
 
     @Autowired
-    public HearingBookedReminderHandler(
+    public HearingReminder(
         JobGroupGenerator jobGroupGenerator,
         JobScheduler<String> jobScheduler,
         @Value("${reminder.hearingReminder.beforeFirst.seconds}") long beforeFirstHearingReminder,
@@ -60,7 +60,7 @@ public class HearingBookedReminderHandler implements ReminderHandler {
 
         String caseId = ccdResponse.getCaseId();
         String eventId = HEARING_REMINDER.getId();
-        String jobGroup = jobGroupGenerator.generate(caseId, HEARING_REMINDER);
+        String jobGroup = jobGroupGenerator.generate(caseId, eventId);
         ZonedDateTime reminderDate = calculateReminderDate(ccdResponse, secondsBeforeHearing);
 
         jobScheduler.schedule(new Job<>(

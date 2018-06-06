@@ -4,8 +4,7 @@ import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
 import static org.mockito.Mockito.*;
-import static uk.gov.hmcts.sscs.domain.notify.EventType.HEARING_REMINDER;
-import static uk.gov.hmcts.sscs.domain.notify.EventType.POSTPONEMENT;
+import static uk.gov.hmcts.sscs.domain.notify.EventType.*;
 
 import org.junit.Before;
 import org.junit.Test;
@@ -19,18 +18,18 @@ import uk.gov.hmcts.sscs.domain.CcdResponse;
 import uk.gov.hmcts.sscs.domain.notify.EventType;
 
 @RunWith(MockitoJUnitRunner.class)
-public class HearingPostponedReminderHandlerTest {
+public class HearingHoldingReminderRemoverTest {
 
     @Mock
     private JobGroupGenerator jobGroupGenerator;
     @Mock
     private JobRemover jobRemover;
 
-    private HearingPostponedReminderHandler hearingPostponedReminderHandler;
+    private HearingHoldingReminderRemover hearingHoldingReminderRemoverTest;
 
     @Before
     public void setup() {
-        hearingPostponedReminderHandler = new HearingPostponedReminderHandler(
+        hearingHoldingReminderRemoverTest = new HearingHoldingReminderRemover(
             jobGroupGenerator,
             jobRemover
         );
@@ -43,12 +42,12 @@ public class HearingPostponedReminderHandlerTest {
 
             CcdResponse ccdResponse = CcdResponseUtils.buildBasicCcdResponse(eventType);
 
-            if (eventType == POSTPONEMENT) {
-                assertTrue(hearingPostponedReminderHandler.canHandle(ccdResponse));
+            if (eventType == HEARING_BOOKED) {
+                assertTrue(hearingHoldingReminderRemoverTest.canHandle(ccdResponse));
             } else {
 
-                assertFalse(hearingPostponedReminderHandler.canHandle(ccdResponse));
-                assertThatThrownBy(() -> hearingPostponedReminderHandler.handle(ccdResponse))
+                assertFalse(hearingHoldingReminderRemoverTest.canHandle(ccdResponse));
+                assertThatThrownBy(() -> hearingHoldingReminderRemoverTest.handle(ccdResponse))
                     .hasMessage("cannot handle ccdResponse")
                     .isExactlyInstanceOf(IllegalArgumentException.class);
             }
@@ -56,7 +55,7 @@ public class HearingPostponedReminderHandlerTest {
     }
 
     @Test
-    public void removedHearingBookedReminder() {
+    public void removedHearingHoldingReminderWhenHearingBooked() {
 
         final String expectedJobGroup = "ID_EVENT";
 
@@ -64,14 +63,14 @@ public class HearingPostponedReminderHandlerTest {
         String hearingTime = "14:01:18";
 
         CcdResponse ccdResponse = CcdResponseUtils.buildBasicCcdResponseWithHearing(
-            POSTPONEMENT,
+            HEARING_BOOKED,
             hearingDate,
             hearingTime
         );
 
-        when(jobGroupGenerator.generate(ccdResponse.getCaseId(), HEARING_REMINDER)).thenReturn(expectedJobGroup);
+        when(jobGroupGenerator.generate(ccdResponse.getCaseId(), HEARING_HOLDING_REMINDER.getId())).thenReturn(expectedJobGroup);
 
-        hearingPostponedReminderHandler.handle(ccdResponse);
+        hearingHoldingReminderRemoverTest.handle(ccdResponse);
 
         verify(jobRemover, times(1)).removeGroup(
             expectedJobGroup
@@ -87,18 +86,18 @@ public class HearingPostponedReminderHandlerTest {
         String hearingTime = "14:01:18";
 
         CcdResponse ccdResponse = CcdResponseUtils.buildBasicCcdResponseWithHearing(
-            POSTPONEMENT,
+            HEARING_BOOKED,
             hearingDate,
             hearingTime
         );
 
-        when(jobGroupGenerator.generate(ccdResponse.getCaseId(), HEARING_REMINDER)).thenReturn(expectedJobGroup);
+        when(jobGroupGenerator.generate(ccdResponse.getCaseId(), HEARING_HOLDING_REMINDER.getId())).thenReturn(expectedJobGroup);
 
         doThrow(JobNotFoundException.class)
             .when(jobRemover)
             .removeGroup(expectedJobGroup);
 
-        hearingPostponedReminderHandler.handle(ccdResponse);
+        hearingHoldingReminderRemoverTest.handle(ccdResponse);
 
         verify(jobRemover, times(1)).removeGroup(
             expectedJobGroup
