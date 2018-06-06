@@ -51,7 +51,7 @@ public class ActionExecutor implements JobExecutor<String> {
 
             notificationService.createAndSendNotification(wrapper);
 
-            updateCcdService.update(wrapper.getNewCcdResponse(), Long.valueOf(caseId), wrapper.getNewCcdResponse().getNotificationType().getId(), idamTokens);
+            updateCcdService.update(null, Long.valueOf(caseId), wrapper.getNewCcdResponse().getNotificationType().getId(), idamTokens);
         }
     }
 
