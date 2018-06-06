@@ -8,10 +8,12 @@ import static uk.gov.hmcts.sscs.domain.notify.EventType.*;
 
 import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.time.ZonedDateTime;
 import java.time.format.DateTimeFormatter;
 import java.time.temporal.ChronoUnit;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Optional;
 import java.util.stream.Collectors;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -21,6 +23,7 @@ import uk.gov.hmcts.sscs.domain.*;
 import uk.gov.hmcts.sscs.domain.notify.Event;
 import uk.gov.hmcts.sscs.domain.notify.EventType;
 import uk.gov.hmcts.sscs.domain.notify.Template;
+import uk.gov.hmcts.sscs.extractor.HearingUpdateDateExtractor;
 import uk.gov.hmcts.sscs.service.MessageAuthenticationServiceImpl;
 import uk.gov.hmcts.sscs.service.RegionalProcessingCenterService;
 
@@ -33,6 +36,9 @@ public class Personalisation {
 
     @Autowired
     private NotificationConfig config;
+
+    @Autowired
+    private HearingUpdateDateExtractor hearingUpdateDateExtractor;
 
     @Autowired
     private MessageAuthenticationServiceImpl macService;
@@ -83,8 +89,19 @@ public class Personalisation {
         setEvidenceProcessingAddress(personalisation, ccdResponse);
         setEventData(personalisation, ccdResponse);
         setEvidenceReceivedNotificationData(personalisation, ccdResponse);
+        setHearingUpdateDate(personalisation, ccdResponse);
 
         return personalisation;
+    }
+
+    public void setHearingUpdateDate(Map<String, String> personalisation, CcdResponse ccdResponse) {
+        Optional<ZonedDateTime> hearingUpdateDate = hearingUpdateDateExtractor.extract(ccdResponse);
+        if (hearingUpdateDate.isPresent()) {
+            personalisation.put(
+                HEARING_CONTACT_DATE,
+                formatLocalDate(hearingUpdateDate.get().toLocalDate())
+            );
+        }
     }
 
     public Map<String, String> setEventData(Map<String, String> personalisation, CcdResponse ccdResponse) {

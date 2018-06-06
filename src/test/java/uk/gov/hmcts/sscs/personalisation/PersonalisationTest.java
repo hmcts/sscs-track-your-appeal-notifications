@@ -1,7 +1,6 @@
 package uk.gov.hmcts.sscs.personalisation;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNull;
+import static org.junit.Assert.*;
 import static org.mockito.Matchers.anyString;
 import static org.mockito.Mockito.*;
 import static org.mockito.MockitoAnnotations.initMocks;
@@ -9,12 +8,12 @@ import static uk.gov.hmcts.sscs.config.AppConstants.*;
 import static uk.gov.hmcts.sscs.domain.Benefit.PIP;
 import static uk.gov.hmcts.sscs.domain.notify.EventType.*;
 
+import java.time.Instant;
 import java.time.LocalDate;
+import java.time.ZoneId;
+import java.time.ZonedDateTime;
 import java.time.format.DateTimeFormatter;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 import javax.annotation.Resource;
 import org.junit.Before;
 import org.junit.Test;
@@ -24,6 +23,7 @@ import uk.gov.hmcts.sscs.config.NotificationConfig;
 import uk.gov.hmcts.sscs.domain.*;
 import uk.gov.hmcts.sscs.domain.notify.Event;
 import uk.gov.hmcts.sscs.domain.notify.Link;
+import uk.gov.hmcts.sscs.extractor.HearingUpdateDateExtractor;
 import uk.gov.hmcts.sscs.service.MessageAuthenticationServiceImpl;
 import uk.gov.hmcts.sscs.service.RegionalProcessingCenterService;
 
@@ -39,6 +39,9 @@ public class PersonalisationTest {
 
     @Mock
     private NotificationConfig config;
+
+    @Mock
+    private HearingUpdateDateExtractor hearingUpdateDateExtractor;
 
     @Mock
     private MessageAuthenticationServiceImpl macService;
@@ -67,6 +70,7 @@ public class PersonalisationTest {
         when(config.getClaimingExpensesLink()).thenReturn(Link.builder().linkUrl("http://link.com/progress/appeal_id/expenses").build());
         when(config.getHearingInfoLink()).thenReturn(Link.builder().linkUrl("http://link.com/progress/appeal_id/abouthearing").build());
         when(macService.generateToken("GLSCRR", PIP.name())).thenReturn("ZYX");
+        when(hearingUpdateDateExtractor.extract(any())).thenReturn(Optional.empty());
 
         RegionalProcessingCenter rpc = new RegionalProcessingCenter();
         rpc.createRegionalProcessingCenter("LIVERPOOL", "HM Courts & Tribunals Service", ADDRESS2,
@@ -369,5 +373,32 @@ public class PersonalisationTest {
         assertEquals(ADDRESS4, result.get(TOWN_LITERAL));
         assertEquals(CITY, result.get(COUNTY_LITERAL));
         assertEquals(POSTCODE, result.get(POSTCODE_LITERAL));
+    }
+
+    @Test
+    public void shouldPopulateHearingUpdateDateFromCcdCaseIfPresent() {
+
+        CcdResponse response = CcdResponse.builder().build();
+
+        ZonedDateTime now = ZonedDateTime.ofInstant(Instant.ofEpochSecond(1528907807), ZoneId.of("UTC"));
+        when(hearingUpdateDateExtractor.extract(response)).thenReturn(Optional.of(now));
+
+        Map<String, String> values = new HashMap<>();
+        personalisation.setHearingUpdateDate(values, response);
+
+        assertEquals("13 June 2018", values.get(HEARING_CONTACT_DATE));
+    }
+
+    @Test
+    public void shouldNotPopulateHearingUpdateDateFromCcdCaseIfNotPresent() {
+
+        CcdResponse response = CcdResponse.builder().build();
+
+        when(hearingUpdateDateExtractor.extract(response)).thenReturn(Optional.empty());
+
+        Map<String, String> values = new HashMap<>();
+        personalisation.setHearingUpdateDate(values, response);
+
+        assertFalse(values.containsKey(HEARING_CONTACT_DATE));
     }
 }

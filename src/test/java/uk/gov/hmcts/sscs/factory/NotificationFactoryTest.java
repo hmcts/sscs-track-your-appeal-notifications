@@ -2,6 +2,7 @@ package uk.gov.hmcts.sscs.factory;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNull;
+import static org.mockito.Matchers.any;
 import static org.mockito.Mockito.when;
 import static org.mockito.MockitoAnnotations.initMocks;
 import static uk.gov.hmcts.sscs.domain.Benefit.PIP;
@@ -9,6 +10,7 @@ import static uk.gov.hmcts.sscs.domain.notify.EventType.*;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 import javax.annotation.Resource;
 import org.junit.Before;
 import org.junit.Test;
@@ -20,6 +22,7 @@ import uk.gov.hmcts.sscs.domain.notify.Event;
 import uk.gov.hmcts.sscs.domain.notify.Link;
 import uk.gov.hmcts.sscs.domain.notify.Notification;
 import uk.gov.hmcts.sscs.domain.notify.Template;
+import uk.gov.hmcts.sscs.extractor.HearingUpdateDateExtractor;
 import uk.gov.hmcts.sscs.personalisation.Personalisation;
 import uk.gov.hmcts.sscs.personalisation.SubscriptionPersonalisation;
 import uk.gov.hmcts.sscs.service.MessageAuthenticationServiceImpl;
@@ -40,6 +43,9 @@ public class NotificationFactoryTest {
 
     @Mock
     private RegionalProcessingCenterService regionalProcessingCenterService;
+
+    @Mock
+    private HearingUpdateDateExtractor hearingUpdateDateExtractor;
 
     @Mock
     private NotificationConfig config;
@@ -87,6 +93,7 @@ public class NotificationFactoryTest {
         RegionalProcessingCenter rpc = new RegionalProcessingCenter();
         rpc.createRegionalProcessingCenter("Venue", "HMCTS", "The Road", "Town", "City", "B23 1EH", "Birmingham");
         when(regionalProcessingCenterService.getByScReferenceCode("SC/1234/5")).thenReturn(rpc);
+        when(hearingUpdateDateExtractor.extract(any())).thenReturn(Optional.empty());
     }
 
     @Test

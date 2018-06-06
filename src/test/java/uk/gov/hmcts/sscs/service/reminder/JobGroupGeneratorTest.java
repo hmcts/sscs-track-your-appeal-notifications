@@ -12,8 +12,8 @@ public class JobGroupGeneratorTest {
 
     @Test
     public void generatesJobGroup() {
-        assertEquals("123_responseReceived", jobGroupGenerator.generate("123", DWP_RESPONSE_RECEIVED));
-        assertEquals("123_hearingBooked", jobGroupGenerator.generate("123", HEARING_BOOKED));
+        assertEquals("123_responseReceived", jobGroupGenerator.generate("123", DWP_RESPONSE_RECEIVED.getId()));
+        assertEquals("123_hearingBooked", jobGroupGenerator.generate("123", HEARING_BOOKED.getId()));
     }
 
 }

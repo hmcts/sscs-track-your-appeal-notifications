@@ -6,6 +6,7 @@ import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.node.JsonNodeFactory;
 import com.fasterxml.jackson.databind.node.ObjectNode;
+import org.slf4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 import uk.gov.hmcts.reform.ccd.client.model.CaseDetails;
@@ -21,7 +22,7 @@ import uk.gov.hmcts.sscs.service.idam.IdamService;
 @Component
 public class ActionExecutor implements JobExecutor<String> {
 
-    private static final org.slf4j.Logger LOG = getLogger(ActionExecutor.class);
+    private static final Logger LOG = getLogger(ActionExecutor.class);
 
     private final NotificationService notificationService;
     private final SearchCcdService searchCcdService;
@@ -43,7 +44,7 @@ public class ActionExecutor implements JobExecutor<String> {
     @Override
     public void execute(String jobId, String jobGroup, String eventId, String caseId) {
 
-        LOG.info("Scheduled event: " + eventId + " triggered for case: " + caseId);
+        LOG.info("Scheduled event: {} triggered for case: {}", eventId, caseId);
 
         String oauth2Token = idamService.getIdamOauth2Token();
         IdamTokens idamTokens = IdamTokens.builder()
@@ -56,10 +57,10 @@ public class ActionExecutor implements JobExecutor<String> {
 
         if (caseDetails != null) {
             CcdResponseWrapper wrapper = deserializer.buildCcdResponseWrapper(buildCcdNode(caseDetails, eventId));
-
             notificationService.createAndSendNotification(wrapper);
-
             updateCcdService.update(null, Long.valueOf(caseId), wrapper.getNewCcdResponse().getNotificationType().getId(), idamTokens);
+        } else {
+            LOG.warn("Case: {} could not be found for event: {}", caseId, eventId);
         }
     }
 
