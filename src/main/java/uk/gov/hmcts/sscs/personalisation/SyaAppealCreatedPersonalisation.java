@@ -188,11 +188,11 @@ public class SyaAppealCreatedPersonalisation extends Personalisation {
     }
 
     private String buildHearingArrangements(HearingOptions hearingOptions) {
-        String languagueInterpreterRequired = convertBooleanToRequiredText(hearingOptions.getLanguageInterpreter().toLowerCase().equals("yes") ? true : false);
+        String languageInterpreterRequired = convertBooleanToRequiredText(hearingOptions.getLanguageInterpreter() != null && hearingOptions.getLanguageInterpreter().toLowerCase().equals("yes") ? true : false);
 
         return new StringBuilder()
                 .append("Language interpreter: ")
-                .append(languagueInterpreterRequired + "\n\n")
+                .append(languageInterpreterRequired + "\n\n")
                 .append("Sign interpreter: ")
                 .append(convertBooleanToRequiredText(findHearingArrangement("signLanguageInterpreter", hearingOptions.getArrangements())) + "\n\n")
                 .append("Hearing loop: ")
