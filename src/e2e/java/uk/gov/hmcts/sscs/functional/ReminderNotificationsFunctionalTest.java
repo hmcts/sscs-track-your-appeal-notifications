@@ -7,6 +7,7 @@ import static uk.gov.hmcts.sscs.CcdResponseUtils.buildCcdResponse;
 import static uk.gov.hmcts.sscs.domain.notify.EventType.DWP_RESPONSE_RECEIVED;
 import static uk.gov.hmcts.sscs.domain.notify.EventType.HEARING_BOOKED;
 
+import helper.EnvironmentProfileValueSource;
 import io.restassured.RestAssured;
 import java.io.File;
 import java.io.IOException;
@@ -23,6 +24,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.http.HttpStatus;
+import org.springframework.test.annotation.ProfileValueSourceConfiguration;
 import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.context.junit4.SpringRunner;
 import uk.gov.hmcts.reform.ccd.client.model.CaseDetails;
@@ -39,6 +41,7 @@ import uk.gov.service.notify.NotificationClientException;
 @RunWith(SpringRunner.class)
 @SpringBootTest
 @ActiveProfiles("functional")
+@ProfileValueSourceConfiguration(EnvironmentProfileValueSource.class)
 public class ReminderNotificationsFunctionalTest {
 
     private static final org.slf4j.Logger LOG = getLogger(ReminderNotificationsFunctionalTest.class);
@@ -95,6 +98,8 @@ public class ReminderNotificationsFunctionalTest {
 
         assertNotNull(caseDetails);
         caseId = caseDetails.getId();
+
+        LOG.info("Built case with ID: " + caseId + " and reference: " + testCaseReference);
     }
 
     @Test
@@ -175,7 +180,7 @@ public class ReminderNotificationsFunctionalTest {
 
             if (maxSecondsToWaitForNotification-- == 0) {
                 throw new RuntimeException(
-                        "Timed out fetching notifications after " + MAX_SECONDS_TO_WAIT_FOR_NOTIFICATIONS + " seconds"
+                    "Timed out fetching notifications after " + MAX_SECONDS_TO_WAIT_FOR_NOTIFICATIONS + " seconds"
                 );
             }
 
@@ -194,17 +199,17 @@ public class ReminderNotificationsFunctionalTest {
         assertTrue(sentEmailNotifications.size() >= EXPECTED_EMAIL_NOTIFICATIONS);
 
         assertTrue(
-                sentEmailNotifications.stream()
-                        .anyMatch(sentEmailNotification ->
-                                sentEmailNotification.getTemplateId().equals(UUID.fromString(emailTemplateId))
-                        )
+            sentEmailNotifications.stream()
+                .anyMatch(sentEmailNotification ->
+                    sentEmailNotification.getTemplateId().equals(UUID.fromString(emailTemplateId))
+                )
         );
 
         assertTrue(
-                sentEmailNotifications.stream()
-                        .anyMatch(sentEmailNotification ->
-                                sentEmailNotification.getBody().contains(testCaseReference)
-                        )
+            sentEmailNotifications.stream()
+                .anyMatch(sentEmailNotification ->
+                    sentEmailNotification.getBody().contains(testCaseReference)
+                )
         );
 
         if (smsTemplateId != null) {
@@ -213,10 +218,10 @@ public class ReminderNotificationsFunctionalTest {
             assertTrue(sentSmsNotifications.size() >= EXPECTED_SMS_NOTIFICATIONS);
 
             assertTrue(
-                    sentSmsNotifications.stream()
-                            .anyMatch(sentSmsNotification ->
-                                    sentSmsNotification.getTemplateId().equals(UUID.fromString(smsTemplateId))
-                            )
+                sentSmsNotifications.stream()
+                    .anyMatch(sentSmsNotification ->
+                        sentSmsNotification.getTemplateId().equals(UUID.fromString(smsTemplateId))
+                    )
             );
         }
     }

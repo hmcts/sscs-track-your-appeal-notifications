@@ -6,7 +6,6 @@ import java.net.UnknownHostException;
 import org.slf4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-import uk.gov.hmcts.sscs.domain.CcdResponse;
 import uk.gov.hmcts.sscs.domain.CcdResponseWrapper;
 import uk.gov.hmcts.sscs.domain.notify.Notification;
 import uk.gov.hmcts.sscs.exception.NotificationClientRuntimeException;
@@ -48,7 +47,9 @@ public class NotificationService {
                     client.sendSms(notification.getSmsTemplate(), notification.getMobile(), notification.getPlaceholders(), notification.getReference());
                     LOG.info("SMS sent for case reference " + responseWrapper.getNewCcdResponse().getCaseReference());
                 }
-                createReminders(responseWrapper.getNewCcdResponse());
+
+                reminderService.createReminders(responseWrapper.getNewCcdResponse());
+
             } catch (Exception ex) {
                 if (ex.getCause() instanceof UnknownHostException) {
                     NotificationClientRuntimeException exception = new NotificationClientRuntimeException(ex);
@@ -63,9 +64,4 @@ public class NotificationService {
         }
     }
 
-    public void createReminders(CcdResponse ccdResponse) {
-        if (ccdResponse.getNotificationType().isScheduleReminder()) {
-            reminderService.createJob(ccdResponse);
-        }
-    }
 }

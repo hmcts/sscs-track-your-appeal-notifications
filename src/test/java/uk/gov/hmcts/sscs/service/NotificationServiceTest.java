@@ -3,7 +3,6 @@ package uk.gov.hmcts.sscs.service;
 import static org.mockito.Mockito.*;
 import static org.mockito.MockitoAnnotations.initMocks;
 import static uk.gov.hmcts.sscs.domain.notify.EventType.APPEAL_WITHDRAWN;
-import static uk.gov.hmcts.sscs.domain.notify.EventType.DWP_RESPONSE_RECEIVED;
 
 import java.net.UnknownHostException;
 import org.junit.Before;
@@ -46,7 +45,7 @@ public class NotificationServiceTest {
         notificationService = new NotificationService(client, factory, reminderService);
 
         Subscription appellantSubscription = Subscription.builder().tya("GLSCRR").email("test@email.com")
-                .mobile("07983495065").subscribeEmail("Yes").subscribeSms("Yes").build();
+            .mobile("07983495065").subscribeEmail("Yes").subscribeSms("Yes").build();
 
         response = CcdResponse.builder().subscriptions(Subscriptions.builder().appellantSubscription(appellantSubscription).build()).caseReference("ABC123").notificationType(APPEAL_WITHDRAWN).build();
         wrapper = CcdResponseWrapper.builder().newCcdResponse(response).oldCcdResponse(response).build();
@@ -122,8 +121,8 @@ public class NotificationServiceTest {
         when(factory.create(wrapper)).thenReturn(notification);
 
         when(client.sendEmail(
-                notification.getEmailTemplate(), notification.getEmail(), notification.getPlaceholders(), notification.getReference()))
-                .thenThrow(new NotificationClientException(new UnknownHostException()));
+            notification.getEmailTemplate(), notification.getEmail(), notification.getPlaceholders(), notification.getReference()))
+            .thenThrow(new NotificationClientException(new UnknownHostException()));
 
         notificationService.createAndSendNotification(wrapper);
     }
@@ -134,36 +133,16 @@ public class NotificationServiceTest {
         when(factory.create(wrapper)).thenReturn(notification);
 
         when(client.sendEmail(
-                notification.getEmailTemplate(), notification.getEmail(), notification.getPlaceholders(), notification.getReference()))
-                .thenThrow(new RuntimeException());
+            notification.getEmailTemplate(), notification.getEmail(), notification.getPlaceholders(), notification.getReference()))
+            .thenThrow(new RuntimeException());
 
         notificationService.createAndSendNotification(wrapper);
-    }
-
-    @Test
-    public void createAReminderJobWhenNotificationIsDwpResponseReceived() {
-        response.setNotificationType(DWP_RESPONSE_RECEIVED);
-
-        Notification notification = new Notification(Template.builder().emailTemplateId(null).smsTemplateId("123").build(), Destination.builder().email(null).sms("07823456746").build(), null, new Reference(), null);
-        when(factory.create(wrapper)).thenReturn(notification);
-        notificationService.createAndSendNotification(wrapper);
-
-        verify(reminderService).createJob(response);
-    }
-
-    @Test
-    public void doNotCreateAReminderJobWhenReminderIsNotRequired() throws Exception {
-        Notification notification = new Notification(Template.builder().emailTemplateId(null).smsTemplateId("123").build(), Destination.builder().email(null).sms("07823456746").build(), null, new Reference(), null);
-        when(factory.create(wrapper)).thenReturn(notification);
-        notificationService.createAndSendNotification(wrapper);
-
-        verify(reminderService, never()).createJob(response);
     }
 
     @Test
     public void doNotSendEmailOrSmsWhenNoActiveSubscription() throws Exception {
         Subscription appellantSubscription = Subscription.builder().tya("GLSCRR").email("test@email.com")
-                .mobile("07983495065").subscribeEmail("No").subscribeSms("No").build();
+            .mobile("07983495065").subscribeEmail("No").subscribeSms("No").build();
 
         response = CcdResponse.builder().subscriptions(Subscriptions.builder().appellantSubscription(appellantSubscription).build()).caseReference("ABC123").notificationType(APPEAL_WITHDRAWN).build();
         wrapper = CcdResponseWrapper.builder().newCcdResponse(response).oldCcdResponse(response).build();
@@ -176,4 +155,16 @@ public class NotificationServiceTest {
         verify(client, never()).sendSms(notification.getSmsTemplate(), notification.getMobile(), notification.getPlaceholders(), notification.getReference());
         verify(client, never()).sendEmail(notification.getEmailTemplate(), notification.getEmail(), notification.getPlaceholders(), notification.getReference());
     }
+
+    @Test
+    public void createsReminders() {
+
+        Notification notification = new Notification(Template.builder().emailTemplateId(null).smsTemplateId("123").build(), Destination.builder().email(null).sms("07823456746").build(), null, new Reference(), null);
+
+        when(factory.create(wrapper)).thenReturn(notification);
+        notificationService.createAndSendNotification(wrapper);
+
+        verify(reminderService, times(1)).createReminders(response);
+    }
+
 }

@@ -111,7 +111,7 @@ job.scheduler:
     org.quartz:
       scheduler:
         instanceId: AUTO
-        idleWaitTime: ${JOB_SCHEDULER_POLL_INTERVAL:30000}
+        idleWaitTime: ${JOB_SCHEDULER_POLL_INTERVAL:10000}
       dataSource:
         jobscheduler:
           driver: org.postgresql.Driver
