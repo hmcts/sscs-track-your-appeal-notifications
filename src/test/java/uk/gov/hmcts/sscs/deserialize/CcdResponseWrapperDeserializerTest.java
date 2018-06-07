@@ -463,7 +463,7 @@ public class CcdResponseWrapperDeserializerTest {
         Subscription appellantSubscription = ccdResponse.getSubscriptions().getAppellantSubscription();
 
         assertEquals(APPEAL_RECEIVED, ccdResponse.getNotificationType());
-        assertEquals("updatedemail@hmcts.net", appellantSubscription.getEmail());
+        assertEquals("sscstest@greencroftconsulting.com", appellantSubscription.getEmail());
         assertEquals("07985233301", appellantSubscription.getMobile());
         assertTrue(appellantSubscription.isSmsSubscribed());
         assertTrue(appellantSubscription.isEmailSubscribed());
