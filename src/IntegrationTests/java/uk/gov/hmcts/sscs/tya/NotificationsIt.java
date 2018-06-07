@@ -210,7 +210,7 @@ public class NotificationsIt {
     @Test
     public void shouldNotSendSubscriptionUpdatedNotificationForSubscriptionUpdatedRequestWithSameEmailAddress() throws Exception {
         json = json.replace("appealReceived", "subscriptionUpdated");
-        json = json.replace("updatedemail@hmcts.net", "tester@hmcts.net");
+        json = json.replace("sscstest@greencroftconsulting.com", "tester@hmcts.net");
 
         json = updateEmbeddedJson(json, "Yes", "case_details_before", "case_data", "subscriptions", "appellantSubscription", "subscribeEmail");
         json = updateEmbeddedJson(json, "No", "case_details", "case_data", "subscriptions", "appellantSubscription", "subscribeSms");
