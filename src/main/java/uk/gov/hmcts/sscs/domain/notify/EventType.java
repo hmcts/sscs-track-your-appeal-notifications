@@ -8,6 +8,7 @@ public enum EventType {
     APPEAL_LAPSED("appealLapsed"),
     APPEAL_RECEIVED("appealReceived"),
     APPEAL_WITHDRAWN("appealWithdrawn"),
+    APPEAL_DORMANT("appealDormant"),
     DWP_RESPONSE_RECEIVED("responseReceived"),
     EVIDENCE_RECEIVED("evidenceReceived"),
     HEARING_BOOKED("hearingBooked"),
@@ -16,6 +17,7 @@ public enum EventType {
     SUBSCRIPTION_UPDATED("subscriptionUpdated"),
     EVIDENCE_REMINDER("evidenceReminder"),
     HEARING_HOLDING_REMINDER("hearingHoldingReminder"),
+    FINAL_HEARING_HOLDING_REMINDER("finalHearingHoldingReminder"),
     HEARING_REMINDER("hearingReminder"),
     DO_NOT_SEND("");
 
