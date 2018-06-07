@@ -6,6 +6,7 @@ import static org.junit.Assert.assertTrue;
 import static org.mockito.Mockito.*;
 import static uk.gov.hmcts.sscs.domain.notify.EventType.*;
 
+import java.util.Arrays;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -42,7 +43,12 @@ public class HearingHoldingReminderRemoverTest {
 
             CcdResponse ccdResponse = CcdResponseUtils.buildBasicCcdResponse(eventType);
 
-            if (eventType == HEARING_BOOKED) {
+            if (Arrays.asList(
+                APPEAL_DORMANT,
+                APPEAL_LAPSED,
+                APPEAL_WITHDRAWN,
+                HEARING_BOOKED
+            ).contains(eventType)) {
                 assertTrue(hearingHoldingReminderRemoverTest.canHandle(ccdResponse));
             } else {
 
@@ -55,9 +61,10 @@ public class HearingHoldingReminderRemoverTest {
     }
 
     @Test
-    public void removedHearingHoldingReminderWhenHearingBooked() {
+    public void removedHearingHoldingReminders() {
 
-        final String expectedJobGroup = "ID_EVENT";
+        final String expectedInterimJobGroup = "ID_EVENT";
+        final String expectedFinalJobGroup = "ID_FINAL_EVENT";
 
         String hearingDate = "2018-01-01";
         String hearingTime = "14:01:18";
@@ -68,19 +75,24 @@ public class HearingHoldingReminderRemoverTest {
             hearingTime
         );
 
-        when(jobGroupGenerator.generate(ccdResponse.getCaseId(), HEARING_HOLDING_REMINDER.getId())).thenReturn(expectedJobGroup);
+        when(jobGroupGenerator.generate(ccdResponse.getCaseId(), HEARING_HOLDING_REMINDER.getId())).thenReturn(expectedInterimJobGroup);
+        when(jobGroupGenerator.generate(ccdResponse.getCaseId(), FINAL_HEARING_HOLDING_REMINDER.getId())).thenReturn(expectedFinalJobGroup);
 
         hearingHoldingReminderRemoverTest.handle(ccdResponse);
 
         verify(jobRemover, times(1)).removeGroup(
-            expectedJobGroup
+            expectedInterimJobGroup
+        );
+
+        verify(jobRemover, times(1)).removeGroup(
+            expectedFinalJobGroup
         );
     }
 
     @Test
-    public void doesNotThrowExceptionWhenCannotFindReminder() {
+    public void doesNotThrowExceptionWhenCannotFindInterimReminder() {
 
-        final String expectedJobGroup = "NOT_EXISTANT";
+        final String notExistantJobGroup = "NOT_EXISTANT";
 
         String hearingDate = "2018-01-01";
         String hearingTime = "14:01:18";
@@ -91,16 +103,17 @@ public class HearingHoldingReminderRemoverTest {
             hearingTime
         );
 
-        when(jobGroupGenerator.generate(ccdResponse.getCaseId(), HEARING_HOLDING_REMINDER.getId())).thenReturn(expectedJobGroup);
+        when(jobGroupGenerator.generate(ccdResponse.getCaseId(), HEARING_HOLDING_REMINDER.getId())).thenReturn(notExistantJobGroup);
+        when(jobGroupGenerator.generate(ccdResponse.getCaseId(), FINAL_HEARING_HOLDING_REMINDER.getId())).thenReturn(notExistantJobGroup);
 
         doThrow(JobNotFoundException.class)
             .when(jobRemover)
-            .removeGroup(expectedJobGroup);
+            .removeGroup(notExistantJobGroup);
 
         hearingHoldingReminderRemoverTest.handle(ccdResponse);
 
-        verify(jobRemover, times(1)).removeGroup(
-            expectedJobGroup
+        verify(jobRemover, times(2)).removeGroup(
+            notExistantJobGroup
         );
     }
 
