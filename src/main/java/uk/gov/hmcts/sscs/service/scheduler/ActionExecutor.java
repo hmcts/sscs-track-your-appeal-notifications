@@ -44,7 +44,7 @@ public class ActionExecutor implements JobExecutor<String> {
     @Override
     public void execute(String jobId, String jobGroup, String eventId, String caseId) {
 
-        LOG.info("Scheduled event: " + eventId + " triggered for case: " + caseId);
+        LOG.info("Scheduled event: {} triggered for case: {}", eventId, caseId);
 
         IdamTokens idamTokens = IdamTokens.builder()
             .idamOauth2Token(idamService.getIdamOauth2Token())
@@ -58,7 +58,7 @@ public class ActionExecutor implements JobExecutor<String> {
             notificationService.createAndSendNotification(wrapper);
             updateCcdService.update(null, Long.valueOf(caseId), wrapper.getNewCcdResponse().getNotificationType().getId(), idamTokens);
         } else {
-            LOG.warn("Case: " + caseId + " could not be found for event: " + eventId);
+            LOG.warn("Case: {} could not be found for event: {}", caseId, eventId);
         }
     }
 

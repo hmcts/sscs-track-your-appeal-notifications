@@ -30,9 +30,11 @@ public class NotificationService {
     }
 
     public void createAndSendNotification(CcdResponseWrapper responseWrapper) {
-        LOG.info("Start to create notification for case reference " + responseWrapper.getNewCcdResponse().getCaseReference());
 
         Subscription appellantSubscription = responseWrapper.getNewCcdResponse().getSubscriptions().getAppellantSubscription();
+        String caseReference = responseWrapper.getNewCcdResponse().getCaseReference();
+
+        LOG.info("Start to create notification for case reference: {}", caseReference);
 
         if (appellantSubscription != null && appellantSubscription.doesCaseHaveSubscriptions()) {
 
@@ -41,15 +43,15 @@ public class NotificationService {
             try {
 
                 if (appellantSubscription.isEmailSubscribed() && notification.isEmail() && notification.getEmailTemplate() != null) {
-                    LOG.info("Sending email for case reference " + responseWrapper.getNewCcdResponse().getCaseReference());
+                    LOG.info("Sending email for case reference: {}", caseReference);
                     client.sendEmail(notification.getEmailTemplate(), notification.getEmail(), notification.getPlaceholders(), notification.getReference());
-                    LOG.info("Email sent for case reference " + responseWrapper.getNewCcdResponse().getCaseReference());
+                    LOG.info("Email sent for case reference: {}", caseReference);
                 }
 
                 if (appellantSubscription.isSmsSubscribed() && notification.isSms() && notification.getSmsTemplate() != null) {
-                    LOG.info("Sending SMS for case reference " + responseWrapper.getNewCcdResponse().getCaseReference());
+                    LOG.info("Sending SMS for case reference: {}", caseReference);
                     client.sendSms(notification.getSmsTemplate(), notification.getMobile(), notification.getPlaceholders(), notification.getReference());
-                    LOG.info("SMS sent for case reference " + responseWrapper.getNewCcdResponse().getCaseReference());
+                    LOG.info("SMS sent for case reference: {}", caseReference);
                 }
 
                 reminderService.createReminders(responseWrapper.getNewCcdResponse());
@@ -57,11 +59,11 @@ public class NotificationService {
             } catch (Exception ex) {
                 if (ex.getCause() instanceof UnknownHostException) {
                     NotificationClientRuntimeException exception = new NotificationClientRuntimeException(ex);
-                    LOG.error("Runtime error on GovUKNotify for case reference " + responseWrapper.getNewCcdResponse().getCaseReference(), exception);
+                    LOG.error("Runtime error on GovUKNotify for case reference " + caseReference, exception);
                     throw exception;
                 } else {
                     NotificationServiceException exception = new NotificationServiceException(ex);
-                    LOG.error("Error on GovUKNotify for case reference " + responseWrapper.getNewCcdResponse().getCaseReference(), exception);
+                    LOG.error("Error on GovUKNotify for case reference " + caseReference, exception);
                     throw exception;
                 }
             }

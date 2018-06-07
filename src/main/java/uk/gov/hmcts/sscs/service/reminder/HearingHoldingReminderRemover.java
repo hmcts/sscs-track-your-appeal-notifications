@@ -44,7 +44,7 @@ public class HearingHoldingReminderRemover implements ReminderHandler {
         try {
 
             jobRemover.removeGroup(jobGroup);
-            LOG.info("Removed hearing holding reminders from case: " + caseId);
+            LOG.info("Removed hearing holding reminders from case: {}", caseId);
 
         } catch (JobNotFoundException ignore) {
             LOG.warn("Hearing holding reminder for case: " + caseId + " could not be found");

@@ -70,7 +70,7 @@ public class HearingReminder implements ReminderHandler {
             reminderDate
         ));
 
-        LOG.info("Scheduled hearing reminder for case: " + caseId + " @ " + reminderDate.toString());
+        LOG.info("Scheduled hearing reminder for case: {} @ {}", caseId, reminderDate.toString());
     }
 
     private ZonedDateTime calculateReminderDate(CcdResponse ccdResponse, long secondsBeforeHearing) {
