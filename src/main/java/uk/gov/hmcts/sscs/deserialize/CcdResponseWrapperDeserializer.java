@@ -246,13 +246,16 @@ public class CcdResponseWrapperDeserializer extends StdDeserializer<CcdResponseW
     public void deserializeRepresentativeReasons(JsonNode appealReasonsNode, Appeal appeal) {
         final JsonNode repNode = appealReasonsNode.get("rep");
 
-        Name name = deserializeNameJson(repNode);
-        Address address = deserializeAddressJson(repNode);
-        Contact contact = deserializeContactJson(repNode);
-        String organisation = getField(repNode, "organisation");
+        String hasRepresentative = getField(repNode, "hasRepresentative");
+        if (hasRepresentative != null && hasRepresentative.toLowerCase().equals("yes")) {
+            Name name = deserializeNameJson(repNode);
+            Address address = deserializeAddressJson(repNode);
+            Contact contact = deserializeContactJson(repNode);
+            String organisation = getField(repNode, "organisation");
 
-        appeal.setRep(Representative.builder()
-                .name(name).address(address).contact(contact).organisation(organisation).build());
+            appeal.setRep(Representative.builder()
+                    .name(name).address(address).contact(contact).organisation(organisation).build());
+        }
     }
 
     public void deserializeSubscriptionJson(JsonNode subscriptionsNode, CcdResponse ccdResponse) {
