@@ -4,9 +4,11 @@ import static uk.gov.hmcts.sscs.config.AppConstants.*;
 
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 import java.util.StringJoiner;
+import org.apache.commons.lang.StringUtils;
 import org.springframework.stereotype.Component;
 import uk.gov.hmcts.sscs.domain.*;
 
@@ -35,14 +37,20 @@ public class SyaAppealCreatedPersonalisation extends Personalisation {
     }
 
     private String buildMrnDetails(MrnDetails mrnDetails) {
-        return new StringBuilder()
-                .append("Date of MRN: ")
-                .append(mrnDetails.getMrnDate() + "\n\n")
-                .append("Reason for late appeal: ")
-                .append(mrnDetails.getMrnLateReason() + "\n\n")
-                .append("Reason for no MRN: ")
-                .append(mrnDetails.getMrnMissingReason())
-                .toString();
+
+        List<String> details = new ArrayList<>();
+
+        if (mrnDetails.getMrnDate() != null) {
+            details.add("Date of MRN: " + mrnDetails.getMrnDate());
+        }
+        if (mrnDetails.getMrnLateReason() != null) {
+            details.add("Reason for late appeal: " + mrnDetails.getMrnLateReason());
+        }
+        if (mrnDetails.getMrnMissingReason() != null) {
+            details.add("Reason for no MRN: " + mrnDetails.getMrnMissingReason());
+        }
+
+        return StringUtils.join(details.toArray(),"\n\n").toString();
     }
 
     public Map<String, String> setYourDetails(Map<String, String> personalisation, CcdResponse ccdResponse) {
@@ -188,11 +196,11 @@ public class SyaAppealCreatedPersonalisation extends Personalisation {
     }
 
     private String buildHearingArrangements(HearingOptions hearingOptions) {
-        String languagueInterpreterRequired = convertBooleanToRequiredText(hearingOptions.getLanguageInterpreter().toLowerCase().equals("yes") ? true : false);
+        String languageInterpreterRequired = convertBooleanToRequiredText(hearingOptions.getLanguageInterpreter() != null && hearingOptions.getLanguageInterpreter().toLowerCase().equals("yes") ? true : false);
 
         return new StringBuilder()
                 .append("Language interpreter: ")
-                .append(languagueInterpreterRequired + "\n\n")
+                .append(languageInterpreterRequired + "\n\n")
                 .append("Sign interpreter: ")
                 .append(convertBooleanToRequiredText(findHearingArrangement("signLanguageInterpreter", hearingOptions.getArrangements())) + "\n\n")
                 .append("Hearing loop: ")

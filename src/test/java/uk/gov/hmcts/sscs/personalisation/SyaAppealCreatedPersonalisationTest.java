@@ -48,6 +48,22 @@ public class SyaAppealCreatedPersonalisationTest {
     }
 
     @Test
+    public void givenASyaAppealCreated_setMrnDetailsForTemplateWhenReasonForNoMrnMissing() {
+        response = CcdResponse.builder()
+                .caseId(CASE_ID).caseReference("SC/1234/5")
+                .appeal(Appeal.builder().benefitType(BenefitType.builder().code("PIP").build())
+                        .mrnDetails(MrnDetails.builder().mrnDate("3 May 2018").mrnLateReason("My train was cancelled.").build()).build())
+                .notificationType(SYA_APPEAL_CREATED)
+                .build();
+
+        Map<String, String> result = personalisation.setMrnDetails(new HashMap<>(), response);
+
+        assertEquals("Date of MRN: 3 May 2018\n"
+                        + "\nReason for late appeal: My train was cancelled.",
+                result.get(MRN_DETAILS_LITERAL));
+    }
+
+    @Test
     public void givenASyaAppealCreated_setYourDetailsForTemplate() {
         response = CcdResponse.builder()
                 .caseId(CASE_ID).caseReference("SC/1234/5")
@@ -350,12 +366,32 @@ public class SyaAppealCreatedPersonalisationTest {
     }
 
     @Test
-    public void givenASyaAppealWithNoHearingArrangements_setHearingArrangementsForTemplate() {
+    public void givenASyaAppealWithNoLanguageInterpreter_setHearingArrangementsForTemplate() {
 
         response = CcdResponse.builder()
                 .caseId(CASE_ID).caseReference("SC/1234/5")
                 .appeal(Appeal.builder().hearingOptions(HearingOptions.builder()
                         .languageInterpreter("No")
+                        .build()).build())
+                .notificationType(SYA_APPEAL_CREATED)
+                .build();
+
+        Map<String, String> result = personalisation.setHearingArrangementDetails(new HashMap<>(), response);
+
+        assertEquals("Language interpreter: Not required\n"
+                        + "\nSign interpreter: Not required\n"
+                        + "\nHearing loop: Not required\n"
+                        + "\nDisabled access: Not required\n"
+                        + "\nAny other arrangements: Not required",
+                result.get(HEARING_ARRANGEMENT_DETAILS_LITERAL));
+    }
+
+    @Test
+    public void givenASyaAppealWithNoHearingArrangements_setHearingArrangementsForTemplate() {
+
+        response = CcdResponse.builder()
+                .caseId(CASE_ID).caseReference("SC/1234/5")
+                .appeal(Appeal.builder().hearingOptions(HearingOptions.builder()
                         .build()).build())
                 .notificationType(SYA_APPEAL_CREATED)
                 .build();
