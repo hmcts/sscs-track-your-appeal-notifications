@@ -404,7 +404,7 @@ public class CcdResponseWrapperDeserializer extends StdDeserializer<CcdResponseW
     }
 
     public String getField(JsonNode node, String field) {
-        return node != null && !node.asText().equals("null") && node.has(field) ? node.get(field).asText() : null;
+        return node != null && !node.asText().equals("null") && node.has(field) && !node.get(field).asText().equals("null") ? node.get(field).asText() : null;
     }
 
     public void deserializeRegionalProcessingCenterJson(JsonNode rpcNode, CcdResponse ccdResponse) {
