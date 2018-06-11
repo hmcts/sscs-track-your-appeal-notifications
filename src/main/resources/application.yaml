@@ -73,27 +73,35 @@ job.scheduler:
     delayBetweenAttemptsInMs: 1000
 
 notification:
-  appealReceived.emailId: ${APPEAL_RECEIVED_EMAIL_TEMPLATE_ID:b90df52f-c628-409c-8875-4b0b9663a053}
-  responseReceived.emailId: ${RESPONSE_RECEIVED_EMAIL_TEMPLATE_ID:1e13bd2d-9ae0-4030-89b9-a0ef65ec36ef}
+  appealReceived:
+    emailId: b90df52f-c628-409c-8875-4b0b9663a053
+    smsId: ede384aa-0b6e-4311-9f01-ee547573a07b
+  responseReceived:
+    emailId: 1afd89f9-9935-4acb-b4f6-ba708b03a0d3
+    smsId: 4bba0b5d-a3f3-4fd9-a845-26af5eda042e
   evidenceReceived:
-    emailId: ${EVIDENCE_RECEIVED_EMAIL_TEMPLATE_ID:c5654134-2e13-4541-ac73-334a5b5cdbb6}
-    smsId: ${EVIDENCE_RECEIVED_SMS_TEMPLATE_ID:74bda35f-040b-4355-bda3-faf0e4f5ae6e}
+    emailId: c5654134-2e13-4541-ac73-334a5b5cdbb6
+    smsId: 74bda35f-040b-4355-bda3-faf0e4f5ae6e
   hearingAdjourned:
-    emailId: ${HEARING_ADJOURNED_EMAIL_TEMPLATE_ID:07b9738d-d6ba-4736-86f6-7102776f57a2}
-    smsId: ${HEARING_ADJOURNED_SMS_TEMPLATE_ID:31d9ff36-ca22-4a22-b794-c53904f614c4}
-  hearingPostponed.emailId: ${HEARING_POSTPONED_EMAIL_TEMPLATE_ID:08959288-e09a-472d-80b8-af79bfcbb437}
-  appealLapsed.emailId: ${APPEAL_LAPSED_EMAIL_TEMPLATE_ID:8ce8d794-75e8-49a0-b4d2-0c6cd2061c11}
-  appealWithdrawn.emailId: ${APPEAL_WITHDRAWN_EMAIL_TEMPLATE_ID:8620e023-f663-477e-a771-9cfad50ee30f}
-  subscriptionCreated.smsId: ${SUBSCRIPTION_CREATED_SMS_TEMPLATE_ID:18444f5f-8834-49e9-a6ae-bfe7f50db2b8}
-  subscriptionUpdated.emailId: ${SUBSCRIPTION_UPDATED_EMAIL_TEMPLATE_ID:820901f0-15a9-4796-bdec-0cef42922531}
-  hearingBooked.emailId: ${HEARING_BOOKED_EMAIL_TEMPLATE_ID:fee16753-0bdb-43f1-9abb-b14b826e3b26}
+    emailId: 07b9738d-d6ba-4736-86f6-7102776f57a2
+    smsId: 31d9ff36-ca22-4a22-b794-c53904f614c4
+  hearingPostponed.emailId: 08959288-e09a-472d-80b8-af79bfcbb437
+  appealLapsed.emailId: 8ce8d794-75e8-49a0-b4d2-0c6cd2061c11
+  appealWithdrawn.emailId: 8620e023-f663-477e-a771-9cfad50ee30f
+  subscriptionCreated.smsId: 18444f5f-8834-49e9-a6ae-bfe7f50db2b8
+  subscriptionUpdated.emailId: 820901f0-15a9-4796-bdec-0cef42922531
+  hearingBooked:
+    emailId: fee16753-0bdb-43f1-9abb-b14b826e3b26
+    smsId: f900174a-a556-43b2-8042-bbf3e6090071
   evidenceReminder:
-    emailId: ${EVIDENCE_REMINDER_EMAIL_TEMPLATE_ID:b9e47ec4-3b58-4b8d-9304-f77ac27fb7f2}
-    smsId: ${EVIDENCE_REMINDER_SMS_TEMPLATE_ID:e3f71440-d1ac-43c8-a8cc-a088c4f3c959}
-  appealCreated.emailId: ${SYA_APPEAL_CREATED_EMAIL_TEMPLATE_ID:01293b93-b23e-40a3-ad78-2c6cd01cd21c}
+    emailId: b9e47ec4-3b58-4b8d-9304-f77ac27fb7f2
+    smsId: e3f71440-d1ac-43c8-a8cc-a088c4f3c959
+  appealCreated:
+    emailId: 01293b93-b23e-40a3-ad78-2c6cd01cd21c
+    smsId: f41222ef-c05c-4682-9634-6b034a166368
   hearingReminder:
-    emailId: ${HEARING_REMINDER_EMAIL_TEMPLATE_ID:774a5cba-fab6-4b8c-a9d9-03f913ed2dca}
-    smsId: ${HEARING_REMINDER_SMS_TEMPLATE_ID:404e9a43-6318-492c-b5c2-e34ddfbbdde9}
+    emailId: 774a5cba-fab6-4b8c-a9d9-03f913ed2dca
+    smsId: 404e9a43-6318-492c-b5c2-e34ddfbbdde9
 
 reminder:
   evidenceReminder.delay.seconds: 172800

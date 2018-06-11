@@ -114,7 +114,6 @@ public class PersonalisationTest {
         assertEquals(DWP_ACRONYM, result.get(FIRST_TIER_AGENCY_ACRONYM));
         assertEquals(DWP_FUL_NAME, result.get(FIRST_TIER_AGENCY_FULL_NAME));
         assertEquals("05 August 2018", result.get(APPEAL_RESPOND_DATE));
-        assertEquals("12 August 2018", result.get(HEARING_CONTACT_DATE));
         assertEquals("http://link.com/GLSCRR", result.get(SUBMIT_EVIDENCE_LINK_LITERAL));
         assertEquals("http://link.com/progress/GLSCRR/expenses", result.get(CLAIMING_EXPENSES_LINK_LITERAL));
         assertEquals("http://link.com/progress/GLSCRR/abouthearing", result.get(HEARING_INFO_LINK_LITERAL));
@@ -186,7 +185,23 @@ public class PersonalisationTest {
         Map<String, String> result = personalisation.setEventData(new HashMap<>(), response);
 
         assertEquals("05 August 2018", result.get(APPEAL_RESPOND_DATE));
-        assertEquals("12 August 2018", result.get(HEARING_CONTACT_DATE));
+    }
+
+    @Test
+    public void setResponseReceivedEventData() {
+        List<Events> events = new ArrayList<>();
+        events.add(Events.builder().value(Event.builder().date(date).type(DWP_RESPONSE_RECEIVED.getId()).build()).build());
+
+        CcdResponse response = CcdResponse.builder()
+                .caseId(CASE_ID).caseReference("SC/1234/5")
+                .appeal(Appeal.builder().benefitType(BenefitType.builder().code("PIP").build()).build())
+                .notificationType(DWP_RESPONSE_RECEIVED)
+                .events(events)
+                .build();
+
+        Map<String, String> result = personalisation.setEventData(new HashMap<>(), response);
+
+        assertEquals("26 August 2018", result.get(HEARING_CONTACT_DATE));
     }
 
     @Test
@@ -304,7 +319,7 @@ public class PersonalisationTest {
 
         Map<String, String> result = personalisation.setEventData(new HashMap<>(), response);
 
-        assertEquals("12 August 2018", result.get(HEARING_CONTACT_DATE));
+        assertEquals("26 August 2018", result.get(HEARING_CONTACT_DATE));
     }
 
     @Test
