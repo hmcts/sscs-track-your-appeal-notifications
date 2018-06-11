@@ -298,6 +298,16 @@ public class CcdResponseWrapperDeserializerTest {
     }
 
     @Test
+    public void returnNullWhenFieldTextIsNull() {
+        final JsonNodeFactory factory = JsonNodeFactory.instance;
+        final ObjectNode child = factory.objectNode();
+
+        child.put("message", "null");
+
+        assertEquals(null, ccdResponseDeserializer.getField(null, "message"));
+    }
+
+    @Test
     public void shouldDeserializeRegionalProcessingCenterIfPresent() throws Exception {
         String rpcJson = "{\"regionalProcessingCenter\":{\"name\":\"CARDIFF\",\"address1\":\"HM Courts & Tribunals Service\","
                 + "\"address2\":\"Social Security & Child Support Appeals\",\"address3\":\"Eastgate House\",\n"
