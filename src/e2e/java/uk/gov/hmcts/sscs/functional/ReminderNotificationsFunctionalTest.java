@@ -13,10 +13,12 @@ import java.io.File;
 import java.io.IOException;
 import java.nio.charset.StandardCharsets;
 import java.time.Instant;
+import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
+import java.util.stream.Collectors;
 import java.util.stream.Stream;
 import org.apache.commons.io.FileUtils;
 import org.apache.commons.lang3.tuple.Pair;
@@ -71,11 +73,20 @@ public class ReminderNotificationsFunctionalTest {
     @Value("${notification.hearingReminder.emailId}")
     private String hearingReminderEmailTemplateId;
 
+    @Value("${notification.hearingReminder.smsId}")
+    private String hearingReminderSmsTemplateId;
+
     @Value("${notification.hearingHoldingReminder.emailId}")
     private String hearingHoldingReminderEmailTemplateId;
 
     @Value("${notification.hearingHoldingReminder.smsId}")
     private String hearingHoldingReminderSmsTemplateId;
+
+    @Value("${notification.finalHearingHoldingReminder.emailId}")
+    private String finalHearingHoldingReminderEmailTemplateId;
+
+    @Value("${notification.finalHearingHoldingReminder.smsId}")
+    private String finalHearingHoldingReminderSmsTemplateId;
 
     @Autowired
     private NotificationClient client;
@@ -113,8 +124,8 @@ public class ReminderNotificationsFunctionalTest {
     @Test
     public void shouldSendEvidenceReceivedAndHearingHoldingNotification() throws IOException, NotificationClientException {
 
-        final int expectedEmailNotifications = 3;
-        final int expectedSmsNotifications = 2;
+        final int expectedEmailNotifications = 6;
+        final int expectedSmsNotifications = 5;
 
         setup(DWP_RESPONSE_RECEIVED);
 
@@ -125,25 +136,53 @@ public class ReminderNotificationsFunctionalTest {
             assertEquals("COMPLETED", updatedCaseDetails.getCallbackResponseStatus());
         }
 
+        final String todayPlus6Weeks = LocalDate.now().plusWeeks(6).toString();
+
         Optional<Pair<List<Notification>, List<Notification>>> notifications =
             tryFetchNotificationsForTestCase(expectedEmailNotifications, expectedSmsNotifications);
 
-        assertNotificationTemplateSubjectContains(notifications, evidenceReminderEmailTemplateId, "ESA benefit appeal");
-        assertNotificationTemplateBodyContains(notifications, evidenceReminderEmailTemplateId, testCaseReference);
-        assertNotificationTemplateBodyContains(notifications, evidenceReminderEmailTemplateId, "User Test");
-        assertNotificationTemplateBodyContains(notifications, evidenceReminderEmailTemplateId, "ESA benefit appeal");
-        assertNotificationTemplateBodyContains(notifications, evidenceReminderEmailTemplateId, "/evidence");
+        assertNotificationCount(notifications, evidenceReminderEmailTemplateId, 1);
+        assertNotificationSubjectContains(notifications, evidenceReminderEmailTemplateId, "ESA benefit appeal");
+        assertNotificationBodyContains(
+            notifications,
+            evidenceReminderEmailTemplateId,
+            testCaseReference,
+            "User Test",
+            "ESA benefit appeal",
+            "/evidence"
+        );
 
-        assertNotificationTemplateBodyContains(notifications, evidenceReminderSmsTemplateId, "ESA benefit appeal");
+        assertNotificationCount(notifications, evidenceReminderSmsTemplateId, 1);
+        assertNotificationBodyContains(notifications, evidenceReminderSmsTemplateId, "ESA benefit appeal");
 
-        assertNotificationTemplateSubjectContains(notifications, hearingHoldingReminderEmailTemplateId, "ESA benefit appeal");
-        assertNotificationTemplateBodyContains(notifications, hearingHoldingReminderEmailTemplateId, testCaseReference);
-        assertNotificationTemplateBodyContains(notifications, hearingHoldingReminderEmailTemplateId, "User Test");
-        assertNotificationTemplateBodyContains(notifications, hearingHoldingReminderEmailTemplateId, "ESA benefit appeal");
-        assertNotificationTemplateBodyContains(notifications, hearingHoldingReminderEmailTemplateId, "/trackyourappeal");
-        assertNotificationTemplateBodyContains(notifications, hearingHoldingReminderEmailTemplateId, "2018-04-22");
+        assertNotificationCount(notifications, hearingHoldingReminderEmailTemplateId, 3);
+        assertNotificationSubjectContains(notifications, hearingHoldingReminderEmailTemplateId, "ESA benefit appeal");
+        assertNotificationBodyContains(
+            notifications,
+            hearingHoldingReminderEmailTemplateId,
+            testCaseReference,
+            "User Test",
+            "ESA benefit appeal",
+            "/trackyourappeal",
+            todayPlus6Weeks
+        );
 
-        assertNotificationTemplateBodyContains(notifications, hearingHoldingReminderSmsTemplateId, "ESA benefit appeal");
+        assertNotificationCount(notifications, hearingHoldingReminderSmsTemplateId, 3);
+        assertNotificationBodyContains(notifications, hearingHoldingReminderSmsTemplateId, "ESA benefit appeal");
+
+        assertNotificationCount(notifications, finalHearingHoldingReminderEmailTemplateId, 1);
+        assertNotificationSubjectContains(notifications, finalHearingHoldingReminderEmailTemplateId, "ESA benefit appeal");
+        assertNotificationBodyContains(
+            notifications,
+            finalHearingHoldingReminderEmailTemplateId,
+            testCaseReference,
+            "User Test",
+            "ESA benefit appeal",
+            "/trackyourappeal"
+        );
+
+        assertNotificationCount(notifications, finalHearingHoldingReminderSmsTemplateId, 1);
+        assertNotificationBodyContains(notifications, finalHearingHoldingReminderSmsTemplateId, "ESA benefit appeal");
     }
 
     @Test
@@ -165,67 +204,87 @@ public class ReminderNotificationsFunctionalTest {
         Optional<Pair<List<Notification>, List<Notification>>> notifications =
             tryFetchNotificationsForTestCase(expectedEmailNotifications, expectedSmsNotifications);
 
-        assertNotificationTemplate(notifications, hearingReminderEmailTemplateId);
+        assertNotificationCount(notifications, hearingReminderEmailTemplateId, 2);
+        assertNotificationSubjectContains(notifications, hearingReminderEmailTemplateId, "ESA benefit appeal");
+        assertNotificationBodyContains(
+            notifications,
+            hearingReminderEmailTemplateId,
+            testCaseReference,
+            "AB12 0HN",
+            "/abouthearing"
+        );
+
+        assertNotificationCount(notifications, hearingReminderSmsTemplateId, 2);
+        assertNotificationBodyContains(notifications, hearingReminderSmsTemplateId, "ESA benefit appeal");
     }
 
-    private void assertNotificationTemplate(
+    private void assertNotificationCount(
         Optional<Pair<List<Notification>, List<Notification>>> notifications,
-        String templateId
+        String templateId,
+        int expectedCount
     ) {
         assertTrue(notifications.isPresent());
-        assertTrue(
+        assertEquals(
             "Notification template was sent",
+            expectedCount,
             Stream.concat(
                 notifications.get().getLeft().stream(),
                 notifications.get().getRight().stream()
-            ).anyMatch(notification ->
+            ).filter(notification ->
                 notification.getTemplateId().equals(UUID.fromString(templateId))
-            )
+            ).count()
         );
     }
 
-    private void assertNotificationTemplateSubjectContains(
+    private void assertNotificationSubjectContains(
         Optional<Pair<List<Notification>, List<Notification>>> notifications,
         String templateId,
-        String match
+        String... matches
     ) {
-        assertNotificationTemplate(notifications, templateId);
-
-        Stream
-            .concat(
-                notifications.get().getLeft().stream(),
-                notifications.get().getRight().stream()
-            )
-            .filter(notification -> notification.getTemplateId().equals(UUID.fromString(templateId)))
-            .forEach(notification ->
-                Assert.assertThat(
-                    "Notification template " + templateId + " [subject] contains '" + match + "'",
-                    notification.getSubject().orElse(""),
-                    CoreMatchers.containsString(match)
+        String bodies =
+            Stream
+                .concat(
+                    notifications.get().getLeft().stream(),
+                    notifications.get().getRight().stream()
                 )
+                .filter(notification -> notification.getTemplateId().equals(UUID.fromString(templateId)))
+                .filter(notification -> notification.getSubject().isPresent())
+                .map(notification -> notification.getSubject().get())
+                .collect(Collectors.joining("\n--\n"));
+
+        for (String match : matches) {
+
+            Assert.assertThat(
+                "Notification template " + templateId + " [subject] contains '" + match + "'",
+                bodies,
+                CoreMatchers.containsString(match)
             );
+        }
     }
 
-    private void assertNotificationTemplateBodyContains(
+    private void assertNotificationBodyContains(
         Optional<Pair<List<Notification>, List<Notification>>> notifications,
         String templateId,
-        String match
+        String... matches
     ) {
-        assertNotificationTemplate(notifications, templateId);
-
-        Stream
-            .concat(
-                notifications.get().getLeft().stream(),
-                notifications.get().getRight().stream()
-            )
-            .filter(notification -> notification.getTemplateId().equals(UUID.fromString(templateId)))
-            .forEach(notification ->
-                Assert.assertThat(
-                    "Notification template " + templateId + " [body] contains '" + match + "'",
-                    notification.getBody(),
-                    CoreMatchers.containsString(match)
+        String bodies =
+            Stream
+                .concat(
+                    notifications.get().getLeft().stream(),
+                    notifications.get().getRight().stream()
                 )
+                .filter(notification -> notification.getTemplateId().equals(UUID.fromString(templateId)))
+                .map(notification -> notification.getBody())
+                .collect(Collectors.joining("\n--\n"));
+
+        for (String match : matches) {
+
+            Assert.assertThat(
+                "Notification template " + templateId + " [body] contains '" + match + "'",
+                bodies,
+                CoreMatchers.containsString(match)
             );
+        }
     }
 
     private boolean isPreviewOrAatEnv() {

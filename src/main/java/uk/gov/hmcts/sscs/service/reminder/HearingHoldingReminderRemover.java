@@ -1,9 +1,10 @@
 package uk.gov.hmcts.sscs.service.reminder;
 
 import static org.slf4j.LoggerFactory.getLogger;
-import static uk.gov.hmcts.sscs.domain.notify.EventType.HEARING_BOOKED;
-import static uk.gov.hmcts.sscs.domain.notify.EventType.HEARING_HOLDING_REMINDER;
+import static uk.gov.hmcts.sscs.domain.notify.EventType.*;
 
+import com.google.common.collect.ImmutableList;
+import java.util.Arrays;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 import uk.gov.hmcts.reform.sscs.jobscheduler.services.JobNotFoundException;
@@ -28,9 +29,14 @@ public class HearingHoldingReminderRemover implements ReminderHandler {
     }
 
     public boolean canHandle(CcdResponse ccdResponse) {
-        return ccdResponse
-            .getNotificationType()
-            .equals(HEARING_BOOKED);
+        return Arrays.asList(
+            APPEAL_DORMANT,
+            APPEAL_LAPSED,
+            APPEAL_WITHDRAWN,
+            HEARING_BOOKED
+        ).contains(
+            ccdResponse.getNotificationType()
+        );
     }
 
     public void handle(CcdResponse ccdResponse) {
@@ -38,17 +44,24 @@ public class HearingHoldingReminderRemover implements ReminderHandler {
             throw new IllegalArgumentException("cannot handle ccdResponse");
         }
 
-        String caseId = ccdResponse.getCaseId();
-        String jobGroup = jobGroupGenerator.generate(caseId, HEARING_HOLDING_REMINDER.getId());
+        final String caseId = ccdResponse.getCaseId();
 
-        try {
+        ImmutableList
+            .of(HEARING_HOLDING_REMINDER.getId(),
+                FINAL_HEARING_HOLDING_REMINDER.getId())
+            .forEach(eventId -> {
 
-            jobRemover.removeGroup(jobGroup);
-            LOG.info("Removed hearing holding reminders from case: {}", caseId);
+                String jobGroup = jobGroupGenerator.generate(caseId, eventId);
 
-        } catch (JobNotFoundException ignore) {
-            LOG.warn("Hearing holding reminder for case: " + caseId + " could not be found");
-        }
+                try {
+
+                    jobRemover.removeGroup(jobGroup);
+                    LOG.info("Removed hearing holding reminder from case: {}", caseId);
+
+                } catch (JobNotFoundException ignore) {
+                    LOG.warn("Hearing holding reminder for case: " + caseId + " could not be found");
+                }
+            });
     }
 
 }

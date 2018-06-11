@@ -7,7 +7,8 @@ import helper.IntegrationTestHelper;
 import java.io.File;
 import java.io.IOException;
 import java.nio.charset.StandardCharsets;
-import java.time.ZonedDateTime;
+import java.util.Arrays;
+import java.util.List;
 import javax.servlet.http.HttpServletResponse;
 import org.apache.commons.io.FileUtils;
 import org.junit.Before;
@@ -17,7 +18,6 @@ import org.quartz.Scheduler;
 import org.quartz.SchedulerException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
@@ -56,52 +56,88 @@ public class HearingHoldingReminderIt {
     @MockBean
     private JobExecutor<String> jobExecutor;
 
-    @Value("${reminder.hearingHoldingReminder.delay.seconds}")
-    long hearingHoldingReminderDelay;
-
     @Autowired
     @Qualifier("scheduler")
     private Scheduler quartzScheduler;
-
-    String ccdResponseJson;
 
     @Before
     public void setup() throws IOException {
         controller = new NotificationController(notificationService, authorisationService);
         this.mockMvc = MockMvcBuilders.standaloneSetup(controller).build();
-        String path = getClass().getClassLoader().getResource("json/ccdResponse.json").getFile();
-        ccdResponseJson = FileUtils.readFileToString(new File(path), StandardCharsets.UTF_8.name());
-
-        try {
-            quartzScheduler.clear();
-        } catch (SchedulerException e) {
-            throw new RuntimeException(e);
-        }
     }
 
     @Test
     public void shouldScheduleHearingHoldingReminderThenRemoveWhenBooked() throws Exception {
 
-        IntegrationTestHelper.assertScheduledJobCount(quartzScheduler, "Job scheduler is empty at start", 0);
+        List<String> eventsThatRemoveReminders =
+            Arrays.asList(
+                "appealDormant",
+                "appealLapsed",
+                "appealWithdrawn",
+                "hearingBooked"
+            );
 
-        ccdResponseJson = ccdResponseJson.replace("appealReceived", "responseReceived");
-        HttpServletResponse hearingBookedResponse = getResponse(getRequestWithAuthHeader(ccdResponseJson));
-        assertHttpStatus(hearingBookedResponse, HttpStatus.OK);
+        for (String eventThatRemoveReminders : eventsThatRemoveReminders) {
 
-        IntegrationTestHelper.assertScheduledJobCount(quartzScheduler, "Hearing holding reminder scheduled", "hearingHoldingReminder", 1);
+            try {
+                quartzScheduler.clear();
+            } catch (SchedulerException e) {
+                throw new RuntimeException(e);
+            }
 
-        IntegrationTestHelper.assertScheduledJobTriggerAt(
-            quartzScheduler,
-            "Hearing holding reminder scheduled",
-            "hearingHoldingReminder",
-            ZonedDateTime.parse("2017-05-24T14:01:18.243Z").plusSeconds(hearingHoldingReminderDelay).toString()
-        );
+            IntegrationTestHelper.assertScheduledJobCount(quartzScheduler, "Job scheduler is empty at start", 0);
 
-        ccdResponseJson = ccdResponseJson.replace("responseReceived", "hearingBooked");
-        HttpServletResponse hearingPostponedResponse = getResponse(getRequestWithAuthHeader(ccdResponseJson));
-        assertHttpStatus(hearingPostponedResponse, HttpStatus.OK);
+            sendEvent("responseReceived");
 
-        IntegrationTestHelper.assertScheduledJobCount(quartzScheduler, "Hearing reminders were removed", "hearingHoldingReminder", 0);
+            IntegrationTestHelper.assertScheduledJobCount(quartzScheduler, "Hearing holding reminder scheduled", "hearingHoldingReminder", 3);
+
+            IntegrationTestHelper.assertScheduledJobTriggerAt(
+                quartzScheduler,
+                "First hearing holding reminder scheduled",
+                "hearingHoldingReminder",
+                "2048-07-19T14:01:18.243Z"
+            );
+
+            IntegrationTestHelper.assertScheduledJobTriggerAt(
+                quartzScheduler,
+                "Hearing holding reminder scheduled",
+                "hearingHoldingReminder",
+                "2048-08-30T14:01:18.243Z"
+            );
+
+            IntegrationTestHelper.assertScheduledJobTriggerAt(
+                quartzScheduler,
+                "Hearing holding reminder scheduled",
+                "hearingHoldingReminder",
+                "2048-10-11T14:01:18.243Z"
+            );
+
+            IntegrationTestHelper.assertScheduledJobCount(quartzScheduler, "Final hearing holding reminder scheduled", "finalHearingHoldingReminder", 1);
+
+            IntegrationTestHelper.assertScheduledJobTriggerAt(
+                quartzScheduler,
+                "Final hearing holding reminder scheduled",
+                "finalHearingHoldingReminder",
+                "2048-11-22T14:01:18.243Z"
+            );
+
+            sendEvent(eventThatRemoveReminders);
+
+            IntegrationTestHelper.assertScheduledJobCount(quartzScheduler, "Hearing reminders were removed", "hearingHoldingReminder", 0);
+            IntegrationTestHelper.assertScheduledJobCount(quartzScheduler, "Final hearing reminder was removed", "finalHearingHoldingReminder", 0);
+        }
+    }
+
+    private void sendEvent(String event) throws Exception {
+
+        String path = getClass().getClassLoader().getResource("json/ccdResponse.json").getFile();
+        String ccdResponseJson = FileUtils.readFileToString(new File(path), StandardCharsets.UTF_8.name());
+
+        ccdResponseJson = ccdResponseJson.replace("appealReceived", event);
+        ccdResponseJson = ccdResponseJson.replace("2017-05-24T14:01:18.243", "2048-05-24T14:01:18.243");
+
+        HttpServletResponse sendResponse = getResponse(getRequestWithAuthHeader(ccdResponseJson));
+        assertHttpStatus(sendResponse, HttpStatus.OK);
     }
 
     private MockHttpServletResponse getResponse(MockHttpServletRequestBuilder requestBuilder) throws Exception {
