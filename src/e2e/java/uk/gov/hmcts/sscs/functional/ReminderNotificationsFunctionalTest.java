@@ -113,7 +113,7 @@ public class ReminderNotificationsFunctionalTest {
         setup(DWP_RESPONSE_RECEIVED);
 
         CaseDetails updatedCaseDetails = updateCcdService.update(caseData, caseId, DWP_RESPONSE_RECEIVED.getId(), idamTokens);
-        if (isPreviewOrAatEnv()) {
+        if (isPreviewEnv()) {
             simulateCcdCallback(DWP_RESPONSE_RECEIVED);
         } else {
             assertEquals("COMPLETED", updatedCaseDetails.getCallbackResponseStatus());
@@ -141,7 +141,7 @@ public class ReminderNotificationsFunctionalTest {
         addHearing(caseData);
 
         CaseDetails updatedCaseDetails = updateCcdService.update(caseData, caseId, HEARING_BOOKED.getId(), idamTokens);
-        if (isPreviewOrAatEnv()) {
+        if (isPreviewEnv()) {
             simulateCcdCallback(HEARING_BOOKED);
         } else {
             assertEquals("COMPLETED", updatedCaseDetails.getCallbackResponseStatus());
@@ -216,21 +216,21 @@ public class ReminderNotificationsFunctionalTest {
             );
     }
 
-    private boolean isPreviewOrAatEnv() {
+    private boolean isPreviewEnv() {
         final String testUrl = getEnvOrEmpty("TEST_URL");
-        return testUrl.contains("preview.internal") || testUrl.contains("aat.internal");
+        return testUrl.contains("preview.internal");
     }
 
     private void simulateCcdCallback(EventType eventType) throws IOException {
 
         /*
-         this method simulates the ccd callback in preview & aat,
-         because ccd callbacks cannot be configured in these environments
+         this method simulates the ccd callback in preview,
+         because ccd callbacks cannot be configured in this environment
          */
 
         final String callbackUrl = getEnvOrEmpty("TEST_URL") + "/send";
 
-        LOG.info("Is preview or AAT environment -- simulating a CCD callback to: " + callbackUrl + " for case " + testCaseReference);
+        LOG.info("Is preview environment -- simulating a CCD callback to: " + callbackUrl + " for case " + testCaseReference);
 
         String path = getClass().getClassLoader().getResource("json/ccdResponse.json").getFile();
         String json = FileUtils.readFileToString(new File(path), StandardCharsets.UTF_8.name());
@@ -255,21 +255,32 @@ public class ReminderNotificationsFunctionalTest {
         String... expectedTemplateIds
     ) throws NotificationClientException {
 
-        List<Notification> notifications = new ArrayList<>();
+        List<Notification> allNotifications = new ArrayList<>();
+        List<Notification> matchingNotifications = new ArrayList<>();
 
         int maxSecondsToWaitForNotification = MAX_SECONDS_TO_WAIT_FOR_NOTIFICATIONS;
 
         do {
 
             if (maxSecondsToWaitForNotification-- == 0) {
+
+                String allTemplateIds =
+                    allNotifications
+                        .stream()
+                        .map(notification -> notification.getTemplateId().toString())
+                        .collect(Collectors.joining("\n"));
+
                 throw new RuntimeException(
-                    "Timed out fetching notifications after " + MAX_SECONDS_TO_WAIT_FOR_NOTIFICATIONS + " seconds"
+                    "Timed out fetching notifications after "
+                    + MAX_SECONDS_TO_WAIT_FOR_NOTIFICATIONS
+                    + " seconds. Template IDs:\n"
+                    + allTemplateIds
                 );
             }
 
             LOG.info(
                 "Waiting for all test case notifications to be delivered "
-                + "[" + notifications.size() + "/" + expectedTemplateIds.length + "] ..."
+                + "[" + matchingNotifications.size() + "/" + expectedTemplateIds.length + "] ..."
             );
 
             try {
@@ -278,26 +289,29 @@ public class ReminderNotificationsFunctionalTest {
                 // noop
             }
 
-            notifications =
+            allNotifications =
                 client
                     .getNotifications("", "", testCaseReference, "")
-                    .getNotifications()
+                    .getNotifications();
+
+            matchingNotifications =
+                allNotifications
                     .stream()
                     .filter(notification -> Arrays.asList(expectedTemplateIds).contains(notification.getTemplateId().toString()))
                     .collect(Collectors.toList());
 
-            if (notifications.size() >= expectedTemplateIds.length) {
+            if (matchingNotifications.size() >= expectedTemplateIds.length) {
 
-                for (Notification notification : notifications) {
+                for (Notification notification : matchingNotifications) {
                     assertFalse(notification.getStatus().contains("fail"));
                 }
 
                 LOG.info(
                     "Test case notifications have been delivered "
-                    + "[" + notifications.size() + "/" + expectedTemplateIds.length + "]"
+                    + "[" + matchingNotifications.size() + "/" + expectedTemplateIds.length + "]"
                 );
 
-                return notifications;
+                return matchingNotifications;
             }
 
         } while (true);
