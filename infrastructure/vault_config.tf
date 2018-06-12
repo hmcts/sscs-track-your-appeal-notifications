@@ -81,3 +81,15 @@ resource "azurerm_key_vault_secret" "idam-redirect" {
   value     = "${var.idam_redirect_url}"
   vault_uri = "${module.sscs-tya-notif-key-vault.key_vault_uri}"
 }
+
+resource "azurerm_key_vault_secret" "idam-user" {
+  name      = "idam-user"
+  value     = "${data.vault_generic_secret.idam_sscs_systemupdate_user.data["value"]}"
+  vault_uri = "${module.sscs-tya-notif-key-vault.key_vault_uri}"
+}
+
+resource "azurerm_key_vault_secret" "idam-password" {
+  name      = "idam-password"
+  value     = "${data.vault_generic_secret.idam_sscs_systemupdate_password.data["value"]}"
+  vault_uri = "${module.sscs-tya-notif-key-vault.key_vault_uri}"
+}
