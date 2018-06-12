@@ -7,3 +7,4 @@ hearing_info_link = "https://sscs-track-your-appeal-frontend-saat.service.core-c
 claiming_expenses_link = "https://sscs-track-your-appeal-frontend-saat.service.core-compute-saat.internal/expenses/appeal_id"
 core_case_data_user_id = "43132"
 idam_redirect_url = "https://sscs-case-loader-aat.service.core-compute-aat.internal"
+notification_key = "notification-key"
