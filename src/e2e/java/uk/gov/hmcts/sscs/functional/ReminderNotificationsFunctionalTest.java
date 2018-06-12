@@ -13,11 +13,13 @@ import java.io.File;
 import java.io.IOException;
 import java.nio.charset.StandardCharsets;
 import java.time.Instant;
+import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
-import java.util.Optional;
 import java.util.UUID;
+import java.util.stream.Collectors;
 import org.apache.commons.io.FileUtils;
-import org.apache.commons.lang3.tuple.Pair;
+import org.hamcrest.CoreMatchers;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -67,13 +69,14 @@ public class ReminderNotificationsFunctionalTest {
     @Value("${notification.hearingReminder.emailId}")
     private String hearingReminderEmailTemplateId;
 
+    @Value("${notification.hearingReminder.smsId}")
+    private String hearingReminderSmsTemplateId;
+
     @Autowired
     private NotificationClient client;
 
     String testCaseReference;
 
-    private static int EXPECTED_EMAIL_NOTIFICATIONS;
-    private static int EXPECTED_SMS_NOTIFICATIONS;
     private static final int MAX_SECONDS_TO_WAIT_FOR_NOTIFICATIONS = 120;
 
     public void setup(EventType eventType) {
@@ -105,52 +108,127 @@ public class ReminderNotificationsFunctionalTest {
     }
 
     @Test
-    public void shouldSendEvidenceReceivedNotification() throws IOException, NotificationClientException {
-        EXPECTED_EMAIL_NOTIFICATIONS = 2;
-        EXPECTED_SMS_NOTIFICATIONS = 1;
+    public void shouldSendEvidenceReminderNotification() throws IOException, NotificationClientException {
 
         setup(DWP_RESPONSE_RECEIVED);
 
         CaseDetails updatedCaseDetails = updateCcdService.update(caseData, caseId, DWP_RESPONSE_RECEIVED.getId(), idamTokens);
+        if (isPreviewOrAatEnv()) {
+            simulateCcdCallback(DWP_RESPONSE_RECEIVED);
+        } else {
+            assertEquals("COMPLETED", updatedCaseDetails.getCallbackResponseStatus());
+        }
 
-        // assertEquals("COMPLETED", updatedCaseDetails.getCallbackResponseStatus());
+        List<Notification> notifications =
+            tryFetchNotificationsForTestCase(
+                evidenceReminderEmailTemplateId,
+                evidenceReminderSmsTemplateId
+            );
 
-        ifPreviewEnvSimulateCcdCallback(DWP_RESPONSE_RECEIVED);
+        assertNotificationTemplateSubjectContains(notifications, evidenceReminderEmailTemplateId, "ESA benefit appeal");
+        assertNotificationTemplateBodyContains(notifications, evidenceReminderEmailTemplateId, testCaseReference);
+        assertNotificationTemplateBodyContains(notifications, evidenceReminderEmailTemplateId, "User Test");
+        assertNotificationTemplateBodyContains(notifications, evidenceReminderEmailTemplateId, "ESA benefit appeal");
+        assertNotificationTemplateBodyContains(notifications, evidenceReminderEmailTemplateId, "/evidence");
 
-        assertNotificationsSent(evidenceReminderEmailTemplateId, evidenceReminderSmsTemplateId);
+        assertNotificationTemplateBodyContains(notifications, evidenceReminderSmsTemplateId, "ESA benefit appeal");
     }
 
     @Test
     public void shouldSendHearingReminderNotification() throws IOException, NotificationClientException {
-        EXPECTED_EMAIL_NOTIFICATIONS = 3;
-        EXPECTED_SMS_NOTIFICATIONS = 2;
 
         setup(HEARING_BOOKED);
-
         addHearing(caseData);
 
         CaseDetails updatedCaseDetails = updateCcdService.update(caseData, caseId, HEARING_BOOKED.getId(), idamTokens);
-
-        // assertEquals("COMPLETED", updatedCaseDetails.getCallbackResponseStatus());
-
-        ifPreviewEnvSimulateCcdCallback(HEARING_BOOKED);
-
-        assertNotificationsSent(hearingReminderEmailTemplateId, null);
-    }
-
-    /*
-     this method simulates the ccd callback in preview,
-     because ccd callbacks cannot be configured in preview env
-     */
-    private void ifPreviewEnvSimulateCcdCallback(EventType eventType) throws IOException {
-
-        final String testUrl = getEnvOrEmpty("TEST_URL");
-        if (!testUrl.contains("preview.internal") && !testUrl.contains("aat.internal")) {
-            LOG.info("Is *not* preview or AAT environment -- expecting CCD to callback for case " + testCaseReference);
-            return;
+        if (isPreviewOrAatEnv()) {
+            simulateCcdCallback(HEARING_BOOKED);
+        } else {
+            assertEquals("COMPLETED", updatedCaseDetails.getCallbackResponseStatus());
         }
 
-        final String callbackUrl = testUrl + "/send";
+        List<Notification> notifications =
+            tryFetchNotificationsForTestCase(
+                hearingReminderEmailTemplateId,
+                hearingReminderEmailTemplateId,
+                hearingReminderSmsTemplateId,
+                hearingReminderSmsTemplateId
+            );
+
+        assertNotificationTemplateSubjectContains(notifications, hearingReminderEmailTemplateId, "ESA benefit appeal");
+        assertNotificationTemplateBodyContains(notifications, hearingReminderEmailTemplateId, "reminder");
+
+        assertNotificationTemplateBodyContains(notifications, hearingReminderSmsTemplateId, "reminder");
+    }
+
+    private void assertNotificationTemplate(
+        List<Notification> notifications,
+        String templateId
+    ) {
+        String observedTemplateIds =
+            notifications
+                .stream()
+                .map(notification -> notification.getTemplateId().toString())
+                .collect(Collectors.joining("\n"));
+
+        assertThat(
+            "Notification template " + templateId + " was sent",
+            observedTemplateIds,
+            CoreMatchers.containsString(templateId)
+        );
+    }
+
+    private void assertNotificationTemplateSubjectContains(
+        List<Notification> notifications,
+        String templateId,
+        String match
+    ) {
+        assertNotificationTemplate(notifications, templateId);
+
+        notifications
+            .stream()
+            .filter(notification -> notification.getTemplateId().equals(UUID.fromString(templateId)))
+            .forEach(notification ->
+                assertThat(
+                    "Notification template " + templateId + " [subject] contains '" + match + "'",
+                    notification.getSubject().orElse(""),
+                    CoreMatchers.containsString(match)
+                )
+            );
+    }
+
+    private void assertNotificationTemplateBodyContains(
+        List<Notification> notifications,
+        String templateId,
+        String match
+    ) {
+        assertNotificationTemplate(notifications, templateId);
+
+        notifications
+            .stream()
+            .filter(notification -> notification.getTemplateId().equals(UUID.fromString(templateId)))
+            .forEach(notification ->
+                assertThat(
+                    "Notification template " + templateId + " [body] contains '" + match + "'",
+                    notification.getBody(),
+                    CoreMatchers.containsString(match)
+                )
+            );
+    }
+
+    private boolean isPreviewOrAatEnv() {
+        final String testUrl = getEnvOrEmpty("TEST_URL");
+        return testUrl.contains("preview.internal") || testUrl.contains("aat.internal");
+    }
+
+    private void simulateCcdCallback(EventType eventType) throws IOException {
+
+        /*
+         this method simulates the ccd callback in preview & aat,
+         because ccd callbacks cannot be configured in preview env
+         */
+
+        final String callbackUrl = getEnvOrEmpty("TEST_URL") + "/send";
 
         LOG.info("Is preview or AAT environment -- simulating a CCD callback to: " + callbackUrl + " for case " + testCaseReference);
 
@@ -173,8 +251,11 @@ public class ReminderNotificationsFunctionalTest {
             .statusCode(HttpStatus.OK.value());
     }
 
-    private void assertNotificationsSent(String emailTemplateId, String smsTemplateId) throws NotificationClientException {
-        Optional<Pair<List<Notification>, List<Notification>>> notifications;
+    private List<Notification> tryFetchNotificationsForTestCase(
+        String... expectedTemplateIds
+    ) throws NotificationClientException {
+
+        List<Notification> notifications = new ArrayList<>();
 
         int maxSecondsToWaitForNotification = MAX_SECONDS_TO_WAIT_FOR_NOTIFICATIONS;
 
@@ -186,86 +267,40 @@ public class ReminderNotificationsFunctionalTest {
                 );
             }
 
+            LOG.info(
+                "Waiting for all test case notifications to be delivered "
+                + "[" + notifications.size() + "/" + expectedTemplateIds.length + "] ..."
+            );
+
             try {
                 Thread.sleep(1000);
             } catch (InterruptedException e) {
                 // noop
             }
 
-            notifications = tryFetchNotificationsForTestCase();
+            notifications =
+                client
+                    .getNotifications("", "", testCaseReference, "")
+                    .getNotifications()
+                    .stream()
+                    .filter(notification -> Arrays.asList(expectedTemplateIds).contains(notification.getTemplateId().toString()))
+                    .collect(Collectors.toList());
 
-        } while (!notifications.isPresent());
+            if (notifications.size() >= expectedTemplateIds.length) {
 
-        List<Notification> sentEmailNotifications = notifications.get().getLeft();
+                for (Notification notification : notifications) {
+                    assertFalse(notification.getStatus().contains("fail"));
+                }
 
-        assertTrue(sentEmailNotifications.size() >= EXPECTED_EMAIL_NOTIFICATIONS);
+                LOG.info(
+                    "Test case notifications have been delivered "
+                    + "[" + notifications.size() + "/" + expectedTemplateIds.length + "]"
+                );
 
-        assertTrue(
-            sentEmailNotifications.stream()
-                .anyMatch(sentEmailNotification ->
-                    sentEmailNotification.getTemplateId().equals(UUID.fromString(emailTemplateId))
-                )
-        );
-
-        assertTrue(
-            sentEmailNotifications.stream()
-                .anyMatch(sentEmailNotification ->
-                    sentEmailNotification.getBody().contains(testCaseReference)
-                )
-        );
-
-        if (smsTemplateId != null) {
-            List<Notification> sentSmsNotifications = notifications.get().getRight();
-
-            assertTrue(sentSmsNotifications.size() >= EXPECTED_SMS_NOTIFICATIONS);
-
-            assertTrue(
-                sentSmsNotifications.stream()
-                    .anyMatch(sentSmsNotification ->
-                        sentSmsNotification.getTemplateId().equals(UUID.fromString(smsTemplateId))
-                    )
-            );
-        }
-    }
-
-    private Optional<Pair<List<Notification>, List<Notification>>> tryFetchNotificationsForTestCase() throws NotificationClientException {
-
-        List<Notification> emailNotifications =
-            client
-                .getNotifications("", "email", testCaseReference, "")
-                .getNotifications();
-
-        List<Notification> smsNotifications =
-            client
-                .getNotifications("", "sms", testCaseReference, "")
-                .getNotifications();
-
-        if (emailNotifications.size() >= EXPECTED_EMAIL_NOTIFICATIONS
-            && smsNotifications.size() >= EXPECTED_SMS_NOTIFICATIONS) {
-
-            for (Notification n : emailNotifications) {
-                assertFalse(n.getStatus().contains("fail"));
+                return notifications;
             }
 
-            for (Notification n : smsNotifications) {
-                assertFalse(n.getStatus().contains("fail"));
-            }
-
-            return Optional.of(
-                Pair.of(
-                    emailNotifications,
-                    smsNotifications
-                )
-            );
-        }
-
-        LOG.info(
-            "Waiting for all test case notifications to be delivered "
-            + "[" + emailNotifications.size() + "] "
-            + "[" + smsNotifications.size() + "]..."
-        );
-
-        return Optional.empty();
+        } while (true);
     }
 
     private String getEnvOrEmpty(
