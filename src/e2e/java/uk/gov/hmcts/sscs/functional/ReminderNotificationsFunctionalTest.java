@@ -67,6 +67,9 @@ public class ReminderNotificationsFunctionalTest {
     @Value("${notification.hearingReminder.emailId}")
     private String hearingReminderEmailTemplateId;
 
+    @Value("${notification.hearingReminder.smsId}")
+    private String hearingReminderSmsTemplateId;
+
     @Autowired
     private NotificationClient client;
 
@@ -106,8 +109,8 @@ public class ReminderNotificationsFunctionalTest {
 
     @Test
     public void shouldSendEvidenceReceivedNotification() throws IOException, NotificationClientException {
-        EXPECTED_EMAIL_NOTIFICATIONS = 2;
-        EXPECTED_SMS_NOTIFICATIONS = 1;
+        EXPECTED_EMAIL_NOTIFICATIONS = 3;
+        EXPECTED_SMS_NOTIFICATIONS = 2;
 
         setup(DWP_RESPONSE_RECEIVED);
 
@@ -122,8 +125,8 @@ public class ReminderNotificationsFunctionalTest {
 
     @Test
     public void shouldSendHearingReminderNotification() throws IOException, NotificationClientException {
-        EXPECTED_EMAIL_NOTIFICATIONS = 3;
-        EXPECTED_SMS_NOTIFICATIONS = 2;
+        EXPECTED_EMAIL_NOTIFICATIONS = 4;
+        EXPECTED_SMS_NOTIFICATIONS = 3;
 
         setup(HEARING_BOOKED);
 
@@ -135,7 +138,7 @@ public class ReminderNotificationsFunctionalTest {
 
         ifPreviewEnvSimulateCcdCallback(HEARING_BOOKED);
 
-        assertNotificationsSent(hearingReminderEmailTemplateId, null);
+        assertNotificationsSent(hearingReminderEmailTemplateId, hearingReminderSmsTemplateId);
     }
 
     /*
