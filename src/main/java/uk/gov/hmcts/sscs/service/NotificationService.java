@@ -29,7 +29,10 @@ public class NotificationService {
     }
 
     public void createAndSendNotification(CcdResponseWrapper responseWrapper) {
-        LOG.info("Start to create notification for case reference " + responseWrapper.getNewCcdResponse().getCaseReference());
+
+        String notificationEventType = responseWrapper.getNewCcdResponse().getNotificationType().getId();
+
+        LOG.info("Notification event triggered {} for case reference {}", notificationEventType, responseWrapper.getNewCcdResponse().getCaseReference());
 
         if (responseWrapper.getNewCcdResponse().getSubscriptions().getAppellantSubscription() != null && responseWrapper.getNewCcdResponse().getSubscriptions().getAppellantSubscription().doesCaseHaveSubscriptions()) {
 

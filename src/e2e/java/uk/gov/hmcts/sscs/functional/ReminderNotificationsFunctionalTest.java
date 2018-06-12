@@ -225,7 +225,7 @@ public class ReminderNotificationsFunctionalTest {
 
         /*
          this method simulates the ccd callback in preview & aat,
-         because ccd callbacks cannot be configured in preview env
+         because ccd callbacks cannot be configured in these environments
          */
 
         final String callbackUrl = getEnvOrEmpty("TEST_URL") + "/send";
