@@ -1,6 +1,6 @@
 resource "azurerm_key_vault_secret" "idam-url" {
   name      = "idam-url"
-  value     = "${data.vault_generic_secret.idam_api.data["value"]}"
+  value     = "${local.idamUrl}"
   vault_uri = "${module.sscs-tya-notif-key-vault.key_vault_uri}"
 }
 
