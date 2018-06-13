@@ -206,7 +206,7 @@ dependencies {
     testCompile group: 'org.springframework.boot', name: 'spring-boot-starter-test', version: versions.springBoot
 }
 
-bootJar {
+jar {
     archiveName 'track-your-appeal-notifications.jar'
     manifest {
         attributes 'Implementation-Title': project.name,
