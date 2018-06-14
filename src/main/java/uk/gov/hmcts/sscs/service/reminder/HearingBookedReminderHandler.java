@@ -70,7 +70,7 @@ public class HearingBookedReminderHandler implements ReminderHandler {
             reminderDate
         ));
 
-        LOG.info("Scheduled hearing reminder for case: " + caseId + " @ " + reminderDate.toString());
+        LOG.info("Scheduled hearing reminder for case id: " + caseId + " @ " + reminderDate.toString());
     }
 
     private ZonedDateTime calculateReminderDate(CcdResponse ccdResponse, long secondsBeforeHearing) {
@@ -82,7 +82,7 @@ public class HearingBookedReminderHandler implements ReminderHandler {
         }
 
         ReminderException reminderException = new ReminderException(
-            new Exception("Could not find reminder date for case reference: " + ccdResponse.getCaseReference())
+            new Exception("Could not find reminder date for case id: " + ccdResponse.getCaseId())
         );
 
         LOG.error("Reminder date not found", reminderException);

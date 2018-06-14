@@ -198,7 +198,7 @@ dependencies {
     compile group: 'uk.gov.hmcts.reform', name: 'sscs-job-scheduler', version: '1.2.0'
     compile group: 'uk.gov.hmcts.reform', name: 'service-auth-provider-client', version: '0.6.0'
 
-    compile group: 'uk.gov.service.notify', name: 'notifications-java-client', version: '3.9.1-RELEASE'
+    compile group: 'uk.gov.service.notify', name: 'notifications-java-client', version: '3.9.2-RELEASE'
 
     compileOnly 'org.projectlombok:lombok:1.16.20'
     apt "org.projectlombok:lombok:1.16.20"
