@@ -6,6 +6,7 @@ import java.net.UnknownHostException;
 import org.slf4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import uk.gov.hmcts.sscs.domain.AppealReason;
 import uk.gov.hmcts.sscs.domain.CcdResponseWrapper;
 import uk.gov.hmcts.sscs.domain.notify.Notification;
 import uk.gov.hmcts.sscs.exception.NotificationClientRuntimeException;
@@ -32,23 +33,30 @@ public class NotificationService {
 
         String notificationEventType = responseWrapper.getNewCcdResponse().getNotificationType().getId();
 
-        LOG.info("Notification event triggered {} for case reference {}", notificationEventType, responseWrapper.getNewCcdResponse().getCaseReference());
+        LOG.info("Notification event triggered {} for case id {}", notificationEventType, responseWrapper.getNewCcdResponse().getCaseId());
 
         if (responseWrapper.getNewCcdResponse().getSubscriptions().getAppellantSubscription() != null && responseWrapper.getNewCcdResponse().getSubscriptions().getAppellantSubscription().doesCaseHaveSubscriptions()) {
 
             Notification notification = factory.create(responseWrapper);
 
+            //TODO: Temporary logging to debug issue with pound symbol encoding
+            if (responseWrapper.getNewCcdResponse().getAppeal() != null && responseWrapper.getNewCcdResponse().getAppeal().getAppealReasons() != null) {
+                for (AppealReason reason : responseWrapper.getNewCcdResponse().getAppeal().getAppealReasons().getReasons()) {
+                    LOG.info("An appeal reason for case id: {}, {}, {}", responseWrapper.getNewCcdResponse().getCaseId(), reason.getValue().getReason(), reason.getValue().getDescription());
+                }
+            }
+
             try {
 
                 if (responseWrapper.getNewCcdResponse().getSubscriptions().getAppellantSubscription().isEmailSubscribed() && notification.isEmail() && notification.getEmailTemplate() != null) {
-                    LOG.info("Sending email for case reference " + responseWrapper.getNewCcdResponse().getCaseReference());
+                    LOG.info("Sending email template {} for case id: {}", notification.getEmailTemplate(), responseWrapper.getNewCcdResponse().getCaseId());
                     client.sendEmail(notification.getEmailTemplate(), notification.getEmail(), notification.getPlaceholders(), notification.getReference());
-                    LOG.info("Email sent for case reference " + responseWrapper.getNewCcdResponse().getCaseReference());
+                    LOG.info("Email template {} sent for case id: {}", notification.getEmailTemplate(), responseWrapper.getNewCcdResponse().getCaseId());
                 }
                 if (responseWrapper.getNewCcdResponse().getSubscriptions().getAppellantSubscription().isSmsSubscribed() && notification.isSms() && notification.getSmsTemplate() != null) {
-                    LOG.info("Sending SMS for case reference " + responseWrapper.getNewCcdResponse().getCaseReference());
+                    LOG.info("Sending SMS template {} for case id: {}", notification.getSmsTemplate(), responseWrapper.getNewCcdResponse().getCaseId());
                     client.sendSms(notification.getSmsTemplate(), notification.getMobile(), notification.getPlaceholders(), notification.getReference());
-                    LOG.info("SMS sent for case reference " + responseWrapper.getNewCcdResponse().getCaseReference());
+                    LOG.info("SMS template {} sent for case id: {}", notification.getSmsTemplate(), responseWrapper.getNewCcdResponse().getCaseId());
                 }
 
                 reminderService.createReminders(responseWrapper.getNewCcdResponse());
@@ -56,15 +64,14 @@ public class NotificationService {
             } catch (Exception ex) {
                 if (ex.getCause() instanceof UnknownHostException) {
                     NotificationClientRuntimeException exception = new NotificationClientRuntimeException(ex);
-                    LOG.error("Runtime error on GovUKNotify for case reference " + responseWrapper.getNewCcdResponse().getCaseReference(), exception);
+                    LOG.error("Runtime error on GovUKNotify for case id: " + responseWrapper.getNewCcdResponse().getCaseId(), exception);
                     throw exception;
                 } else {
                     NotificationServiceException exception = new NotificationServiceException(ex);
-                    LOG.error("Error on GovUKNotify for case reference " + responseWrapper.getNewCcdResponse().getCaseReference(), exception);
+                    LOG.error("Error on GovUKNotify for case id: " + responseWrapper.getNewCcdResponse().getCaseId(), exception);
                     throw exception;
                 }
             }
         }
     }
-
 }

@@ -31,7 +31,7 @@ public class NotificationController {
     public void sendNotification(
             @RequestHeader(AuthorisationService.SERVICE_AUTHORISATION_HEADER) String serviceAuthHeader,
             @RequestBody CcdResponseWrapper ccdResponseWrapper) {
-        LOG.info("Ccd Response received: ", ccdResponseWrapper);
+        LOG.info("Ccd Response received for case id: {}", ccdResponseWrapper.getNewCcdResponse().getCaseId());
 
         authorisationService.authorise(serviceAuthHeader);
         service.createAndSendNotification(ccdResponseWrapper);
