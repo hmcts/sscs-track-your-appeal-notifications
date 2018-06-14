@@ -61,7 +61,7 @@ module "track-your-appeal-notifications" {
   ilbIp        = "${var.ilbIp}"
   is_frontend  = false
   subscription = "${var.subscription}"
-
+  capacity     = "${(var.env == "preview") ? 1 : 2}"
 
   app_settings = {
     INFRASTRUCTURE_ENV = "${var.env}"
