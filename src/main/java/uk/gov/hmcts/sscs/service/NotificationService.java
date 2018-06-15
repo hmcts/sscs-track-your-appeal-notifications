@@ -6,7 +6,6 @@ import java.net.UnknownHostException;
 import org.slf4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-import uk.gov.hmcts.sscs.domain.AppealReason;
 import uk.gov.hmcts.sscs.domain.CcdResponseWrapper;
 import uk.gov.hmcts.sscs.domain.notify.Notification;
 import uk.gov.hmcts.sscs.exception.NotificationClientRuntimeException;
@@ -38,13 +37,6 @@ public class NotificationService {
         if (responseWrapper.getNewCcdResponse().getSubscriptions().getAppellantSubscription() != null && responseWrapper.getNewCcdResponse().getSubscriptions().getAppellantSubscription().doesCaseHaveSubscriptions()) {
 
             Notification notification = factory.create(responseWrapper);
-
-            //TODO: Temporary logging to debug issue with pound symbol encoding
-            if (responseWrapper.getNewCcdResponse().getAppeal() != null && responseWrapper.getNewCcdResponse().getAppeal().getAppealReasons() != null) {
-                for (AppealReason reason : responseWrapper.getNewCcdResponse().getAppeal().getAppealReasons().getReasons()) {
-                    LOG.info("An appeal reason for case id: {}, {}, {}", responseWrapper.getNewCcdResponse().getCaseId(), reason.getValue().getReason(), reason.getValue().getDescription());
-                }
-            }
 
             try {
 
