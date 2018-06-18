@@ -136,9 +136,9 @@ public class SyaAppealCreatedPersonalisation extends Personalisation {
         if (appealReasons.getReasons() != null && appealReasons.getReasons().size() > 0) {
             for (AppealReason reason : appealReasons.getReasons()) {
                 appealReasonsBuilder.append("What you disagree with: ")
-                        .append(reason.getValue().getReason() + "\n\n")
+                        .append(reason.getValue().getDescription() + "\n\n")
                         .append("Why you disagree with it: ")
-                        .append(reason.getValue().getDescription() + "\n\n");
+                        .append(reason.getValue().getReason() + "\n\n");
             }
         }
 
