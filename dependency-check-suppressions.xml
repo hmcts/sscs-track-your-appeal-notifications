@@ -107,9 +107,7 @@
    file name: tomcat-embed-core-8.5.27.jar
    ]]></notes>
     <sha1>a10612f0af27c7bfcc4e8d88393adad1fc5b4ece</sha1>
-    <cve>CVE-2017-6056</cve>
-    <cve>CVE-2016-6325</cve>
-    <cve>CVE-2016-5425</cve>
+      <cve>CVE-2018-8014</cve>
   </suppress>
   <suppress>
     <notes><![CDATA[
@@ -125,9 +123,7 @@
    file name: tomcat-embed-websocket-8.5.27.jar
    ]]></notes>
     <sha1>3cba1c5187a17b0233de5712024d6e144036ba9a</sha1>
-    <cve>CVE-2017-6056</cve>
-    <cve>CVE-2016-6325</cve>
-    <cve>CVE-2016-5425</cve>
+    <cve>CVE-2018-8014</cve>
   </suppress>
   <suppress>
     <notes><![CDATA[
