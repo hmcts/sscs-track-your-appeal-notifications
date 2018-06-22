@@ -90,6 +90,15 @@ task functional(type: Test) {
     exclude "uk/gov/hmcts/sscs/smoke/**"
 }
 
+jacocoTestReport {
+    executionData(test, integration)
+    reports {
+        xml.enabled = true
+        csv.enabled = false
+        xml.destination file("${project.buildDir}/reports/jacoco/test/jacocoTestReport.xml")
+    }
+}
+
 dependencyUpdates.resolutionStrategy = {
     componentSelection { rules ->
         rules.all { ComponentSelection selection ->
@@ -137,6 +146,8 @@ sonarqube {
     properties {
         property "sonar.projectName", "SSCS - Track Your Appeal Notifications"
         property "sonar.projectKey", "SSCSTYANS"
+        property "sonar.jacoco.reportPath", "${project.buildDir}/jacoco/test.exec"
+        property "sonar.jacoco.itReportPath", "${project.buildDir}/jacoco/integration.exec"
         property "sonar.exclusions", "src/main/java/uk/gov/hmcts/sscs/domain/**," +
                 "src/main/java/uk/gov/hmcts/sscs/TrackYourAppealNotificationsApplication.java," +
                 "src/main/java/uk/gov/hmcts/sscs/config/**,"
