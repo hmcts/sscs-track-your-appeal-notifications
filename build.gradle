@@ -225,6 +225,10 @@ jar {
     }
 }
 
+// this is required to force Java running on the Azure Windows Server OS into using
+// UTF-8 as the default character set instead of windows-1252 which causes issues
+applicationDefaultJvmArgs = ["-Dfile.encoding=UTF-8"]
+
 run {
     def debug = System.getProperty("debug")
     if (debug == 'true') {
