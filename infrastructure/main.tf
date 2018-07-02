@@ -116,7 +116,7 @@ module "sscs-tya-notif-key-vault" {
 }
 
 module "db-notif" {
-  source          = "git@github.com:hmcts/moj-module-postgres?ref=cnp-449-tactical"
+  source          = "git@github.com:hmcts/moj-module-postgres?ref=master"
   product         = "${var.product}-${var.component}-postgres-db"
   location        = "${var.location}"
   env             = "${var.env}"
