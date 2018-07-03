@@ -98,3 +98,8 @@ variable "database_name" {
 variable "notification_key" {
   default = "sscs_notify_api_new_key"
 }
+
+variable "common_tags" {
+  type = "map"
+}
+
