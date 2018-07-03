@@ -45,7 +45,7 @@ locals {
   previewVaultName       = "${var.product}-${var.component}"
   nonPreviewVaultName    = "${var.product}-${var.component}-${var.env}"
   vaultName              = "${(var.env == "preview") ? local.previewVaultName : local.nonPreviewVaultName}"
-  
+
   local_env = "${(var.env == "preview" || var.env == "spreview") ? (var.env == "preview" ) ? "aat" : "saat" : var.env}"
   local_ase = "${(var.env == "preview" || var.env == "spreview") ? (var.env == "preview" ) ? "core-compute-aat" : "core-compute-saat" : local.aseName}"
 
@@ -62,6 +62,7 @@ module "track-your-appeal-notifications" {
   is_frontend  = false
   subscription = "${var.subscription}"
   capacity     = "${(var.env == "preview") ? 1 : 2}"
+  common_tags = "${var.common_tags}"
 
   app_settings = {
     INFRASTRUCTURE_ENV = "${var.env}"
@@ -116,10 +117,11 @@ module "sscs-tya-notif-key-vault" {
 }
 
 module "db-notif" {
-  source          = "git@github.com:hmcts/moj-module-postgres?ref=20e3d58f285c327693d8529d8d7e8dd781f3003d"
+  source          = "git@github.com:hmcts/moj-module-postgres?ref=master"
   product         = "${var.product}-${var.component}-postgres-db"
   location        = "${var.location}"
   env             = "${var.env}"
   postgresql_user = "${var.postgresql_user}"
   database_name   = "${var.database_name}"
+  common_tags     = "${var.common_tags}"
 }
