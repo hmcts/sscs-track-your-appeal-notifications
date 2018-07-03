@@ -12,5 +12,3 @@ log_level_spring_web = "DEBUG"
 log_level_sscs = "DEBUG"
 idam_redirect_url = "https://evidence-sharing-preprod.sscs.reform.hmcts.net"
 notification_key = "notification-key"
-
-TF_LOG= "DEBUG"
