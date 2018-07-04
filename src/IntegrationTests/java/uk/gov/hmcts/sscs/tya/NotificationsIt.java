@@ -1,8 +1,8 @@
 package uk.gov.hmcts.sscs.tya;
 
 import static helper.IntegrationTestHelper.*;
-import static org.mockito.Matchers.any;
 import static org.mockito.Mockito.*;
+import static org.mockito.Mockito.any;
 
 import java.io.File;
 import java.io.IOException;

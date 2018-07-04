@@ -8,7 +8,6 @@ import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 import org.springframework.boot.autoconfigure.flyway.FlywayMigrationInitializer;
-import org.springframework.cloud.netflix.feign.EnableFeignClients;
 import org.springframework.context.ApplicationContext;
 import org.springframework.context.MessageSource;
 import org.springframework.context.annotation.Bean;
@@ -18,7 +17,6 @@ import uk.gov.hmcts.reform.sscs.jobscheduler.config.QuartzConfiguration;
 import uk.gov.hmcts.sscs.deserialize.CcdResponseWrapperDeserializer;
 import uk.gov.service.notify.NotificationClient;
 
-@EnableFeignClients
 @SpringBootApplication
 @ComponentScan(
     basePackages = "uk.gov.hmcts.reform.sscs",
@@ -60,7 +58,7 @@ public class TrackYourAppealNotificationsApplication {
     }
 
     @Bean
-    @ConditionalOnProperty("flyway.enabled")
+    @ConditionalOnProperty("spring.flyway.enabled")
     public JobFactory jobFactory(ApplicationContext context, FlywayMigrationInitializer flywayInitializer) {
         return (new QuartzConfiguration()).jobFactory(context);
     }
