@@ -2,7 +2,6 @@ package uk.gov.hmcts.sscs.service.ccd;
 
 import static org.hamcrest.CoreMatchers.is;
 import static org.junit.Assert.assertThat;
-import static org.mockito.Mockito.stub;
 import static org.mockito.Mockito.when;
 
 import org.junit.Before;
@@ -14,7 +13,6 @@ import uk.gov.hmcts.reform.ccd.client.model.CaseDetails;
 import uk.gov.hmcts.reform.ccd.client.model.StartEventResponse;
 import uk.gov.hmcts.sscs.domain.CcdResponse;
 import uk.gov.hmcts.sscs.domain.idam.IdamTokens;
-import uk.gov.hmcts.sscs.service.idam.IdamService;
 
 @RunWith(MockitoJUnitRunner.class)
 public class UpdateCcdServiceTest {
@@ -25,8 +23,6 @@ public class UpdateCcdServiceTest {
     private static final String EVENT_ID = "appealReceived";
     private static final Long CASE_ID = 1L;
 
-    @Mock
-    private IdamService idamService;
     @Mock
     private StartEventResponse response;
     @Mock
@@ -41,9 +37,6 @@ public class UpdateCcdServiceTest {
 
     @Before
     public void setUp() {
-        stub(idamService.generateServiceAuthorization()).toReturn(S2SAUTH);
-        stub(idamService.getIdamOauth2Token()).toReturn(OAUTH2);
-
         idamTokens = IdamTokens.builder()
             .idamOauth2Token(OAUTH2)
             .serviceAuthorization(S2SAUTH)

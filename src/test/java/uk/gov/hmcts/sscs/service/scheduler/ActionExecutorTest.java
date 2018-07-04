@@ -1,8 +1,8 @@
 package uk.gov.hmcts.sscs.service.scheduler;
 
-import static org.mockito.Matchers.any;
-import static org.mockito.Matchers.eq;
 import static org.mockito.Mockito.*;
+import static org.mockito.Mockito.any;
+import static org.mockito.Mockito.eq;
 import static org.mockito.MockitoAnnotations.initMocks;
 import static uk.gov.hmcts.sscs.domain.notify.EventType.EVIDENCE_REMINDER;
 
