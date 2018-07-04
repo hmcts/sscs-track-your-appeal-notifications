@@ -45,7 +45,7 @@ locals {
   previewVaultName       = "${var.product}-${var.component}"
   nonPreviewVaultName    = "${var.product}-${var.component}-${var.env}"
   vaultName              = "${(var.env == "preview") ? local.previewVaultName : local.nonPreviewVaultName}"
-  
+
   local_env = "${(var.env == "preview" || var.env == "spreview") ? (var.env == "preview" ) ? "aat" : "saat" : var.env}"
   local_ase = "${(var.env == "preview" || var.env == "spreview") ? (var.env == "preview" ) ? "core-compute-aat" : "core-compute-saat" : local.aseName}"
 
@@ -62,6 +62,7 @@ module "track-your-appeal-notifications" {
   is_frontend  = false
   subscription = "${var.subscription}"
   capacity     = "${(var.env == "preview") ? 1 : 2}"
+  common_tags = "${var.common_tags}"
 
   app_settings = {
     INFRASTRUCTURE_ENV = "${var.env}"
@@ -122,4 +123,5 @@ module "db-notif" {
   env             = "${var.env}"
   postgresql_user = "${var.postgresql_user}"
   database_name   = "${var.database_name}"
+  common_tags     = "${var.common_tags}"
 }
