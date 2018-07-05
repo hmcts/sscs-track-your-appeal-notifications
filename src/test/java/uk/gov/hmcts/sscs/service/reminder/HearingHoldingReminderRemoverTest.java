@@ -63,7 +63,9 @@ public class HearingHoldingReminderRemoverTest {
     @Test
     public void removeHearingHoldingRemindersWhenHearingBooked() {
 
-        final String expectedInterimJobGroup = "ID_EVENT";
+        final String expectedFirstJobGroup = "ID_FIRST_EVENT";
+        final String expectedSecondJobGroup = "ID_SECOND_EVENT";
+        final String expectedThirdJobGroup = "ID_THIRD_EVENT";
         final String expectedFinalJobGroup = "ID_FINAL_EVENT";
 
         String hearingDate = "2018-01-01";
@@ -75,13 +77,23 @@ public class HearingHoldingReminderRemoverTest {
             hearingTime
         );
 
-        when(jobGroupGenerator.generate(ccdResponse.getCaseId(), HEARING_HOLDING_REMINDER.getId())).thenReturn(expectedInterimJobGroup);
+        when(jobGroupGenerator.generate(ccdResponse.getCaseId(), FIRST_HEARING_HOLDING_REMINDER.getId())).thenReturn(expectedFirstJobGroup);
+        when(jobGroupGenerator.generate(ccdResponse.getCaseId(), SECOND_HEARING_HOLDING_REMINDER.getId())).thenReturn(expectedSecondJobGroup);
+        when(jobGroupGenerator.generate(ccdResponse.getCaseId(), THIRD_HEARING_HOLDING_REMINDER.getId())).thenReturn(expectedThirdJobGroup);
         when(jobGroupGenerator.generate(ccdResponse.getCaseId(), FINAL_HEARING_HOLDING_REMINDER.getId())).thenReturn(expectedFinalJobGroup);
 
         hearingHoldingReminderRemoverTest.handle(ccdResponse);
 
         verify(jobRemover, times(1)).removeGroup(
-            expectedInterimJobGroup
+            expectedFirstJobGroup
+        );
+
+        verify(jobRemover, times(1)).removeGroup(
+            expectedSecondJobGroup
+        );
+
+        verify(jobRemover, times(1)).removeGroup(
+            expectedThirdJobGroup
         );
 
         verify(jobRemover, times(1)).removeGroup(
@@ -103,7 +115,9 @@ public class HearingHoldingReminderRemoverTest {
             hearingTime
         );
 
-        when(jobGroupGenerator.generate(ccdResponse.getCaseId(), HEARING_HOLDING_REMINDER.getId())).thenReturn(notExistantJobGroup);
+        when(jobGroupGenerator.generate(ccdResponse.getCaseId(), FIRST_HEARING_HOLDING_REMINDER.getId())).thenReturn(notExistantJobGroup);
+        when(jobGroupGenerator.generate(ccdResponse.getCaseId(), SECOND_HEARING_HOLDING_REMINDER.getId())).thenReturn(notExistantJobGroup);
+        when(jobGroupGenerator.generate(ccdResponse.getCaseId(), THIRD_HEARING_HOLDING_REMINDER.getId())).thenReturn(notExistantJobGroup);
         when(jobGroupGenerator.generate(ccdResponse.getCaseId(), FINAL_HEARING_HOLDING_REMINDER.getId())).thenReturn(notExistantJobGroup);
 
         doThrow(JobNotFoundException.class)
@@ -112,7 +126,7 @@ public class HearingHoldingReminderRemoverTest {
 
         hearingHoldingReminderRemoverTest.handle(ccdResponse);
 
-        verify(jobRemover, times(2)).removeGroup(
+        verify(jobRemover, times(4)).removeGroup(
             notExistantJobGroup
         );
     }

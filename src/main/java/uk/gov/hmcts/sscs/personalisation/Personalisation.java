@@ -23,7 +23,7 @@ import uk.gov.hmcts.sscs.domain.*;
 import uk.gov.hmcts.sscs.domain.notify.Event;
 import uk.gov.hmcts.sscs.domain.notify.EventType;
 import uk.gov.hmcts.sscs.domain.notify.Template;
-import uk.gov.hmcts.sscs.extractor.HearingUpdateDateExtractor;
+import uk.gov.hmcts.sscs.extractor.HearingContactDateExtractor;
 import uk.gov.hmcts.sscs.service.MessageAuthenticationServiceImpl;
 import uk.gov.hmcts.sscs.service.RegionalProcessingCenterService;
 
@@ -38,7 +38,7 @@ public class Personalisation {
     private NotificationConfig config;
 
     @Autowired
-    private HearingUpdateDateExtractor hearingUpdateDateExtractor;
+    private HearingContactDateExtractor hearingContactDateExtractor;
 
     @Autowired
     private MessageAuthenticationServiceImpl macService;
@@ -89,17 +89,17 @@ public class Personalisation {
         setEvidenceProcessingAddress(personalisation, ccdResponse);
         setEventData(personalisation, ccdResponse);
         setEvidenceReceivedNotificationData(personalisation, ccdResponse);
-        setHearingUpdateDate(personalisation, ccdResponse);
+        setHearingContactDate(personalisation, ccdResponse);
 
         return personalisation;
     }
 
-    public void setHearingUpdateDate(Map<String, String> personalisation, CcdResponse ccdResponse) {
-        Optional<ZonedDateTime> hearingUpdateDate = hearingUpdateDateExtractor.extract(ccdResponse);
-        if (hearingUpdateDate.isPresent()) {
+    public void setHearingContactDate(Map<String, String> personalisation, CcdResponse ccdResponse) {
+        Optional<ZonedDateTime> hearingContactDate = hearingContactDateExtractor.extract(ccdResponse);
+        if (hearingContactDate.isPresent()) {
             personalisation.put(
                 HEARING_CONTACT_DATE,
-                formatLocalDate(hearingUpdateDate.get().toLocalDate())
+                formatLocalDate(hearingContactDate.get().toLocalDate())
             );
         }
     }
@@ -111,10 +111,6 @@ public class Personalisation {
                 if (events.getValue() != null) {
                     if (ccdResponse.getNotificationType().equals(APPEAL_RECEIVED) && events.getValue().getEventType().equals(APPEAL_RECEIVED)) {
                         return setAppealReceivedDetails(personalisation, events.getValue());
-                    } else if (ccdResponse.getNotificationType().equals(DWP_RESPONSE_RECEIVED) && events.getValue().getEventType().equals(DWP_RESPONSE_RECEIVED)) {
-                        return setHearingContactDate(personalisation, events.getValue());
-                    } else if (ccdResponse.getNotificationType().equals(POSTPONEMENT) && events.getValue().getEventType().equals(POSTPONEMENT)) {
-                        return setPostponementDetails(personalisation, events.getValue());
                     }
                 }
             }
@@ -134,11 +130,6 @@ public class Personalisation {
     private Map<String, String> setAppealReceivedDetails(Map<String, String> personalisation, Event event) {
         String dwpResponseDateString = formatLocalDate(event.getDateTime().plusDays(MAX_DWP_RESPONSE_DAYS).toLocalDate());
         personalisation.put(APPEAL_RESPOND_DATE, dwpResponseDateString);
-        return personalisation;
-    }
-
-    private Map<String, String> setPostponementDetails(Map<String, String> personalisation, Event event) {
-        setHearingContactDate(personalisation, event);
         return personalisation;
     }
 
@@ -167,13 +158,6 @@ public class Personalisation {
                 .stream()
                 .filter(StringUtils::isNotBlank)
                 .collect(Collectors.joining(", "));
-    }
-
-    private Map<String, String> setHearingContactDate(Map<String, String> personalisation, Event event) {
-        String hearingContactDate = formatLocalDate(event.getDateTime().plusDays(MAX_HEARING_BOOKED_DAYS).toLocalDate());
-        personalisation.put(HEARING_CONTACT_DATE, hearingContactDate);
-
-        return personalisation;
     }
 
     private String calculateDaysToHearingText(LocalDate hearingDate) {

@@ -33,7 +33,6 @@ public final class AppConstants {
     public static final String MAC_LITERAL = "mac";
     public static final String MANAGE_EMAILS_LINK_LITERAL = "manage_emails_link";
     public static final int MAX_DWP_RESPONSE_DAYS = 35;
-    public static final int MAX_HEARING_BOOKED_DAYS = 56;
     public static final String MRN_DETAILS_LITERAL = "mrn_details";
     public static final String PHONE_NUMBER = "phone_number";
     public static final String POSTCODE_LITERAL = "postcode";

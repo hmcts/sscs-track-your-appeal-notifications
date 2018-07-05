@@ -35,7 +35,7 @@
           "isAppointee": "Yes"
         },
         "benefitType":{
-          "code":"PIP"
+          "code":"ESA"
         },
         "hearingOptions":{
           "wantsToAttend":"Yes",
@@ -125,6 +125,14 @@
         ]
       },
       "events": [
+        {
+          "id": "960c715a-e24e-46de-b4b6-33dfbecccddc",
+          "value": {
+            "date": "2017-05-01T12:34:56.789",
+            "description": "Appeal received",
+            "type": "appealReceived"
+          }
+        },
         {
           "id": "960c715a-e24e-46de-b4b6-33dfbecccddc",
           "value": {
@@ -234,7 +242,7 @@
           "isAppointee": "Yes"
         },
         "benefitType": {
-          "code": "PIP"
+          "code": "ESA"
         },
         "hearingOptions": {
           "wantsToAttend": "Yes",

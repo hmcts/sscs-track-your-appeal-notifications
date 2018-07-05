@@ -67,7 +67,7 @@ public final class CcdResponseUtils {
             .value(Event.builder()
                 .type(eventType.getId())
                 .description("Some Events")
-                .date("2016-01-14T21:59:43.10")
+                .date("2017-05-24T14:01:18.243")
                 .build())
             .build();
 

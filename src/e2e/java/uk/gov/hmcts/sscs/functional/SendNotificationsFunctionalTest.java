@@ -84,6 +84,7 @@ public class SendNotificationsFunctionalTest {
 
     @Test
     public void shouldSendHearingPostponedNotification() {
+        addEventTypeToCase(caseData, DWP_RESPONSE_RECEIVED);
         addEventTypeToCase(caseData, POSTPONEMENT);
 
         CaseDetails updatedCaseDetails = updateCcdService.update(caseData, caseId, POSTPONEMENT.getId(), idamTokens);
