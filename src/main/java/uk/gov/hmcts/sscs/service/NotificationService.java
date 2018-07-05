@@ -41,33 +41,41 @@ public class NotificationService {
 
             Notification notification = factory.create(responseWrapper);
 
-            try {
+            if (appellantSubscription.isEmailSubscribed() && notification.isEmail() && notification.getEmailTemplate() != null) {
 
-                if (appellantSubscription.isEmailSubscribed() && notification.isEmail() && notification.getEmailTemplate() != null) {
+                try {
                     LOG.info("Sending email template {} for case id: {}", notification.getEmailTemplate(), caseId);
                     client.sendEmail(notification.getEmailTemplate(), notification.getEmail(), notification.getPlaceholders(), notification.getReference());
                     LOG.info("Email template {} sent for case id: {}", notification.getEmailTemplate(), caseId);
+                } catch (Exception ex) {
+                    wrapAndThrowNotificationException(caseId, notification.getEmailTemplate(), ex);
                 }
+            }
 
-                if (appellantSubscription.isSmsSubscribed() && notification.isSms() && notification.getSmsTemplate() != null) {
+            if (appellantSubscription.isSmsSubscribed() && notification.isSms() && notification.getSmsTemplate() != null) {
+
+                try {
                     LOG.info("Sending SMS template {} for case id: {}", notification.getSmsTemplate(), caseId);
                     client.sendSms(notification.getSmsTemplate(), notification.getMobile(), notification.getPlaceholders(), notification.getReference());
                     LOG.info("SMS template {} sent for case id: {}", notification.getSmsTemplate(), caseId);
-                }
-
-                reminderService.createReminders(responseWrapper.getNewCcdResponse());
-
-            } catch (Exception ex) {
-                if (ex.getCause() instanceof UnknownHostException) {
-                    NotificationClientRuntimeException exception = new NotificationClientRuntimeException(ex);
-                    LOG.error("Runtime error on GovUKNotify for case id: " + caseId, exception);
-                    throw exception;
-                } else {
-                    NotificationServiceException exception = new NotificationServiceException(ex);
-                    LOG.error("Error on GovUKNotify for case id: " + caseId, exception);
-                    throw exception;
+                } catch (Exception ex) {
+                    wrapAndThrowNotificationException(caseId, notification.getSmsTemplate(), ex);
                 }
             }
+
+            reminderService.createReminders(responseWrapper.getNewCcdResponse());
+        }
+    }
+
+    private void wrapAndThrowNotificationException(String caseId, String templateId, Exception ex) {
+        if (ex.getCause() instanceof UnknownHostException) {
+            NotificationClientRuntimeException exception = new NotificationClientRuntimeException(ex);
+            LOG.error("Runtime error on GovUKNotify for case id: " + caseId + ", template: " + templateId, exception);
+            throw exception;
+        } else {
+            NotificationServiceException exception = new NotificationServiceException(ex);
+            LOG.error("Error on GovUKNotify for case id: " + caseId + ", template: " + templateId, exception);
+            throw exception;
         }
     }
 }

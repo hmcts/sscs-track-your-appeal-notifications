@@ -24,7 +24,7 @@ import uk.gov.hmcts.sscs.config.NotificationConfig;
 import uk.gov.hmcts.sscs.domain.*;
 import uk.gov.hmcts.sscs.domain.notify.Event;
 import uk.gov.hmcts.sscs.domain.notify.Link;
-import uk.gov.hmcts.sscs.extractor.HearingUpdateDateExtractor;
+import uk.gov.hmcts.sscs.extractor.HearingContactDateExtractor;
 import uk.gov.hmcts.sscs.service.MessageAuthenticationServiceImpl;
 import uk.gov.hmcts.sscs.service.RegionalProcessingCenterService;
 
@@ -42,7 +42,7 @@ public class PersonalisationTest {
     private NotificationConfig config;
 
     @Mock
-    private HearingUpdateDateExtractor hearingUpdateDateExtractor;
+    private HearingContactDateExtractor hearingContactDateExtractor;
 
     @Mock
     private MessageAuthenticationServiceImpl macService;
@@ -71,7 +71,7 @@ public class PersonalisationTest {
         when(config.getClaimingExpensesLink()).thenReturn(Link.builder().linkUrl("http://link.com/progress/appeal_id/expenses").build());
         when(config.getHearingInfoLink()).thenReturn(Link.builder().linkUrl("http://link.com/progress/appeal_id/abouthearing").build());
         when(macService.generateToken("GLSCRR", PIP.name())).thenReturn("ZYX");
-        when(hearingUpdateDateExtractor.extract(any())).thenReturn(Optional.empty());
+        when(hearingContactDateExtractor.extract(any())).thenReturn(Optional.empty());
 
         RegionalProcessingCenter rpc = new RegionalProcessingCenter();
         rpc.createRegionalProcessingCenter("LIVERPOOL", "HM Courts & Tribunals Service", ADDRESS2,
@@ -193,23 +193,6 @@ public class PersonalisationTest {
     }
 
     @Test
-    public void setResponseReceivedEventData() {
-        List<Events> events = new ArrayList<>();
-        events.add(Events.builder().value(Event.builder().date(date).type(DWP_RESPONSE_RECEIVED.getId()).build()).build());
-
-        CcdResponse response = CcdResponse.builder()
-            .caseId(CASE_ID).caseReference("SC/1234/5")
-            .appeal(Appeal.builder().benefitType(BenefitType.builder().code("PIP").build()).build())
-            .notificationType(DWP_RESPONSE_RECEIVED)
-            .events(events)
-            .build();
-
-        Map<String, String> result = personalisation.setEventData(new HashMap<>(), response);
-
-        assertEquals("26 August 2018", result.get(HEARING_CONTACT_DATE));
-    }
-
-    @Test
     public void setEvidenceReceivedEventData() {
         List<Documents> documents = new ArrayList<>();
 
@@ -311,23 +294,6 @@ public class PersonalisationTest {
     }
 
     @Test
-    public void setPostponementEventData() {
-        List<Events> events = new ArrayList<>();
-        events.add(Events.builder().value(Event.builder().date(date).type(POSTPONEMENT.getId()).build()).build());
-
-        CcdResponse response = CcdResponse.builder()
-            .caseId(CASE_ID).caseReference("SC/1234/5")
-            .appeal(Appeal.builder().benefitType(BenefitType.builder().code("PIP").build()).build())
-            .notificationType(POSTPONEMENT)
-            .events(events)
-            .build();
-
-        Map<String, String> result = personalisation.setEventData(new HashMap<>(), response);
-
-        assertEquals("26 August 2018", result.get(HEARING_CONTACT_DATE));
-    }
-
-    @Test
     public void handleNullEventWhenPopulatingEventData() {
         CcdResponse response = CcdResponse.builder()
             .caseId(CASE_ID).caseReference("SC/1234/5")
@@ -377,28 +343,28 @@ public class PersonalisationTest {
     }
 
     @Test
-    public void shouldPopulateHearingUpdateDateFromCcdCaseIfPresent() {
+    public void shouldPopulateHearingContactDateFromCcdCaseIfPresent() {
 
         CcdResponse response = CcdResponse.builder().build();
 
         ZonedDateTime now = ZonedDateTime.ofInstant(Instant.ofEpochSecond(1528907807), ZoneId.of("UTC"));
-        when(hearingUpdateDateExtractor.extract(response)).thenReturn(Optional.of(now));
+        when(hearingContactDateExtractor.extract(response)).thenReturn(Optional.of(now));
 
         Map<String, String> values = new HashMap<>();
-        personalisation.setHearingUpdateDate(values, response);
+        personalisation.setHearingContactDate(values, response);
 
         assertEquals("13 June 2018", values.get(HEARING_CONTACT_DATE));
     }
 
     @Test
-    public void shouldNotPopulateHearingUpdateDateFromCcdCaseIfNotPresent() {
+    public void shouldNotPopulateHearingContactDateFromCcdCaseIfNotPresent() {
 
         CcdResponse response = CcdResponse.builder().build();
 
-        when(hearingUpdateDateExtractor.extract(response)).thenReturn(Optional.empty());
+        when(hearingContactDateExtractor.extract(response)).thenReturn(Optional.empty());
 
         Map<String, String> values = new HashMap<>();
-        personalisation.setHearingUpdateDate(values, response);
+        personalisation.setHearingContactDate(values, response);
 
         assertFalse(values.containsKey(HEARING_CONTACT_DATE));
     }

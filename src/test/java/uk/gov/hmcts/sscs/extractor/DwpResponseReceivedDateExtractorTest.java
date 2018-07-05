@@ -12,7 +12,8 @@ import uk.gov.hmcts.sscs.domain.CcdResponse;
 
 public class DwpResponseReceivedDateExtractorTest {
 
-    private DwpResponseReceivedDateExtractor dwpResponseReceivedDateExtractor = new DwpResponseReceivedDateExtractor();
+    private final DwpResponseReceivedDateExtractor dwpResponseReceivedDateExtractor =
+        new DwpResponseReceivedDateExtractor();
 
     @Test
     public void extractsDwpResponseReceivedDate() {

@@ -88,8 +88,7 @@ public class HearingHoldingReminderIt {
 
             sendEvent("responseReceived");
 
-            IntegrationTestHelper.assertScheduledJobCount(quartzScheduler, "Hearing holding reminder scheduled", "hearingHoldingReminder", 3);
-
+            IntegrationTestHelper.assertScheduledJobCount(quartzScheduler, "First hearing holding reminder scheduled", "hearingHoldingReminder", 1);
             IntegrationTestHelper.assertScheduledJobTriggerAt(
                 quartzScheduler,
                 "First hearing holding reminder scheduled",
@@ -97,22 +96,23 @@ public class HearingHoldingReminderIt {
                 "2048-07-19T14:01:18.243Z"
             );
 
+            IntegrationTestHelper.assertScheduledJobCount(quartzScheduler, "Second hearing holding reminder scheduled", "secondHearingHoldingReminder", 1);
             IntegrationTestHelper.assertScheduledJobTriggerAt(
                 quartzScheduler,
                 "Hearing holding reminder scheduled",
-                "hearingHoldingReminder",
+                "secondHearingHoldingReminder",
                 "2048-08-30T14:01:18.243Z"
             );
 
+            IntegrationTestHelper.assertScheduledJobCount(quartzScheduler, "Third hearing holding reminder scheduled", "thirdHearingHoldingReminder", 1);
             IntegrationTestHelper.assertScheduledJobTriggerAt(
                 quartzScheduler,
                 "Hearing holding reminder scheduled",
-                "hearingHoldingReminder",
+                "thirdHearingHoldingReminder",
                 "2048-10-11T14:01:18.243Z"
             );
 
             IntegrationTestHelper.assertScheduledJobCount(quartzScheduler, "Final hearing holding reminder scheduled", "finalHearingHoldingReminder", 1);
-
             IntegrationTestHelper.assertScheduledJobTriggerAt(
                 quartzScheduler,
                 "Final hearing holding reminder scheduled",
@@ -122,7 +122,9 @@ public class HearingHoldingReminderIt {
 
             sendEvent(eventThatRemoveReminders);
 
-            IntegrationTestHelper.assertScheduledJobCount(quartzScheduler, "Hearing reminders were removed", "hearingHoldingReminder", 0);
+            IntegrationTestHelper.assertScheduledJobCount(quartzScheduler, "First hearing reminders were removed", "hearingHoldingReminder", 0);
+            IntegrationTestHelper.assertScheduledJobCount(quartzScheduler, "Second hearing reminders were removed", "secondHearingHoldingReminder", 0);
+            IntegrationTestHelper.assertScheduledJobCount(quartzScheduler, "Third hearing reminders were removed", "thirdHearingHoldingReminder", 0);
             IntegrationTestHelper.assertScheduledJobCount(quartzScheduler, "Final hearing reminder was removed", "finalHearingHoldingReminder", 0);
         }
     }
