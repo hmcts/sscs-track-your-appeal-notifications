@@ -73,7 +73,7 @@ public class HearingHoldingReminder implements ReminderHandler {
             reminderDate
         ));
 
-        LOG.info("Scheduled hearing holding reminder for case: {} @ {}", caseId, reminderDate.toString());
+        LOG.info("Scheduled hearing holding reminder for case id: {} @ {}", caseId, reminderDate.toString());
     }
 
     private void scheduleFinalReminder(CcdResponse ccdResponse, long delay) {
@@ -90,7 +90,7 @@ public class HearingHoldingReminder implements ReminderHandler {
             reminderDate
         ));
 
-        LOG.info("Scheduled final hearing holding reminder for case: {} @ {}", caseId, reminderDate.toString());
+        LOG.info("Scheduled final hearing holding reminder for case id: {} @ {}", caseId, reminderDate.toString());
     }
 
     private ZonedDateTime calculateReminderDate(CcdResponse ccdResponse, long delay) {
@@ -103,7 +103,7 @@ public class HearingHoldingReminder implements ReminderHandler {
         }
 
         ReminderException reminderException = new ReminderException(
-            new Exception("Could not find reminder date for case reference: " + ccdResponse.getCaseReference())
+            new Exception("Could not find reminder date for case id: " + ccdResponse.getCaseId())
         );
 
         LOG.error("Reminder date not found", reminderException);

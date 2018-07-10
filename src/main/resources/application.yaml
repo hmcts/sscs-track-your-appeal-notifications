@@ -113,6 +113,9 @@ notification:
   finalHearingHoldingReminder:
     emailId: ab66ce4e-3f18-483c-9025-f9731bad9d6e
     smsId: f1409c96-8cfa-4e92-b046-887f9599d7e4
+  dwpResponseLateReminder:
+    emailId: 1dfa9e4e-0a85-4001-acc9-2847ed6e2a22
+    smsId: ef6297d1-7b03-432a-b04a-62a01f009b56
 
 reminder:
   evidenceReminder.delay.seconds: 172800
@@ -120,6 +123,7 @@ reminder:
   hearingReminder.beforeSecond.seconds: 86400
   hearingHoldingReminder.initialDelay.seconds: 4838400
   hearingHoldingReminder.subsequentDelay.seconds: 3628800
+  dwpResponseLateReminder.delay.seconds: 3024000
 
 ---
 # default profile (development, production etc.)

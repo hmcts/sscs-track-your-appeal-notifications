@@ -126,6 +126,14 @@
       },
       "events": [
         {
+          "id": "88888888-e24e-46de-b4b6-33dfbecccddc",
+          "value": {
+            "date": "2017-05-22T14:01:18.243",
+            "description": "Appeal received",
+            "type": "appealReceived"
+          }
+        },
+        {
           "id": "960c715a-e24e-46de-b4b6-33dfbecccddc",
           "value": {
             "date": "2017-05-24T14:01:18.243",
