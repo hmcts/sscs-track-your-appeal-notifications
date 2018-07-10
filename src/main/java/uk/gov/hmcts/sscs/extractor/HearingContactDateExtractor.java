@@ -1,5 +1,7 @@
 package uk.gov.hmcts.sscs.extractor;
 
+import static org.slf4j.LoggerFactory.getLogger;
+
 import java.time.ZonedDateTime;
 import java.util.Optional;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -10,6 +12,8 @@ import uk.gov.hmcts.sscs.domain.notify.EventType;
 
 @Component
 public class HearingContactDateExtractor {
+
+    private static final org.slf4j.Logger LOG = getLogger(HearingContactDateExtractor.class);
 
     private final DwpResponseReceivedDateExtractor dwpResponseReceivedDateExtractor;
     private final long initialDelay;
@@ -59,10 +63,17 @@ public class HearingContactDateExtractor {
                 return Optional.empty();
         }
 
-        return
-            dwpResponseReceivedDateExtractor
-                .extract(ccdResponse)
-                .map(dwpResponseReceivedDate -> dwpResponseReceivedDate.plusSeconds(delay));
+        Optional<ZonedDateTime> optionalDwpResponseReceivedDate = dwpResponseReceivedDateExtractor.extract(ccdResponse);
+
+        LOG.info("@@ Reference event type: " + referenceEventType.getId());
+        if (optionalDwpResponseReceivedDate.isPresent()) {
+            LOG.info("@@ DWP Response Date Extracted: " + optionalDwpResponseReceivedDate.get().toString());
+        } else {
+            LOG.info("@@ DWP Response Date Extracted: NONE");
+        }
+
+        return optionalDwpResponseReceivedDate
+            .map(dwpResponseReceivedDate -> dwpResponseReceivedDate.plusSeconds(delay));
     }
 
 }
