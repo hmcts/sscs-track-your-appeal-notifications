@@ -53,6 +53,7 @@ public class Personalisation {
         Benefit benefit = getBenefitByCode(ccdResponse.getAppeal().getBenefitType().getCode());
 
         personalisation.put(BENEFIT_NAME_ACRONYM_LITERAL, benefit.name() + " benefit");
+        personalisation.put(BENEFIT_NAME_ACRONYM_SHORT_LITERAL, benefit.name());
         personalisation.put(BENEFIT_FULL_NAME_LITERAL, benefit.getDescription());
         personalisation.put(APPEAL_REF, ccdResponse.getCaseReference());
         personalisation.put(APPELLANT_NAME, String.format("%s %s",
@@ -109,7 +110,8 @@ public class Personalisation {
 
             for (Events events : ccdResponse.getEvents()) {
                 if (events.getValue() != null) {
-                    if (ccdResponse.getNotificationType().equals(APPEAL_RECEIVED) && events.getValue().getEventType().equals(APPEAL_RECEIVED)) {
+                    if ((ccdResponse.getNotificationType().equals(APPEAL_RECEIVED) && events.getValue().getEventType().equals(APPEAL_RECEIVED))
+                        || ccdResponse.getNotificationType().equals(DWP_RESPONSE_LATE_REMINDER)) {
                         return setAppealReceivedDetails(personalisation, events.getValue());
                     } else if (ccdResponse.getNotificationType().equals(DWP_RESPONSE_RECEIVED) && events.getValue().getEventType().equals(DWP_RESPONSE_RECEIVED)) {
                         return setHearingContactDate(personalisation, events.getValue());

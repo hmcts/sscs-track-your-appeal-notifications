@@ -3,7 +3,6 @@ package uk.gov.hmcts.sscs.service.reminder;
 import static org.slf4j.LoggerFactory.getLogger;
 import static uk.gov.hmcts.sscs.domain.notify.EventType.*;
 
-import com.google.common.collect.ImmutableList;
 import java.util.Arrays;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
@@ -12,7 +11,7 @@ import uk.gov.hmcts.reform.sscs.jobscheduler.services.JobRemover;
 import uk.gov.hmcts.sscs.domain.CcdResponse;
 
 @Component
-public class HearingHoldingReminderRemover implements ReminderHandler {
+public class DwpResponseLateReminderRemover implements ReminderHandler {
 
     private static final org.slf4j.Logger LOG = getLogger(HearingReminderRemover.class);
 
@@ -20,7 +19,7 @@ public class HearingHoldingReminderRemover implements ReminderHandler {
     private final JobRemover jobRemover;
 
     @Autowired
-    public HearingHoldingReminderRemover(
+    public DwpResponseLateReminderRemover(
         JobGroupGenerator jobGroupGenerator,
         JobRemover jobRemover
     ) {
@@ -33,7 +32,7 @@ public class HearingHoldingReminderRemover implements ReminderHandler {
             APPEAL_DORMANT,
             APPEAL_LAPSED,
             APPEAL_WITHDRAWN,
-            HEARING_BOOKED
+            DWP_RESPONSE_RECEIVED
         ).contains(
             ccdResponse.getNotificationType()
         );
@@ -44,24 +43,17 @@ public class HearingHoldingReminderRemover implements ReminderHandler {
             throw new IllegalArgumentException("cannot handle ccdResponse");
         }
 
-        final String caseId = ccdResponse.getCaseId();
+        String caseId = ccdResponse.getCaseId();
+        String jobGroup = jobGroupGenerator.generate(caseId, DWP_RESPONSE_LATE_REMINDER.getId());
 
-        ImmutableList
-            .of(HEARING_HOLDING_REMINDER.getId(),
-                FINAL_HEARING_HOLDING_REMINDER.getId())
-            .forEach(eventId -> {
+        try {
 
-                String jobGroup = jobGroupGenerator.generate(caseId, eventId);
+            jobRemover.removeGroup(jobGroup);
+            LOG.info("Removed DWP response late reminder from case id: {}", caseId);
 
-                try {
-
-                    jobRemover.removeGroup(jobGroup);
-                    LOG.info("Removed hearing holding reminder from case id: {}", caseId);
-
-                } catch (JobNotFoundException ignore) {
-                    LOG.warn("Hearing holding reminder for case id: {} could not be found", caseId);
-                }
-            });
+        } catch (JobNotFoundException ignore) {
+            LOG.warn("DWP response late reminder for case id: {} could not be found", caseId);
+        }
     }
 
 }

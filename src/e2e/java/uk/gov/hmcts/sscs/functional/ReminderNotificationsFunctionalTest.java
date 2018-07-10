@@ -5,8 +5,7 @@ import static org.slf4j.LoggerFactory.getLogger;
 import static uk.gov.hmcts.sscs.CcdResponseUtils.addHearing;
 import static uk.gov.hmcts.sscs.CcdResponseUtils.buildCcdResponse;
 import static uk.gov.hmcts.sscs.config.AppConstants.RESPONSE_DATE_FORMAT;
-import static uk.gov.hmcts.sscs.domain.notify.EventType.DWP_RESPONSE_RECEIVED;
-import static uk.gov.hmcts.sscs.domain.notify.EventType.HEARING_BOOKED;
+import static uk.gov.hmcts.sscs.domain.notify.EventType.*;
 
 import helper.EnvironmentProfileValueSource;
 import io.restassured.RestAssured;
@@ -35,7 +34,9 @@ import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.context.junit4.SpringRunner;
 import uk.gov.hmcts.reform.ccd.client.model.CaseDetails;
 import uk.gov.hmcts.sscs.domain.CcdResponse;
+import uk.gov.hmcts.sscs.domain.Events;
 import uk.gov.hmcts.sscs.domain.idam.IdamTokens;
+import uk.gov.hmcts.sscs.domain.notify.Event;
 import uk.gov.hmcts.sscs.domain.notify.EventType;
 import uk.gov.hmcts.sscs.service.ccd.CreateCcdService;
 import uk.gov.hmcts.sscs.service.ccd.UpdateCcdService;
@@ -63,6 +64,13 @@ public class ReminderNotificationsFunctionalTest {
     private CcdResponse caseData;
     private IdamTokens idamTokens;
     private Long caseId;
+    private String caseReference;
+
+    @Value("${notification.dwpResponseLateReminder.emailId}")
+    private String dwpResponseLateReminderEmailTemplateId;
+
+    @Value("${notification.dwpResponseLateReminder.smsId}")
+    private String dwpResponseLateReminderSmsTemplateId;
 
     @Value("${notification.evidenceReminder.emailId}")
     private String evidenceReminderEmailTemplateId;
@@ -91,14 +99,12 @@ public class ReminderNotificationsFunctionalTest {
     @Autowired
     private NotificationClient client;
 
-    String testCaseReference;
-
     private static final int MAX_SECONDS_TO_WAIT_FOR_NOTIFICATIONS = 120;
 
-    public void setup(EventType eventType) {
+    public void createCase(EventType eventType) {
 
         String epoch = String.valueOf(Instant.now().toEpochMilli());
-        testCaseReference =
+        caseReference =
             "SC"
             + epoch.substring(3, 6)
             + "/"
@@ -106,7 +112,7 @@ public class ReminderNotificationsFunctionalTest {
             + "/"
             + epoch.substring(8, 13);
 
-        caseData = buildCcdResponse(testCaseReference, "Yes", "Yes", eventType);
+        caseData = buildCcdResponse(caseReference, "Yes", "Yes", eventType);
 
         String oauth2Token = idamService.getIdamOauth2Token();
         idamTokens = IdamTokens.builder()
@@ -120,20 +126,39 @@ public class ReminderNotificationsFunctionalTest {
         assertNotNull(caseDetails);
         caseId = caseDetails.getId();
 
-        LOG.info("Built case with ID: " + caseId + " and reference: " + testCaseReference);
+        LOG.info("Built case with id: " + caseId + " and reference: " + caseReference);
+    }
+
+    @Test
+    public void shouldSendDwpResponseLateNotification() throws IOException, NotificationClientException {
+
+        createCase(SYA_APPEAL_CREATED);
+        triggerEvent(APPEAL_RECEIVED);
+
+        List<Notification> notifications =
+            tryFetchNotificationsForTestCase(
+                dwpResponseLateReminderEmailTemplateId,
+                dwpResponseLateReminderSmsTemplateId
+            );
+
+        assertNotificationSubjectContains(notifications, dwpResponseLateReminderEmailTemplateId, "ESA");
+        assertNotificationBodyContains(
+            notifications,
+            dwpResponseLateReminderEmailTemplateId,
+            caseReference,
+            "User Test",
+            "due to respond",
+            "/trackyourappeal"
+        );
+
+        assertNotificationBodyContains(notifications, dwpResponseLateReminderSmsTemplateId, "ESA");
     }
 
     @Test
     public void shouldSendEvidenceReminderAndHearingHoldingNotification() throws IOException, NotificationClientException {
 
-        setup(DWP_RESPONSE_RECEIVED);
-
-        CaseDetails updatedCaseDetails = updateCcdService.update(caseData, caseId, DWP_RESPONSE_RECEIVED.getId(), idamTokens);
-        if (isPreviewEnv()) {
-            simulateCcdCallback(DWP_RESPONSE_RECEIVED);
-        } else {
-            assertEquals("COMPLETED", updatedCaseDetails.getCallbackResponseStatus());
-        }
+        createCase(APPEAL_RECEIVED);
+        triggerEvent(DWP_RESPONSE_RECEIVED);
 
         List<Notification> notifications =
             tryFetchNotificationsForTestCase(
@@ -151,25 +176,25 @@ public class ReminderNotificationsFunctionalTest {
 
         final String todayPlus6Weeks = LocalDate.now().plusWeeks(6).format(DateTimeFormatter.ofPattern(RESPONSE_DATE_FORMAT));
 
-        assertNotificationSubjectContains(notifications, evidenceReminderEmailTemplateId, "ESA benefit appeal");
+        assertNotificationSubjectContains(notifications, evidenceReminderEmailTemplateId, "ESA");
         assertNotificationBodyContains(
             notifications,
             evidenceReminderEmailTemplateId,
-            testCaseReference,
+            caseReference,
             "User Test",
-            "ESA benefit",
+            "ESA",
             "/evidence"
         );
 
-        assertNotificationBodyContains(notifications, evidenceReminderSmsTemplateId, "ESA benefit appeal");
+        assertNotificationBodyContains(notifications, evidenceReminderSmsTemplateId, "ESA");
 
-        assertNotificationSubjectContains(notifications, hearingHoldingReminderEmailTemplateId, "ESA benefit appeal");
+        assertNotificationSubjectContains(notifications, hearingHoldingReminderEmailTemplateId, "ESA");
         assertNotificationBodyContains(
             notifications,
             hearingHoldingReminderEmailTemplateId,
-            testCaseReference,
+            caseReference,
             "User Test",
-            "ESA benefit",
+            "ESA",
             "not been booked",
             "/trackyourappeal",
             todayPlus6Weeks
@@ -178,19 +203,19 @@ public class ReminderNotificationsFunctionalTest {
         assertNotificationBodyContains(
             notifications,
             hearingHoldingReminderSmsTemplateId,
-            "ESA benefit",
+            "ESA",
             "not been booked",
             "/trackyourappeal",
             todayPlus6Weeks
         );
 
-        assertNotificationSubjectContains(notifications, finalHearingHoldingReminderEmailTemplateId, "ESA benefit appeal");
+        assertNotificationSubjectContains(notifications, finalHearingHoldingReminderEmailTemplateId, "ESA");
         assertNotificationBodyContains(
             notifications,
             finalHearingHoldingReminderEmailTemplateId,
-            testCaseReference,
+            caseReference,
             "User Test",
-            "ESA benefit",
+            "ESA",
             "not been booked",
             "/trackyourappeal"
         );
@@ -198,7 +223,7 @@ public class ReminderNotificationsFunctionalTest {
         assertNotificationBodyContains(
             notifications,
             finalHearingHoldingReminderSmsTemplateId,
-            "ESA benefit",
+            "ESA",
             "not been booked",
             "/trackyourappeal"
         );
@@ -207,15 +232,9 @@ public class ReminderNotificationsFunctionalTest {
     @Test
     public void shouldSendHearingReminderNotification() throws IOException, NotificationClientException {
 
-        setup(HEARING_BOOKED);
+        createCase(DWP_RESPONSE_RECEIVED);
         addHearing(caseData);
-
-        CaseDetails updatedCaseDetails = updateCcdService.update(caseData, caseId, HEARING_BOOKED.getId(), idamTokens);
-        if (isPreviewEnv()) {
-            simulateCcdCallback(HEARING_BOOKED);
-        } else {
-            assertEquals("COMPLETED", updatedCaseDetails.getCallbackResponseStatus());
-        }
+        triggerEvent(HEARING_BOOKED);
 
         List<Notification> notifications =
             tryFetchNotificationsForTestCase(
@@ -225,12 +244,12 @@ public class ReminderNotificationsFunctionalTest {
                 hearingReminderSmsTemplateId
             );
 
-        assertNotificationSubjectContains(notifications, hearingReminderEmailTemplateId, "ESA benefit appeal");
+        assertNotificationSubjectContains(notifications, hearingReminderEmailTemplateId, "ESA");
         assertNotificationBodyContains(
             notifications,
             hearingReminderEmailTemplateId,
-            testCaseReference,
-            "ESA benefit",
+            caseReference,
+            "ESA",
             "reminder",
             "AB12 0HN",
             "/abouthearing"
@@ -239,9 +258,31 @@ public class ReminderNotificationsFunctionalTest {
         assertNotificationBodyContains(
             notifications,
             hearingReminderSmsTemplateId,
-            "ESA benefit",
+            "ESA",
             "reminder"
         );
+    }
+
+    private void triggerEvent(EventType eventType) throws IOException {
+
+        Events events = Events.builder()
+            .value(Event.builder()
+                .type(eventType.getId())
+                .description(eventType.getId())
+                .date("2016-01-16T12:34:56.789")
+                .build())
+            .build();
+
+        List<Events> allEvents = new ArrayList<>(caseData.getEvents());
+        allEvents.add(events);
+        caseData.setEvents(allEvents);
+
+        CaseDetails updatedCaseDetails = updateCcdService.update(caseData, caseId, eventType.getId(), idamTokens);
+        if (isPreviewEnv()) {
+            simulateCcdCallback(eventType);
+        } else {
+            assertEquals("COMPLETED", updatedCaseDetails.getCallbackResponseStatus());
+        }
     }
 
     private void assertNotificationSubjectContains(
@@ -303,14 +344,14 @@ public class ReminderNotificationsFunctionalTest {
 
         final String callbackUrl = getEnvOrEmpty("TEST_URL") + "/send";
 
-        LOG.info("Is preview environment -- simulating a CCD callback to: " + callbackUrl + " for case " + testCaseReference);
+        LOG.info("Is preview environment -- simulating a CCD callback to: " + callbackUrl + " for case " + caseReference);
 
         String path = getClass().getClassLoader().getResource("json/ccdResponse.json").getFile();
         String json = FileUtils.readFileToString(new File(path), StandardCharsets.UTF_8.name());
 
         json = json.replace("appealReceived", eventType.getId());
         json = json.replace("12345656789", caseId.toString());
-        json = json.replace("SC022/14/12423", testCaseReference);
+        json = json.replace("SC022/14/12423", caseReference);
 
         RestAssured.useRelaxedHTTPSValidation();
         RestAssured
@@ -364,7 +405,7 @@ public class ReminderNotificationsFunctionalTest {
 
             allNotifications =
                 client
-                    .getNotifications("", "", testCaseReference, "")
+                    .getNotifications("", "", caseReference, "")
                     .getNotifications();
 
             matchingNotifications =
