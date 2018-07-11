@@ -168,7 +168,7 @@ bootRun {
     systemProperty 'server.port', '8081'
 }
 
-def springBootVersion = '2.0.1.RELEASE'
+def springBootVersion = '2.0.3.RELEASE'
 
 ext {
     springCloudVersion = 'Finchley.M9'
