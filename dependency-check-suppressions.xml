@@ -2,6 +2,15 @@
 <suppressions xmlns="https://jeremylong.github.io/DependencyCheck/dependency-suppression.1.1.xsd">
   <suppress>
     <notes><![CDATA[
+   CVE-2018-1257: we do not use STOMP message broker, so this does not affect us
+   CVE-2018-1258: we do not use Spring Method Security, so this does not affect us
+   ]]></notes>
+    <gav regex="true">^org\.springframework:spring-.*:.*$</gav>
+    <cve>CVE-2018-1257</cve>
+    <cve>CVE-2018-1258</cve>
+  </suppress>
+  <suppress>
+    <notes><![CDATA[
    file name: d3js-3.4.11.jar
    ]]></notes>
     <gav regex="true">^org\.webjars:d3js:.*$</gav>
