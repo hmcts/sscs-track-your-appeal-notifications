@@ -19,13 +19,13 @@ import uk.gov.hmcts.sscs.CcdResponseUtils;
 import uk.gov.hmcts.sscs.domain.CcdResponse;
 import uk.gov.hmcts.sscs.domain.notify.EventType;
 import uk.gov.hmcts.sscs.exception.ReminderException;
-import uk.gov.hmcts.sscs.extractor.DwpResponseReceivedDateExtractor;
+import uk.gov.hmcts.sscs.extractor.HearingContactDateExtractor;
 
 @RunWith(MockitoJUnitRunner.class)
 public class HearingHoldingReminderTest {
 
     @Mock
-    private DwpResponseReceivedDateExtractor dwpResponseReceivedDateExtractor;
+    private HearingContactDateExtractor hearingContactDateExtractor;
     @Mock
     private JobGroupGenerator jobGroupGenerator;
     @Mock
@@ -36,11 +36,9 @@ public class HearingHoldingReminderTest {
     @Before
     public void setup() {
         hearingHoldingReminder = new HearingHoldingReminder(
-            dwpResponseReceivedDateExtractor,
+            hearingContactDateExtractor,
             jobGroupGenerator,
-            jobScheduler,
-            86400,
-            (86400 * 2)
+            jobScheduler
         );
     }
 
@@ -66,25 +64,41 @@ public class HearingHoldingReminderTest {
     @Test
     public void scheduleHearingHoldingRemindersWhenDwpResponseReceived() {
 
-        final String expectedInterimJobGroup = "ID_EVENT";
+        final ZonedDateTime firstHearingContactDate = ZonedDateTime.parse("2018-01-01T15:00:18Z[Europe/London]");
+        final ZonedDateTime secondHearingContactDate = ZonedDateTime.parse("2018-01-01T16:00:18Z[Europe/London]");
+        final ZonedDateTime thirdHearingContactDate = ZonedDateTime.parse("2018-01-01T17:00:18Z[Europe/London]");
+        final ZonedDateTime finalHearingContactDate = ZonedDateTime.parse("2018-01-01T18:00:18Z[Europe/London]");
+
+        final String expectedFirstJobGroup = "ID_FIRST_EVENT";
+        final String expectedSecondJobGroup = "ID_SECOND_EVENT";
+        final String expectedThirdJobGroup = "ID_THIRD_EVENT";
         final String expectedFinalJobGroup = "ID_FINAL_EVENT";
 
-        final String expectedTriggerAt1 = "2018-01-02T14:01:18Z[Europe/London]";
-        final String expectedTriggerAt2 = "2018-01-04T14:01:18Z[Europe/London]";
-        final String expectedTriggerAt3 = "2018-01-06T14:01:18Z[Europe/London]";
-        final String expectedTriggerAt4 = "2018-01-08T14:01:18Z[Europe/London]";
+        CcdResponse ccdResponse = CcdResponseUtils.buildBasicCcdResponse(DWP_RESPONSE_RECEIVED);
 
-        ZonedDateTime dwpResponseReceivedDate = ZonedDateTime.parse("2018-01-01T14:01:18Z[Europe/London]");
+        when(hearingContactDateExtractor.extractForReferenceEvent(ccdResponse, DWP_RESPONSE_RECEIVED))
+            .thenReturn(Optional.of(firstHearingContactDate));
 
-        CcdResponse ccdResponse = CcdResponseUtils.buildBasicCcdResponseWithEvent(
-            DWP_RESPONSE_RECEIVED,
-            DWP_RESPONSE_RECEIVED,
-            dwpResponseReceivedDate.toString()
-        );
+        when(hearingContactDateExtractor.extractForReferenceEvent(ccdResponse, FIRST_HEARING_HOLDING_REMINDER))
+            .thenReturn(Optional.of(secondHearingContactDate));
 
-        when(dwpResponseReceivedDateExtractor.extract(ccdResponse)).thenReturn(Optional.of(dwpResponseReceivedDate));
-        when(jobGroupGenerator.generate(ccdResponse.getCaseId(), HEARING_HOLDING_REMINDER.getId())).thenReturn(expectedInterimJobGroup);
-        when(jobGroupGenerator.generate(ccdResponse.getCaseId(), FINAL_HEARING_HOLDING_REMINDER.getId())).thenReturn(expectedFinalJobGroup);
+        when(hearingContactDateExtractor.extractForReferenceEvent(ccdResponse, SECOND_HEARING_HOLDING_REMINDER))
+            .thenReturn(Optional.of(thirdHearingContactDate));
+
+        when(hearingContactDateExtractor.extractForReferenceEvent(ccdResponse, THIRD_HEARING_HOLDING_REMINDER))
+            .thenReturn(Optional.of(finalHearingContactDate));
+
+        when(jobGroupGenerator.generate(ccdResponse.getCaseId(), FIRST_HEARING_HOLDING_REMINDER.getId()))
+            .thenReturn(expectedFirstJobGroup);
+
+        when(jobGroupGenerator.generate(ccdResponse.getCaseId(), SECOND_HEARING_HOLDING_REMINDER.getId()))
+            .thenReturn(expectedSecondJobGroup);
+
+        when(jobGroupGenerator.generate(ccdResponse.getCaseId(), THIRD_HEARING_HOLDING_REMINDER.getId()))
+            .thenReturn(expectedThirdJobGroup);
+
+        when(jobGroupGenerator.generate(ccdResponse.getCaseId(), FINAL_HEARING_HOLDING_REMINDER.getId()))
+            .thenReturn(expectedFinalJobGroup);
 
         hearingHoldingReminder.handle(ccdResponse);
 
@@ -95,36 +109,37 @@ public class HearingHoldingReminderTest {
         );
 
         Job<String> job1 = jobCaptor.getAllValues().get(0);
-        assertEquals(expectedInterimJobGroup, job1.group);
-        assertEquals(HEARING_HOLDING_REMINDER.getId(), job1.name);
+        assertEquals(expectedFirstJobGroup, job1.group);
+        assertEquals(FIRST_HEARING_HOLDING_REMINDER.getId(), job1.name);
         assertEquals(CcdResponseUtils.CASE_ID, job1.payload);
-        assertEquals(expectedTriggerAt1, job1.triggerAt.toString());
+        assertEquals(firstHearingContactDate, job1.triggerAt);
 
         Job<String> job2 = jobCaptor.getAllValues().get(1);
-        assertEquals(expectedInterimJobGroup, job2.group);
-        assertEquals(HEARING_HOLDING_REMINDER.getId(), job2.name);
+        assertEquals(expectedSecondJobGroup, job2.group);
+        assertEquals(SECOND_HEARING_HOLDING_REMINDER.getId(), job2.name);
         assertEquals(CcdResponseUtils.CASE_ID, job2.payload);
-        assertEquals(expectedTriggerAt2, job2.triggerAt.toString());
+        assertEquals(secondHearingContactDate, job2.triggerAt);
 
         Job<String> job3 = jobCaptor.getAllValues().get(2);
-        assertEquals(expectedInterimJobGroup, job3.group);
-        assertEquals(HEARING_HOLDING_REMINDER.getId(), job3.name);
+        assertEquals(expectedThirdJobGroup, job3.group);
+        assertEquals(THIRD_HEARING_HOLDING_REMINDER.getId(), job3.name);
         assertEquals(CcdResponseUtils.CASE_ID, job3.payload);
-        assertEquals(expectedTriggerAt3, job3.triggerAt.toString());
+        assertEquals(thirdHearingContactDate, job3.triggerAt);
 
         Job<String> job4 = jobCaptor.getAllValues().get(3);
         assertEquals(expectedFinalJobGroup, job4.group);
         assertEquals(FINAL_HEARING_HOLDING_REMINDER.getId(), job4.name);
         assertEquals(CcdResponseUtils.CASE_ID, job4.payload);
-        assertEquals(expectedTriggerAt4, job4.triggerAt.toString());
+        assertEquals(finalHearingContactDate, job4.triggerAt);
     }
 
     @Test(expected = ReminderException.class)
-    public void throwExceptionWhenDwpResponseReceivedDateNotPresent() {
+    public void throwExceptionWhenHearingContactDateNotPresent() {
 
         CcdResponse ccdResponse = CcdResponseUtils.buildBasicCcdResponse(DWP_RESPONSE_RECEIVED);
 
-        when(dwpResponseReceivedDateExtractor.extract(ccdResponse)).thenReturn(Optional.empty());
+        when(hearingContactDateExtractor.extractForReferenceEvent(ccdResponse, DWP_RESPONSE_RECEIVED))
+            .thenReturn(Optional.empty());
 
         hearingHoldingReminder.handle(ccdResponse);
     }

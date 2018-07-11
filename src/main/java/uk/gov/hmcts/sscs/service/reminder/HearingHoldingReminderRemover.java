@@ -47,7 +47,9 @@ public class HearingHoldingReminderRemover implements ReminderHandler {
         final String caseId = ccdResponse.getCaseId();
 
         ImmutableList
-            .of(HEARING_HOLDING_REMINDER.getId(),
+            .of(FIRST_HEARING_HOLDING_REMINDER.getId(),
+                SECOND_HEARING_HOLDING_REMINDER.getId(),
+                THIRD_HEARING_HOLDING_REMINDER.getId(),
                 FINAL_HEARING_HOLDING_REMINDER.getId())
             .forEach(eventId -> {
 

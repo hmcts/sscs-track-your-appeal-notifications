@@ -50,7 +50,7 @@ public class SyaAppealCreatedPersonalisation extends Personalisation {
             details.add("Reason for no MRN: " + mrnDetails.getMrnMissingReason());
         }
 
-        return StringUtils.join(details.toArray(),"\n\n").toString();
+        return StringUtils.join(details.toArray(),"\n\n");
     }
 
     public Map<String, String> setYourDetails(Map<String, String> personalisation, CcdResponse ccdResponse) {

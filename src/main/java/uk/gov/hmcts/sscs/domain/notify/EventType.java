@@ -16,7 +16,9 @@ public enum EventType {
     SUBSCRIPTION_CREATED("subscriptionCreated"),
     SUBSCRIPTION_UPDATED("subscriptionUpdated"),
     EVIDENCE_REMINDER("evidenceReminder"),
-    HEARING_HOLDING_REMINDER("hearingHoldingReminder"),
+    FIRST_HEARING_HOLDING_REMINDER("hearingHoldingReminder"),
+    SECOND_HEARING_HOLDING_REMINDER("secondHearingHoldingReminder"),
+    THIRD_HEARING_HOLDING_REMINDER("thirdHearingHoldingReminder"),
     FINAL_HEARING_HOLDING_REMINDER("finalHearingHoldingReminder"),
     HEARING_REMINDER("hearingReminder"),
     DO_NOT_SEND("");

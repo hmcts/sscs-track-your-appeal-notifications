@@ -22,7 +22,7 @@ import uk.gov.hmcts.sscs.domain.notify.Event;
 import uk.gov.hmcts.sscs.domain.notify.Link;
 import uk.gov.hmcts.sscs.domain.notify.Notification;
 import uk.gov.hmcts.sscs.domain.notify.Template;
-import uk.gov.hmcts.sscs.extractor.HearingUpdateDateExtractor;
+import uk.gov.hmcts.sscs.extractor.HearingContactDateExtractor;
 import uk.gov.hmcts.sscs.personalisation.Personalisation;
 import uk.gov.hmcts.sscs.personalisation.SubscriptionPersonalisation;
 import uk.gov.hmcts.sscs.service.MessageAuthenticationServiceImpl;
@@ -45,7 +45,7 @@ public class NotificationFactoryTest {
     private RegionalProcessingCenterService regionalProcessingCenterService;
 
     @Mock
-    private HearingUpdateDateExtractor hearingUpdateDateExtractor;
+    private HearingContactDateExtractor hearingContactDateExtractor;
 
     @Mock
     private NotificationConfig config;
@@ -93,7 +93,7 @@ public class NotificationFactoryTest {
         RegionalProcessingCenter rpc = new RegionalProcessingCenter();
         rpc.createRegionalProcessingCenter("Venue", "HMCTS", "The Road", "Town", "City", "B23 1EH", "Birmingham");
         when(regionalProcessingCenterService.getByScReferenceCode("SC/1234/5")).thenReturn(rpc);
-        when(hearingUpdateDateExtractor.extract(any())).thenReturn(Optional.empty());
+        when(hearingContactDateExtractor.extract(any())).thenReturn(Optional.empty());
     }
 
     @Test

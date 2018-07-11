@@ -1,45 +1,37 @@
 package uk.gov.hmcts.sscs.service.reminder;
 
 import static org.slf4j.LoggerFactory.getLogger;
-import static uk.gov.hmcts.sscs.domain.notify.EventType.DWP_RESPONSE_RECEIVED;
-import static uk.gov.hmcts.sscs.domain.notify.EventType.FINAL_HEARING_HOLDING_REMINDER;
-import static uk.gov.hmcts.sscs.domain.notify.EventType.HEARING_HOLDING_REMINDER;
+import static uk.gov.hmcts.sscs.domain.notify.EventType.*;
 
 import java.time.ZonedDateTime;
 import java.util.Optional;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 import uk.gov.hmcts.reform.sscs.jobscheduler.model.Job;
 import uk.gov.hmcts.reform.sscs.jobscheduler.services.JobScheduler;
 import uk.gov.hmcts.sscs.domain.CcdResponse;
+import uk.gov.hmcts.sscs.domain.notify.EventType;
 import uk.gov.hmcts.sscs.exception.ReminderException;
-import uk.gov.hmcts.sscs.extractor.DwpResponseReceivedDateExtractor;
+import uk.gov.hmcts.sscs.extractor.HearingContactDateExtractor;
 
 @Component
 public class HearingHoldingReminder implements ReminderHandler {
 
     private static final org.slf4j.Logger LOG = getLogger(HearingHoldingReminder.class);
 
-    private final DwpResponseReceivedDateExtractor dwpResponseReceivedDateExtractor;
+    private final HearingContactDateExtractor hearingContactDateExtractor;
     private final JobGroupGenerator jobGroupGenerator;
     private final JobScheduler<String> jobScheduler;
-    private final long initialDelay;
-    private final long subsequentDelay;
 
     @Autowired
     public HearingHoldingReminder(
-        DwpResponseReceivedDateExtractor dwpResponseReceivedDateExtractor,
+        HearingContactDateExtractor hearingContactDateExtractor,
         JobGroupGenerator jobGroupGenerator,
-        JobScheduler<String> jobScheduler,
-        @Value("${reminder.hearingHoldingReminder.initialDelay.seconds}") long initialDelay,
-        @Value("${reminder.hearingHoldingReminder.subsequentDelay.seconds}") long subsequentDelay
+        JobScheduler<String> jobScheduler
     ) {
-        this.dwpResponseReceivedDateExtractor = dwpResponseReceivedDateExtractor;
+        this.hearingContactDateExtractor = hearingContactDateExtractor;
         this.jobGroupGenerator = jobGroupGenerator;
         this.jobScheduler = jobScheduler;
-        this.initialDelay = initialDelay;
-        this.subsequentDelay = subsequentDelay;
     }
 
     public boolean canHandle(CcdResponse ccdResponse) {
@@ -53,18 +45,21 @@ public class HearingHoldingReminder implements ReminderHandler {
             throw new IllegalArgumentException("cannot handle ccdResponse");
         }
 
-        scheduleReminder(ccdResponse, initialDelay);
-        scheduleReminder(ccdResponse, initialDelay + subsequentDelay);
-        scheduleReminder(ccdResponse, initialDelay + (subsequentDelay * 2));
-        scheduleFinalReminder(ccdResponse, initialDelay + (subsequentDelay * 3));
+        scheduleReminder(ccdResponse, DWP_RESPONSE_RECEIVED, FIRST_HEARING_HOLDING_REMINDER);
+        scheduleReminder(ccdResponse, FIRST_HEARING_HOLDING_REMINDER, SECOND_HEARING_HOLDING_REMINDER);
+        scheduleReminder(ccdResponse, SECOND_HEARING_HOLDING_REMINDER, THIRD_HEARING_HOLDING_REMINDER);
+        scheduleReminder(ccdResponse, THIRD_HEARING_HOLDING_REMINDER, FINAL_HEARING_HOLDING_REMINDER);
     }
 
-    private void scheduleReminder(CcdResponse ccdResponse, long delay) {
-
+    private void scheduleReminder(
+        CcdResponse ccdResponse,
+        EventType referenceEventType,
+        EventType scheduledEventType
+    ) {
         String caseId = ccdResponse.getCaseId();
-        String eventId = HEARING_HOLDING_REMINDER.getId();
+        String eventId = scheduledEventType.getId();
         String jobGroup = jobGroupGenerator.generate(caseId, eventId);
-        ZonedDateTime reminderDate = calculateReminderDate(ccdResponse, delay);
+        ZonedDateTime reminderDate = calculateReminderDate(ccdResponse, referenceEventType);
 
         jobScheduler.schedule(new Job<>(
             jobGroup,
@@ -76,30 +71,13 @@ public class HearingHoldingReminder implements ReminderHandler {
         LOG.info("Scheduled hearing holding reminder for case: {} @ {}", caseId, reminderDate.toString());
     }
 
-    private void scheduleFinalReminder(CcdResponse ccdResponse, long delay) {
+    private ZonedDateTime calculateReminderDate(CcdResponse ccdResponse, EventType referenceEventType) {
 
-        String caseId = ccdResponse.getCaseId();
-        String eventId = FINAL_HEARING_HOLDING_REMINDER.getId();
-        String jobGroup = jobGroupGenerator.generate(caseId, eventId);
-        ZonedDateTime reminderDate = calculateReminderDate(ccdResponse, delay);
+        Optional<ZonedDateTime> hearingContactDate =
+                hearingContactDateExtractor.extractForReferenceEvent(ccdResponse, referenceEventType);
 
-        jobScheduler.schedule(new Job<>(
-            jobGroup,
-            eventId,
-            caseId,
-            reminderDate
-        ));
-
-        LOG.info("Scheduled final hearing holding reminder for case: {} @ {}", caseId, reminderDate.toString());
-    }
-
-    private ZonedDateTime calculateReminderDate(CcdResponse ccdResponse, long delay) {
-
-        Optional<ZonedDateTime> dwpResponseReceivedDate = dwpResponseReceivedDateExtractor.extract(ccdResponse);
-
-        if (dwpResponseReceivedDate.isPresent()) {
-            return dwpResponseReceivedDate.get()
-                .plusSeconds(delay);
+        if (hearingContactDate.isPresent()) {
+            return hearingContactDate.get();
         }
 
         ReminderException reminderException = new ReminderException(
