@@ -23,7 +23,7 @@ import uk.gov.hmcts.sscs.config.NotificationConfig;
 import uk.gov.hmcts.sscs.domain.*;
 import uk.gov.hmcts.sscs.domain.notify.Event;
 import uk.gov.hmcts.sscs.domain.notify.Link;
-import uk.gov.hmcts.sscs.extractor.HearingUpdateDateExtractor;
+import uk.gov.hmcts.sscs.extractor.HearingContactDateExtractor;
 import uk.gov.hmcts.sscs.service.MessageAuthenticationServiceImpl;
 import uk.gov.hmcts.sscs.service.RegionalProcessingCenterService;
 
@@ -41,7 +41,7 @@ public class SubscriptionPersonalisationTest {
     private RegionalProcessingCenterService regionalProcessingCenterService;
 
     @Mock
-    private HearingUpdateDateExtractor hearingUpdateDateExtractor;
+    private HearingContactDateExtractor hearingContactDateExtractor;
 
     @Mock
     private NotificationConfig config;
@@ -66,7 +66,7 @@ public class SubscriptionPersonalisationTest {
         when(config.getClaimingExpensesLink()).thenReturn(Link.builder().linkUrl("http://link.com/progress/appeal_id/expenses").build());
         when(config.getHearingInfoLink()).thenReturn(Link.builder().linkUrl("http://link.com/progress/appeal_id/abouthearing").build());
         when(macService.generateToken("GLSCRR", PIP.name())).thenReturn("ZYX");
-        when(hearingUpdateDateExtractor.extract(any())).thenReturn(Optional.empty());
+        when(hearingContactDateExtractor.extract(any())).thenReturn(Optional.empty());
 
         RegionalProcessingCenter rpc = new RegionalProcessingCenter();
         rpc.createRegionalProcessingCenter("Venue", "HMCTS", "The Road", "Town", "City", "B23 1EH", "Birmingham");

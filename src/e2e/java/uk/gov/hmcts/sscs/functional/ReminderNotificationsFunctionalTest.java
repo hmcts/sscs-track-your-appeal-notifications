@@ -4,7 +4,6 @@ import static org.junit.Assert.*;
 import static org.slf4j.LoggerFactory.getLogger;
 import static uk.gov.hmcts.sscs.CcdResponseUtils.addHearing;
 import static uk.gov.hmcts.sscs.CcdResponseUtils.buildCcdResponse;
-import static uk.gov.hmcts.sscs.config.AppConstants.RESPONSE_DATE_FORMAT;
 import static uk.gov.hmcts.sscs.domain.notify.EventType.*;
 
 import helper.EnvironmentProfileValueSource;
@@ -13,8 +12,6 @@ import java.io.File;
 import java.io.IOException;
 import java.nio.charset.StandardCharsets;
 import java.time.Instant;
-import java.time.LocalDate;
-import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
@@ -23,6 +20,7 @@ import java.util.stream.Collectors;
 import org.apache.commons.io.FileUtils;
 import org.hamcrest.CoreMatchers;
 import org.junit.Assert;
+import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -61,6 +59,9 @@ public class ReminderNotificationsFunctionalTest {
     @Autowired
     private IdamService idamService;
 
+    @Autowired
+    private NotificationClient client;
+
     private CcdResponse caseData;
     private IdamTokens idamTokens;
     private Long caseId;
@@ -78,6 +79,12 @@ public class ReminderNotificationsFunctionalTest {
     @Value("${notification.evidenceReminder.smsId}")
     private String evidenceReminderSmsTemplateId;
 
+    @Value("${notification.responseReceived.emailId}")
+    private String responseReceivedEmailTemplateId;
+
+    @Value("${notification.responseReceived.smsId}")
+    private String responseReceivedSmsTemplateId;
+
     @Value("${notification.hearingReminder.emailId}")
     private String hearingReminderEmailTemplateId;
 
@@ -85,10 +92,22 @@ public class ReminderNotificationsFunctionalTest {
     private String hearingReminderSmsTemplateId;
 
     @Value("${notification.hearingHoldingReminder.emailId}")
-    private String hearingHoldingReminderEmailTemplateId;
+    private String firstHearingHoldingReminderEmailTemplateId;
 
     @Value("${notification.hearingHoldingReminder.smsId}")
-    private String hearingHoldingReminderSmsTemplateId;
+    private String firstHearingHoldingReminderSmsTemplateId;
+
+    @Value("${notification.secondHearingHoldingReminder.emailId}")
+    private String secondHearingHoldingReminderEmailTemplateId;
+
+    @Value("${notification.secondHearingHoldingReminder.smsId}")
+    private String secondHearingHoldingReminderSmsTemplateId;
+
+    @Value("${notification.thirdHearingHoldingReminder.emailId}")
+    private String thirdHearingHoldingReminderEmailTemplateId;
+
+    @Value("${notification.thirdHearingHoldingReminder.smsId}")
+    private String thirdHearingHoldingReminderSmsTemplateId;
 
     @Value("${notification.finalHearingHoldingReminder.emailId}")
     private String finalHearingHoldingReminderEmailTemplateId;
@@ -96,12 +115,20 @@ public class ReminderNotificationsFunctionalTest {
     @Value("${notification.finalHearingHoldingReminder.smsId}")
     private String finalHearingHoldingReminderSmsTemplateId;
 
-    @Autowired
-    private NotificationClient client;
-
     private static final int MAX_SECONDS_TO_WAIT_FOR_NOTIFICATIONS = 120;
 
-    public void createCase(EventType eventType) {
+    @Before
+    public void setup() {
+
+        String oauth2Token = idamService.getIdamOauth2Token();
+        idamTokens = IdamTokens.builder()
+            .idamOauth2Token(oauth2Token)
+            .serviceAuthorization(idamService.generateServiceAuthorization())
+            .userId(idamService.getUserId(oauth2Token))
+            .build();
+    }
+
+    private void createCase(EventType eventType) {
 
         String epoch = String.valueOf(Instant.now().toEpochMilli());
         caseReference =
@@ -113,14 +140,6 @@ public class ReminderNotificationsFunctionalTest {
             + epoch.substring(8, 13);
 
         caseData = buildCcdResponse(caseReference, "Yes", "Yes", eventType);
-
-        String oauth2Token = idamService.getIdamOauth2Token();
-        idamTokens = IdamTokens.builder()
-            .idamOauth2Token(oauth2Token)
-            .serviceAuthorization(idamService.generateServiceAuthorization())
-            .userId(idamService.getUserId(oauth2Token))
-            .build();
-
         CaseDetails caseDetails = createCcdService.create(caseData, idamTokens);
 
         assertNotNull(caseDetails);
@@ -130,7 +149,7 @@ public class ReminderNotificationsFunctionalTest {
     }
 
     @Test
-    public void shouldSendDwpResponseLateNotification() throws IOException, NotificationClientException {
+    public void shouldSendNotificationsWhenAppealReceivedEventIsReceived() throws IOException, NotificationClientException {
 
         createCase(SYA_APPEAL_CREATED);
         triggerEvent(APPEAL_RECEIVED);
@@ -147,34 +166,43 @@ public class ReminderNotificationsFunctionalTest {
             dwpResponseLateReminderEmailTemplateId,
             caseReference,
             "User Test",
+            "DWP",
             "due to respond",
+            "28 June 2017",
             "/trackyourappeal"
         );
 
-        assertNotificationBodyContains(notifications, dwpResponseLateReminderSmsTemplateId, "ESA");
+        assertNotificationBodyContains(
+            notifications,
+            dwpResponseLateReminderSmsTemplateId,
+            "DWP",
+            "due to respond",
+            "28 June 2017",
+            "/trackyourappeal"
+        );
     }
 
     @Test
-    public void shouldSendEvidenceReminderAndHearingHoldingNotification() throws IOException, NotificationClientException {
+    public void shouldSendNotificationsWhenDwpResponseReceivedEventIsReceived() throws IOException, NotificationClientException {
 
-        createCase(APPEAL_RECEIVED);
+        createCase(SYA_APPEAL_CREATED);
         triggerEvent(DWP_RESPONSE_RECEIVED);
 
         List<Notification> notifications =
             tryFetchNotificationsForTestCase(
+                responseReceivedEmailTemplateId,
+                responseReceivedSmsTemplateId,
                 evidenceReminderEmailTemplateId,
                 evidenceReminderSmsTemplateId,
-                hearingHoldingReminderEmailTemplateId,
-                hearingHoldingReminderEmailTemplateId,
-                hearingHoldingReminderEmailTemplateId,
-                hearingHoldingReminderSmsTemplateId,
-                hearingHoldingReminderSmsTemplateId,
-                hearingHoldingReminderSmsTemplateId,
+                firstHearingHoldingReminderEmailTemplateId,
+                firstHearingHoldingReminderSmsTemplateId,
+                secondHearingHoldingReminderEmailTemplateId,
+                secondHearingHoldingReminderSmsTemplateId,
+                thirdHearingHoldingReminderEmailTemplateId,
+                thirdHearingHoldingReminderSmsTemplateId,
                 finalHearingHoldingReminderEmailTemplateId,
                 finalHearingHoldingReminderSmsTemplateId
             );
-
-        final String todayPlus6Weeks = LocalDate.now().plusWeeks(6).format(DateTimeFormatter.ofPattern(RESPONSE_DATE_FORMAT));
 
         assertNotificationSubjectContains(notifications, evidenceReminderEmailTemplateId, "ESA");
         assertNotificationBodyContains(
@@ -188,25 +216,90 @@ public class ReminderNotificationsFunctionalTest {
 
         assertNotificationBodyContains(notifications, evidenceReminderSmsTemplateId, "ESA");
 
-        assertNotificationSubjectContains(notifications, hearingHoldingReminderEmailTemplateId, "ESA");
+        assertNotificationSubjectContains(notifications, responseReceivedEmailTemplateId, "ESA");
         assertNotificationBodyContains(
             notifications,
-            hearingHoldingReminderEmailTemplateId,
+            responseReceivedEmailTemplateId,
+            caseReference,
+            "User Test",
+            "ESA benefit",
+            "DWP",
+            "response",
+            "/trackyourappeal",
+            "12 March 2016"
+        );
+
+        assertNotificationBodyContains(
+            notifications,
+            responseReceivedSmsTemplateId,
+            "ESA benefit",
+            "DWP",
+            "response",
+            "/trackyourappeal",
+            "12 March 2016"
+        );
+
+        assertNotificationSubjectContains(notifications, firstHearingHoldingReminderEmailTemplateId, "ESA");
+        assertNotificationBodyContains(
+            notifications,
+            firstHearingHoldingReminderEmailTemplateId,
             caseReference,
             "User Test",
             "ESA",
             "not been booked",
             "/trackyourappeal",
-            todayPlus6Weeks
+            "23 April 2016"
         );
 
         assertNotificationBodyContains(
             notifications,
-            hearingHoldingReminderSmsTemplateId,
+            firstHearingHoldingReminderSmsTemplateId,
             "ESA",
             "not been booked",
             "/trackyourappeal",
-            todayPlus6Weeks
+            "23 April 2016"
+        );
+
+        assertNotificationSubjectContains(notifications, secondHearingHoldingReminderEmailTemplateId, "ESA benefit appeal");
+        assertNotificationBodyContains(
+            notifications,
+            secondHearingHoldingReminderEmailTemplateId,
+            caseReference,
+            "User Test",
+            "ESA benefit",
+            "not been booked",
+            "/trackyourappeal",
+            "04 June 2016"
+        );
+
+        assertNotificationBodyContains(
+            notifications,
+            secondHearingHoldingReminderSmsTemplateId,
+            "ESA benefit",
+            "not been booked",
+            "/trackyourappeal",
+            "04 June 2016"
+        );
+
+        assertNotificationSubjectContains(notifications, thirdHearingHoldingReminderEmailTemplateId, "ESA benefit appeal");
+        assertNotificationBodyContains(
+            notifications,
+            thirdHearingHoldingReminderEmailTemplateId,
+            caseReference,
+            "User Test",
+            "ESA benefit",
+            "not been booked",
+            "/trackyourappeal",
+            "16 July 2016"
+        );
+
+        assertNotificationBodyContains(
+            notifications,
+            thirdHearingHoldingReminderSmsTemplateId,
+            "ESA benefit",
+            "not been booked",
+            "/trackyourappeal",
+            "16 July 2016"
         );
 
         assertNotificationSubjectContains(notifications, finalHearingHoldingReminderEmailTemplateId, "ESA");
@@ -230,9 +323,9 @@ public class ReminderNotificationsFunctionalTest {
     }
 
     @Test
-    public void shouldSendHearingReminderNotification() throws IOException, NotificationClientException {
+    public void shouldSendNotificationsWhenHearingBookedEventIsReceived() throws IOException, NotificationClientException {
 
-        createCase(DWP_RESPONSE_RECEIVED);
+        createCase(SYA_APPEAL_CREATED);
         addHearing(caseData);
         triggerEvent(HEARING_BOOKED);
 
@@ -251,6 +344,8 @@ public class ReminderNotificationsFunctionalTest {
             caseReference,
             "ESA",
             "reminder",
+            "01 January 2016",
+            "12:00 PM",
             "AB12 0HN",
             "/abouthearing"
         );
@@ -259,7 +354,11 @@ public class ReminderNotificationsFunctionalTest {
             notifications,
             hearingReminderSmsTemplateId,
             "ESA",
-            "reminder"
+            "reminder",
+            "01 January 2016",
+            "12:00 PM",
+            "AB12 0HN",
+            "/abouthearing"
         );
     }
 
@@ -346,10 +445,10 @@ public class ReminderNotificationsFunctionalTest {
 
         LOG.info("Is preview environment -- simulating a CCD callback to: " + callbackUrl + " for case " + caseReference);
 
-        String path = getClass().getClassLoader().getResource("json/ccdResponse.json").getFile();
+        String resource = eventType.getId() + "Callback.json";
+        String path = getClass().getClassLoader().getResource(resource).getFile();
         String json = FileUtils.readFileToString(new File(path), StandardCharsets.UTF_8.name());
 
-        json = json.replace("appealReceived", eventType.getId());
         json = json.replace("12345656789", caseId.toString());
         json = json.replace("SC022/14/12423", caseReference);
 
@@ -372,11 +471,28 @@ public class ReminderNotificationsFunctionalTest {
         List<Notification> allNotifications = new ArrayList<>();
         List<Notification> matchingNotifications = new ArrayList<>();
 
-        int maxSecondsToWaitForNotification = MAX_SECONDS_TO_WAIT_FOR_NOTIFICATIONS;
+        int waitForAtLeastNumberOfNotifications = expectedTemplateIds.length;
+
+        if (isPreviewEnv()) {
+            // aat staging slot will also send a set of notifications
+            // because aat ccd callbacks go there. the notifications from
+            // aat staging slot will be from an older version.
+            waitForAtLeastNumberOfNotifications *= 2;
+        }
+
+        boolean isTimeoutExceeded = false;
+        int maxSecondsToWaitForNotification = 180;
 
         do {
 
-            if (maxSecondsToWaitForNotification-- == 0) {
+            LOG.info(
+                "Waiting for all test case notifications to be delivered "
+                + "[" + matchingNotifications.size() + "/" + waitForAtLeastNumberOfNotifications + "] ..."
+            );
+
+            if (maxSecondsToWaitForNotification <= 0) {
+
+                isTimeoutExceeded = true;
 
                 String allTemplateIds =
                     allNotifications
@@ -384,7 +500,7 @@ public class ReminderNotificationsFunctionalTest {
                         .map(notification -> notification.getTemplateId().toString())
                         .collect(Collectors.joining("\n"));
 
-                throw new RuntimeException(
+                LOG.info(
                     "Timed out fetching notifications after "
                     + MAX_SECONDS_TO_WAIT_FOR_NOTIFICATIONS
                     + " seconds. Template IDs:\n"
@@ -392,15 +508,14 @@ public class ReminderNotificationsFunctionalTest {
                 );
             }
 
-            LOG.info(
-                "Waiting for all test case notifications to be delivered "
-                + "[" + matchingNotifications.size() + "/" + expectedTemplateIds.length + "] ..."
-            );
+            maxSecondsToWaitForNotification -= 10;
 
-            try {
-                Thread.sleep(1000);
-            } catch (InterruptedException e) {
-                // noop
+            if (!isTimeoutExceeded) {
+                try {
+                    Thread.sleep(10000);
+                } catch (InterruptedException e) {
+                    // noop
+                }
             }
 
             allNotifications =
@@ -414,7 +529,8 @@ public class ReminderNotificationsFunctionalTest {
                     .filter(notification -> Arrays.asList(expectedTemplateIds).contains(notification.getTemplateId().toString()))
                     .collect(Collectors.toList());
 
-            if (matchingNotifications.size() >= expectedTemplateIds.length) {
+            if (matchingNotifications.size() >= waitForAtLeastNumberOfNotifications
+                || isTimeoutExceeded) {
 
                 for (Notification notification : matchingNotifications) {
                     assertFalse(notification.getStatus().contains("fail"));
@@ -422,8 +538,19 @@ public class ReminderNotificationsFunctionalTest {
 
                 LOG.info(
                     "Test case notifications have been delivered "
-                    + "[" + matchingNotifications.size() + "/" + expectedTemplateIds.length + "]"
+                    + "[" + matchingNotifications.size() + "/" + waitForAtLeastNumberOfNotifications + "]"
                 );
+
+                if (!getEnvOrEmpty("DISPLAY_NOTIFICATIONS").isEmpty()) {
+
+                    String bodies =
+                        matchingNotifications
+                            .stream()
+                            .map(notification -> notification.getId().toString() + "\n" + notification.getBody())
+                            .collect(Collectors.joining("\n--\n"));
+
+                    LOG.info(matchingNotifications.size() + " bodies:\n" + bodies);
+                }
 
                 return matchingNotifications;
             }
