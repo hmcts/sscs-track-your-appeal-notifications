@@ -24,9 +24,11 @@ import org.springframework.test.context.junit4.SpringRunner;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.request.MockHttpServletRequestBuilder;
 import org.springframework.test.web.servlet.setup.MockMvcBuilders;
+import uk.gov.hmcts.sscs.config.NotificationBlacklist;
 import uk.gov.hmcts.sscs.controller.NotificationController;
 import uk.gov.hmcts.sscs.factory.NotificationFactory;
 import uk.gov.hmcts.sscs.service.AuthorisationService;
+import uk.gov.hmcts.sscs.service.NotificationSender;
 import uk.gov.hmcts.sscs.service.NotificationService;
 import uk.gov.hmcts.sscs.service.ReminderService;
 import uk.gov.service.notify.NotificationClient;
@@ -50,6 +52,9 @@ public class NotificationsIt {
     @MockBean
     private AuthorisationService authorisationService;
 
+    @Mock
+    NotificationBlacklist notificationBlacklist;
+
     @Autowired
     NotificationFactory factory;
 
@@ -57,7 +62,8 @@ public class NotificationsIt {
 
     @Before
     public void setup() throws IOException {
-        NotificationService service = new NotificationService(client, factory, reminderService);
+        NotificationSender sender = new NotificationSender(client, null, notificationBlacklist);
+        NotificationService service = new NotificationService(sender, factory, reminderService);
         controller = new NotificationController(service, authorisationService);
         this.mockMvc = MockMvcBuilders.standaloneSetup(controller).build();
         String path = getClass().getClassLoader().getResource("json/ccdResponse.json").getFile();

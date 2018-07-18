@@ -17,8 +17,6 @@ public class NotificationBlacklist {
     private final List<String> testRecipients = new ArrayList<>();
 
     public List<String> getTestRecipients() {
-        LOG.info("Blacklist recipients: " + testRecipients.toString());
-
         return testRecipients;
     }
 }

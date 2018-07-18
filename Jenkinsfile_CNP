@@ -16,6 +16,7 @@ List<LinkedHashMap<String, Object>> secrets = [
   secret('sysupdate-user', 'IDAM_SSCS_SYSTEMUPDATE_USER'),
   secret('sysupdate-pass', 'IDAM_SSCS_SYSTEMUPDATE_PASSWORD'),
   secret('notif-api', 'NOTIFICATION_API_KEY'),
+  secret('notif-test-api', 'NOTIFICATION_API_TEST_KEY'),
   secret('mac-secret', 'EMAIL_MAC_SECRET_TEXT'),
   secret('idam-oauth-secret', 'IDAM_OAUTH2_CLIENT_SECRET'),
   secret('idam-oauth-user', 'IDAM_OAUTH2_CLIENT_ID'),
