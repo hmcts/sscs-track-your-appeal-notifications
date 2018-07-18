@@ -41,7 +41,7 @@ public class NotificationSender {
         NotificationClient client;
 
         if (notificationBlacklist.getTestRecipients().contains(emailAddress)) {
-            LOG.info("Using test GovNotify key for: {}", emailAddress);
+            LOG.info("Using test GovNotify key {} for {}", testNotificationClient.getApiKey(), emailAddress);
             client = testNotificationClient;
         } else {
             client = notificationClient;
@@ -65,7 +65,7 @@ public class NotificationSender {
         NotificationClient client;
 
         if (notificationBlacklist.getTestRecipients().contains(phoneNumber)) {
-            LOG.info("Using test GovNotify key for: {}", phoneNumber);
+            LOG.info("Using test GovNotify key {} for {}", testNotificationClient.getApiKey(), phoneNumber);
             client = testNotificationClient;
         } else {
             client = notificationClient;
