@@ -35,6 +35,10 @@ data "vault_generic_secret" "sscs_notify_api_key" {
   path = "secret/${var.infrastructure_env}/sscs/${var.notification_key}"
 }
 
+data "vault_generic_secret" "sscs_notify_api_test_key" {
+  path = "secret/${var.infrastructure_env}/sscs/${var.notification_test_key}"
+}
+
 data "vault_generic_secret" "mac_secret" {
   path = "secret/${var.infrastructure_env}/sscs/sscs_email_mac_secret_text"
 }
@@ -86,6 +90,7 @@ module "track-your-appeal-notifications" {
     IDAM_OAUTH2_REDIRECT_URL = "${var.idam_redirect_url}"
 
     NOTIFICATION_API_KEY = "${data.vault_generic_secret.sscs_notify_api_key.data["value"]}"
+    NOTIFICATION_API_TEST_KEY = "${data.vault_generic_secret.sscs_notify_api_test_key.data["value"]}"
     EVIDENCE_SUBMISSION_INFO_LINK = "${var.evidence_submission_info_link}"
     SSCS_MANAGE_EMAILS_LINK = "${var.sscs_manage_emails_link}"
     SSCS_TRACK_YOUR_APPEAL_LINK = "${var.sscs_track_your_appeal_link}"

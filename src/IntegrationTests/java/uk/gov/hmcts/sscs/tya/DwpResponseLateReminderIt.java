@@ -49,7 +49,7 @@ public class DwpResponseLateReminderIt {
     @MockBean
     private AuthorisationService authorisationService;
 
-    @MockBean
+    @MockBean(name = "notificationClient")
     NotificationClient client;
 
     @MockBean
