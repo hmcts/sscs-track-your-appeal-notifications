@@ -62,6 +62,11 @@ management:
       show-details: always
 
 gov.uk.notification.api.key: ${NOTIFICATION_API_KEY:emailnotificationkey}
+gov.uk.notification.api.testKey: ${NOTIFICATION_API_TEST_KEY:emailnotificationtestkey}
+gov.uk.notification.api.testRecipients:
+  - "sscstest+notify@greencroftconsulting.com"
+  - "07398785050"
+
 subscription.hmac.secret.text: ${EMAIL_MAC_SECRET_TEXT:our-big-secret}
 
 hmcts.phone.number: 0300 123 1142

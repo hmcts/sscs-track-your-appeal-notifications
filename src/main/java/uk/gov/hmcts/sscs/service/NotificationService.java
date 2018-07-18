@@ -12,20 +12,19 @@ import uk.gov.hmcts.sscs.domain.notify.Notification;
 import uk.gov.hmcts.sscs.exception.NotificationClientRuntimeException;
 import uk.gov.hmcts.sscs.exception.NotificationServiceException;
 import uk.gov.hmcts.sscs.factory.NotificationFactory;
-import uk.gov.service.notify.NotificationClient;
 
 @Service
 public class NotificationService {
     private static final Logger LOG = getLogger(NotificationService.class);
 
-    private final NotificationClient client;
+    private final NotificationSender notificationSender;
     private final NotificationFactory factory;
     private final ReminderService reminderService;
 
     @Autowired
-    public NotificationService(NotificationClient client, NotificationFactory factory, ReminderService reminderService) {
+    public NotificationService(NotificationSender notificationSender, NotificationFactory factory, ReminderService reminderService) {
         this.factory = factory;
-        this.client = client;
+        this.notificationSender = notificationSender;
         this.reminderService = reminderService;
     }
 
@@ -45,7 +44,7 @@ public class NotificationService {
 
                 try {
                     LOG.info("Sending email template {} for case id: {}", notification.getEmailTemplate(), caseId);
-                    client.sendEmail(notification.getEmailTemplate(), notification.getEmail(), notification.getPlaceholders(), notification.getReference());
+                    notificationSender.sendEmail(notification.getEmailTemplate(), notification.getEmail(), notification.getPlaceholders(), notification.getReference());
                     LOG.info("Email template {} sent for case id: {}", notification.getEmailTemplate(), caseId);
                 } catch (Exception ex) {
                     wrapAndThrowNotificationException(caseId, notification.getEmailTemplate(), ex);
@@ -56,7 +55,7 @@ public class NotificationService {
 
                 try {
                     LOG.info("Sending SMS template {} for case id: {}", notification.getSmsTemplate(), caseId);
-                    client.sendSms(notification.getSmsTemplate(), notification.getMobile(), notification.getPlaceholders(), notification.getReference());
+                    notificationSender.sendSms(notification.getSmsTemplate(), notification.getMobile(), notification.getPlaceholders(), notification.getReference());
                     LOG.info("SMS template {} sent for case id: {}", notification.getSmsTemplate(), caseId);
                 } catch (Exception ex) {
                     wrapAndThrowNotificationException(caseId, notification.getSmsTemplate(), ex);

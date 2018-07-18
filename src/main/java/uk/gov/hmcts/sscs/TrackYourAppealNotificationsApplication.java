@@ -12,6 +12,7 @@ import org.springframework.context.ApplicationContext;
 import org.springframework.context.MessageSource;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.ComponentScan;
+import org.springframework.context.annotation.Primary;
 import org.springframework.context.support.ReloadableResourceBundleMessageSource;
 import uk.gov.hmcts.reform.sscs.jobscheduler.config.QuartzConfiguration;
 import uk.gov.hmcts.sscs.deserialize.CcdResponseWrapperDeserializer;
@@ -30,6 +31,9 @@ public class TrackYourAppealNotificationsApplication {
     @Value("${gov.uk.notification.api.key}")
     private String apiKey;
 
+    @Value("${gov.uk.notification.api.testKey}")
+    private String testApiKey;
+
     @PostConstruct
     public void started() {
         TimeZone.setDefault(TimeZone.getTimeZone(UTC));
@@ -40,8 +44,14 @@ public class TrackYourAppealNotificationsApplication {
     }
 
     @Bean
+    @Primary
     public NotificationClient notificationClient() {
         return new NotificationClient(apiKey);
+    }
+
+    @Bean
+    public NotificationClient testNotificationClient() {
+        return new NotificationClient(testApiKey);
     }
 
     @Bean
