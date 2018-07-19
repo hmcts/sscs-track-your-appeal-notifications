@@ -38,21 +38,12 @@ public class NotificationSender {
         String reference
     ) throws NotificationClientException {
 
-        NotificationClient client;
-
         if (notificationBlacklist.getTestRecipients().contains(emailAddress)) {
             LOG.info("Using test GovNotify key {} for {}", testNotificationClient.getApiKey(), emailAddress);
-            client = testNotificationClient;
+            testNotificationClient.sendEmail(templateId, emailAddress, personalisation, reference);
         } else {
-            client = notificationClient;
+            notificationClient.sendEmail(templateId, emailAddress, personalisation, reference);
         }
-
-        client.sendEmail(
-            templateId,
-            emailAddress,
-            personalisation,
-            reference
-        );
     }
 
     public void sendSms(
@@ -62,22 +53,11 @@ public class NotificationSender {
         String reference
     ) throws NotificationClientException {
 
-        NotificationClient client;
-
         if (notificationBlacklist.getTestRecipients().contains(phoneNumber)) {
             LOG.info("Using test GovNotify key {} for {}", testNotificationClient.getApiKey(), phoneNumber);
-            client = testNotificationClient;
+            testNotificationClient.sendSms(templateId, phoneNumber, personalisation, reference);
         } else {
-            client = notificationClient;
+            notificationClient.sendSms(templateId, phoneNumber, personalisation, reference);
         }
-
-        LOG.info("Temp second log using test GovNotify key {} for {}", client.getApiKey(), phoneNumber);
-
-        client.sendSms(
-            templateId,
-            phoneNumber,
-            personalisation,
-            reference
-        );
     }
 }
