@@ -71,6 +71,8 @@ public class NotificationSender {
             client = notificationClient;
         }
 
+        LOG.info("Temp second log using test GovNotify key {} for {}", client.getApiKey(), phoneNumber);
+
         client.sendSms(
             templateId,
             phoneNumber,
