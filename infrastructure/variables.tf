@@ -100,7 +100,7 @@ variable "notification_key" {
 }
 
 variable "notification_test_key" {
-  default = "sscs_notify_api_test_key"
+  default = "sscs_notify_api_new_key"
 }
 
 variable "common_tags" {
