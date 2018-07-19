@@ -30,6 +30,7 @@ import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 import uk.gov.hmcts.reform.sscs.jobscheduler.services.JobExecutor;
 import uk.gov.hmcts.sscs.controller.NotificationController;
 import uk.gov.hmcts.sscs.service.AuthorisationService;
+import uk.gov.hmcts.sscs.service.NotificationSender;
 import uk.gov.hmcts.sscs.service.NotificationService;
 import uk.gov.service.notify.NotificationClient;
 
@@ -49,8 +50,16 @@ public class DwpResponseLateReminderIt {
     @MockBean
     private AuthorisationService authorisationService;
 
-    @MockBean(name = "notificationClient")
-    NotificationClient client;
+    @MockBean
+    @Qualifier("notificationClient")
+    private NotificationClient notificationClient;
+
+    @MockBean
+    @Qualifier("testNotificationClient")
+    private NotificationClient testNotificationClient;
+
+    @MockBean
+    NotificationSender notificationSender;
 
     @MockBean
     private JobExecutor<String> jobExecutor;
