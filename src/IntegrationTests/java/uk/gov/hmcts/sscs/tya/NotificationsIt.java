@@ -2,7 +2,6 @@ package uk.gov.hmcts.sscs.tya;
 
 import static helper.IntegrationTestHelper.*;
 import static org.mockito.Mockito.*;
-import static org.mockito.Mockito.any;
 
 import java.io.File;
 import java.io.IOException;
@@ -14,6 +13,7 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.Mock;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
@@ -31,6 +31,7 @@ import uk.gov.hmcts.sscs.service.AuthorisationService;
 import uk.gov.hmcts.sscs.service.NotificationSender;
 import uk.gov.hmcts.sscs.service.NotificationService;
 import uk.gov.hmcts.sscs.service.ReminderService;
+import uk.gov.service.notify.NotificationClient;
 
 @RunWith(SpringRunner.class)
 @SpringBootTest
@@ -50,6 +51,14 @@ public class NotificationsIt {
 
     @MockBean
     private AuthorisationService authorisationService;
+
+    @MockBean
+    @Qualifier("notificationClient")
+    private NotificationClient notificationClient;
+
+    @MockBean
+    @Qualifier("testNotificationClient")
+    private NotificationClient testNotificationClient;
 
     @Mock
     NotificationBlacklist notificationBlacklist;
