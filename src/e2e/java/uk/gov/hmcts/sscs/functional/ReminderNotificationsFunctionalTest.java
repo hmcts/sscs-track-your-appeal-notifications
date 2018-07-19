@@ -117,7 +117,7 @@ public class ReminderNotificationsFunctionalTest {
     @Value("${notification.finalHearingHoldingReminder.smsId}")
     private String finalHearingHoldingReminderSmsTemplateId;
 
-    private static final int MAX_SECONDS_TO_WAIT_FOR_NOTIFICATIONS = 120;
+    private static final int MAX_SECONDS_TO_WAIT_FOR_NOTIFICATIONS = 240;
 
     @Before
     public void setup() {
