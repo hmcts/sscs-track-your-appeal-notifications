@@ -9,3 +9,4 @@ claiming_expenses_link = "https://track-appeal.demo.platform.hmcts.net/expenses/
 
 idam_redirect_url = "https://evidence-sharing-preprod.sscs.reform.hmcts.net"
 notification_key = "notification-key"
+notification_test_key = "notification-key"
