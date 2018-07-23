@@ -6,7 +6,6 @@ import java.util.Map;
 import org.slf4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 import uk.gov.hmcts.sscs.config.NotificationBlacklist;
 import uk.gov.service.notify.NotificationClient;
@@ -20,12 +19,6 @@ public class NotificationSender {
     private final NotificationClient notificationClient;
     private final NotificationClient testNotificationClient;
     private final NotificationBlacklist notificationBlacklist;
-
-    @Value("${gov.uk.notification.api.key}")
-    private String apiKey;
-
-    @Value("${gov.uk.notification.api.testKey}")
-    private String testApiKey;
 
     @Autowired
     public NotificationSender(
@@ -45,13 +38,21 @@ public class NotificationSender {
         String reference
     ) throws NotificationClientException {
 
+        NotificationClient client;
+
         if (notificationBlacklist.getTestRecipients().contains(emailAddress)) {
-            LOG.info("Using test GovNotify key {} for {}", testApiKey, emailAddress);
-            (new NotificationClient(testApiKey)).sendEmail(templateId, emailAddress, personalisation, reference);
+            LOG.info("Using test GovNotify key {} for {}", testNotificationClient.getApiKey(), emailAddress);
+            client = testNotificationClient;
         } else {
-            LOG.info("Using real GovNotify key {} for {}", apiKey, emailAddress);
-            (new NotificationClient(apiKey)).sendEmail(templateId, emailAddress, personalisation, reference);
+            client = notificationClient;
         }
+
+        client.sendEmail(
+            templateId,
+            emailAddress,
+            personalisation,
+            reference
+        );
     }
 
     public void sendSms(
@@ -61,12 +62,20 @@ public class NotificationSender {
         String reference
     ) throws NotificationClientException {
 
+        NotificationClient client;
+
         if (notificationBlacklist.getTestRecipients().contains(phoneNumber)) {
-            LOG.info("Using test GovNotify key {} for {}", testApiKey, phoneNumber);
-            (new NotificationClient(testApiKey)).sendSms(templateId, phoneNumber, personalisation, reference);
+            LOG.info("Using test GovNotify key {} for {}", testNotificationClient.getApiKey(), phoneNumber);
+            client = testNotificationClient;
         } else {
-            LOG.info("Using real GovNotify key {} for {}", apiKey, phoneNumber);
-            (new NotificationClient(apiKey)).sendSms(templateId, phoneNumber, personalisation, reference);
+            client = notificationClient;
         }
+
+        client.sendSms(
+            templateId,
+            phoneNumber,
+            personalisation,
+            reference
+        );
     }
 }
