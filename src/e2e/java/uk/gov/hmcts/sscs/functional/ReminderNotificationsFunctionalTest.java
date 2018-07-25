@@ -1,5 +1,6 @@
 package uk.gov.hmcts.sscs.functional;
 
+import static helper.EnvironmentProfileValueSource.getEnvOrEmpty;
 import static org.junit.Assert.*;
 import static org.slf4j.LoggerFactory.getLogger;
 import static uk.gov.hmcts.sscs.CcdResponseUtils.addHearing;
@@ -560,15 +561,5 @@ public class ReminderNotificationsFunctionalTest {
         } while (true);
     }
 
-    private String getEnvOrEmpty(
-        String name
-    ) {
-        String value = System.getenv(name);
-        if (value == null) {
-            return "";
-        }
-
-        return value;
-    }
 
 }
