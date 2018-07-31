@@ -1,9 +1,9 @@
 package uk.gov.hmcts.sscs.service.reminder;
 
 import static org.slf4j.LoggerFactory.getLogger;
-import static uk.gov.hmcts.sscs.domain.notify.EventType.HEARING_REMINDER;
-import static uk.gov.hmcts.sscs.domain.notify.EventType.POSTPONEMENT;
+import static uk.gov.hmcts.sscs.domain.notify.EventType.*;
 
+import java.util.Arrays;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 import uk.gov.hmcts.reform.sscs.jobscheduler.services.JobNotFoundException;
@@ -11,15 +11,15 @@ import uk.gov.hmcts.reform.sscs.jobscheduler.services.JobRemover;
 import uk.gov.hmcts.sscs.domain.CcdResponse;
 
 @Component
-public class HearingPostponedReminderHandler implements ReminderHandler {
+public class DwpResponseLateReminderRemover implements ReminderHandler {
 
-    private static final org.slf4j.Logger LOG = getLogger(HearingPostponedReminderHandler.class);
+    private static final org.slf4j.Logger LOG = getLogger(HearingReminderRemover.class);
 
     private final JobGroupGenerator jobGroupGenerator;
     private final JobRemover jobRemover;
 
     @Autowired
-    public HearingPostponedReminderHandler(
+    public DwpResponseLateReminderRemover(
         JobGroupGenerator jobGroupGenerator,
         JobRemover jobRemover
     ) {
@@ -28,9 +28,14 @@ public class HearingPostponedReminderHandler implements ReminderHandler {
     }
 
     public boolean canHandle(CcdResponse ccdResponse) {
-        return ccdResponse
-            .getNotificationType()
-            .equals(POSTPONEMENT);
+        return Arrays.asList(
+            APPEAL_DORMANT,
+            APPEAL_LAPSED,
+            APPEAL_WITHDRAWN,
+            DWP_RESPONSE_RECEIVED
+        ).contains(
+            ccdResponse.getNotificationType()
+        );
     }
 
     public void handle(CcdResponse ccdResponse) {
@@ -39,15 +44,15 @@ public class HearingPostponedReminderHandler implements ReminderHandler {
         }
 
         String caseId = ccdResponse.getCaseId();
-        String jobGroup = jobGroupGenerator.generate(caseId, HEARING_REMINDER);
+        String jobGroup = jobGroupGenerator.generate(caseId, DWP_RESPONSE_LATE_REMINDER.getId());
 
         try {
 
             jobRemover.removeGroup(jobGroup);
-            LOG.info("Removed hearing reminders from case: " + caseId);
+            LOG.info("Removed DWP response late reminder from case id: {}", caseId);
 
         } catch (JobNotFoundException ignore) {
-            LOG.warn("Hearing reminder for case ID: " + caseId + " could not be found");
+            LOG.warn("DWP response late reminder for case id: {} could not be found", caseId);
         }
     }
 

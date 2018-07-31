@@ -8,10 +8,12 @@ import static uk.gov.hmcts.sscs.domain.notify.EventType.*;
 
 import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.time.ZonedDateTime;
 import java.time.format.DateTimeFormatter;
 import java.time.temporal.ChronoUnit;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Optional;
 import java.util.stream.Collectors;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -21,6 +23,7 @@ import uk.gov.hmcts.sscs.domain.*;
 import uk.gov.hmcts.sscs.domain.notify.Event;
 import uk.gov.hmcts.sscs.domain.notify.EventType;
 import uk.gov.hmcts.sscs.domain.notify.Template;
+import uk.gov.hmcts.sscs.extractor.HearingContactDateExtractor;
 import uk.gov.hmcts.sscs.service.MessageAuthenticationServiceImpl;
 import uk.gov.hmcts.sscs.service.RegionalProcessingCenterService;
 
@@ -35,6 +38,9 @@ public class Personalisation {
     private NotificationConfig config;
 
     @Autowired
+    private HearingContactDateExtractor hearingContactDateExtractor;
+
+    @Autowired
     private MessageAuthenticationServiceImpl macService;
 
     @Autowired
@@ -47,6 +53,7 @@ public class Personalisation {
         Benefit benefit = getBenefitByCode(ccdResponse.getAppeal().getBenefitType().getCode());
 
         personalisation.put(BENEFIT_NAME_ACRONYM_LITERAL, benefit.name() + " benefit");
+        personalisation.put(BENEFIT_NAME_ACRONYM_SHORT_LITERAL, benefit.name());
         personalisation.put(BENEFIT_FULL_NAME_LITERAL, benefit.getDescription());
         personalisation.put(APPEAL_REF, ccdResponse.getCaseReference());
         personalisation.put(APPELLANT_NAME, String.format("%s %s",
@@ -83,8 +90,19 @@ public class Personalisation {
         setEvidenceProcessingAddress(personalisation, ccdResponse);
         setEventData(personalisation, ccdResponse);
         setEvidenceReceivedNotificationData(personalisation, ccdResponse);
+        setHearingContactDate(personalisation, ccdResponse);
 
         return personalisation;
+    }
+
+    public void setHearingContactDate(Map<String, String> personalisation, CcdResponse ccdResponse) {
+        Optional<ZonedDateTime> hearingContactDate = hearingContactDateExtractor.extract(ccdResponse);
+        if (hearingContactDate.isPresent()) {
+            personalisation.put(
+                HEARING_CONTACT_DATE,
+                formatLocalDate(hearingContactDate.get().toLocalDate())
+            );
+        }
     }
 
     public Map<String, String> setEventData(Map<String, String> personalisation, CcdResponse ccdResponse) {
@@ -92,12 +110,9 @@ public class Personalisation {
 
             for (Events events : ccdResponse.getEvents()) {
                 if (events.getValue() != null) {
-                    if (ccdResponse.getNotificationType().equals(APPEAL_RECEIVED) && events.getValue().getEventType().equals(APPEAL_RECEIVED)) {
+                    if ((ccdResponse.getNotificationType().equals(APPEAL_RECEIVED) && events.getValue().getEventType().equals(APPEAL_RECEIVED))
+                        || ccdResponse.getNotificationType().equals(DWP_RESPONSE_LATE_REMINDER)) {
                         return setAppealReceivedDetails(personalisation, events.getValue());
-                    } else if (ccdResponse.getNotificationType().equals(DWP_RESPONSE_RECEIVED) && events.getValue().getEventType().equals(DWP_RESPONSE_RECEIVED)) {
-                        return setHearingContactDate(personalisation, events.getValue());
-                    } else if (ccdResponse.getNotificationType().equals(POSTPONEMENT) && events.getValue().getEventType().equals(POSTPONEMENT)) {
-                        return setPostponementDetails(personalisation, events.getValue());
                     }
                 }
             }
@@ -117,11 +132,6 @@ public class Personalisation {
     private Map<String, String> setAppealReceivedDetails(Map<String, String> personalisation, Event event) {
         String dwpResponseDateString = formatLocalDate(event.getDateTime().plusDays(MAX_DWP_RESPONSE_DAYS).toLocalDate());
         personalisation.put(APPEAL_RESPOND_DATE, dwpResponseDateString);
-        return personalisation;
-    }
-
-    private Map<String, String> setPostponementDetails(Map<String, String> personalisation, Event event) {
-        setHearingContactDate(personalisation, event);
         return personalisation;
     }
 
@@ -150,13 +160,6 @@ public class Personalisation {
                 .stream()
                 .filter(StringUtils::isNotBlank)
                 .collect(Collectors.joining(", "));
-    }
-
-    private Map<String, String> setHearingContactDate(Map<String, String> personalisation, Event event) {
-        String hearingContactDate = formatLocalDate(event.getDateTime().plusDays(MAX_HEARING_BOOKED_DAYS).toLocalDate());
-        personalisation.put(HEARING_CONTACT_DATE, hearingContactDate);
-
-        return personalisation;
     }
 
     private String calculateDaysToHearingText(LocalDate hearingDate) {

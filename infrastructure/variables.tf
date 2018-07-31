@@ -1,9 +1,9 @@
 variable "product" {
-  type    = "string"
+  type = "string"
 }
 
 variable "component" {
-  type    = "string"
+  type = "string"
 }
 
 variable "location" {
@@ -25,55 +25,55 @@ variable "management_security_enabled" {
   default = "true"
 }
 
-variable "ilbIp"{}
+variable "ilbIp" {}
 
 variable "subscription" {
   type = "string"
 }
 
-variable "core_case_data_jurisdiction_id"{
+variable "core_case_data_jurisdiction_id" {
   default = "SSCS"
 }
 
-variable "core_case_data_case_type_id"{
+variable "core_case_data_case_type_id" {
   default = "Benefit"
 }
 
-variable "idam_s2s_auth_microservice"{
+variable "idam_s2s_auth_microservice" {
   default = "sscs"
 }
 
-variable "idam_oauth2_client_id"{
+variable "idam_oauth2_client_id" {
   default = "sscs"
 }
 
 variable "evidence_submission_info_link" {
-  type = "string"
+  type    = "string"
   default = "http://localhost:3000/evidence/appeal_id"
 }
 
 variable "sscs_manage_emails_link" {
-  type = "string"
+  type    = "string"
   default = "http://localhost:3000/manage-email-notifications/mac"
 }
 
 variable "sscs_track_your_appeal_link" {
-  type = "string"
+  type    = "string"
   default = "http://localhost:3000/trackyourappeal/appeal_id"
 }
 
 variable "hearing_info_link" {
-  type = "string"
+  type    = "string"
   default = "http://localhost:3000/abouthearing/appeal_id"
 }
 
 variable "claiming_expenses_link" {
-  type = "string"
+  type    = "string"
   default = "http://localhost:3000/expenses/appeal_id"
 }
 
 variable "job_scheduler_poll_interval" {
-  type = "string"
+  type    = "string"
   default = "30000"
 }
 
@@ -84,7 +84,7 @@ variable "idam_redirect_url" {
 variable "tenant_id" {}
 
 variable "jenkins_AAD_objectId" {
-  type        = "string"
+  type = "string"
 }
 
 variable "postgresql_user" {
@@ -97,4 +97,12 @@ variable "database_name" {
 
 variable "notification_key" {
   default = "sscs_notify_api_new_key"
+}
+
+variable "notification_test_key" {
+  default = "sscs_notify_api_new_key"
+}
+
+variable "common_tags" {
+  type = "map"
 }

@@ -1,20 +1,20 @@
 package uk.gov.hmcts.sscs.personalisation;
 
+import static org.junit.Assert.*;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNull;
-import static org.mockito.Matchers.anyString;
 import static org.mockito.Mockito.*;
 import static org.mockito.MockitoAnnotations.initMocks;
 import static uk.gov.hmcts.sscs.config.AppConstants.*;
 import static uk.gov.hmcts.sscs.domain.Benefit.PIP;
 import static uk.gov.hmcts.sscs.domain.notify.EventType.*;
 
+import java.time.Instant;
 import java.time.LocalDate;
+import java.time.ZoneId;
+import java.time.ZonedDateTime;
 import java.time.format.DateTimeFormatter;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 import javax.annotation.Resource;
 import org.junit.Before;
 import org.junit.Test;
@@ -24,6 +24,7 @@ import uk.gov.hmcts.sscs.config.NotificationConfig;
 import uk.gov.hmcts.sscs.domain.*;
 import uk.gov.hmcts.sscs.domain.notify.Event;
 import uk.gov.hmcts.sscs.domain.notify.Link;
+import uk.gov.hmcts.sscs.extractor.HearingContactDateExtractor;
 import uk.gov.hmcts.sscs.service.MessageAuthenticationServiceImpl;
 import uk.gov.hmcts.sscs.service.RegionalProcessingCenterService;
 
@@ -39,6 +40,9 @@ public class PersonalisationTest {
 
     @Mock
     private NotificationConfig config;
+
+    @Mock
+    private HearingContactDateExtractor hearingContactDateExtractor;
 
     @Mock
     private MessageAuthenticationServiceImpl macService;
@@ -67,20 +71,21 @@ public class PersonalisationTest {
         when(config.getClaimingExpensesLink()).thenReturn(Link.builder().linkUrl("http://link.com/progress/appeal_id/expenses").build());
         when(config.getHearingInfoLink()).thenReturn(Link.builder().linkUrl("http://link.com/progress/appeal_id/abouthearing").build());
         when(macService.generateToken("GLSCRR", PIP.name())).thenReturn("ZYX");
+        when(hearingContactDateExtractor.extract(any())).thenReturn(Optional.empty());
 
         RegionalProcessingCenter rpc = new RegionalProcessingCenter();
         rpc.createRegionalProcessingCenter("LIVERPOOL", "HM Courts & Tribunals Service", ADDRESS2,
-                ADDRESS3, "36 Dale Street", POSTCODE, "LIVERPOOL");
+            ADDRESS3, "36 Dale Street", POSTCODE, "LIVERPOOL");
 
         when(regionalProcessingCenterService.getByScReferenceCode("SC/1234/5")).thenReturn(rpc);
 
         Subscription appellantSubscription = Subscription.builder()
-                .tya("GLSCRR")
-                .email("test@email.com")
-                .mobile("07983495065")
-                .subscribeEmail("Yes")
-                .subscribeSms("No")
-                .build();
+            .tya("GLSCRR")
+            .email("test@email.com")
+            .mobile("07983495065")
+            .subscribeEmail("Yes")
+            .subscribeSms("No")
+            .build();
 
         subscriptions = Subscriptions.builder().appellantSubscription(appellantSubscription).build();
         name = Name.builder().firstName("Harry").lastName("Kane").title("Mr").build();
@@ -95,7 +100,7 @@ public class PersonalisationTest {
             .caseId(CASE_ID).caseReference("SC/1234/5")
             .appeal(Appeal.builder().benefitType(BenefitType.builder().code("PIP").build())
                 .appellant(Appellant.builder().name(name).build())
-            .build())
+                .build())
             .subscriptions(subscriptions)
             .notificationType(APPEAL_RECEIVED)
             .events(events)
@@ -136,34 +141,34 @@ public class PersonalisationTest {
         List<Documents> documents = new ArrayList<>();
 
         Documents doc = Documents.builder().value(Doc.builder()
-                .dateReceived("2018-07-01")
-                .evidenceType("Medical")
-                .evidenceProvidedBy("Caseworker").build()).build();
+            .dateReceived("2018-07-01")
+            .evidenceType("Medical")
+            .evidenceProvidedBy("Caseworker").build()).build();
 
         documents.add(doc);
 
         Evidence evidence = Evidence.builder().documents(documents).build();
 
         Subscription appellantSubscription = Subscription.builder()
-                .tya("GLSCRR")
-                .email("test@email.com")
-                .mobile("07983495065")
-                .subscribeEmail("Yes")
-                .subscribeSms("No")
-                .build();
+            .tya("GLSCRR")
+            .email("test@email.com")
+            .mobile("07983495065")
+            .subscribeEmail("Yes")
+            .subscribeSms("No")
+            .build();
 
         Subscriptions subscriptions = Subscriptions.builder().appellantSubscription(appellantSubscription).build();
 
         CcdResponse response = CcdResponse.builder()
-                .caseId(CASE_ID).caseReference("SC/1234/5")
-                .appeal(Appeal.builder().benefitType(BenefitType.builder().code("PIP").build())
-                        .appellant(Appellant.builder().name(name).build())
-                        .build())
-                .subscriptions(subscriptions)
-                .notificationType(EVIDENCE_RECEIVED)
-                .events(events)
-                .evidence(evidence)
-                .build();
+            .caseId(CASE_ID).caseReference("SC/1234/5")
+            .appeal(Appeal.builder().benefitType(BenefitType.builder().code("PIP").build())
+                .appellant(Appellant.builder().name(name).build())
+                .build())
+            .subscriptions(subscriptions)
+            .notificationType(EVIDENCE_RECEIVED)
+            .events(events)
+            .evidence(evidence)
+            .build();
 
         Map<String, String> result = personalisation.create(CcdResponseWrapper.builder().newCcdResponse(response).build());
 
@@ -176,11 +181,11 @@ public class PersonalisationTest {
         events.add(Events.builder().value(Event.builder().date(date).type(APPEAL_RECEIVED.getId()).build()).build());
 
         CcdResponse response = CcdResponse.builder()
-                .caseId(CASE_ID).caseReference("SC/1234/5")
-                .appeal(Appeal.builder().benefitType(BenefitType.builder().code("PIP").build()).build())
-                .notificationType(APPEAL_RECEIVED)
-                .events(events)
-                .build();
+            .caseId(CASE_ID).caseReference("SC/1234/5")
+            .appeal(Appeal.builder().benefitType(BenefitType.builder().code("PIP").build()).build())
+            .notificationType(APPEAL_RECEIVED)
+            .events(events)
+            .build();
 
         Map<String, String> result = personalisation.setEventData(new HashMap<>(), response);
 
@@ -188,41 +193,24 @@ public class PersonalisationTest {
     }
 
     @Test
-    public void setResponseReceivedEventData() {
-        List<Events> events = new ArrayList<>();
-        events.add(Events.builder().value(Event.builder().date(date).type(DWP_RESPONSE_RECEIVED.getId()).build()).build());
-
-        CcdResponse response = CcdResponse.builder()
-                .caseId(CASE_ID).caseReference("SC/1234/5")
-                .appeal(Appeal.builder().benefitType(BenefitType.builder().code("PIP").build()).build())
-                .notificationType(DWP_RESPONSE_RECEIVED)
-                .events(events)
-                .build();
-
-        Map<String, String> result = personalisation.setEventData(new HashMap<>(), response);
-
-        assertEquals("26 August 2018", result.get(HEARING_CONTACT_DATE));
-    }
-
-    @Test
     public void setEvidenceReceivedEventData() {
         List<Documents> documents = new ArrayList<>();
 
         Documents doc = Documents.builder().value(Doc.builder()
-                .dateReceived("2018-07-01")
-                .evidenceType("Medical")
-                .evidenceProvidedBy("Caseworker").build()).build();
+            .dateReceived("2018-07-01")
+            .evidenceType("Medical")
+            .evidenceProvidedBy("Caseworker").build()).build();
 
         documents.add(doc);
 
         Evidence evidence = Evidence.builder().documents(documents).build();
 
         CcdResponse response = CcdResponse.builder()
-                .caseId(CASE_ID).caseReference("SC/1234/5")
-                .appeal(Appeal.builder().benefitType(BenefitType.builder().code("PIP").build()).build())
-                .notificationType(EVIDENCE_RECEIVED)
-                .evidence(evidence)
-                .build();
+            .caseId(CASE_ID).caseReference("SC/1234/5")
+            .appeal(Appeal.builder().benefitType(BenefitType.builder().code("PIP").build()).build())
+            .notificationType(EVIDENCE_RECEIVED)
+            .evidence(evidence)
+            .build();
 
         Map<String, String> result = personalisation.setEvidenceReceivedNotificationData(new HashMap<>(), response);
 
@@ -234,31 +222,31 @@ public class PersonalisationTest {
         LocalDate hearingDate = LocalDate.now().plusDays(7);
 
         Hearing hearing = Hearing.builder().value(HearingDetails.builder()
-                .hearingDate(hearingDate.format(DateTimeFormatter.ofPattern("yyyy-MM-dd")))
-                .time("12:00")
-                .venue(Venue.builder()
-                        .name("The venue")
-                        .address(Address.builder()
-                                .line1("12 The Road Avenue")
-                                .line2("Village")
-                                .town("Aberdeen")
-                                .county("Aberdeenshire")
-                                .postcode("AB12 0HN").build())
-                        .googleMapLink("http://www.googlemaps.com/aberdeenvenue")
-                        .build()).build()).build();
+            .hearingDate(hearingDate.format(DateTimeFormatter.ofPattern("yyyy-MM-dd")))
+            .time("12:00")
+            .venue(Venue.builder()
+                .name("The venue")
+                .address(Address.builder()
+                    .line1("12 The Road Avenue")
+                    .line2("Village")
+                    .town("Aberdeen")
+                    .county("Aberdeenshire")
+                    .postcode("AB12 0HN").build())
+                .googleMapLink("http://www.googlemaps.com/aberdeenvenue")
+                .build()).build()).build();
 
         List<Hearing> hearingList = new ArrayList<>();
         hearingList.add(hearing);
 
         CcdResponse response = CcdResponse.builder()
-                .caseId(CASE_ID).caseReference("SC/1234/5")
-                .appeal(Appeal.builder().benefitType(BenefitType.builder().code("PIP").build())
+            .caseId(CASE_ID).caseReference("SC/1234/5")
+            .appeal(Appeal.builder().benefitType(BenefitType.builder().code("PIP").build())
                 .appellant(Appellant.builder().name(name).build())
                 .build())
-                .notificationType(HEARING_BOOKED)
-                .subscriptions(subscriptions)
-                .hearings(hearingList)
-                .build();
+            .notificationType(HEARING_BOOKED)
+            .subscriptions(subscriptions)
+            .hearings(hearingList)
+            .build();
 
         Map<String, String> result = personalisation.create(CcdResponseWrapper.builder().newCcdResponse(response).build());
 
@@ -274,31 +262,31 @@ public class PersonalisationTest {
         LocalDate hearingDate = LocalDate.now().plusDays(1);
 
         Hearing hearing = Hearing.builder().value(HearingDetails.builder()
-                .hearingDate(hearingDate.format(DateTimeFormatter.ofPattern("yyyy-MM-dd")))
-                .time("12:00")
-                .venue(Venue.builder()
-                        .name("The venue")
-                        .address(Address.builder()
-                                .line1("12 The Road Avenue")
-                                .line2("Village")
-                                .town("Aberdeen")
-                                .county("Aberdeenshire")
-                                .postcode("AB12 0HN").build())
-                        .googleMapLink("http://www.googlemaps.com/aberdeenvenue")
-                        .build()).build()).build();
+            .hearingDate(hearingDate.format(DateTimeFormatter.ofPattern("yyyy-MM-dd")))
+            .time("12:00")
+            .venue(Venue.builder()
+                .name("The venue")
+                .address(Address.builder()
+                    .line1("12 The Road Avenue")
+                    .line2("Village")
+                    .town("Aberdeen")
+                    .county("Aberdeenshire")
+                    .postcode("AB12 0HN").build())
+                .googleMapLink("http://www.googlemaps.com/aberdeenvenue")
+                .build()).build()).build();
 
         List<Hearing> hearingList = new ArrayList<>();
         hearingList.add(hearing);
 
         CcdResponse response = CcdResponse.builder()
-                .caseId(CASE_ID).caseReference("SC/1234/5")
-                .appeal(Appeal.builder().benefitType(BenefitType.builder().code("PIP").build())
-                        .appellant(Appellant.builder().name(name).build())
-                        .build())
-                .notificationType(HEARING_BOOKED)
-                .subscriptions(subscriptions)
-                .hearings(hearingList)
-                .build();
+            .caseId(CASE_ID).caseReference("SC/1234/5")
+            .appeal(Appeal.builder().benefitType(BenefitType.builder().code("PIP").build())
+                .appellant(Appellant.builder().name(name).build())
+                .build())
+            .notificationType(HEARING_BOOKED)
+            .subscriptions(subscriptions)
+            .hearings(hearingList)
+            .build();
 
         Map<String, String> result = personalisation.create(CcdResponseWrapper.builder().newCcdResponse(response).build());
 
@@ -306,29 +294,12 @@ public class PersonalisationTest {
     }
 
     @Test
-    public void setPostponementEventData() {
-        List<Events> events = new ArrayList<>();
-        events.add(Events.builder().value(Event.builder().date(date).type(POSTPONEMENT.getId()).build()).build());
-
-        CcdResponse response = CcdResponse.builder()
-                .caseId(CASE_ID).caseReference("SC/1234/5")
-                .appeal(Appeal.builder().benefitType(BenefitType.builder().code("PIP").build()).build())
-                .notificationType(POSTPONEMENT)
-                .events(events)
-                .build();
-
-        Map<String, String> result = personalisation.setEventData(new HashMap<>(), response);
-
-        assertEquals("26 August 2018", result.get(HEARING_CONTACT_DATE));
-    }
-
-    @Test
     public void handleNullEventWhenPopulatingEventData() {
         CcdResponse response = CcdResponse.builder()
-                .caseId(CASE_ID).caseReference("SC/1234/5")
-                .appeal(Appeal.builder().benefitType(BenefitType.builder().code("PIP").build()).build())
-                .notificationType(POSTPONEMENT)
-                .build();
+            .caseId(CASE_ID).caseReference("SC/1234/5")
+            .appeal(Appeal.builder().benefitType(BenefitType.builder().code("PIP").build()).build())
+            .notificationType(POSTPONEMENT)
+            .build();
 
         Map<String, String> result = personalisation.setEventData(new HashMap<>(), response);
 
@@ -338,11 +309,11 @@ public class PersonalisationTest {
     @Test
     public void handleEmptyEventsWhenPopulatingEventData() {
         CcdResponse response = CcdResponse.builder()
-                .caseId(CASE_ID).caseReference("SC/1234/5")
-                .appeal(Appeal.builder().benefitType(BenefitType.builder().code("PIP").build()).build())
-                .notificationType(POSTPONEMENT)
-                .events(new ArrayList())
-                .build();
+            .caseId(CASE_ID).caseReference("SC/1234/5")
+            .appeal(Appeal.builder().benefitType(BenefitType.builder().code("PIP").build()).build())
+            .notificationType(POSTPONEMENT)
+            .events(new ArrayList())
+            .build();
 
         Map<String, String> result = personalisation.setEventData(new HashMap<>(), response);
 
@@ -353,9 +324,9 @@ public class PersonalisationTest {
     public void shouldPopulateRegionalProcessingCenterFromCcdCaseIfItsPresent() {
         RegionalProcessingCenter rpc = new RegionalProcessingCenter();
         rpc.createRegionalProcessingCenter("LIVERPOOL", ADDRESS1,
-                ADDRESS2, ADDRESS3,
-                ADDRESS4, POSTCODE,
-                CITY);
+            ADDRESS2, ADDRESS3,
+            ADDRESS4, POSTCODE,
+            CITY);
 
         CcdResponse response = CcdResponse.builder().regionalProcessingCenter(rpc).build();
 
@@ -369,5 +340,32 @@ public class PersonalisationTest {
         assertEquals(ADDRESS4, result.get(TOWN_LITERAL));
         assertEquals(CITY, result.get(COUNTY_LITERAL));
         assertEquals(POSTCODE, result.get(POSTCODE_LITERAL));
+    }
+
+    @Test
+    public void shouldPopulateHearingContactDateFromCcdCaseIfPresent() {
+
+        CcdResponse response = CcdResponse.builder().build();
+
+        ZonedDateTime now = ZonedDateTime.ofInstant(Instant.ofEpochSecond(1528907807), ZoneId.of("UTC"));
+        when(hearingContactDateExtractor.extract(response)).thenReturn(Optional.of(now));
+
+        Map<String, String> values = new HashMap<>();
+        personalisation.setHearingContactDate(values, response);
+
+        assertEquals("13 June 2018", values.get(HEARING_CONTACT_DATE));
+    }
+
+    @Test
+    public void shouldNotPopulateHearingContactDateFromCcdCaseIfNotPresent() {
+
+        CcdResponse response = CcdResponse.builder().build();
+
+        when(hearingContactDateExtractor.extract(response)).thenReturn(Optional.empty());
+
+        Map<String, String> values = new HashMap<>();
+        personalisation.setHearingContactDate(values, response);
+
+        assertFalse(values.containsKey(HEARING_CONTACT_DATE));
     }
 }

@@ -1,43 +1,46 @@
 package uk.gov.hmcts.sscs.service.reminder;
 
 import static org.slf4j.LoggerFactory.getLogger;
-import static uk.gov.hmcts.sscs.domain.notify.EventType.DWP_RESPONSE_RECEIVED;
-import static uk.gov.hmcts.sscs.domain.notify.EventType.EVIDENCE_REMINDER;
+import static uk.gov.hmcts.sscs.domain.notify.EventType.*;
 
 import java.time.ZonedDateTime;
+import java.util.Optional;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 import uk.gov.hmcts.reform.sscs.jobscheduler.model.Job;
 import uk.gov.hmcts.reform.sscs.jobscheduler.services.JobScheduler;
 import uk.gov.hmcts.sscs.domain.CcdResponse;
-import uk.gov.hmcts.sscs.domain.Events;
 import uk.gov.hmcts.sscs.exception.ReminderException;
+import uk.gov.hmcts.sscs.extractor.AppealReceivedDateExtractor;
 
 @Component
-public class DwpResponseReceivedReminderHandler implements ReminderHandler {
+public class DwpResponseLateReminder implements ReminderHandler {
 
-    private static final org.slf4j.Logger LOG = getLogger(DwpResponseReceivedReminderHandler.class);
+    private static final org.slf4j.Logger LOG = getLogger(DwpResponseLateReminder.class);
 
+    private final AppealReceivedDateExtractor appealReceivedDateExtractor;
     private final JobGroupGenerator jobGroupGenerator;
     private final JobScheduler<String> jobScheduler;
-    private final long evidenceReminderDelay;
+    private final long delay;
 
     @Autowired
-    public DwpResponseReceivedReminderHandler(
+    public DwpResponseLateReminder(
+        AppealReceivedDateExtractor appealReceivedDateExtractor,
         JobGroupGenerator jobGroupGenerator,
         JobScheduler<String> jobScheduler,
-        @Value("${reminder.evidenceReminder.delay.seconds}") long evidenceReminderDelay
+        @Value("${reminder.dwpResponseLateReminder.delay.seconds}") long delay
     ) {
+        this.appealReceivedDateExtractor = appealReceivedDateExtractor;
         this.jobGroupGenerator = jobGroupGenerator;
         this.jobScheduler = jobScheduler;
-        this.evidenceReminderDelay = evidenceReminderDelay;
+        this.delay = delay;
     }
 
     public boolean canHandle(CcdResponse ccdResponse) {
         return ccdResponse
             .getNotificationType()
-            .equals(DWP_RESPONSE_RECEIVED);
+            .equals(APPEAL_RECEIVED);
     }
 
     public void handle(CcdResponse ccdResponse) {
@@ -46,9 +49,9 @@ public class DwpResponseReceivedReminderHandler implements ReminderHandler {
         }
 
         String caseId = ccdResponse.getCaseId();
-        String eventId = EVIDENCE_REMINDER.getId();
-        String jobGroup = jobGroupGenerator.generate(caseId, EVIDENCE_REMINDER);
-        ZonedDateTime reminderDate = calculateReminderDate(ccdResponse);
+        String eventId = DWP_RESPONSE_LATE_REMINDER.getId();
+        String jobGroup = jobGroupGenerator.generate(caseId, eventId);
+        ZonedDateTime reminderDate = calculateReminderDate(ccdResponse, delay);
 
         jobScheduler.schedule(new Job<>(
             jobGroup,
@@ -57,19 +60,20 @@ public class DwpResponseReceivedReminderHandler implements ReminderHandler {
             reminderDate
         ));
 
-        LOG.info("Scheduled evidence reminder for case: " + caseId + " @ " + reminderDate.toString());
+        LOG.info("Scheduled DWP response late reminder for case id: {} @ {}", caseId, reminderDate.toString());
     }
 
-    private ZonedDateTime calculateReminderDate(CcdResponse ccdResponse) {
+    private ZonedDateTime calculateReminderDate(CcdResponse ccdResponse, long delay) {
 
-        for (Events events : ccdResponse.getEvents()) {
-            if (events.getValue() != null && events.getValue().getEventType().equals(DWP_RESPONSE_RECEIVED)) {
-                return events.getValue().getDateTime().plusSeconds(evidenceReminderDelay);
-            }
+        Optional<ZonedDateTime> appealReceivedDate = appealReceivedDateExtractor.extract(ccdResponse);
+
+        if (appealReceivedDate.isPresent()) {
+            return appealReceivedDate.get()
+                .plusSeconds(delay);
         }
 
         ReminderException reminderException = new ReminderException(
-            new Exception("Could not find reminder date for case reference: " + ccdResponse.getCaseReference())
+            new Exception("Could not find reminder date for case id: " + ccdResponse.getCaseId())
         );
 
         LOG.error("Reminder date not found", reminderException);

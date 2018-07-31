@@ -21,18 +21,18 @@ import uk.gov.hmcts.sscs.domain.notify.EventType;
 import uk.gov.hmcts.sscs.exception.ReminderException;
 
 @RunWith(MockitoJUnitRunner.class)
-public class HearingBookedReminderHandlerTest {
+public class HearingReminderTest {
 
     @Mock
     private JobGroupGenerator jobGroupGenerator;
     @Mock
     private JobScheduler<String> jobScheduler;
 
-    private HearingBookedReminderHandler hearingBookedReminderHandler;
+    private HearingReminder hearingReminder;
 
     @Before
     public void setup() {
-        hearingBookedReminderHandler = new HearingBookedReminderHandler(
+        hearingReminder = new HearingReminder(
             jobGroupGenerator,
             jobScheduler,
             172800,
@@ -48,11 +48,11 @@ public class HearingBookedReminderHandlerTest {
             CcdResponse ccdResponse = CcdResponseUtils.buildBasicCcdResponse(eventType);
 
             if (eventType == HEARING_BOOKED) {
-                assertTrue(hearingBookedReminderHandler.canHandle(ccdResponse));
+                assertTrue(hearingReminder.canHandle(ccdResponse));
             } else {
 
-                assertFalse(hearingBookedReminderHandler.canHandle(ccdResponse));
-                assertThatThrownBy(() -> hearingBookedReminderHandler.handle(ccdResponse))
+                assertFalse(hearingReminder.canHandle(ccdResponse));
+                assertThatThrownBy(() -> hearingReminder.handle(ccdResponse))
                     .hasMessage("cannot handle ccdResponse")
                     .isExactlyInstanceOf(IllegalArgumentException.class);
             }
@@ -75,9 +75,9 @@ public class HearingBookedReminderHandlerTest {
             hearingTime
         );
 
-        when(jobGroupGenerator.generate(ccdResponse.getCaseId(), HEARING_REMINDER)).thenReturn(expectedJobGroup);
+        when(jobGroupGenerator.generate(ccdResponse.getCaseId(), HEARING_REMINDER.getId())).thenReturn(expectedJobGroup);
 
-        hearingBookedReminderHandler.handle(ccdResponse);
+        hearingReminder.handle(ccdResponse);
 
         ArgumentCaptor<Job> jobCaptor = ArgumentCaptor.forClass(Job.class);
 
@@ -103,7 +103,7 @@ public class HearingBookedReminderHandlerTest {
 
         CcdResponse ccdResponse = CcdResponseUtils.buildBasicCcdResponse(HEARING_BOOKED);
 
-        hearingBookedReminderHandler.handle(ccdResponse);
+        hearingReminder.handle(ccdResponse);
     }
 
 }
