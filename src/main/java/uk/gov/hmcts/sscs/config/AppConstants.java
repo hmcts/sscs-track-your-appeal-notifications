@@ -9,6 +9,7 @@ public final class AppConstants {
     public static final String APPEAL_RESPOND_DATE = "appeal_respond_date";
     public static final String APPELLANT_NAME = "name";
     public static final String BENEFIT_NAME_ACRONYM_LITERAL = "benefit_name_acronym";
+    public static final String BENEFIT_NAME_ACRONYM_SHORT_LITERAL = "benefit_name_acronym_short";
     public static final String BENEFIT_FULL_NAME_LITERAL = "benefit_full_name";
     public static final String CLAIMING_EXPENSES_LINK_LITERAL = "claiming_expenses_link";
     public static final String COUNTY_LITERAL = "county";
@@ -26,14 +27,13 @@ public final class AppConstants {
     public static final String HEARING_CONTACT_DATE = "hearing_contact_date";
     public static final String HEARING_DATE = "hearing_date";
     public static final String HEARING_DETAILS_LITERAL = "hearing_details";
+    public static final String HEARING_INFO_LINK_LITERAL = "hearing_info_link";
     public static final String HEARING_TIME = "hearing_time";
     public static final String HEARING_TIME_FORMAT = "hh:mm a";
-    public static final String HEARING_INFO_LINK_LITERAL = "hearing_info_link";
     public static final String MAC_ALGO = "HmacSHA256";
     public static final String MAC_LITERAL = "mac";
     public static final String MANAGE_EMAILS_LINK_LITERAL = "manage_emails_link";
     public static final int MAX_DWP_RESPONSE_DAYS = 35;
-    public static final int MAX_HEARING_BOOKED_DAYS = 56;
     public static final String MRN_DETAILS_LITERAL = "mrn_details";
     public static final String PHONE_NUMBER = "phone_number";
     public static final String POSTCODE_LITERAL = "postcode";

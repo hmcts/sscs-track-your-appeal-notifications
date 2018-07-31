@@ -2,8 +2,8 @@ package uk.gov.hmcts.sscs.service.ccd;
 
 import static org.junit.Assert.assertEquals;
 import static org.mockito.BDDMockito.given;
-import static org.mockito.Matchers.anyString;
-import static org.mockito.Matchers.eq;
+import static org.mockito.Mockito.anyString;
+import static org.mockito.Mockito.eq;
 import static org.mockito.Mockito.verify;
 
 import com.google.common.collect.ImmutableMap;

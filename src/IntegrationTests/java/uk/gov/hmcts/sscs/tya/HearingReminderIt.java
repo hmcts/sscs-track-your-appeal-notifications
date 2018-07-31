@@ -2,10 +2,9 @@ package uk.gov.hmcts.sscs.tya;
 
 import static helper.IntegrationTestHelper.assertHttpStatus;
 import static helper.IntegrationTestHelper.getRequestWithAuthHeader;
-import static org.junit.Assert.assertTrue;
 
+import helper.IntegrationTestHelper;
 import java.io.File;
-import java.io.IOException;
 import java.nio.charset.StandardCharsets;
 import javax.servlet.http.HttpServletResponse;
 import org.apache.commons.io.FileUtils;
@@ -14,7 +13,6 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.quartz.Scheduler;
 import org.quartz.SchedulerException;
-import org.quartz.impl.matchers.GroupMatcher;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
@@ -37,7 +35,7 @@ import uk.gov.service.notify.NotificationClient;
 @SpringBootTest
 @ActiveProfiles("integration")
 @AutoConfigureMockMvc
-public class HearingPostponedIt {
+public class HearingReminderIt {
 
     MockMvc mockMvc;
 
@@ -49,7 +47,7 @@ public class HearingPostponedIt {
     @MockBean
     private AuthorisationService authorisationService;
 
-    @MockBean
+    @MockBean(name = "notificationClient")
     NotificationClient client;
 
     @MockBean
@@ -59,55 +57,56 @@ public class HearingPostponedIt {
     @Qualifier("scheduler")
     private Scheduler quartzScheduler;
 
-    String ccdResponseJson;
-
     @Before
-    public void setup() throws IOException {
+    public void setup() {
         controller = new NotificationController(notificationService, authorisationService);
         this.mockMvc = MockMvcBuilders.standaloneSetup(controller).build();
-        String path = getClass().getClassLoader().getResource("json/ccdResponse.json").getFile();
-        ccdResponseJson = FileUtils.readFileToString(new File(path), StandardCharsets.UTF_8.name());
-        ccdResponseJson = ccdResponseJson.replace("\"hearingDate\": \"2018-01-12\"", "\"hearingDate\": \"2048-01-12\"");
     }
 
     @Test
-    public void shouldRemoveHearingReminderWhenPostponed() throws Exception {
-
-        assertScheduledJobCount("Job scheduler is empty at start", 0);
-
-        ccdResponseJson = ccdResponseJson.replace("appealReceived", "hearingBooked");
-        HttpServletResponse hearingBookedResponse = getResponse(getRequestWithAuthHeader(ccdResponseJson));
-        assertHttpStatus(hearingBookedResponse, HttpStatus.OK);
-
-        assertScheduledJobCount("Hearing reminders scheduled", 2);
-
-        ccdResponseJson = ccdResponseJson.replace("hearingBooked", "hearingPostponed");
-        HttpServletResponse hearingPostponedResponse = getResponse(getRequestWithAuthHeader(ccdResponseJson));
-        assertHttpStatus(hearingPostponedResponse, HttpStatus.OK);
-
-        assertScheduledJobCount("Hearing reminders were removed", 0);
-    }
-
-    public void assertScheduledJobCount(
-        String message,
-        int expectedValue
-    ) {
+    public void shouldScheduleHearingReminderThenRemoveWhenPostponed() throws Exception {
 
         try {
-
-            int scheduledJobCount =
-                quartzScheduler
-                    .getJobKeys(GroupMatcher.anyGroup())
-                    .size();
-
-            assertTrue(
-                message + " (" + expectedValue + " != " + expectedValue + ")",
-                scheduledJobCount == expectedValue
-            );
-
+            quartzScheduler.clear();
         } catch (SchedulerException e) {
             throw new RuntimeException(e);
         }
+
+        IntegrationTestHelper.assertScheduledJobCount(quartzScheduler, "Job scheduler is empty at start", 0);
+
+        sendEvent("hearingBooked");
+
+        IntegrationTestHelper.assertScheduledJobCount(quartzScheduler, "Hearing reminders scheduled", "hearingReminder", 2);
+
+        IntegrationTestHelper.assertScheduledJobTriggerAt(
+            quartzScheduler,
+            "First hearing reminder scheduled",
+            "hearingReminder",
+            "2048-01-05T11:00:00Z"
+        );
+
+        IntegrationTestHelper.assertScheduledJobTriggerAt(
+            quartzScheduler,
+            "Second hearing reminder scheduled",
+            "hearingReminder",
+            "2048-01-11T11:00:00Z"
+        );
+
+        sendEvent("hearingPostponed");
+
+        IntegrationTestHelper.assertScheduledJobCount(quartzScheduler, "Hearing reminders were removed", "hearingReminder", 0);
+    }
+
+    private void sendEvent(String event) throws Exception {
+
+        String path = getClass().getClassLoader().getResource("json/ccdResponse.json").getFile();
+        String ccdResponseJson = FileUtils.readFileToString(new File(path), StandardCharsets.UTF_8.name());
+
+        ccdResponseJson = ccdResponseJson.replace("appealReceived", event);
+        ccdResponseJson = ccdResponseJson.replace("\"hearingDate\": \"2018-01-12\"", "\"hearingDate\": \"2048-01-12\"");
+
+        HttpServletResponse sendResponse = getResponse(getRequestWithAuthHeader(ccdResponseJson));
+        assertHttpStatus(sendResponse, HttpStatus.OK);
     }
 
     private MockHttpServletResponse getResponse(MockHttpServletRequestBuilder requestBuilder) throws Exception {

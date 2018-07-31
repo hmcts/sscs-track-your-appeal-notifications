@@ -34,6 +34,12 @@ resource "azurerm_key_vault_secret" "notif-api" {
   vault_uri = "${module.sscs-tya-notif-key-vault.key_vault_uri}"
 }
 
+resource "azurerm_key_vault_secret" "notif-test-api" {
+  name      = "notif-test-api"
+  value     = "${data.vault_generic_secret.sscs_notify_api_test_key.data["value"]}"
+  vault_uri = "${module.sscs-tya-notif-key-vault.key_vault_uri}"
+}
+
 resource "azurerm_key_vault_secret" "mac-secret" {
   name      = "mac-secret"
   value     = "${data.vault_generic_secret.mac_secret.data["value"]}"

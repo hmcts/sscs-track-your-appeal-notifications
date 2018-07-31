@@ -216,7 +216,7 @@ public class SyaAppealCreatedPersonalisationTest {
     @Test
     public void givenASyaAppealWithOneReasonForAppealing_setReasonForAppealingDetailsForTemplate() {
         List<AppealReason> appealReasonList = new ArrayList<>();
-        AppealReason reason = AppealReason.builder().value(AppealReasonDetails.builder().reason("I want to appeal").description("Because I do").build()).build();
+        AppealReason reason = AppealReason.builder().value(AppealReasonDetails.builder().description("I want to appeal").reason("Because I do").build()).build();
         appealReasonList.add(reason);
 
         response = CcdResponse.builder()
@@ -237,8 +237,8 @@ public class SyaAppealCreatedPersonalisationTest {
     @Test
     public void givenASyaAppealWithMultipleReasonsForAppealing_setReasonForAppealingDetailsForTemplate() {
         List<AppealReason> appealReasonList = new ArrayList<>();
-        AppealReason reason1 = AppealReason.builder().value(AppealReasonDetails.builder().reason("I want to appeal").description("Because I do").build()).build();
-        AppealReason reason2 = AppealReason.builder().value(AppealReasonDetails.builder().reason("I want to appeal again").description("I'm in the mood").build()).build();
+        AppealReason reason1 = AppealReason.builder().value(AppealReasonDetails.builder().description("I want to appeal").reason("Because I do").build()).build();
+        AppealReason reason2 = AppealReason.builder().value(AppealReasonDetails.builder().description("I want to appeal again").reason("I'm in the mood").build()).build();
         appealReasonList.add(reason1);
         appealReasonList.add(reason2);
 

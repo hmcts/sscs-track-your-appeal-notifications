@@ -2,7 +2,7 @@ package uk.gov.hmcts.sscs.deserialize;
 
 import static org.junit.Assert.*;
 import static uk.gov.hmcts.sscs.config.AppConstants.ZONE_ID;
-import static uk.gov.hmcts.sscs.domain.Benefit.PIP;
+import static uk.gov.hmcts.sscs.domain.Benefit.ESA;
 import static uk.gov.hmcts.sscs.domain.notify.EventType.*;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -33,13 +33,13 @@ public class CcdResponseWrapperDeserializerTest {
     @Test
     public void deserializeBenefitJson() throws IOException {
 
-        String appealJson = "{\"benefitType\":{\"code\":\"PIP\"}}";
+        String appealJson = "{\"benefitType\":{\"code\":\"ESA\"}}";
 
         Appeal appeal = Appeal.builder().build();
 
         ccdResponseDeserializer.deserializeBenefitDetailsJson(mapper.readTree(appealJson), appeal);
 
-        assertEquals(PIP.name(), appeal.getBenefitType().getCode());
+        assertEquals(ESA.name(), appeal.getBenefitType().getCode());
     }
 
     @Test
@@ -479,7 +479,7 @@ public class CcdResponseWrapperDeserializerTest {
         assertTrue(appellantSubscription.isEmailSubscribed());
 
         Appeal appeal = ccdResponse.getAppeal();
-        assertEquals(PIP.name(), appeal.getBenefitType().getCode());
+        assertEquals(ESA.name(), appeal.getBenefitType().getCode());
 
         MrnDetails mrnDetails = appeal.getMrnDetails();
         assertEquals("Birmingham", mrnDetails.getDwpIssuingOffice());

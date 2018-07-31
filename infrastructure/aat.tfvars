@@ -8,3 +8,5 @@ hearing_info_link = "https://track-appeal.nonprod.platform.hmcts.net/abouthearin
 claiming_expenses_link = "https://track-appeal.nonprod.platform.hmcts.net/expenses/appeal_id"
 
 idam_redirect_url = "https://evidence-sharing-preprod.sscs.reform.hmcts.net"
+notification_key = "notification-key"
+notification_test_key = "notification-test-key"

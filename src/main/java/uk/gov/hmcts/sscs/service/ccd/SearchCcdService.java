@@ -33,7 +33,7 @@ public class SearchCcdService {
     }
 
     public CaseDetails getByCaseId(String caseId, IdamTokens idamTokens) {
-        log.info("Get getByCaseId...");
+        log.info("Get getByCaseId " + caseId);
         return coreCaseDataApi.readForCaseWorker(
             idamTokens.getIdamOauth2Token(),
             idamTokens.getServiceAuthorization(),
