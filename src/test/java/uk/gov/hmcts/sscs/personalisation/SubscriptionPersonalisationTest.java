@@ -3,6 +3,7 @@ package uk.gov.hmcts.sscs.personalisation;
 import static junit.framework.TestCase.assertTrue;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
+import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.when;
 import static org.mockito.MockitoAnnotations.initMocks;
 import static uk.gov.hmcts.sscs.config.AppConstants.*;
@@ -12,6 +13,7 @@ import static uk.gov.hmcts.sscs.domain.notify.EventType.*;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
 import javax.annotation.Resource;
 import org.junit.Before;
 import org.junit.Test;
@@ -21,6 +23,7 @@ import uk.gov.hmcts.sscs.config.NotificationConfig;
 import uk.gov.hmcts.sscs.domain.*;
 import uk.gov.hmcts.sscs.domain.notify.Event;
 import uk.gov.hmcts.sscs.domain.notify.Link;
+import uk.gov.hmcts.sscs.extractor.HearingContactDateExtractor;
 import uk.gov.hmcts.sscs.service.MessageAuthenticationServiceImpl;
 import uk.gov.hmcts.sscs.service.RegionalProcessingCenterService;
 
@@ -36,6 +39,9 @@ public class SubscriptionPersonalisationTest {
 
     @Mock
     private RegionalProcessingCenterService regionalProcessingCenterService;
+
+    @Mock
+    private HearingContactDateExtractor hearingContactDateExtractor;
 
     @Mock
     private NotificationConfig config;
@@ -60,6 +66,7 @@ public class SubscriptionPersonalisationTest {
         when(config.getClaimingExpensesLink()).thenReturn(Link.builder().linkUrl("http://link.com/progress/appeal_id/expenses").build());
         when(config.getHearingInfoLink()).thenReturn(Link.builder().linkUrl("http://link.com/progress/appeal_id/abouthearing").build());
         when(macService.generateToken("GLSCRR", PIP.name())).thenReturn("ZYX");
+        when(hearingContactDateExtractor.extract(any())).thenReturn(Optional.empty());
 
         RegionalProcessingCenter rpc = new RegionalProcessingCenter();
         rpc.createRegionalProcessingCenter("Venue", "HMCTS", "The Road", "Town", "City", "B23 1EH", "Birmingham");
@@ -67,26 +74,26 @@ public class SubscriptionPersonalisationTest {
         when(regionalProcessingCenterService.getByScReferenceCode("1234")).thenReturn(rpc);
 
         newAppellantSubscription = Subscription.builder()
-                .tya("GLSCRR").email("test@email.com")
-                .mobile("07983495065").subscribeEmail("Yes").subscribeSms("Yes").build();
+            .tya("GLSCRR").email("test@email.com")
+            .mobile("07983495065").subscribeEmail("Yes").subscribeSms("Yes").build();
 
         oldAppellantSubscription = Subscription.builder()
-                .tya("GLSCRR").email("test@email.com")
-                .mobile("07983495065").subscribeEmail("No").subscribeSms("No").build();
+            .tya("GLSCRR").email("test@email.com")
+            .mobile("07983495065").subscribeEmail("No").subscribeSms("No").build();
 
         newCcdResponse = CcdResponse.builder().caseId("54321")
-                .appeal(Appeal.builder()
-                    .benefitType(BenefitType.builder().code("PIP").build())
-                    .appellant(Appellant.builder().name(Name.builder().firstName("Harry").lastName("Kane").title("Mr").build()).build()).build())
-                .caseReference("1234")
-                .subscriptions(Subscriptions.builder().appellantSubscription(newAppellantSubscription).build()).notificationType(SUBSCRIPTION_UPDATED).build();
+            .appeal(Appeal.builder()
+                .benefitType(BenefitType.builder().code("PIP").build())
+                .appellant(Appellant.builder().name(Name.builder().firstName("Harry").lastName("Kane").title("Mr").build()).build()).build())
+            .caseReference("1234")
+            .subscriptions(Subscriptions.builder().appellantSubscription(newAppellantSubscription).build()).notificationType(SUBSCRIPTION_UPDATED).build();
 
         oldCcdResponse = CcdResponse.builder().caseId("54321")
-                .appeal(Appeal.builder()
-                        .benefitType(BenefitType.builder().code("PIP").build())
-                        .appellant(Appellant.builder().name(Name.builder().firstName("Harry").lastName("Kane").title("Mr").build()).build()).build())
-                .caseReference("5432")
-                .subscriptions(Subscriptions.builder().appellantSubscription(oldAppellantSubscription).build()).notificationType(SUBSCRIPTION_UPDATED).build();
+            .appeal(Appeal.builder()
+                .benefitType(BenefitType.builder().code("PIP").build())
+                .appellant(Appellant.builder().name(Name.builder().firstName("Harry").lastName("Kane").title("Mr").build()).build()).build())
+            .caseReference("5432")
+            .subscriptions(Subscriptions.builder().appellantSubscription(oldAppellantSubscription).build()).notificationType(SUBSCRIPTION_UPDATED).build();
     }
 
     @Test

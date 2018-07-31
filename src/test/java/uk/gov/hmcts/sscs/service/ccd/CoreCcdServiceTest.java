@@ -2,8 +2,8 @@ package uk.gov.hmcts.sscs.service.ccd;
 
 import static org.hamcrest.CoreMatchers.is;
 import static org.junit.Assert.assertThat;
-import static org.mockito.Matchers.any;
-import static org.mockito.Matchers.eq;
+import static org.mockito.Mockito.any;
+import static org.mockito.Mockito.eq;
 import static org.mockito.Mockito.when;
 
 import org.junit.Before;
@@ -26,13 +26,9 @@ public class CoreCcdServiceTest {
     private static final String USER_ID = "16";
     private static final Long CASE_ID = 989897L;
     private static final String EVENT_ID = "appealCreated";
-    private static final String CCD_TOKEN = "ccdToken";
-    private static final String CCD_EVENT = "ccdEvent";
 
     @Mock
     private CoreCaseDataApi ccdApi;
-    @Mock
-    private StartEventResponse response;
     @Mock
     private CaseDetails caseDetails;
     @Mock
@@ -48,9 +44,6 @@ public class CoreCcdServiceTest {
         ccdProperties = new CoreCaseDataProperties();
         ccdProperties.setJurisdictionId("SSCS");
         ccdProperties.setCaseTypeId("Benefits");
-
-        when(response.getToken()).thenReturn(CCD_TOKEN);
-        when(response.getEventId()).thenReturn(CCD_EVENT);
 
         coreCcdService = new CoreCcdService(ccdApi, ccdProperties);
         idamTokens = IdamTokens.builder()

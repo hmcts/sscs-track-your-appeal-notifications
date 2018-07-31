@@ -8,6 +8,7 @@ public enum EventType {
     APPEAL_LAPSED("appealLapsed"),
     APPEAL_RECEIVED("appealReceived"),
     APPEAL_WITHDRAWN("appealWithdrawn"),
+    APPEAL_DORMANT("appealDormant"),
     DWP_RESPONSE_RECEIVED("responseReceived"),
     EVIDENCE_RECEIVED("evidenceReceived"),
     HEARING_BOOKED("hearingBooked"),
@@ -15,7 +16,12 @@ public enum EventType {
     SUBSCRIPTION_CREATED("subscriptionCreated"),
     SUBSCRIPTION_UPDATED("subscriptionUpdated"),
     EVIDENCE_REMINDER("evidenceReminder"),
+    FIRST_HEARING_HOLDING_REMINDER("hearingHoldingReminder"),
+    SECOND_HEARING_HOLDING_REMINDER("secondHearingHoldingReminder"),
+    THIRD_HEARING_HOLDING_REMINDER("thirdHearingHoldingReminder"),
+    FINAL_HEARING_HOLDING_REMINDER("finalHearingHoldingReminder"),
     HEARING_REMINDER("hearingReminder"),
+    DWP_RESPONSE_LATE_REMINDER("dwpResponseLateReminder"),
     DO_NOT_SEND("");
 
     private String id;

@@ -67,7 +67,7 @@ public final class CcdResponseUtils {
             .value(Event.builder()
                 .type(eventType.getId())
                 .description("Some Events")
-                .date("2018-01-14T21:59:43.10")
+                .date("2017-05-24T14:01:18.243")
                 .build())
             .build();
 
@@ -174,7 +174,7 @@ public final class CcdResponseUtils {
         List<Documents> documents = new ArrayList<>();
 
         Documents doc = Documents.builder().value(Doc.builder()
-            .dateReceived("2018-01-01")
+            .dateReceived("2016-01-01")
             .evidenceType("Medical")
             .evidenceProvidedBy("Caseworker").build()).build();
 
@@ -187,7 +187,7 @@ public final class CcdResponseUtils {
 
     public static void addHearing(CcdResponse response) {
         Hearing hearing = Hearing.builder().value(HearingDetails.builder()
-            .hearingDate("2018-01-01")
+            .hearingDate("2016-01-01")
             .time("12:00")
             .venue(Venue.builder()
                 .name("The venue")

@@ -2,11 +2,11 @@ package uk.gov.hmcts.sscs.service.reminder;
 
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.junit.Assert.*;
-import static org.mockito.Mockito.times;
-import static org.mockito.Mockito.verify;
-import static org.mockito.Mockito.when;
+import static org.mockito.Mockito.*;
 import static uk.gov.hmcts.sscs.domain.notify.EventType.*;
 
+import java.time.ZonedDateTime;
+import java.util.Optional;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -19,23 +19,27 @@ import uk.gov.hmcts.sscs.CcdResponseUtils;
 import uk.gov.hmcts.sscs.domain.CcdResponse;
 import uk.gov.hmcts.sscs.domain.notify.EventType;
 import uk.gov.hmcts.sscs.exception.ReminderException;
+import uk.gov.hmcts.sscs.extractor.AppealReceivedDateExtractor;
 
 @RunWith(MockitoJUnitRunner.class)
-public class DwpResponseReceivedReminderHandlerTest {
+public class DwpResponseLateReminderTest {
 
+    @Mock
+    private AppealReceivedDateExtractor appealReceivedDateExtractor;
     @Mock
     private JobGroupGenerator jobGroupGenerator;
     @Mock
     private JobScheduler<String> jobScheduler;
 
-    private DwpResponseReceivedReminderHandler dwpResponseReceivedReminderHandler;
+    private DwpResponseLateReminder dwpResponseLateReminder;
 
     @Before
     public void setup() {
-        dwpResponseReceivedReminderHandler = new DwpResponseReceivedReminderHandler(
+        dwpResponseLateReminder = new DwpResponseLateReminder(
+            appealReceivedDateExtractor,
             jobGroupGenerator,
             jobScheduler,
-            172800
+            86400
         );
     }
 
@@ -46,12 +50,12 @@ public class DwpResponseReceivedReminderHandlerTest {
 
             CcdResponse ccdResponse = CcdResponseUtils.buildBasicCcdResponse(eventType);
 
-            if (eventType == DWP_RESPONSE_RECEIVED) {
-                assertTrue(dwpResponseReceivedReminderHandler.canHandle(ccdResponse));
+            if (eventType == APPEAL_RECEIVED) {
+                assertTrue(dwpResponseLateReminder.canHandle(ccdResponse));
             } else {
 
-                assertFalse(dwpResponseReceivedReminderHandler.canHandle(ccdResponse));
-                assertThatThrownBy(() -> dwpResponseReceivedReminderHandler.handle(ccdResponse))
+                assertFalse(dwpResponseLateReminder.canHandle(ccdResponse));
+                assertThatThrownBy(() -> dwpResponseLateReminder.handle(ccdResponse))
                     .hasMessage("cannot handle ccdResponse")
                     .isExactlyInstanceOf(IllegalArgumentException.class);
             }
@@ -59,22 +63,22 @@ public class DwpResponseReceivedReminderHandlerTest {
     }
 
     @Test
-    public void schedulesReminder() {
+    public void scheduleDwpResponseLateReminderWhenDwpResponseNotReceivedInTime() {
 
         final String expectedJobGroup = "ID_EVENT";
-        final String expectedTriggerAt = "2018-01-03T14:01:18Z[Europe/London]";
-
-        String eventDate = "2018-01-01T14:01:18";
+        final String expectedTriggerAt = "2018-01-02T14:01:18Z[Europe/London]";
+        ZonedDateTime appealReceivedDate = ZonedDateTime.parse("2018-01-01T14:01:18Z[Europe/London]");
 
         CcdResponse ccdResponse = CcdResponseUtils.buildBasicCcdResponseWithEvent(
-            DWP_RESPONSE_RECEIVED,
-            DWP_RESPONSE_RECEIVED,
-            eventDate
+            APPEAL_RECEIVED,
+            APPEAL_RECEIVED,
+            appealReceivedDate.toString()
         );
 
-        when(jobGroupGenerator.generate(ccdResponse.getCaseId(), EVIDENCE_REMINDER)).thenReturn(expectedJobGroup);
+        when(appealReceivedDateExtractor.extract(ccdResponse)).thenReturn(Optional.of(appealReceivedDate));
+        when(jobGroupGenerator.generate(ccdResponse.getCaseId(), DWP_RESPONSE_LATE_REMINDER.getId())).thenReturn(expectedJobGroup);
 
-        dwpResponseReceivedReminderHandler.handle(ccdResponse);
+        dwpResponseLateReminder.handle(ccdResponse);
 
         ArgumentCaptor<Job> jobCaptor = ArgumentCaptor.forClass(Job.class);
 
@@ -82,31 +86,21 @@ public class DwpResponseReceivedReminderHandlerTest {
             jobCaptor.capture()
         );
 
-        Job<String> job = jobCaptor.getValue();
+        Job<String> job = jobCaptor.getAllValues().get(0);
         assertEquals(expectedJobGroup, job.group);
-        assertEquals(EVIDENCE_REMINDER.getId(), job.name);
+        assertEquals(DWP_RESPONSE_LATE_REMINDER.getId(), job.name);
         assertEquals(CcdResponseUtils.CASE_ID, job.payload);
         assertEquals(expectedTriggerAt, job.triggerAt.toString());
     }
 
     @Test(expected = ReminderException.class)
-    public void throwExceptionWhenCannotFindEventDateForDwpResponseReceivedEvent() {
+    public void throwExceptionWhenAppealReceivedDateNotPresent() {
 
-        CcdResponse ccdResponse = CcdResponseUtils.buildBasicCcdResponse(DWP_RESPONSE_RECEIVED);
+        CcdResponse ccdResponse = CcdResponseUtils.buildBasicCcdResponse(APPEAL_RECEIVED);
 
-        dwpResponseReceivedReminderHandler.handle(ccdResponse);
-    }
+        when(appealReceivedDateExtractor.extract(ccdResponse)).thenReturn(Optional.empty());
 
-    @Test(expected = ReminderException.class)
-    public void throwExceptionForUnrecognisedReminderEvent() {
-
-        CcdResponse ccdResponse = CcdResponseUtils.buildBasicCcdResponseWithEvent(
-            DWP_RESPONSE_RECEIVED,
-            APPEAL_WITHDRAWN,
-            "2018-01-01T14:01:18"
-        );
-
-        dwpResponseReceivedReminderHandler.handle(ccdResponse);
+        dwpResponseLateReminder.handle(ccdResponse);
     }
 
 }
