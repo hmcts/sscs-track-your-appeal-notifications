@@ -16,11 +16,11 @@ data "vault_generic_secret" "sscs_s2s_secret" {
 }
 
 data "vault_generic_secret" "idam_sscs_systemupdate_user" {
-  path = "secret/${var.infrastructure_env}/sscs/sidamuser"
+  path = "secret/${var.infrastructure_env}/ccidam/idam-api/sscs/systemupdate/user"
 }
 
 data "vault_generic_secret" "idam_sscs_systemupdate_password" {
-  path = "secret/${var.infrastructure_env}/sscs/sidampassword"
+  path = "secret/${var.infrastructure_env}/ccidam/idam-api/sscs/systemupdate/password"
 }
 
 data "vault_generic_secret" "idam_oauth2_client_secret" {
@@ -59,7 +59,7 @@ locals {
 
   ccdApi    = "http://ccd-data-store-api-${local.local_env}.service.${local.local_ase}.internal"
   s2sCnpUrl = "http://rpe-service-auth-provider-${local.local_env}.service.${local.local_ase}.internal"
-  idamUrl = "${(var.env == "saat") ? "http://idam-api-idam-${local.local_env}.service.${local.local_ase}.internal" : data.vault_generic_secret.idam_api.data["value"]}"
+  idamUrl   = "${(var.env == "saat") ? "http://idam-api-idam-${local.local_env}.service.${local.local_ase}.internal:80" : data.vault_generic_secret.idam_api.data["value"]}"
 }
 
 module "track-your-appeal-notifications" {
