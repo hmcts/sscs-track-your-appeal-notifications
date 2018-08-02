@@ -30,10 +30,8 @@ public class IdamService {
         return authTokenGenerator.generate();
     }
 
-    //todo: only for CNP I hardcode the userID and only for testing purpose
     public String getUserId(String oauth2Token) {
-	return "77d5afa6-1cb7-4f8e-8e17-7f632e7fd0d8";
-        //return authTokenSubjectExtractor.extract(oauth2Token);
+        return authTokenSubjectExtractor.extract(oauth2Token);
     }
 
     public String getIdamOauth2Token() {
