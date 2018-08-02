@@ -7,10 +7,9 @@ import java.util.Map;
 import org.apache.http.HttpHeaders;
 import org.springframework.cloud.openfeign.FeignClient;
 import org.springframework.http.MediaType;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestHeader;
-import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.*;
 import uk.gov.hmcts.sscs.domain.idam.Authorize;
+import uk.gov.hmcts.sscs.domain.idam.UserDetails;
 
 @FeignClient(
     name = "idam-api",
@@ -54,5 +53,11 @@ public interface IdamApiClient {
     Authorize authorizeToken(
         Map<String, ?> formParams
     );
+
+    @RequestMapping(
+            method = RequestMethod.GET,
+            value = "/details"
+    )
+    UserDetails getUserDetails(@RequestHeader(HttpHeaders.AUTHORIZATION) final String oauth2Token);
 
 }

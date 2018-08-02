@@ -31,7 +31,7 @@ public class IdamService {
     }
 
     public String getUserId(String oauth2Token) {
-        return authTokenSubjectExtractor.extract(oauth2Token);
+        return idamApiClient.getUserDetails(oauth2Token).getId();
     }
 
     public String getIdamOauth2Token() {
