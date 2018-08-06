@@ -100,7 +100,7 @@ public class SubscriptionPersonalisationTest {
     public void customisePersonalisation() {
         Map<String, String> result = personalisation.create(CcdResponseWrapper.builder().newCcdResponse(newCcdResponse).oldCcdResponse(oldCcdResponse).build());
 
-        assertEquals("PIP benefit", result.get(BENEFIT_NAME_ACRONYM_LITERAL));
+        assertEquals("PIP", result.get(BENEFIT_NAME_ACRONYM_LITERAL));
         assertEquals("Personal Independence Payment", result.get(BENEFIT_FULL_NAME_LITERAL));
         assertEquals("1234", result.get(APPEAL_REF));
         assertEquals("GLSCRR", result.get(APPEAL_ID));

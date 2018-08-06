@@ -52,7 +52,7 @@ public class Personalisation {
         Subscription appellantSubscription = ccdResponse.getSubscriptions().getAppellantSubscription();
         Benefit benefit = getBenefitByCode(ccdResponse.getAppeal().getBenefitType().getCode());
 
-        personalisation.put(BENEFIT_NAME_ACRONYM_LITERAL, benefit.name() + " benefit");
+        personalisation.put(BENEFIT_NAME_ACRONYM_LITERAL, benefit.name());
         personalisation.put(BENEFIT_NAME_ACRONYM_SHORT_LITERAL, benefit.name());
         personalisation.put(BENEFIT_FULL_NAME_LITERAL, benefit.getDescription());
         personalisation.put(APPEAL_REF, ccdResponse.getCaseReference());
