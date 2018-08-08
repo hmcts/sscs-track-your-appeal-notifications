@@ -5,6 +5,7 @@ import static uk.gov.hmcts.sscs.domain.notify.EventType.*;
 
 import java.io.IOException;
 import java.util.List;
+import org.junit.Ignore;
 import org.junit.Test;
 import org.springframework.beans.factory.annotation.Value;
 import uk.gov.service.notify.Notification;
@@ -93,6 +94,7 @@ public class ReminderNotificationsFunctionalTest extends AbstractFunctionalTest 
         );
     }
 
+    @Ignore
     @Test
     public void shouldSendNotificationsWhenDwpResponseReceivedEventIsReceived() throws IOException, NotificationClientException {
 
