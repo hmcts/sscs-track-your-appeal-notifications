@@ -25,7 +25,6 @@ List<LinkedHashMap<String, Object>> secrets = [
   secret('idam-redirect', 'IDAM_OAUTH2_REDIRECT_URL'),
   secret('idam-password','IDAM_SSCS_SYSTEMUPDATE_PASSWORD'),
   secret('idam-user','IDAM_SSCS_SYSTEMUPDATE_USER'),
-  secret('notif-api', 'NOTIFICATION_API_KEY'),
 ]
 
 static LinkedHashMap<String, Object> secret(String secretName, String envVar) {
