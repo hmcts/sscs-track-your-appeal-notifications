@@ -113,7 +113,7 @@ public abstract class AbstractFunctionalTest {
         List<Notification> allNotifications = new ArrayList<>();
         List<Notification> matchingNotifications = new ArrayList<>();
 
-        int waitForAtLeastNumberOfNotifications = expectedTemplateIds.length;
+        int waitForAtLeastNumberOfNotifications = expectedTemplateIds.length * 2;
 
         int maxSecondsToWaitForNotification = MAX_SECONDS_TO_WAIT_FOR_NOTIFICATIONS;
 
