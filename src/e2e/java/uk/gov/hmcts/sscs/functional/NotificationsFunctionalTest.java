@@ -51,7 +51,7 @@ public class NotificationsFunctionalTest extends AbstractFunctionalTest {
     public void shouldSendAppealReceivedNotification() throws IOException, NotificationClientException {
         simulateCcdCallback(EventType.APPEAL_RECEIVED);
 
-        tryFetchNotificationsForTestCase(false,
+        tryFetchNotificationsForTestCase(
             appealReceivedEmailTemplateId,
             appealReceivedSmsTemplateId
         );
@@ -61,7 +61,7 @@ public class NotificationsFunctionalTest extends AbstractFunctionalTest {
     public void shouldSendEvidenceReceivedNotification() throws NotificationClientException, IOException {
         simulateCcdCallback(EventType.EVIDENCE_RECEIVED);
 
-        tryFetchNotificationsForTestCase(false,
+        tryFetchNotificationsForTestCase(
             evidenceReceivedEmailTemplateId,
             evidenceReceivedSmsTemplateId
         );
@@ -71,7 +71,7 @@ public class NotificationsFunctionalTest extends AbstractFunctionalTest {
     public void shouldSendHearingAdjournedNotification() throws NotificationClientException, IOException {
         simulateCcdCallback(EventType.ADJOURNED);
 
-        tryFetchNotificationsForTestCase(false,
+        tryFetchNotificationsForTestCase(
             hearingAdjournedEmailTemplateId,
             hearingAdjournedSmsTemplateId
         );
@@ -81,28 +81,28 @@ public class NotificationsFunctionalTest extends AbstractFunctionalTest {
     public void shouldSendHearingPostponedNotification() throws NotificationClientException, IOException {
         simulateCcdCallback(EventType.POSTPONEMENT);
 
-        tryFetchNotificationsForTestCase(false, hearingPostponedEmailTemplateId);
+        tryFetchNotificationsForTestCase(hearingPostponedEmailTemplateId);
     }
 
     @Test
     public void shouldSendAppealLapsedNotification() throws NotificationClientException, IOException {
         simulateCcdCallback(EventType.APPEAL_LAPSED);
 
-        tryFetchNotificationsForTestCase(false, appealLapsedEmailTemplateId);
+        tryFetchNotificationsForTestCase(appealLapsedEmailTemplateId);
     }
 
     @Test
     public void shouldSendAppealWithdrawnNotification() throws NotificationClientException, IOException {
         simulateCcdCallback(EventType.APPEAL_WITHDRAWN);
 
-        tryFetchNotificationsForTestCase(false, appealWithdrawnEmailTemplateId);
+        tryFetchNotificationsForTestCase(appealWithdrawnEmailTemplateId);
     }
 
     @Test
     public void shouldSendHearingBookedNotification() throws NotificationClientException, IOException {
         simulateCcdCallback(EventType.HEARING_BOOKED);
 
-        tryFetchNotificationsForTestCase(false,
+        tryFetchNotificationsForTestCase(
             hearingBookedEmailTemplateId,
             hearingBookedSmsTemplateId
         );
@@ -112,13 +112,13 @@ public class NotificationsFunctionalTest extends AbstractFunctionalTest {
     public void shouldSendSubscriptionCreatedNotification() throws NotificationClientException, IOException {
         simulateCcdCallback(EventType.SUBSCRIPTION_CREATED);
 
-        tryFetchNotificationsForTestCase(false, subscriptionCreatedSmsTemplateId);
+        tryFetchNotificationsForTestCase(subscriptionCreatedSmsTemplateId);
     }
 
     @Test
     public void shouldSendSubscriptionUpdatedNotification() throws NotificationClientException, IOException {
         simulateCcdCallback(EventType.SUBSCRIPTION_UPDATED);
 
-        tryFetchNotificationsForTestCase(false, subscriptionUpdatedEmailTemplateId);
+        tryFetchNotificationsForTestCase(subscriptionUpdatedEmailTemplateId);
     }
 }
