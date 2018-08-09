@@ -94,6 +94,7 @@ public class ReminderNotificationsFunctionalTest extends AbstractFunctionalTest 
         );
     }
 
+    @Ignore
     @Test
     public void shouldSendNotificationsWhenDwpResponseReceivedEventIsReceived() throws IOException, NotificationClientException {
 
