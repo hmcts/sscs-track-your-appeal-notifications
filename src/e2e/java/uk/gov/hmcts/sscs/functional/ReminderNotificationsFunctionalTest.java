@@ -67,8 +67,8 @@ public class ReminderNotificationsFunctionalTest extends AbstractFunctionalTest 
         simulateCcdCallback(APPEAL_RECEIVED);
 
         List<Notification> notifications =
-            tryFetchNotificationsForTestCase(
-                dwpResponseLateReminderEmailTemplateId,
+            tryFetchNotificationsForTestCase(false,
+                    dwpResponseLateReminderEmailTemplateId,
                 dwpResponseLateReminderSmsTemplateId
             );
 
@@ -94,7 +94,6 @@ public class ReminderNotificationsFunctionalTest extends AbstractFunctionalTest 
         );
     }
 
-    @Ignore
     @Test
     public void shouldSendNotificationsWhenDwpResponseReceivedEventIsReceived() throws IOException, NotificationClientException {
 
@@ -102,7 +101,7 @@ public class ReminderNotificationsFunctionalTest extends AbstractFunctionalTest 
         simulateCcdCallback(DWP_RESPONSE_RECEIVED);
 
         List<Notification> notifications =
-            tryFetchNotificationsForTestCase(
+            tryFetchNotificationsForTestCase(true,
                 responseReceivedEmailTemplateId,
                 responseReceivedSmsTemplateId,
                 evidenceReminderEmailTemplateId,
@@ -243,8 +242,8 @@ public class ReminderNotificationsFunctionalTest extends AbstractFunctionalTest 
         simulateCcdCallback(HEARING_BOOKED);
 
         List<Notification> notifications =
-            tryFetchNotificationsForTestCase(
-                hearingReminderEmailTemplateId,
+            tryFetchNotificationsForTestCase(true,
+                    hearingReminderEmailTemplateId,
                 hearingReminderEmailTemplateId,
                 hearingReminderSmsTemplateId,
                 hearingReminderSmsTemplateId

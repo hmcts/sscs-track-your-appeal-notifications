@@ -108,7 +108,7 @@ public abstract class AbstractFunctionalTest {
                     + epoch.substring(8, 13);
     }
 
-    protected List<Notification> tryFetchNotificationsForTestCase(String... expectedTemplateIds) throws NotificationClientException {
+    protected List<Notification> tryFetchNotificationsForTestCase(Boolean hitCcd, String... expectedTemplateIds) throws NotificationClientException {
 
         List<Notification> allNotifications = new ArrayList<>();
         List<Notification> matchingNotifications = new ArrayList<>();
@@ -116,6 +116,10 @@ public abstract class AbstractFunctionalTest {
         int waitForAtLeastNumberOfNotifications = expectedTemplateIds.length;
 
         int maxSecondsToWaitForNotification = MAX_SECONDS_TO_WAIT_FOR_NOTIFICATIONS;
+
+        if (hitCcd) {
+            waitForAtLeastNumberOfNotifications *= 2;
+        }
 
         do {
 
