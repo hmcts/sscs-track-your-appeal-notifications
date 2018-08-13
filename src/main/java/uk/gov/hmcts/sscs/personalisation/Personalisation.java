@@ -24,11 +24,12 @@ import uk.gov.hmcts.sscs.domain.notify.Event;
 import uk.gov.hmcts.sscs.domain.notify.EventType;
 import uk.gov.hmcts.sscs.domain.notify.Template;
 import uk.gov.hmcts.sscs.extractor.HearingContactDateExtractor;
+import uk.gov.hmcts.sscs.factory.NotificationWrapper;
 import uk.gov.hmcts.sscs.service.MessageAuthenticationServiceImpl;
 import uk.gov.hmcts.sscs.service.RegionalProcessingCenterService;
 
 @Component
-public class Personalisation {
+public class Personalisation<E extends NotificationWrapper> {
 
     private boolean sendSmsSubscriptionConfirmation;
 
@@ -46,7 +47,11 @@ public class Personalisation {
     @Autowired
     private RegionalProcessingCenterService regionalProcessingCenterService;
 
-    public Map<String, String> create(CcdResponseWrapper responseWrapper) {
+    public Map<String, String> create(E notificationWrapper) {
+        return create(notificationWrapper.getCcdResponseWrapper());
+    }
+
+    protected Map<String, String> create(CcdResponseWrapper responseWrapper) {
         CcdResponse ccdResponse = responseWrapper.getNewCcdResponse();
         Map<String, String> personalisation = new HashMap<>();
         Subscription appellantSubscription = ccdResponse.getSubscriptions().getAppellantSubscription();

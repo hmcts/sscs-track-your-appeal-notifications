@@ -2,7 +2,6 @@ package uk.gov.hmcts.sscs.tya;
 
 import static helper.IntegrationTestHelper.*;
 import static org.mockito.Mockito.*;
-import static org.mockito.Mockito.any;
 
 import java.io.File;
 import java.io.IOException;
@@ -27,8 +26,11 @@ import org.springframework.test.web.servlet.request.MockHttpServletRequestBuilde
 import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 import uk.gov.hmcts.sscs.config.NotificationBlacklist;
 import uk.gov.hmcts.sscs.controller.NotificationController;
+import uk.gov.hmcts.sscs.deserialize.CcdResponseWrapperDeserializer;
 import uk.gov.hmcts.sscs.factory.NotificationFactory;
 import uk.gov.hmcts.sscs.service.*;
+import uk.gov.hmcts.sscs.service.ccd.SearchCcdService;
+import uk.gov.hmcts.sscs.service.idam.IdamService;
 import uk.gov.service.notify.NotificationClient;
 
 @RunWith(SpringRunner.class)
@@ -59,13 +61,22 @@ public class NotificationsIt {
     @Autowired
     NotificationFactory factory;
 
+    @Autowired
+    private SearchCcdService searchCcdService;
+
+    @Autowired
+    private IdamService idamService;
+
+    @Autowired
+    private CcdResponseWrapperDeserializer deserializer;
+
     String json;
 
     @Before
     public void setup() throws IOException {
         NotificationSender sender = new NotificationSender(client, null, notificationBlacklist);
         NotificationService service = new NotificationService(sender, factory, reminderService, notificationValidService);
-        controller = new NotificationController(service, authorisationService);
+        controller = new NotificationController(service, authorisationService, searchCcdService, idamService, deserializer);
         this.mockMvc = MockMvcBuilders.standaloneSetup(controller).build();
         String path = getClass().getClassLoader().getResource("json/ccdResponse.json").getFile();
         json = FileUtils.readFileToString(new File(path), StandardCharsets.UTF_8.name());

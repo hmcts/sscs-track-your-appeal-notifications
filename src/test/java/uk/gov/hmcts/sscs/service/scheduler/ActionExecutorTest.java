@@ -13,6 +13,7 @@ import uk.gov.hmcts.reform.ccd.client.model.CaseDetails;
 import uk.gov.hmcts.sscs.deserialize.CcdResponseWrapperDeserializer;
 import uk.gov.hmcts.sscs.domain.CcdResponse;
 import uk.gov.hmcts.sscs.domain.CcdResponseWrapper;
+import uk.gov.hmcts.sscs.factory.CcdNotificationWrapper;
 import uk.gov.hmcts.sscs.service.NotificationService;
 import uk.gov.hmcts.sscs.service.ccd.SearchCcdService;
 import uk.gov.hmcts.sscs.service.ccd.UpdateCcdService;
@@ -58,7 +59,7 @@ public class ActionExecutorTest {
 
         actionExecutor.execute("1", "group", EVIDENCE_REMINDER.getId(), "123456");
 
-        verify(notificationService, times(1)).createAndSendNotification(wrapper);
+        verify(notificationService, times(1)).createAndSendNotification(new CcdNotificationWrapper(wrapper));
         verify(updateCcdService, times(1)).update(any(), any(), any(), any());
     }
 

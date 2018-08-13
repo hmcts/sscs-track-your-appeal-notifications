@@ -6,7 +6,6 @@ import java.util.Map;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 import uk.gov.hmcts.sscs.domain.CcdResponse;
-import uk.gov.hmcts.sscs.domain.CcdResponseWrapper;
 import uk.gov.hmcts.sscs.domain.notify.*;
 import uk.gov.hmcts.sscs.personalisation.Personalisation;
 
@@ -22,22 +21,28 @@ public class NotificationFactory {
         this.personalisationFactory = personalisationFactory;
     }
 
-    public Notification create(CcdResponseWrapper responseWrapper) {
-        CcdResponse ccdResponse = responseWrapper.getNewCcdResponse();
-        Personalisation personalisation = map.computeIfAbsent(ccdResponse.getNotificationType(), personalisationFactory);
+    public <E extends NotificationWrapper> Notification create(E notificationWrapper) {
+        Personalisation<E> personalisation = getPersonalisation(notificationWrapper);
         if (personalisation == null) {
             return null;
         }
 
-        Map<String, String> placeholders = personalisation.create(responseWrapper);
+        Map<String, String> placeholders = personalisation.create(notificationWrapper);
         if (null == placeholders) {
             return null;
         }
 
-        Template template = personalisation.getTemplate(ccdResponse.getNotificationType());
+        Template template = personalisation.getTemplate(notificationWrapper.getNotificationType());
+
+        CcdResponse ccdResponse = notificationWrapper.getCcdResponseWrapper().getNewCcdResponse();
         Destination destination = ccdResponse.getSubscriptions().getAppellantSubscription().getDestination();
         Reference reference = new Reference(ccdResponse.getCaseReference());
         String appealNumber = ccdResponse.getSubscriptions().getAppellantSubscription().getTya();
+
         return new Notification(template, destination, placeholders, reference, appealNumber);
+    }
+
+    private <E extends NotificationWrapper> Personalisation<E> getPersonalisation(E notificationWrapper) {
+        return map.computeIfAbsent(notificationWrapper.getNotificationType(), personalisationFactory);
     }
 }

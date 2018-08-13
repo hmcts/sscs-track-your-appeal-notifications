@@ -51,6 +51,9 @@ idam:
       secret: ${IDAM_OAUTH2_CLIENT_SECRET:QM5RQQ53LZFOSIXJ}
     redirectUrl: ${IDAM_SSCS_URL:https://localhost:9000/poc}
 
+coh:
+  url: ${COH_URL:http://localhost:8081}
+
 management:
   endpoints:
     web:
@@ -128,6 +131,9 @@ notification:
   dwpResponseLateReminder:
     emailId: 1dfa9e4e-0a85-4001-acc9-2847ed6e2a22
     smsId: ef6297d1-7b03-432a-b04a-62a01f009b56
+  question_round_issued:
+    emailId: ccfbfcac-847d-4e55-955c-096802c131a0
+    smsId: f4138438-9707-4d52-9f54-dfa68e96856f
 
 reminder:
   evidenceReminder.delay.seconds: 172800

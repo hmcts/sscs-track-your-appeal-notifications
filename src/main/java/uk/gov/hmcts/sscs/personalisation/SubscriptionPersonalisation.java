@@ -6,12 +6,13 @@ import uk.gov.hmcts.sscs.domain.CcdResponse;
 import uk.gov.hmcts.sscs.domain.CcdResponseWrapper;
 import uk.gov.hmcts.sscs.domain.Subscription;
 import uk.gov.hmcts.sscs.domain.notify.EventType;
+import uk.gov.hmcts.sscs.factory.CcdNotificationWrapper;
 
 @Component
-public class SubscriptionPersonalisation extends Personalisation {
+public class SubscriptionPersonalisation extends Personalisation<CcdNotificationWrapper> {
 
     @Override
-    public Map<String, String> create(CcdResponseWrapper responseWrapper) {
+    protected Map<String, String> create(CcdResponseWrapper responseWrapper) {
         setSendSmsSubscriptionConfirmation(shouldSendSmsSubscriptionConfirmation(responseWrapper.getNewCcdResponse(), responseWrapper.getOldCcdResponse()));
         responseWrapper.getNewCcdResponse().setNotificationType(setEventTypeNotification(responseWrapper.getNewCcdResponse(), responseWrapper.getOldCcdResponse()));
         return super.create(responseWrapper);
