@@ -25,8 +25,6 @@ public class IdamServiceTest {
     @Mock
     private AuthTokenGenerator authTokenGenerator;
     @Mock
-    private AuthTokenSubjectExtractor authTokenSubjectExtractor;
-    @Mock
     private IdamApiClient idamApiClient;
 
     private Authorize authToken;
@@ -38,7 +36,7 @@ public class IdamServiceTest {
         authToken = new Authorize("redirect/", "authCode", "access");
         idamProperties = new IdamProperties();
         idamService = new IdamService(
-            authTokenGenerator, authTokenSubjectExtractor, idamApiClient, idamProperties
+            authTokenGenerator, idamApiClient, idamProperties
         );
     }
 

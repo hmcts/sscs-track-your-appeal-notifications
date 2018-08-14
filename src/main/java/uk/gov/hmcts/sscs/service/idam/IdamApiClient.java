@@ -1,57 +1,41 @@
 package uk.gov.hmcts.sscs.service.idam;
 
-import static org.springframework.util.MimeTypeUtils.APPLICATION_JSON_VALUE;
-
-import com.google.common.collect.ImmutableMap;
-import java.util.Map;
 import org.apache.http.HttpHeaders;
 import org.springframework.cloud.openfeign.FeignClient;
 import org.springframework.http.MediaType;
-import org.springframework.web.bind.annotation.*;
+import org.springframework.web.bind.annotation.RequestHeader;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.bind.annotation.RequestParam;
 import uk.gov.hmcts.sscs.domain.idam.Authorize;
 import uk.gov.hmcts.sscs.domain.idam.UserDetails;
 
-@FeignClient(
-    name = "idam-api",
-    url = "${idam.url}"
-)
+@FeignClient(name = "idam-api", url = "${idam.url}")
 public interface IdamApiClient {
 
-    @PostMapping(
-        consumes = APPLICATION_JSON_VALUE,
-        value = "/oauth2/authorize"
+    @RequestMapping(
+            method = RequestMethod.POST,
+            value = "/oauth2/authorize",
+            consumes = MediaType.APPLICATION_FORM_URLENCODED_VALUE
     )
     Authorize authorizeCodeType(
-        @RequestHeader(HttpHeaders.AUTHORIZATION) final String authorisation,
-        @RequestParam("response_type") final String responseType,
-        @RequestParam("client_id") final String clientId,
-        @RequestParam("redirect_uri") final String redirectUri
+            @RequestHeader(HttpHeaders.AUTHORIZATION) final String authorisation,
+            @RequestParam("response_type") final String responseType,
+            @RequestParam("client_id") final String clientId,
+            @RequestParam("redirect_uri") final String redirectUri
     );
 
-    default Authorize authorizeToken(
-        final String code,
-        final String grantType,
-        final String redirectUri,
-        final String clientId,
-        final String clientSecret
-    ) {
-        return authorizeToken(
-            ImmutableMap.of(
-                "code", code,
-                "grant_type", grantType,
-                "redirect_uri", redirectUri,
-                "client_id", clientId,
-                "client_secret", clientSecret
-            )
-        );
-    }
-
-    @PostMapping(
-        consumes = MediaType.APPLICATION_FORM_URLENCODED_VALUE,
-        value = "/oauth2/token"
+    @RequestMapping(
+            method = RequestMethod.POST,
+            value = "/oauth2/token",
+            consumes = MediaType.APPLICATION_FORM_URLENCODED_VALUE
     )
     Authorize authorizeToken(
-        Map<String, ?> formParams
+            @RequestParam("code") final String code,
+            @RequestParam("grant_type") final String grantType,
+            @RequestParam("redirect_uri") final String redirectUri,
+            @RequestParam("client_id") final String clientId,
+            @RequestParam("client_secret") final String clientSecret
     );
 
     @RequestMapping(
@@ -59,5 +43,4 @@ public interface IdamApiClient {
             value = "/details"
     )
     UserDetails getUserDetails(@RequestHeader(HttpHeaders.AUTHORIZATION) final String oauth2Token);
-
 }
