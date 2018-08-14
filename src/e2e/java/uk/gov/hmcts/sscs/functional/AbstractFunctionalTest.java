@@ -51,7 +51,7 @@ public abstract class AbstractFunctionalTest {
 
     private static final org.slf4j.Logger LOG = getLogger(AbstractFunctionalTest.class);
 
-    private static final int MAX_SECONDS_TO_WAIT_FOR_NOTIFICATIONS = 150;
+    private static final int MAX_SECONDS_TO_WAIT_FOR_NOTIFICATIONS = 200;
 
     @Autowired
     @Qualifier("testNotificationClient")
