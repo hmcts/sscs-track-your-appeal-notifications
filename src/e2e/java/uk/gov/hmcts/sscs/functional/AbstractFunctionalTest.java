@@ -13,6 +13,7 @@ import java.io.File;
 import java.io.IOException;
 import java.nio.charset.StandardCharsets;
 import java.time.Instant;
+import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
@@ -176,8 +177,7 @@ public abstract class AbstractFunctionalTest {
         String path = getClass().getClassLoader().getResource(resource).getFile();
         String json = FileUtils.readFileToString(new File(path), StandardCharsets.UTF_8.name());
 
-        json = json.replace("12345656789", caseId.toString());
-        json = json.replace("SC022/14/12423", caseReference);
+        json = updateJson(json, eventType);
 
         RestAssured.useRelaxedHTTPSValidation();
         RestAssured
@@ -189,6 +189,17 @@ public abstract class AbstractFunctionalTest {
                 .post(callbackUrl)
                 .then()
                 .statusCode(HttpStatus.OK.value());
+    }
+
+    private String updateJson(String json, EventType eventType) {
+        json = json.replace("12345656789", caseId.toString());
+        json = json.replace("SC022/14/12423", caseReference);
+
+        if (eventType.equals(EventType.HEARING_BOOKED)) {
+            json = json.replace("2016-01-01", LocalDate.now().toString());
+        }
+
+        return json;
     }
 
     protected void triggerEvent(EventType eventType) {

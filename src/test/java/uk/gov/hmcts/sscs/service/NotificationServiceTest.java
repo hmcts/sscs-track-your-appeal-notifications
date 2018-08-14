@@ -36,12 +36,16 @@ public class NotificationServiceTest {
     @Mock
     private ReminderService reminderService;
 
+    @Mock
+    private NotificationValidService notificationValidService;
+
     CcdResponse response;
 
     @Before
     public void setup() {
         initMocks(this);
-        notificationService = new NotificationService(notificationSender, factory, reminderService);
+        when((notificationValidService).isNotificationStillValidToSend(any(), any())).thenReturn(true);
+        notificationService = new NotificationService(notificationSender, factory, reminderService, notificationValidService);
 
         Subscription appellantSubscription = Subscription.builder().tya("GLSCRR").email("test@email.com")
             .mobile("07983495065").subscribeEmail("Yes").subscribeSms("Yes").build();
@@ -167,7 +171,18 @@ public class NotificationServiceTest {
         when(factory.create(wrapper)).thenReturn(notification);
         notificationService.createAndSendNotification(wrapper);
 
-        verify(reminderService, times(1)).createReminders(response);
+        verify(reminderService).createReminders(response);
+    }
+
+    @Test
+    public void doNotSendNotificationWhenNotificationNotValidToSend() throws Exception {
+        Notification notification = new Notification(Template.builder().emailTemplateId("abc").smsTemplateId(null).build(), Destination.builder().email("test@testing.com").sms(null).build(), null, new Reference(), null);
+        when(factory.create(wrapper)).thenReturn(notification);
+        when((notificationValidService).isNotificationStillValidToSend(any(), any())).thenReturn(false);
+
+        notificationService.createAndSendNotification(wrapper);
+
+        verify(notificationSender, never()).sendEmail(notification.getEmailTemplate(), notification.getEmail(), notification.getPlaceholders(), notification.getReference());
     }
 
 }

@@ -6,6 +6,7 @@ import static helper.IntegrationTestHelper.getRequestWithAuthHeader;
 import helper.IntegrationTestHelper;
 import java.io.File;
 import java.nio.charset.StandardCharsets;
+import java.time.LocalDate;
 import java.util.Arrays;
 import java.util.List;
 import javax.servlet.http.HttpServletResponse;
@@ -136,6 +137,7 @@ public class HearingHoldingReminderIt {
 
         ccdResponseJson = ccdResponseJson.replace("appealReceived", event);
         ccdResponseJson = ccdResponseJson.replace("2017-05-24T14:01:18.243", "2048-05-24T14:01:18.243");
+        ccdResponseJson = ccdResponseJson.replace("2018-01-12", LocalDate.now().plusDays(2).toString());
 
         HttpServletResponse sendResponse = getResponse(getRequestWithAuthHeader(ccdResponseJson));
         assertHttpStatus(sendResponse, HttpStatus.OK);
