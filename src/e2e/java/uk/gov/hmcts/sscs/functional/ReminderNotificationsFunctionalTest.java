@@ -1,9 +1,12 @@
 package uk.gov.hmcts.sscs.functional;
 
 import static uk.gov.hmcts.sscs.CcdResponseUtils.addHearing;
+import static uk.gov.hmcts.sscs.config.AppConstants.RESPONSE_DATE_FORMAT;
 import static uk.gov.hmcts.sscs.domain.notify.EventType.*;
 
 import java.io.IOException;
+import java.time.LocalDate;
+import java.time.format.DateTimeFormatter;
 import java.util.List;
 import org.junit.Test;
 import org.springframework.beans.factory.annotation.Value;
@@ -236,7 +239,7 @@ public class ReminderNotificationsFunctionalTest extends AbstractFunctionalTest 
     @Test
     public void shouldSendNotificationsWhenHearingBookedEventIsReceived() throws IOException, NotificationClientException {
 
-        addHearing(caseData);
+        addHearing(caseData, 0);
         triggerEvent(HEARING_BOOKED);
         simulateCcdCallback(HEARING_BOOKED);
 
@@ -249,14 +252,17 @@ public class ReminderNotificationsFunctionalTest extends AbstractFunctionalTest 
             );
 
         assertNotificationSubjectContains(notifications, hearingReminderEmailTemplateId, "ESA");
+
+        String formattedString = LocalDate.now().format(DateTimeFormatter.ofPattern(RESPONSE_DATE_FORMAT));
+
         assertNotificationBodyContains(
             notifications,
             hearingReminderEmailTemplateId,
             caseReference,
             "ESA",
             "reminder",
-            "01 January 2016",
-            "12:00 PM",
+            formattedString,
+            "11:59 PM",
             "AB12 0HN",
             "/abouthearing"
         );
@@ -266,8 +272,8 @@ public class ReminderNotificationsFunctionalTest extends AbstractFunctionalTest 
             hearingReminderSmsTemplateId,
             "ESA",
             "reminder",
-            "01 January 2016",
-            "12:00 PM",
+            formattedString,
+            "11:59 PM",
             "AB12 0HN",
             "/abouthearing"
         );

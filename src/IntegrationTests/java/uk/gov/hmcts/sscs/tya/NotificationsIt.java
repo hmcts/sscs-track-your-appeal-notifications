@@ -7,6 +7,7 @@ import static org.mockito.Mockito.any;
 import java.io.File;
 import java.io.IOException;
 import java.nio.charset.StandardCharsets;
+import java.time.LocalDate;
 import javax.servlet.http.HttpServletResponse;
 import org.apache.commons.io.FileUtils;
 import org.junit.Before;
@@ -27,10 +28,7 @@ import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 import uk.gov.hmcts.sscs.config.NotificationBlacklist;
 import uk.gov.hmcts.sscs.controller.NotificationController;
 import uk.gov.hmcts.sscs.factory.NotificationFactory;
-import uk.gov.hmcts.sscs.service.AuthorisationService;
-import uk.gov.hmcts.sscs.service.NotificationSender;
-import uk.gov.hmcts.sscs.service.NotificationService;
-import uk.gov.hmcts.sscs.service.ReminderService;
+import uk.gov.hmcts.sscs.service.*;
 import uk.gov.service.notify.NotificationClient;
 
 @RunWith(SpringRunner.class)
@@ -49,6 +47,9 @@ public class NotificationsIt {
     @Mock
     ReminderService reminderService;
 
+    @Autowired
+    NotificationValidService notificationValidService;
+
     @MockBean
     private AuthorisationService authorisationService;
 
@@ -63,7 +64,7 @@ public class NotificationsIt {
     @Before
     public void setup() throws IOException {
         NotificationSender sender = new NotificationSender(client, null, notificationBlacklist);
-        NotificationService service = new NotificationService(sender, factory, reminderService);
+        NotificationService service = new NotificationService(sender, factory, reminderService, notificationValidService);
         controller = new NotificationController(service, authorisationService);
         this.mockMvc = MockMvcBuilders.standaloneSetup(controller).build();
         String path = getClass().getClassLoader().getResource("json/ccdResponse.json").getFile();
@@ -148,12 +149,24 @@ public class NotificationsIt {
     @Test
     public void shouldSendNotificationForHearingBookedRequest() throws Exception {
         json = json.replace("appealReceived", "hearingBooked");
+        json = json.replace("2018-01-12", LocalDate.now().plusDays(2).toString());
 
         HttpServletResponse response = getResponse(getRequestWithAuthHeader(json));
 
         assertHttpStatus(response, HttpStatus.OK);
         verify(client, times(1)).sendEmail(any(), any(), any(), any());
         verify(client, times(1)).sendSms(any(), any(), any(), any());
+    }
+
+    @Test
+    public void shouldNotSendNotificationForHearingBookedRequestForHearingInThePast() throws Exception {
+        json = json.replace("appealReceived", "hearingBooked");
+
+        HttpServletResponse response = getResponse(getRequestWithAuthHeader(json));
+
+        assertHttpStatus(response, HttpStatus.OK);
+        verify(client, times(0)).sendEmail(any(), any(), any(), any());
+        verify(client, times(0)).sendSms(any(), any(), any(), any());
     }
 
     @Test
@@ -170,6 +183,7 @@ public class NotificationsIt {
     @Test
     public void shouldSendNotificationForHearingReminder() throws Exception {
         json = json.replace("appealReceived", "hearingReminder");
+        json = json.replace("2018-01-12", LocalDate.now().plusDays(2).toString());
 
         HttpServletResponse response = getResponse(getRequestWithAuthHeader(json));
 

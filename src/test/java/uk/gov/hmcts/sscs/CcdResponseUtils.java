@@ -1,6 +1,7 @@
 package uk.gov.hmcts.sscs;
 
 import java.text.SimpleDateFormat;
+import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Date;
@@ -185,10 +186,10 @@ public final class CcdResponseUtils {
         response.setEvidence(evidence);
     }
 
-    public static void addHearing(CcdResponse response) {
+    public static List<Hearing> addHearing(CcdResponse response, Integer hearingDaysFromNow) {
         Hearing hearing = Hearing.builder().value(HearingDetails.builder()
-            .hearingDate("2016-01-01")
-            .time("12:00")
+            .hearingDate(LocalDate.now().plusDays(hearingDaysFromNow).toString())
+            .time("23:59")
             .venue(Venue.builder()
                 .name("The venue")
                 .address(Address.builder()
@@ -202,8 +203,9 @@ public final class CcdResponseUtils {
 
         List<Hearing> hearingsList = new ArrayList<>();
         hearingsList.add(hearing);
-
         response.setHearings(hearingsList);
+
+        return hearingsList;
     }
 
 }

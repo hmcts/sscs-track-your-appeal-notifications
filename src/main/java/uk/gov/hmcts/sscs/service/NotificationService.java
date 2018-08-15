@@ -20,12 +20,15 @@ public class NotificationService {
     private final NotificationSender notificationSender;
     private final NotificationFactory factory;
     private final ReminderService reminderService;
+    private final NotificationValidService notificationValidService;
 
     @Autowired
-    public NotificationService(NotificationSender notificationSender, NotificationFactory factory, ReminderService reminderService) {
+    public NotificationService(NotificationSender notificationSender, NotificationFactory factory, ReminderService reminderService,
+                               NotificationValidService notificationValidService) {
         this.factory = factory;
         this.notificationSender = notificationSender;
         this.reminderService = reminderService;
+        this.notificationValidService = notificationValidService;
     }
 
     public void createAndSendNotification(CcdResponseWrapper responseWrapper) {
@@ -36,7 +39,8 @@ public class NotificationService {
 
         LOG.info("Notification event triggered {} for case id {}", notificationEventType, caseId);
 
-        if (appellantSubscription != null && appellantSubscription.doesCaseHaveSubscriptions()) {
+        if (appellantSubscription != null && appellantSubscription.doesCaseHaveSubscriptions() && notificationValidService.isNotificationStillValidToSend(
+                responseWrapper.getNewCcdResponse().getHearings(), responseWrapper.getNewCcdResponse().getNotificationType())) {
 
             Notification notification = factory.create(responseWrapper);
 

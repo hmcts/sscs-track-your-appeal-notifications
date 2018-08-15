@@ -60,8 +60,8 @@
           "id": "609523de-ba0a-45e7-8f0b-af3f82ab347c",
           "value": {
             "adjourned": null,
-            "hearingDate": "2016-01-01",
-            "time": "12:00",
+            "hearingDate": "2048-01-01",
+            "time": "23:59",
             "venue": {
               "address": {
                 "county": "Aberdeenshire",
