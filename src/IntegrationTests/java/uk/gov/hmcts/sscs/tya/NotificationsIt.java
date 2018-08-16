@@ -30,7 +30,7 @@ import uk.gov.hmcts.sscs.deserialize.CcdResponseWrapperDeserializer;
 import uk.gov.hmcts.sscs.factory.NotificationFactory;
 import uk.gov.hmcts.sscs.service.*;
 import uk.gov.hmcts.sscs.service.ccd.SearchCcdService;
-import uk.gov.hmcts.sscs.service.idam.IdamService;
+import uk.gov.hmcts.sscs.service.idam.IdamTokensService;
 import uk.gov.service.notify.NotificationClient;
 
 @RunWith(SpringRunner.class)
@@ -65,7 +65,7 @@ public class NotificationsIt {
     private SearchCcdService searchCcdService;
 
     @Autowired
-    private IdamService idamService;
+    private IdamTokensService idamTokensService;
 
     @Autowired
     private CcdResponseWrapperDeserializer deserializer;
@@ -76,7 +76,7 @@ public class NotificationsIt {
     public void setup() throws IOException {
         NotificationSender sender = new NotificationSender(client, null, notificationBlacklist);
         NotificationService service = new NotificationService(sender, factory, reminderService, notificationValidService);
-        controller = new NotificationController(service, authorisationService, searchCcdService, idamService, deserializer);
+        controller = new NotificationController(service, authorisationService, searchCcdService, idamTokensService, deserializer);
         this.mockMvc = MockMvcBuilders.standaloneSetup(controller).build();
         String path = getClass().getClassLoader().getResource("json/ccdResponse.json").getFile();
         json = FileUtils.readFileToString(new File(path), StandardCharsets.UTF_8.name());

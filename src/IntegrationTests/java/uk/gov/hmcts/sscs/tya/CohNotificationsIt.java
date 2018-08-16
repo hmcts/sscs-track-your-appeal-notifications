@@ -31,6 +31,7 @@ import uk.gov.hmcts.reform.ccd.client.model.CaseDetails;
 import uk.gov.hmcts.sscs.config.NotificationBlacklist;
 import uk.gov.hmcts.sscs.controller.NotificationController;
 import uk.gov.hmcts.sscs.deserialize.CcdResponseWrapperDeserializer;
+import uk.gov.hmcts.sscs.domain.idam.IdamTokens;
 import uk.gov.hmcts.sscs.factory.NotificationFactory;
 import uk.gov.hmcts.sscs.service.*;
 import uk.gov.hmcts.sscs.service.ccd.SearchCcdService;
@@ -38,7 +39,7 @@ import uk.gov.hmcts.sscs.service.coh.CohClient;
 import uk.gov.hmcts.sscs.service.coh.QuestionReferences;
 import uk.gov.hmcts.sscs.service.coh.QuestionRound;
 import uk.gov.hmcts.sscs.service.coh.QuestionRounds;
-import uk.gov.hmcts.sscs.service.idam.IdamService;
+import uk.gov.hmcts.sscs.service.idam.IdamTokensService;
 import uk.gov.service.notify.NotificationClient;
 
 @RunWith(SpringRunner.class)
@@ -61,7 +62,7 @@ public class CohNotificationsIt {
     private AuthorisationService authorisationService;
 
     @MockBean
-    private IdamService idamService;
+    private IdamTokensService idamTokensService;
 
     @MockBean
     private CoreCaseDataApi coreCaseDataApi;
@@ -93,13 +94,13 @@ public class CohNotificationsIt {
     public void setup() throws IOException {
         NotificationSender sender = new NotificationSender(client, null, notificationBlacklist);
         NotificationService service = new NotificationService(sender, factory, reminderService, notificationValidService);
-        controller = new NotificationController(service, authorisationService, searchCcdService, idamService, deserializer);
-        when(idamService.getUserId(null)).thenReturn("user-id");
+        controller = new NotificationController(service, authorisationService, searchCcdService, idamTokensService, deserializer);
 
         ObjectMapper mapper = new ObjectMapper();
         File src = new File(getClass().getClassLoader().getResource("json/ccdcase.json").getFile());
         CaseDetails caseDetails = mapper.readValue(src, CaseDetails.class);
 
+        when(idamTokensService.getIdamTokens()).thenReturn(IdamTokens.builder().userId("user-id").build());
         when(coreCaseDataApi.readForCaseWorker(any(), any(), any(), any(), any(), any()))
                 .thenReturn(caseDetails);
         when(cohClient.getQuestionRounds(any(), any(), any())).thenReturn(

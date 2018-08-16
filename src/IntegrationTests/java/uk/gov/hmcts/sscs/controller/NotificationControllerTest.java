@@ -24,7 +24,7 @@ import uk.gov.hmcts.sscs.factory.CohNotificationWrapper;
 import uk.gov.hmcts.sscs.service.AuthorisationService;
 import uk.gov.hmcts.sscs.service.NotificationService;
 import uk.gov.hmcts.sscs.service.ccd.SearchCcdService;
-import uk.gov.hmcts.sscs.service.idam.IdamService;
+import uk.gov.hmcts.sscs.service.idam.IdamTokensService;
 
 @ActiveProfiles("integration")
 public class NotificationControllerTest {
@@ -43,7 +43,7 @@ public class NotificationControllerTest {
     private SearchCcdService searchCcdService;
 
     @Mock
-    private IdamService idamService;
+    private IdamTokensService idamTokensService;
 
     @Mock
     private CcdResponseWrapperDeserializer deserializer;
@@ -52,7 +52,7 @@ public class NotificationControllerTest {
     public void setUp() {
         initMocks(this);
 
-        notificationController = new NotificationController(notificationService, authorisationService, searchCcdService, idamService, deserializer);
+        notificationController = new NotificationController(notificationService, authorisationService, searchCcdService, idamTokensService, deserializer);
         ccdResponseWrapper = CcdResponseWrapper.builder().newCcdResponse(CcdResponse.builder().build()).oldCcdResponse(CcdResponse.builder().build()).build();
     }
 
@@ -70,7 +70,9 @@ public class NotificationControllerTest {
         String onlineHearingId = "onlineHearingId";
 
         CaseDetails caseDetails = CaseDetails.builder().id(caseDetailsId).build();
-        when(searchCcdService.getByCaseId(eq(caseId), any(IdamTokens.class))).thenReturn(caseDetails);
+        IdamTokens idamTokens = IdamTokens.builder().build();
+        when(idamTokensService.getIdamTokens()).thenReturn(idamTokens);
+        when(searchCcdService.getByCaseId(caseId, idamTokens)).thenReturn(caseDetails);
         CcdResponseWrapper ccdResponseWrapper = CcdResponseWrapper.builder().build();
         when(deserializer.buildCcdResponseWrapper(hasFields(eventType, caseDetailsId))).thenReturn(ccdResponseWrapper);
 

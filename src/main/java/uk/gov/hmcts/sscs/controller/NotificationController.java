@@ -23,7 +23,7 @@ import uk.gov.hmcts.sscs.factory.CohNotificationWrapper;
 import uk.gov.hmcts.sscs.service.AuthorisationService;
 import uk.gov.hmcts.sscs.service.NotificationService;
 import uk.gov.hmcts.sscs.service.ccd.SearchCcdService;
-import uk.gov.hmcts.sscs.service.idam.IdamService;
+import uk.gov.hmcts.sscs.service.idam.IdamTokensService;
 
 @RestController
 public class NotificationController {
@@ -33,15 +33,15 @@ public class NotificationController {
     private final NotificationService service;
     private final AuthorisationService authorisationService;
     private final SearchCcdService searchCcdService;
-    private final IdamService idamService;
+    private final IdamTokensService idamTokensService;
     private final CcdResponseWrapperDeserializer deserializer;
 
     @Autowired
-    public NotificationController(NotificationService service, AuthorisationService authorisationService, SearchCcdService searchCcdService, IdamService idamService, CcdResponseWrapperDeserializer deserializer) {
+    public NotificationController(NotificationService service, AuthorisationService authorisationService, SearchCcdService searchCcdService, IdamTokensService idamTokensService, CcdResponseWrapperDeserializer deserializer) {
         this.service = service;
         this.authorisationService = authorisationService;
         this.searchCcdService = searchCcdService;
-        this.idamService = idamService;
+        this.idamTokensService = idamTokensService;
         this.deserializer = deserializer;
     }
 
@@ -64,12 +64,7 @@ public class NotificationController {
 
         authorisationService.authorise(serviceAuthHeader);
 
-        String oauth2Token = idamService.getIdamOauth2Token();
-        IdamTokens idamTokens = IdamTokens.builder()
-                .idamOauth2Token(oauth2Token)
-                .serviceAuthorization(idamService.generateServiceAuthorization())
-                .userId(idamService.getUserId(oauth2Token))
-                .build();
+        IdamTokens idamTokens = idamTokensService.getIdamTokens();
 
         CaseDetails caseDetails = searchCcdService.getByCaseId(caseId, idamTokens);
 

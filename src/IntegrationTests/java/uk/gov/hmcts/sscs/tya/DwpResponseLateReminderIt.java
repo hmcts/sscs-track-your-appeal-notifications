@@ -33,7 +33,7 @@ import uk.gov.hmcts.sscs.deserialize.CcdResponseWrapperDeserializer;
 import uk.gov.hmcts.sscs.service.AuthorisationService;
 import uk.gov.hmcts.sscs.service.NotificationService;
 import uk.gov.hmcts.sscs.service.ccd.SearchCcdService;
-import uk.gov.hmcts.sscs.service.idam.IdamService;
+import uk.gov.hmcts.sscs.service.idam.IdamTokensService;
 import uk.gov.service.notify.NotificationClient;
 
 @RunWith(SpringRunner.class)
@@ -66,14 +66,14 @@ public class DwpResponseLateReminderIt {
     private SearchCcdService searchCcdService;
 
     @Autowired
-    private IdamService idamService;
+    private IdamTokensService idamTokensService;
 
     @Autowired
     private CcdResponseWrapperDeserializer deserializer;
 
     @Before
     public void setup() {
-        controller = new NotificationController(notificationService, authorisationService, searchCcdService, idamService, deserializer);
+        controller = new NotificationController(notificationService, authorisationService, searchCcdService, idamTokensService, deserializer);
         this.mockMvc = MockMvcBuilders.standaloneSetup(controller).build();
     }
 
