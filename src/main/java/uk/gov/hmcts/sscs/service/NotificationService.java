@@ -51,6 +51,9 @@ public class NotificationService {
                     notificationSender.sendEmail(notification.getEmailTemplate(), notification.getEmail(), notification.getPlaceholders(), notification.getReference());
                     LOG.info("Email template {} sent for case id: {}", notification.getEmailTemplate(), caseId);
                 } catch (Exception ex) {
+                    LOG.error("placeholders begin:");
+                    notification.getPlaceholders().entrySet().stream().forEach(entry -> LOG.error("[" + entry.getKey() + "] [" + entry.getValue() + "]"));
+                    LOG.error("placeholders end:");
                     wrapAndThrowNotificationException(caseId, notification.getEmailTemplate(), ex);
                 }
             }
