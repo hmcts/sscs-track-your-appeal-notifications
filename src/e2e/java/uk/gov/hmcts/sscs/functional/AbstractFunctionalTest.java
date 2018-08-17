@@ -65,7 +65,7 @@ public abstract class AbstractFunctionalTest {
 
     protected String caseReference;
 
-    private Long caseId;
+    protected Long caseId;
 
     protected CcdResponse caseData;
 
@@ -178,6 +178,29 @@ public abstract class AbstractFunctionalTest {
         String json = FileUtils.readFileToString(new File(path), StandardCharsets.UTF_8.name());
 
         json = updateJson(json, eventType);
+
+        RestAssured.useRelaxedHTTPSValidation();
+        RestAssured
+                .given()
+                .header("ServiceAuthorization", "" + idamTokens.getServiceAuthorization())
+                .contentType("application/json")
+                .body(json)
+                .when()
+                .post(callbackUrl)
+                .then()
+                .statusCode(HttpStatus.OK.value());
+    }
+
+    protected void simulateCohCallback(EventType eventType, String hearingId) throws IOException {
+
+        final String callbackUrl = getEnvOrEmpty("TEST_URL") + "/coh-send";
+
+        String resource = eventType.getId() + "Callback.json";
+        String path = getClass().getClassLoader().getResource(resource).getFile();
+        String json = FileUtils.readFileToString(new File(path), StandardCharsets.UTF_8.name());
+
+        json = updateJson(json, eventType);
+        json = json.replace("hearing-id", hearingId);
 
         RestAssured.useRelaxedHTTPSValidation();
         RestAssured
