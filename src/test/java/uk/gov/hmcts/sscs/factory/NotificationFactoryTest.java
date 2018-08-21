@@ -100,7 +100,7 @@ public class NotificationFactoryTest {
     public void buildNotificationFromCcdResponse() {
         when(personalisationFactory.apply(APPEAL_RECEIVED)).thenReturn(personalisation);
         when(config.getTemplate(APPEAL_RECEIVED.getId(), APPEAL_RECEIVED.getId())).thenReturn(Template.builder().emailTemplateId("123").smsTemplateId(null).build());
-        Notification result = factory.create(wrapper);
+        Notification result = factory.create(new CcdNotificationWrapper(wrapper));
 
         assertEquals("123", result.getEmailTemplate());
         assertEquals("test@testing.com", result.getEmail());
@@ -125,7 +125,7 @@ public class NotificationFactoryTest {
                     .build())
                 .build();
 
-        Notification result = factory.create(wrapper);
+        Notification result = factory.create(new CcdNotificationWrapper(wrapper));
 
         assertEquals("123", result.getSmsTemplate());
     }
@@ -148,7 +148,7 @@ public class NotificationFactoryTest {
                     .build())
                 .build();
 
-        Notification result = factory.create(wrapper);
+        Notification result = factory.create(new CcdNotificationWrapper(wrapper));
 
         assertEquals("123", result.getSmsTemplate());
     }
@@ -175,7 +175,7 @@ public class NotificationFactoryTest {
                         .build())
                 .build();
 
-        Notification result = factory.create(wrapper);
+        Notification result = factory.create(new CcdNotificationWrapper(wrapper));
 
         assertEquals("123", result.getEmailTemplate());
     }
@@ -202,7 +202,7 @@ public class NotificationFactoryTest {
                                 .build())
                 .build();
 
-        Notification result = factory.create(wrapper);
+        Notification result = factory.create(new CcdNotificationWrapper(wrapper));
 
         assertEquals("123", result.getSmsTemplate());
     }
@@ -229,7 +229,7 @@ public class NotificationFactoryTest {
                     .build())
             .build();
 
-        Notification result = factory.create(wrapper);
+        Notification result = factory.create(new CcdNotificationWrapper(wrapper));
 
         assertNull(result.getEmailTemplate());
     }
@@ -256,7 +256,7 @@ public class NotificationFactoryTest {
                     .build())
             .build();
 
-        Notification result = factory.create(wrapper);
+        Notification result = factory.create(new CcdNotificationWrapper(wrapper));
 
         assertEquals("123", result.getEmailTemplate());
     }
@@ -264,7 +264,7 @@ public class NotificationFactoryTest {
     @Test
     public void returnNullIfPersonalisationNotFound() {
         when(personalisationFactory.apply(APPEAL_RECEIVED)).thenReturn(null);
-        Notification result = factory.create(wrapper);
+        Notification result = factory.create(new CcdNotificationWrapper(wrapper));
 
         assertNull(result);
     }

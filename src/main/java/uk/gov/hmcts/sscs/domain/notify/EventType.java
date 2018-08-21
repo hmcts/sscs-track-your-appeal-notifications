@@ -22,7 +22,9 @@ public enum EventType {
     FINAL_HEARING_HOLDING_REMINDER("finalHearingHoldingReminder"),
     HEARING_REMINDER("hearingReminder"),
     DWP_RESPONSE_LATE_REMINDER("dwpResponseLateReminder"),
-    DO_NOT_SEND("");
+    DO_NOT_SEND(""),
+
+    QUESTION_ROUND_ISSUED("question_round_issued");
 
     private String id;
 

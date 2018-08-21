@@ -6,12 +6,12 @@ import java.net.UnknownHostException;
 import org.slf4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-import uk.gov.hmcts.sscs.domain.CcdResponseWrapper;
 import uk.gov.hmcts.sscs.domain.Subscription;
 import uk.gov.hmcts.sscs.domain.notify.Notification;
 import uk.gov.hmcts.sscs.exception.NotificationClientRuntimeException;
 import uk.gov.hmcts.sscs.exception.NotificationServiceException;
 import uk.gov.hmcts.sscs.factory.NotificationFactory;
+import uk.gov.hmcts.sscs.factory.NotificationWrapper;
 
 @Service
 public class NotificationService {
@@ -31,18 +31,18 @@ public class NotificationService {
         this.notificationValidService = notificationValidService;
     }
 
-    public void createAndSendNotification(CcdResponseWrapper responseWrapper) {
+    public void createAndSendNotification(NotificationWrapper notificationWrapper) {
 
-        final Subscription appellantSubscription = responseWrapper.getNewCcdResponse().getSubscriptions().getAppellantSubscription();
-        final String notificationEventType = responseWrapper.getNewCcdResponse().getNotificationType().getId();
-        final String caseId = responseWrapper.getNewCcdResponse().getCaseId();
+        final Subscription appellantSubscription = notificationWrapper.getAppellantSubscription();
+        final String notificationEventType = notificationWrapper.getNotificationType().getId();
+        final String caseId = notificationWrapper.getCaseId();
 
         LOG.info("Notification event triggered {} for case id {}", notificationEventType, caseId);
 
         if (appellantSubscription != null && appellantSubscription.doesCaseHaveSubscriptions() && notificationValidService.isNotificationStillValidToSend(
-                responseWrapper.getNewCcdResponse().getHearings(), responseWrapper.getNewCcdResponse().getNotificationType())) {
+                notificationWrapper.getNewCcdResponse().getHearings(), notificationWrapper.getNewCcdResponse().getNotificationType())) {
 
-            Notification notification = factory.create(responseWrapper);
+            Notification notification = factory.create(notificationWrapper);
 
             if (appellantSubscription.isEmailSubscribed() && notification.isEmail() && notification.getEmailTemplate() != null) {
 
@@ -66,7 +66,7 @@ public class NotificationService {
                 }
             }
 
-            reminderService.createReminders(responseWrapper.getNewCcdResponse());
+            reminderService.createReminders(notificationWrapper.getNewCcdResponse());
         }
     }
 

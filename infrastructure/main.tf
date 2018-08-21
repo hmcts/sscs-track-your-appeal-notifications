@@ -59,6 +59,7 @@ locals {
 
   ccdApi    = "http://ccd-data-store-api-${local.local_env}.service.${local.local_ase}.internal"
   s2sCnpUrl = "http://rpe-service-auth-provider-${local.local_env}.service.${local.local_ase}.internal"
+  cohApi    = "http://coh-cor-${local.local_env}.service.${local.local_ase}.internal"
 }
 
 module "track-your-appeal-notifications" {
@@ -79,6 +80,8 @@ module "track-your-appeal-notifications" {
     CORE_CASE_DATA_API_URL         = "${local.ccdApi}"
     CORE_CASE_DATA_JURISDICTION_ID = "${var.core_case_data_jurisdiction_id}"
     CORE_CASE_DATA_CASE_TYPE_ID    = "${var.core_case_data_case_type_id}"
+
+    COH_URL = "${local.cohApi}"
 
     IDAM_URL = "${data.vault_generic_secret.idam_api.data["value"]}"
 

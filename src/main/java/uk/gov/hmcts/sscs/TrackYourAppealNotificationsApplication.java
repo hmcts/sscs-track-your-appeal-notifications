@@ -8,6 +8,7 @@ import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 import org.springframework.boot.autoconfigure.flyway.FlywayMigrationInitializer;
+import org.springframework.cloud.openfeign.EnableFeignClients;
 import org.springframework.context.ApplicationContext;
 import org.springframework.context.MessageSource;
 import org.springframework.context.annotation.Bean;
@@ -24,6 +25,10 @@ import uk.gov.service.notify.NotificationClient;
     basePackageClasses = TrackYourAppealNotificationsApplication.class,
     lazyInit = true
 )
+@EnableFeignClients(basePackages =
+        {
+                "uk.gov.hmcts.sscs.service.coh"
+        })
 public class TrackYourAppealNotificationsApplication {
 
     public static final String UTC = "UTC";

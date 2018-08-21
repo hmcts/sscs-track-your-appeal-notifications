@@ -29,8 +29,11 @@ import org.springframework.test.web.servlet.request.MockHttpServletRequestBuilde
 import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 import uk.gov.hmcts.reform.sscs.jobscheduler.services.JobExecutor;
 import uk.gov.hmcts.sscs.controller.NotificationController;
+import uk.gov.hmcts.sscs.deserialize.CcdResponseWrapperDeserializer;
 import uk.gov.hmcts.sscs.service.AuthorisationService;
 import uk.gov.hmcts.sscs.service.NotificationService;
+import uk.gov.hmcts.sscs.service.ccd.SearchCcdService;
+import uk.gov.hmcts.sscs.service.idam.IdamTokensService;
 import uk.gov.service.notify.NotificationClient;
 
 @RunWith(SpringRunner.class)
@@ -59,9 +62,18 @@ public class DwpResponseLateReminderIt {
     @Qualifier("scheduler")
     private Scheduler quartzScheduler;
 
+    @Autowired
+    private SearchCcdService searchCcdService;
+
+    @Autowired
+    private IdamTokensService idamTokensService;
+
+    @Autowired
+    private CcdResponseWrapperDeserializer deserializer;
+
     @Before
     public void setup() {
-        controller = new NotificationController(notificationService, authorisationService);
+        controller = new NotificationController(notificationService, authorisationService, searchCcdService, idamTokensService, deserializer);
         this.mockMvc = MockMvcBuilders.standaloneSetup(controller).build();
     }
 

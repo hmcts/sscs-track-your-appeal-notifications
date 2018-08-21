@@ -14,6 +14,7 @@ import uk.gov.hmcts.reform.sscs.jobscheduler.services.JobExecutor;
 import uk.gov.hmcts.sscs.deserialize.CcdResponseWrapperDeserializer;
 import uk.gov.hmcts.sscs.domain.CcdResponseWrapper;
 import uk.gov.hmcts.sscs.domain.idam.IdamTokens;
+import uk.gov.hmcts.sscs.factory.CcdNotificationWrapper;
 import uk.gov.hmcts.sscs.service.NotificationService;
 import uk.gov.hmcts.sscs.service.ccd.SearchCcdService;
 import uk.gov.hmcts.sscs.service.ccd.UpdateCcdService;
@@ -57,7 +58,7 @@ public class ActionExecutor implements JobExecutor<String> {
 
         if (caseDetails != null) {
             CcdResponseWrapper wrapper = deserializer.buildCcdResponseWrapper(buildCcdNode(caseDetails, eventId));
-            notificationService.createAndSendNotification(wrapper);
+            notificationService.createAndSendNotification(new CcdNotificationWrapper(wrapper));
             updateCcdService.update(null, Long.valueOf(caseId), wrapper.getNewCcdResponse().getNotificationType().getId(), idamTokens);
         } else {
             LOG.warn("Case id: {} could not be found for event: {}", caseId, eventId);

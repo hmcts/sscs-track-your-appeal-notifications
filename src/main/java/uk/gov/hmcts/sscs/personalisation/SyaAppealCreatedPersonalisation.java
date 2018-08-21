@@ -11,12 +11,13 @@ import java.util.StringJoiner;
 import org.apache.commons.lang.StringUtils;
 import org.springframework.stereotype.Component;
 import uk.gov.hmcts.sscs.domain.*;
+import uk.gov.hmcts.sscs.factory.CcdNotificationWrapper;
 
 @Component
-public class SyaAppealCreatedPersonalisation extends Personalisation {
+public class SyaAppealCreatedPersonalisation extends Personalisation<CcdNotificationWrapper> {
 
     @Override
-    public Map<String, String> create(CcdResponseWrapper responseWrapper) {
+    protected Map<String, String> create(CcdResponseWrapper responseWrapper) {
         Map<String, String> personalisation = super.create(responseWrapper);
         CcdResponse ccdResponse = responseWrapper.getNewCcdResponse();
 
