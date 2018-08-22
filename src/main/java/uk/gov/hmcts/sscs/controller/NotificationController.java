@@ -62,8 +62,6 @@ public class NotificationController {
         String caseId = cohEvent.getCaseId();
         LOG.info("Coh Response received for case id: {}", caseId);
 
-        authorisationService.authorise(serviceAuthHeader);
-
         IdamTokens idamTokens = idamTokensService.getIdamTokens();
 
         CaseDetails caseDetails = searchCcdService.getByCaseId(caseId, idamTokens);
