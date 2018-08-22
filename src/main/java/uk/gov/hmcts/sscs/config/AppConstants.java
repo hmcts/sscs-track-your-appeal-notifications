@@ -13,7 +13,6 @@ public final class AppConstants {
     public static final String BENEFIT_FULL_NAME_LITERAL = "benefit_full_name";
     public static final String CLAIMING_EXPENSES_LINK_LITERAL = "claiming_expenses_link";
     public static final String COUNTY_LITERAL = "county";
-    public static final String DAY_STRING = " day";
     public static final String DAYS_STRING = " days";
     public static final String DAYS_TO_HEARING_LITERAL = "days_to_hearing_text";
     public static final String DEPARTMENT_NAME_LITERAL = "department_name";
@@ -45,6 +44,7 @@ public final class AppConstants {
     public static final String SUBMIT_EVIDENCE_LINK_LITERAL = "submit_evidence_link";
     public static final String SUPPORT_CENTRE_NAME_LITERAL = "support_centre_name";
     public static final String TEXT_MESSAGE_REMINDER_DETAILS_LITERAL = "text_message_reminder_details";
+    public static final String TOMORROW_STRING = "tomorrow";
     public static final String TOWN_LITERAL = "town";
     public static final String TRACK_APPEAL_LINK_LITERAL = "track_appeal_link";
     public static final String VENUE_ADDRESS_LITERAL = "venue_address";

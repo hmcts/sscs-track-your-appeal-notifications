@@ -290,7 +290,7 @@ public class PersonalisationTest {
 
         Map<String, String> result = personalisation.create(CcdResponseWrapper.builder().newCcdResponse(response).build());
 
-        assertEquals("in 1 day", result.get(DAYS_TO_HEARING_LITERAL));
+        assertEquals("tomorrow", result.get(DAYS_TO_HEARING_LITERAL));
     }
 
     @Test

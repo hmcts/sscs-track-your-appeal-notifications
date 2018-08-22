@@ -59,7 +59,7 @@ public class NotificationService {
 
                 try {
                     LOG.info("Sending SMS template {} for case id: {}", notification.getSmsTemplate(), caseId);
-                    notificationSender.sendSms(notification.getSmsTemplate(), notification.getMobile(), notification.getPlaceholders(), notification.getReference());
+                    notificationSender.sendSms(notification.getSmsTemplate(), notification.getMobile(), notification.getPlaceholders(), notification.getReference(), notification.getSmsSenderTemplate());
                     LOG.info("SMS template {} sent for case id: {}", notification.getSmsTemplate(), caseId);
                 } catch (Exception ex) {
                     wrapAndThrowNotificationException(caseId, notification.getSmsTemplate(), ex);

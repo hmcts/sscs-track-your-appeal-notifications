@@ -170,9 +170,7 @@ public class Personalisation<E extends NotificationWrapper> {
     private String calculateDaysToHearingText(LocalDate hearingDate) {
         Long daysBetween = ChronoUnit.DAYS.between(LocalDate.now(), hearingDate);
 
-        String daysText = daysBetween == 1 ? DAY_STRING : DAYS_STRING;
-
-        return "in " + daysBetween + daysText;
+        return daysBetween == 1 ? TOMORROW_STRING : "in " + daysBetween + DAYS_STRING;
     }
 
     public String getMacToken(String id, String benefitType) {

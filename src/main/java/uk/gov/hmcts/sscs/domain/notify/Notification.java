@@ -40,6 +40,10 @@ public class Notification {
         return template.getSmsTemplateId();
     }
 
+    public String getSmsSenderTemplate() {
+        return template.getSmsSenderTemplateId();
+    }
+
     public String getEmail() {
         return destination.email;
     }
