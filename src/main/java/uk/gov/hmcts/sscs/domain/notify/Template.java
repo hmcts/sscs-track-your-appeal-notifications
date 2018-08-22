@@ -9,5 +9,6 @@ public class Template {
 
     private final String emailTemplateId;
     private final String smsTemplateId;
+    private final String smsSenderTemplateId;
 
 }

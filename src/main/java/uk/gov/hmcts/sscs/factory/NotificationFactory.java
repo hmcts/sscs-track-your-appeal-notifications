@@ -1,10 +1,12 @@
 package uk.gov.hmcts.sscs.factory;
 
 import static com.google.common.collect.Maps.newHashMap;
+import static uk.gov.hmcts.sscs.domain.Benefit.getBenefitByCode;
 
 import java.util.Map;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
+import uk.gov.hmcts.sscs.domain.Benefit;
 import uk.gov.hmcts.sscs.domain.CcdResponse;
 import uk.gov.hmcts.sscs.domain.notify.*;
 import uk.gov.hmcts.sscs.personalisation.Personalisation;
@@ -32,7 +34,8 @@ public class NotificationFactory {
             return null;
         }
 
-        Template template = personalisation.getTemplate(notificationWrapper.getNotificationType());
+        Benefit benefit = getBenefitByCode(notificationWrapper.getCcdResponseWrapper().getNewCcdResponse().getAppeal().getBenefitType().getCode());
+        Template template = personalisation.getTemplate(notificationWrapper.getNotificationType(), benefit);
 
         CcdResponse ccdResponse = notificationWrapper.getCcdResponseWrapper().getNewCcdResponse();
         Destination destination = ccdResponse.getSubscriptions().getAppellantSubscription().getDestination();

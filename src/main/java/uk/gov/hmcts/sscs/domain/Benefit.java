@@ -6,7 +6,7 @@ import uk.gov.hmcts.sscs.exception.BenefitMappingException;
 
 public enum Benefit {
 
-    ESA("Employment Support Allowance"),
+    ESA("Employment and Support Allowance"),
     JSA("Job Seekers Allowance"),
     PIP("Personal Independence Payment");
 

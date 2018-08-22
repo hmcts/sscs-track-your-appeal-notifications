@@ -43,6 +43,7 @@ public class HearingContactDateExtractor {
         switch (referenceEventType) {
 
             case DWP_RESPONSE_RECEIVED:
+            case ADJOURNED:
             case POSTPONEMENT:
                 delay = initialDelay;
                 break;

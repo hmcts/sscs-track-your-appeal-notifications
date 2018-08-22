@@ -187,9 +187,9 @@ public class Personalisation<E extends NotificationWrapper> {
         return date.format(DateTimeFormatter.ofPattern(HEARING_TIME_FORMAT));
     }
 
-    public Template getTemplate(EventType type) {
+    public Template getTemplate(EventType type, Benefit benefit) {
         String smsTemplateId = isSendSmsSubscriptionConfirmation() ? SUBSCRIPTION_CREATED.getId() : type.getId();
-        return config.getTemplate(type.getId(), smsTemplateId);
+        return config.getTemplate(type.getId(), smsTemplateId, benefit);
     }
 
     public Boolean isSendSmsSubscriptionConfirmation() {

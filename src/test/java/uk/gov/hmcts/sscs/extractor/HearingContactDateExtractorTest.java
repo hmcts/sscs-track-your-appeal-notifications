@@ -108,7 +108,7 @@ public class HearingContactDateExtractorTest {
     }
 
     @Test
-    public void extractsForReferenceEvent() {
+    public void givenDwpResponseReceivedEvent_thenExtractDateForReferenceEvent() {
 
         ZonedDateTime expectedHearingContactDate = ZonedDateTime.parse("2018-01-01T16:02:18Z[Europe/London]");
 
@@ -121,6 +121,25 @@ public class HearingContactDateExtractorTest {
                 ccdResponse,
                 SECOND_HEARING_HOLDING_REMINDER
             );
+
+        assertTrue(hearingContactDate.isPresent());
+        assertEquals(expectedHearingContactDate, hearingContactDate.get());
+    }
+
+    @Test
+    public void givenAdjournedEvent_thenExtractDateForReferenceEvent() {
+
+        ZonedDateTime expectedHearingContactDate = ZonedDateTime.parse("2018-01-01T14:02:18Z[Europe/London]");
+
+        CcdResponse ccdResponse = CcdResponseUtils.buildBasicCcdResponse(ADJOURNED);
+
+        when(dwpResponseReceivedDateExtractor.extract(ccdResponse)).thenReturn(Optional.of(dwpResponseReceivedDate));
+
+        Optional<ZonedDateTime> hearingContactDate =
+                hearingContactDateExtractor.extractForReferenceEvent(
+                        ccdResponse,
+                        ADJOURNED
+                );
 
         assertTrue(hearingContactDate.isPresent());
         assertEquals(expectedHearingContactDate, hearingContactDate.get());
