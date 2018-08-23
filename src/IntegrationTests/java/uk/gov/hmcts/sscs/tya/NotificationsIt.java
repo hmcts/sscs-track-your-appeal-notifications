@@ -88,7 +88,7 @@ public class NotificationsIt {
 
         assertHttpStatus(response, HttpStatus.OK);
         verify(client, times(1)).sendEmail(any(), any(), any(), any());
-        verify(client, times(1)).sendSms(any(), any(), any(), any());
+        verify(client, times(1)).sendSms(any(), any(), any(), any(), any());
     }
 
     @Test
@@ -99,7 +99,7 @@ public class NotificationsIt {
 
         assertHttpStatus(response, HttpStatus.OK);
         verify(client, times(1)).sendEmail(any(), any(), any(), any());
-        verify(client, times(1)).sendSms(any(), any(), any(), any());
+        verify(client, times(1)).sendSms(any(), any(), any(), any(), any());
     }
 
     @Test
@@ -110,7 +110,7 @@ public class NotificationsIt {
 
         assertHttpStatus(response, HttpStatus.OK);
         verify(client, times(1)).sendEmail(any(), any(), any(), any());
-        verify(client, times(1)).sendSms(any(), any(), any(), any());
+        verify(client, times(1)).sendSms(any(), any(), any(), any(), any());
     }
 
     @Test
@@ -121,7 +121,7 @@ public class NotificationsIt {
 
         assertHttpStatus(response, HttpStatus.OK);
         verify(client, times(1)).sendEmail(any(), any(), any(), any());
-        verify(client, times(1)).sendSms(any(), any(), any(), any());
+        verify(client, times(1)).sendSms(any(), any(), any(), any(), any());
     }
 
     @Test
@@ -132,7 +132,7 @@ public class NotificationsIt {
 
         assertHttpStatus(response, HttpStatus.OK);
         verify(client, times(1)).sendEmail(any(), any(), any(), any());
-        verify(client, never()).sendSms(any(), any(), any(), any());
+        verify(client, never()).sendSms(any(), any(), any(), any(), any());
     }
 
     @Test
@@ -143,7 +143,7 @@ public class NotificationsIt {
 
         assertHttpStatus(response, HttpStatus.OK);
         verify(client, times(1)).sendEmail(any(), any(), any(), any());
-        verify(client, never()).sendSms(any(), any(), any(), any());
+        verify(client, never()).sendSms(any(), any(), any(), any(), any());
     }
 
     @Test
@@ -154,7 +154,7 @@ public class NotificationsIt {
 
         assertHttpStatus(response, HttpStatus.OK);
         verify(client, times(1)).sendEmail(any(), any(), any(), any());
-        verify(client, never()).sendSms(any(), any(), any(), any());
+        verify(client, never()).sendSms(any(), any(), any(), any(), any());
     }
 
     @Test
@@ -166,7 +166,7 @@ public class NotificationsIt {
 
         assertHttpStatus(response, HttpStatus.OK);
         verify(client, times(1)).sendEmail(any(), any(), any(), any());
-        verify(client, times(1)).sendSms(any(), any(), any(), any());
+        verify(client, times(1)).sendSms(any(), any(), any(), any(), any());
     }
 
     @Test
@@ -177,7 +177,7 @@ public class NotificationsIt {
 
         assertHttpStatus(response, HttpStatus.OK);
         verify(client, times(0)).sendEmail(any(), any(), any(), any());
-        verify(client, times(0)).sendSms(any(), any(), any(), any());
+        verify(client, times(0)).sendSms(any(), any(), any(), any(), any());
     }
 
     @Test
@@ -188,7 +188,7 @@ public class NotificationsIt {
 
         assertHttpStatus(response, HttpStatus.OK);
         verify(client, times(1)).sendEmail(any(), any(), any(), any());
-        verify(client, times(1)).sendSms(any(), any(), any(), any());
+        verify(client, times(1)).sendSms(any(), any(), any(), any(), any());
     }
 
     @Test
@@ -200,7 +200,7 @@ public class NotificationsIt {
 
         assertHttpStatus(response, HttpStatus.OK);
         verify(client, times(1)).sendEmail(any(), any(), any(), any());
-        verify(client, times(1)).sendSms(any(), any(), any(), any());
+        verify(client, times(1)).sendSms(any(), any(), any(), any(), any());
     }
 
     @Test
@@ -211,7 +211,7 @@ public class NotificationsIt {
 
         assertHttpStatus(response, HttpStatus.OK);
         verify(client, times(1)).sendEmail(any(), any(), any(), any());
-        verify(client, times(1)).sendSms(any(), any(), any(), any());
+        verify(client, times(1)).sendSms(any(), any(), any(), any(), any());
     }
 
     @Test
@@ -223,7 +223,7 @@ public class NotificationsIt {
 
         assertHttpStatus(response, HttpStatus.OK);
         verify(client, never()).sendEmail(any(), any(), any(), any());
-        verify(client, times(1)).sendSms(any(), any(), any(), any());
+        verify(client, times(1)).sendSms(any(), any(), any(), any(), any());
     }
 
     @Test
@@ -235,7 +235,7 @@ public class NotificationsIt {
 
         assertHttpStatus(response, HttpStatus.OK);
         verify(client, times(1)).sendEmail(any(), any(), any(), any());
-        verify(client, never()).sendSms(any(), any(), any(), any());
+        verify(client, never()).sendSms(any(), any(), any(), any(), any());
     }
 
     @Test
@@ -250,7 +250,7 @@ public class NotificationsIt {
 
         assertHttpStatus(response, HttpStatus.OK);
         verify(client, never()).sendEmail(any(), any(), any(), any());
-        verify(client, never()).sendSms(any(), any(), any(), any());
+        verify(client, never()).sendSms(any(), any(), any(), any(), any());
     }
 
     @Test
@@ -259,7 +259,7 @@ public class NotificationsIt {
 
         assertHttpStatus(response, HttpStatus.BAD_REQUEST);
         verify(authorisationService, never()).authorise(anyString());
-        verify(client, never()).sendEmail(any(), any(), any(), any());
+        verify(client, never()).sendEmail(any(), any(), any(), any(), any());
     }
 
     private MockHttpServletResponse getResponse(MockHttpServletRequestBuilder requestBuilder) throws Exception {

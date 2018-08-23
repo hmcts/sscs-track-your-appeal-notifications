@@ -125,7 +125,6 @@ public class PersonalisationTest {
         assertNull(result.get(EVIDENCE_RECEIVED_DATE_LITERAL));
 
         assertEquals(ADDRESS1, result.get(REGIONAL_OFFICE_NAME_LITERAL));
-        assertEquals(DEPARTMENT_NAME_STRING, result.get(DEPARTMENT_NAME_LITERAL));
         assertEquals(ADDRESS2, result.get(SUPPORT_CENTRE_NAME_LITERAL));
         assertEquals(ADDRESS3, result.get(ADDRESS_LINE_LITERAL));
         assertEquals(ADDRESS4, result.get(TOWN_LITERAL));

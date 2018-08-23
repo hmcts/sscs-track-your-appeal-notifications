@@ -15,8 +15,6 @@ public final class AppConstants {
     public static final String COUNTY_LITERAL = "county";
     public static final String DAYS_STRING = " days";
     public static final String DAYS_TO_HEARING_LITERAL = "days_to_hearing_text";
-    public static final String DEPARTMENT_NAME_LITERAL = "department_name";
-    public static final String DEPARTMENT_NAME_STRING = "Regional Processing Centre";
     public static final String DWP_ACRONYM = "DWP";
     public static final String DWP_FUL_NAME = "Department for Work and Pensions";
     public static final String EVIDENCE_RECEIVED_DATE_LITERAL = "evidence_received_date";

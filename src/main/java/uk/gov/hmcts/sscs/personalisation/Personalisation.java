@@ -149,7 +149,6 @@ public class Personalisation<E extends NotificationWrapper> {
             rpc = regionalProcessingCenterService.getByScReferenceCode(ccdResponse.getCaseReference());
         }
         personalisation.put(REGIONAL_OFFICE_NAME_LITERAL, rpc.getAddress1());
-        personalisation.put(DEPARTMENT_NAME_LITERAL, DEPARTMENT_NAME_STRING);
         personalisation.put(SUPPORT_CENTRE_NAME_LITERAL, rpc.getAddress2());
         personalisation.put(ADDRESS_LINE_LITERAL, rpc.getAddress3());
         personalisation.put(TOWN_LITERAL, rpc.getAddress4());
