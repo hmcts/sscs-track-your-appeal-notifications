@@ -99,7 +99,7 @@ public class NotificationFactoryTest {
     @Test
     public void buildNotificationFromCcdResponse() {
         when(personalisationFactory.apply(APPEAL_RECEIVED)).thenReturn(personalisation);
-        when(config.getTemplate(APPEAL_RECEIVED.getId(), APPEAL_RECEIVED.getId())).thenReturn(Template.builder().emailTemplateId("123").smsTemplateId(null).build());
+        when(config.getTemplate(APPEAL_RECEIVED.getId(), APPEAL_RECEIVED.getId(), Benefit.PIP)).thenReturn(Template.builder().emailTemplateId("123").smsTemplateId(null).build());
         Notification result = factory.create(new CcdNotificationWrapper(wrapper));
 
         assertEquals("123", result.getEmailTemplate());
@@ -110,7 +110,7 @@ public class NotificationFactoryTest {
     @Test
     public void buildSubscriptionCreatedSmsNotificationFromCcdResponseWithSubscriptionUpdatedNotificationAndSmsFirstSubscribed() {
         when(personalisationFactory.apply(SUBSCRIPTION_UPDATED)).thenReturn(subscriptionPersonalisation);
-        when(config.getTemplate(SUBSCRIPTION_UPDATED.getId(), SUBSCRIPTION_CREATED.getId())).thenReturn(Template.builder().emailTemplateId(null).smsTemplateId("123").build());
+        when(config.getTemplate(SUBSCRIPTION_UPDATED.getId(), SUBSCRIPTION_CREATED.getId(), Benefit.PIP)).thenReturn(Template.builder().emailTemplateId(null).smsTemplateId("123").build());
 
         wrapper = CcdResponseWrapper.builder()
                 .newCcdResponse(
@@ -133,7 +133,7 @@ public class NotificationFactoryTest {
     @Test
     public void buildSubscriptionUpdatedSmsNotificationFromCcdResponseWithSubscriptionUpdatedNotificationAndSmsAlreadySubscribed() {
         when(personalisationFactory.apply(SUBSCRIPTION_UPDATED)).thenReturn(subscriptionPersonalisation);
-        when(config.getTemplate(SUBSCRIPTION_UPDATED.getId(), SUBSCRIPTION_UPDATED.getId())).thenReturn(Template.builder().emailTemplateId(null).smsTemplateId("123").build());
+        when(config.getTemplate(SUBSCRIPTION_UPDATED.getId(), SUBSCRIPTION_UPDATED.getId(), Benefit.PIP)).thenReturn(Template.builder().emailTemplateId(null).smsTemplateId("123").build());
 
         wrapper = CcdResponseWrapper.builder()
                 .newCcdResponse(
@@ -156,7 +156,7 @@ public class NotificationFactoryTest {
     @Test
     public void buildLastNotificationFromCcdResponseEventWhenEmailFirstSubscribed() {
         when(personalisationFactory.apply(SUBSCRIPTION_UPDATED)).thenReturn(subscriptionPersonalisation);
-        when(config.getTemplate(APPEAL_RECEIVED.getId(), APPEAL_RECEIVED.getId())).thenReturn(Template.builder().emailTemplateId("123").smsTemplateId(null).build());
+        when(config.getTemplate(APPEAL_RECEIVED.getId(), APPEAL_RECEIVED.getId(), Benefit.PIP)).thenReturn(Template.builder().emailTemplateId("123").smsTemplateId(null).build());
 
         List<Events> events = new ArrayList<>();
         events.add(Events.builder().value(Event.builder().date(date).type(APPEAL_RECEIVED.getId()).build()).build());
@@ -183,7 +183,7 @@ public class NotificationFactoryTest {
     @Test
     public void buildLastNotificationFromCcdResponseEventWhenSmsFirstSubscribed() {
         when(personalisationFactory.apply(SUBSCRIPTION_UPDATED)).thenReturn(subscriptionPersonalisation);
-        when(config.getTemplate(DO_NOT_SEND.getId(), SUBSCRIPTION_CREATED.getId())).thenReturn(Template.builder().emailTemplateId(null).smsTemplateId("123").build());
+        when(config.getTemplate(DO_NOT_SEND.getId(), SUBSCRIPTION_CREATED.getId(), Benefit.PIP)).thenReturn(Template.builder().emailTemplateId(null).smsTemplateId("123").build());
 
         List<Events> events = new ArrayList<>();
         events.add(Events.builder().value(Event.builder().date(date).type(APPEAL_RECEIVED.getId()).build()).build());
@@ -210,7 +210,7 @@ public class NotificationFactoryTest {
     @Test
     public void buildNoNotificationFromCcdResponseWhenSubscriptionUpdateReceivedWithNoChangeInEmailAddress() {
         when(personalisationFactory.apply(SUBSCRIPTION_UPDATED)).thenReturn(subscriptionPersonalisation);
-        when(config.getTemplate(DO_NOT_SEND.getId(), SUBSCRIPTION_CREATED.getId())).thenReturn(Template.builder().emailTemplateId(null).smsTemplateId(null).build());
+        when(config.getTemplate(DO_NOT_SEND.getId(), SUBSCRIPTION_CREATED.getId(), Benefit.PIP)).thenReturn(Template.builder().emailTemplateId(null).smsTemplateId(null).build());
 
         List<Events> events = new ArrayList<>();
         events.add(Events.builder().value(Event.builder().date(date).type(APPEAL_RECEIVED.getId()).build()).build());
@@ -237,7 +237,7 @@ public class NotificationFactoryTest {
     @Test
     public void buildSubscriptionUpdatedNotificationFromCcdResponseWhenEmailIsChanged() {
         when(personalisationFactory.apply(SUBSCRIPTION_UPDATED)).thenReturn(subscriptionPersonalisation);
-        when(config.getTemplate(SUBSCRIPTION_UPDATED.getId(), SUBSCRIPTION_UPDATED.getId())).thenReturn(Template.builder().emailTemplateId("123").smsTemplateId(null).build());
+        when(config.getTemplate(SUBSCRIPTION_UPDATED.getId(), SUBSCRIPTION_UPDATED.getId(), Benefit.PIP)).thenReturn(Template.builder().emailTemplateId("123").smsTemplateId(null).build());
 
         List<Events> events = new ArrayList<>();
         events.add(Events.builder().value(Event.builder().date(date).type(APPEAL_RECEIVED.getId()).build()).build());

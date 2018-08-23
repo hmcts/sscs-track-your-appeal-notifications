@@ -183,7 +183,7 @@ public class ReminderNotificationsFunctionalTest extends AbstractFunctionalTest 
             "ESA benefit",
             "not been booked",
             "/trackyourappeal",
-            "04 June 2016"
+            "4 June 2016"
         );
 
         assertNotificationBodyContains(
@@ -192,7 +192,7 @@ public class ReminderNotificationsFunctionalTest extends AbstractFunctionalTest 
             "ESA benefit",
             "not been booked",
             "/trackyourappeal",
-            "04 June 2016"
+            "4 June 2016"
         );
 
         assertNotificationSubjectContains(notifications, thirdHearingHoldingReminderEmailTemplateId, "ESA benefit appeal");

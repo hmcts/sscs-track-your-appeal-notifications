@@ -59,7 +59,8 @@ public class NotificationSender {
         String templateId,
         String phoneNumber,
         Map<String, String> personalisation,
-        String reference
+        String reference,
+        String smsSender
     ) throws NotificationClientException {
 
         NotificationClient client;
@@ -75,7 +76,8 @@ public class NotificationSender {
             templateId,
             phoneNumber,
             personalisation,
-            reference
+            reference,
+            smsSender
         );
     }
 }

@@ -128,7 +128,7 @@ public class CohNotificationsIt {
                 argThat(argument -> "expiryDate".equals(argument.get("questions_end_date"))),
                 any()
         );
-        verify(client, times(1)).sendSms(any(), any(), any(), any());
+        verify(client, times(1)).sendSms(any(), any(), any(), any(), any());
     }
 
     @Test
@@ -137,7 +137,7 @@ public class CohNotificationsIt {
 
         assertHttpStatus(response, HttpStatus.BAD_REQUEST);
         verify(authorisationService, never()).authorise(anyString());
-        verify(client, never()).sendEmail(any(), any(), any(), any());
+        verify(client, never()).sendEmail(any(), any(), any(), any(), any());
     }
 
     private MockHttpServletResponse getResponse(MockHttpServletRequestBuilder requestBuilder) throws Exception {

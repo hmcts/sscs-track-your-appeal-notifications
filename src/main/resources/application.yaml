@@ -97,8 +97,8 @@ notification:
     emailId: c5654134-2e13-4541-ac73-334a5b5cdbb6
     smsId: 74bda35f-040b-4355-bda3-faf0e4f5ae6e
   hearingAdjourned:
-    emailId: 07b9738d-d6ba-4736-86f6-7102776f57a2
-    smsId: 31d9ff36-ca22-4a22-b794-c53904f614c4
+    emailId: bff02237-9bcb-49fa-bbf7-11725b97132a
+    smsId: 46c6bf06-33dd-4e5a-9b6b-8bd6d0eb33b1
   hearingPostponed.emailId: 08959288-e09a-472d-80b8-af79bfcbb437
   appealLapsed.emailId: 8ce8d794-75e8-49a0-b4d2-0c6cd2061c11
   appealWithdrawn.emailId: 8620e023-f663-477e-a771-9cfad50ee30f
@@ -134,6 +134,10 @@ notification:
   question_round_issued:
     emailId: ccfbfcac-847d-4e55-955c-096802c131a0
     smsId: f4138438-9707-4d52-9f54-dfa68e96856f
+
+smsSender:
+  pip: 80b11be7-5c10-2773-8351-070e22d5ab6b
+  esa: f84a568d-bd01-4940-a48a-5bcfc52940e0
 
 reminder:
   evidenceReminder.delay.seconds: 172800

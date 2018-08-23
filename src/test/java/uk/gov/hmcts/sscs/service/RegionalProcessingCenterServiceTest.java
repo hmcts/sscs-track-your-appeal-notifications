@@ -44,11 +44,11 @@ public class RegionalProcessingCenterServiceTest {
         assertThat(regionalProcessingCenterMap.size(), equalTo(6));
         RegionalProcessingCenter regionalProcessingCenter = regionalProcessingCenterMap.get(SSCS_LIVERPOOL);
         assertThat(regionalProcessingCenter.getName(), equalTo("LIVERPOOL"));
-        assertThat(regionalProcessingCenter.getAddress1(), equalTo("HM Courts & Tribunals Service"));
-        assertThat(regionalProcessingCenter.getAddress2(), equalTo("Social Security & Child Support Appeals"));
+        assertThat(regionalProcessingCenter.getAddress1(), equalTo("HMCTS"));
+        assertThat(regionalProcessingCenter.getAddress2(), equalTo("SSCS Appeals"));
         assertThat(regionalProcessingCenter.getAddress3(), equalTo("Prudential Buildings"));
         assertThat(regionalProcessingCenter.getAddress4(), equalTo("36 Dale Street"));
-        assertThat(regionalProcessingCenter.getCity(), equalTo("LIVERPOOL"));
+        assertThat(regionalProcessingCenter.getCity(), equalTo("Liverpool"));
         assertThat(regionalProcessingCenter.getPostcode(), equalTo("L2 5UZ"));
     }
 
@@ -63,11 +63,11 @@ public class RegionalProcessingCenterServiceTest {
 
         //Then
         assertThat(regionalProcessingCenter.getName(), equalTo("LIVERPOOL"));
-        assertThat(regionalProcessingCenter.getAddress1(), equalTo("HM Courts & Tribunals Service"));
-        assertThat(regionalProcessingCenter.getAddress2(), equalTo("Social Security & Child Support Appeals"));
+        assertThat(regionalProcessingCenter.getAddress1(), equalTo("HMCTS"));
+        assertThat(regionalProcessingCenter.getAddress2(), equalTo("SSCS Appeals"));
         assertThat(regionalProcessingCenter.getAddress3(), equalTo("Prudential Buildings"));
         assertThat(regionalProcessingCenter.getAddress4(), equalTo("36 Dale Street"));
-        assertThat(regionalProcessingCenter.getCity(), equalTo("LIVERPOOL"));
+        assertThat(regionalProcessingCenter.getCity(), equalTo("Liverpool"));
         assertThat(regionalProcessingCenter.getPostcode(), equalTo("L2 5UZ"));
     }
 
@@ -83,11 +83,11 @@ public class RegionalProcessingCenterServiceTest {
 
         //Then
         assertThat(regionalProcessingCenter.getName(), equalTo("BIRMINGHAM"));
-        assertThat(regionalProcessingCenter.getAddress1(), equalTo("HM Courts & Tribunals Service"));
-        assertThat(regionalProcessingCenter.getAddress2(), equalTo("Social Security & Child Support Appeals"));
+        assertThat(regionalProcessingCenter.getAddress1(), equalTo("HMCTS"));
+        assertThat(regionalProcessingCenter.getAddress2(), equalTo("SSCS Appeals"));
         assertThat(regionalProcessingCenter.getAddress3(), equalTo("Administrative Support Centre"));
         assertThat(regionalProcessingCenter.getAddress4(), equalTo("PO Box 14620"));
-        assertThat(regionalProcessingCenter.getCity(), equalTo("BIRMINGHAM"));
+        assertThat(regionalProcessingCenter.getCity(), equalTo("Birmingham"));
         assertThat(regionalProcessingCenter.getPostcode(), equalTo("B16 6FR"));
 
     }
@@ -103,11 +103,11 @@ public class RegionalProcessingCenterServiceTest {
 
         //Then
         assertThat(regionalProcessingCenter.getName(), equalTo("BIRMINGHAM"));
-        assertThat(regionalProcessingCenter.getAddress1(), equalTo("HM Courts & Tribunals Service"));
-        assertThat(regionalProcessingCenter.getAddress2(), equalTo("Social Security & Child Support Appeals"));
+        assertThat(regionalProcessingCenter.getAddress1(), equalTo("HMCTS"));
+        assertThat(regionalProcessingCenter.getAddress2(), equalTo("SSCS Appeals"));
         assertThat(regionalProcessingCenter.getAddress3(), equalTo("Administrative Support Centre"));
         assertThat(regionalProcessingCenter.getAddress4(), equalTo("PO Box 14620"));
-        assertThat(regionalProcessingCenter.getCity(), equalTo("BIRMINGHAM"));
+        assertThat(regionalProcessingCenter.getCity(), equalTo("Birmingham"));
         assertThat(regionalProcessingCenter.getPostcode(), equalTo("B16 6FR"));
 
     }

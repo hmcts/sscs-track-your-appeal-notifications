@@ -45,6 +45,14 @@
             "description": "Some Events",
             "type": "appealReceived"
           }
+        },
+        {
+          "id": "9b1652f5-dc51-4ad4-affb-01c553fbf814",
+          "value": {
+            "date": "2018-07-14T03:17:42.856",
+            "description": "responseReceived",
+            "type": "responseReceived"
+          }
         }
       ],
       "subscriptions": {

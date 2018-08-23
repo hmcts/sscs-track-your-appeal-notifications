@@ -149,7 +149,6 @@ public class Personalisation<E extends NotificationWrapper> {
             rpc = regionalProcessingCenterService.getByScReferenceCode(ccdResponse.getCaseReference());
         }
         personalisation.put(REGIONAL_OFFICE_NAME_LITERAL, rpc.getAddress1());
-        personalisation.put(DEPARTMENT_NAME_LITERAL, DEPARTMENT_NAME_STRING);
         personalisation.put(SUPPORT_CENTRE_NAME_LITERAL, rpc.getAddress2());
         personalisation.put(ADDRESS_LINE_LITERAL, rpc.getAddress3());
         personalisation.put(TOWN_LITERAL, rpc.getAddress4());
@@ -170,9 +169,7 @@ public class Personalisation<E extends NotificationWrapper> {
     private String calculateDaysToHearingText(LocalDate hearingDate) {
         Long daysBetween = ChronoUnit.DAYS.between(LocalDate.now(), hearingDate);
 
-        String daysText = daysBetween == 1 ? DAY_STRING : DAYS_STRING;
-
-        return "in " + daysBetween + daysText;
+        return daysBetween == 1 ? TOMORROW_STRING : "in " + daysBetween + DAYS_STRING;
     }
 
     public String getMacToken(String id, String benefitType) {
@@ -187,9 +184,9 @@ public class Personalisation<E extends NotificationWrapper> {
         return date.format(DateTimeFormatter.ofPattern(HEARING_TIME_FORMAT));
     }
 
-    public Template getTemplate(EventType type) {
+    public Template getTemplate(EventType type, Benefit benefit) {
         String smsTemplateId = isSendSmsSubscriptionConfirmation() ? SUBSCRIPTION_CREATED.getId() : type.getId();
-        return config.getTemplate(type.getId(), smsTemplateId);
+        return config.getTemplate(type.getId(), smsTemplateId, benefit);
     }
 
     public Boolean isSendSmsSubscriptionConfirmation() {

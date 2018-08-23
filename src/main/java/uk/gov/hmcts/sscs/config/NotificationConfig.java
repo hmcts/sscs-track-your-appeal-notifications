@@ -4,6 +4,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.core.env.Environment;
 import org.springframework.stereotype.Component;
+import uk.gov.hmcts.sscs.domain.Benefit;
 import uk.gov.hmcts.sscs.domain.notify.Link;
 import uk.gov.hmcts.sscs.domain.notify.Template;
 
@@ -50,9 +51,10 @@ public class NotificationConfig {
         return Link.builder().linkUrl(hearingInfoLink).build();
     }
 
-    public Template getTemplate(String emailTemplateName, String smsTemplateName) {
+    public Template getTemplate(String emailTemplateName, String smsTemplateName, Benefit benefit) {
         return Template.builder().emailTemplateId(env.getProperty("notification." + emailTemplateName + ".emailId"))
-                .smsTemplateId(env.getProperty("notification." + smsTemplateName + ".smsId")).build();
+                .smsTemplateId(env.getProperty("notification." + smsTemplateName + ".smsId"))
+                .smsSenderTemplateId(env.getProperty("smsSender." + benefit.toString().toLowerCase())).build();
     }
 
 }
