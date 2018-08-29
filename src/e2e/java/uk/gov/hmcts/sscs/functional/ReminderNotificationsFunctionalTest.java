@@ -174,7 +174,7 @@ public class ReminderNotificationsFunctionalTest extends AbstractFunctionalTest 
             "23 April 2016"
         );
 
-        assertNotificationSubjectContains(notifications, secondHearingHoldingReminderEmailTemplateId, "ESA benefit appeal");
+        assertNotificationSubjectContains(notifications, secondHearingHoldingReminderEmailTemplateId, "Your ESA appeal");
         assertNotificationBodyContains(
             notifications,
             secondHearingHoldingReminderEmailTemplateId,
@@ -195,7 +195,7 @@ public class ReminderNotificationsFunctionalTest extends AbstractFunctionalTest 
             "4 June 2016"
         );
 
-        assertNotificationSubjectContains(notifications, thirdHearingHoldingReminderEmailTemplateId, "ESA benefit appeal");
+        assertNotificationSubjectContains(notifications, thirdHearingHoldingReminderEmailTemplateId, "Your ESA appeal");
         assertNotificationBodyContains(
             notifications,
             thirdHearingHoldingReminderEmailTemplateId,
