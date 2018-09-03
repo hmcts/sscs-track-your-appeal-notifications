@@ -72,6 +72,11 @@ variable "claiming_expenses_link" {
   default = "http://localhost:3000/expenses/appeal_id"
 }
 
+variable "online_hearing_link" {
+  type    = "string"
+  default = "http://localhost:8090/login"
+}
+
 variable "job_scheduler_poll_interval" {
   type    = "string"
   default = "30000"

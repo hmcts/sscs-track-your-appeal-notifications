@@ -23,6 +23,8 @@ public class NotificationConfig {
     private String claimingExpensesLink;
     @Value("${hearing.info.link}")
     private String hearingInfoLink;
+    @Value("${online.hearing.link}")
+    private String onlineHearingLink;
 
     @Autowired
     private Environment env;
@@ -51,10 +53,13 @@ public class NotificationConfig {
         return Link.builder().linkUrl(hearingInfoLink).build();
     }
 
+    public Link getOnlineHearingLink() {
+        return Link.builder().linkUrl(onlineHearingLink).build();
+    }
+
     public Template getTemplate(String emailTemplateName, String smsTemplateName, Benefit benefit) {
         return Template.builder().emailTemplateId(env.getProperty("notification." + emailTemplateName + ".emailId"))
                 .smsTemplateId(env.getProperty("notification." + smsTemplateName + ".smsId"))
                 .smsSenderTemplateId(env.getProperty("smsSender." + benefit.toString().toLowerCase())).build();
     }
-
 }

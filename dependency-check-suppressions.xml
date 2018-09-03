@@ -8,6 +8,8 @@
     <gav regex="true">^org\.springframework:spring-.*:.*$</gav>
     <cve>CVE-2018-1257</cve>
     <cve>CVE-2018-1258</cve>
+    <cve>CVE-2018-11039</cve>
+    <cve>CVE-2018-11040</cve>
   </suppress>
   <suppress>
     <notes><![CDATA[

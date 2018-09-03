@@ -80,6 +80,7 @@ manage.emails.link: ${SSCS_MANAGE_EMAILS_LINK:http://localhost:3000/manage-email
 track.appeal.link: ${SSCS_TRACK_YOUR_APPEAL_LINK:http://localhost:3000/trackyourappeal/appeal_id}
 hearing.info.link: ${HEARING_INFO_LINK:http://localhost:3000/abouthearing/appeal_id}
 claiming.expenses.link: ${CLAIMING_EXPENSES_LINK:http://localhost:3000/expenses/appeal_id}
+online.hearing.link: ${ONLINE_HEARING_LINK:http://localhost:8090/login}?email={email}
 
 job.scheduler:
   retryPolicy:
@@ -134,6 +135,9 @@ notification:
   question_round_issued:
     emailId: ccfbfcac-847d-4e55-955c-096802c131a0
     smsId: f4138438-9707-4d52-9f54-dfa68e96856f
+  question_deadline_elapsed:
+    emailId: 48f2b7d1-cb71-4f60-b145-dfcf63cc4fcd
+    smsId: 181fb0f5-0cc8-4d57-903f-9e5db2a76b88
 
 smsSender:
   pip: 80b11be7-5c10-2773-8351-070e22d5ab6b

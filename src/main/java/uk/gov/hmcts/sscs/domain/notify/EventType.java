@@ -24,7 +24,8 @@ public enum EventType {
     DWP_RESPONSE_LATE_REMINDER("dwpResponseLateReminder"),
     DO_NOT_SEND(""),
 
-    QUESTION_ROUND_ISSUED("question_round_issued");
+    QUESTION_ROUND_ISSUED("question_round_issued"),
+    QUESTION_DEADLINE_ELAPSED("question_deadline_elapsed");
 
     private String id;
 
