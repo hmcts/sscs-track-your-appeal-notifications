@@ -1,0 +1,57 @@
+package uk.gov.hmcts.reform.sscs.factory;
+
+import java.util.Objects;
+import uk.gov.hmcts.reform.sscs.ccd.domain.EventType;
+import uk.gov.hmcts.reform.sscs.ccd.domain.SscsCaseData;
+import uk.gov.hmcts.reform.sscs.ccd.domain.Subscription;
+import uk.gov.hmcts.reform.sscs.domain.SscsCaseDataWrapper;
+
+public class CcdNotificationWrapper implements NotificationWrapper {
+    private final SscsCaseDataWrapper responseWrapper;
+
+    public CcdNotificationWrapper(SscsCaseDataWrapper responseWrapper) {
+        this.responseWrapper = responseWrapper;
+    }
+
+    @Override
+    public EventType getNotificationType() {
+        return responseWrapper.getNewSscsCaseData().getNotificationType();
+    }
+
+    @Override
+    public SscsCaseData getNewSscsCaseData() {
+        return responseWrapper.getNewSscsCaseData();
+    }
+
+    @Override
+    public Subscription getAppellantSubscription() {
+        return responseWrapper.getNewSscsCaseData().getSubscriptions().getAppellantSubscription();
+    }
+
+    @Override
+    public SscsCaseDataWrapper getSscsCaseDataWrapper() {
+        return responseWrapper;
+    }
+
+    @Override
+    public String getCaseId() {
+        return responseWrapper.getNewSscsCaseData().getCaseId();
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) {
+            return true;
+        }
+        if (o == null || getClass() != o.getClass()) {
+            return false;
+        }
+        CcdNotificationWrapper that = (CcdNotificationWrapper) o;
+        return Objects.equals(responseWrapper, that.responseWrapper);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(responseWrapper);
+    }
+}
