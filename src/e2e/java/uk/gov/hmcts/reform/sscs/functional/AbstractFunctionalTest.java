@@ -95,10 +95,10 @@ public abstract class AbstractFunctionalTest {
     protected static String generateRandomCaseReference() {
         String epoch = String.valueOf(Instant.now().toEpochMilli());
         return "SC" + epoch.substring(3, 6)
-                    + "/"
-                    + epoch.substring(6, 8)
-                    + "/"
-                    + epoch.substring(8, 13);
+                + "/"
+                + epoch.substring(6, 8)
+                + "/"
+                + epoch.substring(8, 13);
     }
 
     protected List<Notification> tryFetchNotificationsForTestCase(String... expectedTemplateIds) throws NotificationClientException {
