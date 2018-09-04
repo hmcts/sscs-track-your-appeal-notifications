@@ -27,16 +27,6 @@ import uk.gov.hmcts.reform.sscs.personalisation.Personalisation;
 import uk.gov.hmcts.reform.sscs.personalisation.SubscriptionPersonalisation;
 import uk.gov.hmcts.reform.sscs.service.MessageAuthenticationServiceImpl;
 import uk.gov.hmcts.reform.sscs.service.RegionalProcessingCenterService;
-import uk.gov.hmcts.reform.sscs.config.NotificationConfig;
-import uk.gov.hmcts.reform.sscs.domain.SscsCaseDataWrapper;
-import uk.gov.hmcts.reform.sscs.domain.notify.Link;
-import uk.gov.hmcts.reform.sscs.domain.notify.Notification;
-import uk.gov.hmcts.reform.sscs.domain.notify.Template;
-import uk.gov.hmcts.reform.sscs.extractor.HearingContactDateExtractor;
-import uk.gov.hmcts.reform.sscs.personalisation.Personalisation;
-import uk.gov.hmcts.reform.sscs.personalisation.SubscriptionPersonalisation;
-import uk.gov.hmcts.reform.sscs.service.MessageAuthenticationServiceImpl;
-import uk.gov.hmcts.reform.sscs.service.RegionalProcessingCenterService;
 
 public class NotificationFactoryTest {
 

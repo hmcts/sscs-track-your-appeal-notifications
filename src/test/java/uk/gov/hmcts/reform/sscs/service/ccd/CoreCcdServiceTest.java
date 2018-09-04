@@ -15,7 +15,6 @@ import uk.gov.hmcts.reform.ccd.client.model.StartEventResponse;
 import uk.gov.hmcts.reform.sscs.ccd.domain.SscsCaseData;
 import uk.gov.hmcts.reform.sscs.config.properties.CoreCaseDataProperties;
 import uk.gov.hmcts.reform.sscs.idam.IdamTokens;
-import uk.gov.hmcts.reform.sscs.config.properties.CoreCaseDataProperties;
 
 @RunWith(MockitoJUnitRunner.class)
 public class CoreCcdServiceTest {

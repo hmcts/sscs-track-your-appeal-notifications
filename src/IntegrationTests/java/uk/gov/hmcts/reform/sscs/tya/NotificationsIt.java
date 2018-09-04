@@ -31,12 +31,6 @@ import uk.gov.hmcts.reform.sscs.factory.NotificationFactory;
 import uk.gov.hmcts.reform.sscs.idam.IdamService;
 import uk.gov.hmcts.reform.sscs.service.*;
 import uk.gov.hmcts.reform.sscs.service.ccd.SearchCcdService;
-import uk.gov.hmcts.reform.sscs.config.NotificationBlacklist;
-import uk.gov.hmcts.reform.sscs.controller.NotificationController;
-import uk.gov.hmcts.reform.sscs.deserialize.SscsCaseDataWrapperDeserializer;
-import uk.gov.hmcts.reform.sscs.factory.NotificationFactory;
-import uk.gov.hmcts.reform.sscs.service.*;
-import uk.gov.hmcts.reform.sscs.service.ccd.SearchCcdService;
 import uk.gov.service.notify.NotificationClient;
 
 @RunWith(SpringRunner.class)

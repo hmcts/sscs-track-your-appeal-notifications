@@ -20,15 +20,6 @@ import uk.gov.hmcts.reform.sscs.exception.NotificationClientRuntimeException;
 import uk.gov.hmcts.reform.sscs.exception.NotificationServiceException;
 import uk.gov.hmcts.reform.sscs.factory.CcdNotificationWrapper;
 import uk.gov.hmcts.reform.sscs.factory.NotificationFactory;
-import uk.gov.hmcts.reform.sscs.domain.SscsCaseDataWrapper;
-import uk.gov.hmcts.reform.sscs.domain.notify.Destination;
-import uk.gov.hmcts.reform.sscs.domain.notify.Notification;
-import uk.gov.hmcts.reform.sscs.domain.notify.Reference;
-import uk.gov.hmcts.reform.sscs.domain.notify.Template;
-import uk.gov.hmcts.reform.sscs.exception.NotificationClientRuntimeException;
-import uk.gov.hmcts.reform.sscs.exception.NotificationServiceException;
-import uk.gov.hmcts.reform.sscs.factory.CcdNotificationWrapper;
-import uk.gov.hmcts.reform.sscs.factory.NotificationFactory;
 import uk.gov.service.notify.NotificationClientException;
 
 public class NotificationServiceTest {

@@ -1,8 +1,7 @@
 package uk.gov.hmcts.reform.sscs.functional;
 
-import static uk.gov.hmcts.reform.sscs.ccd.domain.EventType.*;
 import static uk.gov.hmcts.reform.sscs.SscsCaseDataUtils.addHearing;
-import static uk.gov.hmcts.reform.sscs.config.AppConstants.RESPONSE_DATE_FORMAT;
+import static uk.gov.hmcts.reform.sscs.ccd.domain.EventType.*;
 
 import java.io.IOException;
 import java.time.LocalDate;

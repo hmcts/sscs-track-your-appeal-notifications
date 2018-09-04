@@ -12,9 +12,6 @@ import org.mockito.Mock;
 import uk.gov.hmcts.reform.sscs.personalisation.CohPersonalisation;
 import uk.gov.hmcts.reform.sscs.personalisation.Personalisation;
 import uk.gov.hmcts.reform.sscs.personalisation.SubscriptionPersonalisation;
-import uk.gov.hmcts.reform.sscs.personalisation.CohPersonalisation;
-import uk.gov.hmcts.reform.sscs.personalisation.Personalisation;
-import uk.gov.hmcts.reform.sscs.personalisation.SubscriptionPersonalisation;
 
 public class PersonalisationFactoryTest {
 

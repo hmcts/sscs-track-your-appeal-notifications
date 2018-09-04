@@ -3,7 +3,6 @@ package uk.gov.hmcts.reform.sscs.deserialize;
 import static org.junit.Assert.*;
 import static uk.gov.hmcts.reform.sscs.ccd.domain.Benefit.ESA;
 import static uk.gov.hmcts.reform.sscs.ccd.domain.EventType.*;
-import static uk.gov.hmcts.reform.sscs.config.AppConstants.ZONE_ID;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.node.JsonNodeFactory;
@@ -19,7 +18,6 @@ import org.junit.Before;
 import org.junit.Test;
 import uk.gov.hmcts.reform.sscs.ccd.domain.*;
 import uk.gov.hmcts.reform.sscs.config.AppConstants;
-import uk.gov.hmcts.reform.sscs.domain.SscsCaseDataWrapper;
 import uk.gov.hmcts.reform.sscs.domain.SscsCaseDataWrapper;
 
 public class SscsCaseDataWrapperDeserializerTest {
@@ -38,11 +36,9 @@ public class SscsCaseDataWrapperDeserializerTest {
 
         String appealJson = "{\"benefitType\":{\"code\":\"ESA\"}}";
 
-        Appeal appeal = Appeal.builder().build();
+        BenefitType benefitType = ccdResponseDeserializer.deserializeBenefitDetailsJson(mapper.readTree(appealJson));
 
-        ccdResponseDeserializer.deserializeBenefitDetailsJson(mapper.readTree(appealJson), appeal);
-
-        assertEquals(ESA.name(), appeal.getBenefitType().getCode());
+        assertEquals(ESA.name(), benefitType.getCode());
     }
 
     @Test
@@ -51,18 +47,16 @@ public class SscsCaseDataWrapperDeserializerTest {
         String subscriptionJson = "{\"appellantSubscription\":{\"tya\":\"543212345\",\"email\":\"test@testing.com\",\"mobile\":\"01234556634\",\"reason\":null,\"subscribeSms\":\"No\",\"subscribeEmail\":\"Yes\"},"
                 + "\"supporterSubscription\":{\"tya\":\"232929249492\",\"email\":\"supporter@live.co.uk\",\"mobile\":\"07925289702\",\"reason\":null,\"subscribeSms\":\"Yes\",\"subscribeEmail\":\"No\"}}";
 
-        SscsCaseData ccdResponse = SscsCaseData.builder().build();
+        Subscriptions subscriptions = ccdResponseDeserializer.deserializeSubscriptionJson(mapper.readTree(subscriptionJson));
 
-        ccdResponseDeserializer.deserializeSubscriptionJson(mapper.readTree(subscriptionJson), ccdResponse);
-
-        Subscription appellantSubscription = ccdResponse.getSubscriptions().getAppellantSubscription();
+        Subscription appellantSubscription = subscriptions.getAppellantSubscription();
 
         assertEquals("test@testing.com", appellantSubscription.getEmail());
         assertEquals("01234556634", appellantSubscription.getMobile());
         assertFalse(appellantSubscription.isSmsSubscribed());
         assertTrue(appellantSubscription.isEmailSubscribed());
 
-        Subscription supporterSubscription = ccdResponse.getSubscriptions().getSupporterSubscription();
+        Subscription supporterSubscription = subscriptions.getSupporterSubscription();
         assertEquals("supporter@live.co.uk", supporterSubscription.getEmail());
         assertEquals("07925289702", supporterSubscription.getMobile());
         assertTrue(supporterSubscription.isSmsSubscribed());
@@ -73,13 +67,11 @@ public class SscsCaseDataWrapperDeserializerTest {
     public void deserializeEventJson() throws IOException {
         String eventJson = "{\"events\": [{\"id\": \"bad54ab0-5d09-47ab-b9fd-c3d55cbaf56f\",\"value\": {\"date\": \"2018-01-19T12:54:12.000\",\"description\": null,\"type\": \"appealReceived\"}}]}";
 
-        SscsCaseData ccdResponse = SscsCaseData.builder().build();
+        List<Event> events = ccdResponseDeserializer.deserializeEventDetailsJson(mapper.readTree(eventJson));
 
-        ccdResponseDeserializer.deserializeEventDetailsJson(mapper.readTree(eventJson), ccdResponse);
-
-        assertEquals(1, ccdResponse.getEvents().size());
-        assertEquals(ZonedDateTime.of(LocalDate.of(2018, 1, 19), LocalTime.of(12, 54, 12), ZoneId.of(AppConstants.ZONE_ID)), ccdResponse.getEvents().get(0).getValue().getDateTime());
-        assertEquals(APPEAL_RECEIVED, ccdResponse.getEvents().get(0).getValue().getEventType());
+        assertEquals(1, events.size());
+        assertEquals(ZonedDateTime.of(LocalDate.of(2018, 1, 19), LocalTime.of(12, 54, 12), ZoneId.of(AppConstants.ZONE_ID)), events.get(0).getValue().getDateTime());
+        assertEquals(APPEAL_RECEIVED, events.get(0).getValue().getEventType());
     }
 
     @Test
@@ -88,18 +80,16 @@ public class SscsCaseDataWrapperDeserializerTest {
                 + "{\"id\": \"12354ab0\",\"value\": {\"date\": \"2018-01-19T14:00:00.000\",\"description\": null,\"type\": \"appealWithdrawn\"}},\n"
                 + "{\"id\": \"87564ab0\",\"value\": {\"date\": \"2018-01-19T13:00:00.000\",\"description\": null,\"type\": \"appealLapsed\"}}]}";
 
-        SscsCaseData ccdResponse = SscsCaseData.builder().build();
+        List<Event> events = ccdResponseDeserializer.deserializeEventDetailsJson(mapper.readTree(eventJson));
 
-        ccdResponseDeserializer.deserializeEventDetailsJson(mapper.readTree(eventJson), ccdResponse);
+        assertEquals(3, events.size());
 
-        assertEquals(3, ccdResponse.getEvents().size());
-
-        assertEquals(ZonedDateTime.of(LocalDate.of(2018, 1, 19), LocalTime.of(14, 0), ZoneId.of(AppConstants.ZONE_ID)), ccdResponse.getEvents().get(0).getValue().getDateTime());
-        assertEquals(APPEAL_WITHDRAWN, ccdResponse.getEvents().get(0).getValue().getEventType());
-        assertEquals(ZonedDateTime.of(LocalDate.of(2018, 1, 19), LocalTime.of(13, 0), ZoneId.of(AppConstants.ZONE_ID)), ccdResponse.getEvents().get(1).getValue().getDateTime());
-        assertEquals(APPEAL_LAPSED, ccdResponse.getEvents().get(1).getValue().getEventType());
-        assertEquals(ZonedDateTime.of(LocalDate.of(2018, 1, 19), LocalTime.of(12, 0), ZoneId.of(AppConstants.ZONE_ID)), ccdResponse.getEvents().get(2).getValue().getDateTime());
-        assertEquals(APPEAL_RECEIVED, ccdResponse.getEvents().get(2).getValue().getEventType());
+        assertEquals(ZonedDateTime.of(LocalDate.of(2018, 1, 19), LocalTime.of(14, 0), ZoneId.of(AppConstants.ZONE_ID)), events.get(0).getValue().getDateTime());
+        assertEquals(APPEAL_WITHDRAWN, events.get(0).getValue().getEventType());
+        assertEquals(ZonedDateTime.of(LocalDate.of(2018, 1, 19), LocalTime.of(13, 0), ZoneId.of(AppConstants.ZONE_ID)), events.get(1).getValue().getDateTime());
+        assertEquals(APPEAL_LAPSED, events.get(1).getValue().getEventType());
+        assertEquals(ZonedDateTime.of(LocalDate.of(2018, 1, 19), LocalTime.of(12, 0), ZoneId.of(AppConstants.ZONE_ID)), events.get(2).getValue().getDateTime());
+        assertEquals(APPEAL_RECEIVED, events.get(2).getValue().getEventType());
     }
 
     @Test
@@ -110,13 +100,11 @@ public class SscsCaseDataWrapperDeserializerTest {
                 + "\"town\": \"Liverpool\",\"county\": \"Merseyside\",\"postcode\": \"L2 5UZ\"},"
                 + "\"googleMapLink\": \"https://www.google.com/theAddress\"}}}]}";
 
-        SscsCaseData ccdResponse = SscsCaseData.builder().build();
+        List<Hearing> hearings = ccdResponseDeserializer.deserializeHearingDetailsJson(mapper.readTree(hearingJson));
 
-        ccdResponseDeserializer.deserializeHearingDetailsJson(mapper.readTree(hearingJson), ccdResponse);
+        assertEquals(1, hearings.size());
 
-        assertEquals(1, ccdResponse.getHearings().size());
-
-        Hearing hearing = ccdResponse.getHearings().get(0);
+        Hearing hearing = hearings.get(0);
         assertEquals(LocalDateTime.of(LocalDate.of(2018, 1, 12), LocalTime.of(11, 00, 00)), hearing.getValue().getHearingDateTime());
         assertEquals("Prudential House", hearing.getValue().getVenue().getName());
         assertEquals("36 Dale Street", hearing.getValue().getVenue().getAddress().getLine1());
@@ -134,13 +122,11 @@ public class SscsCaseDataWrapperDeserializerTest {
                 + "\"town\": \"Liverpool\",\"county\": \"Merseyside\",\"postcode\": \"L2 5UZ\"},"
                 + "\"googleMapLink\": \"https://www.google.com/theAddress\"}}}]}";
 
-        SscsCaseData ccdResponse = SscsCaseData.builder().build();
+        List<Hearing> hearings = ccdResponseDeserializer.deserializeHearingDetailsJson(mapper.readTree(hearingJson));
 
-        ccdResponseDeserializer.deserializeHearingDetailsJson(mapper.readTree(hearingJson), ccdResponse);
+        assertEquals(1, hearings.size());
 
-        assertEquals(1, ccdResponse.getHearings().size());
-
-        Hearing hearing = ccdResponse.getHearings().get(0);
+        Hearing hearing = hearings.get(0);
         assertEquals(LocalDateTime.of(LocalDate.of(2018, 7, 12), LocalTime.of(11, 00, 00)), hearing.getValue().getHearingDateTime());
     }
 
@@ -162,15 +148,14 @@ public class SscsCaseDataWrapperDeserializerTest {
                 + "\"town\": \"Liverpool\",\"county\": \"Merseyside\",\"postcode\": \"L2 5UZ\"},"
                 + "\"googleMapLink\": \"https://www.google.com/theAddress\"}}}"
                 + "]}";
-        SscsCaseData ccdResponse = SscsCaseData.builder().build();
 
-        ccdResponseDeserializer.deserializeHearingDetailsJson(mapper.readTree(hearingJson), ccdResponse);
+        List<Hearing> hearings = ccdResponseDeserializer.deserializeHearingDetailsJson(mapper.readTree(hearingJson));
 
-        assertEquals(3, ccdResponse.getHearings().size());
+        assertEquals(3, hearings.size());
 
-        assertEquals(LocalDateTime.of(LocalDate.of(2018, 1, 12), LocalTime.of(13, 0)), ccdResponse.getHearings().get(0).getValue().getHearingDateTime());
-        assertEquals(LocalDateTime.of(LocalDate.of(2018, 1, 12), LocalTime.of(12, 0)), ccdResponse.getHearings().get(1).getValue().getHearingDateTime());
-        assertEquals(LocalDateTime.of(LocalDate.of(2018, 1, 12), LocalTime.of(11, 0)), ccdResponse.getHearings().get(2).getValue().getHearingDateTime());
+        assertEquals(LocalDateTime.of(LocalDate.of(2018, 1, 12), LocalTime.of(13, 0)), hearings.get(0).getValue().getHearingDateTime());
+        assertEquals(LocalDateTime.of(LocalDate.of(2018, 1, 12), LocalTime.of(12, 0)), hearings.get(1).getValue().getHearingDateTime());
+        assertEquals(LocalDateTime.of(LocalDate.of(2018, 1, 12), LocalTime.of(11, 0)), hearings.get(2).getValue().getHearingDateTime());
     }
 
     @Test
@@ -316,12 +301,9 @@ public class SscsCaseDataWrapperDeserializerTest {
                 + "\"address2\":\"Social Security & Child Support Appeals\",\"address3\":\"Eastgate House\",\n"
                 + "\"address4\":\"Newport Road\",\"city\":\"CARDIFF\",\"postcode\":\"CF24 0AB\",\"phoneNumber\":\"0300 123 1142\",\"faxNumber\":\"0870 739 4438\"}}";
 
-        SscsCaseData ccdResponse = SscsCaseData.builder().build();
-        ccdResponseDeserializer.deserializeRegionalProcessingCenterJson(mapper.readTree(rpcJson), ccdResponse);
+        RegionalProcessingCenter regionalProcessingCenter = ccdResponseDeserializer.deserializeRegionalProcessingCenterJson(mapper.readTree(rpcJson));
 
-        assertNotNull(ccdResponse.getRegionalProcessingCenter());
-
-        RegionalProcessingCenter regionalProcessingCenter = ccdResponse.getRegionalProcessingCenter();
+        assertNotNull(regionalProcessingCenter);
 
         assertEquals(regionalProcessingCenter.getName(), "CARDIFF");
         assertEquals(regionalProcessingCenter.getAddress1(), "HM Courts & Tribunals Service");
@@ -337,11 +319,10 @@ public class SscsCaseDataWrapperDeserializerTest {
     @Test
     public void shouldNotDeserializeRegionalProcessingCenterIfItsNotPresent() throws Exception {
         String json = "{\"benefitType\":{\"code\":\"UNK\"}}";
-        SscsCaseData ccdResponse = SscsCaseData.builder().build();
 
-        ccdResponseDeserializer.deserializeRegionalProcessingCenterJson(mapper.readTree(json), ccdResponse);
+        RegionalProcessingCenter rpc = ccdResponseDeserializer.deserializeRegionalProcessingCenterJson(mapper.readTree(json));
 
-        assertNull(ccdResponse.getRegionalProcessingCenter());
+        assertNull(rpc);
     }
 
     @Test
@@ -349,10 +330,7 @@ public class SscsCaseDataWrapperDeserializerTest {
         String mrnJson = "{\"mrnDetails\":{\"dwpIssuingOffice\":\"Birmingham\",\"mrnDate\":\"2018-01-01\","
                 + "\"mrnLateReason\":\"It is late\",\"mrnMissingReason\":\"It went missing\"}}";
 
-        Appeal appeal = Appeal.builder().build();
-        ccdResponseDeserializer.deserializeMrnDetailsJson(mapper.readTree(mrnJson), appeal);
-
-        MrnDetails mrnDetails = appeal.getMrnDetails();
+        MrnDetails mrnDetails = ccdResponseDeserializer.deserializeMrnDetailsJson(mapper.readTree(mrnJson));
 
         assertEquals("Birmingham", mrnDetails.getDwpIssuingOffice());
         assertEquals("2018-01-01", mrnDetails.getMrnDate());
@@ -369,10 +347,7 @@ public class SscsCaseDataWrapperDeserializerTest {
                 + "\"identity\": {\"dob\": \"1998-07-01\", \"nino\": \"JT098230B\"},"
                 + "\"isAppointee\": \"Yes\"}}";
 
-        Appeal appeal = Appeal.builder().build();
-        ccdResponseDeserializer.deserializeAppellantDetailsJson(mapper.readTree(appellantJson), appeal);
-
-        Appellant appellant = appeal.getAppellant();
+        Appellant appellant = ccdResponseDeserializer.deserializeAppellantDetailsJson(mapper.readTree(appellantJson));
 
         assertEquals("Mr", appellant.getName().getTitle());
         assertEquals("Dexter", appellant.getName().getFirstName());
@@ -397,10 +372,7 @@ public class SscsCaseDataWrapperDeserializerTest {
                 + "\"excludeDates\": [{\"value\": {\"start\": \"2018-04-04\",\"end\": \"2018-04-06\"}},"
                 + "{\"value\": {\"start\": \"2018-04-10\"}}]}}";
 
-        Appeal appeal = Appeal.builder().build();
-        ccdResponseDeserializer.deserializeHearingOptionsJson(mapper.readTree(hearingOptionsDetailsJson), appeal);
-
-        HearingOptions hearingOptions = appeal.getHearingOptions();
+        HearingOptions hearingOptions = ccdResponseDeserializer.deserializeHearingOptionsJson(mapper.readTree(hearingOptionsDetailsJson));
 
         List<String> arrangements = new ArrayList<>();
         arrangements.add("signLanguageInterpreter");
@@ -425,10 +397,7 @@ public class SscsCaseDataWrapperDeserializerTest {
         String appealReasonsJson = "{\"appealReasons\": {\"reasons\": [{\"value\": {\"reason\": \"reason1\",\"description\": \"description1\"}},"
                 + "{\"value\": {\"reason\": \"reason2\",\"description\": \"description2\"}}],\"otherReasons\": \"Another reason\"}}";
 
-        Appeal appeal = Appeal.builder().build();
-        ccdResponseDeserializer.deserializeAppealReasonsJson(mapper.readTree(appealReasonsJson), appeal);
-
-        AppealReasons appealReasons = appeal.getAppealReasons();
+        AppealReasons appealReasons = ccdResponseDeserializer.deserializeAppealReasonsJson(mapper.readTree(appealReasonsJson));
 
         assertEquals("reason1", appealReasons.getReasons().get(0).getValue().getReason());
         assertEquals("description1", appealReasons.getReasons().get(0).getValue().getDescription());
@@ -446,10 +415,7 @@ public class SscsCaseDataWrapperDeserializerTest {
                 + "\"contact\": {\"email\": \"harry.potter@wizards.com\",\"mobile\": \"07411999999\"},"
                 + "\"organisation\": \"HP Ltd\"}}}";
 
-        Appeal appeal = Appeal.builder().build();
-        ccdResponseDeserializer.deserializeRepresentativeReasons(mapper.readTree(appealReasonsJson), appeal);
-
-        Representative rep = appeal.getRep();
+        Representative rep = ccdResponseDeserializer.deserializeRepresentativeReasons(mapper.readTree(appealReasonsJson));
 
         assertEquals("Mr", rep.getName().getTitle());
         assertEquals("Harry", rep.getName().getFirstName());

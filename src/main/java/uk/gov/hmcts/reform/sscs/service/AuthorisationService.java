@@ -7,8 +7,6 @@ import org.springframework.stereotype.Service;
 import uk.gov.hmcts.reform.authorisation.ServiceAuthorisationApi;
 import uk.gov.hmcts.reform.sscs.exception.AuthorisationException;
 import uk.gov.hmcts.reform.sscs.exception.ClientAuthorisationException;
-import uk.gov.hmcts.reform.sscs.exception.AuthorisationException;
-import uk.gov.hmcts.reform.sscs.exception.ClientAuthorisationException;
 
 @Service
 public class AuthorisationService {

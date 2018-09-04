@@ -3,7 +3,6 @@ package uk.gov.hmcts.reform.sscs.service.reminder;
 import static org.slf4j.LoggerFactory.getLogger;
 import static uk.gov.hmcts.reform.sscs.ccd.domain.EventType.HEARING_BOOKED;
 import static uk.gov.hmcts.reform.sscs.ccd.domain.EventType.HEARING_REMINDER;
-import static uk.gov.hmcts.reform.sscs.config.AppConstants.ZONE_ID;
 
 import java.time.LocalDateTime;
 import java.time.ZoneId;
@@ -17,7 +16,6 @@ import uk.gov.hmcts.reform.sscs.config.AppConstants;
 import uk.gov.hmcts.reform.sscs.exception.ReminderException;
 import uk.gov.hmcts.reform.sscs.jobscheduler.model.Job;
 import uk.gov.hmcts.reform.sscs.jobscheduler.services.JobScheduler;
-import uk.gov.hmcts.reform.sscs.exception.ReminderException;
 
 @Component
 public class HearingReminder implements ReminderHandler {

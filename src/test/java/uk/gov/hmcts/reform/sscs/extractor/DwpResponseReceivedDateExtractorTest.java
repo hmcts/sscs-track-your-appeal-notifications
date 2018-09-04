@@ -7,8 +7,8 @@ import static uk.gov.hmcts.reform.sscs.ccd.domain.EventType.DWP_RESPONSE_RECEIVE
 import java.time.ZonedDateTime;
 import java.util.Optional;
 import org.junit.Test;
-import uk.gov.hmcts.reform.sscs.ccd.domain.SscsCaseData;
 import uk.gov.hmcts.reform.sscs.SscsCaseDataUtils;
+import uk.gov.hmcts.reform.sscs.ccd.domain.SscsCaseData;
 
 public class DwpResponseReceivedDateExtractorTest {
 
