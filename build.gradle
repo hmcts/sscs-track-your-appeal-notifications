@@ -151,9 +151,9 @@ sonarqube {
         property "sonar.projectKey", "SSCSTYANS"
         property "sonar.jacoco.reportPath", "${project.buildDir}/jacoco/test.exec"
         property "sonar.jacoco.itReportPath", "${project.buildDir}/jacoco/integration.exec"
-        property "sonar.exclusions", "src/main/java/uk/gov/hmcts/sscs/domain/**," +
-                "src/main/java/uk/gov/hmcts/sscs/TrackYourAppealNotificationsApplication.java," +
-                "src/main/java/uk/gov/hmcts/sscs/config/**,"
+        property "sonar.exclusions", "src/main/java/uk/gov/hmcts/reform/sscs/domain/**," +
+                "src/main/java/uk/gov/hmcts/reform/sscs/TrackYourAppealNotificationsApplication.java," +
+                "src/main/java/uk/gov/hmcts/reform/sscs/config/**,"
     }
 }
 
