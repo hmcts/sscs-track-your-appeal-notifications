@@ -35,7 +35,7 @@ public class NotificationFactory {
         }
 
         Benefit benefit = getBenefitByCode(notificationWrapper.getCcdResponseWrapper().getNewCcdResponse().getAppeal().getBenefitType().getCode());
-        Template template = personalisation.getTemplate(notificationWrapper.getNotificationType(), benefit);
+        Template template = personalisation.getTemplate(notificationWrapper, benefit);
 
         CcdResponse ccdResponse = notificationWrapper.getCcdResponseWrapper().getNewCcdResponse();
         Destination destination = ccdResponse.getSubscriptions().getAppellantSubscription().getDestination();

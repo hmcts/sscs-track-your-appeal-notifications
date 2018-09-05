@@ -1,7 +1,9 @@
 package uk.gov.hmcts.sscs.personalisation;
 
+import static org.hamcrest.CoreMatchers.is;
 import static org.hamcrest.collection.IsMapContaining.hasEntry;
 import static org.junit.Assert.assertThat;
+import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 import static org.mockito.MockitoAnnotations.initMocks;
 import static uk.gov.hmcts.sscs.domain.Benefit.PIP;
@@ -18,11 +20,14 @@ import uk.gov.hmcts.sscs.config.NotificationConfig;
 import uk.gov.hmcts.sscs.domain.*;
 import uk.gov.hmcts.sscs.domain.idam.IdamTokens;
 import uk.gov.hmcts.sscs.domain.notify.Event;
+import uk.gov.hmcts.sscs.domain.notify.EventType;
 import uk.gov.hmcts.sscs.domain.notify.Link;
+import uk.gov.hmcts.sscs.domain.notify.Template;
 import uk.gov.hmcts.sscs.extractor.HearingContactDateExtractor;
 import uk.gov.hmcts.sscs.factory.CohNotificationWrapper;
 import uk.gov.hmcts.sscs.service.MessageAuthenticationServiceImpl;
 import uk.gov.hmcts.sscs.service.RegionalProcessingCenterService;
+import uk.gov.hmcts.sscs.service.coh.QuestionRounds;
 import uk.gov.hmcts.sscs.service.coh.QuestionService;
 
 public class CohPersonalisationTest {
@@ -57,6 +62,7 @@ public class CohPersonalisationTest {
         when(config.getManageEmailsLink()).thenReturn(Link.builder().linkUrl("http://link.com/manage-email-notifications/mac").build());
         when(config.getClaimingExpensesLink()).thenReturn(Link.builder().linkUrl("http://link.com/progress/appeal_id/expenses").build());
         when(config.getHearingInfoLink()).thenReturn(Link.builder().linkUrl("http://link.com/progress/appeal_id/abouthearing").build());
+        when(config.getOnlineHearingLink()).thenReturn(Link.builder().linkUrl("http://link.com/onlineHearing?email={email}").build());
         when(macService.generateToken("GLSCRR", PIP.name())).thenReturn("ZYX");
 
         RegionalProcessingCenter rpc = new RegionalProcessingCenter();
@@ -102,5 +108,40 @@ public class CohPersonalisationTest {
         Map<String, String> placeholders = cohPersonalisation.create(new CohNotificationWrapper(idamTokens, someHearingId, ccdResponseWrapper));
 
         assertThat(placeholders, hasEntry("questions_end_date", expectedRequiredByDate));
+    }
+
+    @Test
+    public void setsCorrectTemplatesForFirstQuestionRound() {
+        String someHearingId = "someHearingId";
+        IdamTokens idamTokens = IdamTokens.builder().build();
+        QuestionRounds questionRounds = mock(QuestionRounds.class);
+        when(questionService.getQuestionRounds(idamTokens, someHearingId)).thenReturn(questionRounds);
+        when(questionRounds.getCurrentQuestionRound()).thenReturn(1);
+        CohNotificationWrapper cohNotificationWrapper = new CohNotificationWrapper(
+                idamTokens,
+                someHearingId,
+                CcdResponseWrapper.builder().newCcdResponse(
+                        CcdResponse.builder().notificationType(EventType.QUESTION_ROUND_ISSUED).build()
+                ).build());
+        Template expectedTemplate = Template.builder().build();
+        when(config.getTemplate(EventType.QUESTION_ROUND_ISSUED.getId(), EventType.QUESTION_ROUND_ISSUED.getId(), Benefit.PIP)).thenReturn(expectedTemplate);
+
+        Template template = cohPersonalisation.getTemplate(cohNotificationWrapper, Benefit.PIP);
+        assertThat(template, is(expectedTemplate));
+    }
+
+    @Test
+    public void setsCorrectTemplatesForSecondQuestionRound() {
+        String someHearingId = "someHearingId";
+        IdamTokens idamTokens = IdamTokens.builder().build();
+        QuestionRounds questionRounds = mock(QuestionRounds.class);
+        when(questionService.getQuestionRounds(idamTokens, someHearingId)).thenReturn(questionRounds);
+        when(questionRounds.getCurrentQuestionRound()).thenReturn(2);
+        CohNotificationWrapper cohNotificationWrapper = new CohNotificationWrapper(idamTokens, someHearingId, CcdResponseWrapper.builder().build());
+        Template expectedTemplate = Template.builder().build();
+        when(config.getTemplate("follow_up_question_round_issued", "follow_up_question_round_issued", Benefit.PIP)).thenReturn(expectedTemplate);
+
+        Template template = cohPersonalisation.getTemplate(cohNotificationWrapper, Benefit.PIP);
+        assertThat(template, is(expectedTemplate));
     }
 }

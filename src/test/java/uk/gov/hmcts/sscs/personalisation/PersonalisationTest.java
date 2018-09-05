@@ -70,6 +70,7 @@ public class PersonalisationTest {
         when(config.getManageEmailsLink()).thenReturn(Link.builder().linkUrl("http://link.com/manage-email-notifications/mac").build());
         when(config.getClaimingExpensesLink()).thenReturn(Link.builder().linkUrl("http://link.com/progress/appeal_id/expenses").build());
         when(config.getHearingInfoLink()).thenReturn(Link.builder().linkUrl("http://link.com/progress/appeal_id/abouthearing").build());
+        when(config.getOnlineHearingLink()).thenReturn(Link.builder().linkUrl("http://link.com/onlineHearing?email={email}").build());
         when(macService.generateToken("GLSCRR", PIP.name())).thenReturn("ZYX");
         when(hearingContactDateExtractor.extract(any())).thenReturn(Optional.empty());
 
@@ -220,32 +221,12 @@ public class PersonalisationTest {
     public void givenHearingData_correctlySetTheHearingDetails() {
         LocalDate hearingDate = LocalDate.now().plusDays(7);
 
-        Hearing hearing = Hearing.builder().value(HearingDetails.builder()
-            .hearingDate(hearingDate.format(DateTimeFormatter.ofPattern("yyyy-MM-dd")))
-            .time("12:00")
-            .venue(Venue.builder()
-                .name("The venue")
-                .address(Address.builder()
-                    .line1("12 The Road Avenue")
-                    .line2("Village")
-                    .town("Aberdeen")
-                    .county("Aberdeenshire")
-                    .postcode("AB12 0HN").build())
-                .googleMapLink("http://www.googlemaps.com/aberdeenvenue")
-                .build()).build()).build();
+        Hearing hearing = createHearing(hearingDate);
 
         List<Hearing> hearingList = new ArrayList<>();
         hearingList.add(hearing);
 
-        CcdResponse response = CcdResponse.builder()
-            .caseId(CASE_ID).caseReference("SC/1234/5")
-            .appeal(Appeal.builder().benefitType(BenefitType.builder().code("PIP").build())
-                .appellant(Appellant.builder().name(name).build())
-                .build())
-            .notificationType(HEARING_BOOKED)
-            .subscriptions(subscriptions)
-            .hearings(hearingList)
-            .build();
+        CcdResponse response = createResponse(hearingList);
 
         Map<String, String> result = personalisation.create(CcdResponseWrapper.builder().newCcdResponse(response).build());
 
@@ -260,32 +241,12 @@ public class PersonalisationTest {
     public void givenOnlyOneDayUntilHearing_correctlySetTheDaysToHearingText() {
         LocalDate hearingDate = LocalDate.now().plusDays(1);
 
-        Hearing hearing = Hearing.builder().value(HearingDetails.builder()
-            .hearingDate(hearingDate.format(DateTimeFormatter.ofPattern("yyyy-MM-dd")))
-            .time("12:00")
-            .venue(Venue.builder()
-                .name("The venue")
-                .address(Address.builder()
-                    .line1("12 The Road Avenue")
-                    .line2("Village")
-                    .town("Aberdeen")
-                    .county("Aberdeenshire")
-                    .postcode("AB12 0HN").build())
-                .googleMapLink("http://www.googlemaps.com/aberdeenvenue")
-                .build()).build()).build();
+        Hearing hearing = createHearing(hearingDate);
 
         List<Hearing> hearingList = new ArrayList<>();
         hearingList.add(hearing);
 
-        CcdResponse response = CcdResponse.builder()
-            .caseId(CASE_ID).caseReference("SC/1234/5")
-            .appeal(Appeal.builder().benefitType(BenefitType.builder().code("PIP").build())
-                .appellant(Appellant.builder().name(name).build())
-                .build())
-            .notificationType(HEARING_BOOKED)
-            .subscriptions(subscriptions)
-            .hearings(hearingList)
-            .build();
+        CcdResponse response = createResponse(hearingList);
 
         Map<String, String> result = personalisation.create(CcdResponseWrapper.builder().newCcdResponse(response).build());
 
@@ -366,5 +327,49 @@ public class PersonalisationTest {
         personalisation.setHearingContactDate(values, response);
 
         assertFalse(values.containsKey(HEARING_CONTACT_DATE));
+    }
+
+    @Test
+    public void shouldSetOnlineHearingLink() {
+        LocalDate hearingDate = LocalDate.now().plusDays(1);
+
+        Hearing hearing = createHearing(hearingDate);
+
+        List<Hearing> hearingList = new ArrayList<>();
+        hearingList.add(hearing);
+
+        CcdResponse response = createResponse(hearingList);
+
+        Map<String, String> result = personalisation.create(CcdResponseWrapper.builder().newCcdResponse(response).build());
+
+        assertEquals("http://link.com/onlineHearing?email=test@email.com", result.get(ONLINE_HEARING_LINK_LITERAL));
+    }
+
+    private Hearing createHearing(LocalDate hearingDate) {
+        return Hearing.builder().value(HearingDetails.builder()
+                .hearingDate(hearingDate.format(DateTimeFormatter.ofPattern("yyyy-MM-dd")))
+                .time("12:00")
+                .venue(Venue.builder()
+                        .name("The venue")
+                        .address(Address.builder()
+                                .line1("12 The Road Avenue")
+                                .line2("Village")
+                                .town("Aberdeen")
+                                .county("Aberdeenshire")
+                                .postcode("AB12 0HN").build())
+                        .googleMapLink("http://www.googlemaps.com/aberdeenvenue")
+                        .build()).build()).build();
+    }
+
+    private CcdResponse createResponse(List<Hearing> hearingList) {
+        return CcdResponse.builder()
+                .caseId(CASE_ID).caseReference("SC/1234/5")
+                .appeal(Appeal.builder().benefitType(BenefitType.builder().code("PIP").build())
+                        .appellant(Appellant.builder().name(name).build())
+                        .build())
+                .notificationType(HEARING_BOOKED)
+                .subscriptions(subscriptions)
+                .hearings(hearingList)
+                .build();
     }
 }

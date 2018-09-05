@@ -20,6 +20,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 import uk.gov.hmcts.sscs.config.NotificationConfig;
 import uk.gov.hmcts.sscs.domain.*;
+import uk.gov.hmcts.sscs.domain.notify.Destination;
 import uk.gov.hmcts.sscs.domain.notify.Event;
 import uk.gov.hmcts.sscs.domain.notify.EventType;
 import uk.gov.hmcts.sscs.domain.notify.Template;
@@ -36,7 +37,7 @@ public class Personalisation<E extends NotificationWrapper> {
     private static final org.slf4j.Logger LOG = getLogger(Personalisation.class);
 
     @Autowired
-    private NotificationConfig config;
+    protected NotificationConfig config;
 
     @Autowired
     private HearingContactDateExtractor hearingContactDateExtractor;
@@ -76,6 +77,11 @@ public class Personalisation<E extends NotificationWrapper> {
             personalisation.put(CLAIMING_EXPENSES_LINK_LITERAL, config.getClaimingExpensesLink().replace(APPEAL_ID, appellantSubscription.getTya()));
             personalisation.put(HEARING_INFO_LINK_LITERAL,
                     config.getHearingInfoLink().replace(APPEAL_ID_LITERAL, appellantSubscription.getTya()));
+        }
+        Destination destination = appellantSubscription.getDestination();
+        if (destination != null && destination.email != null) {
+            String email = destination.email;
+            personalisation.put(ONLINE_HEARING_LINK_LITERAL, config.getOnlineHearingLink().replace("{email}", email));
         }
 
         personalisation.put(FIRST_TIER_AGENCY_ACRONYM, DWP_ACRONYM);
@@ -184,7 +190,8 @@ public class Personalisation<E extends NotificationWrapper> {
         return date.format(DateTimeFormatter.ofPattern(HEARING_TIME_FORMAT));
     }
 
-    public Template getTemplate(EventType type, Benefit benefit) {
+    public Template getTemplate(E notificationWrapper, Benefit benefit) {
+        EventType type = notificationWrapper.getNotificationType();
         String smsTemplateId = isSendSmsSubscriptionConfirmation() ? SUBSCRIPTION_CREATED.getId() : type.getId();
         return config.getTemplate(type.getId(), smsTemplateId, benefit);
     }
