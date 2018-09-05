@@ -1,12 +1,15 @@
 package uk.gov.hmcts.reform.sscs.personalisation;
 
+import static org.hamcrest.CoreMatchers.is;
 import static org.hamcrest.collection.IsMapContaining.hasEntry;
 import static org.junit.Assert.assertThat;
+import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 import static org.mockito.MockitoAnnotations.initMocks;
 import static uk.gov.hmcts.reform.sscs.ccd.domain.Benefit.PIP;
 import static uk.gov.hmcts.reform.sscs.ccd.domain.EventType.APPEAL_RECEIVED;
 import static uk.gov.hmcts.reform.sscs.domain.notify.NotificationEventType.APPEAL_RECEIVED_NOTIFICATION;
+import static uk.gov.hmcts.reform.sscs.domain.notify.NotificationEventType.QUESTION_ROUND_ISSUED_NOTIFICATION;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -19,10 +22,12 @@ import uk.gov.hmcts.reform.sscs.ccd.domain.*;
 import uk.gov.hmcts.reform.sscs.config.NotificationConfig;
 import uk.gov.hmcts.reform.sscs.domain.SscsCaseDataWrapper;
 import uk.gov.hmcts.reform.sscs.domain.notify.Link;
+import uk.gov.hmcts.reform.sscs.domain.notify.Template;
 import uk.gov.hmcts.reform.sscs.extractor.HearingContactDateExtractor;
 import uk.gov.hmcts.reform.sscs.factory.CohNotificationWrapper;
 import uk.gov.hmcts.reform.sscs.service.MessageAuthenticationServiceImpl;
 import uk.gov.hmcts.reform.sscs.service.RegionalProcessingCenterService;
+import uk.gov.hmcts.reform.sscs.service.coh.QuestionRounds;
 import uk.gov.hmcts.reform.sscs.service.coh.QuestionService;
 
 public class CohPersonalisationTest {
@@ -44,8 +49,11 @@ public class CohPersonalisationTest {
     @Mock
     private QuestionService questionService;
 
+    @Mock
+    private CohDateConverterUtil cohDateConverterUtil;
+
     @InjectMocks
-    public CohPersonalisation cohPersonalisation;
+    private CohPersonalisation cohPersonalisation;
 
     @Before
     public void setup() {
@@ -94,12 +102,51 @@ public class CohPersonalisationTest {
         SscsCaseDataWrapper sscsCaseDataWrapper = SscsCaseDataWrapper.builder().newSscsCaseData(response).notificationEventType(APPEAL_RECEIVED_NOTIFICATION).build();
 
         String someHearingId = "someHearingId";
+        String cohDate = "cohDate";
         String expectedRequiredByDate = "expectedRequiredByDate";
 
-        when(questionService.getQuestionRequiredByDate(someHearingId)).thenReturn(expectedRequiredByDate);
+        when(questionService.getQuestionRequiredByDate(someHearingId)).thenReturn(cohDate);
+        when(cohDateConverterUtil.toEmailDate(cohDate)).thenReturn(expectedRequiredByDate);
 
         Map<String, String> placeholders = cohPersonalisation.create(new CohNotificationWrapper(someHearingId, sscsCaseDataWrapper));
 
         assertThat(placeholders, hasEntry("questions_end_date", expectedRequiredByDate));
+    }
+
+    @Test
+    public void setsCorrectTemplatesForFirstQuestionRound() {
+        String someHearingId = "someHearingId";
+        QuestionRounds questionRounds = mock(QuestionRounds.class);
+        when(questionService.getQuestionRounds(someHearingId)).thenReturn(questionRounds);
+        when(questionRounds.getCurrentQuestionRound()).thenReturn(1);
+        CohNotificationWrapper cohNotificationWrapper = new CohNotificationWrapper(
+                someHearingId,
+                SscsCaseDataWrapper.builder()
+                        .newSscsCaseData(SscsCaseData.builder().build())
+                        .notificationEventType(QUESTION_ROUND_ISSUED_NOTIFICATION)
+                        .build());
+        Template expectedTemplate = Template.builder().build();
+        when(config.getTemplate(
+                QUESTION_ROUND_ISSUED_NOTIFICATION.getId(),
+                QUESTION_ROUND_ISSUED_NOTIFICATION.getId(),
+                Benefit.PIP))
+                .thenReturn(expectedTemplate);
+
+        Template template = cohPersonalisation.getTemplate(cohNotificationWrapper, Benefit.PIP);
+        assertThat(template, is(expectedTemplate));
+    }
+
+    @Test
+    public void setsCorrectTemplatesForSecondQuestionRound() {
+        String someHearingId = "someHearingId";
+        QuestionRounds questionRounds = mock(QuestionRounds.class);
+        when(questionService.getQuestionRounds(someHearingId)).thenReturn(questionRounds);
+        when(questionRounds.getCurrentQuestionRound()).thenReturn(2);
+        CohNotificationWrapper cohNotificationWrapper = new CohNotificationWrapper(someHearingId, SscsCaseDataWrapper.builder().build());
+        Template expectedTemplate = Template.builder().build();
+        when(config.getTemplate("follow_up_question_round_issued", "follow_up_question_round_issued", Benefit.PIP)).thenReturn(expectedTemplate);
+
+        Template template = cohPersonalisation.getTemplate(cohNotificationWrapper, Benefit.PIP);
+        assertThat(template, is(expectedTemplate));
     }
 }

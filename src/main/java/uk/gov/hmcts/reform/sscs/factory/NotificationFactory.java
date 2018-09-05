@@ -36,7 +36,7 @@ public class NotificationFactory {
         }
 
         Benefit benefit = getBenefitByCode(notificationWrapper.getSscsCaseDataWrapper().getNewSscsCaseData().getAppeal().getBenefitType().getCode());
-        Template template = personalisation.getTemplate(notificationWrapper.getNotificationType(), benefit);
+        Template template = personalisation.getTemplate(notificationWrapper, benefit);
 
         SscsCaseData ccdResponse = notificationWrapper.getSscsCaseDataWrapper().getNewSscsCaseData();
 

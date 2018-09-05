@@ -67,4 +67,15 @@ public class QuestionServiceTest {
 
         new QuestionService(cohClient, idamService).getQuestionRequiredByDate(someHearingId);
     }
+
+    @Test
+    public void getsQuestionRounds() {
+        QuestionRounds expectedQuestionRounds = new QuestionRounds(1, singletonList(new QuestionRound(emptyList())));
+        when(cohClient.getQuestionRounds(authHeader, serviceAuthHeader, someHearingId))
+                .thenReturn(expectedQuestionRounds);
+
+        QuestionRounds questionRounds = new QuestionService(cohClient, idamService).getQuestionRounds(someHearingId);
+
+        assertThat(questionRounds, is(expectedQuestionRounds));
+    }
 }

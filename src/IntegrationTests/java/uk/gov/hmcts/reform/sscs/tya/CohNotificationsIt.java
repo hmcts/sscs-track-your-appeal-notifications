@@ -105,7 +105,7 @@ public class CohNotificationsIt {
                 .thenReturn(caseDetails);
         when(cohClient.getQuestionRounds(any(), any(), any())).thenReturn(
                 new QuestionRounds(1, singletonList(
-                        new QuestionRound(Collections.singletonList(new QuestionReferences("expiryDate")))
+                        new QuestionRound(Collections.singletonList(new QuestionReferences("2018-08-11T23:59:59Z")))
                 ))
         );
 
@@ -125,7 +125,7 @@ public class CohNotificationsIt {
 
         assertHttpStatus(response, HttpStatus.OK);
         verify(client, times(1)).sendEmail(eq(emailTemplateId), eq("joe@bloggs.com"),
-                argThat(argument -> "expiryDate".equals(argument.get("questions_end_date"))),
+                argThat(argument -> "11 August 2018".equals(argument.get("questions_end_date"))),
                 any()
         );
         verify(client, times(1)).sendSms(any(), any(), any(), any(), any());

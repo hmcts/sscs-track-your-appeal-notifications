@@ -38,7 +38,7 @@ public class Personalisation<E extends NotificationWrapper> {
     private boolean sendSmsSubscriptionConfirmation;
 
     @Autowired
-    private NotificationConfig config;
+    protected NotificationConfig config;
 
     @Autowired
     private HearingContactDateExtractor hearingContactDateExtractor;
@@ -198,7 +198,8 @@ public class Personalisation<E extends NotificationWrapper> {
         return date.format(DateTimeFormatter.ofPattern(AppConstants.HEARING_TIME_FORMAT));
     }
 
-    public Template getTemplate(NotificationEventType type, Benefit benefit) {
+    public Template getTemplate(E notificationWrapper, Benefit benefit) {
+        NotificationEventType type = notificationWrapper.getNotificationType();
         String smsTemplateId = isSendSmsSubscriptionConfirmation() ? SUBSCRIPTION_CREATED_NOTIFICATION.getId() : type.getId();
         return config.getTemplate(type.getId(), smsTemplateId, benefit);
     }

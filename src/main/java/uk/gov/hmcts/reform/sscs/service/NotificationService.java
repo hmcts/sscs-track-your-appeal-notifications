@@ -39,6 +39,7 @@ public class NotificationService {
 
         LOG.info("Notification event triggered {} for case id {}", notificationEventType, caseId);
 
+
         if (appellantSubscription != null && appellantSubscription.doesCaseHaveSubscriptions()
                 && notificationValidService.isNotificationStillValidToSend(wrapper.getNewSscsCaseData().getHearings(), wrapper.getNotificationType())
                 && notificationValidService.isHearingTypeValidToSendNotification(wrapper.getNewSscsCaseData(), wrapper.getNotificationType())) {
