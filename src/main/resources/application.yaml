@@ -135,6 +135,9 @@ notification:
   question_round_issued:
     emailId: ccfbfcac-847d-4e55-955c-096802c131a0
     smsId: f4138438-9707-4d52-9f54-dfa68e96856f
+  follow_up_question_round_issued:
+    emailId: 71efa426-bfa9-473e-b3cf-da5d99e39461
+    smsId: 217b826c-e569-4fda-b0df-45736a887af8
   question_deadline_elapsed:
     emailId: 48f2b7d1-cb71-4f60-b145-dfcf63cc4fcd
     smsId: 181fb0f5-0cc8-4d57-903f-9e5db2a76b88

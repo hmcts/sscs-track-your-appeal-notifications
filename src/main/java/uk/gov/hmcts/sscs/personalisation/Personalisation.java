@@ -37,7 +37,7 @@ public class Personalisation<E extends NotificationWrapper> {
     private static final org.slf4j.Logger LOG = getLogger(Personalisation.class);
 
     @Autowired
-    private NotificationConfig config;
+    protected NotificationConfig config;
 
     @Autowired
     private HearingContactDateExtractor hearingContactDateExtractor;
@@ -190,7 +190,8 @@ public class Personalisation<E extends NotificationWrapper> {
         return date.format(DateTimeFormatter.ofPattern(HEARING_TIME_FORMAT));
     }
 
-    public Template getTemplate(EventType type, Benefit benefit) {
+    public Template getTemplate(E notificationWrapper, Benefit benefit) {
+        EventType type = notificationWrapper.getNotificationType();
         String smsTemplateId = isSendSmsSubscriptionConfirmation() ? SUBSCRIPTION_CREATED.getId() : type.getId();
         return config.getTemplate(type.getId(), smsTemplateId, benefit);
     }
