@@ -3,17 +3,23 @@ package uk.gov.hmcts.reform.sscs.service.coh;
 import java.util.List;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import uk.gov.hmcts.reform.sscs.idam.IdamService;
 import uk.gov.hmcts.reform.sscs.idam.IdamTokens;
 
 @Service
 public class QuestionService {
     private final CohClient cohClient;
+    private final IdamService idamService;
 
-    public QuestionService(@Autowired CohClient cohClient) {
+    @Autowired
+    public QuestionService(CohClient cohClient, IdamService idamService) {
         this.cohClient = cohClient;
+        this.idamService = idamService;
     }
 
-    public String getQuestionRequiredByDate(IdamTokens idamTokens, String onlineHearingId) {
+    public String getQuestionRequiredByDate(String onlineHearingId) {
+        IdamTokens idamTokens = idamService.getIdamTokens();
+
         QuestionRounds questionRounds = cohClient.getQuestionRounds(
                 idamTokens.getIdamOauth2Token(),
                 idamTokens.getServiceAuthorization(),

@@ -15,6 +15,7 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.ComponentScan;
 import org.springframework.context.annotation.Primary;
 import org.springframework.context.support.ReloadableResourceBundleMessageSource;
+import uk.gov.hmcts.reform.sscs.ccd.config.CcdRequestDetails;
 import uk.gov.hmcts.reform.sscs.deserialize.SscsCaseDataWrapperDeserializer;
 import uk.gov.hmcts.reform.sscs.jobscheduler.config.QuartzConfiguration;
 import uk.gov.service.notify.NotificationClient;
@@ -78,4 +79,12 @@ public class TrackYourAppealNotificationsApplication {
         return (new QuartzConfiguration()).jobFactory(context);
     }
 
+    @Bean
+    public CcdRequestDetails getRequestDetails(@Value("${core_case_data.jurisdictionId}") String coreCaseDataJurisdictionId,
+                                               @Value("${core_case_data.caseTypeId}") String coreCaseDataCaseTypeId) {
+        return CcdRequestDetails.builder()
+                .caseTypeId(coreCaseDataCaseTypeId)
+                .jurisdictionId(coreCaseDataJurisdictionId)
+                .build();
+    }
 }

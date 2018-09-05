@@ -11,11 +11,13 @@ import static org.mockito.Mockito.when;
 import java.util.Collections;
 import org.junit.Before;
 import org.junit.Test;
+import uk.gov.hmcts.reform.sscs.idam.IdamService;
 import uk.gov.hmcts.reform.sscs.idam.IdamTokens;
 
 public class QuestionServiceTest {
 
     private CohClient cohClient;
+    private IdamService idamService;
     private String someHearingId;
     private String expectedDate;
     private String authHeader;
@@ -25,11 +27,14 @@ public class QuestionServiceTest {
     @Before
     public void setUp() {
         cohClient = mock(CohClient.class);
+        idamService = mock(IdamService.class);
         someHearingId = "someHearingId";
         expectedDate = "expectedDate";
         authHeader = "authHeader";
         serviceAuthHeader = "serviceAuthHeader";
         idamTokens = IdamTokens.builder().idamOauth2Token(authHeader).serviceAuthorization(serviceAuthHeader).build();
+
+        when(idamService.getIdamTokens()).thenReturn(idamTokens);
     }
 
     @Test
@@ -38,7 +43,7 @@ public class QuestionServiceTest {
                 .thenReturn(new QuestionRounds(1, singletonList(
                         new QuestionRound(Collections.singletonList(new QuestionReferences(expectedDate))))
                 ));
-        String questionRequiredByDate = new QuestionService(cohClient).getQuestionRequiredByDate(idamTokens, someHearingId);
+        String questionRequiredByDate = new QuestionService(cohClient, idamService).getQuestionRequiredByDate(someHearingId);
 
         assertThat(questionRequiredByDate, is(expectedDate));
     }
@@ -50,7 +55,7 @@ public class QuestionServiceTest {
                         new QuestionRound(Collections.singletonList(new QuestionReferences("Different date"))),
                         new QuestionRound(Collections.singletonList(new QuestionReferences(expectedDate))))
                 ));
-        String questionRequiredByDate = new QuestionService(cohClient).getQuestionRequiredByDate(idamTokens, someHearingId);
+        String questionRequiredByDate = new QuestionService(cohClient, idamService).getQuestionRequiredByDate(someHearingId);
 
         assertThat(questionRequiredByDate, is(expectedDate));
     }
@@ -60,6 +65,6 @@ public class QuestionServiceTest {
         when(cohClient.getQuestionRounds(authHeader, serviceAuthHeader, someHearingId))
                 .thenReturn(new QuestionRounds(1, singletonList(new QuestionRound(emptyList()))));
 
-        new QuestionService(cohClient).getQuestionRequiredByDate(idamTokens, someHearingId);
+        new QuestionService(cohClient, idamService).getQuestionRequiredByDate(someHearingId);
     }
 }

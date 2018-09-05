@@ -20,7 +20,6 @@ import uk.gov.hmcts.reform.sscs.domain.SscsCaseDataWrapper;
 import uk.gov.hmcts.reform.sscs.domain.notify.Link;
 import uk.gov.hmcts.reform.sscs.extractor.HearingContactDateExtractor;
 import uk.gov.hmcts.reform.sscs.factory.CohNotificationWrapper;
-import uk.gov.hmcts.reform.sscs.idam.IdamTokens;
 import uk.gov.hmcts.reform.sscs.service.MessageAuthenticationServiceImpl;
 import uk.gov.hmcts.reform.sscs.service.RegionalProcessingCenterService;
 import uk.gov.hmcts.reform.sscs.service.coh.QuestionService;
@@ -95,11 +94,10 @@ public class CohPersonalisationTest {
 
         String someHearingId = "someHearingId";
         String expectedRequiredByDate = "expectedRequiredByDate";
-        IdamTokens idamTokens = IdamTokens.builder().build();
 
-        when(questionService.getQuestionRequiredByDate(idamTokens, someHearingId)).thenReturn(expectedRequiredByDate);
+        when(questionService.getQuestionRequiredByDate(someHearingId)).thenReturn(expectedRequiredByDate);
 
-        Map<String, String> placeholders = cohPersonalisation.create(new CohNotificationWrapper(idamTokens, someHearingId, sscsCaseDataWrapper));
+        Map<String, String> placeholders = cohPersonalisation.create(new CohNotificationWrapper(someHearingId, sscsCaseDataWrapper));
 
         assertThat(placeholders, hasEntry("questions_end_date", expectedRequiredByDate));
     }

@@ -14,34 +14,30 @@ import org.springframework.web.bind.annotation.RequestHeader;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 import uk.gov.hmcts.reform.ccd.client.model.CaseDetails;
+import uk.gov.hmcts.reform.sscs.ccd.client.CcdClient;
 import uk.gov.hmcts.reform.sscs.deserialize.SscsCaseDataWrapperDeserializer;
 import uk.gov.hmcts.reform.sscs.domain.CohEvent;
 import uk.gov.hmcts.reform.sscs.domain.SscsCaseDataWrapper;
 import uk.gov.hmcts.reform.sscs.factory.CcdNotificationWrapper;
 import uk.gov.hmcts.reform.sscs.factory.CohNotificationWrapper;
-import uk.gov.hmcts.reform.sscs.idam.IdamService;
-import uk.gov.hmcts.reform.sscs.idam.IdamTokens;
 import uk.gov.hmcts.reform.sscs.service.AuthorisationService;
 import uk.gov.hmcts.reform.sscs.service.NotificationService;
-import uk.gov.hmcts.reform.sscs.service.ccd.SearchCcdService;
 
 @RestController
 public class NotificationController {
 
     private static final org.slf4j.Logger LOG = getLogger(NotificationController.class);
 
-    private final NotificationService service;
+    private final NotificationService notificationService;
     private final AuthorisationService authorisationService;
-    private final SearchCcdService searchCcdService;
-    private final IdamService idamService;
+    private final CcdClient ccdClient;
     private final SscsCaseDataWrapperDeserializer deserializer;
 
     @Autowired
-    public NotificationController(NotificationService service, AuthorisationService authorisationService, SearchCcdService searchCcdService, IdamService idamService, SscsCaseDataWrapperDeserializer deserializer) {
-        this.service = service;
+    public NotificationController(NotificationService notificationService, AuthorisationService authorisationService, CcdClient ccdClient, SscsCaseDataWrapperDeserializer deserializer) {
+        this.notificationService = notificationService;
         this.authorisationService = authorisationService;
-        this.searchCcdService = searchCcdService;
-        this.idamService = idamService;
+        this.ccdClient = ccdClient;
         this.deserializer = deserializer;
     }
 
@@ -52,7 +48,7 @@ public class NotificationController {
         LOG.info("Ccd Response received for case id: {}", sscsCaseDataWrapper.getNewSscsCaseData().getCaseId());
 
         authorisationService.authorise(serviceAuthHeader);
-        service.createAndSendNotification(new CcdNotificationWrapper(sscsCaseDataWrapper));
+        notificationService.createAndSendNotification(new CcdNotificationWrapper(sscsCaseDataWrapper));
     }
 
     @RequestMapping(value = "/coh-send", method = POST, produces = APPLICATION_JSON_VALUE)
@@ -62,14 +58,12 @@ public class NotificationController {
         String caseId = cohEvent.getCaseId();
         LOG.info("Coh Response received for case id: {}", caseId);
 
-        IdamTokens tokens = idamService.getIdamTokens();
-
-        CaseDetails caseDetails = searchCcdService.getByCaseId(caseId, tokens);
+        CaseDetails caseDetails = ccdClient.getByCaseId(caseId);
 
         String eventId = cohEvent.getEventType();
         if (caseDetails != null) {
             SscsCaseDataWrapper wrapper = deserializer.buildSscsCaseDataWrapper(buildCcdNode(caseDetails, eventId));
-            service.createAndSendNotification(new CohNotificationWrapper(tokens, cohEvent.getOnlineHearingId(), wrapper));
+            notificationService.createAndSendNotification(new CohNotificationWrapper(cohEvent.getOnlineHearingId(), wrapper));
         } else {
             LOG.warn("Case id: {} could not be found for event: {}", caseId, eventId);
         }

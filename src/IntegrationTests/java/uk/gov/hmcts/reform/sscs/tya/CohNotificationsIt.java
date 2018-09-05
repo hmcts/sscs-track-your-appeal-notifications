@@ -28,6 +28,7 @@ import org.springframework.test.web.servlet.request.MockHttpServletRequestBuilde
 import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 import uk.gov.hmcts.reform.ccd.client.CoreCaseDataApi;
 import uk.gov.hmcts.reform.ccd.client.model.CaseDetails;
+import uk.gov.hmcts.reform.sscs.ccd.client.CcdClient;
 import uk.gov.hmcts.reform.sscs.config.NotificationBlacklist;
 import uk.gov.hmcts.reform.sscs.controller.NotificationController;
 import uk.gov.hmcts.reform.sscs.deserialize.SscsCaseDataWrapperDeserializer;
@@ -35,7 +36,6 @@ import uk.gov.hmcts.reform.sscs.factory.NotificationFactory;
 import uk.gov.hmcts.reform.sscs.idam.IdamService;
 import uk.gov.hmcts.reform.sscs.idam.IdamTokens;
 import uk.gov.hmcts.reform.sscs.service.*;
-import uk.gov.hmcts.reform.sscs.service.ccd.SearchCcdService;
 import uk.gov.hmcts.reform.sscs.service.coh.CohClient;
 import uk.gov.hmcts.reform.sscs.service.coh.QuestionReferences;
 import uk.gov.hmcts.reform.sscs.service.coh.QuestionRound;
@@ -77,9 +77,6 @@ public class CohNotificationsIt {
     NotificationFactory factory;
 
     @Autowired
-    private SearchCcdService searchCcdService;
-
-    @Autowired
     private SscsCaseDataWrapperDeserializer deserializer;
 
     @Autowired
@@ -88,13 +85,16 @@ public class CohNotificationsIt {
     @Value("${notification.question_round_issued.emailId}")
     private String emailTemplateId;
 
+    @Autowired
+    private CcdClient ccdClient;
+
     String json;
 
     @Before
     public void setup() throws IOException {
         NotificationSender sender = new NotificationSender(client, null, notificationBlacklist);
         NotificationService service = new NotificationService(sender, factory, reminderService, notificationValidService);
-        controller = new NotificationController(service, authorisationService, searchCcdService, idamService, deserializer);
+        controller = new NotificationController(service, authorisationService, ccdClient, deserializer);
 
         ObjectMapper mapper = new ObjectMapper();
         File src = new File(getClass().getClassLoader().getResource("json/ccdcase.json").getFile());

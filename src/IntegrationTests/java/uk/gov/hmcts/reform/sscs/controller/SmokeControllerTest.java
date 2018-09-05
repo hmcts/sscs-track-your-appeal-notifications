@@ -13,9 +13,7 @@ import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.context.junit4.SpringRunner;
 import org.springframework.test.web.servlet.MockMvc;
-import uk.gov.hmcts.reform.sscs.idam.IdamService;
-import uk.gov.hmcts.reform.sscs.service.ccd.SearchCcdService;
-import uk.gov.hmcts.reform.sscs.service.ccd.SearchCcdService;
+import uk.gov.hmcts.reform.sscs.ccd.client.CcdClient;
 
 @RunWith(SpringRunner.class)
 @SpringBootTest
@@ -24,9 +22,7 @@ import uk.gov.hmcts.reform.sscs.service.ccd.SearchCcdService;
 public class SmokeControllerTest {
 
     @MockBean
-    private SearchCcdService searchCcdService;
-    @MockBean
-    private IdamService idamService;
+    private CcdClient ccdClient;
     @Autowired
     private MockMvc mockMvc;
 

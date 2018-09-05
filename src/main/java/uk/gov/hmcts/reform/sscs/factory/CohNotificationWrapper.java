@@ -2,20 +2,13 @@ package uk.gov.hmcts.reform.sscs.factory;
 
 import java.util.Objects;
 import uk.gov.hmcts.reform.sscs.domain.SscsCaseDataWrapper;
-import uk.gov.hmcts.reform.sscs.idam.IdamTokens;
 
 public class CohNotificationWrapper extends CcdNotificationWrapper {
-    private final IdamTokens idamTokens;
     private final String onlineHearingId;
 
-    public CohNotificationWrapper(IdamTokens idamTokens, String onlineHearingId, SscsCaseDataWrapper responseWrapper) {
+    public CohNotificationWrapper(String onlineHearingId, SscsCaseDataWrapper responseWrapper) {
         super(responseWrapper);
-        this.idamTokens = idamTokens;
         this.onlineHearingId = onlineHearingId;
-    }
-
-    public IdamTokens getIdamTokens() {
-        return idamTokens;
     }
 
     public String getOnlineHearingId() {

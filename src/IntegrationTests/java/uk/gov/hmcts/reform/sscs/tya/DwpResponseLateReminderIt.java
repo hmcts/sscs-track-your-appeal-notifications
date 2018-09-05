@@ -27,13 +27,12 @@ import org.springframework.test.context.junit4.SpringRunner;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.request.MockHttpServletRequestBuilder;
 import org.springframework.test.web.servlet.setup.MockMvcBuilders;
+import uk.gov.hmcts.reform.sscs.ccd.client.CcdClient;
 import uk.gov.hmcts.reform.sscs.controller.NotificationController;
 import uk.gov.hmcts.reform.sscs.deserialize.SscsCaseDataWrapperDeserializer;
-import uk.gov.hmcts.reform.sscs.idam.IdamService;
 import uk.gov.hmcts.reform.sscs.jobscheduler.services.JobExecutor;
 import uk.gov.hmcts.reform.sscs.service.AuthorisationService;
 import uk.gov.hmcts.reform.sscs.service.NotificationService;
-import uk.gov.hmcts.reform.sscs.service.ccd.SearchCcdService;
 import uk.gov.service.notify.NotificationClient;
 
 @RunWith(SpringRunner.class)
@@ -63,17 +62,14 @@ public class DwpResponseLateReminderIt {
     private Scheduler quartzScheduler;
 
     @Autowired
-    private SearchCcdService searchCcdService;
-
-    @Autowired
-    private IdamService idamService;
+    private CcdClient ccdClient;
 
     @Autowired
     private SscsCaseDataWrapperDeserializer deserializer;
 
     @Before
     public void setup() {
-        controller = new NotificationController(notificationService, authorisationService, searchCcdService, idamService, deserializer);
+        controller = new NotificationController(notificationService, authorisationService, ccdClient, deserializer);
         this.mockMvc = MockMvcBuilders.standaloneSetup(controller).build();
     }
 

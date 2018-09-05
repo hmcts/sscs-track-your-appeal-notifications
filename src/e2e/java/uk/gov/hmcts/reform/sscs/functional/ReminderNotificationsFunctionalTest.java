@@ -136,7 +136,7 @@ public class ReminderNotificationsFunctionalTest extends AbstractFunctionalTest 
             responseReceivedEmailTemplateId,
             caseReference,
             "User Test",
-            "ESA benefit",
+            "ESA",
             "DWP",
             "response",
             "/trackyourappeal",
@@ -146,7 +146,7 @@ public class ReminderNotificationsFunctionalTest extends AbstractFunctionalTest 
         assertNotificationBodyContains(
             notifications,
             responseReceivedSmsTemplateId,
-            "ESA benefit",
+            "ESA",
             "DWP",
             "response",
             "/trackyourappeal",
@@ -201,7 +201,7 @@ public class ReminderNotificationsFunctionalTest extends AbstractFunctionalTest 
             thirdHearingHoldingReminderEmailTemplateId,
             caseReference,
             "User Test",
-            "ESA benefit",
+            "ESA",
             "not been booked",
             "/trackyourappeal",
             "16 July 2016"
@@ -210,7 +210,7 @@ public class ReminderNotificationsFunctionalTest extends AbstractFunctionalTest 
         assertNotificationBodyContains(
             notifications,
             thirdHearingHoldingReminderSmsTemplateId,
-            "ESA benefit",
+            "ESA",
             "not been booked",
             "/trackyourappeal",
             "16 July 2016"

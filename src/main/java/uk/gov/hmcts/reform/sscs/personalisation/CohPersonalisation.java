@@ -16,7 +16,7 @@ public class CohPersonalisation extends Personalisation<CohNotificationWrapper> 
     public Map<String, String> create(CohNotificationWrapper notificationWrapper) {
         Map<String, String> placeholders = super.create(notificationWrapper);
 
-        String questionRequiredByDate = questionService.getQuestionRequiredByDate(notificationWrapper.getIdamTokens(), notificationWrapper.getOnlineHearingId());
+        String questionRequiredByDate = questionService.getQuestionRequiredByDate(notificationWrapper.getOnlineHearingId());
 
         placeholders.put("questions_end_date", questionRequiredByDate);
 

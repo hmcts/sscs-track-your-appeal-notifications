@@ -31,15 +31,10 @@ import org.springframework.http.HttpStatus;
 import org.springframework.test.annotation.ProfileValueSourceConfiguration;
 import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.context.junit4.SpringRunner;
-import uk.gov.hmcts.reform.ccd.client.model.CaseDetails;
-import uk.gov.hmcts.reform.sscs.ccd.domain.Event;
-import uk.gov.hmcts.reform.sscs.ccd.domain.EventDetails;
-import uk.gov.hmcts.reform.sscs.ccd.domain.EventType;
-import uk.gov.hmcts.reform.sscs.ccd.domain.SscsCaseData;
+import uk.gov.hmcts.reform.sscs.ccd.client.CcdClient;
+import uk.gov.hmcts.reform.sscs.ccd.domain.*;
 import uk.gov.hmcts.reform.sscs.idam.IdamService;
 import uk.gov.hmcts.reform.sscs.idam.IdamTokens;
-import uk.gov.hmcts.reform.sscs.service.ccd.CreateCcdService;
-import uk.gov.hmcts.reform.sscs.service.ccd.UpdateCcdService;
 import uk.gov.service.notify.Notification;
 import uk.gov.service.notify.NotificationClient;
 import uk.gov.service.notify.NotificationClientException;
@@ -70,10 +65,7 @@ public abstract class AbstractFunctionalTest {
     protected SscsCaseData caseData;
 
     @Autowired
-    private CreateCcdService createCcdService;
-
-    @Autowired
-    private UpdateCcdService updateCcdService;
+    private CcdClient ccdClient;
 
     @Before
     public void setup() {
@@ -89,7 +81,7 @@ public abstract class AbstractFunctionalTest {
 
         caseData = buildSscsCaseData(caseReference, "Yes", "Yes", EventType.SYA_APPEAL_CREATED);
 
-        CaseDetails caseDetails = createCcdService.create(caseData, idamTokens);
+        SscsCaseDetails caseDetails = ccdClient.createCase(caseData, "Create case");
 
         assertNotNull(caseDetails);
         caseId = caseDetails.getId();
@@ -234,7 +226,7 @@ public abstract class AbstractFunctionalTest {
         allEvents.add(events);
         caseData.setEvents(allEvents);
 
-        updateCcdService.update(caseData, caseId, eventType.getCcdType(), idamTokens);
+        ccdClient.updateCase(caseData, caseId, eventType.getCcdType(), "CCD Case", "Notification Service updated case");
     }
 
     protected void assertNotificationSubjectContains(List<Notification> notifications, String templateId, String... matches) {
