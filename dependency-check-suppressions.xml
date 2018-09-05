@@ -8,6 +8,8 @@
     <gav regex="true">^org\.springframework:spring-.*:.*$</gav>
     <cve>CVE-2018-1257</cve>
     <cve>CVE-2018-1258</cve>
+    <cve>CVE-2018-11039</cve>
+    <cve>CVE-2018-11040</cve>
   </suppress>
   <suppress>
     <notes><![CDATA[
@@ -90,99 +92,5 @@
     <cve>CVE-2017-17485</cve>
     <cve>CVE-2018-5968</cve>
     <cve>CVE-2018-7489</cve>
-  </suppress>
-  <suppress>
-    <notes><![CDATA[file name: spring-webmvc-5.0.5.RELEASE.jar]]></notes>
-    <gav regex="true">^org\.springframework:spring-webmvc:.*$</gav>
-    <cve>CVE-2018-11039</cve>
-    <cve>CVE-2018-11040</cve>
-  </suppress>
-  <suppress>
-    <notes><![CDATA[
-   file name: spring-context-support-5.0.5.RELEASE.jar
-   ]]></notes>
-    <gav regex="true">^org\.springframework:spring-context-support:.*$</gav>
-    <cve>CVE-2018-11039</cve>
-    <cve>CVE-2018-11040</cve>
-  </suppress>
-  <suppress>
-    <notes><![CDATA[
-   file name: spring-context-5.0.5.RELEASE.jar
-   ]]></notes>
-    <gav regex="true">^org\.springframework:spring-context:.*$</gav>
-    <cve>CVE-2018-11039</cve>
-    <cve>CVE-2018-11040</cve>
-  </suppress>
-  <suppress>
-    <notes><![CDATA[
-   file name: spring-aop-5.0.5.RELEASE.jar
-   ]]></notes>
-    <gav regex="true">^org\.springframework:spring-aop:.*$</gav>
-    <cve>CVE-2018-11039</cve>
-    <cve>CVE-2018-11040</cve>
-  </suppress>
-  <suppress>
-    <notes><![CDATA[
-   file name: spring-jdbc-5.0.5.RELEASE.jar
-   ]]></notes>
-    <gav regex="true">^org\.springframework:spring-jdbc:.*$</gav>
-    <cve>CVE-2018-11039</cve>
-    <cve>CVE-2018-11040</cve>
-  </suppress>
-  <suppress>
-    <notes><![CDATA[
-   file name: spring-web-5.0.5.RELEASE.jar
-   ]]></notes>
-    <gav regex="true">^org\.springframework:spring-web:.*$</gav>
-    <cve>CVE-2018-11039</cve>
-    <cve>CVE-2018-11040</cve>
-  </suppress>
-  <suppress>
-    <notes><![CDATA[
-   file name: spring-tx-5.0.5.RELEASE.jar
-   ]]></notes>
-    <gav regex="true">^org\.springframework:spring-tx:.*$</gav>
-    <cve>CVE-2018-11039</cve>
-    <cve>CVE-2018-11040</cve>
-  </suppress>
-  <suppress>
-    <notes><![CDATA[
-   file name: spring-beans-5.0.5.RELEASE.jar
-   ]]></notes>
-    <gav regex="true">^org\.springframework:spring-beans:.*$</gav>
-    <cve>CVE-2018-11039</cve>
-    <cve>CVE-2018-11040</cve>
-  </suppress>
-  <suppress>
-    <notes><![CDATA[
-   file name: spring-expression-5.0.5.RELEASE.jar
-   ]]></notes>
-    <gav regex="true">^org\.springframework:spring-expression:.*$</gav>
-    <cve>CVE-2018-11039</cve>
-    <cve>CVE-2018-11040</cve>
-  </suppress>
-  <suppress>
-    <notes><![CDATA[
-   file name: spring-test-5.0.5.RELEASE.jar
-   ]]></notes>
-    <gav regex="true">^org\.springframework:spring-test:.*$</gav>
-    <cve>CVE-2018-11039</cve>
-    <cve>CVE-2018-11040</cve>
-  </suppress>
-  <suppress>
-    <notes><![CDATA[
-   file name: spring-core-5.0.5.RELEASE.jar
-   ]]></notes>
-    <gav regex="true">^org\.springframework:spring-core:.*$</gav>
-    <cve>CVE-2018-11039</cve>
-    <cve>CVE-2018-11040</cve>
-  </suppress>
-  <suppress>
-    <notes><![CDATA[
-   file name: spring-jcl-5.0.5.RELEASE.jar
-   ]]></notes>
-    <gav regex="true">^org\.springframework:spring-jcl:.*$</gav>
-    <cve>CVE-2018-11039</cve>
-    <cve>CVE-2018-11040</cve>
   </suppress>
 </suppressions>
