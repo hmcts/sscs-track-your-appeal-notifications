@@ -4,7 +4,7 @@ import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
 import static org.mockito.Mockito.*;
-import static uk.gov.hmcts.reform.sscs.ccd.domain.EventType.*;
+import static uk.gov.hmcts.reform.sscs.domain.notify.NotificationEventType.*;
 
 import java.util.Arrays;
 import org.junit.Before;
@@ -13,8 +13,8 @@ import org.junit.runner.RunWith;
 import org.mockito.Mock;
 import org.mockito.runners.MockitoJUnitRunner;
 import uk.gov.hmcts.reform.sscs.SscsCaseDataUtils;
-import uk.gov.hmcts.reform.sscs.ccd.domain.EventType;
-import uk.gov.hmcts.reform.sscs.ccd.domain.SscsCaseData;
+import uk.gov.hmcts.reform.sscs.domain.notify.NotificationEventType;
+import uk.gov.hmcts.reform.sscs.factory.CcdNotificationWrapper;
 import uk.gov.hmcts.reform.sscs.jobscheduler.services.JobNotFoundException;
 import uk.gov.hmcts.reform.sscs.jobscheduler.services.JobRemover;
 
@@ -39,21 +39,21 @@ public class DwpResponseLateReminderRemoverTest {
     @Test
     public void canHandleEvent() {
 
-        for (EventType eventType : EventType.values()) {
+        for (NotificationEventType eventType : NotificationEventType.values()) {
 
-            SscsCaseData ccdResponse = SscsCaseDataUtils.buildBasicSscsCaseData(eventType);
+            CcdNotificationWrapper wrapper = SscsCaseDataUtils.buildBasicCcdNotificationWrapper(eventType);
 
             if (Arrays.asList(
-                APPEAL_DORMANT,
-                APPEAL_LAPSED,
-                APPEAL_WITHDRAWN,
-                DWP_RESPONSE_RECEIVED
+                APPEAL_DORMANT_NOTIFICATION,
+                APPEAL_LAPSED_NOTIFICATION,
+                APPEAL_WITHDRAWN_NOTIFICATION,
+                DWP_RESPONSE_RECEIVED_NOTIFICATION
             ).contains(eventType)) {
-                assertTrue(dwpResponseLateReminderRemover.canHandle(ccdResponse));
+                assertTrue(dwpResponseLateReminderRemover.canHandle(wrapper));
             } else {
 
-                assertFalse(dwpResponseLateReminderRemover.canHandle(ccdResponse));
-                assertThatThrownBy(() -> dwpResponseLateReminderRemover.handle(ccdResponse))
+                assertFalse(dwpResponseLateReminderRemover.canHandle(wrapper));
+                assertThatThrownBy(() -> dwpResponseLateReminderRemover.handle(wrapper))
                     .hasMessage("cannot handle ccdResponse")
                     .isExactlyInstanceOf(IllegalArgumentException.class);
             }
@@ -65,13 +65,13 @@ public class DwpResponseLateReminderRemoverTest {
 
         final String expectedJobGroup = "ID_EVENT";
 
-        SscsCaseData ccdResponse = SscsCaseDataUtils.buildBasicSscsCaseData(
-            DWP_RESPONSE_RECEIVED
+        CcdNotificationWrapper wrapper = SscsCaseDataUtils.buildBasicCcdNotificationWrapper(
+            DWP_RESPONSE_RECEIVED_NOTIFICATION
         );
 
-        when(jobGroupGenerator.generate(ccdResponse.getCaseId(), DWP_RESPONSE_LATE_REMINDER.getCcdType())).thenReturn(expectedJobGroup);
+        when(jobGroupGenerator.generate(wrapper.getCaseId(), DWP_RESPONSE_LATE_REMINDER_NOTIFICATION.getId())).thenReturn(expectedJobGroup);
 
-        dwpResponseLateReminderRemover.handle(ccdResponse);
+        dwpResponseLateReminderRemover.handle(wrapper);
 
         verify(jobRemover, times(1)).removeGroup(
             expectedJobGroup
@@ -83,13 +83,13 @@ public class DwpResponseLateReminderRemoverTest {
 
         final String expectedJobGroup = "ID_EVENT";
 
-        SscsCaseData ccdResponse = SscsCaseDataUtils.buildBasicSscsCaseData(
-            APPEAL_DORMANT
+        CcdNotificationWrapper wrapper = SscsCaseDataUtils.buildBasicCcdNotificationWrapper(
+            APPEAL_DORMANT_NOTIFICATION
         );
 
-        when(jobGroupGenerator.generate(ccdResponse.getCaseId(), DWP_RESPONSE_LATE_REMINDER.getCcdType())).thenReturn(expectedJobGroup);
+        when(jobGroupGenerator.generate(wrapper.getCaseId(), DWP_RESPONSE_LATE_REMINDER_NOTIFICATION.getId())).thenReturn(expectedJobGroup);
 
-        dwpResponseLateReminderRemover.handle(ccdResponse);
+        dwpResponseLateReminderRemover.handle(wrapper);
 
         verify(jobRemover, times(1)).removeGroup(
             expectedJobGroup
@@ -101,13 +101,13 @@ public class DwpResponseLateReminderRemoverTest {
 
         final String expectedJobGroup = "ID_EVENT";
 
-        SscsCaseData ccdResponse = SscsCaseDataUtils.buildBasicSscsCaseData(
-            APPEAL_WITHDRAWN
+        CcdNotificationWrapper wrapper = SscsCaseDataUtils.buildBasicCcdNotificationWrapper(
+            APPEAL_WITHDRAWN_NOTIFICATION
         );
 
-        when(jobGroupGenerator.generate(ccdResponse.getCaseId(), DWP_RESPONSE_LATE_REMINDER.getCcdType())).thenReturn(expectedJobGroup);
+        when(jobGroupGenerator.generate(wrapper.getCaseId(), DWP_RESPONSE_LATE_REMINDER_NOTIFICATION.getId())).thenReturn(expectedJobGroup);
 
-        dwpResponseLateReminderRemover.handle(ccdResponse);
+        dwpResponseLateReminderRemover.handle(wrapper);
 
         verify(jobRemover, times(1)).removeGroup(
             expectedJobGroup
@@ -119,13 +119,13 @@ public class DwpResponseLateReminderRemoverTest {
 
         final String expectedJobGroup = "ID_EVENT";
 
-        SscsCaseData ccdResponse = SscsCaseDataUtils.buildBasicSscsCaseData(
-            APPEAL_LAPSED
+        CcdNotificationWrapper wrapper = SscsCaseDataUtils.buildBasicCcdNotificationWrapper(
+            APPEAL_LAPSED_NOTIFICATION
         );
 
-        when(jobGroupGenerator.generate(ccdResponse.getCaseId(), DWP_RESPONSE_LATE_REMINDER.getCcdType())).thenReturn(expectedJobGroup);
+        when(jobGroupGenerator.generate(wrapper.getCaseId(), DWP_RESPONSE_LATE_REMINDER_NOTIFICATION.getId())).thenReturn(expectedJobGroup);
 
-        dwpResponseLateReminderRemover.handle(ccdResponse);
+        dwpResponseLateReminderRemover.handle(wrapper);
 
         verify(jobRemover, times(1)).removeGroup(
             expectedJobGroup
@@ -137,17 +137,17 @@ public class DwpResponseLateReminderRemoverTest {
 
         final String notExistantJobGroup = "NOT_EXISTANT";
 
-        SscsCaseData ccdResponse = SscsCaseDataUtils.buildBasicSscsCaseData(
-            DWP_RESPONSE_RECEIVED
+        CcdNotificationWrapper wrapper = SscsCaseDataUtils.buildBasicCcdNotificationWrapper(
+            DWP_RESPONSE_RECEIVED_NOTIFICATION
         );
 
-        when(jobGroupGenerator.generate(ccdResponse.getCaseId(), DWP_RESPONSE_LATE_REMINDER.getCcdType())).thenReturn(notExistantJobGroup);
+        when(jobGroupGenerator.generate(wrapper.getCaseId(), DWP_RESPONSE_LATE_REMINDER_NOTIFICATION.getId())).thenReturn(notExistantJobGroup);
 
         doThrow(JobNotFoundException.class)
             .when(jobRemover)
             .removeGroup(notExistantJobGroup);
 
-        dwpResponseLateReminderRemover.handle(ccdResponse);
+        dwpResponseLateReminderRemover.handle(wrapper);
 
         verify(jobRemover, times(1)).removeGroup(
             notExistantJobGroup

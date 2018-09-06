@@ -7,6 +7,9 @@ import java.util.Collections;
 import java.util.Date;
 import java.util.List;
 import uk.gov.hmcts.reform.sscs.ccd.domain.*;
+import uk.gov.hmcts.reform.sscs.domain.SscsCaseDataWrapper;
+import uk.gov.hmcts.reform.sscs.domain.notify.NotificationEventType;
+import uk.gov.hmcts.reform.sscs.factory.CcdNotificationWrapper;
 
 public final class SscsCaseDataUtils {
 
@@ -97,17 +100,19 @@ public final class SscsCaseDataUtils {
                 .build();
     }
 
-    public static SscsCaseData buildBasicSscsCaseData(EventType notificationType) {
-        return SscsCaseData.builder()
-                .caseId(CASE_ID)
-                .notificationType(notificationType)
-                .events(Collections.emptyList())
-                .hearings(Collections.emptyList())
-                .build();
+    public static CcdNotificationWrapper buildBasicCcdNotificationWrapper(NotificationEventType notificationType) {
+        return new CcdNotificationWrapper(SscsCaseDataWrapper.builder()
+                .notificationEventType(notificationType)
+                .newSscsCaseData(
+                    SscsCaseData.builder()
+                    .caseId(CASE_ID)
+                    .events(Collections.emptyList())
+                    .hearings(Collections.emptyList()).build())
+                .build());
     }
 
-    public static SscsCaseData buildBasicSscsCaseDataWithEvent(
-            EventType notificationType,
+    public static CcdNotificationWrapper buildBasicCcdNotificationWrapperWithEvent(
+            NotificationEventType notificationType,
             EventType eventType,
             String eventDate
     ) {
@@ -121,16 +126,19 @@ public final class SscsCaseDataUtils {
                 )
                 .build();
 
-        return SscsCaseData.builder()
-                .caseId(CASE_ID)
-                .notificationType(notificationType)
-                .events(Collections.singletonList(event))
-                .hearings(Collections.emptyList())
-                .build();
+        return new CcdNotificationWrapper(SscsCaseDataWrapper.builder()
+                .notificationEventType(notificationType)
+                .newSscsCaseData(
+                    SscsCaseData.builder()
+                    .caseId(CASE_ID)
+                    .events(Collections.singletonList(event))
+                    .hearings(Collections.emptyList())
+                    .build())
+                .build());
     }
 
-    public static SscsCaseData buildBasicSscsCaseDataWithHearing(
-            EventType notificationType,
+    public static CcdNotificationWrapper buildBasicCcdNotificationWrapperWithHearing(
+            NotificationEventType notificationType,
             String hearingDate,
             String hearingTime
     ) {
@@ -144,12 +152,14 @@ public final class SscsCaseDataUtils {
                 )
                 .build();
 
-        return SscsCaseData.builder()
-                .caseId(CASE_ID)
-                .notificationType(notificationType)
-                .events(Collections.emptyList())
-                .hearings(Collections.singletonList(hearing))
-                .build();
+        return new CcdNotificationWrapper(SscsCaseDataWrapper.builder()
+                .notificationEventType(notificationType)
+                .newSscsCaseData(SscsCaseData.builder()
+                    .caseId(CASE_ID)
+                    .events(Collections.emptyList())
+                    .hearings(Collections.singletonList(hearing))
+                    .build())
+                .build());
     }
 
     public static void addEventTypeToCase(SscsCaseData response, EventType eventType) {

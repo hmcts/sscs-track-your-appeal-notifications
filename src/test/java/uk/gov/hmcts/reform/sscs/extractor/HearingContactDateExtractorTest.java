@@ -2,7 +2,7 @@ package uk.gov.hmcts.reform.sscs.extractor;
 
 import static org.junit.Assert.*;
 import static org.mockito.Mockito.*;
-import static uk.gov.hmcts.reform.sscs.ccd.domain.EventType.*;
+import static uk.gov.hmcts.reform.sscs.domain.notify.NotificationEventType.*;
 
 import java.time.ZonedDateTime;
 import java.util.Arrays;
@@ -14,8 +14,8 @@ import org.junit.runner.RunWith;
 import org.mockito.Mock;
 import org.mockito.runners.MockitoJUnitRunner;
 import uk.gov.hmcts.reform.sscs.SscsCaseDataUtils;
-import uk.gov.hmcts.reform.sscs.ccd.domain.EventType;
-import uk.gov.hmcts.reform.sscs.ccd.domain.SscsCaseData;
+import uk.gov.hmcts.reform.sscs.domain.notify.NotificationEventType;
+import uk.gov.hmcts.reform.sscs.factory.CcdNotificationWrapper;
 
 @RunWith(MockitoJUnitRunner.class)
 public class HearingContactDateExtractorTest {
@@ -40,20 +40,20 @@ public class HearingContactDateExtractorTest {
     @Test
     public void extractsFirstHearingContactDate() {
 
-        List<EventType> eventsUsingInitialDelay = Arrays.asList(
-            DWP_RESPONSE_RECEIVED,
-            POSTPONEMENT
+        List<NotificationEventType> eventsUsingInitialDelay = Arrays.asList(
+            DWP_RESPONSE_RECEIVED_NOTIFICATION,
+            POSTPONEMENT_NOTIFICATION
         );
 
-        for (EventType eventUsingInitialDelay : eventsUsingInitialDelay) {
+        for (NotificationEventType eventUsingInitialDelay : eventsUsingInitialDelay) {
 
             ZonedDateTime expectedHearingContactDate = ZonedDateTime.parse("2018-01-01T14:02:18Z[Europe/London]");
 
-            SscsCaseData ccdResponse = SscsCaseDataUtils.buildBasicSscsCaseData(eventUsingInitialDelay);
+            CcdNotificationWrapper wrapper = SscsCaseDataUtils.buildBasicCcdNotificationWrapper(eventUsingInitialDelay);
 
-            when(dwpResponseReceivedDateExtractor.extract(ccdResponse)).thenReturn(Optional.of(dwpResponseReceivedDate));
+            when(dwpResponseReceivedDateExtractor.extract(wrapper.getNewSscsCaseData())).thenReturn(Optional.of(dwpResponseReceivedDate));
 
-            Optional<ZonedDateTime> hearingContactDate = hearingContactDateExtractor.extract(ccdResponse);
+            Optional<ZonedDateTime> hearingContactDate = hearingContactDateExtractor.extract(wrapper.getSscsCaseDataWrapper());
 
             assertTrue(hearingContactDate.isPresent());
             assertEquals(expectedHearingContactDate, hearingContactDate.get());
@@ -65,11 +65,11 @@ public class HearingContactDateExtractorTest {
 
         ZonedDateTime expectedHearingContactDate = ZonedDateTime.parse("2018-01-01T15:02:18Z[Europe/London]");
 
-        SscsCaseData ccdResponse = SscsCaseDataUtils.buildBasicSscsCaseData(FIRST_HEARING_HOLDING_REMINDER);
+        CcdNotificationWrapper wrapper = SscsCaseDataUtils.buildBasicCcdNotificationWrapper(FIRST_HEARING_HOLDING_REMINDER_NOTIFICATION);
 
-        when(dwpResponseReceivedDateExtractor.extract(ccdResponse)).thenReturn(Optional.of(dwpResponseReceivedDate));
+        when(dwpResponseReceivedDateExtractor.extract(wrapper.getNewSscsCaseData())).thenReturn(Optional.of(dwpResponseReceivedDate));
 
-        Optional<ZonedDateTime> hearingContactDate = hearingContactDateExtractor.extract(ccdResponse);
+        Optional<ZonedDateTime> hearingContactDate = hearingContactDateExtractor.extract(wrapper.getSscsCaseDataWrapper());
 
         assertTrue(hearingContactDate.isPresent());
         assertEquals(expectedHearingContactDate, hearingContactDate.get());
@@ -80,11 +80,11 @@ public class HearingContactDateExtractorTest {
 
         ZonedDateTime expectedHearingContactDate = ZonedDateTime.parse("2018-01-01T16:02:18Z[Europe/London]");
 
-        SscsCaseData ccdResponse = SscsCaseDataUtils.buildBasicSscsCaseData(SECOND_HEARING_HOLDING_REMINDER);
+        CcdNotificationWrapper wrapper = SscsCaseDataUtils.buildBasicCcdNotificationWrapper(SECOND_HEARING_HOLDING_REMINDER_NOTIFICATION);
 
-        when(dwpResponseReceivedDateExtractor.extract(ccdResponse)).thenReturn(Optional.of(dwpResponseReceivedDate));
+        when(dwpResponseReceivedDateExtractor.extract(wrapper.getNewSscsCaseData())).thenReturn(Optional.of(dwpResponseReceivedDate));
 
-        Optional<ZonedDateTime> hearingContactDate = hearingContactDateExtractor.extract(ccdResponse);
+        Optional<ZonedDateTime> hearingContactDate = hearingContactDateExtractor.extract(wrapper.getSscsCaseDataWrapper());
 
         assertTrue(hearingContactDate.isPresent());
         assertEquals(expectedHearingContactDate, hearingContactDate.get());
@@ -95,11 +95,11 @@ public class HearingContactDateExtractorTest {
 
         ZonedDateTime expectedHearingContactDate = ZonedDateTime.parse("2018-01-01T17:02:18Z[Europe/London]");
 
-        SscsCaseData ccdResponse = SscsCaseDataUtils.buildBasicSscsCaseData(THIRD_HEARING_HOLDING_REMINDER);
+        CcdNotificationWrapper wrapper = SscsCaseDataUtils.buildBasicCcdNotificationWrapper(THIRD_HEARING_HOLDING_REMINDER_NOTIFICATION);
 
-        when(dwpResponseReceivedDateExtractor.extract(ccdResponse)).thenReturn(Optional.of(dwpResponseReceivedDate));
+        when(dwpResponseReceivedDateExtractor.extract(wrapper.getNewSscsCaseData())).thenReturn(Optional.of(dwpResponseReceivedDate));
 
-        Optional<ZonedDateTime> hearingContactDate = hearingContactDateExtractor.extract(ccdResponse);
+        Optional<ZonedDateTime> hearingContactDate = hearingContactDateExtractor.extract(wrapper.getSscsCaseDataWrapper());
 
         assertTrue(hearingContactDate.isPresent());
         assertEquals(expectedHearingContactDate, hearingContactDate.get());
@@ -110,14 +110,14 @@ public class HearingContactDateExtractorTest {
 
         ZonedDateTime expectedHearingContactDate = ZonedDateTime.parse("2018-01-01T16:02:18Z[Europe/London]");
 
-        SscsCaseData ccdResponse = SscsCaseDataUtils.buildBasicSscsCaseData(DWP_RESPONSE_RECEIVED);
+        CcdNotificationWrapper wrapper = SscsCaseDataUtils.buildBasicCcdNotificationWrapper(DWP_RESPONSE_RECEIVED_NOTIFICATION);
 
-        when(dwpResponseReceivedDateExtractor.extract(ccdResponse)).thenReturn(Optional.of(dwpResponseReceivedDate));
+        when(dwpResponseReceivedDateExtractor.extract(wrapper.getNewSscsCaseData())).thenReturn(Optional.of(dwpResponseReceivedDate));
 
         Optional<ZonedDateTime> hearingContactDate =
             hearingContactDateExtractor.extractForReferenceEvent(
-                ccdResponse,
-                SECOND_HEARING_HOLDING_REMINDER
+                wrapper.getNewSscsCaseData(),
+                SECOND_HEARING_HOLDING_REMINDER_NOTIFICATION
             );
 
         assertTrue(hearingContactDate.isPresent());
@@ -129,14 +129,14 @@ public class HearingContactDateExtractorTest {
 
         ZonedDateTime expectedHearingContactDate = ZonedDateTime.parse("2018-01-01T14:02:18Z[Europe/London]");
 
-        SscsCaseData ccdResponse = SscsCaseDataUtils.buildBasicSscsCaseData(ADJOURNED);
+        CcdNotificationWrapper wrapper = SscsCaseDataUtils.buildBasicCcdNotificationWrapper(ADJOURNED_NOTIFICATION);
 
-        when(dwpResponseReceivedDateExtractor.extract(ccdResponse)).thenReturn(Optional.of(dwpResponseReceivedDate));
+        when(dwpResponseReceivedDateExtractor.extract(wrapper.getNewSscsCaseData())).thenReturn(Optional.of(dwpResponseReceivedDate));
 
         Optional<ZonedDateTime> hearingContactDate =
                 hearingContactDateExtractor.extractForReferenceEvent(
-                        ccdResponse,
-                        ADJOURNED
+                        wrapper.getNewSscsCaseData(),
+                        ADJOURNED_NOTIFICATION
                 );
 
         assertTrue(hearingContactDate.isPresent());
@@ -146,25 +146,25 @@ public class HearingContactDateExtractorTest {
     @Test
     public void returnsEmptyOptionalWhenDwpResponseReceivedDateIsNotPresent() {
 
-        SscsCaseData ccdResponse = SscsCaseDataUtils.buildBasicSscsCaseData(DWP_RESPONSE_RECEIVED);
+        CcdNotificationWrapper wrapper = SscsCaseDataUtils.buildBasicCcdNotificationWrapper(DWP_RESPONSE_RECEIVED_NOTIFICATION);
 
-        when(dwpResponseReceivedDateExtractor.extract(ccdResponse)).thenReturn(Optional.empty());
+        when(dwpResponseReceivedDateExtractor.extract(wrapper.getNewSscsCaseData())).thenReturn(Optional.empty());
 
-        Optional<ZonedDateTime> dwpResponseReceivedDate = hearingContactDateExtractor.extract(ccdResponse);
+        Optional<ZonedDateTime> dwpResponseReceivedDate = hearingContactDateExtractor.extract(wrapper.getSscsCaseDataWrapper());
 
         assertFalse(dwpResponseReceivedDate.isPresent());
     }
 
     @Test
-    public void returnsEmptyOptionalWhenEventTypeNotAcceptable() {
+    public void returnsEmptyOptionalWhenNotificationEventTypeNotAcceptable() {
 
-        SscsCaseData ccdResponse = SscsCaseDataUtils.buildBasicSscsCaseData(APPEAL_RECEIVED);
+        CcdNotificationWrapper wrapper = SscsCaseDataUtils.buildBasicCcdNotificationWrapper(APPEAL_RECEIVED_NOTIFICATION);
 
-        Optional<ZonedDateTime> dwpResponseReceivedDate = hearingContactDateExtractor.extract(ccdResponse);
+        Optional<ZonedDateTime> dwpResponseReceivedDate = hearingContactDateExtractor.extract(wrapper.getSscsCaseDataWrapper());
 
         assertFalse(dwpResponseReceivedDate.isPresent());
 
-        verify(dwpResponseReceivedDateExtractor, never()).extract(ccdResponse);
+        verify(dwpResponseReceivedDateExtractor, never()).extract(wrapper.getNewSscsCaseData());
     }
 
 }

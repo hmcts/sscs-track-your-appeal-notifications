@@ -13,6 +13,7 @@ import java.util.List;
 import org.springframework.stereotype.Service;
 import uk.gov.hmcts.reform.sscs.ccd.domain.*;
 import uk.gov.hmcts.reform.sscs.domain.SscsCaseDataWrapper;
+import uk.gov.hmcts.reform.sscs.domain.notify.NotificationEventType;
 
 @Service
 public class SscsCaseDataWrapperDeserializer extends StdDeserializer<SscsCaseDataWrapper> {
@@ -53,13 +54,16 @@ public class SscsCaseDataWrapperDeserializer extends StdDeserializer<SscsCaseDat
                 oldSscsCaseData = createSscsCaseDataFromNode(oldCaseNode, node, oldCaseDetailsNode);
             }
         }
+        NotificationEventType notificationEventType = NotificationEventType.getNotificationById(getField(node, "event_id"));
 
-        return SscsCaseDataWrapper.builder().newSscsCaseData(newSscsCaseData).oldSscsCaseData(oldSscsCaseData).build();
+        return SscsCaseDataWrapper.builder()
+                .newSscsCaseData(newSscsCaseData)
+                .oldSscsCaseData(oldSscsCaseData)
+                .notificationEventType(notificationEventType).build();
     }
 
     private SscsCaseData createSscsCaseDataFromNode(JsonNode caseNode, JsonNode node, JsonNode caseDetailsNode) {
         SscsCaseData ccdResponse = deserializeCaseNode(caseNode);
-        ccdResponse.setNotificationType(EventType.getEventTypeByCcdType(getField(node, "event_id")));
         ccdResponse.setCaseId(getField(caseDetailsNode, "id"));
         return ccdResponse;
     }

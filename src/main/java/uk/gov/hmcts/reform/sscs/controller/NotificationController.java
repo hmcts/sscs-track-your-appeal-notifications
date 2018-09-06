@@ -60,7 +60,7 @@ public class NotificationController {
 
         CaseDetails caseDetails = ccdClient.getByCaseId(caseId);
 
-        String eventId = cohEvent.getEventType();
+        String eventId = cohEvent.getNotificationEventType();
         if (caseDetails != null) {
             SscsCaseDataWrapper wrapper = deserializer.buildSscsCaseDataWrapper(buildCcdNode(caseDetails, eventId));
             notificationService.createAndSendNotification(new CohNotificationWrapper(cohEvent.getOnlineHearingId(), wrapper));

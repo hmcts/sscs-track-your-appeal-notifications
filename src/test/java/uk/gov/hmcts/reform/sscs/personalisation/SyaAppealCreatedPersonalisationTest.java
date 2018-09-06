@@ -2,8 +2,6 @@ package uk.gov.hmcts.reform.sscs.personalisation;
 
 import static org.junit.Assert.assertEquals;
 import static org.mockito.MockitoAnnotations.initMocks;
-import static uk.gov.hmcts.reform.sscs.ccd.domain.EventType.SYA_APPEAL_CREATED;
-import static uk.gov.hmcts.reform.sscs.config.AppConstants.*;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -37,7 +35,6 @@ public class SyaAppealCreatedPersonalisationTest {
                 .caseId(CASE_ID).caseReference("SC/1234/5")
                 .appeal(Appeal.builder().benefitType(BenefitType.builder().code("PIP").build())
                 .mrnDetails(MrnDetails.builder().mrnDate("3 May 2018").mrnLateReason("My train was cancelled.").mrnMissingReason("My dog ate my homework.").build()).build())
-                .notificationType(SYA_APPEAL_CREATED)
                 .build();
 
         Map<String, String> result = personalisation.setMrnDetails(new HashMap<>(), response);
@@ -54,7 +51,6 @@ public class SyaAppealCreatedPersonalisationTest {
                 .caseId(CASE_ID).caseReference("SC/1234/5")
                 .appeal(Appeal.builder().benefitType(BenefitType.builder().code("PIP").build())
                         .mrnDetails(MrnDetails.builder().mrnDate("3 May 2018").mrnLateReason("My train was cancelled.").build()).build())
-                .notificationType(SYA_APPEAL_CREATED)
                 .build();
 
         Map<String, String> result = personalisation.setMrnDetails(new HashMap<>(), response);
@@ -76,7 +72,6 @@ public class SyaAppealCreatedPersonalisationTest {
                         .address(Address.builder().line1("122 Breach Street").line2("The Village").town("My town").county("Cardiff").postcode("CF11 2HB").build())
                         .contact(Contact.builder().email("manish.sharma@gmail.com").phone("0797 243 8179").build())
                     .build()).build())
-                .notificationType(SYA_APPEAL_CREATED)
                 .build();
 
         Map<String, String> result = personalisation.setYourDetails(new HashMap<>(), response);
@@ -103,7 +98,6 @@ public class SyaAppealCreatedPersonalisationTest {
                         .address(Address.builder().line1("122 Breach Street").town("My town").county("Cardiff").postcode("CF11 2HB").build())
                         .contact(Contact.builder().build())
                         .build()).build())
-                .notificationType(SYA_APPEAL_CREATED)
                 .build();
 
         Map<String, String> result = personalisation.setYourDetails(new HashMap<>(), response);
@@ -126,7 +120,6 @@ public class SyaAppealCreatedPersonalisationTest {
                         .appellantSubscription(Subscription.builder()
                         .subscribeSms("Yes")
                         .mobile("07955555708").build()).build())
-                .notificationType(SYA_APPEAL_CREATED)
                 .build();
 
         Map<String, String> result = personalisation.setTextMessageReminderDetails(new HashMap<>(), response);
@@ -143,7 +136,6 @@ public class SyaAppealCreatedPersonalisationTest {
                 .subscriptions(Subscriptions.builder()
                         .appellantSubscription(Subscription.builder()
                                 .subscribeSms("No").build()).build())
-                .notificationType(SYA_APPEAL_CREATED)
                 .build();
 
         Map<String, String> result = personalisation.setTextMessageReminderDetails(new HashMap<>(), response);
@@ -162,7 +154,6 @@ public class SyaAppealCreatedPersonalisationTest {
                         .address(Address.builder().line1("Ground Floor").line2("Gazette Buildings").town("168 Corporation Street").county("Cardiff").postcode("CF11 6TF").build())
                         .contact(Contact.builder().email("peter.smith@cab.org.uk").phone("03444 77 1010").build())
                         .build()).build())
-                .notificationType(SYA_APPEAL_CREATED)
                 .build();
 
         Map<String, String> result = personalisation.setRepresentativeDetails(new HashMap<>(), response);
@@ -185,7 +176,6 @@ public class SyaAppealCreatedPersonalisationTest {
                         .address(Address.builder().line1("Ground Floor").line2("Gazette Buildings").town("168 Corporation Street").county("Cardiff").postcode("CF11 6TF").build())
                         .contact(Contact.builder().build())
                         .build()).build())
-                .notificationType(SYA_APPEAL_CREATED)
                 .build();
 
         Map<String, String> result = personalisation.setRepresentativeDetails(new HashMap<>(), response);
@@ -205,7 +195,6 @@ public class SyaAppealCreatedPersonalisationTest {
                 .caseId(CASE_ID).caseReference("SC/1234/5")
                 .appeal(Appeal.builder()
                         .build())
-                .notificationType(SYA_APPEAL_CREATED)
                 .build();
 
         Map<String, String> result = personalisation.setRepresentativeDetails(new HashMap<>(), response);
@@ -224,7 +213,6 @@ public class SyaAppealCreatedPersonalisationTest {
                 .caseId(CASE_ID).caseReference("SC/1234/5")
                 .appeal(Appeal.builder().appealReasons(AppealReasons.builder().reasons(appealReasonList).otherReasons("Some other reason").build())
                         .build())
-                .notificationType(SYA_APPEAL_CREATED)
                 .build();
 
         Map<String, String> result = personalisation.setReasonsForAppealingDetails(new HashMap<>(), response);
@@ -247,7 +235,6 @@ public class SyaAppealCreatedPersonalisationTest {
                 .caseId(CASE_ID).caseReference("SC/1234/5")
                 .appeal(Appeal.builder().appealReasons(AppealReasons.builder().reasons(appealReasonList).otherReasons("Some other reason").build())
                         .build())
-                .notificationType(SYA_APPEAL_CREATED)
                 .build();
 
         Map<String, String> result = personalisation.setReasonsForAppealingDetails(new HashMap<>(), response);
@@ -267,7 +254,6 @@ public class SyaAppealCreatedPersonalisationTest {
                 .caseId(CASE_ID).caseReference("SC/1234/5")
                 .appeal(Appeal.builder().appealReasons(AppealReasons.builder().build())
                         .build())
-                .notificationType(SYA_APPEAL_CREATED)
                 .build();
 
         Map<String, String> result = personalisation.setReasonsForAppealingDetails(new HashMap<>(), response);
@@ -283,7 +269,6 @@ public class SyaAppealCreatedPersonalisationTest {
                 .caseId(CASE_ID).caseReference("SC/1234/5")
                 .appeal(Appeal.builder().hearingOptions(HearingOptions.builder().wantsToAttend("yes")
                         .build()).build())
-                .notificationType(SYA_APPEAL_CREATED)
                 .build();
 
         Map<String, String> result = personalisation.setHearingDetails(new HashMap<>(), response);
@@ -304,7 +289,6 @@ public class SyaAppealCreatedPersonalisationTest {
                 .appeal(Appeal.builder().hearingOptions(HearingOptions.builder().wantsToAttend("yes")
                         .excludeDates(excludeDates)
                         .build()).build())
-                .notificationType(SYA_APPEAL_CREATED)
                 .build();
 
         Map<String, String> result = personalisation.setHearingDetails(new HashMap<>(), response);
@@ -327,7 +311,6 @@ public class SyaAppealCreatedPersonalisationTest {
                 .appeal(Appeal.builder().hearingOptions(HearingOptions.builder().wantsToAttend("yes")
                         .excludeDates(excludeDates)
                         .build()).build())
-                .notificationType(SYA_APPEAL_CREATED)
                 .build();
 
         Map<String, String> result = personalisation.setHearingDetails(new HashMap<>(), response);
@@ -353,7 +336,6 @@ public class SyaAppealCreatedPersonalisationTest {
                         .languageInterpreter("Yes")
                         .other("Other")
                         .build()).build())
-                .notificationType(SYA_APPEAL_CREATED)
                 .build();
 
         Map<String, String> result = personalisation.setHearingArrangementDetails(new HashMap<>(), response);
@@ -374,7 +356,6 @@ public class SyaAppealCreatedPersonalisationTest {
                 .appeal(Appeal.builder().hearingOptions(HearingOptions.builder()
                         .languageInterpreter("No")
                         .build()).build())
-                .notificationType(SYA_APPEAL_CREATED)
                 .build();
 
         Map<String, String> result = personalisation.setHearingArrangementDetails(new HashMap<>(), response);
@@ -394,7 +375,6 @@ public class SyaAppealCreatedPersonalisationTest {
                 .caseId(CASE_ID).caseReference("SC/1234/5")
                 .appeal(Appeal.builder().hearingOptions(HearingOptions.builder()
                         .build()).build())
-                .notificationType(SYA_APPEAL_CREATED)
                 .build();
 
         Map<String, String> result = personalisation.setHearingArrangementDetails(new HashMap<>(), response);

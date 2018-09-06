@@ -1,8 +1,8 @@
 package uk.gov.hmcts.reform.sscs.service.reminder;
 
 import static org.slf4j.LoggerFactory.getLogger;
-import static uk.gov.hmcts.reform.sscs.ccd.domain.EventType.HEARING_BOOKED;
-import static uk.gov.hmcts.reform.sscs.ccd.domain.EventType.HEARING_REMINDER;
+import static uk.gov.hmcts.reform.sscs.domain.notify.NotificationEventType.HEARING_BOOKED_NOTIFICATION;
+import static uk.gov.hmcts.reform.sscs.domain.notify.NotificationEventType.HEARING_REMINDER_NOTIFICATION;
 
 import java.time.LocalDateTime;
 import java.time.ZoneId;
@@ -14,6 +14,7 @@ import uk.gov.hmcts.reform.sscs.ccd.domain.Hearing;
 import uk.gov.hmcts.reform.sscs.ccd.domain.SscsCaseData;
 import uk.gov.hmcts.reform.sscs.config.AppConstants;
 import uk.gov.hmcts.reform.sscs.exception.ReminderException;
+import uk.gov.hmcts.reform.sscs.factory.NotificationWrapper;
 import uk.gov.hmcts.reform.sscs.jobscheduler.model.Job;
 import uk.gov.hmcts.reform.sscs.jobscheduler.services.JobScheduler;
 
@@ -41,25 +42,25 @@ public class HearingReminder implements ReminderHandler {
         this.beforeSecondHearingReminder = beforeSecondHearingReminder;
     }
 
-    public boolean canHandle(SscsCaseData ccdResponse) {
-        return ccdResponse
+    public boolean canHandle(NotificationWrapper wrapper) {
+        return wrapper
             .getNotificationType()
-            .equals(HEARING_BOOKED);
+            .equals(HEARING_BOOKED_NOTIFICATION);
     }
 
-    public void handle(SscsCaseData ccdResponse) {
-        if (!canHandle(ccdResponse)) {
+    public void handle(NotificationWrapper wrapper) {
+        if (!canHandle(wrapper)) {
             throw new IllegalArgumentException("cannot handle ccdResponse");
         }
 
-        scheduleReminder(ccdResponse, beforeFirstHearingReminder);
-        scheduleReminder(ccdResponse, beforeSecondHearingReminder);
+        scheduleReminder(wrapper.getNewSscsCaseData(), beforeFirstHearingReminder);
+        scheduleReminder(wrapper.getNewSscsCaseData(), beforeSecondHearingReminder);
     }
 
     private void scheduleReminder(SscsCaseData ccdResponse, long secondsBeforeHearing) {
 
         String caseId = ccdResponse.getCaseId();
-        String eventId = HEARING_REMINDER.getCcdType();
+        String eventId = HEARING_REMINDER_NOTIFICATION.getId();
         String jobGroup = jobGroupGenerator.generate(caseId, eventId);
         ZonedDateTime reminderDate = calculateReminderDate(ccdResponse, secondsBeforeHearing);
 

@@ -1,5 +1,7 @@
 package uk.gov.hmcts.reform.sscs.functional;
 
+import static uk.gov.hmcts.reform.sscs.domain.notify.NotificationEventType.QUESTION_ROUND_ISSUED_NOTIFICATION;
+
 import io.restassured.RestAssured;
 import io.restassured.http.ContentType;
 import io.restassured.response.Response;
@@ -11,7 +13,6 @@ import org.junit.Test;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
-import uk.gov.hmcts.reform.sscs.ccd.domain.EventType;
 import uk.gov.service.notify.Notification;
 import uk.gov.service.notify.NotificationClientException;
 
@@ -28,7 +29,7 @@ public class CohNotificationFunctionalTest extends AbstractFunctionalTest {
     @Test
     public void shouldSendQuestionsReadyNotifications() throws IOException, InterruptedException, NotificationClientException {
         String hearingId = createHearingWithQuestions(caseId);
-        simulateCohCallback(EventType.QUESTION_ROUND_ISSUED, hearingId);
+        simulateCohCallback(QUESTION_ROUND_ISSUED_NOTIFICATION, hearingId);
 
         List<Notification> notifications = tryFetchNotificationsForTestCase(questionRoundIssuedEmailTemplateId, questionRoundIssuedSmsTemplateId);
 

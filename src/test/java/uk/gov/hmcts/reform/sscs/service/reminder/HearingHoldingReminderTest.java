@@ -3,7 +3,7 @@ package uk.gov.hmcts.reform.sscs.service.reminder;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.junit.Assert.*;
 import static org.mockito.Mockito.*;
-import static uk.gov.hmcts.reform.sscs.ccd.domain.EventType.*;
+import static uk.gov.hmcts.reform.sscs.domain.notify.NotificationEventType.*;
 
 import java.time.ZonedDateTime;
 import java.util.Optional;
@@ -14,10 +14,11 @@ import org.mockito.ArgumentCaptor;
 import org.mockito.Mock;
 import org.mockito.runners.MockitoJUnitRunner;
 import uk.gov.hmcts.reform.sscs.SscsCaseDataUtils;
-import uk.gov.hmcts.reform.sscs.ccd.domain.EventType;
 import uk.gov.hmcts.reform.sscs.ccd.domain.SscsCaseData;
+import uk.gov.hmcts.reform.sscs.domain.notify.NotificationEventType;
 import uk.gov.hmcts.reform.sscs.exception.ReminderException;
 import uk.gov.hmcts.reform.sscs.extractor.HearingContactDateExtractor;
+import uk.gov.hmcts.reform.sscs.factory.CcdNotificationWrapper;
 import uk.gov.hmcts.reform.sscs.jobscheduler.model.Job;
 import uk.gov.hmcts.reform.sscs.jobscheduler.services.JobScheduler;
 
@@ -45,16 +46,16 @@ public class HearingHoldingReminderTest {
     @Test
     public void canHandleEvent() {
 
-        for (EventType eventType : EventType.values()) {
+        for (NotificationEventType eventType : NotificationEventType.values()) {
 
-            SscsCaseData ccdResponse = SscsCaseDataUtils.buildBasicSscsCaseData(eventType);
+            CcdNotificationWrapper wrapper = SscsCaseDataUtils.buildBasicCcdNotificationWrapper(eventType);
 
-            if (eventType == DWP_RESPONSE_RECEIVED) {
-                assertTrue(hearingHoldingReminder.canHandle(ccdResponse));
+            if (eventType == DWP_RESPONSE_RECEIVED_NOTIFICATION) {
+                assertTrue(hearingHoldingReminder.canHandle(wrapper));
             } else {
 
-                assertFalse(hearingHoldingReminder.canHandle(ccdResponse));
-                assertThatThrownBy(() -> hearingHoldingReminder.handle(ccdResponse))
+                assertFalse(hearingHoldingReminder.canHandle(wrapper));
+                assertThatThrownBy(() -> hearingHoldingReminder.handle(wrapper))
                     .hasMessage("cannot handle ccdResponse")
                     .isExactlyInstanceOf(IllegalArgumentException.class);
             }
@@ -74,33 +75,35 @@ public class HearingHoldingReminderTest {
         final String expectedThirdJobGroup = "ID_THIRD_EVENT";
         final String expectedFinalJobGroup = "ID_FINAL_EVENT";
 
-        SscsCaseData ccdResponse = SscsCaseDataUtils.buildBasicSscsCaseData(DWP_RESPONSE_RECEIVED);
+        CcdNotificationWrapper wrapper = SscsCaseDataUtils.buildBasicCcdNotificationWrapper(DWP_RESPONSE_RECEIVED_NOTIFICATION);
 
-        when(hearingContactDateExtractor.extractForReferenceEvent(ccdResponse, DWP_RESPONSE_RECEIVED))
+        SscsCaseData newCaseData = wrapper.getNewSscsCaseData();
+
+        when(hearingContactDateExtractor.extractForReferenceEvent(newCaseData, DWP_RESPONSE_RECEIVED_NOTIFICATION))
             .thenReturn(Optional.of(firstHearingContactDate));
 
-        when(hearingContactDateExtractor.extractForReferenceEvent(ccdResponse, FIRST_HEARING_HOLDING_REMINDER))
+        when(hearingContactDateExtractor.extractForReferenceEvent(newCaseData, FIRST_HEARING_HOLDING_REMINDER_NOTIFICATION))
             .thenReturn(Optional.of(secondHearingContactDate));
 
-        when(hearingContactDateExtractor.extractForReferenceEvent(ccdResponse, SECOND_HEARING_HOLDING_REMINDER))
+        when(hearingContactDateExtractor.extractForReferenceEvent(newCaseData, SECOND_HEARING_HOLDING_REMINDER_NOTIFICATION))
             .thenReturn(Optional.of(thirdHearingContactDate));
 
-        when(hearingContactDateExtractor.extractForReferenceEvent(ccdResponse, THIRD_HEARING_HOLDING_REMINDER))
+        when(hearingContactDateExtractor.extractForReferenceEvent(newCaseData, THIRD_HEARING_HOLDING_REMINDER_NOTIFICATION))
             .thenReturn(Optional.of(finalHearingContactDate));
 
-        when(jobGroupGenerator.generate(ccdResponse.getCaseId(), FIRST_HEARING_HOLDING_REMINDER.getCcdType()))
+        when(jobGroupGenerator.generate(wrapper.getCaseId(), FIRST_HEARING_HOLDING_REMINDER_NOTIFICATION.getId()))
             .thenReturn(expectedFirstJobGroup);
 
-        when(jobGroupGenerator.generate(ccdResponse.getCaseId(), SECOND_HEARING_HOLDING_REMINDER.getCcdType()))
+        when(jobGroupGenerator.generate(wrapper.getCaseId(), SECOND_HEARING_HOLDING_REMINDER_NOTIFICATION.getId()))
             .thenReturn(expectedSecondJobGroup);
 
-        when(jobGroupGenerator.generate(ccdResponse.getCaseId(), THIRD_HEARING_HOLDING_REMINDER.getCcdType()))
+        when(jobGroupGenerator.generate(wrapper.getCaseId(), THIRD_HEARING_HOLDING_REMINDER_NOTIFICATION.getId()))
             .thenReturn(expectedThirdJobGroup);
 
-        when(jobGroupGenerator.generate(ccdResponse.getCaseId(), FINAL_HEARING_HOLDING_REMINDER.getCcdType()))
+        when(jobGroupGenerator.generate(wrapper.getCaseId(), FINAL_HEARING_HOLDING_REMINDER_NOTIFICATION.getId()))
             .thenReturn(expectedFinalJobGroup);
 
-        hearingHoldingReminder.handle(ccdResponse);
+        hearingHoldingReminder.handle(wrapper);
 
         ArgumentCaptor<Job> jobCaptor = ArgumentCaptor.forClass(Job.class);
 
@@ -110,25 +113,25 @@ public class HearingHoldingReminderTest {
 
         Job<String> job1 = jobCaptor.getAllValues().get(0);
         assertEquals(expectedFirstJobGroup, job1.group);
-        assertEquals(FIRST_HEARING_HOLDING_REMINDER.getCcdType(), job1.name);
+        assertEquals(FIRST_HEARING_HOLDING_REMINDER_NOTIFICATION.getId(), job1.name);
         assertEquals(SscsCaseDataUtils.CASE_ID, job1.payload);
         assertEquals(firstHearingContactDate, job1.triggerAt);
 
         Job<String> job2 = jobCaptor.getAllValues().get(1);
         assertEquals(expectedSecondJobGroup, job2.group);
-        assertEquals(SECOND_HEARING_HOLDING_REMINDER.getCcdType(), job2.name);
+        assertEquals(SECOND_HEARING_HOLDING_REMINDER_NOTIFICATION.getId(), job2.name);
         assertEquals(SscsCaseDataUtils.CASE_ID, job2.payload);
         assertEquals(secondHearingContactDate, job2.triggerAt);
 
         Job<String> job3 = jobCaptor.getAllValues().get(2);
         assertEquals(expectedThirdJobGroup, job3.group);
-        assertEquals(THIRD_HEARING_HOLDING_REMINDER.getCcdType(), job3.name);
+        assertEquals(THIRD_HEARING_HOLDING_REMINDER_NOTIFICATION.getId(), job3.name);
         assertEquals(SscsCaseDataUtils.CASE_ID, job3.payload);
         assertEquals(thirdHearingContactDate, job3.triggerAt);
 
         Job<String> job4 = jobCaptor.getAllValues().get(3);
         assertEquals(expectedFinalJobGroup, job4.group);
-        assertEquals(FINAL_HEARING_HOLDING_REMINDER.getCcdType(), job4.name);
+        assertEquals(FINAL_HEARING_HOLDING_REMINDER_NOTIFICATION.getId(), job4.name);
         assertEquals(SscsCaseDataUtils.CASE_ID, job4.payload);
         assertEquals(finalHearingContactDate, job4.triggerAt);
     }
@@ -136,12 +139,12 @@ public class HearingHoldingReminderTest {
     @Test(expected = ReminderException.class)
     public void throwExceptionWhenHearingContactDateNotPresent() {
 
-        SscsCaseData ccdResponse = SscsCaseDataUtils.buildBasicSscsCaseData(DWP_RESPONSE_RECEIVED);
+        CcdNotificationWrapper wrapper = SscsCaseDataUtils.buildBasicCcdNotificationWrapper(DWP_RESPONSE_RECEIVED_NOTIFICATION);
 
-        when(hearingContactDateExtractor.extractForReferenceEvent(ccdResponse, DWP_RESPONSE_RECEIVED))
+        when(hearingContactDateExtractor.extractForReferenceEvent(wrapper.getNewSscsCaseData(), DWP_RESPONSE_RECEIVED_NOTIFICATION))
             .thenReturn(Optional.empty());
 
-        hearingHoldingReminder.handle(ccdResponse);
+        hearingHoldingReminder.handle(wrapper);
     }
 
 }

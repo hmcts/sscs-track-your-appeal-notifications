@@ -6,6 +6,7 @@ import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNotNull;
 import static org.slf4j.LoggerFactory.getLogger;
 import static uk.gov.hmcts.reform.sscs.SscsCaseDataUtils.buildSscsCaseData;
+import static uk.gov.hmcts.reform.sscs.ccd.domain.EventType.SYA_APPEAL_CREATED;
 
 import helper.EnvironmentProfileValueSource;
 import io.restassured.RestAssured;
@@ -32,7 +33,11 @@ import org.springframework.test.annotation.ProfileValueSourceConfiguration;
 import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.context.junit4.SpringRunner;
 import uk.gov.hmcts.reform.sscs.ccd.client.CcdClient;
-import uk.gov.hmcts.reform.sscs.ccd.domain.*;
+import uk.gov.hmcts.reform.sscs.ccd.domain.Event;
+import uk.gov.hmcts.reform.sscs.ccd.domain.EventDetails;
+import uk.gov.hmcts.reform.sscs.ccd.domain.SscsCaseData;
+import uk.gov.hmcts.reform.sscs.ccd.domain.SscsCaseDetails;
+import uk.gov.hmcts.reform.sscs.domain.notify.NotificationEventType;
 import uk.gov.hmcts.reform.sscs.idam.IdamService;
 import uk.gov.hmcts.reform.sscs.idam.IdamTokens;
 import uk.gov.service.notify.Notification;
@@ -79,7 +84,7 @@ public abstract class AbstractFunctionalTest {
 
         caseReference = generateRandomCaseReference();
 
-        caseData = buildSscsCaseData(caseReference, "Yes", "Yes", EventType.SYA_APPEAL_CREATED);
+        caseData = buildSscsCaseData(caseReference, "Yes", "Yes", SYA_APPEAL_CREATED);
 
         SscsCaseDetails caseDetails = ccdClient.createCase(caseData, "Create case");
 
@@ -156,11 +161,11 @@ public abstract class AbstractFunctionalTest {
         } while (true);
     }
 
-    protected void simulateCcdCallback(EventType eventType) throws IOException {
+    protected void simulateCcdCallback(NotificationEventType eventType) throws IOException {
 
         final String callbackUrl = getEnvOrEmpty("TEST_URL") + "/send";
 
-        String resource = eventType.getCcdType() + "Callback.json";
+        String resource = eventType.getId() + "Callback.json";
         String path = getClass().getClassLoader().getResource(resource).getFile();
         String json = FileUtils.readFileToString(new File(path), StandardCharsets.UTF_8.name());
 
@@ -178,11 +183,11 @@ public abstract class AbstractFunctionalTest {
                 .statusCode(HttpStatus.OK.value());
     }
 
-    protected void simulateCohCallback(EventType eventType, String hearingId) throws IOException {
+    protected void simulateCohCallback(NotificationEventType eventType, String hearingId) throws IOException {
 
         final String callbackUrl = getEnvOrEmpty("TEST_URL") + "/coh-send";
 
-        String resource = eventType.getCcdType() + "Callback.json";
+        String resource = eventType.getId() + "Callback.json";
         String path = getClass().getClassLoader().getResource(resource).getFile();
         String json = FileUtils.readFileToString(new File(path), StandardCharsets.UTF_8.name());
 
@@ -201,23 +206,23 @@ public abstract class AbstractFunctionalTest {
                 .statusCode(HttpStatus.OK.value());
     }
 
-    private String updateJson(String json, EventType eventType) {
+    private String updateJson(String json, NotificationEventType eventType) {
         json = json.replace("12345656789", caseId.toString());
         json = json.replace("SC022/14/12423", caseReference);
 
-        if (eventType.equals(EventType.HEARING_BOOKED)) {
+        if (eventType.equals(NotificationEventType.HEARING_BOOKED_NOTIFICATION)) {
             json = json.replace("2016-01-01", LocalDate.now().toString());
         }
 
         return json;
     }
 
-    protected void triggerEvent(EventType eventType) {
+    protected void triggerEvent(NotificationEventType eventType) {
 
         Event events = Event.builder()
                 .value(EventDetails.builder()
-                        .type(eventType.getCcdType())
-                        .description(eventType.getCcdType())
+                        .type(eventType.getId())
+                        .description(eventType.getId())
                         .date("2016-01-16T12:34:56.789")
                         .build())
                 .build();
@@ -226,7 +231,7 @@ public abstract class AbstractFunctionalTest {
         allEvents.add(events);
         caseData.setEvents(allEvents);
 
-        ccdClient.updateCase(caseData, caseId, eventType.getCcdType(), "CCD Case", "Notification Service updated case");
+        ccdClient.updateCase(caseData, caseId, eventType.getId(), "CCD Case", "Notification Service updated case");
     }
 
     protected void assertNotificationSubjectContains(List<Notification> notifications, String templateId, String... matches) {

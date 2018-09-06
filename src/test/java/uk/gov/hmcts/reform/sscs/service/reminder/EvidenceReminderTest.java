@@ -4,7 +4,8 @@ import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.junit.Assert.*;
 import static org.mockito.Mockito.*;
 import static uk.gov.hmcts.reform.sscs.ccd.domain.EventType.DWP_RESPONSE_RECEIVED;
-import static uk.gov.hmcts.reform.sscs.ccd.domain.EventType.EVIDENCE_REMINDER;
+import static uk.gov.hmcts.reform.sscs.domain.notify.NotificationEventType.DWP_RESPONSE_RECEIVED_NOTIFICATION;
+import static uk.gov.hmcts.reform.sscs.domain.notify.NotificationEventType.EVIDENCE_REMINDER_NOTIFICATION;
 
 import java.time.ZonedDateTime;
 import java.util.Optional;
@@ -15,10 +16,10 @@ import org.mockito.ArgumentCaptor;
 import org.mockito.Mock;
 import org.mockito.runners.MockitoJUnitRunner;
 import uk.gov.hmcts.reform.sscs.SscsCaseDataUtils;
-import uk.gov.hmcts.reform.sscs.ccd.domain.EventType;
-import uk.gov.hmcts.reform.sscs.ccd.domain.SscsCaseData;
+import uk.gov.hmcts.reform.sscs.domain.notify.NotificationEventType;
 import uk.gov.hmcts.reform.sscs.exception.ReminderException;
 import uk.gov.hmcts.reform.sscs.extractor.DwpResponseReceivedDateExtractor;
+import uk.gov.hmcts.reform.sscs.factory.CcdNotificationWrapper;
 import uk.gov.hmcts.reform.sscs.jobscheduler.model.Job;
 import uk.gov.hmcts.reform.sscs.jobscheduler.services.JobScheduler;
 
@@ -47,11 +48,11 @@ public class EvidenceReminderTest {
     @Test
     public void canHandleEvent() {
 
-        for (EventType eventType : EventType.values()) {
+        for (NotificationEventType eventType : NotificationEventType.values()) {
 
-            SscsCaseData ccdResponse = SscsCaseDataUtils.buildBasicSscsCaseData(eventType);
+            CcdNotificationWrapper ccdResponse = SscsCaseDataUtils.buildBasicCcdNotificationWrapper(eventType);
 
-            if (eventType == DWP_RESPONSE_RECEIVED) {
+            if (eventType == DWP_RESPONSE_RECEIVED_NOTIFICATION) {
                 assertTrue(evidenceReminder.canHandle(ccdResponse));
             } else {
 
@@ -71,16 +72,16 @@ public class EvidenceReminderTest {
 
         ZonedDateTime dwpResponseReceivedDate = ZonedDateTime.parse("2018-01-01T14:01:18Z[Europe/London]");
 
-        SscsCaseData ccdResponse = SscsCaseDataUtils.buildBasicSscsCaseDataWithEvent(
-            DWP_RESPONSE_RECEIVED,
+        CcdNotificationWrapper wrapper = SscsCaseDataUtils.buildBasicCcdNotificationWrapperWithEvent(
+            DWP_RESPONSE_RECEIVED_NOTIFICATION,
             DWP_RESPONSE_RECEIVED,
             dwpResponseReceivedDate.toString()
         );
 
-        when(dwpResponseReceivedDateExtractor.extract(ccdResponse)).thenReturn(Optional.of(dwpResponseReceivedDate));
-        when(jobGroupGenerator.generate(ccdResponse.getCaseId(), EVIDENCE_REMINDER.getCcdType())).thenReturn(expectedJobGroup);
+        when(dwpResponseReceivedDateExtractor.extract(wrapper.getNewSscsCaseData())).thenReturn(Optional.of(dwpResponseReceivedDate));
+        when(jobGroupGenerator.generate(wrapper.getCaseId(), EVIDENCE_REMINDER_NOTIFICATION.getId())).thenReturn(expectedJobGroup);
 
-        evidenceReminder.handle(ccdResponse);
+        evidenceReminder.handle(wrapper);
 
         ArgumentCaptor<Job> jobCaptor = ArgumentCaptor.forClass(Job.class);
 
@@ -90,7 +91,7 @@ public class EvidenceReminderTest {
 
         Job<String> job = jobCaptor.getValue();
         assertEquals(expectedJobGroup, job.group);
-        assertEquals(EVIDENCE_REMINDER.getCcdType(), job.name);
+        assertEquals(EVIDENCE_REMINDER_NOTIFICATION.getId(), job.name);
         assertEquals(SscsCaseDataUtils.CASE_ID, job.payload);
         assertEquals(expectedTriggerAt, job.triggerAt.toString());
     }
@@ -98,11 +99,11 @@ public class EvidenceReminderTest {
     @Test(expected = ReminderException.class)
     public void throwExceptionWhenDwpResponseReceivedDateNotPresent() {
 
-        SscsCaseData ccdResponse = SscsCaseDataUtils.buildBasicSscsCaseData(DWP_RESPONSE_RECEIVED);
+        CcdNotificationWrapper wrapper = SscsCaseDataUtils.buildBasicCcdNotificationWrapper(DWP_RESPONSE_RECEIVED_NOTIFICATION);
 
-        when(dwpResponseReceivedDateExtractor.extract(ccdResponse)).thenReturn(Optional.empty());
+        when(dwpResponseReceivedDateExtractor.extract(wrapper.getNewSscsCaseData())).thenReturn(Optional.empty());
 
-        evidenceReminder.handle(ccdResponse);
+        evidenceReminder.handle(wrapper);
     }
 
 }

@@ -45,7 +45,7 @@ public class ActionExecutor implements JobExecutor<String> {
         if (caseDetails != null) {
             SscsCaseDataWrapper wrapper = deserializer.buildSscsCaseDataWrapper(buildCcdNode(caseDetails, eventId));
             notificationService.createAndSendNotification(new CcdNotificationWrapper(wrapper));
-            ccdClient.updateCase(null, Long.valueOf(caseId), wrapper.getNewSscsCaseData().getNotificationType().getCcdType(), "CCD Case", "Notification Service updated case");
+            ccdClient.updateCase(null, Long.valueOf(caseId), wrapper.getNotificationEventType().getId(), "CCD Case", "Notification Service updated case");
         } else {
             LOG.warn("Case id: {} could not be found for event: {}", caseId, eventId);
         }

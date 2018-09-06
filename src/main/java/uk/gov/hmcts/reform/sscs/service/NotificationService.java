@@ -34,13 +34,13 @@ public class NotificationService {
     public void createAndSendNotification(NotificationWrapper notificationWrapper) {
 
         final Subscription appellantSubscription = notificationWrapper.getAppellantSubscription();
-        final String notificationEventType = notificationWrapper.getNotificationType().getCcdType();
+        final String notificationNotificationEventType = notificationWrapper.getNotificationType().getId();
         final String caseId = notificationWrapper.getCaseId();
 
-        LOG.info("Notification event triggered {} for case id {}", notificationEventType, caseId);
+        LOG.info("Notification event triggered {} for case id {}", notificationNotificationEventType, caseId);
 
         if (appellantSubscription != null && appellantSubscription.doesCaseHaveSubscriptions() && notificationValidService.isNotificationStillValidToSend(
-                notificationWrapper.getNewSscsCaseData().getHearings(), notificationWrapper.getNewSscsCaseData().getNotificationType())) {
+                notificationWrapper.getNewSscsCaseData().getHearings(), notificationWrapper.getNotificationType())) {
 
             Notification notification = factory.create(notificationWrapper);
 
@@ -66,7 +66,7 @@ public class NotificationService {
                 }
             }
 
-            reminderService.createReminders(notificationWrapper.getNewSscsCaseData());
+            reminderService.createReminders(notificationWrapper);
         }
     }
 

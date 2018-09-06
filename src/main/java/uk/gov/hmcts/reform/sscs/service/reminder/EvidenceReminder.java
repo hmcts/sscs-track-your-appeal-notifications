@@ -1,8 +1,8 @@
 package uk.gov.hmcts.reform.sscs.service.reminder;
 
 import static org.slf4j.LoggerFactory.getLogger;
-import static uk.gov.hmcts.reform.sscs.ccd.domain.EventType.DWP_RESPONSE_RECEIVED;
 import static uk.gov.hmcts.reform.sscs.ccd.domain.EventType.EVIDENCE_REMINDER;
+import static uk.gov.hmcts.reform.sscs.domain.notify.NotificationEventType.DWP_RESPONSE_RECEIVED_NOTIFICATION;
 
 import java.time.ZonedDateTime;
 import java.util.Optional;
@@ -12,6 +12,7 @@ import org.springframework.stereotype.Component;
 import uk.gov.hmcts.reform.sscs.ccd.domain.SscsCaseData;
 import uk.gov.hmcts.reform.sscs.exception.ReminderException;
 import uk.gov.hmcts.reform.sscs.extractor.DwpResponseReceivedDateExtractor;
+import uk.gov.hmcts.reform.sscs.factory.NotificationWrapper;
 import uk.gov.hmcts.reform.sscs.jobscheduler.model.Job;
 import uk.gov.hmcts.reform.sscs.jobscheduler.services.JobScheduler;
 
@@ -38,21 +39,22 @@ public class EvidenceReminder implements ReminderHandler {
         this.evidenceReminderDelay = evidenceReminderDelay;
     }
 
-    public boolean canHandle(SscsCaseData ccdResponse) {
-        return ccdResponse
+    public boolean canHandle(NotificationWrapper wrapper) {
+        return wrapper
             .getNotificationType()
-            .equals(DWP_RESPONSE_RECEIVED);
+            .equals(DWP_RESPONSE_RECEIVED_NOTIFICATION);
     }
 
-    public void handle(SscsCaseData ccdResponse) {
-        if (!canHandle(ccdResponse)) {
+    public void handle(NotificationWrapper wrapper) {
+        if (!canHandle(wrapper)) {
             throw new IllegalArgumentException("cannot handle ccdResponse");
         }
 
-        String caseId = ccdResponse.getCaseId();
+        SscsCaseData caseData = wrapper.getNewSscsCaseData();
+        String caseId = caseData.getCaseId();
         String eventId = EVIDENCE_REMINDER.getCcdType();
         String jobGroup = jobGroupGenerator.generate(caseId, eventId);
-        ZonedDateTime reminderDate = calculateReminderDate(ccdResponse);
+        ZonedDateTime reminderDate = calculateReminderDate(caseData);
 
         jobScheduler.schedule(new Job<>(
             jobGroup,

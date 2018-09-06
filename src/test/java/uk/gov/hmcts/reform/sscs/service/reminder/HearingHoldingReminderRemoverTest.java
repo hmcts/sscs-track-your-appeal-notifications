@@ -4,7 +4,7 @@ import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
 import static org.mockito.Mockito.*;
-import static uk.gov.hmcts.reform.sscs.ccd.domain.EventType.*;
+import static uk.gov.hmcts.reform.sscs.domain.notify.NotificationEventType.*;
 
 import java.util.Arrays;
 import org.junit.Before;
@@ -13,8 +13,8 @@ import org.junit.runner.RunWith;
 import org.mockito.Mock;
 import org.mockito.runners.MockitoJUnitRunner;
 import uk.gov.hmcts.reform.sscs.SscsCaseDataUtils;
-import uk.gov.hmcts.reform.sscs.ccd.domain.EventType;
-import uk.gov.hmcts.reform.sscs.ccd.domain.SscsCaseData;
+import uk.gov.hmcts.reform.sscs.domain.notify.NotificationEventType;
+import uk.gov.hmcts.reform.sscs.factory.CcdNotificationWrapper;
 import uk.gov.hmcts.reform.sscs.jobscheduler.services.JobNotFoundException;
 import uk.gov.hmcts.reform.sscs.jobscheduler.services.JobRemover;
 
@@ -39,21 +39,21 @@ public class HearingHoldingReminderRemoverTest {
     @Test
     public void canHandleEvent() {
 
-        for (EventType eventType : EventType.values()) {
+        for (NotificationEventType eventType : NotificationEventType.values()) {
 
-            SscsCaseData ccdResponse = SscsCaseDataUtils.buildBasicSscsCaseData(eventType);
+            CcdNotificationWrapper wrapper = SscsCaseDataUtils.buildBasicCcdNotificationWrapper(eventType);
 
             if (Arrays.asList(
-                APPEAL_DORMANT,
-                APPEAL_LAPSED,
-                APPEAL_WITHDRAWN,
-                HEARING_BOOKED
+                APPEAL_DORMANT_NOTIFICATION,
+                APPEAL_LAPSED_NOTIFICATION,
+                APPEAL_WITHDRAWN_NOTIFICATION,
+                HEARING_BOOKED_NOTIFICATION
             ).contains(eventType)) {
-                assertTrue(hearingHoldingReminderRemoverTest.canHandle(ccdResponse));
+                assertTrue(hearingHoldingReminderRemoverTest.canHandle(wrapper));
             } else {
 
-                assertFalse(hearingHoldingReminderRemoverTest.canHandle(ccdResponse));
-                assertThatThrownBy(() -> hearingHoldingReminderRemoverTest.handle(ccdResponse))
+                assertFalse(hearingHoldingReminderRemoverTest.canHandle(wrapper));
+                assertThatThrownBy(() -> hearingHoldingReminderRemoverTest.handle(wrapper))
                     .hasMessage("cannot handle ccdResponse")
                     .isExactlyInstanceOf(IllegalArgumentException.class);
             }
@@ -71,18 +71,18 @@ public class HearingHoldingReminderRemoverTest {
         String hearingDate = "2018-01-01";
         String hearingTime = "14:01:18";
 
-        SscsCaseData ccdResponse = SscsCaseDataUtils.buildBasicSscsCaseDataWithHearing(
-            HEARING_BOOKED,
+        CcdNotificationWrapper wrapper = SscsCaseDataUtils.buildBasicCcdNotificationWrapperWithHearing(
+            HEARING_BOOKED_NOTIFICATION,
             hearingDate,
             hearingTime
         );
 
-        when(jobGroupGenerator.generate(ccdResponse.getCaseId(), FIRST_HEARING_HOLDING_REMINDER.getCcdType())).thenReturn(expectedFirstJobGroup);
-        when(jobGroupGenerator.generate(ccdResponse.getCaseId(), SECOND_HEARING_HOLDING_REMINDER.getCcdType())).thenReturn(expectedSecondJobGroup);
-        when(jobGroupGenerator.generate(ccdResponse.getCaseId(), THIRD_HEARING_HOLDING_REMINDER.getCcdType())).thenReturn(expectedThirdJobGroup);
-        when(jobGroupGenerator.generate(ccdResponse.getCaseId(), FINAL_HEARING_HOLDING_REMINDER.getCcdType())).thenReturn(expectedFinalJobGroup);
+        when(jobGroupGenerator.generate(wrapper.getCaseId(), FIRST_HEARING_HOLDING_REMINDER_NOTIFICATION.getId())).thenReturn(expectedFirstJobGroup);
+        when(jobGroupGenerator.generate(wrapper.getCaseId(), SECOND_HEARING_HOLDING_REMINDER_NOTIFICATION.getId())).thenReturn(expectedSecondJobGroup);
+        when(jobGroupGenerator.generate(wrapper.getCaseId(), THIRD_HEARING_HOLDING_REMINDER_NOTIFICATION.getId())).thenReturn(expectedThirdJobGroup);
+        when(jobGroupGenerator.generate(wrapper.getCaseId(), FINAL_HEARING_HOLDING_REMINDER_NOTIFICATION.getId())).thenReturn(expectedFinalJobGroup);
 
-        hearingHoldingReminderRemoverTest.handle(ccdResponse);
+        hearingHoldingReminderRemoverTest.handle(wrapper);
 
         verify(jobRemover, times(1)).removeGroup(
             expectedFirstJobGroup
@@ -109,22 +109,22 @@ public class HearingHoldingReminderRemoverTest {
         String hearingDate = "2018-01-01";
         String hearingTime = "14:01:18";
 
-        SscsCaseData ccdResponse = SscsCaseDataUtils.buildBasicSscsCaseDataWithHearing(
-            HEARING_BOOKED,
+        CcdNotificationWrapper wrapper = SscsCaseDataUtils.buildBasicCcdNotificationWrapperWithHearing(
+            HEARING_BOOKED_NOTIFICATION,
             hearingDate,
             hearingTime
         );
 
-        when(jobGroupGenerator.generate(ccdResponse.getCaseId(), FIRST_HEARING_HOLDING_REMINDER.getCcdType())).thenReturn(notExistantJobGroup);
-        when(jobGroupGenerator.generate(ccdResponse.getCaseId(), SECOND_HEARING_HOLDING_REMINDER.getCcdType())).thenReturn(notExistantJobGroup);
-        when(jobGroupGenerator.generate(ccdResponse.getCaseId(), THIRD_HEARING_HOLDING_REMINDER.getCcdType())).thenReturn(notExistantJobGroup);
-        when(jobGroupGenerator.generate(ccdResponse.getCaseId(), FINAL_HEARING_HOLDING_REMINDER.getCcdType())).thenReturn(notExistantJobGroup);
+        when(jobGroupGenerator.generate(wrapper.getCaseId(), FIRST_HEARING_HOLDING_REMINDER_NOTIFICATION.getId())).thenReturn(notExistantJobGroup);
+        when(jobGroupGenerator.generate(wrapper.getCaseId(), SECOND_HEARING_HOLDING_REMINDER_NOTIFICATION.getId())).thenReturn(notExistantJobGroup);
+        when(jobGroupGenerator.generate(wrapper.getCaseId(), THIRD_HEARING_HOLDING_REMINDER_NOTIFICATION.getId())).thenReturn(notExistantJobGroup);
+        when(jobGroupGenerator.generate(wrapper.getCaseId(), FINAL_HEARING_HOLDING_REMINDER_NOTIFICATION.getId())).thenReturn(notExistantJobGroup);
 
         doThrow(JobNotFoundException.class)
             .when(jobRemover)
             .removeGroup(notExistantJobGroup);
 
-        hearingHoldingReminderRemoverTest.handle(ccdResponse);
+        hearingHoldingReminderRemoverTest.handle(wrapper);
 
         verify(jobRemover, times(4)).removeGroup(
             notExistantJobGroup

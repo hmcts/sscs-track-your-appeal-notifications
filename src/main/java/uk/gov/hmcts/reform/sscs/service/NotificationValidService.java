@@ -3,16 +3,16 @@ package uk.gov.hmcts.reform.sscs.service;
 import java.time.LocalDateTime;
 import java.util.List;
 import org.springframework.stereotype.Service;
-import uk.gov.hmcts.reform.sscs.ccd.domain.EventType;
 import uk.gov.hmcts.reform.sscs.ccd.domain.Hearing;
+import uk.gov.hmcts.reform.sscs.domain.notify.NotificationEventType;
 
 @Service
 public class NotificationValidService {
 
-    public Boolean isNotificationStillValidToSend(List<Hearing> hearings, EventType eventType) {
+    public Boolean isNotificationStillValidToSend(List<Hearing> hearings, NotificationEventType eventType) {
         switch (eventType) {
-            case HEARING_BOOKED: return checkHearingIsInFuture(hearings);
-            case HEARING_REMINDER: return checkHearingIsInFuture(hearings);
+            case HEARING_BOOKED_NOTIFICATION: return checkHearingIsInFuture(hearings);
+            case HEARING_REMINDER_NOTIFICATION: return checkHearingIsInFuture(hearings);
             default: return true;
         }
     }

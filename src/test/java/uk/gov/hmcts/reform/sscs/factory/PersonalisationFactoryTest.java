@@ -3,7 +3,7 @@ package uk.gov.hmcts.reform.sscs.factory;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNull;
 import static org.mockito.MockitoAnnotations.initMocks;
-import static uk.gov.hmcts.reform.sscs.ccd.domain.EventType.*;
+import static uk.gov.hmcts.reform.sscs.domain.notify.NotificationEventType.*;
 
 import org.junit.Before;
 import org.junit.Test;
@@ -34,19 +34,19 @@ public class PersonalisationFactoryTest {
 
     @Test
     public void createPersonalisationWhenNotificationApplied() {
-        Personalisation result = factory.apply(APPEAL_RECEIVED);
+        Personalisation result = factory.apply(APPEAL_RECEIVED_NOTIFICATION);
         assertEquals(personalisation, result);
     }
 
     @Test
     public void createSubscriptionPersonalisationWhenSubscriptionUpdatedNotificationApplied() {
-        Personalisation result = factory.apply(SUBSCRIPTION_UPDATED);
+        Personalisation result = factory.apply(SUBSCRIPTION_UPDATED_NOTIFICATION);
         assertEquals(subscriptionPersonalisation, result);
     }
 
     @Test
     public void createCohPersonalisationWhenQuestionRoundIssuedNotificationApplied() {
-        Personalisation result = factory.apply(QUESTION_ROUND_ISSUED);
+        Personalisation result = factory.apply(QUESTION_ROUND_ISSUED_NOTIFICATION);
         assertEquals(cohPersonalisation, result);
     }
 

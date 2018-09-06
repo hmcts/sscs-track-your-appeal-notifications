@@ -1,10 +1,10 @@
 package uk.gov.hmcts.reform.sscs.service.reminder;
 
-import uk.gov.hmcts.reform.sscs.ccd.domain.SscsCaseData;
+import uk.gov.hmcts.reform.sscs.factory.NotificationWrapper;
 
 public interface ReminderHandler {
 
-    boolean canHandle(SscsCaseData ccdResponse);
+    boolean canHandle(NotificationWrapper wrapper);
 
-    void handle(SscsCaseData ccdResponse);
+    void handle(NotificationWrapper wrapper);
 }

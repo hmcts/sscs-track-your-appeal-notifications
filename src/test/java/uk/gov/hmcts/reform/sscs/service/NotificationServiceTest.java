@@ -2,7 +2,7 @@ package uk.gov.hmcts.reform.sscs.service;
 
 import static org.mockito.Mockito.*;
 import static org.mockito.MockitoAnnotations.initMocks;
-import static uk.gov.hmcts.reform.sscs.ccd.domain.EventType.APPEAL_WITHDRAWN;
+import static uk.gov.hmcts.reform.sscs.domain.notify.NotificationEventType.APPEAL_WITHDRAWN_NOTIFICATION;
 
 import java.net.UnknownHostException;
 import org.junit.Before;
@@ -50,8 +50,8 @@ public class NotificationServiceTest {
         Subscription appellantSubscription = Subscription.builder().tya("GLSCRR").email("test@email.com")
             .mobile("07983495065").subscribeEmail("Yes").subscribeSms("Yes").build();
 
-        response = SscsCaseData.builder().subscriptions(Subscriptions.builder().appellantSubscription(appellantSubscription).build()).caseReference("ABC123").notificationType(APPEAL_WITHDRAWN).build();
-        SscsCaseDataWrapper wrapper = SscsCaseDataWrapper.builder().newSscsCaseData(response).oldSscsCaseData(response).build();
+        response = SscsCaseData.builder().subscriptions(Subscriptions.builder().appellantSubscription(appellantSubscription).build()).caseReference("ABC123").build();
+        SscsCaseDataWrapper wrapper = SscsCaseDataWrapper.builder().newSscsCaseData(response).oldSscsCaseData(response).notificationEventType(APPEAL_WITHDRAWN_NOTIFICATION).build();
         notificationWrapper = new CcdNotificationWrapper(wrapper);
     }
 
@@ -152,8 +152,8 @@ public class NotificationServiceTest {
         Subscription appellantSubscription = Subscription.builder().tya("GLSCRR").email("test@email.com")
             .mobile("07983495065").subscribeEmail("No").subscribeSms("No").build();
 
-        response = SscsCaseData.builder().subscriptions(Subscriptions.builder().appellantSubscription(appellantSubscription).build()).caseReference("ABC123").notificationType(APPEAL_WITHDRAWN).build();
-        SscsCaseDataWrapper wrapper = SscsCaseDataWrapper.builder().newSscsCaseData(response).oldSscsCaseData(response).build();
+        response = SscsCaseData.builder().subscriptions(Subscriptions.builder().appellantSubscription(appellantSubscription).build()).caseReference("ABC123").build();
+        SscsCaseDataWrapper wrapper = SscsCaseDataWrapper.builder().newSscsCaseData(response).oldSscsCaseData(response).notificationEventType(APPEAL_WITHDRAWN_NOTIFICATION).build();
 
         Notification notification = new Notification(Template.builder().emailTemplateId(null).smsTemplateId("123").build(), Destination.builder().email(null).sms("07823456746").build(), null, new Reference(), null);
         when(factory.create(notificationWrapper)).thenReturn(notification);
@@ -172,7 +172,7 @@ public class NotificationServiceTest {
         when(factory.create(notificationWrapper)).thenReturn(notification);
         notificationService.createAndSendNotification(notificationWrapper);
 
-        verify(reminderService).createReminders(response);
+        verify(reminderService).createReminders(notificationWrapper);
     }
 
     @Test

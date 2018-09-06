@@ -1,10 +1,10 @@
 package uk.gov.hmcts.reform.sscs.factory;
 
 import java.util.Objects;
-import uk.gov.hmcts.reform.sscs.ccd.domain.EventType;
 import uk.gov.hmcts.reform.sscs.ccd.domain.SscsCaseData;
 import uk.gov.hmcts.reform.sscs.ccd.domain.Subscription;
 import uk.gov.hmcts.reform.sscs.domain.SscsCaseDataWrapper;
+import uk.gov.hmcts.reform.sscs.domain.notify.NotificationEventType;
 
 public class CcdNotificationWrapper implements NotificationWrapper {
     private final SscsCaseDataWrapper responseWrapper;
@@ -14,8 +14,8 @@ public class CcdNotificationWrapper implements NotificationWrapper {
     }
 
     @Override
-    public EventType getNotificationType() {
-        return responseWrapper.getNewSscsCaseData().getNotificationType();
+    public NotificationEventType getNotificationType() {
+        return responseWrapper.getNotificationEventType();
     }
 
     @Override

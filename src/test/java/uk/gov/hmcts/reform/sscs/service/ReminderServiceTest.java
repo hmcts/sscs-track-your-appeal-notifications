@@ -5,8 +5,7 @@ import static org.mockito.Mockito.*;
 import com.google.common.collect.ImmutableList;
 import java.util.List;
 import org.junit.Test;
-import uk.gov.hmcts.reform.sscs.ccd.domain.SscsCaseData;
-import uk.gov.hmcts.reform.sscs.service.reminder.ReminderHandler;
+import uk.gov.hmcts.reform.sscs.factory.NotificationWrapper;
 import uk.gov.hmcts.reform.sscs.service.reminder.ReminderHandler;
 
 public class ReminderServiceTest {
@@ -27,22 +26,22 @@ public class ReminderServiceTest {
     @Test
     public void createReminders() {
 
-        SscsCaseData ccdResponse = mock(SscsCaseData.class);
+        NotificationWrapper wrapper = mock(NotificationWrapper.class);
 
-        when(reminderHandler1.canHandle(ccdResponse)).thenReturn(true);
-        when(reminderHandler2.canHandle(ccdResponse)).thenReturn(false);
-        when(reminderHandler3.canHandle(ccdResponse)).thenReturn(true);
+        when(reminderHandler1.canHandle(wrapper)).thenReturn(true);
+        when(reminderHandler2.canHandle(wrapper)).thenReturn(false);
+        when(reminderHandler3.canHandle(wrapper)).thenReturn(true);
 
-        reminderService.createReminders(ccdResponse);
+        reminderService.createReminders(wrapper);
 
-        verify(reminderHandler1, times(1)).canHandle(ccdResponse);
-        verify(reminderHandler1, times(1)).handle(ccdResponse);
+        verify(reminderHandler1, times(1)).canHandle(wrapper);
+        verify(reminderHandler1, times(1)).handle(wrapper);
 
-        verify(reminderHandler2, times(1)).canHandle(ccdResponse);
-        verify(reminderHandler2, never()).handle(ccdResponse);
+        verify(reminderHandler2, times(1)).canHandle(wrapper);
+        verify(reminderHandler2, never()).handle(wrapper);
 
-        verify(reminderHandler3, times(1)).canHandle(ccdResponse);
-        verify(reminderHandler3, times(1)).handle(ccdResponse);
+        verify(reminderHandler3, times(1)).canHandle(wrapper);
+        verify(reminderHandler3, times(1)).handle(wrapper);
     }
 
 }

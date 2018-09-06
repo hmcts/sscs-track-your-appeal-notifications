@@ -4,7 +4,8 @@ import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.junit.Assert.*;
 import static org.mockito.Mockito.*;
 import static uk.gov.hmcts.reform.sscs.ccd.domain.EventType.APPEAL_RECEIVED;
-import static uk.gov.hmcts.reform.sscs.ccd.domain.EventType.DWP_RESPONSE_LATE_REMINDER;
+import static uk.gov.hmcts.reform.sscs.domain.notify.NotificationEventType.APPEAL_RECEIVED_NOTIFICATION;
+import static uk.gov.hmcts.reform.sscs.domain.notify.NotificationEventType.DWP_RESPONSE_LATE_REMINDER_NOTIFICATION;
 
 import java.time.ZonedDateTime;
 import java.util.Optional;
@@ -15,10 +16,10 @@ import org.mockito.ArgumentCaptor;
 import org.mockito.Mock;
 import org.mockito.runners.MockitoJUnitRunner;
 import uk.gov.hmcts.reform.sscs.SscsCaseDataUtils;
-import uk.gov.hmcts.reform.sscs.ccd.domain.EventType;
-import uk.gov.hmcts.reform.sscs.ccd.domain.SscsCaseData;
+import uk.gov.hmcts.reform.sscs.domain.notify.NotificationEventType;
 import uk.gov.hmcts.reform.sscs.exception.ReminderException;
 import uk.gov.hmcts.reform.sscs.extractor.AppealReceivedDateExtractor;
+import uk.gov.hmcts.reform.sscs.factory.CcdNotificationWrapper;
 import uk.gov.hmcts.reform.sscs.jobscheduler.model.Job;
 import uk.gov.hmcts.reform.sscs.jobscheduler.services.JobScheduler;
 
@@ -47,16 +48,16 @@ public class DwpResponseLateReminderTest {
     @Test
     public void canHandleEvent() {
 
-        for (EventType eventType : EventType.values()) {
+        for (NotificationEventType eventType : NotificationEventType.values()) {
 
-            SscsCaseData ccdResponse = SscsCaseDataUtils.buildBasicSscsCaseData(eventType);
+            CcdNotificationWrapper wrapper = SscsCaseDataUtils.buildBasicCcdNotificationWrapper(eventType);
 
-            if (eventType == APPEAL_RECEIVED) {
-                assertTrue(dwpResponseLateReminder.canHandle(ccdResponse));
+            if (eventType == APPEAL_RECEIVED_NOTIFICATION) {
+                assertTrue(dwpResponseLateReminder.canHandle(wrapper));
             } else {
 
-                assertFalse(dwpResponseLateReminder.canHandle(ccdResponse));
-                assertThatThrownBy(() -> dwpResponseLateReminder.handle(ccdResponse))
+                assertFalse(dwpResponseLateReminder.canHandle(wrapper));
+                assertThatThrownBy(() -> dwpResponseLateReminder.handle(wrapper))
                     .hasMessage("cannot handle ccdResponse")
                     .isExactlyInstanceOf(IllegalArgumentException.class);
             }
@@ -70,16 +71,16 @@ public class DwpResponseLateReminderTest {
         final String expectedTriggerAt = "2018-01-02T14:01:18Z[Europe/London]";
         ZonedDateTime appealReceivedDate = ZonedDateTime.parse("2018-01-01T14:01:18Z[Europe/London]");
 
-        SscsCaseData ccdResponse = SscsCaseDataUtils.buildBasicSscsCaseDataWithEvent(
-            APPEAL_RECEIVED,
+        CcdNotificationWrapper wrapper = SscsCaseDataUtils.buildBasicCcdNotificationWrapperWithEvent(
+            APPEAL_RECEIVED_NOTIFICATION,
             APPEAL_RECEIVED,
             appealReceivedDate.toString()
         );
 
-        when(appealReceivedDateExtractor.extract(ccdResponse)).thenReturn(Optional.of(appealReceivedDate));
-        when(jobGroupGenerator.generate(ccdResponse.getCaseId(), DWP_RESPONSE_LATE_REMINDER.getCcdType())).thenReturn(expectedJobGroup);
+        when(appealReceivedDateExtractor.extract(wrapper.getNewSscsCaseData())).thenReturn(Optional.of(appealReceivedDate));
+        when(jobGroupGenerator.generate(wrapper.getCaseId(), DWP_RESPONSE_LATE_REMINDER_NOTIFICATION.getId())).thenReturn(expectedJobGroup);
 
-        dwpResponseLateReminder.handle(ccdResponse);
+        dwpResponseLateReminder.handle(wrapper);
 
         ArgumentCaptor<Job> jobCaptor = ArgumentCaptor.forClass(Job.class);
 
@@ -89,7 +90,7 @@ public class DwpResponseLateReminderTest {
 
         Job<String> job = jobCaptor.getAllValues().get(0);
         assertEquals(expectedJobGroup, job.group);
-        assertEquals(DWP_RESPONSE_LATE_REMINDER.getCcdType(), job.name);
+        assertEquals(DWP_RESPONSE_LATE_REMINDER_NOTIFICATION.getId(), job.name);
         assertEquals(SscsCaseDataUtils.CASE_ID, job.payload);
         assertEquals(expectedTriggerAt, job.triggerAt.toString());
     }
@@ -97,11 +98,11 @@ public class DwpResponseLateReminderTest {
     @Test(expected = ReminderException.class)
     public void throwExceptionWhenAppealReceivedDateNotPresent() {
 
-        SscsCaseData ccdResponse = SscsCaseDataUtils.buildBasicSscsCaseData(APPEAL_RECEIVED);
+        CcdNotificationWrapper wrapper = SscsCaseDataUtils.buildBasicCcdNotificationWrapper(APPEAL_RECEIVED_NOTIFICATION);
 
-        when(appealReceivedDateExtractor.extract(ccdResponse)).thenReturn(Optional.empty());
+        when(appealReceivedDateExtractor.extract(wrapper.getNewSscsCaseData())).thenReturn(Optional.empty());
 
-        dwpResponseLateReminder.handle(ccdResponse);
+        dwpResponseLateReminder.handle(wrapper);
     }
 
 }

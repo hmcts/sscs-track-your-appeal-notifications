@@ -1,13 +1,13 @@
 package uk.gov.hmcts.reform.sscs.service.reminder;
 
 import static org.slf4j.LoggerFactory.getLogger;
-import static uk.gov.hmcts.reform.sscs.ccd.domain.EventType.*;
+import static uk.gov.hmcts.reform.sscs.domain.notify.NotificationEventType.*;
 
 import com.google.common.collect.ImmutableList;
 import java.util.Arrays;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
-import uk.gov.hmcts.reform.sscs.ccd.domain.SscsCaseData;
+import uk.gov.hmcts.reform.sscs.factory.NotificationWrapper;
 import uk.gov.hmcts.reform.sscs.jobscheduler.services.JobNotFoundException;
 import uk.gov.hmcts.reform.sscs.jobscheduler.services.JobRemover;
 
@@ -28,29 +28,29 @@ public class HearingHoldingReminderRemover implements ReminderHandler {
         this.jobRemover = jobRemover;
     }
 
-    public boolean canHandle(SscsCaseData ccdResponse) {
+    public boolean canHandle(NotificationWrapper wrapper) {
         return Arrays.asList(
-            APPEAL_DORMANT,
-            APPEAL_LAPSED,
-            APPEAL_WITHDRAWN,
-            HEARING_BOOKED
+            APPEAL_DORMANT_NOTIFICATION,
+            APPEAL_LAPSED_NOTIFICATION,
+            APPEAL_WITHDRAWN_NOTIFICATION,
+            HEARING_BOOKED_NOTIFICATION
         ).contains(
-            ccdResponse.getNotificationType()
+            wrapper.getNotificationType()
         );
     }
 
-    public void handle(SscsCaseData ccdResponse) {
-        if (!canHandle(ccdResponse)) {
+    public void handle(NotificationWrapper wrapper) {
+        if (!canHandle(wrapper)) {
             throw new IllegalArgumentException("cannot handle ccdResponse");
         }
 
-        final String caseId = ccdResponse.getCaseId();
+        final String caseId = wrapper.getCaseId();
 
         ImmutableList
-            .of(FIRST_HEARING_HOLDING_REMINDER.getCcdType(),
-                SECOND_HEARING_HOLDING_REMINDER.getCcdType(),
-                THIRD_HEARING_HOLDING_REMINDER.getCcdType(),
-                FINAL_HEARING_HOLDING_REMINDER.getCcdType())
+            .of(FIRST_HEARING_HOLDING_REMINDER_NOTIFICATION.getId(),
+                SECOND_HEARING_HOLDING_REMINDER_NOTIFICATION.getId(),
+                THIRD_HEARING_HOLDING_REMINDER_NOTIFICATION.getId(),
+                FINAL_HEARING_HOLDING_REMINDER_NOTIFICATION.getId())
             .forEach(eventId -> {
 
                 String jobGroup = jobGroupGenerator.generate(caseId, eventId);

@@ -4,7 +4,8 @@ import static org.junit.Assert.*;
 import static org.mockito.Mockito.*;
 import static org.mockito.MockitoAnnotations.initMocks;
 import static uk.gov.hmcts.reform.sscs.ccd.domain.Benefit.PIP;
-import static uk.gov.hmcts.reform.sscs.ccd.domain.EventType.*;
+import static uk.gov.hmcts.reform.sscs.ccd.domain.EventType.APPEAL_RECEIVED;
+import static uk.gov.hmcts.reform.sscs.domain.notify.NotificationEventType.*;
 
 import java.time.Instant;
 import java.time.LocalDate;
@@ -100,11 +101,10 @@ public class PersonalisationTest {
                 .appellant(Appellant.builder().name(name).build())
                 .build())
             .subscriptions(subscriptions)
-            .notificationType(APPEAL_RECEIVED)
             .events(events)
             .build();
 
-        Map<String, String> result = personalisation.create(SscsCaseDataWrapper.builder().newSscsCaseData(response).build());
+        Map<String, String> result = personalisation.create(SscsCaseDataWrapper.builder().newSscsCaseData(response).notificationEventType(APPEAL_RECEIVED_NOTIFICATION).build());
 
         assertEquals("PIP", result.get(AppConstants.BENEFIT_NAME_ACRONYM_LITERAL));
         assertEquals("Personal Independence Payment", result.get(AppConstants.BENEFIT_FULL_NAME_LITERAL));
@@ -162,12 +162,11 @@ public class PersonalisationTest {
                 .appellant(Appellant.builder().name(name).build())
                 .build())
             .subscriptions(subscriptions)
-            .notificationType(EVIDENCE_RECEIVED)
             .events(events)
             .evidence(evidence)
             .build();
 
-        Map<String, String> result = personalisation.create(SscsCaseDataWrapper.builder().newSscsCaseData(response).build());
+        Map<String, String> result = personalisation.create(SscsCaseDataWrapper.builder().newSscsCaseData(response).notificationEventType(EVIDENCE_RECEIVED_NOTIFICATION).build());
 
         assertEquals("1 July 2018", result.get(AppConstants.EVIDENCE_RECEIVED_DATE_LITERAL));
     }
@@ -180,11 +179,10 @@ public class PersonalisationTest {
         SscsCaseData response = SscsCaseData.builder()
             .caseId(CASE_ID).caseReference("SC/1234/5")
             .appeal(Appeal.builder().benefitType(BenefitType.builder().code("PIP").build()).build())
-            .notificationType(APPEAL_RECEIVED)
             .events(events)
             .build();
 
-        Map<String, String> result = personalisation.setEventData(new HashMap<>(), response);
+        Map<String, String> result = personalisation.setEventData(new HashMap<>(), response, APPEAL_RECEIVED_NOTIFICATION);
 
         assertEquals("5 August 2018", result.get(AppConstants.APPEAL_RESPOND_DATE));
     }
@@ -205,11 +203,10 @@ public class PersonalisationTest {
         SscsCaseData response = SscsCaseData.builder()
             .caseId(CASE_ID).caseReference("SC/1234/5")
             .appeal(Appeal.builder().benefitType(BenefitType.builder().code("PIP").build()).build())
-            .notificationType(EVIDENCE_RECEIVED)
             .evidence(evidence)
             .build();
 
-        Map<String, String> result = personalisation.setEvidenceReceivedNotificationData(new HashMap<>(), response);
+        Map<String, String> result = personalisation.setEvidenceReceivedNotificationData(new HashMap<>(), response, EVIDENCE_RECEIVED_NOTIFICATION);
 
         assertEquals("1 July 2018", result.get(AppConstants.EVIDENCE_RECEIVED_DATE_LITERAL));
     }
@@ -240,12 +237,11 @@ public class PersonalisationTest {
             .appeal(Appeal.builder().benefitType(BenefitType.builder().code("PIP").build())
                 .appellant(Appellant.builder().name(name).build())
                 .build())
-            .notificationType(HEARING_BOOKED)
             .subscriptions(subscriptions)
             .hearings(hearingList)
             .build();
 
-        Map<String, String> result = personalisation.create(SscsCaseDataWrapper.builder().newSscsCaseData(response).build());
+        Map<String, String> result = personalisation.create(SscsCaseDataWrapper.builder().newSscsCaseData(response).notificationEventType(HEARING_BOOKED_NOTIFICATION).build());
 
         assertEquals(hearingDate.format(DateTimeFormatter.ofPattern(AppConstants.RESPONSE_DATE_FORMAT)), result.get(AppConstants.HEARING_DATE));
         assertEquals("12:00 PM", result.get(AppConstants.HEARING_TIME));
@@ -280,12 +276,11 @@ public class PersonalisationTest {
             .appeal(Appeal.builder().benefitType(BenefitType.builder().code("PIP").build())
                 .appellant(Appellant.builder().name(name).build())
                 .build())
-            .notificationType(HEARING_BOOKED)
             .subscriptions(subscriptions)
             .hearings(hearingList)
             .build();
 
-        Map<String, String> result = personalisation.create(SscsCaseDataWrapper.builder().newSscsCaseData(response).build());
+        Map<String, String> result = personalisation.create(SscsCaseDataWrapper.builder().newSscsCaseData(response).notificationEventType(HEARING_BOOKED_NOTIFICATION).build());
 
         assertEquals("tomorrow", result.get(AppConstants.DAYS_TO_HEARING_LITERAL));
     }
@@ -295,10 +290,9 @@ public class PersonalisationTest {
         SscsCaseData response = SscsCaseData.builder()
             .caseId(CASE_ID).caseReference("SC/1234/5")
             .appeal(Appeal.builder().benefitType(BenefitType.builder().code("PIP").build()).build())
-            .notificationType(POSTPONEMENT)
             .build();
 
-        Map<String, String> result = personalisation.setEventData(new HashMap<>(), response);
+        Map<String, String> result = personalisation.setEventData(new HashMap<>(), response, POSTPONEMENT_NOTIFICATION);
 
         assertEquals(new HashMap<>(), result);
     }
@@ -308,11 +302,10 @@ public class PersonalisationTest {
         SscsCaseData response = SscsCaseData.builder()
             .caseId(CASE_ID).caseReference("SC/1234/5")
             .appeal(Appeal.builder().benefitType(BenefitType.builder().code("PIP").build()).build())
-            .notificationType(POSTPONEMENT)
             .events(new ArrayList())
             .build();
 
-        Map<String, String> result = personalisation.setEventData(new HashMap<>(), response);
+        Map<String, String> result = personalisation.setEventData(new HashMap<>(), response, POSTPONEMENT_NOTIFICATION);
 
         assertEquals(new HashMap<>(), result);
     }
@@ -339,13 +332,13 @@ public class PersonalisationTest {
     @Test
     public void shouldPopulateHearingContactDateFromCcdCaseIfPresent() {
 
-        SscsCaseData response = SscsCaseData.builder().build();
+        SscsCaseDataWrapper wrapper = SscsCaseDataWrapper.builder().newSscsCaseData(SscsCaseData.builder().build()).build();
 
         ZonedDateTime now = ZonedDateTime.ofInstant(Instant.ofEpochSecond(1528907807), ZoneId.of("UTC"));
-        when(hearingContactDateExtractor.extract(response)).thenReturn(Optional.of(now));
+        when(hearingContactDateExtractor.extract(wrapper)).thenReturn(Optional.of(now));
 
         Map<String, String> values = new HashMap<>();
-        personalisation.setHearingContactDate(values, response);
+        personalisation.setHearingContactDate(values, wrapper);
 
         assertEquals("13 June 2018", values.get(AppConstants.HEARING_CONTACT_DATE));
     }
@@ -353,12 +346,12 @@ public class PersonalisationTest {
     @Test
     public void shouldNotPopulateHearingContactDateFromCcdCaseIfNotPresent() {
 
-        SscsCaseData response = SscsCaseData.builder().build();
+        SscsCaseDataWrapper wrapper = SscsCaseDataWrapper.builder().newSscsCaseData(SscsCaseData.builder().build()).build();
 
-        when(hearingContactDateExtractor.extract(response)).thenReturn(Optional.empty());
+        when(hearingContactDateExtractor.extract(wrapper)).thenReturn(Optional.empty());
 
         Map<String, String> values = new HashMap<>();
-        personalisation.setHearingContactDate(values, response);
+        personalisation.setHearingContactDate(values, wrapper);
 
         assertFalse(values.containsKey(AppConstants.HEARING_CONTACT_DATE));
     }

@@ -4,8 +4,8 @@ import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
 import static org.mockito.Mockito.*;
-import static uk.gov.hmcts.reform.sscs.ccd.domain.EventType.HEARING_REMINDER;
-import static uk.gov.hmcts.reform.sscs.ccd.domain.EventType.POSTPONEMENT;
+import static uk.gov.hmcts.reform.sscs.domain.notify.NotificationEventType.HEARING_REMINDER_NOTIFICATION;
+import static uk.gov.hmcts.reform.sscs.domain.notify.NotificationEventType.POSTPONEMENT_NOTIFICATION;
 
 import org.junit.Before;
 import org.junit.Test;
@@ -13,8 +13,8 @@ import org.junit.runner.RunWith;
 import org.mockito.Mock;
 import org.mockito.runners.MockitoJUnitRunner;
 import uk.gov.hmcts.reform.sscs.SscsCaseDataUtils;
-import uk.gov.hmcts.reform.sscs.ccd.domain.EventType;
-import uk.gov.hmcts.reform.sscs.ccd.domain.SscsCaseData;
+import uk.gov.hmcts.reform.sscs.domain.notify.NotificationEventType;
+import uk.gov.hmcts.reform.sscs.factory.CcdNotificationWrapper;
 import uk.gov.hmcts.reform.sscs.jobscheduler.services.JobNotFoundException;
 import uk.gov.hmcts.reform.sscs.jobscheduler.services.JobRemover;
 
@@ -39,16 +39,16 @@ public class HearingReminderRemoverTest {
     @Test
     public void canHandleEvent() {
 
-        for (EventType eventType : EventType.values()) {
+        for (NotificationEventType eventType : NotificationEventType.values()) {
 
-            SscsCaseData ccdResponse = SscsCaseDataUtils.buildBasicSscsCaseData(eventType);
+            CcdNotificationWrapper wrapper = SscsCaseDataUtils.buildBasicCcdNotificationWrapper(eventType);
 
-            if (eventType == POSTPONEMENT) {
-                assertTrue(hearingReminderRemoverTest.canHandle(ccdResponse));
+            if (eventType == POSTPONEMENT_NOTIFICATION) {
+                assertTrue(hearingReminderRemoverTest.canHandle(wrapper));
             } else {
 
-                assertFalse(hearingReminderRemoverTest.canHandle(ccdResponse));
-                assertThatThrownBy(() -> hearingReminderRemoverTest.handle(ccdResponse))
+                assertFalse(hearingReminderRemoverTest.canHandle(wrapper));
+                assertThatThrownBy(() -> hearingReminderRemoverTest.handle(wrapper))
                     .hasMessage("cannot handle ccdResponse")
                     .isExactlyInstanceOf(IllegalArgumentException.class);
             }
@@ -63,15 +63,15 @@ public class HearingReminderRemoverTest {
         String hearingDate = "2018-01-01";
         String hearingTime = "14:01:18";
 
-        SscsCaseData ccdResponse = SscsCaseDataUtils.buildBasicSscsCaseDataWithHearing(
-            POSTPONEMENT,
+        CcdNotificationWrapper wrapper = SscsCaseDataUtils.buildBasicCcdNotificationWrapperWithHearing(
+            POSTPONEMENT_NOTIFICATION,
             hearingDate,
             hearingTime
         );
 
-        when(jobGroupGenerator.generate(ccdResponse.getCaseId(), HEARING_REMINDER.getCcdType())).thenReturn(expectedJobGroup);
+        when(jobGroupGenerator.generate(wrapper.getCaseId(), HEARING_REMINDER_NOTIFICATION.getId())).thenReturn(expectedJobGroup);
 
-        hearingReminderRemoverTest.handle(ccdResponse);
+        hearingReminderRemoverTest.handle(wrapper);
 
         verify(jobRemover, times(1)).removeGroup(
             expectedJobGroup
@@ -86,19 +86,19 @@ public class HearingReminderRemoverTest {
         String hearingDate = "2018-01-01";
         String hearingTime = "14:01:18";
 
-        SscsCaseData ccdResponse = SscsCaseDataUtils.buildBasicSscsCaseDataWithHearing(
-            POSTPONEMENT,
+        CcdNotificationWrapper wrapper = SscsCaseDataUtils.buildBasicCcdNotificationWrapperWithHearing(
+            POSTPONEMENT_NOTIFICATION,
             hearingDate,
             hearingTime
         );
 
-        when(jobGroupGenerator.generate(ccdResponse.getCaseId(), HEARING_REMINDER.getCcdType())).thenReturn(expectedJobGroup);
+        when(jobGroupGenerator.generate(wrapper.getCaseId(), HEARING_REMINDER_NOTIFICATION.getId())).thenReturn(expectedJobGroup);
 
         doThrow(JobNotFoundException.class)
             .when(jobRemover)
             .removeGroup(expectedJobGroup);
 
-        hearingReminderRemoverTest.handle(ccdResponse);
+        hearingReminderRemoverTest.handle(wrapper);
 
         verify(jobRemover, times(1)).removeGroup(
             expectedJobGroup

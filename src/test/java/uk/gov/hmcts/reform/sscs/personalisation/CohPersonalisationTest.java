@@ -6,6 +6,7 @@ import static org.mockito.Mockito.when;
 import static org.mockito.MockitoAnnotations.initMocks;
 import static uk.gov.hmcts.reform.sscs.ccd.domain.Benefit.PIP;
 import static uk.gov.hmcts.reform.sscs.ccd.domain.EventType.APPEAL_RECEIVED;
+import static uk.gov.hmcts.reform.sscs.domain.notify.NotificationEventType.APPEAL_RECEIVED_NOTIFICATION;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -86,11 +87,10 @@ public class CohPersonalisationTest {
                         .appellant(Appellant.builder().name(name).build())
                         .build())
                 .subscriptions(subscriptions)
-                .notificationType(APPEAL_RECEIVED)
                 .events(events)
                 .build();
 
-        SscsCaseDataWrapper sscsCaseDataWrapper = SscsCaseDataWrapper.builder().newSscsCaseData(response).build();
+        SscsCaseDataWrapper sscsCaseDataWrapper = SscsCaseDataWrapper.builder().newSscsCaseData(response).notificationEventType(APPEAL_RECEIVED_NOTIFICATION).build();
 
         String someHearingId = "someHearingId";
         String expectedRequiredByDate = "expectedRequiredByDate";

@@ -7,13 +7,9 @@ import java.util.Map;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 import uk.gov.hmcts.reform.sscs.ccd.domain.Benefit;
-import uk.gov.hmcts.reform.sscs.ccd.domain.EventType;
 import uk.gov.hmcts.reform.sscs.ccd.domain.SscsCaseData;
 import uk.gov.hmcts.reform.sscs.ccd.domain.Subscription;
-import uk.gov.hmcts.reform.sscs.domain.notify.Destination;
-import uk.gov.hmcts.reform.sscs.domain.notify.Notification;
-import uk.gov.hmcts.reform.sscs.domain.notify.Reference;
-import uk.gov.hmcts.reform.sscs.domain.notify.Template;
+import uk.gov.hmcts.reform.sscs.domain.notify.*;
 import uk.gov.hmcts.reform.sscs.personalisation.Personalisation;
 
 @Component
@@ -21,7 +17,7 @@ public class NotificationFactory {
 
     private final PersonalisationFactory personalisationFactory;
 
-    private final Map<EventType, Personalisation> map = newHashMap();
+    private final Map<NotificationEventType, Personalisation> map = newHashMap();
 
     @Autowired
     public NotificationFactory(PersonalisationFactory personalisationFactory) {

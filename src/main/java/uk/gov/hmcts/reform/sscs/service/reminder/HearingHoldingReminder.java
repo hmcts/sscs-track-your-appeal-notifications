@@ -1,16 +1,17 @@
 package uk.gov.hmcts.reform.sscs.service.reminder;
 
 import static org.slf4j.LoggerFactory.getLogger;
-import static uk.gov.hmcts.reform.sscs.ccd.domain.EventType.*;
+import static uk.gov.hmcts.reform.sscs.domain.notify.NotificationEventType.*;
 
 import java.time.ZonedDateTime;
 import java.util.Optional;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
-import uk.gov.hmcts.reform.sscs.ccd.domain.EventType;
 import uk.gov.hmcts.reform.sscs.ccd.domain.SscsCaseData;
+import uk.gov.hmcts.reform.sscs.domain.notify.NotificationEventType;
 import uk.gov.hmcts.reform.sscs.exception.ReminderException;
 import uk.gov.hmcts.reform.sscs.extractor.HearingContactDateExtractor;
+import uk.gov.hmcts.reform.sscs.factory.NotificationWrapper;
 import uk.gov.hmcts.reform.sscs.jobscheduler.model.Job;
 import uk.gov.hmcts.reform.sscs.jobscheduler.services.JobScheduler;
 
@@ -34,32 +35,33 @@ public class HearingHoldingReminder implements ReminderHandler {
         this.jobScheduler = jobScheduler;
     }
 
-    public boolean canHandle(SscsCaseData ccdResponse) {
-        return ccdResponse
+    public boolean canHandle(NotificationWrapper wrapper) {
+        return wrapper
             .getNotificationType()
-            .equals(DWP_RESPONSE_RECEIVED);
+            .equals(DWP_RESPONSE_RECEIVED_NOTIFICATION);
     }
 
-    public void handle(SscsCaseData ccdResponse) {
-        if (!canHandle(ccdResponse)) {
+    public void handle(NotificationWrapper wrapper) {
+        if (!canHandle(wrapper)) {
             throw new IllegalArgumentException("cannot handle ccdResponse");
         }
 
-        scheduleReminder(ccdResponse, DWP_RESPONSE_RECEIVED, FIRST_HEARING_HOLDING_REMINDER);
-        scheduleReminder(ccdResponse, FIRST_HEARING_HOLDING_REMINDER, SECOND_HEARING_HOLDING_REMINDER);
-        scheduleReminder(ccdResponse, SECOND_HEARING_HOLDING_REMINDER, THIRD_HEARING_HOLDING_REMINDER);
-        scheduleReminder(ccdResponse, THIRD_HEARING_HOLDING_REMINDER, FINAL_HEARING_HOLDING_REMINDER);
+        SscsCaseData sscsCaseData = wrapper.getNewSscsCaseData();
+        scheduleReminder(sscsCaseData, DWP_RESPONSE_RECEIVED_NOTIFICATION, FIRST_HEARING_HOLDING_REMINDER_NOTIFICATION);
+        scheduleReminder(sscsCaseData, FIRST_HEARING_HOLDING_REMINDER_NOTIFICATION, SECOND_HEARING_HOLDING_REMINDER_NOTIFICATION);
+        scheduleReminder(sscsCaseData, SECOND_HEARING_HOLDING_REMINDER_NOTIFICATION, THIRD_HEARING_HOLDING_REMINDER_NOTIFICATION);
+        scheduleReminder(sscsCaseData, THIRD_HEARING_HOLDING_REMINDER_NOTIFICATION, FINAL_HEARING_HOLDING_REMINDER_NOTIFICATION);
     }
 
     private void scheduleReminder(
         SscsCaseData ccdResponse,
-        EventType referenceEventType,
-        EventType scheduledEventType
+        NotificationEventType referenceNotificationEventType,
+        NotificationEventType scheduledNotificationEventType
     ) {
         String caseId = ccdResponse.getCaseId();
-        String eventId = scheduledEventType.getCcdType();
+        String eventId = scheduledNotificationEventType.getId();
         String jobGroup = jobGroupGenerator.generate(caseId, eventId);
-        ZonedDateTime reminderDate = calculateReminderDate(ccdResponse, referenceEventType);
+        ZonedDateTime reminderDate = calculateReminderDate(ccdResponse, referenceNotificationEventType);
 
         jobScheduler.schedule(new Job<>(
             jobGroup,
@@ -71,10 +73,10 @@ public class HearingHoldingReminder implements ReminderHandler {
         LOG.info("Scheduled hearing holding reminder for case id: {} @ {}", caseId, reminderDate.toString());
     }
 
-    private ZonedDateTime calculateReminderDate(SscsCaseData ccdResponse, EventType referenceEventType) {
+    private ZonedDateTime calculateReminderDate(SscsCaseData ccdResponse, NotificationEventType referenceNotificationEventType) {
 
         Optional<ZonedDateTime> hearingContactDate =
-                hearingContactDateExtractor.extractForReferenceEvent(ccdResponse, referenceEventType);
+                hearingContactDateExtractor.extractForReferenceEvent(ccdResponse, referenceNotificationEventType);
 
         if (hearingContactDate.isPresent()) {
             return hearingContactDate.get();

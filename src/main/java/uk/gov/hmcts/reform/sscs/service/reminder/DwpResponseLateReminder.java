@@ -1,8 +1,8 @@
 package uk.gov.hmcts.reform.sscs.service.reminder;
 
 import static org.slf4j.LoggerFactory.getLogger;
-import static uk.gov.hmcts.reform.sscs.ccd.domain.EventType.APPEAL_RECEIVED;
-import static uk.gov.hmcts.reform.sscs.ccd.domain.EventType.DWP_RESPONSE_LATE_REMINDER;
+import static uk.gov.hmcts.reform.sscs.domain.notify.NotificationEventType.APPEAL_RECEIVED_NOTIFICATION;
+import static uk.gov.hmcts.reform.sscs.domain.notify.NotificationEventType.DWP_RESPONSE_LATE_REMINDER_NOTIFICATION;
 
 import java.time.ZonedDateTime;
 import java.util.Optional;
@@ -12,6 +12,7 @@ import org.springframework.stereotype.Component;
 import uk.gov.hmcts.reform.sscs.ccd.domain.SscsCaseData;
 import uk.gov.hmcts.reform.sscs.exception.ReminderException;
 import uk.gov.hmcts.reform.sscs.extractor.AppealReceivedDateExtractor;
+import uk.gov.hmcts.reform.sscs.factory.NotificationWrapper;
 import uk.gov.hmcts.reform.sscs.jobscheduler.model.Job;
 import uk.gov.hmcts.reform.sscs.jobscheduler.services.JobScheduler;
 
@@ -38,21 +39,22 @@ public class DwpResponseLateReminder implements ReminderHandler {
         this.delay = delay;
     }
 
-    public boolean canHandle(SscsCaseData ccdResponse) {
-        return ccdResponse
+    public boolean canHandle(NotificationWrapper wrapper) {
+        return wrapper
             .getNotificationType()
-            .equals(APPEAL_RECEIVED);
+            .equals(APPEAL_RECEIVED_NOTIFICATION);
     }
 
-    public void handle(SscsCaseData ccdResponse) {
-        if (!canHandle(ccdResponse)) {
+    public void handle(NotificationWrapper wrapper) {
+        if (!canHandle(wrapper)) {
             throw new IllegalArgumentException("cannot handle ccdResponse");
         }
 
-        String caseId = ccdResponse.getCaseId();
-        String eventId = DWP_RESPONSE_LATE_REMINDER.getCcdType();
+        SscsCaseData caseData = wrapper.getNewSscsCaseData();
+        String caseId = wrapper.getNewSscsCaseData().getCaseId();
+        String eventId = DWP_RESPONSE_LATE_REMINDER_NOTIFICATION.getId();
         String jobGroup = jobGroupGenerator.generate(caseId, eventId);
-        ZonedDateTime reminderDate = calculateReminderDate(ccdResponse, delay);
+        ZonedDateTime reminderDate = calculateReminderDate(caseData, delay);
 
         jobScheduler.schedule(new Job<>(
             jobGroup,

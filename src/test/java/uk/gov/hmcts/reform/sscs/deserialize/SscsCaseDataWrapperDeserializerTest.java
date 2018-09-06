@@ -3,6 +3,7 @@ package uk.gov.hmcts.reform.sscs.deserialize;
 import static org.junit.Assert.*;
 import static uk.gov.hmcts.reform.sscs.ccd.domain.Benefit.ESA;
 import static uk.gov.hmcts.reform.sscs.ccd.domain.EventType.*;
+import static uk.gov.hmcts.reform.sscs.domain.notify.NotificationEventType.APPEAL_RECEIVED_NOTIFICATION;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.node.JsonNodeFactory;
@@ -178,10 +179,10 @@ public class SscsCaseDataWrapperDeserializerTest {
                 + "\"event_id\": \"appealReceived\"\n}";
 
         SscsCaseDataWrapper wrapper = mapper.readValue(json, SscsCaseDataWrapper.class);
+
+        assertEquals(APPEAL_RECEIVED_NOTIFICATION, wrapper.getNotificationEventType());
+
         SscsCaseData newSscsCaseData = wrapper.getNewSscsCaseData();
-
-        assertEquals(APPEAL_RECEIVED, newSscsCaseData.getNotificationType());
-
         Appellant newAppellant = newSscsCaseData.getAppeal().getAppellant();
         assertEquals("Dexter", newAppellant.getName().getFirstName());
         assertEquals("Vasquez", newAppellant.getName().getLastName());
@@ -441,7 +442,7 @@ public class SscsCaseDataWrapperDeserializerTest {
 
         Subscription appellantSubscription = ccdResponse.getSubscriptions().getAppellantSubscription();
 
-        assertEquals(APPEAL_RECEIVED, ccdResponse.getNotificationType());
+        assertEquals(APPEAL_RECEIVED_NOTIFICATION, wrapper.getNotificationEventType());
         assertEquals("sscstest@greencroftconsulting.com", appellantSubscription.getEmail());
         assertEquals("07985233301", appellantSubscription.getMobile());
         assertTrue(appellantSubscription.isSmsSubscribed());

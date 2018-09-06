@@ -1,12 +1,12 @@
 package uk.gov.hmcts.reform.sscs.service.reminder;
 
 import static org.slf4j.LoggerFactory.getLogger;
-import static uk.gov.hmcts.reform.sscs.ccd.domain.EventType.HEARING_REMINDER;
-import static uk.gov.hmcts.reform.sscs.ccd.domain.EventType.POSTPONEMENT;
+import static uk.gov.hmcts.reform.sscs.domain.notify.NotificationEventType.HEARING_REMINDER_NOTIFICATION;
+import static uk.gov.hmcts.reform.sscs.domain.notify.NotificationEventType.POSTPONEMENT_NOTIFICATION;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
-import uk.gov.hmcts.reform.sscs.ccd.domain.SscsCaseData;
+import uk.gov.hmcts.reform.sscs.factory.NotificationWrapper;
 import uk.gov.hmcts.reform.sscs.jobscheduler.services.JobNotFoundException;
 import uk.gov.hmcts.reform.sscs.jobscheduler.services.JobRemover;
 
@@ -27,19 +27,19 @@ public class HearingReminderRemover implements ReminderHandler {
         this.jobRemover = jobRemover;
     }
 
-    public boolean canHandle(SscsCaseData ccdResponse) {
-        return ccdResponse
+    public boolean canHandle(NotificationWrapper wrapper) {
+        return wrapper
             .getNotificationType()
-            .equals(POSTPONEMENT);
+            .equals(POSTPONEMENT_NOTIFICATION);
     }
 
-    public void handle(SscsCaseData ccdResponse) {
-        if (!canHandle(ccdResponse)) {
+    public void handle(NotificationWrapper wrapper) {
+        if (!canHandle(wrapper)) {
             throw new IllegalArgumentException("cannot handle ccdResponse");
         }
 
-        String caseId = ccdResponse.getCaseId();
-        String jobGroup = jobGroupGenerator.generate(caseId, HEARING_REMINDER.getCcdType());
+        String caseId = wrapper.getCaseId();
+        String jobGroup = jobGroupGenerator.generate(caseId, HEARING_REMINDER_NOTIFICATION.getId());
 
         try {
 

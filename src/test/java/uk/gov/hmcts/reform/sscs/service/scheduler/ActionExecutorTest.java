@@ -2,7 +2,7 @@ package uk.gov.hmcts.reform.sscs.service.scheduler;
 
 import static org.mockito.Mockito.*;
 import static org.mockito.MockitoAnnotations.initMocks;
-import static uk.gov.hmcts.reform.sscs.ccd.domain.EventType.EVIDENCE_REMINDER;
+import static uk.gov.hmcts.reform.sscs.domain.notify.NotificationEventType.EVIDENCE_REMINDER_NOTIFICATION;
 
 import org.junit.Before;
 import org.junit.Test;
@@ -44,18 +44,18 @@ public class ActionExecutorTest {
 
         caseDetails = CaseDetails.builder().caseTypeId("123").build();
 
-        newSscsCaseData = SscsCaseData.builder().notificationType(EVIDENCE_REMINDER).build();
+        newSscsCaseData = SscsCaseData.builder().build();
 
-        wrapper = SscsCaseDataWrapper.builder().newSscsCaseData(newSscsCaseData).build();
+        wrapper = SscsCaseDataWrapper.builder().newSscsCaseData(newSscsCaseData).notificationEventType(EVIDENCE_REMINDER_NOTIFICATION).build();
     }
 
     @Test
     public void givenAReminderIsTriggered_thenActionExecutorShouldProcessTheJob() {
         when(ccdClient.getByCaseId(eq("123456"))).thenReturn(caseDetails);
         when(deserializer.buildSscsCaseDataWrapper(any())).thenReturn(wrapper);
-        when(ccdClient.updateCase(eq(newSscsCaseData), eq(123456L), eq(EVIDENCE_REMINDER.getCcdType()), any(), any())).thenReturn(sscsCaseDetails);
+        when(ccdClient.updateCase(eq(newSscsCaseData), eq(123456L), eq(EVIDENCE_REMINDER_NOTIFICATION.getId()), any(), any())).thenReturn(sscsCaseDetails);
 
-        actionExecutor.execute("1", "group", EVIDENCE_REMINDER.getCcdType(), "123456");
+        actionExecutor.execute("1", "group", EVIDENCE_REMINDER_NOTIFICATION.getId(), "123456");
 
         verify(notificationService, times(1)).createAndSendNotification(new CcdNotificationWrapper(wrapper));
         verify(ccdClient, times(1)).updateCase(any(), any(), any(), any(), any());

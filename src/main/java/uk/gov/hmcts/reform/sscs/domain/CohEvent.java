@@ -42,7 +42,7 @@ public class CohEvent {
         return onlineHearingId;
     }
 
-    public String getEventType() {
+    public String getNotificationEventType() {
         return eventType;
     }
 

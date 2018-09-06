@@ -2,7 +2,8 @@ package uk.gov.hmcts.reform.sscs.personalisation;
 
 import static com.google.common.collect.Lists.newArrayList;
 import static uk.gov.hmcts.reform.sscs.ccd.domain.Benefit.getBenefitByCode;
-import static uk.gov.hmcts.reform.sscs.ccd.domain.EventType.*;
+import static uk.gov.hmcts.reform.sscs.ccd.domain.EventType.APPEAL_RECEIVED;
+import static uk.gov.hmcts.reform.sscs.domain.notify.NotificationEventType.*;
 
 import java.time.LocalDate;
 import java.time.LocalDateTime;
@@ -20,6 +21,7 @@ import uk.gov.hmcts.reform.sscs.ccd.domain.*;
 import uk.gov.hmcts.reform.sscs.config.AppConstants;
 import uk.gov.hmcts.reform.sscs.config.NotificationConfig;
 import uk.gov.hmcts.reform.sscs.domain.SscsCaseDataWrapper;
+import uk.gov.hmcts.reform.sscs.domain.notify.NotificationEventType;
 import uk.gov.hmcts.reform.sscs.domain.notify.Template;
 import uk.gov.hmcts.reform.sscs.extractor.HearingContactDateExtractor;
 import uk.gov.hmcts.reform.sscs.factory.NotificationWrapper;
@@ -89,15 +91,17 @@ public class Personalisation<E extends NotificationWrapper> {
         }
 
         setEvidenceProcessingAddress(personalisation, ccdResponse);
-        setEventData(personalisation, ccdResponse);
-        setEvidenceReceivedNotificationData(personalisation, ccdResponse);
-        setHearingContactDate(personalisation, ccdResponse);
+
+        NotificationEventType notificationEventType = responseWrapper.getNotificationEventType();
+        setEventData(personalisation, ccdResponse, notificationEventType);
+        setEvidenceReceivedNotificationData(personalisation, ccdResponse, notificationEventType);
+        setHearingContactDate(personalisation, responseWrapper);
 
         return personalisation;
     }
 
-    public void setHearingContactDate(Map<String, String> personalisation, SscsCaseData ccdResponse) {
-        Optional<ZonedDateTime> hearingContactDate = hearingContactDateExtractor.extract(ccdResponse);
+    public void setHearingContactDate(Map<String, String> personalisation, SscsCaseDataWrapper wrapper) {
+        Optional<ZonedDateTime> hearingContactDate = hearingContactDateExtractor.extract(wrapper);
         if (hearingContactDate.isPresent()) {
             personalisation.put(
                 AppConstants.HEARING_CONTACT_DATE,
@@ -106,13 +110,13 @@ public class Personalisation<E extends NotificationWrapper> {
         }
     }
 
-    public Map<String, String> setEventData(Map<String, String> personalisation, SscsCaseData ccdResponse) {
+    public Map<String, String> setEventData(Map<String, String> personalisation, SscsCaseData ccdResponse, NotificationEventType notificationEventType) {
         if (ccdResponse.getEvents() != null) {
 
             for (Event event : ccdResponse.getEvents()) {
                 if (event.getValue() != null) {
-                    if ((ccdResponse.getNotificationType().equals(APPEAL_RECEIVED) && event.getValue().getEventType().equals(APPEAL_RECEIVED))
-                        || ccdResponse.getNotificationType().equals(DWP_RESPONSE_LATE_REMINDER)) {
+                    if ((notificationEventType.equals(APPEAL_RECEIVED_NOTIFICATION) && event.getValue().getEventType().equals(APPEAL_RECEIVED))
+                        || notificationEventType.equals(DWP_RESPONSE_LATE_REMINDER_NOTIFICATION)) {
                         return setAppealReceivedDetails(personalisation, event.getValue());
                     }
                 }
@@ -121,8 +125,8 @@ public class Personalisation<E extends NotificationWrapper> {
         return personalisation;
     }
 
-    public Map<String, String> setEvidenceReceivedNotificationData(Map<String, String> personalisation, SscsCaseData ccdResponse) {
-        if (ccdResponse.getNotificationType().equals(EVIDENCE_RECEIVED)) {
+    public Map<String, String> setEvidenceReceivedNotificationData(Map<String, String> personalisation, SscsCaseData ccdResponse, NotificationEventType notificationEventType) {
+        if (notificationEventType.equals(EVIDENCE_RECEIVED_NOTIFICATION)) {
             if (ccdResponse.getEvidence() != null && ccdResponse.getEvidence().getDocuments() != null && !ccdResponse.getEvidence().getDocuments().isEmpty()) {
                 personalisation.put(AppConstants.EVIDENCE_RECEIVED_DATE_LITERAL, formatLocalDate(ccdResponse.getEvidence().getDocuments().get(0).getValue().getEvidenceDateTimeFormatted()));
             }
@@ -180,9 +184,9 @@ public class Personalisation<E extends NotificationWrapper> {
         return date.format(DateTimeFormatter.ofPattern(AppConstants.HEARING_TIME_FORMAT));
     }
 
-    public Template getTemplate(EventType type, Benefit benefit) {
-        String smsTemplateId = isSendSmsSubscriptionConfirmation() ? SUBSCRIPTION_CREATED.getCcdType() : type.getCcdType();
-        return config.getTemplate(type.getCcdType(), smsTemplateId, benefit);
+    public Template getTemplate(NotificationEventType type, Benefit benefit) {
+        String smsTemplateId = isSendSmsSubscriptionConfirmation() ? SUBSCRIPTION_CREATED_NOTIFICATION.getId() : type.getId();
+        return config.getTemplate(type.getId(), smsTemplateId, benefit);
     }
 
     public Boolean isSendSmsSubscriptionConfirmation() {

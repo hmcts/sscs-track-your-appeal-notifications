@@ -1,7 +1,7 @@
 package uk.gov.hmcts.reform.sscs.functional;
 
 import static uk.gov.hmcts.reform.sscs.SscsCaseDataUtils.addHearing;
-import static uk.gov.hmcts.reform.sscs.ccd.domain.EventType.*;
+import static uk.gov.hmcts.reform.sscs.domain.notify.NotificationEventType.*;
 
 import java.io.IOException;
 import java.time.LocalDate;
@@ -66,7 +66,7 @@ public class ReminderNotificationsFunctionalTest extends AbstractFunctionalTest 
     @Test
     public void shouldSendNotificationsWhenAppealReceivedEventIsReceived() throws IOException, NotificationClientException {
 
-        simulateCcdCallback(APPEAL_RECEIVED);
+        simulateCcdCallback(APPEAL_RECEIVED_NOTIFICATION);
 
         List<Notification> notifications =
             tryFetchNotificationsForTestCase(
@@ -99,8 +99,8 @@ public class ReminderNotificationsFunctionalTest extends AbstractFunctionalTest 
     @Test
     public void shouldSendNotificationsWhenDwpResponseReceivedEventIsReceived() throws IOException, NotificationClientException {
 
-        triggerEvent(DWP_RESPONSE_RECEIVED);
-        simulateCcdCallback(DWP_RESPONSE_RECEIVED);
+        triggerEvent(DWP_RESPONSE_RECEIVED_NOTIFICATION);
+        simulateCcdCallback(DWP_RESPONSE_RECEIVED_NOTIFICATION);
 
         List<Notification> notifications =
             tryFetchNotificationsForTestCase(
@@ -240,8 +240,8 @@ public class ReminderNotificationsFunctionalTest extends AbstractFunctionalTest 
     public void shouldSendNotificationsWhenHearingBookedEventIsReceived() throws IOException, NotificationClientException {
 
         addHearing(caseData, 0);
-        triggerEvent(HEARING_BOOKED);
-        simulateCcdCallback(HEARING_BOOKED);
+        triggerEvent(HEARING_BOOKED_NOTIFICATION);
+        simulateCcdCallback(HEARING_BOOKED_NOTIFICATION);
 
         List<Notification> notifications =
             tryFetchNotificationsForTestCase(

@@ -1,11 +1,14 @@
 package uk.gov.hmcts.reform.sscs.personalisation;
 
+import static uk.gov.hmcts.reform.sscs.domain.notify.NotificationEventType.DO_NOT_SEND;
+import static uk.gov.hmcts.reform.sscs.domain.notify.NotificationEventType.getNotificationByCcdEvent;
+
 import java.util.Map;
 import org.springframework.stereotype.Component;
-import uk.gov.hmcts.reform.sscs.ccd.domain.EventType;
 import uk.gov.hmcts.reform.sscs.ccd.domain.SscsCaseData;
 import uk.gov.hmcts.reform.sscs.ccd.domain.Subscription;
 import uk.gov.hmcts.reform.sscs.domain.SscsCaseDataWrapper;
+import uk.gov.hmcts.reform.sscs.domain.notify.NotificationEventType;
 import uk.gov.hmcts.reform.sscs.factory.CcdNotificationWrapper;
 
 @Component
@@ -14,7 +17,10 @@ public class SubscriptionPersonalisation extends Personalisation<CcdNotification
     @Override
     protected Map<String, String> create(SscsCaseDataWrapper responseWrapper) {
         setSendSmsSubscriptionConfirmation(shouldSendSmsSubscriptionConfirmation(responseWrapper.getNewSscsCaseData(), responseWrapper.getOldSscsCaseData()));
-        responseWrapper.getNewSscsCaseData().setNotificationType(setEventTypeNotification(responseWrapper.getNewSscsCaseData(), responseWrapper.getOldSscsCaseData()));
+        NotificationEventType eventType = getNotificationEventTypeNotification(responseWrapper);
+
+        responseWrapper.setNotificationEventType(eventType);
+
         return super.create(responseWrapper);
     }
 
@@ -25,17 +31,19 @@ public class SubscriptionPersonalisation extends Personalisation<CcdNotification
                 && newSscsCaseData.getSubscriptions().getAppellantSubscription().isSmsSubscribed());
     }
 
-    public EventType setEventTypeNotification(SscsCaseData newSscsCaseData, SscsCaseData oldSscsCaseData) {
+    public NotificationEventType getNotificationEventTypeNotification(SscsCaseDataWrapper responseWrapper) {
+        SscsCaseData newSscsCaseData = responseWrapper.getNewSscsCaseData();
+        SscsCaseData oldSscsCaseData = responseWrapper.getOldSscsCaseData();
         if (doNotSendEmailUpdatedNotificationWhenEmailNotChanged(newSscsCaseData, oldSscsCaseData)) {
-            return EventType.DO_NOT_SEND;
-        } else if (shouldSetMostRecentEventTypeNotification(newSscsCaseData, oldSscsCaseData)) {
-            return newSscsCaseData.getEvents().get(0).getValue().getEventType();
+            return DO_NOT_SEND;
+        } else if (shouldSetMostRecentNotificationEventTypeNotification(newSscsCaseData, oldSscsCaseData)) {
+            return getNotificationByCcdEvent(newSscsCaseData.getEvents().get(0).getValue().getEventType());
         } else {
-            return newSscsCaseData.getNotificationType();
+            return responseWrapper.getNotificationEventType();
         }
     }
 
-    private Boolean shouldSetMostRecentEventTypeNotification(SscsCaseData newSscsCaseData, SscsCaseData oldSscsCaseData) {
+    private Boolean shouldSetMostRecentNotificationEventTypeNotification(SscsCaseData newSscsCaseData, SscsCaseData oldSscsCaseData) {
         return (hasCaseJustSubscribed(oldSscsCaseData.getSubscriptions().getAppellantSubscription(), newSscsCaseData.getSubscriptions().getAppellantSubscription())
                 && newSscsCaseData.getEvents() != null
                 && !newSscsCaseData.getEvents().isEmpty()
