@@ -9,6 +9,15 @@ import uk.gov.hmcts.reform.sscs.domain.notify.NotificationEventType;
 @Service
 public class NotificationValidService {
 
+    public Boolean isHearingTypeValidToSendNotification(Boolean isOralCase, NotificationEventType eventType) {
+        if (isOralCase && eventType.isSendForOralCase()) {
+            return true;
+        } else if (!isOralCase && eventType.isSendForPaperCase()) {
+            return true;
+        }
+        return false;
+    }
+
     public Boolean isNotificationStillValidToSend(List<Hearing> hearings, NotificationEventType eventType) {
         switch (eventType) {
             case HEARING_BOOKED_NOTIFICATION: return checkHearingIsInFuture(hearings);

@@ -79,7 +79,17 @@ public class NotificationsIt {
     }
 
     @Test
-    public void shouldSendNotificationForAnAppealReceivedRequest() throws Exception {
+    public void shouldSendNotificationForAnAppealReceivedRequestForAnOralHearing() throws Exception {
+        HttpServletResponse response = getResponse(getRequestWithAuthHeader(json));
+
+        assertHttpStatus(response, HttpStatus.OK);
+        verify(client, times(1)).sendEmail(any(), any(), any(), any());
+        verify(client, times(1)).sendSms(any(), any(), any(), any(), any());
+    }
+
+    @Test
+    public void shouldSendNotificationForAnAppealReceivedRequestForAPaperHearing() throws Exception {
+        json = updateEmbeddedJson(json, "No", "case_details", "case_data", "appeal", "hearingOptions", "wantsToAttend");
         HttpServletResponse response = getResponse(getRequestWithAuthHeader(json));
 
         assertHttpStatus(response, HttpStatus.OK);

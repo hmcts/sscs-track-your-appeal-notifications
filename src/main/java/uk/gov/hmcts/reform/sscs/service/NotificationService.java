@@ -31,18 +31,19 @@ public class NotificationService {
         this.notificationValidService = notificationValidService;
     }
 
-    public void createAndSendNotification(NotificationWrapper notificationWrapper) {
+    public void createAndSendNotification(NotificationWrapper wrapper) {
 
-        final Subscription appellantSubscription = notificationWrapper.getAppellantSubscription();
-        final String notificationNotificationEventType = notificationWrapper.getNotificationType().getId();
-        final String caseId = notificationWrapper.getCaseId();
+        final Subscription appellantSubscription = wrapper.getAppellantSubscription();
+        final String notificationNotificationEventType = wrapper.getNotificationType().getId();
+        final String caseId = wrapper.getCaseId();
 
         LOG.info("Notification event triggered {} for case id {}", notificationNotificationEventType, caseId);
 
-        if (appellantSubscription != null && appellantSubscription.doesCaseHaveSubscriptions() && notificationValidService.isNotificationStillValidToSend(
-                notificationWrapper.getNewSscsCaseData().getHearings(), notificationWrapper.getNotificationType())) {
+        if (appellantSubscription != null && appellantSubscription.doesCaseHaveSubscriptions()
+                && notificationValidService.isNotificationStillValidToSend(wrapper.getNewSscsCaseData().getHearings(), wrapper.getNotificationType())
+                && notificationValidService.isHearingTypeValidToSendNotification(wrapper.getNewSscsCaseData().getAppeal().getHearingOptions().isWantsToAttendHearing(), wrapper.getNotificationType())) {
 
-            Notification notification = factory.create(notificationWrapper);
+            Notification notification = factory.create(wrapper);
 
             if (appellantSubscription.isEmailSubscribed() && notification.isEmail() && notification.getEmailTemplate() != null) {
 
@@ -66,7 +67,7 @@ public class NotificationService {
                 }
             }
 
-            reminderService.createReminders(notificationWrapper);
+            reminderService.createReminders(wrapper);
         }
     }
 
