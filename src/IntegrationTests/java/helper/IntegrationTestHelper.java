@@ -20,7 +20,7 @@ import org.quartz.Trigger;
 import org.quartz.impl.matchers.GroupMatcher;
 import org.springframework.http.HttpStatus;
 import org.springframework.test.web.servlet.request.MockHttpServletRequestBuilder;
-import uk.gov.hmcts.sscs.service.AuthorisationService;
+import uk.gov.hmcts.reform.sscs.service.AuthorisationService;
 
 public class IntegrationTestHelper {
 

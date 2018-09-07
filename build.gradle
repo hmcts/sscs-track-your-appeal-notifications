@@ -29,7 +29,7 @@ compileTestJava {
     options.compilerArgs << '-Xlint:deprecation'
 }
 
-mainClassName = 'uk.gov.hmcts.sscs.TrackYourAppealNotificationsApplication'
+mainClassName = 'uk.gov.hmcts.reform.sscs.TrackYourAppealNotificationsApplication'
 
 checkstyle {
     maxWarnings = 0
@@ -80,8 +80,8 @@ task smoke(type: Test) {
     description = 'Executes non-destructive smoke tests against a running CCD and notification service'
     setTestClassesDirs(sourceSets.e2e.output.classesDirs)
     setClasspath(sourceSets.e2e.runtimeClasspath)
-    include "uk/gov/hmcts/sscs/smoke/**"
-    exclude "uk/gov/hmcts/sscs/functional/**"
+    include "uk/gov/hmcts/reform/sscs/smoke/**"
+    exclude "uk/gov/hmcts/reform/sscs/functional/**"
 }
 
 task functional(type: Test) {
@@ -89,8 +89,8 @@ task functional(type: Test) {
     description = 'Executes non-destructive functional tests in AAT against a running CCD and notification service'
     setTestClassesDirs(sourceSets.e2e.output.classesDirs)
     setClasspath(sourceSets.e2e.runtimeClasspath)
-    include "uk/gov/hmcts/sscs/functional/**"
-    exclude "uk/gov/hmcts/sscs/smoke/**"
+    include "uk/gov/hmcts/reform/sscs/functional/**"
+    exclude "uk/gov/hmcts/reform/sscs/smoke/**"
 }
 
 jacocoTestReport {
@@ -151,9 +151,9 @@ sonarqube {
         property "sonar.projectKey", "SSCSTYANS"
         property "sonar.jacoco.reportPath", "${project.buildDir}/jacoco/test.exec"
         property "sonar.jacoco.itReportPath", "${project.buildDir}/jacoco/integration.exec"
-        property "sonar.exclusions", "src/main/java/uk/gov/hmcts/sscs/domain/**," +
-                "src/main/java/uk/gov/hmcts/sscs/TrackYourAppealNotificationsApplication.java," +
-                "src/main/java/uk/gov/hmcts/sscs/config/**,"
+        property "sonar.exclusions", "src/main/java/uk/gov/hmcts/reform/sscs/domain/**," +
+                "src/main/java/uk/gov/hmcts/reform/sscs/TrackYourAppealNotificationsApplication.java," +
+                "src/main/java/uk/gov/hmcts/reform/sscs/config/**,"
     }
 }
 
@@ -233,6 +233,7 @@ dependencies {
     compile group: 'uk.gov.hmcts.reform', name: 'core-case-data-store-client', version: '4.1.1'
     compile group: 'uk.gov.hmcts.reform', name: 'sscs-job-scheduler', version: '1.2.0'
     compile group: 'uk.gov.hmcts.reform', name: 'service-auth-provider-client', version: '1.0.0'
+    compile group: 'uk.gov.hmcts.reform', name: 'sscs-common', version: '0.0.23'
 
     compile group: 'uk.gov.service.notify', name: 'notifications-java-client', version: '3.9.2-RELEASE'
     compile group: 'io.github.openfeign', name: 'feign-httpclient', version: '9.5.1'
