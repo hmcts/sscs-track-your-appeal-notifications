@@ -278,3 +278,4 @@ flyway {
     user = dbUser
     password = dbPass
 }
+
