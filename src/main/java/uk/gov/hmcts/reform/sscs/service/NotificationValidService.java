@@ -17,7 +17,7 @@ public class NotificationValidService {
 
         if (isOralCase && !isOnlineHearing && eventType.isSendForOralCase()) {
             return true;
-        } else if (!isOralCase &&!isOnlineHearing && eventType.isSendForPaperCase()) {
+        } else if (!isOralCase && !isOnlineHearing && eventType.isSendForPaperCase()) {
             return true;
         } else if (isOnlineHearing && isOnlineHearing && eventType.isSendForCohCase()) {
             return true;

@@ -298,8 +298,8 @@ public class SscsCaseDataWrapperDeserializerTest {
 
     @Test
     public void shouldDeserializeOnlinePanel() throws Exception {
-            String onlinePanelJson = "{\"onlinePanel\":{\"assignedTo\":\"Mr Smith\",\"disabilityQualifiedMember\":\"Mr Tall\","
-                    + "\"medicalMember\":\"Mr Small\"}}";
+        String onlinePanelJson = "{\"onlinePanel\":{\"assignedTo\":\"Mr Smith\",\"disabilityQualifiedMember\":\"Mr Tall\","
+                + "\"medicalMember\":\"Mr Small\"}}";
 
         OnlinePanel onlinePanel = ccdResponseDeserializer.deserializeOnlinePanelJson(mapper.readTree(onlinePanelJson));
 
@@ -446,7 +446,7 @@ public class SscsCaseDataWrapperDeserializerTest {
     @Test
     public void deserializeAllSscsCaseDataJson() throws IOException {
 
-        String path = getClass().getClassLoader().getResource("json/ccdResponse.json").getFile();
+        String path = getClass().getClassLoader().getResource("json/ccdResponseWithCohFields.json").getFile();
         String json = FileUtils.readFileToString(new File(path), StandardCharsets.UTF_8.name());
 
         SscsCaseDataWrapper wrapper = mapper.readValue(json, SscsCaseDataWrapper.class);
