@@ -80,11 +80,14 @@ public class Personalisation<E extends NotificationWrapper> {
                     config.getHearingInfoLink().replace(AppConstants.APPEAL_ID_LITERAL, appellantSubscription.getTya()));
         }
 
-        try {
-            String email = URLEncoder.encode(appellantSubscription.getEmail(), StandardCharsets.UTF_8.name());
-            personalisation.put(ONLINE_HEARING_LINK_LITERAL, config.getOnlineHearingLink().replace("{email}", email));
-        } catch (UnsupportedEncodingException e) {
-            throw new RuntimeException(e);
+        String email = appellantSubscription.getEmail();
+        if (email != null) {
+            try {
+                String encodedEmail = URLEncoder.encode(email, StandardCharsets.UTF_8.name());
+                personalisation.put(ONLINE_HEARING_LINK_LITERAL, config.getOnlineHearingLink().replace("{email}", encodedEmail));
+            } catch (UnsupportedEncodingException e) {
+                throw new RuntimeException(e);
+            }
         }
 
         personalisation.put(AppConstants.FIRST_TIER_AGENCY_ACRONYM, AppConstants.DWP_ACRONYM);
