@@ -145,6 +145,13 @@ reminder:
   hearingReminder.beforeFirst.seconds: 604800
   hearingReminder.beforeSecond.seconds: 86400
 
+feign:
+  client:
+    config:
+      core-case-data-api:
+        decode404: true
+
+
 ---
 # default profile (development, production etc.)
 spring:
