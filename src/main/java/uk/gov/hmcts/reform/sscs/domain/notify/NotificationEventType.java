@@ -71,23 +71,12 @@ public enum NotificationEventType {
         return sendForPaperCase;
     }
 
-    public void setSendForPaperCase(Boolean sendForPaperCase) {
-        this.sendForPaperCase = sendForPaperCase;
-    }
-
     public boolean isSendForOralCase() {
         return sendForOralCase;
-    }
-
-    public void setSendForOralCase(Boolean sendForOralCase) {
-        this.sendForOralCase = sendForOralCase;
     }
 
     public boolean isSendForCohCase() {
         return sendForCohCase;
     }
 
-    public void setSendForCohCase(boolean sendForCohCase) {
-        this.sendForCohCase = sendForCohCase;
-    }
 }

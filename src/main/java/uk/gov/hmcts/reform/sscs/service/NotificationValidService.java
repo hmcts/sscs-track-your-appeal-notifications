@@ -12,14 +12,14 @@ public class NotificationValidService {
 
     public Boolean isHearingTypeValidToSendNotification(SscsCaseData sscsCaseData, NotificationEventType eventType) {
 
+        Boolean isOralCase = sscsCaseData.getAppeal().getHearingOptions().isWantsToAttendHearing();
         Boolean isOnlineHearing = sscsCaseData.getOnlinePanel() != null;
-        Boolean isOralCase = sscsCaseData.getAppeal().getHearingOptions().isWantsToAttendHearing() && !isOnlineHearing;
 
-        if (isOralCase && eventType.isSendForOralCase()) {
+        if (isOralCase && !isOnlineHearing && eventType.isSendForOralCase()) {
             return true;
-        } else if (!isOralCase && eventType.isSendForPaperCase()) {
+        } else if (!isOralCase &&!isOnlineHearing && eventType.isSendForPaperCase()) {
             return true;
-        } else if (isOnlineHearing && eventType.isSendForCohCase()) {
+        } else if (isOnlineHearing && isOnlineHearing && eventType.isSendForCohCase()) {
             return true;
         }
         return false;

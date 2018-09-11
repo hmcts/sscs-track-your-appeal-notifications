@@ -69,11 +69,10 @@ public class SscsCaseDataWrapperDeserializer extends StdDeserializer<SscsCaseDat
     }
 
     public SscsCaseData deserializeCaseNode(JsonNode caseNode) {
-        JsonNode panelNode = getNode(caseNode, "onlinePanel");
         JsonNode appealNode = getNode(caseNode, "appeal");
         JsonNode subscriptionsNode = getNode(caseNode, "subscriptions");
 
-        OnlinePanel onlinePanel = deserializeOnlinePanelJson(panelNode);
+        OnlinePanel onlinePanel = deserializeOnlinePanelJson(caseNode);
         Appeal appeal = deserializeAppealDetailsJson(appealNode);
         Subscriptions subscriptions = deserializeSubscriptionJson(subscriptionsNode);
         List<Event> events = deserializeEventDetailsJson(caseNode);
@@ -93,12 +92,14 @@ public class SscsCaseDataWrapperDeserializer extends StdDeserializer<SscsCaseDat
                 .build();
     }
 
-    public OnlinePanel deserializeOnlinePanelJson(JsonNode panelJson) {
-        if (panelJson != null) {
+    public OnlinePanel deserializeOnlinePanelJson(JsonNode caseNode) {
+        JsonNode panelNode = getNode(caseNode, "onlinePanel");
+
+        if (panelNode != null) {
             return OnlinePanel.builder()
-                    .assignedTo(getField(panelJson, "assignedTo"))
-                    .disabilityQualifiedMember(getField(panelJson, "disabilityQualifiedMember"))
-                    .medicalMember(getField(panelJson, "medicalMember")).build();
+                    .assignedTo(getField(panelNode, "assignedTo"))
+                    .disabilityQualifiedMember(getField(panelNode, "disabilityQualifiedMember"))
+                    .medicalMember(getField(panelNode, "medicalMember")).build();
         }
         return null;
     }

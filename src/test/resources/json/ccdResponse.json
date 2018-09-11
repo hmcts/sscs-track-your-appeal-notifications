@@ -4,6 +4,11 @@
     "callback_response_status": null,
     "callback_response_status_code": null,
     "case_data": {
+      "onlinePanel":{
+        "assignedTo":"Mr Smith",
+        "disabilityQualifiedMember":"Mr Tall",
+        "medicalMember":"Mr Small"
+      },
       "appeal": {
         "mrnDetails": {
           "dwpIssuingOffice": "Birmingham",
