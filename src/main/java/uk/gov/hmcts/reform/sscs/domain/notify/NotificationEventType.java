@@ -5,7 +5,7 @@ import uk.gov.hmcts.reform.sscs.ccd.domain.EventType;
 public enum NotificationEventType {
 
     ADJOURNED_NOTIFICATION("hearingAdjourned", true, false, false),
-    SYA_APPEAL_CREATED_NOTIFICATION("appealCreated", true, false, false),
+    SYA_APPEAL_CREATED_NOTIFICATION("appealCreated", true, true, false),
     APPEAL_LAPSED_NOTIFICATION("appealLapsed", true, false, false),
     APPEAL_RECEIVED_NOTIFICATION("appealReceived", true, true, false),
     APPEAL_WITHDRAWN_NOTIFICATION("appealWithdrawn", true, false, false),

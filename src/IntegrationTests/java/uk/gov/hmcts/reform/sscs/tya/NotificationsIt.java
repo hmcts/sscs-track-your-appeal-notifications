@@ -210,9 +210,20 @@ public class NotificationsIt {
     }
 
     @Test
-    public void shouldSendNotificationForSyaAppealCreated() throws Exception {
+    public void shouldSendNotificationForSyaAppealCreatedRequestForAnOralHearing() throws Exception {
         json = json.replace("appealReceived", "appealCreated");
 
+        HttpServletResponse response = getResponse(getRequestWithAuthHeader(json));
+
+        assertHttpStatus(response, HttpStatus.OK);
+        verify(client, times(1)).sendEmail(any(), any(), any(), any());
+        verify(client, times(1)).sendSms(any(), any(), any(), any(), any());
+    }
+
+    @Test
+    public void shouldSendNotificationForSyaAppealCreatedRequestForAPaperHearing() throws Exception {
+        json = json.replace("appealReceived", "appealCreated");
+        json = updateEmbeddedJson(json, "No", "case_details", "case_data", "appeal", "hearingOptions", "wantsToAttend");
         HttpServletResponse response = getResponse(getRequestWithAuthHeader(json));
 
         assertHttpStatus(response, HttpStatus.OK);
