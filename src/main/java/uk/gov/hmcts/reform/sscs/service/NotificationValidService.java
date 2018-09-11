@@ -4,15 +4,22 @@ import java.time.LocalDateTime;
 import java.util.List;
 import org.springframework.stereotype.Service;
 import uk.gov.hmcts.reform.sscs.ccd.domain.Hearing;
+import uk.gov.hmcts.reform.sscs.ccd.domain.SscsCaseData;
 import uk.gov.hmcts.reform.sscs.domain.notify.NotificationEventType;
 
 @Service
 public class NotificationValidService {
 
-    public Boolean isHearingTypeValidToSendNotification(Boolean isOralCase, NotificationEventType eventType) {
+    public Boolean isHearingTypeValidToSendNotification(SscsCaseData sscsCaseData, NotificationEventType eventType) {
+
+        Boolean isOnlineHearing = sscsCaseData.getOnlinePanel() != null;
+        Boolean isOralCase = sscsCaseData.getAppeal().getHearingOptions().isWantsToAttendHearing() && !isOnlineHearing;
+
         if (isOralCase && eventType.isSendForOralCase()) {
             return true;
         } else if (!isOralCase && eventType.isSendForPaperCase()) {
+            return true;
+        } else if (isOnlineHearing && eventType.isSendForCohCase()) {
             return true;
         }
         return false;
