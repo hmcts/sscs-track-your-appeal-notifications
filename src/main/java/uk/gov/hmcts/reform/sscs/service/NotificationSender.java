@@ -40,7 +40,7 @@ public class NotificationSender {
 
         NotificationClient client;
 
-        if (notificationBlacklist.getTestRecipients().contains(emailAddress)) {
+        if (notificationBlacklist.getTestRecipients().contains(emailAddress) || emailAddress.matches("test[\\d]+@hmcts.net")) {
             LOG.info("Using test GovNotify key {} for {}", testNotificationClient.getApiKey(), emailAddress);
             client = testNotificationClient;
         } else {
@@ -48,10 +48,10 @@ public class NotificationSender {
         }
 
         client.sendEmail(
-            templateId,
-            emailAddress,
-            personalisation,
-            reference
+                templateId,
+                emailAddress,
+                personalisation,
+                reference
         );
     }
 
