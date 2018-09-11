@@ -354,6 +354,29 @@ public class PersonalisationTest {
         assertEquals("http://link.com/onlineHearing?email=test%40email.com", result.get(ONLINE_HEARING_LINK_LITERAL));
     }
 
+    @Test
+    public void shouldNotSetOnlineHearingLinkIfEmailAddressDoesNotExist() {
+        LocalDate hearingDate = LocalDate.now().plusDays(1);
+
+        Hearing hearing = createHearing(hearingDate);
+
+        List<Hearing> hearingList = new ArrayList<>();
+        hearingList.add(hearing);
+
+        SscsCaseData response = createResponse(hearingList);
+        Subscription subscriptionsWithoutEmail = response.getSubscriptions().getAppellantSubscription().toBuilder()
+                .email(null).build();
+        Subscriptions subscriptions = response.getSubscriptions().toBuilder().appellantSubscription(subscriptionsWithoutEmail).build();
+        response.setSubscriptions(subscriptions);
+
+        Map result = personalisation.create(SscsCaseDataWrapper.builder()
+                .newSscsCaseData(response)
+                .notificationEventType(NotificationEventType.QUESTION_ROUND_ISSUED_NOTIFICATION)
+                .build());
+
+        assertNull(result.get(ONLINE_HEARING_LINK_LITERAL));
+    }
+
     private Hearing createHearing(LocalDate hearingDate) {
         return Hearing.builder().value(HearingDetails.builder()
                 .hearingDate(hearingDate.format(DateTimeFormatter.ofPattern("yyyy-MM-dd")))
