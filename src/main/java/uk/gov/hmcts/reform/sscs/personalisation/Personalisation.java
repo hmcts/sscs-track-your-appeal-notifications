@@ -3,8 +3,12 @@ package uk.gov.hmcts.reform.sscs.personalisation;
 import static com.google.common.collect.Lists.newArrayList;
 import static uk.gov.hmcts.reform.sscs.ccd.domain.Benefit.getBenefitByCode;
 import static uk.gov.hmcts.reform.sscs.ccd.domain.EventType.APPEAL_RECEIVED;
+import static uk.gov.hmcts.reform.sscs.config.AppConstants.ONLINE_HEARING_LINK_LITERAL;
 import static uk.gov.hmcts.reform.sscs.domain.notify.NotificationEventType.*;
 
+import java.io.UnsupportedEncodingException;
+import java.net.URLEncoder;
+import java.nio.charset.StandardCharsets;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.ZonedDateTime;
@@ -74,6 +78,13 @@ public class Personalisation<E extends NotificationWrapper> {
             personalisation.put(AppConstants.CLAIMING_EXPENSES_LINK_LITERAL, config.getClaimingExpensesLink().replace(AppConstants.APPEAL_ID, appellantSubscription.getTya()));
             personalisation.put(AppConstants.HEARING_INFO_LINK_LITERAL,
                     config.getHearingInfoLink().replace(AppConstants.APPEAL_ID_LITERAL, appellantSubscription.getTya()));
+        }
+
+        try {
+            String email = URLEncoder.encode(appellantSubscription.getEmail(), StandardCharsets.UTF_8.name());
+            personalisation.put(ONLINE_HEARING_LINK_LITERAL, config.getOnlineHearingLink().replace("{email}", email));
+        } catch (UnsupportedEncodingException e) {
+            throw new RuntimeException(e);
         }
 
         personalisation.put(AppConstants.FIRST_TIER_AGENCY_ACRONYM, AppConstants.DWP_ACRONYM);

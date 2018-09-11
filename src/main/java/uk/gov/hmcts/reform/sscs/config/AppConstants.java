@@ -32,6 +32,7 @@ public final class AppConstants {
     public static final String MANAGE_EMAILS_LINK_LITERAL = "manage_emails_link";
     public static final int MAX_DWP_RESPONSE_DAYS = 35;
     public static final String MRN_DETAILS_LITERAL = "mrn_details";
+    public static final String ONLINE_HEARING_LINK_LITERAL = "online_hearing_link";
     public static final String PHONE_NUMBER = "phone_number";
     public static final String POSTCODE_LITERAL = "postcode";
     public static final String REASONS_FOR_APPEALING_DETAILS_LITERAL = "reasons_for_appealing_details";

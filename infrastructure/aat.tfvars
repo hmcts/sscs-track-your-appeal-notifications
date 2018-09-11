@@ -6,6 +6,7 @@ sscs_manage_emails_link = "https://track-appeal.nonprod.platform.hmcts.net/manag
 sscs_track_your_appeal_link = "https://track-appeal.nonprod.platform.hmcts.net/trackyourappeal/appeal_id"
 hearing_info_link = "https://track-appeal.nonprod.platform.hmcts.net/abouthearing/appeal_id"
 claiming_expenses_link = "https://track-appeal.nonprod.platform.hmcts.net/expenses/appeal_id"
+online_hearing_link = "https://sscs-cor-frontend-aat.service.core-compute-aat.internal/login"
 
 idam_redirect_url = "https://evidence-sharing-preprod.sscs.reform.hmcts.net"
 notification_key = "notification-key"

@@ -105,6 +105,7 @@ module "track-your-appeal-notifications" {
     CLAIMING_EXPENSES_LINK        = "${var.claiming_expenses_link}"
     JOB_SCHEDULER_POLL_INTERVAL   = "${var.job_scheduler_poll_interval}"
     EMAIL_MAC_SECRET_TEXT         = "${data.vault_generic_secret.mac_secret.data["value"]}"
+    ONLINE_HEARING_LINK           = "${var.online_hearing_link}"
 
     // db vars
     JOB_SCHEDULER_DB_HOST               = "${module.db-notif.host_name}"
