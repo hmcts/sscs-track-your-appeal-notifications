@@ -5,6 +5,7 @@ import static org.mockito.Mockito.*;
 import static org.mockito.MockitoAnnotations.initMocks;
 import static uk.gov.hmcts.reform.sscs.ccd.domain.Benefit.PIP;
 import static uk.gov.hmcts.reform.sscs.ccd.domain.EventType.APPEAL_RECEIVED;
+import static uk.gov.hmcts.reform.sscs.config.AppConstants.ONLINE_HEARING_LINK_LITERAL;
 import static uk.gov.hmcts.reform.sscs.domain.notify.NotificationEventType.*;
 
 import java.time.Instant;
@@ -24,6 +25,7 @@ import uk.gov.hmcts.reform.sscs.config.AppConstants;
 import uk.gov.hmcts.reform.sscs.config.NotificationConfig;
 import uk.gov.hmcts.reform.sscs.domain.SscsCaseDataWrapper;
 import uk.gov.hmcts.reform.sscs.domain.notify.Link;
+import uk.gov.hmcts.reform.sscs.domain.notify.NotificationEventType;
 import uk.gov.hmcts.reform.sscs.extractor.HearingContactDateExtractor;
 import uk.gov.hmcts.reform.sscs.service.MessageAuthenticationServiceImpl;
 import uk.gov.hmcts.reform.sscs.service.RegionalProcessingCenterService;
@@ -70,6 +72,7 @@ public class PersonalisationTest {
         when(config.getManageEmailsLink()).thenReturn(Link.builder().linkUrl("http://link.com/manage-email-notifications/mac").build());
         when(config.getClaimingExpensesLink()).thenReturn(Link.builder().linkUrl("http://link.com/progress/appeal_id/expenses").build());
         when(config.getHearingInfoLink()).thenReturn(Link.builder().linkUrl("http://link.com/progress/appeal_id/abouthearing").build());
+        when(config.getOnlineHearingLink()).thenReturn(Link.builder().linkUrl("http://link.com/onlineHearing?email={email}").build());
         when(macService.generateToken("GLSCRR", PIP.name())).thenReturn("ZYX");
         when(hearingContactDateExtractor.extract(any())).thenReturn(Optional.empty());
 
@@ -215,19 +218,7 @@ public class PersonalisationTest {
     public void givenHearingData_correctlySetTheHearingDetails() {
         LocalDate hearingDate = LocalDate.now().plusDays(7);
 
-        Hearing hearing = Hearing.builder().value(HearingDetails.builder()
-            .hearingDate(hearingDate.format(DateTimeFormatter.ofPattern("yyyy-MM-dd")))
-            .time("12:00")
-            .venue(Venue.builder()
-                .name("The venue")
-                .address(Address.builder()
-                    .line1("12 The Road Avenue")
-                    .line2("Village")
-                    .town("Aberdeen")
-                    .county("Aberdeenshire")
-                    .postcode("AB12 0HN").build())
-                .googleMapLink("http://www.googlemaps.com/aberdeenvenue")
-                .build()).build()).build();
+        Hearing hearing = createHearing(hearingDate);
 
         List<Hearing> hearingList = new ArrayList<>();
         hearingList.add(hearing);
@@ -254,19 +245,7 @@ public class PersonalisationTest {
     public void givenOnlyOneDayUntilHearing_correctlySetTheDaysToHearingText() {
         LocalDate hearingDate = LocalDate.now().plusDays(1);
 
-        Hearing hearing = Hearing.builder().value(HearingDetails.builder()
-            .hearingDate(hearingDate.format(DateTimeFormatter.ofPattern("yyyy-MM-dd")))
-            .time("12:00")
-            .venue(Venue.builder()
-                .name("The venue")
-                .address(Address.builder()
-                    .line1("12 The Road Avenue")
-                    .line2("Village")
-                    .town("Aberdeen")
-                    .county("Aberdeenshire")
-                    .postcode("AB12 0HN").build())
-                .googleMapLink("http://www.googlemaps.com/aberdeenvenue")
-                .build()).build()).build();
+        Hearing hearing = createHearing(hearingDate);
 
         List<Hearing> hearingList = new ArrayList<>();
         hearingList.add(hearing);
@@ -354,5 +333,51 @@ public class PersonalisationTest {
         personalisation.setHearingContactDate(values, wrapper);
 
         assertFalse(values.containsKey(AppConstants.HEARING_CONTACT_DATE));
+    }
+
+    @Test
+    public void shouldSetOnlineHearingLink() {
+        LocalDate hearingDate = LocalDate.now().plusDays(1);
+
+        Hearing hearing = createHearing(hearingDate);
+
+        List<Hearing> hearingList = new ArrayList<>();
+        hearingList.add(hearing);
+
+        SscsCaseData response = createResponse(hearingList);
+
+        Map result = personalisation.create(SscsCaseDataWrapper.builder()
+                .newSscsCaseData(response)
+                .notificationEventType(NotificationEventType.QUESTION_ROUND_ISSUED_NOTIFICATION)
+                .build());
+
+        assertEquals("http://link.com/onlineHearing?email=test%40email.com", result.get(ONLINE_HEARING_LINK_LITERAL));
+    }
+
+    private Hearing createHearing(LocalDate hearingDate) {
+        return Hearing.builder().value(HearingDetails.builder()
+                .hearingDate(hearingDate.format(DateTimeFormatter.ofPattern("yyyy-MM-dd")))
+                .time("12:00")
+                .venue(Venue.builder()
+                        .name("The venue")
+                        .address(Address.builder()
+                                .line1("12 The Road Avenue")
+                                .line2("Village")
+                                .town("Aberdeen")
+                                .county("Aberdeenshire")
+                                .postcode("AB12 0HN").build())
+                        .googleMapLink("http://www.googlemaps.com/aberdeenvenue")
+                        .build()).build()).build();
+    }
+
+    private SscsCaseData createResponse(List<Hearing> hearingList) {
+        return SscsCaseData.builder()
+                .caseId(CASE_ID).caseReference("SC/1234/5")
+                .appeal(Appeal.builder().benefitType(BenefitType.builder().code("PIP").build())
+                        .appellant(Appellant.builder().name(name).build())
+                        .build())
+                .subscriptions(subscriptions)
+                .hearings(hearingList)
+                .build();
     }
 }
