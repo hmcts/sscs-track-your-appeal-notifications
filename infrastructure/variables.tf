@@ -20,11 +20,6 @@ variable "infrastructure_env" {
   description = "Infrastructure environment to point to"
 }
 
-variable "management_security_enabled" {
-  type    = "string"
-  default = "true"
-}
-
 variable "ilbIp" {}
 
 variable "subscription" {
@@ -98,14 +93,6 @@ variable "postgresql_user" {
 
 variable "database_name" {
   default = "notification"
-}
-
-variable "notification_key" {
-  default = "sscs_notify_api_new_key"
-}
-
-variable "notification_test_key" {
-  default = "sscs_notify_api_new_key"
 }
 
 variable "common_tags" {
