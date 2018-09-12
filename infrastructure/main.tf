@@ -72,6 +72,8 @@ module "track-your-appeal-notifications" {
   subscription = "${var.subscription}"
   capacity     = "${(var.env == "preview") ? 1 : 2}"
   common_tags  = "${var.common_tags}"
+  asp_rg       = "${var.product}-${var.component}-${var.env}"
+  asp_name     = "${var.product}-${var.component}-${var.env}"
 
   app_settings = {
     INFRASTRUCTURE_ENV          = "${var.env}"
