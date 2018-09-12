@@ -39,7 +39,7 @@ public final class SscsCaseDataUtils {
                 .lastName("Test")
                 .build();
         Contact contact = Contact.builder()
-                .email("mail@email.com")
+                .email("test-mail@hmcts.net")
                 .phone("01234567890")
                 .build();
         Identity identity = Identity.builder()
