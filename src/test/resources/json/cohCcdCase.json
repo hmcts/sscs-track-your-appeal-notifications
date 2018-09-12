@@ -6,6 +6,11 @@
   "security_classification": "PUBLIC",
   "case_data": {
     "caseReference": "SC123/11/11111",
+    "onlinePanel": {
+      "assignedTo": "John Dead",
+      "medicalMember": "Dr Quin",
+      "disabilityQualifiedMember": "Bob Jones"
+    },
     "caseCreated": "2005-06-07",
     "appeal": {
       "rep": {

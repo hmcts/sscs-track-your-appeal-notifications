@@ -4,33 +4,43 @@ import uk.gov.hmcts.reform.sscs.ccd.domain.EventType;
 
 public enum NotificationEventType {
 
-    ADJOURNED_NOTIFICATION("hearingAdjourned"),
-    SYA_APPEAL_CREATED_NOTIFICATION("appealCreated"),
-    APPEAL_LAPSED_NOTIFICATION("appealLapsed"),
-    APPEAL_RECEIVED_NOTIFICATION("appealReceived"),
-    APPEAL_WITHDRAWN_NOTIFICATION("appealWithdrawn"),
-    APPEAL_DORMANT_NOTIFICATION("appealDormant"),
-    DWP_RESPONSE_RECEIVED_NOTIFICATION("responseReceived"),
-    EVIDENCE_RECEIVED_NOTIFICATION("evidenceReceived"),
-    HEARING_BOOKED_NOTIFICATION("hearingBooked"),
-    POSTPONEMENT_NOTIFICATION("hearingPostponed"),
-    SUBSCRIPTION_CREATED_NOTIFICATION("subscriptionCreated"),
-    SUBSCRIPTION_UPDATED_NOTIFICATION("subscriptionUpdated"),
-    EVIDENCE_REMINDER_NOTIFICATION("evidenceReminder"),
-    FIRST_HEARING_HOLDING_REMINDER_NOTIFICATION("hearingHoldingReminder"),
-    SECOND_HEARING_HOLDING_REMINDER_NOTIFICATION("secondHearingHoldingReminder"),
-    THIRD_HEARING_HOLDING_REMINDER_NOTIFICATION("thirdHearingHoldingReminder"),
-    FINAL_HEARING_HOLDING_REMINDER_NOTIFICATION("finalHearingHoldingReminder"),
-    HEARING_REMINDER_NOTIFICATION("hearingReminder"),
-    DWP_RESPONSE_LATE_REMINDER_NOTIFICATION("dwpResponseLateReminder"),
-    QUESTION_ROUND_ISSUED_NOTIFICATION("question_round_issued"),
-    QUESTION_DEADLINE_ELAPSED_NOTIFICATION("question_deadline_elapsed"),
+    ADJOURNED_NOTIFICATION("hearingAdjourned", true, false, false),
+    SYA_APPEAL_CREATED_NOTIFICATION("appealCreated", true, true, false),
+    APPEAL_LAPSED_NOTIFICATION("appealLapsed", true, false, false),
+    APPEAL_RECEIVED_NOTIFICATION("appealReceived", true, true, false),
+    APPEAL_WITHDRAWN_NOTIFICATION("appealWithdrawn", true, false, false),
+    APPEAL_DORMANT_NOTIFICATION("appealDormant", true, false, false),
+    DWP_RESPONSE_RECEIVED_NOTIFICATION("responseReceived", true, false, false),
+    EVIDENCE_RECEIVED_NOTIFICATION("evidenceReceived", true, false, false),
+    HEARING_BOOKED_NOTIFICATION("hearingBooked", true, false, false),
+    POSTPONEMENT_NOTIFICATION("hearingPostponed", true, false, false),
+    SUBSCRIPTION_CREATED_NOTIFICATION("subscriptionCreated", true, true, false),
+    SUBSCRIPTION_UPDATED_NOTIFICATION("subscriptionUpdated", true, true, false),
+    EVIDENCE_REMINDER_NOTIFICATION("evidenceReminder", true, false, false),
+    FIRST_HEARING_HOLDING_REMINDER_NOTIFICATION("hearingHoldingReminder", true, false, false),
+    SECOND_HEARING_HOLDING_REMINDER_NOTIFICATION("secondHearingHoldingReminder", true, false, false),
+    THIRD_HEARING_HOLDING_REMINDER_NOTIFICATION("thirdHearingHoldingReminder", true, false, false),
+    FINAL_HEARING_HOLDING_REMINDER_NOTIFICATION("finalHearingHoldingReminder", true, false, false),
+    HEARING_REMINDER_NOTIFICATION("hearingReminder", true, false, false),
+    DWP_RESPONSE_LATE_REMINDER_NOTIFICATION("dwpResponseLateReminder", true, false, false),
+    QUESTION_ROUND_ISSUED_NOTIFICATION("question_round_issued", false, false, true),
+    QUESTION_DEADLINE_ELAPSED_NOTIFICATION("question_deadline_elapsed", false, false, true),
     DO_NOT_SEND("");
 
     private String id;
+    private boolean sendForOralCase;
+    private boolean sendForPaperCase;
+    private boolean sendForCohCase;
 
     NotificationEventType(String id) {
         this.id = id;
+    }
+
+    NotificationEventType(String id, Boolean sendForOralCase, Boolean sendForPaperCase, Boolean sendForCohCase) {
+        this.id = id;
+        this.sendForOralCase = sendForOralCase;
+        this.sendForPaperCase = sendForPaperCase;
+        this.sendForCohCase = sendForCohCase;
     }
 
     public static NotificationEventType getNotificationById(String id) {
@@ -55,6 +65,18 @@ public enum NotificationEventType {
 
     public String getId() {
         return id;
+    }
+
+    public boolean isSendForPaperCase() {
+        return sendForPaperCase;
+    }
+
+    public boolean isSendForOralCase() {
+        return sendForOralCase;
+    }
+
+    public boolean isSendForCohCase() {
+        return sendForCohCase;
     }
 
 }

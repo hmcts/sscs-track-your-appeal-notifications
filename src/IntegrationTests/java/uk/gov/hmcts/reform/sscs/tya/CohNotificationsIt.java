@@ -97,7 +97,7 @@ public class CohNotificationsIt {
         controller = new NotificationController(service, authorisationService, ccdClient, deserializer);
 
         ObjectMapper mapper = new ObjectMapper();
-        File src = new File(getClass().getClassLoader().getResource("json/ccdcase.json").getFile());
+        File src = new File(getClass().getClassLoader().getResource("json/cohCcdCase.json").getFile());
         CaseDetails caseDetails = mapper.readValue(src, CaseDetails.class);
 
         when(idamService.getIdamTokens()).thenReturn(IdamTokens.builder().userId("user-id").build());

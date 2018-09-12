@@ -297,6 +297,18 @@ public class SscsCaseDataWrapperDeserializerTest {
     }
 
     @Test
+    public void shouldDeserializeOnlinePanel() throws Exception {
+        String onlinePanelJson = "{\"onlinePanel\":{\"assignedTo\":\"Mr Smith\",\"disabilityQualifiedMember\":\"Mr Tall\","
+                + "\"medicalMember\":\"Mr Small\"}}";
+
+        OnlinePanel onlinePanel = ccdResponseDeserializer.deserializeOnlinePanelJson(mapper.readTree(onlinePanelJson));
+
+        assertEquals("Mr Smith", onlinePanel.getAssignedTo());
+        assertEquals("Mr Tall", onlinePanel.getDisabilityQualifiedMember());
+        assertEquals("Mr Small", onlinePanel.getMedicalMember());
+    }
+
+    @Test
     public void shouldDeserializeRegionalProcessingCenterIfPresent() throws Exception {
         String rpcJson = "{\"regionalProcessingCenter\":{\"name\":\"CARDIFF\",\"address1\":\"HM Courts & Tribunals Service\","
                 + "\"address2\":\"Social Security & Child Support Appeals\",\"address3\":\"Eastgate House\",\n"
@@ -434,7 +446,7 @@ public class SscsCaseDataWrapperDeserializerTest {
     @Test
     public void deserializeAllSscsCaseDataJson() throws IOException {
 
-        String path = getClass().getClassLoader().getResource("json/ccdResponse.json").getFile();
+        String path = getClass().getClassLoader().getResource("json/ccdResponseWithCohFields.json").getFile();
         String json = FileUtils.readFileToString(new File(path), StandardCharsets.UTF_8.name());
 
         SscsCaseDataWrapper wrapper = mapper.readValue(json, SscsCaseDataWrapper.class);
@@ -529,5 +541,10 @@ public class SscsCaseDataWrapperDeserializerTest {
         assertEquals("https://www.google.com/theAddress", hearing.getValue().getVenue().getGoogleMapLink());
         assertEquals("12345656789", ccdResponse.getCaseId());
         assertNotNull(ccdResponse.getRegionalProcessingCenter());
+
+        OnlinePanel onlinePanel = ccdResponse.getOnlinePanel();
+        assertEquals("Mr Smith", onlinePanel.getAssignedTo());
+        assertEquals("Mr Tall", onlinePanel.getDisabilityQualifiedMember());
+        assertEquals("Mr Small", onlinePanel.getMedicalMember());
     }
 }

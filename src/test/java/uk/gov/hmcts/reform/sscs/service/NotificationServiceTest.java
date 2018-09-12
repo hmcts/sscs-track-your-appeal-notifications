@@ -8,9 +8,7 @@ import java.net.UnknownHostException;
 import org.junit.Before;
 import org.junit.Test;
 import org.mockito.Mock;
-import uk.gov.hmcts.reform.sscs.ccd.domain.SscsCaseData;
-import uk.gov.hmcts.reform.sscs.ccd.domain.Subscription;
-import uk.gov.hmcts.reform.sscs.ccd.domain.Subscriptions;
+import uk.gov.hmcts.reform.sscs.ccd.domain.*;
 import uk.gov.hmcts.reform.sscs.domain.SscsCaseDataWrapper;
 import uk.gov.hmcts.reform.sscs.domain.notify.Destination;
 import uk.gov.hmcts.reform.sscs.domain.notify.Notification;
@@ -45,12 +43,17 @@ public class NotificationServiceTest {
     public void setup() {
         initMocks(this);
         when((notificationValidService).isNotificationStillValidToSend(any(), any())).thenReturn(true);
+        when((notificationValidService).isHearingTypeValidToSendNotification(any(), any())).thenReturn(true);
+
         notificationService = new NotificationService(notificationSender, factory, reminderService, notificationValidService);
 
         Subscription appellantSubscription = Subscription.builder().tya("GLSCRR").email("test@email.com")
             .mobile("07983495065").subscribeEmail("Yes").subscribeSms("Yes").build();
 
-        response = SscsCaseData.builder().subscriptions(Subscriptions.builder().appellantSubscription(appellantSubscription).build()).caseReference("ABC123").build();
+        response = SscsCaseData.builder()
+                .appeal(Appeal.builder().hearingOptions(HearingOptions.builder().wantsToAttend("Yes").build()).build())
+                .subscriptions(Subscriptions.builder().appellantSubscription(appellantSubscription).build())
+                .caseReference("ABC123").build();
         SscsCaseDataWrapper wrapper = SscsCaseDataWrapper.builder().newSscsCaseData(response).oldSscsCaseData(response).notificationEventType(APPEAL_WITHDRAWN_NOTIFICATION).build();
         notificationWrapper = new CcdNotificationWrapper(wrapper);
     }
@@ -180,6 +183,17 @@ public class NotificationServiceTest {
         Notification notification = new Notification(Template.builder().emailTemplateId("abc").smsTemplateId(null).build(), Destination.builder().email("test@testing.com").sms(null).build(), null, new Reference(), null);
         when(factory.create(notificationWrapper)).thenReturn(notification);
         when((notificationValidService).isNotificationStillValidToSend(any(), any())).thenReturn(false);
+
+        notificationService.createAndSendNotification(notificationWrapper);
+
+        verify(notificationSender, never()).sendEmail(notification.getEmailTemplate(), notification.getEmail(), notification.getPlaceholders(), notification.getReference());
+    }
+
+    @Test
+    public void doNotSendNotificationWhenHearingTypeIsNotValidToSend() throws Exception {
+        Notification notification = new Notification(Template.builder().emailTemplateId("abc").smsTemplateId(null).build(), Destination.builder().email("test@testing.com").sms(null).build(), null, new Reference(), null);
+        when(factory.create(notificationWrapper)).thenReturn(notification);
+        when((notificationValidService).isHearingTypeValidToSendNotification(any(), any())).thenReturn(false);
 
         notificationService.createAndSendNotification(notificationWrapper);
 

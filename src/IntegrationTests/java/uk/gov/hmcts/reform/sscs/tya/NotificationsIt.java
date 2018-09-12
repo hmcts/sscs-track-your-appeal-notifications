@@ -79,128 +79,248 @@ public class NotificationsIt {
     }
 
     @Test
-    public void shouldSendNotificationForAnAppealReceivedRequest() throws Exception {
+    public void shouldSendNotificationForAnAppealReceivedRequestForAnOralHearing() throws Exception {
         HttpServletResponse response = getResponse(getRequestWithAuthHeader(json));
 
         assertHttpStatus(response, HttpStatus.OK);
-        verify(client, times(1)).sendEmail(any(), any(), any(), any());
-        verify(client, times(1)).sendSms(any(), any(), any(), any(), any());
+        verify(client).sendEmail(any(), any(), any(), any());
+        verify(client).sendSms(any(), any(), any(), any(), any());
     }
 
     @Test
-    public void shouldSendNotificationForAnAdjournedRequest() throws Exception {
+    public void shouldSendNotificationForAnAppealReceivedRequestForAPaperHearing() throws Exception {
+        updateJsonForPaperHearing();
+        HttpServletResponse response = getResponse(getRequestWithAuthHeader(json));
+
+        assertHttpStatus(response, HttpStatus.OK);
+        verify(client).sendEmail(any(), any(), any(), any());
+        verify(client).sendSms(any(), any(), any(), any(), any());
+    }
+
+    @Test
+    public void shouldSendNotificationForAnAdjournedRequestForAnOralHearing() throws Exception {
         json = json.replace("appealReceived", "hearingAdjourned");
 
         HttpServletResponse response = getResponse(getRequestWithAuthHeader(json));
 
         assertHttpStatus(response, HttpStatus.OK);
-        verify(client, times(1)).sendEmail(any(), any(), any(), any());
-        verify(client, times(1)).sendSms(any(), any(), any(), any(), any());
+        verify(client).sendEmail(any(), any(), any(), any());
+        verify(client).sendSms(any(), any(), any(), any(), any());
     }
 
     @Test
-    public void shouldSendNotificationForAnResponseReceivedRequest() throws Exception {
+    public void shouldNotSendNotificationForAnAdjournedRequestForAPaperHearing() throws Exception {
+        updateJsonForPaperHearing();
+        json = json.replace("appealReceived", "hearingAdjourned");
+
+        HttpServletResponse response = getResponse(getRequestWithAuthHeader(json));
+
+        assertHttpStatus(response, HttpStatus.OK);
+        verify(client, never()).sendEmail(any(), any(), any(), any());
+        verify(client, never()).sendSms(any(), any(), any(), any(), any());
+    }
+
+    @Test
+    public void shouldSendNotificationForAnResponseReceivedRequestForAnOralHearing() throws Exception {
         json = json.replace("appealReceived", "responseReceived");
 
         HttpServletResponse response = getResponse(getRequestWithAuthHeader(json));
 
         assertHttpStatus(response, HttpStatus.OK);
-        verify(client, times(1)).sendEmail(any(), any(), any(), any());
-        verify(client, times(1)).sendSms(any(), any(), any(), any(), any());
+        verify(client).sendEmail(any(), any(), any(), any());
+        verify(client).sendSms(any(), any(), any(), any(), any());
     }
 
     @Test
-    public void shouldSendNotificationForAnEvidenceReceivedRequest() throws Exception {
+    public void shouldNotSendNotificationForAnResponseReceivedRequestForAPaperHearing() throws Exception {
+        updateJsonForPaperHearing();
+        json = json.replace("appealReceived", "responseReceived");
+
+        HttpServletResponse response = getResponse(getRequestWithAuthHeader(json));
+
+        assertHttpStatus(response, HttpStatus.OK);
+        verify(client, never()).sendEmail(any(), any(), any(), any());
+        verify(client, never()).sendSms(any(), any(), any(), any(), any());
+    }
+
+    @Test
+    public void shouldSendNotificationForAnEvidenceReceivedRequestForAnOralHearing() throws Exception {
         json = json.replace("appealReceived", "evidenceReceived");
 
         HttpServletResponse response = getResponse(getRequestWithAuthHeader(json));
 
         assertHttpStatus(response, HttpStatus.OK);
-        verify(client, times(1)).sendEmail(any(), any(), any(), any());
-        verify(client, times(1)).sendSms(any(), any(), any(), any(), any());
+        verify(client).sendEmail(any(), any(), any(), any());
+        verify(client).sendSms(any(), any(), any(), any(), any());
     }
 
     @Test
-    public void shouldSendNotificationForAHearingPostponedRequest() throws Exception {
+    public void shouldNotSendNotificationForAnEvidenceReceivedRequestForAPaperHearing() throws Exception {
+        updateJsonForPaperHearing();
+        json = json.replace("appealReceived", "evidenceReceived");
+
+        HttpServletResponse response = getResponse(getRequestWithAuthHeader(json));
+
+        assertHttpStatus(response, HttpStatus.OK);
+        verify(client, never()).sendEmail(any(), any(), any(), any());
+        verify(client, never()).sendSms(any(), any(), any(), any(), any());
+    }
+
+    @Test
+    public void shouldSendNotificationForAHearingPostponedRequestForAnOralHearing() throws Exception {
         json = json.replace("appealReceived", "hearingPostponed");
 
         HttpServletResponse response = getResponse(getRequestWithAuthHeader(json));
 
         assertHttpStatus(response, HttpStatus.OK);
-        verify(client, times(1)).sendEmail(any(), any(), any(), any());
+        verify(client).sendEmail(any(), any(), any(), any());
         verify(client, never()).sendSms(any(), any(), any(), any(), any());
     }
 
     @Test
-    public void shouldSendNotificationForAppealLapsedRequest() throws Exception {
+    public void shouldNotSendNotificationForAHearingPostponedRequestForAPaperHearing() throws Exception {
+        updateJsonForPaperHearing();
+        json = json.replace("appealReceived", "hearingPostponed");
+
+        HttpServletResponse response = getResponse(getRequestWithAuthHeader(json));
+
+        assertHttpStatus(response, HttpStatus.OK);
+        verify(client, never()).sendEmail(any(), any(), any(), any());
+        verify(client, never()).sendSms(any(), any(), any(), any(), any());
+    }
+
+    @Test
+    public void shouldSendNotificationForAppealLapsedRequestForAnOralHearing() throws Exception {
         json = json.replace("appealReceived", "appealLapsed");
 
         HttpServletResponse response = getResponse(getRequestWithAuthHeader(json));
 
         assertHttpStatus(response, HttpStatus.OK);
-        verify(client, times(1)).sendEmail(any(), any(), any(), any());
+        verify(client).sendEmail(any(), any(), any(), any());
         verify(client, never()).sendSms(any(), any(), any(), any(), any());
     }
 
     @Test
-    public void shouldSendNotificationForAppealWithdrawnRequest() throws Exception {
+    public void shouldNotSendNotificationForAppealLapsedRequestForAPaperHearing() throws Exception {
+        updateJsonForPaperHearing();
+        json = json.replace("appealReceived", "appealLapsed");
+
+        HttpServletResponse response = getResponse(getRequestWithAuthHeader(json));
+
+        assertHttpStatus(response, HttpStatus.OK);
+        verify(client, never()).sendEmail(any(), any(), any(), any());
+        verify(client, never()).sendSms(any(), any(), any(), any(), any());
+    }
+
+    @Test
+    public void shouldSendNotificationForAppealWithdrawnRequestForAnOralHearing() throws Exception {
         json = json.replace("appealReceived", "appealWithdrawn");
 
         HttpServletResponse response = getResponse(getRequestWithAuthHeader(json));
 
         assertHttpStatus(response, HttpStatus.OK);
-        verify(client, times(1)).sendEmail(any(), any(), any(), any());
+        verify(client).sendEmail(any(), any(), any(), any());
         verify(client, never()).sendSms(any(), any(), any(), any(), any());
     }
 
     @Test
-    public void shouldSendNotificationForHearingBookedRequest() throws Exception {
+    public void shouldNotSendNotificationForAppealWithdrawnRequestForAPaperHearing() throws Exception {
+        updateJsonForPaperHearing();
+        json = json.replace("appealReceived", "appealWithdrawn");
+
+        HttpServletResponse response = getResponse(getRequestWithAuthHeader(json));
+
+        assertHttpStatus(response, HttpStatus.OK);
+        verify(client, never()).sendEmail(any(), any(), any(), any());
+        verify(client, never()).sendSms(any(), any(), any(), any(), any());
+    }
+
+    @Test
+    public void shouldSendNotificationForHearingBookedRequestForAnOralHearing() throws Exception {
         json = json.replace("appealReceived", "hearingBooked");
         json = json.replace("2018-01-12", LocalDate.now().plusDays(2).toString());
 
         HttpServletResponse response = getResponse(getRequestWithAuthHeader(json));
 
         assertHttpStatus(response, HttpStatus.OK);
-        verify(client, times(1)).sendEmail(any(), any(), any(), any());
-        verify(client, times(1)).sendSms(any(), any(), any(), any(), any());
+        verify(client).sendEmail(any(), any(), any(), any());
+        verify(client).sendSms(any(), any(), any(), any(), any());
     }
 
     @Test
-    public void shouldNotSendNotificationForHearingBookedRequestForHearingInThePast() throws Exception {
+    public void shouldNotSendNotificationForHearingBookedRequestForAPaperHearing() throws Exception {
+        updateJsonForPaperHearing();
+        json = json.replace("appealReceived", "hearingBooked");
+        json = json.replace("2018-01-12", LocalDate.now().plusDays(2).toString());
+
+        HttpServletResponse response = getResponse(getRequestWithAuthHeader(json));
+
+        assertHttpStatus(response, HttpStatus.OK);
+        verify(client, never()).sendEmail(any(), any(), any(), any());
+        verify(client, never()).sendSms(any(), any(), any(), any(), any());
+    }
+
+    @Test
+    public void shouldNotSendNotificationForHearingBookedRequestForHearingInThePastForAnOralHearing() throws Exception {
         json = json.replace("appealReceived", "hearingBooked");
 
         HttpServletResponse response = getResponse(getRequestWithAuthHeader(json));
 
         assertHttpStatus(response, HttpStatus.OK);
-        verify(client, times(0)).sendEmail(any(), any(), any(), any());
-        verify(client, times(0)).sendSms(any(), any(), any(), any(), any());
+        verify(client, never()).sendEmail(any(), any(), any(), any());
+        verify(client, never()).sendSms(any(), any(), any(), any(), any());
     }
 
     @Test
-    public void shouldSendNotificationForEvidenceReminder() throws Exception {
+    public void shouldSendNotificationForEvidenceReminderForAnOralHearing() throws Exception {
         json = json.replace("appealReceived", "evidenceReminder");
 
         HttpServletResponse response = getResponse(getRequestWithAuthHeader(json));
 
         assertHttpStatus(response, HttpStatus.OK);
-        verify(client, times(1)).sendEmail(any(), any(), any(), any());
-        verify(client, times(1)).sendSms(any(), any(), any(), any(), any());
+        verify(client).sendEmail(any(), any(), any(), any());
+        verify(client).sendSms(any(), any(), any(), any(), any());
     }
 
     @Test
-    public void shouldSendNotificationForHearingReminder() throws Exception {
+    public void shouldNotSendNotificationForEvidenceReminderForAPaperHearing() throws Exception {
+        updateJsonForPaperHearing();
+        json = json.replace("appealReceived", "evidenceReminder");
+
+        HttpServletResponse response = getResponse(getRequestWithAuthHeader(json));
+
+        assertHttpStatus(response, HttpStatus.OK);
+        verify(client, never()).sendEmail(any(), any(), any(), any());
+        verify(client, never()).sendSms(any(), any(), any(), any(), any());
+    }
+
+    @Test
+    public void shouldSendNotificationForHearingReminderForAnOralHearing() throws Exception {
         json = json.replace("appealReceived", "hearingReminder");
         json = json.replace("2018-01-12", LocalDate.now().plusDays(2).toString());
 
         HttpServletResponse response = getResponse(getRequestWithAuthHeader(json));
 
         assertHttpStatus(response, HttpStatus.OK);
-        verify(client, times(1)).sendEmail(any(), any(), any(), any());
-        verify(client, times(1)).sendSms(any(), any(), any(), any(), any());
+        verify(client).sendEmail(any(), any(), any(), any());
+        verify(client).sendSms(any(), any(), any(), any(), any());
     }
 
     @Test
-    public void shouldSendNotificationForSyaAppealCreated() throws Exception {
+    public void shouldNotSendNotificationForHearingReminderForAPaperHearing() throws Exception {
+        updateJsonForPaperHearing();
+        json = json.replace("appealReceived", "hearingReminder");
+        json = json.replace("2018-01-12", LocalDate.now().plusDays(2).toString());
+
+        HttpServletResponse response = getResponse(getRequestWithAuthHeader(json));
+
+        assertHttpStatus(response, HttpStatus.OK);
+        verify(client, never()).sendEmail(any(), any(), any(), any());
+        verify(client, never()).sendSms(any(), any(), any(), any(), any());
+    }
+
+    @Test
+    public void shouldSendNotificationForSyaAppealCreatedRequestForAnOralHearing() throws Exception {
         json = json.replace("appealReceived", "appealCreated");
 
         HttpServletResponse response = getResponse(getRequestWithAuthHeader(json));
@@ -211,7 +331,18 @@ public class NotificationsIt {
     }
 
     @Test
-    public void shouldSendSubscriptionCreatedNotificationForSubscriptionUpdatedRequestWithNewSubscribeSmsRequest() throws Exception {
+    public void shouldSendNotificationForSyaAppealCreatedRequestForAPaperHearing() throws Exception {
+        updateJsonForPaperHearing();
+        json = json.replace("appealReceived", "appealCreated");
+        HttpServletResponse response = getResponse(getRequestWithAuthHeader(json));
+
+        assertHttpStatus(response, HttpStatus.OK);
+        verify(client, times(1)).sendEmail(any(), any(), any(), any());
+        verify(client, times(1)).sendSms(any(), any(), any(), any(), any());
+    }
+
+    @Test
+    public void shouldSendSubscriptionCreatedNotificationForSubscriptionUpdatedRequestWithNewSubscribeSmsRequestForAnOralHearing() throws Exception {
         json = json.replace("appealReceived", "subscriptionUpdated");
         json = updateEmbeddedJson(json, "No", "case_details", "case_data", "subscriptions", "appellantSubscription", "subscribeEmail");
 
@@ -219,11 +350,37 @@ public class NotificationsIt {
 
         assertHttpStatus(response, HttpStatus.OK);
         verify(client, never()).sendEmail(any(), any(), any(), any());
-        verify(client, times(1)).sendSms(any(), any(), any(), any(), any());
+        verify(client).sendSms(any(), any(), any(), any(), any());
     }
 
     @Test
-    public void shouldSendSubscriptionUpdatedNotificationForSubscriptionUpdatedRequestWithNewEmailAddress() throws Exception {
+    public void shouldSendSubscriptionCreatedNotificationForSubscriptionUpdatedRequestWithNewSubscribeSmsRequestForAPaperHearing() throws Exception {
+        updateJsonForPaperHearing();
+        json = json.replace("appealReceived", "subscriptionUpdated");
+        json = updateEmbeddedJson(json, "No", "case_details", "case_data", "subscriptions", "appellantSubscription", "subscribeEmail");
+
+        HttpServletResponse response = getResponse(getRequestWithAuthHeader(json));
+
+        assertHttpStatus(response, HttpStatus.OK);
+        verify(client, never()).sendEmail(any(), any(), any(), any());
+        verify(client).sendSms(any(), any(), any(), any(), any());
+    }
+
+    @Test
+    public void shouldSendSubscriptionUpdatedNotificationForSubscriptionUpdatedRequestWithNewEmailAddressForAnOralHearing() throws Exception {
+        json = json.replace("appealReceived", "subscriptionUpdated");
+        json = updateEmbeddedJson(json, "No", "case_details", "case_data", "subscriptions", "appellantSubscription", "subscribeSms");
+
+        HttpServletResponse response = getResponse(getRequestWithAuthHeader(json));
+
+        assertHttpStatus(response, HttpStatus.OK);
+        verify(client, times(1)).sendEmail(any(), any(), any(), any());
+        verify(client, never()).sendSms(any(), any(), any(), any(), any());
+    }
+
+    @Test
+    public void shouldSendSubscriptionUpdatedNotificationForSubscriptionUpdatedRequestWithNewEmailAddressForAPaperHearing() throws Exception {
+        updateJsonForPaperHearing();
         json = json.replace("appealReceived", "subscriptionUpdated");
         json = updateEmbeddedJson(json, "No", "case_details", "case_data", "subscriptions", "appellantSubscription", "subscribeSms");
 
@@ -260,6 +417,10 @@ public class NotificationsIt {
 
     private MockHttpServletResponse getResponse(MockHttpServletRequestBuilder requestBuilder) throws Exception {
         return mockMvc.perform(requestBuilder).andReturn().getResponse();
+    }
+
+    private void updateJsonForPaperHearing() throws IOException {
+        json = updateEmbeddedJson(json, "No", "case_details", "case_data", "appeal", "hearingOptions", "wantsToAttend");
     }
 
 }
