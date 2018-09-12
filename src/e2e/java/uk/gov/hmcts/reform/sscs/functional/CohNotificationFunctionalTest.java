@@ -48,13 +48,6 @@ public class CohNotificationFunctionalTest extends AbstractFunctionalTest {
         String createHearingJson = "{\n"
                 + "  \"case_id\": \"" + caseId + "\",\n"
                 + "  \"jurisdiction\": \"SSCS\",\n"
-                + "  \"panel\": [\n"
-                + "    {\n"
-                + "      \"identity_token\": \"Judge\",\n"
-                + "      \"name\": \"John Dead\",\n"
-                + "      \"role\": \"Judge\"\n"
-                + "    }\n"
-                + "  ],\n"
                 + "  \"start_date\": \"2018-08-17T15:20:37.746Z\",\n"
                 + "  \"state\": \"string\"\n"
                 + "}";
