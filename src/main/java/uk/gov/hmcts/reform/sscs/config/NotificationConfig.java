@@ -26,8 +26,11 @@ public class NotificationConfig {
     @Value("${online.hearing.link}")
     private String onlineHearingLink;
 
-    @Autowired
     private Environment env;
+
+    public NotificationConfig(@Autowired Environment env) {
+        this.env = env;
+    }
 
     public String getHmctsPhoneNumber() {
         return hmctsPhoneNumber;
@@ -57,9 +60,19 @@ public class NotificationConfig {
         return Link.builder().linkUrl(onlineHearingLink + "?email={email}").build();
     }
 
-    public Template getTemplate(String emailTemplateName, String smsTemplateName, Benefit benefit) {
-        return Template.builder().emailTemplateId(env.getProperty("notification." + emailTemplateName + ".emailId"))
-                .smsTemplateId(env.getProperty("notification." + smsTemplateName + ".smsId"))
+    public Template getTemplate(String emailTemplateName, String smsTemplateName, Benefit benefit, AppealHearingType appealHearingType) {
+        return Template.builder().emailTemplateId(getTemplate(appealHearingType, emailTemplateName, "emailId"))
+                .smsTemplateId(getTemplate(appealHearingType, smsTemplateName, "smsId"))
                 .smsSenderTemplateId(env.getProperty("smsSender." + benefit.toString().toLowerCase())).build();
     }
+
+    private String getTemplate(AppealHearingType appealHearingType, String templateName, final String notifcationType) {
+        String hearingTypeName = appealHearingType.name().toLowerCase();
+        String templateId = env.getProperty("notification." + hearingTypeName + "." + templateName + "." + notifcationType);
+        if (templateId == null) {
+            templateId = env.getProperty("notification." + templateName + "." + notifcationType);
+        }
+        return templateId;
+    }
+
 }

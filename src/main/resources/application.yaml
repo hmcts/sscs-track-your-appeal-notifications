@@ -139,6 +139,10 @@ notification:
   question_deadline_elapsed:
     emailId: 48f2b7d1-cb71-4f60-b145-dfcf63cc4fcd
     smsId: 181fb0f5-0cc8-4d57-903f-9e5db2a76b88
+  online:
+    responseReceived:
+      emailId: 1afd89f9-9935-4acb-b4f6-ba708b03a0d3
+      smsId: 4bba0b5d-a3f3-4fd9-a845-26af5eda042e
 
 smsSender:
   pip: 80b11be7-5c10-2773-8351-070e22d5ab6b

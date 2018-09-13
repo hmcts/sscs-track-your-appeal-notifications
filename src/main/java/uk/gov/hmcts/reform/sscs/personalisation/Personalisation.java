@@ -201,7 +201,7 @@ public class Personalisation<E extends NotificationWrapper> {
     public Template getTemplate(E notificationWrapper, Benefit benefit) {
         NotificationEventType type = notificationWrapper.getNotificationType();
         String smsTemplateId = isSendSmsSubscriptionConfirmation() ? SUBSCRIPTION_CREATED_NOTIFICATION.getId() : type.getId();
-        return config.getTemplate(type.getId(), smsTemplateId, benefit);
+        return config.getTemplate(type.getId(), smsTemplateId, benefit, notificationWrapper.getHearingType());
     }
 
     public Boolean isSendSmsSubscriptionConfirmation() {

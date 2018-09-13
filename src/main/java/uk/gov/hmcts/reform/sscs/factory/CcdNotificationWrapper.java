@@ -3,6 +3,7 @@ package uk.gov.hmcts.reform.sscs.factory;
 import java.util.Objects;
 import uk.gov.hmcts.reform.sscs.ccd.domain.SscsCaseData;
 import uk.gov.hmcts.reform.sscs.ccd.domain.Subscription;
+import uk.gov.hmcts.reform.sscs.config.AppealHearingType;
 import uk.gov.hmcts.reform.sscs.domain.SscsCaseDataWrapper;
 import uk.gov.hmcts.reform.sscs.domain.notify.NotificationEventType;
 
@@ -36,6 +37,14 @@ public class CcdNotificationWrapper implements NotificationWrapper {
     @Override
     public String getCaseId() {
         return responseWrapper.getNewSscsCaseData().getCaseId();
+    }
+
+    public AppealHearingType getHearingType() {
+        if (responseWrapper.getNewSscsCaseData().getOnlinePanel() != null) {
+            return AppealHearingType.ONLINE;
+        } else {
+            return AppealHearingType.REGULAR;
+        }
     }
 
     @Override
