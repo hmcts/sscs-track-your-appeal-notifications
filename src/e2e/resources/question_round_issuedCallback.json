@@ -1,7 +1,0 @@
-{
-  "case_id":"12345656789",
-  "online_hearing_id":"hearing-id",
-  "event_type":"question_round_issued",
-  "expiry_date":"2018-08-12T23:59:59Z",
-  "reason":"foo"
-}

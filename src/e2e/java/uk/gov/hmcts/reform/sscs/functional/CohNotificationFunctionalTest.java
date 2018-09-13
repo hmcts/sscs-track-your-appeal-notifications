@@ -2,6 +2,7 @@ package uk.gov.hmcts.reform.sscs.functional;
 
 import static uk.gov.hmcts.reform.sscs.SscsCaseDataUtils.builderSscsCaseData;
 import static uk.gov.hmcts.reform.sscs.ccd.domain.EventType.SYA_APPEAL_CREATED;
+import static uk.gov.hmcts.reform.sscs.domain.notify.NotificationEventType.QUESTION_DEADLINE_ELAPSED_NOTIFICATION;
 import static uk.gov.hmcts.reform.sscs.domain.notify.NotificationEventType.QUESTION_ROUND_ISSUED_NOTIFICATION;
 
 import io.restassured.RestAssured;
@@ -30,6 +31,24 @@ public class CohNotificationFunctionalTest extends AbstractFunctionalTest {
     @Value("${notification.question_round_issued.smsId}")
     private String questionRoundIssuedSmsTemplateId;
 
+    @Value("${notification.follow_up_question_round_issued.emailId}")
+    private String followupQuestionRoundIssuedEmailTemplateId;
+
+    @Value("${notification.follow_up_question_round_issued.smsId}")
+    private String followupQuestionRoundIssuedSmsTemplateId;
+
+    @Value("${notification.question_deadline_elapsed.emailId}")
+    private String questionDeadlineElapsedEmailTemplateId;
+
+    @Value("${notification.question_deadline_elapsed.smsId}")
+    private String questionDeadlineElapsedSmsTemplateId;
+
+    @Value("${notification.online.responseReceived.emailId}")
+    private String onlineResponseReceivedEmailId;
+
+    @Value("${notification.online.responseReceived.smsId}")
+    private String onlineResponseReceivedSmsId;
+
     @Override
     protected SscsCaseData createCaseData() {
         SscsCaseData.SscsCaseDataBuilder sscsCaseDataBuilder = builderSscsCaseData(caseReference, "Yes", "Yes", SYA_APPEAL_CREATED);
@@ -37,7 +56,7 @@ public class CohNotificationFunctionalTest extends AbstractFunctionalTest {
                 OnlinePanel.builder()
                         .assignedTo("Judge")
                         .medicalMember("medic")
-                        .disabilityQualifiedMember("disQualMemeber")
+                        .disabilityQualifiedMember("disQualMember")
                         .build())
                 .build();
     }
@@ -45,18 +64,54 @@ public class CohNotificationFunctionalTest extends AbstractFunctionalTest {
     @Test
     public void shouldSendQuestionsReadyNotifications() throws IOException, InterruptedException, NotificationClientException {
         String hearingId = createHearingWithQuestions(caseId);
+        // Issuing the question round will cause these notifications to be fired from AAT
+        tryFetchNotificationsForTestCase(questionRoundIssuedEmailTemplateId, questionRoundIssuedSmsTemplateId);
+
         simulateCohCallback(QUESTION_ROUND_ISSUED_NOTIFICATION, hearingId);
 
-        List<Notification> notifications = tryFetchNotificationsForTestCase(questionRoundIssuedEmailTemplateId, questionRoundIssuedSmsTemplateId);
+        // Need to check for two sets of notifications one from AAT and from the test being run.
+        List<Notification> notifications = tryFetchNotificationsForTestCase(questionRoundIssuedEmailTemplateId, questionRoundIssuedEmailTemplateId,
+                questionRoundIssuedSmsTemplateId, questionRoundIssuedSmsTemplateId);
 
         assertNotificationBodyContains(notifications, questionRoundIssuedEmailTemplateId, caseData.getCaseReference());
+    }
+
+    @Test
+    public void shouldSendFollowUpQuestionsReadyNotifications() throws IOException, InterruptedException, NotificationClientException {
+        String hearingId = createHearingWithQuestions(caseId);
+        createQuestion(hearingId, 2);
+        issueQuestions(hearingId, 2);
+        // Issuing the question round will cause these notifications to be fired from AAT todo put in once this is deployed to AAT
+        //tryFetchNotificationsForTestCase(followupQuestionRoundIssuedEmailTemplateId, followupQuestionRoundIssuedSmsTemplateId);
+
+        simulateCohCallback(QUESTION_ROUND_ISSUED_NOTIFICATION, hearingId);
+
+        // Need to check for two sets of notifications one from AAT and from the test being run.
+        List<Notification> notifications = tryFetchNotificationsForTestCase(
+                followupQuestionRoundIssuedEmailTemplateId,
+                followupQuestionRoundIssuedSmsTemplateId
+        );
+
+        assertNotificationBodyContains(notifications, followupQuestionRoundIssuedEmailTemplateId, caseData.getCaseReference());
+    }
+
+    @Test
+    public void shouldSendQuestionDeadlineElapsedNotifications() throws IOException, InterruptedException, NotificationClientException {
+        String hearingId = createHearingWithQuestions(caseId);
+
+        simulateCohCallback(QUESTION_DEADLINE_ELAPSED_NOTIFICATION, hearingId);
+
+        List<Notification> notifications = tryFetchNotificationsForTestCase(
+                questionDeadlineElapsedEmailTemplateId, questionDeadlineElapsedSmsTemplateId);
+
+        assertNotificationBodyContains(notifications, questionDeadlineElapsedEmailTemplateId, caseData.getCaseReference());
     }
 
     private String createHearingWithQuestions(Long caseId) throws InterruptedException {
         String hearingId = createHearing(caseId);
         System.out.println("Created online hearing [" + hearingId + "] case id [" + caseId + "]");
-        createQuestion(hearingId);
-        issueQuestions(hearingId);
+        createQuestion(hearingId, 1);
+        issueQuestions(hearingId, 1);
 
         return hearingId;
     }
@@ -78,26 +133,26 @@ public class CohNotificationFunctionalTest extends AbstractFunctionalTest {
                 .jsonPath().getString("online_hearing_id");
     }
 
-    private void createQuestion(String hearingId) {
+    private void createQuestion(String hearingId, int round) {
         String createQuestionJson = "{\n"
                 + "  \"owner_reference\": \"string\",\n"
                 + "  \"question_body_text\": \"string\",\n"
                 + "  \"question_header_text\": \"string\",\n"
                 + "  \"question_ordinal\": \"1\",\n"
-                + "  \"question_round\": \"1\"\n"
+                + "  \"question_round\": \"" + round + "\"\n"
                 + "}";
         Response createQuestionResponse = makeRequest(createQuestionJson)
                 .post(COH_URL + "/continuous-online-hearings/" + hearingId + "/questions");
         checkResponseCreated(createQuestionResponse);
     }
 
-    private void issueQuestions(String hearingId) throws InterruptedException {
+    private void issueQuestions(String hearingId, int round) throws InterruptedException {
         makeRequest("{\"state_name\": \"question_issue_pending\"}")
-                .put(COH_URL + "/continuous-online-hearings/" + hearingId + "/questionrounds/1")
+                .put(COH_URL + "/continuous-online-hearings/" + hearingId + "/questionrounds/" + round)
                 .then()
                 .statusCode(HttpStatus.OK.value());
 
-        waitUntil(roundIssued(hearingId), 20L);
+        waitUntil(roundIssued(hearingId, round), 20L);
     }
 
     private ValidatableResponse checkResponseCreated(Response request) {
@@ -116,22 +171,20 @@ public class CohNotificationFunctionalTest extends AbstractFunctionalTest {
                 .when();
     }
 
-    private Supplier<Boolean> roundIssued(String hearingId) {
+    private Supplier<Boolean> roundIssued(String hearingId, int round) {
         return () -> {
-            System.out.println("Checking to see if hearing [" + hearingId + "] has been issued");
             Response response = RestAssured
                     .given()
                     .header(HttpHeaders.AUTHORIZATION, "someValue")
                     .header("ServiceAuthorization", "someValue")
                     .when()
-                    .get(COH_URL + "/continuous-online-hearings/" + hearingId + "/questionrounds/1");
+                    .get(COH_URL + "/continuous-online-hearings/" + hearingId + "/questionrounds/" + round);
             String roundState = response.then()
                     .statusCode(HttpStatus.OK.value())
                     .contentType(ContentType.JSON)
                     .extract()
                     .response()
                     .jsonPath().getString("question_round_state.state_name");
-            System.out.println("Current round state [" + roundState + "]");
             return "question_issued".equals(roundState);
         };
     }
@@ -141,10 +194,10 @@ public class CohNotificationFunctionalTest extends AbstractFunctionalTest {
         long startTime = System.nanoTime();
         while (true) {
             if (condition.get()) {
-                System.out.println("Found after [" + ((System.nanoTime() - startTime) / (1000L * 1000000L)) + "] seconds");
+                System.out.println("Question round issued after [" + ((System.nanoTime() - startTime) / (1000L * 1000000L)) + "] seconds");
                 break;
             } else if (System.nanoTime() - startTime >= timeout) {
-                throw new RuntimeException("Question round has not been issues in 10 seconds.");
+                throw new RuntimeException("Question round has not been issues in [" + timeoutInSeconds + "] seconds.");
             }
             Thread.sleep(100L);
         }
