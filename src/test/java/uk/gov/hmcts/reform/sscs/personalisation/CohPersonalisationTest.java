@@ -51,7 +51,7 @@ public class CohPersonalisationTest {
     private QuestionService questionService;
 
     @Mock
-    private CohDateConverterUtil cohDateConverterUtil;
+    private NotificationDateConverterUtil notificationDateConverterUtil;
 
     @InjectMocks
     private CohPersonalisation cohPersonalisation;
@@ -107,7 +107,7 @@ public class CohPersonalisationTest {
         String expectedRequiredByDate = "expectedRequiredByDate";
 
         when(questionService.getQuestionRequiredByDate(someHearingId)).thenReturn(cohDate);
-        when(cohDateConverterUtil.toEmailDate(cohDate)).thenReturn(expectedRequiredByDate);
+        when(notificationDateConverterUtil.toEmailDate(cohDate)).thenReturn(expectedRequiredByDate);
 
         Map<String, String> placeholders = cohPersonalisation.create(new CohNotificationWrapper(someHearingId, sscsCaseDataWrapper));
 

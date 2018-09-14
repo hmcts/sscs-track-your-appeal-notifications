@@ -17,7 +17,7 @@ public class CohPersonalisation extends Personalisation<CohNotificationWrapper> 
     private QuestionService questionService;
 
     @Autowired
-    private CohDateConverterUtil cohDateConverterUtil;
+    private NotificationDateConverterUtil notificationDateConverterUtil;
 
     @Override
     public Map<String, String> create(CohNotificationWrapper notificationWrapper) {
@@ -25,7 +25,7 @@ public class CohPersonalisation extends Personalisation<CohNotificationWrapper> 
 
         String questionRequiredByDate = questionService.getQuestionRequiredByDate(notificationWrapper.getOnlineHearingId());
 
-        String dateEmailFormat = cohDateConverterUtil.toEmailDate(questionRequiredByDate);
+        String dateEmailFormat = notificationDateConverterUtil.toEmailDate(questionRequiredByDate);
         placeholders.put("questions_end_date", dateEmailFormat);
 
         return placeholders;

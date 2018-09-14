@@ -50,6 +50,7 @@ public final class AppConstants {
     public static final String VENUE_MAP_LINK_LITERAL = "venue_map_link";
     public static final String YOUR_DETAILS_LITERAL = "your_details";
     public static final String ZONE_ID = "Europe/London";
+    public static final String TRIBUNAL_RESPONSE_DATE_LITERAL = "tribunal_response_date";
 
     private AppConstants(){
         //
