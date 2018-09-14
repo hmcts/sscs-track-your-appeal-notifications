@@ -2,6 +2,7 @@ package uk.gov.hmcts.reform.sscs.functional;
 
 import static uk.gov.hmcts.reform.sscs.SscsCaseDataUtils.builderSscsCaseData;
 import static uk.gov.hmcts.reform.sscs.ccd.domain.EventType.SYA_APPEAL_CREATED;
+import static uk.gov.hmcts.reform.sscs.domain.notify.NotificationEventType.DWP_RESPONSE_RECEIVED_NOTIFICATION;
 import static uk.gov.hmcts.reform.sscs.domain.notify.NotificationEventType.QUESTION_ROUND_ISSUED_NOTIFICATION;
 
 import io.restassured.RestAssured;
@@ -30,6 +31,12 @@ public class CohNotificationFunctionalTest extends AbstractFunctionalTest {
     @Value("${notification.question_round_issued.smsId}")
     private String questionRoundIssuedSmsTemplateId;
 
+    @Value("${notification.online.responseReceived.emailId}")
+    private String onlineResponseReceivedEmailId;
+
+    @Value("${notification.online.responseReceived.smsId}")
+    private String onlineResponseReceivedSmsId;
+
     @Override
     protected SscsCaseData createCaseData() {
         SscsCaseData.SscsCaseDataBuilder sscsCaseDataBuilder = builderSscsCaseData(caseReference, "Yes", "Yes", SYA_APPEAL_CREATED);
@@ -50,6 +57,16 @@ public class CohNotificationFunctionalTest extends AbstractFunctionalTest {
         List<Notification> notifications = tryFetchNotificationsForTestCase(questionRoundIssuedEmailTemplateId, questionRoundIssuedSmsTemplateId);
 
         assertNotificationBodyContains(notifications, questionRoundIssuedEmailTemplateId, caseData.getCaseReference());
+    }
+
+    @Test
+    public void shouldSendSubscriptionUpdatedNotification() throws NotificationClientException, IOException {
+        simulateCcdCallback(DWP_RESPONSE_RECEIVED_NOTIFICATION);
+
+        List<Notification> notifications = tryFetchNotificationsForTestCase(onlineResponseReceivedEmailId, onlineResponseReceivedSmsId);
+
+        assertNotificationBodyContains(notifications, onlineResponseReceivedEmailId, caseData.getCaseReference());
+
     }
 
     private String createHearingWithQuestions(Long caseId) throws InterruptedException {
