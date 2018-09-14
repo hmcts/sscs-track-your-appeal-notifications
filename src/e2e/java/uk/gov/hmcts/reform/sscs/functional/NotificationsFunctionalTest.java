@@ -3,8 +3,10 @@ package uk.gov.hmcts.reform.sscs.functional;
 import static uk.gov.hmcts.reform.sscs.domain.notify.NotificationEventType.*;
 
 import java.io.IOException;
+import java.util.List;
 import org.junit.Test;
 import org.springframework.beans.factory.annotation.Value;
+import uk.gov.service.notify.Notification;
 import uk.gov.service.notify.NotificationClientException;
 
 public class NotificationsFunctionalTest extends AbstractFunctionalTest {
@@ -48,35 +50,11 @@ public class NotificationsFunctionalTest extends AbstractFunctionalTest {
     @Value("${notification.subscriptionUpdated.emailId}")
     private String subscriptionUpdatedEmailTemplateId;
 
-    @Test
-    public void shouldSendAppealReceivedNotification() throws IOException, NotificationClientException {
-        simulateCcdCallback(APPEAL_RECEIVED_NOTIFICATION);
+    @Value("${notification.online.responseReceived.emailId}")
+    private String onlineResponseReceivedEmailId;
 
-        tryFetchNotificationsForTestCase(
-            appealReceivedEmailTemplateId,
-            appealReceivedSmsTemplateId
-        );
-    }
-
-    @Test
-    public void shouldSendEvidenceReceivedNotification() throws NotificationClientException, IOException {
-        simulateCcdCallback(EVIDENCE_RECEIVED_NOTIFICATION);
-
-        tryFetchNotificationsForTestCase(
-            evidenceReceivedEmailTemplateId,
-            evidenceReceivedSmsTemplateId
-        );
-    }
-
-    @Test
-    public void shouldSendHearingAdjournedNotification() throws NotificationClientException, IOException {
-        simulateCcdCallback(ADJOURNED_NOTIFICATION);
-
-        tryFetchNotificationsForTestCase(
-            hearingAdjournedEmailTemplateId,
-            hearingAdjournedSmsTemplateId
-        );
-    }
+    @Value("${notification.online.responseReceived.smsId}")
+    private String onlineResponseReceivedSmsId;
 
     @Test
     public void shouldSendHearingPostponedNotification() throws NotificationClientException, IOException {
@@ -110,16 +88,12 @@ public class NotificationsFunctionalTest extends AbstractFunctionalTest {
     }
 
     @Test
-    public void shouldSendSubscriptionCreatedNotification() throws NotificationClientException, IOException {
-        simulateCcdCallback(SUBSCRIPTION_CREATED_NOTIFICATION);
+    public void shouldSendOnlineDwpResponseReceivedNotification() throws NotificationClientException, IOException {
+        simulateCcdCallback(DWP_RESPONSE_RECEIVED_NOTIFICATION, "online-" + DWP_RESPONSE_RECEIVED_NOTIFICATION.getId() + "Callback.json");
 
-        tryFetchNotificationsForTestCase(subscriptionCreatedSmsTemplateId);
-    }
+        System.out.println("Looking for [" + onlineResponseReceivedEmailId + "] [" + onlineResponseReceivedSmsId + "]");
+        List<Notification> notifications = tryFetchNotificationsForTestCase(onlineResponseReceivedEmailId, onlineResponseReceivedSmsId);
 
-    @Test
-    public void shouldSendSubscriptionUpdatedNotification() throws NotificationClientException, IOException {
-        simulateCcdCallback(SUBSCRIPTION_UPDATED_NOTIFICATION);
-
-        tryFetchNotificationsForTestCase(subscriptionUpdatedEmailTemplateId);
+        assertNotificationBodyContains(notifications, onlineResponseReceivedEmailId, caseData.getCaseReference());
     }
 }

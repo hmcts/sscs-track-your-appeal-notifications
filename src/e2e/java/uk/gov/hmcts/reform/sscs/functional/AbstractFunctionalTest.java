@@ -1,6 +1,8 @@
 package uk.gov.hmcts.reform.sscs.functional;
 
 import static helper.EnvironmentProfileValueSource.getEnvOrEmpty;
+import static java.util.Arrays.asList;
+import static java.util.stream.Collectors.toList;
 import static junit.framework.TestCase.fail;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNotNull;
@@ -16,7 +18,6 @@ import java.nio.charset.StandardCharsets;
 import java.time.Instant;
 import java.time.LocalDate;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
 import java.util.UUID;
 import java.util.stream.Collectors;
@@ -90,6 +91,7 @@ public abstract class AbstractFunctionalTest {
 
         assertNotNull(caseDetails);
         caseId = caseDetails.getId();
+        LOG.info("Creating CCD case [" + caseId + "]");
     }
 
     protected SscsCaseData createCaseData() {
@@ -147,8 +149,8 @@ public abstract class AbstractFunctionalTest {
                 matchingNotifications =
                         allNotifications
                                 .stream()
-                                .filter(notification -> Arrays.asList(expectedTemplateIds).contains(notification.getTemplateId().toString()))
-                                .collect(Collectors.toList());
+                                .filter(notification -> asList(expectedTemplateIds).contains(notification.getTemplateId().toString()))
+                                .collect(toList());
             }
             if (matchingNotifications.size() >= waitForAtLeastNumberOfNotifications) {
 
@@ -166,10 +168,13 @@ public abstract class AbstractFunctionalTest {
     }
 
     protected void simulateCcdCallback(NotificationEventType eventType) throws IOException {
+        String resource = eventType.getId() + "Callback.json";
+        simulateCcdCallback(eventType, resource);
+    }
 
+    public void simulateCcdCallback(NotificationEventType eventType, String resource) throws IOException {
         final String callbackUrl = getEnvOrEmpty("TEST_URL") + "/send";
 
-        String resource = eventType.getId() + "Callback.json";
         String path = getClass().getClassLoader().getResource(resource).getFile();
         String json = FileUtils.readFileToString(new File(path), StandardCharsets.UTF_8.name());
 
@@ -191,12 +196,12 @@ public abstract class AbstractFunctionalTest {
 
         final String callbackUrl = getEnvOrEmpty("TEST_URL") + "/coh-send";
 
-        String resource = eventType.getId() + "Callback.json";
-        String path = getClass().getClassLoader().getResource(resource).getFile();
+        String path = getClass().getClassLoader().getResource("cohCallback.json").getFile();
         String json = FileUtils.readFileToString(new File(path), StandardCharsets.UTF_8.name());
 
-        json = updateJson(json, eventType);
-        json = json.replace("hearing-id", hearingId);
+        json = json.replace("{eventType}", eventType.getId());
+        json = json.replace("{caseId}", caseId.toString());
+        json = json.replace("{hearingId}", hearingId);
 
         RestAssured.useRelaxedHTTPSValidation();
         RestAssured
