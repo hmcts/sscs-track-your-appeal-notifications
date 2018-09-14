@@ -11,40 +11,54 @@ resource "azurerm_resource_group" "rg" {
     )}"
 }
 
-data "vault_generic_secret" "sscs_s2s_secret" {
-  path = "secret/${var.infrastructure_env}/ccidam/service-auth-provider/api/microservice-keys/sscs"
+data "azurerm_key_vault" "sscs_key_vault" {
+  name = "${local.azureVaultName}"
+  resource_group_name = "${local.azureVaultName}"
 }
 
-data "vault_generic_secret" "idam_sscs_systemupdate_user" {
-  path = "secret/${var.infrastructure_env}/ccidam/idam-api/sscs/systemupdate/user"
+data "azurerm_key_vault_secret" "sscs-s2s-secret" {
+  name = "sscs-s2s-secret"
+  vault_uri = "${data.azurerm_key_vault.sscs_key_vault.vault_uri}"
 }
 
-data "vault_generic_secret" "idam_sscs_systemupdate_password" {
-  path = "secret/${var.infrastructure_env}/ccidam/idam-api/sscs/systemupdate/password"
+data "azurerm_key_vault_secret" "idam-sscs-systemupdate-user" {
+  name = "idam-sscs-systemupdate-user"
+  vault_uri = "${data.azurerm_key_vault.sscs_key_vault.vault_uri}"
 }
 
-data "vault_generic_secret" "idam_oauth2_client_secret" {
-  path = "secret/${var.infrastructure_env}/ccidam/idam-api/oauth2/client-secrets/sscs"
+data "azurerm_key_vault_secret" "idam-sscs-systemupdate-password" {
+  name = "idam-sscs-systemupdate-password"
+  vault_uri = "${data.azurerm_key_vault.sscs_key_vault.vault_uri}"
 }
 
-data "vault_generic_secret" "idam_api" {
-  path = "secret/${var.infrastructure_env}/sscs/idam_api"
+data "azurerm_key_vault_secret" "idam-sscs-oauth2-client-secret" {
+  name = "idam-sscs-oauth2-client-secret"
+  vault_uri = "${data.azurerm_key_vault.sscs_key_vault.vault_uri}"
 }
 
-data "vault_generic_secret" "idam_s2s_api" {
-  path = "secret/${var.infrastructure_env}/sscs/idam_s2s_api"
+data "azurerm_key_vault_secret" "idam-api" {
+  name = "idam-api"
+  vault_uri = "${data.azurerm_key_vault.sscs_key_vault.vault_uri}"
 }
 
-data "vault_generic_secret" "sscs_notify_api_key" {
-  path = "secret/${var.infrastructure_env}/sscs/${var.notification_key}"
+data "azurerm_key_vault_secret" "idam-s2s-api" {
+  name = "idam-s2s-api"
+  vault_uri = "${data.azurerm_key_vault.sscs_key_vault.vault_uri}"
 }
 
-data "vault_generic_secret" "sscs_notify_api_test_key" {
-  path = "secret/${var.infrastructure_env}/sscs/${var.notification_test_key}"
+data "azurerm_key_vault_secret" "sscs-notify-api-key" {
+  name = "notification-key"
+  vault_uri = "${data.azurerm_key_vault.sscs_key_vault.vault_uri}"
 }
 
-data "vault_generic_secret" "mac_secret" {
-  path = "secret/${var.infrastructure_env}/sscs/sscs_email_mac_secret_text"
+data "azurerm_key_vault_secret" "sscs-notify-api-test-key" {
+  name = "notification-test-key"
+  vault_uri = "${data.azurerm_key_vault.sscs_key_vault.vault_uri}"
+}
+
+data "azurerm_key_vault_secret" "email-mac-secret" {
+  name = "sscs-email-mac-secret-text"
+  vault_uri = "${data.azurerm_key_vault.sscs_key_vault.vault_uri}"
 }
 
 locals {
@@ -60,6 +74,8 @@ locals {
   ccdApi    = "http://ccd-data-store-api-${local.local_env}.service.${local.local_ase}.internal"
   s2sCnpUrl = "http://rpe-service-auth-provider-${local.local_env}.service.${local.local_ase}.internal"
   cohApi    = "http://coh-cor-${local.local_env}.service.${local.local_ase}.internal"
+
+  azureVaultName              = "sscs-${local.local_env}"
 }
 
 module "track-your-appeal-notifications" {
@@ -77,7 +93,6 @@ module "track-your-appeal-notifications" {
 
   app_settings = {
     INFRASTRUCTURE_ENV          = "${var.env}"
-    MANAGEMENT_SECURITY_ENABLED = "${var.management_security_enabled}"
 
     CORE_CASE_DATA_API_URL         = "${local.ccdApi}"
     CORE_CASE_DATA_JURISDICTION_ID = "${var.core_case_data_jurisdiction_id}"
@@ -85,28 +100,28 @@ module "track-your-appeal-notifications" {
 
     COH_URL = "${local.cohApi}"
 
-    IDAM_URL = "${data.vault_generic_secret.idam_api.data["value"]}"
+    IDAM_URL = "${data.azurerm_key_vault_secret.idam-api.value}"
 
-    IDAM.S2S-AUTH.TOTP_SECRET  = "${data.vault_generic_secret.sscs_s2s_secret.data["value"]}"
+    IDAM.S2S-AUTH.TOTP_SECRET  = "${data.azurerm_key_vault_secret.sscs-s2s-secret.value}"
     IDAM.S2S-AUTH              = "${local.s2sCnpUrl}"
     IDAM.S2S-AUTH.MICROSERVICE = "${var.idam_s2s_auth_microservice}"
 
-    IDAM_SSCS_SYSTEMUPDATE_USER     = "${data.vault_generic_secret.idam_sscs_systemupdate_user.data["value"]}"
-    IDAM_SSCS_SYSTEMUPDATE_PASSWORD = "${data.vault_generic_secret.idam_sscs_systemupdate_password.data["value"]}"
+    IDAM_SSCS_SYSTEMUPDATE_USER = "${data.azurerm_key_vault_secret.idam-sscs-systemupdate-user.value}"
+    IDAM_SSCS_SYSTEMUPDATE_PASSWORD = "${data.azurerm_key_vault_secret.idam-sscs-systemupdate-password.value}"
 
     IDAM_OAUTH2_CLIENT_ID     = "${var.idam_oauth2_client_id}"
-    IDAM_OAUTH2_CLIENT_SECRET = "${data.vault_generic_secret.idam_oauth2_client_secret.data["value"]}"
+    IDAM_OAUTH2_CLIENT_SECRET = "${data.azurerm_key_vault_secret.idam-sscs-oauth2-client-secret.value}"
     IDAM_OAUTH2_REDIRECT_URL  = "${var.idam_redirect_url}"
 
-    NOTIFICATION_API_KEY          = "${data.vault_generic_secret.sscs_notify_api_key.data["value"]}"
-    NOTIFICATION_API_TEST_KEY     = "${data.vault_generic_secret.sscs_notify_api_test_key.data["value"]}"
+    NOTIFICATION_API_KEY          = "${data.azurerm_key_vault_secret.sscs-notify-api-key.value}"
+    NOTIFICATION_API_TEST_KEY     = "${data.azurerm_key_vault_secret.sscs-notify-api-test-key.value}"
     EVIDENCE_SUBMISSION_INFO_LINK = "${var.evidence_submission_info_link}"
     SSCS_MANAGE_EMAILS_LINK       = "${var.sscs_manage_emails_link}"
     SSCS_TRACK_YOUR_APPEAL_LINK   = "${var.sscs_track_your_appeal_link}"
     HEARING_INFO_LINK             = "${var.hearing_info_link}"
     CLAIMING_EXPENSES_LINK        = "${var.claiming_expenses_link}"
     JOB_SCHEDULER_POLL_INTERVAL   = "${var.job_scheduler_poll_interval}"
-    EMAIL_MAC_SECRET_TEXT         = "${data.vault_generic_secret.mac_secret.data["value"]}"
+    EMAIL_MAC_SECRET_TEXT         = "${data.azurerm_key_vault_secret.email-mac-secret.value}"
     ONLINE_HEARING_LINK           = "${var.online_hearing_link}"
 
     // db vars

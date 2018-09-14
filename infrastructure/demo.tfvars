@@ -1,4 +1,3 @@
-management_security_enabled = "false"
 infrastructure_env = "preprod"
 
 evidence_submission_info_link = "https://track-appeal.demo.platform.hmcts.net/evidence/appeal_id"
@@ -8,5 +7,3 @@ hearing_info_link = "https://track-appeal.demo.platform.hmcts.net/abouthearing/a
 claiming_expenses_link = "https://track-appeal.demo.platform.hmcts.net/expenses/appeal_id"
 
 idam_redirect_url = "https://evidence-sharing-preprod.sscs.reform.hmcts.net"
-notification_key = "notification-key"
-notification_test_key = "notification-key"

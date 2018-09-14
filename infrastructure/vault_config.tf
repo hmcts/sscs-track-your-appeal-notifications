@@ -1,6 +1,6 @@
 resource "azurerm_key_vault_secret" "idam-url" {
   name      = "idam-url"
-  value     = "${data.vault_generic_secret.idam_api.data["value"]}"
+  value     = "${data.azurerm_key_vault_secret.idam-api.value}"
   vault_uri = "${module.sscs-tya-notif-key-vault.key_vault_uri}"
 }
 
@@ -12,43 +12,43 @@ resource "azurerm_key_vault_secret" "s2s-api" {
 
 resource "azurerm_key_vault_secret" "s2s-auth" {
   name      = "s2s-auth"
-  value     = "${data.vault_generic_secret.sscs_s2s_secret.data["value"]}"
+  value     = "${data.azurerm_key_vault_secret.sscs-s2s-secret.value}"
   vault_uri = "${module.sscs-tya-notif-key-vault.key_vault_uri}"
 }
 
 resource "azurerm_key_vault_secret" "sysupdate-user" {
   name      = "sysupdate-user"
-  value     = "${data.vault_generic_secret.idam_sscs_systemupdate_user.data["value"]}"
+  value     = "${data.azurerm_key_vault_secret.idam-sscs-systemupdate-user.value}"
   vault_uri = "${module.sscs-tya-notif-key-vault.key_vault_uri}"
 }
 
 resource "azurerm_key_vault_secret" "sysupdate-pass" {
   name      = "sysupdate-pass"
-  value     = "${data.vault_generic_secret.idam_sscs_systemupdate_password.data["value"]}"
+  value     = "${data.azurerm_key_vault_secret.idam-sscs-systemupdate-password.value}"
   vault_uri = "${module.sscs-tya-notif-key-vault.key_vault_uri}"
 }
 
 resource "azurerm_key_vault_secret" "notif-api" {
   name      = "notif-api"
-  value     = "${data.vault_generic_secret.sscs_notify_api_key.data["value"]}"
+  value     = "${data.azurerm_key_vault_secret.sscs-notify-api-key.value}"
   vault_uri = "${module.sscs-tya-notif-key-vault.key_vault_uri}"
 }
 
 resource "azurerm_key_vault_secret" "notif-test-api" {
   name      = "notif-test-api"
-  value     = "${data.vault_generic_secret.sscs_notify_api_test_key.data["value"]}"
+  value     = "${data.azurerm_key_vault_secret.sscs-notify-api-test-key.value}"
   vault_uri = "${module.sscs-tya-notif-key-vault.key_vault_uri}"
 }
 
 resource "azurerm_key_vault_secret" "mac-secret" {
   name      = "mac-secret"
-  value     = "${data.vault_generic_secret.mac_secret.data["value"]}"
+  value     = "${data.azurerm_key_vault_secret.email-mac-secret.value}"
   vault_uri = "${module.sscs-tya-notif-key-vault.key_vault_uri}"
 }
 
 resource "azurerm_key_vault_secret" "idam-oauth-secret" {
   name      = "idam-oauth-secret"
-  value     = "${data.vault_generic_secret.idam_oauth2_client_secret.data["value"]}"
+  value     = "${data.azurerm_key_vault_secret.idam-sscs-oauth2-client-secret.value}"
   vault_uri = "${module.sscs-tya-notif-key-vault.key_vault_uri}"
 }
 

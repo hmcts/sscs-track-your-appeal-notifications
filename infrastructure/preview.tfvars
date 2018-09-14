@@ -1,4 +1,3 @@
-management_security_enabled = "false"
 infrastructure_env = "preprod"
 
 evidence_submission_info_link = "https://track-appeal.preview.platform.hmcts.net/evidence/appeal_id"
@@ -11,5 +10,3 @@ root_logging_level = "DEBUG"
 log_level_spring_web = "DEBUG"
 log_level_sscs = "DEBUG"
 idam_redirect_url = "https://evidence-sharing-preprod.sscs.reform.hmcts.net"
-notification_key = "notification-key"
-notification_test_key = "notification-test-key"
