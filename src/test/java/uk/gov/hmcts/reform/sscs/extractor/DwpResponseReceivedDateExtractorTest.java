@@ -1,7 +1,7 @@
 package uk.gov.hmcts.reform.sscs.extractor;
 
 import static org.junit.Assert.*;
-import static uk.gov.hmcts.reform.sscs.ccd.domain.EventType.DWP_RESPONSE_RECEIVED;
+import static uk.gov.hmcts.reform.sscs.ccd.domain.EventType.DWP_RESPOND;
 import static uk.gov.hmcts.reform.sscs.domain.notify.NotificationEventType.APPEAL_RECEIVED_NOTIFICATION;
 import static uk.gov.hmcts.reform.sscs.domain.notify.NotificationEventType.DWP_RESPONSE_RECEIVED_NOTIFICATION;
 
@@ -24,7 +24,7 @@ public class DwpResponseReceivedDateExtractorTest {
 
         CcdNotificationWrapper wrapper = SscsCaseDataUtils.buildBasicCcdNotificationWrapperWithEvent(
             DWP_RESPONSE_RECEIVED_NOTIFICATION,
-            DWP_RESPONSE_RECEIVED,
+            DWP_RESPOND,
             ccdEventDate
         );
 

@@ -11,8 +11,8 @@ import org.junit.Test;
 import org.mockito.Mock;
 import org.springframework.test.context.ActiveProfiles;
 import uk.gov.hmcts.reform.ccd.client.model.CaseDetails;
-import uk.gov.hmcts.reform.sscs.ccd.client.CcdClient;
 import uk.gov.hmcts.reform.sscs.ccd.domain.SscsCaseData;
+import uk.gov.hmcts.reform.sscs.ccd.service.CcdService;
 import uk.gov.hmcts.reform.sscs.deserialize.SscsCaseDataWrapperDeserializer;
 import uk.gov.hmcts.reform.sscs.domain.CohEvent;
 import uk.gov.hmcts.reform.sscs.domain.SscsCaseDataWrapper;
@@ -37,7 +37,7 @@ public class NotificationControllerTest {
     private AuthorisationService authorisationService;
 
     @Mock
-    private CcdClient ccdClient;
+    private CcdService ccdService;
 
     @Mock
     private IdamService idamService;
@@ -45,12 +45,20 @@ public class NotificationControllerTest {
     @Mock
     private SscsCaseDataWrapperDeserializer deserializer;
 
+    private IdamTokens idamTokens;
+
+    private String caseId = "12345";
+    private String eventType = "eventType";
+
     @Before
     public void setUp() {
         initMocks(this);
 
-        notificationController = new NotificationController(notificationService, authorisationService, ccdClient, deserializer);
+        notificationController = new NotificationController(notificationService, authorisationService, ccdService, deserializer, idamService);
         sscsCaseDataWrapper = SscsCaseDataWrapper.builder().newSscsCaseData(SscsCaseData.builder().build()).oldSscsCaseData(SscsCaseData.builder().build()).build();
+
+        idamTokens = IdamTokens.builder().build();
+        when(idamService.getIdamTokens()).thenReturn(idamTokens);
     }
 
     @Test
@@ -61,15 +69,13 @@ public class NotificationControllerTest {
 
     @Test
     public void shouldCreateAndSendNotificationForCohResponse() {
-        String caseId = "caseId";
-        String eventType = "eventType";
+
         long caseDetailsId = 123L;
         String onlineHearingId = "onlineHearingId";
 
         CaseDetails caseDetails = CaseDetails.builder().id(caseDetailsId).build();
-        IdamTokens idamTokens = IdamTokens.builder().build();
-        when(idamService.getIdamTokens()).thenReturn(idamTokens);
-        when(ccdClient.getByCaseId(caseId)).thenReturn(caseDetails);
+
+        when(ccdService.getByCaseId(Long.valueOf(caseId), idamTokens)).thenReturn(caseDetails);
         SscsCaseDataWrapper sscsCaseDataWrapper = SscsCaseDataWrapper.builder().build();
         when(deserializer.buildSscsCaseDataWrapper(hasFields(eventType, caseDetailsId))).thenReturn(sscsCaseDataWrapper);
 
@@ -84,10 +90,7 @@ public class NotificationControllerTest {
 
     @Test
     public void handlesNotFindingCcdDetails() {
-        String caseId = "caseId";
-        String eventType = "eventType";
-
-        when(ccdClient.getByCaseId(eq(caseId))).thenReturn(null);
+        when(ccdService.getByCaseId(eq(Long.valueOf(caseId)), eq(idamTokens))).thenReturn(null);
 
         notificationController.sendCohNotification("", CohEvent.builder().caseId(caseId).eventType(eventType).build());
 

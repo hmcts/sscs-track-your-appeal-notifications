@@ -24,11 +24,12 @@ import org.springframework.test.context.junit4.SpringRunner;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.request.MockHttpServletRequestBuilder;
 import org.springframework.test.web.servlet.setup.MockMvcBuilders;
-import uk.gov.hmcts.reform.sscs.ccd.client.CcdClient;
+import uk.gov.hmcts.reform.sscs.ccd.service.CcdService;
 import uk.gov.hmcts.reform.sscs.config.NotificationBlacklist;
 import uk.gov.hmcts.reform.sscs.controller.NotificationController;
 import uk.gov.hmcts.reform.sscs.deserialize.SscsCaseDataWrapperDeserializer;
 import uk.gov.hmcts.reform.sscs.factory.NotificationFactory;
+import uk.gov.hmcts.reform.sscs.idam.IdamService;
 import uk.gov.hmcts.reform.sscs.service.*;
 import uk.gov.service.notify.NotificationClient;
 
@@ -61,10 +62,13 @@ public class NotificationsIt {
     NotificationFactory factory;
 
     @Autowired
-    private CcdClient ccdClient;
+    private CcdService ccdService;
 
     @Autowired
     private SscsCaseDataWrapperDeserializer deserializer;
+
+    @MockBean
+    private IdamService idamService;
 
     String json;
 
@@ -72,7 +76,7 @@ public class NotificationsIt {
     public void setup() throws IOException {
         NotificationSender sender = new NotificationSender(client, null, notificationBlacklist);
         NotificationService service = new NotificationService(sender, factory, reminderService, notificationValidService);
-        controller = new NotificationController(service, authorisationService, ccdClient, deserializer);
+        controller = new NotificationController(service, authorisationService, ccdService, deserializer, idamService);
         this.mockMvc = MockMvcBuilders.standaloneSetup(controller).build();
         String path = getClass().getClassLoader().getResource("json/ccdResponse.json").getFile();
         json = FileUtils.readFileToString(new File(path), StandardCharsets.UTF_8.name());
