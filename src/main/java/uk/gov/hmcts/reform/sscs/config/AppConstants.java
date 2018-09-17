@@ -35,6 +35,7 @@ public final class AppConstants {
     public static final String ONLINE_HEARING_LINK_LITERAL = "online_hearing_link";
     public static final String PHONE_NUMBER = "phone_number";
     public static final String POSTCODE_LITERAL = "postcode";
+    public static final String QUESTION_ROUND_EXPIRES_DATE_LITERAL = "question_round_expires_date";
     public static final String REASONS_FOR_APPEALING_DETAILS_LITERAL = "reasons_for_appealing_details";
     public static final String REGIONAL_OFFICE_NAME_LITERAL = "regional_office_name";
     public static final String REPRESENTATIVE_DETAILS_LITERAL = "representative_details";
