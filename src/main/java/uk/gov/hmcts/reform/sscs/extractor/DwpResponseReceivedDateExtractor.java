@@ -1,6 +1,6 @@
 package uk.gov.hmcts.reform.sscs.extractor;
 
-import static uk.gov.hmcts.reform.sscs.ccd.domain.EventType.DWP_RESPONSE_RECEIVED;
+import static uk.gov.hmcts.reform.sscs.ccd.domain.EventType.DWP_RESPOND;
 
 import java.time.ZonedDateTime;
 import java.util.Optional;
@@ -14,7 +14,7 @@ public class DwpResponseReceivedDateExtractor {
     public Optional<ZonedDateTime> extract(SscsCaseData caseData) {
 
         for (Event event : caseData.getEvents()) {
-            if (event.getValue() != null && event.getValue().getEventType().equals(DWP_RESPONSE_RECEIVED)) {
+            if (event.getValue() != null && event.getValue().getEventType().equals(DWP_RESPOND)) {
                 return Optional.of(event.getValue().getDateTime());
             }
         }

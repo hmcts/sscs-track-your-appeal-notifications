@@ -3,7 +3,7 @@ package uk.gov.hmcts.reform.sscs.service.reminder;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.junit.Assert.*;
 import static org.mockito.Mockito.*;
-import static uk.gov.hmcts.reform.sscs.ccd.domain.EventType.DWP_RESPONSE_RECEIVED;
+import static uk.gov.hmcts.reform.sscs.ccd.domain.EventType.DWP_RESPOND;
 import static uk.gov.hmcts.reform.sscs.domain.notify.NotificationEventType.DWP_RESPONSE_RECEIVED_NOTIFICATION;
 import static uk.gov.hmcts.reform.sscs.domain.notify.NotificationEventType.EVIDENCE_REMINDER_NOTIFICATION;
 
@@ -74,7 +74,7 @@ public class EvidenceReminderTest {
 
         CcdNotificationWrapper wrapper = SscsCaseDataUtils.buildBasicCcdNotificationWrapperWithEvent(
             DWP_RESPONSE_RECEIVED_NOTIFICATION,
-            DWP_RESPONSE_RECEIVED,
+            DWP_RESPOND,
             dwpResponseReceivedDate.toString()
         );
 
