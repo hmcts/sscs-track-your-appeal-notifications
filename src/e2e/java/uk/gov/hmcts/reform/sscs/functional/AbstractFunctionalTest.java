@@ -32,11 +32,11 @@ import org.springframework.http.HttpStatus;
 import org.springframework.test.annotation.ProfileValueSourceConfiguration;
 import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.context.junit4.SpringRunner;
-import uk.gov.hmcts.reform.sscs.ccd.client.CcdClient;
 import uk.gov.hmcts.reform.sscs.ccd.domain.Event;
 import uk.gov.hmcts.reform.sscs.ccd.domain.EventDetails;
 import uk.gov.hmcts.reform.sscs.ccd.domain.SscsCaseData;
 import uk.gov.hmcts.reform.sscs.ccd.domain.SscsCaseDetails;
+import uk.gov.hmcts.reform.sscs.ccd.service.CcdService;
 import uk.gov.hmcts.reform.sscs.domain.notify.NotificationEventType;
 import uk.gov.hmcts.reform.sscs.idam.IdamService;
 import uk.gov.hmcts.reform.sscs.idam.IdamTokens;
@@ -70,7 +70,7 @@ public abstract class AbstractFunctionalTest {
     protected SscsCaseData caseData;
 
     @Autowired
-    private CcdClient ccdClient;
+    private CcdService ccdService;
 
     @Before
     public void setup() {
@@ -86,7 +86,7 @@ public abstract class AbstractFunctionalTest {
 
         caseData = buildSscsCaseData(caseReference, "Yes", "Yes", SYA_APPEAL_CREATED);
 
-        SscsCaseDetails caseDetails = ccdClient.createCase(caseData, "Create case");
+        SscsCaseDetails caseDetails = ccdService.createCase(caseData, idamTokens);
 
         assertNotNull(caseDetails);
         caseId = caseDetails.getId();
@@ -231,7 +231,7 @@ public abstract class AbstractFunctionalTest {
         allEvents.add(events);
         caseData.setEvents(allEvents);
 
-        ccdClient.updateCase(caseData, caseId, eventType.getId(), "CCD Case", "Notification Service updated case");
+        ccdService.updateCase(caseData, caseId, eventType.getId(), "CCD Case", "Notification Service updated case", idamTokens);
     }
 
     protected void assertNotificationSubjectContains(List<Notification> notifications, String templateId, String... matches) {
