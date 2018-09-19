@@ -33,6 +33,15 @@ public final class SscsCaseDataUtils {
             String subscribeSms,
             EventType eventType
     ) {
+        return builderSscsCaseData(caseReference, subscribeEmail, subscribeSms, eventType).build();
+    }
+
+    public static SscsCaseData.SscsCaseDataBuilder builderSscsCaseData(
+            String caseReference,
+            String subscribeEmail,
+            String subscribeSms,
+            EventType eventType
+    ) {
         Name name = Name.builder()
                 .title("Mr")
                 .firstName("User")
@@ -96,8 +105,7 @@ public final class SscsCaseDataUtils {
                 .caseReference(caseReference)
                 .appeal(appeal)
                 .events(Collections.singletonList(events))
-                .subscriptions(subscriptions)
-                .build();
+                .subscriptions(subscriptions);
     }
 
     public static CcdNotificationWrapper buildBasicCcdNotificationWrapper(NotificationEventType notificationType) {

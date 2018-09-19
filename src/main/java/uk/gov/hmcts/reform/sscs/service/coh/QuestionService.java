@@ -38,4 +38,14 @@ public class QuestionService {
             );
         }
     }
+
+    public QuestionRounds getQuestionRounds(String onlineHearingId) {
+        IdamTokens idamTokens = idamService.getIdamTokens();
+
+        return cohClient.getQuestionRounds(
+                    idamTokens.getIdamOauth2Token(),
+                    idamTokens.getServiceAuthorization(),
+                    onlineHearingId
+            );
+    }
 }

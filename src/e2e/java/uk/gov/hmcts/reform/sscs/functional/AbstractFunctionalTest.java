@@ -70,7 +70,7 @@ public abstract class AbstractFunctionalTest {
     protected SscsCaseData caseData;
 
     @Autowired
-    private CcdClient ccdClient;
+    protected CcdClient ccdClient;
 
     @Before
     public void setup() {
@@ -84,12 +84,16 @@ public abstract class AbstractFunctionalTest {
 
         caseReference = generateRandomCaseReference();
 
-        caseData = buildSscsCaseData(caseReference, "Yes", "Yes", SYA_APPEAL_CREATED);
+        caseData = createCaseData();
 
         SscsCaseDetails caseDetails = ccdClient.createCase(caseData, "Create case");
 
         assertNotNull(caseDetails);
         caseId = caseDetails.getId();
+    }
+
+    protected SscsCaseData createCaseData() {
+        return buildSscsCaseData(caseReference, "Yes", "Yes", SYA_APPEAL_CREATED);
     }
 
     protected static String generateRandomCaseReference() {
