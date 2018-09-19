@@ -8,6 +8,7 @@ import static org.mockito.Mockito.when;
 import static org.mockito.MockitoAnnotations.initMocks;
 import static uk.gov.hmcts.reform.sscs.ccd.domain.Benefit.PIP;
 import static uk.gov.hmcts.reform.sscs.ccd.domain.EventType.APPEAL_RECEIVED;
+import static uk.gov.hmcts.reform.sscs.config.AppealHearingType.ONLINE;
 import static uk.gov.hmcts.reform.sscs.domain.notify.NotificationEventType.APPEAL_RECEIVED_NOTIFICATION;
 import static uk.gov.hmcts.reform.sscs.domain.notify.NotificationEventType.QUESTION_ROUND_ISSUED_NOTIFICATION;
 
@@ -50,7 +51,7 @@ public class CohPersonalisationTest {
     private QuestionService questionService;
 
     @Mock
-    private CohDateConverterUtil cohDateConverterUtil;
+    private NotificationDateConverterUtil notificationDateConverterUtil;
 
     @InjectMocks
     private CohPersonalisation cohPersonalisation;
@@ -106,7 +107,7 @@ public class CohPersonalisationTest {
         String expectedRequiredByDate = "expectedRequiredByDate";
 
         when(questionService.getQuestionRequiredByDate(someHearingId)).thenReturn(cohDate);
-        when(cohDateConverterUtil.toEmailDate(cohDate)).thenReturn(expectedRequiredByDate);
+        when(notificationDateConverterUtil.toEmailDate(cohDate)).thenReturn(expectedRequiredByDate);
 
         Map<String, String> placeholders = cohPersonalisation.create(new CohNotificationWrapper(someHearingId, sscsCaseDataWrapper));
 
@@ -122,14 +123,16 @@ public class CohPersonalisationTest {
         CohNotificationWrapper cohNotificationWrapper = new CohNotificationWrapper(
                 someHearingId,
                 SscsCaseDataWrapper.builder()
-                        .newSscsCaseData(SscsCaseData.builder().build())
+                        .newSscsCaseData(SscsCaseData.builder()
+                                .onlinePanel(OnlinePanel.builder().build())
+                                .build())
                         .notificationEventType(QUESTION_ROUND_ISSUED_NOTIFICATION)
                         .build());
         Template expectedTemplate = Template.builder().build();
         when(config.getTemplate(
                 QUESTION_ROUND_ISSUED_NOTIFICATION.getId(),
                 QUESTION_ROUND_ISSUED_NOTIFICATION.getId(),
-                Benefit.PIP))
+                Benefit.PIP, ONLINE))
                 .thenReturn(expectedTemplate);
 
         Template template = cohPersonalisation.getTemplate(cohNotificationWrapper, Benefit.PIP);
@@ -142,9 +145,16 @@ public class CohPersonalisationTest {
         QuestionRounds questionRounds = mock(QuestionRounds.class);
         when(questionService.getQuestionRounds(someHearingId)).thenReturn(questionRounds);
         when(questionRounds.getCurrentQuestionRound()).thenReturn(2);
-        CohNotificationWrapper cohNotificationWrapper = new CohNotificationWrapper(someHearingId, SscsCaseDataWrapper.builder().build());
+        CohNotificationWrapper cohNotificationWrapper = new CohNotificationWrapper(someHearingId,
+                SscsCaseDataWrapper.builder()
+                        .newSscsCaseData(
+                                SscsCaseData.builder()
+                                        .onlinePanel(OnlinePanel.builder().build())
+                                        .build()
+                        )
+                        .build());
         Template expectedTemplate = Template.builder().build();
-        when(config.getTemplate("follow_up_question_round_issued", "follow_up_question_round_issued", Benefit.PIP)).thenReturn(expectedTemplate);
+        when(config.getTemplate("follow_up_question_round_issued", "follow_up_question_round_issued", Benefit.PIP, ONLINE)).thenReturn(expectedTemplate);
 
         Template template = cohPersonalisation.getTemplate(cohNotificationWrapper, Benefit.PIP);
         assertThat(template, is(expectedTemplate));
