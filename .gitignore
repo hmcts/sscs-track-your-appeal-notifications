@@ -19,3 +19,12 @@ build
 
 # vim
 .*.swp
+
+# eclipse
+.classpath
+.project
+.settings
+
+#visual code
+bin/
+.vscode
