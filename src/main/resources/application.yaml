@@ -164,6 +164,10 @@ reminder:
   hearingReminder.beforeFirst.seconds: 604800
   hearingReminder.beforeSecond.seconds: 86400
 
+outOfHours:
+  startHour: ${HOURS_START_TIME:9}
+  endHour: ${HOURS_END_TIME:17}
+
 feign:
   client:
     config:

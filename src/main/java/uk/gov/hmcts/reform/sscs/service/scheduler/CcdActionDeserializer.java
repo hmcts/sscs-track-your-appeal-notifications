@@ -4,7 +4,7 @@ import org.springframework.stereotype.Component;
 import uk.gov.hmcts.reform.sscs.jobscheduler.services.JobPayloadDeserializer;
 
 @Component
-public class ActionDeserializer implements JobPayloadDeserializer<String> {
+public class CcdActionDeserializer implements JobPayloadDeserializer<String> {
 
     @Override
     public String deserialize(String payload) {

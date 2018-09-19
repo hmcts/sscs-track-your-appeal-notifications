@@ -2,6 +2,8 @@ package uk.gov.hmcts.reform.sscs.tya;
 
 import static helper.IntegrationTestHelper.assertHttpStatus;
 import static helper.IntegrationTestHelper.getRequestWithAuthHeader;
+import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.when;
 
 import helper.IntegrationTestHelper;
 import java.io.File;
@@ -13,6 +15,7 @@ import org.apache.commons.io.FileUtils;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
+import org.mockito.Mock;
 import org.quartz.Scheduler;
 import org.quartz.SchedulerException;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -34,6 +37,7 @@ import uk.gov.hmcts.reform.sscs.idam.IdamService;
 import uk.gov.hmcts.reform.sscs.jobscheduler.services.JobExecutor;
 import uk.gov.hmcts.reform.sscs.service.AuthorisationService;
 import uk.gov.hmcts.reform.sscs.service.NotificationService;
+import uk.gov.hmcts.reform.sscs.service.OutOfHoursCalculator;
 import uk.gov.service.notify.NotificationClient;
 
 @RunWith(SpringRunner.class)
@@ -68,6 +72,9 @@ public class DwpResponseLateReminderIt {
     @Autowired
     private SscsCaseDataWrapperDeserializer deserializer;
 
+    @Mock
+    private OutOfHoursCalculator outOfHoursCalculator;
+
     @MockBean
     private IdamService idamService;
 
@@ -75,6 +82,9 @@ public class DwpResponseLateReminderIt {
     public void setup() {
         controller = new NotificationController(notificationService, authorisationService, ccdService, deserializer, idamService);
         this.mockMvc = MockMvcBuilders.standaloneSetup(controller).build();
+
+        outOfHoursCalculator = mock(OutOfHoursCalculator.class);
+        when(outOfHoursCalculator.isItOutOfHours()).thenReturn(false);
     }
 
     @Test

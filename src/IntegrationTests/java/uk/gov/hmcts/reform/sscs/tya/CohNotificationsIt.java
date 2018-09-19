@@ -46,6 +46,7 @@ import uk.gov.service.notify.NotificationClient;
 @SpringBootTest
 @ActiveProfiles("integration")
 @AutoConfigureMockMvc
+// NB These could fail if it is out of hours check the config for AAT if this test has started to fail.
 public class CohNotificationsIt {
 
     MockMvc mockMvc;
@@ -73,6 +74,9 @@ public class CohNotificationsIt {
     @Mock
     NotificationBlacklist notificationBlacklist;
 
+    @MockBean
+    private OutOfHoursCalculator outOfHoursCalculator;
+
     @Autowired
     NotificationFactory factory;
 
@@ -81,6 +85,9 @@ public class CohNotificationsIt {
 
     @Autowired
     private NotificationValidService notificationValidService;
+
+    @Autowired
+    private NotificationHandler notificationHandler;
 
     @Value("${notification.question_round_issued.emailId}")
     private String emailTemplateId;
@@ -93,7 +100,7 @@ public class CohNotificationsIt {
     @Before
     public void setup() throws IOException {
         NotificationSender sender = new NotificationSender(client, null, notificationBlacklist);
-        NotificationService service = new NotificationService(sender, factory, reminderService, notificationValidService);
+        NotificationService service = new NotificationService(sender, factory, reminderService, notificationValidService, notificationHandler);
         controller = new NotificationController(service, authorisationService, ccdService, deserializer, idamService);
 
         ObjectMapper mapper = new ObjectMapper();
@@ -117,6 +124,9 @@ public class CohNotificationsIt {
                 + "   \"expiry_date\":\"2018-08-12T23:59:59Z\",\n"
                 + "   \"reason\":\"foo\"\n"
                 + "}";
+
+        outOfHoursCalculator = mock(OutOfHoursCalculator.class);
+        when(outOfHoursCalculator.isItOutOfHours()).thenReturn(false);
     }
 
     @Test

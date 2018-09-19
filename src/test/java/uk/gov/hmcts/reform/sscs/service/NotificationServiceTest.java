@@ -4,7 +4,6 @@ import static org.mockito.Mockito.*;
 import static org.mockito.MockitoAnnotations.initMocks;
 import static uk.gov.hmcts.reform.sscs.domain.notify.NotificationEventType.APPEAL_WITHDRAWN_NOTIFICATION;
 
-import java.net.UnknownHostException;
 import org.junit.Before;
 import org.junit.Test;
 import org.mockito.Mock;
@@ -14,11 +13,8 @@ import uk.gov.hmcts.reform.sscs.domain.notify.Destination;
 import uk.gov.hmcts.reform.sscs.domain.notify.Notification;
 import uk.gov.hmcts.reform.sscs.domain.notify.Reference;
 import uk.gov.hmcts.reform.sscs.domain.notify.Template;
-import uk.gov.hmcts.reform.sscs.exception.NotificationClientRuntimeException;
-import uk.gov.hmcts.reform.sscs.exception.NotificationServiceException;
 import uk.gov.hmcts.reform.sscs.factory.CcdNotificationWrapper;
 import uk.gov.hmcts.reform.sscs.factory.NotificationFactory;
-import uk.gov.service.notify.NotificationClientException;
 
 public class NotificationServiceTest {
 
@@ -36,7 +32,10 @@ public class NotificationServiceTest {
     @Mock
     private NotificationValidService notificationValidService;
 
-    SscsCaseData response;
+    @Mock
+    private NotificationHandler notificationHandler;
+
+    private SscsCaseData response;
     private CcdNotificationWrapper notificationWrapper;
 
     @Before
@@ -45,7 +44,7 @@ public class NotificationServiceTest {
         when((notificationValidService).isNotificationStillValidToSend(any(), any())).thenReturn(true);
         when((notificationValidService).isHearingTypeValidToSendNotification(any(), any())).thenReturn(true);
 
-        notificationService = new NotificationService(notificationSender, factory, reminderService, notificationValidService);
+        notificationService = new NotificationService(notificationSender, factory, reminderService, notificationValidService, notificationHandler);
 
         Subscription appellantSubscription = Subscription.builder().tya("GLSCRR").email("test@email.com")
             .mobile("07983495065").subscribeEmail("Yes").subscribeSms("Yes").build();
@@ -59,31 +58,35 @@ public class NotificationServiceTest {
     }
 
     @Test
-    public void sendEmailToGovNotifyWhenNotificationIsAnEmailAndTemplateNotBlank() throws Exception {
-        Notification notification = new Notification(Template.builder().emailTemplateId("abc").smsTemplateId(null).build(), Destination.builder().email("test@testing.com").sms(null).build(), null, new Reference(), null);
+    public void sendEmailToGovNotifyWhenNotificationIsAnEmailAndTemplateNotBlank() {
+        String emailTemplateId = "abc";
+        Notification notification = new Notification(Template.builder().emailTemplateId(emailTemplateId).smsTemplateId(null).build(), Destination.builder().email("test@testing.com").sms(null).build(), null, new Reference(), null);
         when(factory.create(notificationWrapper)).thenReturn(notification);
         notificationService.createAndSendNotification(notificationWrapper);
 
-        verify(notificationSender).sendEmail(notification.getEmailTemplate(), notification.getEmail(), notification.getPlaceholders(), notification.getReference());
+        verify(notificationHandler).sendNotification(eq(notificationWrapper), eq(emailTemplateId), eq("Email"), any(NotificationHandler.SendNotification.class));
     }
 
     @Test
-    public void sendSmsToGovNotifyWhenNotificationIsAnSmsAndTemplateNotBlank() throws Exception {
-        Notification notification = new Notification(Template.builder().emailTemplateId(null).smsTemplateId("123").build(), Destination.builder().email(null).sms("07823456746").build(), null, new Reference(), null);
+    public void sendSmsToGovNotifyWhenNotificationIsAnSmsAndTemplateNotBlank() {
+        String smsTemplateId = "123";
+        Notification notification = new Notification(Template.builder().emailTemplateId(null).smsTemplateId(smsTemplateId).build(), Destination.builder().email(null).sms("07823456746").build(), null, new Reference(), null);
         when(factory.create(notificationWrapper)).thenReturn(notification);
         notificationService.createAndSendNotification(notificationWrapper);
 
-        verify(notificationSender).sendSms(notification.getSmsTemplate(), notification.getMobile(), notification.getPlaceholders(), notification.getReference(), notification.getSmsSenderTemplate());
+        verify(notificationHandler).sendNotification(eq(notificationWrapper), eq(smsTemplateId), eq("SMS"), any(NotificationHandler.SendNotification.class));
     }
 
     @Test
-    public void sendSmsAndEmailToGovNotifyWhenNotificationIsAnSmsAndEmailAndTemplateNotBlank() throws Exception {
-        Notification notification = new Notification(Template.builder().emailTemplateId("abc").smsTemplateId("123").build(), Destination.builder().email("test@testing.com").sms("07823456746").build(), null, new Reference(), null);
+    public void sendSmsAndEmailToGovNotifyWhenNotificationIsAnSmsAndEmailAndTemplateNotBlank() {
+        String emailTemplateId = "abc";
+        String smsTemplateId = "123";
+        Notification notification = new Notification(Template.builder().emailTemplateId(emailTemplateId).smsTemplateId(smsTemplateId).build(), Destination.builder().email("test@testing.com").sms("07823456746").build(), null, new Reference(), null);
         when(factory.create(notificationWrapper)).thenReturn(notification);
         notificationService.createAndSendNotification(notificationWrapper);
 
-        verify(notificationSender).sendEmail(notification.getEmailTemplate(), notification.getEmail(), notification.getPlaceholders(), notification.getReference());
-        verify(notificationSender).sendSms(notification.getSmsTemplate(), notification.getMobile(), notification.getPlaceholders(), notification.getReference(), notification.getSmsSenderTemplate());
+        verify(notificationHandler).sendNotification(eq(notificationWrapper), eq(emailTemplateId), eq("Email"), any(NotificationHandler.SendNotification.class));
+        verify(notificationHandler).sendNotification(eq(notificationWrapper), eq(smsTemplateId), eq("SMS"), any(NotificationHandler.SendNotification.class));
     }
 
     @Test
@@ -120,34 +123,6 @@ public class NotificationServiceTest {
         notificationService.createAndSendNotification(notificationWrapper);
 
         verify(notificationSender, never()).sendSms(notification.getSmsTemplate(), notification.getMobile(), notification.getPlaceholders(), notification.getReference(), notification.getSmsSenderTemplate());
-    }
-
-    @Test(expected = NotificationClientRuntimeException.class)
-    public void shouldThrowNotificationClientRuntimeExceptionForAnyNotificationException() throws Exception {
-        Notification notification = new Notification(Template.builder().emailTemplateId("abc").smsTemplateId(null).build(), Destination.builder().email("test@testing.com").sms(null).build(), null, new Reference(), null);
-        when(factory.create(notificationWrapper)).thenReturn(notification);
-
-        doThrow(new NotificationClientException(new UnknownHostException()))
-            .when(notificationSender)
-            .sendEmail(
-                notification.getEmailTemplate(), notification.getEmail(), notification.getPlaceholders(), notification.getReference()
-            );
-
-        notificationService.createAndSendNotification(notificationWrapper);
-    }
-
-    @Test(expected = NotificationServiceException.class)
-    public void shouldCorrectlyHandleAGovNotifyException() throws Exception {
-        Notification notification = new Notification(Template.builder().emailTemplateId("abc").smsTemplateId(null).build(), Destination.builder().email("test@testing.com").sms(null).build(), null, new Reference(), null);
-        when(factory.create(notificationWrapper)).thenReturn(notification);
-
-        doThrow(new RuntimeException())
-            .when(notificationSender)
-            .sendEmail(
-                notification.getEmailTemplate(), notification.getEmail(), notification.getPlaceholders(), notification.getReference()
-            );
-
-        notificationService.createAndSendNotification(notificationWrapper);
     }
 
     @Test

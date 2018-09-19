@@ -23,14 +23,14 @@ public class DwpResponseLateReminder implements ReminderHandler {
 
     private final AppealReceivedDateExtractor appealReceivedDateExtractor;
     private final JobGroupGenerator jobGroupGenerator;
-    private final JobScheduler<String> jobScheduler;
+    private final JobScheduler jobScheduler;
     private final long delay;
 
     @Autowired
     public DwpResponseLateReminder(
         AppealReceivedDateExtractor appealReceivedDateExtractor,
         JobGroupGenerator jobGroupGenerator,
-        JobScheduler<String> jobScheduler,
+        JobScheduler jobScheduler,
         @Value("${reminder.dwpResponseLateReminder.delay.seconds}") long delay
     ) {
         this.appealReceivedDateExtractor = appealReceivedDateExtractor;

@@ -23,14 +23,14 @@ public class EvidenceReminder implements ReminderHandler {
 
     private final DwpResponseReceivedDateExtractor dwpResponseReceivedDateExtractor;
     private final JobGroupGenerator jobGroupGenerator;
-    private final JobScheduler<String> jobScheduler;
+    private final JobScheduler jobScheduler;
     private final long evidenceReminderDelay;
 
     @Autowired
     public EvidenceReminder(
         DwpResponseReceivedDateExtractor dwpResponseReceivedDateExtractor,
         JobGroupGenerator jobGroupGenerator,
-        JobScheduler<String> jobScheduler,
+        JobScheduler jobScheduler,
         @Value("${reminder.evidenceReminder.delay.seconds}") long evidenceReminderDelay
     ) {
         this.dwpResponseReceivedDateExtractor = dwpResponseReceivedDateExtractor;

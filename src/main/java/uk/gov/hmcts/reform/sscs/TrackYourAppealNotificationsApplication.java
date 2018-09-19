@@ -1,5 +1,7 @@
 package uk.gov.hmcts.reform.sscs;
 
+import static java.util.Arrays.asList;
+
 import java.util.TimeZone;
 import javax.annotation.PostConstruct;
 import org.quartz.spi.JobFactory;
@@ -16,8 +18,16 @@ import org.springframework.context.annotation.ComponentScan;
 import org.springframework.context.annotation.Primary;
 import org.springframework.context.support.ReloadableResourceBundleMessageSource;
 import uk.gov.hmcts.reform.sscs.ccd.config.CcdRequestDetails;
+import uk.gov.hmcts.reform.sscs.ccd.service.CcdService;
 import uk.gov.hmcts.reform.sscs.deserialize.SscsCaseDataWrapperDeserializer;
+import uk.gov.hmcts.reform.sscs.idam.IdamService;
 import uk.gov.hmcts.reform.sscs.jobscheduler.config.QuartzConfiguration;
+import uk.gov.hmcts.reform.sscs.jobscheduler.services.quartz.JobClassMapper;
+import uk.gov.hmcts.reform.sscs.jobscheduler.services.quartz.JobClassMapping;
+import uk.gov.hmcts.reform.sscs.jobscheduler.services.quartz.JobMapper;
+import uk.gov.hmcts.reform.sscs.jobscheduler.services.quartz.JobMapping;
+import uk.gov.hmcts.reform.sscs.service.NotificationService;
+import uk.gov.hmcts.reform.sscs.service.scheduler.*;
 import uk.gov.service.notify.NotificationClient;
 
 @SpringBootApplication
@@ -86,5 +96,30 @@ public class TrackYourAppealNotificationsApplication {
                 .caseTypeId(coreCaseDataCaseTypeId)
                 .jurisdictionId(coreCaseDataJurisdictionId)
                 .build();
+    }
+
+    @Bean
+    public JobMapper getJobMapper(CohActionDeserializer cohActionDeserializer,
+                                  CcdActionDeserializer ccdActionDeserializer,
+                                  NotificationService notificationService,
+                                  CcdService ccdService,
+                                  SscsCaseDataWrapperDeserializer deserializer,
+                                  IdamService idamService) {
+        // Had to wire these up like this Spring will not wire up CcdActionExecutor otherwise.
+        CohActionExecutor cohActionExecutor = new CohActionExecutor(notificationService, ccdService, deserializer, idamService);
+        CcdActionExecutor ccdActionExecutor = new CcdActionExecutor(notificationService, ccdService, deserializer, idamService);
+        return new JobMapper(asList(
+                new JobMapping<>(payload -> payload.contains("online_hearing_id"), cohActionDeserializer, cohActionExecutor),
+                new JobMapping<>(payload -> !payload.contains("online_hearing_id"), ccdActionDeserializer, ccdActionExecutor)
+        ));
+    }
+
+    @Bean
+    public JobClassMapper getJobClassMapper(CohActionSerializer cohActionSerializer,
+                                            CcdActionSerializer ccdActionSerializer) {
+        return new JobClassMapper(asList(
+                new JobClassMapping<>(CohJobPayload.class, cohActionSerializer),
+                new JobClassMapping<>(String.class, ccdActionSerializer)
+        ));
     }
 }

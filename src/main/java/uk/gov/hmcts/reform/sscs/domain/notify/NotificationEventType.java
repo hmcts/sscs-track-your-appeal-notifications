@@ -4,45 +4,47 @@ import uk.gov.hmcts.reform.sscs.ccd.domain.EventType;
 
 public enum NotificationEventType {
 
-    ADJOURNED_NOTIFICATION("hearingAdjourned", true, false, false),
-    SYA_APPEAL_CREATED_NOTIFICATION("appealCreated", true, true, false),
-    APPEAL_LAPSED_NOTIFICATION("appealLapsed", true, true, false),
-    APPEAL_RECEIVED_NOTIFICATION("appealReceived", true, true, false),
-    APPEAL_WITHDRAWN_NOTIFICATION("appealWithdrawn", true, false, false),
-    APPEAL_DORMANT_NOTIFICATION("appealDormant", true, false, false),
-    DWP_RESPONSE_RECEIVED_NOTIFICATION("responseReceived", true, false, true),
-    EVIDENCE_RECEIVED_NOTIFICATION("evidenceReceived", true, false, false),
-    HEARING_BOOKED_NOTIFICATION("hearingBooked", true, false, false),
-    POSTPONEMENT_NOTIFICATION("hearingPostponed", true, false, false),
-    SUBSCRIPTION_CREATED_NOTIFICATION("subscriptionCreated", true, true, false),
-    SUBSCRIPTION_UPDATED_NOTIFICATION("subscriptionUpdated", true, true, false),
-    EVIDENCE_REMINDER_NOTIFICATION("evidenceReminder", true, false, false),
-    FIRST_HEARING_HOLDING_REMINDER_NOTIFICATION("hearingHoldingReminder", true, false, false),
-    SECOND_HEARING_HOLDING_REMINDER_NOTIFICATION("secondHearingHoldingReminder", true, false, false),
-    THIRD_HEARING_HOLDING_REMINDER_NOTIFICATION("thirdHearingHoldingReminder", true, false, false),
-    FINAL_HEARING_HOLDING_REMINDER_NOTIFICATION("finalHearingHoldingReminder", true, false, false),
-    HEARING_REMINDER_NOTIFICATION("hearingReminder", true, false, false),
-    DWP_RESPONSE_LATE_REMINDER_NOTIFICATION("dwpResponseLateReminder", true, false, false),
-    QUESTION_ROUND_ISSUED_NOTIFICATION("question_round_issued", false, false, true),
-    QUESTION_DEADLINE_ELAPSED_NOTIFICATION("question_deadline_elapsed", false, false, true),
-    QUESTION_DEADLINE_REMINDER_NOTIFICATION("question_deadline_reminder", false, false, true),
-    HEARING_REQUIRED_NOTIFICATION("continuous_online_hearing_relisted", false, false, true),
+    ADJOURNED_NOTIFICATION("hearingAdjourned", true, false, false, true),
+    SYA_APPEAL_CREATED_NOTIFICATION("appealCreated", true, true, false, true),
+    APPEAL_LAPSED_NOTIFICATION("appealLapsed", true, true, false, true),
+    APPEAL_RECEIVED_NOTIFICATION("appealReceived", true, true, false, true),
+    APPEAL_WITHDRAWN_NOTIFICATION("appealWithdrawn", true, false, false, true),
+    APPEAL_DORMANT_NOTIFICATION("appealDormant", true, false, false, true),
+    DWP_RESPONSE_RECEIVED_NOTIFICATION("responseReceived", true, false, true, true),
+    EVIDENCE_RECEIVED_NOTIFICATION("evidenceReceived", true, false, false, true),
+    HEARING_BOOKED_NOTIFICATION("hearingBooked", true, false, false, true),
+    POSTPONEMENT_NOTIFICATION("hearingPostponed", true, false, false, true),
+    SUBSCRIPTION_CREATED_NOTIFICATION("subscriptionCreated", true, true, false, true),
+    SUBSCRIPTION_UPDATED_NOTIFICATION("subscriptionUpdated", true, true, false, true),
+    EVIDENCE_REMINDER_NOTIFICATION("evidenceReminder", true, false, false, true),
+    FIRST_HEARING_HOLDING_REMINDER_NOTIFICATION("hearingHoldingReminder", true, false, false, true),
+    SECOND_HEARING_HOLDING_REMINDER_NOTIFICATION("secondHearingHoldingReminder", true, false, false, true),
+    THIRD_HEARING_HOLDING_REMINDER_NOTIFICATION("thirdHearingHoldingReminder", true, false, false, true),
+    FINAL_HEARING_HOLDING_REMINDER_NOTIFICATION("finalHearingHoldingReminder", true, false, false, true),
+    HEARING_REMINDER_NOTIFICATION("hearingReminder", true, false, false, true),
+    DWP_RESPONSE_LATE_REMINDER_NOTIFICATION("dwpResponseLateReminder", true, false, false, true),
+    QUESTION_ROUND_ISSUED_NOTIFICATION("question_round_issued", false, false, true, false),
+    QUESTION_DEADLINE_ELAPSED_NOTIFICATION("question_deadline_elapsed", false, false, true, false),
+    QUESTION_DEADLINE_REMINDER_NOTIFICATION("question_deadline_reminder", false, false, true, false),
+    HEARING_REQUIRED_NOTIFICATION("continuous_online_hearing_relisted", false, false, true, false),
     DO_NOT_SEND("");
 
     private String id;
     private boolean sendForOralCase;
     private boolean sendForPaperCase;
     private boolean sendForCohCase;
+    private boolean allowOutOfHours;
 
     NotificationEventType(String id) {
         this.id = id;
     }
 
-    NotificationEventType(String id, Boolean sendForOralCase, Boolean sendForPaperCase, Boolean sendForCohCase) {
+    NotificationEventType(String id, Boolean sendForOralCase, Boolean sendForPaperCase, Boolean sendForCohCase, Boolean allowOutOfHours) {
         this.id = id;
         this.sendForOralCase = sendForOralCase;
         this.sendForPaperCase = sendForPaperCase;
         this.sendForCohCase = sendForCohCase;
+        this.allowOutOfHours = allowOutOfHours;
     }
 
     public static NotificationEventType getNotificationById(String id) {
@@ -81,4 +83,7 @@ public enum NotificationEventType {
         return sendForCohCase;
     }
 
+    public boolean isAllowOutOfHours() {
+        return allowOutOfHours;
+    }
 }
