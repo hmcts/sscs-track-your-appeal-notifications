@@ -26,6 +26,7 @@ public enum NotificationEventType {
     QUESTION_ROUND_ISSUED_NOTIFICATION("question_round_issued", false, false, true),
     QUESTION_DEADLINE_ELAPSED_NOTIFICATION("question_deadline_elapsed", false, false, true),
     QUESTION_DEADLINE_REMINDER_NOTIFICATION("question_deadline_reminder", false, false, true),
+    HEARING_REQUIRED_NOTIFICATION("continuous_online_hearing_relisted", false, false, true),
     DO_NOT_SEND("");
 
     private String id;
