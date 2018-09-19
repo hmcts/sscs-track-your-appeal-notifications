@@ -10,7 +10,7 @@ public enum NotificationEventType {
     APPEAL_RECEIVED_NOTIFICATION("appealReceived", true, true, false),
     APPEAL_WITHDRAWN_NOTIFICATION("appealWithdrawn", true, false, false),
     APPEAL_DORMANT_NOTIFICATION("appealDormant", true, false, false),
-    DWP_RESPONSE_RECEIVED_NOTIFICATION("responseReceived", true, false, false),
+    DWP_RESPONSE_RECEIVED_NOTIFICATION("responseReceived", true, false, true),
     EVIDENCE_RECEIVED_NOTIFICATION("evidenceReceived", true, false, false),
     HEARING_BOOKED_NOTIFICATION("hearingBooked", true, false, false),
     POSTPONEMENT_NOTIFICATION("hearingPostponed", true, false, false),
@@ -25,6 +25,8 @@ public enum NotificationEventType {
     DWP_RESPONSE_LATE_REMINDER_NOTIFICATION("dwpResponseLateReminder", true, false, false),
     QUESTION_ROUND_ISSUED_NOTIFICATION("question_round_issued", false, false, true),
     QUESTION_DEADLINE_ELAPSED_NOTIFICATION("question_deadline_elapsed", false, false, true),
+    QUESTION_DEADLINE_REMINDER_NOTIFICATION("question_deadline_reminder", false, false, true),
+    HEARING_REQUIRED_NOTIFICATION("continuous_online_hearing_relisted", false, false, true),
     DO_NOT_SEND("");
 
     private String id;

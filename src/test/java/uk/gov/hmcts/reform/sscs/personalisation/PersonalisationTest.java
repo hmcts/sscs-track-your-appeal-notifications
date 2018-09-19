@@ -6,6 +6,8 @@ import static org.mockito.MockitoAnnotations.initMocks;
 import static uk.gov.hmcts.reform.sscs.ccd.domain.Benefit.PIP;
 import static uk.gov.hmcts.reform.sscs.ccd.domain.EventType.APPEAL_RECEIVED;
 import static uk.gov.hmcts.reform.sscs.config.AppConstants.ONLINE_HEARING_LINK_LITERAL;
+import static uk.gov.hmcts.reform.sscs.config.AppConstants.QUESTION_ROUND_EXPIRES_DATE_LITERAL;
+import static uk.gov.hmcts.reform.sscs.config.AppConstants.TRIBUNAL_RESPONSE_DATE_LITERAL;
 import static uk.gov.hmcts.reform.sscs.domain.notify.NotificationEventType.*;
 
 import java.time.Instant;
@@ -52,6 +54,9 @@ public class PersonalisationTest {
     @Mock
     private RegionalProcessingCenterService regionalProcessingCenterService;
 
+    @Mock
+    private NotificationDateConverterUtil notificationDateConverterUtil;
+
     @InjectMocks
     @Resource
     public Personalisation personalisation;
@@ -73,6 +78,8 @@ public class PersonalisationTest {
         when(config.getClaimingExpensesLink()).thenReturn(Link.builder().linkUrl("http://link.com/progress/appeal_id/expenses").build());
         when(config.getHearingInfoLink()).thenReturn(Link.builder().linkUrl("http://link.com/progress/appeal_id/abouthearing").build());
         when(config.getOnlineHearingLink()).thenReturn(Link.builder().linkUrl("http://link.com/onlineHearing?email={email}").build());
+        when(notificationDateConverterUtil.toEmailDate(LocalDate.now().plusDays(1))).thenReturn("1 January 2018");
+        when(notificationDateConverterUtil.toEmailDate(LocalDate.now().plusDays(7))).thenReturn("1 February 2018");
         when(macService.generateToken("GLSCRR", PIP.name())).thenReturn("ZYX");
         when(hearingContactDateExtractor.extract(any())).thenReturn(Optional.empty());
 
@@ -131,6 +138,8 @@ public class PersonalisationTest {
         assertEquals(ADDRESS4, result.get(AppConstants.TOWN_LITERAL));
         assertEquals(CITY, result.get(AppConstants.COUNTY_LITERAL));
         assertEquals(POSTCODE, result.get(AppConstants.POSTCODE_LITERAL));
+        assertEquals("1 February 2018", result.get(TRIBUNAL_RESPONSE_DATE_LITERAL));
+        assertEquals("1 January 2018", result.get(QUESTION_ROUND_EXPIRES_DATE_LITERAL));
     }
 
     @Test
