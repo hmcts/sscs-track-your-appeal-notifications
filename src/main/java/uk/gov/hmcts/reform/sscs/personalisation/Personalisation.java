@@ -4,6 +4,7 @@ import static com.google.common.collect.Lists.newArrayList;
 import static uk.gov.hmcts.reform.sscs.ccd.domain.Benefit.getBenefitByCode;
 import static uk.gov.hmcts.reform.sscs.ccd.domain.EventType.APPEAL_RECEIVED;
 import static uk.gov.hmcts.reform.sscs.config.AppConstants.ONLINE_HEARING_LINK_LITERAL;
+import static uk.gov.hmcts.reform.sscs.config.AppConstants.TRIBUNAL_RESPONSE_DATE_LITERAL;
 import static uk.gov.hmcts.reform.sscs.domain.notify.NotificationEventType.*;
 
 import java.io.UnsupportedEncodingException;
@@ -48,6 +49,9 @@ public class Personalisation<E extends NotificationWrapper> {
 
     @Autowired
     private RegionalProcessingCenterService regionalProcessingCenterService;
+
+    @Autowired
+    private NotificationDateConverterUtil notificationDateConverterUtil;
 
     public Map<String, String> create(E notificationWrapper) {
         return create(notificationWrapper.getSscsCaseDataWrapper());
@@ -110,6 +114,9 @@ public class Personalisation<E extends NotificationWrapper> {
         setEventData(personalisation, ccdResponse, notificationEventType);
         setEvidenceReceivedNotificationData(personalisation, ccdResponse, notificationEventType);
         setHearingContactDate(personalisation, responseWrapper);
+
+        LocalDate sevenDaysTime = LocalDate.now().plusDays(7);
+        personalisation.put(TRIBUNAL_RESPONSE_DATE_LITERAL, notificationDateConverterUtil.toEmailDate(sevenDaysTime));
 
         return personalisation;
     }
@@ -201,7 +208,7 @@ public class Personalisation<E extends NotificationWrapper> {
     public Template getTemplate(E notificationWrapper, Benefit benefit) {
         NotificationEventType type = notificationWrapper.getNotificationType();
         String smsTemplateId = isSendSmsSubscriptionConfirmation() ? SUBSCRIPTION_CREATED_NOTIFICATION.getId() : type.getId();
-        return config.getTemplate(type.getId(), smsTemplateId, benefit);
+        return config.getTemplate(type.getId(), smsTemplateId, benefit, notificationWrapper.getHearingType());
     }
 
     public Boolean isSendSmsSubscriptionConfirmation() {

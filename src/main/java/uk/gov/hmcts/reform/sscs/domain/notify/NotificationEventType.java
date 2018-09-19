@@ -10,7 +10,7 @@ public enum NotificationEventType {
     APPEAL_RECEIVED_NOTIFICATION("appealReceived", true, true, false),
     APPEAL_WITHDRAWN_NOTIFICATION("appealWithdrawn", true, false, false),
     APPEAL_DORMANT_NOTIFICATION("appealDormant", true, false, false),
-    DWP_RESPONSE_RECEIVED_NOTIFICATION("responseReceived", true, false, false),
+    DWP_RESPONSE_RECEIVED_NOTIFICATION("responseReceived", true, false, true),
     EVIDENCE_RECEIVED_NOTIFICATION("evidenceReceived", true, false, false),
     HEARING_BOOKED_NOTIFICATION("hearingBooked", true, false, false),
     POSTPONEMENT_NOTIFICATION("hearingPostponed", true, false, false),

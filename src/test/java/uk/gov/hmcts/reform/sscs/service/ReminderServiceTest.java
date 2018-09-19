@@ -5,6 +5,7 @@ import static org.mockito.Mockito.*;
 import com.google.common.collect.ImmutableList;
 import java.util.List;
 import org.junit.Test;
+import uk.gov.hmcts.reform.sscs.config.AppealHearingType;
 import uk.gov.hmcts.reform.sscs.factory.NotificationWrapper;
 import uk.gov.hmcts.reform.sscs.service.reminder.ReminderHandler;
 
@@ -44,4 +45,15 @@ public class ReminderServiceTest {
         verify(reminderHandler3, times(1)).handle(wrapper);
     }
 
+    @Test
+    public void remindersAreNotSetForOnlineHearings() {
+        NotificationWrapper notificationWrapper = mock(NotificationWrapper.class);
+        when(notificationWrapper.getHearingType()).thenReturn(AppealHearingType.ONLINE);
+
+        reminderService.createReminders(notificationWrapper);
+
+        verifyZeroInteractions(reminderHandler1);
+        verifyZeroInteractions(reminderHandler2);
+        verifyZeroInteractions(reminderHandler3);
+    }
 }
