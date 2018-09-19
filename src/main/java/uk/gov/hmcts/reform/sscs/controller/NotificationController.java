@@ -14,12 +14,13 @@ import org.springframework.web.bind.annotation.RequestHeader;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 import uk.gov.hmcts.reform.ccd.client.model.CaseDetails;
-import uk.gov.hmcts.reform.sscs.ccd.client.CcdClient;
+import uk.gov.hmcts.reform.sscs.ccd.service.CcdService;
 import uk.gov.hmcts.reform.sscs.deserialize.SscsCaseDataWrapperDeserializer;
 import uk.gov.hmcts.reform.sscs.domain.CohEvent;
 import uk.gov.hmcts.reform.sscs.domain.SscsCaseDataWrapper;
 import uk.gov.hmcts.reform.sscs.factory.CcdNotificationWrapper;
 import uk.gov.hmcts.reform.sscs.factory.CohNotificationWrapper;
+import uk.gov.hmcts.reform.sscs.idam.IdamService;
 import uk.gov.hmcts.reform.sscs.service.AuthorisationService;
 import uk.gov.hmcts.reform.sscs.service.NotificationService;
 
@@ -30,15 +31,17 @@ public class NotificationController {
 
     private final NotificationService notificationService;
     private final AuthorisationService authorisationService;
-    private final CcdClient ccdClient;
+    private final CcdService ccdService;
     private final SscsCaseDataWrapperDeserializer deserializer;
+    private final IdamService idamService;
 
     @Autowired
-    public NotificationController(NotificationService notificationService, AuthorisationService authorisationService, CcdClient ccdClient, SscsCaseDataWrapperDeserializer deserializer) {
+    public NotificationController(NotificationService notificationService, AuthorisationService authorisationService, CcdService ccdService, SscsCaseDataWrapperDeserializer deserializer, IdamService idamService) {
         this.notificationService = notificationService;
         this.authorisationService = authorisationService;
-        this.ccdClient = ccdClient;
+        this.ccdService = ccdService;
         this.deserializer = deserializer;
+        this.idamService = idamService;
     }
 
     @RequestMapping(value = "/send", method = POST, produces = APPLICATION_JSON_VALUE)
@@ -58,7 +61,7 @@ public class NotificationController {
         String caseId = cohEvent.getCaseId();
         LOG.info("Coh Response received for case id: {}", caseId);
 
-        CaseDetails caseDetails = ccdClient.getByCaseId(caseId);
+        CaseDetails caseDetails = ccdService.getByCaseId(Long.valueOf(caseId), idamService.getIdamTokens());
 
         String eventId = cohEvent.getNotificationEventType();
         if (caseDetails != null) {

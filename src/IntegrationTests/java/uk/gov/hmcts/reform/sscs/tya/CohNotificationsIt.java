@@ -28,7 +28,7 @@ import org.springframework.test.web.servlet.request.MockHttpServletRequestBuilde
 import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 import uk.gov.hmcts.reform.ccd.client.CoreCaseDataApi;
 import uk.gov.hmcts.reform.ccd.client.model.CaseDetails;
-import uk.gov.hmcts.reform.sscs.ccd.client.CcdClient;
+import uk.gov.hmcts.reform.sscs.ccd.service.CcdService;
 import uk.gov.hmcts.reform.sscs.config.NotificationBlacklist;
 import uk.gov.hmcts.reform.sscs.controller.NotificationController;
 import uk.gov.hmcts.reform.sscs.deserialize.SscsCaseDataWrapperDeserializer;
@@ -86,7 +86,7 @@ public class CohNotificationsIt {
     private String emailTemplateId;
 
     @Autowired
-    private CcdClient ccdClient;
+    private CcdService ccdService;
 
     String json;
 
@@ -94,7 +94,7 @@ public class CohNotificationsIt {
     public void setup() throws IOException {
         NotificationSender sender = new NotificationSender(client, null, notificationBlacklist);
         NotificationService service = new NotificationService(sender, factory, reminderService, notificationValidService);
-        controller = new NotificationController(service, authorisationService, ccdClient, deserializer);
+        controller = new NotificationController(service, authorisationService, ccdService, deserializer, idamService);
 
         ObjectMapper mapper = new ObjectMapper();
         File src = new File(getClass().getClassLoader().getResource("json/cohCcdCase.json").getFile());
@@ -111,7 +111,7 @@ public class CohNotificationsIt {
 
         this.mockMvc = MockMvcBuilders.standaloneSetup(controller).build();
         json = "{\n"
-                + "   \"case_id\":\"case_3\",\n"
+                + "   \"case_id\":\"12345\",\n"
                 + "   \"online_hearing_id\":\"9a0e278a-e294-47dd-aa18-02b85b40ca93\",\n"
                 + "   \"event_type\":\"question_round_issued\",\n"
                 + "   \"expiry_date\":\"2018-08-12T23:59:59Z\",\n"
