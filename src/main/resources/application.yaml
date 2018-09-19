@@ -10,7 +10,6 @@ spring:
     password: ${JOB_SCHEDULER_DB_PASSWORD:sscsjobscheduler}
     properties:
       charSet: UTF-8
-    # http://tomcat.apache.org/tomcat-7.0-doc/jdbc-pool.html#Common_Attributes
     tomcat:
       max-active: 10
       max-idle: 10
