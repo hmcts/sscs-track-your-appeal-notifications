@@ -86,9 +86,9 @@ public class SscsCaseDataWrapperDeserializerTest {
         assertEquals(3, events.size());
 
         assertEquals(ZonedDateTime.of(LocalDate.of(2018, 1, 19), LocalTime.of(14, 0), ZoneId.of(AppConstants.ZONE_ID)), events.get(0).getValue().getDateTime());
-        assertEquals(APPEAL_WITHDRAWN, events.get(0).getValue().getEventType());
+        assertEquals(WITHDRAWN, events.get(0).getValue().getEventType());
         assertEquals(ZonedDateTime.of(LocalDate.of(2018, 1, 19), LocalTime.of(13, 0), ZoneId.of(AppConstants.ZONE_ID)), events.get(1).getValue().getDateTime());
-        assertEquals(APPEAL_LAPSED, events.get(1).getValue().getEventType());
+        assertEquals(LAPSED_REVISED, events.get(1).getValue().getEventType());
         assertEquals(ZonedDateTime.of(LocalDate.of(2018, 1, 19), LocalTime.of(12, 0), ZoneId.of(AppConstants.ZONE_ID)), events.get(2).getValue().getDateTime());
         assertEquals(APPEAL_RECEIVED, events.get(2).getValue().getEventType());
     }
