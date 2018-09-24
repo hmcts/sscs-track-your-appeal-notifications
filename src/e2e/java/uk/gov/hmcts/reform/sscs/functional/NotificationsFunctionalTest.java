@@ -57,6 +57,36 @@ public class NotificationsFunctionalTest extends AbstractFunctionalTest {
     private String onlineResponseReceivedSmsId;
 
     @Test
+    public void shouldSendAppealReceivedNotification() throws IOException, NotificationClientException {
+        simulateCcdCallback(APPEAL_RECEIVED_NOTIFICATION);
+
+        tryFetchNotificationsForTestCase(
+                appealReceivedEmailTemplateId,
+                appealReceivedSmsTemplateId
+        );
+    }
+
+    @Test
+    public void shouldSendEvidenceReceivedNotification() throws NotificationClientException, IOException {
+        simulateCcdCallback(EVIDENCE_RECEIVED_NOTIFICATION);
+
+        tryFetchNotificationsForTestCase(
+                evidenceReceivedEmailTemplateId,
+                evidenceReceivedSmsTemplateId
+        );
+    }
+
+    @Test
+    public void shouldSendHearingAdjournedNotification() throws NotificationClientException, IOException {
+        simulateCcdCallback(ADJOURNED_NOTIFICATION);
+
+        tryFetchNotificationsForTestCase(
+                hearingAdjournedEmailTemplateId,
+                hearingAdjournedSmsTemplateId
+        );
+    }
+
+    @Test
     public void shouldSendHearingPostponedNotification() throws NotificationClientException, IOException {
         simulateCcdCallback(POSTPONEMENT_NOTIFICATION);
 
@@ -85,6 +115,20 @@ public class NotificationsFunctionalTest extends AbstractFunctionalTest {
             hearingBookedEmailTemplateId,
             hearingBookedSmsTemplateId
         );
+    }
+
+    @Test
+    public void shouldSendSubscriptionCreatedNotification() throws NotificationClientException, IOException {
+        simulateCcdCallback(SUBSCRIPTION_CREATED_NOTIFICATION);
+
+        tryFetchNotificationsForTestCase(subscriptionCreatedSmsTemplateId);
+    }
+
+    @Test
+    public void shouldSendSubscriptionUpdatedNotification() throws NotificationClientException, IOException {
+        simulateCcdCallback(SUBSCRIPTION_UPDATED_NOTIFICATION);
+
+        tryFetchNotificationsForTestCase(subscriptionUpdatedEmailTemplateId);
     }
 
     @Test
