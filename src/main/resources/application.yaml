@@ -152,6 +152,10 @@ notification:
     responseReceived:
       emailId: 90f0ed29-a616-4ce0-b4ef-108391f5d90e
       smsId: e2e166c4-3600-443d-8feb-39f2c28e8732
+  paper:
+    responseReceived:
+      emailId: 1
+      smsId: 2
 
 smsSender:
   pip: 80b11be7-5c10-2773-8351-070e22d5ab6b

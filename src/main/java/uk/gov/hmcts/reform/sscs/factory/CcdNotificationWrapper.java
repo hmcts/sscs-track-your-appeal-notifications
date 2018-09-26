@@ -44,7 +44,7 @@ public class CcdNotificationWrapper implements NotificationWrapper {
         if (responseWrapper.getNewSscsCaseData().getOnlinePanel() != null) {
             return AppealHearingType.ONLINE;
         }
-        if (AppealHearingType.PAPER.getName().equals(
+        if (AppealHearingType.PAPER.name().toLowerCase().equals(
                 responseWrapper.getNewSscsCaseData().getAppeal().getHearingType())) {
             return AppealHearingType.PAPER;
         } else {

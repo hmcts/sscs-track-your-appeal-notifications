@@ -1,7 +1,7 @@
 package uk.gov.hmcts.reform.sscs.config;
 
 import static org.hamcrest.CoreMatchers.is;
-import static org.junit.Assert.*;
+import static org.junit.Assert.assertThat;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 import static uk.gov.hmcts.reform.sscs.config.AppealHearingType.ONLINE;
@@ -18,7 +18,8 @@ public class NotificationConfigTest {
         when(env.getProperty("notification.emailTemplateName.emailId")).thenReturn("emailTemplateId");
         when(env.getProperty("notification.smsTemplateName.smsId")).thenReturn("smsTemplateId");
 
-        Template template = new NotificationConfig(env).getTemplate("emailTemplateName", "smsTemplateName", Benefit.PIP, ONLINE);
+        Template template = new NotificationConfig(env).getTemplate("emailTemplateName",
+                "smsTemplateName", Benefit.PIP, ONLINE);
 
         assertThat(template.getEmailTemplateId(), is("emailTemplateId"));
         assertThat(template.getSmsTemplateId(), is("smsTemplateId"));
@@ -30,7 +31,8 @@ public class NotificationConfigTest {
         when(env.getProperty("notification.online.emailTemplateName.emailId")).thenReturn("onlineEmailTemplateId");
         when(env.getProperty("notification.online.smsTemplateName.smsId")).thenReturn("onlineSmsTemplateId");
 
-        Template template = new NotificationConfig(env).getTemplate("emailTemplateName", "smsTemplateName", Benefit.PIP, ONLINE);
+        Template template = new NotificationConfig(env).getTemplate("emailTemplateName",
+                "smsTemplateName", Benefit.PIP, ONLINE);
 
         assertThat(template.getEmailTemplateId(), is("onlineEmailTemplateId"));
         assertThat(template.getSmsTemplateId(), is("onlineSmsTemplateId"));

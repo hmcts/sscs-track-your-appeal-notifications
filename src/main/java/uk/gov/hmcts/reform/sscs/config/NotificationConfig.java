@@ -61,15 +61,18 @@ public class NotificationConfig {
         return Link.builder().linkUrl(onlineHearingLink + "?email={email}").build();
     }
 
-    public Template getTemplate(String emailTemplateName, String smsTemplateName, Benefit benefit, AppealHearingType appealHearingType) {
+    public Template getTemplate(String emailTemplateName, String smsTemplateName, Benefit benefit,
+                                AppealHearingType appealHearingType) {
         return Template.builder().emailTemplateId(getTemplate(appealHearingType, emailTemplateName, "emailId"))
                 .smsTemplateId(getTemplate(appealHearingType, smsTemplateName, "smsId"))
                 .smsSenderTemplateId(env.getProperty("smsSender." + benefit.toString().toLowerCase())).build();
     }
 
-    private String getTemplate(@NotNull AppealHearingType appealHearingType, String templateName, final String notificationType) {
+    private String getTemplate(@NotNull AppealHearingType appealHearingType, String templateName,
+                               final String notificationType) {
         String hearingTypeName = appealHearingType.name().toLowerCase();
-        String templateId = env.getProperty("notification." + hearingTypeName + "." + templateName + "." + notificationType);
+        String templateId = env.getProperty("notification." + hearingTypeName + "." + templateName + "."
+                + notificationType);
         if (templateId == null) {
             templateId = env.getProperty("notification." + templateName + "." + notificationType);
         }
