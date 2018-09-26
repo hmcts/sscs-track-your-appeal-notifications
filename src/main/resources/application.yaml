@@ -157,7 +157,7 @@ smsSender:
   esa: f84a568d-bd01-4940-a48a-5bcfc52940e0
 
 reminder:
-  evidenceReminder.delay.seconds: 172800
+  evidenceReminder.delay.seconds: 604800
   dwpResponseLateReminder.delay.seconds: 3024000
   hearingContactDate.initialDelay.seconds: 4838400
   hearingContactDate.subsequentDelay.seconds: 3628800
