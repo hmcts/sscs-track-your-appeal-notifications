@@ -29,7 +29,8 @@ public class NotificationConfigTest {
     private NotificationConfig notificationConfig;
 
     @Test
-    @Parameters({"1, 2, PIP", "1, 2, ESA"})
+    @Parameters({"a64bce9a-9162-47ca-b3e7-cf5f85ca7bdc, f5b61f94-0b2b-4e8e-9c25-56e9830df7d4, PIP",
+            "a64bce9a-9162-47ca-b3e7-cf5f85ca7bdc, f5b61f94-0b2b-4e8e-9c25-56e9830df7d4, ESA"})
     public void should_getDwpResponseTemplate_when_aDwpResponseNotificationPaperCaseHappens(
             String expectedEmailTemplateId, String expectedSmsTemplateId, Benefit benefit) {
         Template template = notificationConfig.getTemplate("responseReceived",
