@@ -18,7 +18,7 @@ public class CcdNotificationWrapperTest {
 
     @Test
     @Parameters({"paper, PAPER", "null, REGULAR", "oral, ONLINE"})
-    public void should_returnAppealHearingType_when_hearingType(String hearingType,
+    public void should_returnAccordingAppealHearingType_when_hearingTypeIsPresent(String hearingType,
                                                                 AppealHearingType expected) {
         CcdNotificationWrapper ccdNotificationWrapper = buildCcdNotificationWrapper(hearingType);
 
