@@ -4,13 +4,17 @@ import static org.hamcrest.CoreMatchers.is;
 import static org.junit.Assert.assertThat;
 import static uk.gov.hmcts.reform.sscs.config.AppealHearingType.ONLINE;
 
+import junitparams.JUnitParamsRunner;
+import junitparams.Parameters;
 import org.junit.Test;
+import org.junit.runner.RunWith;
 import uk.gov.hmcts.reform.sscs.ccd.domain.Appeal;
 import uk.gov.hmcts.reform.sscs.ccd.domain.OnlinePanel;
 import uk.gov.hmcts.reform.sscs.ccd.domain.SscsCaseData;
 import uk.gov.hmcts.reform.sscs.config.AppealHearingType;
 import uk.gov.hmcts.reform.sscs.domain.SscsCaseDataWrapper;
 
+@RunWith(JUnitParamsRunner.class)
 public class CcdNotificationWrapperTest {
     @Test
     public void hearingTypeIsOnline() {
@@ -34,17 +38,19 @@ public class CcdNotificationWrapperTest {
     }
 
     @Test
-    public void should_returnAppealHearingTypePaper_when_hearingTypeIsPaper() {
+    @Parameters({"paper, PAPER", "null, REGULAR"})
+    public void should_returnAppealHearingTypePaper_when_hearingTypeIsPaper(String hearingType,
+                                                                            AppealHearingType expected) {
         CcdNotificationWrapper ccdNotificationWrapper = new CcdNotificationWrapper(
                 SscsCaseDataWrapper.builder()
                         .newSscsCaseData(SscsCaseData.builder()
                                 .appeal(Appeal.builder()
-                                        .hearingType("paper")
+                                        .hearingType(hearingType)
                                         .build())
                                 .build())
                         .build()
         );
 
-        assertThat(ccdNotificationWrapper.getHearingType(), is(AppealHearingType.PAPER));
+        assertThat(ccdNotificationWrapper.getHearingType(), is(expected));
     }
 }
