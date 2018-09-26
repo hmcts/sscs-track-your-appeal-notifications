@@ -1,18 +1,18 @@
 package uk.gov.hmcts.reform.sscs.service;
 
-import static org.slf4j.LoggerFactory.getLogger;
 
-import org.slf4j.Logger;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import uk.gov.hmcts.reform.sscs.ccd.domain.Subscription;
 import uk.gov.hmcts.reform.sscs.domain.notify.Notification;
+import uk.gov.hmcts.reform.sscs.domain.notify.NotificationEventType;
 import uk.gov.hmcts.reform.sscs.factory.NotificationFactory;
 import uk.gov.hmcts.reform.sscs.factory.NotificationWrapper;
 
 @Service
+@Slf4j
 public class NotificationService {
-    private static final Logger LOG = getLogger(NotificationService.class);
 
     private final NotificationSender notificationSender;
     private final NotificationFactory factory;
@@ -33,15 +33,14 @@ public class NotificationService {
     public void createAndSendNotification(NotificationWrapper wrapper) {
 
         final Subscription appellantSubscription = wrapper.getAppellantSubscription();
-        final String notificationEventType = wrapper.getNotificationType().getId();
+        NotificationEventType notificationType = wrapper.getNotificationType();
         final String caseId = wrapper.getCaseId();
 
-        LOG.info("Notification event triggered {} for case id {}", notificationEventType, caseId);
-
+        log.info("Notification event triggered {} for case id {}", notificationType.getId(), caseId);
 
         if (appellantSubscription != null && appellantSubscription.doesCaseHaveSubscriptions()
-                && notificationValidService.isNotificationStillValidToSend(wrapper.getNewSscsCaseData().getHearings(), wrapper.getNotificationType())
-                && notificationValidService.isHearingTypeValidToSendNotification(wrapper.getNewSscsCaseData(), wrapper.getNotificationType())) {
+                && notificationValidService.isNotificationStillValidToSend(wrapper.getNewSscsCaseData().getHearings(), notificationType)
+                && notificationValidService.isHearingTypeValidToSendNotification(wrapper.getNewSscsCaseData(), notificationType)) {
 
             Notification notification = factory.create(wrapper);
 
