@@ -17,6 +17,7 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.ComponentScan;
 import org.springframework.context.annotation.Primary;
 import org.springframework.context.support.ReloadableResourceBundleMessageSource;
+import org.springframework.retry.annotation.EnableRetry;
 import uk.gov.hmcts.reform.sscs.ccd.config.CcdRequestDetails;
 import uk.gov.hmcts.reform.sscs.ccd.service.CcdService;
 import uk.gov.hmcts.reform.sscs.deserialize.SscsCaseDataWrapperDeserializer;
@@ -40,6 +41,7 @@ import uk.gov.service.notify.NotificationClient;
         {
                 "uk.gov.hmcts.reform.sscs.service.coh"
         })
+@EnableRetry
 public class TrackYourAppealNotificationsApplication {
 
     public static final String UTC = "UTC";
