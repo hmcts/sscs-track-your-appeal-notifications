@@ -90,7 +90,7 @@ public class NotificationValidServiceTest {
         SscsCaseData caseData = SscsCaseData.builder().appeal(Appeal.builder().hearingOptions(HearingOptions.builder().wantsToAttend("No").build()).build()).build();
 
         assertFalse(
-            notificationValidService.isHearingTypeValidToSendNotification(caseData, APPEAL_WITHDRAWN_NOTIFICATION)
+            notificationValidService.isHearingTypeValidToSendNotification(caseData, HEARING_BOOKED_NOTIFICATION)
         );
     }
 
