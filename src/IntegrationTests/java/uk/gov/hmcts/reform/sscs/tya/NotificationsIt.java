@@ -151,13 +151,14 @@ public class NotificationsIt {
 
     @Test
     public void shouldSendNotificationForAnResponseReceivedRequestForAnOralHearing() throws Exception {
-        json = json.replace("appealReceived", "responseReceived");
+        json = updateEmbeddedJson(json, "oral", "case_details", "case_data", "appeal", "hearingType");
+        json = updateEmbeddedJson(json, "responseReceived", "event_id");
 
         HttpServletResponse response = getResponse(getRequestWithAuthHeader(json));
 
         assertHttpStatus(response, HttpStatus.OK);
-        verify(client).sendEmail(any(), any(), any(), any());
-        verify(client).sendSms(any(), any(), any(), any(), any());
+        verify(client).sendEmail(eq("1afd89f9-9935-4acb-b4f6-ba708b03a0d3"), any(), any(), any());
+        verify(client).sendSms(eq("4bba0b5d-a3f3-4fd9-a845-26af5eda042e"), any(), any(), any(), any());
     }
 
     @Test
@@ -421,8 +422,10 @@ public class NotificationsIt {
 
     @Test
     public void shouldSendSubscriptionUpdatedNotificationForSubscriptionUpdatedRequestWithNewEmailAddressForAnOralHearing() throws Exception {
-        json = json.replace("appealReceived", "subscriptionUpdated");
-        json = updateEmbeddedJson(json, "No", "case_details", "case_data", "subscriptions", "appellantSubscription", "subscribeSms");
+        json = updateEmbeddedJson(json, "subscriptionUpdated", "event_id");
+        json = updateEmbeddedJson(json, "oral", "case_details", "case_data", "appeal", "hearingType");
+        json = updateEmbeddedJson(json, "No", "case_details", "case_data", "subscriptions",
+                "appellantSubscription", "subscribeSms");
 
         HttpServletResponse response = getResponse(getRequestWithAuthHeader(json));
 
@@ -434,8 +437,10 @@ public class NotificationsIt {
     @Test
     public void shouldSendSubscriptionUpdatedNotificationForSubscriptionUpdatedRequestWithNewEmailAddressForAPaperHearing() throws Exception {
         updateJsonForPaperHearing();
-        json = json.replace("appealReceived", "subscriptionUpdated");
-        json = updateEmbeddedJson(json, "No", "case_details", "case_data", "subscriptions", "appellantSubscription", "subscribeSms");
+        json = updateEmbeddedJson(json, "subscriptionUpdated", "event_id");
+        json = updateEmbeddedJson(json, "paper", "case_details", "case_data", "appeal", "hearingType");
+        json = updateEmbeddedJson(json, "No", "case_details", "case_data", "subscriptions",
+                "appellantSubscription", "subscribeSms");
 
         HttpServletResponse response = getResponse(getRequestWithAuthHeader(json));
 

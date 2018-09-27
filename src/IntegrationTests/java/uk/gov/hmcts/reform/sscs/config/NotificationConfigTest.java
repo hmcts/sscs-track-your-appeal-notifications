@@ -29,12 +29,16 @@ public class NotificationConfigTest {
     private NotificationConfig notificationConfig;
 
     @Test
-    @Parameters({"a64bce9a-9162-47ca-b3e7-cf5f85ca7bdc, f5b61f94-0b2b-4e8e-9c25-56e9830df7d4, PIP",
-            "a64bce9a-9162-47ca-b3e7-cf5f85ca7bdc, f5b61f94-0b2b-4e8e-9c25-56e9830df7d4, ESA"})
-    public void should_getDwpResponseTemplate_when_aDwpResponseNotificationPaperCaseHappens(
-            String expectedEmailTemplateId, String expectedSmsTemplateId, Benefit benefit) {
+    @Parameters(
+            {
+                    "a64bce9a-9162-47ca-b3e7-cf5f85ca7bdc, f5b61f94-0b2b-4e8e-9c25-56e9830df7d4, PAPER",
+                    "1afd89f9-9935-4acb-b4f6-ba708b03a0d3, 4bba0b5d-a3f3-4fd9-a845-26af5eda042e, ORAL",
+                    "90f0ed29-a616-4ce0-b4ef-108391f5d90e, e2e166c4-3600-443d-8feb-39f2c28e8732, ONLINE"
+            })
+    public void should_getDwpResponseTemplate_when_aDwpResponseNotificationHappens(
+            String expectedEmailTemplateId, String expectedSmsTemplateId, AppealHearingType appealHearingType) {
         Template template = notificationConfig.getTemplate("responseReceived",
-                "responseReceived", benefit, AppealHearingType.PAPER);
+                "responseReceived", Benefit.PIP, appealHearingType);
         assertEquals(expectedEmailTemplateId, template.getEmailTemplateId());
         assertEquals(expectedSmsTemplateId, template.getSmsTemplateId());
     }

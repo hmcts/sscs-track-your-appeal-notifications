@@ -17,7 +17,7 @@ import uk.gov.hmcts.reform.sscs.domain.SscsCaseDataWrapper;
 public class CcdNotificationWrapperTest {
 
     @Test
-    @Parameters({"paper, PAPER", "null, REGULAR", "oral, ONLINE"})
+    @Parameters({"paper, PAPER", "null, REGULAR", "oral, ORAL", "online, ONLINE"})
     public void should_returnAccordingAppealHearingType_when_hearingTypeIsPresent(String hearingType,
                                                                 AppealHearingType expected) {
         CcdNotificationWrapper ccdNotificationWrapper = buildCcdNotificationWrapper(hearingType);
@@ -26,7 +26,7 @@ public class CcdNotificationWrapperTest {
     }
 
     private CcdNotificationWrapper buildCcdNotificationWrapper(String hearingType) {
-        if ("oral".equals(hearingType)) {
+        if ("online".equals(hearingType)) {
             return new CcdNotificationWrapper(
                     SscsCaseDataWrapper.builder()
                             .newSscsCaseData(SscsCaseData.builder()
