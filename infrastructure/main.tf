@@ -1,7 +1,3 @@
-provider "vault" {
-  address = "https://vault.reform.hmcts.net:6200"
-}
-
 resource "azurerm_resource_group" "rg" {
   name     = "${var.product}-${var.component}-${var.env}"
   location = "${var.location}"
@@ -63,10 +59,6 @@ data "azurerm_key_vault_secret" "email-mac-secret" {
 
 locals {
   aseName = "${data.terraform_remote_state.core_apps_compute.ase_name[0]}"
-
-  previewVaultName    = "${var.product}-${var.component}"
-  nonPreviewVaultName = "${var.product}-${var.component}-${var.env}"
-  vaultName           = "${(var.env == "preview") ? local.previewVaultName : local.nonPreviewVaultName}"
 
   local_env = "${(var.env == "preview" || var.env == "spreview") ? (var.env == "preview" ) ? "aat" : "saat" : var.env}"
   local_ase = "${(var.env == "preview" || var.env == "spreview") ? (var.env == "preview" ) ? "core-compute-aat" : "core-compute-saat" : local.aseName}"
@@ -136,17 +128,6 @@ module "track-your-appeal-notifications" {
     HOURS_START_TIME                    = "${var.hours_start_time}"
     HOURS_END_TIME                      = "${var.hours_end_time}"
   }
-}
-
-module "sscs-tya-notif-key-vault" {
-  source                  = "git@github.com:hmcts/moj-module-key-vault?ref=master"
-  name                    = "${local.vaultName}"
-  product                 = "${var.product}"
-  env                     = "${var.env}"
-  tenant_id               = "${var.tenant_id}"
-  object_id               = "${var.jenkins_AAD_objectId}"
-  resource_group_name     = "${azurerm_resource_group.rg.name}"
-  product_group_object_id = "70de400b-4f47-4f25-a4f0-45e1ee4e4ae3"
 }
 
 module "db-notif" {
