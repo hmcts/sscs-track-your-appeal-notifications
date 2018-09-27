@@ -30,7 +30,7 @@ public class HearingHoldingReminderTest {
     @Mock
     private JobGroupGenerator jobGroupGenerator;
     @Mock
-    private JobScheduler<String> jobScheduler;
+    private JobScheduler jobScheduler;
 
     private HearingHoldingReminder hearingHoldingReminder;
 

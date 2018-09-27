@@ -25,7 +25,7 @@ public class HearingReminderTest {
     @Mock
     private JobGroupGenerator jobGroupGenerator;
     @Mock
-    private JobScheduler<String> jobScheduler;
+    private JobScheduler jobScheduler;
 
     private HearingReminder hearingReminder;
 

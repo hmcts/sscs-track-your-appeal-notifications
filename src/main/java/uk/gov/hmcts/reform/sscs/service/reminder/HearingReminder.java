@@ -24,7 +24,7 @@ public class HearingReminder implements ReminderHandler {
     private static final org.slf4j.Logger LOG = getLogger(HearingReminder.class);
 
     private final JobGroupGenerator jobGroupGenerator;
-    private JobScheduler<String> jobScheduler;
+    private JobScheduler jobScheduler;
 
     private long beforeFirstHearingReminder;
     private long beforeSecondHearingReminder;
@@ -32,7 +32,7 @@ public class HearingReminder implements ReminderHandler {
     @Autowired
     public HearingReminder(
         JobGroupGenerator jobGroupGenerator,
-        JobScheduler<String> jobScheduler,
+        JobScheduler jobScheduler,
         @Value("${reminder.hearingReminder.beforeFirst.seconds}") long beforeFirstHearingReminder,
         @Value("${reminder.hearingReminder.beforeSecond.seconds}") long beforeSecondHearingReminder
     ) {

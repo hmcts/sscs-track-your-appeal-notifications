@@ -9,7 +9,6 @@ import org.junit.Test;
 import org.mockito.Mock;
 import uk.gov.hmcts.reform.ccd.client.model.CaseDetails;
 import uk.gov.hmcts.reform.sscs.ccd.domain.SscsCaseData;
-import uk.gov.hmcts.reform.sscs.ccd.domain.SscsCaseDetails;
 import uk.gov.hmcts.reform.sscs.ccd.service.CcdService;
 import uk.gov.hmcts.reform.sscs.deserialize.SscsCaseDataWrapperDeserializer;
 import uk.gov.hmcts.reform.sscs.domain.SscsCaseDataWrapper;
@@ -18,9 +17,9 @@ import uk.gov.hmcts.reform.sscs.idam.IdamService;
 import uk.gov.hmcts.reform.sscs.idam.IdamTokens;
 import uk.gov.hmcts.reform.sscs.service.NotificationService;
 
-public class ActionExecutorTest {
+public class CcdActionExecutorTest {
 
-    private ActionExecutor actionExecutor;
+    private CcdActionExecutor ccdActionExecutor;
 
     @Mock
     private NotificationService notificationService;
@@ -32,7 +31,6 @@ public class ActionExecutorTest {
     private SscsCaseDataWrapperDeserializer deserializer;
 
     private CaseDetails caseDetails;
-    private SscsCaseDetails sscsCaseDetails;
     private SscsCaseDataWrapper wrapper;
     private SscsCaseData newSscsCaseData;
 
@@ -42,7 +40,7 @@ public class ActionExecutorTest {
     public void setup() {
         initMocks(this);
 
-        actionExecutor = new ActionExecutor(notificationService, ccdService, deserializer, idamService);
+        ccdActionExecutor = new CcdActionExecutor(notificationService, ccdService, deserializer, idamService);
 
         caseDetails = CaseDetails.builder().caseTypeId("123").build();
 
@@ -58,9 +56,8 @@ public class ActionExecutorTest {
     public void givenAReminderIsTriggered_thenActionExecutorShouldProcessTheJob() {
         when(ccdService.getByCaseId(eq(123456L), eq(idamTokens))).thenReturn(caseDetails);
         when(deserializer.buildSscsCaseDataWrapper(any())).thenReturn(wrapper);
-        when(ccdService.updateCase(eq(newSscsCaseData), eq(123456L), eq(EVIDENCE_REMINDER_NOTIFICATION.getId()), any(), any(), eq(idamTokens))).thenReturn(sscsCaseDetails);
 
-        actionExecutor.execute("1", "group", EVIDENCE_REMINDER_NOTIFICATION.getId(), "123456");
+        ccdActionExecutor.execute("1", "group", EVIDENCE_REMINDER_NOTIFICATION.getId(), "123456");
 
         verify(notificationService, times(1)).createAndSendNotification(new CcdNotificationWrapper(wrapper));
         verify(ccdService, times(1)).updateCase(any(), any(), any(), any(), any(), any());

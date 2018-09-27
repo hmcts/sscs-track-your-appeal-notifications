@@ -2,6 +2,8 @@ package uk.gov.hmcts.reform.sscs.tya;
 
 import static helper.IntegrationTestHelper.assertHttpStatus;
 import static helper.IntegrationTestHelper.getRequestWithAuthHeader;
+import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.when;
 
 import helper.IntegrationTestHelper;
 import java.io.File;
@@ -32,6 +34,7 @@ import uk.gov.hmcts.reform.sscs.idam.IdamService;
 import uk.gov.hmcts.reform.sscs.jobscheduler.services.JobExecutor;
 import uk.gov.hmcts.reform.sscs.service.AuthorisationService;
 import uk.gov.hmcts.reform.sscs.service.NotificationService;
+import uk.gov.hmcts.reform.sscs.service.OutOfHoursCalculator;
 import uk.gov.service.notify.NotificationClient;
 
 @RunWith(SpringRunner.class)
@@ -56,6 +59,9 @@ public class HearingReminderIt {
     @MockBean
     private JobExecutor<String> jobExecutor;
 
+    @MockBean
+    private OutOfHoursCalculator outOfHoursCalculator;
+
     @Autowired
     @Qualifier("scheduler")
     private Scheduler quartzScheduler;
@@ -73,6 +79,9 @@ public class HearingReminderIt {
     public void setup() {
         controller = new NotificationController(notificationService, authorisationService, ccdService, deserializer, idamService);
         this.mockMvc = MockMvcBuilders.standaloneSetup(controller).build();
+
+        outOfHoursCalculator = mock(OutOfHoursCalculator.class);
+        when(outOfHoursCalculator.isItOutOfHours()).thenReturn(false);
     }
 
     @Test

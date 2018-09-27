@@ -6,6 +6,7 @@ import uk.gov.hmcts.reform.sscs.ccd.domain.Subscription;
 import uk.gov.hmcts.reform.sscs.config.AppealHearingType;
 import uk.gov.hmcts.reform.sscs.domain.SscsCaseDataWrapper;
 import uk.gov.hmcts.reform.sscs.domain.notify.NotificationEventType;
+import uk.gov.hmcts.reform.sscs.service.scheduler.CcdActionSerializer;
 
 public class CcdNotificationWrapper implements NotificationWrapper {
     private final SscsCaseDataWrapper responseWrapper;
@@ -45,6 +46,11 @@ public class CcdNotificationWrapper implements NotificationWrapper {
         } else {
             return AppealHearingType.REGULAR;
         }
+    }
+
+    @Override
+    public String getSchedulerPayload() {
+        return new CcdActionSerializer().serialize(getCaseId());
     }
 
     @Override

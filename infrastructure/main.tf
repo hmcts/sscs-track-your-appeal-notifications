@@ -132,6 +132,9 @@ module "track-your-appeal-notifications" {
     JOB_SCHEDULER_DB_NAME               = "${module.db-notif.postgresql_database}"
     JOB_SCHEDULER_DB_CONNECTION_OPTIONS = "?ssl"
     MAX_ACTIVE_DB_CONNECTIONS           = 70
+
+    HOURS_START_TIME                    = "${var.hours_start_time}"
+    HOURS_END_TIME                      = "${var.hours_end_time}"
   }
 }
 

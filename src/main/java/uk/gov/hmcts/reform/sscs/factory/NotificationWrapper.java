@@ -18,4 +18,6 @@ public interface NotificationWrapper {
     SscsCaseDataWrapper getSscsCaseDataWrapper();
 
     AppealHearingType getHearingType();
+
+    String getSchedulerPayload();
 }

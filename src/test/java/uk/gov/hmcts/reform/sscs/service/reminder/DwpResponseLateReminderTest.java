@@ -31,7 +31,7 @@ public class DwpResponseLateReminderTest {
     @Mock
     private JobGroupGenerator jobGroupGenerator;
     @Mock
-    private JobScheduler<String> jobScheduler;
+    private JobScheduler jobScheduler;
 
     private DwpResponseLateReminder dwpResponseLateReminder;
 
