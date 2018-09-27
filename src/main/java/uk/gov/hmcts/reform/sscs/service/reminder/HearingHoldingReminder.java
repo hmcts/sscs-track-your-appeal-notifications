@@ -22,13 +22,13 @@ public class HearingHoldingReminder implements ReminderHandler {
 
     private final HearingContactDateExtractor hearingContactDateExtractor;
     private final JobGroupGenerator jobGroupGenerator;
-    private final JobScheduler<String> jobScheduler;
+    private final JobScheduler jobScheduler;
 
     @Autowired
     public HearingHoldingReminder(
         HearingContactDateExtractor hearingContactDateExtractor,
         JobGroupGenerator jobGroupGenerator,
-        JobScheduler<String> jobScheduler
+        JobScheduler jobScheduler
     ) {
         this.hearingContactDateExtractor = hearingContactDateExtractor;
         this.jobGroupGenerator = jobGroupGenerator;

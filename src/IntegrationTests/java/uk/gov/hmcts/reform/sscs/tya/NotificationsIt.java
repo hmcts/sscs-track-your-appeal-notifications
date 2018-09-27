@@ -72,14 +72,23 @@ public class NotificationsIt {
 
     String json;
 
+    @Autowired
+    private NotificationHandler notificationHandler;
+
+    @MockBean
+    private OutOfHoursCalculator outOfHoursCalculator;
+
     @Before
     public void setup() throws IOException {
         NotificationSender sender = new NotificationSender(client, null, notificationBlacklist);
-        NotificationService service = new NotificationService(sender, factory, reminderService, notificationValidService);
+        NotificationService service = new NotificationService(sender, factory, reminderService, notificationValidService, notificationHandler);
         controller = new NotificationController(service, authorisationService, ccdService, deserializer, idamService);
         this.mockMvc = MockMvcBuilders.standaloneSetup(controller).build();
         String path = getClass().getClassLoader().getResource("json/ccdResponse.json").getFile();
         json = FileUtils.readFileToString(new File(path), StandardCharsets.UTF_8.name());
+
+        outOfHoursCalculator = mock(OutOfHoursCalculator.class);
+        when(outOfHoursCalculator.isItOutOfHours()).thenReturn(false);
     }
 
     @Test

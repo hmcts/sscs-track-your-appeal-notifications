@@ -98,3 +98,13 @@ variable "database_name" {
 variable "common_tags" {
   type = "map"
 }
+
+variable "hours_start_time" {
+  type = "string"
+  default = "9"
+}
+
+variable "hours_end_time" {
+  type = "string"
+  default = "17"
+}
