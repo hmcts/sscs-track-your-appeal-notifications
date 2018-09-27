@@ -1,7 +1,17 @@
 package uk.gov.hmcts.reform.sscs.tya;
 
-import static helper.IntegrationTestHelper.*;
-import static org.mockito.Mockito.*;
+import static helper.IntegrationTestHelper.assertHttpStatus;
+import static helper.IntegrationTestHelper.getRequestWithAuthHeader;
+import static helper.IntegrationTestHelper.getRequestWithoutAuthHeader;
+import static helper.IntegrationTestHelper.updateEmbeddedJson;
+import static org.mockito.Mockito.any;
+import static org.mockito.Mockito.anyString;
+import static org.mockito.Mockito.eq;
+import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.never;
+import static org.mockito.Mockito.times;
+import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.when;
 
 import java.io.File;
 import java.io.IOException;
@@ -30,7 +40,13 @@ import uk.gov.hmcts.reform.sscs.controller.NotificationController;
 import uk.gov.hmcts.reform.sscs.deserialize.SscsCaseDataWrapperDeserializer;
 import uk.gov.hmcts.reform.sscs.factory.NotificationFactory;
 import uk.gov.hmcts.reform.sscs.idam.IdamService;
-import uk.gov.hmcts.reform.sscs.service.*;
+import uk.gov.hmcts.reform.sscs.service.AuthorisationService;
+import uk.gov.hmcts.reform.sscs.service.NotificationHandler;
+import uk.gov.hmcts.reform.sscs.service.NotificationSender;
+import uk.gov.hmcts.reform.sscs.service.NotificationService;
+import uk.gov.hmcts.reform.sscs.service.NotificationValidService;
+import uk.gov.hmcts.reform.sscs.service.OutOfHoursCalculator;
+import uk.gov.hmcts.reform.sscs.service.ReminderService;
 import uk.gov.service.notify.NotificationClient;
 
 @RunWith(SpringRunner.class)
@@ -145,15 +161,16 @@ public class NotificationsIt {
     }
 
     @Test
-    public void shouldNotSendNotificationForAnResponseReceivedRequestForAPaperHearing() throws Exception {
+    public void shouldSendNotificationForAnResponseReceivedRequestForAPaperHearing() throws Exception {
         updateJsonForPaperHearing();
-        json = json.replace("appealReceived", "responseReceived");
+        json = updateEmbeddedJson(json, "paper", "case_details", "case_data", "appeal", "hearingType");
+        json = updateEmbeddedJson(json, "responseReceived", "event_id");
 
         HttpServletResponse response = getResponse(getRequestWithAuthHeader(json));
 
         assertHttpStatus(response, HttpStatus.OK);
-        verify(client, never()).sendEmail(any(), any(), any(), any());
-        verify(client, never()).sendSms(any(), any(), any(), any(), any());
+        verify(client).sendEmail(eq("a64bce9a-9162-47ca-b3e7-cf5f85ca7bdc"), any(), any(), any());
+        verify(client).sendSms(eq("f5b61f94-0b2b-4e8e-9c25-56e9830df7d4"), any(), any(), any(), any());
     }
 
     @Test

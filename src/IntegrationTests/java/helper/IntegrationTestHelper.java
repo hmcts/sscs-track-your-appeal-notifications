@@ -38,7 +38,7 @@ public class IntegrationTestHelper {
 
         return post("/send")
             .contentType(APPLICATION_JSON)
-            .content(json);
+             .content(json);
     }
 
     public static MockHttpServletRequestBuilder getCohRequestWithAuthHeader(String json) {

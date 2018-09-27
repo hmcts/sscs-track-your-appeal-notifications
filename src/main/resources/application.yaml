@@ -88,9 +88,6 @@ notification:
   appealReceived:
     emailId: b90df52f-c628-409c-8875-4b0b9663a053
     smsId: ede384aa-0b6e-4311-9f01-ee547573a07b
-  responseReceived:
-    emailId: 1afd89f9-9935-4acb-b4f6-ba708b03a0d3
-    smsId: 4bba0b5d-a3f3-4fd9-a845-26af5eda042e
   evidenceReceived:
     emailId: c5654134-2e13-4541-ac73-334a5b5cdbb6
     smsId: 74bda35f-040b-4355-bda3-faf0e4f5ae6e
@@ -156,6 +153,11 @@ notification:
     responseReceived:
       emailId: a64bce9a-9162-47ca-b3e7-cf5f85ca7bdc
       smsId: f5b61f94-0b2b-4e8e-9c25-56e9830df7d4
+  oral:
+    responseReceived:
+      emailId: 1afd89f9-9935-4acb-b4f6-ba708b03a0d3
+      smsId: 4bba0b5d-a3f3-4fd9-a845-26af5eda042e
+
 
 smsSender:
   pip: 80b11be7-5c10-2773-8351-070e22d5ab6b
