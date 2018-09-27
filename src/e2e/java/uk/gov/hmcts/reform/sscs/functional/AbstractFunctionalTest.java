@@ -107,12 +107,24 @@ public abstract class AbstractFunctionalTest {
                 + epoch.substring(8, 13);
     }
 
-    protected List<Notification> tryFetchNotificationsForTestCase(String... expectedTemplateIds) throws NotificationClientException {
+    private boolean isPreviewEnv() {
+        final String testUrl = getEnvOrEmpty("TEST_URL");
+        return testUrl.contains("preview.internal");
+    }
+
+    protected List<Notification> tryFetchNotificationsForTestCase(Boolean doesHitRealCcd, String... expectedTemplateIds) throws NotificationClientException {
 
         List<Notification> allNotifications = new ArrayList<>();
         List<Notification> matchingNotifications = new ArrayList<>();
 
         int waitForAtLeastNumberOfNotifications = expectedTemplateIds.length;
+
+        if (isPreviewEnv()) {
+            // aat staging slot will also send a set of notifications
+            // because aat ccd callbacks go there. the notifications from
+            // aat staging slot will be from an older version.
+            waitForAtLeastNumberOfNotifications *= 2;
+        }
 
         int maxSecondsToWaitForNotification = MAX_SECONDS_TO_WAIT_FOR_NOTIFICATIONS;
 
