@@ -22,7 +22,7 @@ public enum NotificationEventType {
     THIRD_HEARING_HOLDING_REMINDER_NOTIFICATION("thirdHearingHoldingReminder", true, false, false, true),
     FINAL_HEARING_HOLDING_REMINDER_NOTIFICATION("finalHearingHoldingReminder", true, false, false, true),
     HEARING_REMINDER_NOTIFICATION("hearingReminder", true, false, false, true),
-    DWP_RESPONSE_LATE_REMINDER_NOTIFICATION("dwpResponseLateReminder", true, false, false, true),
+    DWP_RESPONSE_LATE_REMINDER_NOTIFICATION("dwpResponseLateReminder", true, true, false, true),
     QUESTION_ROUND_ISSUED_NOTIFICATION("question_round_issued", false, false, true, false),
     QUESTION_DEADLINE_ELAPSED_NOTIFICATION("question_deadline_elapsed", false, false, true, false),
     QUESTION_DEADLINE_REMINDER_NOTIFICATION("question_deadline_reminder", false, false, true, false),

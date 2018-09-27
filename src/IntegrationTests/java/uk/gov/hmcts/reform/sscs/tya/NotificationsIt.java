@@ -308,6 +308,29 @@ public class NotificationsIt {
     }
 
     @Test
+    public void shouldSendNotificationForDwpResponseLateReminderForAnOralHearing() throws Exception {
+        json = json.replace("appealReceived", "dwpResponseLateReminder");
+
+        HttpServletResponse response = getResponse(getRequestWithAuthHeader(json));
+
+        assertHttpStatus(response, HttpStatus.OK);
+        verify(client).sendEmail(any(), any(), any(), any());
+        verify(client).sendSms(any(), any(), any(), any(), any());
+    }
+
+    @Test
+    public void shouldNotSendNotificationForDwpResponseLateReminderForAPaperHearing() throws Exception {
+        updateJsonForPaperHearing();
+        json = json.replace("appealReceived", "dwpResponseLateReminder");
+
+        HttpServletResponse response = getResponse(getRequestWithAuthHeader(json));
+
+        assertHttpStatus(response, HttpStatus.OK);
+        verify(client).sendEmail(any(), any(), any(), any());
+        verify(client).sendSms(any(), any(), any(), any(), any());
+    }
+
+    @Test
     public void shouldSendNotificationForHearingReminderForAnOralHearing() throws Exception {
         json = json.replace("appealReceived", "hearingReminder");
         json = json.replace("2018-01-12", LocalDate.now().plusDays(2).toString());
