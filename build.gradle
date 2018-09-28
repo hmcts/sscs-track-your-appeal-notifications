@@ -169,7 +169,7 @@ bootRun {
     systemProperty 'server.port', '8081'
 }
 
-def springBootVersion = '2.0.3.RELEASE'
+def springBootVersion = '2.0.5.RELEASE'
 
 ext {
     springCloudVersion = 'Finchley.M9'
@@ -177,6 +177,7 @@ ext {
 
 dependencyManagement {
     imports {
+        mavenBom "org.springframework.boot:spring-boot-dependencies:${springBootVersion}"
         mavenBom "org.springframework.cloud:spring-cloud-dependencies:${springCloudVersion}"
     }
     dependencies {
@@ -197,6 +198,7 @@ def versions = [
 
 repositories {
     mavenLocal()
+    mavenCentral()
     maven {
         url "https://dl.bintray.com/hmcts/hmcts-maven"
     }
@@ -237,7 +239,7 @@ dependencies {
     compile group: 'uk.gov.hmcts.reform', name: 'sscs-common', version: '0.0.34'
 
     compile group: 'uk.gov.service.notify', name: 'notifications-java-client', version: '3.9.2-RELEASE'
-    compile group: 'io.github.openfeign', name: 'feign-httpclient', version: '9.5.1'
+    compile group: 'io.github.openfeign', name: 'feign-httpclient', version: '10.0.1'
     compile group: 'io.github.openfeign.form', name: 'feign-form', version: '3.3.0'
 
     compileOnly 'org.projectlombok:lombok:1.16.20'
