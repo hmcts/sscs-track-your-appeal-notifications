@@ -203,6 +203,9 @@ repositories {
     maven {
         url 'https://repo.spring.io/libs-milestone'
     }
+    maven {
+        url 'https://artifactory.reform.hmcts.net/artifactory/libs-release'
+    }
     jcenter()
 }
 
@@ -237,7 +240,7 @@ dependencies {
     compile group: 'uk.gov.hmcts.reform', name: 'sscs-common', version: '0.0.34'
 
     compile group: 'uk.gov.service.notify', name: 'notifications-java-client', version: '3.9.2-RELEASE'
-    compile group: 'io.github.openfeign', name: 'feign-httpclient', version: '9.5.1'
+    compile group: 'io.github.openfeign', name: 'feign-httpclient', version: '10.0.1'
     compile group: 'io.github.openfeign.form', name: 'feign-form', version: '3.3.0'
 
     compileOnly 'org.projectlombok:lombok:1.16.20'
