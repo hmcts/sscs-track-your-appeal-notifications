@@ -107,9 +107,9 @@ public abstract class AbstractFunctionalTest {
                 + epoch.substring(8, 13);
     }
 
-    private boolean isPreviewEnv() {
+    private boolean isAatEnv() {
         final String testUrl = getEnvOrEmpty("TEST_URL");
-        return testUrl.contains("preview.internal");
+        return testUrl.contains("aat.internal");
     }
 
     protected List<Notification> tryFetchNotificationsForTestCase(Boolean doesHitRealCcd, String... expectedTemplateIds) throws NotificationClientException {
@@ -119,7 +119,7 @@ public abstract class AbstractFunctionalTest {
 
         int waitForAtLeastNumberOfNotifications = expectedTemplateIds.length;
 
-        if (isPreviewEnv()) {
+        if (isAatEnv()) {
             // aat staging slot will also send a set of notifications
             // because aat ccd callbacks go there. the notifications from
             // aat staging slot will be from an older version.
