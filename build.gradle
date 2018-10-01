@@ -4,8 +4,8 @@ plugins {
     id 'pmd'
     id 'org.sonarqube' version '2.6.2'
     id 'jacoco'
-    id 'io.spring.dependency-management' version '1.0.5.RELEASE'
-    id 'org.springframework.boot' version '2.0.1.RELEASE'
+    id 'io.spring.dependency-management' version '1.0.6.RELEASE'
+    id 'org.springframework.boot' version '2.0.4.RELEASE'
     id 'org.owasp.dependencycheck' version '3.2.1'
     id 'com.github.ben-manes.versions' version '0.17.0'
     id 'net.ltgt.apt' version '0.14'
@@ -169,10 +169,10 @@ bootRun {
     systemProperty 'server.port', '8081'
 }
 
-def springBootVersion = '2.0.3.RELEASE'
+def springBootVersion = '2.0.5.RELEASE'
 
 ext {
-    springCloudVersion = 'Finchley.M9'
+    springCloudVersion = 'Finchley.SR1'
 }
 
 dependencyManagement {
@@ -203,6 +203,9 @@ repositories {
     maven {
         url 'https://repo.spring.io/libs-milestone'
     }
+    maven {
+        url 'https://artifactory.reform.hmcts.net/artifactory/libs-release'
+    }
     jcenter()
 }
 
@@ -222,6 +225,7 @@ dependencies {
     compile group: 'org.springframework.cloud', name: 'spring-cloud-starter-openfeign'
     compile group: 'org.springframework.cloud', name: 'spring-cloud-starter-hystrix', version: versions.springHystrix
     compile group: 'org.springframework.cloud', name: 'spring-cloud-starter-hystrix-dashboard', version: versions.springHystrix
+    compile group: 'org.springframework.retry', name: 'spring-retry', version: '1.2.2.RELEASE'
 
     compile group: 'io.rest-assured', name: 'rest-assured', version: '3.0.7'
     compile group: 'io.springfox', name: 'springfox-swagger2', version: versions.springfoxSwagger
@@ -237,7 +241,7 @@ dependencies {
     compile group: 'uk.gov.hmcts.reform', name: 'sscs-common', version: '0.0.34'
 
     compile group: 'uk.gov.service.notify', name: 'notifications-java-client', version: '3.9.2-RELEASE'
-    compile group: 'io.github.openfeign', name: 'feign-httpclient', version: '9.5.1'
+    compile group: 'io.github.openfeign', name: 'feign-httpclient', version: '10.0.1'
     compile group: 'io.github.openfeign.form', name: 'feign-form', version: '3.3.0'
 
     compileOnly 'org.projectlombok:lombok:1.16.20'

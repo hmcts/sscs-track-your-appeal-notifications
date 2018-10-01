@@ -48,7 +48,7 @@ public class NotificationController {
     public void sendNotification(
             @RequestHeader(AuthorisationService.SERVICE_AUTHORISATION_HEADER) String serviceAuthHeader,
             @RequestBody SscsCaseDataWrapper sscsCaseDataWrapper) {
-        LOG.info("Ccd Response received for case id: {}", sscsCaseDataWrapper.getNewSscsCaseData().getCaseId());
+        LOG.info("Ccd Response received for case id: {} , {}", sscsCaseDataWrapper.getNewSscsCaseData().getCaseId(), sscsCaseDataWrapper.getNotificationEventType());
 
         authorisationService.authorise(serviceAuthHeader);
         notificationService.createAndSendNotification(new CcdNotificationWrapper(sscsCaseDataWrapper));

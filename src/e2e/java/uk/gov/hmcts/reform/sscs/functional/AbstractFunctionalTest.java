@@ -53,7 +53,7 @@ public abstract class AbstractFunctionalTest {
 
     private static final org.slf4j.Logger LOG = getLogger(AbstractFunctionalTest.class);
 
-    private static final int MAX_SECONDS_TO_WAIT_FOR_NOTIFICATIONS = 200;
+    private static final int MAX_SECONDS_TO_WAIT_FOR_NOTIFICATIONS = 180;
 
     @Autowired
     @Qualifier("testNotificationClient")
@@ -107,12 +107,24 @@ public abstract class AbstractFunctionalTest {
                 + epoch.substring(8, 13);
     }
 
-    protected List<Notification> tryFetchNotificationsForTestCase(String... expectedTemplateIds) throws NotificationClientException {
+    private boolean isAatEnv() {
+        final String testUrl = getEnvOrEmpty("TEST_URL");
+        return testUrl.contains("aat.internal");
+    }
+
+    protected List<Notification> tryFetchNotificationsForTestCase(Boolean doesHitRealCcd, String... expectedTemplateIds) throws NotificationClientException {
 
         List<Notification> allNotifications = new ArrayList<>();
         List<Notification> matchingNotifications = new ArrayList<>();
 
         int waitForAtLeastNumberOfNotifications = expectedTemplateIds.length;
+
+        if (isAatEnv()) {
+            // aat staging slot will also send a set of notifications
+            // because aat ccd callbacks go there. the notifications from
+            // aat staging slot will be from an older version.
+            waitForAtLeastNumberOfNotifications *= 2;
+        }
 
         int maxSecondsToWaitForNotification = MAX_SECONDS_TO_WAIT_FOR_NOTIFICATIONS;
 
