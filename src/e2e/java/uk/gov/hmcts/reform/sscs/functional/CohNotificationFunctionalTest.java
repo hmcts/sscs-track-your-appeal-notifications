@@ -65,12 +65,12 @@ public class CohNotificationFunctionalTest extends AbstractFunctionalTest {
     public void shouldSendQuestionsReadyNotifications() throws IOException, InterruptedException, NotificationClientException {
         String hearingId = createHearingWithQuestions(caseId);
         // Issuing the question round will cause these notifications to be fired from AAT
-        tryFetchNotificationsForTestCase(false, questionRoundIssuedEmailTemplateId, questionRoundIssuedSmsTemplateId);
+        tryFetchNotificationsForTestCase(questionRoundIssuedEmailTemplateId, questionRoundIssuedSmsTemplateId);
 
         simulateCohCallback(QUESTION_ROUND_ISSUED_NOTIFICATION, hearingId);
 
         // Need to check for two sets of notifications one from AAT and from the test being run.
-        List<Notification> notifications = tryFetchNotificationsForTestCase(false, questionRoundIssuedEmailTemplateId, questionRoundIssuedEmailTemplateId,
+        List<Notification> notifications = tryFetchNotificationsForTestCase(questionRoundIssuedEmailTemplateId, questionRoundIssuedEmailTemplateId,
                 questionRoundIssuedSmsTemplateId, questionRoundIssuedSmsTemplateId);
 
         assertNotificationBodyContains(notifications, questionRoundIssuedEmailTemplateId, caseData.getCaseReference());
@@ -88,7 +88,6 @@ public class CohNotificationFunctionalTest extends AbstractFunctionalTest {
 
         // Need to check for two sets of notifications one from AAT and from the test being run.
         List<Notification> notifications = tryFetchNotificationsForTestCase(
-                false,
                 followupQuestionRoundIssuedEmailTemplateId,
                 followupQuestionRoundIssuedSmsTemplateId
         );
@@ -103,7 +102,7 @@ public class CohNotificationFunctionalTest extends AbstractFunctionalTest {
         simulateCohCallback(QUESTION_DEADLINE_ELAPSED_NOTIFICATION, hearingId);
 
         List<Notification> notifications = tryFetchNotificationsForTestCase(
-                false, questionDeadlineElapsedEmailTemplateId, questionDeadlineElapsedSmsTemplateId);
+                questionDeadlineElapsedEmailTemplateId, questionDeadlineElapsedSmsTemplateId);
 
         assertNotificationBodyContains(notifications, questionDeadlineElapsedEmailTemplateId, caseData.getCaseReference());
     }

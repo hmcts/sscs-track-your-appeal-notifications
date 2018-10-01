@@ -107,24 +107,12 @@ public abstract class AbstractFunctionalTest {
                 + epoch.substring(8, 13);
     }
 
-    private boolean isAatEnv() {
-        final String testUrl = getEnvOrEmpty("TEST_URL");
-        return testUrl.contains("aat.internal");
-    }
-
-    protected List<Notification> tryFetchNotificationsForTestCase(Boolean doesHitRealCcd, String... expectedTemplateIds) throws NotificationClientException {
+    protected List<Notification> tryFetchNotificationsForTestCase(String... expectedTemplateIds) throws NotificationClientException {
 
         List<Notification> allNotifications = new ArrayList<>();
         List<Notification> matchingNotifications = new ArrayList<>();
 
         int waitForAtLeastNumberOfNotifications = expectedTemplateIds.length;
-
-        if (isAatEnv()) {
-            // aat staging slot will also send a set of notifications
-            // because aat ccd callbacks go there. the notifications from
-            // aat staging slot will be from an older version.
-            waitForAtLeastNumberOfNotifications *= 2;
-        }
 
         int maxSecondsToWaitForNotification = MAX_SECONDS_TO_WAIT_FOR_NOTIFICATIONS;
 

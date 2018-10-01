@@ -70,7 +70,6 @@ public class ReminderNotificationsFunctionalTest extends AbstractFunctionalTest 
 
         List<Notification> notifications =
             tryFetchNotificationsForTestCase(
-                false,
                 dwpResponseLateReminderEmailTemplateId,
                 dwpResponseLateReminderSmsTemplateId
             );
@@ -105,7 +104,6 @@ public class ReminderNotificationsFunctionalTest extends AbstractFunctionalTest 
 
         List<Notification> notifications =
             tryFetchNotificationsForTestCase(
-                    true,
                 responseReceivedEmailTemplateId,
                 responseReceivedSmsTemplateId,
                 evidenceReminderEmailTemplateId,
@@ -247,7 +245,6 @@ public class ReminderNotificationsFunctionalTest extends AbstractFunctionalTest 
 
         List<Notification> notifications =
             tryFetchNotificationsForTestCase(
-                true,
                 hearingReminderEmailTemplateId,
                 hearingReminderEmailTemplateId,
                 hearingReminderSmsTemplateId,
