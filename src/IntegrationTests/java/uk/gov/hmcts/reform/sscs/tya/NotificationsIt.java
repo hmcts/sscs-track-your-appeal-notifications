@@ -175,8 +175,8 @@ public class NotificationsIt {
         HttpServletResponse response = getResponse(getRequestWithAuthHeader(json));
 
         assertHttpStatus(response, HttpStatus.OK);
-        verify(client, never()).sendEmail(any(), any(), any(), any());
-        verify(client, never()).sendSms(any(), any(), any(), any(), any());
+        verify(client).sendEmail(any(), any(), any(), any());
+        verify(client).sendSms(any(), any(), any(), any(), any());
     }
 
     @Test
@@ -233,7 +233,7 @@ public class NotificationsIt {
 
         assertHttpStatus(response, HttpStatus.OK);
         verify(client).sendEmail(any(), any(), any(), any());
-        verify(client, never()).sendSms(any(), any(), any(), any(), any());
+        verify(client).sendSms(any(), any(), any(), any(), any());
     }
 
     @Test
@@ -244,8 +244,8 @@ public class NotificationsIt {
         HttpServletResponse response = getResponse(getRequestWithAuthHeader(json));
 
         assertHttpStatus(response, HttpStatus.OK);
-        verify(client, never()).sendEmail(any(), any(), any(), any());
-        verify(client, never()).sendSms(any(), any(), any(), any(), any());
+        verify(client).sendEmail(any(), any(), any(), any());
+        verify(client).sendSms(any(), any(), any(), any(), any());
     }
 
     @Test

@@ -102,7 +102,9 @@ notification:
   appealLapsed:
     emailId: 8ce8d794-75e8-49a0-b4d2-0c6cd2061c11
     smsId: d2b4394b-d1c9-4d5c-a44e-b382e41c67e5
-  appealWithdrawn.emailId: 8620e023-f663-477e-a771-9cfad50ee30f
+  appealWithdrawn:
+    emailId: 8620e023-f663-477e-a771-9cfad50ee30f
+    smsId: f59440ee-19ca-4d47-a702-13e9cecaccbd
   subscriptionCreated.smsId: 18444f5f-8834-49e9-a6ae-bfe7f50db2b8
   subscriptionUpdated.emailId: 820901f0-15a9-4796-bdec-0cef42922531
   hearingBooked:

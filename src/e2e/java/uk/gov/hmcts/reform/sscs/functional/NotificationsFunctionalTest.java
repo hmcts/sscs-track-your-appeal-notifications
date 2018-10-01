@@ -41,6 +41,9 @@ public class NotificationsFunctionalTest extends AbstractFunctionalTest {
     @Value("${notification.appealWithdrawn.emailId}")
     private String appealWithdrawnEmailTemplateId;
 
+    @Value("${notification.appealWithdrawn.smsId}")
+    private String appealWithdrawnSmsTemplateId;
+
     @Value("${notification.hearingBooked.emailId}")
     private String hearingBookedEmailTemplateId;
 
@@ -110,7 +113,10 @@ public class NotificationsFunctionalTest extends AbstractFunctionalTest {
     public void shouldSendAppealWithdrawnNotification() throws NotificationClientException, IOException {
         simulateCcdCallback(APPEAL_WITHDRAWN_NOTIFICATION);
 
-        tryFetchNotificationsForTestCase(appealWithdrawnEmailTemplateId);
+        tryFetchNotificationsForTestCase(
+            appealWithdrawnEmailTemplateId,
+            appealWithdrawnSmsTemplateId
+        );
     }
 
     @Test
