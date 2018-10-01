@@ -172,7 +172,7 @@ bootRun {
 def springBootVersion = '2.0.3.RELEASE'
 
 ext {
-    springCloudVersion = 'Finchley.M9'
+    springCloudVersion = 'Greenwich.M1'
 }
 
 dependencyManagement {
