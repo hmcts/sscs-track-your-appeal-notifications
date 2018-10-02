@@ -443,7 +443,6 @@ public class NotificationsIt {
     public void shouldSendSubscriptionUpdatedNotificationForSubscriptionUpdatedRequestWithNewEmailAddressForAPaperHearing() throws Exception {
         updateJsonForPaperHearing();
         json = updateEmbeddedJson(json, "subscriptionUpdated", "event_id");
-        json = updateEmbeddedJson(json, "paper", "case_details", "case_data", "appeal", "hearingType");
         json = updateEmbeddedJson(json, "No", "case_details", "case_data", "subscriptions",
                 "appellantSubscription", "subscribeSms");
 
@@ -484,6 +483,7 @@ public class NotificationsIt {
 
     private void updateJsonForPaperHearing() throws IOException {
         json = updateEmbeddedJson(json, "No", "case_details", "case_data", "appeal", "hearingOptions", "wantsToAttend");
+        json = updateEmbeddedJson(json, "paper", "case_details", "case_data", "appeal", "hearingType");
     }
 
 }
