@@ -216,7 +216,7 @@ dependencies {
 
     compile group: 'com.mchange', name: 'c3p0', version: '0.9.5.2'
     compile group: 'org.flywaydb', name: 'flyway-core', version: '5.1.0'
-    compile group: 'org.postgresql', name: 'postgresql', version: '42.2.2'
+    compile group: 'org.postgresql', name: 'postgresql', version: '42.2.5'
 
     compile group: 'org.springframework.boot', name: 'spring-boot-starter-actuator'
     compile group: 'org.springframework.boot', name: 'spring-boot-starter-aop'
@@ -261,7 +261,7 @@ bootJar {
     }
 }
 
-// this is required to force Java running on the Azure Windows Server OS into using
+// This is required to force Java running on the Azure Windows Server OS into using
 // UTF-8 as the default character set instead of windows-1252 which causes issues
 applicationDefaultJvmArgs = ["-Dfile.encoding=UTF-8"]
 
