@@ -1,5 +1,6 @@
 package uk.gov.hmcts.reform.sscs.config;
 
+import javax.validation.constraints.NotNull;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.core.env.Environment;
@@ -28,7 +29,7 @@ public class NotificationConfig {
 
     private Environment env;
 
-    public NotificationConfig(@Autowired Environment env) {
+    NotificationConfig(@Autowired Environment env) {
         this.env = env;
     }
 
@@ -60,17 +61,20 @@ public class NotificationConfig {
         return Link.builder().linkUrl(onlineHearingLink + "?email={email}").build();
     }
 
-    public Template getTemplate(String emailTemplateName, String smsTemplateName, Benefit benefit, AppealHearingType appealHearingType) {
+    public Template getTemplate(String emailTemplateName, String smsTemplateName, Benefit benefit,
+                                AppealHearingType appealHearingType) {
         return Template.builder().emailTemplateId(getTemplate(appealHearingType, emailTemplateName, "emailId"))
                 .smsTemplateId(getTemplate(appealHearingType, smsTemplateName, "smsId"))
                 .smsSenderTemplateId(env.getProperty("smsSender." + benefit.toString().toLowerCase())).build();
     }
 
-    private String getTemplate(AppealHearingType appealHearingType, String templateName, final String notifcationType) {
+    private String getTemplate(@NotNull AppealHearingType appealHearingType, String templateName,
+                               final String notificationType) {
         String hearingTypeName = appealHearingType.name().toLowerCase();
-        String templateId = env.getProperty("notification." + hearingTypeName + "." + templateName + "." + notifcationType);
+        String templateId = env.getProperty("notification." + hearingTypeName + "." + templateName + "."
+                + notificationType);
         if (templateId == null) {
-            templateId = env.getProperty("notification." + templateName + "." + notifcationType);
+            templateId = env.getProperty("notification." + templateName + "." + notificationType);
         }
         return templateId;
     }
