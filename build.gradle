@@ -247,7 +247,7 @@ dependencies {
     compileOnly 'org.projectlombok:lombok:1.18.2'
     apt "org.projectlombok:lombok:1.16.20"
 
-    testCompile group: 'org.springframework.boot', name: 'spring-boot-starter-test', version: '1.5.10.RELEASE'
+    testCompile group: 'org.springframework.boot', name: 'spring-boot-starter-test', version: '2.0.5.RELEASE'
     testCompile group: 'org.mockito', name: 'mockito-core', version: '2.22.0'
 
     runtime "org.springframework.boot:spring-boot-properties-migrator"
