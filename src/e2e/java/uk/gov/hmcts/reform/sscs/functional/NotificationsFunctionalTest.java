@@ -1,6 +1,15 @@
 package uk.gov.hmcts.reform.sscs.functional;
 
-import static uk.gov.hmcts.reform.sscs.domain.notify.NotificationEventType.*;
+import static uk.gov.hmcts.reform.sscs.domain.notify.NotificationEventType.ADJOURNED_NOTIFICATION;
+import static uk.gov.hmcts.reform.sscs.domain.notify.NotificationEventType.APPEAL_LAPSED_NOTIFICATION;
+import static uk.gov.hmcts.reform.sscs.domain.notify.NotificationEventType.APPEAL_RECEIVED_NOTIFICATION;
+import static uk.gov.hmcts.reform.sscs.domain.notify.NotificationEventType.APPEAL_WITHDRAWN_NOTIFICATION;
+import static uk.gov.hmcts.reform.sscs.domain.notify.NotificationEventType.DWP_RESPONSE_RECEIVED_NOTIFICATION;
+import static uk.gov.hmcts.reform.sscs.domain.notify.NotificationEventType.EVIDENCE_RECEIVED_NOTIFICATION;
+import static uk.gov.hmcts.reform.sscs.domain.notify.NotificationEventType.HEARING_BOOKED_NOTIFICATION;
+import static uk.gov.hmcts.reform.sscs.domain.notify.NotificationEventType.POSTPONEMENT_NOTIFICATION;
+import static uk.gov.hmcts.reform.sscs.domain.notify.NotificationEventType.SUBSCRIPTION_CREATED_NOTIFICATION;
+import static uk.gov.hmcts.reform.sscs.domain.notify.NotificationEventType.SUBSCRIPTION_UPDATED_NOTIFICATION;
 
 import java.io.IOException;
 import java.util.List;
@@ -62,6 +71,12 @@ public class NotificationsFunctionalTest extends AbstractFunctionalTest {
     @Value("${notification.online.responseReceived.smsId}")
     private String onlineResponseReceivedSmsId;
 
+    @Value("${notification.paper.responseReceived.emailId}")
+    private String paperResponseReceivedEmailId;
+
+    @Value("${notification.paper.responseReceived.smsId}")
+    private String paperResponseReceivedSmsId;
+
     @Test
     public void shouldSendAppealReceivedNotification() throws IOException, NotificationClientException {
         simulateCcdCallback(APPEAL_RECEIVED_NOTIFICATION);
@@ -87,8 +102,8 @@ public class NotificationsFunctionalTest extends AbstractFunctionalTest {
         simulateCcdCallback(ADJOURNED_NOTIFICATION);
 
         tryFetchNotificationsForTestCase(
-            hearingAdjournedEmailTemplateId,
-            hearingAdjournedSmsTemplateId
+                hearingAdjournedEmailTemplateId,
+                hearingAdjournedSmsTemplateId
         );
     }
 
@@ -104,8 +119,8 @@ public class NotificationsFunctionalTest extends AbstractFunctionalTest {
         simulateCcdCallback(APPEAL_LAPSED_NOTIFICATION);
 
         tryFetchNotificationsForTestCase(
-            appealLapsedEmailTemplateId,
-            appealLapsedSmsTemplateId
+                appealLapsedEmailTemplateId,
+                appealLapsedSmsTemplateId
         );
     }
 
@@ -114,8 +129,8 @@ public class NotificationsFunctionalTest extends AbstractFunctionalTest {
         simulateCcdCallback(APPEAL_WITHDRAWN_NOTIFICATION);
 
         tryFetchNotificationsForTestCase(
-            appealWithdrawnEmailTemplateId,
-            appealWithdrawnSmsTemplateId
+                appealWithdrawnEmailTemplateId,
+                appealWithdrawnSmsTemplateId
         );
     }
 
@@ -124,8 +139,8 @@ public class NotificationsFunctionalTest extends AbstractFunctionalTest {
         simulateCcdCallback(HEARING_BOOKED_NOTIFICATION);
 
         tryFetchNotificationsForTestCase(
-            hearingBookedEmailTemplateId,
-            hearingBookedSmsTemplateId
+                hearingBookedEmailTemplateId,
+                hearingBookedSmsTemplateId
         );
     }
 
@@ -149,5 +164,15 @@ public class NotificationsFunctionalTest extends AbstractFunctionalTest {
         List<Notification> notifications = tryFetchNotificationsForTestCase(onlineResponseReceivedEmailId, onlineResponseReceivedSmsId);
 
         assertNotificationBodyContains(notifications, onlineResponseReceivedEmailId, caseData.getCaseReference());
+    }
+
+    @Test
+    public void shouldSendPaperDwpResponseReceivedNotification() throws NotificationClientException, IOException {
+        simulateCcdCallback(DWP_RESPONSE_RECEIVED_NOTIFICATION, "paper-"
+                + DWP_RESPONSE_RECEIVED_NOTIFICATION.getId() + "Callback.json");
+        List<Notification> notifications = tryFetchNotificationsForTestCase(
+                paperResponseReceivedEmailId, paperResponseReceivedSmsId);
+
+        assertNotificationBodyContains(notifications, paperResponseReceivedEmailId, caseData.getCaseReference());
     }
 }

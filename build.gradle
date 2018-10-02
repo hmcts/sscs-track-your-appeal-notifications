@@ -65,12 +65,8 @@ sourceSets {
 
 }
 
-dependencies {
-    integrationTestCompile(sourceSets.test.output)
-    e2eCompile(sourceSets.test.output)
-}
-
 task integration(type: Test) {
+    group = 'verification'
     setTestClassesDirs(sourceSets.integrationTest.output.classesDirs)
     setClasspath(sourceSets.integrationTest.runtimeClasspath)
 }
@@ -85,7 +81,7 @@ task smoke(type: Test) {
 }
 
 task functional(type: Test) {
-    group = 'Functional Tests'
+    group = 'verification'
     description = 'Executes non-destructive functional tests in AAT against a running CCD and notification service'
     setTestClassesDirs(sourceSets.e2e.output.classesDirs)
     setClasspath(sourceSets.e2e.runtimeClasspath)
@@ -125,15 +121,6 @@ dependencyCheck {
         // Disable scanning of .NET related binaries
         assemblyEnabled = false
     }
-}
-
-repositories {
-    mavenLocal()
-    maven {
-        url "https://dl.bintray.com/hmcts/hmcts-maven"
-    }
-
-    jcenter()
 }
 
 project.tasks['sonarqube'].dependsOn test, integration
@@ -210,6 +197,9 @@ repositories {
 }
 
 dependencies {
+    integrationTestCompile(sourceSets.test.output)
+    e2eCompile(sourceSets.test.output)
+
     compile group: 'com.googlecode.json-simple', name: 'json-simple', version: '1.1.1'
     compile group: 'com.opencsv', name: 'opencsv', version: '4.2'
     compile group: 'commons-io', name: 'commons-io', version: '2.6'
@@ -245,10 +235,13 @@ dependencies {
     compile group: 'io.github.openfeign.form', name: 'feign-form', version: '3.3.0'
 
     compileOnly 'org.projectlombok:lombok:1.18.2'
+    compileOnly("org.springframework.boot:spring-boot-devtools")
+
     apt "org.projectlombok:lombok:1.16.20"
 
     testCompile group: 'org.springframework.boot', name: 'spring-boot-starter-test', version: '1.5.10.RELEASE'
     testCompile group: 'org.mockito', name: 'mockito-core', version: '2.22.0'
+    testCompile 'pl.pragmatists:JUnitParams:1.1.1'
 
     runtime "org.springframework.boot:spring-boot-properties-migrator"
 }

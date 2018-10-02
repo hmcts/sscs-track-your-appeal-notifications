@@ -1,15 +1,29 @@
 package uk.gov.hmcts.reform.sscs.tya;
 
-import static helper.IntegrationTestHelper.*;
-import static org.mockito.Mockito.*;
+import static helper.IntegrationTestHelper.assertHttpStatus;
+import static helper.IntegrationTestHelper.getRequestWithAuthHeader;
+import static helper.IntegrationTestHelper.getRequestWithoutAuthHeader;
+import static helper.IntegrationTestHelper.updateEmbeddedJson;
+import static org.mockito.Mockito.any;
+import static org.mockito.Mockito.anyString;
+import static org.mockito.Mockito.eq;
+import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.never;
+import static org.mockito.Mockito.times;
+import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.when;
 
 import java.io.File;
 import java.io.IOException;
 import java.nio.charset.StandardCharsets;
 import java.time.LocalDate;
 import javax.servlet.http.HttpServletResponse;
+import junitparams.JUnitParamsRunner;
+import junitparams.Parameters;
 import org.apache.commons.io.FileUtils;
 import org.junit.Before;
+import org.junit.ClassRule;
+import org.junit.Rule;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.Mock;
@@ -20,7 +34,8 @@ import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.http.HttpStatus;
 import org.springframework.mock.web.MockHttpServletResponse;
 import org.springframework.test.context.ActiveProfiles;
-import org.springframework.test.context.junit4.SpringRunner;
+import org.springframework.test.context.junit4.rules.SpringClassRule;
+import org.springframework.test.context.junit4.rules.SpringMethodRule;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.request.MockHttpServletRequestBuilder;
 import org.springframework.test.web.servlet.setup.MockMvcBuilders;
@@ -30,14 +45,27 @@ import uk.gov.hmcts.reform.sscs.controller.NotificationController;
 import uk.gov.hmcts.reform.sscs.deserialize.SscsCaseDataWrapperDeserializer;
 import uk.gov.hmcts.reform.sscs.factory.NotificationFactory;
 import uk.gov.hmcts.reform.sscs.idam.IdamService;
-import uk.gov.hmcts.reform.sscs.service.*;
+import uk.gov.hmcts.reform.sscs.service.AuthorisationService;
+import uk.gov.hmcts.reform.sscs.service.NotificationHandler;
+import uk.gov.hmcts.reform.sscs.service.NotificationSender;
+import uk.gov.hmcts.reform.sscs.service.NotificationService;
+import uk.gov.hmcts.reform.sscs.service.NotificationValidService;
+import uk.gov.hmcts.reform.sscs.service.OutOfHoursCalculator;
+import uk.gov.hmcts.reform.sscs.service.ReminderService;
 import uk.gov.service.notify.NotificationClient;
 
-@RunWith(SpringRunner.class)
+@RunWith(JUnitParamsRunner.class)
 @SpringBootTest
 @ActiveProfiles("integration")
 @AutoConfigureMockMvc
 public class NotificationsIt {
+
+    // Below rules are needed to use the junitParamsRunner together with SpringRunner
+    @ClassRule
+    public static final SpringClassRule SPRING_CLASS_RULE = new SpringClassRule();
+
+    @Rule
+    public final SpringMethodRule springMethodRule = new SpringMethodRule();
 
     MockMvc mockMvc;
 
@@ -134,26 +162,21 @@ public class NotificationsIt {
     }
 
     @Test
-    public void shouldSendNotificationForAnResponseReceivedRequestForAnOralHearing() throws Exception {
-        json = json.replace("appealReceived", "responseReceived");
+    @Parameters(
+            {
+                    "oral, 1afd89f9-9935-4acb-b4f6-ba708b03a0d3, 4bba0b5d-a3f3-4fd9-a845-26af5eda042e",
+                    "paper, a64bce9a-9162-47ca-b3e7-cf5f85ca7bdc, f5b61f94-0b2b-4e8e-9c25-56e9830df7d4"
+            })
+    public void shouldSendNotificationForAnResponseReceivedRequestForAnOralOrPaperHearing(
+            String hearingType, String emailTemplateId, String smsTemplateId) throws Exception {
+        json = updateEmbeddedJson(json, hearingType, "case_details", "case_data", "appeal", "hearingType");
+        json = updateEmbeddedJson(json, "responseReceived", "event_id");
 
         HttpServletResponse response = getResponse(getRequestWithAuthHeader(json));
 
         assertHttpStatus(response, HttpStatus.OK);
-        verify(client).sendEmail(any(), any(), any(), any());
-        verify(client).sendSms(any(), any(), any(), any(), any());
-    }
-
-    @Test
-    public void shouldNotSendNotificationForAnResponseReceivedRequestForAPaperHearing() throws Exception {
-        updateJsonForPaperHearing();
-        json = json.replace("appealReceived", "responseReceived");
-
-        HttpServletResponse response = getResponse(getRequestWithAuthHeader(json));
-
-        assertHttpStatus(response, HttpStatus.OK);
-        verify(client, never()).sendEmail(any(), any(), any(), any());
-        verify(client, never()).sendSms(any(), any(), any(), any(), any());
+        verify(client).sendEmail(eq(emailTemplateId), any(), any(), any());
+        verify(client).sendSms(eq(smsTemplateId), any(), any(), any(), any());
     }
 
     @Test
@@ -404,8 +427,10 @@ public class NotificationsIt {
 
     @Test
     public void shouldSendSubscriptionUpdatedNotificationForSubscriptionUpdatedRequestWithNewEmailAddressForAnOralHearing() throws Exception {
-        json = json.replace("appealReceived", "subscriptionUpdated");
-        json = updateEmbeddedJson(json, "No", "case_details", "case_data", "subscriptions", "appellantSubscription", "subscribeSms");
+        json = updateEmbeddedJson(json, "subscriptionUpdated", "event_id");
+        json = updateEmbeddedJson(json, "oral", "case_details", "case_data", "appeal", "hearingType");
+        json = updateEmbeddedJson(json, "No", "case_details", "case_data", "subscriptions",
+                "appellantSubscription", "subscribeSms");
 
         HttpServletResponse response = getResponse(getRequestWithAuthHeader(json));
 
@@ -417,8 +442,9 @@ public class NotificationsIt {
     @Test
     public void shouldSendSubscriptionUpdatedNotificationForSubscriptionUpdatedRequestWithNewEmailAddressForAPaperHearing() throws Exception {
         updateJsonForPaperHearing();
-        json = json.replace("appealReceived", "subscriptionUpdated");
-        json = updateEmbeddedJson(json, "No", "case_details", "case_data", "subscriptions", "appellantSubscription", "subscribeSms");
+        json = updateEmbeddedJson(json, "subscriptionUpdated", "event_id");
+        json = updateEmbeddedJson(json, "No", "case_details", "case_data", "subscriptions",
+                "appellantSubscription", "subscribeSms");
 
         HttpServletResponse response = getResponse(getRequestWithAuthHeader(json));
 
@@ -457,6 +483,7 @@ public class NotificationsIt {
 
     private void updateJsonForPaperHearing() throws IOException {
         json = updateEmbeddedJson(json, "No", "case_details", "case_data", "appeal", "hearingOptions", "wantsToAttend");
+        json = updateEmbeddedJson(json, "paper", "case_details", "case_data", "appeal", "hearingType");
     }
 
 }
