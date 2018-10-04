@@ -3,8 +3,6 @@ server.port: ${PORT:8081}
 spring:
   application:
     name: TyaNotificationsService
-  flyway:
-    baseline-on-migrate: true
   datasource:
     driverClassName: org.postgresql.Driver
     url: jdbc:postgresql://${JOB_SCHEDULER_DB_HOST:localhost}:${JOB_SCHEDULER_DB_PORT:5432}/${JOB_SCHEDULER_DB_NAME:sscsjobscheduler}${JOB_SCHEDULER_DB_CONNECTION_OPTIONS:}
