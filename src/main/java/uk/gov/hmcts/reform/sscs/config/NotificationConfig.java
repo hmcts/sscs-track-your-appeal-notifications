@@ -57,8 +57,12 @@ public class NotificationConfig {
         return Link.builder().linkUrl(hearingInfoLink).build();
     }
 
-    public Link getOnlineHearingLink() {
+    public Link getOnlineHearingLinkWithEmail() {
         return Link.builder().linkUrl(onlineHearingLink + "?email={email}").build();
+    }
+
+    public String getOnlineHearingLink() {
+        return onlineHearingLink;
     }
 
     public Template getTemplate(String emailTemplateName, String smsTemplateName, Benefit benefit,
