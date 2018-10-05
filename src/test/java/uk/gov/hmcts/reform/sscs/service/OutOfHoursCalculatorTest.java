@@ -49,7 +49,7 @@ public class OutOfHoursCalculatorTest {
         ZonedDateTime now = nowAtHour(END_HOUR);
         ZonedDateTime nextInHoursTime = new OutOfHoursCalculator(new FixedDateTimeProvider(now), START_HOUR, END_HOUR).getStartOfNextInHoursPeriod();
 
-        assertThat(nextInHoursTime, is(ZonedDateTime.of(2018, 9, 19, START_HOUR, 0, 0, 0, ZoneId.systemDefault())));
+        assertThat(nextInHoursTime, is(ZonedDateTime.of(2018, 9, 19, START_HOUR, 0, 0, 0, ZoneId.of("Europe/London"))));
     }
 
     @Test
@@ -57,7 +57,7 @@ public class OutOfHoursCalculatorTest {
         ZonedDateTime now = nowAtHour(1);
         ZonedDateTime nextInHoursTime = new OutOfHoursCalculator(new FixedDateTimeProvider(now), START_HOUR, END_HOUR).getStartOfNextInHoursPeriod();
 
-        assertThat(nextInHoursTime, is(ZonedDateTime.of(2018, 9, 18, START_HOUR, 0, 0, 0, ZoneId.systemDefault())));
+        assertThat(nextInHoursTime, is(ZonedDateTime.of(2018, 9, 18, START_HOUR, 0, 0, 0, ZoneId.of("Europe/London"))));
     }
 
 
@@ -109,7 +109,7 @@ public class OutOfHoursCalculatorTest {
     }
 
     private ZonedDateTime nowAtHour(int hour) {
-        return ZonedDateTime.of(2018, 9, 18, hour, 0, 0, 0, ZoneId.systemDefault());
+        return ZonedDateTime.of(2018, 9, 18, hour, 0, 0, 0, ZoneId.of("Europe/London"));
     }
 
     public static class FixedDateTimeProvider extends DateTimeProvider {
