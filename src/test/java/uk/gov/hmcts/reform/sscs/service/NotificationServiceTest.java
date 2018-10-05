@@ -3,6 +3,7 @@ package uk.gov.hmcts.reform.sscs.service;
 import static org.mockito.Mockito.*;
 import static org.mockito.MockitoAnnotations.initMocks;
 import static uk.gov.hmcts.reform.sscs.domain.notify.NotificationEventType.APPEAL_WITHDRAWN_NOTIFICATION;
+import static uk.gov.hmcts.reform.sscs.domain.notify.NotificationEventType.QUESTION_ROUND_ISSUED_NOTIFICATION;
 
 import org.junit.Before;
 import org.junit.Test;
@@ -14,6 +15,7 @@ import uk.gov.hmcts.reform.sscs.domain.notify.Notification;
 import uk.gov.hmcts.reform.sscs.domain.notify.Reference;
 import uk.gov.hmcts.reform.sscs.domain.notify.Template;
 import uk.gov.hmcts.reform.sscs.factory.CcdNotificationWrapper;
+import uk.gov.hmcts.reform.sscs.factory.CohNotificationWrapper;
 import uk.gov.hmcts.reform.sscs.factory.NotificationFactory;
 
 public class NotificationServiceTest {
@@ -35,6 +37,9 @@ public class NotificationServiceTest {
     @Mock
     private NotificationHandler notificationHandler;
 
+    @Mock
+    private OutOfHoursCalculator outOfHoursCalculator;
+
     private SscsCaseData response;
     private CcdNotificationWrapper notificationWrapper;
 
@@ -44,7 +49,7 @@ public class NotificationServiceTest {
         when((notificationValidService).isNotificationStillValidToSend(any(), any())).thenReturn(true);
         when((notificationValidService).isHearingTypeValidToSendNotification(any(), any())).thenReturn(true);
 
-        notificationService = new NotificationService(notificationSender, factory, reminderService, notificationValidService, notificationHandler);
+        notificationService = new NotificationService(notificationSender, factory, reminderService, notificationValidService, notificationHandler, outOfHoursCalculator);
 
         Subscription appellantSubscription = Subscription.builder().tya("GLSCRR").email("test@email.com")
             .mobile("07983495065").subscribeEmail("Yes").subscribeSms("Yes").build();
@@ -55,6 +60,7 @@ public class NotificationServiceTest {
                 .caseReference("ABC123").build();
         SscsCaseDataWrapper wrapper = SscsCaseDataWrapper.builder().newSscsCaseData(response).oldSscsCaseData(response).notificationEventType(APPEAL_WITHDRAWN_NOTIFICATION).build();
         notificationWrapper = new CcdNotificationWrapper(wrapper);
+        when(outOfHoursCalculator.isItOutOfHours()).thenReturn(false);
     }
 
     @Test
@@ -173,6 +179,21 @@ public class NotificationServiceTest {
         notificationService.createAndSendNotification(notificationWrapper);
 
         verify(notificationSender, never()).sendEmail(notification.getEmailTemplate(), notification.getEmail(), notification.getPlaceholders(), notification.getReference());
+    }
+
+    @Test
+    public void doNotSendNotificationsOutOfHours() {
+        String emailTemplateId = "abc";
+        String smsTemplateId = "123";
+        Notification notification = new Notification(Template.builder().emailTemplateId(emailTemplateId).smsTemplateId(smsTemplateId).build(), Destination.builder().email("test@testing.com").sms("07823456746").build(), null, new Reference(), null);
+        SscsCaseDataWrapper wrapper = SscsCaseDataWrapper.builder().newSscsCaseData(response).oldSscsCaseData(response).notificationEventType(QUESTION_ROUND_ISSUED_NOTIFICATION).build();
+        notificationWrapper = new CohNotificationWrapper("someHearingId", wrapper);
+        when(factory.create(notificationWrapper)).thenReturn(notification);
+        when(outOfHoursCalculator.isItOutOfHours()).thenReturn(true);
+        notificationService.createAndSendNotification(notificationWrapper);
+
+        verify(notificationHandler, never()).sendNotification(any(), any(), any(), any());
+        verify(notificationHandler).scheduleNotification(notificationWrapper);
     }
 
 }

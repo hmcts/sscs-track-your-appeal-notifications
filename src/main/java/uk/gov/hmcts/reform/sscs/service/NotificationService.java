@@ -18,15 +18,18 @@ public class NotificationService {
     private final ReminderService reminderService;
     private final NotificationValidService notificationValidService;
     private final NotificationHandler notificationHandler;
+    private final OutOfHoursCalculator outOfHoursCalculator;
 
     @Autowired
     public NotificationService(NotificationSender notificationSender, NotificationFactory factory, ReminderService reminderService,
-                               NotificationValidService notificationValidService, NotificationHandler notificationHandler) {
+                               NotificationValidService notificationValidService, NotificationHandler notificationHandler,
+                               OutOfHoursCalculator outOfHoursCalculator) {
         this.factory = factory;
         this.notificationSender = notificationSender;
         this.reminderService = reminderService;
         this.notificationValidService = notificationValidService;
         this.notificationHandler = notificationHandler;
+        this.outOfHoursCalculator = outOfHoursCalculator;
     }
 
     public void createAndSendNotification(NotificationWrapper wrapper) {
@@ -43,26 +46,30 @@ public class NotificationService {
 
             Notification notification = factory.create(wrapper);
 
-            if (appellantSubscription.isEmailSubscribed() && notification.isEmail() && notification.getEmailTemplate() != null) {
-                NotificationHandler.SendNotification sendNotification = () ->
-                        notificationSender.sendEmail(
-                                notification.getEmailTemplate(),
-                                notification.getEmail(),
-                                notification.getPlaceholders(),
-                                notification.getReference()
-                        );
-                notificationHandler.sendNotification(wrapper, notification.getEmailTemplate(), "Email", sendNotification);
-            }
-            if (appellantSubscription.isSmsSubscribed() && notification.isSms() && notification.getSmsTemplate() != null) {
-                NotificationHandler.SendNotification sendNotification = () ->
-                        notificationSender.sendSms(
-                                notification.getSmsTemplate(),
-                                notification.getMobile(),
-                                notification.getPlaceholders(),
-                                notification.getReference(),
-                                notification.getSmsSenderTemplate()
-                        );
-                notificationHandler.sendNotification(wrapper, notification.getSmsTemplate(), "SMS", sendNotification);
+            if (wrapper.getNotificationType().isAllowOutOfHours() || !outOfHoursCalculator.isItOutOfHours()) {
+                if (appellantSubscription.isEmailSubscribed() && notification.isEmail() && notification.getEmailTemplate() != null) {
+                    NotificationHandler.SendNotification sendNotification = () ->
+                            notificationSender.sendEmail(
+                                    notification.getEmailTemplate(),
+                                    notification.getEmail(),
+                                    notification.getPlaceholders(),
+                                    notification.getReference()
+                            );
+                    notificationHandler.sendNotification(wrapper, notification.getEmailTemplate(), "Email", sendNotification);
+                }
+                if (appellantSubscription.isSmsSubscribed() && notification.isSms() && notification.getSmsTemplate() != null) {
+                    NotificationHandler.SendNotification sendNotification = () ->
+                            notificationSender.sendSms(
+                                    notification.getSmsTemplate(),
+                                    notification.getMobile(),
+                                    notification.getPlaceholders(),
+                                    notification.getReference(),
+                                    notification.getSmsSenderTemplate()
+                            );
+                    notificationHandler.sendNotification(wrapper, notification.getSmsTemplate(), "SMS", sendNotification);
+                }
+            } else {
+                notificationHandler.scheduleNotification(wrapper);
             }
 
             reminderService.createReminders(wrapper);
