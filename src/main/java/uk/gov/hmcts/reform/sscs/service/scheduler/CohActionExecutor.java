@@ -7,6 +7,7 @@ import uk.gov.hmcts.reform.sscs.domain.SscsCaseDataWrapper;
 import uk.gov.hmcts.reform.sscs.factory.CohNotificationWrapper;
 import uk.gov.hmcts.reform.sscs.factory.NotificationWrapper;
 import uk.gov.hmcts.reform.sscs.idam.IdamService;
+import uk.gov.hmcts.reform.sscs.idam.IdamTokens;
 import uk.gov.hmcts.reform.sscs.service.NotificationService;
 
 public class CohActionExecutor extends BaseActionExecutor<CohJobPayload> {
@@ -17,6 +18,10 @@ public class CohActionExecutor extends BaseActionExecutor<CohJobPayload> {
                              SscsCaseDataWrapperDeserializer deserializer,
                              IdamService idamService) {
         super(notificationService, ccdService, deserializer, idamService);
+    }
+
+    @Override
+    protected void updateCase(Long caseId, SscsCaseDataWrapper wrapper, IdamTokens idamTokens) {
     }
 
     @Override

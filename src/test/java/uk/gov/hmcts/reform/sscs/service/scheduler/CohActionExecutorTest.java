@@ -62,6 +62,5 @@ public class CohActionExecutorTest {
         cohActionExecutor.execute("1", "group", EVIDENCE_REMINDER_NOTIFICATION.getId(), new CohJobPayload(123456L, onlineHearingId));
 
         verify(notificationService, times(1)).createAndSendNotification(new CohNotificationWrapper(onlineHearingId, wrapper));
-        verify(ccdService, times(1)).updateCase(any(), any(), any(), any(), any(), any());
     }
 }
