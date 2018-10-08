@@ -100,7 +100,7 @@ public class CohNotificationsIt {
     @Before
     public void setup() throws IOException {
         NotificationSender sender = new NotificationSender(client, null, notificationBlacklist);
-        NotificationService service = new NotificationService(sender, factory, reminderService, notificationValidService, notificationHandler);
+        NotificationService service = new NotificationService(sender, factory, reminderService, notificationValidService, notificationHandler, outOfHoursCalculator);
         controller = new NotificationController(service, authorisationService, ccdService, deserializer, idamService);
 
         ObjectMapper mapper = new ObjectMapper();

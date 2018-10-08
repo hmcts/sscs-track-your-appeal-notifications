@@ -45,7 +45,7 @@ public abstract class BaseActionExecutor<T> implements JobExecutor<T> {
             SscsCaseDataWrapper wrapper = deserializer.buildSscsCaseDataWrapper(buildCcdNode(caseDetails, eventId));
 
             notificationService.createAndSendNotification(getWrapper(wrapper, payload));
-            ccdService.updateCase(null, caseId, wrapper.getNotificationEventType().getId(), "COH Case", "Notification Service updated case", idamTokens);
+            updateCase(caseId, wrapper, idamTokens);
         } else {
             LOG.warn("Case id: {} could not be found for event: {}", caseId, eventId);
         }
@@ -61,6 +61,8 @@ public abstract class BaseActionExecutor<T> implements JobExecutor<T> {
 
         return node;
     }
+
+    protected abstract void updateCase(Long caseId, SscsCaseDataWrapper wrapper, IdamTokens idamTokens);
 
     protected abstract NotificationWrapper getWrapper(SscsCaseDataWrapper wrapper, T payload);
 
