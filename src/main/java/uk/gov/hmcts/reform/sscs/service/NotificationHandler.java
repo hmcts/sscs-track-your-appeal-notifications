@@ -31,24 +31,25 @@ public class NotificationHandler {
 
     public <T> void sendNotification(NotificationWrapper wrapper, String notificationTemplate, final String notificationType, SendNotification sendNotification) {
         final String caseId = wrapper.getCaseId();
-        if (wrapper.getNotificationType().isAllowOutOfHours() || !outOfHoursCalculator.isItOutOfHours()) {
-            try {
-                LOG.info("Sending " + notificationType + " template {} for case id: {}", notificationTemplate, caseId);
-                sendNotification.send();
-                LOG.info(notificationType + " template {} sent for case id: {}", notificationTemplate, caseId);
-            } catch (Exception ex) {
-                wrapAndThrowNotificationException(caseId, notificationTemplate, ex);
-            }
-        } else {
-            String eventId = wrapper.getNotificationType().getId();
-            String jobGroup = jobGroupGenerator.generate(caseId, eventId);
-            jobScheduler.schedule(new Job<>(
-                    jobGroup,
-                    eventId,
-                    wrapper.getSchedulerPayload(),
-                    outOfHoursCalculator.getStartOfNextInHoursPeriod()
-            ));
+        try {
+            LOG.info("Sending " + notificationType + " template {} for case id: {}", notificationTemplate, caseId);
+            sendNotification.send();
+            LOG.info(notificationType + " template {} sent for case id: {}", notificationTemplate, caseId);
+        } catch (Exception ex) {
+            wrapAndThrowNotificationException(caseId, notificationTemplate, ex);
         }
+    }
+
+    public void scheduleNotification(NotificationWrapper wrapper) {
+        final String caseId = wrapper.getCaseId();
+        String eventId = wrapper.getNotificationType().getId();
+        String jobGroup = jobGroupGenerator.generate(caseId, eventId);
+        jobScheduler.schedule(new Job<>(
+                jobGroup,
+                eventId,
+                wrapper.getSchedulerPayload(),
+                outOfHoursCalculator.getStartOfNextInHoursPeriod()
+        ));
     }
 
     private void wrapAndThrowNotificationException(String caseId, String templateId, Exception ex) {

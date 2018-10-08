@@ -20,8 +20,8 @@ import uk.gov.service.notify.NotificationClientException;
 
 public class NotificationHandlerTest {
 
-    public static final NotificationEventType A_NOTIFICATION_THAT_CAN_TRIGGER_OUT_OF_HOURS = NotificationEventType.SYA_APPEAL_CREATED_NOTIFICATION;
-    public static final NotificationEventType A_NOTIFICATION_THAT_CANNOT_TRIGGER_OUT_OF_HOURS = NotificationEventType.QUESTION_ROUND_ISSUED_NOTIFICATION;
+    private static final NotificationEventType A_NOTIFICATION_THAT_CAN_TRIGGER_OUT_OF_HOURS = NotificationEventType.SYA_APPEAL_CREATED_NOTIFICATION;
+    private static final NotificationEventType A_NOTIFICATION_THAT_CANNOT_TRIGGER_OUT_OF_HOURS = NotificationEventType.QUESTION_ROUND_ISSUED_NOTIFICATION;
     private OutOfHoursCalculator outOfHoursCalculator;
     private JobScheduler jobScheduler;
     private JobGroupGenerator jobGroupGenerator;
@@ -56,21 +56,19 @@ public class NotificationHandlerTest {
     }
 
     @Test
-    public void shouldNotSendNotificationIfNotificationTypeCannotBeSentOutOfHouseAndItIsOutOfHours() throws NotificationClientException {
+    public void canScheduleNotifications() {
         when(notificationWrapper.getNotificationType()).thenReturn(A_NOTIFICATION_THAT_CANNOT_TRIGGER_OUT_OF_HOURS);
         String payload = "payload";
         when(notificationWrapper.getSchedulerPayload()).thenReturn(payload);
         String caseId = "caseId";
         when(notificationWrapper.getCaseId()).thenReturn(caseId);
-        when(outOfHoursCalculator.isItOutOfHours()).thenReturn(true);
+
         ZonedDateTime whenToScheduleJob = ZonedDateTime.now();
         when(outOfHoursCalculator.getStartOfNextInHoursPeriod()).thenReturn(whenToScheduleJob);
         String group = "group";
         when(jobGroupGenerator.generate(caseId, A_NOTIFICATION_THAT_CANNOT_TRIGGER_OUT_OF_HOURS.getId())).thenReturn(group);
 
-        underTest.sendNotification(notificationWrapper, "someTemplate", "Email", sendNotification);
-
-        verifyZeroInteractions(sendNotification);
+        underTest.scheduleNotification(notificationWrapper);
         ArgumentCaptor<Job> argument = ArgumentCaptor.forClass(Job.class);
         verify(jobScheduler).schedule(argument.capture());
 
@@ -88,7 +86,6 @@ public class NotificationHandlerTest {
         underTest.sendNotification(notificationWrapper, "someTemplate", "Email", sendNotification);
 
         verify(sendNotification).send();
-        verifyZeroInteractions(jobScheduler);
     }
 
     @Test(expected = NotificationClientRuntimeException.class)

@@ -109,7 +109,7 @@ public class NotificationsIt {
     @Before
     public void setup() throws IOException {
         NotificationSender sender = new NotificationSender(client, null, notificationBlacklist);
-        NotificationService service = new NotificationService(sender, factory, reminderService, notificationValidService, notificationHandler);
+        NotificationService service = new NotificationService(sender, factory, reminderService, notificationValidService, notificationHandler, outOfHoursCalculator);
         controller = new NotificationController(service, authorisationService, ccdService, deserializer, idamService);
         this.mockMvc = MockMvcBuilders.standaloneSetup(controller).build();
         String path = getClass().getClassLoader().getResource("json/ccdResponse.json").getFile();

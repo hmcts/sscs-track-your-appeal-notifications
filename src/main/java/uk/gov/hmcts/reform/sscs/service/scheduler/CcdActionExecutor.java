@@ -7,6 +7,7 @@ import uk.gov.hmcts.reform.sscs.domain.SscsCaseDataWrapper;
 import uk.gov.hmcts.reform.sscs.factory.CcdNotificationWrapper;
 import uk.gov.hmcts.reform.sscs.factory.NotificationWrapper;
 import uk.gov.hmcts.reform.sscs.idam.IdamService;
+import uk.gov.hmcts.reform.sscs.idam.IdamTokens;
 import uk.gov.hmcts.reform.sscs.service.NotificationService;
 
 public class CcdActionExecutor extends BaseActionExecutor<String> {
@@ -17,6 +18,11 @@ public class CcdActionExecutor extends BaseActionExecutor<String> {
                              SscsCaseDataWrapperDeserializer deserializer,
                              IdamService idamService) {
         super(notificationService, ccdService, deserializer, idamService);
+    }
+
+    @Override
+    protected void updateCase(Long caseId, SscsCaseDataWrapper wrapper, IdamTokens idamTokens) {
+        ccdService.updateCase(null, caseId, wrapper.getNotificationEventType().getId(), "CCD Case", "Notification Service updated case", idamTokens);
     }
 
     @Override

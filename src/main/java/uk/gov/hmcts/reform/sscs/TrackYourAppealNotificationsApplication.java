@@ -111,8 +111,8 @@ public class TrackYourAppealNotificationsApplication {
         CohActionExecutor cohActionExecutor = new CohActionExecutor(notificationService, ccdService, deserializer, idamService);
         CcdActionExecutor ccdActionExecutor = new CcdActionExecutor(notificationService, ccdService, deserializer, idamService);
         return new JobMapper(asList(
-                new JobMapping<>(payload -> payload.contains("online_hearing_id"), cohActionDeserializer, cohActionExecutor),
-                new JobMapping<>(payload -> !payload.contains("online_hearing_id"), ccdActionDeserializer, ccdActionExecutor)
+                new JobMapping<>(payload -> payload.contains("onlineHearingId"), cohActionDeserializer, cohActionExecutor),
+                new JobMapping<>(payload -> !payload.contains("onlineHearingId"), ccdActionDeserializer, ccdActionExecutor)
         ));
     }
 
