@@ -4,6 +4,7 @@ import static uk.gov.hmcts.reform.sscs.SscsCaseDataUtils.builderSscsCaseData;
 import static uk.gov.hmcts.reform.sscs.ccd.domain.EventType.SYA_APPEAL_CREATED;
 import static uk.gov.hmcts.reform.sscs.domain.notify.NotificationEventType.QUESTION_DEADLINE_ELAPSED_NOTIFICATION;
 import static uk.gov.hmcts.reform.sscs.domain.notify.NotificationEventType.QUESTION_ROUND_ISSUED_NOTIFICATION;
+import static uk.gov.hmcts.reform.sscs.domain.notify.NotificationEventType.VIEW_ISSUED;
 
 import io.restassured.RestAssured;
 import io.restassured.http.ContentType;
@@ -48,6 +49,12 @@ public class CohNotificationFunctionalTest extends AbstractFunctionalTest {
 
     @Value("${notification.online.responseReceived.smsId}")
     private String onlineResponseReceivedSmsId;
+
+    @Value("${notification.decision_issued.emailId}")
+    private String viewIssuedEmailTemplateId;
+
+    @Value("${notification.decision_issued.smsId}")
+    private String viewIssuedSmsIdTemplate;
 
     @Override
     protected SscsCaseData createCaseData() {
@@ -105,6 +112,18 @@ public class CohNotificationFunctionalTest extends AbstractFunctionalTest {
                 questionDeadlineElapsedEmailTemplateId, questionDeadlineElapsedSmsTemplateId);
 
         assertNotificationBodyContains(notifications, questionDeadlineElapsedEmailTemplateId, caseData.getCaseReference());
+    }
+
+    @Test
+    public void shouldSendViewIssuedNotifications() throws IOException, InterruptedException, NotificationClientException {
+        String hearingId = createHearingWithQuestions(caseId);
+
+        simulateCohCallback(VIEW_ISSUED, hearingId);
+
+        List<Notification> notifications = tryFetchNotificationsForTestCase(
+                viewIssuedEmailTemplateId, viewIssuedSmsIdTemplate);
+
+        assertNotificationBodyContains(notifications, viewIssuedEmailTemplateId, caseData.getCaseReference());
     }
 
     private String createHearingWithQuestions(Long caseId) throws InterruptedException {
