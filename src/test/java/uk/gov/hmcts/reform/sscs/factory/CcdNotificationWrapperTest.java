@@ -8,7 +8,6 @@ import junitparams.Parameters;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import uk.gov.hmcts.reform.sscs.ccd.domain.Appeal;
-import uk.gov.hmcts.reform.sscs.ccd.domain.OnlinePanel;
 import uk.gov.hmcts.reform.sscs.ccd.domain.SscsCaseData;
 import uk.gov.hmcts.reform.sscs.config.AppealHearingType;
 import uk.gov.hmcts.reform.sscs.domain.SscsCaseDataWrapper;
@@ -30,7 +29,9 @@ public class CcdNotificationWrapperTest {
             return new CcdNotificationWrapper(
                     SscsCaseDataWrapper.builder()
                             .newSscsCaseData(SscsCaseData.builder()
-                                    .onlinePanel(OnlinePanel.builder().build())
+                                    .appeal(Appeal.builder()
+                                            .hearingType("cor")
+                                            .build())
                                     .build())
                             .build()
             );

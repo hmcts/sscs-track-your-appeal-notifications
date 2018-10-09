@@ -10,10 +10,12 @@ import uk.gov.hmcts.reform.sscs.domain.notify.NotificationEventType;
 @Service
 public class NotificationValidService {
 
+    private static final String HEARING_TYPE_ONLINE_RESOLUTION = "cor";
+
     public Boolean isHearingTypeValidToSendNotification(SscsCaseData sscsCaseData, NotificationEventType eventType) {
 
         Boolean isOralCase = sscsCaseData.getAppeal().getHearingOptions().isWantsToAttendHearing();
-        Boolean isOnlineHearing = sscsCaseData.getOnlinePanel() != null;
+        Boolean isOnlineHearing = HEARING_TYPE_ONLINE_RESOLUTION.equalsIgnoreCase(sscsCaseData.getAppeal().getHearingType());
 
         if (isOralCase && !isOnlineHearing && eventType.isSendForOralCase()) {
             return true;

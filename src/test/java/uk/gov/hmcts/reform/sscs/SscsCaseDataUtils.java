@@ -23,7 +23,7 @@ public final class SscsCaseDataUtils {
                 caseReference,
                 subscribeEmail,
                 subscribeSms,
-                EventType.APPEAL_RECEIVED
+                EventType.APPEAL_RECEIVED, "oral"
         );
     }
 
@@ -31,16 +31,18 @@ public final class SscsCaseDataUtils {
             String caseReference,
             String subscribeEmail,
             String subscribeSms,
-            EventType eventType
+            EventType eventType,
+            String hearingType
     ) {
-        return builderSscsCaseData(caseReference, subscribeEmail, subscribeSms, eventType).build();
+        return builderSscsCaseData(caseReference, subscribeEmail, subscribeSms, eventType, hearingType).build();
     }
 
     public static SscsCaseData.SscsCaseDataBuilder builderSscsCaseData(
             String caseReference,
             String subscribeEmail,
             String subscribeSms,
-            EventType eventType
+            EventType eventType,
+            String hearingType
     ) {
         Name name = Name.builder()
                 .title("Mr")
@@ -72,6 +74,7 @@ public final class SscsCaseDataUtils {
                 .appellant(appellant)
                 .benefitType(BenefitType.builder().code("ESA").build())
                 .hearingOptions(hearingOptions)
+                .hearingType(hearingType)
                 .build();
 
         Event events = Event.builder()

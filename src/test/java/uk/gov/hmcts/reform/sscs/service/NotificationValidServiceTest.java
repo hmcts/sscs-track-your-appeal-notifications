@@ -9,7 +9,6 @@ import org.junit.Test;
 import uk.gov.hmcts.reform.sscs.SscsCaseDataUtils;
 import uk.gov.hmcts.reform.sscs.ccd.domain.Appeal;
 import uk.gov.hmcts.reform.sscs.ccd.domain.HearingOptions;
-import uk.gov.hmcts.reform.sscs.ccd.domain.OnlinePanel;
 import uk.gov.hmcts.reform.sscs.ccd.domain.SscsCaseData;
 
 public class NotificationValidServiceTest {
@@ -96,7 +95,12 @@ public class NotificationValidServiceTest {
 
     @Test
     public void givenCaseIsCohCaseAndNotificationTypeIsSentForCoh_thenReturnTrue() {
-        SscsCaseData caseData = SscsCaseData.builder().onlinePanel(OnlinePanel.builder().build()).appeal(Appeal.builder().hearingOptions(HearingOptions.builder().wantsToAttend("No").build()).build()).build();
+        SscsCaseData caseData = SscsCaseData.builder().appeal(
+                Appeal.builder()
+                        .hearingType("cor")
+                        .hearingOptions(HearingOptions.builder().wantsToAttend("No").build())
+                        .build())
+                .build();
 
         assertTrue(
                 notificationValidService.isHearingTypeValidToSendNotification(caseData, QUESTION_ROUND_ISSUED_NOTIFICATION)

@@ -35,7 +35,8 @@
         },
         "mrnDetails": {},
         "rep": {},
-        "signer": null
+        "signer": null,
+        "hearingType": "cor"
       },
       "caseReference": "SC022/14/12423",
       "events": [
