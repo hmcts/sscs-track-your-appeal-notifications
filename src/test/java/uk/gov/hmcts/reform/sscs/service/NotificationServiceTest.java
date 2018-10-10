@@ -101,7 +101,7 @@ public class NotificationServiceTest {
         when(factory.create(notificationWrapper)).thenReturn(notification);
         notificationService.createAndSendNotification(notificationWrapper);
 
-        verify(notificationSender, never()).sendEmail(notification.getEmailTemplate(), notification.getEmail(), notification.getPlaceholders(), notification.getReference());
+        verify(notificationSender, never()).sendEmail(notification.getEmailTemplate(), notification.getEmail(), notification.getPlaceholders(), notification.getReference(), notificationWrapper.getCaseId());
     }
 
     @Test
@@ -110,7 +110,7 @@ public class NotificationServiceTest {
         when(factory.create(notificationWrapper)).thenReturn(notification);
         notificationService.createAndSendNotification(notificationWrapper);
 
-        verify(notificationSender, never()).sendSms(notification.getSmsTemplate(), notification.getMobile(), notification.getPlaceholders(), notification.getReference(), notification.getSmsSenderTemplate());
+        verify(notificationSender, never()).sendSms(notification.getSmsTemplate(), notification.getMobile(), notification.getPlaceholders(), notification.getReference(), notification.getSmsSenderTemplate(), notificationWrapper.getCaseId());
     }
 
     @Test
@@ -119,7 +119,7 @@ public class NotificationServiceTest {
         when(factory.create(notificationWrapper)).thenReturn(notification);
         notificationService.createAndSendNotification(notificationWrapper);
 
-        verify(notificationSender, never()).sendEmail(notification.getEmailTemplate(), notification.getEmail(), notification.getPlaceholders(), notification.getReference());
+        verify(notificationSender, never()).sendEmail(notification.getEmailTemplate(), notification.getEmail(), notification.getPlaceholders(), notification.getReference(), notificationWrapper.getCaseId());
     }
 
     @Test
@@ -128,7 +128,7 @@ public class NotificationServiceTest {
         when(factory.create(notificationWrapper)).thenReturn(notification);
         notificationService.createAndSendNotification(notificationWrapper);
 
-        verify(notificationSender, never()).sendSms(notification.getSmsTemplate(), notification.getMobile(), notification.getPlaceholders(), notification.getReference(), notification.getSmsSenderTemplate());
+        verify(notificationSender, never()).sendSms(notification.getSmsTemplate(), notification.getMobile(), notification.getPlaceholders(), notification.getReference(), notification.getSmsSenderTemplate(), notificationWrapper.getCaseId());
     }
 
     @Test
@@ -144,8 +144,8 @@ public class NotificationServiceTest {
 
         notificationService.createAndSendNotification(new CcdNotificationWrapper(wrapper));
 
-        verify(notificationSender, never()).sendSms(notification.getSmsTemplate(), notification.getMobile(), notification.getPlaceholders(), notification.getReference(), notification.getSmsSenderTemplate());
-        verify(notificationSender, never()).sendEmail(notification.getEmailTemplate(), notification.getEmail(), notification.getPlaceholders(), notification.getReference());
+        verify(notificationSender, never()).sendSms(notification.getSmsTemplate(), notification.getMobile(), notification.getPlaceholders(), notification.getReference(), notification.getSmsSenderTemplate(), notificationWrapper.getCaseId());
+        verify(notificationSender, never()).sendEmail(notification.getEmailTemplate(), notification.getEmail(), notification.getPlaceholders(), notification.getReference(), notificationWrapper.getCaseId());
     }
 
     @Test
@@ -167,7 +167,7 @@ public class NotificationServiceTest {
 
         notificationService.createAndSendNotification(notificationWrapper);
 
-        verify(notificationSender, never()).sendEmail(notification.getEmailTemplate(), notification.getEmail(), notification.getPlaceholders(), notification.getReference());
+        verify(notificationSender, never()).sendEmail(notification.getEmailTemplate(), notification.getEmail(), notification.getPlaceholders(), notification.getReference(), notificationWrapper.getCaseId());
     }
 
     @Test
@@ -178,7 +178,7 @@ public class NotificationServiceTest {
 
         notificationService.createAndSendNotification(notificationWrapper);
 
-        verify(notificationSender, never()).sendEmail(notification.getEmailTemplate(), notification.getEmail(), notification.getPlaceholders(), notification.getReference());
+        verify(notificationSender, never()).sendEmail(notification.getEmailTemplate(), notification.getEmail(), notification.getPlaceholders(), notification.getReference(), notificationWrapper.getCaseId());
     }
 
     @Test

@@ -7,8 +7,8 @@ import static org.mockito.Mockito.*;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import java.io.File;
-import java.io.IOException;
 import java.util.Collections;
+import java.util.UUID;
 import javax.servlet.http.HttpServletResponse;
 import org.junit.Before;
 import org.junit.Test;
@@ -41,6 +41,8 @@ import uk.gov.hmcts.reform.sscs.service.coh.QuestionReferences;
 import uk.gov.hmcts.reform.sscs.service.coh.QuestionRound;
 import uk.gov.hmcts.reform.sscs.service.coh.QuestionRounds;
 import uk.gov.service.notify.NotificationClient;
+import uk.gov.service.notify.SendEmailResponse;
+import uk.gov.service.notify.SendSmsResponse;
 
 @RunWith(SpringRunner.class)
 @SpringBootTest
@@ -54,7 +56,13 @@ public class CohNotificationsIt {
     NotificationController controller;
 
     @Mock
-    NotificationClient client;
+    NotificationClient notificationClient;
+
+    @Mock
+    private SendEmailResponse sendEmailResponse;
+
+    @Mock
+    private SendSmsResponse sendSmsResponse;
 
     @Mock
     ReminderService reminderService;
@@ -98,8 +106,8 @@ public class CohNotificationsIt {
     String json;
 
     @Before
-    public void setup() throws IOException {
-        NotificationSender sender = new NotificationSender(client, null, notificationBlacklist);
+    public void setup() throws Exception {
+        NotificationSender sender = new NotificationSender(notificationClient, null, notificationBlacklist);
         NotificationService service = new NotificationService(sender, factory, reminderService, notificationValidService, notificationHandler, outOfHoursCalculator);
         controller = new NotificationController(service, authorisationService, ccdService, deserializer, idamService);
 
@@ -115,6 +123,14 @@ public class CohNotificationsIt {
                         new QuestionRound(Collections.singletonList(new QuestionReferences("2018-08-11T23:59:59Z")))
                 ))
         );
+
+        when(notificationClient.sendEmail(any(), any(), any(), any()))
+                .thenReturn(sendEmailResponse);
+        when(sendEmailResponse.getNotificationId()).thenReturn(UUID.randomUUID());
+
+        when(notificationClient.sendSms(any(), any(), any(), any(), any()))
+                .thenReturn(sendSmsResponse);
+        when(sendSmsResponse.getNotificationId()).thenReturn(UUID.randomUUID());
 
         this.mockMvc = MockMvcBuilders.standaloneSetup(controller).build();
         json = "{\n"
@@ -134,11 +150,11 @@ public class CohNotificationsIt {
         HttpServletResponse response = getResponse(getCohRequestWithAuthHeader(json));
 
         assertHttpStatus(response, HttpStatus.OK);
-        verify(client, times(1)).sendEmail(eq(emailTemplateId), eq("joe@bloggs.com"),
+        verify(notificationClient, times(1)).sendEmail(eq(emailTemplateId), eq("joe@bloggs.com"),
                 argThat(argument -> "11 August 2018".equals(argument.get("questions_end_date"))),
                 any()
         );
-        verify(client, times(1)).sendSms(any(), any(), any(), any(), any());
+        verify(notificationClient, times(1)).sendSms(any(), any(), any(), any(), any());
     }
 
     @Test
@@ -147,7 +163,7 @@ public class CohNotificationsIt {
 
         assertHttpStatus(response, HttpStatus.BAD_REQUEST);
         verify(authorisationService, never()).authorise(anyString());
-        verify(client, never()).sendEmail(any(), any(), any(), any(), any());
+        verify(notificationClient, never()).sendEmail(any(), any(), any(), any(), any());
     }
 
     private MockHttpServletResponse getResponse(MockHttpServletRequestBuilder requestBuilder) throws Exception {

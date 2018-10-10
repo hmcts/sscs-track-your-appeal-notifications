@@ -53,7 +53,8 @@ public class NotificationService {
                                     notification.getEmailTemplate(),
                                     notification.getEmail(),
                                     notification.getPlaceholders(),
-                                    notification.getReference()
+                                    notification.getReference(),
+                                    wrapper.getCaseId()
                             );
                     notificationHandler.sendNotification(wrapper, notification.getEmailTemplate(), "Email", sendNotification);
                 }
@@ -64,7 +65,8 @@ public class NotificationService {
                                     notification.getMobile(),
                                     notification.getPlaceholders(),
                                     notification.getReference(),
-                                    notification.getSmsSenderTemplate()
+                                    notification.getSmsSenderTemplate(),
+                                    wrapper.getCaseId()
                             );
                     notificationHandler.sendNotification(wrapper, notification.getSmsTemplate(), "SMS", sendNotification);
                 }
