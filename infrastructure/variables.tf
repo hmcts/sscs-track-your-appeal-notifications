@@ -69,7 +69,7 @@ variable "claiming_expenses_link" {
 
 variable "online_hearing_link" {
   type    = "string"
-  default = "http://localhost:8090/login"
+  default = "http://localhost:8090"
 }
 
 variable "job_scheduler_poll_interval" {
