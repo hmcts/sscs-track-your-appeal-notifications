@@ -27,6 +27,7 @@ public enum NotificationEventType {
     QUESTION_DEADLINE_ELAPSED_NOTIFICATION("question_deadline_elapsed", false, false, true, false),
     QUESTION_DEADLINE_REMINDER_NOTIFICATION("question_deadline_reminder", false, false, true, false),
     HEARING_REQUIRED_NOTIFICATION("continuous_online_hearing_relisted", false, false, true, false),
+    VIEW_ISSUED("decision_issued", false, false, true, false),
     DO_NOT_SEND("");
 
     private String id;

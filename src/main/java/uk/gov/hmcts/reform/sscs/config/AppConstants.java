@@ -52,6 +52,9 @@ public final class AppConstants {
     public static final String YOUR_DETAILS_LITERAL = "your_details";
     public static final String ZONE_ID = "Europe/London";
     public static final String TRIBUNAL_RESPONSE_DATE_LITERAL = "tribunal_response_date";
+    public static final String ACCEPT_VIEW_BY_DATE_LITERAL = "accept_view_by_date";
+    public static final String ONLINE_HEARING_SIGN_IN_LINK_LITERAL = "online_hearing_sign_in_link";
+    public static final String ONLINE_HEARING_REGISTER_LINK_LITERAL = "online_hearing_register_link";
 
     private AppConstants(){
         //
