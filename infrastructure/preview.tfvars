@@ -5,7 +5,7 @@ sscs_manage_emails_link = "https://track-appeal.preview.platform.hmcts.net/manag
 sscs_track_your_appeal_link = "https://track-appeal.preview.platform.hmcts.net/trackyourappeal/appeal_id"
 hearing_info_link = "https://track-appeal.preview.platform.hmcts.net/abouthearing/appeal_id"
 claiming_expenses_link = "https://track-appeal.preview.platform.hmcts.net/expenses/appeal_id"
-online_hearing_link = "https://sscs-cor-frontend-aat-staging.service.core-compute-aat.internal/sign-in"
+online_hearing_link = "https://sscs-cor-frontend-aat-staging.service.core-compute-aat.internal"
 
 root_logging_level = "DEBUG"
 log_level_spring_web = "DEBUG"
