@@ -2,6 +2,7 @@ package uk.gov.hmcts.reform.sscs.tya;
 
 import static helper.IntegrationTestHelper.assertHttpStatus;
 import static helper.IntegrationTestHelper.getRequestWithAuthHeader;
+import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 
@@ -10,6 +11,7 @@ import java.io.File;
 import java.nio.charset.StandardCharsets;
 import java.util.Arrays;
 import java.util.List;
+import java.util.UUID;
 import javax.servlet.http.HttpServletResponse;
 import org.apache.commons.io.FileUtils;
 import org.junit.Before;
@@ -39,6 +41,9 @@ import uk.gov.hmcts.reform.sscs.service.AuthorisationService;
 import uk.gov.hmcts.reform.sscs.service.NotificationService;
 import uk.gov.hmcts.reform.sscs.service.OutOfHoursCalculator;
 import uk.gov.service.notify.NotificationClient;
+import uk.gov.service.notify.NotificationClientException;
+import uk.gov.service.notify.SendEmailResponse;
+import uk.gov.service.notify.SendSmsResponse;
 
 @RunWith(SpringRunner.class)
 @SpringBootTest
@@ -58,6 +63,12 @@ public class DwpResponseLateReminderIt {
 
     @MockBean(name = "notificationClient")
     NotificationClient client;
+
+    @Mock
+    private SendEmailResponse sendEmailResponse;
+
+    @Mock
+    private SendSmsResponse sendSmsResponse;
 
     @MockBean
     private JobExecutor<String> jobExecutor;
@@ -79,12 +90,20 @@ public class DwpResponseLateReminderIt {
     private IdamService idamService;
 
     @Before
-    public void setup() {
+    public void setup() throws NotificationClientException {
         controller = new NotificationController(notificationService, authorisationService, ccdService, deserializer, idamService);
         this.mockMvc = MockMvcBuilders.standaloneSetup(controller).build();
 
         outOfHoursCalculator = mock(OutOfHoursCalculator.class);
         when(outOfHoursCalculator.isItOutOfHours()).thenReturn(false);
+
+        when(client.sendEmail(any(), any(), any(), any()))
+                .thenReturn(sendEmailResponse);
+        when(sendEmailResponse.getNotificationId()).thenReturn(UUID.randomUUID());
+
+        when(client.sendSms(any(), any(), any(), any(), any()))
+                .thenReturn(sendSmsResponse);
+        when(sendSmsResponse.getNotificationId()).thenReturn(UUID.randomUUID());
     }
 
     @Test

@@ -10,6 +10,8 @@ import org.springframework.stereotype.Component;
 import uk.gov.hmcts.reform.sscs.config.NotificationBlacklist;
 import uk.gov.service.notify.NotificationClient;
 import uk.gov.service.notify.NotificationClientException;
+import uk.gov.service.notify.SendEmailResponse;
+import uk.gov.service.notify.SendSmsResponse;
 
 @Component
 public class NotificationSender {
@@ -35,7 +37,8 @@ public class NotificationSender {
         String templateId,
         String emailAddress,
         Map<String, String> personalisation,
-        String reference
+        String reference,
+        String ccdCaseId
     ) throws NotificationClientException {
 
         NotificationClient client;
@@ -47,12 +50,14 @@ public class NotificationSender {
             client = notificationClient;
         }
 
-        client.sendEmail(
+        SendEmailResponse sendEmailResponse = client.sendEmail(
                 templateId,
                 emailAddress,
                 personalisation,
                 reference
         );
+
+        LOG.info("Email Notification send for case id : {}, Gov notify id: {} ", ccdCaseId, sendEmailResponse.getNotificationId());
     }
 
     public void sendSms(
@@ -60,7 +65,8 @@ public class NotificationSender {
         String phoneNumber,
         Map<String, String> personalisation,
         String reference,
-        String smsSender
+        String smsSender,
+        String ccdCaseId
     ) throws NotificationClientException {
 
         NotificationClient client;
@@ -72,12 +78,14 @@ public class NotificationSender {
             client = notificationClient;
         }
 
-        client.sendSms(
-            templateId,
-            phoneNumber,
-            personalisation,
-            reference,
-            smsSender
+        SendSmsResponse sendSmsResponse = client.sendSms(
+                templateId,
+                phoneNumber,
+                personalisation,
+                reference,
+                smsSender
         );
+
+        LOG.info("Sms Notification send for case id : {}, Gov notify id: {} ", ccdCaseId, sendSmsResponse.getNotificationId());
     }
 }
