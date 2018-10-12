@@ -25,6 +25,7 @@ import org.apache.commons.io.FileUtils;
 import org.hamcrest.CoreMatchers;
 import org.junit.Assert;
 import org.junit.Before;
+import org.junit.Rule;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
@@ -50,10 +51,12 @@ import uk.gov.service.notify.NotificationClientException;
 @ActiveProfiles("functional")
 @ProfileValueSourceConfiguration(EnvironmentProfileValueSource.class)
 public abstract class AbstractFunctionalTest {
+    @Rule
+    public Retry retry = new Retry(3);
 
     private static final org.slf4j.Logger LOG = getLogger(AbstractFunctionalTest.class);
 
-    private static final int MAX_SECONDS_TO_WAIT_FOR_NOTIFICATIONS = 180;
+    private final int maxSecondsToWaitForNotification;
 
     @Autowired
     @Qualifier("testNotificationClient")
@@ -79,6 +82,10 @@ public abstract class AbstractFunctionalTest {
         idamTokens = idamService.getIdamTokens();
 
         createCase();
+    }
+
+    public AbstractFunctionalTest(int maxSecondsToWaitForNotification) {
+        this.maxSecondsToWaitForNotification = maxSecondsToWaitForNotification;
     }
 
     private void createCase() {
@@ -114,7 +121,7 @@ public abstract class AbstractFunctionalTest {
 
         int waitForAtLeastNumberOfNotifications = expectedTemplateIds.length;
 
-        int maxSecondsToWaitForNotification = MAX_SECONDS_TO_WAIT_FOR_NOTIFICATIONS;
+        int secondsLeft = maxSecondsToWaitForNotification;
 
         do {
 
@@ -122,7 +129,7 @@ public abstract class AbstractFunctionalTest {
                     + "[" + matchingNotifications.size() + "/" + waitForAtLeastNumberOfNotifications + "] ..."
             );
 
-            if (maxSecondsToWaitForNotification <= 0) {
+            if (secondsLeft <= 0) {
 
                 String allTemplateIds =
                         allNotifications
@@ -131,12 +138,12 @@ public abstract class AbstractFunctionalTest {
                                 .collect(Collectors.joining("\n"));
 
                 fail("Timed out fetching notifications after "
-                        + MAX_SECONDS_TO_WAIT_FOR_NOTIFICATIONS
+                        + maxSecondsToWaitForNotification
                         + " seconds. Template IDs:\n"
                         + allTemplateIds);
             } else {
 
-                maxSecondsToWaitForNotification -= 5;
+                secondsLeft -= 5;
 
                 try {
                     Thread.sleep(5000);
