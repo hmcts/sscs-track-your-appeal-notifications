@@ -95,7 +95,7 @@ public abstract class AbstractFunctionalTest {
     }
 
     protected SscsCaseData createCaseData() {
-        return buildSscsCaseData(caseReference, "Yes", "Yes", SYA_APPEAL_CREATED);
+        return buildSscsCaseData(caseReference, "Yes", "Yes", SYA_APPEAL_CREATED, "oral");
     }
 
     protected static String generateRandomCaseReference() {

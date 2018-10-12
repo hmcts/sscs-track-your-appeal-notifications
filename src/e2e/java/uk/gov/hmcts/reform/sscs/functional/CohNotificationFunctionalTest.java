@@ -2,9 +2,7 @@ package uk.gov.hmcts.reform.sscs.functional;
 
 import static uk.gov.hmcts.reform.sscs.SscsCaseDataUtils.builderSscsCaseData;
 import static uk.gov.hmcts.reform.sscs.ccd.domain.EventType.SYA_APPEAL_CREATED;
-import static uk.gov.hmcts.reform.sscs.domain.notify.NotificationEventType.QUESTION_DEADLINE_ELAPSED_NOTIFICATION;
-import static uk.gov.hmcts.reform.sscs.domain.notify.NotificationEventType.QUESTION_ROUND_ISSUED_NOTIFICATION;
-import static uk.gov.hmcts.reform.sscs.domain.notify.NotificationEventType.VIEW_ISSUED;
+import static uk.gov.hmcts.reform.sscs.domain.notify.NotificationEventType.*;
 
 import io.restassured.RestAssured;
 import io.restassured.http.ContentType;
@@ -58,7 +56,7 @@ public class CohNotificationFunctionalTest extends AbstractFunctionalTest {
 
     @Override
     protected SscsCaseData createCaseData() {
-        SscsCaseData.SscsCaseDataBuilder sscsCaseDataBuilder = builderSscsCaseData(caseReference, "Yes", "Yes", SYA_APPEAL_CREATED);
+        SscsCaseData.SscsCaseDataBuilder sscsCaseDataBuilder = builderSscsCaseData(caseReference, "Yes", "Yes", SYA_APPEAL_CREATED, "cor");
         return sscsCaseDataBuilder.onlinePanel(
                 OnlinePanel.builder()
                         .assignedTo("Judge")

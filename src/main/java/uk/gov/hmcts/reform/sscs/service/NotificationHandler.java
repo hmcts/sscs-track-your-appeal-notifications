@@ -54,11 +54,11 @@ public class NotificationHandler {
 
     private void wrapAndThrowNotificationException(String caseId, String templateId, Exception ex) {
         if (ex.getCause() instanceof UnknownHostException) {
-            NotificationClientRuntimeException exception = new NotificationClientRuntimeException(ex);
+            NotificationClientRuntimeException exception = new NotificationClientRuntimeException(caseId, ex);
             LOG.error("Runtime error on GovUKNotify for case id: " + caseId + ", template: " + templateId, exception);
             throw exception;
         } else {
-            NotificationServiceException exception = new NotificationServiceException(ex);
+            NotificationServiceException exception = new NotificationServiceException(caseId, ex);
             LOG.error("Error on GovUKNotify for case id: " + caseId + ", template: " + templateId, exception);
             throw exception;
         }

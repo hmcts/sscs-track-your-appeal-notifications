@@ -124,7 +124,7 @@ public class CohPersonalisationTest {
                 someHearingId,
                 SscsCaseDataWrapper.builder()
                         .newSscsCaseData(SscsCaseData.builder()
-                                .onlinePanel(OnlinePanel.builder().build())
+                                .appeal(Appeal.builder().hearingType("cor").build())
                                 .build())
                         .notificationEventType(QUESTION_ROUND_ISSUED_NOTIFICATION)
                         .build());
@@ -149,7 +149,7 @@ public class CohPersonalisationTest {
                 SscsCaseDataWrapper.builder()
                         .newSscsCaseData(
                                 SscsCaseData.builder()
-                                        .onlinePanel(OnlinePanel.builder().build())
+                                        .appeal(Appeal.builder().hearingType("cor").build())
                                         .build()
                         )
                         .build());
