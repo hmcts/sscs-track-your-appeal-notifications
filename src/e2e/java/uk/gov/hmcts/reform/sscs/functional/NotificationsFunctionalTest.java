@@ -77,6 +77,10 @@ public class NotificationsFunctionalTest extends AbstractFunctionalTest {
     @Value("${notification.paper.responseReceived.smsId}")
     private String paperResponseReceivedSmsId;
 
+    public NotificationsFunctionalTest() {
+        super(30);
+    }
+
     @Test
     public void shouldSendAppealReceivedNotification() throws IOException, NotificationClientException {
         simulateCcdCallback(APPEAL_RECEIVED_NOTIFICATION);

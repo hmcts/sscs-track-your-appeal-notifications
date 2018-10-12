@@ -54,6 +54,10 @@ public class CohNotificationFunctionalTest extends AbstractFunctionalTest {
     @Value("${notification.decision_issued.smsId}")
     private String viewIssuedSmsIdTemplate;
 
+    public CohNotificationFunctionalTest() {
+        super(30);
+    }
+
     @Override
     protected SscsCaseData createCaseData() {
         SscsCaseData.SscsCaseDataBuilder sscsCaseDataBuilder = builderSscsCaseData(caseReference, "Yes", "Yes", SYA_APPEAL_CREATED, "cor");
