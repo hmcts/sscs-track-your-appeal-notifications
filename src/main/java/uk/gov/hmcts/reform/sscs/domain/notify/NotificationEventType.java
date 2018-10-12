@@ -28,6 +28,7 @@ public enum NotificationEventType {
     QUESTION_DEADLINE_REMINDER_NOTIFICATION("question_deadline_reminder", false, false, true, false),
     HEARING_REQUIRED_NOTIFICATION("continuous_online_hearing_relisted", false, false, true, false),
     VIEW_ISSUED("decision_issued", false, false, true, false),
+    DECISION_ISSUED_2("decision_issued_2", false, false, true, false), // placeholder until COH name this notification
     DO_NOT_SEND("");
 
     private String id;
