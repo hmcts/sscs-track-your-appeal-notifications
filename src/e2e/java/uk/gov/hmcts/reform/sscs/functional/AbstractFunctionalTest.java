@@ -6,6 +6,7 @@ import static java.util.stream.Collectors.toList;
 import static junit.framework.TestCase.fail;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNotNull;
+import static org.slf4j.LoggerFactory.getLogger;
 import static uk.gov.hmcts.reform.sscs.SscsCaseDataUtils.buildSscsCaseData;
 import static uk.gov.hmcts.reform.sscs.ccd.domain.EventType.SYA_APPEAL_CREATED;
 
@@ -21,13 +22,13 @@ import java.util.Collections;
 import java.util.List;
 import java.util.UUID;
 import java.util.stream.Collectors;
-import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.io.FileUtils;
 import org.hamcrest.CoreMatchers;
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Rule;
 import org.junit.runner.RunWith;
+import org.slf4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.boot.test.context.SpringBootTest;
@@ -43,6 +44,7 @@ import uk.gov.hmcts.reform.sscs.ccd.service.CcdService;
 import uk.gov.hmcts.reform.sscs.domain.notify.NotificationEventType;
 import uk.gov.hmcts.reform.sscs.idam.IdamService;
 import uk.gov.hmcts.reform.sscs.idam.IdamTokens;
+import uk.gov.hmcts.reform.sscs.service.AuthorisationService;
 import uk.gov.service.notify.Notification;
 import uk.gov.service.notify.NotificationClient;
 import uk.gov.service.notify.NotificationClientException;
@@ -51,8 +53,9 @@ import uk.gov.service.notify.NotificationClientException;
 @SpringBootTest
 @ActiveProfiles("functional")
 @ProfileValueSourceConfiguration(EnvironmentProfileValueSource.class)
-@Slf4j
 public abstract class AbstractFunctionalTest {
+
+    private static final Logger log = getLogger(AuthorisationService.class);
     @Rule
     public Retry retry = new Retry(3);
 
