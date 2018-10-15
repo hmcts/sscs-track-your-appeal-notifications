@@ -21,14 +21,19 @@ public class NotificationValidService {
             return true;
         } else if (!isOralCase && !isOnlineHearing && eventType.isSendForPaperCase()) {
             return true;
-        } else return isOnlineHearing && eventType.isSendForCohCase();
+        } else {
+            return isOnlineHearing && eventType.isSendForCohCase();
+        }
     }
 
     boolean isNotificationStillValidToSend(List<Hearing> hearings, NotificationEventType eventType) {
         switch (eventType) {
-            case HEARING_BOOKED_NOTIFICATION: return checkHearingIsInFuture(hearings);
-            case HEARING_REMINDER_NOTIFICATION: return checkHearingIsInFuture(hearings);
-            default: return true;
+            case HEARING_BOOKED_NOTIFICATION:
+                return checkHearingIsInFuture(hearings);
+            case HEARING_REMINDER_NOTIFICATION:
+                return checkHearingIsInFuture(hearings);
+            default:
+                return true;
         }
     }
 
