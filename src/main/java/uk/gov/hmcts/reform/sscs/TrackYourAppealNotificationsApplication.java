@@ -14,7 +14,6 @@ import org.springframework.cloud.openfeign.EnableFeignClients;
 import org.springframework.context.ApplicationContext;
 import org.springframework.context.MessageSource;
 import org.springframework.context.annotation.Bean;
-import org.springframework.context.annotation.ComponentScan;
 import org.springframework.context.annotation.Primary;
 import org.springframework.context.support.ReloadableResourceBundleMessageSource;
 import org.springframework.retry.annotation.EnableRetry;
@@ -32,11 +31,6 @@ import uk.gov.hmcts.reform.sscs.service.scheduler.*;
 import uk.gov.service.notify.NotificationClient;
 
 @SpringBootApplication
-@ComponentScan(
-    basePackages = "uk.gov.hmcts.reform.sscs",
-    basePackageClasses = TrackYourAppealNotificationsApplication.class,
-    lazyInit = true
-)
 @EnableFeignClients(basePackages =
         {
                 "uk.gov.hmcts.reform.sscs.service.coh"
