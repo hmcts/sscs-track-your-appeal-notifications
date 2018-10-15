@@ -1,6 +1,5 @@
 package uk.gov.hmcts.reform.sscs.controller;
 
-import static org.slf4j.LoggerFactory.getLogger;
 import static org.springframework.util.MimeTypeUtils.APPLICATION_JSON_VALUE;
 import static org.springframework.web.bind.annotation.RequestMethod.POST;
 
@@ -8,6 +7,7 @@ import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.node.JsonNodeFactory;
 import com.fasterxml.jackson.databind.node.ObjectNode;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestHeader;
@@ -25,9 +25,8 @@ import uk.gov.hmcts.reform.sscs.service.AuthorisationService;
 import uk.gov.hmcts.reform.sscs.service.NotificationService;
 
 @RestController
+@Slf4j
 public class NotificationController {
-
-    private static final org.slf4j.Logger LOG = getLogger(NotificationController.class);
 
     private final NotificationService notificationService;
     private final AuthorisationService authorisationService;
@@ -45,21 +44,21 @@ public class NotificationController {
     }
 
     @RequestMapping(value = "/send", method = POST, produces = APPLICATION_JSON_VALUE)
-    public void sendNotification(
+    void sendNotification(
             @RequestHeader(AuthorisationService.SERVICE_AUTHORISATION_HEADER) String serviceAuthHeader,
             @RequestBody SscsCaseDataWrapper sscsCaseDataWrapper) {
-        LOG.info("Ccd Response received for case id: {} , {}", sscsCaseDataWrapper.getNewSscsCaseData().getCcdCaseId(), sscsCaseDataWrapper.getNotificationEventType());
+        log.info("Ccd Response received for case id: {} , {}", sscsCaseDataWrapper.getNewSscsCaseData().getCcdCaseId(), sscsCaseDataWrapper.getNotificationEventType());
 
         authorisationService.authorise(serviceAuthHeader);
         notificationService.createAndSendNotification(new CcdNotificationWrapper(sscsCaseDataWrapper));
     }
 
     @RequestMapping(value = "/coh-send", method = POST, produces = APPLICATION_JSON_VALUE)
-    public void sendCohNotification(
+    void sendCohNotification(
             @RequestHeader(AuthorisationService.SERVICE_AUTHORISATION_HEADER) String serviceAuthHeader,
             @RequestBody CohEvent cohEvent) {
         String caseId = cohEvent.getCaseId();
-        LOG.info("Coh Response received for case id: {}", caseId);
+        log.info("Coh Response received for case id: {}", caseId);
 
         SscsCaseDetails caseDetails = ccdService.getByCaseId(Long.valueOf(caseId), idamService.getIdamTokens());
 
@@ -68,7 +67,7 @@ public class NotificationController {
             SscsCaseDataWrapper wrapper = deserializer.buildSscsCaseDataWrapper(buildCcdNode(caseDetails, eventId));
             notificationService.createAndSendNotification(new CohNotificationWrapper(cohEvent.getOnlineHearingId(), wrapper));
         } else {
-            LOG.warn("Case id: {} could not be found for event: {}", caseId, eventId);
+            log.warn("Case id: {} could not be found for event: {}", caseId, eventId);
         }
     }
 
