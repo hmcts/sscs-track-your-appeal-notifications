@@ -1,5 +1,6 @@
 package uk.gov.hmcts.reform.sscs.functional;
 
+import static org.junit.Assert.assertTrue;
 import static uk.gov.hmcts.reform.sscs.domain.notify.NotificationEventType.ADJOURNED_NOTIFICATION;
 import static uk.gov.hmcts.reform.sscs.domain.notify.NotificationEventType.APPEAL_LAPSED_NOTIFICATION;
 import static uk.gov.hmcts.reform.sscs.domain.notify.NotificationEventType.APPEAL_RECEIVED_NOTIFICATION;
@@ -179,4 +180,17 @@ public class NotificationsFunctionalTest extends AbstractFunctionalTest {
 
         assertNotificationBodyContains(notifications, paperResponseReceivedEmailId, caseData.getCaseReference());
     }
+
+    @Test
+    public void shouldNotSendPaperDwpResponseReceivedNotificationIfNotSubscribed() throws NotificationClientException, IOException {
+        simulateCcdCallback(DWP_RESPONSE_RECEIVED_NOTIFICATION, "paper-no-subscriptions-"
+                + DWP_RESPONSE_RECEIVED_NOTIFICATION.getId() + "Callback.json");
+
+        List<Notification> notifications = tryFetchNotificationsForTestCaseWithFlag(true,
+                paperResponseReceivedEmailId, paperResponseReceivedSmsId);
+
+        assertTrue(notifications.isEmpty());
+    }
+
+
 }

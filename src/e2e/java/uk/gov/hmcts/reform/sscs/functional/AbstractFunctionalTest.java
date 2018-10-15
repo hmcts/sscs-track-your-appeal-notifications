@@ -6,7 +6,6 @@ import static java.util.stream.Collectors.toList;
 import static junit.framework.TestCase.fail;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNotNull;
-import static org.slf4j.LoggerFactory.getLogger;
 import static uk.gov.hmcts.reform.sscs.SscsCaseDataUtils.buildSscsCaseData;
 import static uk.gov.hmcts.reform.sscs.ccd.domain.EventType.SYA_APPEAL_CREATED;
 
@@ -18,9 +17,11 @@ import java.nio.charset.StandardCharsets;
 import java.time.Instant;
 import java.time.LocalDate;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 import java.util.UUID;
 import java.util.stream.Collectors;
+import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.io.FileUtils;
 import org.hamcrest.CoreMatchers;
 import org.junit.Assert;
@@ -50,11 +51,11 @@ import uk.gov.service.notify.NotificationClientException;
 @SpringBootTest
 @ActiveProfiles("functional")
 @ProfileValueSourceConfiguration(EnvironmentProfileValueSource.class)
+@Slf4j
 public abstract class AbstractFunctionalTest {
     @Rule
     public Retry retry = new Retry(3);
 
-    private static final org.slf4j.Logger LOG = getLogger(AbstractFunctionalTest.class);
 
     private final int maxSecondsToWaitForNotification;
 
@@ -98,7 +99,7 @@ public abstract class AbstractFunctionalTest {
 
         assertNotNull(caseDetails);
         caseId = caseDetails.getId();
-        LOG.info("Creating CCD case [" + caseId + "]");
+        log.info("Creating CCD case [" + caseId + "]");
     }
 
     protected SscsCaseData createCaseData() {
@@ -114,7 +115,11 @@ public abstract class AbstractFunctionalTest {
                 + epoch.substring(8, 13);
     }
 
-    protected List<Notification> tryFetchNotificationsForTestCase(String... expectedTemplateIds) throws NotificationClientException {
+    List<Notification> tryFetchNotificationsForTestCase(String... expectedTemplateIds) throws NotificationClientException {
+        return tryFetchNotificationsForTestCaseWithFlag(false, expectedTemplateIds);
+    }
+
+    List<Notification> tryFetchNotificationsForTestCaseWithFlag(boolean notificationNotFoundFlag, String... expectedTemplateIds) throws NotificationClientException {
 
         List<Notification> allNotifications = new ArrayList<>();
         List<Notification> matchingNotifications = new ArrayList<>();
@@ -125,7 +130,7 @@ public abstract class AbstractFunctionalTest {
 
         do {
 
-            LOG.info("Waiting for all test case notifications to be delivered "
+            log.info("Waiting for all test case notifications to be delivered "
                     + "[" + matchingNotifications.size() + "/" + waitForAtLeastNumberOfNotifications + "] ..."
             );
 
@@ -137,10 +142,15 @@ public abstract class AbstractFunctionalTest {
                                 .map(notification -> notification.getTemplateId().toString())
                                 .collect(Collectors.joining("\n"));
 
-                fail("Timed out fetching notifications after "
+                log.info("Timed out fetching notifications after "
                         + maxSecondsToWaitForNotification
                         + " seconds. Template IDs:\n"
                         + allTemplateIds);
+                if (notificationNotFoundFlag) {
+                    return Collections.emptyList();
+                } else {
+                    fail();
+                }
             } else {
 
                 secondsLeft -= 5;
@@ -165,7 +175,7 @@ public abstract class AbstractFunctionalTest {
                     assertFalse(notification.getStatus().contains("fail"));
                 }
 
-                LOG.info("Test case notifications have been delivered "
+                log.info("Test case notifications have been delivered "
                         + "[" + matchingNotifications.size() + "/" + waitForAtLeastNumberOfNotifications + "]");
 
                 return matchingNotifications;
@@ -286,4 +296,6 @@ public abstract class AbstractFunctionalTest {
             );
         }
     }
+
+
 }
