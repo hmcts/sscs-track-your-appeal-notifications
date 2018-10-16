@@ -62,6 +62,8 @@ public class Personalisation<E extends NotificationWrapper> {
         Subscription appellantSubscription = ccdResponse.getSubscriptions().getAppellantSubscription();
         Benefit benefit = getBenefitByCode(ccdResponse.getAppeal().getBenefitType().getCode());
 
+        personalisation.put(AppConstants.PANEL_COMPOSITION, "judge, doctor and disability expert");
+
         personalisation.put(AppConstants.BENEFIT_NAME_ACRONYM_LITERAL, benefit.name());
         personalisation.put(AppConstants.BENEFIT_NAME_ACRONYM_SHORT_LITERAL, benefit.name());
         personalisation.put(AppConstants.BENEFIT_FULL_NAME_LITERAL, benefit.getDescription());

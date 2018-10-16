@@ -33,12 +33,12 @@ import uk.gov.hmcts.reform.sscs.service.RegionalProcessingCenterService;
 public class PersonalisationTest {
 
     private static final String CASE_ID = "54321";
-    public static final String ADDRESS1 = "HM Courts & Tribunals Service";
-    public static final String ADDRESS2 = "Social Security & Child Support Appeals";
-    public static final String ADDRESS3 = "Prudential Buildings";
-    public static final String ADDRESS4 = "36 Dale Street";
-    public static final String CITY = "LIVERPOOL";
-    public static final String POSTCODE = "L2 5UZ";
+    private static final String ADDRESS1 = "HM Courts & Tribunals Service";
+    private static final String ADDRESS2 = "Social Security & Child Support Appeals";
+    private static final String ADDRESS3 = "Prudential Buildings";
+    private static final String ADDRESS4 = "36 Dale Street";
+    private static final String CITY = "LIVERPOOL";
+    private static final String POSTCODE = "L2 5UZ";
 
     @Mock
     private NotificationConfig config;
@@ -114,6 +114,8 @@ public class PersonalisationTest {
             .build();
 
         Map<String, String> result = personalisation.create(SscsCaseDataWrapper.builder().newSscsCaseData(response).notificationEventType(APPEAL_RECEIVED_NOTIFICATION).build());
+
+        assertEquals("judge, doctor and disability expert", result.get(AppConstants.PANEL_COMPOSITION));
 
         assertEquals("PIP", result.get(AppConstants.BENEFIT_NAME_ACRONYM_LITERAL));
         assertEquals("Personal Independence Payment", result.get(AppConstants.BENEFIT_FULL_NAME_LITERAL));

@@ -13,9 +13,7 @@ public class ReminderService {
     private List<ReminderHandler> reminderHandlers;
 
     @Autowired
-    ReminderService(
-            List<ReminderHandler> reminderHandlers
-    ) {
+    ReminderService(List<ReminderHandler> reminderHandlers) {
         this.reminderHandlers = reminderHandlers;
     }
 
