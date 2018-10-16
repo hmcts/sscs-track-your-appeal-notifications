@@ -24,7 +24,7 @@
           }
         },
         "benefitType": {
-          "code": "ESA"
+          "code": "PIP"
         },
         "hearingOptions": {
           "languageInterpreter": "Yes",
@@ -350,7 +350,7 @@
           }
         },
         "benefitType": {
-          "code": "ESA"
+          "code": "PIP"
         },
         "hearingOptions": {
           "languageInterpreter": "Yes",

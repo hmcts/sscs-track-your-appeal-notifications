@@ -178,7 +178,9 @@ public class NotificationsFunctionalTest extends AbstractFunctionalTest {
         List<Notification> notifications = tryFetchNotificationsForTestCase(
                 paperResponseReceivedEmailId, paperResponseReceivedSmsId);
 
-        assertNotificationBodyContains(notifications, paperResponseReceivedEmailId, caseData.getCaseReference());
+        String pipPanelComposition = "judge, doctor and disability expert";
+        assertNotificationBodyContains(notifications, paperResponseReceivedEmailId, caseData.getCaseReference(),
+                pipPanelComposition);
     }
 
     @Test
