@@ -14,6 +14,7 @@ import static uk.gov.hmcts.reform.sscs.domain.notify.NotificationEventType.SUBSC
 
 import java.io.IOException;
 import java.util.List;
+import junitparams.Parameters;
 import org.junit.Test;
 import org.springframework.beans.factory.annotation.Value;
 import uk.gov.service.notify.Notification;
@@ -172,15 +173,18 @@ public class NotificationsFunctionalTest extends AbstractFunctionalTest {
     }
 
     @Test
-    public void shouldSendPaperDwpResponseReceivedNotification() throws NotificationClientException, IOException {
-        simulateCcdCallback(DWP_RESPONSE_RECEIVED_NOTIFICATION, "paper-"
+    @Parameters({
+            "pip,judge\\, doctor and disability expert",
+            "esa,judge and a doctor"
+    })
+    public void shouldSendPaperDwpResponseReceivedNotification(final String benefit, String panelComposition) throws NotificationClientException, IOException {
+        simulateCcdCallback(DWP_RESPONSE_RECEIVED_NOTIFICATION, benefit + "-paper-"
                 + DWP_RESPONSE_RECEIVED_NOTIFICATION.getId() + "Callback.json");
         List<Notification> notifications = tryFetchNotificationsForTestCase(
                 paperResponseReceivedEmailId, paperResponseReceivedSmsId);
 
-        String pipPanelComposition = "judge, doctor and disability expert";
         assertNotificationBodyContains(notifications, paperResponseReceivedEmailId, caseData.getCaseReference(),
-                pipPanelComposition);
+                panelComposition);
     }
 
     @Test
