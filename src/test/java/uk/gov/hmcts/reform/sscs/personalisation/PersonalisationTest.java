@@ -1,26 +1,64 @@
 package uk.gov.hmcts.reform.sscs.personalisation;
 
-import static org.junit.Assert.*;
-import static org.mockito.Mockito.*;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertNull;
+import static org.mockito.Mockito.any;
+import static org.mockito.Mockito.anyString;
+import static org.mockito.Mockito.never;
+import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.when;
 import static org.mockito.MockitoAnnotations.initMocks;
+import static uk.gov.hmcts.reform.sscs.ccd.domain.Benefit.ESA;
 import static uk.gov.hmcts.reform.sscs.ccd.domain.Benefit.PIP;
 import static uk.gov.hmcts.reform.sscs.ccd.domain.EventType.APPEAL_RECEIVED;
-import static uk.gov.hmcts.reform.sscs.config.AppConstants.*;
-import static uk.gov.hmcts.reform.sscs.domain.notify.NotificationEventType.*;
+import static uk.gov.hmcts.reform.sscs.config.AppConstants.ACCEPT_VIEW_BY_DATE_LITERAL;
+import static uk.gov.hmcts.reform.sscs.config.AppConstants.ONLINE_HEARING_LINK_LITERAL;
+import static uk.gov.hmcts.reform.sscs.config.AppConstants.ONLINE_HEARING_REGISTER_LINK_LITERAL;
+import static uk.gov.hmcts.reform.sscs.config.AppConstants.ONLINE_HEARING_SIGN_IN_LINK_LITERAL;
+import static uk.gov.hmcts.reform.sscs.config.AppConstants.QUESTION_ROUND_EXPIRES_DATE_LITERAL;
+import static uk.gov.hmcts.reform.sscs.config.AppConstants.TRIBUNAL_RESPONSE_DATE_LITERAL;
+import static uk.gov.hmcts.reform.sscs.domain.notify.NotificationEventType.APPEAL_RECEIVED_NOTIFICATION;
+import static uk.gov.hmcts.reform.sscs.domain.notify.NotificationEventType.EVIDENCE_RECEIVED_NOTIFICATION;
+import static uk.gov.hmcts.reform.sscs.domain.notify.NotificationEventType.HEARING_BOOKED_NOTIFICATION;
+import static uk.gov.hmcts.reform.sscs.domain.notify.NotificationEventType.POSTPONEMENT_NOTIFICATION;
 
 import java.time.Instant;
 import java.time.LocalDate;
 import java.time.ZoneId;
 import java.time.ZonedDateTime;
 import java.time.format.DateTimeFormatter;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.Optional;
 import javax.annotation.Resource;
+import junitparams.JUnitParamsRunner;
+import junitparams.Parameters;
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
+import org.junit.runner.RunWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
-import uk.gov.hmcts.reform.sscs.ccd.domain.*;
+import uk.gov.hmcts.reform.sscs.ccd.domain.Address;
+import uk.gov.hmcts.reform.sscs.ccd.domain.Appeal;
+import uk.gov.hmcts.reform.sscs.ccd.domain.Appellant;
+import uk.gov.hmcts.reform.sscs.ccd.domain.BenefitType;
+import uk.gov.hmcts.reform.sscs.ccd.domain.Document;
+import uk.gov.hmcts.reform.sscs.ccd.domain.DocumentDetails;
+import uk.gov.hmcts.reform.sscs.ccd.domain.Event;
+import uk.gov.hmcts.reform.sscs.ccd.domain.EventDetails;
+import uk.gov.hmcts.reform.sscs.ccd.domain.Evidence;
+import uk.gov.hmcts.reform.sscs.ccd.domain.Hearing;
+import uk.gov.hmcts.reform.sscs.ccd.domain.HearingDetails;
+import uk.gov.hmcts.reform.sscs.ccd.domain.Name;
+import uk.gov.hmcts.reform.sscs.ccd.domain.RegionalProcessingCenter;
+import uk.gov.hmcts.reform.sscs.ccd.domain.SscsCaseData;
+import uk.gov.hmcts.reform.sscs.ccd.domain.Subscription;
+import uk.gov.hmcts.reform.sscs.ccd.domain.Subscriptions;
+import uk.gov.hmcts.reform.sscs.ccd.domain.Venue;
 import uk.gov.hmcts.reform.sscs.config.AppConstants;
 import uk.gov.hmcts.reform.sscs.config.NotificationConfig;
 import uk.gov.hmcts.reform.sscs.domain.SscsCaseDataWrapper;
@@ -30,6 +68,7 @@ import uk.gov.hmcts.reform.sscs.extractor.HearingContactDateExtractor;
 import uk.gov.hmcts.reform.sscs.service.MessageAuthenticationServiceImpl;
 import uk.gov.hmcts.reform.sscs.service.RegionalProcessingCenterService;
 
+@RunWith(JUnitParamsRunner.class)
 public class PersonalisationTest {
 
     private static final String CASE_ID = "54321";
@@ -59,11 +98,11 @@ public class PersonalisationTest {
     @Resource
     public Personalisation personalisation;
 
-    String date = "2018-07-01T14:01:18.243";
+    private String date = "2018-07-01T14:01:18.243";
 
-    Subscriptions subscriptions;
+    private Subscriptions subscriptions;
 
-    Name name;
+    private Name name;
 
     @Before
     public void setup() {
@@ -80,6 +119,7 @@ public class PersonalisationTest {
         when(notificationDateConverterUtil.toEmailDate(LocalDate.now().plusDays(1))).thenReturn("1 January 2018");
         when(notificationDateConverterUtil.toEmailDate(LocalDate.now().plusDays(7))).thenReturn("1 February 2018");
         when(macService.generateToken("GLSCRR", PIP.name())).thenReturn("ZYX");
+        when(macService.generateToken("GLSCRR", ESA.name())).thenReturn("ZYX");
         when(hearingContactDateExtractor.extract(any())).thenReturn(Optional.empty());
 
         RegionalProcessingCenter rpc = RegionalProcessingCenter.builder()
@@ -88,37 +128,41 @@ public class PersonalisationTest {
         when(regionalProcessingCenterService.getByScReferenceCode("SC/1234/5")).thenReturn(rpc);
 
         Subscription appellantSubscription = Subscription.builder()
-            .tya("GLSCRR")
-            .email("test@email.com")
-            .mobile("07983495065")
-            .subscribeEmail("Yes")
-            .subscribeSms("No")
-            .build();
+                .tya("GLSCRR")
+                .email("test@email.com")
+                .mobile("07983495065")
+                .subscribeEmail("Yes")
+                .subscribeSms("No")
+                .build();
 
         subscriptions = Subscriptions.builder().appellantSubscription(appellantSubscription).build();
         name = Name.builder().firstName("Harry").lastName("Kane").title("Mr").build();
     }
 
     @Test
-    public void customisePersonalisation() {
+    @Parameters({
+            "PIP,judge\\, doctor and disability expert, Personal Independence Payment",
+            "ESA,judge and a doctor, Employment and Support Allowance"
+    })
+    public void customisePersonalisation(String benefitType, String expectedPanelComposition, String expectedBenefitDesc) {
         List<Event> events = new ArrayList<>();
         events.add(Event.builder().value(EventDetails.builder().date(date).type(APPEAL_RECEIVED.getCcdType()).build()).build());
 
         SscsCaseData response = SscsCaseData.builder()
-            .ccdCaseId(CASE_ID).caseReference("SC/1234/5")
-            .appeal(Appeal.builder().benefitType(BenefitType.builder().code("PIP").build())
-                .appellant(Appellant.builder().name(name).build())
-                .build())
-            .subscriptions(subscriptions)
-            .events(events)
-            .build();
+                .ccdCaseId(CASE_ID).caseReference("SC/1234/5")
+                .appeal(Appeal.builder().benefitType(BenefitType.builder().code(benefitType).build())
+                        .appellant(Appellant.builder().name(name).build())
+                        .build())
+                .subscriptions(subscriptions)
+                .events(events)
+                .build();
 
         Map<String, String> result = personalisation.create(SscsCaseDataWrapper.builder().newSscsCaseData(response).notificationEventType(APPEAL_RECEIVED_NOTIFICATION).build());
 
-        assertEquals("judge, doctor and disability expert", result.get(AppConstants.PANEL_COMPOSITION));
+        assertEquals(expectedPanelComposition, result.get(AppConstants.PANEL_COMPOSITION));
 
-        assertEquals("PIP", result.get(AppConstants.BENEFIT_NAME_ACRONYM_LITERAL));
-        assertEquals("Personal Independence Payment", result.get(AppConstants.BENEFIT_FULL_NAME_LITERAL));
+        assertEquals(benefitType, result.get(AppConstants.BENEFIT_NAME_ACRONYM_LITERAL));
+        assertEquals(expectedBenefitDesc, result.get(AppConstants.BENEFIT_FULL_NAME_LITERAL));
         assertEquals("SC/1234/5", result.get(AppConstants.APPEAL_REF));
         assertEquals("GLSCRR", result.get(AppConstants.APPEAL_ID));
         assertEquals("Harry Kane", result.get(AppConstants.APPELLANT_NAME));
@@ -152,33 +196,33 @@ public class PersonalisationTest {
         List<Document> documents = new ArrayList<>();
 
         Document doc = Document.builder().value(DocumentDetails.builder()
-            .dateReceived("2018-07-01")
-            .evidenceType("Medical")
-            .evidenceProvidedBy("Caseworker").build()).build();
+                .dateReceived("2018-07-01")
+                .evidenceType("Medical")
+                .evidenceProvidedBy("Caseworker").build()).build();
 
         documents.add(doc);
 
         Evidence evidence = Evidence.builder().documents(documents).build();
 
         Subscription appellantSubscription = Subscription.builder()
-            .tya("GLSCRR")
-            .email("test@email.com")
-            .mobile("07983495065")
-            .subscribeEmail("Yes")
-            .subscribeSms("No")
-            .build();
+                .tya("GLSCRR")
+                .email("test@email.com")
+                .mobile("07983495065")
+                .subscribeEmail("Yes")
+                .subscribeSms("No")
+                .build();
 
         Subscriptions subscriptions = Subscriptions.builder().appellantSubscription(appellantSubscription).build();
 
         SscsCaseData response = SscsCaseData.builder()
-            .ccdCaseId(CASE_ID).caseReference("SC/1234/5")
-            .appeal(Appeal.builder().benefitType(BenefitType.builder().code("PIP").build())
-                .appellant(Appellant.builder().name(name).build())
-                .build())
-            .subscriptions(subscriptions)
-            .events(events)
-            .evidence(evidence)
-            .build();
+                .ccdCaseId(CASE_ID).caseReference("SC/1234/5")
+                .appeal(Appeal.builder().benefitType(BenefitType.builder().code("PIP").build())
+                        .appellant(Appellant.builder().name(name).build())
+                        .build())
+                .subscriptions(subscriptions)
+                .events(events)
+                .evidence(evidence)
+                .build();
 
         Map<String, String> result = personalisation.create(SscsCaseDataWrapper.builder().newSscsCaseData(response).notificationEventType(EVIDENCE_RECEIVED_NOTIFICATION).build());
 
@@ -191,10 +235,10 @@ public class PersonalisationTest {
         events.add(Event.builder().value(EventDetails.builder().date(date).type(APPEAL_RECEIVED.getCcdType()).build()).build());
 
         SscsCaseData response = SscsCaseData.builder()
-            .ccdCaseId(CASE_ID).caseReference("SC/1234/5")
-            .appeal(Appeal.builder().benefitType(BenefitType.builder().code("PIP").build()).build())
-            .events(events)
-            .build();
+                .ccdCaseId(CASE_ID).caseReference("SC/1234/5")
+                .appeal(Appeal.builder().benefitType(BenefitType.builder().code("PIP").build()).build())
+                .events(events)
+                .build();
 
         Map<String, String> result = personalisation.setEventData(new HashMap<>(), response, APPEAL_RECEIVED_NOTIFICATION);
 
@@ -206,19 +250,19 @@ public class PersonalisationTest {
         List<Document> documents = new ArrayList<>();
 
         Document doc = Document.builder().value(DocumentDetails.builder()
-            .dateReceived("2018-07-01")
-            .evidenceType("Medical")
-            .evidenceProvidedBy("Caseworker").build()).build();
+                .dateReceived("2018-07-01")
+                .evidenceType("Medical")
+                .evidenceProvidedBy("Caseworker").build()).build();
 
         documents.add(doc);
 
         Evidence evidence = Evidence.builder().documents(documents).build();
 
         SscsCaseData response = SscsCaseData.builder()
-            .ccdCaseId(CASE_ID).caseReference("SC/1234/5")
-            .appeal(Appeal.builder().benefitType(BenefitType.builder().code("PIP").build()).build())
-            .evidence(evidence)
-            .build();
+                .ccdCaseId(CASE_ID).caseReference("SC/1234/5")
+                .appeal(Appeal.builder().benefitType(BenefitType.builder().code("PIP").build()).build())
+                .evidence(evidence)
+                .build();
 
         Map<String, String> result = personalisation.setEvidenceReceivedNotificationData(new HashMap<>(), response, EVIDENCE_RECEIVED_NOTIFICATION);
 
@@ -235,13 +279,13 @@ public class PersonalisationTest {
         hearingList.add(hearing);
 
         SscsCaseData response = SscsCaseData.builder()
-            .ccdCaseId(CASE_ID).caseReference("SC/1234/5")
-            .appeal(Appeal.builder().benefitType(BenefitType.builder().code("PIP").build())
-                .appellant(Appellant.builder().name(name).build())
-                .build())
-            .subscriptions(subscriptions)
-            .hearings(hearingList)
-            .build();
+                .ccdCaseId(CASE_ID).caseReference("SC/1234/5")
+                .appeal(Appeal.builder().benefitType(BenefitType.builder().code("PIP").build())
+                        .appellant(Appellant.builder().name(name).build())
+                        .build())
+                .subscriptions(subscriptions)
+                .hearings(hearingList)
+                .build();
 
         Map<String, String> result = personalisation.create(SscsCaseDataWrapper.builder().newSscsCaseData(response).notificationEventType(HEARING_BOOKED_NOTIFICATION).build());
 
@@ -262,13 +306,13 @@ public class PersonalisationTest {
         hearingList.add(hearing);
 
         SscsCaseData response = SscsCaseData.builder()
-            .ccdCaseId(CASE_ID).caseReference("SC/1234/5")
-            .appeal(Appeal.builder().benefitType(BenefitType.builder().code("PIP").build())
-                .appellant(Appellant.builder().name(name).build())
-                .build())
-            .subscriptions(subscriptions)
-            .hearings(hearingList)
-            .build();
+                .ccdCaseId(CASE_ID).caseReference("SC/1234/5")
+                .appeal(Appeal.builder().benefitType(BenefitType.builder().code("PIP").build())
+                        .appellant(Appellant.builder().name(name).build())
+                        .build())
+                .subscriptions(subscriptions)
+                .hearings(hearingList)
+                .build();
 
         Map<String, String> result = personalisation.create(SscsCaseDataWrapper.builder().newSscsCaseData(response).notificationEventType(HEARING_BOOKED_NOTIFICATION).build());
 
@@ -278,9 +322,9 @@ public class PersonalisationTest {
     @Test
     public void handleNullEventWhenPopulatingEventData() {
         SscsCaseData response = SscsCaseData.builder()
-            .ccdCaseId(CASE_ID).caseReference("SC/1234/5")
-            .appeal(Appeal.builder().benefitType(BenefitType.builder().code("PIP").build()).build())
-            .build();
+                .ccdCaseId(CASE_ID).caseReference("SC/1234/5")
+                .appeal(Appeal.builder().benefitType(BenefitType.builder().code("PIP").build()).build())
+                .build();
 
         Map<String, String> result = personalisation.setEventData(new HashMap<>(), response, POSTPONEMENT_NOTIFICATION);
 
@@ -290,10 +334,10 @@ public class PersonalisationTest {
     @Test
     public void handleEmptyEventsWhenPopulatingEventData() {
         SscsCaseData response = SscsCaseData.builder()
-            .ccdCaseId(CASE_ID).caseReference("SC/1234/5")
-            .appeal(Appeal.builder().benefitType(BenefitType.builder().code("PIP").build()).build())
-            .events(new ArrayList())
-            .build();
+                .ccdCaseId(CASE_ID).caseReference("SC/1234/5")
+                .appeal(Appeal.builder().benefitType(BenefitType.builder().code("PIP").build()).build())
+                .events(new ArrayList())
+                .build();
 
         Map<String, String> result = personalisation.setEventData(new HashMap<>(), response, POSTPONEMENT_NOTIFICATION);
 

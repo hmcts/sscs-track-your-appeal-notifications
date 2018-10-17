@@ -62,7 +62,7 @@ public class Personalisation<E extends NotificationWrapper> {
         Subscription appellantSubscription = ccdResponse.getSubscriptions().getAppellantSubscription();
         Benefit benefit = getBenefitByCode(ccdResponse.getAppeal().getBenefitType().getCode());
 
-        personalisation.put(AppConstants.PANEL_COMPOSITION, "judge, doctor and disability expert");
+        personalisation.put(AppConstants.PANEL_COMPOSITION, getPanelCompositionByBenefitType(benefit));
 
         personalisation.put(AppConstants.BENEFIT_NAME_ACRONYM_LITERAL, benefit.name());
         personalisation.put(AppConstants.BENEFIT_NAME_ACRONYM_SHORT_LITERAL, benefit.name());
@@ -125,6 +125,13 @@ public class Personalisation<E extends NotificationWrapper> {
         personalisation.put(ONLINE_HEARING_SIGN_IN_LINK_LITERAL, config.getOnlineHearingLink() + "/sign-in");
 
         return personalisation;
+    }
+
+    private String getPanelCompositionByBenefitType(Benefit benefit) {
+        if ("PIP".equals(benefit.name())) {
+            return "judge, doctor and disability expert";
+        }
+        return "judge and a doctor";
     }
 
     public void setHearingContactDate(Map<String, String> personalisation, SscsCaseDataWrapper wrapper) {
