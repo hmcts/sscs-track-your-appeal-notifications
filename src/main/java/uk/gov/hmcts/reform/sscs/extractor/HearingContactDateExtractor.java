@@ -1,5 +1,7 @@
 package uk.gov.hmcts.reform.sscs.extractor;
 
+import static uk.gov.hmcts.reform.sscs.ccd.domain.HearingType.PAPER;
+
 import java.time.ZonedDateTime;
 import java.util.Optional;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -40,7 +42,7 @@ public class HearingContactDateExtractor {
         switch (referenceNotificationEventType) {
 
             case DWP_RESPONSE_RECEIVED_NOTIFICATION: {
-                if ("paper".equals(sscsCaseData.getAppeal().getHearingType())) {
+                if (PAPER.getValue().equals(sscsCaseData.getAppeal().getHearingType())) {
                     delay = paperCaseDecisionDateInitialDelay;
                 } else {
                     delay = initialDelay;
