@@ -177,14 +177,16 @@ public class NotificationsFunctionalTest extends AbstractFunctionalTest {
             "pip,judge\\, doctor and disability expert",
             "esa,judge and a doctor"
     })
-    public void shouldSendPaperDwpResponseReceivedNotification(final String benefit, String panelComposition) throws NotificationClientException, IOException {
+    public void shouldSendPaperDwpResponseReceivedNotification(final String benefit, String expectedPanelComposition)
+            throws Exception {
         simulateCcdCallback(DWP_RESPONSE_RECEIVED_NOTIFICATION, benefit + "-paper-"
                 + DWP_RESPONSE_RECEIVED_NOTIFICATION.getId() + "Callback.json");
         List<Notification> notifications = tryFetchNotificationsForTestCase(
                 paperResponseReceivedEmailId, paperResponseReceivedSmsId);
 
+        String expectedHearingContactDate = "9 April 2016";
         assertNotificationBodyContains(notifications, paperResponseReceivedEmailId, caseData.getCaseReference(),
-                panelComposition);
+                expectedPanelComposition, expectedHearingContactDate);
     }
 
     @Test
