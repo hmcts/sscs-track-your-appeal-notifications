@@ -134,14 +134,11 @@ public class Personalisation<E extends NotificationWrapper> {
         return "judge and a doctor";
     }
 
-    public void setHearingContactDate(Map<String, String> personalisation, SscsCaseDataWrapper wrapper) {
+    void setHearingContactDate(Map<String, String> personalisation, SscsCaseDataWrapper wrapper) {
         Optional<ZonedDateTime> hearingContactDate = hearingContactDateExtractor.extract(wrapper);
-        if (hearingContactDate.isPresent()) {
-            personalisation.put(
-                AppConstants.HEARING_CONTACT_DATE,
-                formatLocalDate(hearingContactDate.get().toLocalDate())
-            );
-        }
+        hearingContactDate.ifPresent(zonedDateTime -> personalisation.put(AppConstants.HEARING_CONTACT_DATE,
+                formatLocalDate(zonedDateTime.toLocalDate())
+        ));
     }
 
     public Map<String, String> setEventData(Map<String, String> personalisation, SscsCaseData ccdResponse, NotificationEventType notificationEventType) {
