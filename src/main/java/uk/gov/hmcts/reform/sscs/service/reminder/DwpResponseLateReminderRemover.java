@@ -45,7 +45,7 @@ public class DwpResponseLateReminderRemover implements ReminderHandler {
         }
 
         SscsCaseData caseData = wrapper.getNewSscsCaseData();
-        String caseId = caseData.getCaseId();
+        String caseId = caseData.getCcdCaseId();
         String jobGroup = jobGroupGenerator.generate(caseId, DWP_RESPONSE_LATE_REMINDER_NOTIFICATION.getId());
 
         try {

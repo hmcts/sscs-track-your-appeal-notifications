@@ -42,6 +42,10 @@ public class SscsCaseDataWrapperDeserializer extends StdDeserializer<SscsCaseDat
         JsonNode caseDetailsNode = getNode(node, "case_details");
         JsonNode caseNode = getNode(caseDetailsNode, "case_data");
 
+        if (caseNode == null) {
+            caseNode = getNode(caseDetailsNode, "data");
+        }
+
         if (caseNode != null) {
             newSscsCaseData = createSscsCaseDataFromNode(caseNode, node, caseDetailsNode);
         }
@@ -64,7 +68,7 @@ public class SscsCaseDataWrapperDeserializer extends StdDeserializer<SscsCaseDat
 
     private SscsCaseData createSscsCaseDataFromNode(JsonNode caseNode, JsonNode node, JsonNode caseDetailsNode) {
         SscsCaseData ccdResponse = deserializeCaseNode(caseNode);
-        ccdResponse.setCaseId(getField(caseDetailsNode, "id"));
+        ccdResponse.setCcdCaseId(getField(caseDetailsNode, "id"));
         return ccdResponse;
     }
 

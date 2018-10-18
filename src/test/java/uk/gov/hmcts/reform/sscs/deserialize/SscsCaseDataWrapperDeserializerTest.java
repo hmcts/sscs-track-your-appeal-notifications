@@ -200,7 +200,7 @@ public class SscsCaseDataWrapperDeserializerTest {
         assertTrue(newSupporterSubscription.isSmsSubscribed());
         assertFalse(newSupporterSubscription.isEmailSubscribed());
         assertEquals("SC022/14/12423", newSscsCaseData.getCaseReference());
-        assertEquals("123456789", newSscsCaseData.getCaseId());
+        assertEquals("123456789", newSscsCaseData.getCcdCaseId());
 
         SscsCaseData oldSscsCaseData = wrapper.getOldSscsCaseData();
 
@@ -221,7 +221,7 @@ public class SscsCaseDataWrapperDeserializerTest {
         assertTrue(oldSupporterSubscription.isSmsSubscribed());
         assertFalse(oldSupporterSubscription.isEmailSubscribed());
         assertEquals("SC/5432/89", oldSscsCaseData.getCaseReference());
-        assertEquals("523456789", oldSscsCaseData.getCaseId());
+        assertEquals("523456789", oldSscsCaseData.getCcdCaseId());
     }
 
     @Test
@@ -539,7 +539,7 @@ public class SscsCaseDataWrapperDeserializerTest {
         assertEquals("Merseyside", hearing.getValue().getVenue().getAddress().getCounty());
         assertEquals("L2 5UZ", hearing.getValue().getVenue().getAddress().getPostcode());
         assertEquals("https://www.google.com/theAddress", hearing.getValue().getVenue().getGoogleMapLink());
-        assertEquals("12345656789", ccdResponse.getCaseId());
+        assertEquals("12345656789", ccdResponse.getCcdCaseId());
         assertNotNull(ccdResponse.getRegionalProcessingCenter());
 
         OnlinePanel onlinePanel = ccdResponse.getOnlinePanel();

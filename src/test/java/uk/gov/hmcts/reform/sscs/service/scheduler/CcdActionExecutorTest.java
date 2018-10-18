@@ -7,8 +7,8 @@ import static uk.gov.hmcts.reform.sscs.domain.notify.NotificationEventType.EVIDE
 import org.junit.Before;
 import org.junit.Test;
 import org.mockito.Mock;
-import uk.gov.hmcts.reform.ccd.client.model.CaseDetails;
 import uk.gov.hmcts.reform.sscs.ccd.domain.SscsCaseData;
+import uk.gov.hmcts.reform.sscs.ccd.domain.SscsCaseDetails;
 import uk.gov.hmcts.reform.sscs.ccd.service.CcdService;
 import uk.gov.hmcts.reform.sscs.deserialize.SscsCaseDataWrapperDeserializer;
 import uk.gov.hmcts.reform.sscs.domain.SscsCaseDataWrapper;
@@ -30,7 +30,7 @@ public class CcdActionExecutorTest {
     @Mock
     private SscsCaseDataWrapperDeserializer deserializer;
 
-    private CaseDetails caseDetails;
+    private SscsCaseDetails caseDetails;
     private SscsCaseDataWrapper wrapper;
     private SscsCaseData newSscsCaseData;
 
@@ -42,7 +42,7 @@ public class CcdActionExecutorTest {
 
         ccdActionExecutor = new CcdActionExecutor(notificationService, ccdService, deserializer, idamService);
 
-        caseDetails = CaseDetails.builder().caseTypeId("123").build();
+        caseDetails = SscsCaseDetails.builder().caseTypeId("123").build();
 
         newSscsCaseData = SscsCaseData.builder().build();
 

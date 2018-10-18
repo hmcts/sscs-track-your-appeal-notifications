@@ -58,7 +58,7 @@ public class HearingHoldingReminder implements ReminderHandler {
         NotificationEventType referenceNotificationEventType,
         NotificationEventType scheduledNotificationEventType
     ) {
-        String caseId = ccdResponse.getCaseId();
+        String caseId = ccdResponse.getCcdCaseId();
         String eventId = scheduledNotificationEventType.getId();
         String jobGroup = jobGroupGenerator.generate(caseId, eventId);
         ZonedDateTime reminderDate = calculateReminderDate(ccdResponse, referenceNotificationEventType);
@@ -83,7 +83,7 @@ public class HearingHoldingReminder implements ReminderHandler {
         }
 
         ReminderException reminderException = new ReminderException(
-            new Exception("Could not find reminder date for case id: " + ccdResponse.getCaseId())
+            new Exception("Could not find reminder date for case id: " + ccdResponse.getCcdCaseId())
         );
 
         LOG.error("Reminder date not found", reminderException);

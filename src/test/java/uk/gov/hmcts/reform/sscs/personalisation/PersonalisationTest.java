@@ -105,7 +105,7 @@ public class PersonalisationTest {
         events.add(Event.builder().value(EventDetails.builder().date(date).type(APPEAL_RECEIVED.getCcdType()).build()).build());
 
         SscsCaseData response = SscsCaseData.builder()
-            .caseId(CASE_ID).caseReference("SC/1234/5")
+            .ccdCaseId(CASE_ID).caseReference("SC/1234/5")
             .appeal(Appeal.builder().benefitType(BenefitType.builder().code("PIP").build())
                 .appellant(Appellant.builder().name(name).build())
                 .build())
@@ -169,7 +169,7 @@ public class PersonalisationTest {
         Subscriptions subscriptions = Subscriptions.builder().appellantSubscription(appellantSubscription).build();
 
         SscsCaseData response = SscsCaseData.builder()
-            .caseId(CASE_ID).caseReference("SC/1234/5")
+            .ccdCaseId(CASE_ID).caseReference("SC/1234/5")
             .appeal(Appeal.builder().benefitType(BenefitType.builder().code("PIP").build())
                 .appellant(Appellant.builder().name(name).build())
                 .build())
@@ -189,7 +189,7 @@ public class PersonalisationTest {
         events.add(Event.builder().value(EventDetails.builder().date(date).type(APPEAL_RECEIVED.getCcdType()).build()).build());
 
         SscsCaseData response = SscsCaseData.builder()
-            .caseId(CASE_ID).caseReference("SC/1234/5")
+            .ccdCaseId(CASE_ID).caseReference("SC/1234/5")
             .appeal(Appeal.builder().benefitType(BenefitType.builder().code("PIP").build()).build())
             .events(events)
             .build();
@@ -213,7 +213,7 @@ public class PersonalisationTest {
         Evidence evidence = Evidence.builder().documents(documents).build();
 
         SscsCaseData response = SscsCaseData.builder()
-            .caseId(CASE_ID).caseReference("SC/1234/5")
+            .ccdCaseId(CASE_ID).caseReference("SC/1234/5")
             .appeal(Appeal.builder().benefitType(BenefitType.builder().code("PIP").build()).build())
             .evidence(evidence)
             .build();
@@ -233,7 +233,7 @@ public class PersonalisationTest {
         hearingList.add(hearing);
 
         SscsCaseData response = SscsCaseData.builder()
-            .caseId(CASE_ID).caseReference("SC/1234/5")
+            .ccdCaseId(CASE_ID).caseReference("SC/1234/5")
             .appeal(Appeal.builder().benefitType(BenefitType.builder().code("PIP").build())
                 .appellant(Appellant.builder().name(name).build())
                 .build())
@@ -260,7 +260,7 @@ public class PersonalisationTest {
         hearingList.add(hearing);
 
         SscsCaseData response = SscsCaseData.builder()
-            .caseId(CASE_ID).caseReference("SC/1234/5")
+            .ccdCaseId(CASE_ID).caseReference("SC/1234/5")
             .appeal(Appeal.builder().benefitType(BenefitType.builder().code("PIP").build())
                 .appellant(Appellant.builder().name(name).build())
                 .build())
@@ -276,7 +276,7 @@ public class PersonalisationTest {
     @Test
     public void handleNullEventWhenPopulatingEventData() {
         SscsCaseData response = SscsCaseData.builder()
-            .caseId(CASE_ID).caseReference("SC/1234/5")
+            .ccdCaseId(CASE_ID).caseReference("SC/1234/5")
             .appeal(Appeal.builder().benefitType(BenefitType.builder().code("PIP").build()).build())
             .build();
 
@@ -288,7 +288,7 @@ public class PersonalisationTest {
     @Test
     public void handleEmptyEventsWhenPopulatingEventData() {
         SscsCaseData response = SscsCaseData.builder()
-            .caseId(CASE_ID).caseReference("SC/1234/5")
+            .ccdCaseId(CASE_ID).caseReference("SC/1234/5")
             .appeal(Appeal.builder().benefitType(BenefitType.builder().code("PIP").build()).build())
             .events(new ArrayList())
             .build();
@@ -406,7 +406,7 @@ public class PersonalisationTest {
 
     private SscsCaseData createResponse(List<Hearing> hearingList) {
         return SscsCaseData.builder()
-                .caseId(CASE_ID).caseReference("SC/1234/5")
+                .ccdCaseId(CASE_ID).caseReference("SC/1234/5")
                 .appeal(Appeal.builder().benefitType(BenefitType.builder().code("PIP").build())
                         .appellant(Appellant.builder().name(name).build())
                         .build())
