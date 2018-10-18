@@ -116,7 +116,7 @@ public final class SscsCaseDataUtils {
                 .notificationEventType(notificationType)
                 .newSscsCaseData(
                     SscsCaseData.builder()
-                    .caseId(CASE_ID)
+                    .ccdCaseId(CASE_ID)
                     .events(Collections.emptyList())
                     .hearings(Collections.emptyList()).build())
                 .build());
@@ -141,7 +141,7 @@ public final class SscsCaseDataUtils {
                 .notificationEventType(notificationType)
                 .newSscsCaseData(
                     SscsCaseData.builder()
-                    .caseId(CASE_ID)
+                    .ccdCaseId(CASE_ID)
                     .events(Collections.singletonList(event))
                     .hearings(Collections.emptyList())
                     .build())
@@ -166,7 +166,7 @@ public final class SscsCaseDataUtils {
         return new CcdNotificationWrapper(SscsCaseDataWrapper.builder()
                 .notificationEventType(notificationType)
                 .newSscsCaseData(SscsCaseData.builder()
-                    .caseId(CASE_ID)
+                    .ccdCaseId(CASE_ID)
                     .events(Collections.emptyList())
                     .hearings(Collections.singletonList(hearing))
                     .build())

@@ -7,7 +7,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.node.JsonNodeFactory;
 import com.fasterxml.jackson.databind.node.ObjectNode;
 import org.slf4j.Logger;
-import uk.gov.hmcts.reform.ccd.client.model.CaseDetails;
+import uk.gov.hmcts.reform.sscs.ccd.domain.SscsCaseDetails;
 import uk.gov.hmcts.reform.sscs.ccd.service.CcdService;
 import uk.gov.hmcts.reform.sscs.deserialize.SscsCaseDataWrapperDeserializer;
 import uk.gov.hmcts.reform.sscs.domain.SscsCaseDataWrapper;
@@ -39,7 +39,7 @@ public abstract class BaseActionExecutor<T> implements JobExecutor<T> {
 
         IdamTokens idamTokens = idamService.getIdamTokens();
 
-        CaseDetails caseDetails = ccdService.getByCaseId(caseId, idamTokens);
+        SscsCaseDetails caseDetails = ccdService.getByCaseId(caseId, idamTokens);
 
         if (caseDetails != null) {
             SscsCaseDataWrapper wrapper = deserializer.buildSscsCaseDataWrapper(buildCcdNode(caseDetails, eventId));
@@ -51,7 +51,7 @@ public abstract class BaseActionExecutor<T> implements JobExecutor<T> {
         }
     }
 
-    private ObjectNode buildCcdNode(CaseDetails caseDetails, String jobName) {
+    private ObjectNode buildCcdNode(SscsCaseDetails caseDetails, String jobName) {
         ObjectMapper mapper = new ObjectMapper();
         JsonNode jsonNode = mapper.valueToTree(caseDetails);
         ObjectNode node = JsonNodeFactory.instance.objectNode();

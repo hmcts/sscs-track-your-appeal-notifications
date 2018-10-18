@@ -39,7 +39,7 @@ public class CcdNotificationWrapper implements NotificationWrapper {
 
     @Override
     public String getCaseId() {
-        return responseWrapper.getNewSscsCaseData().getCaseId();
+        return responseWrapper.getNewSscsCaseData().getCcdCaseId();
     }
 
     public AppealHearingType getHearingType() {

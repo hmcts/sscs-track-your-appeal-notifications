@@ -51,7 +51,7 @@ public class DwpResponseLateReminder implements ReminderHandler {
         }
 
         SscsCaseData caseData = wrapper.getNewSscsCaseData();
-        String caseId = wrapper.getNewSscsCaseData().getCaseId();
+        String caseId = wrapper.getNewSscsCaseData().getCcdCaseId();
         String eventId = DWP_RESPONSE_LATE_REMINDER_NOTIFICATION.getId();
         String jobGroup = jobGroupGenerator.generate(caseId, eventId);
         ZonedDateTime reminderDate = calculateReminderDate(caseData, delay);
@@ -76,7 +76,7 @@ public class DwpResponseLateReminder implements ReminderHandler {
         }
 
         ReminderException reminderException = new ReminderException(
-            new Exception("Could not find reminder date for case id: " + ccdResponse.getCaseId())
+            new Exception("Could not find reminder date for case id: " + ccdResponse.getCcdCaseId())
         );
 
         LOG.error("Reminder date not found", reminderException);

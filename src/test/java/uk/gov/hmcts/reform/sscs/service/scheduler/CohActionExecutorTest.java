@@ -8,8 +8,8 @@ import java.util.UUID;
 import org.junit.Before;
 import org.junit.Test;
 import org.mockito.Mock;
-import uk.gov.hmcts.reform.ccd.client.model.CaseDetails;
 import uk.gov.hmcts.reform.sscs.ccd.domain.SscsCaseData;
+import uk.gov.hmcts.reform.sscs.ccd.domain.SscsCaseDetails;
 import uk.gov.hmcts.reform.sscs.ccd.service.CcdService;
 import uk.gov.hmcts.reform.sscs.deserialize.SscsCaseDataWrapperDeserializer;
 import uk.gov.hmcts.reform.sscs.domain.SscsCaseDataWrapper;
@@ -31,7 +31,7 @@ public class CohActionExecutorTest {
     @Mock
     private SscsCaseDataWrapperDeserializer deserializer;
 
-    private CaseDetails caseDetails;
+    private SscsCaseDetails caseDetails;
     private SscsCaseDataWrapper wrapper;
     private SscsCaseData newSscsCaseData;
 
@@ -43,7 +43,7 @@ public class CohActionExecutorTest {
 
         cohActionExecutor = new CohActionExecutor(notificationService, ccdService, deserializer, idamService);
 
-        caseDetails = CaseDetails.builder().caseTypeId("123").build();
+        caseDetails = SscsCaseDetails.builder().caseTypeId("123").build();
 
         newSscsCaseData = SscsCaseData.builder().build();
 

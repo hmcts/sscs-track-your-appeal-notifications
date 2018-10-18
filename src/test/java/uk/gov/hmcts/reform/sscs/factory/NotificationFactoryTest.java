@@ -80,7 +80,7 @@ public class NotificationFactoryTest {
                 .tya("ABC").email("test@testing.com")
                 .mobile("07985858594").subscribeEmail("Yes").subscribeSms("No").build();
 
-        ccdResponse = SscsCaseData.builder().caseId(CASE_ID).caseReference("SC/1234/5").appeal(Appeal.builder()
+        ccdResponse = SscsCaseData.builder().ccdCaseId(CASE_ID).caseReference("SC/1234/5").appeal(Appeal.builder()
                 .appellant(Appellant.builder().name(Name.builder().firstName("Ronnie").lastName("Scott").title("Mr").build()).build())
                 .benefitType(BenefitType.builder().code("PIP").build()).build())
                 .subscriptions(Subscriptions.builder().appellantSubscription(subscription).build()).build();

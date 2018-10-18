@@ -344,14 +344,14 @@ public class SubscriptionPersonalisationTest {
     }
 
     private void buildNewAndOldCaseData(Subscription newAppellantSubscription, Subscription oldAppellantSubscription) {
-        newSscsCaseData = SscsCaseData.builder().caseId("54321")
+        newSscsCaseData = SscsCaseData.builder().ccdCaseId("54321")
                 .appeal(Appeal.builder()
                         .benefitType(BenefitType.builder().code("PIP").build())
                         .appellant(Appellant.builder().name(Name.builder().firstName("Harry").lastName("Kane").title("Mr").build()).build()).build())
                 .caseReference("1234")
                 .subscriptions(Subscriptions.builder().appellantSubscription(newAppellantSubscription).build()).build();
 
-        oldSscsCaseData = SscsCaseData.builder().caseId("54321")
+        oldSscsCaseData = SscsCaseData.builder().ccdCaseId("54321")
                 .appeal(Appeal.builder()
                         .benefitType(BenefitType.builder().code("PIP").build())
                         .appellant(Appellant.builder().name(Name.builder().firstName("Harry").lastName("Kane").title("Mr").build()).build()).build())

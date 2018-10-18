@@ -13,7 +13,7 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestHeader;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
-import uk.gov.hmcts.reform.ccd.client.model.CaseDetails;
+import uk.gov.hmcts.reform.sscs.ccd.domain.SscsCaseDetails;
 import uk.gov.hmcts.reform.sscs.ccd.service.CcdService;
 import uk.gov.hmcts.reform.sscs.deserialize.SscsCaseDataWrapperDeserializer;
 import uk.gov.hmcts.reform.sscs.domain.CohEvent;
@@ -48,7 +48,7 @@ public class NotificationController {
     public void sendNotification(
             @RequestHeader(AuthorisationService.SERVICE_AUTHORISATION_HEADER) String serviceAuthHeader,
             @RequestBody SscsCaseDataWrapper sscsCaseDataWrapper) {
-        LOG.info("Ccd Response received for case id: {} , {}", sscsCaseDataWrapper.getNewSscsCaseData().getCaseId(), sscsCaseDataWrapper.getNotificationEventType());
+        LOG.info("Ccd Response received for case id: {} , {}", sscsCaseDataWrapper.getNewSscsCaseData().getCcdCaseId(), sscsCaseDataWrapper.getNotificationEventType());
 
         authorisationService.authorise(serviceAuthHeader);
         notificationService.createAndSendNotification(new CcdNotificationWrapper(sscsCaseDataWrapper));
@@ -61,7 +61,7 @@ public class NotificationController {
         String caseId = cohEvent.getCaseId();
         LOG.info("Coh Response received for case id: {}", caseId);
 
-        CaseDetails caseDetails = ccdService.getByCaseId(Long.valueOf(caseId), idamService.getIdamTokens());
+        SscsCaseDetails caseDetails = ccdService.getByCaseId(Long.valueOf(caseId), idamService.getIdamTokens());
 
         String eventId = cohEvent.getNotificationEventType();
         if (caseDetails != null) {
@@ -72,7 +72,7 @@ public class NotificationController {
         }
     }
 
-    private ObjectNode buildCcdNode(CaseDetails caseDetails, String jobName) {
+    private ObjectNode buildCcdNode(SscsCaseDetails caseDetails, String jobName) {
         ObjectMapper mapper = new ObjectMapper();
         JsonNode jsonNode = mapper.valueToTree(caseDetails);
         ObjectNode node = JsonNodeFactory.instance.objectNode();
