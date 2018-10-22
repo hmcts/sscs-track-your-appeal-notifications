@@ -185,8 +185,9 @@ public class NotificationsFunctionalTest extends AbstractFunctionalTest {
                 paperResponseReceivedEmailId, paperResponseReceivedSmsId);
 
         String expectedHearingContactDate = "9 April 2016";
+        String expectedTyaLink = "http://localhost:3000/trackyourappeal/v8eg15XeZk";
         assertNotificationBodyContains(notifications, paperResponseReceivedEmailId, caseData.getCaseReference(),
-                expectedPanelComposition, expectedHearingContactDate);
+                expectedPanelComposition, expectedHearingContactDate, expectedTyaLink);
     }
 
     @Test
