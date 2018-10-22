@@ -22,6 +22,9 @@ import uk.gov.service.notify.NotificationClientException;
 
 public class NotificationsFunctionalTest extends AbstractFunctionalTest {
 
+    @Value("${track.appeal.link}")
+    private String tyaLink;
+
     @Value("${notification.appealReceived.emailId}")
     private String appealReceivedEmailTemplateId;
 
@@ -185,7 +188,7 @@ public class NotificationsFunctionalTest extends AbstractFunctionalTest {
                 paperResponseReceivedEmailId, paperResponseReceivedSmsId);
 
         String expectedHearingContactDate = "9 April 2016";
-        String expectedTyaLink = "http://localhost:3000/trackyourappeal/v8eg15XeZk";
+        String expectedTyaLink = tyaLink.replace("appeal_id", "v8eg15XeZk");
         assertNotificationBodyContains(notifications, paperResponseReceivedEmailId, caseData.getCaseReference(),
                 expectedPanelComposition, expectedHearingContactDate, expectedTyaLink);
         assertNotificationBodyContains(notifications, paperResponseReceivedSmsId, expectedHearingContactDate,
