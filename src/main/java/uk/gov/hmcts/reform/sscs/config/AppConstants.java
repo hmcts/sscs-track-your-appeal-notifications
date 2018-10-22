@@ -2,6 +2,9 @@ package uk.gov.hmcts.reform.sscs.config;
 
 public final class AppConstants {
 
+    public static final String PANEL_COMPOSITION = "panel_composition";
+    public static final String PIP_PANEL_COMPOSITION = "judge, doctor and disability expert";
+    public static final String ESA_PANEL_COMPOSITION = "judge and a doctor";
     public static final String ADDRESS_LINE_LITERAL = "address_line";
     public static final String APPEAL_REF = "appeal_ref";
     public static final String APPEAL_ID = "appeal_id";
@@ -56,7 +59,7 @@ public final class AppConstants {
     public static final String ONLINE_HEARING_SIGN_IN_LINK_LITERAL = "online_hearing_sign_in_link";
     public static final String ONLINE_HEARING_REGISTER_LINK_LITERAL = "online_hearing_register_link";
 
-    private AppConstants(){
+    private AppConstants() {
         //
     }
 }

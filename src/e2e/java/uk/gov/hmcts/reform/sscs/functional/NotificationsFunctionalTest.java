@@ -1,5 +1,6 @@
 package uk.gov.hmcts.reform.sscs.functional;
 
+import static org.junit.Assert.assertTrue;
 import static uk.gov.hmcts.reform.sscs.domain.notify.NotificationEventType.ADJOURNED_NOTIFICATION;
 import static uk.gov.hmcts.reform.sscs.domain.notify.NotificationEventType.APPEAL_LAPSED_NOTIFICATION;
 import static uk.gov.hmcts.reform.sscs.domain.notify.NotificationEventType.APPEAL_RECEIVED_NOTIFICATION;
@@ -13,12 +14,16 @@ import static uk.gov.hmcts.reform.sscs.domain.notify.NotificationEventType.SUBSC
 
 import java.io.IOException;
 import java.util.List;
+import junitparams.Parameters;
 import org.junit.Test;
 import org.springframework.beans.factory.annotation.Value;
 import uk.gov.service.notify.Notification;
 import uk.gov.service.notify.NotificationClientException;
 
 public class NotificationsFunctionalTest extends AbstractFunctionalTest {
+
+    @Value("${track.appeal.link}")
+    private String tyaLink;
 
     @Value("${notification.appealReceived.emailId}")
     private String appealReceivedEmailTemplateId;
@@ -171,12 +176,35 @@ public class NotificationsFunctionalTest extends AbstractFunctionalTest {
     }
 
     @Test
-    public void shouldSendPaperDwpResponseReceivedNotification() throws NotificationClientException, IOException {
-        simulateCcdCallback(DWP_RESPONSE_RECEIVED_NOTIFICATION, "paper-"
+    @Parameters({
+            "pip,judge\\, doctor and disability expert",
+            "esa,judge and a doctor"
+    })
+    public void shouldSendPaperDwpResponseReceivedNotification(final String benefit, String expectedPanelComposition)
+            throws Exception {
+        simulateCcdCallback(DWP_RESPONSE_RECEIVED_NOTIFICATION, benefit + "-paper-"
                 + DWP_RESPONSE_RECEIVED_NOTIFICATION.getId() + "Callback.json");
         List<Notification> notifications = tryFetchNotificationsForTestCase(
                 paperResponseReceivedEmailId, paperResponseReceivedSmsId);
 
-        assertNotificationBodyContains(notifications, paperResponseReceivedEmailId, caseData.getCaseReference());
+        String expectedHearingContactDate = "9 April 2016";
+        String expectedTyaLink = tyaLink.replace("appeal_id", "v8eg15XeZk");
+        assertNotificationBodyContains(notifications, paperResponseReceivedEmailId, caseData.getCaseReference(),
+                expectedPanelComposition, expectedHearingContactDate, expectedTyaLink);
+        assertNotificationBodyContains(notifications, paperResponseReceivedSmsId, expectedHearingContactDate,
+                expectedTyaLink);
     }
+
+    @Test
+    public void shouldNotSendPaperDwpResponseReceivedNotificationIfNotSubscribed() throws NotificationClientException, IOException {
+        simulateCcdCallback(DWP_RESPONSE_RECEIVED_NOTIFICATION, "paper-no-subscriptions-"
+                + DWP_RESPONSE_RECEIVED_NOTIFICATION.getId() + "Callback.json");
+
+        List<Notification> notifications = tryFetchNotificationsForTestCaseWithFlag(true,
+                paperResponseReceivedEmailId, paperResponseReceivedSmsId);
+
+        assertTrue(notifications.isEmpty());
+    }
+
+
 }

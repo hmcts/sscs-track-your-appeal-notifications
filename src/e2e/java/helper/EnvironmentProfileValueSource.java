@@ -21,9 +21,7 @@ public class EnvironmentProfileValueSource implements ProfileValueSource {
         return testUrl.contains("preview.internal") || testUrl.contains("aat.internal");
     }
 
-    public static String getEnvOrEmpty(
-        String name
-    ) {
+    public static String getEnvOrEmpty(String name) {
         String value = System.getenv(name);
         if (value == null) {
             return "";

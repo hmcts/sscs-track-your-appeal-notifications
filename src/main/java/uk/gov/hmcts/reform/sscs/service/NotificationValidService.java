@@ -12,30 +12,32 @@ public class NotificationValidService {
 
     private static final String HEARING_TYPE_ONLINE_RESOLUTION = "cor";
 
-    public Boolean isHearingTypeValidToSendNotification(SscsCaseData sscsCaseData, NotificationEventType eventType) {
+    boolean isHearingTypeValidToSendNotification(SscsCaseData sscsCaseData, NotificationEventType eventType) {
 
-        Boolean isOralCase = sscsCaseData.getAppeal().getHearingOptions().isWantsToAttendHearing();
-        Boolean isOnlineHearing = HEARING_TYPE_ONLINE_RESOLUTION.equalsIgnoreCase(sscsCaseData.getAppeal().getHearingType());
+        boolean isOralCase = sscsCaseData.getAppeal().getHearingOptions().isWantsToAttendHearing();
+        boolean isOnlineHearing = HEARING_TYPE_ONLINE_RESOLUTION.equalsIgnoreCase(sscsCaseData.getAppeal().getHearingType());
 
         if (isOralCase && !isOnlineHearing && eventType.isSendForOralCase()) {
             return true;
         } else if (!isOralCase && !isOnlineHearing && eventType.isSendForPaperCase()) {
             return true;
-        } else if (isOnlineHearing && eventType.isSendForCohCase()) {
-            return true;
+        } else {
+            return isOnlineHearing && eventType.isSendForCohCase();
         }
-        return false;
     }
 
-    public Boolean isNotificationStillValidToSend(List<Hearing> hearings, NotificationEventType eventType) {
+    boolean isNotificationStillValidToSend(List<Hearing> hearings, NotificationEventType eventType) {
         switch (eventType) {
-            case HEARING_BOOKED_NOTIFICATION: return checkHearingIsInFuture(hearings);
-            case HEARING_REMINDER_NOTIFICATION: return checkHearingIsInFuture(hearings);
-            default: return true;
+            case HEARING_BOOKED_NOTIFICATION:
+                return checkHearingIsInFuture(hearings);
+            case HEARING_REMINDER_NOTIFICATION:
+                return checkHearingIsInFuture(hearings);
+            default:
+                return true;
         }
     }
 
-    private Boolean checkHearingIsInFuture(List<Hearing> hearings) {
+    private boolean checkHearingIsInFuture(List<Hearing> hearings) {
         if (hearings != null && !hearings.isEmpty()) {
 
             Hearing latestHearing = hearings.get(0);

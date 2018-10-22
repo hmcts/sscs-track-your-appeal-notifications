@@ -13,13 +13,11 @@ public class ReminderService {
     private List<ReminderHandler> reminderHandlers;
 
     @Autowired
-    public ReminderService(
-        List<ReminderHandler> reminderHandlers
-    ) {
+    ReminderService(List<ReminderHandler> reminderHandlers) {
         this.reminderHandlers = reminderHandlers;
     }
 
-    public void createReminders(NotificationWrapper wrapper) {
+    void createReminders(NotificationWrapper wrapper) {
         if (AppealHearingType.ONLINE != wrapper.getHearingType()) {
             for (ReminderHandler reminderHandler : reminderHandlers) {
                 if (reminderHandler.canHandle(wrapper)) {

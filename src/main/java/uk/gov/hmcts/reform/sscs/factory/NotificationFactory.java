@@ -20,7 +20,7 @@ public class NotificationFactory {
     private final Map<NotificationEventType, Personalisation> map = newHashMap();
 
     @Autowired
-    public NotificationFactory(PersonalisationFactory personalisationFactory) {
+    NotificationFactory(PersonalisationFactory personalisationFactory) {
         this.personalisationFactory = personalisationFactory;
     }
 
