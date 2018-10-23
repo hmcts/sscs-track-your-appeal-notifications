@@ -6,35 +6,33 @@ import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 import static uk.gov.hmcts.reform.sscs.config.AppealHearingType.ONLINE;
 
+import junitparams.JUnitParamsRunner;
+import junitparams.Parameters;
 import org.junit.Test;
+import org.junit.runner.RunWith;
 import org.springframework.core.env.Environment;
 import uk.gov.hmcts.reform.sscs.ccd.domain.Benefit;
 import uk.gov.hmcts.reform.sscs.domain.notify.Template;
 
+@RunWith(JUnitParamsRunner.class)
 public class NotificationConfigTest {
-    @Test
-    public void getDefaultTemplate() {
-        Environment env = mock(Environment.class);
-        when(env.getProperty("notification.emailTemplateName.emailId")).thenReturn("emailTemplateId");
-        when(env.getProperty("notification.smsTemplateName.smsId")).thenReturn("smsTemplateId");
 
-        Template template = new NotificationConfig(env).getTemplate("emailTemplateName",
-                "smsTemplateName", Benefit.PIP, ONLINE);
-
-        assertThat(template.getEmailTemplateId(), is("emailTemplateId"));
-        assertThat(template.getSmsTemplateId(), is("smsTemplateId"));
-    }
+    private final Environment env = mock(Environment.class);
 
     @Test
-    public void getHearingTypeSpecificTemplate() {
-        Environment env = mock(Environment.class);
-        when(env.getProperty("notification.online.emailTemplateName.emailId")).thenReturn("onlineEmailTemplateId");
-        when(env.getProperty("notification.online.smsTemplateName.smsId")).thenReturn("onlineSmsTemplateId");
+    @Parameters({
+            "emailTemplateName, notification.emailTemplateName.emailId, emailTemplateId, smsTemplateName, notification.smsTemplateName.smsId, smsTemplateId",
+            "emailTemplateName, notification.online.emailTemplateName.emailId, onlineEmailTemplateId, smsTemplateName, notification.online.smsTemplateName.smsId, onlineSmsTemplateId"
+    })
+    public void getDefaultTemplate(String emailTemplateName, String emailTemplateKey, String emailTemplateId,
+                                   String smsTemplateName, String smsTemplateKey, String smsTemplateId) {
+        when(env.getProperty(emailTemplateKey)).thenReturn(emailTemplateId);
+        when(env.getProperty(smsTemplateKey)).thenReturn(smsTemplateId);
 
-        Template template = new NotificationConfig(env).getTemplate("emailTemplateName",
-                "smsTemplateName", Benefit.PIP, ONLINE);
+        Template template = new NotificationConfig(env).getTemplate(emailTemplateName, smsTemplateName, Benefit.PIP, ONLINE);
 
-        assertThat(template.getEmailTemplateId(), is("onlineEmailTemplateId"));
-        assertThat(template.getSmsTemplateId(), is("onlineSmsTemplateId"));
+        assertThat(template.getEmailTemplateId(), is(emailTemplateId));
+        assertThat(template.getSmsTemplateId(), is(smsTemplateId));
     }
+
 }
