@@ -47,10 +47,10 @@ public class CcdNotificationWrapper implements NotificationWrapper {
         if (HEARING_TYPE_ONLINE_RESOLUTION.equalsIgnoreCase(hearingType)) {
             return AppealHearingType.ONLINE;
         }
-        if (AppealHearingType.PAPER.name().toLowerCase().equals(hearingType)) {
+        if (AppealHearingType.PAPER.name().toLowerCase().equalsIgnoreCase(hearingType)) {
             return AppealHearingType.PAPER;
         }
-        if (AppealHearingType.ORAL.name().toLowerCase().equals(hearingType)) {
+        if (AppealHearingType.ORAL.name().toLowerCase().equalsIgnoreCase(hearingType)) {
             return AppealHearingType.ORAL;
         } else {
             return AppealHearingType.REGULAR;
@@ -60,6 +60,11 @@ public class CcdNotificationWrapper implements NotificationWrapper {
     @Override
     public String getSchedulerPayload() {
         return new CcdActionSerializer().serialize(getCaseId());
+    }
+
+    @Override
+    public SscsCaseData getOldSscsCaseData() {
+        return responseWrapper.getOldSscsCaseData();
     }
 
     @Override
