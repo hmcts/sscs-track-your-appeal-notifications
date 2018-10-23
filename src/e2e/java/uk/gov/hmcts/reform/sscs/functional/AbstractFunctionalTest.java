@@ -18,22 +18,27 @@ import java.nio.charset.StandardCharsets;
 import java.time.Instant;
 import java.time.LocalDate;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 import java.util.UUID;
 import java.util.stream.Collectors;
+import junitparams.JUnitParamsRunner;
 import org.apache.commons.io.FileUtils;
 import org.hamcrest.CoreMatchers;
 import org.junit.Assert;
 import org.junit.Before;
+import org.junit.ClassRule;
 import org.junit.Rule;
 import org.junit.runner.RunWith;
+import org.slf4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.http.HttpStatus;
 import org.springframework.test.annotation.ProfileValueSourceConfiguration;
 import org.springframework.test.context.ActiveProfiles;
-import org.springframework.test.context.junit4.SpringRunner;
+import org.springframework.test.context.junit4.rules.SpringClassRule;
+import org.springframework.test.context.junit4.rules.SpringMethodRule;
 import uk.gov.hmcts.reform.sscs.ccd.domain.Event;
 import uk.gov.hmcts.reform.sscs.ccd.domain.EventDetails;
 import uk.gov.hmcts.reform.sscs.ccd.domain.SscsCaseData;
@@ -42,19 +47,30 @@ import uk.gov.hmcts.reform.sscs.ccd.service.CcdService;
 import uk.gov.hmcts.reform.sscs.domain.notify.NotificationEventType;
 import uk.gov.hmcts.reform.sscs.idam.IdamService;
 import uk.gov.hmcts.reform.sscs.idam.IdamTokens;
+import uk.gov.hmcts.reform.sscs.service.AuthorisationService;
 import uk.gov.service.notify.Notification;
 import uk.gov.service.notify.NotificationClient;
 import uk.gov.service.notify.NotificationClientException;
 
-@RunWith(SpringRunner.class)
+@RunWith(JUnitParamsRunner.class)
 @SpringBootTest
 @ActiveProfiles("functional")
 @ProfileValueSourceConfiguration(EnvironmentProfileValueSource.class)
 public abstract class AbstractFunctionalTest {
+
+    private static final Logger log = getLogger(AuthorisationService.class);
+
+    // Below rules are needed to use the junitParamsRunner together with SpringRunner
+    @ClassRule
+    public static final SpringClassRule SPRING_CLASS_RULE = new SpringClassRule();
+
+    @Rule
+    public final SpringMethodRule springMethodRule = new SpringMethodRule();
+    //end of rules needed for junitParamsRunner
+
     @Rule
     public Retry retry = new Retry(3);
 
-    private static final org.slf4j.Logger LOG = getLogger(AbstractFunctionalTest.class);
 
     private final int maxSecondsToWaitForNotification;
 
@@ -98,7 +114,7 @@ public abstract class AbstractFunctionalTest {
 
         assertNotNull(caseDetails);
         caseId = caseDetails.getId();
-        LOG.info("Creating CCD case [" + caseId + "]");
+        log.info("Creating CCD case [" + caseId + "]");
     }
 
     protected SscsCaseData createCaseData() {
@@ -114,7 +130,11 @@ public abstract class AbstractFunctionalTest {
                 + epoch.substring(8, 13);
     }
 
-    protected List<Notification> tryFetchNotificationsForTestCase(String... expectedTemplateIds) throws NotificationClientException {
+    List<Notification> tryFetchNotificationsForTestCase(String... expectedTemplateIds) throws NotificationClientException {
+        return tryFetchNotificationsForTestCaseWithFlag(false, expectedTemplateIds);
+    }
+
+    List<Notification> tryFetchNotificationsForTestCaseWithFlag(boolean notificationNotFoundFlag, String... expectedTemplateIds) throws NotificationClientException {
 
         List<Notification> allNotifications = new ArrayList<>();
         List<Notification> matchingNotifications = new ArrayList<>();
@@ -125,7 +145,7 @@ public abstract class AbstractFunctionalTest {
 
         do {
 
-            LOG.info("Waiting for all test case notifications to be delivered "
+            log.info("Waiting for all test case notifications to be delivered "
                     + "[" + matchingNotifications.size() + "/" + waitForAtLeastNumberOfNotifications + "] ..."
             );
 
@@ -137,10 +157,15 @@ public abstract class AbstractFunctionalTest {
                                 .map(notification -> notification.getTemplateId().toString())
                                 .collect(Collectors.joining("\n"));
 
-                fail("Timed out fetching notifications after "
+                log.info("Timed out fetching notifications after "
                         + maxSecondsToWaitForNotification
                         + " seconds. Template IDs:\n"
                         + allTemplateIds);
+                if (notificationNotFoundFlag) {
+                    return Collections.emptyList();
+                } else {
+                    fail();
+                }
             } else {
 
                 secondsLeft -= 5;
@@ -165,7 +190,7 @@ public abstract class AbstractFunctionalTest {
                     assertFalse(notification.getStatus().contains("fail"));
                 }
 
-                LOG.info("Test case notifications have been delivered "
+                log.info("Test case notifications have been delivered "
                         + "[" + matchingNotifications.size() + "/" + waitForAtLeastNumberOfNotifications + "]");
 
                 return matchingNotifications;
@@ -286,4 +311,6 @@ public abstract class AbstractFunctionalTest {
             );
         }
     }
+
+
 }

@@ -3,8 +3,16 @@ package uk.gov.hmcts.reform.sscs.personalisation;
 import static com.google.common.collect.Lists.newArrayList;
 import static uk.gov.hmcts.reform.sscs.ccd.domain.Benefit.getBenefitByCode;
 import static uk.gov.hmcts.reform.sscs.ccd.domain.EventType.APPEAL_RECEIVED;
-import static uk.gov.hmcts.reform.sscs.config.AppConstants.*;
-import static uk.gov.hmcts.reform.sscs.domain.notify.NotificationEventType.*;
+import static uk.gov.hmcts.reform.sscs.config.AppConstants.ACCEPT_VIEW_BY_DATE_LITERAL;
+import static uk.gov.hmcts.reform.sscs.config.AppConstants.ONLINE_HEARING_LINK_LITERAL;
+import static uk.gov.hmcts.reform.sscs.config.AppConstants.ONLINE_HEARING_REGISTER_LINK_LITERAL;
+import static uk.gov.hmcts.reform.sscs.config.AppConstants.ONLINE_HEARING_SIGN_IN_LINK_LITERAL;
+import static uk.gov.hmcts.reform.sscs.config.AppConstants.QUESTION_ROUND_EXPIRES_DATE_LITERAL;
+import static uk.gov.hmcts.reform.sscs.config.AppConstants.TRIBUNAL_RESPONSE_DATE_LITERAL;
+import static uk.gov.hmcts.reform.sscs.domain.notify.NotificationEventType.APPEAL_RECEIVED_NOTIFICATION;
+import static uk.gov.hmcts.reform.sscs.domain.notify.NotificationEventType.DWP_RESPONSE_LATE_REMINDER_NOTIFICATION;
+import static uk.gov.hmcts.reform.sscs.domain.notify.NotificationEventType.EVIDENCE_RECEIVED_NOTIFICATION;
+import static uk.gov.hmcts.reform.sscs.domain.notify.NotificationEventType.SUBSCRIPTION_CREATED_NOTIFICATION;
 
 import java.io.UnsupportedEncodingException;
 import java.net.URLEncoder;
@@ -21,7 +29,13 @@ import java.util.stream.Collectors;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
-import uk.gov.hmcts.reform.sscs.ccd.domain.*;
+import uk.gov.hmcts.reform.sscs.ccd.domain.Benefit;
+import uk.gov.hmcts.reform.sscs.ccd.domain.Event;
+import uk.gov.hmcts.reform.sscs.ccd.domain.EventDetails;
+import uk.gov.hmcts.reform.sscs.ccd.domain.Hearing;
+import uk.gov.hmcts.reform.sscs.ccd.domain.RegionalProcessingCenter;
+import uk.gov.hmcts.reform.sscs.ccd.domain.SscsCaseData;
+import uk.gov.hmcts.reform.sscs.ccd.domain.Subscription;
 import uk.gov.hmcts.reform.sscs.config.AppConstants;
 import uk.gov.hmcts.reform.sscs.config.NotificationConfig;
 import uk.gov.hmcts.reform.sscs.domain.SscsCaseDataWrapper;
@@ -61,6 +75,8 @@ public class Personalisation<E extends NotificationWrapper> {
         Map<String, String> personalisation = new HashMap<>();
         Subscription appellantSubscription = ccdResponse.getSubscriptions().getAppellantSubscription();
         Benefit benefit = getBenefitByCode(ccdResponse.getAppeal().getBenefitType().getCode());
+
+        personalisation.put(AppConstants.PANEL_COMPOSITION, getPanelCompositionByBenefitType(benefit));
 
         personalisation.put(AppConstants.BENEFIT_NAME_ACRONYM_LITERAL, benefit.name());
         personalisation.put(AppConstants.BENEFIT_NAME_ACRONYM_SHORT_LITERAL, benefit.name());
@@ -125,14 +141,18 @@ public class Personalisation<E extends NotificationWrapper> {
         return personalisation;
     }
 
-    public void setHearingContactDate(Map<String, String> personalisation, SscsCaseDataWrapper wrapper) {
-        Optional<ZonedDateTime> hearingContactDate = hearingContactDateExtractor.extract(wrapper);
-        if (hearingContactDate.isPresent()) {
-            personalisation.put(
-                AppConstants.HEARING_CONTACT_DATE,
-                formatLocalDate(hearingContactDate.get().toLocalDate())
-            );
+    private String getPanelCompositionByBenefitType(Benefit benefit) {
+        if (Benefit.PIP.equals(benefit)) {
+            return AppConstants.PIP_PANEL_COMPOSITION;
         }
+        return AppConstants.ESA_PANEL_COMPOSITION;
+    }
+
+    void setHearingContactDate(Map<String, String> personalisation, SscsCaseDataWrapper wrapper) {
+        Optional<ZonedDateTime> hearingContactDate = hearingContactDateExtractor.extract(wrapper);
+        hearingContactDate.ifPresent(zonedDateTime -> personalisation.put(AppConstants.HEARING_CONTACT_DATE,
+                formatLocalDate(zonedDateTime.toLocalDate())
+        ));
     }
 
     public Map<String, String> setEventData(Map<String, String> personalisation, SscsCaseData ccdResponse, NotificationEventType notificationEventType) {
@@ -141,7 +161,7 @@ public class Personalisation<E extends NotificationWrapper> {
             for (Event event : ccdResponse.getEvents()) {
                 if (event.getValue() != null) {
                     if ((notificationEventType.equals(APPEAL_RECEIVED_NOTIFICATION) && event.getValue().getEventType().equals(APPEAL_RECEIVED))
-                        || notificationEventType.equals(DWP_RESPONSE_LATE_REMINDER_NOTIFICATION)) {
+                            || notificationEventType.equals(DWP_RESPONSE_LATE_REMINDER_NOTIFICATION)) {
                         return setAppealReceivedDetails(personalisation, event.getValue());
                     }
                 }

@@ -181,6 +181,7 @@ smsSender:
 reminder:
   evidenceReminder.delay.seconds: 604800
   dwpResponseLateReminder.delay.seconds: 3024000
+  paperCases.decisionDate.initialDelay.seconds: 7257600
   hearingContactDate.initialDelay.seconds: 4838400
   hearingContactDate.subsequentDelay.seconds: 3628800
   hearingReminder.beforeFirst.seconds: 604800
