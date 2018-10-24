@@ -1,4 +1,4 @@
-package uk.gov.hmcts.reform.sscs.functional;
+package uk.gov.hmcts.reform.sscs.functional.sya.notifications;
 
 import static org.junit.Assert.assertTrue;
 import static uk.gov.hmcts.reform.sscs.domain.notify.NotificationEventType.ADJOURNED_NOTIFICATION;
@@ -17,6 +17,7 @@ import java.util.List;
 import junitparams.Parameters;
 import org.junit.Test;
 import org.springframework.beans.factory.annotation.Value;
+import uk.gov.hmcts.reform.sscs.functional.AbstractFunctionalTest;
 import uk.gov.service.notify.Notification;
 import uk.gov.service.notify.NotificationClientException;
 
