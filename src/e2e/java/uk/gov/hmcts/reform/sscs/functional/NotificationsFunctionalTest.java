@@ -15,6 +15,7 @@ import static uk.gov.hmcts.reform.sscs.domain.notify.NotificationEventType.SUBSC
 import java.io.IOException;
 import java.util.List;
 import junitparams.Parameters;
+import org.junit.Ignore;
 import org.junit.Test;
 import org.springframework.beans.factory.annotation.Value;
 import uk.gov.service.notify.Notification;
@@ -220,6 +221,7 @@ public class NotificationsFunctionalTest extends AbstractFunctionalTest {
     }
 
     @Test
+    @Ignore
     public void shouldSendPaperSubscriptionUpdateNotification() throws NotificationClientException, IOException {
         simulateCcdCallback(SUBSCRIPTION_UPDATED_NOTIFICATION,
                 "paper-" + SUBSCRIPTION_UPDATED_NOTIFICATION.getId() + "Callback.json");
