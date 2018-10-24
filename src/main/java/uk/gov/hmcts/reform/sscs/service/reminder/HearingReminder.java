@@ -59,7 +59,7 @@ public class HearingReminder implements ReminderHandler {
 
     private void scheduleReminder(SscsCaseData ccdResponse, long secondsBeforeHearing) {
 
-        String caseId = ccdResponse.getCaseId();
+        String caseId = ccdResponse.getCcdCaseId();
         String eventId = HEARING_REMINDER_NOTIFICATION.getId();
         String jobGroup = jobGroupGenerator.generate(caseId, eventId);
         ZonedDateTime reminderDate = calculateReminderDate(ccdResponse, secondsBeforeHearing);
@@ -83,7 +83,7 @@ public class HearingReminder implements ReminderHandler {
         }
 
         ReminderException reminderException = new ReminderException(
-            new Exception("Could not find reminder date for case id: " + ccdResponse.getCaseId())
+            new Exception("Could not find reminder date for case id: " + ccdResponse.getCcdCaseId())
         );
 
         LOG.error("Reminder date not found", reminderException);

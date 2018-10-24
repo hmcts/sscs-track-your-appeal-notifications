@@ -36,8 +36,7 @@
           "identity": {
             "dob": "1998-07-01",
             "nino": "JT098230B"
-          },
-          "isAppointee": "Yes"
+          }
         },
         "benefitType":{
           "code":"ESA"
@@ -251,8 +250,7 @@
           "identity": {
             "dob": "1998-07-01",
             "nino": "JT098230B"
-          },
-          "isAppointee": "Yes"
+          }
         },
         "benefitType": {
           "code": "ESA"

@@ -4,7 +4,6 @@
     "callback_response_status": null,
     "callback_response_status_code": null,
     "case_data": {
-      "onlinePanel": {},
       "appeal": {
         "appealReasons": {},
         "appellant": {
@@ -35,7 +34,7 @@
         "mrnDetails": {},
         "rep": {},
         "signer": null,
-        "hearingType": "cor"
+        "hearingType": "paper"
       },
       "caseReference": "SC022/14/12423",
       "events": [
@@ -60,8 +59,8 @@
         "appellantSubscription": {
           "email": "sscstest+notify@greencroftconsulting.com",
           "mobile": "07398785050",
-          "subscribeEmail": "Yes",
-          "subscribeSms": "Yes",
+          "subscribeEmail": "No",
+          "subscribeSms": "No",
           "tya": ""
         },
         "supporterSubscription": {
@@ -357,7 +356,8 @@
         },
         "mrnDetails": {},
         "rep": {},
-        "signer": null
+        "signer": null,
+        "hearingType": "paper"
       },
       "caseReference": "SC022/14/12423",
       "events": [
@@ -374,8 +374,8 @@
         "appellantSubscription": {
           "email": "sscstest+notify@greencroftconsulting.com",
           "mobile": "07398785050",
-          "subscribeEmail": "Yes",
-          "subscribeSms": "Yes",
+          "subscribeEmail": "No",
+          "subscribeSms": "No",
           "tya": ""
         },
         "supporterSubscription": {

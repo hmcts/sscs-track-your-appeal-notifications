@@ -10,8 +10,8 @@ import org.junit.Before;
 import org.junit.Test;
 import org.mockito.Mock;
 import org.springframework.test.context.ActiveProfiles;
-import uk.gov.hmcts.reform.ccd.client.model.CaseDetails;
 import uk.gov.hmcts.reform.sscs.ccd.domain.SscsCaseData;
+import uk.gov.hmcts.reform.sscs.ccd.domain.SscsCaseDetails;
 import uk.gov.hmcts.reform.sscs.ccd.service.CcdService;
 import uk.gov.hmcts.reform.sscs.deserialize.SscsCaseDataWrapperDeserializer;
 import uk.gov.hmcts.reform.sscs.domain.CohEvent;
@@ -73,7 +73,7 @@ public class NotificationControllerTest {
         long caseDetailsId = 123L;
         String onlineHearingId = "onlineHearingId";
 
-        CaseDetails caseDetails = CaseDetails.builder().id(caseDetailsId).build();
+        SscsCaseDetails caseDetails = SscsCaseDetails.builder().id(caseDetailsId).build();
 
         when(ccdService.getByCaseId(Long.valueOf(caseId), idamTokens)).thenReturn(caseDetails);
         SscsCaseDataWrapper sscsCaseDataWrapper = SscsCaseDataWrapper.builder().build();

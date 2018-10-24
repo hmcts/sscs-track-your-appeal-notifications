@@ -42,6 +42,10 @@ public class SscsCaseDataWrapperDeserializer extends StdDeserializer<SscsCaseDat
         JsonNode caseDetailsNode = getNode(node, "case_details");
         JsonNode caseNode = getNode(caseDetailsNode, "case_data");
 
+        if (caseNode == null) {
+            caseNode = getNode(caseDetailsNode, "data");
+        }
+
         if (caseNode != null) {
             newSscsCaseData = createSscsCaseDataFromNode(caseNode, node, caseDetailsNode);
         }
@@ -64,7 +68,7 @@ public class SscsCaseDataWrapperDeserializer extends StdDeserializer<SscsCaseDat
 
     private SscsCaseData createSscsCaseDataFromNode(JsonNode caseNode, JsonNode node, JsonNode caseDetailsNode) {
         SscsCaseData ccdResponse = deserializeCaseNode(caseNode);
-        ccdResponse.setCaseId(getField(caseDetailsNode, "id"));
+        ccdResponse.setCcdCaseId(getField(caseDetailsNode, "id"));
         return ccdResponse;
     }
 
@@ -146,10 +150,9 @@ public class SscsCaseDataWrapperDeserializer extends StdDeserializer<SscsCaseDat
         Address address = deserializeAddressJson(appellantNode);
         Contact contact = deserializeContactJson(appellantNode);
         Identity identity = deserializeIdentityJson(appellantNode);
-        String isAppointee = getField(appellantNode, "isAppointee");
 
         return Appellant.builder()
-                .name(name).address(address).contact(contact).identity(identity).isAppointee(isAppointee).build();
+                .name(name).address(address).contact(contact).identity(identity).build();
     }
 
     private Contact deserializeContactJson(JsonNode node) {

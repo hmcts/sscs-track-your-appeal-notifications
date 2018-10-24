@@ -51,7 +51,7 @@ public class EvidenceReminder implements ReminderHandler {
         }
 
         SscsCaseData caseData = wrapper.getNewSscsCaseData();
-        String caseId = caseData.getCaseId();
+        String caseId = caseData.getCcdCaseId();
         String eventId = EVIDENCE_REMINDER.getCcdType();
         String jobGroup = jobGroupGenerator.generate(caseId, eventId);
         ZonedDateTime reminderDate = calculateReminderDate(caseData);
@@ -76,7 +76,7 @@ public class EvidenceReminder implements ReminderHandler {
         }
 
         ReminderException reminderException = new ReminderException(
-            new Exception("Could not find reminder date for case id: " + ccdResponse.getCaseId())
+            new Exception("Could not find reminder date for case id: " + ccdResponse.getCcdCaseId())
         );
 
         LOG.error("Reminder date not found", reminderException);
