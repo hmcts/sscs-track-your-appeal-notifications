@@ -67,6 +67,7 @@ gov.uk.notification.api.testRecipients:
   - "sscstest+notify@greencroftconsulting.com"
   - "sscstest+notify2@greencroftconsulting.com"
   - "07398785050"
+  - "07398785051"
 
 subscription.hmac.secret.text: ${EMAIL_MAC_SECRET_TEXT:our-big-secret}
 
