@@ -70,29 +70,29 @@ public class NotificationService {
             Subscription newSubscription = wrapper.getNewSscsCaseData().getSubscriptions().getAppellantSubscription();
             Subscription oldSubscription = wrapper.getOldSscsCaseData().getSubscriptions().getAppellantSubscription();
 
-            String emailAdress = null;
+            String emailAddress = null;
             String smsNumber = null;
 
             if (null != newSubscription.getEmail() && null != oldSubscription.getEmail()) {
-                emailAdress = newSubscription.getEmail().equals(oldSubscription.getEmail()) ? null : oldSubscription.getEmail();
+                emailAddress = newSubscription.getEmail().equals(oldSubscription.getEmail()) ? null : oldSubscription.getEmail();
             } else if (null == newSubscription.getEmail() && null != oldSubscription.getEmail()) {
-                emailAdress = oldSubscription.getEmail();
+                emailAddress = oldSubscription.getEmail();
             }
 
             if (null != newSubscription.getMobile() && null != oldSubscription.getMobile()) {
                 smsNumber = newSubscription.getMobile().equals(oldSubscription.getMobile()) ? null : oldSubscription.getMobile();
             } else if (null == newSubscription.getMobile() && null != oldSubscription.getMobile()) {
-                emailAdress =  oldSubscription.getMobile();
+                smsNumber =  oldSubscription.getMobile();
             }
 
 
-            Destination destination = Destination.builder().email(emailAdress).sms(smsNumber).build();
+            Destination destination = Destination.builder().email(emailAddress).sms(smsNumber).build();
 
             Benefit benefit = getBenefitByCode(wrapper.getSscsCaseDataWrapper()
                     .getNewSscsCaseData().getAppeal().getBenefitType().getCode());
 
             Template template = notificationConfig.getTemplate(NotificationEventType.SUBSCRIPTION_OLD_NOTIFICATION.getId(),
-                    null, benefit, wrapper.getHearingType());
+                    NotificationEventType.SUBSCRIPTION_OLD_NOTIFICATION.getId(), benefit, wrapper.getHearingType());
 
             Notification oldNotification = Notification.builder().template(template).appealNumber(notification.getAppealNumber())
                     .destination(destination)
