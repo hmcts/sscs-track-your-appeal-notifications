@@ -150,10 +150,9 @@ public class SscsCaseDataWrapperDeserializer extends StdDeserializer<SscsCaseDat
         Address address = deserializeAddressJson(appellantNode);
         Contact contact = deserializeContactJson(appellantNode);
         Identity identity = deserializeIdentityJson(appellantNode);
-        String isAppointee = getField(appellantNode, "isAppointee");
 
         return Appellant.builder()
-                .name(name).address(address).contact(contact).identity(identity).isAppointee(isAppointee).build();
+                .name(name).address(address).contact(contact).identity(identity).build();
     }
 
     private Contact deserializeContactJson(JsonNode node) {

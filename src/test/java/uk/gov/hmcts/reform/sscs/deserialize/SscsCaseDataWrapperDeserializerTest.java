@@ -357,8 +357,7 @@ public class SscsCaseDataWrapperDeserializerTest {
                 + "\"address\": {\"line1\": \"36 Dale Street\",\"line2\": \"Village\","
                 + "\"town\": \"Liverpool\",\"county\": \"Merseyside\",\"postcode\": \"L2 5UZ\"},"
                 + "\"contact\": {\"email\": \"test@tester.com\", \"mobile\": \"07848484848\"},"
-                + "\"identity\": {\"dob\": \"1998-07-01\", \"nino\": \"JT098230B\"},"
-                + "\"isAppointee\": \"Yes\"}}";
+                + "\"identity\": {\"dob\": \"1998-07-01\", \"nino\": \"JT098230B\"}}}";
 
         Appellant appellant = ccdResponseDeserializer.deserializeAppellantDetailsJson(mapper.readTree(appellantJson));
 
@@ -374,7 +373,6 @@ public class SscsCaseDataWrapperDeserializerTest {
         assertEquals("07848484848", appellant.getContact().getPhone());
         assertEquals("1998-07-01", appellant.getIdentity().getDob());
         assertEquals("JT098230B", appellant.getIdentity().getNino());
-        assertEquals("Yes", appellant.getIsAppointee());
     }
 
     @Test
@@ -482,7 +480,6 @@ public class SscsCaseDataWrapperDeserializerTest {
         assertEquals("07848484848", appellant.getContact().getPhone());
         assertEquals("JT098230B", appellant.getIdentity().getNino());
         assertEquals("1998-07-01", appellant.getIdentity().getDob());
-        assertEquals("Yes", appellant.getIsAppointee());
 
         List<String> arrangements = new ArrayList<>();
         arrangements.add("signLanguageInterpreter");

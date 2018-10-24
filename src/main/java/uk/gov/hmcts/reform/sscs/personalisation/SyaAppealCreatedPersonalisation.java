@@ -61,8 +61,6 @@ public class SyaAppealCreatedPersonalisation extends Personalisation<CcdNotifica
 
     private String buildYourDetails(Appeal appeal) {
         return new StringBuilder()
-            .append("Appointee: ")
-            .append(appeal.getAppellant().getIsAppointee() + "\n\n")
             .append("Name: ")
             .append(appeal.getAppellant().getName().getFullNameNoTitle() + "\n\n")
             .append("Date of birth: ")

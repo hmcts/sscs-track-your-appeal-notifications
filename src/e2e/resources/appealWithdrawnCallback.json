@@ -16,7 +16,6 @@
             "dob": "1904-03-10",
             "nino": "AB 22 55 66 B"
           },
-          "isAppointee": null,
           "name": {
             "firstName": "User",
             "lastName": "Test",
@@ -111,7 +110,6 @@
                   "nino": "PUBLIC"
                 }
               },
-              "isAppointee": "PUBLIC",
               "name": {
                 "classification": "PUBLIC",
                 "value": {
@@ -237,7 +235,6 @@
                   "nino": "PUBLIC"
                 }
               },
-              "isAppointee": "PUBLIC",
               "name": {
                 "classification": "PUBLIC",
                 "value": {
@@ -341,7 +338,6 @@
             "dob": "1904-03-10",
             "nino": "AB 22 55 66 B"
           },
-          "isAppointee": null,
           "name": {
             "firstName": "User",
             "lastName": "Test",
@@ -428,7 +424,6 @@
                   "nino": "PUBLIC"
                 }
               },
-              "isAppointee": "PUBLIC",
               "name": {
                 "classification": "PUBLIC",
                 "value": {
@@ -546,7 +541,6 @@
                   "nino": "PUBLIC"
                 }
               },
-              "isAppointee": "PUBLIC",
               "name": {
                 "classification": "PUBLIC",
                 "value": {
