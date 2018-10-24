@@ -2,6 +2,8 @@ package uk.gov.hmcts.reform.sscs.functional.sya.notifications;
 
 import static uk.gov.hmcts.reform.sscs.domain.notify.NotificationEventType.APPEAL_DORMANT_NOTIFICATION;
 
+import java.time.LocalDate;
+import java.time.format.DateTimeFormatter;
 import java.util.List;
 import org.junit.Test;
 import org.springframework.beans.factory.annotation.Value;
@@ -34,9 +36,11 @@ public class AppealDormantNotificationTest extends AbstractFunctionalTest {
         String firstTierAgencyAcronym = "DWP";
         String benefitNameAcronym = "ESA";
         String rpcPhoneNumber = "0300 123 1142";
+        DateTimeFormatter dateFormatter = DateTimeFormatter.ofPattern("d MMMM yyyy");
+        String expectedDecisionPostedReceiveDate = dateFormatter.format(LocalDate.now().plusDays(7));
         assertNotificationBodyContains(notifications, paperAppealDormantEmailId, caseData.getCaseReference(),
-                name, firstTierAgencyAcronym, benefitNameAcronym, rpcPhoneNumber);
+                name, firstTierAgencyAcronym, benefitNameAcronym, rpcPhoneNumber, expectedDecisionPostedReceiveDate);
         assertNotificationBodyContains(notifications, paperAppealDormantSmsId, firstTierAgencyAcronym,
-                benefitNameAcronym);
+                benefitNameAcronym, expectedDecisionPostedReceiveDate);
     }
 }
