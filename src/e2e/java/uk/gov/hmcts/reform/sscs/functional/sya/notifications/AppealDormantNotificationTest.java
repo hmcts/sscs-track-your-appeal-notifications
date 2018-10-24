@@ -22,7 +22,7 @@ public class AppealDormantNotificationTest extends AbstractFunctionalTest {
 
     @Test
     public void shouldSendPaperAppealDormantNotification() throws Exception {
-        simulateCcdCallback(APPEAL_DORMANT_NOTIFICATION, "appealDormant/paper/paper-" + APPEAL_DORMANT_NOTIFICATION.getId()
+        simulateCcdCallback(APPEAL_DORMANT_NOTIFICATION, "paper/appealDormant/paper-" + APPEAL_DORMANT_NOTIFICATION.getId()
                 + "Callback.json");
         List<Notification> notifications = tryFetchNotificationsForTestCase(
                 paperAppealDormantEmailId, paperAppealDormantSmsId);

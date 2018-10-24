@@ -23,7 +23,7 @@ import uk.gov.service.notify.NotificationClientException;
 
 public class NotificationsFunctionalTest extends AbstractFunctionalTest {
 
-    private static final String RESPONSE_RECEIVED_PAPER_PATH = "responseReceived/paper/";
+    private static final String RESPONSE_RECEIVED_PAPER_PATH = "paper/responseReceived/";
     @Value("${track.appeal.link}")
     private String tyaLink;
 
