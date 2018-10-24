@@ -88,10 +88,10 @@ public class NotificationsFunctionalTest extends AbstractFunctionalTest {
     @Value("${notification.paper.subscriptionUpdated.smsId}")
     private String paperSubscriptionUpdateSmsId;
 
-    @Value("${notification.paper.subscriptionUpdatedOld.emailId}")
+    @Value("${notification.paper.subscriptionOld.emailId}")
     private String paperSubscriptionUpdateOldEmailId;
 
-    @Value("${notification.paper.subscriptionUpdatedOld.smsId}")
+    @Value("${notification.paper.subscriptionOld.smsId}")
     private String paperSubscriptionUpdateOldSmsId;
 
 
@@ -217,6 +217,19 @@ public class NotificationsFunctionalTest extends AbstractFunctionalTest {
                 paperResponseReceivedEmailId, paperResponseReceivedSmsId);
 
         assertTrue(notifications.isEmpty());
+    }
+
+    @Test
+    public void shouldSendPaperSubscriptionUpdateNotification() throws NotificationClientException, IOException {
+        simulateCcdCallback(SUBSCRIPTION_UPDATED_NOTIFICATION,
+                "paper-" + SUBSCRIPTION_UPDATED_NOTIFICATION.getId() + "Callback.json");
+
+        tryFetchNotificationsForTestCase(
+                paperSubscriptionUpdateEmailId,
+                paperSubscriptionUpdateSmsId,
+                paperSubscriptionUpdateOldEmailId,
+                paperSubscriptionUpdateOldSmsId
+        );
     }
 
 
