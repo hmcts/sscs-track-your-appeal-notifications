@@ -96,7 +96,8 @@ public class NotificationService {
 
             Notification oldNotification = Notification.builder().template(template).appealNumber(notification.getAppealNumber())
                     .destination(destination)
-                    .reference(new Reference())
+                    .reference(new Reference(wrapper.getOldSscsCaseData().getCaseReference()))
+                    .appealNumber(notification.getAppealNumber())
                     .placeholders(notification.getPlaceholders()).build();
 
             sendEmailSmsNotification(wrapper, oldSubscription, oldNotification);
