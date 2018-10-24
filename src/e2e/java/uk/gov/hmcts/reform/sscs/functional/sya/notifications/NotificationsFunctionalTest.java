@@ -23,6 +23,7 @@ import uk.gov.service.notify.NotificationClientException;
 
 public class NotificationsFunctionalTest extends AbstractFunctionalTest {
 
+    private static final String RESPONSE_RECEIVED_PAPER_PATH = "responseReceived/paper/";
     @Value("${track.appeal.link}")
     private String tyaLink;
 
@@ -196,7 +197,7 @@ public class NotificationsFunctionalTest extends AbstractFunctionalTest {
     })
     public void shouldSendPaperDwpResponseReceivedNotification(final String benefit, String expectedPanelComposition)
             throws Exception {
-        simulateCcdCallback(DWP_RESPONSE_RECEIVED_NOTIFICATION, benefit + "-paper-"
+        simulateCcdCallback(DWP_RESPONSE_RECEIVED_NOTIFICATION, RESPONSE_RECEIVED_PAPER_PATH + benefit + "-paper-"
                 + DWP_RESPONSE_RECEIVED_NOTIFICATION.getId() + "Callback.json");
         List<Notification> notifications = tryFetchNotificationsForTestCase(
                 paperResponseReceivedEmailId, paperResponseReceivedSmsId);
@@ -211,7 +212,7 @@ public class NotificationsFunctionalTest extends AbstractFunctionalTest {
 
     @Test
     public void shouldNotSendPaperDwpResponseReceivedNotificationIfNotSubscribed() throws NotificationClientException, IOException {
-        simulateCcdCallback(DWP_RESPONSE_RECEIVED_NOTIFICATION, "paper-no-subscriptions-"
+        simulateCcdCallback(DWP_RESPONSE_RECEIVED_NOTIFICATION, RESPONSE_RECEIVED_PAPER_PATH + "paper-no-subscriptions-"
                 + DWP_RESPONSE_RECEIVED_NOTIFICATION.getId() + "Callback.json");
 
         List<Notification> notifications = tryFetchNotificationsForTestCaseWithFlag(true,
