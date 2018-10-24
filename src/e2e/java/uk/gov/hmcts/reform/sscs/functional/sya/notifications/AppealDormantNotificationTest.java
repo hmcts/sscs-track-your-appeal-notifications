@@ -26,6 +26,15 @@ public class AppealDormantNotificationTest extends AbstractFunctionalTest {
                 + "Callback.json");
         List<Notification> notifications = tryFetchNotificationsForTestCase(
                 paperAppealDormantEmailId, paperAppealDormantSmsId);
-        assertNotificationBodyContains(notifications, paperAppealDormantEmailId, caseData.getCaseReference());
+        assertEmailNotificationContentIsAsExpected(notifications);
+    }
+
+    private void assertEmailNotificationContentIsAsExpected(List<Notification> notifications) {
+        String name = "AN Test";
+        String firstTierAgencyAcronym = "DWP";
+        String benefitNameAcronym = "ESA";
+        String rpcPhoneNumber = "0300 123 1142";
+        assertNotificationBodyContains(notifications, paperAppealDormantEmailId, caseData.getCaseReference(),
+                name, firstTierAgencyAcronym, benefitNameAcronym, rpcPhoneNumber);
     }
 }
