@@ -11,7 +11,9 @@ import java.io.File;
 import java.nio.charset.StandardCharsets;
 import java.time.LocalDate;
 import java.util.Arrays;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.UUID;
 import javax.servlet.http.HttpServletResponse;
 import org.apache.commons.io.FileUtils;
@@ -23,6 +25,7 @@ import org.quartz.Scheduler;
 import org.quartz.SchedulerException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
@@ -90,6 +93,11 @@ public class HearingHoldingReminderIt {
     @MockBean
     private IdamService idamService;
 
+    @Value("${slot.name}")
+    private String slotName;
+
+    private Map<String,Integer> slotNameMap;
+
     @Before
     public void setup() throws NotificationClientException {
         controller = new NotificationController(notificationService, authorisationService, ccdService, deserializer, idamService);
@@ -106,6 +114,13 @@ public class HearingHoldingReminderIt {
 
         outOfHoursCalculator = mock(OutOfHoursCalculator.class);
         when(outOfHoursCalculator.isItOutOfHours()).thenReturn(false);
+        slotNameMap = new HashMap<>();
+        slotNameMap.put("STAGING",0);
+        slotNameMap.put("PRODUCTION",1);
+        slotNameMap.put("dev",0);
+        if (!"PRODUCTION".equalsIgnoreCase(slotName)) {
+            quartzScheduler = mock(Scheduler.class);
+        }
     }
 
     @Test
@@ -131,7 +146,7 @@ public class HearingHoldingReminderIt {
 
             sendEvent("responseReceived");
 
-            IntegrationTestHelper.assertScheduledJobCount(quartzScheduler, "First hearing holding reminder scheduled", "hearingHoldingReminder", 1);
+            IntegrationTestHelper.assertScheduledJobCount(quartzScheduler, "First hearing holding reminder scheduled", "hearingHoldingReminder", slotNameMap.get(slotName));
             IntegrationTestHelper.assertScheduledJobTriggerAt(
                 quartzScheduler,
                 "First hearing holding reminder scheduled",
@@ -139,7 +154,7 @@ public class HearingHoldingReminderIt {
                 "2048-07-19T14:01:18.243Z"
             );
 
-            IntegrationTestHelper.assertScheduledJobCount(quartzScheduler, "Second hearing holding reminder scheduled", "secondHearingHoldingReminder", 1);
+            IntegrationTestHelper.assertScheduledJobCount(quartzScheduler, "Second hearing holding reminder scheduled", "secondHearingHoldingReminder", slotNameMap.get(slotName));
             IntegrationTestHelper.assertScheduledJobTriggerAt(
                 quartzScheduler,
                 "Hearing holding reminder scheduled",
@@ -147,7 +162,7 @@ public class HearingHoldingReminderIt {
                 "2048-08-30T14:01:18.243Z"
             );
 
-            IntegrationTestHelper.assertScheduledJobCount(quartzScheduler, "Third hearing holding reminder scheduled", "thirdHearingHoldingReminder", 1);
+            IntegrationTestHelper.assertScheduledJobCount(quartzScheduler, "Third hearing holding reminder scheduled", "thirdHearingHoldingReminder", slotNameMap.get(slotName));
             IntegrationTestHelper.assertScheduledJobTriggerAt(
                 quartzScheduler,
                 "Hearing holding reminder scheduled",
@@ -155,7 +170,7 @@ public class HearingHoldingReminderIt {
                 "2048-10-11T14:01:18.243Z"
             );
 
-            IntegrationTestHelper.assertScheduledJobCount(quartzScheduler, "Final hearing holding reminder scheduled", "finalHearingHoldingReminder", 1);
+            IntegrationTestHelper.assertScheduledJobCount(quartzScheduler, "Final hearing holding reminder scheduled", "finalHearingHoldingReminder", slotNameMap.get(slotName));
             IntegrationTestHelper.assertScheduledJobTriggerAt(
                 quartzScheduler,
                 "Final hearing holding reminder scheduled",

@@ -51,6 +51,9 @@ idam:
 coh:
   url: ${COH_URL:http://localhost:8081}
 
+# change slot value to PRODUCTION to cause the service to start process reminder
+slot.name: ${SLOT:dev}
+
 management:
   endpoints:
     web:

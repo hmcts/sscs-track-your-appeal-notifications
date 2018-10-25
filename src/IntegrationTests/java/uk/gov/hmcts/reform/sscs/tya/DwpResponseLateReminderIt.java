@@ -9,9 +9,7 @@ import static org.mockito.Mockito.when;
 import helper.IntegrationTestHelper;
 import java.io.File;
 import java.nio.charset.StandardCharsets;
-import java.util.Arrays;
-import java.util.List;
-import java.util.UUID;
+import java.util.*;
 import javax.servlet.http.HttpServletResponse;
 import org.apache.commons.io.FileUtils;
 import org.junit.Before;
@@ -22,6 +20,7 @@ import org.quartz.Scheduler;
 import org.quartz.SchedulerException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
@@ -89,6 +88,11 @@ public class DwpResponseLateReminderIt {
     @MockBean
     private IdamService idamService;
 
+    @Value("${slot.name}")
+    private String slotName;
+
+    private Map<String,Integer> slotNameMap;
+
     @Before
     public void setup() throws NotificationClientException {
         controller = new NotificationController(notificationService, authorisationService, ccdService, deserializer, idamService);
@@ -104,10 +108,18 @@ public class DwpResponseLateReminderIt {
         when(client.sendSms(any(), any(), any(), any(), any()))
                 .thenReturn(sendSmsResponse);
         when(sendSmsResponse.getNotificationId()).thenReturn(UUID.randomUUID());
+        slotNameMap = new HashMap<>();
+        slotNameMap.put("STAGING",0);
+        slotNameMap.put("PRODUCTION",1);
+        slotNameMap.put("dev",0);
+        if (!"PRODUCTION".equalsIgnoreCase(slotName)) {
+            quartzScheduler = mock(Scheduler.class);
+        }
     }
 
     @Test
     public void shouldScheduleDwpResponseLateReminderThenRemoveWhenReceived() throws Exception {
+
 
         List<String> eventsThatRemoveReminders =
             Arrays.asList(
@@ -129,14 +141,16 @@ public class DwpResponseLateReminderIt {
 
             sendEvent("appealReceived");
 
-            IntegrationTestHelper.assertScheduledJobCount(quartzScheduler, "DWP response late reminder scheduled", "dwpResponseLateReminder", 1);
+            IntegrationTestHelper.assertScheduledJobCount(quartzScheduler, "DWP response late reminder scheduled", "dwpResponseLateReminder", slotNameMap.get(slotName));
 
-            IntegrationTestHelper.assertScheduledJobTriggerAt(
-                quartzScheduler,
-                "DWP response late reminder scheduled",
-                "dwpResponseLateReminder",
-                "2048-06-26T14:01:18.243Z"
-            );
+            if ("PRODUCTION".equalsIgnoreCase(slotName)) {
+                IntegrationTestHelper.assertScheduledJobTriggerAt(
+                      quartzScheduler,
+                      "DWP response late reminder scheduled",
+                      "dwpResponseLateReminder",
+                      "2048-06-26T14:01:18.243Z"
+                );
+            }
 
             sendEvent(eventThatRemoveReminders);
 

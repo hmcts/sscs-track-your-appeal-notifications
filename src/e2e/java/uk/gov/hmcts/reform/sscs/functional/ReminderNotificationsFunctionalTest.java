@@ -63,6 +63,9 @@ public class ReminderNotificationsFunctionalTest extends AbstractFunctionalTest 
     @Value("${notification.finalHearingHoldingReminder.smsId}")
     private String finalHearingHoldingReminderSmsTemplateId;
 
+    @Value("${slot.name}")
+    private String slotName;
+
     public ReminderNotificationsFunctionalTest() {
         super(90);
     }

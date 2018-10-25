@@ -133,6 +133,9 @@ public class IntegrationTestHelper {
     ) {
         try {
 
+            if (!quartzScheduler.isStarted()) {
+                return;
+            }
             Set<JobKey> jobKeys =
                 quartzScheduler.getJobKeys(GroupMatcher.jobGroupContains(groupMatch));
 

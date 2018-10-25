@@ -9,6 +9,8 @@ import static org.mockito.Mockito.when;
 import helper.IntegrationTestHelper;
 import java.io.File;
 import java.nio.charset.StandardCharsets;
+import java.util.HashMap;
+import java.util.Map;
 import java.util.UUID;
 import javax.servlet.http.HttpServletResponse;
 import org.apache.commons.io.FileUtils;
@@ -20,6 +22,7 @@ import org.quartz.Scheduler;
 import org.quartz.SchedulerException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
@@ -87,6 +90,11 @@ public class HearingReminderIt {
     @MockBean
     private IdamService idamService;
 
+    @Value("${slot.name}")
+    private String slotName;
+
+    private Map<String,Integer> slotNameMap;
+
     @Before
     public void setup() throws NotificationClientException {
         controller = new NotificationController(notificationService, authorisationService, ccdService, deserializer, idamService);
@@ -102,6 +110,13 @@ public class HearingReminderIt {
 
         outOfHoursCalculator = mock(OutOfHoursCalculator.class);
         when(outOfHoursCalculator.isItOutOfHours()).thenReturn(false);
+        slotNameMap = new HashMap<>();
+        slotNameMap.put("STAGING",0);
+        slotNameMap.put("PRODUCTION",2);
+        slotNameMap.put("dev",0);
+        if (!"PRODUCTION".equalsIgnoreCase(slotName)) {
+            quartzScheduler = mock(Scheduler.class);
+        }
     }
 
     @Test
@@ -117,7 +132,7 @@ public class HearingReminderIt {
 
         sendEvent("hearingBooked");
 
-        IntegrationTestHelper.assertScheduledJobCount(quartzScheduler, "Hearing reminders scheduled", "hearingReminder", 2);
+        IntegrationTestHelper.assertScheduledJobCount(quartzScheduler, "Hearing reminders scheduled", "hearingReminder", slotNameMap.get(slotName));
 
         IntegrationTestHelper.assertScheduledJobTriggerAt(
             quartzScheduler,

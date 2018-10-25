@@ -4,11 +4,17 @@ import static org.mockito.Mockito.*;
 
 import com.google.common.collect.ImmutableList;
 import java.util.List;
+
+import junitparams.JUnitParamsRunner;
+import junitparams.Parameters;
 import org.junit.Test;
+import org.junit.runner.RunWith;
+import org.springframework.test.util.ReflectionTestUtils;
 import uk.gov.hmcts.reform.sscs.config.AppealHearingType;
 import uk.gov.hmcts.reform.sscs.factory.NotificationWrapper;
 import uk.gov.hmcts.reform.sscs.service.reminder.ReminderHandler;
 
+@RunWith(JUnitParamsRunner.class)
 public class ReminderServiceTest {
 
     ReminderHandler reminderHandler1 = mock(ReminderHandler.class);
@@ -25,8 +31,15 @@ public class ReminderServiceTest {
     ReminderService reminderService = new ReminderService(reminderHandlers);
 
     @Test
-    public void createReminders() {
+    @Parameters({
+            "STAGING, 0",
+            "PRODUCTION, 1",
+            "dev , 0"
+    })
+    public void createReminders(String host, int times) {
 
+        ReflectionTestUtils.setField(reminderService, "slotName",
+                host);
         NotificationWrapper wrapper = mock(NotificationWrapper.class);
 
         when(reminderHandler1.canHandle(wrapper)).thenReturn(true);
@@ -35,14 +48,14 @@ public class ReminderServiceTest {
 
         reminderService.createReminders(wrapper);
 
-        verify(reminderHandler1, times(1)).canHandle(wrapper);
-        verify(reminderHandler1, times(1)).handle(wrapper);
+        verify(reminderHandler1, times(times)).canHandle(wrapper);
+        verify(reminderHandler1, times(times)).handle(wrapper);
 
-        verify(reminderHandler2, times(1)).canHandle(wrapper);
+        verify(reminderHandler2, times(times)).canHandle(wrapper);
         verify(reminderHandler2, never()).handle(wrapper);
 
-        verify(reminderHandler3, times(1)).canHandle(wrapper);
-        verify(reminderHandler3, times(1)).handle(wrapper);
+        verify(reminderHandler3, times(times)).canHandle(wrapper);
+        verify(reminderHandler3, times(times)).handle(wrapper);
     }
 
     @Test
