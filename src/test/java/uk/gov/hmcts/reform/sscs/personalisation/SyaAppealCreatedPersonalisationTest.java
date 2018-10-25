@@ -66,7 +66,6 @@ public class SyaAppealCreatedPersonalisationTest {
                 .ccdCaseId(CASE_ID).caseReference("SC/1234/5")
                 .appeal(Appeal.builder().benefitType(BenefitType.builder().code("PIP").build())
                         .appellant(Appellant.builder()
-                        .isAppointee("No")
                         .name(Name.builder().firstName("Manish").lastName("Sharma").title("Mrs").build())
                         .identity(Identity.builder().nino("NP 27 28 67 B").dob("12 March 1971").build())
                         .address(Address.builder().line1("122 Breach Street").line2("The Village").town("My town").county("Cardiff").postcode("CF11 2HB").build())
@@ -76,8 +75,7 @@ public class SyaAppealCreatedPersonalisationTest {
 
         Map<String, String> result = personalisation.setYourDetails(new HashMap<>(), response);
 
-        assertEquals("Appointee: No\n"
-                        + "\nName: Manish Sharma\n"
+        assertEquals("Name: Manish Sharma\n"
                         + "\nDate of birth: 12 March 1971\n"
                         + "\nNational Insurance number: NP 27 28 67 B\n"
                         + "\nAddress: 122 Breach Street, The Village, My town, Cardiff, CF11 2HB\n"
@@ -92,7 +90,6 @@ public class SyaAppealCreatedPersonalisationTest {
                 .ccdCaseId(CASE_ID).caseReference("SC/1234/5")
                 .appeal(Appeal.builder().benefitType(BenefitType.builder().code("PIP").build())
                         .appellant(Appellant.builder()
-                        .isAppointee("No")
                         .name(Name.builder().firstName("Manish").lastName("Sharma").title("Mrs").build())
                         .identity(Identity.builder().nino("NP 27 28 67 B").dob("12 March 1971").build())
                         .address(Address.builder().line1("122 Breach Street").town("My town").county("Cardiff").postcode("CF11 2HB").build())
@@ -102,8 +99,7 @@ public class SyaAppealCreatedPersonalisationTest {
 
         Map<String, String> result = personalisation.setYourDetails(new HashMap<>(), response);
 
-        assertEquals("Appointee: No\n"
-                        + "\nName: Manish Sharma\n"
+        assertEquals("Name: Manish Sharma\n"
                         + "\nDate of birth: 12 March 1971\n"
                         + "\nNational Insurance number: NP 27 28 67 B\n"
                         + "\nAddress: 122 Breach Street, My town, Cardiff, CF11 2HB\n"

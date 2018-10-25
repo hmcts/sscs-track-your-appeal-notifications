@@ -57,8 +57,7 @@
           "identity": {
             "dob": "1904-03-10",
             "nino": "AB 22 55 66 B"
-          },
-          "isAppointee": null
+          }
         },
         "benefitType": {
           "code": "ESA"
@@ -154,8 +153,7 @@
                   "dob": "PUBLIC",
                   "nino": "PUBLIC"
                 }
-              },
-              "isAppointee": "PUBLIC"
+              }
             }
           },
           "benefitType": {
@@ -271,8 +269,7 @@
                   "dob": "PUBLIC",
                   "nino": "PUBLIC"
                 }
-              },
-              "isAppointee": "PUBLIC"
+              }
             }
           },
           "benefitType": {
@@ -383,8 +380,7 @@
           "identity": {
             "dob": "1904-03-10",
             "nino": "AB 22 55 66 B"
-          },
-          "isAppointee": null
+          }
         },
         "mrnDetails": {},
         "benefitType": {
@@ -470,8 +466,7 @@
                   "nino": "PUBLIC"
                 },
                 "classification": "PUBLIC"
-              },
-              "isAppointee": "PUBLIC"
+              }
             },
             "classification": "PUBLIC"
           },
@@ -579,8 +574,7 @@
                   "nino": "PUBLIC"
                 },
                 "classification": "PUBLIC"
-              },
-              "isAppointee": "PUBLIC"
+              }
             },
             "classification": "PUBLIC"
           },
