@@ -53,7 +53,7 @@ coh:
 
 # change slot value to PRODUCTION to cause the service to start process reminder
 slot.name: ${SLOT:STAGING}
-infrastructure.env.name: ${INFRASTRUCTURE_ENV:PROD}
+infrastructure.env.name: ${INFRASTRUCTURE_ENV:DEV}
 
 management:
   endpoints:
