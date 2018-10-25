@@ -7,6 +7,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.node.JsonNodeFactory;
 import com.fasterxml.jackson.databind.node.ObjectNode;
 import org.slf4j.Logger;
+import org.springframework.core.env.Environment;
 import uk.gov.hmcts.reform.sscs.ccd.domain.SscsCaseDetails;
 import uk.gov.hmcts.reform.sscs.ccd.service.CcdService;
 import uk.gov.hmcts.reform.sscs.deserialize.SscsCaseDataWrapperDeserializer;
@@ -23,31 +24,39 @@ public abstract class BaseActionExecutor<T> implements JobExecutor<T> {
     protected final CcdService ccdService;
     protected final SscsCaseDataWrapperDeserializer deserializer;
     protected final IdamService idamService;
+    protected final Environment environment;
 
-    BaseActionExecutor(NotificationService notificationService, CcdService ccdService, SscsCaseDataWrapperDeserializer deserializer, IdamService idamService) {
+    BaseActionExecutor(NotificationService notificationService, CcdService ccdService, SscsCaseDataWrapperDeserializer deserializer, IdamService idamService, Environment environment) {
         this.notificationService = notificationService;
         this.ccdService = ccdService;
         this.deserializer = deserializer;
         this.idamService = idamService;
+        this.environment = environment;
     }
 
     @Override
     public void execute(String jobId, String jobGroup, String eventId, T payload) {
 
-        long caseId = getCaseId(payload);
-        LOG.info("Scheduled event: {} triggered for case id: {}", eventId, caseId);
+        // Get the infrastructure env and slot from properties
+        String infraEnv = environment.getProperty("infrastructure.env.name");
+        String slotName = environment.getProperty("slot.name");
 
-        IdamTokens idamTokens = idamService.getIdamTokens();
+        if (!("PROD".equalsIgnoreCase(infraEnv) && "STAGING".equalsIgnoreCase(slotName))) {
+            long caseId = getCaseId(payload);
+            LOG.info("Scheduled event: {} triggered for case id: {}", eventId, caseId);
 
-        SscsCaseDetails caseDetails = ccdService.getByCaseId(caseId, idamTokens);
+            IdamTokens idamTokens = idamService.getIdamTokens();
 
-        if (caseDetails != null) {
-            SscsCaseDataWrapper wrapper = deserializer.buildSscsCaseDataWrapper(buildCcdNode(caseDetails, eventId));
+            SscsCaseDetails caseDetails = ccdService.getByCaseId(caseId, idamTokens);
 
-            notificationService.createAndSendNotification(getWrapper(wrapper, payload));
-            updateCase(caseId, wrapper, idamTokens);
-        } else {
-            LOG.warn("Case id: {} could not be found for event: {}", caseId, eventId);
+            if (caseDetails != null) {
+                SscsCaseDataWrapper wrapper = deserializer.buildSscsCaseDataWrapper(buildCcdNode(caseDetails, eventId));
+
+                notificationService.createAndSendNotification(getWrapper(wrapper, payload));
+                updateCase(caseId, wrapper, idamTokens);
+            } else {
+                LOG.warn("Case id: {} could not be found for event: {}", caseId, eventId);
+            }
         }
     }
 

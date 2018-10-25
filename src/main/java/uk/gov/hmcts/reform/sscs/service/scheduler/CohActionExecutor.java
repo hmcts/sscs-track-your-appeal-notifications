@@ -1,6 +1,7 @@
 package uk.gov.hmcts.reform.sscs.service.scheduler;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.core.env.Environment;
 import uk.gov.hmcts.reform.sscs.ccd.service.CcdService;
 import uk.gov.hmcts.reform.sscs.deserialize.SscsCaseDataWrapperDeserializer;
 import uk.gov.hmcts.reform.sscs.domain.SscsCaseDataWrapper;
@@ -16,8 +17,9 @@ public class CohActionExecutor extends BaseActionExecutor<CohJobPayload> {
     public CohActionExecutor(NotificationService notificationService,
                              CcdService ccdService,
                              SscsCaseDataWrapperDeserializer deserializer,
-                             IdamService idamService) {
-        super(notificationService, ccdService, deserializer, idamService);
+                             IdamService idamService,
+                             Environment environment) {
+        super(notificationService, ccdService, deserializer, idamService, environment);
     }
 
     @Override

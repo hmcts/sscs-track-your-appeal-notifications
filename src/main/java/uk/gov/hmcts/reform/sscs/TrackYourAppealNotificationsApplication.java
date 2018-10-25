@@ -5,6 +5,7 @@ import static java.util.Arrays.asList;
 import java.util.TimeZone;
 import javax.annotation.PostConstruct;
 import org.quartz.spi.JobFactory;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
@@ -17,6 +18,7 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.ComponentScan;
 import org.springframework.context.annotation.Primary;
 import org.springframework.context.support.ReloadableResourceBundleMessageSource;
+import org.springframework.core.env.Environment;
 import org.springframework.retry.annotation.EnableRetry;
 import uk.gov.hmcts.reform.sscs.ccd.config.CcdRequestDetails;
 import uk.gov.hmcts.reform.sscs.ccd.service.CcdService;
@@ -50,6 +52,9 @@ public class TrackYourAppealNotificationsApplication {
 
     @Value("${gov.uk.notification.api.testKey}")
     private String testApiKey;
+
+    @Autowired
+    private Environment environment;
 
     @PostConstruct
     public void started() {
@@ -107,8 +112,8 @@ public class TrackYourAppealNotificationsApplication {
                                   SscsCaseDataWrapperDeserializer deserializer,
                                   IdamService idamService) {
         // Had to wire these up like this Spring will not wire up CcdActionExecutor otherwise.
-        CohActionExecutor cohActionExecutor = new CohActionExecutor(notificationService, ccdService, deserializer, idamService);
-        CcdActionExecutor ccdActionExecutor = new CcdActionExecutor(notificationService, ccdService, deserializer, idamService);
+        CohActionExecutor cohActionExecutor = new CohActionExecutor(notificationService, ccdService, deserializer, idamService, environment);
+        CcdActionExecutor ccdActionExecutor = new CcdActionExecutor(notificationService, ccdService, deserializer, idamService, environment);
         return new JobMapper(asList(
                 new JobMapping<>(payload -> payload.contains("onlineHearingId"), cohActionDeserializer, cohActionExecutor),
                 new JobMapping<>(payload -> !payload.contains("onlineHearingId"), ccdActionDeserializer, ccdActionExecutor)
