@@ -1,6 +1,7 @@
 package uk.gov.hmcts.reform.sscs.service.scheduler;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import uk.gov.hmcts.reform.sscs.ccd.domain.SscsCaseData;
 import uk.gov.hmcts.reform.sscs.ccd.service.CcdService;
 import uk.gov.hmcts.reform.sscs.deserialize.SscsCaseDataWrapperDeserializer;
 import uk.gov.hmcts.reform.sscs.domain.SscsCaseDataWrapper;
@@ -22,7 +23,8 @@ public class CcdActionExecutor extends BaseActionExecutor<String> {
 
     @Override
     protected void updateCase(Long caseId, SscsCaseDataWrapper wrapper, IdamTokens idamTokens) {
-        ccdService.updateCase(null, caseId, wrapper.getNotificationEventType().getId(), "CCD Case", "Notification Service updated case", idamTokens);
+        SscsCaseData sscsCaseData = ccdService.getByCaseId(caseId, idamTokens).getData();
+        ccdService.updateCase(sscsCaseData, caseId, wrapper.getNotificationEventType().getId(), "CCD Case", "Notification Service updated case", idamTokens);
     }
 
     @Override
