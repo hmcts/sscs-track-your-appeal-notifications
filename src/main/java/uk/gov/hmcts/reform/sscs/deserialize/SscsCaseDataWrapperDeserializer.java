@@ -291,11 +291,11 @@ public class SscsCaseDataWrapperDeserializer extends StdDeserializer<SscsCaseDat
 
     public Subscriptions deserializeSubscriptionJson(JsonNode subscriptionsNode) {
         Subscription appellantSubscription = deserializeAppellantSubscriptionJson(subscriptionsNode);
-        Subscription supporterSubscription = deserializeSupporterSubscriptionJson(subscriptionsNode);
+        Subscription representativeSubscription = deserializeRepresentativeSubscriptionJson(subscriptionsNode);
 
         return Subscriptions.builder()
                 .appellantSubscription(appellantSubscription)
-                .supporterSubscription(supporterSubscription).build();
+                .representativeSubscription(representativeSubscription).build();
     }
 
     private Subscription deserializeAppellantSubscriptionJson(JsonNode subscriptionsNode) {
@@ -310,16 +310,16 @@ public class SscsCaseDataWrapperDeserializer extends StdDeserializer<SscsCaseDat
         return appellantSubscription;
     }
 
-    private Subscription deserializeSupporterSubscriptionJson(JsonNode subscriptionsNode) {
-        JsonNode supporterSubscriptionNode = getNode(subscriptionsNode, "supporterSubscription");
+    private Subscription deserializeRepresentativeSubscriptionJson(JsonNode subscriptionsNode) {
+        JsonNode representativeSubscriptionNode = getNode(subscriptionsNode, "representativeSubscription");
 
-        Subscription supporterSubscription = Subscription.builder().build();
+        Subscription representativeSubscription = Subscription.builder().build();
 
-        if (supporterSubscriptionNode != null) {
-            supporterSubscription = deserializeSubscriberJson(supporterSubscriptionNode, supporterSubscription);
+        if (representativeSubscriptionNode != null) {
+            representativeSubscription = deserializeSubscriberJson(representativeSubscriptionNode, representativeSubscription);
         }
 
-        return supporterSubscription;
+        return representativeSubscription;
     }
 
     public List<Event> deserializeEventDetailsJson(JsonNode caseNode) {
