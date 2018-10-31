@@ -40,21 +40,24 @@ public class NotificationService {
     }
 
     public void createAndSendNotification(NotificationWrapper wrapper) {
+        createAndSendNotificationForSubscription(wrapper, wrapper.getAppellantSubscription());
+    }
+    
+    public void createAndSendNotificationForSubscription(NotificationWrapper wrapper, final Subscription subscription) {
 
-        final Subscription appellantSubscription = wrapper.getAppellantSubscription();
         NotificationEventType notificationType = wrapper.getNotificationType();
         final String caseId = wrapper.getCaseId();
 
         log.info("Notification event triggered {} for case id {}", notificationType.getId(), caseId);
 
-        if (appellantSubscription != null && appellantSubscription.doesCaseHaveSubscriptions()
+        if (subscription != null && subscription.doesCaseHaveSubscriptions()
                 && notificationValidService.isNotificationStillValidToSend(wrapper.getNewSscsCaseData().getHearings(), notificationType)
                 && notificationValidService.isHearingTypeValidToSendNotification(wrapper.getNewSscsCaseData(), notificationType)) {
 
             Notification notification = factory.create(wrapper);
 
             if (wrapper.getNotificationType().isAllowOutOfHours() || !outOfHoursCalculator.isItOutOfHours()) {
-                sendEmailSmsNotification(wrapper, appellantSubscription, notification);
+                sendEmailSmsNotification(wrapper, subscription, notification);
                 processOldSubscriptionNotifications(wrapper, notification);
             } else {
                 notificationHandler.scheduleNotification(wrapper);
