@@ -41,6 +41,7 @@ public class NotificationService {
 
     public void createAndSendNotification(NotificationWrapper wrapper) {
         createAndSendNotificationForSubscription(wrapper, wrapper.getAppellantSubscription());
+        createAndSendNotificationForSubscription(wrapper, wrapper.getRepresentativeSubscription());
     }
     
     public void createAndSendNotificationForSubscription(NotificationWrapper wrapper, final Subscription subscription) {

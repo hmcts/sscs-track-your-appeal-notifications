@@ -14,6 +14,8 @@ public interface NotificationWrapper {
     String getCaseId();
 
     Subscription getAppellantSubscription();
+    
+    Subscription getRepresentativeSubscription();
 
     SscsCaseDataWrapper getSscsCaseDataWrapper();
 

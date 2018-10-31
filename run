@@ -1,0 +1,1 @@
+NOTIFICATION_API_KEY=emailnotificationkey-cf23bf9c-4a42-42d1-a734-5cfc53dda6ca-963572e2-768e-482c-b0de-bf0d2bd79edaJ NOTIFICATION_API_TEST_KEY=preview_notification_key-cf23bf9c-4a42-42d1-a734-5cfc53dda6ca-23f04032-d474-47a5-95e9-7b17e5a4b192 TEST_URL=http://localhost:8081 ./gradlew bootRun

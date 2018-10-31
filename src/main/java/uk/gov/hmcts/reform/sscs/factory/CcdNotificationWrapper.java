@@ -31,6 +31,11 @@ public class CcdNotificationWrapper implements NotificationWrapper {
     public Subscription getAppellantSubscription() {
         return responseWrapper.getNewSscsCaseData().getSubscriptions().getAppellantSubscription();
     }
+    
+    @Override
+    public Subscription getRepresentativeSubscription() {
+        return responseWrapper.getNewSscsCaseData().getSubscriptions().getRepresentativeSubscription();
+    }
 
     @Override
     public SscsCaseDataWrapper getSscsCaseDataWrapper() {
