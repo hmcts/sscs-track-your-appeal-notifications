@@ -1,4 +1,4 @@
-package uk.gov.hmcts.reform.sscs.functional;
+package uk.gov.hmcts.reform.sscs.functional.sya.notifications;
 
 import static org.junit.Assert.assertTrue;
 import static uk.gov.hmcts.reform.sscs.domain.notify.NotificationEventType.ADJOURNED_NOTIFICATION;
@@ -17,11 +17,13 @@ import java.util.List;
 import junitparams.Parameters;
 import org.junit.Test;
 import org.springframework.beans.factory.annotation.Value;
+import uk.gov.hmcts.reform.sscs.functional.AbstractFunctionalTest;
 import uk.gov.service.notify.Notification;
 import uk.gov.service.notify.NotificationClientException;
 
 public class NotificationsFunctionalTest extends AbstractFunctionalTest {
 
+    private static final String RESPONSE_RECEIVED_PAPER_PATH = "paper/responseReceived/";
     @Value("${track.appeal.link}")
     private String tyaLink;
 
@@ -195,7 +197,7 @@ public class NotificationsFunctionalTest extends AbstractFunctionalTest {
     })
     public void shouldSendPaperDwpResponseReceivedNotification(final String benefit, String expectedPanelComposition)
             throws Exception {
-        simulateCcdCallback(DWP_RESPONSE_RECEIVED_NOTIFICATION, benefit + "-paper-"
+        simulateCcdCallback(DWP_RESPONSE_RECEIVED_NOTIFICATION, RESPONSE_RECEIVED_PAPER_PATH + benefit + "-paper-"
                 + DWP_RESPONSE_RECEIVED_NOTIFICATION.getId() + "Callback.json");
         List<Notification> notifications = tryFetchNotificationsForTestCase(
                 paperResponseReceivedEmailId, paperResponseReceivedSmsId);
@@ -210,7 +212,7 @@ public class NotificationsFunctionalTest extends AbstractFunctionalTest {
 
     @Test
     public void shouldNotSendPaperDwpResponseReceivedNotificationIfNotSubscribed() throws NotificationClientException, IOException {
-        simulateCcdCallback(DWP_RESPONSE_RECEIVED_NOTIFICATION, "paper-no-subscriptions-"
+        simulateCcdCallback(DWP_RESPONSE_RECEIVED_NOTIFICATION, RESPONSE_RECEIVED_PAPER_PATH + "paper-no-subscriptions-"
                 + DWP_RESPONSE_RECEIVED_NOTIFICATION.getId() + "Callback.json");
 
         List<Notification> notifications = tryFetchNotificationsForTestCaseWithFlag(true,

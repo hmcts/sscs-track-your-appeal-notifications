@@ -78,6 +78,8 @@ public class Personalisation<E extends NotificationWrapper> {
 
         personalisation.put(AppConstants.PANEL_COMPOSITION, getPanelCompositionByBenefitType(benefit));
 
+        personalisation.put(AppConstants.DECISION_POSTED_RECEIVE_DATE, formatLocalDate(LocalDate.now().plusDays(7)));
+
         personalisation.put(AppConstants.BENEFIT_NAME_ACRONYM_LITERAL, benefit.name());
         personalisation.put(AppConstants.BENEFIT_NAME_ACRONYM_SHORT_LITERAL, benefit.name());
         personalisation.put(AppConstants.BENEFIT_FULL_NAME_LITERAL, benefit.getDescription());

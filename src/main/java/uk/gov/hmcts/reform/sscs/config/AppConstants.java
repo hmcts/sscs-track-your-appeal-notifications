@@ -3,6 +3,7 @@ package uk.gov.hmcts.reform.sscs.config;
 public final class AppConstants {
 
     public static final String PANEL_COMPOSITION = "panel_composition";
+    public static final String DECISION_POSTED_RECEIVE_DATE = "decision_posted_receive_date";
     public static final String PIP_PANEL_COMPOSITION = "judge, doctor and disability expert";
     public static final String ESA_PANEL_COMPOSITION = "judge and a doctor";
     public static final String ADDRESS_LINE_LITERAL = "address_line";

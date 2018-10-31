@@ -130,11 +130,11 @@ public abstract class AbstractFunctionalTest {
                 + epoch.substring(8, 13);
     }
 
-    List<Notification> tryFetchNotificationsForTestCase(String... expectedTemplateIds) throws NotificationClientException {
+    public List<Notification> tryFetchNotificationsForTestCase(String... expectedTemplateIds) throws NotificationClientException {
         return tryFetchNotificationsForTestCaseWithFlag(false, expectedTemplateIds);
     }
 
-    List<Notification> tryFetchNotificationsForTestCaseWithFlag(boolean notificationNotFoundFlag, String... expectedTemplateIds) throws NotificationClientException {
+    public List<Notification> tryFetchNotificationsForTestCaseWithFlag(boolean notificationNotFoundFlag, String... expectedTemplateIds) throws NotificationClientException {
 
         List<Notification> allNotifications = new ArrayList<>();
         List<Notification> matchingNotifications = new ArrayList<>();

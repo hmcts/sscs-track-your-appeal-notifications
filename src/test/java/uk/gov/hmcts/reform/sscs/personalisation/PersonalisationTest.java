@@ -159,6 +159,10 @@ public class PersonalisationTest {
 
         Map<String, String> result = personalisation.create(SscsCaseDataWrapper.builder().newSscsCaseData(response).notificationEventType(APPEAL_RECEIVED_NOTIFICATION).build());
 
+        DateTimeFormatter dateFormatter = DateTimeFormatter.ofPattern("d MMMM yyyy");
+        String expectedDecisionPostedReceiveDate = dateFormatter.format(LocalDate.now().plusDays(7));
+        assertEquals(expectedDecisionPostedReceiveDate, result.get("decision_posted_receive_date"));
+
         assertEquals(expectedPanelComposition, result.get(AppConstants.PANEL_COMPOSITION));
 
         assertEquals(benefitType, result.get(AppConstants.BENEFIT_NAME_ACRONYM_LITERAL));
