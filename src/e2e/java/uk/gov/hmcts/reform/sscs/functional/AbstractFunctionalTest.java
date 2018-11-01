@@ -17,10 +17,7 @@ import java.io.IOException;
 import java.nio.charset.StandardCharsets;
 import java.time.Instant;
 import java.time.LocalDate;
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.List;
-import java.util.UUID;
+import java.util.*;
 import java.util.stream.Collectors;
 import junitparams.JUnitParamsRunner;
 import org.apache.commons.io.FileUtils;
@@ -39,15 +36,13 @@ import org.springframework.test.annotation.ProfileValueSourceConfiguration;
 import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.context.junit4.rules.SpringClassRule;
 import org.springframework.test.context.junit4.rules.SpringMethodRule;
-import uk.gov.hmcts.reform.sscs.ccd.domain.Event;
-import uk.gov.hmcts.reform.sscs.ccd.domain.EventDetails;
-import uk.gov.hmcts.reform.sscs.ccd.domain.SscsCaseData;
-import uk.gov.hmcts.reform.sscs.ccd.domain.SscsCaseDetails;
+import uk.gov.hmcts.reform.sscs.ccd.domain.*;
 import uk.gov.hmcts.reform.sscs.ccd.service.CcdService;
 import uk.gov.hmcts.reform.sscs.domain.notify.NotificationEventType;
 import uk.gov.hmcts.reform.sscs.idam.IdamService;
 import uk.gov.hmcts.reform.sscs.idam.IdamTokens;
 import uk.gov.hmcts.reform.sscs.service.AuthorisationService;
+import uk.gov.hmcts.reform.sscs.service.RegionalProcessingCenterService;
 import uk.gov.service.notify.Notification;
 import uk.gov.service.notify.NotificationClient;
 import uk.gov.service.notify.NotificationClientException;
@@ -77,6 +72,9 @@ public abstract class AbstractFunctionalTest {
     @Autowired
     @Qualifier("testNotificationClient")
     private NotificationClient client;
+
+    @Autowired
+    private RegionalProcessingCenterService regionalProcessingCenterService;
 
     @Autowired
     private IdamService idamService;
@@ -121,13 +119,26 @@ public abstract class AbstractFunctionalTest {
         return buildSscsCaseData(caseReference, "Yes", "Yes", SYA_APPEAL_CREATED, "oral");
     }
 
-    protected static String generateRandomCaseReference() {
+    protected String generateRandomCaseReference() {
         String epoch = String.valueOf(Instant.now().toEpochMilli());
-        return "SC" + epoch.substring(3, 6)
+        Map<String,String> sscCodeMap = regionalProcessingCenterService.getSccodeRegionalProcessingCentermap();
+        String scNumber = generateScNumber(Instant.now(),sscCodeMap);
+        return scNumber
                 + "/"
                 + epoch.substring(6, 8)
                 + "/"
                 + epoch.substring(8, 13);
+    }
+
+    // Recursive function until we find the right sc number other than Glasgow
+    private String generateScNumber(Instant currentEpoh, Map<String,String> sscCodeMap) {
+        String epoch = String.valueOf(currentEpoh.toEpochMilli());
+        String scNumber = "SC" + epoch.substring(3,6);
+        String city = sscCodeMap.get(scNumber);
+        if (city == null || city.equalsIgnoreCase("SSCS Glasgow")) {
+            return generateScNumber(currentEpoh.plusSeconds(86400),sscCodeMap); //86400 is day
+        }
+        return scNumber;
     }
 
     public List<Notification> tryFetchNotificationsForTestCase(String... expectedTemplateIds) throws NotificationClientException {
