@@ -50,7 +50,7 @@ public class NotificationController {
         log.info("Ccd Response received for case id: {} , {}", sscsCaseDataWrapper.getNewSscsCaseData().getCcdCaseId(), sscsCaseDataWrapper.getNotificationEventType());
 
         authorisationService.authorise(serviceAuthHeader);
-        notificationService.createAndSendNotification(new CcdNotificationWrapper(sscsCaseDataWrapper));
+        notificationService.manageNotificationAndSubscription(new CcdNotificationWrapper(sscsCaseDataWrapper));
     }
 
     @RequestMapping(value = "/coh-send", method = POST, produces = APPLICATION_JSON_VALUE)
@@ -65,7 +65,7 @@ public class NotificationController {
         String eventId = cohEvent.getNotificationEventType();
         if (caseDetails != null) {
             SscsCaseDataWrapper wrapper = deserializer.buildSscsCaseDataWrapper(buildCcdNode(caseDetails, eventId));
-            notificationService.createAndSendNotification(new CohNotificationWrapper(cohEvent.getOnlineHearingId(), wrapper));
+            notificationService.manageNotificationAndSubscription(new CohNotificationWrapper(cohEvent.getOnlineHearingId(), wrapper));
         } else {
             log.warn("Case id: {} could not be found for event: {}", caseId, eventId);
         }

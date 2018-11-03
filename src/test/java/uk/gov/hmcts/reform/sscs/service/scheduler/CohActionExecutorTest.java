@@ -61,6 +61,6 @@ public class CohActionExecutorTest {
         String onlineHearingId = UUID.randomUUID().toString();
         cohActionExecutor.execute("1", "group", EVIDENCE_REMINDER_NOTIFICATION.getId(), new CohJobPayload(123456L, onlineHearingId));
 
-        verify(notificationService, times(1)).createAndSendNotification(new CohNotificationWrapper(onlineHearingId, wrapper));
+        verify(notificationService, times(1)).manageNotificationAndSubscription(new CohNotificationWrapper(onlineHearingId, wrapper));
     }
 }

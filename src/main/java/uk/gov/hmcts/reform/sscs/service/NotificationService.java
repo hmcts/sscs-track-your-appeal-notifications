@@ -1,7 +1,10 @@
 package uk.gov.hmcts.reform.sscs.service;
 
 import static uk.gov.hmcts.reform.sscs.ccd.domain.Benefit.getBenefitByCode;
+import static uk.gov.hmcts.reform.sscs.domain.notify.NotificationEventType.SYA_APPEAL_CREATED_NOTIFICATION;
 
+import java.util.ArrayList;
+import java.util.List;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -9,7 +12,11 @@ import uk.gov.hmcts.reform.sscs.ccd.domain.Benefit;
 import uk.gov.hmcts.reform.sscs.ccd.domain.Subscription;
 import uk.gov.hmcts.reform.sscs.config.AppealHearingType;
 import uk.gov.hmcts.reform.sscs.config.NotificationConfig;
-import uk.gov.hmcts.reform.sscs.domain.notify.*;
+import uk.gov.hmcts.reform.sscs.domain.notify.Destination;
+import uk.gov.hmcts.reform.sscs.domain.notify.Notification;
+import uk.gov.hmcts.reform.sscs.domain.notify.NotificationEventType;
+import uk.gov.hmcts.reform.sscs.domain.notify.Reference;
+import uk.gov.hmcts.reform.sscs.domain.notify.Template;
 import uk.gov.hmcts.reform.sscs.factory.NotificationFactory;
 import uk.gov.hmcts.reform.sscs.factory.NotificationWrapper;
 
@@ -39,29 +46,43 @@ public class NotificationService {
         this.notificationConfig = notificationConfig;
     }
 
-    public void createAndSendNotification(NotificationWrapper wrapper) {
-
-        final Subscription appellantSubscription = wrapper.getAppellantSubscription();
-        NotificationEventType notificationType = wrapper.getNotificationType();
-        final String caseId = wrapper.getCaseId();
-
+    public void manageNotificationAndSubscription(NotificationWrapper notificationWrapper) {
+        NotificationEventType notificationType = notificationWrapper.getNotificationType();
+        final String caseId = notificationWrapper.getCaseId();
         log.info("Notification event triggered {} for case id {}", notificationType.getId(), caseId);
-
-        if (appellantSubscription != null && appellantSubscription.doesCaseHaveSubscriptions()
-                && notificationValidService.isNotificationStillValidToSend(wrapper.getNewSscsCaseData().getHearings(), notificationType)
-                && notificationValidService.isHearingTypeValidToSendNotification(wrapper.getNewSscsCaseData(), notificationType)) {
-
-            Notification notification = factory.create(wrapper);
-
-            if (wrapper.getNotificationType().isAllowOutOfHours() || !outOfHoursCalculator.isItOutOfHours()) {
-                sendEmailSmsNotification(wrapper, appellantSubscription, notification);
-                processOldSubscriptionNotifications(wrapper, notification);
-            } else {
-                notificationHandler.scheduleNotification(wrapper);
-            }
-
-            reminderService.createReminders(wrapper);
+        for (Subscription subscription : getSubscriptionsBasedOnNotificationType(notificationWrapper, notificationType)) {
+            sendNotificationPerSubscription(notificationWrapper, subscription, notificationType);
         }
+    }
+
+    private List<Subscription> getSubscriptionsBasedOnNotificationType(NotificationWrapper notificationWrapper,
+                                                                       NotificationEventType notificationType) {
+        List<Subscription> subscriptions = new ArrayList<>();
+        subscriptions.add(notificationWrapper.getAppellantSubscription());
+        if (SYA_APPEAL_CREATED_NOTIFICATION.getId().equals(notificationType.getId())) {
+            subscriptions.add(notificationWrapper.getRepresentativeSubscription());
+        }
+        return subscriptions;
+    }
+
+    private void sendNotificationPerSubscription(NotificationWrapper notificationWrapper, Subscription subscription,
+                                                 NotificationEventType notificationType) {
+        if (isValidNotification(notificationWrapper, subscription, notificationType)) {
+            Notification notification = factory.create(notificationWrapper);
+            if (notificationWrapper.getNotificationType().isAllowOutOfHours() || !outOfHoursCalculator.isItOutOfHours()) {
+                sendEmailSmsNotification(notificationWrapper, subscription, notification);
+                processOldSubscriptionNotifications(notificationWrapper, notification);
+            } else {
+                notificationHandler.scheduleNotification(notificationWrapper);
+            }
+            reminderService.createReminders(notificationWrapper);
+        }
+    }
+
+    private boolean isValidNotification(NotificationWrapper wrapper, Subscription appellantSubscription, NotificationEventType notificationType) {
+        return appellantSubscription != null && appellantSubscription.doesCaseHaveSubscriptions()
+                && notificationValidService.isNotificationStillValidToSend(wrapper.getNewSscsCaseData().getHearings(), notificationType)
+                && notificationValidService.isHearingTypeValidToSendNotification(wrapper.getNewSscsCaseData(), notificationType);
     }
 
     private void processOldSubscriptionNotifications(NotificationWrapper wrapper, Notification notification) {
@@ -82,7 +103,7 @@ public class NotificationService {
             if (null != newSubscription.getMobile() && null != oldSubscription.getMobile()) {
                 smsNumber = newSubscription.getMobile().equals(oldSubscription.getMobile()) ? null : oldSubscription.getMobile();
             } else if (null == newSubscription.getMobile() && null != oldSubscription.getMobile()) {
-                smsNumber =  oldSubscription.getMobile();
+                smsNumber = oldSubscription.getMobile();
             }
 
 
@@ -104,8 +125,8 @@ public class NotificationService {
         }
     }
 
-    private void sendEmailSmsNotification(NotificationWrapper wrapper, Subscription appellantSubscription, Notification notification) {
-        if (appellantSubscription.isEmailSubscribed() && notification.isEmail() && notification.getEmailTemplate() != null) {
+    private void sendEmailSmsNotification(NotificationWrapper wrapper, Subscription subscription, Notification notification) {
+        if (subscription.isEmailSubscribed() && notification.isEmail() && notification.getEmailTemplate() != null) {
             NotificationHandler.SendNotification sendNotification = () ->
                     notificationSender.sendEmail(
                             notification.getEmailTemplate(),
@@ -116,7 +137,7 @@ public class NotificationService {
                     );
             notificationHandler.sendNotification(wrapper, notification.getEmailTemplate(), "Email", sendNotification);
         }
-        if (appellantSubscription.isSmsSubscribed() && notification.isSms() && notification.getSmsTemplate() != null) {
+        if (subscription.isSmsSubscribed() && notification.isSms() && notification.getSmsTemplate() != null) {
             NotificationHandler.SendNotification sendNotification = () ->
                     notificationSender.sendSms(
                             notification.getSmsTemplate(),

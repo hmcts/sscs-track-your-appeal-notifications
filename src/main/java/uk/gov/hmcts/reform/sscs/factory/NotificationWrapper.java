@@ -15,6 +15,8 @@ public interface NotificationWrapper {
 
     Subscription getAppellantSubscription();
 
+    Subscription getRepresentativeSubscription();
+
     SscsCaseDataWrapper getSscsCaseDataWrapper();
 
     AppealHearingType getHearingType();
