@@ -13,11 +13,13 @@ import static org.mockito.MockitoAnnotations.initMocks;
 import static uk.gov.hmcts.reform.sscs.domain.notify.NotificationEventType.APPEAL_WITHDRAWN_NOTIFICATION;
 import static uk.gov.hmcts.reform.sscs.domain.notify.NotificationEventType.QUESTION_ROUND_ISSUED_NOTIFICATION;
 import static uk.gov.hmcts.reform.sscs.domain.notify.NotificationEventType.SUBSCRIPTION_UPDATED_NOTIFICATION;
-import static uk.gov.hmcts.reform.sscs.domain.notify.NotificationEventType.SYA_APPEAL_CREATED_NOTIFICATION;
 
 import java.util.Collections;
+import junitparams.JUnitParamsRunner;
+import junitparams.Parameters;
 import org.junit.Before;
 import org.junit.Test;
+import org.junit.runner.RunWith;
 import org.mockito.Mock;
 import uk.gov.hmcts.reform.sscs.ccd.domain.Appeal;
 import uk.gov.hmcts.reform.sscs.ccd.domain.BenefitType;
@@ -31,6 +33,7 @@ import uk.gov.hmcts.reform.sscs.config.NotificationConfig;
 import uk.gov.hmcts.reform.sscs.domain.SscsCaseDataWrapper;
 import uk.gov.hmcts.reform.sscs.domain.notify.Destination;
 import uk.gov.hmcts.reform.sscs.domain.notify.Notification;
+import uk.gov.hmcts.reform.sscs.domain.notify.NotificationEventType;
 import uk.gov.hmcts.reform.sscs.domain.notify.Reference;
 import uk.gov.hmcts.reform.sscs.domain.notify.Template;
 import uk.gov.hmcts.reform.sscs.factory.CcdNotificationWrapper;
@@ -38,6 +41,7 @@ import uk.gov.hmcts.reform.sscs.factory.CohNotificationWrapper;
 import uk.gov.hmcts.reform.sscs.factory.NotificationFactory;
 import uk.gov.hmcts.reform.sscs.factory.NotificationWrapper;
 
+@RunWith(JUnitParamsRunner.class)
 public class NotificationServiceTest {
 
     private static final String APPEAL_NUMBER = "GLSCRR";
@@ -78,10 +82,8 @@ public class NotificationServiceTest {
 
     private SscsCaseData sscsCaseData;
     private Subscription appellantSubscription;
-    private Subscription repsSubscription;
     private CcdNotificationWrapper ccdNotificationWrapper;
     private SscsCaseDataWrapper sscsCaseDataWrapper;
-    private Notification notification;
 
     @Before
     public void setup() {
@@ -107,50 +109,60 @@ public class NotificationServiceTest {
     }
 
     @Test
-    public void givenAppealCreatedAndAppellantAndRepsSubscriptionsPresent_shouldSendNotificationToBoth() {
-        ccdNotificationWrapper = buildNotificationWrapperForAppealCreatedNotificationTypeAndAppeallantAndRepsSubscriptions();
-
-        given(notificationValidService.isHearingTypeValidToSendNotification(
-                any(SscsCaseData.class), eq(SYA_APPEAL_CREATED_NOTIFICATION))).willReturn(true);
-
-        given(notificationValidService.isNotificationStillValidToSend(anyList(), eq(SYA_APPEAL_CREATED_NOTIFICATION)))
-                .willReturn(true);
-
-        notification = new Notification(
-                Template.builder()
-                        .emailTemplateId(EMAIL_TEMPLATE_ID)
-                        .smsTemplateId(null)
-                        .build(),
-                Destination.builder()
-                        .email(EMAIL)
-                        .sms(null)
-                        .build(),
-                null,
-                new Reference(),
-                null);
-
-        given(factory.create(any(NotificationWrapper.class))).willReturn(notification);
-
-        notificationService.manageNotificationAndSubscription(ccdNotificationWrapper);
-
-        then(notificationHandler).should(times(2)).sendNotification(
-                eq(ccdNotificationWrapper), eq(EMAIL_TEMPLATE_ID), eq("Email"),
-                any(NotificationHandler.SendNotification.class));
-
-    }
-
-    private CcdNotificationWrapper buildNotificationWrapperForAppealCreatedNotificationTypeAndAppeallantAndRepsSubscriptions() {
+    @Parameters({"SYA_APPEAL_CREATED_NOTIFICATION, 2, 1", "APPEAL_LAPSED_NOTIFICATION, 1, 1"})
+    public void givenNotificationEventTypeAndDifferentSubscriptionCombinations_shouldSendNotificationAccordingly(
+            NotificationEventType notificationEventType, int wantedNumberOfEmailNotificationsSent,
+            int wantedNumberOfSmsNotificationsSent) {
         appellantSubscription = Subscription.builder()
                 .tya(APPEAL_NUMBER)
                 .email(EMAIL)
                 .subscribeEmail(YES)
+                .mobile(MOBILE_NUMBER_1)
+                .subscribeSms(YES)
                 .build();
-        repsSubscription = Subscription.builder()
+
+        Subscription repsSubscription = Subscription.builder()
                 .tya(APPEAL_NUMBER)
                 .email(EMAIL)
                 .subscribeEmail(YES)
                 .build();
 
+        ccdNotificationWrapper = buildNotificationWrapperGivenNotificationTypeAndSubscriptions(
+                notificationEventType, appellantSubscription, repsSubscription);
+
+        given(notificationValidService.isHearingTypeValidToSendNotification(
+                any(SscsCaseData.class), eq(notificationEventType))).willReturn(true);
+
+        given(notificationValidService.isNotificationStillValidToSend(anyList(), eq(notificationEventType)))
+                .willReturn(true);
+
+        given(factory.create(any(NotificationWrapper.class))).willReturn(new Notification(
+                Template.builder()
+                        .emailTemplateId(EMAIL_TEMPLATE_ID)
+                        .smsTemplateId(SMS_TEMPLATE_ID)
+                        .build(),
+                Destination.builder()
+                        .email(EMAIL)
+                        .sms(SMS)
+                        .build(),
+                null,
+                new Reference(),
+                null));
+
+        notificationService.manageNotificationAndSubscription(ccdNotificationWrapper);
+
+        then(notificationHandler).should(times(wantedNumberOfEmailNotificationsSent)).sendNotification(
+                eq(ccdNotificationWrapper), eq(EMAIL_TEMPLATE_ID), eq("Email"),
+                any(NotificationHandler.SendNotification.class));
+        then(notificationHandler).should(times(wantedNumberOfSmsNotificationsSent)).sendNotification(
+                eq(ccdNotificationWrapper), eq(SMS_TEMPLATE_ID), eq("SMS"),
+                any(NotificationHandler.SendNotification.class));
+
+    }
+
+    private CcdNotificationWrapper buildNotificationWrapperGivenNotificationTypeAndSubscriptions(
+            NotificationEventType notificationEventType, Subscription appellantSubscription,
+            Subscription repsSubscription) {
         sscsCaseData = SscsCaseData.builder()
                 .appeal(Appeal.builder()
                         .hearingType(AppealHearingType.ORAL.name())
@@ -168,7 +180,7 @@ public class NotificationServiceTest {
 
         sscsCaseDataWrapper = SscsCaseDataWrapper.builder()
                 .newSscsCaseData(sscsCaseData)
-                .notificationEventType(SYA_APPEAL_CREATED_NOTIFICATION)
+                .notificationEventType(notificationEventType)
                 .build();
 
         return new CcdNotificationWrapper(sscsCaseDataWrapper);
@@ -306,14 +318,12 @@ public class NotificationServiceTest {
 
     @Test
     public void doNotSendNotificationsOutOfHours() {
-        String emailTemplateId = "abc";
-        String smsTemplateId = "123";
-        Notification notification = new Notification(Template.builder().emailTemplateId(emailTemplateId).smsTemplateId(smsTemplateId).build(), Destination.builder().email("test@testing.com").sms("07823456746").build(), null, new Reference(), null);
         SscsCaseDataWrapper wrapper = SscsCaseDataWrapper.builder().newSscsCaseData(sscsCaseData).oldSscsCaseData(sscsCaseData).notificationEventType(QUESTION_ROUND_ISSUED_NOTIFICATION).build();
         ccdNotificationWrapper = new CohNotificationWrapper("someHearingId", wrapper);
         when((notificationValidService).isNotificationStillValidToSend(any(), any())).thenReturn(true);
         when((notificationValidService).isHearingTypeValidToSendNotification(any(), any())).thenReturn(true);
 
+        Notification notification = new Notification(Template.builder().emailTemplateId("abc").smsTemplateId("123").build(), Destination.builder().email("test@testing.com").sms("07823456746").build(), null, new Reference(), null);
         when(factory.create(ccdNotificationWrapper)).thenReturn(notification);
         when(outOfHoursCalculator.isItOutOfHours()).thenReturn(true);
         notificationService.manageNotificationAndSubscription(ccdNotificationWrapper);
