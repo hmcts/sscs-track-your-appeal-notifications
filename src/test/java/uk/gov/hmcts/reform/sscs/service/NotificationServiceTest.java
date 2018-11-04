@@ -10,9 +10,11 @@ import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 import static org.mockito.MockitoAnnotations.initMocks;
+import static uk.gov.hmcts.reform.sscs.domain.notify.NotificationEventType.APPEAL_LAPSED_NOTIFICATION;
 import static uk.gov.hmcts.reform.sscs.domain.notify.NotificationEventType.APPEAL_WITHDRAWN_NOTIFICATION;
 import static uk.gov.hmcts.reform.sscs.domain.notify.NotificationEventType.QUESTION_ROUND_ISSUED_NOTIFICATION;
 import static uk.gov.hmcts.reform.sscs.domain.notify.NotificationEventType.SUBSCRIPTION_UPDATED_NOTIFICATION;
+import static uk.gov.hmcts.reform.sscs.domain.notify.NotificationEventType.SYA_APPEAL_CREATED_NOTIFICATION;
 
 import java.util.Collections;
 import junitparams.JUnitParamsRunner;
@@ -81,7 +83,6 @@ public class NotificationServiceTest {
     private NotificationConfig notificationConfig;
 
     private SscsCaseData sscsCaseData;
-    private Subscription appellantSubscription;
     private CcdNotificationWrapper ccdNotificationWrapper;
     private SscsCaseDataWrapper sscsCaseDataWrapper;
 
@@ -91,41 +92,27 @@ public class NotificationServiceTest {
         notificationService = new NotificationService(notificationSender, factory, reminderService,
                 notificationValidService, notificationHandler, outOfHoursCalculator, notificationConfig);
 
-        appellantSubscription = Subscription.builder()
-                .tya(APPEAL_NUMBER)
-                .email(EMAIL)
-                .mobile(MOBILE_NUMBER_1)
-                .subscribeEmail(YES)
-                .subscribeSms(YES)
-                .build();
-
         sscsCaseData = SscsCaseData.builder()
                 .appeal(Appeal.builder().hearingType(AppealHearingType.ORAL.name()).hearingOptions(HearingOptions.builder().wantsToAttend(YES).build()).build())
-                .subscriptions(Subscriptions.builder().appellantSubscription(appellantSubscription).build())
+                .subscriptions(Subscriptions.builder().appellantSubscription(Subscription.builder()
+                        .tya(APPEAL_NUMBER)
+                        .email(EMAIL)
+                        .mobile(MOBILE_NUMBER_1)
+                        .subscribeEmail(YES)
+                        .subscribeSms(YES)
+                        .build()).build())
                 .caseReference(CASE_REFERENCE).build();
         sscsCaseDataWrapper = SscsCaseDataWrapper.builder().newSscsCaseData(sscsCaseData).oldSscsCaseData(sscsCaseData).notificationEventType(APPEAL_WITHDRAWN_NOTIFICATION).build();
         ccdNotificationWrapper = new CcdNotificationWrapper(sscsCaseDataWrapper);
         when(outOfHoursCalculator.isItOutOfHours()).thenReturn(false);
     }
 
+
     @Test
-    @Parameters({"SYA_APPEAL_CREATED_NOTIFICATION, 2, 1", "APPEAL_LAPSED_NOTIFICATION, 1, 1"})
+    @Parameters(method = "generateNotificationAndSubscriptionCombinations")
     public void givenNotificationEventTypeAndDifferentSubscriptionCombinations_shouldSendNotificationAccordingly(
             NotificationEventType notificationEventType, int wantedNumberOfEmailNotificationsSent,
-            int wantedNumberOfSmsNotificationsSent) {
-        appellantSubscription = Subscription.builder()
-                .tya(APPEAL_NUMBER)
-                .email(EMAIL)
-                .subscribeEmail(YES)
-                .mobile(MOBILE_NUMBER_1)
-                .subscribeSms(YES)
-                .build();
-
-        Subscription repsSubscription = Subscription.builder()
-                .tya(APPEAL_NUMBER)
-                .email(EMAIL)
-                .subscribeEmail(YES)
-                .build();
+            int wantedNumberOfSmsNotificationsSent, Subscription appellantSubscription, Subscription repsSubscription) {
 
         ccdNotificationWrapper = buildNotificationWrapperGivenNotificationTypeAndSubscriptions(
                 notificationEventType, appellantSubscription, repsSubscription);
@@ -158,6 +145,34 @@ public class NotificationServiceTest {
                 eq(ccdNotificationWrapper), eq(SMS_TEMPLATE_ID), eq("SMS"),
                 any(NotificationHandler.SendNotification.class));
 
+    }
+
+    @SuppressWarnings("Indentation")
+    private Object[] generateNotificationAndSubscriptionCombinations() {
+        return new Object[]{
+                new Object[]{SYA_APPEAL_CREATED_NOTIFICATION, 2, 1, Subscription.builder()
+                        .tya(APPEAL_NUMBER)
+                        .email(EMAIL)
+                        .subscribeEmail(YES)
+                        .mobile(MOBILE_NUMBER_1)
+                        .subscribeSms(YES)
+                        .build(), Subscription.builder()
+                        .tya(APPEAL_NUMBER)
+                        .email(EMAIL)
+                        .subscribeEmail(YES)
+                        .build()},
+                new Object[]{APPEAL_LAPSED_NOTIFICATION, 1, 1, Subscription.builder()
+                        .tya(APPEAL_NUMBER)
+                        .email(EMAIL)
+                        .subscribeEmail(YES)
+                        .mobile(MOBILE_NUMBER_1)
+                        .subscribeSms(YES)
+                        .build(), Subscription.builder()
+                        .tya(APPEAL_NUMBER)
+                        .email(EMAIL)
+                        .subscribeEmail(YES)
+                        .build()}
+        };
     }
 
     private CcdNotificationWrapper buildNotificationWrapperGivenNotificationTypeAndSubscriptions(
