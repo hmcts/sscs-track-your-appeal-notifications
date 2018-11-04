@@ -25,7 +25,7 @@ import uk.gov.hmcts.reform.sscs.factory.NotificationWrapper;
 public class NotificationService {
 
     private final NotificationSender notificationSender;
-    private final NotificationFactory factory;
+    private final NotificationFactory notificationFactory;
     private final ReminderService reminderService;
     private final NotificationValidService notificationValidService;
     private final NotificationHandler notificationHandler;
@@ -34,10 +34,10 @@ public class NotificationService {
 
 
     @Autowired
-    public NotificationService(NotificationSender notificationSender, NotificationFactory factory, ReminderService reminderService,
+    public NotificationService(NotificationSender notificationSender, NotificationFactory notificationFactory, ReminderService reminderService,
                                NotificationValidService notificationValidService, NotificationHandler notificationHandler,
                                OutOfHoursCalculator outOfHoursCalculator, NotificationConfig notificationConfig) {
-        this.factory = factory;
+        this.notificationFactory = notificationFactory;
         this.notificationSender = notificationSender;
         this.reminderService = reminderService;
         this.notificationValidService = notificationValidService;
@@ -68,7 +68,7 @@ public class NotificationService {
     private void sendNotificationPerSubscription(NotificationWrapper notificationWrapper, Subscription subscription,
                                                  NotificationEventType notificationType) {
         if (isValidNotification(notificationWrapper, subscription, notificationType)) {
-            Notification notification = factory.create(notificationWrapper);
+            Notification notification = notificationFactory.create(notificationWrapper);
             if (notificationWrapper.getNotificationType().isAllowOutOfHours() || !outOfHoursCalculator.isItOutOfHours()) {
                 sendEmailSmsNotification(notificationWrapper, subscription, notification);
                 processOldSubscriptionNotifications(notificationWrapper, notification);
