@@ -50,16 +50,15 @@ public class NotificationService {
         NotificationEventType notificationType = notificationWrapper.getNotificationType();
         final String caseId = notificationWrapper.getCaseId();
         log.info("Notification event triggered {} for case id {}", notificationType.getId(), caseId);
-        for (Subscription subscription : getSubscriptionsBasedOnNotificationType(notificationWrapper, notificationType)) {
+        for (Subscription subscription : getSubscriptionsBasedOnNotificationType(notificationWrapper)) {
             sendNotificationPerSubscription(notificationWrapper, subscription, notificationType);
         }
     }
 
-    private List<Subscription> getSubscriptionsBasedOnNotificationType(NotificationWrapper notificationWrapper,
-                                                                       NotificationEventType notificationType) {
+    private List<Subscription> getSubscriptionsBasedOnNotificationType(NotificationWrapper notificationWrapper) {
         List<Subscription> subscriptions = new ArrayList<>();
         subscriptions.add(notificationWrapper.getAppellantSubscription());
-        if (SYA_APPEAL_CREATED_NOTIFICATION.getId().equals(notificationType.getId())) {
+        if (SYA_APPEAL_CREATED_NOTIFICATION.getId().equals(notificationWrapper.getNotificationType().getId())) {
             subscriptions.add(notificationWrapper.getRepresentativeSubscription());
         }
         return subscriptions;
