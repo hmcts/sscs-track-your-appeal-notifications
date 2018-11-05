@@ -114,11 +114,11 @@ public class NotificationServiceTest {
 
 
     @Test
-    @Parameters(method = "generateNotificationAndSubscriptionCombinations")
+    @Parameters(method = "generateNotificationTypeAndSubscriptionsScenarios")
     public void givenNotificationEventTypeAndDifferentSubscriptionCombinations_shouldManageNotificationAndSubscriptionAccordingly(
             NotificationEventType notificationEventType, int wantedNumberOfEmailNotificationsSent,
             int wantedNumberOfSmsNotificationsSent, Subscription appellantSubscription, Subscription repsSubscription,
-            SubscriptionType[] expectedSubscriptionTypes, int wantedNumberOfNotificationFactoryCreateInvocations) {
+            SubscriptionType[] expectedSubscriptionTypes) {
 
         ccdNotificationWrapper = buildNotificationWrapperGivenNotificationTypeAndSubscriptions(
                 notificationEventType, appellantSubscription, repsSubscription);
@@ -146,7 +146,7 @@ public class NotificationServiceTest {
 
         notificationService.manageNotificationAndSubscription(ccdNotificationWrapper);
 
-        then(factory).should(times(wantedNumberOfNotificationFactoryCreateInvocations))
+        then(factory).should(times(expectedSubscriptionTypes.length))
                 .create(any(NotificationWrapper.class), subscriptionTypeCaptor.capture());
         assertArrayEquals(expectedSubscriptionTypes, subscriptionTypeCaptor.getAllValues().toArray());
 
@@ -160,7 +160,7 @@ public class NotificationServiceTest {
     }
 
     @SuppressWarnings("Indentation")
-    private Object[] generateNotificationAndSubscriptionCombinations() {
+    private Object[] generateNotificationTypeAndSubscriptionsScenarios() {
         return new Object[]{
                 new Object[]{
                         SYA_APPEAL_CREATED_NOTIFICATION,
@@ -179,7 +179,6 @@ public class NotificationServiceTest {
                                 .subscribeEmail(YES)
                                 .build(),
                         new SubscriptionType[]{APPELLANT, REPRESENTATIVE},
-                        2
                 },
                 new Object[]{
                         SYA_APPEAL_CREATED_NOTIFICATION,
@@ -196,7 +195,6 @@ public class NotificationServiceTest {
                                 .subscribeSms(YES)
                                 .build(),
                         new SubscriptionType[]{APPELLANT, REPRESENTATIVE},
-                        2
                 },
                 new Object[]{
                         SYA_APPEAL_CREATED_NOTIFICATION,
@@ -213,7 +211,6 @@ public class NotificationServiceTest {
                                 .subscribeSms(YES)
                                 .build(),
                         new SubscriptionType[]{REPRESENTATIVE},
-                        1
                 },
                 new Object[]{
                         APPEAL_LAPSED_NOTIFICATION,
@@ -232,8 +229,67 @@ public class NotificationServiceTest {
                                 .subscribeEmail(YES)
                                 .build(),
                         new SubscriptionType[]{APPELLANT},
-                        1
                 },
+                new Object[]{
+                        SYA_APPEAL_CREATED_NOTIFICATION,
+                        0,
+                        0,
+                        null,
+                        null,
+                        new SubscriptionType[]{},
+                },
+                new Object[]{
+                        SYA_APPEAL_CREATED_NOTIFICATION,
+                        1,
+                        0,
+                        null,
+                        Subscription.builder()
+                                .tya(APPEAL_NUMBER)
+                                .email(EMAIL)
+                                .subscribeEmail(YES)
+                                .build(),
+                        new SubscriptionType[]{REPRESENTATIVE},
+                },
+                new Object[]{
+                        SYA_APPEAL_CREATED_NOTIFICATION,
+                        1,
+                        0,
+                        Subscription.builder()
+                                .tya(APPEAL_NUMBER)
+                                .email(EMAIL)
+                                .subscribeEmail(YES)
+                                .build(),
+                        null,
+                        new SubscriptionType[]{APPELLANT},
+                },
+                new Object[]{
+                        SYA_APPEAL_CREATED_NOTIFICATION,
+                        2,
+                        2,
+                        Subscription.builder()
+                                .tya(APPEAL_NUMBER)
+                                .email(EMAIL)
+                                .subscribeEmail(YES)
+                                .subscribeSms(YES)
+                                .mobile(MOBILE_NUMBER_1)
+                                .build(),
+                        Subscription.builder()
+                                .tya(APPEAL_NUMBER)
+                                .email(EMAIL)
+                                .subscribeEmail(YES)
+                                .subscribeSms(YES)
+                                .mobile(MOBILE_NUMBER_1)
+                                .build(),
+                        new SubscriptionType[]{APPELLANT, REPRESENTATIVE},
+                },
+                new Object[]{
+                        SYA_APPEAL_CREATED_NOTIFICATION,
+                        0,
+                        0,
+                        Subscription.builder().build(),
+                        Subscription.builder().build(),
+                        new SubscriptionType[]{},
+                }
         };
     }
 

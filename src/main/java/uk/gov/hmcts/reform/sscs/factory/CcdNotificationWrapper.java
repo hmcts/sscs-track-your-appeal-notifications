@@ -1,5 +1,7 @@
 package uk.gov.hmcts.reform.sscs.factory;
 
+import static uk.gov.hmcts.reform.sscs.config.SubscriptionType.APPELLANT;
+import static uk.gov.hmcts.reform.sscs.config.SubscriptionType.REPRESENTATIVE;
 import static uk.gov.hmcts.reform.sscs.domain.notify.NotificationEventType.SYA_APPEAL_CREATED_NOTIFICATION;
 
 import java.util.ArrayList;
@@ -9,6 +11,7 @@ import uk.gov.hmcts.reform.sscs.ccd.domain.SscsCaseData;
 import uk.gov.hmcts.reform.sscs.ccd.domain.Subscription;
 import uk.gov.hmcts.reform.sscs.config.AppealHearingType;
 import uk.gov.hmcts.reform.sscs.domain.SscsCaseDataWrapper;
+import uk.gov.hmcts.reform.sscs.domain.SubscriptionWithType;
 import uk.gov.hmcts.reform.sscs.domain.notify.NotificationEventType;
 import uk.gov.hmcts.reform.sscs.service.scheduler.CcdActionSerializer;
 
@@ -77,13 +80,13 @@ public class CcdNotificationWrapper implements NotificationWrapper {
     }
 
     @Override
-    public List<Subscription> getSubscriptionsBasedOnNotificationType() {
-        List<Subscription> subscriptions = new ArrayList<>();
-        subscriptions.add(getAppellantSubscription());
+    public List<SubscriptionWithType> getSubscriptionsBasedOnNotificationType() {
+        List<SubscriptionWithType> subscriptionWithTypeList = new ArrayList<>();
+        subscriptionWithTypeList.add(new SubscriptionWithType(getAppellantSubscription(), APPELLANT));
         if (SYA_APPEAL_CREATED_NOTIFICATION.getId().equals(getNotificationType().getId())) {
-            subscriptions.add(getRepresentativeSubscription());
+            subscriptionWithTypeList.add(new SubscriptionWithType(getRepresentativeSubscription(), REPRESENTATIVE));
         }
-        return subscriptions;
+        return subscriptionWithTypeList;
     }
 
     @Override
