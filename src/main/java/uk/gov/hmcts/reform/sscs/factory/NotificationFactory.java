@@ -4,6 +4,7 @@ import static com.google.common.collect.Maps.newHashMap;
 import static uk.gov.hmcts.reform.sscs.ccd.domain.Benefit.getBenefitByCode;
 
 import java.util.Map;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 import uk.gov.hmcts.reform.sscs.ccd.domain.Benefit;
@@ -18,6 +19,7 @@ import uk.gov.hmcts.reform.sscs.domain.notify.Template;
 import uk.gov.hmcts.reform.sscs.personalisation.Personalisation;
 
 @Component
+@Slf4j
 public class NotificationFactory {
 
     private final PersonalisationFactory personalisationFactory;
@@ -31,6 +33,7 @@ public class NotificationFactory {
 
     public <E extends NotificationWrapper> Notification create(E notificationWrapper,
                                                                SubscriptionType subscriptionType) {
+        log.info(subscriptionType.name());
         Personalisation<E> personalisation = getPersonalisation(notificationWrapper);
         if (personalisation == null) {
             return null;
