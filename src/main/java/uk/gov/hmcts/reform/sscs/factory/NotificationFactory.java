@@ -33,7 +33,6 @@ public class NotificationFactory {
 
     public <E extends NotificationWrapper> Notification create(E notificationWrapper,
                                                                SubscriptionType subscriptionType) {
-        log.info(subscriptionType.name());
         Personalisation<E> personalisation = getPersonalisation(notificationWrapper);
         if (personalisation == null) {
             return null;
@@ -46,7 +45,7 @@ public class NotificationFactory {
 
         Benefit benefit = getBenefitByCode(notificationWrapper
                 .getSscsCaseDataWrapper().getNewSscsCaseData().getAppeal().getBenefitType().getCode());
-        Template template = personalisation.getTemplate(notificationWrapper, benefit);
+        Template template = personalisation.getTemplate(notificationWrapper, benefit, subscriptionType);
 
         SscsCaseData ccdResponse = notificationWrapper.getSscsCaseDataWrapper().getNewSscsCaseData();
 

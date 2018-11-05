@@ -4,6 +4,7 @@ import java.util.Map;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 import uk.gov.hmcts.reform.sscs.ccd.domain.Benefit;
+import uk.gov.hmcts.reform.sscs.config.SubscriptionType;
 import uk.gov.hmcts.reform.sscs.domain.notify.NotificationEventType;
 import uk.gov.hmcts.reform.sscs.domain.notify.Template;
 import uk.gov.hmcts.reform.sscs.factory.CohNotificationWrapper;
@@ -31,7 +32,8 @@ public class CohPersonalisation extends Personalisation<CohNotificationWrapper> 
         return placeholders;
     }
 
-    public Template getTemplate(CohNotificationWrapper notificationWrapper, Benefit benefit) {
+    public Template getTemplate(CohNotificationWrapper notificationWrapper, Benefit benefit,
+                                SubscriptionType subscriptionType) {
         // If we remembered the question rounds before we would not need to make this call but currently Personalisation is a singleton
         QuestionRounds questionRounds = questionService.getQuestionRounds(notificationWrapper.getOnlineHearingId());
         if (questionRounds.getCurrentQuestionRound() == 1) {

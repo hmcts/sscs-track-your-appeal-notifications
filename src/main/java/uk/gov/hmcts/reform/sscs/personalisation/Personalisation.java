@@ -38,6 +38,7 @@ import uk.gov.hmcts.reform.sscs.ccd.domain.SscsCaseData;
 import uk.gov.hmcts.reform.sscs.ccd.domain.Subscription;
 import uk.gov.hmcts.reform.sscs.config.AppConstants;
 import uk.gov.hmcts.reform.sscs.config.NotificationConfig;
+import uk.gov.hmcts.reform.sscs.config.SubscriptionType;
 import uk.gov.hmcts.reform.sscs.domain.SscsCaseDataWrapper;
 import uk.gov.hmcts.reform.sscs.domain.notify.NotificationEventType;
 import uk.gov.hmcts.reform.sscs.domain.notify.Template;
@@ -231,7 +232,7 @@ public class Personalisation<E extends NotificationWrapper> {
         return date.format(DateTimeFormatter.ofPattern(AppConstants.HEARING_TIME_FORMAT));
     }
 
-    public Template getTemplate(E notificationWrapper, Benefit benefit) {
+    public Template getTemplate(E notificationWrapper, Benefit benefit, SubscriptionType subscriptionType) {
         NotificationEventType type = notificationWrapper.getNotificationType();
         String smsTemplateId = isSendSmsSubscriptionConfirmation() ? SUBSCRIPTION_CREATED_NOTIFICATION.getId() : type.getId();
         return config.getTemplate(type.getId(), smsTemplateId, benefit, notificationWrapper.getHearingType());

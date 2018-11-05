@@ -33,7 +33,6 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
-import javax.annotation.Resource;
 import junitparams.JUnitParamsRunner;
 import junitparams.Parameters;
 import org.junit.Assert;
@@ -95,7 +94,6 @@ public class PersonalisationTest {
     private NotificationDateConverterUtil notificationDateConverterUtil;
 
     @InjectMocks
-    @Resource
     public Personalisation personalisation;
 
     private String date = "2018-07-01T14:01:18.243";
