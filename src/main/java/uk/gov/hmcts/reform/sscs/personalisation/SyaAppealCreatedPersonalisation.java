@@ -43,12 +43,16 @@ public class SyaAppealCreatedPersonalisation extends Personalisation<CcdNotifica
     }
 
     Map<String, String> setRepresentativeName(Map<String, String> personalisation, SscsCaseData sscsCaseData) {
-        if (null != (sscsCaseData.getAppeal().getRep()) && null != sscsCaseData.getAppeal().getRep().getName()) {
+        if (isValidReps(sscsCaseData.getAppeal().getRep())) {
             personalisation.put(AppConstants.REPRESENTATIVE_NAME, String.format("%s %s",
                     sscsCaseData.getAppeal().getRep().getName().getFirstName(),
                     sscsCaseData.getAppeal().getRep().getName().getLastName()));
         }
         return personalisation;
+    }
+
+    private boolean isValidReps(Representative representative) {
+        return null != (representative) && null != representative.getName();
     }
 
     public Map<String, String> setMrnDetails(Map<String, String> personalisation, SscsCaseData ccdResponse) {
