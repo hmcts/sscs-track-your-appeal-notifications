@@ -72,10 +72,18 @@ public class SyaAppealCreatedPersonalisationTest {
                         .rep(Representative.builder().build())
                         .build())
                 .build();
+        SscsCaseData sscsCaseDataWithEmptyRepsAndEmptyNames = SscsCaseData.builder()
+                .appeal(Appeal.builder()
+                        .rep(Representative.builder()
+                                .name(Name.builder().build())
+                                .build())
+                        .build())
+                .build();
         return new Object[]{
                 new Object[]{sscsCaseDataWithReps, "Manish Sharma"},
                 new Object[]{sscsCaseDataWithNoReps, null},
-                new Object[]{sscsCaseDataWithEmptyReps, null}
+                new Object[]{sscsCaseDataWithEmptyReps, null},
+                new Object[]{sscsCaseDataWithEmptyRepsAndEmptyNames, "null null"}
         };
     }
 
