@@ -26,6 +26,7 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.Optional;
 import java.util.stream.Collectors;
+import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
@@ -48,6 +49,7 @@ import uk.gov.hmcts.reform.sscs.service.MessageAuthenticationServiceImpl;
 import uk.gov.hmcts.reform.sscs.service.RegionalProcessingCenterService;
 
 @Component
+@Slf4j
 public class Personalisation<E extends NotificationWrapper> {
 
     private boolean sendSmsSubscriptionConfirmation;
@@ -233,6 +235,7 @@ public class Personalisation<E extends NotificationWrapper> {
     }
 
     public Template getTemplate(E notificationWrapper, Benefit benefit, SubscriptionType subscriptionType) {
+        log.info(subscriptionType.name());
         NotificationEventType type = notificationWrapper.getNotificationType();
         String smsTemplateId = isSendSmsSubscriptionConfirmation() ? SUBSCRIPTION_CREATED_NOTIFICATION.getId() : type.getId();
         return config.getTemplate(type.getId(), smsTemplateId, benefit, notificationWrapper.getHearingType());

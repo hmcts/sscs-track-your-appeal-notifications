@@ -32,6 +32,7 @@ public class CohPersonalisation extends Personalisation<CohNotificationWrapper> 
         return placeholders;
     }
 
+    @Override
     public Template getTemplate(CohNotificationWrapper notificationWrapper, Benefit benefit,
                                 SubscriptionType subscriptionType) {
         // If we remembered the question rounds before we would not need to make this call but currently Personalisation is a singleton
