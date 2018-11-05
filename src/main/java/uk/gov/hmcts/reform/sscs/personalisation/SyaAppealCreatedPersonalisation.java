@@ -8,7 +8,16 @@ import java.util.Map;
 import java.util.StringJoiner;
 import org.apache.commons.lang.StringUtils;
 import org.springframework.stereotype.Component;
-import uk.gov.hmcts.reform.sscs.ccd.domain.*;
+import uk.gov.hmcts.reform.sscs.ccd.domain.Appeal;
+import uk.gov.hmcts.reform.sscs.ccd.domain.AppealReason;
+import uk.gov.hmcts.reform.sscs.ccd.domain.AppealReasons;
+import uk.gov.hmcts.reform.sscs.ccd.domain.DateRange;
+import uk.gov.hmcts.reform.sscs.ccd.domain.ExcludeDate;
+import uk.gov.hmcts.reform.sscs.ccd.domain.HearingOptions;
+import uk.gov.hmcts.reform.sscs.ccd.domain.MrnDetails;
+import uk.gov.hmcts.reform.sscs.ccd.domain.Representative;
+import uk.gov.hmcts.reform.sscs.ccd.domain.SscsCaseData;
+import uk.gov.hmcts.reform.sscs.ccd.domain.Subscription;
 import uk.gov.hmcts.reform.sscs.config.AppConstants;
 import uk.gov.hmcts.reform.sscs.domain.SscsCaseDataWrapper;
 import uk.gov.hmcts.reform.sscs.factory.CcdNotificationWrapper;
@@ -28,7 +37,17 @@ public class SyaAppealCreatedPersonalisation extends Personalisation<CcdNotifica
         setReasonsForAppealingDetails(personalisation, ccdResponse);
         setHearingDetails(personalisation, ccdResponse);
         setHearingArrangementDetails(personalisation, ccdResponse);
+        setRepresentativeName(personalisation, ccdResponse);
 
+        return personalisation;
+    }
+
+    Map<String, String> setRepresentativeName(Map<String, String> personalisation, SscsCaseData sscsCaseData) {
+        if (null != (sscsCaseData.getAppeal().getRep()) && null != sscsCaseData.getAppeal().getRep().getName()) {
+            personalisation.put(AppConstants.REPRESENTATIVE_NAME, String.format("%s %s",
+                    sscsCaseData.getAppeal().getRep().getName().getFirstName(),
+                    sscsCaseData.getAppeal().getRep().getName().getLastName()));
+        }
         return personalisation;
     }
 
@@ -51,7 +70,7 @@ public class SyaAppealCreatedPersonalisation extends Personalisation<CcdNotifica
             details.add("Reason for no MRN: " + mrnDetails.getMrnMissingReason());
         }
 
-        return StringUtils.join(details.toArray(),"\n\n");
+        return StringUtils.join(details.toArray(), "\n\n");
     }
 
     public Map<String, String> setYourDetails(Map<String, String> personalisation, SscsCaseData ccdResponse) {
@@ -61,19 +80,19 @@ public class SyaAppealCreatedPersonalisation extends Personalisation<CcdNotifica
 
     private String buildYourDetails(Appeal appeal) {
         return new StringBuilder()
-            .append("Name: ")
-            .append(appeal.getAppellant().getName().getFullNameNoTitle() + "\n\n")
-            .append("Date of birth: ")
-            .append(appeal.getAppellant().getIdentity().getDob() + "\n\n")
-            .append("National Insurance number: ")
-            .append(appeal.getAppellant().getIdentity().getNino() + "\n\n")
-            .append("Address: ")
-            .append(appeal.getAppellant().getAddress().getFullAddress() + "\n\n")
-            .append("Email: ")
-            .append(getOptionalField(appeal.getAppellant().getContact().getEmail(), "Not provided") + "\n\n")
-            .append("Phone: ")
-            .append(getOptionalField(appeal.getAppellant().getContact().getPhone(), "Not provided"))
-            .toString();
+                .append("Name: ")
+                .append(appeal.getAppellant().getName().getFullNameNoTitle() + "\n\n")
+                .append("Date of birth: ")
+                .append(appeal.getAppellant().getIdentity().getDob() + "\n\n")
+                .append("National Insurance number: ")
+                .append(appeal.getAppellant().getIdentity().getNino() + "\n\n")
+                .append("Address: ")
+                .append(appeal.getAppellant().getAddress().getFullAddress() + "\n\n")
+                .append("Email: ")
+                .append(getOptionalField(appeal.getAppellant().getContact().getEmail(), "Not provided") + "\n\n")
+                .append("Phone: ")
+                .append(getOptionalField(appeal.getAppellant().getContact().getPhone(), "Not provided"))
+                .toString();
     }
 
     public Map<String, String> setTextMessageReminderDetails(Map<String, String> personalisation, SscsCaseData ccdResponse) {
@@ -109,16 +128,16 @@ public class SyaAppealCreatedPersonalisation extends Personalisation<CcdNotifica
 
         if (representative != null) {
             representativeBuilder.append("\n\nName: ")
-                .append(representative.getName().getFullNameNoTitle() + "\n\n")
-                .append("Organisation: ")
-                .append(getOptionalField(representative.getOrganisation(), "Not provided") + "\n\n")
-                .append("Address: ")
-                .append(representative.getAddress().getFullAddress() + "\n\n")
-                .append("Email: ")
-                .append(getOptionalField(representative.getContact().getEmail(), "Not provided") + "\n\n")
-                .append("Phone: ")
-                .append(getOptionalField(representative.getContact().getPhone(), "Not provided"))
-                .toString();
+                    .append(representative.getName().getFullNameNoTitle() + "\n\n")
+                    .append("Organisation: ")
+                    .append(getOptionalField(representative.getOrganisation(), "Not provided") + "\n\n")
+                    .append("Address: ")
+                    .append(representative.getAddress().getFullAddress() + "\n\n")
+                    .append("Email: ")
+                    .append(getOptionalField(representative.getContact().getEmail(), "Not provided") + "\n\n")
+                    .append("Phone: ")
+                    .append(getOptionalField(representative.getContact().getPhone(), "Not provided"))
+                    .toString();
         }
         return representativeBuilder.toString();
     }
@@ -223,4 +242,5 @@ public class SyaAppealCreatedPersonalisation extends Personalisation<CcdNotifica
     private String getOptionalField(String field, String text) {
         return field == null || field.equals("null") || field.isEmpty() ? text : field;
     }
+
 }

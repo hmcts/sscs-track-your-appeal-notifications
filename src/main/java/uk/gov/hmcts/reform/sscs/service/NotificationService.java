@@ -1,10 +1,7 @@
 package uk.gov.hmcts.reform.sscs.service;
 
 import static uk.gov.hmcts.reform.sscs.ccd.domain.Benefit.getBenefitByCode;
-import static uk.gov.hmcts.reform.sscs.domain.notify.NotificationEventType.SYA_APPEAL_CREATED_NOTIFICATION;
 
-import java.util.ArrayList;
-import java.util.List;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -34,8 +31,9 @@ public class NotificationService {
 
 
     @Autowired
-    public NotificationService(NotificationSender notificationSender, NotificationFactory notificationFactory, ReminderService reminderService,
-                               NotificationValidService notificationValidService, NotificationHandler notificationHandler,
+    public NotificationService(NotificationSender notificationSender, NotificationFactory notificationFactory,
+                               ReminderService reminderService, NotificationValidService notificationValidService,
+                               NotificationHandler notificationHandler,
                                OutOfHoursCalculator outOfHoursCalculator, NotificationConfig notificationConfig) {
         this.notificationFactory = notificationFactory;
         this.notificationSender = notificationSender;
@@ -50,18 +48,9 @@ public class NotificationService {
         NotificationEventType notificationType = notificationWrapper.getNotificationType();
         final String caseId = notificationWrapper.getCaseId();
         log.info("Notification event triggered {} for case id {}", notificationType.getId(), caseId);
-        for (Subscription subscription : getSubscriptionsBasedOnNotificationType(notificationWrapper)) {
+        for (Subscription subscription : notificationWrapper.getSubscriptionsBasedOnNotificationType()) {
             sendNotificationPerSubscription(notificationWrapper, subscription, notificationType);
         }
-    }
-
-    private List<Subscription> getSubscriptionsBasedOnNotificationType(NotificationWrapper notificationWrapper) {
-        List<Subscription> subscriptions = new ArrayList<>();
-        subscriptions.add(notificationWrapper.getAppellantSubscription());
-        if (SYA_APPEAL_CREATED_NOTIFICATION.getId().equals(notificationWrapper.getNotificationType().getId())) {
-            subscriptions.add(notificationWrapper.getRepresentativeSubscription());
-        }
-        return subscriptions;
     }
 
     private void sendNotificationPerSubscription(NotificationWrapper notificationWrapper, Subscription subscription,

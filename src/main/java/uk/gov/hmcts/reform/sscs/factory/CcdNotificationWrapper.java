@@ -1,5 +1,9 @@
 package uk.gov.hmcts.reform.sscs.factory;
 
+import static uk.gov.hmcts.reform.sscs.domain.notify.NotificationEventType.SYA_APPEAL_CREATED_NOTIFICATION;
+
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Objects;
 import uk.gov.hmcts.reform.sscs.ccd.domain.SscsCaseData;
 import uk.gov.hmcts.reform.sscs.ccd.domain.Subscription;
@@ -70,6 +74,16 @@ public class CcdNotificationWrapper implements NotificationWrapper {
     @Override
     public SscsCaseData getOldSscsCaseData() {
         return responseWrapper.getOldSscsCaseData();
+    }
+
+    @Override
+    public List<Subscription> getSubscriptionsBasedOnNotificationType() {
+        List<Subscription> subscriptions = new ArrayList<>();
+        subscriptions.add(getAppellantSubscription());
+        if (SYA_APPEAL_CREATED_NOTIFICATION.getId().equals(getNotificationType().getId())) {
+            subscriptions.add(getRepresentativeSubscription());
+        }
+        return subscriptions;
     }
 
     @Override
