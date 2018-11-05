@@ -1,6 +1,8 @@
 package uk.gov.hmcts.reform.sscs.service;
 
 import static uk.gov.hmcts.reform.sscs.ccd.domain.Benefit.getBenefitByCode;
+import static uk.gov.hmcts.reform.sscs.config.SubscriptionType.APPELLANT;
+import static uk.gov.hmcts.reform.sscs.config.SubscriptionType.REPRESENTATIVE;
 
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -9,6 +11,7 @@ import uk.gov.hmcts.reform.sscs.ccd.domain.Benefit;
 import uk.gov.hmcts.reform.sscs.ccd.domain.Subscription;
 import uk.gov.hmcts.reform.sscs.config.AppealHearingType;
 import uk.gov.hmcts.reform.sscs.config.NotificationConfig;
+import uk.gov.hmcts.reform.sscs.config.SubscriptionType;
 import uk.gov.hmcts.reform.sscs.domain.notify.Destination;
 import uk.gov.hmcts.reform.sscs.domain.notify.Notification;
 import uk.gov.hmcts.reform.sscs.domain.notify.NotificationEventType;
@@ -56,7 +59,8 @@ public class NotificationService {
     private void sendNotificationPerSubscription(NotificationWrapper notificationWrapper, Subscription subscription,
                                                  NotificationEventType notificationType) {
         if (isValidNotification(notificationWrapper, subscription, notificationType)) {
-            Notification notification = notificationFactory.create(notificationWrapper);
+            SubscriptionType subscriptionType = workOutSubscriptionType(notificationWrapper, subscription);
+            Notification notification = notificationFactory.create(notificationWrapper, subscriptionType);
             if (notificationWrapper.getNotificationType().isAllowOutOfHours() || !outOfHoursCalculator.isItOutOfHours()) {
                 sendEmailSmsNotification(notificationWrapper, subscription, notification);
                 processOldSubscriptionNotifications(notificationWrapper, notification);
@@ -65,6 +69,14 @@ public class NotificationService {
             }
             reminderService.createReminders(notificationWrapper);
         }
+    }
+
+    private SubscriptionType workOutSubscriptionType(NotificationWrapper notificationWrapper,
+                                                     Subscription subscription) {
+        if (notificationWrapper.getAppellantSubscription().equals(subscription)) {
+            return APPELLANT;
+        }
+        return REPRESENTATIVE;
     }
 
     private boolean isValidNotification(NotificationWrapper wrapper, Subscription appellantSubscription, NotificationEventType notificationType) {

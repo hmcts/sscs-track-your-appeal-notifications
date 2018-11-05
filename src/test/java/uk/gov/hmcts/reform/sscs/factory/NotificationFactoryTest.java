@@ -7,7 +7,11 @@ import static org.mockito.Mockito.when;
 import static org.mockito.MockitoAnnotations.initMocks;
 import static uk.gov.hmcts.reform.sscs.ccd.domain.Benefit.PIP;
 import static uk.gov.hmcts.reform.sscs.config.AppealHearingType.REGULAR;
-import static uk.gov.hmcts.reform.sscs.domain.notify.NotificationEventType.*;
+import static uk.gov.hmcts.reform.sscs.config.SubscriptionType.APPELLANT;
+import static uk.gov.hmcts.reform.sscs.domain.notify.NotificationEventType.APPEAL_RECEIVED_NOTIFICATION;
+import static uk.gov.hmcts.reform.sscs.domain.notify.NotificationEventType.DO_NOT_SEND;
+import static uk.gov.hmcts.reform.sscs.domain.notify.NotificationEventType.SUBSCRIPTION_CREATED_NOTIFICATION;
+import static uk.gov.hmcts.reform.sscs.domain.notify.NotificationEventType.SUBSCRIPTION_UPDATED_NOTIFICATION;
 
 import java.time.LocalDate;
 import java.util.ArrayList;
@@ -18,7 +22,16 @@ import org.junit.Before;
 import org.junit.Test;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
-import uk.gov.hmcts.reform.sscs.ccd.domain.*;
+import uk.gov.hmcts.reform.sscs.ccd.domain.Appeal;
+import uk.gov.hmcts.reform.sscs.ccd.domain.Appellant;
+import uk.gov.hmcts.reform.sscs.ccd.domain.BenefitType;
+import uk.gov.hmcts.reform.sscs.ccd.domain.Event;
+import uk.gov.hmcts.reform.sscs.ccd.domain.EventDetails;
+import uk.gov.hmcts.reform.sscs.ccd.domain.Name;
+import uk.gov.hmcts.reform.sscs.ccd.domain.RegionalProcessingCenter;
+import uk.gov.hmcts.reform.sscs.ccd.domain.SscsCaseData;
+import uk.gov.hmcts.reform.sscs.ccd.domain.Subscription;
+import uk.gov.hmcts.reform.sscs.ccd.domain.Subscriptions;
 import uk.gov.hmcts.reform.sscs.config.NotificationConfig;
 import uk.gov.hmcts.reform.sscs.domain.SscsCaseDataWrapper;
 import uk.gov.hmcts.reform.sscs.domain.notify.Link;
@@ -108,7 +121,7 @@ public class NotificationFactoryTest {
     public void buildNotificationFromSscsCaseData() {
         when(personalisationFactory.apply(APPEAL_RECEIVED_NOTIFICATION)).thenReturn(personalisation);
         when(config.getTemplate(APPEAL_RECEIVED_NOTIFICATION.getId(), APPEAL_RECEIVED_NOTIFICATION.getId(), PIP, REGULAR)).thenReturn(Template.builder().emailTemplateId("123").smsTemplateId(null).build());
-        Notification result = factory.create(new CcdNotificationWrapper(wrapper));
+        Notification result = factory.create(new CcdNotificationWrapper(wrapper), APPELLANT);
 
         assertEquals("123", result.getEmailTemplate());
         assertEquals("test@testing.com", result.getEmail());
@@ -132,7 +145,7 @@ public class NotificationFactoryTest {
                 .notificationEventType(SUBSCRIPTION_UPDATED_NOTIFICATION)
                 .build();
 
-        Notification result = factory.create(new CcdNotificationWrapper(wrapper));
+        Notification result = factory.create(new CcdNotificationWrapper(wrapper), APPELLANT);
 
         assertEquals("123", result.getSmsTemplate());
     }
@@ -154,7 +167,7 @@ public class NotificationFactoryTest {
                 .notificationEventType(SUBSCRIPTION_UPDATED_NOTIFICATION)
                 .build();
 
-        Notification result = factory.create(new CcdNotificationWrapper(wrapper));
+        Notification result = factory.create(new CcdNotificationWrapper(wrapper), APPELLANT);
 
         assertEquals("123", result.getSmsTemplate());
     }
@@ -180,7 +193,7 @@ public class NotificationFactoryTest {
                 .notificationEventType(SUBSCRIPTION_UPDATED_NOTIFICATION)
                 .build();
 
-        Notification result = factory.create(new CcdNotificationWrapper(wrapper));
+        Notification result = factory.create(new CcdNotificationWrapper(wrapper), APPELLANT);
 
         assertEquals("123", result.getEmailTemplate());
     }
@@ -206,7 +219,7 @@ public class NotificationFactoryTest {
                 .notificationEventType(SUBSCRIPTION_UPDATED_NOTIFICATION)
                 .build();
 
-        Notification result = factory.create(new CcdNotificationWrapper(wrapper));
+        Notification result = factory.create(new CcdNotificationWrapper(wrapper), APPELLANT);
 
         assertEquals("123", result.getSmsTemplate());
     }
@@ -232,7 +245,7 @@ public class NotificationFactoryTest {
             .notificationEventType(SUBSCRIPTION_UPDATED_NOTIFICATION)
             .build();
 
-        Notification result = factory.create(new CcdNotificationWrapper(wrapper));
+        Notification result = factory.create(new CcdNotificationWrapper(wrapper), APPELLANT);
 
         assertNull(result.getEmailTemplate());
     }
@@ -258,7 +271,7 @@ public class NotificationFactoryTest {
             .notificationEventType(SUBSCRIPTION_UPDATED_NOTIFICATION)
             .build();
 
-        Notification result = factory.create(new CcdNotificationWrapper(wrapper));
+        Notification result = factory.create(new CcdNotificationWrapper(wrapper), APPELLANT);
 
         assertEquals("123", result.getEmailTemplate());
     }
@@ -266,7 +279,7 @@ public class NotificationFactoryTest {
     @Test
     public void returnNullIfPersonalisationNotFound() {
         when(personalisationFactory.apply(APPEAL_RECEIVED_NOTIFICATION)).thenReturn(null);
-        Notification result = factory.create(new CcdNotificationWrapper(wrapper));
+        Notification result = factory.create(new CcdNotificationWrapper(wrapper), APPELLANT);
 
         assertNull(result);
     }

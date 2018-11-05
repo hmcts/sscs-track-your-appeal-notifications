@@ -9,6 +9,7 @@ import org.springframework.stereotype.Component;
 import uk.gov.hmcts.reform.sscs.ccd.domain.Benefit;
 import uk.gov.hmcts.reform.sscs.ccd.domain.SscsCaseData;
 import uk.gov.hmcts.reform.sscs.ccd.domain.Subscription;
+import uk.gov.hmcts.reform.sscs.config.SubscriptionType;
 import uk.gov.hmcts.reform.sscs.domain.notify.Destination;
 import uk.gov.hmcts.reform.sscs.domain.notify.Notification;
 import uk.gov.hmcts.reform.sscs.domain.notify.NotificationEventType;
@@ -28,7 +29,8 @@ public class NotificationFactory {
         this.personalisationFactory = personalisationFactory;
     }
 
-    public <E extends NotificationWrapper> Notification create(E notificationWrapper) {
+    public <E extends NotificationWrapper> Notification create(E notificationWrapper,
+                                                               SubscriptionType subscriptionType) {
         Personalisation<E> personalisation = getPersonalisation(notificationWrapper);
         if (personalisation == null) {
             return null;
