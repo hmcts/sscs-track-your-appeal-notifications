@@ -546,7 +546,7 @@ public class SscsCaseDataWrapperDeserializerTest {
         assertEquals("Yes", ccdResponse.getAppeal().getSigner());
 
         Subscription representativeSubscription = ccdResponse.getSubscriptions().getRepresentativeSubscription();
-        assertEquals("supporter@hmcts.net", representativeSubscription.getEmail());
+        assertEquals("representative@hmcts.net", representativeSubscription.getEmail());
         assertEquals("07983469702", representativeSubscription.getMobile());
         assertTrue(representativeSubscription.isSmsSubscribed());
         assertFalse(representativeSubscription.isEmailSubscribed());
