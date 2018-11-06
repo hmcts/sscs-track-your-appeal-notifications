@@ -4,6 +4,7 @@ import static helper.IntegrationTestHelper.assertHttpStatus;
 import static helper.IntegrationTestHelper.getRequestWithAuthHeader;
 import static helper.IntegrationTestHelper.getRequestWithoutAuthHeader;
 import static helper.IntegrationTestHelper.updateEmbeddedJson;
+import static org.junit.Assert.assertArrayEquals;
 import static org.mockito.Mockito.any;
 import static org.mockito.Mockito.anyString;
 import static org.mockito.Mockito.eq;
@@ -17,6 +18,8 @@ import java.io.File;
 import java.io.IOException;
 import java.nio.charset.StandardCharsets;
 import java.time.LocalDate;
+import java.util.Arrays;
+import java.util.List;
 import java.util.UUID;
 import javax.servlet.http.HttpServletResponse;
 import junitparams.JUnitParamsRunner;
@@ -27,6 +30,7 @@ import org.junit.ClassRule;
 import org.junit.Rule;
 import org.junit.Test;
 import org.junit.runner.RunWith;
+import org.mockito.ArgumentCaptor;
 import org.mockito.Mock;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
@@ -401,17 +405,51 @@ public class NotificationsIt {
     }
 
     @Test
-    @Parameters({"paper", "oral"})
+    @Parameters(method = "generateAppealCreatedNotificationScenarios")
     public void shouldSendNotificationsForAnAppealCreatedRequestForAnOralAndPaperHearingAndForEachSubscription(
-            String hearingType) throws Exception {
+            String hearingType, List<String> expectedEmailTemplateIds, String appellantEmailSubs, String appellantSmsSubs,
+            String repsEmailSubs, String repsSmsSubs, int wantedNumberOfSendEmailInvocations,
+            int wantedNumberOfSendSmsInvocations) throws Exception {
         json = updateEmbeddedJson(json, hearingType, "case_details", "case_data", "appeal", "hearingType");
+
+        json = updateEmbeddedJson(json, appellantEmailSubs, "case_details", "case_data", "subscriptions",
+                "appellantSubscription", "subscribeEmail");
+        json = updateEmbeddedJson(json, appellantSmsSubs, "case_details", "case_data", "subscriptions",
+                "appellantSubscription", "subscribeSms");
+        json = updateEmbeddedJson(json, repsEmailSubs, "case_details", "case_data", "subscriptions",
+                "representativeSubscription", "subscribeEmail");
+        json = updateEmbeddedJson(json, repsSmsSubs, "case_details", "case_data", "subscriptions",
+                "representativeSubscription", "subscribeSms");
+
         json = updateEmbeddedJson(json, "appealCreated", "event_id");
 
         HttpServletResponse response = getResponse(getRequestWithAuthHeader(json));
 
         assertHttpStatus(response, HttpStatus.OK);
-        verify(notificationClient, times(1)).sendEmail(any(), any(), any(), any());
-        verify(notificationClient, times(2)).sendSms(any(), any(), any(), any(), any());
+
+        ArgumentCaptor<String> emailTemplateIdCaptor = ArgumentCaptor.forClass(String.class);
+        verify(notificationClient, times(wantedNumberOfSendEmailInvocations))
+                .sendEmail(emailTemplateIdCaptor.capture(), any(), any(), any());
+        System.out.println(emailTemplateIdCaptor.getAllValues());
+        assertArrayEquals(expectedEmailTemplateIds.toArray(), emailTemplateIdCaptor.getAllValues().toArray());
+
+        verify(notificationClient, times(wantedNumberOfSendSmsInvocations)).sendSms(any(), any(), any(), any(), any());
+    }
+
+    @SuppressWarnings("Indentation")
+    private Object[] generateAppealCreatedNotificationScenarios() {
+        return new Object[]{
+                new Object[]{
+                        "paper",
+                        Arrays.asList("01293b93-b23e-40a3-ad78-2c6cd01cd21c", "e88cb0ca-d295-4f51-8041-c3ef1f4321c2"),
+                        "yes",
+                        "yes",
+                        "yes",
+                        "yes",
+                        "2",
+                        "2"
+                }
+        };
     }
 
     @Test
