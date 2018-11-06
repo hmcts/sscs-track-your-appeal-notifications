@@ -2,6 +2,7 @@ package uk.gov.hmcts.reform.sscs.factory;
 
 import static com.google.common.collect.Maps.newHashMap;
 import static uk.gov.hmcts.reform.sscs.ccd.domain.Benefit.getBenefitByCode;
+import static uk.gov.hmcts.reform.sscs.config.SubscriptionType.APPELLANT;
 
 import java.util.Map;
 import lombok.extern.slf4j.Slf4j;
@@ -49,11 +50,20 @@ public class NotificationFactory {
 
         SscsCaseData ccdResponse = notificationWrapper.getSscsCaseDataWrapper().getNewSscsCaseData();
 
-        Destination destination = getDestination(ccdResponse.getSubscriptions().getAppellantSubscription());
+        Subscription subscription = getSubscriptionGivenSubscriptionType(ccdResponse, subscriptionType);
+        Destination destination = getDestination(subscription);
         Reference reference = new Reference(ccdResponse.getCaseReference());
-        String appealNumber = ccdResponse.getSubscriptions().getAppellantSubscription().getTya();
+        String appealNumber = subscription.getTya();
 
         return new Notification(template, destination, placeholders, reference, appealNumber);
+    }
+
+    private Subscription getSubscriptionGivenSubscriptionType(SscsCaseData ccdResponse,
+                                                              SubscriptionType subscriptionType) {
+        if (APPELLANT.equals(subscriptionType)) {
+            return ccdResponse.getSubscriptions().getAppellantSubscription();
+        }
+        return ccdResponse.getSubscriptions().getRepresentativeSubscription();
     }
 
     private <E extends NotificationWrapper> Personalisation<E> getPersonalisation(E notificationWrapper) {
