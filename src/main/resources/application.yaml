@@ -64,10 +64,10 @@ management:
 gov.uk.notification.api.key: ${NOTIFICATION_API_KEY:emailnotificationkey}
 gov.uk.notification.api.testKey: ${NOTIFICATION_API_TEST_KEY:emailnotificationtestkey}
 gov.uk.notification.api.testRecipients:
-  - "sscstest+notify@greencroftconsulting.com"
-  - "sscstest+notify2@greencroftconsulting.com"
-  - "07398785050"
-  - "07398785051"
+- "sscstest+notify@greencroftconsulting.com"
+- "sscstest+notify2@greencroftconsulting.com"
+- "07398785050"
+- "07398785051"
 
 subscription.hmac.secret.text: ${EMAIL_MAC_SECRET_TEXT:our-big-secret}
 
@@ -111,8 +111,12 @@ notification:
     emailId: b9e47ec4-3b58-4b8d-9304-f77ac27fb7f2
     smsId: e3f71440-d1ac-43c8-a8cc-a088c4f3c959
   appealCreated:
-    emailId: 01293b93-b23e-40a3-ad78-2c6cd01cd21c
-    smsId: f41222ef-c05c-4682-9634-6b034a166368
+    appellant:
+      emailId: 01293b93-b23e-40a3-ad78-2c6cd01cd21c
+      smsId: f41222ef-c05c-4682-9634-6b034a166368
+    representative:
+      emailId: e88cb0ca-d295-4f51-8041-c3ef1f4321c2
+      smsId: e88cb0ca-d295-4f51-8041-c3ef1f4321c2
   hearingReminder:
     emailId: 774a5cba-fab6-4b8c-a9d9-03f913ed2dca
     smsId: 404e9a43-6318-492c-b5c2-e34ddfbbdde9
@@ -150,8 +154,8 @@ notification:
     emailId: 62e72e11-5eb6-4048-83f4-0b0c5c59fcb9
     smsId: 32138594-d960-44ff-8b74-07cbd565607c
   decision_issued_2:
-      emailId: 5b0df251-49b9-46d5-b347-37a81ab77f19
-      smsId: 04e778fd-71a8-4c27-b423-aa7485a81a9c
+    emailId: 5b0df251-49b9-46d5-b347-37a81ab77f19
+    smsId: 04e778fd-71a8-4c27-b423-aa7485a81a9c
   online:
     responseReceived:
       emailId: 90f0ed29-a616-4ce0-b4ef-108391f5d90e
@@ -231,7 +235,7 @@ job.scheduler:
 spring:
   profiles: integration, functional
   autoconfigure.exclude:
-    - org.springframework.boot.autoconfigure.jdbc.DataSourceAutoConfiguration
+  - org.springframework.boot.autoconfigure.jdbc.DataSourceAutoConfiguration
   flyway.enabled: false
 job.scheduler:
   quartzProperties:
