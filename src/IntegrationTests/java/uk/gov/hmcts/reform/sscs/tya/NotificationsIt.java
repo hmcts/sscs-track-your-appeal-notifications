@@ -19,6 +19,7 @@ import java.io.IOException;
 import java.nio.charset.StandardCharsets;
 import java.time.LocalDate;
 import java.util.Arrays;
+import java.util.Collections;
 import java.util.List;
 import java.util.UUID;
 import javax.servlet.http.HttpServletResponse;
@@ -406,10 +407,11 @@ public class NotificationsIt {
 
     @Test
     @Parameters(method = "generateAppealCreatedNotificationScenarios")
-    public void shouldSendNotificationsForAnAppealCreatedRequestForAnOralAndPaperHearingAndForEachSubscription(
-            String hearingType, List<String> expectedEmailTemplateIds, String appellantEmailSubs, String appellantSmsSubs,
-            String repsEmailSubs, String repsSmsSubs, int wantedNumberOfSendEmailInvocations,
-            int wantedNumberOfSendSmsInvocations) throws Exception {
+    public void shouldSendNotificationsForAnAppealCreatedRequestForAnOralOrPaperHearingAndForEachSubscription(
+            String hearingType, List<String> expectedEmailTemplateIds, List<String> expectedSmsTemplateIds,
+            String appellantEmailSubs, String appellantSmsSubs, String repsEmailSubs, String repsSmsSubs,
+            int wantedNumberOfSendEmailInvocations, int wantedNumberOfSendSmsInvocations) throws Exception {
+
         json = updateEmbeddedJson(json, hearingType, "case_details", "case_data", "appeal", "hearingType");
 
         json = updateEmbeddedJson(json, appellantEmailSubs, "case_details", "case_data", "subscriptions",
@@ -430,10 +432,12 @@ public class NotificationsIt {
         ArgumentCaptor<String> emailTemplateIdCaptor = ArgumentCaptor.forClass(String.class);
         verify(notificationClient, times(wantedNumberOfSendEmailInvocations))
                 .sendEmail(emailTemplateIdCaptor.capture(), any(), any(), any());
-        System.out.println(emailTemplateIdCaptor.getAllValues());
         assertArrayEquals(expectedEmailTemplateIds.toArray(), emailTemplateIdCaptor.getAllValues().toArray());
 
-        verify(notificationClient, times(wantedNumberOfSendSmsInvocations)).sendSms(any(), any(), any(), any(), any());
+        ArgumentCaptor<String> smsTemplateIdCaptor = ArgumentCaptor.forClass(String.class);
+        verify(notificationClient, times(wantedNumberOfSendSmsInvocations))
+                .sendSms(smsTemplateIdCaptor.capture(), any(), any(), any(), any());
+        assertArrayEquals(expectedSmsTemplateIds.toArray(), smsTemplateIdCaptor.getAllValues().toArray());
     }
 
     @SuppressWarnings("Indentation")
@@ -442,11 +446,34 @@ public class NotificationsIt {
                 new Object[]{
                         "paper",
                         Arrays.asList("01293b93-b23e-40a3-ad78-2c6cd01cd21c", "e88cb0ca-d295-4f51-8041-c3ef1f4321c2"),
+                        Arrays.asList("f41222ef-c05c-4682-9634-6b034a166368", "69793118-1032-4e9b-b2de-c23a25869842"),
                         "yes",
                         "yes",
                         "yes",
                         "yes",
                         "2",
+                        "2"
+                },
+                new Object[]{
+                        "oral",
+                        Arrays.asList("01293b93-b23e-40a3-ad78-2c6cd01cd21c", "e88cb0ca-d295-4f51-8041-c3ef1f4321c2"),
+                        Arrays.asList("f41222ef-c05c-4682-9634-6b034a166368", "69793118-1032-4e9b-b2de-c23a25869842"),
+                        "yes",
+                        "yes",
+                        "yes",
+                        "yes",
+                        "2",
+                        "2"
+                },
+                new Object[]{
+                        "paper",
+                        Collections.singletonList("e88cb0ca-d295-4f51-8041-c3ef1f4321c2"),
+                        Arrays.asList("f41222ef-c05c-4682-9634-6b034a166368", "69793118-1032-4e9b-b2de-c23a25869842"),
+                        "no",
+                        "yes",
+                        "yes",
+                        "yes",
+                        "1",
                         "2"
                 }
         };
