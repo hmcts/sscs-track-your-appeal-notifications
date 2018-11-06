@@ -3,6 +3,7 @@ package uk.gov.hmcts.reform.sscs.personalisation;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNull;
+import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.Mockito.any;
 import static org.mockito.Mockito.anyString;
 import static org.mockito.Mockito.never;
@@ -43,7 +44,6 @@ import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
-import org.mockito.ArgumentCaptor;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import uk.gov.hmcts.reform.sscs.ccd.domain.Address;
@@ -162,11 +162,8 @@ public class PersonalisationTest {
 
         personalisation.getTemplate(notificationWrapper, PIP, subscriptionType);
 
-        ArgumentCaptor<String> emailTemplateNameCaptor = ArgumentCaptor.forClass(String.class);
-        verify(config).getTemplate(emailTemplateNameCaptor.capture(), anyString(), any(Benefit.class),
-                any(AppealHearingType.class));
-        assertEquals(getExpectedTemplateName(notificationEventType, subscriptionType),
-                emailTemplateNameCaptor.getValue());
+        verify(config).getTemplate(eq(getExpectedTemplateName(notificationEventType, subscriptionType)),
+                anyString(), any(Benefit.class), any(AppealHearingType.class));
     }
 
     private String getExpectedTemplateName(NotificationEventType notificationEventType,

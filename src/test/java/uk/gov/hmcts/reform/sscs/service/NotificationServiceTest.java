@@ -129,7 +129,6 @@ public class NotificationServiceTest {
         given(notificationValidService.isNotificationStillValidToSend(anyList(), eq(notificationEventType)))
                 .willReturn(true);
 
-        ArgumentCaptor<SubscriptionType> subscriptionTypeCaptor = ArgumentCaptor.forClass(SubscriptionType.class);
         given(factory.create(any(NotificationWrapper.class), any(SubscriptionType.class)))
                 .willReturn(new Notification(
                         Template.builder()
@@ -146,6 +145,7 @@ public class NotificationServiceTest {
 
         notificationService.manageNotificationAndSubscription(ccdNotificationWrapper);
 
+        ArgumentCaptor<SubscriptionType> subscriptionTypeCaptor = ArgumentCaptor.forClass(SubscriptionType.class);
         then(factory).should(times(expectedSubscriptionTypes.length))
                 .create(any(NotificationWrapper.class), subscriptionTypeCaptor.capture());
         assertArrayEquals(expectedSubscriptionTypes, subscriptionTypeCaptor.getAllValues().toArray());
