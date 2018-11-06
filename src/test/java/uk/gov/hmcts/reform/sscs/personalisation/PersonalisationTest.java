@@ -20,6 +20,7 @@ import static uk.gov.hmcts.reform.sscs.config.AppConstants.ONLINE_HEARING_SIGN_I
 import static uk.gov.hmcts.reform.sscs.config.AppConstants.QUESTION_ROUND_EXPIRES_DATE_LITERAL;
 import static uk.gov.hmcts.reform.sscs.config.AppConstants.TRIBUNAL_RESPONSE_DATE_LITERAL;
 import static uk.gov.hmcts.reform.sscs.config.SubscriptionType.APPELLANT;
+import static uk.gov.hmcts.reform.sscs.config.SubscriptionType.REPRESENTATIVE;
 import static uk.gov.hmcts.reform.sscs.domain.notify.NotificationEventType.APPEAL_RECEIVED_NOTIFICATION;
 import static uk.gov.hmcts.reform.sscs.domain.notify.NotificationEventType.EVIDENCE_RECEIVED_NOTIFICATION;
 import static uk.gov.hmcts.reform.sscs.domain.notify.NotificationEventType.HEARING_BOOKED_NOTIFICATION;
@@ -66,6 +67,7 @@ import uk.gov.hmcts.reform.sscs.ccd.domain.Venue;
 import uk.gov.hmcts.reform.sscs.config.AppConstants;
 import uk.gov.hmcts.reform.sscs.config.AppealHearingType;
 import uk.gov.hmcts.reform.sscs.config.NotificationConfig;
+import uk.gov.hmcts.reform.sscs.config.SubscriptionType;
 import uk.gov.hmcts.reform.sscs.domain.SscsCaseDataWrapper;
 import uk.gov.hmcts.reform.sscs.domain.notify.Link;
 import uk.gov.hmcts.reform.sscs.domain.notify.NotificationEventType;
@@ -146,23 +148,40 @@ public class PersonalisationTest {
     }
 
     @Test
-    public void givenSubscriptionType_shouldGenerateEmailAndSmsTemplateNamesPerSubscription() {
+    @Parameters(method = "generateNotificationTypeAndSubscriptionsScenarios")
+    public void givenSubscriptionType_shouldGenerateEmailAndSmsTemplateNamesPerSubscription(
+            NotificationEventType notificationEventType, SubscriptionType subscriptionType) {
         NotificationWrapper notificationWrapper = new CcdNotificationWrapper(SscsCaseDataWrapper.builder()
                 .newSscsCaseData(SscsCaseData.builder()
                         .appeal(Appeal.builder()
                                 .hearingType(PAPER.name())
                                 .build())
                         .build())
-                .notificationEventType(SYA_APPEAL_CREATED_NOTIFICATION)
+                .notificationEventType(notificationEventType)
                 .build());
 
-        personalisation.getTemplate(notificationWrapper, PIP, APPELLANT);
+        personalisation.getTemplate(notificationWrapper, PIP, subscriptionType);
 
         ArgumentCaptor<String> emailTemplateNameCaptor = ArgumentCaptor.forClass(String.class);
         verify(config).getTemplate(emailTemplateNameCaptor.capture(), anyString(), any(Benefit.class),
                 any(AppealHearingType.class));
-        assertEquals(SYA_APPEAL_CREATED_NOTIFICATION.getId() + "." + APPELLANT.name().toLowerCase(),
+        assertEquals(getExpectedTemplateName(notificationEventType, subscriptionType),
                 emailTemplateNameCaptor.getValue());
+    }
+
+    private String getExpectedTemplateName(NotificationEventType notificationEventType,
+                                           SubscriptionType subscriptionType) {
+        return notificationEventType.getId() + (subscriptionType == null ? "" :
+                "." + subscriptionType.name().toLowerCase());
+    }
+
+    @SuppressWarnings("Indentation")
+    private Object[] generateNotificationTypeAndSubscriptionsScenarios() {
+        return new Object[]{
+                new Object[]{SYA_APPEAL_CREATED_NOTIFICATION, APPELLANT},
+                new Object[]{SYA_APPEAL_CREATED_NOTIFICATION, REPRESENTATIVE},
+                new Object[]{APPEAL_RECEIVED_NOTIFICATION, null}
+        };
     }
 
     @Test
@@ -170,7 +189,8 @@ public class PersonalisationTest {
             "PIP,judge\\, doctor and disability expert, Personal Independence Payment",
             "ESA,judge and a doctor, Employment and Support Allowance"
     })
-    public void customisePersonalisation(String benefitType, String expectedPanelComposition, String expectedBenefitDesc) {
+    public void customisePersonalisation(String benefitType, String expectedPanelComposition, String
+            expectedBenefitDesc) {
         List<Event> events = new ArrayList<>();
         events.add(Event.builder().value(EventDetails.builder().date(date).type(APPEAL_RECEIVED.getCcdType()).build()).build());
 
