@@ -13,6 +13,7 @@ import static uk.gov.hmcts.reform.sscs.domain.notify.NotificationEventType.APPEA
 import static uk.gov.hmcts.reform.sscs.domain.notify.NotificationEventType.DWP_RESPONSE_LATE_REMINDER_NOTIFICATION;
 import static uk.gov.hmcts.reform.sscs.domain.notify.NotificationEventType.EVIDENCE_RECEIVED_NOTIFICATION;
 import static uk.gov.hmcts.reform.sscs.domain.notify.NotificationEventType.SUBSCRIPTION_CREATED_NOTIFICATION;
+import static uk.gov.hmcts.reform.sscs.domain.notify.NotificationEventType.SYA_APPEAL_CREATED_NOTIFICATION;
 
 import java.io.UnsupportedEncodingException;
 import java.net.URLEncoder;
@@ -235,10 +236,19 @@ public class Personalisation<E extends NotificationWrapper> {
     }
 
     public Template getTemplate(E notificationWrapper, Benefit benefit, SubscriptionType subscriptionType) {
-        log.info(subscriptionType.name());
-        NotificationEventType type = notificationWrapper.getNotificationType();
-        String smsTemplateId = isSendSmsSubscriptionConfirmation() ? SUBSCRIPTION_CREATED_NOTIFICATION.getId() : type.getId();
-        return config.getTemplate(type.getId(), smsTemplateId, benefit, notificationWrapper.getHearingType());
+        String emailTemplateName = getEmailTemplateName(subscriptionType, notificationWrapper.getNotificationType());
+        String smsTemplateName = isSendSmsSubscriptionConfirmation() ? SUBSCRIPTION_CREATED_NOTIFICATION.getId() :
+                emailTemplateName;
+        return config.getTemplate(emailTemplateName, smsTemplateName, benefit, notificationWrapper.getHearingType());
+    }
+
+    private String getEmailTemplateName(SubscriptionType subscriptionType,
+                                        NotificationEventType notificationEventType) {
+        String emailTemplateName = notificationEventType.getId();
+        if (SYA_APPEAL_CREATED_NOTIFICATION.getId().equals(notificationEventType.getId())) {
+            emailTemplateName = emailTemplateName + "." + subscriptionType.name().toLowerCase();
+        }
+        return emailTemplateName;
     }
 
     public Boolean isSendSmsSubscriptionConfirmation() {
