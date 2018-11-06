@@ -1,8 +1,14 @@
 package uk.gov.hmcts.reform.sscs.deserialize;
 
-import static org.junit.Assert.*;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertNull;
+import static org.junit.Assert.assertTrue;
 import static uk.gov.hmcts.reform.sscs.ccd.domain.Benefit.ESA;
-import static uk.gov.hmcts.reform.sscs.ccd.domain.EventType.*;
+import static uk.gov.hmcts.reform.sscs.ccd.domain.EventType.APPEAL_RECEIVED;
+import static uk.gov.hmcts.reform.sscs.ccd.domain.EventType.LAPSED_REVISED;
+import static uk.gov.hmcts.reform.sscs.ccd.domain.EventType.WITHDRAWN;
 import static uk.gov.hmcts.reform.sscs.domain.notify.NotificationEventType.APPEAL_RECEIVED_NOTIFICATION;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -11,13 +17,30 @@ import com.fasterxml.jackson.databind.node.ObjectNode;
 import java.io.File;
 import java.io.IOException;
 import java.nio.charset.StandardCharsets;
-import java.time.*;
+import java.time.LocalDate;
+import java.time.LocalDateTime;
+import java.time.LocalTime;
+import java.time.ZoneId;
+import java.time.ZonedDateTime;
 import java.util.ArrayList;
 import java.util.List;
 import org.apache.commons.io.FileUtils;
 import org.junit.Before;
 import org.junit.Test;
-import uk.gov.hmcts.reform.sscs.ccd.domain.*;
+import uk.gov.hmcts.reform.sscs.ccd.domain.Appeal;
+import uk.gov.hmcts.reform.sscs.ccd.domain.AppealReasons;
+import uk.gov.hmcts.reform.sscs.ccd.domain.Appellant;
+import uk.gov.hmcts.reform.sscs.ccd.domain.BenefitType;
+import uk.gov.hmcts.reform.sscs.ccd.domain.Event;
+import uk.gov.hmcts.reform.sscs.ccd.domain.Hearing;
+import uk.gov.hmcts.reform.sscs.ccd.domain.HearingOptions;
+import uk.gov.hmcts.reform.sscs.ccd.domain.MrnDetails;
+import uk.gov.hmcts.reform.sscs.ccd.domain.OnlinePanel;
+import uk.gov.hmcts.reform.sscs.ccd.domain.RegionalProcessingCenter;
+import uk.gov.hmcts.reform.sscs.ccd.domain.Representative;
+import uk.gov.hmcts.reform.sscs.ccd.domain.SscsCaseData;
+import uk.gov.hmcts.reform.sscs.ccd.domain.Subscription;
+import uk.gov.hmcts.reform.sscs.ccd.domain.Subscriptions;
 import uk.gov.hmcts.reform.sscs.config.AppConstants;
 import uk.gov.hmcts.reform.sscs.domain.SscsCaseDataWrapper;
 
@@ -46,9 +69,9 @@ public class SscsCaseDataWrapperDeserializerTest {
     public void deserializeAppellantJson() throws IOException {
 
         String subscriptionJson = "{\"appellantSubscription\":{\"tya\":\"543212345\",\"email\":\"test@testing.com\",\"mobile\":\"01234556634\",\"reason\":null,\"subscribeSms\":\"No\",\"subscribeEmail\":\"Yes\"},"
-                + "\"supporterSubscription\":{\"tya\":\"232929249492\",\"email\":\"supporter@live.co.uk\",\"mobile\":\"07925289702\",\"reason\":null,\"subscribeSms\":\"Yes\",\"subscribeEmail\":\"No\"}}";
+                + "\"representativeSubscription\":{\"tya\":\"232929249492\",\"email\":\"supporter@live.co.uk\",\"mobile\":\"07925289702\",\"reason\":null,\"subscribeSms\":\"Yes\",\"subscribeEmail\":\"No\"}}";
 
-        Subscriptions subscriptions = ccdResponseDeserializer.deserializeSubscriptionJson(mapper.readTree(subscriptionJson));
+        Subscriptions subscriptions = ccdResponseDeserializer.deserializeSubscriptionsJson(mapper.readTree(subscriptionJson));
 
         Subscription appellantSubscription = subscriptions.getAppellantSubscription();
 
@@ -57,11 +80,11 @@ public class SscsCaseDataWrapperDeserializerTest {
         assertFalse(appellantSubscription.isSmsSubscribed());
         assertTrue(appellantSubscription.isEmailSubscribed());
 
-        Subscription supporterSubscription = subscriptions.getSupporterSubscription();
-        assertEquals("supporter@live.co.uk", supporterSubscription.getEmail());
-        assertEquals("07925289702", supporterSubscription.getMobile());
-        assertTrue(supporterSubscription.isSmsSubscribed());
-        assertFalse(supporterSubscription.isEmailSubscribed());
+        Subscription representativeSubscription = subscriptions.getRepresentativeSubscription();
+        assertEquals("supporter@live.co.uk", representativeSubscription.getEmail());
+        assertEquals("07925289702", representativeSubscription.getMobile());
+        assertTrue(representativeSubscription.isSmsSubscribed());
+        assertFalse(representativeSubscription.isEmailSubscribed());
     }
 
     @Test
@@ -164,14 +187,14 @@ public class SscsCaseDataWrapperDeserializerTest {
 
         String json = "{\"case_details\":{\"case_data\":{\"subscriptions\":{"
                 + "\"appellantSubscription\":{\"tya\":\"543212345\",\"email\":\"test@testing.com\",\"mobile\":\"01234556634\",\"reason\":null,\"subscribeSms\":\"No\",\"subscribeEmail\":\"Yes\"},"
-                + "\"supporterSubscription\":{\"tya\":\"232929249492\",\"email\":\"supporter@live.co.uk\",\"mobile\":\"07925289702\",\"reason\":null,\"subscribeSms\":\"Yes\",\"subscribeEmail\":\"No\"}},"
+                + "\"representativeSubscription\":{\"tya\":\"232929249492\",\"email\":\"supporter@live.co.uk\",\"mobile\":\"07925289702\",\"reason\":null,\"subscribeSms\":\"Yes\",\"subscribeEmail\":\"No\"}},"
                 + "\"caseReference\":\"SC022/14/12423\",\"appeal\":{"
                 + "\"appellant\":{\"name\":{\"title\":\"Mr\",\"lastName\":\"Vasquez\",\"firstName\":\"Dexter\",\"middleName\":\"Ali Sosa\"}},"
                 + "\"supporter\":{\"name\":{\"title\":\"Mrs\",\"lastName\":\"Wilder\",\"firstName\":\"Amber\",\"middleName\":\"Clark Eaton\"}}}},"
                 + "\"id\": \"123456789\"},"
                 + "\"case_details_before\":{\"case_data\":{\"subscriptions\":{"
                 + "\"appellantSubscription\":{\"tya\":\"123456\",\"email\":\"old@email.com\",\"mobile\":\"07543534345\",\"reason\":null,\"subscribeSms\":\"No\",\"subscribeEmail\":\"Yes\"},"
-                + "\"supporterSubscription\":{\"tya\":\"232929249492\",\"email\":\"supporter@gmail.co.uk\",\"mobile\":\"07925267702\",\"reason\":null,\"subscribeSms\":\"Yes\",\"subscribeEmail\":\"No\"}},"
+                + "\"representativeSubscription\":{\"tya\":\"232929249492\",\"email\":\"supporter@gmail.co.uk\",\"mobile\":\"07925267702\",\"reason\":null,\"subscribeSms\":\"Yes\",\"subscribeEmail\":\"No\"}},"
                 + "\"caseReference\":\"SC/5432/89\",\"appeal\":{"
                 + "\"appellant\":{\"name\":{\"title\":\"Mr\",\"lastName\":\"Smith\",\"firstName\":\"Jeremy\",\"middleName\":\"Rupert\"}},"
                 + "\"supporter\":{\"name\":{\"title\":\"Mr\",\"lastName\":\"Redknapp\",\"firstName\":\"Harry\",\"middleName\":\"Winston\"}}}},"
@@ -194,11 +217,11 @@ public class SscsCaseDataWrapperDeserializerTest {
         assertFalse(newAppellantSubscription.isSmsSubscribed());
         assertTrue(newAppellantSubscription.isEmailSubscribed());
 
-        Subscription newSupporterSubscription = newSscsCaseData.getSubscriptions().getSupporterSubscription();
-        assertEquals("supporter@live.co.uk", newSupporterSubscription.getEmail());
-        assertEquals("07925289702", newSupporterSubscription.getMobile());
-        assertTrue(newSupporterSubscription.isSmsSubscribed());
-        assertFalse(newSupporterSubscription.isEmailSubscribed());
+        Subscription newRepresentativeSubscription = newSscsCaseData.getSubscriptions().getRepresentativeSubscription();
+        assertEquals("supporter@live.co.uk", newRepresentativeSubscription.getEmail());
+        assertEquals("07925289702", newRepresentativeSubscription.getMobile());
+        assertTrue(newRepresentativeSubscription.isSmsSubscribed());
+        assertFalse(newRepresentativeSubscription.isEmailSubscribed());
         assertEquals("SC022/14/12423", newSscsCaseData.getCaseReference());
         assertEquals("123456789", newSscsCaseData.getCcdCaseId());
 
@@ -215,11 +238,11 @@ public class SscsCaseDataWrapperDeserializerTest {
         assertFalse(oldAppellantSubscription.isSmsSubscribed());
         assertTrue(oldAppellantSubscription.isEmailSubscribed());
 
-        Subscription oldSupporterSubscription = oldSscsCaseData.getSubscriptions().getSupporterSubscription();
-        assertEquals("supporter@gmail.co.uk", oldSupporterSubscription.getEmail());
-        assertEquals("07925267702", oldSupporterSubscription.getMobile());
-        assertTrue(oldSupporterSubscription.isSmsSubscribed());
-        assertFalse(oldSupporterSubscription.isEmailSubscribed());
+        Subscription oldRepresentativeSubscription = oldSscsCaseData.getSubscriptions().getRepresentativeSubscription();
+        assertEquals("supporter@gmail.co.uk", oldRepresentativeSubscription.getEmail());
+        assertEquals("07925267702", oldRepresentativeSubscription.getMobile());
+        assertTrue(oldRepresentativeSubscription.isSmsSubscribed());
+        assertFalse(oldRepresentativeSubscription.isEmailSubscribed());
         assertEquals("SC/5432/89", oldSscsCaseData.getCaseReference());
         assertEquals("523456789", oldSscsCaseData.getCcdCaseId());
     }
@@ -228,7 +251,7 @@ public class SscsCaseDataWrapperDeserializerTest {
     public void deserializeWithMissingCaseReference() throws IOException {
         String json = "{\"case_details\":{\"case_data\":{\"subscriptions\":{"
                 + "\"appellantSubscription\":{\"tya\":\"543212345\",\"email\":\"test@testing.com\",\"mobile\":\"01234556634\",\"reason\":null,\"subscribeSms\":\"No\",\"subscribeEmail\":\"Yes\"},"
-                + "\"supporterSubscription\":{\"tya\":\"232929249492\",\"email\":\"supporter@live.co.uk\",\"mobile\":\"07925289702\",\"reason\":null,\"subscribeSms\":\"Yes\",\"subscribeEmail\":\"No\"}},"
+                + "\"representativeSubscription\":{\"tya\":\"232929249492\",\"email\":\"supporter@live.co.uk\",\"mobile\":\"07925289702\",\"reason\":null,\"subscribeSms\":\"Yes\",\"subscribeEmail\":\"No\"}},"
                 + "\"appeal\":{"
                 + "\"appellant\":{\"name\":{\"title\":\"Mr\",\"lastName\":\"Vasquez\",\"firstName\":\"Dexter\",\"middleName\":\"Ali Sosa\"}},"
                 + "\"supporter\":{\"name\":{\"title\":\"Mrs\",\"lastName\":\"Wilder\",\"firstName\":\"Amber\",\"middleName\":\"Clark Eaton\"}}}}},\"event_id\": \"appealReceived\"\n}";
@@ -522,11 +545,11 @@ public class SscsCaseDataWrapperDeserializerTest {
 
         assertEquals("Yes", ccdResponse.getAppeal().getSigner());
 
-        Subscription supporterSubscription = ccdResponse.getSubscriptions().getSupporterSubscription();
-        assertEquals("supporter@hmcts.net", supporterSubscription.getEmail());
-        assertEquals("07983469702", supporterSubscription.getMobile());
-        assertTrue(supporterSubscription.isSmsSubscribed());
-        assertFalse(supporterSubscription.isEmailSubscribed());
+        Subscription representativeSubscription = ccdResponse.getSubscriptions().getRepresentativeSubscription();
+        assertEquals("supporter@hmcts.net", representativeSubscription.getEmail());
+        assertEquals("07983469702", representativeSubscription.getMobile());
+        assertTrue(representativeSubscription.isSmsSubscribed());
+        assertFalse(representativeSubscription.isEmailSubscribed());
         assertEquals("SC022/14/12423", ccdResponse.getCaseReference());
 
         Hearing hearing = ccdResponse.getHearings().get(0);

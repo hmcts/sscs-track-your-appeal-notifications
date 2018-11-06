@@ -401,25 +401,17 @@ public class NotificationsIt {
     }
 
     @Test
-    public void shouldSendNotificationForSyaAppealCreatedRequestForAnOralHearing() throws Exception {
-        json = json.replace("appealReceived", "appealCreated");
+    @Parameters({"paper", "oral"})
+    public void shouldSendNotificationsForAnAppealCreatedRequestForAnOralAndPaperHearingAndForEachSubscription(
+            String hearingType) throws Exception {
+        json = updateEmbeddedJson(json, hearingType, "case_details", "case_data", "appeal", "hearingType");
+        json = updateEmbeddedJson(json, "appealCreated", "event_id");
 
         HttpServletResponse response = getResponse(getRequestWithAuthHeader(json));
 
         assertHttpStatus(response, HttpStatus.OK);
         verify(notificationClient, times(1)).sendEmail(any(), any(), any(), any());
-        verify(notificationClient, times(1)).sendSms(any(), any(), any(), any(), any());
-    }
-
-    @Test
-    public void shouldSendNotificationForSyaAppealCreatedRequestForAPaperHearing() throws Exception {
-        updateJsonForPaperHearing();
-        json = json.replace("appealReceived", "appealCreated");
-        HttpServletResponse response = getResponse(getRequestWithAuthHeader(json));
-
-        assertHttpStatus(response, HttpStatus.OK);
-        verify(notificationClient, times(1)).sendEmail(any(), any(), any(), any());
-        verify(notificationClient, times(1)).sendSms(any(), any(), any(), any(), any());
+        verify(notificationClient, times(2)).sendSms(any(), any(), any(), any(), any());
     }
 
     @Test
