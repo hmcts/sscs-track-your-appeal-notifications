@@ -11,7 +11,34 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 import org.springframework.stereotype.Service;
-import uk.gov.hmcts.reform.sscs.ccd.domain.*;
+import uk.gov.hmcts.reform.sscs.ccd.domain.Address;
+import uk.gov.hmcts.reform.sscs.ccd.domain.Appeal;
+import uk.gov.hmcts.reform.sscs.ccd.domain.AppealReason;
+import uk.gov.hmcts.reform.sscs.ccd.domain.AppealReasonDetails;
+import uk.gov.hmcts.reform.sscs.ccd.domain.AppealReasons;
+import uk.gov.hmcts.reform.sscs.ccd.domain.Appellant;
+import uk.gov.hmcts.reform.sscs.ccd.domain.BenefitType;
+import uk.gov.hmcts.reform.sscs.ccd.domain.Contact;
+import uk.gov.hmcts.reform.sscs.ccd.domain.DateRange;
+import uk.gov.hmcts.reform.sscs.ccd.domain.Document;
+import uk.gov.hmcts.reform.sscs.ccd.domain.DocumentDetails;
+import uk.gov.hmcts.reform.sscs.ccd.domain.Event;
+import uk.gov.hmcts.reform.sscs.ccd.domain.EventDetails;
+import uk.gov.hmcts.reform.sscs.ccd.domain.Evidence;
+import uk.gov.hmcts.reform.sscs.ccd.domain.ExcludeDate;
+import uk.gov.hmcts.reform.sscs.ccd.domain.Hearing;
+import uk.gov.hmcts.reform.sscs.ccd.domain.HearingDetails;
+import uk.gov.hmcts.reform.sscs.ccd.domain.HearingOptions;
+import uk.gov.hmcts.reform.sscs.ccd.domain.Identity;
+import uk.gov.hmcts.reform.sscs.ccd.domain.MrnDetails;
+import uk.gov.hmcts.reform.sscs.ccd.domain.Name;
+import uk.gov.hmcts.reform.sscs.ccd.domain.OnlinePanel;
+import uk.gov.hmcts.reform.sscs.ccd.domain.RegionalProcessingCenter;
+import uk.gov.hmcts.reform.sscs.ccd.domain.Representative;
+import uk.gov.hmcts.reform.sscs.ccd.domain.SscsCaseData;
+import uk.gov.hmcts.reform.sscs.ccd.domain.Subscription;
+import uk.gov.hmcts.reform.sscs.ccd.domain.Subscriptions;
+import uk.gov.hmcts.reform.sscs.ccd.domain.Venue;
 import uk.gov.hmcts.reform.sscs.domain.SscsCaseDataWrapper;
 import uk.gov.hmcts.reform.sscs.domain.notify.NotificationEventType;
 
@@ -78,7 +105,7 @@ public class SscsCaseDataWrapperDeserializer extends StdDeserializer<SscsCaseDat
 
         OnlinePanel onlinePanel = deserializeOnlinePanelJson(caseNode);
         Appeal appeal = deserializeAppealDetailsJson(appealNode);
-        Subscriptions subscriptions = deserializeSubscriptionJson(subscriptionsNode);
+        Subscriptions subscriptions = deserializeSubscriptionsJson(subscriptionsNode);
         List<Event> events = deserializeEventDetailsJson(caseNode);
         List<Hearing> hearings = deserializeHearingDetailsJson(caseNode);
         Evidence evidence = deserializeEvidenceDetailsJson(caseNode);
@@ -161,8 +188,8 @@ public class SscsCaseDataWrapperDeserializer extends StdDeserializer<SscsCaseDat
         String phone = getField(contactNode, "phone") != null ? getField(contactNode, "phone") : getField(contactNode, "mobile");
 
         return Contact.builder()
-            .email(getField(contactNode, "email"))
-            .phone(phone).build();
+                .email(getField(contactNode, "email"))
+                .phone(phone).build();
     }
 
     private Identity deserializeIdentityJson(JsonNode node) {
@@ -199,14 +226,14 @@ public class SscsCaseDataWrapperDeserializer extends StdDeserializer<SscsCaseDat
         String other = getField(hearingOptionsNode, "other");
 
         return HearingOptions.builder()
-            .wantsToAttend(wantsToAttend)
-            .wantsSupport(wantsSupport)
-            .languageInterpreter(languageInterpreter)
-            .languages(languages)
-            .arrangements(arrangements)
-            .scheduleHearing(scheduleHearing)
-            .excludeDates(excludeDates)
-            .other(other).build();
+                .wantsToAttend(wantsToAttend)
+                .wantsSupport(wantsSupport)
+                .languageInterpreter(languageInterpreter)
+                .languages(languages)
+                .arrangements(arrangements)
+                .scheduleHearing(scheduleHearing)
+                .excludeDates(excludeDates)
+                .other(other).build();
     }
 
     private List<String> buildArrangements(JsonNode hearingOptionsNode) {
@@ -284,46 +311,33 @@ public class SscsCaseDataWrapperDeserializer extends StdDeserializer<SscsCaseDat
             String organisation = getField(repNode, "organisation");
 
             return Representative.builder()
-                .name(name).address(address).contact(contact).organisation(organisation).build();
+                    .name(name).address(address).contact(contact).organisation(organisation).build();
         }
         return null;
     }
 
-    public Subscriptions deserializeSubscriptionJson(JsonNode subscriptionsNode) {
-        Subscription appellantSubscription = deserializeAppellantSubscriptionJson(subscriptionsNode);
-        Subscription supporterSubscription = deserializeSupporterSubscriptionJson(subscriptionsNode);
-
+    public Subscriptions deserializeSubscriptionsJson(JsonNode subscriptionsNode) {
         return Subscriptions.builder()
-                .appellantSubscription(appellantSubscription)
-                .supporterSubscription(supporterSubscription).build();
+                .appellantSubscription(deserializeSubscriptionJson(
+                        subscriptionsNode, "appellantSubscription"))
+                .representativeSubscription(deserializeSubscriptionJson(
+                        subscriptionsNode, "representativeSubscription")).build();
     }
 
-    private Subscription deserializeAppellantSubscriptionJson(JsonNode subscriptionsNode) {
-        JsonNode appellantSubscriptionNode = getNode(subscriptionsNode, "appellantSubscription");
+    private Subscription deserializeSubscriptionJson(JsonNode subscriptionsNode, String subscriptionName) {
+        JsonNode subscriptionNode = getNode(subscriptionsNode, subscriptionName);
 
-        Subscription appellantSubscription = Subscription.builder().build();
+        Subscription subscription = Subscription.builder().build();
 
-        if (appellantSubscriptionNode != null) {
-            appellantSubscription = deserializeSubscriberJson(appellantSubscriptionNode, appellantSubscription);
+        if (subscriptionNode != null) {
+            subscription = deserializeSubscriberJson(subscriptionNode, subscription);
         }
 
-        return appellantSubscription;
-    }
-
-    private Subscription deserializeSupporterSubscriptionJson(JsonNode subscriptionsNode) {
-        JsonNode supporterSubscriptionNode = getNode(subscriptionsNode, "supporterSubscription");
-
-        Subscription supporterSubscription = Subscription.builder().build();
-
-        if (supporterSubscriptionNode != null) {
-            supporterSubscription = deserializeSubscriberJson(supporterSubscriptionNode, supporterSubscription);
-        }
-
-        return supporterSubscription;
+        return subscription;
     }
 
     public List<Event> deserializeEventDetailsJson(JsonNode caseNode) {
-        final JsonNode eventNode =  caseNode.get("events");
+        final JsonNode eventNode = caseNode.get("events");
 
         if (eventNode != null && eventNode.isArray()) {
             List<Event> events = new ArrayList<>();
@@ -354,13 +368,13 @@ public class SscsCaseDataWrapperDeserializer extends StdDeserializer<SscsCaseDat
                 JsonNode venueNode = getNode(valueNode, "venue");
 
                 Hearing hearing = Hearing.builder().value(HearingDetails.builder()
-                    .hearingDate(getField(valueNode, "hearingDate"))
-                    .time(getField(valueNode, "time"))
-                    .venue(Venue.builder()
-                    .name(getField(venueNode, "name"))
-                    .address(deserializeAddressJson(venueNode))
-                    .googleMapLink(getField(venueNode, "googleMapLink"))
-                    .build()).build()).build();
+                        .hearingDate(getField(valueNode, "hearingDate"))
+                        .time(getField(valueNode, "time"))
+                        .venue(Venue.builder()
+                                .name(getField(venueNode, "name"))
+                                .address(deserializeAddressJson(venueNode))
+                                .googleMapLink(getField(venueNode, "googleMapLink"))
+                                .build()).build()).build();
 
                 hearings.add(hearing);
             }
@@ -410,19 +424,19 @@ public class SscsCaseDataWrapperDeserializer extends StdDeserializer<SscsCaseDat
         JsonNode nameNode = getNode(node, "name");
 
         return Name.builder()
-            .title(getField(nameNode, "title"))
-            .firstName(getField(nameNode, "firstName"))
-            .lastName(getField(nameNode, "lastName")).build();
+                .title(getField(nameNode, "title"))
+                .firstName(getField(nameNode, "firstName"))
+                .lastName(getField(nameNode, "lastName")).build();
     }
 
     private Subscription deserializeSubscriberJson(JsonNode node, Subscription subscription) {
         if (node != null) {
             subscription = subscription.toBuilder()
-                .tya(getField(node, "tya"))
-                .email(getField(node, "email"))
-                .mobile(getField(node, "mobile"))
-                .subscribeSms(convertEmptyToNo(getField(node, "subscribeSms")))
-                .subscribeEmail(convertEmptyToNo(getField(node, "subscribeEmail")))
+                    .tya(getField(node, "tya"))
+                    .email(getField(node, "email"))
+                    .mobile(getField(node, "mobile"))
+                    .subscribeSms(convertEmptyToNo(getField(node, "subscribeSms")))
+                    .subscribeEmail(convertEmptyToNo(getField(node, "subscribeEmail")))
                     .build();
         }
 
