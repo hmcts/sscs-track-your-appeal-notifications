@@ -245,7 +245,7 @@ public class Personalisation<E extends NotificationWrapper> {
     private String getEmailTemplateName(SubscriptionType subscriptionType,
                                         NotificationEventType notificationEventType) {
         String emailTemplateName = notificationEventType.getId();
-        if (SYA_APPEAL_CREATED_NOTIFICATION.getId().equals(notificationEventType.getId())) {
+        if (SYA_APPEAL_CREATED_NOTIFICATION.equals(notificationEventType)) {
             emailTemplateName = emailTemplateName + "." + subscriptionType.name().toLowerCase();
         }
         return emailTemplateName;
