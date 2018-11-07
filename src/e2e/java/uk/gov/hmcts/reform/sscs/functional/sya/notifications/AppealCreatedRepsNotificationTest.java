@@ -34,7 +34,9 @@ public class AppealCreatedRepsNotificationTest extends AbstractFunctionalTest {
 
         assertNotificationBodyContains(notifications, appealCreatedAppellantEmailId);
         assertNotificationBodyContains(notifications, appealCreatedAppellantSmsId);
-        assertNotificationBodyContains(notifications, appealCreatedRepsEmailId);
+
+        String representativeName = "Harry Potter";
+        assertNotificationBodyContains(notifications, appealCreatedRepsEmailId, representativeName);
         assertNotificationBodyContains(notifications, appealCreatedRepsSmsId);
     }
 }
