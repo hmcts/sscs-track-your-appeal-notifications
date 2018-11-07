@@ -1,5 +1,6 @@
 package uk.gov.hmcts.reform.sscs.functional.sya.notifications;
 
+import static org.junit.Assert.assertTrue;
 import static uk.gov.hmcts.reform.sscs.domain.notify.NotificationEventType.SYA_APPEAL_CREATED_NOTIFICATION;
 
 import java.util.List;
@@ -38,5 +39,22 @@ public class AppealCreatedRepsNotificationTest extends AbstractFunctionalTest {
         String representativeName = "Harry Potter";
         assertNotificationBodyContains(notifications, appealCreatedRepsEmailId, representativeName);
         assertNotificationBodyContains(notifications, appealCreatedRepsSmsId);
+    }
+
+    @Test
+    public void givenAppealCreatedEventAndNoRepsSubscription_shouldNotSendAppealCreatedNotificationToReps()
+            throws Exception {
+        simulateCcdCallback(SYA_APPEAL_CREATED_NOTIFICATION,
+                "representative/" + "no-reps-subscribed-" + SYA_APPEAL_CREATED_NOTIFICATION.getId()
+                        + "Callback.json");
+
+        List<Notification> notifications = tryFetchNotificationsForTestCase(appealCreatedAppellantEmailId,
+                appealCreatedAppellantSmsId);
+        assertNotificationBodyContains(notifications, appealCreatedAppellantEmailId);
+        assertNotificationBodyContains(notifications, appealCreatedAppellantSmsId);
+
+        List<Notification> notificationsNotFound = tryFetchNotificationsForTestCaseWithFlag(true,
+                appealCreatedRepsEmailId, appealCreatedRepsSmsId);
+        assertTrue(notificationsNotFound.isEmpty());
     }
 }
