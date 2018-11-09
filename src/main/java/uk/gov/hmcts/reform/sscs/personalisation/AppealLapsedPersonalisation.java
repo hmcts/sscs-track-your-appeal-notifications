@@ -55,13 +55,17 @@ public class AppealLapsedPersonalisation extends Personalisation<CcdNotification
         return representativeBuilder.toString();
     }
 
-    public Map<String, String> setRepresentativeName(Map<String, String> personalisation, SscsCaseData ccdResponse) {
-        personalisation.put(AppConstants.REPRESENTATIVE_NAME, ccdResponse.getAppeal().getRep().getName().getFullNameNoTitle());
+    Map<String, String> setRepresentativeName(Map<String, String> personalisation, SscsCaseData sscsCaseData) {
+        if (isValidReps(sscsCaseData.getAppeal().getRep())) {
+            personalisation.put(AppConstants.REPRESENTATIVE_NAME, String.format("%s %s",
+                    sscsCaseData.getAppeal().getRep().getName().getFirstName(),
+                    sscsCaseData.getAppeal().getRep().getName().getLastName()));
+        }
         return personalisation;
     }
 
-    private String convertBooleanToRequiredText(Boolean value) {
-        return value ? "Required" : "Not required";
+    private boolean isValidReps(Representative representative) {
+        return null != (representative) && null != representative.getName();
     }
 
     private String getOptionalField(String field, String text) {
