@@ -11,6 +11,7 @@ import uk.gov.hmcts.reform.sscs.domain.notify.NotificationEventType;
 import uk.gov.hmcts.reform.sscs.personalisation.CohPersonalisation;
 import uk.gov.hmcts.reform.sscs.personalisation.Personalisation;
 import uk.gov.hmcts.reform.sscs.personalisation.SubscriptionPersonalisation;
+import uk.gov.hmcts.reform.sscs.personalisation.AppealLapsedPersonalisation;
 import uk.gov.hmcts.reform.sscs.personalisation.SyaAppealCreatedPersonalisation;
 
 @Component
@@ -18,6 +19,9 @@ public class PersonalisationFactory implements Function<NotificationEventType, P
 
     @Autowired
     private SyaAppealCreatedPersonalisation syaAppealCreatedPersonalisation;
+
+    @Autowired
+    private AppealLapsedPersonalisation appealLapsedPersonalisation;
 
     @Autowired
     private SubscriptionPersonalisation subscriptionPersonalisation;
