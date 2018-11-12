@@ -293,7 +293,7 @@ public class NotificationsIt {
                 new Object[]{
                         "paper",
                         Arrays.asList("8ce8d794-75e8-49a0-b4d2-0c6cd2061c11", "e93dd744-84a1-4173-847a-6d023b55637f"),
-                        Arrays.asList("d2b4394b-d1c9-4d5c-a44e-b382e41c67e5", "99bd4a56-256c-4de8-b187-d43a8dde466f"),
+                        Arrays.asList("d2b4394b-d1c9-4d5c-a44e-b382e41c67e5", "ee58f7d0-8de7-4bee-acd4-252213db6b7b"),
                         "yes",
                         "yes",
                         "yes",
@@ -304,7 +304,7 @@ public class NotificationsIt {
                 new Object[]{
                         "oral",
                         Arrays.asList("8ce8d794-75e8-49a0-b4d2-0c6cd2061c11", "e93dd744-84a1-4173-847a-6d023b55637f"),
-                        Arrays.asList("d2b4394b-d1c9-4d5c-a44e-b382e41c67e5", "99bd4a56-256c-4de8-b187-d43a8dde466f"),
+                        Arrays.asList("d2b4394b-d1c9-4d5c-a44e-b382e41c67e5", "ee58f7d0-8de7-4bee-acd4-252213db6b7b"),
                         "yes",
                         "yes",
                         "yes",
@@ -315,7 +315,7 @@ public class NotificationsIt {
                 new Object[]{
                         "paper",
                         Collections.singletonList("e93dd744-84a1-4173-847a-6d023b55637f"),
-                        Arrays.asList("d2b4394b-d1c9-4d5c-a44e-b382e41c67e5", "99bd4a56-256c-4de8-b187-d43a8dde466f"),
+                        Arrays.asList("d2b4394b-d1c9-4d5c-a44e-b382e41c67e5", "ee58f7d0-8de7-4bee-acd4-252213db6b7b"),
                         "no",
                         "yes",
                         "yes",
