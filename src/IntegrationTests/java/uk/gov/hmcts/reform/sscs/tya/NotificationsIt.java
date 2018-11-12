@@ -253,26 +253,77 @@ public class NotificationsIt {
     }
 
     @Test
-    public void shouldSendNotificationForAppealLapsedRequestForAnOralHearing() throws Exception {
-        json = json.replace("appealReceived", "appealLapsed");
+    @Parameters(method = "generateAppealLapsedNotificationScenarios")
+    public void shouldSendNotificationsForAnAppealLapsedRequestForAnOralOrPaperHearingAndForEachSubscription(
+            String hearingType, List<String> expectedEmailTemplateIds, List<String> expectedSmsTemplateIds,
+            String appellantEmailSubs, String appellantSmsSubs, String repsEmailSubs, String repsSmsSubs,
+            int wantedNumberOfSendEmailInvocations, int wantedNumberOfSendSmsInvocations) throws Exception {
+
+        json = updateEmbeddedJson(json, hearingType, "case_details", "case_data", "appeal", "hearingType");
+
+        json = updateEmbeddedJson(json, appellantEmailSubs, "case_details", "case_data", "subscriptions",
+                "appellantSubscription", "subscribeEmail");
+        json = updateEmbeddedJson(json, appellantSmsSubs, "case_details", "case_data", "subscriptions",
+                "appellantSubscription", "subscribeSms");
+        json = updateEmbeddedJson(json, repsEmailSubs, "case_details", "case_data", "subscriptions",
+                "representativeSubscription", "subscribeEmail");
+        json = updateEmbeddedJson(json, repsSmsSubs, "case_details", "case_data", "subscriptions",
+                "representativeSubscription", "subscribeSms");
+
+        json = updateEmbeddedJson(json, "appealLapsed", "event_id");
 
         HttpServletResponse response = getResponse(getRequestWithAuthHeader(json));
 
         assertHttpStatus(response, HttpStatus.OK);
-        verify(notificationClient).sendEmail(any(), any(), any(), any());
-        verify(notificationClient).sendSms(any(), any(), any(), any(), any());
+
+        ArgumentCaptor<String> emailTemplateIdCaptor = ArgumentCaptor.forClass(String.class);
+        verify(notificationClient, times(wantedNumberOfSendEmailInvocations))
+                .sendEmail(emailTemplateIdCaptor.capture(), any(), any(), any());
+        assertArrayEquals(expectedEmailTemplateIds.toArray(), emailTemplateIdCaptor.getAllValues().toArray());
+
+        ArgumentCaptor<String> smsTemplateIdCaptor = ArgumentCaptor.forClass(String.class);
+        verify(notificationClient, times(wantedNumberOfSendSmsInvocations))
+                .sendSms(smsTemplateIdCaptor.capture(), any(), any(), any(), any());
+        assertArrayEquals(expectedSmsTemplateIds.toArray(), smsTemplateIdCaptor.getAllValues().toArray());
     }
 
-    @Test
-    public void shouldNotSendNotificationForAppealLapsedRequestForAPaperHearing() throws Exception {
-        updateJsonForPaperHearing();
-        json = json.replace("appealReceived", "appealLapsed");
-
-        HttpServletResponse response = getResponse(getRequestWithAuthHeader(json));
-
-        assertHttpStatus(response, HttpStatus.OK);
-        verify(notificationClient).sendEmail(any(), any(), any(), any());
-        verify(notificationClient).sendSms(any(), any(), any(), any(), any());
+    @SuppressWarnings("Indentation")
+    private Object[] generateAppealLapsedNotificationScenarios() {
+        return new Object[]{
+                new Object[]{
+                        "paper",
+                        Arrays.asList("8ce8d794-75e8-49a0-b4d2-0c6cd2061c11", "e93dd744-84a1-4173-847a-6d023b55637f"),
+                        Arrays.asList("d2b4394b-d1c9-4d5c-a44e-b382e41c67e5", "99bd4a56-256c-4de8-b187-d43a8dde466f"),
+                        "yes",
+                        "yes",
+                        "yes",
+                        "yes",
+                        "2",
+                        "2"
+                },
+                new Object[]{
+                        "oral",
+                        Arrays.asList("8ce8d794-75e8-49a0-b4d2-0c6cd2061c11", "e93dd744-84a1-4173-847a-6d023b55637f"),
+                        Arrays.asList("d2b4394b-d1c9-4d5c-a44e-b382e41c67e5", "99bd4a56-256c-4de8-b187-d43a8dde466f"),
+                        "yes",
+                        "yes",
+                        "yes",
+                        "yes",
+                        "2",
+                        "2"
+                },
+                new Object[]{
+                        "paper",
+                        Collections.singletonList("e93dd744-84a1-4173-847a-6d023b55637f"),
+                        Arrays.asList("d2b4394b-d1c9-4d5c-a44e-b382e41c67e5", "99bd4a56-256c-4de8-b187-d43a8dde466f"),
+                        "no",
+                        "yes",
+                        "yes",
+                        "yes",
+                        "1",
+                        "2"
+                }
+        };
     }
 
     @Test
@@ -406,77 +457,25 @@ public class NotificationsIt {
     }
 
     @Test
-    @Parameters(method = "generateAppealCreatedNotificationScenarios")
-    public void shouldSendNotificationsForAnAppealCreatedRequestForAnOralOrPaperHearingAndForEachSubscription(
-            String hearingType, List<String> expectedEmailTemplateIds, List<String> expectedSmsTemplateIds,
-            String appellantEmailSubs, String appellantSmsSubs, String repsEmailSubs, String repsSmsSubs,
-            int wantedNumberOfSendEmailInvocations, int wantedNumberOfSendSmsInvocations) throws Exception {
-
-        json = updateEmbeddedJson(json, hearingType, "case_details", "case_data", "appeal", "hearingType");
-
-        json = updateEmbeddedJson(json, appellantEmailSubs, "case_details", "case_data", "subscriptions",
-                "appellantSubscription", "subscribeEmail");
-        json = updateEmbeddedJson(json, appellantSmsSubs, "case_details", "case_data", "subscriptions",
-                "appellantSubscription", "subscribeSms");
-        json = updateEmbeddedJson(json, repsEmailSubs, "case_details", "case_data", "subscriptions",
-                "representativeSubscription", "subscribeEmail");
-        json = updateEmbeddedJson(json, repsSmsSubs, "case_details", "case_data", "subscriptions",
-                "representativeSubscription", "subscribeSms");
-
-        json = updateEmbeddedJson(json, "appealCreated", "event_id");
+    public void shouldSendNotificationForSyaAppealCreatedRequestForAnOralHearing() throws Exception {
+        json = json.replace("appealReceived", "appealCreated");
 
         HttpServletResponse response = getResponse(getRequestWithAuthHeader(json));
 
         assertHttpStatus(response, HttpStatus.OK);
-
-        ArgumentCaptor<String> emailTemplateIdCaptor = ArgumentCaptor.forClass(String.class);
-        verify(notificationClient, times(wantedNumberOfSendEmailInvocations))
-                .sendEmail(emailTemplateIdCaptor.capture(), any(), any(), any());
-        assertArrayEquals(expectedEmailTemplateIds.toArray(), emailTemplateIdCaptor.getAllValues().toArray());
-
-        ArgumentCaptor<String> smsTemplateIdCaptor = ArgumentCaptor.forClass(String.class);
-        verify(notificationClient, times(wantedNumberOfSendSmsInvocations))
-                .sendSms(smsTemplateIdCaptor.capture(), any(), any(), any(), any());
-        assertArrayEquals(expectedSmsTemplateIds.toArray(), smsTemplateIdCaptor.getAllValues().toArray());
+        verify(notificationClient, times(1)).sendEmail(any(), any(), any(), any());
+        verify(notificationClient, times(1)).sendSms(any(), any(), any(), any(), any());
     }
 
-    @SuppressWarnings("Indentation")
-    private Object[] generateAppealCreatedNotificationScenarios() {
-        return new Object[]{
-                new Object[]{
-                        "paper",
-                        Arrays.asList("01293b93-b23e-40a3-ad78-2c6cd01cd21c", "e88cb0ca-d295-4f51-8041-c3ef1f4321c2"),
-                        Arrays.asList("f41222ef-c05c-4682-9634-6b034a166368", "69793118-1032-4e9b-b2de-c23a25869842"),
-                        "yes",
-                        "yes",
-                        "yes",
-                        "yes",
-                        "2",
-                        "2"
-                },
-                new Object[]{
-                        "oral",
-                        Arrays.asList("01293b93-b23e-40a3-ad78-2c6cd01cd21c", "e88cb0ca-d295-4f51-8041-c3ef1f4321c2"),
-                        Arrays.asList("f41222ef-c05c-4682-9634-6b034a166368", "69793118-1032-4e9b-b2de-c23a25869842"),
-                        "yes",
-                        "yes",
-                        "yes",
-                        "yes",
-                        "2",
-                        "2"
-                },
-                new Object[]{
-                        "paper",
-                        Collections.singletonList("e88cb0ca-d295-4f51-8041-c3ef1f4321c2"),
-                        Arrays.asList("f41222ef-c05c-4682-9634-6b034a166368", "69793118-1032-4e9b-b2de-c23a25869842"),
-                        "no",
-                        "yes",
-                        "yes",
-                        "yes",
-                        "1",
-                        "2"
-                }
-        };
+    @Test
+    public void shouldSendNotificationForSyaAppealCreatedRequestForAPaperHearing() throws Exception {
+        updateJsonForPaperHearing();
+        json = json.replace("appealReceived", "appealCreated");
+        HttpServletResponse response = getResponse(getRequestWithAuthHeader(json));
+
+        assertHttpStatus(response, HttpStatus.OK);
+        verify(notificationClient, times(1)).sendEmail(any(), any(), any(), any());
+        verify(notificationClient, times(1)).sendSms(any(), any(), any(), any(), any());
     }
 
     @Test

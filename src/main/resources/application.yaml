@@ -115,12 +115,8 @@ notification:
     emailId: b9e47ec4-3b58-4b8d-9304-f77ac27fb7f2
     smsId: e3f71440-d1ac-43c8-a8cc-a088c4f3c959
   appealCreated:
-    appellant:
-      emailId: 01293b93-b23e-40a3-ad78-2c6cd01cd21c
-      smsId: f41222ef-c05c-4682-9634-6b034a166368
-    representative:
-      emailId: e88cb0ca-d295-4f51-8041-c3ef1f4321c2
-      smsId: 69793118-1032-4e9b-b2de-c23a25869842
+    emailId: 01293b93-b23e-40a3-ad78-2c6cd01cd21c
+    smsId: f41222ef-c05c-4682-9634-6b034a166368
   hearingReminder:
     emailId: 774a5cba-fab6-4b8c-a9d9-03f913ed2dca
     smsId: 404e9a43-6318-492c-b5c2-e34ddfbbdde9

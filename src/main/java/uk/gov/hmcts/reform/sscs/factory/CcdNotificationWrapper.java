@@ -2,7 +2,7 @@ package uk.gov.hmcts.reform.sscs.factory;
 
 import static uk.gov.hmcts.reform.sscs.config.SubscriptionType.APPELLANT;
 import static uk.gov.hmcts.reform.sscs.config.SubscriptionType.REPRESENTATIVE;
-import static uk.gov.hmcts.reform.sscs.domain.notify.NotificationEventType.SYA_APPEAL_CREATED_NOTIFICATION;
+import static uk.gov.hmcts.reform.sscs.domain.notify.NotificationEventType.APPEAL_LAPSED_NOTIFICATION;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -83,7 +83,7 @@ public class CcdNotificationWrapper implements NotificationWrapper {
     public List<SubscriptionWithType> getSubscriptionsBasedOnNotificationType() {
         List<SubscriptionWithType> subscriptionWithTypeList = new ArrayList<>();
         subscriptionWithTypeList.add(new SubscriptionWithType(getAppellantSubscription(), APPELLANT));
-        if (SYA_APPEAL_CREATED_NOTIFICATION.getId().equals(getNotificationType().getId())) {
+        if (APPEAL_LAPSED_NOTIFICATION.getId().equals(getNotificationType().getId())) {
             subscriptionWithTypeList.add(new SubscriptionWithType(getRepresentativeSubscription(), REPRESENTATIVE));
         }
         return subscriptionWithTypeList;

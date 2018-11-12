@@ -14,7 +14,6 @@ import static uk.gov.hmcts.reform.sscs.ccd.domain.Benefit.ESA;
 import static uk.gov.hmcts.reform.sscs.ccd.domain.Benefit.PIP;
 import static uk.gov.hmcts.reform.sscs.ccd.domain.EventType.APPEAL_RECEIVED;
 import static uk.gov.hmcts.reform.sscs.ccd.domain.HearingType.ONLINE;
-import static uk.gov.hmcts.reform.sscs.ccd.domain.HearingType.ORAL;
 import static uk.gov.hmcts.reform.sscs.ccd.domain.HearingType.PAPER;
 import static uk.gov.hmcts.reform.sscs.ccd.domain.HearingType.REGULAR;
 import static uk.gov.hmcts.reform.sscs.config.AppConstants.ACCEPT_VIEW_BY_DATE_LITERAL;
@@ -23,8 +22,6 @@ import static uk.gov.hmcts.reform.sscs.config.AppConstants.ONLINE_HEARING_REGIST
 import static uk.gov.hmcts.reform.sscs.config.AppConstants.ONLINE_HEARING_SIGN_IN_LINK_LITERAL;
 import static uk.gov.hmcts.reform.sscs.config.AppConstants.QUESTION_ROUND_EXPIRES_DATE_LITERAL;
 import static uk.gov.hmcts.reform.sscs.config.AppConstants.TRIBUNAL_RESPONSE_DATE_LITERAL;
-import static uk.gov.hmcts.reform.sscs.config.SubscriptionType.APPELLANT;
-import static uk.gov.hmcts.reform.sscs.config.SubscriptionType.REPRESENTATIVE;
 import static uk.gov.hmcts.reform.sscs.domain.notify.NotificationEventType.APPEAL_RECEIVED_NOTIFICATION;
 import static uk.gov.hmcts.reform.sscs.domain.notify.NotificationEventType.EVIDENCE_RECEIVED_NOTIFICATION;
 import static uk.gov.hmcts.reform.sscs.domain.notify.NotificationEventType.HEARING_BOOKED_NOTIFICATION;
@@ -179,10 +176,9 @@ public class PersonalisationTest {
     @SuppressWarnings("Indentation")
     private Object[] generateNotificationTypeAndSubscriptionsScenarios() {
         return new Object[]{
-                new Object[]{SYA_APPEAL_CREATED_NOTIFICATION, APPELLANT, PAPER},
-                new Object[]{SYA_APPEAL_CREATED_NOTIFICATION, APPELLANT, REGULAR},
-                new Object[]{SYA_APPEAL_CREATED_NOTIFICATION, APPELLANT, ONLINE},
-                new Object[]{SYA_APPEAL_CREATED_NOTIFICATION, REPRESENTATIVE, ORAL},
+                new Object[]{SYA_APPEAL_CREATED_NOTIFICATION, null, PAPER},
+                new Object[]{SYA_APPEAL_CREATED_NOTIFICATION, null, REGULAR},
+                new Object[]{SYA_APPEAL_CREATED_NOTIFICATION, null, ONLINE},
                 new Object[]{APPEAL_RECEIVED_NOTIFICATION, null, PAPER},
                 new Object[]{APPEAL_RECEIVED_NOTIFICATION, null, REGULAR},
                 new Object[]{APPEAL_RECEIVED_NOTIFICATION, null, ONLINE}
