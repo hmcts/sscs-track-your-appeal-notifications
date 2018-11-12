@@ -32,7 +32,26 @@
           "wantsToAttend": "Yes"
         },
         "mrnDetails": {},
-        "rep": {},
+        "rep": {
+          "hasRepresentative": "Yes",
+          "name": {
+            "title": "Mr",
+            "firstName": "Harry",
+            "lastName": "Potter"
+          },
+          "address": {
+            "line1": "123 Hairy Lane",
+            "line2": "Off Hairy Park",
+            "town": "Town",
+            "county": "County",
+            "postcode": "CM14 4LQ"
+          },
+          "contact": {
+            "email": "harry.potter@wizards.com",
+            "mobile": "07411999999"
+          },
+          "organisation": "HP Ltd"
+        },
         "signer": null
       },
       "caseReference": "SC022/14/12423",
@@ -63,10 +82,10 @@
           "tya": ""
         },
         "representativeSubscription": {
-          "email": "",
-          "mobile": "",
-          "subscribeEmail": "No",
-          "subscribeSms": "No",
+          "email": "sscstest+notify@greencroftconsulting.com",
+          "mobile": "07398785050",
+          "subscribeEmail": "Yes",
+          "subscribeSms": "Yes",
           "tya": ""
         }
       }
@@ -377,10 +396,10 @@
           "tya": ""
         },
         "representativeSubscription": {
-          "email": "",
-          "mobile": "",
-          "subscribeEmail": "No",
-          "subscribeSms": "No",
+          "email": "sscstest+notify@greencroftconsulting.com",
+          "mobile": "07398785050",
+          "subscribeEmail": "Yes",
+          "subscribeSms": "Yes",
           "tya": ""
         }
       }
