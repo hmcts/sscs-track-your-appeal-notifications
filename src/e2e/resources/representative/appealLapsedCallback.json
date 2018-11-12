@@ -46,10 +46,7 @@
             "county": "County",
             "postcode": "CM14 4LQ"
           },
-          "contact": {
-            "email": "harry.potter@wizards.com",
-            "mobile": "07411999999"
-          },
+          "contact": {},
           "organisation": "HP Ltd"
         },
         "signer": null
@@ -159,8 +156,21 @@
             "value": {}
           },
           "rep": {
-            "classification": "PUBLIC",
-            "value": {}
+            "hasRepresentative": "PUBLIC",
+            "name": {
+              "title": "PUBLIC",
+              "firstName": "PUBLIC",
+              "lastName": "PUBLIC"
+            },
+            "address": {
+              "line1": "PUBLIC",
+              "line2": "PUBLIC",
+              "town": "PUBLIC",
+              "county": "PUBLIC",
+              "postcode": "PUBLIC"
+            },
+            "contact": {},
+            "organisation": "PUBLIC"
           },
           "signer": "PUBLIC"
         }
