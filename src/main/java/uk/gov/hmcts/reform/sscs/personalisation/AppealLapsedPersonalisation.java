@@ -22,37 +22,8 @@ public class AppealLapsedPersonalisation extends Personalisation<CcdNotification
         SscsCaseData ccdResponse = responseWrapper.getNewSscsCaseData();
 
         setRepresentativeName(personalisation, ccdResponse);
-        setRepresentativeDetails(personalisation, ccdResponse);
 
         return personalisation;
-    }
-
-    public Map<String, String> setRepresentativeDetails(Map<String, String> personalisation, SscsCaseData ccdResponse) {
-        personalisation.put(AppConstants.REPRESENTATIVE_DETAILS_LITERAL, buildRepresentativeDetails(ccdResponse.getAppeal().getRep()));
-        return personalisation;
-    }
-
-    private String buildRepresentativeDetails(Representative representative) {
-        String hasRepresentative = (representative != null) ? "yes" : "no";
-
-        StringBuilder representativeBuilder = new StringBuilder()
-                .append("Have a representative: ")
-                .append(hasRepresentative);
-
-        if (representative != null) {
-            representativeBuilder.append("\n\nName: ")
-                .append(representative.getName().getFullNameNoTitle() + "\n\n")
-                .append("Organisation: ")
-                .append(getOptionalField(representative.getOrganisation(), "Not provided") + "\n\n")
-                .append("Address: ")
-                .append(representative.getAddress().getFullAddress() + "\n\n")
-                .append("Email: ")
-                .append(getOptionalField(representative.getContact().getEmail(), "Not provided") + "\n\n")
-                .append("Phone: ")
-                .append(getOptionalField(representative.getContact().getPhone(), "Not provided"))
-                .toString();
-        }
-        return representativeBuilder.toString();
     }
 
     public Map<String, String> setRepresentativeName(Map<String, String> personalisation, SscsCaseData sscsCaseData) {
