@@ -21,7 +21,7 @@ public class AppealLapsedPersonalisation extends Personalisation<CcdNotification
         Map<String, String> personalisation = super.create(responseWrapper);
         SscsCaseData ccdResponse = responseWrapper.getNewSscsCaseData();
 
-        setRepresentaitveName(personalisation, ccdResponse);
+        setRepresentativeName(personalisation, ccdResponse);
         setRepresentativeDetails(personalisation, ccdResponse);
 
         return personalisation;
@@ -55,7 +55,7 @@ public class AppealLapsedPersonalisation extends Personalisation<CcdNotification
         return representativeBuilder.toString();
     }
 
-    Map<String, String> setRepresentativeName(Map<String, String> personalisation, SscsCaseData sscsCaseData) {
+    public Map<String, String> setRepresentativeName(Map<String, String> personalisation, SscsCaseData sscsCaseData) {
         if (isValidReps(sscsCaseData.getAppeal().getRep())) {
             personalisation.put(AppConstants.REPRESENTATIVE_NAME, String.format("%s %s",
                     sscsCaseData.getAppeal().getRep().getName().getFirstName(),
