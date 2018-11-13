@@ -7,6 +7,7 @@ import java.util.Map;
 import org.springframework.stereotype.Component;
 import uk.gov.hmcts.reform.sscs.ccd.domain.SscsCaseData;
 import uk.gov.hmcts.reform.sscs.ccd.domain.Subscription;
+import uk.gov.hmcts.reform.sscs.config.AppealHearingType;
 import uk.gov.hmcts.reform.sscs.domain.SscsCaseDataWrapper;
 import uk.gov.hmcts.reform.sscs.domain.notify.NotificationEventType;
 import uk.gov.hmcts.reform.sscs.factory.CcdNotificationWrapper;
@@ -36,11 +37,15 @@ public class SubscriptionPersonalisation extends Personalisation<CcdNotification
         SscsCaseData oldSscsCaseData = responseWrapper.getOldSscsCaseData();
         if (doNotSendEmailUpdatedNotificationWhenEmailNotChanged(newSscsCaseData, oldSscsCaseData)) {
             return DO_NOT_SEND;
-        } else if (shouldSetMostRecentNotificationEventTypeNotification(newSscsCaseData, oldSscsCaseData)) {
+        } else if (!isPaperCase(newSscsCaseData.getAppeal().getHearingType()) && shouldSetMostRecentNotificationEventTypeNotification(newSscsCaseData, oldSscsCaseData)) {
             return getNotificationByCcdEvent(newSscsCaseData.getEvents().get(0).getValue().getEventType());
         } else {
             return responseWrapper.getNotificationEventType();
         }
+    }
+
+    protected Boolean isPaperCase(String hearingType) {
+        return AppealHearingType.PAPER.name().equalsIgnoreCase(hearingType);
     }
 
     private Boolean shouldSetMostRecentNotificationEventTypeNotification(SscsCaseData newSscsCaseData, SscsCaseData oldSscsCaseData) {
