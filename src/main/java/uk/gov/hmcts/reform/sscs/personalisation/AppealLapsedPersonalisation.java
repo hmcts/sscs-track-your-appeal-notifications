@@ -32,8 +32,4 @@ public class AppealLapsedPersonalisation extends Personalisation<CcdNotification
     private boolean isValidReps(Representative representative) {
         return null != (representative) && null != representative.getName();
     }
-
-    private String getOptionalField(String field, String text) {
-        return field == null || field.equals("null") || field.isEmpty() ? text : field;
-    }
 }
