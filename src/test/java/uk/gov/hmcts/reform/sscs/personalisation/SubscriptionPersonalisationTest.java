@@ -8,13 +8,11 @@ import static org.mockito.Mockito.when;
 import static org.mockito.MockitoAnnotations.initMocks;
 import static uk.gov.hmcts.reform.sscs.ccd.domain.Benefit.PIP;
 import static uk.gov.hmcts.reform.sscs.ccd.domain.EventType.APPEAL_RECEIVED;
+import static uk.gov.hmcts.reform.sscs.ccd.domain.EventType.HEARING_BOOKED;
 import static uk.gov.hmcts.reform.sscs.domain.notify.NotificationEventType.*;
 
 import java.time.LocalDate;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Map;
-import java.util.Optional;
+import java.util.*;
 import javax.annotation.Resource;
 import org.junit.Assert;
 import org.junit.Before;
@@ -23,6 +21,7 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import uk.gov.hmcts.reform.sscs.ccd.domain.*;
 import uk.gov.hmcts.reform.sscs.config.AppConstants;
+import uk.gov.hmcts.reform.sscs.config.AppealHearingType;
 import uk.gov.hmcts.reform.sscs.config.NotificationConfig;
 import uk.gov.hmcts.reform.sscs.domain.SscsCaseDataWrapper;
 import uk.gov.hmcts.reform.sscs.domain.notify.Link;
@@ -284,6 +283,48 @@ public class SubscriptionPersonalisationTest {
         newSscsCaseData.setEvents(new ArrayList<>());
 
         assertEquals(SUBSCRIPTION_UPDATED_NOTIFICATION, personalisation.getNotificationEventTypeNotification(wrapper));
+    }
+
+    @Test
+    public void isPaperCase() {
+        assertTrue(personalisation.isPaperCase(AppealHearingType.PAPER.name()));
+    }
+
+    @Test
+    public void isNotPaperCase() {
+        Arrays.stream(AppealHearingType.values())
+            .filter(aht -> {
+                return (aht != AppealHearingType.PAPER);
+            })
+            .forEach(aht -> assertFalse(personalisation.isPaperCase(aht.name())));
+    }
+
+    @Test
+    public void doNotSendMostRecentNotificationEventTypeIfPaperCase() {
+        buildNewAndOldCaseData(buildDefaultNewAppeallantSubscription(), buildDefaultOldAppeallantSubscription());
+
+        wrapper.getNewSscsCaseData().getAppeal().setHearingType(AppealHearingType.PAPER.name());
+        wrapper.getOldSscsCaseData().getAppeal().setHearingType(AppealHearingType.PAPER.name());
+
+        List<Event> events = new ArrayList<>();
+        events.add(Event.builder().value(EventDetails.builder().date(date).type(HEARING_BOOKED.getCcdType()).build()).build());
+        newSscsCaseData.setEvents(events);
+
+        assertEquals(SUBSCRIPTION_UPDATED_NOTIFICATION, personalisation.getNotificationEventTypeNotification(wrapper));
+    }
+
+    @Test
+    public void sendMostRecentNotificationEventTypeIfOralCase() {
+        buildNewAndOldCaseData(buildDefaultNewAppeallantSubscription(), buildDefaultOldAppeallantSubscription());
+
+        wrapper.getNewSscsCaseData().getAppeal().setHearingType(AppealHearingType.ORAL.name());
+        wrapper.getOldSscsCaseData().getAppeal().setHearingType(AppealHearingType.ORAL.name());
+
+        List<Event> events = new ArrayList<>();
+        events.add(Event.builder().value(EventDetails.builder().date(date).type(HEARING_BOOKED.getCcdType()).build()).build());
+        newSscsCaseData.setEvents(events);
+
+        assertEquals(HEARING_BOOKED_NOTIFICATION, personalisation.getNotificationEventTypeNotification(wrapper));
     }
 
     @Test
