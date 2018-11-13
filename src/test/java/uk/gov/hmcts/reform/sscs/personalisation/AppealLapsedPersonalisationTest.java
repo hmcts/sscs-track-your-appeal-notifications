@@ -8,46 +8,27 @@ import junitparams.JUnitParamsRunner;
 import junitparams.Parameters;
 import org.junit.Test;
 import org.junit.runner.RunWith;
-import org.mockito.InjectMocks;
-import org.mockito.Mock;
 import uk.gov.hmcts.reform.sscs.ccd.domain.Appeal;
 import uk.gov.hmcts.reform.sscs.ccd.domain.Name;
 import uk.gov.hmcts.reform.sscs.ccd.domain.Representative;
 import uk.gov.hmcts.reform.sscs.ccd.domain.SscsCaseData;
 import uk.gov.hmcts.reform.sscs.config.AppConstants;
-import uk.gov.hmcts.reform.sscs.config.NotificationConfig;
-import uk.gov.hmcts.reform.sscs.extractor.HearingContactDateExtractor;
-import uk.gov.hmcts.reform.sscs.service.MessageAuthenticationServiceImpl;
-import uk.gov.hmcts.reform.sscs.service.RegionalProcessingCenterService;
 
 @RunWith(JUnitParamsRunner.class)
 public class AppealLapsedPersonalisationTest {
 
-    @Mock
-    private NotificationConfig config;
+    private static final String CASE_ID = "54321";
 
-    @Mock
-    private HearingContactDateExtractor hearingContactDateExtractor;
+    private SscsCaseData response;
 
-    @Mock
-    private MessageAuthenticationServiceImpl macService;
-
-    @Mock
-    private RegionalProcessingCenterService regionalProcessingCenterService;
-
-    @Mock
-    private NotificationDateConverterUtil notificationDateConverterUtil;
-
-    @InjectMocks
-    public AppealLapsedPersonalisation appealLapsedpersonalisation;
-
-    private Name name;
+    private AppealLapsedPersonalisation appealLapsedPersonalisation =
+        new AppealLapsedPersonalisation();
 
     @Test
     @Parameters(method = "generateSscsCaseDataForTest")
     public void givenSyaAppealCreated_shouldSetRepresentativeNameIfPresent(
             SscsCaseData sscsCaseData, String expected) {
-        Map<String, String> personalisation = appealLapsedpersonalisation.setRepresentativeName(
+        Map<String, String> personalisation = appealLapsedPersonalisation.setRepresentativeName(
                 new HashMap<>(), sscsCaseData);
         assertEquals(expected, personalisation.get(AppConstants.REPRESENTATIVE_NAME));
     }
