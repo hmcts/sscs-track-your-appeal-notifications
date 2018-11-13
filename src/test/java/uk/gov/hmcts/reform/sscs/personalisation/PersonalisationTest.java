@@ -151,7 +151,7 @@ public class PersonalisationTest {
     @Test
     @Parameters(method = "generateNotificationTypeAndSubscriptionsScenarios")
     public void givenSubscriptionType_shouldGenerateEmailAndSmsTemplateNamesPerSubscription(
-            NotificationEventType notificationEventType, SubscriptionType subscriptionType, HearingType hearingType) {
+            NotificationEventType notificationEventType, HearingType hearingType) {
         NotificationWrapper notificationWrapper = new CcdNotificationWrapper(SscsCaseDataWrapper.builder()
                 .newSscsCaseData(SscsCaseData.builder()
                         .appeal(Appeal.builder()
@@ -161,9 +161,9 @@ public class PersonalisationTest {
                 .notificationEventType(notificationEventType)
                 .build());
 
-        personalisation.getTemplate(notificationWrapper, PIP, subscriptionType);
+        personalisation.getTemplate(notificationWrapper, PIP, null);
 
-        verify(config).getTemplate(eq(getExpectedTemplateName(notificationEventType, subscriptionType)),
+        verify(config).getTemplate(eq(getExpectedTemplateName(notificationEventType, null)),
                 anyString(), any(Benefit.class), any(AppealHearingType.class));
     }
 
@@ -176,12 +176,12 @@ public class PersonalisationTest {
     @SuppressWarnings("Indentation")
     private Object[] generateNotificationTypeAndSubscriptionsScenarios() {
         return new Object[]{
-                new Object[]{SYA_APPEAL_CREATED_NOTIFICATION, null, PAPER},
-                new Object[]{SYA_APPEAL_CREATED_NOTIFICATION, null, REGULAR},
-                new Object[]{SYA_APPEAL_CREATED_NOTIFICATION, null, ONLINE},
-                new Object[]{APPEAL_RECEIVED_NOTIFICATION, null, PAPER},
-                new Object[]{APPEAL_RECEIVED_NOTIFICATION, null, REGULAR},
-                new Object[]{APPEAL_RECEIVED_NOTIFICATION, null, ONLINE}
+                new Object[]{SYA_APPEAL_CREATED_NOTIFICATION, PAPER},
+                new Object[]{SYA_APPEAL_CREATED_NOTIFICATION, REGULAR},
+                new Object[]{SYA_APPEAL_CREATED_NOTIFICATION, ONLINE},
+                new Object[]{APPEAL_RECEIVED_NOTIFICATION, PAPER},
+                new Object[]{APPEAL_RECEIVED_NOTIFICATION, REGULAR},
+                new Object[]{APPEAL_RECEIVED_NOTIFICATION, ONLINE}
         };
     }
 
