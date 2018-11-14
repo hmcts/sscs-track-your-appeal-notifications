@@ -133,7 +133,7 @@ public class NotificationFactoryTest {
 
     @Test
     @Parameters({"APPELLANT, appellantEmail", "REPRESENTATIVE, repsEmail"})
-    public void givenAppealCreatedEventAndSubscriptionType_shouldInferRightSubscriptionToCreateNotification(
+    public void givenAppealLapsedEventAndSubscriptionType_shouldInferRightSubscriptionToCreateNotification(
             SubscriptionType subscriptionType, String expectedEmail) {
         factory = new NotificationFactory(personalisationFactory);
         CcdNotificationWrapper notificationWrapper = new CcdNotificationWrapper(SscsCaseDataWrapper.builder()
