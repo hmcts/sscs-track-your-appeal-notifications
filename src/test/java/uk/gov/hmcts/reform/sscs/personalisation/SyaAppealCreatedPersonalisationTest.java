@@ -1,90 +1,32 @@
 package uk.gov.hmcts.reform.sscs.personalisation;
 
 import static org.junit.Assert.assertEquals;
+import static org.mockito.MockitoAnnotations.initMocks;
 
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import junitparams.JUnitParamsRunner;
-import junitparams.Parameters;
+import javax.annotation.Resource;
+import org.junit.Before;
 import org.junit.Test;
-import org.junit.runner.RunWith;
-import uk.gov.hmcts.reform.sscs.ccd.domain.Address;
-import uk.gov.hmcts.reform.sscs.ccd.domain.Appeal;
-import uk.gov.hmcts.reform.sscs.ccd.domain.AppealReason;
-import uk.gov.hmcts.reform.sscs.ccd.domain.AppealReasonDetails;
-import uk.gov.hmcts.reform.sscs.ccd.domain.AppealReasons;
-import uk.gov.hmcts.reform.sscs.ccd.domain.Appellant;
-import uk.gov.hmcts.reform.sscs.ccd.domain.BenefitType;
-import uk.gov.hmcts.reform.sscs.ccd.domain.Contact;
-import uk.gov.hmcts.reform.sscs.ccd.domain.DateRange;
-import uk.gov.hmcts.reform.sscs.ccd.domain.ExcludeDate;
-import uk.gov.hmcts.reform.sscs.ccd.domain.HearingOptions;
-import uk.gov.hmcts.reform.sscs.ccd.domain.Identity;
-import uk.gov.hmcts.reform.sscs.ccd.domain.MrnDetails;
-import uk.gov.hmcts.reform.sscs.ccd.domain.Name;
-import uk.gov.hmcts.reform.sscs.ccd.domain.Representative;
-import uk.gov.hmcts.reform.sscs.ccd.domain.SscsCaseData;
-import uk.gov.hmcts.reform.sscs.ccd.domain.Subscription;
-import uk.gov.hmcts.reform.sscs.ccd.domain.Subscriptions;
+import org.mockito.InjectMocks;
+import uk.gov.hmcts.reform.sscs.ccd.domain.*;
 import uk.gov.hmcts.reform.sscs.config.AppConstants;
 
-@RunWith(JUnitParamsRunner.class)
 public class SyaAppealCreatedPersonalisationTest {
 
     private static final String CASE_ID = "54321";
 
-    private SscsCaseData response;
+    SscsCaseData response;
 
-    private SyaAppealCreatedPersonalisation syaAppealCreatedPersonalisation =
-            new SyaAppealCreatedPersonalisation();
+    @InjectMocks
+    @Resource
+    SyaAppealCreatedPersonalisation syaAppealCreatedPersonalisation;
 
-    @Test
-    @Parameters(method = "generateSscsCaseDataForTest")
-    public void givenSyaAppealCreated_shouldSetRepresentativeNameIfPresent(
-            SscsCaseData sscsCaseData, String expected) {
-        Map<String, String> personalisation = syaAppealCreatedPersonalisation.setRepresentativeName(
-                new HashMap<>(), sscsCaseData);
-        assertEquals(expected, personalisation.get(AppConstants.REPRESENTATIVE_NAME));
-    }
-
-    @SuppressWarnings("Indentation")
-    private Object[] generateSscsCaseDataForTest() {
-        SscsCaseData sscsCaseDataWithReps = SscsCaseData.builder()
-                .appeal(Appeal.builder()
-                        .rep(Representative.builder()
-                                .name(Name.builder()
-                                        .firstName("Manish")
-                                        .lastName("Sharma")
-                                        .title("Mrs")
-                                        .build())
-                                .build())
-                        .build())
-                .build();
-        SscsCaseData sscsCaseDataWithNoReps = SscsCaseData.builder()
-                .appeal(Appeal.builder()
-                        .rep(null)
-                        .build())
-                .build();
-        SscsCaseData sscsCaseDataWithEmptyReps = SscsCaseData.builder()
-                .appeal(Appeal.builder()
-                        .rep(Representative.builder().build())
-                        .build())
-                .build();
-        SscsCaseData sscsCaseDataWithEmptyRepsAndEmptyNames = SscsCaseData.builder()
-                .appeal(Appeal.builder()
-                        .rep(Representative.builder()
-                                .name(Name.builder().build())
-                                .build())
-                        .build())
-                .build();
-        return new Object[]{
-                new Object[]{sscsCaseDataWithReps, "Manish Sharma"},
-                new Object[]{sscsCaseDataWithNoReps, null},
-                new Object[]{sscsCaseDataWithEmptyReps, null},
-                new Object[]{sscsCaseDataWithEmptyRepsAndEmptyNames, "null null"}
-        };
+    @Before
+    public void setup() {
+        initMocks(this);
     }
 
     @Test

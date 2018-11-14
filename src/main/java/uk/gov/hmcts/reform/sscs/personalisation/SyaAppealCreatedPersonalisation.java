@@ -8,16 +8,7 @@ import java.util.Map;
 import java.util.StringJoiner;
 import org.apache.commons.lang.StringUtils;
 import org.springframework.stereotype.Component;
-import uk.gov.hmcts.reform.sscs.ccd.domain.Appeal;
-import uk.gov.hmcts.reform.sscs.ccd.domain.AppealReason;
-import uk.gov.hmcts.reform.sscs.ccd.domain.AppealReasons;
-import uk.gov.hmcts.reform.sscs.ccd.domain.DateRange;
-import uk.gov.hmcts.reform.sscs.ccd.domain.ExcludeDate;
-import uk.gov.hmcts.reform.sscs.ccd.domain.HearingOptions;
-import uk.gov.hmcts.reform.sscs.ccd.domain.MrnDetails;
-import uk.gov.hmcts.reform.sscs.ccd.domain.Representative;
-import uk.gov.hmcts.reform.sscs.ccd.domain.SscsCaseData;
-import uk.gov.hmcts.reform.sscs.ccd.domain.Subscription;
+import uk.gov.hmcts.reform.sscs.ccd.domain.*;
 import uk.gov.hmcts.reform.sscs.config.AppConstants;
 import uk.gov.hmcts.reform.sscs.domain.SscsCaseDataWrapper;
 import uk.gov.hmcts.reform.sscs.factory.CcdNotificationWrapper;
@@ -37,22 +28,8 @@ public class SyaAppealCreatedPersonalisation extends Personalisation<CcdNotifica
         setReasonsForAppealingDetails(personalisation, ccdResponse);
         setHearingDetails(personalisation, ccdResponse);
         setHearingArrangementDetails(personalisation, ccdResponse);
-        setRepresentativeName(personalisation, ccdResponse);
 
         return personalisation;
-    }
-
-    Map<String, String> setRepresentativeName(Map<String, String> personalisation, SscsCaseData sscsCaseData) {
-        if (isValidReps(sscsCaseData.getAppeal().getRep())) {
-            personalisation.put(AppConstants.REPRESENTATIVE_NAME, String.format("%s %s",
-                    sscsCaseData.getAppeal().getRep().getName().getFirstName(),
-                    sscsCaseData.getAppeal().getRep().getName().getLastName()));
-        }
-        return personalisation;
-    }
-
-    private boolean isValidReps(Representative representative) {
-        return null != (representative) && null != representative.getName();
     }
 
     public Map<String, String> setMrnDetails(Map<String, String> personalisation, SscsCaseData ccdResponse) {
@@ -246,5 +223,4 @@ public class SyaAppealCreatedPersonalisation extends Personalisation<CcdNotifica
     private String getOptionalField(String field, String text) {
         return field == null || field.equals("null") || field.isEmpty() ? text : field;
     }
-
 }
