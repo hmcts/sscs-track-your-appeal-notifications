@@ -26,7 +26,6 @@ import static uk.gov.hmcts.reform.sscs.domain.notify.NotificationEventType.APPEA
 import static uk.gov.hmcts.reform.sscs.domain.notify.NotificationEventType.EVIDENCE_RECEIVED_NOTIFICATION;
 import static uk.gov.hmcts.reform.sscs.domain.notify.NotificationEventType.HEARING_BOOKED_NOTIFICATION;
 import static uk.gov.hmcts.reform.sscs.domain.notify.NotificationEventType.POSTPONEMENT_NOTIFICATION;
-import static uk.gov.hmcts.reform.sscs.domain.notify.NotificationEventType.SYA_APPEAL_CREATED_NOTIFICATION;
 
 import java.time.Instant;
 import java.time.LocalDate;
@@ -176,9 +175,6 @@ public class PersonalisationTest {
     @SuppressWarnings("Indentation")
     private Object[] generateNotificationTypeAndSubscriptionsScenarios() {
         return new Object[]{
-                new Object[]{SYA_APPEAL_CREATED_NOTIFICATION, PAPER},
-                new Object[]{SYA_APPEAL_CREATED_NOTIFICATION, REGULAR},
-                new Object[]{SYA_APPEAL_CREATED_NOTIFICATION, ONLINE},
                 new Object[]{APPEAL_RECEIVED_NOTIFICATION, PAPER},
                 new Object[]{APPEAL_RECEIVED_NOTIFICATION, REGULAR},
                 new Object[]{APPEAL_RECEIVED_NOTIFICATION, ONLINE}
