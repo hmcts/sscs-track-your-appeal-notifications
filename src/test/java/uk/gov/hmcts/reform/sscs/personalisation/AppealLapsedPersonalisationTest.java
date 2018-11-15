@@ -21,14 +21,14 @@ public class AppealLapsedPersonalisationTest {
 
     private SscsCaseData response;
 
-    private AppealLapsedPersonalisation appealLapsedPersonalisation =
-        new AppealLapsedPersonalisation();
+    private WithRepresentativePersonalisation withRepresentativePersonalisation =
+        new WithRepresentativePersonalisation();
 
     @Test
     @Parameters(method = "generateSscsCaseDataForTest")
     public void givenSyaAppealCreated_shouldSetRepresentativeNameIfPresent(
             SscsCaseData sscsCaseData, String expected) {
-        Map<String, String> personalisation = appealLapsedPersonalisation.setRepresentativeName(
+        Map<String, String> personalisation = withRepresentativePersonalisation.setRepresentativeName(
                 new HashMap<>(), sscsCaseData);
         assertEquals(expected, personalisation.get(AppConstants.REPRESENTATIVE_NAME));
     }

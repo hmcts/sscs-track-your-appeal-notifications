@@ -13,6 +13,8 @@ import static org.mockito.Mockito.never;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
+import static uk.gov.hmcts.reform.sscs.domain.notify.NotificationEventType.APPEAL_LAPSED_NOTIFICATION;
+import static uk.gov.hmcts.reform.sscs.domain.notify.NotificationEventType.APPEAL_WITHDRAWN_NOTIFICATION;
 
 import java.io.File;
 import java.io.IOException;
@@ -50,6 +52,7 @@ import uk.gov.hmcts.reform.sscs.config.NotificationBlacklist;
 import uk.gov.hmcts.reform.sscs.config.NotificationConfig;
 import uk.gov.hmcts.reform.sscs.controller.NotificationController;
 import uk.gov.hmcts.reform.sscs.deserialize.SscsCaseDataWrapperDeserializer;
+import uk.gov.hmcts.reform.sscs.domain.notify.NotificationEventType;
 import uk.gov.hmcts.reform.sscs.factory.NotificationFactory;
 import uk.gov.hmcts.reform.sscs.idam.IdamService;
 import uk.gov.hmcts.reform.sscs.service.AuthorisationService;
@@ -253,11 +256,12 @@ public class NotificationsIt {
     }
 
     @Test
-    @Parameters(method = "generateAppealLapsedNotificationScenarios")
-    public void shouldSendNotificationsForAnAppealLapsedRequestForAnOralOrPaperHearingAndForEachSubscription(
-            String hearingType, List<String> expectedEmailTemplateIds, List<String> expectedSmsTemplateIds,
-            String appellantEmailSubs, String appellantSmsSubs, String repsEmailSubs, String repsSmsSubs,
-            int wantedNumberOfSendEmailInvocations, int wantedNumberOfSendSmsInvocations) throws Exception {
+    @Parameters(method = "generateRepsNotificationScenarios")
+    public void shouldSendRepsNotificationsForAnEventForAnOralOrPaperHearingAndForEachSubscription(
+            NotificationEventType notificationEventType, String hearingType, List<String> expectedEmailTemplateIds,
+            List<String> expectedSmsTemplateIds, String appellantEmailSubs, String appellantSmsSubs, String repsEmailSubs,
+            String repsSmsSubs, int wantedNumberOfSendEmailInvocations, int wantedNumberOfSendSmsInvocations)
+        throws Exception {
 
         json = updateEmbeddedJson(json, hearingType, "case_details", "case_data", "appeal", "hearingType");
 
@@ -270,7 +274,7 @@ public class NotificationsIt {
         json = updateEmbeddedJson(json, repsSmsSubs, "case_details", "case_data", "subscriptions",
                 "representativeSubscription", "subscribeSms");
 
-        json = updateEmbeddedJson(json, "appealLapsed", "event_id");
+        json = updateEmbeddedJson(json, notificationEventType.getId(), "event_id");
 
         HttpServletResponse response = getResponse(getRequestWithAuthHeader(json));
 
@@ -288,9 +292,10 @@ public class NotificationsIt {
     }
 
     @SuppressWarnings("Indentation")
-    private Object[] generateAppealLapsedNotificationScenarios() {
+    private Object[] generateRepsNotificationScenarios() {
         return new Object[]{
                 new Object[]{
+                        APPEAL_LAPSED_NOTIFICATION,
                         "paper",
                         Arrays.asList("8ce8d794-75e8-49a0-b4d2-0c6cd2061c11", "e93dd744-84a1-4173-847a-6d023b55637f"),
                         Arrays.asList("d2b4394b-d1c9-4d5c-a44e-b382e41c67e5", "ee58f7d0-8de7-4bee-acd4-252213db6b7b"),
@@ -302,6 +307,7 @@ public class NotificationsIt {
                         "2"
                 },
                 new Object[]{
+                        APPEAL_LAPSED_NOTIFICATION,
                         "oral",
                         Arrays.asList("8ce8d794-75e8-49a0-b4d2-0c6cd2061c11", "e93dd744-84a1-4173-847a-6d023b55637f"),
                         Arrays.asList("d2b4394b-d1c9-4d5c-a44e-b382e41c67e5", "ee58f7d0-8de7-4bee-acd4-252213db6b7b"),
@@ -313,6 +319,7 @@ public class NotificationsIt {
                         "2"
                 },
                 new Object[]{
+                        APPEAL_LAPSED_NOTIFICATION,
                         "paper",
                         Collections.singletonList("e93dd744-84a1-4173-847a-6d023b55637f"),
                         Arrays.asList("d2b4394b-d1c9-4d5c-a44e-b382e41c67e5", "ee58f7d0-8de7-4bee-acd4-252213db6b7b"),
@@ -322,31 +329,44 @@ public class NotificationsIt {
                         "yes",
                         "1",
                         "2"
+                },
+                new Object[]{
+                        APPEAL_WITHDRAWN_NOTIFICATION,
+                        "paper",
+                        Arrays.asList("8620e023-f663-477e-a771-9cfad50ee30f", "e29a2275-553f-4e70-97f4-2994c095f281"),
+                        Arrays.asList("f59440ee-19ca-4d47-a702-13e9cecaccbd", "f59440ee-19ca-4d47-a702-13e9cecaccbd"),
+                        "yes",
+                        "yes",
+                        "yes",
+                        "yes",
+                        "2",
+                        "2"
+                },
+                new Object[]{
+                        APPEAL_WITHDRAWN_NOTIFICATION,
+                        "oral",
+                        Arrays.asList("8620e023-f663-477e-a771-9cfad50ee30f", "e29a2275-553f-4e70-97f4-2994c095f281"),
+                        Arrays.asList("f59440ee-19ca-4d47-a702-13e9cecaccbd", "f59440ee-19ca-4d47-a702-13e9cecaccbd"),
+                        "yes",
+                        "yes",
+                        "yes",
+                        "yes",
+                        "2",
+                        "2"
+                },
+                new Object[]{
+                        APPEAL_WITHDRAWN_NOTIFICATION,
+                        "paper",
+                        Collections.singletonList("e29a2275-553f-4e70-97f4-2994c095f281"),
+                        Arrays.asList("f59440ee-19ca-4d47-a702-13e9cecaccbd", "f59440ee-19ca-4d47-a702-13e9cecaccbd"),
+                        "no",
+                        "yes",
+                        "yes",
+                        "yes",
+                        "1",
+                        "2"
                 }
         };
-    }
-
-    @Test
-    public void shouldSendNotificationForAppealWithdrawnRequestForAnOralHearing() throws Exception {
-        json = json.replace("appealReceived", "appealWithdrawn");
-
-        HttpServletResponse response = getResponse(getRequestWithAuthHeader(json));
-
-        assertHttpStatus(response, HttpStatus.OK);
-        verify(notificationClient).sendEmail(any(), any(), any(), any());
-        verify(notificationClient).sendSms(any(), any(), any(), any(), any());
-    }
-
-    @Test
-    public void shouldNotSendNotificationForAppealWithdrawnRequestForAPaperHearing() throws Exception {
-        updateJsonForPaperHearing();
-        json = json.replace("appealReceived", "appealWithdrawn");
-
-        HttpServletResponse response = getResponse(getRequestWithAuthHeader(json));
-
-        assertHttpStatus(response, HttpStatus.OK);
-        verify(notificationClient).sendEmail(any(), any(), any(), any());
-        verify(notificationClient).sendSms(any(), any(), any(), any(), any());
     }
 
     @Test
