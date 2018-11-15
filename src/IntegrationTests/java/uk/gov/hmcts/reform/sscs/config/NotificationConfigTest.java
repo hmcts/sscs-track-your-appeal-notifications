@@ -43,8 +43,8 @@ public class NotificationConfigTest {
             "8ce8d794-75e8-49a0-b4d2-0c6cd2061c11, d2b4394b-d1c9-4d5c-a44e-b382e41c67e5, ORAL, appealLapsed.appellant",
             "e29a2275-553f-4e70-97f4-2994c095f281, f59440ee-19ca-4d47-a702-13e9cecaccbd, PAPER, appealWithdrawn.representative",
             "e29a2275-553f-4e70-97f4-2994c095f281, f59440ee-19ca-4d47-a702-13e9cecaccbd, ORAL, appealWithdrawn.representative",
-            "8620e023-f663-477e-a771-9cfad50ee30f, f59440ee-19ca-4d47-a702-13e9cecaccbd, PAPER, appealWithdrawn.appellant",
-            "8620e023-f663-477e-a771-9cfad50ee30f, f59440ee-19ca-4d47-a702-13e9cecaccbd, ORAL, appealWithdrawn.appellant"
+            "8620e023-f663-477e-a771-9cfad50ee30f, 446c7b23-7342-42e1-adff-b4c367e951cb, PAPER, appealWithdrawn.appellant",
+            "8620e023-f663-477e-a771-9cfad50ee30f, 446c7b23-7342-42e1-adff-b4c367e951cb, ORAL, appealWithdrawn.appellant"
     })
     public void given_templateNamesAndHearingType_should_getCorrectTemplate(String expectedEmailTemplateId,
                                                                             String expectedSmsTemplateId,

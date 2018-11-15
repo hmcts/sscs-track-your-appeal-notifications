@@ -4,17 +4,16 @@ import static org.junit.Assert.assertTrue;
 import static uk.gov.hmcts.reform.sscs.domain.notify.NotificationEventType.APPEAL_LAPSED_NOTIFICATION;
 import static uk.gov.hmcts.reform.sscs.domain.notify.NotificationEventType.APPEAL_WITHDRAWN_NOTIFICATION;
 
+import com.google.common.collect.ImmutableMap;
 import java.util.List;
-import junitparams.JUnitParamsRunner;
+import java.util.Map;
 import junitparams.Parameters;
 import org.junit.Test;
-import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Value;
 import uk.gov.hmcts.reform.sscs.domain.notify.NotificationEventType;
 import uk.gov.hmcts.reform.sscs.functional.AbstractFunctionalTest;
 import uk.gov.service.notify.Notification;
 
-@RunWith(JUnitParamsRunner.class)
 public class WithRepresentativePersonalisationTest extends AbstractFunctionalTest {
     @Value("${notification.appealLapsed.appellant.emailId}")
     private String appealLapsedAppellantEmailId;
@@ -34,19 +33,27 @@ public class WithRepresentativePersonalisationTest extends AbstractFunctionalTes
     @Value("${notification.appealWithdrawn.representative.smsId}")
     private String appealWithdrawnRepsSmsId;
 
+    private Map<NotificationEventType, String[]> notificationEventTypeMap =
+         ImmutableMap.of(APPEAL_LAPSED_NOTIFICATION, new String[] {appealLapsedAppellantEmailId, appealLapsedAppellantSmsId, appealLapsedRepsEmailId, appealLapsedRepsSmsId},
+            APPEAL_WITHDRAWN_NOTIFICATION, new String[] {appealWithdrawnAppellantEmailId, appealWithdrawnAppellantSmsId, appealWithdrawnRepsEmailId, appealWithdrawnRepsSmsId}
+        );
+
     public WithRepresentativePersonalisationTest() {
         super(30);
     }
 
     @Test
     @Parameters(method = "eventTypeAndSubscriptions")
-    public void givenEventAndRepsSubscription_shouldSendNotificationToReps(NotificationEventType notificationEventType,
-                                                                           String appellantEmailId,
-                                                                           String appellantSmsId,
-                                                                           String repsEmailId,
-                                                                           String repsSmsId)
+    public void givenEventAndRepsSubscription_shouldSendNotificationToReps(NotificationEventType notificationEventType)
             throws Exception {
         //Given
+
+        String[] values = notificationEventTypeMap.get(notificationEventType);
+        final String appellantEmailId = values[0];
+        final String appellantSmsId = values[1];
+        final String repsEmailId = values[2];
+        final String repsSmsId = values[3];
+
         simulateCcdCallback(notificationEventType,
                 "representative/" + notificationEventType.getId() + "Callback.json");
 
@@ -64,12 +71,15 @@ public class WithRepresentativePersonalisationTest extends AbstractFunctionalTes
 
     @Test
     @Parameters(method = "eventTypeAndSubscriptions")
-    public void givenEventAndNoRepsSubscription_shouldNotSendNotificationToReps(NotificationEventType notificationEventType,
-                                                                                String appellantEmailId,
-                                                                                String appellantSmsId,
-                                                                                String repsEmailId,
-                                                                                String repsSmsId)
+    public void givenEventAndNoRepsSubscription_shouldNotSendNotificationToReps(NotificationEventType notificationEventType)
             throws Exception {
+
+        String[] values = notificationEventTypeMap.get(notificationEventType);
+        final String appellantEmailId = values[0];
+        final String appellantSmsId = values[1];
+        final String repsEmailId = values[2];
+        final String repsSmsId = values[3];
+
         simulateCcdCallback(notificationEventType,
                 "representative/" + "no-reps-subscribed-" + notificationEventType.getId()
                         + "Callback.json");
@@ -86,16 +96,8 @@ public class WithRepresentativePersonalisationTest extends AbstractFunctionalTes
 
     private Object[] eventTypeAndSubscriptions() {
         return new Object[]{
-            new Object[]{APPEAL_LAPSED_NOTIFICATION,
-                appealLapsedAppellantEmailId,
-                appealLapsedAppellantSmsId,
-                appealLapsedRepsEmailId,
-                appealLapsedRepsSmsId},
-            new Object[]{APPEAL_WITHDRAWN_NOTIFICATION,
-                appealWithdrawnAppellantEmailId,
-                appealWithdrawnAppellantSmsId,
-                appealWithdrawnRepsEmailId,
-                appealWithdrawnRepsSmsId}
+            new Object[]{APPEAL_LAPSED_NOTIFICATION},
+            new Object[]{APPEAL_WITHDRAWN_NOTIFICATION}
         };
     }
 }

@@ -15,7 +15,7 @@ import uk.gov.hmcts.reform.sscs.ccd.domain.SscsCaseData;
 import uk.gov.hmcts.reform.sscs.config.AppConstants;
 
 @RunWith(JUnitParamsRunner.class)
-public class AppealLapsedPersonalisationTest {
+public class WithRepresentativePersonalisationTest {
 
     private static final String CASE_ID = "54321";
 
