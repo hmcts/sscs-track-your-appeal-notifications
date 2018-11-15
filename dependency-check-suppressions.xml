@@ -10,6 +10,7 @@
     <cve>CVE-2018-1258</cve>
     <cve>CVE-2018-11039</cve>
     <cve>CVE-2018-11040</cve>
+    <cve>CVE-2018-10237</cve><!-- shaded guava dependency v20.0 -->
   </suppress>
   <suppress>
     <notes><![CDATA[

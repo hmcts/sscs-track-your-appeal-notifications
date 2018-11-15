@@ -100,7 +100,7 @@ dependencyManagement {
     }
     dependencies {
         // checkstyle needs a certain version and so does spring fox swagger, so can't use latest
-        dependencySet(group: 'com.google.guava', version: '25.0-jre') {
+        dependencySet(group: 'com.google.guava', version: '20.0') {
             entry 'guava'
         }
     }
@@ -190,7 +190,7 @@ functional.shouldRunAfter(test)
 
 def versions = [
         logback         : '1.2.3',
-        reformLogging   : '3.0.3',
+        reformLogging   : '3.0.1',
         springBoot      : springBootVersion,
         springHystrix   : '1.4.2.RELEASE',
         springfoxSwagger: '2.8.0'
