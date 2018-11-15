@@ -190,7 +190,7 @@ functional.shouldRunAfter(test)
 
 def versions = [
         logback         : '1.2.3',
-        reformLogging   : '3.0.1',
+        reformLogging   : '3.0.3',
         springBoot      : springBootVersion,
         springHystrix   : '1.4.2.RELEASE',
         springfoxSwagger: '2.8.0'
