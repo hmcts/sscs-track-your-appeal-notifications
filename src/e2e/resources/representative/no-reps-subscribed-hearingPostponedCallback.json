@@ -63,7 +63,7 @@
         }
       ],
       "subscriptions": {
-        "appellantSubscription": {
+        "representativeSubscription": {
           "email": "sscstest+notify@greencroftconsulting.com",
           "mobile": "07398785050",
           "subscribeEmail": "Yes",
@@ -187,7 +187,7 @@
       "subscriptions": {
         "classification": "PUBLIC",
         "value": {
-          "appellantSubscription": {
+          "representativeSubscription": {
             "classification": "PUBLIC",
             "value": {
               "email": "PUBLIC",
@@ -320,7 +320,7 @@
       "subscriptions": {
         "classification": "PUBLIC",
         "value": {
-          "appellantSubscription": {
+          "representativeSubscription": {
             "classification": "PUBLIC",
             "value": {
               "email": "PUBLIC",
@@ -393,7 +393,7 @@
         }
       ],
       "subscriptions": {
-        "appellantSubscription": {
+        "representativeSubscription": {
           "email": "sscstest+notify@greencroftconsulting.com",
           "mobile": "07398785050",
           "subscribeEmail": "Yes",
@@ -501,7 +501,7 @@
       "subscriptions": {
         "classification": "PUBLIC",
         "value": {
-          "appellantSubscription": {
+          "representativeSubscription": {
             "classification": "PUBLIC",
             "value": {
               "email": "PUBLIC",
@@ -618,7 +618,7 @@
       "subscriptions": {
         "classification": "PUBLIC",
         "value": {
-          "appellantSubscription": {
+          "representativeSubscription": {
             "classification": "PUBLIC",
             "value": {
               "email": "PUBLIC",

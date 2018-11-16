@@ -170,17 +170,6 @@ public class NotificationsIt {
     }
 
     @Test
-    public void shouldSendNotificationForAnAdjournedRequestForAnOralHearing() throws Exception {
-        json = json.replace("appealReceived", "hearingAdjourned");
-
-        HttpServletResponse response = getResponse(getRequestWithAuthHeader(json));
-
-        assertHttpStatus(response, HttpStatus.OK);
-        verify(notificationClient).sendEmail(any(), any(), any(), any());
-        verify(notificationClient).sendSms(any(), any(), any(), any(), any());
-    }
-
-    @Test
     public void shouldNotSendNotificationForAnAdjournedRequestForAPaperHearing() throws Exception {
         updateJsonForPaperHearing();
         json = json.replace("appealReceived", "hearingAdjourned");
