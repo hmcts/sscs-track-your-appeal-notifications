@@ -3,6 +3,7 @@ package uk.gov.hmcts.reform.sscs.functional.sya.notifications;
 import static org.junit.Assert.assertTrue;
 import static uk.gov.hmcts.reform.sscs.domain.notify.NotificationEventType.APPEAL_LAPSED_NOTIFICATION;
 import static uk.gov.hmcts.reform.sscs.domain.notify.NotificationEventType.APPEAL_WITHDRAWN_NOTIFICATION;
+import static uk.gov.hmcts.reform.sscs.domain.notify.NotificationEventType.HEARING_BOOKED_NOTIFICATION;
 
 import java.lang.reflect.Field;
 import java.util.List;
@@ -22,7 +23,6 @@ public class WithRepresentativePersonalisationTest extends AbstractFunctionalTes
     private String appealLapsedRepsEmailId;
     @Value("${notification.appealLapsed.representative.smsId}")
     private String appealLapsedRepsSmsId;
-
     @Value("${notification.appealWithdrawn.appellant.emailId}")
     private String appealWithdrawnAppellantEmailId;
     @Value("${notification.appealWithdrawn.appellant.smsId}")
@@ -31,6 +31,14 @@ public class WithRepresentativePersonalisationTest extends AbstractFunctionalTes
     private String appealWithdrawnRepsEmailId;
     @Value("${notification.appealWithdrawn.representative.smsId}")
     private String appealWithdrawnRepsSmsId;
+    @Value("${notification.hearingBooked.appellant.emailId}")
+    private String hearingBookedAppellantEmailTemplateId;
+    @Value("${notification.hearingBooked.appellant.smsId}")
+    private String hearingBookedAppellantSmsTemplateId;    
+    @Value("${notification.hearingBooked.representative.emailId}")
+    private String hearingBookedRepsEmailTemplateId;
+    @Value("${notification.hearingBooked.representative.smsId}")
+    private String hearingBookedRepsSmsTemplateId;
 
     public WithRepresentativePersonalisationTest() {
         super(30);
@@ -94,7 +102,8 @@ public class WithRepresentativePersonalisationTest extends AbstractFunctionalTes
     private Object[] eventTypeAndSubscriptions() {
         return new Object[]{
             new Object[]{APPEAL_LAPSED_NOTIFICATION},
-            new Object[]{APPEAL_WITHDRAWN_NOTIFICATION}
+            new Object[]{APPEAL_WITHDRAWN_NOTIFICATION},
+            new Object[]{HEARING_BOOKED_NOTIFICATION}
         };
     }
 }
