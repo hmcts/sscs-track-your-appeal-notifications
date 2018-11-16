@@ -187,7 +187,9 @@ public class PersonalisationTest {
                 new Object[]{APPEAL_WITHDRAWN_NOTIFICATION, APPELLANT, ONLINE},
                 new Object[]{APPEAL_WITHDRAWN_NOTIFICATION, REPRESENTATIVE, PAPER},
                 new Object[]{APPEAL_WITHDRAWN_NOTIFICATION, REPRESENTATIVE, REGULAR},
-                new Object[]{APPEAL_WITHDRAWN_NOTIFICATION, REPRESENTATIVE, ONLINE}
+                new Object[]{APPEAL_WITHDRAWN_NOTIFICATION, REPRESENTATIVE, ONLINE},
+                new Object[]{APPEAL_DORMANT_NOTIFICATION, APPELLANT, PAPER},
+                new Object[]{APPEAL_DORMANT_NOTIFICATION, REPRESENTATIVE, PAPER}
         };
     }
 
