@@ -11,8 +11,6 @@ def component = "notif"
 
 List<LinkedHashMap<String, Object>> secrets = [
   secret('idam-api', 'IDAM_URL'),
-  secret('idam-s2s-api', 'IDAM.S2S-AUTH'),
-  secret('sscs-s2s-secret', 'IDAM.S2S-AUTH.TOTP_SECRET'),
   secret('idam-sscs-systemupdate-user', 'IDAM_SSCS_SYSTEMUPDATE_USER'),
   secret('idam-sscs-systemupdate-password', 'IDAM_SSCS_SYSTEMUPDATE_PASSWORD'),
   secret('notification-key', 'NOTIFICATION_API_KEY'),
@@ -23,9 +21,17 @@ List<LinkedHashMap<String, Object>> secrets = [
   secret('ccd-api', 'CORE_CASE_DATA_API_URL'),
   secret('ccd-jid', 'CORE_CASE_DATA_JURISDICTION_ID'),
   secret('ccd-tid', 'CORE_CASE_DATA_CASE_TYPE_ID'),
-  secret('s2s-micro', 'IDAM.S2S-AUTH.MICROSERVICE'),
   secret('idam-redirect', 'IDAM_OAUTH2_REDIRECT_URL'),
   secret('tya-link', 'SSCS_TRACK_YOUR_APPEAL_LINK'),
+
+  secret('idam-s2s-api', 'IDAM.S2S-AUTH'),
+  secret('sscs-s2s-secret', 'IDAM.S2S-AUTH.TOTP_SECRET'),
+  secret('s2s-micro', 'IDAM.S2S-AUTH.MICROSERVICE'),
+
+  // Used by Kubernetes
+  secret('idam-s2s-api', 'IDAM_S2S_AUTH'),
+  secret('sscs-s2s-secret', 'IDAM_S2S_AUTH_TOTP_SECRET'),
+  secret('s2s-micro', 'IDAM_S2S_AUTH_MICROSERVICE'),
 ]
 
 static LinkedHashMap<String, Object> secret(String secretName, String envVar) {
@@ -40,5 +46,7 @@ static LinkedHashMap<String, Object> secret(String secretName, String envVar) {
 withPipeline("java", product, component) {
     enableSlackNotifications('#sscs-tech')
     loadVaultSecrets(secrets)
+    enableDockerBuild()
+    enableDeployToAKS()
 }
 
