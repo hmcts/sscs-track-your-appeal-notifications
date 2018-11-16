@@ -1,7 +1,6 @@
 package uk.gov.hmcts.reform.sscs.functional.sya.notifications;
 
 import static org.junit.Assert.assertTrue;
-import static uk.gov.hmcts.reform.sscs.domain.notify.NotificationEventType.ADJOURNED_NOTIFICATION;
 import static uk.gov.hmcts.reform.sscs.domain.notify.NotificationEventType.APPEAL_RECEIVED_NOTIFICATION;
 import static uk.gov.hmcts.reform.sscs.domain.notify.NotificationEventType.DWP_RESPONSE_RECEIVED_NOTIFICATION;
 import static uk.gov.hmcts.reform.sscs.domain.notify.NotificationEventType.EVIDENCE_RECEIVED_NOTIFICATION;
@@ -36,12 +35,6 @@ public class NotificationsFunctionalTest extends AbstractFunctionalTest {
 
     @Value("${notification.evidenceReceived.smsId}")
     private String evidenceReceivedSmsTemplateId;
-
-    @Value("${notification.hearingAdjourned.emailId}")
-    private String hearingAdjournedEmailTemplateId;
-
-    @Value("${notification.hearingAdjourned.smsId}")
-    private String hearingAdjournedSmsTemplateId;
 
     @Value("${notification.hearingPostponed.emailId}")
     private String hearingPostponedEmailTemplateId;
@@ -104,16 +97,6 @@ public class NotificationsFunctionalTest extends AbstractFunctionalTest {
         tryFetchNotificationsForTestCase(
                 evidenceReceivedEmailTemplateId,
                 evidenceReceivedSmsTemplateId
-        );
-    }
-
-    @Test
-    public void shouldSendHearingAdjournedNotification() throws NotificationClientException, IOException {
-        simulateCcdCallback(ADJOURNED_NOTIFICATION);
-
-        tryFetchNotificationsForTestCase(
-                hearingAdjournedEmailTemplateId,
-                hearingAdjournedSmsTemplateId
         );
     }
 

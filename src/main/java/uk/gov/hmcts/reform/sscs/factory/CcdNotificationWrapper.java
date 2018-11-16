@@ -2,6 +2,7 @@ package uk.gov.hmcts.reform.sscs.factory;
 
 import static uk.gov.hmcts.reform.sscs.config.SubscriptionType.APPELLANT;
 import static uk.gov.hmcts.reform.sscs.config.SubscriptionType.REPRESENTATIVE;
+import static uk.gov.hmcts.reform.sscs.domain.notify.NotificationEventType.ADJOURNED_NOTIFICATION;
 import static uk.gov.hmcts.reform.sscs.domain.notify.NotificationEventType.APPEAL_LAPSED_NOTIFICATION;
 import static uk.gov.hmcts.reform.sscs.domain.notify.NotificationEventType.APPEAL_WITHDRAWN_NOTIFICATION;
 
@@ -85,7 +86,8 @@ public class CcdNotificationWrapper implements NotificationWrapper {
         List<SubscriptionWithType> subscriptionWithTypeList = new ArrayList<>();
         subscriptionWithTypeList.add(new SubscriptionWithType(getAppellantSubscription(), APPELLANT));
         if (APPEAL_LAPSED_NOTIFICATION.equals(getNotificationType())
-            || APPEAL_WITHDRAWN_NOTIFICATION.equals(getNotificationType())) {
+            || APPEAL_WITHDRAWN_NOTIFICATION.equals(getNotificationType())
+            || ADJOURNED_NOTIFICATION.equals(getNotificationType())) {
             subscriptionWithTypeList.add(new SubscriptionWithType(getRepresentativeSubscription(), REPRESENTATIVE));
         }
         return subscriptionWithTypeList;
