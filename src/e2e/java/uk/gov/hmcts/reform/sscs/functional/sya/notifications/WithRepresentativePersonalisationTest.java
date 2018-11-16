@@ -4,9 +4,8 @@ import static org.junit.Assert.assertTrue;
 import static uk.gov.hmcts.reform.sscs.domain.notify.NotificationEventType.APPEAL_LAPSED_NOTIFICATION;
 import static uk.gov.hmcts.reform.sscs.domain.notify.NotificationEventType.APPEAL_WITHDRAWN_NOTIFICATION;
 
-import com.google.common.collect.ImmutableMap;
+import java.lang.reflect.Field;
 import java.util.List;
-import java.util.Map;
 import junitparams.Parameters;
 import org.junit.Test;
 import org.springframework.beans.factory.annotation.Value;
@@ -33,11 +32,6 @@ public class WithRepresentativePersonalisationTest extends AbstractFunctionalTes
     @Value("${notification.appealWithdrawn.representative.smsId}")
     private String appealWithdrawnRepsSmsId;
 
-    private Map<NotificationEventType, String[]> notificationEventTypeMap =
-         ImmutableMap.of(APPEAL_LAPSED_NOTIFICATION, new String[] {appealLapsedAppellantEmailId, appealLapsedAppellantSmsId, appealLapsedRepsEmailId, appealLapsedRepsSmsId},
-            APPEAL_WITHDRAWN_NOTIFICATION, new String[] {appealWithdrawnAppellantEmailId, appealWithdrawnAppellantSmsId, appealWithdrawnRepsEmailId, appealWithdrawnRepsSmsId}
-        );
-
     public WithRepresentativePersonalisationTest() {
         super(30);
     }
@@ -47,12 +41,10 @@ public class WithRepresentativePersonalisationTest extends AbstractFunctionalTes
     public void givenEventAndRepsSubscription_shouldSendNotificationToReps(NotificationEventType notificationEventType)
             throws Exception {
         //Given
-
-        String[] values = notificationEventTypeMap.get(notificationEventType);
-        final String appellantEmailId = values[0];
-        final String appellantSmsId = values[1];
-        final String repsEmailId = values[2];
-        final String repsSmsId = values[3];
+        final String appellantEmailId = getFieldValue(notificationEventType, "AppellantEmailId");
+        final String appellantSmsId = getFieldValue(notificationEventType, "AppellantSmsId");
+        final String repsEmailId = getFieldValue(notificationEventType, "RepsEmailId");
+        final String repsSmsId = getFieldValue(notificationEventType, "RepsSmsId");
 
         simulateCcdCallback(notificationEventType,
                 "representative/" + notificationEventType.getId() + "Callback.json");
@@ -74,11 +66,10 @@ public class WithRepresentativePersonalisationTest extends AbstractFunctionalTes
     public void givenEventAndNoRepsSubscription_shouldNotSendNotificationToReps(NotificationEventType notificationEventType)
             throws Exception {
 
-        String[] values = notificationEventTypeMap.get(notificationEventType);
-        final String appellantEmailId = values[0];
-        final String appellantSmsId = values[1];
-        final String repsEmailId = values[2];
-        final String repsSmsId = values[3];
+        final String appellantEmailId = getFieldValue(notificationEventType, "AppellantEmailId");
+        final String appellantSmsId = getFieldValue(notificationEventType, "AppellantSmsId");
+        final String repsEmailId = getFieldValue(notificationEventType, "RepsEmailId");
+        final String repsSmsId = getFieldValue(notificationEventType, "RepsSmsId");
 
         simulateCcdCallback(notificationEventType,
                 "representative/" + "no-reps-subscribed-" + notificationEventType.getId()
@@ -92,6 +83,12 @@ public class WithRepresentativePersonalisationTest extends AbstractFunctionalTes
         List<Notification> notificationsNotFound = tryFetchNotificationsForTestCaseWithFlag(true,
             repsEmailId, repsSmsId);
         assertTrue(notificationsNotFound.isEmpty());
+    }
+
+    private String getFieldValue(NotificationEventType notificationEventType, String fieldName) throws Exception {
+        Field field = this.getClass().getDeclaredField(notificationEventType.getId() + fieldName);
+        field.setAccessible(true);
+        return (String) field.get(this);
     }
 
     private Object[] eventTypeAndSubscriptions() {
