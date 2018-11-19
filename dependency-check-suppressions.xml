@@ -93,4 +93,11 @@
     <cve>CVE-2018-5968</cve>
     <cve>CVE-2018-7489</cve>
   </suppress>
+  <suppress>
+    <notes><![CDATA[
+      file name: guava-20.0.jar
+      ]]></notes>
+    <cpe>cpe:/a:google:guava:20.0</cpe>
+    <cve>CVE-2018-10237</cve>
+  </suppress>
 </suppressions>
