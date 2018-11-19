@@ -87,14 +87,14 @@ spec:
           - containerPort: 8081
         resources:
           requests:
-            memory: "512Mi"
-            cpu: "200m"
-          limits:
             memory: "1024Mi"
             cpu: "2500m"
+          limits:
+            memory: "2048Mi"
+            cpu: "2500m"
         readinessProbe:
-          initialDelaySeconds: 5
-          periodSeconds: 1
+          initialDelaySeconds: 60
+          periodSeconds: 30
           httpGet:
             path: /health
             port: 8081
@@ -148,6 +148,14 @@ spec:
         imagePullPolicy: IfNotPresent
         ports:
           - containerPort: 5432
+
+        env:
+        - name: POSTGRES_PASSWORD
+          value: sscs
+        - name: POSTGRES_USER
+          value: sscs
+        - name: POSTGRES_DB
+          value: preview
 
         resources:
           requests:
