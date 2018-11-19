@@ -32,13 +32,13 @@ public class WithRepresentativePersonalisationTest extends AbstractFunctionalTes
     @Value("${notification.appealWithdrawn.representative.smsId}")
     private String appealWithdrawnRepsSmsId;
     @Value("${notification.hearingBooked.appellant.emailId}")
-    private String hearingBookedAppellantEmailTemplateId;
+    private String hearingBookedAppellantEmailId;
     @Value("${notification.hearingBooked.appellant.smsId}")
-    private String hearingBookedAppellantSmsTemplateId;    
+    private String hearingBookedAppellantSmsId;    
     @Value("${notification.hearingBooked.representative.emailId}")
-    private String hearingBookedRepsEmailTemplateId;
+    private String hearingBookedRepsEmailId;
     @Value("${notification.hearingBooked.representative.smsId}")
-    private String hearingBookedRepsSmsTemplateId;
+    private String hearingBookedRepsSmsId;
 
     public WithRepresentativePersonalisationTest() {
         super(30);
