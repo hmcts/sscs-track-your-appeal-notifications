@@ -1,8 +1,7 @@
 package uk.gov.hmcts.reform.sscs.functional.sya.notifications;
 
 import static org.junit.Assert.assertTrue;
-import static uk.gov.hmcts.reform.sscs.domain.notify.NotificationEventType.APPEAL_LAPSED_NOTIFICATION;
-import static uk.gov.hmcts.reform.sscs.domain.notify.NotificationEventType.APPEAL_WITHDRAWN_NOTIFICATION;
+import static uk.gov.hmcts.reform.sscs.domain.notify.NotificationEventType.*;
 
 import java.lang.reflect.Field;
 import java.util.List;
@@ -32,14 +31,20 @@ public class WithRepresentativePersonalisationTest extends AbstractFunctionalTes
     @Value("${notification.appealWithdrawn.representative.smsId}")
     private String appealWithdrawnRepsSmsId;
 
+    @Value("${notification.hearingPostponed.appellant.emailId}")
+    private String hearingPostponedAppellantEmailId;
+    @Value("${notification.hearingPostponed.representative.emailId}")
+    private String hearingPostponedRepsEmailId;
+
     public WithRepresentativePersonalisationTest() {
         super(30);
     }
 
     @Test
     @Parameters(method = "eventTypeAndSubscriptions")
-    public void givenEventAndRepsSubscription_shouldSendNotificationToReps(NotificationEventType notificationEventType)
-            throws Exception {
+    public void givenEventAndRepsSubscription_shouldSendNotificationToReps(NotificationEventType notificationEventType,
+                                                                           boolean isSmsNotificationFound)
+        throws Exception {
         //Given
         final String appellantEmailId = getFieldValue(notificationEventType, "AppellantEmailId");
         final String appellantSmsId = getFieldValue(notificationEventType, "AppellantSmsId");
@@ -47,24 +52,33 @@ public class WithRepresentativePersonalisationTest extends AbstractFunctionalTes
         final String repsSmsId = getFieldValue(notificationEventType, "RepsSmsId");
 
         simulateCcdCallback(notificationEventType,
-                "representative/" + notificationEventType.getId() + "Callback.json");
+            "representative/" + notificationEventType.getId() + "Callback.json");
 
-        List<Notification> notifications = tryFetchNotificationsForTestCase(
-            appellantEmailId, appellantSmsId,
-            repsEmailId, repsSmsId);
-
-        assertNotificationBodyContains(notifications, appellantEmailId);
-        assertNotificationBodyContains(notifications, appellantSmsId);
+        List<Notification> notifications;
+        if (isSmsNotificationFound) {
+            notifications = tryFetchNotificationsForTestCase(
+                appellantEmailId, appellantSmsId, repsEmailId, repsSmsId);
+            assertNotificationBodyContains(notifications, appellantEmailId);
+            assertNotificationBodyContains(notifications, appellantSmsId);
+        } else {
+            notifications = tryFetchNotificationsForTestCase(
+                appellantEmailId, repsEmailId);
+            assertNotificationBodyContains(notifications, appellantEmailId);
+        }
 
         String representativeName = "Harry Potter";
         assertNotificationBodyContains(notifications, repsEmailId, representativeName);
-        assertNotificationBodyContains(notifications, repsSmsId);
+
+        if (isSmsNotificationFound) {
+            assertNotificationBodyContains(notifications, repsSmsId);
+        }
     }
 
     @Test
     @Parameters(method = "eventTypeAndSubscriptions")
-    public void givenEventAndNoRepsSubscription_shouldNotSendNotificationToReps(NotificationEventType notificationEventType)
-            throws Exception {
+    public void givenEventAndNoRepsSubscription_shouldNotSendNotificationToReps(NotificationEventType notificationEventType,
+                                                                                boolean isSmsNotificationFound)
+        throws Exception {
 
         final String appellantEmailId = getFieldValue(notificationEventType, "AppellantEmailId");
         final String appellantSmsId = getFieldValue(notificationEventType, "AppellantSmsId");
@@ -72,13 +86,18 @@ public class WithRepresentativePersonalisationTest extends AbstractFunctionalTes
         final String repsSmsId = getFieldValue(notificationEventType, "RepsSmsId");
 
         simulateCcdCallback(notificationEventType,
-                "representative/" + "no-reps-subscribed-" + notificationEventType.getId()
-                        + "Callback.json");
+            "representative/" + "no-reps-subscribed-" + notificationEventType.getId()
+                + "Callback.json");
 
-        List<Notification> notifications = tryFetchNotificationsForTestCase(appellantEmailId,
-            appellantSmsId);
-        assertNotificationBodyContains(notifications, appellantEmailId);
-        assertNotificationBodyContains(notifications, appellantSmsId);
+        List<Notification> notifications;
+        if (isSmsNotificationFound) {
+            notifications = tryFetchNotificationsForTestCase(appellantEmailId, appellantSmsId);
+            assertNotificationBodyContains(notifications, appellantEmailId);
+            assertNotificationBodyContains(notifications, appellantSmsId);
+        } else {
+            notifications = tryFetchNotificationsForTestCase(appellantEmailId);
+            assertNotificationBodyContains(notifications, appellantEmailId);
+        }
 
         List<Notification> notificationsNotFound = tryFetchNotificationsForTestCaseWithFlag(true,
             repsEmailId, repsSmsId);
@@ -86,15 +105,22 @@ public class WithRepresentativePersonalisationTest extends AbstractFunctionalTes
     }
 
     private String getFieldValue(NotificationEventType notificationEventType, String fieldName) throws Exception {
-        Field field = this.getClass().getDeclaredField(notificationEventType.getId() + fieldName);
-        field.setAccessible(true);
-        return (String) field.get(this);
+        String fieldValue;
+        try {
+            Field field = this.getClass().getDeclaredField(notificationEventType.getId() + fieldName);
+            field.setAccessible(true);
+            fieldValue = (String) field.get(this);
+        } catch (NoSuchFieldException e) {
+            fieldValue = null;
+        }
+        return fieldValue;
     }
 
     private Object[] eventTypeAndSubscriptions() {
-        return new Object[]{
-            new Object[]{APPEAL_LAPSED_NOTIFICATION},
-            new Object[]{APPEAL_WITHDRAWN_NOTIFICATION}
+        return new Object[] {
+            new Object[] {APPEAL_LAPSED_NOTIFICATION, true},
+            new Object[] {APPEAL_WITHDRAWN_NOTIFICATION, true},
+            new Object[] {POSTPONEMENT_NOTIFICATION, false},
         };
     }
 }
