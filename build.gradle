@@ -240,7 +240,7 @@ dependencies {
     testCompile(group: 'org.springframework.boot', name: 'spring-boot-starter-test', version: '1.5.10.RELEASE') {
         exclude group: "com.vaadin.external.google", module:"android-json"
     }
-    testCompile group: 'org.mockito', name: 'mockito-core', version: '2.22.0'
+    testCompile group: 'org.mockito', name: 'mockito-core', version: '2.23.0'
     testCompile 'pl.pragmatists:JUnitParams:1.1.1'
 
     runtime "org.springframework.boot:spring-boot-properties-migrator"
