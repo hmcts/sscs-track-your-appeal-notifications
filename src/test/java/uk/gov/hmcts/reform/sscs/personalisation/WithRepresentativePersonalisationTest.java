@@ -26,7 +26,7 @@ public class WithRepresentativePersonalisationTest {
 
     @Test
     @Parameters(method = "generateSscsCaseDataForTest")
-    public void givenSyaAppealCreated_shouldSetRepresentativeNameIfPresent(
+    public void givenSscsCaseData_shouldSetRepresentativeNameIfPresent(
             SscsCaseData sscsCaseData, String expected) {
         Map<String, String> personalisation = withRepresentativePersonalisation.setRepresentativeName(
                 new HashMap<>(), sscsCaseData);
