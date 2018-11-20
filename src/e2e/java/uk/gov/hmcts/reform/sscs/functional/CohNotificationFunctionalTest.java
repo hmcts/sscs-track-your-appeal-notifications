@@ -72,7 +72,6 @@ public class CohNotificationFunctionalTest extends AbstractFunctionalTest {
     }
 
     @Test
-    @Ignore //TODO remove ignore once the Coh service in AAT is working fine again
     public void shouldSendQuestionsReadyNotifications() throws IOException, InterruptedException, NotificationClientException {
         String hearingId = createHearingWithQuestions(caseId);
         // Issuing the question round will cause these notifications to be fired from AAT
