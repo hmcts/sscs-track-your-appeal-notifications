@@ -76,7 +76,7 @@ spec:
         - name: JOB_SCHEDULER_DB_NAME
           value: preview
         - name: JOB_SCHEDULER_DB_CONNECTION_OPTIONS
-          value: "?ssl"
+          value: ""
         - name: MAX_ACTIVE_DB_CONNECTIONS
           value: "70"
         - name: HOURS_START_TIME
@@ -93,8 +93,9 @@ spec:
             memory: "2048Mi"
             cpu: "2500m"
         readinessProbe:
-          initialDelaySeconds: 60
-          periodSeconds: 30
+          timeoutSeconds: 10
+          initialDelaySeconds: 30
+          periodSeconds: 10
           httpGet:
             path: /health
             port: 8081
