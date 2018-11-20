@@ -66,7 +66,7 @@ spec:
         - name: ONLINE_HEARING_LINK
           value: https://sscs-cor-frontend-aat-staging.service.core-compute-aat.internal
         - name: JOB_SCHEDULER_DB_HOST
-          value: db
+          value: postgres
         - name: JOB_SCHEDULER_DB_PORT
           value: "5432"
         - name: JOB_SCHEDULER_DB_PASSWORD
@@ -170,7 +170,7 @@ spec:
             command:
             - sh
             - -c
-            - exec pg_isready -U sscs --host $POD_IP
+            - exec pg_isready -U sscs
           initialDelaySeconds: 15
           timeoutSeconds: 2
 ---
