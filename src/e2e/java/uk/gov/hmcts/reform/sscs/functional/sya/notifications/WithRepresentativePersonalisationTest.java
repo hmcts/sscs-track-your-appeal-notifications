@@ -80,7 +80,7 @@ public class WithRepresentativePersonalisationTest extends AbstractFunctionalTes
         final String repsSmsId = getFieldValue(notificationEventType, "RepsSmsId");
 
         simulateCcdCallback(notificationEventType,
-                "representative/" + "no-reps-subscribed-" + notificationEventType.getId()
+                "representative/no-reps-subscribed-" + notificationEventType.getId()
                         + "Callback.json");
 
         List<Notification> notifications = tryFetchNotificationsForTestCase(appellantEmailId,
