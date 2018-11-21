@@ -180,10 +180,18 @@ notification:
     appealDormant:
       emailId: 976bdb6c-8a86-48cf-9e0f-7989acaec0c2
       smsId: 1aa60c8a-1b6f-4ee1-88ae-51c1cef0ea2b
+    evidenceReceived:
+      representative:
+        emailId: 7af36950-fc63-45d1-907d-f472fac7af06
+        smsId: 345f802b-7089-4f46-a17f-bf534b272740
   oral:
     responseReceived:
       emailId: 1afd89f9-9935-4acb-b4f6-ba708b03a0d3
       smsId: 4bba0b5d-a3f3-4fd9-a845-26af5eda042e
+    evidenceReceived:
+      representative:
+        emailId: 30260c0b-5575-4f4e-bce4-73cf3f245c2d
+        smsId: 345f802b-7089-4f46-a17f-bf534b272740
 
 
 smsSender:
