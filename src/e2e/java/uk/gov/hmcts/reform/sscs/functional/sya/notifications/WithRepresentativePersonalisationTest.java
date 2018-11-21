@@ -83,7 +83,7 @@ public class WithRepresentativePersonalisationTest extends AbstractFunctionalTes
                 "representative/no-reps-subscribed-" + notificationEventType.getId()
                         + "Callback.json");
 
-        List<Notification> notifications = tryFetchNotificationsForTestCase(appellantEmailId,
+        List<Notification> notifications = tryFetchNotificationsForTestCaseWithFlag(true,appellantEmailId,
             appellantSmsId);
         assertNotificationBodyContains(notifications, appellantEmailId);
         assertNotificationBodyContains(notifications, appellantSmsId);

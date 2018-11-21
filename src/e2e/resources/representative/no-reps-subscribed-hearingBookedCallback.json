@@ -38,19 +38,40 @@
       "caseReference": "SC022/14/12423",
       "events": [
         {
-          "id": "4beb1c7e-96c4-4020-9b1a-e8fdd70016b6",
+          "id": "e89d246d-8846-4623-821d-d9c38a2aa288",
           "value": {
             "date": "2017-05-24T14:01:18.243",
             "description": "Some Events",
-            "type": "appealReceived"
+            "type": "appealCreated"
           }
         },
         {
-          "id": "db5eab58-9549-4bc0-9126-b05061afa36a",
+          "id": "2ee8619f-ff94-4c55-b05e-d25e19b3b690",
           "value": {
-            "date": "2018-07-25T03:22:27.115",
+            "date": "2016-01-16T12:34:56.789",
             "description": "hearingBooked",
             "type": "hearingBooked"
+          }
+        }
+      ],
+      "hearings": [
+        {
+          "id": "609523de-ba0a-45e7-8f0b-af3f82ab347c",
+          "value": {
+            "adjourned": null,
+            "hearingDate": "2048-01-01",
+            "time": "23:59",
+            "venue": {
+              "address": {
+                "county": "Aberdeenshire",
+                "line1": "12 The Road Avenue",
+                "line2": "Village",
+                "postcode": "AB12 0HN",
+                "town": "Aberdeen"
+              },
+              "googleMapLink": "http://www.googlemaps.com/aberdeenvenue",
+              "name": "The venue"
+            }
           }
         }
       ],
@@ -62,7 +83,7 @@
           "subscribeSms": "Yes",
           "tya": ""
         },
-        "representativeSubscription": {
+        "supporterSubscription": {
           "email": "",
           "mobile": "",
           "subscribeEmail": "No",
@@ -75,11 +96,11 @@
     "created_date": [
       2018,
       7,
-      25,
+      26,
+      11,
       15,
-      22,
-      25,
-      534000000
+      48,
+      894000000
     ],
     "data_classification": {
       "appeal": {
@@ -151,7 +172,7 @@
         "classification": "PUBLIC",
         "value": [
           {
-            "id": "4beb1c7e-96c4-4020-9b1a-e8fdd70016b6",
+            "id": "e89d246d-8846-4623-821d-d9c38a2aa288",
             "value": {
               "date": "PUBLIC",
               "description": "PUBLIC",
@@ -159,11 +180,41 @@
             }
           },
           {
-            "id": "db5eab58-9549-4bc0-9126-b05061afa36a",
+            "id": "2ee8619f-ff94-4c55-b05e-d25e19b3b690",
             "value": {
               "date": "PUBLIC",
               "description": "PUBLIC",
               "type": "PUBLIC"
+            }
+          }
+        ]
+      },
+      "hearings": {
+        "classification": "PUBLIC",
+        "value": [
+          {
+            "id": "609523de-ba0a-45e7-8f0b-af3f82ab347c",
+            "value": {
+              "adjourned": "PUBLIC",
+              "hearingDate": "PUBLIC",
+              "time": "PUBLIC",
+              "venue": {
+                "classification": "PUBLIC",
+                "value": {
+                  "address": {
+                    "classification": "PUBLIC",
+                    "value": {
+                      "county": "PUBLIC",
+                      "line1": "PUBLIC",
+                      "line2": "PUBLIC",
+                      "postcode": "PUBLIC",
+                      "town": "PUBLIC"
+                    }
+                  },
+                  "googleMapLink": "PUBLIC",
+                  "name": "PUBLIC"
+                }
+              }
             }
           }
         ]
@@ -181,7 +232,7 @@
               "tya": "PUBLIC"
             }
           },
-          "representativeSubscription": {
+          "supporterSubscription": {
             "classification": "PUBLIC",
             "value": {
               "email": "PUBLIC",
@@ -199,11 +250,11 @@
     "last_modified": [
       2018,
       7,
-      25,
-      15,
-      22,
       26,
-      417000000
+      11,
+      15,
+      50,
+      242000000
     ],
     "security_classification": "PUBLIC",
     "security_classifications": {
@@ -276,7 +327,7 @@
         "classification": "PUBLIC",
         "value": [
           {
-            "id": "4beb1c7e-96c4-4020-9b1a-e8fdd70016b6",
+            "id": "e89d246d-8846-4623-821d-d9c38a2aa288",
             "value": {
               "date": "PUBLIC",
               "description": "PUBLIC",
@@ -284,11 +335,41 @@
             }
           },
           {
-            "id": "db5eab58-9549-4bc0-9126-b05061afa36a",
+            "id": "2ee8619f-ff94-4c55-b05e-d25e19b3b690",
             "value": {
               "date": "PUBLIC",
               "description": "PUBLIC",
               "type": "PUBLIC"
+            }
+          }
+        ]
+      },
+      "hearings": {
+        "classification": "PUBLIC",
+        "value": [
+          {
+            "id": "609523de-ba0a-45e7-8f0b-af3f82ab347c",
+            "value": {
+              "adjourned": "PUBLIC",
+              "hearingDate": "PUBLIC",
+              "time": "PUBLIC",
+              "venue": {
+                "classification": "PUBLIC",
+                "value": {
+                  "address": {
+                    "classification": "PUBLIC",
+                    "value": {
+                      "county": "PUBLIC",
+                      "line1": "PUBLIC",
+                      "line2": "PUBLIC",
+                      "postcode": "PUBLIC",
+                      "town": "PUBLIC"
+                    }
+                  },
+                  "googleMapLink": "PUBLIC",
+                  "name": "PUBLIC"
+                }
+              }
             }
           }
         ]
@@ -306,7 +387,7 @@
               "tya": "PUBLIC"
             }
           },
-          "representativeSubscription": {
+          "supporterSubscription": {
             "classification": "PUBLIC",
             "value": {
               "email": "PUBLIC",
@@ -360,11 +441,11 @@
       "caseReference": "SC022/14/12423",
       "events": [
         {
-          "id": "2788453b-50a8-46d5-8b6f-224b12344ca4",
+          "id": "776d1ead-cb01-43f5-8742-9195bec67399",
           "value": {
             "date": "2017-05-24T14:01:18.243",
             "description": "Some Events",
-            "type": "appealReceived"
+            "type": "appealCreated"
           }
         }
       ],
@@ -376,7 +457,7 @@
           "subscribeSms": "Yes",
           "tya": ""
         },
-        "representativeSubscription": {
+        "supporterSubscription": {
           "email": "",
           "mobile": "",
           "subscribeEmail": "No",
@@ -389,11 +470,11 @@
     "created_date": [
       2018,
       7,
-      25,
+      26,
+      11,
       15,
-      22,
-      25,
-      534000000
+      48,
+      894000000
     ],
     "data_classification": {
       "appeal": {
@@ -465,7 +546,7 @@
         "classification": "PUBLIC",
         "value": [
           {
-            "id": "2788453b-50a8-46d5-8b6f-224b12344ca4",
+            "id": "776d1ead-cb01-43f5-8742-9195bec67399",
             "value": {
               "date": "PUBLIC",
               "description": "PUBLIC",
@@ -487,7 +568,7 @@
               "tya": "PUBLIC"
             }
           },
-          "representativeSubscription": {
+          "supporterSubscription": {
             "classification": "PUBLIC",
             "value": {
               "email": "PUBLIC",
@@ -505,11 +586,11 @@
     "last_modified": [
       2018,
       7,
-      25,
+      26,
+      11,
       15,
-      22,
-      25,
-      536000000
+      48,
+      894000000
     ],
     "security_classification": "PUBLIC",
     "security_classifications": {
@@ -582,7 +663,7 @@
         "classification": "PUBLIC",
         "value": [
           {
-            "id": "2788453b-50a8-46d5-8b6f-224b12344ca4",
+            "id": "776d1ead-cb01-43f5-8742-9195bec67399",
             "value": {
               "date": "PUBLIC",
               "description": "PUBLIC",
@@ -604,7 +685,7 @@
               "tya": "PUBLIC"
             }
           },
-          "representativeSubscription": {
+          "supporterSubscription": {
             "classification": "PUBLIC",
             "value": {
               "email": "PUBLIC",

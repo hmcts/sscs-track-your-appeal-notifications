@@ -70,6 +70,27 @@
           }
         }
       ],
+      "hearings": [
+        {
+          "id": "609523de-ba0a-45e7-8f0b-af3f82ab347c",
+          "value": {
+            "adjourned": null,
+            "hearingDate": "2048-01-01",
+            "time": "23:59",
+            "venue": {
+              "address": {
+                "county": "Aberdeenshire",
+                "line1": "12 The Road Avenue",
+                "line2": "Village",
+                "postcode": "AB12 0HN",
+                "town": "Aberdeen"
+              },
+              "googleMapLink": "http://www.googlemaps.com/aberdeenvenue",
+              "name": "The venue"
+            }
+          }
+        }
+      ],
       "subscriptions": {
         "appellantSubscription": {
           "email": "sscstest+notify@greencroftconsulting.com",
@@ -193,6 +214,36 @@
               "date": "PUBLIC",
               "description": "PUBLIC",
               "type": "PUBLIC"
+            }
+          }
+        ]
+      },
+      "hearings": {
+        "classification": "PUBLIC",
+        "value": [
+          {
+            "id": "609523de-ba0a-45e7-8f0b-af3f82ab347c",
+            "value": {
+              "adjourned": "PUBLIC",
+              "hearingDate": "PUBLIC",
+              "time": "PUBLIC",
+              "venue": {
+                "classification": "PUBLIC",
+                "value": {
+                  "address": {
+                    "classification": "PUBLIC",
+                    "value": {
+                      "county": "PUBLIC",
+                      "line1": "PUBLIC",
+                      "line2": "PUBLIC",
+                      "postcode": "PUBLIC",
+                      "town": "PUBLIC"
+                    }
+                  },
+                  "googleMapLink": "PUBLIC",
+                  "name": "PUBLIC"
+                }
+              }
             }
           }
         ]
@@ -322,6 +373,36 @@
           }
         ]
       },
+      "hearings": {
+        "classification": "PUBLIC",
+        "value": [
+          {
+            "id": "609523de-ba0a-45e7-8f0b-af3f82ab347c",
+            "value": {
+              "adjourned": "PUBLIC",
+              "hearingDate": "PUBLIC",
+              "time": "PUBLIC",
+              "venue": {
+                "classification": "PUBLIC",
+                "value": {
+                  "address": {
+                    "classification": "PUBLIC",
+                    "value": {
+                      "county": "PUBLIC",
+                      "line1": "PUBLIC",
+                      "line2": "PUBLIC",
+                      "postcode": "PUBLIC",
+                      "town": "PUBLIC"
+                    }
+                  },
+                  "googleMapLink": "PUBLIC",
+                  "name": "PUBLIC"
+                }
+              }
+            }
+          }
+        ]
+      },
       "subscriptions": {
         "classification": "PUBLIC",
         "value": {
@@ -383,7 +464,23 @@
           "wantsToAttend": "Yes"
         },
         "mrnDetails": {},
-        "rep": {},
+        "rep": {
+          "hasRepresentative": "Yes",
+          "name": {
+            "title": "Mr",
+            "firstName": "Harry",
+            "lastName": "Potter"
+          },
+          "address": {
+            "line1": "123 Hairy Lane",
+            "line2": "Off Hairy Park",
+            "town": "Town",
+            "county": "County",
+            "postcode": "CM14 4LQ"
+          },
+          "contact": {},
+          "organisation": "HP Ltd"
+        },
         "signer": null
       },
       "caseReference": "SC022/14/12423",
