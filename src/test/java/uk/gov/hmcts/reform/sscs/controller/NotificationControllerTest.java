@@ -64,7 +64,7 @@ public class NotificationControllerTest {
     @Test
     public void shouldCreateAndSendNotificationForSscsCaseData() {
         notificationController.sendNotification("", sscsCaseDataWrapper);
-        verify(notificationService).createAndSendNotification(new CcdNotificationWrapper(sscsCaseDataWrapper));
+        verify(notificationService).manageNotificationAndSubscription(new CcdNotificationWrapper(sscsCaseDataWrapper));
     }
 
     @Test
@@ -82,7 +82,7 @@ public class NotificationControllerTest {
         CohEvent cohEvent = CohEvent.builder().caseId(caseId).onlineHearingId(onlineHearingId).eventType(eventType).build();
         notificationController.sendCohNotification("", cohEvent);
 
-        verify(notificationService).createAndSendNotification(argThat(argument ->
+        verify(notificationService).manageNotificationAndSubscription(argThat(argument ->
                 argument instanceof CohNotificationWrapper
                         && ((CohNotificationWrapper) argument).getOnlineHearingId().equals(onlineHearingId)
                         && argument.getSscsCaseDataWrapper().equals(sscsCaseDataWrapper)));

@@ -9,6 +9,7 @@ import static org.mockito.MockitoAnnotations.initMocks;
 import static uk.gov.hmcts.reform.sscs.ccd.domain.Benefit.PIP;
 import static uk.gov.hmcts.reform.sscs.ccd.domain.EventType.APPEAL_RECEIVED;
 import static uk.gov.hmcts.reform.sscs.config.AppealHearingType.ONLINE;
+import static uk.gov.hmcts.reform.sscs.config.SubscriptionType.APPELLANT;
 import static uk.gov.hmcts.reform.sscs.domain.notify.NotificationEventType.APPEAL_RECEIVED_NOTIFICATION;
 import static uk.gov.hmcts.reform.sscs.domain.notify.NotificationEventType.QUESTION_ROUND_ISSUED_NOTIFICATION;
 
@@ -19,7 +20,17 @@ import org.junit.Before;
 import org.junit.Test;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
-import uk.gov.hmcts.reform.sscs.ccd.domain.*;
+import uk.gov.hmcts.reform.sscs.ccd.domain.Appeal;
+import uk.gov.hmcts.reform.sscs.ccd.domain.Appellant;
+import uk.gov.hmcts.reform.sscs.ccd.domain.Benefit;
+import uk.gov.hmcts.reform.sscs.ccd.domain.BenefitType;
+import uk.gov.hmcts.reform.sscs.ccd.domain.Event;
+import uk.gov.hmcts.reform.sscs.ccd.domain.EventDetails;
+import uk.gov.hmcts.reform.sscs.ccd.domain.Name;
+import uk.gov.hmcts.reform.sscs.ccd.domain.RegionalProcessingCenter;
+import uk.gov.hmcts.reform.sscs.ccd.domain.SscsCaseData;
+import uk.gov.hmcts.reform.sscs.ccd.domain.Subscription;
+import uk.gov.hmcts.reform.sscs.ccd.domain.Subscriptions;
 import uk.gov.hmcts.reform.sscs.config.NotificationConfig;
 import uk.gov.hmcts.reform.sscs.domain.SscsCaseDataWrapper;
 import uk.gov.hmcts.reform.sscs.domain.notify.Link;
@@ -135,7 +146,7 @@ public class CohPersonalisationTest {
                 Benefit.PIP, ONLINE))
                 .thenReturn(expectedTemplate);
 
-        Template template = cohPersonalisation.getTemplate(cohNotificationWrapper, Benefit.PIP);
+        Template template = cohPersonalisation.getTemplate(cohNotificationWrapper, Benefit.PIP, APPELLANT);
         assertThat(template, is(expectedTemplate));
     }
 
@@ -156,7 +167,7 @@ public class CohPersonalisationTest {
         Template expectedTemplate = Template.builder().build();
         when(config.getTemplate("follow_up_question_round_issued", "follow_up_question_round_issued", Benefit.PIP, ONLINE)).thenReturn(expectedTemplate);
 
-        Template template = cohPersonalisation.getTemplate(cohNotificationWrapper, Benefit.PIP);
+        Template template = cohPersonalisation.getTemplate(cohNotificationWrapper, Benefit.PIP, APPELLANT);
         assertThat(template, is(expectedTemplate));
     }
 }

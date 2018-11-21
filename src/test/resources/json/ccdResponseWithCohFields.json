@@ -173,8 +173,8 @@
           "subscribeSms": "Yes",
           "tya": "543212345"
         },
-        "supporterSubscription": {
-          "email": "supporter@hmcts.net",
+        "representativeSubscription": {
+          "email": "representative@hmcts.net",
           "mobile": "07983469702",
           "reason": null,
           "subscribeEmail": "No",
@@ -342,8 +342,8 @@
           "subscribeSms": "No",
           "tya": "543212345"
         },
-        "supporterSubscription": {
-          "email": "supporter@hmcts.net",
+        "representativeSubscription": {
+          "email": "representative@hmcts.net",
           "mobile": "07983469702",
           "reason": null,
           "subscribeEmail": "No",

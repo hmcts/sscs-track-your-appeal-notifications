@@ -3,7 +3,6 @@ package uk.gov.hmcts.reform.sscs.functional.sya.notifications;
 import static org.junit.Assert.assertTrue;
 import static uk.gov.hmcts.reform.sscs.domain.notify.NotificationEventType.APPEAL_DORMANT_NOTIFICATION;
 
-import java.io.IOException;
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
 import java.util.List;
@@ -11,10 +10,10 @@ import org.junit.Test;
 import org.springframework.beans.factory.annotation.Value;
 import uk.gov.hmcts.reform.sscs.functional.AbstractFunctionalTest;
 import uk.gov.service.notify.Notification;
-import uk.gov.service.notify.NotificationClientException;
 
 public class AppealDormantNotificationTest extends AbstractFunctionalTest {
 
+    private static final String PAPER_APPEAL_DORMANT_PATH = "paper/appealDormant/";
     @Value("${notification.paper.appealDormant.emailId}")
     private String paperAppealDormantEmailId;
 
@@ -27,8 +26,9 @@ public class AppealDormantNotificationTest extends AbstractFunctionalTest {
 
     @Test
     public void shouldSendPaperAppealDormantNotification() throws Exception {
-        simulateCcdCallback(APPEAL_DORMANT_NOTIFICATION, "paper/appealDormant/paper-" + APPEAL_DORMANT_NOTIFICATION.getId()
-                + "Callback.json");
+        simulateCcdCallback(APPEAL_DORMANT_NOTIFICATION,
+                PAPER_APPEAL_DORMANT_PATH + "paper-" + APPEAL_DORMANT_NOTIFICATION.getId()
+                        + "Callback.json");
         List<Notification> notifications = tryFetchNotificationsForTestCase(
                 paperAppealDormantEmailId, paperAppealDormantSmsId);
         assertEmailAndSmsNotificationContentIsAsExpected(notifications);
@@ -48,8 +48,8 @@ public class AppealDormantNotificationTest extends AbstractFunctionalTest {
     }
 
     @Test
-    public void shouldNotSendPaperAppealDormantdNotificationIfNotSubscribed() throws NotificationClientException, IOException {
-        simulateCcdCallback(APPEAL_DORMANT_NOTIFICATION, "paper/appealDormant/paper-no-subscriptions-"
+    public void shouldNotSendPaperAppealDormantdNotificationIfNotSubscribed() throws Exception {
+        simulateCcdCallback(APPEAL_DORMANT_NOTIFICATION, PAPER_APPEAL_DORMANT_PATH + "paper-no-subscriptions-"
                 + APPEAL_DORMANT_NOTIFICATION.getId()
                 + "Callback.json");
         List<Notification> notifications = tryFetchNotificationsForTestCaseWithFlag(true,

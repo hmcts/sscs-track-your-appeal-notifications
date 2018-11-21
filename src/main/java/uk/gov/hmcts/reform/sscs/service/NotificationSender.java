@@ -23,50 +23,40 @@ public class NotificationSender {
     private final NotificationBlacklist notificationBlacklist;
 
     @Autowired
-    public NotificationSender(
-        @Qualifier("notificationClient") NotificationClient notificationClient,
-        @Qualifier("testNotificationClient") NotificationClient testNotificationClient,
-        NotificationBlacklist notificationBlacklist
-    ) {
+    public NotificationSender(@Qualifier("notificationClient") NotificationClient notificationClient,
+                              @Qualifier("testNotificationClient") NotificationClient testNotificationClient,
+                              NotificationBlacklist notificationBlacklist) {
         this.notificationClient = notificationClient;
         this.testNotificationClient = testNotificationClient;
         this.notificationBlacklist = notificationBlacklist;
     }
 
-    public void sendEmail(
-        String templateId,
-        String emailAddress,
-        Map<String, String> personalisation,
-        String reference,
-        String ccdCaseId
-    ) throws NotificationClientException {
+    public void sendEmail(String templateId, String emailAddress, Map<String, String> personalisation, String reference,
+                          String ccdCaseId) throws NotificationClientException {
 
         NotificationClient client;
 
-        if (notificationBlacklist.getTestRecipients().contains(emailAddress) || emailAddress.matches("test[\\d]+@hmcts.net")) {
+        if (notificationBlacklist.getTestRecipients().contains(emailAddress)
+                || emailAddress.matches("test[\\d]+@hmcts.net")) {
             LOG.info("Using test GovNotify key {} for {}", testNotificationClient.getApiKey(), emailAddress);
             client = testNotificationClient;
         } else {
             client = notificationClient;
         }
 
-        SendEmailResponse sendEmailResponse = client.sendEmail(
-                templateId,
-                emailAddress,
-                personalisation,
-                reference
-        );
+        SendEmailResponse sendEmailResponse = client.sendEmail(templateId, emailAddress, personalisation, reference);
 
-        LOG.info("Email Notification send for case id : {}, Gov notify id: {} ", ccdCaseId, sendEmailResponse.getNotificationId());
+        LOG.info("Email Notification send for case id : {}, Gov notify id: {} ", ccdCaseId,
+                sendEmailResponse.getNotificationId());
     }
 
     public void sendSms(
-        String templateId,
-        String phoneNumber,
-        Map<String, String> personalisation,
-        String reference,
-        String smsSender,
-        String ccdCaseId
+            String templateId,
+            String phoneNumber,
+            Map<String, String> personalisation,
+            String reference,
+            String smsSender,
+            String ccdCaseId
     ) throws NotificationClientException {
 
         NotificationClient client;

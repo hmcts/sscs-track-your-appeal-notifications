@@ -51,7 +51,7 @@ public class SyaAppealCreatedPersonalisation extends Personalisation<CcdNotifica
             details.add("Reason for no MRN: " + mrnDetails.getMrnMissingReason());
         }
 
-        return StringUtils.join(details.toArray(),"\n\n");
+        return StringUtils.join(details.toArray(), "\n\n");
     }
 
     public Map<String, String> setYourDetails(Map<String, String> personalisation, SscsCaseData ccdResponse) {
@@ -61,19 +61,19 @@ public class SyaAppealCreatedPersonalisation extends Personalisation<CcdNotifica
 
     private String buildYourDetails(Appeal appeal) {
         return new StringBuilder()
-            .append("Name: ")
-            .append(appeal.getAppellant().getName().getFullNameNoTitle() + "\n\n")
-            .append("Date of birth: ")
-            .append(appeal.getAppellant().getIdentity().getDob() + "\n\n")
-            .append("National Insurance number: ")
-            .append(appeal.getAppellant().getIdentity().getNino() + "\n\n")
-            .append("Address: ")
-            .append(appeal.getAppellant().getAddress().getFullAddress() + "\n\n")
-            .append("Email: ")
-            .append(getOptionalField(appeal.getAppellant().getContact().getEmail(), "Not provided") + "\n\n")
-            .append("Phone: ")
-            .append(getOptionalField(appeal.getAppellant().getContact().getPhone(), "Not provided"))
-            .toString();
+                .append("Name: ")
+                .append(appeal.getAppellant().getName().getFullNameNoTitle() + "\n\n")
+                .append("Date of birth: ")
+                .append(appeal.getAppellant().getIdentity().getDob() + "\n\n")
+                .append("National Insurance number: ")
+                .append(appeal.getAppellant().getIdentity().getNino() + "\n\n")
+                .append("Address: ")
+                .append(appeal.getAppellant().getAddress().getFullAddress() + "\n\n")
+                .append("Email: ")
+                .append(getOptionalField(appeal.getAppellant().getContact().getEmail(), "Not provided") + "\n\n")
+                .append("Phone: ")
+                .append(getOptionalField(appeal.getAppellant().getContact().getPhone(), "Not provided"))
+                .toString();
     }
 
     public Map<String, String> setTextMessageReminderDetails(Map<String, String> personalisation, SscsCaseData ccdResponse) {
@@ -109,16 +109,16 @@ public class SyaAppealCreatedPersonalisation extends Personalisation<CcdNotifica
 
         if (representative != null) {
             representativeBuilder.append("\n\nName: ")
-                .append(representative.getName().getFullNameNoTitle() + "\n\n")
-                .append("Organisation: ")
-                .append(getOptionalField(representative.getOrganisation(), "Not provided") + "\n\n")
-                .append("Address: ")
-                .append(representative.getAddress().getFullAddress() + "\n\n")
-                .append("Email: ")
-                .append(getOptionalField(representative.getContact().getEmail(), "Not provided") + "\n\n")
-                .append("Phone: ")
-                .append(getOptionalField(representative.getContact().getPhone(), "Not provided"))
-                .toString();
+                    .append(representative.getName().getFullNameNoTitle() + "\n\n")
+                    .append("Organisation: ")
+                    .append(getOptionalField(representative.getOrganisation(), "Not provided") + "\n\n")
+                    .append("Address: ")
+                    .append(representative.getAddress().getFullAddress() + "\n\n")
+                    .append("Email: ")
+                    .append(getOptionalField(representative.getContact().getEmail(), "Not provided") + "\n\n")
+                    .append("Phone: ")
+                    .append(getOptionalField(representative.getContact().getPhone(), "Not provided"))
+                    .toString();
         }
         return representativeBuilder.toString();
     }

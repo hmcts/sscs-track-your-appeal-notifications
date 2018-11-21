@@ -4,6 +4,7 @@ import static helper.IntegrationTestHelper.assertHttpStatus;
 import static helper.IntegrationTestHelper.getRequestWithAuthHeader;
 import static helper.IntegrationTestHelper.getRequestWithoutAuthHeader;
 import static helper.IntegrationTestHelper.updateEmbeddedJson;
+import static org.junit.Assert.assertArrayEquals;
 import static org.mockito.Mockito.any;
 import static org.mockito.Mockito.anyString;
 import static org.mockito.Mockito.eq;
@@ -17,6 +18,9 @@ import java.io.File;
 import java.io.IOException;
 import java.nio.charset.StandardCharsets;
 import java.time.LocalDate;
+import java.util.Arrays;
+import java.util.Collections;
+import java.util.List;
 import java.util.UUID;
 import javax.servlet.http.HttpServletResponse;
 import junitparams.JUnitParamsRunner;
@@ -27,6 +31,7 @@ import org.junit.ClassRule;
 import org.junit.Rule;
 import org.junit.Test;
 import org.junit.runner.RunWith;
+import org.mockito.ArgumentCaptor;
 import org.mockito.Mock;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
@@ -248,26 +253,77 @@ public class NotificationsIt {
     }
 
     @Test
-    public void shouldSendNotificationForAppealLapsedRequestForAnOralHearing() throws Exception {
-        json = json.replace("appealReceived", "appealLapsed");
+    @Parameters(method = "generateAppealLapsedNotificationScenarios")
+    public void shouldSendNotificationsForAnAppealLapsedRequestForAnOralOrPaperHearingAndForEachSubscription(
+            String hearingType, List<String> expectedEmailTemplateIds, List<String> expectedSmsTemplateIds,
+            String appellantEmailSubs, String appellantSmsSubs, String repsEmailSubs, String repsSmsSubs,
+            int wantedNumberOfSendEmailInvocations, int wantedNumberOfSendSmsInvocations) throws Exception {
+
+        json = updateEmbeddedJson(json, hearingType, "case_details", "case_data", "appeal", "hearingType");
+
+        json = updateEmbeddedJson(json, appellantEmailSubs, "case_details", "case_data", "subscriptions",
+                "appellantSubscription", "subscribeEmail");
+        json = updateEmbeddedJson(json, appellantSmsSubs, "case_details", "case_data", "subscriptions",
+                "appellantSubscription", "subscribeSms");
+        json = updateEmbeddedJson(json, repsEmailSubs, "case_details", "case_data", "subscriptions",
+                "representativeSubscription", "subscribeEmail");
+        json = updateEmbeddedJson(json, repsSmsSubs, "case_details", "case_data", "subscriptions",
+                "representativeSubscription", "subscribeSms");
+
+        json = updateEmbeddedJson(json, "appealLapsed", "event_id");
 
         HttpServletResponse response = getResponse(getRequestWithAuthHeader(json));
 
         assertHttpStatus(response, HttpStatus.OK);
-        verify(notificationClient).sendEmail(any(), any(), any(), any());
-        verify(notificationClient).sendSms(any(), any(), any(), any(), any());
+
+        ArgumentCaptor<String> emailTemplateIdCaptor = ArgumentCaptor.forClass(String.class);
+        verify(notificationClient, times(wantedNumberOfSendEmailInvocations))
+                .sendEmail(emailTemplateIdCaptor.capture(), any(), any(), any());
+        assertArrayEquals(expectedEmailTemplateIds.toArray(), emailTemplateIdCaptor.getAllValues().toArray());
+
+        ArgumentCaptor<String> smsTemplateIdCaptor = ArgumentCaptor.forClass(String.class);
+        verify(notificationClient, times(wantedNumberOfSendSmsInvocations))
+                .sendSms(smsTemplateIdCaptor.capture(), any(), any(), any(), any());
+        assertArrayEquals(expectedSmsTemplateIds.toArray(), smsTemplateIdCaptor.getAllValues().toArray());
     }
 
-    @Test
-    public void shouldNotSendNotificationForAppealLapsedRequestForAPaperHearing() throws Exception {
-        updateJsonForPaperHearing();
-        json = json.replace("appealReceived", "appealLapsed");
-
-        HttpServletResponse response = getResponse(getRequestWithAuthHeader(json));
-
-        assertHttpStatus(response, HttpStatus.OK);
-        verify(notificationClient).sendEmail(any(), any(), any(), any());
-        verify(notificationClient).sendSms(any(), any(), any(), any(), any());
+    @SuppressWarnings("Indentation")
+    private Object[] generateAppealLapsedNotificationScenarios() {
+        return new Object[]{
+                new Object[]{
+                        "paper",
+                        Arrays.asList("8ce8d794-75e8-49a0-b4d2-0c6cd2061c11", "e93dd744-84a1-4173-847a-6d023b55637f"),
+                        Arrays.asList("d2b4394b-d1c9-4d5c-a44e-b382e41c67e5", "ee58f7d0-8de7-4bee-acd4-252213db6b7b"),
+                        "yes",
+                        "yes",
+                        "yes",
+                        "yes",
+                        "2",
+                        "2"
+                },
+                new Object[]{
+                        "oral",
+                        Arrays.asList("8ce8d794-75e8-49a0-b4d2-0c6cd2061c11", "e93dd744-84a1-4173-847a-6d023b55637f"),
+                        Arrays.asList("d2b4394b-d1c9-4d5c-a44e-b382e41c67e5", "ee58f7d0-8de7-4bee-acd4-252213db6b7b"),
+                        "yes",
+                        "yes",
+                        "yes",
+                        "yes",
+                        "2",
+                        "2"
+                },
+                new Object[]{
+                        "paper",
+                        Collections.singletonList("e93dd744-84a1-4173-847a-6d023b55637f"),
+                        Arrays.asList("d2b4394b-d1c9-4d5c-a44e-b382e41c67e5", "ee58f7d0-8de7-4bee-acd4-252213db6b7b"),
+                        "no",
+                        "yes",
+                        "yes",
+                        "yes",
+                        "1",
+                        "2"
+                }
+        };
     }
 
     @Test

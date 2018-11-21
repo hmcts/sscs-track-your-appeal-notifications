@@ -59,7 +59,7 @@ public class CcdActionExecutorTest {
 
         ccdActionExecutor.execute("1", "group", EVIDENCE_REMINDER_NOTIFICATION.getId(), "123456");
 
-        verify(notificationService, times(1)).createAndSendNotification(new CcdNotificationWrapper(wrapper));
+        verify(notificationService, times(1)).manageNotificationAndSubscription(new CcdNotificationWrapper(wrapper));
         verify(ccdService, times(1)).updateCase(any(), any(), any(), any(), any(), any());
     }
 

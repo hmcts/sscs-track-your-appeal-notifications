@@ -2,7 +2,6 @@ package uk.gov.hmcts.reform.sscs.functional.sya.notifications;
 
 import static org.junit.Assert.assertTrue;
 import static uk.gov.hmcts.reform.sscs.domain.notify.NotificationEventType.ADJOURNED_NOTIFICATION;
-import static uk.gov.hmcts.reform.sscs.domain.notify.NotificationEventType.APPEAL_LAPSED_NOTIFICATION;
 import static uk.gov.hmcts.reform.sscs.domain.notify.NotificationEventType.APPEAL_RECEIVED_NOTIFICATION;
 import static uk.gov.hmcts.reform.sscs.domain.notify.NotificationEventType.APPEAL_WITHDRAWN_NOTIFICATION;
 import static uk.gov.hmcts.reform.sscs.domain.notify.NotificationEventType.DWP_RESPONSE_RECEIVED_NOTIFICATION;
@@ -47,12 +46,6 @@ public class NotificationsFunctionalTest extends AbstractFunctionalTest {
 
     @Value("${notification.hearingPostponed.emailId}")
     private String hearingPostponedEmailTemplateId;
-
-    @Value("${notification.appealLapsed.emailId}")
-    private String appealLapsedEmailTemplateId;
-
-    @Value("${notification.appealLapsed.smsId}")
-    private String appealLapsedSmsTemplateId;
 
     @Value("${notification.appealWithdrawn.emailId}")
     private String appealWithdrawnEmailTemplateId;
@@ -136,16 +129,6 @@ public class NotificationsFunctionalTest extends AbstractFunctionalTest {
         simulateCcdCallback(POSTPONEMENT_NOTIFICATION);
 
         tryFetchNotificationsForTestCase(hearingPostponedEmailTemplateId);
-    }
-
-    @Test
-    public void shouldSendAppealLapsedNotification() throws NotificationClientException, IOException {
-        simulateCcdCallback(APPEAL_LAPSED_NOTIFICATION);
-
-        tryFetchNotificationsForTestCase(
-                appealLapsedEmailTemplateId,
-                appealLapsedSmsTemplateId
-        );
     }
 
     @Test

@@ -3,6 +3,7 @@ package uk.gov.hmcts.reform.sscs.personalisation;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNull;
+import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.Mockito.any;
 import static org.mockito.Mockito.anyString;
 import static org.mockito.Mockito.never;
@@ -12,6 +13,9 @@ import static org.mockito.MockitoAnnotations.initMocks;
 import static uk.gov.hmcts.reform.sscs.ccd.domain.Benefit.ESA;
 import static uk.gov.hmcts.reform.sscs.ccd.domain.Benefit.PIP;
 import static uk.gov.hmcts.reform.sscs.ccd.domain.EventType.APPEAL_RECEIVED;
+import static uk.gov.hmcts.reform.sscs.ccd.domain.HearingType.ONLINE;
+import static uk.gov.hmcts.reform.sscs.ccd.domain.HearingType.PAPER;
+import static uk.gov.hmcts.reform.sscs.ccd.domain.HearingType.REGULAR;
 import static uk.gov.hmcts.reform.sscs.config.AppConstants.ACCEPT_VIEW_BY_DATE_LITERAL;
 import static uk.gov.hmcts.reform.sscs.config.AppConstants.ONLINE_HEARING_LINK_LITERAL;
 import static uk.gov.hmcts.reform.sscs.config.AppConstants.ONLINE_HEARING_REGISTER_LINK_LITERAL;
@@ -33,7 +37,6 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
-import javax.annotation.Resource;
 import junitparams.JUnitParamsRunner;
 import junitparams.Parameters;
 import org.junit.Assert;
@@ -45,6 +48,7 @@ import org.mockito.Mock;
 import uk.gov.hmcts.reform.sscs.ccd.domain.Address;
 import uk.gov.hmcts.reform.sscs.ccd.domain.Appeal;
 import uk.gov.hmcts.reform.sscs.ccd.domain.Appellant;
+import uk.gov.hmcts.reform.sscs.ccd.domain.Benefit;
 import uk.gov.hmcts.reform.sscs.ccd.domain.BenefitType;
 import uk.gov.hmcts.reform.sscs.ccd.domain.Document;
 import uk.gov.hmcts.reform.sscs.ccd.domain.DocumentDetails;
@@ -53,6 +57,7 @@ import uk.gov.hmcts.reform.sscs.ccd.domain.EventDetails;
 import uk.gov.hmcts.reform.sscs.ccd.domain.Evidence;
 import uk.gov.hmcts.reform.sscs.ccd.domain.Hearing;
 import uk.gov.hmcts.reform.sscs.ccd.domain.HearingDetails;
+import uk.gov.hmcts.reform.sscs.ccd.domain.HearingType;
 import uk.gov.hmcts.reform.sscs.ccd.domain.Name;
 import uk.gov.hmcts.reform.sscs.ccd.domain.RegionalProcessingCenter;
 import uk.gov.hmcts.reform.sscs.ccd.domain.SscsCaseData;
@@ -60,11 +65,15 @@ import uk.gov.hmcts.reform.sscs.ccd.domain.Subscription;
 import uk.gov.hmcts.reform.sscs.ccd.domain.Subscriptions;
 import uk.gov.hmcts.reform.sscs.ccd.domain.Venue;
 import uk.gov.hmcts.reform.sscs.config.AppConstants;
+import uk.gov.hmcts.reform.sscs.config.AppealHearingType;
 import uk.gov.hmcts.reform.sscs.config.NotificationConfig;
+import uk.gov.hmcts.reform.sscs.config.SubscriptionType;
 import uk.gov.hmcts.reform.sscs.domain.SscsCaseDataWrapper;
 import uk.gov.hmcts.reform.sscs.domain.notify.Link;
 import uk.gov.hmcts.reform.sscs.domain.notify.NotificationEventType;
 import uk.gov.hmcts.reform.sscs.extractor.HearingContactDateExtractor;
+import uk.gov.hmcts.reform.sscs.factory.CcdNotificationWrapper;
+import uk.gov.hmcts.reform.sscs.factory.NotificationWrapper;
 import uk.gov.hmcts.reform.sscs.service.MessageAuthenticationServiceImpl;
 import uk.gov.hmcts.reform.sscs.service.RegionalProcessingCenterService;
 
@@ -95,7 +104,6 @@ public class PersonalisationTest {
     private NotificationDateConverterUtil notificationDateConverterUtil;
 
     @InjectMocks
-    @Resource
     public Personalisation personalisation;
 
     private String date = "2018-07-01T14:01:18.243";
@@ -140,11 +148,46 @@ public class PersonalisationTest {
     }
 
     @Test
+    @Parameters(method = "generateNotificationTypeAndSubscriptionsScenarios")
+    public void givenSubscriptionType_shouldGenerateEmailAndSmsTemplateNamesPerSubscription(
+            NotificationEventType notificationEventType, HearingType hearingType) {
+        NotificationWrapper notificationWrapper = new CcdNotificationWrapper(SscsCaseDataWrapper.builder()
+                .newSscsCaseData(SscsCaseData.builder()
+                        .appeal(Appeal.builder()
+                                .hearingType(hearingType.name())
+                                .build())
+                        .build())
+                .notificationEventType(notificationEventType)
+                .build());
+
+        personalisation.getTemplate(notificationWrapper, PIP, null);
+
+        verify(config).getTemplate(eq(getExpectedTemplateName(notificationEventType, null)),
+                anyString(), any(Benefit.class), any(AppealHearingType.class));
+    }
+
+    private String getExpectedTemplateName(NotificationEventType notificationEventType,
+                                           SubscriptionType subscriptionType) {
+        return notificationEventType.getId() + (subscriptionType == null ? "" :
+                "." + subscriptionType.name().toLowerCase());
+    }
+
+    @SuppressWarnings("Indentation")
+    private Object[] generateNotificationTypeAndSubscriptionsScenarios() {
+        return new Object[]{
+                new Object[]{APPEAL_RECEIVED_NOTIFICATION, PAPER},
+                new Object[]{APPEAL_RECEIVED_NOTIFICATION, REGULAR},
+                new Object[]{APPEAL_RECEIVED_NOTIFICATION, ONLINE}
+        };
+    }
+
+    @Test
     @Parameters({
             "PIP,judge\\, doctor and disability expert, Personal Independence Payment",
             "ESA,judge and a doctor, Employment and Support Allowance"
     })
-    public void customisePersonalisation(String benefitType, String expectedPanelComposition, String expectedBenefitDesc) {
+    public void customisePersonalisation(String benefitType, String expectedPanelComposition, String
+            expectedBenefitDesc) {
         List<Event> events = new ArrayList<>();
         events.add(Event.builder().value(EventDetails.builder().date(date).type(APPEAL_RECEIVED.getCcdType()).build()).build());
 
@@ -191,6 +234,7 @@ public class PersonalisationTest {
         assertEquals("1 February 2018", result.get(ACCEPT_VIEW_BY_DATE_LITERAL));
         assertEquals("1 January 2018", result.get(QUESTION_ROUND_EXPIRES_DATE_LITERAL));
     }
+
 
     @Test
     public void givenEvidenceReceivedNotification_customisePersonalisation() {

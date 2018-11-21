@@ -9,6 +9,7 @@ import static uk.gov.hmcts.reform.sscs.config.AppConstants.ONLINE_HEARING_REGIST
 import static uk.gov.hmcts.reform.sscs.config.AppConstants.ONLINE_HEARING_SIGN_IN_LINK_LITERAL;
 import static uk.gov.hmcts.reform.sscs.config.AppConstants.QUESTION_ROUND_EXPIRES_DATE_LITERAL;
 import static uk.gov.hmcts.reform.sscs.config.AppConstants.TRIBUNAL_RESPONSE_DATE_LITERAL;
+import static uk.gov.hmcts.reform.sscs.domain.notify.NotificationEventType.APPEAL_LAPSED_NOTIFICATION;
 import static uk.gov.hmcts.reform.sscs.domain.notify.NotificationEventType.APPEAL_RECEIVED_NOTIFICATION;
 import static uk.gov.hmcts.reform.sscs.domain.notify.NotificationEventType.DWP_RESPONSE_LATE_REMINDER_NOTIFICATION;
 import static uk.gov.hmcts.reform.sscs.domain.notify.NotificationEventType.EVIDENCE_RECEIVED_NOTIFICATION;
@@ -26,6 +27,7 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.Optional;
 import java.util.stream.Collectors;
+import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
@@ -38,6 +40,7 @@ import uk.gov.hmcts.reform.sscs.ccd.domain.SscsCaseData;
 import uk.gov.hmcts.reform.sscs.ccd.domain.Subscription;
 import uk.gov.hmcts.reform.sscs.config.AppConstants;
 import uk.gov.hmcts.reform.sscs.config.NotificationConfig;
+import uk.gov.hmcts.reform.sscs.config.SubscriptionType;
 import uk.gov.hmcts.reform.sscs.domain.SscsCaseDataWrapper;
 import uk.gov.hmcts.reform.sscs.domain.notify.NotificationEventType;
 import uk.gov.hmcts.reform.sscs.domain.notify.Template;
@@ -47,6 +50,7 @@ import uk.gov.hmcts.reform.sscs.service.MessageAuthenticationServiceImpl;
 import uk.gov.hmcts.reform.sscs.service.RegionalProcessingCenterService;
 
 @Component
+@Slf4j
 public class Personalisation<E extends NotificationWrapper> {
 
     private boolean sendSmsSubscriptionConfirmation;
@@ -231,10 +235,20 @@ public class Personalisation<E extends NotificationWrapper> {
         return date.format(DateTimeFormatter.ofPattern(AppConstants.HEARING_TIME_FORMAT));
     }
 
-    public Template getTemplate(E notificationWrapper, Benefit benefit) {
-        NotificationEventType type = notificationWrapper.getNotificationType();
-        String smsTemplateId = isSendSmsSubscriptionConfirmation() ? SUBSCRIPTION_CREATED_NOTIFICATION.getId() : type.getId();
-        return config.getTemplate(type.getId(), smsTemplateId, benefit, notificationWrapper.getHearingType());
+    public Template getTemplate(E notificationWrapper, Benefit benefit, SubscriptionType subscriptionType) {
+        String emailTemplateName = getEmailTemplateName(subscriptionType, notificationWrapper.getNotificationType());
+        String smsTemplateName = isSendSmsSubscriptionConfirmation() ? SUBSCRIPTION_CREATED_NOTIFICATION.getId() :
+                emailTemplateName;
+        return config.getTemplate(emailTemplateName, smsTemplateName, benefit, notificationWrapper.getHearingType());
+    }
+
+    private String getEmailTemplateName(SubscriptionType subscriptionType,
+                                        NotificationEventType notificationEventType) {
+        String emailTemplateName = notificationEventType.getId();
+        if (APPEAL_LAPSED_NOTIFICATION.equals(notificationEventType)) {
+            emailTemplateName = emailTemplateName + "." + subscriptionType.name().toLowerCase();
+        }
+        return emailTemplateName;
     }
 
     public Boolean isSendSmsSubscriptionConfirmation() {
