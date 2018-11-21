@@ -100,7 +100,7 @@ dependencyManagement {
     }
     dependencies {
         // checkstyle needs a certain version and so does spring fox swagger, so can't use latest
-        dependencySet(group: 'com.google.guava', version: '20.0') {
+        dependencySet(group: 'com.google.guava', version: '23.0') {
             entry 'guava'
         }
     }
@@ -160,6 +160,8 @@ task functional(type: Test) {
     setClasspath(sourceSets.e2e.runtimeClasspath)
     include "uk/gov/hmcts/reform/sscs/functional/**"
     exclude "uk/gov/hmcts/reform/sscs/smoke/**"
+    exclude("uk/gov/hmcts/reform/sscs/smoke/**", "uk/gov/hmcts/reform/sscs/functional/CohNotificationFunctionalTest")
+    exclude("uk/gov/hmcts/reform/sscs/smoke/**", "**/*CohNotificationFunctionalTest*")
 }
 
 configurations {
