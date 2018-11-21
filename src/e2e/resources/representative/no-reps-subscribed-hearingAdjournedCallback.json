@@ -38,13 +38,14 @@
             "title": "Mr",
             "firstName": "Harry",
             "lastName": "Potter"
-          },
+          }
+        },
         "signer": null
       },
       "caseReference": "SC022/14/12423",
       "events": [
         {
-          "id": "560d5fa3-1a47-432c-a7e4-329eeb75c1a8",
+          "id": "96f908a4-c05f-454e-a024-94c115cd3d47",
           "value": {
             "date": "2017-05-24T14:01:18.243",
             "description": "Some Events",
@@ -54,17 +55,9 @@
         {
           "id": "9b1652f5-dc51-4ad4-affb-01c553fbf814",
           "value": {
-            "date": "2018-07-25T03:17:42.856",
+            "date": "2018-07-14T03:17:42.856",
             "description": "responseReceived",
             "type": "responseReceived"
-          }
-        },
-        {
-          "id": "c48bc5e4-51d9-4ec5-b9c3-a6e068bdb6aa",
-          "value": {
-            "date": "2018-07-25T03:17:42.856",
-            "description": "hearingPostponed",
-            "type": "hearingPostponed"
           }
         }
       ],
@@ -77,8 +70,8 @@
           "tya": ""
         },
         "representativeSubscription": {
-          "email": "",
-          "mobile": "",
+          "email": "sscstest+notify@greencroftconsulting.com",
+          "mobile": "07398785050",
           "subscribeEmail": "No",
           "subscribeSms": "No",
           "tya": ""
@@ -91,9 +84,9 @@
       7,
       25,
       15,
+      9,
       17,
-      41,
-      285000000
+      242000000
     ],
     "data_classification": {
       "appeal": {
@@ -165,23 +158,7 @@
         "classification": "PUBLIC",
         "value": [
           {
-            "id": "560d5fa3-1a47-432c-a7e4-329eeb75c1a8",
-            "value": {
-              "date": "PUBLIC",
-              "description": "PUBLIC",
-              "type": "PUBLIC"
-            }
-          },
-          {
-            "id": "9b1652f5-dc51-4ad4-affb-01c553fbf814",
-            "value": {
-              "date": "PUBLIC",
-              "description": "PUBLIC",
-              "type": "PUBLIC"
-            }
-          },
-          {
-            "id": "c48bc5e4-51d9-4ec5-b9c3-a6e068bdb6aa",
+            "id": "96f908a4-c05f-454e-a024-94c115cd3d47",
             "value": {
               "date": "PUBLIC",
               "description": "PUBLIC",
@@ -223,9 +200,9 @@
       7,
       25,
       15,
-      17,
-      42,
-      74000000
+      9,
+      18,
+      367000000
     ],
     "security_classification": "PUBLIC",
     "security_classifications": {
@@ -298,23 +275,7 @@
         "classification": "PUBLIC",
         "value": [
           {
-            "id": "560d5fa3-1a47-432c-a7e4-329eeb75c1a8",
-            "value": {
-              "date": "PUBLIC",
-              "description": "PUBLIC",
-              "type": "PUBLIC"
-            }
-          },
-          {
-            "id": "9b1652f5-dc51-4ad4-affb-01c553fbf814",
-            "value": {
-              "date": "PUBLIC",
-              "description": "PUBLIC",
-              "type": "PUBLIC"
-            }
-          },
-          {
-            "id": "c48bc5e4-51d9-4ec5-b9c3-a6e068bdb6aa",
+            "id": "96f908a4-c05f-454e-a024-94c115cd3d47",
             "value": {
               "date": "PUBLIC",
               "description": "PUBLIC",
@@ -390,7 +351,7 @@
       "caseReference": "SC022/14/12423",
       "events": [
         {
-          "id": "a082fa56-8601-4412-836e-93523560148b",
+          "id": "03e2955a-6f6b-4e13-8bc8-1b782641d8fc",
           "value": {
             "date": "2017-05-24T14:01:18.243",
             "description": "Some Events",
@@ -421,9 +382,9 @@
       7,
       25,
       15,
+      9,
       17,
-      41,
-      285000000
+      242000000
     ],
     "data_classification": {
       "appeal": {
@@ -495,7 +456,7 @@
         "classification": "PUBLIC",
         "value": [
           {
-            "id": "a082fa56-8601-4412-836e-93523560148b",
+            "id": "03e2955a-6f6b-4e13-8bc8-1b782641d8fc",
             "value": {
               "date": "PUBLIC",
               "description": "PUBLIC",
@@ -537,9 +498,9 @@
       7,
       25,
       15,
+      9,
       17,
-      41,
-      289000000
+      243000000
     ],
     "security_classification": "PUBLIC",
     "security_classifications": {
@@ -612,7 +573,7 @@
         "classification": "PUBLIC",
         "value": [
           {
-            "id": "a082fa56-8601-4412-836e-93523560148b",
+            "id": "03e2955a-6f6b-4e13-8bc8-1b782641d8fc",
             "value": {
               "date": "PUBLIC",
               "description": "PUBLIC",
@@ -649,5 +610,5 @@
     },
     "state": "appealCreated"
   },
-  "event_id": "hearingPostponed"
+  "event_id": "hearingAdjourned"
 }
