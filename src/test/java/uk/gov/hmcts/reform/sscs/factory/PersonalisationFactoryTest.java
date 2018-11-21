@@ -12,6 +12,7 @@ import org.mockito.Mock;
 import uk.gov.hmcts.reform.sscs.personalisation.CohPersonalisation;
 import uk.gov.hmcts.reform.sscs.personalisation.Personalisation;
 import uk.gov.hmcts.reform.sscs.personalisation.SubscriptionPersonalisation;
+import uk.gov.hmcts.reform.sscs.personalisation.WithRepresentativePersonalisation;
 
 public class PersonalisationFactoryTest {
 
@@ -23,6 +24,9 @@ public class PersonalisationFactoryTest {
 
     @Mock
     private CohPersonalisation cohPersonalisation;
+
+    @Mock
+    private WithRepresentativePersonalisation withRepresentativePersonalisation;
 
     @InjectMocks
     private PersonalisationFactory factory;
@@ -48,6 +52,18 @@ public class PersonalisationFactoryTest {
     public void createCohPersonalisationWhenQuestionRoundIssuedNotificationApplied() {
         Personalisation result = factory.apply(QUESTION_ROUND_ISSUED_NOTIFICATION);
         assertEquals(cohPersonalisation, result);
+    }
+
+    @Test
+    public void createRepsPersonalisationWhenLapsedNotificationApplied() {
+        Personalisation result = factory.apply(APPEAL_LAPSED_NOTIFICATION);
+        assertEquals(withRepresentativePersonalisation, result);
+    }
+
+    @Test
+    public void createRepsPersonalisationWhenWithdrawnNotificationApplied() {
+        Personalisation result = factory.apply(APPEAL_WITHDRAWN_NOTIFICATION);
+        assertEquals(withRepresentativePersonalisation, result);
     }
 
     @Test

@@ -89,7 +89,7 @@ public class NotificationFactoryTest {
     private String date = "2018-01-01T14:01:18.243";
 
     @Mock
-    private AppealLapsedPersonalisation appealLapsedPersonalisation;
+    private WithRepresentativePersonalisation withRepresentativePersonalisation;
 
     @Before
     public void setup() {
@@ -149,12 +149,12 @@ public class NotificationFactoryTest {
                 .build());
 
         given(personalisationFactory.apply(any(NotificationEventType.class)))
-                .willReturn(appealLapsedPersonalisation);
+                .willReturn(withRepresentativePersonalisation);
 
         Notification notification = factory.create(notificationWrapper, subscriptionType);
         assertEquals(expectedEmail, notification.getEmail());
 
-        then(appealLapsedPersonalisation).should()
+        then(withRepresentativePersonalisation).should()
                 .getTemplate(eq(notificationWrapper), eq(PIP), eq(subscriptionType));
 
     }

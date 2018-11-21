@@ -8,7 +8,7 @@ import uk.gov.hmcts.reform.sscs.domain.SscsCaseDataWrapper;
 import uk.gov.hmcts.reform.sscs.factory.CcdNotificationWrapper;
 
 @Component
-public class AppealLapsedPersonalisation extends Personalisation<CcdNotificationWrapper> {
+public class WithRepresentativePersonalisation extends Personalisation<CcdNotificationWrapper> {
 
     @Override
     protected Map<String, String> create(SscsCaseDataWrapper responseWrapper) {

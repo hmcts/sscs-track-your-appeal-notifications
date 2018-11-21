@@ -22,10 +22,8 @@ import static uk.gov.hmcts.reform.sscs.config.AppConstants.ONLINE_HEARING_REGIST
 import static uk.gov.hmcts.reform.sscs.config.AppConstants.ONLINE_HEARING_SIGN_IN_LINK_LITERAL;
 import static uk.gov.hmcts.reform.sscs.config.AppConstants.QUESTION_ROUND_EXPIRES_DATE_LITERAL;
 import static uk.gov.hmcts.reform.sscs.config.AppConstants.TRIBUNAL_RESPONSE_DATE_LITERAL;
-import static uk.gov.hmcts.reform.sscs.domain.notify.NotificationEventType.APPEAL_RECEIVED_NOTIFICATION;
-import static uk.gov.hmcts.reform.sscs.domain.notify.NotificationEventType.EVIDENCE_RECEIVED_NOTIFICATION;
-import static uk.gov.hmcts.reform.sscs.domain.notify.NotificationEventType.HEARING_BOOKED_NOTIFICATION;
-import static uk.gov.hmcts.reform.sscs.domain.notify.NotificationEventType.POSTPONEMENT_NOTIFICATION;
+import static uk.gov.hmcts.reform.sscs.config.SubscriptionType.*;
+import static uk.gov.hmcts.reform.sscs.domain.notify.NotificationEventType.*;
 
 import java.time.Instant;
 import java.time.LocalDate;
@@ -150,7 +148,7 @@ public class PersonalisationTest {
     @Test
     @Parameters(method = "generateNotificationTypeAndSubscriptionsScenarios")
     public void givenSubscriptionType_shouldGenerateEmailAndSmsTemplateNamesPerSubscription(
-            NotificationEventType notificationEventType, HearingType hearingType) {
+            NotificationEventType notificationEventType, SubscriptionType subscriptionType,  HearingType hearingType) {
         NotificationWrapper notificationWrapper = new CcdNotificationWrapper(SscsCaseDataWrapper.builder()
                 .newSscsCaseData(SscsCaseData.builder()
                         .appeal(Appeal.builder()
@@ -160,9 +158,9 @@ public class PersonalisationTest {
                 .notificationEventType(notificationEventType)
                 .build());
 
-        personalisation.getTemplate(notificationWrapper, PIP, null);
+        personalisation.getTemplate(notificationWrapper, PIP, subscriptionType);
 
-        verify(config).getTemplate(eq(getExpectedTemplateName(notificationEventType, null)),
+        verify(config).getTemplate(eq(getExpectedTemplateName(notificationEventType, subscriptionType)),
                 anyString(), any(Benefit.class), any(AppealHearingType.class));
     }
 
@@ -175,9 +173,21 @@ public class PersonalisationTest {
     @SuppressWarnings("Indentation")
     private Object[] generateNotificationTypeAndSubscriptionsScenarios() {
         return new Object[]{
-                new Object[]{APPEAL_RECEIVED_NOTIFICATION, PAPER},
-                new Object[]{APPEAL_RECEIVED_NOTIFICATION, REGULAR},
-                new Object[]{APPEAL_RECEIVED_NOTIFICATION, ONLINE}
+                new Object[]{APPEAL_RECEIVED_NOTIFICATION, null,  PAPER},
+                new Object[]{APPEAL_RECEIVED_NOTIFICATION, null, REGULAR},
+                new Object[]{APPEAL_RECEIVED_NOTIFICATION, null, ONLINE},
+                new Object[]{APPEAL_LAPSED_NOTIFICATION, APPELLANT, PAPER},
+                new Object[]{APPEAL_LAPSED_NOTIFICATION, APPELLANT, REGULAR},
+                new Object[]{APPEAL_LAPSED_NOTIFICATION, APPELLANT, ONLINE},
+                new Object[]{APPEAL_LAPSED_NOTIFICATION, REPRESENTATIVE, PAPER},
+                new Object[]{APPEAL_LAPSED_NOTIFICATION, REPRESENTATIVE, REGULAR},
+                new Object[]{APPEAL_LAPSED_NOTIFICATION, REPRESENTATIVE, ONLINE},
+                new Object[]{APPEAL_WITHDRAWN_NOTIFICATION, APPELLANT, PAPER},
+                new Object[]{APPEAL_WITHDRAWN_NOTIFICATION, APPELLANT, REGULAR},
+                new Object[]{APPEAL_WITHDRAWN_NOTIFICATION, APPELLANT, ONLINE},
+                new Object[]{APPEAL_WITHDRAWN_NOTIFICATION, REPRESENTATIVE, PAPER},
+                new Object[]{APPEAL_WITHDRAWN_NOTIFICATION, REPRESENTATIVE, REGULAR},
+                new Object[]{APPEAL_WITHDRAWN_NOTIFICATION, REPRESENTATIVE, ONLINE}
         };
     }
 
