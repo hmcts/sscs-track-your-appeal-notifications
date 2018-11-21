@@ -4,6 +4,7 @@ import static org.hamcrest.CoreMatchers.is;
 import static org.junit.Assert.assertThat;
 import static uk.gov.hmcts.reform.sscs.domain.notify.NotificationEventType.APPEAL_LAPSED_NOTIFICATION;
 import static uk.gov.hmcts.reform.sscs.domain.notify.NotificationEventType.APPEAL_WITHDRAWN_NOTIFICATION;
+import static uk.gov.hmcts.reform.sscs.domain.notify.NotificationEventType.EVIDENCE_RECEIVED_NOTIFICATION;
 
 import java.util.Arrays;
 import java.util.List;
@@ -91,8 +92,10 @@ public class CcdNotificationWrapperTest {
 
     private Object[] getEventTypeFilteredOnReps() {
         return Arrays.stream(NotificationEventType.values())
-            .filter(type -> !(type.equals(APPEAL_LAPSED_NOTIFICATION)
-                || type.equals(APPEAL_WITHDRAWN_NOTIFICATION))).toArray();
+                .filter(type -> !(type.equals(APPEAL_LAPSED_NOTIFICATION)
+                        || type.equals(APPEAL_WITHDRAWN_NOTIFICATION)
+                        || type.equals(EVIDENCE_RECEIVED_NOTIFICATION)
+                )).toArray();
     }
 
 }
