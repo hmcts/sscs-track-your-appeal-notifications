@@ -42,8 +42,7 @@ public class WithRepresentativePersonalisationTest extends AbstractFunctionalTes
 
     @Test
     @Parameters(method = "eventTypeAndSubscriptions")
-    public void givenEventAndRepsSubscription_shouldSendNotificationToReps(NotificationEventType notificationEventType,
-                                                                           boolean isSmsNotificationFound)
+    public void givenEventAndRepsSubscription_shouldSendNotificationToReps(NotificationEventType notificationEventType)
         throws Exception {
         //Given
         final String appellantEmailId = getFieldValue(notificationEventType, "AppellantEmailId");
@@ -54,30 +53,21 @@ public class WithRepresentativePersonalisationTest extends AbstractFunctionalTes
         simulateCcdCallback(notificationEventType,
             "representative/" + notificationEventType.getId() + "Callback.json");
 
-        List<Notification> notifications;
-        if (isSmsNotificationFound) {
-            notifications = tryFetchNotificationsForTestCase(
-                appellantEmailId, appellantSmsId, repsEmailId, repsSmsId);
-            assertNotificationBodyContains(notifications, appellantEmailId);
-            assertNotificationBodyContains(notifications, appellantSmsId);
-        } else {
-            notifications = tryFetchNotificationsForTestCase(
-                appellantEmailId, repsEmailId);
-            assertNotificationBodyContains(notifications, appellantEmailId);
-        }
+        List<Notification> notifications = tryFetchNotificationsForTestCase(
+            appellantEmailId, appellantSmsId,
+            repsEmailId, repsSmsId);
+
+        assertNotificationBodyContains(notifications, appellantEmailId);
+        assertNotificationBodyContains(notifications, appellantSmsId);
 
         String representativeName = "Harry Potter";
         assertNotificationBodyContains(notifications, repsEmailId, representativeName);
-
-        if (isSmsNotificationFound) {
-            assertNotificationBodyContains(notifications, repsSmsId);
-        }
+        assertNotificationBodyContains(notifications, repsSmsId);
     }
 
     @Test
     @Parameters(method = "eventTypeAndSubscriptions")
-    public void givenEventAndNoRepsSubscription_shouldNotSendNotificationToReps(NotificationEventType notificationEventType,
-                                                                                boolean isSmsNotificationFound)
+    public void givenEventAndNoRepsSubscription_shouldNotSendNotificationToReps(NotificationEventType notificationEventType)
         throws Exception {
 
         final String appellantEmailId = getFieldValue(notificationEventType, "AppellantEmailId");
@@ -89,18 +79,52 @@ public class WithRepresentativePersonalisationTest extends AbstractFunctionalTes
             "representative/" + "no-reps-subscribed-" + notificationEventType.getId()
                 + "Callback.json");
 
-        List<Notification> notifications;
-        if (isSmsNotificationFound) {
-            notifications = tryFetchNotificationsForTestCase(appellantEmailId, appellantSmsId);
-            assertNotificationBodyContains(notifications, appellantEmailId);
-            assertNotificationBodyContains(notifications, appellantSmsId);
-        } else {
-            notifications = tryFetchNotificationsForTestCase(appellantEmailId);
-            assertNotificationBodyContains(notifications, appellantEmailId);
-        }
+        List<Notification> notifications = tryFetchNotificationsForTestCase(appellantEmailId,
+            appellantSmsId);
+        assertNotificationBodyContains(notifications, appellantEmailId);
+        assertNotificationBodyContains(notifications, appellantSmsId);
 
         List<Notification> notificationsNotFound = tryFetchNotificationsForTestCaseWithFlag(true,
             repsEmailId, repsSmsId);
+        assertTrue(notificationsNotFound.isEmpty());
+    }
+
+    @Test
+    public void givenHearingPostponedEventAndRepsSubscription_shouldSendEmailOnlyNotificationToReps()
+        throws Exception {
+
+        final String appellantEmailId = getFieldValue(POSTPONEMENT_NOTIFICATION, "AppellantEmailId");
+        final String repsEmailId = getFieldValue(POSTPONEMENT_NOTIFICATION, "RepsEmailId");
+
+        simulateCcdCallback(POSTPONEMENT_NOTIFICATION,
+            "representative/" + POSTPONEMENT_NOTIFICATION.getId()
+                + "Callback.json");
+
+        List<Notification> notifications = tryFetchNotificationsForTestCase(
+            appellantEmailId, repsEmailId);
+
+        assertNotificationBodyContains(notifications, appellantEmailId);
+
+        String representativeName = "Harry Potter";
+        assertNotificationBodyContains(notifications, repsEmailId, representativeName);
+    }
+
+    @Test
+    public void givenHearingPostponedEventAndNoRepsSubscription_shouldNotSendEmailOnlyNotificationToReps()
+        throws Exception {
+
+        final String appellantEmailId = getFieldValue(POSTPONEMENT_NOTIFICATION, "AppellantEmailId");
+        final String repsEmailId = getFieldValue(POSTPONEMENT_NOTIFICATION, "RepsEmailId");
+
+        simulateCcdCallback(POSTPONEMENT_NOTIFICATION,
+            "representative/" + "no-reps-subscribed-" + POSTPONEMENT_NOTIFICATION.getId()
+                + "Callback.json");
+
+        List<Notification> notifications = tryFetchNotificationsForTestCase(appellantEmailId);
+        assertNotificationBodyContains(notifications, appellantEmailId);
+
+        List<Notification> notificationsNotFound = tryFetchNotificationsForTestCaseWithFlag(true,
+            repsEmailId);
         assertTrue(notificationsNotFound.isEmpty());
     }
 
@@ -118,9 +142,8 @@ public class WithRepresentativePersonalisationTest extends AbstractFunctionalTes
 
     private Object[] eventTypeAndSubscriptions() {
         return new Object[] {
-            new Object[] {APPEAL_LAPSED_NOTIFICATION, true},
-            new Object[] {APPEAL_WITHDRAWN_NOTIFICATION, true},
-            new Object[] {POSTPONEMENT_NOTIFICATION, false},
+            new Object[] {APPEAL_LAPSED_NOTIFICATION},
+            new Object[] {APPEAL_WITHDRAWN_NOTIFICATION}
         };
     }
 }
