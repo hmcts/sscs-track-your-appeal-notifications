@@ -100,7 +100,7 @@ dependencyManagement {
     }
     dependencies {
         // checkstyle needs a certain version and so does spring fox swagger, so can't use latest
-        dependencySet(group: 'com.google.guava', version: '20.0') {
+        dependencySet(group: 'com.google.guava', version: '23.0') {
             entry 'guava'
         }
     }
