@@ -1,11 +1,9 @@
 FROM openjdk:8-jre
 
-COPY build/install/track-your-appeal-notifications /opt/app/
+COPY build/libs/track-your-appeal-notifications.jar /opt/app/
 
 WORKDIR /opt/app
 
-HEALTHCHECK --interval=10s --timeout=10s --retries=10 CMD http_proxy="" curl --silent --fail http://localhost:8081/health
-
 EXPOSE 8081
 
-ENTRYPOINT ["/opt/app/bin/track-your-appeal-notifications"]
+CMD ["/usr/bin/java", "-jar", "/opt/app/track-your-appeal-notifications.jar"]
