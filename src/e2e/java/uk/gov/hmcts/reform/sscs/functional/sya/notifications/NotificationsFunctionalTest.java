@@ -2,7 +2,6 @@ package uk.gov.hmcts.reform.sscs.functional.sya.notifications;
 
 import static org.junit.Assert.assertTrue;
 import static uk.gov.hmcts.reform.sscs.domain.notify.NotificationEventType.ADJOURNED_NOTIFICATION;
-import static uk.gov.hmcts.reform.sscs.domain.notify.NotificationEventType.APPEAL_RECEIVED_NOTIFICATION;
 import static uk.gov.hmcts.reform.sscs.domain.notify.NotificationEventType.DWP_RESPONSE_RECEIVED_NOTIFICATION;
 import static uk.gov.hmcts.reform.sscs.domain.notify.NotificationEventType.EVIDENCE_RECEIVED_NOTIFICATION;
 import static uk.gov.hmcts.reform.sscs.domain.notify.NotificationEventType.HEARING_BOOKED_NOTIFICATION;
@@ -24,12 +23,6 @@ public class NotificationsFunctionalTest extends AbstractFunctionalTest {
     private static final String RESPONSE_RECEIVED_PAPER_PATH = "paper/responseReceived/";
     @Value("${track.appeal.link}")
     private String tyaLink;
-
-    @Value("${notification.appealReceived.emailId}")
-    private String appealReceivedEmailTemplateId;
-
-    @Value("${notification.appealReceived.smsId}")
-    private String appealReceivedSmsTemplateId;
 
     @Value("${notification.evidenceReceived.emailId}")
     private String evidenceReceivedEmailTemplateId;
@@ -85,16 +78,6 @@ public class NotificationsFunctionalTest extends AbstractFunctionalTest {
 
     public NotificationsFunctionalTest() {
         super(30);
-    }
-
-    @Test
-    public void shouldSendAppealReceivedNotification() throws IOException, NotificationClientException {
-        simulateCcdCallback(APPEAL_RECEIVED_NOTIFICATION);
-
-        tryFetchNotificationsForTestCase(
-                appealReceivedEmailTemplateId,
-                appealReceivedSmsTemplateId
-        );
     }
 
     @Test

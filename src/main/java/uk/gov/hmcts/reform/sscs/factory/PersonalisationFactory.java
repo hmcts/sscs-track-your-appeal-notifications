@@ -9,14 +9,14 @@ import uk.gov.hmcts.reform.sscs.domain.notify.NotificationEventType;
 import uk.gov.hmcts.reform.sscs.personalisation.CohPersonalisation;
 import uk.gov.hmcts.reform.sscs.personalisation.Personalisation;
 import uk.gov.hmcts.reform.sscs.personalisation.SubscriptionPersonalisation;
-import uk.gov.hmcts.reform.sscs.personalisation.SyaAppealCreatedPersonalisation;
+import uk.gov.hmcts.reform.sscs.personalisation.SyaAppealCreatedAndReceivedPersonalisation;
 import uk.gov.hmcts.reform.sscs.personalisation.WithRepresentativePersonalisation;
 
 @Component
 public class PersonalisationFactory implements Function<NotificationEventType, Personalisation> {
 
     @Autowired
-    private SyaAppealCreatedPersonalisation syaAppealCreatedPersonalisation;
+    private SyaAppealCreatedAndReceivedPersonalisation syaAppealCreatedAndReceivedPersonalisation;
 
     @Autowired
     private WithRepresentativePersonalisation withRepresentativePersonalisation;
@@ -34,8 +34,9 @@ public class PersonalisationFactory implements Function<NotificationEventType, P
     public Personalisation apply(NotificationEventType notificationType) {
         Personalisation selectedPersonalisation = null;
         if (notificationType != null) {
-            if (SYA_APPEAL_CREATED_NOTIFICATION.equals(notificationType)) {
-                selectedPersonalisation = syaAppealCreatedPersonalisation;
+            if (SYA_APPEAL_CREATED_NOTIFICATION.equals(notificationType)
+                || APPEAL_RECEIVED_NOTIFICATION.equals(notificationType)) {
+                selectedPersonalisation = syaAppealCreatedAndReceivedPersonalisation;
             } else if (APPEAL_LAPSED_NOTIFICATION.equals(notificationType)
                 || APPEAL_WITHDRAWN_NOTIFICATION.equals(notificationType)) {
                 selectedPersonalisation = withRepresentativePersonalisation;

@@ -14,7 +14,7 @@ import org.mockito.InjectMocks;
 import uk.gov.hmcts.reform.sscs.ccd.domain.*;
 import uk.gov.hmcts.reform.sscs.config.AppConstants;
 
-public class SyaAppealCreatedPersonalisationTest {
+public class SyaAppealCreatedAndReceivedPersonalisationTest {
 
     private static final String CASE_ID = "54321";
 
@@ -22,7 +22,7 @@ public class SyaAppealCreatedPersonalisationTest {
 
     @InjectMocks
     @Resource
-    SyaAppealCreatedPersonalisation syaAppealCreatedPersonalisation;
+    SyaAppealCreatedAndReceivedPersonalisation syaAppealCreatedAndReceivedPersonalisation;
 
     @Before
     public void setup() {
@@ -30,7 +30,7 @@ public class SyaAppealCreatedPersonalisationTest {
     }
 
     @Test
-    public void givenASyaAppealCreated_setMrnDetailsForTemplate() {
+    public void givenAAppeal_setMrnDetailsForTemplate() {
         response = SscsCaseData.builder()
                 .ccdCaseId(CASE_ID).caseReference("SC/1234/5")
                 .appeal(Appeal.builder().benefitType(BenefitType.builder().code("PIP").build())
@@ -42,7 +42,7 @@ public class SyaAppealCreatedPersonalisationTest {
                         .build())
                 .build();
 
-        Map<String, String> result = syaAppealCreatedPersonalisation.setMrnDetails(new HashMap<>(), response);
+        Map<String, String> result = syaAppealCreatedAndReceivedPersonalisation.setMrnDetails(new HashMap<>(), response);
 
         assertEquals("Date of MRN: 3 May 2018\n"
                         + "\nReason for late appeal: My train was cancelled.\n"
@@ -51,14 +51,14 @@ public class SyaAppealCreatedPersonalisationTest {
     }
 
     @Test
-    public void givenASyaAppealCreated_setMrnDetailsForTemplateWhenReasonForNoMrnMissing() {
+    public void givenAAppeal_setMrnDetailsForTemplateWhenReasonForNoMrnMissing() {
         response = SscsCaseData.builder()
                 .ccdCaseId(CASE_ID).caseReference("SC/1234/5")
                 .appeal(Appeal.builder().benefitType(BenefitType.builder().code("PIP").build())
                         .mrnDetails(MrnDetails.builder().mrnDate("3 May 2018").mrnLateReason("My train was cancelled.").build()).build())
                 .build();
 
-        Map<String, String> result = syaAppealCreatedPersonalisation.setMrnDetails(new HashMap<>(), response);
+        Map<String, String> result = syaAppealCreatedAndReceivedPersonalisation.setMrnDetails(new HashMap<>(), response);
 
         assertEquals("Date of MRN: 3 May 2018\n"
                         + "\nReason for late appeal: My train was cancelled.",
@@ -66,7 +66,7 @@ public class SyaAppealCreatedPersonalisationTest {
     }
 
     @Test
-    public void givenASyaAppealCreated_setYourDetailsForTemplate() {
+    public void givenAAppeal_setYourDetailsForTemplate() {
         response = SscsCaseData.builder()
                 .ccdCaseId(CASE_ID).caseReference("SC/1234/5")
                 .appeal(Appeal.builder().benefitType(BenefitType.builder().code("PIP").build())
@@ -78,7 +78,7 @@ public class SyaAppealCreatedPersonalisationTest {
                                 .build()).build())
                 .build();
 
-        Map<String, String> result = syaAppealCreatedPersonalisation.setYourDetails(new HashMap<>(), response);
+        Map<String, String> result = syaAppealCreatedAndReceivedPersonalisation.setYourDetails(new HashMap<>(), response);
 
         assertEquals("Name: Manish Sharma\n"
                         + "\nDate of birth: 12 March 1971\n"
@@ -90,7 +90,7 @@ public class SyaAppealCreatedPersonalisationTest {
     }
 
     @Test
-    public void givenASyaAppealCreatedWithNoEmailOrPhoneProvided_setYourDetailsForTemplate() {
+    public void givenAAppealWithNoEmailOrPhoneProvided_setYourDetailsForTemplate() {
         response = SscsCaseData.builder()
                 .ccdCaseId(CASE_ID).caseReference("SC/1234/5")
                 .appeal(Appeal.builder().benefitType(BenefitType.builder().code("PIP").build())
@@ -102,7 +102,7 @@ public class SyaAppealCreatedPersonalisationTest {
                                 .build()).build())
                 .build();
 
-        Map<String, String> result = syaAppealCreatedPersonalisation.setYourDetails(new HashMap<>(), response);
+        Map<String, String> result = syaAppealCreatedAndReceivedPersonalisation.setYourDetails(new HashMap<>(), response);
 
         assertEquals("Name: Manish Sharma\n"
                         + "\nDate of birth: 12 March 1971\n"
@@ -114,7 +114,7 @@ public class SyaAppealCreatedPersonalisationTest {
     }
 
     @Test
-    public void givenASyaAppealCreatedWithTextMessageReminders_setTextMessageReminderDetailsForTemplate() {
+    public void givenAAppealWithTextMessageReminders_setTextMessageReminderDetailsForTemplate() {
         response = SscsCaseData.builder()
                 .ccdCaseId(CASE_ID).caseReference("SC/1234/5")
                 .subscriptions(Subscriptions.builder()
@@ -123,7 +123,7 @@ public class SyaAppealCreatedPersonalisationTest {
                                 .mobile("07955555708").build()).build())
                 .build();
 
-        Map<String, String> result = syaAppealCreatedPersonalisation.setTextMessageReminderDetails(new HashMap<>(), response);
+        Map<String, String> result = syaAppealCreatedAndReceivedPersonalisation.setTextMessageReminderDetails(new HashMap<>(), response);
 
         assertEquals("Receive text message reminders: yes\n"
                         + "\nMobile number: 07955555708",
@@ -131,7 +131,7 @@ public class SyaAppealCreatedPersonalisationTest {
     }
 
     @Test
-    public void givenASyaAppealCreatedWithNoTextMessageReminders_setTextMessageReminderDetailsForTemplate() {
+    public void givenAAppealWithNoTextMessageReminders_setTextMessageReminderDetailsForTemplate() {
         response = SscsCaseData.builder()
                 .ccdCaseId(CASE_ID).caseReference("SC/1234/5")
                 .subscriptions(Subscriptions.builder()
@@ -139,14 +139,14 @@ public class SyaAppealCreatedPersonalisationTest {
                                 .subscribeSms("No").build()).build())
                 .build();
 
-        Map<String, String> result = syaAppealCreatedPersonalisation.setTextMessageReminderDetails(new HashMap<>(), response);
+        Map<String, String> result = syaAppealCreatedAndReceivedPersonalisation.setTextMessageReminderDetails(new HashMap<>(), response);
 
         assertEquals("Receive text message reminders: no",
                 result.get(AppConstants.TEXT_MESSAGE_REMINDER_DETAILS_LITERAL));
     }
 
     @Test
-    public void givenASyaAppealCreatedWithRepresentative_setRepresentativeDetailsForTemplate() {
+    public void givenAAppealWithRepresentative_setRepresentativeDetailsForTemplate() {
         response = SscsCaseData.builder()
                 .ccdCaseId(CASE_ID).caseReference("SC/1234/5")
                 .appeal(Appeal.builder().rep(Representative.builder()
@@ -157,7 +157,7 @@ public class SyaAppealCreatedPersonalisationTest {
                         .build()).build())
                 .build();
 
-        Map<String, String> result = syaAppealCreatedPersonalisation.setRepresentativeDetails(new HashMap<>(), response);
+        Map<String, String> result = syaAppealCreatedAndReceivedPersonalisation.setRepresentativeDetails(new HashMap<>(), response);
 
         assertEquals("Have a representative: yes\n"
                         + "\nName: Peter Smith\n"
@@ -169,7 +169,7 @@ public class SyaAppealCreatedPersonalisationTest {
     }
 
     @Test
-    public void givenASyaAppealCreatedWithRepresentativeAndNoEmailOrPhoneOrOrganisationProvided_setRepresentativeDetailsForTemplate() {
+    public void givenAAppealWithRepresentativeAndNoEmailOrPhoneOrOrganisationProvided_setRepresentativeDetailsForTemplate() {
         response = SscsCaseData.builder()
                 .ccdCaseId(CASE_ID).caseReference("SC/1234/5")
                 .appeal(Appeal.builder().rep(Representative.builder()
@@ -179,7 +179,7 @@ public class SyaAppealCreatedPersonalisationTest {
                         .build()).build())
                 .build();
 
-        Map<String, String> result = syaAppealCreatedPersonalisation.setRepresentativeDetails(new HashMap<>(), response);
+        Map<String, String> result = syaAppealCreatedAndReceivedPersonalisation.setRepresentativeDetails(new HashMap<>(), response);
 
         assertEquals("Have a representative: yes\n"
                         + "\nName: Peter Smith\n"
@@ -191,14 +191,14 @@ public class SyaAppealCreatedPersonalisationTest {
     }
 
     @Test
-    public void givenASyaAppealCreatedWithNoRepresentative_setRepresentativeDetailsForTemplate() {
+    public void givenAAppealWithNoRepresentative_setRepresentativeDetailsForTemplate() {
         response = SscsCaseData.builder()
                 .ccdCaseId(CASE_ID).caseReference("SC/1234/5")
                 .appeal(Appeal.builder()
                         .build())
                 .build();
 
-        Map<String, String> result = syaAppealCreatedPersonalisation.setRepresentativeDetails(new HashMap<>(), response);
+        Map<String, String> result = syaAppealCreatedAndReceivedPersonalisation.setRepresentativeDetails(new HashMap<>(), response);
 
         assertEquals("Have a representative: no",
                 result.get(AppConstants.REPRESENTATIVE_DETAILS_LITERAL));
@@ -216,7 +216,7 @@ public class SyaAppealCreatedPersonalisationTest {
                         .build())
                 .build();
 
-        Map<String, String> result = syaAppealCreatedPersonalisation.setReasonsForAppealingDetails(new HashMap<>(), response);
+        Map<String, String> result = syaAppealCreatedAndReceivedPersonalisation.setReasonsForAppealingDetails(new HashMap<>(), response);
 
         assertEquals("What you disagree with: I want to appeal\n"
                         + "\nWhy you disagree with it: Because I do\n"
@@ -238,7 +238,7 @@ public class SyaAppealCreatedPersonalisationTest {
                         .build())
                 .build();
 
-        Map<String, String> result = syaAppealCreatedPersonalisation.setReasonsForAppealingDetails(new HashMap<>(), response);
+        Map<String, String> result = syaAppealCreatedAndReceivedPersonalisation.setReasonsForAppealingDetails(new HashMap<>(), response);
 
         assertEquals("What you disagree with: I want to appeal\n"
                         + "\nWhy you disagree with it: Because I do\n"
@@ -257,7 +257,7 @@ public class SyaAppealCreatedPersonalisationTest {
                         .build())
                 .build();
 
-        Map<String, String> result = syaAppealCreatedPersonalisation.setReasonsForAppealingDetails(new HashMap<>(), response);
+        Map<String, String> result = syaAppealCreatedAndReceivedPersonalisation.setReasonsForAppealingDetails(new HashMap<>(), response);
 
         assertEquals("Anything else you want to tell the tribunal: Not provided",
                 result.get(AppConstants.REASONS_FOR_APPEALING_DETAILS_LITERAL));
@@ -272,7 +272,7 @@ public class SyaAppealCreatedPersonalisationTest {
                         .build()).build())
                 .build();
 
-        Map<String, String> result = syaAppealCreatedPersonalisation.setHearingDetails(new HashMap<>(), response);
+        Map<String, String> result = syaAppealCreatedAndReceivedPersonalisation.setHearingDetails(new HashMap<>(), response);
 
         assertEquals("Attending the hearing: yes",
                 result.get(AppConstants.HEARING_DETAILS_LITERAL));
@@ -292,7 +292,7 @@ public class SyaAppealCreatedPersonalisationTest {
                         .build()).build())
                 .build();
 
-        Map<String, String> result = syaAppealCreatedPersonalisation.setHearingDetails(new HashMap<>(), response);
+        Map<String, String> result = syaAppealCreatedAndReceivedPersonalisation.setHearingDetails(new HashMap<>(), response);
 
         assertEquals("Attending the hearing: yes\n"
                         + "\nDates you can't attend: 3 January 2018",
@@ -314,7 +314,7 @@ public class SyaAppealCreatedPersonalisationTest {
                         .build()).build())
                 .build();
 
-        Map<String, String> result = syaAppealCreatedPersonalisation.setHearingDetails(new HashMap<>(), response);
+        Map<String, String> result = syaAppealCreatedAndReceivedPersonalisation.setHearingDetails(new HashMap<>(), response);
 
         assertEquals("Attending the hearing: yes\n"
                         + "\nDates you can't attend: 3 January 2018, 5 January 2018",
@@ -339,7 +339,7 @@ public class SyaAppealCreatedPersonalisationTest {
                         .build()).build())
                 .build();
 
-        Map<String, String> result = syaAppealCreatedPersonalisation.setHearingArrangementDetails(new HashMap<>(), response);
+        Map<String, String> result = syaAppealCreatedAndReceivedPersonalisation.setHearingArrangementDetails(new HashMap<>(), response);
 
         assertEquals("Language interpreter: Required\n"
                         + "\nSign interpreter: Required\n"
@@ -359,7 +359,7 @@ public class SyaAppealCreatedPersonalisationTest {
                         .build()).build())
                 .build();
 
-        Map<String, String> result = syaAppealCreatedPersonalisation.setHearingArrangementDetails(new HashMap<>(), response);
+        Map<String, String> result = syaAppealCreatedAndReceivedPersonalisation.setHearingArrangementDetails(new HashMap<>(), response);
 
         assertEquals("Language interpreter: Not required\n"
                         + "\nSign interpreter: Not required\n"
@@ -378,7 +378,7 @@ public class SyaAppealCreatedPersonalisationTest {
                         .build()).build())
                 .build();
 
-        Map<String, String> result = syaAppealCreatedPersonalisation.setHearingArrangementDetails(new HashMap<>(), response);
+        Map<String, String> result = syaAppealCreatedAndReceivedPersonalisation.setHearingArrangementDetails(new HashMap<>(), response);
 
         assertEquals("Language interpreter: Not required\n"
                         + "\nSign interpreter: Not required\n"
