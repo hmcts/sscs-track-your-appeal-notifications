@@ -9,12 +9,12 @@ import org.junit.Before;
 import org.junit.Test;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
-import uk.gov.hmcts.reform.sscs.personalisation.CohPersonalisation;
-import uk.gov.hmcts.reform.sscs.personalisation.Personalisation;
-import uk.gov.hmcts.reform.sscs.personalisation.SubscriptionPersonalisation;
-import uk.gov.hmcts.reform.sscs.personalisation.WithRepresentativePersonalisation;
+import uk.gov.hmcts.reform.sscs.personalisation.*;
 
 public class PersonalisationFactoryTest {
+
+    @Mock
+    private SyaAppealCreatedPersonalisation syaAppealCreatedPersonalisation;
 
     @Mock
     private SubscriptionPersonalisation subscriptionPersonalisation;
@@ -64,6 +64,12 @@ public class PersonalisationFactoryTest {
     public void createRepsPersonalisationWhenWithdrawnNotificationApplied() {
         Personalisation result = factory.apply(APPEAL_WITHDRAWN_NOTIFICATION);
         assertEquals(withRepresentativePersonalisation, result);
+    }
+
+    @Test
+    public void createSyaAppealCreatedPersonalisationWhenAppealCreateNotificationApplied() {
+        Personalisation result = factory.apply(SYA_APPEAL_CREATED_NOTIFICATION);
+        assertEquals(syaAppealCreatedPersonalisation, result);
     }
 
     @Test

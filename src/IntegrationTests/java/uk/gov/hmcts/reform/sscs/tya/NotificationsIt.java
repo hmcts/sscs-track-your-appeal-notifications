@@ -15,6 +15,7 @@ import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 import static uk.gov.hmcts.reform.sscs.domain.notify.NotificationEventType.APPEAL_LAPSED_NOTIFICATION;
 import static uk.gov.hmcts.reform.sscs.domain.notify.NotificationEventType.APPEAL_WITHDRAWN_NOTIFICATION;
+import static uk.gov.hmcts.reform.sscs.domain.notify.NotificationEventType.SYA_APPEAL_CREATED_NOTIFICATION;
 
 import java.io.File;
 import java.io.IOException;
@@ -365,6 +366,42 @@ public class NotificationsIt {
                         "yes",
                         "1",
                         "2"
+                },
+                new Object[]{
+                        SYA_APPEAL_CREATED_NOTIFICATION,
+                        "paper",
+                        Arrays.asList("01293b93-b23e-40a3-ad78-2c6cd01cd21c", "652753bf-59b4-46eb-9c24-bd762338a098"),
+                        Arrays.asList("f41222ef-c05c-4682-9634-6b034a166368", "0e44927e-168b-4510-ac57-6932fda7aec1"),
+                        "yes",
+                        "yes",
+                        "yes",
+                        "yes",
+                        "2",
+                        "2"
+                },
+                new Object[]{
+                        SYA_APPEAL_CREATED_NOTIFICATION,
+                        "oral",
+                        Arrays.asList("01293b93-b23e-40a3-ad78-2c6cd01cd21c", "652753bf-59b4-46eb-9c24-bd762338a098"),
+                        Arrays.asList("f41222ef-c05c-4682-9634-6b034a166368", "0e44927e-168b-4510-ac57-6932fda7aec1"),
+                        "yes",
+                        "yes",
+                        "yes",
+                        "yes",
+                        "2",
+                        "2"
+                },
+                new Object[]{
+                        SYA_APPEAL_CREATED_NOTIFICATION,
+                        "paper",
+                        Collections.singletonList("652753bf-59b4-46eb-9c24-bd762338a098"),
+                        Arrays.asList("f41222ef-c05c-4682-9634-6b034a166368", "0e44927e-168b-4510-ac57-6932fda7aec1"),
+                        "no",
+                        "yes",
+                        "yes",
+                        "yes",
+                        "1",
+                        "2"
                 }
         };
     }
@@ -484,7 +521,7 @@ public class NotificationsIt {
 
         assertHttpStatus(response, HttpStatus.OK);
         verify(notificationClient, times(1)).sendEmail(any(), any(), any(), any());
-        verify(notificationClient, times(1)).sendSms(any(), any(), any(), any(), any());
+        verify(notificationClient, times(2)).sendSms(any(), any(), any(), any(), any());
     }
 
     @Test
@@ -495,7 +532,7 @@ public class NotificationsIt {
 
         assertHttpStatus(response, HttpStatus.OK);
         verify(notificationClient, times(1)).sendEmail(any(), any(), any(), any());
-        verify(notificationClient, times(1)).sendSms(any(), any(), any(), any(), any());
+        verify(notificationClient, times(2)).sendSms(any(), any(), any(), any(), any());
     }
 
     @Test

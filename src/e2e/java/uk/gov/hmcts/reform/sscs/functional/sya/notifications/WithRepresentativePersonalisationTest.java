@@ -3,6 +3,7 @@ package uk.gov.hmcts.reform.sscs.functional.sya.notifications;
 import static org.junit.Assert.assertTrue;
 import static uk.gov.hmcts.reform.sscs.domain.notify.NotificationEventType.APPEAL_LAPSED_NOTIFICATION;
 import static uk.gov.hmcts.reform.sscs.domain.notify.NotificationEventType.APPEAL_WITHDRAWN_NOTIFICATION;
+import static uk.gov.hmcts.reform.sscs.domain.notify.NotificationEventType.SYA_APPEAL_CREATED_NOTIFICATION;
 
 import java.lang.reflect.Field;
 import java.util.List;
@@ -31,6 +32,15 @@ public class WithRepresentativePersonalisationTest extends AbstractFunctionalTes
     private String appealWithdrawnRepsEmailId;
     @Value("${notification.appealWithdrawn.representative.smsId}")
     private String appealWithdrawnRepsSmsId;
+
+    @Value("${notification.appealCreated.appellant.emailId}")
+    private String appealCreatedAppellantEmailId;
+    @Value("${notification.appealCreated.appellant.smsId}")
+    private String appealCreatedAppellantSmsId;
+    @Value("${notification.appealCreated.representative.emailId}")
+    private String appealCreatedRepsEmailId;
+    @Value("${notification.appealCreated.representative.smsId}")
+    private String appealCreatedRepsSmsId;
 
     public WithRepresentativePersonalisationTest() {
         super(30);
@@ -94,7 +104,8 @@ public class WithRepresentativePersonalisationTest extends AbstractFunctionalTes
     private Object[] eventTypeAndSubscriptions() {
         return new Object[]{
             new Object[]{APPEAL_LAPSED_NOTIFICATION},
-            new Object[]{APPEAL_WITHDRAWN_NOTIFICATION}
+            new Object[]{APPEAL_WITHDRAWN_NOTIFICATION},
+            new Object[]{SYA_APPEAL_CREATED_NOTIFICATION}
         };
     }
 }
