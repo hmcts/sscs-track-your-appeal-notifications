@@ -113,7 +113,7 @@ public class WithRepresentativePersonalisationTest extends AbstractFunctionalTes
         return new Object[]{
             new Object[]{APPEAL_LAPSED_NOTIFICATION},
             new Object[]{APPEAL_WITHDRAWN_NOTIFICATION},
-            new Object[]{APPEAL_RECEIVED_NOTIFICATION}
+            new Object[]{APPEAL_RECEIVED_NOTIFICATION},
             new Object[]{HEARING_BOOKED_NOTIFICATION}
         };
     }
