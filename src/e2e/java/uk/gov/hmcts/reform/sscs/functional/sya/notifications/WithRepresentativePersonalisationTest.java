@@ -4,6 +4,7 @@ import static org.junit.Assert.assertTrue;
 import static uk.gov.hmcts.reform.sscs.domain.notify.NotificationEventType.APPEAL_LAPSED_NOTIFICATION;
 import static uk.gov.hmcts.reform.sscs.domain.notify.NotificationEventType.APPEAL_RECEIVED_NOTIFICATION;
 import static uk.gov.hmcts.reform.sscs.domain.notify.NotificationEventType.APPEAL_WITHDRAWN_NOTIFICATION;
+import static uk.gov.hmcts.reform.sscs.domain.notify.NotificationEventType.HEARING_BOOKED_NOTIFICATION;
 
 import java.lang.reflect.Field;
 import java.util.List;
@@ -23,7 +24,6 @@ public class WithRepresentativePersonalisationTest extends AbstractFunctionalTes
     private String appealLapsedRepsEmailId;
     @Value("${notification.appealLapsed.representative.smsId}")
     private String appealLapsedRepsSmsId;
-
     @Value("${notification.appealWithdrawn.appellant.emailId}")
     private String appealWithdrawnAppellantEmailId;
     @Value("${notification.appealWithdrawn.appellant.smsId}")
@@ -32,6 +32,14 @@ public class WithRepresentativePersonalisationTest extends AbstractFunctionalTes
     private String appealWithdrawnRepsEmailId;
     @Value("${notification.appealWithdrawn.representative.smsId}")
     private String appealWithdrawnRepsSmsId;
+    @Value("${notification.hearingBooked.appellant.emailId}")
+    private String hearingBookedAppellantEmailId;
+    @Value("${notification.hearingBooked.appellant.smsId}")
+    private String hearingBookedAppellantSmsId;    
+    @Value("${notification.hearingBooked.representative.emailId}")
+    private String hearingBookedRepsEmailId;
+    @Value("${notification.hearingBooked.representative.smsId}")
+    private String hearingBookedRepsSmsId;
 
     @Value("${notification.appealReceived.appellant.emailId}")
     private String appealReceivedAppellantEmailId;
@@ -82,10 +90,10 @@ public class WithRepresentativePersonalisationTest extends AbstractFunctionalTes
         final String repsSmsId = getFieldValue(notificationEventType, "RepsSmsId");
 
         simulateCcdCallback(notificationEventType,
-                "representative/" + "no-reps-subscribed-" + notificationEventType.getId()
+                "representative/no-reps-subscribed-" + notificationEventType.getId()
                         + "Callback.json");
 
-        List<Notification> notifications = tryFetchNotificationsForTestCase(appellantEmailId,
+        List<Notification> notifications = tryFetchNotificationsForTestCaseWithFlag(true,appellantEmailId,
             appellantSmsId);
         assertNotificationBodyContains(notifications, appellantEmailId);
         assertNotificationBodyContains(notifications, appellantSmsId);
@@ -106,6 +114,7 @@ public class WithRepresentativePersonalisationTest extends AbstractFunctionalTes
             new Object[]{APPEAL_LAPSED_NOTIFICATION},
             new Object[]{APPEAL_WITHDRAWN_NOTIFICATION},
             new Object[]{APPEAL_RECEIVED_NOTIFICATION}
+            new Object[]{HEARING_BOOKED_NOTIFICATION}
         };
     }
 }
