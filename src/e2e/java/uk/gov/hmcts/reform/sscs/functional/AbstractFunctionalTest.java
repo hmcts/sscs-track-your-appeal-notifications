@@ -9,7 +9,6 @@ import static org.junit.Assert.assertNotNull;
 import static org.slf4j.LoggerFactory.getLogger;
 import static uk.gov.hmcts.reform.sscs.SscsCaseDataUtils.buildSscsCaseData;
 import static uk.gov.hmcts.reform.sscs.ccd.domain.EventType.SYA_APPEAL_CREATED;
-import static uk.gov.hmcts.reform.sscs.domain.notify.NotificationEventType.*;
 
 import helper.EnvironmentProfileValueSource;
 import io.restassured.RestAssured;
@@ -212,12 +211,7 @@ public abstract class AbstractFunctionalTest {
     }
 
     protected void simulateCcdCallback(NotificationEventType eventType) throws IOException {
-        String resource = "";
-        if (APPEAL_RECEIVED_NOTIFICATION.equals(eventType)) {
-            resource = "representative/";
-        }
-        resource = resource + eventType.getId() + "Callback.json";
-
+        String resource = eventType.getId() + "Callback.json";
         simulateCcdCallback(eventType, resource);
     }
 
@@ -268,7 +262,7 @@ public abstract class AbstractFunctionalTest {
         json = json.replace("12345656789", caseId.toString());
         json = json.replace("SC022/14/12423", caseReference);
 
-        if (eventType.equals(HEARING_BOOKED_NOTIFICATION)) {
+        if (eventType.equals(NotificationEventType.HEARING_BOOKED_NOTIFICATION)) {
             json = json.replace("2016-01-01", LocalDate.now().toString());
         }
 

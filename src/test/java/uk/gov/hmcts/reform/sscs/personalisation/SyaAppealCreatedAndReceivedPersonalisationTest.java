@@ -30,7 +30,7 @@ public class SyaAppealCreatedAndReceivedPersonalisationTest {
     }
 
     @Test
-    public void givenAAppeal_setMrnDetailsForTemplate() {
+    public void givenAnAppeal_setMrnDetailsForTemplate() {
         response = SscsCaseData.builder()
                 .ccdCaseId(CASE_ID).caseReference("SC/1234/5")
                 .appeal(Appeal.builder().benefitType(BenefitType.builder().code("PIP").build())
@@ -51,7 +51,7 @@ public class SyaAppealCreatedAndReceivedPersonalisationTest {
     }
 
     @Test
-    public void givenAAppeal_setMrnDetailsForTemplateWhenReasonForNoMrnMissing() {
+    public void givenAnAppeal_setMrnDetailsForTemplateWhenReasonForNoMrnMissing() {
         response = SscsCaseData.builder()
                 .ccdCaseId(CASE_ID).caseReference("SC/1234/5")
                 .appeal(Appeal.builder().benefitType(BenefitType.builder().code("PIP").build())
@@ -66,7 +66,7 @@ public class SyaAppealCreatedAndReceivedPersonalisationTest {
     }
 
     @Test
-    public void givenAAppeal_setYourDetailsForTemplate() {
+    public void givenAnAppeal_setYourDetailsForTemplate() {
         response = SscsCaseData.builder()
                 .ccdCaseId(CASE_ID).caseReference("SC/1234/5")
                 .appeal(Appeal.builder().benefitType(BenefitType.builder().code("PIP").build())
@@ -90,7 +90,7 @@ public class SyaAppealCreatedAndReceivedPersonalisationTest {
     }
 
     @Test
-    public void givenAAppealWithNoEmailOrPhoneProvided_setYourDetailsForTemplate() {
+    public void givenAnAppealWithNoEmailOrPhoneProvided_setYourDetailsForTemplate() {
         response = SscsCaseData.builder()
                 .ccdCaseId(CASE_ID).caseReference("SC/1234/5")
                 .appeal(Appeal.builder().benefitType(BenefitType.builder().code("PIP").build())
@@ -114,7 +114,7 @@ public class SyaAppealCreatedAndReceivedPersonalisationTest {
     }
 
     @Test
-    public void givenAAppealWithTextMessageReminders_setTextMessageReminderDetailsForTemplate() {
+    public void givenAnAppealWithTextMessageReminders_setTextMessageReminderDetailsForTemplate() {
         response = SscsCaseData.builder()
                 .ccdCaseId(CASE_ID).caseReference("SC/1234/5")
                 .subscriptions(Subscriptions.builder()
@@ -131,7 +131,7 @@ public class SyaAppealCreatedAndReceivedPersonalisationTest {
     }
 
     @Test
-    public void givenAAppealWithNoTextMessageReminders_setTextMessageReminderDetailsForTemplate() {
+    public void givenAnAppealWithNoTextMessageReminders_setTextMessageReminderDetailsForTemplate() {
         response = SscsCaseData.builder()
                 .ccdCaseId(CASE_ID).caseReference("SC/1234/5")
                 .subscriptions(Subscriptions.builder()
@@ -146,7 +146,7 @@ public class SyaAppealCreatedAndReceivedPersonalisationTest {
     }
 
     @Test
-    public void givenAAppealWithRepresentative_setRepresentativeDetailsForTemplate() {
+    public void givenAnAppealWithRepresentative_setRepresentativeDetailsForTemplate() {
         response = SscsCaseData.builder()
                 .ccdCaseId(CASE_ID).caseReference("SC/1234/5")
                 .appeal(Appeal.builder().rep(Representative.builder()
@@ -169,7 +169,7 @@ public class SyaAppealCreatedAndReceivedPersonalisationTest {
     }
 
     @Test
-    public void givenAAppealWithRepresentativeAndNoEmailOrPhoneOrOrganisationProvided_setRepresentativeDetailsForTemplate() {
+    public void givenAnAppealWithRepresentativeAndNoEmailOrPhoneOrOrganisationProvided_setRepresentativeDetailsForTemplate() {
         response = SscsCaseData.builder()
                 .ccdCaseId(CASE_ID).caseReference("SC/1234/5")
                 .appeal(Appeal.builder().rep(Representative.builder()
@@ -191,7 +191,7 @@ public class SyaAppealCreatedAndReceivedPersonalisationTest {
     }
 
     @Test
-    public void givenAAppealWithNoRepresentative_setRepresentativeDetailsForTemplate() {
+    public void givenAnAppealWithNoRepresentative_setRepresentativeDetailsForTemplate() {
         response = SscsCaseData.builder()
                 .ccdCaseId(CASE_ID).caseReference("SC/1234/5")
                 .appeal(Appeal.builder()

@@ -11,10 +11,9 @@ import org.springframework.stereotype.Component;
 import uk.gov.hmcts.reform.sscs.ccd.domain.*;
 import uk.gov.hmcts.reform.sscs.config.AppConstants;
 import uk.gov.hmcts.reform.sscs.domain.SscsCaseDataWrapper;
-import uk.gov.hmcts.reform.sscs.factory.CcdNotificationWrapper;
 
 @Component
-public class SyaAppealCreatedAndReceivedPersonalisation extends Personalisation<CcdNotificationWrapper> {
+public class SyaAppealCreatedAndReceivedPersonalisation extends WithRepresentativePersonalisation {
 
     @Override
     protected Map<String, String> create(SscsCaseDataWrapper responseWrapper) {
@@ -28,17 +27,7 @@ public class SyaAppealCreatedAndReceivedPersonalisation extends Personalisation<
         setReasonsForAppealingDetails(personalisation, ccdResponse);
         setHearingDetails(personalisation, ccdResponse);
         setHearingArrangementDetails(personalisation, ccdResponse);
-        setRepresentativeName(personalisation, ccdResponse);
 
-        return personalisation;
-    }
-
-    Map<String, String> setRepresentativeName(Map<String, String> personalisation, SscsCaseData sscsCaseData) {
-        if (null != (sscsCaseData.getAppeal().getRep()) && null != sscsCaseData.getAppeal().getRep().getName()) {
-            personalisation.put(AppConstants.REPRESENTATIVE_NAME, String.format("%s %s",
-                    sscsCaseData.getAppeal().getRep().getName().getFirstName(),
-                    sscsCaseData.getAppeal().getRep().getName().getLastName()));
-        }
         return personalisation;
     }
 
