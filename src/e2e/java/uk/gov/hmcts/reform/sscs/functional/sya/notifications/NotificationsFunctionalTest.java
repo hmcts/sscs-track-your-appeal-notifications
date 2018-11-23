@@ -6,6 +6,7 @@ import static uk.gov.hmcts.reform.sscs.domain.notify.NotificationEventType.APPEA
 import static uk.gov.hmcts.reform.sscs.domain.notify.NotificationEventType.DWP_RESPONSE_RECEIVED_NOTIFICATION;
 import static uk.gov.hmcts.reform.sscs.domain.notify.NotificationEventType.EVIDENCE_RECEIVED_NOTIFICATION;
 import static uk.gov.hmcts.reform.sscs.domain.notify.NotificationEventType.HEARING_BOOKED_NOTIFICATION;
+import static uk.gov.hmcts.reform.sscs.domain.notify.NotificationEventType.POSTPONEMENT_NOTIFICATION;
 import static uk.gov.hmcts.reform.sscs.domain.notify.NotificationEventType.SUBSCRIPTION_CREATED_NOTIFICATION;
 import static uk.gov.hmcts.reform.sscs.domain.notify.NotificationEventType.SUBSCRIPTION_UPDATED_NOTIFICATION;
 
@@ -47,6 +48,9 @@ public class NotificationsFunctionalTest extends AbstractFunctionalTest {
 
     @Value("${notification.hearingBooked.smsId}")
     private String hearingBookedSmsTemplateId;
+
+    @Value("${notification.hearingPostponed.emailId}")
+    private String hearingPostponedEmailTemplateId;
 
     @Value("${notification.subscriptionCreated.smsId}")
     private String subscriptionCreatedSmsTemplateId;
@@ -121,6 +125,13 @@ public class NotificationsFunctionalTest extends AbstractFunctionalTest {
                 hearingBookedEmailTemplateId,
                 hearingBookedSmsTemplateId
         );
+    }
+
+    @Test
+    public void shouldSendHearingPostponedNotification() throws NotificationClientException, IOException {
+        simulateCcdCallback(POSTPONEMENT_NOTIFICATION);
+
+        tryFetchNotificationsForTestCase(hearingPostponedEmailTemplateId);
     }
 
     @Test
