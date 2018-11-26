@@ -173,21 +173,27 @@ public class PersonalisationTest {
     @SuppressWarnings("Indentation")
     private Object[] generateNotificationTypeAndSubscriptionsScenarios() {
         return new Object[]{
-                new Object[]{APPEAL_RECEIVED_NOTIFICATION, null,  PAPER},
-                new Object[]{APPEAL_RECEIVED_NOTIFICATION, null, REGULAR},
-                new Object[]{APPEAL_RECEIVED_NOTIFICATION, null, ONLINE},
                 new Object[]{APPEAL_LAPSED_NOTIFICATION, APPELLANT, PAPER},
                 new Object[]{APPEAL_LAPSED_NOTIFICATION, APPELLANT, REGULAR},
                 new Object[]{APPEAL_LAPSED_NOTIFICATION, APPELLANT, ONLINE},
                 new Object[]{APPEAL_LAPSED_NOTIFICATION, REPRESENTATIVE, PAPER},
                 new Object[]{APPEAL_LAPSED_NOTIFICATION, REPRESENTATIVE, REGULAR},
                 new Object[]{APPEAL_LAPSED_NOTIFICATION, REPRESENTATIVE, ONLINE},
+                new Object[]{APPEAL_RECEIVED_NOTIFICATION, null, PAPER},
+                new Object[]{APPEAL_RECEIVED_NOTIFICATION, null, REGULAR},
+                new Object[]{APPEAL_RECEIVED_NOTIFICATION, null, ONLINE},
                 new Object[]{APPEAL_WITHDRAWN_NOTIFICATION, APPELLANT, PAPER},
                 new Object[]{APPEAL_WITHDRAWN_NOTIFICATION, APPELLANT, REGULAR},
                 new Object[]{APPEAL_WITHDRAWN_NOTIFICATION, APPELLANT, ONLINE},
                 new Object[]{APPEAL_WITHDRAWN_NOTIFICATION, REPRESENTATIVE, PAPER},
                 new Object[]{APPEAL_WITHDRAWN_NOTIFICATION, REPRESENTATIVE, REGULAR},
-                new Object[]{APPEAL_WITHDRAWN_NOTIFICATION, REPRESENTATIVE, ONLINE}
+                new Object[]{APPEAL_WITHDRAWN_NOTIFICATION, REPRESENTATIVE, ONLINE},
+                new Object[]{HEARING_BOOKED_NOTIFICATION, APPELLANT, PAPER},
+                new Object[]{HEARING_BOOKED_NOTIFICATION, APPELLANT, REGULAR},
+                new Object[]{HEARING_BOOKED_NOTIFICATION, APPELLANT, ONLINE},
+                new Object[]{HEARING_BOOKED_NOTIFICATION, REPRESENTATIVE, PAPER},
+                new Object[]{HEARING_BOOKED_NOTIFICATION, REPRESENTATIVE, REGULAR},
+                new Object[]{HEARING_BOOKED_NOTIFICATION, REPRESENTATIVE, ONLINE}
         };
     }
 

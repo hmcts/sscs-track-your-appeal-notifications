@@ -30,7 +30,6 @@ public class NotificationConfigTest {
     @Autowired
     private NotificationConfig notificationConfig;
 
-
     @Test
     @Parameters({"a64bce9a-9162-47ca-b3e7-cf5f85ca7bdc, f5b61f94-0b2b-4e8e-9c25-56e9830df7d4, PAPER, responseReceived",
             "1afd89f9-9935-4acb-b4f6-ba708b03a0d3, 4bba0b5d-a3f3-4fd9-a845-26af5eda042e, ORAL, responseReceived",
@@ -44,8 +43,13 @@ public class NotificationConfigTest {
             "e29a2275-553f-4e70-97f4-2994c095f281, f59440ee-19ca-4d47-a702-13e9cecaccbd, PAPER, appealWithdrawn.representative",
             "e29a2275-553f-4e70-97f4-2994c095f281, f59440ee-19ca-4d47-a702-13e9cecaccbd, ORAL, appealWithdrawn.representative",
             "8620e023-f663-477e-a771-9cfad50ee30f, 446c7b23-7342-42e1-adff-b4c367e951cb, PAPER, appealWithdrawn.appellant",
-            "8620e023-f663-477e-a771-9cfad50ee30f, 446c7b23-7342-42e1-adff-b4c367e951cb, ORAL, appealWithdrawn.appellant"
+            "8620e023-f663-477e-a771-9cfad50ee30f, 446c7b23-7342-42e1-adff-b4c367e951cb, ORAL, appealWithdrawn.appellant",
+            "fee16753-0bdb-43f1-9abb-b14b826e3b26, f900174a-a556-43b2-8042-bbf3e6090071, PAPER, hearingBooked.appellant",
+            "fee16753-0bdb-43f1-9abb-b14b826e3b26, f900174a-a556-43b2-8042-bbf3e6090071, ORAL, hearingBooked.appellant",
+            "a56e67cb-6b4b-41e3-8f4c-cd1cdb6809c1, e04c548d-1ba9-40b5-bf9b-ea5e7bbadbac, PAPER, hearingBooked.representative",
+            "a56e67cb-6b4b-41e3-8f4c-cd1cdb6809c1, e04c548d-1ba9-40b5-bf9b-ea5e7bbadbac, ORAL, hearingBooked.representative"
     })
+    
     public void given_templateNamesAndHearingType_should_getCorrectTemplate(String expectedEmailTemplateId,
                                                                             String expectedSmsTemplateId,
                                                                             AppealHearingType appealHearingType,
