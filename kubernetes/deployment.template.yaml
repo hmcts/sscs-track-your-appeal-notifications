@@ -1,0 +1,187 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: ${SERVICE_NAME}
+  namespace: ${NAMESPACE}
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: ${SERVICE_NAME}
+  template:
+    metadata:
+      labels:
+        app: ${SERVICE_NAME}
+    spec:
+      containers:
+      - image: ${IMAGE_NAME}
+        name: ${SERVICE_NAME}
+        env:
+        - name: INFRASTRUCTURE_ENV
+          value: preprod
+        - name: CORE_CASE_DATA_API_URL
+          value: http://ccd-data-store-api-aat.service.core-compute-aat.internal
+        - name: CORE_CASE_DATA_JURISDICTION_ID
+          value: SSCS
+        - name: CORE_CASE_DATA_CASE_TYPE_ID
+          value: Benefit
+        - name: COH_URL
+          value: http://coh-cor-aat.service.core-compute-aat.internal
+        - name: IDAM_URL
+          value: ${IDAM_URL}
+        - name: IDAM.S2S-AUTH.TOTP_SECRET
+          value: ${IDAM_S2S_AUTH_TOTP_SECRET}
+        - name: IDAM.S2S-AUTH
+          value: ${IDAM_S2S_AUTH}
+        - name: IDAM.S2S-AUTH.MICROSERVICE
+          value: ${IDAM_S2S_AUTH_MICROSERVICE}
+        - name: IDAM_SSCS_SYSTEMUPDATE_USER
+          value: ${IDAM_SSCS_SYSTEMUPDATE_USER}
+        - name: IDAM_SSCS_SYSTEMUPDATE_PASSWORD
+          value: ${IDAM_SSCS_SYSTEMUPDATE_PASSWORD}
+        - name: IDAM_OAUTH2_CLIENT_ID
+          value: sscs
+        - name: IDAM_OAUTH2_CLIENT_SECRET
+          value: ${IDAM_OAUTH2_CLIENT_SECRET}
+        - name: IDAM_OAUTH2_REDIRECT_URL
+          value: https://evidence-sharing-preprod.sscs.reform.hmcts.net
+        - name: NOTIFICATION_API_KEY
+          value: ${NOTIFICATION_API_KEY}
+        - name: NOTIFICATION_API_TEST_KEY
+          value: ${NOTIFICATION_API_TEST_KEY}
+        - name: EVIDENCE_SUBMISSION_INFO_LINK
+          value: https://track-appeal.preview.platform.hmcts.net/evidence/appeal_id
+        - name: SSCS_MANAGE_EMAILS_LINK
+          value: https://track-appeal.preview.platform.hmcts.net/manage-email-notifications/mac
+        - name: SSCS_TRACK_YOUR_APPEAL_LINK
+          value: https://track-appeal.nonprod.platform.hmcts.net/trackyourappeal/appeal_id
+        - name: HEARING_INFO_LINK
+          value: https://track-appeal.preview.platform.hmcts.net/abouthearing/appeal_id
+        - name: CLAIMING_EXPENSES_LINK
+          value: https://track-appeal.preview.platform.hmcts.net/expenses/appeal_id
+        - name: JOB_SCHEDULER_POLL_INTERVAL
+          value: "30000"
+        - name: EMAIL_MAC_SECRET_TEXT
+          value: ${EMAIL_MAC_SECRET_TEXT}
+        - name: ONLINE_HEARING_LINK
+          value: https://sscs-cor-frontend-aat-staging.service.core-compute-aat.internal
+        - name: JOB_SCHEDULER_DB_HOST
+          value: postgres
+        - name: JOB_SCHEDULER_DB_PORT
+          value: "5432"
+        - name: JOB_SCHEDULER_DB_PASSWORD
+          value: sscs
+        - name: JOB_SCHEDULER_DB_USERNAME
+          value: sscs
+        - name: JOB_SCHEDULER_DB_NAME
+          value: preview
+        - name: JOB_SCHEDULER_DB_CONNECTION_OPTIONS
+          value: ""
+        - name: MAX_ACTIVE_DB_CONNECTIONS
+          value: "70"
+        - name: HOURS_START_TIME
+          value: "0"
+        - name: HOURS_END_TIME
+          value: "23"
+        ports:
+          - containerPort: 8081
+        resources:
+          requests:
+            memory: "1024Mi"
+            cpu: "200m"
+          limits:
+            memory: "2048Mi"
+            cpu: "2500m"
+        readinessProbe:
+          timeoutSeconds: 10
+          initialDelaySeconds: 30
+          periodSeconds: 10
+          httpGet:
+            path: /health
+            port: 8081
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: ${SERVICE_NAME}
+  namespace: ${NAMESPACE}
+  labels:
+    app: ${SERVICE_NAME}
+spec:
+  ports:
+    - name: http
+      port: 80
+      targetPort: 8081
+  selector:
+    app: ${SERVICE_NAME}
+---
+apiVersion: extensions/v1beta1
+kind: Ingress
+metadata:
+  name: ${SERVICE_NAME}
+  namespace: ${NAMESPACE}
+  annotations:
+    kubernetes.io/ingress.class: traefik
+spec:
+  rules:
+  - host: ${SERVICE_FQDN}
+    http:
+      paths:
+      - path: /
+        backend:
+          serviceName: ${SERVICE_NAME}
+          servicePort: 80
+---
+apiVersion: extensions/v1beta1
+kind: Deployment
+metadata:
+  name: postgres
+spec:
+  replicas: 1
+  template:
+    metadata:
+      labels:
+        app: postgres
+    spec:
+      containers:
+      - name: postgres
+        image: postgres:10-alpine
+        imagePullPolicy: IfNotPresent
+        ports:
+          - containerPort: 5432
+
+        env:
+        - name: POSTGRES_PASSWORD
+          value: sscs
+        - name: POSTGRES_USER
+          value: sscs
+        - name: POSTGRES_DB
+          value: preview
+
+        resources:
+          requests:
+            memory: "256Mi"
+            cpu: "200m"
+          limits:
+            memory: "1024Mi"
+            cpu: "1000m"
+
+        readinessProbe:
+          exec:
+            command:
+            - sh
+            - -c
+            - exec pg_isready -U sscs
+          initialDelaySeconds: 15
+          timeoutSeconds: 2
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: postgres
+spec:
+  ports:
+  - port: 5432
+    targetPort: 5432
+  selector:
+    app: postgres

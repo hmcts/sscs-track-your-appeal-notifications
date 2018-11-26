@@ -243,7 +243,8 @@ public class Personalisation<E extends NotificationWrapper> {
         String emailTemplateName = notificationEventType.getId();
         if (APPEAL_LAPSED_NOTIFICATION.equals(notificationEventType)
             || APPEAL_WITHDRAWN_NOTIFICATION.equals(notificationEventType)
-            || ADJOURNED_NOTIFICATION.equals(notificationEventType)) {
+            || ADJOURNED_NOTIFICATION.equals(notificationEventType)
+            || HEARING_BOOKED_NOTIFICATION.equals(notificationEventType)) {
             emailTemplateName = emailTemplateName + "." + subscriptionType.name().toLowerCase();
         }
         return emailTemplateName;
