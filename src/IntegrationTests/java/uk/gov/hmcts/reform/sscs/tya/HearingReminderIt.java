@@ -117,7 +117,7 @@ public class HearingReminderIt {
 
         sendEvent("hearingBooked");
 
-        IntegrationTestHelper.assertScheduledJobCount(quartzScheduler, "Hearing reminders scheduled", "hearingReminder", 2);
+        IntegrationTestHelper.assertScheduledJobCount(quartzScheduler, "Hearing reminders scheduled", "hearingReminder", 4);
 
         IntegrationTestHelper.assertScheduledJobTriggerAt(
             quartzScheduler,
