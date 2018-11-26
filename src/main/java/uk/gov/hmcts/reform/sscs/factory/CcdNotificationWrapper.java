@@ -85,7 +85,8 @@ public class CcdNotificationWrapper implements NotificationWrapper {
         subscriptionWithTypeList.add(new SubscriptionWithType(getAppellantSubscription(), APPELLANT));
         if (APPEAL_LAPSED_NOTIFICATION.equals(getNotificationType())
             || APPEAL_WITHDRAWN_NOTIFICATION.equals(getNotificationType())
-            || APPEAL_DORMANT_NOTIFICATION.equals(getNotificationType())) {
+            || APPEAL_DORMANT_NOTIFICATION.equals(getNotificationType())
+            || HEARING_BOOKED_NOTIFICATION.equals(getNotificationType())) {
             subscriptionWithTypeList.add(new SubscriptionWithType(getRepresentativeSubscription(), REPRESENTATIVE));
         }
         return subscriptionWithTypeList;

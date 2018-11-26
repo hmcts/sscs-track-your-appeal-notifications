@@ -69,6 +69,11 @@ public class PersonalisationFactoryTest {
     @Test
     public void createRepsPersonalisationWhenAppealDormantNotificationApplied() {
         Personalisation result = factory.apply(APPEAL_DORMANT_NOTIFICATION);
+    }
+
+    @Test
+    public void createRepsPersonalisationWhenHearingBookedNotificationApplied() {
+        Personalisation result = factory.apply(HEARING_BOOKED_NOTIFICATION);
         assertEquals(withRepresentativePersonalisation, result);
     }
 

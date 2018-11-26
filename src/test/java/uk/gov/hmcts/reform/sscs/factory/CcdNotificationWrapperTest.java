@@ -70,7 +70,7 @@ public class CcdNotificationWrapperTest {
     }
 
     @Test
-    @Parameters({"APPEAL_LAPSED_NOTIFICATION","APPEAL_WITHDRAWN_NOTIFICATION", "APPEAL_DORMANT_NOTIFICATION"})
+    @Parameters({"APPEAL_LAPSED_NOTIFICATION","APPEAL_WITHDRAWN_NOTIFICATION", "HEARING_BOOKED_NOTIFICATION", "APPEAL_DORMANT_NOTIFICATION"})
     public void givenSubscriptions_shouldGetSubscriptionTypeList(NotificationEventType notificationEventType) {
         ccdNotificationWrapper = buildCcdNotificationWrapperBasedOnEventType(notificationEventType);
         List<SubscriptionWithType> subsWithTypeList = ccdNotificationWrapper.getSubscriptionsBasedOnNotificationType();
@@ -93,6 +93,7 @@ public class CcdNotificationWrapperTest {
             .filter(type -> !(type.equals(APPEAL_LAPSED_NOTIFICATION)
                 || type.equals(APPEAL_WITHDRAWN_NOTIFICATION)
                 || type.equals(APPEAL_DORMANT_NOTIFICATION)
+                || type.equals(HEARING_BOOKED_NOTIFICATION)
             )).toArray();
     }
 
