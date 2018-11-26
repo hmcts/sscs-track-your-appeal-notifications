@@ -44,12 +44,14 @@ public class NotificationConfigTest {
             "e29a2275-553f-4e70-97f4-2994c095f281, f59440ee-19ca-4d47-a702-13e9cecaccbd, ORAL, appealWithdrawn.representative",
             "8620e023-f663-477e-a771-9cfad50ee30f, 446c7b23-7342-42e1-adff-b4c367e951cb, PAPER, appealWithdrawn.appellant",
             "8620e023-f663-477e-a771-9cfad50ee30f, 446c7b23-7342-42e1-adff-b4c367e951cb, ORAL, appealWithdrawn.appellant",
+            "7af36950-fc63-45d1-907d-f472fac7af06, 345f802b-7089-4f46-a17f-bf534b272740, PAPER, evidenceReceived.representative",
+            "30260c0b-5575-4f4e-bce4-73cf3f245c2d, 345f802b-7089-4f46-a17f-bf534b272740, ORAL, evidenceReceived.representative",
             "fee16753-0bdb-43f1-9abb-b14b826e3b26, f900174a-a556-43b2-8042-bbf3e6090071, PAPER, hearingBooked.appellant",
             "fee16753-0bdb-43f1-9abb-b14b826e3b26, f900174a-a556-43b2-8042-bbf3e6090071, ORAL, hearingBooked.appellant",
             "a56e67cb-6b4b-41e3-8f4c-cd1cdb6809c1, e04c548d-1ba9-40b5-bf9b-ea5e7bbadbac, PAPER, hearingBooked.representative",
             "a56e67cb-6b4b-41e3-8f4c-cd1cdb6809c1, e04c548d-1ba9-40b5-bf9b-ea5e7bbadbac, ORAL, hearingBooked.representative"
     })
-    
+
     public void given_templateNamesAndHearingType_should_getCorrectTemplate(String expectedEmailTemplateId,
                                                                             String expectedSmsTemplateId,
                                                                             AppealHearingType appealHearingType,
