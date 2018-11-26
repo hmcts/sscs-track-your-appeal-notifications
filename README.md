@@ -107,6 +107,7 @@ run-notify up -d
 This starts the CCD applications with Track-your-appeal-notifications in Docker with just one command
 
 ## Job scheduler service
+
 This project imports the sscs job scheduler service JAR (https://github.com/hmcts/sscs-job-scheduler).
 This is used to schedule reminders in the future. The management of the database is handled within this 
 project using a PostgreSQL database. 
