@@ -388,6 +388,42 @@ public class NotificationsIt {
                         "yes",
                         "1",
                         "2"
+                },
+                new Object[]{
+                        POSTPONEMENT_NOTIFICATION,
+                        "paper",
+                        Arrays.asList("08959288-e09a-472d-80b8-af79bfcbb437", "0a48bd48-f79c-4863-b6e3-e8fa69019c34"),
+                        Collections.EMPTY_LIST,
+                        "yes",
+                        "no",
+                        "yes",
+                        "no",
+                        "2",
+                        "0"
+                },
+                new Object[]{
+                        POSTPONEMENT_NOTIFICATION,
+                        "oral",
+                        Arrays.asList("08959288-e09a-472d-80b8-af79bfcbb437", "0a48bd48-f79c-4863-b6e3-e8fa69019c34"),
+                        Collections.EMPTY_LIST,
+                        "yes",
+                        "no",
+                        "Yes",
+                        "no",
+                        "2",
+                        "0"
+                },
+                new Object[]{
+                        POSTPONEMENT_NOTIFICATION,
+                        "paper",
+                        Collections.singletonList("0a48bd48-f79c-4863-b6e3-e8fa69019c34"),
+                        Collections.EMPTY_LIST,
+                        "no",
+                        "no",
+                        "yes",
+                        "no",
+                        "1",
+                        "0"
                 }
         };
     }
