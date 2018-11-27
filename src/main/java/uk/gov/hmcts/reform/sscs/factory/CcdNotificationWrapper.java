@@ -6,6 +6,7 @@ import static uk.gov.hmcts.reform.sscs.domain.notify.NotificationEventType.APPEA
 import static uk.gov.hmcts.reform.sscs.domain.notify.NotificationEventType.APPEAL_RECEIVED_NOTIFICATION;
 import static uk.gov.hmcts.reform.sscs.domain.notify.NotificationEventType.APPEAL_WITHDRAWN_NOTIFICATION;
 import static uk.gov.hmcts.reform.sscs.domain.notify.NotificationEventType.HEARING_BOOKED_NOTIFICATION;
+import static uk.gov.hmcts.reform.sscs.domain.notify.NotificationEventType.POSTPONEMENT_NOTIFICATION;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -88,7 +89,8 @@ public class CcdNotificationWrapper implements NotificationWrapper {
         subscriptionWithTypeList.add(new SubscriptionWithType(getAppellantSubscription(), APPELLANT));
         if (APPEAL_LAPSED_NOTIFICATION.equals(getNotificationType())
             || APPEAL_WITHDRAWN_NOTIFICATION.equals(getNotificationType())
-            || APPEAL_RECEIVED_NOTIFICATION.equals(getNotificationType()) 
+            || APPEAL_RECEIVED_NOTIFICATION.equals(getNotificationType())
+            || POSTPONEMENT_NOTIFICATION.equals(getNotificationType())
             || HEARING_BOOKED_NOTIFICATION.equals(getNotificationType())) {
             subscriptionWithTypeList.add(new SubscriptionWithType(getRepresentativeSubscription(), REPRESENTATIVE));
         }
