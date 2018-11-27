@@ -99,7 +99,11 @@ notification:
     representative:
       emailId: 75357eb8-bba7-4bdf-b879-b535bc3fb50a
       smsId: a170d63e-b04e-4da5-ad89-d93644b6c1e9
-  hearingPostponed.emailId: 08959288-e09a-472d-80b8-af79bfcbb437
+  hearingPostponed:
+    appellant:
+      emailId: 08959288-e09a-472d-80b8-af79bfcbb437
+    representative:
+      emailId: 0a48bd48-f79c-4863-b6e3-e8fa69019c34
   appealLapsed:
     appellant:
       emailId: 8ce8d794-75e8-49a0-b4d2-0c6cd2061c11
