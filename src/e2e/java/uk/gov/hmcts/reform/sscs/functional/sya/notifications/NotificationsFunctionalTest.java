@@ -18,12 +18,6 @@ public class NotificationsFunctionalTest extends AbstractFunctionalTest {
     @Value("${track.appeal.link}")
     private String tyaLink;
 
-    @Value("${notification.appealReceived.emailId}")
-    private String appealReceivedEmailTemplateId;
-
-    @Value("${notification.appealReceived.smsId}")
-    private String appealReceivedSmsTemplateId;
-
     @Value("${notification.evidenceReceived.emailId}")
     private String evidenceReceivedEmailTemplateId;
 
@@ -72,16 +66,6 @@ public class NotificationsFunctionalTest extends AbstractFunctionalTest {
 
     public NotificationsFunctionalTest() {
         super(30);
-    }
-
-    @Test
-    public void shouldSendAppealReceivedNotification() throws IOException, NotificationClientException {
-        simulateCcdCallback(APPEAL_RECEIVED_NOTIFICATION);
-
-        tryFetchNotificationsForTestCase(
-                appealReceivedEmailTemplateId,
-                appealReceivedSmsTemplateId
-        );
     }
 
     @Test

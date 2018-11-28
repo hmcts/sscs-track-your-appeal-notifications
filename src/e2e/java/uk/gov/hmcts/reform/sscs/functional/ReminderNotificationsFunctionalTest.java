@@ -70,7 +70,7 @@ public class ReminderNotificationsFunctionalTest extends AbstractFunctionalTest 
     @Test
     public void shouldSendNotificationsWhenAppealReceivedEventIsReceived() throws IOException, NotificationClientException {
 
-        simulateCcdCallback(APPEAL_RECEIVED_NOTIFICATION);
+        simulateCcdCallback(APPEAL_RECEIVED_NOTIFICATION,"representative/" + APPEAL_RECEIVED_NOTIFICATION.getId() + "Callback.json");
 
         List<Notification> notifications =
             tryFetchNotificationsForTestCase(
