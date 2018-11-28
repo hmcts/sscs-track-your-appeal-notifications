@@ -172,6 +172,10 @@ notification:
   decision_issued_2:
     emailId: 5b0df251-49b9-46d5-b347-37a81ab77f19
     smsId: 04e778fd-71a8-4c27-b423-aa7485a81a9c
+  addRepresentative:
+    representative:
+      emailId: 652753bf-59b4-46eb-9c24-bd762338a098
+      smsId: 0e44927e-168b-4510-ac57-6932fda7aec1
   online:
     responseReceived:
       emailId: 90f0ed29-a616-4ce0-b4ef-108391f5d90e

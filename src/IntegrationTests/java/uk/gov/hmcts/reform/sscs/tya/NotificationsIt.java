@@ -13,10 +13,7 @@ import static org.mockito.Mockito.never;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
-import static uk.gov.hmcts.reform.sscs.domain.notify.NotificationEventType.APPEAL_LAPSED_NOTIFICATION;
-import static uk.gov.hmcts.reform.sscs.domain.notify.NotificationEventType.APPEAL_RECEIVED_NOTIFICATION;
-import static uk.gov.hmcts.reform.sscs.domain.notify.NotificationEventType.APPEAL_WITHDRAWN_NOTIFICATION;
-import static uk.gov.hmcts.reform.sscs.domain.notify.NotificationEventType.POSTPONEMENT_NOTIFICATION;
+import static uk.gov.hmcts.reform.sscs.domain.notify.NotificationEventType.*;
 
 import java.io.File;
 import java.io.IOException;
@@ -384,6 +381,30 @@ public class NotificationsIt {
                         "yes",
                         "1",
                         "2"
+                },
+                new Object[]{
+                        ADD_REPRESENTATIVE,
+                        "paper",
+                        Collections.singletonList("652753bf-59b4-46eb-9c24-bd762338a098"),
+                        Collections.singletonList("0e44927e-168b-4510-ac57-6932fda7aec1"),
+                        "no",
+                        "no",
+                        "yes",
+                        "yes",
+                        "1",
+                        "1"
+                },
+                new Object[]{
+                        ADD_REPRESENTATIVE,
+                        "oral",
+                        Collections.singletonList("652753bf-59b4-46eb-9c24-bd762338a098"),
+                        Collections.singletonList("0e44927e-168b-4510-ac57-6932fda7aec1"),
+                        "no",
+                        "no",
+                        "yes",
+                        "yes",
+                        "1",
+                        "1"
                 },
                 new Object[]{
                         POSTPONEMENT_NOTIFICATION,

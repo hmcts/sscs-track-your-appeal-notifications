@@ -245,6 +245,7 @@ public class Personalisation<E extends NotificationWrapper> {
             || APPEAL_WITHDRAWN_NOTIFICATION.equals(notificationEventType)
             || APPEAL_RECEIVED_NOTIFICATION.equals(notificationEventType)
             || POSTPONEMENT_NOTIFICATION.equals(notificationEventType)
+            || ADD_REPRESENTATIVE.equals(notificationEventType)
             || HEARING_BOOKED_NOTIFICATION.equals(notificationEventType)) {
             emailTemplateName = emailTemplateName + "." + subscriptionType.name().toLowerCase();
         }

@@ -36,7 +36,7 @@ public class WithRepresentativePersonalisationTest extends AbstractFunctionalTes
     @Value("${notification.hearingBooked.appellant.emailId}")
     private String hearingBookedAppellantEmailId;
     @Value("${notification.hearingBooked.appellant.smsId}")
-    private String hearingBookedAppellantSmsId;    
+    private String hearingBookedAppellantSmsId;
     @Value("${notification.hearingBooked.representative.emailId}")
     private String hearingBookedRepsEmailId;
     @Value("${notification.hearingBooked.representative.smsId}")
@@ -54,6 +54,11 @@ public class WithRepresentativePersonalisationTest extends AbstractFunctionalTes
     private String hearingPostponedAppellantEmailId;
     @Value("${notification.hearingPostponed.representative.emailId}")
     private String hearingPostponedRepsEmailId;
+
+    @Value("${notification.addRepresentative.representative.emailId}")
+    private String addRepresentativeRepsEmailId;
+    @Value("${notification.addRepresentative.representative.smsId}")
+    private String addRepresentativeRepsSmsId;
 
     public WithRepresentativePersonalisationTest() {
         super(30);
@@ -145,6 +150,26 @@ public class WithRepresentativePersonalisationTest extends AbstractFunctionalTes
         List<Notification> notificationsNotFound = tryFetchNotificationsForTestCaseWithFlag(true,
             repsEmailId);
         assertTrue(notificationsNotFound.isEmpty());
+    }
+
+    @Test
+    public void givenAddRepresentativeEventAndRepsSubscription_shouldSendNotificationToReps()
+        throws Exception {
+
+        final String repsEmailId = getFieldValue(ADD_REPRESENTATIVE, "RepsEmailId");
+        final String repsSmsId = getFieldValue(ADD_REPRESENTATIVE, "RepsSmsId");
+
+
+        simulateCcdCallback(ADD_REPRESENTATIVE,
+            "representative/" + ADD_REPRESENTATIVE.getId()
+                + "Callback.json");
+
+        List<Notification> notifications = tryFetchNotificationsForTestCase(
+            repsEmailId, repsSmsId);
+
+        String representativeName = "Harry Potter";
+        assertNotificationBodyContains(notifications, repsEmailId, representativeName);
+        assertNotificationBodyContains(notifications, repsSmsId);
     }
 
     private String getFieldValue(NotificationEventType notificationEventType, String fieldName) throws Exception {

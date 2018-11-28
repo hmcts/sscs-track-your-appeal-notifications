@@ -2,11 +2,7 @@ package uk.gov.hmcts.reform.sscs.factory;
 
 import static org.hamcrest.CoreMatchers.is;
 import static org.junit.Assert.assertThat;
-import static uk.gov.hmcts.reform.sscs.domain.notify.NotificationEventType.APPEAL_LAPSED_NOTIFICATION;
-import static uk.gov.hmcts.reform.sscs.domain.notify.NotificationEventType.APPEAL_RECEIVED_NOTIFICATION;
-import static uk.gov.hmcts.reform.sscs.domain.notify.NotificationEventType.APPEAL_WITHDRAWN_NOTIFICATION;
-import static uk.gov.hmcts.reform.sscs.domain.notify.NotificationEventType.HEARING_BOOKED_NOTIFICATION;
-import static uk.gov.hmcts.reform.sscs.domain.notify.NotificationEventType.POSTPONEMENT_NOTIFICATION;
+import static uk.gov.hmcts.reform.sscs.domain.notify.NotificationEventType.*;
 
 import java.util.Arrays;
 import java.util.List;
@@ -74,7 +70,7 @@ public class CcdNotificationWrapperTest {
     }
 
     @Test
-    @Parameters({"APPEAL_LAPSED_NOTIFICATION","APPEAL_WITHDRAWN_NOTIFICATION","POSTPONEMENT_NOTIFICATION","HEARING_BOOKED_NOTIFICATION","APPEAL_RECEIVED_NOTIFICATION"})
+    @Parameters({"APPEAL_LAPSED_NOTIFICATION","APPEAL_WITHDRAWN_NOTIFICATION","POSTPONEMENT_NOTIFICATION","HEARING_BOOKED_NOTIFICATION","APPEAL_RECEIVED_NOTIFICATION","ADD_REPRESENTATIVE"})
     public void givenSubscriptions_shouldGetSubscriptionTypeList(NotificationEventType notificationEventType) {
         ccdNotificationWrapper = buildCcdNotificationWrapperBasedOnEventType(notificationEventType);
         List<SubscriptionWithType> subsWithTypeList = ccdNotificationWrapper.getSubscriptionsBasedOnNotificationType();
@@ -98,6 +94,7 @@ public class CcdNotificationWrapperTest {
                 || type.equals(APPEAL_WITHDRAWN_NOTIFICATION)
                 || type.equals(APPEAL_RECEIVED_NOTIFICATION)
                 || type.equals(POSTPONEMENT_NOTIFICATION)
+                || type.equals(ADD_REPRESENTATIVE)
                 || type.equals(HEARING_BOOKED_NOTIFICATION)
                 )).toArray();
     }
