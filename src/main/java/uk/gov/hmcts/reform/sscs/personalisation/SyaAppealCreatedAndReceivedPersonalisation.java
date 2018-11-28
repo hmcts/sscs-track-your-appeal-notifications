@@ -2,18 +2,18 @@ package uk.gov.hmcts.reform.sscs.personalisation;
 
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Map;
-import java.util.StringJoiner;
+import java.util.*;
 import org.apache.commons.lang.StringUtils;
 import org.springframework.stereotype.Component;
+import org.springframework.util.CollectionUtils;
 import uk.gov.hmcts.reform.sscs.ccd.domain.*;
 import uk.gov.hmcts.reform.sscs.config.AppConstants;
 import uk.gov.hmcts.reform.sscs.domain.SscsCaseDataWrapper;
 
 @Component
 public class SyaAppealCreatedAndReceivedPersonalisation extends WithRepresentativePersonalisation {
+
+    public static final String NOT_PROVIDED = "Not provided";
 
     @Override
     protected Map<String, String> create(SscsCaseDataWrapper responseWrapper) {
@@ -69,9 +69,9 @@ public class SyaAppealCreatedAndReceivedPersonalisation extends WithRepresentati
                 .append("Address: ")
                 .append(appeal.getAppellant().getAddress().getFullAddress() + "\n\n")
                 .append("Email: ")
-                .append(getOptionalField(appeal.getAppellant().getContact().getEmail(), "Not provided") + "\n\n")
+                .append(getOptionalField(appeal.getAppellant().getContact().getEmail(), NOT_PROVIDED) + "\n\n")
                 .append("Phone: ")
-                .append(getOptionalField(appeal.getAppellant().getContact().getPhone(), "Not provided"))
+                .append(getOptionalField(appeal.getAppellant().getContact().getPhone(), NOT_PROVIDED))
                 .toString();
     }
 
@@ -110,13 +110,13 @@ public class SyaAppealCreatedAndReceivedPersonalisation extends WithRepresentati
             representativeBuilder.append("\n\nName: ")
                     .append(representative.getName().getFullNameNoTitle() + "\n\n")
                     .append("Organisation: ")
-                    .append(getOptionalField(representative.getOrganisation(), "Not provided") + "\n\n")
+                    .append(getOptionalField(representative.getOrganisation(), NOT_PROVIDED) + "\n\n")
                     .append("Address: ")
                     .append(representative.getAddress().getFullAddress() + "\n\n")
                     .append("Email: ")
-                    .append(getOptionalField(representative.getContact().getEmail(), "Not provided") + "\n\n")
+                    .append(getOptionalField(representative.getContact().getEmail(), NOT_PROVIDED) + "\n\n")
                     .append("Phone: ")
-                    .append(getOptionalField(representative.getContact().getPhone(), "Not provided"))
+                    .append(getOptionalField(representative.getContact().getPhone(), NOT_PROVIDED))
                     .toString();
         }
         return representativeBuilder.toString();
@@ -141,7 +141,7 @@ public class SyaAppealCreatedAndReceivedPersonalisation extends WithRepresentati
         }
 
         appealReasonsBuilder.append("Anything else you want to tell the tribunal: ")
-                .append(getOptionalField(appealReasons.getOtherReasons(), "Not provided"));
+                .append(getOptionalField(appealReasons.getOtherReasons(), NOT_PROVIDED));
 
         return appealReasonsBuilder.toString();
     }
@@ -157,7 +157,8 @@ public class SyaAppealCreatedAndReceivedPersonalisation extends WithRepresentati
                 .append("Attending the hearing: ")
                 .append(hearingOptions.getWantsToAttend().toLowerCase());
 
-        if (hearingOptions.getWantsToAttend().toLowerCase().equals("yes") && hearingOptions.getExcludeDates() != null && hearingOptions.getExcludeDates().size() > 0) {
+        if (hearingOptions.getWantsToAttend().equalsIgnoreCase("yes") && hearingOptions.getExcludeDates() != null && !CollectionUtils.isEmpty(
+        hearingOptions.getExcludeDates())) {
             hearingOptionsBuilder.append("\n\nDates you can't attend: ");
 
             StringJoiner joiner = new StringJoiner(", ");
@@ -194,7 +195,7 @@ public class SyaAppealCreatedAndReceivedPersonalisation extends WithRepresentati
     }
 
     private String buildHearingArrangements(HearingOptions hearingOptions) {
-        String languageInterpreterRequired = convertBooleanToRequiredText(hearingOptions.getLanguageInterpreter() != null && hearingOptions.getLanguageInterpreter().toLowerCase().equals("yes") ? true : false);
+        String languageInterpreterRequired = convertBooleanToRequiredText(hearingOptions.getLanguageInterpreter() != null && hearingOptions.getLanguageInterpreter().equalsIgnoreCase("yes"));
 
         return new StringBuilder()
                 .append("Language interpreter: ")
@@ -211,7 +212,7 @@ public class SyaAppealCreatedAndReceivedPersonalisation extends WithRepresentati
     }
 
     private Boolean findHearingArrangement(String field, List<String> arrangements) {
-        return (arrangements != null && arrangements.contains(field)) ? true : false;
+        return (arrangements != null && arrangements.contains(field));
     }
 
     private String convertBooleanToRequiredText(Boolean value) {
