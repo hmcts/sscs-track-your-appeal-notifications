@@ -13,7 +13,7 @@ import uk.gov.hmcts.reform.sscs.domain.SscsCaseDataWrapper;
 @Component
 public class SyaAppealCreatedAndReceivedPersonalisation extends WithRepresentativePersonalisation {
 
-    public static final String NOT_PROVIDED = "Not provided";
+    private static final String NOT_PROVIDED = "Not provided";
 
     @Override
     protected Map<String, String> create(SscsCaseDataWrapper responseWrapper) {
@@ -157,8 +157,7 @@ public class SyaAppealCreatedAndReceivedPersonalisation extends WithRepresentati
                 .append("Attending the hearing: ")
                 .append(hearingOptions.getWantsToAttend().toLowerCase());
 
-        if (hearingOptions.getWantsToAttend().equalsIgnoreCase("yes") && hearingOptions.getExcludeDates() != null && !CollectionUtils.isEmpty(
-        hearingOptions.getExcludeDates())) {
+        if (hearingOptions.getWantsToAttend().equalsIgnoreCase("yes") && hearingOptions.getExcludeDates() != null && !CollectionUtils.isEmpty(hearingOptions.getExcludeDates())) {
             hearingOptionsBuilder.append("\n\nDates you can't attend: ");
 
             StringJoiner joiner = new StringJoiner(", ");
