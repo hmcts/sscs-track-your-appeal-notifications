@@ -131,7 +131,7 @@ public class SyaAppealCreatedAndReceivedPersonalisation extends WithRepresentati
     private String buildReasonsForAppealingDetails(AppealReasons appealReasons) {
         StringBuilder appealReasonsBuilder = new StringBuilder();
 
-        if (appealReasons.getReasons() != null && appealReasons.getReasons().size() > 0) {
+        if (appealReasons.getReasons() != null && !CollectionUtils.isEmpty(appealReasons.getReasons())) {
             for (AppealReason reason : appealReasons.getReasons()) {
                 appealReasonsBuilder.append("What you disagree with: ")
                         .append(reason.getValue().getDescription() + "\n\n")
