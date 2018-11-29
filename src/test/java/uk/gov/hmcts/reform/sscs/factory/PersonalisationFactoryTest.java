@@ -9,10 +9,7 @@ import org.junit.Before;
 import org.junit.Test;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
-import uk.gov.hmcts.reform.sscs.personalisation.CohPersonalisation;
-import uk.gov.hmcts.reform.sscs.personalisation.Personalisation;
-import uk.gov.hmcts.reform.sscs.personalisation.SubscriptionPersonalisation;
-import uk.gov.hmcts.reform.sscs.personalisation.WithRepresentativePersonalisation;
+import uk.gov.hmcts.reform.sscs.personalisation.*;
 
 public class PersonalisationFactoryTest {
 
@@ -28,6 +25,9 @@ public class PersonalisationFactoryTest {
     @Mock
     private WithRepresentativePersonalisation withRepresentativePersonalisation;
 
+    @Mock
+    private SyaAppealCreatedAndReceivedPersonalisation syaAppealCreatedAndReceivedPersonalisation;
+
     @InjectMocks
     private PersonalisationFactory factory;
 
@@ -38,7 +38,7 @@ public class PersonalisationFactoryTest {
 
     @Test
     public void createPersonalisationWhenNotificationApplied() {
-        Personalisation result = factory.apply(APPEAL_RECEIVED_NOTIFICATION);
+        Personalisation result = factory.apply(ADJOURNED_NOTIFICATION);
         assertEquals(personalisation, result);
     }
 
@@ -67,8 +67,15 @@ public class PersonalisationFactoryTest {
     }
 
     @Test
+    public void createRepsPersonalisationWhenReceivedNotificationApplied() {
+        Personalisation result = factory.apply(APPEAL_RECEIVED_NOTIFICATION);
+        assertEquals(syaAppealCreatedAndReceivedPersonalisation, result);
+    }
+
+    @Test  
     public void createRepsPersonalisationWhenHearingPostponeNotificationApplied() {
         Personalisation result = factory.apply(POSTPONEMENT_NOTIFICATION);
+        assertEquals(withRepresentativePersonalisation, result);
     }
   
     @Test
