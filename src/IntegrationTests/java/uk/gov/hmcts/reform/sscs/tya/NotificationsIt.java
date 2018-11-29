@@ -365,6 +365,7 @@ public class NotificationsIt {
                         "1",
                         "2"
                 },
+
                 new Object[]{
                         ADJOURNED_NOTIFICATION,
                         "paper",
@@ -430,6 +431,30 @@ public class NotificationsIt {
                         "paper",
                         Collections.singletonList("4b1ee55b-abd1-4e7e-b0ed-693d8df1e741"),
                         Arrays.asList("ede384aa-0b6e-4311-9f01-ee547573a07b", "99bd4a56-256c-4de8-b187-d43a8dde466f"),
+                        "no",
+                        "yes",
+                        "yes",
+                        "yes",
+                        "1",
+                        "2"
+                },
+                new Object[]{
+                        APPEAL_DORMANT_NOTIFICATION,
+                        "paper",
+                        Arrays.asList("976bdb6c-8a86-48cf-9e0f-7989acaec0c2", "b74ea5d4-dba2-4148-b822-d102cedbea12"),
+                        Arrays.asList("1aa60c8a-1b6f-4ee1-88ae-51c1cef0ea2b", "4562984e-2854-4191-81d9-cffbe5111015"),
+                        "yes",
+                        "yes",
+                        "yes",
+                        "yes",
+                        "2",
+                        "2"
+                },
+                new Object[]{
+                        APPEAL_DORMANT_NOTIFICATION,
+                        "paper",
+                        Collections.singletonList("b74ea5d4-dba2-4148-b822-d102cedbea12"),
+                        Arrays.asList("1aa60c8a-1b6f-4ee1-88ae-51c1cef0ea2b", "4562984e-2854-4191-81d9-cffbe5111015"),
                         "no",
                         "yes",
                         "yes",
