@@ -244,6 +244,9 @@ public class Personalisation<E extends NotificationWrapper> {
         if (APPEAL_LAPSED_NOTIFICATION.equals(notificationEventType)
             || APPEAL_WITHDRAWN_NOTIFICATION.equals(notificationEventType)
             || SYA_APPEAL_CREATED_NOTIFICATION.equals(notificationEventType)
+            || APPEAL_DORMANT_NOTIFICATION.equals(notificationEventType)
+            || ADJOURNED_NOTIFICATION.equals(notificationEventType)
+            || APPEAL_RECEIVED_NOTIFICATION.equals(notificationEventType)
             || POSTPONEMENT_NOTIFICATION.equals(notificationEventType)
             || HEARING_BOOKED_NOTIFICATION.equals(notificationEventType)) {
             emailTemplateName = emailTemplateName + "." + subscriptionType.name().toLowerCase();

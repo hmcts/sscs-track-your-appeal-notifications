@@ -14,9 +14,6 @@ import uk.gov.hmcts.reform.sscs.personalisation.*;
 public class PersonalisationFactoryTest {
 
     @Mock
-    private SyaAppealCreatedPersonalisation syaAppealCreatedPersonalisation;
-
-    @Mock
     private SubscriptionPersonalisation subscriptionPersonalisation;
 
     @Mock
@@ -28,6 +25,9 @@ public class PersonalisationFactoryTest {
     @Mock
     private WithRepresentativePersonalisation withRepresentativePersonalisation;
 
+    @Mock
+    private SyaAppealCreatedAndReceivedPersonalisation syaAppealCreatedAndReceivedPersonalisation;
+
     @InjectMocks
     private PersonalisationFactory factory;
 
@@ -38,7 +38,7 @@ public class PersonalisationFactoryTest {
 
     @Test
     public void createPersonalisationWhenNotificationApplied() {
-        Personalisation result = factory.apply(APPEAL_RECEIVED_NOTIFICATION);
+        Personalisation result = factory.apply(DO_NOT_SEND);
         assertEquals(personalisation, result);
     }
 
@@ -69,7 +69,25 @@ public class PersonalisationFactoryTest {
     @Test
     public void createSyaAppealCreatedPersonalisationWhenAppealCreateNotificationApplied() {
         Personalisation result = factory.apply(SYA_APPEAL_CREATED_NOTIFICATION);
-        assertEquals(syaAppealCreatedPersonalisation, result);
+        assertEquals(syaAppealCreatedAndReceivedPersonalisation, result);
+    }
+
+    @Test
+    public void createRepsPersonalisationWhenAppealDormantNotificationApplied() {
+        Personalisation result = factory.apply(APPEAL_DORMANT_NOTIFICATION);
+        assertEquals(withRepresentativePersonalisation, result);
+    }
+
+    @Test
+    public void createRepsPersonalisationWhenAdjournedNotificationApplied() {
+        Personalisation result = factory.apply(ADJOURNED_NOTIFICATION);
+        assertEquals(withRepresentativePersonalisation, result);
+    }
+
+    @Test
+    public void createRepsPersonalisationWhenReceivedNotificationApplied() {
+        Personalisation result = factory.apply(APPEAL_RECEIVED_NOTIFICATION);
+        assertEquals(syaAppealCreatedAndReceivedPersonalisation, result);
     }
 
     @Test

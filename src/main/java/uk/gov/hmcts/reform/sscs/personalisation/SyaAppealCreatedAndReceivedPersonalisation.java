@@ -13,7 +13,7 @@ import uk.gov.hmcts.reform.sscs.config.AppConstants;
 import uk.gov.hmcts.reform.sscs.domain.SscsCaseDataWrapper;
 
 @Component
-public class SyaAppealCreatedPersonalisation extends WithRepresentativePersonalisation {
+public class SyaAppealCreatedAndReceivedPersonalisation extends WithRepresentativePersonalisation {
 
     @Override
     protected Map<String, String> create(SscsCaseDataWrapper responseWrapper) {

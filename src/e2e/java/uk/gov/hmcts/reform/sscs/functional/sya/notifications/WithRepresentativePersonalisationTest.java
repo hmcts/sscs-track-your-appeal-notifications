@@ -46,6 +46,32 @@ public class WithRepresentativePersonalisationTest extends AbstractFunctionalTes
     private String appealCreatedRepsEmailId;
     @Value("${notification.appealCreated.representative.smsId}")
     private String appealCreatedRepsSmsId;
+    @Value("${notification.paper.appealDormant.appellant.emailId}")
+    private String appealDormantAppellantEmailId;
+    @Value("${notification.paper.appealDormant.appellant.smsId}")
+    private String appealDormantAppellantSmsId;
+    @Value("${notification.paper.appealDormant.representative.emailId}")
+    private String appealDormantRepsEmailId;
+    @Value("${notification.paper.appealDormant.representative.smsId}")
+    private String appealDormantRepsSmsId;
+
+    @Value("${notification.hearingAdjourned.appellant.emailId}")
+    private String hearingAdjournedAppellantEmailId;
+    @Value("${notification.hearingAdjourned.appellant.smsId}")
+    private String hearingAdjournedAppellantSmsId;
+    @Value("${notification.hearingAdjourned.representative.emailId}")
+    private String hearingAdjournedRepsEmailId;
+    @Value("${notification.hearingAdjourned.representative.smsId}")
+    private String hearingAdjournedRepsSmsId;
+    @Value("${notification.appealReceived.appellant.emailId}")
+    private String appealReceivedAppellantEmailId;
+    @Value("${notification.appealReceived.appellant.smsId}")
+    private String appealReceivedAppellantSmsId;
+    @Value("${notification.appealReceived.representative.emailId}")
+    private String appealReceivedRepsEmailId;
+    @Value("${notification.appealReceived.representative.smsId}")
+    private String appealReceivedRepsSmsId;
+
     @Value("${notification.hearingPostponed.appellant.emailId}")
     private String hearingPostponedAppellantEmailId;
     @Value("${notification.hearingPostponed.representative.emailId}")
@@ -160,6 +186,9 @@ public class WithRepresentativePersonalisationTest extends AbstractFunctionalTes
             new Object[]{APPEAL_LAPSED_NOTIFICATION},
             new Object[]{APPEAL_WITHDRAWN_NOTIFICATION},
             new Object[]{SYA_APPEAL_CREATED_NOTIFICATION},
+            new Object[]{APPEAL_DORMANT_NOTIFICATION},
+            new Object[]{ADJOURNED_NOTIFICATION},
+            new Object[]{APPEAL_RECEIVED_NOTIFICATION},
             new Object[]{HEARING_BOOKED_NOTIFICATION}
         };
     }
