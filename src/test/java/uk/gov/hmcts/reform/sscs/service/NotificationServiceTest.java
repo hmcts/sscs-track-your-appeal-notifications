@@ -13,11 +13,7 @@ import static org.mockito.Mockito.when;
 import static org.mockito.MockitoAnnotations.initMocks;
 import static uk.gov.hmcts.reform.sscs.config.SubscriptionType.APPELLANT;
 import static uk.gov.hmcts.reform.sscs.config.SubscriptionType.REPRESENTATIVE;
-import static uk.gov.hmcts.reform.sscs.domain.notify.NotificationEventType.APPEAL_LAPSED_NOTIFICATION;
-import static uk.gov.hmcts.reform.sscs.domain.notify.NotificationEventType.APPEAL_WITHDRAWN_NOTIFICATION;
-import static uk.gov.hmcts.reform.sscs.domain.notify.NotificationEventType.QUESTION_ROUND_ISSUED_NOTIFICATION;
-import static uk.gov.hmcts.reform.sscs.domain.notify.NotificationEventType.SUBSCRIPTION_UPDATED_NOTIFICATION;
-import static uk.gov.hmcts.reform.sscs.domain.notify.NotificationEventType.SYA_APPEAL_CREATED_NOTIFICATION;
+import static uk.gov.hmcts.reform.sscs.domain.notify.NotificationEventType.*;
 
 import java.util.Collections;
 import junitparams.JUnitParamsRunner;
@@ -225,6 +221,58 @@ public class NotificationServiceTest {
                                 .subscribeSms(YES)
                                 .build(),
                         new SubscriptionType[]{APPELLANT, REPRESENTATIVE},
+                },
+                new Object[]{
+                    APPEAL_RECEIVED_NOTIFICATION,
+                    1,
+                    1,
+                    Subscription.builder()
+                        .tya(APPEAL_NUMBER)
+                        .email(EMAIL)
+                        .subscribeEmail(YES)
+                        .mobile(MOBILE_NUMBER_1)
+                        .subscribeSms(YES)
+                        .build(),
+                    null,
+                    new SubscriptionType[]{APPELLANT},
+                },
+                new Object[]{
+                    APPEAL_RECEIVED_NOTIFICATION,
+                    2,
+                    1,
+                    Subscription.builder()
+                        .tya(APPEAL_NUMBER)
+                        .email(EMAIL)
+                        .subscribeEmail(YES)
+                        .mobile(MOBILE_NUMBER_1)
+                        .subscribeSms(YES)
+                        .build(),
+                    Subscription.builder()
+                        .tya(APPEAL_NUMBER)
+                        .email(EMAIL)
+                        .subscribeEmail(YES)
+                        .build(),
+                    new SubscriptionType[]{APPELLANT, REPRESENTATIVE},
+                },
+                new Object[]{
+                    APPEAL_RECEIVED_NOTIFICATION,
+                    2,
+                    2,
+                    Subscription.builder()
+                        .tya(APPEAL_NUMBER)
+                        .email(EMAIL)
+                        .subscribeEmail(YES)
+                        .mobile(MOBILE_NUMBER_1)
+                        .subscribeSms(YES)
+                        .build(),
+                    Subscription.builder()
+                        .tya(APPEAL_NUMBER)
+                        .email(EMAIL)
+                        .subscribeEmail(YES)
+                        .mobile(MOBILE_NUMBER_1)
+                        .subscribeSms(YES)
+                        .build(),
+                    new SubscriptionType[]{APPELLANT, REPRESENTATIVE},
                 },
                 new Object[]{
                         SYA_APPEAL_CREATED_NOTIFICATION,
