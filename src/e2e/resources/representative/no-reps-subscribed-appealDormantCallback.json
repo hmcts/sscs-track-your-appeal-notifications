@@ -61,13 +61,13 @@
           "subscribeSms": "Yes",
           "reason": ""
         },
-        "supporterSubscription": {
+        "representativeSubscription": {
           "wantSmsNotifications": null,
-          "tya": "",
-          "email": "",
-          "mobile": "",
-          "subscribeEmail": "",
-          "subscribeSms": "",
+          "tya": "NpmhpYaFLa",
+          "email": "sscstest+notify@greencroftconsulting.com",
+          "mobile": "07398785050",
+          "subscribeEmail": "No",
+          "subscribeSms": "No",
           "reason": ""
         }
       },
@@ -124,7 +124,12 @@
 
         },
         "rep": {
-
+          "hasRepresentative": "Yes",
+          "name": {
+            "title": "Mr",
+            "firstName": "Harry",
+            "lastName": "Potter"
+          }
         },
         "signer": null,
         "hearingType": "paper"
@@ -221,7 +226,7 @@
               "reason": "PUBLIC"
             }
           },
-          "supporterSubscription": {
+          "representativeSubscription": {
             "classification": "PUBLIC",
             "value": {
               "wantSmsNotifications": "PUBLIC",
@@ -326,9 +331,11 @@
             }
           },
           "rep": {
-            "classification": "PUBLIC",
-            "value": {
-
+            "hasRepresentative": "Yes",
+            "name": {
+              "title": "Mr",
+              "firstName": "Harry",
+              "lastName": "Potter"
             }
           },
           "signer": "PUBLIC",
@@ -435,7 +442,7 @@
               "reason": "PUBLIC"
             }
           },
-          "supporterSubscription": {
+          "representativeSubscription": {
             "classification": "PUBLIC",
             "value": {
               "wantSmsNotifications": "PUBLIC",
@@ -540,9 +547,11 @@
             }
           },
           "rep": {
-            "classification": "PUBLIC",
-            "value": {
-
+            "hasRepresentative": "PUBLIC",
+            "name": {
+              "title": "PUBLIC",
+              "firstName": "PUBLIC",
+              "lastName": "PUBLIC"
             }
           },
           "signer": "PUBLIC",

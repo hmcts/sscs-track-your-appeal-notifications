@@ -38,7 +38,7 @@ public class PersonalisationFactoryTest {
 
     @Test
     public void createPersonalisationWhenNotificationApplied() {
-        Personalisation result = factory.apply(ADJOURNED_NOTIFICATION);
+        Personalisation result = factory.apply(DO_NOT_SEND);
         assertEquals(personalisation, result);
     }
 
@@ -67,17 +67,29 @@ public class PersonalisationFactoryTest {
     }
 
     @Test
+    public void createRepsPersonalisationWhenAppealDormantNotificationApplied() {
+        Personalisation result = factory.apply(APPEAL_DORMANT_NOTIFICATION);
+        assertEquals(withRepresentativePersonalisation, result);
+    }
+
+    @Test
+    public void createRepsPersonalisationWhenAdjournedNotificationApplied() {
+        Personalisation result = factory.apply(ADJOURNED_NOTIFICATION);
+        assertEquals(withRepresentativePersonalisation, result);
+    }
+
+    @Test
     public void createRepsPersonalisationWhenReceivedNotificationApplied() {
         Personalisation result = factory.apply(APPEAL_RECEIVED_NOTIFICATION);
         assertEquals(syaAppealCreatedAndReceivedPersonalisation, result);
     }
 
-    @Test  
+    @Test
     public void createRepsPersonalisationWhenHearingPostponeNotificationApplied() {
         Personalisation result = factory.apply(POSTPONEMENT_NOTIFICATION);
         assertEquals(withRepresentativePersonalisation, result);
     }
-  
+
     @Test
     public void createRepsPersonalisationWhenHearingBookedNotificationApplied() {
         Personalisation result = factory.apply(HEARING_BOOKED_NOTIFICATION);
