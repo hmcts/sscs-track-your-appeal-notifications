@@ -2,10 +2,6 @@ package uk.gov.hmcts.reform.sscs.functional.sya.notifications;
 
 import static org.junit.Assert.assertTrue;
 import static uk.gov.hmcts.reform.sscs.domain.notify.NotificationEventType.*;
-import static uk.gov.hmcts.reform.sscs.domain.notify.NotificationEventType.APPEAL_LAPSED_NOTIFICATION;
-import static uk.gov.hmcts.reform.sscs.domain.notify.NotificationEventType.APPEAL_RECEIVED_NOTIFICATION;
-import static uk.gov.hmcts.reform.sscs.domain.notify.NotificationEventType.APPEAL_WITHDRAWN_NOTIFICATION;
-import static uk.gov.hmcts.reform.sscs.domain.notify.NotificationEventType.HEARING_BOOKED_NOTIFICATION;
 
 import java.lang.reflect.Field;
 import java.util.List;
@@ -42,6 +38,23 @@ public class WithRepresentativePersonalisationTest extends AbstractFunctionalTes
     @Value("${notification.hearingBooked.representative.smsId}")
     private String hearingBookedRepsSmsId;
 
+    @Value("${notification.paper.appealDormant.appellant.emailId}")
+    private String appealDormantAppellantEmailId;
+    @Value("${notification.paper.appealDormant.appellant.smsId}")
+    private String appealDormantAppellantSmsId;
+    @Value("${notification.paper.appealDormant.representative.emailId}")
+    private String appealDormantRepsEmailId;
+    @Value("${notification.paper.appealDormant.representative.smsId}")
+    private String appealDormantRepsSmsId;
+
+    @Value("${notification.hearingAdjourned.appellant.emailId}")
+    private String hearingAdjournedAppellantEmailId;
+    @Value("${notification.hearingAdjourned.appellant.smsId}")
+    private String hearingAdjournedAppellantSmsId;
+    @Value("${notification.hearingAdjourned.representative.emailId}")
+    private String hearingAdjournedRepsEmailId;
+    @Value("${notification.hearingAdjourned.representative.smsId}")
+    private String hearingAdjournedRepsSmsId;
     @Value("${notification.appealReceived.appellant.emailId}")
     private String appealReceivedAppellantEmailId;
     @Value("${notification.appealReceived.appellant.smsId}")
@@ -50,6 +63,7 @@ public class WithRepresentativePersonalisationTest extends AbstractFunctionalTes
     private String appealReceivedRepsEmailId;
     @Value("${notification.appealReceived.representative.smsId}")
     private String appealReceivedRepsSmsId;
+
     @Value("${notification.hearingPostponed.appellant.emailId}")
     private String hearingPostponedAppellantEmailId;
     @Value("${notification.hearingPostponed.representative.emailId}")
@@ -184,6 +198,8 @@ public class WithRepresentativePersonalisationTest extends AbstractFunctionalTes
         return new Object[]{
             new Object[]{APPEAL_LAPSED_NOTIFICATION},
             new Object[]{APPEAL_WITHDRAWN_NOTIFICATION},
+            new Object[]{APPEAL_DORMANT_NOTIFICATION},
+            new Object[]{ADJOURNED_NOTIFICATION},
             new Object[]{APPEAL_RECEIVED_NOTIFICATION},
             new Object[]{HEARING_BOOKED_NOTIFICATION}
         };
