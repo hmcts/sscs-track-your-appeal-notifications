@@ -194,9 +194,8 @@ public class WithRepresentativePersonalisationTest extends AbstractFunctionalTes
 
     private Object[] evidenceReceivedNotifications() {
         return new Object[]{
-                new Object[]{ORAL, EVIDENCE_RECEIVED_NOTIFICATION},
-                new Object[]{PAPER, EVIDENCE_RECEIVED_NOTIFICATION},
-
+            new Object[]{ORAL, EVIDENCE_RECEIVED_NOTIFICATION},
+            new Object[]{PAPER, EVIDENCE_RECEIVED_NOTIFICATION},
         };
     }
 
