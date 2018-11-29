@@ -157,7 +157,7 @@ public class SyaAppealCreatedAndReceivedPersonalisation extends WithRepresentati
                 .append("Attending the hearing: ")
                 .append(hearingOptions.getWantsToAttend().toLowerCase());
 
-        if (hearingOptions.getWantsToAttend().equalsIgnoreCase("yes") && hearingOptions.getExcludeDates() != null && !CollectionUtils.isEmpty(hearingOptions.getExcludeDates())) {
+        if ("yes".equalsIgnoreCase(hearingOptions.getWantsToAttend()) && hearingOptions.getExcludeDates() != null && !CollectionUtils.isEmpty(hearingOptions.getExcludeDates())) {
             hearingOptionsBuilder.append("\n\nDates you can't attend: ");
 
             StringJoiner joiner = new StringJoiner(", ");
@@ -194,7 +194,7 @@ public class SyaAppealCreatedAndReceivedPersonalisation extends WithRepresentati
     }
 
     private String buildHearingArrangements(HearingOptions hearingOptions) {
-        String languageInterpreterRequired = convertBooleanToRequiredText(hearingOptions.getLanguageInterpreter() != null && hearingOptions.getLanguageInterpreter().equalsIgnoreCase("yes"));
+        String languageInterpreterRequired = convertBooleanToRequiredText(hearingOptions.getLanguageInterpreter() != null && "yes".equalsIgnoreCase(hearingOptions.getLanguageInterpreter()));
 
         return new StringBuilder()
                 .append("Language interpreter: ")

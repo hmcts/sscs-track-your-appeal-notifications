@@ -156,20 +156,16 @@ public class WithRepresentativePersonalisationTest extends AbstractFunctionalTes
     public void givenAddRepresentativeEventAndRepsSubscription_shouldSendNotificationToReps()
         throws Exception {
 
-        final String repsEmailId = getFieldValue(ADD_REPRESENTATIVE, "RepsEmailId");
-        final String repsSmsId = getFieldValue(ADD_REPRESENTATIVE, "RepsSmsId");
-
-
         simulateCcdCallback(ADD_REPRESENTATIVE,
             "representative/" + ADD_REPRESENTATIVE.getId()
                 + "Callback.json");
 
         List<Notification> notifications = tryFetchNotificationsForTestCase(
-            repsEmailId, repsSmsId);
+            addRepresentativeRepsEmailId, addRepresentativeRepsSmsId);
 
         String representativeName = "Harry Potter";
-        assertNotificationBodyContains(notifications, repsEmailId, representativeName);
-        assertNotificationBodyContains(notifications, repsSmsId);
+        assertNotificationBodyContains(notifications, addRepresentativeRepsEmailId, representativeName);
+        assertNotificationBodyContains(notifications, addRepresentativeRepsSmsId);
     }
 
     private String getFieldValue(NotificationEventType notificationEventType, String fieldName) throws Exception {
