@@ -1,11 +1,7 @@
 package uk.gov.hmcts.reform.sscs.functional.sya.notifications;
 
 import static org.junit.Assert.assertTrue;
-import static uk.gov.hmcts.reform.sscs.domain.notify.NotificationEventType.ADJOURNED_NOTIFICATION;
-import static uk.gov.hmcts.reform.sscs.domain.notify.NotificationEventType.DWP_RESPONSE_RECEIVED_NOTIFICATION;
-import static uk.gov.hmcts.reform.sscs.domain.notify.NotificationEventType.EVIDENCE_RECEIVED_NOTIFICATION;
-import static uk.gov.hmcts.reform.sscs.domain.notify.NotificationEventType.SUBSCRIPTION_CREATED_NOTIFICATION;
-import static uk.gov.hmcts.reform.sscs.domain.notify.NotificationEventType.SUBSCRIPTION_UPDATED_NOTIFICATION;
+import static uk.gov.hmcts.reform.sscs.domain.notify.NotificationEventType.*;
 
 import java.io.IOException;
 import java.util.List;
@@ -28,10 +24,13 @@ public class NotificationsFunctionalTest extends AbstractFunctionalTest {
     @Value("${notification.evidenceReceived.smsId}")
     private String evidenceReceivedSmsTemplateId;
 
-    @Value("${notification.hearingAdjourned.emailId}")
+    @Value("${notification.hearingPostponed.appellant.emailId}")
+    private String hearingPostponedEmailTemplateId;
+
+    @Value("${notification.hearingAdjourned.appellant.emailId}")
     private String hearingAdjournedEmailTemplateId;
 
-    @Value("${notification.hearingAdjourned.smsId}")
+    @Value("${notification.hearingAdjourned.appellant.smsId}")
     private String hearingAdjournedSmsTemplateId;
 
     @Value("${notification.subscriptionCreated.smsId}")
@@ -77,6 +76,13 @@ public class NotificationsFunctionalTest extends AbstractFunctionalTest {
                 evidenceReceivedEmailTemplateId,
                 evidenceReceivedSmsTemplateId
         );
+    }
+
+    @Test
+    public void shouldSendHearingPostponedNotification() throws NotificationClientException, IOException {
+        simulateCcdCallback(POSTPONEMENT_NOTIFICATION);
+
+        tryFetchNotificationsForTestCase(hearingPostponedEmailTemplateId);
     }
 
     @Test
