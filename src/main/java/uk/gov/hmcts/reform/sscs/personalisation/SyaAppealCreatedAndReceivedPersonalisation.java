@@ -11,10 +11,9 @@ import org.springframework.stereotype.Component;
 import uk.gov.hmcts.reform.sscs.ccd.domain.*;
 import uk.gov.hmcts.reform.sscs.config.AppConstants;
 import uk.gov.hmcts.reform.sscs.domain.SscsCaseDataWrapper;
-import uk.gov.hmcts.reform.sscs.factory.CcdNotificationWrapper;
 
 @Component
-public class SyaAppealCreatedPersonalisation extends Personalisation<CcdNotificationWrapper> {
+public class SyaAppealCreatedAndReceivedPersonalisation extends WithRepresentativePersonalisation {
 
     @Override
     protected Map<String, String> create(SscsCaseDataWrapper responseWrapper) {
