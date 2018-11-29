@@ -87,15 +87,27 @@ job.scheduler:
 
 notification:
   appealReceived:
-    emailId: b90df52f-c628-409c-8875-4b0b9663a053
-    smsId: ede384aa-0b6e-4311-9f01-ee547573a07b
+    appellant:
+      emailId: b90df52f-c628-409c-8875-4b0b9663a053
+      smsId: ede384aa-0b6e-4311-9f01-ee547573a07b
+    representative:
+      emailId: 4b1ee55b-abd1-4e7e-b0ed-693d8df1e741
+      smsId: 99bd4a56-256c-4de8-b187-d43a8dde466f
   evidenceReceived:
     emailId: c5654134-2e13-4541-ac73-334a5b5cdbb6
     smsId: 74bda35f-040b-4355-bda3-faf0e4f5ae6e
   hearingAdjourned:
-    emailId: bff02237-9bcb-49fa-bbf7-11725b97132a
-    smsId: 46c6bf06-33dd-4e5a-9b6b-8bd6d0eb33b1
-  hearingPostponed.emailId: 08959288-e09a-472d-80b8-af79bfcbb437
+    appellant:
+      emailId: bff02237-9bcb-49fa-bbf7-11725b97132a
+      smsId: 46c6bf06-33dd-4e5a-9b6b-8bd6d0eb33b1
+    representative:
+      emailId: 75357eb8-bba7-4bdf-b879-b535bc3fb50a
+      smsId: a170d63e-b04e-4da5-ad89-d93644b6c1e9
+  hearingPostponed:
+    appellant:
+      emailId: 08959288-e09a-472d-80b8-af79bfcbb437
+    representative:
+      emailId: 0a48bd48-f79c-4863-b6e3-e8fa69019c34
   appealLapsed:
     appellant:
       emailId: 8ce8d794-75e8-49a0-b4d2-0c6cd2061c11
@@ -182,8 +194,12 @@ notification:
       emailId: 504a42dc-e135-4be3-8f86-d4109992c7f7
       smsId: c8e4b766-6c32-4225-97d9-75b14fb988b0
     appealDormant:
-      emailId: 976bdb6c-8a86-48cf-9e0f-7989acaec0c2
-      smsId: 1aa60c8a-1b6f-4ee1-88ae-51c1cef0ea2b
+      appellant:
+        emailId: 976bdb6c-8a86-48cf-9e0f-7989acaec0c2
+        smsId: 1aa60c8a-1b6f-4ee1-88ae-51c1cef0ea2b
+      representative:
+        emailId: b74ea5d4-dba2-4148-b822-d102cedbea12
+        smsId: 4562984e-2854-4191-81d9-cffbe5111015
     evidenceReceived:
       representative:
         emailId: 7af36950-fc63-45d1-907d-f472fac7af06

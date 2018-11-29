@@ -13,8 +13,7 @@ import static org.mockito.Mockito.never;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
-import static uk.gov.hmcts.reform.sscs.domain.notify.NotificationEventType.APPEAL_LAPSED_NOTIFICATION;
-import static uk.gov.hmcts.reform.sscs.domain.notify.NotificationEventType.APPEAL_WITHDRAWN_NOTIFICATION;
+import static uk.gov.hmcts.reform.sscs.domain.notify.NotificationEventType.*;
 
 import java.io.File;
 import java.io.IOException;
@@ -155,7 +154,7 @@ public class NotificationsIt {
 
         assertHttpStatus(response, HttpStatus.OK);
         verify(notificationClient).sendEmail(any(), any(), any(), any());
-        verify(notificationClient).sendSms(any(), any(), any(), any(), any());
+        verify(notificationClient, times(2)).sendSms(any(), any(), any(), any(), any());
     }
 
     @Test
@@ -165,7 +164,7 @@ public class NotificationsIt {
 
         assertHttpStatus(response, HttpStatus.OK);
         verify(notificationClient).sendEmail(any(), any(), any(), any());
-        verify(notificationClient).sendSms(any(), any(), any(), any(), any());
+        verify(notificationClient, times(2)).sendSms(any(), any(), any(), any(), any());
     }
 
     @Test
@@ -176,7 +175,7 @@ public class NotificationsIt {
 
         assertHttpStatus(response, HttpStatus.OK);
         verify(notificationClient).sendEmail(any(), any(), any(), any());
-        verify(notificationClient).sendSms(any(), any(), any(), any(), any());
+        verify(notificationClient, times(2)).sendSms(any(), any(), any(), any(), any());
     }
 
     @Test
@@ -365,6 +364,139 @@ public class NotificationsIt {
                         "yes",
                         "1",
                         "2"
+                },
+
+                new Object[]{
+                        ADJOURNED_NOTIFICATION,
+                        "paper",
+                        Arrays.asList("bff02237-9bcb-49fa-bbf7-11725b97132a", "75357eb8-bba7-4bdf-b879-b535bc3fb50a"),
+                        Arrays.asList("46c6bf06-33dd-4e5a-9b6b-8bd6d0eb33b1", "a170d63e-b04e-4da5-ad89-d93644b6c1e9"),
+                        "yes",
+                        "yes",
+                        "yes",
+                        "yes",
+                        "2",
+                        "2"
+                },
+                new Object[]{
+                        ADJOURNED_NOTIFICATION,
+                        "oral",
+                        Arrays.asList("bff02237-9bcb-49fa-bbf7-11725b97132a", "75357eb8-bba7-4bdf-b879-b535bc3fb50a"),
+                        Arrays.asList("46c6bf06-33dd-4e5a-9b6b-8bd6d0eb33b1", "a170d63e-b04e-4da5-ad89-d93644b6c1e9"),
+                        "yes",
+                        "yes",
+                        "yes",
+                        "yes",
+                        "2",
+                        "2"
+                },
+                new Object[]{
+                        ADJOURNED_NOTIFICATION,
+                        "paper",
+                        Collections.singletonList("75357eb8-bba7-4bdf-b879-b535bc3fb50a"),
+                        Arrays.asList("46c6bf06-33dd-4e5a-9b6b-8bd6d0eb33b1", "a170d63e-b04e-4da5-ad89-d93644b6c1e9"),
+                        "no",
+                        "yes",
+                        "yes",
+                        "yes",
+                        "1",
+                        "2"
+                },
+                new Object[]{
+                        APPEAL_RECEIVED_NOTIFICATION,
+                        "paper",
+                        Arrays.asList("b90df52f-c628-409c-8875-4b0b9663a053", "4b1ee55b-abd1-4e7e-b0ed-693d8df1e741"),
+                        Arrays.asList("ede384aa-0b6e-4311-9f01-ee547573a07b", "99bd4a56-256c-4de8-b187-d43a8dde466f"),
+                        "yes",
+                        "yes",
+                        "yes",
+                        "yes",
+                        "2",
+                        "2"
+                },
+                new Object[]{
+                        APPEAL_RECEIVED_NOTIFICATION,
+                        "oral",
+                        Arrays.asList("b90df52f-c628-409c-8875-4b0b9663a053", "4b1ee55b-abd1-4e7e-b0ed-693d8df1e741"),
+                        Arrays.asList("ede384aa-0b6e-4311-9f01-ee547573a07b", "99bd4a56-256c-4de8-b187-d43a8dde466f"),
+                        "yes",
+                        "yes",
+                        "yes",
+                        "yes",
+                        "2",
+                        "2"
+                },
+                new Object[]{
+                        APPEAL_RECEIVED_NOTIFICATION,
+                        "paper",
+                        Collections.singletonList("4b1ee55b-abd1-4e7e-b0ed-693d8df1e741"),
+                        Arrays.asList("ede384aa-0b6e-4311-9f01-ee547573a07b", "99bd4a56-256c-4de8-b187-d43a8dde466f"),
+                        "no",
+                        "yes",
+                        "yes",
+                        "yes",
+                        "1",
+                        "2"
+                },
+                new Object[]{
+                        APPEAL_DORMANT_NOTIFICATION,
+                        "paper",
+                        Arrays.asList("976bdb6c-8a86-48cf-9e0f-7989acaec0c2", "b74ea5d4-dba2-4148-b822-d102cedbea12"),
+                        Arrays.asList("1aa60c8a-1b6f-4ee1-88ae-51c1cef0ea2b", "4562984e-2854-4191-81d9-cffbe5111015"),
+                        "yes",
+                        "yes",
+                        "yes",
+                        "yes",
+                        "2",
+                        "2"
+                },
+                new Object[]{
+                        APPEAL_DORMANT_NOTIFICATION,
+                        "paper",
+                        Collections.singletonList("b74ea5d4-dba2-4148-b822-d102cedbea12"),
+                        Arrays.asList("1aa60c8a-1b6f-4ee1-88ae-51c1cef0ea2b", "4562984e-2854-4191-81d9-cffbe5111015"),
+                        "no",
+                        "yes",
+                        "yes",
+                        "yes",
+                        "1",
+                        "2"
+                },
+                new Object[]{
+                        POSTPONEMENT_NOTIFICATION,
+                        "paper",
+                        Arrays.asList("08959288-e09a-472d-80b8-af79bfcbb437", "0a48bd48-f79c-4863-b6e3-e8fa69019c34"),
+                        Collections.EMPTY_LIST,
+                        "yes",
+                        "no",
+                        "yes",
+                        "no",
+                        "2",
+                        "0"
+                },
+                new Object[]{
+                        POSTPONEMENT_NOTIFICATION,
+                        "oral",
+                        Arrays.asList("08959288-e09a-472d-80b8-af79bfcbb437", "0a48bd48-f79c-4863-b6e3-e8fa69019c34"),
+                        Collections.EMPTY_LIST,
+                        "yes",
+                        "no",
+                        "Yes",
+                        "no",
+                        "2",
+                        "0"
+                },
+                new Object[]{
+                        POSTPONEMENT_NOTIFICATION,
+                        "paper",
+                        Collections.singletonList("0a48bd48-f79c-4863-b6e3-e8fa69019c34"),
+                        Collections.EMPTY_LIST,
+                        "no",
+                        "no",
+                        "yes",
+                        "no",
+                        "1",
+                        "0"
                 }
         };
     }
