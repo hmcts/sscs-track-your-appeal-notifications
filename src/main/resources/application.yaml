@@ -233,6 +233,7 @@ feign:
 # default profile (development, production etc.)
 spring:
   profiles: default
+  profiles.include: ${INFRASTRUCTURE_ENV:aat}-${SLOT:STAGING}-slot
   flyway.enabled: true
 job.scheduler:
   quartzProperties:
@@ -262,6 +263,7 @@ spring:
   - org.springframework.boot.autoconfigure.jdbc.DataSourceAutoConfiguration
   flyway.enabled: false
 job.scheduler:
+  autoStart: false
   quartzProperties:
     org.quartz:
       scheduler:
