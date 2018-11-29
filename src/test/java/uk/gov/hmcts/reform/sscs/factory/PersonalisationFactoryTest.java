@@ -38,7 +38,7 @@ public class PersonalisationFactoryTest {
 
     @Test
     public void createPersonalisationWhenNotificationApplied() {
-        Personalisation result = factory.apply(ADJOURNED_NOTIFICATION);
+        Personalisation result = factory.apply(DO_NOT_SEND);
         assertEquals(personalisation, result);
     }
 
@@ -69,6 +69,12 @@ public class PersonalisationFactoryTest {
     @Test
     public void createRepsPersonalisationWhenAppealDormantNotificationApplied() {
         Personalisation result = factory.apply(APPEAL_DORMANT_NOTIFICATION);
+        assertEquals(withRepresentativePersonalisation, result);
+    }
+
+    @Test
+    public void createRepsPersonalisationWhenAdjournedNotificationApplied() {
+        Personalisation result = factory.apply(ADJOURNED_NOTIFICATION);
         assertEquals(withRepresentativePersonalisation, result);
     }
 

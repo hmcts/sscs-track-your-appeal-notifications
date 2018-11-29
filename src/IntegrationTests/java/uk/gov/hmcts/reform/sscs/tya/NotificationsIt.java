@@ -149,6 +149,25 @@ public class NotificationsIt {
     }
 
     @Test
+    public void shouldSendNotificationForAnAppealReceivedRequestForAnOralHearing() throws Exception {
+        HttpServletResponse response = getResponse(getRequestWithAuthHeader(json));
+
+        assertHttpStatus(response, HttpStatus.OK);
+        verify(notificationClient).sendEmail(any(), any(), any(), any());
+        verify(notificationClient, times(2)).sendSms(any(), any(), any(), any(), any());
+    }
+
+    @Test
+    public void shouldSendNotificationForAnAppealReceivedRequestForAPaperHearing() throws Exception {
+        updateJsonForPaperHearing();
+        HttpServletResponse response = getResponse(getRequestWithAuthHeader(json));
+
+        assertHttpStatus(response, HttpStatus.OK);
+        verify(notificationClient).sendEmail(any(), any(), any(), any());
+        verify(notificationClient, times(2)).sendSms(any(), any(), any(), any(), any());
+    }
+
+    @Test
     public void shouldSendNotificationForAnAdjournedRequestForAnOralHearing() throws Exception {
         json = json.replace("appealReceived", "hearingAdjourned");
 
@@ -156,7 +175,7 @@ public class NotificationsIt {
 
         assertHttpStatus(response, HttpStatus.OK);
         verify(notificationClient).sendEmail(any(), any(), any(), any());
-        verify(notificationClient).sendSms(any(), any(), any(), any(), any());
+        verify(notificationClient, times(2)).sendSms(any(), any(), any(), any(), any());
     }
 
     @Test
@@ -347,6 +366,42 @@ public class NotificationsIt {
                         "2"
                 },
 
+                new Object[]{
+                        ADJOURNED_NOTIFICATION,
+                        "paper",
+                        Arrays.asList("bff02237-9bcb-49fa-bbf7-11725b97132a", "75357eb8-bba7-4bdf-b879-b535bc3fb50a"),
+                        Arrays.asList("46c6bf06-33dd-4e5a-9b6b-8bd6d0eb33b1", "a170d63e-b04e-4da5-ad89-d93644b6c1e9"),
+                        "yes",
+                        "yes",
+                        "yes",
+                        "yes",
+                        "2",
+                        "2"
+                },
+                new Object[]{
+                        ADJOURNED_NOTIFICATION,
+                        "oral",
+                        Arrays.asList("bff02237-9bcb-49fa-bbf7-11725b97132a", "75357eb8-bba7-4bdf-b879-b535bc3fb50a"),
+                        Arrays.asList("46c6bf06-33dd-4e5a-9b6b-8bd6d0eb33b1", "a170d63e-b04e-4da5-ad89-d93644b6c1e9"),
+                        "yes",
+                        "yes",
+                        "yes",
+                        "yes",
+                        "2",
+                        "2"
+                },
+                new Object[]{
+                        ADJOURNED_NOTIFICATION,
+                        "paper",
+                        Collections.singletonList("75357eb8-bba7-4bdf-b879-b535bc3fb50a"),
+                        Arrays.asList("46c6bf06-33dd-4e5a-9b6b-8bd6d0eb33b1", "a170d63e-b04e-4da5-ad89-d93644b6c1e9"),
+                        "no",
+                        "yes",
+                        "yes",
+                        "yes",
+                        "1",
+                        "2"
+                },
                 new Object[]{
                         APPEAL_RECEIVED_NOTIFICATION,
                         "paper",
