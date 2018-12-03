@@ -245,6 +245,7 @@ public class Personalisation<E extends NotificationWrapper> {
         if (APPEAL_LAPSED_NOTIFICATION.equals(notificationEventType)
             || APPEAL_WITHDRAWN_NOTIFICATION.equals(notificationEventType)
             || (EVIDENCE_RECEIVED_NOTIFICATION.equals(notificationEventType) && REPRESENTATIVE.equals(subscriptionType))
+            || SYA_APPEAL_CREATED_NOTIFICATION.equals(notificationEventType)
             || APPEAL_DORMANT_NOTIFICATION.equals(notificationEventType)
             || ADJOURNED_NOTIFICATION.equals(notificationEventType)
             || APPEAL_RECEIVED_NOTIFICATION.equals(notificationEventType)

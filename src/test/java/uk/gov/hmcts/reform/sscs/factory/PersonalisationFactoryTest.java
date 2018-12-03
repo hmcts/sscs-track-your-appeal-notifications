@@ -67,6 +67,12 @@ public class PersonalisationFactoryTest {
     }
 
     @Test
+    public void createSyaAppealCreatedPersonalisationWhenAppealCreateNotificationApplied() {
+        Personalisation result = factory.apply(SYA_APPEAL_CREATED_NOTIFICATION);
+        assertEquals(syaAppealCreatedAndReceivedPersonalisation, result);
+    }
+
+    @Test
     public void createRepsPersonalisationWhenAppealDormantNotificationApplied() {
         Personalisation result = factory.apply(APPEAL_DORMANT_NOTIFICATION);
         assertEquals(withRepresentativePersonalisation, result);

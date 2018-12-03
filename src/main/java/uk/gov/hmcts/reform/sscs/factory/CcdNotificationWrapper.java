@@ -86,6 +86,7 @@ public class CcdNotificationWrapper implements NotificationWrapper {
         if (APPEAL_LAPSED_NOTIFICATION.equals(getNotificationType())
             || APPEAL_WITHDRAWN_NOTIFICATION.equals(getNotificationType())
             || EVIDENCE_RECEIVED_NOTIFICATION.equals(getNotificationType())
+            || SYA_APPEAL_CREATED_NOTIFICATION.equals(getNotificationType())
             || APPEAL_DORMANT_NOTIFICATION.equals(getNotificationType())
             || ADJOURNED_NOTIFICATION.equals(getNotificationType())
             || APPEAL_RECEIVED_NOTIFICATION.equals(getNotificationType())
