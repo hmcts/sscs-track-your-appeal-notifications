@@ -204,10 +204,18 @@ notification:
       representative:
         emailId: b74ea5d4-dba2-4148-b822-d102cedbea12
         smsId: 4562984e-2854-4191-81d9-cffbe5111015
+    evidenceReceived:
+      representative:
+        emailId: 7af36950-fc63-45d1-907d-f472fac7af06
+        smsId: 345f802b-7089-4f46-a17f-bf534b272740
   oral:
     responseReceived:
       emailId: 1afd89f9-9935-4acb-b4f6-ba708b03a0d3
       smsId: 4bba0b5d-a3f3-4fd9-a845-26af5eda042e
+    evidenceReceived:
+      representative:
+        emailId: 30260c0b-5575-4f4e-bce4-73cf3f245c2d
+        smsId: 345f802b-7089-4f46-a17f-bf534b272740
 
 
 smsSender:
