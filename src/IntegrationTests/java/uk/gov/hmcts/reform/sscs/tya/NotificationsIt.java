@@ -220,7 +220,7 @@ public class NotificationsIt {
     }
 
     @Test
-    public void shouldNotSendNotificationForAnEvidenceReceivedRequestForAPaperHearing() throws Exception {
+    public void shouldSendNotificationForAnEvidenceReceivedRequestForAPaperHearing() throws Exception {
         updateJsonForPaperHearing();
         json = json.replace("appealReceived", "evidenceReceived");
 
@@ -228,7 +228,7 @@ public class NotificationsIt {
 
         assertHttpStatus(response, HttpStatus.OK);
         verify(notificationClient).sendEmail(any(), any(), any(), any());
-        verify(notificationClient).sendSms(any(), any(), any(), any(), any());
+        verify(notificationClient, times(2)).sendSms(any(), any(), any(), any(), any());
     }
 
     @Test
