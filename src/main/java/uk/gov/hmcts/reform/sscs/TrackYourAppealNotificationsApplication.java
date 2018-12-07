@@ -34,6 +34,9 @@ import uk.gov.hmcts.reform.sscs.service.scheduler.CohActionDeserializer;
 import uk.gov.hmcts.reform.sscs.service.scheduler.CohActionExecutor;
 import uk.gov.hmcts.reform.sscs.service.scheduler.CohActionSerializer;
 import uk.gov.hmcts.reform.sscs.service.scheduler.CohJobPayload;
+import uk.gov.hmcts.reform.sscs.service.scheduler.TcaActionDeserializer;
+import uk.gov.hmcts.reform.sscs.service.scheduler.TcaActionExecutor;
+import uk.gov.hmcts.reform.sscs.service.tca.TcaService;
 import uk.gov.service.notify.NotificationClient;
 
 @SpringBootApplication
@@ -103,15 +106,19 @@ public class TrackYourAppealNotificationsApplication {
     @Bean
     public JobMapper getJobMapper(CohActionDeserializer cohActionDeserializer,
                                   CcdActionDeserializer ccdActionDeserializer,
+                                  TcaActionDeserializer tcaActionDeserializer,
                                   NotificationService notificationService,
+                                  TcaService tcaService,
                                   CcdService ccdService,
                                   SscsCaseDataWrapperDeserializer deserializer,
                                   IdamService idamService) {
         // Had to wire these up like this Spring will not wire up CcdActionExecutor otherwise.
         CohActionExecutor cohActionExecutor = new CohActionExecutor(notificationService, ccdService, deserializer, idamService);
         CcdActionExecutor ccdActionExecutor = new CcdActionExecutor(notificationService, ccdService, deserializer, idamService);
+        TcaActionExecutor tcaActionExecutor = new TcaActionExecutor(tcaService, ccdService, deserializer, idamService);
         return new JobMapper(asList(
                 new JobMapping<>(payload -> payload.contains("onlineHearingId"), cohActionDeserializer, cohActionExecutor),
+                new JobMapping<>(payload -> payload.contains("tcaEvent"), tcaActionDeserializer, tcaActionExecutor),
                 new JobMapping<>(payload -> !payload.contains("onlineHearingId"), ccdActionDeserializer, ccdActionExecutor)
         ));
     }

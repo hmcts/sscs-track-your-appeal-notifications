@@ -30,9 +30,11 @@ public enum NotificationEventType {
     HEARING_REQUIRED_NOTIFICATION("continuous_online_hearing_relisted", false, false, true, false),
     VIEW_ISSUED("decision_issued", false, false, true, false),
     DECISION_ISSUED_2("decision_issued_2", false, false, true, false), // placeholder until COH name this notification
+    CREATE_APPEAL_PDF("createAppealPDF"),
+    RESEND_CASE_TO_GAPS2("resendCaseToGAPS2"),
     DO_NOT_SEND("");
 
-    private String id;
+    private final String id;
     private boolean sendForOralCase;
     private boolean sendForPaperCase;
     private boolean sendForCohCase;
@@ -88,5 +90,9 @@ public enum NotificationEventType {
 
     public boolean isAllowOutOfHours() {
         return allowOutOfHours;
+    }
+
+    public boolean isSubscriptionEvent() {
+        return sendForOralCase || sendForPaperCase || sendForCohCase;
     }
 }

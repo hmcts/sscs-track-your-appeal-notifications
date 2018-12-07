@@ -99,7 +99,7 @@ public class SscsCaseDataWrapperDeserializer extends StdDeserializer<SscsCaseDat
         return ccdResponse;
     }
 
-    public SscsCaseData deserializeCaseNode(JsonNode caseNode) {
+    private SscsCaseData deserializeCaseNode(JsonNode caseNode) {
         JsonNode appealNode = getNode(caseNode, "appeal");
         JsonNode subscriptionsNode = getNode(caseNode, "subscriptions");
 
@@ -135,7 +135,7 @@ public class SscsCaseDataWrapperDeserializer extends StdDeserializer<SscsCaseDat
         return null;
     }
 
-    public Appeal deserializeAppealDetailsJson(JsonNode appealNode) {
+    private Appeal deserializeAppealDetailsJson(JsonNode appealNode) {
 
         MrnDetails mrnDetails = deserializeMrnDetailsJson(appealNode);
         Appellant appellant = deserializeAppellantDetailsJson(appealNode);
@@ -311,6 +311,7 @@ public class SscsCaseDataWrapperDeserializer extends StdDeserializer<SscsCaseDat
             String organisation = getField(repNode, "organisation");
 
             return Representative.builder()
+                    .hasRepresentative(hasRepresentative)
                     .name(name).address(address).contact(contact).organisation(organisation).build();
         }
         return null;
@@ -384,7 +385,7 @@ public class SscsCaseDataWrapperDeserializer extends StdDeserializer<SscsCaseDat
         return null;
     }
 
-    public Evidence deserializeEvidenceDetailsJson(JsonNode caseNode) {
+    private Evidence deserializeEvidenceDetailsJson(JsonNode caseNode) {
         JsonNode evidenceNode = getNode(caseNode, "evidence");
 
         if (evidenceNode != null) {
