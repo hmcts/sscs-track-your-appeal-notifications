@@ -18,8 +18,4 @@ public class TcaActionSerializer implements JobPayloadSerializer<TcaJobPayload> 
             throw new IllegalArgumentException("Cannot serialize TcaJobPayload " + payload);
         }
     }
-
-    public static void main(String[] args) {
-        System.out.println(new TcaActionSerializer().serialize(new TcaJobPayload(100)));
-    }
 }
