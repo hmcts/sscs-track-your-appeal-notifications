@@ -51,6 +51,9 @@ idam:
 coh:
   url: ${COH_URL:http://localhost:8081}
 
+tca:
+  url: ${TCA_URL:http://localhost:8082}
+
 management:
   endpoints:
     web:
