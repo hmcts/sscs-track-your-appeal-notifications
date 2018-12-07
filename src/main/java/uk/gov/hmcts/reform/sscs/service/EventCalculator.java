@@ -17,6 +17,10 @@ public class EventCalculator {
 
     public ZonedDateTime getEventStart(NotificationEventType eventType) {
 
+        if (NotificationEventType.CREATE_APPEAL_PDF == eventType) {
+            return dateTimeProvider.now().withZoneSameInstant(UK_TIME_ZONE);
+        }
+
         return dateTimeProvider.now().withZoneSameInstant(UK_TIME_ZONE);
     }
 }

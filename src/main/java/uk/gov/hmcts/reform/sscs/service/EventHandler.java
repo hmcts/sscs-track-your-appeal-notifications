@@ -1,8 +1,5 @@
 package uk.gov.hmcts.reform.sscs.service;
 
-import static org.slf4j.LoggerFactory.getLogger;
-
-import org.slf4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import uk.gov.hmcts.reform.sscs.factory.NotificationWrapper;
@@ -12,7 +9,6 @@ import uk.gov.hmcts.reform.sscs.service.reminder.JobGroupGenerator;
 
 @Service
 public class EventHandler {
-    private static final Logger LOG = getLogger(EventHandler.class);
 
     private final EventCalculator eventCalculator;
     private final JobScheduler jobScheduler;
