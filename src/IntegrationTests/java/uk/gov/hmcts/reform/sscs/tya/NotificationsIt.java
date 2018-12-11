@@ -463,6 +463,30 @@ public class NotificationsIt {
                         "2"
                 },
                 new Object[]{
+                        APPEAL_DORMANT_NOTIFICATION,
+                        "oral",
+                        Arrays.asList("fc9d0618-68c4-48ec-9481-a84b225a57a9","e2ee8609-7d56-4857-b3f8-79028e8960aa"),
+                        Collections.EMPTY_LIST,
+                        "yes",
+                        "no",
+                        "yes",
+                        "no",
+                        "2",
+                        "0"
+                },
+                new Object[]{
+                        APPEAL_DORMANT_NOTIFICATION,
+                        "oral",
+                        Collections.singletonList("e2ee8609-7d56-4857-b3f8-79028e8960aa"),
+                        Collections.EMPTY_LIST,
+                        "no",
+                        "no",
+                        "yes",
+                        "no",
+                        "1",
+                        "0"
+                },
+                new Object[]{
                         SYA_APPEAL_CREATED_NOTIFICATION,
                         "paper",
                         Arrays.asList("01293b93-b23e-40a3-ad78-2c6cd01cd21c", "652753bf-59b4-46eb-9c24-bd762338a098"),

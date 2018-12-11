@@ -13,9 +13,7 @@ import static org.mockito.MockitoAnnotations.initMocks;
 import static uk.gov.hmcts.reform.sscs.ccd.domain.Benefit.ESA;
 import static uk.gov.hmcts.reform.sscs.ccd.domain.Benefit.PIP;
 import static uk.gov.hmcts.reform.sscs.ccd.domain.EventType.APPEAL_RECEIVED;
-import static uk.gov.hmcts.reform.sscs.ccd.domain.HearingType.ONLINE;
-import static uk.gov.hmcts.reform.sscs.ccd.domain.HearingType.PAPER;
-import static uk.gov.hmcts.reform.sscs.ccd.domain.HearingType.REGULAR;
+import static uk.gov.hmcts.reform.sscs.ccd.domain.HearingType.*;
 import static uk.gov.hmcts.reform.sscs.config.AppConstants.ACCEPT_VIEW_BY_DATE_LITERAL;
 import static uk.gov.hmcts.reform.sscs.config.AppConstants.ONLINE_HEARING_LINK_LITERAL;
 import static uk.gov.hmcts.reform.sscs.config.AppConstants.ONLINE_HEARING_REGISTER_LINK_LITERAL;
@@ -199,6 +197,8 @@ public class PersonalisationTest {
                 new Object[]{SYA_APPEAL_CREATED_NOTIFICATION, REPRESENTATIVE, ONLINE},
                 new Object[]{APPEAL_DORMANT_NOTIFICATION, APPELLANT, PAPER},
                 new Object[]{APPEAL_DORMANT_NOTIFICATION, REPRESENTATIVE, PAPER},
+                new Object[]{APPEAL_DORMANT_NOTIFICATION, APPELLANT, ORAL},
+                new Object[]{APPEAL_DORMANT_NOTIFICATION, REPRESENTATIVE, ORAL},
                 new Object[]{ADJOURNED_NOTIFICATION, APPELLANT, PAPER},
                 new Object[]{ADJOURNED_NOTIFICATION, APPELLANT, REGULAR},
                 new Object[]{ADJOURNED_NOTIFICATION, APPELLANT, ONLINE},
