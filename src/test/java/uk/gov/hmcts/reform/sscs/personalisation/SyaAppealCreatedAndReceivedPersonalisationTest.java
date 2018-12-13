@@ -146,62 +146,127 @@ public class SyaAppealCreatedAndReceivedPersonalisationTest {
     }
 
     @Test
-    public void givenAnAppealWithRepresentative_setRepresentativeDetailsForTemplate() {
+    public void givenAnAppealWithAppointee_setAppointeeDetailsForTemplate() {
         response = SscsCaseData.builder()
                 .ccdCaseId(CASE_ID).caseReference("SC/1234/5")
-                .appeal(Appeal.builder().rep(Representative.builder()
-                        .name(Name.builder().firstName("Peter").lastName("Smith").build())
-                        .organisation("Citizens Advice")
+                .appeal(Appeal.builder().appellant(Appellant.builder()
+                    .name(Name.builder().firstName("Manish").lastName("Sharma").title("Mrs").build())
+                    .identity(Identity.builder().nino("NP 27 28 67 B").dob("12 March 1971").build())
+                    .address(Address.builder().line1("122 Breach Street").town("My town").county("Cardiff").postcode("CF11 2HB").build())
+                    .appointee(Appointee.builder().name(Name.builder().firstName("Peter").lastName("Smith").build())
                         .address(Address.builder().line1("Ground Floor").line2("Gazette Buildings").town("168 Corporation Street").county("Cardiff").postcode("CF11 6TF").build())
                         .contact(Contact.builder().email("peter.smith@cab.org.uk").phone("03444 77 1010").build())
+                        .identity(Identity.builder().dob("12 March 1981").build())
+                        .build())
+                    .contact(Contact.builder().build()).build()).build()).build();
+
+        Map<String, String> result = syaAppealCreatedAndReceivedPersonalisation.setAppointeeDetails(new HashMap<>(), response);
+
+        assertEquals("Have a appointee: yes\n"
+                        + "\nName: Peter Smith\n"
+                        + "\nDate of birth: 12 March 1981\n"
+                        + "\nAddress: Ground Floor, Gazette Buildings, 168 Corporation Street, Cardiff, CF11 6TF\n"
+                        + "\nEmail: peter.smith@cab.org.uk\n"
+                        + "\nPhone: 03444 77 1010",
+                result.get(AppConstants.APPOINTEE_DETAILS_LITERAL));
+    }
+
+    @Test
+    public void givenAnAppealWithAppointeeAndNoEmailOrPhone_setAppointeeDetailsForTemplate() {
+        response = SscsCaseData.builder()
+                .ccdCaseId(CASE_ID).caseReference("SC/1234/5")
+                .appeal(Appeal.builder().appellant(Appellant.builder().appointee(Appointee.builder()
+                        .name(Name.builder().firstName("Peter").lastName("Smith").build())
+                        .identity(Identity.builder().dob("12 March 1981").build())
+                        .address(Address.builder().line1("Ground Floor").line2("Gazette Buildings").town("168 Corporation Street").county("Cardiff").postcode("CF11 6TF").build())
+                        .contact(Contact.builder().build())
                         .build()).build())
-                .build();
+                    .build()).build();
+
+        Map<String, String> result = syaAppealCreatedAndReceivedPersonalisation.setAppointeeDetails(new HashMap<>(), response);
+
+        assertEquals("Have a appointee: yes\n"
+                        + "\nName: Peter Smith\n"
+                        + "\nDate of birth: 12 March 1981\n"
+                        + "\nAddress: Ground Floor, Gazette Buildings, 168 Corporation Street, Cardiff, CF11 6TF\n"
+                        + "\nEmail: Not provided\n"
+                        + "\nPhone: Not provided",
+                result.get(AppConstants.APPOINTEE_DETAILS_LITERAL));
+    }
+
+    @Test
+    public void givenAnAppealWithNoAppointee_setAppointeeDetailsForTemplate() {
+        response = SscsCaseData.builder()
+                .ccdCaseId(CASE_ID).caseReference("SC/1234/5")
+                .appeal(Appeal.builder().appellant(Appellant.builder()
+                    .name(Name.builder().firstName("Manish").lastName("Sharma").title("Mrs").build())
+                    .address(Address.builder().line1("122 Breach Street").town("My town").county("Cardiff").postcode("CF11 2HB").build())
+                    .build())
+                .build()).build();
+
+        Map<String, String> result = syaAppealCreatedAndReceivedPersonalisation.setAppointeeDetails(new HashMap<>(), response);
+
+        assertEquals("Have a appointee: no",
+                result.get(AppConstants.APPOINTEE_DETAILS_LITERAL));
+    }
+
+    @Test
+    public void givenAnAppealWithRepresentative_setRepresentativeDetailsForTemplate() {
+        response = SscsCaseData.builder()
+            .ccdCaseId(CASE_ID).caseReference("SC/1234/5")
+            .appeal(Appeal.builder().rep(Representative.builder()
+                .name(Name.builder().firstName("Peter").lastName("Smith").build())
+                .organisation("Citizens Advice")
+                .address(Address.builder().line1("Ground Floor").line2("Gazette Buildings").town("168 Corporation Street").county("Cardiff").postcode("CF11 6TF").build())
+                .contact(Contact.builder().email("peter.smith@cab.org.uk").phone("03444 77 1010").build())
+                .build()).build())
+            .build();
 
         Map<String, String> result = syaAppealCreatedAndReceivedPersonalisation.setRepresentativeDetails(new HashMap<>(), response);
 
         assertEquals("Have a representative: yes\n"
-                        + "\nName: Peter Smith\n"
-                        + "\nOrganisation: Citizens Advice\n"
-                        + "\nAddress: Ground Floor, Gazette Buildings, 168 Corporation Street, Cardiff, CF11 6TF\n"
-                        + "\nEmail: peter.smith@cab.org.uk\n"
-                        + "\nPhone: 03444 77 1010",
-                result.get(AppConstants.REPRESENTATIVE_DETAILS_LITERAL));
+                + "\nName: Peter Smith\n"
+                + "\nOrganisation: Citizens Advice\n"
+                + "\nAddress: Ground Floor, Gazette Buildings, 168 Corporation Street, Cardiff, CF11 6TF\n"
+                + "\nEmail: peter.smith@cab.org.uk\n"
+                + "\nPhone: 03444 77 1010",
+            result.get(AppConstants.REPRESENTATIVE_DETAILS_LITERAL));
     }
 
     @Test
     public void givenAnAppealWithRepresentativeAndNoEmailOrPhoneOrOrganisationProvided_setRepresentativeDetailsForTemplate() {
         response = SscsCaseData.builder()
-                .ccdCaseId(CASE_ID).caseReference("SC/1234/5")
-                .appeal(Appeal.builder().rep(Representative.builder()
-                        .name(Name.builder().firstName("Peter").lastName("Smith").build())
-                        .address(Address.builder().line1("Ground Floor").line2("Gazette Buildings").town("168 Corporation Street").county("Cardiff").postcode("CF11 6TF").build())
-                        .contact(Contact.builder().build())
-                        .build()).build())
-                .build();
+            .ccdCaseId(CASE_ID).caseReference("SC/1234/5")
+            .appeal(Appeal.builder().rep(Representative.builder()
+                .name(Name.builder().firstName("Peter").lastName("Smith").build())
+                .address(Address.builder().line1("Ground Floor").line2("Gazette Buildings").town("168 Corporation Street").county("Cardiff").postcode("CF11 6TF").build())
+                .contact(Contact.builder().build())
+                .build()).build())
+            .build();
 
         Map<String, String> result = syaAppealCreatedAndReceivedPersonalisation.setRepresentativeDetails(new HashMap<>(), response);
 
         assertEquals("Have a representative: yes\n"
-                        + "\nName: Peter Smith\n"
-                        + "\nOrganisation: Not provided\n"
-                        + "\nAddress: Ground Floor, Gazette Buildings, 168 Corporation Street, Cardiff, CF11 6TF\n"
-                        + "\nEmail: Not provided\n"
-                        + "\nPhone: Not provided",
-                result.get(AppConstants.REPRESENTATIVE_DETAILS_LITERAL));
+                + "\nName: Peter Smith\n"
+                + "\nOrganisation: Not provided\n"
+                + "\nAddress: Ground Floor, Gazette Buildings, 168 Corporation Street, Cardiff, CF11 6TF\n"
+                + "\nEmail: Not provided\n"
+                + "\nPhone: Not provided",
+            result.get(AppConstants.REPRESENTATIVE_DETAILS_LITERAL));
     }
 
     @Test
     public void givenAnAppealWithNoRepresentative_setRepresentativeDetailsForTemplate() {
         response = SscsCaseData.builder()
-                .ccdCaseId(CASE_ID).caseReference("SC/1234/5")
-                .appeal(Appeal.builder()
-                        .build())
-                .build();
+            .ccdCaseId(CASE_ID).caseReference("SC/1234/5")
+            .appeal(Appeal.builder()
+                .build())
+            .build();
 
         Map<String, String> result = syaAppealCreatedAndReceivedPersonalisation.setRepresentativeDetails(new HashMap<>(), response);
 
         assertEquals("Have a representative: no",
-                result.get(AppConstants.REPRESENTATIVE_DETAILS_LITERAL));
+            result.get(AppConstants.REPRESENTATIVE_DETAILS_LITERAL));
     }
 
     @Test

@@ -11,34 +11,7 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 import org.springframework.stereotype.Service;
-import uk.gov.hmcts.reform.sscs.ccd.domain.Address;
-import uk.gov.hmcts.reform.sscs.ccd.domain.Appeal;
-import uk.gov.hmcts.reform.sscs.ccd.domain.AppealReason;
-import uk.gov.hmcts.reform.sscs.ccd.domain.AppealReasonDetails;
-import uk.gov.hmcts.reform.sscs.ccd.domain.AppealReasons;
-import uk.gov.hmcts.reform.sscs.ccd.domain.Appellant;
-import uk.gov.hmcts.reform.sscs.ccd.domain.BenefitType;
-import uk.gov.hmcts.reform.sscs.ccd.domain.Contact;
-import uk.gov.hmcts.reform.sscs.ccd.domain.DateRange;
-import uk.gov.hmcts.reform.sscs.ccd.domain.Document;
-import uk.gov.hmcts.reform.sscs.ccd.domain.DocumentDetails;
-import uk.gov.hmcts.reform.sscs.ccd.domain.Event;
-import uk.gov.hmcts.reform.sscs.ccd.domain.EventDetails;
-import uk.gov.hmcts.reform.sscs.ccd.domain.Evidence;
-import uk.gov.hmcts.reform.sscs.ccd.domain.ExcludeDate;
-import uk.gov.hmcts.reform.sscs.ccd.domain.Hearing;
-import uk.gov.hmcts.reform.sscs.ccd.domain.HearingDetails;
-import uk.gov.hmcts.reform.sscs.ccd.domain.HearingOptions;
-import uk.gov.hmcts.reform.sscs.ccd.domain.Identity;
-import uk.gov.hmcts.reform.sscs.ccd.domain.MrnDetails;
-import uk.gov.hmcts.reform.sscs.ccd.domain.Name;
-import uk.gov.hmcts.reform.sscs.ccd.domain.OnlinePanel;
-import uk.gov.hmcts.reform.sscs.ccd.domain.RegionalProcessingCenter;
-import uk.gov.hmcts.reform.sscs.ccd.domain.Representative;
-import uk.gov.hmcts.reform.sscs.ccd.domain.SscsCaseData;
-import uk.gov.hmcts.reform.sscs.ccd.domain.Subscription;
-import uk.gov.hmcts.reform.sscs.ccd.domain.Subscriptions;
-import uk.gov.hmcts.reform.sscs.ccd.domain.Venue;
+import uk.gov.hmcts.reform.sscs.ccd.domain.*;
 import uk.gov.hmcts.reform.sscs.domain.SscsCaseDataWrapper;
 import uk.gov.hmcts.reform.sscs.domain.notify.NotificationEventType;
 
@@ -177,9 +150,27 @@ public class SscsCaseDataWrapperDeserializer extends StdDeserializer<SscsCaseDat
         Address address = deserializeAddressJson(appellantNode);
         Contact contact = deserializeContactJson(appellantNode);
         Identity identity = deserializeIdentityJson(appellantNode);
+        Appointee appointee = deserializeAppointeeDetailsJson(appellantNode);
+        String isAddressSameAsAppointee =  convertEmptyToNo(getField(appellantNode, "isAddressSameAsAppointee"));
 
         return Appellant.builder()
-                .name(name).address(address).contact(contact).identity(identity).build();
+                .name(name).address(address).contact(contact).identity(identity).appointee(appointee)
+                .isAddressSameAsAppointee(isAddressSameAsAppointee).build();
+    }
+
+    public Appointee deserializeAppointeeDetailsJson(JsonNode appealNode) {
+        JsonNode appointeeNode = getNode(appealNode, "appointee");
+        if (appointeeNode == null) {
+            return null;
+        }
+
+        Name name = deserializeNameJson(appointeeNode);
+        Address address = deserializeAddressJson(appointeeNode);
+        Contact contact = deserializeContactJson(appointeeNode);
+        Identity identity = deserializeIdentityJson(appointeeNode);
+
+        return Appointee.builder()
+            .name(name).address(address).contact(contact).identity(identity).build();
     }
 
     private Contact deserializeContactJson(JsonNode node) {
@@ -320,6 +311,8 @@ public class SscsCaseDataWrapperDeserializer extends StdDeserializer<SscsCaseDat
         return Subscriptions.builder()
                 .appellantSubscription(deserializeSubscriptionJson(
                         subscriptionsNode, "appellantSubscription"))
+                .appointeeSubscription(deserializeSubscriptionJson(
+                        subscriptionsNode, "appointeeSubscription"))
                 .representativeSubscription(deserializeSubscriptionJson(
                         subscriptionsNode, "representativeSubscription")).build();
     }

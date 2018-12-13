@@ -25,16 +25,7 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
-import uk.gov.hmcts.reform.sscs.ccd.domain.Appeal;
-import uk.gov.hmcts.reform.sscs.ccd.domain.Appellant;
-import uk.gov.hmcts.reform.sscs.ccd.domain.BenefitType;
-import uk.gov.hmcts.reform.sscs.ccd.domain.Event;
-import uk.gov.hmcts.reform.sscs.ccd.domain.EventDetails;
-import uk.gov.hmcts.reform.sscs.ccd.domain.Name;
-import uk.gov.hmcts.reform.sscs.ccd.domain.RegionalProcessingCenter;
-import uk.gov.hmcts.reform.sscs.ccd.domain.SscsCaseData;
-import uk.gov.hmcts.reform.sscs.ccd.domain.Subscription;
-import uk.gov.hmcts.reform.sscs.ccd.domain.Subscriptions;
+import uk.gov.hmcts.reform.sscs.ccd.domain.*;
 import uk.gov.hmcts.reform.sscs.config.NotificationConfig;
 import uk.gov.hmcts.reform.sscs.config.SubscriptionType;
 import uk.gov.hmcts.reform.sscs.domain.SscsCaseDataWrapper;
@@ -156,6 +147,44 @@ public class NotificationFactoryTest {
 
         then(withRepresentativePersonalisation).should()
                 .getTemplate(eq(notificationWrapper), eq(PIP), eq(subscriptionType));
+
+    }
+
+    @Test
+    @Parameters({"APPOINTEE, appointeeEmail", "REPRESENTATIVE, repsEmail"})
+    public void givenAppealCreatedEventAndSubscriptionType_shouldInferRightSubscriptionToCreateNotification(
+        SubscriptionType subscriptionType, String expectedEmail) {
+        factory = new NotificationFactory(personalisationFactory);
+        CcdNotificationWrapper notificationWrapper = new CcdNotificationWrapper(SscsCaseDataWrapper.builder()
+            .newSscsCaseData(SscsCaseData.builder()
+                .appeal(Appeal.builder().appellant(Appellant.builder().appointee(Appointee.builder().build()).build())
+                    .benefitType(BenefitType.builder()
+                        .code("PIP")
+                        .build())
+                    .build())
+                .subscriptions(Subscriptions.builder()
+                    .appellantSubscription(Subscription.builder()
+                        .email("appellantEmail")
+                        .build())
+                    .appointeeSubscription(Subscription.builder()
+                        .email("appointeeEmail")
+                        .build())
+                    .representativeSubscription(Subscription.builder()
+                        .email("repsEmail")
+                        .build())
+                    .build())
+                .build())
+            .notificationEventType(SYA_APPEAL_CREATED_NOTIFICATION)
+            .build());
+
+        given(personalisationFactory.apply(any(NotificationEventType.class)))
+            .willReturn(withRepresentativePersonalisation);
+
+        Notification notification = factory.create(notificationWrapper, subscriptionType);
+        assertEquals(expectedEmail, notification.getEmail());
+
+        then(withRepresentativePersonalisation).should()
+            .getTemplate(eq(notificationWrapper), eq(PIP), eq(subscriptionType));
 
     }
 
