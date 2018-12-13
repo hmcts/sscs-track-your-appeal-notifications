@@ -147,6 +147,9 @@ notification:
     representative:
       emailId: 652753bf-59b4-46eb-9c24-bd762338a098
       smsId: 0e44927e-168b-4510-ac57-6932fda7aec1
+    appointee:
+      emailId: 362d9a85-e0e4-412b-b874-020c0464e2b4
+      smsId: f41222ef-c05c-4682-9634-6b034a166368
   resendAppealCreated:
     appellant:
       emailId: 01293b93-b23e-40a3-ad78-2c6cd01cd21c
