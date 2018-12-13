@@ -360,6 +360,23 @@ public class PersonalisationTest {
     }
 
     @Test
+    public void setEvidenceReceivedEventDataWhenEvidenceIsEmpty() {
+        List<Document> documents = null;
+
+        Evidence evidence = Evidence.builder().documents(documents).build();
+
+        SscsCaseData response = SscsCaseData.builder()
+            .ccdCaseId(CASE_ID).caseReference("SC/1234/5")
+            .appeal(Appeal.builder().benefitType(BenefitType.builder().code("PIP").build()).build())
+            .evidence(evidence)
+            .build();
+
+        Map<String, String> result = personalisation.setEvidenceReceivedNotificationData(new HashMap<>(), response, EVIDENCE_RECEIVED_NOTIFICATION);
+
+        assertEquals("", result.get(AppConstants.EVIDENCE_RECEIVED_DATE_LITERAL));
+    }
+
+    @Test
     public void givenHearingData_correctlySetTheHearingDetails() {
         LocalDate hearingDate = LocalDate.now().plusDays(7);
 
