@@ -630,14 +630,14 @@ public class NotificationsIt {
                 "1"
             },
             new Object[]{
-                    DWP_RESPONSE_RECEIVED_NOTIFICATION,
-                    "oral",
-                    Collections.singletonList("1afd89f9-9935-4acb-b4f6-ba708b03a0d3"),
-                    Collections.singletonList("4bba0b5d-a3f3-4fd9-a845-26af5eda042e"),
-                    "yes",
-                    "yes",
-                    "1",
-                    "1"
+                DWP_RESPONSE_RECEIVED_NOTIFICATION,
+                "oral",
+                Collections.singletonList("1afd89f9-9935-4acb-b4f6-ba708b03a0d3"),
+                Collections.singletonList("4bba0b5d-a3f3-4fd9-a845-26af5eda042e"),
+                "yes",
+                "yes",
+                "1",
+                "1"
             }
         };
     }
