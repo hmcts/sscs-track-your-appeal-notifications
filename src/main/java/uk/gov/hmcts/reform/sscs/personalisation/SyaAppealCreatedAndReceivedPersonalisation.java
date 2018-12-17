@@ -126,7 +126,7 @@ public class SyaAppealCreatedAndReceivedPersonalisation extends WithRepresentati
             .append("Have a appointee: ")
             .append(hasAppointee);
 
-        if (appointee != null) {
+        if (isValidAppointee(appointee)) {
             appointeeBuilder.append(TWO_NEW_LINES + "Name: ")
                 .append(appointee.getName().getFullNameNoTitle() + TWO_NEW_LINES)
                 .append("Date of birth: ")
