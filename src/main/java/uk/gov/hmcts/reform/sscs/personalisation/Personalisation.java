@@ -74,7 +74,6 @@ public class Personalisation<E extends NotificationWrapper> {
     protected Map<String, String> create(SscsCaseDataWrapper responseWrapper) {
         SscsCaseData ccdResponse = responseWrapper.getNewSscsCaseData();
         Map<String, String> personalisation = new HashMap<>();
-        Subscription appellantSubscription = ccdResponse.getSubscriptions().getAppellantSubscription();
         Benefit benefit = getBenefitByCode(ccdResponse.getAppeal().getBenefitType().getCode());
 
         personalisation.put(AppConstants.PANEL_COMPOSITION, getPanelCompositionByBenefitType(benefit));
@@ -87,31 +86,19 @@ public class Personalisation<E extends NotificationWrapper> {
         personalisation.put(AppConstants.APPEAL_REF, ccdResponse.getCaseReference());
         personalisation.put(AppConstants.APPELLANT_NAME, String.format("%s %s",
                 ccdResponse.getAppeal().getAppellant().getName().getFirstName(), ccdResponse.getAppeal().getAppellant().getName().getLastName()));
+        personalisation.put(AppConstants.NAME, String.format("%s %s",
+                ccdResponse.getAppeal().getAppellant().getName().getFirstName(), ccdResponse.getAppeal().getAppellant().getName().getLastName()));
         personalisation.put(AppConstants.PHONE_NUMBER, config.getHmctsPhoneNumber());
 
-        if (ccdResponse.getSubscriptions().getAppellantSubscription().getTya() != null) {
-            personalisation.put(AppConstants.APPEAL_ID, ccdResponse.getSubscriptions().getAppellantSubscription().getTya());
-            personalisation.put(AppConstants.MANAGE_EMAILS_LINK_LITERAL, config.getManageEmailsLink().replace(AppConstants.MAC_LITERAL,
-                    getMacToken(ccdResponse.getSubscriptions().getAppellantSubscription().getTya(),
-                            benefit.name())));
-            personalisation.put(AppConstants.TRACK_APPEAL_LINK_LITERAL, config.getTrackAppealLink() != null ? config.getTrackAppealLink().replace(AppConstants.APPEAL_ID_LITERAL, appellantSubscription.getTya()) : null);
-            personalisation.put(AppConstants.SUBMIT_EVIDENCE_LINK_LITERAL, config.getEvidenceSubmissionInfoLink().replace(AppConstants.APPEAL_ID, appellantSubscription.getTya()));
-            personalisation.put(AppConstants.SUBMIT_EVIDENCE_INFO_LINK_LITERAL, config.getEvidenceSubmissionInfoLink().replace(AppConstants.APPEAL_ID_LITERAL, appellantSubscription.getTya()));
-            personalisation.put(AppConstants.CLAIMING_EXPENSES_LINK_LITERAL, config.getClaimingExpensesLink().replace(AppConstants.APPEAL_ID, appellantSubscription.getTya()));
-            personalisation.put(AppConstants.HEARING_INFO_LINK_LITERAL,
-                    config.getHearingInfoLink().replace(AppConstants.APPEAL_ID_LITERAL, appellantSubscription.getTya()));
-        }
-
-        String email = appellantSubscription.getEmail();
-        if (email != null) {
-            try {
-                String encodedEmail = URLEncoder.encode(email, StandardCharsets.UTF_8.name());
-                personalisation.put(ONLINE_HEARING_LINK_LITERAL, config.getOnlineHearingLinkWithEmail().replace("{email}", encodedEmail));
-            } catch (UnsupportedEncodingException e) {
-                throw new RuntimeException(e);
+        if (ccdResponse.getSubscriptions().getAppointeeSubscription() != null && ccdResponse.getSubscriptions().getAppointeeSubscription().getTya() != null) {
+            if (ccdResponse.getAppeal().getAppellant().getAppointee() != null && ccdResponse.getAppeal().getAppellant().getAppointee().getName() != null) {
+                personalisation.put(AppConstants.NAME, String.format("%s %s",
+                    ccdResponse.getAppeal().getAppellant().getAppointee().getName().getFirstName(), ccdResponse.getAppeal().getAppellant().getAppointee().getName().getLastName()));
             }
+            subscriptionDetails(personalisation, ccdResponse.getSubscriptions().getAppointeeSubscription(), benefit);
+        } else if (ccdResponse.getSubscriptions().getAppellantSubscription() != null && ccdResponse.getSubscriptions().getAppellantSubscription().getTya() != null) {
+            subscriptionDetails(personalisation, ccdResponse.getSubscriptions().getAppellantSubscription(), benefit);
         }
-
         personalisation.put(AppConstants.FIRST_TIER_AGENCY_ACRONYM, AppConstants.DWP_ACRONYM);
         personalisation.put(AppConstants.FIRST_TIER_AGENCY_FULL_NAME, AppConstants.DWP_FUL_NAME);
 
@@ -144,6 +131,29 @@ public class Personalisation<E extends NotificationWrapper> {
         return personalisation;
     }
 
+    private void subscriptionDetails(Map<String, String> personalisation, Subscription subscription, Benefit benefit) {
+        personalisation.put(AppConstants.APPEAL_ID, subscription.getTya());
+        personalisation.put(AppConstants.MANAGE_EMAILS_LINK_LITERAL, config.getManageEmailsLink().replace(AppConstants.MAC_LITERAL,
+                getMacToken(subscription.getTya(),
+                        benefit.name())));
+        personalisation.put(AppConstants.TRACK_APPEAL_LINK_LITERAL, config.getTrackAppealLink() != null ? config.getTrackAppealLink().replace(AppConstants.APPEAL_ID_LITERAL, subscription.getTya()) : null);
+        personalisation.put(AppConstants.SUBMIT_EVIDENCE_LINK_LITERAL, config.getEvidenceSubmissionInfoLink().replace(AppConstants.APPEAL_ID, subscription.getTya()));
+        personalisation.put(AppConstants.SUBMIT_EVIDENCE_INFO_LINK_LITERAL, config.getEvidenceSubmissionInfoLink().replace(AppConstants.APPEAL_ID_LITERAL, subscription.getTya()));
+        personalisation.put(AppConstants.CLAIMING_EXPENSES_LINK_LITERAL, config.getClaimingExpensesLink().replace(AppConstants.APPEAL_ID, subscription.getTya()));
+        personalisation.put(AppConstants.HEARING_INFO_LINK_LITERAL,
+                config.getHearingInfoLink().replace(AppConstants.APPEAL_ID_LITERAL, subscription.getTya()));
+
+        String email = subscription.getEmail();
+        if (email != null) {
+            try {
+                String encodedEmail = URLEncoder.encode(email, StandardCharsets.UTF_8.name());
+                personalisation.put(ONLINE_HEARING_LINK_LITERAL, config.getOnlineHearingLinkWithEmail().replace("{email}", encodedEmail));
+            } catch (UnsupportedEncodingException e) {
+                throw new RuntimeException(e);
+            }
+        }
+    }
+
     private String getPanelCompositionByBenefitType(Benefit benefit) {
         if (Benefit.PIP.equals(benefit)) {
             return AppConstants.PIP_PANEL_COMPOSITION;
@@ -162,11 +172,10 @@ public class Personalisation<E extends NotificationWrapper> {
         if (ccdResponse.getEvents() != null) {
 
             for (Event event : ccdResponse.getEvents()) {
-                if (event.getValue() != null) {
-                    if ((notificationEventType.equals(APPEAL_RECEIVED_NOTIFICATION) && event.getValue().getEventType().equals(APPEAL_RECEIVED))
-                            || notificationEventType.equals(DWP_RESPONSE_LATE_REMINDER_NOTIFICATION)) {
-                        return setAppealReceivedDetails(personalisation, event.getValue());
-                    }
+                if (event.getValue() != null
+                        && (notificationEventType.equals(APPEAL_RECEIVED_NOTIFICATION) && event.getValue().getEventType().equals(APPEAL_RECEIVED)
+                            || notificationEventType.equals(DWP_RESPONSE_LATE_REMINDER_NOTIFICATION))) {
+                    return setAppealReceivedDetails(personalisation, event.getValue());
                 }
             }
         }
@@ -246,14 +255,14 @@ public class Personalisation<E extends NotificationWrapper> {
         String emailTemplateName = notificationEventType.getId();
         if (APPEAL_LAPSED_NOTIFICATION.equals(notificationEventType)
             || APPEAL_WITHDRAWN_NOTIFICATION.equals(notificationEventType)
-            || (EVIDENCE_RECEIVED_NOTIFICATION.equals(notificationEventType) && REPRESENTATIVE.equals(subscriptionType))
+            || EVIDENCE_RECEIVED_NOTIFICATION.equals(notificationEventType) && REPRESENTATIVE.equals(subscriptionType)
             || SYA_APPEAL_CREATED_NOTIFICATION.equals(notificationEventType)
             || APPEAL_DORMANT_NOTIFICATION.equals(notificationEventType)
             || ADJOURNED_NOTIFICATION.equals(notificationEventType)
             || APPEAL_RECEIVED_NOTIFICATION.equals(notificationEventType)
             || POSTPONEMENT_NOTIFICATION.equals(notificationEventType)
             || HEARING_BOOKED_NOTIFICATION.equals(notificationEventType)) {
-            emailTemplateName = emailTemplateName + "." + subscriptionType.name().toLowerCase();
+            emailTemplateName = emailTemplateName + "." + StringUtils.lowerCase(subscriptionType.name());
         }
         return emailTemplateName;
     }

@@ -14,7 +14,6 @@ import static uk.gov.hmcts.reform.sscs.domain.notify.NotificationEventType.*;
 import java.time.LocalDate;
 import java.util.*;
 import javax.annotation.Resource;
-import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
 import org.mockito.InjectMocks;
@@ -56,7 +55,7 @@ public class SubscriptionPersonalisationTest {
     @Resource
     SubscriptionPersonalisation personalisation;
 
-    private String date = "2018-01-01T14:01:18.243";
+    private final String date = "2018-01-01T14:01:18.243";
 
     @Before
     public void setup() {
@@ -89,12 +88,12 @@ public class SubscriptionPersonalisationTest {
         assertEquals("Personal Independence Payment", result.get(AppConstants.BENEFIT_FULL_NAME_LITERAL));
         assertEquals("1234", result.get(AppConstants.APPEAL_REF));
         assertEquals("GLSCRR", result.get(AppConstants.APPEAL_ID));
-        assertEquals("Harry Kane", result.get(AppConstants.APPELLANT_NAME));
+        assertEquals("Harry Kane", result.get(AppConstants.NAME));
         assertEquals("01234543225", result.get(AppConstants.PHONE_NUMBER));
         assertEquals("http://link.com/manage-email-notifications/ZYX", result.get(AppConstants.MANAGE_EMAILS_LINK_LITERAL));
         assertEquals("http://tyalink.com/GLSCRR", result.get(AppConstants.TRACK_APPEAL_LINK_LITERAL));
-        Assert.assertEquals(AppConstants.DWP_ACRONYM, result.get(AppConstants.FIRST_TIER_AGENCY_ACRONYM));
-        Assert.assertEquals(AppConstants.DWP_FUL_NAME, result.get(AppConstants.FIRST_TIER_AGENCY_FULL_NAME));
+        assertEquals(AppConstants.DWP_ACRONYM, result.get(AppConstants.FIRST_TIER_AGENCY_ACRONYM));
+        assertEquals(AppConstants.DWP_FUL_NAME, result.get(AppConstants.FIRST_TIER_AGENCY_FULL_NAME));
         assertEquals("http://link.com/GLSCRR", result.get(AppConstants.SUBMIT_EVIDENCE_LINK_LITERAL));
     }
 
@@ -294,7 +293,7 @@ public class SubscriptionPersonalisationTest {
     public void isNotPaperCase() {
         Arrays.stream(AppealHearingType.values())
             .filter(aht -> {
-                return (aht != AppealHearingType.PAPER);
+                return aht != AppealHearingType.PAPER;
             })
             .forEach(aht -> assertFalse(personalisation.isPaperCase(aht.name())));
     }

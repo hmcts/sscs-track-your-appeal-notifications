@@ -1,5 +1,6 @@
 package uk.gov.hmcts.reform.sscs.factory;
 
+import static uk.gov.hmcts.reform.sscs.config.AppealHearingType.*;
 import static uk.gov.hmcts.reform.sscs.config.SubscriptionType.APPELLANT;
 import static uk.gov.hmcts.reform.sscs.config.SubscriptionType.APPOINTEE;
 import static uk.gov.hmcts.reform.sscs.config.SubscriptionType.REPRESENTATIVE;
@@ -61,18 +62,18 @@ public class CcdNotificationWrapper implements NotificationWrapper {
     }
 
     public AppealHearingType getHearingType() {
-        String hearingType = responseWrapper.getNewSscsCaseData().getAppeal().getHearingType();
+        final String hearingType = responseWrapper.getNewSscsCaseData().getAppeal().getHearingType();
+        AppealHearingType returnHearingType = REGULAR;
         if (HEARING_TYPE_ONLINE_RESOLUTION.equalsIgnoreCase(hearingType)) {
-            return AppealHearingType.ONLINE;
+            returnHearingType = ONLINE;
         }
-        if (AppealHearingType.PAPER.name().equalsIgnoreCase(hearingType)) {
-            return AppealHearingType.PAPER;
+        if (PAPER.name().equalsIgnoreCase(hearingType)) {
+            returnHearingType = PAPER;
         }
-        if (AppealHearingType.ORAL.name().equalsIgnoreCase(hearingType)) {
-            return AppealHearingType.ORAL;
-        } else {
-            return AppealHearingType.REGULAR;
+        if (ORAL.name().equalsIgnoreCase(hearingType)) {
+            returnHearingType = ORAL;
         }
+        return returnHearingType;
     }
 
     @Override
@@ -89,7 +90,10 @@ public class CcdNotificationWrapper implements NotificationWrapper {
     public List<SubscriptionWithType> getSubscriptionsBasedOnNotificationType() {
         List<SubscriptionWithType> subscriptionWithTypeList = new ArrayList<>();
 
-        if (hasAppointee() && SYA_APPEAL_CREATED_NOTIFICATION.equals(getNotificationType())) {
+        if (hasAppointee()
+                && (SYA_APPEAL_CREATED_NOTIFICATION.equals(getNotificationType())
+                || DWP_RESPONSE_RECEIVED_NOTIFICATION.equals(getNotificationType()) && ORAL.equals(getHearingType()))
+        ) {
             subscriptionWithTypeList.add(new SubscriptionWithType(getAppointeeSubscription(), APPOINTEE));
         } else {
             subscriptionWithTypeList.add(new SubscriptionWithType(getAppellantSubscription(), APPELLANT));
@@ -110,14 +114,14 @@ public class CcdNotificationWrapper implements NotificationWrapper {
     }
 
     private boolean hasAppointee() {
-        return (responseWrapper.getNewSscsCaseData().getAppeal() != null
+        return responseWrapper.getNewSscsCaseData().getAppeal() != null
             && responseWrapper.getNewSscsCaseData().getAppeal().getAppellant() != null
-            && responseWrapper.getNewSscsCaseData().getAppeal().getAppellant().getAppointee() != null);
+            && responseWrapper.getNewSscsCaseData().getAppeal().getAppellant().getAppointee() != null;
     }
 
     private boolean hasRepresentative() {
-        return (responseWrapper.getNewSscsCaseData().getAppeal() != null
-            && responseWrapper.getNewSscsCaseData().getAppeal().getRep() != null);
+        return responseWrapper.getNewSscsCaseData().getAppeal() != null
+            && responseWrapper.getNewSscsCaseData().getAppeal().getRep() != null;
     }
 
     @Override

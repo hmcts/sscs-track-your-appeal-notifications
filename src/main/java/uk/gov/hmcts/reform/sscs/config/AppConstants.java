@@ -11,7 +11,8 @@ public final class AppConstants {
     public static final String APPEAL_ID = "appeal_id";
     public static final String APPEAL_ID_LITERAL = "appeal_id";
     public static final String APPEAL_RESPOND_DATE = "appeal_respond_date";
-    public static final String APPELLANT_NAME = "name";
+    public static final String NAME = "name";
+    public static final String APPELLANT_NAME = "appellant_name";
     public static final String REPRESENTATIVE_NAME = "representative_name";
     public static final String APPOINTEE_NAME = "appointee_name";
     public static final String BENEFIT_NAME_ACRONYM_LITERAL = "benefit_name_acronym";

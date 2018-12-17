@@ -5,6 +5,7 @@ import static helper.IntegrationTestHelper.getRequestWithAuthHeader;
 import static helper.IntegrationTestHelper.getRequestWithoutAuthHeader;
 import static helper.IntegrationTestHelper.updateEmbeddedJson;
 import static org.junit.Assert.assertArrayEquals;
+import static org.junit.Assert.assertEquals;
 import static org.mockito.Mockito.any;
 import static org.mockito.Mockito.anyString;
 import static org.mockito.Mockito.eq;
@@ -13,16 +14,14 @@ import static org.mockito.Mockito.never;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
+import static uk.gov.hmcts.reform.sscs.config.AppConstants.*;
 import static uk.gov.hmcts.reform.sscs.domain.notify.NotificationEventType.*;
 
 import java.io.File;
 import java.io.IOException;
 import java.nio.charset.StandardCharsets;
 import java.time.LocalDate;
-import java.util.Arrays;
-import java.util.Collections;
-import java.util.List;
-import java.util.UUID;
+import java.util.*;
 import javax.servlet.http.HttpServletResponse;
 import junitparams.JUnitParamsRunner;
 import junitparams.Parameters;
@@ -292,6 +291,7 @@ public class NotificationsIt {
 
     @Test
     @Parameters(method = "generateAppointeeNotificationScenarios")
+    @SuppressWarnings("unchecked")
     public void shouldSendAppointeeNotificationsForAnEventForAnOralOrPaperHearingAndForEachSubscription(
         NotificationEventType notificationEventType, String hearingType, List<String> expectedEmailTemplateIds,
         List<String> expectedSmsTemplateIds, String appointeeEmailSubs, String appointeeSmsSubs,
@@ -314,17 +314,22 @@ public class NotificationsIt {
         assertHttpStatus(response, HttpStatus.OK);
 
         ArgumentCaptor<String> emailTemplateIdCaptor = ArgumentCaptor.forClass(String.class);
+        ArgumentCaptor<Map<String, ?>> personalisationCaptor = ArgumentCaptor.forClass(Map.class);
         verify(notificationClient, times(wantedNumberOfSendEmailInvocations))
-            .sendEmail(emailTemplateIdCaptor.capture(), any(), any(), any());
+            .sendEmail(emailTemplateIdCaptor.capture(), any(), personalisationCaptor.capture(), any());
         assertArrayEquals(expectedEmailTemplateIds.toArray(), emailTemplateIdCaptor.getAllValues().toArray());
 
         ArgumentCaptor<String> smsTemplateIdCaptor = ArgumentCaptor.forClass(String.class);
         verify(notificationClient, times(wantedNumberOfSendSmsInvocations))
             .sendSms(smsTemplateIdCaptor.capture(), any(), any(), any(), any());
         assertArrayEquals(expectedSmsTemplateIds.toArray(), smsTemplateIdCaptor.getAllValues().toArray());
+
+        Map<String, ?> personalisation = personalisationCaptor.getValue();
+        assertEquals("Appointee Appointee", personalisation.get(NAME));
+        assertEquals("Dexter Vasquez", personalisation.get(APPELLANT_NAME));
     }
 
-    @SuppressWarnings("Indentation")
+    @SuppressWarnings({"Indentation", "unused"})
     private Object[] generateRepsNotificationScenarios() {
         return new Object[]{
                 new Object[]{
@@ -600,7 +605,7 @@ public class NotificationsIt {
         return new Object[]{
             new Object[]{
                 SYA_APPEAL_CREATED_NOTIFICATION,
-                "paper",
+                "oral",
                 Collections.singletonList("362d9a85-e0e4-412b-b874-020c0464e2b4"),
                 Collections.singletonList("f41222ef-c05c-4682-9634-6b034a166368"),
                 "yes",
@@ -617,6 +622,16 @@ public class NotificationsIt {
                 "yes",
                 "1",
                 "1"
+            },
+            new Object[]{
+                    DWP_RESPONSE_RECEIVED_NOTIFICATION,
+                    "oral",
+                    Collections.singletonList("1afd89f9-9935-4acb-b4f6-ba708b03a0d3"),
+                    Collections.singletonList("4bba0b5d-a3f3-4fd9-a845-26af5eda042e"),
+                    "yes",
+                    "yes",
+                    "1",
+                    "1"
             }
         };
     }
