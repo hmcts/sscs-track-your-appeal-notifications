@@ -101,4 +101,10 @@
     <gav regex="true">^com\.google\.guava:guava:.*$</gav>
     <cve>CVE-2018-10237</cve>
   </suppress>
+  <suppress>
+    <notes><![CDATA[
+   Security issue with current version of slf4j. Later releases don't log anything so cannot upgrade
+   ]]></notes>
+    <cve>CVE-2018-8088</cve>
+  </suppress>
 </suppressions>
