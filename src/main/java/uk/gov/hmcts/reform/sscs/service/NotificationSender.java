@@ -95,15 +95,16 @@ public class NotificationSender {
     }
 
     public void sendBundledLetter(String templateId, Address address, byte[] directionText, Map<String, String> personalisation, String reference, String ccdCaseId) throws NotificationClientException {
+        if (directionText != null) {
+            NotificationClient client = getLetterNotificationClient(address.getPostcode());
 
-        NotificationClient client = getLetterNotificationClient(address.getPostcode());
+            ByteInputStream bis = new ByteInputStream(directionText, directionText.length);
 
-        ByteInputStream bis = new ByteInputStream(directionText, directionText.length);
+            LetterResponse sendLetterResponse = client.sendPrecompiledLetterWithInputStream(reference, bis);
 
-        LetterResponse sendLetterResponse = client.sendPrecompiledLetterWithInputStream(reference, bis);
-
-        LOG.info("Letter Notification send for case id : {}, Gov notify id: {} ", ccdCaseId,
-            sendLetterResponse.getNotificationId());
+            LOG.info("Letter Notification send for case id : {}, Gov notify id: {} ", ccdCaseId,
+                sendLetterResponse.getNotificationId());
+        }
     }
 
     private NotificationClient getLetterNotificationClient(String postcode) {
