@@ -11,6 +11,8 @@ import static uk.gov.hmcts.reform.sscs.service.NotificationUtils.hasRepresentati
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
+
+import org.apache.commons.lang3.StringUtils;
 import uk.gov.hmcts.reform.sscs.ccd.domain.SscsCaseData;
 import uk.gov.hmcts.reform.sscs.ccd.domain.Subscription;
 import uk.gov.hmcts.reform.sscs.config.AppealHearingType;
@@ -66,13 +68,11 @@ public class CcdNotificationWrapper implements NotificationWrapper {
     public AppealHearingType getHearingType() {
         final String hearingType = responseWrapper.getNewSscsCaseData().getAppeal().getHearingType();
         AppealHearingType returnHearingType = REGULAR;
-        if (HEARING_TYPE_ONLINE_RESOLUTION.equalsIgnoreCase(hearingType)) {
+        if (StringUtils.equalsAnyIgnoreCase(HEARING_TYPE_ONLINE_RESOLUTION, hearingType)) {
             returnHearingType = ONLINE;
-        }
-        if (PAPER.name().equalsIgnoreCase(hearingType)) {
+        } else if (StringUtils.equalsAnyIgnoreCase(PAPER.name(), hearingType)) {
             returnHearingType = PAPER;
-        }
-        if (ORAL.name().equalsIgnoreCase(hearingType)) {
+        } else if (StringUtils.equalsAnyIgnoreCase(ORAL.name(), hearingType)) {
             returnHearingType = ORAL;
         }
         return returnHearingType;
