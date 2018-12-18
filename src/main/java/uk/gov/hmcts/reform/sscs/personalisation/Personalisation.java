@@ -81,10 +81,10 @@ public class Personalisation<E extends NotificationWrapper> {
         personalisation.put(AppConstants.BENEFIT_NAME_ACRONYM_SHORT_LITERAL, benefit.name());
         personalisation.put(AppConstants.BENEFIT_FULL_NAME_LITERAL, benefit.getDescription());
         personalisation.put(AppConstants.APPEAL_REF, ccdResponse.getCaseReference());
-        personalisation.put(AppConstants.APPELLANT_NAME, String.format("%s %s",
-                ccdResponse.getAppeal().getAppellant().getName().getFirstName(), ccdResponse.getAppeal().getAppellant().getName().getLastName()));
-        personalisation.put(AppConstants.NAME, String.format("%s %s",
-                ccdResponse.getAppeal().getAppellant().getName().getFirstName(), ccdResponse.getAppeal().getAppellant().getName().getLastName()));
+        personalisation.put(AppConstants.APPELLANT_NAME,
+                ccdResponse.getAppeal().getAppellant().getName().getFullNameNoTitle());
+        personalisation.put(AppConstants.NAME,
+                ccdResponse.getAppeal().getAppellant().getName().getFullNameNoTitle());
         personalisation.put(AppConstants.PHONE_NUMBER, config.getHmctsPhoneNumber());
 
 
@@ -114,8 +114,8 @@ public class Personalisation<E extends NotificationWrapper> {
             }
 
             if (ccdResponse.getAppeal().getAppellant().getAppointee() != null && ccdResponse.getAppeal().getAppellant().getAppointee().getName() != null) {
-                personalisation.put(AppConstants.NAME, String.format("%s %s",
-                    ccdResponse.getAppeal().getAppellant().getAppointee().getName().getFirstName(), ccdResponse.getAppeal().getAppellant().getAppointee().getName().getLastName()));
+                personalisation.put(AppConstants.NAME,
+                    ccdResponse.getAppeal().getAppellant().getAppointee().getName().getFullNameNoTitle());
             }
 
             subscriptionDetails(personalisation, appellantOrAppointeeSubscription, benefit);
