@@ -61,6 +61,13 @@ public final class AppConstants {
     public static final String ONLINE_HEARING_SIGN_IN_LINK_LITERAL = "online_hearing_sign_in_link";
     public static final String ONLINE_HEARING_REGISTER_LINK_LITERAL = "online_hearing_register_link";
 
+    public static final String ADDRESS_LINE_1 = "address line 1";
+    public static final String ADDRESS_LINE_2 = "address line 2";
+    public static final String ADDRESS_LINE_3 = "address line 3";
+    public static final String ADDRESS_LINE_4 = "address line 4";
+    public static final String ADDRESS_LINE_5 = "address line 5";
+    public static final String ADDRESS_LINE_6 = "address line 6";
+
     private AppConstants() {
         //
     }

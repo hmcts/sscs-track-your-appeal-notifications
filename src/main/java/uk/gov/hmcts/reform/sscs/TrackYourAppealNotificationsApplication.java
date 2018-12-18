@@ -2,6 +2,7 @@ package uk.gov.hmcts.reform.sscs;
 
 import static java.util.Arrays.asList;
 
+import java.util.Properties;
 import java.util.TimeZone;
 import javax.annotation.PostConstruct;
 import org.quartz.spi.JobFactory;
@@ -16,7 +17,10 @@ import org.springframework.context.MessageSource;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Primary;
 import org.springframework.context.support.ReloadableResourceBundleMessageSource;
+import org.springframework.mail.javamail.JavaMailSender;
+import org.springframework.mail.javamail.JavaMailSenderImpl;
 import org.springframework.retry.annotation.EnableRetry;
+import org.springframework.web.client.RestTemplate;
 import uk.gov.hmcts.reform.sscs.ccd.config.CcdRequestDetails;
 import uk.gov.hmcts.reform.sscs.ccd.service.CcdService;
 import uk.gov.hmcts.reform.sscs.deserialize.SscsCaseDataWrapperDeserializer;
@@ -46,6 +50,15 @@ public class TrackYourAppealNotificationsApplication {
 
     public static final String UTC = "UTC";
 
+    @Value("${appeal.email.host}")
+    private String emailHost;
+
+    @Value("${appeal.email.port}")
+    private int emailPort;
+
+    @Value("${appeal.email.smtp.tls.enabled}")
+    private String smtpTlsEnabled;
+
     @Value("${gov.uk.notification.api.key}")
     private String apiKey;
 
@@ -59,6 +72,24 @@ public class TrackYourAppealNotificationsApplication {
 
     public static void main(String[] args) {
         SpringApplication.run(TrackYourAppealNotificationsApplication.class, args);
+    }
+
+    @Bean
+    public RestTemplate restTemplate() {
+        return new RestTemplate();
+    }
+
+    @Bean
+    public JavaMailSender javaMailSender() {
+        JavaMailSenderImpl javaMailSender = new JavaMailSenderImpl();
+        javaMailSender.setHost(emailHost);
+        javaMailSender.setPort(emailPort);
+        Properties properties = new Properties();
+        properties.setProperty("mail.transport.protocol","smtp");
+        properties.setProperty("mail.smtp.starttls.enable", smtpTlsEnabled);
+        properties.put("mail.smtp.ssl.trust","*");
+        javaMailSender.setJavaMailProperties(properties);
+        return javaMailSender;
     }
 
     @Bean

@@ -39,9 +39,14 @@ public class CohPersonalisation extends Personalisation<CohNotificationWrapper> 
         QuestionRounds questionRounds = questionService.getQuestionRounds(notificationWrapper.getOnlineHearingId());
         if (questionRounds.getCurrentQuestionRound() == 1) {
             NotificationEventType type = notificationWrapper.getNotificationType();
-            return config.getTemplate(type.getId(), type.getId(), benefit, notificationWrapper.getHearingType());
+            return config.getTemplate(type.getId(), type.getId(), type.getId(), benefit, notificationWrapper.getHearingType());
         }
-        return config.getTemplate("follow_up_question_round_issued",
-                "follow_up_question_round_issued", benefit, notificationWrapper.getHearingType());
+        return config.getTemplate(
+            "follow_up_question_round_issued",
+            "follow_up_question_round_issued",
+            "follow_up_question_round_issued",
+            benefit,
+            notificationWrapper.getHearingType()
+        );
     }
 }

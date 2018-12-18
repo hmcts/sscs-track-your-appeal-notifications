@@ -9,36 +9,10 @@ import com.fasterxml.jackson.databind.node.JsonNodeType;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.Iterator;
 import java.util.List;
 import org.springframework.stereotype.Service;
-import uk.gov.hmcts.reform.sscs.ccd.domain.Address;
-import uk.gov.hmcts.reform.sscs.ccd.domain.Appeal;
-import uk.gov.hmcts.reform.sscs.ccd.domain.AppealReason;
-import uk.gov.hmcts.reform.sscs.ccd.domain.AppealReasonDetails;
-import uk.gov.hmcts.reform.sscs.ccd.domain.AppealReasons;
-import uk.gov.hmcts.reform.sscs.ccd.domain.Appellant;
-import uk.gov.hmcts.reform.sscs.ccd.domain.BenefitType;
-import uk.gov.hmcts.reform.sscs.ccd.domain.Contact;
-import uk.gov.hmcts.reform.sscs.ccd.domain.DateRange;
-import uk.gov.hmcts.reform.sscs.ccd.domain.Document;
-import uk.gov.hmcts.reform.sscs.ccd.domain.DocumentDetails;
-import uk.gov.hmcts.reform.sscs.ccd.domain.Event;
-import uk.gov.hmcts.reform.sscs.ccd.domain.EventDetails;
-import uk.gov.hmcts.reform.sscs.ccd.domain.Evidence;
-import uk.gov.hmcts.reform.sscs.ccd.domain.ExcludeDate;
-import uk.gov.hmcts.reform.sscs.ccd.domain.Hearing;
-import uk.gov.hmcts.reform.sscs.ccd.domain.HearingDetails;
-import uk.gov.hmcts.reform.sscs.ccd.domain.HearingOptions;
-import uk.gov.hmcts.reform.sscs.ccd.domain.Identity;
-import uk.gov.hmcts.reform.sscs.ccd.domain.MrnDetails;
-import uk.gov.hmcts.reform.sscs.ccd.domain.Name;
-import uk.gov.hmcts.reform.sscs.ccd.domain.OnlinePanel;
-import uk.gov.hmcts.reform.sscs.ccd.domain.RegionalProcessingCenter;
-import uk.gov.hmcts.reform.sscs.ccd.domain.Representative;
-import uk.gov.hmcts.reform.sscs.ccd.domain.SscsCaseData;
-import uk.gov.hmcts.reform.sscs.ccd.domain.Subscription;
-import uk.gov.hmcts.reform.sscs.ccd.domain.Subscriptions;
-import uk.gov.hmcts.reform.sscs.ccd.domain.Venue;
+import uk.gov.hmcts.reform.sscs.ccd.domain.*;
 import uk.gov.hmcts.reform.sscs.domain.SscsCaseDataWrapper;
 import uk.gov.hmcts.reform.sscs.domain.notify.NotificationEventType;
 
@@ -102,6 +76,7 @@ public class SscsCaseDataWrapperDeserializer extends StdDeserializer<SscsCaseDat
     public SscsCaseData deserializeCaseNode(JsonNode caseNode) {
         JsonNode appealNode = getNode(caseNode, "appeal");
         JsonNode subscriptionsNode = getNode(caseNode, "subscriptions");
+        JsonNode documentsNode = getNode(caseNode, "sscsDocument");
 
         OnlinePanel onlinePanel = deserializeOnlinePanelJson(caseNode);
         Appeal appeal = deserializeAppealDetailsJson(appealNode);
@@ -110,6 +85,7 @@ public class SscsCaseDataWrapperDeserializer extends StdDeserializer<SscsCaseDat
         List<Hearing> hearings = deserializeHearingDetailsJson(caseNode);
         Evidence evidence = deserializeEvidenceDetailsJson(caseNode);
         RegionalProcessingCenter rpc = deserializeRegionalProcessingCenterJson(caseNode);
+        List<SscsDocument> documents = deserializeDocuments(documentsNode);
 
         return SscsCaseData.builder()
                 .caseReference(getField(caseNode, "caseReference"))
@@ -120,6 +96,7 @@ public class SscsCaseDataWrapperDeserializer extends StdDeserializer<SscsCaseDat
                 .hearings(hearings)
                 .evidence(evidence)
                 .regionalProcessingCenter(rpc)
+                .sscsDocument(documents)
                 .build();
     }
 
@@ -471,5 +448,38 @@ public class SscsCaseDataWrapperDeserializer extends StdDeserializer<SscsCaseDat
                     .faxNumber(getField(regionalProcessingCenterNode, "faxNumber")).build();
         }
         return null;
+    }
+
+    public List<SscsDocument> deserializeDocuments(JsonNode documentsNode) {
+        if (documentsNode != null) {
+            List<SscsDocument> documents = new ArrayList<>();
+
+            if (documentsNode != null && documentsNode.isArray()) {
+                for (final JsonNode objNode : documentsNode) {
+
+                    JsonNode valueNode = getNode(objNode, "value");
+
+                    String documentUrl = getField((JsonNode)getNode(valueNode, "documentLink"), "document_url");
+                    String documentFileName = getField((JsonNode)getNode(valueNode, "documentLink"), "document_filename");
+                    DocumentLink documentLink = DocumentLink.builder().documentUrl(documentUrl).build();
+                    SscsDocumentDetails sscsDocumentDetails = SscsDocumentDetails.builder()
+                        .documentType(getField(valueNode, "documentType"))
+                        .documentFileName(documentFileName)
+                        .documentEmailContent(getField(valueNode, "documentEmailContent"))
+                        .documentDateAdded(getField(valueNode, "documentDateAdded"))
+                        .documentLink(documentLink)
+                        .documentComment(getField(valueNode, "documentComment")
+                    ).build();
+
+                    SscsDocument document = SscsDocument.builder().value(sscsDocumentDetails).build();
+
+                    documents.add(document);
+                }
+//                Collections.sort(documents, Collections.reverseOrder());
+            }
+            return documents;
+        } else {
+            return null;
+        }
     }
 }

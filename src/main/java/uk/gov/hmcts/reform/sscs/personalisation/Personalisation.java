@@ -141,6 +141,15 @@ public class Personalisation<E extends NotificationWrapper> {
         personalisation.put(ONLINE_HEARING_REGISTER_LINK_LITERAL, config.getOnlineHearingLink() + "/register");
         personalisation.put(ONLINE_HEARING_SIGN_IN_LINK_LITERAL, config.getOnlineHearingLink() + "/sign-in");
 
+        // Letter notifications
+        personalisation.put("address_line_1", "hardcoded line 1");
+        personalisation.put("address_line_2", "hardcoded line 2");
+        personalisation.put("address_line_3", "hardcoded line 3");
+        personalisation.put("address_line_4", "hardcoded line 4");
+        personalisation.put("address_line_5", "hardcoded line 5");
+        personalisation.put("address_line_6", "hardcoded line 6");
+        personalisation.put("postcode", "AB1 1YZ");
+
         return personalisation;
     }
 
@@ -236,7 +245,8 @@ public class Personalisation<E extends NotificationWrapper> {
         String emailTemplateName = getEmailTemplateName(subscriptionType, notificationWrapper.getNotificationType());
         String smsTemplateName = isSendSmsSubscriptionConfirmation() ? SUBSCRIPTION_CREATED_NOTIFICATION.getId() :
                 emailTemplateName;
-        return config.getTemplate(emailTemplateName, smsTemplateName, benefit, notificationWrapper.getHearingType());
+        String letterTemplateName = getLetterTemplateName(subscriptionType, notificationWrapper.getNotificationType());
+        return config.getTemplate(emailTemplateName, smsTemplateName, letterTemplateName, benefit, notificationWrapper.getHearingType());
     }
 
     private String getEmailTemplateName(SubscriptionType subscriptionType,
@@ -254,6 +264,12 @@ public class Personalisation<E extends NotificationWrapper> {
             emailTemplateName = emailTemplateName + "." + subscriptionType.name().toLowerCase();
         }
         return emailTemplateName;
+    }
+
+    private String getLetterTemplateName(SubscriptionType subscriptionType,
+                                        NotificationEventType notificationEventType) {
+        // TODO: Check that this is right!
+        return notificationEventType.getId();
     }
 
     public Boolean isSendSmsSubscriptionConfirmation() {

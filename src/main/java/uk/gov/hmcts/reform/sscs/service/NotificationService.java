@@ -1,11 +1,15 @@
 package uk.gov.hmcts.reform.sscs.service;
 
 import static uk.gov.hmcts.reform.sscs.ccd.domain.Benefit.getBenefitByCode;
+import static uk.gov.hmcts.reform.sscs.domain.notify.NotificationEventType.STRUCK_OUT;
 
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import uk.gov.hmcts.reform.authorisation.generators.AuthTokenGenerator;
 import uk.gov.hmcts.reform.sscs.ccd.domain.Benefit;
+import uk.gov.hmcts.reform.sscs.ccd.domain.SscsCaseData;
+import uk.gov.hmcts.reform.sscs.ccd.domain.SscsDocument;
 import uk.gov.hmcts.reform.sscs.ccd.domain.Subscription;
 import uk.gov.hmcts.reform.sscs.config.AppealHearingType;
 import uk.gov.hmcts.reform.sscs.config.NotificationConfig;
@@ -18,9 +22,14 @@ import uk.gov.hmcts.reform.sscs.domain.notify.Template;
 import uk.gov.hmcts.reform.sscs.factory.NotificationFactory;
 import uk.gov.hmcts.reform.sscs.factory.NotificationWrapper;
 
+import java.net.URI;
+
 @Service
 @Slf4j
 public class NotificationService {
+    public static final String S2S_TOKEN = "oauth2Token";
+    public static final String DM_STORE_USER_ID = "sscs";
+    public static final String DIRECTION_TEXT = "Direction Text";
 
     private final NotificationSender notificationSender;
     private final NotificationFactory notificationFactory;
@@ -29,13 +38,18 @@ public class NotificationService {
     private final NotificationHandler notificationHandler;
     private final OutOfHoursCalculator outOfHoursCalculator;
     private final NotificationConfig notificationConfig;
+//    private final EvidenceManagementService evidenceManagementService;
+    private final AuthTokenGenerator authTokenGenerator;
+    private final EvidenceManagementService evidenceManagementService;
 
 
     @Autowired
     public NotificationService(NotificationSender notificationSender, NotificationFactory notificationFactory,
                                ReminderService reminderService, NotificationValidService notificationValidService,
                                NotificationHandler notificationHandler,
-                               OutOfHoursCalculator outOfHoursCalculator, NotificationConfig notificationConfig) {
+                               OutOfHoursCalculator outOfHoursCalculator, NotificationConfig notificationConfig,
+                               AuthTokenGenerator authTokenGenerator,
+                               EvidenceManagementService evidenceManagementService) {
         this.notificationFactory = notificationFactory;
         this.notificationSender = notificationSender;
         this.reminderService = reminderService;
@@ -43,6 +57,9 @@ public class NotificationService {
         this.notificationHandler = notificationHandler;
         this.outOfHoursCalculator = outOfHoursCalculator;
         this.notificationConfig = notificationConfig;
+//        this.evidenceManagementService = evidenceManagementService;
+        this.authTokenGenerator = authTokenGenerator;
+        this.evidenceManagementService = evidenceManagementService;
     }
 
     public void manageNotificationAndSubscription(NotificationWrapper notificationWrapper) {
@@ -62,7 +79,7 @@ public class NotificationService {
             Notification notification = notificationFactory.create(notificationWrapper,
                     subscriptionWithType.getSubscriptionType());
             if (notificationWrapper.getNotificationType().isAllowOutOfHours() || !outOfHoursCalculator.isItOutOfHours()) {
-                sendEmailSmsNotification(notificationWrapper, subscriptionWithType.getSubscription(), notification);
+                sendEmailSmsLetterNotification(notificationWrapper, subscriptionWithType.getSubscription(), notification);
                 processOldSubscriptionNotifications(notificationWrapper, notification);
             } else {
                 notificationHandler.scheduleNotification(notificationWrapper);
@@ -105,8 +122,13 @@ public class NotificationService {
             Benefit benefit = getBenefitByCode(wrapper.getSscsCaseDataWrapper()
                     .getNewSscsCaseData().getAppeal().getBenefitType().getCode());
 
-            Template template = notificationConfig.getTemplate(NotificationEventType.SUBSCRIPTION_OLD_NOTIFICATION.getId(),
-                    NotificationEventType.SUBSCRIPTION_OLD_NOTIFICATION.getId(), benefit, wrapper.getHearingType());
+            Template template = notificationConfig.getTemplate(
+                NotificationEventType.SUBSCRIPTION_OLD_NOTIFICATION.getId(),
+                NotificationEventType.SUBSCRIPTION_OLD_NOTIFICATION.getId(),
+                NotificationEventType.SUBSCRIPTION_OLD_NOTIFICATION.getId(),
+                benefit,
+                wrapper.getHearingType()
+            );
 
             Notification oldNotification = Notification.builder().template(template).appealNumber(notification.getAppealNumber())
                     .destination(destination)
@@ -114,23 +136,18 @@ public class NotificationService {
                     .appealNumber(notification.getAppealNumber())
                     .placeholders(notification.getPlaceholders()).build();
 
-            sendEmailSmsNotification(wrapper, oldSubscription, oldNotification);
+            sendEmailSmsLetterNotification(wrapper, oldSubscription, oldNotification);
         }
     }
 
-    private void sendEmailSmsNotification(NotificationWrapper wrapper, Subscription subscription, Notification
+    private void sendEmailSmsLetterNotification(NotificationWrapper wrapper, Subscription subscription, Notification
             notification) {
-        if (subscription.isEmailSubscribed() && notification.isEmail() && notification.getEmailTemplate() != null) {
-            NotificationHandler.SendNotification sendNotification = () ->
-                    notificationSender.sendEmail(
-                            notification.getEmailTemplate(),
-                            notification.getEmail(),
-                            notification.getPlaceholders(),
-                            notification.getReference(),
-                            wrapper.getCaseId()
-                    );
-            notificationHandler.sendNotification(wrapper, notification.getEmailTemplate(), "Email", sendNotification);
-        }
+        sendEmailNotification(wrapper, subscription, notification);
+        sendSmsNotification(wrapper, subscription, notification);
+        sendBundledLetterNotification(wrapper, notification);
+    }
+
+    private void sendSmsNotification(NotificationWrapper wrapper, Subscription subscription, Notification notification) {
         if (subscription.isSmsSubscribed() && notification.isSms() && notification.getSmsTemplate() != null) {
             NotificationHandler.SendNotification sendNotification = () ->
                     notificationSender.sendSms(
@@ -143,5 +160,87 @@ public class NotificationService {
                     );
             notificationHandler.sendNotification(wrapper, notification.getSmsTemplate(), "SMS", sendNotification);
         }
+    }
+
+    private void sendEmailNotification(NotificationWrapper wrapper, Subscription subscription, Notification notification) {
+        if (subscription.isEmailSubscribed() && notification.isEmail() && notification.getEmailTemplate() != null) {
+            NotificationHandler.SendNotification sendNotification = () ->
+                    notificationSender.sendEmail(
+                            notification.getEmailTemplate(),
+                            notification.getEmail(),
+                            notification.getPlaceholders(),
+                            notification.getReference(),
+                            wrapper.getCaseId()
+                    );
+            notificationHandler.sendNotification(wrapper, notification.getEmailTemplate(), "Email", sendNotification);
+        }
+    }
+
+    private void sendLetterNotification(NotificationWrapper wrapper, Notification notification) {
+        if (notification.getLetterTemplate() != null) {
+            NotificationHandler.SendNotification sendNotification = () ->
+                notificationSender.sendLetter(
+                    notification.getLetterTemplate(),
+                    wrapper.getNewSscsCaseData().getAppeal().getAppellant().getAddress(),   // TODO: This can't always go tot he appellant, need to work out how to send to others (Appointee/Representative)
+                    notification.getPlaceholders(),
+                    notification.getReference(),
+                    wrapper.getCaseId()
+                );
+            notificationHandler.sendNotification(wrapper, notification.getLetterTemplate(), "Letter", sendNotification);
+        }
+    }
+
+    private void sendBundledLetterNotification(NotificationWrapper wrapper, Notification notification) {
+        if (notification.getLetterTemplate() != null) {
+            byte[] directionText = downloadDirectionText(wrapper, notification);
+
+            NotificationHandler.SendNotification sendNotification = () ->
+                notificationSender.sendBundledLetter(
+                    notification.getLetterTemplate(),
+                    wrapper.getNewSscsCaseData().getAppeal().getAppellant().getAddress(),   // TODO: This can't always go to the appellant, need to work out how to send to others (Appointee/Representative)
+                    directionText,
+                    notification.getPlaceholders(),
+                    notification.getReference(),
+                    wrapper.getCaseId()
+                );
+            notificationHandler.sendNotification(wrapper, notification.getLetterTemplate(), "Letter", sendNotification);
+        }
+    }
+//
+//    private Map<String, byte[]> downloadEvidence(NotificationWrapper wrapper) {
+//        if (wrapper.) {
+//            Map<String, byte[]> map = new LinkedHashMap<>();
+//            for (SyaEvidence evidence : appeal.getReasonsForAppealing().getEvidences()) {
+//                map.put(evidence.getFileName(), downloadBinary(evidence));
+//            }
+//            return map;
+//        } else {
+//            return Collections.emptyMap();
+//        }
+//    }
+
+    private byte[] downloadDirectionText(NotificationWrapper wrapper, Notification notification) {
+        NotificationEventType notificationEventType = wrapper.getSscsCaseDataWrapper().getNotificationEventType();
+        SscsCaseData newSscsCaseData = wrapper.getNewSscsCaseData();
+
+        byte[] directionText = null;
+        if (notificationEventType.equals(STRUCK_OUT)) {
+            if (newSscsCaseData.getSscsDocument() != null && !newSscsCaseData.getSscsDocument().isEmpty()) {
+                for (SscsDocument sscsDocument : newSscsCaseData.getSscsDocument()) {
+                    if (DIRECTION_TEXT.equalsIgnoreCase(sscsDocument.getValue().getDocumentType())) {
+                        String serviceAuthorization = authTokenGenerator.generate();
+
+                        directionText =  evidenceManagementService.download(
+                            URI.create(sscsDocument.getValue().getDocumentLink().getDocumentUrl()),
+                            DM_STORE_USER_ID
+                        );
+
+                        break;
+                    }
+                }
+            }
+        }
+
+        return directionText;
     }
 }
