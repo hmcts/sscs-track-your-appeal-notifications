@@ -186,6 +186,8 @@ public class Personalisation<E extends NotificationWrapper> {
         if (notificationEventType.equals(EVIDENCE_RECEIVED_NOTIFICATION)) {
             if (ccdResponse.getEvidence() != null && ccdResponse.getEvidence().getDocuments() != null && !ccdResponse.getEvidence().getDocuments().isEmpty()) {
                 personalisation.put(AppConstants.EVIDENCE_RECEIVED_DATE_LITERAL, formatLocalDate(ccdResponse.getEvidence().getDocuments().get(0).getValue().getEvidenceDateTimeFormatted()));
+            } else {
+                personalisation.put(AppConstants.EVIDENCE_RECEIVED_DATE_LITERAL,"");
             }
         }
         return personalisation;
