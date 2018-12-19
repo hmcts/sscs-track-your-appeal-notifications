@@ -23,6 +23,7 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.ArgumentCaptor;
 import org.mockito.Mock;
+import uk.gov.hmcts.reform.authorisation.generators.AuthTokenGenerator;
 import uk.gov.hmcts.reform.sscs.ccd.domain.Appeal;
 import uk.gov.hmcts.reform.sscs.ccd.domain.BenefitType;
 import uk.gov.hmcts.reform.sscs.ccd.domain.Hearing;
@@ -83,6 +84,12 @@ public class NotificationServiceTest {
     @Mock
     private NotificationConfig notificationConfig;
 
+    @Mock
+    private AuthTokenGenerator authTokenGenerator;
+
+    @Mock
+    private EvidenceManagementService evidenceManagementService;
+
     private SscsCaseData sscsCaseData;
     private CcdNotificationWrapper ccdNotificationWrapper;
     private SscsCaseDataWrapper sscsCaseDataWrapper;
@@ -91,7 +98,9 @@ public class NotificationServiceTest {
     public void setup() {
         initMocks(this);
         notificationService = new NotificationService(notificationSender, factory, reminderService,
-                notificationValidService, notificationHandler, outOfHoursCalculator, notificationConfig);
+            notificationValidService, notificationHandler, outOfHoursCalculator, notificationConfig,
+            authTokenGenerator, evidenceManagementService
+        );
 
         sscsCaseData = SscsCaseData.builder()
                 .appeal(Appeal.builder().hearingType(AppealHearingType.ORAL.name()).hearingOptions(HearingOptions.builder().wantsToAttend(YES).build()).build())
@@ -518,7 +527,7 @@ public class NotificationServiceTest {
         when((notificationValidService).isHearingTypeValidToSendNotification(any(), any())).thenReturn(true);
 
         when(factory.create(ccdNotificationWrapper, APPELLANT)).thenReturn(notification);
-        when(notificationConfig.getTemplate(any(), any(), any(), any())).thenReturn(Template.builder().emailTemplateId(EMAIL_TEMPLATE_ID).smsTemplateId(SMS_TEMPLATE_ID).build());
+        when(notificationConfig.getTemplate(any(), any(), any(), any(), any())).thenReturn(Template.builder().emailTemplateId(EMAIL_TEMPLATE_ID).smsTemplateId(SMS_TEMPLATE_ID).build());
 
         notificationService.manageNotificationAndSubscription(ccdNotificationWrapper);
 
@@ -555,7 +564,7 @@ public class NotificationServiceTest {
         when((notificationValidService).isHearingTypeValidToSendNotification(any(), any())).thenReturn(true);
 
         when(factory.create(ccdNotificationWrapper, APPELLANT)).thenReturn(notification);
-        when(notificationConfig.getTemplate(any(), any(), any(), any())).thenReturn(Template.builder().emailTemplateId(EMAIL_TEMPLATE_ID).smsTemplateId(SMS_TEMPLATE_ID).build());
+        when(notificationConfig.getTemplate(any(), any(), any(), any(), any())).thenReturn(Template.builder().emailTemplateId(EMAIL_TEMPLATE_ID).smsTemplateId(SMS_TEMPLATE_ID).build());
 
         notificationService.manageNotificationAndSubscription(ccdNotificationWrapper);
 
@@ -624,7 +633,7 @@ public class NotificationServiceTest {
         when((notificationValidService).isHearingTypeValidToSendNotification(any(), any())).thenReturn(true);
 
         when(factory.create(ccdNotificationWrapper, APPELLANT)).thenReturn(notification);
-        when(notificationConfig.getTemplate(any(), any(), any(), any())).thenReturn(Template.builder().emailTemplateId(EMAIL_TEMPLATE_ID).smsTemplateId(SMS_TEMPLATE_ID).build());
+        when(notificationConfig.getTemplate(any(), any(), any(), any(), any())).thenReturn(Template.builder().emailTemplateId(EMAIL_TEMPLATE_ID).smsTemplateId(SMS_TEMPLATE_ID).build());
 
         notificationService.manageNotificationAndSubscription(ccdNotificationWrapper);
 
