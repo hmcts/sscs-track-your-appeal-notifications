@@ -142,13 +142,13 @@ public class Personalisation<E extends NotificationWrapper> {
         personalisation.put(ONLINE_HEARING_SIGN_IN_LINK_LITERAL, config.getOnlineHearingLink() + "/sign-in");
 
         // Letter notifications
-        personalisation.put("address_line_1", "hardcoded line 1");
-        personalisation.put("address_line_2", "hardcoded line 2");
-        personalisation.put("address_line_3", "hardcoded line 3");
-        personalisation.put("address_line_4", "hardcoded line 4");
-        personalisation.put("address_line_5", "hardcoded line 5");
-        personalisation.put("address_line_6", "hardcoded line 6");
-        personalisation.put("postcode", "AB1 1YZ");
+        personalisation.put("letter_address_line_1", "hardcoded line 1");
+        personalisation.put("letter_address_line_2", "hardcoded line 2");
+        personalisation.put("letter_address_line_3", "hardcoded line 3");
+        personalisation.put("letter_address_line_4", "hardcoded line 4");
+        personalisation.put("letter_address_line_5", "hardcoded line 5");
+        personalisation.put("letter_address_line_6", "hardcoded line 6");
+        personalisation.put("letter_postcode", "AB1 1YZ");
 
         return personalisation;
     }
@@ -270,8 +270,13 @@ public class Personalisation<E extends NotificationWrapper> {
 
     private String getLetterTemplateName(SubscriptionType subscriptionType,
                                         NotificationEventType notificationEventType) {
-        // TODO: Check that this is right!
-        return notificationEventType.getId();
+        String letterTemplateName = notificationEventType.getId();
+
+        if (STRUCK_OUT.equals(notificationEventType)) {
+            letterTemplateName = letterTemplateName + "." + subscriptionType.name().toLowerCase();
+        }
+
+        return letterTemplateName;
     }
 
     public Boolean isSendSmsSubscriptionConfirmation() {
