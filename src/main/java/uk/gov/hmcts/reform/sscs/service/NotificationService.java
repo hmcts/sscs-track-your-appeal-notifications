@@ -149,8 +149,11 @@ public class NotificationService {
         }
     }
 
-    private void sendEmailSmsLetterNotification(NotificationWrapper wrapper, Subscription subscription, Notification
-            notification) {
+    private void sendEmailSmsLetterNotification(
+        NotificationWrapper wrapper,
+        Subscription subscription,
+        Notification notification
+    ) {
         sendEmailNotification(wrapper, subscription, notification);
         sendSmsNotification(wrapper, subscription, notification);
         sendBundledLetterNotification(wrapper, notification);
@@ -185,28 +188,16 @@ public class NotificationService {
         }
     }
 
-    private void sendLetterNotification(NotificationWrapper wrapper, Notification notification) {
-        if (notification.getLetterTemplate() != null) {
-            NotificationHandler.SendNotification sendNotification = () ->
-                notificationSender.sendLetter(
-                    notification.getLetterTemplate(),
-                    wrapper.getNewSscsCaseData().getAppeal().getAppellant().getAddress(),   // TODO: This can't always go tot he appellant, need to work out how to send to others (Appointee/Representative)
-                    notification.getPlaceholders(),
-                    notification.getReference(),
-                    wrapper.getCaseId()
-                );
-            notificationHandler.sendNotification(wrapper, notification.getLetterTemplate(), "Letter", sendNotification);
-        }
-    }
-
     private void sendBundledLetterNotification(NotificationWrapper wrapper, Notification notification) {
         if (notification.getLetterTemplate() != null) {
             try {
-                byte[] bundledLetter = buildBundleLetter(downloadDirectionText(wrapper, notification));
+                byte[] bundledLetter = buildBundleLetter(
+                    generateCoveringLetter(wrapper, notification),
+                    downloadDirectionText(wrapper, notification)
+                );
 
                 NotificationHandler.SendNotification sendNotification = () ->
                     notificationSender.sendBundledLetter(
-                        notification.getLetterTemplate(),
                         wrapper.getNewSscsCaseData().getAppeal().getAppellant().getAddress(),   // TODO: This can't always go to the appellant, need to work out how to send to others (Appointee/Representative)
                         bundledLetter,
                         notification.getPlaceholders(),
@@ -223,6 +214,32 @@ public class NotificationService {
     }
 
     private byte[] downloadDirectionText(NotificationWrapper wrapper, Notification notification) {
+        NotificationEventType notificationEventType = wrapper.getSscsCaseDataWrapper().getNotificationEventType();
+        SscsCaseData newSscsCaseData = wrapper.getNewSscsCaseData();
+
+        byte[] directionText = null;
+        if (notificationEventType.equals(STRUCK_OUT)) { // TODO: Should we also check for appeal state is 'interlocutoryReviewState'
+            if (newSscsCaseData.getSscsDocument() != null && !newSscsCaseData.getSscsDocument().isEmpty()) {
+                for (SscsDocument sscsDocument : newSscsCaseData.getSscsDocument()) {
+                    if (DIRECTION_TEXT.equalsIgnoreCase(sscsDocument.getValue().getDocumentType())) {
+                        String serviceAuthorization = authTokenGenerator.generate();
+
+                        directionText =  evidenceManagementService.download(
+                            URI.create(sscsDocument.getValue().getDocumentLink().getDocumentUrl()),
+                            DM_STORE_USER_ID
+                        );
+
+                        break;
+                    }
+                }
+            }
+        }
+
+        return directionText;
+    }
+
+    private byte[] generateCoveringLetter(NotificationWrapper wrapper, Notification notification) {
+        // TODO: this will be generated personalised template, all of this will change
         NotificationEventType notificationEventType = wrapper.getSscsCaseDataWrapper().getNotificationEventType();
         SscsCaseData newSscsCaseData = wrapper.getNewSscsCaseData();
 
@@ -247,8 +264,8 @@ public class NotificationService {
         return directionText;
     }
 
-    private byte[] buildBundleLetter(byte[] directionText) throws IOException {
-        PDDocument bundledLetter = PDDocument.load(directionText);      // TODO: this will be generated personalised template
+    private byte[] buildBundleLetter(byte[] coveringLetter, byte[] directionText) throws IOException {
+        PDDocument bundledLetter = PDDocument.load(coveringLetter);
 
         PDDocument loadDoc = PDDocument.load(directionText);
 
