@@ -26,6 +26,7 @@ import org.springframework.test.context.junit4.SpringRunner;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.request.MockHttpServletRequestBuilder;
 import org.springframework.test.web.servlet.setup.MockMvcBuilders;
+import uk.gov.hmcts.reform.authorisation.generators.AuthTokenGenerator;
 import uk.gov.hmcts.reform.ccd.client.CoreCaseDataApi;
 import uk.gov.hmcts.reform.ccd.client.model.CaseDetails;
 import uk.gov.hmcts.reform.sscs.ccd.service.CcdService;
@@ -98,6 +99,12 @@ public class CohNotificationsIt {
     @Autowired
     private NotificationHandler notificationHandler;
 
+    @Autowired
+    private AuthTokenGenerator authTokenGenerator;
+
+    @Autowired
+    private EvidenceManagementService evidenceManagementService;
+
     @Value("${notification.question_round_issued.emailId}")
     private String emailTemplateId;
 
@@ -112,7 +119,7 @@ public class CohNotificationsIt {
     @Before
     public void setup() throws Exception {
         NotificationSender sender = new NotificationSender(notificationClient, null, notificationBlacklist);
-        NotificationService service = new NotificationService(sender, factory, reminderService, notificationValidService, notificationHandler, outOfHoursCalculator, notificationConfig);
+        NotificationService service = new NotificationService(sender, factory, reminderService, notificationValidService, notificationHandler, outOfHoursCalculator, notificationConfig, authTokenGenerator, evidenceManagementService);
         controller = new NotificationController(service, authorisationService, ccdService, deserializer, idamService);
 
         ObjectMapper mapper = new ObjectMapper();
