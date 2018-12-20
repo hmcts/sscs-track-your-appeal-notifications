@@ -99,6 +99,7 @@ public class CcdNotificationWrapperTest {
                 || type.equals(APPEAL_RECEIVED_NOTIFICATION)
                 || type.equals(POSTPONEMENT_NOTIFICATION)
                 || type.equals(HEARING_BOOKED_NOTIFICATION)
+                || type.equals(RESEND_APPEAL_CREATED_NOTIFICATION)
             )).toArray();
     }
 
