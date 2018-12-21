@@ -245,7 +245,7 @@ public class Personalisation<E extends NotificationWrapper> {
         String emailTemplateName = notificationEventType.getId();
         if (APPEAL_LAPSED_NOTIFICATION.equals(notificationEventType)
             || APPEAL_WITHDRAWN_NOTIFICATION.equals(notificationEventType)
-            || (EVIDENCE_RECEIVED_NOTIFICATION.equals(notificationEventType))
+            || EVIDENCE_RECEIVED_NOTIFICATION.equals(notificationEventType)
             || SYA_APPEAL_CREATED_NOTIFICATION.equals(notificationEventType)
             || RESEND_APPEAL_CREATED_NOTIFICATION.equals(notificationEventType)
             || APPEAL_DORMANT_NOTIFICATION.equals(notificationEventType)
