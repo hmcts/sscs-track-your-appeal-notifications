@@ -14,6 +14,7 @@ import uk.gov.hmcts.reform.sscs.service.coh.QuestionService;
 @Component
 public class CohPersonalisation extends Personalisation<CohNotificationWrapper> {
 
+    public static final String FOLLOW_UP_QUESTION_ROUND_ISSUED = "follow_up_question_round_issued";
     @Autowired
     private QuestionService questionService;
 
@@ -42,9 +43,9 @@ public class CohPersonalisation extends Personalisation<CohNotificationWrapper> 
             return config.getTemplate(type.getId(), type.getId(), type.getId(), benefit, notificationWrapper.getHearingType());
         }
         return config.getTemplate(
-            "follow_up_question_round_issued",
-            "follow_up_question_round_issued",
-            "follow_up_question_round_issued",
+            FOLLOW_UP_QUESTION_ROUND_ISSUED,
+            FOLLOW_UP_QUESTION_ROUND_ISSUED,
+            FOLLOW_UP_QUESTION_ROUND_ISSUED,
             benefit,
             notificationWrapper.getHearingType()
         );

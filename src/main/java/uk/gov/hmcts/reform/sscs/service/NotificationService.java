@@ -4,13 +4,16 @@ import static org.slf4j.LoggerFactory.getLogger;
 import static uk.gov.hmcts.reform.sscs.ccd.domain.Benefit.getBenefitByCode;
 import static uk.gov.hmcts.reform.sscs.domain.notify.NotificationEventType.STRUCK_OUT;
 
+import java.io.ByteArrayOutputStream;
+import java.io.IOException;
+import java.net.URI;
+
 import lombok.extern.slf4j.Slf4j;
 import org.apache.pdfbox.multipdf.PDFMergerUtility;
 import org.apache.pdfbox.pdmodel.PDDocument;
 import org.slf4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-import uk.gov.hmcts.reform.authorisation.generators.AuthTokenGenerator;
 import uk.gov.hmcts.reform.sscs.ccd.domain.Benefit;
 import uk.gov.hmcts.reform.sscs.ccd.domain.SscsCaseData;
 import uk.gov.hmcts.reform.sscs.ccd.domain.SscsDocument;
@@ -23,20 +26,16 @@ import uk.gov.hmcts.reform.sscs.domain.notify.Notification;
 import uk.gov.hmcts.reform.sscs.domain.notify.NotificationEventType;
 import uk.gov.hmcts.reform.sscs.domain.notify.Reference;
 import uk.gov.hmcts.reform.sscs.domain.notify.Template;
+import uk.gov.hmcts.reform.sscs.exception.NotificationClientRuntimeException;
 import uk.gov.hmcts.reform.sscs.exception.NotificationServiceException;
 import uk.gov.hmcts.reform.sscs.factory.NotificationFactory;
 import uk.gov.hmcts.reform.sscs.factory.NotificationWrapper;
-
-import java.io.ByteArrayOutputStream;
-import java.io.IOException;
-import java.net.URI;
 
 @Service
 @Slf4j
 public class NotificationService {
     private static final Logger LOG = getLogger(NotificationService.class);
 
-    public static final String S2S_TOKEN = "oauth2Token";
     public static final String DM_STORE_USER_ID = "sscs";
     public static final String DIRECTION_TEXT = "Direction Text";
 
@@ -47,8 +46,6 @@ public class NotificationService {
     private final NotificationHandler notificationHandler;
     private final OutOfHoursCalculator outOfHoursCalculator;
     private final NotificationConfig notificationConfig;
-//    private final EvidenceManagementService evidenceManagementService;
-    private final AuthTokenGenerator authTokenGenerator;
     private final EvidenceManagementService evidenceManagementService;
 
 
@@ -57,7 +54,6 @@ public class NotificationService {
                                ReminderService reminderService, NotificationValidService notificationValidService,
                                NotificationHandler notificationHandler,
                                OutOfHoursCalculator outOfHoursCalculator, NotificationConfig notificationConfig,
-                               AuthTokenGenerator authTokenGenerator,
                                EvidenceManagementService evidenceManagementService) {
         this.notificationFactory = notificationFactory;
         this.notificationSender = notificationSender;
@@ -66,8 +62,6 @@ public class NotificationService {
         this.notificationHandler = notificationHandler;
         this.outOfHoursCalculator = outOfHoursCalculator;
         this.notificationConfig = notificationConfig;
-//        this.evidenceManagementService = evidenceManagementService;
-        this.authTokenGenerator = authTokenGenerator;
         this.evidenceManagementService = evidenceManagementService;
     }
 
@@ -191,9 +185,9 @@ public class NotificationService {
     private void sendBundledLetterNotification(NotificationWrapper wrapper, Notification notification) {
         if (notification.getLetterTemplate() != null) {
             try {
-                byte[] bundledLetter = buildBundleLetter(
-                    generateCoveringLetter(wrapper, notification),
-                    downloadDirectionText(wrapper, notification)
+                byte[] bundledLetter = buildBundledLetter(
+                    generateCoveringLetter(wrapper),
+                    downloadDirectionText(wrapper)
                 );
 
                 NotificationHandler.SendNotification sendNotification = () ->
@@ -213,50 +207,47 @@ public class NotificationService {
         }
     }
 
-    private byte[] downloadDirectionText(NotificationWrapper wrapper, Notification notification) {
-        NotificationEventType notificationEventType = wrapper.getSscsCaseDataWrapper().getNotificationEventType();
-        SscsCaseData newSscsCaseData = wrapper.getNewSscsCaseData();
-
-        byte[] directionText = null;
-        if (notificationEventType.equals(STRUCK_OUT)) { // TODO: Should we also check for appeal state is 'interlocutoryReviewState'
-            if (newSscsCaseData.getSscsDocument() != null && !newSscsCaseData.getSscsDocument().isEmpty()) {
-                for (SscsDocument sscsDocument : newSscsCaseData.getSscsDocument()) {
-                    if (DIRECTION_TEXT.equalsIgnoreCase(sscsDocument.getValue().getDocumentType())) {
-                        String serviceAuthorization = authTokenGenerator.generate();
-
-                        directionText =  evidenceManagementService.download(
-                            URI.create(sscsDocument.getValue().getDocumentLink().getDocumentUrl()),
-                            DM_STORE_USER_ID
-                        );
-
-                        break;
-                    }
-                }
-            }
-        }
-
-        return directionText;
-    }
-
-    private byte[] generateCoveringLetter(NotificationWrapper wrapper, Notification notification) {
+    private byte[] generateCoveringLetter(NotificationWrapper wrapper) {
         // TODO: this will be generated personalised template, all of this will change
         NotificationEventType notificationEventType = wrapper.getSscsCaseDataWrapper().getNotificationEventType();
         SscsCaseData newSscsCaseData = wrapper.getNewSscsCaseData();
 
+        byte[] coveringLetter = null;
+        if ((notificationEventType.equals(STRUCK_OUT))
+            && (newSscsCaseData.getSscsDocument() != null
+            && !newSscsCaseData.getSscsDocument().isEmpty())) {
+            for (SscsDocument sscsDocument : newSscsCaseData.getSscsDocument()) {
+                if (DIRECTION_TEXT.equalsIgnoreCase(sscsDocument.getValue().getDocumentType())) {
+                    coveringLetter =  evidenceManagementService.download(
+                        URI.create(sscsDocument.getValue().getDocumentLink().getDocumentUrl()),
+                        DM_STORE_USER_ID
+                    );
+
+                    break;
+                }
+            }
+        }
+
+        return coveringLetter;
+    }
+
+    private byte[] downloadDirectionText(NotificationWrapper wrapper) {
+        NotificationEventType notificationEventType = wrapper.getSscsCaseDataWrapper().getNotificationEventType();
+        SscsCaseData newSscsCaseData = wrapper.getNewSscsCaseData();
+
         byte[] directionText = null;
-        if (notificationEventType.equals(STRUCK_OUT)) {
-            if (newSscsCaseData.getSscsDocument() != null && !newSscsCaseData.getSscsDocument().isEmpty()) {
-                for (SscsDocument sscsDocument : newSscsCaseData.getSscsDocument()) {
-                    if (DIRECTION_TEXT.equalsIgnoreCase(sscsDocument.getValue().getDocumentType())) {
-                        String serviceAuthorization = authTokenGenerator.generate();
+        // TODO: Should we also check for appeal state is 'interlocutoryReviewState'
+        if ((notificationEventType.equals(STRUCK_OUT))
+            && (newSscsCaseData.getSscsDocument() != null
+            && !newSscsCaseData.getSscsDocument().isEmpty())) {
+            for (SscsDocument sscsDocument : newSscsCaseData.getSscsDocument()) {
+                if (DIRECTION_TEXT.equalsIgnoreCase(sscsDocument.getValue().getDocumentType())) {
+                    directionText =  evidenceManagementService.download(
+                        URI.create(sscsDocument.getValue().getDocumentLink().getDocumentUrl()),
+                        DM_STORE_USER_ID
+                    );
 
-                        directionText =  evidenceManagementService.download(
-                            URI.create(sscsDocument.getValue().getDocumentLink().getDocumentUrl()),
-                            DM_STORE_USER_ID
-                        );
-
-                        break;
-                    }
+                    break;
                 }
             }
         }
@@ -264,17 +255,21 @@ public class NotificationService {
         return directionText;
     }
 
-    private byte[] buildBundleLetter(byte[] coveringLetter, byte[] directionText) throws IOException {
-        PDDocument bundledLetter = PDDocument.load(coveringLetter);
+    private byte[] buildBundledLetter(byte[] coveringLetter, byte[] directionText) throws IOException {
+        if (coveringLetter != null && directionText != null) {
+            PDDocument bundledLetter = PDDocument.load(coveringLetter);
 
-        PDDocument loadDoc = PDDocument.load(directionText);
+            PDDocument loadDoc = PDDocument.load(directionText);
 
-        final PDFMergerUtility merger = new PDFMergerUtility();
-        merger.appendDocument(bundledLetter, loadDoc);
+            final PDFMergerUtility merger = new PDFMergerUtility();
+            merger.appendDocument(bundledLetter, loadDoc);
 
-        ByteArrayOutputStream baos = new ByteArrayOutputStream();
-        bundledLetter.save(baos);
+            ByteArrayOutputStream baos = new ByteArrayOutputStream();
+            bundledLetter.save(baos);
 
-        return baos.toByteArray();
+            return baos.toByteArray();
+        } else {
+            throw new NotificationClientRuntimeException("Can not bundle empty documents");
+        }
     }
 }

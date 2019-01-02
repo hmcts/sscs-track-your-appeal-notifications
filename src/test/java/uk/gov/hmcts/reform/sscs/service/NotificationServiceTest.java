@@ -4,33 +4,28 @@ import static org.junit.Assert.assertArrayEquals;
 import static org.mockito.ArgumentMatchers.anyList;
 import static org.mockito.BDDMockito.given;
 import static org.mockito.BDDMockito.then;
-import static org.mockito.Mockito.any;
-import static org.mockito.Mockito.eq;
-import static org.mockito.Mockito.never;
-import static org.mockito.Mockito.times;
-import static org.mockito.Mockito.verify;
-import static org.mockito.Mockito.when;
+import static org.mockito.Mockito.*;
 import static org.mockito.MockitoAnnotations.initMocks;
 import static uk.gov.hmcts.reform.sscs.config.SubscriptionType.APPELLANT;
 import static uk.gov.hmcts.reform.sscs.config.SubscriptionType.REPRESENTATIVE;
 import static uk.gov.hmcts.reform.sscs.domain.notify.NotificationEventType.*;
+import static uk.gov.hmcts.reform.sscs.service.NotificationService.DM_STORE_USER_ID;
 
+import java.io.FileInputStream;
+import java.io.IOException;
+import java.net.URI;
+import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collections;
 import junitparams.JUnitParamsRunner;
 import junitparams.Parameters;
+import org.apache.pdfbox.io.IOUtils;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.ArgumentCaptor;
 import org.mockito.Mock;
-import uk.gov.hmcts.reform.authorisation.generators.AuthTokenGenerator;
-import uk.gov.hmcts.reform.sscs.ccd.domain.Appeal;
-import uk.gov.hmcts.reform.sscs.ccd.domain.BenefitType;
-import uk.gov.hmcts.reform.sscs.ccd.domain.Hearing;
-import uk.gov.hmcts.reform.sscs.ccd.domain.HearingOptions;
-import uk.gov.hmcts.reform.sscs.ccd.domain.SscsCaseData;
-import uk.gov.hmcts.reform.sscs.ccd.domain.Subscription;
-import uk.gov.hmcts.reform.sscs.ccd.domain.Subscriptions;
+import uk.gov.hmcts.reform.sscs.ccd.domain.*;
 import uk.gov.hmcts.reform.sscs.config.AppealHearingType;
 import uk.gov.hmcts.reform.sscs.config.NotificationConfig;
 import uk.gov.hmcts.reform.sscs.config.SubscriptionType;
@@ -40,6 +35,7 @@ import uk.gov.hmcts.reform.sscs.domain.notify.Notification;
 import uk.gov.hmcts.reform.sscs.domain.notify.NotificationEventType;
 import uk.gov.hmcts.reform.sscs.domain.notify.Reference;
 import uk.gov.hmcts.reform.sscs.domain.notify.Template;
+import uk.gov.hmcts.reform.sscs.exception.NotificationServiceException;
 import uk.gov.hmcts.reform.sscs.factory.CcdNotificationWrapper;
 import uk.gov.hmcts.reform.sscs.factory.CohNotificationWrapper;
 import uk.gov.hmcts.reform.sscs.factory.NotificationFactory;
@@ -53,11 +49,13 @@ public class NotificationServiceTest {
     private static final String CASE_REFERENCE = "ABC123";
     private static final String EMAIL_TEMPLATE_ID = "email-template-id";
     private static final String SMS_TEMPLATE_ID = "sms-template-id";
+    private static final String LETTER_TEMPLATE_ID_STRUCKOUT = "struckOut";
     private static final String SAME_TEST_EMAIL_COM = "sametest@email.com";
     private static final String NEW_TEST_EMAIL_COM = "newtest@email.com";
     private static final String PIP = "PIP";
     private static final String EMAIL = "Email";
     private static final String SMS = "SMS";
+    private static final String LETTER = "Letter";
     private static final String MOBILE_NUMBER_1 = "07983495065";
     private static final String MOBILE_NUMBER_2 = "07983495067";
 
@@ -85,9 +83,6 @@ public class NotificationServiceTest {
     private NotificationConfig notificationConfig;
 
     @Mock
-    private AuthTokenGenerator authTokenGenerator;
-
-    @Mock
     private EvidenceManagementService evidenceManagementService;
 
     private SscsCaseData sscsCaseData;
@@ -99,19 +94,20 @@ public class NotificationServiceTest {
         initMocks(this);
         notificationService = new NotificationService(notificationSender, factory, reminderService,
             notificationValidService, notificationHandler, outOfHoursCalculator, notificationConfig,
-            authTokenGenerator, evidenceManagementService
+            evidenceManagementService
         );
 
         sscsCaseData = SscsCaseData.builder()
-                .appeal(Appeal.builder().hearingType(AppealHearingType.ORAL.name()).hearingOptions(HearingOptions.builder().wantsToAttend(YES).build()).build())
-                .subscriptions(Subscriptions.builder().appellantSubscription(Subscription.builder()
-                        .tya(APPEAL_NUMBER)
-                        .email(EMAIL)
-                        .mobile(MOBILE_NUMBER_1)
-                        .subscribeEmail(YES)
-                        .subscribeSms(YES)
-                        .build()).build())
-                .caseReference(CASE_REFERENCE).build();
+            .appeal(Appeal.builder().hearingType(AppealHearingType.ORAL.name()).hearingOptions(HearingOptions.builder().wantsToAttend(YES).build()).build())
+            .subscriptions(Subscriptions.builder().appellantSubscription(Subscription.builder()
+                .tya(APPEAL_NUMBER)
+                .email(EMAIL)
+                .mobile(MOBILE_NUMBER_1)
+                .subscribeEmail(YES)
+                .subscribeSms(YES)
+                .build()).build())
+            .caseReference(CASE_REFERENCE)
+            .build();
         sscsCaseDataWrapper = SscsCaseDataWrapper.builder().newSscsCaseData(sscsCaseData).oldSscsCaseData(sscsCaseData).notificationEventType(APPEAL_WITHDRAWN_NOTIFICATION).build();
         ccdNotificationWrapper = new CcdNotificationWrapper(sscsCaseDataWrapper);
         when(outOfHoursCalculator.isItOutOfHours()).thenReturn(false);
@@ -640,5 +636,83 @@ public class NotificationServiceTest {
         verify(notificationHandler, times(1)).sendNotification(eq(ccdNotificationWrapper), any(), eq(EMAIL), any(NotificationHandler.SendNotification.class));
         verify(notificationHandler, times(1)).sendNotification(eq(ccdNotificationWrapper), any(), eq(SMS), any(NotificationHandler.SendNotification.class));
 
+    }
+
+    @Test
+    public void sendLetterToGovNotifyWhenStruckOutNotification() throws IOException {
+        String fileUrl = "http://dm-store:4506/documents/1e1eb3d2-5b6c-430d-8dad-ebcea1ad7ecf";
+
+        CcdNotificationWrapper struckOutCcdNotificationWrapper = buildWrapperWithDocuments(fileUrl);
+
+        // TODO: Add address placeholders
+        Notification notification = new Notification(Template.builder().letterTemplateId(LETTER_TEMPLATE_ID_STRUCKOUT).build(), Destination.builder().build(), null, new Reference(), null);
+
+        byte[] sampleDirectionText = IOUtils.toByteArray(getClass().getClassLoader().getResourceAsStream("pdfs/direction-text.pdf"));
+
+        when(evidenceManagementService.download(URI.create(fileUrl), DM_STORE_USER_ID)).thenReturn(sampleDirectionText);
+        when((notificationValidService).isNotificationStillValidToSend(any(), any())).thenReturn(true);
+        when((notificationValidService).isHearingTypeValidToSendNotification(any(), any())).thenReturn(true);
+
+        when(factory.create(struckOutCcdNotificationWrapper, APPELLANT)).thenReturn(notification);
+        notificationService.manageNotificationAndSubscription(struckOutCcdNotificationWrapper);
+
+        verify(notificationHandler, times(1)).sendNotification(eq(struckOutCcdNotificationWrapper), eq(LETTER_TEMPLATE_ID_STRUCKOUT), eq(LETTER), any(NotificationHandler.SendNotification.class));
+    }
+
+    @Test(expected = NotificationServiceException.class)
+    public void sendLetterToGovNotifyWhenStruckOutNotificationFailsAtNotify() throws IOException {
+        String fileUrl = "http://dm-store:4506/documents/1e1eb3d2-5b6c-430d-8dad-ebcea1ad7ecf";
+
+        CcdNotificationWrapper struckOutCcdNotificationWrapper = buildWrapperWithDocuments(fileUrl);
+
+        // TODO: Add address placeholders
+        Notification notification = new Notification(Template.builder().letterTemplateId(LETTER_TEMPLATE_ID_STRUCKOUT).build(), Destination.builder().build(), null, new Reference(), null);
+
+        byte[] sampleDirectionText = IOUtils.toByteArray(getClass().getClassLoader().getResourceAsStream("pdfs/direction-text.pdf"));
+
+        when(evidenceManagementService.download(URI.create(fileUrl), DM_STORE_USER_ID)).thenReturn(sampleDirectionText);
+        when(evidenceManagementService.download(URI.create(fileUrl), DM_STORE_USER_ID)).thenReturn(sampleDirectionText);
+        when((notificationValidService).isNotificationStillValidToSend(any(), any())).thenReturn(true);
+        when((notificationValidService).isHearingTypeValidToSendNotification(any(), any())).thenReturn(true);
+
+        doThrow(new NotificationServiceException("Forced exception", new RuntimeException())).when(notificationHandler).sendNotification(eq(struckOutCcdNotificationWrapper), eq(LETTER_TEMPLATE_ID_STRUCKOUT), eq(LETTER), any(NotificationHandler.SendNotification.class));
+
+        when(factory.create(struckOutCcdNotificationWrapper, APPELLANT)).thenReturn(notification);
+        notificationService.manageNotificationAndSubscription(struckOutCcdNotificationWrapper);
+    }
+
+    private CcdNotificationWrapper buildWrapperWithDocuments(String fileUrl) {
+        SscsDocumentDetails sscsDocumentDetails = SscsDocumentDetails.builder()
+            .documentType("Direction Text")
+            .documentLink(
+                DocumentLink.builder()
+                    .documentUrl(fileUrl)
+                    .documentFilename("direction-text.pdf")
+                    .documentBinaryUrl(fileUrl + "/binary")
+                    .build()
+            )
+            .build();
+
+        SscsDocument sscsDocument = SscsDocument.builder().value(sscsDocumentDetails).build();
+
+        SscsCaseData sscsCaseDataWithDocuments = SscsCaseData.builder()
+            .appeal(Appeal.builder().hearingType(AppealHearingType.ORAL.name()).hearingOptions(HearingOptions.builder().wantsToAttend(YES).build()).build())
+            .subscriptions(Subscriptions.builder().appellantSubscription(Subscription.builder()
+                .tya(APPEAL_NUMBER)
+                .email(EMAIL)
+                .mobile(MOBILE_NUMBER_1)
+                .subscribeEmail(YES)
+                .subscribeSms(YES)
+                .build()).build())
+            .caseReference(CASE_REFERENCE)
+            .sscsDocument(new ArrayList<SscsDocument>(Arrays.asList(sscsDocument)))
+            .build();
+
+        SscsCaseDataWrapper struckOutSscsCaseDataWrapper = SscsCaseDataWrapper.builder()
+            .newSscsCaseData(sscsCaseDataWithDocuments)
+            .oldSscsCaseData(sscsCaseDataWithDocuments)
+            .notificationEventType(STRUCK_OUT)
+            .build();
+        return new CcdNotificationWrapper(struckOutSscsCaseDataWrapper);
     }
 }

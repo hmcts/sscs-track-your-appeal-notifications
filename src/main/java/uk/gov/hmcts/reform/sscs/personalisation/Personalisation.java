@@ -171,11 +171,10 @@ public class Personalisation<E extends NotificationWrapper> {
         if (ccdResponse.getEvents() != null) {
 
             for (Event event : ccdResponse.getEvents()) {
-                if (event.getValue() != null) {
-                    if ((notificationEventType.equals(APPEAL_RECEIVED_NOTIFICATION) && event.getValue().getEventType().equals(APPEAL_RECEIVED))
-                            || notificationEventType.equals(DWP_RESPONSE_LATE_REMINDER_NOTIFICATION)) {
-                        return setAppealReceivedDetails(personalisation, event.getValue());
-                    }
+                if ((event.getValue() != null)
+                    && ((notificationEventType.equals(APPEAL_RECEIVED_NOTIFICATION) && event.getValue().getEventType().equals(APPEAL_RECEIVED))
+                    || (notificationEventType.equals(DWP_RESPONSE_LATE_REMINDER_NOTIFICATION)))) {
+                    return setAppealReceivedDetails(personalisation, event.getValue());
                 }
             }
         }
@@ -270,13 +269,7 @@ public class Personalisation<E extends NotificationWrapper> {
 
     private String getLetterTemplateName(SubscriptionType subscriptionType,
                                         NotificationEventType notificationEventType) {
-        String letterTemplateName = notificationEventType.getId();
-
-        if (STRUCK_OUT.equals(notificationEventType)) {
-            letterTemplateName = letterTemplateName + "." + subscriptionType.name().toLowerCase();
-        }
-
-        return letterTemplateName;
+        return notificationEventType.getId();
     }
 
     public Boolean isSendSmsSubscriptionConfirmation() {

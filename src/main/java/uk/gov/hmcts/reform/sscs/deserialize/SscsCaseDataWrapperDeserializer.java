@@ -9,7 +9,6 @@ import com.fasterxml.jackson.databind.node.JsonNodeType;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Collections;
-import java.util.Iterator;
 import java.util.List;
 import org.springframework.stereotype.Service;
 import uk.gov.hmcts.reform.sscs.ccd.domain.*;
@@ -18,6 +17,8 @@ import uk.gov.hmcts.reform.sscs.domain.notify.NotificationEventType;
 
 @Service
 public class SscsCaseDataWrapperDeserializer extends StdDeserializer<SscsCaseDataWrapper> {
+
+    public static final String VALUE = "value";
 
     public SscsCaseDataWrapperDeserializer() {
         this(null);
@@ -48,7 +49,7 @@ public class SscsCaseDataWrapperDeserializer extends StdDeserializer<SscsCaseDat
         }
 
         if (caseNode != null) {
-            newSscsCaseData = createSscsCaseDataFromNode(caseNode, node, caseDetailsNode);
+            newSscsCaseData = createSscsCaseDataFromNode(caseNode, caseDetailsNode);
         }
 
         if (getNode(node, "case_details_before") != null) {
@@ -56,7 +57,7 @@ public class SscsCaseDataWrapperDeserializer extends StdDeserializer<SscsCaseDat
             JsonNode oldCaseNode = getNode(oldCaseDetailsNode, "case_data");
 
             if (oldCaseNode != null) {
-                oldSscsCaseData = createSscsCaseDataFromNode(oldCaseNode, node, oldCaseDetailsNode);
+                oldSscsCaseData = createSscsCaseDataFromNode(oldCaseNode, oldCaseDetailsNode);
             }
         }
         NotificationEventType notificationEventType = NotificationEventType.getNotificationById(getField(node, "event_id"));
@@ -67,7 +68,7 @@ public class SscsCaseDataWrapperDeserializer extends StdDeserializer<SscsCaseDat
                 .notificationEventType(notificationEventType).build();
     }
 
-    private SscsCaseData createSscsCaseDataFromNode(JsonNode caseNode, JsonNode node, JsonNode caseDetailsNode) {
+    private SscsCaseData createSscsCaseDataFromNode(JsonNode caseNode, JsonNode caseDetailsNode) {
         SscsCaseData ccdResponse = deserializeCaseNode(caseNode);
         ccdResponse.setCcdCaseId(getField(caseDetailsNode, "id"));
         return ccdResponse;
@@ -236,7 +237,7 @@ public class SscsCaseDataWrapperDeserializer extends StdDeserializer<SscsCaseDat
 
             if (excludeDatesNode != null && excludeDatesNode.isArray()) {
                 for (final JsonNode objNode : excludeDatesNode) {
-                    final JsonNode valueNode = getNode(objNode, "value");
+                    final JsonNode valueNode = getNode(objNode, VALUE);
 
                     excludeDates.add(ExcludeDate.builder().value(DateRange.builder()
                             .start(getField(valueNode, "start"))
@@ -266,7 +267,7 @@ public class SscsCaseDataWrapperDeserializer extends StdDeserializer<SscsCaseDat
 
             if (reasonsNode != null && reasonsNode.isArray()) {
                 for (final JsonNode objNode : reasonsNode) {
-                    final JsonNode valueNode = getNode(objNode, "value");
+                    final JsonNode valueNode = getNode(objNode, VALUE);
 
                     appealReasons.add(AppealReason.builder().value(AppealReasonDetails.builder()
                             .description(getField(valueNode, "description"))
@@ -281,7 +282,7 @@ public class SscsCaseDataWrapperDeserializer extends StdDeserializer<SscsCaseDat
         final JsonNode repNode = appealReasonsNode.get("rep");
 
         String hasRepresentative = getField(repNode, "hasRepresentative");
-        if (hasRepresentative != null && hasRepresentative.toLowerCase().equals("yes")) {
+        if (hasRepresentative != null && hasRepresentative.equalsIgnoreCase("yes")) {
             Name name = deserializeNameJson(repNode);
             Address address = deserializeAddressJson(repNode);
             Contact contact = deserializeContactJson(repNode);
@@ -320,7 +321,7 @@ public class SscsCaseDataWrapperDeserializer extends StdDeserializer<SscsCaseDat
             List<Event> events = new ArrayList<>();
 
             for (final JsonNode objNode : eventNode) {
-                JsonNode valueNode = getNode(objNode, "value");
+                JsonNode valueNode = getNode(objNode, VALUE);
 
                 String date = getField(valueNode, "date");
                 String eventType = getField(valueNode, "type");
@@ -331,7 +332,7 @@ public class SscsCaseDataWrapperDeserializer extends StdDeserializer<SscsCaseDat
             Collections.sort(events, Collections.reverseOrder());
             return events;
         }
-        return null;
+        return Collections.emptyList();
     }
 
     public List<Hearing> deserializeHearingDetailsJson(JsonNode caseNode) {
@@ -341,7 +342,7 @@ public class SscsCaseDataWrapperDeserializer extends StdDeserializer<SscsCaseDat
             List<Hearing> hearings = new ArrayList<>();
 
             for (final JsonNode objNode : hearingNode) {
-                JsonNode valueNode = getNode(objNode, "value");
+                JsonNode valueNode = getNode(objNode, VALUE);
                 JsonNode venueNode = getNode(valueNode, "venue");
 
                 Hearing hearing = Hearing.builder().value(HearingDetails.builder()
@@ -358,7 +359,7 @@ public class SscsCaseDataWrapperDeserializer extends StdDeserializer<SscsCaseDat
             Collections.sort(hearings, Collections.reverseOrder());
             return hearings;
         }
-        return null;
+        return Collections.emptyList();
     }
 
     public Evidence deserializeEvidenceDetailsJson(JsonNode caseNode) {
@@ -371,7 +372,7 @@ public class SscsCaseDataWrapperDeserializer extends StdDeserializer<SscsCaseDat
             if (documentsNode != null && documentsNode.isArray()) {
                 for (final JsonNode objNode : documentsNode) {
 
-                    JsonNode valueNode = getNode(objNode, "value");
+                    JsonNode valueNode = getNode(objNode, VALUE);
 
                     Document document = Document.builder().value(DocumentDetails.builder()
                             .dateReceived(getField(valueNode, "dateReceived"))
@@ -454,10 +455,10 @@ public class SscsCaseDataWrapperDeserializer extends StdDeserializer<SscsCaseDat
         if (documentsNode != null) {
             List<SscsDocument> documents = new ArrayList<>();
 
-            if (documentsNode != null && documentsNode.isArray()) {
+            if (documentsNode.isArray()) {
                 for (final JsonNode objNode : documentsNode) {
 
-                    JsonNode valueNode = getNode(objNode, "value");
+                    JsonNode valueNode = getNode(objNode, VALUE);
 
                     String documentUrl = getField((JsonNode)getNode(valueNode, "documentLink"), "document_url");
                     String documentFileName = getField((JsonNode)getNode(valueNode, "documentLink"), "document_filename");
@@ -475,11 +476,11 @@ public class SscsCaseDataWrapperDeserializer extends StdDeserializer<SscsCaseDat
 
                     documents.add(document);
                 }
-//                Collections.sort(documents, Collections.reverseOrder());
             }
+
             return documents;
         } else {
-            return null;
+            return Collections.emptyList();
         }
     }
 }

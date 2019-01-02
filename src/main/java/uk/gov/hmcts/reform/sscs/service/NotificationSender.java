@@ -2,13 +2,9 @@ package uk.gov.hmcts.reform.sscs.service;
 
 import static org.slf4j.LoggerFactory.getLogger;
 
-import java.io.IOException;
+import java.io.ByteArrayInputStream;
 import java.util.Map;
 
-import com.sun.xml.internal.messaging.saaj.util.ByteInputStream;
-import org.apache.pdfbox.multipdf.PDFMergerUtility;
-import org.apache.pdfbox.pdmodel.PDDocument;
-import org.apache.pdfbox.pdmodel.PDPage;
 import org.slf4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
@@ -21,6 +17,7 @@ import uk.gov.service.notify.*;
 public class NotificationSender {
 
     private static final Logger LOG = getLogger(NotificationSender.class);
+    public static final String USING_TEST_GOV_NOTIFY_KEY_FOR = "Using test GovNotify key {} for {}";
 
     private final NotificationClient notificationClient;
     private final NotificationClient testNotificationClient;
@@ -42,7 +39,7 @@ public class NotificationSender {
 
         if (notificationBlacklist.getTestRecipients().contains(emailAddress)
                 || emailAddress.matches("test[\\d]+@hmcts.net")) {
-            LOG.info("Using test GovNotify key {} for {}", testNotificationClient.getApiKey(), emailAddress);
+            LOG.info(USING_TEST_GOV_NOTIFY_KEY_FOR, testNotificationClient.getApiKey(), emailAddress);
             client = testNotificationClient;
         } else {
             client = notificationClient;
@@ -66,7 +63,7 @@ public class NotificationSender {
         NotificationClient client;
 
         if (notificationBlacklist.getTestRecipients().contains(phoneNumber)) {
-            LOG.info("Using test GovNotify key {} for {}", testNotificationClient.getApiKey(), phoneNumber);
+            LOG.info(USING_TEST_GOV_NOTIFY_KEY_FOR, testNotificationClient.getApiKey(), phoneNumber);
             client = testNotificationClient;
         } else {
             client = notificationClient;
@@ -98,7 +95,7 @@ public class NotificationSender {
         if (directionText != null) {
             NotificationClient client = getLetterNotificationClient(address.getPostcode());
 
-            ByteInputStream bis = new ByteInputStream(directionText, directionText.length);
+            ByteArrayInputStream bis = new ByteArrayInputStream(directionText);
 
             LetterResponse sendLetterResponse = client.sendPrecompiledLetterWithInputStream(reference, bis);
 
@@ -110,7 +107,7 @@ public class NotificationSender {
     private NotificationClient getLetterNotificationClient(String postcode) {
         NotificationClient client;
         if (notificationBlacklist.getTestRecipients().contains(postcode)) {
-            LOG.info("Using test GovNotify key {} for {}", testNotificationClient.getApiKey(), postcode);
+            LOG.info(USING_TEST_GOV_NOTIFY_KEY_FOR, testNotificationClient.getApiKey(), postcode);
             client = testNotificationClient;
         } else {
             client = notificationClient;
