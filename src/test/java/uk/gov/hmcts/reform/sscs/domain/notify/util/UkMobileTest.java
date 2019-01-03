@@ -29,6 +29,7 @@ public class UkMobileTest {
 
         Assert.assertFalse(UkMobile.check("07-123-456789"));
         Assert.assertFalse(UkMobile.check("07.123.456789"));
+        Assert.assertFalse(UkMobile.check("(0)7 123 456789"));
     }
 
     @Test

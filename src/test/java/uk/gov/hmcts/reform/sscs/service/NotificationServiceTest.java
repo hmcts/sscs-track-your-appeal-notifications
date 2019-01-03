@@ -13,7 +13,12 @@ import static org.mockito.Mockito.when;
 import static org.mockito.MockitoAnnotations.initMocks;
 import static uk.gov.hmcts.reform.sscs.config.SubscriptionType.APPELLANT;
 import static uk.gov.hmcts.reform.sscs.config.SubscriptionType.REPRESENTATIVE;
-import static uk.gov.hmcts.reform.sscs.domain.notify.NotificationEventType.*;
+import static uk.gov.hmcts.reform.sscs.domain.notify.NotificationEventType.APPEAL_LAPSED_NOTIFICATION;
+import static uk.gov.hmcts.reform.sscs.domain.notify.NotificationEventType.APPEAL_RECEIVED_NOTIFICATION;
+import static uk.gov.hmcts.reform.sscs.domain.notify.NotificationEventType.APPEAL_WITHDRAWN_NOTIFICATION;
+import static uk.gov.hmcts.reform.sscs.domain.notify.NotificationEventType.QUESTION_ROUND_ISSUED_NOTIFICATION;
+import static uk.gov.hmcts.reform.sscs.domain.notify.NotificationEventType.SUBSCRIPTION_UPDATED_NOTIFICATION;
+import static uk.gov.hmcts.reform.sscs.domain.notify.NotificationEventType.SYA_APPEAL_CREATED_NOTIFICATION;
 
 import java.util.Collections;
 import junitparams.JUnitParamsRunner;
@@ -57,6 +62,7 @@ public class NotificationServiceTest {
     private static final String PIP = "PIP";
     private static final String EMAIL = "Email";
     private static final String SMS = "SMS";
+    private static final String SMS_MOBILE = "07123456789";
     private static final String MOBILE_NUMBER_1 = "07983495065";
     private static final String MOBILE_NUMBER_2 = "07983495067";
 
@@ -133,7 +139,7 @@ public class NotificationServiceTest {
                                 .build(),
                         Destination.builder()
                                 .email(EMAIL)
-                                .sms(SMS)
+                                .sms(SMS_MOBILE)
                                 .build(),
                         null,
                         new Reference(),
