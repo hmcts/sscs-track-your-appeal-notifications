@@ -33,9 +33,9 @@ public class UkMobileTest {
     }
 
     @Test
-    public void shouldNotAcceptLandlineNumbers() {
+    public void shouldNotAcceptLandLineNumbers() {
 
-        Assert.assertTrue(UkMobile.check("01234567890"));
-        Assert.assertTrue(UkMobile.check("08001234567"));
+        Assert.assertFalse(UkMobile.check("01234567890"));
+        Assert.assertFalse(UkMobile.check("08001234567"));
     }
 }

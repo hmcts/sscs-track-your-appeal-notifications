@@ -4,7 +4,7 @@ import java.util.regex.Pattern;
 
 public class UkMobile {
 
-    private static final Pattern UK_MOBILE = Pattern.compile("(?:(?:(\\+44[\\s]?)|(?:0[\\s]?))(?:\\d[\\s]?){10})");
+    private static final Pattern UK_MOBILE = Pattern.compile("(?:(?:\\+44[\\s]?)|(?:0[\\s]?))(?:7[\\s]?)(?:\\d[\\s]?){9}");
 
     private UkMobile() {
         // Void
