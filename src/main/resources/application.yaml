@@ -308,7 +308,7 @@ appeal.email.to: ${EMAIL_TO:receiver@hmcts.net}
 appeal.email.subject: ${EMAIL_SUBJECT:Your appeal}
 appeal.email.message: ${EMAIL_MESSAGE:Your appeal has been created \nPlease do not respond to this email}
 
-appellant.appeal.html.template.path: /templates/appellant_appeal_template.html
+noncompliantcaseletter.appeal.html.template.path: /templates/non_compliant_case_letter_template.html
 
 pdf.api.url: ${PDF_API_URL:http://localhost:5500}
 

@@ -11,7 +11,6 @@ import static uk.gov.hmcts.reform.sscs.config.SubscriptionType.REPRESENTATIVE;
 import static uk.gov.hmcts.reform.sscs.domain.notify.NotificationEventType.*;
 import static uk.gov.hmcts.reform.sscs.service.NotificationService.DM_STORE_USER_ID;
 
-import java.io.FileInputStream;
 import java.io.IOException;
 import java.net.URI;
 import java.util.ArrayList;
@@ -43,6 +42,7 @@ import uk.gov.hmcts.reform.sscs.factory.NotificationWrapper;
 
 @RunWith(JUnitParamsRunner.class)
 public class NotificationServiceTest {
+    private static final String TEMPLATE_PATH = "/templates/non_compliant_case_letter_template.html";
 
     private static final String APPEAL_NUMBER = "GLSCRR";
     private static final String YES = "Yes";
@@ -85,6 +85,9 @@ public class NotificationServiceTest {
     @Mock
     private EvidenceManagementService evidenceManagementService;
 
+    @Mock
+    private SscsGeneratePdfService sscsGeneratePdfService;
+
     private SscsCaseData sscsCaseData;
     private CcdNotificationWrapper ccdNotificationWrapper;
     private SscsCaseDataWrapper sscsCaseDataWrapper;
@@ -92,9 +95,9 @@ public class NotificationServiceTest {
     @Before
     public void setup() {
         initMocks(this);
-        notificationService = new NotificationService(notificationSender, factory, reminderService,
+        notificationService = new NotificationService(TEMPLATE_PATH, notificationSender, factory, reminderService,
             notificationValidService, notificationHandler, outOfHoursCalculator, notificationConfig,
-            evidenceManagementService
+            evidenceManagementService, sscsGeneratePdfService
         );
 
         sscsCaseData = SscsCaseData.builder()

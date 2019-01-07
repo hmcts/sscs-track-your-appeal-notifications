@@ -51,6 +51,7 @@ import uk.gov.service.notify.SendSmsResponse;
 @AutoConfigureMockMvc
 // NB These could fail if it is out of hours check the config for AAT if this test has started to fail.
 public class CohNotificationsIt {
+    private static final String TEMPLATE_PATH = "/templates/non_compliant_case_letter_template.html";
 
     MockMvc mockMvc;
 
@@ -110,12 +111,15 @@ public class CohNotificationsIt {
     @Autowired
     private NotificationConfig notificationConfig;
 
+    @Mock
+    private SscsGeneratePdfService sscsGeneratePdfService;
+
     String json;
 
     @Before
     public void setup() throws Exception {
         NotificationSender sender = new NotificationSender(notificationClient, null, notificationBlacklist);
-        NotificationService service = new NotificationService(sender, factory, reminderService, notificationValidService, notificationHandler, outOfHoursCalculator, notificationConfig, evidenceManagementService);
+        NotificationService service = new NotificationService(TEMPLATE_PATH, sender, factory, reminderService, notificationValidService, notificationHandler, outOfHoursCalculator, notificationConfig, evidenceManagementService, sscsGeneratePdfService);
         controller = new NotificationController(service, authorisationService, ccdService, deserializer, idamService);
 
         ObjectMapper mapper = new ObjectMapper();

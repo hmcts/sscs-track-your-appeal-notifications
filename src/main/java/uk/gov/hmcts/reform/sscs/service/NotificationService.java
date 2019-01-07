@@ -13,6 +13,7 @@ import org.apache.pdfbox.multipdf.PDFMergerUtility;
 import org.apache.pdfbox.pdmodel.PDDocument;
 import org.slf4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 import uk.gov.hmcts.reform.sscs.ccd.domain.Benefit;
 import uk.gov.hmcts.reform.sscs.ccd.domain.SscsCaseData;
@@ -39,6 +40,7 @@ public class NotificationService {
     public static final String DM_STORE_USER_ID = "sscs";
     public static final String DIRECTION_TEXT = "Direction Text";
 
+    private final String noncompliantcaseletterTemplate;
     private final NotificationSender notificationSender;
     private final NotificationFactory notificationFactory;
     private final ReminderService reminderService;
@@ -47,14 +49,17 @@ public class NotificationService {
     private final OutOfHoursCalculator outOfHoursCalculator;
     private final NotificationConfig notificationConfig;
     private final EvidenceManagementService evidenceManagementService;
-
+    private final SscsGeneratePdfService sscsGeneratePdfService;
 
     @Autowired
-    public NotificationService(NotificationSender notificationSender, NotificationFactory notificationFactory,
+    public NotificationService(@Value("${noncompliantcaseletter.appeal.html.template.path}") String noncompliantcaseletterTemplate,
+                               NotificationSender notificationSender, NotificationFactory notificationFactory,
                                ReminderService reminderService, NotificationValidService notificationValidService,
                                NotificationHandler notificationHandler,
                                OutOfHoursCalculator outOfHoursCalculator, NotificationConfig notificationConfig,
-                               EvidenceManagementService evidenceManagementService) {
+                               EvidenceManagementService evidenceManagementService,
+                               SscsGeneratePdfService sscsGeneratePdfService) {
+        this.noncompliantcaseletterTemplate = noncompliantcaseletterTemplate;
         this.notificationFactory = notificationFactory;
         this.notificationSender = notificationSender;
         this.reminderService = reminderService;
@@ -63,6 +68,7 @@ public class NotificationService {
         this.outOfHoursCalculator = outOfHoursCalculator;
         this.notificationConfig = notificationConfig;
         this.evidenceManagementService = evidenceManagementService;
+        this.sscsGeneratePdfService = sscsGeneratePdfService;
     }
 
     public void manageNotificationAndSubscription(NotificationWrapper notificationWrapper) {
@@ -186,7 +192,7 @@ public class NotificationService {
         if (notification.getLetterTemplate() != null) {
             try {
                 byte[] bundledLetter = buildBundledLetter(
-                    generateCoveringLetter(wrapper),
+                    generateCoveringLetter(wrapper, notification),
                     downloadDirectionText(wrapper)
                 );
 
@@ -207,26 +213,8 @@ public class NotificationService {
         }
     }
 
-    private byte[] generateCoveringLetter(NotificationWrapper wrapper) {
-        // TODO: this will be generated personalised template, all of this will change
-        NotificationEventType notificationEventType = wrapper.getSscsCaseDataWrapper().getNotificationEventType();
-        SscsCaseData newSscsCaseData = wrapper.getNewSscsCaseData();
-
-        byte[] coveringLetter = null;
-        if ((notificationEventType.equals(STRUCK_OUT))
-            && (newSscsCaseData.getSscsDocument() != null
-            && !newSscsCaseData.getSscsDocument().isEmpty())) {
-            for (SscsDocument sscsDocument : newSscsCaseData.getSscsDocument()) {
-                if (DIRECTION_TEXT.equalsIgnoreCase(sscsDocument.getValue().getDocumentType())) {
-                    coveringLetter =  evidenceManagementService.download(
-                        URI.create(sscsDocument.getValue().getDocumentLink().getDocumentUrl()),
-                        DM_STORE_USER_ID
-                    );
-
-                    break;
-                }
-            }
-        }
+    private byte[] generateCoveringLetter(NotificationWrapper wrapper, Notification notification) {
+        byte[] coveringLetter = sscsGeneratePdfService.generatePdf(noncompliantcaseletterTemplate, wrapper.getNewSscsCaseData(), Long.parseLong(wrapper.getNewSscsCaseData().getCcdCaseId()), notification.getPlaceholders());
 
         return coveringLetter;
     }

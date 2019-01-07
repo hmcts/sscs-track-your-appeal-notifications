@@ -64,6 +64,7 @@ import uk.gov.service.notify.SendSmsResponse;
 @ActiveProfiles("integration")
 @AutoConfigureMockMvc
 public class NotificationsIt {
+    private static final String TEMPLATE_PATH = "/templates/non_compliant_case_letter_template.html";
 
     // Below rules are needed to use the junitParamsRunner together with SpringRunner
     @ClassRule
@@ -124,10 +125,13 @@ public class NotificationsIt {
     @Autowired
     private EvidenceManagementService evidenceManagementService;
 
+    @Mock
+    private SscsGeneratePdfService sscsGeneratePdfService;
+
     @Before
     public void setup() throws Exception {
         NotificationSender sender = new NotificationSender(notificationClient, null, notificationBlacklist);
-        NotificationService service = new NotificationService(sender, factory, reminderService, notificationValidService, notificationHandler, outOfHoursCalculator, notificationConfig, evidenceManagementService);
+        NotificationService service = new NotificationService(TEMPLATE_PATH, sender, factory, reminderService, notificationValidService, notificationHandler, outOfHoursCalculator, notificationConfig, evidenceManagementService, sscsGeneratePdfService);
         controller = new NotificationController(service, authorisationService, ccdService, deserializer, idamService);
         this.mockMvc = MockMvcBuilders.standaloneSetup(controller).build();
         String path = getClass().getClassLoader().getResource("json/ccdResponse.json").getFile();
