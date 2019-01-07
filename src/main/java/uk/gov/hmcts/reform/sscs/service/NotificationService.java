@@ -15,10 +15,7 @@ import org.slf4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
-import uk.gov.hmcts.reform.sscs.ccd.domain.Benefit;
-import uk.gov.hmcts.reform.sscs.ccd.domain.SscsCaseData;
-import uk.gov.hmcts.reform.sscs.ccd.domain.SscsDocument;
-import uk.gov.hmcts.reform.sscs.ccd.domain.Subscription;
+import uk.gov.hmcts.reform.sscs.ccd.domain.*;
 import uk.gov.hmcts.reform.sscs.config.AppealHearingType;
 import uk.gov.hmcts.reform.sscs.config.NotificationConfig;
 import uk.gov.hmcts.reform.sscs.domain.SubscriptionWithType;
@@ -196,9 +193,11 @@ public class NotificationService {
                     downloadDirectionText(wrapper)
                 );
 
+                final Address addressToUse = getAddressToUseForLetter(wrapper);
+
                 NotificationHandler.SendNotification sendNotification = () ->
                     notificationSender.sendBundledLetter(
-                        wrapper.getNewSscsCaseData().getAppeal().getAppellant().getAddress(),   // TODO: This can't always go to the appellant, need to work out how to send to others (Appointee/Representative)
+                        addressToUse,
                         bundledLetter,
                         notification.getPlaceholders(),
                         notification.getReference(),
@@ -210,6 +209,18 @@ public class NotificationService {
                 LOG.error("Error on GovUKNotify for case id: " + wrapper.getCaseId() + ", sendBundledLetterNotification", exception);
                 throw exception;
             }
+        }
+    }
+
+    private Address getAddressToUseForLetter(NotificationWrapper wrapper) {
+        if (null == wrapper.getNewSscsCaseData().getAppeal().getRep()) {
+            if (null == wrapper.getNewSscsCaseData().getAppeal().getAppellant().getAppointee()) {
+                return wrapper.getNewSscsCaseData().getAppeal().getAppellant().getAddress();
+            } else {
+                return wrapper.getNewSscsCaseData().getAppeal().getAppellant().getAppointee().getAddress();
+            }
+        } else {
+            return wrapper.getNewSscsCaseData().getAppeal().getRep().getAddress();
         }
     }
 
