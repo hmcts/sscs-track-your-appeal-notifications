@@ -20,7 +20,6 @@ import junitparams.JUnitParamsRunner;
 import junitparams.Parameters;
 import org.apache.pdfbox.io.IOUtils;
 import org.junit.Before;
-import org.junit.Ignore;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.ArgumentCaptor;
@@ -48,6 +47,7 @@ public class NotificationServiceTest {
     private static final String APPEAL_NUMBER = "GLSCRR";
     private static final String YES = "Yes";
     private static final String CASE_REFERENCE = "ABC123";
+    private static final String CASE_ID = "1000001";
     private static final String EMAIL_TEMPLATE_ID = "email-template-id";
     private static final String SMS_TEMPLATE_ID = "sms-template-id";
     private static final String LETTER_TEMPLATE_ID_STRUCKOUT = "struckOut";
@@ -643,20 +643,22 @@ public class NotificationServiceTest {
 
     }
 
-    @Ignore
+    @Test
     public void sendLetterToGovNotifyWhenStruckOutNotification() throws IOException {
         String fileUrl = "http://dm-store:4506/documents/1e1eb3d2-5b6c-430d-8dad-ebcea1ad7ecf";
 
-        CcdNotificationWrapper struckOutCcdNotificationWrapper = buildWrapperWithDocuments(fileUrl);
+        CcdNotificationWrapper struckOutCcdNotificationWrapper = buildWrapperWithDocuments(fileUrl, justAppellant(), null);
 
         // TODO: Add address placeholders
         Notification notification = new Notification(Template.builder().letterTemplateId(LETTER_TEMPLATE_ID_STRUCKOUT).build(), Destination.builder().build(), null, new Reference(), null);
 
         byte[] sampleDirectionText = IOUtils.toByteArray(getClass().getClassLoader().getResourceAsStream("pdfs/direction-text.pdf"));
+        byte[] sampleDirectionCoversheet = IOUtils.toByteArray(getClass().getClassLoader().getResourceAsStream("pdfs/direction-notice-coversheet-sample.pdf"));
 
         when(evidenceManagementService.download(URI.create(fileUrl), DM_STORE_USER_ID)).thenReturn(sampleDirectionText);
         when((notificationValidService).isNotificationStillValidToSend(any(), any())).thenReturn(true);
         when((notificationValidService).isHearingTypeValidToSendNotification(any(), any())).thenReturn(true);
+        when(sscsGeneratePdfService.generatePdf(anyString(), any(), any(), any())).thenReturn(sampleDirectionCoversheet);
 
         when(factory.create(struckOutCcdNotificationWrapper, APPELLANT)).thenReturn(notification);
         notificationService.manageNotificationAndSubscription(struckOutCcdNotificationWrapper);
@@ -664,21 +666,23 @@ public class NotificationServiceTest {
         verify(notificationHandler, times(1)).sendNotification(eq(struckOutCcdNotificationWrapper), eq(LETTER_TEMPLATE_ID_STRUCKOUT), eq(LETTER), any(NotificationHandler.SendNotification.class));
     }
 
-    @Ignore//(expected = NotificationServiceException.class)
+    @Test(expected = NotificationServiceException.class)
     public void sendLetterToGovNotifyWhenStruckOutNotificationFailsAtNotify() throws IOException {
         String fileUrl = "http://dm-store:4506/documents/1e1eb3d2-5b6c-430d-8dad-ebcea1ad7ecf";
 
-        CcdNotificationWrapper struckOutCcdNotificationWrapper = buildWrapperWithDocuments(fileUrl);
+        CcdNotificationWrapper struckOutCcdNotificationWrapper = buildWrapperWithDocuments(fileUrl, justAppellant(), null);
 
         // TODO: Add address placeholders
         Notification notification = new Notification(Template.builder().letterTemplateId(LETTER_TEMPLATE_ID_STRUCKOUT).build(), Destination.builder().build(), null, new Reference(), null);
 
         byte[] sampleDirectionText = IOUtils.toByteArray(getClass().getClassLoader().getResourceAsStream("pdfs/direction-text.pdf"));
+        byte[] sampleDirectionCoversheet = IOUtils.toByteArray(getClass().getClassLoader().getResourceAsStream("pdfs/direction-notice-coversheet-sample.pdf"));
 
         when(evidenceManagementService.download(URI.create(fileUrl), DM_STORE_USER_ID)).thenReturn(sampleDirectionText);
         when(evidenceManagementService.download(URI.create(fileUrl), DM_STORE_USER_ID)).thenReturn(sampleDirectionText);
         when((notificationValidService).isNotificationStillValidToSend(any(), any())).thenReturn(true);
         when((notificationValidService).isHearingTypeValidToSendNotification(any(), any())).thenReturn(true);
+        when(sscsGeneratePdfService.generatePdf(anyString(), any(), any(), any())).thenReturn(sampleDirectionCoversheet);
 
         doThrow(new NotificationServiceException("Forced exception", new RuntimeException())).when(notificationHandler).sendNotification(eq(struckOutCcdNotificationWrapper), eq(LETTER_TEMPLATE_ID_STRUCKOUT), eq(LETTER), any(NotificationHandler.SendNotification.class));
 
@@ -686,7 +690,19 @@ public class NotificationServiceTest {
         notificationService.manageNotificationAndSubscription(struckOutCcdNotificationWrapper);
     }
 
-    private CcdNotificationWrapper buildWrapperWithDocuments(String fileUrl) {
+    private Appellant justAppellant() {
+        return Appellant.builder()
+            .name(Name.builder().firstName("Ap").lastName("pellant").build())
+            .address(Address.builder().line1("Appellant Line 1").town("Appellant Town").county("Appellant County").postcode("AP9 3LL").build())
+            .build();
+    }
+
+    private Appellant appellantWithAppointee() {
+        // TODO
+        return null;
+    }
+
+    private CcdNotificationWrapper buildWrapperWithDocuments(String fileUrl, Appellant appellant, Representative rep) {
         SscsDocumentDetails sscsDocumentDetails = SscsDocumentDetails.builder()
             .documentType("Direction Text")
             .documentLink(
@@ -701,7 +717,14 @@ public class NotificationServiceTest {
         SscsDocument sscsDocument = SscsDocument.builder().value(sscsDocumentDetails).build();
 
         SscsCaseData sscsCaseDataWithDocuments = SscsCaseData.builder()
-            .appeal(Appeal.builder().hearingType(AppealHearingType.ORAL.name()).hearingOptions(HearingOptions.builder().wantsToAttend(YES).build()).build())
+            .appeal(
+                Appeal
+                    .builder()
+                    .hearingType(AppealHearingType.ORAL.name())
+                    .hearingOptions(HearingOptions.builder().wantsToAttend(YES).build())
+                    .appellant(appellant)
+                    .rep(rep)
+                    .build())
             .subscriptions(Subscriptions.builder().appellantSubscription(Subscription.builder()
                 .tya(APPEAL_NUMBER)
                 .email(EMAIL)
@@ -710,6 +733,7 @@ public class NotificationServiceTest {
                 .subscribeSms(YES)
                 .build()).build())
             .caseReference(CASE_REFERENCE)
+            .ccdCaseId(CASE_ID)
             .sscsDocument(new ArrayList<SscsDocument>(Arrays.asList(sscsDocument)))
             .build();
 
