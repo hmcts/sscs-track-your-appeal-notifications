@@ -212,15 +212,13 @@ public class NotificationService {
         }
     }
 
-    private Address getAddressToUseForLetter(NotificationWrapper wrapper) {
-        if (null == wrapper.getNewSscsCaseData().getAppeal().getRep()) {
-            if (null == wrapper.getNewSscsCaseData().getAppeal().getAppellant().getAppointee()) {
-                return wrapper.getNewSscsCaseData().getAppeal().getAppellant().getAddress();
-            } else {
-                return wrapper.getNewSscsCaseData().getAppeal().getAppellant().getAppointee().getAddress();
-            }
-        } else {
+    protected static Address getAddressToUseForLetter(NotificationWrapper wrapper) {
+        if (null != wrapper.getNewSscsCaseData().getAppeal().getRep()) {
             return wrapper.getNewSscsCaseData().getAppeal().getRep().getAddress();
+        } else if (null != wrapper.getNewSscsCaseData().getAppeal().getAppellant().getAppointee()) {
+            return wrapper.getNewSscsCaseData().getAppeal().getAppellant().getAppointee().getAddress();
+        } else {
+            return wrapper.getNewSscsCaseData().getAppeal().getAppellant().getAddress();
         }
     }
 
@@ -235,7 +233,6 @@ public class NotificationService {
         SscsCaseData newSscsCaseData = wrapper.getNewSscsCaseData();
 
         byte[] directionText = null;
-        // TODO: Should we also check for appeal state is 'interlocutoryReviewState'
         if ((notificationEventType.equals(STRUCK_OUT))
             && (newSscsCaseData.getSscsDocument() != null
             && !newSscsCaseData.getSscsDocument().isEmpty())) {
