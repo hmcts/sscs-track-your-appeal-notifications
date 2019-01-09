@@ -28,6 +28,8 @@ import uk.gov.hmcts.reform.sscs.exception.NotificationClientRuntimeException;
 import uk.gov.hmcts.reform.sscs.exception.NotificationServiceException;
 import uk.gov.hmcts.reform.sscs.factory.NotificationFactory;
 import uk.gov.hmcts.reform.sscs.factory.NotificationWrapper;
+import uk.gov.hmcts.reform.sscs.idam.IdamService;
+import uk.gov.hmcts.reform.sscs.idam.IdamTokens;
 
 @Service
 @Slf4j
@@ -47,6 +49,7 @@ public class NotificationService {
     private final NotificationConfig notificationConfig;
     private final EvidenceManagementService evidenceManagementService;
     private final SscsGeneratePdfService sscsGeneratePdfService;
+    private final IdamService idamService;
 
     @Autowired
     public NotificationService(@Value("${noncompliantcaseletter.appeal.html.template.path}") String noncompliantcaseletterTemplate,
@@ -55,7 +58,8 @@ public class NotificationService {
                                NotificationHandler notificationHandler,
                                OutOfHoursCalculator outOfHoursCalculator, NotificationConfig notificationConfig,
                                EvidenceManagementService evidenceManagementService,
-                               SscsGeneratePdfService sscsGeneratePdfService) {
+                               SscsGeneratePdfService sscsGeneratePdfService,
+                               IdamService idamService) {
         this.noncompliantcaseletterTemplate = noncompliantcaseletterTemplate;
         this.notificationFactory = notificationFactory;
         this.notificationSender = notificationSender;
@@ -66,6 +70,7 @@ public class NotificationService {
         this.notificationConfig = notificationConfig;
         this.evidenceManagementService = evidenceManagementService;
         this.sscsGeneratePdfService = sscsGeneratePdfService;
+        this.idamService = idamService;
     }
 
     public void manageNotificationAndSubscription(NotificationWrapper notificationWrapper) {
@@ -188,8 +193,10 @@ public class NotificationService {
     private void sendBundledLetterNotification(NotificationWrapper wrapper, Notification notification) {
         if (notification.getLetterTemplate() != null) {
             try {
+                IdamTokens idamTokens = idamService.getIdamTokens();
+
                 byte[] bundledLetter = buildBundledLetter(
-                    generateCoveringLetter(wrapper, notification),
+                    generateCoveringLetter(wrapper, notification, idamTokens),
                     downloadDirectionText(wrapper)
                 );
 
@@ -210,10 +217,14 @@ public class NotificationService {
         }
     }
 
-    private byte[] generateCoveringLetter(NotificationWrapper wrapper, Notification notification) {
-        byte[] coveringLetter = sscsGeneratePdfService.generatePdf(noncompliantcaseletterTemplate, wrapper.getNewSscsCaseData(), Long.parseLong(wrapper.getNewSscsCaseData().getCcdCaseId()), notification.getPlaceholders());
-
-        return coveringLetter;
+    private byte[] generateCoveringLetter(NotificationWrapper wrapper, Notification notification, IdamTokens idamTokens) {
+        return sscsGeneratePdfService.generateAndSavePdf(
+            noncompliantcaseletterTemplate,
+            wrapper.getNewSscsCaseData(),
+            Long.parseLong(wrapper.getNewSscsCaseData().getCcdCaseId()),
+            notification.getPlaceholders(),
+            idamTokens
+        );
     }
 
     private byte[] downloadDirectionText(NotificationWrapper wrapper) {
