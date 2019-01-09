@@ -710,58 +710,6 @@ public class NotificationServiceTest {
         notificationService.manageNotificationAndSubscription(struckOutCcdNotificationWrapper);
     }
 
-    @Test
-    public void getAppellantAddressToUseForLetter() {
-        Address expectedAddress = APPELLANT_WITH_ADDRESS.getAddress();
-        CcdNotificationWrapper wrapper = buildBaseWrapper(STRUCK_OUT, APPELLANT_WITH_ADDRESS, null, null);
-
-        Address actualAddress = NotificationService.getAddressToUseForLetter(wrapper);
-        assertEquals(expectedAddress.getLine1(), actualAddress.getLine1());
-        assertEquals(expectedAddress.getLine2(), actualAddress.getLine2());
-        assertEquals(expectedAddress.getTown(), actualAddress.getTown());
-        assertEquals(expectedAddress.getCounty(), actualAddress.getCounty());
-        assertEquals(expectedAddress.getPostcode(), actualAddress.getPostcode());
-    }
-
-    @Test
-    public void getAppointeeAddressToUseForLetter() {
-        Address expectedAddress = APPOINTEE_WITH_ADDRESS.getAddress();
-        CcdNotificationWrapper wrapper = buildBaseWrapper(STRUCK_OUT, APPELLANT_WITH_ADDRESS_AND_APPOINTEE, null, null);
-
-        Address actualAddress = NotificationService.getAddressToUseForLetter(wrapper);
-        assertEquals(expectedAddress.getLine1(), actualAddress.getLine1());
-        assertEquals(expectedAddress.getLine2(), actualAddress.getLine2());
-        assertEquals(expectedAddress.getTown(), actualAddress.getTown());
-        assertEquals(expectedAddress.getCounty(), actualAddress.getCounty());
-        assertEquals(expectedAddress.getPostcode(), actualAddress.getPostcode());
-    }
-
-    @Test
-    public void getRepresentativeAddressToUseForLetter() {
-        Address expectedAddress = REPRESENTATIVE_WITH_ADDRESS.getAddress();
-        CcdNotificationWrapper wrapper = buildBaseWrapper(STRUCK_OUT, APPELLANT_WITH_ADDRESS, REPRESENTATIVE_WITH_ADDRESS, null);
-
-        Address actualAddress = NotificationService.getAddressToUseForLetter(wrapper);
-        assertEquals(expectedAddress.getLine1(), actualAddress.getLine1());
-        assertEquals(expectedAddress.getLine2(), actualAddress.getLine2());
-        assertEquals(expectedAddress.getTown(), actualAddress.getTown());
-        assertEquals(expectedAddress.getCounty(), actualAddress.getCounty());
-        assertEquals(expectedAddress.getPostcode(), actualAddress.getPostcode());
-    }
-
-    @Test
-    public void getRepresentativeAddressToUseForLetterWhenAppointeePresent() {
-        Address expectedAddress = REPRESENTATIVE_WITH_ADDRESS.getAddress();
-        CcdNotificationWrapper wrapper = buildBaseWrapper(STRUCK_OUT, APPELLANT_WITH_ADDRESS_AND_APPOINTEE, REPRESENTATIVE_WITH_ADDRESS, null);
-
-        Address actualAddress = NotificationService.getAddressToUseForLetter(wrapper);
-        assertEquals(expectedAddress.getLine1(), actualAddress.getLine1());
-        assertEquals(expectedAddress.getLine2(), actualAddress.getLine2());
-        assertEquals(expectedAddress.getTown(), actualAddress.getTown());
-        assertEquals(expectedAddress.getCounty(), actualAddress.getCounty());
-        assertEquals(expectedAddress.getPostcode(), actualAddress.getPostcode());
-    }
-
     private CcdNotificationWrapper buildWrapperWithDocuments(NotificationEventType eventType, String fileUrl, Appellant appellant, Representative rep) {
         SscsDocumentDetails sscsDocumentDetails = SscsDocumentDetails.builder()
             .documentType("Direction Text")

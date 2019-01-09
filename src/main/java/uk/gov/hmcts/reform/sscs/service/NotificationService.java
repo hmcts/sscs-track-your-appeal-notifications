@@ -193,11 +193,9 @@ public class NotificationService {
                     downloadDirectionText(wrapper)
                 );
 
-                final Address addressToUse = getAddressToUseForLetter(wrapper);
-
                 NotificationHandler.SendNotification sendNotification = () ->
                     notificationSender.sendBundledLetter(
-                        addressToUse,
+                        wrapper.getNewSscsCaseData().getAppeal().getAppellant().getAddress(),   // Used for whitelisting only
                         bundledLetter,
                         notification.getPlaceholders(),
                         notification.getReference(),
@@ -209,16 +207,6 @@ public class NotificationService {
                 LOG.error("Error on GovUKNotify for case id: " + wrapper.getCaseId() + ", sendBundledLetterNotification", exception);
                 throw exception;
             }
-        }
-    }
-
-    protected static Address getAddressToUseForLetter(NotificationWrapper wrapper) {
-        if (null != wrapper.getNewSscsCaseData().getAppeal().getRep()) {
-            return wrapper.getNewSscsCaseData().getAppeal().getRep().getAddress();
-        } else if (null != wrapper.getNewSscsCaseData().getAppeal().getAppellant().getAppointee()) {
-            return wrapper.getNewSscsCaseData().getAppeal().getAppellant().getAppointee().getAddress();
-        } else {
-            return wrapper.getNewSscsCaseData().getAppeal().getAppellant().getAddress();
         }
     }
 
