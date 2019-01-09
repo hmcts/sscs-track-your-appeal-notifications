@@ -16,6 +16,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 import uk.gov.hmcts.reform.sscs.ccd.domain.*;
+import uk.gov.hmcts.reform.sscs.config.AppConstants;
 import uk.gov.hmcts.reform.sscs.config.AppealHearingType;
 import uk.gov.hmcts.reform.sscs.config.NotificationConfig;
 import uk.gov.hmcts.reform.sscs.domain.SubscriptionWithType;
@@ -153,7 +154,8 @@ public class NotificationService {
     ) {
         sendEmailNotification(wrapper, subscription, notification);
         sendSmsNotification(wrapper, subscription, notification);
-        sendBundledLetterNotification(wrapper, notification);
+        sendBundledLetterNotificationToAppellant(wrapper, notification);
+        sendBundledLetterNotificationToRepresentative(wrapper, notification);
     }
 
     private void sendSmsNotification(NotificationWrapper wrapper, Subscription subscription, Notification notification) {
@@ -185,9 +187,26 @@ public class NotificationService {
         }
     }
 
-    private void sendBundledLetterNotification(NotificationWrapper wrapper, Notification notification) {
+    private void sendBundledLetterNotificationToAppellant(NotificationWrapper wrapper, Notification notification) {
+        sendBundledLetterNotification(wrapper, notification, getAddressToUseForLetter(wrapper), getNameToUseForLetter(wrapper));
+    }
+
+    private void sendBundledLetterNotificationToRepresentative(NotificationWrapper wrapper, Notification notification) {
+        if (null != wrapper.getNewSscsCaseData().getAppeal().getRep()) {
+            sendBundledLetterNotification(wrapper, notification, wrapper.getNewSscsCaseData().getAppeal().getRep().getAddress(), wrapper.getNewSscsCaseData().getAppeal().getRep().getName());
+        }
+    }
+
+    private void sendBundledLetterNotification(NotificationWrapper wrapper, Notification notification, Address addressToUse, Name nameToUse) {
         if (notification.getLetterTemplate() != null) {
             try {
+                notification.getPlaceholders().put(AppConstants.LETTER_ADDRESS_LINE_1, addressToUse.getLine1());
+                notification.getPlaceholders().put(AppConstants.LETTER_ADDRESS_LINE_2, addressToUse.getLine2());
+                notification.getPlaceholders().put(AppConstants.LETTER_ADDRESS_LINE_3, addressToUse.getTown());
+                notification.getPlaceholders().put(AppConstants.LETTER_ADDRESS_LINE_4, addressToUse.getCounty());
+                notification.getPlaceholders().put(AppConstants.LETTER_ADDRESS_POSTCODE, addressToUse.getPostcode());
+                notification.getPlaceholders().put(AppConstants.LETTER_NAME, nameToUse.getFullNameNoTitle());
+
                 byte[] bundledLetter = buildBundledLetter(
                     generateCoveringLetter(wrapper, notification),
                     downloadDirectionText(wrapper)
@@ -195,7 +214,7 @@ public class NotificationService {
 
                 NotificationHandler.SendNotification sendNotification = () ->
                     notificationSender.sendBundledLetter(
-                        wrapper.getNewSscsCaseData().getAppeal().getAppellant().getAddress(),   // Used for whitelisting only
+                        wrapper.getNewSscsCaseData().getAppeal().getAppellant().getAddress().getPostcode(),   // Used for whitelisting only
                         bundledLetter,
                         notification.getPlaceholders(),
                         notification.getReference(),
@@ -210,10 +229,24 @@ public class NotificationService {
         }
     }
 
-    private byte[] generateCoveringLetter(NotificationWrapper wrapper, Notification notification) {
-        byte[] coveringLetter = sscsGeneratePdfService.generatePdf(noncompliantcaseletterTemplate, wrapper.getNewSscsCaseData(), Long.parseLong(wrapper.getNewSscsCaseData().getCcdCaseId()), notification.getPlaceholders());
+    protected static Address getAddressToUseForLetter(NotificationWrapper wrapper) {
+        if (null != wrapper.getNewSscsCaseData().getAppeal().getAppellant().getAppointee()) {
+            return wrapper.getNewSscsCaseData().getAppeal().getAppellant().getAppointee().getAddress();
+        } else {
+            return wrapper.getNewSscsCaseData().getAppeal().getAppellant().getAddress();
+        }
+    }
 
-        return coveringLetter;
+    protected static Name getNameToUseForLetter(NotificationWrapper wrapper) {
+        if (null != wrapper.getNewSscsCaseData().getAppeal().getAppellant().getAppointee()) {
+            return wrapper.getNewSscsCaseData().getAppeal().getAppellant().getAppointee().getName();
+        } else {
+            return wrapper.getNewSscsCaseData().getAppeal().getAppellant().getName();
+        }
+    }
+
+    private byte[] generateCoveringLetter(NotificationWrapper wrapper, Notification notification) {
+        return sscsGeneratePdfService.generatePdf(noncompliantcaseletterTemplate, wrapper.getNewSscsCaseData(), Long.parseLong(wrapper.getNewSscsCaseData().getCcdCaseId()), notification.getPlaceholders());
     }
 
     private byte[] downloadDirectionText(NotificationWrapper wrapper) {
