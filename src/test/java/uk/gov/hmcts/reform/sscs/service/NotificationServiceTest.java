@@ -17,6 +17,8 @@ import java.net.URI;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
+import java.util.HashMap;
+
 import junitparams.JUnitParamsRunner;
 import junitparams.Parameters;
 import org.apache.pdfbox.io.IOUtils;
@@ -125,7 +127,13 @@ public class NotificationServiceTest {
         );
 
         sscsCaseData = SscsCaseData.builder()
-            .appeal(Appeal.builder().hearingType(AppealHearingType.ORAL.name()).hearingOptions(HearingOptions.builder().wantsToAttend(YES).build()).build())
+            .appeal(
+                Appeal.builder()
+                    .hearingType(AppealHearingType.ORAL.name())
+                    .hearingOptions(HearingOptions.builder().wantsToAttend(YES).build())
+                    .appellant(APPELLANT_WITH_ADDRESS)
+                    .build()
+            )
             .subscriptions(Subscriptions.builder().appellantSubscription(Subscription.builder()
                 .tya(APPEAL_NUMBER)
                 .email(EMAIL)
@@ -671,7 +679,7 @@ public class NotificationServiceTest {
 
         CcdNotificationWrapper struckOutCcdNotificationWrapper = buildWrapperWithDocuments(STRUCK_OUT, fileUrl, APPELLANT_WITH_ADDRESS, null);
 
-        Notification notification = new Notification(Template.builder().letterTemplateId(LETTER_TEMPLATE_ID_STRUCKOUT).build(), Destination.builder().build(), null, new Reference(), null);
+        Notification notification = new Notification(Template.builder().letterTemplateId(LETTER_TEMPLATE_ID_STRUCKOUT).build(), Destination.builder().build(), new HashMap<>(), new Reference(), null);
 
         byte[] sampleDirectionText = IOUtils.toByteArray(getClass().getClassLoader().getResourceAsStream("pdfs/direction-text.pdf"));
         byte[] sampleDirectionCoversheet = IOUtils.toByteArray(getClass().getClassLoader().getResourceAsStream("pdfs/direction-notice-coversheet-sample.pdf"));
@@ -693,7 +701,7 @@ public class NotificationServiceTest {
 
         CcdNotificationWrapper struckOutCcdNotificationWrapper = buildWrapperWithDocuments(STRUCK_OUT, fileUrl, APPELLANT_WITH_ADDRESS, null);
 
-        Notification notification = new Notification(Template.builder().letterTemplateId(LETTER_TEMPLATE_ID_STRUCKOUT).build(), Destination.builder().build(), null, new Reference(), null);
+        Notification notification = new Notification(Template.builder().letterTemplateId(LETTER_TEMPLATE_ID_STRUCKOUT).build(), Destination.builder().build(), new HashMap<>(), new Reference(), null);
 
         byte[] sampleDirectionText = IOUtils.toByteArray(getClass().getClassLoader().getResourceAsStream("pdfs/direction-text.pdf"));
         byte[] sampleDirectionCoversheet = IOUtils.toByteArray(getClass().getClassLoader().getResourceAsStream("pdfs/direction-notice-coversheet-sample.pdf"));
@@ -727,32 +735,6 @@ public class NotificationServiceTest {
     public void getAppointeeAddressToUseForLetter() {
         Address expectedAddress = APPOINTEE_WITH_ADDRESS.getAddress();
         CcdNotificationWrapper wrapper = buildBaseWrapper(STRUCK_OUT, APPELLANT_WITH_ADDRESS_AND_APPOINTEE, null, null);
-
-        Address actualAddress = NotificationService.getAddressToUseForLetter(wrapper);
-        assertEquals(expectedAddress.getLine1(), actualAddress.getLine1());
-        assertEquals(expectedAddress.getLine2(), actualAddress.getLine2());
-        assertEquals(expectedAddress.getTown(), actualAddress.getTown());
-        assertEquals(expectedAddress.getCounty(), actualAddress.getCounty());
-        assertEquals(expectedAddress.getPostcode(), actualAddress.getPostcode());
-    }
-
-    @Test
-    public void getRepresentativeAddressToUseForLetter() {
-        Address expectedAddress = REPRESENTATIVE_WITH_ADDRESS.getAddress();
-        CcdNotificationWrapper wrapper = buildBaseWrapper(STRUCK_OUT, APPELLANT_WITH_ADDRESS, REPRESENTATIVE_WITH_ADDRESS, null);
-
-        Address actualAddress = NotificationService.getAddressToUseForLetter(wrapper);
-        assertEquals(expectedAddress.getLine1(), actualAddress.getLine1());
-        assertEquals(expectedAddress.getLine2(), actualAddress.getLine2());
-        assertEquals(expectedAddress.getTown(), actualAddress.getTown());
-        assertEquals(expectedAddress.getCounty(), actualAddress.getCounty());
-        assertEquals(expectedAddress.getPostcode(), actualAddress.getPostcode());
-    }
-
-    @Test
-    public void getRepresentativeAddressToUseForLetterWhenAppointeePresent() {
-        Address expectedAddress = REPRESENTATIVE_WITH_ADDRESS.getAddress();
-        CcdNotificationWrapper wrapper = buildBaseWrapper(STRUCK_OUT, APPELLANT_WITH_ADDRESS_AND_APPOINTEE, REPRESENTATIVE_WITH_ADDRESS, null);
 
         Address actualAddress = NotificationService.getAddressToUseForLetter(wrapper);
         assertEquals(expectedAddress.getLine1(), actualAddress.getLine1());

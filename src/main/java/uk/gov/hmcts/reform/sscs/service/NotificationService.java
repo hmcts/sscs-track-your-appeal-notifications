@@ -188,44 +188,44 @@ public class NotificationService {
     }
 
     private void sendBundledLetterNotificationToAppellant(NotificationWrapper wrapper, Notification notification) {
-        sendBundledLetterNotification(wrapper, notification, getAddressToUseForLetter(wrapper), getNameToUseForLetter(wrapper));
+        if (notification.getLetterTemplate() != null) {
+            sendBundledLetterNotification(wrapper, notification, getAddressToUseForLetter(wrapper), getNameToUseForLetter(wrapper));
+        }
     }
 
     private void sendBundledLetterNotificationToRepresentative(NotificationWrapper wrapper, Notification notification) {
-        if (null != wrapper.getNewSscsCaseData().getAppeal().getRep()) {
+        if ((notification.getLetterTemplate() != null) && (null != wrapper.getNewSscsCaseData().getAppeal().getRep())) {
             sendBundledLetterNotification(wrapper, notification, wrapper.getNewSscsCaseData().getAppeal().getRep().getAddress(), wrapper.getNewSscsCaseData().getAppeal().getRep().getName());
         }
     }
 
     private void sendBundledLetterNotification(NotificationWrapper wrapper, Notification notification, Address addressToUse, Name nameToUse) {
-        if (notification.getLetterTemplate() != null) {
-            try {
-                notification.getPlaceholders().put(AppConstants.LETTER_ADDRESS_LINE_1, addressToUse.getLine1());
-                notification.getPlaceholders().put(AppConstants.LETTER_ADDRESS_LINE_2, addressToUse.getLine2());
-                notification.getPlaceholders().put(AppConstants.LETTER_ADDRESS_LINE_3, addressToUse.getTown());
-                notification.getPlaceholders().put(AppConstants.LETTER_ADDRESS_LINE_4, addressToUse.getCounty());
-                notification.getPlaceholders().put(AppConstants.LETTER_ADDRESS_POSTCODE, addressToUse.getPostcode());
-                notification.getPlaceholders().put(AppConstants.LETTER_NAME, nameToUse.getFullNameNoTitle());
+        try {
+            notification.getPlaceholders().put(AppConstants.LETTER_ADDRESS_LINE_1, addressToUse.getLine1());
+            notification.getPlaceholders().put(AppConstants.LETTER_ADDRESS_LINE_2, addressToUse.getLine2());
+            notification.getPlaceholders().put(AppConstants.LETTER_ADDRESS_LINE_3, addressToUse.getTown());
+            notification.getPlaceholders().put(AppConstants.LETTER_ADDRESS_LINE_4, addressToUse.getCounty());
+            notification.getPlaceholders().put(AppConstants.LETTER_ADDRESS_POSTCODE, addressToUse.getPostcode());
+            notification.getPlaceholders().put(AppConstants.LETTER_NAME, nameToUse.getFullNameNoTitle());
 
-                byte[] bundledLetter = buildBundledLetter(
-                    generateCoveringLetter(wrapper, notification),
-                    downloadDirectionText(wrapper)
+            byte[] bundledLetter = buildBundledLetter(
+                generateCoveringLetter(wrapper, notification),
+                downloadDirectionText(wrapper)
+            );
+
+            NotificationHandler.SendNotification sendNotification = () ->
+                notificationSender.sendBundledLetter(
+                    wrapper.getNewSscsCaseData().getAppeal().getAppellant().getAddress().getPostcode(),   // Used for whitelisting only
+                    bundledLetter,
+                    notification.getPlaceholders(),
+                    notification.getReference(),
+                    wrapper.getCaseId()
                 );
-
-                NotificationHandler.SendNotification sendNotification = () ->
-                    notificationSender.sendBundledLetter(
-                        wrapper.getNewSscsCaseData().getAppeal().getAppellant().getAddress().getPostcode(),   // Used for whitelisting only
-                        bundledLetter,
-                        notification.getPlaceholders(),
-                        notification.getReference(),
-                        wrapper.getCaseId()
-                    );
-                notificationHandler.sendNotification(wrapper, notification.getLetterTemplate(), "Letter", sendNotification);
-            } catch (IOException ioe) {
-                NotificationServiceException exception = new NotificationServiceException(wrapper.getCaseId(), ioe);
-                LOG.error("Error on GovUKNotify for case id: " + wrapper.getCaseId() + ", sendBundledLetterNotification", exception);
-                throw exception;
-            }
+            notificationHandler.sendNotification(wrapper, notification.getLetterTemplate(), "Letter", sendNotification);
+        } catch (IOException ioe) {
+            NotificationServiceException exception = new NotificationServiceException(wrapper.getCaseId(), ioe);
+            LOG.error("Error on GovUKNotify for case id: " + wrapper.getCaseId() + ", sendBundledLetterNotification", exception);
+            throw exception;
         }
     }
 
