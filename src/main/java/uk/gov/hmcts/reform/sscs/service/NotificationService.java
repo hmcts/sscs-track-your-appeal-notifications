@@ -16,6 +16,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 import uk.gov.hmcts.reform.sscs.ccd.domain.*;
+import uk.gov.hmcts.reform.sscs.config.AppConstants;
 import uk.gov.hmcts.reform.sscs.config.AppealHearingType;
 import uk.gov.hmcts.reform.sscs.config.NotificationConfig;
 import uk.gov.hmcts.reform.sscs.domain.SubscriptionWithType;
@@ -158,7 +159,8 @@ public class NotificationService {
     ) {
         sendEmailNotification(wrapper, subscription, notification);
         sendSmsNotification(wrapper, subscription, notification);
-        sendBundledLetterNotification(wrapper, notification);
+        sendBundledLetterNotificationToAppellant(wrapper, notification);
+        sendBundledLetterNotificationToRepresentative(wrapper, notification);
     }
 
     private void sendSmsNotification(NotificationWrapper wrapper, Subscription subscription, Notification notification) {
@@ -190,30 +192,63 @@ public class NotificationService {
         }
     }
 
-    private void sendBundledLetterNotification(NotificationWrapper wrapper, Notification notification) {
+    private void sendBundledLetterNotificationToAppellant(NotificationWrapper wrapper, Notification notification) {
         if (notification.getLetterTemplate() != null) {
-            try {
-                IdamTokens idamTokens = idamService.getIdamTokens();
+            sendBundledLetterNotification(wrapper, notification, getAddressToUseForLetter(wrapper), getNameToUseForLetter(wrapper));
+        }
+    }
 
-                byte[] bundledLetter = buildBundledLetter(
-                    generateCoveringLetter(wrapper, notification, idamTokens),
-                    downloadDirectionText(wrapper)
+    private void sendBundledLetterNotificationToRepresentative(NotificationWrapper wrapper, Notification notification) {
+        if ((notification.getLetterTemplate() != null) && (null != wrapper.getNewSscsCaseData().getAppeal().getRep())) {
+            sendBundledLetterNotification(wrapper, notification, wrapper.getNewSscsCaseData().getAppeal().getRep().getAddress(), wrapper.getNewSscsCaseData().getAppeal().getRep().getName());
+        }
+    }
+
+    private void sendBundledLetterNotification(NotificationWrapper wrapper, Notification notification, Address addressToUse, Name nameToUse) {
+        try {
+            notification.getPlaceholders().put(AppConstants.LETTER_ADDRESS_LINE_1, addressToUse.getLine1());
+            notification.getPlaceholders().put(AppConstants.LETTER_ADDRESS_LINE_2, addressToUse.getLine2());
+            notification.getPlaceholders().put(AppConstants.LETTER_ADDRESS_LINE_3, addressToUse.getTown());
+            notification.getPlaceholders().put(AppConstants.LETTER_ADDRESS_LINE_4, addressToUse.getCounty());
+            notification.getPlaceholders().put(AppConstants.LETTER_ADDRESS_POSTCODE, addressToUse.getPostcode());
+            notification.getPlaceholders().put(AppConstants.LETTER_NAME, nameToUse.getFullNameNoTitle());
+
+            IdamTokens idamTokens = idamService.getIdamTokens();
+
+            byte[] bundledLetter = buildBundledLetter(
+                generateCoveringLetter(wrapper, notification, idamService),
+                downloadDirectionText(wrapper)
+            );
+
+            NotificationHandler.SendNotification sendNotification = () ->
+                notificationSender.sendBundledLetter(
+                    wrapper.getNewSscsCaseData().getAppeal().getAppellant().getAddress().getPostcode(),   // Used for whitelisting only
+                    bundledLetter,
+                    notification.getPlaceholders(),
+                    notification.getReference(),
+                    wrapper.getCaseId()
                 );
+            notificationHandler.sendNotification(wrapper, notification.getLetterTemplate(), "Letter", sendNotification);
+        } catch (IOException ioe) {
+            NotificationServiceException exception = new NotificationServiceException(wrapper.getCaseId(), ioe);
+            LOG.error("Error on GovUKNotify for case id: " + wrapper.getCaseId() + ", sendBundledLetterNotification", exception);
+            throw exception;
+        }
+    }
 
-                NotificationHandler.SendNotification sendNotification = () ->
-                    notificationSender.sendBundledLetter(
-                        wrapper.getNewSscsCaseData().getAppeal().getAppellant().getAddress(),   // Used for whitelisting only
-                        bundledLetter,
-                        notification.getPlaceholders(),
-                        notification.getReference(),
-                        wrapper.getCaseId()
-                    );
-                notificationHandler.sendNotification(wrapper, notification.getLetterTemplate(), "Letter", sendNotification);
-            } catch (IOException ioe) {
-                NotificationServiceException exception = new NotificationServiceException(wrapper.getCaseId(), ioe);
-                LOG.error("Error on GovUKNotify for case id: " + wrapper.getCaseId() + ", sendBundledLetterNotification", exception);
-                throw exception;
-            }
+    protected static Address getAddressToUseForLetter(NotificationWrapper wrapper) {
+        if (null != wrapper.getNewSscsCaseData().getAppeal().getAppellant().getAppointee()) {
+            return wrapper.getNewSscsCaseData().getAppeal().getAppellant().getAppointee().getAddress();
+        } else {
+            return wrapper.getNewSscsCaseData().getAppeal().getAppellant().getAddress();
+        }
+    }
+
+    protected static Name getNameToUseForLetter(NotificationWrapper wrapper) {
+        if (null != wrapper.getNewSscsCaseData().getAppeal().getAppellant().getAppointee()) {
+            return wrapper.getNewSscsCaseData().getAppeal().getAppellant().getAppointee().getName();
+        } else {
+            return wrapper.getNewSscsCaseData().getAppeal().getAppellant().getName();
         }
     }
 

@@ -91,9 +91,9 @@ public class NotificationSender {
             sendLetterResponse.getNotificationId());
     }
 
-    public void sendBundledLetter(Address address, byte[] directionText, Map<String, String> personalisation, String reference, String ccdCaseId) throws NotificationClientException {
+    public void sendBundledLetter(String appellantPostcode, byte[] directionText, Map<String, String> personalisation, String reference, String ccdCaseId) throws NotificationClientException {
         if (directionText != null) {
-            NotificationClient client = getLetterNotificationClient(address.getPostcode());
+            NotificationClient client = getLetterNotificationClient(appellantPostcode);
 
             ByteArrayInputStream bis = new ByteArrayInputStream(directionText);
 
