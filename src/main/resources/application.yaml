@@ -94,8 +94,11 @@ notification:
       emailId: 4b1ee55b-abd1-4e7e-b0ed-693d8df1e741
       smsId: 99bd4a56-256c-4de8-b187-d43a8dde466f
   evidenceReceived:
-    emailId: c5654134-2e13-4541-ac73-334a5b5cdbb6
-    smsId: 74bda35f-040b-4355-bda3-faf0e4f5ae6e
+    appellant:
+      emailId: c5654134-2e13-4541-ac73-334a5b5cdbb6
+      smsId: 74bda35f-040b-4355-bda3-faf0e4f5ae6e
+    representative:
+      smsId: 345f802b-7089-4f46-a17f-bf534b272740
   hearingAdjourned:
     appellant:
       emailId: bff02237-9bcb-49fa-bbf7-11725b97132a
@@ -135,6 +138,13 @@ notification:
     emailId: b9e47ec4-3b58-4b8d-9304-f77ac27fb7f2
     smsId: e3f71440-d1ac-43c8-a8cc-a088c4f3c959
   appealCreated:
+    appellant:
+      emailId: 01293b93-b23e-40a3-ad78-2c6cd01cd21c
+      smsId: f41222ef-c05c-4682-9634-6b034a166368
+    representative:
+      emailId: 652753bf-59b4-46eb-9c24-bd762338a098
+      smsId: 0e44927e-168b-4510-ac57-6932fda7aec1
+  resendAppealCreated:
     appellant:
       emailId: 01293b93-b23e-40a3-ad78-2c6cd01cd21c
       smsId: f41222ef-c05c-4682-9634-6b034a166368
@@ -207,7 +217,6 @@ notification:
     evidenceReceived:
       representative:
         emailId: 7af36950-fc63-45d1-907d-f472fac7af06
-        smsId: 345f802b-7089-4f46-a17f-bf534b272740
   oral:
     responseReceived:
       emailId: 1afd89f9-9935-4acb-b4f6-ba708b03a0d3
@@ -215,7 +224,6 @@ notification:
     evidenceReceived:
       representative:
         emailId: 30260c0b-5575-4f4e-bce4-73cf3f245c2d
-        smsId: 345f802b-7089-4f46-a17f-bf534b272740
     appealDormant:
       appellant:
         emailId: fc9d0618-68c4-48ec-9481-a84b225a57a9
