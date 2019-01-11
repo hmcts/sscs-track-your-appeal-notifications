@@ -42,17 +42,17 @@ public class WithRepresentativePersonalisationTest extends AbstractFunctionalTes
     @Value("${notification.hearingBooked.representative.smsId}")
     private String hearingBookedRepsSmsId;
 
-    @Value("${notification.evidenceReceived.emailId}")
+    @Value("${notification.evidenceReceived.appellant.emailId}")
     private String evidenceReceivedAppellantEmailId;
-    @Value("${notification.evidenceReceived.smsId}")
+    @Value("${notification.evidenceReceived.appellant.smsId}")
     private String evidenceReceivedAppellantSmsId;
     @Value("${notification.paper.evidenceReceived.representative.emailId}")
     private String paperEvidenceReceivedRepsEmailId;
-    @Value("${notification.paper.evidenceReceived.representative.smsId}")
+    @Value("${notification.evidenceReceived.representative.smsId}")
     private String paperEvidenceReceivedRepsSmsId;
     @Value("${notification.oral.evidenceReceived.representative.emailId}")
     private String oralEvidenceReceivedRepsEmailId;
-    @Value("${notification.oral.evidenceReceived.representative.smsId}")
+    @Value("${notification.evidenceReceived.representative.smsId}")
     private String oralEvidenceReceivedRepsSmsId;
     @Value("${notification.appealCreated.appellant.emailId}")
     private String appealCreatedAppellantEmailId;
