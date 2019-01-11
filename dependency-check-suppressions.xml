@@ -107,4 +107,16 @@
    ]]></notes>
     <cve>CVE-2018-8088</cve>
   </suppress>
+  <suppress>
+    <notes><![CDATA[
+   file name: pdfbox-2.0.1.jar
+   ]]></notes>
+    <cve>CVE-2018-11797</cve>
+  </suppress>
+  <suppress>
+    <notes><![CDATA[
+   file name: fontbox-2.0.1.jar
+   ]]></notes>
+    <cve>CVE-2018-11797</cve>
+  </suppress>
 </suppressions>
