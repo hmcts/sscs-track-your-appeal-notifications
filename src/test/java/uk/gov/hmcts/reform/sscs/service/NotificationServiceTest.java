@@ -42,6 +42,8 @@ import uk.gov.hmcts.reform.sscs.factory.CcdNotificationWrapper;
 import uk.gov.hmcts.reform.sscs.factory.CohNotificationWrapper;
 import uk.gov.hmcts.reform.sscs.factory.NotificationFactory;
 import uk.gov.hmcts.reform.sscs.factory.NotificationWrapper;
+import uk.gov.hmcts.reform.sscs.idam.IdamService;
+import uk.gov.hmcts.reform.sscs.idam.IdamTokens;
 
 @RunWith(JUnitParamsRunner.class)
 public class NotificationServiceTest {
@@ -114,6 +116,9 @@ public class NotificationServiceTest {
     @Mock
     private SscsGeneratePdfService sscsGeneratePdfService;
 
+    @Mock
+    private IdamService idamService;
+
     private SscsCaseData sscsCaseData;
     private CcdNotificationWrapper ccdNotificationWrapper;
     private SscsCaseDataWrapper sscsCaseDataWrapper;
@@ -123,7 +128,7 @@ public class NotificationServiceTest {
         initMocks(this);
         notificationService = new NotificationService(TEMPLATE_PATH, notificationSender, factory, reminderService,
             notificationValidService, notificationHandler, outOfHoursCalculator, notificationConfig,
-            evidenceManagementService, sscsGeneratePdfService
+            evidenceManagementService, sscsGeneratePdfService, idamService
         );
 
         sscsCaseData = SscsCaseData.builder()
@@ -146,8 +151,13 @@ public class NotificationServiceTest {
         sscsCaseDataWrapper = SscsCaseDataWrapper.builder().newSscsCaseData(sscsCaseData).oldSscsCaseData(sscsCaseData).notificationEventType(APPEAL_WITHDRAWN_NOTIFICATION).build();
         ccdNotificationWrapper = new CcdNotificationWrapper(sscsCaseDataWrapper);
         when(outOfHoursCalculator.isItOutOfHours()).thenReturn(false);
-    }
 
+        String authHeader = "authHeader";
+        String serviceAuthHeader = "serviceAuthHeader";
+        IdamTokens idamTokens = IdamTokens.builder().idamOauth2Token(authHeader).serviceAuthorization(serviceAuthHeader).build();
+
+        when(idamService.getIdamTokens()).thenReturn(idamTokens);
+    }
 
     @Test
     @Parameters(method = "generateNotificationTypeAndSubscriptionsScenarios")
@@ -687,7 +697,7 @@ public class NotificationServiceTest {
         when(evidenceManagementService.download(URI.create(fileUrl), DM_STORE_USER_ID)).thenReturn(sampleDirectionText);
         when((notificationValidService).isNotificationStillValidToSend(any(), any())).thenReturn(true);
         when((notificationValidService).isHearingTypeValidToSendNotification(any(), any())).thenReturn(true);
-        when(sscsGeneratePdfService.generatePdf(anyString(), any(), any(), any())).thenReturn(sampleDirectionCoversheet);
+        when(sscsGeneratePdfService.generateAndSavePdf(anyString(), any(), any(), any(), any())).thenReturn(sampleDirectionCoversheet);
 
         when(factory.create(struckOutCcdNotificationWrapper, APPELLANT)).thenReturn(notification);
         notificationService.manageNotificationAndSubscription(struckOutCcdNotificationWrapper);
@@ -710,7 +720,7 @@ public class NotificationServiceTest {
         when(evidenceManagementService.download(URI.create(fileUrl), DM_STORE_USER_ID)).thenReturn(sampleDirectionText);
         when((notificationValidService).isNotificationStillValidToSend(any(), any())).thenReturn(true);
         when((notificationValidService).isHearingTypeValidToSendNotification(any(), any())).thenReturn(true);
-        when(sscsGeneratePdfService.generatePdf(anyString(), any(), any(), any())).thenReturn(sampleDirectionCoversheet);
+        when(sscsGeneratePdfService.generateAndSavePdf(anyString(), any(), any(), any(), any())).thenReturn(sampleDirectionCoversheet);
 
         doThrow(new NotificationServiceException("Forced exception", new RuntimeException())).when(notificationHandler).sendNotification(eq(struckOutCcdNotificationWrapper), eq(LETTER_TEMPLATE_ID_STRUCKOUT), eq(LETTER), any(NotificationHandler.SendNotification.class));
 

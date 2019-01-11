@@ -3,6 +3,7 @@ package uk.gov.hmcts.reform.sscs.service;
 import static org.slf4j.LoggerFactory.getLogger;
 import static uk.gov.hmcts.reform.sscs.ccd.domain.Benefit.getBenefitByCode;
 import static uk.gov.hmcts.reform.sscs.domain.notify.NotificationEventType.STRUCK_OUT;
+import static uk.gov.hmcts.reform.sscs.service.NotificationValidService.isMandatoryLetter;
 
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
@@ -102,9 +103,9 @@ public class NotificationService {
 
     private boolean isValidNotification(NotificationWrapper wrapper, Subscription
             subscription, NotificationEventType notificationType) {
-        return subscription != null && subscription.doesCaseHaveSubscriptions()
+        return (isMandatoryLetter(notificationType) || (subscription != null && subscription.doesCaseHaveSubscriptions()
                 && notificationValidService.isNotificationStillValidToSend(wrapper.getNewSscsCaseData().getHearings(), notificationType)
-                && notificationValidService.isHearingTypeValidToSendNotification(wrapper.getNewSscsCaseData(), notificationType);
+                && notificationValidService.isHearingTypeValidToSendNotification(wrapper.getNewSscsCaseData(), notificationType)));
     }
 
     private void processOldSubscriptionNotifications(NotificationWrapper wrapper, Notification notification) {
@@ -216,7 +217,7 @@ public class NotificationService {
             IdamTokens idamTokens = idamService.getIdamTokens();
 
             byte[] bundledLetter = buildBundledLetter(
-                generateCoveringLetter(wrapper, notification, idamService),
+                generateCoveringLetter(wrapper, notification, idamTokens),
                 downloadDirectionText(wrapper)
             );
 
@@ -224,7 +225,6 @@ public class NotificationService {
                 notificationSender.sendBundledLetter(
                     wrapper.getNewSscsCaseData().getAppeal().getAppellant().getAddress().getPostcode(),   // Used for whitelisting only
                     bundledLetter,
-                    notification.getPlaceholders(),
                     notification.getReference(),
                     wrapper.getCaseId()
                 );

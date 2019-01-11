@@ -7,10 +7,22 @@ import uk.gov.hmcts.reform.sscs.ccd.domain.Hearing;
 import uk.gov.hmcts.reform.sscs.ccd.domain.SscsCaseData;
 import uk.gov.hmcts.reform.sscs.domain.notify.NotificationEventType;
 
+import static uk.gov.hmcts.reform.sscs.domain.notify.NotificationEventType.STRUCK_OUT;
+
 @Service
 public class NotificationValidService {
 
     private static final String HEARING_TYPE_ONLINE_RESOLUTION = "cor";
+
+    static final boolean isMandatoryLetter(NotificationEventType eventType) {
+        boolean isMandatoryLetter = STRUCK_OUT.equals(eventType);
+
+        if (isMandatoryLetter) {
+            return true;
+        } else {
+            return false;
+        }
+    }
 
     boolean isHearingTypeValidToSendNotification(SscsCaseData sscsCaseData, NotificationEventType eventType) {
 
