@@ -236,7 +236,7 @@ public class Personalisation<E extends NotificationWrapper> {
         String emailTemplateName = getEmailTemplateName(subscriptionType, notificationWrapper.getNotificationType());
         String smsTemplateName = isSendSmsSubscriptionConfirmation() ? SUBSCRIPTION_CREATED_NOTIFICATION.getId() :
                 emailTemplateName;
-        String letterTemplateName = getLetterTemplateName(subscriptionType, notificationWrapper.getNotificationType());
+        String letterTemplateName = getLetterTemplateName(notificationWrapper.getNotificationType());
         return config.getTemplate(emailTemplateName, smsTemplateName, letterTemplateName, benefit, notificationWrapper.getHearingType());
     }
 
@@ -258,8 +258,7 @@ public class Personalisation<E extends NotificationWrapper> {
         return emailTemplateName;
     }
 
-    private String getLetterTemplateName(SubscriptionType subscriptionType,
-                                        NotificationEventType notificationEventType) {
+    private String getLetterTemplateName(NotificationEventType notificationEventType) {
         return notificationEventType.getId();
     }
 

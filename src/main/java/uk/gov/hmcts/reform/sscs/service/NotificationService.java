@@ -38,7 +38,7 @@ public class NotificationService {
     public static final String DM_STORE_USER_ID = "sscs";
     public static final String DIRECTION_TEXT = "Direction Text";
 
-    private final String noncompliantcaseletterTemplate;
+//    private final String noncompliantcaseletterTemplate;
     private final NotificationSender notificationSender;
     private final NotificationFactory notificationFactory;
     private final ReminderService reminderService;
@@ -49,15 +49,19 @@ public class NotificationService {
     private final EvidenceManagementService evidenceManagementService;
     private final SscsGeneratePdfService sscsGeneratePdfService;
 
+    @Value("${noncompliantcaseletter.appeal.html.template.path}")
+    String noncompliantcaseletterTemplate;
+
     @Autowired
-    public NotificationService(@Value("${noncompliantcaseletter.appeal.html.template.path}") String noncompliantcaseletterTemplate,
-                               NotificationSender notificationSender, NotificationFactory notificationFactory,
-                               ReminderService reminderService, NotificationValidService notificationValidService,
+    public NotificationService(NotificationSender notificationSender,
+                               NotificationFactory notificationFactory,
+                               ReminderService reminderService,
+                               NotificationValidService notificationValidService,
                                NotificationHandler notificationHandler,
-                               OutOfHoursCalculator outOfHoursCalculator, NotificationConfig notificationConfig,
+                               OutOfHoursCalculator outOfHoursCalculator,
+                               NotificationConfig notificationConfig,
                                EvidenceManagementService evidenceManagementService,
                                SscsGeneratePdfService sscsGeneratePdfService) {
-        this.noncompliantcaseletterTemplate = noncompliantcaseletterTemplate;
         this.notificationFactory = notificationFactory;
         this.notificationSender = notificationSender;
         this.reminderService = reminderService;
@@ -217,7 +221,6 @@ public class NotificationService {
                 notificationSender.sendBundledLetter(
                     wrapper.getNewSscsCaseData().getAppeal().getAppellant().getAddress().getPostcode(),   // Used for whitelisting only
                     bundledLetter,
-                    notification.getPlaceholders(),
                     notification.getReference(),
                     wrapper.getCaseId()
                 );
