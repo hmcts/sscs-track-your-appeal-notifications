@@ -131,7 +131,7 @@ public class NotificationsIt {
     @Before
     public void setup() throws Exception {
         NotificationSender sender = new NotificationSender(notificationClient, null, notificationBlacklist);
-        NotificationService service = new NotificationService(TEMPLATE_PATH, sender, factory, reminderService, notificationValidService, notificationHandler, outOfHoursCalculator, notificationConfig, evidenceManagementService, sscsGeneratePdfService);
+        NotificationService service = new NotificationService(sender, factory, reminderService, notificationValidService, notificationHandler, outOfHoursCalculator, notificationConfig, evidenceManagementService, sscsGeneratePdfService);
         controller = new NotificationController(service, authorisationService, ccdService, deserializer, idamService);
         this.mockMvc = MockMvcBuilders.standaloneSetup(controller).build();
         String path = getClass().getClassLoader().getResource("json/ccdResponse.json").getFile();

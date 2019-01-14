@@ -27,6 +27,7 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.ArgumentCaptor;
 import org.mockito.Mock;
+import org.springframework.test.util.ReflectionTestUtils;
 import uk.gov.hmcts.reform.sscs.ccd.domain.*;
 import uk.gov.hmcts.reform.sscs.config.AppealHearingType;
 import uk.gov.hmcts.reform.sscs.config.NotificationConfig;
@@ -121,10 +122,12 @@ public class NotificationServiceTest {
     @Before
     public void setup() {
         initMocks(this);
-        notificationService = new NotificationService(TEMPLATE_PATH, notificationSender, factory, reminderService,
+
+        notificationService = new NotificationService(notificationSender, factory, reminderService,
             notificationValidService, notificationHandler, outOfHoursCalculator, notificationConfig,
             evidenceManagementService, sscsGeneratePdfService
         );
+        ReflectionTestUtils.setField(notificationService, "noncompliantcaseletterTemplate", "/templates/non_compliant_case_letter_template.html");
 
         sscsCaseData = SscsCaseData.builder()
             .appeal(

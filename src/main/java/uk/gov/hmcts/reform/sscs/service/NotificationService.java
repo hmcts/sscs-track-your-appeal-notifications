@@ -38,7 +38,6 @@ public class NotificationService {
     public static final String DM_STORE_USER_ID = "sscs";
     public static final String DIRECTION_TEXT = "Direction Text";
 
-//    private final String noncompliantcaseletterTemplate;
     private final NotificationSender notificationSender;
     private final NotificationFactory notificationFactory;
     private final ReminderService reminderService;
