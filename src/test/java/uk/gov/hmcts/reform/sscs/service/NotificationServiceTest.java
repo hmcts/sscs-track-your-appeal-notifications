@@ -1,7 +1,6 @@
 package uk.gov.hmcts.reform.sscs.service;
 
 import static org.junit.Assert.assertArrayEquals;
-import static org.junit.Assert.assertEquals;
 import static org.mockito.ArgumentMatchers.anyList;
 import static org.mockito.BDDMockito.given;
 import static org.mockito.BDDMockito.then;
@@ -10,12 +9,11 @@ import static org.mockito.MockitoAnnotations.initMocks;
 import static uk.gov.hmcts.reform.sscs.config.SubscriptionType.APPELLANT;
 import static uk.gov.hmcts.reform.sscs.config.SubscriptionType.REPRESENTATIVE;
 import static uk.gov.hmcts.reform.sscs.domain.notify.NotificationEventType.*;
-import static uk.gov.hmcts.reform.sscs.service.NotificationService.DM_STORE_USER_ID;
+import static uk.gov.hmcts.reform.sscs.service.SendNotificationService.DM_STORE_USER_ID;
 
 import java.io.IOException;
 import java.net.URI;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Collections;
 import java.util.HashMap;
 
@@ -46,28 +44,11 @@ import uk.gov.hmcts.reform.sscs.factory.NotificationWrapper;
 
 @RunWith(JUnitParamsRunner.class)
 public class NotificationServiceTest {
-    private static final String TEMPLATE_PATH = "/templates/non_compliant_case_letter_template.html";
 
     private static Appellant APPELLANT_WITH_ADDRESS = Appellant.builder()
-        .name(Name.builder().firstName("Ap").lastName("pellant").build())
-        .address(Address.builder().line1("Appellant Line 1").town("Appellant Town").county("Appellant County").postcode("AP9 3LL").build())
-        .build();
-
-    private static Appointee APPOINTEE_WITH_ADDRESS = Appointee.builder()
-        .address(Address.builder().line1("Appointee Line 1").town("Appointee Town").county("Appointee County").postcode("AP9 0IN").build())
-        .name(Name.builder().firstName("Ap").lastName("Pointee").build())
-        .build();
-
-    private static Appellant APPELLANT_WITH_ADDRESS_AND_APPOINTEE = Appellant.builder()
-        .name(Name.builder().firstName("Ap").lastName("Pellant").build())
-        .address(Address.builder().line1("Appellant Line 1").town("Appellant Town").county("Appellant County").postcode("AP9 3LL").build())
-        .appointee(APPOINTEE_WITH_ADDRESS)
-        .build();
-
-    private static Representative REPRESENTATIVE_WITH_ADDRESS = Representative.builder()
-        .name(Name.builder().firstName("Ap").lastName("pellant").build())
-        .address(Address.builder().line1("Appellant Line 1").town("Appellant Town").county("Appellant County").postcode("AP9 3LL").build())
-        .build();
+            .name(Name.builder().firstName("Ap").lastName("pellant").build())
+            .address(Address.builder().line1("Appellant Line 1").town("Appellant Town").county("Appellant County").postcode("AP9 3LL").build())
+            .build();
 
     private static final String APPEAL_NUMBER = "GLSCRR";
     private static final String YES = "Yes";
@@ -123,11 +104,12 @@ public class NotificationServiceTest {
     public void setup() {
         initMocks(this);
 
-        notificationService = new NotificationService(notificationSender, factory, reminderService,
-            notificationValidService, notificationHandler, outOfHoursCalculator, notificationConfig,
-            evidenceManagementService, sscsGeneratePdfService
+        SendNotificationService sendNotificationService = new SendNotificationService(notificationSender, evidenceManagementService, sscsGeneratePdfService, notificationHandler);
+
+        notificationService = new NotificationService(factory, reminderService,
+            notificationValidService, notificationHandler, outOfHoursCalculator, notificationConfig, sendNotificationService
         );
-        ReflectionTestUtils.setField(notificationService, "noncompliantcaseletterTemplate", "/templates/non_compliant_case_letter_template.html");
+        ReflectionTestUtils.setField(sendNotificationService, "noncompliantcaseletterTemplate", "/templates/non_compliant_case_letter_template.html");
 
         sscsCaseData = SscsCaseData.builder()
             .appeal(
@@ -721,31 +703,7 @@ public class NotificationServiceTest {
         notificationService.manageNotificationAndSubscription(struckOutCcdNotificationWrapper);
     }
 
-    @Test
-    public void getAppellantAddressToUseForLetter() {
-        Address expectedAddress = APPELLANT_WITH_ADDRESS.getAddress();
-        CcdNotificationWrapper wrapper = buildBaseWrapper(STRUCK_OUT, APPELLANT_WITH_ADDRESS, null, null);
 
-        Address actualAddress = NotificationService.getAddressToUseForLetter(wrapper);
-        assertEquals(expectedAddress.getLine1(), actualAddress.getLine1());
-        assertEquals(expectedAddress.getLine2(), actualAddress.getLine2());
-        assertEquals(expectedAddress.getTown(), actualAddress.getTown());
-        assertEquals(expectedAddress.getCounty(), actualAddress.getCounty());
-        assertEquals(expectedAddress.getPostcode(), actualAddress.getPostcode());
-    }
-
-    @Test
-    public void getAppointeeAddressToUseForLetter() {
-        Address expectedAddress = APPOINTEE_WITH_ADDRESS.getAddress();
-        CcdNotificationWrapper wrapper = buildBaseWrapper(STRUCK_OUT, APPELLANT_WITH_ADDRESS_AND_APPOINTEE, null, null);
-
-        Address actualAddress = NotificationService.getAddressToUseForLetter(wrapper);
-        assertEquals(expectedAddress.getLine1(), actualAddress.getLine1());
-        assertEquals(expectedAddress.getLine2(), actualAddress.getLine2());
-        assertEquals(expectedAddress.getTown(), actualAddress.getTown());
-        assertEquals(expectedAddress.getCounty(), actualAddress.getCounty());
-        assertEquals(expectedAddress.getPostcode(), actualAddress.getPostcode());
-    }
 
     private CcdNotificationWrapper buildWrapperWithDocuments(NotificationEventType eventType, String fileUrl, Appellant appellant, Representative rep) {
         SscsDocumentDetails sscsDocumentDetails = SscsDocumentDetails.builder()
@@ -783,7 +741,7 @@ public class NotificationServiceTest {
                 .build()).build())
             .caseReference(CASE_REFERENCE)
             .ccdCaseId(CASE_ID)
-            .sscsDocument(new ArrayList<SscsDocument>(Arrays.asList(sscsDocument)))
+            .sscsDocument(new ArrayList<>(Collections.singletonList(sscsDocument)))
             .build();
 
         SscsCaseDataWrapper struckOutSscsCaseDataWrapper = SscsCaseDataWrapper.builder()
