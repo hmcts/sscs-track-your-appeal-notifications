@@ -1,8 +1,8 @@
 FROM openjdk:8-jre
 
-COPY build/libs/track-your-appeal-notifications.jar /opt/app/
-
 WORKDIR /opt/app
+
+COPY build/libs/track-your-appeal-notifications.jar ./
 
 EXPOSE 8081
 
