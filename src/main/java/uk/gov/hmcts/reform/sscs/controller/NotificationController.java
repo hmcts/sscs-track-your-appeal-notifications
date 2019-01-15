@@ -55,6 +55,7 @@ public class NotificationController {
             @RequestBody CohEvent cohEvent) {
         String caseId = cohEvent.getCaseId();
         log.info("Coh Response received for case id: {}", caseId);
+        log.info("Coh Response received for event: {}", cohEvent.getNotificationEventType());
 
         SscsCaseDetails caseDetails = ccdService.getByCaseId(Long.valueOf(caseId), idamService.getIdamTokens());
 
