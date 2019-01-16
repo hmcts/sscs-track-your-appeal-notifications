@@ -644,12 +644,12 @@ public class NotificationsIt {
             new Object[]{
                     SUBSCRIPTION_UPDATED_NOTIFICATION,
                     "oral",
-                    Collections.singletonList("820901f0-15a9-4796-bdec-0cef42922531"),
-                    Collections.singletonList("18444f5f-8834-49e9-a6ae-bfe7f50db2b8"),
+                    Arrays.asList("b8b2904f-629d-42cf-acea-1b74bde5b2ff", "504a42dc-e135-4be3-8f86-d4109992c7f7"),
+                    Arrays.asList("18444f5f-8834-49e9-a6ae-bfe7f50db2b8", "c8e4b766-6c32-4225-97d9-75b14fb988b0"),
                     "yes",
                     "yes",
-                    "1",
-                    "1"
+                    "2",
+                    "2"
             }
         };
     }

@@ -531,12 +531,14 @@ public class NotificationServiceTest {
                 .mobile(MOBILE_NUMBER_2).subscribeEmail(YES).subscribeSms(YES).build();
 
         SscsCaseData newSscsCaseData = SscsCaseData.builder()
-                .appeal(Appeal.builder().hearingType(AppealHearingType.PAPER.name()).benefitType(BenefitType.builder().code(PIP).build()).build())
+                .appeal(Appeal.builder().appellant(Appellant.builder().build())
+                        .hearingType(AppealHearingType.PAPER.name()).benefitType(BenefitType.builder().code(PIP).build()).build())
                 .subscriptions(Subscriptions.builder().appellantSubscription(appellantNewSubscription).build())
                 .caseReference(CASE_REFERENCE).build();
 
         SscsCaseData oldSscsCaseData = SscsCaseData.builder()
-                .appeal(Appeal.builder().hearingType(AppealHearingType.PAPER.name()).benefitType(BenefitType.builder().code(PIP).build()).build())
+                .appeal(Appeal.builder().appellant(Appellant.builder().build())
+                        .hearingType(AppealHearingType.PAPER.name()).benefitType(BenefitType.builder().code(PIP).build()).build())
                 .subscriptions(Subscriptions.builder().appellantSubscription(appellantOldSubscription).build())
                 .caseReference(CASE_REFERENCE).build();
 
@@ -567,16 +569,19 @@ public class NotificationServiceTest {
                 .mobile(MOBILE_NUMBER_1).subscribeEmail(YES).subscribeSms(YES).build();
 
         SscsCaseData newSscsCaseData = SscsCaseData.builder()
-                .appeal(Appeal.builder().hearingType(AppealHearingType.PAPER.name()).benefitType(BenefitType.builder().code(PIP).build()).build())
+                .appeal(Appeal.builder().appellant(Appellant.builder().build())
+                        .hearingType(AppealHearingType.PAPER.name()).benefitType(BenefitType.builder().code(PIP).build()).build())
                 .subscriptions(Subscriptions.builder().appellantSubscription(appellantNewSubscription).build())
                 .caseReference(CASE_REFERENCE).build();
 
         SscsCaseData oldSscsCaseData = SscsCaseData.builder()
-                .appeal(Appeal.builder().hearingType(AppealHearingType.PAPER.name()).benefitType(BenefitType.builder().code(PIP).build()).build())
+                .appeal(Appeal.builder().appellant(Appellant.builder().build())
+                        .hearingType(AppealHearingType.PAPER.name()).benefitType(BenefitType.builder().code(PIP).build()).build())
                 .subscriptions(Subscriptions.builder().appellantSubscription(appellantOldSubscription).build())
                 .caseReference(CASE_REFERENCE).build();
 
-        SscsCaseDataWrapper wrapper = SscsCaseDataWrapper.builder().newSscsCaseData(newSscsCaseData).oldSscsCaseData(oldSscsCaseData).notificationEventType(SUBSCRIPTION_UPDATED_NOTIFICATION).build();
+        SscsCaseDataWrapper wrapper = SscsCaseDataWrapper.builder().newSscsCaseData(newSscsCaseData)
+                .oldSscsCaseData(oldSscsCaseData).notificationEventType(SUBSCRIPTION_UPDATED_NOTIFICATION).build();
         ccdNotificationWrapper = new CcdNotificationWrapper(wrapper);
 
         Notification notification = new Notification(
@@ -611,6 +616,7 @@ public class NotificationServiceTest {
 
         SscsCaseData newSscsCaseData = SscsCaseData.builder()
                 .appeal(Appeal.builder()
+                        .appellant(Appellant.builder().build())
                         .hearingType(AppealHearingType.PAPER.name())
                         .benefitType(BenefitType.builder()
                                 .code(PIP)
@@ -623,6 +629,7 @@ public class NotificationServiceTest {
 
         SscsCaseData oldSscsCaseData = SscsCaseData.builder()
                 .appeal(Appeal.builder()
+                        .appellant(Appellant.builder().build())
                         .hearingType(AppealHearingType.PAPER.name())
                         .benefitType(BenefitType.builder()
                                 .code(PIP)
