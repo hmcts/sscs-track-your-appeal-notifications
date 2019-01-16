@@ -21,8 +21,8 @@ public class CohPersonalisation extends Personalisation<CohNotificationWrapper> 
     private NotificationDateConverterUtil notificationDateConverterUtil;
 
     @Override
-    public Map<String, String> create(CohNotificationWrapper notificationWrapper) {
-        Map<String, String> placeholders = super.create(notificationWrapper);
+    public Map<String, String> create(CohNotificationWrapper notificationWrapper, final SubscriptionType subscriptionType) {
+        Map<String, String> placeholders = super.create(notificationWrapper, subscriptionType);
 
         String questionRequiredByDate = questionService.getQuestionRequiredByDate(notificationWrapper.getOnlineHearingId());
 

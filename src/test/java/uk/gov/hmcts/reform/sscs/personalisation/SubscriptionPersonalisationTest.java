@@ -9,6 +9,7 @@ import static org.mockito.MockitoAnnotations.initMocks;
 import static uk.gov.hmcts.reform.sscs.ccd.domain.Benefit.PIP;
 import static uk.gov.hmcts.reform.sscs.ccd.domain.EventType.APPEAL_RECEIVED;
 import static uk.gov.hmcts.reform.sscs.ccd.domain.EventType.HEARING_BOOKED;
+import static uk.gov.hmcts.reform.sscs.config.SubscriptionType.APPELLANT;
 import static uk.gov.hmcts.reform.sscs.domain.notify.NotificationEventType.*;
 
 import java.time.LocalDate;
@@ -82,7 +83,7 @@ public class SubscriptionPersonalisationTest {
     @Test
     public void customisePersonalisation() {
         buildNewAndOldCaseData(buildDefaultNewAppeallantSubscription(), buildDefaultOldAppeallantSubscription());
-        Map<String, String> result = personalisation.create(wrapper);
+        Map<String, String> result = personalisation.create(wrapper, APPELLANT);
 
         assertEquals("PIP", result.get(AppConstants.BENEFIT_NAME_ACRONYM_LITERAL));
         assertEquals("Personal Independence Payment", result.get(AppConstants.BENEFIT_FULL_NAME_LITERAL));
@@ -104,7 +105,7 @@ public class SubscriptionPersonalisationTest {
         events.add(Event.builder().value(EventDetails.builder().date(date).type(APPEAL_RECEIVED.getCcdType()).build()).build());
         newSscsCaseData.setEvents(events);
 
-        personalisation.create(wrapper);
+        personalisation.create(wrapper, APPELLANT);
 
         assertEquals(APPEAL_RECEIVED_NOTIFICATION, wrapper.getNotificationEventType());
     }
@@ -121,7 +122,7 @@ public class SubscriptionPersonalisationTest {
 
         buildNewAndOldCaseData(newAppellantSubscription, oldAppellantSubscription);
 
-        personalisation.create(wrapper);
+        personalisation.create(wrapper, APPELLANT);
 
         assertEquals(DO_NOT_SEND, wrapper.getNotificationEventType());
     }
@@ -138,7 +139,7 @@ public class SubscriptionPersonalisationTest {
 
         buildNewAndOldCaseData(newAppellantSubscription, oldAppellantSubscription);
 
-        personalisation.create(wrapper);
+        personalisation.create(wrapper, APPELLANT);
 
         assertEquals(SUBSCRIPTION_UPDATED_NOTIFICATION, wrapper.getNotificationEventType());
     }

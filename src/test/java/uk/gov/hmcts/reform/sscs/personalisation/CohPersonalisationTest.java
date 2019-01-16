@@ -120,7 +120,7 @@ public class CohPersonalisationTest {
         when(questionService.getQuestionRequiredByDate(someHearingId)).thenReturn(cohDate);
         when(notificationDateConverterUtil.toEmailDate(cohDate)).thenReturn(expectedRequiredByDate);
 
-        Map<String, String> placeholders = cohPersonalisation.create(new CohNotificationWrapper(someHearingId, sscsCaseDataWrapper));
+        Map<String, String> placeholders = cohPersonalisation.create(new CohNotificationWrapper(someHearingId, sscsCaseDataWrapper), APPELLANT);
 
         assertThat(placeholders, hasEntry("questions_end_date", expectedRequiredByDate));
     }

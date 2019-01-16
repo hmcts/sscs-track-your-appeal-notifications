@@ -79,8 +79,15 @@ public class NotificationService {
 
     private void processOldSubscriptionNotifications(NotificationWrapper wrapper, Notification notification) {
         if (wrapper.getNotificationType() == NotificationEventType.SUBSCRIPTION_UPDATED_NOTIFICATION) {
-            Subscription newSubscription = wrapper.getNewSscsCaseData().getSubscriptions().getAppellantSubscription();
-            Subscription oldSubscription = wrapper.getOldSscsCaseData().getSubscriptions().getAppellantSubscription();
+            boolean hasAppointee = wrapper.getNewSscsCaseData().getAppeal().getAppellant().getAppointee() != null;
+
+            Subscription newSubscription = hasAppointee
+                ? wrapper.getNewSscsCaseData().getSubscriptions().getAppointeeSubscription()
+                : wrapper.getNewSscsCaseData().getSubscriptions().getAppellantSubscription();
+
+            Subscription oldSubscription = hasAppointee
+                ? wrapper.getOldSscsCaseData().getSubscriptions().getAppointeeSubscription()
+                : wrapper.getOldSscsCaseData().getSubscriptions().getAppellantSubscription();
 
             String emailAddress = null;
             String smsNumber = null;

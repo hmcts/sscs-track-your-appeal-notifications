@@ -217,7 +217,8 @@ public class PersonalisationTest {
                 .events(events)
                 .build();
 
-        Map<String, String> result = personalisation.create(SscsCaseDataWrapper.builder().newSscsCaseData(response).notificationEventType(APPEAL_RECEIVED_NOTIFICATION).build());
+        Map<String, String> result = personalisation.create(SscsCaseDataWrapper.builder().newSscsCaseData(response)
+                .notificationEventType(APPEAL_RECEIVED_NOTIFICATION).build(), APPELLANT);
 
         DateTimeFormatter dateFormatter = DateTimeFormatter.ofPattern("d MMMM yyyy");
         String expectedDecisionPostedReceiveDate = dateFormatter.format(LocalDate.now().plusDays(7));
@@ -290,7 +291,8 @@ public class PersonalisationTest {
                 .evidence(evidence)
                 .build();
 
-        Map<String, String> result = personalisation.create(SscsCaseDataWrapper.builder().newSscsCaseData(response).notificationEventType(EVIDENCE_RECEIVED_NOTIFICATION).build());
+        Map<String, String> result = personalisation.create(SscsCaseDataWrapper.builder()
+                .newSscsCaseData(response).notificationEventType(EVIDENCE_RECEIVED_NOTIFICATION).build(), APPELLANT);
 
         assertEquals("1 July 2018", result.get(EVIDENCE_RECEIVED_DATE_LITERAL));
     }
@@ -370,7 +372,8 @@ public class PersonalisationTest {
                 .hearings(hearingList)
                 .build();
 
-        Map<String, String> result = personalisation.create(SscsCaseDataWrapper.builder().newSscsCaseData(response).notificationEventType(HEARING_BOOKED_NOTIFICATION).build());
+        Map<String, String> result = personalisation.create(SscsCaseDataWrapper.builder()
+                .newSscsCaseData(response).notificationEventType(HEARING_BOOKED_NOTIFICATION).build(), APPELLANT);
 
         assertEquals(hearingDate.format(DateTimeFormatter.ofPattern(RESPONSE_DATE_FORMAT)), result.get(HEARING_DATE));
         assertEquals("12:00 PM", result.get(HEARING_TIME));
@@ -397,7 +400,8 @@ public class PersonalisationTest {
                 .hearings(hearingList)
                 .build();
 
-        Map<String, String> result = personalisation.create(SscsCaseDataWrapper.builder().newSscsCaseData(response).notificationEventType(HEARING_BOOKED_NOTIFICATION).build());
+        Map<String, String> result = personalisation.create(SscsCaseDataWrapper.builder().newSscsCaseData(response)
+                .notificationEventType(HEARING_BOOKED_NOTIFICATION).build(), APPELLANT);
 
         assertEquals("tomorrow", result.get(DAYS_TO_HEARING_LITERAL));
     }
@@ -487,7 +491,7 @@ public class PersonalisationTest {
         Map result = personalisation.create(SscsCaseDataWrapper.builder()
                 .newSscsCaseData(response)
                 .notificationEventType(QUESTION_ROUND_ISSUED_NOTIFICATION)
-                .build());
+                .build(), APPELLANT);
 
         assertEquals("http://link.com/onlineHearing?email=test%40email.com", result.get(ONLINE_HEARING_LINK_LITERAL));
         assertEquals("http://link.com/register", result.get(ONLINE_HEARING_REGISTER_LINK_LITERAL));
@@ -512,7 +516,7 @@ public class PersonalisationTest {
         Map result = personalisation.create(SscsCaseDataWrapper.builder()
                 .newSscsCaseData(response)
                 .notificationEventType(QUESTION_ROUND_ISSUED_NOTIFICATION)
-                .build());
+                .build(), APPELLANT);
 
         assertNull(result.get(ONLINE_HEARING_LINK_LITERAL));
     }
@@ -535,7 +539,7 @@ public class PersonalisationTest {
         Map result = personalisation.create(SscsCaseDataWrapper.builder()
                 .newSscsCaseData(response)
                 .notificationEventType(DWP_RESPONSE_RECEIVED_NOTIFICATION)
-                .build());
+                .build(), APPOINTEE);
 
         assertNotNull(result);
         assertEquals(appointeeName.getFullNameNoTitle(), result.get(NAME));

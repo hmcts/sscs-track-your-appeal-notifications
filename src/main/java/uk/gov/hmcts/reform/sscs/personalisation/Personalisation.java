@@ -3,12 +3,9 @@ package uk.gov.hmcts.reform.sscs.personalisation;
 import static com.google.common.collect.Lists.newArrayList;
 import static uk.gov.hmcts.reform.sscs.ccd.domain.Benefit.getBenefitByCode;
 import static uk.gov.hmcts.reform.sscs.ccd.domain.EventType.APPEAL_RECEIVED;
-import static uk.gov.hmcts.reform.sscs.config.AppConstants.ACCEPT_VIEW_BY_DATE_LITERAL;
-import static uk.gov.hmcts.reform.sscs.config.AppConstants.ONLINE_HEARING_LINK_LITERAL;
-import static uk.gov.hmcts.reform.sscs.config.AppConstants.ONLINE_HEARING_REGISTER_LINK_LITERAL;
-import static uk.gov.hmcts.reform.sscs.config.AppConstants.ONLINE_HEARING_SIGN_IN_LINK_LITERAL;
-import static uk.gov.hmcts.reform.sscs.config.AppConstants.QUESTION_ROUND_EXPIRES_DATE_LITERAL;
-import static uk.gov.hmcts.reform.sscs.config.AppConstants.TRIBUNAL_RESPONSE_DATE_LITERAL;
+import static uk.gov.hmcts.reform.sscs.config.AppConstants.*;
+import static uk.gov.hmcts.reform.sscs.config.SubscriptionType.APPELLANT;
+import static uk.gov.hmcts.reform.sscs.config.SubscriptionType.APPOINTEE;
 import static uk.gov.hmcts.reform.sscs.config.SubscriptionType.REPRESENTATIVE;
 import static uk.gov.hmcts.reform.sscs.domain.notify.NotificationEventType.*;
 
@@ -28,13 +25,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
-import uk.gov.hmcts.reform.sscs.ccd.domain.Benefit;
-import uk.gov.hmcts.reform.sscs.ccd.domain.Event;
-import uk.gov.hmcts.reform.sscs.ccd.domain.EventDetails;
-import uk.gov.hmcts.reform.sscs.ccd.domain.Hearing;
-import uk.gov.hmcts.reform.sscs.ccd.domain.RegionalProcessingCenter;
-import uk.gov.hmcts.reform.sscs.ccd.domain.SscsCaseData;
-import uk.gov.hmcts.reform.sscs.ccd.domain.Subscription;
+import uk.gov.hmcts.reform.sscs.ccd.domain.*;
 import uk.gov.hmcts.reform.sscs.config.AppConstants;
 import uk.gov.hmcts.reform.sscs.config.NotificationConfig;
 import uk.gov.hmcts.reform.sscs.config.SubscriptionType;
@@ -67,11 +58,11 @@ public class Personalisation<E extends NotificationWrapper> {
     @Autowired
     private NotificationDateConverterUtil notificationDateConverterUtil;
 
-    public Map<String, String> create(E notificationWrapper) {
-        return create(notificationWrapper.getSscsCaseDataWrapper());
+    public Map<String, String> create(final E notificationWrapper, final SubscriptionType subscriptionType) {
+        return create(notificationWrapper.getSscsCaseDataWrapper(), subscriptionType);
     }
 
-    protected Map<String, String> create(SscsCaseDataWrapper responseWrapper) {
+    protected Map<String, String> create(final SscsCaseDataWrapper responseWrapper, final SubscriptionType subscriptionType) {
         SscsCaseData ccdResponse = responseWrapper.getNewSscsCaseData();
         Map<String, String> personalisation = new HashMap<>();
         Benefit benefit = getBenefitByCode(ccdResponse.getAppeal().getBenefitType().getCode());
@@ -87,14 +78,10 @@ public class Personalisation<E extends NotificationWrapper> {
         personalisation.put(AppConstants.APPELLANT_NAME,
                 ccdResponse.getAppeal().getAppellant().getName().getFullNameNoTitle());
         personalisation.put(AppConstants.NAME,
-                ccdResponse.getAppeal().getAppellant().getName().getFullNameNoTitle());
+                getName(subscriptionType, ccdResponse));
         personalisation.put(AppConstants.PHONE_NUMBER, config.getHmctsPhoneNumber());
 
         if (ccdResponse.getSubscriptions().getAppointeeSubscription() != null && ccdResponse.getSubscriptions().getAppointeeSubscription().getTya() != null) {
-            if (ccdResponse.getAppeal().getAppellant().getAppointee() != null && ccdResponse.getAppeal().getAppellant().getAppointee().getName() != null) {
-                personalisation.put(AppConstants.NAME,
-                    ccdResponse.getAppeal().getAppellant().getAppointee().getName().getFullNameNoTitle());
-            }
             subscriptionDetails(personalisation, ccdResponse.getSubscriptions().getAppointeeSubscription(), benefit);
         } else if (ccdResponse.getSubscriptions().getAppellantSubscription() != null && ccdResponse.getSubscriptions().getAppellantSubscription().getTya() != null) {
             subscriptionDetails(personalisation, ccdResponse.getSubscriptions().getAppellantSubscription(), benefit);
@@ -128,7 +115,33 @@ public class Personalisation<E extends NotificationWrapper> {
         personalisation.put(ONLINE_HEARING_REGISTER_LINK_LITERAL, config.getOnlineHearingLink() + "/register");
         personalisation.put(ONLINE_HEARING_SIGN_IN_LINK_LITERAL, config.getOnlineHearingLink() + "/sign-in");
 
+        personalisation.put(APPOINTEE_DESCRIPTION, getAppointeeDescription(subscriptionType, ccdResponse));
+
         return personalisation;
+    }
+
+    private String getName(SubscriptionType subscriptionType, SscsCaseData ccdResponse) {
+        Name name = null;
+        if (subscriptionType.equals(APPELLANT) && ccdResponse.getAppeal() != null
+                && ccdResponse.getAppeal().getAppellant() != null) {
+            name = ccdResponse.getAppeal().getAppellant().getName();
+        } else if (subscriptionType.equals(REPRESENTATIVE) && ccdResponse.getAppeal() != null
+                && ccdResponse.getAppeal().getRep() != null) {
+            name = ccdResponse.getAppeal().getRep().getName();
+        } else if (subscriptionType.equals(APPOINTEE) && ccdResponse.getAppeal() != null
+                && ccdResponse.getAppeal().getAppellant() != null
+                && ccdResponse.getAppeal().getAppellant().getAppointee() != null) {
+            name = ccdResponse.getAppeal().getAppellant().getAppointee().getName();
+        }
+        return name == null ? "" : name.getFullNameNoTitle();
+    }
+
+    private String getAppointeeDescription(SubscriptionType subscriptionType, SscsCaseData ccdResponse) {
+        if (APPOINTEE.equals(subscriptionType) && ccdResponse.getAppeal() != null && ccdResponse.getAppeal().getAppellant().getName() != null) {
+            return String.format("You are receiving this update as the appointee for %s.\r\n\r\n", ccdResponse.getAppeal().getAppellant().getName().getFullNameNoTitle());
+        } else {
+            return "";
+        }
     }
 
     private void subscriptionDetails(Map<String, String> personalisation, Subscription subscription, Benefit benefit) {

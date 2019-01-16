@@ -63,6 +63,7 @@ public final class AppConstants {
     public static final String ACCEPT_VIEW_BY_DATE_LITERAL = "accept_view_by_date";
     public static final String ONLINE_HEARING_SIGN_IN_LINK_LITERAL = "online_hearing_sign_in_link";
     public static final String ONLINE_HEARING_REGISTER_LINK_LITERAL = "online_hearing_register_link";
+    public static final String APPOINTEE_DESCRIPTION = "appointee_description";
 
     private AppConstants() {
         //

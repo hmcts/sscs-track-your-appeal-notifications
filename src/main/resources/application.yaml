@@ -124,7 +124,7 @@ notification:
       smsId: f59440ee-19ca-4d47-a702-13e9cecaccbd
   subscriptionCreated.smsId: 18444f5f-8834-49e9-a6ae-bfe7f50db2b8
   subscriptionUpdated:
-    emailId: 820901f0-15a9-4796-bdec-0cef42922531
+    emailId: b8b2904f-629d-42cf-acea-1b74bde5b2ff
     smsId: 18444f5f-8834-49e9-a6ae-bfe7f50db2b8
   subscriptionOld:
     emailId: 504a42dc-e135-4be3-8f86-d4109992c7f7

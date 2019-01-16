@@ -8,6 +8,7 @@ import org.springframework.stereotype.Component;
 import uk.gov.hmcts.reform.sscs.ccd.domain.SscsCaseData;
 import uk.gov.hmcts.reform.sscs.ccd.domain.Subscription;
 import uk.gov.hmcts.reform.sscs.config.AppealHearingType;
+import uk.gov.hmcts.reform.sscs.config.SubscriptionType;
 import uk.gov.hmcts.reform.sscs.domain.SscsCaseDataWrapper;
 import uk.gov.hmcts.reform.sscs.domain.notify.NotificationEventType;
 import uk.gov.hmcts.reform.sscs.factory.CcdNotificationWrapper;
@@ -16,13 +17,13 @@ import uk.gov.hmcts.reform.sscs.factory.CcdNotificationWrapper;
 public class SubscriptionPersonalisation extends Personalisation<CcdNotificationWrapper> {
 
     @Override
-    protected Map<String, String> create(SscsCaseDataWrapper responseWrapper) {
+    protected Map<String, String> create(SscsCaseDataWrapper responseWrapper, SubscriptionType subscriptionType) {
         setSendSmsSubscriptionConfirmation(shouldSendSmsSubscriptionConfirmation(responseWrapper.getNewSscsCaseData(), responseWrapper.getOldSscsCaseData()));
         NotificationEventType eventType = getNotificationEventTypeNotification(responseWrapper);
 
         responseWrapper.setNotificationEventType(eventType);
 
-        return super.create(responseWrapper);
+        return super.create(responseWrapper, subscriptionType);
     }
 
     public Boolean shouldSendSmsSubscriptionConfirmation(SscsCaseData newSscsCaseData, SscsCaseData oldSscsCaseData) {
