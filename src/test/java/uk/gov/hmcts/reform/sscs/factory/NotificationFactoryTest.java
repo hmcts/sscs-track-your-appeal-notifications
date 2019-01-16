@@ -42,6 +42,7 @@ import uk.gov.hmcts.reform.sscs.service.RegionalProcessingCenterService;
 public class NotificationFactoryTest {
 
     private static final String CASE_ID = "54321";
+    private static final String DATE = "2018-01-01T14:01:18.243";
 
     private NotificationFactory factory;
 
@@ -66,18 +67,12 @@ public class NotificationFactoryTest {
 
     @InjectMocks
     @Resource
-    private Personalisation personalisation;
-
-    @InjectMocks
-    @Resource
     private SubscriptionPersonalisation subscriptionPersonalisation;
 
     @Mock
     private MessageAuthenticationServiceImpl macService;
 
     private Subscription subscription;
-
-    private String date = "2018-01-01T14:01:18.243";
 
     @Mock
     private WithRepresentativePersonalisation withRepresentativePersonalisation;
@@ -238,7 +233,7 @@ public class NotificationFactoryTest {
         when(config.getTemplate(DO_NOT_SEND.getId(), SUBSCRIPTION_CREATED_NOTIFICATION.getId(), PIP, REGULAR)).thenReturn(Template.builder().emailTemplateId(null).smsTemplateId("123").build());
 
         List<Event> event = new ArrayList<>();
-        event.add(Event.builder().value(EventDetails.builder().date(date).type(APPEAL_RECEIVED_NOTIFICATION.getId()).build()).build());
+        event.add(Event.builder().value(EventDetails.builder().date(DATE).type(APPEAL_RECEIVED_NOTIFICATION.getId()).build()).build());
 
         wrapper = SscsCaseDataWrapper.builder()
                 .newSscsCaseData(
@@ -264,7 +259,7 @@ public class NotificationFactoryTest {
         when(config.getTemplate(DO_NOT_SEND.getId(), SUBSCRIPTION_CREATED_NOTIFICATION.getId(), PIP, REGULAR)).thenReturn(Template.builder().emailTemplateId(null).smsTemplateId(null).build());
 
         List<Event> events = new ArrayList<>();
-        events.add(Event.builder().value(EventDetails.builder().date(date).type(APPEAL_RECEIVED_NOTIFICATION.getId()).build()).build());
+        events.add(Event.builder().value(EventDetails.builder().date(DATE).type(APPEAL_RECEIVED_NOTIFICATION.getId()).build()).build());
 
         wrapper = SscsCaseDataWrapper.builder()
                 .newSscsCaseData(
@@ -290,7 +285,7 @@ public class NotificationFactoryTest {
         when(config.getTemplate(SUBSCRIPTION_UPDATED_NOTIFICATION.getId(), SUBSCRIPTION_UPDATED_NOTIFICATION.getId(), PIP, REGULAR)).thenReturn(Template.builder().emailTemplateId("123").smsTemplateId(null).build());
 
         List<Event> events = new ArrayList<>();
-        events.add(Event.builder().value(EventDetails.builder().date(date).type(APPEAL_RECEIVED_NOTIFICATION.getId()).build()).build());
+        events.add(Event.builder().value(EventDetails.builder().date(DATE).type(APPEAL_RECEIVED_NOTIFICATION.getId()).build()).build());
 
         wrapper = SscsCaseDataWrapper.builder()
                 .newSscsCaseData(
