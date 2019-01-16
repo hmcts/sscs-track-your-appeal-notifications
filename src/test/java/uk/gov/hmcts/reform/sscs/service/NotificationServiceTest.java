@@ -46,7 +46,7 @@ import uk.gov.hmcts.reform.sscs.idam.IdamTokens;
 @RunWith(JUnitParamsRunner.class)
 public class NotificationServiceTest {
 
-    protected static Appellant APPELLANT_WITH_ADDRESS = Appellant.builder()
+    static Appellant APPELLANT_WITH_ADDRESS = Appellant.builder()
             .name(Name.builder().firstName("Ap").lastName("pellant").build())
             .address(Address.builder().line1("Appellant Line 1").town("Appellant Town").county("Appellant County").postcode("AP9 3LL").build())
             .build();
