@@ -3,12 +3,73 @@ package uk.gov.hmcts.reform.sscs.personalisation;
 import static com.google.common.collect.Lists.newArrayList;
 import static uk.gov.hmcts.reform.sscs.ccd.domain.Benefit.getBenefitByCode;
 import static uk.gov.hmcts.reform.sscs.ccd.domain.EventType.APPEAL_RECEIVED;
-import static uk.gov.hmcts.reform.sscs.config.AppConstants.*;
+import static uk.gov.hmcts.reform.sscs.config.AppConstants.ACCEPT_VIEW_BY_DATE_LITERAL;
+import static uk.gov.hmcts.reform.sscs.config.AppConstants.ADDRESS_LINE_LITERAL;
+import static uk.gov.hmcts.reform.sscs.config.AppConstants.APPEAL_ID;
+import static uk.gov.hmcts.reform.sscs.config.AppConstants.APPEAL_ID_LITERAL;
+import static uk.gov.hmcts.reform.sscs.config.AppConstants.APPEAL_REF;
+import static uk.gov.hmcts.reform.sscs.config.AppConstants.APPEAL_RESPOND_DATE;
+import static uk.gov.hmcts.reform.sscs.config.AppConstants.APPELLANT_NAME;
+import static uk.gov.hmcts.reform.sscs.config.AppConstants.APPOINTEE_DESCRIPTION;
+import static uk.gov.hmcts.reform.sscs.config.AppConstants.BENEFIT_FULL_NAME_LITERAL;
+import static uk.gov.hmcts.reform.sscs.config.AppConstants.BENEFIT_NAME_ACRONYM_LITERAL;
+import static uk.gov.hmcts.reform.sscs.config.AppConstants.BENEFIT_NAME_ACRONYM_SHORT_LITERAL;
+import static uk.gov.hmcts.reform.sscs.config.AppConstants.CLAIMING_EXPENSES_LINK_LITERAL;
+import static uk.gov.hmcts.reform.sscs.config.AppConstants.COUNTY_LITERAL;
+import static uk.gov.hmcts.reform.sscs.config.AppConstants.DAYS_STRING;
+import static uk.gov.hmcts.reform.sscs.config.AppConstants.DAYS_TO_HEARING_LITERAL;
+import static uk.gov.hmcts.reform.sscs.config.AppConstants.DECISION_POSTED_RECEIVE_DATE;
+import static uk.gov.hmcts.reform.sscs.config.AppConstants.DWP_ACRONYM;
+import static uk.gov.hmcts.reform.sscs.config.AppConstants.DWP_FUL_NAME;
+import static uk.gov.hmcts.reform.sscs.config.AppConstants.ESA_PANEL_COMPOSITION;
+import static uk.gov.hmcts.reform.sscs.config.AppConstants.EVIDENCE_RECEIVED_DATE_LITERAL;
+import static uk.gov.hmcts.reform.sscs.config.AppConstants.FIRST_TIER_AGENCY_ACRONYM;
+import static uk.gov.hmcts.reform.sscs.config.AppConstants.FIRST_TIER_AGENCY_FULL_NAME;
+import static uk.gov.hmcts.reform.sscs.config.AppConstants.HEARING_CONTACT_DATE;
+import static uk.gov.hmcts.reform.sscs.config.AppConstants.HEARING_DATE;
+import static uk.gov.hmcts.reform.sscs.config.AppConstants.HEARING_INFO_LINK_LITERAL;
+import static uk.gov.hmcts.reform.sscs.config.AppConstants.HEARING_TIME;
+import static uk.gov.hmcts.reform.sscs.config.AppConstants.HEARING_TIME_FORMAT;
+import static uk.gov.hmcts.reform.sscs.config.AppConstants.MAC_LITERAL;
+import static uk.gov.hmcts.reform.sscs.config.AppConstants.MANAGE_EMAILS_LINK_LITERAL;
+import static uk.gov.hmcts.reform.sscs.config.AppConstants.MAX_DWP_RESPONSE_DAYS;
+import static uk.gov.hmcts.reform.sscs.config.AppConstants.NAME;
+import static uk.gov.hmcts.reform.sscs.config.AppConstants.ONLINE_HEARING_LINK_LITERAL;
+import static uk.gov.hmcts.reform.sscs.config.AppConstants.ONLINE_HEARING_REGISTER_LINK_LITERAL;
+import static uk.gov.hmcts.reform.sscs.config.AppConstants.ONLINE_HEARING_SIGN_IN_LINK_LITERAL;
+import static uk.gov.hmcts.reform.sscs.config.AppConstants.PANEL_COMPOSITION;
+import static uk.gov.hmcts.reform.sscs.config.AppConstants.PHONE_NUMBER;
+import static uk.gov.hmcts.reform.sscs.config.AppConstants.PIP_PANEL_COMPOSITION;
+import static uk.gov.hmcts.reform.sscs.config.AppConstants.POSTCODE_LITERAL;
+import static uk.gov.hmcts.reform.sscs.config.AppConstants.QUESTION_ROUND_EXPIRES_DATE_LITERAL;
+import static uk.gov.hmcts.reform.sscs.config.AppConstants.REGIONAL_OFFICE_NAME_LITERAL;
+import static uk.gov.hmcts.reform.sscs.config.AppConstants.RESPONSE_DATE_FORMAT;
+import static uk.gov.hmcts.reform.sscs.config.AppConstants.SUBMIT_EVIDENCE_INFO_LINK_LITERAL;
+import static uk.gov.hmcts.reform.sscs.config.AppConstants.SUBMIT_EVIDENCE_LINK_LITERAL;
+import static uk.gov.hmcts.reform.sscs.config.AppConstants.SUPPORT_CENTRE_NAME_LITERAL;
+import static uk.gov.hmcts.reform.sscs.config.AppConstants.TOMORROW_STRING;
+import static uk.gov.hmcts.reform.sscs.config.AppConstants.TOWN_LITERAL;
+import static uk.gov.hmcts.reform.sscs.config.AppConstants.TRACK_APPEAL_LINK_LITERAL;
+import static uk.gov.hmcts.reform.sscs.config.AppConstants.TRIBUNAL_RESPONSE_DATE_LITERAL;
+import static uk.gov.hmcts.reform.sscs.config.AppConstants.VENUE_ADDRESS_LITERAL;
+import static uk.gov.hmcts.reform.sscs.config.AppConstants.VENUE_MAP_LINK_LITERAL;
 import static uk.gov.hmcts.reform.sscs.config.SubscriptionType.APPELLANT;
 import static uk.gov.hmcts.reform.sscs.config.SubscriptionType.APPOINTEE;
 import static uk.gov.hmcts.reform.sscs.config.SubscriptionType.REPRESENTATIVE;
-import static uk.gov.hmcts.reform.sscs.domain.notify.NotificationEventType.*;
-import static uk.gov.hmcts.reform.sscs.service.NotificationUtils.*;
+import static uk.gov.hmcts.reform.sscs.domain.notify.NotificationEventType.ADJOURNED_NOTIFICATION;
+import static uk.gov.hmcts.reform.sscs.domain.notify.NotificationEventType.APPEAL_DORMANT_NOTIFICATION;
+import static uk.gov.hmcts.reform.sscs.domain.notify.NotificationEventType.APPEAL_LAPSED_NOTIFICATION;
+import static uk.gov.hmcts.reform.sscs.domain.notify.NotificationEventType.APPEAL_RECEIVED_NOTIFICATION;
+import static uk.gov.hmcts.reform.sscs.domain.notify.NotificationEventType.APPEAL_WITHDRAWN_NOTIFICATION;
+import static uk.gov.hmcts.reform.sscs.domain.notify.NotificationEventType.DWP_RESPONSE_LATE_REMINDER_NOTIFICATION;
+import static uk.gov.hmcts.reform.sscs.domain.notify.NotificationEventType.EVIDENCE_RECEIVED_NOTIFICATION;
+import static uk.gov.hmcts.reform.sscs.domain.notify.NotificationEventType.HEARING_BOOKED_NOTIFICATION;
+import static uk.gov.hmcts.reform.sscs.domain.notify.NotificationEventType.POSTPONEMENT_NOTIFICATION;
+import static uk.gov.hmcts.reform.sscs.domain.notify.NotificationEventType.RESEND_APPEAL_CREATED_NOTIFICATION;
+import static uk.gov.hmcts.reform.sscs.domain.notify.NotificationEventType.SUBSCRIPTION_CREATED_NOTIFICATION;
+import static uk.gov.hmcts.reform.sscs.domain.notify.NotificationEventType.SYA_APPEAL_CREATED_NOTIFICATION;
+import static uk.gov.hmcts.reform.sscs.service.NotificationUtils.hasAppointee;
+import static uk.gov.hmcts.reform.sscs.service.NotificationUtils.hasRepresentative;
 
 import java.io.UnsupportedEncodingException;
 import java.net.URLEncoder;
@@ -26,7 +87,14 @@ import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
-import uk.gov.hmcts.reform.sscs.ccd.domain.*;
+import uk.gov.hmcts.reform.sscs.ccd.domain.Benefit;
+import uk.gov.hmcts.reform.sscs.ccd.domain.Event;
+import uk.gov.hmcts.reform.sscs.ccd.domain.EventDetails;
+import uk.gov.hmcts.reform.sscs.ccd.domain.Hearing;
+import uk.gov.hmcts.reform.sscs.ccd.domain.Name;
+import uk.gov.hmcts.reform.sscs.ccd.domain.RegionalProcessingCenter;
+import uk.gov.hmcts.reform.sscs.ccd.domain.SscsCaseData;
+import uk.gov.hmcts.reform.sscs.ccd.domain.Subscription;
 import uk.gov.hmcts.reform.sscs.config.NotificationConfig;
 import uk.gov.hmcts.reform.sscs.config.SubscriptionType;
 import uk.gov.hmcts.reform.sscs.domain.SscsCaseDataWrapper;
@@ -41,7 +109,7 @@ import uk.gov.hmcts.reform.sscs.service.RegionalProcessingCenterService;
 @Slf4j
 public class Personalisation<E extends NotificationWrapper> {
 
-    private static final String CRLF =  String.format("%c%c",(char) 0x0D, (char) 0x0A);
+    private static final String CRLF = String.format("%c%c", (char) 0x0D, (char) 0x0A);
 
     private boolean sendSmsSubscriptionConfirmation;
 
@@ -141,7 +209,8 @@ public class Personalisation<E extends NotificationWrapper> {
     }
 
     private String getAppointeeDescription(SubscriptionType subscriptionType, SscsCaseData ccdResponse) {
-        if (APPOINTEE.equals(subscriptionType) && ccdResponse.getAppeal() != null && ccdResponse.getAppeal().getAppellant().getName() != null) {
+        if (APPOINTEE.equals(subscriptionType) && ccdResponse.getAppeal() != null
+                && ccdResponse.getAppeal().getAppellant().getName() != null) {
             return String.format("You are receiving this update as the appointee for %s.%s%s",
                     ccdResponse.getAppeal().getAppellant().getName().getFullNameNoTitle(), CRLF, CRLF);
         } else {
@@ -193,7 +262,7 @@ public class Personalisation<E extends NotificationWrapper> {
             for (Event event : ccdResponse.getEvents()) {
                 if (event.getValue() != null
                         && (notificationEventType.equals(APPEAL_RECEIVED_NOTIFICATION) && event.getValue().getEventType().equals(APPEAL_RECEIVED)
-                            || notificationEventType.equals(DWP_RESPONSE_LATE_REMINDER_NOTIFICATION))) {
+                        || notificationEventType.equals(DWP_RESPONSE_LATE_REMINDER_NOTIFICATION))) {
                     return setAppealReceivedDetails(personalisation, event.getValue());
                 }
             }
@@ -274,15 +343,15 @@ public class Personalisation<E extends NotificationWrapper> {
                                         NotificationEventType notificationEventType) {
         String emailTemplateName = notificationEventType.getId();
         if (APPEAL_LAPSED_NOTIFICATION.equals(notificationEventType)
-            || APPEAL_WITHDRAWN_NOTIFICATION.equals(notificationEventType)
-            || EVIDENCE_RECEIVED_NOTIFICATION.equals(notificationEventType)
-            || SYA_APPEAL_CREATED_NOTIFICATION.equals(notificationEventType)
-            || RESEND_APPEAL_CREATED_NOTIFICATION.equals(notificationEventType)
-            || APPEAL_DORMANT_NOTIFICATION.equals(notificationEventType)
-            || ADJOURNED_NOTIFICATION.equals(notificationEventType)
-            || APPEAL_RECEIVED_NOTIFICATION.equals(notificationEventType)
-            || POSTPONEMENT_NOTIFICATION.equals(notificationEventType)
-            || HEARING_BOOKED_NOTIFICATION.equals(notificationEventType)) {
+                || APPEAL_WITHDRAWN_NOTIFICATION.equals(notificationEventType)
+                || EVIDENCE_RECEIVED_NOTIFICATION.equals(notificationEventType)
+                || SYA_APPEAL_CREATED_NOTIFICATION.equals(notificationEventType)
+                || RESEND_APPEAL_CREATED_NOTIFICATION.equals(notificationEventType)
+                || APPEAL_DORMANT_NOTIFICATION.equals(notificationEventType)
+                || ADJOURNED_NOTIFICATION.equals(notificationEventType)
+                || APPEAL_RECEIVED_NOTIFICATION.equals(notificationEventType)
+                || POSTPONEMENT_NOTIFICATION.equals(notificationEventType)
+                || HEARING_BOOKED_NOTIFICATION.equals(notificationEventType)) {
             emailTemplateName = emailTemplateName + "." + StringUtils.lowerCase(subscriptionType.name());
         }
         return emailTemplateName;
