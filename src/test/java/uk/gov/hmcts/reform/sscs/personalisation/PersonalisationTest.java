@@ -57,6 +57,7 @@ public class PersonalisationTest {
     private static final String ADDRESS4 = "36 Dale Street";
     private static final String CITY = "LIVERPOOL";
     private static final String POSTCODE = "L2 5UZ";
+    private static final String DATE = "2018-07-01T14:01:18.243";
 
     @Mock
     private NotificationConfig config;
@@ -75,8 +76,6 @@ public class PersonalisationTest {
 
     @InjectMocks
     public Personalisation personalisation;
-
-    private final String date = "2018-07-01T14:01:18.243";
 
     private Subscriptions subscriptions;
 
@@ -219,7 +218,7 @@ public class PersonalisationTest {
     public void customisePersonalisation(String benefitType, String expectedPanelComposition, String
             expectedBenefitDesc) {
         List<Event> events = new ArrayList<>();
-        events.add(Event.builder().value(EventDetails.builder().date(date).type(APPEAL_RECEIVED.getCcdType()).build()).build());
+        events.add(Event.builder().value(EventDetails.builder().date(DATE).type(APPEAL_RECEIVED.getCcdType()).build()).build());
 
         SscsCaseData response = SscsCaseData.builder()
                 .ccdCaseId(CASE_ID).caseReference("SC/1234/5")
@@ -271,7 +270,7 @@ public class PersonalisationTest {
     @Test
     public void givenEvidenceReceivedNotification_customisePersonalisation() {
         List<Event> events = new ArrayList<>();
-        events.add(Event.builder().value(EventDetails.builder().date(date).type(APPEAL_RECEIVED.getCcdType()).build()).build());
+        events.add(Event.builder().value(EventDetails.builder().date(DATE).type(APPEAL_RECEIVED.getCcdType()).build()).build());
 
         List<Document> documents = new ArrayList<>();
 
@@ -313,7 +312,7 @@ public class PersonalisationTest {
     @Test
     public void setAppealReceivedEventData() {
         List<Event> events = new ArrayList<>();
-        events.add(Event.builder().value(EventDetails.builder().date(date).type(APPEAL_RECEIVED.getCcdType()).build()).build());
+        events.add(Event.builder().value(EventDetails.builder().date(DATE).type(APPEAL_RECEIVED.getCcdType()).build()).build());
 
         SscsCaseData response = SscsCaseData.builder()
                 .ccdCaseId(CASE_ID).caseReference("SC/1234/5")

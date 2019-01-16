@@ -185,7 +185,7 @@ public class NotificationServiceTest {
 
     }
 
-    @SuppressWarnings("Indentation")
+    @SuppressWarnings({"Indentation", "UnusedPrivateMethod"})
     private Object[] generateNotificationTypeAndSubscriptionsScenarios() {
         return new Object[]{
                 new Object[]{

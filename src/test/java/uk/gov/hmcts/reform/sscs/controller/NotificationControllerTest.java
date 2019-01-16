@@ -26,6 +26,9 @@ import uk.gov.hmcts.reform.sscs.service.NotificationService;
 @ActiveProfiles("integration")
 public class NotificationControllerTest {
 
+    private static final String CASE_ID = "12345";
+    private static final String eventType = "eventType";
+
     private NotificationController notificationController;
 
     private SscsCaseDataWrapper sscsCaseDataWrapper;
@@ -46,9 +49,6 @@ public class NotificationControllerTest {
     private SscsCaseDataWrapperDeserializer deserializer;
 
     private IdamTokens idamTokens;
-
-    private String caseId = "12345";
-    private String eventType = "question_round_issued";
 
     @Before
     public void setUp() {
@@ -75,11 +75,11 @@ public class NotificationControllerTest {
 
         SscsCaseDetails caseDetails = SscsCaseDetails.builder().id(caseDetailsId).build();
 
-        when(ccdService.getByCaseId(Long.valueOf(caseId), idamTokens)).thenReturn(caseDetails);
+        when(ccdService.getByCaseId(Long.valueOf(CASE_ID), idamTokens)).thenReturn(caseDetails);
         SscsCaseDataWrapper sscsCaseDataWrapper = SscsCaseDataWrapper.builder().build();
         when(deserializer.buildSscsCaseDataWrapper(hasFields(eventType, caseDetailsId))).thenReturn(sscsCaseDataWrapper);
 
-        CohEvent cohEvent = CohEvent.builder().caseId(caseId).onlineHearingId(onlineHearingId).eventType(eventType).build();
+        CohEvent cohEvent = CohEvent.builder().caseId(CASE_ID).onlineHearingId(onlineHearingId).eventType(eventType).build();
         notificationController.sendCohNotification("", cohEvent);
 
         verify(notificationService).manageNotificationAndSubscription(argThat(argument ->
@@ -90,9 +90,9 @@ public class NotificationControllerTest {
 
     @Test
     public void handlesNotFindingCcdDetails() {
-        when(ccdService.getByCaseId(eq(Long.valueOf(caseId)), eq(idamTokens))).thenReturn(null);
+        when(ccdService.getByCaseId(eq(Long.valueOf(CASE_ID)), eq(idamTokens))).thenReturn(null);
 
-        notificationController.sendCohNotification("", CohEvent.builder().caseId(caseId).eventType(eventType).build());
+        notificationController.sendCohNotification("", CohEvent.builder().caseId(CASE_ID).eventType(eventType).build());
 
         verifyZeroInteractions(notificationService);
     }
