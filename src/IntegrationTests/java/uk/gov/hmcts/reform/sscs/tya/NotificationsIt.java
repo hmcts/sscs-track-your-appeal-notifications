@@ -640,6 +640,16 @@ public class NotificationsIt {
                     "yes",
                     "1",
                     "1"
+            },
+            new Object[]{
+                    SUBSCRIPTION_UPDATED_NOTIFICATION,
+                    "oral",
+                    Collections.singletonList("820901f0-15a9-4796-bdec-0cef42922531"),
+                    Collections.singletonList("18444f5f-8834-49e9-a6ae-bfe7f50db2b8"),
+                    "yes",
+                    "yes",
+                    "1",
+                    "1"
             }
         };
     }

@@ -51,16 +51,16 @@ public class NotificationsFunctionalTest extends AbstractFunctionalTest {
     @Value("${notification.paper.responseReceived.smsId}")
     private String paperResponseReceivedSmsId;
 
-    @Value("${notification.paper.subscriptionUpdated.emailId}")
+    @Value("${notification.subscriptionUpdated.emailId}")
     private String paperSubscriptionUpdateEmailId;
 
-    @Value("${notification.paper.subscriptionUpdated.smsId}")
+    @Value("${notification.subscriptionUpdated.smsId}")
     private String paperSubscriptionUpdateSmsId;
 
-    @Value("${notification.paper.subscriptionOld.emailId}")
+    @Value("${notification.subscriptionOld.emailId}")
     private String paperSubscriptionUpdateOldEmailId;
 
-    @Value("${notification.paper.subscriptionOld.smsId}")
+    @Value("${notification.subscriptionOld.smsId}")
     private String paperSubscriptionUpdateOldSmsId;
 
 
