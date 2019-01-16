@@ -78,7 +78,6 @@ public class NotificationsFunctionalTest extends AbstractFunctionalTest {
     private String appealCreatedAppointeeEmailId;
 
 
-
     public NotificationsFunctionalTest() {
         super(30);
     }
