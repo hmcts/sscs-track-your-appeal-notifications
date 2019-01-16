@@ -161,7 +161,6 @@ public class Personalisation<E extends NotificationWrapper> {
         if (ccdResponse.getHearings() != null && !ccdResponse.getHearings().isEmpty()) {
             Hearing latestHearing = ccdResponse.getHearings().get(0);
             LocalDateTime hearingDateTime = latestHearing.getValue().getHearingDateTime();
-
             personalisation.put(HEARING_DATE, formatLocalDate(hearingDateTime.toLocalDate()));
             personalisation.put(HEARING_TIME, formatLocalTime(hearingDateTime));
             personalisation.put(VENUE_ADDRESS_LITERAL, formatAddress(latestHearing));
@@ -256,7 +255,7 @@ public class Personalisation<E extends NotificationWrapper> {
         ));
     }
 
-    public Map<String, String> setEventData(Map<String, String> personalisation, SscsCaseData ccdResponse, NotificationEventType notificationEventType) {
+    Map<String, String> setEventData(Map<String, String> personalisation, SscsCaseData ccdResponse, NotificationEventType notificationEventType) {
         if (ccdResponse.getEvents() != null) {
 
             for (Event event : ccdResponse.getEvents()) {
@@ -270,10 +269,15 @@ public class Personalisation<E extends NotificationWrapper> {
         return personalisation;
     }
 
-    public Map<String, String> setEvidenceReceivedNotificationData(Map<String, String> personalisation, SscsCaseData ccdResponse, NotificationEventType notificationEventType) {
+    Map<String, String> setEvidenceReceivedNotificationData(Map<String, String> personalisation,
+                                                            SscsCaseData ccdResponse,
+                                                            NotificationEventType notificationEventType) {
         if (notificationEventType.equals(EVIDENCE_RECEIVED_NOTIFICATION)) {
-            if (ccdResponse.getEvidence() != null && ccdResponse.getEvidence().getDocuments() != null && !ccdResponse.getEvidence().getDocuments().isEmpty()) {
-                personalisation.put(EVIDENCE_RECEIVED_DATE_LITERAL, formatLocalDate(ccdResponse.getEvidence().getDocuments().get(0).getValue().getEvidenceDateTimeFormatted()));
+            if (ccdResponse.getEvidence() != null && ccdResponse.getEvidence().getDocuments() != null
+                    && !ccdResponse.getEvidence().getDocuments().isEmpty()) {
+                personalisation.put(EVIDENCE_RECEIVED_DATE_LITERAL,
+                        formatLocalDate(ccdResponse.getEvidence().getDocuments().get(0).getValue()
+                                .getEvidenceDateTimeFormatted()));
             } else {
                 personalisation.put(EVIDENCE_RECEIVED_DATE_LITERAL, StringUtils.EMPTY);
             }
@@ -287,7 +291,7 @@ public class Personalisation<E extends NotificationWrapper> {
         return personalisation;
     }
 
-    public Map<String, String> setEvidenceProcessingAddress(Map<String, String> personalisation, SscsCaseData ccdResponse) {
+    Map<String, String> setEvidenceProcessingAddress(Map<String, String> personalisation, SscsCaseData ccdResponse) {
         RegionalProcessingCenter rpc;
 
         if (null != ccdResponse.getRegionalProcessingCenter()) {
@@ -319,7 +323,7 @@ public class Personalisation<E extends NotificationWrapper> {
         return daysBetween == 1 ? TOMORROW_STRING : "in " + daysBetween + DAYS_STRING;
     }
 
-    public String getMacToken(String id, String benefitType) {
+    private String getMacToken(String id, String benefitType) {
         return macService.generateToken(id, benefitType);
     }
 
@@ -361,11 +365,11 @@ public class Personalisation<E extends NotificationWrapper> {
         return notificationEventType.getId();
     }
 
-    public Boolean isSendSmsSubscriptionConfirmation() {
+    private Boolean isSendSmsSubscriptionConfirmation() {
         return sendSmsSubscriptionConfirmation;
     }
 
-    public void setSendSmsSubscriptionConfirmation(Boolean sendSmsSubscriptionConfirmation) {
+    void setSendSmsSubscriptionConfirmation(Boolean sendSmsSubscriptionConfirmation) {
         this.sendSmsSubscriptionConfirmation = sendSmsSubscriptionConfirmation;
     }
 }
