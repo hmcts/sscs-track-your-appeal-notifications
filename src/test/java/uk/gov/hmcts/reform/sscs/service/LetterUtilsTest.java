@@ -8,12 +8,12 @@ import static uk.gov.hmcts.reform.sscs.service.LetterUtils.*;
 import static uk.gov.hmcts.reform.sscs.service.NotificationServiceTest.APPELLANT_WITH_ADDRESS;
 import static uk.gov.hmcts.reform.sscs.service.SendNotificationServiceTest.APPELLANT_WITH_ADDRESS_AND_APPOINTEE;
 
+import java.io.IOException;
+
 import org.apache.pdfbox.io.IOUtils;
 import org.junit.Test;
 import uk.gov.hmcts.reform.sscs.exception.NotificationClientRuntimeException;
 import uk.gov.hmcts.reform.sscs.factory.NotificationWrapper;
-
-import java.io.IOException;
 
 public class LetterUtilsTest {
     @Test
@@ -126,6 +126,7 @@ public class LetterUtilsTest {
 
         buildBundledLetter(null, sampleDirectionText);
     }
+
     @Test(expected = NotificationClientRuntimeException.class)
     public void shouldNotBundleLetterWhenAttachmentIsNull() throws IOException {
         byte[] sampleDirectionCoversheet = IOUtils.toByteArray(getClass().getClassLoader().getResourceAsStream("pdfs/direction-notice-coversheet-sample.pdf"));
