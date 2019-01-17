@@ -40,6 +40,8 @@ import uk.gov.hmcts.reform.sscs.service.RegionalProcessingCenterService;
 @Slf4j
 public class Personalisation<E extends NotificationWrapper> {
 
+    private static final String CRLF =  String.format("%c%c",(char) 0x0D, (char) 0x0A);
+
     private boolean sendSmsSubscriptionConfirmation;
 
     @Autowired
@@ -143,7 +145,8 @@ public class Personalisation<E extends NotificationWrapper> {
 
     private String getAppointeeDescription(SubscriptionType subscriptionType, SscsCaseData ccdResponse) {
         if (APPOINTEE.equals(subscriptionType) && ccdResponse.getAppeal() != null && ccdResponse.getAppeal().getAppellant().getName() != null) {
-            return String.format("You are receiving this update as the appointee for %s.\r\n\r\n", ccdResponse.getAppeal().getAppellant().getName().getFullNameNoTitle());
+            return String.format("You are receiving this update as the appointee for %s.%s%s",
+                    ccdResponse.getAppeal().getAppellant().getName().getFullNameNoTitle(), CRLF, CRLF);
         } else {
             return "";
         }

@@ -264,6 +264,7 @@ public class PersonalisationTest {
         assertEquals("1 February 2018", result.get(TRIBUNAL_RESPONSE_DATE_LITERAL));
         assertEquals("1 February 2018", result.get(ACCEPT_VIEW_BY_DATE_LITERAL));
         assertEquals("1 January 2018", result.get(QUESTION_ROUND_EXPIRES_DATE_LITERAL));
+        assertEquals("", result.get(APPOINTEE_DESCRIPTION));
     }
 
 
@@ -567,6 +568,7 @@ public class PersonalisationTest {
         assertEquals(tyaNumber, result.get(APPEAL_ID));
         assertEquals("http://link.com/manage-email-notifications/ZYX", result.get(MANAGE_EMAILS_LINK_LITERAL));
         assertEquals("http://tyalink.com/" + tyaNumber, result.get(TRACK_APPEAL_LINK_LITERAL));
+        assertEquals("You are receiving this update as the appointee for Harry Kane.\r\n\r\n", result.get(APPOINTEE_DESCRIPTION));
     }
 
     private Hearing createHearing(LocalDate hearingDate) {
