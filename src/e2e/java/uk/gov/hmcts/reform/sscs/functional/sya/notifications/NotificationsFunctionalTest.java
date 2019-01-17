@@ -18,10 +18,10 @@ public class NotificationsFunctionalTest extends AbstractFunctionalTest {
     @Value("${track.appeal.link}")
     private String tyaLink;
 
-    @Value("${notification.evidenceReceived.emailId}")
+    @Value("${notification.evidenceReceived.appellant.emailId}")
     private String evidenceReceivedEmailTemplateId;
 
-    @Value("${notification.evidenceReceived.smsId}")
+    @Value("${notification.evidenceReceived.appellant.smsId}")
     private String evidenceReceivedSmsTemplateId;
 
     @Value("${notification.hearingPostponed.appellant.emailId}")
