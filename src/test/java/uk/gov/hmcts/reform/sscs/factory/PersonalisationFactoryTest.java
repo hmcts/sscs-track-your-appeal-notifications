@@ -91,6 +91,12 @@ public class PersonalisationFactoryTest {
     }
 
     @Test
+    public void createRepsPersonalisationWhenInterlockValidAppealNotificationApplied() {
+        Personalisation result = factory.apply(INTERLOC_VALID_APPEAL);
+        assertEquals(syaAppealCreatedAndReceivedPersonalisation, result);
+    }
+
+    @Test
     public void createRepsPersonalisationWhenHearingPostponeNotificationApplied() {
         Personalisation result = factory.apply(POSTPONEMENT_NOTIFICATION);
         assertEquals(withRepresentativePersonalisation, result);

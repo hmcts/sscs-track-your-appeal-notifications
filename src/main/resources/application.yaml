@@ -195,6 +195,11 @@ notification:
     smsId: 04e778fd-71a8-4c27-b423-aa7485a81a9c
   struckOut:
     letterId: 7383b637-d76e-4c9f-8af9-3e3573168011
+  interlocValidAppeal:
+    appellant:
+      emailId: 01293b93-b23e-40a3-ad78-2c6cd01cd21c
+    representative:
+      emailId: 652753bf-59b4-46eb-9c24-bd762338a098
   online:
     responseReceived:
       emailId: 90f0ed29-a616-4ce0-b4ef-108391f5d90e

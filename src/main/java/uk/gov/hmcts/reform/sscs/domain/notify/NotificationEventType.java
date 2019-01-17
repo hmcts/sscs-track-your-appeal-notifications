@@ -31,7 +31,8 @@ public enum NotificationEventType {
     HEARING_REQUIRED_NOTIFICATION("continuous_online_hearing_relisted", false, false, true, false),
     VIEW_ISSUED("decision_issued", false, false, true, false),
     DECISION_ISSUED_2("decision_issued_2", false, false, true, false), // placeholder until COH name this notification
-    STRUCK_OUT("struckOut", true, true, false, true),
+    STRUCK_OUT("x", true, true, false, true),
+    INTERLOC_VALID_APPEAL("interlocValidAppeal", true, true, true, true),
     DO_NOT_SEND("");
 
     private String id;
