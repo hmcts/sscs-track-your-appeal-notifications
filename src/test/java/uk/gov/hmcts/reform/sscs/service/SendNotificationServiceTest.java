@@ -32,7 +32,7 @@ public class SendNotificationServiceTest {
             .name(Name.builder().firstName("Ap").lastName("Pointee").build())
             .build();
 
-    private static Appellant APPELLANT_WITH_ADDRESS_AND_APPOINTEE = Appellant.builder()
+    protected static Appellant APPELLANT_WITH_ADDRESS_AND_APPOINTEE = Appellant.builder()
             .name(Name.builder().firstName("Ap").lastName("Pellant").build())
             .address(Address.builder().line1("Appellant Line 1").town("Appellant Town").county("Appellant County").postcode("AP9 3LL").build())
             .appointee(APPOINTEE_WITH_ADDRESS)

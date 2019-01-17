@@ -13,6 +13,10 @@ import uk.gov.hmcts.reform.sscs.exception.NotificationClientRuntimeException;
 import uk.gov.hmcts.reform.sscs.factory.NotificationWrapper;
 
 public class LetterUtils {
+    public static final String PDF_DIRECTION_NOTICE = "Direction_Notice.pdf";
+    public static final String PDF_UNKNOWN = "unknown.pdf";
+    public static final String COMMENT_UNKNOWN = "Unknown";
+    public static final String COMMENT_DIRECTION_NOTICE = "Direction Notice";
 
     private LetterUtils() {
         // Hiding utility class constructor
@@ -28,10 +32,10 @@ public class LetterUtils {
 
     public static String getFilename(NotificationWrapper wrapper) {
         if (STRUCK_OUT.equals(wrapper.getNotificationType())) {
-            return "Direction_Notice.pdf";
+            return PDF_DIRECTION_NOTICE;
         }
 
-        return "unknown.pdf";
+        return PDF_UNKNOWN;
     }
 
     public static Name getNameToUseForLetter(NotificationWrapper wrapper) {
@@ -62,9 +66,9 @@ public class LetterUtils {
 
     public static String getSystemComment(NotificationWrapper wrapper) {
         if (STRUCK_OUT.equals(wrapper.getNotificationType())) {
-            return "Direction Notice";
+            return COMMENT_DIRECTION_NOTICE;
         }
 
-        return "unknown.pdf";
+        return COMMENT_UNKNOWN;
     }
 }
