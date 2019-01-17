@@ -1,7 +1,6 @@
 package uk.gov.hmcts.reform.sscs.config;
 
 import java.util.Locale;
-
 import javax.validation.constraints.NotNull;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
@@ -70,31 +69,24 @@ public class NotificationConfig {
     public Template getTemplate(String emailTemplateName, String smsTemplateName, String letterTemplateName, Benefit benefit,
                                 AppealHearingType appealHearingType) {
         return Template.builder()
-            .emailTemplateId(getTemplate(appealHearingType, emailTemplateName, "emailId"))
-            .smsTemplateId(getTemplate(appealHearingType, smsTemplateName, "smsId"))
-            .smsSenderTemplateId(env.getProperty("smsSender." + benefit.toString().toLowerCase(Locale.ENGLISH)))
-            .letterTemplateId(getTemplate(appealHearingType, letterTemplateName, "letterId"))
-            .build();
-
+                .emailTemplateId(getTemplate(appealHearingType, emailTemplateName, "emailId"))
+                .smsTemplateId(getTemplate(appealHearingType, smsTemplateName, "smsId"))
+                .smsSenderTemplateId(env.getProperty("smsSender." + benefit.toString().toLowerCase(Locale.ENGLISH)))
+                .letterTemplateId(getTemplate(appealHearingType, letterTemplateName, "letterId"))
+                .build();
     }
 
     private String getTemplate(@NotNull AppealHearingType appealHearingType, String templateName,
                                final String notificationType) {
 
-        String templateNameWithHearing = (new StringBuilder("notification."))
-                                .append(appealHearingType.name().toLowerCase(Locale.ENGLISH))
-                                .append(".").append(templateName)
-                                .append(".").append(notificationType).toString();
+        String templateNameWithHearing = "notification." + appealHearingType.name().toLowerCase(Locale.ENGLISH)
+                + "." + templateName + "." + notificationType;
 
-        String templateNameNoHearing = (new StringBuilder("notification."))
-                            .append(templateName)
-                            .append(".").append(notificationType).toString();
+        String templateNameNoHearing = "notification." + templateName + "." + notificationType;
 
-        String templateId = env.containsProperty(templateNameWithHearing)
-                                ? env.getProperty(templateNameWithHearing)
-                                : env.getProperty(templateNameNoHearing);
-
-        return templateId;
+        return env.containsProperty(templateNameWithHearing)
+                ? env.getProperty(templateNameWithHearing)
+                : env.getProperty(templateNameNoHearing);
     }
 
 }
