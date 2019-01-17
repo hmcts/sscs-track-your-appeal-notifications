@@ -1,5 +1,7 @@
 package uk.gov.hmcts.reform.sscs.config;
 
+import java.util.Locale;
+
 import javax.validation.constraints.NotNull;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
@@ -70,13 +72,13 @@ public class NotificationConfig {
         return Template.builder()
                 .emailTemplateId(getTemplate(appealHearingType, emailTemplateName, "emailId"))
                 .smsTemplateId(getTemplate(appealHearingType, smsTemplateName, "smsId"))
-                .smsSenderTemplateId(env.getProperty("smsSender." + benefit.toString().toLowerCase()))
+                .smsSenderTemplateId(env.getProperty("smsSender." + benefit.toString().toLowerCase(Locale.ENGLISH)))
                 .build();
     }
 
     private String getTemplate(@NotNull AppealHearingType appealHearingType, String templateName,
                                final String notificationType) {
-        String hearingTypeName = appealHearingType.name().toLowerCase();
+        String hearingTypeName = appealHearingType.name().toLowerCase(Locale.ENGLISH);
         String templateId = env.getProperty("notification." + hearingTypeName + "." + templateName + "."
                 + notificationType);
         if (templateId == null) {

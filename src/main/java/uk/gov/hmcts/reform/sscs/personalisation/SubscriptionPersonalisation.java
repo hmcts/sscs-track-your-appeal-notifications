@@ -27,10 +27,10 @@ public class SubscriptionPersonalisation extends Personalisation<CcdNotification
     }
 
     public Boolean shouldSendSmsSubscriptionConfirmation(SscsCaseData newSscsCaseData, SscsCaseData oldSscsCaseData) {
-        return (oldSscsCaseData.getSubscriptions().getAppellantSubscription() != null
+        return oldSscsCaseData.getSubscriptions().getAppellantSubscription() != null
                 && !oldSscsCaseData.getSubscriptions().getAppellantSubscription().isSmsSubscribed()
                 && newSscsCaseData.getSubscriptions().getAppellantSubscription() != null
-                && newSscsCaseData.getSubscriptions().getAppellantSubscription().isSmsSubscribed());
+                && newSscsCaseData.getSubscriptions().getAppellantSubscription().isSmsSubscribed();
     }
 
     public NotificationEventType getNotificationEventTypeNotification(SscsCaseDataWrapper responseWrapper) {
@@ -50,23 +50,23 @@ public class SubscriptionPersonalisation extends Personalisation<CcdNotification
     }
 
     private Boolean shouldSetMostRecentNotificationEventTypeNotification(SscsCaseData newSscsCaseData, SscsCaseData oldSscsCaseData) {
-        return (hasCaseJustSubscribed(oldSscsCaseData.getSubscriptions().getAppellantSubscription(), newSscsCaseData.getSubscriptions().getAppellantSubscription())
-                && newSscsCaseData.getEvents() != null
-                && !newSscsCaseData.getEvents().isEmpty()
-                && newSscsCaseData.getEvents().get(0).getValue().getEventType() != null);
+        return hasCaseJustSubscribed(oldSscsCaseData.getSubscriptions().getAppellantSubscription(), newSscsCaseData.getSubscriptions().getAppellantSubscription())
+            && newSscsCaseData.getEvents() != null
+            && !newSscsCaseData.getEvents().isEmpty()
+            && newSscsCaseData.getEvents().get(0).getValue().getEventType() != null;
     }
 
     private Boolean hasCaseJustSubscribed(Subscription oldSubscription, Subscription newSubscription) {
         return oldSubscription != null && newSubscription != null
-             && ((!oldSubscription.isEmailSubscribed() && newSubscription.isEmailSubscribed())
-             || (!oldSubscription.isSmsSubscribed() && newSubscription.isSmsSubscribed()));
+            && (!oldSubscription.isEmailSubscribed() && newSubscription.isEmailSubscribed()
+                || (!oldSubscription.isSmsSubscribed() && newSubscription.isSmsSubscribed()));
     }
 
     public Boolean doNotSendEmailUpdatedNotificationWhenEmailNotChanged(SscsCaseData newSscsCaseData, SscsCaseData oldSscsCaseData) {
-        return (oldSscsCaseData.getSubscriptions().getAppellantSubscription() != null
-                && oldSscsCaseData.getSubscriptions().getAppellantSubscription().isEmailSubscribed()
-                && newSscsCaseData.getSubscriptions().getAppellantSubscription() != null
-                && newSscsCaseData.getSubscriptions().getAppellantSubscription().isEmailSubscribed()
-                && oldSscsCaseData.getSubscriptions().getAppellantSubscription().getEmail().equals(newSscsCaseData.getSubscriptions().getAppellantSubscription().getEmail()));
+        return oldSscsCaseData.getSubscriptions().getAppellantSubscription() != null
+            && oldSscsCaseData.getSubscriptions().getAppellantSubscription().isEmailSubscribed()
+            && newSscsCaseData.getSubscriptions().getAppellantSubscription() != null
+            && newSscsCaseData.getSubscriptions().getAppellantSubscription().isEmailSubscribed()
+            && oldSscsCaseData.getSubscriptions().getAppellantSubscription().getEmail().equals(newSscsCaseData.getSubscriptions().getAppellantSubscription().getEmail());
     }
 }
