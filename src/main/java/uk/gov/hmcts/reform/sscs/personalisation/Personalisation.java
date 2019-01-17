@@ -87,7 +87,6 @@ public class Personalisation<E extends NotificationWrapper> {
                 ccdResponse.getAppeal().getAppellant().getName().getFullNameNoTitle());
         personalisation.put(AppConstants.PHONE_NUMBER, config.getHmctsPhoneNumber());
 
-
         Subscription appellantOrAppointeeSubscription = (ccdResponse.getAppeal().getAppellant().getAppointee() == null)
                 ? ccdResponse.getSubscriptions().getAppellantSubscription()
                 : ccdResponse.getSubscriptions().getAppointeeSubscription();
