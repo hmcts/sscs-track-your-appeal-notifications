@@ -15,13 +15,7 @@ public class NotificationValidService {
     private static final String HEARING_TYPE_ONLINE_RESOLUTION = "cor";
 
     static final boolean isMandatoryLetter(NotificationEventType eventType) {
-        boolean isMandatoryLetter = STRUCK_OUT.equals(eventType);
-
-        if (isMandatoryLetter) {
-            return true;
-        } else {
-            return false;
-        }
+        return STRUCK_OUT.equals(eventType);
     }
 
     boolean isHearingTypeValidToSendNotification(SscsCaseData sscsCaseData, NotificationEventType eventType) {
