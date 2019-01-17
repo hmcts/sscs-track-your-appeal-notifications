@@ -119,14 +119,20 @@ public class SendNotificationService {
                     notificationSender.sendBundledLetter(
                             wrapper.getNewSscsCaseData().getAppeal().getAppellant().getAddress().getPostcode(),   // Used for whitelisting only
                             bundledLetter,
-                            notification.getReference(),
                             wrapper.getCaseId()
                     );
             notificationHandler.sendNotification(wrapper, notification.getLetterTemplate(), "Letter", sendNotification);
 
             IdamTokens idamTokens = idamService.getIdamTokens();
 
-            sscsGeneratePdfService.mergeDocIntoCcd(getFilename(wrapper), bundledLetter, Long.parseLong(wrapper.getNewSscsCaseData().getCcdCaseId()), wrapper.getNewSscsCaseData(), idamTokens);
+            sscsGeneratePdfService.mergeDocIntoCcd(
+                getFilename(wrapper),
+                bundledLetter,
+                Long.parseLong(wrapper.getNewSscsCaseData().getCcdCaseId()),
+                wrapper.getNewSscsCaseData(),
+                idamTokens,
+                getSystemComment(wrapper)
+            );
         } catch (IOException ioe) {
             NotificationServiceException exception = new NotificationServiceException(wrapper.getCaseId(), ioe);
             log.error("Error on GovUKNotify for case id: " + wrapper.getCaseId() + ", sendBundledLetterNotification", exception);

@@ -59,4 +59,12 @@ public class LetterUtils {
             throw new NotificationClientRuntimeException("Can not bundle empty documents");
         }
     }
+
+    public static String getSystemComment(NotificationWrapper wrapper) {
+        if (STRUCK_OUT.equals(wrapper.getNotificationType())) {
+            return "Direction Notice";
+        }
+
+        return "unknown.pdf";
+    }
 }
