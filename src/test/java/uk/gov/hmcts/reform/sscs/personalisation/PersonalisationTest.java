@@ -251,6 +251,7 @@ public class PersonalisationTest {
         assertEquals("1 February 2018", result.get(TRIBUNAL_RESPONSE_DATE_LITERAL));
         assertEquals("1 February 2018", result.get(ACCEPT_VIEW_BY_DATE_LITERAL));
         assertEquals("1 January 2018", result.get(QUESTION_ROUND_EXPIRES_DATE_LITERAL));
+        assertEquals("", result.get(APPOINTEE_DESCRIPTION));
     }
 
 
@@ -543,6 +544,7 @@ public class PersonalisationTest {
         assertNotNull(result);
         assertEquals(appointeeName.getFullNameNoTitle(), result.get(NAME));
         assertEquals(name.getFullNameNoTitle(), result.get(APPELLANT_NAME));
+        assertEquals("You are receiving this update as the appointee for Harry Kane.\r\n\r\n", result.get(APPOINTEE_DESCRIPTION));
     }
 
     private Hearing createHearing(LocalDate hearingDate) {
