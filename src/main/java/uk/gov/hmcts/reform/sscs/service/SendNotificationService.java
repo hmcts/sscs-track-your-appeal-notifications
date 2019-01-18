@@ -16,8 +16,6 @@ import uk.gov.hmcts.reform.sscs.domain.notify.Notification;
 import uk.gov.hmcts.reform.sscs.domain.notify.NotificationEventType;
 import uk.gov.hmcts.reform.sscs.exception.NotificationServiceException;
 import uk.gov.hmcts.reform.sscs.factory.NotificationWrapper;
-import uk.gov.hmcts.reform.sscs.idam.IdamService;
-import uk.gov.hmcts.reform.sscs.idam.IdamTokens;
 
 @Service
 @Slf4j
@@ -25,11 +23,13 @@ public class SendNotificationService {
     private static final String DIRECTION_TEXT = "Direction Text";
     static final String DM_STORE_USER_ID = "sscs";
 
+    @Value("${feature.bundled_letters_on}")
+    private Boolean bundledLettersOn;
+
     private final NotificationSender notificationSender;
     private final EvidenceManagementService evidenceManagementService;
     private final SscsGeneratePdfService sscsGeneratePdfService;
     private final NotificationHandler notificationHandler;
-    private final IdamService idamService;
 
     @Value("${noncompliantcaseletter.appeal.html.template.path}")
     String noncompliantcaseletterTemplate;
@@ -39,14 +39,12 @@ public class SendNotificationService {
             NotificationSender notificationSender,
             EvidenceManagementService evidenceManagementService,
             SscsGeneratePdfService sscsGeneratePdfService,
-            NotificationHandler notificationHandler,
-            IdamService idamService
+            NotificationHandler notificationHandler
     ) {
         this.notificationSender = notificationSender;
         this.evidenceManagementService = evidenceManagementService;
         this.sscsGeneratePdfService = sscsGeneratePdfService;
         this.notificationHandler = notificationHandler;
-        this.idamService = idamService;
     }
 
     void sendEmailSmsLetterNotification(
@@ -56,8 +54,11 @@ public class SendNotificationService {
     ) {
         sendEmailNotification(wrapper, subscription, notification);
         sendSmsNotification(wrapper, subscription, notification);
-        sendBundledLetterNotificationToAppellant(wrapper, notification);
-        sendBundledLetterNotificationToRepresentative(wrapper, notification);
+
+        if (bundledLettersOn) {
+            sendBundledLetterNotificationToAppellant(wrapper, notification);
+            sendBundledLetterNotificationToRepresentative(wrapper, notification);
+        }
     }
 
     private void sendSmsNotification(NotificationWrapper wrapper, Subscription subscription, Notification notification) {
@@ -122,17 +123,6 @@ public class SendNotificationService {
                             wrapper.getCaseId()
                     );
             notificationHandler.sendNotification(wrapper, notification.getLetterTemplate(), "Letter", sendNotification);
-
-            IdamTokens idamTokens = idamService.getIdamTokens();
-
-            sscsGeneratePdfService.mergeDocIntoCcd(
-                getFilename(wrapper),
-                bundledLetter,
-                Long.parseLong(wrapper.getNewSscsCaseData().getCcdCaseId()),
-                wrapper.getNewSscsCaseData(),
-                idamTokens,
-                getSystemComment(wrapper)
-            );
         } catch (IOException ioe) {
             NotificationServiceException exception = new NotificationServiceException(wrapper.getCaseId(), ioe);
             log.error("Error on GovUKNotify for case id: " + wrapper.getCaseId() + ", sendBundledLetterNotification", exception);

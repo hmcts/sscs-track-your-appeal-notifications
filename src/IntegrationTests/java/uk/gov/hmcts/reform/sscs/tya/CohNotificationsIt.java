@@ -23,6 +23,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.mock.web.MockHttpServletResponse;
 import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.context.junit4.SpringRunner;
+import org.springframework.test.util.ReflectionTestUtils;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.request.MockHttpServletRequestBuilder;
 import org.springframework.test.web.servlet.setup.MockMvcBuilders;
@@ -119,7 +120,10 @@ public class CohNotificationsIt {
     @Before
     public void setup() throws Exception {
         NotificationSender sender = new NotificationSender(notificationClient, null, notificationBlacklist);
-        SendNotificationService sendNotificationService = new SendNotificationService(sender, evidenceManagementService, sscsGeneratePdfService, notificationHandler, idamService);
+
+        SendNotificationService sendNotificationService = new SendNotificationService(sender, evidenceManagementService, sscsGeneratePdfService, notificationHandler);
+        ReflectionTestUtils.setField(sendNotificationService, "bundledLettersOn", true);
+
         NotificationService service = new NotificationService(factory, reminderService, notificationValidService, notificationHandler, outOfHoursCalculator, notificationConfig, sendNotificationService);
         controller = new NotificationController(service, authorisationService, ccdService, deserializer, idamService);
 
