@@ -103,12 +103,14 @@ public class Personalisation<E extends NotificationWrapper> {
             personalisation.put(AppConstants.HEARING_INFO_LINK_LITERAL,
                     config.getHearingInfoLink().replace(AppConstants.APPEAL_ID_LITERAL, tya));
 
-            String email = StringUtils.defaultIfBlank(appellantOrAppointeeSubscription.getEmail(), StringUtils.EMPTY);
-            try {
-                String encodedEmail = URLEncoder.encode(email, StandardCharsets.UTF_8.name());
-                personalisation.put(ONLINE_HEARING_LINK_LITERAL, config.getOnlineHearingLinkWithEmail().replace("{email}", encodedEmail));
-            } catch (UnsupportedEncodingException e) {
-                throw new RuntimeException(e);
+            String email = appellantOrAppointeeSubscription.getEmail();
+            if (email != null) {
+                try {
+                    String encodedEmail = URLEncoder.encode(email, StandardCharsets.UTF_8.name());
+                    personalisation.put(ONLINE_HEARING_LINK_LITERAL, config.getOnlineHearingLinkWithEmail().replace("{email}", encodedEmail));
+                } catch (UnsupportedEncodingException e) {
+                    throw new RuntimeException(e);
+                }
             }
         }
 
