@@ -50,7 +50,7 @@ public class NotificationConfigTest {
     private Object[] templateIdsWithHearingAndEventTypes() {
         return new Object[]{
             new Object[]{"a64bce9a-9162-47ca-b3e7-cf5f85ca7bdc", "f5b61f94-0b2b-4e8e-9c25-56e9830df7d4", PAPER, getTemplateName(DWP_RESPONSE_RECEIVED_NOTIFICATION)},
-            new Object[]{"1afd89f9-9935-4acb-b4f6-ba708b03a0d3", "4bba0b5d-a3f3-4fd9-a845-26af5eda042e", ORAL, getTemplateName(DWP_RESPONSE_RECEIVED_NOTIFICATION)},
+            new Object[]{"01caec0c-191b-4a32-882a-6fded2546ce6", "317a121e-d08c-4890-b3b3-4652f741771f", ORAL, getTemplateName(DWP_RESPONSE_RECEIVED_NOTIFICATION)},
             new Object[]{"90f0ed29-a616-4ce0-b4ef-108391f5d90e", "e2e166c4-3600-443d-8feb-39f2c28e8732", ONLINE, getTemplateName(DWP_RESPONSE_RECEIVED_NOTIFICATION)},
             new Object[]{"652753bf-59b4-46eb-9c24-bd762338a098", "0e44927e-168b-4510-ac57-6932fda7aec1", PAPER, getTemplateName(SYA_APPEAL_CREATED_NOTIFICATION, REPRESENTATIVE)},
             new Object[]{"652753bf-59b4-46eb-9c24-bd762338a098", "0e44927e-168b-4510-ac57-6932fda7aec1", ORAL, getTemplateName(SYA_APPEAL_CREATED_NOTIFICATION, REPRESENTATIVE)},
