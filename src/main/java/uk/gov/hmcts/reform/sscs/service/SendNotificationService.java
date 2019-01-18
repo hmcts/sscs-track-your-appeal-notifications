@@ -125,14 +125,15 @@ public class SendNotificationService {
 
             IdamTokens idamTokens = idamService.getIdamTokens();
 
-            sscsGeneratePdfService.mergeDocIntoCcd(
-                getFilename(wrapper),
-                bundledLetter,
-                Long.parseLong(wrapper.getNewSscsCaseData().getCcdCaseId()),
-                wrapper.getNewSscsCaseData(),
-                idamTokens,
-                getSystemComment(wrapper)
-            );
+            // SSCS-4616 - Save bundled PDF to CCD, issues with saving as CCD thinks it has been updated in the background!
+            //sscsGeneratePdfService.mergeDocIntoCcd(
+            //    getFilename(wrapper),
+            //    bundledLetter,
+            //    Long.parseLong(wrapper.getNewSscsCaseData().getCcdCaseId()),
+            //    wrapper.getNewSscsCaseData(),
+            //    idamTokens,
+            //    getSystemComment(wrapper)
+            //);
         } catch (IOException ioe) {
             NotificationServiceException exception = new NotificationServiceException(wrapper.getCaseId(), ioe);
             log.error("Error on GovUKNotify for case id: " + wrapper.getCaseId() + ", sendBundledLetterNotification", exception);

@@ -57,6 +57,7 @@ public class LetterUtils {
 
             ByteArrayOutputStream baos = new ByteArrayOutputStream();
             bundledLetter.save(baos);
+            bundledLetter.close();
 
             return baos.toByteArray();
         } else {
