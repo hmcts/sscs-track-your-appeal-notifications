@@ -6,6 +6,7 @@ public enum NotificationEventType {
 
     ADJOURNED_NOTIFICATION("hearingAdjourned", true, false, false, false),
     SYA_APPEAL_CREATED_NOTIFICATION("appealCreated", true, true, false, true),
+    RESEND_APPEAL_CREATED_NOTIFICATION("resendAppealCreated", true, true, false, true),
     APPEAL_LAPSED_NOTIFICATION("appealLapsed", true, true, false, false),
     APPEAL_RECEIVED_NOTIFICATION("appealReceived", true, true, false, false),
     APPEAL_WITHDRAWN_NOTIFICATION("appealWithdrawn", true, true, false, false),

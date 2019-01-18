@@ -87,7 +87,7 @@ public class CcdNotificationWrapperTest {
     }
 
     @Test
-    @Parameters({"APPEAL_LAPSED_NOTIFICATION","APPEAL_WITHDRAWN_NOTIFICATION","POSTPONEMENT_NOTIFICATION","HEARING_BOOKED_NOTIFICATION","SYA_APPEAL_CREATED_NOTIFICATION", "APPEAL_RECEIVED_NOTIFICATION", "ADJOURNED_NOTIFICATION", "APPEAL_DORMANT_NOTIFICATION"})
+    @Parameters({"APPEAL_LAPSED_NOTIFICATION","APPEAL_WITHDRAWN_NOTIFICATION","EVIDENCE_RECEIVED_NOTIFICATION","POSTPONEMENT_NOTIFICATION","HEARING_BOOKED_NOTIFICATION","SYA_APPEAL_CREATED_NOTIFICATION", "RESEND_APPEAL_CREATED_NOTIFICATION", "APPEAL_RECEIVED_NOTIFICATION", "ADJOURNED_NOTIFICATION", "APPEAL_DORMANT_NOTIFICATION"})
     public void givenSubscriptions_shouldGetSubscriptionTypeList(NotificationEventType notificationEventType) {
         ccdNotificationWrapper = buildCcdNotificationWrapperBasedOnEventType(notificationEventType);
         List<SubscriptionWithType> subsWithTypeList = ccdNotificationWrapper.getSubscriptionsBasedOnNotificationType();
@@ -121,6 +121,7 @@ public class CcdNotificationWrapperTest {
                 || type.equals(APPEAL_WITHDRAWN_NOTIFICATION)
                 || type.equals(EVIDENCE_RECEIVED_NOTIFICATION)
                 || type.equals(SYA_APPEAL_CREATED_NOTIFICATION)
+                || type.equals(RESEND_APPEAL_CREATED_NOTIFICATION)
                 || type.equals(APPEAL_DORMANT_NOTIFICATION)
                 || type.equals(ADJOURNED_NOTIFICATION)
                 || type.equals(APPEAL_RECEIVED_NOTIFICATION)

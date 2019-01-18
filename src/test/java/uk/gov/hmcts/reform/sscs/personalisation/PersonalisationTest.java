@@ -172,6 +172,18 @@ public class PersonalisationTest {
                 new Object[]{SYA_APPEAL_CREATED_NOTIFICATION, APPOINTEE, REGULAR},
                 new Object[]{SYA_APPEAL_CREATED_NOTIFICATION, APPOINTEE, ONLINE},
                 new Object[]{DWP_RESPONSE_RECEIVED_NOTIFICATION, null, ONLINE},
+                new Object[]{EVIDENCE_RECEIVED_NOTIFICATION, APPELLANT, PAPER},
+                new Object[]{EVIDENCE_RECEIVED_NOTIFICATION, APPELLANT, REGULAR},
+                new Object[]{EVIDENCE_RECEIVED_NOTIFICATION, APPELLANT, ONLINE},
+                new Object[]{EVIDENCE_RECEIVED_NOTIFICATION, REPRESENTATIVE, PAPER},
+                new Object[]{EVIDENCE_RECEIVED_NOTIFICATION, REPRESENTATIVE, REGULAR},
+                new Object[]{EVIDENCE_RECEIVED_NOTIFICATION, REPRESENTATIVE, ONLINE},
+                new Object[]{RESEND_APPEAL_CREATED_NOTIFICATION, APPELLANT, PAPER},
+                new Object[]{RESEND_APPEAL_CREATED_NOTIFICATION, APPELLANT, REGULAR},
+                new Object[]{RESEND_APPEAL_CREATED_NOTIFICATION, APPELLANT, ONLINE},
+                new Object[]{RESEND_APPEAL_CREATED_NOTIFICATION, REPRESENTATIVE, PAPER},
+                new Object[]{RESEND_APPEAL_CREATED_NOTIFICATION, REPRESENTATIVE, REGULAR},
+                new Object[]{RESEND_APPEAL_CREATED_NOTIFICATION, REPRESENTATIVE, ONLINE},
                 new Object[]{APPEAL_DORMANT_NOTIFICATION, APPELLANT, PAPER},
                 new Object[]{APPEAL_DORMANT_NOTIFICATION, REPRESENTATIVE, PAPER},
                 new Object[]{APPEAL_DORMANT_NOTIFICATION, APPELLANT, ORAL},
@@ -524,6 +536,8 @@ public class PersonalisationTest {
     @Test
     public void shouldGetPersonalisationForAppointee_WhenNoAppellantSubscription() {
         Name appointeeName = Name.builder().title("MR").firstName("George").lastName("Appointee").build();
+        final String tyaNumber = "tya";
+        when(macService.generateToken(tyaNumber, PIP.name())).thenReturn("ZYX");
         SscsCaseData response = SscsCaseData.builder()
                 .ccdCaseId(CASE_ID).caseReference("SC/1234/5")
                 .appeal(Appeal.builder().appellant(Appellant.builder().name(name)
@@ -531,9 +545,9 @@ public class PersonalisationTest {
                         .build())
                         .benefitType(BenefitType.builder().code("PIP").build()).build())
                 .subscriptions(Subscriptions.builder().appointeeSubscription(
-                        Subscription.builder().tya("GLSCRR").email("appointee@example.com")
+                        Subscription.builder().tya(tyaNumber).email("appointee@example.com")
                                 .subscribeEmail("YES").build()
-                    ).build())
+                ).build())
                 .build();
 
         Map result = personalisation.create(SscsCaseDataWrapper.builder()
@@ -544,6 +558,9 @@ public class PersonalisationTest {
         assertNotNull(result);
         assertEquals(appointeeName.getFullNameNoTitle(), result.get(NAME));
         assertEquals(name.getFullNameNoTitle(), result.get(APPELLANT_NAME));
+        assertEquals(tyaNumber, result.get(APPEAL_ID));
+        assertEquals("http://link.com/manage-email-notifications/ZYX", result.get(MANAGE_EMAILS_LINK_LITERAL));
+        assertEquals("http://tyalink.com/" + tyaNumber, result.get(TRACK_APPEAL_LINK_LITERAL));
         assertEquals("You are receiving this update as the appointee for Harry Kane.\r\n\r\n", result.get(APPOINTEE_DESCRIPTION));
     }
 

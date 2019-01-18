@@ -82,10 +82,12 @@ public class Personalisation<E extends NotificationWrapper> {
                 getName(subscriptionType, ccdResponse));
         personalisation.put(PHONE_NUMBER, config.getHmctsPhoneNumber());
 
-        if (ccdResponse.getSubscriptions().getAppointeeSubscription() != null && ccdResponse.getSubscriptions().getAppointeeSubscription().getTya() != null) {
-            subscriptionDetails(personalisation, ccdResponse.getSubscriptions().getAppointeeSubscription(), benefit);
-        } else if (ccdResponse.getSubscriptions().getAppellantSubscription() != null && ccdResponse.getSubscriptions().getAppellantSubscription().getTya() != null) {
-            subscriptionDetails(personalisation, ccdResponse.getSubscriptions().getAppellantSubscription(), benefit);
+
+        Subscription appellantOrAppointeeSubscription = (ccdResponse.getAppeal().getAppellant().getAppointee() == null)
+                ? ccdResponse.getSubscriptions().getAppellantSubscription()
+                : ccdResponse.getSubscriptions().getAppointeeSubscription();
+        if (appellantOrAppointeeSubscription != null && appellantOrAppointeeSubscription.getTya() != null) {
+            subscriptionDetails(personalisation, appellantOrAppointeeSubscription, benefit);
         }
         personalisation.put(FIRST_TIER_AGENCY_ACRONYM, DWP_ACRONYM);
         personalisation.put(FIRST_TIER_AGENCY_FULL_NAME, DWP_FUL_NAME);
@@ -270,8 +272,9 @@ public class Personalisation<E extends NotificationWrapper> {
         String emailTemplateName = notificationEventType.getId();
         if (APPEAL_LAPSED_NOTIFICATION.equals(notificationEventType)
             || APPEAL_WITHDRAWN_NOTIFICATION.equals(notificationEventType)
-            || EVIDENCE_RECEIVED_NOTIFICATION.equals(notificationEventType) && REPRESENTATIVE.equals(subscriptionType)
+            || EVIDENCE_RECEIVED_NOTIFICATION.equals(notificationEventType)
             || SYA_APPEAL_CREATED_NOTIFICATION.equals(notificationEventType)
+            || RESEND_APPEAL_CREATED_NOTIFICATION.equals(notificationEventType)
             || APPEAL_DORMANT_NOTIFICATION.equals(notificationEventType)
             || ADJOURNED_NOTIFICATION.equals(notificationEventType)
             || APPEAL_RECEIVED_NOTIFICATION.equals(notificationEventType)
