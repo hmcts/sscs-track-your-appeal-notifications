@@ -91,10 +91,12 @@ public class Personalisation<E extends NotificationWrapper> {
                 ? ccdResponse.getSubscriptions().getAppellantSubscription()
                 : ccdResponse.getSubscriptions().getAppointeeSubscription();
 
-        if (appellantOrAppointeeSubscription != null && appellantOrAppointeeSubscription.getTya() != null) {
+        if (appellantOrAppointeeSubscription != null) {
             String tya = StringUtils.defaultIfBlank(appellantOrAppointeeSubscription.getTya(), StringUtils.EMPTY);
             personalisation.put(AppConstants.APPEAL_ID, tya);
-            personalisation.put(AppConstants.MANAGE_EMAILS_LINK_LITERAL, config.getManageEmailsLink().replace(AppConstants.MAC_LITERAL, getMacToken(tya, benefit.name())));
+            personalisation.put(AppConstants.MANAGE_EMAILS_LINK_LITERAL, config.getManageEmailsLink().replace(AppConstants.MAC_LITERAL,
+                    getMacToken(tya,
+                            benefit.name())));
             personalisation.put(AppConstants.TRACK_APPEAL_LINK_LITERAL, config.getTrackAppealLink() != null ? config.getTrackAppealLink().replace(AppConstants.APPEAL_ID_LITERAL, tya) : null);
             personalisation.put(AppConstants.SUBMIT_EVIDENCE_LINK_LITERAL, config.getEvidenceSubmissionInfoLink().replace(AppConstants.APPEAL_ID, tya));
             personalisation.put(AppConstants.SUBMIT_EVIDENCE_INFO_LINK_LITERAL, config.getEvidenceSubmissionInfoLink().replace(AppConstants.APPEAL_ID_LITERAL, tya));
