@@ -16,8 +16,6 @@ import uk.gov.hmcts.reform.sscs.domain.notify.Notification;
 import uk.gov.hmcts.reform.sscs.domain.notify.NotificationEventType;
 import uk.gov.hmcts.reform.sscs.exception.NotificationServiceException;
 import uk.gov.hmcts.reform.sscs.factory.NotificationWrapper;
-import uk.gov.hmcts.reform.sscs.idam.IdamService;
-import uk.gov.hmcts.reform.sscs.idam.IdamTokens;
 
 @Service
 @Slf4j
@@ -29,7 +27,6 @@ public class SendNotificationService {
     private final EvidenceManagementService evidenceManagementService;
     private final SscsGeneratePdfService sscsGeneratePdfService;
     private final NotificationHandler notificationHandler;
-    private final IdamService idamService;
 
     @Value("${noncompliantcaseletter.appeal.html.template.path}")
     String noncompliantcaseletterTemplate;
@@ -39,14 +36,12 @@ public class SendNotificationService {
             NotificationSender notificationSender,
             EvidenceManagementService evidenceManagementService,
             SscsGeneratePdfService sscsGeneratePdfService,
-            NotificationHandler notificationHandler,
-            IdamService idamService
+            NotificationHandler notificationHandler
     ) {
         this.notificationSender = notificationSender;
         this.evidenceManagementService = evidenceManagementService;
         this.sscsGeneratePdfService = sscsGeneratePdfService;
         this.notificationHandler = notificationHandler;
-        this.idamService = idamService;
     }
 
     void sendEmailSmsLetterNotification(
@@ -122,18 +117,6 @@ public class SendNotificationService {
                             wrapper.getCaseId()
                     );
             notificationHandler.sendNotification(wrapper, notification.getLetterTemplate(), "Letter", sendNotification);
-
-            IdamTokens idamTokens = idamService.getIdamTokens();
-
-            // SSCS-4616 - Save bundled PDF to CCD, issues with saving as CCD thinks it has been updated in the background!
-            //sscsGeneratePdfService.mergeDocIntoCcd(
-            //    getFilename(wrapper),
-            //    bundledLetter,
-            //    Long.parseLong(wrapper.getNewSscsCaseData().getCcdCaseId()),
-            //    wrapper.getNewSscsCaseData(),
-            //    idamTokens,
-            //    getSystemComment(wrapper)
-            //);
         } catch (IOException ioe) {
             NotificationServiceException exception = new NotificationServiceException(wrapper.getCaseId(), ioe);
             log.error("Error on GovUKNotify for case id: " + wrapper.getCaseId() + ", sendBundledLetterNotification", exception);
