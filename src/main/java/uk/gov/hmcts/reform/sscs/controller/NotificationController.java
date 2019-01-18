@@ -58,8 +58,7 @@ public class NotificationController {
             @RequestHeader(AuthorisationService.SERVICE_AUTHORISATION_HEADER) String serviceAuthHeader,
             @RequestBody CohEvent cohEvent) {
         String caseId = cohEvent.getCaseId();
-        log.info("Coh Response received for case id: {}", caseId);
-        log.info("Coh Response received for event: {}", cohEvent.getNotificationEventType());
+        log.info("Coh Response received for case id: {} and event {}", caseId, cohEvent.getNotificationEventType());
 
         SscsCaseDetails caseDetails = ccdService.getByCaseId(Long.valueOf(caseId), idamService.getIdamTokens());
 

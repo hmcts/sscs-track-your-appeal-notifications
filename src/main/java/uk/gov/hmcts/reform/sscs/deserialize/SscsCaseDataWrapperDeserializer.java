@@ -10,38 +10,13 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
-import uk.gov.hmcts.reform.sscs.ccd.domain.Address;
-import uk.gov.hmcts.reform.sscs.ccd.domain.Appeal;
-import uk.gov.hmcts.reform.sscs.ccd.domain.AppealReason;
-import uk.gov.hmcts.reform.sscs.ccd.domain.AppealReasonDetails;
-import uk.gov.hmcts.reform.sscs.ccd.domain.AppealReasons;
-import uk.gov.hmcts.reform.sscs.ccd.domain.Appellant;
-import uk.gov.hmcts.reform.sscs.ccd.domain.BenefitType;
-import uk.gov.hmcts.reform.sscs.ccd.domain.Contact;
-import uk.gov.hmcts.reform.sscs.ccd.domain.DateRange;
-import uk.gov.hmcts.reform.sscs.ccd.domain.Document;
-import uk.gov.hmcts.reform.sscs.ccd.domain.DocumentDetails;
-import uk.gov.hmcts.reform.sscs.ccd.domain.Event;
-import uk.gov.hmcts.reform.sscs.ccd.domain.EventDetails;
-import uk.gov.hmcts.reform.sscs.ccd.domain.Evidence;
-import uk.gov.hmcts.reform.sscs.ccd.domain.ExcludeDate;
-import uk.gov.hmcts.reform.sscs.ccd.domain.Hearing;
-import uk.gov.hmcts.reform.sscs.ccd.domain.HearingDetails;
-import uk.gov.hmcts.reform.sscs.ccd.domain.HearingOptions;
-import uk.gov.hmcts.reform.sscs.ccd.domain.Identity;
-import uk.gov.hmcts.reform.sscs.ccd.domain.MrnDetails;
-import uk.gov.hmcts.reform.sscs.ccd.domain.Name;
-import uk.gov.hmcts.reform.sscs.ccd.domain.OnlinePanel;
-import uk.gov.hmcts.reform.sscs.ccd.domain.RegionalProcessingCenter;
-import uk.gov.hmcts.reform.sscs.ccd.domain.Representative;
-import uk.gov.hmcts.reform.sscs.ccd.domain.SscsCaseData;
-import uk.gov.hmcts.reform.sscs.ccd.domain.Subscription;
-import uk.gov.hmcts.reform.sscs.ccd.domain.Subscriptions;
-import uk.gov.hmcts.reform.sscs.ccd.domain.Venue;
+import uk.gov.hmcts.reform.sscs.ccd.domain.*;
 import uk.gov.hmcts.reform.sscs.domain.SscsCaseDataWrapper;
 import uk.gov.hmcts.reform.sscs.domain.notify.NotificationEventType;
 
+@Slf4j
 @Service
 public class SscsCaseDataWrapperDeserializer extends StdDeserializer<SscsCaseDataWrapper> {
 
@@ -85,7 +60,13 @@ public class SscsCaseDataWrapperDeserializer extends StdDeserializer<SscsCaseDat
                 oldSscsCaseData = createSscsCaseDataFromNode(oldCaseNode, node, oldCaseDetailsNode);
             }
         }
-        NotificationEventType notificationEventType = NotificationEventType.getNotificationById(getField(node, "event_id"));
+        String eventId = getField(node, "event_id");
+        NotificationEventType notificationEventType = NotificationEventType.getNotificationById(eventId);
+        if (notificationEventType == null) {
+            String errorMessage = "Event id cannot be mapped [" + eventId + "]"
+                    + ((newSscsCaseData != null) ? " case id [" + newSscsCaseData.getCcdCaseId() + "]" : "");
+            log.info(errorMessage);
+        }
 
         return SscsCaseDataWrapper.builder()
                 .newSscsCaseData(newSscsCaseData)
