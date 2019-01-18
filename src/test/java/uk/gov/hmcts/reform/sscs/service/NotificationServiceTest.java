@@ -109,12 +109,7 @@ public class NotificationServiceTest {
     public void setup() {
         initMocks(this);
 
-        SendNotificationService sendNotificationService = new SendNotificationService(notificationSender, evidenceManagementService, sscsGeneratePdfService, notificationHandler);
-
-        notificationService = new NotificationService(factory, reminderService,
-            notificationValidService, notificationHandler, outOfHoursCalculator, notificationConfig, sendNotificationService
-        );
-        ReflectionTestUtils.setField(sendNotificationService, "noncompliantcaseletterTemplate", "/templates/non_compliant_case_letter_template.html");
+        notificationService = getNotificationService(true);
 
         sscsCaseData = SscsCaseData.builder()
             .appeal(
@@ -711,6 +706,40 @@ public class NotificationServiceTest {
 
         when(factory.create(struckOutCcdNotificationWrapper, APPELLANT)).thenReturn(notification);
         notificationService.manageNotificationAndSubscription(struckOutCcdNotificationWrapper);
+    }
+
+    @Test
+    public void doNotSendLetterToGovNotifyWhenStruckOutNotificationWhenFeatureToggledOff() throws IOException {
+        String fileUrl = "http://dm-store:4506/documents/1e1eb3d2-5b6c-430d-8dad-ebcea1ad7ecf";
+
+        CcdNotificationWrapper struckOutCcdNotificationWrapper = buildWrapperWithDocuments(STRUCK_OUT, fileUrl, APPELLANT_WITH_ADDRESS, null);
+
+        Notification notification = new Notification(Template.builder().letterTemplateId(LETTER_TEMPLATE_ID_STRUCKOUT).build(), Destination.builder().build(), new HashMap<>(), new Reference(), null);
+
+        byte[] sampleDirectionText = IOUtils.toByteArray(getClass().getClassLoader().getResourceAsStream("pdfs/direction-text.pdf"));
+        byte[] sampleDirectionCoversheet = IOUtils.toByteArray(getClass().getClassLoader().getResourceAsStream("pdfs/direction-notice-coversheet-sample.pdf"));
+
+        when(evidenceManagementService.download(URI.create(fileUrl), DM_STORE_USER_ID)).thenReturn(sampleDirectionText);
+        when((notificationValidService).isNotificationStillValidToSend(any(), any())).thenReturn(true);
+        when((notificationValidService).isHearingTypeValidToSendNotification(any(), any())).thenReturn(true);
+        when(sscsGeneratePdfService.generatePdf(anyString(), any(), any(), any())).thenReturn(sampleDirectionCoversheet);
+
+        when(factory.create(struckOutCcdNotificationWrapper, APPELLANT)).thenReturn(notification);
+
+        getNotificationService(false).manageNotificationAndSubscription(struckOutCcdNotificationWrapper);
+
+        verify(notificationHandler, times(0)).sendNotification(eq(struckOutCcdNotificationWrapper), eq(LETTER_TEMPLATE_ID_STRUCKOUT), eq(LETTER), any(NotificationHandler.SendNotification.class));
+    }
+
+    private NotificationService getNotificationService(Boolean bundledLettersOn) {
+        SendNotificationService sendNotificationService = new SendNotificationService(notificationSender, evidenceManagementService, sscsGeneratePdfService, notificationHandler);
+
+        NotificationService notificationService = new NotificationService(factory, reminderService,
+            notificationValidService, notificationHandler, outOfHoursCalculator, notificationConfig, sendNotificationService
+        );
+        ReflectionTestUtils.setField(sendNotificationService, "noncompliantcaseletterTemplate", "/templates/non_compliant_case_letter_template.html");
+        ReflectionTestUtils.setField(sendNotificationService, "bundledLettersOn", bundledLettersOn);
+        return notificationService;
     }
 
     private CcdNotificationWrapper buildWrapperWithDocuments(NotificationEventType eventType, String fileUrl, Appellant appellant, Representative rep) {
