@@ -23,6 +23,9 @@ public class SendNotificationService {
     private static final String DIRECTION_TEXT = "Direction Text";
     static final String DM_STORE_USER_ID = "sscs";
 
+    @Value("${feature.bundled_letters_on}")
+    private Boolean bundledLettersOn;
+
     private final NotificationSender notificationSender;
     private final EvidenceManagementService evidenceManagementService;
     private final SscsGeneratePdfService sscsGeneratePdfService;
@@ -51,8 +54,11 @@ public class SendNotificationService {
     ) {
         sendEmailNotification(wrapper, subscription, notification);
         sendSmsNotification(wrapper, subscription, notification);
-        sendBundledLetterNotificationToAppellant(wrapper, notification);
-        sendBundledLetterNotificationToRepresentative(wrapper, notification);
+
+        if (bundledLettersOn) {
+            sendBundledLetterNotificationToAppellant(wrapper, notification);
+            sendBundledLetterNotificationToRepresentative(wrapper, notification);
+        }
     }
 
     private void sendSmsNotification(NotificationWrapper wrapper, Subscription subscription, Notification notification) {
