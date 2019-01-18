@@ -1,6 +1,7 @@
 package uk.gov.hmcts.reform.sscs.service;
 
 import static org.junit.Assert.assertEquals;
+import static uk.gov.hmcts.reform.sscs.service.LetterUtils.getAddressToUseForLetter;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -31,7 +32,7 @@ public class SendNotificationServiceTest {
             .name(Name.builder().firstName("Ap").lastName("Pointee").build())
             .build();
 
-    private static Appellant APPELLANT_WITH_ADDRESS_AND_APPOINTEE = Appellant.builder()
+    protected static Appellant APPELLANT_WITH_ADDRESS_AND_APPOINTEE = Appellant.builder()
             .name(Name.builder().firstName("Ap").lastName("Pellant").build())
             .address(Address.builder().line1("Appellant Line 1").town("Appellant Town").county("Appellant County").postcode("AP9 3LL").build())
             .appointee(APPOINTEE_WITH_ADDRESS)
@@ -42,7 +43,7 @@ public class SendNotificationServiceTest {
         Address expectedAddress = APPELLANT_WITH_ADDRESS.getAddress();
         CcdNotificationWrapper wrapper = buildBaseWrapper(APPELLANT_WITH_ADDRESS);
 
-        Address actualAddress = SendNotificationService.getAddressToUseForLetter(wrapper);
+        Address actualAddress = getAddressToUseForLetter(wrapper);
         assertEquals(expectedAddress.getLine1(), actualAddress.getLine1());
         assertEquals(expectedAddress.getLine2(), actualAddress.getLine2());
         assertEquals(expectedAddress.getTown(), actualAddress.getTown());
@@ -55,7 +56,7 @@ public class SendNotificationServiceTest {
         Address expectedAddress = APPOINTEE_WITH_ADDRESS.getAddress();
         CcdNotificationWrapper wrapper = buildBaseWrapper(APPELLANT_WITH_ADDRESS_AND_APPOINTEE);
 
-        Address actualAddress = SendNotificationService.getAddressToUseForLetter(wrapper);
+        Address actualAddress = getAddressToUseForLetter(wrapper);
         assertEquals(expectedAddress.getLine1(), actualAddress.getLine1());
         assertEquals(expectedAddress.getLine2(), actualAddress.getLine2());
         assertEquals(expectedAddress.getTown(), actualAddress.getTown());

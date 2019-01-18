@@ -91,13 +91,13 @@ public class NotificationSender {
             sendLetterResponse.getNotificationId());
     }
 
-    public void sendBundledLetter(String appellantPostcode, byte[] directionText, String reference, String ccdCaseId) throws NotificationClientException {
+    public void sendBundledLetter(String appellantPostcode, byte[] directionText, String ccdCaseId) throws NotificationClientException {
         if (directionText != null) {
             NotificationClient client = getLetterNotificationClient(appellantPostcode);
 
             ByteArrayInputStream bis = new ByteArrayInputStream(directionText);
 
-            LetterResponse sendLetterResponse = client.sendPrecompiledLetterWithInputStream(reference, bis);
+            LetterResponse sendLetterResponse = client.sendPrecompiledLetterWithInputStream(ccdCaseId, bis);
 
             LOG.info("Letter Notification send for case id : {}, Gov notify id: {} ", ccdCaseId,
                 sendLetterResponse.getNotificationId());

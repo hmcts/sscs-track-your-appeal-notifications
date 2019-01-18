@@ -40,11 +40,13 @@ import uk.gov.hmcts.reform.sscs.factory.CcdNotificationWrapper;
 import uk.gov.hmcts.reform.sscs.factory.CohNotificationWrapper;
 import uk.gov.hmcts.reform.sscs.factory.NotificationFactory;
 import uk.gov.hmcts.reform.sscs.factory.NotificationWrapper;
+import uk.gov.hmcts.reform.sscs.idam.IdamService;
+import uk.gov.hmcts.reform.sscs.idam.IdamTokens;
 
 @RunWith(JUnitParamsRunner.class)
 public class NotificationServiceTest {
 
-    private static Appellant APPELLANT_WITH_ADDRESS = Appellant.builder()
+    protected static Appellant APPELLANT_WITH_ADDRESS = Appellant.builder()
             .name(Name.builder().firstName("Ap").lastName("pellant").build())
             .address(Address.builder().line1("Appellant Line 1").town("Appellant Town").county("Appellant County").postcode("AP9 3LL").build())
             .build();
@@ -95,6 +97,9 @@ public class NotificationServiceTest {
     @Mock
     private SscsGeneratePdfService sscsGeneratePdfService;
 
+    @Mock
+    private IdamService idamService;
+
     private SscsCaseData sscsCaseData;
     private CcdNotificationWrapper ccdNotificationWrapper;
     private SscsCaseDataWrapper sscsCaseDataWrapper;
@@ -103,7 +108,7 @@ public class NotificationServiceTest {
     public void setup() {
         initMocks(this);
 
-        SendNotificationService sendNotificationService = new SendNotificationService(notificationSender, evidenceManagementService, sscsGeneratePdfService, notificationHandler);
+        SendNotificationService sendNotificationService = new SendNotificationService(notificationSender, evidenceManagementService, sscsGeneratePdfService, notificationHandler, idamService);
 
         notificationService = new NotificationService(factory, reminderService,
             notificationValidService, notificationHandler, outOfHoursCalculator, notificationConfig, sendNotificationService
@@ -130,8 +135,13 @@ public class NotificationServiceTest {
         sscsCaseDataWrapper = SscsCaseDataWrapper.builder().newSscsCaseData(sscsCaseData).oldSscsCaseData(sscsCaseData).notificationEventType(APPEAL_WITHDRAWN_NOTIFICATION).build();
         ccdNotificationWrapper = new CcdNotificationWrapper(sscsCaseDataWrapper);
         when(outOfHoursCalculator.isItOutOfHours()).thenReturn(false);
-    }
 
+        String authHeader = "authHeader";
+        String serviceAuthHeader = "serviceAuthHeader";
+        IdamTokens idamTokens = IdamTokens.builder().idamOauth2Token(authHeader).serviceAuthorization(serviceAuthHeader).build();
+
+        when(idamService.getIdamTokens()).thenReturn(idamTokens);
+    }
 
     @Test
     @Parameters(method = "generateNotificationTypeAndSubscriptionsScenarios")
@@ -750,8 +760,6 @@ public class NotificationServiceTest {
         notificationService.manageNotificationAndSubscription(struckOutCcdNotificationWrapper);
     }
 
-
-
     private CcdNotificationWrapper buildWrapperWithDocuments(NotificationEventType eventType, String fileUrl, Appellant appellant, Representative rep) {
         SscsDocumentDetails sscsDocumentDetails = SscsDocumentDetails.builder()
             .documentType("Direction Text")
@@ -769,7 +777,7 @@ public class NotificationServiceTest {
         return buildBaseWrapper(eventType, appellant, rep, sscsDocument);
     }
 
-    private CcdNotificationWrapper buildBaseWrapper(NotificationEventType eventType, Appellant appellant, Representative rep, SscsDocument sscsDocument) {
+    protected static CcdNotificationWrapper buildBaseWrapper(NotificationEventType eventType, Appellant appellant, Representative rep, SscsDocument sscsDocument) {
         SscsCaseData sscsCaseDataWithDocuments = SscsCaseData.builder()
             .appeal(
                 Appeal
