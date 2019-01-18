@@ -44,10 +44,12 @@ static LinkedHashMap<String, Object> secret(String secretName, String envVar) {
 }
 
 withPipeline("java", product, component) {
-    enableSlackNotifications('#sscs-tech')
-    setVaultName('sscs')
-    loadVaultSecrets(secrets)
+  if (env.CHANGE_TITLE && !env.CHANGE_TITLE.startsWith('Bump')) {
     enableDockerBuild()
     enableDeployToAKS()
+  }
+  enableSlackNotifications('#sscs-tech')
+  setVaultName('sscs')
+  loadVaultSecrets(secrets)
 }
 
