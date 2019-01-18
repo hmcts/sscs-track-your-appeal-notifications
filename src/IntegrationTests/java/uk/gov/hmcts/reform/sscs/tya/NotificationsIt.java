@@ -197,7 +197,7 @@ public class NotificationsIt {
 
     @Test
     @Parameters({
-            "oral, 1afd89f9-9935-4acb-b4f6-ba708b03a0d3, 4bba0b5d-a3f3-4fd9-a845-26af5eda042e",
+            "oral, 01caec0c-191b-4a32-882a-6fded2546ce6, 317a121e-d08c-4890-b3b3-4652f741771f",
             "paper, a64bce9a-9162-47ca-b3e7-cf5f85ca7bdc, f5b61f94-0b2b-4e8e-9c25-56e9830df7d4"
         })
     public void shouldSendNotificationForAnResponseReceivedRequestForAnOralOrPaperHearing(
@@ -632,8 +632,8 @@ public class NotificationsIt {
                     new Object[]{
                                 DWP_RESPONSE_RECEIVED_NOTIFICATION,
                                 "oral",
-                                Collections.singletonList("1afd89f9-9935-4acb-b4f6-ba708b03a0d3"),
-                                Collections.singletonList("4bba0b5d-a3f3-4fd9-a845-26af5eda042e"),
+                                Collections.singletonList("01caec0c-191b-4a32-882a-6fded2546ce6"),
+                                Collections.singletonList("317a121e-d08c-4890-b3b3-4652f741771f"),
                                 "yes",
                                 "yes",
                                 "1",
