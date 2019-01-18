@@ -86,7 +86,8 @@ public class Personalisation<E extends NotificationWrapper> {
         Subscription appellantOrAppointeeSubscription = (ccdResponse.getAppeal().getAppellant().getAppointee() == null)
                 ? ccdResponse.getSubscriptions().getAppellantSubscription()
                 : ccdResponse.getSubscriptions().getAppointeeSubscription();
-        if (appellantOrAppointeeSubscription != null && appellantOrAppointeeSubscription.getTya() != null) {
+
+        if (appellantOrAppointeeSubscription != null) {
             subscriptionDetails(personalisation, appellantOrAppointeeSubscription, benefit);
         }
         personalisation.put(FIRST_TIER_AGENCY_ACRONYM, DWP_ACRONYM);
@@ -149,16 +150,17 @@ public class Personalisation<E extends NotificationWrapper> {
     }
 
     private void subscriptionDetails(Map<String, String> personalisation, Subscription subscription, Benefit benefit) {
-        personalisation.put(APPEAL_ID, subscription.getTya());
+
+        final String tya = StringUtils.defaultIfBlank(subscription.getTya(), StringUtils.EMPTY);
+        personalisation.put(APPEAL_ID, tya);
         personalisation.put(MANAGE_EMAILS_LINK_LITERAL, config.getManageEmailsLink().replace(MAC_LITERAL,
-                getMacToken(subscription.getTya(),
-                        benefit.name())));
-        personalisation.put(TRACK_APPEAL_LINK_LITERAL, config.getTrackAppealLink() != null ? config.getTrackAppealLink().replace(APPEAL_ID_LITERAL, subscription.getTya()) : null);
-        personalisation.put(SUBMIT_EVIDENCE_LINK_LITERAL, config.getEvidenceSubmissionInfoLink().replace(APPEAL_ID, subscription.getTya()));
-        personalisation.put(SUBMIT_EVIDENCE_INFO_LINK_LITERAL, config.getEvidenceSubmissionInfoLink().replace(APPEAL_ID_LITERAL, subscription.getTya()));
-        personalisation.put(CLAIMING_EXPENSES_LINK_LITERAL, config.getClaimingExpensesLink().replace(APPEAL_ID, subscription.getTya()));
+                getMacToken(tya, benefit.name())));
+        personalisation.put(TRACK_APPEAL_LINK_LITERAL, config.getTrackAppealLink() != null ? config.getTrackAppealLink().replace(APPEAL_ID_LITERAL, tya) : null);
+        personalisation.put(SUBMIT_EVIDENCE_LINK_LITERAL, config.getEvidenceSubmissionInfoLink().replace(APPEAL_ID, tya));
+        personalisation.put(SUBMIT_EVIDENCE_INFO_LINK_LITERAL, config.getEvidenceSubmissionInfoLink().replace(APPEAL_ID_LITERAL, tya));
+        personalisation.put(CLAIMING_EXPENSES_LINK_LITERAL, config.getClaimingExpensesLink().replace(APPEAL_ID, tya));
         personalisation.put(HEARING_INFO_LINK_LITERAL,
-                config.getHearingInfoLink().replace(APPEAL_ID_LITERAL, subscription.getTya()));
+                config.getHearingInfoLink().replace(APPEAL_ID_LITERAL, tya));
 
         String email = subscription.getEmail();
         if (email != null) {
@@ -204,7 +206,7 @@ public class Personalisation<E extends NotificationWrapper> {
             if (ccdResponse.getEvidence() != null && ccdResponse.getEvidence().getDocuments() != null && !ccdResponse.getEvidence().getDocuments().isEmpty()) {
                 personalisation.put(EVIDENCE_RECEIVED_DATE_LITERAL, formatLocalDate(ccdResponse.getEvidence().getDocuments().get(0).getValue().getEvidenceDateTimeFormatted()));
             } else {
-                personalisation.put(EVIDENCE_RECEIVED_DATE_LITERAL,"");
+                personalisation.put(EVIDENCE_RECEIVED_DATE_LITERAL, StringUtils.EMPTY);
             }
         }
         return personalisation;
