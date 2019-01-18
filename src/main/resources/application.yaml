@@ -221,8 +221,8 @@ notification:
         emailId: 7af36950-fc63-45d1-907d-f472fac7af06
   oral:
     responseReceived:
-      emailId: 1afd89f9-9935-4acb-b4f6-ba708b03a0d3
-      smsId: 4bba0b5d-a3f3-4fd9-a845-26af5eda042e
+      emailId: 01caec0c-191b-4a32-882a-6fded2546ce6
+      smsId: 317a121e-d08c-4890-b3b3-4652f741771f
     evidenceReceived:
       representative:
         emailId: 30260c0b-5575-4f4e-bce4-73cf3f245c2d
