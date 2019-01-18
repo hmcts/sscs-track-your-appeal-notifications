@@ -104,7 +104,7 @@ public class Personalisation<E extends NotificationWrapper> {
             personalisation.put(AppConstants.HEARING_INFO_LINK_LITERAL,
                     config.getHearingInfoLink().replace(AppConstants.APPEAL_ID_LITERAL, tya));
 
-            String email = appellantOrAppointeeSubscription.getEmail();
+            String email = StringUtils.defaultIfBlank(appellantOrAppointeeSubscription.getEmail(), StringUtils.EMPTY);
             if (email != null) {
                 try {
                     String encodedEmail = URLEncoder.encode(email, StandardCharsets.UTF_8.name());
