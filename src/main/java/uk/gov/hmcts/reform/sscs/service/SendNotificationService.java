@@ -27,6 +27,7 @@ import uk.gov.hmcts.reform.sscs.factory.NotificationWrapper;
 public class SendNotificationService {
     private static final String DIRECTION_TEXT = "Direction Text";
     static final String DM_STORE_USER_ID = "sscs";
+    public static final String NOTIFICATION_TYPE_LETTER = "Letter";
 
     @Value("${feature.bundled_letters_on}")
     private Boolean bundledLettersOn;
@@ -119,7 +120,7 @@ public class SendNotificationService {
                     wrapper.getCaseId()
                 );
             };
-            notificationHandler.sendNotification(wrapper, notification.getSmsTemplate(), "Letter", sendNotification);
+            notificationHandler.sendNotification(wrapper, notification.getSmsTemplate(), NOTIFICATION_TYPE_LETTER, sendNotification);
         }
     }
 
@@ -143,7 +144,7 @@ public class SendNotificationService {
                     wrapper.getCaseId()
                 );
             };
-            notificationHandler.sendNotification(wrapper, notification.getSmsTemplate(), "Letter", sendNotification);
+            notificationHandler.sendNotification(wrapper, notification.getSmsTemplate(), NOTIFICATION_TYPE_LETTER, sendNotification);
         }
     }
 
@@ -179,7 +180,7 @@ public class SendNotificationService {
                             bundledLetter,
                             wrapper.getCaseId()
                     );
-            notificationHandler.sendNotification(wrapper, notification.getLetterTemplate(), "Letter", sendNotification);
+            notificationHandler.sendNotification(wrapper, notification.getLetterTemplate(), NOTIFICATION_TYPE_LETTER, sendNotification);
         } catch (IOException ioe) {
             NotificationServiceException exception = new NotificationServiceException(wrapper.getCaseId(), ioe);
             log.error("Error on GovUKNotify for case id: " + wrapper.getCaseId() + ", sendBundledLetterNotification", exception);

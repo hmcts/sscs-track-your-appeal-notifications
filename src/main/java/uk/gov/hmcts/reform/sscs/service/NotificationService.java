@@ -90,21 +90,8 @@ public class NotificationService {
             Subscription newSubscription = wrapper.getNewSscsCaseData().getSubscriptions().getAppellantSubscription();
             Subscription oldSubscription = wrapper.getOldSscsCaseData().getSubscriptions().getAppellantSubscription();
 
-            String emailAddress = null;
-            String smsNumber = null;
-
-            if (null != newSubscription.getEmail() && null != oldSubscription.getEmail()) {
-                emailAddress = newSubscription.getEmail().equals(oldSubscription.getEmail()) ? null : oldSubscription.getEmail();
-            } else if (null == newSubscription.getEmail() && null != oldSubscription.getEmail()) {
-                emailAddress = oldSubscription.getEmail();
-            }
-
-            if (null != newSubscription.getMobile() && null != oldSubscription.getMobile()) {
-                smsNumber = newSubscription.getMobile().equals(oldSubscription.getMobile()) ? null : oldSubscription.getMobile();
-            } else if (null == newSubscription.getMobile() && null != oldSubscription.getMobile()) {
-                smsNumber = oldSubscription.getMobile();
-            }
-
+            String emailAddress = getSubscriptionDetails(newSubscription.getEmail(), oldSubscription.getEmail());
+            String smsNumber = getSubscriptionDetails(newSubscription.getMobile(), oldSubscription.getMobile());
 
             Destination destination = Destination.builder().email(emailAddress).sms(smsNumber).build();
 
@@ -129,5 +116,13 @@ public class NotificationService {
         }
     }
 
-
+    private String getSubscriptionDetails(String newSubscription, String oldSubscription) {
+        String subscription = "";
+        if (null != newSubscription && null != oldSubscription) {
+            subscription = newSubscription.equals(oldSubscription) ? null : oldSubscription;
+        } else if (null == newSubscription && null != oldSubscription) {
+            subscription = oldSubscription;
+        }
+        return subscription;
+    }
 }
