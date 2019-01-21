@@ -108,7 +108,6 @@ public class SendNotificationService {
                     notification.getLetterTemplate(),
                     addressToUse,
                     notification.getPlaceholders(),
-                    notification.getReference(),
                     wrapper.getCaseId()
                 );
             };

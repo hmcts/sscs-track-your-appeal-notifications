@@ -164,7 +164,7 @@ public class Personalisation<E extends NotificationWrapper> {
                 if ((event.getValue() != null)
                     && ((notificationEventType.equals(APPEAL_RECEIVED_NOTIFICATION) && event.getValue().getEventType().equals(APPEAL_RECEIVED))
                     || (notificationEventType.equals(DWP_RESPONSE_LATE_REMINDER_NOTIFICATION)))
-                    || notificationEventType.equals(INTERLOC_VALID_APPEAL)) { // TODO: Not sure if this is right!
+                    || notificationEventType.equals(INTERLOC_VALID_APPEAL)) {
                     return setAppealReceivedDetails(personalisation, event.getValue());
                 }
             }
