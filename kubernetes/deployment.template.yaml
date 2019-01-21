@@ -83,8 +83,6 @@ spec:
           value: "0"
         - name: HOURS_END_TIME
           value: "23"
-        - name: DOCUMENT_MANAGEMENT_URL
-          value: "http://dm-store-aat.service.core-compute-aat.internal"
         ports:
           - containerPort: 8081
         resources:
