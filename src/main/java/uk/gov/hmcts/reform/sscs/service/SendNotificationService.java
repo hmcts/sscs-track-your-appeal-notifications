@@ -1,7 +1,9 @@
 package uk.gov.hmcts.reform.sscs.service;
 
+import static uk.gov.hmcts.reform.sscs.config.AppConstants.*;
 import static uk.gov.hmcts.reform.sscs.domain.notify.NotificationEventType.STRUCK_OUT;
 import static uk.gov.hmcts.reform.sscs.service.LetterUtils.*;
+import static uk.gov.hmcts.reform.sscs.service.NotificationValidService.isBundledLetter;
 
 import java.io.IOException;
 import java.net.URI;
@@ -54,8 +56,9 @@ public class SendNotificationService {
     ) {
         sendEmailNotification(wrapper, subscription, notification);
         sendSmsNotification(wrapper, subscription, notification);
+        sendFallbackLetterNofication(wrapper, subscription, notification);
 
-        if (bundledLettersOn) {
+        if (bundledLettersOn && isBundledLetter(wrapper.getNotificationType())) {
             sendBundledLetterNotificationToAppellant(wrapper, notification);
             sendBundledLetterNotificationToRepresentative(wrapper, notification);
         }
@@ -89,6 +92,30 @@ public class SendNotificationService {
             notificationHandler.sendNotification(wrapper, notification.getEmailTemplate(), "Email", sendNotification);
         }
     }
+
+    private void sendFallbackLetterNofication(NotificationWrapper wrapper, Subscription subscription, Notification notification) {
+        if (!subscription.isSmsSubscribed() && !subscription.isEmailSubscribed() && notification.getLetterTemplate() != null) {
+            NotificationHandler.SendNotification sendNotification = () -> {
+                Address addressToUse = getAddressToUseForLetter(wrapper);
+
+                notification.getPlaceholders().put(ADDRESS_LINE_1, addressToUse.getLine1());
+                notification.getPlaceholders().put(ADDRESS_LINE_2, addressToUse.getLine2());
+                notification.getPlaceholders().put(ADDRESS_LINE_3, addressToUse.getTown());
+                notification.getPlaceholders().put(ADDRESS_LINE_4, addressToUse.getCounty());
+                notification.getPlaceholders().put(ADDRESS_POSTCODE, addressToUse.getPostcode());
+
+                notificationSender.sendLetter(
+                    notification.getLetterTemplate(),
+                    addressToUse,
+                    notification.getPlaceholders(),
+                    notification.getReference(),
+                    wrapper.getCaseId()
+                );
+            };
+            notificationHandler.sendNotification(wrapper, notification.getSmsTemplate(), "Letter", sendNotification);
+        }
+    }
+
 
     private void sendBundledLetterNotificationToAppellant(NotificationWrapper wrapper, Notification notification) {
         if (notification.getLetterTemplate() != null) {

@@ -163,7 +163,8 @@ public class Personalisation<E extends NotificationWrapper> {
             for (Event event : ccdResponse.getEvents()) {
                 if ((event.getValue() != null)
                     && ((notificationEventType.equals(APPEAL_RECEIVED_NOTIFICATION) && event.getValue().getEventType().equals(APPEAL_RECEIVED))
-                    || (notificationEventType.equals(DWP_RESPONSE_LATE_REMINDER_NOTIFICATION)))) {
+                    || (notificationEventType.equals(DWP_RESPONSE_LATE_REMINDER_NOTIFICATION)))
+                    || notificationEventType.equals(INTERLOC_VALID_APPEAL)) { // TODO: Not sure if this is right!
                     return setAppealReceivedDetails(personalisation, event.getValue());
                 }
             }
@@ -236,7 +237,7 @@ public class Personalisation<E extends NotificationWrapper> {
         String emailTemplateName = getEmailTemplateName(subscriptionType, notificationWrapper.getNotificationType());
         String smsTemplateName = isSendSmsSubscriptionConfirmation() ? SUBSCRIPTION_CREATED_NOTIFICATION.getId() :
                 emailTemplateName;
-        String letterTemplateName = getLetterTemplateName(notificationWrapper.getNotificationType());
+        String letterTemplateName = getLetterTemplateName(subscriptionType, notificationWrapper.getNotificationType());
         return config.getTemplate(emailTemplateName, smsTemplateName, letterTemplateName, benefit, notificationWrapper.getHearingType());
     }
 
@@ -259,8 +260,12 @@ public class Personalisation<E extends NotificationWrapper> {
         return emailTemplateName;
     }
 
-    private String getLetterTemplateName(NotificationEventType notificationEventType) {
-        return notificationEventType.getId();
+    private String getLetterTemplateName(SubscriptionType subscriptionType, NotificationEventType notificationEventType) {
+        String letterTemplateName = notificationEventType.getId();
+        if (INTERLOC_VALID_APPEAL.equals(notificationEventType)) {
+            letterTemplateName = letterTemplateName + "." + subscriptionType.name().toLowerCase();
+        }
+        return letterTemplateName;
     }
 
     public Boolean isSendSmsSubscriptionConfirmation() {

@@ -22,7 +22,7 @@ public class LetterUtils {
         // Hiding utility class constructor
     }
 
-    public static Address getAddressToUseForLetter(NotificationWrapper wrapper) {
+    public static final Address getAddressToUseForLetter(NotificationWrapper wrapper) {
         if (null != wrapper.getNewSscsCaseData().getAppeal().getAppellant().getAppointee()) {
             return wrapper.getNewSscsCaseData().getAppeal().getAppellant().getAppointee().getAddress();
         }
@@ -38,7 +38,7 @@ public class LetterUtils {
         return PDF_UNKNOWN;
     }
 
-    public static Name getNameToUseForLetter(NotificationWrapper wrapper) {
+    public static final Name getNameToUseForLetter(NotificationWrapper wrapper) {
         if (null != wrapper.getNewSscsCaseData().getAppeal().getAppellant().getAppointee()) {
             return wrapper.getNewSscsCaseData().getAppeal().getAppellant().getAppointee().getName();
         } else {

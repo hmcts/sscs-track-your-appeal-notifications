@@ -1,5 +1,8 @@
 package uk.gov.hmcts.reform.sscs.service;
 
+import static uk.gov.hmcts.reform.sscs.config.SubscriptionType.APPELLANT;
+import static uk.gov.hmcts.reform.sscs.config.SubscriptionType.REPRESENTATIVE;
+import static uk.gov.hmcts.reform.sscs.domain.notify.NotificationEventType.INTERLOC_VALID_APPEAL;
 import static uk.gov.hmcts.reform.sscs.domain.notify.NotificationEventType.STRUCK_OUT;
 
 import java.time.LocalDateTime;
@@ -7,7 +10,9 @@ import java.util.List;
 import org.springframework.stereotype.Service;
 import uk.gov.hmcts.reform.sscs.ccd.domain.Hearing;
 import uk.gov.hmcts.reform.sscs.ccd.domain.SscsCaseData;
+import uk.gov.hmcts.reform.sscs.config.SubscriptionType;
 import uk.gov.hmcts.reform.sscs.domain.notify.NotificationEventType;
+import uk.gov.hmcts.reform.sscs.factory.NotificationWrapper;
 
 @Service
 public class NotificationValidService {
@@ -15,6 +20,22 @@ public class NotificationValidService {
     private static final String HEARING_TYPE_ONLINE_RESOLUTION = "cor";
 
     static final boolean isMandatoryLetter(NotificationEventType eventType) {
+        return STRUCK_OUT.equals(eventType);
+    }
+
+    static final boolean isFallbackLetterRequiredForSubscriptionType(NotificationWrapper wrapper, SubscriptionType subscriptionType, NotificationEventType eventType) {
+        boolean result = false;
+
+        if (INTERLOC_VALID_APPEAL.equals(eventType)
+            && (APPELLANT.equals(subscriptionType)
+            || (REPRESENTATIVE.equals(subscriptionType) && null != wrapper.getNewSscsCaseData().getAppeal().getRep()))) {
+            result = true;
+        }
+
+        return result;
+    }
+
+    static final boolean isBundledLetter(NotificationEventType eventType) {
         return STRUCK_OUT.equals(eventType);
     }
 

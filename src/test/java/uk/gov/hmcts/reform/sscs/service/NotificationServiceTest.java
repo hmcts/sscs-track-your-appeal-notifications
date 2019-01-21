@@ -377,7 +377,7 @@ public class NotificationServiceTest {
                                 .subscribeEmail(YES)
                                 .mobile(MOBILE_NUMBER_1)
                                 .build(),
-                        new SubscriptionType[]{REPRESENTATIVE},
+                        new SubscriptionType[]{APPELLANT, REPRESENTATIVE},
                 },
                 new Object[]{
                         INTERLOC_VALID_APPEAL,
@@ -391,7 +391,7 @@ public class NotificationServiceTest {
                                 .tya(APPEAL_NUMBER)
                                 .mobile(MOBILE_NUMBER_1)
                                 .build(),
-                        new SubscriptionType[]{},
+                        new SubscriptionType[]{APPELLANT},
                 }
         };
     }

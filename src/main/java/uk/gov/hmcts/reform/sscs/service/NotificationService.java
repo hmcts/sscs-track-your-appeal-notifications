@@ -1,6 +1,7 @@
 package uk.gov.hmcts.reform.sscs.service;
 
 import static uk.gov.hmcts.reform.sscs.ccd.domain.Benefit.getBenefitByCode;
+import static uk.gov.hmcts.reform.sscs.service.NotificationValidService.isFallbackLetterRequiredForSubscriptionType;
 import static uk.gov.hmcts.reform.sscs.service.NotificationValidService.isMandatoryLetter;
 
 import lombok.extern.slf4j.Slf4j;
@@ -57,7 +58,7 @@ public class NotificationService {
     private void sendNotificationPerSubscription(NotificationWrapper notificationWrapper,
                                                  SubscriptionWithType subscriptionWithType,
                                                  NotificationEventType notificationType) {
-        if (isValidNotification(notificationWrapper, subscriptionWithType.getSubscription(), notificationType)) {
+        if (isValidNotification(notificationWrapper, subscriptionWithType, notificationType)) {
             Notification notification = notificationFactory.create(notificationWrapper,
                     subscriptionWithType.getSubscriptionType());
             if (notificationWrapper.getNotificationType().isAllowOutOfHours() || !outOfHoursCalculator.isItOutOfHours()) {
@@ -70,11 +71,16 @@ public class NotificationService {
         }
     }
 
-    private boolean isValidNotification(NotificationWrapper wrapper, Subscription
-            subscription, NotificationEventType notificationType) {
-        return (isMandatoryLetter(notificationType) || (subscription != null && subscription.doesCaseHaveSubscriptions()
-                && notificationValidService.isNotificationStillValidToSend(wrapper.getNewSscsCaseData().getHearings(), notificationType)
-                && notificationValidService.isHearingTypeValidToSendNotification(wrapper.getNewSscsCaseData(), notificationType)));
+    private boolean isValidNotification(NotificationWrapper wrapper, SubscriptionWithType
+            subscriptionWithType, NotificationEventType notificationType) {
+        Subscription subscription = subscriptionWithType.getSubscription();
+
+        return (isMandatoryLetter(notificationType)
+            || ((subscription != null && subscription.doesCaseHaveSubscriptions()
+            || (subscription != null && !subscription.doesCaseHaveSubscriptions() && isFallbackLetterRequiredForSubscriptionType(wrapper, subscriptionWithType.getSubscriptionType(), notificationType)
+            || subscription == null && isFallbackLetterRequiredForSubscriptionType(wrapper, subscriptionWithType.getSubscriptionType(), notificationType)))
+            && notificationValidService.isNotificationStillValidToSend(wrapper.getNewSscsCaseData().getHearings(), notificationType)
+            && notificationValidService.isHearingTypeValidToSendNotification(wrapper.getNewSscsCaseData(), notificationType)));
     }
 
     private void processOldSubscriptionNotifications(NotificationWrapper wrapper, Notification notification) {

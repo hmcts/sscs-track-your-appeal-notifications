@@ -85,7 +85,7 @@ public class NotificationSender {
 
         NotificationClient client = getLetterNotificationClient(address.getPostcode());
 
-        SendLetterResponse sendLetterResponse = client.sendLetter(templateId, personalisation, reference);
+        SendLetterResponse sendLetterResponse = client.sendLetter(templateId, personalisation, ccdCaseId);
 
         LOG.info("Letter Notification send for case id : {}, Gov notify id: {} ", ccdCaseId,
             sendLetterResponse.getNotificationId());
