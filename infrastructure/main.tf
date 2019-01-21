@@ -68,7 +68,7 @@ locals {
   cohApi    = "http://coh-cor-${local.local_env}.service.${local.local_ase}.internal"
   documentStore = "http://dm-store-${local.local_env}.service.${local.local_ase}.internal"
 
-  azureVaultName              = "sscs-${local.local_env}"
+  azureVaultName = "sscs-${local.local_env}"
 }
 
 module "track-your-appeal-notifications" {
