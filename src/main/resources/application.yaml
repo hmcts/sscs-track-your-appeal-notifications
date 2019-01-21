@@ -306,6 +306,9 @@ job.scheduler:
         class: org.quartz.simpl.RAMJobStore
 ---
 
+# Document store
+document_management.url: ${DOCUMENT_MANAGEMENT_URL:http://dm-store:4506}
+
 appeal.email.host: ${EMAIL_SERVER_HOST:localhost}
 appeal.email.port: ${EMAIL_SERVER_PORT:1025}
 appeal.email.smtp.tls.enabled: ${EMAIL_SMTP_TLS_ENABLED:true}
