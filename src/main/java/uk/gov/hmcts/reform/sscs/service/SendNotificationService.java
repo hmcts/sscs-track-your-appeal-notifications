@@ -1,12 +1,14 @@
 package uk.gov.hmcts.reform.sscs.service;
 
 import static uk.gov.hmcts.reform.sscs.config.AppConstants.*;
+import static uk.gov.hmcts.reform.sscs.config.SubscriptionType.APPELLANT;
 import static uk.gov.hmcts.reform.sscs.domain.notify.NotificationEventType.STRUCK_OUT;
 import static uk.gov.hmcts.reform.sscs.service.LetterUtils.*;
 import static uk.gov.hmcts.reform.sscs.service.NotificationValidService.isBundledLetter;
 
 import java.io.IOException;
 import java.net.URI;
+import java.util.Map;
 
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -14,6 +16,7 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 import uk.gov.hmcts.reform.sscs.ccd.domain.*;
 import uk.gov.hmcts.reform.sscs.config.AppConstants;
+import uk.gov.hmcts.reform.sscs.domain.SubscriptionWithType;
 import uk.gov.hmcts.reform.sscs.domain.notify.Notification;
 import uk.gov.hmcts.reform.sscs.domain.notify.NotificationEventType;
 import uk.gov.hmcts.reform.sscs.exception.NotificationServiceException;
@@ -52,11 +55,17 @@ public class SendNotificationService {
     void sendEmailSmsLetterNotification(
             NotificationWrapper wrapper,
             Subscription subscription,
-            Notification notification
-    ) {
+            Notification notification,
+            SubscriptionWithType subscriptionWithType
+            ) {
         sendEmailNotification(wrapper, subscription, notification);
         sendSmsNotification(wrapper, subscription, notification);
-        sendFallbackLetterNofication(wrapper, subscription, notification);
+
+        if (APPELLANT.equals(subscriptionWithType.getSubscriptionType())) {
+            sendFallbackLetterNoficationToAppellant(wrapper, subscription, notification);
+        } else {
+            sendFallbackLetterNoficationToRepresentative(wrapper, subscription, notification);
+        }
 
         if (bundledLettersOn && isBundledLetter(wrapper.getNotificationType())) {
             sendBundledLetterNotificationToAppellant(wrapper, notification);
@@ -93,16 +102,16 @@ public class SendNotificationService {
         }
     }
 
-    private void sendFallbackLetterNofication(NotificationWrapper wrapper, Subscription subscription, Notification notification) {
+    private void sendFallbackLetterNoficationToAppellant(NotificationWrapper wrapper, Subscription subscription, Notification notification) {
         if (!subscription.isSmsSubscribed() && !subscription.isEmailSubscribed() && notification.getLetterTemplate() != null) {
             NotificationHandler.SendNotification sendNotification = () -> {
                 Address addressToUse = getAddressToUseForLetter(wrapper);
 
-                notification.getPlaceholders().put(ADDRESS_LINE_1, addressToUse.getLine1());
-                notification.getPlaceholders().put(ADDRESS_LINE_2, addressToUse.getLine2());
-                notification.getPlaceholders().put(ADDRESS_LINE_3, addressToUse.getTown());
-                notification.getPlaceholders().put(ADDRESS_LINE_4, addressToUse.getCounty());
-                notification.getPlaceholders().put(ADDRESS_POSTCODE, addressToUse.getPostcode());
+                notification.getPlaceholders().put(ADDRESS_LINE_1, addressToUse.getLine1() == null ? " " : addressToUse.getLine1());
+                notification.getPlaceholders().put(ADDRESS_LINE_2, addressToUse.getLine2() == null ? " " : addressToUse.getLine2());
+                notification.getPlaceholders().put(ADDRESS_LINE_3, addressToUse.getTown() == null ? " " : addressToUse.getTown());
+                notification.getPlaceholders().put(ADDRESS_LINE_4, addressToUse.getCounty() == null ? " " : addressToUse.getCounty());
+                notification.getPlaceholders().put(POSTCODE_LITERAL, addressToUse.getPostcode());
 
                 notificationSender.sendLetter(
                     notification.getLetterTemplate(),
@@ -115,6 +124,29 @@ public class SendNotificationService {
         }
     }
 
+    private void sendFallbackLetterNoficationToRepresentative(NotificationWrapper wrapper, Subscription subscription, Notification notification) {
+        if (!subscription.isSmsSubscribed() && !subscription.isEmailSubscribed() && notification.getLetterTemplate() != null) {
+            NotificationHandler.SendNotification sendNotification = () -> {
+                Address addressToUse = wrapper.getNewSscsCaseData().getAppeal().getRep().getAddress();
+
+                Map<String, String> placeholders = notification.getPlaceholders();
+                placeholders.put(ADDRESS_LINE_1, addressToUse.getLine1() == null ? " " : addressToUse.getLine1());
+                placeholders.put(ADDRESS_LINE_2, addressToUse.getLine2() == null ? " " : addressToUse.getLine2());
+                placeholders.put(ADDRESS_LINE_3, addressToUse.getTown() == null ? " " : addressToUse.getTown());
+                placeholders.put(ADDRESS_LINE_4, addressToUse.getCounty() == null ? " " : addressToUse.getCounty());
+                placeholders.put(POSTCODE_LITERAL, addressToUse.getPostcode());
+                placeholders.put(REPRESENTATIVE_NAME, wrapper.getNewSscsCaseData().getAppeal().getRep().getName().getFullNameNoTitle());
+
+                notificationSender.sendLetter(
+                    notification.getLetterTemplate(),
+                    addressToUse,
+                    notification.getPlaceholders(),
+                    wrapper.getCaseId()
+                );
+            };
+            notificationHandler.sendNotification(wrapper, notification.getSmsTemplate(), "Letter", sendNotification);
+        }
+    }
 
     private void sendBundledLetterNotificationToAppellant(NotificationWrapper wrapper, Notification notification) {
         if (notification.getLetterTemplate() != null) {

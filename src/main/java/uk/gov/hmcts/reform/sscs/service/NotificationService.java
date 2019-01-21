@@ -51,19 +51,20 @@ public class NotificationService {
         log.info("Notification event triggered {} for case id {}", notificationType.getId(), caseId);
         for (SubscriptionWithType subscriptionWithType :
                 notificationWrapper.getSubscriptionsBasedOnNotificationType()) {
-            sendNotificationPerSubscription(notificationWrapper, subscriptionWithType, notificationType);
+            sendNotificationPerSubscription(notificationWrapper, subscriptionWithType.getSubscription(), notificationType, subscriptionWithType);
         }
     }
 
     private void sendNotificationPerSubscription(NotificationWrapper notificationWrapper,
-                                                 SubscriptionWithType subscriptionWithType,
-                                                 NotificationEventType notificationType) {
+                                                 Subscription subscription,
+                                                 NotificationEventType notificationType,
+                                                 SubscriptionWithType subscriptionWithType) {
         if (isValidNotification(notificationWrapper, subscriptionWithType, notificationType)) {
             Notification notification = notificationFactory.create(notificationWrapper,
                     subscriptionWithType.getSubscriptionType());
             if (notificationWrapper.getNotificationType().isAllowOutOfHours() || !outOfHoursCalculator.isItOutOfHours()) {
-                sendNotificationService.sendEmailSmsLetterNotification(notificationWrapper, subscriptionWithType.getSubscription(), notification);
-                processOldSubscriptionNotifications(notificationWrapper, notification);
+                sendNotificationService.sendEmailSmsLetterNotification(notificationWrapper, subscription, notification, subscriptionWithType);
+                processOldSubscriptionNotifications(notificationWrapper, notification, subscriptionWithType);
             } else {
                 notificationHandler.scheduleNotification(notificationWrapper);
             }
@@ -83,7 +84,7 @@ public class NotificationService {
             && notificationValidService.isHearingTypeValidToSendNotification(wrapper.getNewSscsCaseData(), notificationType)));
     }
 
-    private void processOldSubscriptionNotifications(NotificationWrapper wrapper, Notification notification) {
+    private void processOldSubscriptionNotifications(NotificationWrapper wrapper, Notification notification, SubscriptionWithType subscriptionWithType) {
         if (wrapper.getNotificationType() == NotificationEventType.SUBSCRIPTION_UPDATED_NOTIFICATION
                 && wrapper.getHearingType() == AppealHearingType.PAPER) {
             Subscription newSubscription = wrapper.getNewSscsCaseData().getSubscriptions().getAppellantSubscription();
@@ -124,7 +125,7 @@ public class NotificationService {
                     .appealNumber(notification.getAppealNumber())
                     .placeholders(notification.getPlaceholders()).build();
 
-            sendNotificationService.sendEmailSmsLetterNotification(wrapper, oldSubscription, oldNotification);
+            sendNotificationService.sendEmailSmsLetterNotification(wrapper, oldSubscription, oldNotification, subscriptionWithType);
         }
     }
 
