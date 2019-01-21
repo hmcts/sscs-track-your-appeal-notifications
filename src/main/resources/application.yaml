@@ -234,8 +234,14 @@ notification:
       letterId: 7383b637-d76e-4c9f-8af9-3e3573168011
   oral:
     responseReceived:
-      emailId: 1afd89f9-9935-4acb-b4f6-ba708b03a0d3
-      smsId: 4bba0b5d-a3f3-4fd9-a845-26af5eda042e
+      appellant:
+        emailId: 1afd89f9-9935-4acb-b4f6-ba708b03a0d3
+        smsId: 4bba0b5d-a3f3-4fd9-a845-26af5eda042e
+        letterId: 8b11f3f4-6452-4a35-93d8-a94996af6499
+      appointee:
+        letterId: 8b11f3f4-6452-4a35-93d8-a94996af6499
+      representative:
+        letterId: 419beb1c-4f26-45e7-8db3-69bfe5e9224d
     evidenceReceived:
       representative:
         emailId: 30260c0b-5575-4f4e-bce4-73cf3f245c2d

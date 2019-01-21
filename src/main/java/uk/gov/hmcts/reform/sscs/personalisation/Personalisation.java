@@ -252,6 +252,7 @@ public class Personalisation<E extends NotificationWrapper> {
             || APPEAL_DORMANT_NOTIFICATION.equals(notificationEventType)
             || ADJOURNED_NOTIFICATION.equals(notificationEventType)
             || APPEAL_RECEIVED_NOTIFICATION.equals(notificationEventType)
+            || DWP_RESPONSE_RECEIVED_NOTIFICATION.equals(notificationEventType)
             || POSTPONEMENT_NOTIFICATION.equals(notificationEventType)
             || HEARING_BOOKED_NOTIFICATION.equals(notificationEventType)
             || INTERLOC_VALID_APPEAL.equals(notificationEventType)) {
