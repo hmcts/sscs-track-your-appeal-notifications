@@ -159,7 +159,8 @@ public class PersonalisationTest {
         personalisation.getTemplate(notificationWrapper, PIP, subscriptionType);
 
         verify(config).getTemplate(eq(getExpectedTemplateName(notificationEventType, subscriptionType)),
-                anyString(), any(Benefit.class), any(AppealHearingType.class));
+            anyString(), anyString(), any(Benefit.class), any(AppealHearingType.class)
+        );
     }
 
     private String getExpectedTemplateName(NotificationEventType notificationEventType,

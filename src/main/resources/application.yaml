@@ -68,6 +68,9 @@ gov.uk.notification.api.testRecipients:
 - "sscstest+notify2@greencroftconsulting.com"
 - "07398785050"
 - "07398785051"
+- "TS1 1ST"
+- "TS2 2ST"
+- "TS3 3ST"
 
 subscription.hmac.secret.text: ${EMAIL_MAC_SECRET_TEXT:our-big-secret}
 
@@ -190,6 +193,8 @@ notification:
   decision_issued_2:
     emailId: 5b0df251-49b9-46d5-b347-37a81ab77f19
     smsId: 04e778fd-71a8-4c27-b423-aa7485a81a9c
+  struckOut:
+    letterId: 7383b637-d76e-4c9f-8af9-3e3573168011
   online:
     responseReceived:
       emailId: 90f0ed29-a616-4ce0-b4ef-108391f5d90e
@@ -217,6 +222,9 @@ notification:
     evidenceReceived:
       representative:
         emailId: 7af36950-fc63-45d1-907d-f472fac7af06
+        smsId: 345f802b-7089-4f46-a17f-bf534b272740
+    struckOut:
+      letterId: 7383b637-d76e-4c9f-8af9-3e3573168011
   oral:
     responseReceived:
       emailId: 1afd89f9-9935-4acb-b4f6-ba708b03a0d3
@@ -229,6 +237,8 @@ notification:
         emailId: fc9d0618-68c4-48ec-9481-a84b225a57a9
       representative:
         emailId: e2ee8609-7d56-4857-b3f8-79028e8960aa
+    struckOut:
+      letterId: 7383b637-d76e-4c9f-8af9-3e3573168011
 
 smsSender:
   pip: 80b11be7-5c10-2773-8351-070e22d5ab6b
@@ -295,3 +305,29 @@ job.scheduler:
       jobStore:
         class: org.quartz.simpl.RAMJobStore
 ---
+
+# Document store
+document_management.url: ${DOCUMENT_MANAGEMENT_URL:http://dm-store:4506}
+
+appeal.email.host: ${EMAIL_SERVER_HOST:localhost}
+appeal.email.port: ${EMAIL_SERVER_PORT:1025}
+appeal.email.smtp.tls.enabled: ${EMAIL_SMTP_TLS_ENABLED:true}
+appeal.email.smtp.ssl.trust: ${EMAIL_SMTP_SSL_TRUST:*}
+
+appeal.email.from: ${EMAIL_FROM:sscs@hmcts.net}
+appeal.email.to: ${EMAIL_TO:receiver@hmcts.net}
+appeal.email.subject: ${EMAIL_SUBJECT:Your appeal}
+appeal.email.message: ${EMAIL_MESSAGE:Your appeal has been created \nPlease do not respond to this email}
+
+appellant.appeal.html.template.path: /templates/appellant_appeal_template.html
+noncompliantcaseletter.appeal.html.template.path: /templates/non_compliant_case_letter_template.html
+
+pdf.api.url: ${PDF_API_URL:http://localhost:5500}
+
+robotics.email.from: ${ROBOTICS_EMAIL_FROM:sscs@hmcts.net}
+robotics.email.to: ${ROBOTICS_EMAIL_TO:receiver@hmcts.net}
+robotics.email.subject: ${ROBOTICS_EMAIL_SUBJECT:Robotics Data}
+robotics.email.message: ${ROBOTICS_EMAIL_MESSAGE:Please find attached the robotics json file \nPlease do not respond to this email}
+robotics.schema.resource.location: /schema/sscs-robotics.json
+
+feature.bundled_letters_on: ${BUNDLED_LETTERS_ON:false}

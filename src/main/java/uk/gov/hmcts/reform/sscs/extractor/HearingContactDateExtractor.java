@@ -41,14 +41,10 @@ public class HearingContactDateExtractor {
 
         switch (referenceNotificationEventType) {
 
-            case DWP_RESPONSE_RECEIVED_NOTIFICATION: {
-                if (PAPER.getValue().equals(sscsCaseData.getAppeal().getHearingType())) {
-                    delay = paperCaseDecisionDateInitialDelay;
-                } else {
-                    delay = initialDelay;
-                }
+            case DWP_RESPONSE_RECEIVED_NOTIFICATION:
+                delay = getDwpResponseReceivedNotificationDelay(sscsCaseData);
                 break;
-            }
+
             case ADJOURNED_NOTIFICATION:
             case POSTPONEMENT_NOTIFICATION:
                 delay = initialDelay;
@@ -74,6 +70,16 @@ public class HearingContactDateExtractor {
 
         return optionalDwpResponseReceivedDate
                 .map(dwpResponseReceivedDate -> dwpResponseReceivedDate.plusSeconds(delay));
+    }
+
+    private long getDwpResponseReceivedNotificationDelay(SscsCaseData sscsCaseData) {
+        long delay;
+        if (PAPER.getValue().equals(sscsCaseData.getAppeal().getHearingType())) {
+            delay = paperCaseDecisionDateInitialDelay;
+        } else {
+            delay = initialDelay;
+        }
+        return delay;
     }
 
 }

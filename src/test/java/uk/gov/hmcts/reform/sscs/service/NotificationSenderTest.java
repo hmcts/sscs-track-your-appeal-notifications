@@ -4,20 +4,20 @@ import static java.util.Collections.singletonList;
 import static org.mockito.Mockito.*;
 import static org.mockito.MockitoAnnotations.initMocks;
 
+import java.io.IOException;
 import java.util.Collections;
 import java.util.Map;
 import java.util.UUID;
+
+import org.apache.pdfbox.io.IOUtils;
 import org.junit.Before;
 import org.junit.Test;
 import org.mockito.Mock;
+import uk.gov.hmcts.reform.sscs.ccd.domain.Address;
 import uk.gov.hmcts.reform.sscs.config.NotificationBlacklist;
-import uk.gov.service.notify.NotificationClient;
-import uk.gov.service.notify.NotificationClientException;
-import uk.gov.service.notify.SendEmailResponse;
-import uk.gov.service.notify.SendSmsResponse;
+import uk.gov.service.notify.*;
 
 public class NotificationSenderTest {
-
     public static final String CCD_CASE_ID = "78980909090099";
     public static final String SMS_SENDER = "sms-sender";
     private NotificationClient notificationClient;
@@ -33,6 +33,12 @@ public class NotificationSenderTest {
 
     @Mock
     private SendSmsResponse sendSmsResponse;
+
+    @Mock
+    private LetterResponse letterResponse;
+
+    @Mock
+    private SendLetterResponse sendLetterResponse;
 
     @Before
     public void setUp() {
@@ -88,7 +94,6 @@ public class NotificationSenderTest {
         verify(testNotificationClient).sendEmail(templateId, emailAddress, personalisation, reference);
     }
 
-
     @Test
     public void sendSmsToNormalSender() throws NotificationClientException {
         String phoneNumber = "07777777777";
@@ -101,7 +106,6 @@ public class NotificationSenderTest {
         verifyZeroInteractions(testNotificationClient);
         verify(notificationClient).sendSms(templateId, phoneNumber, personalisation, reference, SMS_SENDER);
     }
-
 
     @Test
     public void sendSmsToTestSenderIfOnBlacklist() throws NotificationClientException {
@@ -117,5 +121,61 @@ public class NotificationSenderTest {
         verify(testNotificationClient).sendSms(templateId, phoneNumber, personalisation, reference, SMS_SENDER);
     }
 
+    @Test
+    public void sendBundledLetterToNormalSender() throws IOException, NotificationClientException {
+        String postcode = "LN8 4DX";
 
+        when(notificationClient.sendPrecompiledLetterWithInputStream(any(), any())).thenReturn(letterResponse);
+        when(letterResponse.getNotificationId()).thenReturn(UUID.randomUUID());
+
+        byte[] sampleDirectionCoversheet = IOUtils.toByteArray(getClass().getClassLoader().getResourceAsStream("pdfs/direction-notice-coversheet-sample.pdf"));
+        notificationSender.sendBundledLetter(postcode, sampleDirectionCoversheet, CCD_CASE_ID);
+
+        verifyZeroInteractions(testNotificationClient);
+        verify(notificationClient).sendPrecompiledLetterWithInputStream(any(), any());
+    }
+
+    @Test
+    public void sendBundledLetterToSenderIfOnBlacklist() throws IOException, NotificationClientException {
+        String postcode = "TS1 1ST";
+
+        when(blacklist.getTestRecipients()).thenReturn(singletonList(postcode));
+        when(testNotificationClient.sendPrecompiledLetterWithInputStream(any(), any())).thenReturn(letterResponse);
+        when(letterResponse.getNotificationId()).thenReturn(UUID.randomUUID());
+
+        byte[] sampleDirectionCoversheet = IOUtils.toByteArray(getClass().getClassLoader().getResourceAsStream("pdfs/direction-notice-coversheet-sample.pdf"));
+        notificationSender.sendBundledLetter(postcode, sampleDirectionCoversheet, CCD_CASE_ID);
+
+        verifyZeroInteractions(notificationClient);
+        verify(testNotificationClient).sendPrecompiledLetterWithInputStream(any(), any());
+    }
+
+    @Test
+    public void sendLetterToNormalSender() throws IOException, NotificationClientException {
+        String postcode = "LN8 4DX";
+
+        when(notificationClient.sendLetter(any(), any(), any())).thenReturn(sendLetterResponse);
+        when(sendLetterResponse.getNotificationId()).thenReturn(UUID.randomUUID());
+
+        Address address = Address.builder().line1("1 Appellant Ave").town("Sometown").county("Somecounty").postcode(postcode).build();
+        notificationSender.sendLetter(templateId, address, personalisation, null, CCD_CASE_ID);
+
+        verifyZeroInteractions(testNotificationClient);
+        verify(notificationClient).sendLetter(any(), any(), any());
+    }
+
+    @Test
+    public void sendLetterToSenderIfOnBlacklist() throws IOException, NotificationClientException {
+        String postcode = "TS1 1ST";
+
+        when(blacklist.getTestRecipients()).thenReturn(singletonList(postcode));
+        when(testNotificationClient.sendLetter(any(), any(), any())).thenReturn(sendLetterResponse);
+        when(sendLetterResponse.getNotificationId()).thenReturn(UUID.randomUUID());
+
+        Address address = Address.builder().line1("1 Appellant Ave").town("Sometown").county("Somecounty").postcode(postcode).build();
+        notificationSender.sendLetter(templateId, address, personalisation, null, CCD_CASE_ID);
+
+        verifyZeroInteractions(notificationClient);
+        verify(testNotificationClient).sendLetter(any(), any(), any());
+    }
 }
