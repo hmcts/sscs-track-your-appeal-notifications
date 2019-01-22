@@ -62,7 +62,8 @@ public class NotificationService {
         if (isValidNotification(notificationWrapper, subscriptionWithType, notificationType)) {
             Notification notification = notificationFactory.create(notificationWrapper,
                     subscriptionWithType.getSubscriptionType());
-            if (notificationWrapper.getNotificationType().isAllowOutOfHours() || !outOfHoursCalculator.isItOutOfHours()) {
+            if (!subscription.doesCaseHaveSubscriptions()
+                    || notificationWrapper.getNotificationType().isAllowOutOfHours() || !outOfHoursCalculator.isItOutOfHours()) {
                 sendNotificationService.sendEmailSmsLetterNotification(notificationWrapper, subscription, notification, subscriptionWithType);
                 processOldSubscriptionNotifications(notificationWrapper, notification, subscriptionWithType);
             } else {

@@ -131,7 +131,7 @@ public class HearingHoldingReminderIt {
 
             sendEvent("responseReceived");
 
-            IntegrationTestHelper.assertScheduledJobCount(quartzScheduler, "First hearing holding reminder scheduled", "hearingHoldingReminder", 1);
+            IntegrationTestHelper.assertScheduledJobCount(quartzScheduler, "First hearing holding reminder scheduled", "hearingHoldingReminder", 2);
             IntegrationTestHelper.assertScheduledJobTriggerAt(
                 quartzScheduler,
                 "First hearing holding reminder scheduled",
@@ -139,7 +139,7 @@ public class HearingHoldingReminderIt {
                 "2048-07-19T14:01:18.243Z"
             );
 
-            IntegrationTestHelper.assertScheduledJobCount(quartzScheduler, "Second hearing holding reminder scheduled", "secondHearingHoldingReminder", 1);
+            IntegrationTestHelper.assertScheduledJobCount(quartzScheduler, "Second hearing holding reminder scheduled", "secondHearingHoldingReminder", 2);
             IntegrationTestHelper.assertScheduledJobTriggerAt(
                 quartzScheduler,
                 "Hearing holding reminder scheduled",
@@ -147,7 +147,7 @@ public class HearingHoldingReminderIt {
                 "2048-08-30T14:01:18.243Z"
             );
 
-            IntegrationTestHelper.assertScheduledJobCount(quartzScheduler, "Third hearing holding reminder scheduled", "thirdHearingHoldingReminder", 1);
+            IntegrationTestHelper.assertScheduledJobCount(quartzScheduler, "Third hearing holding reminder scheduled", "thirdHearingHoldingReminder", 2);
             IntegrationTestHelper.assertScheduledJobTriggerAt(
                 quartzScheduler,
                 "Hearing holding reminder scheduled",
@@ -155,7 +155,7 @@ public class HearingHoldingReminderIt {
                 "2048-10-11T14:01:18.243Z"
             );
 
-            IntegrationTestHelper.assertScheduledJobCount(quartzScheduler, "Final hearing holding reminder scheduled", "finalHearingHoldingReminder", 1);
+            IntegrationTestHelper.assertScheduledJobCount(quartzScheduler, "Final hearing holding reminder scheduled", "finalHearingHoldingReminder", 2);
             IntegrationTestHelper.assertScheduledJobTriggerAt(
                 quartzScheduler,
                 "Final hearing holding reminder scheduled",

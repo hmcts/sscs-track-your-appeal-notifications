@@ -57,7 +57,7 @@ public class SendNotificationService {
             Subscription subscription,
             Notification notification,
             SubscriptionWithType subscriptionWithType
-            ) {
+    ) {
         sendEmailNotification(wrapper, subscription, notification);
         sendSmsNotification(wrapper, subscription, notification);
 
