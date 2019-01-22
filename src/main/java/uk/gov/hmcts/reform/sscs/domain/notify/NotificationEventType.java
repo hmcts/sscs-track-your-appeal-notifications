@@ -73,6 +73,15 @@ public enum NotificationEventType {
         return b;
     }
 
+    public static boolean checkEvent(String event) {
+        for (NotificationEventType type : NotificationEventType.values()) {
+            if (event.equals(type.getId())) {
+                return true;
+            }
+        }
+        return false;
+    }
+
     public String getId() {
         return id;
     }

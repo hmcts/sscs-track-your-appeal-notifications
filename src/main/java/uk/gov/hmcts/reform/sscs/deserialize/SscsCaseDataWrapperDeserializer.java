@@ -164,7 +164,7 @@ public class SscsCaseDataWrapperDeserializer extends StdDeserializer<SscsCaseDat
 
     private Appointee deserializeAppointee(JsonNode appellantNode) {
         JsonNode appointeeNode = getNode(appellantNode, "appointee");
-        if (null != appellantNode) {
+        if (null != appointeeNode) {
             Name name = deserializeNameJson(appointeeNode);
             Address address = deserializeAddressJson(appointeeNode);
             Contact contact = deserializeContactJson(appointeeNode);

@@ -307,6 +307,7 @@ robotics.email.message: ${ROBOTICS_EMAIL_MESSAGE:Please find attached the roboti
 robotics.schema.resource.location: /schema/sscs-robotics.json
 
 feature.bundled_letters_on: ${BUNDLED_LETTERS_ON:false}
+feature.letters_on: ${LETTERS_ON:false}
 
 
 ---

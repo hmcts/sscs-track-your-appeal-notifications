@@ -33,6 +33,9 @@ public class SendNotificationService {
     @Value("${feature.bundled_letters_on}")
     Boolean bundledLettersOn;
 
+    @Value("${feature.letters_on}")
+    Boolean lettersOn;
+
     private final NotificationSender notificationSender;
     private final EvidenceManagementService evidenceManagementService;
     private final SscsGeneratePdfService sscsGeneratePdfService;
@@ -62,10 +65,12 @@ public class SendNotificationService {
         sendEmailNotification(wrapper, subscription, notification);
         sendSmsNotification(wrapper, subscription, notification);
 
-        if (APPELLANT.equals(subscriptionWithType.getSubscriptionType())) {
-            sendFallbackLetterNoficationToAppellant(wrapper, subscription, notification);
-        } else {
-            sendFallbackLetterNoficationToRepresentative(wrapper, subscription, notification);
+        if (lettersOn) {
+            if (APPELLANT.equals(subscriptionWithType.getSubscriptionType())) {
+                sendFallbackLetterNoficationToAppellant(wrapper, subscription, notification);
+            } else {
+                sendFallbackLetterNoficationToRepresentative(wrapper, subscription, notification);
+            }
         }
 
         if (bundledLettersOn && isBundledLetter(wrapper.getNotificationType())) {
