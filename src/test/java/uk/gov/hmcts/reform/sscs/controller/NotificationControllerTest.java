@@ -48,7 +48,7 @@ public class NotificationControllerTest {
     private IdamTokens idamTokens;
 
     private String caseId = "12345";
-    private String eventType = "eventType";
+    private String eventType = "question_round_issued";
 
     @Before
     public void setUp() {
