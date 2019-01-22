@@ -27,10 +27,10 @@ public class ReminderNotificationsFunctionalTest extends AbstractFunctionalTest 
     @Value("${notification.evidenceReminder.smsId}")
     private String evidenceReminderSmsTemplateId;
 
-    @Value("${notification.oral.responseReceived.emailId}")
+    @Value("${notification.oral.responseReceived.appellant.emailId}")
     private String responseReceivedEmailTemplateId;
 
-    @Value("${notification.oral.responseReceived.smsId}")
+    @Value("${notification.oral.responseReceived.appellant.smsId}")
     private String responseReceivedSmsTemplateId;
 
     @Value("${notification.hearingReminder.emailId}")
