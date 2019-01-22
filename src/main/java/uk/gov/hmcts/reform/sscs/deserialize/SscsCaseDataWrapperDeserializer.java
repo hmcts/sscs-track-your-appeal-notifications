@@ -156,8 +156,23 @@ public class SscsCaseDataWrapperDeserializer extends StdDeserializer<SscsCaseDat
         Contact contact = deserializeContactJson(appellantNode);
         Identity identity = deserializeIdentityJson(appellantNode);
 
+        Appointee appointee = deserializeAppointee(appellantNode);
+
         return Appellant.builder()
-                .name(name).address(address).contact(contact).identity(identity).build();
+                .name(name).address(address).contact(contact).identity(identity).appointee(appointee).build();
+    }
+
+    private Appointee deserializeAppointee(JsonNode appellantNode) {
+        JsonNode appointeeNode = getNode(appellantNode, "appointee");
+        if (null != appellantNode) {
+            Name name = deserializeNameJson(appointeeNode);
+            Address address = deserializeAddressJson(appointeeNode);
+            Contact contact = deserializeContactJson(appointeeNode);
+
+            return Appointee.builder().name(name).address(address).contact(contact).build();
+        } else {
+            return null;
+        }
     }
 
     private Contact deserializeContactJson(JsonNode node) {
