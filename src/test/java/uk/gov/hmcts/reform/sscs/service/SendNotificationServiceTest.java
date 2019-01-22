@@ -101,6 +101,7 @@ public class SendNotificationServiceTest {
 
         classUnderTest = new SendNotificationService(notificationSender, evidenceManagementService, pdfService, notificationHandler);
         classUnderTest.bundledLettersOn = true;
+        classUnderTest.lettersOn = true;
     }
 
     @Test
@@ -163,6 +164,16 @@ public class SendNotificationServiceTest {
         classUnderTest.sendEmailSmsLetterNotification(buildBaseWrapper(APPELLANT_WITH_ADDRESS, NotificationEventType.INTERLOC_VALID_APPEAL), EMPTY_SUBSCRIPTION, LETTER_NOTIFICATION, appellantEmptySubscription);
 
         verify(notificationHandler).sendNotification(any(), eq(LETTER_NOTIFICATION.getLetterTemplate()), any(), any());
+    }
+
+    @Test
+    public void doNotSendFallbackLetterNoficationToAppellantWhenToggledOff() {
+        SubscriptionWithType appellantEmptySubscription = new SubscriptionWithType(EMPTY_SUBSCRIPTION, SubscriptionType.APPELLANT);
+
+        classUnderTest.lettersOn = false;
+        classUnderTest.sendEmailSmsLetterNotification(buildBaseWrapper(APPELLANT_WITH_ADDRESS, NotificationEventType.INTERLOC_VALID_APPEAL), EMPTY_SUBSCRIPTION, LETTER_NOTIFICATION, appellantEmptySubscription);
+
+        verifyZeroInteractions(notificationHandler);
     }
 
     @Test

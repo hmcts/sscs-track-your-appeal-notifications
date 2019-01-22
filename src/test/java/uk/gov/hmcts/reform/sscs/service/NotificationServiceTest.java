@@ -108,7 +108,7 @@ public class NotificationServiceTest {
     public void setup() {
         initMocks(this);
 
-        notificationService = getNotificationService(true);
+        notificationService = getNotificationService(true, true);
 
         sscsCaseData = SscsCaseData.builder()
             .appeal(
@@ -711,7 +711,7 @@ public class NotificationServiceTest {
     }
 
     @Test
-    public void sendLetterToGovNotifyWhenStruckOutNotification() throws IOException {
+    public void sendBundledLetterToGovNotifyWhenStruckOutNotification() throws IOException {
         String fileUrl = "http://dm-store:4506/documents/1e1eb3d2-5b6c-430d-8dad-ebcea1ad7ecf";
 
         CcdNotificationWrapper struckOutCcdNotificationWrapper = buildWrapperWithDocuments(STRUCK_OUT, fileUrl, APPELLANT_WITH_ADDRESS, null);
@@ -733,7 +733,7 @@ public class NotificationServiceTest {
     }
 
     @Test(expected = NotificationServiceException.class)
-    public void sendLetterToGovNotifyWhenStruckOutNotificationFailsAtNotify() throws IOException {
+    public void sendBundledLettersToGovNotifyWhenStruckOutNotificationFailsAtNotify() throws IOException {
         String fileUrl = "http://dm-store:4506/documents/1e1eb3d2-5b6c-430d-8dad-ebcea1ad7ecf";
 
         CcdNotificationWrapper struckOutCcdNotificationWrapper = buildWrapperWithDocuments(STRUCK_OUT, fileUrl, APPELLANT_WITH_ADDRESS, null);
@@ -756,7 +756,7 @@ public class NotificationServiceTest {
     }
 
     @Test
-    public void doNotSendLetterToGovNotifyWhenStruckOutNotificationWhenFeatureToggledOff() throws IOException {
+    public void doNotSendBundledLettersToGovNotifyWhenStruckOutNotificationWhenFeatureToggledOff() throws IOException {
         String fileUrl = "http://dm-store:4506/documents/1e1eb3d2-5b6c-430d-8dad-ebcea1ad7ecf";
 
         CcdNotificationWrapper struckOutCcdNotificationWrapper = buildWrapperWithDocuments(STRUCK_OUT, fileUrl, APPELLANT_WITH_ADDRESS, null);
@@ -773,19 +773,20 @@ public class NotificationServiceTest {
 
         when(factory.create(struckOutCcdNotificationWrapper, APPELLANT)).thenReturn(notification);
 
-        getNotificationService(false).manageNotificationAndSubscription(struckOutCcdNotificationWrapper);
+        getNotificationService(false, false).manageNotificationAndSubscription(struckOutCcdNotificationWrapper);
 
         verify(notificationHandler, times(0)).sendNotification(eq(struckOutCcdNotificationWrapper), eq(LETTER_TEMPLATE_ID_STRUCKOUT), eq(LETTER), any(NotificationHandler.SendNotification.class));
     }
 
-    private NotificationService getNotificationService(Boolean bundledLettersOn) {
+    private NotificationService getNotificationService(Boolean bundledLettersOn, Boolean lettersOn) {
         SendNotificationService sendNotificationService = new SendNotificationService(notificationSender, evidenceManagementService, sscsGeneratePdfService, notificationHandler);
 
-        NotificationService notificationService = new NotificationService(factory, reminderService,
+        final NotificationService notificationService = new NotificationService(factory, reminderService,
             notificationValidService, notificationHandler, outOfHoursCalculator, notificationConfig, sendNotificationService
         );
         ReflectionTestUtils.setField(sendNotificationService, "noncompliantcaseletterTemplate", "/templates/non_compliant_case_letter_template.html");
         ReflectionTestUtils.setField(sendNotificationService, "bundledLettersOn", bundledLettersOn);
+        ReflectionTestUtils.setField(sendNotificationService, "lettersOn", lettersOn);
         return notificationService;
     }
 
