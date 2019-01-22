@@ -30,7 +30,7 @@ public class SendNotificationService {
     public static final String NOTIFICATION_TYPE_LETTER = "Letter";
 
     @Value("${feature.bundled_letters_on}")
-    private Boolean bundledLettersOn;
+    Boolean bundledLettersOn;
 
     private final NotificationSender notificationSender;
     private final EvidenceManagementService evidenceManagementService;
@@ -120,7 +120,7 @@ public class SendNotificationService {
                     wrapper.getCaseId()
                 );
             };
-            notificationHandler.sendNotification(wrapper, notification.getSmsTemplate(), NOTIFICATION_TYPE_LETTER, sendNotification);
+            notificationHandler.sendNotification(wrapper, notification.getLetterTemplate(), NOTIFICATION_TYPE_LETTER, sendNotification);
         }
     }
 
@@ -144,7 +144,7 @@ public class SendNotificationService {
                     wrapper.getCaseId()
                 );
             };
-            notificationHandler.sendNotification(wrapper, notification.getSmsTemplate(), NOTIFICATION_TYPE_LETTER, sendNotification);
+            notificationHandler.sendNotification(wrapper, notification.getLetterTemplate(), NOTIFICATION_TYPE_LETTER, sendNotification);
         }
     }
 
