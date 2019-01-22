@@ -148,6 +148,9 @@ public class NotificationServiceTest {
         ccdNotificationWrapper = buildNotificationWrapperGivenNotificationTypeAndSubscriptions(
                 notificationEventType, appellantSubscription, repsSubscription);
 
+        // Add representative
+        ccdNotificationWrapper.getNewSscsCaseData().getAppeal().setRep(Representative.builder().build());
+
         given(notificationValidService.isHearingTypeValidToSendNotification(
                 any(SscsCaseData.class), eq(notificationEventType))).willReturn(true);
 
@@ -346,6 +349,18 @@ public class NotificationServiceTest {
                         new SubscriptionType[]{},
                 },
                 new Object[]{
+                        DWP_RESPONSE_RECEIVED_NOTIFICATION,
+                        0,
+                        0,
+                        Subscription.builder()
+                                .tya(APPEAL_NUMBER)
+                                .build(),
+                        Subscription.builder()
+                                .tya(APPEAL_NUMBER)
+                                .build(),
+                        new SubscriptionType[]{APPELLANT, REPRESENTATIVE},
+                },
+                new Object[]{
                         INTERLOC_VALID_APPEAL,
                         2,
                         0,
@@ -391,7 +406,7 @@ public class NotificationServiceTest {
                                 .tya(APPEAL_NUMBER)
                                 .mobile(MOBILE_NUMBER_1)
                                 .build(),
-                        new SubscriptionType[]{APPELLANT},
+                        new SubscriptionType[]{APPELLANT, REPRESENTATIVE},
                 }
         };
     }

@@ -13,15 +13,30 @@ import static org.mockito.MockitoAnnotations.initMocks;
 import static uk.gov.hmcts.reform.sscs.ccd.domain.Benefit.ESA;
 import static uk.gov.hmcts.reform.sscs.ccd.domain.Benefit.PIP;
 import static uk.gov.hmcts.reform.sscs.ccd.domain.EventType.APPEAL_RECEIVED;
-import static uk.gov.hmcts.reform.sscs.ccd.domain.HearingType.*;
+import static uk.gov.hmcts.reform.sscs.ccd.domain.HearingType.ONLINE;
+import static uk.gov.hmcts.reform.sscs.ccd.domain.HearingType.ORAL;
+import static uk.gov.hmcts.reform.sscs.ccd.domain.HearingType.PAPER;
+import static uk.gov.hmcts.reform.sscs.ccd.domain.HearingType.REGULAR;
 import static uk.gov.hmcts.reform.sscs.config.AppConstants.ACCEPT_VIEW_BY_DATE_LITERAL;
 import static uk.gov.hmcts.reform.sscs.config.AppConstants.ONLINE_HEARING_LINK_LITERAL;
 import static uk.gov.hmcts.reform.sscs.config.AppConstants.ONLINE_HEARING_REGISTER_LINK_LITERAL;
 import static uk.gov.hmcts.reform.sscs.config.AppConstants.ONLINE_HEARING_SIGN_IN_LINK_LITERAL;
 import static uk.gov.hmcts.reform.sscs.config.AppConstants.QUESTION_ROUND_EXPIRES_DATE_LITERAL;
 import static uk.gov.hmcts.reform.sscs.config.AppConstants.TRIBUNAL_RESPONSE_DATE_LITERAL;
-import static uk.gov.hmcts.reform.sscs.config.SubscriptionType.*;
-import static uk.gov.hmcts.reform.sscs.domain.notify.NotificationEventType.*;
+import static uk.gov.hmcts.reform.sscs.config.SubscriptionType.APPELLANT;
+import static uk.gov.hmcts.reform.sscs.config.SubscriptionType.REPRESENTATIVE;
+import static uk.gov.hmcts.reform.sscs.domain.notify.NotificationEventType.ADJOURNED_NOTIFICATION;
+import static uk.gov.hmcts.reform.sscs.domain.notify.NotificationEventType.APPEAL_DORMANT_NOTIFICATION;
+import static uk.gov.hmcts.reform.sscs.domain.notify.NotificationEventType.APPEAL_LAPSED_NOTIFICATION;
+import static uk.gov.hmcts.reform.sscs.domain.notify.NotificationEventType.APPEAL_RECEIVED_NOTIFICATION;
+import static uk.gov.hmcts.reform.sscs.domain.notify.NotificationEventType.APPEAL_WITHDRAWN_NOTIFICATION;
+import static uk.gov.hmcts.reform.sscs.domain.notify.NotificationEventType.DWP_RESPONSE_RECEIVED_NOTIFICATION;
+import static uk.gov.hmcts.reform.sscs.domain.notify.NotificationEventType.EVIDENCE_RECEIVED_NOTIFICATION;
+import static uk.gov.hmcts.reform.sscs.domain.notify.NotificationEventType.HEARING_BOOKED_NOTIFICATION;
+import static uk.gov.hmcts.reform.sscs.domain.notify.NotificationEventType.INTERLOC_VALID_APPEAL;
+import static uk.gov.hmcts.reform.sscs.domain.notify.NotificationEventType.POSTPONEMENT_NOTIFICATION;
+import static uk.gov.hmcts.reform.sscs.domain.notify.NotificationEventType.RESEND_APPEAL_CREATED_NOTIFICATION;
+import static uk.gov.hmcts.reform.sscs.domain.notify.NotificationEventType.SYA_APPEAL_CREATED_NOTIFICATION;
 
 import java.time.Instant;
 import java.time.LocalDate;
@@ -44,7 +59,6 @@ import org.mockito.Mock;
 import uk.gov.hmcts.reform.sscs.ccd.domain.Address;
 import uk.gov.hmcts.reform.sscs.ccd.domain.Appeal;
 import uk.gov.hmcts.reform.sscs.ccd.domain.Appellant;
-import uk.gov.hmcts.reform.sscs.ccd.domain.Benefit;
 import uk.gov.hmcts.reform.sscs.ccd.domain.BenefitType;
 import uk.gov.hmcts.reform.sscs.ccd.domain.Document;
 import uk.gov.hmcts.reform.sscs.ccd.domain.DocumentDetails;
@@ -61,7 +75,6 @@ import uk.gov.hmcts.reform.sscs.ccd.domain.Subscription;
 import uk.gov.hmcts.reform.sscs.ccd.domain.Subscriptions;
 import uk.gov.hmcts.reform.sscs.ccd.domain.Venue;
 import uk.gov.hmcts.reform.sscs.config.AppConstants;
-import uk.gov.hmcts.reform.sscs.config.AppealHearingType;
 import uk.gov.hmcts.reform.sscs.config.NotificationConfig;
 import uk.gov.hmcts.reform.sscs.config.SubscriptionType;
 import uk.gov.hmcts.reform.sscs.domain.SscsCaseDataWrapper;
@@ -158,8 +171,13 @@ public class PersonalisationTest {
 
         personalisation.getTemplate(notificationWrapper, PIP, subscriptionType);
 
-        verify(config).getTemplate(eq(getExpectedTemplateName(notificationEventType, subscriptionType)),
-            anyString(), anyString(), any(Benefit.class), any(AppealHearingType.class)
+        String expectedTemplateName = getExpectedTemplateName(notificationEventType, subscriptionType);
+        verify(config).getTemplate(
+                eq(expectedTemplateName),
+                eq(expectedTemplateName),
+                anyString(),
+                eq(PIP),
+                eq(notificationWrapper.getHearingType())
         );
     }
 
@@ -197,9 +215,11 @@ public class PersonalisationTest {
                 new Object[]{SYA_APPEAL_CREATED_NOTIFICATION, REPRESENTATIVE, REGULAR},
                 new Object[]{SYA_APPEAL_CREATED_NOTIFICATION, REPRESENTATIVE, ONLINE},
                 new Object[]{INTERLOC_VALID_APPEAL, APPELLANT, PAPER},
+                new Object[]{INTERLOC_VALID_APPEAL, APPELLANT, ORAL},
                 new Object[]{INTERLOC_VALID_APPEAL, APPELLANT, REGULAR},
                 new Object[]{INTERLOC_VALID_APPEAL, APPELLANT, ONLINE},
                 new Object[]{INTERLOC_VALID_APPEAL, REPRESENTATIVE, PAPER},
+                new Object[]{INTERLOC_VALID_APPEAL, REPRESENTATIVE, ORAL},
                 new Object[]{INTERLOC_VALID_APPEAL, REPRESENTATIVE, REGULAR},
                 new Object[]{INTERLOC_VALID_APPEAL, REPRESENTATIVE, ONLINE},
                 new Object[]{EVIDENCE_RECEIVED_NOTIFICATION, APPELLANT, PAPER},
@@ -208,6 +228,12 @@ public class PersonalisationTest {
                 new Object[]{EVIDENCE_RECEIVED_NOTIFICATION, REPRESENTATIVE, PAPER},
                 new Object[]{EVIDENCE_RECEIVED_NOTIFICATION, REPRESENTATIVE, REGULAR},
                 new Object[]{EVIDENCE_RECEIVED_NOTIFICATION, REPRESENTATIVE, ONLINE},
+                new Object[]{DWP_RESPONSE_RECEIVED_NOTIFICATION, REPRESENTATIVE, PAPER},
+                new Object[]{DWP_RESPONSE_RECEIVED_NOTIFICATION, REPRESENTATIVE, ORAL},
+                new Object[]{DWP_RESPONSE_RECEIVED_NOTIFICATION, REPRESENTATIVE, ONLINE},
+                new Object[]{DWP_RESPONSE_RECEIVED_NOTIFICATION, APPELLANT, PAPER},
+                new Object[]{DWP_RESPONSE_RECEIVED_NOTIFICATION, APPELLANT, ORAL},
+                new Object[]{DWP_RESPONSE_RECEIVED_NOTIFICATION, APPELLANT, ONLINE},
                 new Object[]{RESEND_APPEAL_CREATED_NOTIFICATION, APPELLANT, PAPER},
                 new Object[]{RESEND_APPEAL_CREATED_NOTIFICATION, APPELLANT, REGULAR},
                 new Object[]{RESEND_APPEAL_CREATED_NOTIFICATION, APPELLANT, ONLINE},
@@ -236,6 +262,49 @@ public class PersonalisationTest {
                 new Object[]{HEARING_BOOKED_NOTIFICATION, REPRESENTATIVE, PAPER},
                 new Object[]{HEARING_BOOKED_NOTIFICATION, REPRESENTATIVE, REGULAR},
                 new Object[]{HEARING_BOOKED_NOTIFICATION, REPRESENTATIVE, ONLINE}
+        };
+    }
+
+    @Test
+    @Parameters(method = "generateLetterScenarios")
+    public void givenSubscriptionType_shouldGenerateLetterTemplateNamesPerSubscription(
+            NotificationEventType notificationEventType, SubscriptionType subscriptionType, HearingType hearingType) {
+        NotificationWrapper notificationWrapper = new CcdNotificationWrapper(SscsCaseDataWrapper.builder()
+                .newSscsCaseData(SscsCaseData.builder()
+                        .appeal(Appeal.builder()
+                                .hearingType(hearingType.name())
+                                .build())
+                        .build())
+                .notificationEventType(notificationEventType)
+                .build());
+
+        personalisation.getTemplate(notificationWrapper, PIP, subscriptionType);
+
+        String expectedTemplateName = getExpectedTemplateName(notificationEventType, subscriptionType);
+        verify(config).getTemplate(
+                anyString(),
+                anyString(),
+                eq(expectedTemplateName),
+                eq(PIP),
+                eq(notificationWrapper.getHearingType())
+        );
+    }
+
+    @SuppressWarnings("Indentation")
+    private Object[] generateLetterScenarios() {
+        return new Object[]{
+                new Object[]{INTERLOC_VALID_APPEAL, APPELLANT, PAPER},
+                new Object[]{INTERLOC_VALID_APPEAL, APPELLANT, ORAL},
+                new Object[]{INTERLOC_VALID_APPEAL, APPELLANT, ONLINE},
+                new Object[]{INTERLOC_VALID_APPEAL, REPRESENTATIVE, PAPER},
+                new Object[]{INTERLOC_VALID_APPEAL, REPRESENTATIVE, ORAL},
+                new Object[]{INTERLOC_VALID_APPEAL, REPRESENTATIVE, ONLINE},
+                new Object[]{DWP_RESPONSE_RECEIVED_NOTIFICATION, APPELLANT, PAPER},
+                new Object[]{DWP_RESPONSE_RECEIVED_NOTIFICATION, APPELLANT, ORAL},
+                new Object[]{DWP_RESPONSE_RECEIVED_NOTIFICATION, APPELLANT, ONLINE},
+                new Object[]{DWP_RESPONSE_RECEIVED_NOTIFICATION, REPRESENTATIVE, PAPER},
+                new Object[]{DWP_RESPONSE_RECEIVED_NOTIFICATION, REPRESENTATIVE, ORAL},
+                new Object[]{DWP_RESPONSE_RECEIVED_NOTIFICATION, REPRESENTATIVE, ONLINE}
         };
     }
 
