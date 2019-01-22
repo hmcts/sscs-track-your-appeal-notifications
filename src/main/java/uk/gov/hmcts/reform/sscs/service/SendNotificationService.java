@@ -21,6 +21,7 @@ import uk.gov.hmcts.reform.sscs.domain.notify.Notification;
 import uk.gov.hmcts.reform.sscs.domain.notify.NotificationEventType;
 import uk.gov.hmcts.reform.sscs.exception.NotificationServiceException;
 import uk.gov.hmcts.reform.sscs.factory.NotificationWrapper;
+import uk.gov.service.notify.NotificationClientException;
 
 @Service
 @Slf4j
@@ -107,18 +108,7 @@ public class SendNotificationService {
             NotificationHandler.SendNotification sendNotification = () -> {
                 Address addressToUse = getAddressToUseForLetter(wrapper);
 
-                notification.getPlaceholders().put(ADDRESS_LINE_1, addressToUse.getLine1() == null ? " " : addressToUse.getLine1());
-                notification.getPlaceholders().put(ADDRESS_LINE_2, addressToUse.getLine2() == null ? " " : addressToUse.getLine2());
-                notification.getPlaceholders().put(ADDRESS_LINE_3, addressToUse.getTown() == null ? " " : addressToUse.getTown());
-                notification.getPlaceholders().put(ADDRESS_LINE_4, addressToUse.getCounty() == null ? " " : addressToUse.getCounty());
-                notification.getPlaceholders().put(POSTCODE_LITERAL, addressToUse.getPostcode());
-
-                notificationSender.sendLetter(
-                    notification.getLetterTemplate(),
-                    addressToUse,
-                    notification.getPlaceholders(),
-                    wrapper.getCaseId()
-                );
+                sendLetterNotification(wrapper, notification, addressToUse);
             };
             notificationHandler.sendNotification(wrapper, notification.getLetterTemplate(), NOTIFICATION_TYPE_LETTER, sendNotification);
         }
@@ -129,23 +119,29 @@ public class SendNotificationService {
             NotificationHandler.SendNotification sendNotification = () -> {
                 Address addressToUse = wrapper.getNewSscsCaseData().getAppeal().getRep().getAddress();
 
-                Map<String, String> placeholders = notification.getPlaceholders();
-                placeholders.put(ADDRESS_LINE_1, addressToUse.getLine1() == null ? " " : addressToUse.getLine1());
-                placeholders.put(ADDRESS_LINE_2, addressToUse.getLine2() == null ? " " : addressToUse.getLine2());
-                placeholders.put(ADDRESS_LINE_3, addressToUse.getTown() == null ? " " : addressToUse.getTown());
-                placeholders.put(ADDRESS_LINE_4, addressToUse.getCounty() == null ? " " : addressToUse.getCounty());
-                placeholders.put(POSTCODE_LITERAL, addressToUse.getPostcode());
-                placeholders.put(REPRESENTATIVE_NAME, wrapper.getNewSscsCaseData().getAppeal().getRep().getName().getFullNameNoTitle());
-
-                notificationSender.sendLetter(
-                    notification.getLetterTemplate(),
-                    addressToUse,
-                    notification.getPlaceholders(),
-                    wrapper.getCaseId()
-                );
+                sendLetterNotification(wrapper, notification, addressToUse);
             };
             notificationHandler.sendNotification(wrapper, notification.getLetterTemplate(), NOTIFICATION_TYPE_LETTER, sendNotification);
         }
+    }
+
+    protected void sendLetterNotification(NotificationWrapper wrapper, Notification notification, final Address addressToUse) throws NotificationClientException {
+        Map<String, String> placeholders = notification.getPlaceholders();
+        placeholders.put(ADDRESS_LINE_1, addressToUse.getLine1() == null ? " " : addressToUse.getLine1());
+        placeholders.put(ADDRESS_LINE_2, addressToUse.getLine2() == null ? " " : addressToUse.getLine2());
+        placeholders.put(ADDRESS_LINE_3, addressToUse.getTown() == null ? " " : addressToUse.getTown());
+        placeholders.put(ADDRESS_LINE_4, addressToUse.getCounty() == null ? " " : addressToUse.getCounty());
+        placeholders.put(POSTCODE_LITERAL, addressToUse.getPostcode());
+        if (null != wrapper.getNewSscsCaseData().getAppeal().getRep()) {
+            placeholders.put(REPRESENTATIVE_NAME, wrapper.getNewSscsCaseData().getAppeal().getRep().getName().getFullNameNoTitle());
+        }
+
+        notificationSender.sendLetter(
+            notification.getLetterTemplate(),
+            addressToUse,
+            notification.getPlaceholders(),
+            wrapper.getCaseId()
+        );
     }
 
     private void sendBundledLetterNotificationToAppellant(NotificationWrapper wrapper, Notification notification) {

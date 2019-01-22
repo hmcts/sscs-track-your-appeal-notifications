@@ -25,6 +25,7 @@ import uk.gov.hmcts.reform.sscs.domain.notify.Notification;
 import uk.gov.hmcts.reform.sscs.domain.notify.NotificationEventType;
 import uk.gov.hmcts.reform.sscs.domain.notify.Template;
 import uk.gov.hmcts.reform.sscs.factory.CcdNotificationWrapper;
+import uk.gov.service.notify.NotificationClientException;
 
 @RunWith(JUnitParamsRunner.class)
 public class SendNotificationServiceTest {
@@ -47,6 +48,11 @@ public class SendNotificationServiceTest {
             .address(Address.builder().line1("Appellant Line 1").town("Appellant Town").county("Appellant County").postcode("AP9 3LL").build())
             .appointee(APPOINTEE_WITH_ADDRESS)
             .build();
+
+    private static Representative REP_WITH_ADDRESS = Representative.builder()
+        .name(Name.builder().firstName("Re").lastName("Presentative").build())
+        .address(Address.builder().line1("Rep Line 1").town("Appellant Town").county("Appellant County").postcode("AP9 3LL").build())
+        .build();
 
     private static Subscription SMS_SUBSCRIPTION = Subscription.builder().mobile("07831292000").subscribeSms("Yes").build();
 
@@ -195,11 +201,29 @@ public class SendNotificationServiceTest {
         verify(notificationHandler).sendNotification(any(), eq(LETTER_NOTIFICATION.getLetterTemplate()), any(), any());
     }
 
+    @Test
+    public void sendLetterNotificationForAppellant() throws NotificationClientException {
+        classUnderTest.sendLetterNotification(buildBaseWrapper(APPELLANT_WITH_ADDRESS, NotificationEventType.INTERLOC_VALID_APPEAL), LETTER_NOTIFICATION, APPELLANT_WITH_ADDRESS.getAddress());
+
+        verify(notificationSender).sendLetter(eq(LETTER_NOTIFICATION.getLetterTemplate()), eq(APPELLANT_WITH_ADDRESS.getAddress()), any(), any());
+    }
+
+    @Test
+    public void sendLetterNotificationForRep() throws NotificationClientException {
+        classUnderTest.sendLetterNotification(buildBaseWrapper(APPELLANT_WITH_ADDRESS, NotificationEventType.INTERLOC_VALID_APPEAL), LETTER_NOTIFICATION, REP_WITH_ADDRESS.getAddress());
+
+        verify(notificationSender).sendLetter(eq(LETTER_NOTIFICATION.getLetterTemplate()), eq(REP_WITH_ADDRESS.getAddress()), any(), any());
+    }
+
     private CcdNotificationWrapper buildBaseWrapper(Appellant appellant) {
-        return buildBaseWrapper(appellant, NotificationEventType.STRUCK_OUT);
+        return buildBaseWrapper(appellant, NotificationEventType.STRUCK_OUT, null);
     }
 
     private CcdNotificationWrapper buildBaseWrapper(Appellant appellant, NotificationEventType eventType) {
+        return buildBaseWrapper(appellant, eventType, null);
+    }
+
+    private CcdNotificationWrapper buildBaseWrapper(Appellant appellant, NotificationEventType eventType, Representative representative) {
         SscsCaseData sscsCaseDataWithDocuments = SscsCaseData.builder()
                 .appeal(
                         Appeal
@@ -207,7 +231,7 @@ public class SendNotificationServiceTest {
                                 .hearingType(AppealHearingType.ORAL.name())
                                 .hearingOptions(HearingOptions.builder().wantsToAttend(YES).build())
                                 .appellant(appellant)
-                                .rep(null)
+                                .rep(representative)
                                 .build())
                 .subscriptions(Subscriptions.builder().appellantSubscription(Subscription.builder()
                         .tya("GLSCRR")
