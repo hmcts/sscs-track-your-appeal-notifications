@@ -370,6 +370,7 @@ public class NotificationServiceTest {
                         Subscription.builder()
                                 .tya(APPEAL_NUMBER)
                                 .build(),
+                        null,
                         new SubscriptionType[]{APPELLANT, REPRESENTATIVE},
                 },
                 new Object[]{
