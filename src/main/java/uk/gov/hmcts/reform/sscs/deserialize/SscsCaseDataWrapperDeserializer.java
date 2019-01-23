@@ -155,7 +155,7 @@ public class SscsCaseDataWrapperDeserializer extends StdDeserializer<SscsCaseDat
         Address address = deserializeAddressJson(appellantNode);
         Contact contact = deserializeContactJson(appellantNode);
         Identity identity = deserializeIdentityJson(appellantNode);
-        Appointee appointee = deserializeAppointeeDetailsJson(appellantNode);
+        Appointee appointee = deserializeAppointee(appellantNode);
         String isAddressSameAsAppointee =  convertEmptyToNo(getField(appellantNode, "isAddressSameAsAppointee"));
 
         return Appellant.builder()
@@ -163,19 +163,16 @@ public class SscsCaseDataWrapperDeserializer extends StdDeserializer<SscsCaseDat
                 .isAddressSameAsAppointee(isAddressSameAsAppointee).build();
     }
 
-    public Appointee deserializeAppointeeDetailsJson(JsonNode appealNode) {
-        JsonNode appointeeNode = getNode(appealNode, "appointee");
-        if (appointeeNode == null) {
+    private Appointee deserializeAppointee(JsonNode appellantNode) {
+        JsonNode appointeeNode = getNode(appellantNode, "appointee");
+        if (null == appointeeNode) {
             return null;
         }
 
-    private Appointee deserializeAppointee(JsonNode appellantNode) {
-        JsonNode appointeeNode = getNode(appellantNode, "appointee");
-        if (null != appointeeNode) {
-            Name name = deserializeNameJson(appointeeNode);
-            Address address = deserializeAddressJson(appointeeNode);
-            Contact contact = deserializeContactJson(appointeeNode);
-        }
+        Name name = deserializeNameJson(appointeeNode);
+        Address address = deserializeAddressJson(appointeeNode);
+        Contact contact = deserializeContactJson(appointeeNode);
+        Identity identity = deserializeIdentityJson(appointeeNode);
 
         return Appointee.builder()
             .name(name).address(address).contact(contact).identity(identity).build();

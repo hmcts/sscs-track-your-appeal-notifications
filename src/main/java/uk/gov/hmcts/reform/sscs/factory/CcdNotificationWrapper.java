@@ -89,7 +89,8 @@ public class CcdNotificationWrapper implements NotificationWrapper {
     public List<SubscriptionWithType> getSubscriptionsBasedOnNotificationType() {
         List<SubscriptionWithType> subscriptionWithTypeList = new ArrayList<>();
 
-        if (hasAppointee() && SYA_APPEAL_CREATED_NOTIFICATION.equals(getNotificationType())) {
+        if (hasAppointee() && (SYA_APPEAL_CREATED_NOTIFICATION.equals(getNotificationType()))
+            || INTERLOC_VALID_APPEAL.equals(getNotificationType())) {
             subscriptionWithTypeList.add(new SubscriptionWithType(getAppointeeSubscription(), APPOINTEE));
         } else {
             subscriptionWithTypeList.add(new SubscriptionWithType(getAppellantSubscription(), APPELLANT));
@@ -105,7 +106,7 @@ public class CcdNotificationWrapper implements NotificationWrapper {
             || APPEAL_RECEIVED_NOTIFICATION.equals(getNotificationType())
             || POSTPONEMENT_NOTIFICATION.equals(getNotificationType())
             || HEARING_BOOKED_NOTIFICATION.equals(getNotificationType())
-            || INTERLOC_VALID_APPEAL.equals(getNotificationType())) {
+            || INTERLOC_VALID_APPEAL.equals(getNotificationType()))) {
             subscriptionWithTypeList.add(new SubscriptionWithType(getRepresentativeSubscription(), REPRESENTATIVE));
         }
         return subscriptionWithTypeList;

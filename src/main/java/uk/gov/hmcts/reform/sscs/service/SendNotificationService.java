@@ -2,6 +2,7 @@ package uk.gov.hmcts.reform.sscs.service;
 
 import static uk.gov.hmcts.reform.sscs.config.AppConstants.*;
 import static uk.gov.hmcts.reform.sscs.config.SubscriptionType.APPELLANT;
+import static uk.gov.hmcts.reform.sscs.config.SubscriptionType.APPOINTEE;
 import static uk.gov.hmcts.reform.sscs.domain.notify.NotificationEventType.STRUCK_OUT;
 import static uk.gov.hmcts.reform.sscs.service.LetterUtils.*;
 import static uk.gov.hmcts.reform.sscs.service.NotificationValidService.isBundledLetter;
@@ -66,7 +67,8 @@ public class SendNotificationService {
         sendSmsNotification(wrapper, subscription, notification);
 
         if (lettersOn) {
-            if (APPELLANT.equals(subscriptionWithType.getSubscriptionType())) {
+            if (APPELLANT.equals(subscriptionWithType.getSubscriptionType())
+                || APPOINTEE.equals(subscriptionWithType.getSubscriptionType())) {
                 sendFallbackLetterNoficationToAppellant(wrapper, subscription, notification);
             } else {
                 sendFallbackLetterNoficationToRepresentative(wrapper, subscription, notification);
@@ -95,7 +97,9 @@ public class SendNotificationService {
     }
 
     private void sendEmailNotification(NotificationWrapper wrapper, Subscription subscription, Notification notification) {
-        if (subscription.isEmailSubscribed() && notification.isEmail() && notification.getEmailTemplate() != null) {
+        if (subscription.isEmailSubscribed()
+            && notification.isEmail()
+            && notification.getEmailTemplate() != null) {
             NotificationHandler.SendNotification sendNotification = () ->
                     notificationSender.sendEmail(
                             notification.getEmailTemplate(),
