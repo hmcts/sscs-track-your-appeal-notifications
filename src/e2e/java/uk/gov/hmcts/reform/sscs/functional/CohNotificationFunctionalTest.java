@@ -44,10 +44,10 @@ public class CohNotificationFunctionalTest extends AbstractFunctionalTest {
     @Value("${notification.question_deadline_elapsed.smsId}")
     private String questionDeadlineElapsedSmsTemplateId;
 
-    @Value("${notification.online.responseReceived.emailId}")
-    private String onlineResponseReceivedEmailId;
+    @Value("${notification.online.responseReceived.appellant.emailId}")
+    private String onlineResponseReceivedEmailId;   // Use appellant template
 
-    @Value("${notification.online.responseReceived.smsId}")
+    @Value("${notification.online.responseReceived.appellant.smsId}")
     private String onlineResponseReceivedSmsId;
 
     @Value("${notification.decision_issued.emailId}")

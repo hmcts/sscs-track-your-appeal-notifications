@@ -3,6 +3,7 @@ package uk.gov.hmcts.reform.sscs.factory;
 import static com.google.common.collect.Maps.newHashMap;
 import static uk.gov.hmcts.reform.sscs.ccd.domain.Benefit.getBenefitByCode;
 import static uk.gov.hmcts.reform.sscs.config.SubscriptionType.APPELLANT;
+import static uk.gov.hmcts.reform.sscs.config.SubscriptionType.APPOINTEE;
 
 import java.util.Map;
 import lombok.extern.slf4j.Slf4j;
@@ -62,6 +63,9 @@ public class NotificationFactory {
                                                               SubscriptionType subscriptionType) {
         if (APPELLANT.equals(subscriptionType)) {
             return ccdResponse.getSubscriptions().getAppellantSubscription();
+        }
+        if (APPOINTEE.equals(subscriptionType)) {
+            return ccdResponse.getSubscriptions().getAppointeeSubscription();
         }
         return ccdResponse.getSubscriptions().getRepresentativeSubscription();
     }
