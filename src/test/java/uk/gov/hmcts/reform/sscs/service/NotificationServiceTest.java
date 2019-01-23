@@ -416,6 +416,7 @@ public class NotificationServiceTest {
             Subscription repsSubscription) {
         sscsCaseData = SscsCaseData.builder()
                 .appeal(Appeal.builder()
+                        .rep(Representative.builder().build())
                         .hearingType(AppealHearingType.ORAL.name())
                         .hearingOptions(HearingOptions.builder()
                                 .wantsToAttend(YES)

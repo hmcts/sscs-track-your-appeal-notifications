@@ -3,6 +3,7 @@ package uk.gov.hmcts.reform.sscs.config;
 import static org.junit.Assert.assertEquals;
 import static uk.gov.hmcts.reform.sscs.config.AppealHearingType.*;
 import static uk.gov.hmcts.reform.sscs.config.SubscriptionType.APPELLANT;
+import static uk.gov.hmcts.reform.sscs.config.SubscriptionType.APPOINTEE;
 import static uk.gov.hmcts.reform.sscs.config.SubscriptionType.REPRESENTATIVE;
 import static uk.gov.hmcts.reform.sscs.domain.notify.NotificationEventType.*;
 

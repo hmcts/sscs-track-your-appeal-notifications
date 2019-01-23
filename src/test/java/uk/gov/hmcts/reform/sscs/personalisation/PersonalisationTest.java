@@ -56,24 +56,7 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
-import uk.gov.hmcts.reform.sscs.ccd.domain.Address;
-import uk.gov.hmcts.reform.sscs.ccd.domain.Appeal;
-import uk.gov.hmcts.reform.sscs.ccd.domain.Appellant;
-import uk.gov.hmcts.reform.sscs.ccd.domain.BenefitType;
-import uk.gov.hmcts.reform.sscs.ccd.domain.Document;
-import uk.gov.hmcts.reform.sscs.ccd.domain.DocumentDetails;
-import uk.gov.hmcts.reform.sscs.ccd.domain.Event;
-import uk.gov.hmcts.reform.sscs.ccd.domain.EventDetails;
-import uk.gov.hmcts.reform.sscs.ccd.domain.Evidence;
-import uk.gov.hmcts.reform.sscs.ccd.domain.Hearing;
-import uk.gov.hmcts.reform.sscs.ccd.domain.HearingDetails;
-import uk.gov.hmcts.reform.sscs.ccd.domain.HearingType;
-import uk.gov.hmcts.reform.sscs.ccd.domain.Name;
-import uk.gov.hmcts.reform.sscs.ccd.domain.RegionalProcessingCenter;
-import uk.gov.hmcts.reform.sscs.ccd.domain.SscsCaseData;
-import uk.gov.hmcts.reform.sscs.ccd.domain.Subscription;
-import uk.gov.hmcts.reform.sscs.ccd.domain.Subscriptions;
-import uk.gov.hmcts.reform.sscs.ccd.domain.Venue;
+import uk.gov.hmcts.reform.sscs.ccd.domain.*;
 import uk.gov.hmcts.reform.sscs.config.AppConstants;
 import uk.gov.hmcts.reform.sscs.config.NotificationConfig;
 import uk.gov.hmcts.reform.sscs.config.SubscriptionType;
@@ -222,6 +205,10 @@ public class PersonalisationTest {
                 new Object[]{INTERLOC_VALID_APPEAL, REPRESENTATIVE, ORAL},
                 new Object[]{INTERLOC_VALID_APPEAL, REPRESENTATIVE, REGULAR},
                 new Object[]{INTERLOC_VALID_APPEAL, REPRESENTATIVE, ONLINE},
+                new Object[]{SYA_APPEAL_CREATED_NOTIFICATION, APPOINTEE, PAPER},
+                new Object[]{SYA_APPEAL_CREATED_NOTIFICATION, APPOINTEE, REGULAR},
+                new Object[]{SYA_APPEAL_CREATED_NOTIFICATION, APPOINTEE, ONLINE},
+                new Object[]{APPEAL_DORMANT_NOTIFICATION, APPELLANT, PAPER},
                 new Object[]{EVIDENCE_RECEIVED_NOTIFICATION, APPELLANT, PAPER},
                 new Object[]{EVIDENCE_RECEIVED_NOTIFICATION, APPELLANT, REGULAR},
                 new Object[]{EVIDENCE_RECEIVED_NOTIFICATION, APPELLANT, ONLINE},
@@ -240,7 +227,6 @@ public class PersonalisationTest {
                 new Object[]{RESEND_APPEAL_CREATED_NOTIFICATION, REPRESENTATIVE, PAPER},
                 new Object[]{RESEND_APPEAL_CREATED_NOTIFICATION, REPRESENTATIVE, REGULAR},
                 new Object[]{RESEND_APPEAL_CREATED_NOTIFICATION, REPRESENTATIVE, ONLINE},
-                new Object[]{APPEAL_DORMANT_NOTIFICATION, APPELLANT, PAPER},
                 new Object[]{APPEAL_DORMANT_NOTIFICATION, REPRESENTATIVE, PAPER},
                 new Object[]{APPEAL_DORMANT_NOTIFICATION, APPELLANT, ORAL},
                 new Object[]{APPEAL_DORMANT_NOTIFICATION, REPRESENTATIVE, ORAL},
@@ -624,6 +610,35 @@ public class PersonalisationTest {
                 .build());
 
         assertNull(result.get(ONLINE_HEARING_LINK_LITERAL));
+    }
+
+    @Test
+    public void shouldPopulateAppointeeSubscriptionPersonalisation() {
+        final String tyaNumber = "tya";
+        when(macService.generateToken(tyaNumber, PIP.name())).thenReturn("ZYX");
+        final SscsCaseData sscsCaseData = SscsCaseData.builder()
+                .ccdCaseId(CASE_ID).caseReference("SC/1234/5")
+                .appeal(Appeal.builder().benefitType(BenefitType.builder().code(PIP.name()).build())
+                        .appellant(Appellant.builder().name(name)
+                            .appointee(Appointee.builder().name(Name.builder().build()).build())
+                            .build())
+                        .build())
+                .subscriptions(Subscriptions.builder().appointeeSubscription(Subscription.builder()
+                        .tya(tyaNumber)
+                        .subscribeEmail("Yes")
+                        .email("appointee@example.com")
+                        .build()).build())
+                .build();
+
+        Map result = personalisation.create(SscsCaseDataWrapper.builder()
+                .newSscsCaseData(sscsCaseData)
+                .notificationEventType(SUBSCRIPTION_CREATED_NOTIFICATION)
+                .build());
+
+        assertEquals(tyaNumber, result.get(AppConstants.APPEAL_ID));
+        assertEquals("http://link.com/manage-email-notifications/ZYX", result.get(AppConstants.MANAGE_EMAILS_LINK_LITERAL));
+        assertEquals("http://tyalink.com/" + tyaNumber, result.get(AppConstants.TRACK_APPEAL_LINK_LITERAL));
+
     }
 
     private Hearing createHearing(LocalDate hearingDate) {
