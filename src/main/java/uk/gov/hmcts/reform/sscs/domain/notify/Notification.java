@@ -41,6 +41,10 @@ public class Notification {
         return template.getSmsTemplateId();
     }
 
+    public String getLetterTemplate() {
+        return template.getLetterTemplateId();
+    }
+
     public String getSmsSenderTemplate() {
         return template.getSmsSenderTemplateId();
     }

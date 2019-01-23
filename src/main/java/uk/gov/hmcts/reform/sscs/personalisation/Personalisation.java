@@ -73,6 +73,7 @@ public class Personalisation<E extends NotificationWrapper> {
     protected Map<String, String> create(SscsCaseDataWrapper responseWrapper) {
         SscsCaseData ccdResponse = responseWrapper.getNewSscsCaseData();
         Map<String, String> personalisation = new HashMap<>();
+
         Benefit benefit = getBenefitByCode(ccdResponse.getAppeal().getBenefitType().getCode());
 
         personalisation.put(AppConstants.PANEL_COMPOSITION, getPanelCompositionByBenefitType(benefit));
@@ -87,15 +88,15 @@ public class Personalisation<E extends NotificationWrapper> {
                 ccdResponse.getAppeal().getAppellant().getName().getFullNameNoTitle());
         personalisation.put(AppConstants.PHONE_NUMBER, config.getHmctsPhoneNumber());
 
+        if (ccdResponse.getAppeal().getAppellant().getAppointee() != null && ccdResponse.getAppeal().getAppellant().getAppointee().getName() != null) {
+            personalisation.put(AppConstants.NAME,
+                    ccdResponse.getAppeal().getAppellant().getAppointee().getName().getFullNameNoTitle());
+        }
         Subscription appellantOrAppointeeSubscription = (ccdResponse.getAppeal().getAppellant().getAppointee() == null)
                 ? ccdResponse.getSubscriptions().getAppellantSubscription()
                 : ccdResponse.getSubscriptions().getAppointeeSubscription();
 
         if (appellantOrAppointeeSubscription != null) {
-            if (ccdResponse.getAppeal().getAppellant().getAppointee() != null && ccdResponse.getAppeal().getAppellant().getAppointee().getName() != null) {
-                personalisation.put(AppConstants.NAME,
-                        ccdResponse.getAppeal().getAppellant().getAppointee().getName().getFullNameNoTitle());
-            }
             subscriptionDetails(personalisation, appellantOrAppointeeSubscription, benefit);
         }
         personalisation.put(AppConstants.FIRST_TIER_AGENCY_ACRONYM, AppConstants.DWP_ACRONYM);
@@ -247,7 +248,8 @@ public class Personalisation<E extends NotificationWrapper> {
         String emailTemplateName = getEmailTemplateName(subscriptionType, notificationWrapper.getNotificationType());
         String smsTemplateName = isSendSmsSubscriptionConfirmation() ? SUBSCRIPTION_CREATED_NOTIFICATION.getId() :
                 emailTemplateName;
-        return config.getTemplate(emailTemplateName, smsTemplateName, benefit, notificationWrapper.getHearingType());
+        String letterTemplateName = getLetterTemplateName(notificationWrapper.getNotificationType());
+        return config.getTemplate(emailTemplateName, smsTemplateName, letterTemplateName, benefit, notificationWrapper.getHearingType());
     }
 
     private String getEmailTemplateName(SubscriptionType subscriptionType,
@@ -266,6 +268,10 @@ public class Personalisation<E extends NotificationWrapper> {
             emailTemplateName = emailTemplateName + "." + StringUtils.lowerCase(subscriptionType.name());
         }
         return emailTemplateName;
+    }
+
+    private String getLetterTemplateName(NotificationEventType notificationEventType) {
+        return notificationEventType.getId();
     }
 
     public Boolean isSendSmsSubscriptionConfirmation() {

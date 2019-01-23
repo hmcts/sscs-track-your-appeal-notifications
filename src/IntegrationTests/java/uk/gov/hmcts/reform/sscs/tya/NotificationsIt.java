@@ -42,6 +42,7 @@ import org.springframework.mock.web.MockHttpServletResponse;
 import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.context.junit4.rules.SpringClassRule;
 import org.springframework.test.context.junit4.rules.SpringMethodRule;
+import org.springframework.test.util.ReflectionTestUtils;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.request.MockHttpServletRequestBuilder;
 import org.springframework.test.web.servlet.setup.MockMvcBuilders;
@@ -53,13 +54,7 @@ import uk.gov.hmcts.reform.sscs.deserialize.SscsCaseDataWrapperDeserializer;
 import uk.gov.hmcts.reform.sscs.domain.notify.NotificationEventType;
 import uk.gov.hmcts.reform.sscs.factory.NotificationFactory;
 import uk.gov.hmcts.reform.sscs.idam.IdamService;
-import uk.gov.hmcts.reform.sscs.service.AuthorisationService;
-import uk.gov.hmcts.reform.sscs.service.NotificationHandler;
-import uk.gov.hmcts.reform.sscs.service.NotificationSender;
-import uk.gov.hmcts.reform.sscs.service.NotificationService;
-import uk.gov.hmcts.reform.sscs.service.NotificationValidService;
-import uk.gov.hmcts.reform.sscs.service.OutOfHoursCalculator;
-import uk.gov.hmcts.reform.sscs.service.ReminderService;
+import uk.gov.hmcts.reform.sscs.service.*;
 import uk.gov.service.notify.NotificationClient;
 import uk.gov.service.notify.SendEmailResponse;
 import uk.gov.service.notify.SendSmsResponse;
@@ -69,6 +64,7 @@ import uk.gov.service.notify.SendSmsResponse;
 @ActiveProfiles("integration")
 @AutoConfigureMockMvc
 public class NotificationsIt {
+    private static final String TEMPLATE_PATH = "/templates/non_compliant_case_letter_template.html";
 
     // Below rules are needed to use the junitParamsRunner together with SpringRunner
     @ClassRule
@@ -126,10 +122,20 @@ public class NotificationsIt {
     @Autowired
     private NotificationConfig notificationConfig;
 
+    @Autowired
+    private EvidenceManagementService evidenceManagementService;
+
+    @Mock
+    private SscsGeneratePdfService sscsGeneratePdfService;
+
     @Before
     public void setup() throws Exception {
         NotificationSender sender = new NotificationSender(notificationClient, null, notificationBlacklist);
-        NotificationService service = new NotificationService(sender, factory, reminderService, notificationValidService, notificationHandler, outOfHoursCalculator, notificationConfig);
+
+        SendNotificationService sendNotificationService = new SendNotificationService(sender, evidenceManagementService, sscsGeneratePdfService, notificationHandler);
+        ReflectionTestUtils.setField(sendNotificationService, "bundledLettersOn", true);
+
+        NotificationService service = new NotificationService(factory, reminderService, notificationValidService, notificationHandler, outOfHoursCalculator, notificationConfig, sendNotificationService);
         controller = new NotificationController(service, authorisationService, ccdService, deserializer, idamService);
         this.mockMvc = MockMvcBuilders.standaloneSetup(controller).build();
         String path = getClass().getClassLoader().getResource("json/ccdResponse.json").getFile();
@@ -328,6 +334,7 @@ public class NotificationsIt {
         assertEquals("Appointee Appointee", personalisation.get(NAME));
         assertEquals("Dexter Vasquez", personalisation.get(APPELLANT_NAME));
     }
+
 
     @SuppressWarnings({"Indentation", "unused"})
     private Object[] generateRepsNotificationScenarios() {

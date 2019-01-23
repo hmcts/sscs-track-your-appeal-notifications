@@ -73,6 +73,7 @@ public class CcdNotificationWrapperTest {
                 .newSscsCaseData(SscsCaseData.builder()
                     .appeal(Appeal.builder()
                         .hearingType(hearingType)
+
                         .appellant(Appellant.builder().appointee(Appointee.builder().build()).build())
                         .build())
                     .subscriptions(Subscriptions.builder()
@@ -100,6 +101,7 @@ public class CcdNotificationWrapperTest {
     @Parameters({"SYA_APPEAL_CREATED_NOTIFICATION, cor", "DWP_RESPONSE_RECEIVED_NOTIFICATION, oral"})
     public void givenSubscriptions_shouldGetSubscriptionTypeListWithAppointee(NotificationEventType notificationEventType, String hearingType) {
         ccdNotificationWrapper = buildCcdNotificationWrapperBasedOnEventTypeWithAppointee(notificationEventType, hearingType);
+
         List<SubscriptionWithType> subsWithTypeList = ccdNotificationWrapper.getSubscriptionsBasedOnNotificationType();
         Assert.assertEquals(1,subsWithTypeList.size());
         Assert.assertEquals(SubscriptionType.APPOINTEE, subsWithTypeList.get(0).getSubscriptionType());

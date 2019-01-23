@@ -133,7 +133,8 @@ public class PersonalisationTest {
         personalisation.getTemplate(notificationWrapper, PIP, subscriptionType);
 
         verify(config).getTemplate(eq(getExpectedTemplateName(notificationEventType, subscriptionType)),
-                anyString(), any(Benefit.class), any(AppealHearingType.class));
+            anyString(), anyString(), any(Benefit.class), any(AppealHearingType.class)
+        );
     }
 
     private String getExpectedTemplateName(NotificationEventType notificationEventType,
@@ -173,6 +174,7 @@ public class PersonalisationTest {
                 new Object[]{SYA_APPEAL_CREATED_NOTIFICATION, APPOINTEE, REGULAR},
                 new Object[]{SYA_APPEAL_CREATED_NOTIFICATION, APPOINTEE, ONLINE},
                 new Object[]{DWP_RESPONSE_RECEIVED_NOTIFICATION, null, ONLINE},
+                new Object[]{APPEAL_DORMANT_NOTIFICATION, APPELLANT, PAPER},
                 new Object[]{EVIDENCE_RECEIVED_NOTIFICATION, APPELLANT, PAPER},
                 new Object[]{EVIDENCE_RECEIVED_NOTIFICATION, APPELLANT, REGULAR},
                 new Object[]{EVIDENCE_RECEIVED_NOTIFICATION, APPELLANT, ONLINE},
@@ -185,7 +187,6 @@ public class PersonalisationTest {
                 new Object[]{RESEND_APPEAL_CREATED_NOTIFICATION, REPRESENTATIVE, PAPER},
                 new Object[]{RESEND_APPEAL_CREATED_NOTIFICATION, REPRESENTATIVE, REGULAR},
                 new Object[]{RESEND_APPEAL_CREATED_NOTIFICATION, REPRESENTATIVE, ONLINE},
-                new Object[]{APPEAL_DORMANT_NOTIFICATION, APPELLANT, PAPER},
                 new Object[]{APPEAL_DORMANT_NOTIFICATION, REPRESENTATIVE, PAPER},
                 new Object[]{APPEAL_DORMANT_NOTIFICATION, APPELLANT, ORAL},
                 new Object[]{APPEAL_DORMANT_NOTIFICATION, REPRESENTATIVE, ORAL},
@@ -530,39 +531,15 @@ public class PersonalisationTest {
     }
 
     @Test
-    public void shouldGetPersonalisationForAppointee_WhenNoAppellantSubscription() {
-        Name appointeeName = Name.builder().title("MR").firstName("George").lastName("Appointee").build();
-        SscsCaseData response = SscsCaseData.builder()
-                .ccdCaseId(CASE_ID).caseReference("SC/1234/5")
-                .appeal(Appeal.builder().appellant(Appellant.builder().name(name)
-                        .appointee(Appointee.builder().name(appointeeName).build())
-                        .build())
-                        .benefitType(BenefitType.builder().code("PIP").build()).build())
-                .subscriptions(Subscriptions.builder().appointeeSubscription(
-                        Subscription.builder().tya("GLSCRR").email("appointee@example.com")
-                                .subscribeEmail("YES").build()
-                ).build())
-                .build();
-
-        Map result = personalisation.create(SscsCaseDataWrapper.builder()
-                .newSscsCaseData(response)
-                .notificationEventType(DWP_RESPONSE_RECEIVED_NOTIFICATION)
-                .build());
-
-        assertNotNull(result);
-        assertEquals(appointeeName.getFullNameNoTitle(), result.get(NAME));
-        assertEquals(name.getFullNameNoTitle(), result.get(APPELLANT_NAME));
-    }
-
-    @Test
     public void shouldPopulateAppointeeSubscriptionPersonalisation() {
         final String tyaNumber = "tya";
+        Name appointeeName = Name.builder().title("MR").firstName("George").lastName("Appointee").build();
         when(macService.generateToken(tyaNumber, PIP.name())).thenReturn("ZYX");
         final SscsCaseData sscsCaseData = SscsCaseData.builder()
                 .ccdCaseId(CASE_ID).caseReference("SC/1234/5")
                 .appeal(Appeal.builder().benefitType(BenefitType.builder().code(PIP.name()).build())
                         .appellant(Appellant.builder().name(name)
-                            .appointee(Appointee.builder().name(Name.builder().build()).build())
+                            .appointee(Appointee.builder().name(appointeeName).build())
                             .build())
                         .build())
                 .subscriptions(Subscriptions.builder().appointeeSubscription(Subscription.builder()
@@ -577,6 +554,9 @@ public class PersonalisationTest {
                 .notificationEventType(SUBSCRIPTION_CREATED_NOTIFICATION)
                 .build());
 
+        assertNotNull(result);
+        assertEquals(appointeeName.getFullNameNoTitle(), result.get(NAME));
+        assertEquals(name.getFullNameNoTitle(), result.get(APPELLANT_NAME));
         assertEquals(tyaNumber, result.get(APPEAL_ID));
         assertEquals("http://link.com/manage-email-notifications/ZYX", result.get(MANAGE_EMAILS_LINK_LITERAL));
         assertEquals("http://tyalink.com/" + tyaNumber, result.get(TRACK_APPEAL_LINK_LITERAL));
