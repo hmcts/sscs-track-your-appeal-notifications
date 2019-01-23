@@ -1,6 +1,7 @@
 package uk.gov.hmcts.reform.sscs.factory;
 
 import static uk.gov.hmcts.reform.sscs.config.SubscriptionType.APPELLANT;
+import static uk.gov.hmcts.reform.sscs.config.SubscriptionType.APPOINTEE;
 import static uk.gov.hmcts.reform.sscs.config.SubscriptionType.REPRESENTATIVE;
 import static uk.gov.hmcts.reform.sscs.domain.notify.NotificationEventType.*;
 
@@ -45,6 +46,11 @@ public class CcdNotificationWrapper implements NotificationWrapper {
     }
 
     @Override
+    public Subscription getAppointeeSubscription() {
+        return responseWrapper.getNewSscsCaseData().getSubscriptions().getAppointeeSubscription();
+    }
+
+    @Override
     public SscsCaseDataWrapper getSscsCaseDataWrapper() {
         return responseWrapper;
     }
@@ -82,8 +88,14 @@ public class CcdNotificationWrapper implements NotificationWrapper {
     @Override
     public List<SubscriptionWithType> getSubscriptionsBasedOnNotificationType() {
         List<SubscriptionWithType> subscriptionWithTypeList = new ArrayList<>();
-        subscriptionWithTypeList.add(new SubscriptionWithType(getAppellantSubscription(), APPELLANT));
-        if (APPEAL_LAPSED_NOTIFICATION.equals(getNotificationType())
+
+        if (hasAppointee() && SYA_APPEAL_CREATED_NOTIFICATION.equals(getNotificationType())) {
+            subscriptionWithTypeList.add(new SubscriptionWithType(getAppointeeSubscription(), APPOINTEE));
+        } else {
+            subscriptionWithTypeList.add(new SubscriptionWithType(getAppellantSubscription(), APPELLANT));
+        }
+
+        if (hasRepresentative() && (APPEAL_LAPSED_NOTIFICATION.equals(getNotificationType())
             || APPEAL_WITHDRAWN_NOTIFICATION.equals(getNotificationType())
             || EVIDENCE_RECEIVED_NOTIFICATION.equals(getNotificationType())
             || SYA_APPEAL_CREATED_NOTIFICATION.equals(getNotificationType())
@@ -92,10 +104,21 @@ public class CcdNotificationWrapper implements NotificationWrapper {
             || ADJOURNED_NOTIFICATION.equals(getNotificationType())
             || APPEAL_RECEIVED_NOTIFICATION.equals(getNotificationType())
             || POSTPONEMENT_NOTIFICATION.equals(getNotificationType())
-            || HEARING_BOOKED_NOTIFICATION.equals(getNotificationType())) {
+            || HEARING_BOOKED_NOTIFICATION.equals(getNotificationType()))) {
             subscriptionWithTypeList.add(new SubscriptionWithType(getRepresentativeSubscription(), REPRESENTATIVE));
         }
         return subscriptionWithTypeList;
+    }
+
+    private boolean hasAppointee() {
+        return (responseWrapper.getNewSscsCaseData().getAppeal() != null
+            && responseWrapper.getNewSscsCaseData().getAppeal().getAppellant() != null
+            && responseWrapper.getNewSscsCaseData().getAppeal().getAppellant().getAppointee() != null);
+    }
+
+    private boolean hasRepresentative() {
+        return (responseWrapper.getNewSscsCaseData().getAppeal() != null
+            && responseWrapper.getNewSscsCaseData().getAppeal().getRep() != null);
     }
 
     @Override

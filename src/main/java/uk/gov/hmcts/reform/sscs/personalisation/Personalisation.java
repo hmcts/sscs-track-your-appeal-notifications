@@ -73,13 +73,11 @@ public class Personalisation<E extends NotificationWrapper> {
     protected Map<String, String> create(SscsCaseDataWrapper responseWrapper) {
         SscsCaseData ccdResponse = responseWrapper.getNewSscsCaseData();
         Map<String, String> personalisation = new HashMap<>();
-        Subscription appellantSubscription = ccdResponse.getSubscriptions().getAppellantSubscription();
+
         Benefit benefit = getBenefitByCode(ccdResponse.getAppeal().getBenefitType().getCode());
 
         personalisation.put(AppConstants.PANEL_COMPOSITION, getPanelCompositionByBenefitType(benefit));
-
         personalisation.put(AppConstants.DECISION_POSTED_RECEIVE_DATE, formatLocalDate(LocalDate.now().plusDays(7)));
-
         personalisation.put(AppConstants.BENEFIT_NAME_ACRONYM_LITERAL, benefit.name());
         personalisation.put(AppConstants.BENEFIT_NAME_ACRONYM_SHORT_LITERAL, benefit.name());
         personalisation.put(AppConstants.BENEFIT_FULL_NAME_LITERAL, benefit.getDescription());
@@ -88,26 +86,31 @@ public class Personalisation<E extends NotificationWrapper> {
                 ccdResponse.getAppeal().getAppellant().getName().getFirstName(), ccdResponse.getAppeal().getAppellant().getName().getLastName()));
         personalisation.put(AppConstants.PHONE_NUMBER, config.getHmctsPhoneNumber());
 
-        if (ccdResponse.getSubscriptions().getAppellantSubscription().getTya() != null) {
-            personalisation.put(AppConstants.APPEAL_ID, ccdResponse.getSubscriptions().getAppellantSubscription().getTya());
-            personalisation.put(AppConstants.MANAGE_EMAILS_LINK_LITERAL, config.getManageEmailsLink().replace(AppConstants.MAC_LITERAL,
-                    getMacToken(ccdResponse.getSubscriptions().getAppellantSubscription().getTya(),
-                            benefit.name())));
-            personalisation.put(AppConstants.TRACK_APPEAL_LINK_LITERAL, config.getTrackAppealLink() != null ? config.getTrackAppealLink().replace(AppConstants.APPEAL_ID_LITERAL, appellantSubscription.getTya()) : null);
-            personalisation.put(AppConstants.SUBMIT_EVIDENCE_LINK_LITERAL, config.getEvidenceSubmissionInfoLink().replace(AppConstants.APPEAL_ID, appellantSubscription.getTya()));
-            personalisation.put(AppConstants.SUBMIT_EVIDENCE_INFO_LINK_LITERAL, config.getEvidenceSubmissionInfoLink().replace(AppConstants.APPEAL_ID_LITERAL, appellantSubscription.getTya()));
-            personalisation.put(AppConstants.CLAIMING_EXPENSES_LINK_LITERAL, config.getClaimingExpensesLink().replace(AppConstants.APPEAL_ID, appellantSubscription.getTya()));
-            personalisation.put(AppConstants.HEARING_INFO_LINK_LITERAL,
-                    config.getHearingInfoLink().replace(AppConstants.APPEAL_ID_LITERAL, appellantSubscription.getTya()));
-        }
+        Subscription appellantOrAppointeeSubscription = (ccdResponse.getAppeal().getAppellant().getAppointee() == null)
+                ? ccdResponse.getSubscriptions().getAppellantSubscription()
+                : ccdResponse.getSubscriptions().getAppointeeSubscription();
 
-        String email = appellantSubscription.getEmail();
-        if (email != null) {
-            try {
-                String encodedEmail = URLEncoder.encode(email, StandardCharsets.UTF_8.name());
-                personalisation.put(ONLINE_HEARING_LINK_LITERAL, config.getOnlineHearingLinkWithEmail().replace("{email}", encodedEmail));
-            } catch (UnsupportedEncodingException e) {
-                throw new RuntimeException(e);
+        if (appellantOrAppointeeSubscription != null) {
+            String tya = StringUtils.defaultIfBlank(appellantOrAppointeeSubscription.getTya(), StringUtils.EMPTY);
+            personalisation.put(AppConstants.APPEAL_ID, tya);
+            personalisation.put(AppConstants.MANAGE_EMAILS_LINK_LITERAL, config.getManageEmailsLink().replace(AppConstants.MAC_LITERAL,
+                    getMacToken(tya,
+                            benefit.name())));
+            personalisation.put(AppConstants.TRACK_APPEAL_LINK_LITERAL, config.getTrackAppealLink() != null ? config.getTrackAppealLink().replace(AppConstants.APPEAL_ID_LITERAL, tya) : null);
+            personalisation.put(AppConstants.SUBMIT_EVIDENCE_LINK_LITERAL, config.getEvidenceSubmissionInfoLink().replace(AppConstants.APPEAL_ID, tya));
+            personalisation.put(AppConstants.SUBMIT_EVIDENCE_INFO_LINK_LITERAL, config.getEvidenceSubmissionInfoLink().replace(AppConstants.APPEAL_ID_LITERAL, tya));
+            personalisation.put(AppConstants.CLAIMING_EXPENSES_LINK_LITERAL, config.getClaimingExpensesLink().replace(AppConstants.APPEAL_ID, tya));
+            personalisation.put(AppConstants.HEARING_INFO_LINK_LITERAL,
+                    config.getHearingInfoLink().replace(AppConstants.APPEAL_ID_LITERAL, tya));
+
+            String email = appellantOrAppointeeSubscription.getEmail();
+            if (email != null) {
+                try {
+                    String encodedEmail = URLEncoder.encode(email, StandardCharsets.UTF_8.name());
+                    personalisation.put(ONLINE_HEARING_LINK_LITERAL, config.getOnlineHearingLinkWithEmail().replace("{email}", encodedEmail));
+                } catch (UnsupportedEncodingException e) {
+                    throw new RuntimeException(e);
+                }
             }
         }
 
@@ -176,7 +179,7 @@ public class Personalisation<E extends NotificationWrapper> {
             if (ccdResponse.getEvidence() != null && ccdResponse.getEvidence().getDocuments() != null && !ccdResponse.getEvidence().getDocuments().isEmpty()) {
                 personalisation.put(AppConstants.EVIDENCE_RECEIVED_DATE_LITERAL, formatLocalDate(ccdResponse.getEvidence().getDocuments().get(0).getValue().getEvidenceDateTimeFormatted()));
             } else {
-                personalisation.put(AppConstants.EVIDENCE_RECEIVED_DATE_LITERAL,"");
+                personalisation.put(AppConstants.EVIDENCE_RECEIVED_DATE_LITERAL, StringUtils.EMPTY);
             }
         }
         return personalisation;
