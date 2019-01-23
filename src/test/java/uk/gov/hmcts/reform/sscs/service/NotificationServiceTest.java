@@ -6,6 +6,7 @@ import static org.mockito.BDDMockito.then;
 import static org.mockito.Mockito.*;
 import static org.mockito.MockitoAnnotations.initMocks;
 import static uk.gov.hmcts.reform.sscs.config.SubscriptionType.APPELLANT;
+import static uk.gov.hmcts.reform.sscs.config.SubscriptionType.APPOINTEE;
 import static uk.gov.hmcts.reform.sscs.config.SubscriptionType.REPRESENTATIVE;
 import static uk.gov.hmcts.reform.sscs.domain.notify.NotificationEventType.*;
 import static uk.gov.hmcts.reform.sscs.service.SendNotificationService.DM_STORE_USER_ID;
@@ -143,10 +144,10 @@ public class NotificationServiceTest {
     public void givenNotificationEventTypeAndDifferentSubscriptionCombinations_shouldManageNotificationAndSubscriptionAccordingly(
             NotificationEventType notificationEventType, int wantedNumberOfEmailNotificationsSent,
             int wantedNumberOfSmsNotificationsSent, Subscription appellantSubscription, Subscription repsSubscription,
-            SubscriptionType[] expectedSubscriptionTypes) {
+            Subscription appointeeSubscription, SubscriptionType[] expectedSubscriptionTypes) {
 
         ccdNotificationWrapper = buildNotificationWrapperGivenNotificationTypeAndSubscriptions(
-                notificationEventType, appellantSubscription, repsSubscription);
+                notificationEventType, appellantSubscription, repsSubscription, appointeeSubscription);
 
         // Add representative
         ccdNotificationWrapper.getNewSscsCaseData().getAppeal().setRep(Representative.builder().build());
@@ -200,6 +201,7 @@ public class NotificationServiceTest {
                                 .subscribeEmail(YES)
                                 .build(),
                         null,
+                        null,
                         new SubscriptionType[]{APPELLANT},
                 },
                 new Object[]{
@@ -213,6 +215,7 @@ public class NotificationServiceTest {
                                 .mobile(MOBILE_NUMBER_1)
                                 .subscribeSms(YES)
                                 .build(),
+                        null,
                         null,
                         new SubscriptionType[]{APPELLANT},
                 },
@@ -232,6 +235,7 @@ public class NotificationServiceTest {
                                 .email(EMAIL)
                                 .subscribeEmail(YES)
                                 .build(),
+                        null,
                         new SubscriptionType[]{APPELLANT, REPRESENTATIVE},
                 },
                 new Object[]{
@@ -252,6 +256,7 @@ public class NotificationServiceTest {
                                 .mobile(MOBILE_NUMBER_1)
                                 .subscribeSms(YES)
                                 .build(),
+                        null,
                         new SubscriptionType[]{APPELLANT, REPRESENTATIVE},
                 },
                 new Object[]{
@@ -265,6 +270,7 @@ public class NotificationServiceTest {
                         .mobile(MOBILE_NUMBER_1)
                         .subscribeSms(YES)
                         .build(),
+                    null,
                     null,
                     new SubscriptionType[]{APPELLANT},
                 },
@@ -284,6 +290,7 @@ public class NotificationServiceTest {
                         .email(EMAIL)
                         .subscribeEmail(YES)
                         .build(),
+                    null,
                     new SubscriptionType[]{APPELLANT, REPRESENTATIVE},
                 },
                 new Object[]{
@@ -304,12 +311,14 @@ public class NotificationServiceTest {
                         .mobile(MOBILE_NUMBER_1)
                         .subscribeSms(YES)
                         .build(),
+                    null,
                     new SubscriptionType[]{APPELLANT, REPRESENTATIVE},
                 },
                 new Object[]{
                         SYA_APPEAL_CREATED_NOTIFICATION,
                         0,
                         0,
+                        null,
                         null,
                         null,
                         new SubscriptionType[]{},
@@ -323,6 +332,7 @@ public class NotificationServiceTest {
                                 .email(EMAIL)
                                 .subscribeEmail(YES)
                                 .build(),
+                        null,
                         null,
                         new SubscriptionType[]{APPELLANT},
                 },
@@ -338,12 +348,14 @@ public class NotificationServiceTest {
                                 .mobile(MOBILE_NUMBER_1)
                                 .build(),
                         null,
+                        null,
                         new SubscriptionType[]{APPELLANT},
                 },
                 new Object[]{
                         SYA_APPEAL_CREATED_NOTIFICATION,
                         0,
                         0,
+                        Subscription.builder().build(),
                         Subscription.builder().build(),
                         Subscription.builder().build(),
                         new SubscriptionType[]{},
@@ -376,7 +388,13 @@ public class NotificationServiceTest {
                                 .subscribeEmail(YES)
                                 .mobile(MOBILE_NUMBER_1)
                                 .build(),
-                        new SubscriptionType[]{APPELLANT, REPRESENTATIVE},
+                        Subscription.builder()
+                                .tya(APPEAL_NUMBER)
+                                .email(EMAIL)
+                                .subscribeEmail(YES)
+                                .mobile(MOBILE_NUMBER_1)
+                                .build(),
+                        new SubscriptionType[]{APPOINTEE, REPRESENTATIVE},
                 },
                 new Object[]{
                         INTERLOC_VALID_APPEAL,
@@ -392,7 +410,11 @@ public class NotificationServiceTest {
                                 .subscribeEmail(YES)
                                 .mobile(MOBILE_NUMBER_1)
                                 .build(),
-                        new SubscriptionType[]{APPELLANT, REPRESENTATIVE},
+                        Subscription.builder()
+                                .tya(APPEAL_NUMBER)
+                                .mobile(MOBILE_NUMBER_1)
+                                .build(),
+                        new SubscriptionType[]{APPOINTEE, REPRESENTATIVE},
                 },
                 new Object[]{
                         INTERLOC_VALID_APPEAL,
@@ -406,14 +428,18 @@ public class NotificationServiceTest {
                                 .tya(APPEAL_NUMBER)
                                 .mobile(MOBILE_NUMBER_1)
                                 .build(),
-                        new SubscriptionType[]{APPELLANT, REPRESENTATIVE},
+                        Subscription.builder()
+                                .tya(APPEAL_NUMBER)
+                                .mobile(MOBILE_NUMBER_1)
+                                .build(),
+                        new SubscriptionType[]{APPOINTEE, REPRESENTATIVE},
                 }
         };
     }
 
     private CcdNotificationWrapper buildNotificationWrapperGivenNotificationTypeAndSubscriptions(
             NotificationEventType notificationEventType, Subscription appellantSubscription,
-            Subscription repsSubscription) {
+            Subscription repsSubscription, Subscription appointeeSubscription) {
         sscsCaseData = SscsCaseData.builder()
                 .appeal(Appeal.builder()
                         .rep(Representative.builder().build())
@@ -425,6 +451,7 @@ public class NotificationServiceTest {
                 .subscriptions(Subscriptions.builder()
                         .appellantSubscription(appellantSubscription)
                         .representativeSubscription(repsSubscription)
+                        .appointeeSubscription(appointeeSubscription)
                         .build())
                 .caseReference(CASE_REFERENCE)
                 .hearings(Collections.singletonList(Hearing.builder().build()))
