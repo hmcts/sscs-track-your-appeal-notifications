@@ -18,6 +18,10 @@ public class SyaAppealCreatedAndReceivedPersonalisation extends WithRepresentati
     private static final String TWO_NEW_LINES = "\n\n";
     private static final String NOT_REQUIRED = "Not required";
     private static final String REQUIRED = "Required";
+    private static final String NAME = "Name: ";
+    private static final String ADDRESS = "Address: ";
+    private static final String EMAIL = "Email: ";
+    private static final String PHONE = "Phone: ";
 
     @Override
     protected Map<String, String> create(SscsCaseDataWrapper responseWrapper) {
@@ -26,6 +30,8 @@ public class SyaAppealCreatedAndReceivedPersonalisation extends WithRepresentati
 
         setMrnDetails(personalisation, ccdResponse);
         setYourDetails(personalisation, ccdResponse);
+        setAppointeeName(personalisation,ccdResponse);
+        setAppointeeDetails(personalisation, ccdResponse);
         setTextMessageReminderDetails(personalisation, ccdResponse);
         setRepresentativeDetails(personalisation, ccdResponse);
         setReasonsForAppealingDetails(personalisation, ccdResponse);
@@ -64,17 +70,17 @@ public class SyaAppealCreatedAndReceivedPersonalisation extends WithRepresentati
 
     private String buildYourDetails(Appeal appeal) {
         return new StringBuilder()
-                .append("Name: ")
+                .append(NAME)
                 .append(appeal.getAppellant().getName().getFullNameNoTitle() + TWO_NEW_LINES)
                 .append("Date of birth: ")
                 .append(appeal.getAppellant().getIdentity().getDob() + TWO_NEW_LINES)
                 .append("National Insurance number: ")
                 .append(appeal.getAppellant().getIdentity().getNino() + TWO_NEW_LINES)
-                .append("Address: ")
+                .append(ADDRESS)
                 .append(appeal.getAppellant().getAddress().getFullAddress() + TWO_NEW_LINES)
-                .append("Email: ")
+                .append(EMAIL)
                 .append(getOptionalField(appeal.getAppellant().getContact().getEmail(), NOT_PROVIDED) + TWO_NEW_LINES)
-                .append("Phone: ")
+                .append(PHONE)
                 .append(getOptionalField(appeal.getAppellant().getContact().getPhone(), NOT_PROVIDED))
                 .toString();
     }
@@ -98,6 +104,48 @@ public class SyaAppealCreatedAndReceivedPersonalisation extends WithRepresentati
         return buildTextMessage.toString();
     }
 
+    public Map<String, String> setAppointeeName(Map<String, String> personalisation, SscsCaseData sscsCaseData) {
+        Appointee appointee = sscsCaseData.getAppeal().getAppellant().getAppointee();
+        if (isValidAppointee(appointee)) {
+            personalisation.put(AppConstants.APPOINTEE_NAME, String.format("%s %s",
+                appointee.getName().getFirstName(),
+                appointee.getName().getLastName()));
+        }
+        return personalisation;
+    }
+
+    private boolean isValidAppointee(Appointee appointee) {
+        return null != (appointee) && null != appointee.getName();
+    }
+
+    public Map<String, String> setAppointeeDetails(Map<String, String> personalisation, SscsCaseData ccdResponse) {
+        personalisation.put(AppConstants.APPOINTEE_DETAILS_LITERAL, buildAppointeeDetails(ccdResponse.getAppeal().getAppellant().getAppointee()));
+        return personalisation;
+    }
+
+    private String buildAppointeeDetails(Appointee appointee) {
+        String hasAppointee = (appointee != null) ? YES : NO;
+
+        StringBuilder appointeeBuilder = new StringBuilder()
+            .append("Have a appointee: ")
+            .append(hasAppointee);
+
+        if (isValidAppointee(appointee)) {
+            appointeeBuilder.append(TWO_NEW_LINES + NAME)
+                .append(appointee.getName().getFullNameNoTitle() + TWO_NEW_LINES)
+                .append("Date of birth: ")
+                .append(appointee.getIdentity().getDob() + TWO_NEW_LINES)
+                .append(ADDRESS)
+                .append(appointee.getAddress().getFullAddress() + TWO_NEW_LINES)
+                .append(EMAIL)
+                .append(getOptionalField(appointee.getContact().getEmail(), NOT_PROVIDED) + TWO_NEW_LINES)
+                .append(PHONE)
+                .append(getOptionalField(appointee.getContact().getPhone(), NOT_PROVIDED))
+                .toString();
+        }
+        return appointeeBuilder.toString();
+    }
+
     public Map<String, String> setRepresentativeDetails(Map<String, String> personalisation, SscsCaseData ccdResponse) {
         personalisation.put(AppConstants.REPRESENTATIVE_DETAILS_LITERAL, buildRepresentativeDetails(ccdResponse.getAppeal().getRep()));
         return personalisation;
@@ -111,15 +159,15 @@ public class SyaAppealCreatedAndReceivedPersonalisation extends WithRepresentati
                 .append(hasRepresentative);
 
         if (representative != null) {
-            representativeBuilder.append(TWO_NEW_LINES + "Name: ")
+            representativeBuilder.append(TWO_NEW_LINES + NAME)
                     .append(representative.getName().getFullNameNoTitle() + TWO_NEW_LINES)
                     .append("Organisation: ")
                     .append(getOptionalField(representative.getOrganisation(), NOT_PROVIDED) + TWO_NEW_LINES)
-                    .append("Address: ")
+                    .append(ADDRESS)
                     .append(representative.getAddress().getFullAddress() + TWO_NEW_LINES)
-                    .append("Email: ")
+                    .append(EMAIL)
                     .append(getOptionalField(representative.getContact().getEmail(), NOT_PROVIDED) + TWO_NEW_LINES)
-                    .append("Phone: ")
+                    .append(PHONE)
                     .append(getOptionalField(representative.getContact().getPhone(), NOT_PROVIDED))
                     .toString();
         }
