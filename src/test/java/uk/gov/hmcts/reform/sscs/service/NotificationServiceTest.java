@@ -407,6 +407,20 @@ public class NotificationServiceTest {
                                 .mobile(MOBILE_NUMBER_1)
                                 .build(),
                         new SubscriptionType[]{APPELLANT, REPRESENTATIVE},
+                },
+                new Object[]{
+                        VALID_APPEAL,
+                        0,
+                        0,
+                        Subscription.builder()
+                                .tya(APPEAL_NUMBER)
+                                .mobile(MOBILE_NUMBER_1)
+                                .build(),
+                        Subscription.builder()
+                                .tya(APPEAL_NUMBER)
+                                .mobile(MOBILE_NUMBER_1)
+                                .build(),
+                        new SubscriptionType[]{APPELLANT, REPRESENTATIVE},
                 }
         };
     }

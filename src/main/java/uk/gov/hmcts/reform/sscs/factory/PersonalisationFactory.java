@@ -37,6 +37,7 @@ public class PersonalisationFactory implements Function<NotificationEventType, P
             if (SYA_APPEAL_CREATED_NOTIFICATION.equals(notificationType)
                     || RESEND_APPEAL_CREATED_NOTIFICATION.equals(notificationType)
                     || APPEAL_RECEIVED_NOTIFICATION.equals(notificationType)
+                    || VALID_APPEAL.equals(notificationType)
                     || INTERLOC_VALID_APPEAL.equals(notificationType)) {
                 selectedPersonalisation = syaAppealCreatedAndReceivedPersonalisation;
             } else if (APPEAL_LAPSED_NOTIFICATION.equals(notificationType)

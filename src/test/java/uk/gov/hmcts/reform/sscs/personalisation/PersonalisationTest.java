@@ -37,6 +37,7 @@ import static uk.gov.hmcts.reform.sscs.domain.notify.NotificationEventType.INTER
 import static uk.gov.hmcts.reform.sscs.domain.notify.NotificationEventType.POSTPONEMENT_NOTIFICATION;
 import static uk.gov.hmcts.reform.sscs.domain.notify.NotificationEventType.RESEND_APPEAL_CREATED_NOTIFICATION;
 import static uk.gov.hmcts.reform.sscs.domain.notify.NotificationEventType.SYA_APPEAL_CREATED_NOTIFICATION;
+import static uk.gov.hmcts.reform.sscs.domain.notify.NotificationEventType.VALID_APPEAL;
 
 import java.time.Instant;
 import java.time.LocalDate;
@@ -234,6 +235,12 @@ public class PersonalisationTest {
                 new Object[]{DWP_RESPONSE_RECEIVED_NOTIFICATION, APPELLANT, PAPER},
                 new Object[]{DWP_RESPONSE_RECEIVED_NOTIFICATION, APPELLANT, ORAL},
                 new Object[]{DWP_RESPONSE_RECEIVED_NOTIFICATION, APPELLANT, ONLINE},
+                new Object[]{VALID_APPEAL, APPELLANT, PAPER},
+                new Object[]{VALID_APPEAL, APPELLANT, REGULAR},
+                new Object[]{VALID_APPEAL, APPELLANT, ONLINE},
+                new Object[]{VALID_APPEAL, REPRESENTATIVE, PAPER},
+                new Object[]{VALID_APPEAL, REPRESENTATIVE, REGULAR},
+                new Object[]{VALID_APPEAL, REPRESENTATIVE, ONLINE},
                 new Object[]{RESEND_APPEAL_CREATED_NOTIFICATION, APPELLANT, PAPER},
                 new Object[]{RESEND_APPEAL_CREATED_NOTIFICATION, APPELLANT, REGULAR},
                 new Object[]{RESEND_APPEAL_CREATED_NOTIFICATION, APPELLANT, ONLINE},
@@ -304,7 +311,13 @@ public class PersonalisationTest {
                 new Object[]{DWP_RESPONSE_RECEIVED_NOTIFICATION, APPELLANT, ONLINE},
                 new Object[]{DWP_RESPONSE_RECEIVED_NOTIFICATION, REPRESENTATIVE, PAPER},
                 new Object[]{DWP_RESPONSE_RECEIVED_NOTIFICATION, REPRESENTATIVE, ORAL},
-                new Object[]{DWP_RESPONSE_RECEIVED_NOTIFICATION, REPRESENTATIVE, ONLINE}
+                new Object[]{DWP_RESPONSE_RECEIVED_NOTIFICATION, REPRESENTATIVE, ONLINE},
+                new Object[]{VALID_APPEAL, APPELLANT, PAPER},
+                new Object[]{VALID_APPEAL, APPELLANT, REGULAR},
+                new Object[]{VALID_APPEAL, APPELLANT, ONLINE},
+                new Object[]{VALID_APPEAL, REPRESENTATIVE, PAPER},
+                new Object[]{VALID_APPEAL, REPRESENTATIVE, REGULAR},
+                new Object[]{VALID_APPEAL, REPRESENTATIVE, ONLINE}
         };
     }
 

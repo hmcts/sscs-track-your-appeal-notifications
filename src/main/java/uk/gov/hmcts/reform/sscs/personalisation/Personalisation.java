@@ -255,6 +255,7 @@ public class Personalisation<E extends NotificationWrapper> {
             || DWP_RESPONSE_RECEIVED_NOTIFICATION.equals(notificationEventType)
             || POSTPONEMENT_NOTIFICATION.equals(notificationEventType)
             || HEARING_BOOKED_NOTIFICATION.equals(notificationEventType)
+            || VALID_APPEAL.equals(notificationEventType)
             || INTERLOC_VALID_APPEAL.equals(notificationEventType)) {
             emailTemplateName = emailTemplateName + "." + subscriptionType.name().toLowerCase();
         }
@@ -264,7 +265,8 @@ public class Personalisation<E extends NotificationWrapper> {
     private String getLetterTemplateName(SubscriptionType subscriptionType, NotificationEventType notificationEventType) {
         String letterTemplateName = notificationEventType.getId();
         if (INTERLOC_VALID_APPEAL.equals(notificationEventType)
-            || DWP_RESPONSE_RECEIVED_NOTIFICATION.equals(notificationEventType)) {
+            || DWP_RESPONSE_RECEIVED_NOTIFICATION.equals(notificationEventType)
+            || VALID_APPEAL.equals(notificationEventType)) {
             letterTemplateName = letterTemplateName + "." + subscriptionType.name().toLowerCase();
         }
         return letterTemplateName;

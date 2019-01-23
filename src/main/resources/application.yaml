@@ -202,6 +202,13 @@ notification:
     representative:
       emailId: 652753bf-59b4-46eb-9c24-bd762338a098
       letterId: 77ea8a2f-06df-4279-9c1f-0f23cb2d9bbf
+  validAppeal:
+    appellant:
+      letterId: 91143b85-dd9d-430c-ba23-e42ec90f44f8
+    appointee:
+      letterId: 747d026e-1bec-4e96-8a34-28f36e30bba5
+    representative:
+      letterId: 77ea8a2f-06df-4279-9c1f-0f23cb2d9bbf
   online:
     responseReceived:
       emailId: 90f0ed29-a616-4ce0-b4ef-108391f5d90e

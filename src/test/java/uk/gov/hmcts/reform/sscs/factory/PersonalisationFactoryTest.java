@@ -103,6 +103,12 @@ public class PersonalisationFactoryTest {
     }
 
     @Test
+    public void createRepsPersonalisationWhenValidAppealNotificationApplied() {
+        Personalisation result = factory.apply(VALID_APPEAL);
+        assertEquals(syaAppealCreatedAndReceivedPersonalisation, result);
+    }
+
+    @Test
     public void createRepsPersonalisationWhenHearingPostponeNotificationApplied() {
         Personalisation result = factory.apply(POSTPONEMENT_NOTIFICATION);
         assertEquals(withRepresentativePersonalisation, result);

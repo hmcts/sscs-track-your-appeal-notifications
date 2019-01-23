@@ -25,6 +25,7 @@ public enum NotificationEventType {
     FINAL_HEARING_HOLDING_REMINDER_NOTIFICATION("finalHearingHoldingReminder", true, false, false, false),
     HEARING_REMINDER_NOTIFICATION("hearingReminder", true, false, false, false),
     DWP_RESPONSE_LATE_REMINDER_NOTIFICATION("dwpResponseLateReminder", true, true, false, false),
+    VALID_APPEAL("validAppeal", true, true, true, true),
     QUESTION_ROUND_ISSUED_NOTIFICATION("question_round_issued", false, false, true, false),
     QUESTION_DEADLINE_ELAPSED_NOTIFICATION("question_deadline_elapsed", false, false, true, false),
     QUESTION_DEADLINE_REMINDER_NOTIFICATION("question_deadline_reminder", false, false, true, false),
