@@ -141,7 +141,8 @@ public class PersonalisationTest {
         personalisation.getTemplate(notificationWrapper, PIP, subscriptionType);
 
         verify(config).getTemplate(eq(getExpectedTemplateName(notificationEventType, subscriptionType)),
-                anyString(), any(Benefit.class), any(AppealHearingType.class));
+            anyString(), anyString(), any(Benefit.class), any(AppealHearingType.class)
+        );
     }
 
     private String getExpectedTemplateName(NotificationEventType notificationEventType,
@@ -183,6 +184,7 @@ public class PersonalisationTest {
                 new Object[]{SYA_APPEAL_CREATED_NOTIFICATION, APPOINTEE, PAPER},
                 new Object[]{SYA_APPEAL_CREATED_NOTIFICATION, APPOINTEE, REGULAR},
                 new Object[]{SYA_APPEAL_CREATED_NOTIFICATION, APPOINTEE, ONLINE},
+                new Object[]{APPEAL_DORMANT_NOTIFICATION, APPELLANT, PAPER},
                 new Object[]{EVIDENCE_RECEIVED_NOTIFICATION, APPELLANT, PAPER},
                 new Object[]{EVIDENCE_RECEIVED_NOTIFICATION, APPELLANT, REGULAR},
                 new Object[]{EVIDENCE_RECEIVED_NOTIFICATION, APPELLANT, ONLINE},
@@ -195,7 +197,6 @@ public class PersonalisationTest {
                 new Object[]{RESEND_APPEAL_CREATED_NOTIFICATION, REPRESENTATIVE, PAPER},
                 new Object[]{RESEND_APPEAL_CREATED_NOTIFICATION, REPRESENTATIVE, REGULAR},
                 new Object[]{RESEND_APPEAL_CREATED_NOTIFICATION, REPRESENTATIVE, ONLINE},
-                new Object[]{APPEAL_DORMANT_NOTIFICATION, APPELLANT, PAPER},
                 new Object[]{APPEAL_DORMANT_NOTIFICATION, REPRESENTATIVE, PAPER},
                 new Object[]{APPEAL_DORMANT_NOTIFICATION, APPELLANT, ORAL},
                 new Object[]{APPEAL_DORMANT_NOTIFICATION, REPRESENTATIVE, ORAL},

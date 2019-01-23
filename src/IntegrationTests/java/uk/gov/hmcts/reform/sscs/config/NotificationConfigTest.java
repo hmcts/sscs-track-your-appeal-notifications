@@ -42,7 +42,7 @@ public class NotificationConfigTest {
                                                                             String expectedSmsTemplateId,
                                                                             AppealHearingType appealHearingType,
                                                                             String templateName) {
-        Template template = notificationConfig.getTemplate(templateName, templateName, Benefit.PIP, appealHearingType);
+        Template template = notificationConfig.getTemplate(templateName, templateName, templateName, Benefit.PIP, appealHearingType);
         assertEquals(expectedEmailTemplateId, template.getEmailTemplateId());
         assertEquals(expectedSmsTemplateId, template.getSmsTemplateId());
     }

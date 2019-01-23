@@ -364,15 +364,15 @@ public class SscsCaseDataWrapperDeserializerTest {
 
         assertNotNull(regionalProcessingCenter);
 
-        assertEquals(regionalProcessingCenter.getName(), "CARDIFF");
-        assertEquals(regionalProcessingCenter.getAddress1(), "HM Courts & Tribunals Service");
-        assertEquals(regionalProcessingCenter.getAddress2(), "Social Security & Child Support Appeals");
-        assertEquals(regionalProcessingCenter.getAddress3(), "Eastgate House");
-        assertEquals(regionalProcessingCenter.getAddress4(), "Newport Road");
-        assertEquals(regionalProcessingCenter.getCity(), "CARDIFF");
-        assertEquals(regionalProcessingCenter.getPostcode(), "CF24 0AB");
-        assertEquals(regionalProcessingCenter.getPhoneNumber(), "0300 123 1142");
-        assertEquals(regionalProcessingCenter.getFaxNumber(), "0870 739 4438");
+        assertEquals("CARDIFF", regionalProcessingCenter.getName());
+        assertEquals("HM Courts & Tribunals Service", regionalProcessingCenter.getAddress1());
+        assertEquals("Social Security & Child Support Appeals", regionalProcessingCenter.getAddress2());
+        assertEquals("Eastgate House", regionalProcessingCenter.getAddress3());
+        assertEquals("Newport Road", regionalProcessingCenter.getAddress4());
+        assertEquals("CARDIFF", regionalProcessingCenter.getCity());
+        assertEquals("CF24 0AB", regionalProcessingCenter.getPostcode());
+        assertEquals("0300 123 1142", regionalProcessingCenter.getPhoneNumber());
+        assertEquals("0870 739 4438", regionalProcessingCenter.getFaxNumber());
     }
 
     @Test

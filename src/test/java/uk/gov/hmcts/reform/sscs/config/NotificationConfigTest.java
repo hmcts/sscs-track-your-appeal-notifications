@@ -21,18 +21,21 @@ public class NotificationConfigTest {
 
     @Test
     @Parameters({
-            "emailTemplateName, notification.emailTemplateName.emailId, emailTemplateId, smsTemplateName, notification.smsTemplateName.smsId, smsTemplateId",
-            "emailTemplateName, notification.online.emailTemplateName.emailId, onlineEmailTemplateId, smsTemplateName, notification.online.smsTemplateName.smsId, onlineSmsTemplateId"
+            "emailTemplateName, notification.emailTemplateName.emailId, emailTemplateId, smsTemplateName, notification.smsTemplateName.smsId, smsTemplateId, letterTemplateName, notification.letterTemplateName.letterId, letterTemplateId",
+            "emailTemplateName, notification.online.emailTemplateName.emailId, onlineEmailTemplateId, smsTemplateName, notification.online.smsTemplateName.smsId, onlineSmsTemplateId, letterTemplateName, notification.online.letterTemplateName.letterId, onlineLetterTemplateId"
     })
     public void getDefaultTemplate(String emailTemplateName, String emailTemplateKey, String emailTemplateId,
-                                   String smsTemplateName, String smsTemplateKey, String smsTemplateId) {
+                                   String smsTemplateName, String smsTemplateKey, String smsTemplateId,
+                                   String letterTemplateName, String letterTemplateKey, String letterTemplateId) {
         when(env.getProperty(emailTemplateKey)).thenReturn(emailTemplateId);
         when(env.getProperty(smsTemplateKey)).thenReturn(smsTemplateId);
+        when(env.getProperty(letterTemplateKey)).thenReturn(letterTemplateId);
 
-        Template template = new NotificationConfig(env).getTemplate(emailTemplateName, smsTemplateName, Benefit.PIP, ONLINE);
+        Template template = new NotificationConfig(env).getTemplate(emailTemplateName, smsTemplateName, letterTemplateName, Benefit.PIP, ONLINE);
 
         assertThat(template.getEmailTemplateId(), is(emailTemplateId));
         assertThat(template.getSmsTemplateId(), is(smsTemplateId));
+        assertThat(template.getLetterTemplateId(), is(letterTemplateId));
     }
 
 }

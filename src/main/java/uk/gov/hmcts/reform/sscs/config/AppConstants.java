@@ -63,6 +63,14 @@ public final class AppConstants {
     public static final String ONLINE_HEARING_SIGN_IN_LINK_LITERAL = "online_hearing_sign_in_link";
     public static final String ONLINE_HEARING_REGISTER_LINK_LITERAL = "online_hearing_register_link";
 
+    public static final String LETTER_ADDRESS_LINE_1 = "letter_address_line_1";
+    public static final String LETTER_ADDRESS_LINE_2 = "letter_address_line_2";
+    public static final String LETTER_ADDRESS_LINE_3 = "letter_address_line_3";
+    public static final String LETTER_ADDRESS_LINE_4 = "letter_address_line_4";
+    public static final String LETTER_ADDRESS_POSTCODE = "letter_address_postcode";
+    public static final String LETTER_NAME = "letter_name";
+
+
     private AppConstants() {
         //
     }
