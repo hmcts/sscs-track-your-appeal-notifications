@@ -1,8 +1,6 @@
 package uk.gov.hmcts.reform.sscs.personalisation;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertNull;
+import static org.junit.Assert.*;
 import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.Mockito.any;
 import static org.mockito.Mockito.anyString;
@@ -14,12 +12,7 @@ import static uk.gov.hmcts.reform.sscs.ccd.domain.Benefit.ESA;
 import static uk.gov.hmcts.reform.sscs.ccd.domain.Benefit.PIP;
 import static uk.gov.hmcts.reform.sscs.ccd.domain.EventType.APPEAL_RECEIVED;
 import static uk.gov.hmcts.reform.sscs.ccd.domain.HearingType.*;
-import static uk.gov.hmcts.reform.sscs.config.AppConstants.ACCEPT_VIEW_BY_DATE_LITERAL;
-import static uk.gov.hmcts.reform.sscs.config.AppConstants.ONLINE_HEARING_LINK_LITERAL;
-import static uk.gov.hmcts.reform.sscs.config.AppConstants.ONLINE_HEARING_REGISTER_LINK_LITERAL;
-import static uk.gov.hmcts.reform.sscs.config.AppConstants.ONLINE_HEARING_SIGN_IN_LINK_LITERAL;
-import static uk.gov.hmcts.reform.sscs.config.AppConstants.QUESTION_ROUND_EXPIRES_DATE_LITERAL;
-import static uk.gov.hmcts.reform.sscs.config.AppConstants.TRIBUNAL_RESPONSE_DATE_LITERAL;
+import static uk.gov.hmcts.reform.sscs.config.AppConstants.*;
 import static uk.gov.hmcts.reform.sscs.config.SubscriptionType.*;
 import static uk.gov.hmcts.reform.sscs.domain.notify.NotificationEventType.*;
 
@@ -35,14 +28,13 @@ import java.util.Map;
 import java.util.Optional;
 import junitparams.JUnitParamsRunner;
 import junitparams.Parameters;
-import org.junit.Assert;
+import org.apache.commons.lang3.StringUtils;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import uk.gov.hmcts.reform.sscs.ccd.domain.*;
-import uk.gov.hmcts.reform.sscs.config.AppConstants;
 import uk.gov.hmcts.reform.sscs.config.AppealHearingType;
 import uk.gov.hmcts.reform.sscs.config.NotificationConfig;
 import uk.gov.hmcts.reform.sscs.config.SubscriptionType;
@@ -84,7 +76,7 @@ public class PersonalisationTest {
     @InjectMocks
     public Personalisation personalisation;
 
-    private String date = "2018-07-01T14:01:18.243";
+    private final String date = "2018-07-01T14:01:18.243";
 
     private Subscriptions subscriptions;
 
@@ -148,10 +140,10 @@ public class PersonalisationTest {
     private String getExpectedTemplateName(NotificationEventType notificationEventType,
                                            SubscriptionType subscriptionType) {
         return notificationEventType.getId() + (subscriptionType == null ? "" :
-                "." + subscriptionType.name().toLowerCase());
+                "." + StringUtils.lowerCase(subscriptionType.name()));
     }
 
-    @SuppressWarnings("Indentation")
+    @SuppressWarnings({"Indentation", "unused"})
     private Object[] generateNotificationTypeAndSubscriptionsScenarios() {
         return new Object[]{
                 new Object[]{APPEAL_RECEIVED_NOTIFICATION, APPELLANT, PAPER},
@@ -181,6 +173,7 @@ public class PersonalisationTest {
                 new Object[]{SYA_APPEAL_CREATED_NOTIFICATION, APPOINTEE, PAPER},
                 new Object[]{SYA_APPEAL_CREATED_NOTIFICATION, APPOINTEE, REGULAR},
                 new Object[]{SYA_APPEAL_CREATED_NOTIFICATION, APPOINTEE, ONLINE},
+                new Object[]{DWP_RESPONSE_RECEIVED_NOTIFICATION, null, ONLINE},
                 new Object[]{APPEAL_DORMANT_NOTIFICATION, APPELLANT, PAPER},
                 new Object[]{EVIDENCE_RECEIVED_NOTIFICATION, APPELLANT, PAPER},
                 new Object[]{EVIDENCE_RECEIVED_NOTIFICATION, APPELLANT, REGULAR},
@@ -243,30 +236,31 @@ public class PersonalisationTest {
         String expectedDecisionPostedReceiveDate = dateFormatter.format(LocalDate.now().plusDays(7));
         assertEquals(expectedDecisionPostedReceiveDate, result.get("decision_posted_receive_date"));
 
-        assertEquals(expectedPanelComposition, result.get(AppConstants.PANEL_COMPOSITION));
+        assertEquals(expectedPanelComposition, result.get(PANEL_COMPOSITION));
 
-        assertEquals(benefitType, result.get(AppConstants.BENEFIT_NAME_ACRONYM_LITERAL));
-        assertEquals(expectedBenefitDesc, result.get(AppConstants.BENEFIT_FULL_NAME_LITERAL));
-        assertEquals("SC/1234/5", result.get(AppConstants.APPEAL_REF));
-        assertEquals("GLSCRR", result.get(AppConstants.APPEAL_ID));
-        assertEquals("Harry Kane", result.get(AppConstants.APPELLANT_NAME));
-        assertEquals("01234543225", result.get(AppConstants.PHONE_NUMBER));
-        assertEquals("http://link.com/manage-email-notifications/ZYX", result.get(AppConstants.MANAGE_EMAILS_LINK_LITERAL));
-        assertEquals("http://tyalink.com/GLSCRR", result.get(AppConstants.TRACK_APPEAL_LINK_LITERAL));
-        Assert.assertEquals(AppConstants.DWP_ACRONYM, result.get(AppConstants.FIRST_TIER_AGENCY_ACRONYM));
-        Assert.assertEquals(AppConstants.DWP_FUL_NAME, result.get(AppConstants.FIRST_TIER_AGENCY_FULL_NAME));
-        assertEquals("5 August 2018", result.get(AppConstants.APPEAL_RESPOND_DATE));
-        assertEquals("http://link.com/GLSCRR", result.get(AppConstants.SUBMIT_EVIDENCE_LINK_LITERAL));
-        assertEquals("http://link.com/progress/GLSCRR/expenses", result.get(AppConstants.CLAIMING_EXPENSES_LINK_LITERAL));
-        assertEquals("http://link.com/progress/GLSCRR/abouthearing", result.get(AppConstants.HEARING_INFO_LINK_LITERAL));
-        assertNull(result.get(AppConstants.EVIDENCE_RECEIVED_DATE_LITERAL));
+        assertEquals(benefitType, result.get(BENEFIT_NAME_ACRONYM_LITERAL));
+        assertEquals(expectedBenefitDesc, result.get(BENEFIT_FULL_NAME_LITERAL));
+        assertEquals("SC/1234/5", result.get(APPEAL_REF));
+        assertEquals("GLSCRR", result.get(APPEAL_ID));
+        assertEquals("Harry Kane", result.get(NAME));
+        assertEquals("Harry Kane", result.get(APPELLANT_NAME));
+        assertEquals("01234543225", result.get(PHONE_NUMBER));
+        assertEquals("http://link.com/manage-email-notifications/ZYX", result.get(MANAGE_EMAILS_LINK_LITERAL));
+        assertEquals("http://tyalink.com/GLSCRR", result.get(TRACK_APPEAL_LINK_LITERAL));
+        assertEquals(DWP_ACRONYM, result.get(FIRST_TIER_AGENCY_ACRONYM));
+        assertEquals(DWP_FUL_NAME, result.get(FIRST_TIER_AGENCY_FULL_NAME));
+        assertEquals("5 August 2018", result.get(APPEAL_RESPOND_DATE));
+        assertEquals("http://link.com/GLSCRR", result.get(SUBMIT_EVIDENCE_LINK_LITERAL));
+        assertEquals("http://link.com/progress/GLSCRR/expenses", result.get(CLAIMING_EXPENSES_LINK_LITERAL));
+        assertEquals("http://link.com/progress/GLSCRR/abouthearing", result.get(HEARING_INFO_LINK_LITERAL));
+        assertNull(result.get(EVIDENCE_RECEIVED_DATE_LITERAL));
 
-        assertEquals(ADDRESS1, result.get(AppConstants.REGIONAL_OFFICE_NAME_LITERAL));
-        assertEquals(ADDRESS2, result.get(AppConstants.SUPPORT_CENTRE_NAME_LITERAL));
-        assertEquals(ADDRESS3, result.get(AppConstants.ADDRESS_LINE_LITERAL));
-        assertEquals(ADDRESS4, result.get(AppConstants.TOWN_LITERAL));
-        assertEquals(CITY, result.get(AppConstants.COUNTY_LITERAL));
-        assertEquals(POSTCODE, result.get(AppConstants.POSTCODE_LITERAL));
+        assertEquals(ADDRESS1, result.get(REGIONAL_OFFICE_NAME_LITERAL));
+        assertEquals(ADDRESS2, result.get(SUPPORT_CENTRE_NAME_LITERAL));
+        assertEquals(ADDRESS3, result.get(ADDRESS_LINE_LITERAL));
+        assertEquals(ADDRESS4, result.get(TOWN_LITERAL));
+        assertEquals(CITY, result.get(COUNTY_LITERAL));
+        assertEquals(POSTCODE, result.get(POSTCODE_LITERAL));
         assertEquals("1 February 2018", result.get(TRIBUNAL_RESPONSE_DATE_LITERAL));
         assertEquals("1 February 2018", result.get(ACCEPT_VIEW_BY_DATE_LITERAL));
         assertEquals("1 January 2018", result.get(QUESTION_ROUND_EXPIRES_DATE_LITERAL));
@@ -311,7 +305,7 @@ public class PersonalisationTest {
 
         Map<String, String> result = personalisation.create(SscsCaseDataWrapper.builder().newSscsCaseData(response).notificationEventType(EVIDENCE_RECEIVED_NOTIFICATION).build());
 
-        assertEquals("1 July 2018", result.get(AppConstants.EVIDENCE_RECEIVED_DATE_LITERAL));
+        assertEquals("1 July 2018", result.get(EVIDENCE_RECEIVED_DATE_LITERAL));
     }
 
     @Test
@@ -327,7 +321,7 @@ public class PersonalisationTest {
 
         Map<String, String> result = personalisation.setEventData(new HashMap<>(), response, APPEAL_RECEIVED_NOTIFICATION);
 
-        assertEquals("5 August 2018", result.get(AppConstants.APPEAL_RESPOND_DATE));
+        assertEquals("5 August 2018", result.get(APPEAL_RESPOND_DATE));
     }
 
     @Test
@@ -351,7 +345,7 @@ public class PersonalisationTest {
 
         Map<String, String> result = personalisation.setEvidenceReceivedNotificationData(new HashMap<>(), response, EVIDENCE_RECEIVED_NOTIFICATION);
 
-        assertEquals("1 July 2018", result.get(AppConstants.EVIDENCE_RECEIVED_DATE_LITERAL));
+        assertEquals("1 July 2018", result.get(EVIDENCE_RECEIVED_DATE_LITERAL));
     }
 
     @Test
@@ -368,7 +362,7 @@ public class PersonalisationTest {
 
         Map<String, String> result = personalisation.setEvidenceReceivedNotificationData(new HashMap<>(), response, EVIDENCE_RECEIVED_NOTIFICATION);
 
-        assertEquals("", result.get(AppConstants.EVIDENCE_RECEIVED_DATE_LITERAL));
+        assertEquals("", result.get(EVIDENCE_RECEIVED_DATE_LITERAL));
     }
 
     @Test
@@ -391,11 +385,11 @@ public class PersonalisationTest {
 
         Map<String, String> result = personalisation.create(SscsCaseDataWrapper.builder().newSscsCaseData(response).notificationEventType(HEARING_BOOKED_NOTIFICATION).build());
 
-        assertEquals(hearingDate.format(DateTimeFormatter.ofPattern(AppConstants.RESPONSE_DATE_FORMAT)), result.get(AppConstants.HEARING_DATE));
-        assertEquals("12:00 PM", result.get(AppConstants.HEARING_TIME));
-        assertEquals("The venue, 12 The Road Avenue, Village, Aberdeen, Aberdeenshire, AB12 0HN", result.get(AppConstants.VENUE_ADDRESS_LITERAL));
-        assertEquals("http://www.googlemaps.com/aberdeenvenue", result.get(AppConstants.VENUE_MAP_LINK_LITERAL));
-        assertEquals("in 7 days", result.get(AppConstants.DAYS_TO_HEARING_LITERAL));
+        assertEquals(hearingDate.format(DateTimeFormatter.ofPattern(RESPONSE_DATE_FORMAT)), result.get(HEARING_DATE));
+        assertEquals("12:00 PM", result.get(HEARING_TIME));
+        assertEquals("The venue, 12 The Road Avenue, Village, Aberdeen, Aberdeenshire, AB12 0HN", result.get(VENUE_ADDRESS_LITERAL));
+        assertEquals("http://www.googlemaps.com/aberdeenvenue", result.get(VENUE_MAP_LINK_LITERAL));
+        assertEquals("in 7 days", result.get(DAYS_TO_HEARING_LITERAL));
     }
 
     @Test
@@ -418,7 +412,7 @@ public class PersonalisationTest {
 
         Map<String, String> result = personalisation.create(SscsCaseDataWrapper.builder().newSscsCaseData(response).notificationEventType(HEARING_BOOKED_NOTIFICATION).build());
 
-        assertEquals("tomorrow", result.get(AppConstants.DAYS_TO_HEARING_LITERAL));
+        assertEquals("tomorrow", result.get(DAYS_TO_HEARING_LITERAL));
     }
 
     @Test
@@ -457,12 +451,12 @@ public class PersonalisationTest {
 
         verify(regionalProcessingCenterService, never()).getByScReferenceCode(anyString());
 
-        assertEquals(ADDRESS1, result.get(AppConstants.REGIONAL_OFFICE_NAME_LITERAL));
-        assertEquals(ADDRESS2, result.get(AppConstants.SUPPORT_CENTRE_NAME_LITERAL));
-        assertEquals(ADDRESS3, result.get(AppConstants.ADDRESS_LINE_LITERAL));
-        assertEquals(ADDRESS4, result.get(AppConstants.TOWN_LITERAL));
-        assertEquals(CITY, result.get(AppConstants.COUNTY_LITERAL));
-        assertEquals(POSTCODE, result.get(AppConstants.POSTCODE_LITERAL));
+        assertEquals(ADDRESS1, result.get(REGIONAL_OFFICE_NAME_LITERAL));
+        assertEquals(ADDRESS2, result.get(SUPPORT_CENTRE_NAME_LITERAL));
+        assertEquals(ADDRESS3, result.get(ADDRESS_LINE_LITERAL));
+        assertEquals(ADDRESS4, result.get(TOWN_LITERAL));
+        assertEquals(CITY, result.get(COUNTY_LITERAL));
+        assertEquals(POSTCODE, result.get(POSTCODE_LITERAL));
     }
 
     @Test
@@ -476,7 +470,7 @@ public class PersonalisationTest {
         Map<String, String> values = new HashMap<>();
         personalisation.setHearingContactDate(values, wrapper);
 
-        assertEquals("13 June 2018", values.get(AppConstants.HEARING_CONTACT_DATE));
+        assertEquals("13 June 2018", values.get(HEARING_CONTACT_DATE));
     }
 
     @Test
@@ -489,7 +483,7 @@ public class PersonalisationTest {
         Map<String, String> values = new HashMap<>();
         personalisation.setHearingContactDate(values, wrapper);
 
-        assertFalse(values.containsKey(AppConstants.HEARING_CONTACT_DATE));
+        assertFalse(values.containsKey(HEARING_CONTACT_DATE));
     }
 
     @Test
@@ -505,7 +499,7 @@ public class PersonalisationTest {
 
         Map result = personalisation.create(SscsCaseDataWrapper.builder()
                 .newSscsCaseData(response)
-                .notificationEventType(NotificationEventType.QUESTION_ROUND_ISSUED_NOTIFICATION)
+                .notificationEventType(QUESTION_ROUND_ISSUED_NOTIFICATION)
                 .build());
 
         assertEquals("http://link.com/onlineHearing?email=test%40email.com", result.get(ONLINE_HEARING_LINK_LITERAL));
@@ -530,7 +524,7 @@ public class PersonalisationTest {
 
         Map result = personalisation.create(SscsCaseDataWrapper.builder()
                 .newSscsCaseData(response)
-                .notificationEventType(NotificationEventType.QUESTION_ROUND_ISSUED_NOTIFICATION)
+                .notificationEventType(QUESTION_ROUND_ISSUED_NOTIFICATION)
                 .build());
 
         assertNull(result.get(ONLINE_HEARING_LINK_LITERAL));
@@ -539,12 +533,13 @@ public class PersonalisationTest {
     @Test
     public void shouldPopulateAppointeeSubscriptionPersonalisation() {
         final String tyaNumber = "tya";
+        Name appointeeName = Name.builder().title("MR").firstName("George").lastName("Appointee").build();
         when(macService.generateToken(tyaNumber, PIP.name())).thenReturn("ZYX");
         final SscsCaseData sscsCaseData = SscsCaseData.builder()
                 .ccdCaseId(CASE_ID).caseReference("SC/1234/5")
                 .appeal(Appeal.builder().benefitType(BenefitType.builder().code(PIP.name()).build())
                         .appellant(Appellant.builder().name(name)
-                            .appointee(Appointee.builder().name(Name.builder().build()).build())
+                            .appointee(Appointee.builder().name(appointeeName).build())
                             .build())
                         .build())
                 .subscriptions(Subscriptions.builder().appointeeSubscription(Subscription.builder()
@@ -559,10 +554,12 @@ public class PersonalisationTest {
                 .notificationEventType(SUBSCRIPTION_CREATED_NOTIFICATION)
                 .build());
 
-        assertEquals(tyaNumber, result.get(AppConstants.APPEAL_ID));
-        assertEquals("http://link.com/manage-email-notifications/ZYX", result.get(AppConstants.MANAGE_EMAILS_LINK_LITERAL));
-        assertEquals("http://tyalink.com/" + tyaNumber, result.get(AppConstants.TRACK_APPEAL_LINK_LITERAL));
-
+        assertNotNull(result);
+        assertEquals(appointeeName.getFullNameNoTitle(), result.get(NAME));
+        assertEquals(name.getFullNameNoTitle(), result.get(APPELLANT_NAME));
+        assertEquals(tyaNumber, result.get(APPEAL_ID));
+        assertEquals("http://link.com/manage-email-notifications/ZYX", result.get(MANAGE_EMAILS_LINK_LITERAL));
+        assertEquals("http://tyalink.com/" + tyaNumber, result.get(TRACK_APPEAL_LINK_LITERAL));
     }
 
     private Hearing createHearing(LocalDate hearingDate) {
