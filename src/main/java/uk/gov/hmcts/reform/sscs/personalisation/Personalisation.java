@@ -88,7 +88,11 @@ public class Personalisation<E extends NotificationWrapper> {
                 ccdResponse.getAppeal().getAppellant().getName().getFullNameNoTitle());
         personalisation.put(AppConstants.PHONE_NUMBER, config.getHmctsPhoneNumber());
 
-        if (ccdResponse.getAppeal().getAppellant().getAppointee() != null && ccdResponse.getAppeal().getAppellant().getAppointee().getName() != null) {
+        if (ccdResponse.getAppeal().getAppellant().getAppointee() != null
+                && ccdResponse.getAppeal().getAppellant().getAppointee().getName() != null
+                && ccdResponse.getAppeal().getAppellant().getAppointee().getName().getFirstName() != null
+                && ccdResponse.getAppeal().getAppellant().getAppointee().getName().getLastName() != null
+        ) {
             personalisation.put(AppConstants.NAME,
                     ccdResponse.getAppeal().getAppellant().getAppointee().getName().getFullNameNoTitle());
         }
