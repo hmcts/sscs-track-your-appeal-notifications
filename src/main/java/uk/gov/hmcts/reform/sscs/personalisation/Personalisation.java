@@ -3,12 +3,10 @@ package uk.gov.hmcts.reform.sscs.personalisation;
 import static com.google.common.collect.Lists.newArrayList;
 import static uk.gov.hmcts.reform.sscs.ccd.domain.Benefit.getBenefitByCode;
 import static uk.gov.hmcts.reform.sscs.ccd.domain.EventType.APPEAL_RECEIVED;
-import static uk.gov.hmcts.reform.sscs.config.AppConstants.ACCEPT_VIEW_BY_DATE_LITERAL;
-import static uk.gov.hmcts.reform.sscs.config.AppConstants.ONLINE_HEARING_LINK_LITERAL;
-import static uk.gov.hmcts.reform.sscs.config.AppConstants.ONLINE_HEARING_REGISTER_LINK_LITERAL;
-import static uk.gov.hmcts.reform.sscs.config.AppConstants.ONLINE_HEARING_SIGN_IN_LINK_LITERAL;
-import static uk.gov.hmcts.reform.sscs.config.AppConstants.QUESTION_ROUND_EXPIRES_DATE_LITERAL;
-import static uk.gov.hmcts.reform.sscs.config.AppConstants.TRIBUNAL_RESPONSE_DATE_LITERAL;
+import static uk.gov.hmcts.reform.sscs.config.AppConstants.*;
+import static uk.gov.hmcts.reform.sscs.config.SubscriptionType.APPELLANT;
+import static uk.gov.hmcts.reform.sscs.config.SubscriptionType.APPOINTEE;
+import static uk.gov.hmcts.reform.sscs.config.SubscriptionType.REPRESENTATIVE;
 import static uk.gov.hmcts.reform.sscs.domain.notify.NotificationEventType.*;
 
 import java.io.UnsupportedEncodingException;
@@ -27,14 +25,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
-import uk.gov.hmcts.reform.sscs.ccd.domain.Benefit;
-import uk.gov.hmcts.reform.sscs.ccd.domain.Event;
-import uk.gov.hmcts.reform.sscs.ccd.domain.EventDetails;
-import uk.gov.hmcts.reform.sscs.ccd.domain.Hearing;
-import uk.gov.hmcts.reform.sscs.ccd.domain.RegionalProcessingCenter;
-import uk.gov.hmcts.reform.sscs.ccd.domain.SscsCaseData;
-import uk.gov.hmcts.reform.sscs.ccd.domain.Subscription;
-import uk.gov.hmcts.reform.sscs.config.AppConstants;
+import uk.gov.hmcts.reform.sscs.ccd.domain.*;
 import uk.gov.hmcts.reform.sscs.config.NotificationConfig;
 import uk.gov.hmcts.reform.sscs.config.SubscriptionType;
 import uk.gov.hmcts.reform.sscs.domain.SscsCaseDataWrapper;
@@ -48,6 +39,8 @@ import uk.gov.hmcts.reform.sscs.service.RegionalProcessingCenterService;
 @Component
 @Slf4j
 public class Personalisation<E extends NotificationWrapper> {
+
+    private static final String CRLF =  String.format("%c%c",(char) 0x0D, (char) 0x0A);
 
     private boolean sendSmsSubscriptionConfirmation;
 
@@ -66,36 +59,30 @@ public class Personalisation<E extends NotificationWrapper> {
     @Autowired
     private NotificationDateConverterUtil notificationDateConverterUtil;
 
-    public Map<String, String> create(E notificationWrapper) {
-        return create(notificationWrapper.getSscsCaseDataWrapper());
+    public Map<String, String> create(final E notificationWrapper, final SubscriptionType subscriptionType) {
+        return create(notificationWrapper.getSscsCaseDataWrapper(), subscriptionType);
     }
 
-    protected Map<String, String> create(SscsCaseDataWrapper responseWrapper) {
+    protected Map<String, String> create(final SscsCaseDataWrapper responseWrapper, final SubscriptionType subscriptionType) {
         SscsCaseData ccdResponse = responseWrapper.getNewSscsCaseData();
         Map<String, String> personalisation = new HashMap<>();
 
         Benefit benefit = getBenefitByCode(ccdResponse.getAppeal().getBenefitType().getCode());
 
-        personalisation.put(AppConstants.PANEL_COMPOSITION, getPanelCompositionByBenefitType(benefit));
-        personalisation.put(AppConstants.DECISION_POSTED_RECEIVE_DATE, formatLocalDate(LocalDate.now().plusDays(7)));
-        personalisation.put(AppConstants.BENEFIT_NAME_ACRONYM_LITERAL, benefit.name());
-        personalisation.put(AppConstants.BENEFIT_NAME_ACRONYM_SHORT_LITERAL, benefit.name());
-        personalisation.put(AppConstants.BENEFIT_FULL_NAME_LITERAL, benefit.getDescription());
-        personalisation.put(AppConstants.APPEAL_REF, ccdResponse.getCaseReference());
-        personalisation.put(AppConstants.APPELLANT_NAME,
-                ccdResponse.getAppeal().getAppellant().getName().getFullNameNoTitle());
-        personalisation.put(AppConstants.NAME,
-                ccdResponse.getAppeal().getAppellant().getName().getFullNameNoTitle());
-        personalisation.put(AppConstants.PHONE_NUMBER, config.getHmctsPhoneNumber());
+        personalisation.put(PANEL_COMPOSITION, getPanelCompositionByBenefitType(benefit));
 
-        if (ccdResponse.getAppeal().getAppellant().getAppointee() != null
-                && ccdResponse.getAppeal().getAppellant().getAppointee().getName() != null
-                && ccdResponse.getAppeal().getAppellant().getAppointee().getName().getFirstName() != null
-                && ccdResponse.getAppeal().getAppellant().getAppointee().getName().getLastName() != null
-        ) {
-            personalisation.put(AppConstants.NAME,
-                    ccdResponse.getAppeal().getAppellant().getAppointee().getName().getFullNameNoTitle());
-        }
+        personalisation.put(DECISION_POSTED_RECEIVE_DATE, formatLocalDate(LocalDate.now().plusDays(7)));
+
+        personalisation.put(BENEFIT_NAME_ACRONYM_LITERAL, benefit.name());
+        personalisation.put(BENEFIT_NAME_ACRONYM_SHORT_LITERAL, benefit.name());
+        personalisation.put(BENEFIT_FULL_NAME_LITERAL, benefit.getDescription());
+        personalisation.put(APPEAL_REF, ccdResponse.getCaseReference());
+        personalisation.put(APPELLANT_NAME,
+                ccdResponse.getAppeal().getAppellant().getName().getFullNameNoTitle());
+        personalisation.put(NAME,
+                getName(subscriptionType, ccdResponse));
+        personalisation.put(PHONE_NUMBER, config.getHmctsPhoneNumber());
+
         Subscription appellantOrAppointeeSubscription = (ccdResponse.getAppeal().getAppellant().getAppointee() == null)
                 ? ccdResponse.getSubscriptions().getAppellantSubscription()
                 : ccdResponse.getSubscriptions().getAppointeeSubscription();
@@ -103,18 +90,18 @@ public class Personalisation<E extends NotificationWrapper> {
         if (appellantOrAppointeeSubscription != null) {
             subscriptionDetails(personalisation, appellantOrAppointeeSubscription, benefit);
         }
-        personalisation.put(AppConstants.FIRST_TIER_AGENCY_ACRONYM, AppConstants.DWP_ACRONYM);
-        personalisation.put(AppConstants.FIRST_TIER_AGENCY_FULL_NAME, AppConstants.DWP_FUL_NAME);
+        personalisation.put(FIRST_TIER_AGENCY_ACRONYM, DWP_ACRONYM);
+        personalisation.put(FIRST_TIER_AGENCY_FULL_NAME, DWP_FUL_NAME);
 
         if (ccdResponse.getHearings() != null && !ccdResponse.getHearings().isEmpty()) {
             Hearing latestHearing = ccdResponse.getHearings().get(0);
 
             LocalDateTime hearingDateTime = latestHearing.getValue().getHearingDateTime();
-            personalisation.put(AppConstants.HEARING_DATE, formatLocalDate(hearingDateTime.toLocalDate()));
-            personalisation.put(AppConstants.HEARING_TIME, formatLocalTime(hearingDateTime));
-            personalisation.put(AppConstants.VENUE_ADDRESS_LITERAL, formatAddress(latestHearing));
-            personalisation.put(AppConstants.VENUE_MAP_LINK_LITERAL, latestHearing.getValue().getVenue().getGoogleMapLink());
-            personalisation.put(AppConstants.DAYS_TO_HEARING_LITERAL, calculateDaysToHearingText(hearingDateTime.toLocalDate()));
+            personalisation.put(HEARING_DATE, formatLocalDate(hearingDateTime.toLocalDate()));
+            personalisation.put(HEARING_TIME, formatLocalTime(hearingDateTime));
+            personalisation.put(VENUE_ADDRESS_LITERAL, formatAddress(latestHearing));
+            personalisation.put(VENUE_MAP_LINK_LITERAL, latestHearing.getValue().getVenue().getGoogleMapLink());
+            personalisation.put(DAYS_TO_HEARING_LITERAL, calculateDaysToHearingText(hearingDateTime.toLocalDate()));
         }
 
         setEvidenceProcessingAddress(personalisation, ccdResponse);
@@ -132,21 +119,48 @@ public class Personalisation<E extends NotificationWrapper> {
         personalisation.put(ONLINE_HEARING_REGISTER_LINK_LITERAL, config.getOnlineHearingLink() + "/register");
         personalisation.put(ONLINE_HEARING_SIGN_IN_LINK_LITERAL, config.getOnlineHearingLink() + "/sign-in");
 
+        personalisation.put(APPOINTEE_DESCRIPTION, getAppointeeDescription(subscriptionType, ccdResponse));
+
         return personalisation;
     }
 
+    private String getName(SubscriptionType subscriptionType, SscsCaseData ccdResponse) {
+        Name name = null;
+        if (subscriptionType.equals(APPELLANT) && ccdResponse.getAppeal() != null
+                && ccdResponse.getAppeal().getAppellant() != null) {
+            name = ccdResponse.getAppeal().getAppellant().getName();
+        } else if (subscriptionType.equals(REPRESENTATIVE) && ccdResponse.getAppeal() != null
+                && ccdResponse.getAppeal().getRep() != null) {
+            name = ccdResponse.getAppeal().getRep().getName();
+        } else if (subscriptionType.equals(APPOINTEE) && ccdResponse.getAppeal() != null
+                && ccdResponse.getAppeal().getAppellant() != null
+                && ccdResponse.getAppeal().getAppellant().getAppointee() != null) {
+            name = ccdResponse.getAppeal().getAppellant().getAppointee().getName();
+        }
+        return name == null ? "" : name.getFullNameNoTitle();
+    }
+
+    private String getAppointeeDescription(SubscriptionType subscriptionType, SscsCaseData ccdResponse) {
+        if (APPOINTEE.equals(subscriptionType) && ccdResponse.getAppeal() != null && ccdResponse.getAppeal().getAppellant().getName() != null) {
+            return String.format("You are receiving this update as the appointee for %s.%s%s",
+                    ccdResponse.getAppeal().getAppellant().getName().getFullNameNoTitle(), CRLF, CRLF);
+        } else {
+            return "";
+        }
+    }
+
     private void subscriptionDetails(Map<String, String> personalisation, Subscription subscription, Benefit benefit) {
+
         final String tya = StringUtils.defaultIfBlank(subscription.getTya(), StringUtils.EMPTY);
-        personalisation.put(AppConstants.APPEAL_ID, tya);
-        personalisation.put(AppConstants.MANAGE_EMAILS_LINK_LITERAL, config.getManageEmailsLink().replace(AppConstants.MAC_LITERAL,
-                getMacToken(tya,
-                        benefit.name())));
-        personalisation.put(AppConstants.TRACK_APPEAL_LINK_LITERAL, config.getTrackAppealLink() != null ? config.getTrackAppealLink().replace(AppConstants.APPEAL_ID_LITERAL, tya) : null);
-        personalisation.put(AppConstants.SUBMIT_EVIDENCE_LINK_LITERAL, config.getEvidenceSubmissionInfoLink().replace(AppConstants.APPEAL_ID, tya));
-        personalisation.put(AppConstants.SUBMIT_EVIDENCE_INFO_LINK_LITERAL, config.getEvidenceSubmissionInfoLink().replace(AppConstants.APPEAL_ID_LITERAL, tya));
-        personalisation.put(AppConstants.CLAIMING_EXPENSES_LINK_LITERAL, config.getClaimingExpensesLink().replace(AppConstants.APPEAL_ID, tya));
-        personalisation.put(AppConstants.HEARING_INFO_LINK_LITERAL,
-                config.getHearingInfoLink().replace(AppConstants.APPEAL_ID_LITERAL, tya));
+        personalisation.put(APPEAL_ID, tya);
+        personalisation.put(MANAGE_EMAILS_LINK_LITERAL, config.getManageEmailsLink().replace(MAC_LITERAL,
+                getMacToken(tya, benefit.name())));
+        personalisation.put(TRACK_APPEAL_LINK_LITERAL, config.getTrackAppealLink() != null ? config.getTrackAppealLink().replace(APPEAL_ID_LITERAL, tya) : null);
+        personalisation.put(SUBMIT_EVIDENCE_LINK_LITERAL, config.getEvidenceSubmissionInfoLink().replace(APPEAL_ID, tya));
+        personalisation.put(SUBMIT_EVIDENCE_INFO_LINK_LITERAL, config.getEvidenceSubmissionInfoLink().replace(APPEAL_ID_LITERAL, tya));
+        personalisation.put(CLAIMING_EXPENSES_LINK_LITERAL, config.getClaimingExpensesLink().replace(APPEAL_ID, tya));
+        personalisation.put(HEARING_INFO_LINK_LITERAL,
+                config.getHearingInfoLink().replace(APPEAL_ID_LITERAL, tya));
 
         String email = subscription.getEmail();
         if (email != null) {
@@ -161,14 +175,14 @@ public class Personalisation<E extends NotificationWrapper> {
 
     private String getPanelCompositionByBenefitType(Benefit benefit) {
         if (Benefit.PIP.equals(benefit)) {
-            return AppConstants.PIP_PANEL_COMPOSITION;
+            return PIP_PANEL_COMPOSITION;
         }
-        return AppConstants.ESA_PANEL_COMPOSITION;
+        return ESA_PANEL_COMPOSITION;
     }
 
     void setHearingContactDate(Map<String, String> personalisation, SscsCaseDataWrapper wrapper) {
         Optional<ZonedDateTime> hearingContactDate = hearingContactDateExtractor.extract(wrapper);
-        hearingContactDate.ifPresent(zonedDateTime -> personalisation.put(AppConstants.HEARING_CONTACT_DATE,
+        hearingContactDate.ifPresent(zonedDateTime -> personalisation.put(HEARING_CONTACT_DATE,
                 formatLocalDate(zonedDateTime.toLocalDate())
         ));
     }
@@ -190,17 +204,17 @@ public class Personalisation<E extends NotificationWrapper> {
     public Map<String, String> setEvidenceReceivedNotificationData(Map<String, String> personalisation, SscsCaseData ccdResponse, NotificationEventType notificationEventType) {
         if (notificationEventType.equals(EVIDENCE_RECEIVED_NOTIFICATION)) {
             if (ccdResponse.getEvidence() != null && ccdResponse.getEvidence().getDocuments() != null && !ccdResponse.getEvidence().getDocuments().isEmpty()) {
-                personalisation.put(AppConstants.EVIDENCE_RECEIVED_DATE_LITERAL, formatLocalDate(ccdResponse.getEvidence().getDocuments().get(0).getValue().getEvidenceDateTimeFormatted()));
+                personalisation.put(EVIDENCE_RECEIVED_DATE_LITERAL, formatLocalDate(ccdResponse.getEvidence().getDocuments().get(0).getValue().getEvidenceDateTimeFormatted()));
             } else {
-                personalisation.put(AppConstants.EVIDENCE_RECEIVED_DATE_LITERAL, StringUtils.EMPTY);
+                personalisation.put(EVIDENCE_RECEIVED_DATE_LITERAL, StringUtils.EMPTY);
             }
         }
         return personalisation;
     }
 
     private Map<String, String> setAppealReceivedDetails(Map<String, String> personalisation, EventDetails eventDetails) {
-        String dwpResponseDateString = formatLocalDate(eventDetails.getDateTime().plusDays(AppConstants.MAX_DWP_RESPONSE_DAYS).toLocalDate());
-        personalisation.put(AppConstants.APPEAL_RESPOND_DATE, dwpResponseDateString);
+        String dwpResponseDateString = formatLocalDate(eventDetails.getDateTime().plusDays(MAX_DWP_RESPONSE_DAYS).toLocalDate());
+        personalisation.put(APPEAL_RESPOND_DATE, dwpResponseDateString);
         return personalisation;
     }
 
@@ -212,12 +226,12 @@ public class Personalisation<E extends NotificationWrapper> {
         } else {
             rpc = regionalProcessingCenterService.getByScReferenceCode(ccdResponse.getCaseReference());
         }
-        personalisation.put(AppConstants.REGIONAL_OFFICE_NAME_LITERAL, rpc.getAddress1());
-        personalisation.put(AppConstants.SUPPORT_CENTRE_NAME_LITERAL, rpc.getAddress2());
-        personalisation.put(AppConstants.ADDRESS_LINE_LITERAL, rpc.getAddress3());
-        personalisation.put(AppConstants.TOWN_LITERAL, rpc.getAddress4());
-        personalisation.put(AppConstants.COUNTY_LITERAL, rpc.getCity());
-        personalisation.put(AppConstants.POSTCODE_LITERAL, rpc.getPostcode());
+        personalisation.put(REGIONAL_OFFICE_NAME_LITERAL, rpc.getAddress1());
+        personalisation.put(SUPPORT_CENTRE_NAME_LITERAL, rpc.getAddress2());
+        personalisation.put(ADDRESS_LINE_LITERAL, rpc.getAddress3());
+        personalisation.put(TOWN_LITERAL, rpc.getAddress4());
+        personalisation.put(COUNTY_LITERAL, rpc.getCity());
+        personalisation.put(POSTCODE_LITERAL, rpc.getPostcode());
 
         return personalisation;
     }
@@ -233,7 +247,7 @@ public class Personalisation<E extends NotificationWrapper> {
     private String calculateDaysToHearingText(LocalDate hearingDate) {
         Long daysBetween = ChronoUnit.DAYS.between(LocalDate.now(), hearingDate);
 
-        return daysBetween == 1 ? AppConstants.TOMORROW_STRING : "in " + daysBetween + AppConstants.DAYS_STRING;
+        return daysBetween == 1 ? TOMORROW_STRING : "in " + daysBetween + DAYS_STRING;
     }
 
     public String getMacToken(String id, String benefitType) {
@@ -241,11 +255,11 @@ public class Personalisation<E extends NotificationWrapper> {
     }
 
     private String formatLocalDate(LocalDate date) {
-        return date.format(DateTimeFormatter.ofPattern(AppConstants.RESPONSE_DATE_FORMAT));
+        return date.format(DateTimeFormatter.ofPattern(RESPONSE_DATE_FORMAT));
     }
 
     private String formatLocalTime(LocalDateTime date) {
-        return date.format(DateTimeFormatter.ofPattern(AppConstants.HEARING_TIME_FORMAT));
+        return date.format(DateTimeFormatter.ofPattern(HEARING_TIME_FORMAT));
     }
 
     public Template getTemplate(E notificationWrapper, Benefit benefit, SubscriptionType subscriptionType) {

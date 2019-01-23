@@ -32,7 +32,6 @@ public class CcdActionExecutorTest {
 
     private SscsCaseDetails caseDetails;
     private SscsCaseDataWrapper wrapper;
-    private SscsCaseData newSscsCaseData;
 
     private IdamTokens idamTokens;
 
@@ -44,7 +43,7 @@ public class CcdActionExecutorTest {
 
         caseDetails = SscsCaseDetails.builder().caseTypeId("123").build();
 
-        newSscsCaseData = SscsCaseData.builder().build();
+        SscsCaseData newSscsCaseData = SscsCaseData.builder().build();
 
         wrapper = SscsCaseDataWrapper.builder().newSscsCaseData(newSscsCaseData).notificationEventType(EVIDENCE_REMINDER_NOTIFICATION).build();
 
