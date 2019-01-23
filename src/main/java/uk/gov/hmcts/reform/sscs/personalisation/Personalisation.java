@@ -87,6 +87,15 @@ public class Personalisation<E extends NotificationWrapper> {
                 ccdResponse.getAppeal().getAppellant().getName().getFullNameNoTitle());
         personalisation.put(AppConstants.PHONE_NUMBER, config.getHmctsPhoneNumber());
 
+        if (ccdResponse.getAppeal().getAppellant().getAppointee() != null
+                && ccdResponse.getAppeal().getAppellant().getAppointee().getName() != null
+                && ccdResponse.getAppeal().getAppellant().getAppointee().getName().getFirstName() != null
+                && ccdResponse.getAppeal().getAppellant().getAppointee().getName().getLastName() != null
+        ) {
+            personalisation.put(AppConstants.NAME,
+                    ccdResponse.getAppeal().getAppellant().getAppointee().getName().getFullNameNoTitle());
+        }
+        
         Subscription appellantOrAppointeeSubscription = (ccdResponse.getAppeal().getAppellant().getAppointee() == null)
                 ? ccdResponse.getSubscriptions().getAppellantSubscription()
                 : ccdResponse.getSubscriptions().getAppointeeSubscription();
@@ -112,11 +121,6 @@ public class Personalisation<E extends NotificationWrapper> {
                 } catch (UnsupportedEncodingException e) {
                     throw new RuntimeException(e);
                 }
-            }
-
-            if (ccdResponse.getAppeal().getAppellant().getAppointee() != null && ccdResponse.getAppeal().getAppellant().getAppointee().getName() != null) {
-                personalisation.put(AppConstants.NAME,
-                    ccdResponse.getAppeal().getAppellant().getAppointee().getName().getFullNameNoTitle());
             }
 
             subscriptionDetails(personalisation, appellantOrAppointeeSubscription, benefit);
