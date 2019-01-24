@@ -3,9 +3,7 @@ package uk.gov.hmcts.reform.sscs.service;
 import static uk.gov.hmcts.reform.sscs.config.SubscriptionType.APPELLANT;
 import static uk.gov.hmcts.reform.sscs.config.SubscriptionType.APPOINTEE;
 import static uk.gov.hmcts.reform.sscs.config.SubscriptionType.REPRESENTATIVE;
-import static uk.gov.hmcts.reform.sscs.domain.notify.NotificationEventType.INTERLOC_VALID_APPEAL;
-import static uk.gov.hmcts.reform.sscs.domain.notify.NotificationEventType.STRUCK_OUT;
-import static uk.gov.hmcts.reform.sscs.domain.notify.NotificationEventType.SYA_APPEAL_CREATED_NOTIFICATION;
+import static uk.gov.hmcts.reform.sscs.domain.notify.NotificationEventType.*;
 
 import java.time.LocalDateTime;
 import java.util.Arrays;
@@ -19,7 +17,7 @@ import uk.gov.hmcts.reform.sscs.factory.NotificationWrapper;
 
 @Service
 public class NotificationValidService {
-    private static final List<NotificationEventType> FALLBACK_SUBSCRIPTION_TYPES = Arrays.asList(INTERLOC_VALID_APPEAL, SYA_APPEAL_CREATED_NOTIFICATION);
+    private static final List<NotificationEventType> FALLBACK_SUBSCRIPTION_TYPES = Arrays.asList(INTERLOC_VALID_APPEAL, APPEAL_RECEIVED_NOTIFICATION);
     private static final String HEARING_TYPE_ONLINE_RESOLUTION = "cor";
 
     static boolean isMandatoryLetter(NotificationEventType eventType) {

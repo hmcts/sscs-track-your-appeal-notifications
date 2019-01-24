@@ -19,9 +19,7 @@ import java.time.LocalDateTime;
 import java.time.ZonedDateTime;
 import java.time.format.DateTimeFormatter;
 import java.time.temporal.ChronoUnit;
-import java.util.HashMap;
-import java.util.Map;
-import java.util.Optional;
+import java.util.*;
 import java.util.stream.Collectors;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.StringUtils;
@@ -48,6 +46,7 @@ import uk.gov.hmcts.reform.sscs.service.RegionalProcessingCenterService;
 @Component
 @Slf4j
 public class Personalisation<E extends NotificationWrapper> {
+    private static final List<NotificationEventType> LETTER_EVENT_TYPES = Arrays.asList(INTERLOC_VALID_APPEAL, APPEAL_RECEIVED_NOTIFICATION);
 
     private boolean sendSmsSubscriptionConfirmation;
 
@@ -265,7 +264,7 @@ public class Personalisation<E extends NotificationWrapper> {
 
     private String getLetterTemplateName(SubscriptionType subscriptionType, NotificationEventType notificationEventType) {
         String letterTemplateName = notificationEventType.getId();
-        if (INTERLOC_VALID_APPEAL.equals(notificationEventType)) {
+        if (LETTER_EVENT_TYPES.contains(notificationEventType)) {
             letterTemplateName = letterTemplateName + "." + subscriptionType.name().toLowerCase();
         }
         return letterTemplateName;
