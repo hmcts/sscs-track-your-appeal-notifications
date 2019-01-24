@@ -89,8 +89,9 @@ public class CcdNotificationWrapper implements NotificationWrapper {
     public List<SubscriptionWithType> getSubscriptionsBasedOnNotificationType() {
         List<SubscriptionWithType> subscriptionWithTypeList = new ArrayList<>();
 
-        if (hasAppointee() && (SYA_APPEAL_CREATED_NOTIFICATION.equals(getNotificationType()))
-            || INTERLOC_VALID_APPEAL.equals(getNotificationType())) {
+        if (hasAppointee() && (SYA_APPEAL_CREATED_NOTIFICATION.equals(getNotificationType())
+            || DWP_RESPONSE_RECEIVED_NOTIFICATION.equals(getNotificationType())
+            || INTERLOC_VALID_APPEAL.equals(getNotificationType()))) {
             subscriptionWithTypeList.add(new SubscriptionWithType(getAppointeeSubscription(), APPOINTEE));
         } else {
             subscriptionWithTypeList.add(new SubscriptionWithType(getAppellantSubscription(), APPELLANT));
