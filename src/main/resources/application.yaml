@@ -121,6 +121,9 @@ notification:
     representative:
       emailId: e93dd744-84a1-4173-847a-6d023b55637f
       smsId: ee58f7d0-8de7-4bee-acd4-252213db6b7b
+    appointee:
+      emailId: 8ce8d794-75e8-49a0-b4d2-0c6cd2061c11
+      smsId: d2b4394b-d1c9-4d5c-a44e-b382e41c67e5
   appealWithdrawn:
     appellant:
       emailId: 8620e023-f663-477e-a771-9cfad50ee30f
