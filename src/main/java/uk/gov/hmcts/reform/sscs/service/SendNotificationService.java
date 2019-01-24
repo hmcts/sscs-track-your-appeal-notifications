@@ -29,7 +29,7 @@ import uk.gov.service.notify.NotificationClientException;
 public class SendNotificationService {
     private static final String DIRECTION_TEXT = "Direction Text";
     static final String DM_STORE_USER_ID = "sscs";
-    public static final String NOTIFICATION_TYPE_LETTER = "Letter";
+    private static final String NOTIFICATION_TYPE_LETTER = "Letter";
 
     @Value("${feature.bundled_letters_on}")
     Boolean bundledLettersOn;
@@ -69,9 +69,9 @@ public class SendNotificationService {
         if (lettersOn) {
             if (APPELLANT.equals(subscriptionWithType.getSubscriptionType())
                 || APPOINTEE.equals(subscriptionWithType.getSubscriptionType())) {
-                sendFallbackLetterNoficationToAppellant(wrapper, subscription, notification);
+                sendFallbackLetterNotificationToAppellant(wrapper, subscription, notification);
             } else {
-                sendFallbackLetterNoficationToRepresentative(wrapper, subscription, notification);
+                sendFallbackLetterNotificationToRepresentative(wrapper, subscription, notification);
             }
         }
 
@@ -112,7 +112,7 @@ public class SendNotificationService {
         }
     }
 
-    private void sendFallbackLetterNoficationToAppellant(NotificationWrapper wrapper, Subscription subscription, Notification notification) {
+    private void sendFallbackLetterNotificationToAppellant(NotificationWrapper wrapper, Subscription subscription, Notification notification) {
         if (!subscription.isSmsSubscribed() && !subscription.isEmailSubscribed() && notification.getLetterTemplate() != null) {
             NotificationHandler.SendNotification sendNotification = () -> {
                 Address addressToUse = getAddressToUseForLetter(wrapper);
@@ -123,7 +123,7 @@ public class SendNotificationService {
         }
     }
 
-    private void sendFallbackLetterNoficationToRepresentative(NotificationWrapper wrapper, Subscription subscription, Notification notification) {
+    private void sendFallbackLetterNotificationToRepresentative(NotificationWrapper wrapper, Subscription subscription, Notification notification) {
         if (!subscription.isSmsSubscribed() && !subscription.isEmailSubscribed() && notification.getLetterTemplate() != null) {
             NotificationHandler.SendNotification sendNotification = () -> {
                 Address addressToUse = wrapper.getNewSscsCaseData().getAppeal().getRep().getAddress();

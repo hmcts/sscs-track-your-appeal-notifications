@@ -22,11 +22,11 @@ public class NotificationValidService {
     private static final List<NotificationEventType> FALLBACK_SUBSCRIPTION_TYPES = Arrays.asList(INTERLOC_VALID_APPEAL, SYA_APPEAL_CREATED_NOTIFICATION);
     private static final String HEARING_TYPE_ONLINE_RESOLUTION = "cor";
 
-    static final boolean isMandatoryLetter(NotificationEventType eventType) {
+    static boolean isMandatoryLetter(NotificationEventType eventType) {
         return STRUCK_OUT.equals(eventType);
     }
 
-    static final boolean isFallbackLetterRequiredForSubscriptionType(NotificationWrapper wrapper, SubscriptionType subscriptionType, NotificationEventType eventType) {
+    static boolean isFallbackLetterRequiredForSubscriptionType(NotificationWrapper wrapper, SubscriptionType subscriptionType, NotificationEventType eventType) {
         boolean result = false;
 
         if (FALLBACK_SUBSCRIPTION_TYPES.contains(eventType)
