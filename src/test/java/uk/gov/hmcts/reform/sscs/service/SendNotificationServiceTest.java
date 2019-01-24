@@ -131,7 +131,7 @@ public class SendNotificationServiceTest {
     }
 
     @Test
-    public void doNotSendFallbackLetterNoficationToAppellantWhenSubscribedForSms() {
+    public void doNotSendFallbackLetterNotificationToAppellantWhenSubscribedForSms() {
         SubscriptionWithType appellantSmsSubscription = new SubscriptionWithType(SMS_SUBSCRIPTION, SubscriptionType.APPELLANT);
 
         classUnderTest.sendEmailSmsLetterNotification(buildBaseWrapper(APPELLANT_WITH_ADDRESS, NotificationEventType.INTERLOC_VALID_APPEAL), SMS_SUBSCRIPTION, SMS_NOTIFICATION, appellantSmsSubscription);
@@ -140,7 +140,7 @@ public class SendNotificationServiceTest {
     }
 
     @Test
-    public void doNotSendFallbackLetterNoficationToAppellantWhenSubscribedForEmail() {
+    public void doNotSendFallbackLetterNotificationToAppellantWhenSubscribedForEmail() {
         SubscriptionWithType appellantEmailSubscription = new SubscriptionWithType(EMAIL_SUBSCRIPTION, SubscriptionType.APPELLANT);
 
         classUnderTest.sendEmailSmsLetterNotification(buildBaseWrapper(APPELLANT_WITH_ADDRESS, NotificationEventType.INTERLOC_VALID_APPEAL), EMAIL_SUBSCRIPTION, EMAIL_NOTIFICATION, appellantEmailSubscription);
@@ -149,7 +149,7 @@ public class SendNotificationServiceTest {
     }
 
     @Test
-    public void doNotSendFallbackLetterNoficationToAppellantWhenNoLetterTemplate() {
+    public void doNotSendFallbackLetterNotificationToAppellantWhenNoLetterTemplate() {
         SubscriptionWithType appellantEmptySubscription = new SubscriptionWithType(EMPTY_SUBSCRIPTION, SubscriptionType.APPELLANT);
 
         classUnderTest.sendEmailSmsLetterNotification(buildBaseWrapper(APPELLANT_WITH_ADDRESS, NotificationEventType.INTERLOC_VALID_APPEAL), EMPTY_SUBSCRIPTION, EMPTY_TEMPLATE_NOTIFICATION, appellantEmptySubscription);
@@ -158,7 +158,7 @@ public class SendNotificationServiceTest {
     }
 
     @Test
-    public void sendFallbackLetterNoficationToAppellant() {
+    public void sendFallbackLetterNotificationToAppellant() {
         SubscriptionWithType appellantEmptySubscription = new SubscriptionWithType(EMPTY_SUBSCRIPTION, SubscriptionType.APPELLANT);
 
         classUnderTest.sendEmailSmsLetterNotification(buildBaseWrapper(APPELLANT_WITH_ADDRESS, NotificationEventType.INTERLOC_VALID_APPEAL), EMPTY_SUBSCRIPTION, LETTER_NOTIFICATION, appellantEmptySubscription);
@@ -167,7 +167,7 @@ public class SendNotificationServiceTest {
     }
 
     @Test
-    public void doNotSendFallbackLetterNoficationToAppellantWhenToggledOff() {
+    public void doNotSendFallbackLetterNotificationToAppellantWhenToggledOff() {
         SubscriptionWithType appellantEmptySubscription = new SubscriptionWithType(EMPTY_SUBSCRIPTION, SubscriptionType.APPELLANT);
 
         classUnderTest.lettersOn = false;
@@ -177,7 +177,7 @@ public class SendNotificationServiceTest {
     }
 
     @Test
-    public void doNotSendFallbackLetterNoficationToRepWhenSubscribedForSms() {
+    public void doNotSendFallbackLetterNotificationToRepWhenSubscribedForSms() {
         SubscriptionWithType appellantSmsSubscription = new SubscriptionWithType(SMS_SUBSCRIPTION, SubscriptionType.REPRESENTATIVE);
 
         classUnderTest.sendEmailSmsLetterNotification(buildBaseWrapper(APPELLANT_WITH_ADDRESS, NotificationEventType.INTERLOC_VALID_APPEAL), SMS_SUBSCRIPTION, SMS_NOTIFICATION, appellantSmsSubscription);
@@ -186,7 +186,7 @@ public class SendNotificationServiceTest {
     }
 
     @Test
-    public void doNotSendFallbackLetterNoficationToRepWhenSubscribedForEmail() {
+    public void doNotSendFallbackLetterNotificationToRepWhenSubscribedForEmail() {
         SubscriptionWithType appellantEmailSubscription = new SubscriptionWithType(EMAIL_SUBSCRIPTION, SubscriptionType.REPRESENTATIVE);
 
         classUnderTest.sendEmailSmsLetterNotification(buildBaseWrapper(APPELLANT_WITH_ADDRESS, NotificationEventType.INTERLOC_VALID_APPEAL), EMAIL_SUBSCRIPTION, EMAIL_NOTIFICATION, appellantEmailSubscription);
@@ -195,7 +195,7 @@ public class SendNotificationServiceTest {
     }
 
     @Test
-    public void doNotSendFallbackLetterNoficationToRepWhenNoLetterTemplate() {
+    public void doNotSendFallbackLetterNotificationToRepWhenNoLetterTemplate() {
         SubscriptionWithType appellantEmptySubscription = new SubscriptionWithType(EMPTY_SUBSCRIPTION, SubscriptionType.REPRESENTATIVE);
 
         classUnderTest.sendEmailSmsLetterNotification(buildBaseWrapper(APPELLANT_WITH_ADDRESS, NotificationEventType.INTERLOC_VALID_APPEAL), EMPTY_SUBSCRIPTION, EMPTY_TEMPLATE_NOTIFICATION, appellantEmptySubscription);
@@ -204,7 +204,7 @@ public class SendNotificationServiceTest {
     }
 
     @Test
-    public void sendFallbackLetterNoficationToRep() {
+    public void sendFallbackLetterNotificationToRep() {
         SubscriptionWithType appellantEmptySubscription = new SubscriptionWithType(EMPTY_SUBSCRIPTION, SubscriptionType.REPRESENTATIVE);
 
         classUnderTest.sendEmailSmsLetterNotification(buildBaseWrapper(APPELLANT_WITH_ADDRESS, NotificationEventType.INTERLOC_VALID_APPEAL), EMPTY_SUBSCRIPTION, LETTER_NOTIFICATION, appellantEmptySubscription);
