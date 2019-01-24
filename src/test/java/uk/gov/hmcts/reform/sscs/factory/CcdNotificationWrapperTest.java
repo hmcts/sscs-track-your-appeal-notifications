@@ -67,13 +67,13 @@ public class CcdNotificationWrapperTest {
         );
     }
 
+
     private CcdNotificationWrapper buildCcdNotificationWrapperBasedOnEventTypeWithAppointee(NotificationEventType notificationEventType, String hearingType) {
         return new CcdNotificationWrapper(
             SscsCaseDataWrapper.builder()
                 .newSscsCaseData(SscsCaseData.builder()
                     .appeal(Appeal.builder()
                         .hearingType(hearingType)
-
                         .appellant(Appellant.builder().appointee(Appointee.builder().build()).build())
                         .build())
                     .subscriptions(Subscriptions.builder()

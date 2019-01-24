@@ -320,6 +320,7 @@ public class NotificationsIt {
         assertHttpStatus(response, HttpStatus.OK);
 
         ArgumentCaptor<String> emailTemplateIdCaptor = ArgumentCaptor.forClass(String.class);
+
         ArgumentCaptor<Map<String, ?>> personalisationCaptor = ArgumentCaptor.forClass(Map.class);
         verify(notificationClient, times(wantedNumberOfSendEmailInvocations))
             .sendEmail(emailTemplateIdCaptor.capture(), any(), personalisationCaptor.capture(), any());
