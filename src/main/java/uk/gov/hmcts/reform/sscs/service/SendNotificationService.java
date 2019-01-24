@@ -82,7 +82,7 @@ public class SendNotificationService {
     }
 
     private void sendSmsNotification(NotificationWrapper wrapper, Subscription subscription, Notification notification) {
-        if (subscription.isSmsSubscribed() && notification.isSms() && notification.getSmsTemplate() != null) {
+        if (subscription != null && subscription.isSmsSubscribed() && notification.isSms() && notification.getSmsTemplate() != null) {
             NotificationHandler.SendNotification sendNotification = () ->
                     notificationSender.sendSms(
                             notification.getSmsTemplate(),
@@ -97,7 +97,7 @@ public class SendNotificationService {
     }
 
     private void sendEmailNotification(NotificationWrapper wrapper, Subscription subscription, Notification notification) {
-        if (subscription.isEmailSubscribed()
+        if (subscription != null && subscription.isEmailSubscribed()
             && notification.isEmail()
             && notification.getEmailTemplate() != null) {
             NotificationHandler.SendNotification sendNotification = () ->
@@ -113,7 +113,7 @@ public class SendNotificationService {
     }
 
     private void sendFallbackLetterNotificationToAppellant(NotificationWrapper wrapper, Subscription subscription, Notification notification) {
-        if (!subscription.isSmsSubscribed() && !subscription.isEmailSubscribed() && notification.getLetterTemplate() != null) {
+        if (subscription != null && !subscription.isSmsSubscribed() && !subscription.isEmailSubscribed() && notification.getLetterTemplate() != null) {
             NotificationHandler.SendNotification sendNotification = () -> {
                 Address addressToUse = getAddressToUseForLetter(wrapper);
 
@@ -124,7 +124,7 @@ public class SendNotificationService {
     }
 
     private void sendFallbackLetterNotificationToRepresentative(NotificationWrapper wrapper, Subscription subscription, Notification notification) {
-        if (!subscription.isSmsSubscribed() && !subscription.isEmailSubscribed() && notification.getLetterTemplate() != null) {
+        if (subscription != null && !subscription.isSmsSubscribed() && !subscription.isEmailSubscribed() && notification.getLetterTemplate() != null) {
             NotificationHandler.SendNotification sendNotification = () -> {
                 Address addressToUse = wrapper.getNewSscsCaseData().getAppeal().getRep().getAddress();
 
