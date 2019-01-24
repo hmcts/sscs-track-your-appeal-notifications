@@ -114,6 +114,8 @@ notification:
       emailId: 08959288-e09a-472d-80b8-af79bfcbb437
     representative:
       emailId: 0a48bd48-f79c-4863-b6e3-e8fa69019c34
+    appointee:
+      emailId: 08959288-e09a-472d-80b8-af79bfcbb437
   appealLapsed:
     appellant:
       emailId: 8ce8d794-75e8-49a0-b4d2-0c6cd2061c11
