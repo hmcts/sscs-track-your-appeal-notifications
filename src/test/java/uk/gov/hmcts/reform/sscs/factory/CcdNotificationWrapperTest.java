@@ -91,6 +91,9 @@ public class CcdNotificationWrapperTest {
     @Parameters({"APPEAL_LAPSED_NOTIFICATION","APPEAL_WITHDRAWN_NOTIFICATION","EVIDENCE_RECEIVED_NOTIFICATION","POSTPONEMENT_NOTIFICATION","HEARING_BOOKED_NOTIFICATION","SYA_APPEAL_CREATED_NOTIFICATION", "INTERLOC_VALID_APPEAL", "RESEND_APPEAL_CREATED_NOTIFICATION", "APPEAL_RECEIVED_NOTIFICATION", "DWP_RESPONSE_RECEIVED_NOTIFICATION", "ADJOURNED_NOTIFICATION", "VALID_APPEAL", "APPEAL_DORMANT_NOTIFICATION"})
     public void givenSubscriptions_shouldGetSubscriptionTypeList(NotificationEventType notificationEventType) {
         ccdNotificationWrapper = buildCcdNotificationWrapperBasedOnEventType(notificationEventType);
+        if (notificationEventType == VALID_APPEAL) {
+            ccdNotificationWrapper.getNewSscsCaseData().getAppeal().setReceivedVia("Paper");
+        }
         List<SubscriptionWithType> subsWithTypeList = ccdNotificationWrapper.getSubscriptionsBasedOnNotificationType();
         Assert.assertEquals(2,subsWithTypeList.size());
         Assert.assertEquals(SubscriptionType.APPELLANT, subsWithTypeList.get(0).getSubscriptionType());

@@ -153,6 +153,9 @@ public class NotificationServiceTest {
             ccdNotificationWrapper.getNewSscsCaseData().getAppeal()
                     .setAppellant(Appellant.builder().appointee(Appointee.builder().build()).build());
         }
+        if (notificationEventType == VALID_APPEAL) {
+            ccdNotificationWrapper.getNewSscsCaseData().getAppeal().setReceivedVia("Paper");
+        }
 
         given(notificationValidService.isHearingTypeValidToSendNotification(
                 any(SscsCaseData.class), eq(notificationEventType))).willReturn(true);
@@ -453,7 +456,7 @@ public class NotificationServiceTest {
                                 .tya(APPEAL_NUMBER)
                                 .mobile(MOBILE_NUMBER_1)
                                 .build(),
-                        new SubscriptionType[]{APPELLANT, REPRESENTATIVE},
+                        new SubscriptionType[]{APPOINTEE, REPRESENTATIVE},
                 }
         };
     }

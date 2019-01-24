@@ -89,28 +89,31 @@ public class CcdNotificationWrapper implements NotificationWrapper {
     public List<SubscriptionWithType> getSubscriptionsBasedOnNotificationType() {
         List<SubscriptionWithType> subscriptionWithTypeList = new ArrayList<>();
 
-        if (hasAppointee() && (SYA_APPEAL_CREATED_NOTIFICATION.equals(getNotificationType())
-            || DWP_RESPONSE_RECEIVED_NOTIFICATION.equals(getNotificationType())
-            || INTERLOC_VALID_APPEAL.equals(getNotificationType()))) {
-            subscriptionWithTypeList.add(new SubscriptionWithType(getAppointeeSubscription(), APPOINTEE));
-        } else {
-            subscriptionWithTypeList.add(new SubscriptionWithType(getAppellantSubscription(), APPELLANT));
-        }
+        if (!VALID_APPEAL.equals(getNotificationType()) || isBulkScanCase()) {
+            if (hasAppointee() && (SYA_APPEAL_CREATED_NOTIFICATION.equals(getNotificationType())
+                    || DWP_RESPONSE_RECEIVED_NOTIFICATION.equals(getNotificationType())
+                    || VALID_APPEAL.equals(getNotificationType())
+                    || INTERLOC_VALID_APPEAL.equals(getNotificationType()))) {
+                subscriptionWithTypeList.add(new SubscriptionWithType(getAppointeeSubscription(), APPOINTEE));
+            } else {
+                subscriptionWithTypeList.add(new SubscriptionWithType(getAppellantSubscription(), APPELLANT));
+            }
 
-        if (hasRepresentative() && (APPEAL_LAPSED_NOTIFICATION.equals(getNotificationType())
-            || APPEAL_WITHDRAWN_NOTIFICATION.equals(getNotificationType())
-            || EVIDENCE_RECEIVED_NOTIFICATION.equals(getNotificationType())
-            || SYA_APPEAL_CREATED_NOTIFICATION.equals(getNotificationType())
-            || RESEND_APPEAL_CREATED_NOTIFICATION.equals(getNotificationType())
-            || APPEAL_DORMANT_NOTIFICATION.equals(getNotificationType())
-            || ADJOURNED_NOTIFICATION.equals(getNotificationType())
-            || APPEAL_RECEIVED_NOTIFICATION.equals(getNotificationType())
-            || DWP_RESPONSE_RECEIVED_NOTIFICATION.equals(getNotificationType())
-            || POSTPONEMENT_NOTIFICATION.equals(getNotificationType())
-            || HEARING_BOOKED_NOTIFICATION.equals(getNotificationType())
-            || VALID_APPEAL.equals(getNotificationType())
-            || INTERLOC_VALID_APPEAL.equals(getNotificationType())) {
-            subscriptionWithTypeList.add(new SubscriptionWithType(getRepresentativeSubscription(), REPRESENTATIVE));
+            if (hasRepresentative() && (APPEAL_LAPSED_NOTIFICATION.equals(getNotificationType())
+                    || APPEAL_WITHDRAWN_NOTIFICATION.equals(getNotificationType())
+                    || EVIDENCE_RECEIVED_NOTIFICATION.equals(getNotificationType())
+                    || SYA_APPEAL_CREATED_NOTIFICATION.equals(getNotificationType())
+                    || RESEND_APPEAL_CREATED_NOTIFICATION.equals(getNotificationType())
+                    || APPEAL_DORMANT_NOTIFICATION.equals(getNotificationType())
+                    || ADJOURNED_NOTIFICATION.equals(getNotificationType())
+                    || APPEAL_RECEIVED_NOTIFICATION.equals(getNotificationType())
+                    || DWP_RESPONSE_RECEIVED_NOTIFICATION.equals(getNotificationType())
+                    || POSTPONEMENT_NOTIFICATION.equals(getNotificationType())
+                    || HEARING_BOOKED_NOTIFICATION.equals(getNotificationType())
+                    || VALID_APPEAL.equals(getNotificationType())
+                    || INTERLOC_VALID_APPEAL.equals(getNotificationType()))) {
+                subscriptionWithTypeList.add(new SubscriptionWithType(getRepresentativeSubscription(), REPRESENTATIVE));
+            }
         }
         return subscriptionWithTypeList;
     }
@@ -124,6 +127,10 @@ public class CcdNotificationWrapper implements NotificationWrapper {
     private boolean hasRepresentative() {
         return (responseWrapper.getNewSscsCaseData().getAppeal() != null
             && responseWrapper.getNewSscsCaseData().getAppeal().getRep() != null);
+    }
+
+    private boolean isBulkScanCase() {
+        return "Paper".equals(responseWrapper.getNewSscsCaseData().getAppeal().getReceivedVia());
     }
 
     @Override
