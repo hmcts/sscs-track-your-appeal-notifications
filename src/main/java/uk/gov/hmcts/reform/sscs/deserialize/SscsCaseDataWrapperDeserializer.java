@@ -164,7 +164,7 @@ public class SscsCaseDataWrapperDeserializer extends StdDeserializer<SscsCaseDat
     }
 
     private Appointee deserializeAppointee(JsonNode appellantNode) {
-        JsonNode appointeeNode = getNode(appellantNode, "appointee");
+        JsonNode appointeeNode = getObjectNode(appellantNode, "appointee");
         if (null == appointeeNode) {
             return null;
         }
@@ -447,6 +447,10 @@ public class SscsCaseDataWrapperDeserializer extends StdDeserializer<SscsCaseDat
 
     public JsonNode getNode(JsonNode node, String field) {
         return node != null && node.has(field) && !node.get(field).getNodeType().equals(JsonNodeType.NULL) ? node.get(field) : null;
+    }
+
+    public JsonNode getObjectNode(JsonNode node, String field) {
+        return node != null && node.has(field) && node.get(field).getNodeType().equals(JsonNodeType.OBJECT) && node.get(field).size() > 0 ? node.get(field) : null;
     }
 
     public String getField(JsonNode node, String field) {

@@ -149,8 +149,10 @@ public class NotificationServiceTest {
         ccdNotificationWrapper = buildNotificationWrapperGivenNotificationTypeAndSubscriptions(
                 notificationEventType, appellantSubscription, repsSubscription, appointeeSubscription);
 
-        // Add representative
-        ccdNotificationWrapper.getNewSscsCaseData().getAppeal().setRep(Representative.builder().build());
+        if (appointeeSubscription != null) {
+            ccdNotificationWrapper.getNewSscsCaseData().getAppeal()
+                    .setAppellant(Appellant.builder().appointee(Appointee.builder().build()).build());
+        }
 
         given(notificationValidService.isHearingTypeValidToSendNotification(
                 any(SscsCaseData.class), eq(notificationEventType))).willReturn(true);
