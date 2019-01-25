@@ -361,12 +361,7 @@ public class NotificationServiceTest {
                         INTERLOC_VALID_APPEAL,
                         2,
                         0,
-                        Subscription.builder()
-                                .tya(APPEAL_NUMBER)
-                                .email(EMAIL)
-                                .subscribeEmail(YES)
-                                .mobile(MOBILE_NUMBER_1)
-                                .build(),
+                        null,
                         Subscription.builder()
                                 .tya(APPEAL_NUMBER)
                                 .email(EMAIL)
@@ -385,10 +380,7 @@ public class NotificationServiceTest {
                         INTERLOC_VALID_APPEAL,
                         1,
                         0,
-                        Subscription.builder()
-                                .tya(APPEAL_NUMBER)
-                                .mobile(MOBILE_NUMBER_1)
-                                .build(),
+                        null,
                         Subscription.builder()
                                 .tya(APPEAL_NUMBER)
                                 .email(EMAIL)
@@ -425,9 +417,20 @@ public class NotificationServiceTest {
     private CcdNotificationWrapper buildNotificationWrapperGivenNotificationTypeAndSubscriptions(
             NotificationEventType notificationEventType, Subscription appellantSubscription,
             Subscription repsSubscription, Subscription appointeeSubscription) {
+        Representative rep = null;
+        if (repsSubscription != null) {
+            rep = Representative.builder().hasRepresentative("Yes").build();
+        }
+
+        Appellant appellant = Appellant.builder().build();
+        if (appointeeSubscription != null) {
+            appellant.setAppointee(Appointee.builder().build());
+        }
+
         sscsCaseData = SscsCaseData.builder()
                 .appeal(Appeal.builder()
-                        .rep(Representative.builder().build())
+                        .appellant(appellant)
+                        .rep(rep)
                         .hearingType(AppealHearingType.ORAL.name())
                         .hearingOptions(HearingOptions.builder()
                                 .wantsToAttend(YES)

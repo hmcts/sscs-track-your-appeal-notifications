@@ -48,13 +48,35 @@ public class CcdNotificationWrapperTest {
         );
     }
 
+    private CcdNotificationWrapper buildCcdNotificationWrapperBasedOnEventTypeWithRep(NotificationEventType notificationEventType) {
+        return buildCcdNotificationWrapperBasedOnEventType(notificationEventType, null, Representative.builder().build());
+    }
+
+    private CcdNotificationWrapper buildCcdNotificationWrapperBasedOnEventTypeWithAppointee(NotificationEventType notificationEventType) {
+        return buildCcdNotificationWrapperBasedOnEventType(notificationEventType, Appointee.builder().build(), null);
+    }
+
     private CcdNotificationWrapper buildCcdNotificationWrapperBasedOnEventType(NotificationEventType notificationEventType) {
+        return buildCcdNotificationWrapperBasedOnEventType(notificationEventType, null, null);
+    }
+
+    private CcdNotificationWrapper buildCcdNotificationWrapperBasedOnEventType(NotificationEventType notificationEventType, Appointee appointee, Representative representative) {
+        Appellant appellant = Appellant.builder().build();
+        if (null != appointee) {
+            appellant.setAppointee(appointee);
+        }
+
+        if (null != representative) {
+            representative = Representative.builder().hasRepresentative("Yes").build();
+        }
+
         return new CcdNotificationWrapper(
             SscsCaseDataWrapper.builder()
                 .newSscsCaseData(SscsCaseData.builder()
                     .appeal(Appeal.builder()
+                        .appellant(appellant)
                         .hearingType("cor")
-                        .rep(Representative.builder().build())
+                        .rep(representative)
                         .build())
                     .subscriptions(Subscriptions.builder()
                         .appellantSubscription(Subscription.builder().build())
@@ -67,29 +89,10 @@ public class CcdNotificationWrapperTest {
         );
     }
 
-    private CcdNotificationWrapper buildCcdNotificationWrapperBasedOnEventTypeWithAppointee(NotificationEventType notificationEventType) {
-        return new CcdNotificationWrapper(
-            SscsCaseDataWrapper.builder()
-                .newSscsCaseData(SscsCaseData.builder()
-                    .appeal(Appeal.builder()
-                        .hearingType("cor")
-                        .appellant(Appellant.builder().appointee(Appointee.builder().build()).build())
-                        .build())
-                    .subscriptions(Subscriptions.builder()
-                        .appellantSubscription(Subscription.builder().build())
-                        .appointeeSubscription(Subscription.builder().build())
-                        .build())
-                    .build())
-                .notificationEventType(notificationEventType)
-                .build()
-
-        );
-    }
-
     @Test
-    @Parameters({"APPEAL_LAPSED_NOTIFICATION","APPEAL_WITHDRAWN_NOTIFICATION","EVIDENCE_RECEIVED_NOTIFICATION","POSTPONEMENT_NOTIFICATION","HEARING_BOOKED_NOTIFICATION","SYA_APPEAL_CREATED_NOTIFICATION", "RESEND_APPEAL_CREATED_NOTIFICATION", "APPEAL_RECEIVED_NOTIFICATION", "ADJOURNED_NOTIFICATION", "APPEAL_DORMANT_NOTIFICATION"})
+    @Parameters({"APPEAL_LAPSED_NOTIFICATION","APPEAL_WITHDRAWN_NOTIFICATION","EVIDENCE_RECEIVED_NOTIFICATION","POSTPONEMENT_NOTIFICATION","HEARING_BOOKED_NOTIFICATION","SYA_APPEAL_CREATED_NOTIFICATION", "RESEND_APPEAL_CREATED_NOTIFICATION", "APPEAL_RECEIVED_NOTIFICATION", "ADJOURNED_NOTIFICATION", "APPEAL_DORMANT_NOTIFICATION", "INTERLOC_VALID_APPEAL"})
     public void givenSubscriptions_shouldGetAppellantAndRepSubscriptionTypeList(NotificationEventType notificationEventType) {
-        ccdNotificationWrapper = buildCcdNotificationWrapperBasedOnEventType(notificationEventType);
+        ccdNotificationWrapper = buildCcdNotificationWrapperBasedOnEventTypeWithRep(notificationEventType);
         List<SubscriptionWithType> subsWithTypeList = ccdNotificationWrapper.getSubscriptionsBasedOnNotificationType();
         Assert.assertEquals(2,subsWithTypeList.size());
         Assert.assertEquals(SubscriptionType.APPELLANT, subsWithTypeList.get(0).getSubscriptionType());
@@ -99,7 +102,7 @@ public class CcdNotificationWrapperTest {
     @Test
     @Parameters({"INTERLOC_VALID_APPEAL"})
     public void givenSubscriptions_shouldGetAppointeeAndRepSubscriptionTypeList(NotificationEventType notificationEventType) {
-        ccdNotificationWrapper = buildCcdNotificationWrapperBasedOnEventType(notificationEventType);
+        ccdNotificationWrapper = buildCcdNotificationWrapperBasedOnEventType(notificationEventType, Appointee.builder().build(), Representative.builder().build());
         List<SubscriptionWithType> subsWithTypeList = ccdNotificationWrapper.getSubscriptionsBasedOnNotificationType();
         Assert.assertEquals(2,subsWithTypeList.size());
         Assert.assertEquals(SubscriptionType.APPOINTEE, subsWithTypeList.get(0).getSubscriptionType());
