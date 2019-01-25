@@ -27,16 +27,20 @@ public class NotificationValidService {
     }
 
     static boolean isFallbackLetterRequiredForSubscriptionType(NotificationWrapper wrapper, SubscriptionType subscriptionType, NotificationEventType eventType) {
-        boolean result = false;
 
-        if ((INTERLOC_VALID_APPEAL.equals(eventType) || DWP_RESPONSE_RECEIVED_NOTIFICATION.equals(eventType))
-                && (APPELLANT.equals(subscriptionType)
+        boolean validTarget = APPELLANT.equals(subscriptionType)
                 || APPOINTEE.equals(subscriptionType)
-                || (REPRESENTATIVE.equals(subscriptionType) && null != wrapper.getNewSscsCaseData().getAppeal().getRep()))) {
-            result = true;
-        }
+                || (REPRESENTATIVE.equals(subscriptionType) && null != wrapper.getNewSscsCaseData().getAppeal().getRep());
 
-        return result;
+        switch (eventType) {
+            case INTERLOC_VALID_APPEAL:
+                return validTarget;
+            case DWP_RESPONSE_RECEIVED_NOTIFICATION:
+                boolean receivedViaPaper = "Paper".equals(wrapper.getNewSscsCaseData().getAppeal().getReceivedVia());
+                return receivedViaPaper && validTarget;
+            default:
+                return false;
+        }
     }
 
     static final boolean isBundledLetter(NotificationEventType eventType) {

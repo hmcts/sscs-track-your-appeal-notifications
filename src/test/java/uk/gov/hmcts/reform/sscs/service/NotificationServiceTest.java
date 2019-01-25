@@ -363,19 +363,6 @@ public class NotificationServiceTest {
                         new SubscriptionType[]{},
                 },
                 new Object[]{
-                        DWP_RESPONSE_RECEIVED_NOTIFICATION,
-                        0,
-                        0,
-                        Subscription.builder()
-                                .tya(APPEAL_NUMBER)
-                                .build(),
-                        Subscription.builder()
-                                .tya(APPEAL_NUMBER)
-                                .build(),
-                        null,
-                        new SubscriptionType[]{APPELLANT, REPRESENTATIVE},
-                },
-                new Object[]{
                         INTERLOC_VALID_APPEAL,
                         2,
                         0,
