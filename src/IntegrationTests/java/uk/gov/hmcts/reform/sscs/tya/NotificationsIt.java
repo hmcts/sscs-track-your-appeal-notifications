@@ -606,7 +606,7 @@ public class NotificationsIt {
         };
     }
 
-    @SuppressWarnings("Indentation")
+    @SuppressWarnings({"Indentation", "unused"})
     private Object[] generateAppointeeNotificationScenarios() {
         return new Object[]{
             new Object[]{
