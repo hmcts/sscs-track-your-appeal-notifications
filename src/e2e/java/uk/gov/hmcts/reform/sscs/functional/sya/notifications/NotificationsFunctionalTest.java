@@ -77,6 +77,11 @@ public class NotificationsFunctionalTest extends AbstractFunctionalTest {
     @Value("${notification.appealCreated.appointee.emailId}")
     private String appealCreatedAppointeeEmailId;
 
+    @Value("${notification.appealWithdrawn.appointee.emailId}")
+    private String appointeeAppealWithdrawnEmailId;
+
+    @Value("${notification.appealWithdrawn.appointee.smsId}")
+    private String appointeeAppealWithdrawnSmsId;
 
     public NotificationsFunctionalTest() {
         super(30);
@@ -207,6 +212,17 @@ public class NotificationsFunctionalTest extends AbstractFunctionalTest {
         );
         Notification updateEmailNotification = notifications.stream().filter(f -> f.getTemplateId().toString().equals(subscriptionUpdatedEmailTemplateId)).collect(Collectors.toList()).get(0);
         assertTrue(updateEmailNotification.getBody().contains("Dear Appointee User\r\n\r\nYou are receiving this update as the appointee for Appellant User.\r\n\r\nEmails about your ESA"));
+    }
+
+    @Test
+    public void shouldSendAppointeeAppealWithdrawnNotification() throws NotificationClientException, IOException {
+        simulateCcdCallback(APPEAL_WITHDRAWN_NOTIFICATION,
+                "appointee/" + APPEAL_WITHDRAWN_NOTIFICATION.getId() + "Callback.json");
+        List<Notification> notifications = tryFetchNotificationsForTestCase(appointeeAppealWithdrawnEmailId, appointeeAppealWithdrawnSmsId);
+        Notification emailNotification = notifications.stream().filter(f -> f.getTemplateId().toString().equals(appointeeAppealWithdrawnEmailId)).collect(Collectors.toList()).get(0);
+        System.out.println(emailNotification.getBody());
+        assertTrue(emailNotification.getBody().contains("Dear Appointee User"));
+        assertTrue(emailNotification.getBody().contains("You are receiving this update as the appointee for"));
     }
 
 }
