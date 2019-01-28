@@ -73,7 +73,26 @@ public class CcdNotificationWrapperTest {
                 .newSscsCaseData(SscsCaseData.builder()
                     .appeal(Appeal.builder()
                         .hearingType("cor")
-                        .appellant(Appellant.builder().appointee(Appointee.builder().build()).build())
+                        .appellant(Appellant.builder().appointee(Appointee.builder().name(Name.builder().lastName("TEST").build()).build()).build())
+                        .build())
+                    .subscriptions(Subscriptions.builder()
+                        .appellantSubscription(Subscription.builder().build())
+                        .appointeeSubscription(Subscription.builder().build())
+                        .build())
+                    .build())
+                .notificationEventType(notificationEventType)
+                .build()
+
+        );
+    }
+
+    private CcdNotificationWrapper buildCcdNotificationWrapperBasedOnEventTypeWithoutAppointee(NotificationEventType notificationEventType) {
+        return new CcdNotificationWrapper(
+            SscsCaseDataWrapper.builder()
+                .newSscsCaseData(SscsCaseData.builder()
+                    .appeal(Appeal.builder()
+                        .hearingType("cor")
+                        .appellant(Appellant.builder().appointee(Appointee.builder().name(Name.builder().build()).build()).build())
                         .build())
                     .subscriptions(Subscriptions.builder()
                         .appellantSubscription(Subscription.builder().build())
@@ -103,6 +122,15 @@ public class CcdNotificationWrapperTest {
         List<SubscriptionWithType> subsWithTypeList = ccdNotificationWrapper.getSubscriptionsBasedOnNotificationType();
         Assert.assertEquals(1,subsWithTypeList.size());
         Assert.assertEquals(SubscriptionType.APPOINTEE, subsWithTypeList.get(0).getSubscriptionType());
+    }
+
+    @Test
+    @Parameters({"SYA_APPEAL_CREATED_NOTIFICATION"})
+    public void givenSubscriptions_shouldGetSubscriptionTypeListWithoutAppointee(NotificationEventType notificationEventType) {
+        ccdNotificationWrapper = buildCcdNotificationWrapperBasedOnEventTypeWithoutAppointee(notificationEventType);
+        List<SubscriptionWithType> subsWithTypeList = ccdNotificationWrapper.getSubscriptionsBasedOnNotificationType();
+        Assert.assertEquals(1,subsWithTypeList.size());
+        Assert.assertEquals(SubscriptionType.APPELLANT, subsWithTypeList.get(0).getSubscriptionType());
     }
 
     @Test

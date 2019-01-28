@@ -119,4 +119,11 @@
    ]]></notes>
     <cve>CVE-2018-11797</cve>
   </suppress>
+  <suppress>
+    <notes><![CDATA[
+   file name: stax-api-1.0.1.jar
+   ]]></notes>
+    <gav regex="true">^stax\:stax-api:.*$</gav>
+    <cve>CVE-2017-16224</cve>
+  </suppress>
 </suppressions>
