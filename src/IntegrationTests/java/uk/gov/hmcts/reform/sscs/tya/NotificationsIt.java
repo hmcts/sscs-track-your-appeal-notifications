@@ -640,6 +640,16 @@ public class NotificationsIt {
                         "1"
             },
             new Object[]{
+                    EVIDENCE_RECEIVED_NOTIFICATION,
+                        "oral",
+                        Collections.singletonList("c5654134-2e13-4541-ac73-334a5b5cdbb6"),
+                        Collections.singletonList("74bda35f-040b-4355-bda3-faf0e4f5ae6e"),
+                        "yes",
+                        "yes",
+                        "1",
+                        "1"
+            },
+            new Object[]{
                         SUBSCRIPTION_UPDATED_NOTIFICATION,
                         "oral",
                         Arrays.asList("b8b2904f-629d-42cf-acea-1b74bde5b2ff", "03b957bf-e21d-4147-90c1-b6fefa8cf70d"),
