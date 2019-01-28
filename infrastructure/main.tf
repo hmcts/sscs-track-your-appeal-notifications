@@ -67,6 +67,7 @@ locals {
   s2sCnpUrl = "http://rpe-service-auth-provider-${local.local_env}.service.${local.local_ase}.internal"
   cohApi    = "http://coh-cor-${local.local_env}.service.${local.local_ase}.internal"
   documentStore = "http://dm-store-${local.local_env}.service.${local.local_ase}.internal"
+  pdfService    = "http://cmc-pdf-service-${local.local_env}.service.${local.local_ase}.internal"
 
   azureVaultName = "sscs-${local.local_env}"
 }
@@ -116,6 +117,8 @@ module "track-your-appeal-notifications" {
     JOB_SCHEDULER_POLL_INTERVAL   = "${var.job_scheduler_poll_interval}"
     EMAIL_MAC_SECRET_TEXT         = "${data.azurerm_key_vault_secret.email-mac-secret.value}"
     ONLINE_HEARING_LINK           = "${var.online_hearing_link}"
+
+    PDF_API_URL                   = "${local.pdfService}"
 
     // db vars
     JOB_SCHEDULER_DB_HOST               = "${module.db-notif.host_name}"
