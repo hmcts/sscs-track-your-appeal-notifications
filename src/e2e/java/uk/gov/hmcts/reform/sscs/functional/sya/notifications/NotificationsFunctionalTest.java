@@ -220,7 +220,6 @@ public class NotificationsFunctionalTest extends AbstractFunctionalTest {
                 "appointee/" + APPEAL_WITHDRAWN_NOTIFICATION.getId() + "Callback.json");
         List<Notification> notifications = tryFetchNotificationsForTestCase(appointeeAppealWithdrawnEmailId, appointeeAppealWithdrawnSmsId);
         Notification emailNotification = notifications.stream().filter(f -> f.getTemplateId().toString().equals(appointeeAppealWithdrawnEmailId)).collect(Collectors.toList()).get(0);
-        System.out.println(emailNotification.getBody());
         assertTrue(emailNotification.getBody().contains("Dear Appointee User"));
         assertTrue(emailNotification.getBody().contains("You are receiving this update as the appointee for"));
     }
