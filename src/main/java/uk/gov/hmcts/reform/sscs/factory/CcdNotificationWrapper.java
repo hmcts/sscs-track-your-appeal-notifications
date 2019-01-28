@@ -114,6 +114,8 @@ public class CcdNotificationWrapper implements NotificationWrapper {
         return (responseWrapper.getNewSscsCaseData().getAppeal() != null
             && responseWrapper.getNewSscsCaseData().getAppeal().getAppellant() != null
             && responseWrapper.getNewSscsCaseData().getAppeal().getAppellant().getAppointee() != null
+            && responseWrapper.getNewSscsCaseData().getAppeal().getAppellant().getAppointee().getName() != null
+            && responseWrapper.getNewSscsCaseData().getAppeal().getAppellant().getAppointee().getName().getFirstName() != null
             && responseWrapper.getNewSscsCaseData().getAppeal().getAppellant().getAppointee().getName().getLastName() != null);
     }
 
