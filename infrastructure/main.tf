@@ -130,6 +130,8 @@ module "track-your-appeal-notifications" {
     HOURS_END_TIME                      = "${var.hours_end_time}"
 
     DOCUMENT_MANAGEMENT_URL = "${local.documentStore}"
+
+    BUNDLED_LETTERS_ON                  = "${var.bundled_letters_on}"
   }
 }
 
