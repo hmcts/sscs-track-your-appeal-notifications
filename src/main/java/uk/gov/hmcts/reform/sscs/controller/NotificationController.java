@@ -42,7 +42,7 @@ public class NotificationController {
     }
 
     @PostMapping(value = "/send", produces = APPLICATION_JSON_VALUE)
-    void sendNotification(
+    public void sendNotification(
             @RequestHeader(AuthorisationService.SERVICE_AUTHORISATION_HEADER) String serviceAuthHeader,
             @RequestBody SscsCaseDataWrapper sscsCaseDataWrapper) {
         log.info("Ccd Response received for case id: {} , {}", sscsCaseDataWrapper.getNewSscsCaseData().getCcdCaseId(), sscsCaseDataWrapper.getNotificationEventType());
@@ -52,7 +52,7 @@ public class NotificationController {
     }
 
     @PostMapping(value = "/coh-send", produces = APPLICATION_JSON_VALUE)
-    ResponseEntity<String> sendCohNotification(
+    public ResponseEntity<String> sendCohNotification(
             @RequestHeader(AuthorisationService.SERVICE_AUTHORISATION_HEADER) String serviceAuthHeader,
             @RequestBody CohEvent cohEvent) {
         String caseId = cohEvent.getCaseId();
