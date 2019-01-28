@@ -312,6 +312,11 @@ public class NotificationsIt {
         jsonAppointee = updateEmbeddedJson(jsonAppointee, appointeeSmsSubs, "case_details", "case_data", "subscriptions",
             "appointeeSubscription", "subscribeSms");
 
+        if (notificationEventType.equals(HEARING_BOOKED_NOTIFICATION)) {
+            jsonAppointee = jsonAppointee.replace("appealReceived", "hearingBooked");
+            jsonAppointee = jsonAppointee.replace("2018-01-12", LocalDate.now().plusDays(2).toString());
+        }
+
         jsonAppointee = updateEmbeddedJson(jsonAppointee, notificationEventType.getId(), "event_id");
 
         HttpServletResponse response = getResponse(getRequestWithAuthHeader(jsonAppointee));
@@ -634,6 +639,16 @@ public class NotificationsIt {
                         "oral",
                         Collections.singletonList("01caec0c-191b-4a32-882a-6fded2546ce6"),
                         Collections.singletonList("317a121e-d08c-4890-b3b3-4652f741771f"),
+                        "yes",
+                        "yes",
+                        "1",
+                        "1"
+            },
+            new Object[]{
+                        HEARING_BOOKED_NOTIFICATION,
+                        "oral",
+                        Collections.singletonList("fee16753-0bdb-43f1-9abb-b14b826e3b26"),
+                        Collections.singletonList("f900174a-a556-43b2-8042-bbf3e6090071"),
                         "yes",
                         "yes",
                         "1",

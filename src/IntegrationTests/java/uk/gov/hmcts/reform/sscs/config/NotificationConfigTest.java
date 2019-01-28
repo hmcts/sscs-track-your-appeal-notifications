@@ -78,6 +78,8 @@ public class NotificationConfigTest {
             new Object[]{"fee16753-0bdb-43f1-9abb-b14b826e3b26", "f900174a-a556-43b2-8042-bbf3e6090071", ORAL, getTemplateName(HEARING_BOOKED_NOTIFICATION, APPELLANT)},
             new Object[]{"a56e67cb-6b4b-41e3-8f4c-cd1cdb6809c1", "e04c548d-1ba9-40b5-bf9b-ea5e7bbadbac", PAPER, getTemplateName(HEARING_BOOKED_NOTIFICATION, REPRESENTATIVE)},
             new Object[]{"a56e67cb-6b4b-41e3-8f4c-cd1cdb6809c1", "e04c548d-1ba9-40b5-bf9b-ea5e7bbadbac", ORAL, getTemplateName(HEARING_BOOKED_NOTIFICATION, REPRESENTATIVE)},
+            new Object[]{"fee16753-0bdb-43f1-9abb-b14b826e3b26", "f900174a-a556-43b2-8042-bbf3e6090071", PAPER, getTemplateName(HEARING_BOOKED_NOTIFICATION, APPOINTEE)},
+            new Object[]{"fee16753-0bdb-43f1-9abb-b14b826e3b26", "f900174a-a556-43b2-8042-bbf3e6090071", ORAL, getTemplateName(HEARING_BOOKED_NOTIFICATION, APPOINTEE)},
             new Object[]{"b74ea5d4-dba2-4148-b822-d102cedbea12", "4562984e-2854-4191-81d9-cffbe5111015", PAPER, getTemplateName(APPEAL_DORMANT_NOTIFICATION, REPRESENTATIVE)},
             new Object[]{"976bdb6c-8a86-48cf-9e0f-7989acaec0c2", "1aa60c8a-1b6f-4ee1-88ae-51c1cef0ea2b", PAPER, getTemplateName(APPEAL_DORMANT_NOTIFICATION, APPELLANT)},
             new Object[]{"4b1ee55b-abd1-4e7e-b0ed-693d8df1e741", "99bd4a56-256c-4de8-b187-d43a8dde466f", PAPER, getTemplateName(APPEAL_RECEIVED_NOTIFICATION, REPRESENTATIVE)},
