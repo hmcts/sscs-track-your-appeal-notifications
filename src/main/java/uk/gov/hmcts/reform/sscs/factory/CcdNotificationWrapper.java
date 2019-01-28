@@ -91,6 +91,7 @@ public class CcdNotificationWrapper implements NotificationWrapper {
 
         if (hasAppointee() && (SYA_APPEAL_CREATED_NOTIFICATION.equals(getNotificationType())
             || DWP_RESPONSE_RECEIVED_NOTIFICATION.equals(getNotificationType())
+            || EVIDENCE_RECEIVED_NOTIFICATION.equals(getNotificationType())
             || INTERLOC_VALID_APPEAL.equals(getNotificationType()))) {
             subscriptionWithTypeList.add(new SubscriptionWithType(getAppointeeSubscription(), APPOINTEE));
         } else {

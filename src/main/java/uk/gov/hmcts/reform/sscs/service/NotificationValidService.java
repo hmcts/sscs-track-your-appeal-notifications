@@ -34,6 +34,7 @@ public class NotificationValidService {
 
         switch (eventType) {
             case INTERLOC_VALID_APPEAL:
+            case EVIDENCE_RECEIVED_NOTIFICATION:
                 return validTarget;
             case DWP_RESPONSE_RECEIVED_NOTIFICATION:
                 boolean receivedViaPaper = "Paper".equals(wrapper.getNewSscsCaseData().getAppeal().getReceivedVia());

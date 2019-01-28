@@ -267,7 +267,8 @@ public class Personalisation<E extends NotificationWrapper> {
     private String getLetterTemplateName(SubscriptionType subscriptionType, NotificationEventType notificationEventType) {
         String letterTemplateName = notificationEventType.getId();
         if (INTERLOC_VALID_APPEAL.equals(notificationEventType)
-            || DWP_RESPONSE_RECEIVED_NOTIFICATION.equals(notificationEventType)) {
+            || DWP_RESPONSE_RECEIVED_NOTIFICATION.equals(notificationEventType)
+            || EVIDENCE_RECEIVED_NOTIFICATION.equals(notificationEventType)) {
             letterTemplateName = letterTemplateName + "." + subscriptionType.name().toLowerCase();
         }
         return letterTemplateName;
