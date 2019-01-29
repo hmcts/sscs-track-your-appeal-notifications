@@ -428,7 +428,9 @@ public class NotificationServiceTest {
 
         Appellant appellant = Appellant.builder().build();
         if (appointeeSubscription != null) {
-            appellant.setAppointee(Appointee.builder().build());
+            appellant.setAppointee(Appointee.builder()
+                .name(Name.builder().firstName("Jack").lastName("Smith").build())
+                .build());
         }
 
         sscsCaseData = SscsCaseData.builder()
