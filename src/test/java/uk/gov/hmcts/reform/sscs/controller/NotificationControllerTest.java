@@ -27,7 +27,7 @@ import uk.gov.hmcts.reform.sscs.service.NotificationService;
 public class NotificationControllerTest {
 
     private static final String CASE_ID = "12345";
-    private static final String eventType = "eventType";
+    private static final String eventType = "question_round_issued";
 
     private NotificationController notificationController;
 
