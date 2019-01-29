@@ -115,7 +115,9 @@ public class CcdNotificationWrapper implements NotificationWrapper {
     private boolean hasAppointee() {
         return (responseWrapper.getNewSscsCaseData().getAppeal() != null
             && responseWrapper.getNewSscsCaseData().getAppeal().getAppellant() != null
-            && responseWrapper.getNewSscsCaseData().getAppeal().getAppellant().getAppointee() != null);
+            && responseWrapper.getNewSscsCaseData().getAppeal().getAppellant().getAppointee() != null
+            && responseWrapper.getNewSscsCaseData().getAppeal().getAppellant().getAppointee().getName() != null
+            && responseWrapper.getNewSscsCaseData().getAppeal().getAppellant().getAppointee().getName().getFirstName() != null);
     }
 
     private boolean hasRepresentative() {

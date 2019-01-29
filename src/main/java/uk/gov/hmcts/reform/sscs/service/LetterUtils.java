@@ -23,11 +23,17 @@ public class LetterUtils {
     }
 
     public static final Address getAddressToUseForLetter(NotificationWrapper wrapper) {
-        if (null != wrapper.getNewSscsCaseData().getAppeal().getAppellant().getAppointee()) {
+        if (hasPopulatedAppellant(wrapper)) {
             return wrapper.getNewSscsCaseData().getAppeal().getAppellant().getAppointee().getAddress();
         }
 
         return wrapper.getNewSscsCaseData().getAppeal().getAppellant().getAddress();
+    }
+
+    public static final Boolean hasPopulatedAppellant(NotificationWrapper wrapper) {
+        return null != wrapper.getNewSscsCaseData().getAppeal().getAppellant().getAppointee()
+            && null != wrapper.getNewSscsCaseData().getAppeal().getAppellant().getAppointee().getAddress().getLine1();
+
     }
 
     public static String getFilename(NotificationWrapper wrapper) {

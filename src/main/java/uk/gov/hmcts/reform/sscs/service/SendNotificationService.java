@@ -3,12 +3,17 @@ package uk.gov.hmcts.reform.sscs.service;
 import static uk.gov.hmcts.reform.sscs.config.AppConstants.*;
 import static uk.gov.hmcts.reform.sscs.config.SubscriptionType.APPELLANT;
 import static uk.gov.hmcts.reform.sscs.config.SubscriptionType.APPOINTEE;
+import static uk.gov.hmcts.reform.sscs.domain.notify.NotificationEventType.INTERLOC_VALID_APPEAL;
 import static uk.gov.hmcts.reform.sscs.domain.notify.NotificationEventType.STRUCK_OUT;
 import static uk.gov.hmcts.reform.sscs.service.LetterUtils.*;
 import static uk.gov.hmcts.reform.sscs.service.NotificationValidService.isBundledLetter;
 
 import java.io.IOException;
 import java.net.URI;
+import java.time.ZonedDateTime;
+import java.time.format.DateTimeFormatter;
+import java.util.Arrays;
+import java.util.List;
 import java.util.Map;
 
 import lombok.extern.slf4j.Slf4j;
@@ -27,6 +32,8 @@ import uk.gov.service.notify.NotificationClientException;
 @Service
 @Slf4j
 public class SendNotificationService {
+    private static final DateTimeFormatter DATE_TIME_FORMATTER = DateTimeFormatter.ofPattern("d MMMM yyyy");
+    private static final List<NotificationEventType> LETTERS_REQUIRING_APPEAL_RESPOND_DATE = Arrays.asList(INTERLOC_VALID_APPEAL);
     private static final String DIRECTION_TEXT = "Direction Text";
     static final String DM_STORE_USER_ID = "sscs";
     private static final String NOTIFICATION_TYPE_LETTER = "Letter";
@@ -44,6 +51,9 @@ public class SendNotificationService {
 
     @Value("${noncompliantcaseletter.appeal.html.template.path}")
     String noncompliantcaseletterTemplate;
+
+    @Value("${reminder.dwpResponseLateReminder.delay.seconds}")
+    long delay;
 
     @Autowired
     public SendNotificationService(
@@ -141,9 +151,8 @@ public class SendNotificationService {
         placeholders.put(ADDRESS_LINE_3, addressToUse.getTown() == null ? " " : addressToUse.getTown());
         placeholders.put(ADDRESS_LINE_4, addressToUse.getCounty() == null ? " " : addressToUse.getCounty());
         placeholders.put(POSTCODE_LITERAL, addressToUse.getPostcode());
-        if (null != wrapper.getNewSscsCaseData().getAppeal().getRep()) {
-            placeholders.put(REPRESENTATIVE_NAME, wrapper.getNewSscsCaseData().getAppeal().getRep().getName().getFullNameNoTitle());
-        }
+
+        setLetterNotificationPlaceholders(wrapper, placeholders);
 
         notificationSender.sendLetter(
             notification.getLetterTemplate(),
@@ -151,6 +160,16 @@ public class SendNotificationService {
             notification.getPlaceholders(),
             wrapper.getCaseId()
         );
+    }
+
+    private final void setLetterNotificationPlaceholders(NotificationWrapper wrapper, Map<String, String> placeholders) {
+        if (null != wrapper.getNewSscsCaseData().getAppeal().getRep()) {
+            placeholders.put(REPRESENTATIVE_NAME, wrapper.getNewSscsCaseData().getAppeal().getRep().getName().getFullNameNoTitle());
+        }
+
+        if (LETTERS_REQUIRING_APPEAL_RESPOND_DATE.contains(wrapper.getNotificationType())) {
+            placeholders.put(APPEAL_RESPOND_DATE, DATE_TIME_FORMATTER.format(ZonedDateTime.now().plusSeconds(delay)));
+        }
     }
 
     private void sendBundledLetterNotificationToAppellant(NotificationWrapper wrapper, Notification notification) {
