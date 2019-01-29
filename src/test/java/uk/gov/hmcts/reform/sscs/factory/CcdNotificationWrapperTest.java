@@ -93,7 +93,6 @@ public class CcdNotificationWrapperTest {
                     .build())
                 .notificationEventType(notificationEventType)
                 .build()
-
         );
     }
 

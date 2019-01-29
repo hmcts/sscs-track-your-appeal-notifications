@@ -117,8 +117,16 @@
   </suppress>
   <suppress>
     <notes><![CDATA[
-   Security issue with current version of slf4j. Later releases don't log anything so cannot upgrade
+   file name: jul-to-slf4j-1.7.25.jar
    ]]></notes>
+    <gav regex="true">^org\.slf4j:jul-to-slf4j:.*$</gav>
+    <cve>CVE-2018-8088</cve>
+  </suppress>
+  <suppress>
+    <notes><![CDATA[
+   file name: slf4j-api-1.7.25.jar
+   ]]></notes>
+    <gav regex="true">^org\.slf4j:slf4j-api:.*$</gav>
     <cve>CVE-2018-8088</cve>
   </suppress>
   <suppress>

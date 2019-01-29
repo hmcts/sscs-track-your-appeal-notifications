@@ -638,6 +638,26 @@ public class NotificationsIt {
                 "yes",
                 "1",
                 "1"
+            },
+            new Object[]{
+                APPEAL_RECEIVED_NOTIFICATION,
+                "paper",
+                Collections.singletonList("08365e91-9e07-4a5c-bf96-ef56fd0ada63"),
+                Collections.singletonList("ede384aa-0b6e-4311-9f01-ee547573a07b"),
+                "yes",
+                "yes",
+                "1",
+                "1"
+            },
+            new Object[]{
+                APPEAL_RECEIVED_NOTIFICATION,
+                "oral",
+                Collections.singletonList("08365e91-9e07-4a5c-bf96-ef56fd0ada63"),
+                Collections.singletonList("ede384aa-0b6e-4311-9f01-ee547573a07b"),
+                "yes",
+                "yes",
+                "1",
+                "1"
             }
         };
     }

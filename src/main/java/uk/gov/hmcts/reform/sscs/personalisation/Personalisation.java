@@ -93,7 +93,8 @@ public class Personalisation<E extends NotificationWrapper> {
                     ccdResponse.getAppeal().getAppellant().getAppointee().getName().getFullNameNoTitle());
         }
 
-        Subscription appellantOrAppointeeSubscription = (hasAppointee(responseWrapper))
+        Subscription appellantOrAppointeeSubscription = hasAppointee(responseWrapper)
+
                 ? ccdResponse.getSubscriptions().getAppointeeSubscription()
                 : ccdResponse.getSubscriptions().getAppellantSubscription();
 
