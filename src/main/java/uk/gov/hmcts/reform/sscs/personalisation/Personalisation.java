@@ -92,14 +92,16 @@ public class Personalisation<E extends NotificationWrapper> {
                 : ccdResponse.getSubscriptions().getAppointeeSubscription();
 
         if (appellantOrAppointeeSubscription != null && appellantOrAppointeeSubscription.getTya() != null) {
-            subscriptionDetails(personalisation, appellantOrAppointeeSubscription, benefit);        }
+            subscriptionDetails(personalisation, appellantOrAppointeeSubscription, benefit);        
+        }
+
         personalisation.put(FIRST_TIER_AGENCY_ACRONYM, DWP_ACRONYM);
         personalisation.put(FIRST_TIER_AGENCY_FULL_NAME, DWP_FUL_NAME);
 
         if (ccdResponse.getHearings() != null && !ccdResponse.getHearings().isEmpty()) {
             Hearing latestHearing = ccdResponse.getHearings().get(0);
-
             LocalDateTime hearingDateTime = latestHearing.getValue().getHearingDateTime();
+            
             personalisation.put(HEARING_DATE, formatLocalDate(hearingDateTime.toLocalDate()));
             personalisation.put(HEARING_TIME, formatLocalTime(hearingDateTime));
             personalisation.put(VENUE_ADDRESS_LITERAL, formatAddress(latestHearing));
