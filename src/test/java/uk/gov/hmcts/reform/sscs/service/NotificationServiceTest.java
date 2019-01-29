@@ -594,6 +594,7 @@ public class NotificationServiceTest {
 
         verify(notificationHandler, never()).sendNotification(any(), any(), any(), any());
         verify(notificationHandler).scheduleNotification(ccdNotificationWrapper);
+        verifyNoMoreInteractions(reminderService);
     }
 
     @Test
