@@ -17,6 +17,7 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 import uk.gov.hmcts.reform.sscs.ccd.domain.*;
 import uk.gov.hmcts.reform.sscs.config.AppConstants;
+import uk.gov.hmcts.reform.sscs.config.SubscriptionType;
 import uk.gov.hmcts.reform.sscs.domain.SubscriptionWithType;
 import uk.gov.hmcts.reform.sscs.domain.notify.Notification;
 import uk.gov.hmcts.reform.sscs.domain.notify.NotificationEventType;
@@ -67,7 +68,7 @@ public class SendNotificationService {
         sendSmsNotification(wrapper, subscription, notification);
 
         if (lettersOn) {
-            if (isAppointeeOrAppellantSubscription(subscriptionWithType)) {
+            if (isAppointeeOrAppellantSubscription(subscriptionWithType.getSubscriptionType())) {
                 sendFallbackLetterNotificationToAppellant(wrapper, subscription, notification);
             } else {
                 sendFallbackLetterNotificationToRepresentative(wrapper, subscription, notification);
@@ -80,9 +81,9 @@ public class SendNotificationService {
         }
     }
 
-    private static final boolean isAppointeeOrAppellantSubscription(SubscriptionWithType subscriptionWithType) {
-        return APPELLANT.equals(subscriptionWithType.getSubscriptionType())
-            || APPOINTEE.equals(subscriptionWithType.getSubscriptionType());
+    public static final boolean isAppointeeOrAppellantSubscription(SubscriptionType subscriptionType) {
+        return APPELLANT.equals(subscriptionType)
+            || APPOINTEE.equals(subscriptionType);
     }
 
     private void sendSmsNotification(NotificationWrapper wrapper, Subscription subscription, Notification notification) {
