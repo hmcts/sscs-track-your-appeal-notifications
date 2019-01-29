@@ -67,8 +67,7 @@ public class SendNotificationService {
         sendSmsNotification(wrapper, subscription, notification);
 
         if (lettersOn) {
-            if (APPELLANT.equals(subscriptionWithType.getSubscriptionType())
-                || APPOINTEE.equals(subscriptionWithType.getSubscriptionType())) {
+            if (isAppointeeOrAppellantSubscription(subscriptionWithType)) {
                 sendFallbackLetterNotificationToAppellant(wrapper, subscription, notification);
             } else {
                 sendFallbackLetterNotificationToRepresentative(wrapper, subscription, notification);
@@ -79,6 +78,11 @@ public class SendNotificationService {
             sendBundledLetterNotificationToAppellant(wrapper, notification);
             sendBundledLetterNotificationToRepresentative(wrapper, notification);
         }
+    }
+
+    private static final boolean isAppointeeOrAppellantSubscription(SubscriptionWithType subscriptionWithType) {
+        return APPELLANT.equals(subscriptionWithType.getSubscriptionType())
+            || APPOINTEE.equals(subscriptionWithType.getSubscriptionType());
     }
 
     private void sendSmsNotification(NotificationWrapper wrapper, Subscription subscription, Notification notification) {
