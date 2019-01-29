@@ -1,6 +1,7 @@
 package uk.gov.hmcts.reform.sscs.service;
 
 import static uk.gov.hmcts.reform.sscs.domain.notify.NotificationEventType.STRUCK_OUT;
+import static uk.gov.hmcts.reform.sscs.service.NotificationUtils.hasAppointee;
 
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
@@ -22,8 +23,8 @@ public class LetterUtils {
         // Hiding utility class constructor
     }
 
-    public static final Address getAddressToUseForLetter(NotificationWrapper wrapper) {
-        if (null != wrapper.getNewSscsCaseData().getAppeal().getAppellant().getAppointee()) {
+    public static Address getAddressToUseForLetter(NotificationWrapper wrapper) {
+        if (hasAppointee(wrapper.getSscsCaseDataWrapper())) {
             return wrapper.getNewSscsCaseData().getAppeal().getAppellant().getAppointee().getAddress();
         }
 
@@ -38,8 +39,8 @@ public class LetterUtils {
         return PDF_UNKNOWN;
     }
 
-    public static final Name getNameToUseForLetter(NotificationWrapper wrapper) {
-        if (null != wrapper.getNewSscsCaseData().getAppeal().getAppellant().getAppointee()) {
+    public static Name getNameToUseForLetter(NotificationWrapper wrapper) {
+        if (hasAppointee(wrapper.getSscsCaseDataWrapper())) {
             return wrapper.getNewSscsCaseData().getAppeal().getAppellant().getAppointee().getName();
         } else {
             return wrapper.getNewSscsCaseData().getAppeal().getAppellant().getName();
