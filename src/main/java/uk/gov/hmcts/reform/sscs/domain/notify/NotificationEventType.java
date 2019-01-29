@@ -30,7 +30,7 @@ public enum NotificationEventType {
     QUESTION_DEADLINE_REMINDER_NOTIFICATION("question_deadline_reminder", false, false, true, false, true),
     HEARING_REQUIRED_NOTIFICATION("continuous_online_hearing_relisted", false, false, true, false, false),
     VIEW_ISSUED("decision_issued", false, false, true, false, false),
-    DECISION_ISSUED_2("decision_issued_2", false, false, true, false, false), // placeholder until COH name this notification
+    DECISION_ISSUED_2("corDecision", false, false, true, false, false),
     STRUCK_OUT("struckOut", true, true, false, true, false),
     DO_NOT_SEND("");
 
