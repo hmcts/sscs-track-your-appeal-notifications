@@ -424,10 +424,20 @@ public class NotificationServiceTest {
 
     private CcdNotificationWrapper buildNotificationWrapperGivenNotificationTypeAndSubscriptions(
             NotificationEventType notificationEventType, Subscription appellantSubscription,
-            Subscription repsSubscription, Subscription appointeeSubscription) {
+            Subscription repsSubscription) {
+
+        Representative rep = null;
+        if (null != repsSubscription) {
+            rep = Representative.builder()
+                .hasRepresentative("Yes")
+                .name(Name.builder().firstName("Joe").lastName("Bloggs").build())
+                .address(Address.builder().line1("Rep Line 1").town("Rep Town").county("Rep County").postcode("RE9 7SE").build())
+                .build();
+        }
+
         sscsCaseData = SscsCaseData.builder()
                 .appeal(Appeal.builder()
-                        .rep(Representative.builder().build())
+                        .rep(rep)
                         .hearingType(AppealHearingType.ORAL.name())
                         .hearingOptions(HearingOptions.builder()
                                 .wantsToAttend(YES)

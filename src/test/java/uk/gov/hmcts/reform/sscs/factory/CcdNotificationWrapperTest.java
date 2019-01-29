@@ -49,12 +49,18 @@ public class CcdNotificationWrapperTest {
     }
 
     private CcdNotificationWrapper buildCcdNotificationWrapperBasedOnEventType(NotificationEventType notificationEventType) {
+        Representative rep = Representative.builder()
+            .hasRepresentative("Yes")
+            .name(Name.builder().firstName("Joe").lastName("Bloggs").build())
+            .address(Address.builder().line1("Rep Line 1").town("Rep Town").county("Rep County").postcode("RE9 7SE").build())
+            .build();
+
         return new CcdNotificationWrapper(
             SscsCaseDataWrapper.builder()
                 .newSscsCaseData(SscsCaseData.builder()
                     .appeal(Appeal.builder()
                         .hearingType("cor")
-                        .rep(Representative.builder().build())
+                        .rep(rep)
                         .build())
                     .subscriptions(Subscriptions.builder()
                         .appellantSubscription(Subscription.builder().build())
@@ -68,12 +74,17 @@ public class CcdNotificationWrapperTest {
     }
 
     private CcdNotificationWrapper buildCcdNotificationWrapperBasedOnEventTypeWithAppointee(NotificationEventType notificationEventType) {
+        Appointee appointee = Appointee.builder()
+            .name(Name.builder().firstName("Ap").lastName("Pointee").build())
+            .address(Address.builder().line1("Appointee Line 1").town("Appointee Town").county("Appointee County").postcode("AP9 0IN").build())
+            .build();
+
         return new CcdNotificationWrapper(
             SscsCaseDataWrapper.builder()
                 .newSscsCaseData(SscsCaseData.builder()
                     .appeal(Appeal.builder()
                         .hearingType("cor")
-                        .appellant(Appellant.builder().appointee(Appointee.builder().name(Name.builder().firstName("Joe").lastName("Bloggs").build()).build()).build())
+                        .appellant(Appellant.builder().appointee(appointee).build())
                         .build())
                     .subscriptions(Subscriptions.builder()
                         .appellantSubscription(Subscription.builder().build())
