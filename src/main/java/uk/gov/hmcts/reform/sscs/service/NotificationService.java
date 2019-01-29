@@ -46,24 +46,21 @@ public class NotificationService {
     }
 
     public void manageNotificationAndSubscription(NotificationWrapper notificationWrapper) {
-        NotificationEventType notificationType = notificationWrapper.getNotificationType();
         final String caseId = notificationWrapper.getCaseId();
-        log.info("Notification event triggered {} for case id {}", notificationType.getId(), caseId);
+        log.info("Notification event triggered {} for case id {}", notificationWrapper.getNotificationType().getId(), caseId);
         for (SubscriptionWithType subscriptionWithType :
                 notificationWrapper.getSubscriptionsBasedOnNotificationType()) {
-            sendNotificationPerSubscription(notificationWrapper, subscriptionWithType.getSubscription(), notificationType, subscriptionWithType);
+            sendNotificationPerSubscription(notificationWrapper, subscriptionWithType.getSubscription(), subscriptionWithType);
         }
     }
 
     private void sendNotificationPerSubscription(NotificationWrapper notificationWrapper,
                                                  Subscription subscription,
-                                                 NotificationEventType notificationType,
                                                  SubscriptionWithType subscriptionWithType) {
-        if (isValidNotification(notificationWrapper, subscriptionWithType, notificationType)) {
+        if (isValidNotification(notificationWrapper, subscriptionWithType)) {
             Notification notification = notificationFactory.create(notificationWrapper,
                     subscriptionWithType.getSubscriptionType());
-            if (!subscription.doesCaseHaveSubscriptions()
-                    || notificationWrapper.getNotificationType().isAllowOutOfHours() || !outOfHoursCalculator.isItOutOfHours()) {
+            if (notificationWrapper.getNotificationType().isAllowOutOfHours() || !outOfHoursCalculator.isItOutOfHours()) {
                 sendNotificationService.sendEmailSmsLetterNotification(notificationWrapper, subscription, notification, subscriptionWithType);
                 processOldSubscriptionNotifications(notificationWrapper, notification, subscriptionWithType);
                 reminderService.createReminders(notificationWrapper);
@@ -74,10 +71,11 @@ public class NotificationService {
     }
 
     private boolean isValidNotification(NotificationWrapper wrapper, SubscriptionWithType
-            subscriptionWithType, NotificationEventType notificationType) {
+            subscriptionWithType) {
         Subscription subscription = subscriptionWithType.getSubscription();
+        NotificationEventType notificationType = wrapper.getNotificationType();
 
-        return (isMandatoryLetter(notificationType)
+        return (isMandatoryLetter(wrapper.getNotificationType())
             || ((subscription != null && subscription.doesCaseHaveSubscriptions()
             || (subscription != null && !subscription.doesCaseHaveSubscriptions() && isFallbackLetterRequiredForSubscriptionType(wrapper, subscriptionWithType.getSubscriptionType(), notificationType)
             || subscription == null && isFallbackLetterRequiredForSubscriptionType(wrapper, subscriptionWithType.getSubscriptionType(), notificationType)))

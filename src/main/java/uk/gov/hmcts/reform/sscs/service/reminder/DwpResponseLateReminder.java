@@ -54,7 +54,7 @@ public class DwpResponseLateReminder implements ReminderHandler {
         String caseId = wrapper.getNewSscsCaseData().getCcdCaseId();
         String eventId = DWP_RESPONSE_LATE_REMINDER_NOTIFICATION.getId();
         String jobGroup = jobGroupGenerator.generate(caseId, eventId);
-        ZonedDateTime reminderDate = calculateReminderDate(caseData, delay);
+        ZonedDateTime reminderDate = calculateReminderDate(caseData);
 
         jobScheduler.schedule(new Job<>(
             jobGroup,
@@ -66,7 +66,7 @@ public class DwpResponseLateReminder implements ReminderHandler {
         LOG.info("Scheduled DWP response late reminder for case id: {} @ {}", caseId, reminderDate.toString());
     }
 
-    private ZonedDateTime calculateReminderDate(SscsCaseData ccdResponse, long delay) {
+    private ZonedDateTime calculateReminderDate(SscsCaseData ccdResponse) {
 
         Optional<ZonedDateTime> appealReceivedDate = appealReceivedDateExtractor.extract(ccdResponse);
 
