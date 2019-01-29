@@ -424,7 +424,7 @@ public class NotificationServiceTest {
 
     private CcdNotificationWrapper buildNotificationWrapperGivenNotificationTypeAndSubscriptions(
             NotificationEventType notificationEventType, Subscription appellantSubscription,
-            Subscription repsSubscription) {
+            Subscription repsSubscription, Subscription appointeeSubscription) {
 
         Representative rep = null;
         if (null != repsSubscription) {
@@ -433,6 +433,13 @@ public class NotificationServiceTest {
                 .name(Name.builder().firstName("Joe").lastName("Bloggs").build())
                 .address(Address.builder().line1("Rep Line 1").town("Rep Town").county("Rep County").postcode("RE9 7SE").build())
                 .build();
+        }
+
+        Appellant appellant = Appellant.builder().build();
+        if (appointeeSubscription != null) {
+            appellant.setAppointee(Appointee.builder()
+                .name(Name.builder().firstName("Jack").lastName("Smith").build())
+                .build());
         }
 
         sscsCaseData = SscsCaseData.builder()
