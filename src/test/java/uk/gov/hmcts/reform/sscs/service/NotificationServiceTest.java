@@ -454,59 +454,11 @@ public class NotificationServiceTest {
         return new Object[]{
                 new Object[]{
                         EVIDENCE_RECEIVED_NOTIFICATION,
-                        1,
-                        Subscription.builder().build(),
-                        null,
-                        null,
-                        new SubscriptionType[]{APPELLANT},
-                },
-                new Object[]{
-                        EVIDENCE_RECEIVED_NOTIFICATION,
-                        1,
-                        null,
-                        null,
-                        Subscription.builder().build(),
-                        new SubscriptionType[]{APPOINTEE},
-                },
-                new Object[]{
-                        EVIDENCE_RECEIVED_NOTIFICATION,
                         2,
                         Subscription.builder().build(),
                         Subscription.builder().build(),
                         null,
                         new SubscriptionType[]{APPELLANT, REPRESENTATIVE},
-                },
-                new Object[]{
-                        EVIDENCE_RECEIVED_NOTIFICATION,
-                        2,
-                        null,
-                        Subscription.builder().build(),
-                        Subscription.builder().build(),
-                        new SubscriptionType[]{APPOINTEE, REPRESENTATIVE},
-                },
-                new Object[]{
-                        EVIDENCE_RECEIVED_NOTIFICATION,
-                        0,
-                        Subscription.builder()
-                                .tya(APPEAL_NUMBER)
-                                .email(EMAIL)
-                                .subscribeEmail(YES)
-                                .build(),
-                        null,
-                        null,
-                        new SubscriptionType[]{APPELLANT},
-                },
-                new Object[]{
-                        EVIDENCE_RECEIVED_NOTIFICATION,
-                        0,
-                        null,
-                        null,
-                        Subscription.builder()
-                                .tya(APPEAL_NUMBER)
-                                .email(EMAIL)
-                                .subscribeEmail(YES)
-                                .build(),
-                        new SubscriptionType[]{APPOINTEE},
                 },
                 new Object[]{
                         EVIDENCE_RECEIVED_NOTIFICATION,
@@ -523,22 +475,6 @@ public class NotificationServiceTest {
                                 .build(),
                         null,
                         new SubscriptionType[]{APPELLANT, REPRESENTATIVE},
-                },
-                new Object[]{
-                        EVIDENCE_RECEIVED_NOTIFICATION,
-                        0,
-                        null,
-                        Subscription.builder()
-                                .tya(APPEAL_NUMBER)
-                                .email(EMAIL)
-                                .subscribeEmail(YES)
-                                .build(),
-                        Subscription.builder()
-                                .tya(APPEAL_NUMBER)
-                                .email(EMAIL)
-                                .subscribeEmail(YES)
-                                .build(),
-                        new SubscriptionType[]{APPOINTEE, REPRESENTATIVE},
                 },
         };
     }
@@ -548,8 +484,7 @@ public class NotificationServiceTest {
             Subscription repsSubscription, Subscription appointeeSubscription) {
         sscsCaseData = SscsCaseData.builder()
                 .appeal(Appeal.builder()
-                        .appellant(Appellant.builder().appointee(appointeeSubscription != null ? Appointee.builder().build() : null).build())
-                        .rep(repsSubscription != null ? Representative.builder().build() : null)
+                        .rep(Representative.builder().build())
                         .hearingType(AppealHearingType.ORAL.name())
                         .hearingOptions(HearingOptions.builder()
                                 .wantsToAttend(YES)
