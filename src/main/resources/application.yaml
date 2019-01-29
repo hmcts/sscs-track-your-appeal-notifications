@@ -193,7 +193,7 @@ notification:
   decision_issued:
     emailId: 62e72e11-5eb6-4048-83f4-0b0c5c59fcb9
     smsId: 32138594-d960-44ff-8b74-07cbd565607c
-  decision_issued_2:
+  corDecision:
     emailId: 5b0df251-49b9-46d5-b347-37a81ab77f19
     smsId: 04e778fd-71a8-4c27-b423-aa7485a81a9c
   struckOut:
