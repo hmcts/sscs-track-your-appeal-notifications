@@ -8,6 +8,7 @@ import static uk.gov.hmcts.reform.sscs.config.SubscriptionType.APPELLANT;
 import static uk.gov.hmcts.reform.sscs.config.SubscriptionType.APPOINTEE;
 import static uk.gov.hmcts.reform.sscs.config.SubscriptionType.REPRESENTATIVE;
 import static uk.gov.hmcts.reform.sscs.domain.notify.NotificationEventType.*;
+import static uk.gov.hmcts.reform.sscs.service.NotificationUtils.hasAppointee;
 
 import java.io.UnsupportedEncodingException;
 import java.net.URLEncoder;
@@ -66,7 +67,6 @@ public class Personalisation<E extends NotificationWrapper> {
     protected Map<String, String> create(final SscsCaseDataWrapper responseWrapper, final SubscriptionType subscriptionType) {
         SscsCaseData ccdResponse = responseWrapper.getNewSscsCaseData();
         Map<String, String> personalisation = new HashMap<>();
-
         Benefit benefit = getBenefitByCode(ccdResponse.getAppeal().getBenefitType().getCode());
 
         personalisation.put(PANEL_COMPOSITION, getPanelCompositionByBenefitType(benefit));
@@ -79,20 +79,13 @@ public class Personalisation<E extends NotificationWrapper> {
         personalisation.put(NAME, getName(subscriptionType, ccdResponse));
         personalisation.put(PHONE_NUMBER, config.getHmctsPhoneNumber());
 
-        if (ccdResponse.getAppeal().getAppellant().getAppointee() != null
-                && ccdResponse.getAppeal().getAppellant().getAppointee().getName() != null
-                && ccdResponse.getAppeal().getAppellant().getAppointee().getName().getFirstName() != null
-                && ccdResponse.getAppeal().getAppellant().getAppointee().getName().getLastName() != null
-        ) {
-            personalisation.put(NAME, ccdResponse.getAppeal().getAppellant().getAppointee().getName().getFullNameNoTitle());
-        }
 
-        Subscription appellantOrAppointeeSubscription = (ccdResponse.getAppeal().getAppellant().getAppointee() == null)
-                ? ccdResponse.getSubscriptions().getAppellantSubscription()
-                : ccdResponse.getSubscriptions().getAppointeeSubscription();
+        Subscription appellantOrAppointeeSubscription = (hasAppointee(responseWrapper))
+                ? ccdResponse.getSubscriptions().getAppointeeSubscription()
+                : ccdResponse.getSubscriptions().getAppellantSubscription();
 
-        if (appellantOrAppointeeSubscription != null && appellantOrAppointeeSubscription.getTya() != null) {
-            subscriptionDetails(personalisation, appellantOrAppointeeSubscription, benefit);        
+        if (appellantOrAppointeeSubscription != null) {
+            subscriptionDetails(personalisation, appellantOrAppointeeSubscription, benefit);
         }
 
         personalisation.put(FIRST_TIER_AGENCY_ACRONYM, DWP_ACRONYM);
@@ -101,7 +94,7 @@ public class Personalisation<E extends NotificationWrapper> {
         if (ccdResponse.getHearings() != null && !ccdResponse.getHearings().isEmpty()) {
             Hearing latestHearing = ccdResponse.getHearings().get(0);
             LocalDateTime hearingDateTime = latestHearing.getValue().getHearingDateTime();
-            
+
             personalisation.put(HEARING_DATE, formatLocalDate(hearingDateTime.toLocalDate()));
             personalisation.put(HEARING_TIME, formatLocalTime(hearingDateTime));
             personalisation.put(VENUE_ADDRESS_LITERAL, formatAddress(latestHearing));

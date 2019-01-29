@@ -5,6 +5,8 @@ import static uk.gov.hmcts.reform.sscs.config.SubscriptionType.APPELLANT;
 import static uk.gov.hmcts.reform.sscs.config.SubscriptionType.APPOINTEE;
 import static uk.gov.hmcts.reform.sscs.config.SubscriptionType.REPRESENTATIVE;
 import static uk.gov.hmcts.reform.sscs.domain.notify.NotificationEventType.*;
+import static uk.gov.hmcts.reform.sscs.service.NotificationUtils.hasAppointee;
+import static uk.gov.hmcts.reform.sscs.service.NotificationUtils.hasRepresentative;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -90,18 +92,18 @@ public class CcdNotificationWrapper implements NotificationWrapper {
     public List<SubscriptionWithType> getSubscriptionsBasedOnNotificationType() {
         List<SubscriptionWithType> subscriptionWithTypeList = new ArrayList<>();
 
-        if (hasAppointee()
+        if (hasAppointee(responseWrapper)
                 && (SYA_APPEAL_CREATED_NOTIFICATION.equals(getNotificationType())
                     || DWP_RESPONSE_RECEIVED_NOTIFICATION.equals(getNotificationType()) && ORAL.equals(getHearingType())
                     || SUBSCRIPTION_UPDATED_NOTIFICATION.equals(getNotificationType())
-                )
+                    )
         ) {
             subscriptionWithTypeList.add(new SubscriptionWithType(getAppointeeSubscription(), APPOINTEE));
         } else {
             subscriptionWithTypeList.add(new SubscriptionWithType(getAppellantSubscription(), APPELLANT));
         }
 
-        if (hasRepresentative() && (APPEAL_LAPSED_NOTIFICATION.equals(getNotificationType())
+        if (hasRepresentative(responseWrapper) && (APPEAL_LAPSED_NOTIFICATION.equals(getNotificationType())
             || APPEAL_WITHDRAWN_NOTIFICATION.equals(getNotificationType())
             || EVIDENCE_RECEIVED_NOTIFICATION.equals(getNotificationType())
             || SYA_APPEAL_CREATED_NOTIFICATION.equals(getNotificationType())
@@ -114,17 +116,6 @@ public class CcdNotificationWrapper implements NotificationWrapper {
             subscriptionWithTypeList.add(new SubscriptionWithType(getRepresentativeSubscription(), REPRESENTATIVE));
         }
         return subscriptionWithTypeList;
-    }
-
-    private boolean hasAppointee() {
-        return responseWrapper.getNewSscsCaseData().getAppeal() != null
-            && responseWrapper.getNewSscsCaseData().getAppeal().getAppellant() != null
-            && responseWrapper.getNewSscsCaseData().getAppeal().getAppellant().getAppointee() != null;
-    }
-
-    private boolean hasRepresentative() {
-        return responseWrapper.getNewSscsCaseData().getAppeal() != null
-            && responseWrapper.getNewSscsCaseData().getAppeal().getRep() != null;
     }
 
     @Override
