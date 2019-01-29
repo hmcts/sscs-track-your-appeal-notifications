@@ -435,8 +435,16 @@ public class NotificationServiceTest {
                 .build();
         }
 
+        Appellant appellant = Appellant.builder().build();
+        if (appointeeSubscription != null) {
+            appellant.setAppointee(Appointee.builder()
+                .name(Name.builder().firstName("Jack").lastName("Smith").build())
+                .build());
+        }
+
         sscsCaseData = SscsCaseData.builder()
                 .appeal(Appeal.builder()
+                        .appellant(appellant)
                         .rep(rep)
                         .hearingType(AppealHearingType.ORAL.name())
                         .hearingOptions(HearingOptions.builder()
