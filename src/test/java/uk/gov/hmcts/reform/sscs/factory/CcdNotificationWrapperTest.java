@@ -73,7 +73,6 @@ public class CcdNotificationWrapperTest {
         );
     }
 
-
     private CcdNotificationWrapper buildCcdNotificationWrapperBasedOnEventTypeWithAppointee(NotificationEventType notificationEventType, String hearingType) {
         Appointee appointee = Appointee.builder()
             .name(Name.builder().firstName("Ap").lastName("Pointee").build())
