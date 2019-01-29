@@ -547,7 +547,7 @@ public class PersonalisationTest {
                 .ccdCaseId(CASE_ID).caseReference("SC/1234/5")
                 .appeal(Appeal.builder().benefitType(BenefitType.builder().code(PIP.name()).build())
                         .appellant(Appellant.builder().name(name)
-                            .appointee(Appointee.builder().name(Name.builder().build()).build())
+                            .appointee(Appointee.builder().name(Name.builder().firstName("firstName").build()).build())
                             .build())
                         .build())
                 .subscriptions(Subscriptions.builder().appointeeSubscription(Subscription.builder()
