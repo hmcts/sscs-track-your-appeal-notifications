@@ -251,7 +251,6 @@ notification:
     evidenceReceived:
       representative:
         emailId: 7af36950-fc63-45d1-907d-f472fac7af06
-        smsId: 345f802b-7089-4f46-a17f-bf534b272740
     struckOut:
       letterId: 7383b637-d76e-4c9f-8af9-3e3573168011
   oral:
