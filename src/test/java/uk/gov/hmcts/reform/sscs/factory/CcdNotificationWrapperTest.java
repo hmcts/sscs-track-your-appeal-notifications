@@ -67,7 +67,11 @@ public class CcdNotificationWrapperTest {
         }
 
         if (null != representative) {
-            representative = Representative.builder().hasRepresentative("Yes").build();
+            representative = Representative.builder()
+                .hasRepresentative("Yes")
+                .name(Name.builder().firstName("Joe").lastName("Bloggs").build())
+                .address(Address.builder().line1("Rep Line 1").town("Rep Town").county("Rep County").postcode("RE9 7SE").build())
+                .build();
         }
 
         return new CcdNotificationWrapper(

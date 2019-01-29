@@ -419,7 +419,11 @@ public class NotificationServiceTest {
             Subscription repsSubscription, Subscription appointeeSubscription) {
         Representative rep = null;
         if (repsSubscription != null) {
-            rep = Representative.builder().hasRepresentative("Yes").build();
+            rep = Representative.builder()
+                .hasRepresentative("Yes")
+                .name(Name.builder().firstName("Joe").lastName("Bloggs").build())
+                .address(Address.builder().line1("Rep Line 1").town("Rep Town").county("Rep County").postcode("RE9 7SE").build())
+                .build();
         }
 
         Appellant appellant = Appellant.builder().build();
