@@ -63,10 +63,10 @@ public class NotificationService {
             if (notificationWrapper.getNotificationType().isAllowOutOfHours() || !outOfHoursCalculator.isItOutOfHours()) {
                 sendNotificationService.sendEmailSmsLetterNotification(notificationWrapper, subscription, notification, subscriptionWithType);
                 processOldSubscriptionNotifications(notificationWrapper, notification, subscriptionWithType);
+                reminderService.createReminders(notificationWrapper);
             } else {
                 notificationHandler.scheduleNotification(notificationWrapper);
             }
-            reminderService.createReminders(notificationWrapper);
         }
     }
 
