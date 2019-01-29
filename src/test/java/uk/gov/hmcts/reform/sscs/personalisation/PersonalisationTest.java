@@ -539,7 +539,7 @@ public class PersonalisationTest {
                 .ccdCaseId(CASE_ID).caseReference("SC/1234/5")
                 .appeal(Appeal.builder().benefitType(BenefitType.builder().code(PIP.name()).build())
                         .appellant(Appellant.builder().name(name)
-                            .appointee(Appointee.builder().name(Name.builder().build()).build())
+                            .appointee(Appointee.builder().name(Name.builder().firstName("firstName").build()).build())
                             .build())
                         .build())
                 .subscriptions(Subscriptions.builder().appointeeSubscription(Subscription.builder()
@@ -558,7 +558,7 @@ public class PersonalisationTest {
         assertEquals("http://link.com/manage-email-notifications/ZYX", result.get(AppConstants.MANAGE_EMAILS_LINK_LITERAL));
         assertEquals("http://tyalink.com/" + tyaNumber, result.get(AppConstants.TRACK_APPEAL_LINK_LITERAL));
     }
-    
+
     public void shouldGetPersonalisationForAppointee_WhenNoAppellantSubscription() {
         Name appointeeName = Name.builder().title("MR").firstName("George").lastName("Appointee").build();
         SscsCaseData response = SscsCaseData.builder()

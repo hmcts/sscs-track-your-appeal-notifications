@@ -10,6 +10,7 @@ import static uk.gov.hmcts.reform.sscs.config.AppConstants.ONLINE_HEARING_SIGN_I
 import static uk.gov.hmcts.reform.sscs.config.AppConstants.QUESTION_ROUND_EXPIRES_DATE_LITERAL;
 import static uk.gov.hmcts.reform.sscs.config.AppConstants.TRIBUNAL_RESPONSE_DATE_LITERAL;
 import static uk.gov.hmcts.reform.sscs.domain.notify.NotificationEventType.*;
+import static uk.gov.hmcts.reform.sscs.service.NotificationUtils.hasAppointee;
 
 import java.io.UnsupportedEncodingException;
 import java.net.URLEncoder;
@@ -87,43 +88,18 @@ public class Personalisation<E extends NotificationWrapper> {
                 ccdResponse.getAppeal().getAppellant().getName().getFullNameNoTitle());
         personalisation.put(AppConstants.PHONE_NUMBER, config.getHmctsPhoneNumber());
 
-        if (ccdResponse.getAppeal().getAppellant().getAppointee() != null
-                && ccdResponse.getAppeal().getAppellant().getAppointee().getName() != null
-                && ccdResponse.getAppeal().getAppellant().getAppointee().getName().getFirstName() != null
-                && ccdResponse.getAppeal().getAppellant().getAppointee().getName().getLastName() != null
-        ) {
+        if (hasAppointee(responseWrapper)) {
             personalisation.put(AppConstants.NAME,
                     ccdResponse.getAppeal().getAppellant().getAppointee().getName().getFullNameNoTitle());
         }
-        
-        Subscription appellantOrAppointeeSubscription = (ccdResponse.getAppeal().getAppellant().getAppointee() == null)
-                ? ccdResponse.getSubscriptions().getAppellantSubscription()
-                : ccdResponse.getSubscriptions().getAppointeeSubscription();
+
+        Subscription appellantOrAppointeeSubscription = (hasAppointee(responseWrapper))
+                ? ccdResponse.getSubscriptions().getAppointeeSubscription()
+                : ccdResponse.getSubscriptions().getAppellantSubscription();
 
         if (appellantOrAppointeeSubscription != null) {
-            String tya = StringUtils.defaultIfBlank(appellantOrAppointeeSubscription.getTya(), StringUtils.EMPTY);
-            personalisation.put(AppConstants.APPEAL_ID, tya);
-            personalisation.put(AppConstants.MANAGE_EMAILS_LINK_LITERAL, config.getManageEmailsLink().replace(AppConstants.MAC_LITERAL,
-                    getMacToken(tya,
-                            benefit.name())));
-            personalisation.put(AppConstants.TRACK_APPEAL_LINK_LITERAL, config.getTrackAppealLink() != null ? config.getTrackAppealLink().replace(AppConstants.APPEAL_ID_LITERAL, tya) : null);
-            personalisation.put(AppConstants.SUBMIT_EVIDENCE_LINK_LITERAL, config.getEvidenceSubmissionInfoLink().replace(AppConstants.APPEAL_ID, tya));
-            personalisation.put(AppConstants.SUBMIT_EVIDENCE_INFO_LINK_LITERAL, config.getEvidenceSubmissionInfoLink().replace(AppConstants.APPEAL_ID_LITERAL, tya));
-            personalisation.put(AppConstants.CLAIMING_EXPENSES_LINK_LITERAL, config.getClaimingExpensesLink().replace(AppConstants.APPEAL_ID, tya));
-            personalisation.put(AppConstants.HEARING_INFO_LINK_LITERAL,
-                    config.getHearingInfoLink().replace(AppConstants.APPEAL_ID_LITERAL, tya));
-
-            String email = StringUtils.defaultIfBlank(appellantOrAppointeeSubscription.getEmail(), StringUtils.EMPTY);
-            if (!StringUtils.isEmpty(email)) {
-                try {
-                    String encodedEmail = URLEncoder.encode(email, StandardCharsets.UTF_8.name());
-                    personalisation.put(ONLINE_HEARING_LINK_LITERAL, config.getOnlineHearingLinkWithEmail().replace("{email}", encodedEmail));
-                } catch (UnsupportedEncodingException e) {
-                    throw new RuntimeException(e);
-                }
-            }
+            subscriptionDetails(personalisation, appellantOrAppointeeSubscription, benefit);
         }
-        
         personalisation.put(AppConstants.FIRST_TIER_AGENCY_ACRONYM, AppConstants.DWP_ACRONYM);
         personalisation.put(AppConstants.FIRST_TIER_AGENCY_FULL_NAME, AppConstants.DWP_FUL_NAME);
 
@@ -154,6 +130,31 @@ public class Personalisation<E extends NotificationWrapper> {
         personalisation.put(ONLINE_HEARING_SIGN_IN_LINK_LITERAL, config.getOnlineHearingLink() + "/sign-in");
 
         return personalisation;
+    }
+
+
+    private void subscriptionDetails(Map<String, String> personalisation, Subscription subscription, Benefit benefit) {
+        String tya = StringUtils.defaultIfBlank(subscription.getTya(), StringUtils.EMPTY);
+        personalisation.put(AppConstants.APPEAL_ID, tya);
+        personalisation.put(AppConstants.MANAGE_EMAILS_LINK_LITERAL, config.getManageEmailsLink().replace(AppConstants.MAC_LITERAL,
+                getMacToken(tya,
+                        benefit.name())));
+        personalisation.put(AppConstants.TRACK_APPEAL_LINK_LITERAL, config.getTrackAppealLink() != null ? config.getTrackAppealLink().replace(AppConstants.APPEAL_ID_LITERAL, tya) : null);
+        personalisation.put(AppConstants.SUBMIT_EVIDENCE_LINK_LITERAL, config.getEvidenceSubmissionInfoLink().replace(AppConstants.APPEAL_ID, tya));
+        personalisation.put(AppConstants.SUBMIT_EVIDENCE_INFO_LINK_LITERAL, config.getEvidenceSubmissionInfoLink().replace(AppConstants.APPEAL_ID_LITERAL, tya));
+        personalisation.put(AppConstants.CLAIMING_EXPENSES_LINK_LITERAL, config.getClaimingExpensesLink().replace(AppConstants.APPEAL_ID, tya));
+        personalisation.put(AppConstants.HEARING_INFO_LINK_LITERAL,
+                config.getHearingInfoLink().replace(AppConstants.APPEAL_ID_LITERAL, tya));
+
+        String email = subscription.getEmail();
+        if (email != null) {
+            try {
+                String encodedEmail = URLEncoder.encode(email, StandardCharsets.UTF_8.name());
+                personalisation.put(ONLINE_HEARING_LINK_LITERAL, config.getOnlineHearingLinkWithEmail().replace("{email}", encodedEmail));
+            } catch (UnsupportedEncodingException e) {
+                throw new RuntimeException(e);
+            }
+        }
     }
 
     private String getPanelCompositionByBenefitType(Benefit benefit) {
