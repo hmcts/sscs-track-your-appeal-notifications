@@ -173,6 +173,7 @@ public class PersonalisationTest {
                 new Object[]{SYA_APPEAL_CREATED_NOTIFICATION, APPOINTEE, REGULAR},
                 new Object[]{SYA_APPEAL_CREATED_NOTIFICATION, APPOINTEE, ONLINE},
                 new Object[]{DWP_RESPONSE_RECEIVED_NOTIFICATION, null, ONLINE},
+                new Object[]{DWP_RESPONSE_RECEIVED_NOTIFICATION, null, PAPER},
                 new Object[]{APPEAL_DORMANT_NOTIFICATION, APPELLANT, PAPER},
                 new Object[]{EVIDENCE_RECEIVED_NOTIFICATION, APPELLANT, PAPER},
                 new Object[]{EVIDENCE_RECEIVED_NOTIFICATION, APPELLANT, REGULAR},

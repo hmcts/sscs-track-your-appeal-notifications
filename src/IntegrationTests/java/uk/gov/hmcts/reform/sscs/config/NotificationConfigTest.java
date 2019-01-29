@@ -47,6 +47,7 @@ public class NotificationConfigTest {
         assertEquals(expectedSmsTemplateId, template.getSmsTemplateId());
     }
 
+    @SuppressWarnings({"Indentation", "unused"})
     private Object[] templateIdsWithHearingAndEventTypes() {
         return new Object[]{
             new Object[]{"a64bce9a-9162-47ca-b3e7-cf5f85ca7bdc", "f5b61f94-0b2b-4e8e-9c25-56e9830df7d4", PAPER, getTemplateName(DWP_RESPONSE_RECEIVED_NOTIFICATION)},
