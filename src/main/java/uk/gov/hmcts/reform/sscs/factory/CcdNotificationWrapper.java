@@ -1,8 +1,11 @@
 package uk.gov.hmcts.reform.sscs.factory;
 
 import static uk.gov.hmcts.reform.sscs.config.SubscriptionType.APPELLANT;
+import static uk.gov.hmcts.reform.sscs.config.SubscriptionType.APPOINTEE;
 import static uk.gov.hmcts.reform.sscs.config.SubscriptionType.REPRESENTATIVE;
 import static uk.gov.hmcts.reform.sscs.domain.notify.NotificationEventType.*;
+import static uk.gov.hmcts.reform.sscs.service.NotificationUtils.hasAppointee;
+import static uk.gov.hmcts.reform.sscs.service.NotificationUtils.hasRepresentative;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -45,6 +48,11 @@ public class CcdNotificationWrapper implements NotificationWrapper {
     }
 
     @Override
+    public Subscription getAppointeeSubscription() {
+        return responseWrapper.getNewSscsCaseData().getSubscriptions().getAppointeeSubscription();
+    }
+
+    @Override
     public SscsCaseDataWrapper getSscsCaseDataWrapper() {
         return responseWrapper;
     }
@@ -82,8 +90,16 @@ public class CcdNotificationWrapper implements NotificationWrapper {
     @Override
     public List<SubscriptionWithType> getSubscriptionsBasedOnNotificationType() {
         List<SubscriptionWithType> subscriptionWithTypeList = new ArrayList<>();
-        subscriptionWithTypeList.add(new SubscriptionWithType(getAppellantSubscription(), APPELLANT));
-        if (APPEAL_LAPSED_NOTIFICATION.equals(getNotificationType())
+
+
+        if (hasAppointee(responseWrapper) && (SYA_APPEAL_CREATED_NOTIFICATION.equals(getNotificationType())
+            || APPEAL_RECEIVED_NOTIFICATION.equals(getNotificationType()))) {
+            subscriptionWithTypeList.add(new SubscriptionWithType(getAppointeeSubscription(), APPOINTEE));
+        } else {
+            subscriptionWithTypeList.add(new SubscriptionWithType(getAppellantSubscription(), APPELLANT));
+        }
+
+        if (hasRepresentative(responseWrapper) && (APPEAL_LAPSED_NOTIFICATION.equals(getNotificationType())
             || APPEAL_WITHDRAWN_NOTIFICATION.equals(getNotificationType())
             || EVIDENCE_RECEIVED_NOTIFICATION.equals(getNotificationType())
             || SYA_APPEAL_CREATED_NOTIFICATION.equals(getNotificationType())
@@ -92,7 +108,7 @@ public class CcdNotificationWrapper implements NotificationWrapper {
             || ADJOURNED_NOTIFICATION.equals(getNotificationType())
             || APPEAL_RECEIVED_NOTIFICATION.equals(getNotificationType())
             || POSTPONEMENT_NOTIFICATION.equals(getNotificationType())
-            || HEARING_BOOKED_NOTIFICATION.equals(getNotificationType())) {
+            || HEARING_BOOKED_NOTIFICATION.equals(getNotificationType()))) {
             subscriptionWithTypeList.add(new SubscriptionWithType(getRepresentativeSubscription(), REPRESENTATIVE));
         }
         return subscriptionWithTypeList;

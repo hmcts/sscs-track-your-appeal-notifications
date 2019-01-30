@@ -11,4 +11,8 @@ public class NotificationClientRuntimeException extends UnknownErrorCodeExceptio
     public NotificationClientRuntimeException(String caseId, Exception ex) {
         super(AlertLevel.P1, format("Exception thrown for case [%s]", caseId), ex);
     }
+
+    public NotificationClientRuntimeException(String caseId) {
+        super(AlertLevel.P1, format("Exception thrown for case [%s]", caseId));
+    }
 }

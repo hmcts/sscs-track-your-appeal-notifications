@@ -65,13 +65,14 @@ public class NotificationConfig {
         return onlineHearingLink;
     }
 
-    public Template getTemplate(String emailTemplateName, String smsTemplateName, Benefit benefit,
+    public Template getTemplate(String emailTemplateName, String smsTemplateName, String letterTemplateName, Benefit benefit,
                                 AppealHearingType appealHearingType) {
         return Template.builder()
-                .emailTemplateId(getTemplate(appealHearingType, emailTemplateName, "emailId"))
-                .smsTemplateId(getTemplate(appealHearingType, smsTemplateName, "smsId"))
-                .smsSenderTemplateId(env.getProperty("smsSender." + benefit.toString().toLowerCase()))
-                .build();
+            .emailTemplateId(getTemplate(appealHearingType, emailTemplateName, "emailId"))
+            .smsTemplateId(getTemplate(appealHearingType, smsTemplateName, "smsId"))
+            .smsSenderTemplateId(env.getProperty("smsSender." + benefit.toString().toLowerCase()))
+            .letterTemplateId(getTemplate(appealHearingType, letterTemplateName, "letterId"))
+            .build();
     }
 
     private String getTemplate(@NotNull AppealHearingType appealHearingType, String templateName,

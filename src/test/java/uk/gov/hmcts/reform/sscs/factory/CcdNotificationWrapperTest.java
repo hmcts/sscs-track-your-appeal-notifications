@@ -11,10 +11,7 @@ import junitparams.Parameters;
 import org.junit.Assert;
 import org.junit.Test;
 import org.junit.runner.RunWith;
-import uk.gov.hmcts.reform.sscs.ccd.domain.Appeal;
-import uk.gov.hmcts.reform.sscs.ccd.domain.SscsCaseData;
-import uk.gov.hmcts.reform.sscs.ccd.domain.Subscription;
-import uk.gov.hmcts.reform.sscs.ccd.domain.Subscriptions;
+import uk.gov.hmcts.reform.sscs.ccd.domain.*;
 import uk.gov.hmcts.reform.sscs.config.AppealHearingType;
 import uk.gov.hmcts.reform.sscs.config.SubscriptionType;
 import uk.gov.hmcts.reform.sscs.domain.SscsCaseDataWrapper;
@@ -52,15 +49,46 @@ public class CcdNotificationWrapperTest {
     }
 
     private CcdNotificationWrapper buildCcdNotificationWrapperBasedOnEventType(NotificationEventType notificationEventType) {
+        Representative rep = Representative.builder()
+            .hasRepresentative("Yes")
+            .name(Name.builder().firstName("Joe").lastName("Bloggs").build())
+            .address(Address.builder().line1("Rep Line 1").town("Rep Town").county("Rep County").postcode("RE9 7SE").build())
+            .build();
+
         return new CcdNotificationWrapper(
             SscsCaseDataWrapper.builder()
                 .newSscsCaseData(SscsCaseData.builder()
                     .appeal(Appeal.builder()
                         .hearingType("cor")
+                        .rep(rep)
                         .build())
                     .subscriptions(Subscriptions.builder()
                         .appellantSubscription(Subscription.builder().build())
                         .representativeSubscription(Subscription.builder().build())
+                        .build())
+                    .build())
+                .notificationEventType(notificationEventType)
+                .build()
+
+        );
+    }
+
+    private CcdNotificationWrapper buildCcdNotificationWrapperBasedOnEventTypeWithAppointee(NotificationEventType notificationEventType) {
+        Appointee appointee = Appointee.builder()
+            .name(Name.builder().firstName("Ap").lastName("Pointee").build())
+            .address(Address.builder().line1("Appointee Line 1").town("Appointee Town").county("Appointee County").postcode("AP9 0IN").build())
+            .build();
+
+        return new CcdNotificationWrapper(
+            SscsCaseDataWrapper.builder()
+                .newSscsCaseData(SscsCaseData.builder()
+                    .appeal(Appeal.builder()
+                        .hearingType("cor")
+                        .appellant(Appellant.builder().appointee(appointee).build())
+                        .build())
+                    .subscriptions(Subscriptions.builder()
+                        .appellantSubscription(Subscription.builder().build())
+                        .appointeeSubscription(Subscription.builder().build())
                         .build())
                     .build())
                 .notificationEventType(notificationEventType)
@@ -77,6 +105,15 @@ public class CcdNotificationWrapperTest {
         Assert.assertEquals(2,subsWithTypeList.size());
         Assert.assertEquals(SubscriptionType.APPELLANT, subsWithTypeList.get(0).getSubscriptionType());
         Assert.assertEquals(SubscriptionType.REPRESENTATIVE, subsWithTypeList.get(1).getSubscriptionType());
+    }
+
+    @Test
+    @Parameters({"SYA_APPEAL_CREATED_NOTIFICATION","APPEAL_RECEIVED_NOTIFICATION"})
+    public void givenSubscriptions_shouldGetSubscriptionTypeListWithAppointee(NotificationEventType notificationEventType) {
+        ccdNotificationWrapper = buildCcdNotificationWrapperBasedOnEventTypeWithAppointee(notificationEventType);
+        List<SubscriptionWithType> subsWithTypeList = ccdNotificationWrapper.getSubscriptionsBasedOnNotificationType();
+        Assert.assertEquals(1,subsWithTypeList.size());
+        Assert.assertEquals(SubscriptionType.APPOINTEE, subsWithTypeList.get(0).getSubscriptionType());
     }
 
     @Test

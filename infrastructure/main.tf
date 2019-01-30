@@ -66,8 +66,10 @@ locals {
   ccdApi    = "http://ccd-data-store-api-${local.local_env}.service.${local.local_ase}.internal"
   s2sCnpUrl = "http://rpe-service-auth-provider-${local.local_env}.service.${local.local_ase}.internal"
   cohApi    = "http://coh-cor-${local.local_env}.service.${local.local_ase}.internal"
+  documentStore = "http://dm-store-${local.local_env}.service.${local.local_ase}.internal"
+  pdfService    = "http://cmc-pdf-service-${local.local_env}.service.${local.local_ase}.internal"
 
-  azureVaultName              = "sscs-${local.local_env}"
+  azureVaultName = "sscs-${local.local_env}"
 }
 
 module "track-your-appeal-notifications" {
@@ -116,6 +118,8 @@ module "track-your-appeal-notifications" {
     EMAIL_MAC_SECRET_TEXT         = "${data.azurerm_key_vault_secret.email-mac-secret.value}"
     ONLINE_HEARING_LINK           = "${var.online_hearing_link}"
 
+    PDF_API_URL                   = "${local.pdfService}"
+
     // db vars
     JOB_SCHEDULER_DB_HOST               = "${module.db-notif.host_name}"
     JOB_SCHEDULER_DB_PORT               = "${module.db-notif.postgresql_listen_port}"
@@ -127,6 +131,10 @@ module "track-your-appeal-notifications" {
 
     HOURS_START_TIME                    = "${var.hours_start_time}"
     HOURS_END_TIME                      = "${var.hours_end_time}"
+
+    DOCUMENT_MANAGEMENT_URL = "${local.documentStore}"
+
+    BUNDLED_LETTERS_ON                  = "${var.bundled_letters_on}"
   }
 }
 
