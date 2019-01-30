@@ -91,8 +91,10 @@ public class CcdNotificationWrapper implements NotificationWrapper {
     public List<SubscriptionWithType> getSubscriptionsBasedOnNotificationType() {
         List<SubscriptionWithType> subscriptionWithTypeList = new ArrayList<>();
 
+
         if (hasAppointee(responseWrapper) && (SYA_APPEAL_CREATED_NOTIFICATION.equals(getNotificationType())
-            || INTERLOC_VALID_APPEAL.equals(getNotificationType()))) {
+            || INTERLOC_VALID_APPEAL.equals(getNotificationType())
+            || APPEAL_RECEIVED_NOTIFICATION.equals(getNotificationType()))) {
             subscriptionWithTypeList.add(new SubscriptionWithType(getAppointeeSubscription(), APPOINTEE));
         } else {
             subscriptionWithTypeList.add(new SubscriptionWithType(getAppellantSubscription(), APPELLANT));

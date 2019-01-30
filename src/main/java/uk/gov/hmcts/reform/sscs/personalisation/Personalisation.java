@@ -10,6 +10,7 @@ import static uk.gov.hmcts.reform.sscs.config.AppConstants.ONLINE_HEARING_SIGN_I
 import static uk.gov.hmcts.reform.sscs.config.AppConstants.QUESTION_ROUND_EXPIRES_DATE_LITERAL;
 import static uk.gov.hmcts.reform.sscs.config.AppConstants.TRIBUNAL_RESPONSE_DATE_LITERAL;
 import static uk.gov.hmcts.reform.sscs.domain.notify.NotificationEventType.*;
+import static uk.gov.hmcts.reform.sscs.service.NotificationUtils.hasAppointee;
 
 import java.io.UnsupportedEncodingException;
 import java.net.URLEncoder;
@@ -86,9 +87,9 @@ public class Personalisation<E extends NotificationWrapper> {
                 ccdResponse.getAppeal().getAppellant().getName().getFirstName(), ccdResponse.getAppeal().getAppellant().getName().getLastName()));
         personalisation.put(AppConstants.PHONE_NUMBER, config.getHmctsPhoneNumber());
 
-        Subscription appellantOrAppointeeSubscription = (ccdResponse.getAppeal().getAppellant().getAppointee() == null)
-                ? ccdResponse.getSubscriptions().getAppellantSubscription()
-                : ccdResponse.getSubscriptions().getAppointeeSubscription();
+        Subscription appellantOrAppointeeSubscription = hasAppointee(responseWrapper)
+                ? ccdResponse.getSubscriptions().getAppointeeSubscription()
+                : ccdResponse.getSubscriptions().getAppellantSubscription();
 
         if (appellantOrAppointeeSubscription != null) {
             String tya = StringUtils.defaultIfBlank(appellantOrAppointeeSubscription.getTya(), StringUtils.EMPTY);
