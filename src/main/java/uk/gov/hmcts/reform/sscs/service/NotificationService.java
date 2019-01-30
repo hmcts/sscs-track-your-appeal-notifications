@@ -46,7 +46,7 @@ public class NotificationService {
     public void manageNotificationAndSubscription(NotificationWrapper notificationWrapper) {
         NotificationEventType notificationType = notificationWrapper.getNotificationType();
         final String caseId = notificationWrapper.getCaseId();
-        log.info("Notification event triggered {} for case id {}", notificationType.getId(), caseId);
+        log.info("Notification event triggered {} for case id {} {}", notificationType.getId(), caseId, notificationWrapper.getSubscriptionsBasedOnNotificationType());
         for (SubscriptionWithType subscriptionWithType :
                 notificationWrapper.getSubscriptionsBasedOnNotificationType()) {
             sendNotificationPerSubscription(notificationWrapper, subscriptionWithType, notificationType);
