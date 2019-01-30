@@ -4,7 +4,7 @@ import static uk.gov.hmcts.reform.sscs.config.SubscriptionType.REPRESENTATIVE;
 import static uk.gov.hmcts.reform.sscs.domain.notify.NotificationEventType.HEARING_BOOKED_NOTIFICATION;
 import static uk.gov.hmcts.reform.sscs.domain.notify.NotificationEventType.INTERLOC_VALID_APPEAL;
 import static uk.gov.hmcts.reform.sscs.domain.notify.NotificationEventType.STRUCK_OUT;
-import static uk.gov.hmcts.reform.sscs.service.SendNotificationService.isAppointeeOrAppellantSubscription;
+import static uk.gov.hmcts.reform.sscs.service.NotificationUtils.isAppointeeOrAppellantSubscription;
 
 import java.time.LocalDateTime;
 import java.util.Arrays;
@@ -18,11 +18,11 @@ import uk.gov.hmcts.reform.sscs.factory.NotificationWrapper;
 
 @Service
 public class NotificationValidService {
-    private static final List<NotificationEventType> MANDATORY_LETTER_EVENT_TYPES = Arrays.asList(STRUCK_OUT);
+    private static final List<NotificationEventType> MANDATORY_LETTER_EVENT_TYPES = Arrays.asList(STRUCK_OUT, HEARING_BOOKED_NOTIFICATION);
     private static final List<NotificationEventType> FALLBACK_LETTER_EVENT_TYPES = Arrays.asList(INTERLOC_VALID_APPEAL, HEARING_BOOKED_NOTIFICATION);
     private static final String HEARING_TYPE_ONLINE_RESOLUTION = "cor";
 
-    static boolean isMandatoryLetter(NotificationEventType eventType) {
+    static boolean isMandatoryLetterEventType(NotificationEventType eventType) {
         return MANDATORY_LETTER_EVENT_TYPES.contains(eventType);
     }
 

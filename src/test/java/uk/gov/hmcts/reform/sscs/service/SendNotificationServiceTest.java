@@ -4,6 +4,9 @@ import static org.junit.Assert.assertEquals;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.*;
 import static org.mockito.MockitoAnnotations.initMocks;
+import static uk.gov.hmcts.reform.sscs.config.SubscriptionType.APPELLANT;
+import static uk.gov.hmcts.reform.sscs.config.SubscriptionType.APPOINTEE;
+import static uk.gov.hmcts.reform.sscs.config.SubscriptionType.REPRESENTATIVE;
 import static uk.gov.hmcts.reform.sscs.service.LetterUtils.getAddressToUseForLetter;
 
 import java.util.ArrayList;
@@ -49,7 +52,7 @@ public class SendNotificationServiceTest {
             .appointee(APPOINTEE_WITH_ADDRESS)
             .build();
 
-    private static Representative REP_WITH_ADDRESS = Representative.builder()
+    protected static Representative REP_WITH_ADDRESS = Representative.builder()
         .name(Name.builder().firstName("Re").lastName("Presentative").build())
         .address(Address.builder().line1("Rep Line 1").town("Appellant Town").county("Appellant County").postcode("AP9 3LL").build())
         .build();
@@ -109,7 +112,7 @@ public class SendNotificationServiceTest {
         Address expectedAddress = APPELLANT_WITH_ADDRESS.getAddress();
         CcdNotificationWrapper wrapper = buildBaseWrapper(APPELLANT_WITH_ADDRESS);
 
-        Address actualAddress = getAddressToUseForLetter(wrapper);
+        Address actualAddress = getAddressToUseForLetter(wrapper, APPELLANT);
         assertEquals(expectedAddress.getLine1(), actualAddress.getLine1());
         assertEquals(expectedAddress.getLine2(), actualAddress.getLine2());
         assertEquals(expectedAddress.getTown(), actualAddress.getTown());
@@ -122,7 +125,20 @@ public class SendNotificationServiceTest {
         Address expectedAddress = APPOINTEE_WITH_ADDRESS.getAddress();
         CcdNotificationWrapper wrapper = buildBaseWrapper(APPELLANT_WITH_ADDRESS_AND_APPOINTEE);
 
-        Address actualAddress = getAddressToUseForLetter(wrapper);
+        Address actualAddress = getAddressToUseForLetter(wrapper, APPOINTEE);
+        assertEquals(expectedAddress.getLine1(), actualAddress.getLine1());
+        assertEquals(expectedAddress.getLine2(), actualAddress.getLine2());
+        assertEquals(expectedAddress.getTown(), actualAddress.getTown());
+        assertEquals(expectedAddress.getCounty(), actualAddress.getCounty());
+        assertEquals(expectedAddress.getPostcode(), actualAddress.getPostcode());
+    }
+
+    @Test
+    public void getRepAddressToUseForLetter() {
+        Address expectedAddress = REP_WITH_ADDRESS.getAddress();
+        CcdNotificationWrapper wrapper = buildBaseWrapper(APPELLANT_WITH_ADDRESS_AND_APPOINTEE, NotificationEventType.STRUCK_OUT, REP_WITH_ADDRESS);
+
+        Address actualAddress = getAddressToUseForLetter(wrapper, REPRESENTATIVE);
         assertEquals(expectedAddress.getLine1(), actualAddress.getLine1());
         assertEquals(expectedAddress.getLine2(), actualAddress.getLine2());
         assertEquals(expectedAddress.getTown(), actualAddress.getTown());
@@ -132,7 +148,7 @@ public class SendNotificationServiceTest {
 
     @Test
     public void doNotSendFallbackLetterNotificationToAppellantWhenSubscribedForSms() {
-        SubscriptionWithType appellantSmsSubscription = new SubscriptionWithType(SMS_SUBSCRIPTION, SubscriptionType.APPELLANT);
+        SubscriptionWithType appellantSmsSubscription = new SubscriptionWithType(SMS_SUBSCRIPTION, APPELLANT);
 
         classUnderTest.sendEmailSmsLetterNotification(buildBaseWrapper(APPELLANT_WITH_ADDRESS, NotificationEventType.INTERLOC_VALID_APPEAL), SMS_SUBSCRIPTION, SMS_NOTIFICATION, appellantSmsSubscription);
 
@@ -141,7 +157,7 @@ public class SendNotificationServiceTest {
 
     @Test
     public void doNotSendFallbackLetterNotificationToAppellantWhenSubscribedForEmail() {
-        SubscriptionWithType appellantEmailSubscription = new SubscriptionWithType(EMAIL_SUBSCRIPTION, SubscriptionType.APPELLANT);
+        SubscriptionWithType appellantEmailSubscription = new SubscriptionWithType(EMAIL_SUBSCRIPTION, APPELLANT);
 
         classUnderTest.sendEmailSmsLetterNotification(buildBaseWrapper(APPELLANT_WITH_ADDRESS, NotificationEventType.INTERLOC_VALID_APPEAL), EMAIL_SUBSCRIPTION, EMAIL_NOTIFICATION, appellantEmailSubscription);
 
@@ -150,7 +166,7 @@ public class SendNotificationServiceTest {
 
     @Test
     public void doNotSendFallbackLetterNotificationToAppellantWhenNoLetterTemplate() {
-        SubscriptionWithType appellantEmptySubscription = new SubscriptionWithType(EMPTY_SUBSCRIPTION, SubscriptionType.APPELLANT);
+        SubscriptionWithType appellantEmptySubscription = new SubscriptionWithType(EMPTY_SUBSCRIPTION, APPELLANT);
 
         classUnderTest.sendEmailSmsLetterNotification(buildBaseWrapper(APPELLANT_WITH_ADDRESS, NotificationEventType.INTERLOC_VALID_APPEAL), EMPTY_SUBSCRIPTION, EMPTY_TEMPLATE_NOTIFICATION, appellantEmptySubscription);
 
@@ -159,7 +175,7 @@ public class SendNotificationServiceTest {
 
     @Test
     public void sendFallbackLetterNotificationToAppellant() {
-        SubscriptionWithType appellantEmptySubscription = new SubscriptionWithType(EMPTY_SUBSCRIPTION, SubscriptionType.APPELLANT);
+        SubscriptionWithType appellantEmptySubscription = new SubscriptionWithType(EMPTY_SUBSCRIPTION, APPELLANT);
 
         classUnderTest.sendEmailSmsLetterNotification(buildBaseWrapper(APPELLANT_WITH_ADDRESS, NotificationEventType.INTERLOC_VALID_APPEAL), EMPTY_SUBSCRIPTION, LETTER_NOTIFICATION, appellantEmptySubscription);
 
@@ -168,7 +184,7 @@ public class SendNotificationServiceTest {
 
     @Test
     public void doNotSendFallbackLetterNotificationToAppellantWhenToggledOff() {
-        SubscriptionWithType appellantEmptySubscription = new SubscriptionWithType(EMPTY_SUBSCRIPTION, SubscriptionType.APPELLANT);
+        SubscriptionWithType appellantEmptySubscription = new SubscriptionWithType(EMPTY_SUBSCRIPTION, APPELLANT);
 
         classUnderTest.lettersOn = false;
         classUnderTest.sendEmailSmsLetterNotification(buildBaseWrapper(APPELLANT_WITH_ADDRESS, NotificationEventType.INTERLOC_VALID_APPEAL), EMPTY_SUBSCRIPTION, LETTER_NOTIFICATION, appellantEmptySubscription);
@@ -214,14 +230,14 @@ public class SendNotificationServiceTest {
 
     @Test
     public void sendLetterNotificationForAppellant() throws NotificationClientException {
-        classUnderTest.sendLetterNotification(buildBaseWrapper(APPELLANT_WITH_ADDRESS, NotificationEventType.INTERLOC_VALID_APPEAL), LETTER_NOTIFICATION, APPELLANT_WITH_ADDRESS.getAddress());
+        classUnderTest.sendLetterNotificationToAddress(buildBaseWrapper(APPELLANT_WITH_ADDRESS, NotificationEventType.INTERLOC_VALID_APPEAL), LETTER_NOTIFICATION, APPELLANT_WITH_ADDRESS.getAddress());
 
         verify(notificationSender).sendLetter(eq(LETTER_NOTIFICATION.getLetterTemplate()), eq(APPELLANT_WITH_ADDRESS.getAddress()), any(), any());
     }
 
     @Test
     public void sendLetterNotificationForRep() throws NotificationClientException {
-        classUnderTest.sendLetterNotification(buildBaseWrapper(APPELLANT_WITH_ADDRESS, NotificationEventType.INTERLOC_VALID_APPEAL), LETTER_NOTIFICATION, REP_WITH_ADDRESS.getAddress());
+        classUnderTest.sendLetterNotificationToAddress(buildBaseWrapper(APPELLANT_WITH_ADDRESS, NotificationEventType.INTERLOC_VALID_APPEAL), LETTER_NOTIFICATION, REP_WITH_ADDRESS.getAddress());
 
         verify(notificationSender).sendLetter(eq(LETTER_NOTIFICATION.getLetterTemplate()), eq(REP_WITH_ADDRESS.getAddress()), any(), any());
     }

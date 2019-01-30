@@ -2,7 +2,7 @@ package uk.gov.hmcts.reform.sscs.service;
 
 import static uk.gov.hmcts.reform.sscs.ccd.domain.Benefit.getBenefitByCode;
 import static uk.gov.hmcts.reform.sscs.service.NotificationValidService.isFallbackLetterRequiredForSubscriptionType;
-import static uk.gov.hmcts.reform.sscs.service.NotificationValidService.isMandatoryLetter;
+import static uk.gov.hmcts.reform.sscs.service.NotificationValidService.isMandatoryLetterEventType;
 
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -76,7 +76,7 @@ public class NotificationService {
             subscriptionWithType, NotificationEventType notificationType) {
         Subscription subscription = subscriptionWithType.getSubscription();
 
-        return (isMandatoryLetter(notificationType)
+        return (isMandatoryLetterEventType(notificationType)
             || ((subscription != null && subscription.doesCaseHaveSubscriptions()
             || (subscription != null && !subscription.doesCaseHaveSubscriptions() && isFallbackLetterRequiredForSubscriptionType(wrapper, subscriptionWithType.getSubscriptionType(), notificationType)
             || subscription == null && isFallbackLetterRequiredForSubscriptionType(wrapper, subscriptionWithType.getSubscriptionType(), notificationType)))
