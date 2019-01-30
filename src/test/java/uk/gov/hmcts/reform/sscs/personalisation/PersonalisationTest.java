@@ -160,6 +160,9 @@ public class PersonalisationTest {
                 new Object[]{APPEAL_RECEIVED_NOTIFICATION, REPRESENTATIVE, PAPER},
                 new Object[]{APPEAL_RECEIVED_NOTIFICATION, REPRESENTATIVE, REGULAR},
                 new Object[]{APPEAL_RECEIVED_NOTIFICATION, REPRESENTATIVE, ONLINE},
+                new Object[]{APPEAL_RECEIVED_NOTIFICATION, APPOINTEE, PAPER},
+                new Object[]{APPEAL_RECEIVED_NOTIFICATION, APPOINTEE, REGULAR},
+                new Object[]{APPEAL_RECEIVED_NOTIFICATION, APPOINTEE, ONLINE},
                 new Object[]{APPEAL_LAPSED_NOTIFICATION, APPELLANT, PAPER},
                 new Object[]{APPEAL_LAPSED_NOTIFICATION, APPELLANT, REGULAR},
                 new Object[]{APPEAL_LAPSED_NOTIFICATION, APPELLANT, ONLINE},
@@ -544,7 +547,7 @@ public class PersonalisationTest {
                 .ccdCaseId(CASE_ID).caseReference("SC/1234/5")
                 .appeal(Appeal.builder().benefitType(BenefitType.builder().code(PIP.name()).build())
                         .appellant(Appellant.builder().name(name)
-                            .appointee(Appointee.builder().name(Name.builder().build()).build())
+                            .appointee(Appointee.builder().name(Name.builder().firstName("firstName").build()).build())
                             .build())
                         .build())
                 .subscriptions(Subscriptions.builder().appointeeSubscription(Subscription.builder()
