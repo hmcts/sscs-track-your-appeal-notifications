@@ -326,14 +326,16 @@ public class SscsCaseDataWrapperDeserializer extends StdDeserializer<SscsCaseDat
     private Subscription deserializeSubscriptionJson(JsonNode subscriptionsNode, String subscriptionName) {
         JsonNode subscriptionNode = getNode(subscriptionsNode, subscriptionName);
 
-        Subscription subscription = Subscription.builder().build();
+        Subscription subscription = null;
+        if (null != subscriptionNode) {
+            subscription = Subscription.builder().build();
 
-        if (subscriptionNode != null) {
             subscription = deserializeSubscriberJson(subscriptionNode, subscription);
         }
 
         return subscription;
     }
+
 
     public List<Event> deserializeEventDetailsJson(JsonNode caseNode) {
         final JsonNode eventNode = caseNode.get("events");

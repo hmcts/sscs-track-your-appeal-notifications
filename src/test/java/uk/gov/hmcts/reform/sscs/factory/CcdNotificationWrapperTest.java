@@ -62,16 +62,20 @@ public class CcdNotificationWrapperTest {
 
     private CcdNotificationWrapper buildCcdNotificationWrapperBasedOnEventType(NotificationEventType notificationEventType, Appointee appointee, Representative representative) {
         Appellant appellant = Appellant.builder().build();
+        Subscription appointeeSubscription = null;
         if (null != appointee) {
             appellant.setAppointee(appointee);
+            appointeeSubscription = Subscription.builder().build();
         }
 
+        Subscription repSubscription = null;
         if (null != representative) {
             representative = Representative.builder()
                 .hasRepresentative("Yes")
                 .name(Name.builder().firstName("Joe").lastName("Bloggs").build())
                 .address(Address.builder().line1("Rep Line 1").town("Rep Town").county("Rep County").postcode("RE9 7SE").build())
                 .build();
+            repSubscription = Subscription.builder().build();
         }
 
         return new CcdNotificationWrapper(
@@ -84,7 +88,8 @@ public class CcdNotificationWrapperTest {
                         .build())
                     .subscriptions(Subscriptions.builder()
                         .appellantSubscription(Subscription.builder().build())
-                        .representativeSubscription(Subscription.builder().build())
+                        .representativeSubscription(repSubscription)
+                        .appointeeSubscription(appointeeSubscription)
                         .build())
                     .build())
                 .notificationEventType(notificationEventType)

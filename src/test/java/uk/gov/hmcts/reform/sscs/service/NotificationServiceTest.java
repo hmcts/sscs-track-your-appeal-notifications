@@ -621,15 +621,24 @@ public class NotificationServiceTest {
         NotificationEventType notificationEventType, Subscription appointeeSubscription,
         Subscription repsSubscription) {
 
-        Representative rep = Representative.builder()
+        Representative rep = null;
+        if (repsSubscription != null) {
+            rep = Representative.builder()
                 .hasRepresentative("Yes")
                 .name(Name.builder().firstName("Joe").lastName("Bloggs").build())
                 .address(Address.builder().line1("Rep Line 1").town("Rep Town").county("Rep County").postcode("RE9 7SE").build())
                 .build();
+        }
+
+        Appointee appointee = null;
+        if (appointeeSubscription != null) {
+            appointee = Appointee.builder()
+                .name(Name.builder().firstName("firstName").build())
+                .build();
+        }
 
         sscsCaseData = SscsCaseData.builder()
-            .appeal(Appeal.builder().appellant(Appellant.builder().appointee(Appointee.builder()
-                    .name(Name.builder().firstName("firstName").build()).build()).build())
+            .appeal(Appeal.builder().appellant(Appellant.builder().appointee(appointee).build())
                 .rep(rep)
                 .hearingType(AppealHearingType.ORAL.name())
                 .hearingOptions(HearingOptions.builder()
