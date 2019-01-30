@@ -83,7 +83,7 @@ public class CcdNotificationWrapperTest {
             SscsCaseDataWrapper.builder()
                 .newSscsCaseData(SscsCaseData.builder()
                     .appeal(Appeal.builder()
-                        .hearingType("cor")
+                        .hearingType(hearingType)
                         .appellant(Appellant.builder().appointee(Appointee.builder().name(Name.builder().firstName("TEST")
                             .lastName("TEST").build()).build()).build())
                         .build())
