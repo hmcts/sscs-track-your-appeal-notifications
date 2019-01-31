@@ -24,4 +24,11 @@ public class NotificationUtils {
             && wrapper.getNewSscsCaseData().getAppeal().getRep().getHasRepresentative().equalsIgnoreCase("yes"));
     }
 
+    public static boolean hasAppointeeSubscription(SscsCaseDataWrapper wrapper) {
+        return null != wrapper.getNewSscsCaseData().getSubscriptions().getAppointeeSubscription();
+    }
+
+    public static boolean hasRepresentativeSubscription(SscsCaseDataWrapper wrapper) {
+        return null != wrapper.getNewSscsCaseData().getSubscriptions().getRepresentativeSubscription();
+    }
 }

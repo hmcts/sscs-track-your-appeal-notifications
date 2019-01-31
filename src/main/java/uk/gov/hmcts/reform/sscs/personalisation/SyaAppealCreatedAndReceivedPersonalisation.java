@@ -7,6 +7,7 @@ import org.apache.commons.lang.StringUtils;
 import org.springframework.stereotype.Component;
 import uk.gov.hmcts.reform.sscs.ccd.domain.*;
 import uk.gov.hmcts.reform.sscs.config.AppConstants;
+import uk.gov.hmcts.reform.sscs.config.SubscriptionType;
 import uk.gov.hmcts.reform.sscs.domain.SscsCaseDataWrapper;
 
 @Component
@@ -24,8 +25,8 @@ public class SyaAppealCreatedAndReceivedPersonalisation extends WithRepresentati
     private static final String PHONE = "Phone: ";
 
     @Override
-    protected Map<String, String> create(SscsCaseDataWrapper responseWrapper) {
-        Map<String, String> personalisation = super.create(responseWrapper);
+    protected Map<String, String> create(SscsCaseDataWrapper responseWrapper, SubscriptionType subscriptionType) {
+        Map<String, String> personalisation = super.create(responseWrapper, subscriptionType);
         SscsCaseData ccdResponse = responseWrapper.getNewSscsCaseData();
 
         setMrnDetails(personalisation, ccdResponse);
