@@ -96,7 +96,7 @@ public class PersonalisationTest {
         when(config.getOnlineHearingLinkWithEmail()).thenReturn(Link.builder().linkUrl("http://link.com/onlineHearing?email={email}").build());
         when(config.getOnlineHearingLink()).thenReturn("http://link.com");
         when(notificationDateConverterUtil.toEmailDate(LocalDate.now().plusDays(1))).thenReturn("1 January 2018");
-        when(notificationDateConverterUtil.toEmailDate(LocalDate.now().plusDays(7))).thenReturn("1 February 2018");
+        when(notificationDateConverterUtil.toEmailDate(LocalDate.now().plusDays(56))).thenReturn("1 February 2018");
         when(macService.generateToken("GLSCRR", PIP.name())).thenReturn("ZYX");
         when(macService.generateToken("GLSCRR", ESA.name())).thenReturn("ZYX");
         when(hearingContactDateExtractor.extract(any())).thenReturn(Optional.empty());
