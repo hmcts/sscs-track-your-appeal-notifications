@@ -555,7 +555,7 @@ public class NotificationServiceTest {
 
         sscsCaseData = SscsCaseData.builder()
             .appeal(Appeal.builder().appellant(Appellant.builder().appointee(Appointee.builder()
-                    .name(Name.builder().firstName("firstName").build()).build()).build())
+                    .name(Name.builder().firstName("firstName").lastName("lastName").build()).build()).build())
                 .rep(rep)
                 .hearingType(AppealHearingType.ORAL.name())
                 .hearingOptions(HearingOptions.builder()

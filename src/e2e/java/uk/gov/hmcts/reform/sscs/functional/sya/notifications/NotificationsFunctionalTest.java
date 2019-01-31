@@ -65,6 +65,19 @@ public class NotificationsFunctionalTest extends AbstractFunctionalTest {
     @Value("${notification.subscriptionOld.smsId}")
     private String subscriptionUpdateOldSmsId;
 
+    @Value("${notification.appealCreated.appellant.smsId}")
+    private String appealCreatedAppellantSmsId;
+
+    @Value("${notification.appealCreated.appellant.emailId}")
+    private String appealCreatedAppellantEmailId;
+
+    @Value("${notification.appealCreated.appointee.smsId}")
+    private String appealCreatedAppointeeSmsId;
+
+    @Value("${notification.appealCreated.appointee.emailId}")
+    private String appealCreatedAppointeeEmailId;
+
+
 
     public NotificationsFunctionalTest() {
         super(30);
@@ -117,6 +130,22 @@ public class NotificationsFunctionalTest extends AbstractFunctionalTest {
         List<Notification> notifications = tryFetchNotificationsForTestCase(onlineResponseReceivedEmailId, onlineResponseReceivedSmsId);
 
         assertNotificationBodyContains(notifications, onlineResponseReceivedEmailId, caseData.getCaseReference());
+    }
+
+    @Test
+    public void shouldSendAppealCreatedAppellantNotification() throws NotificationClientException, IOException {
+        simulateCcdCallback(SYA_APPEAL_CREATED_NOTIFICATION,  SYA_APPEAL_CREATED_NOTIFICATION.getId() + "Callback.json");
+        List<Notification> notifications = tryFetchNotificationsForTestCase(appealCreatedAppellantEmailId, appealCreatedAppellantSmsId);
+
+        assertNotificationBodyContains(notifications, appealCreatedAppellantEmailId, "appeal has been received");
+    }
+
+    @Test
+    public void shouldSendAppealCreatedAppointeeNotification() throws NotificationClientException, IOException {
+        simulateCcdCallback(SYA_APPEAL_CREATED_NOTIFICATION,  SYA_APPEAL_CREATED_NOTIFICATION.getId() + "AppointeeCallback.json");
+        List<Notification> notifications = tryFetchNotificationsForTestCase(appealCreatedAppointeeEmailId, appealCreatedAppointeeSmsId);
+
+        assertNotificationBodyContains(notifications, appealCreatedAppointeeEmailId,"appointee");
     }
 
     @Test

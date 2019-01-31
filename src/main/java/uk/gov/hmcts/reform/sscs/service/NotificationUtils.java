@@ -13,7 +13,8 @@ public class NotificationUtils {
             && wrapper.getNewSscsCaseData().getAppeal().getAppellant() != null
             && wrapper.getNewSscsCaseData().getAppeal().getAppellant().getAppointee() != null
             && wrapper.getNewSscsCaseData().getAppeal().getAppellant().getAppointee().getName() != null
-            && wrapper.getNewSscsCaseData().getAppeal().getAppellant().getAppointee().getName().getFirstName() != null);
+            && wrapper.getNewSscsCaseData().getAppeal().getAppellant().getAppointee().getName().getFirstName() != null
+            && wrapper.getNewSscsCaseData().getAppeal().getAppellant().getAppointee().getName().getLastName() != null);
     }
 
     public static boolean hasRepresentative(SscsCaseDataWrapper wrapper) {
