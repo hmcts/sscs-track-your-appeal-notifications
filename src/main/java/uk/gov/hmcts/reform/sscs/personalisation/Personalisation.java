@@ -8,7 +8,7 @@ import static uk.gov.hmcts.reform.sscs.config.SubscriptionType.APPELLANT;
 import static uk.gov.hmcts.reform.sscs.config.SubscriptionType.APPOINTEE;
 import static uk.gov.hmcts.reform.sscs.config.SubscriptionType.REPRESENTATIVE;
 import static uk.gov.hmcts.reform.sscs.domain.notify.NotificationEventType.*;
-import static uk.gov.hmcts.reform.sscs.service.NotificationUtils.hasAppointee;
+import static uk.gov.hmcts.reform.sscs.service.NotificationUtils.*;
 
 import java.io.UnsupportedEncodingException;
 import java.net.URLEncoder;
@@ -76,11 +76,10 @@ public class Personalisation<E extends NotificationWrapper> {
         personalisation.put(BENEFIT_FULL_NAME_LITERAL, benefit.getDescription());
         personalisation.put(APPEAL_REF, ccdResponse.getCaseReference());
         personalisation.put(APPELLANT_NAME, ccdResponse.getAppeal().getAppellant().getName().getFullNameNoTitle());
-        personalisation.put(NAME, getName(subscriptionType, ccdResponse));
+        personalisation.put(NAME, getName(subscriptionType, ccdResponse, responseWrapper));
         personalisation.put(PHONE_NUMBER, config.getHmctsPhoneNumber());
 
-
-        Subscription appellantOrAppointeeSubscription = (hasAppointee(responseWrapper))
+        Subscription appellantOrAppointeeSubscription = hasAppointee(responseWrapper)
                 ? ccdResponse.getSubscriptions().getAppointeeSubscription()
                 : ccdResponse.getSubscriptions().getAppellantSubscription();
 
@@ -122,17 +121,20 @@ public class Personalisation<E extends NotificationWrapper> {
         return personalisation;
     }
 
-    private String getName(SubscriptionType subscriptionType, SscsCaseData ccdResponse) {
+    private String getName(SubscriptionType subscriptionType, SscsCaseData ccdResponse, SscsCaseDataWrapper wrapper) {
         Name name = null;
-        if (subscriptionType.equals(APPELLANT) && ccdResponse.getAppeal() != null
+        if (ccdResponse.getAppeal() == null) {
+            return "";
+        }
+
+        if (subscriptionType.equals(APPELLANT)
                 && ccdResponse.getAppeal().getAppellant() != null) {
             name = ccdResponse.getAppeal().getAppellant().getName();
-        } else if (subscriptionType.equals(REPRESENTATIVE) && ccdResponse.getAppeal() != null
-                && ccdResponse.getAppeal().getRep() != null) {
+        } else if (subscriptionType.equals(REPRESENTATIVE)
+                && hasRepresentative(wrapper)) {
             name = ccdResponse.getAppeal().getRep().getName();
-        } else if (subscriptionType.equals(APPOINTEE) && ccdResponse.getAppeal() != null
-                && ccdResponse.getAppeal().getAppellant() != null
-                && ccdResponse.getAppeal().getAppellant().getAppointee() != null) {
+        } else if (subscriptionType.equals(APPOINTEE)
+                && hasAppointee(wrapper)) {
             name = ccdResponse.getAppeal().getAppellant().getAppointee().getName();
         }
         return name == null ? "" : name.getFullNameNoTitle();
