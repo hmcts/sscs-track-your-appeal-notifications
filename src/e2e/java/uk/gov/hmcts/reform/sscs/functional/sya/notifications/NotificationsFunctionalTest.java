@@ -77,7 +77,7 @@ public class NotificationsFunctionalTest extends AbstractFunctionalTest {
     @Value("${notification.appealCreated.appointee.emailId}")
     private String appealCreatedAppointeeEmailId;
 
-    @Value("${notification.evidenceReceived.appellant.EmailId}")
+    @Value("${notification.evidenceReceived.appellant.emailId}")
     private String appointeeEvidenceReceivedEmailId;
 
     @Value("${notification.evidenceReceived.appellant.smsId}")
