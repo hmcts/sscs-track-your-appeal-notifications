@@ -65,7 +65,19 @@ public class NotificationsFunctionalTest extends AbstractFunctionalTest {
     @Value("${notification.subscriptionOld.smsId}")
     private String subscriptionUpdateOldSmsId;
 
-    @Value("${notification.evidenceReceived.appellant.emailId}")
+    @Value("${notification.appealCreated.appellant.smsId}")
+    private String appealCreatedAppellantSmsId;
+
+    @Value("${notification.appealCreated.appellant.emailId}")
+    private String appealCreatedAppellantEmailId;
+
+    @Value("${notification.appealCreated.appointee.smsId}")
+    private String appealCreatedAppointeeSmsId;
+
+    @Value("${notification.appealCreated.appointee.emailId}")
+    private String appealCreatedAppointeeEmailId;
+
+    @Value("${notification.evidenceReceived.appellant.EmailId}")
     private String appointeeEvidenceReceivedEmailId;
 
     @Value("${notification.evidenceReceived.appellant.smsId}")
@@ -122,6 +134,22 @@ public class NotificationsFunctionalTest extends AbstractFunctionalTest {
         List<Notification> notifications = tryFetchNotificationsForTestCase(onlineResponseReceivedEmailId, onlineResponseReceivedSmsId);
 
         assertNotificationBodyContains(notifications, onlineResponseReceivedEmailId, caseData.getCaseReference());
+    }
+
+    @Test
+    public void shouldSendAppealCreatedAppellantNotification() throws NotificationClientException, IOException {
+        simulateCcdCallback(SYA_APPEAL_CREATED_NOTIFICATION,  SYA_APPEAL_CREATED_NOTIFICATION.getId() + "Callback.json");
+        List<Notification> notifications = tryFetchNotificationsForTestCase(appealCreatedAppellantEmailId, appealCreatedAppellantSmsId);
+
+        assertNotificationBodyContains(notifications, appealCreatedAppellantEmailId, "appeal has been received");
+    }
+
+    @Test
+    public void shouldSendAppealCreatedAppointeeNotification() throws NotificationClientException, IOException {
+        simulateCcdCallback(SYA_APPEAL_CREATED_NOTIFICATION,  SYA_APPEAL_CREATED_NOTIFICATION.getId() + "AppointeeCallback.json");
+        List<Notification> notifications = tryFetchNotificationsForTestCase(appealCreatedAppointeeEmailId, appealCreatedAppointeeSmsId);
+
+        assertNotificationBodyContains(notifications, appealCreatedAppointeeEmailId,"appointee");
     }
 
     @Test
@@ -195,5 +223,4 @@ public class NotificationsFunctionalTest extends AbstractFunctionalTest {
         assertTrue(emailNotification.getBody().contains("Dear Appointee User"));
         assertTrue(emailNotification.getBody().contains("You are receiving this update as the appointee for"));
     }
-
 }

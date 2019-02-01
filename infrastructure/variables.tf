@@ -108,3 +108,8 @@ variable "hours_end_time" {
   type = "string"
   default = "17"
 }
+
+variable "bundled_letters_on" {
+  type = "string"
+  default = false
+}
