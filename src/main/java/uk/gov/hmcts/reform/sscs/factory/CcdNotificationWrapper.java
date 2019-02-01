@@ -11,6 +11,7 @@ import java.util.Objects;
 import uk.gov.hmcts.reform.sscs.ccd.domain.SscsCaseData;
 import uk.gov.hmcts.reform.sscs.ccd.domain.Subscription;
 import uk.gov.hmcts.reform.sscs.config.AppealHearingType;
+import uk.gov.hmcts.reform.sscs.config.ReceivedVia;
 import uk.gov.hmcts.reform.sscs.domain.SscsCaseDataWrapper;
 import uk.gov.hmcts.reform.sscs.domain.SubscriptionWithType;
 import uk.gov.hmcts.reform.sscs.domain.notify.NotificationEventType;
@@ -72,6 +73,17 @@ public class CcdNotificationWrapper implements NotificationWrapper {
             return AppealHearingType.ORAL;
         } else {
             return AppealHearingType.REGULAR;
+        }
+    }
+
+    @Override
+    public ReceivedVia getReceivedVia() {
+        String receivedVia = getNewSscsCaseData().getAppeal().getReceivedVia();
+        if (ReceivedVia.PAPER.name().equalsIgnoreCase(receivedVia)) {
+            return ReceivedVia.PAPER;
+        }
+        else {
+            return ReceivedVia.ONLINE;
         }
     }
 

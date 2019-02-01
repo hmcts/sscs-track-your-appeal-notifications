@@ -13,6 +13,7 @@ import java.util.List;
 import org.springframework.stereotype.Service;
 import uk.gov.hmcts.reform.sscs.ccd.domain.Hearing;
 import uk.gov.hmcts.reform.sscs.ccd.domain.SscsCaseData;
+import uk.gov.hmcts.reform.sscs.config.ReceivedVia;
 import uk.gov.hmcts.reform.sscs.config.SubscriptionType;
 import uk.gov.hmcts.reform.sscs.domain.notify.NotificationEventType;
 import uk.gov.hmcts.reform.sscs.factory.NotificationWrapper;
@@ -36,8 +37,7 @@ public class NotificationValidService {
             case INTERLOC_VALID_APPEAL:
                 return validTarget;
             case DWP_RESPONSE_RECEIVED_NOTIFICATION:
-                boolean receivedViaPaper = "Paper".equals(wrapper.getNewSscsCaseData().getAppeal().getReceivedVia());
-                return receivedViaPaper && validTarget;
+                return ReceivedVia.PAPER.equals(wrapper.getReceivedVia()) && validTarget;
             default:
                 return false;
         }

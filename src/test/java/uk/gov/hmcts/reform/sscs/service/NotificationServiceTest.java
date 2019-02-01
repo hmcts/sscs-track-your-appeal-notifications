@@ -29,6 +29,7 @@ import org.springframework.test.util.ReflectionTestUtils;
 import uk.gov.hmcts.reform.sscs.ccd.domain.*;
 import uk.gov.hmcts.reform.sscs.config.AppealHearingType;
 import uk.gov.hmcts.reform.sscs.config.NotificationConfig;
+import uk.gov.hmcts.reform.sscs.config.ReceivedVia;
 import uk.gov.hmcts.reform.sscs.config.SubscriptionType;
 import uk.gov.hmcts.reform.sscs.domain.SscsCaseDataWrapper;
 import uk.gov.hmcts.reform.sscs.domain.notify.Destination;
@@ -51,6 +52,10 @@ public class NotificationServiceTest {
             .name(Name.builder().firstName("Ap").lastName("pellant").build())
             .address(Address.builder().line1("Appellant Line 1").town("Appellant Town").county("Appellant County").postcode("AP9 3LL").build())
             .build();
+    protected static Representative REP_WITH_ADDRESS = Representative.builder()
+            .name(Name.builder().firstName("Rep").lastName("resentative").build())
+            .address(Address.builder().line1("Representative Line 1").town("Representative Town").county("Representative County").postcode("RP9 3LL").build())
+            .build();
 
     private static final String APPEAL_NUMBER = "GLSCRR";
     private static final String YES = "Yes";
@@ -58,6 +63,7 @@ public class NotificationServiceTest {
     private static final String CASE_ID = "1000001";
     private static final String EMAIL_TEMPLATE_ID = "email-template-id";
     private static final String SMS_TEMPLATE_ID = "sms-template-id";
+    private static final String LETTER_TEMPLATE_ID = "letter-template-id";
     private static final String LETTER_TEMPLATE_ID_STRUCKOUT = "struckOut";
     private static final String SAME_TEST_EMAIL_COM = "sametest@email.com";
     private static final String NEW_TEST_EMAIL_COM = "newtest@email.com";
@@ -741,6 +747,51 @@ public class NotificationServiceTest {
         verify(notificationHandler, times(1)).sendNotification(eq(ccdNotificationWrapper), any(), eq(EMAIL), any(NotificationHandler.SendNotification.class));
         verify(notificationHandler, times(1)).sendNotification(eq(ccdNotificationWrapper), any(), eq(SMS), any(NotificationHandler.SendNotification.class));
 
+    }
+
+    @Test
+    public void shouldSendFResponseReceivedLetterForPaperCase() {
+        SscsCaseData newSscsCaseData = SscsCaseData.builder()
+                .appeal(Appeal.builder()
+                        .appellant(APPELLANT_WITH_ADDRESS)
+                        .rep(REP_WITH_ADDRESS)
+                        .hearingType(AppealHearingType.ORAL.name())
+                        .receivedVia(ReceivedVia.PAPER.name())
+                        .build())
+                .subscriptions(
+                        Subscriptions.builder()
+                                .appellantSubscription(Subscription.builder().build())
+                                .representativeSubscription(Subscription.builder().build())
+                                .build())
+                .build();
+
+        ccdNotificationWrapper = new CcdNotificationWrapper(SscsCaseDataWrapper.builder()
+                .newSscsCaseData(newSscsCaseData)
+                .notificationEventType(DWP_RESPONSE_RECEIVED_NOTIFICATION)
+                .build());
+
+        Notification notification = new Notification(
+                Template.builder()
+                        .emailTemplateId(EMAIL_TEMPLATE_ID)
+                        .smsTemplateId(SMS_TEMPLATE_ID)
+                        .letterTemplateId(LETTER_TEMPLATE_ID)
+                        .build(),
+                Destination.builder().build(),
+                null,
+                new Reference(),
+                null);
+
+        when((notificationValidService).isNotificationStillValidToSend(any(), any())).thenReturn(true);
+        when((notificationValidService).isHearingTypeValidToSendNotification(any(), any())).thenReturn(true);
+
+        when(factory.create(ccdNotificationWrapper, APPELLANT)).thenReturn(notification);
+        when(factory.create(ccdNotificationWrapper, REPRESENTATIVE)).thenReturn(notification);
+
+        notificationService.manageNotificationAndSubscription(ccdNotificationWrapper);
+
+        verify(notificationHandler, times(0)).sendNotification(eq(ccdNotificationWrapper), any(), eq(EMAIL), any(NotificationHandler.SendNotification.class));
+        verify(notificationHandler, times(0)).sendNotification(eq(ccdNotificationWrapper), any(), eq(SMS), any(NotificationHandler.SendNotification.class));
+        verify(notificationHandler, times(2)).sendNotification(eq(ccdNotificationWrapper), eq(LETTER_TEMPLATE_ID), eq(LETTER), any(NotificationHandler.SendNotification.class));
     }
 
     @Test
