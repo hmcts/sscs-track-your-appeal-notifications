@@ -324,7 +324,6 @@ public class NotificationsIt {
         assertHttpStatus(response, HttpStatus.OK);
 
         ArgumentCaptor<String> emailTemplateIdCaptor = ArgumentCaptor.forClass(String.class);
-
         ArgumentCaptor<Map<String, ?>> personalisationCaptor = ArgumentCaptor.forClass(Map.class);
         verify(notificationClient, times(wantedNumberOfSendEmailInvocations))
             .sendEmail(emailTemplateIdCaptor.capture(), any(), personalisationCaptor.capture(), any());
@@ -339,7 +338,6 @@ public class NotificationsIt {
         assertEquals("Appointee Appointee", personalisation.get(NAME));
         assertEquals("Dexter Vasquez", personalisation.get(APPELLANT_NAME));
     }
-
 
     @SuppressWarnings({"Indentation", "unused"})
     private Object[] generateRepsNotificationScenarios() {
@@ -614,56 +612,66 @@ public class NotificationsIt {
     @SuppressWarnings({"Indentation", "unused"})
     private Object[] generateAppointeeNotificationScenarios() {
         return new Object[]{
-            new Object[]{
-                        SYA_APPEAL_CREATED_NOTIFICATION,
-                        "oral",
-                        Collections.singletonList("362d9a85-e0e4-412b-b874-020c0464e2b4"),
-                        Collections.singletonList("f41222ef-c05c-4682-9634-6b034a166368"),
-                        "yes",
-                        "yes",
-                        "1",
-                        "1"
-            },
-            new Object[]{
-                        SYA_APPEAL_CREATED_NOTIFICATION,
-                        "oral",
-                        Collections.singletonList("362d9a85-e0e4-412b-b874-020c0464e2b4"),
-                        Collections.singletonList("f41222ef-c05c-4682-9634-6b034a166368"),
-                        "yes",
-                        "yes",
-                        "1",
-                        "1"
-            },
-            new Object[]{
-                        DWP_RESPONSE_RECEIVED_NOTIFICATION,
-                        "oral",
-                        Collections.singletonList("01caec0c-191b-4a32-882a-6fded2546ce6"),
-                        Collections.singletonList("317a121e-d08c-4890-b3b3-4652f741771f"),
-                        "yes",
-                        "yes",
-                        "1",
-                        "1"
-            },
-            new Object[]{
-                        HEARING_BOOKED_NOTIFICATION,
-                        "oral",
-                        Collections.singletonList("fee16753-0bdb-43f1-9abb-b14b826e3b26"),
-                        Collections.singletonList("f900174a-a556-43b2-8042-bbf3e6090071"),
-                        "yes",
-                        "yes",
-                        "1",
-                        "1"
-            },
-            new Object[]{
-                        SUBSCRIPTION_UPDATED_NOTIFICATION,
-                        "oral",
-                        Arrays.asList("b8b2904f-629d-42cf-acea-1b74bde5b2ff", "03b957bf-e21d-4147-90c1-b6fefa8cf70d"),
-                        Arrays.asList("7397a76f-14cb-468c-b1a7-0570940ead91", "759c712a-6b55-485e-bcf7-1cf5c4896eb1"),
-                        "yes",
-                        "yes",
-                        "2",
-                        "2"
-            }
+                new Object[]{
+                            SYA_APPEAL_CREATED_NOTIFICATION,
+                            "oral",
+                            Collections.singletonList("362d9a85-e0e4-412b-b874-020c0464e2b4"),
+                            Collections.singletonList("f41222ef-c05c-4682-9634-6b034a166368"),
+                            "yes",
+                            "yes",
+                            "1",
+                            "1"
+                },
+                new Object[]{
+                            SYA_APPEAL_CREATED_NOTIFICATION,
+                            "oral",
+                            Collections.singletonList("362d9a85-e0e4-412b-b874-020c0464e2b4"),
+                            Collections.singletonList("f41222ef-c05c-4682-9634-6b034a166368"),
+                            "yes",
+                            "yes",
+                            "1",
+                            "1"
+                },
+                new Object[]{
+                            DWP_RESPONSE_RECEIVED_NOTIFICATION,
+                            "oral",
+                            Collections.singletonList("01caec0c-191b-4a32-882a-6fded2546ce6"),
+                            Collections.singletonList("317a121e-d08c-4890-b3b3-4652f741771f"),
+                            "yes",
+                            "yes",
+                            "1",
+                            "1"
+                },
+                new Object[]{
+                            SUBSCRIPTION_UPDATED_NOTIFICATION,
+                            "oral",
+                            Arrays.asList("b8b2904f-629d-42cf-acea-1b74bde5b2ff", "03b957bf-e21d-4147-90c1-b6fefa8cf70d"),
+                            Arrays.asList("7397a76f-14cb-468c-b1a7-0570940ead91", "759c712a-6b55-485e-bcf7-1cf5c4896eb1"),
+                            "yes",
+                            "yes",
+                            "2",
+                            "2"
+                },
+                new Object[]{
+                            APPEAL_RECEIVED_NOTIFICATION,
+                            "paper",
+                            Collections.singletonList("08365e91-9e07-4a5c-bf96-ef56fd0ada63"),
+                            Collections.singletonList("ede384aa-0b6e-4311-9f01-ee547573a07b"),
+                            "yes",
+                            "yes",
+                            "1",
+                            "1"
+                },
+                new Object[]{
+                            APPEAL_RECEIVED_NOTIFICATION,
+                            "oral",
+                            Collections.singletonList("08365e91-9e07-4a5c-bf96-ef56fd0ada63"),
+                            Collections.singletonList("ede384aa-0b6e-4311-9f01-ee547573a07b"),
+                            "yes",
+                            "yes",
+                            "1",
+                            "1"
+                }
         };
     }
 
