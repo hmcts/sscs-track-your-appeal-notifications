@@ -83,7 +83,7 @@ public class SendNotificationService {
         if (subscription.isSmsSubscribed()
             && notification.isSms()
             && notification.getSmsTemplate() != null
-            && isOkToSendNotification(wrapper, wrapper.getNotificationType(), notificationValidService)) {
+            && isOkToSendNotification(wrapper, wrapper.getNotificationType(), subscription, notificationValidService)) {
             NotificationHandler.SendNotification sendNotification = () ->
                     notificationSender.sendSms(
                             notification.getSmsTemplate(),
@@ -101,7 +101,7 @@ public class SendNotificationService {
         if (subscription.isEmailSubscribed()
             && notification.isEmail()
             && notification.getEmailTemplate() != null
-            && isOkToSendNotification(wrapper, wrapper.getNotificationType(), notificationValidService)) {
+            && isOkToSendNotification(wrapper, wrapper.getNotificationType(), subscription, notificationValidService)) {
             NotificationHandler.SendNotification sendNotification = () ->
                     notificationSender.sendEmail(
                             notification.getEmailTemplate(),

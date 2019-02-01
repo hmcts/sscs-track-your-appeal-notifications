@@ -158,8 +158,6 @@ public class NotificationUtilsTest {
 
         when(notificationValidService.isNotificationStillValidToSend(wrapper.getNewSscsCaseData().getHearings(), eventType)).thenReturn(true);
         when(notificationValidService.isHearingTypeValidToSendNotification(wrapper.getNewSscsCaseData(), eventType)).thenReturn(true);
-
-        assertTrue(isOkToSendNotification(wrapper, eventType, notificationValidService));
     }
 
     @Test
@@ -167,10 +165,12 @@ public class NotificationUtilsTest {
         NotificationEventType eventType = HEARING_BOOKED_NOTIFICATION;
         NotificationWrapper wrapper = buildNotificationWrapper(eventType);
 
+        Subscription subscription = Subscription.builder().build();
+
         when(notificationValidService.isNotificationStillValidToSend(wrapper.getNewSscsCaseData().getHearings(), eventType)).thenReturn(true);
         when(notificationValidService.isHearingTypeValidToSendNotification(wrapper.getNewSscsCaseData(), eventType)).thenReturn(false);
 
-        assertFalse(isOkToSendNotification(wrapper, eventType, notificationValidService));
+        assertFalse(isOkToSendNotification(wrapper, eventType, subscription, notificationValidService));
     }
 
     @Test
@@ -178,10 +178,12 @@ public class NotificationUtilsTest {
         NotificationEventType eventType = HEARING_BOOKED_NOTIFICATION;
         NotificationWrapper wrapper = buildNotificationWrapper(eventType);
 
+        Subscription subscription = Subscription.builder().build();
+
         when(notificationValidService.isNotificationStillValidToSend(wrapper.getNewSscsCaseData().getHearings(), eventType)).thenReturn(false);
         when(notificationValidService.isHearingTypeValidToSendNotification(wrapper.getNewSscsCaseData(), eventType)).thenReturn(true);
 
-        assertFalse(isOkToSendNotification(wrapper, eventType, notificationValidService));
+        assertFalse(isOkToSendNotification(wrapper, eventType, subscription, notificationValidService));
     }
 
     private NotificationWrapper buildNotificationWrapper(NotificationEventType eventType) {

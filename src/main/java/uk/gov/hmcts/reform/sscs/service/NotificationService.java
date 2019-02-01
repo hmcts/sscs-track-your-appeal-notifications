@@ -3,7 +3,6 @@ package uk.gov.hmcts.reform.sscs.service;
 import static uk.gov.hmcts.reform.sscs.ccd.domain.Benefit.getBenefitByCode;
 import static uk.gov.hmcts.reform.sscs.service.NotificationUtils.isFallbackLetterRequired;
 import static uk.gov.hmcts.reform.sscs.service.NotificationUtils.isOkToSendNotification;
-import static uk.gov.hmcts.reform.sscs.service.NotificationValidService.isFallbackLetterRequiredForSubscriptionType;
 import static uk.gov.hmcts.reform.sscs.service.NotificationValidService.isMandatoryLetterEventType;
 
 import lombok.extern.slf4j.Slf4j;
@@ -80,7 +79,7 @@ public class NotificationService {
 
         return (isMandatoryLetterEventType(notificationType)
             || isFallbackLetterRequired(wrapper, subscriptionWithType, subscription)
-            || isOkToSendNotification(wrapper, notificationType, notificationValidService));
+            || isOkToSendNotification(wrapper, notificationType, subscription, notificationValidService));
     }
 
     private void processOldSubscriptionNotifications(NotificationWrapper wrapper, Notification notification, SubscriptionWithType subscriptionWithType) {
