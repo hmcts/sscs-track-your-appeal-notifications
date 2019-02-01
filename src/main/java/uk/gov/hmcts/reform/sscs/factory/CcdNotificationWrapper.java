@@ -81,8 +81,7 @@ public class CcdNotificationWrapper implements NotificationWrapper {
         String receivedVia = getNewSscsCaseData().getAppeal().getReceivedVia();
         if (ReceivedVia.PAPER.name().equalsIgnoreCase(receivedVia)) {
             return ReceivedVia.PAPER;
-        }
-        else {
+        } else {
             return ReceivedVia.ONLINE;
         }
     }
