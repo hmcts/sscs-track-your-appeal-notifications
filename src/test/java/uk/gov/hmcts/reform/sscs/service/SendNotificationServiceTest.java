@@ -96,13 +96,16 @@ public class SendNotificationServiceTest {
     @Mock
     private NotificationHandler notificationHandler;
 
+    @Mock
+    private NotificationValidService notificationValidService;
+
     private SendNotificationService classUnderTest;
 
     @Before
     public void setup() {
         initMocks(this);
 
-        classUnderTest = new SendNotificationService(notificationSender, evidenceManagementService, pdfService, notificationHandler);
+        classUnderTest = new SendNotificationService(notificationSender, evidenceManagementService, pdfService, notificationHandler, notificationValidService);
         classUnderTest.bundledLettersOn = true;
         classUnderTest.lettersOn = true;
     }
@@ -150,6 +153,9 @@ public class SendNotificationServiceTest {
     public void doNotSendFallbackLetterNotificationToAppellantWhenSubscribedForSms() {
         SubscriptionWithType appellantSmsSubscription = new SubscriptionWithType(SMS_SUBSCRIPTION, APPELLANT);
 
+        when(notificationValidService.isNotificationStillValidToSend(any(), any())).thenReturn(true);
+        when(notificationValidService.isHearingTypeValidToSendNotification(any(), any())).thenReturn(true);
+
         classUnderTest.sendEmailSmsLetterNotification(buildBaseWrapper(APPELLANT_WITH_ADDRESS, NotificationEventType.INTERLOC_VALID_APPEAL), SMS_SUBSCRIPTION, SMS_NOTIFICATION, appellantSmsSubscription);
 
         verify(notificationHandler).sendNotification(any(), eq(SMS_NOTIFICATION.getSmsTemplate()), any(), any());
@@ -158,6 +164,9 @@ public class SendNotificationServiceTest {
     @Test
     public void doNotSendFallbackLetterNotificationToAppellantWhenSubscribedForEmail() {
         SubscriptionWithType appellantEmailSubscription = new SubscriptionWithType(EMAIL_SUBSCRIPTION, APPELLANT);
+
+        when(notificationValidService.isNotificationStillValidToSend(any(), any())).thenReturn(true);
+        when(notificationValidService.isHearingTypeValidToSendNotification(any(), any())).thenReturn(true);
 
         classUnderTest.sendEmailSmsLetterNotification(buildBaseWrapper(APPELLANT_WITH_ADDRESS, NotificationEventType.INTERLOC_VALID_APPEAL), EMAIL_SUBSCRIPTION, EMAIL_NOTIFICATION, appellantEmailSubscription);
 
@@ -196,6 +205,9 @@ public class SendNotificationServiceTest {
     public void doNotSendFallbackLetterNotificationToRepWhenSubscribedForSms() {
         SubscriptionWithType appellantSmsSubscription = new SubscriptionWithType(SMS_SUBSCRIPTION, SubscriptionType.REPRESENTATIVE);
 
+        when(notificationValidService.isNotificationStillValidToSend(any(), any())).thenReturn(true);
+        when(notificationValidService.isHearingTypeValidToSendNotification(any(), any())).thenReturn(true);
+
         classUnderTest.sendEmailSmsLetterNotification(buildBaseWrapper(APPELLANT_WITH_ADDRESS, NotificationEventType.INTERLOC_VALID_APPEAL), SMS_SUBSCRIPTION, SMS_NOTIFICATION, appellantSmsSubscription);
 
         verify(notificationHandler).sendNotification(any(), eq(SMS_NOTIFICATION.getSmsTemplate()), any(), any());
@@ -205,7 +217,10 @@ public class SendNotificationServiceTest {
     public void doNotSendFallbackLetterNotificationToRepWhenSubscribedForEmail() {
         SubscriptionWithType appellantEmailSubscription = new SubscriptionWithType(EMAIL_SUBSCRIPTION, SubscriptionType.REPRESENTATIVE);
 
-        classUnderTest.sendEmailSmsLetterNotification(buildBaseWrapper(APPELLANT_WITH_ADDRESS, NotificationEventType.INTERLOC_VALID_APPEAL), EMAIL_SUBSCRIPTION, EMAIL_NOTIFICATION, appellantEmailSubscription);
+        when(notificationValidService.isNotificationStillValidToSend(any(), any())).thenReturn(true);
+        when(notificationValidService.isHearingTypeValidToSendNotification(any(), any())).thenReturn(true);
+
+        classUnderTest.sendEmailSmsLetterNotification(buildBaseWrapper(APPELLANT_WITH_ADDRESS, NotificationEventType.INTERLOC_VALID_APPEAL, REP_WITH_ADDRESS), EMAIL_SUBSCRIPTION, EMAIL_NOTIFICATION, appellantEmailSubscription);
 
         verify(notificationHandler).sendNotification(any(), eq(EMAIL_NOTIFICATION.getEmailTemplate()), any(), any());
     }
@@ -214,7 +229,10 @@ public class SendNotificationServiceTest {
     public void doNotSendFallbackLetterNotificationToRepWhenNoLetterTemplate() {
         SubscriptionWithType appellantEmptySubscription = new SubscriptionWithType(EMPTY_SUBSCRIPTION, SubscriptionType.REPRESENTATIVE);
 
-        classUnderTest.sendEmailSmsLetterNotification(buildBaseWrapper(APPELLANT_WITH_ADDRESS, NotificationEventType.INTERLOC_VALID_APPEAL), EMPTY_SUBSCRIPTION, EMPTY_TEMPLATE_NOTIFICATION, appellantEmptySubscription);
+        when(notificationValidService.isNotificationStillValidToSend(any(), any())).thenReturn(true);
+        when(notificationValidService.isHearingTypeValidToSendNotification(any(), any())).thenReturn(true);
+
+        classUnderTest.sendEmailSmsLetterNotification(buildBaseWrapper(APPELLANT_WITH_ADDRESS, NotificationEventType.INTERLOC_VALID_APPEAL, REP_WITH_ADDRESS), EMPTY_SUBSCRIPTION, EMPTY_TEMPLATE_NOTIFICATION, appellantEmptySubscription);
 
         verifyZeroInteractions(notificationHandler);
     }
@@ -223,7 +241,10 @@ public class SendNotificationServiceTest {
     public void sendFallbackLetterNotificationToRep() {
         SubscriptionWithType appellantEmptySubscription = new SubscriptionWithType(EMPTY_SUBSCRIPTION, SubscriptionType.REPRESENTATIVE);
 
-        classUnderTest.sendEmailSmsLetterNotification(buildBaseWrapper(APPELLANT_WITH_ADDRESS, NotificationEventType.INTERLOC_VALID_APPEAL), EMPTY_SUBSCRIPTION, LETTER_NOTIFICATION, appellantEmptySubscription);
+        when(notificationValidService.isNotificationStillValidToSend(any(), any())).thenReturn(true);
+        when(notificationValidService.isHearingTypeValidToSendNotification(any(), any())).thenReturn(true);
+
+        classUnderTest.sendEmailSmsLetterNotification(buildBaseWrapper(APPELLANT_WITH_ADDRESS, NotificationEventType.INTERLOC_VALID_APPEAL, REP_WITH_ADDRESS), EMPTY_SUBSCRIPTION, LETTER_NOTIFICATION, appellantEmptySubscription);
 
         verify(notificationHandler).sendNotification(any(), eq(LETTER_NOTIFICATION.getLetterTemplate()), any(), any());
     }
@@ -251,6 +272,28 @@ public class SendNotificationServiceTest {
     }
 
     private CcdNotificationWrapper buildBaseWrapper(Appellant appellant, NotificationEventType eventType, Representative representative) {
+        Subscription repSubscription = null;
+        if (null != representative) {
+            repSubscription = Subscription.builder()
+                .tya("GLSCRR")
+                .email("Email")
+                .mobile("07983495066")
+                .subscribeEmail(YES)
+                .subscribeSms(YES)
+                .build();
+        }
+
+        Subscription appellantSubscription = null;
+        if (null != appellant) {
+            appellantSubscription = Subscription.builder()
+                .tya("GLSCRR")
+                .email("Email")
+                .mobile("07983495067")
+                .subscribeEmail(YES)
+                .subscribeSms(YES)
+                .build();
+        }
+
         SscsCaseData sscsCaseDataWithDocuments = SscsCaseData.builder()
                 .appeal(
                         Appeal
@@ -260,13 +303,17 @@ public class SendNotificationServiceTest {
                                 .appellant(appellant)
                                 .rep(representative)
                                 .build())
-                .subscriptions(Subscriptions.builder().appellantSubscription(Subscription.builder()
+                .subscriptions(Subscriptions.builder()
+                    .appellantSubscription(Subscription.builder()
                         .tya("GLSCRR")
                         .email("Email")
                         .mobile("07983495065")
                         .subscribeEmail(YES)
                         .subscribeSms(YES)
-                        .build()).build())
+                        .build())
+                    .representativeSubscription(repSubscription)
+                    .appellantSubscription(appellantSubscription)
+                    .build())
                 .caseReference(CASE_REFERENCE)
                 .ccdCaseId(CASE_ID)
                 .sscsDocument(new ArrayList<>(Collections.singletonList(null)))

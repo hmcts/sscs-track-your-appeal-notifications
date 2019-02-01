@@ -12,6 +12,7 @@ import uk.gov.hmcts.reform.sscs.config.SubscriptionType;
 import uk.gov.hmcts.reform.sscs.domain.SscsCaseDataWrapper;
 import uk.gov.hmcts.reform.sscs.domain.notify.Notification;
 import uk.gov.hmcts.reform.sscs.domain.notify.NotificationEventType;
+import uk.gov.hmcts.reform.sscs.factory.NotificationWrapper;
 
 public class NotificationUtils {
     private static final List<NotificationEventType> MANDATORY_LETTERS = Arrays.asList(HEARING_BOOKED_NOTIFICATION);
@@ -54,4 +55,8 @@ public class NotificationUtils {
         return MANDATORY_LETTERS.contains(eventType);
     }
 
+    static boolean isOkToSendNotification(NotificationWrapper wrapper, NotificationEventType notificationType, NotificationValidService notificationValidService) {
+        return notificationValidService.isNotificationStillValidToSend(wrapper.getNewSscsCaseData().getHearings(), notificationType)
+            && notificationValidService.isHearingTypeValidToSendNotification(wrapper.getNewSscsCaseData(), notificationType);
+    }
 }

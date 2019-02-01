@@ -255,5 +255,13 @@ public final class SscsCaseDataUtils {
         return hearingsList;
     }
 
+    public static HearingOptions addHearingOptions(SscsCaseData response, String wantsToAttend) {
+        HearingOptions options = HearingOptions.builder()
+            .wantsToAttend(wantsToAttend)
+            .build();
+
+        return options;
+    }
+
 }
 

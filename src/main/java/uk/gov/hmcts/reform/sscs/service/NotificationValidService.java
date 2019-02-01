@@ -26,10 +26,10 @@ public class NotificationValidService {
         return MANDATORY_LETTER_EVENT_TYPES.contains(eventType);
     }
 
-    static boolean isFallbackLetterRequiredForSubscriptionType(NotificationWrapper wrapper, SubscriptionType subscriptionType, NotificationEventType eventType) {
+    static boolean isFallbackLetterRequiredForSubscriptionType(NotificationWrapper wrapper, SubscriptionType subscriptionType) {
         boolean result = false;
 
-        if (FALLBACK_LETTER_EVENT_TYPES.contains(eventType)
+        if (FALLBACK_LETTER_EVENT_TYPES.contains(wrapper.getNotificationType())
             && (isAppointeeOrAppellantSubscription(subscriptionType)
             || (REPRESENTATIVE.equals(subscriptionType) && null != wrapper.getNewSscsCaseData().getAppeal().getRep()))) {
             result = true;
@@ -38,12 +38,11 @@ public class NotificationValidService {
         return result;
     }
 
-    static final boolean isBundledLetter(NotificationEventType eventType) {
+    static boolean isBundledLetter(NotificationEventType eventType) {
         return STRUCK_OUT.equals(eventType);
     }
 
-    boolean isHearingTypeValidToSendNotification(SscsCaseData sscsCaseData, NotificationEventType eventType) {
-
+    protected boolean isHearingTypeValidToSendNotification(SscsCaseData sscsCaseData, NotificationEventType eventType) {
         boolean isOralCase = sscsCaseData.getAppeal().getHearingOptions().isWantsToAttendHearing();
         boolean isOnlineHearing = HEARING_TYPE_ONLINE_RESOLUTION.equalsIgnoreCase(sscsCaseData.getAppeal().getHearingType());
 
@@ -67,7 +66,7 @@ public class NotificationValidService {
         }
     }
 
-    private boolean checkHearingIsInFuture(List<Hearing> hearings) {
+    boolean checkHearingIsInFuture(List<Hearing> hearings) {
         if (hearings != null && !hearings.isEmpty()) {
 
             Hearing latestHearing = hearings.get(0);

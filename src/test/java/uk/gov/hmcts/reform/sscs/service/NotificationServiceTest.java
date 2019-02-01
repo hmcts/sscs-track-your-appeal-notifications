@@ -52,22 +52,22 @@ public class NotificationServiceTest {
             .address(Address.builder().line1("Appellant Line 1").town("Appellant Town").county("Appellant County").postcode("AP9 3LL").build())
             .build();
 
-    private static final String APPEAL_NUMBER = "GLSCRR";
-    private static final String YES = "Yes";
-    private static final String CASE_REFERENCE = "ABC123";
-    private static final String CASE_ID = "1000001";
-    private static final String EMAIL_TEMPLATE_ID = "email-template-id";
-    private static final String SMS_TEMPLATE_ID = "sms-template-id";
-    private static final String LETTER_TEMPLATE_ID_STRUCKOUT = "struckOut";
-    private static final String SAME_TEST_EMAIL_COM = "sametest@email.com";
-    private static final String NEW_TEST_EMAIL_COM = "newtest@email.com";
-    private static final String PIP = "PIP";
-    private static final String EMAIL = "Email";
-    private static final String SMS = "SMS";
-    private static final String SMS_MOBILE = "07123456789";
-    private static final String LETTER = "Letter";
-    private static final String MOBILE_NUMBER_1 = "07983495065";
-    private static final String MOBILE_NUMBER_2 = "07983495067";
+    protected static final String APPEAL_NUMBER = "GLSCRR";
+    protected static final String YES = "Yes";
+    protected static final String CASE_REFERENCE = "ABC123";
+    protected static final String CASE_ID = "1000001";
+    protected static final String EMAIL_TEMPLATE_ID = "email-template-id";
+    protected static final String SMS_TEMPLATE_ID = "sms-template-id";
+    protected static final String LETTER_TEMPLATE_ID_STRUCKOUT = "struckOut";
+    protected static final String SAME_TEST_EMAIL_COM = "sametest@email.com";
+    protected static final String NEW_TEST_EMAIL_COM = "newtest@email.com";
+    protected static final String PIP = "PIP";
+    protected static final String EMAIL = "Email";
+    protected static final String SMS = "SMS";
+    protected static final String SMS_MOBILE = "07123456789";
+    protected static final String LETTER = "Letter";
+    protected static final String MOBILE_NUMBER_1 = "07983495065";
+    protected static final String MOBILE_NUMBER_2 = "07983495067";
 
     private NotificationService notificationService;
 
@@ -1020,7 +1020,7 @@ public class NotificationServiceTest {
     }
 
     private NotificationService getNotificationService(Boolean bundledLettersOn, Boolean lettersOn) {
-        SendNotificationService sendNotificationService = new SendNotificationService(notificationSender, evidenceManagementService, sscsGeneratePdfService, notificationHandler);
+        SendNotificationService sendNotificationService = new SendNotificationService(notificationSender, evidenceManagementService, sscsGeneratePdfService, notificationHandler, notificationValidService);
 
         final NotificationService notificationService = new NotificationService(factory, reminderService,
             notificationValidService, notificationHandler, outOfHoursCalculator, notificationConfig, sendNotificationService
@@ -1049,7 +1049,18 @@ public class NotificationServiceTest {
     }
 
     protected static CcdNotificationWrapper buildBaseWrapper(NotificationEventType eventType, Appellant appellant, Representative rep, SscsDocument sscsDocument) {
-        SscsCaseData sscsCaseDataWithDocuments = SscsCaseData.builder()
+        SscsCaseData sscsCaseDataWithDocuments = getSscsCaseDataBuilder(appellant, rep, sscsDocument).build();
+
+        SscsCaseDataWrapper caseDataWrapper = SscsCaseDataWrapper.builder()
+            .newSscsCaseData(sscsCaseDataWithDocuments)
+            .oldSscsCaseData(sscsCaseDataWithDocuments)
+            .notificationEventType(eventType)
+            .build();
+        return new CcdNotificationWrapper(caseDataWrapper);
+    }
+
+    protected static SscsCaseData.SscsCaseDataBuilder getSscsCaseDataBuilder(Appellant appellant, Representative rep, SscsDocument sscsDocument) {
+        return SscsCaseData.builder()
             .appeal(
                 Appeal
                     .builder()
@@ -1067,14 +1078,6 @@ public class NotificationServiceTest {
                 .build()).build())
             .caseReference(CASE_REFERENCE)
             .ccdCaseId(CASE_ID)
-            .sscsDocument(new ArrayList<>(Collections.singletonList(sscsDocument)))
-            .build();
-
-        SscsCaseDataWrapper struckOutSscsCaseDataWrapper = SscsCaseDataWrapper.builder()
-            .newSscsCaseData(sscsCaseDataWithDocuments)
-            .oldSscsCaseData(sscsCaseDataWithDocuments)
-            .notificationEventType(eventType)
-            .build();
-        return new CcdNotificationWrapper(struckOutSscsCaseDataWrapper);
+            .sscsDocument(new ArrayList<>(Collections.singletonList(sscsDocument)));
     }
 }
