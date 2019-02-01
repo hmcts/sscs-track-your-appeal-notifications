@@ -121,32 +121,6 @@ public class Personalisation<E extends NotificationWrapper> {
         return personalisation;
     }
 
-    private String getName_4550(SubscriptionType subscriptionType, SscsCaseData ccdResponse) {
-        Name name = null;
-        if (subscriptionType.equals(APPELLANT) && ccdResponse.getAppeal() != null
-                && ccdResponse.getAppeal().getAppellant() != null) {
-            name = ccdResponse.getAppeal().getAppellant().getName();
-        } else if (subscriptionType.equals(REPRESENTATIVE) && ccdResponse.getAppeal() != null
-                && ccdResponse.getAppeal().getRep() != null) {
-            name = ccdResponse.getAppeal().getRep().getName();
-        } else if (subscriptionType.equals(APPOINTEE) && ccdResponse.getAppeal() != null
-                && ccdResponse.getAppeal().getAppellant() != null
-                && ccdResponse.getAppeal().getAppellant().getAppointee() != null) {
-            name = ccdResponse.getAppeal().getAppellant().getAppointee().getName();
-        }
-        return name == null ? "" : name.getFullNameNoTitle();
-    }
-
-    private String getAppointeeDescription_4550(SubscriptionType subscriptionType, SscsCaseData ccdResponse) {
-        if (APPOINTEE.equals(subscriptionType) && ccdResponse.getAppeal() != null && ccdResponse.getAppeal().getAppellant().getName() != null) {
-            return String.format("You are receiving this update as the appointee for %s.%s%s",
-                    ccdResponse.getAppeal().getAppellant().getName().getFullNameNoTitle(), CRLF, CRLF);
-        } else {
-            return "";
-        }
-    }
-
-
     private String getName(SubscriptionType subscriptionType, SscsCaseData ccdResponse, SscsCaseDataWrapper wrapper) {
         Name name = null;
         if (ccdResponse.getAppeal() == null) {
@@ -172,58 +146,6 @@ public class Personalisation<E extends NotificationWrapper> {
                     ccdResponse.getAppeal().getAppellant().getName().getFullNameNoTitle(), CRLF, CRLF);
         } else {
             return "";
-        }
-    }
-
-    private String getName(SubscriptionType subscriptionType, SscsCaseData ccdResponse, SscsCaseDataWrapper wrapper) {
-        Name name = null;
-        if (ccdResponse.getAppeal() == null) {
-            return "";
-        }
-
-        if (subscriptionType.equals(APPELLANT)
-                && ccdResponse.getAppeal().getAppellant() != null) {
-            name = ccdResponse.getAppeal().getAppellant().getName();
-        } else if (subscriptionType.equals(REPRESENTATIVE)
-                && hasRepresentative(wrapper)) {
-            name = ccdResponse.getAppeal().getRep().getName();
-        } else if (subscriptionType.equals(APPOINTEE)
-                && hasAppointee(wrapper)) {
-            name = ccdResponse.getAppeal().getAppellant().getAppointee().getName();
-        }
-        return name == null ? "" : name.getFullNameNoTitle();
-    }
-
-    private String getAppointeeDescription(SubscriptionType subscriptionType, SscsCaseData ccdResponse) {
-        if (APPOINTEE.equals(subscriptionType) && ccdResponse.getAppeal() != null && ccdResponse.getAppeal().getAppellant().getName() != null) {
-            return String.format("You are receiving this update as the appointee for %s.%s%s",
-                    ccdResponse.getAppeal().getAppellant().getName().getFullNameNoTitle(), CRLF, CRLF);
-        } else {
-            return "";
-        }
-    }
-
-    private void subscriptionDetails_4550(Map<String, String> personalisation, Subscription subscription, Benefit benefit) {
-
-        final String tya = StringUtils.defaultIfBlank(subscription.getTya(), StringUtils.EMPTY);
-        personalisation.put(APPEAL_ID, tya);
-        personalisation.put(MANAGE_EMAILS_LINK_LITERAL, config.getManageEmailsLink().replace(MAC_LITERAL,
-                getMacToken(tya, benefit.name())));
-        personalisation.put(TRACK_APPEAL_LINK_LITERAL, config.getTrackAppealLink() != null ? config.getTrackAppealLink().replace(APPEAL_ID_LITERAL, tya) : null);
-        personalisation.put(SUBMIT_EVIDENCE_LINK_LITERAL, config.getEvidenceSubmissionInfoLink().replace(APPEAL_ID, tya));
-        personalisation.put(SUBMIT_EVIDENCE_INFO_LINK_LITERAL, config.getEvidenceSubmissionInfoLink().replace(APPEAL_ID_LITERAL, tya));
-        personalisation.put(CLAIMING_EXPENSES_LINK_LITERAL, config.getClaimingExpensesLink().replace(APPEAL_ID, tya));
-        personalisation.put(HEARING_INFO_LINK_LITERAL,
-                config.getHearingInfoLink().replace(APPEAL_ID_LITERAL, tya));
-
-        String email = subscription.getEmail();
-        if (email != null) {
-            try {
-                String encodedEmail = URLEncoder.encode(email, StandardCharsets.UTF_8.name());
-                personalisation.put(ONLINE_HEARING_LINK_LITERAL, config.getOnlineHearingLinkWithEmail().replace("{email}", encodedEmail));
-            } catch (UnsupportedEncodingException e) {
-                throw new RuntimeException(e);
-            }
         }
     }
 
