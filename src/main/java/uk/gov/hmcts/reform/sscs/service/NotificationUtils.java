@@ -3,6 +3,7 @@ package uk.gov.hmcts.reform.sscs.service;
 import static uk.gov.hmcts.reform.sscs.config.SubscriptionType.APPELLANT;
 import static uk.gov.hmcts.reform.sscs.config.SubscriptionType.APPOINTEE;
 import static uk.gov.hmcts.reform.sscs.domain.notify.NotificationEventType.HEARING_BOOKED_NOTIFICATION;
+import static uk.gov.hmcts.reform.sscs.service.NotificationValidService.isFallbackLetterRequiredForSubscriptionType;
 
 import java.util.Arrays;
 import java.util.List;
@@ -10,6 +11,7 @@ import java.util.List;
 import uk.gov.hmcts.reform.sscs.ccd.domain.Subscription;
 import uk.gov.hmcts.reform.sscs.config.SubscriptionType;
 import uk.gov.hmcts.reform.sscs.domain.SscsCaseDataWrapper;
+import uk.gov.hmcts.reform.sscs.domain.SubscriptionWithType;
 import uk.gov.hmcts.reform.sscs.domain.notify.Notification;
 import uk.gov.hmcts.reform.sscs.domain.notify.NotificationEventType;
 import uk.gov.hmcts.reform.sscs.factory.NotificationWrapper;
@@ -58,5 +60,11 @@ public class NotificationUtils {
     static boolean isOkToSendNotification(NotificationWrapper wrapper, NotificationEventType notificationType, NotificationValidService notificationValidService) {
         return notificationValidService.isNotificationStillValidToSend(wrapper.getNewSscsCaseData().getHearings(), notificationType)
             && notificationValidService.isHearingTypeValidToSendNotification(wrapper.getNewSscsCaseData(), notificationType);
+    }
+
+    static boolean isFallbackLetterRequired(NotificationWrapper wrapper, SubscriptionWithType subscriptionWithType, Subscription subscription) {
+        return subscription != null && subscription.doesCaseHaveSubscriptions()
+            || (subscription != null && !subscription.doesCaseHaveSubscriptions() && isFallbackLetterRequiredForSubscriptionType(wrapper, subscriptionWithType.getSubscriptionType())
+            || subscription == null && isFallbackLetterRequiredForSubscriptionType(wrapper, subscriptionWithType.getSubscriptionType()));
     }
 }
