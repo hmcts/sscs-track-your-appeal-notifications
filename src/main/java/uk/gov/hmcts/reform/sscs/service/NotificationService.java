@@ -1,6 +1,8 @@
 package uk.gov.hmcts.reform.sscs.service;
 
 import static uk.gov.hmcts.reform.sscs.ccd.domain.Benefit.getBenefitByCode;
+import static uk.gov.hmcts.reform.sscs.config.SubscriptionType.APPOINTEE;
+import static uk.gov.hmcts.reform.sscs.config.SubscriptionType.REPRESENTATIVE;
 import static uk.gov.hmcts.reform.sscs.service.NotificationUtils.isFallbackLetterRequired;
 import static uk.gov.hmcts.reform.sscs.service.NotificationUtils.isOkToSendNotification;
 import static uk.gov.hmcts.reform.sscs.service.NotificationValidService.isMandatoryLetterEventType;
@@ -83,15 +85,18 @@ public class NotificationService {
 
     private void processOldSubscriptionNotifications(NotificationWrapper wrapper, Notification notification, SubscriptionWithType subscriptionWithType) {
         if (wrapper.getNotificationType() == NotificationEventType.SUBSCRIPTION_UPDATED_NOTIFICATION) {
-            boolean hasAppointee = wrapper.getNewSscsCaseData().getAppeal().getAppellant().getAppointee() != null;
-
-            Subscription newSubscription = hasAppointee
-                ? wrapper.getNewSscsCaseData().getSubscriptions().getAppointeeSubscription()
-                : wrapper.getNewSscsCaseData().getSubscriptions().getAppellantSubscription();
-
-            Subscription oldSubscription = hasAppointee
-                ? wrapper.getOldSscsCaseData().getSubscriptions().getAppointeeSubscription()
-                : wrapper.getOldSscsCaseData().getSubscriptions().getAppellantSubscription();
+            Subscription newSubscription = null;
+            Subscription oldSubscription = null;
+            if (REPRESENTATIVE.equals(subscriptionWithType.getSubscriptionType())) {
+                newSubscription = wrapper.getNewSscsCaseData().getSubscriptions().getRepresentativeSubscription();
+                oldSubscription = wrapper.getOldSscsCaseData().getSubscriptions().getRepresentativeSubscription();
+            } else if (APPOINTEE.equals(subscriptionWithType.getSubscriptionType())) {
+                newSubscription = wrapper.getNewSscsCaseData().getSubscriptions().getAppointeeSubscription();
+                oldSubscription = wrapper.getOldSscsCaseData().getSubscriptions().getAppointeeSubscription();
+            } else {
+                newSubscription = wrapper.getNewSscsCaseData().getSubscriptions().getAppellantSubscription();
+                oldSubscription = wrapper.getOldSscsCaseData().getSubscriptions().getAppellantSubscription();
+            }
 
             String emailAddress = getSubscriptionDetails(newSubscription.getEmail(), oldSubscription.getEmail());
             String smsNumber = getSubscriptionDetails(newSubscription.getMobile(), oldSubscription.getMobile());
