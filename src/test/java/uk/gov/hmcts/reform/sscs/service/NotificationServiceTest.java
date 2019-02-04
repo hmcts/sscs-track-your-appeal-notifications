@@ -1060,17 +1060,6 @@ public class NotificationServiceTest {
     }
 
     protected static SscsCaseData.SscsCaseDataBuilder getSscsCaseDataBuilder(Appellant appellant, Representative rep, SscsDocument sscsDocument) {
-//        Subscription repSubscription = null;
-//        if (null != null) {
-//            repSubscription = Subscription.builder()
-//                .tya(APPEAL_NUMBER)
-//                .email(EMAIL)
-//                .mobile(MOBILE_NUMBER_1)
-//                .subscribeEmail(YES)
-//                .subscribeSms(YES)
-//                .build();
-//        }
-//
         return SscsCaseData.builder()
             .appeal(
                 Appeal
@@ -1089,7 +1078,6 @@ public class NotificationServiceTest {
                     .subscribeSms(YES)
                     .build()
                 )
-//                .representativeSubscription(repSubscription)
                 .build())
             .caseReference(CASE_REFERENCE)
             .ccdCaseId(CASE_ID)
