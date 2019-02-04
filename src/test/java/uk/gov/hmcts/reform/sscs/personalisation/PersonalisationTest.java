@@ -95,6 +95,7 @@ public class PersonalisationTest {
         when(config.getOnlineHearingLink()).thenReturn("http://link.com");
         when(notificationDateConverterUtil.toEmailDate(LocalDate.now().plusDays(1))).thenReturn("1 January 2018");
         when(notificationDateConverterUtil.toEmailDate(LocalDate.now().plusDays(7))).thenReturn("1 February 2018");
+        when(notificationDateConverterUtil.toEmailDate(LocalDate.now().plusDays(56))).thenReturn("1 February 2019");
         when(macService.generateToken("GLSCRR", PIP.name())).thenReturn("ZYX");
         when(macService.generateToken("GLSCRR", ESA.name())).thenReturn("ZYX");
         when(hearingContactDateExtractor.extract(any())).thenReturn(Optional.empty());
@@ -151,6 +152,9 @@ public class PersonalisationTest {
                 new Object[]{APPEAL_RECEIVED_NOTIFICATION, REPRESENTATIVE, PAPER},
                 new Object[]{APPEAL_RECEIVED_NOTIFICATION, REPRESENTATIVE, REGULAR},
                 new Object[]{APPEAL_RECEIVED_NOTIFICATION, REPRESENTATIVE, ONLINE},
+                new Object[]{APPEAL_RECEIVED_NOTIFICATION, APPOINTEE, PAPER},
+                new Object[]{APPEAL_RECEIVED_NOTIFICATION, APPOINTEE, REGULAR},
+                new Object[]{APPEAL_RECEIVED_NOTIFICATION, APPOINTEE, ONLINE},
                 new Object[]{APPEAL_LAPSED_NOTIFICATION, APPELLANT, PAPER},
                 new Object[]{APPEAL_LAPSED_NOTIFICATION, APPELLANT, REGULAR},
                 new Object[]{APPEAL_LAPSED_NOTIFICATION, APPELLANT, ONLINE},
@@ -262,7 +266,7 @@ public class PersonalisationTest {
         assertEquals(ADDRESS4, result.get(TOWN_LITERAL));
         assertEquals(CITY, result.get(COUNTY_LITERAL));
         assertEquals(POSTCODE, result.get(POSTCODE_LITERAL));
-        assertEquals("1 February 2018", result.get(TRIBUNAL_RESPONSE_DATE_LITERAL));
+        assertEquals("1 February 2019", result.get(TRIBUNAL_RESPONSE_DATE_LITERAL));
         assertEquals("1 February 2018", result.get(ACCEPT_VIEW_BY_DATE_LITERAL));
         assertEquals("1 January 2018", result.get(QUESTION_ROUND_EXPIRES_DATE_LITERAL));
         assertEquals("", result.get(APPOINTEE_DESCRIPTION));
