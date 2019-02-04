@@ -2,7 +2,14 @@ package uk.gov.hmcts.reform.sscs.functional.sya.notifications;
 
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
-import static uk.gov.hmcts.reform.sscs.domain.notify.NotificationEventType.*;
+import static uk.gov.hmcts.reform.sscs.domain.notify.NotificationEventType.ADJOURNED_NOTIFICATION;
+import static uk.gov.hmcts.reform.sscs.domain.notify.NotificationEventType.APPEAL_WITHDRAWN_NOTIFICATION;
+import static uk.gov.hmcts.reform.sscs.domain.notify.NotificationEventType.DWP_RESPONSE_RECEIVED_NOTIFICATION;
+import static uk.gov.hmcts.reform.sscs.domain.notify.NotificationEventType.EVIDENCE_RECEIVED_NOTIFICATION;
+import static uk.gov.hmcts.reform.sscs.domain.notify.NotificationEventType.POSTPONEMENT_NOTIFICATION;
+import static uk.gov.hmcts.reform.sscs.domain.notify.NotificationEventType.SUBSCRIPTION_CREATED_NOTIFICATION;
+import static uk.gov.hmcts.reform.sscs.domain.notify.NotificationEventType.SUBSCRIPTION_UPDATED_NOTIFICATION;
+import static uk.gov.hmcts.reform.sscs.domain.notify.NotificationEventType.SYA_APPEAL_CREATED_NOTIFICATION;
 
 import java.io.IOException;
 import java.util.List;
@@ -138,7 +145,7 @@ public class NotificationsFunctionalTest extends AbstractFunctionalTest {
 
     @Test
     public void shouldSendAppealCreatedAppellantNotification() throws NotificationClientException, IOException {
-        simulateCcdCallback(SYA_APPEAL_CREATED_NOTIFICATION,  SYA_APPEAL_CREATED_NOTIFICATION.getId() + "Callback.json");
+        simulateCcdCallback(SYA_APPEAL_CREATED_NOTIFICATION, SYA_APPEAL_CREATED_NOTIFICATION.getId() + "Callback.json");
         List<Notification> notifications = tryFetchNotificationsForTestCase(appealCreatedAppellantEmailId, appealCreatedAppellantSmsId);
 
         assertNotificationBodyContains(notifications, appealCreatedAppellantEmailId, "appeal has been received");
@@ -146,10 +153,10 @@ public class NotificationsFunctionalTest extends AbstractFunctionalTest {
 
     @Test
     public void shouldSendAppealCreatedAppointeeNotification() throws NotificationClientException, IOException {
-        simulateCcdCallback(SYA_APPEAL_CREATED_NOTIFICATION,  SYA_APPEAL_CREATED_NOTIFICATION.getId() + "AppointeeCallback.json");
+        simulateCcdCallback(SYA_APPEAL_CREATED_NOTIFICATION, SYA_APPEAL_CREATED_NOTIFICATION.getId() + "AppointeeCallback.json");
         List<Notification> notifications = tryFetchNotificationsForTestCase(appealCreatedAppointeeEmailId, appealCreatedAppointeeSmsId);
 
-        assertNotificationBodyContains(notifications, appealCreatedAppointeeEmailId,"appointee");
+        assertNotificationBodyContains(notifications, appealCreatedAppointeeEmailId, "appointee");
     }
 
     @Test
@@ -218,8 +225,11 @@ public class NotificationsFunctionalTest extends AbstractFunctionalTest {
     public void shouldSendAppointeeAppealWithdrawnNotification() throws NotificationClientException, IOException {
         simulateCcdCallback(APPEAL_WITHDRAWN_NOTIFICATION,
                 "appointee/" + APPEAL_WITHDRAWN_NOTIFICATION.getId() + "Callback.json");
-        List<Notification> notifications = tryFetchNotificationsForTestCase(appointeeAppealWithdrawnEmailId, appointeeAppealWithdrawnSmsId);
-        Notification emailNotification = notifications.stream().filter(f -> f.getTemplateId().toString().equals(appointeeAppealWithdrawnEmailId)).collect(Collectors.toList()).get(0);
+        List<Notification> notifications = tryFetchNotificationsForTestCase(
+                appointeeAppealWithdrawnEmailId, appointeeAppealWithdrawnSmsId);
+        Notification emailNotification = notifications.stream()
+                .filter(f -> f.getTemplateId().toString().equals(appointeeAppealWithdrawnEmailId))
+                .collect(Collectors.toList()).get(0);
         assertTrue(emailNotification.getBody().contains("Dear Appointee User"));
         assertTrue(emailNotification.getBody().contains("You are receiving this update as the appointee for"));
     }
