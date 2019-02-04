@@ -58,7 +58,6 @@ public class SubscriptionPersonalisationTest {
     @Resource
     SubscriptionPersonalisation personalisation;
 
-
     @Before
     public void setup() {
         initMocks(this);
