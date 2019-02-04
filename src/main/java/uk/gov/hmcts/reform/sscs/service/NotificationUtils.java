@@ -13,7 +13,8 @@ public class NotificationUtils {
             && wrapper.getNewSscsCaseData().getAppeal().getAppellant() != null
             && wrapper.getNewSscsCaseData().getAppeal().getAppellant().getAppointee() != null
             && wrapper.getNewSscsCaseData().getAppeal().getAppellant().getAppointee().getName() != null
-            && wrapper.getNewSscsCaseData().getAppeal().getAppellant().getAppointee().getName().getFirstName() != null);
+            && wrapper.getNewSscsCaseData().getAppeal().getAppellant().getAppointee().getName().getFirstName() != null
+            && wrapper.getNewSscsCaseData().getAppeal().getAppellant().getAppointee().getName().getLastName() != null);
     }
 
     public static boolean hasRepresentative(SscsCaseDataWrapper wrapper) {
@@ -23,4 +24,11 @@ public class NotificationUtils {
             && wrapper.getNewSscsCaseData().getAppeal().getRep().getHasRepresentative().equalsIgnoreCase("yes"));
     }
 
+    public static boolean hasAppointeeSubscription(SscsCaseDataWrapper wrapper) {
+        return null != wrapper.getNewSscsCaseData().getSubscriptions().getAppointeeSubscription();
+    }
+
+    public static boolean hasRepresentativeSubscription(SscsCaseDataWrapper wrapper) {
+        return null != wrapper.getNewSscsCaseData().getSubscriptions().getRepresentativeSubscription();
+    }
 }
