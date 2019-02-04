@@ -29,7 +29,7 @@ public class NotificationEventTypeTest {
         event = "decision_issued";
         assertTrue(NotificationEventType.checkEvent(event));
 
-        event = "decision_issued_2";
+        event = "corDecision";
         assertTrue(NotificationEventType.checkEvent(event));
     }
 }

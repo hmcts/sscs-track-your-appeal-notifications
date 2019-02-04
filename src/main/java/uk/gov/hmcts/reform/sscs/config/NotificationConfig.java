@@ -72,9 +72,10 @@ public class NotificationConfig {
         return Template.builder()
             .emailTemplateId(getTemplate(appealHearingType, emailTemplateName, "emailId"))
             .smsTemplateId(getTemplate(appealHearingType, smsTemplateName, "smsId"))
-            .smsSenderTemplateId(env.getProperty("smsSender." + benefit.toString().toLowerCase()))
+            .smsSenderTemplateId(env.getProperty("smsSender." + benefit.toString().toLowerCase(Locale.ENGLISH)))
             .letterTemplateId(getTemplate(appealHearingType, letterTemplateName, "letterId"))
             .build();
+
     }
 
     private String getTemplate(@NotNull AppealHearingType appealHearingType, String templateName,

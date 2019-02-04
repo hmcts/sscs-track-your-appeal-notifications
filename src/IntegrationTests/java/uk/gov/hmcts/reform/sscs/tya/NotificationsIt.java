@@ -319,7 +319,6 @@ public class NotificationsIt {
         assertHttpStatus(response, HttpStatus.OK);
 
         ArgumentCaptor<String> emailTemplateIdCaptor = ArgumentCaptor.forClass(String.class);
-
         ArgumentCaptor<Map<String, ?>> personalisationCaptor = ArgumentCaptor.forClass(Map.class);
         verify(notificationClient, times(wantedNumberOfSendEmailInvocations))
             .sendEmail(emailTemplateIdCaptor.capture(), any(), personalisationCaptor.capture(), any());
@@ -334,7 +333,6 @@ public class NotificationsIt {
         assertEquals("Appointee Appointee", personalisation.get(NAME));
         assertEquals("Dexter Vasquez", personalisation.get(APPELLANT_NAME));
     }
-
 
     @SuppressWarnings({"Indentation", "unused"})
     private Object[] generateRepsNotificationScenarios() {
@@ -658,6 +656,26 @@ public class NotificationsIt {
                         "yes",
                         "2",
                         "2"
+            },
+            new Object[]{
+                        APPEAL_RECEIVED_NOTIFICATION,
+                        "paper",
+                        Collections.singletonList("08365e91-9e07-4a5c-bf96-ef56fd0ada63"),
+                        Collections.singletonList("ede384aa-0b6e-4311-9f01-ee547573a07b"),
+                        "yes",
+                        "yes",
+                        "1",
+                        "1"
+            },
+            new Object[]{
+                        APPEAL_RECEIVED_NOTIFICATION,
+                        "oral",
+                        Collections.singletonList("08365e91-9e07-4a5c-bf96-ef56fd0ada63"),
+                        Collections.singletonList("ede384aa-0b6e-4311-9f01-ee547573a07b"),
+                        "yes",
+                        "yes",
+                        "1",
+                        "1"
             }
         };
     }

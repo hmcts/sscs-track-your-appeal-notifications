@@ -26,14 +26,14 @@
     "case_data": {
       "subscriptions": {
         "appellantSubscription": {
-          "tya": "",
+          "tya": "appellantTya",
           "email": "sscstest+notify@greencroftconsulting.com",
           "mobile": "07398785050",
           "subscribeSms": "Yes",
           "subscribeEmail": "Yes"
         },
         "representativeSubscription": {
-          "tya": "",
+          "tya": "repTya",
           "email": "sscstest+notify@greencroftconsulting.com",
           "mobile": "07398785050",
           "subscribeSms": "Yes",
@@ -364,14 +364,14 @@
     "case_data": {
       "subscriptions": {
         "appellantSubscription": {
-          "tya": "",
+          "tya": "appellantTya",
           "email": "sscstest+notify@greencroftconsulting.com",
           "mobile": "07398785050",
           "subscribeSms": "Yes",
           "subscribeEmail": "Yes"
         },
         "representativeSubscription": {
-          "tya": "",
+          "tya": "repTya",
           "email": "sscstest+notify@greencroftconsulting.com",
           "mobile": "07398785050",
           "subscribeSms": "Yes",

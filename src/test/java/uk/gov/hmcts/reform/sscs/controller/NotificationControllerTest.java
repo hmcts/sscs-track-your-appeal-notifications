@@ -50,7 +50,6 @@ public class NotificationControllerTest {
 
     private IdamTokens idamTokens;
 
-
     @Before
     public void setUp() {
         initMocks(this);
