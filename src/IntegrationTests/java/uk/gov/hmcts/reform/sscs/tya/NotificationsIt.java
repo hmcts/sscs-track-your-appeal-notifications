@@ -813,7 +813,7 @@ public class NotificationsIt {
     }
 
     @Test
-    public void shouldSendSubscriptionCreatedNotificationForSubscriptionUpdatedRequestWithNewSubscribeSmsRequestForAPaperHearing() throws Exception {
+    public void shouldSendSubscriptionCreatedNotificationForSubscriptionUpdatedRequestWithNewSubscribeSmsRequestForAPaperHearingWithRepSubscribedToSms() throws Exception {
         updateJsonForPaperHearing();
         json = json.replace("appealReceived", "subscriptionUpdated");
         json = updateEmbeddedJson(json, "No", "case_details", "case_data", "subscriptions", "appellantSubscription", "subscribeEmail");
@@ -822,11 +822,11 @@ public class NotificationsIt {
 
         assertHttpStatus(response, HttpStatus.OK);
         verify(notificationClient, never()).sendEmail(any(), any(), any(), any());
-        verify(notificationClient).sendSms(any(), any(), any(), any(), any());
+        verify(notificationClient, times(2)).sendSms(any(), any(), any(), any(), any());
     }
 
     @Test
-    public void shouldSendSubscriptionUpdatedNotificationForSubscriptionUpdatedRequestWithNewEmailAddressForAnOralHearing() throws Exception {
+    public void shouldSendSubscriptionUpdatedNotificationForSubscriptionUpdatedRequestWithNewEmailAddressForAnOralHearingWhenAlreadySubscribedToSms() throws Exception {
         json = updateEmbeddedJson(json, "subscriptionUpdated", "event_id");
         json = updateEmbeddedJson(json, "oral", "case_details", "case_data", "appeal", "hearingType");
         json = updateEmbeddedJson(json, "No", "case_details", "case_data", "subscriptions",
@@ -836,11 +836,11 @@ public class NotificationsIt {
 
         assertHttpStatus(response, HttpStatus.OK);
         verify(notificationClient, times(1)).sendEmail(any(), any(), any(), any());
-        verify(notificationClient, never()).sendSms(any(), any(), any(), any(), any());
+        verify(notificationClient, times(1)).sendSms(any(), any(), any(), any(), any());
     }
 
     @Test
-    public void shouldSendSubscriptionUpdatedNotificationForSubscriptionUpdatedRequestWithNewEmailAddressForAPaperHearing() throws Exception {
+    public void shouldSendSubscriptionUpdatedNotificationForSubscriptionUpdatedRequestWithNewEmailAddressForAPaperHearingWhenRepAlreadySubscriptedToSms() throws Exception {
         updateJsonForPaperHearing();
         json = updateEmbeddedJson(json, "subscriptionUpdated", "event_id");
         json = updateEmbeddedJson(json, "No", "case_details", "case_data", "subscriptions",
@@ -850,7 +850,7 @@ public class NotificationsIt {
 
         assertHttpStatus(response, HttpStatus.OK);
         verify(notificationClient, times(1)).sendEmail(any(), any(), any(), any());
-        verify(notificationClient, never()).sendSms(any(), any(), any(), any(), any());
+        verify(notificationClient, times(1)).sendSms(any(), any(), any(), any(), any());
     }
 
     @Test
