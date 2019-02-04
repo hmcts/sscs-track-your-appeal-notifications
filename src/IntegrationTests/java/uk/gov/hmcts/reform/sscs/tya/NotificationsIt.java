@@ -648,14 +648,24 @@ public class NotificationsIt {
                         "1"
                 },
                 new Object[]{
-                        SUBSCRIPTION_UPDATED_NOTIFICATION,
+                        APPEAL_RECEIVED_NOTIFICATION,
+                        "paper",
+                        Collections.singletonList("08365e91-9e07-4a5c-bf96-ef56fd0ada63"),
+                        Collections.singletonList("ede384aa-0b6e-4311-9f01-ee547573a07b"),
+                        "yes",
+                        "yes",
+                        "1",
+                        "1"
+                },
+                new Object[]{
+                        APPEAL_RECEIVED_NOTIFICATION,
                         "oral",
-                        Arrays.asList("b8b2904f-629d-42cf-acea-1b74bde5b2ff", "03b957bf-e21d-4147-90c1-b6fefa8cf70d"),
-                        Arrays.asList("7397a76f-14cb-468c-b1a7-0570940ead91", "759c712a-6b55-485e-bcf7-1cf5c4896eb1"),
+                        Collections.singletonList("08365e91-9e07-4a5c-bf96-ef56fd0ada63"),
+                        Collections.singletonList("ede384aa-0b6e-4311-9f01-ee547573a07b"),
                         "yes",
                         "yes",
-                        "2",
-                        "2"
+                        "1",
+                        "1"
                 }
         };
     }
