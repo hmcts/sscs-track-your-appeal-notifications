@@ -4,6 +4,7 @@ import java.util.Map;
 import org.springframework.stereotype.Component;
 import uk.gov.hmcts.reform.sscs.ccd.domain.*;
 import uk.gov.hmcts.reform.sscs.config.AppConstants;
+import uk.gov.hmcts.reform.sscs.config.SubscriptionType;
 import uk.gov.hmcts.reform.sscs.domain.SscsCaseDataWrapper;
 import uk.gov.hmcts.reform.sscs.factory.CcdNotificationWrapper;
 
@@ -11,8 +12,8 @@ import uk.gov.hmcts.reform.sscs.factory.CcdNotificationWrapper;
 public class WithRepresentativePersonalisation extends Personalisation<CcdNotificationWrapper> {
 
     @Override
-    protected Map<String, String> create(SscsCaseDataWrapper responseWrapper) {
-        Map<String, String> personalisation = super.create(responseWrapper);
+    protected Map<String, String> create(SscsCaseDataWrapper responseWrapper, SubscriptionType subscriptionType) {
+        Map<String, String> personalisation = super.create(responseWrapper, subscriptionType);
         SscsCaseData ccdResponse = responseWrapper.getNewSscsCaseData();
 
         setRepresentativeName(personalisation, ccdResponse);

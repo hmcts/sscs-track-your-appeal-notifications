@@ -30,10 +30,9 @@ public class CcdActionExecutorTest {
     private CcdService ccdService;
     @Mock
     private SscsCaseDataWrapperDeserializer deserializer;
-
+    private SscsCaseData newSscsCaseData;
     private SscsCaseDetails caseDetails;
     private SscsCaseDataWrapper wrapper;
-    private SscsCaseData newSscsCaseData;
 
     private IdamTokens idamTokens;
 

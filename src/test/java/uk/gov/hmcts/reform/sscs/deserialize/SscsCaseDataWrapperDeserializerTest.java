@@ -199,7 +199,8 @@ public class SscsCaseDataWrapperDeserializerTest {
                 + "\"appointeeSubscription\":{\"tya\":\"23292924\",\"email\":\"supporter@live.co.uk\",\"mobile\":\"07925289702\",\"reason\":null,\"subscribeSms\":\"Yes\",\"subscribeEmail\":\"No\"},"
                 + "\"representativeSubscription\":{\"tya\":\"232929249492\",\"email\":\"supporter@live.co.uk\",\"mobile\":\"07925289702\",\"reason\":null,\"subscribeSms\":\"Yes\",\"subscribeEmail\":\"No\"}},"
                 + "\"caseReference\":\"SC022/14/12423\",\"appeal\":{"
-                + "\"appellant\":{\"name\":{\"title\":\"Mr\",\"lastName\":\"Vasquez\",\"firstName\":\"Dexter\",\"middleName\":\"Ali Sosa\"}},"
+                + "\"appellant\":{\"name\":{\"title\":\"Mr\",\"lastName\":\"Vasquez\",\"firstName\":\"Dexter\",\"middleName\":\"Ali Sosa\"},"
+                + "\"appointee\":{\"name\":{\"title\":\"Mr\",\"lastName\":\"Appointee\",\"firstName\":\"Appointee\",\"middleName\":\"Ab\"}}},"
                 + "\"supporter\":{\"name\":{\"title\":\"Mrs\",\"lastName\":\"Wilder\",\"firstName\":\"Amber\",\"middleName\":\"Clark Eaton\"}}}},"
                 + "\"id\": \"123456789\"},"
                 + "\"case_details_before\":{\"case_data\":{\"subscriptions\":{"
@@ -221,6 +222,11 @@ public class SscsCaseDataWrapperDeserializerTest {
         assertEquals("Dexter", newAppellant.getName().getFirstName());
         assertEquals("Vasquez", newAppellant.getName().getLastName());
         assertEquals("Mr", newAppellant.getName().getTitle());
+
+        Appointee newAppointee = newSscsCaseData.getAppeal().getAppellant().getAppointee();
+        assertEquals("Appointee", newAppointee.getName().getFirstName());
+        assertEquals("Appointee", newAppointee.getName().getLastName());
+        assertEquals("Mr", newAppointee.getName().getTitle());
 
         Subscription newAppellantSubscription = newSscsCaseData.getSubscriptions().getAppellantSubscription();
         assertEquals("test@testing.com", newAppellantSubscription.getEmail());
