@@ -192,19 +192,14 @@ public class NotificationsFunctionalTest extends AbstractFunctionalTest {
                 subscriptionUpdateOldEmailId,
                 subscriptionUpdateOldSmsId
         );
-// From this branch
-//        Notification updateEmailNotification = notifications.stream().filter(f -> f.getTemplateId().toString().equals(subscriptionUpdatedEmailTemplateId)).collect(Collectors.toList()).get(0);
-//        assertTrue(updateEmailNotification.getBody().contains("Dear Appellant User\r\n\r\nEmails about your ESA"));
-//        assertFalse(updateEmailNotification.getBody().contains("You are receiving this update as the appointee for"));
 
         Notification updateEmailNotification = notifications.stream().filter(f -> f.getTemplateId().toString().equals(subscriptionUpdatedEmailTemplateId)).collect(Collectors.toList()).get(0);
         assertTrue(updateEmailNotification.getBody().contains("Dear Appellant User\r\n\r\nEmails about your ESA"));
         assertFalse(updateEmailNotification.getBody().contains("You are receiving this update as the appointee for"));
     }
 
-    //----- From this branch
     @Test
-    public void _shouldSendAppointeeSubscriptionUpdateNotification() throws NotificationClientException, IOException {
+    public void shouldSendAppointeeSubscriptionUpdateNotification() throws NotificationClientException, IOException {
         simulateCcdCallback(SUBSCRIPTION_UPDATED_NOTIFICATION,
                 "appointee-" + SUBSCRIPTION_UPDATED_NOTIFICATION.getId() + "Callback.json");
 
@@ -226,22 +221,6 @@ public class NotificationsFunctionalTest extends AbstractFunctionalTest {
         Notification emailNotification = notifications.get(0);
         assertTrue(emailNotification.getBody().contains("Dear Appointee User"));
         assertTrue(emailNotification.getBody().contains("You are receiving this update as the appointee for"));
-    }
-    //---
-
-    @Test
-    public void shouldSendAppointeeSubscriptionUpdateNotification() throws NotificationClientException, IOException {
-        simulateCcdCallback(SUBSCRIPTION_UPDATED_NOTIFICATION,
-                "appointee-" + SUBSCRIPTION_UPDATED_NOTIFICATION.getId() + "Callback.json");
-
-        List<Notification> notifications = tryFetchNotificationsForTestCase(
-                subscriptionUpdateEmailId,
-                subscriptionUpdateSmsId,
-                subscriptionUpdateOldEmailId,
-                subscriptionUpdateOldSmsId
-        );
-        Notification updateEmailNotification = notifications.stream().filter(f -> f.getTemplateId().toString().equals(subscriptionUpdatedEmailTemplateId)).collect(Collectors.toList()).get(0);
-        assertTrue(updateEmailNotification.getBody().contains("Dear Appointee User\r\n\r\nYou are receiving this update as the appointee for Appellant User.\r\n\r\nEmails about your ESA"));
     }
 
 }
