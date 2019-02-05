@@ -46,25 +46,27 @@ public class NotificationService {
     public void manageNotificationAndSubscription(NotificationWrapper notificationWrapper) {
         NotificationEventType notificationType = notificationWrapper.getNotificationType();
         final String caseId = notificationWrapper.getCaseId();
-        log.info("Notification event triggered {} for case id {} {}", notificationType.getId(), caseId, notificationWrapper.getSubscriptionsBasedOnNotificationType());
-        for (SubscriptionWithType subscriptionWithType :
-                notificationWrapper.getSubscriptionsBasedOnNotificationType()) {
-            sendNotificationPerSubscription(notificationWrapper, subscriptionWithType, notificationType);
+
+        log.info("Notification event triggered {} for case id {}", notificationType.getId(), caseId);
+
+        if (notificationWrapper.getNotificationType().isAllowOutOfHours() || !outOfHoursCalculator.isItOutOfHours()) {
+            sendNotificationPerSubscription(notificationWrapper, notificationType);
+        } else {
+            notificationHandler.scheduleNotification(notificationWrapper);
         }
     }
 
     private void sendNotificationPerSubscription(NotificationWrapper notificationWrapper,
-                                                 SubscriptionWithType subscriptionWithType,
                                                  NotificationEventType notificationType) {
-        if (isValidNotification(notificationWrapper, subscriptionWithType.getSubscription(), notificationType)) {
-            Notification notification = notificationFactory.create(notificationWrapper,
-                    subscriptionWithType.getSubscriptionType());
-            if (notificationWrapper.getNotificationType().isAllowOutOfHours() || !outOfHoursCalculator.isItOutOfHours()) {
+        for (SubscriptionWithType subscriptionWithType : notificationWrapper.getSubscriptionsBasedOnNotificationType()) {
+
+            if (isValidNotification(notificationWrapper, subscriptionWithType.getSubscription(), notificationType)) {
+
+                Notification notification = notificationFactory.create(notificationWrapper, subscriptionWithType.getSubscriptionType());
+
                 sendNotificationService.sendEmailSmsLetterNotification(notificationWrapper, subscriptionWithType.getSubscription(), notification);
                 processOldSubscriptionNotifications(notificationWrapper, notification);
                 reminderService.createReminders(notificationWrapper);
-            } else {
-                notificationHandler.scheduleNotification(notificationWrapper);
             }
         }
     }
