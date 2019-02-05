@@ -9,7 +9,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import uk.gov.hmcts.reform.sscs.ccd.domain.Benefit;
 import uk.gov.hmcts.reform.sscs.ccd.domain.Subscription;
-import uk.gov.hmcts.reform.sscs.config.AppealHearingType;
 import uk.gov.hmcts.reform.sscs.config.NotificationConfig;
 import uk.gov.hmcts.reform.sscs.domain.SubscriptionWithType;
 import uk.gov.hmcts.reform.sscs.domain.notify.*;
@@ -84,11 +83,17 @@ public class NotificationService {
             && notificationValidService.isHearingTypeValidToSendNotification(wrapper.getNewSscsCaseData(), notificationType)));
     }
 
-    private void processOldSubscriptionNotifications(NotificationWrapper wrapper, Notification notification, SubscriptionWithType subscriptionWithType) {
-        if (wrapper.getNotificationType() == NotificationEventType.SUBSCRIPTION_UPDATED_NOTIFICATION
-                && wrapper.getHearingType() == AppealHearingType.PAPER) {
-            Subscription newSubscription = wrapper.getNewSscsCaseData().getSubscriptions().getAppellantSubscription();
-            Subscription oldSubscription = wrapper.getOldSscsCaseData().getSubscriptions().getAppellantSubscription();
+    private void processOldSubscriptionNotifications(NotificationWrapper wrapper, Notification notification) {
+        if (wrapper.getNotificationType() == NotificationEventType.SUBSCRIPTION_UPDATED_NOTIFICATION) {
+            boolean hasAppointee = wrapper.getNewSscsCaseData().getAppeal().getAppellant().getAppointee() != null;
+
+            Subscription newSubscription = hasAppointee
+                ? wrapper.getNewSscsCaseData().getSubscriptions().getAppointeeSubscription()
+                : wrapper.getNewSscsCaseData().getSubscriptions().getAppellantSubscription();
+
+            Subscription oldSubscription = hasAppointee
+                ? wrapper.getOldSscsCaseData().getSubscriptions().getAppointeeSubscription()
+                : wrapper.getOldSscsCaseData().getSubscriptions().getAppellantSubscription();
 
             String emailAddress = getSubscriptionDetails(newSubscription.getEmail(), oldSubscription.getEmail());
             String smsNumber = getSubscriptionDetails(newSubscription.getMobile(), oldSubscription.getMobile());

@@ -28,8 +28,11 @@ public class NotificationConfigTest {
                                    String smsTemplateName, String smsTemplateKey, String smsTemplateId,
                                    String letterTemplateName, String letterTemplateKey, String letterTemplateId) {
         when(env.getProperty(emailTemplateKey)).thenReturn(emailTemplateId);
+        when(env.containsProperty(emailTemplateKey)).thenReturn(true);
         when(env.getProperty(smsTemplateKey)).thenReturn(smsTemplateId);
+        when(env.containsProperty(smsTemplateKey)).thenReturn(true);
         when(env.getProperty(letterTemplateKey)).thenReturn(letterTemplateId);
+        when(env.containsProperty(letterTemplateKey)).thenReturn(true);
 
         Template template = new NotificationConfig(env).getTemplate(emailTemplateName, smsTemplateName, letterTemplateName, Benefit.PIP, ONLINE);
 
