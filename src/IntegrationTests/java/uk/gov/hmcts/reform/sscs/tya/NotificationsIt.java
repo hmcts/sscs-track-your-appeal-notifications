@@ -638,6 +638,16 @@ public class NotificationsIt {
                         "1"
                 },
                 new Object[]{
+                        SUBSCRIPTION_UPDATED_NOTIFICATION,
+                        "oral",
+                        Arrays.asList("b8b2904f-629d-42cf-acea-1b74bde5b2ff", "03b957bf-e21d-4147-90c1-b6fefa8cf70d"),
+                        Arrays.asList("7397a76f-14cb-468c-b1a7-0570940ead91", "759c712a-6b55-485e-bcf7-1cf5c4896eb1"),
+                        "yes",
+                        "yes",
+                        "2",
+                        "2"
+                },
+                new Object[]{
                         EVIDENCE_RECEIVED_NOTIFICATION,
                         "paper",
                         Collections.singletonList("c5654134-2e13-4541-ac73-334a5b5cdbb6"),
