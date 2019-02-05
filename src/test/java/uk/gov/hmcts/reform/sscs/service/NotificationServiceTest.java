@@ -631,7 +631,8 @@ public class NotificationServiceTest {
         Appointee appointee = null;
         if (appointeeSubscription != null) {
             appointee = Appointee.builder()
-                .name(Name.builder().firstName("firstName").build())
+                .name(Name.builder().firstName("Jack").lastName("Johnson").build())
+                .address(Address.builder().line1("Appellant Line 1").town("Appellant Town").county("Appellant County").postcode("AP9 7LL").build())
                 .build();
         }
 
