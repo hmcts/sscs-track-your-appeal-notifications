@@ -44,6 +44,8 @@ public class NotificationHandler {
         final String caseId = wrapper.getCaseId();
         String eventId = wrapper.getNotificationType().getId();
         String jobGroup = jobGroupGenerator.generate(caseId, eventId);
+        LOG.info("Scheduled {} for case id: {} @ {}", eventId, caseId, outOfHoursCalculator.getStartOfNextInHoursPeriod());
+
         jobScheduler.schedule(new Job<>(
                 jobGroup,
                 eventId,
