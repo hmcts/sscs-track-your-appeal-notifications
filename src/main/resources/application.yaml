@@ -96,6 +96,9 @@ notification:
     representative:
       emailId: 4b1ee55b-abd1-4e7e-b0ed-693d8df1e741
       smsId: 99bd4a56-256c-4de8-b187-d43a8dde466f
+    appointee:
+      emailId: 08365e91-9e07-4a5c-bf96-ef56fd0ada63
+      smsId: ede384aa-0b6e-4311-9f01-ee547573a07b
   evidenceReceived:
     appellant:
       emailId: c5654134-2e13-4541-ac73-334a5b5cdbb6
@@ -132,8 +135,13 @@ notification:
     representative:
       emailId: e29a2275-553f-4e70-97f4-2994c095f281
       smsId: f59440ee-19ca-4d47-a702-13e9cecaccbd
-  subscriptionCreated.smsId: 18444f5f-8834-49e9-a6ae-bfe7f50db2b8
-  subscriptionUpdated.emailId: 820901f0-15a9-4796-bdec-0cef42922531
+  subscriptionCreated.smsId: 7397a76f-14cb-468c-b1a7-0570940ead91
+  subscriptionUpdated:
+    emailId: b8b2904f-629d-42cf-acea-1b74bde5b2ff
+    smsId: 7397a76f-14cb-468c-b1a7-0570940ead91
+  subscriptionOld:
+    emailId: 03b957bf-e21d-4147-90c1-b6fefa8cf70d
+    smsId: 759c712a-6b55-485e-bcf7-1cf5c4896eb1
   hearingBooked:
     appellant:
       emailId: fee16753-0bdb-43f1-9abb-b14b826e3b26

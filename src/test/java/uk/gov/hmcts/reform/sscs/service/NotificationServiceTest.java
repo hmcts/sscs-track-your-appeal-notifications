@@ -5,9 +5,7 @@ import static org.mockito.BDDMockito.given;
 import static org.mockito.BDDMockito.then;
 import static org.mockito.Mockito.*;
 import static org.mockito.MockitoAnnotations.initMocks;
-import static uk.gov.hmcts.reform.sscs.config.SubscriptionType.APPELLANT;
-import static uk.gov.hmcts.reform.sscs.config.SubscriptionType.APPOINTEE;
-import static uk.gov.hmcts.reform.sscs.config.SubscriptionType.REPRESENTATIVE;
+import static uk.gov.hmcts.reform.sscs.config.SubscriptionType.*;
 import static uk.gov.hmcts.reform.sscs.domain.notify.NotificationEventType.*;
 import static uk.gov.hmcts.reform.sscs.service.SendNotificationService.DM_STORE_USER_ID;
 
@@ -212,7 +210,53 @@ public class NotificationServiceTest {
         return wrapper;
     }
 
-    @SuppressWarnings("Indentation")
+    @Test
+    @Parameters(method = "generateNotificationTypeAndSubscriptionsAppointeeScenarios")
+    public void givenNotificationEventTypeAndAppointeeSubscriptionCombinations_shouldManageNotificationAndSubscriptionAccordingly(
+        NotificationEventType notificationEventType, int wantedNumberOfEmailNotificationsSent,
+        int wantedNumberOfSmsNotificationsSent, Subscription appointeeSubscription, Subscription repsSubscription,
+        SubscriptionType[] expectedSubscriptionTypes) {
+
+        ccdNotificationWrapper = buildNotificationWrapperGivenNotificationTypeAndAppointeeSubscriptions(
+            notificationEventType, appointeeSubscription, repsSubscription);
+
+        given(notificationValidService.isHearingTypeValidToSendNotification(
+            any(SscsCaseData.class), eq(notificationEventType))).willReturn(true);
+
+        given(notificationValidService.isNotificationStillValidToSend(anyList(), eq(notificationEventType)))
+            .willReturn(true);
+
+        given(factory.create(any(NotificationWrapper.class), any(SubscriptionType.class)))
+            .willReturn(new Notification(
+                Template.builder()
+                    .emailTemplateId(EMAIL_TEMPLATE_ID)
+                    .smsTemplateId(SMS_TEMPLATE_ID)
+                    .build(),
+                Destination.builder()
+                    .email(EMAIL)
+                    .sms(SMS_MOBILE)
+                    .build(),
+                null,
+                new Reference(),
+                null));
+
+        notificationService.manageNotificationAndSubscription(ccdNotificationWrapper);
+
+        ArgumentCaptor<SubscriptionType> subscriptionTypeCaptor = ArgumentCaptor.forClass(SubscriptionType.class);
+        then(factory).should(times(expectedSubscriptionTypes.length))
+            .create(any(NotificationWrapper.class), subscriptionTypeCaptor.capture());
+        assertArrayEquals(expectedSubscriptionTypes, subscriptionTypeCaptor.getAllValues().toArray());
+
+        then(notificationHandler).should(times(wantedNumberOfEmailNotificationsSent)).sendNotification(
+            eq(ccdNotificationWrapper), eq(EMAIL_TEMPLATE_ID), eq("Email"),
+            any(NotificationHandler.SendNotification.class));
+        then(notificationHandler).should(times(wantedNumberOfSmsNotificationsSent)).sendNotification(
+            eq(ccdNotificationWrapper), eq(SMS_TEMPLATE_ID), eq("SMS"),
+            any(NotificationHandler.SendNotification.class));
+
+    }
+
+    @SuppressWarnings({"Indentation", "UnusedPrivateMethod"})
     private Object[] generateNotificationTypeAndSubscriptionsScenarios() {
         return new Object[]{
                 new Object[]{
@@ -479,6 +523,118 @@ public class NotificationServiceTest {
         };
     }
 
+    @SuppressWarnings("Indentation")
+    private Object[] generateNotificationTypeAndSubscriptionsAppointeeScenarios() {
+        return new Object[]{
+            new Object[]{
+                SYA_APPEAL_CREATED_NOTIFICATION,
+                1,
+                0,
+                Subscription.builder()
+                    .tya(APPEAL_NUMBER)
+                    .email(EMAIL)
+                    .subscribeEmail(YES)
+                    .build(),
+                null,
+                new SubscriptionType[]{APPOINTEE},
+            },
+            new Object[]{
+                APPEAL_RECEIVED_NOTIFICATION,
+                1,
+                1,
+                Subscription.builder()
+                    .tya(APPEAL_NUMBER)
+                    .email(EMAIL)
+                    .subscribeEmail(YES)
+                    .mobile(MOBILE_NUMBER_1)
+                    .subscribeSms(YES)
+                    .build(),
+                null,
+                new SubscriptionType[]{APPOINTEE},
+            },
+            new Object[]{
+                APPEAL_RECEIVED_NOTIFICATION,
+                2,
+                1,
+                Subscription.builder()
+                    .tya(APPEAL_NUMBER)
+                    .email(EMAIL)
+                    .subscribeEmail(YES)
+                    .mobile(MOBILE_NUMBER_1)
+                    .subscribeSms(YES)
+                    .build(),
+                Subscription.builder()
+                    .tya(APPEAL_NUMBER)
+                    .email(EMAIL)
+                    .subscribeEmail(YES)
+                    .build(),
+                new SubscriptionType[]{APPOINTEE, REPRESENTATIVE},
+            },
+            new Object[]{
+                APPEAL_RECEIVED_NOTIFICATION,
+                2,
+                2,
+                Subscription.builder()
+                    .tya(APPEAL_NUMBER)
+                    .email(EMAIL)
+                    .subscribeEmail(YES)
+                    .mobile(MOBILE_NUMBER_1)
+                    .subscribeSms(YES)
+                    .build(),
+                Subscription.builder()
+                    .tya(APPEAL_NUMBER)
+                    .email(EMAIL)
+                    .subscribeEmail(YES)
+                    .mobile(MOBILE_NUMBER_1)
+                    .subscribeSms(YES)
+                    .build(),
+                new SubscriptionType[]{APPOINTEE, REPRESENTATIVE},
+            },
+            new Object[]{
+                SYA_APPEAL_CREATED_NOTIFICATION,
+                0,
+                0,
+                null,
+                null,
+                new SubscriptionType[]{},
+            },
+            new Object[]{
+                SYA_APPEAL_CREATED_NOTIFICATION,
+                1,
+                0,
+                Subscription.builder()
+                    .tya(APPEAL_NUMBER)
+                    .email(EMAIL)
+                    .subscribeEmail(YES)
+                    .build(),
+                null,
+                new SubscriptionType[]{APPOINTEE},
+            },
+            new Object[]{
+                SYA_APPEAL_CREATED_NOTIFICATION,
+                1,
+                1,
+                Subscription.builder()
+                    .tya(APPEAL_NUMBER)
+                    .email(EMAIL)
+                    .subscribeEmail(YES)
+                    .subscribeSms(YES)
+                    .mobile(MOBILE_NUMBER_1)
+                    .build(),
+                null,
+                new SubscriptionType[]{APPOINTEE},
+            },
+            new Object[]{
+                SYA_APPEAL_CREATED_NOTIFICATION,
+                0,
+                0,
+                Subscription.builder().build(),
+                Subscription.builder().build(),
+                new SubscriptionType[]{},
+            }
+        };
+    }
+
     private CcdNotificationWrapper buildNotificationWrapperGivenNotificationTypeAndSubscriptions(
             NotificationEventType notificationEventType, Subscription appellantSubscription,
             Subscription repsSubscription, Subscription appointeeSubscription) {
@@ -524,12 +680,48 @@ public class NotificationServiceTest {
         return new CcdNotificationWrapper(sscsCaseDataWrapper);
     }
 
+    private CcdNotificationWrapper buildNotificationWrapperGivenNotificationTypeAndAppointeeSubscriptions(
+        NotificationEventType notificationEventType, Subscription appointeeSubscription,
+        Subscription repsSubscription) {
+
+        Representative rep = Representative.builder()
+                .hasRepresentative("Yes")
+                .name(Name.builder().firstName("Joe").lastName("Bloggs").build())
+                .address(Address.builder().line1("Rep Line 1").town("Rep Town").county("Rep County").postcode("RE9 7SE").build())
+                .build();
+
+        sscsCaseData = SscsCaseData.builder()
+            .appeal(Appeal.builder().appellant(Appellant.builder().appointee(Appointee.builder()
+                    .name(Name.builder().firstName("firstName").lastName("lastName").build()).build()).build())
+                .rep(rep)
+                .hearingType(AppealHearingType.ORAL.name())
+                .hearingOptions(HearingOptions.builder()
+                    .wantsToAttend(YES)
+                    .build())
+                .build())
+            .subscriptions(Subscriptions.builder()
+                .appellantSubscription(Subscription.builder().build())
+                .appointeeSubscription(appointeeSubscription)
+                .representativeSubscription(repsSubscription)
+                .build())
+            .caseReference(CASE_REFERENCE)
+            .hearings(Collections.singletonList(Hearing.builder().build()))
+            .build();
+
+        sscsCaseDataWrapper = SscsCaseDataWrapper.builder()
+            .newSscsCaseData(sscsCaseData)
+            .notificationEventType(notificationEventType)
+            .build();
+
+        return new CcdNotificationWrapper(sscsCaseDataWrapper);
+    }
+
     @Test
     public void sendEmailToGovNotifyWhenNotificationIsAnEmailAndTemplateNotBlank() {
         String emailTemplateId = "abc";
         Notification notification = new Notification(Template.builder().emailTemplateId(emailTemplateId).smsTemplateId(null).build(), Destination.builder().email("test@testing.com").sms(null).build(), null, new Reference(), null);
-        when((notificationValidService).isNotificationStillValidToSend(any(), any())).thenReturn(true);
-        when((notificationValidService).isHearingTypeValidToSendNotification(any(), any())).thenReturn(true);
+        when(notificationValidService.isNotificationStillValidToSend(any(), any())).thenReturn(true);
+        when(notificationValidService.isHearingTypeValidToSendNotification(any(), any())).thenReturn(true);
 
         when(factory.create(ccdNotificationWrapper, APPELLANT)).thenReturn(notification);
         notificationService.manageNotificationAndSubscription(ccdNotificationWrapper);
@@ -541,8 +733,8 @@ public class NotificationServiceTest {
     public void sendSmsToGovNotifyWhenNotificationIsAnSmsAndTemplateNotBlank() {
         String smsTemplateId = "123";
         Notification notification = new Notification(Template.builder().emailTemplateId(null).smsTemplateId(smsTemplateId).build(), Destination.builder().email(null).sms("07823456746").build(), null, new Reference(), null);
-        when((notificationValidService).isNotificationStillValidToSend(any(), any())).thenReturn(true);
-        when((notificationValidService).isHearingTypeValidToSendNotification(any(), any())).thenReturn(true);
+        when(notificationValidService.isNotificationStillValidToSend(any(), any())).thenReturn(true);
+        when(notificationValidService.isHearingTypeValidToSendNotification(any(), any())).thenReturn(true);
 
         when(factory.create(ccdNotificationWrapper, APPELLANT)).thenReturn(notification);
         notificationService.manageNotificationAndSubscription(ccdNotificationWrapper);
@@ -555,8 +747,8 @@ public class NotificationServiceTest {
         String emailTemplateId = "abc";
         String smsTemplateId = "123";
         Notification notification = new Notification(Template.builder().emailTemplateId(emailTemplateId).smsTemplateId(smsTemplateId).build(), Destination.builder().email("test@testing.com").sms("07823456746").build(), null, new Reference(), null);
-        when((notificationValidService).isNotificationStillValidToSend(any(), any())).thenReturn(true);
-        when((notificationValidService).isHearingTypeValidToSendNotification(any(), any())).thenReturn(true);
+        when(notificationValidService.isNotificationStillValidToSend(any(), any())).thenReturn(true);
+        when(notificationValidService.isHearingTypeValidToSendNotification(any(), any())).thenReturn(true);
 
         when(factory.create(ccdNotificationWrapper, APPELLANT)).thenReturn(notification);
         notificationService.manageNotificationAndSubscription(ccdNotificationWrapper);
@@ -623,8 +815,8 @@ public class NotificationServiceTest {
 
         Notification notification = new Notification(Template.builder().emailTemplateId(null).smsTemplateId("123").build(), Destination.builder().email(null).sms("07823456746").build(), null, new Reference(), null);
 
-        when((notificationValidService).isNotificationStillValidToSend(any(), any())).thenReturn(true);
-        when((notificationValidService).isHearingTypeValidToSendNotification(any(), any())).thenReturn(true);
+        when(notificationValidService.isNotificationStillValidToSend(any(), any())).thenReturn(true);
+        when(notificationValidService.isHearingTypeValidToSendNotification(any(), any())).thenReturn(true);
 
         when(factory.create(ccdNotificationWrapper, APPELLANT)).thenReturn(notification);
         notificationService.manageNotificationAndSubscription(ccdNotificationWrapper);
@@ -636,7 +828,7 @@ public class NotificationServiceTest {
     public void doNotSendNotificationWhenNotificationNotValidToSend() throws Exception {
         Notification notification = new Notification(Template.builder().emailTemplateId("abc").smsTemplateId(null).build(), Destination.builder().email("test@testing.com").sms(null).build(), null, new Reference(), null);
         when(factory.create(ccdNotificationWrapper, APPELLANT)).thenReturn(notification);
-        when((notificationValidService).isNotificationStillValidToSend(any(), any())).thenReturn(false);
+        when(notificationValidService.isNotificationStillValidToSend(any(), any())).thenReturn(false);
 
         notificationService.manageNotificationAndSubscription(ccdNotificationWrapper);
 
@@ -647,7 +839,7 @@ public class NotificationServiceTest {
     public void doNotSendNotificationWhenHearingTypeIsNotValidToSend() throws Exception {
         Notification notification = new Notification(Template.builder().emailTemplateId("abc").smsTemplateId(null).build(), Destination.builder().email("test@testing.com").sms(null).build(), null, new Reference(), null);
         when(factory.create(ccdNotificationWrapper, APPELLANT)).thenReturn(notification);
-        when((notificationValidService).isHearingTypeValidToSendNotification(any(), any())).thenReturn(false);
+        when(notificationValidService.isHearingTypeValidToSendNotification(any(), any())).thenReturn(false);
 
         notificationService.manageNotificationAndSubscription(ccdNotificationWrapper);
 
@@ -658,8 +850,8 @@ public class NotificationServiceTest {
     public void doNotSendNotificationsOutOfHours() {
         SscsCaseDataWrapper wrapper = SscsCaseDataWrapper.builder().newSscsCaseData(sscsCaseData).oldSscsCaseData(sscsCaseData).notificationEventType(QUESTION_ROUND_ISSUED_NOTIFICATION).build();
         ccdNotificationWrapper = new CohNotificationWrapper("someHearingId", wrapper);
-        when((notificationValidService).isNotificationStillValidToSend(any(), any())).thenReturn(true);
-        when((notificationValidService).isHearingTypeValidToSendNotification(any(), any())).thenReturn(true);
+        when(notificationValidService.isNotificationStillValidToSend(any(), any())).thenReturn(true);
+        when(notificationValidService.isHearingTypeValidToSendNotification(any(), any())).thenReturn(true);
 
         Notification notification = new Notification(Template.builder().emailTemplateId("abc").smsTemplateId("123").build(), Destination.builder().email("test@testing.com").sms("07823456746").build(), null, new Reference(), null);
         when(factory.create(ccdNotificationWrapper, APPELLANT)).thenReturn(notification);
@@ -679,12 +871,14 @@ public class NotificationServiceTest {
                 .mobile(MOBILE_NUMBER_2).subscribeEmail(YES).subscribeSms(YES).build();
 
         SscsCaseData newSscsCaseData = SscsCaseData.builder()
-                .appeal(Appeal.builder().hearingType(AppealHearingType.PAPER.name()).benefitType(BenefitType.builder().code(PIP).build()).build())
+                .appeal(Appeal.builder().appellant(Appellant.builder().build())
+                        .hearingType(AppealHearingType.PAPER.name()).benefitType(BenefitType.builder().code(PIP).build()).build())
                 .subscriptions(Subscriptions.builder().appellantSubscription(appellantNewSubscription).build())
                 .caseReference(CASE_REFERENCE).build();
 
         SscsCaseData oldSscsCaseData = SscsCaseData.builder()
-                .appeal(Appeal.builder().hearingType(AppealHearingType.PAPER.name()).benefitType(BenefitType.builder().code(PIP).build()).build())
+                .appeal(Appeal.builder().appellant(Appellant.builder().build())
+                        .hearingType(AppealHearingType.PAPER.name()).benefitType(BenefitType.builder().code(PIP).build()).build())
                 .subscriptions(Subscriptions.builder().appellantSubscription(appellantOldSubscription).build())
                 .caseReference(CASE_REFERENCE).build();
 
@@ -694,8 +888,8 @@ public class NotificationServiceTest {
         Notification notification = new Notification(
                 Template.builder().emailTemplateId(EMAIL_TEMPLATE_ID).smsTemplateId(SMS_TEMPLATE_ID).build(),
                 Destination.builder().email(NEW_TEST_EMAIL_COM).sms(MOBILE_NUMBER_2).build(), null, new Reference(), null);
-        when((notificationValidService).isNotificationStillValidToSend(any(), any())).thenReturn(true);
-        when((notificationValidService).isHearingTypeValidToSendNotification(any(), any())).thenReturn(true);
+        when(notificationValidService.isNotificationStillValidToSend(any(), any())).thenReturn(true);
+        when(notificationValidService.isHearingTypeValidToSendNotification(any(), any())).thenReturn(true);
 
         when(factory.create(ccdNotificationWrapper, APPELLANT)).thenReturn(notification);
         when(notificationConfig.getTemplate(any(), any(), any(), any(), any())).thenReturn(Template.builder().emailTemplateId(EMAIL_TEMPLATE_ID).smsTemplateId(SMS_TEMPLATE_ID).build());
@@ -715,24 +909,27 @@ public class NotificationServiceTest {
                 .mobile(MOBILE_NUMBER_1).subscribeEmail(YES).subscribeSms(YES).build();
 
         SscsCaseData newSscsCaseData = SscsCaseData.builder()
-                .appeal(Appeal.builder().hearingType(AppealHearingType.PAPER.name()).benefitType(BenefitType.builder().code(PIP).build()).build())
+                .appeal(Appeal.builder().appellant(Appellant.builder().build())
+                        .hearingType(AppealHearingType.PAPER.name()).benefitType(BenefitType.builder().code(PIP).build()).build())
                 .subscriptions(Subscriptions.builder().appellantSubscription(appellantNewSubscription).build())
                 .caseReference(CASE_REFERENCE).build();
 
         SscsCaseData oldSscsCaseData = SscsCaseData.builder()
-                .appeal(Appeal.builder().hearingType(AppealHearingType.PAPER.name()).benefitType(BenefitType.builder().code(PIP).build()).build())
+                .appeal(Appeal.builder().appellant(Appellant.builder().build())
+                        .hearingType(AppealHearingType.PAPER.name()).benefitType(BenefitType.builder().code(PIP).build()).build())
                 .subscriptions(Subscriptions.builder().appellantSubscription(appellantOldSubscription).build())
                 .caseReference(CASE_REFERENCE).build();
 
-        SscsCaseDataWrapper wrapper = SscsCaseDataWrapper.builder().newSscsCaseData(newSscsCaseData).oldSscsCaseData(oldSscsCaseData).notificationEventType(SUBSCRIPTION_UPDATED_NOTIFICATION).build();
+        SscsCaseDataWrapper wrapper = SscsCaseDataWrapper.builder().newSscsCaseData(newSscsCaseData)
+                .oldSscsCaseData(oldSscsCaseData).notificationEventType(SUBSCRIPTION_UPDATED_NOTIFICATION).build();
         ccdNotificationWrapper = new CcdNotificationWrapper(wrapper);
 
         Notification notification = new Notification(
                 Template.builder().emailTemplateId(EMAIL_TEMPLATE_ID).smsTemplateId(SMS_TEMPLATE_ID).build(),
                 Destination.builder().email(NEW_TEST_EMAIL_COM).sms(MOBILE_NUMBER_2).build(), null, new Reference(), null);
 
-        when((notificationValidService).isNotificationStillValidToSend(any(), any())).thenReturn(true);
-        when((notificationValidService).isHearingTypeValidToSendNotification(any(), any())).thenReturn(true);
+        when(notificationValidService.isNotificationStillValidToSend(any(), any())).thenReturn(true);
+        when(notificationValidService.isHearingTypeValidToSendNotification(any(), any())).thenReturn(true);
 
         when(factory.create(ccdNotificationWrapper, APPELLANT)).thenReturn(notification);
         when(notificationConfig.getTemplate(any(), any(), any(), any(), any())).thenReturn(Template.builder().emailTemplateId(EMAIL_TEMPLATE_ID).smsTemplateId(SMS_TEMPLATE_ID).build());
@@ -759,6 +956,7 @@ public class NotificationServiceTest {
 
         SscsCaseData newSscsCaseData = SscsCaseData.builder()
                 .appeal(Appeal.builder()
+                        .appellant(Appellant.builder().build())
                         .hearingType(AppealHearingType.PAPER.name())
                         .benefitType(BenefitType.builder()
                                 .code(PIP)
@@ -771,6 +969,7 @@ public class NotificationServiceTest {
 
         SscsCaseData oldSscsCaseData = SscsCaseData.builder()
                 .appeal(Appeal.builder()
+                        .appellant(Appellant.builder().build())
                         .hearingType(AppealHearingType.PAPER.name())
                         .benefitType(BenefitType.builder()
                                 .code(PIP)
@@ -800,8 +999,8 @@ public class NotificationServiceTest {
                 new Reference(),
                 null);
 
-        when((notificationValidService).isNotificationStillValidToSend(any(), any())).thenReturn(true);
-        when((notificationValidService).isHearingTypeValidToSendNotification(any(), any())).thenReturn(true);
+        when(notificationValidService.isNotificationStillValidToSend(any(), any())).thenReturn(true);
+        when(notificationValidService.isHearingTypeValidToSendNotification(any(), any())).thenReturn(true);
 
         when(factory.create(ccdNotificationWrapper, APPELLANT)).thenReturn(notification);
         when(notificationConfig.getTemplate(any(), any(), any(), any(), any())).thenReturn(Template.builder().emailTemplateId(EMAIL_TEMPLATE_ID).smsTemplateId(SMS_TEMPLATE_ID).build());
@@ -810,7 +1009,6 @@ public class NotificationServiceTest {
 
         verify(notificationHandler, times(1)).sendNotification(eq(ccdNotificationWrapper), any(), eq(EMAIL), any(NotificationHandler.SendNotification.class));
         verify(notificationHandler, times(1)).sendNotification(eq(ccdNotificationWrapper), any(), eq(SMS), any(NotificationHandler.SendNotification.class));
-
     }
 
     @Test

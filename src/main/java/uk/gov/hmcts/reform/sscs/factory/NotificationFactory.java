@@ -40,7 +40,7 @@ public class NotificationFactory {
             return null;
         }
 
-        Map<String, String> placeholders = personalisation.create(notificationWrapper);
+        Map<String, String> placeholders = personalisation.create(notificationWrapper, subscriptionType);
         if (null == placeholders) {
             return null;
         }
