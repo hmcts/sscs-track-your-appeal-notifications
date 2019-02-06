@@ -9,6 +9,7 @@ import static uk.gov.hmcts.reform.sscs.config.SubscriptionType.APPOINTEE;
 import static uk.gov.hmcts.reform.sscs.config.SubscriptionType.REPRESENTATIVE;
 import static uk.gov.hmcts.reform.sscs.domain.notify.NotificationEventType.*;
 import static uk.gov.hmcts.reform.sscs.service.NotificationUtils.*;
+import static uk.gov.hmcts.reform.sscs.service.NotificationValidService.FALLBACK_SUBSCRIPTION_TYPES;
 
 import java.io.UnsupportedEncodingException;
 import java.net.URLEncoder;
@@ -38,8 +39,6 @@ import uk.gov.hmcts.reform.sscs.service.RegionalProcessingCenterService;
 @Component
 @Slf4j
 public class Personalisation<E extends NotificationWrapper> {
-    private static final List<NotificationEventType> LETTER_EVENT_TYPES = Arrays.asList(INTERLOC_VALID_APPEAL, APPEAL_RECEIVED_NOTIFICATION);
-
     private static final String CRLF =  String.format("%c%c",(char) 0x0D, (char) 0x0A);
 
     private boolean sendSmsSubscriptionConfirmation;
@@ -291,7 +290,7 @@ public class Personalisation<E extends NotificationWrapper> {
 
     private String getLetterTemplateName(SubscriptionType subscriptionType, NotificationEventType notificationEventType) {
         String letterTemplateName = notificationEventType.getId();
-        if (LETTER_EVENT_TYPES.contains(notificationEventType)) {
+        if (FALLBACK_SUBSCRIPTION_TYPES.contains(notificationEventType)) {
             letterTemplateName = letterTemplateName + "." + subscriptionType.name().toLowerCase();
         }
         return letterTemplateName;

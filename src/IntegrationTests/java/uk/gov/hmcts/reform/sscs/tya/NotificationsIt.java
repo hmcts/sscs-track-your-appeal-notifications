@@ -577,14 +577,14 @@ public class NotificationsIt {
                 "paper",
                 Collections.emptyList(),
                 Collections.emptyList(),
-                Arrays.asList("91143b85-dd9d-430c-ba23-e42ec90f44f8", "77ea8a2f-06df-4279-9c1f-0f23cb2d9bbf"),
+                Collections.emptyList(),
                 "no",
                 "no",
                 "no",
                 "no",
                 "0",
                 "0",
-                "2"
+                "0"
             },
             new Object[]{
                 APPEAL_DORMANT_NOTIFICATION,
@@ -703,14 +703,14 @@ public class NotificationsIt {
                 "paper",
                 Collections.emptyList(),
                 Collections.emptyList(),
-                Collections.emptyList(),
+                Arrays.asList("91143b85-dd9d-430c-ba23-e42ec90f44f8", "77ea8a2f-06df-4279-9c1f-0f23cb2d9bbf"),
                 "no",
                 "no",
                 "no",
                 "no",
                 "0",
                 "0",
-                "0"
+                "2"
             },
             new Object[]{
                 POSTPONEMENT_NOTIFICATION,
@@ -875,13 +875,13 @@ public class NotificationsIt {
                 "oral",
                 Collections.emptyList(),
                 Collections.emptyList(),
-                Collections.emptyList(),
+                Collections.singletonList("747d026e-1bec-4e96-8a34-28f36e30bba5"),
                 "no",
                 "no",
                 "0",
                 "0",
-                "0",
-                "Appointee Appointee"
+                "1",
+                "Harry Potter"
             },
             new Object[]{
                 DWP_RESPONSE_RECEIVED_NOTIFICATION,
@@ -966,13 +966,13 @@ public class NotificationsIt {
                 "paper",
                 Collections.emptyList(),
                 Collections.emptyList(),
-                Collections.singletonList("747d026e-1bec-4e96-8a34-28f36e30bba5"),
+                Collections.emptyList(),
                 "no",
                 "no",
                 "0",
                 "0",
-                "1",
-                "Harry Potter"
+                "0",
+                ""
             },
             new Object[]{
                 INTERLOC_VALID_APPEAL,

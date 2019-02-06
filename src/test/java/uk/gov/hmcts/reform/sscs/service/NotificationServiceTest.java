@@ -362,7 +362,7 @@ public class NotificationServiceTest {
                         null,
                         null,
                         null,
-                        new SubscriptionType[]{},
+                        new SubscriptionType[]{APPELLANT},  // Fallback letter
                 },
                 new Object[]{
                         SYA_APPEAL_CREATED_NOTIFICATION,
@@ -399,7 +399,7 @@ public class NotificationServiceTest {
                         Subscription.builder().build(),
                         Subscription.builder().build(),
                         Subscription.builder().build(),
-                        new SubscriptionType[]{},
+                        new SubscriptionType[]{APPOINTEE, REPRESENTATIVE},  // Fallback letter
                 },
                 new Object[]{
                         INTERLOC_VALID_APPEAL,
@@ -531,7 +531,7 @@ public class NotificationServiceTest {
                 0,
                 null,
                 null,
-                new SubscriptionType[]{},
+                new SubscriptionType[]{APPELLANT},
             },
             new Object[]{
                 SYA_APPEAL_CREATED_NOTIFICATION,
@@ -565,7 +565,7 @@ public class NotificationServiceTest {
                 0,
                 Subscription.builder().build(),
                 Subscription.builder().build(),
-                new SubscriptionType[]{},
+                new SubscriptionType[]{APPOINTEE, REPRESENTATIVE},
             }
         };
     }
