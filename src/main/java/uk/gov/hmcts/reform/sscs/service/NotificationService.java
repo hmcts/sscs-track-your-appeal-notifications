@@ -1,7 +1,7 @@
 package uk.gov.hmcts.reform.sscs.service;
 
 import static uk.gov.hmcts.reform.sscs.ccd.domain.Benefit.getBenefitByCode;
-import static uk.gov.hmcts.reform.sscs.service.NotificationValidService.isFallbackLetterRequiredForSubscriptionType;
+import static uk.gov.hmcts.reform.sscs.service.NotificationUtils.*;
 import static uk.gov.hmcts.reform.sscs.service.NotificationValidService.isMandatoryLetter;
 
 import lombok.extern.slf4j.Slf4j;
@@ -74,11 +74,8 @@ public class NotificationService {
         Subscription subscription = subscriptionWithType.getSubscription();
 
         return (isMandatoryLetter(notificationType)
-            || ((subscription != null && subscription.doesCaseHaveSubscriptions()
-            || (subscription != null && !subscription.doesCaseHaveSubscriptions() && isFallbackLetterRequiredForSubscriptionType(wrapper, subscriptionWithType.getSubscriptionType(), notificationType)
-            || subscription == null && isFallbackLetterRequiredForSubscriptionType(wrapper, subscriptionWithType.getSubscriptionType(), notificationType)))
-            && notificationValidService.isNotificationStillValidToSend(wrapper.getNewSscsCaseData().getHearings(), notificationType)
-            && notificationValidService.isHearingTypeValidToSendNotification(wrapper.getNewSscsCaseData(), notificationType)));
+            || (isFallbackLetterRequired(wrapper, subscriptionWithType, subscription, notificationType)
+            && isOkToSendNotification(wrapper, notificationType, subscription, notificationValidService)));
     }
 
     private void processOldSubscriptionNotifications(NotificationWrapper wrapper, Notification notification, SubscriptionWithType subscriptionWithType) {

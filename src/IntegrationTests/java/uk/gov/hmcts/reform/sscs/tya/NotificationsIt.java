@@ -269,8 +269,6 @@ public class NotificationsIt {
             NotificationEventType notificationEventType, String hearingType, List<String> expectedEmailTemplateIds,
             List<String> expectedSmsTemplateIds, List<String> expectedLetterTemplateIds, String appellantEmailSubs, String appellantSmsSubs, String repsEmailSubs,
             String repsSmsSubs, int wantedNumberOfSendEmailInvocations, int wantedNumberOfSendSmsInvocations, int wantedNumberOfSendLetterInvocations) throws Exception {
-        String expectedName = "Harry Potter";
-
         json = updateEmbeddedJson(json, hearingType, "case_details", "case_data", "appeal", "hearingType");
         json = updateEmbeddedJson(json, appellantEmailSubs, "case_details", "case_data", "subscriptions",
                 "appellantSubscription", "subscribeEmail");
@@ -285,6 +283,7 @@ public class NotificationsIt {
         HttpServletResponse response = getResponse(getRequestWithAuthHeader(json));
         assertHttpStatus(response, HttpStatus.OK);
 
+        String expectedName = "Harry Potter";
         validateEmailNotifications(expectedEmailTemplateIds, wantedNumberOfSendEmailInvocations, expectedName);
         validateSmsNotifications(expectedSmsTemplateIds, wantedNumberOfSendSmsInvocations);
         validateLetterNotifications(expectedLetterTemplateIds, wantedNumberOfSendLetterInvocations, expectedName);
