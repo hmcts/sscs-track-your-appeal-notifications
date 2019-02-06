@@ -17,7 +17,7 @@ import uk.gov.hmcts.reform.sscs.factory.NotificationWrapper;
 
 @Service
 public class NotificationValidService {
-    public static final List<NotificationEventType> FALLBACK_SUBSCRIPTION_TYPES = Arrays.asList(INTERLOC_VALID_APPEAL, SYA_APPEAL_CREATED_NOTIFICATION);
+    public static final List<NotificationEventType> FALLBACK_LETTER_SUBSCRIPTION_TYPES = Arrays.asList(INTERLOC_VALID_APPEAL, SYA_APPEAL_CREATED_NOTIFICATION);
     private static final String HEARING_TYPE_ONLINE_RESOLUTION = "cor";
 
     static boolean isMandatoryLetter(NotificationEventType eventType) {
@@ -27,7 +27,8 @@ public class NotificationValidService {
     static boolean isFallbackLetterRequiredForSubscriptionType(NotificationWrapper wrapper, SubscriptionType subscriptionType, NotificationEventType eventType) {
         boolean result = false;
 
-        if (FALLBACK_SUBSCRIPTION_TYPES.contains(eventType)
+        if (FALLBACK_LETTER_SUBSCRIPTION_TYPES.contains(eventType)
+            && fallbackConditionsMet(wrapper, eventType)
             && (APPELLANT.equals(subscriptionType)
             || APPOINTEE.equals(subscriptionType)
             || (REPRESENTATIVE.equals(subscriptionType) && null != wrapper.getNewSscsCaseData().getAppeal().getRep()))) {
@@ -35,6 +36,15 @@ public class NotificationValidService {
         }
 
         return result;
+    }
+
+    static boolean fallbackConditionsMet(NotificationWrapper wrapper, NotificationEventType eventType) {
+        if (SYA_APPEAL_CREATED_NOTIFICATION.equals(eventType)) {
+            return (null == wrapper.getOldSscsCaseData() || wrapper.getOldSscsCaseData().getCaseReference().isEmpty())
+                && !wrapper.getNewSscsCaseData().getCaseReference().isEmpty();
+        }
+
+        return true;
     }
 
     static final boolean isBundledLetter(NotificationEventType eventType) {
