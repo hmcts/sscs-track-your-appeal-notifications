@@ -1,6 +1,4 @@
-FROM openjdk:8-jre
-
-WORKDIR /opt/app
+FROM hmcts/cnp-java-base:openjdk-jre-8-alpine-1.2
 
 COPY build/libs/track-your-appeal-notifications.jar ./
 
