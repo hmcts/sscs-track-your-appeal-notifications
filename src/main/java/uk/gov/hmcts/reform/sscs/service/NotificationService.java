@@ -98,21 +98,10 @@ public class NotificationService {
                 ? wrapper.getOldSscsCaseData().getSubscriptions().getAppointeeSubscription()
                 : wrapper.getOldSscsCaseData().getSubscriptions().getAppellantSubscription();
 
-            String emailAddress = null;
-            String smsNumber = null;
-
-            if (null != newSubscription.getEmail() && null != oldSubscription.getEmail()) {
-                emailAddress = newSubscription.getEmail().equals(oldSubscription.getEmail()) ? null : oldSubscription.getEmail();
-            } else if (null == newSubscription.getEmail() && null != oldSubscription.getEmail()) {
-                emailAddress = oldSubscription.getEmail();
-            }
-
-            if (null != newSubscription.getMobile() && null != oldSubscription.getMobile()) {
-                smsNumber = newSubscription.getMobile().equals(oldSubscription.getMobile()) ? null : oldSubscription.getMobile();
-            } else if (null == newSubscription.getMobile() && null != oldSubscription.getMobile()) {
-                smsNumber = oldSubscription.getMobile();
-            }
-
+            String emailAddress = oldSubscription.getEmail() != null
+                    && !oldSubscription.getEmail().equals(newSubscription.getEmail()) ? oldSubscription.getEmail() : null;
+            String smsNumber = oldSubscription.getMobile() != null
+                    && !oldSubscription.getMobile().equals(newSubscription.getMobile()) ? oldSubscription.getMobile() : null;
 
             Destination destination = Destination.builder().email(emailAddress).sms(smsNumber).build();
 
@@ -135,15 +124,5 @@ public class NotificationService {
 
             sendNotificationService.sendEmailSmsLetterNotification(wrapper, oldSubscription, oldNotification, subscriptionWithType);
         }
-    }
-
-    private String getSubscriptionDetails(String newSubscription, String oldSubscription) {
-        String subscription = "";
-        if (null != newSubscription && null != oldSubscription) {
-            subscription = newSubscription.equals(oldSubscription) ? null : oldSubscription;
-        } else if (null == newSubscription && null != oldSubscription) {
-            subscription = oldSubscription;
-        }
-        return subscription;
     }
 }
