@@ -35,8 +35,6 @@ import org.junit.runner.RunWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import uk.gov.hmcts.reform.sscs.ccd.domain.*;
-import uk.gov.hmcts.reform.sscs.config.AppConstants;
-import uk.gov.hmcts.reform.sscs.config.AppealHearingType;
 import uk.gov.hmcts.reform.sscs.config.NotificationConfig;
 import uk.gov.hmcts.reform.sscs.config.SubscriptionType;
 import uk.gov.hmcts.reform.sscs.domain.SscsCaseDataWrapper;
@@ -182,7 +180,6 @@ public class PersonalisationTest {
                 new Object[]{SYA_APPEAL_CREATED_NOTIFICATION, APPOINTEE, PAPER},
                 new Object[]{SYA_APPEAL_CREATED_NOTIFICATION, APPOINTEE, REGULAR},
                 new Object[]{SYA_APPEAL_CREATED_NOTIFICATION, APPOINTEE, ONLINE},
-                new Object[]{DWP_RESPONSE_RECEIVED_NOTIFICATION, null, ONLINE},
                 new Object[]{APPEAL_DORMANT_NOTIFICATION, APPELLANT, PAPER},
                 new Object[]{INTERLOC_VALID_APPEAL, APPELLANT, PAPER},
                 new Object[]{INTERLOC_VALID_APPEAL, APPELLANT, ORAL},

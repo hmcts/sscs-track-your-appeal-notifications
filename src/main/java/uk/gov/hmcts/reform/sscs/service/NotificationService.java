@@ -11,7 +11,11 @@ import uk.gov.hmcts.reform.sscs.ccd.domain.Benefit;
 import uk.gov.hmcts.reform.sscs.ccd.domain.Subscription;
 import uk.gov.hmcts.reform.sscs.config.NotificationConfig;
 import uk.gov.hmcts.reform.sscs.domain.SubscriptionWithType;
-import uk.gov.hmcts.reform.sscs.domain.notify.*;
+import uk.gov.hmcts.reform.sscs.domain.notify.Destination;
+import uk.gov.hmcts.reform.sscs.domain.notify.Notification;
+import uk.gov.hmcts.reform.sscs.domain.notify.NotificationEventType;
+import uk.gov.hmcts.reform.sscs.domain.notify.Reference;
+import uk.gov.hmcts.reform.sscs.domain.notify.Template;
 import uk.gov.hmcts.reform.sscs.factory.NotificationFactory;
 import uk.gov.hmcts.reform.sscs.factory.NotificationWrapper;
 
@@ -60,31 +64,29 @@ public class NotificationService {
                                                  NotificationEventType notificationType) {
         for (SubscriptionWithType subscriptionWithType : notificationWrapper.getSubscriptionsBasedOnNotificationType()) {
 
-            if (isValidNotification(notificationWrapper, subscriptionWithType.getSubscription(), notificationType)) {
+            if (isValidNotification(notificationWrapper, subscriptionWithType, notificationType)) {
 
                 Notification notification = notificationFactory.create(notificationWrapper, subscriptionWithType.getSubscriptionType());
 
-                sendNotificationService.sendEmailSmsLetterNotification(notificationWrapper, subscriptionWithType.getSubscription(), notification);
-                processOldSubscriptionNotifications(notificationWrapper, notification);
+                sendNotificationService.sendEmailSmsLetterNotification(notificationWrapper, subscriptionWithType.getSubscription(), notification, subscriptionWithType);
+                processOldSubscriptionNotifications(notificationWrapper, notification, subscriptionWithType);
                 reminderService.createReminders(notificationWrapper);
             }
         }
     }
 
-    private boolean isValidNotification(NotificationWrapper wrapper, SubscriptionWithType
-            subscriptionWithType) {
+    private boolean isValidNotification(NotificationWrapper wrapper, SubscriptionWithType subscriptionWithType,
+                                        NotificationEventType notificationType) {
         Subscription subscription = subscriptionWithType.getSubscription();
-        NotificationEventType notificationType = wrapper.getNotificationType();
 
-        return (isMandatoryLetter(wrapper.getNotificationType())
-            || ((subscription != null && subscription.doesCaseHaveSubscriptions()
-            || (subscription != null && !subscription.doesCaseHaveSubscriptions() && isFallbackLetterRequiredForSubscriptionType(wrapper, subscriptionWithType.getSubscriptionType(), notificationType)
-            || subscription == null && isFallbackLetterRequiredForSubscriptionType(wrapper, subscriptionWithType.getSubscriptionType(), notificationType)))
+        return (isMandatoryLetter(notificationType)
+                || (subscription != null && !subscription.doesCaseHaveSubscriptions() && isFallbackLetterRequiredForSubscriptionType(wrapper, subscriptionWithType.getSubscriptionType(), notificationType))
+                || (subscription != null && subscription.doesCaseHaveSubscriptions()
             && notificationValidService.isNotificationStillValidToSend(wrapper.getNewSscsCaseData().getHearings(), notificationType)
             && notificationValidService.isHearingTypeValidToSendNotification(wrapper.getNewSscsCaseData(), notificationType)));
     }
 
-    private void processOldSubscriptionNotifications(NotificationWrapper wrapper, Notification notification) {
+    private void processOldSubscriptionNotifications(NotificationWrapper wrapper, Notification notification, SubscriptionWithType subscriptionWithType) {
         if (wrapper.getNotificationType() == NotificationEventType.SUBSCRIPTION_UPDATED_NOTIFICATION) {
             boolean hasAppointee = wrapper.getNewSscsCaseData().getAppeal().getAppellant().getAppointee() != null;
 
@@ -96,8 +98,21 @@ public class NotificationService {
                 ? wrapper.getOldSscsCaseData().getSubscriptions().getAppointeeSubscription()
                 : wrapper.getOldSscsCaseData().getSubscriptions().getAppellantSubscription();
 
-            String emailAddress = getSubscriptionDetails(newSubscription.getEmail(), oldSubscription.getEmail());
-            String smsNumber = getSubscriptionDetails(newSubscription.getMobile(), oldSubscription.getMobile());
+            String emailAddress = null;
+            String smsNumber = null;
+
+            if (null != newSubscription.getEmail() && null != oldSubscription.getEmail()) {
+                emailAddress = newSubscription.getEmail().equals(oldSubscription.getEmail()) ? null : oldSubscription.getEmail();
+            } else if (null == newSubscription.getEmail() && null != oldSubscription.getEmail()) {
+                emailAddress = oldSubscription.getEmail();
+            }
+
+            if (null != newSubscription.getMobile() && null != oldSubscription.getMobile()) {
+                smsNumber = newSubscription.getMobile().equals(oldSubscription.getMobile()) ? null : oldSubscription.getMobile();
+            } else if (null == newSubscription.getMobile() && null != oldSubscription.getMobile()) {
+                smsNumber = oldSubscription.getMobile();
+            }
+
 
             Destination destination = Destination.builder().email(emailAddress).sms(smsNumber).build();
 

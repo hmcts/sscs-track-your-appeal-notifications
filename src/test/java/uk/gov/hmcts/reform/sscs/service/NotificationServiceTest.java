@@ -161,25 +161,6 @@ public class NotificationServiceTest {
 
     }
 
-    @Test
-    @Parameters(method = "generateNotificationTypeAndSubscriptionsScenarios_forLetters")
-    public void givenNotificationEventTypeAndDifferentSubscriptionCombinations_shouldManageLettersAccordingly(
-            NotificationEventType notificationEventType, int wantedNumberOfLetterSent,
-            Subscription appellantSubscription, Subscription repsSubscription, Subscription appointeeSubscription,
-            SubscriptionType[] expectedSubscriptionTypes) {
-
-        ccdNotificationWrapper = invokeNotificationService(notificationEventType, appellantSubscription, repsSubscription, appointeeSubscription);
-
-        ArgumentCaptor<SubscriptionType> subscriptionTypeCaptor = ArgumentCaptor.forClass(SubscriptionType.class);
-        then(factory).should(times(expectedSubscriptionTypes.length))
-                .create(any(NotificationWrapper.class), subscriptionTypeCaptor.capture());
-        assertArrayEquals(expectedSubscriptionTypes, subscriptionTypeCaptor.getAllValues().toArray());
-
-        then(notificationHandler).should(times(wantedNumberOfLetterSent)).sendNotification(
-                eq(ccdNotificationWrapper), eq(LETTER_TEMPLATE_ID), eq("Letter"),
-                any(NotificationHandler.SendNotification.class));
-    }
-
     private CcdNotificationWrapper invokeNotificationService(NotificationEventType notificationEventType, Subscription appellantSubscription, Subscription repsSubscription, Subscription appointeeSubscription) {
 
         given(notificationValidService.isHearingTypeValidToSendNotification(
@@ -427,99 +408,7 @@ public class NotificationServiceTest {
                         Subscription.builder().build(),
                         Subscription.builder().build(),
                         new SubscriptionType[]{},
-                },
-                new Object[]{
-                        INTERLOC_VALID_APPEAL,
-                        2,
-                        0,
-                        Subscription.builder()
-                                .tya(APPEAL_NUMBER)
-                                .email(EMAIL)
-                                .subscribeEmail(YES)
-                                .mobile(MOBILE_NUMBER_1)
-                                .build(),
-                        Subscription.builder()
-                                .tya(APPEAL_NUMBER)
-                                .email(EMAIL)
-                                .subscribeEmail(YES)
-                                .mobile(MOBILE_NUMBER_1)
-                                .build(),
-                        Subscription.builder()
-                                .tya(APPEAL_NUMBER)
-                                .email(EMAIL)
-                                .subscribeEmail(YES)
-                                .mobile(MOBILE_NUMBER_1)
-                                .build(),
-                        new SubscriptionType[]{APPOINTEE, REPRESENTATIVE},
-                },
-                new Object[]{
-                        INTERLOC_VALID_APPEAL,
-                        1,
-                        0,
-                        Subscription.builder()
-                                .tya(APPEAL_NUMBER)
-                                .mobile(MOBILE_NUMBER_1)
-                                .build(),
-                        Subscription.builder()
-                                .tya(APPEAL_NUMBER)
-                                .email(EMAIL)
-                                .subscribeEmail(YES)
-                                .mobile(MOBILE_NUMBER_1)
-                                .build(),
-                        Subscription.builder()
-                                .tya(APPEAL_NUMBER)
-                                .mobile(MOBILE_NUMBER_1)
-                                .build(),
-                        new SubscriptionType[]{APPOINTEE, REPRESENTATIVE},
-                },
-                new Object[]{
-                        INTERLOC_VALID_APPEAL,
-                        0,
-                        0,
-                        Subscription.builder()
-                                .tya(APPEAL_NUMBER)
-                                .mobile(MOBILE_NUMBER_1)
-                                .build(),
-                        Subscription.builder()
-                                .tya(APPEAL_NUMBER)
-                                .mobile(MOBILE_NUMBER_1)
-                                .build(),
-                        Subscription.builder()
-                                .tya(APPEAL_NUMBER)
-                                .mobile(MOBILE_NUMBER_1)
-                                .build(),
-                        new SubscriptionType[]{APPOINTEE, REPRESENTATIVE},
                 }
-        };
-    }
-
-    @SuppressWarnings("Indentation")
-    private Object[] generateNotificationTypeAndSubscriptionsScenarios_forLetters() {
-        return new Object[]{
-                new Object[]{
-                        EVIDENCE_RECEIVED_NOTIFICATION,
-                        2,
-                        Subscription.builder().build(),
-                        Subscription.builder().build(),
-                        null,
-                        new SubscriptionType[]{APPELLANT, REPRESENTATIVE},
-                },
-                new Object[]{
-                        EVIDENCE_RECEIVED_NOTIFICATION,
-                        0,
-                        Subscription.builder()
-                                .tya(APPEAL_NUMBER)
-                                .email(EMAIL)
-                                .subscribeEmail(YES)
-                                .build(),
-                        Subscription.builder()
-                                .tya(APPEAL_NUMBER)
-                                .email(EMAIL)
-                                .subscribeEmail(YES)
-                                .build(),
-                        null,
-                        new SubscriptionType[]{APPELLANT, REPRESENTATIVE},
-                },
         };
     }
 

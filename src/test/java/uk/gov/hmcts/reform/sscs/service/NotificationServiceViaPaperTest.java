@@ -19,6 +19,7 @@ import org.springframework.test.util.ReflectionTestUtils;
 import uk.gov.hmcts.reform.sscs.ccd.domain.Appeal;
 import uk.gov.hmcts.reform.sscs.ccd.domain.Appellant;
 import uk.gov.hmcts.reform.sscs.ccd.domain.Appointee;
+import uk.gov.hmcts.reform.sscs.ccd.domain.Name;
 import uk.gov.hmcts.reform.sscs.ccd.domain.Representative;
 import uk.gov.hmcts.reform.sscs.ccd.domain.SscsCaseData;
 import uk.gov.hmcts.reform.sscs.ccd.domain.Subscription;
@@ -128,7 +129,7 @@ public class NotificationServiceViaPaperTest {
 
     private SscsCaseData appellantRepCase(String receivedVia) {
         SscsCaseData caseData = appellantCase(receivedVia);
-        caseData.getAppeal().setRep(Representative.builder().build());
+        caseData.getAppeal().setRep(rep());
         caseData.setSubscriptions(Subscriptions.builder()
                 .appellantSubscription(Subscription.builder().build())
                 .representativeSubscription(Subscription.builder().build())
@@ -138,7 +139,7 @@ public class NotificationServiceViaPaperTest {
 
     private SscsCaseData appointeeRepCase(String receivedVia) {
         SscsCaseData caseData = appointeeCase(receivedVia);
-        caseData.getAppeal().setRep(Representative.builder().build());
+        caseData.getAppeal().setRep(rep());
         caseData.setSubscriptions(Subscriptions.builder()
                 .appointeeSubscription(Subscription.builder().build())
                 .representativeSubscription(Subscription.builder().build())
@@ -148,21 +149,43 @@ public class NotificationServiceViaPaperTest {
 
     private SscsCaseData appointeeCase(String receivedVia) {
         SscsCaseData caseData = appellantCase(receivedVia);
-        caseData.getAppeal().getAppellant().setAppointee(Appointee.builder().build());
+        caseData.getAppeal().getAppellant().setAppointee(appointee());
         caseData.setSubscriptions(Subscriptions.builder()
                 .appointeeSubscription(Subscription.builder().build())
                 .build());
         return caseData;
     }
 
+    private Representative rep() {
+        return Representative.builder().hasRepresentative("Yes").build();
+    }
+
     private SscsCaseData appellantCase(String receivedVia) {
         return SscsCaseData.builder()
                 .appeal(Appeal.builder()
-                        .appellant(Appellant.builder().build())
+                        .appellant(appellant())
                         .hearingType(AppealHearingType.ORAL.name())
                         .receivedVia(receivedVia)
                         .build())
                 .subscriptions(Subscriptions.builder().appellantSubscription(Subscription.builder().build()).build())
+                .build();
+    }
+
+    private Appellant appellant() {
+        return Appellant.builder()
+                .name(Name.builder()
+                        .firstName("Appellant")
+                        .lastName("One")
+                        .build())
+                .build();
+    }
+
+    private Appointee appointee() {
+        return Appointee.builder()
+                .name(Name.builder()
+                        .firstName("Appointee")
+                        .lastName("One")
+                        .build())
                 .build();
     }
 

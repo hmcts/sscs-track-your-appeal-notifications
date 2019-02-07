@@ -128,17 +128,6 @@ public class CcdNotificationWrapperTest {
     }
 
     @Test
-    @Parameters({"INTERLOC_VALID_APPEAL"})
-    public void givenSubscriptions_shouldGetAppointeeAndRepSubscriptionTypeList(NotificationEventType notificationEventType) {
-        ccdNotificationWrapper = buildCcdNotificationWrapperBasedOnEventTypeWithAppointee(notificationEventType);
-        List<SubscriptionWithType> subsWithTypeList = ccdNotificationWrapper.getSubscriptionsBasedOnNotificationType();
-        Assert.assertEquals(2,subsWithTypeList.size());
-        Assert.assertEquals(SubscriptionType.APPOINTEE, subsWithTypeList.get(0).getSubscriptionType());
-        Assert.assertEquals(SubscriptionType.REPRESENTATIVE, subsWithTypeList.get(1).getSubscriptionType());
-    }
-
-
-    @Test
     @Parameters({"SYA_APPEAL_CREATED_NOTIFICATION, cor", "DWP_RESPONSE_RECEIVED_NOTIFICATION, oral"})
     public void givenSubscriptions_shouldGetSubscriptionTypeListWithAppointee(NotificationEventType notificationEventType, String hearingType) {
         ccdNotificationWrapper = buildCcdNotificationWrapperBasedOnEventTypeWithAppointee(notificationEventType, hearingType);
@@ -152,9 +141,8 @@ public class CcdNotificationWrapperTest {
     public void givenSubscriptions_shouldGetSubscriptionTypeListWithoutAppointee(NotificationEventType notificationEventType) {
         ccdNotificationWrapper = buildCcdNotificationWrapperBasedOnEventTypeWithoutAppointee(notificationEventType);
         List<SubscriptionWithType> subsWithTypeList = ccdNotificationWrapper.getSubscriptionsBasedOnNotificationType();
-        Assert.assertEquals(2,subsWithTypeList.size());
-        Assert.assertEquals(SubscriptionType.APPOINTEE, subsWithTypeList.get(0).getSubscriptionType());
-        Assert.assertEquals(SubscriptionType.REPRESENTATIVE, subsWithTypeList.get(1).getSubscriptionType());
+        Assert.assertEquals(1,subsWithTypeList.size());
+        Assert.assertEquals(SubscriptionType.APPELLANT, subsWithTypeList.get(0).getSubscriptionType());
     }
 
     @Test
