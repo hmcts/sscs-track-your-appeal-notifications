@@ -93,13 +93,16 @@ public class SendNotificationServiceTest {
     @Mock
     private NotificationHandler notificationHandler;
 
+    @Mock
+    private NotificationValidService notificationValidService;
+
     private SendNotificationService classUnderTest;
 
     @Before
     public void setup() {
         initMocks(this);
 
-        classUnderTest = new SendNotificationService(notificationSender, evidenceManagementService, pdfService, notificationHandler);
+        classUnderTest = new SendNotificationService(notificationSender, evidenceManagementService, pdfService, notificationHandler, notificationValidService);
         classUnderTest.bundledLettersOn = true;
         classUnderTest.lettersOn = true;
     }

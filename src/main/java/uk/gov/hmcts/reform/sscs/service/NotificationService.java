@@ -72,8 +72,8 @@ public class NotificationService {
             subscriptionWithType, NotificationEventType notificationType) {
         Subscription subscription = subscriptionWithType.getSubscription();
 
-        return (isMandatoryLetter(notificationType)
-            || (isFallbackLetterRequired(wrapper, subscriptionWithType, subscription, notificationType)
+        return (isMandatoryLetterEventType(notificationType)
+            || (isFallbackLetterRequired(wrapper, subscriptionWithType, subscription, notificationType, notificationValidService)
             && isOkToSendNotification(wrapper, notificationType, notificationValidService)));
     }
 

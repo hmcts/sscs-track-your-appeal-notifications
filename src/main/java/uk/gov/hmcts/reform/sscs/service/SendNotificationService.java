@@ -5,6 +5,8 @@ import static uk.gov.hmcts.reform.sscs.config.SubscriptionType.APPELLANT;
 import static uk.gov.hmcts.reform.sscs.config.SubscriptionType.APPOINTEE;
 import static uk.gov.hmcts.reform.sscs.domain.notify.NotificationEventType.STRUCK_OUT;
 import static uk.gov.hmcts.reform.sscs.service.LetterUtils.*;
+import static uk.gov.hmcts.reform.sscs.service.NotificationUtils.isOkToSendEmailNotification;
+import static uk.gov.hmcts.reform.sscs.service.NotificationUtils.isOkToSendSmsNotification;
 import static uk.gov.hmcts.reform.sscs.service.NotificationValidService.isBundledLetter;
 
 import java.io.IOException;
@@ -41,6 +43,7 @@ public class SendNotificationService {
     private final EvidenceManagementService evidenceManagementService;
     private final SscsGeneratePdfService sscsGeneratePdfService;
     private final NotificationHandler notificationHandler;
+    private final NotificationValidService notificationValidService;
 
     @Value("${noncompliantcaseletter.appeal.html.template.path}")
     String noncompliantcaseletterTemplate;
@@ -50,12 +53,14 @@ public class SendNotificationService {
             NotificationSender notificationSender,
             EvidenceManagementService evidenceManagementService,
             SscsGeneratePdfService sscsGeneratePdfService,
-            NotificationHandler notificationHandler
+            NotificationHandler notificationHandler,
+            NotificationValidService notificationValidService
     ) {
         this.notificationSender = notificationSender;
         this.evidenceManagementService = evidenceManagementService;
         this.sscsGeneratePdfService = sscsGeneratePdfService;
         this.notificationHandler = notificationHandler;
+        this.notificationValidService = notificationValidService;
     }
 
     void sendEmailSmsLetterNotification(
@@ -82,7 +87,7 @@ public class SendNotificationService {
     }
 
     private void sendSmsNotification(NotificationWrapper wrapper, Subscription subscription, Notification notification) {
-        if (subscription != null && subscription.isSmsSubscribed() && notification.isSms() && notification.getSmsTemplate() != null) {
+        if (isOkToSendSmsNotification(wrapper, subscription, notification, notificationValidService)) {
             NotificationHandler.SendNotification sendNotification = () ->
                     notificationSender.sendSms(
                             notification.getSmsTemplate(),
@@ -97,9 +102,7 @@ public class SendNotificationService {
     }
 
     private void sendEmailNotification(NotificationWrapper wrapper, Subscription subscription, Notification notification) {
-        if (subscription != null && subscription.isEmailSubscribed()
-            && notification.isEmail()
-            && notification.getEmailTemplate() != null) {
+        if (isOkToSendEmailNotification(wrapper, subscription, notification, notificationValidService)) {
             NotificationHandler.SendNotification sendNotification = () ->
                     notificationSender.sendEmail(
                             notification.getEmailTemplate(),

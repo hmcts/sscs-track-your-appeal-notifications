@@ -2,7 +2,6 @@ package uk.gov.hmcts.reform.sscs.service;
 
 import static uk.gov.hmcts.reform.sscs.domain.notify.NotificationEventType.HEARING_BOOKED_NOTIFICATION;
 import static uk.gov.hmcts.reform.sscs.domain.notify.NotificationEventType.STRUCK_OUT;
-import static uk.gov.hmcts.reform.sscs.service.NotificationValidService.isFallbackLetterRequiredForSubscriptionType;
 
 import java.util.Arrays;
 import java.util.List;
@@ -10,11 +9,12 @@ import java.util.List;
 import uk.gov.hmcts.reform.sscs.ccd.domain.Subscription;
 import uk.gov.hmcts.reform.sscs.domain.SscsCaseDataWrapper;
 import uk.gov.hmcts.reform.sscs.domain.SubscriptionWithType;
+import uk.gov.hmcts.reform.sscs.domain.notify.Notification;
 import uk.gov.hmcts.reform.sscs.domain.notify.NotificationEventType;
 import uk.gov.hmcts.reform.sscs.factory.NotificationWrapper;
 
 public class NotificationUtils {
-    private static final List<NotificationEventType> MANDATORY_LETTERS = Arrays.asList(HEARING_BOOKED_NOTIFICATION);
+    private static final List<NotificationEventType> MANDATORY_LETTERS = Arrays.asList(STRUCK_OUT, HEARING_BOOKED_NOTIFICATION);
 
     private NotificationUtils() {
         // empty
@@ -45,10 +45,6 @@ public class NotificationUtils {
         return null != wrapper.getNewSscsCaseData().getSubscriptions().getRepresentativeSubscription();
     }
 
-    static boolean isMandatoryLetter(NotificationEventType eventType) {
-        return STRUCK_OUT.equals(eventType);
-    }
-
     public static boolean isMandatoryLetterEventType(NotificationEventType eventType) {
         return MANDATORY_LETTERS.contains(eventType);
     }
@@ -58,9 +54,25 @@ public class NotificationUtils {
             && notificationValidService.isHearingTypeValidToSendNotification(wrapper.getNewSscsCaseData(), notificationType);
     }
 
-    static boolean isFallbackLetterRequired(NotificationWrapper wrapper, SubscriptionWithType subscriptionWithType, Subscription subscription, NotificationEventType eventType) {
+    static boolean isFallbackLetterRequired(NotificationWrapper wrapper, SubscriptionWithType subscriptionWithType, Subscription subscription, NotificationEventType eventType, NotificationValidService notificationValidService) {
         return (subscription != null && subscription.doesCaseHaveSubscriptions()
-            || (subscription != null && !subscription.doesCaseHaveSubscriptions() && isFallbackLetterRequiredForSubscriptionType(wrapper, subscriptionWithType.getSubscriptionType(), eventType)
-            || subscription == null && isFallbackLetterRequiredForSubscriptionType(wrapper, subscriptionWithType.getSubscriptionType(), eventType)));
+            || (subscription != null && !subscription.doesCaseHaveSubscriptions() && notificationValidService.isFallbackLetterRequiredForSubscriptionType(wrapper, subscriptionWithType.getSubscriptionType(), eventType)
+            || subscription == null && notificationValidService.isFallbackLetterRequiredForSubscriptionType(wrapper, subscriptionWithType.getSubscriptionType(), eventType)));
+    }
+
+    protected static boolean isOkToSendSmsNotification(NotificationWrapper wrapper, Subscription subscription, Notification notification, NotificationValidService notificationValidService) {
+        return subscription != null
+            && subscription.isSmsSubscribed()
+            && notification.isSms()
+            && notification.getSmsTemplate() != null
+            && isOkToSendNotification(wrapper, wrapper.getNotificationType(), notificationValidService);
+    }
+
+    protected static boolean isOkToSendEmailNotification(NotificationWrapper wrapper, Subscription subscription, Notification notification, NotificationValidService notificationValidService) {
+        return subscription != null
+            && subscription.isEmailSubscribed()
+            && notification.isEmail()
+            && notification.getEmailTemplate() != null
+            && isOkToSendNotification(wrapper, wrapper.getNotificationType(), notificationValidService);
     }
 }
