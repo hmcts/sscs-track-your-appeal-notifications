@@ -69,20 +69,16 @@ public class SendNotificationService {
             Notification notification,
             SubscriptionWithType subscriptionWithType,
             NotificationEventType eventType) {
-        sendEmailNotification(wrapper, subscription, notification);
-        sendSmsNotification(wrapper, subscription, notification);
+        sendEmailNotification(wrapper, subscription, notification, eventType);
+        sendSmsNotification(wrapper, subscription, notification, eventType);
 
         if (lettersOn) {
             sendLetterNotification(wrapper, subscription, notification, subscriptionWithType, eventType);
         }
-
-        if (bundledLettersOn && isBundledLetter(wrapper.getNotificationType())) {
-            sendBundledLetterNotificationToAppellant(wrapper, notification, subscriptionWithType.getSubscriptionType());
-        }
     }
 
-    private void sendSmsNotification(NotificationWrapper wrapper, Subscription subscription, Notification notification) {
-        if (isOkToSendSmsNotification(wrapper, subscription, notification, notificationValidService)) {
+    private void sendSmsNotification(NotificationWrapper wrapper, Subscription subscription, Notification notification, NotificationEventType eventType) {
+        if (isOkToSendSmsNotification(wrapper, subscription, notification, eventType, notificationValidService)) {
             NotificationHandler.SendNotification sendNotification = () ->
                     notificationSender.sendSms(
                             notification.getSmsTemplate(),
@@ -96,8 +92,8 @@ public class SendNotificationService {
         }
     }
 
-    private void sendEmailNotification(NotificationWrapper wrapper, Subscription subscription, Notification notification) {
-        if (isOkToSendEmailNotification(wrapper, subscription, notification, notificationValidService)) {
+    private void sendEmailNotification(NotificationWrapper wrapper, Subscription subscription, Notification notification, NotificationEventType eventType) {
+        if (isOkToSendEmailNotification(wrapper, subscription, notification, eventType, notificationValidService)) {
             NotificationHandler.SendNotification sendNotification = () ->
                     notificationSender.sendEmail(
                             notification.getEmailTemplate(),
@@ -116,13 +112,18 @@ public class SendNotificationService {
     }
 
     private void sendMandatoryLetterNotification(NotificationWrapper wrapper, Notification notification, SubscriptionType subscriptionType) {
-        if (hasLetterTemplate(notification) && isMandatoryLetter(wrapper.getNotificationType())) {
+        if (hasLetterTemplate(notification) && isMandatoryLetterEventType(wrapper.getNotificationType())) {
             NotificationHandler.SendNotification sendNotification = () -> {
                 Address addressToUse = getAddressToUseForLetter(wrapper, subscriptionType);
 
                 sendLetterNotificationToAddress(wrapper, notification, addressToUse);
             };
-            notificationHandler.sendNotification(wrapper, notification.getLetterTemplate(), NOTIFICATION_TYPE_LETTER, sendNotification);
+
+            if (bundledLettersOn && isBundledLetter(wrapper.getNotificationType())) {
+                sendBundledLetterNotificationToAppellant(wrapper, notification, subscriptionType);
+            } else {
+                notificationHandler.sendNotification(wrapper, notification.getLetterTemplate(), NOTIFICATION_TYPE_LETTER, sendNotification);
+            }
         }
     }
 
@@ -133,7 +134,12 @@ public class SendNotificationService {
 
                 sendLetterNotificationToAddress(wrapper, notification, addressToUse);
             };
-            notificationHandler.sendNotification(wrapper, notification.getLetterTemplate(), NOTIFICATION_TYPE_LETTER, sendNotification);
+
+            if (bundledLettersOn && isBundledLetter(wrapper.getNotificationType())) {
+                sendBundledLetterNotificationToAppellant(wrapper, notification, subscriptionWithType.getSubscriptionType());
+            } else {
+                notificationHandler.sendNotification(wrapper, notification.getLetterTemplate(), NOTIFICATION_TYPE_LETTER, sendNotification);
+            }
         }
     }
 

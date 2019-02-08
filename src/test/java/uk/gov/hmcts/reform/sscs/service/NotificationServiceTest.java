@@ -182,7 +182,6 @@ public class NotificationServiceTest {
         then(notificationHandler).should(times(wantedNumberOfSmsNotificationsSent)).sendNotification(
                 eq(ccdNotificationWrapper), eq(SMS_TEMPLATE_ID), eq("SMS"),
                 any(NotificationHandler.SendNotification.class));
-
     }
 
     @Test
@@ -542,48 +541,49 @@ public class NotificationServiceTest {
                                 .tya(APPEAL_NUMBER)
                                 .email(EMAIL)
                                 .subscribeEmail(YES)
-                                .mobile(MOBILE_NUMBER_1)
                                 .build(),
                         Subscription.builder()
                                 .tya(APPEAL_NUMBER)
                                 .email(EMAIL)
                                 .subscribeEmail(YES)
-                                .mobile(MOBILE_NUMBER_1)
                                 .build(),
                         new SubscriptionType[]{APPOINTEE, REPRESENTATIVE},
                 },
                 new Object[]{
                     CASE_UPDATED,
                         1,
-                        0,
+                        1,
                         null,
                         Subscription.builder()
                                 .tya(APPEAL_NUMBER)
                                 .email(EMAIL)
                                 .subscribeEmail(YES)
-                                .mobile(MOBILE_NUMBER_1)
                                 .build(),
                         Subscription.builder()
                                 .tya(APPEAL_NUMBER)
                                 .mobile(MOBILE_NUMBER_1)
+                                .subscribeSms(YES)
                                 .build(),
                         new SubscriptionType[]{APPOINTEE, REPRESENTATIVE},
                 },
                 new Object[]{
                     CASE_UPDATED,
                         0,
-                        0,
+                        2,
                         Subscription.builder()
                                 .tya(APPEAL_NUMBER)
                                 .mobile(MOBILE_NUMBER_1)
+                                .subscribeSms("Yes")
                                 .build(),
                         Subscription.builder()
                                 .tya(APPEAL_NUMBER)
                                 .mobile(MOBILE_NUMBER_1)
+                                .subscribeSms("Yes")
                                 .build(),
                         Subscription.builder()
                                 .tya(APPEAL_NUMBER)
                                 .mobile(MOBILE_NUMBER_1)
+                                .subscribeSms(YES)
                                 .build(),
                         new SubscriptionType[]{APPOINTEE, REPRESENTATIVE},
                 }
