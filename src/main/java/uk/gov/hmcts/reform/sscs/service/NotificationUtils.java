@@ -55,9 +55,9 @@ public class NotificationUtils {
     }
 
     static boolean isFallbackLetterRequired(NotificationWrapper wrapper, SubscriptionWithType subscriptionWithType, Subscription subscription, NotificationEventType eventType, NotificationValidService notificationValidService) {
-        return (subscription != null && subscription.doesCaseHaveSubscriptions()
-            || (subscription != null && !subscription.doesCaseHaveSubscriptions() && notificationValidService.isFallbackLetterRequiredForSubscriptionType(wrapper, subscriptionWithType.getSubscriptionType(), eventType)
-            || subscription == null && notificationValidService.isFallbackLetterRequiredForSubscriptionType(wrapper, subscriptionWithType.getSubscriptionType(), eventType)));
+        return (subscription != null && subscription.doesCaseHaveSubscriptions())
+            || (subscription != null && !subscription.doesCaseHaveSubscriptions() && notificationValidService.isFallbackLetterRequiredForSubscriptionType(wrapper, subscriptionWithType.getSubscriptionType(), eventType))
+            || (subscription == null && notificationValidService.isFallbackLetterRequiredForSubscriptionType(wrapper, subscriptionWithType.getSubscriptionType(), eventType));
     }
 
     protected static boolean isOkToSendSmsNotification(NotificationWrapper wrapper, Subscription subscription, Notification notification, NotificationValidService notificationValidService) {

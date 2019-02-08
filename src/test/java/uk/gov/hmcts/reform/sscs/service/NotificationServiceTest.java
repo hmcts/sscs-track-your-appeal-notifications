@@ -153,6 +153,8 @@ public class NotificationServiceTest {
         given(notificationValidService.isNotificationStillValidToSend(anyList(), eq(notificationEventType)))
                 .willReturn(true);
 
+        given(notificationValidService.isFallbackLetterRequiredForSubscriptionType(any(), any(), any())).willReturn(true);
+
         given(factory.create(any(NotificationWrapper.class), any(SubscriptionType.class)))
                 .willReturn(new Notification(
                         Template.builder()
@@ -215,6 +217,10 @@ public class NotificationServiceTest {
         given(notificationValidService.isNotificationStillValidToSend(anyList(), eq(notificationEventType)))
             .willReturn(true);
 
+        if (0 != expectedSubscriptionTypes.length) {
+            given(notificationValidService.isFallbackLetterRequiredForSubscriptionType(any(), any(), any())).willReturn(true);
+        }
+
         given(factory.create(any(NotificationWrapper.class), any(SubscriptionType.class)))
             .willReturn(new Notification(
                 Template.builder()
@@ -260,6 +266,8 @@ public class NotificationServiceTest {
 
         given(notificationValidService.isNotificationStillValidToSend(anyList(), eq(notificationEventType)))
             .willReturn(true);
+
+        given(notificationValidService.isFallbackLetterRequiredForSubscriptionType(any(), any(), any())).willReturn(true);
 
         given(factory.create(any(NotificationWrapper.class), any(SubscriptionType.class)))
             .willReturn(new Notification(

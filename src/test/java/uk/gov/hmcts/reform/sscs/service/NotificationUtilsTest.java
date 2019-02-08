@@ -27,9 +27,6 @@ import uk.gov.hmcts.reform.sscs.domain.notify.*;
 import uk.gov.hmcts.reform.sscs.factory.CcdNotificationWrapper;
 import uk.gov.hmcts.reform.sscs.factory.NotificationWrapper;
 
-import java.util.ArrayList;
-import java.util.Collections;
-
 @RunWith(JUnitParamsRunner.class)
 public class NotificationUtilsTest {
     @Mock
