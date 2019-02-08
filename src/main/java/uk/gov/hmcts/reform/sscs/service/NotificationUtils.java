@@ -2,8 +2,8 @@ package uk.gov.hmcts.reform.sscs.service;
 
 import static uk.gov.hmcts.reform.sscs.config.SubscriptionType.APPELLANT;
 import static uk.gov.hmcts.reform.sscs.config.SubscriptionType.APPOINTEE;
+import static uk.gov.hmcts.reform.sscs.config.SubscriptionType.REPRESENTATIVE;
 import static uk.gov.hmcts.reform.sscs.domain.notify.NotificationEventType.HEARING_BOOKED_NOTIFICATION;
-import static uk.gov.hmcts.reform.sscs.service.NotificationValidService.isFallbackLetterRequiredForSubscriptionType;
 
 import java.util.Arrays;
 import java.util.List;
@@ -95,9 +95,10 @@ public class NotificationUtils {
         return !subscription.isSmsSubscribed() && !subscription.isEmailSubscribed();
     }
 
-    public static final boolean isAppointeeOrAppellantSubscription(SubscriptionType subscriptionType) {
+    public static final boolean hasSubscription(NotificationWrapper wrapper, SubscriptionType subscriptionType) {
         return APPELLANT.equals(subscriptionType)
-            || APPOINTEE.equals(subscriptionType);
+            || APPOINTEE.equals(subscriptionType)
+            || (REPRESENTATIVE.equals(subscriptionType) && null != wrapper.getNewSscsCaseData().getAppeal().getRep());
     }
 
     public static boolean isMandatoryLetter(NotificationEventType eventType) {
@@ -108,10 +109,5 @@ public class NotificationUtils {
         return subscription != null && subscription.doesCaseHaveSubscriptions()
             && notificationValidService.isNotificationStillValidToSend(wrapper.getNewSscsCaseData().getHearings(), notificationType)
             && notificationValidService.isHearingTypeValidToSendNotification(wrapper.getNewSscsCaseData(), notificationType);
-    }
-
-    static boolean isFallbackLetterRequired(NotificationWrapper wrapper, SubscriptionWithType subscriptionWithType, Subscription subscription) {
-        return subscription != null && !subscription.doesCaseHaveSubscriptions() && isFallbackLetterRequiredForSubscriptionType(wrapper, subscriptionWithType.getSubscriptionType())
-            || subscription == null && isFallbackLetterRequiredForSubscriptionType(wrapper, subscriptionWithType.getSubscriptionType());
     }
 }

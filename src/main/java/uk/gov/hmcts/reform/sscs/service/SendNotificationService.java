@@ -7,7 +7,6 @@ import static uk.gov.hmcts.reform.sscs.service.NotificationUtils.*;
 import static uk.gov.hmcts.reform.sscs.service.NotificationUtils.isOkToSendEmailNotification;
 import static uk.gov.hmcts.reform.sscs.service.NotificationUtils.isOkToSendSmsNotification;
 import static uk.gov.hmcts.reform.sscs.service.NotificationValidService.isBundledLetter;
-import static uk.gov.hmcts.reform.sscs.service.NotificationValidService.isFallbackLetterRequiredForSubscriptionType;
 
 import java.io.IOException;
 import java.net.URI;
@@ -68,12 +67,13 @@ public class SendNotificationService {
             NotificationWrapper wrapper,
             Subscription subscription,
             Notification notification,
-            SubscriptionWithType subscriptionWithType) {
+            SubscriptionWithType subscriptionWithType,
+            NotificationEventType eventType) {
         sendEmailNotification(wrapper, subscription, notification);
         sendSmsNotification(wrapper, subscription, notification);
 
         if (lettersOn) {
-            sendLetterNotification(wrapper, subscription, notification, subscriptionWithType.getSubscriptionType());
+            sendLetterNotification(wrapper, subscription, notification, subscriptionWithType, eventType);
         }
 
         if (bundledLettersOn && isBundledLetter(wrapper.getNotificationType())) {
@@ -110,20 +110,9 @@ public class SendNotificationService {
         }
     }
 
-    private void sendFallbackLetterNotificationToAppellant(NotificationWrapper wrapper, Subscription subscription, Notification notification) {
-        if (subscription != null && !subscription.isSmsSubscribed() && !subscription.isEmailSubscribed() && notification.getLetterTemplate() != null) {
-            NotificationHandler.SendNotification sendNotification = () -> {
-                Address addressToUse = getAddressToUseForLetter(wrapper, subscriptionType);
-
-                sendLetterNotificationToAddress(wrapper, notification, addressToUse);
-            };
-            notificationHandler.sendNotification(wrapper, notification.getLetterTemplate(), NOTIFICATION_TYPE_LETTER, sendNotification);
-        }
-    }
-
-    private void sendLetterNotification(NotificationWrapper wrapper, Subscription subscription, Notification notification, SubscriptionType subscriptionType) {
-        sendMandatoryLetterNotification(wrapper, notification, subscriptionType);
-        sendFallbackLetterNotification(wrapper, subscription, notification, subscriptionType);
+    private void sendLetterNotification(NotificationWrapper wrapper, Subscription subscription, Notification notification, SubscriptionWithType subscriptionWithType, NotificationEventType eventType) {
+        sendMandatoryLetterNotification(wrapper, notification, subscriptionWithType.getSubscriptionType());
+        sendFallbackLetterNotification(wrapper, subscription, notification, subscriptionWithType, eventType);
     }
 
     private void sendMandatoryLetterNotification(NotificationWrapper wrapper, Notification notification, SubscriptionType subscriptionType) {
@@ -137,10 +126,10 @@ public class SendNotificationService {
         }
     }
 
-    private void sendFallbackLetterNotification(NotificationWrapper wrapper, Subscription subscription, Notification notification, SubscriptionType subscriptionType) {
-        if (hasNoSubscriptions(subscription) && hasLetterTemplate(notification) && isFallbackLetterRequiredForSubscriptionType(wrapper, subscriptionType)) {
+    private void sendFallbackLetterNotification(NotificationWrapper wrapper, Subscription subscription, Notification notification, SubscriptionWithType subscriptionWithType, NotificationEventType eventType) {
+        if (hasNoSubscriptions(subscription) && hasLetterTemplate(notification) && isFallbackLetterRequired(wrapper, subscriptionWithType, subscription, eventType, notificationValidService)) {
             NotificationHandler.SendNotification sendNotification = () -> {
-                Address addressToUse = getAddressToUseForLetter(wrapper, subscriptionType);
+                Address addressToUse = getAddressToUseForLetter(wrapper, subscriptionWithType.getSubscriptionType());
 
                 sendLetterNotificationToAddress(wrapper, notification, addressToUse);
             };

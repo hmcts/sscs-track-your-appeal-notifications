@@ -1,15 +1,18 @@
 package uk.gov.hmcts.reform.sscs.service;
 
+import static uk.gov.hmcts.reform.sscs.config.SubscriptionType.APPELLANT;
+import static uk.gov.hmcts.reform.sscs.config.SubscriptionType.APPOINTEE;
 import static uk.gov.hmcts.reform.sscs.config.SubscriptionType.REPRESENTATIVE;
 import static uk.gov.hmcts.reform.sscs.domain.notify.NotificationEventType.HEARING_BOOKED_NOTIFICATION;
 import static uk.gov.hmcts.reform.sscs.domain.notify.NotificationEventType.INTERLOC_VALID_APPEAL;
 import static uk.gov.hmcts.reform.sscs.domain.notify.NotificationEventType.STRUCK_OUT;
-import static uk.gov.hmcts.reform.sscs.service.NotificationUtils.isAppointeeOrAppellantSubscription;
+import static uk.gov.hmcts.reform.sscs.service.NotificationUtils.hasSubscription;
 import static uk.gov.hmcts.reform.sscs.domain.notify.NotificationEventType.*;
 
 import java.time.LocalDateTime;
 import java.util.Arrays;
 import java.util.List;
+
 import org.springframework.stereotype.Service;
 import uk.gov.hmcts.reform.sscs.ccd.domain.Hearing;
 import uk.gov.hmcts.reform.sscs.ccd.domain.SscsCaseData;
@@ -27,16 +30,12 @@ public class NotificationValidService {
         return MANDATORY_LETTER_EVENT_TYPES.contains(eventType);
     }
 
-    static boolean isFallbackLetterRequiredForSubscriptionType(NotificationWrapper wrapper, SubscriptionType subscriptionType) {
     boolean isFallbackLetterRequiredForSubscriptionType(NotificationWrapper wrapper, SubscriptionType subscriptionType, NotificationEventType eventType) {
         boolean result = false;
 
         if (FALLBACK_LETTER_SUBSCRIPTION_TYPES.contains(eventType)
-            && (isAppointeeOrAppellantSubscription(subscriptionType)
-            && fallbackConditionsMet(wrapper, eventType)
-            && (APPELLANT.equals(subscriptionType)
-            || APPOINTEE.equals(subscriptionType)
-            || (REPRESENTATIVE.equals(subscriptionType) && null != wrapper.getNewSscsCaseData().getAppeal().getRep()))) {
+            && hasSubscription(wrapper, subscriptionType)
+            && fallbackConditionsMet(wrapper, eventType)) {
             result = true;
         }
 

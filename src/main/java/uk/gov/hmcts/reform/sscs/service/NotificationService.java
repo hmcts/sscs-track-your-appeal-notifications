@@ -66,8 +66,8 @@ public class NotificationService {
             if (isValidNotification(notificationWrapper, subscriptionWithType, notificationType)) {
                 Notification notification = notificationFactory.create(notificationWrapper, subscriptionWithType.getSubscriptionType());
 
-                sendNotificationService.sendEmailSmsLetterNotification(notificationWrapper, subscriptionWithType.getSubscription(), notification, subscriptionWithType);
-                processOldSubscriptionNotifications(notificationWrapper, notification, subscriptionWithType);
+                sendNotificationService.sendEmailSmsLetterNotification(notificationWrapper, subscriptionWithType.getSubscription(), notification, subscriptionWithType, notificationType);
+                processOldSubscriptionNotifications(notificationWrapper, notification, subscriptionWithType, notificationType);
                 reminderService.createReminders(notificationWrapper);
             }
         }
@@ -82,7 +82,7 @@ public class NotificationService {
             && isOkToSendNotification(wrapper, notificationType, notificationValidService)));
     }
 
-    private void processOldSubscriptionNotifications(NotificationWrapper wrapper, Notification notification, SubscriptionWithType subscriptionWithType) {
+    private void processOldSubscriptionNotifications(NotificationWrapper wrapper, Notification notification, SubscriptionWithType subscriptionWithType, NotificationEventType eventType) {
         if (wrapper.getNotificationType() == NotificationEventType.SUBSCRIPTION_UPDATED_NOTIFICATION) {
             Subscription newSubscription = null;
             Subscription oldSubscription = null;
@@ -119,7 +119,7 @@ public class NotificationService {
                     .appealNumber(notification.getAppealNumber())
                     .placeholders(notification.getPlaceholders()).build();
 
-            sendNotificationService.sendEmailSmsLetterNotification(wrapper, oldSubscription, oldNotification, subscriptionWithType);
+            sendNotificationService.sendEmailSmsLetterNotification(wrapper, oldSubscription, oldNotification, subscriptionWithType, eventType);
         }
     }
 
