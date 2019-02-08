@@ -825,7 +825,7 @@ public class NotificationsIt {
                 "0"
             },
             new Object[]{
-                INTERLOC_VALID_APPEAL,
+                CASE_UPDATED,
                 "paper",
                 Arrays.asList("01293b93-b23e-40a3-ad78-2c6cd01cd21c", "652753bf-59b4-46eb-9c24-bd762338a098"),
                 Collections.emptyList(),
@@ -839,7 +839,7 @@ public class NotificationsIt {
                 "0"
             },
             new Object[]{
-                INTERLOC_VALID_APPEAL,
+                CASE_UPDATED,
                 "oral",
                 Arrays.asList("01293b93-b23e-40a3-ad78-2c6cd01cd21c", "652753bf-59b4-46eb-9c24-bd762338a098"),
                 Collections.emptyList(),
@@ -853,7 +853,7 @@ public class NotificationsIt {
                 "0"
             },
             new Object[]{
-                INTERLOC_VALID_APPEAL,
+                CASE_UPDATED,
                 "paper",
                 Collections.singletonList("652753bf-59b4-46eb-9c24-bd762338a098"),
                 Collections.emptyList(),
@@ -867,7 +867,7 @@ public class NotificationsIt {
                 "1"
             },
             new Object[]{
-                INTERLOC_VALID_APPEAL,
+                CASE_UPDATED,
                 "paper",
                 Collections.singletonList("01293b93-b23e-40a3-ad78-2c6cd01cd21c"),
                 Collections.emptyList(),
@@ -881,7 +881,7 @@ public class NotificationsIt {
                 "1"
             },
             new Object[]{
-                INTERLOC_VALID_APPEAL,
+                CASE_UPDATED,
                 "paper",
                 Collections.emptyList(),
                 Collections.emptyList(),
@@ -1308,7 +1308,7 @@ public class NotificationsIt {
                 "0"
             },
             new Object[]{
-                INTERLOC_VALID_APPEAL,
+                CASE_UPDATED,
                 "paper",
                 Arrays.asList("01293b93-b23e-40a3-ad78-2c6cd01cd21c", "652753bf-59b4-46eb-9c24-bd762338a098"),
                 Collections.emptyList(),
@@ -1322,7 +1322,7 @@ public class NotificationsIt {
                 "0"
             },
             new Object[]{
-                INTERLOC_VALID_APPEAL,
+                CASE_UPDATED,
                 "oral",
                 Arrays.asList("01293b93-b23e-40a3-ad78-2c6cd01cd21c", "652753bf-59b4-46eb-9c24-bd762338a098"),
                 Collections.emptyList(),
@@ -1336,7 +1336,7 @@ public class NotificationsIt {
                 "0"
             },
             new Object[]{
-                INTERLOC_VALID_APPEAL,
+                CASE_UPDATED,
                 "paper",
                 Collections.singletonList("652753bf-59b4-46eb-9c24-bd762338a098"),
                 Collections.emptyList(),
@@ -1350,7 +1350,7 @@ public class NotificationsIt {
                 "1"
             },
             new Object[]{
-                INTERLOC_VALID_APPEAL,
+                CASE_UPDATED,
                 "paper",
                 Collections.singletonList("01293b93-b23e-40a3-ad78-2c6cd01cd21c"),
                 Collections.emptyList(),
@@ -1364,7 +1364,7 @@ public class NotificationsIt {
                 "1"
             },
             new Object[]{
-                INTERLOC_VALID_APPEAL,
+                CASE_UPDATED,
                 "paper",
                 Collections.emptyList(),
                 Collections.emptyList(),
@@ -1514,7 +1514,7 @@ public class NotificationsIt {
                 ""
             },
             new Object[]{
-                INTERLOC_VALID_APPEAL,
+                CASE_UPDATED,
                 "paper",
                 Collections.emptyList(),
                 Collections.emptyList(),
@@ -1664,7 +1664,7 @@ public class NotificationsIt {
                 ""
             },
             new Object[]{
-                INTERLOC_VALID_APPEAL,
+                CASE_UPDATED,
                 "paper",
                 Collections.emptyList(),
                 Collections.emptyList(),

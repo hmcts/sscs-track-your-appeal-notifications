@@ -310,7 +310,7 @@ public class NotificationUtilsTest {
             HEARING_REQUIRED_NOTIFICATION,
             VIEW_ISSUED,
             DECISION_ISSUED_2,
-            INTERLOC_VALID_APPEAL,
+            CASE_UPDATED,
             DO_NOT_SEND
         };
     }

@@ -38,7 +38,7 @@ import uk.gov.hmcts.reform.sscs.service.RegionalProcessingCenterService;
 @Component
 @Slf4j
 public class Personalisation<E extends NotificationWrapper> {
-    private static final List<NotificationEventType> FALLBACK_LETTER_SUBSCRIPTION_TYPES = Arrays.asList(INTERLOC_VALID_APPEAL, SYA_APPEAL_CREATED_NOTIFICATION);
+    private static final List<NotificationEventType> FALLBACK_LETTER_SUBSCRIPTION_TYPES = Arrays.asList(CASE_UPDATED, SYA_APPEAL_CREATED_NOTIFICATION);
     private static final String CRLF =  String.format("%c%c",(char) 0x0D, (char) 0x0A);
 
     private boolean sendSmsSubscriptionConfirmation;
@@ -192,7 +192,7 @@ public class Personalisation<E extends NotificationWrapper> {
                 if ((event.getValue() != null)
                     && ((notificationEventType.equals(APPEAL_RECEIVED_NOTIFICATION) && event.getValue().getEventType().equals(APPEAL_RECEIVED))
                     || (notificationEventType.equals(DWP_RESPONSE_LATE_REMINDER_NOTIFICATION)))
-                    || notificationEventType.equals(INTERLOC_VALID_APPEAL)) {
+                    || notificationEventType.equals(CASE_UPDATED)) {
                     return setAppealReceivedDetails(personalisation, event.getValue());
                 }
             }
@@ -282,7 +282,7 @@ public class Personalisation<E extends NotificationWrapper> {
             || APPEAL_RECEIVED_NOTIFICATION.equals(notificationEventType)
             || POSTPONEMENT_NOTIFICATION.equals(notificationEventType)
             || HEARING_BOOKED_NOTIFICATION.equals(notificationEventType)
-            || INTERLOC_VALID_APPEAL.equals(notificationEventType)) {
+            || CASE_UPDATED.equals(notificationEventType)) {
             emailTemplateName = emailTemplateName + "." + StringUtils.lowerCase(subscriptionType.name());
         }
         return emailTemplateName;
