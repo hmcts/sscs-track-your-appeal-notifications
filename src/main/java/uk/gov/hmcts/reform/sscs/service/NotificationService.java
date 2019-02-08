@@ -61,12 +61,12 @@ public class NotificationService {
                                                  NotificationEventType notificationType) {
         for (SubscriptionWithType subscriptionWithType : notificationWrapper.getSubscriptionsBasedOnNotificationType()) {
 
-            if (isValidNotification(notificationWrapper, subscriptionWithType.getSubscription(), notificationType)) {
+            if (isValidNotification(notificationWrapper, subscriptionWithType, notificationType)) {
 
                 Notification notification = notificationFactory.create(notificationWrapper, subscriptionWithType.getSubscriptionType());
 
-                sendNotificationService.sendEmailSmsLetterNotification(notificationWrapper, subscriptionWithType.getSubscription(), notification);
-                processOldSubscriptionNotifications(notificationWrapper, notification);
+                sendNotificationService.sendEmailSmsLetterNotification(notificationWrapper, subscriptionWithType.getSubscription(), notification, subscriptionWithType);
+                processOldSubscriptionNotifications(notificationWrapper, notification, subscriptionWithType);
                 reminderService.createReminders(notificationWrapper);
             }
         }
@@ -84,7 +84,7 @@ public class NotificationService {
             && notificationValidService.isHearingTypeValidToSendNotification(wrapper.getNewSscsCaseData(), notificationType)));
     }
 
-    private void processOldSubscriptionNotifications(NotificationWrapper wrapper, Notification notification) {
+    private void processOldSubscriptionNotifications(NotificationWrapper wrapper, Notification notification, SubscriptionWithType subscriptionWithType) {
         if (wrapper.getNotificationType() == NotificationEventType.SUBSCRIPTION_UPDATED_NOTIFICATION) {
             boolean hasAppointee = wrapper.getNewSscsCaseData().getAppeal().getAppellant().getAppointee() != null;
 
