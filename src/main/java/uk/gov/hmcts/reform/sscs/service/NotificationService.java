@@ -49,27 +49,26 @@ public class NotificationService {
         NotificationEventType notificationType = notificationWrapper.getNotificationType();
         final String caseId = notificationWrapper.getCaseId();
         log.info("Notification event triggered {} for case id {}", notificationType.getId(), caseId);
-        for (SubscriptionWithType subscriptionWithType :
-                notificationWrapper.getSubscriptionsBasedOnNotificationType()) {
-            sendNotificationPerSubscription(notificationWrapper, subscriptionWithType.getSubscription(), notificationType, subscriptionWithType);
+
+        if (notificationWrapper.getNotificationType().isAllowOutOfHours() || !outOfHoursCalculator.isItOutOfHours()) {
+            sendNotificationPerSubscription(notificationWrapper, notificationType);
+        } else {
+            notificationHandler.scheduleNotification(notificationWrapper);
         }
     }
 
     private void sendNotificationPerSubscription(NotificationWrapper notificationWrapper,
-                                                 Subscription subscription,
-                                                 NotificationEventType notificationType,
-                                                 SubscriptionWithType subscriptionWithType) {
-        if (isValidNotification(notificationWrapper, subscriptionWithType, notificationType)) {
-            Notification notification = notificationFactory.create(notificationWrapper,
-                    subscriptionWithType.getSubscriptionType());
-            if (!subscription.doesCaseHaveSubscriptions()
-                    || notificationWrapper.getNotificationType().isAllowOutOfHours() || !outOfHoursCalculator.isItOutOfHours()) {
-                sendNotificationService.sendEmailSmsLetterNotification(notificationWrapper, subscription, notification, subscriptionWithType);
-                processOldSubscriptionNotifications(notificationWrapper, notification, subscriptionWithType);
-            } else {
-                notificationHandler.scheduleNotification(notificationWrapper);
+                                                 NotificationEventType notificationType) {
+        for (SubscriptionWithType subscriptionWithType : notificationWrapper.getSubscriptionsBasedOnNotificationType()) {
+
+            if (isValidNotification(notificationWrapper, subscriptionWithType.getSubscription(), notificationType)) {
+
+                Notification notification = notificationFactory.create(notificationWrapper, subscriptionWithType.getSubscriptionType());
+
+                sendNotificationService.sendEmailSmsLetterNotification(notificationWrapper, subscriptionWithType.getSubscription(), notification);
+                processOldSubscriptionNotifications(notificationWrapper, notification);
+                reminderService.createReminders(notificationWrapper);
             }
-            reminderService.createReminders(notificationWrapper);
         }
     }
 
@@ -85,11 +84,17 @@ public class NotificationService {
             && notificationValidService.isHearingTypeValidToSendNotification(wrapper.getNewSscsCaseData(), notificationType)));
     }
 
-    private void processOldSubscriptionNotifications(NotificationWrapper wrapper, Notification notification, SubscriptionWithType subscriptionWithType) {
-        if (wrapper.getNotificationType() == NotificationEventType.SUBSCRIPTION_UPDATED_NOTIFICATION
-                && wrapper.getHearingType() == AppealHearingType.PAPER) {
-            Subscription newSubscription = wrapper.getNewSscsCaseData().getSubscriptions().getAppellantSubscription();
-            Subscription oldSubscription = wrapper.getOldSscsCaseData().getSubscriptions().getAppellantSubscription();
+    private void processOldSubscriptionNotifications(NotificationWrapper wrapper, Notification notification) {
+        if (wrapper.getNotificationType() == NotificationEventType.SUBSCRIPTION_UPDATED_NOTIFICATION) {
+            boolean hasAppointee = wrapper.getNewSscsCaseData().getAppeal().getAppellant().getAppointee() != null;
+
+            Subscription newSubscription = hasAppointee
+                ? wrapper.getNewSscsCaseData().getSubscriptions().getAppointeeSubscription()
+                : wrapper.getNewSscsCaseData().getSubscriptions().getAppellantSubscription();
+
+            Subscription oldSubscription = hasAppointee
+                ? wrapper.getOldSscsCaseData().getSubscriptions().getAppointeeSubscription()
+                : wrapper.getOldSscsCaseData().getSubscriptions().getAppellantSubscription();
 
             String emailAddress = getSubscriptionDetails(newSubscription.getEmail(), oldSubscription.getEmail());
             String smsNumber = getSubscriptionDetails(newSubscription.getMobile(), oldSubscription.getMobile());
