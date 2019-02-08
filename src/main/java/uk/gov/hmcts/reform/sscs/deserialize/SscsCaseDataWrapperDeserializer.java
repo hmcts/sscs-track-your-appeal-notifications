@@ -165,7 +165,7 @@ public class SscsCaseDataWrapperDeserializer extends StdDeserializer<SscsCaseDat
 
     private Appointee deserializeAppointee(JsonNode appellantNode) {
         JsonNode appointeeNode = getNode(appellantNode, "appointee");
-        if (null == appointeeNode) {
+        if ((null == appointeeNode) || (appointeeNode.size() == 0)) {
             return null;
         }
 
@@ -307,7 +307,7 @@ public class SscsCaseDataWrapperDeserializer extends StdDeserializer<SscsCaseDat
             String organisation = getField(repNode, "organisation");
 
             return Representative.builder()
-                .hasRepresentative("Yes")
+                .hasRepresentative(hasRepresentative)
                 .name(name).address(address).contact(contact).organisation(organisation).build();
         }
         return null;
@@ -334,6 +334,7 @@ public class SscsCaseDataWrapperDeserializer extends StdDeserializer<SscsCaseDat
 
         return subscription;
     }
+
 
     public List<Event> deserializeEventDetailsJson(JsonNode caseNode) {
         final JsonNode eventNode = caseNode.get("events");

@@ -6,6 +6,7 @@ import static uk.gov.hmcts.reform.sscs.config.SubscriptionType.REPRESENTATIVE;
 import static uk.gov.hmcts.reform.sscs.service.NotificationUtils.isFallbackLetterRequired;
 import static uk.gov.hmcts.reform.sscs.service.NotificationUtils.isOkToSendNotification;
 import static uk.gov.hmcts.reform.sscs.service.NotificationValidService.isMandatoryLetterEventType;
+import static uk.gov.hmcts.reform.sscs.service.NotificationUtils.*;
 
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -51,25 +52,23 @@ public class NotificationService {
         NotificationEventType notificationType = notificationWrapper.getNotificationType();
         final String caseId = notificationWrapper.getCaseId();
         log.info("Notification event triggered {} for case id {}", notificationType.getId(), caseId);
-        for (SubscriptionWithType subscriptionWithType :
-                notificationWrapper.getSubscriptionsBasedOnNotificationType()) {
-            sendNotificationPerSubscription(notificationWrapper, subscriptionWithType.getSubscription(), notificationType, subscriptionWithType);
+
+        if (notificationWrapper.getNotificationType().isAllowOutOfHours() || !outOfHoursCalculator.isItOutOfHours()) {
+            sendNotificationPerSubscription(notificationWrapper, notificationType);
+        } else {
+            notificationHandler.scheduleNotification(notificationWrapper);
         }
     }
 
     private void sendNotificationPerSubscription(NotificationWrapper notificationWrapper,
-                                                 Subscription subscription,
-                                                 NotificationEventType notificationType,
-                                                 SubscriptionWithType subscriptionWithType) {
-        if (isValidNotification(notificationWrapper, subscriptionWithType, notificationType)) {
-            Notification notification = notificationFactory.create(notificationWrapper,
-                    subscriptionWithType.getSubscriptionType());
-            if (notificationWrapper.getNotificationType().isAllowOutOfHours() || !outOfHoursCalculator.isItOutOfHours()) {
-                sendNotificationService.sendEmailSmsLetterNotification(notificationWrapper, subscription, notification, subscriptionWithType);
+                                                 NotificationEventType notificationType) {
+        for (SubscriptionWithType subscriptionWithType : notificationWrapper.getSubscriptionsBasedOnNotificationType()) {
+            if (isValidNotification(notificationWrapper, subscriptionWithType, notificationType)) {
+                Notification notification = notificationFactory.create(notificationWrapper, subscriptionWithType.getSubscriptionType());
+
+                sendNotificationService.sendEmailSmsLetterNotification(notificationWrapper, subscriptionWithType.getSubscription(), notification, subscriptionWithType);
                 processOldSubscriptionNotifications(notificationWrapper, notification, subscriptionWithType);
                 reminderService.createReminders(notificationWrapper);
-            } else {
-                notificationHandler.scheduleNotification(notificationWrapper);
             }
         }
     }
@@ -79,8 +78,8 @@ public class NotificationService {
         Subscription subscription = subscriptionWithType.getSubscription();
 
         return (isMandatoryLetterEventType(notificationType)
-            || isFallbackLetterRequired(wrapper, subscriptionWithType, subscription)
-            || isOkToSendNotification(wrapper, notificationType, subscription, notificationValidService));
+            || (isFallbackLetterRequired(wrapper, subscriptionWithType, subscription, notificationType, notificationValidService)
+            && isOkToSendNotification(wrapper, notificationType, notificationValidService)));
     }
 
     private void processOldSubscriptionNotifications(NotificationWrapper wrapper, Notification notification, SubscriptionWithType subscriptionWithType) {

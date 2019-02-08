@@ -49,25 +49,24 @@ public class CcdNotificationWrapperTest {
     }
 
     private CcdNotificationWrapper buildCcdNotificationWrapperBasedOnEventTypeWithRep(NotificationEventType notificationEventType) {
-        return buildCcdNotificationWrapperBasedOnEventType(notificationEventType, false, true);
+        return buildCcdNotificationWrapperBasedOnEventType(notificationEventType, null, Representative.builder().hasRepresentative("Yes").build());
     }
 
-    private CcdNotificationWrapper buildCcdNotificationWrapperBasedOnEventType(NotificationEventType notificationEventType, Boolean addAppointee, Boolean addRep) {
-        Appointee appointee = null;
-        Subscription appointeeSubscription = null;
-        if (addAppointee) {
-            appointee = Appointee.builder()
-                .name(Name.builder().firstName("Ap").lastName("Pointee").build())
-                .address(Address.builder().line1("Appointee Line 1").town("Appointee Town").county("Appointee County").postcode("AP9 0IN").build())
-                .build();
+    private CcdNotificationWrapper buildCcdNotificationWrapperBasedOnEventType(NotificationEventType notificationEventType) {
+        return buildCcdNotificationWrapperBasedOnEventType(notificationEventType, null, null);
+    }
 
+    private CcdNotificationWrapper buildCcdNotificationWrapperBasedOnEventType(NotificationEventType notificationEventType, Appointee appointee, Representative representative) {
+        Appellant appellant = Appellant.builder().build();
+        Subscription appointeeSubscription = null;
+        if (null != appointee) {
+            appellant.setAppointee(appointee);
             appointeeSubscription = Subscription.builder().build();
         }
 
-        Representative rep = null;
         Subscription repSubscription = null;
-        if (addRep) {
-            rep = Representative.builder()
+        if (null != representative) {
+            representative = Representative.builder()
                 .hasRepresentative("Yes")
                 .name(Name.builder().firstName("Joe").lastName("Bloggs").build())
                 .address(Address.builder().line1("Rep Line 1").town("Rep Town").county("Rep County").postcode("RE9 7SE").build())
@@ -79,9 +78,9 @@ public class CcdNotificationWrapperTest {
             SscsCaseDataWrapper.builder()
                 .newSscsCaseData(SscsCaseData.builder()
                     .appeal(Appeal.builder()
+                        .appellant(appellant)
                         .hearingType("cor")
-                        .appellant(Appellant.builder().appointee(appointee).build())
-                        .rep(rep)
+                        .rep(representative)
                         .build())
                     .subscriptions(Subscriptions.builder()
                         .appellantSubscription(Subscription.builder().build())
@@ -138,7 +137,7 @@ public class CcdNotificationWrapperTest {
     }
 
     @Test
-    @Parameters({"APPEAL_LAPSED_NOTIFICATION","APPEAL_WITHDRAWN_NOTIFICATION","EVIDENCE_RECEIVED_NOTIFICATION","POSTPONEMENT_NOTIFICATION","HEARING_BOOKED_NOTIFICATION","SYA_APPEAL_CREATED_NOTIFICATION", "RESEND_APPEAL_CREATED_NOTIFICATION", "APPEAL_RECEIVED_NOTIFICATION", "ADJOURNED_NOTIFICATION", "APPEAL_DORMANT_NOTIFICATION"})
+    @Parameters({"APPEAL_LAPSED_NOTIFICATION","APPEAL_WITHDRAWN_NOTIFICATION","EVIDENCE_RECEIVED_NOTIFICATION","POSTPONEMENT_NOTIFICATION","HEARING_BOOKED_NOTIFICATION","SYA_APPEAL_CREATED_NOTIFICATION", "RESEND_APPEAL_CREATED_NOTIFICATION", "APPEAL_RECEIVED_NOTIFICATION", "ADJOURNED_NOTIFICATION", "APPEAL_DORMANT_NOTIFICATION", "INTERLOC_VALID_APPEAL"})
     public void givenSubscriptions_shouldGetAppellantAndRepSubscriptionTypeList(NotificationEventType notificationEventType) {
         ccdNotificationWrapper = buildCcdNotificationWrapperBasedOnEventTypeWithRep(notificationEventType);
         List<SubscriptionWithType> subsWithTypeList = ccdNotificationWrapper.getSubscriptionsBasedOnNotificationType();
@@ -150,7 +149,7 @@ public class CcdNotificationWrapperTest {
     @Test
     @Parameters({"INTERLOC_VALID_APPEAL"})
     public void givenSubscriptions_shouldGetAppointeeAndRepSubscriptionTypeList(NotificationEventType notificationEventType) {
-        ccdNotificationWrapper = buildCcdNotificationWrapperBasedOnEventType(notificationEventType, true, true);
+        ccdNotificationWrapper = buildCcdNotificationWrapperBasedOnEventType(notificationEventType, Appointee.builder().name(Name.builder().firstName("John").lastName("Doe").build()).build(), Representative.builder().hasRepresentative("Yes").build());
         List<SubscriptionWithType> subsWithTypeList = ccdNotificationWrapper.getSubscriptionsBasedOnNotificationType();
         Assert.assertEquals(2,subsWithTypeList.size());
         Assert.assertEquals(SubscriptionType.APPOINTEE, subsWithTypeList.get(0).getSubscriptionType());

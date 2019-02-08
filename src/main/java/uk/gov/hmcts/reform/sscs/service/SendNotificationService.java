@@ -4,6 +4,8 @@ import static uk.gov.hmcts.reform.sscs.config.AppConstants.*;
 import static uk.gov.hmcts.reform.sscs.domain.notify.NotificationEventType.STRUCK_OUT;
 import static uk.gov.hmcts.reform.sscs.service.LetterUtils.*;
 import static uk.gov.hmcts.reform.sscs.service.NotificationUtils.*;
+import static uk.gov.hmcts.reform.sscs.service.NotificationUtils.isOkToSendEmailNotification;
+import static uk.gov.hmcts.reform.sscs.service.NotificationUtils.isOkToSendSmsNotification;
 import static uk.gov.hmcts.reform.sscs.service.NotificationValidService.isBundledLetter;
 import static uk.gov.hmcts.reform.sscs.service.NotificationValidService.isFallbackLetterRequiredForSubscriptionType;
 
@@ -80,10 +82,7 @@ public class SendNotificationService {
     }
 
     private void sendSmsNotification(NotificationWrapper wrapper, Subscription subscription, Notification notification) {
-        if (subscription.isSmsSubscribed()
-            && notification.isSms()
-            && notification.getSmsTemplate() != null
-            && isOkToSendNotification(wrapper, wrapper.getNotificationType(), subscription, notificationValidService)) {
+        if (isOkToSendSmsNotification(wrapper, subscription, notification, notificationValidService)) {
             NotificationHandler.SendNotification sendNotification = () ->
                     notificationSender.sendSms(
                             notification.getSmsTemplate(),
@@ -98,10 +97,7 @@ public class SendNotificationService {
     }
 
     private void sendEmailNotification(NotificationWrapper wrapper, Subscription subscription, Notification notification) {
-        if (subscription.isEmailSubscribed()
-            && notification.isEmail()
-            && notification.getEmailTemplate() != null
-            && isOkToSendNotification(wrapper, wrapper.getNotificationType(), subscription, notificationValidService)) {
+        if (isOkToSendEmailNotification(wrapper, subscription, notification, notificationValidService)) {
             NotificationHandler.SendNotification sendNotification = () ->
                     notificationSender.sendEmail(
                             notification.getEmailTemplate(),
@@ -111,6 +107,17 @@ public class SendNotificationService {
                             wrapper.getCaseId()
                     );
             notificationHandler.sendNotification(wrapper, notification.getEmailTemplate(), "Email", sendNotification);
+        }
+    }
+
+    private void sendFallbackLetterNotificationToAppellant(NotificationWrapper wrapper, Subscription subscription, Notification notification) {
+        if (subscription != null && !subscription.isSmsSubscribed() && !subscription.isEmailSubscribed() && notification.getLetterTemplate() != null) {
+            NotificationHandler.SendNotification sendNotification = () -> {
+                Address addressToUse = getAddressToUseForLetter(wrapper, subscriptionType);
+
+                sendLetterNotificationToAddress(wrapper, notification, addressToUse);
+            };
+            notificationHandler.sendNotification(wrapper, notification.getLetterTemplate(), NOTIFICATION_TYPE_LETTER, sendNotification);
         }
     }
 

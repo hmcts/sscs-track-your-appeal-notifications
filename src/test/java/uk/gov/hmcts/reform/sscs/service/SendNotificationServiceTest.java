@@ -156,6 +156,9 @@ public class SendNotificationServiceTest {
         when(notificationValidService.isNotificationStillValidToSend(any(), any())).thenReturn(true);
         when(notificationValidService.isHearingTypeValidToSendNotification(any(), any())).thenReturn(true);
 
+        when(notificationValidService.isNotificationStillValidToSend(any(), any())).thenReturn(true);
+        when(notificationValidService.isHearingTypeValidToSendNotification(any(), any())).thenReturn(true);
+
         classUnderTest.sendEmailSmsLetterNotification(buildBaseWrapper(APPELLANT_WITH_ADDRESS, NotificationEventType.INTERLOC_VALID_APPEAL), SMS_SUBSCRIPTION, SMS_NOTIFICATION, appellantSmsSubscription);
 
         verify(notificationHandler).sendNotification(any(), eq(SMS_NOTIFICATION.getSmsTemplate()), any(), any());
@@ -164,6 +167,9 @@ public class SendNotificationServiceTest {
     @Test
     public void doNotSendFallbackLetterNotificationToAppellantWhenSubscribedForEmail() {
         SubscriptionWithType appellantEmailSubscription = new SubscriptionWithType(EMAIL_SUBSCRIPTION, APPELLANT);
+
+        when(notificationValidService.isNotificationStillValidToSend(any(), any())).thenReturn(true);
+        when(notificationValidService.isHearingTypeValidToSendNotification(any(), any())).thenReturn(true);
 
         when(notificationValidService.isNotificationStillValidToSend(any(), any())).thenReturn(true);
         when(notificationValidService.isHearingTypeValidToSendNotification(any(), any())).thenReturn(true);
@@ -208,7 +214,7 @@ public class SendNotificationServiceTest {
         when(notificationValidService.isNotificationStillValidToSend(any(), any())).thenReturn(true);
         when(notificationValidService.isHearingTypeValidToSendNotification(any(), any())).thenReturn(true);
 
-        classUnderTest.sendEmailSmsLetterNotification(buildBaseWrapper(APPELLANT_WITH_ADDRESS, NotificationEventType.INTERLOC_VALID_APPEAL), SMS_SUBSCRIPTION, SMS_NOTIFICATION, appellantSmsSubscription);
+        classUnderTest.sendEmailSmsLetterNotification(buildBaseWrapper(APPELLANT_WITH_ADDRESS, NotificationEventType.INTERLOC_VALID_APPEAL, REP_WITH_ADDRESS), SMS_SUBSCRIPTION, SMS_NOTIFICATION, appellantSmsSubscription);
 
         verify(notificationHandler).sendNotification(any(), eq(SMS_NOTIFICATION.getSmsTemplate()), any(), any());
     }
@@ -274,50 +280,32 @@ public class SendNotificationServiceTest {
     private CcdNotificationWrapper buildBaseWrapper(Appellant appellant, NotificationEventType eventType, Representative representative) {
         Subscription repSubscription = null;
         if (null != representative) {
-            repSubscription = Subscription.builder()
-                .tya("GLSCRR")
-                .email("Email")
-                .mobile("07983495066")
-                .subscribeEmail(YES)
-                .subscribeSms(YES)
-                .build();
+            repSubscription = Subscription.builder().email("test@test.com").subscribeEmail(YES).mobile("07800000000").subscribeSms(YES).build();
         }
 
         Subscription appellantSubscription = null;
         if (null != appellant) {
-            appellantSubscription = Subscription.builder()
-                .tya("GLSCRR")
-                .email("Email")
-                .mobile("07983495067")
-                .subscribeEmail(YES)
-                .subscribeSms(YES)
-                .build();
+            appellantSubscription = Subscription.builder().tya("GLSCRR").email("Email").mobile("07983495065").subscribeEmail(YES).subscribeSms(YES).build();
         }
 
         SscsCaseData sscsCaseDataWithDocuments = SscsCaseData.builder()
-                .appeal(
-                        Appeal
-                                .builder()
-                                .hearingType(AppealHearingType.ORAL.name())
-                                .hearingOptions(HearingOptions.builder().wantsToAttend(YES).build())
-                                .appellant(appellant)
-                                .rep(representative)
-                                .build())
-                .subscriptions(Subscriptions.builder()
-                    .appellantSubscription(Subscription.builder()
-                        .tya("GLSCRR")
-                        .email("Email")
-                        .mobile("07983495065")
-                        .subscribeEmail(YES)
-                        .subscribeSms(YES)
-                        .build())
-                    .representativeSubscription(repSubscription)
-                    .appellantSubscription(appellantSubscription)
+            .appeal(
+                Appeal
+                    .builder()
+                    .hearingType(AppealHearingType.ORAL.name())
+                    .hearingOptions(HearingOptions.builder().wantsToAttend(YES).build())
+                    .appellant(appellant)
+                    .rep(representative)
                     .build())
-                .caseReference(CASE_REFERENCE)
-                .ccdCaseId(CASE_ID)
-                .sscsDocument(new ArrayList<>(Collections.singletonList(null)))
-                .build();
+            .subscriptions(
+                Subscriptions.builder()
+                    .appellantSubscription(appellantSubscription)
+                    .representativeSubscription(repSubscription)
+                    .build())
+            .caseReference(CASE_REFERENCE)
+            .ccdCaseId(CASE_ID)
+            .sscsDocument(new ArrayList<>(Collections.singletonList(null)))
+            .build();
 
         SscsCaseDataWrapper struckOutSscsCaseDataWrapper = SscsCaseDataWrapper.builder()
                 .newSscsCaseData(sscsCaseDataWithDocuments)
