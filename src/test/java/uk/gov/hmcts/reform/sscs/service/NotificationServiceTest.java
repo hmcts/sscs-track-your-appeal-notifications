@@ -534,7 +534,7 @@ public class NotificationServiceTest {
                         new SubscriptionType[]{APPOINTEE, REPRESENTATIVE},  // Fallback letter
                 },
                 new Object[]{
-                        INTERLOC_VALID_APPEAL,
+                    CASE_UPDATED,
                         2,
                         0,
                         null,
@@ -553,7 +553,7 @@ public class NotificationServiceTest {
                         new SubscriptionType[]{APPOINTEE, REPRESENTATIVE},
                 },
                 new Object[]{
-                        INTERLOC_VALID_APPEAL,
+                    CASE_UPDATED,
                         1,
                         0,
                         null,
@@ -570,7 +570,7 @@ public class NotificationServiceTest {
                         new SubscriptionType[]{APPOINTEE, REPRESENTATIVE},
                 },
                 new Object[]{
-                        INTERLOC_VALID_APPEAL,
+                    CASE_UPDATED,
                         0,
                         0,
                         Subscription.builder()
@@ -763,7 +763,7 @@ public class NotificationServiceTest {
                 new SubscriptionType[]{},
             },
             new Object[]{
-                INTERLOC_VALID_APPEAL,
+                CASE_UPDATED,
                 2,
                 0,
                 null,
@@ -782,7 +782,7 @@ public class NotificationServiceTest {
                 new SubscriptionType[]{APPOINTEE, REPRESENTATIVE},
             },
             new Object[]{
-                INTERLOC_VALID_APPEAL,
+                CASE_UPDATED,
                 1,
                 0,
                 null,
@@ -799,7 +799,7 @@ public class NotificationServiceTest {
                 new SubscriptionType[]{APPOINTEE, REPRESENTATIVE},
             },
             new Object[]{
-                INTERLOC_VALID_APPEAL,
+                CASE_UPDATED,
                 0,
                 0,
                 Subscription.builder()

@@ -213,7 +213,7 @@ notification:
     smsId: 04e778fd-71a8-4c27-b423-aa7485a81a9c
   struckOut:
     letterId: 7383b637-d76e-4c9f-8af9-3e3573168011
-  interlocValidAppeal:
+  caseUpdated:
     appellant:
       emailId: 01293b93-b23e-40a3-ad78-2c6cd01cd21c
       letterId: 91143b85-dd9d-430c-ba23-e42ec90f44f8
