@@ -52,6 +52,7 @@ public class NotificationServiceTest {
             .build();
     protected static Representative REP_WITH_ADDRESS = Representative.builder()
             .name(Name.builder().firstName("Rep").lastName("resentative").build())
+            .hasRepresentative("Yes")
             .address(Address.builder().line1("Representative Line 1").town("Representative Town").county("Representative County").postcode("RP9 3LL").build())
             .build();
 
@@ -411,68 +412,6 @@ public class NotificationServiceTest {
                         Subscription.builder().build(),
                         Subscription.builder().build(),
                         new SubscriptionType[]{},
-                },
-                new Object[]{
-                        INTERLOC_VALID_APPEAL,
-                        2,
-                        0,
-                        Subscription.builder()
-                                .tya(APPEAL_NUMBER)
-                                .email(EMAIL)
-                                .subscribeEmail(YES)
-                                .mobile(MOBILE_NUMBER_1)
-                                .build(),
-                        Subscription.builder()
-                                .tya(APPEAL_NUMBER)
-                                .email(EMAIL)
-                                .subscribeEmail(YES)
-                                .mobile(MOBILE_NUMBER_1)
-                                .build(),
-                        Subscription.builder()
-                                .tya(APPEAL_NUMBER)
-                                .email(EMAIL)
-                                .subscribeEmail(YES)
-                                .mobile(MOBILE_NUMBER_1)
-                                .build(),
-                        new SubscriptionType[]{APPOINTEE, REPRESENTATIVE},
-                },
-                new Object[]{
-                        INTERLOC_VALID_APPEAL,
-                        1,
-                        0,
-                        Subscription.builder()
-                                .tya(APPEAL_NUMBER)
-                                .mobile(MOBILE_NUMBER_1)
-                                .build(),
-                        Subscription.builder()
-                                .tya(APPEAL_NUMBER)
-                                .email(EMAIL)
-                                .subscribeEmail(YES)
-                                .mobile(MOBILE_NUMBER_1)
-                                .build(),
-                        Subscription.builder()
-                                .tya(APPEAL_NUMBER)
-                                .mobile(MOBILE_NUMBER_1)
-                                .build(),
-                        new SubscriptionType[]{APPOINTEE, REPRESENTATIVE},
-                },
-                new Object[]{
-                        INTERLOC_VALID_APPEAL,
-                        0,
-                        0,
-                        Subscription.builder()
-                                .tya(APPEAL_NUMBER)
-                                .mobile(MOBILE_NUMBER_1)
-                                .build(),
-                        Subscription.builder()
-                                .tya(APPEAL_NUMBER)
-                                .mobile(MOBILE_NUMBER_1)
-                                .build(),
-                        Subscription.builder()
-                                .tya(APPEAL_NUMBER)
-                                .mobile(MOBILE_NUMBER_1)
-                                .build(),
-                        new SubscriptionType[]{APPOINTEE, REPRESENTATIVE},
                 }
         };
     }

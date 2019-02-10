@@ -9,7 +9,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import uk.gov.hmcts.reform.sscs.ccd.domain.Benefit;
 import uk.gov.hmcts.reform.sscs.ccd.domain.Subscription;
-import uk.gov.hmcts.reform.sscs.config.AppealHearingType;
 import uk.gov.hmcts.reform.sscs.config.NotificationConfig;
 import uk.gov.hmcts.reform.sscs.domain.SubscriptionWithType;
 import uk.gov.hmcts.reform.sscs.domain.notify.*;
@@ -96,8 +95,10 @@ public class NotificationService {
                 ? wrapper.getOldSscsCaseData().getSubscriptions().getAppointeeSubscription()
                 : wrapper.getOldSscsCaseData().getSubscriptions().getAppellantSubscription();
 
-            String emailAddress = getSubscriptionDetails(newSubscription.getEmail(), oldSubscription.getEmail());
-            String smsNumber = getSubscriptionDetails(newSubscription.getMobile(), oldSubscription.getMobile());
+            String emailAddress = oldSubscription.getEmail() != null
+                    && !oldSubscription.getEmail().equals(newSubscription.getEmail()) ? oldSubscription.getEmail() : null;
+            String smsNumber = oldSubscription.getMobile() != null
+                    && !oldSubscription.getMobile().equals(newSubscription.getMobile()) ? oldSubscription.getMobile() : null;
 
             Destination destination = Destination.builder().email(emailAddress).sms(smsNumber).build();
 
@@ -120,15 +121,5 @@ public class NotificationService {
 
             sendNotificationService.sendEmailSmsLetterNotification(wrapper, oldSubscription, oldNotification, subscriptionWithType);
         }
-    }
-
-    private String getSubscriptionDetails(String newSubscription, String oldSubscription) {
-        String subscription = "";
-        if (null != newSubscription && null != oldSubscription) {
-            subscription = newSubscription.equals(oldSubscription) ? null : oldSubscription;
-        } else if (null == newSubscription && null != oldSubscription) {
-            subscription = oldSubscription;
-        }
-        return subscription;
     }
 }
