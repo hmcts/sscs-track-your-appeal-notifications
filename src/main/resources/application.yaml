@@ -105,6 +105,9 @@ notification:
       smsId: 74bda35f-040b-4355-bda3-faf0e4f5ae6e
     representative:
       smsId: 345f802b-7089-4f46-a17f-bf534b272740
+    appointee:
+      emailId: c5654134-2e13-4541-ac73-334a5b5cdbb6
+      smsId: 74bda35f-040b-4355-bda3-faf0e4f5ae6e
   hearingAdjourned:
     appellant:
       emailId: bff02237-9bcb-49fa-bbf7-11725b97132a

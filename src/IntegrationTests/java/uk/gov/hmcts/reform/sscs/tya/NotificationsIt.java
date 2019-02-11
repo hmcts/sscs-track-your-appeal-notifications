@@ -643,6 +643,16 @@ public class NotificationsIt {
                             "1"
                 },
                 new Object[]{
+                        HEARING_BOOKED_NOTIFICATION,
+                        "oral",
+                        Collections.singletonList("fee16753-0bdb-43f1-9abb-b14b826e3b26"),
+                        Collections.singletonList("f900174a-a556-43b2-8042-bbf3e6090071"),
+                        "yes",
+                        "yes",
+                        "1",
+                        "1"
+                },
+                new Object[]{
                             SUBSCRIPTION_UPDATED_NOTIFICATION,
                             "oral",
                             Arrays.asList("b8b2904f-629d-42cf-acea-1b74bde5b2ff", "03b957bf-e21d-4147-90c1-b6fefa8cf70d"),

@@ -74,7 +74,7 @@ public class Personalisation<E extends NotificationWrapper> {
         personalisation.put(BENEFIT_NAME_ACRONYM_LITERAL, benefit.name());
         personalisation.put(BENEFIT_NAME_ACRONYM_SHORT_LITERAL, benefit.name());
         personalisation.put(BENEFIT_FULL_NAME_LITERAL, benefit.getDescription());
-        personalisation.put(APPEAL_REF, ccdResponse.getCaseReference());
+        personalisation.put(APPEAL_REF, getAppealReference(ccdResponse));
         personalisation.put(APPELLANT_NAME, ccdResponse.getAppeal().getAppellant().getName().getFullNameNoTitle());
         personalisation.put(NAME, getName(subscriptionType, ccdResponse, responseWrapper));
         personalisation.put(PHONE_NUMBER, config.getHmctsPhoneNumber());
@@ -86,14 +86,12 @@ public class Personalisation<E extends NotificationWrapper> {
         if (appellantOrAppointeeSubscription != null) {
             subscriptionDetails(personalisation, appellantOrAppointeeSubscription, benefit);
         }
-
         personalisation.put(FIRST_TIER_AGENCY_ACRONYM, DWP_ACRONYM);
         personalisation.put(FIRST_TIER_AGENCY_FULL_NAME, DWP_FUL_NAME);
 
         if (ccdResponse.getHearings() != null && !ccdResponse.getHearings().isEmpty()) {
             Hearing latestHearing = ccdResponse.getHearings().get(0);
             LocalDateTime hearingDateTime = latestHearing.getValue().getHearingDateTime();
-
             personalisation.put(HEARING_DATE, formatLocalDate(hearingDateTime.toLocalDate()));
             personalisation.put(HEARING_TIME, formatLocalTime(hearingDateTime));
             personalisation.put(VENUE_ADDRESS_LITERAL, formatAddress(latestHearing));
@@ -121,11 +119,18 @@ public class Personalisation<E extends NotificationWrapper> {
         return personalisation;
     }
 
+
+    private String getAppealReference(SscsCaseData ccdResponse) {
+        final String caseReference = ccdResponse.getCaseReference();
+        return StringUtils.isBlank(caseReference) ? ccdResponse.getCcdCaseId() : caseReference;
+    }
+
     private String getName(SubscriptionType subscriptionType, SscsCaseData ccdResponse, SscsCaseDataWrapper wrapper) {
-        Name name = null;
         if (ccdResponse.getAppeal() == null) {
             return "";
         }
+
+        Name name = null;
 
         if (subscriptionType.equals(APPELLANT)
                 && ccdResponse.getAppeal().getAppellant() != null) {
@@ -153,8 +158,7 @@ public class Personalisation<E extends NotificationWrapper> {
         final String tya = StringUtils.defaultIfBlank(subscription.getTya(), StringUtils.EMPTY);
         personalisation.put(APPEAL_ID, tya);
         personalisation.put(MANAGE_EMAILS_LINK_LITERAL, config.getManageEmailsLink().replace(MAC_LITERAL,
-                getMacToken(tya,
-                        benefit.name())));
+                getMacToken(tya, benefit.name())));
         personalisation.put(TRACK_APPEAL_LINK_LITERAL, config.getTrackAppealLink() != null ? config.getTrackAppealLink().replace(APPEAL_ID_LITERAL, tya) : null);
         personalisation.put(SUBMIT_EVIDENCE_LINK_LITERAL, config.getEvidenceSubmissionInfoLink().replace(APPEAL_ID, tya));
         personalisation.put(SUBMIT_EVIDENCE_INFO_LINK_LITERAL, config.getEvidenceSubmissionInfoLink().replace(APPEAL_ID_LITERAL, tya));
