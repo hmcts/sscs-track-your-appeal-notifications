@@ -65,6 +65,12 @@ public class NotificationsFunctionalTest extends AbstractFunctionalTest {
     @Value("${notification.subscriptionOld.smsId}")
     private String subscriptionUpdateOldSmsId;
 
+    @Value("${notification.paper.responseReceived.emailId}")
+    private String paperAppointeeResponseReceivedEmailId;
+
+    @Value("${notification.paper.responseReceived.smsId}")
+    private String paperAppointeeResponseReceivedSmsId;
+
     @Value("${notification.appealCreated.appellant.smsId}")
     private String appealCreatedAppellantSmsId;
 
@@ -227,6 +233,19 @@ public class NotificationsFunctionalTest extends AbstractFunctionalTest {
     }
 
     @Test
+    public void shouldSendAppointeeResponseReceivedForPaperCaseNotification() throws NotificationClientException, IOException {
+        simulateCcdCallback(DWP_RESPONSE_RECEIVED_NOTIFICATION,
+                "appointee/" + DWP_RESPONSE_RECEIVED_NOTIFICATION.getId() + "Callback.json");
+
+        List<Notification> notifications = tryFetchNotificationsForTestCase(
+                paperAppointeeResponseReceivedEmailId,
+                paperAppointeeResponseReceivedSmsId
+        );
+        Notification emailNotification = notifications.stream().filter(f -> f.getTemplateId().toString().equals(paperAppointeeResponseReceivedEmailId)).collect(Collectors.toList()).get(0);
+        assertTrue(emailNotification.getBody().contains("Dear Appointee User"));
+        assertTrue(emailNotification.getBody().contains("You are receiving this update as the appointee for"));
+    }
+
     public void shouldSendAppointeeAppealWithdrawnNotification() throws NotificationClientException, IOException {
         simulateCcdCallback(APPEAL_WITHDRAWN_NOTIFICATION,
                 "appointee/" + APPEAL_WITHDRAWN_NOTIFICATION.getId() + "Callback.json");
@@ -261,4 +280,5 @@ public class NotificationsFunctionalTest extends AbstractFunctionalTest {
         assertTrue(emailNotification.getBody().contains("Dear Appointee User"));
         assertTrue(emailNotification.getBody().contains("You are receiving this update as the appointee for"));
     }
+
 }
