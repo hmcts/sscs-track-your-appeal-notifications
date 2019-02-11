@@ -187,46 +187,46 @@ public class NotificationServiceTest {
     @Test
     @Parameters(method = "generateNotificationTypeAndSubscriptionsAppointeeScenarios")
     public void givenNotificationEventTypeAndAppointeeSubscriptionCombinations_shouldManageNotificationAndSubscriptionAccordingly(
-        NotificationEventType notificationEventType, int wantedNumberOfEmailNotificationsSent,
-        int wantedNumberOfSmsNotificationsSent, Subscription appointeeSubscription, Subscription repsSubscription,
-        SubscriptionType[] expectedSubscriptionTypes) {
+            NotificationEventType notificationEventType, int wantedNumberOfEmailNotificationsSent,
+            int wantedNumberOfSmsNotificationsSent, Subscription appointeeSubscription, Subscription repsSubscription,
+            SubscriptionType[] expectedSubscriptionTypes) {
 
         ccdNotificationWrapper = buildNotificationWrapperGivenNotificationTypeAndAppointeeSubscriptions(
-            notificationEventType, appointeeSubscription, repsSubscription);
+                notificationEventType, appointeeSubscription, repsSubscription);
 
         given(notificationValidService.isHearingTypeValidToSendNotification(
-            any(SscsCaseData.class), eq(notificationEventType))).willReturn(true);
+                any(SscsCaseData.class), eq(notificationEventType))).willReturn(true);
 
         given(notificationValidService.isNotificationStillValidToSend(anyList(), eq(notificationEventType)))
-            .willReturn(true);
+                .willReturn(true);
 
         given(factory.create(any(NotificationWrapper.class), any(SubscriptionType.class)))
-            .willReturn(new Notification(
-                Template.builder()
-                    .emailTemplateId(EMAIL_TEMPLATE_ID)
-                    .smsTemplateId(SMS_TEMPLATE_ID)
-                    .build(),
-                Destination.builder()
-                    .email(EMAIL)
-                    .sms(SMS_MOBILE)
-                    .build(),
-                null,
-                new Reference(),
-                null));
+                .willReturn(new Notification(
+                        Template.builder()
+                                .emailTemplateId(EMAIL_TEMPLATE_ID)
+                                .smsTemplateId(SMS_TEMPLATE_ID)
+                                .build(),
+                        Destination.builder()
+                                .email(EMAIL)
+                                .sms(SMS_MOBILE)
+                                .build(),
+                        null,
+                        new Reference(),
+                        null));
 
         notificationService.manageNotificationAndSubscription(ccdNotificationWrapper);
 
         ArgumentCaptor<SubscriptionType> subscriptionTypeCaptor = ArgumentCaptor.forClass(SubscriptionType.class);
         then(factory).should(times(expectedSubscriptionTypes.length))
-            .create(any(NotificationWrapper.class), subscriptionTypeCaptor.capture());
+                .create(any(NotificationWrapper.class), subscriptionTypeCaptor.capture());
         assertArrayEquals(expectedSubscriptionTypes, subscriptionTypeCaptor.getAllValues().toArray());
 
         then(notificationHandler).should(times(wantedNumberOfEmailNotificationsSent)).sendNotification(
-            eq(ccdNotificationWrapper), eq(EMAIL_TEMPLATE_ID), eq("Email"),
-            any(NotificationHandler.SendNotification.class));
+                eq(ccdNotificationWrapper), eq(EMAIL_TEMPLATE_ID), eq("Email"),
+                any(NotificationHandler.SendNotification.class));
         then(notificationHandler).should(times(wantedNumberOfSmsNotificationsSent)).sendNotification(
-            eq(ccdNotificationWrapper), eq(SMS_TEMPLATE_ID), eq("SMS"),
-            any(NotificationHandler.SendNotification.class));
+                eq(ccdNotificationWrapper), eq(SMS_TEMPLATE_ID), eq("SMS"),
+                any(NotificationHandler.SendNotification.class));
 
     }
 

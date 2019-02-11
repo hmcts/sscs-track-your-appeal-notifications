@@ -119,6 +119,7 @@ public class Personalisation<E extends NotificationWrapper> {
         return personalisation;
     }
 
+
     private String getAppealReference(SscsCaseData ccdResponse) {
         final String caseReference = ccdResponse.getCaseReference();
         return StringUtils.isBlank(caseReference) ? ccdResponse.getCcdCaseId() : caseReference;
@@ -154,7 +155,6 @@ public class Personalisation<E extends NotificationWrapper> {
     }
 
     private void subscriptionDetails(Map<String, String> personalisation, Subscription subscription, Benefit benefit) {
-
         final String tya = StringUtils.defaultIfBlank(subscription.getTya(), StringUtils.EMPTY);
         personalisation.put(APPEAL_ID, tya);
         personalisation.put(MANAGE_EMAILS_LINK_LITERAL, config.getManageEmailsLink().replace(MAC_LITERAL,

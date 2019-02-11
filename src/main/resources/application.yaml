@@ -148,6 +148,9 @@ notification:
     representative:
       emailId: a56e67cb-6b4b-41e3-8f4c-cd1cdb6809c1
       smsId: e04c548d-1ba9-40b5-bf9b-ea5e7bbadbac
+    appointee:
+      emailId: fee16753-0bdb-43f1-9abb-b14b826e3b26
+      smsId: f900174a-a556-43b2-8042-bbf3e6090071
   evidenceReminder:
     emailId: b9e47ec4-3b58-4b8d-9304-f77ac27fb7f2
     smsId: e3f71440-d1ac-43c8-a8cc-a088c4f3c959
