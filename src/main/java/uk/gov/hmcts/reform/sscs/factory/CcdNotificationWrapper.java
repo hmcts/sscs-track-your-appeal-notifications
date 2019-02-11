@@ -99,6 +99,7 @@ public class CcdNotificationWrapper implements NotificationWrapper {
                     || APPEAL_WITHDRAWN_NOTIFICATION.equals(getNotificationType())
                     || EVIDENCE_RECEIVED_NOTIFICATION.equals(getNotificationType())
                     || HEARING_BOOKED_NOTIFICATION.equals(getNotificationType())
+                    || POSTPONEMENT_NOTIFICATION.equals(getNotificationType())
                     || SUBSCRIPTION_UPDATED_NOTIFICATION.equals(getNotificationType())
                 )
         ) {

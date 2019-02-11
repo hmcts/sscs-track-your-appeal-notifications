@@ -101,6 +101,9 @@ public class NotificationsFunctionalTest extends AbstractFunctionalTest {
     @Value("${notification.evidenceReceived.appellant.smsId}")
     private String appointeeEvidenceReceivedSmsId;
 
+    @Value("${notification.hearingPostponed.appointee.emailId}")
+    private String appointeeHearingPostponedEmailId;
+
     public NotificationsFunctionalTest() {
         super(30);
     }
@@ -212,6 +215,7 @@ public class NotificationsFunctionalTest extends AbstractFunctionalTest {
                 subscriptionUpdateOldEmailId,
                 subscriptionUpdateOldSmsId
         );
+
         Notification updateEmailNotification = notifications.stream().filter(f -> f.getTemplateId().toString().equals(subscriptionUpdatedEmailTemplateId)).collect(Collectors.toList()).get(0);
         assertTrue(updateEmailNotification.getBody().contains("Dear Appellant User\r\n\r\nEmails about your ESA"));
         assertFalse(updateEmailNotification.getBody().contains("You are receiving this update as the appointee for"));
@@ -277,6 +281,16 @@ public class NotificationsFunctionalTest extends AbstractFunctionalTest {
                 "appointee/" + EVIDENCE_RECEIVED_NOTIFICATION.getId() + "Callback.json");
         List<Notification> notifications = tryFetchNotificationsForTestCase(appointeeEvidenceReceivedEmailId, appointeeEvidenceReceivedSmsId);
         Notification emailNotification = notifications.stream().filter(f -> f.getTemplateId().toString().equals(appointeeEvidenceReceivedEmailId)).collect(Collectors.toList()).get(0);
+        assertTrue(emailNotification.getBody().contains("Dear Appointee User"));
+        assertTrue(emailNotification.getBody().contains("You are receiving this update as the appointee for"));
+    }
+
+    @Test
+    public void shouldSendAppointeeHearingPostponedNotification() throws NotificationClientException, IOException {
+        simulateCcdCallback(POSTPONEMENT_NOTIFICATION,
+                "appointee/" + POSTPONEMENT_NOTIFICATION.getId() + "Callback.json");
+        List<Notification> notifications = tryFetchNotificationsForTestCase(appointeeHearingPostponedEmailId);
+        Notification emailNotification = notifications.get(0);
         assertTrue(emailNotification.getBody().contains("Dear Appointee User"));
         assertTrue(emailNotification.getBody().contains("You are receiving this update as the appointee for"));
     }
