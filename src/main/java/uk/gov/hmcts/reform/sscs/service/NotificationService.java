@@ -2,11 +2,6 @@ package uk.gov.hmcts.reform.sscs.service;
 
 import static uk.gov.hmcts.reform.sscs.ccd.domain.Benefit.getBenefitByCode;
 import static uk.gov.hmcts.reform.sscs.service.NotificationValidService.isMandatoryLetter;
-import static uk.gov.hmcts.reform.sscs.config.SubscriptionType.APPOINTEE;
-import static uk.gov.hmcts.reform.sscs.config.SubscriptionType.REPRESENTATIVE;
-import static uk.gov.hmcts.reform.sscs.service.NotificationUtils.isFallbackLetterRequired;
-import static uk.gov.hmcts.reform.sscs.service.NotificationUtils.isOkToSendNotification;
-import static uk.gov.hmcts.reform.sscs.service.NotificationValidService.isMandatoryLetterEventType;
 
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -15,7 +10,11 @@ import uk.gov.hmcts.reform.sscs.ccd.domain.Benefit;
 import uk.gov.hmcts.reform.sscs.ccd.domain.Subscription;
 import uk.gov.hmcts.reform.sscs.config.NotificationConfig;
 import uk.gov.hmcts.reform.sscs.domain.SubscriptionWithType;
-import uk.gov.hmcts.reform.sscs.domain.notify.*;
+import uk.gov.hmcts.reform.sscs.domain.notify.Destination;
+import uk.gov.hmcts.reform.sscs.domain.notify.Notification;
+import uk.gov.hmcts.reform.sscs.domain.notify.NotificationEventType;
+import uk.gov.hmcts.reform.sscs.domain.notify.Reference;
+import uk.gov.hmcts.reform.sscs.domain.notify.Template;
 import uk.gov.hmcts.reform.sscs.factory.NotificationFactory;
 import uk.gov.hmcts.reform.sscs.factory.NotificationWrapper;
 
@@ -84,19 +83,15 @@ public class NotificationService {
 
     private void processOldSubscriptionNotifications(NotificationWrapper wrapper, Notification notification) {
         if (wrapper.getNotificationType() == NotificationEventType.SUBSCRIPTION_UPDATED_NOTIFICATION) {
-            Subscription newSubscription = null;
-            Subscription oldSubscription = null;
-            if (REPRESENTATIVE.equals(subscriptionWithType.getSubscriptionType())) {
-                newSubscription = wrapper.getNewSscsCaseData().getSubscriptions().getRepresentativeSubscription();
-                oldSubscription = wrapper.getOldSscsCaseData().getSubscriptions().getRepresentativeSubscription();
-            } else if (APPOINTEE.equals(subscriptionWithType.getSubscriptionType())) {
-                newSubscription = wrapper.getNewSscsCaseData().getSubscriptions().getAppointeeSubscription();
-                oldSubscription = wrapper.getOldSscsCaseData().getSubscriptions().getAppointeeSubscription();
-            } else {
-                newSubscription = wrapper.getNewSscsCaseData().getSubscriptions().getAppellantSubscription();
-                oldSubscription = wrapper.getOldSscsCaseData().getSubscriptions().getAppellantSubscription();
-            }
+            boolean hasAppointee = wrapper.getNewSscsCaseData().getAppeal().getAppellant().getAppointee() != null;
 
+            Subscription newSubscription = hasAppointee
+                    ? wrapper.getNewSscsCaseData().getSubscriptions().getAppointeeSubscription()
+                    : wrapper.getNewSscsCaseData().getSubscriptions().getAppellantSubscription();
+
+            Subscription oldSubscription = hasAppointee
+                    ? wrapper.getOldSscsCaseData().getSubscriptions().getAppointeeSubscription()
+                    : wrapper.getOldSscsCaseData().getSubscriptions().getAppellantSubscription();
             String emailAddress = null;
             String smsNumber = null;
 
