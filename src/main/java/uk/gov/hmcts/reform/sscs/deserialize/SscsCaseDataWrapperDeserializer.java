@@ -165,8 +165,8 @@ public class SscsCaseDataWrapperDeserializer extends StdDeserializer<SscsCaseDat
     }
 
     private Appointee deserializeAppointee(JsonNode appellantNode) {
-        JsonNode appointeeNode = getObjectNode(appellantNode, "appointee");
-        if (null == appointeeNode) {
+        JsonNode appointeeNode = getNode(appellantNode, "appointee");
+        if ((null == appointeeNode) || (appointeeNode.size() == 0)) {
             return null;
         }
 
@@ -308,7 +308,7 @@ public class SscsCaseDataWrapperDeserializer extends StdDeserializer<SscsCaseDat
             String organisation = getField(repNode, "organisation");
 
             return Representative.builder()
-                .hasRepresentative("Yes")
+                .hasRepresentative(hasRepresentative)
                 .name(name).address(address).contact(contact).organisation(organisation).build();
         }
         return null;
@@ -327,14 +327,16 @@ public class SscsCaseDataWrapperDeserializer extends StdDeserializer<SscsCaseDat
     private Subscription deserializeSubscriptionJson(JsonNode subscriptionsNode, String subscriptionName) {
         JsonNode subscriptionNode = getNode(subscriptionsNode, subscriptionName);
 
-        Subscription subscription = Subscription.builder().build();
+        Subscription subscription = null;
+        if (null != subscriptionNode) {
+            subscription = Subscription.builder().build();
 
-        if (subscriptionNode != null) {
             subscription = deserializeSubscriberJson(subscriptionNode, subscription);
         }
 
         return subscription;
     }
+
 
     public List<Event> deserializeEventDetailsJson(JsonNode caseNode) {
         final JsonNode eventNode = caseNode.get("events");
@@ -449,10 +451,6 @@ public class SscsCaseDataWrapperDeserializer extends StdDeserializer<SscsCaseDat
 
     public JsonNode getNode(JsonNode node, String field) {
         return node != null && node.has(field) && !node.get(field).getNodeType().equals(JsonNodeType.NULL) ? node.get(field) : null;
-    }
-
-    public JsonNode getObjectNode(JsonNode node, String field) {
-        return node != null && node.has(field) && node.get(field).getNodeType().equals(JsonNodeType.OBJECT) && node.get(field).size() > 0 ? node.get(field) : null;
     }
 
     public String getField(JsonNode node, String field) {

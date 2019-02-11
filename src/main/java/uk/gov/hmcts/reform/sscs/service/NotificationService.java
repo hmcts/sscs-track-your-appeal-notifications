@@ -1,8 +1,7 @@
 package uk.gov.hmcts.reform.sscs.service;
 
 import static uk.gov.hmcts.reform.sscs.ccd.domain.Benefit.getBenefitByCode;
-import static uk.gov.hmcts.reform.sscs.service.NotificationValidService.isFallbackLetterRequiredForSubscriptionType;
-import static uk.gov.hmcts.reform.sscs.service.NotificationValidService.isMandatoryLetter;
+import static uk.gov.hmcts.reform.sscs.service.NotificationUtils.*;
 
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -59,9 +58,7 @@ public class NotificationService {
     private void sendNotificationPerSubscription(NotificationWrapper notificationWrapper,
                                                  NotificationEventType notificationType) {
         for (SubscriptionWithType subscriptionWithType : notificationWrapper.getSubscriptionsBasedOnNotificationType()) {
-
             if (isValidNotification(notificationWrapper, subscriptionWithType, notificationType)) {
-
                 Notification notification = notificationFactory.create(notificationWrapper, subscriptionWithType.getSubscriptionType());
 
                 sendNotificationService.sendEmailSmsLetterNotification(notificationWrapper, subscriptionWithType.getSubscription(), notification, subscriptionWithType);
@@ -75,12 +72,9 @@ public class NotificationService {
             subscriptionWithType, NotificationEventType notificationType) {
         Subscription subscription = subscriptionWithType.getSubscription();
 
-        return (isMandatoryLetter(notificationType)
-            || ((subscription != null && subscription.doesCaseHaveSubscriptions()
-            || (subscription != null && !subscription.doesCaseHaveSubscriptions() && isFallbackLetterRequiredForSubscriptionType(wrapper, subscriptionWithType.getSubscriptionType(), notificationType)
-            || subscription == null && isFallbackLetterRequiredForSubscriptionType(wrapper, subscriptionWithType.getSubscriptionType(), notificationType)))
-            && notificationValidService.isNotificationStillValidToSend(wrapper.getNewSscsCaseData().getHearings(), notificationType)
-            && notificationValidService.isHearingTypeValidToSendNotification(wrapper.getNewSscsCaseData(), notificationType)));
+        return (isMandatoryLetterEventType(notificationType)
+            || (isFallbackLetterRequired(wrapper, subscriptionWithType, subscription, notificationType, notificationValidService)
+            && isOkToSendNotification(wrapper, notificationType, notificationValidService)));
     }
 
     private void processOldSubscriptionNotifications(NotificationWrapper wrapper, Notification notification, SubscriptionWithType subscriptionWithType) {
