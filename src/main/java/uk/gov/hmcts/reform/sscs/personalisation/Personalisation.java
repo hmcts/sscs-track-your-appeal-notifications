@@ -74,7 +74,7 @@ public class Personalisation<E extends NotificationWrapper> {
         personalisation.put(BENEFIT_NAME_ACRONYM_LITERAL, benefit.name());
         personalisation.put(BENEFIT_NAME_ACRONYM_SHORT_LITERAL, benefit.name());
         personalisation.put(BENEFIT_FULL_NAME_LITERAL, benefit.getDescription());
-        personalisation.put(APPEAL_REF, ccdResponse.getCaseReference());
+        personalisation.put(APPEAL_REF, getAppealReference(ccdResponse));
         personalisation.put(APPELLANT_NAME, ccdResponse.getAppeal().getAppellant().getName().getFullNameNoTitle());
         personalisation.put(NAME, getName(subscriptionType, ccdResponse, responseWrapper));
         personalisation.put(PHONE_NUMBER, config.getHmctsPhoneNumber());
@@ -119,12 +119,17 @@ public class Personalisation<E extends NotificationWrapper> {
         return personalisation;
     }
 
+    private String getAppealReference(SscsCaseData ccdResponse) {
+        final String caseReference = ccdResponse.getCaseReference();
+        return StringUtils.isBlank(caseReference) ? ccdResponse.getCcdCaseId() : caseReference;
+    }
+
     private String getName(SubscriptionType subscriptionType, SscsCaseData ccdResponse, SscsCaseDataWrapper wrapper) {
-        Name name = null;
-        
         if (ccdResponse.getAppeal() == null) {
             return "";
         }
+
+        Name name = null;
 
         if (subscriptionType.equals(APPELLANT)
                 && ccdResponse.getAppeal().getAppellant() != null) {
