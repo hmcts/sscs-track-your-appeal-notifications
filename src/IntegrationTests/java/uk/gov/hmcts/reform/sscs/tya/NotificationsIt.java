@@ -607,66 +607,76 @@ public class NotificationsIt {
     @SuppressWarnings({"Indentation", "unused"})
     private Object[] generateAppointeeNotificationScenarios() {
         return new Object[]{
-                new Object[]{
-                            SYA_APPEAL_CREATED_NOTIFICATION,
-                            "oral",
-                            Collections.singletonList("362d9a85-e0e4-412b-b874-020c0464e2b4"),
-                            Collections.singletonList("f41222ef-c05c-4682-9634-6b034a166368"),
-                            "yes",
-                            "yes",
-                            "1",
-                            "1"
-                },
-                new Object[]{
-                            SYA_APPEAL_CREATED_NOTIFICATION,
-                            "oral",
-                            Collections.singletonList("362d9a85-e0e4-412b-b874-020c0464e2b4"),
-                            Collections.singletonList("f41222ef-c05c-4682-9634-6b034a166368"),
-                            "yes",
-                            "yes",
-                            "1",
-                            "1"
-                },
-                new Object[]{
-                            DWP_RESPONSE_RECEIVED_NOTIFICATION,
-                            "oral",
-                            Collections.singletonList("01caec0c-191b-4a32-882a-6fded2546ce6"),
-                            Collections.singletonList("317a121e-d08c-4890-b3b3-4652f741771f"),
-                            "yes",
-                            "yes",
-                            "1",
-                            "1"
-                },
-                new Object[]{
-                            SUBSCRIPTION_UPDATED_NOTIFICATION,
-                            "oral",
-                            Arrays.asList("b8b2904f-629d-42cf-acea-1b74bde5b2ff", "03b957bf-e21d-4147-90c1-b6fefa8cf70d"),
-                            Arrays.asList("7397a76f-14cb-468c-b1a7-0570940ead91", "759c712a-6b55-485e-bcf7-1cf5c4896eb1"),
-                            "yes",
-                            "yes",
-                            "2",
-                            "2"
-                },
-                new Object[]{
-                            APPEAL_RECEIVED_NOTIFICATION,
-                            "paper",
-                            Collections.singletonList("08365e91-9e07-4a5c-bf96-ef56fd0ada63"),
-                            Collections.singletonList("ede384aa-0b6e-4311-9f01-ee547573a07b"),
-                            "yes",
-                            "yes",
-                            "1",
-                            "1"
-                },
-                new Object[]{
-                            APPEAL_RECEIVED_NOTIFICATION,
-                            "oral",
-                            Collections.singletonList("08365e91-9e07-4a5c-bf96-ef56fd0ada63"),
-                            Collections.singletonList("ede384aa-0b6e-4311-9f01-ee547573a07b"),
-                            "yes",
-                            "yes",
-                            "1",
-                            "1"
-                }
+                    new Object[]{
+                                SYA_APPEAL_CREATED_NOTIFICATION,
+                                "oral",
+                                Collections.singletonList("362d9a85-e0e4-412b-b874-020c0464e2b4"),
+                                Collections.singletonList("f41222ef-c05c-4682-9634-6b034a166368"),
+                                "yes",
+                                "yes",
+                                "1",
+                                "1"
+                    },
+                    new Object[]{
+                                SYA_APPEAL_CREATED_NOTIFICATION,
+                                "oral",
+                                Collections.singletonList("362d9a85-e0e4-412b-b874-020c0464e2b4"),
+                                Collections.singletonList("f41222ef-c05c-4682-9634-6b034a166368"),
+                                "yes",
+                                "yes",
+                                "1",
+                                "1"
+                    },
+                    new Object[]{
+                                DWP_RESPONSE_RECEIVED_NOTIFICATION,
+                                "oral",
+                                Collections.singletonList("01caec0c-191b-4a32-882a-6fded2546ce6"),
+                                Collections.singletonList("317a121e-d08c-4890-b3b3-4652f741771f"),
+                                "yes",
+                                "yes",
+                                "1",
+                                "1"
+                    },
+                    new Object[]{
+                                EVIDENCE_RECEIVED_NOTIFICATION,
+                                "oral",
+                                Collections.singletonList("c5654134-2e13-4541-ac73-334a5b5cdbb6"),
+                                Collections.singletonList("74bda35f-040b-4355-bda3-faf0e4f5ae6e"),
+                                "yes",
+                                "yes",
+                                "1",
+                                "1"
+                    },
+                    new Object[]{
+                                SUBSCRIPTION_UPDATED_NOTIFICATION,
+                                "oral",
+                                Arrays.asList("b8b2904f-629d-42cf-acea-1b74bde5b2ff", "03b957bf-e21d-4147-90c1-b6fefa8cf70d"),
+                                Arrays.asList("7397a76f-14cb-468c-b1a7-0570940ead91", "759c712a-6b55-485e-bcf7-1cf5c4896eb1"),
+                                "yes",
+                                "yes",
+                                "2",
+                                "2"
+                    },
+                    new Object[]{
+                                APPEAL_RECEIVED_NOTIFICATION,
+                                "paper",
+                                Collections.singletonList("08365e91-9e07-4a5c-bf96-ef56fd0ada63"),
+                                Collections.singletonList("ede384aa-0b6e-4311-9f01-ee547573a07b"),
+                                "yes",
+                                "yes",
+                                "1",
+                                "1"
+                    },
+                    new Object[]{
+                                APPEAL_RECEIVED_NOTIFICATION,
+                                "oral",
+                                Collections.singletonList("08365e91-9e07-4a5c-bf96-ef56fd0ada63"),
+                                Collections.singletonList("ede384aa-0b6e-4311-9f01-ee547573a07b"),
+                                "yes",
+                                "yes",
+                                "1",
+                                "1"
+                    }
         };
     }
 

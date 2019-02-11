@@ -86,14 +86,12 @@ public class Personalisation<E extends NotificationWrapper> {
         if (appellantOrAppointeeSubscription != null) {
             subscriptionDetails(personalisation, appellantOrAppointeeSubscription, benefit);
         }
-
         personalisation.put(FIRST_TIER_AGENCY_ACRONYM, DWP_ACRONYM);
         personalisation.put(FIRST_TIER_AGENCY_FULL_NAME, DWP_FUL_NAME);
 
         if (ccdResponse.getHearings() != null && !ccdResponse.getHearings().isEmpty()) {
             Hearing latestHearing = ccdResponse.getHearings().get(0);
             LocalDateTime hearingDateTime = latestHearing.getValue().getHearingDateTime();
-
             personalisation.put(HEARING_DATE, formatLocalDate(hearingDateTime.toLocalDate()));
             personalisation.put(HEARING_TIME, formatLocalTime(hearingDateTime));
             personalisation.put(VENUE_ADDRESS_LITERAL, formatAddress(latestHearing));
@@ -156,11 +154,11 @@ public class Personalisation<E extends NotificationWrapper> {
     }
 
     private void subscriptionDetails(Map<String, String> personalisation, Subscription subscription, Benefit benefit) {
+
         final String tya = StringUtils.defaultIfBlank(subscription.getTya(), StringUtils.EMPTY);
         personalisation.put(APPEAL_ID, tya);
         personalisation.put(MANAGE_EMAILS_LINK_LITERAL, config.getManageEmailsLink().replace(MAC_LITERAL,
-                getMacToken(tya,
-                        benefit.name())));
+                getMacToken(tya, benefit.name())));
         personalisation.put(TRACK_APPEAL_LINK_LITERAL, config.getTrackAppealLink() != null ? config.getTrackAppealLink().replace(APPEAL_ID_LITERAL, tya) : null);
         personalisation.put(SUBMIT_EVIDENCE_LINK_LITERAL, config.getEvidenceSubmissionInfoLink().replace(APPEAL_ID, tya));
         personalisation.put(SUBMIT_EVIDENCE_INFO_LINK_LITERAL, config.getEvidenceSubmissionInfoLink().replace(APPEAL_ID_LITERAL, tya));
