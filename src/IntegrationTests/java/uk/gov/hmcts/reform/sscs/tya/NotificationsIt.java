@@ -1608,10 +1608,13 @@ public class NotificationsIt {
                 "oral",
                 Collections.singletonList("fee16753-0bdb-43f1-9abb-b14b826e3b26"),
                 Collections.singletonList("f900174a-a556-43b2-8042-bbf3e6090071"),
+                Collections.emptyList(),
                 "yes",
                 "yes",
                 "1",
-                "1"
+                "1",
+                "0",
+                "Harry Potter"
             },
             new Object[]{
                 SUBSCRIPTION_UPDATED_NOTIFICATION,
