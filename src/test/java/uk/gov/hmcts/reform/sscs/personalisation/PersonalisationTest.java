@@ -342,6 +342,24 @@ public class PersonalisationTest {
         assertEquals("", result.get(APPOINTEE_DESCRIPTION));
     }
 
+    @Test
+    public void appealRefWillReturnCcdCaseIdWhenCaseReferenceIsNotSet() {
+        RegionalProcessingCenter rpc = regionalProcessingCenterService.getByScReferenceCode("SC/1234/5");
+        SscsCaseData response = SscsCaseData.builder()
+                .ccdCaseId(CASE_ID).caseReference(null)
+                .regionalProcessingCenter(rpc)
+                .appeal(Appeal.builder().benefitType(BenefitType.builder().code("PIP").build())
+                        .appellant(Appellant.builder().name(name).build())
+                        .build())
+                .subscriptions(subscriptions)
+                .build();
+
+        Map result = personalisation.create(SscsCaseDataWrapper.builder().newSscsCaseData(response)
+                .notificationEventType(APPEAL_RECEIVED_NOTIFICATION).build(), APPELLANT);
+
+        assertEquals(CASE_ID, result.get(APPEAL_REF));
+    }
+
 
     @Test
     public void givenEvidenceReceivedNotification_customisePersonalisation() {

@@ -107,6 +107,8 @@ public class CcdNotificationWrapper implements NotificationWrapper {
                     || INTERLOC_VALID_APPEAL.equals(getNotificationType())
                     || APPEAL_RECEIVED_NOTIFICATION.equals(getNotificationType())
                     || DWP_RESPONSE_RECEIVED_NOTIFICATION.equals(getNotificationType()) && ORAL.equals(getHearingType())
+                    || EVIDENCE_RECEIVED_NOTIFICATION.equals(getNotificationType())
+                    || HEARING_BOOKED_NOTIFICATION.equals(getNotificationType())
                     || SUBSCRIPTION_UPDATED_NOTIFICATION.equals(getNotificationType())
                 )
         ) {
