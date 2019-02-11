@@ -16,15 +16,7 @@ import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 import static uk.gov.hmcts.reform.sscs.config.AppConstants.APPELLANT_NAME;
 import static uk.gov.hmcts.reform.sscs.config.AppConstants.NAME;
-import static uk.gov.hmcts.reform.sscs.domain.notify.NotificationEventType.ADJOURNED_NOTIFICATION;
-import static uk.gov.hmcts.reform.sscs.domain.notify.NotificationEventType.APPEAL_DORMANT_NOTIFICATION;
-import static uk.gov.hmcts.reform.sscs.domain.notify.NotificationEventType.APPEAL_LAPSED_NOTIFICATION;
-import static uk.gov.hmcts.reform.sscs.domain.notify.NotificationEventType.APPEAL_RECEIVED_NOTIFICATION;
-import static uk.gov.hmcts.reform.sscs.domain.notify.NotificationEventType.APPEAL_WITHDRAWN_NOTIFICATION;
-import static uk.gov.hmcts.reform.sscs.domain.notify.NotificationEventType.DWP_RESPONSE_RECEIVED_NOTIFICATION;
-import static uk.gov.hmcts.reform.sscs.domain.notify.NotificationEventType.POSTPONEMENT_NOTIFICATION;
-import static uk.gov.hmcts.reform.sscs.domain.notify.NotificationEventType.SUBSCRIPTION_UPDATED_NOTIFICATION;
-import static uk.gov.hmcts.reform.sscs.domain.notify.NotificationEventType.SYA_APPEAL_CREATED_NOTIFICATION;
+import static uk.gov.hmcts.reform.sscs.domain.notify.NotificationEventType.*;
 
 import java.io.File;
 import java.io.IOException;
@@ -333,6 +325,11 @@ public class NotificationsIt {
                 "appointeeSubscription", "subscribeEmail");
         jsonAppointee = updateEmbeddedJson(jsonAppointee, appointeeSmsSubs, "case_details", "case_data", "subscriptions",
                 "appointeeSubscription", "subscribeSms");
+
+        if (notificationEventType.equals(HEARING_BOOKED_NOTIFICATION)) {
+            jsonAppointee = jsonAppointee.replace("appealReceived", "hearingBooked");
+            jsonAppointee = jsonAppointee.replace("2018-01-12", LocalDate.now().plusDays(2).toString());
+        }
 
         jsonAppointee = updateEmbeddedJson(jsonAppointee, notificationEventType.getId(), "event_id");
 
@@ -674,6 +671,16 @@ public class NotificationsIt {
                         "paper",
                         Collections.singletonList("08365e91-9e07-4a5c-bf96-ef56fd0ada63"),
                         Collections.singletonList("ede384aa-0b6e-4311-9f01-ee547573a07b"),
+                        "yes",
+                        "yes",
+                        "1",
+                        "1"
+                },
+                new Object[]{
+                        HEARING_BOOKED_NOTIFICATION,
+                        "oral",
+                        Collections.singletonList("fee16753-0bdb-43f1-9abb-b14b826e3b26"),
+                        Collections.singletonList("f900174a-a556-43b2-8042-bbf3e6090071"),
                         "yes",
                         "yes",
                         "1",
