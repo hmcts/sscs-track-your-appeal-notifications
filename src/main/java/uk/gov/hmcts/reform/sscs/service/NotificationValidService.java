@@ -2,7 +2,6 @@ package uk.gov.hmcts.reform.sscs.service;
 
 import static uk.gov.hmcts.reform.sscs.config.SubscriptionType.APPELLANT;
 import static uk.gov.hmcts.reform.sscs.config.SubscriptionType.APPOINTEE;
-import static uk.gov.hmcts.reform.sscs.config.SubscriptionType.APPOINTEE;
 import static uk.gov.hmcts.reform.sscs.config.SubscriptionType.REPRESENTATIVE;
 import static uk.gov.hmcts.reform.sscs.domain.notify.NotificationEventType.*;
 
@@ -19,42 +18,29 @@ import uk.gov.hmcts.reform.sscs.factory.NotificationWrapper;
 
 @Service
 public class NotificationValidService {
-    private static final List<NotificationEventType> FALLBACK_LETTER_SUBSCRIPTION_TYPES = Arrays.asList(INTERLOC_VALID_APPEAL, SYA_APPEAL_CREATED_NOTIFICATION);
+    private static final List<NotificationEventType> FALLBACK_LETTER_SUBSCRIPTION_TYPES = Arrays.asList(INTERLOC_VALID_APPEAL, SYA_APPEAL_CREATED_NOTIFICATION, DWP_RESPONSE_RECEIVED_NOTIFICATION);
     private static final String HEARING_TYPE_ONLINE_RESOLUTION = "cor";
-
-    static boolean isMandatoryLetter(NotificationEventType eventType) {
-        return STRUCK_OUT.equals(eventType);
-    }
 
     boolean isFallbackLetterRequiredForSubscriptionType(NotificationWrapper wrapper, SubscriptionType subscriptionType, NotificationEventType eventType) {
         boolean result = false;
 
         if (FALLBACK_LETTER_SUBSCRIPTION_TYPES.contains(eventType)
-            && fallbackConditionsMet(wrapper, eventType)
-            && (APPELLANT.equals(subscriptionType)
-            || APPOINTEE.equals(subscriptionType)
-            || (REPRESENTATIVE.equals(subscriptionType) && null != wrapper.getNewSscsCaseData().getAppeal().getRep()))) {
+                && fallbackConditionsMet(wrapper, eventType)
+                && (APPELLANT.equals(subscriptionType)
+                || APPOINTEE.equals(subscriptionType)
+                || (REPRESENTATIVE.equals(subscriptionType) && null != wrapper.getNewSscsCaseData().getAppeal().getRep()))) {
             result = true;
         }
 
-        boolean validTarget = APPELLANT.equals(subscriptionType)
-                || APPOINTEE.equals(subscriptionType)
-                || (REPRESENTATIVE.equals(subscriptionType) && null != wrapper.getNewSscsCaseData().getAppeal().getRep());
-
-        switch (eventType) {
-            case INTERLOC_VALID_APPEAL:
-                return validTarget;
-            case DWP_RESPONSE_RECEIVED_NOTIFICATION:
-                return ReceivedVia.PAPER.equals(wrapper.getReceivedVia()) && validTarget;
-            default:
-                return false;
-        }
+        return result;
     }
 
     static boolean fallbackConditionsMet(NotificationWrapper wrapper, NotificationEventType eventType) {
         if (SYA_APPEAL_CREATED_NOTIFICATION.equals(eventType)) {
             return (null == wrapper.getOldSscsCaseData() || wrapper.getOldSscsCaseData().getCaseReference().isEmpty())
-                && !wrapper.getNewSscsCaseData().getCaseReference().isEmpty();
+                    && !wrapper.getNewSscsCaseData().getCaseReference().isEmpty();
+        } else if (DWP_RESPONSE_RECEIVED_NOTIFICATION.equals(eventType)) {
+            return ReceivedVia.PAPER.equals(wrapper.getReceivedVia());
         }
 
         return true;

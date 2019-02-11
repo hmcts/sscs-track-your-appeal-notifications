@@ -50,10 +50,11 @@ public class NotificationServiceTest {
             .name(Name.builder().firstName("Ap").lastName("pellant").build())
             .address(Address.builder().line1("Appellant Line 1").town("Appellant Town").county("Appellant County").postcode("AP9 3LL").build())
             .build();
+
     protected static Representative REP_WITH_ADDRESS = Representative.builder()
             .name(Name.builder().firstName("Rep").lastName("resentative").build())
-            .hasRepresentative("Yes")
             .address(Address.builder().line1("Representative Line 1").town("Representative Town").county("Representative County").postcode("RP9 3LL").build())
+            .hasRepresentative("Yes")
             .build();
 
     private static final String APPEAL_NUMBER = "GLSCRR";
@@ -153,11 +154,6 @@ public class NotificationServiceTest {
 
         ccdNotificationWrapper = buildNotificationWrapperGivenNotificationTypeAndSubscriptions(
                 notificationEventType, appellantSubscription, repsSubscription, appointeeSubscription);
-
-        if (appointeeSubscription != null) {
-            ccdNotificationWrapper.getNewSscsCaseData().getAppeal()
-                    .setAppellant(Appellant.builder().appointee(Appointee.builder().build()).build());
-        }
 
         given(notificationValidService.isHearingTypeValidToSendNotification(
                 any(SscsCaseData.class), eq(notificationEventType))).willReturn(true);
@@ -1491,6 +1487,7 @@ public class NotificationServiceTest {
 
         when((notificationValidService).isNotificationStillValidToSend(any(), any())).thenReturn(true);
         when((notificationValidService).isHearingTypeValidToSendNotification(any(), any())).thenReturn(true);
+        when((notificationValidService).isFallbackLetterRequiredForSubscriptionType(any(), any(), eq(DWP_RESPONSE_RECEIVED_NOTIFICATION))).thenReturn(true);
 
         when(factory.create(ccdNotificationWrapper, APPELLANT)).thenReturn(notification);
         when(factory.create(ccdNotificationWrapper, REPRESENTATIVE)).thenReturn(notification);
