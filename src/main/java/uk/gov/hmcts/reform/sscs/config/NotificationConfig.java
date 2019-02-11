@@ -3,6 +3,8 @@ package uk.gov.hmcts.reform.sscs.config;
 import java.util.Locale;
 
 import javax.validation.constraints.NotNull;
+
+import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.core.env.Environment;
@@ -94,7 +96,7 @@ public class NotificationConfig {
                                 ? env.getProperty(templateNameWithHearing)
                                 : env.getProperty(templateNameNoHearing);
 
-        return templateId;
+        return StringUtils.stripToNull(templateId);
     }
 
 }
