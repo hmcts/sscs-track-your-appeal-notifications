@@ -78,15 +78,13 @@ public class NotificationConfig {
 
     private String getTemplate(@NotNull AppealHearingType appealHearingType, String templateName,
                                final String notificationType) {
-
-        String templateNameWithHearing = "notification." + appealHearingType.name().toLowerCase(Locale.ENGLISH)
-                + "." + templateName + "." + notificationType;
-
-        String templateNameNoHearing = "notification." + templateName + "." + notificationType;
-
-        return env.containsProperty(templateNameWithHearing)
-                ? env.getProperty(templateNameWithHearing)
-                : env.getProperty(templateNameNoHearing);
+        String hearingTypeName = appealHearingType.name().toLowerCase(Locale.ENGLISH);
+        String templateId = env.getProperty("notification." + hearingTypeName + "." + templateName + "."
+                + notificationType);
+        if (templateId == null) {
+            templateId = env.getProperty("notification." + templateName + "." + notificationType);
+        }
+        return templateId;
     }
 
 }

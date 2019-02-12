@@ -657,6 +657,16 @@ public class NotificationsIt {
                         "1"
                 },
                 new Object[]{
+                        APPEAL_LAPSED_NOTIFICATION,
+                        "oral",
+                        Collections.singletonList("8ce8d794-75e8-49a0-b4d2-0c6cd2061c11"),
+                        Collections.singletonList("d2b4394b-d1c9-4d5c-a44e-b382e41c67e5"),
+                        "yes",
+                        "yes",
+                        "1",
+                        "1"
+                },
+                new Object[]{
                         SUBSCRIPTION_UPDATED_NOTIFICATION,
                         "oral",
                         Arrays.asList("b8b2904f-629d-42cf-acea-1b74bde5b2ff", "03b957bf-e21d-4147-90c1-b6fefa8cf70d"),
