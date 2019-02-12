@@ -93,9 +93,15 @@ public class CcdNotificationWrapper implements NotificationWrapper {
 
         if (hasAppointee(responseWrapper) && hasAppointeeSubscription(responseWrapper)
                 && (SYA_APPEAL_CREATED_NOTIFICATION.equals(getNotificationType())
-                    || DWP_RESPONSE_RECEIVED_NOTIFICATION.equals(getNotificationType()) && ORAL.equals(getHearingType())
-                    || APPEAL_LAPSED_NOTIFICATION.equals(getNotificationType())
+
                     || APPEAL_RECEIVED_NOTIFICATION.equals(getNotificationType())
+                    || APPEAL_LAPSED_NOTIFICATION.equals(getNotificationType())
+                    || DWP_RESPONSE_RECEIVED_NOTIFICATION.equals(getNotificationType()) && ORAL.equals(getHearingType())
+                    || DWP_RESPONSE_RECEIVED_NOTIFICATION.equals(getNotificationType()) && PAPER.equals(getHearingType())
+                    || APPEAL_WITHDRAWN_NOTIFICATION.equals(getNotificationType())
+                    || EVIDENCE_RECEIVED_NOTIFICATION.equals(getNotificationType())
+                    || HEARING_BOOKED_NOTIFICATION.equals(getNotificationType())
+                    || POSTPONEMENT_NOTIFICATION.equals(getNotificationType())
                     || SUBSCRIPTION_UPDATED_NOTIFICATION.equals(getNotificationType())
                 )
         ) {

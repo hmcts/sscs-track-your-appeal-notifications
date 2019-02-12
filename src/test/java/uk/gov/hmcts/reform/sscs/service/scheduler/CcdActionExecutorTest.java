@@ -44,7 +44,7 @@ public class CcdActionExecutorTest {
 
         caseDetails = SscsCaseDetails.builder().caseTypeId("123").build();
 
-        SscsCaseData newSscsCaseData = SscsCaseData.builder().build();
+        newSscsCaseData = SscsCaseData.builder().build();
 
         idamTokens = IdamTokens.builder().build();
         when(idamService.getIdamTokens()).thenReturn(idamTokens);

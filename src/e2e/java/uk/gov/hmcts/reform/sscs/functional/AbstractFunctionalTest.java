@@ -112,7 +112,7 @@ public abstract class AbstractFunctionalTest {
 
         assertNotNull(caseDetails);
         caseId = caseDetails.getId();
-        log.info("Creating CCD case [" + caseId + "]");
+        log.info("Created CCD case [" + caseId + "] successfully");
     }
 
     protected SscsCaseData createCaseData() {
