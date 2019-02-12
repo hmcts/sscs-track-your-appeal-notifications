@@ -16,6 +16,7 @@ import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 import static uk.gov.hmcts.reform.sscs.config.AppConstants.APPELLANT_NAME;
 import static uk.gov.hmcts.reform.sscs.config.AppConstants.NAME;
+import static uk.gov.hmcts.reform.sscs.config.AppConstants.REPRESENTATIVE_NAME;
 import static uk.gov.hmcts.reform.sscs.domain.notify.NotificationEventType.*;
 
 import java.io.File;
@@ -1629,7 +1630,9 @@ public class NotificationsIt {
                 "yes",
                 "yes",
                 "2",
-                "2"
+                "2",
+                "0",
+                "Appointee Appointee"
             },
             new Object[]{
                 APPEAL_RECEIVED_NOTIFICATION,
@@ -1639,7 +1642,9 @@ public class NotificationsIt {
                 "yes",
                 "yes",
                 "1",
-                "1"
+                "1",
+                "0",
+                "Appointee Appointee"
             },
             new Object[]{
                 DWP_RESPONSE_RECEIVED_NOTIFICATION,
@@ -1649,7 +1654,9 @@ public class NotificationsIt {
                 "yes",
                 "yes",
                 "1",
-                "1"
+                "1",
+                "0",
+                "Appointee Appointee"
             },
             new Object[]{
                 HEARING_BOOKED_NOTIFICATION,
@@ -1659,7 +1666,9 @@ public class NotificationsIt {
                 "yes",
                 "yes",
                 "1",
-                "1"
+                "1",
+                "0",
+                "Appointee Appointee"
             },
             new Object[]{
                 APPEAL_RECEIVED_NOTIFICATION,
@@ -1669,7 +1678,9 @@ public class NotificationsIt {
                 "yes",
                 "yes",
                 "1",
-                "1"
+                "1",
+                "0",
+                "Appointee Appointee"
             },
             new Object[]{
                 APPEAL_WITHDRAWN_NOTIFICATION,
@@ -1679,7 +1690,9 @@ public class NotificationsIt {
                 "yes",
                 "yes",
                 "1",
-                "1"
+                "1",
+                "0",
+                "Appointee Appointee"
             },
             new Object[]{
                 SUBSCRIPTION_UPDATED_NOTIFICATION,
