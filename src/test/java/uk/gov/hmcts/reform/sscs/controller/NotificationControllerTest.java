@@ -69,7 +69,6 @@ public class NotificationControllerTest {
 
     @Test
     public void shouldCreateAndSendNotificationForCohResponse() {
-
         long caseDetailsId = 123L;
         String onlineHearingId = "onlineHearingId";
 
