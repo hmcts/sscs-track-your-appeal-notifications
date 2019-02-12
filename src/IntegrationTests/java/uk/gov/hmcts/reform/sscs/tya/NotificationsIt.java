@@ -1623,20 +1623,7 @@ public class NotificationsIt {
                 "1",
                 "1",
                 "0",
-                "Appointee Appointee"
-            },
-            new Object[]{
-                APPEAL_LAPSED_NOTIFICATION,
-                "oral",
-                Collections.singletonList("8ce8d794-75e8-49a0-b4d2-0c6cd2061c11"),
-                Collections.singletonList("d2b4394b-d1c9-4d5c-a44e-b382e41c67e5"),
-                Collections.emptyList(),
-                "no",
-                "no",
-                "0",
-                "0",
-                "0",
-                "Appointee Appointee"
+                "Harry Potter"
             },
             new Object[]{
                 SUBSCRIPTION_UPDATED_NOTIFICATION,
@@ -1675,20 +1662,7 @@ public class NotificationsIt {
                 "1",
                 "1",
                 "0",
-                "Appointee Appointee"
-            },
-            new Object[]{
-                ADJOURNED_NOTIFICATION,
-                "oral",
-                Collections.singletonList("bff02237-9bcb-49fa-bbf7-11725b97132a"),
-                Collections.singletonList("46c6bf06-33dd-4e5a-9b6b-8bd6d0eb33b1"),
-                Collections.emptyList(),
-                "no",
-                "no",
-                "0",
-                "0",
-                "0",
-                "Appointee Appointee"
+                "Harry Potter"
             },
             new Object[]{
                 DWP_RESPONSE_RECEIVED_NOTIFICATION,
