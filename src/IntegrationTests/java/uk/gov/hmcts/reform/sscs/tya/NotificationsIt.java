@@ -14,14 +14,19 @@ import static org.mockito.Mockito.never;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
-import static uk.gov.hmcts.reform.sscs.config.AppConstants.*;
+import static uk.gov.hmcts.reform.sscs.config.AppConstants.APPELLANT_NAME;
+import static uk.gov.hmcts.reform.sscs.config.AppConstants.NAME;
 import static uk.gov.hmcts.reform.sscs.domain.notify.NotificationEventType.*;
 
 import java.io.File;
 import java.io.IOException;
 import java.nio.charset.StandardCharsets;
 import java.time.LocalDate;
-import java.util.*;
+import java.util.Arrays;
+import java.util.Collections;
+import java.util.List;
+import java.util.Map;
+import java.util.UUID;
 import javax.servlet.http.HttpServletResponse;
 import junitparams.JUnitParamsRunner;
 import junitparams.Parameters;
@@ -56,6 +61,19 @@ import uk.gov.hmcts.reform.sscs.factory.NotificationFactory;
 import uk.gov.hmcts.reform.sscs.idam.IdamService;
 import uk.gov.hmcts.reform.sscs.service.*;
 import uk.gov.service.notify.*;
+import uk.gov.hmcts.reform.sscs.service.AuthorisationService;
+import uk.gov.hmcts.reform.sscs.service.EvidenceManagementService;
+import uk.gov.hmcts.reform.sscs.service.NotificationHandler;
+import uk.gov.hmcts.reform.sscs.service.NotificationSender;
+import uk.gov.hmcts.reform.sscs.service.NotificationService;
+import uk.gov.hmcts.reform.sscs.service.NotificationValidService;
+import uk.gov.hmcts.reform.sscs.service.OutOfHoursCalculator;
+import uk.gov.hmcts.reform.sscs.service.ReminderService;
+import uk.gov.hmcts.reform.sscs.service.SendNotificationService;
+import uk.gov.hmcts.reform.sscs.service.SscsGeneratePdfService;
+import uk.gov.service.notify.NotificationClient;
+import uk.gov.service.notify.SendEmailResponse;
+import uk.gov.service.notify.SendSmsResponse;
 
 @RunWith(JUnitParamsRunner.class)
 @SpringBootTest
@@ -204,7 +222,7 @@ public class NotificationsIt {
     @Parameters({
             "oral, 01caec0c-191b-4a32-882a-6fded2546ce6, 317a121e-d08c-4890-b3b3-4652f741771f",
             "paper, a64bce9a-9162-47ca-b3e7-cf5f85ca7bdc, f5b61f94-0b2b-4e8e-9c25-56e9830df7d4"
-        })
+    })
     public void shouldSendNotificationForAnResponseReceivedRequestForAnOralOrPaperHearing(
             String hearingType, String emailTemplateId, String smsTemplateId) throws Exception {
         json = updateEmbeddedJson(json, hearingType, "case_details", "case_data", "appeal", "hearingType");
@@ -330,9 +348,14 @@ public class NotificationsIt {
         jsonAppointee = updateEmbeddedJson(jsonAppointee, hearingType, "case_details", "case_data", "appeal", "hearingType");
 
         jsonAppointee = updateEmbeddedJson(jsonAppointee, appointeeEmailSubs, "case_details", "case_data", "subscriptions",
-            "appointeeSubscription", "subscribeEmail");
+                "appointeeSubscription", "subscribeEmail");
         jsonAppointee = updateEmbeddedJson(jsonAppointee, appointeeSmsSubs, "case_details", "case_data", "subscriptions",
-            "appointeeSubscription", "subscribeSms");
+                "appointeeSubscription", "subscribeSms");
+
+        if (notificationEventType.equals(HEARING_BOOKED_NOTIFICATION)) {
+            jsonAppointee = jsonAppointee.replace("appealReceived", "hearingBooked");
+            jsonAppointee = jsonAppointee.replace("2018-01-12", LocalDate.now().plusDays(2).toString());
+        }
 
         jsonAppointee = updateEmbeddedJson(jsonAppointee, notificationEventType.getId(), "event_id");
 
@@ -393,7 +416,7 @@ public class NotificationsIt {
     private void validateSmsNotifications(List<String> expectedSmsTemplateIds, int wantedNumberOfSendSmsInvocations) throws NotificationClientException {
         ArgumentCaptor<String> smsTemplateIdCaptor = ArgumentCaptor.forClass(String.class);
         verify(notificationClient, times(wantedNumberOfSendSmsInvocations))
-            .sendSms(smsTemplateIdCaptor.capture(), any(), any(), any(), any());
+                .sendSms(smsTemplateIdCaptor.capture(), any(), any(), any(), any());
         assertArrayEquals(expectedSmsTemplateIds.toArray(), smsTemplateIdCaptor.getAllValues().toArray());
     }
 
@@ -1597,6 +1620,66 @@ public class NotificationsIt {
                 "0",
                 "0",
                 "Appointee Appointee"
+            },
+            new Object[]{
+                SUBSCRIPTION_UPDATED_NOTIFICATION,
+                "oral",
+                Arrays.asList("b8b2904f-629d-42cf-acea-1b74bde5b2ff", "03b957bf-e21d-4147-90c1-b6fefa8cf70d"),
+                Arrays.asList("7397a76f-14cb-468c-b1a7-0570940ead91", "759c712a-6b55-485e-bcf7-1cf5c4896eb1"),
+                "yes",
+                "yes",
+                "2",
+                "2"
+            },
+            new Object[]{
+                APPEAL_RECEIVED_NOTIFICATION,
+                "paper",
+                Collections.singletonList("08365e91-9e07-4a5c-bf96-ef56fd0ada63"),
+                Collections.singletonList("ede384aa-0b6e-4311-9f01-ee547573a07b"),
+                "yes",
+                "yes",
+                "1",
+                "1"
+            },
+            new Object[]{
+                DWP_RESPONSE_RECEIVED_NOTIFICATION,
+                "paper",
+                Collections.singletonList("a64bce9a-9162-47ca-b3e7-cf5f85ca7bdc"),
+                Collections.singletonList("f5b61f94-0b2b-4e8e-9c25-56e9830df7d4"),
+                "yes",
+                "yes",
+                "1",
+                "1"
+            },
+            new Object[]{
+                HEARING_BOOKED_NOTIFICATION,
+                "oral",
+                Collections.singletonList("fee16753-0bdb-43f1-9abb-b14b826e3b26"),
+                Collections.singletonList("f900174a-a556-43b2-8042-bbf3e6090071"),
+                "yes",
+                "yes",
+                "1",
+                "1"
+            },
+            new Object[]{
+                APPEAL_RECEIVED_NOTIFICATION,
+                "oral",
+                Collections.singletonList("08365e91-9e07-4a5c-bf96-ef56fd0ada63"),
+                Collections.singletonList("ede384aa-0b6e-4311-9f01-ee547573a07b"),
+                "yes",
+                "yes",
+                "1",
+                "1"
+            },
+            new Object[]{
+                APPEAL_WITHDRAWN_NOTIFICATION,
+                "oral",
+                Collections.singletonList("8620e023-f663-477e-a771-9cfad50ee30f"),
+                Collections.singletonList("446c7b23-7342-42e1-adff-b4c367e951cb"),
+                "yes",
+                "yes",
+                "1",
+                "1"
             },
             new Object[]{
                 SUBSCRIPTION_UPDATED_NOTIFICATION,

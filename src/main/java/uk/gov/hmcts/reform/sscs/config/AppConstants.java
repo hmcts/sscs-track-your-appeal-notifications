@@ -77,7 +77,6 @@ public final class AppConstants {
     public static final String LETTER_ADDRESS_POSTCODE = "letter_address_postcode";
     public static final String LETTER_NAME = "letter_name";
 
-
     private AppConstants() {
         //
     }
