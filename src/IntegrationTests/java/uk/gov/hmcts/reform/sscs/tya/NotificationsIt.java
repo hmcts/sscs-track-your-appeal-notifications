@@ -62,16 +62,6 @@ import uk.gov.hmcts.reform.sscs.factory.NotificationFactory;
 import uk.gov.hmcts.reform.sscs.idam.IdamService;
 import uk.gov.hmcts.reform.sscs.service.*;
 import uk.gov.service.notify.*;
-import uk.gov.hmcts.reform.sscs.service.AuthorisationService;
-import uk.gov.hmcts.reform.sscs.service.EvidenceManagementService;
-import uk.gov.hmcts.reform.sscs.service.NotificationHandler;
-import uk.gov.hmcts.reform.sscs.service.NotificationSender;
-import uk.gov.hmcts.reform.sscs.service.NotificationService;
-import uk.gov.hmcts.reform.sscs.service.NotificationValidService;
-import uk.gov.hmcts.reform.sscs.service.OutOfHoursCalculator;
-import uk.gov.hmcts.reform.sscs.service.ReminderService;
-import uk.gov.hmcts.reform.sscs.service.SendNotificationService;
-import uk.gov.hmcts.reform.sscs.service.SscsGeneratePdfService;
 import uk.gov.service.notify.NotificationClient;
 import uk.gov.service.notify.SendEmailResponse;
 import uk.gov.service.notify.SendSmsResponse;
@@ -1627,6 +1617,7 @@ public class NotificationsIt {
                 "oral",
                 Arrays.asList("b8b2904f-629d-42cf-acea-1b74bde5b2ff", "03b957bf-e21d-4147-90c1-b6fefa8cf70d"),
                 Arrays.asList("7397a76f-14cb-468c-b1a7-0570940ead91", "759c712a-6b55-485e-bcf7-1cf5c4896eb1"),
+                Collections.emptyList(),
                 "yes",
                 "yes",
                 "2",
@@ -1639,18 +1630,20 @@ public class NotificationsIt {
                 "paper",
                 Collections.singletonList("08365e91-9e07-4a5c-bf96-ef56fd0ada63"),
                 Collections.singletonList("ede384aa-0b6e-4311-9f01-ee547573a07b"),
+                Collections.emptyList(),
                 "yes",
                 "yes",
                 "1",
                 "1",
                 "0",
-                "Appointee Appointee"
+                "Harry Potter"
             },
             new Object[]{
                 DWP_RESPONSE_RECEIVED_NOTIFICATION,
                 "paper",
                 Collections.singletonList("a64bce9a-9162-47ca-b3e7-cf5f85ca7bdc"),
                 Collections.singletonList("f5b61f94-0b2b-4e8e-9c25-56e9830df7d4"),
+                Collections.emptyList(),
                 "yes",
                 "yes",
                 "1",
@@ -1663,36 +1656,39 @@ public class NotificationsIt {
                 "oral",
                 Collections.singletonList("fee16753-0bdb-43f1-9abb-b14b826e3b26"),
                 Collections.singletonList("f900174a-a556-43b2-8042-bbf3e6090071"),
+                Collections.emptyList(),
                 "yes",
                 "yes",
                 "1",
                 "1",
                 "0",
-                "Appointee Appointee"
+                "Harry Potter"
             },
             new Object[]{
                 APPEAL_RECEIVED_NOTIFICATION,
                 "oral",
                 Collections.singletonList("08365e91-9e07-4a5c-bf96-ef56fd0ada63"),
                 Collections.singletonList("ede384aa-0b6e-4311-9f01-ee547573a07b"),
+                Collections.emptyList(),
                 "yes",
                 "yes",
                 "1",
                 "1",
                 "0",
-                "Appointee Appointee"
+                "Harry Potter"
             },
             new Object[]{
                 APPEAL_WITHDRAWN_NOTIFICATION,
                 "oral",
                 Collections.singletonList("8620e023-f663-477e-a771-9cfad50ee30f"),
                 Collections.singletonList("446c7b23-7342-42e1-adff-b4c367e951cb"),
+                Collections.emptyList(),
                 "yes",
                 "yes",
                 "1",
                 "1",
                 "0",
-                "Appointee Appointee"
+                "Harry Potter"
             },
             new Object[]{
                 SUBSCRIPTION_UPDATED_NOTIFICATION,
