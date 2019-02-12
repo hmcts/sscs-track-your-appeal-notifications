@@ -32,7 +32,7 @@
           "subscribeSms": "Yes",
           "subscribeEmail": "Yes"
         },
-        "supporterSubscription": {
+        "representativeSubscription": {
           "tya": "",
           "email": "",
           "mobile": "",
@@ -105,7 +105,7 @@
               "subscribeEmail": "PUBLIC"
             }
           },
-          "supporterSubscription": {
+          "representativeSubscription": {
             "classification": "PUBLIC",
             "value": {
               "tya": "PUBLIC",
@@ -221,7 +221,7 @@
               "subscribeEmail": "PUBLIC"
             }
           },
-          "supporterSubscription": {
+          "representativeSubscription": {
             "classification": "PUBLIC",
             "value": {
               "tya": "PUBLIC",
@@ -354,7 +354,7 @@
           "subscribeSms": "Yes",
           "subscribeEmail": "Yes"
         },
-        "supporterSubscription": {
+        "representativeSubscription": {
           "tya": "",
           "email": "",
           "mobile": "",
@@ -418,7 +418,7 @@
             },
             "classification": "PUBLIC"
           },
-          "supporterSubscription": {
+          "representativeSubscription": {
             "value": {
               "tya": "PUBLIC",
               "email": "PUBLIC",
@@ -526,7 +526,7 @@
             },
             "classification": "PUBLIC"
           },
-          "supporterSubscription": {
+          "representativeSubscription": {
             "value": {
               "tya": "PUBLIC",
               "email": "PUBLIC",
