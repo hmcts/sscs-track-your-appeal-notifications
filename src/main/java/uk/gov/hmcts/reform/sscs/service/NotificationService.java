@@ -1,6 +1,7 @@
 package uk.gov.hmcts.reform.sscs.service;
 
 import static uk.gov.hmcts.reform.sscs.ccd.domain.Benefit.getBenefitByCode;
+import static uk.gov.hmcts.reform.sscs.service.NotificationUtils.hasAppointee;
 import static uk.gov.hmcts.reform.sscs.service.NotificationValidService.isMandatoryLetter;
 
 import lombok.extern.slf4j.Slf4j;
@@ -79,7 +80,7 @@ public class NotificationService {
 
     private void processOldSubscriptionNotifications(NotificationWrapper wrapper, Notification notification) {
         if (wrapper.getNotificationType() == NotificationEventType.SUBSCRIPTION_UPDATED_NOTIFICATION) {
-            boolean hasAppointee = wrapper.getNewSscsCaseData().getAppeal().getAppellant().getAppointee() != null;
+            boolean hasAppointee = hasAppointee(wrapper.getSscsCaseDataWrapper());
 
             Subscription newSubscription = hasAppointee
                 ? wrapper.getNewSscsCaseData().getSubscriptions().getAppointeeSubscription()
