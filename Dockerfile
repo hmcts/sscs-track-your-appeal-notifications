@@ -1,11 +1,9 @@
-FROM openjdk:8-jre
+FROM hmcts/cnp-java-base:openjdk-8u181-jre-alpine3.8-1.0
 
-COPY build/install/track-your-appeal-notifications /opt/app/
+ENV APP track-your-appeal-notifications.jar
+ENV APPLICATION_TOTAL_MEMORY 2048M
+ENV APPLICATION_SIZE_ON_DISK_IN_MB 100
 
-WORKDIR /opt/app
-
-HEALTHCHECK --interval=10s --timeout=10s --retries=10 CMD http_proxy="" curl --silent --fail http://localhost:8081/health
+COPY build/libs/track-your-appeal-notifications.jar /opt/app/
 
 EXPOSE 8081
-
-ENTRYPOINT ["/opt/app/bin/track-your-appeal-notifications"]

@@ -5,6 +5,7 @@ import static org.apache.commons.lang3.StringUtils.isNotBlank;
 import java.util.Map;
 import lombok.Builder;
 import lombok.Value;
+import uk.gov.hmcts.reform.sscs.domain.util.UkMobile;
 
 @Value
 @Builder
@@ -29,7 +30,7 @@ public class Notification {
     }
 
     public boolean isSms() {
-        return isNotBlank(destination.sms);
+        return isNotBlank(destination.sms) && UkMobile.check(destination.sms);
     }
 
     public String getEmailTemplate() {
@@ -38,6 +39,10 @@ public class Notification {
 
     public String getSmsTemplate() {
         return template.getSmsTemplateId();
+    }
+
+    public String getLetterTemplate() {
+        return template.getLetterTemplateId();
     }
 
     public String getSmsSenderTemplate() {

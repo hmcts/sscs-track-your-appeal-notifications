@@ -1,5 +1,7 @@
 package uk.gov.hmcts.reform.sscs.service;
 
+import static uk.gov.hmcts.reform.sscs.domain.notify.NotificationEventType.STRUCK_OUT;
+
 import java.time.LocalDateTime;
 import java.util.List;
 import org.springframework.stereotype.Service;
@@ -11,6 +13,10 @@ import uk.gov.hmcts.reform.sscs.domain.notify.NotificationEventType;
 public class NotificationValidService {
 
     private static final String HEARING_TYPE_ONLINE_RESOLUTION = "cor";
+
+    static final boolean isMandatoryLetter(NotificationEventType eventType) {
+        return STRUCK_OUT.equals(eventType);
+    }
 
     boolean isHearingTypeValidToSendNotification(SscsCaseData sscsCaseData, NotificationEventType eventType) {
 

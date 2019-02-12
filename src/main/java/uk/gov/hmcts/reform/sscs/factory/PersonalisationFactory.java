@@ -1,8 +1,6 @@
 package uk.gov.hmcts.reform.sscs.factory;
 
-import static uk.gov.hmcts.reform.sscs.domain.notify.NotificationEventType.QUESTION_ROUND_ISSUED_NOTIFICATION;
-import static uk.gov.hmcts.reform.sscs.domain.notify.NotificationEventType.SUBSCRIPTION_UPDATED_NOTIFICATION;
-import static uk.gov.hmcts.reform.sscs.domain.notify.NotificationEventType.SYA_APPEAL_CREATED_NOTIFICATION;
+import static uk.gov.hmcts.reform.sscs.domain.notify.NotificationEventType.*;
 
 import java.util.function.Function;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -11,13 +9,17 @@ import uk.gov.hmcts.reform.sscs.domain.notify.NotificationEventType;
 import uk.gov.hmcts.reform.sscs.personalisation.CohPersonalisation;
 import uk.gov.hmcts.reform.sscs.personalisation.Personalisation;
 import uk.gov.hmcts.reform.sscs.personalisation.SubscriptionPersonalisation;
-import uk.gov.hmcts.reform.sscs.personalisation.SyaAppealCreatedPersonalisation;
+import uk.gov.hmcts.reform.sscs.personalisation.SyaAppealCreatedAndReceivedPersonalisation;
+import uk.gov.hmcts.reform.sscs.personalisation.WithRepresentativePersonalisation;
 
 @Component
 public class PersonalisationFactory implements Function<NotificationEventType, Personalisation> {
 
     @Autowired
-    private SyaAppealCreatedPersonalisation syaAppealCreatedPersonalisation;
+    private SyaAppealCreatedAndReceivedPersonalisation syaAppealCreatedAndReceivedPersonalisation;
+
+    @Autowired
+    private WithRepresentativePersonalisation withRepresentativePersonalisation;
 
     @Autowired
     private SubscriptionPersonalisation subscriptionPersonalisation;
@@ -30,17 +32,28 @@ public class PersonalisationFactory implements Function<NotificationEventType, P
 
     @Override
     public Personalisation apply(NotificationEventType notificationType) {
+        Personalisation selectedPersonalisation = null;
         if (notificationType != null) {
-            if (notificationType.equals(SYA_APPEAL_CREATED_NOTIFICATION)) {
-                return syaAppealCreatedPersonalisation;
-            } else if (notificationType.equals(SUBSCRIPTION_UPDATED_NOTIFICATION)) {
-                return subscriptionPersonalisation;
-            } else if (notificationType.equals(QUESTION_ROUND_ISSUED_NOTIFICATION)) {
-                return cohPersonalisation;
+            if (SYA_APPEAL_CREATED_NOTIFICATION.equals(notificationType)
+                    || RESEND_APPEAL_CREATED_NOTIFICATION.equals(notificationType)
+                    || APPEAL_RECEIVED_NOTIFICATION.equals(notificationType)) {
+                selectedPersonalisation = syaAppealCreatedAndReceivedPersonalisation;
+            } else if (APPEAL_LAPSED_NOTIFICATION.equals(notificationType)
+                || APPEAL_WITHDRAWN_NOTIFICATION.equals(notificationType)
+                || EVIDENCE_RECEIVED_NOTIFICATION.equals(notificationType)
+                || APPEAL_DORMANT_NOTIFICATION.equals(notificationType)
+                || ADJOURNED_NOTIFICATION.equals(notificationType)
+                || POSTPONEMENT_NOTIFICATION.equals(notificationType)
+                || HEARING_BOOKED_NOTIFICATION.equals(notificationType)) {
+                selectedPersonalisation = withRepresentativePersonalisation;
+            } else if (SUBSCRIPTION_UPDATED_NOTIFICATION.equals(notificationType)) {
+                selectedPersonalisation = subscriptionPersonalisation;
+            } else if (QUESTION_ROUND_ISSUED_NOTIFICATION.equals(notificationType)) {
+                selectedPersonalisation = cohPersonalisation;
             } else {
-                return personalisation;
+                selectedPersonalisation = this.personalisation;
             }
         }
-        return null;
+        return selectedPersonalisation;
     }
 }

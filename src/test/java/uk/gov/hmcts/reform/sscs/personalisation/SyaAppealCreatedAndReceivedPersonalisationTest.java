@@ -14,7 +14,7 @@ import org.mockito.InjectMocks;
 import uk.gov.hmcts.reform.sscs.ccd.domain.*;
 import uk.gov.hmcts.reform.sscs.config.AppConstants;
 
-public class SyaAppealCreatedPersonalisationTest {
+public class SyaAppealCreatedAndReceivedPersonalisationTest {
 
     private static final String CASE_ID = "54321";
 
@@ -22,7 +22,7 @@ public class SyaAppealCreatedPersonalisationTest {
 
     @InjectMocks
     @Resource
-    SyaAppealCreatedPersonalisation personalisation;
+    SyaAppealCreatedAndReceivedPersonalisation syaAppealCreatedAndReceivedPersonalisation;
 
     @Before
     public void setup() {
@@ -30,14 +30,19 @@ public class SyaAppealCreatedPersonalisationTest {
     }
 
     @Test
-    public void givenASyaAppealCreated_setMrnDetailsForTemplate() {
+    public void givenAnAppeal_setMrnDetailsForTemplate() {
         response = SscsCaseData.builder()
                 .ccdCaseId(CASE_ID).caseReference("SC/1234/5")
                 .appeal(Appeal.builder().benefitType(BenefitType.builder().code("PIP").build())
-                .mrnDetails(MrnDetails.builder().mrnDate("3 May 2018").mrnLateReason("My train was cancelled.").mrnMissingReason("My dog ate my homework.").build()).build())
+                        .mrnDetails(MrnDetails.builder()
+                                .mrnDate("3 May 2018")
+                                .mrnLateReason("My train was cancelled.")
+                                .mrnMissingReason("My dog ate my homework.")
+                                .build())
+                        .build())
                 .build();
 
-        Map<String, String> result = personalisation.setMrnDetails(new HashMap<>(), response);
+        Map<String, String> result = syaAppealCreatedAndReceivedPersonalisation.setMrnDetails(new HashMap<>(), response);
 
         assertEquals("Date of MRN: 3 May 2018\n"
                         + "\nReason for late appeal: My train was cancelled.\n"
@@ -46,14 +51,14 @@ public class SyaAppealCreatedPersonalisationTest {
     }
 
     @Test
-    public void givenASyaAppealCreated_setMrnDetailsForTemplateWhenReasonForNoMrnMissing() {
+    public void givenAnAppeal_setMrnDetailsForTemplateWhenReasonForNoMrnMissing() {
         response = SscsCaseData.builder()
                 .ccdCaseId(CASE_ID).caseReference("SC/1234/5")
                 .appeal(Appeal.builder().benefitType(BenefitType.builder().code("PIP").build())
                         .mrnDetails(MrnDetails.builder().mrnDate("3 May 2018").mrnLateReason("My train was cancelled.").build()).build())
                 .build();
 
-        Map<String, String> result = personalisation.setMrnDetails(new HashMap<>(), response);
+        Map<String, String> result = syaAppealCreatedAndReceivedPersonalisation.setMrnDetails(new HashMap<>(), response);
 
         assertEquals("Date of MRN: 3 May 2018\n"
                         + "\nReason for late appeal: My train was cancelled.",
@@ -61,19 +66,19 @@ public class SyaAppealCreatedPersonalisationTest {
     }
 
     @Test
-    public void givenASyaAppealCreated_setYourDetailsForTemplate() {
+    public void givenAnAppeal_setYourDetailsForTemplate() {
         response = SscsCaseData.builder()
                 .ccdCaseId(CASE_ID).caseReference("SC/1234/5")
                 .appeal(Appeal.builder().benefitType(BenefitType.builder().code("PIP").build())
                         .appellant(Appellant.builder()
-                        .name(Name.builder().firstName("Manish").lastName("Sharma").title("Mrs").build())
-                        .identity(Identity.builder().nino("NP 27 28 67 B").dob("12 March 1971").build())
-                        .address(Address.builder().line1("122 Breach Street").line2("The Village").town("My town").county("Cardiff").postcode("CF11 2HB").build())
-                        .contact(Contact.builder().email("manish.sharma@gmail.com").phone("0797 243 8179").build())
-                    .build()).build())
+                                .name(Name.builder().firstName("Manish").lastName("Sharma").title("Mrs").build())
+                                .identity(Identity.builder().nino("NP 27 28 67 B").dob("12 March 1971").build())
+                                .address(Address.builder().line1("122 Breach Street").line2("The Village").town("My town").county("Cardiff").postcode("CF11 2HB").build())
+                                .contact(Contact.builder().email("manish.sharma@gmail.com").phone("0797 243 8179").build())
+                                .build()).build())
                 .build();
 
-        Map<String, String> result = personalisation.setYourDetails(new HashMap<>(), response);
+        Map<String, String> result = syaAppealCreatedAndReceivedPersonalisation.setYourDetails(new HashMap<>(), response);
 
         assertEquals("Name: Manish Sharma\n"
                         + "\nDate of birth: 12 March 1971\n"
@@ -85,19 +90,19 @@ public class SyaAppealCreatedPersonalisationTest {
     }
 
     @Test
-    public void givenASyaAppealCreatedWithNoEmailOrPhoneProvided_setYourDetailsForTemplate() {
+    public void givenAnAppealWithNoEmailOrPhoneProvided_setYourDetailsForTemplate() {
         response = SscsCaseData.builder()
                 .ccdCaseId(CASE_ID).caseReference("SC/1234/5")
                 .appeal(Appeal.builder().benefitType(BenefitType.builder().code("PIP").build())
                         .appellant(Appellant.builder()
-                        .name(Name.builder().firstName("Manish").lastName("Sharma").title("Mrs").build())
-                        .identity(Identity.builder().nino("NP 27 28 67 B").dob("12 March 1971").build())
-                        .address(Address.builder().line1("122 Breach Street").town("My town").county("Cardiff").postcode("CF11 2HB").build())
-                        .contact(Contact.builder().build())
-                        .build()).build())
+                                .name(Name.builder().firstName("Manish").lastName("Sharma").title("Mrs").build())
+                                .identity(Identity.builder().nino("NP 27 28 67 B").dob("12 March 1971").build())
+                                .address(Address.builder().line1("122 Breach Street").town("My town").county("Cardiff").postcode("CF11 2HB").build())
+                                .contact(Contact.builder().build())
+                                .build()).build())
                 .build();
 
-        Map<String, String> result = personalisation.setYourDetails(new HashMap<>(), response);
+        Map<String, String> result = syaAppealCreatedAndReceivedPersonalisation.setYourDetails(new HashMap<>(), response);
 
         assertEquals("Name: Manish Sharma\n"
                         + "\nDate of birth: 12 March 1971\n"
@@ -109,16 +114,16 @@ public class SyaAppealCreatedPersonalisationTest {
     }
 
     @Test
-    public void givenASyaAppealCreatedWithTextMessageReminders_setTextMessageReminderDetailsForTemplate() {
+    public void givenAnAppealWithTextMessageReminders_setTextMessageReminderDetailsForTemplate() {
         response = SscsCaseData.builder()
                 .ccdCaseId(CASE_ID).caseReference("SC/1234/5")
                 .subscriptions(Subscriptions.builder()
                         .appellantSubscription(Subscription.builder()
-                        .subscribeSms("Yes")
-                        .mobile("07955555708").build()).build())
+                                .subscribeSms("Yes")
+                                .mobile("07955555708").build()).build())
                 .build();
 
-        Map<String, String> result = personalisation.setTextMessageReminderDetails(new HashMap<>(), response);
+        Map<String, String> result = syaAppealCreatedAndReceivedPersonalisation.setTextMessageReminderDetails(new HashMap<>(), response);
 
         assertEquals("Receive text message reminders: yes\n"
                         + "\nMobile number: 07955555708",
@@ -126,7 +131,7 @@ public class SyaAppealCreatedPersonalisationTest {
     }
 
     @Test
-    public void givenASyaAppealCreatedWithNoTextMessageReminders_setTextMessageReminderDetailsForTemplate() {
+    public void givenAnAppealWithNoTextMessageReminders_setTextMessageReminderDetailsForTemplate() {
         response = SscsCaseData.builder()
                 .ccdCaseId(CASE_ID).caseReference("SC/1234/5")
                 .subscriptions(Subscriptions.builder()
@@ -134,69 +139,134 @@ public class SyaAppealCreatedPersonalisationTest {
                                 .subscribeSms("No").build()).build())
                 .build();
 
-        Map<String, String> result = personalisation.setTextMessageReminderDetails(new HashMap<>(), response);
+        Map<String, String> result = syaAppealCreatedAndReceivedPersonalisation.setTextMessageReminderDetails(new HashMap<>(), response);
 
         assertEquals("Receive text message reminders: no",
                 result.get(AppConstants.TEXT_MESSAGE_REMINDER_DETAILS_LITERAL));
     }
 
     @Test
-    public void givenASyaAppealCreatedWithRepresentative_setRepresentativeDetailsForTemplate() {
+    public void givenAnAppealWithAppointee_setAppointeeDetailsForTemplate() {
         response = SscsCaseData.builder()
                 .ccdCaseId(CASE_ID).caseReference("SC/1234/5")
-                .appeal(Appeal.builder().rep(Representative.builder()
-                        .name(Name.builder().firstName("Peter").lastName("Smith").build())
-                        .organisation("Citizens Advice")
+                .appeal(Appeal.builder().appellant(Appellant.builder()
+                    .name(Name.builder().firstName("Manish").lastName("Sharma").title("Mrs").build())
+                    .identity(Identity.builder().nino("NP 27 28 67 B").dob("12 March 1971").build())
+                    .address(Address.builder().line1("122 Breach Street").town("My town").county("Cardiff").postcode("CF11 2HB").build())
+                    .appointee(Appointee.builder().name(Name.builder().firstName("Peter").lastName("Smith").build())
                         .address(Address.builder().line1("Ground Floor").line2("Gazette Buildings").town("168 Corporation Street").county("Cardiff").postcode("CF11 6TF").build())
                         .contact(Contact.builder().email("peter.smith@cab.org.uk").phone("03444 77 1010").build())
-                        .build()).build())
-                .build();
+                        .identity(Identity.builder().dob("12 March 1981").build())
+                        .build())
+                    .contact(Contact.builder().build()).build()).build()).build();
 
-        Map<String, String> result = personalisation.setRepresentativeDetails(new HashMap<>(), response);
+        Map<String, String> result = syaAppealCreatedAndReceivedPersonalisation.setAppointeeDetails(new HashMap<>(), response);
 
-        assertEquals("Have a representative: yes\n"
+        assertEquals("Have a appointee: yes\n"
                         + "\nName: Peter Smith\n"
-                        + "\nOrganisation: Citizens Advice\n"
+                        + "\nDate of birth: 12 March 1981\n"
                         + "\nAddress: Ground Floor, Gazette Buildings, 168 Corporation Street, Cardiff, CF11 6TF\n"
                         + "\nEmail: peter.smith@cab.org.uk\n"
                         + "\nPhone: 03444 77 1010",
-                result.get(AppConstants.REPRESENTATIVE_DETAILS_LITERAL));
+                result.get(AppConstants.APPOINTEE_DETAILS_LITERAL));
     }
 
     @Test
-    public void givenASyaAppealCreatedWithRepresentativeAndNoEmailOrPhoneOrOrganisationProvided_setRepresentativeDetailsForTemplate() {
+    public void givenAnAppealWithAppointeeAndNoEmailOrPhone_setAppointeeDetailsForTemplate() {
         response = SscsCaseData.builder()
                 .ccdCaseId(CASE_ID).caseReference("SC/1234/5")
-                .appeal(Appeal.builder().rep(Representative.builder()
+                .appeal(Appeal.builder().appellant(Appellant.builder().appointee(Appointee.builder()
                         .name(Name.builder().firstName("Peter").lastName("Smith").build())
+                        .identity(Identity.builder().dob("12 March 1981").build())
                         .address(Address.builder().line1("Ground Floor").line2("Gazette Buildings").town("168 Corporation Street").county("Cardiff").postcode("CF11 6TF").build())
                         .contact(Contact.builder().build())
                         .build()).build())
-                .build();
+                    .build()).build();
 
-        Map<String, String> result = personalisation.setRepresentativeDetails(new HashMap<>(), response);
+        Map<String, String> result = syaAppealCreatedAndReceivedPersonalisation.setAppointeeDetails(new HashMap<>(), response);
 
-        assertEquals("Have a representative: yes\n"
+        assertEquals("Have a appointee: yes\n"
                         + "\nName: Peter Smith\n"
-                        + "\nOrganisation: Not provided\n"
+                        + "\nDate of birth: 12 March 1981\n"
                         + "\nAddress: Ground Floor, Gazette Buildings, 168 Corporation Street, Cardiff, CF11 6TF\n"
                         + "\nEmail: Not provided\n"
                         + "\nPhone: Not provided",
-                result.get(AppConstants.REPRESENTATIVE_DETAILS_LITERAL));
+                result.get(AppConstants.APPOINTEE_DETAILS_LITERAL));
     }
 
     @Test
-    public void givenASyaAppealCreatedWithNoRepresentative_setRepresentativeDetailsForTemplate() {
+    public void givenAnAppealWithNoAppointee_setAppointeeDetailsForTemplate() {
         response = SscsCaseData.builder()
                 .ccdCaseId(CASE_ID).caseReference("SC/1234/5")
-                .appeal(Appeal.builder()
-                        .build())
-                .build();
+                .appeal(Appeal.builder().appellant(Appellant.builder()
+                    .name(Name.builder().firstName("Manish").lastName("Sharma").title("Mrs").build())
+                    .address(Address.builder().line1("122 Breach Street").town("My town").county("Cardiff").postcode("CF11 2HB").build())
+                    .build())
+                .build()).build();
 
-        Map<String, String> result = personalisation.setRepresentativeDetails(new HashMap<>(), response);
+        Map<String, String> result = syaAppealCreatedAndReceivedPersonalisation.setAppointeeDetails(new HashMap<>(), response);
+
+        assertEquals("Have a appointee: no",
+                result.get(AppConstants.APPOINTEE_DETAILS_LITERAL));
+    }
+
+    @Test
+    public void givenAnAppealWithRepresentative_setRepresentativeDetailsForTemplate() {
+        response = SscsCaseData.builder()
+            .ccdCaseId(CASE_ID).caseReference("SC/1234/5")
+            .appeal(Appeal.builder().rep(Representative.builder()
+                .name(Name.builder().firstName("Peter").lastName("Smith").build())
+                .organisation("Citizens Advice")
+                .address(Address.builder().line1("Ground Floor").line2("Gazette Buildings").town("168 Corporation Street").county("Cardiff").postcode("CF11 6TF").build())
+                .contact(Contact.builder().email("peter.smith@cab.org.uk").phone("03444 77 1010").build())
+                .build()).build())
+            .build();
+
+        Map<String, String> result = syaAppealCreatedAndReceivedPersonalisation.setRepresentativeDetails(new HashMap<>(), response);
+
+        assertEquals("Have a representative: yes\n"
+                + "\nName: Peter Smith\n"
+                + "\nOrganisation: Citizens Advice\n"
+                + "\nAddress: Ground Floor, Gazette Buildings, 168 Corporation Street, Cardiff, CF11 6TF\n"
+                + "\nEmail: peter.smith@cab.org.uk\n"
+                + "\nPhone: 03444 77 1010",
+            result.get(AppConstants.REPRESENTATIVE_DETAILS_LITERAL));
+    }
+
+    @Test
+    public void givenAnAppealWithRepresentativeAndNoEmailOrPhoneOrOrganisationProvided_setRepresentativeDetailsForTemplate() {
+        response = SscsCaseData.builder()
+            .ccdCaseId(CASE_ID).caseReference("SC/1234/5")
+            .appeal(Appeal.builder().rep(Representative.builder()
+                .name(Name.builder().firstName("Peter").lastName("Smith").build())
+                .address(Address.builder().line1("Ground Floor").line2("Gazette Buildings").town("168 Corporation Street").county("Cardiff").postcode("CF11 6TF").build())
+                .contact(Contact.builder().build())
+                .build()).build())
+            .build();
+
+        Map<String, String> result = syaAppealCreatedAndReceivedPersonalisation.setRepresentativeDetails(new HashMap<>(), response);
+
+        assertEquals("Have a representative: yes\n"
+                + "\nName: Peter Smith\n"
+                + "\nOrganisation: Not provided\n"
+                + "\nAddress: Ground Floor, Gazette Buildings, 168 Corporation Street, Cardiff, CF11 6TF\n"
+                + "\nEmail: Not provided\n"
+                + "\nPhone: Not provided",
+            result.get(AppConstants.REPRESENTATIVE_DETAILS_LITERAL));
+    }
+
+    @Test
+    public void givenAnAppealWithNoRepresentative_setRepresentativeDetailsForTemplate() {
+        response = SscsCaseData.builder()
+            .ccdCaseId(CASE_ID).caseReference("SC/1234/5")
+            .appeal(Appeal.builder()
+                .build())
+            .build();
+
+        Map<String, String> result = syaAppealCreatedAndReceivedPersonalisation.setRepresentativeDetails(new HashMap<>(), response);
 
         assertEquals("Have a representative: no",
-                result.get(AppConstants.REPRESENTATIVE_DETAILS_LITERAL));
+            result.get(AppConstants.REPRESENTATIVE_DETAILS_LITERAL));
     }
 
     @Test
@@ -211,11 +281,11 @@ public class SyaAppealCreatedPersonalisationTest {
                         .build())
                 .build();
 
-        Map<String, String> result = personalisation.setReasonsForAppealingDetails(new HashMap<>(), response);
+        Map<String, String> result = syaAppealCreatedAndReceivedPersonalisation.setReasonsForAppealingDetails(new HashMap<>(), response);
 
         assertEquals("What you disagree with: I want to appeal\n"
-                + "\nWhy you disagree with it: Because I do\n"
-                + "\nAnything else you want to tell the tribunal: Some other reason",
+                        + "\nWhy you disagree with it: Because I do\n"
+                        + "\nAnything else you want to tell the tribunal: Some other reason",
                 result.get(AppConstants.REASONS_FOR_APPEALING_DETAILS_LITERAL));
     }
 
@@ -233,7 +303,7 @@ public class SyaAppealCreatedPersonalisationTest {
                         .build())
                 .build();
 
-        Map<String, String> result = personalisation.setReasonsForAppealingDetails(new HashMap<>(), response);
+        Map<String, String> result = syaAppealCreatedAndReceivedPersonalisation.setReasonsForAppealingDetails(new HashMap<>(), response);
 
         assertEquals("What you disagree with: I want to appeal\n"
                         + "\nWhy you disagree with it: Because I do\n"
@@ -252,7 +322,7 @@ public class SyaAppealCreatedPersonalisationTest {
                         .build())
                 .build();
 
-        Map<String, String> result = personalisation.setReasonsForAppealingDetails(new HashMap<>(), response);
+        Map<String, String> result = syaAppealCreatedAndReceivedPersonalisation.setReasonsForAppealingDetails(new HashMap<>(), response);
 
         assertEquals("Anything else you want to tell the tribunal: Not provided",
                 result.get(AppConstants.REASONS_FOR_APPEALING_DETAILS_LITERAL));
@@ -267,7 +337,7 @@ public class SyaAppealCreatedPersonalisationTest {
                         .build()).build())
                 .build();
 
-        Map<String, String> result = personalisation.setHearingDetails(new HashMap<>(), response);
+        Map<String, String> result = syaAppealCreatedAndReceivedPersonalisation.setHearingDetails(new HashMap<>(), response);
 
         assertEquals("Attending the hearing: yes",
                 result.get(AppConstants.HEARING_DETAILS_LITERAL));
@@ -287,7 +357,7 @@ public class SyaAppealCreatedPersonalisationTest {
                         .build()).build())
                 .build();
 
-        Map<String, String> result = personalisation.setHearingDetails(new HashMap<>(), response);
+        Map<String, String> result = syaAppealCreatedAndReceivedPersonalisation.setHearingDetails(new HashMap<>(), response);
 
         assertEquals("Attending the hearing: yes\n"
                         + "\nDates you can't attend: 3 January 2018",
@@ -309,7 +379,7 @@ public class SyaAppealCreatedPersonalisationTest {
                         .build()).build())
                 .build();
 
-        Map<String, String> result = personalisation.setHearingDetails(new HashMap<>(), response);
+        Map<String, String> result = syaAppealCreatedAndReceivedPersonalisation.setHearingDetails(new HashMap<>(), response);
 
         assertEquals("Attending the hearing: yes\n"
                         + "\nDates you can't attend: 3 January 2018, 5 January 2018",
@@ -334,7 +404,7 @@ public class SyaAppealCreatedPersonalisationTest {
                         .build()).build())
                 .build();
 
-        Map<String, String> result = personalisation.setHearingArrangementDetails(new HashMap<>(), response);
+        Map<String, String> result = syaAppealCreatedAndReceivedPersonalisation.setHearingArrangementDetails(new HashMap<>(), response);
 
         assertEquals("Language interpreter: Required\n"
                         + "\nSign interpreter: Required\n"
@@ -354,7 +424,7 @@ public class SyaAppealCreatedPersonalisationTest {
                         .build()).build())
                 .build();
 
-        Map<String, String> result = personalisation.setHearingArrangementDetails(new HashMap<>(), response);
+        Map<String, String> result = syaAppealCreatedAndReceivedPersonalisation.setHearingArrangementDetails(new HashMap<>(), response);
 
         assertEquals("Language interpreter: Not required\n"
                         + "\nSign interpreter: Not required\n"
@@ -373,7 +443,7 @@ public class SyaAppealCreatedPersonalisationTest {
                         .build()).build())
                 .build();
 
-        Map<String, String> result = personalisation.setHearingArrangementDetails(new HashMap<>(), response);
+        Map<String, String> result = syaAppealCreatedAndReceivedPersonalisation.setHearingArrangementDetails(new HashMap<>(), response);
 
         assertEquals("Language interpreter: Not required\n"
                         + "\nSign interpreter: Not required\n"

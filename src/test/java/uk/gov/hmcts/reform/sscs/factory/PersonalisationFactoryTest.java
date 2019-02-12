@@ -9,9 +9,7 @@ import org.junit.Before;
 import org.junit.Test;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
-import uk.gov.hmcts.reform.sscs.personalisation.CohPersonalisation;
-import uk.gov.hmcts.reform.sscs.personalisation.Personalisation;
-import uk.gov.hmcts.reform.sscs.personalisation.SubscriptionPersonalisation;
+import uk.gov.hmcts.reform.sscs.personalisation.*;
 
 public class PersonalisationFactoryTest {
 
@@ -24,6 +22,12 @@ public class PersonalisationFactoryTest {
     @Mock
     private CohPersonalisation cohPersonalisation;
 
+    @Mock
+    private WithRepresentativePersonalisation withRepresentativePersonalisation;
+
+    @Mock
+    private SyaAppealCreatedAndReceivedPersonalisation syaAppealCreatedAndReceivedPersonalisation;
+
     @InjectMocks
     private PersonalisationFactory factory;
 
@@ -34,7 +38,7 @@ public class PersonalisationFactoryTest {
 
     @Test
     public void createPersonalisationWhenNotificationApplied() {
-        Personalisation result = factory.apply(APPEAL_RECEIVED_NOTIFICATION);
+        Personalisation result = factory.apply(DO_NOT_SEND);
         assertEquals(personalisation, result);
     }
 
@@ -48,6 +52,54 @@ public class PersonalisationFactoryTest {
     public void createCohPersonalisationWhenQuestionRoundIssuedNotificationApplied() {
         Personalisation result = factory.apply(QUESTION_ROUND_ISSUED_NOTIFICATION);
         assertEquals(cohPersonalisation, result);
+    }
+
+    @Test
+    public void createRepsPersonalisationWhenLapsedNotificationApplied() {
+        Personalisation result = factory.apply(APPEAL_LAPSED_NOTIFICATION);
+        assertEquals(withRepresentativePersonalisation, result);
+    }
+
+    @Test
+    public void createRepsPersonalisationWhenWithdrawnNotificationApplied() {
+        Personalisation result = factory.apply(APPEAL_WITHDRAWN_NOTIFICATION);
+        assertEquals(withRepresentativePersonalisation, result);
+    }
+
+    @Test
+    public void createSyaAppealCreatedPersonalisationWhenAppealCreateNotificationApplied() {
+        Personalisation result = factory.apply(SYA_APPEAL_CREATED_NOTIFICATION);
+        assertEquals(syaAppealCreatedAndReceivedPersonalisation, result);
+    }
+
+    @Test
+    public void createRepsPersonalisationWhenAppealDormantNotificationApplied() {
+        Personalisation result = factory.apply(APPEAL_DORMANT_NOTIFICATION);
+        assertEquals(withRepresentativePersonalisation, result);
+    }
+
+    @Test
+    public void createRepsPersonalisationWhenAdjournedNotificationApplied() {
+        Personalisation result = factory.apply(ADJOURNED_NOTIFICATION);
+        assertEquals(withRepresentativePersonalisation, result);
+    }
+
+    @Test
+    public void createRepsPersonalisationWhenReceivedNotificationApplied() {
+        Personalisation result = factory.apply(APPEAL_RECEIVED_NOTIFICATION);
+        assertEquals(syaAppealCreatedAndReceivedPersonalisation, result);
+    }
+
+    @Test
+    public void createRepsPersonalisationWhenHearingPostponeNotificationApplied() {
+        Personalisation result = factory.apply(POSTPONEMENT_NOTIFICATION);
+        assertEquals(withRepresentativePersonalisation, result);
+    }
+
+    @Test
+    public void createRepsPersonalisationWhenHearingBookedNotificationApplied() {
+        Personalisation result = factory.apply(HEARING_BOOKED_NOTIFICATION);
+        assertEquals(withRepresentativePersonalisation, result);
     }
 
     @Test

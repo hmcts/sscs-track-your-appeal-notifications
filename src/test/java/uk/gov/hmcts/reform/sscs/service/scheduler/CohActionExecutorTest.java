@@ -33,7 +33,6 @@ public class CohActionExecutorTest {
 
     private SscsCaseDetails caseDetails;
     private SscsCaseDataWrapper wrapper;
-    private SscsCaseData newSscsCaseData;
 
     private IdamTokens idamTokens;
 
@@ -45,7 +44,7 @@ public class CohActionExecutorTest {
 
         caseDetails = SscsCaseDetails.builder().caseTypeId("123").build();
 
-        newSscsCaseData = SscsCaseData.builder().build();
+        SscsCaseData newSscsCaseData = SscsCaseData.builder().build();
 
         wrapper = SscsCaseDataWrapper.builder().newSscsCaseData(newSscsCaseData).notificationEventType(EVIDENCE_REMINDER_NOTIFICATION).build();
 
@@ -61,6 +60,6 @@ public class CohActionExecutorTest {
         String onlineHearingId = UUID.randomUUID().toString();
         cohActionExecutor.execute("1", "group", EVIDENCE_REMINDER_NOTIFICATION.getId(), new CohJobPayload(123456L, onlineHearingId));
 
-        verify(notificationService, times(1)).createAndSendNotification(new CohNotificationWrapper(onlineHearingId, wrapper));
+        verify(notificationService, times(1)).manageNotificationAndSubscription(new CohNotificationWrapper(onlineHearingId, wrapper));
     }
 }

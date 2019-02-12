@@ -129,7 +129,7 @@ public class DwpResponseLateReminderIt {
 
             sendEvent("appealReceived");
 
-            IntegrationTestHelper.assertScheduledJobCount(quartzScheduler, "DWP response late reminder scheduled", "dwpResponseLateReminder", 1);
+            IntegrationTestHelper.assertScheduledJobCount(quartzScheduler, "DWP response late reminder scheduled", "dwpResponseLateReminder", 2);
 
             IntegrationTestHelper.assertScheduledJobTriggerAt(
                 quartzScheduler,

@@ -16,7 +16,6 @@
             "dob": "1904-03-10",
             "nino": "AB 22 55 66 B"
           },
-          "isAppointee": null,
           "name": {
             "firstName": "User",
             "lastName": "Test",
@@ -33,14 +32,30 @@
           "wantsToAttend": "Yes"
         },
         "mrnDetails": {},
-        "rep": {},
+        "rep": {
+          "hasRepresentative": "Yes",
+          "name": {
+            "title": "Mr",
+            "firstName": "Harry",
+            "lastName": "Potter"
+          },
+          "address": {
+            "line1": "123 Hairy Lane",
+            "line2": "Off Hairy Park",
+            "town": "Town",
+            "county": "County",
+            "postcode": "CM14 4LQ"
+          },
+          "contact": {},
+          "organisation": "HP Ltd"
+        },
         "signer": null,
-        "hearingType": "paper"
+        "hearingType": "oral"
       },
       "caseReference": "SC022/14/12423",
       "events": [
         {
-          "id": "95852d40-ef0a-46ef-9c5d-154f663170b6",
+          "id": "a359fc78-441f-4c74-9350-f95a7f0ad59b",
           "value": {
             "date": "2017-05-24T14:01:18.243",
             "description": "Some Events",
@@ -48,19 +63,31 @@
           }
         }
       ],
+      "evidence": {
+        "documents": [
+          {
+            "id": "0a07cce4-4963-4f29-94b3-ffb93a0a7f56",
+            "value": {
+              "dateReceived": "2016-01-01",
+              "evidenceProvidedBy": "Caseworker",
+              "evidenceType": "Medical"
+            }
+          }
+        ]
+      },
       "subscriptions": {
         "appellantSubscription": {
-          "email": "sscstest+notify2@greencroftconsulting.com",
+          "email": "sscstest+notify@greencroftconsulting.com",
           "mobile": "07398785050",
           "subscribeEmail": "Yes",
           "subscribeSms": "Yes",
           "tya": ""
         },
-        "supporterSubscription": {
-          "email": "",
-          "mobile": "",
-          "subscribeEmail": "No",
-          "subscribeSms": "No",
+        "representativeSubscription": {
+          "email": "sscstest+notify@greencroftconsulting.com",
+          "mobile": "07398785050",
+          "subscribeEmail": "Yes",
+          "subscribeSms": "Yes",
           "tya": ""
         }
       }
@@ -70,10 +97,10 @@
       2018,
       7,
       25,
-      15,
-      59,
-      7,
-      699000000
+      14,
+      40,
+      40,
+      578000000
     ],
     "data_classification": {
       "appeal": {
@@ -104,7 +131,6 @@
                   "nino": "PUBLIC"
                 }
               },
-              "isAppointee": "PUBLIC",
               "name": {
                 "classification": "PUBLIC",
                 "value": {
@@ -146,7 +172,7 @@
         "classification": "PUBLIC",
         "value": [
           {
-            "id": "95852d40-ef0a-46ef-9c5d-154f663170b6",
+            "id": "a359fc78-441f-4c74-9350-f95a7f0ad59b",
             "value": {
               "date": "PUBLIC",
               "description": "PUBLIC",
@@ -154,6 +180,24 @@
             }
           }
         ]
+      },
+      "evidence": {
+        "classification": "PUBLIC",
+        "value": {
+          "documents": {
+            "classification": "PUBLIC",
+            "value": [
+              {
+                "id": "0a07cce4-4963-4f29-94b3-ffb93a0a7f56",
+                "value": {
+                  "dateReceived": "PUBLIC",
+                  "evidenceProvidedBy": "PUBLIC",
+                  "evidenceType": "PUBLIC"
+                }
+              }
+            ]
+          }
+        }
       },
       "subscriptions": {
         "classification": "PUBLIC",
@@ -187,10 +231,10 @@
       2018,
       7,
       25,
-      15,
-      59,
-      8,
-      768000000
+      14,
+      40,
+      42,
+      875000000
     ],
     "security_classification": "PUBLIC",
     "security_classifications": {
@@ -222,7 +266,6 @@
                   "nino": "PUBLIC"
                 }
               },
-              "isAppointee": "PUBLIC",
               "name": {
                 "classification": "PUBLIC",
                 "value": {
@@ -264,7 +307,7 @@
         "classification": "PUBLIC",
         "value": [
           {
-            "id": "95852d40-ef0a-46ef-9c5d-154f663170b6",
+            "id": "a359fc78-441f-4c74-9350-f95a7f0ad59b",
             "value": {
               "date": "PUBLIC",
               "description": "PUBLIC",
@@ -272,6 +315,24 @@
             }
           }
         ]
+      },
+      "evidence": {
+        "classification": "PUBLIC",
+        "value": {
+          "documents": {
+            "classification": "PUBLIC",
+            "value": [
+              {
+                "id": "0a07cce4-4963-4f29-94b3-ffb93a0a7f56",
+                "value": {
+                  "dateReceived": "PUBLIC",
+                  "evidenceProvidedBy": "PUBLIC",
+                  "evidenceType": "PUBLIC"
+                }
+              }
+            ]
+          }
+        }
       },
       "subscriptions": {
         "classification": "PUBLIC",
@@ -318,7 +379,6 @@
             "dob": "1904-03-10",
             "nino": "AB 22 55 66 B"
           },
-          "isAppointee": null,
           "name": {
             "firstName": "User",
             "lastName": "Test",
@@ -335,14 +395,30 @@
           "wantsToAttend": "Yes"
         },
         "mrnDetails": {},
-        "rep": {},
+        "rep": {
+          "hasRepresentative": "Yes",
+          "name": {
+            "title": "Mr",
+            "firstName": "Harry",
+            "lastName": "Potter"
+          },
+          "address": {
+            "line1": "123 Hairy Lane",
+            "line2": "Off Hairy Park",
+            "town": "Town",
+            "county": "County",
+            "postcode": "CM14 4LQ"
+          },
+          "contact": {},
+          "organisation": "HP Ltd"
+        },
         "signer": null,
-        "hearingType": "paper"
+        "hearingType": "oral"
       },
       "caseReference": "SC022/14/12423",
       "events": [
         {
-          "id": "8069618d-603d-4838-8b98-7872ca8e93ac",
+          "id": "f4e85f8a-f6e2-45c3-b445-b3a1c6824c2e",
           "value": {
             "date": "2017-05-24T14:01:18.243",
             "description": "Some Events",
@@ -353,16 +429,16 @@
       "subscriptions": {
         "appellantSubscription": {
           "email": "sscstest+notify@greencroftconsulting.com",
-          "mobile": "07398785051",
+          "mobile": "07398785050",
           "subscribeEmail": "Yes",
           "subscribeSms": "Yes",
           "tya": ""
         },
-        "supporterSubscription": {
-          "email": "",
-          "mobile": "",
-          "subscribeEmail": "No",
-          "subscribeSms": "No",
+        "representativeSubscription": {
+          "email": "sscstest+notify@greencroftconsulting.com",
+          "mobile": "07398785050",
+          "subscribeEmail": "Yes",
+          "subscribeSms": "Yes",
           "tya": ""
         }
       }
@@ -372,10 +448,10 @@
       2018,
       7,
       25,
-      15,
-      59,
-      7,
-      699000000
+      14,
+      40,
+      40,
+      578000000
     ],
     "data_classification": {
       "appeal": {
@@ -406,7 +482,6 @@
                   "nino": "PUBLIC"
                 }
               },
-              "isAppointee": "PUBLIC",
               "name": {
                 "classification": "PUBLIC",
                 "value": {
@@ -448,7 +523,7 @@
         "classification": "PUBLIC",
         "value": [
           {
-            "id": "8069618d-603d-4838-8b98-7872ca8e93ac",
+            "id": "f4e85f8a-f6e2-45c3-b445-b3a1c6824c2e",
             "value": {
               "date": "PUBLIC",
               "description": "PUBLIC",
@@ -489,10 +564,10 @@
       2018,
       7,
       25,
-      15,
-      59,
-      7,
-      701000000
+      14,
+      40,
+      40,
+      578000000
     ],
     "security_classification": "PUBLIC",
     "security_classifications": {
@@ -524,7 +599,6 @@
                   "nino": "PUBLIC"
                 }
               },
-              "isAppointee": "PUBLIC",
               "name": {
                 "classification": "PUBLIC",
                 "value": {
@@ -566,7 +640,7 @@
         "classification": "PUBLIC",
         "value": [
           {
-            "id": "8069618d-603d-4838-8b98-7872ca8e93ac",
+            "id": "f4e85f8a-f6e2-45c3-b445-b3a1c6824c2e",
             "value": {
               "date": "PUBLIC",
               "description": "PUBLIC",
@@ -603,5 +677,5 @@
     },
     "state": "appealCreated"
   },
-  "event_id": "subscriptionUpdated"
+  "event_id": "evidenceReceived"
 }

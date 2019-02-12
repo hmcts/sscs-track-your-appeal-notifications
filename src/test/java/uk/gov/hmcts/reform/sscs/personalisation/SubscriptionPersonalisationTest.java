@@ -8,21 +8,20 @@ import static org.mockito.Mockito.when;
 import static org.mockito.MockitoAnnotations.initMocks;
 import static uk.gov.hmcts.reform.sscs.ccd.domain.Benefit.PIP;
 import static uk.gov.hmcts.reform.sscs.ccd.domain.EventType.APPEAL_RECEIVED;
+import static uk.gov.hmcts.reform.sscs.ccd.domain.EventType.HEARING_BOOKED;
+import static uk.gov.hmcts.reform.sscs.config.SubscriptionType.APPELLANT;
 import static uk.gov.hmcts.reform.sscs.domain.notify.NotificationEventType.*;
 
 import java.time.LocalDate;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Map;
-import java.util.Optional;
+import java.util.*;
 import javax.annotation.Resource;
-import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import uk.gov.hmcts.reform.sscs.ccd.domain.*;
 import uk.gov.hmcts.reform.sscs.config.AppConstants;
+import uk.gov.hmcts.reform.sscs.config.AppealHearingType;
 import uk.gov.hmcts.reform.sscs.config.NotificationConfig;
 import uk.gov.hmcts.reform.sscs.domain.SscsCaseDataWrapper;
 import uk.gov.hmcts.reform.sscs.domain.notify.Link;
@@ -31,6 +30,8 @@ import uk.gov.hmcts.reform.sscs.service.MessageAuthenticationServiceImpl;
 import uk.gov.hmcts.reform.sscs.service.RegionalProcessingCenterService;
 
 public class SubscriptionPersonalisationTest {
+
+    private static final String DATE = "2018-01-01T14:01:18.243";
 
     SscsCaseDataWrapper wrapper;
 
@@ -57,8 +58,6 @@ public class SubscriptionPersonalisationTest {
     @Resource
     SubscriptionPersonalisation personalisation;
 
-    private String date = "2018-01-01T14:01:18.243";
-
     @Before
     public void setup() {
         initMocks(this);
@@ -84,18 +83,18 @@ public class SubscriptionPersonalisationTest {
     @Test
     public void customisePersonalisation() {
         buildNewAndOldCaseData(buildDefaultNewAppeallantSubscription(), buildDefaultOldAppeallantSubscription());
-        Map<String, String> result = personalisation.create(wrapper);
+        Map<String, String> result = personalisation.create(wrapper, APPELLANT);
 
         assertEquals("PIP", result.get(AppConstants.BENEFIT_NAME_ACRONYM_LITERAL));
         assertEquals("Personal Independence Payment", result.get(AppConstants.BENEFIT_FULL_NAME_LITERAL));
         assertEquals("1234", result.get(AppConstants.APPEAL_REF));
         assertEquals("GLSCRR", result.get(AppConstants.APPEAL_ID));
-        assertEquals("Harry Kane", result.get(AppConstants.APPELLANT_NAME));
+        assertEquals("Harry Kane", result.get(AppConstants.NAME));
         assertEquals("01234543225", result.get(AppConstants.PHONE_NUMBER));
         assertEquals("http://link.com/manage-email-notifications/ZYX", result.get(AppConstants.MANAGE_EMAILS_LINK_LITERAL));
         assertEquals("http://tyalink.com/GLSCRR", result.get(AppConstants.TRACK_APPEAL_LINK_LITERAL));
-        Assert.assertEquals(AppConstants.DWP_ACRONYM, result.get(AppConstants.FIRST_TIER_AGENCY_ACRONYM));
-        Assert.assertEquals(AppConstants.DWP_FUL_NAME, result.get(AppConstants.FIRST_TIER_AGENCY_FULL_NAME));
+        assertEquals(AppConstants.DWP_ACRONYM, result.get(AppConstants.FIRST_TIER_AGENCY_ACRONYM));
+        assertEquals(AppConstants.DWP_FUL_NAME, result.get(AppConstants.FIRST_TIER_AGENCY_FULL_NAME));
         assertEquals("http://link.com/GLSCRR", result.get(AppConstants.SUBMIT_EVIDENCE_LINK_LITERAL));
     }
 
@@ -103,10 +102,10 @@ public class SubscriptionPersonalisationTest {
     public void customisePersonalisationSetsNotificationTypeToMostRecentWhenNewSubscription() {
         buildNewAndOldCaseData(buildDefaultNewAppeallantSubscription(), buildDefaultOldAppeallantSubscription());
         List<Event> events = new ArrayList<>();
-        events.add(Event.builder().value(EventDetails.builder().date(date).type(APPEAL_RECEIVED.getCcdType()).build()).build());
+        events.add(Event.builder().value(EventDetails.builder().date(DATE).type(APPEAL_RECEIVED.getCcdType()).build()).build());
         newSscsCaseData.setEvents(events);
 
-        personalisation.create(wrapper);
+        personalisation.create(wrapper, APPELLANT);
 
         assertEquals(APPEAL_RECEIVED_NOTIFICATION, wrapper.getNotificationEventType());
     }
@@ -123,7 +122,7 @@ public class SubscriptionPersonalisationTest {
 
         buildNewAndOldCaseData(newAppellantSubscription, oldAppellantSubscription);
 
-        personalisation.create(wrapper);
+        personalisation.create(wrapper, APPELLANT);
 
         assertEquals(DO_NOT_SEND, wrapper.getNotificationEventType());
     }
@@ -140,7 +139,7 @@ public class SubscriptionPersonalisationTest {
 
         buildNewAndOldCaseData(newAppellantSubscription, oldAppellantSubscription);
 
-        personalisation.create(wrapper);
+        personalisation.create(wrapper, APPELLANT);
 
         assertEquals(SUBSCRIPTION_UPDATED_NOTIFICATION, wrapper.getNotificationEventType());
     }
@@ -215,7 +214,7 @@ public class SubscriptionPersonalisationTest {
         buildNewAndOldCaseData(buildDefaultNewAppeallantSubscription(), buildDefaultOldAppeallantSubscription());
 
         List<Event> events = new ArrayList<>();
-        events.add(Event.builder().value(EventDetails.builder().date(date).type(APPEAL_RECEIVED.getCcdType()).build()).build());
+        events.add(Event.builder().value(EventDetails.builder().date(DATE).type(APPEAL_RECEIVED.getCcdType()).build()).build());
         newSscsCaseData.setEvents(events);
 
         assertEquals(APPEAL_RECEIVED_NOTIFICATION, personalisation.getNotificationEventTypeNotification(wrapper));
@@ -234,7 +233,7 @@ public class SubscriptionPersonalisationTest {
         buildNewAndOldCaseData(newAppellantSubscription, oldAppellantSubscription);
 
         List<Event> events = new ArrayList<>();
-        events.add(Event.builder().value(EventDetails.builder().date(date).type(APPEAL_RECEIVED.getCcdType()).build()).build());
+        events.add(Event.builder().value(EventDetails.builder().date(DATE).type(APPEAL_RECEIVED.getCcdType()).build()).build());
         newSscsCaseData.setEvents(events);
 
         assertEquals(DO_NOT_SEND, personalisation.getNotificationEventTypeNotification(wrapper));
@@ -245,7 +244,7 @@ public class SubscriptionPersonalisationTest {
         buildNewAndOldCaseData(buildDefaultNewAppeallantSubscription(), buildDefaultOldAppeallantSubscription());
 
         List<Event> events = new ArrayList<>();
-        events.add(Event.builder().value(EventDetails.builder().date(date).type(null).build()).build());
+        events.add(Event.builder().value(EventDetails.builder().date(DATE).type(null).build()).build());
         newSscsCaseData.setEvents(events);
 
         assertEquals(SUBSCRIPTION_UPDATED_NOTIFICATION, personalisation.getNotificationEventTypeNotification(wrapper));
@@ -258,7 +257,7 @@ public class SubscriptionPersonalisationTest {
         oldSscsCaseData.setSubscriptions(Subscriptions.builder().appellantSubscription(null).build());
 
         List<Event> events = new ArrayList<>();
-        events.add(Event.builder().value(EventDetails.builder().date(date).type(APPEAL_RECEIVED.getCcdType()).build()).build());
+        events.add(Event.builder().value(EventDetails.builder().date(DATE).type(APPEAL_RECEIVED.getCcdType()).build()).build());
         newSscsCaseData.setEvents(events);
 
         assertEquals(SUBSCRIPTION_UPDATED_NOTIFICATION, personalisation.getNotificationEventTypeNotification(wrapper));
@@ -271,7 +270,7 @@ public class SubscriptionPersonalisationTest {
         newSscsCaseData.setSubscriptions(Subscriptions.builder().appellantSubscription(null).build());
 
         List<Event> events = new ArrayList<>();
-        events.add(Event.builder().value(EventDetails.builder().date(date).type(APPEAL_RECEIVED.getCcdType()).build()).build());
+        events.add(Event.builder().value(EventDetails.builder().date(DATE).type(APPEAL_RECEIVED.getCcdType()).build()).build());
         newSscsCaseData.setEvents(events);
 
         assertEquals(SUBSCRIPTION_UPDATED_NOTIFICATION, personalisation.getNotificationEventTypeNotification(wrapper));
@@ -284,6 +283,48 @@ public class SubscriptionPersonalisationTest {
         newSscsCaseData.setEvents(new ArrayList<>());
 
         assertEquals(SUBSCRIPTION_UPDATED_NOTIFICATION, personalisation.getNotificationEventTypeNotification(wrapper));
+    }
+
+    @Test
+    public void isPaperCase() {
+        assertTrue(personalisation.isPaperCase(AppealHearingType.PAPER.name()));
+    }
+
+    @Test
+    public void isNotPaperCase() {
+        Arrays.stream(AppealHearingType.values())
+            .filter(aht -> {
+                return aht != AppealHearingType.PAPER;
+            })
+            .forEach(aht -> assertFalse(personalisation.isPaperCase(aht.name())));
+    }
+
+    @Test
+    public void doNotSendMostRecentNotificationEventTypeIfPaperCase() {
+        buildNewAndOldCaseData(buildDefaultNewAppeallantSubscription(), buildDefaultOldAppeallantSubscription());
+
+        wrapper.getNewSscsCaseData().getAppeal().setHearingType(AppealHearingType.PAPER.name());
+        wrapper.getOldSscsCaseData().getAppeal().setHearingType(AppealHearingType.PAPER.name());
+
+        List<Event> events = new ArrayList<>();
+        events.add(Event.builder().value(EventDetails.builder().date(DATE).type(HEARING_BOOKED.getCcdType()).build()).build());
+        newSscsCaseData.setEvents(events);
+
+        assertEquals(SUBSCRIPTION_UPDATED_NOTIFICATION, personalisation.getNotificationEventTypeNotification(wrapper));
+    }
+
+    @Test
+    public void sendMostRecentNotificationEventTypeIfOralCase() {
+        buildNewAndOldCaseData(buildDefaultNewAppeallantSubscription(), buildDefaultOldAppeallantSubscription());
+
+        wrapper.getNewSscsCaseData().getAppeal().setHearingType(AppealHearingType.ORAL.name());
+        wrapper.getOldSscsCaseData().getAppeal().setHearingType(AppealHearingType.ORAL.name());
+
+        List<Event> events = new ArrayList<>();
+        events.add(Event.builder().value(EventDetails.builder().date(DATE).type(HEARING_BOOKED.getCcdType()).build()).build());
+        newSscsCaseData.setEvents(events);
+
+        assertEquals(HEARING_BOOKED_NOTIFICATION, personalisation.getNotificationEventTypeNotification(wrapper));
     }
 
     @Test

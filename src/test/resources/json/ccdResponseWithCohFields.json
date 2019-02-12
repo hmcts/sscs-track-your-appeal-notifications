@@ -174,7 +174,7 @@
           "tya": "543212345"
         },
         "representativeSubscription": {
-          "email": "supporter@hmcts.net",
+          "email": "representative@hmcts.net",
           "mobile": "07983469702",
           "reason": null,
           "subscribeEmail": "No",
@@ -343,7 +343,7 @@
           "tya": "543212345"
         },
         "representativeSubscription": {
-          "email": "supporter@hmcts.net",
+          "email": "representative@hmcts.net",
           "mobile": "07983469702",
           "reason": null,
           "subscribeEmail": "No",

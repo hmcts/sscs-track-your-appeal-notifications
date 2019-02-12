@@ -32,9 +32,9 @@ public class NotificationHandler {
     public <T> void sendNotification(NotificationWrapper wrapper, String notificationTemplate, final String notificationType, SendNotification sendNotification) {
         final String caseId = wrapper.getCaseId();
         try {
-            LOG.info("Sending " + notificationType + " template {} for case id: {}", notificationTemplate, caseId);
+            LOG.info("Sending {} template {} for case id: {}", notificationType, notificationTemplate, caseId);
             sendNotification.send();
-            LOG.info(notificationType + " template {} sent for case id: {}", notificationTemplate, caseId);
+            LOG.info("{} template {} sent for case id: {}", notificationType, notificationTemplate, caseId);
         } catch (Exception ex) {
             wrapAndThrowNotificationException(caseId, notificationTemplate, ex);
         }
@@ -44,6 +44,8 @@ public class NotificationHandler {
         final String caseId = wrapper.getCaseId();
         String eventId = wrapper.getNotificationType().getId();
         String jobGroup = jobGroupGenerator.generate(caseId, eventId);
+        LOG.info("Scheduled {} for case id: {} @ {}", eventId, caseId, outOfHoursCalculator.getStartOfNextInHoursPeriod());
+
         jobScheduler.schedule(new Job<>(
                 jobGroup,
                 eventId,
@@ -55,11 +57,11 @@ public class NotificationHandler {
     private void wrapAndThrowNotificationException(String caseId, String templateId, Exception ex) {
         if (ex.getCause() instanceof UnknownHostException) {
             NotificationClientRuntimeException exception = new NotificationClientRuntimeException(caseId, ex);
-            LOG.error("Runtime error on GovUKNotify for case id: " + caseId + ", template: " + templateId, exception);
+            LOG.error("Runtime error on GovUKNotify for case id: {}, template: {}", caseId, templateId, exception);
             throw exception;
         } else {
             NotificationServiceException exception = new NotificationServiceException(caseId, ex);
-            LOG.error("Error on GovUKNotify for case id: " + caseId + ", template: " + templateId, exception);
+            LOG.error("Error on GovUKNotify for case id: {}, template: {}", caseId, templateId, exception);
             throw exception;
         }
     }

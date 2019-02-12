@@ -2,7 +2,7 @@
   "case_details": {
     "id": 12345656789,
     "jurisdiction": "SSCS",
-    "state": "appealDormant",
+    "state": "appealCreated",
     "case_type_id": "Benefit",
     "created_date": [
       2018,
@@ -25,7 +25,6 @@
     "security_classification": "PUBLIC",
     "case_data": {
       "dwpTimeExtension": [
-
       ],
       "generatedNino": "JT 12 34 56 D",
       "hearings": [
@@ -53,7 +52,7 @@
       ],
       "subscriptions": {
         "appellantSubscription": {
-          "wantSmsNotifications": null,
+          "wantSmsNotifications": "Yes",
           "tya": "NpmhpYaFLa",
           "email": "sscstest+notify@greencroftconsulting.com",
           "mobile": "07398785050",
@@ -61,19 +60,16 @@
           "subscribeSms": "Yes",
           "reason": ""
         },
-        "supporterSubscription": {
-          "wantSmsNotifications": null,
-          "tya": "",
+        "representativeSubscription": {
           "email": "",
           "mobile": "",
-          "subscribeEmail": "",
-          "subscribeSms": "",
-          "reason": ""
+          "subscribeEmail": "No",
+          "subscribeSms": "No",
+          "tya": ""
         }
       },
       "evidence": {
         "documents": [
-
         ]
       },
       "caseReference": "SC022/14/12423",
@@ -91,7 +87,6 @@
       },
       "appeal": {
         "mrnDetails": {
-
         },
         "appellant": {
           "name": {
@@ -100,7 +95,6 @@
             "lastName": "Test"
           },
           "address": {
-
           },
           "contact": {
             "email": null,
@@ -121,10 +115,26 @@
           "other": "No"
         },
         "appealReasons": {
-
         },
         "rep": {
-
+          "hasRepresentative": "Yes",
+          "name": {
+            "title": "Mr",
+            "firstName": "Harry",
+            "lastName": "Potter"
+          },
+          "address": {
+            "line1": "123 Hairy Lane",
+            "line2": "Off Hairy Park",
+            "town": "Town",
+            "county": "County",
+            "postcode": "CM14 4LQ"
+          },
+          "contact": {
+            "email": "harry.potter@wizards.com",
+            "mobile": "07411999999"
+          },
+          "organisation": "HP Ltd"
         },
         "signer": null,
         "hearingType": "paper"
@@ -170,7 +180,6 @@
       "dwpTimeExtension": {
         "classification": "PUBLIC",
         "value": [
-
         ]
       },
       "generatedNino": "PUBLIC",
@@ -221,7 +230,7 @@
               "reason": "PUBLIC"
             }
           },
-          "supporterSubscription": {
+          "representativeSubscription": {
             "classification": "PUBLIC",
             "value": {
               "wantSmsNotifications": "PUBLIC",
@@ -241,7 +250,6 @@
           "documents": {
             "classification": "PUBLIC",
             "value": [
-
             ]
           }
         }
@@ -268,7 +276,6 @@
           "mrnDetails": {
             "classification": "PUBLIC",
             "value": {
-
             }
           },
           "appellant": {
@@ -285,7 +292,6 @@
               "address": {
                 "classification": "PUBLIC",
                 "value": {
-
                 }
               },
               "contact": {
@@ -322,13 +328,11 @@
           "appealReasons": {
             "classification": "PUBLIC",
             "value": {
-
             }
           },
           "rep": {
             "classification": "PUBLIC",
             "value": {
-
             }
           },
           "signer": "PUBLIC",
@@ -384,7 +388,6 @@
       "dwpTimeExtension": {
         "classification": "PUBLIC",
         "value": [
-
         ]
       },
       "generatedNino": "PUBLIC",
@@ -435,7 +438,7 @@
               "reason": "PUBLIC"
             }
           },
-          "supporterSubscription": {
+          "representativeSubscription": {
             "classification": "PUBLIC",
             "value": {
               "wantSmsNotifications": "PUBLIC",
@@ -455,7 +458,6 @@
           "documents": {
             "classification": "PUBLIC",
             "value": [
-
             ]
           }
         }
@@ -482,7 +484,6 @@
           "mrnDetails": {
             "classification": "PUBLIC",
             "value": {
-
             }
           },
           "appellant": {
@@ -499,7 +500,6 @@
               "address": {
                 "classification": "PUBLIC",
                 "value": {
-
                 }
               },
               "contact": {
@@ -536,13 +536,11 @@
           "appealReasons": {
             "classification": "PUBLIC",
             "value": {
-
             }
           },
           "rep": {
             "classification": "PUBLIC",
             "value": {
-
             }
           },
           "signer": "PUBLIC",
@@ -591,5 +589,5 @@
     }
   },
   "case_details_before": null,
-  "event_id": "appealDormant"
+  "event_id": "appealCreated"
 }

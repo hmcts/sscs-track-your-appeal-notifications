@@ -4,6 +4,8 @@ import static helper.IntegrationTestHelper.assertHttpStatus;
 import static helper.IntegrationTestHelper.getRequestWithAuthHeader;
 import static helper.IntegrationTestHelper.getRequestWithoutAuthHeader;
 import static helper.IntegrationTestHelper.updateEmbeddedJson;
+import static org.junit.Assert.assertArrayEquals;
+import static org.junit.Assert.assertEquals;
 import static org.mockito.Mockito.any;
 import static org.mockito.Mockito.anyString;
 import static org.mockito.Mockito.eq;
@@ -12,11 +14,18 @@ import static org.mockito.Mockito.never;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
+import static uk.gov.hmcts.reform.sscs.config.AppConstants.APPELLANT_NAME;
+import static uk.gov.hmcts.reform.sscs.config.AppConstants.NAME;
+import static uk.gov.hmcts.reform.sscs.domain.notify.NotificationEventType.*;
 
 import java.io.File;
 import java.io.IOException;
 import java.nio.charset.StandardCharsets;
 import java.time.LocalDate;
+import java.util.Arrays;
+import java.util.Collections;
+import java.util.List;
+import java.util.Map;
 import java.util.UUID;
 import javax.servlet.http.HttpServletResponse;
 import junitparams.JUnitParamsRunner;
@@ -27,6 +36,7 @@ import org.junit.ClassRule;
 import org.junit.Rule;
 import org.junit.Test;
 import org.junit.runner.RunWith;
+import org.mockito.ArgumentCaptor;
 import org.mockito.Mock;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
@@ -37,6 +47,7 @@ import org.springframework.mock.web.MockHttpServletResponse;
 import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.context.junit4.rules.SpringClassRule;
 import org.springframework.test.context.junit4.rules.SpringMethodRule;
+import org.springframework.test.util.ReflectionTestUtils;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.request.MockHttpServletRequestBuilder;
 import org.springframework.test.web.servlet.setup.MockMvcBuilders;
@@ -45,15 +56,19 @@ import uk.gov.hmcts.reform.sscs.config.NotificationBlacklist;
 import uk.gov.hmcts.reform.sscs.config.NotificationConfig;
 import uk.gov.hmcts.reform.sscs.controller.NotificationController;
 import uk.gov.hmcts.reform.sscs.deserialize.SscsCaseDataWrapperDeserializer;
+import uk.gov.hmcts.reform.sscs.domain.notify.NotificationEventType;
 import uk.gov.hmcts.reform.sscs.factory.NotificationFactory;
 import uk.gov.hmcts.reform.sscs.idam.IdamService;
 import uk.gov.hmcts.reform.sscs.service.AuthorisationService;
+import uk.gov.hmcts.reform.sscs.service.EvidenceManagementService;
 import uk.gov.hmcts.reform.sscs.service.NotificationHandler;
 import uk.gov.hmcts.reform.sscs.service.NotificationSender;
 import uk.gov.hmcts.reform.sscs.service.NotificationService;
 import uk.gov.hmcts.reform.sscs.service.NotificationValidService;
 import uk.gov.hmcts.reform.sscs.service.OutOfHoursCalculator;
 import uk.gov.hmcts.reform.sscs.service.ReminderService;
+import uk.gov.hmcts.reform.sscs.service.SendNotificationService;
+import uk.gov.hmcts.reform.sscs.service.SscsGeneratePdfService;
 import uk.gov.service.notify.NotificationClient;
 import uk.gov.service.notify.SendEmailResponse;
 import uk.gov.service.notify.SendSmsResponse;
@@ -63,6 +78,7 @@ import uk.gov.service.notify.SendSmsResponse;
 @ActiveProfiles("integration")
 @AutoConfigureMockMvc
 public class NotificationsIt {
+    private static final String TEMPLATE_PATH = "/templates/non_compliant_case_letter_template.html";
 
     // Below rules are needed to use the junitParamsRunner together with SpringRunner
     @ClassRule
@@ -120,10 +136,20 @@ public class NotificationsIt {
     @Autowired
     private NotificationConfig notificationConfig;
 
+    @Autowired
+    private EvidenceManagementService evidenceManagementService;
+
+    @Mock
+    private SscsGeneratePdfService sscsGeneratePdfService;
+
     @Before
     public void setup() throws Exception {
         NotificationSender sender = new NotificationSender(notificationClient, null, notificationBlacklist);
-        NotificationService service = new NotificationService(sender, factory, reminderService, notificationValidService, notificationHandler, outOfHoursCalculator, notificationConfig);
+
+        SendNotificationService sendNotificationService = new SendNotificationService(sender, evidenceManagementService, sscsGeneratePdfService, notificationHandler);
+        ReflectionTestUtils.setField(sendNotificationService, "bundledLettersOn", true);
+
+        NotificationService service = new NotificationService(factory, reminderService, notificationValidService, notificationHandler, outOfHoursCalculator, notificationConfig, sendNotificationService);
         controller = new NotificationController(service, authorisationService, ccdService, deserializer, idamService);
         this.mockMvc = MockMvcBuilders.standaloneSetup(controller).build();
         String path = getClass().getClassLoader().getResource("json/ccdResponse.json").getFile();
@@ -147,7 +173,7 @@ public class NotificationsIt {
 
         assertHttpStatus(response, HttpStatus.OK);
         verify(notificationClient).sendEmail(any(), any(), any(), any());
-        verify(notificationClient).sendSms(any(), any(), any(), any(), any());
+        verify(notificationClient, times(2)).sendSms(any(), any(), any(), any(), any());
     }
 
     @Test
@@ -157,7 +183,7 @@ public class NotificationsIt {
 
         assertHttpStatus(response, HttpStatus.OK);
         verify(notificationClient).sendEmail(any(), any(), any(), any());
-        verify(notificationClient).sendSms(any(), any(), any(), any(), any());
+        verify(notificationClient, times(2)).sendSms(any(), any(), any(), any(), any());
     }
 
     @Test
@@ -168,7 +194,7 @@ public class NotificationsIt {
 
         assertHttpStatus(response, HttpStatus.OK);
         verify(notificationClient).sendEmail(any(), any(), any(), any());
-        verify(notificationClient).sendSms(any(), any(), any(), any(), any());
+        verify(notificationClient, times(2)).sendSms(any(), any(), any(), any(), any());
     }
 
     @Test
@@ -184,11 +210,10 @@ public class NotificationsIt {
     }
 
     @Test
-    @Parameters(
-            {
-                    "oral, 1afd89f9-9935-4acb-b4f6-ba708b03a0d3, 4bba0b5d-a3f3-4fd9-a845-26af5eda042e",
-                    "paper, a64bce9a-9162-47ca-b3e7-cf5f85ca7bdc, f5b61f94-0b2b-4e8e-9c25-56e9830df7d4"
-            })
+    @Parameters({
+            "oral, 01caec0c-191b-4a32-882a-6fded2546ce6, 317a121e-d08c-4890-b3b3-4652f741771f",
+            "paper, a64bce9a-9162-47ca-b3e7-cf5f85ca7bdc, f5b61f94-0b2b-4e8e-9c25-56e9830df7d4"
+    })
     public void shouldSendNotificationForAnResponseReceivedRequestForAnOralOrPaperHearing(
             String hearingType, String emailTemplateId, String smsTemplateId) throws Exception {
         json = updateEmbeddedJson(json, hearingType, "case_details", "case_data", "appeal", "hearingType");
@@ -209,11 +234,11 @@ public class NotificationsIt {
 
         assertHttpStatus(response, HttpStatus.OK);
         verify(notificationClient).sendEmail(any(), any(), any(), any());
-        verify(notificationClient).sendSms(any(), any(), any(), any(), any());
+        verify(notificationClient, times(2)).sendSms(any(), any(), any(), any(), any());
     }
 
     @Test
-    public void shouldNotSendNotificationForAnEvidenceReceivedRequestForAPaperHearing() throws Exception {
+    public void shouldSendNotificationForAnEvidenceReceivedRequestForAPaperHearing() throws Exception {
         updateJsonForPaperHearing();
         json = json.replace("appealReceived", "evidenceReceived");
 
@@ -221,7 +246,7 @@ public class NotificationsIt {
 
         assertHttpStatus(response, HttpStatus.OK);
         verify(notificationClient).sendEmail(any(), any(), any(), any());
-        verify(notificationClient).sendSms(any(), any(), any(), any(), any());
+        verify(notificationClient, times(2)).sendSms(any(), any(), any(), any(), any());
     }
 
     @Test
@@ -248,49 +273,470 @@ public class NotificationsIt {
     }
 
     @Test
-    public void shouldSendNotificationForAppealLapsedRequestForAnOralHearing() throws Exception {
-        json = json.replace("appealReceived", "appealLapsed");
+    @Parameters(method = "generateRepsNotificationScenarios")
+    public void shouldSendRepsNotificationsForAnEventForAnOralOrPaperHearingAndForEachSubscription(
+            NotificationEventType notificationEventType, String hearingType, List<String> expectedEmailTemplateIds,
+            List<String> expectedSmsTemplateIds, String appellantEmailSubs, String appellantSmsSubs, String repsEmailSubs,
+            String repsSmsSubs, int wantedNumberOfSendEmailInvocations, int wantedNumberOfSendSmsInvocations)
+            throws Exception {
+
+        json = updateEmbeddedJson(json, hearingType, "case_details", "case_data", "appeal", "hearingType");
+
+        json = updateEmbeddedJson(json, appellantEmailSubs, "case_details", "case_data", "subscriptions",
+                "appellantSubscription", "subscribeEmail");
+        json = updateEmbeddedJson(json, appellantSmsSubs, "case_details", "case_data", "subscriptions",
+                "appellantSubscription", "subscribeSms");
+        json = updateEmbeddedJson(json, repsEmailSubs, "case_details", "case_data", "subscriptions",
+                "representativeSubscription", "subscribeEmail");
+        json = updateEmbeddedJson(json, repsSmsSubs, "case_details", "case_data", "subscriptions",
+                "representativeSubscription", "subscribeSms");
+
+        json = updateEmbeddedJson(json, notificationEventType.getId(), "event_id");
 
         HttpServletResponse response = getResponse(getRequestWithAuthHeader(json));
 
         assertHttpStatus(response, HttpStatus.OK);
-        verify(notificationClient).sendEmail(any(), any(), any(), any());
-        verify(notificationClient).sendSms(any(), any(), any(), any(), any());
+
+        ArgumentCaptor<String> emailTemplateIdCaptor = ArgumentCaptor.forClass(String.class);
+        verify(notificationClient, times(wantedNumberOfSendEmailInvocations))
+                .sendEmail(emailTemplateIdCaptor.capture(), any(), any(), any());
+        assertArrayEquals(expectedEmailTemplateIds.toArray(), emailTemplateIdCaptor.getAllValues().toArray());
+
+        ArgumentCaptor<String> smsTemplateIdCaptor = ArgumentCaptor.forClass(String.class);
+        verify(notificationClient, times(wantedNumberOfSendSmsInvocations))
+                .sendSms(smsTemplateIdCaptor.capture(), any(), any(), any(), any());
+        assertArrayEquals(expectedSmsTemplateIds.toArray(), smsTemplateIdCaptor.getAllValues().toArray());
     }
 
     @Test
-    public void shouldNotSendNotificationForAppealLapsedRequestForAPaperHearing() throws Exception {
-        updateJsonForPaperHearing();
-        json = json.replace("appealReceived", "appealLapsed");
+    @Parameters(method = "generateAppointeeNotificationScenarios")
+    @SuppressWarnings("unchecked")
+    public void shouldSendAppointeeNotificationsForAnEventForAnOralOrPaperHearingAndForEachSubscription(
+            NotificationEventType notificationEventType, String hearingType, List<String> expectedEmailTemplateIds,
+            List<String> expectedSmsTemplateIds, String appointeeEmailSubs, String appointeeSmsSubs,
+            int wantedNumberOfSendEmailInvocations, int wantedNumberOfSendSmsInvocations)
+            throws Exception {
 
-        HttpServletResponse response = getResponse(getRequestWithAuthHeader(json));
+        String path = getClass().getClassLoader().getResource("json/ccdResponseWithAppointee.json").getFile();
+        String jsonAppointee = FileUtils.readFileToString(new File(path), StandardCharsets.UTF_8.name());
+        jsonAppointee = updateEmbeddedJson(jsonAppointee, hearingType, "case_details", "case_data", "appeal", "hearingType");
+
+        jsonAppointee = updateEmbeddedJson(jsonAppointee, appointeeEmailSubs, "case_details", "case_data", "subscriptions",
+                "appointeeSubscription", "subscribeEmail");
+        jsonAppointee = updateEmbeddedJson(jsonAppointee, appointeeSmsSubs, "case_details", "case_data", "subscriptions",
+                "appointeeSubscription", "subscribeSms");
+
+        if (notificationEventType.equals(HEARING_BOOKED_NOTIFICATION)) {
+            jsonAppointee = jsonAppointee.replace("appealReceived", "hearingBooked");
+            jsonAppointee = jsonAppointee.replace("2018-01-12", LocalDate.now().plusDays(2).toString());
+        }
+
+        jsonAppointee = updateEmbeddedJson(jsonAppointee, notificationEventType.getId(), "event_id");
+
+        HttpServletResponse response = getResponse(getRequestWithAuthHeader(jsonAppointee));
 
         assertHttpStatus(response, HttpStatus.OK);
-        verify(notificationClient).sendEmail(any(), any(), any(), any());
-        verify(notificationClient).sendSms(any(), any(), any(), any(), any());
+
+        ArgumentCaptor<String> emailTemplateIdCaptor = ArgumentCaptor.forClass(String.class);
+        ArgumentCaptor<Map<String, ?>> personalisationCaptor = ArgumentCaptor.forClass(Map.class);
+        verify(notificationClient, times(wantedNumberOfSendEmailInvocations))
+                .sendEmail(emailTemplateIdCaptor.capture(), any(), personalisationCaptor.capture(), any());
+        assertArrayEquals(expectedEmailTemplateIds.toArray(), emailTemplateIdCaptor.getAllValues().toArray());
+
+        ArgumentCaptor<String> smsTemplateIdCaptor = ArgumentCaptor.forClass(String.class);
+        verify(notificationClient, times(wantedNumberOfSendSmsInvocations))
+                .sendSms(smsTemplateIdCaptor.capture(), any(), any(), any(), any());
+        assertArrayEquals(expectedSmsTemplateIds.toArray(), smsTemplateIdCaptor.getAllValues().toArray());
+
+        Map<String, ?> personalisation = personalisationCaptor.getValue();
+        assertEquals("Appointee Appointee", personalisation.get(NAME));
+        assertEquals("Dexter Vasquez", personalisation.get(APPELLANT_NAME));
     }
 
-    @Test
-    public void shouldSendNotificationForAppealWithdrawnRequestForAnOralHearing() throws Exception {
-        json = json.replace("appealReceived", "appealWithdrawn");
-
-        HttpServletResponse response = getResponse(getRequestWithAuthHeader(json));
-
-        assertHttpStatus(response, HttpStatus.OK);
-        verify(notificationClient).sendEmail(any(), any(), any(), any());
-        verify(notificationClient).sendSms(any(), any(), any(), any(), any());
+    @SuppressWarnings({"Indentation", "unused"})
+    private Object[] generateRepsNotificationScenarios() {
+        return new Object[]{
+                new Object[]{
+                        APPEAL_LAPSED_NOTIFICATION,
+                        "paper",
+                        Arrays.asList("8ce8d794-75e8-49a0-b4d2-0c6cd2061c11", "e93dd744-84a1-4173-847a-6d023b55637f"),
+                        Arrays.asList("d2b4394b-d1c9-4d5c-a44e-b382e41c67e5", "ee58f7d0-8de7-4bee-acd4-252213db6b7b"),
+                        "yes",
+                        "yes",
+                        "yes",
+                        "yes",
+                        "2",
+                        "2"
+                },
+                new Object[]{
+                        APPEAL_LAPSED_NOTIFICATION,
+                        "oral",
+                        Arrays.asList("8ce8d794-75e8-49a0-b4d2-0c6cd2061c11", "e93dd744-84a1-4173-847a-6d023b55637f"),
+                        Arrays.asList("d2b4394b-d1c9-4d5c-a44e-b382e41c67e5", "ee58f7d0-8de7-4bee-acd4-252213db6b7b"),
+                        "yes",
+                        "yes",
+                        "yes",
+                        "yes",
+                        "2",
+                        "2"
+                },
+                new Object[]{
+                        APPEAL_LAPSED_NOTIFICATION,
+                        "paper",
+                        Collections.singletonList("e93dd744-84a1-4173-847a-6d023b55637f"),
+                        Arrays.asList("d2b4394b-d1c9-4d5c-a44e-b382e41c67e5", "ee58f7d0-8de7-4bee-acd4-252213db6b7b"),
+                        "no",
+                        "yes",
+                        "yes",
+                        "yes",
+                        "1",
+                        "2"
+                },
+                new Object[]{
+                        APPEAL_WITHDRAWN_NOTIFICATION,
+                        "paper",
+                        Arrays.asList("8620e023-f663-477e-a771-9cfad50ee30f", "e29a2275-553f-4e70-97f4-2994c095f281"),
+                        Arrays.asList("446c7b23-7342-42e1-adff-b4c367e951cb", "f59440ee-19ca-4d47-a702-13e9cecaccbd"),
+                        "yes",
+                        "yes",
+                        "yes",
+                        "yes",
+                        "2",
+                        "2"
+                },
+                new Object[]{
+                        APPEAL_WITHDRAWN_NOTIFICATION,
+                        "oral",
+                        Arrays.asList("8620e023-f663-477e-a771-9cfad50ee30f", "e29a2275-553f-4e70-97f4-2994c095f281"),
+                        Arrays.asList("446c7b23-7342-42e1-adff-b4c367e951cb", "f59440ee-19ca-4d47-a702-13e9cecaccbd"),
+                        "yes",
+                        "yes",
+                        "yes",
+                        "yes",
+                        "2",
+                        "2"
+                },
+                new Object[]{
+                        APPEAL_WITHDRAWN_NOTIFICATION,
+                        "paper",
+                        Collections.singletonList("e29a2275-553f-4e70-97f4-2994c095f281"),
+                        Arrays.asList("446c7b23-7342-42e1-adff-b4c367e951cb", "f59440ee-19ca-4d47-a702-13e9cecaccbd"),
+                        "no",
+                        "yes",
+                        "yes",
+                        "yes",
+                        "1",
+                        "2"
+                },
+                new Object[]{
+                        ADJOURNED_NOTIFICATION,
+                        "paper",
+                        Arrays.asList("bff02237-9bcb-49fa-bbf7-11725b97132a", "75357eb8-bba7-4bdf-b879-b535bc3fb50a"),
+                        Arrays.asList("46c6bf06-33dd-4e5a-9b6b-8bd6d0eb33b1", "a170d63e-b04e-4da5-ad89-d93644b6c1e9"),
+                        "yes",
+                        "yes",
+                        "yes",
+                        "yes",
+                        "2",
+                        "2"
+                },
+                new Object[]{
+                        ADJOURNED_NOTIFICATION,
+                        "oral",
+                        Arrays.asList("bff02237-9bcb-49fa-bbf7-11725b97132a", "75357eb8-bba7-4bdf-b879-b535bc3fb50a"),
+                        Arrays.asList("46c6bf06-33dd-4e5a-9b6b-8bd6d0eb33b1", "a170d63e-b04e-4da5-ad89-d93644b6c1e9"),
+                        "yes",
+                        "yes",
+                        "yes",
+                        "yes",
+                        "2",
+                        "2"
+                },
+                new Object[]{
+                        ADJOURNED_NOTIFICATION,
+                        "paper",
+                        Collections.singletonList("75357eb8-bba7-4bdf-b879-b535bc3fb50a"),
+                        Arrays.asList("46c6bf06-33dd-4e5a-9b6b-8bd6d0eb33b1", "a170d63e-b04e-4da5-ad89-d93644b6c1e9"),
+                        "no",
+                        "yes",
+                        "yes",
+                        "yes",
+                        "1",
+                        "2"
+                },
+                new Object[]{
+                        APPEAL_RECEIVED_NOTIFICATION,
+                        "paper",
+                        Arrays.asList("b90df52f-c628-409c-8875-4b0b9663a053", "4b1ee55b-abd1-4e7e-b0ed-693d8df1e741"),
+                        Arrays.asList("ede384aa-0b6e-4311-9f01-ee547573a07b", "99bd4a56-256c-4de8-b187-d43a8dde466f"),
+                        "yes",
+                        "yes",
+                        "yes",
+                        "yes",
+                        "2",
+                        "2"
+                },
+                new Object[]{
+                        APPEAL_RECEIVED_NOTIFICATION,
+                        "oral",
+                        Arrays.asList("b90df52f-c628-409c-8875-4b0b9663a053", "4b1ee55b-abd1-4e7e-b0ed-693d8df1e741"),
+                        Arrays.asList("ede384aa-0b6e-4311-9f01-ee547573a07b", "99bd4a56-256c-4de8-b187-d43a8dde466f"),
+                        "yes",
+                        "yes",
+                        "yes",
+                        "yes",
+                        "2",
+                        "2"
+                },
+                new Object[]{
+                        APPEAL_RECEIVED_NOTIFICATION,
+                        "paper",
+                        Collections.singletonList("4b1ee55b-abd1-4e7e-b0ed-693d8df1e741"),
+                        Arrays.asList("ede384aa-0b6e-4311-9f01-ee547573a07b", "99bd4a56-256c-4de8-b187-d43a8dde466f"),
+                        "no",
+                        "yes",
+                        "yes",
+                        "yes",
+                        "1",
+                        "2"
+                },
+                new Object[]{
+                        APPEAL_DORMANT_NOTIFICATION,
+                        "paper",
+                        Arrays.asList("976bdb6c-8a86-48cf-9e0f-7989acaec0c2", "b74ea5d4-dba2-4148-b822-d102cedbea12"),
+                        Arrays.asList("1aa60c8a-1b6f-4ee1-88ae-51c1cef0ea2b", "4562984e-2854-4191-81d9-cffbe5111015"),
+                        "yes",
+                        "yes",
+                        "yes",
+                        "yes",
+                        "2",
+                        "2"
+                },
+                new Object[]{
+                        APPEAL_DORMANT_NOTIFICATION,
+                        "paper",
+                        Collections.singletonList("b74ea5d4-dba2-4148-b822-d102cedbea12"),
+                        Arrays.asList("1aa60c8a-1b6f-4ee1-88ae-51c1cef0ea2b", "4562984e-2854-4191-81d9-cffbe5111015"),
+                        "no",
+                        "yes",
+                        "yes",
+                        "yes",
+                        "1",
+                        "2"
+                },
+                new Object[]{
+                        APPEAL_DORMANT_NOTIFICATION,
+                        "oral",
+                        Arrays.asList("fc9d0618-68c4-48ec-9481-a84b225a57a9", "e2ee8609-7d56-4857-b3f8-79028e8960aa"),
+                        Collections.EMPTY_LIST,
+                        "yes",
+                        "no",
+                        "yes",
+                        "no",
+                        "2",
+                        "0"
+                },
+                new Object[]{
+                        APPEAL_DORMANT_NOTIFICATION,
+                        "oral",
+                        Collections.singletonList("e2ee8609-7d56-4857-b3f8-79028e8960aa"),
+                        Collections.EMPTY_LIST,
+                        "no",
+                        "no",
+                        "yes",
+                        "no",
+                        "1",
+                        "0"
+                },
+                new Object[]{
+                        SYA_APPEAL_CREATED_NOTIFICATION,
+                        "paper",
+                        Arrays.asList("01293b93-b23e-40a3-ad78-2c6cd01cd21c", "652753bf-59b4-46eb-9c24-bd762338a098"),
+                        Arrays.asList("f41222ef-c05c-4682-9634-6b034a166368", "0e44927e-168b-4510-ac57-6932fda7aec1"),
+                        "yes",
+                        "yes",
+                        "yes",
+                        "yes",
+                        "2",
+                        "2"
+                },
+                new Object[]{
+                        SYA_APPEAL_CREATED_NOTIFICATION,
+                        "oral",
+                        Arrays.asList("01293b93-b23e-40a3-ad78-2c6cd01cd21c", "652753bf-59b4-46eb-9c24-bd762338a098"),
+                        Arrays.asList("f41222ef-c05c-4682-9634-6b034a166368", "0e44927e-168b-4510-ac57-6932fda7aec1"),
+                        "yes",
+                        "yes",
+                        "yes",
+                        "yes",
+                        "2",
+                        "2"
+                },
+                new Object[]{
+                        SYA_APPEAL_CREATED_NOTIFICATION,
+                        "paper",
+                        Collections.singletonList("652753bf-59b4-46eb-9c24-bd762338a098"),
+                        Arrays.asList("f41222ef-c05c-4682-9634-6b034a166368", "0e44927e-168b-4510-ac57-6932fda7aec1"),
+                        "no",
+                        "yes",
+                        "yes",
+                        "yes",
+                        "1",
+                        "2"
+                },
+                new Object[]{
+                        POSTPONEMENT_NOTIFICATION,
+                        "paper",
+                        Arrays.asList("08959288-e09a-472d-80b8-af79bfcbb437", "0a48bd48-f79c-4863-b6e3-e8fa69019c34"),
+                        Collections.EMPTY_LIST,
+                        "yes",
+                        "no",
+                        "yes",
+                        "no",
+                        "2",
+                        "0"
+                },
+                new Object[]{
+                        POSTPONEMENT_NOTIFICATION,
+                        "oral",
+                        Arrays.asList("08959288-e09a-472d-80b8-af79bfcbb437", "0a48bd48-f79c-4863-b6e3-e8fa69019c34"),
+                        Collections.EMPTY_LIST,
+                        "yes",
+                        "no",
+                        "Yes",
+                        "no",
+                        "2",
+                        "0"
+                },
+                new Object[]{
+                        POSTPONEMENT_NOTIFICATION,
+                        "paper",
+                        Collections.singletonList("0a48bd48-f79c-4863-b6e3-e8fa69019c34"),
+                        Collections.EMPTY_LIST,
+                        "no",
+                        "no",
+                        "yes",
+                        "no",
+                        "1",
+                        "0"
+                }
+        };
     }
 
-    @Test
-    public void shouldNotSendNotificationForAppealWithdrawnRequestForAPaperHearing() throws Exception {
-        updateJsonForPaperHearing();
-        json = json.replace("appealReceived", "appealWithdrawn");
-
-        HttpServletResponse response = getResponse(getRequestWithAuthHeader(json));
-
-        assertHttpStatus(response, HttpStatus.OK);
-        verify(notificationClient).sendEmail(any(), any(), any(), any());
-        verify(notificationClient).sendSms(any(), any(), any(), any(), any());
+    @SuppressWarnings({"Indentation", "unused"})
+    private Object[] generateAppointeeNotificationScenarios() {
+        return new Object[]{
+                new Object[]{
+                        SYA_APPEAL_CREATED_NOTIFICATION,
+                        "oral",
+                        Collections.singletonList("362d9a85-e0e4-412b-b874-020c0464e2b4"),
+                        Collections.singletonList("f41222ef-c05c-4682-9634-6b034a166368"),
+                        "yes",
+                        "yes",
+                        "1",
+                        "1"
+                },
+                new Object[]{
+                        SYA_APPEAL_CREATED_NOTIFICATION,
+                        "oral",
+                        Collections.singletonList("362d9a85-e0e4-412b-b874-020c0464e2b4"),
+                        Collections.singletonList("f41222ef-c05c-4682-9634-6b034a166368"),
+                        "yes",
+                        "yes",
+                        "1",
+                        "1"
+                },
+                new Object[]{
+                        DWP_RESPONSE_RECEIVED_NOTIFICATION,
+                        "oral",
+                        Collections.singletonList("01caec0c-191b-4a32-882a-6fded2546ce6"),
+                        Collections.singletonList("317a121e-d08c-4890-b3b3-4652f741771f"),
+                        "yes",
+                        "yes",
+                        "1",
+                        "1"
+                },
+                new Object[]{
+                        APPEAL_LAPSED_NOTIFICATION,
+                        "oral",
+                        Collections.singletonList("8ce8d794-75e8-49a0-b4d2-0c6cd2061c11"),
+                        Collections.singletonList("d2b4394b-d1c9-4d5c-a44e-b382e41c67e5"),
+                        "yes",
+                        "yes",
+                        "1",
+                        "1"
+                },
+                new Object[]{
+                        SUBSCRIPTION_UPDATED_NOTIFICATION,
+                        "oral",
+                        Arrays.asList("b8b2904f-629d-42cf-acea-1b74bde5b2ff", "03b957bf-e21d-4147-90c1-b6fefa8cf70d"),
+                        Arrays.asList("7397a76f-14cb-468c-b1a7-0570940ead91", "759c712a-6b55-485e-bcf7-1cf5c4896eb1"),
+                        "yes",
+                        "yes",
+                        "2",
+                        "2"
+                },
+                new Object[]{
+                        APPEAL_RECEIVED_NOTIFICATION,
+                        "paper",
+                        Collections.singletonList("08365e91-9e07-4a5c-bf96-ef56fd0ada63"),
+                        Collections.singletonList("ede384aa-0b6e-4311-9f01-ee547573a07b"),
+                        "yes",
+                        "yes",
+                        "1",
+                        "1"
+                },
+                new Object[]{
+                        DWP_RESPONSE_RECEIVED_NOTIFICATION,
+                        "paper",
+                        Collections.singletonList("a64bce9a-9162-47ca-b3e7-cf5f85ca7bdc"),
+                        Collections.singletonList("f5b61f94-0b2b-4e8e-9c25-56e9830df7d4"),
+                        "yes",
+                        "yes",
+                        "1",
+                        "1"
+                },
+                new Object[]{
+                        HEARING_BOOKED_NOTIFICATION,
+                        "oral",
+                        Collections.singletonList("fee16753-0bdb-43f1-9abb-b14b826e3b26"),
+                        Collections.singletonList("f900174a-a556-43b2-8042-bbf3e6090071"),
+                        "yes",
+                        "yes",
+                        "1",
+                        "1"
+                },
+                new Object[]{
+                        APPEAL_RECEIVED_NOTIFICATION,
+                        "oral",
+                        Collections.singletonList("08365e91-9e07-4a5c-bf96-ef56fd0ada63"),
+                        Collections.singletonList("ede384aa-0b6e-4311-9f01-ee547573a07b"),
+                        "yes",
+                        "yes",
+                        "1",
+                        "1"
+                },
+                new Object[]{
+                        ADJOURNED_NOTIFICATION,
+                        "oral",
+                        Collections.singletonList("bff02237-9bcb-49fa-bbf7-11725b97132a"),
+                        Collections.singletonList("46c6bf06-33dd-4e5a-9b6b-8bd6d0eb33b1"),
+                        "yes",
+                        "yes",
+                        "1",
+                        "1"
+                },
+                new Object[]{
+                        APPEAL_WITHDRAWN_NOTIFICATION,
+                        "oral",
+                        Collections.singletonList("8620e023-f663-477e-a771-9cfad50ee30f"),
+                        Collections.singletonList("446c7b23-7342-42e1-adff-b4c367e951cb"),
+                        "yes",
+                        "yes",
+                        "1",
+                        "1"
+                }
+        };
     }
 
     @Test
@@ -302,7 +748,7 @@ public class NotificationsIt {
 
         assertHttpStatus(response, HttpStatus.OK);
         verify(notificationClient).sendEmail(any(), any(), any(), any());
-        verify(notificationClient).sendSms(any(), any(), any(), any(), any());
+        verify(notificationClient, times(2)).sendSms(any(), any(), any(), any(), any());
     }
 
     @Test
@@ -408,7 +854,7 @@ public class NotificationsIt {
 
         assertHttpStatus(response, HttpStatus.OK);
         verify(notificationClient, times(1)).sendEmail(any(), any(), any(), any());
-        verify(notificationClient, times(1)).sendSms(any(), any(), any(), any(), any());
+        verify(notificationClient, times(2)).sendSms(any(), any(), any(), any(), any());
     }
 
     @Test
@@ -419,7 +865,7 @@ public class NotificationsIt {
 
         assertHttpStatus(response, HttpStatus.OK);
         verify(notificationClient, times(1)).sendEmail(any(), any(), any(), any());
-        verify(notificationClient, times(1)).sendSms(any(), any(), any(), any(), any());
+        verify(notificationClient, times(2)).sendSms(any(), any(), any(), any(), any());
     }
 
     @Test

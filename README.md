@@ -1,18 +1,18 @@
 # SSCS - Track Your Appeal Notifications
 
-##Purpose
+## Purpose
 Track Your Appeal Notifications is a spring boot based application used to send notifications to gov notify. 
 
 The [Job-Scheduler](https://github.com/hmcts/job-scheduler) is used to start notification requests using callbacks. 
 
 
-###Prerequisites
+### Prerequisites
 
 - JDK 8
 
-##Building and deploying the application
+## Building and deploying the application
   
-###Building the application
+### Building the application
 
 To build the project execute the following command:
 
@@ -28,7 +28,7 @@ Run the application by executing:
 ./gradlew bootRun
 ```
 
-###Running in Docker
+### Running in Docker
 Create the image of the application by executing the following command:
 
 ```
@@ -62,7 +62,7 @@ You should get a response similar to this:
 ```
 
 
-###DB initialisation
+### DB initialisation
 
 Running the application will apply db migration scripts automatically.
 
@@ -72,7 +72,7 @@ They can also run on demand using the following Gradle task:
 ./gradlew flywayMigrate
 ```
 
-###Unit tests
+### Unit tests
 
 To run all unit tests execute the following command:
 
@@ -106,7 +106,12 @@ run-notify up -d
 ```
 This starts the CCD applications with Track-your-appeal-notifications in Docker with just one command
 
-##Job scheduler service
+## Job scheduler service
+
 This project imports the sscs job scheduler service JAR (https://github.com/hmcts/sscs-job-scheduler).
 This is used to schedule reminders in the future. The management of the database is handled within this 
-project using a PostgreSQL database. 
+project using a PostgreSQL database.
+
+## Gotchas
+
+PRs that start with _"Bump"_ won't have a preview environment. The decision was made after we realised that most the preview environments were created by Depandabot.
