@@ -5,5 +5,6 @@ sscs_manage_emails_link = "https://track-appeal.demo.platform.hmcts.net/manage-e
 sscs_track_your_appeal_link = "https://track-appeal.demo.platform.hmcts.net/trackyourappeal/appeal_id"
 hearing_info_link = "https://track-appeal.demo.platform.hmcts.net/abouthearing/appeal_id"
 claiming_expenses_link = "https://track-appeal.demo.platform.hmcts.net/expenses/appeal_id"
+online_hearing_link = "https://sscs-cor-frontend-demo.service.core-compute-demo.internal"
 
 idam_redirect_url = "https://evidence-sharing-preprod.sscs.reform.hmcts.net"
