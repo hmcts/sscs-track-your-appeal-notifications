@@ -717,6 +717,16 @@ public class NotificationsIt {
                         "1"
                 },
                 new Object[]{
+                        ADJOURNED_NOTIFICATION,
+                        "oral",
+                        Collections.singletonList("bff02237-9bcb-49fa-bbf7-11725b97132a"),
+                        Collections.singletonList("46c6bf06-33dd-4e5a-9b6b-8bd6d0eb33b1"),
+                        "yes",
+                        "yes",
+                        "1",
+                        "1"
+                },
+                new Object[]{
                         APPEAL_WITHDRAWN_NOTIFICATION,
                         "oral",
                         Collections.singletonList("8620e023-f663-477e-a771-9cfad50ee30f"),
