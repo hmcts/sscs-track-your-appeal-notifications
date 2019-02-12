@@ -123,7 +123,6 @@ public class Personalisation<E extends NotificationWrapper> {
         SscsCaseData ccdResponse = responseWrapper.getNewSscsCaseData();
         Map<String, String> personalisation = new HashMap<>();
         Benefit benefit = getBenefitByCode(ccdResponse.getAppeal().getBenefitType().getCode());
-
         personalisation.put(PANEL_COMPOSITION, getPanelCompositionByBenefitType(benefit));
         personalisation.put(DECISION_POSTED_RECEIVE_DATE, formatLocalDate(LocalDate.now().plusDays(7)));
         personalisation.put(BENEFIT_NAME_ACRONYM_LITERAL, benefit.name());
@@ -175,6 +174,7 @@ public class Personalisation<E extends NotificationWrapper> {
 
         return personalisation;
     }
+
 
     private String getAppealReference(SscsCaseData ccdResponse) {
         final String caseReference = ccdResponse.getCaseReference();

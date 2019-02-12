@@ -115,6 +115,9 @@ notification:
     representative:
       emailId: 75357eb8-bba7-4bdf-b879-b535bc3fb50a
       smsId: a170d63e-b04e-4da5-ad89-d93644b6c1e9
+    appointee:
+      emailId: bff02237-9bcb-49fa-bbf7-11725b97132a
+      smsId: 46c6bf06-33dd-4e5a-9b6b-8bd6d0eb33b1
   hearingPostponed:
     appellant:
       emailId: 08959288-e09a-472d-80b8-af79bfcbb437
@@ -129,6 +132,9 @@ notification:
     representative:
       emailId: e93dd744-84a1-4173-847a-6d023b55637f
       smsId: ee58f7d0-8de7-4bee-acd4-252213db6b7b
+    appointee:
+      emailId: 8ce8d794-75e8-49a0-b4d2-0c6cd2061c11
+      smsId: d2b4394b-d1c9-4d5c-a44e-b382e41c67e5
   appealWithdrawn:
     appellant:
       emailId: 8620e023-f663-477e-a771-9cfad50ee30f
