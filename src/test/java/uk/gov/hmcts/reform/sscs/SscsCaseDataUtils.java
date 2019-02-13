@@ -111,7 +111,7 @@ public final class SscsCaseDataUtils {
                 .subscribeEmail(subscribeEmail)
                 .subscribeSms(subscribeSms)
                 .build();
-        Subscription supporterSubscription = Subscription.builder()
+        Subscription representativeSubscription = Subscription.builder()
                 .tya("")
                 .email("")
                 .mobile("")
@@ -120,7 +120,7 @@ public final class SscsCaseDataUtils {
                 .build();
         Subscriptions subscriptions = Subscriptions.builder()
                 .appellantSubscription(appellantSubscription)
-                .supporterSubscription(supporterSubscription)
+                .representativeSubscription(representativeSubscription)
                 .build();
 
         return SscsCaseData.builder()
