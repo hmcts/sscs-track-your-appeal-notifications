@@ -35,6 +35,7 @@ import org.junit.runner.RunWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import uk.gov.hmcts.reform.sscs.ccd.domain.*;
+import uk.gov.hmcts.reform.sscs.config.AppealHearingType;
 import uk.gov.hmcts.reform.sscs.config.NotificationConfig;
 import uk.gov.hmcts.reform.sscs.config.SubscriptionType;
 import uk.gov.hmcts.reform.sscs.domain.SscsCaseDataWrapper;
@@ -119,7 +120,7 @@ public class PersonalisationTest {
     @Test
     @Parameters(method = "generateNotificationTypeAndSubscriptionsScenarios")
     public void givenSubscriptionType_shouldGenerateEmailAndSmsTemplateNamesPerSubscription(
-            NotificationEventType notificationEventType, SubscriptionType subscriptionType,  HearingType hearingType) {
+            NotificationEventType notificationEventType, SubscriptionType subscriptionType, HearingType hearingType) {
         NotificationWrapper notificationWrapper = new CcdNotificationWrapper(SscsCaseDataWrapper.builder()
                 .newSscsCaseData(SscsCaseData.builder()
                         .appeal(Appeal.builder()
@@ -335,10 +336,29 @@ public class PersonalisationTest {
         assertEquals(ADDRESS4, result.get(TOWN_LITERAL));
         assertEquals(CITY, result.get(COUNTY_LITERAL));
         assertEquals(POSTCODE, result.get(POSTCODE_LITERAL));
+        assertEquals(CASE_ID, result.get(CCD_ID));
         assertEquals("1 February 2019", result.get(TRIBUNAL_RESPONSE_DATE_LITERAL));
         assertEquals("1 February 2018", result.get(ACCEPT_VIEW_BY_DATE_LITERAL));
         assertEquals("1 January 2018", result.get(QUESTION_ROUND_EXPIRES_DATE_LITERAL));
         assertEquals("", result.get(APPOINTEE_DESCRIPTION));
+    }
+
+    @Test
+    public void appealRefWillReturnCcdCaseIdWhenCaseReferenceIsNotSet() {
+        RegionalProcessingCenter rpc = regionalProcessingCenterService.getByScReferenceCode("SC/1234/5");
+        SscsCaseData response = SscsCaseData.builder()
+                .ccdCaseId(CASE_ID).caseReference(null)
+                .regionalProcessingCenter(rpc)
+                .appeal(Appeal.builder().benefitType(BenefitType.builder().code("PIP").build())
+                        .appellant(Appellant.builder().name(name).build())
+                        .build())
+                .subscriptions(subscriptions)
+                .build();
+
+        Map result = personalisation.create(SscsCaseDataWrapper.builder().newSscsCaseData(response)
+                .notificationEventType(APPEAL_RECEIVED_NOTIFICATION).build(), APPELLANT);
+
+        assertEquals(CASE_ID, result.get(APPEAL_REF));
     }
 
 
@@ -431,10 +451,10 @@ public class PersonalisationTest {
         Evidence evidence = Evidence.builder().documents(documents).build();
 
         SscsCaseData response = SscsCaseData.builder()
-            .ccdCaseId(CASE_ID).caseReference("SC/1234/5")
-            .appeal(Appeal.builder().benefitType(BenefitType.builder().code("PIP").build()).build())
-            .evidence(evidence)
-            .build();
+                .ccdCaseId(CASE_ID).caseReference("SC/1234/5")
+                .appeal(Appeal.builder().benefitType(BenefitType.builder().code("PIP").build()).build())
+                .evidence(evidence)
+                .build();
 
         Map<String, String> result = personalisation.setEvidenceReceivedNotificationData(new HashMap<>(), response, EVIDENCE_RECEIVED_NOTIFICATION);
 
@@ -617,10 +637,16 @@ public class PersonalisationTest {
         final SscsCaseData sscsCaseData = SscsCaseData.builder()
                 .ccdCaseId(CASE_ID)
                 .caseReference("SC/1234/5")
-                .appeal(Appeal.builder().benefitType(BenefitType.builder().code(PIP.name()).build())
-                        .appellant(Appellant.builder().name(name)
-                            .appointee(Appointee.builder().name(appointeeName).build())
-                            .build())
+                .appeal(Appeal.builder()
+                        .benefitType(BenefitType.builder()
+                                .code(PIP.name())
+                                .build())
+                        .appellant(Appellant.builder()
+                                .name(name)
+                                .appointee(Appointee.builder()
+                                        .name(appointeeName)
+                                        .build())
+                                .build())
                         .build())
                 .subscriptions(Subscriptions.builder()
                         .appointeeSubscription(Subscription.builder()
@@ -637,6 +663,7 @@ public class PersonalisationTest {
                 .build(), APPOINTEE);
 
         assertNotNull(result);
+        assertEquals(CASE_ID, result.get(CCD_ID));
         assertEquals(appointeeName.getFullNameNoTitle(), result.get(NAME));
         assertEquals(name.getFullNameNoTitle(), result.get(APPELLANT_NAME));
         assertEquals(tyaNumber, result.get(APPEAL_ID));

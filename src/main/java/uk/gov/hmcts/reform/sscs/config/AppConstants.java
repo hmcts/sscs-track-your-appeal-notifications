@@ -16,6 +16,7 @@ public final class AppConstants {
     public static final String BENEFIT_FULL_NAME_LITERAL = "benefit_full_name";
     public static final String BENEFIT_NAME_ACRONYM_LITERAL = "benefit_name_acronym";
     public static final String BENEFIT_NAME_ACRONYM_SHORT_LITERAL = "benefit_name_acronym_short";
+    public static final String CCD_ID = "ccd_id";
     public static final String CLAIMING_EXPENSES_LINK_LITERAL = "claiming_expenses_link";
     public static final String COUNTY_LITERAL = "county";
     public static final String DAYS_STRING = " days";
@@ -64,19 +65,12 @@ public final class AppConstants {
     public static final String VENUE_MAP_LINK_LITERAL = "venue_map_link";
     public static final String YOUR_DETAILS_LITERAL = "your_details";
     public static final String ZONE_ID = "Europe/London";
-
-    public static final String ADDRESS_LINE_1 = "address_line_1";
-    public static final String ADDRESS_LINE_2 = "address_line_2";
-    public static final String ADDRESS_LINE_3 = "address_line_3";
-    public static final String ADDRESS_LINE_4 = "address_line_4";
-
     public static final String LETTER_ADDRESS_LINE_1 = "letter_address_line_1";
     public static final String LETTER_ADDRESS_LINE_2 = "letter_address_line_2";
     public static final String LETTER_ADDRESS_LINE_3 = "letter_address_line_3";
     public static final String LETTER_ADDRESS_LINE_4 = "letter_address_line_4";
     public static final String LETTER_ADDRESS_POSTCODE = "letter_address_postcode";
     public static final String LETTER_NAME = "letter_name";
-
 
     private AppConstants() {
         //

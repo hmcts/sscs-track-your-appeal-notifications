@@ -17,13 +17,36 @@
             "nino": "AB 22 55 66 B"
           },
           "name": {
-            "firstName": "User",
-            "lastName": "Test",
+            "firstName": "Appellant",
+            "lastName": "User",
             "title": "Mr"
+          },
+          "isAddressSameAsAppointee":"no",
+          "appointee": {
+            "name": {
+              "title": "Mr",
+              "firstName": "Appointee",
+              "lastName": "User"
+            },
+            "contact": {
+              "email": "test@tester.com",
+              "mobile": "07848484848"
+            },
+            "address": {
+              "line1": "1 Appointee Street",
+              "line2": "Newcastle",
+              "town": "Newcastle",
+              "county": "Tyne and Wear",
+              "postcode": "NE1 1AW"
+            },
+            "identity": {
+              "dob": "1998-07-01",
+              "nino": ""
+            }
           }
         },
         "benefitType": {
-          "code": "ESA"
+          "code": "PIP"
         },
         "hearingOptions": {
           "languageInterpreter": "Yes",
@@ -33,42 +56,35 @@
         },
         "mrnDetails": {},
         "rep": {},
-        "signer": null
+        "signer": null,
+        "hearingType": "paper"
       },
       "caseReference": "SC022/14/12423",
       "events": [
         {
-          "id": "560d5fa3-1a47-432c-a7e4-329eeb75c1a8",
+          "id": "a95eb829-2da3-4ff4-9d21-90d22583facf",
           "value": {
             "date": "2017-05-24T14:01:18.243",
             "description": "Some Events",
-            "type": "appealReceived"
+            "type": "appealCreated"
           }
         },
         {
-          "id": "9b1652f5-dc51-4ad4-affb-01c553fbf814",
+          "id": "89a668da-de45-4532-ba56-7ce5e14096a8",
           "value": {
-            "date": "2018-07-25T03:17:42.856",
+            "date": "2016-01-16T12:34:56.789",
             "description": "responseReceived",
             "type": "responseReceived"
-          }
-        },
-        {
-          "id": "c48bc5e4-51d9-4ec5-b9c3-a6e068bdb6aa",
-          "value": {
-            "date": "2018-07-25T03:17:42.856",
-            "description": "hearingPostponed",
-            "type": "hearingPostponed"
           }
         }
       ],
       "subscriptions": {
-        "appellantSubscription": {
+        "appointeeSubscription": {
           "email": "sscstest+notify@greencroftconsulting.com",
           "mobile": "07398785050",
           "subscribeEmail": "Yes",
           "subscribeSms": "Yes",
-          "tya": ""
+          "tya": "v8eg15XeZk"
         },
         "representativeSubscription": {
           "email": "",
@@ -83,11 +99,11 @@
     "created_date": [
       2018,
       7,
-      25,
-      15,
-      17,
-      41,
-      285000000
+      26,
+      10,
+      51,
+      3,
+      45000000
     ],
     "data_classification": {
       "appeal": {
@@ -118,6 +134,7 @@
                   "nino": "PUBLIC"
                 }
               },
+              "isAppointee": "PUBLIC",
               "name": {
                 "classification": "PUBLIC",
                 "value": {
@@ -159,7 +176,7 @@
         "classification": "PUBLIC",
         "value": [
           {
-            "id": "560d5fa3-1a47-432c-a7e4-329eeb75c1a8",
+            "id": "a95eb829-2da3-4ff4-9d21-90d22583facf",
             "value": {
               "date": "PUBLIC",
               "description": "PUBLIC",
@@ -167,15 +184,7 @@
             }
           },
           {
-            "id": "9b1652f5-dc51-4ad4-affb-01c553fbf814",
-            "value": {
-              "date": "PUBLIC",
-              "description": "PUBLIC",
-              "type": "PUBLIC"
-            }
-          },
-          {
-            "id": "c48bc5e4-51d9-4ec5-b9c3-a6e068bdb6aa",
+            "id": "89a668da-de45-4532-ba56-7ce5e14096a8",
             "value": {
               "date": "PUBLIC",
               "description": "PUBLIC",
@@ -187,7 +196,7 @@
       "subscriptions": {
         "classification": "PUBLIC",
         "value": {
-          "appellantSubscription": {
+          "appointeeSubscription": {
             "classification": "PUBLIC",
             "value": {
               "email": "PUBLIC",
@@ -215,11 +224,11 @@
     "last_modified": [
       2018,
       7,
-      25,
-      15,
-      17,
-      42,
-      74000000
+      26,
+      10,
+      51,
+      4,
+      255000000
     ],
     "security_classification": "PUBLIC",
     "security_classifications": {
@@ -251,6 +260,7 @@
                   "nino": "PUBLIC"
                 }
               },
+              "isAppointee": "PUBLIC",
               "name": {
                 "classification": "PUBLIC",
                 "value": {
@@ -292,7 +302,7 @@
         "classification": "PUBLIC",
         "value": [
           {
-            "id": "560d5fa3-1a47-432c-a7e4-329eeb75c1a8",
+            "id": "a95eb829-2da3-4ff4-9d21-90d22583facf",
             "value": {
               "date": "PUBLIC",
               "description": "PUBLIC",
@@ -300,15 +310,7 @@
             }
           },
           {
-            "id": "9b1652f5-dc51-4ad4-affb-01c553fbf814",
-            "value": {
-              "date": "PUBLIC",
-              "description": "PUBLIC",
-              "type": "PUBLIC"
-            }
-          },
-          {
-            "id": "c48bc5e4-51d9-4ec5-b9c3-a6e068bdb6aa",
+            "id": "89a668da-de45-4532-ba56-7ce5e14096a8",
             "value": {
               "date": "PUBLIC",
               "description": "PUBLIC",
@@ -320,7 +322,7 @@
       "subscriptions": {
         "classification": "PUBLIC",
         "value": {
-          "appellantSubscription": {
+          "appointeeSubscription": {
             "classification": "PUBLIC",
             "value": {
               "email": "PUBLIC",
@@ -363,13 +365,36 @@
             "nino": "AB 22 55 66 B"
           },
           "name": {
-            "firstName": "User",
-            "lastName": "Test",
+            "firstName": "Appellant",
+            "lastName": "User",
             "title": "Mr"
+          },
+          "isAddressSameAsAppointee":"no",
+          "appointee": {
+            "name": {
+              "title": "Mr",
+              "firstName": "Appointee",
+              "lastName": "User"
+            },
+            "contact": {
+              "email": "test@tester.com",
+              "mobile": "07848484848"
+            },
+            "address": {
+              "line1": "1 Appointee Street",
+              "line2": "Newcastle",
+              "town": "Newcastle",
+              "county": "Tyne and Wear",
+              "postcode": "NE1 1AW"
+            },
+            "identity": {
+              "dob": "1998-07-01",
+              "nino": ""
+            }
           }
         },
         "benefitType": {
-          "code": "ESA"
+          "code": "PIP"
         },
         "hearingOptions": {
           "languageInterpreter": "Yes",
@@ -379,26 +404,27 @@
         },
         "mrnDetails": {},
         "rep": {},
-        "signer": null
+        "signer": null,
+        "hearingType": "paper"
       },
       "caseReference": "SC022/14/12423",
       "events": [
         {
-          "id": "a082fa56-8601-4412-836e-93523560148b",
+          "id": "d5169475-fbfd-4fd3-9d55-d7fa3ebd645f",
           "value": {
             "date": "2017-05-24T14:01:18.243",
             "description": "Some Events",
-            "type": "appealReceived"
+            "type": "appealCreated"
           }
         }
       ],
       "subscriptions": {
-        "appellantSubscription": {
+        "appointeeSubscription": {
           "email": "sscstest+notify@greencroftconsulting.com",
           "mobile": "07398785050",
           "subscribeEmail": "Yes",
           "subscribeSms": "Yes",
-          "tya": ""
+          "tya": "v8eg15XeZk"
         },
         "representativeSubscription": {
           "email": "",
@@ -413,11 +439,11 @@
     "created_date": [
       2018,
       7,
-      25,
-      15,
-      17,
-      41,
-      285000000
+      26,
+      10,
+      51,
+      3,
+      45000000
     ],
     "data_classification": {
       "appeal": {
@@ -448,6 +474,7 @@
                   "nino": "PUBLIC"
                 }
               },
+              "isAppointee": "PUBLIC",
               "name": {
                 "classification": "PUBLIC",
                 "value": {
@@ -489,7 +516,7 @@
         "classification": "PUBLIC",
         "value": [
           {
-            "id": "a082fa56-8601-4412-836e-93523560148b",
+            "id": "d5169475-fbfd-4fd3-9d55-d7fa3ebd645f",
             "value": {
               "date": "PUBLIC",
               "description": "PUBLIC",
@@ -501,7 +528,7 @@
       "subscriptions": {
         "classification": "PUBLIC",
         "value": {
-          "appellantSubscription": {
+          "appointeeSubscription": {
             "classification": "PUBLIC",
             "value": {
               "email": "PUBLIC",
@@ -529,11 +556,11 @@
     "last_modified": [
       2018,
       7,
-      25,
-      15,
-      17,
-      41,
-      289000000
+      26,
+      10,
+      51,
+      3,
+      47000000
     ],
     "security_classification": "PUBLIC",
     "security_classifications": {
@@ -565,6 +592,7 @@
                   "nino": "PUBLIC"
                 }
               },
+              "isAppointee": "PUBLIC",
               "name": {
                 "classification": "PUBLIC",
                 "value": {
@@ -606,7 +634,7 @@
         "classification": "PUBLIC",
         "value": [
           {
-            "id": "a082fa56-8601-4412-836e-93523560148b",
+            "id": "d5169475-fbfd-4fd3-9d55-d7fa3ebd645f",
             "value": {
               "date": "PUBLIC",
               "description": "PUBLIC",
@@ -618,7 +646,7 @@
       "subscriptions": {
         "classification": "PUBLIC",
         "value": {
-          "appellantSubscription": {
+          "appointeeSubscription": {
             "classification": "PUBLIC",
             "value": {
               "email": "PUBLIC",
@@ -643,5 +671,5 @@
     },
     "state": "appealCreated"
   },
-  "event_id": "hearingPostponed"
+  "event_id": "responseReceived"
 }
