@@ -256,6 +256,9 @@ notification:
       appellant:
         emailId: a64bce9a-9162-47ca-b3e7-cf5f85ca7bdc
         smsId: f5b61f94-0b2b-4e8e-9c25-56e9830df7d4
+      appointee:
+        emailId: a64bce9a-9162-47ca-b3e7-cf5f85ca7bdc
+        smsId: f5b61f94-0b2b-4e8e-9c25-56e9830df7d4
       representative:
         emailId: a64bce9a-9162-47ca-b3e7-cf5f85ca7bdc
         smsId: f5b61f94-0b2b-4e8e-9c25-56e9830df7d4
