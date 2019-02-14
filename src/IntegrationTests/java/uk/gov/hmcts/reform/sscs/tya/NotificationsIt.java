@@ -240,7 +240,7 @@ public class NotificationsIt {
 
         assertHttpStatus(response, HttpStatus.OK);
         verify(notificationClient, times(1)).sendEmail(any(), any(), any(), any());
-        verifyNoMoreInteractions(notificationClient);
+        verify(notificationClient, times(1)).sendSms(any(), any(), any(), any(), any());
     }
 
     @Test

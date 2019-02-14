@@ -5,7 +5,6 @@ import static uk.gov.hmcts.reform.sscs.config.AppealHearingType.ORAL;
 import static uk.gov.hmcts.reform.sscs.config.AppealHearingType.PAPER;
 import static uk.gov.hmcts.reform.sscs.domain.notify.NotificationEventType.EVIDENCE_RECEIVED_NOTIFICATION;
 
-import java.io.IOException;
 import java.lang.reflect.Field;
 import java.util.List;
 import junitparams.Parameters;
@@ -15,9 +14,6 @@ import org.springframework.beans.factory.annotation.Value;
 import uk.gov.hmcts.reform.sscs.config.AppealHearingType;
 import uk.gov.hmcts.reform.sscs.functional.AbstractFunctionalTest;
 import uk.gov.service.notify.Notification;
-import uk.gov.service.notify.NotificationClientException;
-
-
 
 public class EvidenceReceivedFunctionalTest extends AbstractFunctionalTest {
 
@@ -27,8 +23,6 @@ public class EvidenceReceivedFunctionalTest extends AbstractFunctionalTest {
     private String evidenceReceivedAppellantSmsId;
     @Value("${notification.paper.evidenceReceived.appellant.emailId}")
     private String paperEvidenceReceivedAppellantEmailId;
-    @Value("${notification.paper.evidenceReceived.appellant.smsId}")
-    private String paperEvidenceReceivedAppellantSmsId;
     @Value("${notification.paper.evidenceReceived.representative.emailId}")
     private String paperEvidenceReceivedRepsEmailId;
     @Value("${notification.evidenceReceived.representative.smsId}")
@@ -72,18 +66,18 @@ public class EvidenceReceivedFunctionalTest extends AbstractFunctionalTest {
     }
 
     @Test
-    public void givenOralEvidenceReceivedWithNoRepSubscription_shouldNotSendNotificationToReps()
+    @Parameters({"ORAL", "PAPER"})
+    public void givenEvidenceReceivedWithNoRepSubscription_shouldNotSendNotificationToReps(AppealHearingType appealHearingType)
             throws Exception {
 
-        final String appellantEmailId = evidenceReceivedAppellantEmailId;
-        final String appellantSmsId = evidenceReceivedAppellantSmsId;
-        final String repsEmailId = oralEvidenceReceivedRepsEmailId;
-        final String repsSmsId = oralEvidenceReceivedRepsSmsId;
-
+        final String appellantEmailId = getFieldValue(appealHearingType, "AppellantEmailId");
+        final String appellantSmsId = getFieldValue(appealHearingType, "AppellantSmsId");
+        final String repsEmailId = getFieldValue(appealHearingType, "RepsEmailId");
+        final String repsSmsId = getFieldValue(appealHearingType, "RepsSmsId");
 
         simulateCcdCallback(EVIDENCE_RECEIVED_NOTIFICATION,
                 "representative/" + "no-reps-subscribed-"
-                        + ORAL.name().toLowerCase() + "-"
+                        + appealHearingType.name().toLowerCase() + "-"
                         + EVIDENCE_RECEIVED_NOTIFICATION.getId() + "Callback.json");
 
         List<Notification> notifications = tryFetchNotificationsForTestCase(appellantEmailId,
@@ -92,28 +86,6 @@ public class EvidenceReceivedFunctionalTest extends AbstractFunctionalTest {
         assertNotificationBodyContains(notifications, appellantSmsId);
         List<Notification> notificationsNotFound = tryFetchNotificationsForTestCaseWithFlag(true,
                     repsEmailId, repsSmsId);
-        assertTrue(notificationsNotFound.isEmpty());
-    }
-
-    @Test
-    public void givenPaperEvidenceReceivedWithNoRepSubscription_shouldNotSendNotificationToRepsAndSmsToAppellant() throws NotificationClientException, IOException {
-        final String appellantEmailId = paperEvidenceReceivedAppellantEmailId;
-        final String appellantSmsId = paperEvidenceReceivedAppellantSmsId;
-        final String repsEmailId = paperEvidenceReceivedRepsEmailId;
-        final String repsSmsId = paperEvidenceReceivedRepsSmsId;
-
-        assertTrue("appellant smsId must be blank for paper evidenceReceived",
-                StringUtils.isBlank(appellantSmsId));
-
-        simulateCcdCallback(EVIDENCE_RECEIVED_NOTIFICATION,
-                "representative/" + "no-reps-subscribed-"
-                        + PAPER.name().toLowerCase() + "-"
-                        + EVIDENCE_RECEIVED_NOTIFICATION.getId() + "Callback.json");
-
-        List<Notification> notifications = tryFetchNotificationsForTestCase(appellantEmailId);
-        assertNotificationBodyContains(notifications, appellantEmailId);
-        List<Notification> notificationsNotFound = tryFetchNotificationsForTestCaseWithFlag(true,
-                repsEmailId, repsSmsId);
         assertTrue(notificationsNotFound.isEmpty());
     }
 
