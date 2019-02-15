@@ -289,7 +289,7 @@ public class PersonalisationTest {
         assertEquals("GLSCRR", result.get(APPEAL_ID));
         assertEquals("Harry Kane", result.get(NAME));
         assertEquals("Harry Kane", result.get(APPELLANT_NAME));
-        assertEquals("01234543225", result.get(PHONE_NUMBER));
+        assertEquals("01234543225", result.get(HMCTS_PHONE_NUMBER));
         assertEquals("http://link.com/manage-email-notifications/ZYX", result.get(MANAGE_EMAILS_LINK_LITERAL));
         assertEquals("http://tyalink.com/GLSCRR", result.get(TRACK_APPEAL_LINK_LITERAL));
         assertEquals(DWP_ACRONYM, result.get(FIRST_TIER_AGENCY_ACRONYM));
