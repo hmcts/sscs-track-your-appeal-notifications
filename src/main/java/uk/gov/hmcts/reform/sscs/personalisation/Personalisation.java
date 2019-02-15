@@ -98,12 +98,10 @@ public class Personalisation<E extends NotificationWrapper> {
         personalisation.put(PHONE_NUMBER, config.getHmctsPhoneNumber());
         personalisation.put(CCD_ID, StringUtils.defaultIfBlank(ccdResponse.getCcdCaseId(), StringUtils.EMPTY));
 
-        Subscription appellantOrAppointeeSubscription = hasAppointee(responseWrapper)
-                ? ccdResponse.getSubscriptions().getAppointeeSubscription()
-                : ccdResponse.getSubscriptions().getAppellantSubscription();
+        Subscription subscription = subscription(responseWrapper, subscriptionType);
 
-        if (appellantOrAppointeeSubscription != null) {
-            subscriptionDetails(personalisation, appellantOrAppointeeSubscription, benefit);
+        if (subscription != null) {
+            subscriptionDetails(personalisation, subscription, benefit);
         }
 
         personalisation.put(FIRST_TIER_AGENCY_ACRONYM, DWP_ACRONYM);
@@ -138,6 +136,16 @@ public class Personalisation<E extends NotificationWrapper> {
         personalisation.put(APPOINTEE_DESCRIPTION, getAppointeeDescription(subscriptionType, ccdResponse));
 
         return personalisation;
+    }
+
+    private Subscription subscription(SscsCaseDataWrapper responseWrapper, SubscriptionType subscriptionType) {
+        if (subscriptionType == REPRESENTATIVE) {
+            return responseWrapper.getNewSscsCaseData().getSubscriptions().getRepresentativeSubscription();
+        } else {
+            return hasAppointee(responseWrapper)
+                ? responseWrapper.getNewSscsCaseData().getSubscriptions().getAppointeeSubscription()
+                : responseWrapper.getNewSscsCaseData().getSubscriptions().getAppellantSubscription();
+        }
     }
 
 

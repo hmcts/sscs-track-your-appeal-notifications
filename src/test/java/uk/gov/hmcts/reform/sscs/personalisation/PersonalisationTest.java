@@ -70,6 +70,7 @@ import uk.gov.hmcts.reform.sscs.ccd.domain.HearingDetails;
 import uk.gov.hmcts.reform.sscs.ccd.domain.HearingType;
 import uk.gov.hmcts.reform.sscs.ccd.domain.Name;
 import uk.gov.hmcts.reform.sscs.ccd.domain.RegionalProcessingCenter;
+import uk.gov.hmcts.reform.sscs.ccd.domain.Representative;
 import uk.gov.hmcts.reform.sscs.ccd.domain.SscsCaseData;
 import uk.gov.hmcts.reform.sscs.ccd.domain.Subscription;
 import uk.gov.hmcts.reform.sscs.ccd.domain.Subscriptions;
@@ -600,6 +601,7 @@ public class PersonalisationTest {
     @Test
     public void shouldPopulateAppointeeSubscriptionPersonalisation() {
         final String tyaNumber = "tya";
+        final String repTyaNumber = "repTya";
         Name appointeeName = Name.builder().title("MR").firstName("George").lastName("Appointee").build();
         when(macService.generateToken(tyaNumber, PIP.name())).thenReturn("ZYX");
 
@@ -623,6 +625,11 @@ public class PersonalisationTest {
                                 .subscribeEmail("Yes")
                                 .email("appointee@example.com")
                                 .build())
+                        .representativeSubscription(Subscription.builder()
+                                .tya(repTyaNumber)
+                                .subscribeEmail("Yes")
+                                .email("rep@example.com")
+                                .build())
                         .build())
                 .build();
 
@@ -639,6 +646,53 @@ public class PersonalisationTest {
         assertEquals("http://link.com/manage-email-notifications/ZYX", result.get(MANAGE_EMAILS_LINK_LITERAL));
         assertEquals("http://tyalink.com/" + tyaNumber, result.get(TRACK_APPEAL_LINK_LITERAL));
         assertEquals("You are receiving this update as the appointee for Harry Kane.\r\n\r\n", result.get(APPOINTEE_DESCRIPTION));
+    }
+
+    @Test
+    public void shouldPopulateRepSubscriptionPersonalisation() {
+        final String tyaNumber = "tya";
+        final String repTyaNumber = "repTya";
+        when(macService.generateToken(repTyaNumber, PIP.name())).thenReturn("ZYX");
+
+        final SscsCaseData sscsCaseData = SscsCaseData.builder()
+                .ccdCaseId(CASE_ID)
+                .caseReference("SC/1234/5")
+                .appeal(Appeal.builder()
+                        .benefitType(BenefitType.builder()
+                                .code(PIP.name())
+                                .build())
+                        .appellant(Appellant.builder()
+                                .name(name)
+                                .build())
+                        .rep(Representative.builder()
+                                .name(name)
+                                .build())
+                        .build())
+                .subscriptions(Subscriptions.builder()
+                        .appellantSubscription(Subscription.builder()
+                                .tya(tyaNumber)
+                                .subscribeEmail("Yes")
+                                .email("appointee@example.com")
+                                .build())
+                        .representativeSubscription(Subscription.builder()
+                                .tya(repTyaNumber)
+                                .subscribeEmail("Yes")
+                                .email("rep@example.com")
+                                .build())
+                        .build())
+                .build();
+
+        Map result = personalisation.create(SscsCaseDataWrapper.builder()
+                .newSscsCaseData(sscsCaseData)
+                .notificationEventType(SUBSCRIPTION_CREATED_NOTIFICATION)
+                .build(), REPRESENTATIVE);
+
+        assertNotNull(result);
+        assertEquals(repTyaNumber, result.get(APPEAL_ID));
+        assertEquals("http://link.com/manage-email-notifications/ZYX", result.get(MANAGE_EMAILS_LINK_LITERAL));
+        assertEquals("http://tyalink.com/" + repTyaNumber, result.get(TRACK_APPEAL_LINK_LITERAL));
+        assertEquals("http://link.com/" + repTyaNumber, result.get(SUBMIT_EVIDENCE_LINK_LITERAL));
+        assertEquals("http://link.com/" + repTyaNumber, result.get(SUBMIT_EVIDENCE_INFO_LINK_LITERAL));
     }
 
     private Hearing createHearing(LocalDate hearingDate) {
