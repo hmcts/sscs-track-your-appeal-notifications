@@ -56,10 +56,10 @@ public class NotificationController {
             @RequestHeader(AuthorisationService.SERVICE_AUTHORISATION_HEADER) String serviceAuthHeader,
             @RequestBody CohEvent cohEvent) {
         String caseId = cohEvent.getCaseId();
-        log.info("Coh Response received for case id: {}", caseId);
-        log.info("Coh Response received for event: {}", cohEvent.getNotificationEventType());
+        log.info("Coh Response received for case id: {} event: {}", caseId, cohEvent.getNotificationEventType());
 
         if (!NotificationEventType.checkEvent(cohEvent.getNotificationEventType())) {
+            log.info("Coh Response bad request unhandled event for case id: {} event: {}", caseId, cohEvent.getNotificationEventType());
             return ResponseEntity.badRequest().body("Unhandled event: " + cohEvent.getNotificationEventType());
         }
 
@@ -72,6 +72,7 @@ public class NotificationController {
         } else {
             log.warn("Case id: {} could not be found for event: {}", caseId, eventId);
         }
+        log.info("Coh Response handled for case id: {} event: {}", caseId, cohEvent.getNotificationEventType());
         return ResponseEntity.ok("");
     }
 
