@@ -155,7 +155,6 @@ public class SendNotificationService {
 
         if (!placeholders.containsKey(APPEAL_RESPOND_DATE)) {
             ZonedDateTime appealReceivedDate = ZonedDateTime.now().plusSeconds(delay);
-            appealReceivedDate.format(DateTimeFormatter.ofPattern(RESPONSE_DATE_FORMAT));
             placeholders.put(APPEAL_RESPOND_DATE, appealReceivedDate.format(DateTimeFormatter.ofPattern(RESPONSE_DATE_FORMAT)));
         }
 
