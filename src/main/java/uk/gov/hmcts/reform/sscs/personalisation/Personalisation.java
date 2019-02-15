@@ -251,6 +251,7 @@ public class Personalisation<E extends NotificationWrapper> {
         personalisation.put(TOWN_LITERAL, rpc.getAddress4());
         personalisation.put(COUNTY_LITERAL, rpc.getCity());
         personalisation.put(POSTCODE_LITERAL, rpc.getPostcode());
+        personalisation.put(REGIONAL_OFFICE_POSTCODE_LITERAL, rpc.getPostcode());
 
         return personalisation;
     }
