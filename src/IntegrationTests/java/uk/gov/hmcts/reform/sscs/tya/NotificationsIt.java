@@ -871,42 +871,42 @@ public class NotificationsIt {
                 "paper",
                 Collections.singletonList("652753bf-59b4-46eb-9c24-bd762338a098"),
                 Collections.emptyList(),
-                Collections.singletonList("91143b85-dd9d-430c-ba23-e42ec90f44f8"),
+                Collections.emptyList(),
                 "no",
                 "no",
                 "yes",
                 "no",
                 "1",
                 "0",
-                "1"
+                "0"
             },
             new Object[]{
                 CASE_UPDATED,
                 "paper",
                 Collections.singletonList("01293b93-b23e-40a3-ad78-2c6cd01cd21c"),
                 Collections.emptyList(),
-                Collections.singletonList("77ea8a2f-06df-4279-9c1f-0f23cb2d9bbf"),
+                Collections.emptyList(),
                 "yes",
                 "no",
                 "no",
                 "no",
                 "1",
                 "0",
-                "1"
+                "0"
             },
             new Object[]{
                 CASE_UPDATED,
                 "paper",
                 Collections.emptyList(),
                 Collections.emptyList(),
-                Arrays.asList("91143b85-dd9d-430c-ba23-e42ec90f44f8", "77ea8a2f-06df-4279-9c1f-0f23cb2d9bbf"),
+                Collections.emptyList(),
                 "no",
                 "no",
                 "no",
                 "no",
                 "0",
                 "0",
-                "2"
+                "0"
             }
         };
     }
@@ -1532,12 +1532,12 @@ public class NotificationsIt {
                 "paper",
                 Collections.emptyList(),
                 Collections.emptyList(),
-                Collections.singletonList("91143b85-dd9d-430c-ba23-e42ec90f44f8"),
+                Collections.emptyList(),
                 "no",
                 "no",
                 "0",
                 "0",
-                "1",
+                "0",
                 "Harry Potter"
             }
         };
