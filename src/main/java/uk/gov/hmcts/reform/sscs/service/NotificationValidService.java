@@ -37,9 +37,9 @@ public class NotificationValidService {
     }
 
     static boolean fallbackConditionsMet(NotificationWrapper wrapper, NotificationEventType eventType) {
-        if (SYA_APPEAL_CREATED_NOTIFICATION.equals(eventType)) {
-            return (null == wrapper.getOldSscsCaseData() || wrapper.getOldSscsCaseData().getCaseReference().isEmpty())
-                && !wrapper.getNewSscsCaseData().getCaseReference().isEmpty();
+        if (FALLBACK_LETTER_SUBSCRIPTION_TYPES.contains(eventType)) {
+            return (null == wrapper.getOldSscsCaseData() || null == wrapper.getOldSscsCaseData().getCaseReference() || wrapper.getOldSscsCaseData().getCaseReference().isEmpty())
+                && (null != wrapper.getNewSscsCaseData().getCaseReference() && !wrapper.getNewSscsCaseData().getCaseReference().isEmpty());
         }
 
         return true;

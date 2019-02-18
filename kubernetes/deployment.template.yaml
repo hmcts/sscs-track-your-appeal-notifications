@@ -64,7 +64,7 @@ spec:
         - name: EMAIL_MAC_SECRET_TEXT
           value: ${EMAIL_MAC_SECRET_TEXT}
         - name: ONLINE_HEARING_LINK
-          value: https://sscs-cor-frontend-aat-staging.service.core-compute-aat.internal
+          value: https://sscs-cor-frontend-aat.service.core-compute-aat.internal
         - name: JOB_SCHEDULER_DB_HOST
           value: postgres
         - name: JOB_SCHEDULER_DB_PORT

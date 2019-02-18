@@ -10,6 +10,8 @@ import static uk.gov.hmcts.reform.sscs.service.NotificationValidService.isBundle
 
 import java.io.IOException;
 import java.net.URI;
+import java.time.ZonedDateTime;
+import java.time.format.DateTimeFormatter;
 import java.util.Map;
 
 import lombok.extern.slf4j.Slf4j;
@@ -38,6 +40,9 @@ public class SendNotificationService {
 
     @Value("${feature.letters_on}")
     Boolean lettersOn;
+
+    @Value("${reminder.dwpResponseLateReminder.delay.seconds}")
+    long delay;
 
     private final NotificationSender notificationSender;
     private final EvidenceManagementService evidenceManagementService;
@@ -152,6 +157,11 @@ public class SendNotificationService {
         placeholders.put(POSTCODE_LITERAL, addressToUse.getPostcode());
         if (hasRepresentative(wrapper.getSscsCaseDataWrapper())) {
             placeholders.put(REPRESENTATIVE_NAME, wrapper.getNewSscsCaseData().getAppeal().getRep().getName().getFullNameNoTitle());
+        }
+
+        if (!placeholders.containsKey(APPEAL_RESPOND_DATE)) {
+            ZonedDateTime appealReceivedDate = ZonedDateTime.now().plusSeconds(delay);
+            placeholders.put(APPEAL_RESPOND_DATE, appealReceivedDate.format(DateTimeFormatter.ofPattern(RESPONSE_DATE_FORMAT)));
         }
 
         notificationSender.sendLetter(

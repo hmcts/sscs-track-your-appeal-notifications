@@ -16,6 +16,7 @@ public final class AppConstants {
     public static final String BENEFIT_FULL_NAME_LITERAL = "benefit_full_name";
     public static final String BENEFIT_NAME_ACRONYM_LITERAL = "benefit_name_acronym";
     public static final String BENEFIT_NAME_ACRONYM_SHORT_LITERAL = "benefit_name_acronym_short";
+    public static final String CCD_ID = "ccd_id";
     public static final String CLAIMING_EXPENSES_LINK_LITERAL = "claiming_expenses_link";
     public static final String COUNTY_LITERAL = "county";
     public static final String DAYS_STRING = " days";
@@ -49,6 +50,7 @@ public final class AppConstants {
     public static final String QUESTION_ROUND_EXPIRES_DATE_LITERAL = "question_round_expires_date";
     public static final String REASONS_FOR_APPEALING_DETAILS_LITERAL = "reasons_for_appealing_details";
     public static final String REGIONAL_OFFICE_NAME_LITERAL = "regional_office_name";
+    public static final String REGIONAL_OFFICE_POSTCODE_LITERAL = "regional_office_postcode";
     public static final String REPRESENTATIVE_DETAILS_LITERAL = "representative_details";
     public static final String REPRESENTATIVE_NAME = "representative_name";
     public static final String RESPONSE_DATE_FORMAT = "d MMMM yyyy";
@@ -76,7 +78,6 @@ public final class AppConstants {
     public static final String LETTER_ADDRESS_LINE_4 = "letter_address_line_4";
     public static final String LETTER_ADDRESS_POSTCODE = "letter_address_postcode";
     public static final String LETTER_NAME = "letter_name";
-
 
     private AppConstants() {
         //
