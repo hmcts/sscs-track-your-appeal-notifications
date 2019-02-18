@@ -289,6 +289,7 @@ public class PersonalisationTest {
         assertEquals("GLSCRR", result.get(APPEAL_ID));
         assertEquals("Harry Kane", result.get(NAME));
         assertEquals("Harry Kane", result.get(APPELLANT_NAME));
+        assertEquals("01234543225", result.get(PHONE_NUMBER));
         assertEquals("01234543225", result.get(HMCTS_PHONE_NUMBER));
         assertEquals("http://link.com/manage-email-notifications/ZYX", result.get(MANAGE_EMAILS_LINK_LITERAL));
         assertEquals("http://tyalink.com/GLSCRR", result.get(TRACK_APPEAL_LINK_LITERAL));
@@ -601,7 +602,6 @@ public class PersonalisationTest {
     @Test
     public void shouldPopulateAppointeeSubscriptionPersonalisation() {
         final String tyaNumber = "tya";
-        final String repTyaNumber = "repTya";
         Name appointeeName = Name.builder().title("MR").firstName("George").lastName("Appointee").build();
         when(macService.generateToken(tyaNumber, PIP.name())).thenReturn("ZYX");
 
@@ -626,7 +626,7 @@ public class PersonalisationTest {
                                 .email("appointee@example.com")
                                 .build())
                         .representativeSubscription(Subscription.builder()
-                                .tya(repTyaNumber)
+                                .tya("repTya")
                                 .subscribeEmail("Yes")
                                 .email("rep@example.com")
                                 .build())

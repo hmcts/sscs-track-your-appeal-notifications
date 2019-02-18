@@ -99,10 +99,10 @@ public class Personalisation<E extends NotificationWrapper> {
         personalisation.put(HMCTS_PHONE_NUMBER, config.getHmctsPhoneNumber());
         personalisation.put(CCD_ID, StringUtils.defaultIfBlank(ccdResponse.getCcdCaseId(), StringUtils.EMPTY));
 
-        Subscription subscription = subscription(responseWrapper, subscriptionType);
+        Subscription appellantOrAppointeeSubscription = subscription(responseWrapper, subscriptionType);
 
-        if (subscription != null) {
-            subscriptionDetails(personalisation, subscription, benefit);
+        if (appellantOrAppointeeSubscription != null) {
+            subscriptionDetails(personalisation, appellantOrAppointeeSubscription, benefit);
         }
 
         personalisation.put(FIRST_TIER_AGENCY_ACRONYM, DWP_ACRONYM);
