@@ -26,7 +26,7 @@ public class NotificationUtilsTest {
     }
 
     @Test
-    public void faleWhenHasNullPopulatedAppointee() {
+    public void falseWhenHasNullPopulatedAppointee() {
         Appellant appellant = Appellant.builder()
             .name(Name.builder().firstName("Ap").lastName("pellant").build())
             .address(Address.builder().line1("Appellant Line 1").town("Appellant Town").county("Appellant County").postcode("AP9 3LL").build())
@@ -44,7 +44,7 @@ public class NotificationUtilsTest {
     }
 
     @Test
-    public void faleWhenHasNullAppointee() {
+    public void falseWhenHasNullAppointee() {
         NotificationWrapper wrapper = NotificationServiceTest.buildBaseWrapper(
             SYA_APPEAL_CREATED_NOTIFICATION,
             APPELLANT_WITH_ADDRESS,
@@ -53,6 +53,21 @@ public class NotificationUtilsTest {
         );
 
         assertFalse(hasAppointee(wrapper.getSscsCaseDataWrapper()));
+    }
+
+    @Test
+    public void falseWhenNoFirstName() {
+        assertFalse(hasAppointee(Appointee.builder().name(Name.builder().lastName("Last").build()).build()));
+    }
+
+    @Test
+    public void falseWhenNoLastName() {
+        assertFalse(hasAppointee(Appointee.builder().name(Name.builder().firstName("First").build()).build()));
+    }
+
+    @Test
+    public void trueWhenHasFirstAndLastName() {
+        assertTrue(hasAppointee(Appointee.builder().name(Name.builder().firstName("First").lastName("Last").build()).build()));
     }
 
     @Test

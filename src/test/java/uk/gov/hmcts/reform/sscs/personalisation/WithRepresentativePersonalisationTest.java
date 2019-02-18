@@ -17,10 +17,6 @@ import uk.gov.hmcts.reform.sscs.config.AppConstants;
 @RunWith(JUnitParamsRunner.class)
 public class WithRepresentativePersonalisationTest {
 
-    private static final String CASE_ID = "54321";
-
-    private SscsCaseData response;
-
     private WithRepresentativePersonalisation withRepresentativePersonalisation =
         new WithRepresentativePersonalisation();
 
@@ -33,6 +29,7 @@ public class WithRepresentativePersonalisationTest {
         assertEquals(expected, personalisation.get(AppConstants.REPRESENTATIVE_NAME));
     }
 
+    @SuppressWarnings({"unused"})
     private Object[] generateSscsCaseDataForTest() {
         SscsCaseData sscsCaseDataWithReps = SscsCaseData.builder()
             .appeal(Appeal.builder()

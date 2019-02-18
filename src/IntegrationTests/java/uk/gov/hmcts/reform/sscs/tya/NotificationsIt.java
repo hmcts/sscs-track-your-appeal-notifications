@@ -903,7 +903,7 @@ public class NotificationsIt {
         HttpServletResponse response = getResponse(getRequestWithAuthHeader(json));
 
         assertHttpStatus(response, HttpStatus.OK);
-        verify(notificationClient, times(1)).sendEmail(any(), any(), any(), any());
+        verify(notificationClient, times(2)).sendEmail(any(), any(), any(), any());
         verify(notificationClient, never()).sendSms(any(), any(), any(), any(), any());
     }
 
