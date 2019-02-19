@@ -145,10 +145,6 @@ public class CohNotificationsIt {
                 .thenReturn(sendEmailResponse);
         when(sendEmailResponse.getNotificationId()).thenReturn(UUID.randomUUID());
 
-        when(notificationClient.sendSms(any(), any(), any(), any(), any()))
-                .thenReturn(sendSmsResponse);
-        when(sendSmsResponse.getNotificationId()).thenReturn(UUID.randomUUID());
-
         this.mockMvc = MockMvcBuilders.standaloneSetup(controller).build();
         json = "{\n"
                 + "   \"case_id\":\"12345\",\n"
@@ -171,7 +167,6 @@ public class CohNotificationsIt {
                 argThat(argument -> "11 August 2018".equals(argument.get("questions_end_date"))),
                 any()
         );
-        verify(notificationClient, times(1)).sendSms(any(), any(), any(), any(), any());
     }
 
     @Test
