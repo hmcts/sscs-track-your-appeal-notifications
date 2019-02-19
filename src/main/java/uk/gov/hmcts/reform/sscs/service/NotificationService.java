@@ -82,6 +82,7 @@ public class NotificationService {
                     getNotificationByCcdEvent(notificationWrapper.getNewSscsCaseData().getEvents().get(0)
                             .getValue().getEventType()));
             sendNotification(notificationWrapper, subscriptionWithType);
+            notificationWrapper.getSscsCaseDataWrapper().setNotificationEventType(SUBSCRIPTION_UPDATED_NOTIFICATION);
         }
     }
 

@@ -78,8 +78,6 @@ import uk.gov.service.notify.SendSmsResponse;
 @ActiveProfiles("integration")
 @AutoConfigureMockMvc
 public class NotificationsIt {
-    private static final String TEMPLATE_PATH = "/templates/non_compliant_case_letter_template.html";
-
     // Below rules are needed to use the junitParamsRunner together with SpringRunner
     @ClassRule
     public static final SpringClassRule SPRING_CLASS_RULE = new SpringClassRule();
@@ -87,12 +85,10 @@ public class NotificationsIt {
     @Rule
     public final SpringMethodRule springMethodRule = new SpringMethodRule();
 
-    MockMvc mockMvc;
-
-    NotificationController controller;
+    private MockMvc mockMvc;
 
     @Mock
-    NotificationClient notificationClient;
+    private NotificationClient notificationClient;
 
     @Mock
     private SendEmailResponse sendEmailResponse;
@@ -100,21 +96,20 @@ public class NotificationsIt {
     @Mock
     private SendSmsResponse sendSmsResponse;
 
-
     @Mock
-    ReminderService reminderService;
-
-    @Autowired
-    NotificationValidService notificationValidService;
+    private ReminderService reminderService;
 
     @MockBean
     private AuthorisationService authorisationService;
 
     @Mock
-    NotificationBlacklist notificationBlacklist;
+    private NotificationBlacklist notificationBlacklist;
 
     @Autowired
-    NotificationFactory factory;
+    private NotificationValidService notificationValidService;
+
+    @Autowired
+    private NotificationFactory factory;
 
     @Autowired
     private CcdService ccdService;
@@ -125,7 +120,7 @@ public class NotificationsIt {
     @MockBean
     private IdamService idamService;
 
-    String json;
+    private String json;
 
     @Autowired
     private NotificationHandler notificationHandler;
@@ -150,7 +145,7 @@ public class NotificationsIt {
         ReflectionTestUtils.setField(sendNotificationService, "bundledLettersOn", true);
 
         NotificationService service = new NotificationService(factory, reminderService, notificationValidService, notificationHandler, outOfHoursCalculator, notificationConfig, sendNotificationService);
-        controller = new NotificationController(service, authorisationService, ccdService, deserializer, idamService);
+        NotificationController controller = new NotificationController(service, authorisationService, ccdService, deserializer, idamService);
         this.mockMvc = MockMvcBuilders.standaloneSetup(controller).build();
         String path = getClass().getClassLoader().getResource("json/ccdResponse.json").getFile();
         json = FileUtils.readFileToString(new File(path), StandardCharsets.UTF_8.name());

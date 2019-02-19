@@ -16,9 +16,9 @@ public class NotificationUtils {
 
     /* Sometimes the data for the appointee comes in with null populated objects */
     public static boolean hasAppointee(SscsCaseDataWrapper wrapper) {
-        return (wrapper.getNewSscsCaseData().getAppeal() != null
+        return wrapper.getNewSscsCaseData().getAppeal() != null
             && wrapper.getNewSscsCaseData().getAppeal().getAppellant() != null
-            && hasAppointee(wrapper.getNewSscsCaseData().getAppeal().getAppellant().getAppointee()));
+            && hasAppointee(wrapper.getNewSscsCaseData().getAppeal().getAppellant().getAppointee());
     }
 
     public static boolean hasAppointee(Appointee appointee) {
@@ -27,10 +27,10 @@ public class NotificationUtils {
     }
 
     public static boolean hasRepresentative(SscsCaseDataWrapper wrapper) {
-        return (wrapper.getNewSscsCaseData().getAppeal() != null
+        return wrapper.getNewSscsCaseData().getAppeal() != null
             && wrapper.getNewSscsCaseData().getAppeal().getRep() != null
             && wrapper.getNewSscsCaseData().getAppeal().getRep().getHasRepresentative() != null
-            && wrapper.getNewSscsCaseData().getAppeal().getRep().getHasRepresentative().equalsIgnoreCase("yes"));
+            && wrapper.getNewSscsCaseData().getAppeal().getRep().getHasRepresentative().equalsIgnoreCase("yes");
     }
 
     public static boolean hasAppointeeSubscription(SscsCaseDataWrapper wrapper) {

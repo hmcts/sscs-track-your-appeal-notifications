@@ -167,6 +167,7 @@ public class CcdNotificationWrapperTest {
                 || type.equals(ADJOURNED_NOTIFICATION)
                 || type.equals(APPEAL_RECEIVED_NOTIFICATION)
                 || type.equals(POSTPONEMENT_NOTIFICATION)
+                || type.equals(SUBSCRIPTION_UPDATED_NOTIFICATION)
                 || type.equals(HEARING_BOOKED_NOTIFICATION)
             )).toArray();
     }
