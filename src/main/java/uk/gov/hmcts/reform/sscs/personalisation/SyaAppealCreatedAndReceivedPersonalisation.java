@@ -158,7 +158,7 @@ public class SyaAppealCreatedAndReceivedPersonalisation extends WithRepresentati
                 .append("Have a representative: ")
                 .append(hasRepresentative);
 
-        if (StringUtils.equalsIgnoreCase(YES, hasRepresentative)) {
+        if (representative != null && representative.getName() != null && StringUtils.equalsIgnoreCase(YES, hasRepresentative)) {
             representativeBuilder.append(TWO_NEW_LINES + NAME)
                     .append(representative.getName().getFullNameNoTitle() + TWO_NEW_LINES)
                     .append("Organisation: ")

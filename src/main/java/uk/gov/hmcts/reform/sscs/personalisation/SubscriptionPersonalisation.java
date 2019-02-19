@@ -41,13 +41,13 @@ public class SubscriptionPersonalisation extends WithRepresentativePersonalisati
 
     private boolean isSmsSubscriptionUnchanged(Subscription newSubscription, Subscription oldSubscription) {
         return oldSubscription != null && newSubscription != null
-                && newSubscription.isSmsSubscribed() == oldSubscription.isSmsSubscribed()
+                && newSubscription.isSmsSubscribed().equals(oldSubscription.isSmsSubscribed())
                 && StringUtils.equalsIgnoreCase(newSubscription.getMobile(), oldSubscription.getMobile());
     }
 
     private boolean isEmailSubscriptionUnchanged(Subscription newSubscription, Subscription oldSubscription) {
         return oldSubscription != null && newSubscription != null
-            && newSubscription.isEmailSubscribed() == oldSubscription.isEmailSubscribed()
+            && newSubscription.isEmailSubscribed().equals(oldSubscription.isEmailSubscribed())
             && StringUtils.equalsIgnoreCase(newSubscription.getEmail(), oldSubscription.getEmail());
     }
 
