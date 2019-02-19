@@ -1,7 +1,7 @@
 # SSCS - Track Your Appeal Notifications
 
 ## Purpose
-Track Your Appeal Notifications is a spring boot based application used to send notifications to gov notify. 
+Track Your Appeal Notifications is a Spring Boot based application used to send notifications to gov notify. 
 
 The [Job-Scheduler](https://github.com/hmcts/job-scheduler) is used to start notification requests using callbacks. 
 
