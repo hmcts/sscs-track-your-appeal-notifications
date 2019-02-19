@@ -16,7 +16,6 @@ import static uk.gov.hmcts.reform.sscs.service.SendNotificationService.DM_STORE_
 import java.io.IOException;
 import java.net.URI;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Collections;
 import java.util.HashMap;
 
@@ -947,18 +946,6 @@ public class NotificationServiceTest {
         getNotificationService(false).manageNotificationAndSubscription(struckOutCcdNotificationWrapper);
 
         verify(notificationHandler, times(0)).sendNotification(eq(struckOutCcdNotificationWrapper), eq(LETTER_TEMPLATE_ID_STRUCKOUT), eq(LETTER), any(NotificationHandler.SendNotification.class));
-    }
-
-    @Test
-    public void isPaperCase() {
-        assertTrue(NotificationService.isPaperCase(AppealHearingType.PAPER.name()));
-    }
-
-    @Test
-    public void isNotPaperCase() {
-        Arrays.stream(AppealHearingType.values())
-                .filter(aht -> aht != AppealHearingType.PAPER)
-                .forEach(aht -> assertFalse(NotificationService.isPaperCase(aht.name())));
     }
 
     @Test

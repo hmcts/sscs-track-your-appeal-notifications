@@ -6,14 +6,7 @@ import static helper.IntegrationTestHelper.getRequestWithoutAuthHeader;
 import static helper.IntegrationTestHelper.updateEmbeddedJson;
 import static org.junit.Assert.assertArrayEquals;
 import static org.junit.Assert.assertEquals;
-import static org.mockito.Mockito.any;
-import static org.mockito.Mockito.anyString;
-import static org.mockito.Mockito.eq;
-import static org.mockito.Mockito.mock;
-import static org.mockito.Mockito.never;
-import static org.mockito.Mockito.times;
-import static org.mockito.Mockito.verify;
-import static org.mockito.Mockito.when;
+import static org.mockito.Mockito.*;
 import static uk.gov.hmcts.reform.sscs.config.AppConstants.APPELLANT_NAME;
 import static uk.gov.hmcts.reform.sscs.config.AppConstants.NAME;
 import static uk.gov.hmcts.reform.sscs.domain.notify.NotificationEventType.*;
@@ -39,6 +32,7 @@ import org.junit.runner.RunWith;
 import org.mockito.ArgumentCaptor;
 import org.mockito.Mock;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
@@ -136,6 +130,21 @@ public class NotificationsIt {
 
     @Mock
     private SscsGeneratePdfService sscsGeneratePdfService;
+
+    @Value("${notification.subscriptionUpdated.emailId}")
+    private String subscriptionUpdatedEmailId;
+
+    @Value("${notification.subscriptionCreated.smsId}")
+    private String subscriptionCreatedSmsId;
+
+    @Value("${notification.paper.responseReceived.emailId}")
+    private String paperResponseReceivedEmailId;
+
+    @Value("${notification.paper.responseReceived.smsId}")
+    private String paperResponseReceivedSmsId;
+
+    @Value("${notification.oral.responseReceived.emailId}")
+    private String oralResponseReceivedEmailId;
 
     @Before
     public void setup() throws Exception {
@@ -884,8 +893,9 @@ public class NotificationsIt {
         HttpServletResponse response = getResponse(getRequestWithAuthHeader(json));
 
         assertHttpStatus(response, HttpStatus.OK);
-        verify(notificationClient, never()).sendEmail(any(), any(), any(), any());
-        verify(notificationClient).sendSms(any(), any(), any(), any(), any());
+        verify(notificationClient).sendSms(eq(subscriptionCreatedSmsId), any(), any(), any(), any());
+        verify(notificationClient).sendSms(eq(paperResponseReceivedSmsId), any(), any(), any(), any());
+        verifyNoMoreInteractions(notificationClient);
     }
 
     @Test
@@ -898,8 +908,9 @@ public class NotificationsIt {
         HttpServletResponse response = getResponse(getRequestWithAuthHeader(json));
 
         assertHttpStatus(response, HttpStatus.OK);
-        verify(notificationClient, times(2)).sendEmail(any(), any(), any(), any());
-        verify(notificationClient, never()).sendSms(any(), any(), any(), any(), any());
+        verify(notificationClient).sendEmail(eq(subscriptionUpdatedEmailId), any(), any(), any());
+        verify(notificationClient).sendEmail(eq(oralResponseReceivedEmailId), any(), any(), any());
+        verifyNoMoreInteractions(notificationClient);
     }
 
     @Test
@@ -912,8 +923,9 @@ public class NotificationsIt {
         HttpServletResponse response = getResponse(getRequestWithAuthHeader(json));
 
         assertHttpStatus(response, HttpStatus.OK);
-        verify(notificationClient, times(1)).sendEmail(any(), any(), any(), any());
-        verify(notificationClient, never()).sendSms(any(), any(), any(), any(), any());
+        verify(notificationClient).sendEmail(eq(subscriptionUpdatedEmailId), any(), any(), any());
+        verify(notificationClient).sendEmail(eq(paperResponseReceivedEmailId), any(), any(), any());
+        verifyNoMoreInteractions(notificationClient);
     }
 
     @Test

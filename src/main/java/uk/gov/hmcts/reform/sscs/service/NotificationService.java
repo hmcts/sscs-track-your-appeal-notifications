@@ -8,13 +8,11 @@ import static uk.gov.hmcts.reform.sscs.service.NotificationUtils.getSubscription
 import static uk.gov.hmcts.reform.sscs.service.NotificationValidService.isMandatoryLetter;
 
 import lombok.extern.slf4j.Slf4j;
-import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import uk.gov.hmcts.reform.sscs.ccd.domain.Benefit;
 import uk.gov.hmcts.reform.sscs.ccd.domain.SscsCaseData;
 import uk.gov.hmcts.reform.sscs.ccd.domain.Subscription;
-import uk.gov.hmcts.reform.sscs.config.AppealHearingType;
 import uk.gov.hmcts.reform.sscs.config.NotificationConfig;
 import uk.gov.hmcts.reform.sscs.domain.SubscriptionWithType;
 import uk.gov.hmcts.reform.sscs.domain.notify.*;
@@ -76,11 +74,11 @@ public class NotificationService {
 
     private void resendLastNotification(NotificationWrapper notificationWrapper, SubscriptionWithType subscriptionWithType) {
         if (shouldProcessLastNotification(notificationWrapper, subscriptionWithType)) {
-            log.info("resending the last notification");
+            NotificationEventType lastEvent = getNotificationByCcdEvent(notificationWrapper.getNewSscsCaseData().getEvents().get(0)
+                    .getValue().getEventType());
+            log.info("Resending the last notification for event {} and case id {}.", lastEvent.getId(), notificationWrapper.getCaseId());
             scrubMobileAndSmsIfSubscribedBefore(notificationWrapper, subscriptionWithType);
-            notificationWrapper.getSscsCaseDataWrapper().setNotificationEventType(
-                    getNotificationByCcdEvent(notificationWrapper.getNewSscsCaseData().getEvents().get(0)
-                            .getValue().getEventType()));
+            notificationWrapper.getSscsCaseDataWrapper().setNotificationEventType(lastEvent);
             sendNotification(notificationWrapper, subscriptionWithType);
             notificationWrapper.getSscsCaseDataWrapper().setNotificationEventType(SUBSCRIPTION_UPDATED_NOTIFICATION);
         }
@@ -96,13 +94,8 @@ public class NotificationService {
 
     private boolean shouldProcessLastNotification(NotificationWrapper notificationWrapper, SubscriptionWithType subscriptionWithType) {
         return SUBSCRIPTION_UPDATED_NOTIFICATION.equals(notificationWrapper.getSscsCaseDataWrapper().getNotificationEventType())
-                && !isPaperCase(notificationWrapper.getNewSscsCaseData().getAppeal().getHearingType())
                 && hasCaseJustSubscribed(subscriptionWithType.getSubscription(), getSubscription(notificationWrapper.getOldSscsCaseData(), subscriptionWithType.getSubscriptionType()))
                 && thereIsALastEventThatIsNotSubscriptionUpdated(notificationWrapper.getNewSscsCaseData());
-    }
-
-    static boolean isPaperCase(String hearingType) {
-        return StringUtils.equalsIgnoreCase(AppealHearingType.PAPER.name(), hearingType);
     }
 
     static Boolean hasCaseJustSubscribed(Subscription newSubscription, Subscription oldSubscription) {
@@ -117,7 +110,7 @@ public class NotificationService {
                 && newSscsCaseData.getEvents().get(0).getValue().getEventType() != null
                 && !SUBSCRIPTION_UPDATED.equals(newSscsCaseData.getEvents().get(0).getValue().getEventType());
         if (!thereIsALastEventThatIsNotSubscriptionUpdated) {
-            log.info("Not re-sending the last subscription as there is no last event on the case.");
+            log.info("Not re-sending the last subscription as there is no last event for ccdCaseId {}.", newSscsCaseData.getCcdCaseId());
         }
         return thereIsALastEventThatIsNotSubscriptionUpdated;
     }
