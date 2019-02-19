@@ -155,7 +155,7 @@ public class SscsCaseDataWrapperDeserializer extends StdDeserializer<SscsCaseDat
         Address address = deserializeAddressJson(appellantNode);
         Contact contact = deserializeContactJson(appellantNode);
         Identity identity = deserializeIdentityJson(appellantNode);
-        Appointee appointee = deserializeAppointeeDetailsJson(appellantNode);
+        Appointee appointee = deserializeAppointee(appellantNode);
         String isAddressSameAsAppointee =  convertEmptyToNo(getField(appellantNode, "isAddressSameAsAppointee"));
 
         return Appellant.builder()
@@ -163,9 +163,9 @@ public class SscsCaseDataWrapperDeserializer extends StdDeserializer<SscsCaseDat
                 .isAddressSameAsAppointee(isAddressSameAsAppointee).build();
     }
 
-    public Appointee deserializeAppointeeDetailsJson(JsonNode appealNode) {
-        JsonNode appointeeNode = getNode(appealNode, "appointee");
-        if (appointeeNode == null) {
+    private Appointee deserializeAppointee(JsonNode appellantNode) {
+        JsonNode appointeeNode = getNode(appellantNode, "appointee");
+        if ((null == appointeeNode) || (appointeeNode.size() == 0)) {
             return null;
         }
 
@@ -307,7 +307,7 @@ public class SscsCaseDataWrapperDeserializer extends StdDeserializer<SscsCaseDat
             String organisation = getField(repNode, "organisation");
 
             return Representative.builder()
-                .hasRepresentative("Yes")
+                .hasRepresentative(hasRepresentative)
                 .name(name).address(address).contact(contact).organisation(organisation).build();
         }
         return null;
@@ -326,14 +326,16 @@ public class SscsCaseDataWrapperDeserializer extends StdDeserializer<SscsCaseDat
     private Subscription deserializeSubscriptionJson(JsonNode subscriptionsNode, String subscriptionName) {
         JsonNode subscriptionNode = getNode(subscriptionsNode, subscriptionName);
 
-        Subscription subscription = Subscription.builder().build();
+        Subscription subscription = null;
+        if (null != subscriptionNode) {
+            subscription = Subscription.builder().build();
 
-        if (subscriptionNode != null) {
             subscription = deserializeSubscriberJson(subscriptionNode, subscription);
         }
 
         return subscription;
     }
+
 
     public List<Event> deserializeEventDetailsJson(JsonNode caseNode) {
         final JsonNode eventNode = caseNode.get("events");

@@ -76,7 +76,7 @@ public class SyaAppealCreatedAndReceivedPersonalisation extends WithRepresentati
                 .append(NAME)
                 .append(appeal.getAppellant().getName().getFullNameNoTitle() + TWO_NEW_LINES)
                 .append("Date of birth: ")
-                .append(appeal.getAppellant().getIdentity().getDob() + TWO_NEW_LINES)
+                .append(getOptionalField(appeal.getAppellant().getIdentity().getDob(), NOT_PROVIDED) + TWO_NEW_LINES)
                 .append("National Insurance number: ")
                 .append(appeal.getAppellant().getIdentity().getNino() + TWO_NEW_LINES)
                 .append(ADDRESS)

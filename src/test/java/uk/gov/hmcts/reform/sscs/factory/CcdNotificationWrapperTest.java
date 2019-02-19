@@ -48,23 +48,44 @@ public class CcdNotificationWrapperTest {
         );
     }
 
+    private CcdNotificationWrapper buildCcdNotificationWrapperBasedOnEventTypeWithRep(NotificationEventType notificationEventType) {
+        return buildCcdNotificationWrapperBasedOnEventType(notificationEventType, null, Representative.builder().hasRepresentative("Yes").build());
+    }
+
     private CcdNotificationWrapper buildCcdNotificationWrapperBasedOnEventType(NotificationEventType notificationEventType) {
-        Representative rep = Representative.builder()
-            .hasRepresentative("Yes")
-            .name(Name.builder().firstName("Joe").lastName("Bloggs").build())
-            .address(Address.builder().line1("Rep Line 1").town("Rep Town").county("Rep County").postcode("RE9 7SE").build())
-            .build();
+        return buildCcdNotificationWrapperBasedOnEventType(notificationEventType, null, null);
+    }
+
+    private CcdNotificationWrapper buildCcdNotificationWrapperBasedOnEventType(NotificationEventType notificationEventType, Appointee appointee, Representative representative) {
+        Appellant appellant = Appellant.builder().build();
+        Subscription appointeeSubscription = null;
+        if (null != appointee) {
+            appellant.setAppointee(appointee);
+            appointeeSubscription = Subscription.builder().build();
+        }
+
+        Subscription repSubscription = null;
+        if (null != representative) {
+            representative = Representative.builder()
+                .hasRepresentative("Yes")
+                .name(Name.builder().firstName("Joe").lastName("Bloggs").build())
+                .address(Address.builder().line1("Rep Line 1").town("Rep Town").county("Rep County").postcode("RE9 7SE").build())
+                .build();
+            repSubscription = Subscription.builder().build();
+        }
 
         return new CcdNotificationWrapper(
             SscsCaseDataWrapper.builder()
                 .newSscsCaseData(SscsCaseData.builder()
                     .appeal(Appeal.builder()
+                        .appellant(appellant)
                         .hearingType("cor")
-                        .rep(rep)
+                        .rep(representative)
                         .build())
                     .subscriptions(Subscriptions.builder()
                         .appellantSubscription(Subscription.builder().build())
-                        .representativeSubscription(Subscription.builder().build())
+                        .representativeSubscription(repSubscription)
+                        .appointeeSubscription(appointeeSubscription)
                         .build())
                     .build())
                 .notificationEventType(notificationEventType)
@@ -119,12 +140,22 @@ public class CcdNotificationWrapperTest {
     @Parameters({"APPEAL_LAPSED_NOTIFICATION","APPEAL_WITHDRAWN_NOTIFICATION","EVIDENCE_RECEIVED_NOTIFICATION",
             "POSTPONEMENT_NOTIFICATION","HEARING_BOOKED_NOTIFICATION","SYA_APPEAL_CREATED_NOTIFICATION",
             "RESEND_APPEAL_CREATED_NOTIFICATION", "APPEAL_RECEIVED_NOTIFICATION", "ADJOURNED_NOTIFICATION",
-            "APPEAL_DORMANT_NOTIFICATION"})
-    public void givenSubscriptions_shouldGetSubscriptionTypeList(NotificationEventType notificationEventType) {
-        ccdNotificationWrapper = buildCcdNotificationWrapperBasedOnEventType(notificationEventType);
+            "APPEAL_DORMANT_NOTIFICATION", "CASE_UPDATED"})
+    public void givenSubscriptions_shouldGetAppellantAndRepSubscriptionTypeList(NotificationEventType notificationEventType) {
+        ccdNotificationWrapper = buildCcdNotificationWrapperBasedOnEventTypeWithRep(notificationEventType);
         List<SubscriptionWithType> subsWithTypeList = ccdNotificationWrapper.getSubscriptionsBasedOnNotificationType();
         Assert.assertEquals(2,subsWithTypeList.size());
         Assert.assertEquals(SubscriptionType.APPELLANT, subsWithTypeList.get(0).getSubscriptionType());
+        Assert.assertEquals(SubscriptionType.REPRESENTATIVE, subsWithTypeList.get(1).getSubscriptionType());
+    }
+
+    @Test
+    @Parameters({"CASE_UPDATED"})
+    public void givenSubscriptions_shouldGetAppointeeAndRepSubscriptionTypeList(NotificationEventType notificationEventType) {
+        ccdNotificationWrapper = buildCcdNotificationWrapperBasedOnEventType(notificationEventType, Appointee.builder().name(Name.builder().firstName("John").lastName("Doe").build()).build(), Representative.builder().build());
+        List<SubscriptionWithType> subsWithTypeList = ccdNotificationWrapper.getSubscriptionsBasedOnNotificationType();
+        Assert.assertEquals(2,subsWithTypeList.size());
+        Assert.assertEquals(SubscriptionType.APPOINTEE, subsWithTypeList.get(0).getSubscriptionType());
         Assert.assertEquals(SubscriptionType.REPRESENTATIVE, subsWithTypeList.get(1).getSubscriptionType());
     }
 
@@ -162,6 +193,7 @@ public class CcdNotificationWrapperTest {
                 || type.equals(APPEAL_WITHDRAWN_NOTIFICATION)
                 || type.equals(EVIDENCE_RECEIVED_NOTIFICATION)
                 || type.equals(SYA_APPEAL_CREATED_NOTIFICATION)
+                || type.equals(CASE_UPDATED)
                 || type.equals(RESEND_APPEAL_CREATED_NOTIFICATION)
                 || type.equals(APPEAL_DORMANT_NOTIFICATION)
                 || type.equals(ADJOURNED_NOTIFICATION)
