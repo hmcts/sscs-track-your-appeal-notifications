@@ -22,9 +22,6 @@ public class NotificationsFunctionalTest extends AbstractFunctionalTest {
     private static final String APPEAL_ID = "appeal_id";
     private static final String TYA = "v8eg15XeZk";
 
-    @Value("${evidence.submission.info.link}")
-    private String evidenceLink;
-
     @Value("${track.appeal.link}")
     private String tyaLink;
 
@@ -79,11 +76,17 @@ public class NotificationsFunctionalTest extends AbstractFunctionalTest {
     @Value("${notification.paper.responseReceived.smsId}")
     private String paperAppointeeResponseReceivedSmsId;
 
-    @Value("${notification.evidenceReminder.emailId}")
+    @Value("${notification.oral.evidenceReminder.emailId}")
     private String oralAppointeeEvidenceReminderEmailId;
 
-    @Value("${notification.evidenceReminder.smsId}")
+    @Value("${notification.oral.evidenceReminder.smsId}")
     private String oralAppointeeEvidenceReminderSmsId;
+
+    @Value("${notification.paper.evidenceReminder.emailId}")
+    private String paperAppointeeEvidenceReminderEmailId;
+
+    @Value("${notification.paper.evidenceReminder.smsId}")
+    private String paperAppointeeEvidenceReminderSmsId;
 
     @Value("${notification.appealCreated.appellant.smsId}")
     private String appealCreatedAppellantSmsId;
@@ -245,7 +248,26 @@ public class NotificationsFunctionalTest extends AbstractFunctionalTest {
                 oralAppointeeEvidenceReminderEmailId,
                 DEAR_APPOINTEE_USER,
                 AS_APPOINTEE_FOR,
-                evidenceLink.replace(APPEAL_ID, TYA)
+                "/evidence/" + TYA
+        );
+    }
+
+    @Test
+    public void shouldSendAppointeeEvidenceReminderForPaperCaseNotification() throws NotificationClientException, IOException {
+        simulateCcdCallback(EVIDENCE_REMINDER_NOTIFICATION,
+                "appointee/paper-" + EVIDENCE_REMINDER_NOTIFICATION.getId() + "Callback.json");
+
+        List<Notification> notifications = tryFetchNotificationsForTestCase(
+                paperAppointeeEvidenceReminderEmailId,
+                paperAppointeeEvidenceReminderSmsId
+        );
+
+        assertNotificationBodyContains(
+                notifications,
+                paperAppointeeEvidenceReminderEmailId,
+                DEAR_APPOINTEE_USER,
+                AS_APPOINTEE_FOR,
+                "/evidence/" + TYA
         );
     }
 
