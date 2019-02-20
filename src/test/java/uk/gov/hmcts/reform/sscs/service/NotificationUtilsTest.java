@@ -163,8 +163,12 @@ public class NotificationUtilsTest {
         NotificationEventType eventType = HEARING_BOOKED_NOTIFICATION;
         NotificationWrapper wrapper = buildNotificationWrapper(eventType);
 
+        Subscription subscription = Subscription.builder().subscribeSms("Yes").subscribeEmail("Yes").build();
+
         when(notificationValidService.isNotificationStillValidToSend(wrapper.getNewSscsCaseData().getHearings(), eventType)).thenReturn(true);
         when(notificationValidService.isHearingTypeValidToSendNotification(wrapper.getNewSscsCaseData(), eventType)).thenReturn(true);
+
+        assertTrue(isOkToSendNotification(wrapper, eventType, subscription, notificationValidService));
     }
 
     @Test
