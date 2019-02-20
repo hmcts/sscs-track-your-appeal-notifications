@@ -80,12 +80,12 @@ public class NotificationSender {
         LOG.info("Sms Notification send for case id : {}, Gov notify id: {} ", ccdCaseId, sendSmsResponse.getNotificationId());
     }
 
-    public void sendLetter(String templateId, Address address, Map<String, String> personalisation, String reference,
+    public void sendLetter(String templateId, Address address, Map<String, String> personalisation,
                            String ccdCaseId) throws NotificationClientException {
 
         NotificationClient client = getLetterNotificationClient(address.getPostcode());
 
-        SendLetterResponse sendLetterResponse = client.sendLetter(templateId, personalisation, reference);
+        SendLetterResponse sendLetterResponse = client.sendLetter(templateId, personalisation, ccdCaseId);
 
         LOG.info("Letter Notification send for case id : {}, Gov notify id: {} ", ccdCaseId,
             sendLetterResponse.getNotificationId());
