@@ -113,3 +113,8 @@ variable "bundled_letters_on" {
   type = "string"
   default = false
 }
+
+variable "letters_on" {
+  type = "string"
+  default = false
+}
