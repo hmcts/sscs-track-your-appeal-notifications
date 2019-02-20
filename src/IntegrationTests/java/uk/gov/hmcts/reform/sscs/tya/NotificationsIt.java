@@ -1463,6 +1463,19 @@ public class NotificationsIt {
                 "Appointee Appointee"
             },
             new Object[]{
+                EVIDENCE_REMINDER_NOTIFICATION,
+                "oral",
+                Arrays.asList("b9e47ec4-3b58-4b8d-9304-f77ac27fb7f2"),
+                Arrays.asList("e3f71440-d1ac-43c8-a8cc-a088c4f3c959"),
+                Collections.emptyList(),
+                "yes",
+                "yes",
+                "1",
+                "1",
+                "0",
+                "Appointee Appointee"
+            },
+            new Object[]{
                 SUBSCRIPTION_UPDATED_NOTIFICATION,
                 "oral",
                 Arrays.asList("b8b2904f-629d-42cf-acea-1b74bde5b2ff", "03b957bf-e21d-4147-90c1-b6fefa8cf70d"),

@@ -16,7 +16,15 @@ import uk.gov.service.notify.NotificationClientException;
 
 public class NotificationsFunctionalTest extends AbstractFunctionalTest {
 
+    private static final String AS_APPOINTEE_FOR = "You are receiving this update as the appointee for";
     private static final String RESPONSE_RECEIVED_PAPER_PATH = "paper/responseReceived/";
+    private static final String DEAR_APPOINTEE_USER = "Dear Appointee User";
+    private static final String APPEAL_ID = "appeal_id";
+    private static final String TYA = "v8eg15XeZk";
+
+    @Value("${evidence.submission.info.link}")
+    private String evidenceLink;
+
     @Value("${track.appeal.link}")
     private String tyaLink;
 
@@ -70,6 +78,12 @@ public class NotificationsFunctionalTest extends AbstractFunctionalTest {
 
     @Value("${notification.paper.responseReceived.smsId}")
     private String paperAppointeeResponseReceivedSmsId;
+
+    @Value("${notification.evidenceReminder.emailId}")
+    private String oralAppointeeEvidenceReminderEmailId;
+
+    @Value("${notification.evidenceReminder.smsId}")
+    private String oralAppointeeEvidenceReminderSmsId;
 
     @Value("${notification.appealCreated.appellant.smsId}")
     private String appealCreatedAppellantSmsId;
@@ -198,7 +212,7 @@ public class NotificationsFunctionalTest extends AbstractFunctionalTest {
                 paperResponseReceivedEmailId, paperResponseReceivedSmsId);
 
         String expectedHearingContactDate = "9 April 2016";
-        String expectedTyaLink = tyaLink.replace("appeal_id", "v8eg15XeZk");
+        String expectedTyaLink = tyaLink.replace(APPEAL_ID, TYA);
         assertNotificationBodyContains(notifications, paperResponseReceivedEmailId, caseData.getCaseReference(),
                 expectedPanelComposition, expectedHearingContactDate, expectedTyaLink);
         assertNotificationBodyContains(notifications, paperResponseReceivedSmsId, expectedHearingContactDate,
@@ -214,6 +228,25 @@ public class NotificationsFunctionalTest extends AbstractFunctionalTest {
                 paperResponseReceivedEmailId, paperResponseReceivedSmsId);
 
         assertTrue(notifications.isEmpty());
+    }
+
+    @Test
+    public void shouldSendAppointeeEvidenceReminderForOralCaseNotification() throws NotificationClientException, IOException {
+        simulateCcdCallback(EVIDENCE_REMINDER_NOTIFICATION,
+                "appointee/oral-" + EVIDENCE_REMINDER_NOTIFICATION.getId() + "Callback.json");
+
+        List<Notification> notifications = tryFetchNotificationsForTestCase(
+                oralAppointeeEvidenceReminderEmailId,
+                oralAppointeeEvidenceReminderSmsId
+        );
+
+        assertNotificationBodyContains(
+                notifications,
+                oralAppointeeEvidenceReminderEmailId,
+                DEAR_APPOINTEE_USER,
+                AS_APPOINTEE_FOR,
+                evidenceLink.replace(APPEAL_ID, TYA)
+        );
     }
 
     @Test

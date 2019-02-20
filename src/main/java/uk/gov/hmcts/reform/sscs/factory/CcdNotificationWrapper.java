@@ -105,6 +105,9 @@ public class CcdNotificationWrapper implements NotificationWrapper {
                     || POSTPONEMENT_NOTIFICATION.equals(getNotificationType())
                     || SUBSCRIPTION_UPDATED_NOTIFICATION.equals(getNotificationType())
                 )
+            || hasAppointee(responseWrapper) && hasAppointeeSubscription(responseWrapper)
+                && (EVIDENCE_REMINDER_NOTIFICATION.equals(getNotificationType()) && ORAL.equals(getHearingType())
+                )
         ) {
             subscriptionWithTypeList.add(new SubscriptionWithType(getAppointeeSubscription(), APPOINTEE));
         } else {
