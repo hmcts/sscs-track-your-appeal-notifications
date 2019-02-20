@@ -158,7 +158,7 @@ public class NotificationSenderTest {
         when(sendLetterResponse.getNotificationId()).thenReturn(UUID.randomUUID());
 
         Address address = Address.builder().line1("1 Appellant Ave").town("Sometown").county("Somecounty").postcode(postcode).build();
-        notificationSender.sendLetter(templateId, address, personalisation, null, CCD_CASE_ID);
+        notificationSender.sendLetter(templateId, address, personalisation, CCD_CASE_ID);
 
         verifyZeroInteractions(testNotificationClient);
         verify(notificationClient).sendLetter(any(), any(), any());
@@ -173,7 +173,7 @@ public class NotificationSenderTest {
         when(sendLetterResponse.getNotificationId()).thenReturn(UUID.randomUUID());
 
         Address address = Address.builder().line1("1 Appellant Ave").town("Sometown").county("Somecounty").postcode(postcode).build();
-        notificationSender.sendLetter(templateId, address, personalisation, null, CCD_CASE_ID);
+        notificationSender.sendLetter(templateId, address, personalisation, CCD_CASE_ID);
 
         verifyZeroInteractions(notificationClient);
         verify(testNotificationClient).sendLetter(any(), any(), any());

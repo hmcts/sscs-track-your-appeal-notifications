@@ -7,18 +7,7 @@ import static uk.gov.hmcts.reform.sscs.config.AppConstants.*;
 import static uk.gov.hmcts.reform.sscs.config.SubscriptionType.APPELLANT;
 import static uk.gov.hmcts.reform.sscs.config.SubscriptionType.APPOINTEE;
 import static uk.gov.hmcts.reform.sscs.config.SubscriptionType.REPRESENTATIVE;
-import static uk.gov.hmcts.reform.sscs.domain.notify.NotificationEventType.ADJOURNED_NOTIFICATION;
-import static uk.gov.hmcts.reform.sscs.domain.notify.NotificationEventType.APPEAL_DORMANT_NOTIFICATION;
-import static uk.gov.hmcts.reform.sscs.domain.notify.NotificationEventType.APPEAL_LAPSED_NOTIFICATION;
-import static uk.gov.hmcts.reform.sscs.domain.notify.NotificationEventType.APPEAL_RECEIVED_NOTIFICATION;
-import static uk.gov.hmcts.reform.sscs.domain.notify.NotificationEventType.APPEAL_WITHDRAWN_NOTIFICATION;
-import static uk.gov.hmcts.reform.sscs.domain.notify.NotificationEventType.DWP_RESPONSE_LATE_REMINDER_NOTIFICATION;
-import static uk.gov.hmcts.reform.sscs.domain.notify.NotificationEventType.EVIDENCE_RECEIVED_NOTIFICATION;
-import static uk.gov.hmcts.reform.sscs.domain.notify.NotificationEventType.HEARING_BOOKED_NOTIFICATION;
-import static uk.gov.hmcts.reform.sscs.domain.notify.NotificationEventType.POSTPONEMENT_NOTIFICATION;
-import static uk.gov.hmcts.reform.sscs.domain.notify.NotificationEventType.RESEND_APPEAL_CREATED_NOTIFICATION;
-import static uk.gov.hmcts.reform.sscs.domain.notify.NotificationEventType.SUBSCRIPTION_CREATED_NOTIFICATION;
-import static uk.gov.hmcts.reform.sscs.domain.notify.NotificationEventType.SYA_APPEAL_CREATED_NOTIFICATION;
+import static uk.gov.hmcts.reform.sscs.domain.notify.NotificationEventType.*;
 import static uk.gov.hmcts.reform.sscs.service.NotificationUtils.hasAppointee;
 import static uk.gov.hmcts.reform.sscs.service.NotificationUtils.hasRepresentative;
 
@@ -30,9 +19,7 @@ import java.time.LocalDateTime;
 import java.time.ZonedDateTime;
 import java.time.format.DateTimeFormatter;
 import java.time.temporal.ChronoUnit;
-import java.util.HashMap;
-import java.util.Map;
-import java.util.Optional;
+import java.util.*;
 import java.util.stream.Collectors;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.StringUtils;
@@ -59,7 +46,7 @@ import uk.gov.hmcts.reform.sscs.service.RegionalProcessingCenterService;
 @Component
 @Slf4j
 public class Personalisation<E extends NotificationWrapper> {
-
+    private static final List<NotificationEventType> FALLBACK_LETTER_SUBSCRIPTION_TYPES = Arrays.asList(CASE_UPDATED, SYA_APPEAL_CREATED_NOTIFICATION);
     private static final String CRLF = String.format("%c%c", (char) 0x0D, (char) 0x0A);
 
     private boolean sendSmsSubscriptionConfirmation;
@@ -226,9 +213,10 @@ public class Personalisation<E extends NotificationWrapper> {
         if (ccdResponse.getEvents() != null) {
 
             for (Event event : ccdResponse.getEvents()) {
-                if (event.getValue() != null
-                        && (notificationEventType.equals(APPEAL_RECEIVED_NOTIFICATION) && event.getValue().getEventType().equals(APPEAL_RECEIVED)
-                        || notificationEventType.equals(DWP_RESPONSE_LATE_REMINDER_NOTIFICATION))) {
+                if ((event.getValue() != null)
+                    && ((notificationEventType.equals(APPEAL_RECEIVED_NOTIFICATION) && event.getValue().getEventType().equals(APPEAL_RECEIVED))
+                    || (notificationEventType.equals(DWP_RESPONSE_LATE_REMINDER_NOTIFICATION)))
+                    || notificationEventType.equals(CASE_UPDATED)) {
                     return setAppealReceivedDetails(personalisation, event.getValue());
                 }
             }
@@ -272,6 +260,7 @@ public class Personalisation<E extends NotificationWrapper> {
         personalisation.put(TOWN_LITERAL, rpc.getAddress4());
         personalisation.put(COUNTY_LITERAL, rpc.getCity());
         personalisation.put(POSTCODE_LITERAL, rpc.getPostcode());
+        personalisation.put(REGIONAL_OFFICE_POSTCODE_LITERAL, rpc.getPostcode());
 
         return personalisation;
     }
@@ -306,7 +295,7 @@ public class Personalisation<E extends NotificationWrapper> {
         String emailTemplateName = getEmailTemplateName(subscriptionType, notificationWrapper.getNotificationType());
         String smsTemplateName = isSendSmsSubscriptionConfirmation() ? SUBSCRIPTION_CREATED_NOTIFICATION.getId() :
                 emailTemplateName;
-        String letterTemplateName = getLetterTemplateName(notificationWrapper.getNotificationType());
+        String letterTemplateName = getLetterTemplateName(subscriptionType, notificationWrapper.getNotificationType());
         return config.getTemplate(emailTemplateName, smsTemplateName, letterTemplateName, benefit, notificationWrapper.getHearingType());
     }
 
@@ -314,22 +303,27 @@ public class Personalisation<E extends NotificationWrapper> {
                                         NotificationEventType notificationEventType) {
         String emailTemplateName = notificationEventType.getId();
         if (APPEAL_LAPSED_NOTIFICATION.equals(notificationEventType)
-                || APPEAL_WITHDRAWN_NOTIFICATION.equals(notificationEventType)
-                || EVIDENCE_RECEIVED_NOTIFICATION.equals(notificationEventType)
-                || SYA_APPEAL_CREATED_NOTIFICATION.equals(notificationEventType)
-                || RESEND_APPEAL_CREATED_NOTIFICATION.equals(notificationEventType)
-                || APPEAL_DORMANT_NOTIFICATION.equals(notificationEventType)
-                || ADJOURNED_NOTIFICATION.equals(notificationEventType)
-                || APPEAL_RECEIVED_NOTIFICATION.equals(notificationEventType)
-                || POSTPONEMENT_NOTIFICATION.equals(notificationEventType)
-                || HEARING_BOOKED_NOTIFICATION.equals(notificationEventType)) {
+            || APPEAL_WITHDRAWN_NOTIFICATION.equals(notificationEventType)
+            || EVIDENCE_RECEIVED_NOTIFICATION.equals(notificationEventType)
+            || SYA_APPEAL_CREATED_NOTIFICATION.equals(notificationEventType)
+            || RESEND_APPEAL_CREATED_NOTIFICATION.equals(notificationEventType)
+            || APPEAL_DORMANT_NOTIFICATION.equals(notificationEventType)
+            || ADJOURNED_NOTIFICATION.equals(notificationEventType)
+            || APPEAL_RECEIVED_NOTIFICATION.equals(notificationEventType)
+            || POSTPONEMENT_NOTIFICATION.equals(notificationEventType)
+            || HEARING_BOOKED_NOTIFICATION.equals(notificationEventType)
+            || CASE_UPDATED.equals(notificationEventType)) {
             emailTemplateName = emailTemplateName + "." + StringUtils.lowerCase(subscriptionType.name());
         }
         return emailTemplateName;
     }
 
-    private String getLetterTemplateName(NotificationEventType notificationEventType) {
-        return notificationEventType.getId();
+    private String getLetterTemplateName(SubscriptionType subscriptionType, NotificationEventType notificationEventType) {
+        String letterTemplateName = notificationEventType.getId();
+        if (FALLBACK_LETTER_SUBSCRIPTION_TYPES.contains(notificationEventType)) {
+            letterTemplateName = letterTemplateName + "." + subscriptionType.name().toLowerCase();
+        }
+        return letterTemplateName;
     }
 
     private Boolean isSendSmsSubscriptionConfirmation() {

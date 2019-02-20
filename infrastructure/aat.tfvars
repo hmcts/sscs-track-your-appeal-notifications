@@ -13,3 +13,5 @@ hours_start_time = "0"
 hours_end_time = "23"
 
 bundled_letters_on = "true"
+
+letters_on = "true"
