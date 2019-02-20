@@ -22,19 +22,7 @@ import static uk.gov.hmcts.reform.sscs.config.AppConstants.*;
 import static uk.gov.hmcts.reform.sscs.config.SubscriptionType.APPELLANT;
 import static uk.gov.hmcts.reform.sscs.config.SubscriptionType.APPOINTEE;
 import static uk.gov.hmcts.reform.sscs.config.SubscriptionType.REPRESENTATIVE;
-import static uk.gov.hmcts.reform.sscs.domain.notify.NotificationEventType.ADJOURNED_NOTIFICATION;
-import static uk.gov.hmcts.reform.sscs.domain.notify.NotificationEventType.APPEAL_DORMANT_NOTIFICATION;
-import static uk.gov.hmcts.reform.sscs.domain.notify.NotificationEventType.APPEAL_LAPSED_NOTIFICATION;
-import static uk.gov.hmcts.reform.sscs.domain.notify.NotificationEventType.APPEAL_RECEIVED_NOTIFICATION;
-import static uk.gov.hmcts.reform.sscs.domain.notify.NotificationEventType.APPEAL_WITHDRAWN_NOTIFICATION;
-import static uk.gov.hmcts.reform.sscs.domain.notify.NotificationEventType.DWP_RESPONSE_RECEIVED_NOTIFICATION;
-import static uk.gov.hmcts.reform.sscs.domain.notify.NotificationEventType.EVIDENCE_RECEIVED_NOTIFICATION;
-import static uk.gov.hmcts.reform.sscs.domain.notify.NotificationEventType.HEARING_BOOKED_NOTIFICATION;
-import static uk.gov.hmcts.reform.sscs.domain.notify.NotificationEventType.POSTPONEMENT_NOTIFICATION;
-import static uk.gov.hmcts.reform.sscs.domain.notify.NotificationEventType.QUESTION_ROUND_ISSUED_NOTIFICATION;
-import static uk.gov.hmcts.reform.sscs.domain.notify.NotificationEventType.RESEND_APPEAL_CREATED_NOTIFICATION;
-import static uk.gov.hmcts.reform.sscs.domain.notify.NotificationEventType.SUBSCRIPTION_CREATED_NOTIFICATION;
-import static uk.gov.hmcts.reform.sscs.domain.notify.NotificationEventType.SYA_APPEAL_CREATED_NOTIFICATION;
+import static uk.gov.hmcts.reform.sscs.domain.notify.NotificationEventType.*;
 
 import java.time.Instant;
 import java.time.LocalDate;
@@ -218,6 +206,12 @@ public class PersonalisationTest {
                 new Object[]{DWP_RESPONSE_RECEIVED_NOTIFICATION, null, ONLINE},
                 new Object[]{DWP_RESPONSE_RECEIVED_NOTIFICATION, null, PAPER},
                 new Object[]{APPEAL_DORMANT_NOTIFICATION, APPELLANT, PAPER},
+                new Object[]{CASE_UPDATED, APPELLANT, PAPER},
+                new Object[]{CASE_UPDATED, APPELLANT, REGULAR},
+                new Object[]{CASE_UPDATED, APPELLANT, ONLINE},
+                new Object[]{CASE_UPDATED, REPRESENTATIVE, PAPER},
+                new Object[]{CASE_UPDATED, REPRESENTATIVE, REGULAR},
+                new Object[]{CASE_UPDATED, REPRESENTATIVE, ONLINE},
                 new Object[]{EVIDENCE_RECEIVED_NOTIFICATION, APPELLANT, PAPER},
                 new Object[]{EVIDENCE_RECEIVED_NOTIFICATION, APPELLANT, REGULAR},
                 new Object[]{EVIDENCE_RECEIVED_NOTIFICATION, APPELLANT, ONLINE},
