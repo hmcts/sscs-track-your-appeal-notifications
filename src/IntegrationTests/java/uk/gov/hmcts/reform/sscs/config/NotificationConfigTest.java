@@ -55,6 +55,8 @@ public class NotificationConfigTest {
             new Object[]{"a64bce9a-9162-47ca-b3e7-cf5f85ca7bdc", "f5b61f94-0b2b-4e8e-9c25-56e9830df7d4", null, PAPER, getTemplateName(DWP_RESPONSE_RECEIVED_NOTIFICATION)},
             new Object[]{"01caec0c-191b-4a32-882a-6fded2546ce6", "317a121e-d08c-4890-b3b3-4652f741771f", null, ORAL, getTemplateName(DWP_RESPONSE_RECEIVED_NOTIFICATION)},
             new Object[]{"90f0ed29-a616-4ce0-b4ef-108391f5d90e", "e2e166c4-3600-443d-8feb-39f2c28e8732", null, ONLINE, getTemplateName(DWP_RESPONSE_RECEIVED_NOTIFICATION)},
+            new Object[]{"a3b22e07-e90b-4b52-a293-30823802c209", "aaa1aad4-7abc-4a7a-b8fb-8b0567c09365", null, PAPER, getTemplateName(EVIDENCE_REMINDER_NOTIFICATION)},
+            new Object[]{"b9e47ec4-3b58-4b8d-9304-f77ac27fb7f2", "e3f71440-d1ac-43c8-a8cc-a088c4f3c959", null, ORAL, getTemplateName(EVIDENCE_REMINDER_NOTIFICATION)},
             new Object[]{"652753bf-59b4-46eb-9c24-bd762338a098", "0e44927e-168b-4510-ac57-6932fda7aec1", "77ea8a2f-06df-4279-9c1f-0f23cb2d9bbf", PAPER, getTemplateName(SYA_APPEAL_CREATED_NOTIFICATION, REPRESENTATIVE)},
             new Object[]{"652753bf-59b4-46eb-9c24-bd762338a098", "0e44927e-168b-4510-ac57-6932fda7aec1", "77ea8a2f-06df-4279-9c1f-0f23cb2d9bbf", ORAL, getTemplateName(SYA_APPEAL_CREATED_NOTIFICATION, REPRESENTATIVE)},
             new Object[]{"01293b93-b23e-40a3-ad78-2c6cd01cd21c", "f41222ef-c05c-4682-9634-6b034a166368", "91143b85-dd9d-430c-ba23-e42ec90f44f8", PAPER, getTemplateName(SYA_APPEAL_CREATED_NOTIFICATION, APPELLANT)},
