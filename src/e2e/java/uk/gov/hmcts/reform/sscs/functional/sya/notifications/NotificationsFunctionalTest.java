@@ -1,10 +1,12 @@
 package uk.gov.hmcts.reform.sscs.functional.sya.notifications;
 
+import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
 import static uk.gov.hmcts.reform.sscs.domain.notify.NotificationEventType.*;
 
 import java.io.IOException;
 import java.util.List;
+import java.util.stream.Collectors;
 import junitparams.Parameters;
 import org.junit.Test;
 import org.springframework.beans.factory.annotation.Value;
@@ -18,10 +20,10 @@ public class NotificationsFunctionalTest extends AbstractFunctionalTest {
     @Value("${track.appeal.link}")
     private String tyaLink;
 
-    @Value("${notification.evidenceReceived.emailId}")
+    @Value("${notification.evidenceReceived.appellant.emailId}")
     private String evidenceReceivedEmailTemplateId;
 
-    @Value("${notification.evidenceReceived.smsId}")
+    @Value("${notification.evidenceReceived.appellant.smsId}")
     private String evidenceReceivedSmsTemplateId;
 
     @Value("${notification.hearingPostponed.appellant.emailId}")
@@ -42,27 +44,74 @@ public class NotificationsFunctionalTest extends AbstractFunctionalTest {
     @Value("${notification.online.responseReceived.emailId}")
     private String onlineResponseReceivedEmailId;
 
-    @Value("${notification.online.responseReceived.smsId}")
-    private String onlineResponseReceivedSmsId;
-
     @Value("${notification.paper.responseReceived.emailId}")
     private String paperResponseReceivedEmailId;
 
     @Value("${notification.paper.responseReceived.smsId}")
     private String paperResponseReceivedSmsId;
 
-    @Value("${notification.paper.subscriptionUpdated.emailId}")
-    private String paperSubscriptionUpdateEmailId;
+    @Value("${notification.subscriptionUpdated.emailId}")
+    private String subscriptionUpdateEmailId;
 
-    @Value("${notification.paper.subscriptionUpdated.smsId}")
-    private String paperSubscriptionUpdateSmsId;
+    @Value("${notification.subscriptionUpdated.smsId}")
+    private String subscriptionUpdateSmsId;
 
-    @Value("${notification.paper.subscriptionOld.emailId}")
-    private String paperSubscriptionUpdateOldEmailId;
+    @Value("${notification.subscriptionOld.emailId}")
+    private String subscriptionUpdateOldEmailId;
 
-    @Value("${notification.paper.subscriptionOld.smsId}")
-    private String paperSubscriptionUpdateOldSmsId;
+    @Value("${notification.subscriptionOld.smsId}")
+    private String subscriptionUpdateOldSmsId;
 
+    @Value("${notification.paper.responseReceived.emailId}")
+    private String paperAppointeeResponseReceivedEmailId;
+
+    @Value("${notification.paper.responseReceived.smsId}")
+    private String paperAppointeeResponseReceivedSmsId;
+
+    @Value("${notification.appealCreated.appellant.smsId}")
+    private String appealCreatedAppellantSmsId;
+
+    @Value("${notification.appealCreated.appellant.emailId}")
+    private String appealCreatedAppellantEmailId;
+
+    @Value("${notification.appealCreated.appointee.smsId}")
+    private String appealCreatedAppointeeSmsId;
+
+    @Value("${notification.appealCreated.appointee.emailId}")
+    private String appealCreatedAppointeeEmailId;
+
+    @Value("${notification.hearingAdjourned.appointee.emailId}")
+    private String hearingAdjournedAppointeeEmailId;
+
+    @Value("${notification.hearingAdjourned.appointee.smsId}")
+    private String hearingAdjournedAppointeeSmsId;
+
+    @Value("${notification.appealLapsed.appointee.emailId}")
+    private String appealLapsedAppointeeEmailTemplateId;
+
+    @Value("${notification.appealLapsed.appointee.smsId}")
+    private String appealLapsedAppointeeSmsTemplateId;
+
+    @Value("${notification.appealWithdrawn.appointee.emailId}")
+    private String appointeeAppealWithdrawnEmailId;
+
+    @Value("${notification.appealWithdrawn.appointee.smsId}")
+    private String appointeeAppealWithdrawnSmsId;
+
+    @Value("${notification.hearingBooked.appointee.emailId}")
+    private String appointeeHearingBookedEmailId;
+
+    @Value("${notification.hearingBooked.appointee.smsId}")
+    private String appointeeHearingBookedSmsId;
+
+    @Value("${notification.evidenceReceived.appellant.emailId}")
+    private String appointeeEvidenceReceivedEmailId;
+
+    @Value("${notification.evidenceReceived.appellant.smsId}")
+    private String appointeeEvidenceReceivedSmsId;
+
+    @Value("${notification.hearingPostponed.appointee.emailId}")
+    private String appointeeHearingPostponedEmailId;
 
     public NotificationsFunctionalTest() {
         super(30);
@@ -112,9 +161,25 @@ public class NotificationsFunctionalTest extends AbstractFunctionalTest {
     @Test
     public void shouldSendOnlineDwpResponseReceivedNotification() throws NotificationClientException, IOException {
         simulateCcdCallback(DWP_RESPONSE_RECEIVED_NOTIFICATION, "online-" + DWP_RESPONSE_RECEIVED_NOTIFICATION.getId() + "Callback.json");
-        List<Notification> notifications = tryFetchNotificationsForTestCase(onlineResponseReceivedEmailId, onlineResponseReceivedSmsId);
+        List<Notification> notifications = tryFetchNotificationsForTestCase(onlineResponseReceivedEmailId);
 
         assertNotificationBodyContains(notifications, onlineResponseReceivedEmailId, caseData.getCaseReference());
+    }
+
+    @Test
+    public void shouldSendAppealCreatedAppellantNotification() throws NotificationClientException, IOException {
+        simulateCcdCallback(SYA_APPEAL_CREATED_NOTIFICATION, SYA_APPEAL_CREATED_NOTIFICATION.getId() + "Callback.json");
+        List<Notification> notifications = tryFetchNotificationsForTestCase(appealCreatedAppellantEmailId, appealCreatedAppellantSmsId);
+
+        assertNotificationBodyContains(notifications, appealCreatedAppellantEmailId, "appeal has been received");
+    }
+
+    @Test
+    public void shouldSendAppealCreatedAppointeeNotification() throws NotificationClientException, IOException {
+        simulateCcdCallback(SYA_APPEAL_CREATED_NOTIFICATION, SYA_APPEAL_CREATED_NOTIFICATION.getId() + "AppointeeCallback.json");
+        List<Notification> notifications = tryFetchNotificationsForTestCase(appealCreatedAppointeeEmailId, appealCreatedAppointeeSmsId);
+
+        assertNotificationBodyContains(notifications, appealCreatedAppointeeEmailId, "appointee");
     }
 
     @Test
@@ -149,17 +214,122 @@ public class NotificationsFunctionalTest extends AbstractFunctionalTest {
     }
 
     @Test
-    public void shouldSendPaperSubscriptionUpdateNotification() throws NotificationClientException, IOException {
+    public void shouldSendAppellantSubscriptionUpdateNotification() throws NotificationClientException, IOException {
         simulateCcdCallback(SUBSCRIPTION_UPDATED_NOTIFICATION,
-                "paper-" + SUBSCRIPTION_UPDATED_NOTIFICATION.getId() + "Callback.json");
+                "appellant-" + SUBSCRIPTION_UPDATED_NOTIFICATION.getId() + "Callback.json");
 
-        tryFetchNotificationsForTestCase(
-                paperSubscriptionUpdateEmailId,
-                paperSubscriptionUpdateSmsId,
-                paperSubscriptionUpdateOldEmailId,
-                paperSubscriptionUpdateOldSmsId
+        List<Notification> notifications = tryFetchNotificationsForTestCase(
+                subscriptionUpdateEmailId,
+                subscriptionUpdateSmsId,
+                subscriptionUpdateOldEmailId,
+                subscriptionUpdateOldSmsId
         );
+
+        Notification updateEmailNotification = notifications.stream().filter(f -> f.getTemplateId().toString().equals(subscriptionUpdatedEmailTemplateId)).collect(Collectors.toList()).get(0);
+        assertTrue(updateEmailNotification.getBody().contains("Dear Appellant User\r\n\r\nEmails about your ESA"));
+        assertFalse(updateEmailNotification.getBody().contains("You are receiving this update as the appointee for"));
     }
 
+    @Test
+    public void shouldSendAppointeeSubscriptionUpdateNotification() throws NotificationClientException, IOException {
+        simulateCcdCallback(SUBSCRIPTION_UPDATED_NOTIFICATION,
+                "appointee-" + SUBSCRIPTION_UPDATED_NOTIFICATION.getId() + "Callback.json");
+
+        List<Notification> notifications = tryFetchNotificationsForTestCase(
+                subscriptionUpdateEmailId,
+                subscriptionUpdateSmsId,
+                subscriptionUpdateOldEmailId,
+                subscriptionUpdateOldSmsId
+        );
+        Notification updateEmailNotification = notifications.stream().filter(f -> f.getTemplateId().toString().equals(subscriptionUpdatedEmailTemplateId)).collect(Collectors.toList()).get(0);
+        assertTrue(updateEmailNotification.getBody().contains("Dear Appointee User\r\n\r\nYou are receiving this update as the appointee for Appellant User.\r\n\r\nEmails about your ESA"));
+    }
+
+    @Test
+    public void shouldSendAppointeeHearingAdjournedNotification() throws NotificationClientException, IOException {
+        simulateCcdCallback(ADJOURNED_NOTIFICATION,
+                "appointee/" + ADJOURNED_NOTIFICATION.getId() + "Callback.json");
+
+        List<Notification> notifications = tryFetchNotificationsForTestCase(
+                hearingAdjournedAppointeeEmailId,
+                hearingAdjournedAppointeeSmsId
+        );
+        Notification emailNotification = notifications.stream().filter(f -> f.getTemplateId().toString().equals(hearingAdjournedAppointeeEmailId)).collect(Collectors.toList()).get(0);
+        assertTrue(emailNotification.getBody().contains("Dear Appointee User\r\n\r\nYou are receiving this update as the appointee for Appellant User.\r\n\r\n"));
+    }
+
+    @Test
+    public void shouldSendAppointeeAppealLapsedNotification() throws NotificationClientException, IOException {
+        simulateCcdCallback(APPEAL_LAPSED_NOTIFICATION,
+                "appointee/" + APPEAL_LAPSED_NOTIFICATION.getId() + "Callback.json");
+        List<Notification> notifications = tryFetchNotificationsForTestCase(
+                appealLapsedAppointeeEmailTemplateId,
+                appealLapsedAppointeeSmsTemplateId
+        );
+        Notification emailNotification = notifications.stream().filter(f -> f.getTemplateId().toString().equals(appealLapsedAppointeeEmailTemplateId)).collect(Collectors.toList()).get(0);
+
+        assertTrue(emailNotification.getBody().contains("Dear Appointee User"));
+        assertTrue(emailNotification.getBody().contains("You are receiving this update as the appointee for"));
+    }
+
+    @Test
+    public void shouldSendAppointeeResponseReceivedForPaperCaseNotification() throws NotificationClientException, IOException {
+        simulateCcdCallback(DWP_RESPONSE_RECEIVED_NOTIFICATION,
+                "appointee/" + DWP_RESPONSE_RECEIVED_NOTIFICATION.getId() + "Callback.json");
+
+        List<Notification> notifications = tryFetchNotificationsForTestCase(
+                paperAppointeeResponseReceivedEmailId,
+                paperAppointeeResponseReceivedSmsId
+        );
+        Notification emailNotification = notifications.stream().filter(f -> f.getTemplateId().toString().equals(paperAppointeeResponseReceivedEmailId)).collect(Collectors.toList()).get(0);
+        assertTrue(emailNotification.getBody().contains("Dear Appointee User"));
+        assertTrue(emailNotification.getBody().contains("You are receiving this update as the appointee for"));
+    }
+
+    public void shouldSendAppointeeAppealWithdrawnNotification() throws NotificationClientException, IOException {
+        simulateCcdCallback(APPEAL_WITHDRAWN_NOTIFICATION,
+                "appointee/" + APPEAL_WITHDRAWN_NOTIFICATION.getId() + "Callback.json");
+        List<Notification> notifications = tryFetchNotificationsForTestCase(
+                appointeeAppealWithdrawnEmailId, appointeeAppealWithdrawnSmsId);
+        Notification emailNotification = notifications.stream()
+                .filter(f -> f.getTemplateId().toString().equals(appointeeAppealWithdrawnEmailId))
+                .collect(Collectors.toList()).get(0);
+        assertTrue(emailNotification.getBody().contains("Dear Appointee User"));
+        assertTrue(emailNotification.getBody().contains("You are receiving this update as the appointee for"));
+    }
+
+    @Test
+    public void shouldSendAppointeeHearingBookedNotification() throws NotificationClientException, IOException {
+        simulateCcdCallback(HEARING_BOOKED_NOTIFICATION,
+                "appointee/" + HEARING_BOOKED_NOTIFICATION.getId() + "Callback.json");
+
+        List<Notification> notifications = tryFetchNotificationsForTestCase(
+                appointeeHearingBookedEmailId,
+                appointeeHearingBookedSmsId
+        );
+        Notification emailNotification = notifications.stream().filter(f -> f.getTemplateId().toString().equals(appointeeHearingBookedEmailId)).collect(Collectors.toList()).get(0);
+        assertTrue(emailNotification.getBody().contains("Dear Appointee User\r\n\r\nYou are receiving this update as the appointee for Appellant User.\r\n\r\n"));
+    }
+
+    @Test
+    public void shouldSendAppointeeEvidenceReceivedNotification() throws NotificationClientException, IOException {
+        simulateCcdCallback(EVIDENCE_RECEIVED_NOTIFICATION,
+                "appointee/" + EVIDENCE_RECEIVED_NOTIFICATION.getId() + "Callback.json");
+        List<Notification> notifications = tryFetchNotificationsForTestCase(appointeeEvidenceReceivedEmailId, appointeeEvidenceReceivedSmsId);
+        Notification emailNotification = notifications.stream().filter(f -> f.getTemplateId().toString().equals(appointeeEvidenceReceivedEmailId)).collect(Collectors.toList()).get(0);
+        assertTrue(emailNotification.getBody().contains("Dear Appointee User"));
+        assertTrue(emailNotification.getBody().contains("You are receiving this update as the appointee for"));
+    }
+
+    @Test
+    public void shouldSendAppointeeHearingPostponedNotification() throws NotificationClientException, IOException {
+        simulateCcdCallback(POSTPONEMENT_NOTIFICATION,
+                "appointee/" + POSTPONEMENT_NOTIFICATION.getId() + "Callback.json");
+        List<Notification> notifications = tryFetchNotificationsForTestCase(appointeeHearingPostponedEmailId);
+        Notification emailNotification = notifications.get(0);
+
+        assertTrue(emailNotification.getBody().contains("Dear Appointee User"));
+        assertTrue(emailNotification.getBody().contains("You are receiving this update as the appointee for"));
+    }
 
 }

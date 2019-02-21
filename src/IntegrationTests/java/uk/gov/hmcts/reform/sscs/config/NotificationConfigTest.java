@@ -3,6 +3,7 @@ package uk.gov.hmcts.reform.sscs.config;
 import static org.junit.Assert.assertEquals;
 import static uk.gov.hmcts.reform.sscs.config.AppealHearingType.*;
 import static uk.gov.hmcts.reform.sscs.config.SubscriptionType.APPELLANT;
+import static uk.gov.hmcts.reform.sscs.config.SubscriptionType.APPOINTEE;
 import static uk.gov.hmcts.reform.sscs.config.SubscriptionType.REPRESENTATIVE;
 import static uk.gov.hmcts.reform.sscs.domain.notify.NotificationEventType.*;
 
@@ -39,13 +40,16 @@ public class NotificationConfigTest {
     @Parameters(method = "templateIdsWithHearingAndEventTypes")
     public void given_templateNamesAndHearingType_should_getCorrectTemplate(String expectedEmailTemplateId,
                                                                             String expectedSmsTemplateId,
+                                                                            String expectedLetterTemplateId,
                                                                             AppealHearingType appealHearingType,
                                                                             String templateName) {
-        Template template = notificationConfig.getTemplate(templateName, templateName, Benefit.PIP, appealHearingType);
+        Template template = notificationConfig.getTemplate(templateName, templateName, templateName, Benefit.PIP, appealHearingType);
         assertEquals(expectedEmailTemplateId, template.getEmailTemplateId());
         assertEquals(expectedSmsTemplateId, template.getSmsTemplateId());
+        assertEquals(expectedLetterTemplateId, template.getLetterTemplateId());
     }
 
+    @SuppressWarnings({"Indentation", "unused"})
     private Object[] templateIdsWithHearingAndEventTypes() {
         return new Object[]{
             new Object[]{"a64bce9a-9162-47ca-b3e7-cf5f85ca7bdc", "f5b61f94-0b2b-4e8e-9c25-56e9830df7d4", PAPER, getTemplateName(DWP_RESPONSE_RECEIVED_NOTIFICATION)},

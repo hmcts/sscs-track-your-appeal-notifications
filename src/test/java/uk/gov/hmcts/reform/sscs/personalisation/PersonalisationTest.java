@@ -2,6 +2,7 @@ package uk.gov.hmcts.reform.sscs.personalisation;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertNull;
 import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.Mockito.any;
@@ -14,15 +15,13 @@ import static uk.gov.hmcts.reform.sscs.ccd.domain.Benefit.ESA;
 import static uk.gov.hmcts.reform.sscs.ccd.domain.Benefit.PIP;
 import static uk.gov.hmcts.reform.sscs.ccd.domain.EventType.APPEAL_RECEIVED;
 import static uk.gov.hmcts.reform.sscs.ccd.domain.HearingType.ONLINE;
+import static uk.gov.hmcts.reform.sscs.ccd.domain.HearingType.ORAL;
 import static uk.gov.hmcts.reform.sscs.ccd.domain.HearingType.PAPER;
 import static uk.gov.hmcts.reform.sscs.ccd.domain.HearingType.REGULAR;
-import static uk.gov.hmcts.reform.sscs.config.AppConstants.ACCEPT_VIEW_BY_DATE_LITERAL;
-import static uk.gov.hmcts.reform.sscs.config.AppConstants.ONLINE_HEARING_LINK_LITERAL;
-import static uk.gov.hmcts.reform.sscs.config.AppConstants.ONLINE_HEARING_REGISTER_LINK_LITERAL;
-import static uk.gov.hmcts.reform.sscs.config.AppConstants.ONLINE_HEARING_SIGN_IN_LINK_LITERAL;
-import static uk.gov.hmcts.reform.sscs.config.AppConstants.QUESTION_ROUND_EXPIRES_DATE_LITERAL;
-import static uk.gov.hmcts.reform.sscs.config.AppConstants.TRIBUNAL_RESPONSE_DATE_LITERAL;
-import static uk.gov.hmcts.reform.sscs.config.SubscriptionType.*;
+import static uk.gov.hmcts.reform.sscs.config.AppConstants.*;
+import static uk.gov.hmcts.reform.sscs.config.SubscriptionType.APPELLANT;
+import static uk.gov.hmcts.reform.sscs.config.SubscriptionType.APPOINTEE;
+import static uk.gov.hmcts.reform.sscs.config.SubscriptionType.REPRESENTATIVE;
 import static uk.gov.hmcts.reform.sscs.domain.notify.NotificationEventType.*;
 
 import java.time.Instant;
@@ -37,7 +36,7 @@ import java.util.Map;
 import java.util.Optional;
 import junitparams.JUnitParamsRunner;
 import junitparams.Parameters;
-import org.junit.Assert;
+import org.apache.commons.lang3.StringUtils;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -46,6 +45,7 @@ import org.mockito.Mock;
 import uk.gov.hmcts.reform.sscs.ccd.domain.Address;
 import uk.gov.hmcts.reform.sscs.ccd.domain.Appeal;
 import uk.gov.hmcts.reform.sscs.ccd.domain.Appellant;
+import uk.gov.hmcts.reform.sscs.ccd.domain.Appointee;
 import uk.gov.hmcts.reform.sscs.ccd.domain.Benefit;
 import uk.gov.hmcts.reform.sscs.ccd.domain.BenefitType;
 import uk.gov.hmcts.reform.sscs.ccd.domain.Document;
@@ -62,7 +62,6 @@ import uk.gov.hmcts.reform.sscs.ccd.domain.SscsCaseData;
 import uk.gov.hmcts.reform.sscs.ccd.domain.Subscription;
 import uk.gov.hmcts.reform.sscs.ccd.domain.Subscriptions;
 import uk.gov.hmcts.reform.sscs.ccd.domain.Venue;
-import uk.gov.hmcts.reform.sscs.config.AppConstants;
 import uk.gov.hmcts.reform.sscs.config.AppealHearingType;
 import uk.gov.hmcts.reform.sscs.config.NotificationConfig;
 import uk.gov.hmcts.reform.sscs.config.SubscriptionType;
@@ -85,6 +84,7 @@ public class PersonalisationTest {
     private static final String ADDRESS4 = "36 Dale Street";
     private static final String CITY = "LIVERPOOL";
     private static final String POSTCODE = "L2 5UZ";
+    private static final String DATE = "2018-07-01T14:01:18.243";
 
     @Mock
     private NotificationConfig config;
@@ -104,8 +104,6 @@ public class PersonalisationTest {
     @InjectMocks
     public Personalisation personalisation;
 
-    private String date = "2018-07-01T14:01:18.243";
-
     private Subscriptions subscriptions;
 
     private Name name;
@@ -124,6 +122,7 @@ public class PersonalisationTest {
         when(config.getOnlineHearingLink()).thenReturn("http://link.com");
         when(notificationDateConverterUtil.toEmailDate(LocalDate.now().plusDays(1))).thenReturn("1 January 2018");
         when(notificationDateConverterUtil.toEmailDate(LocalDate.now().plusDays(7))).thenReturn("1 February 2018");
+        when(notificationDateConverterUtil.toEmailDate(LocalDate.now().plusDays(56))).thenReturn("1 February 2019");
         when(macService.generateToken("GLSCRR", PIP.name())).thenReturn("ZYX");
         when(macService.generateToken("GLSCRR", ESA.name())).thenReturn("ZYX");
         when(hearingContactDateExtractor.extract(any())).thenReturn(Optional.empty());
@@ -148,7 +147,7 @@ public class PersonalisationTest {
     @Test
     @Parameters(method = "generateNotificationTypeAndSubscriptionsScenarios")
     public void givenSubscriptionType_shouldGenerateEmailAndSmsTemplateNamesPerSubscription(
-            NotificationEventType notificationEventType, SubscriptionType subscriptionType,  HearingType hearingType) {
+            NotificationEventType notificationEventType, SubscriptionType subscriptionType, HearingType hearingType) {
         NotificationWrapper notificationWrapper = new CcdNotificationWrapper(SscsCaseDataWrapper.builder()
                 .newSscsCaseData(SscsCaseData.builder()
                         .appeal(Appeal.builder()
@@ -161,16 +160,17 @@ public class PersonalisationTest {
         personalisation.getTemplate(notificationWrapper, PIP, subscriptionType);
 
         verify(config).getTemplate(eq(getExpectedTemplateName(notificationEventType, subscriptionType)),
-                anyString(), any(Benefit.class), any(AppealHearingType.class));
+                anyString(), anyString(), any(Benefit.class), any(AppealHearingType.class)
+        );
     }
 
     private String getExpectedTemplateName(NotificationEventType notificationEventType,
                                            SubscriptionType subscriptionType) {
         return notificationEventType.getId() + (subscriptionType == null ? "" :
-                "." + subscriptionType.name().toLowerCase());
+                "." + StringUtils.lowerCase(subscriptionType.name()));
     }
 
-    @SuppressWarnings("Indentation")
+    @SuppressWarnings({"Indentation", "unused"})
     private Object[] generateNotificationTypeAndSubscriptionsScenarios() {
         return new Object[]{
                 new Object[]{APPEAL_RECEIVED_NOTIFICATION, APPELLANT, PAPER},
@@ -179,6 +179,9 @@ public class PersonalisationTest {
                 new Object[]{APPEAL_RECEIVED_NOTIFICATION, REPRESENTATIVE, PAPER},
                 new Object[]{APPEAL_RECEIVED_NOTIFICATION, REPRESENTATIVE, REGULAR},
                 new Object[]{APPEAL_RECEIVED_NOTIFICATION, REPRESENTATIVE, ONLINE},
+                new Object[]{APPEAL_RECEIVED_NOTIFICATION, APPOINTEE, PAPER},
+                new Object[]{APPEAL_RECEIVED_NOTIFICATION, APPOINTEE, REGULAR},
+                new Object[]{APPEAL_RECEIVED_NOTIFICATION, APPOINTEE, ONLINE},
                 new Object[]{APPEAL_LAPSED_NOTIFICATION, APPELLANT, PAPER},
                 new Object[]{APPEAL_LAPSED_NOTIFICATION, APPELLANT, REGULAR},
                 new Object[]{APPEAL_LAPSED_NOTIFICATION, APPELLANT, ONLINE},
@@ -191,8 +194,39 @@ public class PersonalisationTest {
                 new Object[]{APPEAL_WITHDRAWN_NOTIFICATION, REPRESENTATIVE, PAPER},
                 new Object[]{APPEAL_WITHDRAWN_NOTIFICATION, REPRESENTATIVE, REGULAR},
                 new Object[]{APPEAL_WITHDRAWN_NOTIFICATION, REPRESENTATIVE, ONLINE},
+                new Object[]{SYA_APPEAL_CREATED_NOTIFICATION, APPELLANT, PAPER},
+                new Object[]{SYA_APPEAL_CREATED_NOTIFICATION, APPELLANT, REGULAR},
+                new Object[]{SYA_APPEAL_CREATED_NOTIFICATION, APPELLANT, ONLINE},
+                new Object[]{SYA_APPEAL_CREATED_NOTIFICATION, REPRESENTATIVE, PAPER},
+                new Object[]{SYA_APPEAL_CREATED_NOTIFICATION, REPRESENTATIVE, REGULAR},
+                new Object[]{SYA_APPEAL_CREATED_NOTIFICATION, REPRESENTATIVE, ONLINE},
+                new Object[]{SYA_APPEAL_CREATED_NOTIFICATION, APPOINTEE, PAPER},
+                new Object[]{SYA_APPEAL_CREATED_NOTIFICATION, APPOINTEE, REGULAR},
+                new Object[]{SYA_APPEAL_CREATED_NOTIFICATION, APPOINTEE, ONLINE},
+                new Object[]{DWP_RESPONSE_RECEIVED_NOTIFICATION, null, ONLINE},
+                new Object[]{DWP_RESPONSE_RECEIVED_NOTIFICATION, null, PAPER},
                 new Object[]{APPEAL_DORMANT_NOTIFICATION, APPELLANT, PAPER},
+                new Object[]{CASE_UPDATED, APPELLANT, PAPER},
+                new Object[]{CASE_UPDATED, APPELLANT, REGULAR},
+                new Object[]{CASE_UPDATED, APPELLANT, ONLINE},
+                new Object[]{CASE_UPDATED, REPRESENTATIVE, PAPER},
+                new Object[]{CASE_UPDATED, REPRESENTATIVE, REGULAR},
+                new Object[]{CASE_UPDATED, REPRESENTATIVE, ONLINE},
+                new Object[]{EVIDENCE_RECEIVED_NOTIFICATION, APPELLANT, PAPER},
+                new Object[]{EVIDENCE_RECEIVED_NOTIFICATION, APPELLANT, REGULAR},
+                new Object[]{EVIDENCE_RECEIVED_NOTIFICATION, APPELLANT, ONLINE},
+                new Object[]{EVIDENCE_RECEIVED_NOTIFICATION, REPRESENTATIVE, PAPER},
+                new Object[]{EVIDENCE_RECEIVED_NOTIFICATION, REPRESENTATIVE, REGULAR},
+                new Object[]{EVIDENCE_RECEIVED_NOTIFICATION, REPRESENTATIVE, ONLINE},
+                new Object[]{RESEND_APPEAL_CREATED_NOTIFICATION, APPELLANT, PAPER},
+                new Object[]{RESEND_APPEAL_CREATED_NOTIFICATION, APPELLANT, REGULAR},
+                new Object[]{RESEND_APPEAL_CREATED_NOTIFICATION, APPELLANT, ONLINE},
+                new Object[]{RESEND_APPEAL_CREATED_NOTIFICATION, REPRESENTATIVE, PAPER},
+                new Object[]{RESEND_APPEAL_CREATED_NOTIFICATION, REPRESENTATIVE, REGULAR},
+                new Object[]{RESEND_APPEAL_CREATED_NOTIFICATION, REPRESENTATIVE, ONLINE},
                 new Object[]{APPEAL_DORMANT_NOTIFICATION, REPRESENTATIVE, PAPER},
+                new Object[]{APPEAL_DORMANT_NOTIFICATION, APPELLANT, ORAL},
+                new Object[]{APPEAL_DORMANT_NOTIFICATION, REPRESENTATIVE, ORAL},
                 new Object[]{ADJOURNED_NOTIFICATION, APPELLANT, PAPER},
                 new Object[]{ADJOURNED_NOTIFICATION, APPELLANT, REGULAR},
                 new Object[]{ADJOURNED_NOTIFICATION, APPELLANT, ONLINE},
@@ -225,7 +259,7 @@ public class PersonalisationTest {
     public void customisePersonalisation(String benefitType, String expectedPanelComposition, String
             expectedBenefitDesc) {
         List<Event> events = new ArrayList<>();
-        events.add(Event.builder().value(EventDetails.builder().date(date).type(APPEAL_RECEIVED.getCcdType()).build()).build());
+        events.add(Event.builder().value(EventDetails.builder().date(DATE).type(APPEAL_RECEIVED.getCcdType()).build()).build());
 
         SscsCaseData response = SscsCaseData.builder()
                 .ccdCaseId(CASE_ID).caseReference("SC/1234/5")
@@ -236,46 +270,68 @@ public class PersonalisationTest {
                 .events(events)
                 .build();
 
-        Map<String, String> result = personalisation.create(SscsCaseDataWrapper.builder().newSscsCaseData(response).notificationEventType(APPEAL_RECEIVED_NOTIFICATION).build());
+        Map<String, String> result = personalisation.create(SscsCaseDataWrapper.builder().newSscsCaseData(response)
+                .notificationEventType(APPEAL_RECEIVED_NOTIFICATION).build(), APPELLANT);
 
         DateTimeFormatter dateFormatter = DateTimeFormatter.ofPattern("d MMMM yyyy");
         String expectedDecisionPostedReceiveDate = dateFormatter.format(LocalDate.now().plusDays(7));
         assertEquals(expectedDecisionPostedReceiveDate, result.get("decision_posted_receive_date"));
 
-        assertEquals(expectedPanelComposition, result.get(AppConstants.PANEL_COMPOSITION));
+        assertEquals(expectedPanelComposition, result.get(PANEL_COMPOSITION));
 
-        assertEquals(benefitType, result.get(AppConstants.BENEFIT_NAME_ACRONYM_LITERAL));
-        assertEquals(expectedBenefitDesc, result.get(AppConstants.BENEFIT_FULL_NAME_LITERAL));
-        assertEquals("SC/1234/5", result.get(AppConstants.APPEAL_REF));
-        assertEquals("GLSCRR", result.get(AppConstants.APPEAL_ID));
-        assertEquals("Harry Kane", result.get(AppConstants.APPELLANT_NAME));
-        assertEquals("01234543225", result.get(AppConstants.PHONE_NUMBER));
-        assertEquals("http://link.com/manage-email-notifications/ZYX", result.get(AppConstants.MANAGE_EMAILS_LINK_LITERAL));
-        assertEquals("http://tyalink.com/GLSCRR", result.get(AppConstants.TRACK_APPEAL_LINK_LITERAL));
-        Assert.assertEquals(AppConstants.DWP_ACRONYM, result.get(AppConstants.FIRST_TIER_AGENCY_ACRONYM));
-        Assert.assertEquals(AppConstants.DWP_FUL_NAME, result.get(AppConstants.FIRST_TIER_AGENCY_FULL_NAME));
-        assertEquals("5 August 2018", result.get(AppConstants.APPEAL_RESPOND_DATE));
-        assertEquals("http://link.com/GLSCRR", result.get(AppConstants.SUBMIT_EVIDENCE_LINK_LITERAL));
-        assertEquals("http://link.com/progress/GLSCRR/expenses", result.get(AppConstants.CLAIMING_EXPENSES_LINK_LITERAL));
-        assertEquals("http://link.com/progress/GLSCRR/abouthearing", result.get(AppConstants.HEARING_INFO_LINK_LITERAL));
-        assertNull(result.get(AppConstants.EVIDENCE_RECEIVED_DATE_LITERAL));
+        assertEquals(benefitType, result.get(BENEFIT_NAME_ACRONYM_LITERAL));
+        assertEquals(expectedBenefitDesc, result.get(BENEFIT_FULL_NAME_LITERAL));
+        assertEquals("SC/1234/5", result.get(APPEAL_REF));
+        assertEquals("GLSCRR", result.get(APPEAL_ID));
+        assertEquals("Harry Kane", result.get(NAME));
+        assertEquals("Harry Kane", result.get(APPELLANT_NAME));
+        assertEquals("01234543225", result.get(PHONE_NUMBER));
+        assertEquals("http://link.com/manage-email-notifications/ZYX", result.get(MANAGE_EMAILS_LINK_LITERAL));
+        assertEquals("http://tyalink.com/GLSCRR", result.get(TRACK_APPEAL_LINK_LITERAL));
+        assertEquals(DWP_ACRONYM, result.get(FIRST_TIER_AGENCY_ACRONYM));
+        assertEquals(DWP_FUL_NAME, result.get(FIRST_TIER_AGENCY_FULL_NAME));
+        assertEquals("5 August 2018", result.get(APPEAL_RESPOND_DATE));
+        assertEquals("http://link.com/GLSCRR", result.get(SUBMIT_EVIDENCE_LINK_LITERAL));
+        assertEquals("http://link.com/progress/GLSCRR/expenses", result.get(CLAIMING_EXPENSES_LINK_LITERAL));
+        assertEquals("http://link.com/progress/GLSCRR/abouthearing", result.get(HEARING_INFO_LINK_LITERAL));
+        assertNull(result.get(EVIDENCE_RECEIVED_DATE_LITERAL));
 
-        assertEquals(ADDRESS1, result.get(AppConstants.REGIONAL_OFFICE_NAME_LITERAL));
-        assertEquals(ADDRESS2, result.get(AppConstants.SUPPORT_CENTRE_NAME_LITERAL));
-        assertEquals(ADDRESS3, result.get(AppConstants.ADDRESS_LINE_LITERAL));
-        assertEquals(ADDRESS4, result.get(AppConstants.TOWN_LITERAL));
-        assertEquals(CITY, result.get(AppConstants.COUNTY_LITERAL));
-        assertEquals(POSTCODE, result.get(AppConstants.POSTCODE_LITERAL));
-        assertEquals("1 February 2018", result.get(TRIBUNAL_RESPONSE_DATE_LITERAL));
+        assertEquals(ADDRESS1, result.get(REGIONAL_OFFICE_NAME_LITERAL));
+        assertEquals(ADDRESS2, result.get(SUPPORT_CENTRE_NAME_LITERAL));
+        assertEquals(ADDRESS3, result.get(ADDRESS_LINE_LITERAL));
+        assertEquals(ADDRESS4, result.get(TOWN_LITERAL));
+        assertEquals(CITY, result.get(COUNTY_LITERAL));
+        assertEquals(POSTCODE, result.get(POSTCODE_LITERAL));
+        assertEquals(CASE_ID, result.get(CCD_ID));
+        assertEquals("1 February 2019", result.get(TRIBUNAL_RESPONSE_DATE_LITERAL));
         assertEquals("1 February 2018", result.get(ACCEPT_VIEW_BY_DATE_LITERAL));
         assertEquals("1 January 2018", result.get(QUESTION_ROUND_EXPIRES_DATE_LITERAL));
+        assertEquals("", result.get(APPOINTEE_DESCRIPTION));
+    }
+
+    @Test
+    public void appealRefWillReturnCcdCaseIdWhenCaseReferenceIsNotSet() {
+        RegionalProcessingCenter rpc = regionalProcessingCenterService.getByScReferenceCode("SC/1234/5");
+        SscsCaseData response = SscsCaseData.builder()
+                .ccdCaseId(CASE_ID).caseReference(null)
+                .regionalProcessingCenter(rpc)
+                .appeal(Appeal.builder().benefitType(BenefitType.builder().code("PIP").build())
+                        .appellant(Appellant.builder().name(name).build())
+                        .build())
+                .subscriptions(subscriptions)
+                .build();
+
+        Map result = personalisation.create(SscsCaseDataWrapper.builder().newSscsCaseData(response)
+                .notificationEventType(APPEAL_RECEIVED_NOTIFICATION).build(), APPELLANT);
+
+        assertEquals(CASE_ID, result.get(APPEAL_REF));
     }
 
 
     @Test
     public void givenEvidenceReceivedNotification_customisePersonalisation() {
         List<Event> events = new ArrayList<>();
-        events.add(Event.builder().value(EventDetails.builder().date(date).type(APPEAL_RECEIVED.getCcdType()).build()).build());
+        events.add(Event.builder().value(EventDetails.builder().date(DATE).type(APPEAL_RECEIVED.getCcdType()).build()).build());
 
         List<Document> documents = new ArrayList<>();
 
@@ -308,15 +364,16 @@ public class PersonalisationTest {
                 .evidence(evidence)
                 .build();
 
-        Map<String, String> result = personalisation.create(SscsCaseDataWrapper.builder().newSscsCaseData(response).notificationEventType(EVIDENCE_RECEIVED_NOTIFICATION).build());
+        Map<String, String> result = personalisation.create(SscsCaseDataWrapper.builder()
+                .newSscsCaseData(response).notificationEventType(EVIDENCE_RECEIVED_NOTIFICATION).build(), APPELLANT);
 
-        assertEquals("1 July 2018", result.get(AppConstants.EVIDENCE_RECEIVED_DATE_LITERAL));
+        assertEquals("1 July 2018", result.get(EVIDENCE_RECEIVED_DATE_LITERAL));
     }
 
     @Test
     public void setAppealReceivedEventData() {
         List<Event> events = new ArrayList<>();
-        events.add(Event.builder().value(EventDetails.builder().date(date).type(APPEAL_RECEIVED.getCcdType()).build()).build());
+        events.add(Event.builder().value(EventDetails.builder().date(DATE).type(APPEAL_RECEIVED.getCcdType()).build()).build());
 
         SscsCaseData response = SscsCaseData.builder()
                 .ccdCaseId(CASE_ID).caseReference("SC/1234/5")
@@ -326,7 +383,7 @@ public class PersonalisationTest {
 
         Map<String, String> result = personalisation.setEventData(new HashMap<>(), response, APPEAL_RECEIVED_NOTIFICATION);
 
-        assertEquals("5 August 2018", result.get(AppConstants.APPEAL_RESPOND_DATE));
+        assertEquals("5 August 2018", result.get(APPEAL_RESPOND_DATE));
     }
 
     @Test
@@ -350,7 +407,24 @@ public class PersonalisationTest {
 
         Map<String, String> result = personalisation.setEvidenceReceivedNotificationData(new HashMap<>(), response, EVIDENCE_RECEIVED_NOTIFICATION);
 
-        assertEquals("1 July 2018", result.get(AppConstants.EVIDENCE_RECEIVED_DATE_LITERAL));
+        assertEquals("1 July 2018", result.get(EVIDENCE_RECEIVED_DATE_LITERAL));
+    }
+
+    @Test
+    public void setEvidenceReceivedEventDataWhenEvidenceIsEmpty() {
+        List<Document> documents = null;
+
+        Evidence evidence = Evidence.builder().documents(documents).build();
+
+        SscsCaseData response = SscsCaseData.builder()
+                .ccdCaseId(CASE_ID).caseReference("SC/1234/5")
+                .appeal(Appeal.builder().benefitType(BenefitType.builder().code("PIP").build()).build())
+                .evidence(evidence)
+                .build();
+
+        Map<String, String> result = personalisation.setEvidenceReceivedNotificationData(new HashMap<>(), response, EVIDENCE_RECEIVED_NOTIFICATION);
+
+        assertEquals("", result.get(EVIDENCE_RECEIVED_DATE_LITERAL));
     }
 
     @Test
@@ -371,13 +445,14 @@ public class PersonalisationTest {
                 .hearings(hearingList)
                 .build();
 
-        Map<String, String> result = personalisation.create(SscsCaseDataWrapper.builder().newSscsCaseData(response).notificationEventType(HEARING_BOOKED_NOTIFICATION).build());
+        Map<String, String> result = personalisation.create(SscsCaseDataWrapper.builder()
+                .newSscsCaseData(response).notificationEventType(HEARING_BOOKED_NOTIFICATION).build(), APPELLANT);
 
-        assertEquals(hearingDate.format(DateTimeFormatter.ofPattern(AppConstants.RESPONSE_DATE_FORMAT)), result.get(AppConstants.HEARING_DATE));
-        assertEquals("12:00 PM", result.get(AppConstants.HEARING_TIME));
-        assertEquals("The venue, 12 The Road Avenue, Village, Aberdeen, Aberdeenshire, AB12 0HN", result.get(AppConstants.VENUE_ADDRESS_LITERAL));
-        assertEquals("http://www.googlemaps.com/aberdeenvenue", result.get(AppConstants.VENUE_MAP_LINK_LITERAL));
-        assertEquals("in 7 days", result.get(AppConstants.DAYS_TO_HEARING_LITERAL));
+        assertEquals(hearingDate.format(DateTimeFormatter.ofPattern(RESPONSE_DATE_FORMAT)), result.get(HEARING_DATE));
+        assertEquals("12:00 PM", result.get(HEARING_TIME));
+        assertEquals("The venue, 12 The Road Avenue, Village, Aberdeen, Aberdeenshire, AB12 0HN", result.get(VENUE_ADDRESS_LITERAL));
+        assertEquals("http://www.googlemaps.com/aberdeenvenue", result.get(VENUE_MAP_LINK_LITERAL));
+        assertEquals("in 7 days", result.get(DAYS_TO_HEARING_LITERAL));
     }
 
     @Test
@@ -398,9 +473,10 @@ public class PersonalisationTest {
                 .hearings(hearingList)
                 .build();
 
-        Map<String, String> result = personalisation.create(SscsCaseDataWrapper.builder().newSscsCaseData(response).notificationEventType(HEARING_BOOKED_NOTIFICATION).build());
+        Map<String, String> result = personalisation.create(SscsCaseDataWrapper.builder().newSscsCaseData(response)
+                .notificationEventType(HEARING_BOOKED_NOTIFICATION).build(), APPELLANT);
 
-        assertEquals("tomorrow", result.get(AppConstants.DAYS_TO_HEARING_LITERAL));
+        assertEquals("tomorrow", result.get(DAYS_TO_HEARING_LITERAL));
     }
 
     @Test
@@ -439,12 +515,12 @@ public class PersonalisationTest {
 
         verify(regionalProcessingCenterService, never()).getByScReferenceCode(anyString());
 
-        assertEquals(ADDRESS1, result.get(AppConstants.REGIONAL_OFFICE_NAME_LITERAL));
-        assertEquals(ADDRESS2, result.get(AppConstants.SUPPORT_CENTRE_NAME_LITERAL));
-        assertEquals(ADDRESS3, result.get(AppConstants.ADDRESS_LINE_LITERAL));
-        assertEquals(ADDRESS4, result.get(AppConstants.TOWN_LITERAL));
-        assertEquals(CITY, result.get(AppConstants.COUNTY_LITERAL));
-        assertEquals(POSTCODE, result.get(AppConstants.POSTCODE_LITERAL));
+        assertEquals(ADDRESS1, result.get(REGIONAL_OFFICE_NAME_LITERAL));
+        assertEquals(ADDRESS2, result.get(SUPPORT_CENTRE_NAME_LITERAL));
+        assertEquals(ADDRESS3, result.get(ADDRESS_LINE_LITERAL));
+        assertEquals(ADDRESS4, result.get(TOWN_LITERAL));
+        assertEquals(CITY, result.get(COUNTY_LITERAL));
+        assertEquals(POSTCODE, result.get(POSTCODE_LITERAL));
     }
 
     @Test
@@ -458,7 +534,7 @@ public class PersonalisationTest {
         Map<String, String> values = new HashMap<>();
         personalisation.setHearingContactDate(values, wrapper);
 
-        assertEquals("13 June 2018", values.get(AppConstants.HEARING_CONTACT_DATE));
+        assertEquals("13 June 2018", values.get(HEARING_CONTACT_DATE));
     }
 
     @Test
@@ -471,7 +547,7 @@ public class PersonalisationTest {
         Map<String, String> values = new HashMap<>();
         personalisation.setHearingContactDate(values, wrapper);
 
-        assertFalse(values.containsKey(AppConstants.HEARING_CONTACT_DATE));
+        assertFalse(values.containsKey(HEARING_CONTACT_DATE));
     }
 
     @Test
@@ -487,8 +563,8 @@ public class PersonalisationTest {
 
         Map result = personalisation.create(SscsCaseDataWrapper.builder()
                 .newSscsCaseData(response)
-                .notificationEventType(NotificationEventType.QUESTION_ROUND_ISSUED_NOTIFICATION)
-                .build());
+                .notificationEventType(QUESTION_ROUND_ISSUED_NOTIFICATION)
+                .build(), APPELLANT);
 
         assertEquals("http://link.com/onlineHearing?email=test%40email.com", result.get(ONLINE_HEARING_LINK_LITERAL));
         assertEquals("http://link.com/register", result.get(ONLINE_HEARING_REGISTER_LINK_LITERAL));
@@ -512,10 +588,54 @@ public class PersonalisationTest {
 
         Map result = personalisation.create(SscsCaseDataWrapper.builder()
                 .newSscsCaseData(response)
-                .notificationEventType(NotificationEventType.QUESTION_ROUND_ISSUED_NOTIFICATION)
-                .build());
+                .notificationEventType(QUESTION_ROUND_ISSUED_NOTIFICATION)
+                .build(), APPELLANT);
 
         assertNull(result.get(ONLINE_HEARING_LINK_LITERAL));
+    }
+
+    @Test
+    public void shouldPopulateAppointeeSubscriptionPersonalisation() {
+        final String tyaNumber = "tya";
+        Name appointeeName = Name.builder().title("MR").firstName("George").lastName("Appointee").build();
+        when(macService.generateToken(tyaNumber, PIP.name())).thenReturn("ZYX");
+
+        final SscsCaseData sscsCaseData = SscsCaseData.builder()
+                .ccdCaseId(CASE_ID)
+                .caseReference("SC/1234/5")
+                .appeal(Appeal.builder()
+                        .benefitType(BenefitType.builder()
+                                .code(PIP.name())
+                                .build())
+                        .appellant(Appellant.builder()
+                                .name(name)
+                                .appointee(Appointee.builder()
+                                        .name(appointeeName)
+                                        .build())
+                                .build())
+                        .build())
+                .subscriptions(Subscriptions.builder()
+                        .appointeeSubscription(Subscription.builder()
+                                .tya(tyaNumber)
+                                .subscribeEmail("Yes")
+                                .email("appointee@example.com")
+                                .build())
+                        .build())
+                .build();
+
+        Map result = personalisation.create(SscsCaseDataWrapper.builder()
+                .newSscsCaseData(sscsCaseData)
+                .notificationEventType(SUBSCRIPTION_CREATED_NOTIFICATION)
+                .build(), APPOINTEE);
+
+        assertNotNull(result);
+        assertEquals(CASE_ID, result.get(CCD_ID));
+        assertEquals(appointeeName.getFullNameNoTitle(), result.get(NAME));
+        assertEquals(name.getFullNameNoTitle(), result.get(APPELLANT_NAME));
+        assertEquals(tyaNumber, result.get(APPEAL_ID));
+        assertEquals("http://link.com/manage-email-notifications/ZYX", result.get(MANAGE_EMAILS_LINK_LITERAL));
+        assertEquals("http://tyalink.com/" + tyaNumber, result.get(TRACK_APPEAL_LINK_LITERAL));
+        assertEquals("You are receiving this update as the appointee for Harry Kane.\r\n\r\n", result.get(APPOINTEE_DESCRIPTION));
     }
 
     private Hearing createHearing(LocalDate hearingDate) {

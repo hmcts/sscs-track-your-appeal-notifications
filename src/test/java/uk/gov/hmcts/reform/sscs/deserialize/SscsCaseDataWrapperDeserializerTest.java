@@ -27,20 +27,7 @@ import java.util.List;
 import org.apache.commons.io.FileUtils;
 import org.junit.Before;
 import org.junit.Test;
-import uk.gov.hmcts.reform.sscs.ccd.domain.Appeal;
-import uk.gov.hmcts.reform.sscs.ccd.domain.AppealReasons;
-import uk.gov.hmcts.reform.sscs.ccd.domain.Appellant;
-import uk.gov.hmcts.reform.sscs.ccd.domain.BenefitType;
-import uk.gov.hmcts.reform.sscs.ccd.domain.Event;
-import uk.gov.hmcts.reform.sscs.ccd.domain.Hearing;
-import uk.gov.hmcts.reform.sscs.ccd.domain.HearingOptions;
-import uk.gov.hmcts.reform.sscs.ccd.domain.MrnDetails;
-import uk.gov.hmcts.reform.sscs.ccd.domain.OnlinePanel;
-import uk.gov.hmcts.reform.sscs.ccd.domain.RegionalProcessingCenter;
-import uk.gov.hmcts.reform.sscs.ccd.domain.Representative;
-import uk.gov.hmcts.reform.sscs.ccd.domain.SscsCaseData;
-import uk.gov.hmcts.reform.sscs.ccd.domain.Subscription;
-import uk.gov.hmcts.reform.sscs.ccd.domain.Subscriptions;
+import uk.gov.hmcts.reform.sscs.ccd.domain.*;
 import uk.gov.hmcts.reform.sscs.config.AppConstants;
 import uk.gov.hmcts.reform.sscs.domain.SscsCaseDataWrapper;
 
@@ -85,6 +72,28 @@ public class SscsCaseDataWrapperDeserializerTest {
         assertEquals("07925289702", representativeSubscription.getMobile());
         assertTrue(representativeSubscription.isSmsSubscribed());
         assertFalse(representativeSubscription.isEmailSubscribed());
+    }
+
+    @Test
+    public void deserializeAppellantWithAppointeeJson() throws IOException {
+
+        String subscriptionJson = "{\"appellantSubscription\":{\"tya\":\"543212345\",\"email\":\"test@testing.com\",\"mobile\":\"01234556634\",\"reason\":null,\"subscribeSms\":\"No\",\"subscribeEmail\":\"Yes\"},"
+            + "\"appointeeSubscription\":{\"tya\":\"232929249492\",\"email\":\"supporter@live.co.uk\",\"mobile\":\"07925289702\",\"reason\":null,\"subscribeSms\":\"Yes\",\"subscribeEmail\":\"No\"}}";
+
+        Subscriptions subscriptions = ccdResponseDeserializer.deserializeSubscriptionsJson(mapper.readTree(subscriptionJson));
+
+        Subscription appellantSubscription = subscriptions.getAppellantSubscription();
+
+        assertEquals("test@testing.com", appellantSubscription.getEmail());
+        assertEquals("01234556634", appellantSubscription.getMobile());
+        assertFalse(appellantSubscription.isSmsSubscribed());
+        assertTrue(appellantSubscription.isEmailSubscribed());
+
+        Subscription appointeeSubscription = subscriptions.getAppointeeSubscription();
+        assertEquals("supporter@live.co.uk", appointeeSubscription.getEmail());
+        assertEquals("07925289702", appointeeSubscription.getMobile());
+        assertTrue(appointeeSubscription.isSmsSubscribed());
+        assertFalse(appointeeSubscription.isEmailSubscribed());
     }
 
     @Test
@@ -187,13 +196,16 @@ public class SscsCaseDataWrapperDeserializerTest {
 
         String json = "{\"case_details\":{\"case_data\":{\"subscriptions\":{"
                 + "\"appellantSubscription\":{\"tya\":\"543212345\",\"email\":\"test@testing.com\",\"mobile\":\"01234556634\",\"reason\":null,\"subscribeSms\":\"No\",\"subscribeEmail\":\"Yes\"},"
+                + "\"appointeeSubscription\":{\"tya\":\"23292924\",\"email\":\"supporter@live.co.uk\",\"mobile\":\"07925289702\",\"reason\":null,\"subscribeSms\":\"Yes\",\"subscribeEmail\":\"No\"},"
                 + "\"representativeSubscription\":{\"tya\":\"232929249492\",\"email\":\"supporter@live.co.uk\",\"mobile\":\"07925289702\",\"reason\":null,\"subscribeSms\":\"Yes\",\"subscribeEmail\":\"No\"}},"
                 + "\"caseReference\":\"SC022/14/12423\",\"appeal\":{"
-                + "\"appellant\":{\"name\":{\"title\":\"Mr\",\"lastName\":\"Vasquez\",\"firstName\":\"Dexter\",\"middleName\":\"Ali Sosa\"}},"
+                + "\"appellant\":{\"name\":{\"title\":\"Mr\",\"lastName\":\"Vasquez\",\"firstName\":\"Dexter\",\"middleName\":\"Ali Sosa\"},"
+                + "\"appointee\":{\"name\":{\"title\":\"Mr\",\"lastName\":\"Appointee\",\"firstName\":\"Appointee\",\"middleName\":\"Ab\"}}},"
                 + "\"supporter\":{\"name\":{\"title\":\"Mrs\",\"lastName\":\"Wilder\",\"firstName\":\"Amber\",\"middleName\":\"Clark Eaton\"}}}},"
                 + "\"id\": \"123456789\"},"
                 + "\"case_details_before\":{\"case_data\":{\"subscriptions\":{"
                 + "\"appellantSubscription\":{\"tya\":\"123456\",\"email\":\"old@email.com\",\"mobile\":\"07543534345\",\"reason\":null,\"subscribeSms\":\"No\",\"subscribeEmail\":\"Yes\"},"
+                + "\"appointeeSubscription\":{\"tya\":\"23292924\",\"email\":\"supporter@gmail.co.uk\",\"mobile\":\"07925267702\",\"reason\":null,\"subscribeSms\":\"Yes\",\"subscribeEmail\":\"No\"},"
                 + "\"representativeSubscription\":{\"tya\":\"232929249492\",\"email\":\"supporter@gmail.co.uk\",\"mobile\":\"07925267702\",\"reason\":null,\"subscribeSms\":\"Yes\",\"subscribeEmail\":\"No\"}},"
                 + "\"caseReference\":\"SC/5432/89\",\"appeal\":{"
                 + "\"appellant\":{\"name\":{\"title\":\"Mr\",\"lastName\":\"Smith\",\"firstName\":\"Jeremy\",\"middleName\":\"Rupert\"}},"
@@ -211,11 +223,22 @@ public class SscsCaseDataWrapperDeserializerTest {
         assertEquals("Vasquez", newAppellant.getName().getLastName());
         assertEquals("Mr", newAppellant.getName().getTitle());
 
+        Appointee newAppointee = newSscsCaseData.getAppeal().getAppellant().getAppointee();
+        assertEquals("Appointee", newAppointee.getName().getFirstName());
+        assertEquals("Appointee", newAppointee.getName().getLastName());
+        assertEquals("Mr", newAppointee.getName().getTitle());
+
         Subscription newAppellantSubscription = newSscsCaseData.getSubscriptions().getAppellantSubscription();
         assertEquals("test@testing.com", newAppellantSubscription.getEmail());
         assertEquals("01234556634", newAppellantSubscription.getMobile());
         assertFalse(newAppellantSubscription.isSmsSubscribed());
         assertTrue(newAppellantSubscription.isEmailSubscribed());
+
+        Subscription newAppointeeSubscription = newSscsCaseData.getSubscriptions().getAppointeeSubscription();
+        assertEquals("supporter@live.co.uk", newAppointeeSubscription.getEmail());
+        assertEquals("07925289702", newAppointeeSubscription.getMobile());
+        assertTrue(newAppointeeSubscription.isSmsSubscribed());
+        assertFalse(newAppointeeSubscription.isEmailSubscribed());
 
         Subscription newRepresentativeSubscription = newSscsCaseData.getSubscriptions().getRepresentativeSubscription();
         assertEquals("supporter@live.co.uk", newRepresentativeSubscription.getEmail());
@@ -237,6 +260,12 @@ public class SscsCaseDataWrapperDeserializerTest {
         assertEquals("07543534345", oldAppellantSubscription.getMobile());
         assertFalse(oldAppellantSubscription.isSmsSubscribed());
         assertTrue(oldAppellantSubscription.isEmailSubscribed());
+
+        Subscription oldAppointeeSubscription = newSscsCaseData.getSubscriptions().getAppointeeSubscription();
+        assertEquals("supporter@live.co.uk", oldAppointeeSubscription.getEmail());
+        assertEquals("07925289702", oldAppointeeSubscription.getMobile());
+        assertTrue(oldAppointeeSubscription.isSmsSubscribed());
+        assertFalse(oldAppointeeSubscription.isEmailSubscribed());
 
         Subscription oldRepresentativeSubscription = oldSscsCaseData.getSubscriptions().getRepresentativeSubscription();
         assertEquals("supporter@gmail.co.uk", oldRepresentativeSubscription.getEmail());
@@ -341,15 +370,15 @@ public class SscsCaseDataWrapperDeserializerTest {
 
         assertNotNull(regionalProcessingCenter);
 
-        assertEquals(regionalProcessingCenter.getName(), "CARDIFF");
-        assertEquals(regionalProcessingCenter.getAddress1(), "HM Courts & Tribunals Service");
-        assertEquals(regionalProcessingCenter.getAddress2(), "Social Security & Child Support Appeals");
-        assertEquals(regionalProcessingCenter.getAddress3(), "Eastgate House");
-        assertEquals(regionalProcessingCenter.getAddress4(), "Newport Road");
-        assertEquals(regionalProcessingCenter.getCity(), "CARDIFF");
-        assertEquals(regionalProcessingCenter.getPostcode(), "CF24 0AB");
-        assertEquals(regionalProcessingCenter.getPhoneNumber(), "0300 123 1142");
-        assertEquals(regionalProcessingCenter.getFaxNumber(), "0870 739 4438");
+        assertEquals("CARDIFF", regionalProcessingCenter.getName());
+        assertEquals("HM Courts & Tribunals Service", regionalProcessingCenter.getAddress1());
+        assertEquals("Social Security & Child Support Appeals", regionalProcessingCenter.getAddress2());
+        assertEquals("Eastgate House", regionalProcessingCenter.getAddress3());
+        assertEquals("Newport Road", regionalProcessingCenter.getAddress4());
+        assertEquals("CARDIFF", regionalProcessingCenter.getCity());
+        assertEquals("CF24 0AB", regionalProcessingCenter.getPostcode());
+        assertEquals("0300 123 1142", regionalProcessingCenter.getPhoneNumber());
+        assertEquals("0870 739 4438", regionalProcessingCenter.getFaxNumber());
     }
 
     @Test

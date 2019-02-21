@@ -23,6 +23,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.mock.web.MockHttpServletResponse;
 import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.context.junit4.SpringRunner;
+import org.springframework.test.util.ReflectionTestUtils;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.request.MockHttpServletRequestBuilder;
 import org.springframework.test.web.servlet.setup.MockMvcBuilders;
@@ -51,6 +52,7 @@ import uk.gov.service.notify.SendSmsResponse;
 @AutoConfigureMockMvc
 // NB These could fail if it is out of hours check the config for AAT if this test has started to fail.
 public class CohNotificationsIt {
+    private static final String TEMPLATE_PATH = "/templates/non_compliant_case_letter_template.html";
 
     MockMvc mockMvc;
 
@@ -98,6 +100,9 @@ public class CohNotificationsIt {
     @Autowired
     private NotificationHandler notificationHandler;
 
+    @Autowired
+    private EvidenceManagementService evidenceManagementService;
+
     @Value("${notification.question_round_issued.emailId}")
     private String emailTemplateId;
 
@@ -107,12 +112,20 @@ public class CohNotificationsIt {
     @Autowired
     private NotificationConfig notificationConfig;
 
+    @Mock
+    private SscsGeneratePdfService sscsGeneratePdfService;
+
     String json;
 
     @Before
     public void setup() throws Exception {
         NotificationSender sender = new NotificationSender(notificationClient, null, notificationBlacklist);
-        NotificationService service = new NotificationService(sender, factory, reminderService, notificationValidService, notificationHandler, outOfHoursCalculator, notificationConfig);
+
+        SendNotificationService sendNotificationService = new SendNotificationService(sender, evidenceManagementService, sscsGeneratePdfService, notificationHandler, notificationValidService);
+        ReflectionTestUtils.setField(sendNotificationService, "bundledLettersOn", true);
+        ReflectionTestUtils.setField(sendNotificationService, "lettersOn", true);
+
+        NotificationService service = new NotificationService(factory, reminderService, notificationValidService, notificationHandler, outOfHoursCalculator, notificationConfig, sendNotificationService);
         controller = new NotificationController(service, authorisationService, ccdService, deserializer, idamService);
 
         ObjectMapper mapper = new ObjectMapper();
@@ -131,10 +144,6 @@ public class CohNotificationsIt {
         when(notificationClient.sendEmail(any(), any(), any(), any()))
                 .thenReturn(sendEmailResponse);
         when(sendEmailResponse.getNotificationId()).thenReturn(UUID.randomUUID());
-
-        when(notificationClient.sendSms(any(), any(), any(), any(), any()))
-                .thenReturn(sendSmsResponse);
-        when(sendSmsResponse.getNotificationId()).thenReturn(UUID.randomUUID());
 
         this.mockMvc = MockMvcBuilders.standaloneSetup(controller).build();
         json = "{\n"
@@ -158,7 +167,6 @@ public class CohNotificationsIt {
                 argThat(argument -> "11 August 2018".equals(argument.get("questions_end_date"))),
                 any()
         );
-        verify(notificationClient, times(1)).sendSms(any(), any(), any(), any(), any());
     }
 
     @Test

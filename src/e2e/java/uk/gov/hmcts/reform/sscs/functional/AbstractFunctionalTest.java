@@ -108,11 +108,11 @@ public abstract class AbstractFunctionalTest {
 
         caseData = createCaseData();
 
-        SscsCaseDetails caseDetails = ccdService.createCase(caseData, idamTokens);
+        SscsCaseDetails caseDetails = ccdService.createCase(caseData, "appealCreated", "Appeal created summary", "Appeal created description", idamTokens);
 
         assertNotNull(caseDetails);
         caseId = caseDetails.getId();
-        log.info("Creating CCD case [" + caseId + "]");
+        log.info("Created CCD case [" + caseId + "] successfully");
     }
 
     protected SscsCaseData createCaseData() {

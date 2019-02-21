@@ -38,17 +38,19 @@ public enum NotificationEventType {
     private boolean sendForPaperCase;
     private boolean sendForCohCase;
     private boolean allowOutOfHours;
+    private boolean isReminder;
 
     NotificationEventType(String id) {
         this.id = id;
     }
 
-    NotificationEventType(String id, Boolean sendForOralCase, Boolean sendForPaperCase, Boolean sendForCohCase, Boolean allowOutOfHours) {
+    NotificationEventType(String id, Boolean sendForOralCase, Boolean sendForPaperCase, Boolean sendForCohCase, Boolean allowOutOfHours, Boolean isReminder) {
         this.id = id;
         this.sendForOralCase = sendForOralCase;
         this.sendForPaperCase = sendForPaperCase;
         this.sendForCohCase = sendForCohCase;
         this.allowOutOfHours = allowOutOfHours;
+        this.isReminder = isReminder;
     }
 
     public static NotificationEventType getNotificationById(String id) {
@@ -71,6 +73,15 @@ public enum NotificationEventType {
         return b;
     }
 
+    public static boolean checkEvent(String event) {
+        for (NotificationEventType type : NotificationEventType.values()) {
+            if (event.equals(type.getId())) {
+                return true;
+            }
+        }
+        return false;
+    }
+
     public String getId() {
         return id;
     }
@@ -85,6 +96,10 @@ public enum NotificationEventType {
 
     public boolean isSendForCohCase() {
         return sendForCohCase;
+    }
+
+    public boolean isReminder() {
+        return isReminder;
     }
 
     public boolean isAllowOutOfHours() {

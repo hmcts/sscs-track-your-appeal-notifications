@@ -58,16 +58,15 @@ data "azurerm_key_vault_secret" "email-mac-secret" {
 }
 
 locals {
-  aseName = "${data.terraform_remote_state.core_apps_compute.ase_name[0]}"
+  local_ase = "${data.terraform_remote_state.core_apps_compute.ase_name[0]}"
 
-  local_env = "${(var.env == "preview" || var.env == "spreview") ? (var.env == "preview" ) ? "aat" : "saat" : var.env}"
-  local_ase = "${(var.env == "preview" || var.env == "spreview") ? (var.env == "preview" ) ? "core-compute-aat" : "core-compute-saat" : local.aseName}"
+  ccdApi    = "http://ccd-data-store-api-${var.env}.service.${local.local_ase}.internal"
+  s2sCnpUrl = "http://rpe-service-auth-provider-${var.env}.service.${local.local_ase}.internal"
+  cohApi    = "http://coh-cor-${var.env}.service.${local.local_ase}.internal"
+  documentStore = "http://dm-store-${var.env}.service.${local.local_ase}.internal"
+  pdfService    = "http://cmc-pdf-service-${var.env}.service.${local.local_ase}.internal"
 
-  ccdApi    = "http://ccd-data-store-api-${local.local_env}.service.${local.local_ase}.internal"
-  s2sCnpUrl = "http://rpe-service-auth-provider-${local.local_env}.service.${local.local_ase}.internal"
-  cohApi    = "http://coh-cor-${local.local_env}.service.${local.local_ase}.internal"
-
-  azureVaultName              = "sscs-${local.local_env}"
+  azureVaultName = "sscs-${var.env}"
 }
 
 module "track-your-appeal-notifications" {
@@ -78,7 +77,7 @@ module "track-your-appeal-notifications" {
   ilbIp        = "${var.ilbIp}"
   is_frontend  = false
   subscription = "${var.subscription}"
-  capacity     = "${(var.env == "preview") ? 1 : 2}"
+  capacity     = 2
   common_tags  = "${var.common_tags}"
   asp_rg       = "${var.product}-${var.component}-${var.env}"
   asp_name     = "${var.product}-${var.component}-${var.env}"
@@ -116,6 +115,8 @@ module "track-your-appeal-notifications" {
     EMAIL_MAC_SECRET_TEXT         = "${data.azurerm_key_vault_secret.email-mac-secret.value}"
     ONLINE_HEARING_LINK           = "${var.online_hearing_link}"
 
+    PDF_API_URL                   = "${local.pdfService}"
+
     // db vars
     JOB_SCHEDULER_DB_HOST               = "${module.db-notif.host_name}"
     JOB_SCHEDULER_DB_PORT               = "${module.db-notif.postgresql_listen_port}"
@@ -127,6 +128,12 @@ module "track-your-appeal-notifications" {
 
     HOURS_START_TIME                    = "${var.hours_start_time}"
     HOURS_END_TIME                      = "${var.hours_end_time}"
+
+    DOCUMENT_MANAGEMENT_URL = "${local.documentStore}"
+
+    BUNDLED_LETTERS_ON                  = "${var.bundled_letters_on}"
+
+    LETTERS_ON                          = "${var.letters_on}"
   }
 }
 

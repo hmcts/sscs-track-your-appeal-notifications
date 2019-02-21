@@ -120,7 +120,7 @@ public class CohPersonalisationTest {
         when(questionService.getQuestionRequiredByDate(someHearingId)).thenReturn(cohDate);
         when(notificationDateConverterUtil.toEmailDate(cohDate)).thenReturn(expectedRequiredByDate);
 
-        Map<String, String> placeholders = cohPersonalisation.create(new CohNotificationWrapper(someHearingId, sscsCaseDataWrapper));
+        Map<String, String> placeholders = cohPersonalisation.create(new CohNotificationWrapper(someHearingId, sscsCaseDataWrapper), APPELLANT);
 
         assertThat(placeholders, hasEntry("questions_end_date", expectedRequiredByDate));
     }
@@ -141,10 +141,11 @@ public class CohPersonalisationTest {
                         .build());
         Template expectedTemplate = Template.builder().build();
         when(config.getTemplate(
-                QUESTION_ROUND_ISSUED_NOTIFICATION.getId(),
-                QUESTION_ROUND_ISSUED_NOTIFICATION.getId(),
-                Benefit.PIP, ONLINE))
-                .thenReturn(expectedTemplate);
+            QUESTION_ROUND_ISSUED_NOTIFICATION.getId(),
+            QUESTION_ROUND_ISSUED_NOTIFICATION.getId(),
+            QUESTION_ROUND_ISSUED_NOTIFICATION.getId(),
+            Benefit.PIP, ONLINE))
+            .thenReturn(expectedTemplate);
 
         Template template = cohPersonalisation.getTemplate(cohNotificationWrapper, Benefit.PIP, APPELLANT);
         assertThat(template, is(expectedTemplate));
@@ -165,7 +166,7 @@ public class CohPersonalisationTest {
                         )
                         .build());
         Template expectedTemplate = Template.builder().build();
-        when(config.getTemplate("follow_up_question_round_issued", "follow_up_question_round_issued", Benefit.PIP, ONLINE)).thenReturn(expectedTemplate);
+        when(config.getTemplate("follow_up_question_round_issued", "follow_up_question_round_issued", "follow_up_question_round_issued", Benefit.PIP, ONLINE)).thenReturn(expectedTemplate);
 
         Template template = cohPersonalisation.getTemplate(cohNotificationWrapper, Benefit.PIP, APPELLANT);
         assertThat(template, is(expectedTemplate));
