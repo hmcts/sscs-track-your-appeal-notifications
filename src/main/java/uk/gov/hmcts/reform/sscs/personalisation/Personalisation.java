@@ -257,8 +257,8 @@ public class Personalisation<E extends NotificationWrapper> {
     }
 
     private static boolean hasRegionalProcessingCenter(SscsCaseData ccdResponse) {
-        return null != ccdResponse.getRegionalProcessingCenter() &&
-            null != ccdResponse.getRegionalProcessingCenter().getName();
+        return null != ccdResponse.getRegionalProcessingCenter()
+            && null != ccdResponse.getRegionalProcessingCenter().getName();
     }
 
     private String formatAddress(Hearing hearing) {
