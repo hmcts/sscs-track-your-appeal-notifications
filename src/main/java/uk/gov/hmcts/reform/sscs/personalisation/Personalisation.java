@@ -240,7 +240,7 @@ public class Personalisation<E extends NotificationWrapper> {
     Map<String, String> setEvidenceProcessingAddress(Map<String, String> personalisation, SscsCaseData ccdResponse) {
         RegionalProcessingCenter rpc;
 
-        if (null != ccdResponse.getRegionalProcessingCenter()) {
+        if (hasRegionalProcessingCenter(ccdResponse)) {
             rpc = ccdResponse.getRegionalProcessingCenter();
         } else {
             rpc = regionalProcessingCenterService.getByScReferenceCode(ccdResponse.getCaseReference());
@@ -254,6 +254,11 @@ public class Personalisation<E extends NotificationWrapper> {
         personalisation.put(REGIONAL_OFFICE_POSTCODE_LITERAL, rpc.getPostcode());
 
         return personalisation;
+    }
+
+    private static boolean hasRegionalProcessingCenter(SscsCaseData ccdResponse) {
+        return null != ccdResponse.getRegionalProcessingCenter()
+            && null != ccdResponse.getRegionalProcessingCenter().getName();
     }
 
     private String formatAddress(Hearing hearing) {
