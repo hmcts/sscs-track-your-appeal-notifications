@@ -207,25 +207,18 @@ notification:
     smsId: ef6297d1-7b03-432a-b04a-62a01f009b56
   question_round_issued:
     emailId: ccfbfcac-847d-4e55-955c-096802c131a0
-    smsId: f4138438-9707-4d52-9f54-dfa68e96856f
   follow_up_question_round_issued:
     emailId: 71efa426-bfa9-473e-b3cf-da5d99e39461
-    smsId: 217b826c-e569-4fda-b0df-45736a887af8
   question_deadline_elapsed:
     emailId: 48f2b7d1-cb71-4f60-b145-dfcf63cc4fcd
-    smsId: 181fb0f5-0cc8-4d57-903f-9e5db2a76b88
   question_deadline_reminder:
     emailId: 29820a6a-1aa4-4518-8d08-f06f09c5d808
-    smsId: 7a14e549-9043-47fe-bae5-5f96f8e8faa5
   continuous_online_hearing_relisted:
     emailId: 46cc347a-1a5c-40ce-993a-49769dfce626
-    smsId: 31c9b4f4-0977-4382-af94-b6ef092d59f4
   decision_issued:
     emailId: 62e72e11-5eb6-4048-83f4-0b0c5c59fcb9
-    smsId: 32138594-d960-44ff-8b74-07cbd565607c
   corDecision:
     emailId: 5b0df251-49b9-46d5-b347-37a81ab77f19
-    smsId: 04e778fd-71a8-4c27-b423-aa7485a81a9c
   struckOut:
     letterId: 7383b637-d76e-4c9f-8af9-3e3573168011
   caseUpdated:
@@ -241,10 +234,8 @@ notification:
   online:
     responseReceived:
       emailId: 90f0ed29-a616-4ce0-b4ef-108391f5d90e
-      smsId: e2e166c4-3600-443d-8feb-39f2c28e8732
     evidenceReceived:
       emailId: 0ac422c2-1585-4364-a6f0-4f42c43f85c5
-      smsId: 3d3fe9cb-3cbc-479d-ab43-3a71b80b73c5
   paper:
     responseReceived:
       emailId: a64bce9a-9162-47ca-b3e7-cf5f85ca7bdc
