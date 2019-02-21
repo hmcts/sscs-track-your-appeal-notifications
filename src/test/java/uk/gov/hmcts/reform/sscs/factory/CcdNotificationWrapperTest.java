@@ -138,9 +138,12 @@ public class CcdNotificationWrapperTest {
     }
 
     @Test
-    @Parameters(method = "getEventTypeBasedOnReps")
-    public void givenSubscriptions_shouldGetSubscriptionTypeList(NotificationEventType notificationEventType) {
-        ccdNotificationWrapper = buildCcdNotificationWrapperBasedOnEventType(notificationEventType);
+    @Parameters({"APPEAL_LAPSED_NOTIFICATION","APPEAL_WITHDRAWN_NOTIFICATION","EVIDENCE_RECEIVED_NOTIFICATION",
+            "POSTPONEMENT_NOTIFICATION","HEARING_BOOKED_NOTIFICATION","SYA_APPEAL_CREATED_NOTIFICATION",
+            "RESEND_APPEAL_CREATED_NOTIFICATION", "APPEAL_RECEIVED_NOTIFICATION", "ADJOURNED_NOTIFICATION",
+            "APPEAL_DORMANT_NOTIFICATION", "CASE_UPDATED"})
+    public void givenSubscriptions_shouldGetAppellantAndRepSubscriptionTypeList(NotificationEventType notificationEventType) {
+        ccdNotificationWrapper = buildCcdNotificationWrapperBasedOnEventTypeWithRep(notificationEventType);
         List<SubscriptionWithType> subsWithTypeList = ccdNotificationWrapper.getSubscriptionsBasedOnNotificationType();
         Assert.assertEquals(2,subsWithTypeList.size());
         Assert.assertEquals(SubscriptionType.APPELLANT, subsWithTypeList.get(0).getSubscriptionType());
@@ -200,23 +203,6 @@ public class CcdNotificationWrapperTest {
                 || type.equals(ADD_REPRESENTATIVE)
                 || type.equals(HEARING_BOOKED_NOTIFICATION)
             )).toArray();
-    }
-
-    private NotificationEventType[] getEventTypeBasedOnReps() {
-        return new NotificationEventType[]{
-            APPEAL_LAPSED_NOTIFICATION,
-            APPEAL_WITHDRAWN_NOTIFICATION,
-            EVIDENCE_RECEIVED_NOTIFICATION,
-            POSTPONEMENT_NOTIFICATION,
-            HEARING_BOOKED_NOTIFICATION,
-            SYA_APPEAL_CREATED_NOTIFICATION,
-            RESEND_APPEAL_CREATED_NOTIFICATION,
-            APPEAL_RECEIVED_NOTIFICATION,
-            ADJOURNED_NOTIFICATION,
-            APPEAL_DORMANT_NOTIFICATION,
-            CASE_UPDATED,
-            ADD_REPRESENTATIVE
-        };
     }
 
 }
