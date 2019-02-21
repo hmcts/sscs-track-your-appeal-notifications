@@ -149,27 +149,37 @@ public class SendNotificationService {
     }
 
     protected void sendLetterNotificationToAddress(NotificationWrapper wrapper, Notification notification, final Address addressToUse) throws NotificationClientException {
-        Map<String, String> placeholders = notification.getPlaceholders();
-        placeholders.put(ADDRESS_LINE_1, addressToUse.getLine1() == null ? " " : addressToUse.getLine1());
-        placeholders.put(ADDRESS_LINE_2, addressToUse.getLine2() == null ? " " : addressToUse.getLine2());
-        placeholders.put(ADDRESS_LINE_3, addressToUse.getTown() == null ? " " : addressToUse.getTown());
-        placeholders.put(ADDRESS_LINE_4, addressToUse.getCounty() == null ? " " : addressToUse.getCounty());
-        placeholders.put(POSTCODE_LITERAL, addressToUse.getPostcode());
-        if (hasRepresentative(wrapper.getSscsCaseDataWrapper())) {
-            placeholders.put(REPRESENTATIVE_NAME, wrapper.getNewSscsCaseData().getAppeal().getRep().getName().getFullNameNoTitle());
-        }
+        if (isValidLetterAddress(addressToUse)) {
+            Map<String, String> placeholders = notification.getPlaceholders();
+            placeholders.put(ADDRESS_LINE_1, addressToUse.getLine1());
+            placeholders.put(ADDRESS_LINE_2, addressToUse.getLine2() == null ? " " : addressToUse.getLine2());
+            placeholders.put(ADDRESS_LINE_3, addressToUse.getTown() == null ? " " : addressToUse.getTown());
+            placeholders.put(ADDRESS_LINE_4, addressToUse.getCounty() == null ? " " : addressToUse.getCounty());
+            placeholders.put(POSTCODE_LITERAL, addressToUse.getPostcode());
+            if (hasRepresentative(wrapper.getSscsCaseDataWrapper())) {
+                placeholders.put(REPRESENTATIVE_NAME, wrapper.getNewSscsCaseData().getAppeal().getRep().getName().getFullNameNoTitle());
+            }
 
-        if (!placeholders.containsKey(APPEAL_RESPOND_DATE)) {
-            ZonedDateTime appealReceivedDate = ZonedDateTime.now().plusSeconds(delay);
-            placeholders.put(APPEAL_RESPOND_DATE, appealReceivedDate.format(DateTimeFormatter.ofPattern(RESPONSE_DATE_FORMAT)));
-        }
+            if (!placeholders.containsKey(APPEAL_RESPOND_DATE)) {
+                ZonedDateTime appealReceivedDate = ZonedDateTime.now().plusSeconds(delay);
+                placeholders.put(APPEAL_RESPOND_DATE, appealReceivedDate.format(DateTimeFormatter.ofPattern(RESPONSE_DATE_FORMAT)));
+            }
 
-        notificationSender.sendLetter(
-            notification.getLetterTemplate(),
-            addressToUse,
-            notification.getPlaceholders(),
-            wrapper.getCaseId()
-        );
+            notificationSender.sendLetter(
+                notification.getLetterTemplate(),
+                addressToUse,
+                notification.getPlaceholders(),
+                wrapper.getCaseId()
+            );
+        } else {
+            log.warn("Attempting to send letter for case id: " + wrapper.getCaseId() + ", no address present");
+        }
+    }
+
+    private static boolean isValidLetterAddress(Address addressToUse) {
+        return null != addressToUse
+            && null != addressToUse.getLine1()
+            && null != addressToUse.getPostcode();
     }
 
     private void sendBundledLetterNotificationToAppellant(NotificationWrapper wrapper, Notification notification, SubscriptionType subscriptionType) {

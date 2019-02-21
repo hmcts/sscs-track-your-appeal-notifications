@@ -37,6 +37,15 @@ public class SendNotificationServiceTest {
     private static final String CASE_REFERENCE = "ABC123";
     private static final String CASE_ID = "1000001";
 
+    private static Appellant APPELLANT_WITH_NO_ADDRESS = Appellant.builder()
+        .name(Name.builder().firstName("Ap").lastName("pellant").build())
+        .build();
+
+    private static Appellant APPELLANT_WITH_EMPTY_ADDRESS = Appellant.builder()
+        .name(Name.builder().firstName("Ap").lastName("pellant").build())
+        .address(Address.builder().build())
+        .build();
+
     private static Appellant APPELLANT_WITH_ADDRESS = Appellant.builder()
             .name(Name.builder().firstName("Ap").lastName("pellant").build())
             .address(Address.builder().line1("Appellant Line 1").town("Appellant Town").county("Appellant County").postcode("AP9 3LL").build())
@@ -268,6 +277,20 @@ public class SendNotificationServiceTest {
         classUnderTest.sendLetterNotificationToAddress(buildBaseWrapper(APPELLANT_WITH_ADDRESS, NotificationEventType.CASE_UPDATED), LETTER_NOTIFICATION, REP_WITH_ADDRESS.getAddress());
 
         verify(notificationSender).sendLetter(eq(LETTER_NOTIFICATION.getLetterTemplate()), eq(REP_WITH_ADDRESS.getAddress()), any(), any());
+    }
+
+    @Test
+    public void doNotSendLetterNotificationIfAddressEmpty() throws NotificationClientException {
+        classUnderTest.sendLetterNotificationToAddress(buildBaseWrapper(APPELLANT_WITH_EMPTY_ADDRESS, NotificationEventType.CASE_UPDATED), LETTER_NOTIFICATION, APPELLANT_WITH_EMPTY_ADDRESS.getAddress());
+
+        verifyZeroInteractions(notificationSender);
+    }
+
+    @Test
+    public void doNotSendLetterNotificationIfNoAddress() throws NotificationClientException {
+        classUnderTest.sendLetterNotificationToAddress(buildBaseWrapper(APPELLANT_WITH_NO_ADDRESS, NotificationEventType.CASE_UPDATED), LETTER_NOTIFICATION, APPELLANT_WITH_NO_ADDRESS.getAddress());
+
+        verifyZeroInteractions(notificationSender);
     }
 
     private CcdNotificationWrapper buildBaseWrapper(Appellant appellant) {
