@@ -104,6 +104,7 @@ public class ReminderNotificationsFunctionalTest extends AbstractFunctionalTest 
     public void shouldSendNotificationsWhenDwpResponseReceivedEventIsReceived() throws IOException, NotificationClientException {
 
         triggerEvent(DWP_RESPONSE_RECEIVED_NOTIFICATION);
+        simulateCcdCallback(DWP_RESPONSE_RECEIVED_NOTIFICATION);
 
         List<Notification> notifications =
             tryFetchNotificationsForTestCase(
