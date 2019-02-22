@@ -44,9 +44,6 @@ public class NotificationsFunctionalTest extends AbstractFunctionalTest {
     @Value("${notification.online.responseReceived.emailId}")
     private String onlineResponseReceivedEmailId;
 
-    @Value("${notification.online.responseReceived.smsId}")
-    private String onlineResponseReceivedSmsId;
-
     @Value("${notification.paper.responseReceived.emailId}")
     private String paperResponseReceivedEmailId;
 
@@ -164,7 +161,7 @@ public class NotificationsFunctionalTest extends AbstractFunctionalTest {
     @Test
     public void shouldSendOnlineDwpResponseReceivedNotification() throws NotificationClientException, IOException {
         simulateCcdCallback(DWP_RESPONSE_RECEIVED_NOTIFICATION, "online-" + DWP_RESPONSE_RECEIVED_NOTIFICATION.getId() + "Callback.json");
-        List<Notification> notifications = tryFetchNotificationsForTestCase(onlineResponseReceivedEmailId, onlineResponseReceivedSmsId);
+        List<Notification> notifications = tryFetchNotificationsForTestCase(onlineResponseReceivedEmailId);
 
         assertNotificationBodyContains(notifications, onlineResponseReceivedEmailId, caseData.getCaseReference());
     }
