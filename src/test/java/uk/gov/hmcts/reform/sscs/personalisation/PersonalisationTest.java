@@ -46,7 +46,6 @@ import uk.gov.hmcts.reform.sscs.ccd.domain.Address;
 import uk.gov.hmcts.reform.sscs.ccd.domain.Appeal;
 import uk.gov.hmcts.reform.sscs.ccd.domain.Appellant;
 import uk.gov.hmcts.reform.sscs.ccd.domain.Appointee;
-import uk.gov.hmcts.reform.sscs.ccd.domain.Benefit;
 import uk.gov.hmcts.reform.sscs.ccd.domain.BenefitType;
 import uk.gov.hmcts.reform.sscs.ccd.domain.Document;
 import uk.gov.hmcts.reform.sscs.ccd.domain.DocumentDetails;
@@ -62,7 +61,6 @@ import uk.gov.hmcts.reform.sscs.ccd.domain.SscsCaseData;
 import uk.gov.hmcts.reform.sscs.ccd.domain.Subscription;
 import uk.gov.hmcts.reform.sscs.ccd.domain.Subscriptions;
 import uk.gov.hmcts.reform.sscs.ccd.domain.Venue;
-import uk.gov.hmcts.reform.sscs.config.AppealHearingType;
 import uk.gov.hmcts.reform.sscs.config.NotificationConfig;
 import uk.gov.hmcts.reform.sscs.config.SubscriptionType;
 import uk.gov.hmcts.reform.sscs.domain.SscsCaseDataWrapper;
@@ -296,12 +294,12 @@ public class PersonalisationTest {
     @SuppressWarnings("Indentation")
     private Object[] generateLetterScenarios() {
         return new Object[]{
-                new Object[]{INTERLOC_VALID_APPEAL, APPELLANT, PAPER},
-                new Object[]{INTERLOC_VALID_APPEAL, APPELLANT, ORAL},
-                new Object[]{INTERLOC_VALID_APPEAL, APPELLANT, ONLINE},
-                new Object[]{INTERLOC_VALID_APPEAL, REPRESENTATIVE, PAPER},
-                new Object[]{INTERLOC_VALID_APPEAL, REPRESENTATIVE, ORAL},
-                new Object[]{INTERLOC_VALID_APPEAL, REPRESENTATIVE, ONLINE},
+                new Object[]{CASE_UPDATED, APPELLANT, PAPER},
+                new Object[]{CASE_UPDATED, APPELLANT, ORAL},
+                new Object[]{CASE_UPDATED, APPELLANT, ONLINE},
+                new Object[]{CASE_UPDATED, REPRESENTATIVE, PAPER},
+                new Object[]{CASE_UPDATED, REPRESENTATIVE, ORAL},
+                new Object[]{CASE_UPDATED, REPRESENTATIVE, ONLINE},
                 new Object[]{DWP_RESPONSE_RECEIVED_NOTIFICATION, APPELLANT, PAPER},
                 new Object[]{DWP_RESPONSE_RECEIVED_NOTIFICATION, APPELLANT, ORAL},
                 new Object[]{DWP_RESPONSE_RECEIVED_NOTIFICATION, APPELLANT, ONLINE},

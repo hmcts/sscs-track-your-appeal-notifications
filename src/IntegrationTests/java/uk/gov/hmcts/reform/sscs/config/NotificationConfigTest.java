@@ -40,6 +40,7 @@ public class NotificationConfigTest {
     @Parameters(method = "templateIdsWithHearingAndEventTypes")
     public void given_templateNamesAndHearingType_should_getCorrectTemplate(String expectedEmailTemplateId,
                                                                             String expectedSmsTemplateId,
+                                                                            String expectedLetterTemplateId,
                                                                             AppealHearingType appealHearingType,
                                                                             String templateName) {
         Template template = notificationConfig.getTemplate(templateName, templateName, templateName, Benefit.PIP, appealHearingType);
