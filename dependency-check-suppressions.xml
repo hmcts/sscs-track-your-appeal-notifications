@@ -161,4 +161,16 @@
    ]]></notes>
     <cve>CVE-2017-16224</cve>
   </suppress>
+  <suppress>
+    <notes><![CDATA[
+   file name: pmd-java-5.8.1.jar
+   ]]></notes>
+    <cve>CVE-2019-7722</cve>
+  </suppress>
+  <suppress>
+    <notes><![CDATA[
+   file name: pmd-core-5.8.1.jar
+   ]]></notes>
+    <cve>CVE-2019-7722</cve>
+  </suppress>
 </suppressions>
