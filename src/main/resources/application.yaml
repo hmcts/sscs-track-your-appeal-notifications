@@ -66,6 +66,8 @@ gov.uk.notification.api.testKey: ${NOTIFICATION_API_TEST_KEY:emailnotificationte
 gov.uk.notification.api.testRecipients:
 - "sscstest+notify@greencroftconsulting.com"
 - "sscstest+notify2@greencroftconsulting.com"
+- "hmctspentet2@mailinator.com"
+- "hmctspentet3@mailinator.com"
 - "07398785050"
 - "07398785051"
 - "TS1 1ST"

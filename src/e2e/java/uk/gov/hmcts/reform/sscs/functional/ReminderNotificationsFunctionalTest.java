@@ -9,11 +9,20 @@ import java.time.format.DateTimeFormatter;
 import java.util.List;
 import org.junit.Test;
 import org.springframework.beans.factory.annotation.Value;
+import uk.gov.hmcts.reform.sscs.ccd.domain.Appointee;
+import uk.gov.hmcts.reform.sscs.ccd.domain.Name;
+import uk.gov.hmcts.reform.sscs.ccd.domain.SscsCaseData;
 import uk.gov.hmcts.reform.sscs.config.AppConstants;
 import uk.gov.service.notify.Notification;
 import uk.gov.service.notify.NotificationClientException;
 
 public class ReminderNotificationsFunctionalTest extends AbstractFunctionalTest {
+
+    private static final String AS_APPOINTEE_FOR = "You are receiving this update as the appointee for";
+    private static final String APPOINTEE_TYA = "v8eg15XeZk";
+    public static final String APPOINTEE_FIRST_NAME = "Appointee";
+    public static final String APPOINTEE_LAST_NAME = "User";
+    private static final String DEAR_APPOINTEE_USER = "Dear " + APPOINTEE_FIRST_NAME + " " + APPOINTEE_LAST_NAME;
 
     @Value("${notification.dwpResponseLateReminder.emailId}")
     private String dwpResponseLateReminderEmailTemplateId;
@@ -282,4 +291,63 @@ public class ReminderNotificationsFunctionalTest extends AbstractFunctionalTest 
             "/abouthearing"
         );
     }
+
+    @Test
+    public void shouldSendAppointeeNotificationsWhenHearingBookedEventIsReceived() throws IOException, NotificationClientException {
+
+        addAppointee(caseData, APPOINTEE_TYA);
+        addHearing(caseData, 0);
+        triggerEvent(HEARING_BOOKED_NOTIFICATION);
+        simulateCcdCallback(HEARING_BOOKED_NOTIFICATION,
+                "appointee/" + HEARING_BOOKED_NOTIFICATION.getId() + "Callback.json");
+
+        List<Notification> notifications =
+                tryFetchNotificationsForTestCase(
+                        hearingReminderEmailTemplateId,
+                        hearingReminderEmailTemplateId,
+                        hearingReminderSmsTemplateId,
+                        hearingReminderSmsTemplateId
+                );
+
+        assertNotificationSubjectContains(notifications, hearingReminderEmailTemplateId, "ESA");
+
+        String formattedString = LocalDate.now().format(DateTimeFormatter.ofPattern(AppConstants.RESPONSE_DATE_FORMAT));
+
+        assertNotificationBodyContains(
+                notifications,
+                hearingReminderEmailTemplateId,
+                caseReference,
+                DEAR_APPOINTEE_USER,
+                AS_APPOINTEE_FOR,
+                "ESA",
+                "reminder",
+                formattedString,
+                "11:59 PM",
+                "AB12 0HN",
+                "/abouthearing/" + APPOINTEE_TYA
+        );
+
+        assertNotificationBodyContains(
+                notifications,
+                hearingReminderSmsTemplateId,
+                "ESA",
+                "reminder",
+                formattedString,
+                "11:59 PM",
+                "AB12 0HN",
+                "/abouthearing/" + APPOINTEE_TYA
+        );
+    }
+
+    private static void addAppointee(SscsCaseData response, String tya) {
+        Appointee appointee = Appointee.builder()
+                .name(Name.builder()
+                        .firstName(APPOINTEE_FIRST_NAME)
+                        .lastName(APPOINTEE_LAST_NAME)
+                        .build())
+                .build();
+
+        response.getAppeal().getAppellant().setAppointee(appointee);
+    }
+
 }
