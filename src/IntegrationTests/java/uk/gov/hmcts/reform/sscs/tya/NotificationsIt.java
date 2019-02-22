@@ -6,17 +6,8 @@ import static helper.IntegrationTestHelper.getRequestWithoutAuthHeader;
 import static helper.IntegrationTestHelper.updateEmbeddedJson;
 import static org.junit.Assert.assertArrayEquals;
 import static org.junit.Assert.assertEquals;
-import static org.mockito.Mockito.any;
-import static org.mockito.Mockito.anyString;
-import static org.mockito.Mockito.eq;
-import static org.mockito.Mockito.mock;
-import static org.mockito.Mockito.never;
-import static org.mockito.Mockito.times;
-import static org.mockito.Mockito.verify;
-import static org.mockito.Mockito.when;
-import static uk.gov.hmcts.reform.sscs.config.AppConstants.APPELLANT_NAME;
-import static uk.gov.hmcts.reform.sscs.config.AppConstants.NAME;
-import static uk.gov.hmcts.reform.sscs.config.AppConstants.REPRESENTATIVE_NAME;
+import static org.mockito.Mockito.*;
+import static uk.gov.hmcts.reform.sscs.config.AppConstants.*;
 import static uk.gov.hmcts.reform.sscs.domain.notify.NotificationEventType.*;
 
 import java.io.File;
@@ -238,15 +229,17 @@ public class NotificationsIt {
     }
 
     @Test
-    public void shouldSendNotificationForAnEvidenceReceivedRequestForAPaperHearing() throws Exception {
+    public void shouldSendEmailNotificationOnlyForAnEvidenceReceivedRequestToAnAppellantForAPaperHearing() throws Exception {
         updateJsonForPaperHearing();
         json = json.replace("appealReceived", "evidenceReceived");
+        json = updateEmbeddedJson(json, "No", "case_details", "case_data", "subscriptions", "representativeSubscription", "subscribeSms");
+        json = updateEmbeddedJson(json, "No", "case_details", "case_data", "subscriptions", "representativeSubscription", "subscribeEmail");
 
         HttpServletResponse response = getResponse(getRequestWithAuthHeader(json));
 
         assertHttpStatus(response, HttpStatus.OK);
-        verify(notificationClient).sendEmail(any(), any(), any(), any());
-        verify(notificationClient, times(2)).sendSms(any(), any(), any(), any(), any());
+        verify(notificationClient, times(1)).sendEmail(any(), any(), any(), any());
+        verify(notificationClient, times(1)).sendSms(any(), any(), any(), any(), any());
     }
 
     @Test
