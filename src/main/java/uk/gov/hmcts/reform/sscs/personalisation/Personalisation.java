@@ -8,7 +8,8 @@ import static uk.gov.hmcts.reform.sscs.config.SubscriptionType.APPELLANT;
 import static uk.gov.hmcts.reform.sscs.config.SubscriptionType.APPOINTEE;
 import static uk.gov.hmcts.reform.sscs.config.SubscriptionType.REPRESENTATIVE;
 import static uk.gov.hmcts.reform.sscs.domain.notify.NotificationEventType.*;
-import static uk.gov.hmcts.reform.sscs.service.NotificationUtils.*;
+import static uk.gov.hmcts.reform.sscs.service.NotificationUtils.hasAppointee;
+import static uk.gov.hmcts.reform.sscs.service.NotificationUtils.hasRepresentative;
 
 import java.io.UnsupportedEncodingException;
 import java.net.URLEncoder;
@@ -24,7 +25,14 @@ import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
-import uk.gov.hmcts.reform.sscs.ccd.domain.*;
+import uk.gov.hmcts.reform.sscs.ccd.domain.Benefit;
+import uk.gov.hmcts.reform.sscs.ccd.domain.Event;
+import uk.gov.hmcts.reform.sscs.ccd.domain.EventDetails;
+import uk.gov.hmcts.reform.sscs.ccd.domain.Hearing;
+import uk.gov.hmcts.reform.sscs.ccd.domain.Name;
+import uk.gov.hmcts.reform.sscs.ccd.domain.RegionalProcessingCenter;
+import uk.gov.hmcts.reform.sscs.ccd.domain.SscsCaseData;
+import uk.gov.hmcts.reform.sscs.ccd.domain.Subscription;
 import uk.gov.hmcts.reform.sscs.config.NotificationConfig;
 import uk.gov.hmcts.reform.sscs.config.SubscriptionType;
 import uk.gov.hmcts.reform.sscs.domain.SscsCaseDataWrapper;
@@ -38,7 +46,7 @@ import uk.gov.hmcts.reform.sscs.service.RegionalProcessingCenterService;
 @Component
 @Slf4j
 public class Personalisation<E extends NotificationWrapper> {
-    private static final List<NotificationEventType> FALLBACK_LETTER_SUBSCRIPTION_TYPES = Arrays.asList(INTERLOC_VALID_APPEAL, SYA_APPEAL_CREATED_NOTIFICATION, DWP_RESPONSE_RECEIVED_NOTIFICATION);
+    private static final List<NotificationEventType> FALLBACK_LETTER_SUBSCRIPTION_TYPES = Arrays.asList(CASE_UPDATED, SYA_APPEAL_CREATED_NOTIFICATION, DWP_RESPONSE_RECEIVED_NOTIFICATION);
     private static final String CRLF =  String.format("%c%c",(char) 0x0D, (char) 0x0A);
 
     private boolean sendSmsSubscriptionConfirmation;
@@ -66,7 +74,6 @@ public class Personalisation<E extends NotificationWrapper> {
         SscsCaseData ccdResponse = responseWrapper.getNewSscsCaseData();
         Map<String, String> personalisation = new HashMap<>();
         Benefit benefit = getBenefitByCode(ccdResponse.getAppeal().getBenefitType().getCode());
-
         personalisation.put(PANEL_COMPOSITION, getPanelCompositionByBenefitType(benefit));
         personalisation.put(DECISION_POSTED_RECEIVE_DATE, formatLocalDate(LocalDate.now().plusDays(7)));
         personalisation.put(BENEFIT_NAME_ACRONYM_LITERAL, benefit.name());
@@ -76,6 +83,7 @@ public class Personalisation<E extends NotificationWrapper> {
         personalisation.put(APPELLANT_NAME, ccdResponse.getAppeal().getAppellant().getName().getFullNameNoTitle());
         personalisation.put(NAME, getName(subscriptionType, ccdResponse, responseWrapper));
         personalisation.put(PHONE_NUMBER, config.getHmctsPhoneNumber());
+        personalisation.put(CCD_ID, StringUtils.defaultIfBlank(ccdResponse.getCcdCaseId(), StringUtils.EMPTY));
 
         Subscription appellantOrAppointeeSubscription = hasAppointee(responseWrapper)
                 ? ccdResponse.getSubscriptions().getAppointeeSubscription()
@@ -84,12 +92,14 @@ public class Personalisation<E extends NotificationWrapper> {
         if (appellantOrAppointeeSubscription != null) {
             subscriptionDetails(personalisation, appellantOrAppointeeSubscription, benefit);
         }
+
         personalisation.put(FIRST_TIER_AGENCY_ACRONYM, DWP_ACRONYM);
         personalisation.put(FIRST_TIER_AGENCY_FULL_NAME, DWP_FUL_NAME);
 
         if (ccdResponse.getHearings() != null && !ccdResponse.getHearings().isEmpty()) {
             Hearing latestHearing = ccdResponse.getHearings().get(0);
             LocalDateTime hearingDateTime = latestHearing.getValue().getHearingDateTime();
+
             personalisation.put(HEARING_DATE, formatLocalDate(hearingDateTime.toLocalDate()));
             personalisation.put(HEARING_TIME, formatLocalTime(hearingDateTime));
             personalisation.put(VENUE_ADDRESS_LITERAL, formatAddress(latestHearing));
@@ -144,7 +154,8 @@ public class Personalisation<E extends NotificationWrapper> {
     }
 
     private String getAppointeeDescription(SubscriptionType subscriptionType, SscsCaseData ccdResponse) {
-        if (APPOINTEE.equals(subscriptionType) && ccdResponse.getAppeal() != null && ccdResponse.getAppeal().getAppellant().getName() != null) {
+        if (APPOINTEE.equals(subscriptionType) && ccdResponse.getAppeal() != null
+                && ccdResponse.getAppeal().getAppellant().getName() != null) {
             return String.format("You are receiving this update as the appointee for %s.%s%s",
                     ccdResponse.getAppeal().getAppellant().getName().getFullNameNoTitle(), CRLF, CRLF);
         } else {
@@ -189,7 +200,7 @@ public class Personalisation<E extends NotificationWrapper> {
         ));
     }
 
-    public Map<String, String> setEventData(Map<String, String> personalisation, SscsCaseData ccdResponse, NotificationEventType notificationEventType) {
+    Map<String, String> setEventData(Map<String, String> personalisation, SscsCaseData ccdResponse, NotificationEventType notificationEventType) {
         if (ccdResponse.getEvents() != null) {
 
             for (Event event : ccdResponse.getEvents()) {
@@ -197,7 +208,7 @@ public class Personalisation<E extends NotificationWrapper> {
                     && ((notificationEventType.equals(APPEAL_RECEIVED_NOTIFICATION) && event.getValue().getEventType().equals(APPEAL_RECEIVED))
 
                     || (notificationEventType.equals(DWP_RESPONSE_LATE_REMINDER_NOTIFICATION)))
-                    || notificationEventType.equals(INTERLOC_VALID_APPEAL)) {
+                    || notificationEventType.equals(CASE_UPDATED)) {
                     return setAppealReceivedDetails(personalisation, event.getValue());
                 }
             }
@@ -205,10 +216,15 @@ public class Personalisation<E extends NotificationWrapper> {
         return personalisation;
     }
 
-    public Map<String, String> setEvidenceReceivedNotificationData(Map<String, String> personalisation, SscsCaseData ccdResponse, NotificationEventType notificationEventType) {
+    Map<String, String> setEvidenceReceivedNotificationData(Map<String, String> personalisation,
+                                                            SscsCaseData ccdResponse,
+                                                            NotificationEventType notificationEventType) {
         if (notificationEventType.equals(EVIDENCE_RECEIVED_NOTIFICATION)) {
-            if (ccdResponse.getEvidence() != null && ccdResponse.getEvidence().getDocuments() != null && !ccdResponse.getEvidence().getDocuments().isEmpty()) {
-                personalisation.put(EVIDENCE_RECEIVED_DATE_LITERAL, formatLocalDate(ccdResponse.getEvidence().getDocuments().get(0).getValue().getEvidenceDateTimeFormatted()));
+            if (ccdResponse.getEvidence() != null && ccdResponse.getEvidence().getDocuments() != null
+                    && !ccdResponse.getEvidence().getDocuments().isEmpty()) {
+                personalisation.put(EVIDENCE_RECEIVED_DATE_LITERAL,
+                        formatLocalDate(ccdResponse.getEvidence().getDocuments().get(0).getValue()
+                                .getEvidenceDateTimeFormatted()));
             } else {
                 personalisation.put(EVIDENCE_RECEIVED_DATE_LITERAL, StringUtils.EMPTY);
             }
@@ -222,10 +238,10 @@ public class Personalisation<E extends NotificationWrapper> {
         return personalisation;
     }
 
-    public Map<String, String> setEvidenceProcessingAddress(Map<String, String> personalisation, SscsCaseData ccdResponse) {
+    Map<String, String> setEvidenceProcessingAddress(Map<String, String> personalisation, SscsCaseData ccdResponse) {
         RegionalProcessingCenter rpc;
 
-        if (null != ccdResponse.getRegionalProcessingCenter()) {
+        if (hasRegionalProcessingCenter(ccdResponse)) {
             rpc = ccdResponse.getRegionalProcessingCenter();
         } else {
             rpc = regionalProcessingCenterService.getByScReferenceCode(ccdResponse.getCaseReference());
@@ -236,8 +252,14 @@ public class Personalisation<E extends NotificationWrapper> {
         personalisation.put(TOWN_LITERAL, rpc.getAddress4());
         personalisation.put(COUNTY_LITERAL, rpc.getCity());
         personalisation.put(POSTCODE_LITERAL, rpc.getPostcode());
+        personalisation.put(REGIONAL_OFFICE_POSTCODE_LITERAL, rpc.getPostcode());
 
         return personalisation;
+    }
+
+    private static boolean hasRegionalProcessingCenter(SscsCaseData ccdResponse) {
+        return null != ccdResponse.getRegionalProcessingCenter()
+            && null != ccdResponse.getRegionalProcessingCenter().getName();
     }
 
     private String formatAddress(Hearing hearing) {
@@ -254,7 +276,7 @@ public class Personalisation<E extends NotificationWrapper> {
         return daysBetween == 1 ? TOMORROW_STRING : "in " + daysBetween + DAYS_STRING;
     }
 
-    public String getMacToken(String id, String benefitType) {
+    private String getMacToken(String id, String benefitType) {
         return macService.generateToken(id, benefitType);
     }
 
@@ -288,7 +310,7 @@ public class Personalisation<E extends NotificationWrapper> {
             || DWP_RESPONSE_RECEIVED_NOTIFICATION.equals(notificationEventType)
             || POSTPONEMENT_NOTIFICATION.equals(notificationEventType)
             || HEARING_BOOKED_NOTIFICATION.equals(notificationEventType)
-            || INTERLOC_VALID_APPEAL.equals(notificationEventType)) {
+            || CASE_UPDATED.equals(notificationEventType)) {
             emailTemplateName = emailTemplateName + "." + StringUtils.lowerCase(subscriptionType.name());
         }
         return emailTemplateName;
@@ -302,11 +324,11 @@ public class Personalisation<E extends NotificationWrapper> {
         return letterTemplateName;
     }
 
-    public Boolean isSendSmsSubscriptionConfirmation() {
+    private Boolean isSendSmsSubscriptionConfirmation() {
         return sendSmsSubscriptionConfirmation;
     }
 
-    public void setSendSmsSubscriptionConfirmation(Boolean sendSmsSubscriptionConfirmation) {
+    void setSendSmsSubscriptionConfirmation(Boolean sendSmsSubscriptionConfirmation) {
         this.sendSmsSubscriptionConfirmation = sendSmsSubscriptionConfirmation;
     }
 }

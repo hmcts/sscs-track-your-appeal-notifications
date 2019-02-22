@@ -7,21 +7,44 @@
       "appeal": {
         "appealReasons": {},
         "appellant": {
-          "address": {},
+        "address": {},
+        "contact": {
+          "email": "mail@email.com",
+          "phone": "01234567890"
+        },
+        "identity": {
+          "dob": "1904-03-10",
+          "nino": "AB 22 55 66 B"
+        },
+        "name": {
+          "firstName": "Appellant",
+          "lastName": "User",
+          "title": "Mr"
+        },
+        "isAddressSameAsAppointee":"no",
+        "appointee": {
+          "name": {
+            "title": "Mr",
+            "firstName": "Appointee",
+            "lastName": "User"
+          },
           "contact": {
-            "email": "mail@email.com",
-            "phone": "01234567890"
+            "email": "test@tester.com",
+            "mobile": "07848484848"
+          },
+          "address": {
+            "line1": "1 Appointee Street",
+            "line2": "Newcastle",
+            "town": "Newcastle",
+            "county": "Tyne and Wear",
+            "postcode": "NE1 1AW"
           },
           "identity": {
-            "dob": "1904-03-10",
-            "nino": "AB 22 55 66 B"
-          },
-          "name": {
-            "firstName": "User",
-            "lastName": "Test",
-            "title": "Mr"
+            "dob": "1998-07-01",
+            "nino": ""
           }
-        },
+        }
+      },
         "benefitType": {
           "code": "ESA"
         },
@@ -63,7 +86,7 @@
         }
       ],
       "subscriptions": {
-        "appellantSubscription": {
+        "appointeeSubscription": {
           "email": "sscstest+notify@greencroftconsulting.com",
           "mobile": "07398785050",
           "subscribeEmail": "Yes",
@@ -187,7 +210,7 @@
       "subscriptions": {
         "classification": "PUBLIC",
         "value": {
-          "appellantSubscription": {
+          "appointeeSubscription": {
             "classification": "PUBLIC",
             "value": {
               "email": "PUBLIC",
@@ -320,7 +343,7 @@
       "subscriptions": {
         "classification": "PUBLIC",
         "value": {
-          "appellantSubscription": {
+          "appointeeSubscription": {
             "classification": "PUBLIC",
             "value": {
               "email": "PUBLIC",
@@ -363,9 +386,32 @@
             "nino": "AB 22 55 66 B"
           },
           "name": {
-            "firstName": "User",
-            "lastName": "Test",
+            "firstName": "Appellant",
+            "lastName": "User",
             "title": "Mr"
+          },
+          "isAddressSameAsAppointee":"no",
+          "appointee": {
+            "name": {
+              "title": "Mr",
+              "firstName": "Appointee",
+              "lastName": "User"
+            },
+            "contact": {
+              "email": "test@tester.com",
+              "mobile": "07848484848"
+            },
+            "address": {
+              "line1": "1 Appointee Street",
+              "line2": "Newcastle",
+              "town": "Newcastle",
+              "county": "Tyne and Wear",
+              "postcode": "NE1 1AW"
+            },
+            "identity": {
+              "dob": "1998-07-01",
+              "nino": ""
+            }
           }
         },
         "benefitType": {
@@ -393,7 +439,7 @@
         }
       ],
       "subscriptions": {
-        "appellantSubscription": {
+        "appointeeSubscription": {
           "email": "sscstest+notify@greencroftconsulting.com",
           "mobile": "07398785050",
           "subscribeEmail": "Yes",
@@ -448,6 +494,7 @@
                   "nino": "PUBLIC"
                 }
               },
+              "isAppointee": "PUBLIC",
               "name": {
                 "classification": "PUBLIC",
                 "value": {
@@ -501,7 +548,7 @@
       "subscriptions": {
         "classification": "PUBLIC",
         "value": {
-          "appellantSubscription": {
+          "appointeeSubscription": {
             "classification": "PUBLIC",
             "value": {
               "email": "PUBLIC",
@@ -565,6 +612,7 @@
                   "nino": "PUBLIC"
                 }
               },
+              "isAppointee": "PUBLIC",
               "name": {
                 "classification": "PUBLIC",
                 "value": {
@@ -618,7 +666,7 @@
       "subscriptions": {
         "classification": "PUBLIC",
         "value": {
-          "appellantSubscription": {
+          "appointeeSubscription": {
             "classification": "PUBLIC",
             "value": {
               "email": "PUBLIC",

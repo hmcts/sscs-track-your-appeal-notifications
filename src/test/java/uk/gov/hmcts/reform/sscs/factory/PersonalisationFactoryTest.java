@@ -91,8 +91,8 @@ public class PersonalisationFactoryTest {
     }
 
     @Test
-    public void createRepsPersonalisationWhenInterlockValidAppealNotificationApplied() {
-        Personalisation result = factory.apply(INTERLOC_VALID_APPEAL);
+    public void createRepsPersonalisationWhenCaseUpdatedValidAppealNotificationApplied() {
+        Personalisation result = factory.apply(CASE_UPDATED);
         assertEquals(syaAppealCreatedAndReceivedPersonalisation, result);
     }
 

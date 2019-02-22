@@ -2,9 +2,7 @@ package uk.gov.hmcts.reform.sscs.functional;
 
 import static uk.gov.hmcts.reform.sscs.SscsCaseDataUtils.builderSscsCaseData;
 import static uk.gov.hmcts.reform.sscs.ccd.domain.EventType.SYA_APPEAL_CREATED;
-import static uk.gov.hmcts.reform.sscs.domain.notify.NotificationEventType.QUESTION_DEADLINE_ELAPSED_NOTIFICATION;
-import static uk.gov.hmcts.reform.sscs.domain.notify.NotificationEventType.QUESTION_ROUND_ISSUED_NOTIFICATION;
-import static uk.gov.hmcts.reform.sscs.domain.notify.NotificationEventType.VIEW_ISSUED;
+import static uk.gov.hmcts.reform.sscs.domain.notify.NotificationEventType.*;
 
 import io.restassured.RestAssured;
 import io.restassured.http.ContentType;
@@ -29,14 +27,8 @@ public class CohNotificationFunctionalTest extends AbstractFunctionalTest {
     @Value("${notification.question_round_issued.emailId}")
     private String questionRoundIssuedEmailTemplateId;
 
-    @Value("${notification.question_round_issued.smsId}")
-    private String questionRoundIssuedSmsTemplateId;
-
     @Value("${notification.follow_up_question_round_issued.emailId}")
     private String followupQuestionRoundIssuedEmailTemplateId;
-
-    @Value("${notification.follow_up_question_round_issued.smsId}")
-    private String followupQuestionRoundIssuedSmsTemplateId;
 
     @Value("${notification.question_deadline_elapsed.emailId}")
     private String questionDeadlineElapsedEmailTemplateId;
@@ -52,9 +44,6 @@ public class CohNotificationFunctionalTest extends AbstractFunctionalTest {
 
     @Value("${notification.decision_issued.emailId}")
     private String viewIssuedEmailTemplateId;
-
-    @Value("${notification.decision_issued.smsId}")
-    private String viewIssuedSmsIdTemplate;
 
     public CohNotificationFunctionalTest() {
         super(30);
@@ -76,13 +65,12 @@ public class CohNotificationFunctionalTest extends AbstractFunctionalTest {
     public void shouldSendQuestionsReadyNotifications() throws IOException, InterruptedException, NotificationClientException {
         String hearingId = createHearingWithQuestions(caseId);
         // Issuing the question round will cause these notifications to be fired from AAT
-        tryFetchNotificationsForTestCase(questionRoundIssuedEmailTemplateId, questionRoundIssuedSmsTemplateId);
+        tryFetchNotificationsForTestCase(questionRoundIssuedEmailTemplateId);
 
         simulateCohCallback(QUESTION_ROUND_ISSUED_NOTIFICATION, hearingId);
 
         // Need to check for two sets of notifications one from AAT and from the test being run.
-        List<Notification> notifications = tryFetchNotificationsForTestCase(questionRoundIssuedEmailTemplateId, questionRoundIssuedEmailTemplateId,
-                questionRoundIssuedSmsTemplateId, questionRoundIssuedSmsTemplateId);
+        List<Notification> notifications = tryFetchNotificationsForTestCase(questionRoundIssuedEmailTemplateId, questionRoundIssuedEmailTemplateId);
 
         assertNotificationBodyContains(notifications, questionRoundIssuedEmailTemplateId, caseData.getCaseReference());
     }
@@ -99,8 +87,7 @@ public class CohNotificationFunctionalTest extends AbstractFunctionalTest {
 
         // Need to check for two sets of notifications one from AAT and from the test being run.
         List<Notification> notifications = tryFetchNotificationsForTestCase(
-                followupQuestionRoundIssuedEmailTemplateId,
-                followupQuestionRoundIssuedSmsTemplateId
+                followupQuestionRoundIssuedEmailTemplateId
         );
 
         assertNotificationBodyContains(notifications, followupQuestionRoundIssuedEmailTemplateId, caseData.getCaseReference());
@@ -113,7 +100,7 @@ public class CohNotificationFunctionalTest extends AbstractFunctionalTest {
         simulateCohCallback(QUESTION_DEADLINE_ELAPSED_NOTIFICATION, hearingId);
 
         List<Notification> notifications = tryFetchNotificationsForTestCase(
-                questionDeadlineElapsedEmailTemplateId, questionDeadlineElapsedSmsTemplateId);
+                questionDeadlineElapsedEmailTemplateId);
 
         assertNotificationBodyContains(notifications, questionDeadlineElapsedEmailTemplateId, caseData.getCaseReference());
     }
@@ -125,7 +112,7 @@ public class CohNotificationFunctionalTest extends AbstractFunctionalTest {
         simulateCohCallback(VIEW_ISSUED, hearingId);
 
         List<Notification> notifications = tryFetchNotificationsForTestCase(
-                viewIssuedEmailTemplateId, viewIssuedSmsIdTemplate);
+                viewIssuedEmailTemplateId);
 
         assertNotificationBodyContains(notifications, viewIssuedEmailTemplateId, caseData.getCaseReference());
     }

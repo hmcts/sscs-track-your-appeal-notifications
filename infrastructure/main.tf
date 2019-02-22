@@ -132,6 +132,8 @@ module "track-your-appeal-notifications" {
     DOCUMENT_MANAGEMENT_URL = "${local.documentStore}"
 
     BUNDLED_LETTERS_ON                  = "${var.bundled_letters_on}"
+
+    LETTERS_ON                          = "${var.letters_on}"
   }
 }
 
