@@ -31,6 +31,7 @@ import org.junit.runner.RunWith;
 import org.mockito.ArgumentCaptor;
 import org.mockito.Mock;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
@@ -62,8 +63,6 @@ import uk.gov.service.notify.SendSmsResponse;
 @ActiveProfiles("integration")
 @AutoConfigureMockMvc
 public class NotificationsIt {
-    private static final String TEMPLATE_PATH = "/templates/non_compliant_case_letter_template.html";
-
     // Below rules are needed to use the junitParamsRunner together with SpringRunner
     @ClassRule
     public static final SpringClassRule SPRING_CLASS_RULE = new SpringClassRule();
@@ -71,12 +70,10 @@ public class NotificationsIt {
     @Rule
     public final SpringMethodRule springMethodRule = new SpringMethodRule();
 
-    MockMvc mockMvc;
-
-    NotificationController controller;
+    private MockMvc mockMvc;
 
     @Mock
-    NotificationClient notificationClient;
+    private NotificationClient notificationClient;
 
     @Mock
     private SendEmailResponse sendEmailResponse;
@@ -88,19 +85,19 @@ public class NotificationsIt {
     private SendLetterResponse sendLetterResponse;
 
     @Mock
-    ReminderService reminderService;
-
-    @Autowired
-    NotificationValidService notificationValidService;
+    private ReminderService reminderService;
 
     @MockBean
     private AuthorisationService authorisationService;
 
     @Mock
-    NotificationBlacklist notificationBlacklist;
+    private NotificationBlacklist notificationBlacklist;
 
     @Autowired
-    NotificationFactory factory;
+    private NotificationValidService notificationValidService;
+
+    @Autowired
+    private NotificationFactory factory;
 
     @Autowired
     private CcdService ccdService;
@@ -111,7 +108,7 @@ public class NotificationsIt {
     @MockBean
     private IdamService idamService;
 
-    String json;
+    private String json;
 
     @Autowired
     private NotificationHandler notificationHandler;
@@ -128,6 +125,21 @@ public class NotificationsIt {
     @Mock
     private SscsGeneratePdfService sscsGeneratePdfService;
 
+    @Value("${notification.subscriptionUpdated.emailId}")
+    private String subscriptionUpdatedEmailId;
+
+    @Value("${notification.subscriptionCreated.smsId}")
+    private String subscriptionCreatedSmsId;
+
+    @Value("${notification.paper.responseReceived.emailId}")
+    private String paperResponseReceivedEmailId;
+
+    @Value("${notification.paper.responseReceived.smsId}")
+    private String paperResponseReceivedSmsId;
+
+    @Value("${notification.oral.responseReceived.emailId}")
+    private String oralResponseReceivedEmailId;
+
     @Before
     public void setup() throws Exception {
         NotificationSender sender = new NotificationSender(notificationClient, null, notificationBlacklist);
@@ -137,7 +149,7 @@ public class NotificationsIt {
         ReflectionTestUtils.setField(sendNotificationService, "lettersOn", true);
 
         NotificationService service = new NotificationService(factory, reminderService, notificationValidService, notificationHandler, outOfHoursCalculator, notificationConfig, sendNotificationService);
-        controller = new NotificationController(service, authorisationService, ccdService, deserializer, idamService);
+        NotificationController controller = new NotificationController(service, authorisationService, ccdService, deserializer, idamService);
         this.mockMvc = MockMvcBuilders.standaloneSetup(controller).build();
         String path = getClass().getClassLoader().getResource("json/ccdResponse.json").getFile();
         json = FileUtils.readFileToString(new File(path), StandardCharsets.UTF_8.name());
@@ -1390,7 +1402,7 @@ public class NotificationsIt {
     @SuppressWarnings({"Indentation", "unused"})
     private Object[] generateAppointeeNotificationScenarios() {
         return new Object[]{
-            new Object[]{
+           new Object[]{
                 SYA_APPEAL_CREATED_NOTIFICATION,
                 "oral",
                 Collections.singletonList("362d9a85-e0e4-412b-b874-020c0464e2b4"),
@@ -1466,7 +1478,7 @@ public class NotificationsIt {
                 "2",
                 "2",
                 "0",
-                "Appointee Appointee"
+                "Harry Potter"
             },
             new Object[]{
                 SUBSCRIPTION_UPDATED_NOTIFICATION,
@@ -1479,7 +1491,7 @@ public class NotificationsIt {
                 "0",
                 "0",
                 "0",
-                "Appointee Appointee"
+                "Harry Potter"
             },
             new Object[]{
                 APPEAL_RECEIVED_NOTIFICATION,
@@ -1629,7 +1641,7 @@ public class NotificationsIt {
                 "2",
                 "2",
                 "0",
-                "Appointee Appointee"
+                "Harry Potter"
             },
             new Object[]{
                 APPEAL_RECEIVED_NOTIFICATION,
@@ -1720,7 +1732,7 @@ public class NotificationsIt {
                 "2",
                 "2",
                 "0",
-                "Appointee Appointee"
+                "Harry Potter"
             },
             new Object[]{
                 SUBSCRIPTION_UPDATED_NOTIFICATION,
@@ -1733,7 +1745,7 @@ public class NotificationsIt {
                 "0",
                 "0",
                 "0",
-                "Appointee Appointee"
+                "Harry Potter"
             },
             new Object[]{
                 APPEAL_RECEIVED_NOTIFICATION,
@@ -1940,8 +1952,9 @@ public class NotificationsIt {
         HttpServletResponse response = getResponse(getRequestWithAuthHeader(json));
 
         assertHttpStatus(response, HttpStatus.OK);
-        verify(notificationClient, never()).sendEmail(any(), any(), any(), any());
-        verify(notificationClient).sendSms(any(), any(), any(), any(), any());
+        verify(notificationClient).sendSms(eq(subscriptionCreatedSmsId), any(), any(), any(), any());
+        verify(notificationClient).sendSms(eq(paperResponseReceivedSmsId), any(), any(), any(), any());
+        verifyNoMoreInteractions(notificationClient);
     }
 
     @Test
@@ -1954,8 +1967,9 @@ public class NotificationsIt {
         HttpServletResponse response = getResponse(getRequestWithAuthHeader(json));
 
         assertHttpStatus(response, HttpStatus.OK);
-        verify(notificationClient, times(1)).sendEmail(any(), any(), any(), any());
-        verify(notificationClient, never()).sendSms(any(), any(), any(), any(), any());
+        verify(notificationClient).sendEmail(eq(subscriptionUpdatedEmailId), any(), any(), any());
+        verify(notificationClient).sendEmail(eq(oralResponseReceivedEmailId), any(), any(), any());
+        verifyNoMoreInteractions(notificationClient);
     }
 
     @Test
@@ -1968,8 +1982,9 @@ public class NotificationsIt {
         HttpServletResponse response = getResponse(getRequestWithAuthHeader(json));
 
         assertHttpStatus(response, HttpStatus.OK);
-        verify(notificationClient, times(1)).sendEmail(any(), any(), any(), any());
-        verify(notificationClient, never()).sendSms(any(), any(), any(), any(), any());
+        verify(notificationClient).sendEmail(eq(subscriptionUpdatedEmailId), any(), any(), any());
+        verify(notificationClient).sendEmail(eq(paperResponseReceivedEmailId), any(), any(), any());
+        verifyNoMoreInteractions(notificationClient);
     }
 
     @Test
