@@ -105,8 +105,7 @@ public class CcdNotificationWrapperTest {
                 .newSscsCaseData(SscsCaseData.builder()
                     .appeal(Appeal.builder()
                         .hearingType(hearingType)
-                        .appellant(Appellant.builder().appointee(Appointee.builder().name(Name.builder().firstName("TEST")
-                            .lastName("TEST").build()).build()).build())
+                        .appellant(Appellant.builder().appointee(appointee).build())
                         .build())
                     .subscriptions(Subscriptions.builder()
                         .appellantSubscription(Subscription.builder().build())
@@ -161,7 +160,7 @@ public class CcdNotificationWrapperTest {
     }
 
     @Test
-    @Parameters({"SYA_APPEAL_CREATED_NOTIFICATION, cor", "DWP_RESPONSE_RECEIVED_NOTIFICATION, oral", "ADJOURNED_NOTIFICATION, oral", "DWP_RESPONSE_RECEIVED_NOTIFICATION, paper", "APPEAL_LAPSED_NOTIFICATION, paper", "SUBSCRIPTION_UPDATED_NOTIFICATION, paper", "APPEAL_WITHDRAWN_NOTIFICATION, paper", "EVIDENCE_RECEIVED_NOTIFICATION, oral", "HEARING_BOOKED_NOTIFICATION, paper", "POSTPONEMENT_NOTIFICATION, oral"})
+    @Parameters({"SYA_APPEAL_CREATED_NOTIFICATION, cor", "DWP_RESPONSE_RECEIVED_NOTIFICATION, oral", "ADJOURNED_NOTIFICATION, oral", "DWP_RESPONSE_RECEIVED_NOTIFICATION, paper", "APPEAL_LAPSED_NOTIFICATION, paper", "SUBSCRIPTION_UPDATED_NOTIFICATION, paper", "APPEAL_WITHDRAWN_NOTIFICATION, paper", "EVIDENCE_RECEIVED_NOTIFICATION, oral", "EVIDENCE_RECEIVED_NOTIFICATION, paper", "HEARING_BOOKED_NOTIFICATION, paper", "POSTPONEMENT_NOTIFICATION, oral"})
     public void givenSubscriptions_shouldGetSubscriptionTypeListWithAppointee(NotificationEventType notificationEventType, String hearingType) {
         ccdNotificationWrapper = buildCcdNotificationWrapperBasedOnEventTypeWithAppointee(notificationEventType, hearingType);
         List<SubscriptionWithType> subsWithTypeList = ccdNotificationWrapper.getSubscriptionsBasedOnNotificationType();
@@ -200,6 +199,7 @@ public class CcdNotificationWrapperTest {
                 || type.equals(ADJOURNED_NOTIFICATION)
                 || type.equals(APPEAL_RECEIVED_NOTIFICATION)
                 || type.equals(POSTPONEMENT_NOTIFICATION)
+                || type.equals(SUBSCRIPTION_UPDATED_NOTIFICATION)
                 || type.equals(HEARING_BOOKED_NOTIFICATION)
             )).toArray();
     }
