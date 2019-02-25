@@ -1786,7 +1786,7 @@ public class NotificationsIt {
                 "paper",
                 Collections.emptyList(),
                 Collections.emptyList(),
-                Collections.singletonList("91143b85-dd9d-430c-ba23-e42ec90f44f8"),
+                Collections.singletonList("747d026e-1bec-4e96-8a34-28f36e30bba5"),
                 "no",
                 "no",
                 "0",

@@ -18,6 +18,7 @@ public final class AppConstants {
     public static final String BENEFIT_NAME_ACRONYM_SHORT_LITERAL = "benefit_name_acronym_short";
     public static final String CCD_ID = "ccd_id";
     public static final String CLAIMING_EXPENSES_LINK_LITERAL = "claiming_expenses_link";
+    public static final String CLAIMANT_NAME = "claimant_name";
     public static final String COUNTY_LITERAL = "county";
     public static final String DAYS_STRING = " days";
     public static final String DAYS_TO_HEARING_LITERAL = "days_to_hearing_text";

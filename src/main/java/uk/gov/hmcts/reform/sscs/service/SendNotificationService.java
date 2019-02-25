@@ -5,6 +5,7 @@ import static uk.gov.hmcts.reform.sscs.config.SubscriptionType.APPELLANT;
 import static uk.gov.hmcts.reform.sscs.config.SubscriptionType.APPOINTEE;
 import static uk.gov.hmcts.reform.sscs.domain.notify.NotificationEventType.STRUCK_OUT;
 import static uk.gov.hmcts.reform.sscs.service.LetterUtils.*;
+import static uk.gov.hmcts.reform.sscs.service.NotificationUtils.hasAppointee;
 import static uk.gov.hmcts.reform.sscs.service.NotificationUtils.isOkToSendEmailNotification;
 import static uk.gov.hmcts.reform.sscs.service.NotificationUtils.isOkToSendSmsNotification;
 import static uk.gov.hmcts.reform.sscs.service.NotificationValidService.isBundledLetter;
@@ -151,6 +152,11 @@ public class SendNotificationService {
         placeholders.put(POSTCODE_LITERAL, addressToUse.getPostcode());
         if (null != wrapper.getNewSscsCaseData().getAppeal().getRep()) {
             placeholders.put(REPRESENTATIVE_NAME, wrapper.getNewSscsCaseData().getAppeal().getRep().getName().getFullNameNoTitle());
+        }
+
+        if (hasAppointee(wrapper.getSscsCaseDataWrapper())) {
+            placeholders.put(APPOINTEE_NAME, wrapper.getNewSscsCaseData().getAppeal().getAppellant().getAppointee().getName().getFullNameNoTitle());
+            placeholders.put(CLAIMANT_NAME, wrapper.getNewSscsCaseData().getAppeal().getAppellant().getName().getFullNameNoTitle());
         }
 
         if (!placeholders.containsKey(APPEAL_RESPOND_DATE)) {
