@@ -96,7 +96,6 @@ public class Personalisation<E extends NotificationWrapper> {
         personalisation.put(APPELLANT_NAME, ccdResponse.getAppeal().getAppellant().getName().getFullNameNoTitle());
         personalisation.put(NAME, getName(subscriptionType, ccdResponse, responseWrapper));
         personalisation.put(PHONE_NUMBER, config.getHmctsPhoneNumber());
-        personalisation.put(HMCTS_PHONE_NUMBER, config.getHmctsPhoneNumber());
         personalisation.put(CCD_ID, StringUtils.defaultIfBlank(ccdResponse.getCcdCaseId(), StringUtils.EMPTY));
 
         Subscription appellantOrAppointeeSubscription = subscription(responseWrapper, subscriptionType);

@@ -45,7 +45,6 @@ public final class AppConstants {
     public static final String ONLINE_HEARING_SIGN_IN_LINK_LITERAL = "online_hearing_sign_in_link";
     public static final String PANEL_COMPOSITION = "panel_composition";
     public static final String PHONE_NUMBER = "phone_number";
-    public static final String HMCTS_PHONE_NUMBER = "hmcts_phone_number";
     public static final String PIP_PANEL_COMPOSITION = "judge, doctor and disability expert";
     public static final String POSTCODE_LITERAL = "postcode";
     public static final String QUESTION_ROUND_EXPIRES_DATE_LITERAL = "question_round_expires_date";
