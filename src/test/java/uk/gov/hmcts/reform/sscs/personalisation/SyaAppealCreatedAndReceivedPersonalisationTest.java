@@ -17,6 +17,7 @@ import uk.gov.hmcts.reform.sscs.config.AppConstants;
 public class SyaAppealCreatedAndReceivedPersonalisationTest {
 
     private static final String CASE_ID = "54321";
+    private static final String YES = "yes";
 
     SscsCaseData response;
 
@@ -123,7 +124,7 @@ public class SyaAppealCreatedAndReceivedPersonalisationTest {
                                 .mobile("07955555708").build()).build())
                 .build();
 
-        Map<String, String> result = syaAppealCreatedAndReceivedPersonalisation.setTextMessageReminderDetails(new HashMap<>(), response);
+        Map<String, String> result = syaAppealCreatedAndReceivedPersonalisation.setTextMessageReminderDetails(new HashMap<>(), response.getSubscriptions().getAppellantSubscription());
 
         assertEquals("Receive text message reminders: yes\n"
                         + "\nMobile number: 07955555708",
@@ -139,7 +140,7 @@ public class SyaAppealCreatedAndReceivedPersonalisationTest {
                                 .subscribeSms("No").build()).build())
                 .build();
 
-        Map<String, String> result = syaAppealCreatedAndReceivedPersonalisation.setTextMessageReminderDetails(new HashMap<>(), response);
+        Map<String, String> result = syaAppealCreatedAndReceivedPersonalisation.setTextMessageReminderDetails(new HashMap<>(), response.getSubscriptions().getAppellantSubscription());
 
         assertEquals("Receive text message reminders: no",
                 result.get(AppConstants.TEXT_MESSAGE_REMINDER_DETAILS_LITERAL));
@@ -214,7 +215,7 @@ public class SyaAppealCreatedAndReceivedPersonalisationTest {
     public void givenAnAppealWithRepresentative_setRepresentativeDetailsForTemplate() {
         response = SscsCaseData.builder()
             .ccdCaseId(CASE_ID).caseReference("SC/1234/5")
-            .appeal(Appeal.builder().rep(Representative.builder()
+            .appeal(Appeal.builder().rep(Representative.builder().hasRepresentative(YES)
                 .name(Name.builder().firstName("Peter").lastName("Smith").build())
                 .organisation("Citizens Advice")
                 .address(Address.builder().line1("Ground Floor").line2("Gazette Buildings").town("168 Corporation Street").county("Cardiff").postcode("CF11 6TF").build())
@@ -237,7 +238,7 @@ public class SyaAppealCreatedAndReceivedPersonalisationTest {
     public void givenAnAppealWithRepresentativeAndNoEmailOrPhoneOrOrganisationProvided_setRepresentativeDetailsForTemplate() {
         response = SscsCaseData.builder()
             .ccdCaseId(CASE_ID).caseReference("SC/1234/5")
-            .appeal(Appeal.builder().rep(Representative.builder()
+            .appeal(Appeal.builder().rep(Representative.builder().hasRepresentative(YES)
                 .name(Name.builder().firstName("Peter").lastName("Smith").build())
                 .address(Address.builder().line1("Ground Floor").line2("Gazette Buildings").town("168 Corporation Street").county("Cardiff").postcode("CF11 6TF").build())
                 .contact(Contact.builder().build())

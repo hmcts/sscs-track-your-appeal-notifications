@@ -5,6 +5,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 import uk.gov.hmcts.reform.sscs.ccd.domain.Benefit;
 import uk.gov.hmcts.reform.sscs.config.SubscriptionType;
+import uk.gov.hmcts.reform.sscs.domain.SubscriptionWithType;
 import uk.gov.hmcts.reform.sscs.domain.notify.NotificationEventType;
 import uk.gov.hmcts.reform.sscs.domain.notify.Template;
 import uk.gov.hmcts.reform.sscs.factory.CohNotificationWrapper;
@@ -22,8 +23,8 @@ public class CohPersonalisation extends Personalisation<CohNotificationWrapper> 
     private NotificationDateConverterUtil notificationDateConverterUtil;
 
     @Override
-    public Map<String, String> create(CohNotificationWrapper notificationWrapper, final SubscriptionType subscriptionType) {
-        Map<String, String> placeholders = super.create(notificationWrapper, subscriptionType);
+    public Map<String, String> create(CohNotificationWrapper notificationWrapper, final SubscriptionWithType subscriptionWithType) {
+        Map<String, String> placeholders = super.create(notificationWrapper, subscriptionWithType);
 
         String questionRequiredByDate = questionService.getQuestionRequiredByDate(notificationWrapper.getOnlineHearingId());
 
