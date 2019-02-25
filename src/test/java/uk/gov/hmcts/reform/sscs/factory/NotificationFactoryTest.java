@@ -40,6 +40,7 @@ import uk.gov.hmcts.reform.sscs.extractor.HearingContactDateExtractor;
 import uk.gov.hmcts.reform.sscs.personalisation.*;
 import uk.gov.hmcts.reform.sscs.service.MessageAuthenticationServiceImpl;
 import uk.gov.hmcts.reform.sscs.service.RegionalProcessingCenterService;
+import uk.gov.hmcts.reform.sscs.utility.PhoneNumbersUtil;
 
 @RunWith(JUnitParamsRunner.class)
 public class NotificationFactoryTest {
@@ -257,7 +258,8 @@ public class NotificationFactoryTest {
 
         assertNull(result.getDestination().email);
         assertNotNull(subscription.getMobile());
-        assertEquals(subscription.getMobile(), result.getDestination().sms);
+        assertEquals(PhoneNumbersUtil.cleanPhoneNumber(subscription.getMobile()).orElse(subscription.getMobile()),
+                result.getDestination().sms);
         assertEquals("123", result.getSmsTemplate());
     }
 
