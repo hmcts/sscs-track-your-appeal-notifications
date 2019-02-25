@@ -679,7 +679,9 @@ public class PersonalisationTest {
         Map result = personalisation.create(SscsCaseDataWrapper.builder()
                 .newSscsCaseData(sscsCaseData)
                 .notificationEventType(SUBSCRIPTION_CREATED_NOTIFICATION)
-                .build(), REPRESENTATIVE);
+                .build(),
+                new SubscriptionWithType(sscsCaseData.getSubscriptions()
+                        .getRepresentativeSubscription(), REPRESENTATIVE));
 
         assertNotNull(result);
         assertEquals(repTyaNumber, result.get(APPEAL_ID));
