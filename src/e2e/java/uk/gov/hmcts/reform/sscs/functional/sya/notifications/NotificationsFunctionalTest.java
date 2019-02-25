@@ -44,9 +44,6 @@ public class NotificationsFunctionalTest extends AbstractFunctionalTest {
     @Value("${notification.online.responseReceived.emailId}")
     private String onlineResponseReceivedEmailId;
 
-    @Value("${notification.online.responseReceived.smsId}")
-    private String onlineResponseReceivedSmsId;
-
     @Value("${notification.paper.responseReceived.emailId}")
     private String paperResponseReceivedEmailId;
 
@@ -64,6 +61,12 @@ public class NotificationsFunctionalTest extends AbstractFunctionalTest {
 
     @Value("${notification.subscriptionOld.smsId}")
     private String subscriptionUpdateOldSmsId;
+
+    @Value("${notification.paper.evidenceReceived.appointee.emailId}")
+    private String paperAppointeeEvidenceReceivedEmailId;
+
+    @Value("${notification.paper.evidenceReceived.appointee.smsId}")
+    private String paperAppointeeEvidenceReceivedSmsId;
 
     @Value("${notification.paper.responseReceived.emailId}")
     private String paperAppointeeResponseReceivedEmailId;
@@ -164,7 +167,7 @@ public class NotificationsFunctionalTest extends AbstractFunctionalTest {
     @Test
     public void shouldSendOnlineDwpResponseReceivedNotification() throws NotificationClientException, IOException {
         simulateCcdCallback(DWP_RESPONSE_RECEIVED_NOTIFICATION, "online-" + DWP_RESPONSE_RECEIVED_NOTIFICATION.getId() + "Callback.json");
-        List<Notification> notifications = tryFetchNotificationsForTestCase(onlineResponseReceivedEmailId, onlineResponseReceivedSmsId);
+        List<Notification> notifications = tryFetchNotificationsForTestCase(onlineResponseReceivedEmailId);
 
         assertNotificationBodyContains(notifications, onlineResponseReceivedEmailId, caseData.getCaseReference());
     }
@@ -246,6 +249,20 @@ public class NotificationsFunctionalTest extends AbstractFunctionalTest {
         );
         Notification updateEmailNotification = notifications.stream().filter(f -> f.getTemplateId().toString().equals(subscriptionUpdatedEmailTemplateId)).collect(Collectors.toList()).get(0);
         assertTrue(updateEmailNotification.getBody().contains("Dear Appointee User\r\n\r\nYou are receiving this update as the appointee for Appellant User.\r\n\r\nEmails about your ESA"));
+    }
+
+    @Test
+    public void shouldSendAppointeeEvidenceReceivedPaperNotification() throws NotificationClientException, IOException {
+        simulateCcdCallback(EVIDENCE_RECEIVED_NOTIFICATION,
+                "appointee/paper-" + EVIDENCE_RECEIVED_NOTIFICATION.getId() + "Callback.json");
+
+        List<Notification> notifications = tryFetchNotificationsForTestCase(
+                paperAppointeeEvidenceReceivedEmailId,
+                paperAppointeeEvidenceReceivedSmsId
+        );
+        Notification emailNotification = notifications.stream().filter(f -> f.getTemplateId().toString().equals(paperAppointeeEvidenceReceivedEmailId)).collect(Collectors.toList()).get(0);
+        assertTrue(emailNotification.getBody().contains("Dear Appointee User"));
+        assertTrue(emailNotification.getBody().contains("You are receiving this update as the appointee for Appellant User."));
     }
 
     @Test
