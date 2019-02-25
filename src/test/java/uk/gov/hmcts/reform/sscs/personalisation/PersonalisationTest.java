@@ -446,7 +446,8 @@ public class PersonalisationTest {
                 .build();
 
         Map<String, String> result = personalisation.create(SscsCaseDataWrapper.builder()
-                .newSscsCaseData(response).notificationEventType(hearingNotificationEventType).build(), subscriptionType);
+                .newSscsCaseData(response).notificationEventType(hearingNotificationEventType).build(),
+                new SubscriptionWithType(subscriptions.getAppellantSubscription(), subscriptionType));
 
         assertEquals(hearingDate.format(DateTimeFormatter.ofPattern(RESPONSE_DATE_FORMAT)), result.get(HEARING_DATE));
         assertEquals("12:00 PM", result.get(HEARING_TIME));
