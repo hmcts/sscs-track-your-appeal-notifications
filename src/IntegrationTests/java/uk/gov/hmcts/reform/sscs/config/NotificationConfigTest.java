@@ -78,7 +78,7 @@ public class NotificationConfigTest {
             new Object[]{"75357eb8-bba7-4bdf-b879-b535bc3fb50a", "a170d63e-b04e-4da5-ad89-d93644b6c1e9", null, ORAL, getTemplateName(ADJOURNED_NOTIFICATION, REPRESENTATIVE)},
             new Object[]{"bff02237-9bcb-49fa-bbf7-11725b97132a", "46c6bf06-33dd-4e5a-9b6b-8bd6d0eb33b1", null, PAPER, getTemplateName(ADJOURNED_NOTIFICATION, APPELLANT)},
             new Object[]{"bff02237-9bcb-49fa-bbf7-11725b97132a", "46c6bf06-33dd-4e5a-9b6b-8bd6d0eb33b1", null, ORAL, getTemplateName(ADJOURNED_NOTIFICATION, APPELLANT)},
-            new Object[]{"c5654134-2e13-4541-ac73-334a5b5cdbb6", "74bda35f-040b-4355-bda3-faf0e4f5ae6e", null, PAPER, getTemplateName(EVIDENCE_RECEIVED_NOTIFICATION, APPELLANT)},
+            new Object[]{"cab48431-a4f0-41f5-b753-2cecf20ab5d4", "74bda35f-040b-4355-bda3-faf0e4f5ae6e", null, PAPER, getTemplateName(EVIDENCE_RECEIVED_NOTIFICATION, APPELLANT)},
             new Object[]{"c5654134-2e13-4541-ac73-334a5b5cdbb6", "74bda35f-040b-4355-bda3-faf0e4f5ae6e", null, ORAL, getTemplateName(EVIDENCE_RECEIVED_NOTIFICATION, APPELLANT)},
             new Object[]{"7af36950-fc63-45d1-907d-f472fac7af06", "345f802b-7089-4f46-a17f-bf534b272740", null, PAPER, getTemplateName(EVIDENCE_RECEIVED_NOTIFICATION, REPRESENTATIVE)},
             new Object[]{"30260c0b-5575-4f4e-bce4-73cf3f245c2d", "345f802b-7089-4f46-a17f-bf534b272740", null, ORAL, getTemplateName(EVIDENCE_RECEIVED_NOTIFICATION, REPRESENTATIVE)},

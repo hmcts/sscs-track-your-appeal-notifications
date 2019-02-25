@@ -12,6 +12,7 @@ import static uk.gov.hmcts.reform.sscs.config.AppealHearingType.ONLINE;
 import static uk.gov.hmcts.reform.sscs.config.SubscriptionType.APPELLANT;
 import static uk.gov.hmcts.reform.sscs.domain.notify.NotificationEventType.APPEAL_RECEIVED_NOTIFICATION;
 import static uk.gov.hmcts.reform.sscs.domain.notify.NotificationEventType.QUESTION_ROUND_ISSUED_NOTIFICATION;
+import static uk.gov.hmcts.reform.sscs.service.NotificationUtils.getSubscription;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -33,6 +34,7 @@ import uk.gov.hmcts.reform.sscs.ccd.domain.Subscription;
 import uk.gov.hmcts.reform.sscs.ccd.domain.Subscriptions;
 import uk.gov.hmcts.reform.sscs.config.NotificationConfig;
 import uk.gov.hmcts.reform.sscs.domain.SscsCaseDataWrapper;
+import uk.gov.hmcts.reform.sscs.domain.SubscriptionWithType;
 import uk.gov.hmcts.reform.sscs.domain.notify.Link;
 import uk.gov.hmcts.reform.sscs.domain.notify.Template;
 import uk.gov.hmcts.reform.sscs.extractor.HearingContactDateExtractor;
@@ -120,7 +122,7 @@ public class CohPersonalisationTest {
         when(questionService.getQuestionRequiredByDate(someHearingId)).thenReturn(cohDate);
         when(notificationDateConverterUtil.toEmailDate(cohDate)).thenReturn(expectedRequiredByDate);
 
-        Map<String, String> placeholders = cohPersonalisation.create(new CohNotificationWrapper(someHearingId, sscsCaseDataWrapper), APPELLANT);
+        Map<String, String> placeholders = cohPersonalisation.create(new CohNotificationWrapper(someHearingId, sscsCaseDataWrapper), getSubscriptionWithType(sscsCaseDataWrapper));
 
         assertThat(placeholders, hasEntry("questions_end_date", expectedRequiredByDate));
     }
@@ -170,5 +172,9 @@ public class CohPersonalisationTest {
 
         Template template = cohPersonalisation.getTemplate(cohNotificationWrapper, Benefit.PIP, APPELLANT);
         assertThat(template, is(expectedTemplate));
+    }
+
+    private SubscriptionWithType getSubscriptionWithType(SscsCaseDataWrapper sscsCaseDataWrapper) {
+        return new SubscriptionWithType(getSubscription(sscsCaseDataWrapper.getNewSscsCaseData(), APPELLANT), APPELLANT);
     }
 }
