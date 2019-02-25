@@ -1,12 +1,16 @@
 package uk.gov.hmcts.reform.sscs.service;
 
+import static uk.gov.hmcts.reform.sscs.config.SubscriptionType.APPELLANT;
+import static uk.gov.hmcts.reform.sscs.config.SubscriptionType.REPRESENTATIVE;
 import static uk.gov.hmcts.reform.sscs.domain.notify.NotificationEventType.HEARING_BOOKED_NOTIFICATION;
 import static uk.gov.hmcts.reform.sscs.domain.notify.NotificationEventType.STRUCK_OUT;
 
 import java.util.Arrays;
 import java.util.List;
-
+import uk.gov.hmcts.reform.sscs.ccd.domain.Appointee;
+import uk.gov.hmcts.reform.sscs.ccd.domain.SscsCaseData;
 import uk.gov.hmcts.reform.sscs.ccd.domain.Subscription;
+import uk.gov.hmcts.reform.sscs.config.SubscriptionType;
 import uk.gov.hmcts.reform.sscs.domain.SscsCaseDataWrapper;
 import uk.gov.hmcts.reform.sscs.domain.SubscriptionWithType;
 import uk.gov.hmcts.reform.sscs.domain.notify.Notification;
@@ -22,19 +26,21 @@ public class NotificationUtils {
 
     /* Sometimes the data for the appointee comes in with null populated objects */
     public static boolean hasAppointee(SscsCaseDataWrapper wrapper) {
-        return (wrapper.getNewSscsCaseData().getAppeal() != null
+        return wrapper.getNewSscsCaseData().getAppeal() != null
             && wrapper.getNewSscsCaseData().getAppeal().getAppellant() != null
-            && wrapper.getNewSscsCaseData().getAppeal().getAppellant().getAppointee() != null
-            && wrapper.getNewSscsCaseData().getAppeal().getAppellant().getAppointee().getName() != null
-            && wrapper.getNewSscsCaseData().getAppeal().getAppellant().getAppointee().getName().getFirstName() != null
-            && wrapper.getNewSscsCaseData().getAppeal().getAppellant().getAppointee().getName().getLastName() != null);
+            && hasAppointee(wrapper.getNewSscsCaseData().getAppeal().getAppellant().getAppointee());
+    }
+
+    public static boolean hasAppointee(Appointee appointee) {
+        return appointee != null && appointee.getName() != null && appointee.getName().getFirstName() != null
+                && appointee.getName().getLastName() != null;
     }
 
     public static boolean hasRepresentative(SscsCaseDataWrapper wrapper) {
-        return (wrapper.getNewSscsCaseData().getAppeal() != null
+        return wrapper.getNewSscsCaseData().getAppeal() != null
             && wrapper.getNewSscsCaseData().getAppeal().getRep() != null
             && wrapper.getNewSscsCaseData().getAppeal().getRep().getHasRepresentative() != null
-            && wrapper.getNewSscsCaseData().getAppeal().getRep().getHasRepresentative().equalsIgnoreCase("yes"));
+            && wrapper.getNewSscsCaseData().getAppeal().getRep().getHasRepresentative().equalsIgnoreCase("yes");
     }
 
     public static boolean hasAppointeeSubscription(SscsCaseDataWrapper wrapper) {
@@ -43,6 +49,16 @@ public class NotificationUtils {
 
     public static boolean hasRepresentativeSubscription(SscsCaseDataWrapper wrapper) {
         return null != wrapper.getNewSscsCaseData().getSubscriptions().getRepresentativeSubscription();
+    }
+
+    public static Subscription getSubscription(SscsCaseData sscsCaseData, SubscriptionType subscriptionType) {
+        if (REPRESENTATIVE.equals(subscriptionType)) {
+            return sscsCaseData.getSubscriptions().getRepresentativeSubscription();
+        } else if (APPELLANT.equals(subscriptionType)) {
+            return sscsCaseData.getSubscriptions().getAppellantSubscription();
+        } else {
+            return sscsCaseData.getSubscriptions().getAppointeeSubscription();
+        }
     }
 
     public static boolean isMandatoryLetterEventType(NotificationEventType eventType) {
@@ -74,5 +90,6 @@ public class NotificationUtils {
             && notification.isEmail()
             && notification.getEmailTemplate() != null
             && isOkToSendNotification(wrapper, wrapper.getNotificationType(), notificationValidService);
+
     }
 }
