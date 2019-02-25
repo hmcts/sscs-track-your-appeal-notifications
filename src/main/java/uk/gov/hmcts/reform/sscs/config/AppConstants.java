@@ -73,6 +73,7 @@ public final class AppConstants {
     public static final String ADDRESS_LINE_3 = "address_line_3";
     public static final String ADDRESS_LINE_4 = "address_line_4";
 
+    public static final String REP_SALUTATION = "Sir / Madam";
     public static final String LETTER_ADDRESS_LINE_1 = "letter_address_line_1";
     public static final String LETTER_ADDRESS_LINE_2 = "letter_address_line_2";
     public static final String LETTER_ADDRESS_LINE_3 = "letter_address_line_3";
