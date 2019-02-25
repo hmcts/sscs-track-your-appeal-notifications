@@ -40,7 +40,7 @@ checkstyle {
 
 
 pmd {
-    toolVersion = "5.8.1"
+    toolVersion = "6.5.0"
     ignoreFailures = true
     sourceSets = [sourceSets.main, sourceSets.test]
     reportsDir = file("$project.buildDir/reports/pmd")
@@ -100,7 +100,7 @@ dependencyManagement {
     }
     dependencies {
         // checkstyle needs a certain version and so does spring fox swagger, so can't use latest
-        dependencySet(group: 'com.google.guava', version: '23.0') {
+        dependencySet(group: 'com.google.guava', version: '27.0.1-jre') {
             entry 'guava'
         }
     }
@@ -229,11 +229,11 @@ dependencies {
     compile group: 'uk.gov.hmcts.reform', name: 'java-logging-httpcomponents', version: versions.reformLogging
     compile group: 'uk.gov.hmcts.reform', name: 'java-logging-appinsights', version: versions.reformLogging
     compile group: 'uk.gov.hmcts.reform', name: 'http-proxy-spring-boot-autoconfigure', version: '2.0.0'
-    compile group: 'uk.gov.hmcts.reform', name: 'core-case-data-store-client', version: '4.2.0'
-    compile group: 'uk.gov.hmcts.reform', name: 'sscs-job-scheduler', version: '1.4.0'
-    compile group: 'uk.gov.hmcts.reform', name: 'service-auth-provider-client', version: '1.0.4'
-    compile group: 'uk.gov.hmcts.reform', name: 'sscs-common', version: '0.0.138'
-    compile group: 'uk.gov.hmcts.reform', name: 'sscs-pdf-email-common', version: '0.0.104'
+    compile group: 'uk.gov.hmcts.reform', name: 'core-case-data-store-client', version: '4.5.0'
+    compile group: 'uk.gov.hmcts.reform', name: 'sscs-job-scheduler', version: '1.5.2'
+    compile group: 'uk.gov.hmcts.reform', name: 'service-auth-provider-client', version: '2.0.0'
+    compile group: 'uk.gov.hmcts.reform', name: 'sscs-common', version: '0.0.140'
+    compile group: 'uk.gov.hmcts.reform', name: 'sscs-pdf-email-common', version: '0.0.105'
 
     compile group: 'uk.gov.service.notify', name: 'notifications-java-client', version: '3.14.0-RELEASE'
     compile group: 'io.github.openfeign.form', name: 'feign-form', version: '3.5.0'
@@ -246,7 +246,7 @@ dependencies {
 
     apt "org.projectlombok:lombok:1.18.6"
 
-    testCompile(group: 'org.springframework.boot', name: 'spring-boot-starter-test', version: '1.5.10.RELEASE') {
+    testCompile(group: 'org.springframework.boot', name: 'spring-boot-starter-test', version: '2.1.3.RELEASE') {
         exclude group: "com.vaadin.external.google", module:"android-json"
     }
     testCompile group: 'org.mockito', name: 'mockito-core', version: '2.23.4'
