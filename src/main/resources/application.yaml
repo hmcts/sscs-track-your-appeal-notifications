@@ -250,6 +250,8 @@ notification:
         emailId: b74ea5d4-dba2-4148-b822-d102cedbea12
         smsId: 4562984e-2854-4191-81d9-cffbe5111015
     evidenceReceived:
+      appellant:
+        emailId: cab48431-a4f0-41f5-b753-2cecf20ab5d4
       representative:
         emailId: 7af36950-fc63-45d1-907d-f472fac7af06
         smsId: 345f802b-7089-4f46-a17f-bf534b272740
