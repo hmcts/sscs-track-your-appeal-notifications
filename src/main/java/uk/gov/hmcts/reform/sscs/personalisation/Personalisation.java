@@ -122,17 +122,6 @@ public class Personalisation<E extends NotificationWrapper> {
         return personalisation;
     }
 
-    private Subscription subscription(SscsCaseDataWrapper responseWrapper, SubscriptionType subscriptionType) {
-        if (subscriptionType == REPRESENTATIVE) {
-            return responseWrapper.getNewSscsCaseData().getSubscriptions().getRepresentativeSubscription();
-        } else {
-            return hasAppointee(responseWrapper)
-                ? responseWrapper.getNewSscsCaseData().getSubscriptions().getAppointeeSubscription()
-                : responseWrapper.getNewSscsCaseData().getSubscriptions().getAppellantSubscription();
-        }
-    }
-
-
     private String getAppealReference(SscsCaseData ccdResponse) {
         final String caseReference = ccdResponse.getCaseReference();
         return StringUtils.isBlank(caseReference) ? ccdResponse.getCcdCaseId() : caseReference;
