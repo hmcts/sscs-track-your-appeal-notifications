@@ -72,18 +72,17 @@ public class SendNotificationService {
 
     void sendEmailSmsLetterNotification(
             NotificationWrapper wrapper,
-            Subscription subscription,
             Notification notification,
             SubscriptionWithType subscriptionWithType) {
-        sendEmailNotification(wrapper, subscription, notification);
-        sendSmsNotification(wrapper, subscription, notification);
+        sendEmailNotification(wrapper, subscriptionWithType.getSubscription(), notification);
+        sendSmsNotification(wrapper, subscriptionWithType.getSubscription(), notification);
 
         if (lettersOn) {
             if (APPELLANT.equals(subscriptionWithType.getSubscriptionType())
                 || APPOINTEE.equals(subscriptionWithType.getSubscriptionType())) {
-                sendFallbackLetterNotificationToAppellant(wrapper, subscription, notification);
+                sendFallbackLetterNotificationToAppellant(wrapper, subscriptionWithType.getSubscription(), notification);
             } else {
-                sendFallbackLetterNotificationToRepresentative(wrapper, subscription, notification);
+                sendFallbackLetterNotificationToRepresentative(wrapper, subscriptionWithType.getSubscription(), notification);
             }
         }
 
