@@ -17,6 +17,7 @@ import uk.gov.hmcts.reform.sscs.domain.notify.NotificationEventType;
 import uk.gov.hmcts.reform.sscs.domain.notify.Reference;
 import uk.gov.hmcts.reform.sscs.domain.notify.Template;
 import uk.gov.hmcts.reform.sscs.personalisation.Personalisation;
+import uk.gov.hmcts.reform.sscs.utility.PhoneNumbersUtil;
 
 @Component
 @Slf4j
@@ -62,6 +63,9 @@ public class NotificationFactory {
     }
 
     private Destination getDestination(Subscription subscription) {
-        return Destination.builder().email(subscription.getEmail()).sms(subscription.getMobile()).build();
+        return Destination.builder()
+                .email(subscription.getEmail())
+                .sms(PhoneNumbersUtil.cleanPhoneNumber(subscription.getMobile()).orElse(subscription.getMobile()))
+                .build();
     }
 }

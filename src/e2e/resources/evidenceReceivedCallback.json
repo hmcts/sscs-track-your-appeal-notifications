@@ -60,11 +60,11 @@
       },
       "subscriptions": {
         "appellantSubscription": {
+          "tya": "NpmhpYaFLa",
           "email": "sscstest+notify@greencroftconsulting.com",
           "mobile": "07398785050",
           "subscribeEmail": "Yes",
-          "subscribeSms": "Yes",
-          "tya": ""
+          "subscribeSms": "Yes"
         },
         "representativeSubscription": {
           "email": "",
@@ -398,7 +398,7 @@
           "mobile": "07398785050",
           "subscribeEmail": "Yes",
           "subscribeSms": "Yes",
-          "tya": ""
+          "tya": "NpmhpYaFLa"
         },
         "representativeSubscription": {
           "email": "",
