@@ -337,8 +337,10 @@ public class NotificationsIt {
     @SuppressWarnings("unchecked")
     public void shouldSendAppointeeNotificationsForAnEventForAnOralOrPaperHearingAndForEachSubscription(
         NotificationEventType notificationEventType, String hearingType, List<String> expectedEmailTemplateIds,
-        List<String> expectedSmsTemplateIds, List<String> expectedLetterTemplateIds, String appointeeEmailSubs, String appointeeSmsSubs,
-        int wantedNumberOfSendEmailInvocations, int wantedNumberOfSendSmsInvocations, int wantedNumberOfSendLetterInvocations, String expectedName) throws Exception {
+        List<String> expectedSmsTemplateIds, List<String> expectedLetterTemplateIds, String appointeeEmailSubs,
+        String appointeeSmsSubs, int wantedNumberOfSendEmailInvocations, int wantedNumberOfSendSmsInvocations,
+        int wantedNumberOfSendLetterInvocations, String expectedName) throws Exception {
+
         String path = getClass().getClassLoader().getResource("json/ccdResponseWithAppointee.json").getFile();
         String jsonAppointee = FileUtils.readFileToString(new File(path), StandardCharsets.UTF_8.name());
         jsonAppointee = updateEmbeddedJson(jsonAppointee, hearingType, "case_details", "case_data", "appeal", "hearingType");
