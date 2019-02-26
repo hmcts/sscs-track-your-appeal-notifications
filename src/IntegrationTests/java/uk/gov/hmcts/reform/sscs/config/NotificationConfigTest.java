@@ -106,12 +106,12 @@ public class NotificationConfigTest {
             new Object[]{"08959288-e09a-472d-80b8-af79bfcbb437", null, null, ORAL, getTemplateName(POSTPONEMENT_NOTIFICATION, APPELLANT)},
             new Object[]{"08959288-e09a-472d-80b8-af79bfcbb437", null, null, ORAL, getTemplateName(POSTPONEMENT_NOTIFICATION, APPOINTEE)},
             new Object[]{"08959288-e09a-472d-80b8-af79bfcbb437", null, null, PAPER, getTemplateName(POSTPONEMENT_NOTIFICATION, APPOINTEE)},
-            new Object[]{"652753bf-59b4-46eb-9c24-bd762338a098", null, "77ea8a2f-06df-4279-9c1f-0f23cb2d9bbf", PAPER, getTemplateName(CASE_UPDATED,REPRESENTATIVE)},
-            new Object[]{"652753bf-59b4-46eb-9c24-bd762338a098", null, "77ea8a2f-06df-4279-9c1f-0f23cb2d9bbf", ORAL, getTemplateName(CASE_UPDATED,REPRESENTATIVE)},
-            new Object[]{"01293b93-b23e-40a3-ad78-2c6cd01cd21c", null, "91143b85-dd9d-430c-ba23-e42ec90f44f8", PAPER, getTemplateName(CASE_UPDATED,APPELLANT)},
-            new Object[]{"01293b93-b23e-40a3-ad78-2c6cd01cd21c", null, "91143b85-dd9d-430c-ba23-e42ec90f44f8", ORAL, getTemplateName(CASE_UPDATED,APPELLANT)},
-            new Object[]{"01293b93-b23e-40a3-ad78-2c6cd01cd21c", null, "747d026e-1bec-4e96-8a34-28f36e30bba5", PAPER, getTemplateName(CASE_UPDATED,APPOINTEE)},
-            new Object[]{"01293b93-b23e-40a3-ad78-2c6cd01cd21c", null, "747d026e-1bec-4e96-8a34-28f36e30bba5", ORAL, getTemplateName(CASE_UPDATED,APPOINTEE)},
+            new Object[]{"4b1ee55b-abd1-4e7e-b0ed-693d8df1e741", "99bd4a56-256c-4de8-b187-d43a8dde466f", "77ea8a2f-06df-4279-9c1f-0f23cb2d9bbf", PAPER, getTemplateName(APPEAL_LODGED,REPRESENTATIVE)},
+            new Object[]{"4b1ee55b-abd1-4e7e-b0ed-693d8df1e741", "99bd4a56-256c-4de8-b187-d43a8dde466f", "77ea8a2f-06df-4279-9c1f-0f23cb2d9bbf", ORAL, getTemplateName(APPEAL_LODGED,REPRESENTATIVE)},
+            new Object[]{"b90df52f-c628-409c-8875-4b0b9663a053", "ede384aa-0b6e-4311-9f01-ee547573a07b", "91143b85-dd9d-430c-ba23-e42ec90f44f8", PAPER, getTemplateName(APPEAL_LODGED,APPELLANT)},
+            new Object[]{"b90df52f-c628-409c-8875-4b0b9663a053", "ede384aa-0b6e-4311-9f01-ee547573a07b", "91143b85-dd9d-430c-ba23-e42ec90f44f8", ORAL, getTemplateName(APPEAL_LODGED,APPELLANT)},
+            new Object[]{"08365e91-9e07-4a5c-bf96-ef56fd0ada63", "ede384aa-0b6e-4311-9f01-ee547573a07b", "747d026e-1bec-4e96-8a34-28f36e30bba5", PAPER, getTemplateName(APPEAL_LODGED,APPOINTEE)},
+            new Object[]{"08365e91-9e07-4a5c-bf96-ef56fd0ada63", "ede384aa-0b6e-4311-9f01-ee547573a07b", "747d026e-1bec-4e96-8a34-28f36e30bba5", ORAL, getTemplateName(APPEAL_LODGED,APPOINTEE)},
             new Object[]{"e2ee8609-7d56-4857-b3f8-79028e8960aa", null, null, ORAL, getTemplateName(APPEAL_DORMANT_NOTIFICATION, REPRESENTATIVE)},
             new Object[]{"fc9d0618-68c4-48ec-9481-a84b225a57a9", null, null, ORAL, getTemplateName(APPEAL_DORMANT_NOTIFICATION, APPELLANT)}
         };

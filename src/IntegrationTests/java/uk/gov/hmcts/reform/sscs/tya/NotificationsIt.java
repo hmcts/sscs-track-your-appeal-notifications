@@ -839,9 +839,9 @@ public class NotificationsIt {
                 "0"
             },
             new Object[]{
-                CASE_UPDATED,
+                APPEAL_LODGED,
                 "paper",
-                Arrays.asList("01293b93-b23e-40a3-ad78-2c6cd01cd21c", "652753bf-59b4-46eb-9c24-bd762338a098"),
+                Arrays.asList("b90df52f-c628-409c-8875-4b0b9663a053", "4b1ee55b-abd1-4e7e-b0ed-693d8df1e741"),
                 Collections.emptyList(),
                 Collections.emptyList(),
                 "yes",
@@ -853,9 +853,9 @@ public class NotificationsIt {
                 "0"
             },
             new Object[]{
-                CASE_UPDATED,
+                APPEAL_LODGED,
                 "oral",
-                Arrays.asList("01293b93-b23e-40a3-ad78-2c6cd01cd21c", "652753bf-59b4-46eb-9c24-bd762338a098"),
+                Arrays.asList("b90df52f-c628-409c-8875-4b0b9663a053", "4b1ee55b-abd1-4e7e-b0ed-693d8df1e741"),
                 Collections.emptyList(),
                 Collections.emptyList(),
                 "yes",
@@ -867,9 +867,9 @@ public class NotificationsIt {
                 "0"
             },
             new Object[]{
-                CASE_UPDATED,
+                APPEAL_LODGED,
                 "paper",
-                Collections.singletonList("652753bf-59b4-46eb-9c24-bd762338a098"),
+                Collections.singletonList("4b1ee55b-abd1-4e7e-b0ed-693d8df1e741"),
                 Collections.emptyList(),
                 Collections.emptyList(),
                 "no",
@@ -881,9 +881,9 @@ public class NotificationsIt {
                 "0"
             },
             new Object[]{
-                CASE_UPDATED,
+                APPEAL_LODGED,
                 "paper",
-                Collections.singletonList("01293b93-b23e-40a3-ad78-2c6cd01cd21c"),
+                Collections.singletonList("b90df52f-c628-409c-8875-4b0b9663a053"),
                 Collections.emptyList(),
                 Collections.emptyList(),
                 "yes",
@@ -895,7 +895,7 @@ public class NotificationsIt {
                 "0"
             },
             new Object[]{
-                CASE_UPDATED,
+                APPEAL_LODGED,
                 "paper",
                 Collections.emptyList(),
                 Collections.emptyList(),
@@ -1322,9 +1322,9 @@ public class NotificationsIt {
                 "0"
             },
             new Object[]{
-                CASE_UPDATED,
+                APPEAL_LODGED,
                 "paper",
-                Arrays.asList("01293b93-b23e-40a3-ad78-2c6cd01cd21c", "652753bf-59b4-46eb-9c24-bd762338a098"),
+                Arrays.asList("b90df52f-c628-409c-8875-4b0b9663a053", "4b1ee55b-abd1-4e7e-b0ed-693d8df1e741"),
                 Collections.emptyList(),
                 Collections.emptyList(),
                 "yes",
@@ -1336,9 +1336,9 @@ public class NotificationsIt {
                 "0"
             },
             new Object[]{
-                CASE_UPDATED,
+                APPEAL_LODGED,
                 "oral",
-                Arrays.asList("01293b93-b23e-40a3-ad78-2c6cd01cd21c", "652753bf-59b4-46eb-9c24-bd762338a098"),
+                Arrays.asList("b90df52f-c628-409c-8875-4b0b9663a053", "4b1ee55b-abd1-4e7e-b0ed-693d8df1e741"),
                 Collections.emptyList(),
                 Collections.emptyList(),
                 "yes",
@@ -1350,46 +1350,46 @@ public class NotificationsIt {
                 "0"
             },
             new Object[]{
-                CASE_UPDATED,
+                APPEAL_LODGED,
                 "paper",
-                Collections.singletonList("652753bf-59b4-46eb-9c24-bd762338a098"),
+                Collections.singletonList("4b1ee55b-abd1-4e7e-b0ed-693d8df1e741"),
                 Collections.emptyList(),
-                Collections.singletonList("91143b85-dd9d-430c-ba23-e42ec90f44f8"),
+                Collections.emptyList(),
                 "no",
                 "no",
                 "yes",
                 "no",
                 "1",
                 "0",
-                "1"
+                "0"
             },
             new Object[]{
-                CASE_UPDATED,
+                APPEAL_LODGED,
                 "paper",
-                Collections.singletonList("01293b93-b23e-40a3-ad78-2c6cd01cd21c"),
+                Collections.singletonList("b90df52f-c628-409c-8875-4b0b9663a053"),
                 Collections.emptyList(),
-                Collections.singletonList("77ea8a2f-06df-4279-9c1f-0f23cb2d9bbf"),
+                Collections.emptyList(),
                 "yes",
                 "no",
                 "no",
                 "no",
                 "1",
                 "0",
-                "1"
+                "0"
             },
             new Object[]{
-                CASE_UPDATED,
+                APPEAL_LODGED,
                 "paper",
                 Collections.emptyList(),
                 Collections.emptyList(),
-                Arrays.asList("91143b85-dd9d-430c-ba23-e42ec90f44f8", "77ea8a2f-06df-4279-9c1f-0f23cb2d9bbf"),
+                Collections.emptyList(),
                 "no",
                 "no",
                 "no",
                 "no",
                 "0",
                 "0",
-                "2"
+                "0"
             }
         };
     }
@@ -1782,17 +1782,17 @@ public class NotificationsIt {
                 ""
             },
             new Object[]{
-                CASE_UPDATED,
+                APPEAL_LODGED,
                 "paper",
                 Collections.emptyList(),
                 Collections.emptyList(),
-                Collections.singletonList("747d026e-1bec-4e96-8a34-28f36e30bba5"),
+                Collections.emptyList(),
                 "no",
                 "no",
                 "0",
                 "0",
-                "1",
-                "Harry Potter"
+                "0",
+                ""
             }
         };
     }
