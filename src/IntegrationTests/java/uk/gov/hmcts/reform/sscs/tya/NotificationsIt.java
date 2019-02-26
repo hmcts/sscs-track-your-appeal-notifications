@@ -1576,6 +1576,32 @@ public class NotificationsIt {
             new Object[]{
                 HEARING_REMINDER_NOTIFICATION,
                 "oral",
+                Collections.singletonList("774a5cba-fab6-4b8c-a9d9-03f913ed2dca"),
+                Collections.emptyList(),
+                Collections.emptyList(),
+                "yes",
+                "no",
+                "1",
+                "0",
+                "0",
+                "Appointee Appointee"
+            },
+            new Object[]{
+                HEARING_REMINDER_NOTIFICATION,
+                "oral",
+                Collections.emptyList(),
+                Collections.singletonList("404e9a43-6318-492c-b5c2-e34ddfbbdde9"),
+                Collections.emptyList(),
+                "no",
+                "yes",
+                "0",
+                "1",
+                "0",
+                "Appointee Appointee"
+            },
+            new Object[]{
+                HEARING_REMINDER_NOTIFICATION,
+                "oral",
                 Collections.emptyList(),
                 Collections.emptyList(),
                 Collections.emptyList(),
