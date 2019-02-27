@@ -17,6 +17,7 @@ import uk.gov.hmcts.reform.sscs.domain.SubscriptionWithType;
 import uk.gov.hmcts.reform.sscs.domain.notify.*;
 import uk.gov.hmcts.reform.sscs.factory.NotificationFactory;
 import uk.gov.hmcts.reform.sscs.factory.NotificationWrapper;
+import uk.gov.hmcts.reform.sscs.utility.PhoneNumbersUtil;
 
 @Service
 @Slf4j
@@ -146,7 +147,8 @@ public class NotificationService {
                 smsNumber = newSubscription.getMobile().equals(oldSubscription.getMobile()) ? null : oldSubscription.getMobile();
             }
 
-            Destination destination = Destination.builder().email(emailAddress).sms(smsNumber).build();
+            Destination destination = Destination.builder().email(emailAddress)
+                    .sms(PhoneNumbersUtil.cleanPhoneNumber(smsNumber).orElse(smsNumber)).build();
 
             Benefit benefit = getBenefitByCode(wrapper.getSscsCaseDataWrapper()
                     .getNewSscsCaseData().getAppeal().getBenefitType().getCode());
