@@ -1359,42 +1359,42 @@ public class NotificationsIt {
                 "paper",
                 Collections.singletonList("4b1ee55b-abd1-4e7e-b0ed-693d8df1e741"),
                 Collections.emptyList(),
-                Collections.emptyList(),
+                Collections.singletonList("91143b85-dd9d-430c-ba23-e42ec90f44f8"),
                 "no",
                 "no",
                 "yes",
                 "no",
                 "1",
                 "0",
-                "0"
+                "1"
             },
             new Object[]{
                 APPEAL_LODGED,
                 "paper",
                 Collections.singletonList("b90df52f-c628-409c-8875-4b0b9663a053"),
                 Collections.emptyList(),
-                Collections.emptyList(),
+                Collections.singletonList("77ea8a2f-06df-4279-9c1f-0f23cb2d9bbf"),
                 "yes",
                 "no",
                 "no",
                 "no",
                 "1",
                 "0",
-                "0"
+                "1"
             },
             new Object[]{
                 APPEAL_LODGED,
                 "paper",
                 Collections.emptyList(),
                 Collections.emptyList(),
-                Collections.emptyList(),
+                Arrays.asList("91143b85-dd9d-430c-ba23-e42ec90f44f8", "77ea8a2f-06df-4279-9c1f-0f23cb2d9bbf"),
                 "no",
                 "no",
                 "no",
                 "no",
                 "0",
                 "0",
-                "0"
+                "2"
             }
         };
     }
@@ -1804,13 +1804,13 @@ public class NotificationsIt {
                 "paper",
                 Collections.emptyList(),
                 Collections.emptyList(),
-                Collections.emptyList(),
+                Collections.singletonList("747d026e-1bec-4e96-8a34-28f36e30bba5"),
                 "no",
                 "no",
                 "0",
                 "0",
-                "0",
-                ""
+                "1",
+                "Harry Potter"
             }
         };
     }
