@@ -149,8 +149,15 @@ notification:
       smsId: 446c7b23-7342-42e1-adff-b4c367e951cb
   subscriptionCreated.smsId: 7397a76f-14cb-468c-b1a7-0570940ead91
   subscriptionUpdated:
-    emailId: b8b2904f-629d-42cf-acea-1b74bde5b2ff
-    smsId: 7397a76f-14cb-468c-b1a7-0570940ead91
+    appellant:
+      emailId: b8b2904f-629d-42cf-acea-1b74bde5b2ff
+      smsId: 7397a76f-14cb-468c-b1a7-0570940ead91
+    appointee:
+      emailId: b8b2904f-629d-42cf-acea-1b74bde5b2ff
+      smsId: 7397a76f-14cb-468c-b1a7-0570940ead91
+    representative:
+      emailId: b8b2904f-629d-42cf-acea-1b74bde5b2ff
+      smsId: a6c09fad-6265-4c7c-8b95-36245ffa5352
   subscriptionOld:
     emailId: 03b957bf-e21d-4147-90c1-b6fefa8cf70d
     smsId: 759c712a-6b55-485e-bcf7-1cf5c4896eb1
