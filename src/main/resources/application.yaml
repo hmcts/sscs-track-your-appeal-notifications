@@ -68,6 +68,8 @@ gov.uk.notification.api.testRecipients:
 - "sscstest+notify2@greencroftconsulting.com"
 - "07398785050"
 - "07398785051"
+- "+447398785050"
+- "+447398785051"
 - "TS1 1ST"
 - "TS2 2ST"
 - "TS3 3ST"
@@ -259,9 +261,14 @@ notification:
         emailId: b74ea5d4-dba2-4148-b822-d102cedbea12
         smsId: 4562984e-2854-4191-81d9-cffbe5111015
     evidenceReceived:
+      appellant:
+        emailId: cab48431-a4f0-41f5-b753-2cecf20ab5d4
       representative:
         emailId: 7af36950-fc63-45d1-907d-f472fac7af06
         smsId: 345f802b-7089-4f46-a17f-bf534b272740
+      appointee:
+        emailId: c5654134-2e13-4541-ac73-334a5b5cdbb6
+        smsId: 74bda35f-040b-4355-bda3-faf0e4f5ae6e
     struckOut:
       letterId: 7383b637-d76e-4c9f-8af9-3e3573168011
   oral:

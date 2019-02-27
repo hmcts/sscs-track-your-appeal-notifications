@@ -17,9 +17,32 @@
             "nino": "AB 22 55 66 B"
           },
           "name": {
-            "firstName": "User",
-            "lastName": "Test",
+            "firstName": "Appellant",
+            "lastName": "User",
             "title": "Mr"
+          },
+          "isAddressSameAsAppointee":"no",
+          "appointee": {
+            "name": {
+              "title": "Mr",
+              "firstName": "Appointee",
+              "lastName": "User"
+            },
+            "contact": {
+              "email": "test@tester.com",
+              "mobile": "07848484848"
+            },
+            "address": {
+              "line1": "1 Appointee Street",
+              "line2": "Newcastle",
+              "town": "Newcastle",
+              "county": "Tyne and Wear",
+              "postcode": "NE1 1AW"
+            },
+            "identity": {
+              "dob": "1998-07-01",
+              "nino": ""
+            }
           }
         },
         "benefitType": {
@@ -33,38 +56,35 @@
         },
         "mrnDetails": {},
         "rep": {},
-        "signer": null
+        "signer": null,
+        "hearingType": "paper"
       },
       "caseReference": "SC022/14/12423",
       "events": [
         {
-          "id": "a359fc78-441f-4c74-9350-f95a7f0ad59b",
+          "id": "a95eb829-2da3-4ff4-9d21-90d22583facf",
           "value": {
             "date": "2017-05-24T14:01:18.243",
             "description": "Some Events",
-            "type": "appealReceived"
+            "type": "appealCreated"
+          }
+        },
+        {
+          "id": "89a668da-de45-4532-ba56-7ce5e14096a8",
+          "value": {
+            "date": "2016-01-16T12:34:56.789",
+            "description": "responseReceived",
+            "type": "responseReceived"
           }
         }
       ],
-      "evidence": {
-        "documents": [
-          {
-            "id": "0a07cce4-4963-4f29-94b3-ffb93a0a7f56",
-            "value": {
-              "dateReceived": "2016-01-01",
-              "evidenceProvidedBy": "Caseworker",
-              "evidenceType": "Medical"
-            }
-          }
-        ]
-      },
       "subscriptions": {
-        "appellantSubscription": {
-          "tya": "NpmhpYaFLa",
+        "appointeeSubscription": {
           "email": "sscstest+notify@greencroftconsulting.com",
           "mobile": "07398785050",
           "subscribeEmail": "Yes",
-          "subscribeSms": "Yes"
+          "subscribeSms": "Yes",
+          "tya": "v8eg15XeZk"
         },
         "representativeSubscription": {
           "email": "",
@@ -114,6 +134,7 @@
                   "nino": "PUBLIC"
                 }
               },
+              "isAppointee": "PUBLIC",
               "name": {
                 "classification": "PUBLIC",
                 "value": {
@@ -185,7 +206,7 @@
       "subscriptions": {
         "classification": "PUBLIC",
         "value": {
-          "appellantSubscription": {
+          "appointeeSubscription": {
             "classification": "PUBLIC",
             "value": {
               "email": "PUBLIC",
@@ -249,6 +270,7 @@
                   "nino": "PUBLIC"
                 }
               },
+              "isAppointee": "PUBLIC",
               "name": {
                 "classification": "PUBLIC",
                 "value": {
@@ -320,7 +342,7 @@
       "subscriptions": {
         "classification": "PUBLIC",
         "value": {
-          "appellantSubscription": {
+          "appointeeSubscription": {
             "classification": "PUBLIC",
             "value": {
               "email": "PUBLIC",
@@ -362,6 +384,7 @@
             "dob": "1904-03-10",
             "nino": "AB 22 55 66 B"
           },
+          "isAppointee": null,
           "name": {
             "firstName": "User",
             "lastName": "Test",
@@ -379,7 +402,8 @@
         },
         "mrnDetails": {},
         "rep": {},
-        "signer": null
+        "signer": null,
+        "hearingType": "paper"
       },
       "caseReference": "SC022/14/12423",
       "events": [
@@ -393,12 +417,12 @@
         }
       ],
       "subscriptions": {
-        "appellantSubscription": {
+        "appointeeSubscription": {
           "email": "sscstest+notify@greencroftconsulting.com",
           "mobile": "07398785050",
           "subscribeEmail": "Yes",
           "subscribeSms": "Yes",
-          "tya": "NpmhpYaFLa"
+          "tya": "v8eg15XeZk"
         },
         "representativeSubscription": {
           "email": "",
@@ -448,6 +472,7 @@
                   "nino": "PUBLIC"
                 }
               },
+              "isAppointee": "PUBLIC",
               "name": {
                 "classification": "PUBLIC",
                 "value": {
@@ -501,7 +526,7 @@
       "subscriptions": {
         "classification": "PUBLIC",
         "value": {
-          "appellantSubscription": {
+          "appointeeSubscription": {
             "classification": "PUBLIC",
             "value": {
               "email": "PUBLIC",
@@ -565,6 +590,7 @@
                   "nino": "PUBLIC"
                 }
               },
+              "isAppointee": "PUBLIC",
               "name": {
                 "classification": "PUBLIC",
                 "value": {
@@ -618,7 +644,7 @@
       "subscriptions": {
         "classification": "PUBLIC",
         "value": {
-          "appellantSubscription": {
+          "appointeeSubscription": {
             "classification": "PUBLIC",
             "value": {
               "email": "PUBLIC",
