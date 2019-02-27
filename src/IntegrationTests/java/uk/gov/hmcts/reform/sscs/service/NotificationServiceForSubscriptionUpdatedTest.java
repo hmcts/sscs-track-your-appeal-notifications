@@ -53,8 +53,8 @@ public class NotificationServiceForSubscriptionUpdatedTest {
     private static final String CASE_ID = "1000001";
     private static final String EMAIL_TEST_1 = "test1@email.com";
     private static final String EMAIL_TEST_2 = "test2@email.com";
-    private static final String MOBILE_NUMBER_1 = "07983495065";
-    private static final String MOBILE_NUMBER_2 = "07123456789";
+    private static final String MOBILE_NUMBER_1 = "+447983495065";
+    private static final String MOBILE_NUMBER_2 = "+447123456789";
 
     private NotificationService notificationService;
 
