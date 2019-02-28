@@ -285,7 +285,7 @@ public class Personalisation<E extends NotificationWrapper> {
 
     public Template getTemplate(E notificationWrapper, Benefit benefit, SubscriptionType subscriptionType) {
         String templateConfig = getTemplateConfig(subscriptionType, notificationWrapper.getNotificationType());
-        String smsTemplateName = isSendSmsSubscriptionConfirmation() ? SUBSCRIPTION_CREATED_NOTIFICATION.getId() :
+        String smsTemplateName = isSendSmsSubscriptionConfirmation() ? SUBSCRIPTION_CREATED_NOTIFICATION.getId() + "." + subscriptionType.toString().toLowerCase() :
                 templateConfig;
         String letterTemplateName = getLetterTemplateName(subscriptionType, notificationWrapper.getNotificationType());
         return config.getTemplate(templateConfig, smsTemplateName, letterTemplateName, benefit, notificationWrapper.getHearingType());

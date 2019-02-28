@@ -128,7 +128,7 @@ public class NotificationsIt {
     @Value("${notification.subscriptionUpdated.emailId}")
     private String subscriptionUpdatedEmailId;
 
-    @Value("${notification.subscriptionCreated.smsId}")
+    @Value("${notification.subscriptionCreated.appellant.smsId}")
     private String subscriptionCreatedSmsId;
 
     @Value("${notification.paper.responseReceived.emailId}")

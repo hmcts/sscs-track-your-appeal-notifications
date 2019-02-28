@@ -82,6 +82,15 @@ public class NotificationServiceForSubscriptionUpdatedTest {
     @Value("${notification.subscriptionUpdated.smsId}")
     private String subscriptionUpdatedSmsId;
 
+    @Value("${notification.subscriptionCreated.appellant.smsId}")
+    private String subscriptionCreatedAppellantSmsId;
+
+    @Value("${notification.subscriptionCreated.appointee.smsId}")
+    private String subscriptionCreatedAppointeeSmsId;
+
+    @Value("${notification.subscriptionCreated.representative.smsId}")
+    private String subscriptionCreatedRepresentativeSmsId;
+
     @Value("${notification.subscriptionOld.emailId}")
     private String subscriptionOldEmailId;
 
@@ -183,34 +192,100 @@ public class NotificationServiceForSubscriptionUpdatedTest {
     }
 
     @Test
-    @Parameters({"appellant", "representative", "appointee"})
-    public void subscribeMobile_willSendSubscriptionSms_and_ResendLastEvent(String who) throws NotificationClientException {
+    public void subscribeMobileForAppellant_willSendSubscriptionSms_and_ResendLastEvent() throws NotificationClientException {
+        String appellant = "appellant";
         Subscription newSubscription = subscription.toBuilder().mobile(MOBILE_NUMBER_2).subscribeEmail(NO).subscribeSms(YES).build();
         Subscription oldSubscription = subscription.toBuilder().subscribeEmail(NO).subscribeSms(NO).build();
-        SscsCaseData newSscsCaseData = getSscsCaseData(newSubscription, who);
-        SscsCaseData oldSscsCaseData = getSscsCaseData(oldSubscription, who);
+        SscsCaseData newSscsCaseData = getSscsCaseData(newSubscription, appellant);
+        SscsCaseData oldSscsCaseData = getSscsCaseData(oldSubscription, appellant);
         SscsCaseDataWrapper wrapper = getSscsCaseDataWrapper(newSscsCaseData, oldSscsCaseData);
 
         notificationService.manageNotificationAndSubscription(new CcdNotificationWrapper(wrapper));
         verify(notificationSender).sendSms(eq(subscriptionUpdatedSmsId), eq(newSubscription.getMobile()), any(), any(), any(), any());
-        verify(notificationSender).sendSms(eq(getAppealReceivedSmsId(who)), eq(newSubscription.getMobile()), any(), any(), any(), any());
+        verify(notificationSender).sendSms(eq(getAppealReceivedSmsId(appellant)), eq(newSubscription.getMobile()), any(), any(), any(), any());
         verifyNoMoreInteractions(notificationSender);
     }
 
     @Test
-    @Parameters({"appellant", "representative", "appointee"})
-    public void subscribeMobileAndEmail_willSendSubscriptionEmailAndSms_and_ResendLastEvent(String who) throws NotificationClientException {
+    public void subscribeMobileForAppointee_willSendSubscriptionSms_and_ResendLastEvent() throws NotificationClientException {
+        String appointee = "appointee";
+        Subscription newSubscription = subscription.toBuilder().mobile(MOBILE_NUMBER_2).subscribeEmail(NO).subscribeSms(YES).build();
+        Subscription oldSubscription = subscription.toBuilder().subscribeEmail(NO).subscribeSms(NO).build();
+        SscsCaseData newSscsCaseData = getSscsCaseData(newSubscription, appointee);
+        SscsCaseData oldSscsCaseData = getSscsCaseData(oldSubscription, appointee);
+        SscsCaseDataWrapper wrapper = getSscsCaseDataWrapper(newSscsCaseData, oldSscsCaseData);
+
+        notificationService.manageNotificationAndSubscription(new CcdNotificationWrapper(wrapper));
+        verify(notificationSender).sendSms(eq(subscriptionUpdatedSmsId), eq(newSubscription.getMobile()), any(), any(), any(), any());
+        verify(notificationSender).sendSms(eq(getAppealReceivedSmsId(appointee)), eq(newSubscription.getMobile()), any(), any(), any(), any());
+        verifyNoMoreInteractions(notificationSender);
+    }
+
+    @Test
+    public void subscribeMobileForRepresentative_willSendSubscriptionSms_and_ResendLastEvent() throws NotificationClientException {
+        String representative = "representative";
+        Subscription newSubscription = subscription.toBuilder().mobile(MOBILE_NUMBER_2).subscribeEmail(NO).subscribeSms(YES).build();
+        Subscription oldSubscription = subscription.toBuilder().subscribeEmail(NO).subscribeSms(NO).build();
+        SscsCaseData newSscsCaseData = getSscsCaseData(newSubscription, representative);
+        SscsCaseData oldSscsCaseData = getSscsCaseData(oldSubscription, representative);
+        SscsCaseDataWrapper wrapper = getSscsCaseDataWrapper(newSscsCaseData, oldSscsCaseData);
+
+        notificationService.manageNotificationAndSubscription(new CcdNotificationWrapper(wrapper));
+        verify(notificationSender).sendSms(eq(subscriptionCreatedRepresentativeSmsId), eq(newSubscription.getMobile()), any(), any(), any(), any());
+        verify(notificationSender).sendSms(eq(getAppealReceivedSmsId(representative)), eq(newSubscription.getMobile()), any(), any(), any(), any());
+        verifyNoMoreInteractions(notificationSender);
+    }
+
+    @Test
+    public void subscribeMobileAndEmailForAppellant_willSendSubscriptionEmailAndSms_and_ResendLastEvent() throws NotificationClientException {
+        String appellant = "appellant";
         Subscription newSubscription = subscription.toBuilder().email(EMAIL_TEST_2).mobile(MOBILE_NUMBER_2).subscribeEmail(YES).subscribeSms(YES).build();
         Subscription oldSubscription = subscription.toBuilder().subscribeEmail(NO).subscribeSms(NO).build();
-        SscsCaseData newSscsCaseData = getSscsCaseData(newSubscription, who);
-        SscsCaseData oldSscsCaseData = getSscsCaseData(oldSubscription, who);
+        SscsCaseData newSscsCaseData = getSscsCaseData(newSubscription, appellant);
+        SscsCaseData oldSscsCaseData = getSscsCaseData(oldSubscription, appellant);
         SscsCaseDataWrapper wrapper = getSscsCaseDataWrapper(newSscsCaseData, oldSscsCaseData);
 
         notificationService.manageNotificationAndSubscription(new CcdNotificationWrapper(wrapper));
         verify(notificationSender).sendEmail(eq(subscriptionUpdatedEmailId), eq(newSubscription.getEmail()), any(), any(), any());
-        verify(notificationSender).sendEmail(eq(getAppealReceivedEmailId(who)), eq(newSubscription.getEmail()), any(), any(), any());
-        verify(notificationSender).sendSms(eq(subscriptionUpdatedSmsId), eq(newSubscription.getMobile()), any(), any(), any(), any());
-        verify(notificationSender).sendSms(eq(getAppealReceivedSmsId(who)), eq(newSubscription.getMobile()), any(), any(), any(), any());
+        verify(notificationSender).sendEmail(eq(getAppealReceivedEmailId(appellant)), eq(newSubscription.getEmail()), any(), any(), any());
+        verify(notificationSender).sendSms(eq(subscriptionCreatedAppellantSmsId), eq(newSubscription.getMobile()), any(), any(), any(), any());
+        verify(notificationSender).sendSms(eq(getAppealReceivedSmsId(appellant)), eq(newSubscription.getMobile()), any(), any(), any(), any());
+
+        verifyNoMoreInteractions(notificationSender);
+    }
+
+    @Test
+    public void subscribeMobileAndEmailForAppointee_willSendSubscriptionEmailAndSms_and_ResendLastEvent() throws NotificationClientException {
+        String appointee = "appointee";
+        Subscription newSubscription = subscription.toBuilder().email(EMAIL_TEST_2).mobile(MOBILE_NUMBER_2).subscribeEmail(YES).subscribeSms(YES).build();
+        Subscription oldSubscription = subscription.toBuilder().subscribeEmail(NO).subscribeSms(NO).build();
+        SscsCaseData newSscsCaseData = getSscsCaseData(newSubscription, appointee);
+        SscsCaseData oldSscsCaseData = getSscsCaseData(oldSubscription, appointee);
+        SscsCaseDataWrapper wrapper = getSscsCaseDataWrapper(newSscsCaseData, oldSscsCaseData);
+
+        notificationService.manageNotificationAndSubscription(new CcdNotificationWrapper(wrapper));
+        verify(notificationSender).sendEmail(eq(subscriptionUpdatedEmailId), eq(newSubscription.getEmail()), any(), any(), any());
+        verify(notificationSender).sendEmail(eq(getAppealReceivedEmailId(appointee)), eq(newSubscription.getEmail()), any(), any(), any());
+        verify(notificationSender).sendSms(eq(subscriptionCreatedAppointeeSmsId), eq(newSubscription.getMobile()), any(), any(), any(), any());
+        verify(notificationSender).sendSms(eq(getAppealReceivedSmsId(appointee)), eq(newSubscription.getMobile()), any(), any(), any(), any());
+
+        verifyNoMoreInteractions(notificationSender);
+    }
+
+    @Test
+    public void subscribeMobileAndEmailForRepresentative_willSendSubscriptionEmailAndSms_and_ResendLastEvent() throws NotificationClientException {
+        String representative = "representative";
+        Subscription newSubscription = subscription.toBuilder().email(EMAIL_TEST_2).mobile(MOBILE_NUMBER_2).subscribeEmail(YES).subscribeSms(YES).build();
+        Subscription oldSubscription = subscription.toBuilder().subscribeEmail(NO).subscribeSms(NO).build();
+        SscsCaseData newSscsCaseData = getSscsCaseData(newSubscription, representative);
+        SscsCaseData oldSscsCaseData = getSscsCaseData(oldSubscription, representative);
+        SscsCaseDataWrapper wrapper = getSscsCaseDataWrapper(newSscsCaseData, oldSscsCaseData);
+
+        notificationService.manageNotificationAndSubscription(new CcdNotificationWrapper(wrapper));
+        verify(notificationSender).sendEmail(eq(subscriptionUpdatedEmailId), eq(newSubscription.getEmail()), any(), any(), any());
+        verify(notificationSender).sendEmail(eq(getAppealReceivedEmailId(representative)), eq(newSubscription.getEmail()), any(), any(), any());
+        verify(notificationSender).sendSms(eq(subscriptionCreatedRepresentativeSmsId), eq(newSubscription.getMobile()), any(), any(), any(), any());
+        verify(notificationSender).sendSms(eq(getAppealReceivedSmsId(representative)), eq(newSubscription.getMobile()), any(), any(), any(), any());
 
         verifyNoMoreInteractions(notificationSender);
     }
