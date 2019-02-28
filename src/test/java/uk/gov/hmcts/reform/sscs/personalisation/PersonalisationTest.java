@@ -536,6 +536,25 @@ public class PersonalisationTest {
     }
 
     @Test
+    public void shouldNotPopulateRegionalProcessingCenterIfRpcCannotBeFound() {
+
+        SscsCaseData response = SscsCaseData.builder().regionalProcessingCenter(null).build();
+
+        when(regionalProcessingCenterService.getByScReferenceCode("SC/1234/5")).thenReturn(null);
+
+        Map<String, String> result = personalisation.setEvidenceProcessingAddress(new HashMap<>(), response);
+
+        verify(regionalProcessingCenterService, never()).getByScReferenceCode(anyString());
+
+        assertNull(result.get(REGIONAL_OFFICE_NAME_LITERAL));
+        assertNull(result.get(SUPPORT_CENTRE_NAME_LITERAL));
+        assertNull(result.get(ADDRESS_LINE_LITERAL));
+        assertNull(result.get(TOWN_LITERAL));
+        assertNull(result.get(COUNTY_LITERAL));
+        assertNull(result.get(POSTCODE_LITERAL));
+    }
+
+    @Test
     public void shouldPopulateHearingContactDateFromCcdCaseIfPresent() {
 
         SscsCaseDataWrapper wrapper = SscsCaseDataWrapper.builder().newSscsCaseData(SscsCaseData.builder().build()).build();

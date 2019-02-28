@@ -1086,7 +1086,33 @@ public class NotificationServiceTest {
                 Subscription.builder().build(),
                 Subscription.builder().build(),
                 new SubscriptionType[]{},
-            }
+            },
+            new Object[]{
+                EVIDENCE_REMINDER_NOTIFICATION,
+                1,
+                0,
+                Subscription.builder()
+                    .tya(APPEAL_NUMBER)
+                    .email(EMAIL)
+                    .subscribeEmail(YES)
+                    .build(),
+                null,
+                new SubscriptionType[]{APPOINTEE},
+            },
+            new Object[]{
+                EVIDENCE_REMINDER_NOTIFICATION,
+                1,
+                1,
+                Subscription.builder()
+                    .tya(APPEAL_NUMBER)
+                    .email(EMAIL)
+                    .subscribeEmail(YES)
+                    .mobile(MOBILE_NUMBER_1)
+                    .subscribeSms(YES)
+                    .build(),
+                null,
+                new SubscriptionType[]{APPOINTEE},
+            },
         };
     }
 

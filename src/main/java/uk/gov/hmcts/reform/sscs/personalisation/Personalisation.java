@@ -240,13 +240,15 @@ public class Personalisation<E extends NotificationWrapper> {
         } else {
             rpc = regionalProcessingCenterService.getByScReferenceCode(ccdResponse.getCaseReference());
         }
-        personalisation.put(REGIONAL_OFFICE_NAME_LITERAL, rpc.getAddress1());
-        personalisation.put(SUPPORT_CENTRE_NAME_LITERAL, rpc.getAddress2());
-        personalisation.put(ADDRESS_LINE_LITERAL, rpc.getAddress3());
-        personalisation.put(TOWN_LITERAL, rpc.getAddress4());
-        personalisation.put(COUNTY_LITERAL, rpc.getCity());
-        personalisation.put(POSTCODE_LITERAL, rpc.getPostcode());
-        personalisation.put(REGIONAL_OFFICE_POSTCODE_LITERAL, rpc.getPostcode());
+        if (rpc != null) {
+            personalisation.put(REGIONAL_OFFICE_NAME_LITERAL, rpc.getAddress1());
+            personalisation.put(SUPPORT_CENTRE_NAME_LITERAL, rpc.getAddress2());
+            personalisation.put(ADDRESS_LINE_LITERAL, rpc.getAddress3());
+            personalisation.put(TOWN_LITERAL, rpc.getAddress4());
+            personalisation.put(COUNTY_LITERAL, rpc.getCity());
+            personalisation.put(POSTCODE_LITERAL, rpc.getPostcode());
+            personalisation.put(REGIONAL_OFFICE_POSTCODE_LITERAL, rpc.getPostcode());
+        }
 
         return personalisation;
     }
