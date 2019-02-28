@@ -936,6 +936,44 @@ public class NotificationServiceTest {
                 Subscription.builder().build(),
                 Subscription.builder().build(),
                 new SubscriptionType[]{APPOINTEE, REPRESENTATIVE},
+            },
+            new Object[]{
+                HEARING_REMINDER_NOTIFICATION,
+                1,
+                1,
+                Subscription.builder()
+                        .tya(APPEAL_NUMBER)
+                        .email(EMAIL)
+                        .subscribeEmail(YES)
+                        .subscribeSms(YES)
+                        .mobile(MOBILE_NUMBER_1)
+                        .build(),
+                null,
+                new SubscriptionType[]{APPOINTEE},
+            },
+            new Object[]{
+                HEARING_REMINDER_NOTIFICATION,
+                1,
+                0,
+                Subscription.builder()
+                        .tya(APPEAL_NUMBER)
+                        .email(EMAIL)
+                        .subscribeEmail(YES)
+                        .build(),
+                null,
+                new SubscriptionType[]{APPOINTEE},
+            },
+            new Object[]{
+                HEARING_REMINDER_NOTIFICATION,
+                0,
+                1,
+                Subscription.builder()
+                    .tya(APPEAL_NUMBER)
+                    .subscribeSms(YES)
+                    .mobile(MOBILE_NUMBER_1)
+                    .build(),
+                null,
+                new SubscriptionType[]{APPOINTEE},
             }
         };
     }
