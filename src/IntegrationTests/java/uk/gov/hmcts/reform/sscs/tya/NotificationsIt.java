@@ -6,17 +6,8 @@ import static helper.IntegrationTestHelper.getRequestWithoutAuthHeader;
 import static helper.IntegrationTestHelper.updateEmbeddedJson;
 import static org.junit.Assert.assertArrayEquals;
 import static org.junit.Assert.assertEquals;
-import static org.mockito.Mockito.any;
-import static org.mockito.Mockito.anyString;
-import static org.mockito.Mockito.eq;
-import static org.mockito.Mockito.mock;
-import static org.mockito.Mockito.never;
-import static org.mockito.Mockito.times;
-import static org.mockito.Mockito.verify;
-import static org.mockito.Mockito.when;
-import static uk.gov.hmcts.reform.sscs.config.AppConstants.APPELLANT_NAME;
-import static uk.gov.hmcts.reform.sscs.config.AppConstants.NAME;
-import static uk.gov.hmcts.reform.sscs.config.AppConstants.REPRESENTATIVE_NAME;
+import static org.mockito.Mockito.*;
+import static uk.gov.hmcts.reform.sscs.config.AppConstants.*;
 import static uk.gov.hmcts.reform.sscs.domain.notify.NotificationEventType.*;
 
 import java.io.File;
@@ -40,6 +31,7 @@ import org.junit.runner.RunWith;
 import org.mockito.ArgumentCaptor;
 import org.mockito.Mock;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
@@ -71,8 +63,6 @@ import uk.gov.service.notify.SendSmsResponse;
 @ActiveProfiles("integration")
 @AutoConfigureMockMvc
 public class NotificationsIt {
-    private static final String TEMPLATE_PATH = "/templates/non_compliant_case_letter_template.html";
-
     // Below rules are needed to use the junitParamsRunner together with SpringRunner
     @ClassRule
     public static final SpringClassRule SPRING_CLASS_RULE = new SpringClassRule();
@@ -80,12 +70,10 @@ public class NotificationsIt {
     @Rule
     public final SpringMethodRule springMethodRule = new SpringMethodRule();
 
-    MockMvc mockMvc;
-
-    NotificationController controller;
+    private MockMvc mockMvc;
 
     @Mock
-    NotificationClient notificationClient;
+    private NotificationClient notificationClient;
 
     @Mock
     private SendEmailResponse sendEmailResponse;
@@ -97,19 +85,19 @@ public class NotificationsIt {
     private SendLetterResponse sendLetterResponse;
 
     @Mock
-    ReminderService reminderService;
-
-    @Autowired
-    NotificationValidService notificationValidService;
+    private ReminderService reminderService;
 
     @MockBean
     private AuthorisationService authorisationService;
 
     @Mock
-    NotificationBlacklist notificationBlacklist;
+    private NotificationBlacklist notificationBlacklist;
 
     @Autowired
-    NotificationFactory factory;
+    private NotificationValidService notificationValidService;
+
+    @Autowired
+    private NotificationFactory factory;
 
     @Autowired
     private CcdService ccdService;
@@ -120,7 +108,7 @@ public class NotificationsIt {
     @MockBean
     private IdamService idamService;
 
-    String json;
+    private String json;
 
     @Autowired
     private NotificationHandler notificationHandler;
@@ -137,6 +125,21 @@ public class NotificationsIt {
     @Mock
     private SscsGeneratePdfService sscsGeneratePdfService;
 
+    @Value("${notification.subscriptionUpdated.emailId}")
+    private String subscriptionUpdatedEmailId;
+
+    @Value("${notification.subscriptionCreated.smsId}")
+    private String subscriptionCreatedSmsId;
+
+    @Value("${notification.paper.responseReceived.emailId}")
+    private String paperResponseReceivedEmailId;
+
+    @Value("${notification.paper.responseReceived.smsId}")
+    private String paperResponseReceivedSmsId;
+
+    @Value("${notification.oral.responseReceived.emailId}")
+    private String oralResponseReceivedEmailId;
+
     @Before
     public void setup() throws Exception {
         NotificationSender sender = new NotificationSender(notificationClient, null, notificationBlacklist);
@@ -146,7 +149,7 @@ public class NotificationsIt {
         ReflectionTestUtils.setField(sendNotificationService, "lettersOn", true);
 
         NotificationService service = new NotificationService(factory, reminderService, notificationValidService, notificationHandler, outOfHoursCalculator, notificationConfig, sendNotificationService);
-        controller = new NotificationController(service, authorisationService, ccdService, deserializer, idamService);
+        NotificationController controller = new NotificationController(service, authorisationService, ccdService, deserializer, idamService);
         this.mockMvc = MockMvcBuilders.standaloneSetup(controller).build();
         String path = getClass().getClassLoader().getResource("json/ccdResponse.json").getFile();
         json = FileUtils.readFileToString(new File(path), StandardCharsets.UTF_8.name());
@@ -238,15 +241,17 @@ public class NotificationsIt {
     }
 
     @Test
-    public void shouldSendNotificationForAnEvidenceReceivedRequestForAPaperHearing() throws Exception {
+    public void shouldSendEmailNotificationOnlyForAnEvidenceReceivedRequestToAnAppellantForAPaperHearing() throws Exception {
         updateJsonForPaperHearing();
         json = json.replace("appealReceived", "evidenceReceived");
+        json = updateEmbeddedJson(json, "No", "case_details", "case_data", "subscriptions", "representativeSubscription", "subscribeSms");
+        json = updateEmbeddedJson(json, "No", "case_details", "case_data", "subscriptions", "representativeSubscription", "subscribeEmail");
 
         HttpServletResponse response = getResponse(getRequestWithAuthHeader(json));
 
         assertHttpStatus(response, HttpStatus.OK);
-        verify(notificationClient).sendEmail(any(), any(), any(), any());
-        verify(notificationClient, times(2)).sendSms(any(), any(), any(), any(), any());
+        verify(notificationClient, times(1)).sendEmail(any(), any(), any(), any());
+        verify(notificationClient, times(1)).sendSms(any(), any(), any(), any(), any());
     }
 
     @Test
@@ -839,9 +844,9 @@ public class NotificationsIt {
                 "0"
             },
             new Object[]{
-                CASE_UPDATED,
+                APPEAL_LODGED,
                 "paper",
-                Arrays.asList("01293b93-b23e-40a3-ad78-2c6cd01cd21c", "652753bf-59b4-46eb-9c24-bd762338a098"),
+                Arrays.asList("b90df52f-c628-409c-8875-4b0b9663a053", "4b1ee55b-abd1-4e7e-b0ed-693d8df1e741"),
                 Collections.emptyList(),
                 Collections.emptyList(),
                 "yes",
@@ -853,9 +858,9 @@ public class NotificationsIt {
                 "0"
             },
             new Object[]{
-                CASE_UPDATED,
+                APPEAL_LODGED,
                 "oral",
-                Arrays.asList("01293b93-b23e-40a3-ad78-2c6cd01cd21c", "652753bf-59b4-46eb-9c24-bd762338a098"),
+                Arrays.asList("b90df52f-c628-409c-8875-4b0b9663a053", "4b1ee55b-abd1-4e7e-b0ed-693d8df1e741"),
                 Collections.emptyList(),
                 Collections.emptyList(),
                 "yes",
@@ -867,9 +872,9 @@ public class NotificationsIt {
                 "0"
             },
             new Object[]{
-                CASE_UPDATED,
+                APPEAL_LODGED,
                 "paper",
-                Collections.singletonList("652753bf-59b4-46eb-9c24-bd762338a098"),
+                Collections.singletonList("4b1ee55b-abd1-4e7e-b0ed-693d8df1e741"),
                 Collections.emptyList(),
                 Collections.emptyList(),
                 "no",
@@ -881,9 +886,9 @@ public class NotificationsIt {
                 "0"
             },
             new Object[]{
-                CASE_UPDATED,
+                APPEAL_LODGED,
                 "paper",
-                Collections.singletonList("01293b93-b23e-40a3-ad78-2c6cd01cd21c"),
+                Collections.singletonList("b90df52f-c628-409c-8875-4b0b9663a053"),
                 Collections.emptyList(),
                 Collections.emptyList(),
                 "yes",
@@ -895,7 +900,7 @@ public class NotificationsIt {
                 "0"
             },
             new Object[]{
-                CASE_UPDATED,
+                APPEAL_LODGED,
                 "paper",
                 Collections.emptyList(),
                 Collections.emptyList(),
@@ -1322,9 +1327,9 @@ public class NotificationsIt {
                 "0"
             },
             new Object[]{
-                CASE_UPDATED,
+                APPEAL_LODGED,
                 "paper",
-                Arrays.asList("01293b93-b23e-40a3-ad78-2c6cd01cd21c", "652753bf-59b4-46eb-9c24-bd762338a098"),
+                Arrays.asList("b90df52f-c628-409c-8875-4b0b9663a053", "4b1ee55b-abd1-4e7e-b0ed-693d8df1e741"),
                 Collections.emptyList(),
                 Collections.emptyList(),
                 "yes",
@@ -1336,9 +1341,9 @@ public class NotificationsIt {
                 "0"
             },
             new Object[]{
-                CASE_UPDATED,
+                APPEAL_LODGED,
                 "oral",
-                Arrays.asList("01293b93-b23e-40a3-ad78-2c6cd01cd21c", "652753bf-59b4-46eb-9c24-bd762338a098"),
+                Arrays.asList("b90df52f-c628-409c-8875-4b0b9663a053", "4b1ee55b-abd1-4e7e-b0ed-693d8df1e741"),
                 Collections.emptyList(),
                 Collections.emptyList(),
                 "yes",
@@ -1350,9 +1355,9 @@ public class NotificationsIt {
                 "0"
             },
             new Object[]{
-                CASE_UPDATED,
+                APPEAL_LODGED,
                 "paper",
-                Collections.singletonList("652753bf-59b4-46eb-9c24-bd762338a098"),
+                Collections.singletonList("4b1ee55b-abd1-4e7e-b0ed-693d8df1e741"),
                 Collections.emptyList(),
                 Collections.singletonList("91143b85-dd9d-430c-ba23-e42ec90f44f8"),
                 "no",
@@ -1364,9 +1369,9 @@ public class NotificationsIt {
                 "1"
             },
             new Object[]{
-                CASE_UPDATED,
+                APPEAL_LODGED,
                 "paper",
-                Collections.singletonList("01293b93-b23e-40a3-ad78-2c6cd01cd21c"),
+                Collections.singletonList("b90df52f-c628-409c-8875-4b0b9663a053"),
                 Collections.emptyList(),
                 Collections.singletonList("77ea8a2f-06df-4279-9c1f-0f23cb2d9bbf"),
                 "yes",
@@ -1378,7 +1383,7 @@ public class NotificationsIt {
                 "1"
             },
             new Object[]{
-                CASE_UPDATED,
+                APPEAL_LODGED,
                 "paper",
                 Collections.emptyList(),
                 Collections.emptyList(),
@@ -1397,7 +1402,7 @@ public class NotificationsIt {
     @SuppressWarnings({"Indentation", "unused"})
     private Object[] generateAppointeeNotificationScenarios() {
         return new Object[]{
-            new Object[]{
+           new Object[]{
                 SYA_APPEAL_CREATED_NOTIFICATION,
                 "oral",
                 Collections.singletonList("362d9a85-e0e4-412b-b874-020c0464e2b4"),
@@ -1463,6 +1468,45 @@ public class NotificationsIt {
                 "Appointee Appointee"
             },
             new Object[]{
+                EVIDENCE_REMINDER_NOTIFICATION,
+                "oral",
+                Arrays.asList("b9e47ec4-3b58-4b8d-9304-f77ac27fb7f2"),
+                Arrays.asList("e3f71440-d1ac-43c8-a8cc-a088c4f3c959"),
+                Collections.emptyList(),
+                "yes",
+                "yes",
+                "1",
+                "1",
+                "0",
+                "Appointee Appointee"
+            },
+            new Object[]{
+                EVIDENCE_REMINDER_NOTIFICATION,
+                "paper",
+                Arrays.asList("a3b22e07-e90b-4b52-a293-30823802c209"),
+                Arrays.asList("aaa1aad4-7abc-4a7a-b8fb-8b0567c09365"),
+                Collections.emptyList(),
+                "yes",
+                "yes",
+                "1",
+                "1",
+                "0",
+                "Appointee Appointee"
+            },
+            new Object[]{
+                EVIDENCE_RECEIVED_NOTIFICATION,
+                "paper",
+                Collections.singletonList("c5654134-2e13-4541-ac73-334a5b5cdbb6"),
+                Collections.singletonList("74bda35f-040b-4355-bda3-faf0e4f5ae6e"),
+                Collections.emptyList(),
+                "yes",
+                "yes",
+                "1",
+                "1",
+                "0",
+                "Harry Potter"
+            },
+            new Object[]{
                 SUBSCRIPTION_UPDATED_NOTIFICATION,
                 "oral",
                 Arrays.asList("b8b2904f-629d-42cf-acea-1b74bde5b2ff", "03b957bf-e21d-4147-90c1-b6fefa8cf70d"),
@@ -1473,7 +1517,7 @@ public class NotificationsIt {
                 "2",
                 "2",
                 "0",
-                "Appointee Appointee"
+                "Harry Potter"
             },
             new Object[]{
                 SUBSCRIPTION_UPDATED_NOTIFICATION,
@@ -1486,7 +1530,7 @@ public class NotificationsIt {
                 "0",
                 "0",
                 "0",
-                "Appointee Appointee"
+                "Harry Potter"
             },
             new Object[]{
                 APPEAL_RECEIVED_NOTIFICATION,
@@ -1636,7 +1680,7 @@ public class NotificationsIt {
                 "2",
                 "2",
                 "0",
-                "Appointee Appointee"
+                "Harry Potter"
             },
             new Object[]{
                 APPEAL_RECEIVED_NOTIFICATION,
@@ -1727,7 +1771,7 @@ public class NotificationsIt {
                 "2",
                 "2",
                 "0",
-                "Appointee Appointee"
+                "Harry Potter"
             },
             new Object[]{
                 SUBSCRIPTION_UPDATED_NOTIFICATION,
@@ -1740,7 +1784,7 @@ public class NotificationsIt {
                 "0",
                 "0",
                 "0",
-                "Appointee Appointee"
+                "Harry Potter"
             },
             new Object[]{
                 APPEAL_RECEIVED_NOTIFICATION,
@@ -1782,11 +1826,11 @@ public class NotificationsIt {
                 ""
             },
             new Object[]{
-                CASE_UPDATED,
+                APPEAL_LODGED,
                 "paper",
                 Collections.emptyList(),
                 Collections.emptyList(),
-                Collections.singletonList("91143b85-dd9d-430c-ba23-e42ec90f44f8"),
+                Collections.singletonList("747d026e-1bec-4e96-8a34-28f36e30bba5"),
                 "no",
                 "no",
                 "0",
@@ -1947,8 +1991,9 @@ public class NotificationsIt {
         HttpServletResponse response = getResponse(getRequestWithAuthHeader(json));
 
         assertHttpStatus(response, HttpStatus.OK);
-        verify(notificationClient, never()).sendEmail(any(), any(), any(), any());
-        verify(notificationClient, times(2)).sendSms(any(), any(), any(), any(), any());
+        verify(notificationClient).sendSms(eq(subscriptionCreatedSmsId), any(), any(), any(), any());
+        verify(notificationClient).sendSms(eq(paperResponseReceivedSmsId), any(), any(), any(), any());
+        verifyNoMoreInteractions(notificationClient);
     }
 
     @Test
@@ -1961,8 +2006,9 @@ public class NotificationsIt {
         HttpServletResponse response = getResponse(getRequestWithAuthHeader(json));
 
         assertHttpStatus(response, HttpStatus.OK);
-        verify(notificationClient, times(1)).sendEmail(any(), any(), any(), any());
-        verify(notificationClient, times(1)).sendSms(any(), any(), any(), any(), any());
+        verify(notificationClient).sendEmail(eq(subscriptionUpdatedEmailId), any(), any(), any());
+        verify(notificationClient).sendEmail(eq(oralResponseReceivedEmailId), any(), any(), any());
+        verifyNoMoreInteractions(notificationClient);
     }
 
     @Test
@@ -1975,8 +2021,9 @@ public class NotificationsIt {
         HttpServletResponse response = getResponse(getRequestWithAuthHeader(json));
 
         assertHttpStatus(response, HttpStatus.OK);
-        verify(notificationClient, times(1)).sendEmail(any(), any(), any(), any());
-        verify(notificationClient, times(1)).sendSms(any(), any(), any(), any(), any());
+        verify(notificationClient).sendEmail(eq(subscriptionUpdatedEmailId), any(), any(), any());
+        verify(notificationClient).sendEmail(eq(paperResponseReceivedEmailId), any(), any(), any());
+        verifyNoMoreInteractions(notificationClient);
     }
 
     @Test
@@ -1986,6 +2033,27 @@ public class NotificationsIt {
 
         json = updateEmbeddedJson(json, "Yes", "case_details_before", "case_data", "subscriptions", "appellantSubscription", "subscribeEmail");
         json = updateEmbeddedJson(json, "No", "case_details", "case_data", "subscriptions", "appellantSubscription", "subscribeSms");
+
+        HttpServletResponse response = getResponse(getRequestWithAuthHeader(json));
+
+        assertHttpStatus(response, HttpStatus.OK);
+        verify(notificationClient, never()).sendEmail(any(), any(), any(), any());
+        verify(notificationClient, never()).sendSms(any(), any(), any(), any(), any());
+    }
+
+    @Test
+    public void givenAnUnknownRpcCase_thenDoNotProcessNotifications() throws Exception {
+        String path = getClass().getClassLoader().getResource("json/ccdResponseWithNoOldCaseRef.json").getFile();
+        String json = FileUtils.readFileToString(new File(path), StandardCharsets.UTF_8.name());
+
+        json = json.replace("appealReceived", "appealCreated");
+        json = json.replace("SC022", "SC948");
+
+        json = updateEmbeddedJson(json, "No", "case_details", "case_data", "subscriptions", "appellantSubscription", "subscribeEmail");
+        json = updateEmbeddedJson(json, "No", "case_details", "case_data", "subscriptions", "appellantSubscription", "subscribeSms");
+        json = updateEmbeddedJson(json, "No", "case_details", "case_data", "subscriptions", "representativeSubscription", "subscribeEmail");
+        json = updateEmbeddedJson(json, "No", "case_details", "case_data", "subscriptions", "representativeSubscription", "subscribeSms");
+        json = updateEmbeddedJson(json, "No", "case_details_before", "case_data", "subscriptions", "representativeSubscription", "subscribeSms");
 
         HttpServletResponse response = getResponse(getRequestWithAuthHeader(json));
 

@@ -16,7 +16,12 @@ import uk.gov.service.notify.NotificationClientException;
 
 public class NotificationsFunctionalTest extends AbstractFunctionalTest {
 
+    private static final String AS_APPOINTEE_FOR = "You are receiving this update as the appointee for";
     private static final String RESPONSE_RECEIVED_PAPER_PATH = "paper/responseReceived/";
+    private static final String DEAR_APPOINTEE_USER = "Dear Appointee User";
+    private static final String APPEAL_ID = "appeal_id";
+    private static final String TYA = "v8eg15XeZk";
+
     @Value("${track.appeal.link}")
     private String tyaLink;
 
@@ -62,11 +67,29 @@ public class NotificationsFunctionalTest extends AbstractFunctionalTest {
     @Value("${notification.subscriptionOld.smsId}")
     private String subscriptionUpdateOldSmsId;
 
+    @Value("${notification.paper.evidenceReceived.appointee.emailId}")
+    private String paperAppointeeEvidenceReceivedEmailId;
+
+    @Value("${notification.paper.evidenceReceived.appointee.smsId}")
+    private String paperAppointeeEvidenceReceivedSmsId;
+
     @Value("${notification.paper.responseReceived.emailId}")
     private String paperAppointeeResponseReceivedEmailId;
 
     @Value("${notification.paper.responseReceived.smsId}")
     private String paperAppointeeResponseReceivedSmsId;
+
+    @Value("${notification.oral.evidenceReminder.emailId}")
+    private String oralAppointeeEvidenceReminderEmailId;
+
+    @Value("${notification.oral.evidenceReminder.smsId}")
+    private String oralAppointeeEvidenceReminderSmsId;
+
+    @Value("${notification.paper.evidenceReminder.emailId}")
+    private String paperAppointeeEvidenceReminderEmailId;
+
+    @Value("${notification.paper.evidenceReminder.smsId}")
+    private String paperAppointeeEvidenceReminderSmsId;
 
     @Value("${notification.appealCreated.appellant.smsId}")
     private String appealCreatedAppellantSmsId;
@@ -195,7 +218,7 @@ public class NotificationsFunctionalTest extends AbstractFunctionalTest {
                 paperResponseReceivedEmailId, paperResponseReceivedSmsId);
 
         String expectedHearingContactDate = "9 April 2016";
-        String expectedTyaLink = tyaLink.replace("appeal_id", "v8eg15XeZk");
+        String expectedTyaLink = tyaLink.replace(APPEAL_ID, TYA);
         assertNotificationBodyContains(notifications, paperResponseReceivedEmailId, caseData.getCaseReference(),
                 expectedPanelComposition, expectedHearingContactDate, expectedTyaLink);
         assertNotificationBodyContains(notifications, paperResponseReceivedSmsId, expectedHearingContactDate,
@@ -211,6 +234,44 @@ public class NotificationsFunctionalTest extends AbstractFunctionalTest {
                 paperResponseReceivedEmailId, paperResponseReceivedSmsId);
 
         assertTrue(notifications.isEmpty());
+    }
+
+    @Test
+    public void shouldSendAppointeeEvidenceReminderForOralCaseNotification() throws NotificationClientException, IOException {
+        simulateCcdCallback(EVIDENCE_REMINDER_NOTIFICATION,
+                "appointee/oral-" + EVIDENCE_REMINDER_NOTIFICATION.getId() + "Callback.json");
+
+        List<Notification> notifications = tryFetchNotificationsForTestCase(
+                oralAppointeeEvidenceReminderEmailId,
+                oralAppointeeEvidenceReminderSmsId
+        );
+
+        assertNotificationBodyContains(
+                notifications,
+                oralAppointeeEvidenceReminderEmailId,
+                DEAR_APPOINTEE_USER,
+                AS_APPOINTEE_FOR,
+                "/evidence/" + TYA
+        );
+    }
+
+    @Test
+    public void shouldSendAppointeeEvidenceReminderForPaperCaseNotification() throws NotificationClientException, IOException {
+        simulateCcdCallback(EVIDENCE_REMINDER_NOTIFICATION,
+                "appointee/paper-" + EVIDENCE_REMINDER_NOTIFICATION.getId() + "Callback.json");
+
+        List<Notification> notifications = tryFetchNotificationsForTestCase(
+                paperAppointeeEvidenceReminderEmailId,
+                paperAppointeeEvidenceReminderSmsId
+        );
+
+        assertNotificationBodyContains(
+                notifications,
+                paperAppointeeEvidenceReminderEmailId,
+                DEAR_APPOINTEE_USER,
+                AS_APPOINTEE_FOR,
+                "/evidence/" + TYA
+        );
     }
 
     @Test
@@ -243,6 +304,20 @@ public class NotificationsFunctionalTest extends AbstractFunctionalTest {
         );
         Notification updateEmailNotification = notifications.stream().filter(f -> f.getTemplateId().toString().equals(subscriptionUpdatedEmailTemplateId)).collect(Collectors.toList()).get(0);
         assertTrue(updateEmailNotification.getBody().contains("Dear Appointee User\r\n\r\nYou are receiving this update as the appointee for Appellant User.\r\n\r\nEmails about your ESA"));
+    }
+
+    @Test
+    public void shouldSendAppointeeEvidenceReceivedPaperNotification() throws NotificationClientException, IOException {
+        simulateCcdCallback(EVIDENCE_RECEIVED_NOTIFICATION,
+                "appointee/paper-" + EVIDENCE_RECEIVED_NOTIFICATION.getId() + "Callback.json");
+
+        List<Notification> notifications = tryFetchNotificationsForTestCase(
+                paperAppointeeEvidenceReceivedEmailId,
+                paperAppointeeEvidenceReceivedSmsId
+        );
+        Notification emailNotification = notifications.stream().filter(f -> f.getTemplateId().toString().equals(paperAppointeeEvidenceReceivedEmailId)).collect(Collectors.toList()).get(0);
+        assertTrue(emailNotification.getBody().contains("Dear Appointee User"));
+        assertTrue(emailNotification.getBody().contains("You are receiving this update as the appointee for Appellant User."));
     }
 
     @Test

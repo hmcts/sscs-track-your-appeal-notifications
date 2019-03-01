@@ -36,6 +36,7 @@ import uk.gov.hmcts.reform.sscs.ccd.domain.Subscription;
 import uk.gov.hmcts.reform.sscs.config.NotificationConfig;
 import uk.gov.hmcts.reform.sscs.config.SubscriptionType;
 import uk.gov.hmcts.reform.sscs.domain.SscsCaseDataWrapper;
+import uk.gov.hmcts.reform.sscs.domain.SubscriptionWithType;
 import uk.gov.hmcts.reform.sscs.domain.notify.NotificationEventType;
 import uk.gov.hmcts.reform.sscs.domain.notify.Template;
 import uk.gov.hmcts.reform.sscs.extractor.HearingContactDateExtractor;
@@ -46,7 +47,7 @@ import uk.gov.hmcts.reform.sscs.service.RegionalProcessingCenterService;
 @Component
 @Slf4j
 public class Personalisation<E extends NotificationWrapper> {
-    private static final List<NotificationEventType> FALLBACK_LETTER_SUBSCRIPTION_TYPES = Arrays.asList(CASE_UPDATED, SYA_APPEAL_CREATED_NOTIFICATION);
+    private static final List<NotificationEventType> FALLBACK_LETTER_SUBSCRIPTION_TYPES = Arrays.asList(APPEAL_LODGED, SYA_APPEAL_CREATED_NOTIFICATION);
     private static final String CRLF = String.format("%c%c", (char) 0x0D, (char) 0x0A);
 
     private boolean sendSmsSubscriptionConfirmation;
@@ -66,11 +67,11 @@ public class Personalisation<E extends NotificationWrapper> {
     @Autowired
     private NotificationDateConverterUtil notificationDateConverterUtil;
 
-    public Map<String, String> create(final E notificationWrapper, final SubscriptionType subscriptionType) {
-        return create(notificationWrapper.getSscsCaseDataWrapper(), subscriptionType);
+    public Map<String, String> create(final E notificationWrapper, final SubscriptionWithType subscriptionWithType) {
+        return create(notificationWrapper.getSscsCaseDataWrapper(), subscriptionWithType);
     }
 
-    protected Map<String, String> create(final SscsCaseDataWrapper responseWrapper, final SubscriptionType subscriptionType) {
+    protected Map<String, String> create(final SscsCaseDataWrapper responseWrapper, final SubscriptionWithType subscriptionWithType) {
         SscsCaseData ccdResponse = responseWrapper.getNewSscsCaseData();
         Map<String, String> personalisation = new HashMap<>();
         Benefit benefit = getBenefitByCode(ccdResponse.getAppeal().getBenefitType().getCode());
@@ -81,17 +82,11 @@ public class Personalisation<E extends NotificationWrapper> {
         personalisation.put(BENEFIT_FULL_NAME_LITERAL, benefit.getDescription());
         personalisation.put(APPEAL_REF, getAppealReference(ccdResponse));
         personalisation.put(APPELLANT_NAME, ccdResponse.getAppeal().getAppellant().getName().getFullNameNoTitle());
-        personalisation.put(NAME, getName(subscriptionType, ccdResponse, responseWrapper));
+        personalisation.put(NAME, getName(subscriptionWithType.getSubscriptionType(), ccdResponse, responseWrapper));
         personalisation.put(PHONE_NUMBER, config.getHmctsPhoneNumber());
         personalisation.put(CCD_ID, StringUtils.defaultIfBlank(ccdResponse.getCcdCaseId(), StringUtils.EMPTY));
 
-        Subscription appellantOrAppointeeSubscription = hasAppointee(responseWrapper)
-                ? ccdResponse.getSubscriptions().getAppointeeSubscription()
-                : ccdResponse.getSubscriptions().getAppellantSubscription();
-
-        if (appellantOrAppointeeSubscription != null) {
-            subscriptionDetails(personalisation, appellantOrAppointeeSubscription, benefit);
-        }
+        subscriptionDetails(personalisation, subscriptionWithType.getSubscription(), benefit);
 
         personalisation.put(FIRST_TIER_AGENCY_ACRONYM, DWP_ACRONYM);
         personalisation.put(FIRST_TIER_AGENCY_FULL_NAME, DWP_FUL_NAME);
@@ -122,7 +117,7 @@ public class Personalisation<E extends NotificationWrapper> {
         personalisation.put(ONLINE_HEARING_REGISTER_LINK_LITERAL, config.getOnlineHearingLink() + "/register");
         personalisation.put(ONLINE_HEARING_SIGN_IN_LINK_LITERAL, config.getOnlineHearingLink() + "/sign-in");
 
-        personalisation.put(APPOINTEE_DESCRIPTION, getAppointeeDescription(subscriptionType, ccdResponse));
+        personalisation.put(APPOINTEE_DESCRIPTION, getAppointeeDescription(subscriptionWithType.getSubscriptionType(), ccdResponse));
 
         return personalisation;
     }
@@ -245,13 +240,15 @@ public class Personalisation<E extends NotificationWrapper> {
         } else {
             rpc = regionalProcessingCenterService.getByScReferenceCode(ccdResponse.getCaseReference());
         }
-        personalisation.put(REGIONAL_OFFICE_NAME_LITERAL, rpc.getAddress1());
-        personalisation.put(SUPPORT_CENTRE_NAME_LITERAL, rpc.getAddress2());
-        personalisation.put(ADDRESS_LINE_LITERAL, rpc.getAddress3());
-        personalisation.put(TOWN_LITERAL, rpc.getAddress4());
-        personalisation.put(COUNTY_LITERAL, rpc.getCity());
-        personalisation.put(POSTCODE_LITERAL, rpc.getPostcode());
-        personalisation.put(REGIONAL_OFFICE_POSTCODE_LITERAL, rpc.getPostcode());
+        if (rpc != null) {
+            personalisation.put(REGIONAL_OFFICE_NAME_LITERAL, rpc.getAddress1());
+            personalisation.put(SUPPORT_CENTRE_NAME_LITERAL, rpc.getAddress2());
+            personalisation.put(ADDRESS_LINE_LITERAL, rpc.getAddress3());
+            personalisation.put(TOWN_LITERAL, rpc.getAddress4());
+            personalisation.put(COUNTY_LITERAL, rpc.getCity());
+            personalisation.put(POSTCODE_LITERAL, rpc.getPostcode());
+            personalisation.put(REGIONAL_OFFICE_POSTCODE_LITERAL, rpc.getPostcode());
+        }
 
         return personalisation;
     }
@@ -288,16 +285,16 @@ public class Personalisation<E extends NotificationWrapper> {
     }
 
     public Template getTemplate(E notificationWrapper, Benefit benefit, SubscriptionType subscriptionType) {
-        String emailTemplateName = getEmailTemplateName(subscriptionType, notificationWrapper.getNotificationType());
+        String templateConfig = getTemplateConfig(subscriptionType, notificationWrapper.getNotificationType());
         String smsTemplateName = isSendSmsSubscriptionConfirmation() ? SUBSCRIPTION_CREATED_NOTIFICATION.getId() :
-                emailTemplateName;
+                templateConfig;
         String letterTemplateName = getLetterTemplateName(subscriptionType, notificationWrapper.getNotificationType());
-        return config.getTemplate(emailTemplateName, smsTemplateName, letterTemplateName, benefit, notificationWrapper.getHearingType());
+        return config.getTemplate(templateConfig, smsTemplateName, letterTemplateName, benefit, notificationWrapper.getHearingType());
     }
 
-    private String getEmailTemplateName(SubscriptionType subscriptionType,
-                                        NotificationEventType notificationEventType) {
-        String emailTemplateName = notificationEventType.getId();
+    private String getTemplateConfig(SubscriptionType subscriptionType,
+                                     NotificationEventType notificationEventType) {
+        String templateConfig = notificationEventType.getId();
         if (APPEAL_LAPSED_NOTIFICATION.equals(notificationEventType)
             || APPEAL_WITHDRAWN_NOTIFICATION.equals(notificationEventType)
             || EVIDENCE_RECEIVED_NOTIFICATION.equals(notificationEventType)
@@ -308,10 +305,10 @@ public class Personalisation<E extends NotificationWrapper> {
             || APPEAL_RECEIVED_NOTIFICATION.equals(notificationEventType)
             || POSTPONEMENT_NOTIFICATION.equals(notificationEventType)
             || HEARING_BOOKED_NOTIFICATION.equals(notificationEventType)
-            || CASE_UPDATED.equals(notificationEventType)) {
-            emailTemplateName = emailTemplateName + "." + StringUtils.lowerCase(subscriptionType.name());
+            || APPEAL_LODGED.equals(notificationEventType)) {
+            templateConfig = templateConfig + "." + StringUtils.lowerCase(subscriptionType.name());
         }
-        return emailTemplateName;
+        return templateConfig;
     }
 
     private String getLetterTemplateName(SubscriptionType subscriptionType, NotificationEventType notificationEventType) {
