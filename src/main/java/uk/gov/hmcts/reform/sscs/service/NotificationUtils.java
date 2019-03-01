@@ -3,8 +3,6 @@ package uk.gov.hmcts.reform.sscs.service;
 import static uk.gov.hmcts.reform.sscs.config.SubscriptionType.APPELLANT;
 import static uk.gov.hmcts.reform.sscs.config.SubscriptionType.APPOINTEE;
 import static uk.gov.hmcts.reform.sscs.config.SubscriptionType.REPRESENTATIVE;
-import static uk.gov.hmcts.reform.sscs.config.SubscriptionType.APPELLANT;
-import static uk.gov.hmcts.reform.sscs.config.SubscriptionType.REPRESENTATIVE;
 import static uk.gov.hmcts.reform.sscs.domain.notify.NotificationEventType.HEARING_BOOKED_NOTIFICATION;
 import static uk.gov.hmcts.reform.sscs.domain.notify.NotificationEventType.STRUCK_OUT;
 import static uk.gov.hmcts.reform.sscs.service.NotificationValidService.FALLBACK_LETTER_SUBSCRIPTION_TYPES;
@@ -99,7 +97,7 @@ public class NotificationUtils {
             && subscription.isEmailSubscribed()
             && notification.isEmail()
             && notification.getEmailTemplate() != null
-            && isOkToSendNotification(wrapper, wrapper.getNotificationType(), notificationValidService);
+            && isOkToSendNotification(wrapper, wrapper.getNotificationType(), subscription, notificationValidService);
     }
 
     public static boolean hasLetterTemplate(Notification notification) {

@@ -1,15 +1,15 @@
 package uk.gov.hmcts.reform.sscs.service;
 
 import static uk.gov.hmcts.reform.sscs.ccd.domain.Benefit.getBenefitByCode;
+import static uk.gov.hmcts.reform.sscs.ccd.domain.EventType.SUBSCRIPTION_UPDATED;
 import static uk.gov.hmcts.reform.sscs.config.SubscriptionType.APPOINTEE;
 import static uk.gov.hmcts.reform.sscs.config.SubscriptionType.REPRESENTATIVE;
+import static uk.gov.hmcts.reform.sscs.domain.notify.NotificationEventType.SUBSCRIPTION_UPDATED_NOTIFICATION;
+import static uk.gov.hmcts.reform.sscs.domain.notify.NotificationEventType.getNotificationByCcdEvent;
+import static uk.gov.hmcts.reform.sscs.service.NotificationUtils.getSubscription;
 import static uk.gov.hmcts.reform.sscs.service.NotificationUtils.isFallbackLetterRequired;
 import static uk.gov.hmcts.reform.sscs.service.NotificationUtils.isOkToSendNotification;
 import static uk.gov.hmcts.reform.sscs.service.NotificationValidService.isMandatoryLetterEventType;
-import static uk.gov.hmcts.reform.sscs.ccd.domain.EventType.SUBSCRIPTION_UPDATED;
-import static uk.gov.hmcts.reform.sscs.domain.notify.NotificationEventType.SUBSCRIPTION_UPDATED_NOTIFICATION;
-import static uk.gov.hmcts.reform.sscs.domain.notify.NotificationEventType.getNotificationByCcdEvent;
-import static uk.gov.hmcts.reform.sscs.service.NotificationUtils.*;
 
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -70,21 +70,22 @@ public class NotificationService {
                                                  NotificationEventType notificationType) {
         for (SubscriptionWithType subscriptionWithType : notificationWrapper.getSubscriptionsBasedOnNotificationType()) {
             if (isValidNotification(notificationWrapper, subscriptionWithType, notificationType)) {
-                sendNotification(notificationWrapper, subscriptionWithType);
+                sendNotification(notificationWrapper, subscriptionWithType, notificationType);
                 reminderService.createReminders(notificationWrapper);
-                resendLastNotification(notificationWrapper, subscriptionWithType);
+                resendLastNotification(notificationWrapper, subscriptionWithType, notificationType);
             }
         }
     }
 
-    private void resendLastNotification(NotificationWrapper notificationWrapper, SubscriptionWithType subscriptionWithType) {
+    private void resendLastNotification(NotificationWrapper notificationWrapper, SubscriptionWithType subscriptionWithType,
+                                        NotificationEventType notificationType) {
         if (shouldProcessLastNotification(notificationWrapper, subscriptionWithType)) {
             NotificationEventType lastEvent = getNotificationByCcdEvent(notificationWrapper.getNewSscsCaseData().getEvents().get(0)
                     .getValue().getEventType());
             log.info("Resending the last notification for event {} and case id {}.", lastEvent.getId(), notificationWrapper.getCaseId());
             scrubMobileAndSmsIfSubscribedBefore(notificationWrapper, subscriptionWithType);
             notificationWrapper.getSscsCaseDataWrapper().setNotificationEventType(lastEvent);
-            sendNotification(notificationWrapper, subscriptionWithType);
+            sendNotification(notificationWrapper, subscriptionWithType, notificationType);
             notificationWrapper.getSscsCaseDataWrapper().setNotificationEventType(SUBSCRIPTION_UPDATED_NOTIFICATION);
         }
     }
@@ -120,10 +121,11 @@ public class NotificationService {
         return thereIsALastEventThatIsNotSubscriptionUpdated;
     }
 
-    private void sendNotification(NotificationWrapper notificationWrapper, SubscriptionWithType subscriptionWithType) {
+    private void sendNotification(NotificationWrapper notificationWrapper, SubscriptionWithType subscriptionWithType,
+                                  NotificationEventType notificationType) {
         Notification notification = notificationFactory.create(notificationWrapper, subscriptionWithType);
-        sendNotificationService.sendEmailSmsLetterNotification(notificationWrapper, notification, subscriptionWithType);
-        processOldSubscriptionNotifications(notificationWrapper, notification, subscriptionWithType);
+        sendNotificationService.sendEmailSmsLetterNotification(notificationWrapper, notification, subscriptionWithType, notificationType);
+        processOldSubscriptionNotifications(notificationWrapper, notification, subscriptionWithType, notificationType);
     }
 
     private boolean isValidNotification(NotificationWrapper wrapper, SubscriptionWithType
@@ -178,5 +180,13 @@ public class NotificationService {
         }
     }
 
-
+    private String getSubscriptionDetails(String newSubscription, String oldSubscription) {
+        String subscription = "";
+        if (null != newSubscription && null != oldSubscription) {
+            subscription = newSubscription.equals(oldSubscription) ? null : oldSubscription;
+        } else if (null == newSubscription && null != oldSubscription) {
+            subscription = oldSubscription;
+        }
+        return subscription;
+    }
 }
