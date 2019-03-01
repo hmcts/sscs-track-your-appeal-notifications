@@ -318,7 +318,7 @@ public class Personalisation<E extends NotificationWrapper> {
         return letterTemplateName;
     }
 
-    private Boolean isSendSmsSubscriptionConfirmation() {
+    Boolean isSendSmsSubscriptionConfirmation() {
         return sendSmsSubscriptionConfirmation;
     }
 
