@@ -14,7 +14,6 @@ import uk.gov.hmcts.reform.sscs.ccd.domain.SscsCaseData;
 import uk.gov.hmcts.reform.sscs.ccd.domain.Subscription;
 import uk.gov.hmcts.reform.sscs.config.SubscriptionType;
 
-import uk.gov.hmcts.reform.sscs.config.SubscriptionType;
 import uk.gov.hmcts.reform.sscs.domain.SscsCaseDataWrapper;
 import uk.gov.hmcts.reform.sscs.domain.SubscriptionWithType;
 import uk.gov.hmcts.reform.sscs.domain.notify.Notification;
@@ -92,7 +91,7 @@ public class NotificationUtils {
             && notificationValidService.isHearingTypeValidToSendNotification(wrapper.getNewSscsCaseData(), notificationType);
     }
 
-    protected static boolean isOkToSendEmailNotification(NotificationWrapper wrapper, Subscription subscription, Notification notification, NotificationEventType notificationType, NotificationValidService notificationValidService) {
+    protected static boolean isOkToSendEmailNotification(NotificationWrapper wrapper, Subscription subscription, Notification notification, NotificationValidService notificationValidService) {
         return subscription != null
             && subscription.isEmailSubscribed()
             && notification.isEmail()

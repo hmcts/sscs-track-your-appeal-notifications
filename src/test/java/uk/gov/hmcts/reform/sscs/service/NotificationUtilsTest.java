@@ -338,7 +338,7 @@ public class NotificationUtilsTest {
             .template(Template.builder().emailTemplateId("some.template").build())
             .build();
 
-        assertTrue(isOkToSendEmailNotification(wrapper, subscription, notification, VIEW_ISSUED, notificationValidService));
+        assertTrue(isOkToSendEmailNotification(wrapper, subscription, notification, notificationValidService));
     }
 
     @Test
@@ -349,7 +349,7 @@ public class NotificationUtilsTest {
 
         CcdNotificationWrapper wrapper = buildBaseWrapper(null, null);
 
-        assertFalse(isOkToSendEmailNotification(wrapper, subscription, notification, VIEW_ISSUED, notificationValidService));
+        assertFalse(isOkToSendEmailNotification(wrapper, subscription, notification, notificationValidService));
     }
 
     private Object[] mandatoryNotificationTypes() {

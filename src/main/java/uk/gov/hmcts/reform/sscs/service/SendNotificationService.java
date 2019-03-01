@@ -104,7 +104,7 @@ public class SendNotificationService {
     }
 
     private void sendEmailNotification(NotificationWrapper wrapper, Subscription subscription, Notification notification, NotificationEventType eventType) {
-        if (isOkToSendEmailNotification(wrapper, subscription, notification, eventType, notificationValidService)) {
+        if (isOkToSendEmailNotification(wrapper, subscription, notification, notificationValidService)) {
             if (APPEAL_LODGED.equals(wrapper.getNotificationType())) {
                 ZonedDateTime appealReceivedDate = ZonedDateTime.now().plusSeconds(delay);
                 notification.getPlaceholders().put(APPEAL_RESPOND_DATE, appealReceivedDate.format(DateTimeFormatter.ofPattern(RESPONSE_DATE_FORMAT)));
