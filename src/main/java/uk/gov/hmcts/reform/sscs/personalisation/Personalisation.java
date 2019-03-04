@@ -47,7 +47,7 @@ import uk.gov.hmcts.reform.sscs.service.RegionalProcessingCenterService;
 @Component
 @Slf4j
 public class Personalisation<E extends NotificationWrapper> {
-    private static final List<NotificationEventType> FALLBACK_LETTER_SUBSCRIPTION_TYPES = Arrays.asList(CASE_UPDATED, SYA_APPEAL_CREATED_NOTIFICATION);
+    private static final List<NotificationEventType> FALLBACK_LETTER_SUBSCRIPTION_TYPES = Arrays.asList(APPEAL_LODGED, SYA_APPEAL_CREATED_NOTIFICATION);
     private static final String CRLF = String.format("%c%c", (char) 0x0D, (char) 0x0A);
 
     private boolean sendSmsSubscriptionConfirmation;
@@ -240,13 +240,15 @@ public class Personalisation<E extends NotificationWrapper> {
         } else {
             rpc = regionalProcessingCenterService.getByScReferenceCode(ccdResponse.getCaseReference());
         }
-        personalisation.put(REGIONAL_OFFICE_NAME_LITERAL, rpc.getAddress1());
-        personalisation.put(SUPPORT_CENTRE_NAME_LITERAL, rpc.getAddress2());
-        personalisation.put(ADDRESS_LINE_LITERAL, rpc.getAddress3());
-        personalisation.put(TOWN_LITERAL, rpc.getAddress4());
-        personalisation.put(COUNTY_LITERAL, rpc.getCity());
-        personalisation.put(POSTCODE_LITERAL, rpc.getPostcode());
-        personalisation.put(REGIONAL_OFFICE_POSTCODE_LITERAL, rpc.getPostcode());
+        if (rpc != null) {
+            personalisation.put(REGIONAL_OFFICE_NAME_LITERAL, rpc.getAddress1());
+            personalisation.put(SUPPORT_CENTRE_NAME_LITERAL, rpc.getAddress2());
+            personalisation.put(ADDRESS_LINE_LITERAL, rpc.getAddress3());
+            personalisation.put(TOWN_LITERAL, rpc.getAddress4());
+            personalisation.put(COUNTY_LITERAL, rpc.getCity());
+            personalisation.put(POSTCODE_LITERAL, rpc.getPostcode());
+            personalisation.put(REGIONAL_OFFICE_POSTCODE_LITERAL, rpc.getPostcode());
+        }
 
         return personalisation;
     }
@@ -303,7 +305,7 @@ public class Personalisation<E extends NotificationWrapper> {
             || APPEAL_RECEIVED_NOTIFICATION.equals(notificationEventType)
             || POSTPONEMENT_NOTIFICATION.equals(notificationEventType)
             || HEARING_BOOKED_NOTIFICATION.equals(notificationEventType)
-            || CASE_UPDATED.equals(notificationEventType)) {
+            || APPEAL_LODGED.equals(notificationEventType)) {
             templateConfig = templateConfig + "." + StringUtils.lowerCase(subscriptionType.name());
         }
         return templateConfig;

@@ -4,7 +4,9 @@ import static org.junit.Assert.assertEquals;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.*;
 import static org.mockito.MockitoAnnotations.initMocks;
+import static uk.gov.hmcts.reform.sscs.config.AppConstants.REP_SALUTATION;
 import static uk.gov.hmcts.reform.sscs.service.LetterUtils.getAddressToUseForLetter;
+import static uk.gov.hmcts.reform.sscs.service.SendNotificationService.getRepSalutation;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -51,7 +53,18 @@ public class SendNotificationServiceTest {
 
     private static Representative REP_WITH_ADDRESS = Representative.builder()
         .name(Name.builder().firstName("Re").lastName("Presentative").build())
-        .address(Address.builder().line1("Rep Line 1").town("Appellant Town").county("Appellant County").postcode("AP9 3LL").build())
+        .address(Address.builder().line1("Rep Line 1").town("Rep Town").county("Rep County").postcode("RE9 3LL").build())
+        .build();
+
+    private static Representative REP_ORG_WITH_ADDRESS = Representative.builder()
+        .organisation("Rep Org")
+        .address(Address.builder().line1("Rep Org Line 1").town("Rep Town").county("Rep County").postcode("RE9 3LL").build())
+        .build();
+
+    private static Representative REP_ORG_WITH_NAME_AND_ADDRESS = Representative.builder()
+        .organisation("Rep Org")
+        .name(Name.builder().firstName("Re").lastName("Presentative").build())
+        .address(Address.builder().line1("Rep Org Line 1").town("Rep Town").county("Rep County").postcode("RE9 3LL").build())
         .build();
 
     private static Subscription SMS_SUBSCRIPTION = Subscription.builder().mobile("07831292000").subscribeSms("Yes").build();
@@ -239,6 +252,21 @@ public class SendNotificationServiceTest {
         classUnderTest.sendLetterNotification(buildBaseWrapper(APPELLANT_WITH_ADDRESS, NotificationEventType.CASE_UPDATED), LETTER_NOTIFICATION, REP_WITH_ADDRESS.getAddress());
 
         verify(notificationSender).sendLetter(eq(LETTER_NOTIFICATION.getLetterTemplate()), eq(REP_WITH_ADDRESS.getAddress()), any(), any());
+    }
+
+    @Test
+    public void getRepSalutationWhenRepHasName() {
+        assertEquals(REP_WITH_ADDRESS.getName().getFullNameNoTitle(), getRepSalutation(buildBaseWrapper(APPELLANT_WITH_ADDRESS, NotificationEventType.CASE_UPDATED, REP_WITH_ADDRESS)));
+    }
+
+    @Test
+    public void getRepSalutationWhenRepHasOrgButNoName() {
+        assertEquals(REP_SALUTATION, getRepSalutation(buildBaseWrapper(APPELLANT_WITH_ADDRESS, NotificationEventType.CASE_UPDATED, REP_ORG_WITH_ADDRESS)));
+    }
+
+    @Test
+    public void getRepSalutationWhenRepHasOrgAndName() {
+        assertEquals(REP_ORG_WITH_NAME_AND_ADDRESS.getName().getFullNameNoTitle(), getRepSalutation(buildBaseWrapper(APPELLANT_WITH_ADDRESS, NotificationEventType.CASE_UPDATED, REP_ORG_WITH_NAME_AND_ADDRESS)));
     }
 
     private CcdNotificationWrapper buildBaseWrapper(Appellant appellant) {

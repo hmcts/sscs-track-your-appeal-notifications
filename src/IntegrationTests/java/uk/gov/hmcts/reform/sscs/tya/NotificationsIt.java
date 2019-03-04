@@ -844,9 +844,9 @@ public class NotificationsIt {
                 "0"
             },
             new Object[]{
-                CASE_UPDATED,
+                APPEAL_LODGED,
                 "paper",
-                Arrays.asList("01293b93-b23e-40a3-ad78-2c6cd01cd21c", "652753bf-59b4-46eb-9c24-bd762338a098"),
+                Arrays.asList("b90df52f-c628-409c-8875-4b0b9663a053", "4b1ee55b-abd1-4e7e-b0ed-693d8df1e741"),
                 Collections.emptyList(),
                 Collections.emptyList(),
                 "yes",
@@ -858,9 +858,9 @@ public class NotificationsIt {
                 "0"
             },
             new Object[]{
-                CASE_UPDATED,
+                APPEAL_LODGED,
                 "oral",
-                Arrays.asList("01293b93-b23e-40a3-ad78-2c6cd01cd21c", "652753bf-59b4-46eb-9c24-bd762338a098"),
+                Arrays.asList("b90df52f-c628-409c-8875-4b0b9663a053", "4b1ee55b-abd1-4e7e-b0ed-693d8df1e741"),
                 Collections.emptyList(),
                 Collections.emptyList(),
                 "yes",
@@ -872,9 +872,9 @@ public class NotificationsIt {
                 "0"
             },
             new Object[]{
-                CASE_UPDATED,
+                APPEAL_LODGED,
                 "paper",
-                Collections.singletonList("652753bf-59b4-46eb-9c24-bd762338a098"),
+                Collections.singletonList("4b1ee55b-abd1-4e7e-b0ed-693d8df1e741"),
                 Collections.emptyList(),
                 Collections.emptyList(),
                 "no",
@@ -886,9 +886,9 @@ public class NotificationsIt {
                 "0"
             },
             new Object[]{
-                CASE_UPDATED,
+                APPEAL_LODGED,
                 "paper",
-                Collections.singletonList("01293b93-b23e-40a3-ad78-2c6cd01cd21c"),
+                Collections.singletonList("b90df52f-c628-409c-8875-4b0b9663a053"),
                 Collections.emptyList(),
                 Collections.emptyList(),
                 "yes",
@@ -900,7 +900,7 @@ public class NotificationsIt {
                 "0"
             },
             new Object[]{
-                CASE_UPDATED,
+                APPEAL_LODGED,
                 "paper",
                 Collections.emptyList(),
                 Collections.emptyList(),
@@ -1327,9 +1327,9 @@ public class NotificationsIt {
                 "0"
             },
             new Object[]{
-                CASE_UPDATED,
+                APPEAL_LODGED,
                 "paper",
-                Arrays.asList("01293b93-b23e-40a3-ad78-2c6cd01cd21c", "652753bf-59b4-46eb-9c24-bd762338a098"),
+                Arrays.asList("b90df52f-c628-409c-8875-4b0b9663a053", "4b1ee55b-abd1-4e7e-b0ed-693d8df1e741"),
                 Collections.emptyList(),
                 Collections.emptyList(),
                 "yes",
@@ -1341,9 +1341,9 @@ public class NotificationsIt {
                 "0"
             },
             new Object[]{
-                CASE_UPDATED,
+                APPEAL_LODGED,
                 "oral",
-                Arrays.asList("01293b93-b23e-40a3-ad78-2c6cd01cd21c", "652753bf-59b4-46eb-9c24-bd762338a098"),
+                Arrays.asList("b90df52f-c628-409c-8875-4b0b9663a053", "4b1ee55b-abd1-4e7e-b0ed-693d8df1e741"),
                 Collections.emptyList(),
                 Collections.emptyList(),
                 "yes",
@@ -1355,9 +1355,9 @@ public class NotificationsIt {
                 "0"
             },
             new Object[]{
-                CASE_UPDATED,
+                APPEAL_LODGED,
                 "paper",
-                Collections.singletonList("652753bf-59b4-46eb-9c24-bd762338a098"),
+                Collections.singletonList("4b1ee55b-abd1-4e7e-b0ed-693d8df1e741"),
                 Collections.emptyList(),
                 Collections.singletonList("91143b85-dd9d-430c-ba23-e42ec90f44f8"),
                 "no",
@@ -1369,9 +1369,9 @@ public class NotificationsIt {
                 "1"
             },
             new Object[]{
-                CASE_UPDATED,
+                APPEAL_LODGED,
                 "paper",
-                Collections.singletonList("01293b93-b23e-40a3-ad78-2c6cd01cd21c"),
+                Collections.singletonList("b90df52f-c628-409c-8875-4b0b9663a053"),
                 Collections.emptyList(),
                 Collections.singletonList("77ea8a2f-06df-4279-9c1f-0f23cb2d9bbf"),
                 "yes",
@@ -1383,7 +1383,7 @@ public class NotificationsIt {
                 "1"
             },
             new Object[]{
-                CASE_UPDATED,
+                APPEAL_LODGED,
                 "paper",
                 Collections.emptyList(),
                 Collections.emptyList(),
@@ -1826,11 +1826,11 @@ public class NotificationsIt {
                 ""
             },
             new Object[]{
-                CASE_UPDATED,
+                APPEAL_LODGED,
                 "paper",
                 Collections.emptyList(),
                 Collections.emptyList(),
-                Collections.singletonList("91143b85-dd9d-430c-ba23-e42ec90f44f8"),
+                Collections.singletonList("747d026e-1bec-4e96-8a34-28f36e30bba5"),
                 "no",
                 "no",
                 "0",
@@ -2033,6 +2033,27 @@ public class NotificationsIt {
 
         json = updateEmbeddedJson(json, "Yes", "case_details_before", "case_data", "subscriptions", "appellantSubscription", "subscribeEmail");
         json = updateEmbeddedJson(json, "No", "case_details", "case_data", "subscriptions", "appellantSubscription", "subscribeSms");
+
+        HttpServletResponse response = getResponse(getRequestWithAuthHeader(json));
+
+        assertHttpStatus(response, HttpStatus.OK);
+        verify(notificationClient, never()).sendEmail(any(), any(), any(), any());
+        verify(notificationClient, never()).sendSms(any(), any(), any(), any(), any());
+    }
+
+    @Test
+    public void givenAnUnknownRpcCase_thenDoNotProcessNotifications() throws Exception {
+        String path = getClass().getClassLoader().getResource("json/ccdResponseWithNoOldCaseRef.json").getFile();
+        String json = FileUtils.readFileToString(new File(path), StandardCharsets.UTF_8.name());
+
+        json = json.replace("appealReceived", "appealCreated");
+        json = json.replace("SC022", "SC948");
+
+        json = updateEmbeddedJson(json, "No", "case_details", "case_data", "subscriptions", "appellantSubscription", "subscribeEmail");
+        json = updateEmbeddedJson(json, "No", "case_details", "case_data", "subscriptions", "appellantSubscription", "subscribeSms");
+        json = updateEmbeddedJson(json, "No", "case_details", "case_data", "subscriptions", "representativeSubscription", "subscribeEmail");
+        json = updateEmbeddedJson(json, "No", "case_details", "case_data", "subscriptions", "representativeSubscription", "subscribeSms");
+        json = updateEmbeddedJson(json, "No", "case_details_before", "case_data", "subscriptions", "representativeSubscription", "subscribeSms");
 
         HttpServletResponse response = getResponse(getRequestWithAuthHeader(json));
 
