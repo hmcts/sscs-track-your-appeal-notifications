@@ -125,7 +125,9 @@ public class CcdNotificationWrapper implements NotificationWrapper {
                 || HEARING_BOOKED_NOTIFICATION.equals(getNotificationType())
                 || SUBSCRIPTION_UPDATED_NOTIFICATION.equals(getNotificationType())
                 || CASE_UPDATED.equals(getNotificationType())
-                || APPEAL_LODGED.equals(getNotificationType()))) {
+                || APPEAL_LODGED.equals(getNotificationType()))
+                || DWP_RESPONSE_RECEIVED_NOTIFICATION.equals(getNotificationType()) && ORAL.equals(getHearingType())
+                || DWP_RESPONSE_RECEIVED_NOTIFICATION.equals(getNotificationType()) && PAPER.equals(getHearingType())) {
             subscriptionWithTypeList.add(new SubscriptionWithType(getRepresentativeSubscription(), REPRESENTATIVE));
         }
         return subscriptionWithTypeList;
