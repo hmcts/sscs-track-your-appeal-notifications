@@ -75,7 +75,7 @@ public class SendNotificationService {
             Notification notification,
             SubscriptionWithType subscriptionWithType,
             NotificationEventType eventType) {
-        sendEmailNotification(wrapper, subscriptionWithType.getSubscription(), notification, eventType);
+        sendEmailNotification(wrapper, subscriptionWithType.getSubscription(), notification);
         sendSmsNotification(wrapper, subscriptionWithType.getSubscription(), notification, eventType);
 
         if (lettersOn) {
@@ -103,7 +103,7 @@ public class SendNotificationService {
         }
     }
 
-    private void sendEmailNotification(NotificationWrapper wrapper, Subscription subscription, Notification notification, NotificationEventType eventType) {
+    private void sendEmailNotification(NotificationWrapper wrapper, Subscription subscription, Notification notification) {
         if (isOkToSendEmailNotification(wrapper, subscription, notification, notificationValidService)) {
             if (APPEAL_LODGED.equals(wrapper.getNotificationType())) {
                 ZonedDateTime appealReceivedDate = ZonedDateTime.now().plusSeconds(delay);
