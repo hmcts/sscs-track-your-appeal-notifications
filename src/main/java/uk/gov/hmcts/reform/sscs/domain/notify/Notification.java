@@ -5,7 +5,7 @@ import static org.apache.commons.lang3.StringUtils.isNotBlank;
 import java.util.Map;
 import lombok.Builder;
 import lombok.Value;
-import uk.gov.hmcts.reform.sscs.domain.util.UkMobile;
+import uk.gov.hmcts.reform.sscs.utility.PhoneNumbersUtil;
 
 @Value
 @Builder
@@ -30,7 +30,7 @@ public class Notification {
     }
 
     public boolean isSms() {
-        return isNotBlank(destination.sms) && UkMobile.check(destination.sms);
+        return isNotBlank(destination.sms) && PhoneNumbersUtil.isValidUkMobileNumber(destination.sms);
     }
 
     public String getEmailTemplate() {
@@ -54,7 +54,7 @@ public class Notification {
     }
 
     public String getMobile() {
-        return destination.sms;
+        return PhoneNumbersUtil.cleanPhoneNumber(destination.sms).orElse(destination.sms);
     }
 
     public Map<String, String> getPlaceholders() {

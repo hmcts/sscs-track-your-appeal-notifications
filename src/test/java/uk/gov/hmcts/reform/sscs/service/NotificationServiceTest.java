@@ -173,7 +173,7 @@ public class NotificationServiceTest {
                                 .email(EMAIL)
                                 .sms(SMS_MOBILE)
                                 .build(),
-                        null,
+                        new HashMap<>(),
                         new Reference(),
                         null));
 
@@ -239,7 +239,7 @@ public class NotificationServiceTest {
                     .email(EMAIL)
                     .sms(SMS_MOBILE)
                     .build(),
-                null,
+                new HashMap<>(),
                 new Reference(),
                 null));
 
@@ -543,7 +543,7 @@ public class NotificationServiceTest {
                         new SubscriptionType[]{APPOINTEE, REPRESENTATIVE},  // Fallback letter
                 },
                 new Object[]{
-                    CASE_UPDATED,
+                    APPEAL_LODGED,
                         2,
                         0,
                         null,
@@ -562,7 +562,7 @@ public class NotificationServiceTest {
                         new SubscriptionType[]{APPOINTEE, REPRESENTATIVE},
                 },
                 new Object[]{
-                    CASE_UPDATED,
+                    APPEAL_LODGED,
                         1,
                         0,
                         null,
@@ -579,7 +579,7 @@ public class NotificationServiceTest {
                         new SubscriptionType[]{APPOINTEE, REPRESENTATIVE},
                 },
                 new Object[]{
-                    CASE_UPDATED,
+                    APPEAL_LODGED,
                         0,
                         0,
                         Subscription.builder()
@@ -772,7 +772,7 @@ public class NotificationServiceTest {
                 new SubscriptionType[]{},
             },
             new Object[]{
-                CASE_UPDATED,
+                APPEAL_LODGED,
                 2,
                 0,
                 null,
@@ -791,7 +791,7 @@ public class NotificationServiceTest {
                 new SubscriptionType[]{APPOINTEE, REPRESENTATIVE},
             },
             new Object[]{
-                CASE_UPDATED,
+                APPEAL_LODGED,
                 1,
                 0,
                 null,
@@ -808,7 +808,7 @@ public class NotificationServiceTest {
                 new SubscriptionType[]{APPOINTEE, REPRESENTATIVE},
             },
             new Object[]{
-                CASE_UPDATED,
+                APPEAL_LODGED,
                 0,
                 0,
                 Subscription.builder()
@@ -1048,7 +1048,33 @@ public class NotificationServiceTest {
                 Subscription.builder().build(),
                 Subscription.builder().build(),
                 new SubscriptionType[]{},
-            }
+            },
+            new Object[]{
+                EVIDENCE_REMINDER_NOTIFICATION,
+                1,
+                0,
+                Subscription.builder()
+                    .tya(APPEAL_NUMBER)
+                    .email(EMAIL)
+                    .subscribeEmail(YES)
+                    .build(),
+                null,
+                new SubscriptionType[]{APPOINTEE},
+            },
+            new Object[]{
+                EVIDENCE_REMINDER_NOTIFICATION,
+                1,
+                1,
+                Subscription.builder()
+                    .tya(APPEAL_NUMBER)
+                    .email(EMAIL)
+                    .subscribeEmail(YES)
+                    .mobile(MOBILE_NUMBER_1)
+                    .subscribeSms(YES)
+                    .build(),
+                null,
+                new SubscriptionType[]{APPOINTEE},
+            },
         };
     }
 
