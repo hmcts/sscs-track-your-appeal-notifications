@@ -33,7 +33,7 @@ import uk.gov.service.notify.NotificationClientException;
 @Service
 @Slf4j
 public class SendNotificationService {
-    private static final String DIRECTION_TEXT = "Direction Text";
+    private static final String STRIKE_OUT_NOTICE = "Strike Out Notice";
     static final String DM_STORE_USER_ID = "sscs";
     private static final String NOTIFICATION_TYPE_LETTER = "Letter";
 
@@ -257,7 +257,7 @@ public class SendNotificationService {
         if ((STRUCK_OUT.equals(notificationEventType))
                 && (newSscsCaseData.getSscsDocument() != null
                 && !newSscsCaseData.getSscsDocument().isEmpty())) {
-            filetype = DIRECTION_TEXT;
+            filetype = STRIKE_OUT_NOTICE;
         }
 
         if (null != filetype) {
