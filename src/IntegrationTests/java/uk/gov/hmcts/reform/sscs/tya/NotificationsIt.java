@@ -143,11 +143,11 @@ public class NotificationsIt {
         json = FileUtils.readFileToString(new File(path), StandardCharsets.UTF_8.name());
 
         when(notificationClient.sendEmail(any(), any(), any(), any()))
-                .thenReturn(sendEmailResponse);
+            .thenReturn(sendEmailResponse);
         when(sendEmailResponse.getNotificationId()).thenReturn(UUID.randomUUID());
 
         when(notificationClient.sendSms(any(), any(), any(), any(), any()))
-                .thenReturn(sendSmsResponse);
+            .thenReturn(sendSmsResponse);
         when(sendSmsResponse.getNotificationId()).thenReturn(UUID.randomUUID());
 
         when(notificationClient.sendLetter(any(), any(), any()))
@@ -202,11 +202,11 @@ public class NotificationsIt {
 
     @Test
     @Parameters({
-            "oral, 01caec0c-191b-4a32-882a-6fded2546ce6, 317a121e-d08c-4890-b3b3-4652f741771f",
-            "paper, a64bce9a-9162-47ca-b3e7-cf5f85ca7bdc, f5b61f94-0b2b-4e8e-9c25-56e9830df7d4"
+        "oral, 01caec0c-191b-4a32-882a-6fded2546ce6, 317a121e-d08c-4890-b3b3-4652f741771f",
+        "paper, a64bce9a-9162-47ca-b3e7-cf5f85ca7bdc, f5b61f94-0b2b-4e8e-9c25-56e9830df7d4"
     })
     public void shouldSendNotificationForAnResponseReceivedRequestForAnOralOrPaperHearing(
-            String hearingType, String emailTemplateId, String smsTemplateId) throws Exception {
+        String hearingType, String emailTemplateId, String smsTemplateId) throws Exception {
         json = updateEmbeddedJson(json, hearingType, "case_details", "case_data", "appeal", "hearingType");
         json = updateEmbeddedJson(json, "responseReceived", "event_id");
 
@@ -268,18 +268,18 @@ public class NotificationsIt {
     @Test
     @Parameters(method = "generateRepsNotificationScenarios")
     public void shouldSendRepsNotificationsForAnEventForAnOralOrPaperHearingAndForEachSubscription(
-            NotificationEventType notificationEventType, String hearingType, List<String> expectedEmailTemplateIds,
-            List<String> expectedSmsTemplateIds, List<String> expectedLetterTemplateIds, String appellantEmailSubs, String appellantSmsSubs, String repsEmailSubs,
-            String repsSmsSubs, int wantedNumberOfSendEmailInvocations, int wantedNumberOfSendSmsInvocations, int wantedNumberOfSendLetterInvocations) throws Exception {
+        NotificationEventType notificationEventType, String hearingType, List<String> expectedEmailTemplateIds,
+        List<String> expectedSmsTemplateIds, List<String> expectedLetterTemplateIds, String appellantEmailSubs, String appellantSmsSubs, String repsEmailSubs,
+        String repsSmsSubs, int wantedNumberOfSendEmailInvocations, int wantedNumberOfSendSmsInvocations, int wantedNumberOfSendLetterInvocations) throws Exception {
         json = updateEmbeddedJson(json, hearingType, "case_details", "case_data", "appeal", "hearingType");
         json = updateEmbeddedJson(json, appellantEmailSubs, "case_details", "case_data", "subscriptions",
-                "appellantSubscription", "subscribeEmail");
+            "appellantSubscription", "subscribeEmail");
         json = updateEmbeddedJson(json, appellantSmsSubs, "case_details", "case_data", "subscriptions",
-                "appellantSubscription", "subscribeSms");
+            "appellantSubscription", "subscribeSms");
         json = updateEmbeddedJson(json, repsEmailSubs, "case_details", "case_data", "subscriptions",
-                "representativeSubscription", "subscribeEmail");
+            "representativeSubscription", "subscribeEmail");
         json = updateEmbeddedJson(json, repsSmsSubs, "case_details", "case_data", "subscriptions",
-                "representativeSubscription", "subscribeSms");
+            "representativeSubscription", "subscribeSms");
         json = updateEmbeddedJson(json, notificationEventType.getId(), "event_id");
 
         HttpServletResponse response = getResponse(getRequestWithAuthHeader(json));
@@ -332,9 +332,9 @@ public class NotificationsIt {
         jsonAppointee = updateEmbeddedJson(jsonAppointee, hearingType, "case_details", "case_data", "appeal", "hearingType");
 
         jsonAppointee = updateEmbeddedJson(jsonAppointee, appointeeEmailSubs, "case_details", "case_data", "subscriptions",
-                "appointeeSubscription", "subscribeEmail");
+            "appointeeSubscription", "subscribeEmail");
         jsonAppointee = updateEmbeddedJson(jsonAppointee, appointeeSmsSubs, "case_details", "case_data", "subscriptions",
-                "appointeeSubscription", "subscribeSms");
+            "appointeeSubscription", "subscribeSms");
 
         if (notificationEventType.equals(HEARING_BOOKED_NOTIFICATION)) {
             jsonAppointee = jsonAppointee.replace("appealReceived", "hearingBooked");
@@ -400,7 +400,7 @@ public class NotificationsIt {
     private void validateSmsNotifications(List<String> expectedSmsTemplateIds, int wantedNumberOfSendSmsInvocations) throws NotificationClientException {
         ArgumentCaptor<String> smsTemplateIdCaptor = ArgumentCaptor.forClass(String.class);
         verify(notificationClient, times(wantedNumberOfSendSmsInvocations))
-                .sendSms(smsTemplateIdCaptor.capture(), any(), any(), any(), any());
+            .sendSms(smsTemplateIdCaptor.capture(), any(), any(), any(), any());
         assertArrayEquals(expectedSmsTemplateIds.toArray(), smsTemplateIdCaptor.getAllValues().toArray());
     }
 
@@ -1952,7 +1952,7 @@ public class NotificationsIt {
         json = updateEmbeddedJson(json, "Yes", "case_details", "case_data", "subscriptions",
             "appellantSubscription", "subscribeEmail");
         json = updateEmbeddedJson(json, "No", "case_details", "case_data", "subscriptions",
-                "appellantSubscription", "subscribeSms");
+            "appellantSubscription", "subscribeSms");
         json = updateEmbeddedJson(json, "No", "case_details", "case_data", "subscriptions",
             "representativeSubscription", "subscribeSms");
 
@@ -1972,7 +1972,7 @@ public class NotificationsIt {
         json = updateEmbeddedJson(json, "Yes", "case_details", "case_data", "subscriptions",
             "representativeSubscription", "subscribeEmail");
         json = updateEmbeddedJson(json, "No", "case_details", "case_data", "subscriptions",
-                "appellantSubscription", "subscribeSms");
+            "appellantSubscription", "subscribeSms");
         json = updateEmbeddedJson(json, "No", "case_details", "case_data", "subscriptions",
             "representativeSubscription", "subscribeSms");
 

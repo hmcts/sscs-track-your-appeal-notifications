@@ -75,7 +75,7 @@ public class SubscriptionPersonalisationTest {
         when(hearingContactDateExtractor.extract(any())).thenReturn(Optional.empty());
 
         RegionalProcessingCenter rpc = RegionalProcessingCenter.builder()
-                .name("Venue").address1("HMCTS").address2("The Road").address3("Town").address4("City").city("Birmingham").postcode("B23 1EH").build();
+            .name("Venue").address1("HMCTS").address2("The Road").address3("Town").address4("City").city("Birmingham").postcode("B23 1EH").build();
 
         when(regionalProcessingCenterService.getByScReferenceCode("1234")).thenReturn(rpc);
 
@@ -114,12 +114,12 @@ public class SubscriptionPersonalisationTest {
     @Test
     public void customisePersonalisationSetsNotificationTypeToDoNotSendWhenEmailHasNotChanged() {
         Subscription newAppellantSubscription = Subscription.builder()
-                .tya("GLSCRR").email("test@email.com")
-                .mobile("07983495065").subscribeEmail("Yes").subscribeSms("Yes").build();
+            .tya("GLSCRR").email("test@email.com")
+            .mobile("07983495065").subscribeEmail("Yes").subscribeSms("Yes").build();
 
         Subscription oldAppellantSubscription = Subscription.builder()
-                .tya("GLSCRR").email("test@email.com")
-                .mobile("07983495065").subscribeEmail("Yes").subscribeSms("No").build();
+            .tya("GLSCRR").email("test@email.com")
+            .mobile("07983495065").subscribeEmail("Yes").subscribeSms("No").build();
 
         buildNewAndOldCaseData(newAppellantSubscription, oldAppellantSubscription);
 
@@ -131,12 +131,12 @@ public class SubscriptionPersonalisationTest {
     @Test
     public void customisePersonalisationShouldLeaveNotificationTypeAsSubscriptionUpdatedWhenEmailHasChanged() {
         Subscription newAppellantSubscription = Subscription.builder()
-                .tya("GLSCRR").email("changed@test.com")
-                .mobile("07983495065").subscribeEmail("Yes").subscribeSms("Yes").build();
+            .tya("GLSCRR").email("changed@test.com")
+            .mobile("07983495065").subscribeEmail("Yes").subscribeSms("Yes").build();
 
         Subscription oldAppellantSubscription = Subscription.builder()
-                .tya("GLSCRR").email("test@email.com")
-                .mobile("07983495065").subscribeEmail("Yes").subscribeSms("No").build();
+            .tya("GLSCRR").email("test@email.com")
+            .mobile("07983495065").subscribeEmail("Yes").subscribeSms("No").build();
 
         buildNewAndOldCaseData(newAppellantSubscription, oldAppellantSubscription);
 
@@ -157,12 +157,12 @@ public class SubscriptionPersonalisationTest {
     @Test
     public void checkSubscriptionCreatedNotificationTypeNotChangedWhenSmsSubscribedIsAlreadySet() {
         Subscription newAppellantSubscription = Subscription.builder()
-                .tya("GLSCRR").email("test@email.com")
-                .mobile("07983495065").subscribeEmail("Yes").subscribeSms("Yes").build();
+            .tya("GLSCRR").email("test@email.com")
+            .mobile("07983495065").subscribeEmail("Yes").subscribeSms("Yes").build();
 
         Subscription oldAppellantSubscription = Subscription.builder()
-                .tya("GLSCRR").email("test@email.com")
-                .mobile("07983495065").subscribeEmail("No").subscribeSms("Yes").build();
+            .tya("GLSCRR").email("test@email.com")
+            .mobile("07983495065").subscribeEmail("No").subscribeSms("Yes").build();
 
         buildNewAndOldCaseData(newAppellantSubscription, oldAppellantSubscription);
 
@@ -174,12 +174,12 @@ public class SubscriptionPersonalisationTest {
     @Test
     public void checkSubscriptionCreatedNotificationTypeNotChangedWhenSmsSubscribedIsNotSet() {
         Subscription newAppellantSubscription = Subscription.builder()
-                .tya("GLSCRR").email("test@email.com")
-                .mobile("07983495065").subscribeEmail("Yes").subscribeSms("No").build();
+            .tya("GLSCRR").email("test@email.com")
+            .mobile("07983495065").subscribeEmail("Yes").subscribeSms("No").build();
 
         Subscription oldAppellantSubscription = Subscription.builder()
-                .tya("GLSCRR").email("test@email.com")
-                .mobile("07983495065").subscribeEmail("No").subscribeSms("No").build();
+            .tya("GLSCRR").email("test@email.com")
+            .mobile("07983495065").subscribeEmail("No").subscribeSms("No").build();
 
         buildNewAndOldCaseData(newAppellantSubscription, oldAppellantSubscription);
 
@@ -224,12 +224,12 @@ public class SubscriptionPersonalisationTest {
     @Test
     public void doNotSendNotificationEventTypeNotificationWhenEmailSubscribedIsAlreadySet() {
         Subscription newAppellantSubscription = Subscription.builder()
-                .tya("GLSCRR").email("test@email.com")
-                .mobile("07983495065").subscribeEmail("Yes").subscribeSms("Yes").build();
+            .tya("GLSCRR").email("test@email.com")
+            .mobile("07983495065").subscribeEmail("Yes").subscribeSms("Yes").build();
 
         Subscription oldAppellantSubscription = Subscription.builder()
-                .tya("GLSCRR").email("test@email.com")
-                .mobile("07983495065").subscribeEmail("Yes").subscribeSms("No").build();
+            .tya("GLSCRR").email("test@email.com")
+            .mobile("07983495065").subscribeEmail("Yes").subscribeSms("No").build();
 
         buildNewAndOldCaseData(newAppellantSubscription, oldAppellantSubscription);
 
@@ -331,12 +331,12 @@ public class SubscriptionPersonalisationTest {
     @Test
     public void givenEmailNotChangedAndSubscriptionWasAndStillIsSubscribed_thenReturnTrue() {
         Subscription newAppellantSubscription = Subscription.builder()
-                .tya("GLSCRR").email("test@email.com")
-                .mobile("07983495065").subscribeEmail("Yes").subscribeSms("Yes").build();
+            .tya("GLSCRR").email("test@email.com")
+            .mobile("07983495065").subscribeEmail("Yes").subscribeSms("Yes").build();
 
         Subscription oldAppellantSubscription = Subscription.builder()
-                .tya("GLSCRR").email("test@email.com")
-                .mobile("07983495065").subscribeEmail("Yes").subscribeSms("No").build();
+            .tya("GLSCRR").email("test@email.com")
+            .mobile("07983495065").subscribeEmail("Yes").subscribeSms("No").build();
 
         buildNewAndOldCaseData(newAppellantSubscription, oldAppellantSubscription);
 
@@ -346,12 +346,12 @@ public class SubscriptionPersonalisationTest {
     @Test
     public void givenEmailChangedAndSubscriptionWasAndStillIsSubscribed_thenReturnFalse() {
         Subscription newAppellantSubscription = Subscription.builder()
-                .tya("GLSCRR").email("changed@test.com")
-                .mobile("07983495065").subscribeEmail("Yes").subscribeSms("Yes").build();
+            .tya("GLSCRR").email("changed@test.com")
+            .mobile("07983495065").subscribeEmail("Yes").subscribeSms("Yes").build();
 
         Subscription oldAppellantSubscription = Subscription.builder()
-                .tya("GLSCRR").email("test@email.com")
-                .mobile("07983495065").subscribeEmail("Yes").subscribeSms("No").build();
+            .tya("GLSCRR").email("test@email.com")
+            .mobile("07983495065").subscribeEmail("Yes").subscribeSms("No").build();
 
         buildNewAndOldCaseData(newAppellantSubscription, oldAppellantSubscription);
 
@@ -361,12 +361,12 @@ public class SubscriptionPersonalisationTest {
     @Test
     public void givenEmailChangedAndNowSubscribed_thenReturnFalse() {
         Subscription newAppellantSubscription = Subscription.builder()
-                .tya("GLSCRR").email("changed@test.com")
-                .mobile("07983495065").subscribeEmail("Yes").subscribeSms("Yes").build();
+            .tya("GLSCRR").email("changed@test.com")
+            .mobile("07983495065").subscribeEmail("Yes").subscribeSms("Yes").build();
 
         Subscription oldAppellantSubscription = Subscription.builder()
-                .tya("GLSCRR").email("test@email.com")
-                .mobile("07983495065").subscribeEmail("No").subscribeSms("No").build();
+            .tya("GLSCRR").email("test@email.com")
+            .mobile("07983495065").subscribeEmail("No").subscribeSms("No").build();
 
         buildNewAndOldCaseData(newAppellantSubscription, oldAppellantSubscription);
 
@@ -375,30 +375,30 @@ public class SubscriptionPersonalisationTest {
 
     private Subscription buildDefaultNewAppeallantSubscription() {
         return Subscription.builder()
-                .tya("GLSCRR").email("test@email.com")
-                .mobile("07983495065").subscribeEmail("Yes").subscribeSms("Yes").build();
+            .tya("GLSCRR").email("test@email.com")
+            .mobile("07983495065").subscribeEmail("Yes").subscribeSms("Yes").build();
     }
 
     private Subscription buildDefaultOldAppeallantSubscription() {
         return Subscription.builder()
-                .tya("GLSCRR").email("test@email.com")
-                .mobile("07983495065").subscribeEmail("No").subscribeSms("No").build();
+            .tya("GLSCRR").email("test@email.com")
+            .mobile("07983495065").subscribeEmail("No").subscribeSms("No").build();
     }
 
     private void buildNewAndOldCaseData(Subscription newAppellantSubscription, Subscription oldAppellantSubscription) {
         newSscsCaseData = SscsCaseData.builder().ccdCaseId("54321")
-                .appeal(Appeal.builder()
-                        .benefitType(BenefitType.builder().code("PIP").build())
-                        .appellant(Appellant.builder().name(Name.builder().firstName("Harry").lastName("Kane").title("Mr").build()).build()).build())
-                .caseReference("1234")
-                .subscriptions(Subscriptions.builder().appellantSubscription(newAppellantSubscription).build()).build();
+            .appeal(Appeal.builder()
+                .benefitType(BenefitType.builder().code("PIP").build())
+                .appellant(Appellant.builder().name(Name.builder().firstName("Harry").lastName("Kane").title("Mr").build()).build()).build())
+            .caseReference("1234")
+            .subscriptions(Subscriptions.builder().appellantSubscription(newAppellantSubscription).build()).build();
 
         oldSscsCaseData = SscsCaseData.builder().ccdCaseId("54321")
-                .appeal(Appeal.builder()
-                        .benefitType(BenefitType.builder().code("PIP").build())
-                        .appellant(Appellant.builder().name(Name.builder().firstName("Harry").lastName("Kane").title("Mr").build()).build()).build())
-                .caseReference("5432")
-                .subscriptions(Subscriptions.builder().appellantSubscription(oldAppellantSubscription).build()).build();
+            .appeal(Appeal.builder()
+                .benefitType(BenefitType.builder().code("PIP").build())
+                .appellant(Appellant.builder().name(Name.builder().firstName("Harry").lastName("Kane").title("Mr").build()).build()).build())
+            .caseReference("5432")
+            .subscriptions(Subscriptions.builder().appellantSubscription(oldAppellantSubscription).build()).build();
 
         wrapper = SscsCaseDataWrapper.builder().newSscsCaseData(newSscsCaseData).oldSscsCaseData(oldSscsCaseData).notificationEventType(SUBSCRIPTION_UPDATED_NOTIFICATION).build();
     }
