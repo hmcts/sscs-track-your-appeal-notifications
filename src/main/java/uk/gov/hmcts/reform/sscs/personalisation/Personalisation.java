@@ -309,6 +309,7 @@ public class Personalisation<E extends NotificationWrapper> {
             || POSTPONEMENT_NOTIFICATION.equals(notificationEventType)
             || ADD_REPRESENTATIVE.equals(notificationEventType)
             || HEARING_BOOKED_NOTIFICATION.equals(notificationEventType)
+            || SUBSCRIPTION_UPDATED_NOTIFICATION.equals(notificationEventType)
             || CASE_UPDATED.equals(notificationEventType)) {
             emailTemplateName = emailTemplateName + "." + StringUtils.lowerCase(subscriptionType.name());
         }

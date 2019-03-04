@@ -23,6 +23,7 @@ import uk.gov.hmcts.reform.sscs.ccd.domain.*;
 import uk.gov.hmcts.reform.sscs.config.AppConstants;
 import uk.gov.hmcts.reform.sscs.config.AppealHearingType;
 import uk.gov.hmcts.reform.sscs.config.NotificationConfig;
+import uk.gov.hmcts.reform.sscs.config.SubscriptionType;
 import uk.gov.hmcts.reform.sscs.domain.SscsCaseDataWrapper;
 import uk.gov.hmcts.reform.sscs.domain.notify.Link;
 import uk.gov.hmcts.reform.sscs.extractor.HearingContactDateExtractor;
@@ -148,7 +149,7 @@ public class SubscriptionPersonalisationTest {
     public void checkSubscriptionCreatedNotificationTypeWhenSmsSubscribedIsFirstSet() {
         buildNewAndOldCaseData(buildDefaultNewAppeallantSubscription(), buildDefaultOldAppeallantSubscription());
 
-        Boolean result = personalisation.shouldSendSmsSubscriptionConfirmation(newSscsCaseData, oldSscsCaseData);
+        Boolean result = personalisation.shouldSendSmsSubscriptionConfirmation(newSscsCaseData, oldSscsCaseData, SubscriptionType.APPELLANT);
 
         assertTrue(result);
     }
@@ -165,7 +166,7 @@ public class SubscriptionPersonalisationTest {
 
         buildNewAndOldCaseData(newAppellantSubscription, oldAppellantSubscription);
 
-        Boolean result = personalisation.shouldSendSmsSubscriptionConfirmation(newSscsCaseData, oldSscsCaseData);
+        Boolean result = personalisation.shouldSendSmsSubscriptionConfirmation(newSscsCaseData, oldSscsCaseData, SubscriptionType.APPELLANT);
 
         assertFalse(result);
     }
@@ -182,7 +183,7 @@ public class SubscriptionPersonalisationTest {
 
         buildNewAndOldCaseData(newAppellantSubscription, oldAppellantSubscription);
 
-        Boolean result = personalisation.shouldSendSmsSubscriptionConfirmation(newSscsCaseData, oldSscsCaseData);
+        Boolean result = personalisation.shouldSendSmsSubscriptionConfirmation(newSscsCaseData, oldSscsCaseData, SubscriptionType.APPELLANT);
 
         assertFalse(result);
     }
@@ -193,7 +194,7 @@ public class SubscriptionPersonalisationTest {
 
         oldSscsCaseData.setSubscriptions(Subscriptions.builder().appellantSubscription(null).build());
 
-        Boolean result = personalisation.shouldSendSmsSubscriptionConfirmation(newSscsCaseData, oldSscsCaseData);
+        Boolean result = personalisation.shouldSendSmsSubscriptionConfirmation(newSscsCaseData, oldSscsCaseData, SubscriptionType.APPELLANT);
 
         assertFalse(result);
     }
@@ -204,7 +205,7 @@ public class SubscriptionPersonalisationTest {
 
         newSscsCaseData.setSubscriptions(Subscriptions.builder().appellantSubscription(null).build());
 
-        Boolean result = personalisation.shouldSendSmsSubscriptionConfirmation(newSscsCaseData, oldSscsCaseData);
+        Boolean result = personalisation.shouldSendSmsSubscriptionConfirmation(newSscsCaseData, oldSscsCaseData, SubscriptionType.APPELLANT);
 
         assertFalse(result);
     }
@@ -217,7 +218,7 @@ public class SubscriptionPersonalisationTest {
         events.add(Event.builder().value(EventDetails.builder().date(DATE).type(APPEAL_RECEIVED.getCcdType()).build()).build());
         newSscsCaseData.setEvents(events);
 
-        assertEquals(APPEAL_RECEIVED_NOTIFICATION, personalisation.getNotificationEventTypeNotification(wrapper));
+        assertEquals(APPEAL_RECEIVED_NOTIFICATION, personalisation.getNotificationEventTypeNotification(wrapper, SubscriptionType.APPELLANT));
     }
 
     @Test
@@ -236,7 +237,7 @@ public class SubscriptionPersonalisationTest {
         events.add(Event.builder().value(EventDetails.builder().date(DATE).type(APPEAL_RECEIVED.getCcdType()).build()).build());
         newSscsCaseData.setEvents(events);
 
-        assertEquals(DO_NOT_SEND, personalisation.getNotificationEventTypeNotification(wrapper));
+        assertEquals(DO_NOT_SEND, personalisation.getNotificationEventTypeNotification(wrapper, SubscriptionType.APPELLANT));
     }
 
     @Test
@@ -247,7 +248,7 @@ public class SubscriptionPersonalisationTest {
         events.add(Event.builder().value(EventDetails.builder().date(DATE).type(null).build()).build());
         newSscsCaseData.setEvents(events);
 
-        assertEquals(SUBSCRIPTION_UPDATED_NOTIFICATION, personalisation.getNotificationEventTypeNotification(wrapper));
+        assertEquals(SUBSCRIPTION_UPDATED_NOTIFICATION, personalisation.getNotificationEventTypeNotification(wrapper, SubscriptionType.APPELLANT));
     }
 
     @Test
@@ -260,7 +261,7 @@ public class SubscriptionPersonalisationTest {
         events.add(Event.builder().value(EventDetails.builder().date(DATE).type(APPEAL_RECEIVED.getCcdType()).build()).build());
         newSscsCaseData.setEvents(events);
 
-        assertEquals(SUBSCRIPTION_UPDATED_NOTIFICATION, personalisation.getNotificationEventTypeNotification(wrapper));
+        assertEquals(SUBSCRIPTION_UPDATED_NOTIFICATION, personalisation.getNotificationEventTypeNotification(wrapper, SubscriptionType.APPELLANT));
     }
 
     @Test
@@ -273,7 +274,7 @@ public class SubscriptionPersonalisationTest {
         events.add(Event.builder().value(EventDetails.builder().date(DATE).type(APPEAL_RECEIVED.getCcdType()).build()).build());
         newSscsCaseData.setEvents(events);
 
-        assertEquals(SUBSCRIPTION_UPDATED_NOTIFICATION, personalisation.getNotificationEventTypeNotification(wrapper));
+        assertEquals(SUBSCRIPTION_UPDATED_NOTIFICATION, personalisation.getNotificationEventTypeNotification(wrapper, SubscriptionType.APPELLANT));
     }
 
     @Test
@@ -282,7 +283,7 @@ public class SubscriptionPersonalisationTest {
 
         newSscsCaseData.setEvents(new ArrayList<>());
 
-        assertEquals(SUBSCRIPTION_UPDATED_NOTIFICATION, personalisation.getNotificationEventTypeNotification(wrapper));
+        assertEquals(SUBSCRIPTION_UPDATED_NOTIFICATION, personalisation.getNotificationEventTypeNotification(wrapper, SubscriptionType.APPELLANT));
     }
 
     @Test
@@ -310,7 +311,7 @@ public class SubscriptionPersonalisationTest {
         events.add(Event.builder().value(EventDetails.builder().date(DATE).type(HEARING_BOOKED.getCcdType()).build()).build());
         newSscsCaseData.setEvents(events);
 
-        assertEquals(SUBSCRIPTION_UPDATED_NOTIFICATION, personalisation.getNotificationEventTypeNotification(wrapper));
+        assertEquals(SUBSCRIPTION_UPDATED_NOTIFICATION, personalisation.getNotificationEventTypeNotification(wrapper, SubscriptionType.APPELLANT));
     }
 
     @Test
@@ -324,7 +325,7 @@ public class SubscriptionPersonalisationTest {
         events.add(Event.builder().value(EventDetails.builder().date(DATE).type(HEARING_BOOKED.getCcdType()).build()).build());
         newSscsCaseData.setEvents(events);
 
-        assertEquals(HEARING_BOOKED_NOTIFICATION, personalisation.getNotificationEventTypeNotification(wrapper));
+        assertEquals(HEARING_BOOKED_NOTIFICATION, personalisation.getNotificationEventTypeNotification(wrapper, SubscriptionType.APPELLANT));
     }
 
     @Test
@@ -339,7 +340,7 @@ public class SubscriptionPersonalisationTest {
 
         buildNewAndOldCaseData(newAppellantSubscription, oldAppellantSubscription);
 
-        assertEquals(true, personalisation.doNotSendEmailUpdatedNotificationWhenEmailNotChanged(newSscsCaseData, oldSscsCaseData));
+        assertEquals(true, personalisation.doNotSendEmailUpdatedNotificationWhenEmailNotChanged(newSscsCaseData, oldSscsCaseData, SubscriptionType.APPELLANT));
     }
 
     @Test
@@ -354,7 +355,7 @@ public class SubscriptionPersonalisationTest {
 
         buildNewAndOldCaseData(newAppellantSubscription, oldAppellantSubscription);
 
-        assertEquals(false, personalisation.doNotSendEmailUpdatedNotificationWhenEmailNotChanged(newSscsCaseData, oldSscsCaseData));
+        assertEquals(false, personalisation.doNotSendEmailUpdatedNotificationWhenEmailNotChanged(newSscsCaseData, oldSscsCaseData, SubscriptionType.APPELLANT));
     }
 
     @Test
@@ -369,7 +370,7 @@ public class SubscriptionPersonalisationTest {
 
         buildNewAndOldCaseData(newAppellantSubscription, oldAppellantSubscription);
 
-        assertEquals(false, personalisation.doNotSendEmailUpdatedNotificationWhenEmailNotChanged(newSscsCaseData, oldSscsCaseData));
+        assertEquals(false, personalisation.doNotSendEmailUpdatedNotificationWhenEmailNotChanged(newSscsCaseData, oldSscsCaseData, SubscriptionType.APPELLANT));
     }
 
     private Subscription buildDefaultNewAppeallantSubscription() {
