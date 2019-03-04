@@ -207,12 +207,12 @@ public class PersonalisationTest {
                 new Object[]{DWP_RESPONSE_RECEIVED_NOTIFICATION, null, ONLINE},
                 new Object[]{DWP_RESPONSE_RECEIVED_NOTIFICATION, null, PAPER},
                 new Object[]{APPEAL_DORMANT_NOTIFICATION, APPELLANT, PAPER},
-                new Object[]{CASE_UPDATED, APPELLANT, PAPER},
-                new Object[]{CASE_UPDATED, APPELLANT, REGULAR},
-                new Object[]{CASE_UPDATED, APPELLANT, ONLINE},
-                new Object[]{CASE_UPDATED, REPRESENTATIVE, PAPER},
-                new Object[]{CASE_UPDATED, REPRESENTATIVE, REGULAR},
-                new Object[]{CASE_UPDATED, REPRESENTATIVE, ONLINE},
+                new Object[]{APPEAL_LODGED, APPELLANT, PAPER},
+                new Object[]{APPEAL_LODGED, APPELLANT, REGULAR},
+                new Object[]{APPEAL_LODGED, APPELLANT, ONLINE},
+                new Object[]{APPEAL_LODGED, REPRESENTATIVE, PAPER},
+                new Object[]{APPEAL_LODGED, REPRESENTATIVE, REGULAR},
+                new Object[]{APPEAL_LODGED, REPRESENTATIVE, ONLINE},
                 new Object[]{EVIDENCE_RECEIVED_NOTIFICATION, APPELLANT, PAPER},
                 new Object[]{EVIDENCE_RECEIVED_NOTIFICATION, APPELLANT, REGULAR},
                 new Object[]{EVIDENCE_RECEIVED_NOTIFICATION, APPELLANT, ONLINE},
@@ -522,6 +522,25 @@ public class PersonalisationTest {
         assertEquals(ADDRESS4, result.get(TOWN_LITERAL));
         assertEquals(CITY, result.get(COUNTY_LITERAL));
         assertEquals(POSTCODE, result.get(POSTCODE_LITERAL));
+    }
+
+    @Test
+    public void shouldNotPopulateRegionalProcessingCenterIfRpcCannotBeFound() {
+
+        SscsCaseData response = SscsCaseData.builder().regionalProcessingCenter(null).build();
+
+        when(regionalProcessingCenterService.getByScReferenceCode("SC/1234/5")).thenReturn(null);
+
+        Map<String, String> result = personalisation.setEvidenceProcessingAddress(new HashMap<>(), response);
+
+        verify(regionalProcessingCenterService, never()).getByScReferenceCode(anyString());
+
+        assertNull(result.get(REGIONAL_OFFICE_NAME_LITERAL));
+        assertNull(result.get(SUPPORT_CENTRE_NAME_LITERAL));
+        assertNull(result.get(ADDRESS_LINE_LITERAL));
+        assertNull(result.get(TOWN_LITERAL));
+        assertNull(result.get(COUNTY_LITERAL));
+        assertNull(result.get(POSTCODE_LITERAL));
     }
 
     @Test
