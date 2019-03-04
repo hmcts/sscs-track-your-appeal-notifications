@@ -1,90 +1,61 @@
 package uk.gov.hmcts.reform.sscs.personalisation;
 
-import static uk.gov.hmcts.reform.sscs.domain.notify.NotificationEventType.DO_NOT_SEND;
-import static uk.gov.hmcts.reform.sscs.domain.notify.NotificationEventType.getNotificationByCcdEvent;
+import static uk.gov.hmcts.reform.sscs.service.NotificationUtils.getSubscription;
 
 import java.util.Map;
+import lombok.extern.slf4j.Slf4j;
+import org.apache.commons.lang3.StringUtils;
 import org.springframework.stereotype.Component;
-import uk.gov.hmcts.reform.sscs.ccd.domain.SscsCaseData;
 import uk.gov.hmcts.reform.sscs.ccd.domain.Subscription;
-import uk.gov.hmcts.reform.sscs.config.AppealHearingType;
-import uk.gov.hmcts.reform.sscs.config.SubscriptionType;
 import uk.gov.hmcts.reform.sscs.domain.SscsCaseDataWrapper;
-import uk.gov.hmcts.reform.sscs.domain.notify.NotificationEventType;
-import uk.gov.hmcts.reform.sscs.factory.CcdNotificationWrapper;
+import uk.gov.hmcts.reform.sscs.domain.SubscriptionWithType;
 
 @Component
-public class SubscriptionPersonalisation extends Personalisation<CcdNotificationWrapper> {
+@Slf4j
+public class SubscriptionPersonalisation extends WithRepresentativePersonalisation {
 
     @Override
-    protected Map<String, String> create(SscsCaseDataWrapper responseWrapper, SubscriptionType subscriptionType) {
-        setSendSmsSubscriptionConfirmation(shouldSendSmsSubscriptionConfirmation(responseWrapper.getNewSscsCaseData(),
-            responseWrapper.getOldSscsCaseData(), subscriptionType));
-        NotificationEventType eventType = getNotificationEventTypeNotification(responseWrapper, subscriptionType);
+    protected Map<String, String> create(SscsCaseDataWrapper responseWrapper, SubscriptionWithType subscriptionWithType) {
+        Subscription newSubscription = getSubscription(responseWrapper.getNewSscsCaseData(), subscriptionWithType.getSubscriptionType());
+        Subscription oldSubscription = getSubscription(responseWrapper.getOldSscsCaseData(), subscriptionWithType.getSubscriptionType());
+        setSendSmsSubscriptionConfirmation(shouldSendSmsSubscriptionConfirmation(newSubscription, oldSubscription));
+        unsetMobileAndEmailIfUnchanged(subscriptionWithType, oldSubscription);
 
-        responseWrapper.setNotificationEventType(eventType);
-
-        return super.create(responseWrapper, subscriptionType);
+        return super.create(responseWrapper, subscriptionWithType);
     }
 
-    public Boolean shouldSendSmsSubscriptionConfirmation(SscsCaseData newSscsCaseData, SscsCaseData oldSscsCaseData,
-                                                         SubscriptionType subscriptionType) {
-        return getSubscriptionByType(oldSscsCaseData,subscriptionType) != null
-                && !getSubscriptionByType(oldSscsCaseData,subscriptionType).isSmsSubscribed()
-                && getSubscriptionByType(newSscsCaseData,subscriptionType) != null
-                && getSubscriptionByType(newSscsCaseData,subscriptionType).isSmsSubscribed();
+
+    Boolean shouldSendSmsSubscriptionConfirmation(Subscription newSubscription, Subscription oldSubscription) {
+        return oldSubscription != null && !oldSubscription.isSmsSubscribed() && newSubscription != null && newSubscription.isSmsSubscribed();
     }
 
-    private Subscription getSubscriptionByType(SscsCaseData sscsCaseData, SubscriptionType subscriptionType) {
-        Subscription subscription = sscsCaseData.getSubscriptions().getAppellantSubscription();
-        if (SubscriptionType.APPELLANT.equals(subscriptionType)) {
-            subscription = sscsCaseData.getSubscriptions().getAppellantSubscription();
-        } else if (SubscriptionType.APPOINTEE.equals(subscriptionType)) {
-            subscription = sscsCaseData.getSubscriptions().getAppointeeSubscription();
-        } else if (SubscriptionType.REPRESENTATIVE.equals(subscriptionType)) {
-            subscription = sscsCaseData.getSubscriptions().getRepresentativeSubscription();
-        }
-        return subscription;
-    }
-
-    public NotificationEventType getNotificationEventTypeNotification(SscsCaseDataWrapper responseWrapper, SubscriptionType subscriptionType) {
-        SscsCaseData newSscsCaseData = responseWrapper.getNewSscsCaseData();
-        SscsCaseData oldSscsCaseData = responseWrapper.getOldSscsCaseData();
-        if (doNotSendEmailUpdatedNotificationWhenEmailNotChanged(newSscsCaseData, oldSscsCaseData, subscriptionType)) {
-            return DO_NOT_SEND;
-        } else if (!isPaperCase(newSscsCaseData.getAppeal().getHearingType())
-            && shouldSetMostRecentNotificationEventTypeNotification(newSscsCaseData, oldSscsCaseData, subscriptionType)) {
-            return getNotificationByCcdEvent(newSscsCaseData.getEvents().get(0).getValue().getEventType());
-        } else {
-            return responseWrapper.getNotificationEventType();
+    void unsetMobileAndEmailIfUnchanged(SubscriptionWithType subscriptionWithType, Subscription oldSubscription) {
+        if (isSubscriptionUnchanged(subscriptionWithType.getSubscription(), oldSubscription)) {
+            log.info("The subscription has not changed and so will not send any notification to " + subscriptionWithType.getSubscriptionType());
+            subscriptionWithType.setSubscription(subscriptionWithType.getSubscription().toBuilder().mobile(null).email(null).build());
+        } else if (isEmailSubscriptionUnchanged(subscriptionWithType.getSubscription(), oldSubscription)) {
+            subscriptionWithType.setSubscription(subscriptionWithType.getSubscription().toBuilder().email(null).build());
+        } else if (isSmsSubscriptionUnchanged(subscriptionWithType.getSubscription(), oldSubscription)) {
+            subscriptionWithType.setSubscription(subscriptionWithType.getSubscription().toBuilder().mobile(null).build());
         }
     }
 
-    protected Boolean isPaperCase(String hearingType) {
-        return AppealHearingType.PAPER.name().equalsIgnoreCase(hearingType);
-    }
-
-    private Boolean shouldSetMostRecentNotificationEventTypeNotification(SscsCaseData newSscsCaseData, SscsCaseData oldSscsCaseData,
-                                                                         SubscriptionType subscriptionType) {
-        return hasCaseJustSubscribed(getSubscriptionByType(oldSscsCaseData, subscriptionType), getSubscriptionByType(newSscsCaseData, subscriptionType))
-            && newSscsCaseData.getEvents() != null
-            && !newSscsCaseData.getEvents().isEmpty()
-            && newSscsCaseData.getEvents().get(0).getValue().getEventType() != null;
-    }
-
-    private Boolean hasCaseJustSubscribed(Subscription oldSubscription, Subscription newSubscription) {
+    private boolean isSmsSubscriptionUnchanged(Subscription newSubscription, Subscription oldSubscription) {
         return oldSubscription != null && newSubscription != null
-            && (!oldSubscription.isEmailSubscribed() && newSubscription.isEmailSubscribed()
-                || (!oldSubscription.isSmsSubscribed() && newSubscription.isSmsSubscribed()));
+            && newSubscription.isSmsSubscribed().equals(oldSubscription.isSmsSubscribed())
+            && StringUtils.equalsIgnoreCase(newSubscription.getMobile(), oldSubscription.getMobile());
+
     }
 
-    public Boolean doNotSendEmailUpdatedNotificationWhenEmailNotChanged(SscsCaseData newSscsCaseData,
-                                                                        SscsCaseData oldSscsCaseData,
-                                                                        SubscriptionType subscriptionType) {
-        return getSubscriptionByType(oldSscsCaseData, subscriptionType) != null
-            && getSubscriptionByType(oldSscsCaseData, subscriptionType).isEmailSubscribed()
-            && getSubscriptionByType(newSscsCaseData, subscriptionType) != null
-            && getSubscriptionByType(newSscsCaseData, subscriptionType).isEmailSubscribed()
-            && getSubscriptionByType(oldSscsCaseData, subscriptionType).getEmail().equals(getSubscriptionByType(newSscsCaseData, subscriptionType).getEmail());
+    private boolean isEmailSubscriptionUnchanged(Subscription newSubscription, Subscription oldSubscription) {
+        return oldSubscription != null && newSubscription != null
+            && newSubscription.isEmailSubscribed().equals(oldSubscription.isEmailSubscribed())
+            && StringUtils.equalsIgnoreCase(newSubscription.getEmail(), oldSubscription.getEmail());
+    }
+
+
+    private boolean isSubscriptionUnchanged(Subscription newSubscription, Subscription oldSubscription) {
+        return isEmailSubscriptionUnchanged(newSubscription, oldSubscription)
+            && isSmsSubscriptionUnchanged(newSubscription, oldSubscription);
     }
 }

@@ -365,6 +365,8 @@ public class NotificationsIt {
 
         jsonAppointee = updateEmbeddedJson(jsonAppointee, appointeeEmailSubs, "case_details", "case_data", "subscriptions",
             "appointeeSubscription", "subscribeEmail");
+        jsonAppointee = updateEmbeddedJson(jsonAppointee, appointeeEmailSubs, "case_details", "case_data", "subscriptions",
+            "appointeeSubscription", "subscribeEmail");
         jsonAppointee = updateEmbeddedJson(jsonAppointee, appointeeSmsSubs, "case_details", "case_data", "subscriptions",
             "appointeeSubscription", "subscribeSms");
 
@@ -1466,7 +1468,7 @@ public class NotificationsIt {
                 "2",
                 "2",
                 "0",
-                "Appointee Appointee"
+                "Harry Potter"
             },
             new Object[]{
                 SUBSCRIPTION_UPDATED_NOTIFICATION,
@@ -1629,7 +1631,7 @@ public class NotificationsIt {
                 "2",
                 "2",
                 "0",
-                "Appointee Appointee"
+                "Harry Potter"
             },
             new Object[]{
                 APPEAL_RECEIVED_NOTIFICATION,
@@ -1720,7 +1722,7 @@ public class NotificationsIt {
                 "2",
                 "2",
                 "0",
-                "Appointee Appointee"
+                "Harry Potter"
             },
             new Object[]{
                 SUBSCRIPTION_UPDATED_NOTIFICATION,
@@ -1733,7 +1735,7 @@ public class NotificationsIt {
                 "0",
                 "0",
                 "0",
-                "Appointee Appointee"
+                "Harry Potter"
             },
             new Object[]{
                 APPEAL_RECEIVED_NOTIFICATION,
@@ -1946,20 +1948,18 @@ public class NotificationsIt {
 
     @Test
     public void shouldSendSubscriptionUpdatedNotificationForSubscriptionUpdatedRequestWithNewEmailAddressForAnOralHearing() throws Exception {
-        json = json.replace("appealReceived", "subscriptionUpdated");
+
         json = updateEmbeddedJson(json, "subscriptionUpdated", "event_id");
         json = updateEmbeddedJson(json, "oral", "case_details", "case_data", "appeal", "hearingType");
         json = updateEmbeddedJson(json, "Yes", "case_details", "case_data", "subscriptions",
             "appellantSubscription", "subscribeEmail");
         json = updateEmbeddedJson(json, "No", "case_details", "case_data", "subscriptions",
             "appellantSubscription", "subscribeSms");
-        json = updateEmbeddedJson(json, "No", "case_details", "case_data", "subscriptions",
-            "representativeSubscription", "subscribeSms");
 
         HttpServletResponse response = getResponse(getRequestWithAuthHeader(json));
 
         assertHttpStatus(response, HttpStatus.OK);
-        verify(notificationClient, times(1)).sendEmail(any(), any(), any(), any());
+        verify(notificationClient, times(2)).sendEmail(any(), any(), any(), any());
         verify(notificationClient, never()).sendSms(any(), any(), any(), any(), any());
     }
 
@@ -1967,14 +1967,8 @@ public class NotificationsIt {
     public void shouldSendSubscriptionUpdatedNotificationForSubscriptionUpdatedRequestWithNewEmailAddressForAPaperHearing() throws Exception {
         updateJsonForPaperHearing();
         json = updateEmbeddedJson(json, "subscriptionUpdated", "event_id");
-        json = updateEmbeddedJson(json, "Yes", "case_details", "case_data", "subscriptions",
-            "appellantSubscription", "subscribeEmail");
-        json = updateEmbeddedJson(json, "Yes", "case_details", "case_data", "subscriptions",
-            "representativeSubscription", "subscribeEmail");
         json = updateEmbeddedJson(json, "No", "case_details", "case_data", "subscriptions",
             "appellantSubscription", "subscribeSms");
-        json = updateEmbeddedJson(json, "No", "case_details", "case_data", "subscriptions",
-            "representativeSubscription", "subscribeSms");
 
         HttpServletResponse response = getResponse(getRequestWithAuthHeader(json));
 
