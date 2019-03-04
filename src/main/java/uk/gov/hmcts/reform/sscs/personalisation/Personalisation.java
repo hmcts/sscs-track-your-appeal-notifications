@@ -320,10 +320,6 @@ public class Personalisation<E extends NotificationWrapper> {
         return letterTemplateName;
     }
 
-    private Boolean isSendSmsSubscriptionConfirmation() {
-        return sendSmsSubscriptionConfirmation;
-    }
-
     void setSendSmsSubscriptionConfirmation(Boolean sendSmsSubscriptionConfirmation) {
         this.sendSmsSubscriptionConfirmation = sendSmsSubscriptionConfirmation;
     }
