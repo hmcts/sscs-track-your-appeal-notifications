@@ -3,8 +3,10 @@ package uk.gov.hmcts.reform.sscs.service;
 import static uk.gov.hmcts.reform.sscs.config.AppConstants.*;
 import static uk.gov.hmcts.reform.sscs.config.SubscriptionType.APPELLANT;
 import static uk.gov.hmcts.reform.sscs.config.SubscriptionType.APPOINTEE;
+import static uk.gov.hmcts.reform.sscs.domain.notify.NotificationEventType.APPEAL_LODGED;
 import static uk.gov.hmcts.reform.sscs.domain.notify.NotificationEventType.STRUCK_OUT;
 import static uk.gov.hmcts.reform.sscs.service.LetterUtils.*;
+import static uk.gov.hmcts.reform.sscs.service.NotificationUtils.hasAppointee;
 import static uk.gov.hmcts.reform.sscs.service.NotificationUtils.isOkToSendEmailNotification;
 import static uk.gov.hmcts.reform.sscs.service.NotificationUtils.isOkToSendSmsNotification;
 import static uk.gov.hmcts.reform.sscs.service.NotificationValidService.isBundledLetter;
@@ -31,7 +33,7 @@ import uk.gov.service.notify.NotificationClientException;
 @Service
 @Slf4j
 public class SendNotificationService {
-    private static final String DIRECTION_TEXT = "Direction Text";
+    private static final String STRIKE_OUT_NOTICE = "Strike Out Notice";
     static final String DM_STORE_USER_ID = "sscs";
     private static final String NOTIFICATION_TYPE_LETTER = "Letter";
 
@@ -92,21 +94,31 @@ public class SendNotificationService {
 
     private void sendSmsNotification(NotificationWrapper wrapper, Subscription subscription, Notification notification) {
         if (isOkToSendSmsNotification(wrapper, subscription, notification, notificationValidService)) {
+            if (APPEAL_LODGED.equals(wrapper.getNotificationType())) {
+                ZonedDateTime appealReceivedDate = ZonedDateTime.now().plusSeconds(delay);
+                notification.getPlaceholders().put(APPEAL_RESPOND_DATE, appealReceivedDate.format(DateTimeFormatter.ofPattern(RESPONSE_DATE_FORMAT)));
+            }
+
             NotificationHandler.SendNotification sendNotification = () ->
-                    notificationSender.sendSms(
-                            notification.getSmsTemplate(),
-                            notification.getMobile(),
-                            notification.getPlaceholders(),
-                            notification.getReference(),
-                            notification.getSmsSenderTemplate(),
-                            wrapper.getCaseId()
-                    );
+                notificationSender.sendSms(
+                        notification.getSmsTemplate(),
+                        notification.getMobile(),
+                        notification.getPlaceholders(),
+                        notification.getReference(),
+                        notification.getSmsSenderTemplate(),
+                        wrapper.getCaseId()
+                );
             notificationHandler.sendNotification(wrapper, notification.getSmsTemplate(), "SMS", sendNotification);
         }
     }
 
     private void sendEmailNotification(NotificationWrapper wrapper, Subscription subscription, Notification notification) {
         if (isOkToSendEmailNotification(wrapper, subscription, notification, notificationValidService)) {
+            if (APPEAL_LODGED.equals(wrapper.getNotificationType())) {
+                ZonedDateTime appealReceivedDate = ZonedDateTime.now().plusSeconds(delay);
+                notification.getPlaceholders().put(APPEAL_RESPOND_DATE, appealReceivedDate.format(DateTimeFormatter.ofPattern(RESPONSE_DATE_FORMAT)));
+            }
+
             NotificationHandler.SendNotification sendNotification = () ->
                     notificationSender.sendEmail(
                             notification.getEmailTemplate(),
@@ -141,6 +153,16 @@ public class SendNotificationService {
         }
     }
 
+    protected static String getRepSalutation(NotificationWrapper wrapper) {
+        if (null == wrapper.getNewSscsCaseData().getAppeal().getRep().getName()
+            || null == wrapper.getNewSscsCaseData().getAppeal().getRep().getName().getFirstName()
+            || null == wrapper.getNewSscsCaseData().getAppeal().getRep().getName().getLastName()) {
+            return REP_SALUTATION;
+        } else {
+            return wrapper.getNewSscsCaseData().getAppeal().getRep().getName().getFullNameNoTitle();
+        }
+    }
+
     protected void sendLetterNotification(NotificationWrapper wrapper, Notification notification, final Address addressToUse) throws NotificationClientException {
         Map<String, String> placeholders = notification.getPlaceholders();
         placeholders.put(ADDRESS_LINE_1, addressToUse.getLine1() == null ? " " : addressToUse.getLine1());
@@ -149,7 +171,13 @@ public class SendNotificationService {
         placeholders.put(ADDRESS_LINE_4, addressToUse.getCounty() == null ? " " : addressToUse.getCounty());
         placeholders.put(POSTCODE_LITERAL, addressToUse.getPostcode());
         if (null != wrapper.getNewSscsCaseData().getAppeal().getRep()) {
-            placeholders.put(REPRESENTATIVE_NAME, wrapper.getNewSscsCaseData().getAppeal().getRep().getName().getFullNameNoTitle());
+            String repSalutation = getRepSalutation(wrapper);
+            placeholders.put(REPRESENTATIVE_NAME, repSalutation);
+        }
+
+        if (hasAppointee(wrapper.getSscsCaseDataWrapper())) {
+            placeholders.put(APPOINTEE_NAME, wrapper.getNewSscsCaseData().getAppeal().getAppellant().getAppointee().getName().getFullNameNoTitle());
+            placeholders.put(CLAIMANT_NAME, wrapper.getNewSscsCaseData().getAppeal().getAppellant().getName().getFullNameNoTitle());
         }
 
         if (!placeholders.containsKey(APPEAL_RESPOND_DATE)) {
@@ -219,7 +247,7 @@ public class SendNotificationService {
         if ((STRUCK_OUT.equals(notificationEventType))
                 && (newSscsCaseData.getSscsDocument() != null
                 && !newSscsCaseData.getSscsDocument().isEmpty())) {
-            filetype = DIRECTION_TEXT;
+            filetype = STRIKE_OUT_NOTICE;
         }
 
         if (null != filetype) {

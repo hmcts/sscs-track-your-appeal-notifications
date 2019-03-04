@@ -1,5 +1,8 @@
 package uk.gov.hmcts.reform.sscs.deserialize;
 
+import static uk.gov.hmcts.reform.sscs.domain.notify.NotificationEventType.APPEAL_LODGED;
+import static uk.gov.hmcts.reform.sscs.domain.notify.NotificationEventType.CASE_UPDATED;
+
 import com.fasterxml.jackson.core.JsonParser;
 import com.fasterxml.jackson.core.ObjectCodec;
 import com.fasterxml.jackson.databind.DeserializationContext;
@@ -65,8 +68,19 @@ public class SscsCaseDataWrapperDeserializer extends StdDeserializer<SscsCaseDat
         return SscsCaseDataWrapper.builder()
                 .newSscsCaseData(newSscsCaseData)
                 .oldSscsCaseData(oldSscsCaseData)
-                .notificationEventType(notificationEventType).build();
+                .notificationEventType(substituteNotificationTypeIfNecessary(newSscsCaseData, oldSscsCaseData, notificationEventType)).build();
     }
+
+    private static NotificationEventType substituteNotificationTypeIfNecessary(SscsCaseData newSscsData, SscsCaseData oldSscsData, NotificationEventType notificationEventType) {
+        if (CASE_UPDATED.equals(notificationEventType)
+            && (null == oldSscsData || null == oldSscsData.getCaseReference() || oldSscsData.getCaseReference().isEmpty())
+            && (null != newSscsData.getCaseReference() && !newSscsData.getCaseReference().isEmpty())) {
+            return APPEAL_LODGED;
+        } else {
+            return notificationEventType;
+        }
+    }
+
 
     private SscsCaseData createSscsCaseDataFromNode(JsonNode caseNode, JsonNode caseDetailsNode) {
         SscsCaseData ccdResponse = deserializeCaseNode(caseNode);
