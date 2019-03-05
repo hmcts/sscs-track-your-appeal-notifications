@@ -226,14 +226,16 @@ public class NotificationsFunctionalTest extends AbstractFunctionalTest {
     }
 
     @Test
-    public void shouldNotSendPaperDwpResponseReceivedNotificationIfNotSubscribed() throws NotificationClientException, IOException {
+    public void shouldSendLetterWhenPaperDwpResponseReceivedNotificationIfNotSubscribed() throws NotificationClientException, IOException {
         simulateCcdCallback(DWP_RESPONSE_RECEIVED_NOTIFICATION, RESPONSE_RECEIVED_PAPER_PATH + "paper-no-subscriptions-"
                 + DWP_RESPONSE_RECEIVED_NOTIFICATION.getId() + "Callback.json");
 
         List<Notification> notifications = tryFetchNotificationsForTestCaseWithFlag(true,
                 paperResponseReceivedEmailId, paperResponseReceivedSmsId);
 
-        assertTrue(notifications.isEmpty());
+
+        assertFalse(true); // I want this to fail until I fix it
+        assertFalse(notifications.isEmpty());
     }
 
     @Test
