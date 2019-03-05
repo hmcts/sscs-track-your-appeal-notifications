@@ -160,7 +160,7 @@ public class SyaAppealCreatedAndReceivedPersonalisation extends WithRepresentati
 
         if (representative != null && representative.getName() != null && StringUtils.equalsIgnoreCase(YES, hasRepresentative)) {
             representativeBuilder.append(TWO_NEW_LINES + NAME)
-                    .append(representative.getName().getFullNameNoTitle() + TWO_NEW_LINES)
+                    .append(getOptionalField(representative.getName().getFullNameNoTitle(), NOT_PROVIDED) + TWO_NEW_LINES)
                     .append("Organisation: ")
                     .append(getOptionalField(representative.getOrganisation(), NOT_PROVIDED) + TWO_NEW_LINES)
                     .append(ADDRESS)
@@ -270,8 +270,9 @@ public class SyaAppealCreatedAndReceivedPersonalisation extends WithRepresentati
         return bool ? REQUIRED : NOT_REQUIRED;
     }
 
-
     private String getOptionalField(String field, String text) {
-        return field == null || StringUtils.equalsIgnoreCase("null", field) || field.isEmpty() ? text : field;
+        return field == null || StringUtils.equalsIgnoreCase("null", field) 
+                        || StringUtils.equalsIgnoreCase("null null", field) 
+                        || field.isEmpty() ? text : field;
     }
 }

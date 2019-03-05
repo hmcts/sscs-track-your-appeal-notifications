@@ -42,6 +42,14 @@ public class WithRepresentativePersonalisationTest {
                     .build())
                 .build())
             .build();
+        SscsCaseData sscsCaseDataWithRepsOrgOnly = SscsCaseData.builder()
+            .appeal(Appeal.builder()
+                .rep(Representative.builder()
+                    .name(Name.builder().build())
+                        .organisation("organisation")
+                        .build())
+                .build())
+            .build();
         SscsCaseData sscsCaseDataWithNoReps = SscsCaseData.builder()
             .appeal(Appeal.builder()
                 .rep(null)
@@ -61,9 +69,10 @@ public class WithRepresentativePersonalisationTest {
             .build();
         return new Object[]{
             new Object[]{sscsCaseDataWithReps, "Manish Sharma"},
+            new Object[]{sscsCaseDataWithRepsOrgOnly, "Sir / Madam"},
             new Object[]{sscsCaseDataWithNoReps, null},
             new Object[]{sscsCaseDataWithEmptyReps, null},
-            new Object[]{sscsCaseDataWithEmptyRepsAndEmptyNames, "null null"}
+            new Object[]{sscsCaseDataWithEmptyRepsAndEmptyNames, null}
         };
     }
 }

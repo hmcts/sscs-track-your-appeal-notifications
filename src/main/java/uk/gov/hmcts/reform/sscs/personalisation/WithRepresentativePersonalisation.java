@@ -1,6 +1,7 @@
 package uk.gov.hmcts.reform.sscs.personalisation;
 
 import java.util.Map;
+import org.apache.commons.lang3.StringUtils;
 import org.springframework.stereotype.Component;
 import uk.gov.hmcts.reform.sscs.ccd.domain.*;
 import uk.gov.hmcts.reform.sscs.config.AppConstants;
@@ -23,14 +24,21 @@ public class WithRepresentativePersonalisation extends Personalisation<CcdNotifi
 
     public Map<String, String> setRepresentativeName(Map<String, String> personalisation, SscsCaseData sscsCaseData) {
         if (isValidReps(sscsCaseData.getAppeal().getRep())) {
-            personalisation.put(AppConstants.REPRESENTATIVE_NAME, String.format("%s %s",
-                    sscsCaseData.getAppeal().getRep().getName().getFirstName(),
-                    sscsCaseData.getAppeal().getRep().getName().getLastName()));
+            personalisation.put(AppConstants.REPRESENTATIVE_NAME, 
+                    getDefaultName(sscsCaseData.getAppeal().getRep().getName(),
+                    "Sir / Madam"));
         }
         return personalisation;
     }
 
     private boolean isValidReps(Representative representative) {
-        return null != (representative) && null != representative.getName();
+        if (representative == null) {
+            return false;
+        }
+
+        Name repName = representative.getName();
+
+        return (null != repName && StringUtils.isNotBlank(repName.getFirstName()) && StringUtils.isNotBlank(repName.getLastName()))
+                    || StringUtils.isNotBlank(representative.getOrganisation());
     }
 }

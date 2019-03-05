@@ -136,15 +136,21 @@ public class Personalisation<E extends NotificationWrapper> {
 
         if (subscriptionType.equals(APPELLANT)
                 && ccdResponse.getAppeal().getAppellant() != null) {
-            name = ccdResponse.getAppeal().getAppellant().getName();
+            return getDefaultName(ccdResponse.getAppeal().getAppellant().getName(), "");
         } else if (subscriptionType.equals(REPRESENTATIVE)
                 && hasRepresentative(wrapper)) {
-            name = ccdResponse.getAppeal().getRep().getName();
+            return getDefaultName(ccdResponse.getAppeal().getRep().getName(), "Sir / Madam");
         } else if (subscriptionType.equals(APPOINTEE)
                 && hasAppointee(wrapper)) {
-            name = ccdResponse.getAppeal().getAppellant().getAppointee().getName();
+            return getDefaultName(ccdResponse.getAppeal().getAppellant().getAppointee().getName(), "");
         }
-        return name == null ? "" : name.getFullNameNoTitle();
+
+        return "";
+    }
+
+    protected String getDefaultName(Name name, String defaultText) {
+        return name == null || name.getFirstName() == null || StringUtils.isBlank(name.getFirstName())
+                        || name.getLastName() == null || StringUtils.isBlank(name.getLastName()) ? defaultText : name.getFullNameNoTitle();
     }
 
     private String getAppointeeDescription(SubscriptionType subscriptionType, SscsCaseData ccdResponse) {
