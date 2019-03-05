@@ -122,7 +122,6 @@ public class Personalisation<E extends NotificationWrapper> {
         return personalisation;
     }
 
-
     private String getAppealReference(SscsCaseData ccdResponse) {
         final String caseReference = ccdResponse.getCaseReference();
         return StringUtils.isBlank(caseReference) ? ccdResponse.getCcdCaseId() : caseReference;
