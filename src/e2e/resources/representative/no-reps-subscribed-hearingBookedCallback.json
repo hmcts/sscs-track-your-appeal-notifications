@@ -7,7 +7,12 @@
       "appeal": {
         "appealReasons": {},
         "appellant": {
-          "address": {},
+          "address": {
+            "line1": "1 Appellant Ave",
+            "town": "Appellanton",
+            "county": "Appellanty",
+            "postcode": "TS1 1ST"
+          },
           "contact": {
             "email": "mail@email.com",
             "phone": "01234567890"
@@ -410,7 +415,12 @@
       "appeal": {
         "appealReasons": {},
         "appellant": {
-          "address": {},
+          "address": {
+            "line1": "1 Appellant Ave",
+            "town": "Appellanton",
+            "county": "Appellanty",
+            "postcode": "TS1 1ST"
+          },
           "contact": {
             "email": "mail@email.com",
             "phone": "01234567890"

@@ -1726,12 +1726,12 @@ public class NotificationsIt {
                 "oral",
                 Collections.singletonList("fee16753-0bdb-43f1-9abb-b14b826e3b26"),
                 Collections.singletonList("f900174a-a556-43b2-8042-bbf3e6090071"),
-                Collections.emptyList(),
+                Collections.singletonList("22e51eec-6ba9-489a-aea0-a9e919716935"),
                 "yes",
                 "yes",
                 "1",
                 "1",
-                "0",
+                "1",
                 "Harry Potter"
             },
             new Object[]{
