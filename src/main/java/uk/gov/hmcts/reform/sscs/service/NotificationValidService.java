@@ -35,14 +35,17 @@ public class NotificationValidService {
     }
 
     static boolean fallbackConditionsMet(NotificationWrapper wrapper, NotificationEventType eventType) {
-        if (DWP_RESPONSE_RECEIVED_NOTIFICATION.equals(eventType)) {
-            return true;    // Always send fallback letter for DWP_RESPONSE_RECEIVED_NOTIFICATION
-        } else if (FALLBACK_LETTER_SUBSCRIPTION_TYPES.contains(eventType)) {
-            return (null == wrapper.getOldSscsCaseData() || null == wrapper.getOldSscsCaseData().getCaseReference() || wrapper.getOldSscsCaseData().getCaseReference().isEmpty())
-                && (null != wrapper.getNewSscsCaseData().getCaseReference() && !wrapper.getNewSscsCaseData().getCaseReference().isEmpty());
+        if (FALLBACK_LETTER_SUBSCRIPTION_TYPES.contains(eventType)) {
+            return DWP_RESPONSE_RECEIVED_NOTIFICATION.equals(eventType)
+                || caseReferenceHasBeenAdded(wrapper);
         }
 
         return true;
+    }
+
+    private static boolean caseReferenceHasBeenAdded(NotificationWrapper wrapper) {
+        return (null == wrapper.getOldSscsCaseData() || null == wrapper.getOldSscsCaseData().getCaseReference() || wrapper.getOldSscsCaseData().getCaseReference().isEmpty())
+            && (null != wrapper.getNewSscsCaseData().getCaseReference() && !wrapper.getNewSscsCaseData().getCaseReference().isEmpty());
     }
 
     static final boolean isBundledLetter(NotificationEventType eventType) {

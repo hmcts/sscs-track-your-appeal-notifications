@@ -314,7 +314,7 @@ public class Personalisation<E extends NotificationWrapper> {
     private String getLetterTemplateName(SubscriptionType subscriptionType, NotificationEventType notificationEventType) {
         String letterTemplateName = notificationEventType.getId();
         if (FALLBACK_LETTER_SUBSCRIPTION_TYPES.contains(notificationEventType)) {
-            letterTemplateName = letterTemplateName + "." + subscriptionType.name().toLowerCase();
+            letterTemplateName = letterTemplateName + "." + (subscriptionType == null ? "" : StringUtils.lowerCase(subscriptionType.name()));
         }
         return letterTemplateName;
     }

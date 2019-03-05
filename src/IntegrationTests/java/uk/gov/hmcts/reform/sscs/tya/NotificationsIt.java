@@ -226,7 +226,7 @@ public class NotificationsIt {
 
         assertHttpStatus(response, HttpStatus.OK);
         verify(notificationClient).sendEmail(eq(emailTemplateId), any(), any(), any());
-        verify(notificationClient).sendSms(eq(smsTemplateId), any(), any(), any(), any());
+        verify(notificationClient, times(2)).sendSms(eq(smsTemplateId), any(), any(), any(), any());
     }
 
     @Test
@@ -1459,13 +1459,39 @@ public class NotificationsIt {
                 "oral",
                 Collections.emptyList(),
                 Collections.emptyList(),
+                Collections.singletonList("8b11f3f4-6452-4a35-93d8-a94996af6499"),
+                "no",
+                "no",
+                "0",
+                "0",
+                "1",
+                "Harry Potter"
+            },
+            new Object[]{
+                DWP_RESPONSE_RECEIVED_NOTIFICATION,
+                "paper",
+                Collections.singletonList("a64bce9a-9162-47ca-b3e7-cf5f85ca7bdc"),
+                Collections.singletonList("f5b61f94-0b2b-4e8e-9c25-56e9830df7d4"),
                 Collections.emptyList(),
-                "no",
-                "no",
-                "0",
-                "0",
+                "yes",
+                "yes",
+                "1",
+                "1",
                 "0",
                 "Appointee Appointee"
+            },
+            new Object[]{
+                DWP_RESPONSE_RECEIVED_NOTIFICATION,
+                "paper",
+                Collections.emptyList(),
+                Collections.emptyList(),
+                Collections.singletonList("16c141bc-4e16-48ed-8b60-4db58207201c"),
+                "no",
+                "no",
+                "0",
+                "0",
+                "1",
+                "Harry Potter"
             },
             new Object[]{
                 EVIDENCE_REMINDER_NOTIFICATION,
@@ -1648,13 +1674,26 @@ public class NotificationsIt {
                 "oral",
                 Collections.emptyList(),
                 Collections.emptyList(),
+                Collections.singletonList("8b11f3f4-6452-4a35-93d8-a94996af6499"),
+                "no",
+                "no",
+                "0",
+                "0",
+                "1",
+                "Harry Potter"
+            },
+            new Object[]{
+                DWP_RESPONSE_RECEIVED_NOTIFICATION,
+                "paper",
                 Collections.emptyList(),
+                Collections.emptyList(),
+                Collections.singletonList("16c141bc-4e16-48ed-8b60-4db58207201c"),
                 "no",
                 "no",
                 "0",
                 "0",
-                "0",
-                "Appointee Appointee"
+                "1",
+                "Harry Potter"
             },
             new Object[]{
                 APPEAL_LAPSED_NOTIFICATION,
