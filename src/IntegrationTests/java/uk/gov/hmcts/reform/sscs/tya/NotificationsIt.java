@@ -1005,6 +1005,34 @@ public class NotificationsIt {
     private Object[] generateRepsNotificationScenariosWhenNoOldCaseRef() {
         return new Object[]{
             new Object[]{
+                EVIDENCE_RECEIVED_NOTIFICATION,
+                "paper",
+                Collections.emptyList(),
+                Collections.emptyList(),
+                Arrays.asList("6af62d46-98e5-4ade-aa72-e4a11c56286e", "8eb75404-a442-47aa-bab2-c4ba83a70900"),
+                "no",
+                "no",
+                "no",
+                "no",
+                "0",
+                "0",
+                "2"
+            },
+            new Object[]{
+                EVIDENCE_RECEIVED_NOTIFICATION,
+                "paper",
+                Arrays.asList("cab48431-a4f0-41f5-b753-2cecf20ab5d4", "7af36950-fc63-45d1-907d-f472fac7af06"),
+                Collections.emptyList(),
+                Collections.emptyList(),
+                "yes",
+                "no",
+                "yes",
+                "no",
+                "2",
+                "0",
+                "0"
+            },
+            new Object[]{
                 APPEAL_LAPSED_NOTIFICATION,
                 "paper",
                 Arrays.asList("8ce8d794-75e8-49a0-b4d2-0c6cd2061c11", "e93dd744-84a1-4173-847a-6d023b55637f"),
@@ -1486,58 +1514,6 @@ public class NotificationsIt {
     @SuppressWarnings({"Indentation", "unused"})
     private Object[] generateAppointeeNotificationScenarios() {
         return new Object[]{
-            new Object[]{
-                EVIDENCE_RECEIVED_NOTIFICATION,
-                "paper",
-                Collections.emptyList(),
-                Collections.emptyList(),
-                Arrays.asList("6af62d46-98e5-4ade-aa72-e4a11c56286e"),
-                "no",
-                "no",
-                "0",
-                "0",
-                "1",
-                "Harry Potter"
-            },
-            new Object[]{
-                EVIDENCE_RECEIVED_NOTIFICATION,
-                "paper",
-                Arrays.asList("c5654134-2e13-4541-ac73-334a5b5cdbb6"),
-                Collections.emptyList(),
-                Collections.emptyList(),
-                "yes",
-                "no",
-                "1",
-                "0",
-                "0",
-                "Harry Potter"
-            },
-            new Object[]{
-                EVIDENCE_RECEIVED_NOTIFICATION,
-                "oral",
-                Collections.emptyList(),
-                Collections.emptyList(),
-                Arrays.asList("6af62d46-98e5-4ade-aa72-e4a11c56286e"),
-                "no",
-                "no",
-                "0",
-                "0",
-                "1",
-                "Harry Potter"
-            },
-            new Object[]{
-                EVIDENCE_RECEIVED_NOTIFICATION,
-                "oral",
-                Arrays.asList("c5654134-2e13-4541-ac73-334a5b5cdbb6"),
-                Collections.emptyList(),
-                Collections.emptyList(),
-                "yes",
-                "no",
-                "1",
-                "0",
-                "0",
-                "Harry Potter"
-            },
            new Object[]{
                 SYA_APPEAL_CREATED_NOTIFICATION,
                 "oral",
@@ -1643,6 +1619,45 @@ public class NotificationsIt {
                 "Harry Potter"
             },
             new Object[]{
+                EVIDENCE_RECEIVED_NOTIFICATION,
+                "paper",
+                Collections.emptyList(),
+                Collections.emptyList(),
+                Arrays.asList("6af62d46-98e5-4ade-aa72-e4a11c56286e"),
+                "no",
+                "no",
+                "0",
+                "0",
+                "1",
+                "Harry Potter"
+            },
+            new Object[]{
+                EVIDENCE_RECEIVED_NOTIFICATION,
+                "oral",
+                Collections.emptyList(),
+                Collections.emptyList(),
+                Arrays.asList("6af62d46-98e5-4ade-aa72-e4a11c56286e"),
+                "no",
+                "no",
+                "0",
+                "0",
+                "1",
+                "Harry Potter"
+            },
+            new Object[]{
+                EVIDENCE_RECEIVED_NOTIFICATION,
+                "oral",
+                Arrays.asList("c5654134-2e13-4541-ac73-334a5b5cdbb6"),
+                Arrays.asList("74bda35f-040b-4355-bda3-faf0e4f5ae6e"),
+                Collections.emptyList(),
+                "yes",
+                "yes",
+                "1",
+                "1",
+                "0",
+                "Harry Potter"
+            },
+            new Object[]{
                 SUBSCRIPTION_UPDATED_NOTIFICATION,
                 "oral",
                 Arrays.asList("b8b2904f-629d-42cf-acea-1b74bde5b2ff", "03b957bf-e21d-4147-90c1-b6fefa8cf70d"),
@@ -1728,15 +1743,15 @@ public class NotificationsIt {
     private Object[] generateAppointeeNotificationWhenNoOldCaseReferenceScenarios() {
         return new Object[]{
             new Object[]{
-                SYA_APPEAL_CREATED_NOTIFICATION,
+                EVIDENCE_RECEIVED_NOTIFICATION,
                 "oral",
-                Collections.singletonList("362d9a85-e0e4-412b-b874-020c0464e2b4"),
-                Collections.singletonList("f41222ef-c05c-4682-9634-6b034a166368"),
+                Arrays.asList("c5654134-2e13-4541-ac73-334a5b5cdbb6"),
+                Collections.emptyList(),
                 Collections.emptyList(),
                 "yes",
-                "yes",
+                "no",
                 "1",
-                "1",
+                "0",
                 "0",
                 "Harry Potter"
             },

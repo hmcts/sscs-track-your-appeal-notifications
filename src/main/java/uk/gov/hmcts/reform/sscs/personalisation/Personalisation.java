@@ -220,7 +220,6 @@ public class Personalisation<E extends NotificationWrapper> {
                         formatLocalDate(ccdResponse.getEvidence().getDocuments().get(0).getValue()
                                 .getEvidenceDateTimeFormatted()));
             } else {
-
                 personalisation.put(EVIDENCE_RECEIVED_DATE_LITERAL, StringUtils.EMPTY);
             }
         }
