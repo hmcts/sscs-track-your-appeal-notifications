@@ -1743,15 +1743,15 @@ public class NotificationsIt {
     private Object[] generateAppointeeNotificationWhenNoOldCaseReferenceScenarios() {
         return new Object[]{
             new Object[]{
-                EVIDENCE_RECEIVED_NOTIFICATION,
+                SYA_APPEAL_CREATED_NOTIFICATION,
                 "oral",
-                Arrays.asList("c5654134-2e13-4541-ac73-334a5b5cdbb6"),
-                Collections.emptyList(),
+                Collections.singletonList("362d9a85-e0e4-412b-b874-020c0464e2b4"),
+                Collections.singletonList("f41222ef-c05c-4682-9634-6b034a166368"),
                 Collections.emptyList(),
                 "yes",
-                "no",
+                "yes",
                 "1",
-                "0",
+                "1",
                 "0",
                 "Harry Potter"
             },
@@ -1760,6 +1760,19 @@ public class NotificationsIt {
                 "oral",
                 Collections.singletonList("362d9a85-e0e4-412b-b874-020c0464e2b4"),
                 Collections.singletonList("f41222ef-c05c-4682-9634-6b034a166368"),
+                Collections.emptyList(),
+                "yes",
+                "yes",
+                "1",
+                "1",
+                "0",
+                "Harry Potter"
+            },
+            new Object[]{
+                EVIDENCE_RECEIVED_NOTIFICATION,
+                "oral",
+                Arrays.asList("c5654134-2e13-4541-ac73-334a5b5cdbb6"),
+                Arrays.asList("74bda35f-040b-4355-bda3-faf0e4f5ae6e"),
                 Collections.emptyList(),
                 "yes",
                 "yes",
