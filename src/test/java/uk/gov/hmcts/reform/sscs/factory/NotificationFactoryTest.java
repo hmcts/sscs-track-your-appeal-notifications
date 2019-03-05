@@ -191,9 +191,10 @@ public class NotificationFactoryTest {
 
     @Test
     public void buildSubscriptionCreatedSmsNotificationFromSscsCaseDataWithSubscriptionUpdatedNotificationAndSmsFirstSubscribed() {
-        String templateName = SUBSCRIPTION_UPDATED_NOTIFICATION.getId() + ".appellant";
+        String templateSubUpdateName = SUBSCRIPTION_UPDATED_NOTIFICATION.getId() + ".appellant";
+        String templateSubCreatedName = SUBSCRIPTION_CREATED_NOTIFICATION.getId() + ".appellant";
         when(personalisationFactory.apply(SUBSCRIPTION_UPDATED_NOTIFICATION)).thenReturn(subscriptionPersonalisation);
-        when(config.getTemplate(templateName, templateName, SUBSCRIPTION_UPDATED_NOTIFICATION.getId(), PIP, REGULAR)).thenReturn(Template.builder().emailTemplateId(null).smsTemplateId("123").build());
+        when(config.getTemplate(templateSubUpdateName, templateSubCreatedName, SUBSCRIPTION_UPDATED_NOTIFICATION.getId(), PIP, REGULAR)).thenReturn(Template.builder().emailTemplateId(null).smsTemplateId("123").build());
 
         wrapper = SscsCaseDataWrapper.builder()
                 .newSscsCaseData(
@@ -237,9 +238,10 @@ public class NotificationFactoryTest {
 
     @Test
     public void buildLastNotificationFromSscsCaseDataEventWhenSmsFirstSubscribed() {
-        String templateName = SUBSCRIPTION_UPDATED_NOTIFICATION.getId() + ".appellant";
+        String templateSubUpdateName = SUBSCRIPTION_UPDATED_NOTIFICATION.getId() + ".appellant";
+        String templateSubCreatedName = SUBSCRIPTION_CREATED_NOTIFICATION.getId() + ".appellant";
         when(personalisationFactory.apply(SUBSCRIPTION_UPDATED_NOTIFICATION)).thenReturn(subscriptionPersonalisation);
-        when(config.getTemplate(templateName, templateName, SUBSCRIPTION_UPDATED_NOTIFICATION.getId(), PIP, REGULAR)).thenReturn(Template.builder().emailTemplateId("123").smsTemplateId("123").build());
+        when(config.getTemplate(templateSubUpdateName, templateSubCreatedName, SUBSCRIPTION_UPDATED_NOTIFICATION.getId(), PIP, REGULAR)).thenReturn(Template.builder().emailTemplateId("123").smsTemplateId("123").build());
 
         List<Event> event = new ArrayList<>();
         event.add(Event.builder().value(EventDetails.builder().date(DATE).type(APPEAL_RECEIVED_NOTIFICATION.getId()).build()).build());
@@ -268,9 +270,10 @@ public class NotificationFactoryTest {
 
     @Test
     public void buildNoNotificationFromSscsCaseDataWhenSubscriptionUpdateReceivedWithNoChangeInSubscription() {
-        String templateName = SUBSCRIPTION_UPDATED_NOTIFICATION.getId() + ".appellant";
+        String templateSubUpdateName = SUBSCRIPTION_UPDATED_NOTIFICATION.getId() + ".appellant";
+
         when(personalisationFactory.apply(SUBSCRIPTION_UPDATED_NOTIFICATION)).thenReturn(subscriptionPersonalisation);
-        when(config.getTemplate(templateName, templateName, SUBSCRIPTION_UPDATED_NOTIFICATION.getId(), PIP, REGULAR)).thenReturn(Template.builder().emailTemplateId("123").smsTemplateId("123").build());
+        when(config.getTemplate(templateSubUpdateName, templateSubUpdateName, SUBSCRIPTION_UPDATED_NOTIFICATION.getId(), PIP, REGULAR)).thenReturn(Template.builder().emailTemplateId("123").smsTemplateId("123").build());
 
         List<Event> events = new ArrayList<>();
         events.add(Event.builder().value(EventDetails.builder().date(DATE).type(APPEAL_RECEIVED_NOTIFICATION.getId()).build()).build());
