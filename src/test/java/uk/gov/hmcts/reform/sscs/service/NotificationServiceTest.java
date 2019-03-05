@@ -1591,7 +1591,7 @@ public class NotificationServiceTest {
 
     private CcdNotificationWrapper buildWrapperWithDocuments(NotificationEventType eventType, String fileUrl, Appellant appellant, Representative rep) {
         SscsDocumentDetails sscsDocumentDetails = SscsDocumentDetails.builder()
-            .documentType("Direction Text")
+            .documentType("Strike Out Notice")
             .documentLink(
                 DocumentLink.builder()
                     .documentUrl(fileUrl)
