@@ -286,8 +286,10 @@ public class Personalisation<E extends NotificationWrapper> {
 
     public Template getTemplate(E notificationWrapper, Benefit benefit, SubscriptionType subscriptionType) {
         String templateConfig = getTemplateConfig(subscriptionType, notificationWrapper.getNotificationType());
+        String smsTemplateName = isSendSmsSubscriptionConfirmation() ? SUBSCRIPTION_CREATED_NOTIFICATION.getId() + "."
+            + StringUtils.lowerCase(subscriptionType.name()) : templateConfig;
         String letterTemplateName = getLetterTemplateName(subscriptionType, notificationWrapper.getNotificationType());
-        return config.getTemplate(templateConfig, templateConfig, letterTemplateName, benefit, notificationWrapper.getHearingType());
+        return config.getTemplate(templateConfig, smsTemplateName, letterTemplateName, benefit, notificationWrapper.getHearingType());
     }
 
     private String getTemplateConfig(SubscriptionType subscriptionType,
@@ -318,6 +320,10 @@ public class Personalisation<E extends NotificationWrapper> {
             letterTemplateName = letterTemplateName + "." + subscriptionType.name().toLowerCase();
         }
         return letterTemplateName;
+    }
+
+    private Boolean isSendSmsSubscriptionConfirmation() {
+        return sendSmsSubscriptionConfirmation;
     }
 
     void setSendSmsSubscriptionConfirmation(Boolean sendSmsSubscriptionConfirmation) {
