@@ -204,6 +204,14 @@ public abstract class AbstractFunctionalTest {
                 log.info("Test case notifications have been delivered "
                         + "[" + matchingNotifications.size() + "/" + waitForAtLeastNumberOfNotifications + "]");
 
+                log.info("Test case notification ids: ");
+
+                for (Notification notification :  matchingNotifications) {
+                    log.info("I am a template: ");
+                    log.info(notification.getTemplateId().toString().subSequence(0, 12) + ", ");
+                    log.info(notification.getTemplateId().toString() + ", ");
+                }
+
                 return matchingNotifications;
             }
 
@@ -267,6 +275,11 @@ public abstract class AbstractFunctionalTest {
         }
 
         return json;
+    }
+
+    protected void triggerEventWithHearingType(NotificationEventType eventType, String hearingType) {
+        caseData.getAppeal().setHearingType(hearingType);
+        triggerEvent(eventType);
     }
 
     protected void triggerEvent(NotificationEventType eventType) {
