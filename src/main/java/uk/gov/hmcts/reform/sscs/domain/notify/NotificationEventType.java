@@ -33,6 +33,7 @@ public enum NotificationEventType {
     DECISION_ISSUED_2("corDecision", false, false, true, false, false),
     STRUCK_OUT("struckOut", true, true, false, false, false),
     CASE_UPDATED("caseUpdated", true, true, true, false, false),
+    APPEAL_LODGED("appealLodged", true, true, true, false, false),
     DO_NOT_SEND("");
 
     private String id;
