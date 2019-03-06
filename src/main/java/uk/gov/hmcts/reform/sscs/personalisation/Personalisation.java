@@ -284,18 +284,17 @@ public class Personalisation<E extends NotificationWrapper> {
     }
 
     public Template getTemplate(E notificationWrapper, Benefit benefit, SubscriptionType subscriptionType) {
-        String templateConfig = getTemplateConfig(subscriptionType, notificationWrapper.getNotificationType());
-        String smsTemplateName = isSendSmsSubscriptionConfirmation() ? SUBSCRIPTION_CREATED_NOTIFICATION.getId() :
+        String templateConfig = getEmailTemplateName(subscriptionType, notificationWrapper.getNotificationType());
+        String smsTemplateName = isSendSmsSubscriptionConfirmation() ? SUBSCRIPTION_CREATED_NOTIFICATION.getId() + "." + subscriptionType.toString().toLowerCase() :
                 templateConfig;
         String letterTemplateName = getLetterTemplateName(subscriptionType, notificationWrapper.getNotificationType());
         return config.getTemplate(templateConfig, smsTemplateName, letterTemplateName, benefit, notificationWrapper.getHearingType());
     }
 
-    private String getTemplateConfig(SubscriptionType subscriptionType,
+    private String getEmailTemplateName(SubscriptionType subscriptionType,
                                      NotificationEventType notificationEventType) {
-        String templateConfig = notificationEventType.getId();
-        if (subscriptionType != null
-            && (APPEAL_LAPSED_NOTIFICATION.equals(notificationEventType)
+        String emailTemplateName = notificationEventType.getId();
+        if (APPEAL_LAPSED_NOTIFICATION.equals(notificationEventType)
             || APPEAL_WITHDRAWN_NOTIFICATION.equals(notificationEventType)
             || EVIDENCE_RECEIVED_NOTIFICATION.equals(notificationEventType)
             || SYA_APPEAL_CREATED_NOTIFICATION.equals(notificationEventType)
@@ -305,10 +304,11 @@ public class Personalisation<E extends NotificationWrapper> {
             || APPEAL_RECEIVED_NOTIFICATION.equals(notificationEventType)
             || POSTPONEMENT_NOTIFICATION.equals(notificationEventType)
             || HEARING_BOOKED_NOTIFICATION.equals(notificationEventType)
-            || APPEAL_LODGED.equals(notificationEventType))) {
-            templateConfig = templateConfig + "." + StringUtils.lowerCase(subscriptionType.name());
+            || CASE_UPDATED.equals(notificationEventType)
+            || APPEAL_LODGED.equals(notificationEventType)) {
+            emailTemplateName = emailTemplateName + "." + StringUtils.lowerCase(subscriptionType.name());
         }
-        return templateConfig;
+        return emailTemplateName;
     }
 
     private String getLetterTemplateName(SubscriptionType subscriptionType, NotificationEventType notificationEventType) {
@@ -321,7 +321,7 @@ public class Personalisation<E extends NotificationWrapper> {
         return letterTemplateName;
     }
 
-    private Boolean isSendSmsSubscriptionConfirmation() {
+    Boolean isSendSmsSubscriptionConfirmation() {
         return sendSmsSubscriptionConfirmation;
     }
 
