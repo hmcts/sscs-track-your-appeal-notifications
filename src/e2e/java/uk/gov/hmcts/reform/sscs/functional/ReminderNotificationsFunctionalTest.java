@@ -125,10 +125,9 @@ public class ReminderNotificationsFunctionalTest extends AbstractFunctionalTest 
     }
 
     @Test
-    public void shouldSendNotificationsWhenDwpResponseReceivedEventIsReceivedForOral() throws IOException, NotificationClientException {
-
+    public void shouldSendNotificationsWhenDwpResponseReceivedEventIsReceivedForOralWithAnAppellantSubscribed() throws IOException, NotificationClientException {
         triggerEventWithHearingType(DWP_RESPONSE_RECEIVED_NOTIFICATION, "oral");
-        simulateCcdCallback(DWP_RESPONSE_RECEIVED_NOTIFICATION,"representative/oral-" + DWP_RESPONSE_RECEIVED_NOTIFICATION.getId() + "Callback.json");
+        simulateCcdCallback(DWP_RESPONSE_RECEIVED_NOTIFICATION,"oral-" + DWP_RESPONSE_RECEIVED_NOTIFICATION.getId() + "Callback.json");
 
         List<Notification> notifications =
             tryFetchNotificationsForTestCase(
@@ -136,8 +135,6 @@ public class ReminderNotificationsFunctionalTest extends AbstractFunctionalTest 
                 responseReceivedOralSmsTemplateId,
                 evidenceReminderOralAppellantEmailTemplateId,
                 evidenceReminderOralAppellantSmsTemplateId,
-                evidenceReminderOralRepresentativeEmailTemplateId,
-                evidenceReminderOralRepresentativeSmsTemplateId,
                 firstHearingHoldingReminderEmailTemplateId,
                 firstHearingHoldingReminderSmsTemplateId,
                 secondHearingHoldingReminderEmailTemplateId,
@@ -159,18 +156,6 @@ public class ReminderNotificationsFunctionalTest extends AbstractFunctionalTest 
         );
 
         assertNotificationBodyContains(notifications, evidenceReminderOralAppellantSmsTemplateId, "ESA");
-
-        assertNotificationSubjectContains(notifications, evidenceReminderOralRepresentativeEmailTemplateId, "ESA");
-        assertNotificationBodyContains(
-                notifications,
-                evidenceReminderOralRepresentativeEmailTemplateId,
-                caseReference,
-                "Harry Potter",
-                "ESA",
-                "/evidence"
-        );
-
-        assertNotificationBodyContains(notifications, evidenceReminderOralRepresentativeSmsTemplateId, "ESA");
 
         assertNotificationSubjectContains(notifications, responseReceivedOralEmailTemplateId, "ESA");
         assertNotificationBodyContains(
@@ -280,10 +265,10 @@ public class ReminderNotificationsFunctionalTest extends AbstractFunctionalTest 
 
 
     @Test
-    public void shouldSendNotificationsWhenDwpResponseReceivedEventIsReceivedForPaper() throws IOException, NotificationClientException {
+    public void shouldSendNotificationsWhenDwpResponseReceivedEventIsReceivedForPaperWithAnAppellantSubscribed() throws IOException, NotificationClientException {
 
         triggerEventWithHearingType(DWP_RESPONSE_RECEIVED_NOTIFICATION, "paper");
-        simulateCcdCallback(DWP_RESPONSE_RECEIVED_NOTIFICATION,"representative/paper-" + DWP_RESPONSE_RECEIVED_NOTIFICATION.getId() + "Callback.json");
+        simulateCcdCallback(DWP_RESPONSE_RECEIVED_NOTIFICATION,"paper-" + DWP_RESPONSE_RECEIVED_NOTIFICATION.getId() + "Callback.json");
 
         List<Notification> notifications =
             tryFetchNotificationsForTestCase(
@@ -291,8 +276,6 @@ public class ReminderNotificationsFunctionalTest extends AbstractFunctionalTest 
                 responseReceivedPaperSmsTemplateId,
                 evidenceReminderPaperAppellantEmailTemplateId,
                 evidenceReminderPaperAppellantSmsTemplateId,
-                evidenceReminderPaperRepresentativeEmailTemplateId,
-                evidenceReminderPaperRepresentativeSmsTemplateId,
                 firstHearingHoldingReminderEmailTemplateId,
                 firstHearingHoldingReminderSmsTemplateId,
                 secondHearingHoldingReminderEmailTemplateId,
@@ -314,18 +297,6 @@ public class ReminderNotificationsFunctionalTest extends AbstractFunctionalTest 
         );
 
         assertNotificationBodyContains(notifications, evidenceReminderPaperAppellantSmsTemplateId, "ESA");
-
-        assertNotificationSubjectContains(notifications, evidenceReminderPaperRepresentativeEmailTemplateId, "ESA");
-        assertNotificationBodyContains(
-                notifications,
-                evidenceReminderPaperRepresentativeEmailTemplateId,
-                caseReference,
-                "Harry Potter",
-                "ESA",
-                "/evidence"
-        );
-
-        assertNotificationBodyContains(notifications, evidenceReminderPaperRepresentativeSmsTemplateId, "ESA");
 
         assertNotificationSubjectContains(notifications, responseReceivedPaperEmailTemplateId, "ESA");
         assertNotificationBodyContains(
@@ -430,6 +401,107 @@ public class ReminderNotificationsFunctionalTest extends AbstractFunctionalTest 
                 "ESA",
                 "not been booked",
                 "/trackyourappeal"
+        );
+    }
+
+    @Test
+    public void shouldSendNotificationsWhenDwpResponseReceivedEventIsReceivedForOralWithAnRepSubscribed() throws IOException, NotificationClientException {
+        subscribeRepresentative();
+        triggerEventWithHearingType(DWP_RESPONSE_RECEIVED_NOTIFICATION, "oral");
+        simulateCcdCallback(DWP_RESPONSE_RECEIVED_NOTIFICATION,"representative/oral-" + DWP_RESPONSE_RECEIVED_NOTIFICATION.getId() + "Callback.json");
+
+        List<Notification> notifications =
+                tryFetchNotificationsForTestCase(
+                        responseReceivedOralEmailTemplateId,
+                        responseReceivedOralSmsTemplateId,
+                        evidenceReminderOralRepresentativeEmailTemplateId,
+                        evidenceReminderOralRepresentativeSmsTemplateId
+                );
+
+        assertNotificationSubjectContains(notifications, evidenceReminderOralRepresentativeEmailTemplateId, "ESA");
+        assertNotificationBodyContains(
+                notifications,
+                evidenceReminderOralRepresentativeEmailTemplateId,
+                caseReference,
+                "Harry Potter",
+                "ESA",
+                "/evidence"
+        );
+
+        assertNotificationBodyContains(notifications, evidenceReminderOralRepresentativeSmsTemplateId, "ESA");
+
+        assertNotificationSubjectContains(notifications, responseReceivedOralEmailTemplateId, "ESA");
+        assertNotificationBodyContains(
+                notifications,
+                responseReceivedOralEmailTemplateId,
+                caseReference,
+                "User Test",
+                "ESA",
+                "DWP",
+                "response",
+                "/trackyourappeal",
+                "12 March 2016"
+        );
+
+        assertNotificationBodyContains(
+                notifications,
+                responseReceivedOralSmsTemplateId,
+                "ESA",
+                "DWP",
+                "response",
+                "/trackyourappeal",
+                "12 March 2016"
+        );
+    }
+
+
+    @Test
+    public void shouldSendNotificationsWhenDwpResponseReceivedEventIsReceivedForPaperWithAnRepSubscribed() throws IOException, NotificationClientException {
+        subscribeRepresentative();
+        triggerEventWithHearingType(DWP_RESPONSE_RECEIVED_NOTIFICATION, "paper");
+        simulateCcdCallback(DWP_RESPONSE_RECEIVED_NOTIFICATION,"representative/paper-" + DWP_RESPONSE_RECEIVED_NOTIFICATION.getId() + "Callback.json");
+
+        List<Notification> notifications =
+                tryFetchNotificationsForTestCase(
+                        responseReceivedPaperEmailTemplateId,
+                        responseReceivedPaperSmsTemplateId,
+                        evidenceReminderPaperRepresentativeEmailTemplateId,
+                        evidenceReminderPaperRepresentativeSmsTemplateId
+                );
+
+        assertNotificationSubjectContains(notifications, evidenceReminderPaperRepresentativeEmailTemplateId, "ESA");
+        assertNotificationBodyContains(
+                notifications,
+                evidenceReminderPaperRepresentativeEmailTemplateId,
+                caseReference,
+                "Harry Potter",
+                "ESA",
+                "/evidence"
+        );
+
+        assertNotificationBodyContains(notifications, evidenceReminderPaperRepresentativeSmsTemplateId, "ESA");
+
+        assertNotificationSubjectContains(notifications, responseReceivedPaperEmailTemplateId, "ESA");
+        assertNotificationBodyContains(
+                notifications,
+                responseReceivedPaperEmailTemplateId,
+                caseReference,
+                "User Test",
+                "ESA",
+                "DWP",
+                "response",
+                "/trackyourappeal",
+                "9 April 2016"
+        );
+
+        assertNotificationBodyContains(
+                notifications,
+                responseReceivedPaperSmsTemplateId,
+                "ESA",
+                "DWP",
+                "response",
+                "/trackyourappeal",
+                "9 April 2016"
         );
     }
 
