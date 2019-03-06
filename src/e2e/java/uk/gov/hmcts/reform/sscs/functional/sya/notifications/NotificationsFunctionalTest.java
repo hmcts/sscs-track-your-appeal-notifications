@@ -40,11 +40,11 @@ public class NotificationsFunctionalTest extends AbstractFunctionalTest {
     @Value("${notification.hearingAdjourned.appellant.smsId}")
     private String hearingAdjournedSmsTemplateId;
 
-    @Value("${notification.subscriptionCreated.smsId}")
-    private String subscriptionCreatedSmsTemplateId;
+    @Value("${notification.subscriptionCreated.appellant.smsId}")
+    private String subscriptionCreatedAppellantSmsTemplateId;
 
-    @Value("${notification.subscriptionUpdated.emailId}")
-    private String subscriptionUpdatedEmailTemplateId;
+    @Value("${notification.subscriptionUpdated.appellant.emailId}")
+    private String subscriptionUpdatedAppellantEmailTemplateId;
 
     @Value("${notification.online.responseReceived.emailId}")
     private String onlineResponseReceivedEmailId;
@@ -55,11 +55,11 @@ public class NotificationsFunctionalTest extends AbstractFunctionalTest {
     @Value("${notification.paper.responseReceived.smsId}")
     private String paperResponseReceivedSmsId;
 
-    @Value("${notification.subscriptionUpdated.emailId}")
-    private String subscriptionUpdateEmailId;
+    @Value("${notification.subscriptionUpdated.appellant.emailId}")
+    private String subscriptionUpdateAppellantEmailId;
 
-    @Value("${notification.subscriptionUpdated.smsId}")
-    private String subscriptionUpdateSmsId;
+    @Value("${notification.subscriptionUpdated.appellant.smsId}")
+    private String subscriptionUpdateAppellantSmsId;
 
     @Value("${notification.subscriptionOld.emailId}")
     private String subscriptionUpdateOldEmailId;
@@ -171,14 +171,14 @@ public class NotificationsFunctionalTest extends AbstractFunctionalTest {
     public void shouldSendSubscriptionCreatedNotification() throws NotificationClientException, IOException {
         simulateCcdCallback(SUBSCRIPTION_CREATED_NOTIFICATION);
 
-        tryFetchNotificationsForTestCase(subscriptionCreatedSmsTemplateId);
+        tryFetchNotificationsForTestCase(subscriptionCreatedAppellantSmsTemplateId);
     }
 
     @Test
     public void shouldSendSubscriptionUpdatedNotification() throws NotificationClientException, IOException {
         simulateCcdCallback(SUBSCRIPTION_UPDATED_NOTIFICATION);
 
-        tryFetchNotificationsForTestCase(subscriptionUpdatedEmailTemplateId);
+        tryFetchNotificationsForTestCase(subscriptionUpdatedAppellantEmailTemplateId);
     }
 
     @Test
@@ -280,13 +280,13 @@ public class NotificationsFunctionalTest extends AbstractFunctionalTest {
                 "appellant-" + SUBSCRIPTION_UPDATED_NOTIFICATION.getId() + "Callback.json");
 
         List<Notification> notifications = tryFetchNotificationsForTestCase(
-                subscriptionUpdateEmailId,
-                subscriptionUpdateSmsId,
+                subscriptionUpdateAppellantEmailId,
+                subscriptionUpdateAppellantSmsId,
                 subscriptionUpdateOldEmailId,
                 subscriptionUpdateOldSmsId
         );
 
-        Notification updateEmailNotification = notifications.stream().filter(f -> f.getTemplateId().toString().equals(subscriptionUpdatedEmailTemplateId)).collect(Collectors.toList()).get(0);
+        Notification updateEmailNotification = notifications.stream().filter(f -> f.getTemplateId().toString().equals(subscriptionUpdatedAppellantEmailTemplateId)).collect(Collectors.toList()).get(0);
         assertTrue(updateEmailNotification.getBody().contains("Dear Appellant User\r\n\r\nEmails about your ESA"));
         assertFalse(updateEmailNotification.getBody().contains("You are receiving this update as the appointee for"));
     }
@@ -297,12 +297,12 @@ public class NotificationsFunctionalTest extends AbstractFunctionalTest {
                 "appointee-" + SUBSCRIPTION_UPDATED_NOTIFICATION.getId() + "Callback.json");
 
         List<Notification> notifications = tryFetchNotificationsForTestCase(
-                subscriptionUpdateEmailId,
-                subscriptionUpdateSmsId,
+            subscriptionUpdateAppellantEmailId,
+            subscriptionUpdateAppellantSmsId,
                 subscriptionUpdateOldEmailId,
                 subscriptionUpdateOldSmsId
         );
-        Notification updateEmailNotification = notifications.stream().filter(f -> f.getTemplateId().toString().equals(subscriptionUpdatedEmailTemplateId)).collect(Collectors.toList()).get(0);
+        Notification updateEmailNotification = notifications.stream().filter(f -> f.getTemplateId().toString().equals(subscriptionUpdatedAppellantEmailTemplateId)).collect(Collectors.toList()).get(0);
         assertTrue(updateEmailNotification.getBody().contains("Dear Appointee User\r\n\r\nYou are receiving this update as the appointee for Appellant User.\r\n\r\nEmails about your ESA"));
     }
 
