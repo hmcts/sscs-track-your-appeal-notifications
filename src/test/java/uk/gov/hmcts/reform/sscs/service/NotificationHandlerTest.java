@@ -2,6 +2,7 @@ package uk.gov.hmcts.reform.sscs.service;
 
 import static org.hamcrest.CoreMatchers.is;
 import static org.junit.Assert.assertThat;
+import static org.junit.Assert.fail;
 import static org.mockito.Mockito.*;
 
 import java.net.UnknownHostException;
@@ -106,6 +107,10 @@ public class NotificationHandlerTest {
                 .when(sendNotification)
                 .send();
 
-        underTest.sendNotification(notificationWrapper, "someTemplate", "Email", sendNotification);
+        try {
+            underTest.sendNotification(notificationWrapper, "someTemplate", "Email", sendNotification);
+        } catch (Throwable throwable) {
+            fail("should not throw an error");
+        }
     }
 }
