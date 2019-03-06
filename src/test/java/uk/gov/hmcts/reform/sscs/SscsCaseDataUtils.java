@@ -70,13 +70,8 @@ public final class SscsCaseDataUtils {
                 .other("No")
                 .build();
 
-        Representative rep = Representative.builder()
-                .name(Name.builder().firstName("Harry").lastName("Potter").build())
-                .hasRepresentative("Yes").build();
-
         final Appeal appeal = Appeal.builder()
                 .appellant(appellant)
-                .rep(rep)
                 .benefitType(BenefitType.builder().code("ESA").build())
                 .hearingOptions(hearingOptions)
                 .hearingType(hearingType)
@@ -99,10 +94,10 @@ public final class SscsCaseDataUtils {
                 .build();
         Subscription representativeSubscription = Subscription.builder()
                 .tya("")
-                .email("sscstest+notify@greencroftconsulting.com")
-                .mobile("07398785050")
-                .subscribeEmail("Yes")
-                .subscribeSms("Yes")
+                .email("")
+                .mobile("")
+                .subscribeEmail("No")
+                .subscribeSms("No")
                 .build();
         Subscriptions subscriptions = Subscriptions.builder()
                 .appellantSubscription(appellantSubscription)
@@ -116,6 +111,30 @@ public final class SscsCaseDataUtils {
                 .subscriptions(subscriptions);
     }
 
+    public static SscsCaseData subscribeRep(SscsCaseData sscsCaseData) {
+
+        Representative rep = Representative.builder()
+                .name(Name.builder().firstName("Harry").lastName("Potter").build())
+                .hasRepresentative("Yes").build();
+
+        sscsCaseData.getAppeal().setRep(rep);
+
+        Subscription representativeSubscription = Subscription.builder()
+                .tya("")
+                .email("sscstest+notify@greencroftconsulting.com")
+                .mobile("07398785050")
+                .subscribeEmail("Yes")
+                .subscribeSms("Yes")
+                .build();
+
+        Subscriptions subscriptions = Subscriptions.builder()
+                .representativeSubscription(representativeSubscription)
+                .build();
+
+        sscsCaseData.setSubscriptions(subscriptions);
+
+        return sscsCaseData;
+    }
 
     public static CcdNotificationWrapper buildBasicCcdNotificationWrapper(NotificationEventType notificationType) {
         return buildBasicCcdNotificationWrapper(notificationType, null);
