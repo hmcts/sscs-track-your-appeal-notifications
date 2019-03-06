@@ -226,7 +226,7 @@ public class NotificationsIt {
 
         assertHttpStatus(response, HttpStatus.OK);
         verify(notificationClient).sendEmail(eq(emailTemplateId), any(), any(), any());
-        verify(notificationClient).sendSms(eq(smsTemplateId), any(), any(), any(), any());
+        verify(notificationClient, times(2)).sendSms(eq(smsTemplateId), any(), any(), any(), any());
     }
 
     @Test

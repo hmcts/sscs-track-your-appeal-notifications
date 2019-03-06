@@ -294,7 +294,8 @@ public class Personalisation<E extends NotificationWrapper> {
     private String getTemplateConfig(SubscriptionType subscriptionType,
                                      NotificationEventType notificationEventType) {
         String templateConfig = notificationEventType.getId();
-        if (APPEAL_LAPSED_NOTIFICATION.equals(notificationEventType)
+        if (subscriptionType != null
+            && (APPEAL_LAPSED_NOTIFICATION.equals(notificationEventType)
             || APPEAL_WITHDRAWN_NOTIFICATION.equals(notificationEventType)
             || EVIDENCE_RECEIVED_NOTIFICATION.equals(notificationEventType)
             || SYA_APPEAL_CREATED_NOTIFICATION.equals(notificationEventType)
@@ -302,10 +303,9 @@ public class Personalisation<E extends NotificationWrapper> {
             || APPEAL_DORMANT_NOTIFICATION.equals(notificationEventType)
             || ADJOURNED_NOTIFICATION.equals(notificationEventType)
             || APPEAL_RECEIVED_NOTIFICATION.equals(notificationEventType)
-            || DWP_RESPONSE_RECEIVED_NOTIFICATION.equals(notificationEventType)
             || POSTPONEMENT_NOTIFICATION.equals(notificationEventType)
             || HEARING_BOOKED_NOTIFICATION.equals(notificationEventType)
-            || APPEAL_LODGED.equals(notificationEventType)) {
+            || APPEAL_LODGED.equals(notificationEventType))) {
             templateConfig = templateConfig + "." + StringUtils.lowerCase(subscriptionType.name());
         }
         return templateConfig;
@@ -313,8 +313,9 @@ public class Personalisation<E extends NotificationWrapper> {
 
     private String getLetterTemplateName(SubscriptionType subscriptionType, NotificationEventType notificationEventType) {
         String letterTemplateName = notificationEventType.getId();
-        if (FALLBACK_LETTER_SUBSCRIPTION_TYPES.contains(notificationEventType)
-            || DWP_RESPONSE_RECEIVED_NOTIFICATION.equals(notificationEventType)) {
+        if (subscriptionType != null
+            && (FALLBACK_LETTER_SUBSCRIPTION_TYPES.contains(notificationEventType)
+            || DWP_RESPONSE_RECEIVED_NOTIFICATION.equals(notificationEventType))) {
             letterTemplateName = letterTemplateName + "." + subscriptionType.name().toLowerCase();
         }
         return letterTemplateName;
