@@ -26,7 +26,7 @@ public class WithRepresentativePersonalisation extends Personalisation<CcdNotifi
         if (isValidReps(sscsCaseData.getAppeal().getRep())) {
             personalisation.put(AppConstants.REPRESENTATIVE_NAME, 
                     getDefaultName(sscsCaseData.getAppeal().getRep().getName(),
-                    "Sir / Madam"));
+                    AppConstants.REP_SALUTATION));
         }
         return personalisation;
     }

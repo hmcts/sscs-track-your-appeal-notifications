@@ -69,7 +69,7 @@ public class WithRepresentativePersonalisationTest {
             .build();
         return new Object[]{
             new Object[]{sscsCaseDataWithReps, "Manish Sharma"},
-            new Object[]{sscsCaseDataWithRepsOrgOnly, "Sir / Madam"},
+            new Object[]{sscsCaseDataWithRepsOrgOnly, AppConstants.REP_SALUTATION},
             new Object[]{sscsCaseDataWithNoReps, null},
             new Object[]{sscsCaseDataWithEmptyReps, null},
             new Object[]{sscsCaseDataWithEmptyRepsAndEmptyNames, null}
