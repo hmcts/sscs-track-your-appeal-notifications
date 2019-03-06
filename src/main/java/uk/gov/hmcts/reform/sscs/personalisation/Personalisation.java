@@ -132,8 +132,6 @@ public class Personalisation<E extends NotificationWrapper> {
             return "";
         }
 
-        Name name = null;
-
         if (subscriptionType.equals(APPELLANT)
                 && ccdResponse.getAppeal().getAppellant() != null) {
             return getDefaultName(ccdResponse.getAppeal().getAppellant().getName(), "");
