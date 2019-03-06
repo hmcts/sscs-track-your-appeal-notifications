@@ -270,9 +270,10 @@ public class SyaAppealCreatedAndReceivedPersonalisation extends WithRepresentati
         return bool ? REQUIRED : NOT_REQUIRED;
     }
 
-    private String getOptionalField(String field, String text) {
-        return field == null || StringUtils.equalsIgnoreCase("null", field) 
-                        || StringUtils.equalsIgnoreCase("null null", field) 
-                        || field.isEmpty() ? text : field;
+    protected String getOptionalField(String field, String text) {
+        return field == null || StringUtils.equalsIgnoreCase("null", field)
+                        || StringUtils.equalsIgnoreCase("null null", field)
+                        || StringUtils.equalsIgnoreCase("null null null", field)
+                        || StringUtils.isBlank(field) ? text : field;
     }
 }
