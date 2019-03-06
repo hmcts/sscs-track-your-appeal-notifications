@@ -15,6 +15,7 @@ import org.apache.commons.lang3.StringUtils;
 import uk.gov.hmcts.reform.sscs.ccd.domain.SscsCaseData;
 import uk.gov.hmcts.reform.sscs.ccd.domain.Subscription;
 import uk.gov.hmcts.reform.sscs.config.AppealHearingType;
+import uk.gov.hmcts.reform.sscs.config.ReceivedVia;
 import uk.gov.hmcts.reform.sscs.domain.SscsCaseDataWrapper;
 import uk.gov.hmcts.reform.sscs.domain.SubscriptionWithType;
 import uk.gov.hmcts.reform.sscs.domain.notify.NotificationEventType;
@@ -121,6 +122,7 @@ public class CcdNotificationWrapper implements NotificationWrapper {
                 || APPEAL_DORMANT_NOTIFICATION.equals(getNotificationType())
                 || ADJOURNED_NOTIFICATION.equals(getNotificationType())
                 || APPEAL_RECEIVED_NOTIFICATION.equals(getNotificationType())
+                || DWP_RESPONSE_RECEIVED_NOTIFICATION.equals(getNotificationType())
                 || POSTPONEMENT_NOTIFICATION.equals(getNotificationType())
                 || HEARING_BOOKED_NOTIFICATION.equals(getNotificationType())
                 || SUBSCRIPTION_UPDATED_NOTIFICATION.equals(getNotificationType())
@@ -129,6 +131,15 @@ public class CcdNotificationWrapper implements NotificationWrapper {
             subscriptionWithTypeList.add(new SubscriptionWithType(getRepresentativeSubscription(), REPRESENTATIVE));
         }
         return subscriptionWithTypeList;
+    }
+
+    @Override
+    public ReceivedVia getReceivedVia() {
+        if (ReceivedVia.PAPER.name().equalsIgnoreCase(getNewSscsCaseData().getAppeal().getReceivedVia())) {
+            return ReceivedVia.PAPER;
+        } else {
+            return ReceivedVia.ONLINE;
+        }
     }
 
     @Override

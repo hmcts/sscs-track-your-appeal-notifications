@@ -11,6 +11,7 @@ import java.util.List;
 import org.springframework.stereotype.Service;
 import uk.gov.hmcts.reform.sscs.ccd.domain.Hearing;
 import uk.gov.hmcts.reform.sscs.ccd.domain.SscsCaseData;
+import uk.gov.hmcts.reform.sscs.config.ReceivedVia;
 import uk.gov.hmcts.reform.sscs.config.SubscriptionType;
 import uk.gov.hmcts.reform.sscs.domain.notify.NotificationEventType;
 import uk.gov.hmcts.reform.sscs.factory.NotificationWrapper;
@@ -29,6 +30,8 @@ public class NotificationValidService {
             || APPOINTEE.equals(subscriptionType)
             || (REPRESENTATIVE.equals(subscriptionType) && null != wrapper.getNewSscsCaseData().getAppeal().getRep()))) {
             result = true;
+        } else if (DWP_RESPONSE_RECEIVED_NOTIFICATION.equals(eventType)) {
+            result = ReceivedVia.PAPER.equals(wrapper.getReceivedVia());
         }
 
         return result;

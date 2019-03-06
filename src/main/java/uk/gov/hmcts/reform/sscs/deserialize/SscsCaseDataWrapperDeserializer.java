@@ -143,6 +143,7 @@ public class SscsCaseDataWrapperDeserializer extends StdDeserializer<SscsCaseDat
                 .hearingOptions(hearingOptions)
                 .appealReasons(appealReasons)
                 .rep(rep)
+                .receivedVia(getField(appealNode, "receivedVia"))
                 .hearingType(getField(appealNode, "hearingType"))
                 .signer(getField(appealNode, "signer")).build();
     }
