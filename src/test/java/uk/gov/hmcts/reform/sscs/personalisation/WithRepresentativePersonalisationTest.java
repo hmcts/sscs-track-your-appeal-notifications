@@ -31,9 +31,10 @@ public class WithRepresentativePersonalisationTest {
 
     @SuppressWarnings({"unused"})
     private Object[] generateSscsCaseDataForTest() {
-        SscsCaseData sscsCaseDataWithReps = SscsCaseData.builder()
+        SscsCaseData sscsCaseDataWithRepsFlagYes = SscsCaseData.builder()
             .appeal(Appeal.builder()
                 .rep(Representative.builder()
+                    .hasRepresentative("yes")
                     .name(Name.builder()
                         .firstName("Manish")
                         .lastName("Sharma")
@@ -42,9 +43,31 @@ public class WithRepresentativePersonalisationTest {
                     .build())
                 .build())
             .build();
-        SscsCaseData sscsCaseDataWithRepsOrgOnly = SscsCaseData.builder()
+        SscsCaseData sscsCaseDataWithRepsFlagNo = SscsCaseData.builder()
             .appeal(Appeal.builder()
                 .rep(Representative.builder()
+                    .hasRepresentative("no")
+                    .name(Name.builder()
+                        .firstName("Manish")
+                        .lastName("Sharma")
+                        .title("Mrs")
+                        .build())
+                    .build())
+                .build())
+            .build();
+        SscsCaseData sscsCaseDataWithRepsOrgOnlyFlagYes = SscsCaseData.builder()
+            .appeal(Appeal.builder()
+                .rep(Representative.builder()
+                    .hasRepresentative("yes")
+                    .name(Name.builder().build())
+                        .organisation("organisation")
+                        .build())
+                .build())
+            .build();
+        SscsCaseData sscsCaseDataWithRepsOrgOnlyFlagNo = SscsCaseData.builder()
+            .appeal(Appeal.builder()
+                .rep(Representative.builder()
+                    .hasRepresentative("no")
                     .name(Name.builder().build())
                         .organisation("organisation")
                         .build())
@@ -60,19 +83,22 @@ public class WithRepresentativePersonalisationTest {
                 .rep(Representative.builder().build())
                 .build())
             .build();
-        SscsCaseData sscsCaseDataWithEmptyRepsAndEmptyNames = SscsCaseData.builder()
+        SscsCaseData sscsCaseDataWithEmptyRepsAndEmptyNamesFlagYes = SscsCaseData.builder()
             .appeal(Appeal.builder()
                 .rep(Representative.builder()
+                    .hasRepresentative("yes")
                     .name(Name.builder().build())
                     .build())
                 .build())
             .build();
         return new Object[]{
-            new Object[]{sscsCaseDataWithReps, "Manish Sharma"},
-            new Object[]{sscsCaseDataWithRepsOrgOnly, AppConstants.REP_SALUTATION},
+            new Object[]{sscsCaseDataWithRepsFlagYes, "Manish Sharma"},
+            new Object[]{sscsCaseDataWithRepsFlagNo, null},
+            new Object[]{sscsCaseDataWithRepsOrgOnlyFlagYes, AppConstants.REP_SALUTATION},
+            new Object[]{sscsCaseDataWithRepsOrgOnlyFlagNo, null},
             new Object[]{sscsCaseDataWithNoReps, null},
             new Object[]{sscsCaseDataWithEmptyReps, null},
-            new Object[]{sscsCaseDataWithEmptyRepsAndEmptyNames, null}
+            new Object[]{sscsCaseDataWithEmptyRepsAndEmptyNamesFlagYes, null}
         };
     }
 }

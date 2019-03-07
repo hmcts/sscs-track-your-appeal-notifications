@@ -7,6 +7,8 @@ import static uk.gov.hmcts.reform.sscs.domain.notify.NotificationEventType.STRUC
 
 import java.util.Arrays;
 import java.util.List;
+
+import uk.gov.hmcts.reform.sscs.ccd.domain.Appeal;
 import uk.gov.hmcts.reform.sscs.ccd.domain.Appointee;
 import uk.gov.hmcts.reform.sscs.ccd.domain.SscsCaseData;
 import uk.gov.hmcts.reform.sscs.ccd.domain.Subscription;
@@ -38,9 +40,13 @@ public class NotificationUtils {
 
     public static boolean hasRepresentative(SscsCaseDataWrapper wrapper) {
         return wrapper.getNewSscsCaseData().getAppeal() != null
-            && wrapper.getNewSscsCaseData().getAppeal().getRep() != null
-            && wrapper.getNewSscsCaseData().getAppeal().getRep().getHasRepresentative() != null
-            && wrapper.getNewSscsCaseData().getAppeal().getRep().getHasRepresentative().equalsIgnoreCase("yes");
+            && hasRepresentative(wrapper.getNewSscsCaseData().getAppeal());
+    }
+
+    public static boolean hasRepresentative(Appeal appeal) {
+        return appeal.getRep() != null
+            && appeal.getRep().getHasRepresentative() != null
+            && appeal.getRep().getHasRepresentative().equalsIgnoreCase("yes");
     }
 
     public static boolean hasAppointeeSubscription(SscsCaseDataWrapper wrapper) {

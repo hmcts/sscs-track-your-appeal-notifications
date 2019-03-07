@@ -8,6 +8,7 @@ import uk.gov.hmcts.reform.sscs.config.AppConstants;
 import uk.gov.hmcts.reform.sscs.domain.SscsCaseDataWrapper;
 import uk.gov.hmcts.reform.sscs.domain.SubscriptionWithType;
 import uk.gov.hmcts.reform.sscs.factory.CcdNotificationWrapper;
+import uk.gov.hmcts.reform.sscs.service.NotificationUtils;
 
 @Component
 public class WithRepresentativePersonalisation extends Personalisation<CcdNotificationWrapper> {
@@ -23,7 +24,7 @@ public class WithRepresentativePersonalisation extends Personalisation<CcdNotifi
     }
 
     public Map<String, String> setRepresentativeName(Map<String, String> personalisation, SscsCaseData sscsCaseData) {
-        if (isValidReps(sscsCaseData.getAppeal().getRep())) {
+        if (NotificationUtils.hasRepresentative(sscsCaseData.getAppeal()) && isValidReps(sscsCaseData.getAppeal().getRep())) {
             personalisation.put(AppConstants.REPRESENTATIVE_NAME, 
                     getDefaultName(sscsCaseData.getAppeal().getRep().getName(),
                     AppConstants.REP_SALUTATION));
