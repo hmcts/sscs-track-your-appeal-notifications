@@ -47,7 +47,7 @@ import uk.gov.hmcts.reform.sscs.service.RegionalProcessingCenterService;
 @Component
 @Slf4j
 public class Personalisation<E extends NotificationWrapper> {
-    private static final List<NotificationEventType> FALLBACK_LETTER_SUBSCRIPTION_TYPES = Arrays.asList(APPEAL_LODGED, SYA_APPEAL_CREATED_NOTIFICATION);
+    private static final List<NotificationEventType> FALLBACK_LETTER_SUBSCRIPTION_TYPES = Arrays.asList(DWP_RESPONSE_RECEIVED_NOTIFICATION, APPEAL_LODGED, SYA_APPEAL_CREATED_NOTIFICATION);
     private static final String CRLF = String.format("%c%c", (char) 0x0D, (char) 0x0A);
 
     private boolean sendSmsSubscriptionConfirmation;
@@ -313,9 +313,7 @@ public class Personalisation<E extends NotificationWrapper> {
 
     private String getLetterTemplateName(SubscriptionType subscriptionType, NotificationEventType notificationEventType) {
         String letterTemplateName = notificationEventType.getId();
-        if (subscriptionType != null
-            && (FALLBACK_LETTER_SUBSCRIPTION_TYPES.contains(notificationEventType)
-            || DWP_RESPONSE_RECEIVED_NOTIFICATION.equals(notificationEventType))) {
+        if (subscriptionType != null && FALLBACK_LETTER_SUBSCRIPTION_TYPES.contains(notificationEventType)) {
             letterTemplateName = letterTemplateName + "." + subscriptionType.name().toLowerCase();
         }
         return letterTemplateName;
