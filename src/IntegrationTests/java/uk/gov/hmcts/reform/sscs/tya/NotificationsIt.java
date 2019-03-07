@@ -337,8 +337,10 @@ public class NotificationsIt {
     @SuppressWarnings("unchecked")
     public void shouldSendAppointeeNotificationsForAnEventForAnOralOrPaperHearingAndForEachSubscription(
         NotificationEventType notificationEventType, String hearingType, List<String> expectedEmailTemplateIds,
-        List<String> expectedSmsTemplateIds, List<String> expectedLetterTemplateIds, String appointeeEmailSubs, String appointeeSmsSubs,
-        int wantedNumberOfSendEmailInvocations, int wantedNumberOfSendSmsInvocations, int wantedNumberOfSendLetterInvocations, String expectedName) throws Exception {
+        List<String> expectedSmsTemplateIds, List<String> expectedLetterTemplateIds, String appointeeEmailSubs,
+        String appointeeSmsSubs, int wantedNumberOfSendEmailInvocations, int wantedNumberOfSendSmsInvocations,
+        int wantedNumberOfSendLetterInvocations, String expectedName) throws Exception {
+
         String path = getClass().getClassLoader().getResource("json/ccdResponseWithAppointee.json").getFile();
         String jsonAppointee = FileUtils.readFileToString(new File(path), StandardCharsets.UTF_8.name());
         jsonAppointee = updateEmbeddedJson(jsonAppointee, hearingType, "case_details", "case_data", "appeal", "hearingType");
@@ -1583,6 +1585,58 @@ public class NotificationsIt {
                 "0",
                 "0",
                 "Harry Potter"
+            },
+            new Object[]{
+                HEARING_REMINDER_NOTIFICATION,
+                "oral",
+                Collections.singletonList("774a5cba-fab6-4b8c-a9d9-03f913ed2dca"),
+                Collections.singletonList("404e9a43-6318-492c-b5c2-e34ddfbbdde9"),
+                Collections.emptyList(),
+                "yes",
+                "yes",
+                "1",
+                "1",
+                "0",
+                "Appointee Appointee"
+            },
+            new Object[]{
+                HEARING_REMINDER_NOTIFICATION,
+                "oral",
+                Collections.singletonList("774a5cba-fab6-4b8c-a9d9-03f913ed2dca"),
+                Collections.emptyList(),
+                Collections.emptyList(),
+                "yes",
+                "no",
+                "1",
+                "0",
+                "0",
+                "Appointee Appointee"
+            },
+            new Object[]{
+                HEARING_REMINDER_NOTIFICATION,
+                "oral",
+                Collections.emptyList(),
+                Collections.singletonList("404e9a43-6318-492c-b5c2-e34ddfbbdde9"),
+                Collections.emptyList(),
+                "no",
+                "yes",
+                "0",
+                "1",
+                "0",
+                "Appointee Appointee"
+            },
+            new Object[]{
+                HEARING_REMINDER_NOTIFICATION,
+                "oral",
+                Collections.emptyList(),
+                Collections.emptyList(),
+                Collections.emptyList(),
+                "no",
+                "no",
+                "0",
+                "0",
+                "0",
+                ""
             }
         };
     }
