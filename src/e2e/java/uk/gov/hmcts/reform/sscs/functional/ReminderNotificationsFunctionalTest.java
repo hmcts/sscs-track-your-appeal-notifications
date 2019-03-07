@@ -559,7 +559,7 @@ public class ReminderNotificationsFunctionalTest extends AbstractFunctionalTest 
         subscribeRepresentative();
         addHearing(caseData, 0);
         triggerEvent(HEARING_BOOKED_NOTIFICATION);
-        simulateCcdCallback(HEARING_BOOKED_NOTIFICATION);
+        simulateCcdCallback(HEARING_BOOKED_NOTIFICATION,"representative/" + HEARING_BOOKED_NOTIFICATION.getId() + "Callback.json");
 
         List<Notification> notifications =
                 tryFetchNotificationsForTestCase(
