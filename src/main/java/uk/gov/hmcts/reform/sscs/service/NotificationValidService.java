@@ -18,7 +18,7 @@ import uk.gov.hmcts.reform.sscs.factory.NotificationWrapper;
 
 @Service
 public class NotificationValidService {
-    private static final List<NotificationEventType> FALLBACK_LETTER_SUBSCRIPTION_TYPES = Arrays.asList(APPEAL_LODGED, SYA_APPEAL_CREATED_NOTIFICATION);
+    private static final List<NotificationEventType> FALLBACK_LETTER_SUBSCRIPTION_TYPES = Arrays.asList(DWP_RESPONSE_RECEIVED_NOTIFICATION, APPEAL_LODGED, SYA_APPEAL_CREATED_NOTIFICATION);
     private static final String HEARING_TYPE_ONLINE_RESOLUTION = "cor";
 
     boolean isFallbackLetterRequiredForSubscriptionType(NotificationWrapper wrapper, SubscriptionType subscriptionType, NotificationEventType eventType) {
@@ -30,8 +30,6 @@ public class NotificationValidService {
             || APPOINTEE.equals(subscriptionType)
             || (REPRESENTATIVE.equals(subscriptionType) && null != wrapper.getNewSscsCaseData().getAppeal().getRep()))) {
             result = true;
-        } else if (DWP_RESPONSE_RECEIVED_NOTIFICATION.equals(eventType)) {
-            result = ReceivedVia.PAPER.equals(wrapper.getReceivedVia());
         }
 
         return result;
@@ -39,8 +37,12 @@ public class NotificationValidService {
 
     static boolean fallbackConditionsMet(NotificationWrapper wrapper, NotificationEventType eventType) {
         if (FALLBACK_LETTER_SUBSCRIPTION_TYPES.contains(eventType)) {
-            return (null == wrapper.getOldSscsCaseData() || null == wrapper.getOldSscsCaseData().getCaseReference() || wrapper.getOldSscsCaseData().getCaseReference().isEmpty())
-                && (null != wrapper.getNewSscsCaseData().getCaseReference() && !wrapper.getNewSscsCaseData().getCaseReference().isEmpty());
+            if (DWP_RESPONSE_RECEIVED_NOTIFICATION.equals(eventType)) {
+                return ReceivedVia.PAPER.equals(wrapper.getReceivedVia());
+            } else {
+                return (null == wrapper.getOldSscsCaseData() || null == wrapper.getOldSscsCaseData().getCaseReference() || wrapper.getOldSscsCaseData().getCaseReference().isEmpty())
+                        && (null != wrapper.getNewSscsCaseData().getCaseReference() && !wrapper.getNewSscsCaseData().getCaseReference().isEmpty());
+            }
         }
 
         return true;
