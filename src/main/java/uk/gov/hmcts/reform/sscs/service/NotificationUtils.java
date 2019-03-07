@@ -3,6 +3,7 @@ package uk.gov.hmcts.reform.sscs.service;
 import static uk.gov.hmcts.reform.sscs.config.SubscriptionType.APPELLANT;
 import static uk.gov.hmcts.reform.sscs.config.SubscriptionType.APPOINTEE;
 import static uk.gov.hmcts.reform.sscs.config.SubscriptionType.REPRESENTATIVE;
+import static uk.gov.hmcts.reform.sscs.domain.notify.NotificationEventType.APPEAL_WITHDRAWN_NOTIFICATION;
 import static uk.gov.hmcts.reform.sscs.domain.notify.NotificationEventType.HEARING_BOOKED_NOTIFICATION;
 import static uk.gov.hmcts.reform.sscs.domain.notify.NotificationEventType.STRUCK_OUT;
 import static uk.gov.hmcts.reform.sscs.service.NotificationValidService.FALLBACK_LETTER_SUBSCRIPTION_TYPES;
@@ -21,7 +22,7 @@ import uk.gov.hmcts.reform.sscs.domain.notify.NotificationEventType;
 import uk.gov.hmcts.reform.sscs.factory.NotificationWrapper;
 
 public class NotificationUtils {
-    private static final List<NotificationEventType> MANDATORY_LETTERS = Arrays.asList(STRUCK_OUT, HEARING_BOOKED_NOTIFICATION);
+    private static final List<NotificationEventType> MANDATORY_LETTERS = Arrays.asList(APPEAL_WITHDRAWN_NOTIFICATION, STRUCK_OUT, HEARING_BOOKED_NOTIFICATION);
 
     private NotificationUtils() {
         // empty
