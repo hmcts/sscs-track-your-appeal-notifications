@@ -427,7 +427,9 @@ public class PersonalisationTest {
     }
 
     @Test
-    public void givenHearingData_correctlySetTheHearingDetails() {
+    @Parameters(method = "generateHearingNotificationTypeAndSubscriptionsScenarios")
+    public void givenHearingData_correctlySetTheHearingDetails(NotificationEventType hearingNotificationEventType,
+                                                               SubscriptionType subscriptionType) {
         LocalDate hearingDate = LocalDate.now().plusDays(7);
 
         Hearing hearing = createHearing(hearingDate);
@@ -445,7 +447,8 @@ public class PersonalisationTest {
                 .build();
 
         Map<String, String> result = personalisation.create(SscsCaseDataWrapper.builder()
-                .newSscsCaseData(response).notificationEventType(HEARING_BOOKED_NOTIFICATION).build(), new SubscriptionWithType(subscriptions.getAppellantSubscription(), APPELLANT));
+                .newSscsCaseData(response).notificationEventType(hearingNotificationEventType).build(),
+                new SubscriptionWithType(subscriptions.getAppellantSubscription(), subscriptionType));
 
         assertEquals(hearingDate.format(DateTimeFormatter.ofPattern(RESPONSE_DATE_FORMAT)), result.get(HEARING_DATE));
         assertEquals("12:00 PM", result.get(HEARING_TIME));
@@ -454,7 +457,18 @@ public class PersonalisationTest {
         assertEquals("in 7 days", result.get(DAYS_TO_HEARING_LITERAL));
     }
 
-    @Test
+    @SuppressWarnings({"Indentation", "unused"})
+    private Object[] generateHearingNotificationTypeAndSubscriptionsScenarios() {
+        return new Object[]{
+                new Object[]{HEARING_BOOKED_NOTIFICATION, APPELLANT},
+                new Object[]{HEARING_BOOKED_NOTIFICATION, APPOINTEE},
+
+                new Object[]{HEARING_REMINDER_NOTIFICATION, APPELLANT},
+                new Object[]{HEARING_REMINDER_NOTIFICATION, APPOINTEE},
+        };
+    }
+
+        @Test
     public void givenOnlyOneDayUntilHearing_correctlySetTheDaysToHearingText() {
         LocalDate hearingDate = LocalDate.now().plusDays(1);
 

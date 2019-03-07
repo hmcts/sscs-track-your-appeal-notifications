@@ -25,7 +25,12 @@ public class SubscriptionPersonalisation extends WithRepresentativePersonalisati
     }
 
     Boolean shouldSendSmsSubscriptionConfirmation(Subscription newSubscription, Subscription oldSubscription) {
-        return oldSubscription != null && !oldSubscription.isSmsSubscribed() && newSubscription != null && newSubscription.isSmsSubscribed();
+        if (oldSubscription != null && newSubscription != null) {
+            return ((!oldSubscription.isSmsSubscribed() && newSubscription.isSmsSubscribed())
+                || !StringUtils.equalsIgnoreCase(newSubscription.getMobile(), oldSubscription.getMobile()));
+        } else {
+            return false;
+        }
     }
 
     void unsetMobileAndEmailIfUnchanged(SubscriptionWithType subscriptionWithType, Subscription oldSubscription) {
