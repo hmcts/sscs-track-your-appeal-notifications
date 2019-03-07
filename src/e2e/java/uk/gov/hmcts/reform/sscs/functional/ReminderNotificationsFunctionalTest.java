@@ -57,11 +57,17 @@ public class ReminderNotificationsFunctionalTest extends AbstractFunctionalTest 
     @Value("${notification.paper.responseReceived.smsId}")
     private String responseReceivedPaperSmsTemplateId;
 
-    @Value("${notification.hearingReminder.emailId}")
-    private String hearingReminderEmailTemplateId;
+    @Value("${notification.hearingReminder.appellant.emailId}")
+    private String hearingReminderAppellantEmailTemplateId;
 
-    @Value("${notification.hearingReminder.smsId}")
-    private String hearingReminderSmsTemplateId;
+    @Value("${notification.hearingReminder.appellant.smsId}")
+    private String hearingReminderAppellantSmsTemplateId;
+
+    @Value("${notification.hearingReminder.representative.emailId}")
+    private String hearingReminderRepresentativeEmailTemplateId;
+
+    @Value("${notification.hearingReminder.representative.smsId}")
+    private String hearingReminderRepresentativeSmsTemplateId;
 
     @Value("${notification.hearingHoldingReminder.emailId}")
     private String firstHearingHoldingReminderEmailTemplateId;
@@ -506,7 +512,7 @@ public class ReminderNotificationsFunctionalTest extends AbstractFunctionalTest 
     }
 
     @Test
-    public void shouldSendNotificationsWhenHearingBookedEventIsReceived() throws IOException, NotificationClientException {
+    public void shouldSendNotificationsWhenHearingBookedEventIsReceivedWhenAnAppellantIsSubscribed() throws IOException, NotificationClientException {
 
         addHearing(caseData, 0);
         triggerEvent(HEARING_BOOKED_NOTIFICATION);
@@ -514,19 +520,19 @@ public class ReminderNotificationsFunctionalTest extends AbstractFunctionalTest 
 
         List<Notification> notifications =
             tryFetchNotificationsForTestCase(
-                hearingReminderEmailTemplateId,
-                hearingReminderEmailTemplateId,
-                hearingReminderSmsTemplateId,
-                hearingReminderSmsTemplateId
+                    hearingReminderAppellantEmailTemplateId,
+                    hearingReminderAppellantEmailTemplateId,
+                    hearingReminderAppellantSmsTemplateId,
+                    hearingReminderAppellantSmsTemplateId
             );
 
-        assertNotificationSubjectContains(notifications, hearingReminderEmailTemplateId, "ESA");
+        assertNotificationSubjectContains(notifications, hearingReminderAppellantEmailTemplateId, "ESA");
 
         String formattedString = LocalDate.now().format(DateTimeFormatter.ofPattern(AppConstants.RESPONSE_DATE_FORMAT));
 
         assertNotificationBodyContains(
             notifications,
-            hearingReminderEmailTemplateId,
+                hearingReminderAppellantEmailTemplateId,
             caseReference,
             "ESA",
             "reminder",
@@ -538,13 +544,56 @@ public class ReminderNotificationsFunctionalTest extends AbstractFunctionalTest 
 
         assertNotificationBodyContains(
             notifications,
-            hearingReminderSmsTemplateId,
+                hearingReminderAppellantSmsTemplateId,
             "ESA",
             "reminder",
             formattedString,
             "11:59 PM",
             "AB12 0HN",
             "/abouthearing"
+        );
+    }
+
+    @Test
+    public void shouldSendNotificationsWhenHearingBookedEventIsReceivedWhenARepresentativeIsSubscribed() throws IOException, NotificationClientException {
+        subscribeRepresentative();
+        addHearing(caseData, 0);
+        triggerEvent(HEARING_BOOKED_NOTIFICATION);
+        simulateCcdCallback(HEARING_BOOKED_NOTIFICATION);
+
+        List<Notification> notifications =
+                tryFetchNotificationsForTestCase(
+                        hearingReminderRepresentativeEmailTemplateId,
+                        hearingReminderRepresentativeEmailTemplateId,
+                        hearingReminderRepresentativeSmsTemplateId,
+                        hearingReminderRepresentativeSmsTemplateId
+                );
+
+        assertNotificationSubjectContains(notifications, hearingReminderRepresentativeEmailTemplateId, "ESA");
+
+        String formattedString = LocalDate.now().format(DateTimeFormatter.ofPattern(AppConstants.RESPONSE_DATE_FORMAT));
+
+        assertNotificationBodyContains(
+                notifications,
+                hearingReminderRepresentativeEmailTemplateId,
+                caseReference,
+                "ESA",
+                "reminder",
+                formattedString,
+                "11:59 PM",
+                "AB12 0HN",
+                "/abouthearing"
+        );
+
+        assertNotificationBodyContains(
+                notifications,
+                hearingReminderRepresentativeSmsTemplateId,
+                "ESA",
+                "reminder",
+                formattedString,
+                "11:59 PM",
+                "AB12 0HN",
+                "/abouthearing"
         );
     }
 }

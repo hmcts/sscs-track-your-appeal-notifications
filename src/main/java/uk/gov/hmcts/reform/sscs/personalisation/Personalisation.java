@@ -306,6 +306,7 @@ public class Personalisation<E extends NotificationWrapper> {
             || HEARING_BOOKED_NOTIFICATION.equals(notificationEventType)
             || CASE_UPDATED.equals(notificationEventType)
             || EVIDENCE_REMINDER_NOTIFICATION.equals(notificationEventType)
+            || HEARING_REMINDER_NOTIFICATION.equals(notificationEventType)
             || APPEAL_LODGED.equals(notificationEventType)) {
             emailTemplateName = emailTemplateName + "." + StringUtils.lowerCase(subscriptionType.name());
         }
