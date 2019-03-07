@@ -114,6 +114,23 @@ public class SubscriptionPersonalisationTest {
     }
 
     @Test
+    public void customisePersonalisationShouldSetSmsConfirmationFlagWhenNumberHasChanged() {
+        Subscription newAppellantSubscription = Subscription.builder()
+                .tya("GLSCRR").email("test@email.com")
+                .mobile("07900000000").subscribeEmail("Yes").subscribeSms("Yes").build();
+
+        Subscription oldSubscription = Subscription.builder()
+                .tya("GLSCRR").email("test@email.com")
+                .mobile("07983495065").subscribeEmail("Yes").subscribeSms("Yes").build();
+
+        buildNewAndOldCaseData(newAppellantSubscription, oldSubscription);
+
+        personalisation.create(wrapper, getSubscriptionWithType(new CcdNotificationWrapper(wrapper)));
+
+        assertTrue(personalisation.isSendSmsSubscriptionConfirmation());
+    }
+
+    @Test
     public void checkSubscriptionCreatedNotificationTypeWhenSmsSubscribedIsFirstSet() {
         Boolean result = personalisation.shouldSendSmsSubscriptionConfirmation(NEW_SUBSCRIPTION, buildSubscriptionWithNothingSubscribed());
 
@@ -128,6 +145,16 @@ public class SubscriptionPersonalisationTest {
         Boolean result = personalisation.shouldSendSmsSubscriptionConfirmation(NEW_SUBSCRIPTION, oldSubscription);
 
         assertFalse(result);
+    }
+
+    @Test
+    public void checkSubscriptionCreatedNotificationTypeWhenSmsAlreadySubscribedAndNumberIsChanged() {
+        Subscription oldSubscription = NEW_SUBSCRIPTION.toBuilder()
+                .subscribeEmail("No").subscribeSms("Yes").mobile("07900000000").build();
+
+        Boolean result = personalisation.shouldSendSmsSubscriptionConfirmation(NEW_SUBSCRIPTION, oldSubscription);
+
+        assertTrue(result);
     }
 
     @Test
