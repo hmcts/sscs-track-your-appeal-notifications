@@ -153,13 +153,13 @@ public class SendNotificationService {
         }
     }
 
-    protected static String getRepSalutation(NotificationWrapper wrapper) {
-        if (null == wrapper.getNewSscsCaseData().getAppeal().getRep().getName()
-            || null == wrapper.getNewSscsCaseData().getAppeal().getRep().getName().getFirstName()
-            || null == wrapper.getNewSscsCaseData().getAppeal().getRep().getName().getLastName()) {
+    public static String getRepSalutation(Representative rep) {
+        if (null == rep.getName()
+            || null == rep.getName().getFirstName()
+            || null == rep.getName().getLastName()) {
             return REP_SALUTATION;
         } else {
-            return wrapper.getNewSscsCaseData().getAppeal().getRep().getName().getFullNameNoTitle();
+            return rep.getName().getFullNameNoTitle();
         }
     }
 
@@ -171,7 +171,7 @@ public class SendNotificationService {
         placeholders.put(ADDRESS_LINE_4, addressToUse.getCounty() == null ? " " : addressToUse.getCounty());
         placeholders.put(POSTCODE_LITERAL, addressToUse.getPostcode());
         if (null != wrapper.getNewSscsCaseData().getAppeal().getRep()) {
-            String repSalutation = getRepSalutation(wrapper);
+            String repSalutation = getRepSalutation(wrapper.getNewSscsCaseData().getAppeal().getRep());
             placeholders.put(REPRESENTATIVE_NAME, repSalutation);
         }
 

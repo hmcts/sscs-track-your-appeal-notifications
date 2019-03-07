@@ -43,6 +43,7 @@ import uk.gov.hmcts.reform.sscs.extractor.HearingContactDateExtractor;
 import uk.gov.hmcts.reform.sscs.factory.NotificationWrapper;
 import uk.gov.hmcts.reform.sscs.service.MessageAuthenticationServiceImpl;
 import uk.gov.hmcts.reform.sscs.service.RegionalProcessingCenterService;
+import uk.gov.hmcts.reform.sscs.service.SendNotificationService;
 
 @Component
 @Slf4j
@@ -137,7 +138,7 @@ public class Personalisation<E extends NotificationWrapper> {
             return getDefaultName(ccdResponse.getAppeal().getAppellant().getName(), "");
         } else if (subscriptionType.equals(REPRESENTATIVE)
                 && hasRepresentative(wrapper)) {
-            return getDefaultName(ccdResponse.getAppeal().getRep().getName(), REP_SALUTATION);
+            return SendNotificationService.getRepSalutation(ccdResponse.getAppeal().getRep());
         } else if (subscriptionType.equals(APPOINTEE)
                 && hasAppointee(wrapper)) {
             return getDefaultName(ccdResponse.getAppeal().getAppellant().getAppointee().getName(), "");
