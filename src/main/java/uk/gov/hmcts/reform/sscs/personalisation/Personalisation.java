@@ -327,27 +327,35 @@ public class Personalisation<E extends NotificationWrapper> {
     }
 
     public Map<String, String> setHearingArrangementDetails(Map<String, String> personalisation, SscsCaseData ccdResponse) {
-        personalisation.put(AppConstants.HEARING_ARRANGEMENT_DETAILS_LITERAL, buildHearingArrangements(ccdResponse.getAppeal().getHearingOptions()));
+        if (null != ccdResponse.getAppeal() && null != ccdResponse.getAppeal().getHearingOptions()) {
+            personalisation.put(AppConstants.HEARING_ARRANGEMENT_DETAILS_LITERAL, buildHearingArrangements(ccdResponse.getAppeal().getHearingOptions()));
+
+            return personalisation;
+        }
 
         return personalisation;
     }
 
     private String buildHearingArrangements(HearingOptions hearingOptions) {
-        String languageInterpreterRequired = convertBooleanToRequiredText(hearingOptions.getLanguageInterpreter() != null
-            && StringUtils.equalsIgnoreCase(YES, hearingOptions.getLanguageInterpreter()));
+        if (null != hearingOptions) {
+            String languageInterpreterRequired = convertBooleanToRequiredText(hearingOptions.getLanguageInterpreter() != null
+                && StringUtils.equalsIgnoreCase(YES, hearingOptions.getLanguageInterpreter()));
 
-        return new StringBuilder()
-            .append("Language interpreter: ")
-            .append(languageInterpreterRequired + TWO_NEW_LINES)
-            .append("Sign interpreter: ")
-            .append(convertBooleanToRequiredText(findHearingArrangement("signLanguageInterpreter", hearingOptions.getArrangements())) + TWO_NEW_LINES)
-            .append("Hearing loop: ")
-            .append(convertBooleanToRequiredText(findHearingArrangement("hearingLoop", hearingOptions.getArrangements())) + TWO_NEW_LINES)
-            .append("Disabled access: ")
-            .append(convertBooleanToRequiredText(findHearingArrangement("disabledAccess", hearingOptions.getArrangements())) + TWO_NEW_LINES)
-            .append("Any other arrangements: ")
-            .append(getOptionalField(hearingOptions.getOther(), NOT_REQUIRED))
-            .toString();
+            return new StringBuilder()
+                .append("Language interpreter: ")
+                .append(languageInterpreterRequired + TWO_NEW_LINES)
+                .append("Sign interpreter: ")
+                .append(convertBooleanToRequiredText(findHearingArrangement("signLanguageInterpreter", hearingOptions.getArrangements())) + TWO_NEW_LINES)
+                .append("Hearing loop: ")
+                .append(convertBooleanToRequiredText(findHearingArrangement("hearingLoop", hearingOptions.getArrangements())) + TWO_NEW_LINES)
+                .append("Disabled access: ")
+                .append(convertBooleanToRequiredText(findHearingArrangement("disabledAccess", hearingOptions.getArrangements())) + TWO_NEW_LINES)
+                .append("Any other arrangements: ")
+                .append(getOptionalField(hearingOptions.getOther(), NOT_REQUIRED))
+                .toString();
+        }
+
+        return null;
     }
 
     private Boolean findHearingArrangement(String field, List<String> arrangements) {
