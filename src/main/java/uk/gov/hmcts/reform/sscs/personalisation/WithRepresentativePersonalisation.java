@@ -33,7 +33,7 @@ public class WithRepresentativePersonalisation extends Personalisation<CcdNotifi
         return personalisation;
     }
 
-    private boolean isValidReps(Representative representative) {
+    protected boolean isValidReps(Representative representative) {
         if (representative == null) {
             return false;
         }
