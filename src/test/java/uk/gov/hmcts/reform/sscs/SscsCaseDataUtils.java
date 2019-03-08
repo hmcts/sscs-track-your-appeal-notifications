@@ -9,6 +9,7 @@ import java.util.List;
 import uk.gov.hmcts.reform.sscs.ccd.domain.Address;
 import uk.gov.hmcts.reform.sscs.ccd.domain.Appeal;
 import uk.gov.hmcts.reform.sscs.ccd.domain.Appellant;
+import uk.gov.hmcts.reform.sscs.ccd.domain.Appointee;
 import uk.gov.hmcts.reform.sscs.ccd.domain.BenefitType;
 import uk.gov.hmcts.reform.sscs.ccd.domain.Contact;
 import uk.gov.hmcts.reform.sscs.ccd.domain.Document;
@@ -262,6 +263,25 @@ public final class SscsCaseDataUtils {
         return hearingsList;
     }
 
+    public static void addAppointee(SscsCaseData response) {
+        Appointee appointee = Appointee.builder()
+                .name(Name.builder()
+                        .firstName("Appointee")
+                        .lastName("User")
+                        .build())
+                .build();
+        Subscription appointeeSubscription = Subscription.builder()
+                .email("sscstest+notify2@greencroftconsulting.com")
+                .mobile("07398785051")
+                .subscribeEmail("Yes")
+                .subscribeSms("Yes")
+                .build();
+        Subscriptions subscriptions = response.getSubscriptions().toBuilder()
+                .appointeeSubscription(appointeeSubscription).build();
+
+        response.getAppeal().getAppellant().setAppointee(appointee);
+        response.setSubscriptions(subscriptions);
+    }
     public static HearingOptions addHearingOptions(SscsCaseData response, String wantsToAttend) {
         HearingOptions options = HearingOptions.builder()
             .wantsToAttend(wantsToAttend)
