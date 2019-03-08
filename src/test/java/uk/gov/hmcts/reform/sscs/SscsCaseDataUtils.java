@@ -282,6 +282,7 @@ public final class SscsCaseDataUtils {
         response.getAppeal().getAppellant().setAppointee(appointee);
         response.setSubscriptions(subscriptions);
     }
+
     public static HearingOptions addHearingOptions(SscsCaseData response, String wantsToAttend) {
         HearingOptions options = HearingOptions.builder()
             .wantsToAttend(wantsToAttend)
