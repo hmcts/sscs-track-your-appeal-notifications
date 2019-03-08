@@ -244,6 +244,8 @@ notification:
       emailId: 08365e91-9e07-4a5c-bf96-ef56fd0ada63
       smsId: ede384aa-0b6e-4311-9f01-ee547573a07b
       letterId: 747d026e-1bec-4e96-8a34-28f36e30bba5
+  directionIssued:
+    letterId: 471b9c4a-de87-4d9a-8bec-888bfbd88720
   online:
     responseReceived:
       emailId: 90f0ed29-a616-4ce0-b4ef-108391f5d90e
@@ -329,7 +331,8 @@ appeal.email.subject: ${EMAIL_SUBJECT:Your appeal}
 appeal.email.message: ${EMAIL_MESSAGE:Your appeal has been created \nPlease do not respond to this email}
 
 appellant.appeal.html.template.path: /templates/appellant_appeal_template.html
-noncompliantcaseletter.appeal.html.template.path: /templates/non_compliant_case_letter_template.html
+strikeOutLetterTemplate.appeal.html.template.path: /templates/strike_out_letter_template.html
+directionNoticeLetterTemplate.appeal.html.template.path: /templates/direction_notice_letter_template.html
 
 pdf.api.url: ${PDF_API_URL:http://localhost:5500}
 

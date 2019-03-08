@@ -18,6 +18,7 @@ import uk.gov.hmcts.reform.sscs.factory.NotificationWrapper;
 @Service
 public class NotificationValidService {
     private static final List<NotificationEventType> FALLBACK_LETTER_SUBSCRIPTION_TYPES = Arrays.asList(APPEAL_LODGED, SYA_APPEAL_CREATED_NOTIFICATION);
+    private static final List<NotificationEventType> BUNDLED_LETTER_EVENT_TYPES = Arrays.asList(STRUCK_OUT, DIRECTION_ISSUED);
     private static final String HEARING_TYPE_ONLINE_RESOLUTION = "cor";
 
     boolean isFallbackLetterRequiredForSubscriptionType(NotificationWrapper wrapper, SubscriptionType subscriptionType, NotificationEventType eventType) {
@@ -44,7 +45,7 @@ public class NotificationValidService {
     }
 
     static final boolean isBundledLetter(NotificationEventType eventType) {
-        return STRUCK_OUT.equals(eventType);
+        return BUNDLED_LETTER_EVENT_TYPES.contains(eventType);
     }
 
     boolean isHearingTypeValidToSendNotification(SscsCaseData sscsCaseData, NotificationEventType eventType) {

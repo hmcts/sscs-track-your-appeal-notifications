@@ -49,7 +49,7 @@ public class LetterUtilsTest {
             null
         );
 
-        assertEquals(PDF_DIRECTION_NOTICE, getFilename(wrapper));
+        assertEquals(PDF_STRUCK_OUT, getFilename(wrapper));
     }
 
     @Test
