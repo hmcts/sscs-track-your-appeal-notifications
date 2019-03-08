@@ -31,6 +31,7 @@ import org.junit.runner.RunWith;
 import org.mockito.ArgumentCaptor;
 import org.mockito.Mock;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
@@ -62,8 +63,6 @@ import uk.gov.service.notify.SendSmsResponse;
 @ActiveProfiles("integration")
 @AutoConfigureMockMvc
 public class NotificationsIt {
-    private static final String TEMPLATE_PATH = "/templates/non_compliant_case_letter_template.html";
-
     // Below rules are needed to use the junitParamsRunner together with SpringRunner
     @ClassRule
     public static final SpringClassRule SPRING_CLASS_RULE = new SpringClassRule();
@@ -71,12 +70,10 @@ public class NotificationsIt {
     @Rule
     public final SpringMethodRule springMethodRule = new SpringMethodRule();
 
-    MockMvc mockMvc;
-
-    NotificationController controller;
+    private MockMvc mockMvc;
 
     @Mock
-    NotificationClient notificationClient;
+    private NotificationClient notificationClient;
 
     @Mock
     private SendEmailResponse sendEmailResponse;
@@ -88,19 +85,19 @@ public class NotificationsIt {
     private SendLetterResponse sendLetterResponse;
 
     @Mock
-    ReminderService reminderService;
-
-    @Autowired
-    NotificationValidService notificationValidService;
+    private ReminderService reminderService;
 
     @MockBean
     private AuthorisationService authorisationService;
 
     @Mock
-    NotificationBlacklist notificationBlacklist;
+    private NotificationBlacklist notificationBlacklist;
 
     @Autowired
-    NotificationFactory factory;
+    private NotificationValidService notificationValidService;
+
+    @Autowired
+    private NotificationFactory factory;
 
     @Autowired
     private CcdService ccdService;
@@ -111,7 +108,7 @@ public class NotificationsIt {
     @MockBean
     private IdamService idamService;
 
-    String json;
+    private String json;
 
     @Autowired
     private NotificationHandler notificationHandler;
@@ -128,6 +125,21 @@ public class NotificationsIt {
     @Mock
     private SscsGeneratePdfService sscsGeneratePdfService;
 
+    @Value("${notification.subscriptionUpdated.emailId}")
+    private String subscriptionUpdatedEmailId;
+
+    @Value("${notification.subscriptionCreated.appellant.smsId}")
+    private String subscriptionCreatedSmsId;
+
+    @Value("${notification.paper.responseReceived.emailId}")
+    private String paperResponseReceivedEmailId;
+
+    @Value("${notification.paper.responseReceived.smsId}")
+    private String paperResponseReceivedSmsId;
+
+    @Value("${notification.oral.responseReceived.emailId}")
+    private String oralResponseReceivedEmailId;
+
     @Before
     public void setup() throws Exception {
         NotificationSender sender = new NotificationSender(notificationClient, null, notificationBlacklist);
@@ -137,17 +149,17 @@ public class NotificationsIt {
         ReflectionTestUtils.setField(sendNotificationService, "lettersOn", true);
 
         NotificationService service = new NotificationService(factory, reminderService, notificationValidService, notificationHandler, outOfHoursCalculator, notificationConfig, sendNotificationService);
-        controller = new NotificationController(service, authorisationService, ccdService, deserializer, idamService);
+        NotificationController controller = new NotificationController(service, authorisationService, ccdService, deserializer, idamService);
         this.mockMvc = MockMvcBuilders.standaloneSetup(controller).build();
         String path = getClass().getClassLoader().getResource("json/ccdResponse.json").getFile();
         json = FileUtils.readFileToString(new File(path), StandardCharsets.UTF_8.name());
 
         when(notificationClient.sendEmail(any(), any(), any(), any()))
-            .thenReturn(sendEmailResponse);
+                .thenReturn(sendEmailResponse);
         when(sendEmailResponse.getNotificationId()).thenReturn(UUID.randomUUID());
 
         when(notificationClient.sendSms(any(), any(), any(), any(), any()))
-            .thenReturn(sendSmsResponse);
+                .thenReturn(sendSmsResponse);
         when(sendSmsResponse.getNotificationId()).thenReturn(UUID.randomUUID());
 
         when(notificationClient.sendLetter(any(), any(), any()))
@@ -202,11 +214,11 @@ public class NotificationsIt {
 
     @Test
     @Parameters({
-        "oral, 01caec0c-191b-4a32-882a-6fded2546ce6, 317a121e-d08c-4890-b3b3-4652f741771f",
-        "paper, a64bce9a-9162-47ca-b3e7-cf5f85ca7bdc, f5b61f94-0b2b-4e8e-9c25-56e9830df7d4"
+            "oral, 01caec0c-191b-4a32-882a-6fded2546ce6, 317a121e-d08c-4890-b3b3-4652f741771f",
+            "paper, a64bce9a-9162-47ca-b3e7-cf5f85ca7bdc, f5b61f94-0b2b-4e8e-9c25-56e9830df7d4"
     })
     public void shouldSendNotificationForAnResponseReceivedRequestForAnOralOrPaperHearing(
-        String hearingType, String emailTemplateId, String smsTemplateId) throws Exception {
+            String hearingType, String emailTemplateId, String smsTemplateId) throws Exception {
         json = updateEmbeddedJson(json, hearingType, "case_details", "case_data", "appeal", "hearingType");
         json = updateEmbeddedJson(json, "responseReceived", "event_id");
 
@@ -268,18 +280,18 @@ public class NotificationsIt {
     @Test
     @Parameters(method = "generateRepsNotificationScenarios")
     public void shouldSendRepsNotificationsForAnEventForAnOralOrPaperHearingAndForEachSubscription(
-        NotificationEventType notificationEventType, String hearingType, List<String> expectedEmailTemplateIds,
-        List<String> expectedSmsTemplateIds, List<String> expectedLetterTemplateIds, String appellantEmailSubs, String appellantSmsSubs, String repsEmailSubs,
-        String repsSmsSubs, int wantedNumberOfSendEmailInvocations, int wantedNumberOfSendSmsInvocations, int wantedNumberOfSendLetterInvocations) throws Exception {
+            NotificationEventType notificationEventType, String hearingType, List<String> expectedEmailTemplateIds,
+            List<String> expectedSmsTemplateIds, List<String> expectedLetterTemplateIds, String appellantEmailSubs, String appellantSmsSubs, String repsEmailSubs,
+            String repsSmsSubs, int wantedNumberOfSendEmailInvocations, int wantedNumberOfSendSmsInvocations, int wantedNumberOfSendLetterInvocations) throws Exception {
         json = updateEmbeddedJson(json, hearingType, "case_details", "case_data", "appeal", "hearingType");
         json = updateEmbeddedJson(json, appellantEmailSubs, "case_details", "case_data", "subscriptions",
-            "appellantSubscription", "subscribeEmail");
+                "appellantSubscription", "subscribeEmail");
         json = updateEmbeddedJson(json, appellantSmsSubs, "case_details", "case_data", "subscriptions",
-            "appellantSubscription", "subscribeSms");
+                "appellantSubscription", "subscribeSms");
         json = updateEmbeddedJson(json, repsEmailSubs, "case_details", "case_data", "subscriptions",
-            "representativeSubscription", "subscribeEmail");
+                "representativeSubscription", "subscribeEmail");
         json = updateEmbeddedJson(json, repsSmsSubs, "case_details", "case_data", "subscriptions",
-            "representativeSubscription", "subscribeSms");
+                "representativeSubscription", "subscribeSms");
         json = updateEmbeddedJson(json, notificationEventType.getId(), "event_id");
 
         HttpServletResponse response = getResponse(getRequestWithAuthHeader(json));
@@ -325,16 +337,18 @@ public class NotificationsIt {
     @SuppressWarnings("unchecked")
     public void shouldSendAppointeeNotificationsForAnEventForAnOralOrPaperHearingAndForEachSubscription(
         NotificationEventType notificationEventType, String hearingType, List<String> expectedEmailTemplateIds,
-        List<String> expectedSmsTemplateIds, List<String> expectedLetterTemplateIds, String appointeeEmailSubs, String appointeeSmsSubs,
-        int wantedNumberOfSendEmailInvocations, int wantedNumberOfSendSmsInvocations, int wantedNumberOfSendLetterInvocations, String expectedName) throws Exception {
+        List<String> expectedSmsTemplateIds, List<String> expectedLetterTemplateIds, String appointeeEmailSubs,
+        String appointeeSmsSubs, int wantedNumberOfSendEmailInvocations, int wantedNumberOfSendSmsInvocations,
+        int wantedNumberOfSendLetterInvocations, String expectedName) throws Exception {
+
         String path = getClass().getClassLoader().getResource("json/ccdResponseWithAppointee.json").getFile();
         String jsonAppointee = FileUtils.readFileToString(new File(path), StandardCharsets.UTF_8.name());
         jsonAppointee = updateEmbeddedJson(jsonAppointee, hearingType, "case_details", "case_data", "appeal", "hearingType");
 
         jsonAppointee = updateEmbeddedJson(jsonAppointee, appointeeEmailSubs, "case_details", "case_data", "subscriptions",
-            "appointeeSubscription", "subscribeEmail");
+                "appointeeSubscription", "subscribeEmail");
         jsonAppointee = updateEmbeddedJson(jsonAppointee, appointeeSmsSubs, "case_details", "case_data", "subscriptions",
-            "appointeeSubscription", "subscribeSms");
+                "appointeeSubscription", "subscribeSms");
 
         if (notificationEventType.equals(HEARING_BOOKED_NOTIFICATION)) {
             jsonAppointee = jsonAppointee.replace("appealReceived", "hearingBooked");
@@ -363,8 +377,6 @@ public class NotificationsIt {
         String jsonAppointee = FileUtils.readFileToString(new File(path), StandardCharsets.UTF_8.name());
         jsonAppointee = updateEmbeddedJson(jsonAppointee, hearingType, "case_details", "case_data", "appeal", "hearingType");
 
-        jsonAppointee = updateEmbeddedJson(jsonAppointee, appointeeEmailSubs, "case_details", "case_data", "subscriptions",
-            "appointeeSubscription", "subscribeEmail");
         jsonAppointee = updateEmbeddedJson(jsonAppointee, appointeeEmailSubs, "case_details", "case_data", "subscriptions",
             "appointeeSubscription", "subscribeEmail");
         jsonAppointee = updateEmbeddedJson(jsonAppointee, appointeeSmsSubs, "case_details", "case_data", "subscriptions",
@@ -402,7 +414,7 @@ public class NotificationsIt {
     private void validateSmsNotifications(List<String> expectedSmsTemplateIds, int wantedNumberOfSendSmsInvocations) throws NotificationClientException {
         ArgumentCaptor<String> smsTemplateIdCaptor = ArgumentCaptor.forClass(String.class);
         verify(notificationClient, times(wantedNumberOfSendSmsInvocations))
-            .sendSms(smsTemplateIdCaptor.capture(), any(), any(), any(), any());
+                .sendSms(smsTemplateIdCaptor.capture(), any(), any(), any(), any());
         assertArrayEquals(expectedSmsTemplateIds.toArray(), smsTemplateIdCaptor.getAllValues().toArray());
     }
 
@@ -725,7 +737,7 @@ public class NotificationsIt {
                 SYA_APPEAL_CREATED_NOTIFICATION,
                 "paper",
                 Arrays.asList("01293b93-b23e-40a3-ad78-2c6cd01cd21c", "652753bf-59b4-46eb-9c24-bd762338a098"),
-                Arrays.asList("f41222ef-c05c-4682-9634-6b034a166368", "0e44927e-168b-4510-ac57-6932fda7aec1"),
+                Arrays.asList("f41222ef-c05c-4682-9634-6b034a166368", "a6c09fad-6265-4c7c-8b95-36245ffa5352"),
                 Collections.emptyList(),
                 "yes",
                 "yes",
@@ -739,7 +751,7 @@ public class NotificationsIt {
                 SYA_APPEAL_CREATED_NOTIFICATION,
                 "oral",
                 Arrays.asList("01293b93-b23e-40a3-ad78-2c6cd01cd21c", "652753bf-59b4-46eb-9c24-bd762338a098"),
-                Arrays.asList("f41222ef-c05c-4682-9634-6b034a166368", "0e44927e-168b-4510-ac57-6932fda7aec1"),
+                Arrays.asList("f41222ef-c05c-4682-9634-6b034a166368", "a6c09fad-6265-4c7c-8b95-36245ffa5352"),
                 Collections.emptyList(),
                 "yes",
                 "yes",
@@ -753,7 +765,7 @@ public class NotificationsIt {
                 SYA_APPEAL_CREATED_NOTIFICATION,
                 "paper",
                 Collections.singletonList("652753bf-59b4-46eb-9c24-bd762338a098"),
-                Arrays.asList("f41222ef-c05c-4682-9634-6b034a166368", "0e44927e-168b-4510-ac57-6932fda7aec1"),
+                Arrays.asList("f41222ef-c05c-4682-9634-6b034a166368", "a6c09fad-6265-4c7c-8b95-36245ffa5352"),
                 Collections.emptyList(),
                 "no",
                 "yes",
@@ -1208,7 +1220,7 @@ public class NotificationsIt {
                 SYA_APPEAL_CREATED_NOTIFICATION,
                 "paper",
                 Arrays.asList("01293b93-b23e-40a3-ad78-2c6cd01cd21c", "652753bf-59b4-46eb-9c24-bd762338a098"),
-                Arrays.asList("f41222ef-c05c-4682-9634-6b034a166368", "0e44927e-168b-4510-ac57-6932fda7aec1"),
+                Arrays.asList("f41222ef-c05c-4682-9634-6b034a166368", "a6c09fad-6265-4c7c-8b95-36245ffa5352"),
                 Collections.emptyList(),
                 "yes",
                 "yes",
@@ -1222,7 +1234,7 @@ public class NotificationsIt {
                 SYA_APPEAL_CREATED_NOTIFICATION,
                 "oral",
                 Arrays.asList("01293b93-b23e-40a3-ad78-2c6cd01cd21c", "652753bf-59b4-46eb-9c24-bd762338a098"),
-                Arrays.asList("f41222ef-c05c-4682-9634-6b034a166368", "0e44927e-168b-4510-ac57-6932fda7aec1"),
+                Arrays.asList("f41222ef-c05c-4682-9634-6b034a166368", "a6c09fad-6265-4c7c-8b95-36245ffa5352"),
                 Collections.emptyList(),
                 "yes",
                 "yes",
@@ -1236,7 +1248,7 @@ public class NotificationsIt {
                 SYA_APPEAL_CREATED_NOTIFICATION,
                 "paper",
                 Collections.singletonList("652753bf-59b4-46eb-9c24-bd762338a098"),
-                Arrays.asList("f41222ef-c05c-4682-9634-6b034a166368", "0e44927e-168b-4510-ac57-6932fda7aec1"),
+                Arrays.asList("f41222ef-c05c-4682-9634-6b034a166368", "a6c09fad-6265-4c7c-8b95-36245ffa5352"),
                 Collections.emptyList(),
                 "no",
                 "yes",
@@ -1392,7 +1404,7 @@ public class NotificationsIt {
     @SuppressWarnings({"Indentation", "unused"})
     private Object[] generateAppointeeNotificationScenarios() {
         return new Object[]{
-            new Object[]{
+           new Object[]{
                 SYA_APPEAL_CREATED_NOTIFICATION,
                 "oral",
                 Collections.singletonList("362d9a85-e0e4-412b-b874-020c0464e2b4"),
@@ -1520,7 +1532,7 @@ public class NotificationsIt {
                 "0",
                 "0",
                 "0",
-                "Appointee Appointee"
+                "Harry Potter"
             },
             new Object[]{
                 APPEAL_RECEIVED_NOTIFICATION,
@@ -1573,6 +1585,58 @@ public class NotificationsIt {
                 "0",
                 "0",
                 "Harry Potter"
+            },
+            new Object[]{
+                HEARING_REMINDER_NOTIFICATION,
+                "oral",
+                Collections.singletonList("774a5cba-fab6-4b8c-a9d9-03f913ed2dca"),
+                Collections.singletonList("404e9a43-6318-492c-b5c2-e34ddfbbdde9"),
+                Collections.emptyList(),
+                "yes",
+                "yes",
+                "1",
+                "1",
+                "0",
+                "Appointee Appointee"
+            },
+            new Object[]{
+                HEARING_REMINDER_NOTIFICATION,
+                "oral",
+                Collections.singletonList("774a5cba-fab6-4b8c-a9d9-03f913ed2dca"),
+                Collections.emptyList(),
+                Collections.emptyList(),
+                "yes",
+                "no",
+                "1",
+                "0",
+                "0",
+                "Appointee Appointee"
+            },
+            new Object[]{
+                HEARING_REMINDER_NOTIFICATION,
+                "oral",
+                Collections.emptyList(),
+                Collections.singletonList("404e9a43-6318-492c-b5c2-e34ddfbbdde9"),
+                Collections.emptyList(),
+                "no",
+                "yes",
+                "0",
+                "1",
+                "0",
+                "Appointee Appointee"
+            },
+            new Object[]{
+                HEARING_REMINDER_NOTIFICATION,
+                "oral",
+                Collections.emptyList(),
+                Collections.emptyList(),
+                Collections.emptyList(),
+                "no",
+                "no",
+                "0",
+                "0",
+                "0",
+                ""
             }
         };
     }
@@ -1981,25 +2045,24 @@ public class NotificationsIt {
         HttpServletResponse response = getResponse(getRequestWithAuthHeader(json));
 
         assertHttpStatus(response, HttpStatus.OK);
-        verify(notificationClient, never()).sendEmail(any(), any(), any(), any());
-        verify(notificationClient,times(2)).sendSms(any(), any(), any(), any(), any());
+        verify(notificationClient).sendSms(eq(subscriptionCreatedSmsId), any(), any(), any(), any());
+        verify(notificationClient).sendSms(eq(paperResponseReceivedSmsId), any(), any(), any(), any());
+        verifyNoMoreInteractions(notificationClient);
     }
 
     @Test
     public void shouldSendSubscriptionUpdatedNotificationForSubscriptionUpdatedRequestWithNewEmailAddressForAnOralHearing() throws Exception {
-
         json = updateEmbeddedJson(json, "subscriptionUpdated", "event_id");
         json = updateEmbeddedJson(json, "oral", "case_details", "case_data", "appeal", "hearingType");
-        json = updateEmbeddedJson(json, "Yes", "case_details", "case_data", "subscriptions",
-            "appellantSubscription", "subscribeEmail");
         json = updateEmbeddedJson(json, "No", "case_details", "case_data", "subscriptions",
-            "appellantSubscription", "subscribeSms");
+                "appellantSubscription", "subscribeSms");
 
         HttpServletResponse response = getResponse(getRequestWithAuthHeader(json));
 
         assertHttpStatus(response, HttpStatus.OK);
-        verify(notificationClient, times(2)).sendEmail(any(), any(), any(), any());
-        verify(notificationClient, never()).sendSms(any(), any(), any(), any(), any());
+        verify(notificationClient).sendEmail(eq(subscriptionUpdatedEmailId), any(), any(), any());
+        verify(notificationClient).sendEmail(eq(oralResponseReceivedEmailId), any(), any(), any());
+        verifyNoMoreInteractions(notificationClient);
     }
 
     @Test
@@ -2007,13 +2070,14 @@ public class NotificationsIt {
         updateJsonForPaperHearing();
         json = updateEmbeddedJson(json, "subscriptionUpdated", "event_id");
         json = updateEmbeddedJson(json, "No", "case_details", "case_data", "subscriptions",
-            "appellantSubscription", "subscribeSms");
+                "appellantSubscription", "subscribeSms");
 
         HttpServletResponse response = getResponse(getRequestWithAuthHeader(json));
 
         assertHttpStatus(response, HttpStatus.OK);
-        verify(notificationClient, times(2)).sendEmail(any(), any(), any(), any());
-        verify(notificationClient, never()).sendSms(any(), any(), any(), any(), any());
+        verify(notificationClient).sendEmail(eq(subscriptionUpdatedEmailId), any(), any(), any());
+        verify(notificationClient).sendEmail(eq(paperResponseReceivedEmailId), any(), any(), any());
+        verifyNoMoreInteractions(notificationClient);
     }
 
     @Test
