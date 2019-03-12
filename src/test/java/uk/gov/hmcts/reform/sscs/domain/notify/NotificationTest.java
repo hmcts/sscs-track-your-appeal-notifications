@@ -29,11 +29,11 @@ public class NotificationTest {
     }
 
     @Test
-    @Parameters({"011441632234567", "+317398785050"})
-    public void doesNotAllowInternationalNumbers(String landLineNumber) {
+    @Parameters({"0014168213640", "+41762191008"})
+    public void allowsInternationalNumbers(String landLineNumber) {
         Destination destination = Destination.builder().sms(landLineNumber).build();
         Notification notification = Notification.builder().destination(destination).build();
-        assertFalse(notification.isSms());
+        assertTrue(notification.isSms());
     }
 
     @Test

@@ -30,7 +30,7 @@ public class Notification {
     }
 
     public boolean isSms() {
-        return isNotBlank(destination.sms) && PhoneNumbersUtil.isValidUkMobileNumber(destination.sms);
+        return isNotBlank(destination.sms) && PhoneNumbersUtil.isValidMobileNumber(destination.sms);
     }
 
     public String getEmailTemplate() {
