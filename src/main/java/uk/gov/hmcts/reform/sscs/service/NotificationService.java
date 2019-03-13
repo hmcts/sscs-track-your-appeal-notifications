@@ -64,19 +64,6 @@ public class NotificationService {
 
     private void sendNotificationPerSubscription(NotificationWrapper notificationWrapper,
                                                  NotificationEventType notificationType) {
-        // DO NOT MERGE temp logging
-
-        Subscriptions subs = notificationWrapper.getNewSscsCaseData().getSubscriptions();
-
-        if (subs.getAppellantSubscription() != null) {
-            log.info("APPELLANT SUBSCRIPTION: " + subs.getAppellantSubscription());
-        }
-
-        if (subs.getRepresentativeSubscription() != null) {
-            log.info("REP SUBSCRIPTION: " + subs.getRepresentativeSubscription());
-        }
-
-        log.info("Temporary log subscription details: " + notificationWrapper.getNewSscsCaseData().getSubscriptions());
         for (SubscriptionWithType subscriptionWithType : notificationWrapper.getSubscriptionsBasedOnNotificationType()) {
             if (isValidNotification(notificationWrapper, subscriptionWithType, notificationType)) {
                 sendNotification(notificationWrapper, subscriptionWithType);
