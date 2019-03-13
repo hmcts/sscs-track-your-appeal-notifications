@@ -1454,7 +1454,7 @@ public class NotificationsIt {
                 "1",
                 "1",
                 "0",
-                "Harry Potter"
+                "Appointee Appointee"
             },
             new Object[]{
                 DWP_RESPONSE_RECEIVED_NOTIFICATION,
@@ -1695,7 +1695,7 @@ public class NotificationsIt {
                 "1",
                 "1",
                 "0",
-                "Harry Potter"
+                "Appointee Appointee"
             },
             new Object[]{
                 DWP_RESPONSE_RECEIVED_NOTIFICATION,
@@ -1773,7 +1773,7 @@ public class NotificationsIt {
                 "1",
                 "1",
                 "0",
-                "Harry Potter"
+                "Appointee Appointee"
             },
             new Object[]{
                 HEARING_BOOKED_NOTIFICATION,
