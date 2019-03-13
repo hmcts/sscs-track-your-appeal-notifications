@@ -36,7 +36,7 @@ public class NotificationHandler {
             sendNotification.send();
             LOG.info("{} template {} sent for case id: {}", notificationType, notificationTemplate, caseId);
         } catch (Exception ex) {
-            wrapAndThrowNotificationException(caseId, notificationTemplate, ex);
+            wrapAndThrowNotificationExceptionIfRequired(caseId, notificationTemplate, ex);
         }
     }
 
@@ -54,7 +54,7 @@ public class NotificationHandler {
         ));
     }
 
-    private void wrapAndThrowNotificationException(String caseId, String templateId, Exception ex) {
+    private void wrapAndThrowNotificationExceptionIfRequired(String caseId, String templateId, Exception ex) {
         if (ex.getCause() instanceof UnknownHostException) {
             NotificationClientRuntimeException exception = new NotificationClientRuntimeException(caseId, ex);
             LOG.error("Runtime error on GovUKNotify for case id: {}, template: {}", caseId, templateId, exception);
@@ -62,7 +62,6 @@ public class NotificationHandler {
         } else {
             NotificationServiceException exception = new NotificationServiceException(caseId, ex);
             LOG.error("Error on GovUKNotify for case id: {}, template: {}", caseId, templateId, exception);
-            throw exception;
         }
     }
 

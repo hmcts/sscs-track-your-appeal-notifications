@@ -8,6 +8,7 @@ import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNotNull;
 import static org.slf4j.LoggerFactory.getLogger;
 import static uk.gov.hmcts.reform.sscs.SscsCaseDataUtils.buildSscsCaseData;
+import static uk.gov.hmcts.reform.sscs.SscsCaseDataUtils.subscribeRep;
 import static uk.gov.hmcts.reform.sscs.ccd.domain.EventType.SYA_APPEAL_CREATED;
 
 import helper.EnvironmentProfileValueSource;
@@ -267,6 +268,15 @@ public abstract class AbstractFunctionalTest {
         }
 
         return json;
+    }
+
+    protected void subscribeRepresentative() {
+        subscribeRep(caseData);
+    }
+
+    protected void triggerEventWithHearingType(NotificationEventType eventType, String hearingType) {
+        caseData.getAppeal().setHearingType(hearingType);
+        triggerEvent(eventType);
     }
 
     protected void triggerEvent(NotificationEventType eventType) {

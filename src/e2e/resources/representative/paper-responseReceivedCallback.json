@@ -32,25 +32,42 @@
           "wantsToAttend": "Yes"
         },
         "mrnDetails": {},
-        "rep": {},
-        "signer": null
+        "rep": {
+          "hasRepresentative": "Yes",
+          "name": {
+            "title": "Mr",
+            "firstName": "Harry",
+            "lastName": "Potter"
+          },
+          "address": {
+            "line1": "123 Hairy Lane",
+            "line2": "Off Hairy Park",
+            "town": "Town",
+            "county": "County",
+            "postcode": "CM14 4LQ"
+          },
+          "contact": {},
+          "organisation": "HP Ltd"
+        },
+        "signer": null,
+        "hearingType": "paper"
       },
       "caseReference": "SC022/14/12423",
       "events": [
         {
-          "id": "4beb1c7e-96c4-4020-9b1a-e8fdd70016b6",
+          "id": "a95eb829-2da3-4ff4-9d21-90d22583facf",
           "value": {
             "date": "2017-05-24T14:01:18.243",
             "description": "Some Events",
-            "type": "appealReceived"
+            "type": "appealCreated"
           }
         },
         {
-          "id": "db5eab58-9549-4bc0-9126-b05061afa36a",
+          "id": "89a668da-de45-4532-ba56-7ce5e14096a8",
           "value": {
-            "date": "2018-07-25T03:22:27.115",
-            "description": "appealLapsed",
-            "type": "appealLapsed"
+            "date": "2016-01-16T12:34:56.789",
+            "description": "responseReceived",
+            "type": "responseReceived"
           }
         }
       ],
@@ -63,10 +80,10 @@
           "tya": ""
         },
         "representativeSubscription": {
-          "email": "",
-          "mobile": "",
-          "subscribeEmail": "No",
-          "subscribeSms": "No",
+          "email": "sscstest+notify@greencroftconsulting.com",
+          "mobile": "07398785050",
+          "subscribeEmail": "Yes",
+          "subscribeSms": "Yes",
           "tya": ""
         }
       }
@@ -75,11 +92,11 @@
     "created_date": [
       2018,
       7,
-      25,
-      15,
-      22,
-      25,
-      534000000
+      26,
+      10,
+      51,
+      3,
+      45000000
     ],
     "data_classification": {
       "appeal": {
@@ -151,7 +168,7 @@
         "classification": "PUBLIC",
         "value": [
           {
-            "id": "4beb1c7e-96c4-4020-9b1a-e8fdd70016b6",
+            "id": "a95eb829-2da3-4ff4-9d21-90d22583facf",
             "value": {
               "date": "PUBLIC",
               "description": "PUBLIC",
@@ -159,7 +176,7 @@
             }
           },
           {
-            "id": "db5eab58-9549-4bc0-9126-b05061afa36a",
+            "id": "89a668da-de45-4532-ba56-7ce5e14096a8",
             "value": {
               "date": "PUBLIC",
               "description": "PUBLIC",
@@ -199,11 +216,11 @@
     "last_modified": [
       2018,
       7,
-      25,
-      15,
-      22,
       26,
-      417000000
+      10,
+      51,
+      4,
+      255000000
     ],
     "security_classification": "PUBLIC",
     "security_classifications": {
@@ -276,7 +293,7 @@
         "classification": "PUBLIC",
         "value": [
           {
-            "id": "4beb1c7e-96c4-4020-9b1a-e8fdd70016b6",
+            "id": "a95eb829-2da3-4ff4-9d21-90d22583facf",
             "value": {
               "date": "PUBLIC",
               "description": "PUBLIC",
@@ -284,7 +301,7 @@
             }
           },
           {
-            "id": "db5eab58-9549-4bc0-9126-b05061afa36a",
+            "id": "89a668da-de45-4532-ba56-7ce5e14096a8",
             "value": {
               "date": "PUBLIC",
               "description": "PUBLIC",
@@ -355,16 +372,17 @@
         },
         "mrnDetails": {},
         "rep": {},
-        "signer": null
+        "signer": null,
+        "hearingType": "paper"
       },
       "caseReference": "SC022/14/12423",
       "events": [
         {
-          "id": "2788453b-50a8-46d5-8b6f-224b12344ca4",
+          "id": "d5169475-fbfd-4fd3-9d55-d7fa3ebd645f",
           "value": {
             "date": "2017-05-24T14:01:18.243",
             "description": "Some Events",
-            "type": "appealReceived"
+            "type": "appealCreated"
           }
         }
       ],
@@ -379,8 +397,8 @@
         "representativeSubscription": {
           "email": "",
           "mobile": "",
-          "subscribeEmail": "No",
-          "subscribeSms": "No",
+          "subscribeEmail": "Yes",
+          "subscribeSms": "Yes",
           "tya": ""
         }
       }
@@ -389,11 +407,11 @@
     "created_date": [
       2018,
       7,
-      25,
-      15,
-      22,
-      25,
-      534000000
+      26,
+      10,
+      51,
+      3,
+      45000000
     ],
     "data_classification": {
       "appeal": {
@@ -465,7 +483,7 @@
         "classification": "PUBLIC",
         "value": [
           {
-            "id": "2788453b-50a8-46d5-8b6f-224b12344ca4",
+            "id": "d5169475-fbfd-4fd3-9d55-d7fa3ebd645f",
             "value": {
               "date": "PUBLIC",
               "description": "PUBLIC",
@@ -505,11 +523,11 @@
     "last_modified": [
       2018,
       7,
-      25,
-      15,
-      22,
-      25,
-      536000000
+      26,
+      10,
+      51,
+      3,
+      47000000
     ],
     "security_classification": "PUBLIC",
     "security_classifications": {
@@ -582,7 +600,7 @@
         "classification": "PUBLIC",
         "value": [
           {
-            "id": "2788453b-50a8-46d5-8b6f-224b12344ca4",
+            "id": "d5169475-fbfd-4fd3-9d55-d7fa3ebd645f",
             "value": {
               "date": "PUBLIC",
               "description": "PUBLIC",
@@ -619,5 +637,5 @@
     },
     "state": "appealCreated"
   },
-  "event_id": "appealLapsed"
+  "event_id": "responseReceived"
 }
