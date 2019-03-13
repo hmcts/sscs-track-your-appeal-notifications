@@ -128,7 +128,7 @@ public class SendNotificationService {
     }
 
     private void sendMandatoryLetterNotification(NotificationWrapper wrapper, Notification notification, SubscriptionType subscriptionType) {
-        if (hasLetterTemplate(notification) && isMandatoryLetterEventType(wrapper.getNotificationType())) {
+        if (hasLetterTemplate(notification) && isMandatoryLetterEventType(wrapper)) {
             NotificationHandler.SendNotification sendNotification = () -> {
                 Address addressToUse = getAddressToUseForLetter(wrapper, subscriptionType);
 
