@@ -66,13 +66,11 @@ public class CcdNotificationWrapper implements NotificationWrapper {
 
     public AppealHearingType getHearingType() {
         final String hearingType = responseWrapper.getNewSscsCaseData().getAppeal().getHearingType();
-        AppealHearingType returnHearingType = REGULAR;
+        AppealHearingType returnHearingType = ORAL;
         if (StringUtils.equalsAnyIgnoreCase(HEARING_TYPE_ONLINE_RESOLUTION, hearingType)) {
             returnHearingType = ONLINE;
         } else if (StringUtils.equalsAnyIgnoreCase(PAPER.name(), hearingType)) {
             returnHearingType = PAPER;
-        } else if (StringUtils.equalsAnyIgnoreCase(ORAL.name(), hearingType)) {
-            returnHearingType = ORAL;
         }
         return returnHearingType;
     }
@@ -125,8 +123,9 @@ public class CcdNotificationWrapper implements NotificationWrapper {
                 || POSTPONEMENT_NOTIFICATION.equals(getNotificationType())
                 || HEARING_BOOKED_NOTIFICATION.equals(getNotificationType())
                 || SUBSCRIPTION_UPDATED_NOTIFICATION.equals(getNotificationType())
+                || CASE_UPDATED.equals(getNotificationType())
                 || APPEAL_LODGED.equals(getNotificationType())
-                || CASE_UPDATED.equals(getNotificationType()))) {
+                || EVIDENCE_REMINDER_NOTIFICATION.equals(getNotificationType()))) {
             subscriptionWithTypeList.add(new SubscriptionWithType(getRepresentativeSubscription(), REPRESENTATIVE));
         }
         return subscriptionWithTypeList;
