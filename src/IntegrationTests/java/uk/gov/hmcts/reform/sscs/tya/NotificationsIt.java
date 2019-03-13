@@ -1864,7 +1864,7 @@ public class NotificationsIt {
                 "1",
                 "1",
                 "1",
-                "Harry Potter"
+                "Appointee Appointee"
             },
             new Object[]{
                 APPEAL_RECEIVED_NOTIFICATION,
