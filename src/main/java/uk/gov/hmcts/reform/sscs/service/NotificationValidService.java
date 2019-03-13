@@ -38,12 +38,8 @@ public class NotificationValidService {
 
     static boolean fallbackConditionsMet(NotificationWrapper wrapper, NotificationEventType eventType) {
         if (FALLBACK_LETTER_SUBSCRIPTION_TYPES.contains(eventType)) {
-            if (DWP_RESPONSE_RECEIVED_NOTIFICATION.equals(eventType)) {
-                return StringUtils.equalsAnyIgnoreCase(ORAL.name(),wrapper.getNewSscsCaseData().getAppeal().getHearingType());
-            } else {
-                return (null == wrapper.getOldSscsCaseData() || null == wrapper.getOldSscsCaseData().getCaseReference() || wrapper.getOldSscsCaseData().getCaseReference().isEmpty())
-                        && (null != wrapper.getNewSscsCaseData().getCaseReference() && !wrapper.getNewSscsCaseData().getCaseReference().isEmpty());
-            }
+            return (null == wrapper.getOldSscsCaseData() || null == wrapper.getOldSscsCaseData().getCaseReference() || wrapper.getOldSscsCaseData().getCaseReference().isEmpty())
+                    && (null != wrapper.getNewSscsCaseData().getCaseReference() && !wrapper.getNewSscsCaseData().getCaseReference().isEmpty());
         }
 
         return true;
