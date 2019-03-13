@@ -226,7 +226,7 @@ public class NotificationsIt {
 
         assertHttpStatus(response, HttpStatus.OK);
         verify(notificationClient).sendEmail(eq(emailTemplateId), any(), any(), any());
-        verify(notificationClient, times(2)).sendSms(eq(smsTemplateId), any(), any(), any(), any());
+        verify(notificationClient).sendSms(eq(smsTemplateId), any(), any(), any(), any());
     }
 
     @Test
@@ -1454,7 +1454,7 @@ public class NotificationsIt {
                 "1",
                 "1",
                 "0",
-                "Appointee Appointee"
+                "Harry Potter"
             },
             new Object[]{
                 DWP_RESPONSE_RECEIVED_NOTIFICATION,
@@ -1695,7 +1695,7 @@ public class NotificationsIt {
                 "1",
                 "1",
                 "0",
-                "Appointee Appointee"
+                "Harry Potter"
             },
             new Object[]{
                 DWP_RESPONSE_RECEIVED_NOTIFICATION,
@@ -1773,7 +1773,7 @@ public class NotificationsIt {
                 "1",
                 "1",
                 "0",
-                "Appointee Appointee"
+                "Harry Potter"
             },
             new Object[]{
                 HEARING_BOOKED_NOTIFICATION,
