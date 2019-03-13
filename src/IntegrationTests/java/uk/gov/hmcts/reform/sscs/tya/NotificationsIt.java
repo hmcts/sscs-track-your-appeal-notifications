@@ -1760,7 +1760,7 @@ public class NotificationsIt {
                 "0",
                 "0",
                 "1",
-                "Harry Potter"
+                "Appointee Appointee"
             },
             new Object[]{
                 EVIDENCE_REMINDER_NOTIFICATION,
