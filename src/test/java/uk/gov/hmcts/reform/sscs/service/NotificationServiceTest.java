@@ -1622,7 +1622,7 @@ public class NotificationServiceTest {
         final NotificationService notificationService = new NotificationService(factory, reminderService,
             notificationValidService, notificationHandler, outOfHoursCalculator, notificationConfig, sendNotificationService
         );
-        ReflectionTestUtils.setField(sendNotificationService, "strikeOutLetterTemplate", "/templates/non_compliant_case_letter_template.html");
+        ReflectionTestUtils.setField(sendNotificationService, "strikeOutLetterTemplate", "/templates/strike_out_letter_template.html");
         ReflectionTestUtils.setField(sendNotificationService, "bundledLettersOn", bundledLettersOn);
         ReflectionTestUtils.setField(sendNotificationService, "lettersOn", lettersOn);
         return notificationService;

@@ -281,7 +281,7 @@ public class SendNotificationService {
         return filetype;
     }
 
-    private String getBundledLetterTemplate(NotificationEventType notificationEventType, SscsCaseData newSscsCaseData) {
+    protected String getBundledLetterTemplate(NotificationEventType notificationEventType, SscsCaseData newSscsCaseData) {
         String bundledLetterTemplate = null;
         if ((STRUCK_OUT.equals(notificationEventType))
             && (newSscsCaseData.getSscsDocument() != null

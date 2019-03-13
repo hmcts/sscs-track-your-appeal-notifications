@@ -2,6 +2,7 @@ package uk.gov.hmcts.reform.sscs.service;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
+import static uk.gov.hmcts.reform.sscs.domain.notify.NotificationEventType.DIRECTION_ISSUED;
 import static uk.gov.hmcts.reform.sscs.domain.notify.NotificationEventType.STRUCK_OUT;
 import static uk.gov.hmcts.reform.sscs.domain.notify.NotificationEventType.SYA_APPEAL_CREATED_NOTIFICATION;
 import static uk.gov.hmcts.reform.sscs.service.LetterUtils.*;
@@ -10,11 +11,16 @@ import static uk.gov.hmcts.reform.sscs.service.SendNotificationServiceTest.APPEL
 
 import java.io.IOException;
 
+import junitparams.JUnitParamsRunner;
+import junitparams.Parameters;
 import org.apache.pdfbox.io.IOUtils;
 import org.junit.Test;
+import org.junit.runner.RunWith;
+import uk.gov.hmcts.reform.sscs.domain.notify.NotificationEventType;
 import uk.gov.hmcts.reform.sscs.exception.NotificationClientRuntimeException;
 import uk.gov.hmcts.reform.sscs.factory.NotificationWrapper;
 
+@RunWith(JUnitParamsRunner.class)
 public class LetterUtilsTest {
     @Test
     public void useAppellantAddressForLetter() {
@@ -41,15 +47,23 @@ public class LetterUtilsTest {
     }
 
     @Test
-    public void useStruckOutFilenameForLetter() {
+    @Parameters(method = "struckOutFilenameForLetter")
+    public void useStruckOutFilenameForLetter(NotificationEventType eventType, String filename) {
         NotificationWrapper wrapper = NotificationServiceTest.buildBaseWrapper(
-            STRUCK_OUT,
+            eventType,
             APPELLANT_WITH_ADDRESS,
             null,
             null
         );
 
-        assertEquals(PDF_STRUCK_OUT, getFilename(wrapper));
+        assertEquals(filename, getFilename(wrapper));
+    }
+
+    public Object[] struckOutFilenameForLetter() {
+        return new Object[] {
+            new Object[] { STRUCK_OUT, PDF_STRUCK_OUT},
+            new Object[] { DIRECTION_ISSUED, PDF_DIRECTION_NOTICE}
+        };
     }
 
     @Test
