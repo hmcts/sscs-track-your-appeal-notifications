@@ -1,6 +1,5 @@
 package uk.gov.hmcts.reform.sscs.service;
 
-import static uk.gov.hmcts.reform.sscs.config.AppealHearingType.ORAL;
 import static uk.gov.hmcts.reform.sscs.config.SubscriptionType.APPELLANT;
 import static uk.gov.hmcts.reform.sscs.config.SubscriptionType.APPOINTEE;
 import static uk.gov.hmcts.reform.sscs.config.SubscriptionType.REPRESENTATIVE;
@@ -9,7 +8,6 @@ import static uk.gov.hmcts.reform.sscs.domain.notify.NotificationEventType.*;
 import java.time.LocalDateTime;
 import java.util.Arrays;
 import java.util.List;
-import org.apache.commons.lang3.StringUtils;
 import org.springframework.stereotype.Service;
 import uk.gov.hmcts.reform.sscs.ccd.domain.Hearing;
 import uk.gov.hmcts.reform.sscs.ccd.domain.SscsCaseData;
