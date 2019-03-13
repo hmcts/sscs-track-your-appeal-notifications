@@ -56,6 +56,7 @@ public class NotificationService {
 
         if (notificationWrapper.getNotificationType().isAllowOutOfHours() || !outOfHoursCalculator.isItOutOfHours()) {
             sendNotificationPerSubscription(notificationWrapper, notificationType);
+            reminderService.createReminders(notificationWrapper);
         } else {
             notificationHandler.scheduleNotification(notificationWrapper);
         }
@@ -66,7 +67,6 @@ public class NotificationService {
         for (SubscriptionWithType subscriptionWithType : notificationWrapper.getSubscriptionsBasedOnNotificationType()) {
             if (isValidNotification(notificationWrapper, subscriptionWithType, notificationType)) {
                 sendNotification(notificationWrapper, subscriptionWithType);
-                reminderService.createReminders(notificationWrapper);
                 resendLastNotification(notificationWrapper, subscriptionWithType);
             }
         }
