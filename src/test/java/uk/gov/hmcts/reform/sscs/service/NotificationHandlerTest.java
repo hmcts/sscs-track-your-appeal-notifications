@@ -2,6 +2,7 @@ package uk.gov.hmcts.reform.sscs.service;
 
 import static org.hamcrest.CoreMatchers.is;
 import static org.junit.Assert.assertThat;
+import static org.junit.Assert.fail;
 import static org.mockito.Mockito.*;
 
 import java.net.UnknownHostException;
@@ -11,7 +12,6 @@ import org.junit.Test;
 import org.mockito.ArgumentCaptor;
 import uk.gov.hmcts.reform.sscs.domain.notify.NotificationEventType;
 import uk.gov.hmcts.reform.sscs.exception.NotificationClientRuntimeException;
-import uk.gov.hmcts.reform.sscs.exception.NotificationServiceException;
 import uk.gov.hmcts.reform.sscs.factory.NotificationWrapper;
 import uk.gov.hmcts.reform.sscs.jobscheduler.model.Job;
 import uk.gov.hmcts.reform.sscs.jobscheduler.services.JobScheduler;
@@ -99,14 +99,18 @@ public class NotificationHandlerTest {
         underTest.sendNotification(notificationWrapper, "someTemplate", "Email", sendNotification);
     }
 
-    @Test(expected = NotificationServiceException.class)
-    public void shouldCorrectlyHandleAGovNotifyException() throws Exception {
+    @Test
+    public void shouldContinueAndHandleAGovNotifyException() throws Exception {
         when(notificationWrapper.getNotificationType()).thenReturn(A_NOTIFICATION_THAT_CAN_TRIGGER_OUT_OF_HOURS);
         when(outOfHoursCalculator.isItOutOfHours()).thenReturn(false);
         doThrow(new NotificationClientException(new RuntimeException()))
                 .when(sendNotification)
                 .send();
 
-        underTest.sendNotification(notificationWrapper, "someTemplate", "Email", sendNotification);
+        try {
+            underTest.sendNotification(notificationWrapper, "someTemplate", "Email", sendNotification);
+        } catch (Throwable throwable) {
+            fail("should not throw an error");
+        }
     }
 }

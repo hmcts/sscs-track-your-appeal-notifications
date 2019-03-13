@@ -101,26 +101,7 @@
           ],
           "otherReasons": "Another reason"
         },
-        "rep": {
-          "hasRepresentative": "Yes",
-          "name": {
-            "title": "Mr",
-            "firstName": "Harry",
-            "lastName": "Potter"
-          },
-          "address": {
-            "line1": "123 Hairy Lane",
-            "line2": "Off Hairy Park",
-            "town": "Town",
-            "county": "County",
-            "postcode": "CM14 4LQ"
-          },
-          "contact": {
-            "email": "harry.potter@wizards.com",
-            "mobile": "07411999999"
-          },
-          "organisation": "HP Ltd"
-        },
+        "rep": {},
         "signer":"Yes",
         "supporter": {
           "contact": {
