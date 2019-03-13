@@ -1698,6 +1698,19 @@ public class NotificationsIt {
                 "Appointee Appointee"
             },
             new Object[]{
+                DWP_RESPONSE_RECEIVED_NOTIFICATION,
+                "oral",
+                Collections.emptyList(),
+                Collections.emptyList(),
+                Collections.singletonList("8b11f3f4-6452-4a35-93d8-a94996af6499"),
+                "no",
+                "no",
+                "0",
+                "0",
+                "1",
+                "Harry Potter"
+            },
+            new Object[]{
                 APPEAL_LAPSED_NOTIFICATION,
                 "oral",
                 Collections.singletonList("8ce8d794-75e8-49a0-b4d2-0c6cd2061c11"),
