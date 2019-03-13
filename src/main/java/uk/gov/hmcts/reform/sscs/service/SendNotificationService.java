@@ -199,13 +199,11 @@ public class SendNotificationService {
     }
 
     private void sendBundledLetterNotificationToAppellant(NotificationWrapper wrapper, Notification notification) {
-        if (notification.getLetterTemplate() != null) {
-            sendBundledLetterNotification(wrapper, notification, getAddressToUseForLetter(wrapper), getNameToUseForLetter(wrapper));
-        }
+        sendBundledLetterNotification(wrapper, notification, getAddressToUseForLetter(wrapper), getNameToUseForLetter(wrapper));
     }
 
     private void sendBundledLetterNotificationToRepresentative(NotificationWrapper wrapper, Notification notification) {
-        if ((notification.getLetterTemplate() != null) && (null != wrapper.getNewSscsCaseData().getAppeal().getRep())) {
+        if (null != wrapper.getNewSscsCaseData().getAppeal().getRep()) {
             sendBundledLetterNotification(wrapper, notification, wrapper.getNewSscsCaseData().getAppeal().getRep().getAddress(), wrapper.getNewSscsCaseData().getAppeal().getRep().getName());
         }
     }
