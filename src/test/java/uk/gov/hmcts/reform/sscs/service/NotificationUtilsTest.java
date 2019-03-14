@@ -232,13 +232,13 @@ public class NotificationUtilsTest {
     @Test
     @Parameters(method = "mandatoryNotificationTypes")
     public void isMandatoryLetter(NotificationEventType eventType) {
-        assertTrue(isMandatoryLetterEventType(eventType));
+        assertTrue(isMandatoryLetterEventType(buildNotificationWrapper(eventType)));
     }
 
     @Test
     @Parameters(method = "nonMandatoryNotificationTypes")
     public void isNotMandatoryLetter(NotificationEventType eventType) {
-        assertFalse(isMandatoryLetterEventType(eventType));
+        assertFalse(isMandatoryLetterEventType(buildNotificationWrapper(eventType)));
     }
 
     @Test

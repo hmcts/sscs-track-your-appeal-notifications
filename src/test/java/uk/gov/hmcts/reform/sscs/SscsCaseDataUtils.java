@@ -6,27 +6,7 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Date;
 import java.util.List;
-import uk.gov.hmcts.reform.sscs.ccd.domain.Address;
-import uk.gov.hmcts.reform.sscs.ccd.domain.Appeal;
-import uk.gov.hmcts.reform.sscs.ccd.domain.Appellant;
-import uk.gov.hmcts.reform.sscs.ccd.domain.Appointee;
-import uk.gov.hmcts.reform.sscs.ccd.domain.BenefitType;
-import uk.gov.hmcts.reform.sscs.ccd.domain.Contact;
-import uk.gov.hmcts.reform.sscs.ccd.domain.Document;
-import uk.gov.hmcts.reform.sscs.ccd.domain.DocumentDetails;
-import uk.gov.hmcts.reform.sscs.ccd.domain.Event;
-import uk.gov.hmcts.reform.sscs.ccd.domain.EventDetails;
-import uk.gov.hmcts.reform.sscs.ccd.domain.EventType;
-import uk.gov.hmcts.reform.sscs.ccd.domain.Evidence;
-import uk.gov.hmcts.reform.sscs.ccd.domain.Hearing;
-import uk.gov.hmcts.reform.sscs.ccd.domain.HearingDetails;
-import uk.gov.hmcts.reform.sscs.ccd.domain.HearingOptions;
-import uk.gov.hmcts.reform.sscs.ccd.domain.Identity;
-import uk.gov.hmcts.reform.sscs.ccd.domain.Name;
-import uk.gov.hmcts.reform.sscs.ccd.domain.SscsCaseData;
-import uk.gov.hmcts.reform.sscs.ccd.domain.Subscription;
-import uk.gov.hmcts.reform.sscs.ccd.domain.Subscriptions;
-import uk.gov.hmcts.reform.sscs.ccd.domain.Venue;
+import uk.gov.hmcts.reform.sscs.ccd.domain.*;
 import uk.gov.hmcts.reform.sscs.domain.SscsCaseDataWrapper;
 import uk.gov.hmcts.reform.sscs.domain.notify.NotificationEventType;
 import uk.gov.hmcts.reform.sscs.factory.CcdNotificationWrapper;
@@ -138,6 +118,30 @@ public final class SscsCaseDataUtils {
                 .subscriptions(subscriptions);
     }
 
+    public static SscsCaseData subscribeRep(SscsCaseData sscsCaseData) {
+
+        Representative rep = Representative.builder()
+                .name(Name.builder().firstName("Harry").lastName("Potter").build())
+                .hasRepresentative("Yes").build();
+
+        sscsCaseData.getAppeal().setRep(rep);
+
+        Subscription representativeSubscription = Subscription.builder()
+                .tya("")
+                .email("sscstest+notify@greencroftconsulting.com")
+                .mobile("07398785050")
+                .subscribeEmail("Yes")
+                .subscribeSms("Yes")
+                .build();
+
+        Subscriptions subscriptions = Subscriptions.builder()
+                .representativeSubscription(representativeSubscription)
+                .build();
+
+        sscsCaseData.setSubscriptions(subscriptions);
+
+        return sscsCaseData;
+    }
 
     public static CcdNotificationWrapper buildBasicCcdNotificationWrapper(NotificationEventType notificationType) {
         return buildBasicCcdNotificationWrapper(notificationType, null);

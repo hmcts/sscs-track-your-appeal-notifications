@@ -1,5 +1,6 @@
 package uk.gov.hmcts.reform.sscs.service;
 
+import static uk.gov.hmcts.reform.sscs.config.AppealHearingType.ORAL;
 import static uk.gov.hmcts.reform.sscs.config.SubscriptionType.APPELLANT;
 import static uk.gov.hmcts.reform.sscs.config.SubscriptionType.APPOINTEE;
 import static uk.gov.hmcts.reform.sscs.config.SubscriptionType.REPRESENTATIVE;
@@ -66,8 +67,13 @@ public class NotificationUtils {
         }
     }
 
-    public static boolean isMandatoryLetterEventType(NotificationEventType eventType) {
-        return MANDATORY_LETTERS.contains(eventType);
+    public static boolean isMandatoryLetterEventType(NotificationWrapper wrapper) {
+        if (MANDATORY_LETTERS.contains(wrapper.getNotificationType())) {
+            return (HEARING_BOOKED_NOTIFICATION.equals(wrapper.getNotificationType()) && ORAL.equals(wrapper.getHearingType()))
+                || (!HEARING_BOOKED_NOTIFICATION.equals(wrapper.getNotificationType()));
+        }
+
+        return false;
     }
 
     static boolean isOkToSendNotification(NotificationWrapper wrapper, NotificationEventType notificationType, Subscription subscription, NotificationValidService notificationValidService) {
