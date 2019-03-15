@@ -2,9 +2,14 @@ package uk.gov.hmcts.reform.sscs.service;
 
 import static uk.gov.hmcts.reform.sscs.ccd.domain.Benefit.getBenefitByCode;
 import static uk.gov.hmcts.reform.sscs.ccd.domain.EventType.SUBSCRIPTION_UPDATED;
+import static uk.gov.hmcts.reform.sscs.config.SubscriptionType.APPOINTEE;
+import static uk.gov.hmcts.reform.sscs.config.SubscriptionType.REPRESENTATIVE;
 import static uk.gov.hmcts.reform.sscs.domain.notify.NotificationEventType.SUBSCRIPTION_UPDATED_NOTIFICATION;
 import static uk.gov.hmcts.reform.sscs.domain.notify.NotificationEventType.getNotificationByCcdEvent;
-import static uk.gov.hmcts.reform.sscs.service.NotificationUtils.*;
+import static uk.gov.hmcts.reform.sscs.service.NotificationUtils.getSubscription;
+import static uk.gov.hmcts.reform.sscs.service.NotificationUtils.isFallbackLetterRequired;
+import static uk.gov.hmcts.reform.sscs.service.NotificationUtils.isOkToSendNotification;
+import static uk.gov.hmcts.reform.sscs.service.NotificationValidService.isMandatoryLetterEventType;
 
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -65,21 +70,22 @@ public class NotificationService {
                                                  NotificationEventType notificationType) {
         for (SubscriptionWithType subscriptionWithType : notificationWrapper.getSubscriptionsBasedOnNotificationType()) {
             if (isValidNotification(notificationWrapper, subscriptionWithType, notificationType)) {
-                sendNotification(notificationWrapper, subscriptionWithType);
+                sendNotification(notificationWrapper, subscriptionWithType, notificationType);
                 reminderService.createReminders(notificationWrapper);
-                resendLastNotification(notificationWrapper, subscriptionWithType);
+                resendLastNotification(notificationWrapper, subscriptionWithType, notificationType);
             }
         }
     }
 
-    private void resendLastNotification(NotificationWrapper notificationWrapper, SubscriptionWithType subscriptionWithType) {
+    private void resendLastNotification(NotificationWrapper notificationWrapper, SubscriptionWithType subscriptionWithType,
+                                        NotificationEventType notificationType) {
         if (shouldProcessLastNotification(notificationWrapper, subscriptionWithType)) {
             NotificationEventType lastEvent = getNotificationByCcdEvent(notificationWrapper.getNewSscsCaseData().getEvents().get(0)
                     .getValue().getEventType());
             log.info("Resending the last notification for event {} and case id {}.", lastEvent.getId(), notificationWrapper.getCaseId());
             scrubMobileAndSmsIfSubscribedBefore(notificationWrapper, subscriptionWithType);
             notificationWrapper.getSscsCaseDataWrapper().setNotificationEventType(lastEvent);
-            sendNotification(notificationWrapper, subscriptionWithType);
+            sendNotification(notificationWrapper, subscriptionWithType, notificationType);
             notificationWrapper.getSscsCaseDataWrapper().setNotificationEventType(SUBSCRIPTION_UPDATED_NOTIFICATION);
         }
     }
@@ -115,10 +121,11 @@ public class NotificationService {
         return thereIsALastEventThatIsNotSubscriptionUpdated;
     }
 
-    private void sendNotification(NotificationWrapper notificationWrapper, SubscriptionWithType subscriptionWithType) {
+    private void sendNotification(NotificationWrapper notificationWrapper, SubscriptionWithType subscriptionWithType,
+                                  NotificationEventType notificationType) {
         Notification notification = notificationFactory.create(notificationWrapper, subscriptionWithType);
-        sendNotificationService.sendEmailSmsLetterNotification(notificationWrapper, notification, subscriptionWithType);
-        processOldSubscriptionNotifications(notificationWrapper, notification, subscriptionWithType);
+        sendNotificationService.sendEmailSmsLetterNotification(notificationWrapper, notification, subscriptionWithType, notificationType);
+        processOldSubscriptionNotifications(notificationWrapper, notification, subscriptionWithType, notificationType);
     }
 
     private boolean isValidNotification(NotificationWrapper wrapper, SubscriptionWithType
@@ -127,25 +134,26 @@ public class NotificationService {
 
         return (isMandatoryLetterEventType(notificationType)
             || (isFallbackLetterRequired(wrapper, subscriptionWithType, subscription, notificationType, notificationValidService)
-            && isOkToSendNotification(wrapper, notificationType, notificationValidService)));
+            && isOkToSendNotification(wrapper, notificationType, subscription, notificationValidService)));
     }
 
-    private void processOldSubscriptionNotifications(NotificationWrapper wrapper, Notification notification, SubscriptionWithType subscriptionWithType) {
+    private void processOldSubscriptionNotifications(NotificationWrapper wrapper, Notification notification, SubscriptionWithType subscriptionWithType, NotificationEventType eventType) {
         if (wrapper.getNotificationType() == NotificationEventType.SUBSCRIPTION_UPDATED_NOTIFICATION) {
-
-            Subscription newSubscription = subscriptionWithType.getSubscription();
-            Subscription oldSubscription = getSubscription(wrapper.getOldSscsCaseData(), subscriptionWithType.getSubscriptionType());
-
-            String emailAddress = null;
-            String smsNumber = null;
-
-            if (null != newSubscription.getEmail() && !newSubscription.getEmail().equals(oldSubscription.getEmail())) {
-                emailAddress = newSubscription.getEmail().equals(oldSubscription.getEmail()) ? null : oldSubscription.getEmail();
+            Subscription newSubscription = null;
+            Subscription oldSubscription = null;
+            if (REPRESENTATIVE.equals(subscriptionWithType.getSubscriptionType())) {
+                newSubscription = wrapper.getNewSscsCaseData().getSubscriptions().getRepresentativeSubscription();
+                oldSubscription = wrapper.getOldSscsCaseData().getSubscriptions().getRepresentativeSubscription();
+            } else if (APPOINTEE.equals(subscriptionWithType.getSubscriptionType())) {
+                newSubscription = wrapper.getNewSscsCaseData().getSubscriptions().getAppointeeSubscription();
+                oldSubscription = wrapper.getOldSscsCaseData().getSubscriptions().getAppointeeSubscription();
+            } else {
+                newSubscription = wrapper.getNewSscsCaseData().getSubscriptions().getAppellantSubscription();
+                oldSubscription = wrapper.getOldSscsCaseData().getSubscriptions().getAppellantSubscription();
             }
 
-            if (null != newSubscription.getMobile() && !newSubscription.getMobile().equals(oldSubscription.getMobile())) {
-                smsNumber = newSubscription.getMobile().equals(oldSubscription.getMobile()) ? null : oldSubscription.getMobile();
-            }
+            String emailAddress = getSubscriptionDetails(newSubscription.getEmail(), oldSubscription.getEmail());
+            String smsNumber = getSubscriptionDetails(newSubscription.getMobile(), oldSubscription.getMobile());
 
             Destination destination = Destination.builder().email(emailAddress)
                     .sms(PhoneNumbersUtil.cleanPhoneNumber(smsNumber).orElse(smsNumber)).build();
@@ -168,9 +176,17 @@ public class NotificationService {
                     .placeholders(notification.getPlaceholders()).build();
 
             SubscriptionWithType updatedSubscriptionWithType = new SubscriptionWithType(oldSubscription, subscriptionWithType.getSubscriptionType());
-            sendNotificationService.sendEmailSmsLetterNotification(wrapper, oldNotification, updatedSubscriptionWithType);
+            sendNotificationService.sendEmailSmsLetterNotification(wrapper, oldNotification, updatedSubscriptionWithType, eventType);
         }
     }
 
-
+    private String getSubscriptionDetails(String newSubscription, String oldSubscription) {
+        String subscription = "";
+        if (null != newSubscription && null != oldSubscription) {
+            subscription = newSubscription.equals(oldSubscription) ? null : oldSubscription;
+        } else if (null == newSubscription && null != oldSubscription) {
+            subscription = oldSubscription;
+        }
+        return subscription;
+    }
 }

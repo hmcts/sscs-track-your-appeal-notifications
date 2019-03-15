@@ -7,7 +7,12 @@
       "appeal": {
         "appealReasons": {},
         "appellant": {
-          "address": {},
+          "address": {
+            "line1": "1 Appellant Ave",
+            "town": "Appellanton",
+            "county": "Appellanty",
+            "postcode": "TS1 1ST"
+          },
           "contact": {
             "email": "mail@email.com",
             "phone": "01234567890"
@@ -40,11 +45,10 @@
             "lastName": "Potter"
           },
           "address": {
-            "line1": "123 Hairy Lane",
-            "line2": "Off Hairy Park",
-            "town": "Town",
-            "county": "County",
-            "postcode": "CM14 4LQ"
+            "line1": "1 Representative Close",
+            "town": "Repton",
+            "county": "Repy",
+            "postcode": "TS3 3ST"
           },
           "contact": {},
           "organisation": "HP Ltd"
@@ -439,7 +443,12 @@
       "appeal": {
         "appealReasons": {},
         "appellant": {
-          "address": {},
+          "address": {
+            "line1": "1 Appellant Ave",
+            "town": "Appellanton",
+            "county": "Appellanty",
+            "postcode": "TS1 1ST"
+          },
           "contact": {
             "email": "mail@email.com",
             "phone": "01234567890"
@@ -472,11 +481,10 @@
             "lastName": "Potter"
           },
           "address": {
-            "line1": "123 Hairy Lane",
-            "line2": "Off Hairy Park",
-            "town": "Town",
-            "county": "County",
-            "postcode": "CM14 4LQ"
+            "line1": "1 Representative Close",
+            "town": "Repton",
+            "county": "Repy",
+            "postcode": "TS3 3ST"
           },
           "contact": {},
           "organisation": "HP Ltd"

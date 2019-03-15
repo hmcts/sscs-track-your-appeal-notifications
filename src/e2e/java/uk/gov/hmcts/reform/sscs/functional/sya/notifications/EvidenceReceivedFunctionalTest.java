@@ -1,6 +1,5 @@
 package uk.gov.hmcts.reform.sscs.functional.sya.notifications;
 
-import static org.junit.Assert.assertTrue;
 import static uk.gov.hmcts.reform.sscs.config.AppealHearingType.ORAL;
 import static uk.gov.hmcts.reform.sscs.config.AppealHearingType.PAPER;
 import static uk.gov.hmcts.reform.sscs.domain.notify.NotificationEventType.EVIDENCE_RECEIVED_NOTIFICATION;
@@ -63,30 +62,6 @@ public class EvidenceReceivedFunctionalTest extends AbstractFunctionalTest {
         String representativeName = "Harry Potter";
         assertNotificationBodyContains(notifications, repsEmailId, representativeName);
         assertNotificationBodyContains(notifications, repsSmsId);
-    }
-
-    @Test
-    @Parameters({"ORAL", "PAPER"})
-    public void givenEvidenceReceivedWithNoRepSubscription_shouldNotSendNotificationToReps(AppealHearingType appealHearingType)
-            throws Exception {
-
-        final String appellantEmailId = getFieldValue(appealHearingType, "AppellantEmailId");
-        final String appellantSmsId = getFieldValue(appealHearingType, "AppellantSmsId");
-        final String repsEmailId = getFieldValue(appealHearingType, "RepsEmailId");
-        final String repsSmsId = getFieldValue(appealHearingType, "RepsSmsId");
-
-        simulateCcdCallback(EVIDENCE_RECEIVED_NOTIFICATION,
-                "representative/" + "no-reps-subscribed-"
-                        + appealHearingType.name().toLowerCase() + "-"
-                        + EVIDENCE_RECEIVED_NOTIFICATION.getId() + "Callback.json");
-
-        List<Notification> notifications = tryFetchNotificationsForTestCase(appellantEmailId,
-                    appellantSmsId);
-        assertNotificationBodyContains(notifications, appellantEmailId);
-        assertNotificationBodyContains(notifications, appellantSmsId);
-        List<Notification> notificationsNotFound = tryFetchNotificationsForTestCaseWithFlag(true,
-                    repsEmailId, repsSmsId);
-        assertTrue(notificationsNotFound.isEmpty());
     }
 
     private String getFieldValue(AppealHearingType appealHearingType, String fieldName) throws Exception {

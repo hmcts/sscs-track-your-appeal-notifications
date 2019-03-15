@@ -14,11 +14,7 @@ import java.io.File;
 import java.io.IOException;
 import java.nio.charset.StandardCharsets;
 import java.time.LocalDate;
-import java.util.Arrays;
-import java.util.Collections;
-import java.util.List;
-import java.util.Map;
-import java.util.UUID;
+import java.util.*;
 import javax.servlet.http.HttpServletResponse;
 import junitparams.JUnitParamsRunner;
 import junitparams.Parameters;
@@ -998,6 +994,34 @@ public class NotificationsIt {
                 "0",
                 "0",
                 "0"
+            },
+            new Object[]{
+                EVIDENCE_REMINDER_NOTIFICATION,
+                "oral",
+                Arrays.asList("df0803aa-f804-49fe-a2ac-c27adc4bb585"),
+                Arrays.asList("5f91012e-0d3f-465b-b301-ee3ee5a50100"),
+                Collections.emptyList(),
+                "no",
+                "no",
+                "yes",
+                "yes",
+                "1",
+                "1",
+                "0"
+            },
+            new Object[]{
+                EVIDENCE_REMINDER_NOTIFICATION,
+                "paper",
+                Arrays.asList("81fa38cc-b7cc-469c-8109-67c801dc9c84"),
+                Arrays.asList("f1076482-a76d-4389-b411-9865373cfc42"),
+                Collections.emptyList(),
+                "no",
+                "no",
+                "yes",
+                "yes",
+                "1",
+                "1",
+                "0"
             }
         };
     }
@@ -1509,6 +1533,34 @@ public class NotificationsIt {
                 "0",
                 "0",
                 "2"
+            },
+            new Object[]{
+                EVIDENCE_REMINDER_NOTIFICATION,
+                "oral",
+                Arrays.asList("df0803aa-f804-49fe-a2ac-c27adc4bb585"),
+                Arrays.asList("5f91012e-0d3f-465b-b301-ee3ee5a50100"),
+                Collections.emptyList(),
+                "no",
+                "no",
+                "yes",
+                "yes",
+                "1",
+                "1",
+                "0"
+            },
+            new Object[]{
+                EVIDENCE_REMINDER_NOTIFICATION,
+                "paper",
+                Arrays.asList("81fa38cc-b7cc-469c-8109-67c801dc9c84"),
+                Arrays.asList("f1076482-a76d-4389-b411-9865373cfc42"),
+                Collections.emptyList(),
+                "no",
+                "no",
+                "yes",
+                "yes",
+                "1",
+                "1",
+                "0"
             }
         };
     }
@@ -1527,7 +1579,7 @@ public class NotificationsIt {
                 "1",
                 "1",
                 "0",
-                "Harry Potter"
+                "Appointee Appointee"
             },
             new Object[]{
                 SYA_APPEAL_CREATED_NOTIFICATION,
@@ -1540,7 +1592,7 @@ public class NotificationsIt {
                 "1",
                 "1",
                 "0",
-                "Harry Potter"
+                "Appointee Appointee"
             },
             new Object[]{
                 SYA_APPEAL_CREATED_NOTIFICATION,
@@ -1618,7 +1670,7 @@ public class NotificationsIt {
                 "1",
                 "1",
                 "0",
-                "Harry Potter"
+                "Appointee Appointee"
             },
             new Object[]{
                 EVIDENCE_RECEIVED_NOTIFICATION,
@@ -1670,7 +1722,7 @@ public class NotificationsIt {
                 "2",
                 "2",
                 "0",
-                "Harry Potter"
+                "Appointee Appointee"
             },
             new Object[]{
                 SUBSCRIPTION_UPDATED_NOTIFICATION,
@@ -1696,7 +1748,7 @@ public class NotificationsIt {
                 "1",
                 "1",
                 "0",
-                "Harry Potter"
+                "Appointee Appointee"
             },
             new Object[]{
                 APPEAL_RECEIVED_NOTIFICATION,
@@ -1709,7 +1761,7 @@ public class NotificationsIt {
                 "1",
                 "1",
                 "0",
-                "Harry Potter"
+                "Appointee Appointee"
             },
             new Object[]{
                 APPEAL_RECEIVED_NOTIFICATION,
@@ -1807,7 +1859,7 @@ public class NotificationsIt {
                 "1",
                 "1",
                 "0",
-                "Harry Potter"
+                "Appointee Appointee"
             },
             new Object[]{
                 SYA_APPEAL_CREATED_NOTIFICATION,
@@ -1820,7 +1872,7 @@ public class NotificationsIt {
                 "1",
                 "1",
                 "0",
-                "Harry Potter"
+                "Appointee Appointee"
             },
             new Object[]{
                 EVIDENCE_RECEIVED_NOTIFICATION,
@@ -1846,7 +1898,7 @@ public class NotificationsIt {
                 "0",
                 "0",
                 "1",
-                "Harry Potter"
+                "Appointee Appointee"
             },
             new Object[]{
                 DWP_RESPONSE_RECEIVED_NOTIFICATION,
@@ -1875,6 +1927,32 @@ public class NotificationsIt {
                 "Appointee Appointee"
             },
             new Object[]{
+                EVIDENCE_REMINDER_NOTIFICATION,
+                "oral",
+                Arrays.asList("b9e47ec4-3b58-4b8d-9304-f77ac27fb7f2"),
+                Arrays.asList("e3f71440-d1ac-43c8-a8cc-a088c4f3c959"),
+                Collections.emptyList(),
+                "yes",
+                "yes",
+                "1",
+                "1",
+                "0",
+                "Appointee Appointee"
+            },
+            new Object[]{
+                EVIDENCE_REMINDER_NOTIFICATION,
+                "paper",
+                Arrays.asList("a3b22e07-e90b-4b52-a293-30823802c209"),
+                Arrays.asList("aaa1aad4-7abc-4a7a-b8fb-8b0567c09365"),
+                Collections.emptyList(),
+                "yes",
+                "yes",
+                "1",
+                "1",
+                "0",
+                "Appointee Appointee"
+            },
+            new Object[]{
                 APPEAL_LAPSED_NOTIFICATION,
                 "oral",
                 Collections.singletonList("8ce8d794-75e8-49a0-b4d2-0c6cd2061c11"),
@@ -1885,7 +1963,7 @@ public class NotificationsIt {
                 "1",
                 "1",
                 "0",
-                "Harry Potter"
+                "Appointee Appointee"
             },
             new Object[]{
                 SUBSCRIPTION_UPDATED_NOTIFICATION,
@@ -1898,7 +1976,7 @@ public class NotificationsIt {
                 "2",
                 "2",
                 "0",
-                "Harry Potter"
+                "Appointee Appointee"
             },
             new Object[]{
                 APPEAL_RECEIVED_NOTIFICATION,
@@ -1911,7 +1989,7 @@ public class NotificationsIt {
                 "1",
                 "1",
                 "0",
-                "Harry Potter"
+                "Appointee Appointee"
             },
             new Object[]{
                 ADJOURNED_NOTIFICATION,
@@ -1924,7 +2002,7 @@ public class NotificationsIt {
                 "1",
                 "1",
                 "0",
-                "Harry Potter"
+                "Appointee Appointee"
             },
             new Object[]{
                 DWP_RESPONSE_RECEIVED_NOTIFICATION,
@@ -1944,13 +2022,13 @@ public class NotificationsIt {
                 "oral",
                 Collections.singletonList("fee16753-0bdb-43f1-9abb-b14b826e3b26"),
                 Collections.singletonList("f900174a-a556-43b2-8042-bbf3e6090071"),
-                Collections.emptyList(),
+                Collections.singletonList("22e51eec-6ba9-489a-aea0-a9e919716935"),
                 "yes",
                 "yes",
                 "1",
                 "1",
-                "0",
-                "Harry Potter"
+                "1",
+                "Appointee Appointee"
             },
             new Object[]{
                 APPEAL_RECEIVED_NOTIFICATION,
@@ -1963,7 +2041,7 @@ public class NotificationsIt {
                 "1",
                 "1",
                 "0",
-                "Harry Potter"
+                "Appointee Appointee"
             },
             new Object[]{
                 APPEAL_WITHDRAWN_NOTIFICATION,
@@ -1976,7 +2054,7 @@ public class NotificationsIt {
                 "1",
                 "1",
                 "0",
-                "Harry Potter"
+                "Appointee Appointee"
             },
             new Object[]{
                 SUBSCRIPTION_UPDATED_NOTIFICATION,
@@ -1989,7 +2067,7 @@ public class NotificationsIt {
                 "2",
                 "2",
                 "0",
-                "Harry Potter"
+                "Appointee Appointee"
             },
             new Object[]{
                 SUBSCRIPTION_UPDATED_NOTIFICATION,
@@ -2015,7 +2093,7 @@ public class NotificationsIt {
                 "1",
                 "1",
                 "0",
-                "Harry Potter"
+                "Appointee Appointee"
             },
             new Object[]{
                 APPEAL_RECEIVED_NOTIFICATION,
@@ -2028,7 +2106,7 @@ public class NotificationsIt {
                 "1",
                 "1",
                 "0",
-                "Harry Potter"
+                "Appointee Appointee"
             },
             new Object[]{
                 APPEAL_RECEIVED_NOTIFICATION,
@@ -2054,7 +2132,7 @@ public class NotificationsIt {
                 "0",
                 "0",
                 "1",
-                "Harry Potter"
+                "Appointee Appointee"
             }
         };
     }
@@ -2096,26 +2174,26 @@ public class NotificationsIt {
     }
 
     @Test
-    public void shouldSendNotificationForEvidenceReminderForAnOralHearing() throws Exception {
+    public void shouldSendAppellantNotificationForEvidenceReminderForAnOralHearing() throws Exception {
         json = json.replace("appealReceived", "evidenceReminder");
 
         HttpServletResponse response = getResponse(getRequestWithAuthHeader(json));
 
         assertHttpStatus(response, HttpStatus.OK);
-        verify(notificationClient).sendEmail(any(), any(), any(), any());
-        verify(notificationClient).sendSms(any(), any(), any(), any(), any());
+        verify(notificationClient).sendEmail(eq("b9e47ec4-3b58-4b8d-9304-f77ac27fb7f2"), any(), any(), any());
+        verify(notificationClient).sendSms(eq("e3f71440-d1ac-43c8-a8cc-a088c4f3c959"), any(), any(), any(), any());
     }
 
     @Test
-    public void shouldNotSendNotificationForEvidenceReminderForAPaperHearing() throws Exception {
+    public void shouldSendAppellantNotificationForEvidenceReminderForAPaperHearing() throws Exception {
         updateJsonForPaperHearing();
         json = json.replace("appealReceived", "evidenceReminder");
 
         HttpServletResponse response = getResponse(getRequestWithAuthHeader(json));
 
         assertHttpStatus(response, HttpStatus.OK);
-        verify(notificationClient).sendEmail(any(), any(), any(), any());
-        verify(notificationClient).sendSms(any(), any(), any(), any(), any());
+        verify(notificationClient).sendEmail(eq("a3b22e07-e90b-4b52-a293-30823802c209"), any(), any(), any());
+        verify(notificationClient).sendSms(eq("aaa1aad4-7abc-4a7a-b8fb-8b0567c09365"), any(), any(), any(), any());
     }
 
     @Test
@@ -2197,11 +2275,11 @@ public class NotificationsIt {
 
         assertHttpStatus(response, HttpStatus.OK);
         verify(notificationClient, never()).sendEmail(any(), any(), any(), any());
-        verify(notificationClient).sendSms(any(), any(), any(), any(), any());
+        verify(notificationClient).sendSms(eq("7397a76f-14cb-468c-b1a7-0570940ead91"), any(), any(), any(), any());
     }
 
     @Test
-    public void shouldSendSubscriptionCreatedNotificationForSubscriptionUpdatedRequestWithNewSubscribeSmsRequestForAPaperHearing() throws Exception {
+    public void shouldSendSubscriptionCreatedNotificationForSubscriptionUpdatedRequestWithNewSubscribeSmsRequestForAPaperHearingWithRepSubscribedToSms() throws Exception {
         updateJsonForPaperHearing();
         json = json.replace("appealReceived", "subscriptionUpdated");
         json = updateEmbeddedJson(json, "No", "case_details", "case_data", "subscriptions", "appellantSubscription", "subscribeEmail");
@@ -2215,7 +2293,7 @@ public class NotificationsIt {
     }
 
     @Test
-    public void shouldSendSubscriptionUpdatedNotificationForSubscriptionUpdatedRequestWithNewEmailAddressForAnOralHearing() throws Exception {
+    public void shouldSendSubscriptionUpdatedNotificationForSubscriptionUpdatedRequestWithNewEmailAddressForAnOralHearingWhenAlreadySubscribedToSms() throws Exception {
         json = updateEmbeddedJson(json, "subscriptionUpdated", "event_id");
         json = updateEmbeddedJson(json, "oral", "case_details", "case_data", "appeal", "hearingType");
         json = updateEmbeddedJson(json, "No", "case_details", "case_data", "subscriptions",
@@ -2230,7 +2308,7 @@ public class NotificationsIt {
     }
 
     @Test
-    public void shouldSendSubscriptionUpdatedNotificationForSubscriptionUpdatedRequestWithNewEmailAddressForAPaperHearing() throws Exception {
+    public void shouldSendSubscriptionUpdatedNotificationForSubscriptionUpdatedRequestWithNewEmailAddressForAPaperHearingWhenRepAlreadySubscriptedToSms() throws Exception {
         updateJsonForPaperHearing();
         json = updateEmbeddedJson(json, "subscriptionUpdated", "event_id");
         json = updateEmbeddedJson(json, "No", "case_details", "case_data", "subscriptions",
