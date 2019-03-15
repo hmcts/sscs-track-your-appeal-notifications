@@ -1683,7 +1683,7 @@ public class NotificationsIt {
                 "0",
                 "0",
                 "1",
-                "Harry Potter"
+                "Appointee Appointee"
             },
             new Object[]{
                 EVIDENCE_RECEIVED_NOTIFICATION,
@@ -1696,7 +1696,7 @@ public class NotificationsIt {
                 "0",
                 "0",
                 "1",
-                "Harry Potter"
+                "Appointee Appointee"
             },
             new Object[]{
                 EVIDENCE_RECEIVED_NOTIFICATION,
@@ -1709,7 +1709,7 @@ public class NotificationsIt {
                 "1",
                 "1",
                 "0",
-                "Harry Potter"
+                "Appointee Appointee"
             },
             new Object[]{
                 SUBSCRIPTION_UPDATED_NOTIFICATION,
@@ -1885,7 +1885,7 @@ public class NotificationsIt {
                 "1",
                 "1",
                 "0",
-                "Harry Potter"
+                "Appointee Appointee"
             },
             new Object[]{
                 SYA_APPEAL_CREATED_NOTIFICATION,
