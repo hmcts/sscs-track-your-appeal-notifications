@@ -1858,12 +1858,12 @@ public class NotificationsIt {
                 "oral",
                 Collections.singletonList("fee16753-0bdb-43f1-9abb-b14b826e3b26"),
                 Collections.singletonList("f900174a-a556-43b2-8042-bbf3e6090071"),
-                Collections.emptyList(),
+                Collections.singletonList("22e51eec-6ba9-489a-aea0-a9e919716935"),
                 "yes",
                 "yes",
                 "1",
                 "1",
-                "0",
+                "1",
                 "Appointee Appointee"
             },
             new Object[]{
@@ -2115,7 +2115,7 @@ public class NotificationsIt {
     }
 
     @Test
-    public void shouldSendSubscriptionCreatedNotificationForSubscriptionUpdatedRequestWithNewSubscribeSmsRequestForAPaperHearing() throws Exception {
+    public void shouldSendSubscriptionCreatedNotificationForSubscriptionUpdatedRequestWithNewSubscribeSmsRequestForAPaperHearingWithRepSubscribedToSms() throws Exception {
         updateJsonForPaperHearing();
         json = json.replace("appealReceived", "subscriptionUpdated");
         json = updateEmbeddedJson(json, "No", "case_details", "case_data", "subscriptions", "appellantSubscription", "subscribeEmail");
@@ -2129,7 +2129,7 @@ public class NotificationsIt {
     }
 
     @Test
-    public void shouldSendSubscriptionUpdatedNotificationForSubscriptionUpdatedRequestWithNewEmailAddressForAnOralHearing() throws Exception {
+    public void shouldSendSubscriptionUpdatedNotificationForSubscriptionUpdatedRequestWithNewEmailAddressForAnOralHearingWhenAlreadySubscribedToSms() throws Exception {
         json = updateEmbeddedJson(json, "subscriptionUpdated", "event_id");
         json = updateEmbeddedJson(json, "oral", "case_details", "case_data", "appeal", "hearingType");
         json = updateEmbeddedJson(json, "No", "case_details", "case_data", "subscriptions",
@@ -2144,7 +2144,7 @@ public class NotificationsIt {
     }
 
     @Test
-    public void shouldSendSubscriptionUpdatedNotificationForSubscriptionUpdatedRequestWithNewEmailAddressForAPaperHearing() throws Exception {
+    public void shouldSendSubscriptionUpdatedNotificationForSubscriptionUpdatedRequestWithNewEmailAddressForAPaperHearingWhenRepAlreadySubscriptedToSms() throws Exception {
         updateJsonForPaperHearing();
         json = updateEmbeddedJson(json, "subscriptionUpdated", "event_id");
         json = updateEmbeddedJson(json, "No", "case_details", "case_data", "subscriptions",

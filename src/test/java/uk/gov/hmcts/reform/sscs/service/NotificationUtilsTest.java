@@ -6,9 +6,11 @@ import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.when;
 import static org.mockito.MockitoAnnotations.initMocks;
 import static uk.gov.hmcts.reform.sscs.SscsCaseDataUtils.CASE_ID;
+import static uk.gov.hmcts.reform.sscs.SscsCaseDataUtils.addHearing;
+import static uk.gov.hmcts.reform.sscs.SscsCaseDataUtils.addHearingOptions;
 import static uk.gov.hmcts.reform.sscs.ccd.util.CaseDataUtils.YES;
 import static uk.gov.hmcts.reform.sscs.domain.notify.NotificationEventType.*;
-import static uk.gov.hmcts.reform.sscs.service.NotificationServiceTest.APPELLANT_WITH_ADDRESS;
+import static uk.gov.hmcts.reform.sscs.service.NotificationServiceTest.*;
 import static uk.gov.hmcts.reform.sscs.service.NotificationUtils.*;
 import static uk.gov.hmcts.reform.sscs.service.SendNotificationServiceTest.APPELLANT_WITH_ADDRESS_AND_APPOINTEE;
 
@@ -172,19 +174,75 @@ public class NotificationUtilsTest {
     }
 
     @Test
+    public void shouldBeOkToSendNotificationForValidFutureNotification() {
+        NotificationEventType eventType = HEARING_BOOKED_NOTIFICATION;
+        NotificationWrapper wrapper = buildNotificationWrapper(eventType);
+
+        Subscription subscription = Subscription.builder().subscribeSms("Yes").subscribeEmail("Yes").build();
+
+        when(notificationValidService.isNotificationStillValidToSend(wrapper.getNewSscsCaseData().getHearings(), eventType)).thenReturn(true);
+        when(notificationValidService.isHearingTypeValidToSendNotification(wrapper.getNewSscsCaseData(), eventType)).thenReturn(true);
+
+        assertTrue(isOkToSendNotification(wrapper, eventType, subscription, notificationValidService));
+    }
+
+    @Test
+    public void shouldNotBeOkToSendNotificationValidPastNotification() {
+        NotificationEventType eventType = HEARING_BOOKED_NOTIFICATION;
+        NotificationWrapper wrapper = buildNotificationWrapper(eventType);
+
+        Subscription subscription = Subscription.builder().subscribeSms("Yes").subscribeEmail("Yes").build();
+
+        when(notificationValidService.isNotificationStillValidToSend(wrapper.getNewSscsCaseData().getHearings(), eventType)).thenReturn(true);
+        when(notificationValidService.isHearingTypeValidToSendNotification(wrapper.getNewSscsCaseData(), eventType)).thenReturn(false);
+
+        assertFalse(isOkToSendNotification(wrapper, eventType, subscription, notificationValidService));
+    }
+
+    @Test
+    public void shouldNotBeOkToSendNotificationInvalidNotification() {
+        NotificationEventType eventType = HEARING_BOOKED_NOTIFICATION;
+        NotificationWrapper wrapper = buildNotificationWrapper(eventType);
+
+        Subscription subscription = Subscription.builder().subscribeSms("Yes").subscribeEmail("Yes").build();
+
+        when(notificationValidService.isNotificationStillValidToSend(wrapper.getNewSscsCaseData().getHearings(), eventType)).thenReturn(false);
+        when(notificationValidService.isHearingTypeValidToSendNotification(wrapper.getNewSscsCaseData(), eventType)).thenReturn(true);
+
+        assertFalse(isOkToSendNotification(wrapper, eventType, subscription, notificationValidService));
+    }
+
+    private NotificationWrapper buildNotificationWrapper(NotificationEventType eventType) {
+        SscsCaseData sscsCaseData = getSscsCaseDataBuilder(
+            APPELLANT_WITH_ADDRESS,
+            null,
+            null
+        ).build();
+        addHearing(sscsCaseData, 1);
+        addHearingOptions(sscsCaseData, "Yes");
+
+        SscsCaseDataWrapper caseDataWrapper = SscsCaseDataWrapper.builder()
+            .newSscsCaseData(sscsCaseData)
+            .oldSscsCaseData(sscsCaseData)
+            .notificationEventType(eventType)
+            .build();
+        return new CcdNotificationWrapper(caseDataWrapper);
+    }
+
+    @Test
     @Parameters(method = "mandatoryNotificationTypes")
     public void isMandatoryLetter(NotificationEventType eventType) {
-        assertTrue(isMandatoryLetterEventType(eventType));
+        assertTrue(isMandatoryLetterEventType(buildNotificationWrapper(eventType)));
     }
 
     @Test
     @Parameters(method = "nonMandatoryNotificationTypes")
     public void isNotMandatoryLetter(NotificationEventType eventType) {
-        assertFalse(isMandatoryLetterEventType(eventType));
+        assertFalse(isMandatoryLetterEventType(buildNotificationWrapper(eventType)));
     }
 
     @Test
-    public void isOkToSendNotification() {
+    public void itIsOkToSendNotification() {
         NotificationWrapper wrapper = NotificationServiceTest.buildBaseWrapper(
             SYA_APPEAL_CREATED_NOTIFICATION,
             APPELLANT_WITH_ADDRESS,
@@ -192,10 +250,12 @@ public class NotificationUtilsTest {
             null
         );
 
+        Subscription subscription = Subscription.builder().subscribeEmail("test@test.com").subscribeSms("07800000000").build();
+
         when(notificationValidService.isNotificationStillValidToSend(any(), any())).thenReturn(true);
         when(notificationValidService.isHearingTypeValidToSendNotification(any(), any())).thenReturn(true);
 
-        assertTrue(NotificationUtils.isOkToSendNotification(wrapper, HEARING_BOOKED_NOTIFICATION, notificationValidService));
+        assertTrue(NotificationUtils.isOkToSendNotification(wrapper, HEARING_BOOKED_NOTIFICATION, subscription, notificationValidService));
     }
 
     @Test
@@ -208,10 +268,12 @@ public class NotificationUtilsTest {
             null
         );
 
+        Subscription subscription = Subscription.builder().subscribeEmail("test@test.com").subscribeSms("07800000000").build();
+
         when(notificationValidService.isNotificationStillValidToSend(any(), any())).thenReturn(isNotificationStillValidToSendResponse);
         when(notificationValidService.isHearingTypeValidToSendNotification(any(), any())).thenReturn(isHearingTypeValidToSendNotificationResponse);
 
-        assertFalse(NotificationUtils.isOkToSendNotification(wrapper, HEARING_BOOKED_NOTIFICATION, notificationValidService));
+        assertFalse(NotificationUtils.isOkToSendNotification(wrapper, HEARING_BOOKED_NOTIFICATION, subscription, notificationValidService));
     }
 
     @Test
@@ -248,7 +310,7 @@ public class NotificationUtilsTest {
             .template(Template.builder().smsTemplateId("some.template").build())
             .build();
 
-        assertTrue(isOkToSendSmsNotification(wrapper, subscription, notification, notificationValidService));
+        assertTrue(isOkToSendSmsNotification(wrapper, subscription, notification, VIEW_ISSUED, notificationValidService));
     }
 
     @Test
@@ -259,7 +321,7 @@ public class NotificationUtilsTest {
 
         CcdNotificationWrapper wrapper = buildBaseWrapper(null, null);
 
-        assertFalse(isOkToSendSmsNotification(wrapper, subscription, notification, notificationValidService));
+        assertFalse(isOkToSendSmsNotification(wrapper, subscription, notification, VIEW_ISSUED, notificationValidService));
     }
 
     @Test

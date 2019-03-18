@@ -190,7 +190,6 @@ public class NotificationServiceTest {
         then(notificationHandler).should(times(wantedNumberOfSmsNotificationsSent)).sendNotification(
                 eq(ccdNotificationWrapper), eq(SMS_TEMPLATE_ID), eq("SMS"),
                 any(NotificationHandler.SendNotification.class));
-
     }
 
     @Test
@@ -551,48 +550,49 @@ public class NotificationServiceTest {
                                 .tya(APPEAL_NUMBER)
                                 .email(EMAIL)
                                 .subscribeEmail(YES)
-                                .mobile(MOBILE_NUMBER_1)
                                 .build(),
                         Subscription.builder()
                                 .tya(APPEAL_NUMBER)
                                 .email(EMAIL)
                                 .subscribeEmail(YES)
-                                .mobile(MOBILE_NUMBER_1)
                                 .build(),
                         new SubscriptionType[]{APPOINTEE, REPRESENTATIVE},
                 },
                 new Object[]{
                     APPEAL_LODGED,
                         1,
-                        0,
+                        1,
                         null,
                         Subscription.builder()
                                 .tya(APPEAL_NUMBER)
                                 .email(EMAIL)
                                 .subscribeEmail(YES)
-                                .mobile(MOBILE_NUMBER_1)
                                 .build(),
                         Subscription.builder()
                                 .tya(APPEAL_NUMBER)
                                 .mobile(MOBILE_NUMBER_1)
+                                .subscribeSms(YES)
                                 .build(),
                         new SubscriptionType[]{APPOINTEE, REPRESENTATIVE},
                 },
                 new Object[]{
                     APPEAL_LODGED,
                         0,
-                        0,
+                        2,
                         Subscription.builder()
                                 .tya(APPEAL_NUMBER)
                                 .mobile(MOBILE_NUMBER_1)
+                                .subscribeSms("Yes")
                                 .build(),
                         Subscription.builder()
                                 .tya(APPEAL_NUMBER)
                                 .mobile(MOBILE_NUMBER_1)
+                                .subscribeSms("Yes")
                                 .build(),
                         Subscription.builder()
                                 .tya(APPEAL_NUMBER)
                                 .mobile(MOBILE_NUMBER_1)
+                                .subscribeSms(YES)
                                 .build(),
                         new SubscriptionType[]{APPOINTEE, REPRESENTATIVE},
                 }
@@ -1122,7 +1122,6 @@ public class NotificationServiceTest {
         return buildNotificationWrapperGivenNotificationTypeAndSubscriptions(notificationEventType, appellantSubscription, repsSubscription, appointeeSubscription, null);
     }
 
-
     private CcdNotificationWrapper buildNotificationWrapperGivenNotificationTypeAndSubscriptions(
         NotificationEventType notificationEventType, Subscription appellantSubscription,
         Subscription repsSubscription, Subscription appointeeSubscription, SscsCaseData oldCaseData) {
@@ -1649,8 +1648,19 @@ public class NotificationServiceTest {
         return new SubscriptionWithType(getSubscription(ccdNotificationWrapper.getNewSscsCaseData(), SubscriptionType.APPELLANT), SubscriptionType.APPELLANT);
     }
 
-    static CcdNotificationWrapper buildBaseWrapper(NotificationEventType eventType, Appellant appellant, Representative rep, SscsDocument sscsDocument) {
-        SscsCaseData sscsCaseDataWithDocuments = SscsCaseData.builder()
+    protected static CcdNotificationWrapper buildBaseWrapper(NotificationEventType eventType, Appellant appellant, Representative rep, SscsDocument sscsDocument) {
+        SscsCaseData sscsCaseDataWithDocuments = getSscsCaseDataBuilder(appellant, rep, sscsDocument).build();
+
+        SscsCaseDataWrapper caseDataWrapper = SscsCaseDataWrapper.builder()
+            .newSscsCaseData(sscsCaseDataWithDocuments)
+            .oldSscsCaseData(sscsCaseDataWithDocuments)
+            .notificationEventType(eventType)
+            .build();
+        return new CcdNotificationWrapper(caseDataWrapper);
+    }
+
+    protected static SscsCaseData.SscsCaseDataBuilder getSscsCaseDataBuilder(Appellant appellant, Representative rep, SscsDocument sscsDocument) {
+        return SscsCaseData.builder()
             .appeal(
                 Appeal
                     .builder()
@@ -1659,23 +1669,18 @@ public class NotificationServiceTest {
                     .appellant(appellant)
                     .rep(rep)
                     .build())
-            .subscriptions(Subscriptions.builder().appellantSubscription(Subscription.builder()
-                .tya(APPEAL_NUMBER)
-                .email(EMAIL)
-                .mobile(MOBILE_NUMBER_1)
-                .subscribeEmail(YES)
-                .subscribeSms(YES)
-                .build()).build())
+            .subscriptions(Subscriptions.builder()
+                .appellantSubscription(Subscription.builder()
+                    .tya(APPEAL_NUMBER)
+                    .email(EMAIL)
+                    .mobile(MOBILE_NUMBER_1)
+                    .subscribeEmail(YES)
+                    .subscribeSms(YES)
+                    .build()
+                )
+                .build())
             .caseReference(CASE_REFERENCE)
             .ccdCaseId(CASE_ID)
-            .sscsDocument(new ArrayList<>(Collections.singletonList(sscsDocument)))
-            .build();
-
-        SscsCaseDataWrapper struckOutSscsCaseDataWrapper = SscsCaseDataWrapper.builder()
-            .newSscsCaseData(sscsCaseDataWithDocuments)
-            .oldSscsCaseData(sscsCaseDataWithDocuments)
-            .notificationEventType(eventType)
-            .build();
-        return new CcdNotificationWrapper(struckOutSscsCaseDataWrapper);
+            .sscsDocument(new ArrayList<>(Collections.singletonList(sscsDocument)));
     }
 }
