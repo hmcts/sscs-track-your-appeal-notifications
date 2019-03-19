@@ -270,7 +270,7 @@ public class SyaAppealCreatedAndReceivedPersonalisation extends WithRepresentati
         return bool ? REQUIRED : NOT_REQUIRED;
     }
 
-    protected String getOptionalField(String field, String text) {
+    public static String getOptionalField(String field, String text) {
         return field == null || StringUtils.equalsIgnoreCase("null", field)
                         || StringUtils.equalsIgnoreCase("null null", field)
                         || StringUtils.equalsIgnoreCase("null null null", field)
