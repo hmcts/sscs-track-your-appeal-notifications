@@ -29,8 +29,8 @@
           "tya": "appellantTya",
           "email": "sscstest+notify@greencroftconsulting.com",
           "mobile": "07398785050",
-          "subscribeSms": "Yes",
-          "subscribeEmail": "Yes"
+          "subscribeSms": "No",
+          "subscribeEmail": "No"
         },
         "representativeSubscription": {
           "tya": "repTya",
@@ -367,8 +367,8 @@
           "tya": "appellantTya",
           "email": "sscstest+notify@greencroftconsulting.com",
           "mobile": "07398785050",
-          "subscribeSms": "Yes",
-          "subscribeEmail": "Yes"
+          "subscribeSms": "No",
+          "subscribeEmail": "No"
         },
         "representativeSubscription": {
           "tya": "repTya",
