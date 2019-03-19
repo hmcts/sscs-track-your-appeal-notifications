@@ -1,5 +1,6 @@
 package uk.gov.hmcts.reform.sscs.service;
 
+import static uk.gov.hmcts.reform.sscs.config.SubscriptionType.REPRESENTATIVE;
 import static uk.gov.hmcts.reform.sscs.domain.notify.NotificationEventType.STRUCK_OUT;
 import static uk.gov.hmcts.reform.sscs.service.NotificationUtils.hasAppointee;
 
@@ -10,6 +11,7 @@ import org.apache.pdfbox.multipdf.PDFMergerUtility;
 import org.apache.pdfbox.pdmodel.PDDocument;
 import uk.gov.hmcts.reform.sscs.ccd.domain.Address;
 import uk.gov.hmcts.reform.sscs.ccd.domain.Name;
+import uk.gov.hmcts.reform.sscs.config.SubscriptionType;
 import uk.gov.hmcts.reform.sscs.exception.NotificationClientRuntimeException;
 import uk.gov.hmcts.reform.sscs.factory.NotificationWrapper;
 
@@ -23,12 +25,16 @@ public class LetterUtils {
         // Hiding utility class constructor
     }
 
-    public static Address getAddressToUseForLetter(NotificationWrapper wrapper) {
-        if (hasAppointee(wrapper.getSscsCaseDataWrapper())) {
-            return wrapper.getNewSscsCaseData().getAppeal().getAppellant().getAppointee().getAddress();
-        }
+    public static Address getAddressToUseForLetter(NotificationWrapper wrapper, SubscriptionType subscriptionType) {
+        if (REPRESENTATIVE.equals(subscriptionType)) {
+            return wrapper.getNewSscsCaseData().getAppeal().getRep().getAddress();
+        } else {
+            if (hasAppointee(wrapper.getSscsCaseDataWrapper())) {
+                return wrapper.getNewSscsCaseData().getAppeal().getAppellant().getAppointee().getAddress();
+            }
 
-        return wrapper.getNewSscsCaseData().getAppeal().getAppellant().getAddress();
+            return wrapper.getNewSscsCaseData().getAppeal().getAppellant().getAddress();
+        }
     }
 
     public static String getFilename(NotificationWrapper wrapper) {
@@ -39,11 +45,15 @@ public class LetterUtils {
         return PDF_UNKNOWN;
     }
 
-    public static Name getNameToUseForLetter(NotificationWrapper wrapper) {
-        if (hasAppointee(wrapper.getSscsCaseDataWrapper())) {
-            return wrapper.getNewSscsCaseData().getAppeal().getAppellant().getAppointee().getName();
+    public static Name getNameToUseForLetter(NotificationWrapper wrapper, SubscriptionType subscriptionType) {
+        if (REPRESENTATIVE.equals(subscriptionType)) {
+            return wrapper.getNewSscsCaseData().getAppeal().getRep().getName();
         } else {
-            return wrapper.getNewSscsCaseData().getAppeal().getAppellant().getName();
+            if (hasAppointee(wrapper.getSscsCaseDataWrapper())) {
+                return wrapper.getNewSscsCaseData().getAppeal().getAppellant().getAppointee().getName();
+            } else {
+                return wrapper.getNewSscsCaseData().getAppeal().getAppellant().getName();
+            }
         }
     }
 

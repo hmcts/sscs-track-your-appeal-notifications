@@ -57,8 +57,15 @@ public final class SscsCaseDataUtils {
                 .dob("1904-03-10")
                 .nino("AB 22 55 66 B")
                 .build();
+        Address appellantAddress = Address.builder()
+            .line1("1 Appellant Ave")
+            .town("Appellanton")
+            .county("Appellanty")
+            .postcode("TS1 1ST")
+            .build();
         Appellant appellant = Appellant.builder()
                 .name(name)
+                .address(appellantAddress)
                 .contact(contact)
                 .identity(identity)
                 .build();
@@ -279,5 +286,14 @@ public final class SscsCaseDataUtils {
         response.getAppeal().getAppellant().setAppointee(appointee);
         response.setSubscriptions(subscriptions);
     }
+
+    public static HearingOptions addHearingOptions(SscsCaseData response, String wantsToAttend) {
+        HearingOptions options = HearingOptions.builder()
+            .wantsToAttend(wantsToAttend)
+            .build();
+
+        return options;
+    }
+
 }
 
