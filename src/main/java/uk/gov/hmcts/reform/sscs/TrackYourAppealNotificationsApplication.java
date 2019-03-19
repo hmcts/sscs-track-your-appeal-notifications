@@ -2,15 +2,19 @@ package uk.gov.hmcts.reform.sscs;
 
 import static java.util.Arrays.asList;
 
+import com.microsoft.applicationinsights.web.internal.ApplicationInsightsServletContextListener;
 import java.util.Properties;
 import java.util.TimeZone;
 import javax.annotation.PostConstruct;
+import javax.servlet.ServletContextListener;
 import org.quartz.spi.JobFactory;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
+import org.springframework.boot.autoconfigure.condition.ConditionalOnMissingBean;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 import org.springframework.boot.autoconfigure.flyway.FlywayMigrationInitializer;
+import org.springframework.boot.web.servlet.ServletListenerRegistrationBean;
 import org.springframework.cloud.openfeign.EnableFeignClients;
 import org.springframework.context.ApplicationContext;
 import org.springframework.context.MessageSource;
@@ -77,6 +81,21 @@ public class TrackYourAppealNotificationsApplication {
     @Bean
     public RestTemplate restTemplate() {
         return new RestTemplate();
+    }
+
+    @Bean
+    public ServletListenerRegistrationBean<ServletContextListener> appInsightsServletContextListenerRegistrationBean(
+                                ApplicationInsightsServletContextListener applicationInsightsServletContextListener) {
+        ServletListenerRegistrationBean<ServletContextListener> srb =
+            new ServletListenerRegistrationBean<>();
+        srb.setListener(applicationInsightsServletContextListener);
+        return srb;
+    }
+
+    @Bean
+    @ConditionalOnMissingBean
+    public ApplicationInsightsServletContextListener applicationInsightsServletContextListener() {
+        return new ApplicationInsightsServletContextListener();
     }
 
     @Bean

@@ -18,9 +18,9 @@ public class SyaAppealCreatedAndReceivedPersonalisation extends WithRepresentati
     private static final String NOT_PROVIDED = "Not provided";
     private static final String YES = "yes";
     private static final String NO = "no";
-    private static final String TWO_NEW_LINES = "\n\n";
-    private static final String NOT_REQUIRED = "Not required";
-    private static final String REQUIRED = "Required";
+    static final String TWO_NEW_LINES = "\n\n";
+    static final String NOT_REQUIRED = "Not required";
+    static final String REQUIRED = "Required";
     private static final String NAME = "Name: ";
     private static final String ADDRESS = "Address: ";
     private static final String EMAIL = "Email: ";

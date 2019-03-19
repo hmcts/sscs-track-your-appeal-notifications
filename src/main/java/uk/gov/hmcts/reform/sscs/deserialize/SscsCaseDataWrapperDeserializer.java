@@ -341,9 +341,8 @@ public class SscsCaseDataWrapperDeserializer extends StdDeserializer<SscsCaseDat
         JsonNode subscriptionNode = getNode(subscriptionsNode, subscriptionName);
 
         Subscription subscription = null;
-        if (null != subscriptionNode) {
+        if ((subscriptionNode != null) && (subscriptionNode.size() != 0)) {
             subscription = Subscription.builder().build();
-
             subscription = deserializeSubscriberJson(subscriptionNode, subscription);
         }
 

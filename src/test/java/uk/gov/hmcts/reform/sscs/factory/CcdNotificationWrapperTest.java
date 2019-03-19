@@ -24,7 +24,7 @@ public class CcdNotificationWrapperTest {
     private CcdNotificationWrapper ccdNotificationWrapper;
 
     @Test
-    @Parameters({"paper, PAPER", "null, REGULAR", "oral, ORAL", "cor, ONLINE"})
+    @Parameters({"paper, PAPER", "oral, ORAL", "cor, ONLINE"})
     public void should_returnAccordingAppealHearingType_when_hearingTypeIsPresent(String hearingType,
                                                                                   AppealHearingType expected) {
         ccdNotificationWrapper = buildCcdNotificationWrapper(hearingType);
@@ -152,7 +152,7 @@ public class CcdNotificationWrapperTest {
     @Test
     @Parameters({"APPEAL_LODGED"})
     public void givenSubscriptions_shouldGetAppointeeAndRepSubscriptionTypeList(NotificationEventType notificationEventType) {
-        ccdNotificationWrapper = buildCcdNotificationWrapperBasedOnEventType(notificationEventType, Appointee.builder().name(Name.builder().firstName("John").lastName("Doe").build()).build(), Representative.builder().build());
+        ccdNotificationWrapper = buildCcdNotificationWrapperBasedOnEventType(notificationEventType, Appointee.builder().name(Name.builder().firstName("John").lastName("Doe").build()).build(), Representative.builder().hasRepresentative("Yes").build());
         List<SubscriptionWithType> subsWithTypeList = ccdNotificationWrapper.getSubscriptionsBasedOnNotificationType();
         Assert.assertEquals(2,subsWithTypeList.size());
         Assert.assertEquals(SubscriptionType.APPOINTEE, subsWithTypeList.get(0).getSubscriptionType());
@@ -201,6 +201,7 @@ public class CcdNotificationWrapperTest {
                 || type.equals(POSTPONEMENT_NOTIFICATION)
                 || type.equals(SUBSCRIPTION_UPDATED_NOTIFICATION)
                 || type.equals(HEARING_BOOKED_NOTIFICATION)
+                || type.equals(SUBSCRIPTION_UPDATED_NOTIFICATION)
             )).toArray();
     }
 
