@@ -3,6 +3,7 @@ package uk.gov.hmcts.reform.sscs.service;
 import static uk.gov.hmcts.reform.sscs.config.SubscriptionType.APPELLANT;
 import static uk.gov.hmcts.reform.sscs.config.SubscriptionType.REPRESENTATIVE;
 import static uk.gov.hmcts.reform.sscs.domain.notify.NotificationEventType.HEARING_BOOKED_NOTIFICATION;
+import static uk.gov.hmcts.reform.sscs.domain.notify.NotificationEventType.REQUEST_INFO_INCOMPLETE;
 import static uk.gov.hmcts.reform.sscs.domain.notify.NotificationEventType.STRUCK_OUT;
 
 import java.util.Arrays;
@@ -18,7 +19,7 @@ import uk.gov.hmcts.reform.sscs.domain.notify.NotificationEventType;
 import uk.gov.hmcts.reform.sscs.factory.NotificationWrapper;
 
 public class NotificationUtils {
-    private static final List<NotificationEventType> MANDATORY_LETTERS = Arrays.asList(STRUCK_OUT, HEARING_BOOKED_NOTIFICATION);
+    private static final List<NotificationEventType> MANDATORY_LETTERS = Arrays.asList(STRUCK_OUT, HEARING_BOOKED_NOTIFICATION, REQUEST_INFO_INCOMPLETE);
 
     private NotificationUtils() {
         // empty
