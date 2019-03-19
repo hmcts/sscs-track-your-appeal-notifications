@@ -141,7 +141,7 @@ public class SendNotificationService {
             };
 
             if (bundledLettersOn && isBundledLetter(wrapper.getNotificationType())) {
-                sendBundledLetterNotificationToAppellant(wrapper, notification, subscriptionType);
+                sendBundledLetterNotification(wrapper, notification, getAddressToUseForLetter(wrapper, subscriptionType), getNameToUseForLetter(wrapper, subscriptionType));
             } else {
                 notificationHandler.sendNotification(wrapper, notification.getLetterTemplate(), NOTIFICATION_TYPE_LETTER, sendNotification);
             }
@@ -157,7 +157,7 @@ public class SendNotificationService {
             };
 
             if (bundledLettersOn && isBundledLetter(wrapper.getNotificationType())) {
-                sendBundledLetterNotificationToAppellant(wrapper, notification, subscriptionWithType.getSubscriptionType());
+                sendBundledLetterNotification(wrapper, notification, getAddressToUseForLetter(wrapper, subscriptionWithType.getSubscriptionType()), getNameToUseForLetter(wrapper, subscriptionWithType.getSubscriptionType()));
             } else {
                 notificationHandler.sendNotification(wrapper, notification.getLetterTemplate(), NOTIFICATION_TYPE_LETTER, sendNotification);
             }
@@ -208,20 +208,10 @@ public class SendNotificationService {
         }
     }
 
-    private void sendBundledLetterNotificationToAppellant(NotificationWrapper wrapper, Notification notification) {
-        sendBundledLetterNotification(wrapper, notification, getAddressToUseForLetter(wrapper), getNameToUseForLetter(wrapper));
-    }
-
     private static boolean isValidLetterAddress(Address addressToUse) {
         return null != addressToUse
             && null != addressToUse.getLine1()
             && null != addressToUse.getPostcode();
-    }
-
-    private void sendBundledLetterNotificationToAppellant(NotificationWrapper wrapper, Notification notification, SubscriptionType subscriptionType) {
-        if (hasRepresentative(wrapper.getSscsCaseDataWrapper())) {
-            sendBundledLetterNotification(wrapper, notification, getAddressToUseForLetter(wrapper, subscriptionType), getNameToUseForLetter(wrapper, subscriptionType));
-        }
     }
 
     private void sendBundledLetterNotification(NotificationWrapper wrapper, Notification notification, Address addressToUse, Name nameToUse) {

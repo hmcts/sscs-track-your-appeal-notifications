@@ -233,7 +233,7 @@ dependencies {
     compile group: 'uk.gov.hmcts.reform', name: 'sscs-job-scheduler', version: '1.5.2'
     compile group: 'uk.gov.hmcts.reform', name: 'service-auth-provider-client', version: '2.0.0'
     compile group: 'uk.gov.hmcts.reform', name: 'sscs-common', version: '0.0.143'
-    compile group: 'uk.gov.hmcts.reform', name: 'sscs-pdf-email-common', version: '0.0.106_RC1_SSCS-5094'
+    compile group: 'uk.gov.hmcts.reform', name: 'sscs-pdf-email-common', version: '0.0.107_RC1_SSCS-5094'
 
     compile group: 'uk.gov.service.notify', name: 'notifications-java-client', version: '3.14.1-RELEASE'
     compile group: 'io.github.openfeign.form', name: 'feign-form', version: '3.7.0'
