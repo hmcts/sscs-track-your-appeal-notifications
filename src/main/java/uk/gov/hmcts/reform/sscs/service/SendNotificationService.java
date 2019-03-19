@@ -1,12 +1,11 @@
 package uk.gov.hmcts.reform.sscs.service;
 
 import static uk.gov.hmcts.reform.sscs.config.AppConstants.*;
-import static uk.gov.hmcts.reform.sscs.config.SubscriptionType.APPELLANT;
-import static uk.gov.hmcts.reform.sscs.config.SubscriptionType.APPOINTEE;
 import static uk.gov.hmcts.reform.sscs.domain.notify.NotificationEventType.APPEAL_LODGED;
 import static uk.gov.hmcts.reform.sscs.domain.notify.NotificationEventType.DIRECTION_ISSUED;
 import static uk.gov.hmcts.reform.sscs.domain.notify.NotificationEventType.STRUCK_OUT;
 import static uk.gov.hmcts.reform.sscs.service.LetterUtils.*;
+import static uk.gov.hmcts.reform.sscs.service.NotificationUtils.*;
 import static uk.gov.hmcts.reform.sscs.service.NotificationUtils.hasAppointee;
 import static uk.gov.hmcts.reform.sscs.service.NotificationUtils.isOkToSendEmailNotification;
 import static uk.gov.hmcts.reform.sscs.service.NotificationUtils.isOkToSendSmsNotification;
@@ -24,6 +23,7 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 import uk.gov.hmcts.reform.sscs.ccd.domain.*;
 import uk.gov.hmcts.reform.sscs.config.AppConstants;
+import uk.gov.hmcts.reform.sscs.config.SubscriptionType;
 import uk.gov.hmcts.reform.sscs.domain.SubscriptionWithType;
 import uk.gov.hmcts.reform.sscs.domain.notify.Notification;
 import uk.gov.hmcts.reform.sscs.domain.notify.NotificationEventType;
@@ -78,27 +78,18 @@ public class SendNotificationService {
     void sendEmailSmsLetterNotification(
             NotificationWrapper wrapper,
             Notification notification,
-            SubscriptionWithType subscriptionWithType) {
+            SubscriptionWithType subscriptionWithType,
+            NotificationEventType eventType) {
         sendEmailNotification(wrapper, subscriptionWithType.getSubscription(), notification);
-        sendSmsNotification(wrapper, subscriptionWithType.getSubscription(), notification);
+        sendSmsNotification(wrapper, subscriptionWithType.getSubscription(), notification, eventType);
 
         if (lettersOn) {
-            if (APPELLANT.equals(subscriptionWithType.getSubscriptionType())
-                || APPOINTEE.equals(subscriptionWithType.getSubscriptionType())) {
-                sendFallbackLetterNotificationToAppellant(wrapper, subscriptionWithType.getSubscription(), notification);
-            } else {
-                sendFallbackLetterNotificationToRepresentative(wrapper, subscriptionWithType.getSubscription(), notification);
-            }
-        }
-
-        if (bundledLettersOn && isBundledLetter(wrapper.getNotificationType())) {
-            sendBundledLetterNotificationToAppellant(wrapper, notification);
-            sendBundledLetterNotificationToRepresentative(wrapper, notification);
+            sendLetterNotification(wrapper, subscriptionWithType.getSubscription(), notification, subscriptionWithType, eventType);
         }
     }
 
-    private void sendSmsNotification(NotificationWrapper wrapper, Subscription subscription, Notification notification) {
-        if (isOkToSendSmsNotification(wrapper, subscription, notification, notificationValidService)) {
+    private void sendSmsNotification(NotificationWrapper wrapper, Subscription subscription, Notification notification, NotificationEventType eventType) {
+        if (isOkToSendSmsNotification(wrapper, subscription, notification, eventType, notificationValidService)) {
             if (APPEAL_LODGED.equals(wrapper.getNotificationType())) {
                 ZonedDateTime appealReceivedDate = ZonedDateTime.now().plusSeconds(delay);
                 notification.getPlaceholders().put(APPEAL_RESPOND_DATE, appealReceivedDate.format(DateTimeFormatter.ofPattern(RESPONSE_DATE_FORMAT)));
@@ -136,25 +127,40 @@ public class SendNotificationService {
         }
     }
 
-    private void sendFallbackLetterNotificationToAppellant(NotificationWrapper wrapper, Subscription subscription, Notification notification) {
-        if (subscription != null && !subscription.isSmsSubscribed() && !subscription.isEmailSubscribed() && notification.getLetterTemplate() != null) {
-            NotificationHandler.SendNotification sendNotification = () -> {
-                Address addressToUse = getAddressToUseForLetter(wrapper);
+    private void sendLetterNotification(NotificationWrapper wrapper, Subscription subscription, Notification notification, SubscriptionWithType subscriptionWithType, NotificationEventType eventType) {
+        sendMandatoryLetterNotification(wrapper, notification, subscriptionWithType.getSubscriptionType());
+        sendFallbackLetterNotification(wrapper, subscription, notification, subscriptionWithType, eventType);
+    }
 
-                sendLetterNotification(wrapper, notification, addressToUse);
+    private void sendMandatoryLetterNotification(NotificationWrapper wrapper, Notification notification, SubscriptionType subscriptionType) {
+        if (hasLetterTemplate(notification) && isMandatoryLetterEventType(wrapper)) {
+            NotificationHandler.SendNotification sendNotification = () -> {
+                Address addressToUse = getAddressToUseForLetter(wrapper, subscriptionType);
+
+                sendLetterNotificationToAddress(wrapper, notification, addressToUse);
             };
-            notificationHandler.sendNotification(wrapper, notification.getLetterTemplate(), NOTIFICATION_TYPE_LETTER, sendNotification);
+
+            if (bundledLettersOn && isBundledLetter(wrapper.getNotificationType())) {
+                sendBundledLetterNotificationToAppellant(wrapper, notification, subscriptionType);
+            } else {
+                notificationHandler.sendNotification(wrapper, notification.getLetterTemplate(), NOTIFICATION_TYPE_LETTER, sendNotification);
+            }
         }
     }
 
-    private void sendFallbackLetterNotificationToRepresentative(NotificationWrapper wrapper, Subscription subscription, Notification notification) {
-        if (subscription != null && !subscription.isSmsSubscribed() && !subscription.isEmailSubscribed() && notification.getLetterTemplate() != null) {
+    private void sendFallbackLetterNotification(NotificationWrapper wrapper, Subscription subscription, Notification notification, SubscriptionWithType subscriptionWithType, NotificationEventType eventType) {
+        if (hasNoSubscriptions(subscription) && hasLetterTemplate(notification) && isFallbackLetterRequired(wrapper, subscriptionWithType, subscription, eventType, notificationValidService)) {
             NotificationHandler.SendNotification sendNotification = () -> {
-                Address addressToUse = wrapper.getNewSscsCaseData().getAppeal().getRep().getAddress();
+                Address addressToUse = getAddressToUseForLetter(wrapper, subscriptionWithType.getSubscriptionType());
 
-                sendLetterNotification(wrapper, notification, addressToUse);
+                sendLetterNotificationToAddress(wrapper, notification, addressToUse);
             };
-            notificationHandler.sendNotification(wrapper, notification.getLetterTemplate(), NOTIFICATION_TYPE_LETTER, sendNotification);
+
+            if (bundledLettersOn && isBundledLetter(wrapper.getNotificationType())) {
+                sendBundledLetterNotificationToAppellant(wrapper, notification, subscriptionWithType.getSubscriptionType());
+            } else {
+                notificationHandler.sendNotification(wrapper, notification.getLetterTemplate(), NOTIFICATION_TYPE_LETTER, sendNotification);
+            }
         }
     }
 
@@ -168,43 +174,53 @@ public class SendNotificationService {
         }
     }
 
-    protected void sendLetterNotification(NotificationWrapper wrapper, Notification notification, final Address addressToUse) throws NotificationClientException {
-        Map<String, String> placeholders = notification.getPlaceholders();
-        placeholders.put(ADDRESS_LINE_1, addressToUse.getLine1() == null ? " " : addressToUse.getLine1());
-        placeholders.put(ADDRESS_LINE_2, addressToUse.getLine2() == null ? " " : addressToUse.getLine2());
-        placeholders.put(ADDRESS_LINE_3, addressToUse.getTown() == null ? " " : addressToUse.getTown());
-        placeholders.put(ADDRESS_LINE_4, addressToUse.getCounty() == null ? " " : addressToUse.getCounty());
-        placeholders.put(POSTCODE_LITERAL, addressToUse.getPostcode());
-        if (null != wrapper.getNewSscsCaseData().getAppeal().getRep()) {
-            String repSalutation = getRepSalutation(wrapper);
-            placeholders.put(REPRESENTATIVE_NAME, repSalutation);
-        }
+    protected void sendLetterNotificationToAddress(NotificationWrapper wrapper, Notification notification, final Address addressToUse) throws NotificationClientException {
+        if (isValidLetterAddress(addressToUse)) {
+            Map<String, String> placeholders = notification.getPlaceholders();
+            placeholders.put(ADDRESS_LINE_1, addressToUse.getLine1());
+            placeholders.put(ADDRESS_LINE_2, addressToUse.getLine2() == null ? " " : addressToUse.getLine2());
+            placeholders.put(ADDRESS_LINE_3, addressToUse.getTown() == null ? " " : addressToUse.getTown());
+            placeholders.put(ADDRESS_LINE_4, addressToUse.getCounty() == null ? " " : addressToUse.getCounty());
+            placeholders.put(POSTCODE_LITERAL, addressToUse.getPostcode());
+            if (hasRepresentative(wrapper.getSscsCaseDataWrapper())) {
+                String repSalutation = getRepSalutation(wrapper);
+                placeholders.put(REPRESENTATIVE_NAME, repSalutation);
+            }
 
-        if (hasAppointee(wrapper.getSscsCaseDataWrapper())) {
-            placeholders.put(APPOINTEE_NAME, wrapper.getNewSscsCaseData().getAppeal().getAppellant().getAppointee().getName().getFullNameNoTitle());
-            placeholders.put(CLAIMANT_NAME, wrapper.getNewSscsCaseData().getAppeal().getAppellant().getName().getFullNameNoTitle());
-        }
+            if (hasAppointee(wrapper.getSscsCaseDataWrapper())) {
+                placeholders.put(APPOINTEE_NAME, wrapper.getNewSscsCaseData().getAppeal().getAppellant().getAppointee().getName().getFullNameNoTitle());
+                placeholders.put(CLAIMANT_NAME, wrapper.getNewSscsCaseData().getAppeal().getAppellant().getName().getFullNameNoTitle());
+            }
 
-        if (!placeholders.containsKey(APPEAL_RESPOND_DATE)) {
-            ZonedDateTime appealReceivedDate = ZonedDateTime.now().plusSeconds(delay);
-            placeholders.put(APPEAL_RESPOND_DATE, appealReceivedDate.format(DateTimeFormatter.ofPattern(RESPONSE_DATE_FORMAT)));
-        }
+            if (!placeholders.containsKey(APPEAL_RESPOND_DATE)) {
+                ZonedDateTime appealReceivedDate = ZonedDateTime.now().plusSeconds(delay);
+                placeholders.put(APPEAL_RESPOND_DATE, appealReceivedDate.format(DateTimeFormatter.ofPattern(RESPONSE_DATE_FORMAT)));
+            }
 
-        notificationSender.sendLetter(
-            notification.getLetterTemplate(),
-            addressToUse,
-            notification.getPlaceholders(),
-            wrapper.getCaseId()
-        );
+            notificationSender.sendLetter(
+                notification.getLetterTemplate(),
+                addressToUse,
+                notification.getPlaceholders(),
+                wrapper.getCaseId()
+            );
+        } else {
+            log.warn("Attempting to send letter for case id: " + wrapper.getCaseId() + ", no address present");
+        }
     }
 
     private void sendBundledLetterNotificationToAppellant(NotificationWrapper wrapper, Notification notification) {
         sendBundledLetterNotification(wrapper, notification, getAddressToUseForLetter(wrapper), getNameToUseForLetter(wrapper));
     }
 
-    private void sendBundledLetterNotificationToRepresentative(NotificationWrapper wrapper, Notification notification) {
-        if (null != wrapper.getNewSscsCaseData().getAppeal().getRep()) {
-            sendBundledLetterNotification(wrapper, notification, wrapper.getNewSscsCaseData().getAppeal().getRep().getAddress(), wrapper.getNewSscsCaseData().getAppeal().getRep().getName());
+    private static boolean isValidLetterAddress(Address addressToUse) {
+        return null != addressToUse
+            && null != addressToUse.getLine1()
+            && null != addressToUse.getPostcode();
+    }
+
+    private void sendBundledLetterNotificationToAppellant(NotificationWrapper wrapper, Notification notification, SubscriptionType subscriptionType) {
+        if (hasRepresentative(wrapper.getSscsCaseDataWrapper())) {
+            sendBundledLetterNotification(wrapper, notification, getAddressToUseForLetter(wrapper, subscriptionType), getNameToUseForLetter(wrapper, subscriptionType));
         }
     }
 

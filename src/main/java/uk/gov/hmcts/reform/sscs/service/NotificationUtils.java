@@ -1,10 +1,13 @@
 package uk.gov.hmcts.reform.sscs.service;
 
+import static uk.gov.hmcts.reform.sscs.config.AppealHearingType.ORAL;
 import static uk.gov.hmcts.reform.sscs.config.SubscriptionType.APPELLANT;
+import static uk.gov.hmcts.reform.sscs.config.SubscriptionType.APPOINTEE;
 import static uk.gov.hmcts.reform.sscs.config.SubscriptionType.REPRESENTATIVE;
 import static uk.gov.hmcts.reform.sscs.domain.notify.NotificationEventType.DIRECTION_ISSUED;
 import static uk.gov.hmcts.reform.sscs.domain.notify.NotificationEventType.HEARING_BOOKED_NOTIFICATION;
 import static uk.gov.hmcts.reform.sscs.domain.notify.NotificationEventType.STRUCK_OUT;
+import static uk.gov.hmcts.reform.sscs.service.NotificationValidService.FALLBACK_LETTER_SUBSCRIPTION_TYPES;
 
 import java.util.Arrays;
 import java.util.List;
@@ -12,6 +15,7 @@ import uk.gov.hmcts.reform.sscs.ccd.domain.Appointee;
 import uk.gov.hmcts.reform.sscs.ccd.domain.SscsCaseData;
 import uk.gov.hmcts.reform.sscs.ccd.domain.Subscription;
 import uk.gov.hmcts.reform.sscs.config.SubscriptionType;
+
 import uk.gov.hmcts.reform.sscs.domain.SscsCaseDataWrapper;
 import uk.gov.hmcts.reform.sscs.domain.SubscriptionWithType;
 import uk.gov.hmcts.reform.sscs.domain.notify.Notification;
@@ -37,6 +41,7 @@ public class NotificationUtils {
                 && appointee.getName().getLastName() != null;
     }
 
+    /* Sometimes the data for the appointee comes in with null populated objects */
     public static boolean hasRepresentative(SscsCaseDataWrapper wrapper) {
         return wrapper.getNewSscsCaseData().getAppeal() != null
             && wrapper.getNewSscsCaseData().getAppeal().getRep() != null
@@ -62,12 +67,18 @@ public class NotificationUtils {
         }
     }
 
-    public static boolean isMandatoryLetterEventType(NotificationEventType eventType) {
-        return MANDATORY_LETTERS.contains(eventType);
+    public static boolean isMandatoryLetterEventType(NotificationWrapper wrapper) {
+        if (MANDATORY_LETTERS.contains(wrapper.getNotificationType())) {
+            return (HEARING_BOOKED_NOTIFICATION.equals(wrapper.getNotificationType()) && ORAL.equals(wrapper.getHearingType()))
+                || (!HEARING_BOOKED_NOTIFICATION.equals(wrapper.getNotificationType()));
+        }
+
+        return false;
     }
 
-    static boolean isOkToSendNotification(NotificationWrapper wrapper, NotificationEventType notificationType, NotificationValidService notificationValidService) {
-        return notificationValidService.isNotificationStillValidToSend(wrapper.getNewSscsCaseData().getHearings(), notificationType)
+    static boolean isOkToSendNotification(NotificationWrapper wrapper, NotificationEventType notificationType, Subscription subscription, NotificationValidService notificationValidService) {
+        return ((subscription != null && subscription.doesCaseHaveSubscriptions()) || FALLBACK_LETTER_SUBSCRIPTION_TYPES.contains(notificationType))
+            && notificationValidService.isNotificationStillValidToSend(wrapper.getNewSscsCaseData().getHearings(), notificationType)
             && notificationValidService.isHearingTypeValidToSendNotification(wrapper.getNewSscsCaseData(), notificationType);
     }
 
@@ -77,12 +88,14 @@ public class NotificationUtils {
             || (subscription == null && notificationValidService.isFallbackLetterRequiredForSubscriptionType(wrapper, subscriptionWithType.getSubscriptionType(), eventType));
     }
 
-    protected static boolean isOkToSendSmsNotification(NotificationWrapper wrapper, Subscription subscription, Notification notification, NotificationValidService notificationValidService) {
+    protected static boolean isOkToSendSmsNotification(NotificationWrapper wrapper, Subscription subscription, Notification notification, NotificationEventType notificationType, NotificationValidService notificationValidService) {
         return subscription != null
             && subscription.isSmsSubscribed()
             && notification.isSms()
             && notification.getSmsTemplate() != null
-            && isOkToSendNotification(wrapper, wrapper.getNotificationType(), notificationValidService);
+            && subscription.doesCaseHaveSubscriptions()
+            && notificationValidService.isNotificationStillValidToSend(wrapper.getNewSscsCaseData().getHearings(), notificationType)
+            && notificationValidService.isHearingTypeValidToSendNotification(wrapper.getNewSscsCaseData(), notificationType);
     }
 
     protected static boolean isOkToSendEmailNotification(NotificationWrapper wrapper, Subscription subscription, Notification notification, NotificationValidService notificationValidService) {
@@ -90,7 +103,20 @@ public class NotificationUtils {
             && subscription.isEmailSubscribed()
             && notification.isEmail()
             && notification.getEmailTemplate() != null
-            && isOkToSendNotification(wrapper, wrapper.getNotificationType(), notificationValidService);
+            && isOkToSendNotification(wrapper, wrapper.getNotificationType(), subscription, notificationValidService);
+    }
 
+    public static boolean hasLetterTemplate(Notification notification) {
+        return notification.getLetterTemplate() != null;
+    }
+
+    public static boolean hasNoSubscriptions(Subscription subscription) {
+        return subscription != null && !subscription.isSmsSubscribed() && !subscription.isEmailSubscribed();
+    }
+
+    public static final boolean hasSubscription(NotificationWrapper wrapper, SubscriptionType subscriptionType) {
+        return APPELLANT.equals(subscriptionType)
+            || APPOINTEE.equals(subscriptionType)
+            || (REPRESENTATIVE.equals(subscriptionType) && null != wrapper.getNewSscsCaseData().getAppeal().getRep());
     }
 }

@@ -2,12 +2,16 @@ package uk.gov.hmcts.reform.sscs.service;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
+import static uk.gov.hmcts.reform.sscs.config.SubscriptionType.APPELLANT;
+import static uk.gov.hmcts.reform.sscs.config.SubscriptionType.APPOINTEE;
+import static uk.gov.hmcts.reform.sscs.config.SubscriptionType.REPRESENTATIVE;
 import static uk.gov.hmcts.reform.sscs.domain.notify.NotificationEventType.DIRECTION_ISSUED;
 import static uk.gov.hmcts.reform.sscs.domain.notify.NotificationEventType.STRUCK_OUT;
 import static uk.gov.hmcts.reform.sscs.domain.notify.NotificationEventType.SYA_APPEAL_CREATED_NOTIFICATION;
 import static uk.gov.hmcts.reform.sscs.service.LetterUtils.*;
 import static uk.gov.hmcts.reform.sscs.service.NotificationServiceTest.APPELLANT_WITH_ADDRESS;
 import static uk.gov.hmcts.reform.sscs.service.SendNotificationServiceTest.APPELLANT_WITH_ADDRESS_AND_APPOINTEE;
+import static uk.gov.hmcts.reform.sscs.service.SendNotificationServiceTest.REP_WITH_ADDRESS;
 
 import java.io.IOException;
 
@@ -31,7 +35,7 @@ public class LetterUtilsTest {
             null
         );
 
-        assertEquals(APPELLANT_WITH_ADDRESS.getAddress(), getAddressToUseForLetter(wrapper));
+        assertEquals(APPELLANT_WITH_ADDRESS.getAddress(), getAddressToUseForLetter(wrapper, APPELLANT));
     }
 
     @Test
@@ -43,7 +47,19 @@ public class LetterUtilsTest {
             null
         );
 
-        assertEquals(APPELLANT_WITH_ADDRESS_AND_APPOINTEE.getAppointee().getAddress(), getAddressToUseForLetter(wrapper));
+        assertEquals(APPELLANT_WITH_ADDRESS_AND_APPOINTEE.getAppointee().getAddress(), getAddressToUseForLetter(wrapper, APPOINTEE));
+    }
+
+    @Test
+    public void useRepAddressForLetter() {
+        NotificationWrapper wrapper = NotificationServiceTest.buildBaseWrapper(
+            SYA_APPEAL_CREATED_NOTIFICATION,
+            APPELLANT_WITH_ADDRESS_AND_APPOINTEE,
+            REP_WITH_ADDRESS,
+            null
+        );
+
+        assertEquals(REP_WITH_ADDRESS.getAddress(), getAddressToUseForLetter(wrapper, REPRESENTATIVE));
     }
 
     @Test
@@ -87,7 +103,7 @@ public class LetterUtilsTest {
             null
         );
 
-        assertEquals(APPELLANT_WITH_ADDRESS.getName(), getNameToUseForLetter(wrapper));
+        assertEquals(APPELLANT_WITH_ADDRESS.getName(), getNameToUseForLetter(wrapper, APPELLANT));
     }
 
     @Test
@@ -99,7 +115,19 @@ public class LetterUtilsTest {
             null
         );
 
-        assertEquals(APPELLANT_WITH_ADDRESS_AND_APPOINTEE.getAppointee().getName(), getNameToUseForLetter(wrapper));
+        assertEquals(APPELLANT_WITH_ADDRESS_AND_APPOINTEE.getAppointee().getName(), getNameToUseForLetter(wrapper, APPOINTEE));
+    }
+
+    @Test
+    public void useRepNameForLetter() {
+        NotificationWrapper wrapper = NotificationServiceTest.buildBaseWrapper(
+            SYA_APPEAL_CREATED_NOTIFICATION,
+            APPELLANT_WITH_ADDRESS_AND_APPOINTEE,
+            REP_WITH_ADDRESS,
+            null
+        );
+
+        assertEquals(REP_WITH_ADDRESS.getName(), getNameToUseForLetter(wrapper, REPRESENTATIVE));
     }
 
     @Test
