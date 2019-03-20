@@ -109,6 +109,18 @@ public class PersonalisationFactoryTest {
     }
 
     @Test
+    public void createRepsPersonalisationWhenEvidenceReminderNotificationApplied() {
+        Personalisation result = factory.apply(EVIDENCE_REMINDER_NOTIFICATION);
+        assertEquals(withRepresentativePersonalisation, result);
+    }
+
+    @Test
+    public void createRepsPersonalisationWhenHearingReminderNotificationApplied() {
+        Personalisation result = factory.apply(HEARING_REMINDER_NOTIFICATION);
+        assertEquals(withRepresentativePersonalisation, result);
+    }
+
+    @Test
     public void shouldReturnNullWhenNotificationTypeIsNull() {
         Personalisation personalisation = factory.apply(null);
         assertNull(personalisation);
