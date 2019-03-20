@@ -392,25 +392,29 @@ public class Personalisation<E extends NotificationWrapper> {
     }
 
     protected String getLatestInfoRequestDetail(SscsCaseData ccdResponse) {
-        List<AppellantInfoRequest> infoRequests = ccdResponse.getInfoRequests().getAppellantInfoRequest();
+        if (ccdResponse.getInfoRequests() != null) {
+            List<AppellantInfoRequest> infoRequests = ccdResponse.getInfoRequests().getAppellantInfoRequest();
 
-        if (infoRequests.size() == 0) {
-            return null;
-        }
+            if (infoRequests.size() == 0) {
+                return null;
+            }
 
-        AppellantInfoRequest latestAppellantInfoRequest = null;
-        for (AppellantInfoRequest infoRequest : infoRequests) {
-            if (latestAppellantInfoRequest == null) {
-                latestAppellantInfoRequest = infoRequest;
-            } else {
-                LocalDate latestDate = LocalDate.parse(latestAppellantInfoRequest.getAppellantInfo().getRequestDate(), CC_DATE_FORMAT);
-                LocalDate currentDate = LocalDate.parse(infoRequest.getAppellantInfo().getRequestDate(), CC_DATE_FORMAT);
-                if (currentDate.isAfter(latestDate)) {
+            AppellantInfoRequest latestAppellantInfoRequest = null;
+            for (AppellantInfoRequest infoRequest : infoRequests) {
+                if (latestAppellantInfoRequest == null) {
                     latestAppellantInfoRequest = infoRequest;
+                } else {
+                    LocalDate latestDate = LocalDate.parse(latestAppellantInfoRequest.getAppellantInfo().getRequestDate(), CC_DATE_FORMAT);
+                    LocalDate currentDate = LocalDate.parse(infoRequest.getAppellantInfo().getRequestDate(), CC_DATE_FORMAT);
+                    if (currentDate.isAfter(latestDate)) {
+                        latestAppellantInfoRequest = infoRequest;
+                    }
                 }
             }
+
+            return latestAppellantInfoRequest.getAppellantInfo().getParagraph();
         }
 
-        return latestAppellantInfoRequest.getAppellantInfo().getParagraph();
+        return null;
     }
 }

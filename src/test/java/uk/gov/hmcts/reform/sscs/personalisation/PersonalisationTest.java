@@ -281,6 +281,7 @@ public class PersonalisationTest {
         assertEquals(benefitType, result.get(BENEFIT_NAME_ACRONYM_LITERAL));
         assertEquals(expectedBenefitDesc, result.get(BENEFIT_FULL_NAME_LITERAL));
         assertEquals("SC/1234/5", result.get(APPEAL_REF));
+        assertEquals("SC/1234/5", result.get(CASE_REFENCE_ID));
         assertEquals("GLSCRR", result.get(APPEAL_ID));
         assertEquals("Harry Kane", result.get(NAME));
         assertEquals("Harry Kane", result.get(APPELLANT_NAME));
@@ -324,6 +325,7 @@ public class PersonalisationTest {
                 .notificationEventType(APPEAL_RECEIVED_NOTIFICATION).build(), new SubscriptionWithType(subscriptions.getAppellantSubscription(), APPELLANT));
 
         assertEquals(CASE_ID, result.get(APPEAL_REF));
+        assertEquals(CASE_ID, result.get(CASE_REFENCE_ID));
     }
 
 

@@ -494,6 +494,58 @@ public class SscsCaseDataWrapperDeserializerTest {
     }
 
     @Test
+    public void shouldDeserializeInfoRequests() throws Exception {
+        String info1Para = "Give us some more info please";
+        String info1Date = "2019-03-13";
+        String info2Para = "Come on we've asked for more info";
+        String info2Date = "2019-03-18";
+        String info3Para = "Did you get our first message?";
+        String info3Date = "2019-03-16";
+
+        String infoRequestsJson = "{  \n"
+            + "            \"appellantInfoRequestCollection\":[  \n"
+            + "               {  \n"
+            + "                  \"value\":{  \n"
+            + "                     \"appellantInfoParagraph\":\"" + info1Para + "\",\n"
+            + "                     \"appellantInfoRequestDate\":\"" + info1Date + "\"\n"
+            + "                  },\n"
+            + "                  \"id\":\"57609d85-0763-4fe2-a2f2-90c265eecc0e\"\n"
+            + "               },\n"
+            + "               {  \n"
+            + "                  \"value\":{  \n"
+            + "                     \"appellantInfoParagraph\":\"" + info2Para + "\",\n"
+            + "                     \"appellantInfoRequestDate\":\"" + info2Date + "\"\n"
+            + "                  },\n"
+            + "                  \"id\":\"57609d85-0763-4fe2-a2f2-90c265eecc0g\"\n"
+            + "               },\n"
+            + "               {  \n"
+            + "                  \"value\":{  \n"
+            + "                     \"appellantInfoParagraph\":\"" + info3Para + "\",\n"
+            + "                     \"appellantInfoRequestDate\":\"" + info3Date + "\"\n"
+            + "                  },\n"
+            + "                  \"id\":\"57609d85-0763-4fe2-a2f2-90c265eecc0h\"\n"
+            + "               }\n"
+            + "            ]\n"
+            + "         }";
+
+        InfoRequests infoRequests = ccdResponseDeserializer.deserializeInfoRequests(mapper.readTree(infoRequestsJson));
+
+        assertEquals(3, infoRequests.getAppellantInfoRequest().size());
+        assertEquals(info1Para, infoRequests.getAppellantInfoRequest().get(0).getAppellantInfo().getParagraph());
+        assertEquals(info1Date, infoRequests.getAppellantInfoRequest().get(0).getAppellantInfo().getRequestDate());
+        assertEquals(info2Para, infoRequests.getAppellantInfoRequest().get(1).getAppellantInfo().getParagraph());
+        assertEquals(info2Date, infoRequests.getAppellantInfoRequest().get(1).getAppellantInfo().getRequestDate());
+        assertEquals(info3Para, infoRequests.getAppellantInfoRequest().get(2).getAppellantInfo().getParagraph());
+        assertEquals(info3Date, infoRequests.getAppellantInfoRequest().get(2).getAppellantInfo().getRequestDate());
+    }
+
+    @Test
+    public void shouldDeserializeEmptyInfoRequests() throws Exception {
+        assertNull(ccdResponseDeserializer.deserializeInfoRequests(mapper.readTree("")));
+    }
+
+
+    @Test
     public void deserializeAllSscsCaseDataJson() throws IOException {
 
         String path = getClass().getClassLoader().getResource("json/ccdResponseWithCohFields.json").getFile();
