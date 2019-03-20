@@ -128,7 +128,7 @@ public class SendNotificationService {
     }
 
     private void sendMandatoryLetterNotification(NotificationWrapper wrapper, Notification notification, SubscriptionType subscriptionType) {
-        if (hasLetterTemplate(notification) && isMandatoryLetterEventType(wrapper)) {
+        if (isMandatoryLetterEventType(wrapper)) {
             NotificationHandler.SendNotification sendNotification = () -> {
                 Address addressToUse = getAddressToUseForLetter(wrapper, subscriptionType);
 
@@ -137,7 +137,7 @@ public class SendNotificationService {
 
             if (bundledLettersOn && isBundledLetter(wrapper.getNotificationType())) {
                 sendBundledLetterNotificationToAppellant(wrapper, notification, subscriptionType);
-            } else {
+            } else if (hasLetterTemplate(notification)) {
                 notificationHandler.sendNotification(wrapper, notification.getLetterTemplate(), NOTIFICATION_TYPE_LETTER, sendNotification);
             }
         }

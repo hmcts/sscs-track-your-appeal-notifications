@@ -82,6 +82,16 @@ public class Personalisation<E extends NotificationWrapper> {
         personalisation.put(PHONE_NUMBER, config.getHmctsPhoneNumber());
         personalisation.put(CCD_ID, StringUtils.defaultIfBlank(ccdResponse.getCcdCaseId(), StringUtils.EMPTY));
 
+        // Some templates (noteably letters) can be sent out before the SC Ref is added to the case
+        // this allows those templates to be populated with either the CCD Id or SC Ref
+        if (null == ccdResponse.getCaseReference()) {
+            personalisation.put(CASE_REFENCE_ID, StringUtils.defaultIfBlank(ccdResponse.getCcdCaseId(), StringUtils.EMPTY));
+        } else {
+            personalisation.put(CASE_REFENCE_ID, ccdResponse.getCaseReference());
+        }
+
+        personalisation.put(INFO_REQUEST_DETAIL, StringUtils.defaultIfBlank(getLatestInfoRequestDetail(ccdResponse), StringUtils.EMPTY));
+
         subscriptionDetails(personalisation, subscriptionWithType.getSubscription(), benefit);
 
         personalisation.put(FIRST_TIER_AGENCY_ACRONYM, DWP_ACRONYM);
@@ -326,7 +336,8 @@ public class Personalisation<E extends NotificationWrapper> {
     private String getLetterTemplateName(SubscriptionType subscriptionType, NotificationEventType notificationEventType) {
         String letterTemplateName = notificationEventType.getId();
         if (FALLBACK_LETTER_SUBSCRIPTION_TYPES.contains(notificationEventType)
-            || HEARING_BOOKED_NOTIFICATION.equals(notificationEventType)) {
+            || HEARING_BOOKED_NOTIFICATION.equals(notificationEventType)
+            || REQUEST_INFO_INCOMPLETE.equals(notificationEventType)) {
             letterTemplateName = letterTemplateName + "." + subscriptionType.name().toLowerCase();
         }
         return letterTemplateName;
@@ -380,4 +391,26 @@ public class Personalisation<E extends NotificationWrapper> {
         return bool ? REQUIRED : NOT_REQUIRED;
     }
 
+    protected String getLatestInfoRequestDetail(SscsCaseData ccdResponse) {
+        List<AppellantInfoRequest> infoRequests = ccdResponse.getInfoRequests().getAppellantInfoRequest();
+
+        if (infoRequests.size() == 0) {
+            return null;
+        }
+
+        AppellantInfoRequest latestAppellantInfoRequest = null;
+        for (AppellantInfoRequest infoRequest : infoRequests) {
+            if (latestAppellantInfoRequest == null) {
+                latestAppellantInfoRequest = infoRequest;
+            } else {
+                LocalDate latestDate = LocalDate.parse(latestAppellantInfoRequest.getAppellantInfo().getRequestDate(), CC_DATE_FORMAT);
+                LocalDate currentDate = LocalDate.parse(infoRequest.getAppellantInfo().getRequestDate(), CC_DATE_FORMAT);
+                if (currentDate.isAfter(latestDate)) {
+                    latestAppellantInfoRequest = infoRequest;
+                }
+            }
+        }
+
+        return latestAppellantInfoRequest.getAppellantInfo().getParagraph();
+    }
 }
