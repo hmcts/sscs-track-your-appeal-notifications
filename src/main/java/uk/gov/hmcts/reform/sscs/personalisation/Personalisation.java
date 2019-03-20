@@ -3,11 +3,13 @@ package uk.gov.hmcts.reform.sscs.personalisation;
 import static com.google.common.collect.Lists.newArrayList;
 import static uk.gov.hmcts.reform.sscs.ccd.domain.Benefit.getBenefitByCode;
 import static uk.gov.hmcts.reform.sscs.ccd.domain.EventType.APPEAL_RECEIVED;
+import static uk.gov.hmcts.reform.sscs.ccd.util.CaseDataUtils.YES;
 import static uk.gov.hmcts.reform.sscs.config.AppConstants.*;
 import static uk.gov.hmcts.reform.sscs.config.SubscriptionType.APPELLANT;
 import static uk.gov.hmcts.reform.sscs.config.SubscriptionType.APPOINTEE;
 import static uk.gov.hmcts.reform.sscs.config.SubscriptionType.REPRESENTATIVE;
 import static uk.gov.hmcts.reform.sscs.domain.notify.NotificationEventType.*;
+import static uk.gov.hmcts.reform.sscs.personalisation.SyaAppealCreatedAndReceivedPersonalisation.*;
 import static uk.gov.hmcts.reform.sscs.service.NotificationUtils.hasAppointee;
 import static uk.gov.hmcts.reform.sscs.service.NotificationUtils.hasRepresentative;
 
@@ -25,14 +27,8 @@ import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
-import uk.gov.hmcts.reform.sscs.ccd.domain.Benefit;
-import uk.gov.hmcts.reform.sscs.ccd.domain.Event;
-import uk.gov.hmcts.reform.sscs.ccd.domain.EventDetails;
-import uk.gov.hmcts.reform.sscs.ccd.domain.Hearing;
-import uk.gov.hmcts.reform.sscs.ccd.domain.Name;
-import uk.gov.hmcts.reform.sscs.ccd.domain.RegionalProcessingCenter;
-import uk.gov.hmcts.reform.sscs.ccd.domain.SscsCaseData;
-import uk.gov.hmcts.reform.sscs.ccd.domain.Subscription;
+import uk.gov.hmcts.reform.sscs.ccd.domain.*;
+import uk.gov.hmcts.reform.sscs.config.AppConstants;
 import uk.gov.hmcts.reform.sscs.config.NotificationConfig;
 import uk.gov.hmcts.reform.sscs.config.SubscriptionType;
 import uk.gov.hmcts.reform.sscs.domain.SscsCaseDataWrapper;
@@ -158,7 +154,7 @@ public class Personalisation<E extends NotificationWrapper> {
     }
 
     private void subscriptionDetails(Map<String, String> personalisation, Subscription subscription, Benefit benefit) {
-        final String tya = StringUtils.defaultIfBlank(subscription.getTya(), StringUtils.EMPTY);
+        final String tya = tya(subscription);
         personalisation.put(APPEAL_ID, tya);
         personalisation.put(MANAGE_EMAILS_LINK_LITERAL, config.getManageEmailsLink().replace(MAC_LITERAL,
                 getMacToken(tya, benefit.name())));
@@ -169,7 +165,7 @@ public class Personalisation<E extends NotificationWrapper> {
         personalisation.put(HEARING_INFO_LINK_LITERAL,
                 config.getHearingInfoLink().replace(APPEAL_ID_LITERAL, tya));
 
-        String email = subscription.getEmail();
+        String email = email(subscription);
         if (email != null) {
             try {
                 String encodedEmail = URLEncoder.encode(email, StandardCharsets.UTF_8.name());
@@ -178,6 +174,18 @@ public class Personalisation<E extends NotificationWrapper> {
                 throw new RuntimeException(e);
             }
         }
+    }
+
+    private static String tya(Subscription subscription) {
+        if (subscription != null) {
+            return StringUtils.defaultIfBlank(subscription.getTya(), StringUtils.EMPTY);
+        } else {
+            return StringUtils.EMPTY;
+        }
+    }
+
+    private static String email(Subscription subscription) {
+        return subscription != null ? subscription.getEmail() : null;
     }
 
     private String getPanelCompositionByBenefitType(Benefit benefit) {
@@ -249,6 +257,8 @@ public class Personalisation<E extends NotificationWrapper> {
             personalisation.put(REGIONAL_OFFICE_POSTCODE_LITERAL, rpc.getPostcode());
         }
 
+        setHearingArrangementDetails(personalisation, ccdResponse);
+
         return personalisation;
     }
 
@@ -306,6 +316,7 @@ public class Personalisation<E extends NotificationWrapper> {
             || HEARING_BOOKED_NOTIFICATION.equals(notificationEventType)
             || CASE_UPDATED.equals(notificationEventType)
             || EVIDENCE_REMINDER_NOTIFICATION.equals(notificationEventType)
+            || HEARING_REMINDER_NOTIFICATION.equals(notificationEventType)
             || APPEAL_LODGED.equals(notificationEventType)) {
             emailTemplateName = emailTemplateName + "." + StringUtils.lowerCase(subscriptionType.name());
         }
@@ -314,7 +325,8 @@ public class Personalisation<E extends NotificationWrapper> {
 
     private String getLetterTemplateName(SubscriptionType subscriptionType, NotificationEventType notificationEventType) {
         String letterTemplateName = notificationEventType.getId();
-        if (FALLBACK_LETTER_SUBSCRIPTION_TYPES.contains(notificationEventType)) {
+        if (FALLBACK_LETTER_SUBSCRIPTION_TYPES.contains(notificationEventType)
+            || HEARING_BOOKED_NOTIFICATION.equals(notificationEventType)) {
             letterTemplateName = letterTemplateName + "." + subscriptionType.name().toLowerCase();
         }
         return letterTemplateName;
@@ -327,4 +339,45 @@ public class Personalisation<E extends NotificationWrapper> {
     void setSendSmsSubscriptionConfirmation(Boolean sendSmsSubscriptionConfirmation) {
         this.sendSmsSubscriptionConfirmation = sendSmsSubscriptionConfirmation;
     }
+
+    public Map<String, String> setHearingArrangementDetails(Map<String, String> personalisation, SscsCaseData ccdResponse) {
+        if (null != ccdResponse.getAppeal() && null != ccdResponse.getAppeal().getHearingOptions()) {
+            personalisation.put(AppConstants.HEARING_ARRANGEMENT_DETAILS_LITERAL, buildHearingArrangements(ccdResponse.getAppeal().getHearingOptions()));
+
+            return personalisation;
+        }
+
+        return personalisation;
+    }
+
+    private String buildHearingArrangements(HearingOptions hearingOptions) {
+        if (null != hearingOptions) {
+            String languageInterpreterRequired = convertBooleanToRequiredText(hearingOptions.getLanguageInterpreter() != null
+                && StringUtils.equalsIgnoreCase(YES, hearingOptions.getLanguageInterpreter()));
+
+            return new StringBuilder()
+                .append("Language interpreter: ")
+                .append(languageInterpreterRequired + TWO_NEW_LINES)
+                .append("Sign interpreter: ")
+                .append(convertBooleanToRequiredText(findHearingArrangement("signLanguageInterpreter", hearingOptions.getArrangements())) + TWO_NEW_LINES)
+                .append("Hearing loop: ")
+                .append(convertBooleanToRequiredText(findHearingArrangement("hearingLoop", hearingOptions.getArrangements())) + TWO_NEW_LINES)
+                .append("Disabled access: ")
+                .append(convertBooleanToRequiredText(findHearingArrangement("disabledAccess", hearingOptions.getArrangements())) + TWO_NEW_LINES)
+                .append("Any other arrangements: ")
+                .append(getOptionalField(hearingOptions.getOther(), NOT_REQUIRED))
+                .toString();
+        }
+
+        return null;
+    }
+
+    private Boolean findHearingArrangement(String field, List<String> arrangements) {
+        return arrangements != null && arrangements.contains(field);
+    }
+
+    private String convertBooleanToRequiredText(Boolean bool) {
+        return bool ? REQUIRED : NOT_REQUIRED;
+    }
+
 }
