@@ -84,8 +84,6 @@ public class WithRepresentativePersonalisationTest extends AbstractFunctionalTes
     public void givenEventAndRepsSubscription_shouldSendNotificationToReps(NotificationEventType notificationEventType)
             throws Exception {
         //Given
-        final String appellantEmailId = getFieldValue(notificationEventType, "AppellantEmailId");
-        final String appellantSmsId = getFieldValue(notificationEventType, "AppellantSmsId");
         final String repsEmailId = getFieldValue(notificationEventType, "RepsEmailId");
         final String repsSmsId = getFieldValue(notificationEventType, "RepsSmsId");
 
@@ -93,31 +91,24 @@ public class WithRepresentativePersonalisationTest extends AbstractFunctionalTes
             "representative/" + notificationEventType.getId() + "Callback.json");
 
         List<Notification> notifications = tryFetchNotificationsForTestCase(
-                appellantEmailId, appellantSmsId,
                 repsEmailId, repsSmsId);
-
-        assertNotificationBodyContains(notifications, appellantEmailId);
-        assertNotificationBodyContains(notifications, appellantSmsId);
 
         String representativeName = "Harry Potter";
         assertNotificationBodyContains(notifications, repsEmailId, representativeName);
         assertNotificationBodyContains(notifications, repsSmsId);
     }
 
+    @Test
     public void givenHearingPostponedEventAndRepsSubscription_shouldSendEmailOnlyNotificationToReps()
             throws Exception {
 
-        final String appellantEmailId = getFieldValue(POSTPONEMENT_NOTIFICATION, "AppellantEmailId");
         final String repsEmailId = getFieldValue(POSTPONEMENT_NOTIFICATION, "RepsEmailId");
 
         simulateCcdCallback(POSTPONEMENT_NOTIFICATION,
                 "representative/" + POSTPONEMENT_NOTIFICATION.getId()
                         + "Callback.json");
 
-        List<Notification> notifications = tryFetchNotificationsForTestCase(
-                appellantEmailId, repsEmailId);
-
-        assertNotificationBodyContains(notifications, appellantEmailId);
+        List<Notification> notifications = tryFetchNotificationsForTestCase(repsEmailId);
 
         String representativeName = "Harry Potter";
         assertNotificationBodyContains(notifications, repsEmailId, representativeName);
