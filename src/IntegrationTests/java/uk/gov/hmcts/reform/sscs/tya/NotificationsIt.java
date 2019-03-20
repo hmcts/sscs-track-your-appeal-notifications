@@ -938,6 +938,34 @@ public class NotificationsIt {
                 "1",
                 "1",
                 "0"
+            },
+            new Object[]{
+                REQUEST_INFO_INCOMPLETE,
+                "paper",
+                Collections.emptyList(),
+                Collections.emptyList(),
+                Arrays.asList("bc943cf3-9fd1-4d14-a0c0-b183572c21a7", "a2a4a88a-b91a-4e6d-94f0-507179292058"),
+                "yes",
+                "yes",
+                "yes",
+                "yes",
+                "0",
+                "0",
+                "2"
+            },
+            new Object[]{
+                REQUEST_INFO_INCOMPLETE,
+                "paper",
+                Collections.emptyList(),
+                Collections.emptyList(),
+                Arrays.asList("bc943cf3-9fd1-4d14-a0c0-b183572c21a7", "a2a4a88a-b91a-4e6d-94f0-507179292058"),
+                "no",
+                "no",
+                "no",
+                "no",
+                "0",
+                "0",
+                "2"
             }
         };
     }
@@ -1449,6 +1477,34 @@ public class NotificationsIt {
                 "1",
                 "1",
                 "0"
+            },
+            new Object[]{
+                REQUEST_INFO_INCOMPLETE,
+                "paper",
+                Collections.emptyList(),
+                Collections.emptyList(),
+                Arrays.asList("bc943cf3-9fd1-4d14-a0c0-b183572c21a7", "a2a4a88a-b91a-4e6d-94f0-507179292058"),
+                "yes",
+                "yes",
+                "yes",
+                "yes",
+                "0",
+                "0",
+                "2"
+            },
+            new Object[]{
+                REQUEST_INFO_INCOMPLETE,
+                "paper",
+                Collections.emptyList(),
+                Collections.emptyList(),
+                Arrays.asList("bc943cf3-9fd1-4d14-a0c0-b183572c21a7", "a2a4a88a-b91a-4e6d-94f0-507179292058"),
+                "no",
+                "no",
+                "no",
+                "no",
+                "0",
+                "0",
+                "2"
             }
         };
     }
@@ -1689,6 +1745,32 @@ public class NotificationsIt {
                 "0",
                 "0",
                 ""
+            },
+            new Object[]{
+                REQUEST_INFO_INCOMPLETE,
+                "oral",
+                Collections.emptyList(),
+                Collections.emptyList(),
+                Collections.singletonList("bc943cf3-9fd1-4d14-a0c0-b183572c21a7"),
+                "yes",
+                "yes",
+                "0",
+                "0",
+                "1",
+                "Appointee Appointee"
+            },
+            new Object[]{
+                REQUEST_INFO_INCOMPLETE,
+                "oral",
+                Collections.emptyList(),
+                Collections.emptyList(),
+                Collections.singletonList("bc943cf3-9fd1-4d14-a0c0-b183572c21a7"),
+                "no",
+                "no",
+                "0",
+                "0",
+                "1",
+                "Appointee Appointee"
             }
         };
     }
@@ -1963,6 +2045,32 @@ public class NotificationsIt {
                 Collections.emptyList(),
                 Collections.emptyList(),
                 Collections.singletonList("747d026e-1bec-4e96-8a34-28f36e30bba5"),
+                "no",
+                "no",
+                "0",
+                "0",
+                "1",
+                "Appointee Appointee"
+            },
+            new Object[]{
+                REQUEST_INFO_INCOMPLETE,
+                "oral",
+                Collections.emptyList(),
+                Collections.emptyList(),
+                Collections.singletonList("bc943cf3-9fd1-4d14-a0c0-b183572c21a7"),
+                "yes",
+                "yes",
+                "0",
+                "0",
+                "1",
+                "Appointee Appointee"
+            },
+            new Object[]{
+                REQUEST_INFO_INCOMPLETE,
+                "oral",
+                Collections.emptyList(),
+                Collections.emptyList(),
+                Collections.singletonList("bc943cf3-9fd1-4d14-a0c0-b183572c21a7"),
                 "no",
                 "no",
                 "0",
