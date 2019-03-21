@@ -412,7 +412,9 @@ public class Personalisation<E extends NotificationWrapper> {
                 }
             }
 
-            return latestAppellantInfoRequest.getAppellantInfo().getParagraph();
+            if (latestAppellantInfoRequest != null && latestAppellantInfoRequest.getAppellantInfo() != null) {
+                return latestAppellantInfoRequest.getAppellantInfo().getParagraph();
+            }
         }
 
         return null;
