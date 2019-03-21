@@ -395,7 +395,7 @@ public class Personalisation<E extends NotificationWrapper> {
         if (ccdResponse.getInfoRequests() != null) {
             List<AppellantInfoRequest> infoRequests = ccdResponse.getInfoRequests().getAppellantInfoRequest();
 
-            if (infoRequests.size() == 0) {
+            if (infoRequests.isEmpty()) {
                 return null;
             }
 
