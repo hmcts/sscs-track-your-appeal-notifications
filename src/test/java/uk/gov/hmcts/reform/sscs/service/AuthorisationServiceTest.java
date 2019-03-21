@@ -54,6 +54,8 @@ public class AuthorisationServiceTest {
     }
 
     private class CustomFeignException extends FeignException {
+        private static final long serialVersionUID = 0;
+        
         public CustomFeignException(int status, String message) {
             super(status, message, new byte[0]);
         }
