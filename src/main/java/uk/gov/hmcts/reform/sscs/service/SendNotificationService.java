@@ -34,8 +34,8 @@ import uk.gov.service.notify.NotificationClientException;
 @Service
 @Slf4j
 public class SendNotificationService {
-    private static final String STRIKE_OUT_NOTICE = "Strike Out Notice";
-    private static final String DIRECTION_TEXT = "Direction Text";
+    protected static final String STRIKE_OUT_NOTICE = "Strike Out Notice";
+    protected static final String DIRECTION_TEXT = "Direction Text";
     static final String DM_STORE_USER_ID = "sscs";
     private static final String NOTIFICATION_TYPE_LETTER = "Letter";
 
@@ -133,7 +133,7 @@ public class SendNotificationService {
     }
 
     private void sendMandatoryLetterNotification(NotificationWrapper wrapper, Notification notification, SubscriptionType subscriptionType) {
-        if (hasLetterTemplate(notification) && isMandatoryLetterEventType(wrapper)) {
+        if (isMandatoryLetterEventType(wrapper)) {
             NotificationHandler.SendNotification sendNotification = () -> {
                 Address addressToUse = getAddressToUseForLetter(wrapper, subscriptionType);
 
@@ -142,7 +142,7 @@ public class SendNotificationService {
 
             if (bundledLettersOn && isBundledLetter(wrapper.getNotificationType())) {
                 sendBundledLetterNotification(wrapper, notification, getAddressToUseForLetter(wrapper, subscriptionType), getNameToUseForLetter(wrapper, subscriptionType));
-            } else {
+            } else if (hasLetterTemplate(notification)) {
                 notificationHandler.sendNotification(wrapper, notification.getLetterTemplate(), NOTIFICATION_TYPE_LETTER, sendNotification);
             }
         }

@@ -63,8 +63,8 @@ public class LetterUtilsTest {
     }
 
     @Test
-    @Parameters(method = "struckOutFilenameForLetter")
-    public void useStruckOutFilenameForLetter(NotificationEventType eventType, String filename) {
+    @Parameters(method = "filenameForLetter")
+    public void useCorrectFilenameForLetter(NotificationEventType eventType, String filename) {
         NotificationWrapper wrapper = NotificationServiceTest.buildBaseWrapper(
             eventType,
             APPELLANT_WITH_ADDRESS,
@@ -75,7 +75,7 @@ public class LetterUtilsTest {
         assertEquals(filename, getFilename(wrapper));
     }
 
-    public Object[] struckOutFilenameForLetter() {
+    public Object[] filenameForLetter() {
         return new Object[] {
             new Object[] { STRUCK_OUT, PDF_STRUCK_OUT},
             new Object[] { DIRECTION_ISSUED, PDF_DIRECTION_NOTICE}

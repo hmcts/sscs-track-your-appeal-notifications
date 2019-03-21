@@ -11,7 +11,9 @@ import static org.mockito.MockitoAnnotations.initMocks;
 import static uk.gov.hmcts.reform.sscs.config.SubscriptionType.*;
 import static uk.gov.hmcts.reform.sscs.domain.notify.NotificationEventType.*;
 import static uk.gov.hmcts.reform.sscs.service.NotificationUtils.getSubscription;
+import static uk.gov.hmcts.reform.sscs.service.SendNotificationService.DIRECTION_TEXT;
 import static uk.gov.hmcts.reform.sscs.service.SendNotificationService.DM_STORE_USER_ID;
+import static uk.gov.hmcts.reform.sscs.service.SendNotificationService.STRIKE_OUT_NOTICE;
 
 import java.io.IOException;
 import java.net.URI;
@@ -62,6 +64,7 @@ public class NotificationServiceTest {
     private static final String EMAIL_TEMPLATE_ID = "email-template-id";
     private static final String SMS_TEMPLATE_ID = "sms-template-id";
     private static final String LETTER_TEMPLATE_ID_STRUCKOUT = "struckOut";
+    private static final String LETTER_TEMPLATE_ID_DIRECTION_ISSUED = "directionIssued";
     private static final String SAME_TEST_EMAIL_COM = "sametest@email.com";
     private static final String NEW_TEST_EMAIL_COM = "newtest@email.com";
     private static final String NO = "No";
@@ -1518,12 +1521,13 @@ public class NotificationServiceTest {
     }
 
     @Test
-    public void sendBundledLetterToGovNotifyWhenStruckOutNotification() throws IOException {
+    @Parameters(method = "bundledLetters")
+    public void sendBundledLetterToGovNotifyWhenStruckOutNotification(NotificationEventType eventType, String letterTemplateId) throws IOException {
         String fileUrl = "http://dm-store:4506/documents/1e1eb3d2-5b6c-430d-8dad-ebcea1ad7ecf";
 
-        CcdNotificationWrapper struckOutCcdNotificationWrapper = buildWrapperWithDocuments(STRUCK_OUT, fileUrl, APPELLANT_WITH_ADDRESS, null);
+        CcdNotificationWrapper wrapper = buildWrapperWithDocuments(eventType, fileUrl, APPELLANT_WITH_ADDRESS, null);
 
-        Notification notification = new Notification(Template.builder().letterTemplateId(LETTER_TEMPLATE_ID_STRUCKOUT).build(), Destination.builder().build(), new HashMap<>(), new Reference(), null);
+        Notification notification = new Notification(Template.builder().letterTemplateId(letterTemplateId).build(), Destination.builder().build(), new HashMap<>(), new Reference(), null);
 
         byte[] sampleDirectionText = IOUtils.toByteArray(getClass().getClassLoader().getResourceAsStream("pdfs/direction-text.pdf"));
         byte[] sampleDirectionCoversheet = IOUtils.toByteArray(getClass().getClassLoader().getResourceAsStream("pdfs/direction-notice-coversheet-sample.pdf"));
@@ -1533,10 +1537,21 @@ public class NotificationServiceTest {
         when((notificationValidService).isHearingTypeValidToSendNotification(any(), any())).thenReturn(true);
         when(sscsGeneratePdfService.generatePdf(anyString(), any(), any(), any())).thenReturn(sampleDirectionCoversheet);
 
-        when(factory.create(struckOutCcdNotificationWrapper, getSubscriptionWithType(ccdNotificationWrapper))).thenReturn(notification);
-        notificationService.manageNotificationAndSubscription(struckOutCcdNotificationWrapper);
+        when(factory.create(wrapper, getSubscriptionWithType(ccdNotificationWrapper))).thenReturn(notification);
+        notificationService.manageNotificationAndSubscription(wrapper);
 
-        verify(notificationHandler, times(1)).sendNotification(eq(struckOutCcdNotificationWrapper), eq(LETTER_TEMPLATE_ID_STRUCKOUT), eq(LETTER), any(NotificationHandler.SendNotification.class));
+        verify(notificationHandler, times(1)).sendNotification(eq(wrapper), eq(letterTemplateId), eq(LETTER), any(NotificationHandler.SendNotification.class));
+    }
+
+    private Object[] bundledLetters() {
+        return new Object[] {
+            new Object[] {
+                STRUCK_OUT, LETTER_TEMPLATE_ID_STRUCKOUT
+            },
+            new Object[] {
+                DIRECTION_ISSUED, LETTER_TEMPLATE_ID_DIRECTION_ISSUED
+            }
+        };
     }
 
     @Test(expected = NotificationServiceException.class)
@@ -1622,14 +1637,20 @@ public class NotificationServiceTest {
             notificationValidService, notificationHandler, outOfHoursCalculator, notificationConfig, sendNotificationService
         );
         ReflectionTestUtils.setField(sendNotificationService, "strikeOutLetterTemplate", "/templates/strike_out_letter_template.html");
+        ReflectionTestUtils.setField(sendNotificationService, "directionNoticeLetterTemplate", "/templates/direction_notice_letter_template.html");
         ReflectionTestUtils.setField(sendNotificationService, "bundledLettersOn", bundledLettersOn);
         ReflectionTestUtils.setField(sendNotificationService, "lettersOn", lettersOn);
         return notificationService;
     }
 
     private CcdNotificationWrapper buildWrapperWithDocuments(NotificationEventType eventType, String fileUrl, Appellant appellant, Representative rep) {
+        String documentType = STRIKE_OUT_NOTICE;
+        if (DIRECTION_ISSUED.equals(eventType)) {
+            documentType = DIRECTION_TEXT;
+        }
+
         SscsDocumentDetails sscsDocumentDetails = SscsDocumentDetails.builder()
-            .documentType("Strike Out Notice")
+            .documentType(documentType)
             .documentLink(
                 DocumentLink.builder()
                     .documentUrl(fileUrl)
