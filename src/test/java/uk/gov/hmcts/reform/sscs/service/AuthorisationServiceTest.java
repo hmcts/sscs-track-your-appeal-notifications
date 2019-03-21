@@ -37,25 +37,25 @@ public class AuthorisationServiceTest {
 
     @Test(expected = ClientAuthorisationException.class)
     public void shouldHandleAnAuthorisationException() {
-        when(serviceAuthorisationApi.getServiceName(any())).thenThrow(new CustomFeignException(400, "", new byte[0]));
+        when(serviceAuthorisationApi.getServiceName(any())).thenThrow(new CustomFeignException(400, ""));
         service.authorise(SERVICE_NAME);
     }
 
     @Test(expected = AuthorisationException.class)
     public void shouldHandleAnUnknownFeignException() {
-        when(serviceAuthorisationApi.getServiceName(any())).thenThrow(new CustomFeignException(501, "", new byte[0]));
+        when(serviceAuthorisationApi.getServiceName(any())).thenThrow(new CustomFeignException(501, ""));
         service.authorise(SERVICE_NAME);
     }
 
     @Test(expected = AuthorisationException.class)
     public void shouldHandleAnUnknownFeignException2() {
-        when(serviceAuthorisationApi.getServiceName(any())).thenThrow(new CustomFeignException(399, "", new byte[0]));
+        when(serviceAuthorisationApi.getServiceName(any())).thenThrow(new CustomFeignException(399, ""));
         service.authorise(SERVICE_NAME);
     }
 
     private class CustomFeignException extends FeignException {
-        public CustomFeignException(int status, String message, byte[] content) {
-            super(status, message, content);
+        public CustomFeignException(int status, String message) {
+            super(status, message, new byte[0]);
         }
     }
 
