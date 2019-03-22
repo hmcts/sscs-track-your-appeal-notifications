@@ -154,7 +154,7 @@ public class Personalisation<E extends NotificationWrapper> {
     }
 
     private void subscriptionDetails(Map<String, String> personalisation, Subscription subscription, Benefit benefit) {
-        final String tya = StringUtils.defaultIfBlank(subscription.getTya(), StringUtils.EMPTY);
+        final String tya = tya(subscription);
         personalisation.put(APPEAL_ID, tya);
         personalisation.put(MANAGE_EMAILS_LINK_LITERAL, config.getManageEmailsLink().replace(MAC_LITERAL,
                 getMacToken(tya, benefit.name())));
@@ -165,7 +165,7 @@ public class Personalisation<E extends NotificationWrapper> {
         personalisation.put(HEARING_INFO_LINK_LITERAL,
                 config.getHearingInfoLink().replace(APPEAL_ID_LITERAL, tya));
 
-        String email = subscription.getEmail();
+        String email = email(subscription);
         if (email != null) {
             try {
                 String encodedEmail = URLEncoder.encode(email, StandardCharsets.UTF_8.name());
@@ -174,6 +174,18 @@ public class Personalisation<E extends NotificationWrapper> {
                 throw new RuntimeException(e);
             }
         }
+    }
+
+    private static String tya(Subscription subscription) {
+        if (subscription != null) {
+            return StringUtils.defaultIfBlank(subscription.getTya(), StringUtils.EMPTY);
+        } else {
+            return StringUtils.EMPTY;
+        }
+    }
+
+    private static String email(Subscription subscription) {
+        return subscription != null ? subscription.getEmail() : null;
     }
 
     private String getPanelCompositionByBenefitType(Benefit benefit) {

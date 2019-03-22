@@ -724,6 +724,22 @@ public class PersonalisationTest {
         assertEquals("http://link.com/" + repTyaNumber, result.get(SUBMIT_EVIDENCE_INFO_LINK_LITERAL));
     }
 
+    @Test
+    public void shouldHandleNoSubscription() {
+        when(macService.generateToken(StringUtils.EMPTY, PIP.name())).thenReturn("ZYX");
+        SscsCaseData response = SscsCaseData.builder()
+                .ccdCaseId(CASE_ID).caseReference(null)
+                .appeal(Appeal.builder().benefitType(BenefitType.builder().code("PIP").build())
+                        .appellant(Appellant.builder().name(name).build())
+                        .build())
+                .build();
+
+        Map result = personalisation.create(SscsCaseDataWrapper.builder().newSscsCaseData(response)
+                .notificationEventType(APPEAL_RECEIVED_NOTIFICATION).build(), new SubscriptionWithType(null, APPELLANT));
+
+        assertEquals(CASE_ID, result.get(APPEAL_REF));
+    }
+
     private Hearing createHearing(LocalDate hearingDate) {
         return Hearing.builder().value(HearingDetails.builder()
                 .hearingDate(hearingDate.format(DateTimeFormatter.ofPattern("yyyy-MM-dd")))
