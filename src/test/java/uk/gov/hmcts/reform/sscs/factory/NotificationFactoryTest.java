@@ -22,6 +22,7 @@ import java.util.Optional;
 import javax.annotation.Resource;
 import junitparams.JUnitParamsRunner;
 import junitparams.Parameters;
+import org.apache.commons.lang3.StringUtils;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -32,6 +33,7 @@ import uk.gov.hmcts.reform.sscs.config.NotificationConfig;
 import uk.gov.hmcts.reform.sscs.config.SubscriptionType;
 import uk.gov.hmcts.reform.sscs.domain.SscsCaseDataWrapper;
 import uk.gov.hmcts.reform.sscs.domain.SubscriptionWithType;
+import uk.gov.hmcts.reform.sscs.domain.notify.Destination;
 import uk.gov.hmcts.reform.sscs.domain.notify.Link;
 import uk.gov.hmcts.reform.sscs.domain.notify.Notification;
 import uk.gov.hmcts.reform.sscs.domain.notify.NotificationEventType;
@@ -327,6 +329,30 @@ public class NotificationFactoryTest {
         Notification result = factory.create(new CcdNotificationWrapper(wrapper), getSubscriptionWithType(wrapper, APPELLANT));
 
         assertNull(result);
+    }
+
+    @Test
+    public void shouldHandleNoSubscription() {
+        factory = new NotificationFactory(personalisationFactory);
+        SscsCaseDataWrapper sscsCaseDataWrapper = SscsCaseDataWrapper.builder()
+                .newSscsCaseData(SscsCaseData.builder()
+                        .appeal(Appeal.builder()
+                                .benefitType(BenefitType.builder()
+                                        .code("PIP")
+                                        .build())
+                                .build())
+                        .build())
+                .notificationEventType(APPEAL_RECEIVED_NOTIFICATION)
+                .build();
+        CcdNotificationWrapper notificationWrapper = new CcdNotificationWrapper(sscsCaseDataWrapper);
+
+        given(personalisationFactory.apply(any(NotificationEventType.class)))
+                .willReturn(withRepresentativePersonalisation);
+
+        Notification notification = factory.create(notificationWrapper, new SubscriptionWithType(null, APPELLANT));
+
+        assertEquals(StringUtils.EMPTY, notification.getAppealNumber());
+        assertEquals(Destination.builder().build(), notification.getDestination());
     }
 
     private SubscriptionWithType getSubscriptionWithType(SscsCaseDataWrapper sscsCaseDataWrapper, SubscriptionType subscriptionType) {
