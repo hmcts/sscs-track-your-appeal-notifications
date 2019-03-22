@@ -16,10 +16,7 @@ import static uk.gov.hmcts.reform.sscs.service.NotificationValidService.FALLBACK
 import static uk.gov.hmcts.reform.sscs.service.SendNotificationService.getBundledLetterFileType;
 import static uk.gov.hmcts.reform.sscs.service.SendNotificationService.getRepSalutation;
 
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Collections;
-import java.util.HashMap;
+import java.util.*;
 
 import junitparams.JUnitParamsRunner;
 import junitparams.Parameters;
@@ -405,8 +402,13 @@ public class SendNotificationServiceTest {
     }
 
     public Object[] nonBundledLetterTemplates() {
-        return Arrays.stream(NotificationEventType.values())
+        Object[] originalValues = Arrays.stream(NotificationEventType.values())
             .filter(type -> !BUNDLED_LETTER_EVENT_TYPES.contains(type))
             .toArray();
+
+        ArrayList<Object> x = new ArrayList<Object>(Arrays.asList(originalValues));
+        x.add(null);
+
+        return x.toArray();
     }
 }
