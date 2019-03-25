@@ -333,6 +333,7 @@ public class Personalisation<E extends NotificationWrapper> {
     private String getLetterTemplateName(SubscriptionType subscriptionType, NotificationEventType notificationEventType) {
         String letterTemplateName = notificationEventType.getId();
         if (FALLBACK_LETTER_SUBSCRIPTION_TYPES.contains(notificationEventType)
+            || APPEAL_WITHDRAWN_NOTIFICATION.equals(notificationEventType)
             || HEARING_BOOKED_NOTIFICATION.equals(notificationEventType)) {
             letterTemplateName = letterTemplateName + "." + subscriptionType.name().toLowerCase();
         }
