@@ -160,7 +160,7 @@ public class SyaAppealCreatedAndReceivedPersonalisation extends WithRepresentati
 
         if (representative != null && representative.getName() != null && StringUtils.equalsIgnoreCase(YES, hasRepresentative)) {
             representativeBuilder.append(TWO_NEW_LINES + NAME)
-                    .append(representative.getName().getFullNameNoTitle() + TWO_NEW_LINES)
+                    .append(getOptionalField(representative.getName().getFullNameNoTitle(), NOT_PROVIDED) + TWO_NEW_LINES)
                     .append("Organisation: ")
                     .append(getOptionalField(representative.getOrganisation(), NOT_PROVIDED) + TWO_NEW_LINES)
                     .append(ADDRESS)
@@ -238,7 +238,42 @@ public class SyaAppealCreatedAndReceivedPersonalisation extends WithRepresentati
         return localDate.format(longFormatter);
     }
 
-    static String getOptionalField(String field, String text) {
-        return field == null || StringUtils.equalsIgnoreCase("null", field) || field.isEmpty() ? text : field;
+    public Map<String, String> setHearingArrangementDetails(Map<String, String> personalisation, SscsCaseData ccdResponse) {
+        personalisation.put(AppConstants.HEARING_ARRANGEMENT_DETAILS_LITERAL, buildHearingArrangements(ccdResponse.getAppeal().getHearingOptions()));
+
+        return personalisation;
+    }
+
+    private String buildHearingArrangements(HearingOptions hearingOptions) {
+        String languageInterpreterRequired = convertBooleanToRequiredText(hearingOptions.getLanguageInterpreter() != null
+                && StringUtils.equalsIgnoreCase(YES, hearingOptions.getLanguageInterpreter()));
+
+        return new StringBuilder()
+                .append("Language interpreter: ")
+                .append(languageInterpreterRequired + TWO_NEW_LINES)
+                .append("Sign interpreter: ")
+                .append(convertBooleanToRequiredText(findHearingArrangement("signLanguageInterpreter", hearingOptions.getArrangements())) + TWO_NEW_LINES)
+                .append("Hearing loop: ")
+                .append(convertBooleanToRequiredText(findHearingArrangement("hearingLoop", hearingOptions.getArrangements())) + TWO_NEW_LINES)
+                .append("Disabled access: ")
+                .append(convertBooleanToRequiredText(findHearingArrangement("disabledAccess", hearingOptions.getArrangements())) + TWO_NEW_LINES)
+                .append("Any other arrangements: ")
+                .append(getOptionalField(hearingOptions.getOther(), NOT_REQUIRED))
+                .toString();
+    }
+
+    private Boolean findHearingArrangement(String field, List<String> arrangements) {
+        return arrangements != null && arrangements.contains(field);
+    }
+
+    private String convertBooleanToRequiredText(Boolean bool) {
+        return bool ? REQUIRED : NOT_REQUIRED;
+    }
+
+    public static String getOptionalField(String field, String text) {
+        return field == null || StringUtils.equalsIgnoreCase("null", field)
+                        || StringUtils.equalsIgnoreCase("null null", field)
+                        || StringUtils.equalsIgnoreCase("null null null", field)
+                        || StringUtils.isBlank(field) ? text : field;
     }
 }

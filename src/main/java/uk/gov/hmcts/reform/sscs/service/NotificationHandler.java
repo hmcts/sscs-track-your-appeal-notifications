@@ -29,7 +29,7 @@ public class NotificationHandler {
         this.jobGroupGenerator = jobGroupGenerator;
     }
 
-    public <T> void sendNotification(NotificationWrapper wrapper, String notificationTemplate, final String notificationType, SendNotification sendNotification) {
+    public void sendNotification(NotificationWrapper wrapper, String notificationTemplate, final String notificationType, SendNotification sendNotification) {
         final String caseId = wrapper.getCaseId();
         try {
             LOG.info("Sending {} template {} for case id: {}", notificationType, notificationTemplate, caseId);

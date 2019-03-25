@@ -63,7 +63,7 @@ public class DwpResponseLateReminder implements ReminderHandler {
             reminderDate
         ));
 
-        LOG.info("Scheduled DWP response late reminder for case id: {} @ {}", caseId, reminderDate.toString());
+        LOG.info("Scheduled DWP response late reminder for case id: {} @ {}", caseId, reminderDate);
     }
 
     private ZonedDateTime calculateReminderDate(SscsCaseData ccdResponse, long delay) {
