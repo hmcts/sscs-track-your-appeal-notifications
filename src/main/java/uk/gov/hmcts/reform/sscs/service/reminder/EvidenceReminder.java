@@ -63,7 +63,7 @@ public class EvidenceReminder implements ReminderHandler {
             reminderDate
         ));
 
-        LOG.info("Scheduled evidence reminder for case id: {} @ {}", caseId, reminderDate.toString());
+        LOG.info("Scheduled evidence reminder for case id: {} @ {}", caseId, reminderDate);
     }
 
     private ZonedDateTime calculateReminderDate(SscsCaseData ccdResponse) {

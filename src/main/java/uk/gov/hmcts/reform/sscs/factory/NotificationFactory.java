@@ -5,6 +5,7 @@ import static uk.gov.hmcts.reform.sscs.ccd.domain.Benefit.getBenefitByCode;
 
 import java.util.Map;
 import lombok.extern.slf4j.Slf4j;
+import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 import uk.gov.hmcts.reform.sscs.ccd.domain.Benefit;
@@ -53,9 +54,17 @@ public class NotificationFactory {
         Subscription subscription = subscriptionWithType.getSubscription();
         Destination destination = getDestination(subscription);
         Reference reference = new Reference(ccdResponse.getCaseReference());
-        String appealNumber = subscription.getTya();
+        String appealNumber = tya(subscription);
 
         return new Notification(template, destination, placeholders, reference, appealNumber);
+    }
+
+    private static String tya(Subscription subscription) {
+        if (subscription != null) {
+            return StringUtils.defaultIfBlank(subscription.getTya(), StringUtils.EMPTY);
+        } else {
+            return StringUtils.EMPTY;
+        }
     }
 
     private <E extends NotificationWrapper> Personalisation<E> getPersonalisation(E notificationWrapper) {
@@ -63,9 +72,13 @@ public class NotificationFactory {
     }
 
     private Destination getDestination(Subscription subscription) {
-        return Destination.builder()
-                .email(subscription.getEmail())
-                .sms(PhoneNumbersUtil.cleanPhoneNumber(subscription.getMobile()).orElse(subscription.getMobile()))
-                .build();
+        if (subscription != null) {
+            return Destination.builder()
+                    .email(subscription.getEmail())
+                    .sms(PhoneNumbersUtil.cleanPhoneNumber(subscription.getMobile()).orElse(subscription.getMobile()))
+                    .build();
+        } else {
+            return Destination.builder().build();
+        }
     }
 }
