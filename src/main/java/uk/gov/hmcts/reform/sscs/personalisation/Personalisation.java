@@ -343,10 +343,10 @@ public class Personalisation<E extends NotificationWrapper> {
     private String getLetterTemplateName(SubscriptionType subscriptionType, NotificationEventType notificationEventType) {
         String letterTemplateName = notificationEventType.getId();
         if (subscriptionType != null
-            && (FALLBACK_LETTER_SUBSCRIPTION_TYPES.contains(notificationEventType)
+            && ((FALLBACK_LETTER_SUBSCRIPTION_TYPES.contains(notificationEventType)
             || APPEAL_WITHDRAWN_NOTIFICATION.equals(notificationEventType)
             || HEARING_BOOKED_NOTIFICATION.equals(notificationEventType))
-            || REQUEST_INFO_INCOMPLETE.equals(notificationEventType)) {
+            || REQUEST_INFO_INCOMPLETE.equals(notificationEventType))) {
             letterTemplateName = letterTemplateName + "." + subscriptionType.name().toLowerCase();
         }
         return letterTemplateName;
@@ -410,15 +410,7 @@ public class Personalisation<E extends NotificationWrapper> {
 
             AppellantInfoRequest latestAppellantInfoRequest = null;
             for (AppellantInfoRequest infoRequest : infoRequests) {
-                if (latestAppellantInfoRequest == null) {
-                    latestAppellantInfoRequest = infoRequest;
-                } else {
-                    LocalDate latestDate = LocalDate.parse(latestAppellantInfoRequest.getAppellantInfo().getRequestDate(), CC_DATE_FORMAT);
-                    LocalDate currentDate = LocalDate.parse(infoRequest.getAppellantInfo().getRequestDate(), CC_DATE_FORMAT);
-                    if (currentDate.isAfter(latestDate)) {
-                        latestAppellantInfoRequest = infoRequest;
-                    }
-                }
+                latestAppellantInfoRequest = getLatestAppellantInfoRequest(latestAppellantInfoRequest, infoRequest);
             }
 
             if (latestAppellantInfoRequest != null && latestAppellantInfoRequest.getAppellantInfo() != null) {
@@ -427,5 +419,18 @@ public class Personalisation<E extends NotificationWrapper> {
         }
 
         return null;
+    }
+
+    private static AppellantInfoRequest getLatestAppellantInfoRequest(AppellantInfoRequest latestAppellantInfoRequest, AppellantInfoRequest infoRequest) {
+        if (latestAppellantInfoRequest == null) {
+            latestAppellantInfoRequest = infoRequest;
+        } else {
+            LocalDate latestDate = LocalDate.parse(latestAppellantInfoRequest.getAppellantInfo().getRequestDate(), CC_DATE_FORMAT);
+            LocalDate currentDate = LocalDate.parse(infoRequest.getAppellantInfo().getRequestDate(), CC_DATE_FORMAT);
+            if (currentDate.isAfter(latestDate)) {
+                latestAppellantInfoRequest = infoRequest;
+            }
+        }
+        return latestAppellantInfoRequest;
     }
 }
