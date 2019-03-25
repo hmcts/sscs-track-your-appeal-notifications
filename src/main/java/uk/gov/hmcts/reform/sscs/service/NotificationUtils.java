@@ -4,6 +4,7 @@ import static uk.gov.hmcts.reform.sscs.config.AppealHearingType.ORAL;
 import static uk.gov.hmcts.reform.sscs.config.SubscriptionType.APPELLANT;
 import static uk.gov.hmcts.reform.sscs.config.SubscriptionType.APPOINTEE;
 import static uk.gov.hmcts.reform.sscs.config.SubscriptionType.REPRESENTATIVE;
+import static uk.gov.hmcts.reform.sscs.domain.notify.NotificationEventType.APPEAL_WITHDRAWN_NOTIFICATION;
 import static uk.gov.hmcts.reform.sscs.domain.notify.NotificationEventType.HEARING_BOOKED_NOTIFICATION;
 import static uk.gov.hmcts.reform.sscs.domain.notify.NotificationEventType.REQUEST_INFO_INCOMPLETE;
 import static uk.gov.hmcts.reform.sscs.domain.notify.NotificationEventType.STRUCK_OUT;
@@ -11,6 +12,8 @@ import static uk.gov.hmcts.reform.sscs.service.NotificationValidService.FALLBACK
 
 import java.util.Arrays;
 import java.util.List;
+
+import uk.gov.hmcts.reform.sscs.ccd.domain.Appeal;
 import uk.gov.hmcts.reform.sscs.ccd.domain.Appointee;
 import uk.gov.hmcts.reform.sscs.ccd.domain.SscsCaseData;
 import uk.gov.hmcts.reform.sscs.ccd.domain.Subscription;
@@ -23,7 +26,7 @@ import uk.gov.hmcts.reform.sscs.domain.notify.NotificationEventType;
 import uk.gov.hmcts.reform.sscs.factory.NotificationWrapper;
 
 public class NotificationUtils {
-    private static final List<NotificationEventType> MANDATORY_LETTERS = Arrays.asList(STRUCK_OUT, HEARING_BOOKED_NOTIFICATION, REQUEST_INFO_INCOMPLETE);
+    private static final List<NotificationEventType> MANDATORY_LETTERS = Arrays.asList(APPEAL_WITHDRAWN_NOTIFICATION, STRUCK_OUT, HEARING_BOOKED_NOTIFICATION, REQUEST_INFO_INCOMPLETE);
 
     private NotificationUtils() {
         // empty
@@ -44,9 +47,13 @@ public class NotificationUtils {
     /* Sometimes the data for the appointee comes in with null populated objects */
     public static boolean hasRepresentative(SscsCaseDataWrapper wrapper) {
         return wrapper.getNewSscsCaseData().getAppeal() != null
-            && wrapper.getNewSscsCaseData().getAppeal().getRep() != null
-            && wrapper.getNewSscsCaseData().getAppeal().getRep().getHasRepresentative() != null
-            && wrapper.getNewSscsCaseData().getAppeal().getRep().getHasRepresentative().equalsIgnoreCase("yes");
+            && hasRepresentative(wrapper.getNewSscsCaseData().getAppeal());
+    }
+
+    public static boolean hasRepresentative(Appeal appeal) {
+        return appeal.getRep() != null
+            && appeal.getRep().getHasRepresentative() != null
+            && appeal.getRep().getHasRepresentative().equalsIgnoreCase("yes");
     }
 
     public static boolean hasAppointeeSubscription(SscsCaseDataWrapper wrapper) {
