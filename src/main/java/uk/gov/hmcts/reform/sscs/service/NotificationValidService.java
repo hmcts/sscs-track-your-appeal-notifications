@@ -16,8 +16,8 @@ import uk.gov.hmcts.reform.sscs.factory.NotificationWrapper;
 
 @Service
 public class NotificationValidService {
-    private static final List<NotificationEventType> MANDATORY_LETTER_EVENT_TYPES = Arrays.asList(STRUCK_OUT, HEARING_BOOKED_NOTIFICATION);
-    protected static final List<NotificationEventType> FALLBACK_LETTER_SUBSCRIPTION_TYPES = Arrays.asList(DWP_RESPONSE_RECEIVED_NOTIFICATION, APPEAL_LODGED, SYA_APPEAL_CREATED_NOTIFICATION);
+    protected static final List<NotificationEventType> FALLBACK_LETTER_SUBSCRIPTION_TYPES = Arrays.asList(DWP_RESPONSE_RECEIVED_NOTIFICATION, APPEAL_LODGED, SYA_APPEAL_CREATED_NOTIFICATION, EVIDENCE_RECEIVED_NOTIFICATION);
+    private static final List<NotificationEventType> MANDATORY_LETTER_EVENT_TYPES = Arrays.asList(APPEAL_WITHDRAWN_NOTIFICATION, STRUCK_OUT, HEARING_BOOKED_NOTIFICATION);
     private static final String HEARING_TYPE_ONLINE_RESOLUTION = "cor";
 
     static boolean isMandatoryLetterEventType(NotificationEventType eventType) {
@@ -39,7 +39,7 @@ public class NotificationValidService {
     static boolean fallbackConditionsMet(NotificationWrapper wrapper, NotificationEventType eventType) {
         if (FALLBACK_LETTER_SUBSCRIPTION_TYPES.contains(eventType)) {
             return (null == wrapper.getOldSscsCaseData() || null == wrapper.getOldSscsCaseData().getCaseReference() || wrapper.getOldSscsCaseData().getCaseReference().isEmpty())
-                && (null != wrapper.getNewSscsCaseData().getCaseReference() && !wrapper.getNewSscsCaseData().getCaseReference().isEmpty());
+                && (null != wrapper.getNewSscsCaseData().getCaseReference() && !wrapper.getNewSscsCaseData().getCaseReference().isEmpty()) || eventType == EVIDENCE_RECEIVED_NOTIFICATION;
         }
 
         return true;
