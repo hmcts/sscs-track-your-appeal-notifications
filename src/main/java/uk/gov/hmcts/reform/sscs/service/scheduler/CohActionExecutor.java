@@ -22,6 +22,7 @@ public class CohActionExecutor extends BaseActionExecutor<CohJobPayload> {
 
     @Override
     protected void updateCase(Long caseId, SscsCaseDataWrapper wrapper, IdamTokens idamTokens) {
+        // Void
     }
 
     @Override
