@@ -298,6 +298,12 @@ notification:
     responseReceived:
       emailId: 01caec0c-191b-4a32-882a-6fded2546ce6
       smsId: 317a121e-d08c-4890-b3b3-4652f741771f
+      appellant:
+        letterId: 8b11f3f4-6452-4a35-93d8-a94996af6499
+      appointee:
+        letterId: 8b11f3f4-6452-4a35-93d8-a94996af6499
+      representative:
+        letterId: 419beb1c-4f26-45e7-8db3-69bfe5e9224d
     evidenceReminder:
       appellant:
         emailId: b9e47ec4-3b58-4b8d-9304-f77ac27fb7f2
