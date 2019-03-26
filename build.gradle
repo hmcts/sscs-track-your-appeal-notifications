@@ -212,7 +212,7 @@ dependencies {
     compile group: 'com.opencsv', name: 'opencsv', version: '4.5'
     compile group: 'commons-io', name: 'commons-io', version: '2.6'
 
-    compile group: 'com.mchange', name: 'c3p0', version: '0.9.5.3'
+    compile group: 'com.mchange', name: 'c3p0', version: '0.9.5.4'
     compile group: 'org.flywaydb', name: 'flyway-core', version: '5.1.0'
     compile group: 'org.postgresql', name: 'postgresql', version: '42.2.2'
 
