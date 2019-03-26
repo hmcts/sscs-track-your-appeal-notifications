@@ -400,7 +400,7 @@ public class Personalisation<E extends NotificationWrapper> {
         return bool ? REQUIRED : NOT_REQUIRED;
     }
 
-    protected String getLatestInfoRequestDetail(SscsCaseData ccdResponse) {
+    protected static String getLatestInfoRequestDetail(SscsCaseData ccdResponse) {
         if (ccdResponse.getInfoRequests() != null) {
             List<AppellantInfoRequest> infoRequests = ccdResponse.getInfoRequests().getAppellantInfoRequest();
 
