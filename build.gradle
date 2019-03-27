@@ -30,7 +30,7 @@ compileTestJava {
 }
 
 dependencyCheck {
-    autoUpdate=false
+    autoUpdate=true
 }
 
 mainClassName = 'uk.gov.hmcts.reform.sscs.TrackYourAppealNotificationsApplication'
