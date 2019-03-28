@@ -72,6 +72,8 @@ public class SyaAppealCreatedAndReceivedPersonalisation extends WithRepresentati
     }
 
     private String buildYourDetails(Appeal appeal) {
+        String phone = appeal.getAppellant().getContact().getPhone() != null ? appeal.getAppellant().getContact().getPhone() : appeal.getAppellant().getContact().getMobile();
+
         return new StringBuilder()
                 .append(NAME)
                 .append(appeal.getAppellant().getName().getFullNameNoTitle() + TWO_NEW_LINES)
@@ -84,7 +86,7 @@ public class SyaAppealCreatedAndReceivedPersonalisation extends WithRepresentati
                 .append(EMAIL)
                 .append(getOptionalField(appeal.getAppellant().getContact().getEmail(), NOT_PROVIDED) + TWO_NEW_LINES)
                 .append(PHONE)
-                .append(getOptionalField(appeal.getAppellant().getContact().getPhone(), NOT_PROVIDED))
+                .append(getOptionalField(phone, NOT_PROVIDED))
                 .toString();
     }
 
@@ -131,6 +133,8 @@ public class SyaAppealCreatedAndReceivedPersonalisation extends WithRepresentati
             .append(hasAppointee);
 
         if (StringUtils.equalsIgnoreCase(YES, hasAppointee)) {
+            String phone = appointee.getContact().getPhone() != null ? appointee.getContact().getPhone() : appointee.getContact().getMobile();
+
             appointeeBuilder.append(TWO_NEW_LINES + NAME)
                 .append(appointee.getName().getFullNameNoTitle() + TWO_NEW_LINES)
                 .append("Date of birth: ")
@@ -140,7 +144,7 @@ public class SyaAppealCreatedAndReceivedPersonalisation extends WithRepresentati
                 .append(EMAIL)
                 .append(getOptionalField(appointee.getContact().getEmail(), NOT_PROVIDED) + TWO_NEW_LINES)
                 .append(PHONE)
-                .append(getOptionalField(appointee.getContact().getPhone(), NOT_PROVIDED));
+                .append(getOptionalField(phone, NOT_PROVIDED));
         }
         return appointeeBuilder.toString();
     }
@@ -159,6 +163,8 @@ public class SyaAppealCreatedAndReceivedPersonalisation extends WithRepresentati
                 .append(hasRepresentative);
 
         if (representative != null && representative.getName() != null && StringUtils.equalsIgnoreCase(YES, hasRepresentative)) {
+            String phone = representative.getContact().getPhone() != null ? representative.getContact().getPhone() : representative.getContact().getMobile();
+
             representativeBuilder.append(TWO_NEW_LINES + NAME)
                     .append(getOptionalField(representative.getName().getFullNameNoTitle(), NOT_PROVIDED) + TWO_NEW_LINES)
                     .append("Organisation: ")
@@ -168,7 +174,7 @@ public class SyaAppealCreatedAndReceivedPersonalisation extends WithRepresentati
                     .append(EMAIL)
                     .append(getOptionalField(representative.getContact().getEmail(), NOT_PROVIDED) + TWO_NEW_LINES)
                     .append(PHONE)
-                    .append(getOptionalField(representative.getContact().getPhone(), NOT_PROVIDED));
+                    .append(getOptionalField(phone, NOT_PROVIDED));
         }
         return representativeBuilder.toString();
     }

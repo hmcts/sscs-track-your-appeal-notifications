@@ -35,6 +35,11 @@ public class CcdNotificationWrapper implements NotificationWrapper {
     }
 
     @Override
+    public void setNotificationType(NotificationEventType notificationEventType) {
+        responseWrapper.setNotificationEventType(notificationEventType);
+    }
+
+    @Override
     public SscsCaseData getNewSscsCaseData() {
         return responseWrapper.getNewSscsCaseData();
     }

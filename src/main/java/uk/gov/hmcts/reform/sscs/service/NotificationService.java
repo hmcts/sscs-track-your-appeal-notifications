@@ -4,11 +4,8 @@ import static uk.gov.hmcts.reform.sscs.ccd.domain.Benefit.getBenefitByCode;
 import static uk.gov.hmcts.reform.sscs.ccd.domain.EventType.SUBSCRIPTION_UPDATED;
 import static uk.gov.hmcts.reform.sscs.config.SubscriptionType.APPOINTEE;
 import static uk.gov.hmcts.reform.sscs.config.SubscriptionType.REPRESENTATIVE;
-import static uk.gov.hmcts.reform.sscs.domain.notify.NotificationEventType.SUBSCRIPTION_UPDATED_NOTIFICATION;
-import static uk.gov.hmcts.reform.sscs.domain.notify.NotificationEventType.getNotificationByCcdEvent;
-import static uk.gov.hmcts.reform.sscs.service.NotificationUtils.getSubscription;
-import static uk.gov.hmcts.reform.sscs.service.NotificationUtils.isFallbackLetterRequired;
-import static uk.gov.hmcts.reform.sscs.service.NotificationUtils.isOkToSendNotification;
+import static uk.gov.hmcts.reform.sscs.domain.notify.NotificationEventType.*;
+import static uk.gov.hmcts.reform.sscs.service.NotificationUtils.*;
 import static uk.gov.hmcts.reform.sscs.service.NotificationValidService.isMandatoryLetterEventType;
 
 import lombok.extern.slf4j.Slf4j;
@@ -54,6 +51,8 @@ public class NotificationService {
     }
 
     public void manageNotificationAndSubscription(NotificationWrapper notificationWrapper) {
+        overrideNotificationType(notificationWrapper);
+
         NotificationEventType notificationType = notificationWrapper.getNotificationType();
         final String caseId = notificationWrapper.getCaseId();
 
@@ -188,5 +187,15 @@ public class NotificationService {
             subscription = oldSubscription;
         }
         return subscription;
+    }
+
+    private void overrideNotificationType(NotificationWrapper notificationWrapper) {
+        SscsCaseData newSscsData = notificationWrapper.getNewSscsCaseData();
+        SscsCaseData oldSscsData = notificationWrapper.getOldSscsCaseData();
+        if (CASE_UPDATED.equals(notificationWrapper.getNotificationType())
+                && (null == oldSscsData || null == oldSscsData.getCaseReference() || oldSscsData.getCaseReference().isEmpty())
+                && (null != newSscsData.getCaseReference() && !newSscsData.getCaseReference().isEmpty())) {
+            notificationWrapper.setNotificationType(APPEAL_LODGED);
+        }
     }
 }
