@@ -18,7 +18,7 @@ import uk.gov.hmcts.reform.sscs.factory.NotificationWrapper;
 public class NotificationValidService {
     protected static final List<NotificationEventType> FALLBACK_LETTER_SUBSCRIPTION_TYPES = Arrays.asList(DWP_RESPONSE_RECEIVED_NOTIFICATION, APPEAL_LODGED, SYA_APPEAL_CREATED_NOTIFICATION, EVIDENCE_RECEIVED_NOTIFICATION);
     private static final List<NotificationEventType> MANDATORY_LETTER_EVENT_TYPES = Arrays.asList(APPEAL_WITHDRAWN_NOTIFICATION, STRUCK_OUT, HEARING_BOOKED_NOTIFICATION, DIRECTION_ISSUED);
-    protected static final List<NotificationEventType> BUNDLED_LETTER_EVENT_TYPES = Arrays.asList(STRUCK_OUT, DIRECTION_ISSUED);
+    public static final List<NotificationEventType> BUNDLED_LETTER_EVENT_TYPES = Arrays.asList(STRUCK_OUT, DIRECTION_ISSUED);
     private static final String HEARING_TYPE_ONLINE_RESOLUTION = "cor";
 
     static boolean isMandatoryLetterEventType(NotificationEventType eventType) {

@@ -1,11 +1,16 @@
 package uk.gov.hmcts.reform.sscs.config;
 
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNull;
 import static uk.gov.hmcts.reform.sscs.config.AppealHearingType.*;
 import static uk.gov.hmcts.reform.sscs.config.SubscriptionType.APPELLANT;
 import static uk.gov.hmcts.reform.sscs.config.SubscriptionType.APPOINTEE;
 import static uk.gov.hmcts.reform.sscs.config.SubscriptionType.REPRESENTATIVE;
 import static uk.gov.hmcts.reform.sscs.domain.notify.NotificationEventType.*;
+import static uk.gov.hmcts.reform.sscs.service.NotificationValidService.BUNDLED_LETTER_EVENT_TYPES;
+
+import java.util.Arrays;
+import java.util.List;
 
 import junitparams.JUnitParamsRunner;
 import junitparams.Parameters;
@@ -47,6 +52,15 @@ public class NotificationConfigTest {
         assertEquals(expectedEmailTemplateId, template.getEmailTemplateId());
         assertEquals(expectedSmsTemplateId, template.getSmsTemplateId());
         assertEquals(expectedLetterTemplateId, template.getLetterTemplateId());
+    }
+
+    @Test
+    @Parameters(method = "bundledLetterTemplateNames")
+    public void given_bundledLetters_should_notHaveTemplate(AppealHearingType appealHearingType, String templateName) {
+        Template template = notificationConfig.getTemplate(templateName, templateName, templateName, Benefit.PIP, appealHearingType);
+        assertNull(template.getEmailTemplateId());
+        assertNull(template.getSmsTemplateId());
+        assertNull(template.getLetterTemplateId());
     }
 
     @SuppressWarnings({"Indentation", "unused"})
@@ -129,7 +143,24 @@ public class NotificationConfigTest {
         };
     }
 
-    private String getTemplateName(NotificationEventType notificationEventType, SubscriptionType subscriptionType) {
+
+    @SuppressWarnings({"Indentation", "unused"})
+    private Object[] bundledLetterTemplateNames() {
+        List<SubscriptionType> subscriptionTypes = Arrays.asList(APPELLANT, APPOINTEE, REPRESENTATIVE);
+        Object[] result = new Object[BUNDLED_LETTER_EVENT_TYPES.size() * subscriptionTypes.size() * 2];
+
+        int i = 0;
+        for (NotificationEventType eventType : BUNDLED_LETTER_EVENT_TYPES) {
+            for (SubscriptionType subscriptionType : subscriptionTypes) {
+                result[i++] = new Object[]{PAPER, getTemplateName(eventType, subscriptionType)};
+                result[i++] = new Object[]{ORAL, getTemplateName(eventType, subscriptionType)};
+            }
+        }
+
+        return result;
+    }
+
+        private String getTemplateName(NotificationEventType notificationEventType, SubscriptionType subscriptionType) {
         return notificationEventType.getId() + "." + subscriptionType.name().toLowerCase();
     }
 
