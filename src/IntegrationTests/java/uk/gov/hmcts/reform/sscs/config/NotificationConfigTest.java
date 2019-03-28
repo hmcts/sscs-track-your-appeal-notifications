@@ -160,7 +160,7 @@ public class NotificationConfigTest {
         return result;
     }
 
-        private String getTemplateName(NotificationEventType notificationEventType, SubscriptionType subscriptionType) {
+    private String getTemplateName(NotificationEventType notificationEventType, SubscriptionType subscriptionType) {
         return notificationEventType.getId() + "." + subscriptionType.name().toLowerCase();
     }
 
