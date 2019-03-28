@@ -7,7 +7,6 @@ import static uk.gov.hmcts.reform.sscs.config.SubscriptionType.APPELLANT;
 import static uk.gov.hmcts.reform.sscs.config.SubscriptionType.APPOINTEE;
 import static uk.gov.hmcts.reform.sscs.config.SubscriptionType.REPRESENTATIVE;
 import static uk.gov.hmcts.reform.sscs.domain.notify.NotificationEventType.*;
-import static uk.gov.hmcts.reform.sscs.service.NotificationValidService.BUNDLED_LETTER_EVENT_TYPES;
 
 import java.util.Arrays;
 import java.util.List;
@@ -31,6 +30,8 @@ import uk.gov.hmcts.reform.sscs.domain.notify.Template;
 @SpringBootTest
 @ActiveProfiles("integration")
 public class NotificationConfigTest {
+    private static final List<NotificationEventType> BUNDLED_LETTER_EVENT_TYPES = Arrays.asList(STRUCK_OUT, DIRECTION_ISSUED);
+
     // Below rules are needed to use the junitParamsRunner together with SpringRunner
     @ClassRule
     public static final SpringClassRule SPRING_CLASS_RULE = new SpringClassRule();
