@@ -95,6 +95,14 @@ public class EvidenceReminderTest {
         assertEquals(expectedTriggerAt, job.triggerAt.toString());
     }
 
+    @Test(expected = Exception.class)
+    public void canScheduleReturnFalseWhenDwpResponseReceivedThrowError() {
+
+        CcdNotificationWrapper wrapper = null;
+
+        assertFalse(evidenceReminder.canSchedule(wrapper));
+    }
+
     @Test
     public void canScheduleReturnFalseWhenDwpResponseReceivedDateNotPresent() {
 

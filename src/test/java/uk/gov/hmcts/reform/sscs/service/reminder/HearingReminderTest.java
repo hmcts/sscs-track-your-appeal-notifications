@@ -96,6 +96,14 @@ public class HearingReminderTest {
         assertEquals(expectedSecondTriggerAt, secondJob.triggerAt.toString());
     }
 
+    @Test(expected = Exception.class)
+    public void canScheduleReturnFalseWhenFindHearingDateThrowError() {
+
+        CcdNotificationWrapper ccdResponse = null;
+
+        assertFalse(hearingReminder.canSchedule(ccdResponse));
+    }
+
     @Test
     public void canScheduleReturnFalseWhenCannotFindHearingDate() {
 

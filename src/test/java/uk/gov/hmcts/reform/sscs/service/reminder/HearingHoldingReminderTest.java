@@ -135,6 +135,14 @@ public class HearingHoldingReminderTest {
         assertEquals(finalHearingContactDate, job4.triggerAt);
     }
 
+    @Test(expected = Exception.class)
+    public void canScheduleReturnFalseWhenHearingContactDateThrowError() {
+
+        CcdNotificationWrapper wrapper = null;
+
+        assertFalse(hearingHoldingReminder.canSchedule(wrapper));
+    }
+
     @Test
     public void canScheduleReturnFalseWhenHearingContactDateNotPresent() {
 

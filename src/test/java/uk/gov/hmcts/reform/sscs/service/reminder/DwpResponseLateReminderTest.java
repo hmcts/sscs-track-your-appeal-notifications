@@ -94,6 +94,13 @@ public class DwpResponseLateReminderTest {
         assertEquals(expectedTriggerAt, job.triggerAt.toString());
     }
 
+    @Test(expected = Exception.class)
+    public void canScheduleReturnFalseWhenAppealReceivedDateThrowError() {
+
+        CcdNotificationWrapper wrapper = null;
+        assertFalse(dwpResponseLateReminder.canSchedule(wrapper));
+    }
+
     @Test
     public void canScheduleReturnFalseWhenAppealReceivedDateNotPresent() {
 
