@@ -190,12 +190,14 @@ public class NotificationService {
     }
 
     private void overrideNotificationType(NotificationWrapper notificationWrapper) {
-        SscsCaseData newSscsData = notificationWrapper.getNewSscsCaseData();
-        SscsCaseData oldSscsData = notificationWrapper.getOldSscsCaseData();
         if (CASE_UPDATED.equals(notificationWrapper.getNotificationType())
-                && (null == oldSscsData || null == oldSscsData.getCaseReference() || oldSscsData.getCaseReference().isEmpty())
-                && (null != newSscsData.getCaseReference() && !newSscsData.getCaseReference().isEmpty())) {
+                && hasCaseRefBeenAdded(notificationWrapper.getOldSscsCaseData(), notificationWrapper.getNewSscsCaseData())) {
             notificationWrapper.setNotificationType(APPEAL_LODGED);
         }
+    }
+
+    private boolean hasCaseRefBeenAdded(SscsCaseData oldSscsData, SscsCaseData newSscsData) {
+        return (null == oldSscsData || null == oldSscsData.getCaseReference() || oldSscsData.getCaseReference().isEmpty())
+                && (null != newSscsData.getCaseReference() && !newSscsData.getCaseReference().isEmpty());
     }
 }
