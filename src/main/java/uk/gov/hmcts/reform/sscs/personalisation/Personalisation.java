@@ -85,11 +85,7 @@ public class Personalisation<E extends NotificationWrapper> {
 
         // Some templates (noteably letters) can be sent out before the SC Ref is added to the case
         // this allows those templates to be populated with either the CCD Id or SC Ref
-        if (null == ccdResponse.getCaseReference()) {
-            personalisation.put(CASE_REFENCE_ID, StringUtils.defaultIfBlank(ccdResponse.getCcdCaseId(), StringUtils.EMPTY));
-        } else {
-            personalisation.put(CASE_REFENCE_ID, ccdResponse.getCaseReference());
-        }
+        personalisation.put(CASE_REFERENCE_ID, getAppealReference(ccdResponse));
 
         personalisation.put(INFO_REQUEST_DETAIL, StringUtils.defaultIfBlank(getLatestInfoRequestDetail(ccdResponse), StringUtils.EMPTY));
 
