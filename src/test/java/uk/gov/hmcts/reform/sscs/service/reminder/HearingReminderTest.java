@@ -14,7 +14,6 @@ import org.mockito.Mock;
 import org.mockito.junit.MockitoJUnitRunner;
 import uk.gov.hmcts.reform.sscs.SscsCaseDataUtils;
 import uk.gov.hmcts.reform.sscs.domain.notify.NotificationEventType;
-import uk.gov.hmcts.reform.sscs.exception.ReminderException;
 import uk.gov.hmcts.reform.sscs.factory.CcdNotificationWrapper;
 import uk.gov.hmcts.reform.sscs.jobscheduler.model.Job;
 import uk.gov.hmcts.reform.sscs.jobscheduler.services.JobScheduler;
@@ -97,12 +96,12 @@ public class HearingReminderTest {
         assertEquals(expectedSecondTriggerAt, secondJob.triggerAt.toString());
     }
 
-    @Test(expected = ReminderException.class)
-    public void throwExceptionWhenCannotFindHearingDate() {
+    @Test
+    public void canScheduleReturnFalseWhenCannotFindHearingDate() {
 
         CcdNotificationWrapper ccdResponse = SscsCaseDataUtils.buildBasicCcdNotificationWrapper(HEARING_BOOKED_NOTIFICATION);
 
-        hearingReminder.handle(ccdResponse);
+        assertFalse(hearingReminder.canSchedule(ccdResponse));
     }
 
 }

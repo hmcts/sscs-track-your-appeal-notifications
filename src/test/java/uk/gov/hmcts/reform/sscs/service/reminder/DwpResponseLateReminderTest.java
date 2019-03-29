@@ -17,7 +17,6 @@ import org.mockito.Mock;
 import org.mockito.junit.MockitoJUnitRunner;
 import uk.gov.hmcts.reform.sscs.SscsCaseDataUtils;
 import uk.gov.hmcts.reform.sscs.domain.notify.NotificationEventType;
-import uk.gov.hmcts.reform.sscs.exception.ReminderException;
 import uk.gov.hmcts.reform.sscs.extractor.AppealReceivedDateExtractor;
 import uk.gov.hmcts.reform.sscs.factory.CcdNotificationWrapper;
 import uk.gov.hmcts.reform.sscs.jobscheduler.model.Job;
@@ -95,14 +94,14 @@ public class DwpResponseLateReminderTest {
         assertEquals(expectedTriggerAt, job.triggerAt.toString());
     }
 
-    @Test(expected = ReminderException.class)
-    public void throwExceptionWhenAppealReceivedDateNotPresent() {
+    @Test
+    public void canScheduleReturnFalseWhenAppealReceivedDateNotPresent() {
 
         CcdNotificationWrapper wrapper = SscsCaseDataUtils.buildBasicCcdNotificationWrapper(APPEAL_RECEIVED_NOTIFICATION);
 
         when(appealReceivedDateExtractor.extract(wrapper.getNewSscsCaseData())).thenReturn(Optional.empty());
 
-        dwpResponseLateReminder.handle(wrapper);
+        assertFalse(dwpResponseLateReminder.canSchedule(wrapper));
     }
 
 }
