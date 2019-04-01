@@ -78,22 +78,22 @@ public class NotificationService {
 
     private void resendLastNotification(NotificationWrapper notificationWrapper, SubscriptionWithType subscriptionWithType,
                                         NotificationEventType notificationType) {
-        if (shouldProcessLastNotification(notificationWrapper, subscriptionWithType)) {
+        if (subscriptionWithType.getSubscription() != null && shouldProcessLastNotification(notificationWrapper, subscriptionWithType)) {
             NotificationEventType lastEvent = getNotificationByCcdEvent(notificationWrapper.getNewSscsCaseData().getEvents().get(0)
                     .getValue().getEventType());
             log.info("Resending the last notification for event {} and case id {}.", lastEvent.getId(), notificationWrapper.getCaseId());
-            scrubMobileAndSmsIfSubscribedBefore(notificationWrapper, subscriptionWithType);
+            scrubEmailAndSmsIfSubscribedBefore(notificationWrapper, subscriptionWithType);
             notificationWrapper.getSscsCaseDataWrapper().setNotificationEventType(lastEvent);
             sendNotification(notificationWrapper, subscriptionWithType, notificationType);
             notificationWrapper.getSscsCaseDataWrapper().setNotificationEventType(SUBSCRIPTION_UPDATED_NOTIFICATION);
         }
     }
 
-    private void scrubMobileAndSmsIfSubscribedBefore(NotificationWrapper notificationWrapper, SubscriptionWithType subscriptionWithType) {
+    private void scrubEmailAndSmsIfSubscribedBefore(NotificationWrapper notificationWrapper, SubscriptionWithType subscriptionWithType) {
         Subscription oldSubscription = getSubscription(notificationWrapper.getOldSscsCaseData(), subscriptionWithType.getSubscriptionType());
         Subscription newSubscription = subscriptionWithType.getSubscription();
-        String email = oldSubscription.isEmailSubscribed() ? null : newSubscription.getEmail();
-        String mobile = oldSubscription.isSmsSubscribed() ? null : newSubscription.getMobile();
+        String email = oldSubscription != null && oldSubscription.isEmailSubscribed() ? null : newSubscription.getEmail();
+        String mobile = oldSubscription != null && oldSubscription.isSmsSubscribed() ? null : newSubscription.getMobile();
         subscriptionWithType.setSubscription(newSubscription.toBuilder().email(email).mobile(mobile).build());
     }
 
@@ -104,9 +104,8 @@ public class NotificationService {
     }
 
     static Boolean hasCaseJustSubscribed(Subscription newSubscription, Subscription oldSubscription) {
-        return oldSubscription != null && newSubscription != null
-                && (!oldSubscription.isEmailSubscribed() && newSubscription.isEmailSubscribed()
-                || (!oldSubscription.isSmsSubscribed() && newSubscription.isSmsSubscribed()));
+        return ((oldSubscription == null || !oldSubscription.isEmailSubscribed()) && newSubscription.isEmailSubscribed()
+                || ((oldSubscription == null || !oldSubscription.isSmsSubscribed()) && newSubscription.isSmsSubscribed()));
     }
 
     private static boolean thereIsALastEventThatIsNotSubscriptionUpdated(final SscsCaseData newSscsCaseData) {
@@ -138,8 +137,8 @@ public class NotificationService {
 
     private void processOldSubscriptionNotifications(NotificationWrapper wrapper, Notification notification, SubscriptionWithType subscriptionWithType, NotificationEventType eventType) {
         if (wrapper.getNotificationType() == NotificationEventType.SUBSCRIPTION_UPDATED_NOTIFICATION) {
-            Subscription newSubscription = null;
-            Subscription oldSubscription = null;
+            Subscription newSubscription;
+            Subscription oldSubscription;
             if (REPRESENTATIVE.equals(subscriptionWithType.getSubscriptionType())) {
                 newSubscription = wrapper.getNewSscsCaseData().getSubscriptions().getRepresentativeSubscription();
                 oldSubscription = wrapper.getOldSscsCaseData().getSubscriptions().getRepresentativeSubscription();

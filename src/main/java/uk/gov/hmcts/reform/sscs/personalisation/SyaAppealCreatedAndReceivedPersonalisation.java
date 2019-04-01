@@ -97,9 +97,9 @@ public class SyaAppealCreatedAndReceivedPersonalisation extends WithRepresentati
     private String buildTextMessageDetails(Subscription subscription) {
         StringBuilder buildTextMessage = new StringBuilder()
                 .append("Receive text message reminders: ")
-                .append(null != subscription.getSubscribeSms() ? subscription.getSubscribeSms().toLowerCase(Locale.ENGLISH) : NO);
+                .append(null != subscription && null != subscription.getSubscribeSms() ? subscription.getSubscribeSms().toLowerCase(Locale.ENGLISH) : NO);
 
-        if (subscription.isSmsSubscribed()) {
+        if (null != subscription && subscription.isSmsSubscribed()) {
             buildTextMessage
                     .append(TWO_NEW_LINES + "Mobile number: ")
                     .append(subscription.getMobile());

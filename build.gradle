@@ -232,12 +232,11 @@ dependencies {
     compile group: 'uk.gov.hmcts.reform', name: 'core-case-data-store-client', version: '4.6.2'
     compile group: 'uk.gov.hmcts.reform', name: 'sscs-job-scheduler', version: '1.5.2'
     compile group: 'uk.gov.hmcts.reform', name: 'service-auth-provider-client', version: '3.0.0'
-    compile group: 'uk.gov.hmcts.reform', name: 'sscs-common', version: '0.0.155-RC5'
+    compile group: 'uk.gov.hmcts.reform', name: 'sscs-common', version: '0.0.157'
     compile group: 'uk.gov.hmcts.reform', name: 'sscs-pdf-email-common', version: '0.1.1'
 
     compile group: 'uk.gov.service.notify', name: 'notifications-java-client', version: '3.14.1-RELEASE'
     compile group: 'io.github.openfeign.form', name: 'feign-form', version: '3.7.0'
-
 
     compile group: 'org.apache.pdfbox', name: 'pdfbox', version: '2.0.14'
 
