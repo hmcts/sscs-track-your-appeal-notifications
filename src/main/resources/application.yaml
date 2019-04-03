@@ -206,9 +206,6 @@ notification:
     representative:
       emailId: 97c58e23-c11f-40b3-b981-2d4cfa38b8fd
       smsId: bb3df0ea-8259-43c4-95de-9eef96206575
-  dwpResponseLateReminder:
-    emailId: 1dfa9e4e-0a85-4001-acc9-2847ed6e2a22
-    smsId: ef6297d1-7b03-432a-b04a-62a01f009b56
   question_round_issued:
     emailId: ccfbfcac-847d-4e55-955c-096802c131a0
   follow_up_question_round_issued:
