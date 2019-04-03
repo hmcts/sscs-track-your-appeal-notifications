@@ -223,8 +223,6 @@ notification:
     emailId: 62e72e11-5eb6-4048-83f4-0b0c5c59fcb9
   corDecision:
     emailId: 5b0df251-49b9-46d5-b347-37a81ab77f19
-  struckOut:
-    letterId: 7383b637-d76e-4c9f-8af9-3e3573168011
   caseUpdated:
     appellant:
       emailId: 01293b93-b23e-40a3-ad78-2c6cd01cd21c
@@ -280,8 +278,6 @@ notification:
       appointee:
         emailId: c5654134-2e13-4541-ac73-334a5b5cdbb6
         smsId: 74bda35f-040b-4355-bda3-faf0e4f5ae6e
-    struckOut:
-      letterId: 7383b637-d76e-4c9f-8af9-3e3573168011
   oral:
     responseReceived:
       emailId: 01caec0c-191b-4a32-882a-6fded2546ce6
@@ -310,8 +306,6 @@ notification:
         emailId: fc9d0618-68c4-48ec-9481-a84b225a57a9
       representative:
         emailId: e2ee8609-7d56-4857-b3f8-79028e8960aa
-    struckOut:
-      letterId: 7383b637-d76e-4c9f-8af9-3e3573168011
 
 smsSender:
   pip: 80b11be7-5c10-2773-8351-070e22d5ab6b
@@ -350,7 +344,8 @@ appeal.email.subject: ${EMAIL_SUBJECT:Your appeal}
 appeal.email.message: ${EMAIL_MESSAGE:Your appeal has been created \nPlease do not respond to this email}
 
 appellant.appeal.html.template.path: /templates/appellant_appeal_template.html
-noncompliantcaseletter.appeal.html.template.path: /templates/non_compliant_case_letter_template.html
+strikeOutLetterTemplate.appeal.html.template.path: /templates/strike_out_letter_template.html
+directionNoticeLetterTemplate.appeal.html.template.path: /templates/direction_notice_letter_template.html
 
 pdf.api.url: ${PDF_API_URL:http://localhost:5500}
 
