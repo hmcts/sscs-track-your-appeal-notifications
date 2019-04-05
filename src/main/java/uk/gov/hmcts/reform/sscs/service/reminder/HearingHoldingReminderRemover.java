@@ -39,6 +39,10 @@ public class HearingHoldingReminderRemover implements ReminderHandler {
         );
     }
 
+    public boolean canSchedule(NotificationWrapper wrapper) {
+        return true;
+    }
+
     public void handle(NotificationWrapper wrapper) {
         if (!canHandle(wrapper)) {
             throw new IllegalArgumentException("cannot handle ccdResponse");
