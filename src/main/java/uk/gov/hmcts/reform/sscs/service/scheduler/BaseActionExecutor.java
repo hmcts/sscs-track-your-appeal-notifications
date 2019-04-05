@@ -35,21 +35,26 @@ public abstract class BaseActionExecutor<T> implements JobExecutor<T> {
     public void execute(String jobId, String jobGroup, String eventId, T payload) {
 
         long caseId = getCaseId(payload);
-        LOG.info("Scheduled event: {} triggered for case id: {}", eventId, caseId);
+        try {
+            LOG.info("Scheduled event: {} triggered for case id: {}", eventId, caseId);
 
-        IdamTokens idamTokens = idamService.getIdamTokens();
+            IdamTokens idamTokens = idamService.getIdamTokens();
 
-        SscsCaseDetails caseDetails = ccdService.getByCaseId(caseId, idamTokens);
+            SscsCaseDetails caseDetails = ccdService.getByCaseId(caseId, idamTokens);
 
-        if (caseDetails != null) {
-            SscsCaseDataWrapper wrapper = deserializer.buildSscsCaseDataWrapper(buildCcdNode(caseDetails, eventId));
+            if (caseDetails != null) {
+                SscsCaseDataWrapper wrapper = deserializer.buildSscsCaseDataWrapper(buildCcdNode(caseDetails, eventId));
 
-            notificationService.manageNotificationAndSubscription(getWrapper(wrapper, payload));
-            if (wrapper.getNotificationEventType().isReminder()) {
-                updateCase(caseId, wrapper, idamTokens);
+                notificationService.manageNotificationAndSubscription(getWrapper(wrapper, payload));
+                if (wrapper.getNotificationEventType().isReminder()) {
+                    updateCase(caseId, wrapper, idamTokens);
+                }
+            } else {
+                LOG.warn("Case id: {} could not be found for event: {}", caseId, eventId);
             }
-        } else {
-            LOG.warn("Case id: {} could not be found for event: {}", caseId, eventId);
+        } catch (Exception exc) {
+            LOG.error("Failed to process job [" + jobId + "] for case [" + caseId + "] and event [" + eventId + "]", exc);
+            throw exc;
         }
     }
 
