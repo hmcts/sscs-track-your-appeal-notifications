@@ -17,7 +17,6 @@ import org.mockito.Mock;
 import org.mockito.junit.MockitoJUnitRunner;
 import uk.gov.hmcts.reform.sscs.SscsCaseDataUtils;
 import uk.gov.hmcts.reform.sscs.domain.notify.NotificationEventType;
-import uk.gov.hmcts.reform.sscs.exception.ReminderException;
 import uk.gov.hmcts.reform.sscs.extractor.DwpResponseReceivedDateExtractor;
 import uk.gov.hmcts.reform.sscs.factory.CcdNotificationWrapper;
 import uk.gov.hmcts.reform.sscs.jobscheduler.model.Job;
@@ -96,14 +95,22 @@ public class EvidenceReminderTest {
         assertEquals(expectedTriggerAt, job.triggerAt.toString());
     }
 
-    @Test(expected = ReminderException.class)
-    public void throwExceptionWhenDwpResponseReceivedDateNotPresent() {
+    @Test(expected = Exception.class)
+    public void canScheduleReturnFalseWhenDwpResponseReceivedThrowError() {
+
+        CcdNotificationWrapper wrapper = null;
+
+        assertFalse(evidenceReminder.canSchedule(wrapper));
+    }
+
+    @Test
+    public void canScheduleReturnFalseWhenDwpResponseReceivedDateNotPresent() {
 
         CcdNotificationWrapper wrapper = SscsCaseDataUtils.buildBasicCcdNotificationWrapper(DWP_RESPONSE_RECEIVED_NOTIFICATION);
 
         when(dwpResponseReceivedDateExtractor.extract(wrapper.getNewSscsCaseData())).thenReturn(Optional.empty());
 
-        evidenceReminder.handle(wrapper);
+        assertFalse(evidenceReminder.canSchedule(wrapper));
     }
 
 }

@@ -154,4 +154,12 @@ public class DwpResponseLateReminderRemoverTest {
         );
     }
 
+    @Test
+    public void canScheduleReturnAlwaysTrue() {
+
+        CcdNotificationWrapper wrapper = SscsCaseDataUtils.buildBasicCcdNotificationWrapper(APPEAL_RECEIVED_NOTIFICATION);
+
+        assertTrue(dwpResponseLateReminderRemover.canSchedule(wrapper));
+    }
+
 }
