@@ -29,6 +29,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 import uk.gov.hmcts.reform.sscs.ccd.domain.*;
 import uk.gov.hmcts.reform.sscs.config.AppConstants;
+import uk.gov.hmcts.reform.sscs.config.AppealHearingType;
 import uk.gov.hmcts.reform.sscs.config.NotificationConfig;
 import uk.gov.hmcts.reform.sscs.config.SubscriptionType;
 import uk.gov.hmcts.reform.sscs.domain.SscsCaseDataWrapper;
@@ -299,7 +300,7 @@ public class Personalisation<E extends NotificationWrapper> {
     }
 
     public Template getTemplate(E notificationWrapper, Benefit benefit, SubscriptionType subscriptionType) {
-        String templateConfig = getEmailTemplateName(subscriptionType, notificationWrapper.getNotificationType());
+        String templateConfig = getEmailTemplateName(subscriptionType, notificationWrapper);
         String smsTemplateName = isSendSmsSubscriptionConfirmation() ? SUBSCRIPTION_CREATED_NOTIFICATION.getId() + "." + subscriptionType.toString().toLowerCase() :
                 templateConfig;
         String letterTemplateName = getLetterTemplateName(subscriptionType, notificationWrapper.getNotificationType());
@@ -307,8 +308,9 @@ public class Personalisation<E extends NotificationWrapper> {
     }
 
     private String getEmailTemplateName(SubscriptionType subscriptionType,
-                                     NotificationEventType notificationEventType) {
+                                     NotificationWrapper notificationWrapper) {
 
+        NotificationEventType notificationEventType = notificationWrapper.getNotificationType();
         String emailTemplateName = notificationEventType.getId();
 
         if (ADJOURNED_NOTIFICATION.equals(notificationEventType)
@@ -323,6 +325,8 @@ public class Personalisation<E extends NotificationWrapper> {
             || HEARING_BOOKED_NOTIFICATION.equals(notificationEventType)
             || HEARING_REMINDER_NOTIFICATION.equals(notificationEventType)
             || POSTPONEMENT_NOTIFICATION.equals(notificationEventType)
+            || (DWP_RESPONSE_RECEIVED_NOTIFICATION.equals(notificationEventType)
+                && !notificationWrapper.getHearingType().equals(AppealHearingType.ONLINE))
             || RESEND_APPEAL_CREATED_NOTIFICATION.equals(notificationEventType)
             || SYA_APPEAL_CREATED_NOTIFICATION.equals(notificationEventType)) {
             emailTemplateName = emailTemplateName + "." + StringUtils.lowerCase(subscriptionType.name());

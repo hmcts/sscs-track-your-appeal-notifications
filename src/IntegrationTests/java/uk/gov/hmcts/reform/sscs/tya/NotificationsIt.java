@@ -128,15 +128,6 @@ public class NotificationsIt {
     @Value("${notification.subscriptionCreated.appellant.smsId}")
     private String subscriptionCreatedSmsId;
 
-    @Value("${notification.paper.responseReceived.emailId}")
-    private String paperResponseReceivedEmailId;
-
-    @Value("${notification.paper.responseReceived.smsId}")
-    private String paperResponseReceivedSmsId;
-
-    @Value("${notification.oral.responseReceived.emailId}")
-    private String oralResponseReceivedEmailId;
-
     @Before
     public void setup() throws Exception {
         NotificationSender sender = new NotificationSender(notificationClient, null, notificationBlacklist);
@@ -211,23 +202,6 @@ public class NotificationsIt {
         assertHttpStatus(response, HttpStatus.OK);
         verify(notificationClient, never()).sendEmail(any(), any(), any(), any());
         verify(notificationClient, never()).sendSms(any(), any(), any(), any(), any());
-    }
-
-    @Test
-    @Parameters({
-            "oral, 01caec0c-191b-4a32-882a-6fded2546ce6, 317a121e-d08c-4890-b3b3-4652f741771f",
-            "paper, a64bce9a-9162-47ca-b3e7-cf5f85ca7bdc, f5b61f94-0b2b-4e8e-9c25-56e9830df7d4"
-    })
-    public void shouldSendNotificationForAnResponseReceivedRequestForAnOralOrPaperHearing(
-            String hearingType, String emailTemplateId, String smsTemplateId) throws Exception {
-        json = updateEmbeddedJson(json, hearingType, "case_details", "case_data", "appeal", "hearingType");
-        json = updateEmbeddedJson(json, "responseReceived", "event_id");
-
-        HttpServletResponse response = getResponse(getRequestWithAuthHeader(json));
-
-        assertHttpStatus(response, HttpStatus.OK);
-        verify(notificationClient).sendEmail(eq(emailTemplateId), any(), any(), any());
-        verify(notificationClient).sendSms(eq(smsTemplateId), any(), any(), any(), any());
     }
 
     @Test
@@ -665,8 +639,8 @@ public class NotificationsIt {
             new Object[]{
                 ADJOURNED_NOTIFICATION,
                 "paper",
-                Arrays.asList("bff02237-9bcb-49fa-bbf7-11725b97132a", "75357eb8-bba7-4bdf-b879-b535bc3fb50a"),
-                Arrays.asList("46c6bf06-33dd-4e5a-9b6b-8bd6d0eb33b1", "a170d63e-b04e-4da5-ad89-d93644b6c1e9"),
+                Arrays.asList("cff1be5f-20cf-4cfa-9a90-4a75d3341ba8", "ecf7db7d-a257-4496-a2bf-768e560c80e7"),
+                Arrays.asList("f71772b1-ae1d-49d6-87c6-a41da97a4039", "a170d63e-b04e-4da5-ad89-d93644b6c1e9"),
                 Collections.emptyList(),
                 "yes",
                 "yes",
@@ -679,8 +653,8 @@ public class NotificationsIt {
             new Object[]{
                 ADJOURNED_NOTIFICATION,
                 "oral",
-                Arrays.asList("bff02237-9bcb-49fa-bbf7-11725b97132a", "75357eb8-bba7-4bdf-b879-b535bc3fb50a"),
-                Arrays.asList("46c6bf06-33dd-4e5a-9b6b-8bd6d0eb33b1", "a170d63e-b04e-4da5-ad89-d93644b6c1e9"),
+                Arrays.asList("cff1be5f-20cf-4cfa-9a90-4a75d3341ba8", "ecf7db7d-a257-4496-a2bf-768e560c80e7"),
+                Arrays.asList("f71772b1-ae1d-49d6-87c6-a41da97a4039", "a170d63e-b04e-4da5-ad89-d93644b6c1e9"),
                 Collections.emptyList(),
                 "yes",
                 "yes",
@@ -693,8 +667,8 @@ public class NotificationsIt {
             new Object[]{
                 ADJOURNED_NOTIFICATION,
                 "paper",
-                Collections.singletonList("75357eb8-bba7-4bdf-b879-b535bc3fb50a"),
-                Arrays.asList("46c6bf06-33dd-4e5a-9b6b-8bd6d0eb33b1", "a170d63e-b04e-4da5-ad89-d93644b6c1e9"),
+                Collections.singletonList("ecf7db7d-a257-4496-a2bf-768e560c80e7"),
+                Arrays.asList("f71772b1-ae1d-49d6-87c6-a41da97a4039", "a170d63e-b04e-4da5-ad89-d93644b6c1e9"),
                 Collections.emptyList(),
                 "no",
                 "yes",
@@ -903,7 +877,7 @@ public class NotificationsIt {
             new Object[]{
                 POSTPONEMENT_NOTIFICATION,
                 "paper",
-                Arrays.asList("08959288-e09a-472d-80b8-af79bfcbb437", "0a48bd48-f79c-4863-b6e3-e8fa69019c34"),
+                Arrays.asList("221095a2-aee8-466b-a7ab-beee516cc6cc", "e07b7dba-f383-49ca-a0ba-b5b61be27da6"),
                 Collections.emptyList(),
                 Collections.emptyList(),
                 "yes",
@@ -917,7 +891,7 @@ public class NotificationsIt {
             new Object[]{
                 POSTPONEMENT_NOTIFICATION,
                 "oral",
-                Arrays.asList("08959288-e09a-472d-80b8-af79bfcbb437", "0a48bd48-f79c-4863-b6e3-e8fa69019c34"),
+                Arrays.asList("221095a2-aee8-466b-a7ab-beee516cc6cc", "e07b7dba-f383-49ca-a0ba-b5b61be27da6"),
                 Collections.emptyList(),
                 Collections.emptyList(),
                 "yes",
@@ -931,7 +905,7 @@ public class NotificationsIt {
             new Object[]{
                 POSTPONEMENT_NOTIFICATION,
                 "paper",
-                Collections.singletonList("0a48bd48-f79c-4863-b6e3-e8fa69019c34"),
+                Collections.singletonList("e07b7dba-f383-49ca-a0ba-b5b61be27da6"),
                 Collections.emptyList(),
                 Collections.emptyList(),
                 "no",
@@ -1322,8 +1296,8 @@ public class NotificationsIt {
             new Object[]{
                 ADJOURNED_NOTIFICATION,
                 "paper",
-                Arrays.asList("bff02237-9bcb-49fa-bbf7-11725b97132a", "75357eb8-bba7-4bdf-b879-b535bc3fb50a"),
-                Arrays.asList("46c6bf06-33dd-4e5a-9b6b-8bd6d0eb33b1", "a170d63e-b04e-4da5-ad89-d93644b6c1e9"),
+                Arrays.asList("cff1be5f-20cf-4cfa-9a90-4a75d3341ba8", "ecf7db7d-a257-4496-a2bf-768e560c80e7"),
+                Arrays.asList("f71772b1-ae1d-49d6-87c6-a41da97a4039", "a170d63e-b04e-4da5-ad89-d93644b6c1e9"),
                 Collections.emptyList(),
                 "yes",
                 "yes",
@@ -1336,8 +1310,8 @@ public class NotificationsIt {
             new Object[]{
                 ADJOURNED_NOTIFICATION,
                 "oral",
-                Arrays.asList("bff02237-9bcb-49fa-bbf7-11725b97132a", "75357eb8-bba7-4bdf-b879-b535bc3fb50a"),
-                Arrays.asList("46c6bf06-33dd-4e5a-9b6b-8bd6d0eb33b1", "a170d63e-b04e-4da5-ad89-d93644b6c1e9"),
+                Arrays.asList("cff1be5f-20cf-4cfa-9a90-4a75d3341ba8", "ecf7db7d-a257-4496-a2bf-768e560c80e7"),
+                Arrays.asList("f71772b1-ae1d-49d6-87c6-a41da97a4039", "a170d63e-b04e-4da5-ad89-d93644b6c1e9"),
                 Collections.emptyList(),
                 "yes",
                 "yes",
@@ -1350,8 +1324,8 @@ public class NotificationsIt {
             new Object[]{
                 ADJOURNED_NOTIFICATION,
                 "paper",
-                Collections.singletonList("75357eb8-bba7-4bdf-b879-b535bc3fb50a"),
-                Arrays.asList("46c6bf06-33dd-4e5a-9b6b-8bd6d0eb33b1", "a170d63e-b04e-4da5-ad89-d93644b6c1e9"),
+                Collections.singletonList("ecf7db7d-a257-4496-a2bf-768e560c80e7"),
+                Arrays.asList("f71772b1-ae1d-49d6-87c6-a41da97a4039", "a170d63e-b04e-4da5-ad89-d93644b6c1e9"),
                 Collections.emptyList(),
                 "no",
                 "yes",
@@ -1560,7 +1534,7 @@ public class NotificationsIt {
             new Object[]{
                 POSTPONEMENT_NOTIFICATION,
                 "paper",
-                Arrays.asList("08959288-e09a-472d-80b8-af79bfcbb437", "0a48bd48-f79c-4863-b6e3-e8fa69019c34"),
+                Arrays.asList("221095a2-aee8-466b-a7ab-beee516cc6cc", "e07b7dba-f383-49ca-a0ba-b5b61be27da6"),
                 Collections.emptyList(),
                 Collections.emptyList(),
                 "yes",
@@ -1574,7 +1548,7 @@ public class NotificationsIt {
             new Object[]{
                 POSTPONEMENT_NOTIFICATION,
                 "oral",
-                Arrays.asList("08959288-e09a-472d-80b8-af79bfcbb437", "0a48bd48-f79c-4863-b6e3-e8fa69019c34"),
+                Arrays.asList("221095a2-aee8-466b-a7ab-beee516cc6cc", "e07b7dba-f383-49ca-a0ba-b5b61be27da6"),
                 Collections.emptyList(),
                 Collections.emptyList(),
                 "yes",
@@ -1588,7 +1562,7 @@ public class NotificationsIt {
             new Object[]{
                 POSTPONEMENT_NOTIFICATION,
                 "paper",
-                Collections.singletonList("0a48bd48-f79c-4863-b6e3-e8fa69019c34"),
+                Collections.singletonList("e07b7dba-f383-49ca-a0ba-b5b61be27da6"),
                 Collections.emptyList(),
                 Collections.emptyList(),
                 "no",
@@ -1759,8 +1733,8 @@ public class NotificationsIt {
             new Object[]{
                 DWP_RESPONSE_RECEIVED_NOTIFICATION,
                 "oral",
-                Collections.singletonList("01caec0c-191b-4a32-882a-6fded2546ce6"),
-                Collections.singletonList("317a121e-d08c-4890-b3b3-4652f741771f"),
+                Collections.singletonList("2c5644db-1f7b-429b-b10a-8b23a80ed26a"),
+                Collections.singletonList("f20ffcb1-c5f0-4bff-b2d1-a1094f8014e6"),
                 Collections.emptyList(),
                 "yes",
                 "yes",
@@ -2052,8 +2026,8 @@ public class NotificationsIt {
             new Object[]{
                 DWP_RESPONSE_RECEIVED_NOTIFICATION,
                 "oral",
-                Collections.singletonList("01caec0c-191b-4a32-882a-6fded2546ce6"),
-                Collections.singletonList("317a121e-d08c-4890-b3b3-4652f741771f"),
+                Collections.singletonList("2c5644db-1f7b-429b-b10a-8b23a80ed26a"),
+                Collections.singletonList("f20ffcb1-c5f0-4bff-b2d1-a1094f8014e6"),
                 Collections.emptyList(),
                 "yes",
                 "yes",
@@ -2143,8 +2117,8 @@ public class NotificationsIt {
             new Object[]{
                 ADJOURNED_NOTIFICATION,
                 "oral",
-                Collections.singletonList("bff02237-9bcb-49fa-bbf7-11725b97132a"),
-                Collections.singletonList("46c6bf06-33dd-4e5a-9b6b-8bd6d0eb33b1"),
+                Collections.singletonList("cff1be5f-20cf-4cfa-9a90-4a75d3341ba8"),
+                Collections.singletonList("f71772b1-ae1d-49d6-87c6-a41da97a4039"),
                 Collections.emptyList(),
                 "yes",
                 "yes",
@@ -2156,8 +2130,8 @@ public class NotificationsIt {
             new Object[]{
                 DWP_RESPONSE_RECEIVED_NOTIFICATION,
                 "paper",
-                Collections.singletonList("a64bce9a-9162-47ca-b3e7-cf5f85ca7bdc"),
-                Collections.singletonList("f5b61f94-0b2b-4e8e-9c25-56e9830df7d4"),
+                Collections.singletonList("e1084d78-5e2d-45d2-a54f-84339da141c1"),
+                Collections.singletonList("505be856-ceca-4bbc-ba70-29024585056f"),
                 Collections.emptyList(),
                 "yes",
                 "yes",
@@ -2427,7 +2401,7 @@ public class NotificationsIt {
         verify(notificationClient).sendSms(eq("7397a76f-14cb-468c-b1a7-0570940ead91"), any(), any(), any(), any());
     }
 
-    @Test
+    /*@Test
     public void shouldSendSubscriptionCreatedNotificationForSubscriptionUpdatedRequestWithNewSubscribeSmsRequestForAPaperHearingWithRepSubscribedToSms() throws Exception {
         updateJsonForPaperHearing();
         json = json.replace("appealReceived", "subscriptionUpdated");
@@ -2469,7 +2443,7 @@ public class NotificationsIt {
         verify(notificationClient).sendEmail(eq(subscriptionUpdatedEmailId), any(), any(), any());
         verify(notificationClient).sendEmail(eq(paperResponseReceivedEmailId), any(), any(), any());
         verifyNoMoreInteractions(notificationClient);
-    }
+    }*/
 
     @Test
     public void shouldNotSendSubscriptionUpdatedNotificationForSubscriptionUpdatedRequestWithSameEmailAddress() throws Exception {

@@ -49,10 +49,10 @@ public class NotificationsFunctionalTest extends AbstractFunctionalTest {
     @Value("${notification.online.responseReceived.emailId}")
     private String onlineResponseReceivedEmailId;
 
-    @Value("${notification.paper.responseReceived.emailId}")
+    @Value("${notification.paper.responseReceived.appellant.emailId}")
     private String paperResponseReceivedEmailId;
 
-    @Value("${notification.paper.responseReceived.smsId}")
+    @Value("${notification.paper.responseReceived.appellant.smsId}")
     private String paperResponseReceivedSmsId;
 
     @Value("${notification.subscriptionUpdated.emailId}")
@@ -73,10 +73,10 @@ public class NotificationsFunctionalTest extends AbstractFunctionalTest {
     @Value("${notification.paper.evidenceReceived.appointee.smsId}")
     private String paperAppointeeEvidenceReceivedSmsId;
 
-    @Value("${notification.paper.responseReceived.emailId}")
+    @Value("${notification.paper.responseReceived.appointee.emailId}")
     private String paperAppointeeResponseReceivedEmailId;
 
-    @Value("${notification.paper.responseReceived.smsId}")
+    @Value("${notification.paper.responseReceived.appointee.smsId}")
     private String paperAppointeeResponseReceivedSmsId;
 
     @Value("${notification.oral.evidenceReminder.appointee.emailId}")
@@ -217,7 +217,7 @@ public class NotificationsFunctionalTest extends AbstractFunctionalTest {
         List<Notification> notifications = tryFetchNotificationsForTestCase(
                 paperResponseReceivedEmailId, paperResponseReceivedSmsId);
 
-        String expectedHearingContactDate = "9 April 2016";
+        String expectedHearingContactDate = "how long";
         String expectedTyaLink = tyaLink.replace(APPEAL_ID, TYA);
         assertNotificationBodyContains(notifications, paperResponseReceivedEmailId, caseData.getCaseReference(),
                 expectedPanelComposition, expectedHearingContactDate, expectedTyaLink);
