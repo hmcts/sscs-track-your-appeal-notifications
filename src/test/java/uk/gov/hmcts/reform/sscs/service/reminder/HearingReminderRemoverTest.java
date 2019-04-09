@@ -105,4 +105,12 @@ public class HearingReminderRemoverTest {
         );
     }
 
+    @Test
+    public void canScheduleReturnAlwaysTrue() {
+
+        CcdNotificationWrapper wrapper = SscsCaseDataUtils.buildBasicCcdNotificationWrapper(HEARING_REMINDER_NOTIFICATION);
+
+        assertTrue(hearingReminderRemoverTest.canSchedule(wrapper));
+    }
+
 }

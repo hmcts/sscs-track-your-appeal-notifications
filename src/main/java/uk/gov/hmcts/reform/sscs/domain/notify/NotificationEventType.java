@@ -34,6 +34,7 @@ public enum NotificationEventType {
     STRUCK_OUT("struckOut", true, true, false, false, false),
     CASE_UPDATED("caseUpdated", true, true, true, false, false),
     APPEAL_LODGED("appealLodged", true, true, true, false, false),
+    DIRECTION_ISSUED("directionIssued", true, true, true, false, false),
     REQUEST_INFO_INCOMPLETE("requestInfoIncompleteApplication", true, true, true, false, false),
     DO_NOT_SEND("");
 

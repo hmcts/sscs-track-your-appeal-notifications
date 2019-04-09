@@ -90,21 +90,22 @@ public class CcdNotificationWrapper implements NotificationWrapper {
         List<SubscriptionWithType> subscriptionWithTypeList = new ArrayList<>();
 
         if (hasAppointee(responseWrapper) && hasAppointeeSubscription(responseWrapper)
-                && (SYA_APPEAL_CREATED_NOTIFICATION.equals(getNotificationType())
-                    || ADJOURNED_NOTIFICATION.equals(getNotificationType())
-                    || APPEAL_RECEIVED_NOTIFICATION.equals(getNotificationType())
-                    || APPEAL_LAPSED_NOTIFICATION.equals(getNotificationType())
-                    || APPEAL_LODGED.equals(getNotificationType())
-                    || DWP_RESPONSE_RECEIVED_NOTIFICATION.equals(getNotificationType())
-                    || APPEAL_WITHDRAWN_NOTIFICATION.equals(getNotificationType())
-                    || EVIDENCE_RECEIVED_NOTIFICATION.equals(getNotificationType())
-                    || HEARING_BOOKED_NOTIFICATION.equals(getNotificationType())
-                    || POSTPONEMENT_NOTIFICATION.equals(getNotificationType())
-                    || SUBSCRIPTION_UPDATED_NOTIFICATION.equals(getNotificationType())
-                    || EVIDENCE_REMINDER_NOTIFICATION.equals(getNotificationType())
-                    || HEARING_REMINDER_NOTIFICATION.equals(getNotificationType())
-                    || REQUEST_INFO_INCOMPLETE.equals(getNotificationType())
-                )
+            && (SYA_APPEAL_CREATED_NOTIFICATION.equals(getNotificationType())
+                || ADJOURNED_NOTIFICATION.equals(getNotificationType())
+                || APPEAL_RECEIVED_NOTIFICATION.equals(getNotificationType())
+                || APPEAL_LAPSED_NOTIFICATION.equals(getNotificationType())
+                || APPEAL_LODGED.equals(getNotificationType())
+                || DWP_RESPONSE_RECEIVED_NOTIFICATION.equals(getNotificationType())
+                || APPEAL_WITHDRAWN_NOTIFICATION.equals(getNotificationType())
+                || EVIDENCE_RECEIVED_NOTIFICATION.equals(getNotificationType())
+                || HEARING_BOOKED_NOTIFICATION.equals(getNotificationType())
+                || POSTPONEMENT_NOTIFICATION.equals(getNotificationType())
+                || SUBSCRIPTION_UPDATED_NOTIFICATION.equals(getNotificationType())
+                || EVIDENCE_REMINDER_NOTIFICATION.equals(getNotificationType())
+                || HEARING_REMINDER_NOTIFICATION.equals(getNotificationType())
+                || STRUCK_OUT.equals(getNotificationType())
+                || DIRECTION_ISSUED.equals(getNotificationType())
+            || REQUEST_INFO_INCOMPLETE.equals(getNotificationType()))
         ) {
             subscriptionWithTypeList.add(new SubscriptionWithType(getAppointeeSubscription(), APPOINTEE));
         } else {
@@ -127,8 +128,11 @@ public class CcdNotificationWrapper implements NotificationWrapper {
                 || CASE_UPDATED.equals(getNotificationType())
                 || APPEAL_LODGED.equals(getNotificationType())
                 || EVIDENCE_REMINDER_NOTIFICATION.equals(getNotificationType())
-                || HEARING_REMINDER_NOTIFICATION.equals(getNotificationType()))
-                || REQUEST_INFO_INCOMPLETE.equals(getNotificationType())) {
+                || HEARING_REMINDER_NOTIFICATION.equals(getNotificationType())
+                || STRUCK_OUT.equals(getNotificationType())
+                || DIRECTION_ISSUED.equals(getNotificationType())
+                || REQUEST_INFO_INCOMPLETE.equals(getNotificationType()))
+        ) {
             subscriptionWithTypeList.add(new SubscriptionWithType(getRepresentativeSubscription(), REPRESENTATIVE));
         }
         return subscriptionWithTypeList;

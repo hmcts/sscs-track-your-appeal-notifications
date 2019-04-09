@@ -14,6 +14,13 @@
   </suppress>
   <suppress>
     <notes><![CDATA[
+   CVE-2018-1258: we do not use Spring Method Security, so this does not affect us
+   ]]></notes>
+    <gav regex="true">^org\.springframework\.security:spring-.*:.*$</gav>
+    <cve>CVE-2018-1258</cve>
+  </suppress>
+  <suppress>
+    <notes><![CDATA[
    file name: d3js-3.4.11.jar
    ]]></notes>
     <gav regex="true">^org\.webjars:d3js:.*$</gav>
@@ -160,5 +167,12 @@
    file name: stax-api-1.0.1.jar
    ]]></notes>
     <cve>CVE-2017-16224</cve>
+  </suppress>
+  <suppress>
+    <notes>
+      False positive issue says Spring Framework version 5.0.5 when used in combination with any versions of Spring
+      Security contains an authorization bypass but this project is not using Spring framework 5.0.5
+    </notes>
+    <cve>CVE-2018-1258</cve>
   </suppress>
 </suppressions>

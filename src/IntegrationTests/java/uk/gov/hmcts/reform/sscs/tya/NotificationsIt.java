@@ -19,6 +19,7 @@ import javax.servlet.http.HttpServletResponse;
 import junitparams.JUnitParamsRunner;
 import junitparams.Parameters;
 import org.apache.commons.io.FileUtils;
+import org.apache.pdfbox.io.IOUtils;
 import org.junit.Before;
 import org.junit.ClassRule;
 import org.junit.Rule;
@@ -115,7 +116,7 @@ public class NotificationsIt {
     @Autowired
     private NotificationConfig notificationConfig;
 
-    @Autowired
+    @Mock
     private EvidenceManagementService evidenceManagementService;
 
     @Mock
@@ -141,6 +142,8 @@ public class NotificationsIt {
         NotificationSender sender = new NotificationSender(notificationClient, null, notificationBlacklist);
 
         SendNotificationService sendNotificationService = new SendNotificationService(sender, evidenceManagementService, sscsGeneratePdfService, notificationHandler, notificationValidService);
+        ReflectionTestUtils.setField(sendNotificationService, "strikeOutLetterTemplate", "/templates/strike_out_letter_template.html");
+        ReflectionTestUtils.setField(sendNotificationService, "directionNoticeLetterTemplate", "/templates/direction_notice_letter_template.html");
         ReflectionTestUtils.setField(sendNotificationService, "bundledLettersOn", true);
         ReflectionTestUtils.setField(sendNotificationService, "lettersOn", true);
 
@@ -159,6 +162,8 @@ public class NotificationsIt {
         when(sendSmsResponse.getNotificationId()).thenReturn(UUID.randomUUID());
 
         when(notificationClient.sendLetter(any(), any(), any()))
+            .thenReturn(sendLetterResponse);
+        when(notificationClient.sendPrecompiledLetterWithInputStream(any(), any()))
             .thenReturn(sendLetterResponse);
         when(sendLetterResponse.getNotificationId()).thenReturn(UUID.randomUUID());
 
@@ -297,6 +302,32 @@ public class NotificationsIt {
         validateEmailNotifications(expectedEmailTemplateIds, wantedNumberOfSendEmailInvocations, expectedName);
         validateSmsNotifications(expectedSmsTemplateIds, wantedNumberOfSendSmsInvocations);
         validateLetterNotifications(expectedLetterTemplateIds, wantedNumberOfSendLetterInvocations, expectedName);
+    }
+
+    @Test
+    @Parameters(method = "generateBundledLetterNotificationScenarios")
+    public void shouldSendRepsBundledLetterNotificationsForAnEventForAnOralOrPaperHearingAndForEachSubscription(
+        NotificationEventType notificationEventType, String hearingType, boolean hasRep, boolean hasAppointee, int wantedNumberOfSendLetterInvocations) throws Exception {
+
+        byte[] sampleDirectionCoversheet = IOUtils.toByteArray(getClass().getClassLoader().getResourceAsStream("pdfs/direction-notice-coversheet-sample.pdf"));
+        when(sscsGeneratePdfService.generatePdf(any(), any(), any(), any())).thenReturn(sampleDirectionCoversheet);
+        byte[] sampleDirectionNotice = IOUtils.toByteArray(getClass().getClassLoader().getResourceAsStream("pdfs/direction-text.pdf"));
+        when(evidenceManagementService.download(any(), any())).thenReturn(sampleDirectionNotice);
+
+        String filename = "json/ccdResponse_"
+            + notificationEventType.getId()
+            + (hasRep ? "_withRep" : "")
+            + (hasAppointee ? "_withAppointee" : "")
+            + ".json";
+        String path = getClass().getClassLoader().getResource(filename).getFile();
+        String json = FileUtils.readFileToString(new File(path), StandardCharsets.UTF_8.name());
+
+        json = updateEmbeddedJson(json, hearingType, "case_details", "case_data", "appeal", "hearingType");
+
+        HttpServletResponse response = getResponse(getRequestWithAuthHeader(json));
+        assertHttpStatus(response, HttpStatus.OK);
+
+        verify(notificationClient, times(wantedNumberOfSendLetterInvocations)).sendPrecompiledLetterWithInputStream(any(), any());
     }
 
     @Test
@@ -1054,6 +1085,124 @@ public class NotificationsIt {
         };
     }
 
+
+    @SuppressWarnings({"Indentation", "unused"})
+    private Object[] generateBundledLetterNotificationScenarios() {
+        return new Object[]{
+            new Object[]{
+                STRUCK_OUT,
+                "paper",
+                false,
+                false,
+                "1"
+            },
+            new Object[]{
+                STRUCK_OUT,
+                "oral",
+                false,
+                false,
+                "1"
+            },
+            new Object[]{
+                STRUCK_OUT,
+                "paper",
+                false,
+                true,
+                "1"
+            },
+            new Object[]{
+                STRUCK_OUT,
+                "oral",
+                false,
+                true,
+                "1"
+            },
+            new Object[]{
+                STRUCK_OUT,
+                "paper",
+                true,
+                false,
+                "2"
+            },
+            new Object[]{
+                STRUCK_OUT,
+                "oral",
+                true,
+                false,
+                "2"
+            },
+            new Object[]{
+                STRUCK_OUT,
+                "paper",
+                true,
+                true,
+                "2"
+            },
+            new Object[]{
+                STRUCK_OUT,
+                "oral",
+                true,
+                true,
+                "2"
+            },
+            new Object[]{
+                DIRECTION_ISSUED,
+                "paper",
+                false,
+                false,
+                "1"
+            },
+            new Object[]{
+                DIRECTION_ISSUED,
+                "oral",
+                false,
+                false,
+                "1"
+            },
+            new Object[]{
+                STRUCK_OUT,
+                "paper",
+                false,
+                true,
+                "1"
+            },
+            new Object[]{
+                DIRECTION_ISSUED,
+                "oral",
+                false,
+                true,
+                "1"
+            },
+            new Object[]{
+                DIRECTION_ISSUED,
+                "paper",
+                true,
+                false,
+                "2"
+            },
+            new Object[]{
+                DIRECTION_ISSUED,
+                "oral",
+                true,
+                false,
+                "2"
+            },
+            new Object[]{
+                DIRECTION_ISSUED,
+                "paper",
+                true,
+                true,
+                "2"
+            },
+            new Object[]{
+                DIRECTION_ISSUED,
+                "oral",
+                true,
+                true,
+                "2"
+            }
+        };
+    }
 
     @SuppressWarnings({"Indentation", "unused"})
     private Object[] generateRepsNotificationScenariosWhenNoOldCaseRef() {
