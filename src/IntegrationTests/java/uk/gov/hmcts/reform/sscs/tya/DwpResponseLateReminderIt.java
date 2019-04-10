@@ -33,9 +33,9 @@ import org.springframework.test.util.ReflectionTestUtils;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.request.MockHttpServletRequestBuilder;
 import org.springframework.test.web.servlet.setup.MockMvcBuilders;
+import uk.gov.hmcts.reform.sscs.ccd.deserialisation.SscsCaseCallbackDeserializer;
 import uk.gov.hmcts.reform.sscs.ccd.service.CcdService;
 import uk.gov.hmcts.reform.sscs.controller.NotificationController;
-import uk.gov.hmcts.reform.sscs.deserialize.SscsCaseDataWrapperDeserializer;
 import uk.gov.hmcts.reform.sscs.idam.IdamService;
 import uk.gov.hmcts.reform.sscs.jobscheduler.services.JobExecutor;
 import uk.gov.hmcts.reform.sscs.service.AuthorisationService;
@@ -82,7 +82,7 @@ public class DwpResponseLateReminderIt {
     private CcdService ccdService;
 
     @Autowired
-    private SscsCaseDataWrapperDeserializer deserializer;
+    private SscsCaseCallbackDeserializer deserializer;
 
     @Mock
     private OutOfHoursCalculator outOfHoursCalculator;

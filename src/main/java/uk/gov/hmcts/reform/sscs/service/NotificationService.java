@@ -4,11 +4,8 @@ import static uk.gov.hmcts.reform.sscs.ccd.domain.Benefit.getBenefitByCode;
 import static uk.gov.hmcts.reform.sscs.ccd.domain.EventType.SUBSCRIPTION_UPDATED;
 import static uk.gov.hmcts.reform.sscs.config.SubscriptionType.APPOINTEE;
 import static uk.gov.hmcts.reform.sscs.config.SubscriptionType.REPRESENTATIVE;
-import static uk.gov.hmcts.reform.sscs.domain.notify.NotificationEventType.SUBSCRIPTION_UPDATED_NOTIFICATION;
-import static uk.gov.hmcts.reform.sscs.domain.notify.NotificationEventType.getNotificationByCcdEvent;
-import static uk.gov.hmcts.reform.sscs.service.NotificationUtils.getSubscription;
-import static uk.gov.hmcts.reform.sscs.service.NotificationUtils.isFallbackLetterRequired;
-import static uk.gov.hmcts.reform.sscs.service.NotificationUtils.isOkToSendNotification;
+import static uk.gov.hmcts.reform.sscs.domain.notify.NotificationEventType.*;
+import static uk.gov.hmcts.reform.sscs.service.NotificationUtils.*;
 import static uk.gov.hmcts.reform.sscs.service.NotificationValidService.isMandatoryLetterEventType;
 
 import lombok.extern.slf4j.Slf4j;
@@ -54,6 +51,8 @@ public class NotificationService {
     }
 
     public void manageNotificationAndSubscription(NotificationWrapper notificationWrapper) {
+        overrideNotificationType(notificationWrapper);
+
         NotificationEventType notificationType = notificationWrapper.getNotificationType();
         final String caseId = notificationWrapper.getCaseId();
 
@@ -79,22 +78,22 @@ public class NotificationService {
 
     private void resendLastNotification(NotificationWrapper notificationWrapper, SubscriptionWithType subscriptionWithType,
                                         NotificationEventType notificationType) {
-        if (shouldProcessLastNotification(notificationWrapper, subscriptionWithType)) {
+        if (subscriptionWithType.getSubscription() != null && shouldProcessLastNotification(notificationWrapper, subscriptionWithType)) {
             NotificationEventType lastEvent = getNotificationByCcdEvent(notificationWrapper.getNewSscsCaseData().getEvents().get(0)
                     .getValue().getEventType());
             log.info("Resending the last notification for event {} and case id {}.", lastEvent.getId(), notificationWrapper.getCaseId());
-            scrubMobileAndSmsIfSubscribedBefore(notificationWrapper, subscriptionWithType);
+            scrubEmailAndSmsIfSubscribedBefore(notificationWrapper, subscriptionWithType);
             notificationWrapper.getSscsCaseDataWrapper().setNotificationEventType(lastEvent);
             sendNotification(notificationWrapper, subscriptionWithType, notificationType);
             notificationWrapper.getSscsCaseDataWrapper().setNotificationEventType(SUBSCRIPTION_UPDATED_NOTIFICATION);
         }
     }
 
-    private void scrubMobileAndSmsIfSubscribedBefore(NotificationWrapper notificationWrapper, SubscriptionWithType subscriptionWithType) {
+    private void scrubEmailAndSmsIfSubscribedBefore(NotificationWrapper notificationWrapper, SubscriptionWithType subscriptionWithType) {
         Subscription oldSubscription = getSubscription(notificationWrapper.getOldSscsCaseData(), subscriptionWithType.getSubscriptionType());
         Subscription newSubscription = subscriptionWithType.getSubscription();
-        String email = oldSubscription.isEmailSubscribed() ? null : newSubscription.getEmail();
-        String mobile = oldSubscription.isSmsSubscribed() ? null : newSubscription.getMobile();
+        String email = oldSubscription != null && oldSubscription.isEmailSubscribed() ? null : newSubscription.getEmail();
+        String mobile = oldSubscription != null && oldSubscription.isSmsSubscribed() ? null : newSubscription.getMobile();
         subscriptionWithType.setSubscription(newSubscription.toBuilder().email(email).mobile(mobile).build());
     }
 
@@ -105,9 +104,8 @@ public class NotificationService {
     }
 
     static Boolean hasCaseJustSubscribed(Subscription newSubscription, Subscription oldSubscription) {
-        return oldSubscription != null && newSubscription != null
-                && (!oldSubscription.isEmailSubscribed() && newSubscription.isEmailSubscribed()
-                || (!oldSubscription.isSmsSubscribed() && newSubscription.isSmsSubscribed()));
+        return ((oldSubscription == null || !oldSubscription.isEmailSubscribed()) && newSubscription.isEmailSubscribed()
+                || ((oldSubscription == null || !oldSubscription.isSmsSubscribed()) && newSubscription.isSmsSubscribed()));
     }
 
     private static boolean thereIsALastEventThatIsNotSubscriptionUpdated(final SscsCaseData newSscsCaseData) {
@@ -139,8 +137,8 @@ public class NotificationService {
 
     private void processOldSubscriptionNotifications(NotificationWrapper wrapper, Notification notification, SubscriptionWithType subscriptionWithType, NotificationEventType eventType) {
         if (wrapper.getNotificationType() == NotificationEventType.SUBSCRIPTION_UPDATED_NOTIFICATION) {
-            Subscription newSubscription = null;
-            Subscription oldSubscription = null;
+            Subscription newSubscription;
+            Subscription oldSubscription;
             if (REPRESENTATIVE.equals(subscriptionWithType.getSubscriptionType())) {
                 newSubscription = wrapper.getNewSscsCaseData().getSubscriptions().getRepresentativeSubscription();
                 oldSubscription = wrapper.getOldSscsCaseData().getSubscriptions().getRepresentativeSubscription();
@@ -188,5 +186,17 @@ public class NotificationService {
             subscription = oldSubscription;
         }
         return subscription;
+    }
+
+    private void overrideNotificationType(NotificationWrapper notificationWrapper) {
+        if (CASE_UPDATED.equals(notificationWrapper.getNotificationType())
+                && hasCaseRefBeenAdded(notificationWrapper.getOldSscsCaseData(), notificationWrapper.getNewSscsCaseData())) {
+            notificationWrapper.setNotificationType(APPEAL_LODGED);
+        }
+    }
+
+    private boolean hasCaseRefBeenAdded(SscsCaseData oldSscsData, SscsCaseData newSscsData) {
+        return (null == oldSscsData || null == oldSscsData.getCaseReference() || oldSscsData.getCaseReference().isEmpty())
+                && (null != newSscsData.getCaseReference() && !newSscsData.getCaseReference().isEmpty());
     }
 }

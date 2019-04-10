@@ -11,7 +11,6 @@ import java.time.ZoneId;
 import java.time.ZonedDateTime;
 import java.util.UUID;
 import javax.servlet.http.HttpServletResponse;
-
 import junitparams.JUnitParamsRunner;
 import org.apache.commons.io.FileUtils;
 import org.junit.Before;
@@ -36,12 +35,12 @@ import org.springframework.test.util.ReflectionTestUtils;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.request.MockHttpServletRequestBuilder;
 import org.springframework.test.web.servlet.setup.MockMvcBuilders;
+import uk.gov.hmcts.reform.sscs.ccd.deserialisation.SscsCaseCallbackDeserializer;
 import uk.gov.hmcts.reform.sscs.ccd.service.CcdService;
 import uk.gov.hmcts.reform.sscs.config.AppConstants;
 import uk.gov.hmcts.reform.sscs.config.NotificationBlacklist;
 import uk.gov.hmcts.reform.sscs.config.NotificationConfig;
 import uk.gov.hmcts.reform.sscs.controller.NotificationController;
-import uk.gov.hmcts.reform.sscs.deserialize.SscsCaseDataWrapperDeserializer;
 import uk.gov.hmcts.reform.sscs.factory.NotificationFactory;
 import uk.gov.hmcts.reform.sscs.idam.IdamService;
 import uk.gov.hmcts.reform.sscs.jobscheduler.services.JobScheduler;
@@ -97,7 +96,7 @@ public class OutOfHoursIt {
     private CcdService ccdService;
 
     @Autowired
-    private SscsCaseDataWrapperDeserializer deserializer;
+    private SscsCaseCallbackDeserializer deserializer;
 
     @MockBean
     private IdamService idamService;

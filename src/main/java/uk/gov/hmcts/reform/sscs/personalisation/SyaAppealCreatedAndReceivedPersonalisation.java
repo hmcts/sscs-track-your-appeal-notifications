@@ -72,6 +72,7 @@ public class SyaAppealCreatedAndReceivedPersonalisation extends WithRepresentati
     }
 
     private String buildYourDetails(Appeal appeal) {
+
         return new StringBuilder()
                 .append(NAME)
                 .append(appeal.getAppellant().getName().getFullNameNoTitle() + TWO_NEW_LINES)
@@ -84,7 +85,7 @@ public class SyaAppealCreatedAndReceivedPersonalisation extends WithRepresentati
                 .append(EMAIL)
                 .append(getOptionalField(appeal.getAppellant().getContact().getEmail(), NOT_PROVIDED) + TWO_NEW_LINES)
                 .append(PHONE)
-                .append(getOptionalField(appeal.getAppellant().getContact().getPhone(), NOT_PROVIDED))
+                .append(getOptionalField(getPhoneOrMobile(appeal.getAppellant().getContact()), NOT_PROVIDED))
                 .toString();
     }
 
@@ -96,9 +97,9 @@ public class SyaAppealCreatedAndReceivedPersonalisation extends WithRepresentati
     private String buildTextMessageDetails(Subscription subscription) {
         StringBuilder buildTextMessage = new StringBuilder()
                 .append("Receive text message reminders: ")
-                .append(subscription.getSubscribeSms().toLowerCase(Locale.ENGLISH));
+                .append(null != subscription && null != subscription.getSubscribeSms() ? subscription.getSubscribeSms().toLowerCase(Locale.ENGLISH) : NO);
 
-        if (subscription.isSmsSubscribed()) {
+        if (null != subscription && subscription.isSmsSubscribed()) {
             buildTextMessage
                     .append(TWO_NEW_LINES + "Mobile number: ")
                     .append(subscription.getMobile());
@@ -127,7 +128,7 @@ public class SyaAppealCreatedAndReceivedPersonalisation extends WithRepresentati
         String hasAppointee = hasAppointee(appointee) ? YES : NO;
 
         StringBuilder appointeeBuilder = new StringBuilder()
-            .append("Have a appointee: ")
+            .append("Have an appointee: ")
             .append(hasAppointee);
 
         if (StringUtils.equalsIgnoreCase(YES, hasAppointee)) {
@@ -140,7 +141,7 @@ public class SyaAppealCreatedAndReceivedPersonalisation extends WithRepresentati
                 .append(EMAIL)
                 .append(getOptionalField(appointee.getContact().getEmail(), NOT_PROVIDED) + TWO_NEW_LINES)
                 .append(PHONE)
-                .append(getOptionalField(appointee.getContact().getPhone(), NOT_PROVIDED));
+                .append(getOptionalField(getPhoneOrMobile(appointee.getContact()), NOT_PROVIDED));
         }
         return appointeeBuilder.toString();
     }
@@ -168,7 +169,7 @@ public class SyaAppealCreatedAndReceivedPersonalisation extends WithRepresentati
                     .append(EMAIL)
                     .append(getOptionalField(representative.getContact().getEmail(), NOT_PROVIDED) + TWO_NEW_LINES)
                     .append(PHONE)
-                    .append(getOptionalField(representative.getContact().getPhone(), NOT_PROVIDED));
+                    .append(getOptionalField(getPhoneOrMobile(representative.getContact()), NOT_PROVIDED));
         }
         return representativeBuilder.toString();
     }
@@ -275,5 +276,13 @@ public class SyaAppealCreatedAndReceivedPersonalisation extends WithRepresentati
                         || StringUtils.equalsIgnoreCase("null null", field)
                         || StringUtils.equalsIgnoreCase("null null null", field)
                         || StringUtils.isBlank(field) ? text : field;
+    }
+
+    private String getPhoneOrMobile(Contact contact) {
+        if (null != contact) {
+            return null != contact.getPhone() ? contact.getPhone() : contact.getMobile();
+        } else {
+            return null;
+        }
     }
 }
