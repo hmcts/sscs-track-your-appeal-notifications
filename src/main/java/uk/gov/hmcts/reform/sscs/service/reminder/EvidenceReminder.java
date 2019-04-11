@@ -69,14 +69,18 @@ public class EvidenceReminder implements ReminderHandler {
         String jobGroup = jobGroupGenerator.generate(caseId, eventId);
         ZonedDateTime reminderDate = calculateReminderDate(caseData);
 
-        jobScheduler.schedule(new Job<>(
-            jobGroup,
-            eventId,
-            caseId,
-            reminderDate
-        ));
+        if (reminderDate != null) {
+            jobScheduler.schedule(new Job<>(
+                    jobGroup,
+                    eventId,
+                    caseId,
+                    reminderDate
+            ));
 
-        LOG.info("Scheduled evidence reminder for case id: {} @ {}", caseId, reminderDate);
+            LOG.info("Scheduled evidence reminder for case id: {} @ {}", caseId, reminderDate);
+        } else {
+            LOG.info("Could not find reminder date for case id {}", wrapper.getNewSscsCaseData().getCcdCaseId());
+        }
     }
 
     private ZonedDateTime calculateReminderDate(SscsCaseData ccdResponse) {
