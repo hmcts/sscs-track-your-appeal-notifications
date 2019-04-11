@@ -95,6 +95,33 @@ public class EvidenceReminderTest {
         assertEquals(expectedTriggerAt, job.triggerAt.toString());
     }
 
+    @Test
+    public void canNotSchedulesReminderWhenReminderDateIsNull() {
+
+        final String expectedJobGroup = "ID_EVENT";
+
+        ZonedDateTime dwpResponseReceivedDate = ZonedDateTime.parse("2018-01-01T14:01:18Z[Europe/London]");
+
+        CcdNotificationWrapper wrapper = SscsCaseDataUtils.buildBasicCcdNotificationWrapperWithEvent(
+                DWP_RESPONSE_RECEIVED_NOTIFICATION,
+                DWP_RESPOND,
+                dwpResponseReceivedDate.toString()
+        );
+
+        when(dwpResponseReceivedDateExtractor.extract(wrapper.getNewSscsCaseData())).thenReturn(Optional.empty());
+        when(jobGroupGenerator.generate(wrapper.getCaseId(), EVIDENCE_REMINDER_NOTIFICATION.getId())).thenReturn(expectedJobGroup);
+
+        evidenceReminder.handle(wrapper);
+
+        ArgumentCaptor<Job> jobCaptor = ArgumentCaptor.forClass(Job.class);
+
+        verify(jobScheduler, times(0)).schedule(
+                jobCaptor.capture()
+        );
+
+        assertTrue(jobCaptor.getAllValues().isEmpty());
+    }
+
     @Test(expected = Exception.class)
     public void canScheduleReturnFalseWhenDwpResponseReceivedThrowError() {
 

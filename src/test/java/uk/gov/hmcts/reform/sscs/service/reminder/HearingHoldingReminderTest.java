@@ -135,6 +135,53 @@ public class HearingHoldingReminderTest {
         assertEquals(finalHearingContactDate, job4.triggerAt);
     }
 
+    @Test
+    public void canNotScheduleHearingHoldingRemindersWhenDwpResponseReceivedAndReminderDateIsNull() {
+
+        final String expectedFirstJobGroup = "ID_FIRST_EVENT";
+        final String expectedSecondJobGroup = "ID_SECOND_EVENT";
+        final String expectedThirdJobGroup = "ID_THIRD_EVENT";
+        final String expectedFinalJobGroup = "ID_FINAL_EVENT";
+
+        CcdNotificationWrapper wrapper = SscsCaseDataUtils.buildBasicCcdNotificationWrapper(DWP_RESPONSE_RECEIVED_NOTIFICATION);
+
+        SscsCaseData newCaseData = wrapper.getNewSscsCaseData();
+
+        when(hearingContactDateExtractor.extractForReferenceEvent(newCaseData, DWP_RESPONSE_RECEIVED_NOTIFICATION))
+                .thenReturn(Optional.empty());
+
+        when(hearingContactDateExtractor.extractForReferenceEvent(newCaseData, FIRST_HEARING_HOLDING_REMINDER_NOTIFICATION))
+                .thenReturn(Optional.empty());
+
+        when(hearingContactDateExtractor.extractForReferenceEvent(newCaseData, SECOND_HEARING_HOLDING_REMINDER_NOTIFICATION))
+                .thenReturn(Optional.empty());
+
+        when(hearingContactDateExtractor.extractForReferenceEvent(newCaseData, THIRD_HEARING_HOLDING_REMINDER_NOTIFICATION))
+                .thenReturn(Optional.empty());
+
+        when(jobGroupGenerator.generate(wrapper.getCaseId(), FIRST_HEARING_HOLDING_REMINDER_NOTIFICATION.getId()))
+                .thenReturn(expectedFirstJobGroup);
+
+        when(jobGroupGenerator.generate(wrapper.getCaseId(), SECOND_HEARING_HOLDING_REMINDER_NOTIFICATION.getId()))
+                .thenReturn(expectedSecondJobGroup);
+
+        when(jobGroupGenerator.generate(wrapper.getCaseId(), THIRD_HEARING_HOLDING_REMINDER_NOTIFICATION.getId()))
+                .thenReturn(expectedThirdJobGroup);
+
+        when(jobGroupGenerator.generate(wrapper.getCaseId(), FINAL_HEARING_HOLDING_REMINDER_NOTIFICATION.getId()))
+                .thenReturn(expectedFinalJobGroup);
+
+        hearingHoldingReminder.handle(wrapper);
+
+        ArgumentCaptor<Job> jobCaptor = ArgumentCaptor.forClass(Job.class);
+
+        verify(jobScheduler, times(0)).schedule(
+                jobCaptor.capture()
+        );
+
+        assertTrue(jobCaptor.getAllValues().isEmpty());
+    }
+
     @Test(expected = Exception.class)
     public void canScheduleReturnFalseWhenHearingContactDateThrowError() {
 

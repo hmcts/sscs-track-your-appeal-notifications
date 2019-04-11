@@ -11,6 +11,8 @@ import uk.gov.hmcts.reform.sscs.domain.notify.NotificationEventType;
 public interface NotificationWrapper {
     NotificationEventType getNotificationType();
 
+    void setNotificationType(NotificationEventType notificationEventType);
+
     SscsCaseData getNewSscsCaseData();
 
     String getCaseId();

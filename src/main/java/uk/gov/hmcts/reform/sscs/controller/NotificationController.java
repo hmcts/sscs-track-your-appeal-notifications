@@ -1,18 +1,22 @@
 package uk.gov.hmcts.reform.sscs.controller;
 
 import static org.springframework.util.MimeTypeUtils.APPLICATION_JSON_VALUE;
+import static uk.gov.hmcts.reform.sscs.domain.notify.NotificationEventType.getNotificationByCcdEvent;
+import static uk.gov.hmcts.reform.sscs.domain.notify.NotificationEventType.getNotificationById;
 
-import com.fasterxml.jackson.databind.JsonNode;
-import com.fasterxml.jackson.databind.ObjectMapper;
-import com.fasterxml.jackson.databind.node.JsonNodeFactory;
-import com.fasterxml.jackson.databind.node.ObjectNode;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.*;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestHeader;
+import org.springframework.web.bind.annotation.RestController;
+import uk.gov.hmcts.reform.sscs.ccd.callback.Callback;
+import uk.gov.hmcts.reform.sscs.ccd.deserialisation.SscsCaseCallbackDeserializer;
+import uk.gov.hmcts.reform.sscs.ccd.domain.CaseDetails;
+import uk.gov.hmcts.reform.sscs.ccd.domain.SscsCaseData;
 import uk.gov.hmcts.reform.sscs.ccd.domain.SscsCaseDetails;
 import uk.gov.hmcts.reform.sscs.ccd.service.CcdService;
-import uk.gov.hmcts.reform.sscs.deserialize.SscsCaseDataWrapperDeserializer;
 import uk.gov.hmcts.reform.sscs.domain.CohEvent;
 import uk.gov.hmcts.reform.sscs.domain.SscsCaseDataWrapper;
 import uk.gov.hmcts.reform.sscs.domain.notify.NotificationEventType;
@@ -29,11 +33,15 @@ public class NotificationController {
     private final NotificationService notificationService;
     private final AuthorisationService authorisationService;
     private final CcdService ccdService;
-    private final SscsCaseDataWrapperDeserializer deserializer;
+    private final SscsCaseCallbackDeserializer deserializer;
     private final IdamService idamService;
 
     @Autowired
-    public NotificationController(NotificationService notificationService, AuthorisationService authorisationService, CcdService ccdService, SscsCaseDataWrapperDeserializer deserializer, IdamService idamService) {
+    public NotificationController(NotificationService notificationService,
+                                  AuthorisationService authorisationService,
+                                  CcdService ccdService,
+                                  SscsCaseCallbackDeserializer deserializer,
+                                  IdamService idamService) {
         this.notificationService = notificationService;
         this.authorisationService = authorisationService;
         this.ccdService = ccdService;
@@ -44,7 +52,13 @@ public class NotificationController {
     @PostMapping(value = "/send", produces = APPLICATION_JSON_VALUE)
     public void sendNotification(
             @RequestHeader(AuthorisationService.SERVICE_AUTHORISATION_HEADER) String serviceAuthHeader,
-            @RequestBody SscsCaseDataWrapper sscsCaseDataWrapper) {
+            @RequestBody String message) {
+        Callback<SscsCaseData> callback = deserializer.deserialize(message);
+
+        CaseDetails<SscsCaseData> caseDetailsBefore = callback.getCaseDetailsBefore().orElse(null);
+
+        SscsCaseDataWrapper sscsCaseDataWrapper = buildSscsCaseDataWrapper(callback.getCaseDetails().getCaseData(), caseDetailsBefore != null ? caseDetailsBefore.getCaseData() : null, getNotificationByCcdEvent(callback.getEvent()));
+
         log.info("Ccd Response received for case id: {} , {}", sscsCaseDataWrapper.getNewSscsCaseData().getCcdCaseId(), sscsCaseDataWrapper.getNotificationEventType());
 
         authorisationService.authorise(serviceAuthHeader);
@@ -67,7 +81,7 @@ public class NotificationController {
 
         String eventId = cohEvent.getNotificationEventType();
         if (caseDetails != null) {
-            SscsCaseDataWrapper wrapper = deserializer.buildSscsCaseDataWrapper(buildCcdNode(caseDetails, eventId));
+            SscsCaseDataWrapper wrapper = buildSscsCaseDataWrapper(caseDetails.getData(), null, getNotificationById(eventId));
             notificationService.manageNotificationAndSubscription(new CohNotificationWrapper(cohEvent.getOnlineHearingId(), wrapper));
         } else {
             log.warn("Case id: {} could not be found for event: {}", caseId, eventId);
@@ -76,15 +90,11 @@ public class NotificationController {
         return ResponseEntity.ok("");
     }
 
-    private ObjectNode buildCcdNode(SscsCaseDetails caseDetails, String jobName) {
-        ObjectMapper mapper = new ObjectMapper();
-        JsonNode jsonNode = mapper.valueToTree(caseDetails);
-        ObjectNode node = JsonNodeFactory.instance.objectNode();
-
-        node.set("case_details", jsonNode);
-        node = node.put("event_id", jobName);
-
-        return node;
+    private SscsCaseDataWrapper buildSscsCaseDataWrapper(SscsCaseData caseData, SscsCaseData caseDataBefore, NotificationEventType event) {
+        return SscsCaseDataWrapper.builder()
+                .newSscsCaseData(caseData)
+                .oldSscsCaseData(caseDataBefore)
+                .notificationEventType(event).build();
     }
 
 }

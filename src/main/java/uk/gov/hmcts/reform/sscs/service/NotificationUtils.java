@@ -141,7 +141,7 @@ public class NotificationUtils {
     }
 
     public static boolean hasNoSubscriptions(Subscription subscription) {
-        return subscription != null && !subscription.isSmsSubscribed() && !subscription.isEmailSubscribed();
+        return subscription == null || (!subscription.isSmsSubscribed() && !subscription.isEmailSubscribed());
     }
 
     public static final boolean hasSubscription(NotificationWrapper wrapper, SubscriptionType subscriptionType) {

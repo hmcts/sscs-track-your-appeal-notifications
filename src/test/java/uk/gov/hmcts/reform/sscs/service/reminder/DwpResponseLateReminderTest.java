@@ -94,6 +94,32 @@ public class DwpResponseLateReminderTest {
         assertEquals(expectedTriggerAt, job.triggerAt.toString());
     }
 
+    @Test
+    public void canNotScheduleDwpResponseLateReminderWhenDwpResponseNotReceivedInTime() {
+
+        final String expectedJobGroup = "ID_EVENT";
+        ZonedDateTime appealReceivedDate = ZonedDateTime.parse("2018-01-01T14:01:18Z[Europe/London]");
+
+        CcdNotificationWrapper wrapper = SscsCaseDataUtils.buildBasicCcdNotificationWrapperWithEvent(
+                APPEAL_RECEIVED_NOTIFICATION,
+                APPEAL_RECEIVED,
+                appealReceivedDate.toString()
+        );
+
+        when(appealReceivedDateExtractor.extract(wrapper.getNewSscsCaseData())).thenReturn(Optional.empty());
+        when(jobGroupGenerator.generate(wrapper.getCaseId(), DWP_RESPONSE_LATE_REMINDER_NOTIFICATION.getId())).thenReturn(expectedJobGroup);
+
+        dwpResponseLateReminder.handle(wrapper);
+
+        ArgumentCaptor<Job> jobCaptor = ArgumentCaptor.forClass(Job.class);
+
+        verify(jobScheduler, times(0)).schedule(
+                jobCaptor.capture()
+        );
+
+        assertTrue(jobCaptor.getAllValues().isEmpty());
+    }
+
     @Test(expected = Exception.class)
     public void canScheduleReturnFalseWhenAppealReceivedDateThrowError() {
 

@@ -27,7 +27,6 @@ import org.springframework.retry.annotation.EnableRetry;
 import org.springframework.web.client.RestTemplate;
 import uk.gov.hmcts.reform.sscs.ccd.config.CcdRequestDetails;
 import uk.gov.hmcts.reform.sscs.ccd.service.CcdService;
-import uk.gov.hmcts.reform.sscs.deserialize.SscsCaseDataWrapperDeserializer;
 import uk.gov.hmcts.reform.sscs.idam.IdamService;
 import uk.gov.hmcts.reform.sscs.jobscheduler.config.QuartzConfiguration;
 import uk.gov.hmcts.reform.sscs.jobscheduler.services.quartz.JobClassMapper;
@@ -35,13 +34,7 @@ import uk.gov.hmcts.reform.sscs.jobscheduler.services.quartz.JobClassMapping;
 import uk.gov.hmcts.reform.sscs.jobscheduler.services.quartz.JobMapper;
 import uk.gov.hmcts.reform.sscs.jobscheduler.services.quartz.JobMapping;
 import uk.gov.hmcts.reform.sscs.service.NotificationService;
-import uk.gov.hmcts.reform.sscs.service.scheduler.CcdActionDeserializer;
-import uk.gov.hmcts.reform.sscs.service.scheduler.CcdActionExecutor;
-import uk.gov.hmcts.reform.sscs.service.scheduler.CcdActionSerializer;
-import uk.gov.hmcts.reform.sscs.service.scheduler.CohActionDeserializer;
-import uk.gov.hmcts.reform.sscs.service.scheduler.CohActionExecutor;
-import uk.gov.hmcts.reform.sscs.service.scheduler.CohActionSerializer;
-import uk.gov.hmcts.reform.sscs.service.scheduler.CohJobPayload;
+import uk.gov.hmcts.reform.sscs.service.scheduler.*;
 import uk.gov.service.notify.NotificationClient;
 
 @SpringBootApplication
@@ -123,11 +116,6 @@ public class TrackYourAppealNotificationsApplication {
     }
 
     @Bean
-    public SscsCaseDataWrapperDeserializer sscsCaseDataWrapperDeserializer() {
-        return new SscsCaseDataWrapperDeserializer();
-    }
-
-    @Bean
     public MessageSource messageSource() {
         ReloadableResourceBundleMessageSource bean = new ReloadableResourceBundleMessageSource();
         bean.setBasename("classpath:application");
@@ -155,11 +143,10 @@ public class TrackYourAppealNotificationsApplication {
                                   CcdActionDeserializer ccdActionDeserializer,
                                   NotificationService notificationService,
                                   CcdService ccdService,
-                                  SscsCaseDataWrapperDeserializer deserializer,
                                   IdamService idamService) {
         // Had to wire these up like this Spring will not wire up CcdActionExecutor otherwise.
-        CohActionExecutor cohActionExecutor = new CohActionExecutor(notificationService, ccdService, deserializer, idamService);
-        CcdActionExecutor ccdActionExecutor = new CcdActionExecutor(notificationService, ccdService, deserializer, idamService);
+        CohActionExecutor cohActionExecutor = new CohActionExecutor(notificationService, ccdService, idamService);
+        CcdActionExecutor ccdActionExecutor = new CcdActionExecutor(notificationService, ccdService, idamService);
         return new JobMapper(asList(
                 new JobMapping<>(payload -> payload.contains("onlineHearingId"), cohActionDeserializer, cohActionExecutor),
                 new JobMapping<>(payload -> !payload.contains("onlineHearingId"), ccdActionDeserializer, ccdActionExecutor)

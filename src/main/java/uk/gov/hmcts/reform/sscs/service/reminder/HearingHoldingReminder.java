@@ -77,14 +77,18 @@ public class HearingHoldingReminder implements ReminderHandler {
         String jobGroup = jobGroupGenerator.generate(caseId, eventId);
         ZonedDateTime reminderDate = calculateReminderDate(ccdResponse, referenceNotificationEventType);
 
-        jobScheduler.schedule(new Job<>(
-            jobGroup,
-            eventId,
-            caseId,
-            reminderDate
-        ));
+        if (reminderDate != null) {
+            jobScheduler.schedule(new Job<>(
+                    jobGroup,
+                    eventId,
+                    caseId,
+                    reminderDate
+            ));
 
-        LOG.info("Scheduled hearing holding reminder for case id: {} @ {}", caseId, reminderDate);
+            LOG.info("Scheduled hearing holding reminder for case id: {} @ {}", caseId, reminderDate);
+        } else {
+            LOG.info("Could not find reminder date for case id {}", ccdResponse.getCcdCaseId());
+        }
     }
 
     private ZonedDateTime calculateReminderDate(SscsCaseData ccdResponse, NotificationEventType referenceNotificationEventType) {
