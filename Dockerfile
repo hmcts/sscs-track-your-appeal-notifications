@@ -1,4 +1,4 @@
-FROM hmcts/cnp-java-base:openjdk-8u191-jre-alpine3.9-2.0.1
+FROM hmcts/cnp-java-base:openjdk-8u181-jre-alpine3.8-1.0
 
 ENV APP track-your-appeal-notifications.jar
 ENV APPLICATION_TOTAL_MEMORY 2048M
