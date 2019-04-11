@@ -26,6 +26,7 @@ import org.springframework.mail.javamail.JavaMailSenderImpl;
 import org.springframework.retry.annotation.EnableRetry;
 import org.springframework.web.client.RestTemplate;
 import uk.gov.hmcts.reform.sscs.ccd.config.CcdRequestDetails;
+import uk.gov.hmcts.reform.sscs.ccd.deserialisation.SscsCaseCallbackDeserializer;
 import uk.gov.hmcts.reform.sscs.ccd.service.CcdService;
 import uk.gov.hmcts.reform.sscs.idam.IdamService;
 import uk.gov.hmcts.reform.sscs.jobscheduler.config.QuartzConfiguration;
@@ -143,10 +144,11 @@ public class TrackYourAppealNotificationsApplication {
                                   CcdActionDeserializer ccdActionDeserializer,
                                   NotificationService notificationService,
                                   CcdService ccdService,
-                                  IdamService idamService) {
+                                  IdamService idamService,
+                                  SscsCaseCallbackDeserializer deserializer) {
         // Had to wire these up like this Spring will not wire up CcdActionExecutor otherwise.
-        CohActionExecutor cohActionExecutor = new CohActionExecutor(notificationService, ccdService, idamService);
-        CcdActionExecutor ccdActionExecutor = new CcdActionExecutor(notificationService, ccdService, idamService);
+        CohActionExecutor cohActionExecutor = new CohActionExecutor(notificationService, ccdService, idamService, deserializer);
+        CcdActionExecutor ccdActionExecutor = new CcdActionExecutor(notificationService, ccdService, idamService, deserializer);
         return new JobMapper(asList(
                 new JobMapping<>(payload -> payload.contains("onlineHearingId"), cohActionDeserializer, cohActionExecutor),
                 new JobMapping<>(payload -> !payload.contains("onlineHearingId"), ccdActionDeserializer, ccdActionExecutor)
