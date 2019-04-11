@@ -10,6 +10,7 @@ import static uk.gov.hmcts.reform.sscs.domain.notify.NotificationEventType.HEARI
 import static uk.gov.hmcts.reform.sscs.domain.notify.NotificationEventType.REQUEST_INFO_INCOMPLETE;
 import static uk.gov.hmcts.reform.sscs.domain.notify.NotificationEventType.STRUCK_OUT;
 import static uk.gov.hmcts.reform.sscs.service.NotificationValidService.FALLBACK_LETTER_SUBSCRIPTION_TYPES;
+import static uk.gov.hmcts.reform.sscs.service.NotificationValidService.LETTER_EVENT_TYPES;
 
 import java.util.Arrays;
 import java.util.List;
@@ -57,22 +58,43 @@ public class NotificationUtils {
             && appeal.getRep().getHasRepresentative().equalsIgnoreCase("yes");
     }
 
-    public static boolean hasAppointeeSubscription(SscsCaseDataWrapper wrapper) {
-        return null != wrapper.getNewSscsCaseData().getSubscriptions().getAppointeeSubscription();
+    public static boolean hasAppointeeSubscriptionOrIsMandatoryAppointeeLetter(SscsCaseDataWrapper wrapper) {
+        return ((null != getSubscription(wrapper.getNewSscsCaseData(), APPOINTEE))
+            || (hasAppointee(wrapper.getNewSscsCaseData().getAppeal().getAppellant().getAppointee())
+            && LETTER_EVENT_TYPES.contains(wrapper.getNotificationEventType())));
     }
 
-    public static boolean hasRepresentativeSubscription(SscsCaseDataWrapper wrapper) {
-        return null != wrapper.getNewSscsCaseData().getSubscriptions().getRepresentativeSubscription();
+    public static boolean hasRepSubscriptionOrIsMandatoryRepLetter(SscsCaseDataWrapper wrapper) {
+        return ((null != getSubscription(wrapper.getNewSscsCaseData(), REPRESENTATIVE))
+            || (hasRepresentative(wrapper.getNewSscsCaseData().getAppeal())
+            && LETTER_EVENT_TYPES.contains(wrapper.getNotificationEventType())));
+
     }
 
     public static Subscription getSubscription(SscsCaseData sscsCaseData, SubscriptionType subscriptionType) {
         if (REPRESENTATIVE.equals(subscriptionType)) {
-            return sscsCaseData.getSubscriptions().getRepresentativeSubscription();
+            return getPopulatedSubscriptionOrNull(sscsCaseData.getSubscriptions().getRepresentativeSubscription());
         } else if (APPELLANT.equals(subscriptionType)) {
-            return sscsCaseData.getSubscriptions().getAppellantSubscription();
+            return getPopulatedSubscriptionOrNull(sscsCaseData.getSubscriptions().getAppellantSubscription());
         } else {
-            return sscsCaseData.getSubscriptions().getAppointeeSubscription();
+            return getPopulatedSubscriptionOrNull(sscsCaseData.getSubscriptions().getAppointeeSubscription());
         }
+    }
+
+    public static Subscription getPopulatedSubscriptionOrNull(Subscription subscription) {
+        if (null == subscription
+            || (null == subscription.getWantSmsNotifications()
+            && null == subscription.getTya()
+            && null == subscription.getEmail()
+            && null == subscription.getMobile()
+            && null == subscription.getSubscribeEmail()
+            && null == subscription.getSubscribeSms()
+            && null == subscription.getReason())
+        ) {
+            return null;
+        }
+
+        return subscription;
     }
 
     public static boolean isMandatoryLetterEventType(NotificationWrapper wrapper) {
