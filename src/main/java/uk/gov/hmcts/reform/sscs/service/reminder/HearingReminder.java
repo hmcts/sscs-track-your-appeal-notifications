@@ -13,7 +13,6 @@ import org.springframework.stereotype.Component;
 import uk.gov.hmcts.reform.sscs.ccd.domain.Hearing;
 import uk.gov.hmcts.reform.sscs.ccd.domain.SscsCaseData;
 import uk.gov.hmcts.reform.sscs.config.AppConstants;
-import uk.gov.hmcts.reform.sscs.exception.ReminderException;
 import uk.gov.hmcts.reform.sscs.factory.NotificationWrapper;
 import uk.gov.hmcts.reform.sscs.jobscheduler.model.Job;
 import uk.gov.hmcts.reform.sscs.jobscheduler.services.JobScheduler;
@@ -48,6 +47,20 @@ public class HearingReminder implements ReminderHandler {
             .equals(HEARING_BOOKED_NOTIFICATION);
     }
 
+    public boolean canSchedule(NotificationWrapper wrapper) {
+        boolean isReminderDatePresent = false;
+        try {
+            isReminderDatePresent = calculateReminderDate(wrapper.getNewSscsCaseData(), beforeFirstHearingReminder) != null;
+        } catch (Exception e) {
+            LOG.error("Error while calculating reminder date for case id {} with exception {}",
+                    wrapper.getNewSscsCaseData().getCcdCaseId(), e);
+        }
+        if (!isReminderDatePresent) {
+            LOG.info("Could not find reminder date for case id {}", wrapper.getNewSscsCaseData().getCcdCaseId());
+        }
+        return isReminderDatePresent;
+    }
+
     public void handle(NotificationWrapper wrapper) {
         if (!canHandle(wrapper)) {
             throw new IllegalArgumentException("cannot handle ccdResponse");
@@ -64,14 +77,19 @@ public class HearingReminder implements ReminderHandler {
         String jobGroup = jobGroupGenerator.generate(caseId, eventId);
         ZonedDateTime reminderDate = calculateReminderDate(ccdResponse, secondsBeforeHearing);
 
-        jobScheduler.schedule(new Job<>(
-            jobGroup,
-            eventId,
-            caseId,
-            reminderDate
-        ));
+        if (reminderDate != null) {
+            jobScheduler.schedule(new Job<>(
+                    jobGroup,
+                    eventId,
+                    caseId,
+                    reminderDate
+            ));
 
-        LOG.info("Scheduled hearing reminder for case id: {} @ {}", caseId, reminderDate);
+
+            LOG.info("Scheduled hearing reminder for case id: {} @ {}", caseId, reminderDate);
+        } else {
+            LOG.info("Could not find reminder date for case id {}", ccdResponse.getCcdCaseId());
+        }
     }
 
     private ZonedDateTime calculateReminderDate(SscsCaseData ccdResponse, long secondsBeforeHearing) {
@@ -82,12 +100,7 @@ public class HearingReminder implements ReminderHandler {
             return ZonedDateTime.ofLocal(dateBefore, ZoneId.of(AppConstants.ZONE_ID), null);
         }
 
-        ReminderException reminderException = new ReminderException(
-            new Exception("Could not find reminder date for case id: " + ccdResponse.getCcdCaseId())
-        );
-
-        LOG.error("Reminder date not found", reminderException);
-        throw reminderException;
+        return null;
     }
 
 }

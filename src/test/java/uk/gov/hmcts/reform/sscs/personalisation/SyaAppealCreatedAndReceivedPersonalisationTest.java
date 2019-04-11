@@ -163,7 +163,7 @@ public class SyaAppealCreatedAndReceivedPersonalisationTest {
 
         Map<String, String> result = syaAppealCreatedAndReceivedPersonalisation.setAppointeeDetails(new HashMap<>(), response);
 
-        assertEquals("Have a appointee: yes\n"
+        assertEquals("Have an appointee: yes\n"
                         + "\nName: Peter Smith\n"
                         + "\nDate of birth: 12 March 1981\n"
                         + "\nAddress: Ground Floor, Gazette Buildings, 168 Corporation Street, Cardiff, CF11 6TF\n"
@@ -186,7 +186,7 @@ public class SyaAppealCreatedAndReceivedPersonalisationTest {
 
         Map<String, String> result = syaAppealCreatedAndReceivedPersonalisation.setAppointeeDetails(new HashMap<>(), response);
 
-        assertEquals("Have a appointee: yes\n"
+        assertEquals("Have an appointee: yes\n"
                         + "\nName: Peter Smith\n"
                         + "\nDate of birth: 12 March 1981\n"
                         + "\nAddress: Ground Floor, Gazette Buildings, 168 Corporation Street, Cardiff, CF11 6TF\n"
@@ -207,7 +207,7 @@ public class SyaAppealCreatedAndReceivedPersonalisationTest {
 
         Map<String, String> result = syaAppealCreatedAndReceivedPersonalisation.setAppointeeDetails(new HashMap<>(), response);
 
-        assertEquals("Have a appointee: no",
+        assertEquals("Have an appointee: no",
                 result.get(AppConstants.APPOINTEE_DETAILS_LITERAL));
     }
 
@@ -452,6 +452,27 @@ public class SyaAppealCreatedAndReceivedPersonalisationTest {
                         + "\nDisabled access: Not required\n"
                         + "\nAny other arrangements: Not required",
                 result.get(AppConstants.HEARING_ARRANGEMENT_DETAILS_LITERAL));
+    }
+
+    @Test public void getOptionalFieldTest() {
+
+        final Name emptyName = Name.builder().build();
+        final Name firstName = Name.builder().firstName("FIRST").build();
+        final Name lastName = Name.builder().lastName("LAST").build();
+        final Name bothName = Name.builder().firstName("FIRST").lastName("LAST").build();
+        final Name allName = Name.builder().title("MX").firstName("FIRST").lastName("LAST").build();
+
+        assertEquals("expected", syaAppealCreatedAndReceivedPersonalisation.getOptionalField(null, "expected"));
+        assertEquals("expected", syaAppealCreatedAndReceivedPersonalisation.getOptionalField(emptyName.getFullName(), "expected"));
+        assertEquals("expected", syaAppealCreatedAndReceivedPersonalisation.getOptionalField(emptyName.getFullNameNoTitle(), "expected"));
+        assertEquals("null FIRST null", syaAppealCreatedAndReceivedPersonalisation.getOptionalField(firstName.getFullName(), "expected"));
+        assertEquals("FIRST null", syaAppealCreatedAndReceivedPersonalisation.getOptionalField(firstName.getFullNameNoTitle(), "expected"));
+        assertEquals("null null LAST", syaAppealCreatedAndReceivedPersonalisation.getOptionalField(lastName.getFullName(), "expected"));
+        assertEquals("null LAST", syaAppealCreatedAndReceivedPersonalisation.getOptionalField(lastName.getFullNameNoTitle(), "expected"));
+        assertEquals("null FIRST LAST", syaAppealCreatedAndReceivedPersonalisation.getOptionalField(bothName.getFullName(), "expected"));
+        assertEquals("FIRST LAST", syaAppealCreatedAndReceivedPersonalisation.getOptionalField(bothName.getFullNameNoTitle(), "expected"));
+        assertEquals("MX FIRST LAST", syaAppealCreatedAndReceivedPersonalisation.getOptionalField(allName.getFullName(), "expected"));
+        assertEquals("FIRST LAST", syaAppealCreatedAndReceivedPersonalisation.getOptionalField(allName.getFullNameNoTitle(), "expected"));
     }
 
 }

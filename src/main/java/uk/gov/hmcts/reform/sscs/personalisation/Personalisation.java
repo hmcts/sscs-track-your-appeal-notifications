@@ -39,11 +39,12 @@ import uk.gov.hmcts.reform.sscs.extractor.HearingContactDateExtractor;
 import uk.gov.hmcts.reform.sscs.factory.NotificationWrapper;
 import uk.gov.hmcts.reform.sscs.service.MessageAuthenticationServiceImpl;
 import uk.gov.hmcts.reform.sscs.service.RegionalProcessingCenterService;
+import uk.gov.hmcts.reform.sscs.service.SendNotificationService;
 
 @Component
 @Slf4j
 public class Personalisation<E extends NotificationWrapper> {
-    private static final List<NotificationEventType> FALLBACK_LETTER_SUBSCRIPTION_TYPES = Arrays.asList(APPEAL_LODGED, SYA_APPEAL_CREATED_NOTIFICATION);
+    private static final List<NotificationEventType> FALLBACK_LETTER_SUBSCRIPTION_TYPES = Arrays.asList(DWP_RESPONSE_RECEIVED_NOTIFICATION, APPEAL_LODGED, SYA_APPEAL_CREATED_NOTIFICATION, EVIDENCE_RECEIVED_NOTIFICATION);
     private static final String CRLF = String.format("%c%c", (char) 0x0D, (char) 0x0A);
 
     private boolean sendSmsSubscriptionConfirmation;
@@ -128,19 +129,23 @@ public class Personalisation<E extends NotificationWrapper> {
             return "";
         }
 
-        Name name = null;
-
         if (subscriptionType.equals(APPELLANT)
                 && ccdResponse.getAppeal().getAppellant() != null) {
-            name = ccdResponse.getAppeal().getAppellant().getName();
+            return getDefaultName(ccdResponse.getAppeal().getAppellant().getName(), "");
         } else if (subscriptionType.equals(REPRESENTATIVE)
                 && hasRepresentative(wrapper)) {
-            name = ccdResponse.getAppeal().getRep().getName();
+            return SendNotificationService.getRepSalutation(ccdResponse.getAppeal().getRep());
         } else if (subscriptionType.equals(APPOINTEE)
                 && hasAppointee(wrapper)) {
-            name = ccdResponse.getAppeal().getAppellant().getAppointee().getName();
+            return getDefaultName(ccdResponse.getAppeal().getAppellant().getAppointee().getName(), "");
         }
-        return name == null ? "" : name.getFullNameNoTitle();
+
+        return "";
+    }
+
+    protected String getDefaultName(Name name, String defaultText) {
+        return name == null || name.getFirstName() == null || StringUtils.isBlank(name.getFirstName())
+                        || name.getLastName() == null || StringUtils.isBlank(name.getLastName()) ? defaultText : name.getFullNameNoTitle();
     }
 
     private String getAppointeeDescription(SubscriptionType subscriptionType, SscsCaseData ccdResponse) {
@@ -303,21 +308,23 @@ public class Personalisation<E extends NotificationWrapper> {
 
     private String getEmailTemplateName(SubscriptionType subscriptionType,
                                      NotificationEventType notificationEventType) {
+
         String emailTemplateName = notificationEventType.getId();
-        if (APPEAL_LAPSED_NOTIFICATION.equals(notificationEventType)
-            || APPEAL_WITHDRAWN_NOTIFICATION.equals(notificationEventType)
-            || EVIDENCE_RECEIVED_NOTIFICATION.equals(notificationEventType)
-            || SYA_APPEAL_CREATED_NOTIFICATION.equals(notificationEventType)
-            || RESEND_APPEAL_CREATED_NOTIFICATION.equals(notificationEventType)
+
+        if (ADJOURNED_NOTIFICATION.equals(notificationEventType)
             || APPEAL_DORMANT_NOTIFICATION.equals(notificationEventType)
-            || ADJOURNED_NOTIFICATION.equals(notificationEventType)
+            || APPEAL_LAPSED_NOTIFICATION.equals(notificationEventType)
+            || APPEAL_LODGED.equals(notificationEventType)
             || APPEAL_RECEIVED_NOTIFICATION.equals(notificationEventType)
-            || POSTPONEMENT_NOTIFICATION.equals(notificationEventType)
-            || HEARING_BOOKED_NOTIFICATION.equals(notificationEventType)
+            || APPEAL_WITHDRAWN_NOTIFICATION.equals(notificationEventType)
             || CASE_UPDATED.equals(notificationEventType)
+            || EVIDENCE_RECEIVED_NOTIFICATION.equals(notificationEventType)
             || EVIDENCE_REMINDER_NOTIFICATION.equals(notificationEventType)
+            || HEARING_BOOKED_NOTIFICATION.equals(notificationEventType)
             || HEARING_REMINDER_NOTIFICATION.equals(notificationEventType)
-            || APPEAL_LODGED.equals(notificationEventType)) {
+            || POSTPONEMENT_NOTIFICATION.equals(notificationEventType)
+            || RESEND_APPEAL_CREATED_NOTIFICATION.equals(notificationEventType)
+            || SYA_APPEAL_CREATED_NOTIFICATION.equals(notificationEventType)) {
             emailTemplateName = emailTemplateName + "." + StringUtils.lowerCase(subscriptionType.name());
         }
         return emailTemplateName;
@@ -325,8 +332,10 @@ public class Personalisation<E extends NotificationWrapper> {
 
     private String getLetterTemplateName(SubscriptionType subscriptionType, NotificationEventType notificationEventType) {
         String letterTemplateName = notificationEventType.getId();
-        if (FALLBACK_LETTER_SUBSCRIPTION_TYPES.contains(notificationEventType)
-            || HEARING_BOOKED_NOTIFICATION.equals(notificationEventType)) {
+        if (subscriptionType != null
+            && (FALLBACK_LETTER_SUBSCRIPTION_TYPES.contains(notificationEventType)
+            || APPEAL_WITHDRAWN_NOTIFICATION.equals(notificationEventType)
+            || HEARING_BOOKED_NOTIFICATION.equals(notificationEventType))) {
             letterTemplateName = letterTemplateName + "." + subscriptionType.name().toLowerCase();
         }
         return letterTemplateName;

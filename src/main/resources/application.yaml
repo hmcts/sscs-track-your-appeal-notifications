@@ -105,11 +105,14 @@ notification:
     appellant:
       emailId: c5654134-2e13-4541-ac73-334a5b5cdbb6
       smsId: 74bda35f-040b-4355-bda3-faf0e4f5ae6e
+      letterId: 6af62d46-98e5-4ade-aa72-e4a11c56286e
     representative:
       smsId: 345f802b-7089-4f46-a17f-bf534b272740
+      letterId: 8eb75404-a442-47aa-bab2-c4ba83a70900
     appointee:
       emailId: c5654134-2e13-4541-ac73-334a5b5cdbb6
       smsId: 74bda35f-040b-4355-bda3-faf0e4f5ae6e
+      letterId: 6af62d46-98e5-4ade-aa72-e4a11c56286e
   hearingAdjourned:
     appellant:
       emailId: bff02237-9bcb-49fa-bbf7-11725b97132a
@@ -141,12 +144,15 @@ notification:
     appellant:
       emailId: 8620e023-f663-477e-a771-9cfad50ee30f
       smsId: 446c7b23-7342-42e1-adff-b4c367e951cb
+      letterId: d4ca58d1-8b48-44eb-9af9-0bfc14a0d72d
     representative:
       emailId: e29a2275-553f-4e70-97f4-2994c095f281
       smsId: f59440ee-19ca-4d47-a702-13e9cecaccbd
+      letterId: d4ca58d1-8b48-44eb-9af9-0bfc14a0d72d
     appointee:
       emailId: 8620e023-f663-477e-a771-9cfad50ee30f
       smsId: 446c7b23-7342-42e1-adff-b4c367e951cb
+      letterId: d4ca58d1-8b48-44eb-9af9-0bfc14a0d72d
   subscriptionCreated:
     appellant.smsId: 7397a76f-14cb-468c-b1a7-0570940ead91
     appointee.smsId: 7397a76f-14cb-468c-b1a7-0570940ead91
@@ -229,8 +235,6 @@ notification:
     emailId: 62e72e11-5eb6-4048-83f4-0b0c5c59fcb9
   corDecision:
     emailId: 5b0df251-49b9-46d5-b347-37a81ab77f19
-  struckOut:
-    letterId: 7383b637-d76e-4c9f-8af9-3e3573168011
   caseUpdated:
     appellant:
       emailId: 01293b93-b23e-40a3-ad78-2c6cd01cd21c
@@ -286,12 +290,16 @@ notification:
       appointee:
         emailId: c5654134-2e13-4541-ac73-334a5b5cdbb6
         smsId: 74bda35f-040b-4355-bda3-faf0e4f5ae6e
-    struckOut:
-      letterId: 7383b637-d76e-4c9f-8af9-3e3573168011
   oral:
     responseReceived:
       emailId: 01caec0c-191b-4a32-882a-6fded2546ce6
       smsId: 317a121e-d08c-4890-b3b3-4652f741771f
+      appellant:
+        letterId: 8b11f3f4-6452-4a35-93d8-a94996af6499
+      appointee:
+        letterId: 8b11f3f4-6452-4a35-93d8-a94996af6499
+      representative:
+        letterId: 419beb1c-4f26-45e7-8db3-69bfe5e9224d
     evidenceReminder:
       appellant:
         emailId: b9e47ec4-3b58-4b8d-9304-f77ac27fb7f2
@@ -310,8 +318,6 @@ notification:
         emailId: fc9d0618-68c4-48ec-9481-a84b225a57a9
       representative:
         emailId: e2ee8609-7d56-4857-b3f8-79028e8960aa
-    struckOut:
-      letterId: 7383b637-d76e-4c9f-8af9-3e3573168011
 
 smsSender:
   pip: 80b11be7-5c10-2773-8351-070e22d5ab6b
@@ -350,7 +356,8 @@ appeal.email.subject: ${EMAIL_SUBJECT:Your appeal}
 appeal.email.message: ${EMAIL_MESSAGE:Your appeal has been created \nPlease do not respond to this email}
 
 appellant.appeal.html.template.path: /templates/appellant_appeal_template.html
-noncompliantcaseletter.appeal.html.template.path: /templates/non_compliant_case_letter_template.html
+strikeOutLetterTemplate.appeal.html.template.path: /templates/strike_out_letter_template.html
+directionNoticeLetterTemplate.appeal.html.template.path: /templates/direction_notice_letter_template.html
 
 pdf.api.url: ${PDF_API_URL:http://localhost:5500}
 
@@ -360,8 +367,8 @@ robotics.email.subject: ${ROBOTICS_EMAIL_SUBJECT:Robotics Data}
 robotics.email.message: ${ROBOTICS_EMAIL_MESSAGE:Please find attached the robotics json file \nPlease do not respond to this email}
 robotics.schema.resource.location: /schema/sscs-robotics.json
 
-feature.bundled_letters_on: ${BUNDLED_LETTERS_ON:false}
-feature.letters_on: ${LETTERS_ON:false}
+feature.bundled_letters_on: ${BUNDLED_LETTERS_ON:true}
+feature.letters_on: ${LETTERS_ON:true}
 
 
 ---

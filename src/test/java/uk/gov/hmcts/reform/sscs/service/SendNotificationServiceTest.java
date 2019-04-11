@@ -1,6 +1,8 @@
 package uk.gov.hmcts.reform.sscs.service;
 
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertNull;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.*;
 import static org.mockito.MockitoAnnotations.initMocks;
@@ -9,18 +11,20 @@ import static uk.gov.hmcts.reform.sscs.config.SubscriptionType.APPELLANT;
 import static uk.gov.hmcts.reform.sscs.config.SubscriptionType.APPOINTEE;
 import static uk.gov.hmcts.reform.sscs.config.SubscriptionType.REPRESENTATIVE;
 import static uk.gov.hmcts.reform.sscs.service.LetterUtils.getAddressToUseForLetter;
+import static uk.gov.hmcts.reform.sscs.service.NotificationValidService.BUNDLED_LETTER_EVENT_TYPES;
 import static uk.gov.hmcts.reform.sscs.service.NotificationValidService.FALLBACK_LETTER_SUBSCRIPTION_TYPES;
+import static uk.gov.hmcts.reform.sscs.service.SendNotificationService.getBundledLetterFileType;
 import static uk.gov.hmcts.reform.sscs.service.SendNotificationService.getRepSalutation;
 
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.HashMap;
+import java.util.*;
 
 import junitparams.JUnitParamsRunner;
+import junitparams.Parameters;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.Mock;
+import org.springframework.test.util.ReflectionTestUtils;
 import uk.gov.hmcts.reform.sscs.ccd.domain.*;
 import uk.gov.hmcts.reform.sscs.config.AppealHearingType;
 import uk.gov.hmcts.reform.sscs.config.SubscriptionType;
@@ -129,6 +133,8 @@ public class SendNotificationServiceTest {
         initMocks(this);
 
         classUnderTest = new SendNotificationService(notificationSender, evidenceManagementService, pdfService, notificationHandler, notificationValidService);
+        ReflectionTestUtils.setField(classUnderTest, "strikeOutLetterTemplate", "/templates/strike_out_letter_template.html");
+        ReflectionTestUtils.setField(classUnderTest, "directionNoticeLetterTemplate", "/templates/direction_notice_letter_template.html");
         classUnderTest.bundledLettersOn = true;
         classUnderTest.lettersOn = true;
     }
@@ -308,17 +314,44 @@ public class SendNotificationServiceTest {
 
     @Test
     public void getRepSalutationWhenRepHasName() {
-        assertEquals(REP_WITH_ADDRESS.getName().getFullNameNoTitle(), getRepSalutation(buildBaseWrapper(APPELLANT_WITH_ADDRESS, NotificationEventType.CASE_UPDATED, REP_WITH_ADDRESS)));
+        CcdNotificationWrapper wrapper = buildBaseWrapper(APPELLANT_WITH_ADDRESS, NotificationEventType.CASE_UPDATED, REP_WITH_ADDRESS);
+        assertEquals(REP_WITH_ADDRESS.getName().getFullNameNoTitle(), getRepSalutation(wrapper.getNewSscsCaseData().getAppeal().getRep()));
     }
 
     @Test
     public void getRepSalutationWhenRepHasOrgButNoName() {
-        assertEquals(REP_SALUTATION, getRepSalutation(buildBaseWrapper(APPELLANT_WITH_ADDRESS, NotificationEventType.CASE_UPDATED, REP_ORG_WITH_ADDRESS)));
+        CcdNotificationWrapper wrapper = buildBaseWrapper(APPELLANT_WITH_ADDRESS, NotificationEventType.CASE_UPDATED, REP_ORG_WITH_ADDRESS);
+        assertEquals(REP_SALUTATION, getRepSalutation(wrapper.getNewSscsCaseData().getAppeal().getRep()));
     }
 
     @Test
     public void getRepSalutationWhenRepHasOrgAndName() {
-        assertEquals(REP_ORG_WITH_NAME_AND_ADDRESS.getName().getFullNameNoTitle(), getRepSalutation(buildBaseWrapper(APPELLANT_WITH_ADDRESS, NotificationEventType.CASE_UPDATED, REP_ORG_WITH_NAME_AND_ADDRESS)));
+        CcdNotificationWrapper wrapper = buildBaseWrapper(APPELLANT_WITH_ADDRESS, NotificationEventType.CASE_UPDATED, REP_ORG_WITH_NAME_AND_ADDRESS);
+        assertEquals(REP_ORG_WITH_NAME_AND_ADDRESS.getName().getFullNameNoTitle(), getRepSalutation(wrapper.getNewSscsCaseData().getAppeal().getRep()));
+    }
+
+    @Test
+    @Parameters(method = "bundledLetterTemplates")
+    public void validBundledLetterTemplate(NotificationEventType eventType) {
+        assertNotNull(classUnderTest.getBundledLetterTemplate(eventType, buildBaseWrapper(APPELLANT_WITH_ADDRESS, eventType).getNewSscsCaseData()));
+    }
+
+    @Test
+    @Parameters(method = "nonBundledLetterTemplates")
+    public void invalidBundledLetterTemplate(NotificationEventType eventType) {
+        assertNull(classUnderTest.getBundledLetterTemplate(eventType, buildBaseWrapper(APPELLANT_WITH_ADDRESS, eventType).getNewSscsCaseData()));
+    }
+
+    @Test
+    @Parameters(method = "bundledLetterTemplates")
+    public void validBundledLetterType(NotificationEventType eventType) {
+        assertNotNull(getBundledLetterFileType(eventType, buildBaseWrapper(APPELLANT_WITH_ADDRESS, eventType).getNewSscsCaseData()));
+    }
+
+    @Test
+    @Parameters(method = "nonBundledLetterTemplates")
+    public void invalidBundledLetterTileType(NotificationEventType eventType) {
+        assertNull(getBundledLetterFileType(eventType, buildBaseWrapper(APPELLANT_WITH_ADDRESS, eventType).getNewSscsCaseData()));
     }
 
     private CcdNotificationWrapper buildBaseWrapper(Appellant appellant) {
@@ -367,4 +400,18 @@ public class SendNotificationServiceTest {
         return new CcdNotificationWrapper(struckOutSscsCaseDataWrapper);
     }
 
+    public Object[] bundledLetterTemplates() {
+        return BUNDLED_LETTER_EVENT_TYPES.toArray();
+    }
+
+    public Object[] nonBundledLetterTemplates() {
+        Object[] originalValues = Arrays.stream(NotificationEventType.values())
+            .filter(type -> !BUNDLED_LETTER_EVENT_TYPES.contains(type))
+            .toArray();
+
+        ArrayList<Object> x = new ArrayList<Object>(Arrays.asList(originalValues));
+        x.add(null);
+
+        return x.toArray();
+    }
 }

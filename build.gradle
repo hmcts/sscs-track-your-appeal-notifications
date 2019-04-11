@@ -29,10 +29,6 @@ compileTestJava {
     options.compilerArgs << '-Xlint:deprecation'
 }
 
-dependencyCheck {
-    autoUpdate=false
-}
-
 mainClassName = 'uk.gov.hmcts.reform.sscs.TrackYourAppealNotificationsApplication'
 
 checkstyle {
@@ -212,7 +208,7 @@ dependencies {
     compile group: 'com.opencsv', name: 'opencsv', version: '4.5'
     compile group: 'commons-io', name: 'commons-io', version: '2.6'
 
-    compile group: 'com.mchange', name: 'c3p0', version: '0.9.5.3'
+    compile group: 'com.mchange', name: 'c3p0', version: '0.9.5.4'
     compile group: 'org.flywaydb', name: 'flyway-core', version: '5.1.0'
     compile group: 'org.postgresql', name: 'postgresql', version: '42.2.2'
 
@@ -235,13 +231,12 @@ dependencies {
     compile group: 'uk.gov.hmcts.reform', name: 'http-proxy-spring-boot-autoconfigure', version: '2.0.0'
     compile group: 'uk.gov.hmcts.reform', name: 'core-case-data-store-client', version: '4.6.2'
     compile group: 'uk.gov.hmcts.reform', name: 'sscs-job-scheduler', version: '1.5.2'
-    compile group: 'uk.gov.hmcts.reform', name: 'service-auth-provider-client', version: '2.0.1'
-    compile group: 'uk.gov.hmcts.reform', name: 'sscs-common', version: '0.0.143'
-    compile group: 'uk.gov.hmcts.reform', name: 'sscs-pdf-email-common', version: '0.0.106'
+    compile group: 'uk.gov.hmcts.reform', name: 'service-auth-provider-client', version: '3.0.0'
+    compile group: 'uk.gov.hmcts.reform', name: 'sscs-common', version: '0.0.157'
+    compile group: 'uk.gov.hmcts.reform', name: 'sscs-pdf-email-common', version: '0.1.1'
 
     compile group: 'uk.gov.service.notify', name: 'notifications-java-client', version: '3.14.1-RELEASE'
     compile group: 'io.github.openfeign.form', name: 'feign-form', version: '3.7.0'
-
 
     compile group: 'org.apache.pdfbox', name: 'pdfbox', version: '2.0.14'
 

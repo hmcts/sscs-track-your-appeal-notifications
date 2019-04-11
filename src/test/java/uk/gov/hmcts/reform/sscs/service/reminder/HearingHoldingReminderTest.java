@@ -16,7 +16,6 @@ import org.mockito.junit.MockitoJUnitRunner;
 import uk.gov.hmcts.reform.sscs.SscsCaseDataUtils;
 import uk.gov.hmcts.reform.sscs.ccd.domain.SscsCaseData;
 import uk.gov.hmcts.reform.sscs.domain.notify.NotificationEventType;
-import uk.gov.hmcts.reform.sscs.exception.ReminderException;
 import uk.gov.hmcts.reform.sscs.extractor.HearingContactDateExtractor;
 import uk.gov.hmcts.reform.sscs.factory.CcdNotificationWrapper;
 import uk.gov.hmcts.reform.sscs.jobscheduler.model.Job;
@@ -136,15 +135,70 @@ public class HearingHoldingReminderTest {
         assertEquals(finalHearingContactDate, job4.triggerAt);
     }
 
-    @Test(expected = ReminderException.class)
-    public void throwExceptionWhenHearingContactDateNotPresent() {
+    @Test
+    public void canNotScheduleHearingHoldingRemindersWhenDwpResponseReceivedAndReminderDateIsNull() {
+
+        final String expectedFirstJobGroup = "ID_FIRST_EVENT";
+        final String expectedSecondJobGroup = "ID_SECOND_EVENT";
+        final String expectedThirdJobGroup = "ID_THIRD_EVENT";
+        final String expectedFinalJobGroup = "ID_FINAL_EVENT";
+
+        CcdNotificationWrapper wrapper = SscsCaseDataUtils.buildBasicCcdNotificationWrapper(DWP_RESPONSE_RECEIVED_NOTIFICATION);
+
+        SscsCaseData newCaseData = wrapper.getNewSscsCaseData();
+
+        when(hearingContactDateExtractor.extractForReferenceEvent(newCaseData, DWP_RESPONSE_RECEIVED_NOTIFICATION))
+                .thenReturn(Optional.empty());
+
+        when(hearingContactDateExtractor.extractForReferenceEvent(newCaseData, FIRST_HEARING_HOLDING_REMINDER_NOTIFICATION))
+                .thenReturn(Optional.empty());
+
+        when(hearingContactDateExtractor.extractForReferenceEvent(newCaseData, SECOND_HEARING_HOLDING_REMINDER_NOTIFICATION))
+                .thenReturn(Optional.empty());
+
+        when(hearingContactDateExtractor.extractForReferenceEvent(newCaseData, THIRD_HEARING_HOLDING_REMINDER_NOTIFICATION))
+                .thenReturn(Optional.empty());
+
+        when(jobGroupGenerator.generate(wrapper.getCaseId(), FIRST_HEARING_HOLDING_REMINDER_NOTIFICATION.getId()))
+                .thenReturn(expectedFirstJobGroup);
+
+        when(jobGroupGenerator.generate(wrapper.getCaseId(), SECOND_HEARING_HOLDING_REMINDER_NOTIFICATION.getId()))
+                .thenReturn(expectedSecondJobGroup);
+
+        when(jobGroupGenerator.generate(wrapper.getCaseId(), THIRD_HEARING_HOLDING_REMINDER_NOTIFICATION.getId()))
+                .thenReturn(expectedThirdJobGroup);
+
+        when(jobGroupGenerator.generate(wrapper.getCaseId(), FINAL_HEARING_HOLDING_REMINDER_NOTIFICATION.getId()))
+                .thenReturn(expectedFinalJobGroup);
+
+        hearingHoldingReminder.handle(wrapper);
+
+        ArgumentCaptor<Job> jobCaptor = ArgumentCaptor.forClass(Job.class);
+
+        verify(jobScheduler, times(0)).schedule(
+                jobCaptor.capture()
+        );
+
+        assertTrue(jobCaptor.getAllValues().isEmpty());
+    }
+
+    @Test(expected = Exception.class)
+    public void canScheduleReturnFalseWhenHearingContactDateThrowError() {
+
+        CcdNotificationWrapper wrapper = null;
+
+        assertFalse(hearingHoldingReminder.canSchedule(wrapper));
+    }
+
+    @Test
+    public void canScheduleReturnFalseWhenHearingContactDateNotPresent() {
 
         CcdNotificationWrapper wrapper = SscsCaseDataUtils.buildBasicCcdNotificationWrapper(DWP_RESPONSE_RECEIVED_NOTIFICATION);
 
         when(hearingContactDateExtractor.extractForReferenceEvent(wrapper.getNewSscsCaseData(), DWP_RESPONSE_RECEIVED_NOTIFICATION))
             .thenReturn(Optional.empty());
 
-        hearingHoldingReminder.handle(wrapper);
+        assertFalse(hearingHoldingReminder.canSchedule(wrapper));
     }
 
 }

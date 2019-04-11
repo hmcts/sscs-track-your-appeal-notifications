@@ -1,11 +1,15 @@
 package uk.gov.hmcts.reform.sscs.config;
 
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNull;
 import static uk.gov.hmcts.reform.sscs.config.AppealHearingType.*;
 import static uk.gov.hmcts.reform.sscs.config.SubscriptionType.APPELLANT;
 import static uk.gov.hmcts.reform.sscs.config.SubscriptionType.APPOINTEE;
 import static uk.gov.hmcts.reform.sscs.config.SubscriptionType.REPRESENTATIVE;
 import static uk.gov.hmcts.reform.sscs.domain.notify.NotificationEventType.*;
+
+import java.util.Arrays;
+import java.util.List;
 
 import junitparams.JUnitParamsRunner;
 import junitparams.Parameters;
@@ -26,6 +30,8 @@ import uk.gov.hmcts.reform.sscs.domain.notify.Template;
 @SpringBootTest
 @ActiveProfiles("integration")
 public class NotificationConfigTest {
+    private static final List<NotificationEventType> BUNDLED_LETTER_EVENT_TYPES = Arrays.asList(STRUCK_OUT, DIRECTION_ISSUED);
+
     // Below rules are needed to use the junitParamsRunner together with SpringRunner
     @ClassRule
     public static final SpringClassRule SPRING_CLASS_RULE = new SpringClassRule();
@@ -47,6 +53,15 @@ public class NotificationConfigTest {
         assertEquals(expectedEmailTemplateId, template.getEmailTemplateId());
         assertEquals(expectedSmsTemplateId, template.getSmsTemplateId());
         assertEquals(expectedLetterTemplateId, template.getLetterTemplateId());
+    }
+
+    @Test
+    @Parameters(method = "bundledLetterTemplateNames")
+    public void given_bundledLetters_should_notHaveTemplate(AppealHearingType appealHearingType, String templateName) {
+        Template template = notificationConfig.getTemplate(templateName, templateName, templateName, Benefit.PIP, appealHearingType);
+        assertNull(template.getEmailTemplateId());
+        assertNull(template.getSmsTemplateId());
+        assertNull(template.getLetterTemplateId());
     }
 
     @SuppressWarnings({"Indentation", "unused"})
@@ -72,28 +87,28 @@ public class NotificationConfigTest {
             new Object[]{"8ce8d794-75e8-49a0-b4d2-0c6cd2061c11", "d2b4394b-d1c9-4d5c-a44e-b382e41c67e5", null, PAPER, getTemplateName(APPEAL_LAPSED_NOTIFICATION, APPELLANT)},
             new Object[]{"8ce8d794-75e8-49a0-b4d2-0c6cd2061c11", "d2b4394b-d1c9-4d5c-a44e-b382e41c67e5", null, ORAL, getTemplateName(APPEAL_LAPSED_NOTIFICATION, APPELLANT)},
             new Object[]{"8ce8d794-75e8-49a0-b4d2-0c6cd2061c11", "d2b4394b-d1c9-4d5c-a44e-b382e41c67e5", null, ORAL, getTemplateName(APPEAL_LAPSED_NOTIFICATION, APPOINTEE)},
-            new Object[]{"e29a2275-553f-4e70-97f4-2994c095f281", "f59440ee-19ca-4d47-a702-13e9cecaccbd", null, PAPER, getTemplateName(APPEAL_WITHDRAWN_NOTIFICATION, REPRESENTATIVE)},
-            new Object[]{"e29a2275-553f-4e70-97f4-2994c095f281", "f59440ee-19ca-4d47-a702-13e9cecaccbd", null, ORAL, getTemplateName(APPEAL_WITHDRAWN_NOTIFICATION, REPRESENTATIVE)},
-            new Object[]{"8620e023-f663-477e-a771-9cfad50ee30f", "446c7b23-7342-42e1-adff-b4c367e951cb", null, PAPER, getTemplateName(APPEAL_WITHDRAWN_NOTIFICATION, APPELLANT)},
-            new Object[]{"8620e023-f663-477e-a771-9cfad50ee30f", "446c7b23-7342-42e1-adff-b4c367e951cb", null, ORAL, getTemplateName(APPEAL_WITHDRAWN_NOTIFICATION, APPELLANT)},
-            new Object[]{"8620e023-f663-477e-a771-9cfad50ee30f", "446c7b23-7342-42e1-adff-b4c367e951cb", null, PAPER, getTemplateName(APPEAL_WITHDRAWN_NOTIFICATION, APPOINTEE)},
-            new Object[]{"8620e023-f663-477e-a771-9cfad50ee30f", "446c7b23-7342-42e1-adff-b4c367e951cb", null, ORAL, getTemplateName(APPEAL_WITHDRAWN_NOTIFICATION, APPOINTEE)},
+            new Object[]{"e29a2275-553f-4e70-97f4-2994c095f281", "f59440ee-19ca-4d47-a702-13e9cecaccbd", "d4ca58d1-8b48-44eb-9af9-0bfc14a0d72d", PAPER, getTemplateName(APPEAL_WITHDRAWN_NOTIFICATION, REPRESENTATIVE)},
+            new Object[]{"e29a2275-553f-4e70-97f4-2994c095f281", "f59440ee-19ca-4d47-a702-13e9cecaccbd", "d4ca58d1-8b48-44eb-9af9-0bfc14a0d72d", ORAL, getTemplateName(APPEAL_WITHDRAWN_NOTIFICATION, REPRESENTATIVE)},
+            new Object[]{"8620e023-f663-477e-a771-9cfad50ee30f", "446c7b23-7342-42e1-adff-b4c367e951cb", "d4ca58d1-8b48-44eb-9af9-0bfc14a0d72d", PAPER, getTemplateName(APPEAL_WITHDRAWN_NOTIFICATION, APPELLANT)},
+            new Object[]{"8620e023-f663-477e-a771-9cfad50ee30f", "446c7b23-7342-42e1-adff-b4c367e951cb", "d4ca58d1-8b48-44eb-9af9-0bfc14a0d72d", ORAL, getTemplateName(APPEAL_WITHDRAWN_NOTIFICATION, APPELLANT)},
+            new Object[]{"8620e023-f663-477e-a771-9cfad50ee30f", "446c7b23-7342-42e1-adff-b4c367e951cb", "d4ca58d1-8b48-44eb-9af9-0bfc14a0d72d", PAPER, getTemplateName(APPEAL_WITHDRAWN_NOTIFICATION, APPOINTEE)},
+            new Object[]{"8620e023-f663-477e-a771-9cfad50ee30f", "446c7b23-7342-42e1-adff-b4c367e951cb", "d4ca58d1-8b48-44eb-9af9-0bfc14a0d72d", ORAL, getTemplateName(APPEAL_WITHDRAWN_NOTIFICATION, APPOINTEE)},
             new Object[]{"75357eb8-bba7-4bdf-b879-b535bc3fb50a", "a170d63e-b04e-4da5-ad89-d93644b6c1e9", null, PAPER, getTemplateName(ADJOURNED_NOTIFICATION, REPRESENTATIVE)},
             new Object[]{"75357eb8-bba7-4bdf-b879-b535bc3fb50a", "a170d63e-b04e-4da5-ad89-d93644b6c1e9", null, ORAL, getTemplateName(ADJOURNED_NOTIFICATION, REPRESENTATIVE)},
             new Object[]{"bff02237-9bcb-49fa-bbf7-11725b97132a", "46c6bf06-33dd-4e5a-9b6b-8bd6d0eb33b1", null, PAPER, getTemplateName(ADJOURNED_NOTIFICATION, APPELLANT)},
             new Object[]{"bff02237-9bcb-49fa-bbf7-11725b97132a", "46c6bf06-33dd-4e5a-9b6b-8bd6d0eb33b1", null, ORAL, getTemplateName(ADJOURNED_NOTIFICATION, APPELLANT)},
+            new Object[]{"cab48431-a4f0-41f5-b753-2cecf20ab5d4", "74bda35f-040b-4355-bda3-faf0e4f5ae6e", "6af62d46-98e5-4ade-aa72-e4a11c56286e", PAPER, getTemplateName(EVIDENCE_RECEIVED_NOTIFICATION, APPELLANT)},
+            new Object[]{"c5654134-2e13-4541-ac73-334a5b5cdbb6", "74bda35f-040b-4355-bda3-faf0e4f5ae6e", "6af62d46-98e5-4ade-aa72-e4a11c56286e", ORAL, getTemplateName(EVIDENCE_RECEIVED_NOTIFICATION, APPELLANT)},
+            new Object[]{"7af36950-fc63-45d1-907d-f472fac7af06", "345f802b-7089-4f46-a17f-bf534b272740", "8eb75404-a442-47aa-bab2-c4ba83a70900", PAPER, getTemplateName(EVIDENCE_RECEIVED_NOTIFICATION, REPRESENTATIVE)},
+            new Object[]{"30260c0b-5575-4f4e-bce4-73cf3f245c2d", "345f802b-7089-4f46-a17f-bf534b272740", "8eb75404-a442-47aa-bab2-c4ba83a70900", ORAL, getTemplateName(EVIDENCE_RECEIVED_NOTIFICATION, REPRESENTATIVE)},
+            new Object[]{"c5654134-2e13-4541-ac73-334a5b5cdbb6", "74bda35f-040b-4355-bda3-faf0e4f5ae6e", "6af62d46-98e5-4ade-aa72-e4a11c56286e", PAPER, getTemplateName(EVIDENCE_RECEIVED_NOTIFICATION, APPOINTEE)},
+            new Object[]{"c5654134-2e13-4541-ac73-334a5b5cdbb6", "74bda35f-040b-4355-bda3-faf0e4f5ae6e", "6af62d46-98e5-4ade-aa72-e4a11c56286e", ORAL, getTemplateName(EVIDENCE_RECEIVED_NOTIFICATION, APPOINTEE)},
             new Object[]{"774a5cba-fab6-4b8c-a9d9-03f913ed2dca", "404e9a43-6318-492c-b5c2-e34ddfbbdde9", null, PAPER, getTemplateName(HEARING_REMINDER_NOTIFICATION, APPELLANT)},
             new Object[]{"774a5cba-fab6-4b8c-a9d9-03f913ed2dca", "404e9a43-6318-492c-b5c2-e34ddfbbdde9", null, ORAL, getTemplateName(HEARING_REMINDER_NOTIFICATION, APPELLANT)},
             new Object[]{"774a5cba-fab6-4b8c-a9d9-03f913ed2dca", "404e9a43-6318-492c-b5c2-e34ddfbbdde9", null, PAPER, getTemplateName(HEARING_REMINDER_NOTIFICATION, APPOINTEE)},
             new Object[]{"774a5cba-fab6-4b8c-a9d9-03f913ed2dca", "404e9a43-6318-492c-b5c2-e34ddfbbdde9", null, ORAL, getTemplateName(HEARING_REMINDER_NOTIFICATION, APPOINTEE)},
             new Object[]{"97c58e23-c11f-40b3-b981-2d4cfa38b8fd", "bb3df0ea-8259-43c4-95de-9eef96206575", null, PAPER, getTemplateName(HEARING_REMINDER_NOTIFICATION, REPRESENTATIVE)},
             new Object[]{"97c58e23-c11f-40b3-b981-2d4cfa38b8fd", "bb3df0ea-8259-43c4-95de-9eef96206575", null, ORAL, getTemplateName(HEARING_REMINDER_NOTIFICATION, REPRESENTATIVE)},
-            new Object[]{"cab48431-a4f0-41f5-b753-2cecf20ab5d4", "74bda35f-040b-4355-bda3-faf0e4f5ae6e", null, PAPER, getTemplateName(EVIDENCE_RECEIVED_NOTIFICATION, APPELLANT)},
-            new Object[]{"c5654134-2e13-4541-ac73-334a5b5cdbb6", "74bda35f-040b-4355-bda3-faf0e4f5ae6e", null, ORAL, getTemplateName(EVIDENCE_RECEIVED_NOTIFICATION, APPELLANT)},
-            new Object[]{"7af36950-fc63-45d1-907d-f472fac7af06", "345f802b-7089-4f46-a17f-bf534b272740", null, PAPER, getTemplateName(EVIDENCE_RECEIVED_NOTIFICATION, REPRESENTATIVE)},
-            new Object[]{"30260c0b-5575-4f4e-bce4-73cf3f245c2d", "345f802b-7089-4f46-a17f-bf534b272740", null, ORAL, getTemplateName(EVIDENCE_RECEIVED_NOTIFICATION, REPRESENTATIVE)},
-            new Object[]{"c5654134-2e13-4541-ac73-334a5b5cdbb6", "74bda35f-040b-4355-bda3-faf0e4f5ae6e", null, PAPER, getTemplateName(EVIDENCE_RECEIVED_NOTIFICATION, APPOINTEE)},
-            new Object[]{"c5654134-2e13-4541-ac73-334a5b5cdbb6", "74bda35f-040b-4355-bda3-faf0e4f5ae6e", null, ORAL, getTemplateName(EVIDENCE_RECEIVED_NOTIFICATION, APPOINTEE)},
             new Object[]{"fee16753-0bdb-43f1-9abb-b14b826e3b26", "f900174a-a556-43b2-8042-bbf3e6090071", "22e51eec-6ba9-489a-aea0-a9e919716935", PAPER, getTemplateName(HEARING_BOOKED_NOTIFICATION, APPELLANT)},
             new Object[]{"fee16753-0bdb-43f1-9abb-b14b826e3b26", "f900174a-a556-43b2-8042-bbf3e6090071", "22e51eec-6ba9-489a-aea0-a9e919716935", ORAL, getTemplateName(HEARING_BOOKED_NOTIFICATION, APPELLANT)},
             new Object[]{"a56e67cb-6b4b-41e3-8f4c-cd1cdb6809c1", "e04c548d-1ba9-40b5-bf9b-ea5e7bbadbac", "9046261e-11c5-43e5-8aa6-dd7a786b82c4", PAPER, getTemplateName(HEARING_BOOKED_NOTIFICATION, REPRESENTATIVE)},
@@ -127,6 +142,23 @@ public class NotificationConfigTest {
             new Object[]{"e2ee8609-7d56-4857-b3f8-79028e8960aa", null, null, ORAL, getTemplateName(APPEAL_DORMANT_NOTIFICATION, REPRESENTATIVE)},
             new Object[]{"fc9d0618-68c4-48ec-9481-a84b225a57a9", null, null, ORAL, getTemplateName(APPEAL_DORMANT_NOTIFICATION, APPELLANT)}
         };
+    }
+
+
+    @SuppressWarnings({"Indentation", "unused"})
+    private Object[] bundledLetterTemplateNames() {
+        List<SubscriptionType> subscriptionTypes = Arrays.asList(APPELLANT, APPOINTEE, REPRESENTATIVE);
+        Object[] result = new Object[BUNDLED_LETTER_EVENT_TYPES.size() * subscriptionTypes.size() * 2];
+
+        int i = 0;
+        for (NotificationEventType eventType : BUNDLED_LETTER_EVENT_TYPES) {
+            for (SubscriptionType subscriptionType : subscriptionTypes) {
+                result[i++] = new Object[]{PAPER, getTemplateName(eventType, subscriptionType)};
+                result[i++] = new Object[]{ORAL, getTemplateName(eventType, subscriptionType)};
+            }
+        }
+
+        return result;
     }
 
     private String getTemplateName(NotificationEventType notificationEventType, SubscriptionType subscriptionType) {

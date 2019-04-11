@@ -2,6 +2,7 @@ package uk.gov.hmcts.reform.sscs.service;
 
 import static uk.gov.hmcts.reform.sscs.config.AppConstants.*;
 import static uk.gov.hmcts.reform.sscs.domain.notify.NotificationEventType.APPEAL_LODGED;
+import static uk.gov.hmcts.reform.sscs.domain.notify.NotificationEventType.DIRECTION_ISSUED;
 import static uk.gov.hmcts.reform.sscs.domain.notify.NotificationEventType.STRUCK_OUT;
 import static uk.gov.hmcts.reform.sscs.service.LetterUtils.*;
 import static uk.gov.hmcts.reform.sscs.service.NotificationUtils.*;
@@ -33,7 +34,8 @@ import uk.gov.service.notify.NotificationClientException;
 @Service
 @Slf4j
 public class SendNotificationService {
-    private static final String STRIKE_OUT_NOTICE = "Strike Out Notice";
+    protected static final String STRIKE_OUT_NOTICE = "Strike Out Notice";
+    protected static final String DIRECTION_TEXT = "Direction Text";
     static final String DM_STORE_USER_ID = "sscs";
     private static final String NOTIFICATION_TYPE_LETTER = "Letter";
 
@@ -52,8 +54,11 @@ public class SendNotificationService {
     private final NotificationHandler notificationHandler;
     private final NotificationValidService notificationValidService;
 
-    @Value("${noncompliantcaseletter.appeal.html.template.path}")
-    String noncompliantcaseletterTemplate;
+    @Value("${strikeOutLetterTemplate.appeal.html.template.path}")
+    String strikeOutLetterTemplate;
+
+    @Value("${directionNoticeLetterTemplate.appeal.html.template.path}")
+    String directionNoticeLetterTemplate;
 
     @Autowired
     public SendNotificationService(
@@ -128,7 +133,7 @@ public class SendNotificationService {
     }
 
     private void sendMandatoryLetterNotification(NotificationWrapper wrapper, Notification notification, SubscriptionType subscriptionType) {
-        if (hasLetterTemplate(notification) && isMandatoryLetterEventType(wrapper)) {
+        if (isMandatoryLetterEventType(wrapper)) {
             NotificationHandler.SendNotification sendNotification = () -> {
                 Address addressToUse = getAddressToUseForLetter(wrapper, subscriptionType);
 
@@ -136,8 +141,8 @@ public class SendNotificationService {
             };
 
             if (bundledLettersOn && isBundledLetter(wrapper.getNotificationType())) {
-                sendBundledLetterNotificationToAppellant(wrapper, notification, subscriptionType);
-            } else {
+                sendBundledLetterNotification(wrapper, notification, getAddressToUseForLetter(wrapper, subscriptionType), getNameToUseForLetter(wrapper, subscriptionType));
+            } else if (hasLetterTemplate(notification)) {
                 notificationHandler.sendNotification(wrapper, notification.getLetterTemplate(), NOTIFICATION_TYPE_LETTER, sendNotification);
             }
         }
@@ -152,20 +157,20 @@ public class SendNotificationService {
             };
 
             if (bundledLettersOn && isBundledLetter(wrapper.getNotificationType())) {
-                sendBundledLetterNotificationToAppellant(wrapper, notification, subscriptionWithType.getSubscriptionType());
+                sendBundledLetterNotification(wrapper, notification, getAddressToUseForLetter(wrapper, subscriptionWithType.getSubscriptionType()), getNameToUseForLetter(wrapper, subscriptionWithType.getSubscriptionType()));
             } else {
                 notificationHandler.sendNotification(wrapper, notification.getLetterTemplate(), NOTIFICATION_TYPE_LETTER, sendNotification);
             }
         }
     }
 
-    protected static String getRepSalutation(NotificationWrapper wrapper) {
-        if (null == wrapper.getNewSscsCaseData().getAppeal().getRep().getName()
-            || null == wrapper.getNewSscsCaseData().getAppeal().getRep().getName().getFirstName()
-            || null == wrapper.getNewSscsCaseData().getAppeal().getRep().getName().getLastName()) {
+    public static String getRepSalutation(Representative rep) {
+        if (null == rep.getName()
+            || null == rep.getName().getFirstName()
+            || null == rep.getName().getLastName()) {
             return REP_SALUTATION;
         } else {
-            return wrapper.getNewSscsCaseData().getAppeal().getRep().getName().getFullNameNoTitle();
+            return rep.getName().getFullNameNoTitle();
         }
     }
 
@@ -178,7 +183,7 @@ public class SendNotificationService {
             placeholders.put(ADDRESS_LINE_4, addressToUse.getCounty() == null ? " " : addressToUse.getCounty());
             placeholders.put(POSTCODE_LITERAL, addressToUse.getPostcode());
             if (hasRepresentative(wrapper.getSscsCaseDataWrapper())) {
-                String repSalutation = getRepSalutation(wrapper);
+                String repSalutation = getRepSalutation(wrapper.getNewSscsCaseData().getAppeal().getRep());
                 placeholders.put(REPRESENTATIVE_NAME, repSalutation);
             }
 
@@ -207,12 +212,6 @@ public class SendNotificationService {
         return null != addressToUse
             && null != addressToUse.getLine1()
             && null != addressToUse.getPostcode();
-    }
-
-    private void sendBundledLetterNotificationToAppellant(NotificationWrapper wrapper, Notification notification, SubscriptionType subscriptionType) {
-        if (hasLetterTemplate(notification)) {
-            sendBundledLetterNotification(wrapper, notification, getAddressToUseForLetter(wrapper, subscriptionType), getNameToUseForLetter(wrapper, subscriptionType));
-        }
     }
 
     private void sendBundledLetterNotification(NotificationWrapper wrapper, Notification notification, Address addressToUse, Name nameToUse) {
@@ -244,8 +243,11 @@ public class SendNotificationService {
     }
 
     private byte[] generateCoveringLetter(NotificationWrapper wrapper, Notification notification) {
-        return sscsGeneratePdfService.generatePdf(noncompliantcaseletterTemplate, wrapper.getNewSscsCaseData(),
-                Long.parseLong(wrapper.getNewSscsCaseData().getCcdCaseId()), notification.getPlaceholders());
+        return sscsGeneratePdfService.generatePdf(
+            getBundledLetterTemplate(wrapper.getNotificationType(), wrapper.getNewSscsCaseData()),
+            wrapper.getNewSscsCaseData(),
+            Long.parseLong(wrapper.getNewSscsCaseData().getCcdCaseId()), notification.getPlaceholders()
+        );
     }
 
     private byte[] downloadAssociatedCasePdf(NotificationWrapper wrapper) {
@@ -253,12 +255,7 @@ public class SendNotificationService {
         SscsCaseData newSscsCaseData = wrapper.getNewSscsCaseData();
 
         byte[] associatedCasePdf = null;
-        String filetype = null;
-        if ((STRUCK_OUT.equals(notificationEventType))
-                && (newSscsCaseData.getSscsDocument() != null
-                && !newSscsCaseData.getSscsDocument().isEmpty())) {
-            filetype = STRIKE_OUT_NOTICE;
-        }
+        String filetype = getBundledLetterFileType(notificationEventType, newSscsCaseData);
 
         if (null != filetype) {
             for (SscsDocument sscsDocument : newSscsCaseData.getSscsDocument()) {
@@ -274,5 +271,33 @@ public class SendNotificationService {
         }
 
         return associatedCasePdf;
+    }
+
+    protected static String getBundledLetterFileType(NotificationEventType notificationEventType, SscsCaseData newSscsCaseData) {
+        String filetype = null;
+        if ((STRUCK_OUT.equals(notificationEventType))
+                && (newSscsCaseData.getSscsDocument() != null
+                && !newSscsCaseData.getSscsDocument().isEmpty())) {
+            filetype = STRIKE_OUT_NOTICE;
+        } else if ((DIRECTION_ISSUED.equals(notificationEventType))
+            && (newSscsCaseData.getSscsDocument() != null
+            && !newSscsCaseData.getSscsDocument().isEmpty())) {
+            filetype = DIRECTION_TEXT;
+        }
+        return filetype;
+    }
+
+    protected String getBundledLetterTemplate(NotificationEventType notificationEventType, SscsCaseData newSscsCaseData) {
+        String bundledLetterTemplate = null;
+        if ((STRUCK_OUT.equals(notificationEventType))
+            && (newSscsCaseData.getSscsDocument() != null
+            && !newSscsCaseData.getSscsDocument().isEmpty())) {
+            bundledLetterTemplate = strikeOutLetterTemplate;
+        } else if ((DIRECTION_ISSUED.equals(notificationEventType))
+            && (newSscsCaseData.getSscsDocument() != null
+            && !newSscsCaseData.getSscsDocument().isEmpty())) {
+            bundledLetterTemplate = directionNoticeLetterTemplate;
+        }
+        return bundledLetterTemplate;
     }
 }

@@ -7,4 +7,6 @@ public interface ReminderHandler {
     boolean canHandle(NotificationWrapper wrapper);
 
     void handle(NotificationWrapper wrapper);
+
+    boolean canSchedule(NotificationWrapper wrapper);
 }

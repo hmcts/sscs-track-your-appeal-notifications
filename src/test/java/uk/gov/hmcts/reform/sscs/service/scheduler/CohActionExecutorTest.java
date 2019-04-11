@@ -11,7 +11,6 @@ import org.mockito.Mock;
 import uk.gov.hmcts.reform.sscs.ccd.domain.SscsCaseData;
 import uk.gov.hmcts.reform.sscs.ccd.domain.SscsCaseDetails;
 import uk.gov.hmcts.reform.sscs.ccd.service.CcdService;
-import uk.gov.hmcts.reform.sscs.deserialize.SscsCaseDataWrapperDeserializer;
 import uk.gov.hmcts.reform.sscs.domain.SscsCaseDataWrapper;
 import uk.gov.hmcts.reform.sscs.factory.CohNotificationWrapper;
 import uk.gov.hmcts.reform.sscs.idam.IdamService;
@@ -28,8 +27,6 @@ public class CohActionExecutorTest {
     private IdamService idamService;
     @Mock
     private CcdService ccdService;
-    @Mock
-    private SscsCaseDataWrapperDeserializer deserializer;
 
     private SscsCaseDetails caseDetails;
     private SscsCaseDataWrapper wrapper;
@@ -40,11 +37,12 @@ public class CohActionExecutorTest {
     public void setup() {
         initMocks(this);
 
-        cohActionExecutor = new CohActionExecutor(notificationService, ccdService, deserializer, idamService);
+        cohActionExecutor = new CohActionExecutor(notificationService, ccdService, idamService);
 
         caseDetails = SscsCaseDetails.builder().caseTypeId("123").build();
 
         SscsCaseData newSscsCaseData = SscsCaseData.builder().build();
+        caseDetails.setData(newSscsCaseData);
 
         wrapper = SscsCaseDataWrapper.builder().newSscsCaseData(newSscsCaseData).notificationEventType(EVIDENCE_REMINDER_NOTIFICATION).build();
 
@@ -55,7 +53,6 @@ public class CohActionExecutorTest {
     @Test
     public void givenAReminderIsTriggered_thenActionExecutorShouldProcessTheJob() {
         when(ccdService.getByCaseId(eq(123456L), eq(idamTokens))).thenReturn(caseDetails);
-        when(deserializer.buildSscsCaseDataWrapper(any())).thenReturn(wrapper);
 
         String onlineHearingId = UUID.randomUUID().toString();
         cohActionExecutor.execute("1", "group", EVIDENCE_REMINDER_NOTIFICATION.getId(), new CohJobPayload(123456L, onlineHearingId));

@@ -1,9 +1,6 @@
 package uk.gov.hmcts.reform.sscs.tya;
 
-import static helper.IntegrationTestHelper.assertHttpStatus;
-import static helper.IntegrationTestHelper.getRequestWithAuthHeader;
-import static helper.IntegrationTestHelper.getRequestWithoutAuthHeader;
-import static helper.IntegrationTestHelper.updateEmbeddedJson;
+import static helper.IntegrationTestHelper.*;
 import static org.junit.Assert.assertArrayEquals;
 import static org.junit.Assert.assertEquals;
 import static org.mockito.Mockito.*;
@@ -19,6 +16,7 @@ import javax.servlet.http.HttpServletResponse;
 import junitparams.JUnitParamsRunner;
 import junitparams.Parameters;
 import org.apache.commons.io.FileUtils;
+import org.apache.pdfbox.io.IOUtils;
 import org.junit.Before;
 import org.junit.ClassRule;
 import org.junit.Rule;
@@ -40,19 +38,16 @@ import org.springframework.test.util.ReflectionTestUtils;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.request.MockHttpServletRequestBuilder;
 import org.springframework.test.web.servlet.setup.MockMvcBuilders;
+import uk.gov.hmcts.reform.sscs.ccd.deserialisation.SscsCaseCallbackDeserializer;
 import uk.gov.hmcts.reform.sscs.ccd.service.CcdService;
 import uk.gov.hmcts.reform.sscs.config.NotificationBlacklist;
 import uk.gov.hmcts.reform.sscs.config.NotificationConfig;
 import uk.gov.hmcts.reform.sscs.controller.NotificationController;
-import uk.gov.hmcts.reform.sscs.deserialize.SscsCaseDataWrapperDeserializer;
 import uk.gov.hmcts.reform.sscs.domain.notify.NotificationEventType;
 import uk.gov.hmcts.reform.sscs.factory.NotificationFactory;
 import uk.gov.hmcts.reform.sscs.idam.IdamService;
 import uk.gov.hmcts.reform.sscs.service.*;
 import uk.gov.service.notify.*;
-import uk.gov.service.notify.NotificationClient;
-import uk.gov.service.notify.SendEmailResponse;
-import uk.gov.service.notify.SendSmsResponse;
 
 @RunWith(JUnitParamsRunner.class)
 @SpringBootTest
@@ -99,7 +94,7 @@ public class NotificationsIt {
     private CcdService ccdService;
 
     @Autowired
-    private SscsCaseDataWrapperDeserializer deserializer;
+    private SscsCaseCallbackDeserializer deserializer;
 
     @MockBean
     private IdamService idamService;
@@ -115,7 +110,7 @@ public class NotificationsIt {
     @Autowired
     private NotificationConfig notificationConfig;
 
-    @Autowired
+    @Mock
     private EvidenceManagementService evidenceManagementService;
 
     @Mock
@@ -141,6 +136,8 @@ public class NotificationsIt {
         NotificationSender sender = new NotificationSender(notificationClient, null, notificationBlacklist);
 
         SendNotificationService sendNotificationService = new SendNotificationService(sender, evidenceManagementService, sscsGeneratePdfService, notificationHandler, notificationValidService);
+        ReflectionTestUtils.setField(sendNotificationService, "strikeOutLetterTemplate", "/templates/strike_out_letter_template.html");
+        ReflectionTestUtils.setField(sendNotificationService, "directionNoticeLetterTemplate", "/templates/direction_notice_letter_template.html");
         ReflectionTestUtils.setField(sendNotificationService, "bundledLettersOn", true);
         ReflectionTestUtils.setField(sendNotificationService, "lettersOn", true);
 
@@ -159,6 +156,8 @@ public class NotificationsIt {
         when(sendSmsResponse.getNotificationId()).thenReturn(UUID.randomUUID());
 
         when(notificationClient.sendLetter(any(), any(), any()))
+            .thenReturn(sendLetterResponse);
+        when(notificationClient.sendPrecompiledLetterWithInputStream(any(), any()))
             .thenReturn(sendLetterResponse);
         when(sendLetterResponse.getNotificationId()).thenReturn(UUID.randomUUID());
 
@@ -300,6 +299,32 @@ public class NotificationsIt {
     }
 
     @Test
+    @Parameters(method = "generateBundledLetterNotificationScenarios")
+    public void shouldSendRepsBundledLetterNotificationsForAnEventForAnOralOrPaperHearingAndForEachSubscription(
+        NotificationEventType notificationEventType, String hearingType, boolean hasRep, boolean hasAppointee, int wantedNumberOfSendLetterInvocations) throws Exception {
+
+        byte[] sampleDirectionCoversheet = IOUtils.toByteArray(getClass().getClassLoader().getResourceAsStream("pdfs/direction-notice-coversheet-sample.pdf"));
+        when(sscsGeneratePdfService.generatePdf(any(), any(), any(), any())).thenReturn(sampleDirectionCoversheet);
+        byte[] sampleDirectionNotice = IOUtils.toByteArray(getClass().getClassLoader().getResourceAsStream("pdfs/direction-text.pdf"));
+        when(evidenceManagementService.download(any(), any())).thenReturn(sampleDirectionNotice);
+
+        String filename = "json/ccdResponse_"
+            + notificationEventType.getId()
+            + (hasRep ? "_withRep" : "")
+            + (hasAppointee ? "_withAppointee" : "")
+            + ".json";
+        String path = getClass().getClassLoader().getResource(filename).getFile();
+        String json = FileUtils.readFileToString(new File(path), StandardCharsets.UTF_8.name());
+
+        json = updateEmbeddedJson(json, hearingType, "case_details", "case_data", "appeal", "hearingType");
+
+        HttpServletResponse response = getResponse(getRequestWithAuthHeader(json));
+        assertHttpStatus(response, HttpStatus.OK);
+
+        verify(notificationClient, times(wantedNumberOfSendLetterInvocations)).sendPrecompiledLetterWithInputStream(any(), any());
+    }
+
+    @Test
     @Parameters(method = "generateRepsNotificationScenariosWhenNoOldCaseRef")
     public void shouldSendRepsNotificationsForAnEventForAnOralOrPaperHearingAndForEachSubscriptionWhenNoOldCaseRef(
         NotificationEventType notificationEventType, String hearingType, List<String> expectedEmailTemplateIds,
@@ -436,6 +461,90 @@ public class NotificationsIt {
     private Object[] generateRepsNotificationScenarios() {
         return new Object[]{
             new Object[]{
+                EVIDENCE_RECEIVED_NOTIFICATION,
+                "paper",
+                Collections.emptyList(),
+                Collections.emptyList(),
+                Arrays.asList("6af62d46-98e5-4ade-aa72-e4a11c56286e", "8eb75404-a442-47aa-bab2-c4ba83a70900"),
+                "no",
+                "no",
+                "no",
+                "no",
+                "0",
+                "0",
+                "2"
+            },
+            new Object[]{
+                EVIDENCE_RECEIVED_NOTIFICATION,
+                "paper",
+                Arrays.asList("7af36950-fc63-45d1-907d-f472fac7af06"),
+                Collections.emptyList(),
+                Arrays.asList("6af62d46-98e5-4ade-aa72-e4a11c56286e"),
+                "no",
+                "no",
+                "yes",
+                "no",
+                "1",
+                "0",
+                "1"
+            },
+            new Object[]{
+                EVIDENCE_RECEIVED_NOTIFICATION,
+                "paper",
+                Arrays.asList("cab48431-a4f0-41f5-b753-2cecf20ab5d4", "7af36950-fc63-45d1-907d-f472fac7af06"),
+                Collections.emptyList(),
+                Collections.emptyList(),
+                "yes",
+                "no",
+                "yes",
+                "no",
+                "2",
+                "0",
+                "0"
+            },
+            new Object[]{
+                EVIDENCE_RECEIVED_NOTIFICATION,
+                "oral",
+                Collections.emptyList(),
+                Collections.emptyList(),
+                Arrays.asList("6af62d46-98e5-4ade-aa72-e4a11c56286e", "8eb75404-a442-47aa-bab2-c4ba83a70900"),
+                "no",
+                "no",
+                "no",
+                "no",
+                "0",
+                "0",
+                "2"
+            },
+            new Object[]{
+                EVIDENCE_RECEIVED_NOTIFICATION,
+                "oral",
+                Arrays.asList("30260c0b-5575-4f4e-bce4-73cf3f245c2d"),
+                Collections.emptyList(),
+                Arrays.asList("6af62d46-98e5-4ade-aa72-e4a11c56286e"),
+                "no",
+                "no",
+                "yes",
+                "no",
+                "1",
+                "0",
+                "1"
+            },
+            new Object[]{
+                EVIDENCE_RECEIVED_NOTIFICATION,
+                "oral",
+                Arrays.asList("c5654134-2e13-4541-ac73-334a5b5cdbb6", "30260c0b-5575-4f4e-bce4-73cf3f245c2d"),
+                Collections.emptyList(),
+                Collections.emptyList(),
+                "yes",
+                "no",
+                "yes",
+                "no",
+                "2",
+                "0",
+                "0"
+            },
+            new Object[]{
                 APPEAL_LAPSED_NOTIFICATION,
                 "paper",
                 Arrays.asList("8ce8d794-75e8-49a0-b4d2-0c6cd2061c11", "e93dd744-84a1-4173-847a-6d023b55637f"),
@@ -496,56 +605,56 @@ public class NotificationsIt {
                 "paper",
                 Arrays.asList("8620e023-f663-477e-a771-9cfad50ee30f", "e29a2275-553f-4e70-97f4-2994c095f281"),
                 Arrays.asList("446c7b23-7342-42e1-adff-b4c367e951cb", "f59440ee-19ca-4d47-a702-13e9cecaccbd"),
-                Collections.emptyList(),
+                Arrays.asList("d4ca58d1-8b48-44eb-9af9-0bfc14a0d72d", "d4ca58d1-8b48-44eb-9af9-0bfc14a0d72d"),
                 "yes",
                 "yes",
                 "yes",
                 "yes",
                 "2",
                 "2",
-                "0"
+                "2"
             },
             new Object[]{
                 APPEAL_WITHDRAWN_NOTIFICATION,
                 "oral",
                 Arrays.asList("8620e023-f663-477e-a771-9cfad50ee30f", "e29a2275-553f-4e70-97f4-2994c095f281"),
                 Arrays.asList("446c7b23-7342-42e1-adff-b4c367e951cb", "f59440ee-19ca-4d47-a702-13e9cecaccbd"),
-                Collections.emptyList(),
+                Arrays.asList("d4ca58d1-8b48-44eb-9af9-0bfc14a0d72d", "d4ca58d1-8b48-44eb-9af9-0bfc14a0d72d"),
                 "yes",
                 "yes",
                 "yes",
                 "yes",
                 "2",
                 "2",
-                "0"
+                "2"
             },
             new Object[]{
                 APPEAL_WITHDRAWN_NOTIFICATION,
                 "paper",
                 Collections.singletonList("e29a2275-553f-4e70-97f4-2994c095f281"),
                 Arrays.asList("446c7b23-7342-42e1-adff-b4c367e951cb", "f59440ee-19ca-4d47-a702-13e9cecaccbd"),
-                Collections.emptyList(),
+                Arrays.asList("d4ca58d1-8b48-44eb-9af9-0bfc14a0d72d", "d4ca58d1-8b48-44eb-9af9-0bfc14a0d72d"),
                 "no",
                 "yes",
                 "yes",
                 "yes",
                 "1",
                 "2",
-                "0"
+                "2"
             },
             new Object[]{
                 APPEAL_WITHDRAWN_NOTIFICATION,
                 "paper",
                 Collections.emptyList(),
                 Collections.emptyList(),
-                Collections.emptyList(),
+                Arrays.asList("d4ca58d1-8b48-44eb-9af9-0bfc14a0d72d", "d4ca58d1-8b48-44eb-9af9-0bfc14a0d72d"),
                 "no",
                 "no",
                 "no",
                 "no",
                 "0",
                 "0",
-                "0"
+                "2"
             },
             new Object[]{
                 ADJOURNED_NOTIFICATION,
@@ -842,9 +951,9 @@ public class NotificationsIt {
                 "0"
             },
             new Object[]{
-                APPEAL_LODGED,
+                CASE_UPDATED,
                 "paper",
-                Arrays.asList("b90df52f-c628-409c-8875-4b0b9663a053", "4b1ee55b-abd1-4e7e-b0ed-693d8df1e741"),
+                Arrays.asList("01293b93-b23e-40a3-ad78-2c6cd01cd21c", "652753bf-59b4-46eb-9c24-bd762338a098"),
                 Collections.emptyList(),
                 Collections.emptyList(),
                 "yes",
@@ -856,9 +965,9 @@ public class NotificationsIt {
                 "0"
             },
             new Object[]{
-                APPEAL_LODGED,
+                CASE_UPDATED,
                 "oral",
-                Arrays.asList("b90df52f-c628-409c-8875-4b0b9663a053", "4b1ee55b-abd1-4e7e-b0ed-693d8df1e741"),
+                Arrays.asList("01293b93-b23e-40a3-ad78-2c6cd01cd21c", "652753bf-59b4-46eb-9c24-bd762338a098"),
                 Collections.emptyList(),
                 Collections.emptyList(),
                 "yes",
@@ -870,9 +979,9 @@ public class NotificationsIt {
                 "0"
             },
             new Object[]{
-                APPEAL_LODGED,
+                CASE_UPDATED,
                 "paper",
-                Collections.singletonList("4b1ee55b-abd1-4e7e-b0ed-693d8df1e741"),
+                Collections.singletonList("652753bf-59b4-46eb-9c24-bd762338a098"),
                 Collections.emptyList(),
                 Collections.emptyList(),
                 "no",
@@ -884,9 +993,9 @@ public class NotificationsIt {
                 "0"
             },
             new Object[]{
-                APPEAL_LODGED,
+                CASE_UPDATED,
                 "paper",
-                Collections.singletonList("b90df52f-c628-409c-8875-4b0b9663a053"),
+                Collections.singletonList("01293b93-b23e-40a3-ad78-2c6cd01cd21c"),
                 Collections.emptyList(),
                 Collections.emptyList(),
                 "yes",
@@ -898,7 +1007,7 @@ public class NotificationsIt {
                 "0"
             },
             new Object[]{
-                APPEAL_LODGED,
+                CASE_UPDATED,
                 "paper",
                 Collections.emptyList(),
                 Collections.emptyList(),
@@ -944,8 +1053,154 @@ public class NotificationsIt {
 
 
     @SuppressWarnings({"Indentation", "unused"})
+    private Object[] generateBundledLetterNotificationScenarios() {
+        return new Object[]{
+            new Object[]{
+                STRUCK_OUT,
+                "paper",
+                false,
+                false,
+                "1"
+            },
+            new Object[]{
+                STRUCK_OUT,
+                "oral",
+                false,
+                false,
+                "1"
+            },
+            new Object[]{
+                STRUCK_OUT,
+                "paper",
+                false,
+                true,
+                "1"
+            },
+            new Object[]{
+                STRUCK_OUT,
+                "oral",
+                false,
+                true,
+                "1"
+            },
+            new Object[]{
+                STRUCK_OUT,
+                "paper",
+                true,
+                false,
+                "2"
+            },
+            new Object[]{
+                STRUCK_OUT,
+                "oral",
+                true,
+                false,
+                "2"
+            },
+            new Object[]{
+                STRUCK_OUT,
+                "paper",
+                true,
+                true,
+                "2"
+            },
+            new Object[]{
+                STRUCK_OUT,
+                "oral",
+                true,
+                true,
+                "2"
+            },
+            new Object[]{
+                DIRECTION_ISSUED,
+                "paper",
+                false,
+                false,
+                "1"
+            },
+            new Object[]{
+                DIRECTION_ISSUED,
+                "oral",
+                false,
+                false,
+                "1"
+            },
+            new Object[]{
+                STRUCK_OUT,
+                "paper",
+                false,
+                true,
+                "1"
+            },
+            new Object[]{
+                DIRECTION_ISSUED,
+                "oral",
+                false,
+                true,
+                "1"
+            },
+            new Object[]{
+                DIRECTION_ISSUED,
+                "paper",
+                true,
+                false,
+                "2"
+            },
+            new Object[]{
+                DIRECTION_ISSUED,
+                "oral",
+                true,
+                false,
+                "2"
+            },
+            new Object[]{
+                DIRECTION_ISSUED,
+                "paper",
+                true,
+                true,
+                "2"
+            },
+            new Object[]{
+                DIRECTION_ISSUED,
+                "oral",
+                true,
+                true,
+                "2"
+            }
+        };
+    }
+
+    @SuppressWarnings({"Indentation", "unused"})
     private Object[] generateRepsNotificationScenariosWhenNoOldCaseRef() {
         return new Object[]{
+            new Object[]{
+                EVIDENCE_RECEIVED_NOTIFICATION,
+                "paper",
+                Collections.emptyList(),
+                Collections.emptyList(),
+                Arrays.asList("6af62d46-98e5-4ade-aa72-e4a11c56286e", "8eb75404-a442-47aa-bab2-c4ba83a70900"),
+                "no",
+                "no",
+                "no",
+                "no",
+                "0",
+                "0",
+                "2"
+            },
+            new Object[]{
+                EVIDENCE_RECEIVED_NOTIFICATION,
+                "paper",
+                Arrays.asList("cab48431-a4f0-41f5-b753-2cecf20ab5d4", "7af36950-fc63-45d1-907d-f472fac7af06"),
+                Collections.emptyList(),
+                Collections.emptyList(),
+                "yes",
+                "no",
+                "yes",
+                "no",
+                "2",
+                "0",
+                "0"
+            },
             new Object[]{
                 APPEAL_LAPSED_NOTIFICATION,
                 "paper",
@@ -1007,56 +1262,56 @@ public class NotificationsIt {
                 "paper",
                 Arrays.asList("8620e023-f663-477e-a771-9cfad50ee30f", "e29a2275-553f-4e70-97f4-2994c095f281"),
                 Arrays.asList("446c7b23-7342-42e1-adff-b4c367e951cb", "f59440ee-19ca-4d47-a702-13e9cecaccbd"),
-                Collections.emptyList(),
+                Arrays.asList("d4ca58d1-8b48-44eb-9af9-0bfc14a0d72d", "d4ca58d1-8b48-44eb-9af9-0bfc14a0d72d"),
                 "yes",
                 "yes",
                 "yes",
                 "yes",
                 "2",
                 "2",
-                "0"
+                "2"
             },
             new Object[]{
                 APPEAL_WITHDRAWN_NOTIFICATION,
                 "oral",
                 Arrays.asList("8620e023-f663-477e-a771-9cfad50ee30f", "e29a2275-553f-4e70-97f4-2994c095f281"),
                 Arrays.asList("446c7b23-7342-42e1-adff-b4c367e951cb", "f59440ee-19ca-4d47-a702-13e9cecaccbd"),
-                Collections.emptyList(),
+                Arrays.asList("d4ca58d1-8b48-44eb-9af9-0bfc14a0d72d", "d4ca58d1-8b48-44eb-9af9-0bfc14a0d72d"),
                 "yes",
                 "yes",
                 "yes",
                 "yes",
                 "2",
                 "2",
-                "0"
+                "2"
             },
             new Object[]{
                 APPEAL_WITHDRAWN_NOTIFICATION,
                 "paper",
                 Collections.singletonList("e29a2275-553f-4e70-97f4-2994c095f281"),
                 Arrays.asList("446c7b23-7342-42e1-adff-b4c367e951cb", "f59440ee-19ca-4d47-a702-13e9cecaccbd"),
-                Collections.emptyList(),
+                Arrays.asList("d4ca58d1-8b48-44eb-9af9-0bfc14a0d72d", "d4ca58d1-8b48-44eb-9af9-0bfc14a0d72d"),
                 "no",
                 "yes",
                 "yes",
                 "yes",
                 "1",
                 "2",
-                "0"
+                "2"
             },
             new Object[]{
                 APPEAL_WITHDRAWN_NOTIFICATION,
                 "paper",
                 Collections.emptyList(),
                 Collections.emptyList(),
-                Collections.emptyList(),
+                Arrays.asList("d4ca58d1-8b48-44eb-9af9-0bfc14a0d72d", "d4ca58d1-8b48-44eb-9af9-0bfc14a0d72d"),
                 "no",
                 "no",
                 "no",
                 "no",
                 "0",
                 "0",
-                "0"
+                "2"
             },
             new Object[]{
                 ADJOURNED_NOTIFICATION,
@@ -1353,7 +1608,7 @@ public class NotificationsIt {
                 "0"
             },
             new Object[]{
-                APPEAL_LODGED,
+                CASE_UPDATED,
                 "paper",
                 Arrays.asList("b90df52f-c628-409c-8875-4b0b9663a053", "4b1ee55b-abd1-4e7e-b0ed-693d8df1e741"),
                 Collections.emptyList(),
@@ -1367,7 +1622,7 @@ public class NotificationsIt {
                 "0"
             },
             new Object[]{
-                APPEAL_LODGED,
+                CASE_UPDATED,
                 "oral",
                 Arrays.asList("b90df52f-c628-409c-8875-4b0b9663a053", "4b1ee55b-abd1-4e7e-b0ed-693d8df1e741"),
                 Collections.emptyList(),
@@ -1381,7 +1636,7 @@ public class NotificationsIt {
                 "0"
             },
             new Object[]{
-                APPEAL_LODGED,
+                CASE_UPDATED,
                 "paper",
                 Collections.singletonList("4b1ee55b-abd1-4e7e-b0ed-693d8df1e741"),
                 Collections.emptyList(),
@@ -1395,7 +1650,7 @@ public class NotificationsIt {
                 "1"
             },
             new Object[]{
-                APPEAL_LODGED,
+                CASE_UPDATED,
                 "paper",
                 Collections.singletonList("b90df52f-c628-409c-8875-4b0b9663a053"),
                 Collections.emptyList(),
@@ -1409,7 +1664,7 @@ public class NotificationsIt {
                 "1"
             },
             new Object[]{
-                APPEAL_LODGED,
+                CASE_UPDATED,
                 "paper",
                 Collections.emptyList(),
                 Collections.emptyList(),
@@ -1552,6 +1807,45 @@ public class NotificationsIt {
                 "paper",
                 Collections.singletonList("c5654134-2e13-4541-ac73-334a5b5cdbb6"),
                 Collections.singletonList("74bda35f-040b-4355-bda3-faf0e4f5ae6e"),
+                Collections.emptyList(),
+                "yes",
+                "yes",
+                "1",
+                "1",
+                "0",
+                "Appointee Appointee"
+            },
+            new Object[]{
+                EVIDENCE_RECEIVED_NOTIFICATION,
+                "paper",
+                Collections.emptyList(),
+                Collections.emptyList(),
+                Arrays.asList("6af62d46-98e5-4ade-aa72-e4a11c56286e"),
+                "no",
+                "no",
+                "0",
+                "0",
+                "1",
+                "Appointee Appointee"
+            },
+            new Object[]{
+                EVIDENCE_RECEIVED_NOTIFICATION,
+                "oral",
+                Collections.emptyList(),
+                Collections.emptyList(),
+                Arrays.asList("6af62d46-98e5-4ade-aa72-e4a11c56286e"),
+                "no",
+                "no",
+                "0",
+                "0",
+                "1",
+                "Appointee Appointee"
+            },
+            new Object[]{
+                EVIDENCE_RECEIVED_NOTIFICATION,
+                "oral",
+                Arrays.asList("c5654134-2e13-4541-ac73-334a5b5cdbb6"),
+                Arrays.asList("74bda35f-040b-4355-bda3-faf0e4f5ae6e"),
                 Collections.emptyList(),
                 "yes",
                 "yes",
@@ -1724,6 +2018,19 @@ public class NotificationsIt {
                 "Appointee Appointee"
             },
             new Object[]{
+                EVIDENCE_RECEIVED_NOTIFICATION,
+                "oral",
+                Arrays.asList("c5654134-2e13-4541-ac73-334a5b5cdbb6"),
+                Arrays.asList("74bda35f-040b-4355-bda3-faf0e4f5ae6e"),
+                Collections.emptyList(),
+                "yes",
+                "yes",
+                "1",
+                "1",
+                "0",
+                "Appointee Appointee"
+            },
+            new Object[]{
                 SYA_APPEAL_CREATED_NOTIFICATION,
                 "oral",
                 Collections.emptyList(),
@@ -1754,12 +2061,12 @@ public class NotificationsIt {
                 "oral",
                 Collections.emptyList(),
                 Collections.emptyList(),
-                Collections.emptyList(),
+                Collections.singletonList("8b11f3f4-6452-4a35-93d8-a94996af6499"),
                 "no",
                 "no",
                 "0",
                 "0",
-                "0",
+                "1",
                 "Appointee Appointee"
             },
             new Object[]{
@@ -1884,12 +2191,12 @@ public class NotificationsIt {
                 "oral",
                 Collections.singletonList("8620e023-f663-477e-a771-9cfad50ee30f"),
                 Collections.singletonList("446c7b23-7342-42e1-adff-b4c367e951cb"),
-                Collections.emptyList(),
+                Arrays.asList("d4ca58d1-8b48-44eb-9af9-0bfc14a0d72d"),
                 "yes",
                 "yes",
                 "1",
                 "1",
-                "0",
+                "1",
                 "Appointee Appointee"
             },
             new Object[]{
@@ -1958,7 +2265,7 @@ public class NotificationsIt {
                 ""
             },
             new Object[]{
-                APPEAL_LODGED,
+                CASE_UPDATED,
                 "paper",
                 Collections.emptyList(),
                 Collections.emptyList(),
