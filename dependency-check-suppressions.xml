@@ -175,4 +175,11 @@
     </notes>
     <cve>CVE-2018-1258</cve>
   </suppress>
+  <suppress>
+    <notes><![CDATA[
+   file name: spring-security-crypto-5.0.12.RELEASE.jar
+   ]]></notes>
+    <gav regex="true">^org\.springframework\.security:spring-security-crypto:.*$</gav>
+    <cve>CVE-2018-1258</cve>
+  </suppress>
 </suppressions>
