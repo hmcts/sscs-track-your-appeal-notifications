@@ -30,8 +30,11 @@ public class ReminderServiceTest {
         NotificationWrapper wrapper = mock(NotificationWrapper.class);
 
         when(reminderHandler1.canHandle(wrapper)).thenReturn(true);
+        when(reminderHandler1.canSchedule(wrapper)).thenReturn(true);
         when(reminderHandler2.canHandle(wrapper)).thenReturn(false);
+        when(reminderHandler2.canSchedule(wrapper)).thenReturn(false);
         when(reminderHandler3.canHandle(wrapper)).thenReturn(true);
+        when(reminderHandler3.canSchedule(wrapper)).thenReturn(true);
 
         reminderService.createReminders(wrapper);
 

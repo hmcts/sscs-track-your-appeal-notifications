@@ -147,7 +147,7 @@ public class NotificationServiceForSubscriptionUpdatedTest {
     private NotificationService getNotificationService() {
         SendNotificationService sendNotificationService = new SendNotificationService(notificationSender,
                 evidenceManagementService, sscsGeneratePdfService, notificationHandler, notificationValidService);
-        ReflectionTestUtils.setField(sendNotificationService, "noncompliantcaseletterTemplate", "/templates/non_compliant_case_letter_template.html");
+        ReflectionTestUtils.setField(sendNotificationService, "strikeOutLetterTemplate", "/templates/non_compliant_case_letter_template.html");
         ReflectionTestUtils.setField(sendNotificationService, "bundledLettersOn", false);
         ReflectionTestUtils.setField(sendNotificationService, "lettersOn", false);
         return new NotificationService(notificationFactory, reminderService,

@@ -1,9 +1,6 @@
 package uk.gov.hmcts.reform.sscs.tya;
 
-import static helper.IntegrationTestHelper.assertHttpStatus;
-import static helper.IntegrationTestHelper.getRequestWithAuthHeader;
-import static helper.IntegrationTestHelper.getRequestWithoutAuthHeader;
-import static helper.IntegrationTestHelper.updateEmbeddedJson;
+import static helper.IntegrationTestHelper.*;
 import static org.junit.Assert.assertArrayEquals;
 import static org.junit.Assert.assertEquals;
 import static org.mockito.Mockito.*;
@@ -19,6 +16,7 @@ import javax.servlet.http.HttpServletResponse;
 import junitparams.JUnitParamsRunner;
 import junitparams.Parameters;
 import org.apache.commons.io.FileUtils;
+import org.apache.pdfbox.io.IOUtils;
 import org.junit.Before;
 import org.junit.ClassRule;
 import org.junit.Rule;
@@ -40,19 +38,16 @@ import org.springframework.test.util.ReflectionTestUtils;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.request.MockHttpServletRequestBuilder;
 import org.springframework.test.web.servlet.setup.MockMvcBuilders;
+import uk.gov.hmcts.reform.sscs.ccd.deserialisation.SscsCaseCallbackDeserializer;
 import uk.gov.hmcts.reform.sscs.ccd.service.CcdService;
 import uk.gov.hmcts.reform.sscs.config.NotificationBlacklist;
 import uk.gov.hmcts.reform.sscs.config.NotificationConfig;
 import uk.gov.hmcts.reform.sscs.controller.NotificationController;
-import uk.gov.hmcts.reform.sscs.deserialize.SscsCaseDataWrapperDeserializer;
 import uk.gov.hmcts.reform.sscs.domain.notify.NotificationEventType;
 import uk.gov.hmcts.reform.sscs.factory.NotificationFactory;
 import uk.gov.hmcts.reform.sscs.idam.IdamService;
 import uk.gov.hmcts.reform.sscs.service.*;
 import uk.gov.service.notify.*;
-import uk.gov.service.notify.NotificationClient;
-import uk.gov.service.notify.SendEmailResponse;
-import uk.gov.service.notify.SendSmsResponse;
 
 @RunWith(JUnitParamsRunner.class)
 @SpringBootTest
@@ -99,7 +94,7 @@ public class NotificationsIt {
     private CcdService ccdService;
 
     @Autowired
-    private SscsCaseDataWrapperDeserializer deserializer;
+    private SscsCaseCallbackDeserializer deserializer;
 
     @MockBean
     private IdamService idamService;
@@ -115,7 +110,7 @@ public class NotificationsIt {
     @Autowired
     private NotificationConfig notificationConfig;
 
-    @Autowired
+    @Mock
     private EvidenceManagementService evidenceManagementService;
 
     @Mock
@@ -141,6 +136,8 @@ public class NotificationsIt {
         NotificationSender sender = new NotificationSender(notificationClient, null, notificationBlacklist);
 
         SendNotificationService sendNotificationService = new SendNotificationService(sender, evidenceManagementService, sscsGeneratePdfService, notificationHandler, notificationValidService);
+        ReflectionTestUtils.setField(sendNotificationService, "strikeOutLetterTemplate", "/templates/strike_out_letter_template.html");
+        ReflectionTestUtils.setField(sendNotificationService, "directionNoticeLetterTemplate", "/templates/direction_notice_letter_template.html");
         ReflectionTestUtils.setField(sendNotificationService, "bundledLettersOn", true);
         ReflectionTestUtils.setField(sendNotificationService, "lettersOn", true);
 
@@ -159,6 +156,8 @@ public class NotificationsIt {
         when(sendSmsResponse.getNotificationId()).thenReturn(UUID.randomUUID());
 
         when(notificationClient.sendLetter(any(), any(), any()))
+            .thenReturn(sendLetterResponse);
+        when(notificationClient.sendPrecompiledLetterWithInputStream(any(), any()))
             .thenReturn(sendLetterResponse);
         when(sendLetterResponse.getNotificationId()).thenReturn(UUID.randomUUID());
 
@@ -297,6 +296,32 @@ public class NotificationsIt {
         validateEmailNotifications(expectedEmailTemplateIds, wantedNumberOfSendEmailInvocations, expectedName);
         validateSmsNotifications(expectedSmsTemplateIds, wantedNumberOfSendSmsInvocations);
         validateLetterNotifications(expectedLetterTemplateIds, wantedNumberOfSendLetterInvocations, expectedName);
+    }
+
+    @Test
+    @Parameters(method = "generateBundledLetterNotificationScenarios")
+    public void shouldSendRepsBundledLetterNotificationsForAnEventForAnOralOrPaperHearingAndForEachSubscription(
+        NotificationEventType notificationEventType, String hearingType, boolean hasRep, boolean hasAppointee, int wantedNumberOfSendLetterInvocations) throws Exception {
+
+        byte[] sampleDirectionCoversheet = IOUtils.toByteArray(getClass().getClassLoader().getResourceAsStream("pdfs/direction-notice-coversheet-sample.pdf"));
+        when(sscsGeneratePdfService.generatePdf(any(), any(), any(), any())).thenReturn(sampleDirectionCoversheet);
+        byte[] sampleDirectionNotice = IOUtils.toByteArray(getClass().getClassLoader().getResourceAsStream("pdfs/direction-text.pdf"));
+        when(evidenceManagementService.download(any(), any())).thenReturn(sampleDirectionNotice);
+
+        String filename = "json/ccdResponse_"
+            + notificationEventType.getId()
+            + (hasRep ? "_withRep" : "")
+            + (hasAppointee ? "_withAppointee" : "")
+            + ".json";
+        String path = getClass().getClassLoader().getResource(filename).getFile();
+        String json = FileUtils.readFileToString(new File(path), StandardCharsets.UTF_8.name());
+
+        json = updateEmbeddedJson(json, hearingType, "case_details", "case_data", "appeal", "hearingType");
+
+        HttpServletResponse response = getResponse(getRequestWithAuthHeader(json));
+        assertHttpStatus(response, HttpStatus.OK);
+
+        verify(notificationClient, times(wantedNumberOfSendLetterInvocations)).sendPrecompiledLetterWithInputStream(any(), any());
     }
 
     @Test
@@ -926,9 +951,9 @@ public class NotificationsIt {
                 "0"
             },
             new Object[]{
-                APPEAL_LODGED,
+                CASE_UPDATED,
                 "paper",
-                Arrays.asList("b90df52f-c628-409c-8875-4b0b9663a053", "4b1ee55b-abd1-4e7e-b0ed-693d8df1e741"),
+                Arrays.asList("01293b93-b23e-40a3-ad78-2c6cd01cd21c", "652753bf-59b4-46eb-9c24-bd762338a098"),
                 Collections.emptyList(),
                 Collections.emptyList(),
                 "yes",
@@ -940,9 +965,9 @@ public class NotificationsIt {
                 "0"
             },
             new Object[]{
-                APPEAL_LODGED,
+                CASE_UPDATED,
                 "oral",
-                Arrays.asList("b90df52f-c628-409c-8875-4b0b9663a053", "4b1ee55b-abd1-4e7e-b0ed-693d8df1e741"),
+                Arrays.asList("01293b93-b23e-40a3-ad78-2c6cd01cd21c", "652753bf-59b4-46eb-9c24-bd762338a098"),
                 Collections.emptyList(),
                 Collections.emptyList(),
                 "yes",
@@ -954,9 +979,9 @@ public class NotificationsIt {
                 "0"
             },
             new Object[]{
-                APPEAL_LODGED,
+                CASE_UPDATED,
                 "paper",
-                Collections.singletonList("4b1ee55b-abd1-4e7e-b0ed-693d8df1e741"),
+                Collections.singletonList("652753bf-59b4-46eb-9c24-bd762338a098"),
                 Collections.emptyList(),
                 Collections.emptyList(),
                 "no",
@@ -968,9 +993,9 @@ public class NotificationsIt {
                 "0"
             },
             new Object[]{
-                APPEAL_LODGED,
+                CASE_UPDATED,
                 "paper",
-                Collections.singletonList("b90df52f-c628-409c-8875-4b0b9663a053"),
+                Collections.singletonList("01293b93-b23e-40a3-ad78-2c6cd01cd21c"),
                 Collections.emptyList(),
                 Collections.emptyList(),
                 "yes",
@@ -982,7 +1007,7 @@ public class NotificationsIt {
                 "0"
             },
             new Object[]{
-                APPEAL_LODGED,
+                CASE_UPDATED,
                 "paper",
                 Collections.emptyList(),
                 Collections.emptyList(),
@@ -1026,6 +1051,124 @@ public class NotificationsIt {
         };
     }
 
+
+    @SuppressWarnings({"Indentation", "unused"})
+    private Object[] generateBundledLetterNotificationScenarios() {
+        return new Object[]{
+            new Object[]{
+                STRUCK_OUT,
+                "paper",
+                false,
+                false,
+                "1"
+            },
+            new Object[]{
+                STRUCK_OUT,
+                "oral",
+                false,
+                false,
+                "1"
+            },
+            new Object[]{
+                STRUCK_OUT,
+                "paper",
+                false,
+                true,
+                "1"
+            },
+            new Object[]{
+                STRUCK_OUT,
+                "oral",
+                false,
+                true,
+                "1"
+            },
+            new Object[]{
+                STRUCK_OUT,
+                "paper",
+                true,
+                false,
+                "2"
+            },
+            new Object[]{
+                STRUCK_OUT,
+                "oral",
+                true,
+                false,
+                "2"
+            },
+            new Object[]{
+                STRUCK_OUT,
+                "paper",
+                true,
+                true,
+                "2"
+            },
+            new Object[]{
+                STRUCK_OUT,
+                "oral",
+                true,
+                true,
+                "2"
+            },
+            new Object[]{
+                DIRECTION_ISSUED,
+                "paper",
+                false,
+                false,
+                "1"
+            },
+            new Object[]{
+                DIRECTION_ISSUED,
+                "oral",
+                false,
+                false,
+                "1"
+            },
+            new Object[]{
+                STRUCK_OUT,
+                "paper",
+                false,
+                true,
+                "1"
+            },
+            new Object[]{
+                DIRECTION_ISSUED,
+                "oral",
+                false,
+                true,
+                "1"
+            },
+            new Object[]{
+                DIRECTION_ISSUED,
+                "paper",
+                true,
+                false,
+                "2"
+            },
+            new Object[]{
+                DIRECTION_ISSUED,
+                "oral",
+                true,
+                false,
+                "2"
+            },
+            new Object[]{
+                DIRECTION_ISSUED,
+                "paper",
+                true,
+                true,
+                "2"
+            },
+            new Object[]{
+                DIRECTION_ISSUED,
+                "oral",
+                true,
+                true,
+                "2"
+            }
+        };
+    }
 
     @SuppressWarnings({"Indentation", "unused"})
     private Object[] generateRepsNotificationScenariosWhenNoOldCaseRef() {
@@ -1465,7 +1608,7 @@ public class NotificationsIt {
                 "0"
             },
             new Object[]{
-                APPEAL_LODGED,
+                CASE_UPDATED,
                 "paper",
                 Arrays.asList("b90df52f-c628-409c-8875-4b0b9663a053", "4b1ee55b-abd1-4e7e-b0ed-693d8df1e741"),
                 Collections.emptyList(),
@@ -1479,7 +1622,7 @@ public class NotificationsIt {
                 "0"
             },
             new Object[]{
-                APPEAL_LODGED,
+                CASE_UPDATED,
                 "oral",
                 Arrays.asList("b90df52f-c628-409c-8875-4b0b9663a053", "4b1ee55b-abd1-4e7e-b0ed-693d8df1e741"),
                 Collections.emptyList(),
@@ -1493,7 +1636,7 @@ public class NotificationsIt {
                 "0"
             },
             new Object[]{
-                APPEAL_LODGED,
+                CASE_UPDATED,
                 "paper",
                 Collections.singletonList("4b1ee55b-abd1-4e7e-b0ed-693d8df1e741"),
                 Collections.emptyList(),
@@ -1507,7 +1650,7 @@ public class NotificationsIt {
                 "1"
             },
             new Object[]{
-                APPEAL_LODGED,
+                CASE_UPDATED,
                 "paper",
                 Collections.singletonList("b90df52f-c628-409c-8875-4b0b9663a053"),
                 Collections.emptyList(),
@@ -1521,7 +1664,7 @@ public class NotificationsIt {
                 "1"
             },
             new Object[]{
-                APPEAL_LODGED,
+                CASE_UPDATED,
                 "paper",
                 Collections.emptyList(),
                 Collections.emptyList(),
@@ -2122,7 +2265,7 @@ public class NotificationsIt {
                 ""
             },
             new Object[]{
-                APPEAL_LODGED,
+                CASE_UPDATED,
                 "paper",
                 Collections.emptyList(),
                 Collections.emptyList(),

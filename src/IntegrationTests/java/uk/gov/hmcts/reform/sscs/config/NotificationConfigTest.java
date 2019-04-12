@@ -1,11 +1,15 @@
 package uk.gov.hmcts.reform.sscs.config;
 
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNull;
 import static uk.gov.hmcts.reform.sscs.config.AppealHearingType.*;
 import static uk.gov.hmcts.reform.sscs.config.SubscriptionType.APPELLANT;
 import static uk.gov.hmcts.reform.sscs.config.SubscriptionType.APPOINTEE;
 import static uk.gov.hmcts.reform.sscs.config.SubscriptionType.REPRESENTATIVE;
 import static uk.gov.hmcts.reform.sscs.domain.notify.NotificationEventType.*;
+
+import java.util.Arrays;
+import java.util.List;
 
 import junitparams.JUnitParamsRunner;
 import junitparams.Parameters;
@@ -26,6 +30,8 @@ import uk.gov.hmcts.reform.sscs.domain.notify.Template;
 @SpringBootTest
 @ActiveProfiles("integration")
 public class NotificationConfigTest {
+    private static final List<NotificationEventType> BUNDLED_LETTER_EVENT_TYPES = Arrays.asList(STRUCK_OUT, DIRECTION_ISSUED);
+
     // Below rules are needed to use the junitParamsRunner together with SpringRunner
     @ClassRule
     public static final SpringClassRule SPRING_CLASS_RULE = new SpringClassRule();
@@ -47,6 +53,15 @@ public class NotificationConfigTest {
         assertEquals(expectedEmailTemplateId, template.getEmailTemplateId());
         assertEquals(expectedSmsTemplateId, template.getSmsTemplateId());
         assertEquals(expectedLetterTemplateId, template.getLetterTemplateId());
+    }
+
+    @Test
+    @Parameters(method = "bundledLetterTemplateNames")
+    public void given_bundledLetters_should_notHaveTemplate(AppealHearingType appealHearingType, String templateName) {
+        Template template = notificationConfig.getTemplate(templateName, templateName, templateName, Benefit.PIP, appealHearingType);
+        assertNull(template.getEmailTemplateId());
+        assertNull(template.getSmsTemplateId());
+        assertNull(template.getLetterTemplateId());
     }
 
     @SuppressWarnings({"Indentation", "unused"})
@@ -127,6 +142,23 @@ public class NotificationConfigTest {
             new Object[]{"e2ee8609-7d56-4857-b3f8-79028e8960aa", null, null, ORAL, getTemplateName(APPEAL_DORMANT_NOTIFICATION, REPRESENTATIVE)},
             new Object[]{"fc9d0618-68c4-48ec-9481-a84b225a57a9", null, null, ORAL, getTemplateName(APPEAL_DORMANT_NOTIFICATION, APPELLANT)}
         };
+    }
+
+
+    @SuppressWarnings({"Indentation", "unused"})
+    private Object[] bundledLetterTemplateNames() {
+        List<SubscriptionType> subscriptionTypes = Arrays.asList(APPELLANT, APPOINTEE, REPRESENTATIVE);
+        Object[] result = new Object[BUNDLED_LETTER_EVENT_TYPES.size() * subscriptionTypes.size() * 2];
+
+        int i = 0;
+        for (NotificationEventType eventType : BUNDLED_LETTER_EVENT_TYPES) {
+            for (SubscriptionType subscriptionType : subscriptionTypes) {
+                result[i++] = new Object[]{PAPER, getTemplateName(eventType, subscriptionType)};
+                result[i++] = new Object[]{ORAL, getTemplateName(eventType, subscriptionType)};
+            }
+        }
+
+        return result;
     }
 
     private String getTemplateName(NotificationEventType notificationEventType, SubscriptionType subscriptionType) {

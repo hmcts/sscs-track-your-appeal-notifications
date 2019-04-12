@@ -6,6 +6,7 @@ import static org.mockito.Mockito.*;
 import static uk.gov.hmcts.reform.sscs.domain.notify.NotificationEventType.HEARING_BOOKED_NOTIFICATION;
 import static uk.gov.hmcts.reform.sscs.domain.notify.NotificationEventType.HEARING_REMINDER_NOTIFICATION;
 
+import com.google.common.collect.Lists;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -14,7 +15,6 @@ import org.mockito.Mock;
 import org.mockito.junit.MockitoJUnitRunner;
 import uk.gov.hmcts.reform.sscs.SscsCaseDataUtils;
 import uk.gov.hmcts.reform.sscs.domain.notify.NotificationEventType;
-import uk.gov.hmcts.reform.sscs.exception.ReminderException;
 import uk.gov.hmcts.reform.sscs.factory.CcdNotificationWrapper;
 import uk.gov.hmcts.reform.sscs.jobscheduler.model.Job;
 import uk.gov.hmcts.reform.sscs.jobscheduler.services.JobScheduler;
@@ -97,12 +97,49 @@ public class HearingReminderTest {
         assertEquals(expectedSecondTriggerAt, secondJob.triggerAt.toString());
     }
 
-    @Test(expected = ReminderException.class)
-    public void throwExceptionWhenCannotFindHearingDate() {
+    @Test
+    public void canNotSchedulesReminderWhenReminderDateIsNull() {
+
+        final String expectedJobGroup = "ID_EVENT";
+
+        String hearingDate = "2018-01-01";
+        String hearingTime = "14:01:18";
+
+        CcdNotificationWrapper wrapper = SscsCaseDataUtils.buildBasicCcdNotificationWrapperWithHearing(
+                HEARING_BOOKED_NOTIFICATION,
+                hearingDate,
+                hearingTime
+        );
+
+        wrapper.getNewSscsCaseData().setHearings(Lists.newArrayList());
+
+        when(jobGroupGenerator.generate(wrapper.getCaseId(), HEARING_REMINDER_NOTIFICATION.getId())).thenReturn(expectedJobGroup);
+
+        hearingReminder.handle(wrapper);
+
+        ArgumentCaptor<Job> jobCaptor = ArgumentCaptor.forClass(Job.class);
+
+        verify(jobScheduler, times(0)).schedule(
+                jobCaptor.capture()
+        );
+
+        assertTrue(jobCaptor.getAllValues().isEmpty());
+    }
+
+    @Test(expected = Exception.class)
+    public void canScheduleReturnFalseWhenFindHearingDateThrowError() {
+
+        CcdNotificationWrapper ccdResponse = null;
+
+        assertFalse(hearingReminder.canSchedule(ccdResponse));
+    }
+
+    @Test
+    public void canScheduleReturnFalseWhenCannotFindHearingDate() {
 
         CcdNotificationWrapper ccdResponse = SscsCaseDataUtils.buildBasicCcdNotificationWrapper(HEARING_BOOKED_NOTIFICATION);
 
-        hearingReminder.handle(ccdResponse);
+        assertFalse(hearingReminder.canSchedule(ccdResponse));
     }
 
 }

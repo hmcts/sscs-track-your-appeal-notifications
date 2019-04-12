@@ -20,7 +20,7 @@ public class ReminderService {
     void createReminders(NotificationWrapper wrapper) {
         if (AppealHearingType.ONLINE != wrapper.getHearingType()) {
             for (ReminderHandler reminderHandler : reminderHandlers) {
-                if (reminderHandler.canHandle(wrapper)) {
+                if (reminderHandler.canHandle(wrapper) && reminderHandler.canSchedule(wrapper)) {
                     reminderHandler.handle(wrapper);
                 }
             }
