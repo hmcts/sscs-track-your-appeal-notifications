@@ -3,7 +3,14 @@ package uk.gov.hmcts.reform.sscs.service.scheduler;
 import static org.slf4j.LoggerFactory.getLogger;
 import static uk.gov.hmcts.reform.sscs.domain.notify.NotificationEventType.getNotificationById;
 
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.JsonNode;
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.databind.node.JsonNodeFactory;
+import com.fasterxml.jackson.databind.node.ObjectNode;
 import org.slf4j.Logger;
+import uk.gov.hmcts.reform.sscs.ccd.callback.Callback;
+import uk.gov.hmcts.reform.sscs.ccd.deserialisation.SscsCaseCallbackDeserializer;
 import uk.gov.hmcts.reform.sscs.ccd.domain.SscsCaseData;
 import uk.gov.hmcts.reform.sscs.ccd.domain.SscsCaseDetails;
 import uk.gov.hmcts.reform.sscs.ccd.service.CcdService;
@@ -20,11 +27,14 @@ public abstract class BaseActionExecutor<T> implements JobExecutor<T> {
     protected final NotificationService notificationService;
     protected final CcdService ccdService;
     protected final IdamService idamService;
+    private final SscsCaseCallbackDeserializer deserializer;
 
-    BaseActionExecutor(NotificationService notificationService, CcdService ccdService, IdamService idamService) {
+
+    BaseActionExecutor(NotificationService notificationService, CcdService ccdService, IdamService idamService, SscsCaseCallbackDeserializer deserializer) {
         this.notificationService = notificationService;
         this.ccdService = ccdService;
         this.idamService = idamService;
+        this.deserializer = deserializer;
     }
 
     @Override
@@ -39,7 +49,10 @@ public abstract class BaseActionExecutor<T> implements JobExecutor<T> {
             SscsCaseDetails caseDetails = ccdService.getByCaseId(caseId, idamTokens);
 
             if (caseDetails != null) {
-                SscsCaseDataWrapper wrapper = buildSscsCaseDataWrapper(caseDetails.getData(), null, getNotificationById(eventId));
+
+                Callback<SscsCaseData> callback = deserializer.deserialize(buildCcdNode(caseDetails, eventId));
+
+                SscsCaseDataWrapper wrapper = buildSscsCaseDataWrapper(callback.getCaseDetails().getCaseData(), null, getNotificationById(eventId));
 
                 notificationService.manageNotificationAndSubscription(getWrapper(wrapper, payload));
                 if (wrapper.getNotificationEventType().isReminder()) {
@@ -50,8 +63,22 @@ public abstract class BaseActionExecutor<T> implements JobExecutor<T> {
             }
         } catch (Exception exc) {
             LOG.error("Failed to process job [" + jobId + "] for case [" + caseId + "] and event [" + eventId + "]", exc);
-            throw exc;
         }
+    }
+
+    private String buildCcdNode(SscsCaseDetails caseDetails, String jobName) throws JsonProcessingException {
+        ObjectMapper mapper = new ObjectMapper();
+        JsonNode jsonNode = mapper.valueToTree(caseDetails);
+        ObjectNode node2 = (ObjectNode) jsonNode;
+        ObjectNode node = JsonNodeFactory.instance.objectNode();
+
+        node2.set("case_data", jsonNode.get("data"));
+        node2.remove("data");
+
+        node.set("case_details", node2);
+        node = node.put("event_id", jobName);
+
+        return mapper.writeValueAsString(node);
     }
 
     private SscsCaseDataWrapper buildSscsCaseDataWrapper(SscsCaseData caseData, SscsCaseData caseDataBefore, NotificationEventType event) {
