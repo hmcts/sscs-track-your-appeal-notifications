@@ -18,6 +18,7 @@
    ]]></notes>
     <gav regex="true">^org\.springframework\.security:spring-.*:.*$</gav>
     <cve>CVE-2018-1258</cve>
+    <cve>CVE-2019-3795</cve>
   </suppress>
   <suppress>
     <notes><![CDATA[
