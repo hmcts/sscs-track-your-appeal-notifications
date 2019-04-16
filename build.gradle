@@ -6,7 +6,7 @@ plugins {
     id 'jacoco'
     id 'io.spring.dependency-management' version '1.0.6.RELEASE'
     id 'org.springframework.boot' version '2.0.4.RELEASE'
-    id 'org.owasp.dependencycheck' version '3.2.1'
+    id 'org.owasp.dependencycheck' version '4.0.2'
     id 'com.github.ben-manes.versions' version '0.17.0'
     id 'net.ltgt.apt' version '0.14'
     id "org.flywaydb.flyway" version "5.0.7"
@@ -186,7 +186,6 @@ jacocoTestReport {
 }
 
 project.tasks['sonarqube'].dependsOn test, integration
-check.dependsOn dependencyCheckAnalyze
 check.dependsOn integration
 checkstyleMain.shouldRunAfter(compileJava)
 test.shouldRunAfter(checkstyleTest)
