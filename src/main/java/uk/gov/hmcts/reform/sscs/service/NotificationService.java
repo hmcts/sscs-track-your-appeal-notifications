@@ -51,8 +51,6 @@ public class NotificationService {
     }
 
     public void manageNotificationAndSubscription(NotificationWrapper notificationWrapper) {
-        overrideNotificationType(notificationWrapper);
-
         NotificationEventType notificationType = notificationWrapper.getNotificationType();
         final String caseId = notificationWrapper.getCaseId();
 
@@ -186,13 +184,6 @@ public class NotificationService {
             subscription = oldSubscription;
         }
         return subscription;
-    }
-
-    private void overrideNotificationType(NotificationWrapper notificationWrapper) {
-        if (CASE_UPDATED.equals(notificationWrapper.getNotificationType())
-                && hasCaseRefBeenAdded(notificationWrapper.getOldSscsCaseData(), notificationWrapper.getNewSscsCaseData())) {
-            notificationWrapper.setNotificationType(APPEAL_LODGED);
-        }
     }
 
     private boolean hasCaseRefBeenAdded(SscsCaseData oldSscsData, SscsCaseData newSscsData) {
