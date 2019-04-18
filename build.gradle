@@ -6,7 +6,7 @@ plugins {
     id 'jacoco'
     id 'io.spring.dependency-management' version '1.0.6.RELEASE'
     id 'org.springframework.boot' version '2.0.4.RELEASE'
-    id 'org.owasp.dependencycheck' version '3.2.1'
+    id 'org.owasp.dependencycheck' version '4.0.2'
     id 'com.github.ben-manes.versions' version '0.17.0'
     id 'net.ltgt.apt' version '0.14'
     id "org.flywaydb.flyway" version "5.0.7"
@@ -186,7 +186,6 @@ jacocoTestReport {
 }
 
 project.tasks['sonarqube'].dependsOn test, integration
-check.dependsOn dependencyCheckAnalyze
 check.dependsOn integration
 checkstyleMain.shouldRunAfter(compileJava)
 test.shouldRunAfter(checkstyleTest)
@@ -197,7 +196,7 @@ functional.shouldRunAfter(test)
 
 def versions = [
         logback         : '1.2.3',
-        reformLogging   : '3.0.1',
+        reformLogging   : '5.0.1',
         springBoot      : springBootVersion,
         springHystrix   : '1.4.2.RELEASE',
         springfoxSwagger: '2.8.0'
@@ -232,12 +231,12 @@ dependencies {
     compile group: 'uk.gov.hmcts.reform', name: 'core-case-data-store-client', version: '4.6.2'
     compile group: 'uk.gov.hmcts.reform', name: 'sscs-job-scheduler', version: '1.5.2'
     compile group: 'uk.gov.hmcts.reform', name: 'service-auth-provider-client', version: '3.0.0'
-    compile group: 'uk.gov.hmcts.reform', name: 'sscs-common', version: '0.0.156'
-    compile group: 'uk.gov.hmcts.reform', name: 'sscs-pdf-email-common', version: '0.1.1'
+
+    compile group: 'uk.gov.hmcts.reform', name: 'sscs-common', version: '2.0.0'
+    compile group: 'uk.gov.hmcts.reform', name: 'sscs-pdf-email-common', version: '1.0.1'
 
     compile group: 'uk.gov.service.notify', name: 'notifications-java-client', version: '3.14.1-RELEASE'
     compile group: 'io.github.openfeign.form', name: 'feign-form', version: '3.7.0'
-
 
     compile group: 'org.apache.pdfbox', name: 'pdfbox', version: '2.0.14'
 

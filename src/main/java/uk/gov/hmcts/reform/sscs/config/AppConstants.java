@@ -1,5 +1,7 @@
 package uk.gov.hmcts.reform.sscs.config;
 
+import java.time.format.DateTimeFormatter;
+
 public final class AppConstants {
 
     public static final int MAX_DWP_RESPONSE_DAYS = 35;
@@ -16,7 +18,9 @@ public final class AppConstants {
     public static final String BENEFIT_FULL_NAME_LITERAL = "benefit_full_name";
     public static final String BENEFIT_NAME_ACRONYM_LITERAL = "benefit_name_acronym";
     public static final String BENEFIT_NAME_ACRONYM_SHORT_LITERAL = "benefit_name_acronym_short";
+    public static final DateTimeFormatter CC_DATE_FORMAT = DateTimeFormatter.ofPattern("yyyy-MM-dd");
     public static final String CCD_ID = "ccd_id";
+    public static final String CASE_REFERENCE_ID = "case_reference_id";   // For when the SC Ref may be empty, so use CCD_ID
     public static final String CLAIMING_EXPENSES_LINK_LITERAL = "claiming_expenses_link";
     public static final String CLAIMANT_NAME = "claimant_name";
     public static final String COUNTY_LITERAL = "county";
@@ -36,6 +40,7 @@ public final class AppConstants {
     public static final String HEARING_INFO_LINK_LITERAL = "hearing_info_link";
     public static final String HEARING_TIME = "hearing_time";
     public static final String HEARING_TIME_FORMAT = "hh:mm a";
+    public static final String INFO_REQUEST_DETAIL = "info_request_detail";
     public static final String MAC_ALGO = "HmacSHA256";
     public static final String MAC_LITERAL = "mac";
     public static final String MANAGE_EMAILS_LINK_LITERAL = "manage_emails_link";
