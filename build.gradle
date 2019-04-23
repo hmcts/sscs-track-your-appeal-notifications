@@ -203,8 +203,6 @@ def versions = [
 ]
 
 dependencies {
-    compile group: 'com.googlecode.json-simple', name: 'json-simple', version: '1.1.1'
-    compile group: 'com.opencsv', name: 'opencsv', version: '4.5'
     compile group: 'commons-io', name: 'commons-io', version: '2.6'
 
     compile group: 'com.mchange', name: 'c3p0', version: '0.9.5.4'
@@ -231,7 +229,7 @@ dependencies {
     compile group: 'uk.gov.hmcts.reform', name: 'sscs-job-scheduler', version: '1.5.2'
     compile group: 'uk.gov.hmcts.reform', name: 'service-auth-provider-client', version: '3.0.0'
 
-    compile group: 'uk.gov.hmcts.reform', name: 'sscs-common', version: '2.0.3'
+    compile group: 'uk.gov.hmcts.reform', name: 'sscs-common', version: '2.0.4'
     compile group: 'uk.gov.hmcts.reform', name: 'sscs-pdf-email-common', version: '1.0.3'
 
     compile group: 'uk.gov.service.notify', name: 'notifications-java-client', version: '3.14.1-RELEASE'
