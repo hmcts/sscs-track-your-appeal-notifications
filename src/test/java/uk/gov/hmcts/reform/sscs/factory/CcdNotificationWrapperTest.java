@@ -61,7 +61,10 @@ public class CcdNotificationWrapperTest {
         Subscription appointeeSubscription = null;
         if (null != appointee) {
             appellant.setAppointee(appointee);
-            appointeeSubscription = Subscription.builder().build();
+            appointeeSubscription = Subscription.builder()
+                .email("appointee@test.com")
+                .subscribeEmail("Yes")
+                .build();
         }
 
         Subscription repSubscription = null;
@@ -71,7 +74,10 @@ public class CcdNotificationWrapperTest {
                 .name(Name.builder().firstName("Joe").lastName("Bloggs").build())
                 .address(Address.builder().line1("Rep Line 1").town("Rep Town").county("Rep County").postcode("RE9 7SE").build())
                 .build();
-            repSubscription = Subscription.builder().build();
+            repSubscription = Subscription.builder()
+                .email("rep@test.com")
+                .subscribeEmail("Yes")
+                .build();
         }
 
         return new CcdNotificationWrapper(
@@ -108,8 +114,18 @@ public class CcdNotificationWrapperTest {
                         .appellant(Appellant.builder().appointee(appointee).build())
                         .build())
                     .subscriptions(Subscriptions.builder()
-                        .appellantSubscription(Subscription.builder().build())
-                        .appointeeSubscription(Subscription.builder().build())
+                        .appellantSubscription(
+                            Subscription.builder()
+                                .email("appellant@test.com")
+                                .subscribeEmail("Yes")
+                                .build()
+                        )
+                        .appointeeSubscription(
+                            Subscription.builder()
+                                .email("appointee@test.com")
+                                .subscribeEmail("Yes")
+                                .build()
+                        )
                         .build())
                     .build())
                 .notificationEventType(notificationEventType)
@@ -202,6 +218,7 @@ public class CcdNotificationWrapperTest {
                 || type.equals(SUBSCRIPTION_UPDATED_NOTIFICATION)
                 || type.equals(HEARING_BOOKED_NOTIFICATION)
                 || type.equals(SUBSCRIPTION_UPDATED_NOTIFICATION)
+                || type.equals(REQUEST_INFO_INCOMPLETE)
             )).toArray();
     }
 

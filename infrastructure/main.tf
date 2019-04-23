@@ -83,6 +83,8 @@ module "track-your-appeal-notifications" {
   asp_name     = "${var.product}-${var.component}-${var.env}"
   appinsights_instrumentation_key = "${var.appinsights_instrumentation_key}"
 
+  appinsights_instrumentation_key = "${var.appinsights_instrumentation_key}"
+
   app_settings = {
     INFRASTRUCTURE_ENV          = "${var.env}"
 

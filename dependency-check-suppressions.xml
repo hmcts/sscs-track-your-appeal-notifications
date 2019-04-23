@@ -18,6 +18,22 @@
    ]]></notes>
     <gav regex="true">^org\.springframework\.security:spring-.*:.*$</gav>
     <cve>CVE-2018-1258</cve>
+    <cve>CVE-2019-3795</cve>
+    <cve>CVE-2011-2731</cve>
+    <cve>CVE-2011-2732</cve>
+    <cve>CVE-2012-5055</cve>
+    <cve>CVE-2016-4977</cve>
+    <cve>CVE-2018-1260</cve>
+    <cve>CVE-2018-15758</cve>
+  </suppress>
+  <suppress>
+    <notes><![CDATA[
+   CVE-2018-1258: we do not use Spring Method Security, so this does not affect us
+   ]]></notes>
+    <gav regex="true">^org\.bouncycastle\:bcprov-jdk15on:.*$</gav>
+    <cve>CVE-2017-13098</cve>
+    <cve>CVE-2018-1000180</cve>
+    <cve>CVE-2018-1000613</cve>
   </suppress>
   <suppress>
     <notes><![CDATA[
@@ -169,10 +185,32 @@
     <cve>CVE-2017-16224</cve>
   </suppress>
   <suppress>
+    <notes><![CDATA[
+            only relates to ssl which we don't do at the java app level
+            ]]></notes>
+    <gav regex="true">.*</gav>
+    <cve>CVE-2014-3488</cve>
+  </suppress>
+  <suppress>
+    <notes><![CDATA[
+            only relates to ssl which we don't do at the java app level
+            ]]></notes>
+    <gav regex="true">.*</gav>
+    <cve>CVE-2015-2156</cve>
+  </suppress>
+  <suppress>
     <notes>
       False positive issue says Spring Framework version 5.0.5 when used in combination with any versions of Spring
       Security contains an authorization bypass but this project is not using Spring framework 5.0.5
     </notes>
     <cve>CVE-2018-1258</cve>
   </suppress>
+    <suppress>
+      <notes><![CDATA[
+             file name: spring-security-crypto-5.0.7.RELEASE.jar
+            ]]>
+      </notes>
+        <gav regex="true">^org\.springframework\.security:spring-security-crypto:.*$</gav>
+        <cpe>cpe:/a:pivotal_software:spring_security</cpe>
+    </suppress>
 </suppressions>
