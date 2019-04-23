@@ -83,6 +83,12 @@ public class Personalisation<E extends NotificationWrapper> {
         personalisation.put(PHONE_NUMBER, config.getHmctsPhoneNumber());
         personalisation.put(CCD_ID, StringUtils.defaultIfBlank(ccdResponse.getCcdCaseId(), StringUtils.EMPTY));
 
+        // Some templates (noteably letters) can be sent out before the SC Ref is added to the case
+        // this allows those templates to be populated with either the CCD Id or SC Ref
+        personalisation.put(CASE_REFERENCE_ID, getAppealReference(ccdResponse));
+
+        personalisation.put(INFO_REQUEST_DETAIL, StringUtils.defaultIfBlank(getLatestInfoRequestDetail(ccdResponse), StringUtils.EMPTY));
+
         subscriptionDetails(personalisation, subscriptionWithType.getSubscription(), benefit);
 
         personalisation.put(FIRST_TIER_AGENCY_ACRONYM, DWP_ACRONYM);
@@ -333,9 +339,10 @@ public class Personalisation<E extends NotificationWrapper> {
     private String getLetterTemplateName(SubscriptionType subscriptionType, NotificationEventType notificationEventType) {
         String letterTemplateName = notificationEventType.getId();
         if (subscriptionType != null
-            && (FALLBACK_LETTER_SUBSCRIPTION_TYPES.contains(notificationEventType)
+            && ((FALLBACK_LETTER_SUBSCRIPTION_TYPES.contains(notificationEventType)
             || APPEAL_WITHDRAWN_NOTIFICATION.equals(notificationEventType)
-            || HEARING_BOOKED_NOTIFICATION.equals(notificationEventType))) {
+            || HEARING_BOOKED_NOTIFICATION.equals(notificationEventType))
+            || REQUEST_INFO_INCOMPLETE.equals(notificationEventType))) {
             letterTemplateName = letterTemplateName + "." + subscriptionType.name().toLowerCase();
         }
         return letterTemplateName;
@@ -389,4 +396,37 @@ public class Personalisation<E extends NotificationWrapper> {
         return bool ? REQUIRED : NOT_REQUIRED;
     }
 
+    protected static String getLatestInfoRequestDetail(SscsCaseData ccdResponse) {
+        if (ccdResponse.getInfoRequests() != null) {
+            List<AppellantInfoRequest> infoRequests = ccdResponse.getInfoRequests().getAppellantInfoRequest();
+
+            if (infoRequests.isEmpty()) {
+                return null;
+            }
+
+            AppellantInfoRequest latestAppellantInfoRequest = null;
+            for (AppellantInfoRequest infoRequest : infoRequests) {
+                latestAppellantInfoRequest = getLatestAppellantInfoRequest(latestAppellantInfoRequest, infoRequest);
+            }
+
+            if (latestAppellantInfoRequest != null && latestAppellantInfoRequest.getAppellantInfo() != null) {
+                return latestAppellantInfoRequest.getAppellantInfo().getParagraph();
+            }
+        }
+
+        return null;
+    }
+
+    private static AppellantInfoRequest getLatestAppellantInfoRequest(AppellantInfoRequest latestAppellantInfoRequest, AppellantInfoRequest infoRequest) {
+        if (latestAppellantInfoRequest == null) {
+            latestAppellantInfoRequest = infoRequest;
+        } else {
+            LocalDate latestDate = LocalDate.parse(latestAppellantInfoRequest.getAppellantInfo().getRequestDate(), CC_DATE_FORMAT);
+            LocalDate currentDate = LocalDate.parse(infoRequest.getAppellantInfo().getRequestDate(), CC_DATE_FORMAT);
+            if (currentDate.isAfter(latestDate)) {
+                latestAppellantInfoRequest = infoRequest;
+            }
+        }
+        return latestAppellantInfoRequest;
+    }
 }

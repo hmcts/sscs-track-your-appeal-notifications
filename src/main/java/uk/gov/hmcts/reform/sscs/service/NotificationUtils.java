@@ -7,8 +7,10 @@ import static uk.gov.hmcts.reform.sscs.config.SubscriptionType.REPRESENTATIVE;
 import static uk.gov.hmcts.reform.sscs.domain.notify.NotificationEventType.APPEAL_WITHDRAWN_NOTIFICATION;
 import static uk.gov.hmcts.reform.sscs.domain.notify.NotificationEventType.DIRECTION_ISSUED;
 import static uk.gov.hmcts.reform.sscs.domain.notify.NotificationEventType.HEARING_BOOKED_NOTIFICATION;
+import static uk.gov.hmcts.reform.sscs.domain.notify.NotificationEventType.REQUEST_INFO_INCOMPLETE;
 import static uk.gov.hmcts.reform.sscs.domain.notify.NotificationEventType.STRUCK_OUT;
 import static uk.gov.hmcts.reform.sscs.service.NotificationValidService.FALLBACK_LETTER_SUBSCRIPTION_TYPES;
+import static uk.gov.hmcts.reform.sscs.service.NotificationValidService.LETTER_EVENT_TYPES;
 
 import java.util.Arrays;
 import java.util.List;
@@ -26,7 +28,7 @@ import uk.gov.hmcts.reform.sscs.domain.notify.NotificationEventType;
 import uk.gov.hmcts.reform.sscs.factory.NotificationWrapper;
 
 public class NotificationUtils {
-    private static final List<NotificationEventType> MANDATORY_LETTERS = Arrays.asList(APPEAL_WITHDRAWN_NOTIFICATION, STRUCK_OUT, HEARING_BOOKED_NOTIFICATION, DIRECTION_ISSUED);
+    private static final List<NotificationEventType> MANDATORY_LETTERS = Arrays.asList(APPEAL_WITHDRAWN_NOTIFICATION, STRUCK_OUT, HEARING_BOOKED_NOTIFICATION, DIRECTION_ISSUED, REQUEST_INFO_INCOMPLETE);
 
     private NotificationUtils() {
         // empty
@@ -56,22 +58,43 @@ public class NotificationUtils {
             && appeal.getRep().getHasRepresentative().equalsIgnoreCase("yes");
     }
 
-    public static boolean hasAppointeeSubscription(SscsCaseDataWrapper wrapper) {
-        return null != wrapper.getNewSscsCaseData().getSubscriptions().getAppointeeSubscription();
+    public static boolean hasAppointeeSubscriptionOrIsMandatoryAppointeeLetter(SscsCaseDataWrapper wrapper) {
+        return ((null != getSubscription(wrapper.getNewSscsCaseData(), APPOINTEE))
+            || (hasAppointee(wrapper.getNewSscsCaseData().getAppeal().getAppellant().getAppointee())
+            && LETTER_EVENT_TYPES.contains(wrapper.getNotificationEventType())));
     }
 
-    public static boolean hasRepresentativeSubscription(SscsCaseDataWrapper wrapper) {
-        return null != wrapper.getNewSscsCaseData().getSubscriptions().getRepresentativeSubscription();
+    public static boolean hasRepSubscriptionOrIsMandatoryRepLetter(SscsCaseDataWrapper wrapper) {
+        return ((null != getSubscription(wrapper.getNewSscsCaseData(), REPRESENTATIVE))
+            || (hasRepresentative(wrapper.getNewSscsCaseData().getAppeal())
+            && LETTER_EVENT_TYPES.contains(wrapper.getNotificationEventType())));
+
     }
 
     public static Subscription getSubscription(SscsCaseData sscsCaseData, SubscriptionType subscriptionType) {
         if (REPRESENTATIVE.equals(subscriptionType)) {
-            return sscsCaseData.getSubscriptions().getRepresentativeSubscription();
+            return getPopulatedSubscriptionOrNull(sscsCaseData.getSubscriptions().getRepresentativeSubscription());
         } else if (APPELLANT.equals(subscriptionType)) {
-            return sscsCaseData.getSubscriptions().getAppellantSubscription();
+            return getPopulatedSubscriptionOrNull(sscsCaseData.getSubscriptions().getAppellantSubscription());
         } else {
-            return sscsCaseData.getSubscriptions().getAppointeeSubscription();
+            return getPopulatedSubscriptionOrNull(sscsCaseData.getSubscriptions().getAppointeeSubscription());
         }
+    }
+
+    public static Subscription getPopulatedSubscriptionOrNull(Subscription subscription) {
+        if (null == subscription
+            || (null == subscription.getWantSmsNotifications()
+            && null == subscription.getTya()
+            && null == subscription.getEmail()
+            && null == subscription.getMobile()
+            && null == subscription.getSubscribeEmail()
+            && null == subscription.getSubscribeSms()
+            && null == subscription.getReason())
+        ) {
+            return null;
+        }
+
+        return subscription;
     }
 
     public static boolean isMandatoryLetterEventType(NotificationWrapper wrapper) {

@@ -29,11 +29,8 @@ import java.time.LocalDate;
 import java.time.ZoneId;
 import java.time.ZonedDateTime;
 import java.time.format.DateTimeFormatter;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.Optional;
+import java.util.*;
+
 import junitparams.JUnitParamsRunner;
 import junitparams.Parameters;
 import org.apache.commons.lang3.StringUtils;
@@ -42,27 +39,7 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
-import uk.gov.hmcts.reform.sscs.ccd.domain.Address;
-import uk.gov.hmcts.reform.sscs.ccd.domain.Appeal;
-import uk.gov.hmcts.reform.sscs.ccd.domain.Appellant;
-import uk.gov.hmcts.reform.sscs.ccd.domain.Appointee;
-import uk.gov.hmcts.reform.sscs.ccd.domain.Benefit;
-import uk.gov.hmcts.reform.sscs.ccd.domain.BenefitType;
-import uk.gov.hmcts.reform.sscs.ccd.domain.Document;
-import uk.gov.hmcts.reform.sscs.ccd.domain.DocumentDetails;
-import uk.gov.hmcts.reform.sscs.ccd.domain.Event;
-import uk.gov.hmcts.reform.sscs.ccd.domain.EventDetails;
-import uk.gov.hmcts.reform.sscs.ccd.domain.Evidence;
-import uk.gov.hmcts.reform.sscs.ccd.domain.Hearing;
-import uk.gov.hmcts.reform.sscs.ccd.domain.HearingDetails;
-import uk.gov.hmcts.reform.sscs.ccd.domain.HearingType;
-import uk.gov.hmcts.reform.sscs.ccd.domain.Name;
-import uk.gov.hmcts.reform.sscs.ccd.domain.RegionalProcessingCenter;
-import uk.gov.hmcts.reform.sscs.ccd.domain.Representative;
-import uk.gov.hmcts.reform.sscs.ccd.domain.SscsCaseData;
-import uk.gov.hmcts.reform.sscs.ccd.domain.Subscription;
-import uk.gov.hmcts.reform.sscs.ccd.domain.Subscriptions;
-import uk.gov.hmcts.reform.sscs.ccd.domain.Venue;
+import uk.gov.hmcts.reform.sscs.ccd.domain.*;
 import uk.gov.hmcts.reform.sscs.config.AppealHearingType;
 import uk.gov.hmcts.reform.sscs.config.NotificationConfig;
 import uk.gov.hmcts.reform.sscs.config.SubscriptionType;
@@ -281,6 +258,7 @@ public class PersonalisationTest {
         assertEquals(benefitType, result.get(BENEFIT_NAME_ACRONYM_LITERAL));
         assertEquals(expectedBenefitDesc, result.get(BENEFIT_FULL_NAME_LITERAL));
         assertEquals("SC/1234/5", result.get(APPEAL_REF));
+        assertEquals("SC/1234/5", result.get(CASE_REFERENCE_ID));
         assertEquals("GLSCRR", result.get(APPEAL_ID));
         assertEquals("Harry Kane", result.get(NAME));
         assertEquals("Harry Kane", result.get(APPELLANT_NAME));
@@ -324,8 +302,8 @@ public class PersonalisationTest {
                 .notificationEventType(APPEAL_RECEIVED_NOTIFICATION).build(), new SubscriptionWithType(subscriptions.getAppellantSubscription(), APPELLANT));
 
         assertEquals(CASE_ID, result.get(APPEAL_REF));
+        assertEquals(CASE_ID, result.get(CASE_REFERENCE_ID));
     }
-
 
     @Test
     public void givenEvidenceReceivedNotification_customisePersonalisation() {
@@ -591,7 +569,7 @@ public class PersonalisationTest {
         List<Hearing> hearingList = new ArrayList<>();
         hearingList.add(hearing);
 
-        SscsCaseData response = createResponse(hearingList);
+        SscsCaseData response = createResponseWithHearings(hearingList);
 
         Map result = personalisation.create(SscsCaseDataWrapper.builder()
                 .newSscsCaseData(response)
@@ -612,7 +590,7 @@ public class PersonalisationTest {
         List<Hearing> hearingList = new ArrayList<>();
         hearingList.add(hearing);
 
-        SscsCaseData response = createResponse(hearingList);
+        SscsCaseData response = createResponseWithHearings(hearingList);
         Subscription subscriptionsWithoutEmail = response.getSubscriptions().getAppellantSubscription().toBuilder()
                 .email(null).build();
         Subscriptions subscriptions = response.getSubscriptions().toBuilder().appellantSubscription(subscriptionsWithoutEmail).build();
@@ -740,6 +718,73 @@ public class PersonalisationTest {
         assertEquals(CASE_ID, result.get(APPEAL_REF));
     }
 
+    @Test
+    public void getLatestInfoRequestDetailWhenNoneProvided() {
+        assertNull(Personalisation.getLatestInfoRequestDetail(createResponseWithInfoRequests(null)));
+    }
+
+    @Test
+    public void getLatestInfoRequestDetailWhenOneProvided() {
+        String expected = "Request for information";
+
+        List<AppellantInfoRequest> requests = Collections.singletonList(
+            AppellantInfoRequest.builder()
+                .id("456")
+                .appellantInfo(
+                    AppellantInfo.builder()
+                        .requestDate("2019-01-09").paragraph(expected)
+                        .build()
+                )
+                .build()
+        );
+
+        InfoRequests infoRequests = InfoRequests.builder()
+            .appellantInfoRequest(requests)
+            .build();
+        String latestInfoRequest = Personalisation.getLatestInfoRequestDetail(createResponseWithInfoRequests(infoRequests));
+        assertNotNull(latestInfoRequest);
+        assertEquals(expected, latestInfoRequest);
+    }
+
+    @Test
+    public void getLatestInfoRequestDetailWhenMultipleProvided() {
+        String expected = "Final request for information";
+
+        List<AppellantInfoRequest> requests = Arrays.asList(
+            AppellantInfoRequest.builder()
+                .id("123")
+                .appellantInfo(
+                    AppellantInfo.builder()
+                        .requestDate("2019-01-10").paragraph("Please provide the information requested")
+                        .build()
+                )
+                .build(),
+            AppellantInfoRequest.builder()
+                .id("789")
+                .appellantInfo(
+                    AppellantInfo.builder()
+                        .requestDate("2019-01-11").paragraph(expected)
+                        .build()
+                )
+                .build(),
+            AppellantInfoRequest.builder()
+                .id("456")
+                .appellantInfo(
+                    AppellantInfo.builder()
+                        .requestDate("2019-01-09").paragraph("Request for information")
+                        .build()
+                )
+                .build()
+        );
+
+        InfoRequests infoRequests = InfoRequests.builder()
+            .appellantInfoRequest(requests)
+            .build();
+        String latestInfoRequest = Personalisation.getLatestInfoRequestDetail(createResponseWithInfoRequests(infoRequests));
+        assertNotNull(latestInfoRequest);
+        assertEquals(expected, latestInfoRequest);
+    }
+
     private Hearing createHearing(LocalDate hearingDate) {
         return Hearing.builder().value(HearingDetails.builder()
                 .hearingDate(hearingDate.format(DateTimeFormatter.ofPattern("yyyy-MM-dd")))
@@ -756,7 +801,7 @@ public class PersonalisationTest {
                         .build()).build()).build();
     }
 
-    private SscsCaseData createResponse(List<Hearing> hearingList) {
+    private SscsCaseData createResponseWithHearings(List<Hearing> hearingList) {
         return SscsCaseData.builder()
                 .ccdCaseId(CASE_ID).caseReference("SC/1234/5")
                 .appeal(Appeal.builder().benefitType(BenefitType.builder().code("PIP").build())
@@ -765,5 +810,16 @@ public class PersonalisationTest {
                 .subscriptions(subscriptions)
                 .hearings(hearingList)
                 .build();
+    }
+
+    private SscsCaseData createResponseWithInfoRequests(InfoRequests infoRequests) {
+        return SscsCaseData.builder()
+            .ccdCaseId(CASE_ID).caseReference("SC/1234/5")
+            .appeal(Appeal.builder().benefitType(BenefitType.builder().code("PIP").build())
+                .appellant(Appellant.builder().name(name).build())
+                .build())
+            .subscriptions(subscriptions)
+            .infoRequests(infoRequests)
+            .build();
     }
 }

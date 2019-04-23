@@ -1304,10 +1304,11 @@ public class NotificationServiceTest {
 
     @Test
     public void doNotSendEmailOrSmsWhenNoActiveSubscription() throws Exception {
+        Appeal appeal = Appeal.builder().appellant(Appellant.builder().build()).build();
         Subscription appellantSubscription = Subscription.builder().tya(APPEAL_NUMBER).email("test@email.com")
                 .mobile(MOBILE_NUMBER_1).subscribeEmail("No").subscribeSms("No").build();
 
-        sscsCaseData = SscsCaseData.builder().subscriptions(Subscriptions.builder().appellantSubscription(appellantSubscription).build()).caseReference(CASE_REFERENCE).build();
+        sscsCaseData = SscsCaseData.builder().appeal(appeal).subscriptions(Subscriptions.builder().appellantSubscription(appellantSubscription).build()).caseReference(CASE_REFERENCE).build();
         SscsCaseDataWrapper wrapper = SscsCaseDataWrapper.builder().newSscsCaseData(sscsCaseData).oldSscsCaseData(sscsCaseData).notificationEventType(APPEAL_WITHDRAWN_NOTIFICATION).build();
         ccdNotificationWrapper = new CcdNotificationWrapper(wrapper);
 
