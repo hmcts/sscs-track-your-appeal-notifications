@@ -117,7 +117,10 @@ public class ReminderNotificationsFunctionalTest extends AbstractFunctionalTest 
                 responseReceivedOralEmailTemplateId,
                 responseReceivedOralSmsTemplateId,
                 evidenceReminderOralAppellantEmailTemplateId,
-                evidenceReminderOralAppellantSmsTemplateId
+                evidenceReminderOralAppellantSmsTemplateId,
+                evidenceReminderOralRepresentativeEmailTemplateId,
+                evidenceReminderOralRepresentativeSmsTemplateId
+
             );
 
         assertNotificationSubjectContains(notifications, evidenceReminderOralAppellantEmailTemplateId, "ESA");
@@ -168,7 +171,9 @@ public class ReminderNotificationsFunctionalTest extends AbstractFunctionalTest 
                 responseReceivedPaperEmailTemplateId,
                 responseReceivedPaperSmsTemplateId,
                 evidenceReminderPaperAppellantEmailTemplateId,
-                evidenceReminderPaperAppellantSmsTemplateId
+                evidenceReminderPaperAppellantSmsTemplateId,
+                evidenceReminderPaperRepresentativeEmailTemplateId,
+                evidenceReminderPaperRepresentativeSmsTemplateId
         );
 
         assertNotificationSubjectContains(notifications, evidenceReminderPaperAppellantEmailTemplateId, "ESA");
