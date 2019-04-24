@@ -50,18 +50,6 @@ public class HearingContactDateExtractor {
                 delay = initialDelay;
                 break;
 
-            case FIRST_HEARING_HOLDING_REMINDER_NOTIFICATION:
-                delay = initialDelay + subsequentDelay;
-                break;
-
-            case SECOND_HEARING_HOLDING_REMINDER_NOTIFICATION:
-                delay = initialDelay + (subsequentDelay * 2);
-                break;
-
-            case THIRD_HEARING_HOLDING_REMINDER_NOTIFICATION:
-                delay = initialDelay + (subsequentDelay * 3);
-                break;
-
             default:
                 return Optional.empty();
         }
