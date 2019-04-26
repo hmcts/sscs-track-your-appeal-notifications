@@ -206,21 +206,6 @@ notification:
     representative:
       emailId: 97c58e23-c11f-40b3-b981-2d4cfa38b8fd
       smsId: bb3df0ea-8259-43c4-95de-9eef96206575
-  hearingHoldingReminder:
-    emailId: db8357f1-2302-49a8-a39f-2e0918cd182d
-    smsId: fe4e0146-cd27-49ca-8360-465250573019
-  secondHearingHoldingReminder:
-    emailId: db8357f1-2302-49a8-a39f-2e0918cd182d
-    smsId: fe4e0146-cd27-49ca-8360-465250573019
-  thirdHearingHoldingReminder:
-    emailId: db8357f1-2302-49a8-a39f-2e0918cd182d
-    smsId: fe4e0146-cd27-49ca-8360-465250573019
-  finalHearingHoldingReminder:
-    emailId: ab66ce4e-3f18-483c-9025-f9731bad9d6e
-    smsId: f1409c96-8cfa-4e92-b046-887f9599d7e4
-  dwpResponseLateReminder:
-    emailId: 1dfa9e4e-0a85-4001-acc9-2847ed6e2a22
-    smsId: ef6297d1-7b03-432a-b04a-62a01f009b56
   question_round_issued:
     emailId: ccfbfcac-847d-4e55-955c-096802c131a0
   follow_up_question_round_issued:
@@ -242,19 +227,13 @@ notification:
       emailId: 01293b93-b23e-40a3-ad78-2c6cd01cd21c
     representative:
       emailId: 652753bf-59b4-46eb-9c24-bd762338a098
-  appealLodged:
+  requestInfoIncompleteApplication:
     appellant:
-      emailId: b90df52f-c628-409c-8875-4b0b9663a053
-      smsId: ede384aa-0b6e-4311-9f01-ee547573a07b
-      letterId: 91143b85-dd9d-430c-ba23-e42ec90f44f8
+      letterId: bc943cf3-9fd1-4d14-a0c0-b183572c21a7
     representative:
-      emailId: 4b1ee55b-abd1-4e7e-b0ed-693d8df1e741
-      smsId: 99bd4a56-256c-4de8-b187-d43a8dde466f
-      letterId: 77ea8a2f-06df-4279-9c1f-0f23cb2d9bbf
+      letterId: a2a4a88a-b91a-4e6d-94f0-507179292058
     appointee:
-      emailId: 08365e91-9e07-4a5c-bf96-ef56fd0ada63
-      smsId: ede384aa-0b6e-4311-9f01-ee547573a07b
-      letterId: 747d026e-1bec-4e96-8a34-28f36e30bba5
+      letterId: f4ef3253-bae7-4fa6-8e3d-9b3e83bec356
   online:
     responseReceived:
       emailId: 90f0ed29-a616-4ce0-b4ef-108391f5d90e
@@ -378,8 +357,8 @@ robotics.email.subject: ${ROBOTICS_EMAIL_SUBJECT:Robotics Data}
 robotics.email.message: ${ROBOTICS_EMAIL_MESSAGE:Please find attached the robotics json file \nPlease do not respond to this email}
 robotics.schema.resource.location: /schema/sscs-robotics.json
 
-feature.bundled_letters_on: ${BUNDLED_LETTERS_ON:false}
-feature.letters_on: ${LETTERS_ON:false}
+feature.bundled_letters_on: ${BUNDLED_LETTERS_ON:true}
+feature.letters_on: ${LETTERS_ON:true}
 
 
 ---

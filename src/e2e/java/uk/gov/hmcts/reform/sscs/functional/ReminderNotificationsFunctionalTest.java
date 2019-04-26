@@ -16,12 +16,6 @@ import uk.gov.service.notify.NotificationClientException;
 
 public class ReminderNotificationsFunctionalTest extends AbstractFunctionalTest {
 
-    @Value("${notification.dwpResponseLateReminder.emailId}")
-    private String dwpResponseLateReminderEmailTemplateId;
-
-    @Value("${notification.dwpResponseLateReminder.smsId}")
-    private String dwpResponseLateReminderSmsTemplateId;
-
     @Value("${notification.oral.evidenceReminder.appellant.emailId}")
     private String evidenceReminderOralAppellantEmailTemplateId;
 
@@ -70,65 +64,8 @@ public class ReminderNotificationsFunctionalTest extends AbstractFunctionalTest 
     @Value("${notification.hearingReminder.representative.smsId}")
     private String hearingReminderRepresentativeSmsTemplateId;
 
-    @Value("${notification.hearingHoldingReminder.emailId}")
-    private String firstHearingHoldingReminderEmailTemplateId;
-
-    @Value("${notification.hearingHoldingReminder.smsId}")
-    private String firstHearingHoldingReminderSmsTemplateId;
-
-    @Value("${notification.secondHearingHoldingReminder.emailId}")
-    private String secondHearingHoldingReminderEmailTemplateId;
-
-    @Value("${notification.secondHearingHoldingReminder.smsId}")
-    private String secondHearingHoldingReminderSmsTemplateId;
-
-    @Value("${notification.thirdHearingHoldingReminder.emailId}")
-    private String thirdHearingHoldingReminderEmailTemplateId;
-
-    @Value("${notification.thirdHearingHoldingReminder.smsId}")
-    private String thirdHearingHoldingReminderSmsTemplateId;
-
-    @Value("${notification.finalHearingHoldingReminder.emailId}")
-    private String finalHearingHoldingReminderEmailTemplateId;
-
-    @Value("${notification.finalHearingHoldingReminder.smsId}")
-    private String finalHearingHoldingReminderSmsTemplateId;
-
     public ReminderNotificationsFunctionalTest() {
         super(90);
-    }
-
-    @Test
-    public void shouldSendNotificationsWhenAppealReceivedEventIsReceived() throws IOException, NotificationClientException {
-
-        simulateCcdCallback(APPEAL_RECEIVED_NOTIFICATION,"representative/" + APPEAL_RECEIVED_NOTIFICATION.getId() + "Callback.json");
-
-        List<Notification> notifications =
-            tryFetchNotificationsForTestCase(
-                dwpResponseLateReminderEmailTemplateId,
-                dwpResponseLateReminderSmsTemplateId
-            );
-
-        assertNotificationSubjectContains(notifications, dwpResponseLateReminderEmailTemplateId, "ESA");
-        assertNotificationBodyContains(
-            notifications,
-            dwpResponseLateReminderEmailTemplateId,
-            caseReference,
-            "User Test",
-            "DWP",
-            "due to respond",
-            "28 June 2017",
-            "/trackyourappeal"
-        );
-
-        assertNotificationBodyContains(
-            notifications,
-            dwpResponseLateReminderSmsTemplateId,
-            "DWP",
-            "due to respond",
-            "28 June 2017",
-            "/trackyourappeal"
-        );
     }
 
     @Test
@@ -142,14 +79,9 @@ public class ReminderNotificationsFunctionalTest extends AbstractFunctionalTest 
                 responseReceivedOralAppellantSmsTemplateId,
                 evidenceReminderOralAppellantEmailTemplateId,
                 evidenceReminderOralAppellantSmsTemplateId,
-                firstHearingHoldingReminderEmailTemplateId,
-                firstHearingHoldingReminderSmsTemplateId,
-                secondHearingHoldingReminderEmailTemplateId,
-                secondHearingHoldingReminderSmsTemplateId,
-                thirdHearingHoldingReminderEmailTemplateId,
-                thirdHearingHoldingReminderSmsTemplateId,
-                finalHearingHoldingReminderEmailTemplateId,
-                finalHearingHoldingReminderSmsTemplateId
+                evidenceReminderOralRepresentativeEmailTemplateId,
+                evidenceReminderOralRepresentativeSmsTemplateId
+
             );
 
         assertNotificationSubjectContains(notifications, evidenceReminderOralAppellantEmailTemplateId, "ESA");
@@ -186,88 +118,6 @@ public class ReminderNotificationsFunctionalTest extends AbstractFunctionalTest 
             "/trackyourappeal",
             "how long"
         );
-
-        assertNotificationSubjectContains(notifications, firstHearingHoldingReminderEmailTemplateId, "ESA");
-        assertNotificationBodyContains(
-            notifications,
-            firstHearingHoldingReminderEmailTemplateId,
-            caseReference,
-            "User Test",
-            "ESA",
-            "not been booked",
-            "/trackyourappeal",
-            "23 April 2016"
-        );
-
-        assertNotificationBodyContains(
-            notifications,
-            firstHearingHoldingReminderSmsTemplateId,
-            "ESA",
-            "not been booked",
-            "/trackyourappeal",
-            "23 April 2016"
-        );
-
-        assertNotificationSubjectContains(notifications, secondHearingHoldingReminderEmailTemplateId, "Your ESA appeal");
-        assertNotificationBodyContains(
-            notifications,
-            secondHearingHoldingReminderEmailTemplateId,
-            caseReference,
-            "User Test",
-            "ESA benefit",
-            "not been booked",
-            "/trackyourappeal",
-            "4 June 2016"
-        );
-
-        assertNotificationBodyContains(
-            notifications,
-            secondHearingHoldingReminderSmsTemplateId,
-            "ESA benefit",
-            "not been booked",
-            "/trackyourappeal",
-            "4 June 2016"
-        );
-
-        assertNotificationSubjectContains(notifications, thirdHearingHoldingReminderEmailTemplateId, "Your ESA appeal");
-        assertNotificationBodyContains(
-            notifications,
-            thirdHearingHoldingReminderEmailTemplateId,
-            caseReference,
-            "User Test",
-            "ESA",
-            "not been booked",
-            "/trackyourappeal",
-            "16 July 2016"
-        );
-
-        assertNotificationBodyContains(
-            notifications,
-            thirdHearingHoldingReminderSmsTemplateId,
-            "ESA",
-            "not been booked",
-            "/trackyourappeal",
-            "16 July 2016"
-        );
-
-        assertNotificationSubjectContains(notifications, finalHearingHoldingReminderEmailTemplateId, "ESA");
-        assertNotificationBodyContains(
-            notifications,
-            finalHearingHoldingReminderEmailTemplateId,
-            caseReference,
-            "User Test",
-            "ESA",
-            "not been booked",
-            "/trackyourappeal"
-        );
-
-        assertNotificationBodyContains(
-            notifications,
-            finalHearingHoldingReminderSmsTemplateId,
-            "ESA",
-            "not been booked",
-            "/trackyourappeal"
-        );
     }
 
 
@@ -283,14 +133,8 @@ public class ReminderNotificationsFunctionalTest extends AbstractFunctionalTest 
                 responseReceivedPaperAppellantSmsTemplateId,
                 evidenceReminderPaperAppellantEmailTemplateId,
                 evidenceReminderPaperAppellantSmsTemplateId,
-                firstHearingHoldingReminderEmailTemplateId,
-                firstHearingHoldingReminderSmsTemplateId,
-                secondHearingHoldingReminderEmailTemplateId,
-                secondHearingHoldingReminderSmsTemplateId,
-                thirdHearingHoldingReminderEmailTemplateId,
-                thirdHearingHoldingReminderSmsTemplateId,
-                finalHearingHoldingReminderEmailTemplateId,
-                finalHearingHoldingReminderSmsTemplateId
+                evidenceReminderPaperRepresentativeEmailTemplateId,
+                evidenceReminderPaperRepresentativeSmsTemplateId
         );
 
         assertNotificationSubjectContains(notifications, evidenceReminderPaperAppellantEmailTemplateId, "ESA");
@@ -326,88 +170,6 @@ public class ReminderNotificationsFunctionalTest extends AbstractFunctionalTest 
                 "response",
                 "/trackyourappeal",
                 "how long"
-        );
-
-        assertNotificationSubjectContains(notifications, firstHearingHoldingReminderEmailTemplateId, "ESA");
-        assertNotificationBodyContains(
-                notifications,
-                firstHearingHoldingReminderEmailTemplateId,
-                caseReference,
-                "User Test",
-                "ESA",
-                "not been booked",
-                "/trackyourappeal",
-                "23 April 2016"
-        );
-
-        assertNotificationBodyContains(
-                notifications,
-                firstHearingHoldingReminderSmsTemplateId,
-                "ESA",
-                "not been booked",
-                "/trackyourappeal",
-                "23 April 2016"
-        );
-
-        assertNotificationSubjectContains(notifications, secondHearingHoldingReminderEmailTemplateId, "Your ESA appeal");
-        assertNotificationBodyContains(
-                notifications,
-                secondHearingHoldingReminderEmailTemplateId,
-                caseReference,
-                "User Test",
-                "ESA benefit",
-                "not been booked",
-                "/trackyourappeal",
-                "4 June 2016"
-        );
-
-        assertNotificationBodyContains(
-                notifications,
-                secondHearingHoldingReminderSmsTemplateId,
-                "ESA benefit",
-                "not been booked",
-                "/trackyourappeal",
-                "4 June 2016"
-        );
-
-        assertNotificationSubjectContains(notifications, thirdHearingHoldingReminderEmailTemplateId, "Your ESA appeal");
-        assertNotificationBodyContains(
-                notifications,
-                thirdHearingHoldingReminderEmailTemplateId,
-                caseReference,
-                "User Test",
-                "ESA",
-                "not been booked",
-                "/trackyourappeal",
-                "16 July 2016"
-        );
-
-        assertNotificationBodyContains(
-                notifications,
-                thirdHearingHoldingReminderSmsTemplateId,
-                "ESA",
-                "not been booked",
-                "/trackyourappeal",
-                "16 July 2016"
-        );
-
-        assertNotificationSubjectContains(notifications, finalHearingHoldingReminderEmailTemplateId, "ESA");
-        assertNotificationBodyContains(
-                notifications,
-                finalHearingHoldingReminderEmailTemplateId,
-                caseReference,
-                "User Test",
-                "ESA",
-                "not been booked",
-                "/trackyourappeal"
-        );
-
-        assertNotificationBodyContains(
-                notifications,
-                finalHearingHoldingReminderSmsTemplateId,
-                "ESA",
-                "not been booked",
-                "/trackyourappeal"
         );
     }
 

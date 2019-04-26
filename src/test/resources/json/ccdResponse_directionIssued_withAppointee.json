@@ -171,14 +171,6 @@
           "subscribeEmail": "Yes",
           "subscribeSms": "Yes",
           "tya": "543212345"
-        },
-        "representativeSubscription": {
-          "email": "supporter@hmcts.net",
-          "mobile": "07983469702",
-          "reason": null,
-          "subscribeEmail": "No",
-          "subscribeSms": "Yes",
-          "tya": "232929249492"
         }
       },
       "region" : "CARDIFF",
@@ -320,14 +312,6 @@
           "subscribeEmail": "No",
           "subscribeSms": "No",
           "tya": "543212345"
-        },
-        "representativeSubscription": {
-          "email": "supporter@hmcts.net",
-          "mobile": "07983469702",
-          "reason": null,
-          "subscribeEmail": "No",
-          "subscribeSms": "Yes",
-          "tya": "232929249492"
         }
       },
       "region": "CARDIFF",

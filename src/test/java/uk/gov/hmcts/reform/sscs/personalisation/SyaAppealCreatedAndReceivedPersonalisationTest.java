@@ -163,7 +163,7 @@ public class SyaAppealCreatedAndReceivedPersonalisationTest {
 
         Map<String, String> result = syaAppealCreatedAndReceivedPersonalisation.setAppointeeDetails(new HashMap<>(), response);
 
-        assertEquals("Have a appointee: yes\n"
+        assertEquals("Have an appointee: yes\n"
                         + "\nName: Peter Smith\n"
                         + "\nDate of birth: 12 March 1981\n"
                         + "\nAddress: Ground Floor, Gazette Buildings, 168 Corporation Street, Cardiff, CF11 6TF\n"
@@ -186,7 +186,7 @@ public class SyaAppealCreatedAndReceivedPersonalisationTest {
 
         Map<String, String> result = syaAppealCreatedAndReceivedPersonalisation.setAppointeeDetails(new HashMap<>(), response);
 
-        assertEquals("Have a appointee: yes\n"
+        assertEquals("Have an appointee: yes\n"
                         + "\nName: Peter Smith\n"
                         + "\nDate of birth: 12 March 1981\n"
                         + "\nAddress: Ground Floor, Gazette Buildings, 168 Corporation Street, Cardiff, CF11 6TF\n"
@@ -207,7 +207,7 @@ public class SyaAppealCreatedAndReceivedPersonalisationTest {
 
         Map<String, String> result = syaAppealCreatedAndReceivedPersonalisation.setAppointeeDetails(new HashMap<>(), response);
 
-        assertEquals("Have a appointee: no",
+        assertEquals("Have an appointee: no",
                 result.get(AppConstants.APPOINTEE_DETAILS_LITERAL));
     }
 

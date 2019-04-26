@@ -19,12 +19,7 @@ public enum NotificationEventType {
     SUBSCRIPTION_UPDATED_NOTIFICATION("subscriptionUpdated", true, true, false, true, false),
     SUBSCRIPTION_OLD_NOTIFICATION("subscriptionOld", false, true, false, true, false),
     EVIDENCE_REMINDER_NOTIFICATION("evidenceReminder", true, true, false, false, true),
-    FIRST_HEARING_HOLDING_REMINDER_NOTIFICATION("hearingHoldingReminder", true, false, false, false, true),
-    SECOND_HEARING_HOLDING_REMINDER_NOTIFICATION("secondHearingHoldingReminder", true, false, false, false, true),
-    THIRD_HEARING_HOLDING_REMINDER_NOTIFICATION("thirdHearingHoldingReminder", true, false, false, false, true),
-    FINAL_HEARING_HOLDING_REMINDER_NOTIFICATION("finalHearingHoldingReminder", true, false, false, false, true),
     HEARING_REMINDER_NOTIFICATION("hearingReminder", true, false, false, false, true),
-    DWP_RESPONSE_LATE_REMINDER_NOTIFICATION("dwpResponseLateReminder", true, true, false, false, true),
     QUESTION_ROUND_ISSUED_NOTIFICATION("question_round_issued", false, false, true, false, false),
     QUESTION_DEADLINE_ELAPSED_NOTIFICATION("question_deadline_elapsed", false, false, true, false, false),
     QUESTION_DEADLINE_REMINDER_NOTIFICATION("question_deadline_reminder", false, false, true, false, true),
@@ -35,6 +30,7 @@ public enum NotificationEventType {
     CASE_UPDATED("caseUpdated", true, true, true, false, false),
     APPEAL_LODGED("appealLodged", true, true, true, false, false),
     DIRECTION_ISSUED("directionIssued", true, true, true, false, false),
+    REQUEST_INFO_INCOMPLETE("requestInfoIncompleteApplication", true, true, true, false, false),
     DO_NOT_SEND("");
 
     private String id;
