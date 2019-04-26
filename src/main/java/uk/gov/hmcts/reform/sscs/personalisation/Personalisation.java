@@ -218,8 +218,7 @@ public class Personalisation<E extends NotificationWrapper> {
 
             for (Event event : ccdResponse.getEvents()) {
                 if ((event.getValue() != null)
-                    && ((notificationEventType.equals(APPEAL_RECEIVED_NOTIFICATION) && event.getValue().getEventType().equals(APPEAL_RECEIVED))
-                    || (notificationEventType.equals(DWP_RESPONSE_LATE_REMINDER_NOTIFICATION)))
+                    && ((notificationEventType.equals(APPEAL_RECEIVED_NOTIFICATION) && event.getValue().getEventType().equals(APPEAL_RECEIVED)))
                     || notificationEventType.equals(CASE_UPDATED)) {
                     return setAppealReceivedDetails(personalisation, event.getValue());
                 }

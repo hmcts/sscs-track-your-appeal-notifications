@@ -20,7 +20,6 @@ public enum NotificationEventType {
     SUBSCRIPTION_OLD_NOTIFICATION("subscriptionOld", false, true, false, true, false),
     EVIDENCE_REMINDER_NOTIFICATION("evidenceReminder", true, true, false, false, true),
     HEARING_REMINDER_NOTIFICATION("hearingReminder", true, false, false, false, true),
-    DWP_RESPONSE_LATE_REMINDER_NOTIFICATION("dwpResponseLateReminder", true, true, false, false, true),
     QUESTION_ROUND_ISSUED_NOTIFICATION("question_round_issued", false, false, true, false, false),
     QUESTION_DEADLINE_ELAPSED_NOTIFICATION("question_deadline_elapsed", false, false, true, false, false),
     QUESTION_DEADLINE_REMINDER_NOTIFICATION("question_deadline_reminder", false, false, true, false, true),

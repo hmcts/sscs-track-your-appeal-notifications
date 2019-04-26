@@ -16,12 +16,6 @@ import uk.gov.service.notify.NotificationClientException;
 
 public class ReminderNotificationsFunctionalTest extends AbstractFunctionalTest {
 
-    @Value("${notification.dwpResponseLateReminder.emailId}")
-    private String dwpResponseLateReminderEmailTemplateId;
-
-    @Value("${notification.dwpResponseLateReminder.smsId}")
-    private String dwpResponseLateReminderSmsTemplateId;
-
     @Value("${notification.oral.evidenceReminder.appellant.emailId}")
     private String evidenceReminderOralAppellantEmailTemplateId;
 
@@ -72,39 +66,6 @@ public class ReminderNotificationsFunctionalTest extends AbstractFunctionalTest 
 
     public ReminderNotificationsFunctionalTest() {
         super(90);
-    }
-
-    @Test
-    public void shouldSendNotificationsWhenAppealReceivedEventIsReceived() throws IOException, NotificationClientException {
-
-        simulateCcdCallback(APPEAL_RECEIVED_NOTIFICATION,"representative/" + APPEAL_RECEIVED_NOTIFICATION.getId() + "Callback.json");
-
-        List<Notification> notifications =
-            tryFetchNotificationsForTestCase(
-                dwpResponseLateReminderEmailTemplateId,
-                dwpResponseLateReminderSmsTemplateId
-            );
-
-        assertNotificationSubjectContains(notifications, dwpResponseLateReminderEmailTemplateId, "ESA");
-        assertNotificationBodyContains(
-            notifications,
-            dwpResponseLateReminderEmailTemplateId,
-            caseReference,
-            "User Test",
-            "DWP",
-            "due to respond",
-            "28 June 2017",
-            "/trackyourappeal"
-        );
-
-        assertNotificationBodyContains(
-            notifications,
-            dwpResponseLateReminderSmsTemplateId,
-            "DWP",
-            "due to respond",
-            "28 June 2017",
-            "/trackyourappeal"
-        );
     }
 
     @Test
