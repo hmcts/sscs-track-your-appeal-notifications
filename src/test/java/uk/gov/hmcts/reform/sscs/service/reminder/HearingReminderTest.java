@@ -6,6 +6,7 @@ import static org.mockito.Mockito.*;
 import static uk.gov.hmcts.reform.sscs.domain.notify.NotificationEventType.HEARING_BOOKED_NOTIFICATION;
 import static uk.gov.hmcts.reform.sscs.domain.notify.NotificationEventType.HEARING_REMINDER_NOTIFICATION;
 
+import com.google.common.collect.Lists;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -94,6 +95,35 @@ public class HearingReminderTest {
         assertEquals(HEARING_REMINDER_NOTIFICATION.getId(), secondJob.name);
         assertEquals(SscsCaseDataUtils.CASE_ID, secondJob.payload);
         assertEquals(expectedSecondTriggerAt, secondJob.triggerAt.toString());
+    }
+
+    @Test
+    public void canNotSchedulesReminderWhenReminderDateIsNull() {
+
+        final String expectedJobGroup = "ID_EVENT";
+
+        String hearingDate = "2018-01-01";
+        String hearingTime = "14:01:18";
+
+        CcdNotificationWrapper wrapper = SscsCaseDataUtils.buildBasicCcdNotificationWrapperWithHearing(
+                HEARING_BOOKED_NOTIFICATION,
+                hearingDate,
+                hearingTime
+        );
+
+        wrapper.getNewSscsCaseData().setHearings(Lists.newArrayList());
+
+        when(jobGroupGenerator.generate(wrapper.getCaseId(), HEARING_REMINDER_NOTIFICATION.getId())).thenReturn(expectedJobGroup);
+
+        hearingReminder.handle(wrapper);
+
+        ArgumentCaptor<Job> jobCaptor = ArgumentCaptor.forClass(Job.class);
+
+        verify(jobScheduler, times(0)).schedule(
+                jobCaptor.capture()
+        );
+
+        assertTrue(jobCaptor.getAllValues().isEmpty());
     }
 
     @Test(expected = Exception.class)

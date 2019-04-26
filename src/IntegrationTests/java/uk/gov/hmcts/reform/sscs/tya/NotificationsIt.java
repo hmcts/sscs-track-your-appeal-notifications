@@ -1,9 +1,6 @@
 package uk.gov.hmcts.reform.sscs.tya;
 
-import static helper.IntegrationTestHelper.assertHttpStatus;
-import static helper.IntegrationTestHelper.getRequestWithAuthHeader;
-import static helper.IntegrationTestHelper.getRequestWithoutAuthHeader;
-import static helper.IntegrationTestHelper.updateEmbeddedJson;
+import static helper.IntegrationTestHelper.*;
 import static org.junit.Assert.assertArrayEquals;
 import static org.junit.Assert.assertEquals;
 import static org.mockito.Mockito.*;
@@ -41,19 +38,16 @@ import org.springframework.test.util.ReflectionTestUtils;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.request.MockHttpServletRequestBuilder;
 import org.springframework.test.web.servlet.setup.MockMvcBuilders;
+import uk.gov.hmcts.reform.sscs.ccd.deserialisation.SscsCaseCallbackDeserializer;
 import uk.gov.hmcts.reform.sscs.ccd.service.CcdService;
 import uk.gov.hmcts.reform.sscs.config.NotificationBlacklist;
 import uk.gov.hmcts.reform.sscs.config.NotificationConfig;
 import uk.gov.hmcts.reform.sscs.controller.NotificationController;
-import uk.gov.hmcts.reform.sscs.deserialize.SscsCaseDataWrapperDeserializer;
 import uk.gov.hmcts.reform.sscs.domain.notify.NotificationEventType;
 import uk.gov.hmcts.reform.sscs.factory.NotificationFactory;
 import uk.gov.hmcts.reform.sscs.idam.IdamService;
 import uk.gov.hmcts.reform.sscs.service.*;
 import uk.gov.service.notify.*;
-import uk.gov.service.notify.NotificationClient;
-import uk.gov.service.notify.SendEmailResponse;
-import uk.gov.service.notify.SendSmsResponse;
 
 @RunWith(JUnitParamsRunner.class)
 @SpringBootTest
@@ -100,7 +94,7 @@ public class NotificationsIt {
     private CcdService ccdService;
 
     @Autowired
-    private SscsCaseDataWrapperDeserializer deserializer;
+    private SscsCaseCallbackDeserializer deserializer;
 
     @MockBean
     private IdamService idamService;
@@ -957,9 +951,9 @@ public class NotificationsIt {
                 "0"
             },
             new Object[]{
-                APPEAL_LODGED,
+                CASE_UPDATED,
                 "paper",
-                Arrays.asList("b90df52f-c628-409c-8875-4b0b9663a053", "4b1ee55b-abd1-4e7e-b0ed-693d8df1e741"),
+                Arrays.asList("01293b93-b23e-40a3-ad78-2c6cd01cd21c", "652753bf-59b4-46eb-9c24-bd762338a098"),
                 Collections.emptyList(),
                 Collections.emptyList(),
                 "yes",
@@ -971,9 +965,9 @@ public class NotificationsIt {
                 "0"
             },
             new Object[]{
-                APPEAL_LODGED,
+                CASE_UPDATED,
                 "oral",
-                Arrays.asList("b90df52f-c628-409c-8875-4b0b9663a053", "4b1ee55b-abd1-4e7e-b0ed-693d8df1e741"),
+                Arrays.asList("01293b93-b23e-40a3-ad78-2c6cd01cd21c", "652753bf-59b4-46eb-9c24-bd762338a098"),
                 Collections.emptyList(),
                 Collections.emptyList(),
                 "yes",
@@ -985,9 +979,9 @@ public class NotificationsIt {
                 "0"
             },
             new Object[]{
-                APPEAL_LODGED,
+                CASE_UPDATED,
                 "paper",
-                Collections.singletonList("4b1ee55b-abd1-4e7e-b0ed-693d8df1e741"),
+                Collections.singletonList("652753bf-59b4-46eb-9c24-bd762338a098"),
                 Collections.emptyList(),
                 Collections.emptyList(),
                 "no",
@@ -999,9 +993,9 @@ public class NotificationsIt {
                 "0"
             },
             new Object[]{
-                APPEAL_LODGED,
+                CASE_UPDATED,
                 "paper",
-                Collections.singletonList("b90df52f-c628-409c-8875-4b0b9663a053"),
+                Collections.singletonList("01293b93-b23e-40a3-ad78-2c6cd01cd21c"),
                 Collections.emptyList(),
                 Collections.emptyList(),
                 "yes",
@@ -1013,7 +1007,7 @@ public class NotificationsIt {
                 "0"
             },
             new Object[]{
-                APPEAL_LODGED,
+                CASE_UPDATED,
                 "paper",
                 Collections.emptyList(),
                 Collections.emptyList(),
@@ -1053,6 +1047,34 @@ public class NotificationsIt {
                 "1",
                 "1",
                 "0"
+            },
+            new Object[]{
+                REQUEST_INFO_INCOMPLETE,
+                "paper",
+                Collections.emptyList(),
+                Collections.emptyList(),
+                Arrays.asList("bc943cf3-9fd1-4d14-a0c0-b183572c21a7", "a2a4a88a-b91a-4e6d-94f0-507179292058"),
+                "yes",
+                "yes",
+                "yes",
+                "yes",
+                "0",
+                "0",
+                "2"
+            },
+            new Object[]{
+                REQUEST_INFO_INCOMPLETE,
+                "paper",
+                Collections.emptyList(),
+                Collections.emptyList(),
+                Arrays.asList("bc943cf3-9fd1-4d14-a0c0-b183572c21a7", "a2a4a88a-b91a-4e6d-94f0-507179292058"),
+                "no",
+                "no",
+                "no",
+                "no",
+                "0",
+                "0",
+                "2"
             }
         };
     }
@@ -1614,7 +1636,7 @@ public class NotificationsIt {
                 "0"
             },
             new Object[]{
-                APPEAL_LODGED,
+                CASE_UPDATED,
                 "paper",
                 Arrays.asList("b90df52f-c628-409c-8875-4b0b9663a053", "4b1ee55b-abd1-4e7e-b0ed-693d8df1e741"),
                 Collections.emptyList(),
@@ -1628,7 +1650,7 @@ public class NotificationsIt {
                 "0"
             },
             new Object[]{
-                APPEAL_LODGED,
+                CASE_UPDATED,
                 "oral",
                 Arrays.asList("b90df52f-c628-409c-8875-4b0b9663a053", "4b1ee55b-abd1-4e7e-b0ed-693d8df1e741"),
                 Collections.emptyList(),
@@ -1642,7 +1664,7 @@ public class NotificationsIt {
                 "0"
             },
             new Object[]{
-                APPEAL_LODGED,
+                CASE_UPDATED,
                 "paper",
                 Collections.singletonList("4b1ee55b-abd1-4e7e-b0ed-693d8df1e741"),
                 Collections.emptyList(),
@@ -1656,7 +1678,7 @@ public class NotificationsIt {
                 "1"
             },
             new Object[]{
-                APPEAL_LODGED,
+                CASE_UPDATED,
                 "paper",
                 Collections.singletonList("b90df52f-c628-409c-8875-4b0b9663a053"),
                 Collections.emptyList(),
@@ -1670,7 +1692,7 @@ public class NotificationsIt {
                 "1"
             },
             new Object[]{
-                APPEAL_LODGED,
+                CASE_UPDATED,
                 "paper",
                 Collections.emptyList(),
                 Collections.emptyList(),
@@ -1710,6 +1732,34 @@ public class NotificationsIt {
                 "1",
                 "1",
                 "0"
+            },
+            new Object[]{
+                REQUEST_INFO_INCOMPLETE,
+                "paper",
+                Collections.emptyList(),
+                Collections.emptyList(),
+                Arrays.asList("bc943cf3-9fd1-4d14-a0c0-b183572c21a7", "a2a4a88a-b91a-4e6d-94f0-507179292058"),
+                "yes",
+                "yes",
+                "yes",
+                "yes",
+                "0",
+                "0",
+                "2"
+            },
+            new Object[]{
+                REQUEST_INFO_INCOMPLETE,
+                "paper",
+                Collections.emptyList(),
+                Collections.emptyList(),
+                Arrays.asList("bc943cf3-9fd1-4d14-a0c0-b183572c21a7", "a2a4a88a-b91a-4e6d-94f0-507179292058"),
+                "no",
+                "no",
+                "no",
+                "no",
+                "0",
+                "0",
+                "2"
             }
         };
     }
@@ -1989,6 +2039,32 @@ public class NotificationsIt {
                 "0",
                 "0",
                 ""
+            },
+            new Object[]{
+                REQUEST_INFO_INCOMPLETE,
+                "oral",
+                Collections.emptyList(),
+                Collections.emptyList(),
+                Collections.singletonList("f4ef3253-bae7-4fa6-8e3d-9b3e83bec356"),
+                "yes",
+                "yes",
+                "0",
+                "0",
+                "1",
+                "Appointee Appointee"
+            },
+            new Object[]{
+                REQUEST_INFO_INCOMPLETE,
+                "oral",
+                Collections.emptyList(),
+                Collections.emptyList(),
+                Collections.singletonList("f4ef3253-bae7-4fa6-8e3d-9b3e83bec356"),
+                "no",
+                "no",
+                "0",
+                "0",
+                "1",
+                "Appointee Appointee"
             }
         };
     }
@@ -2271,11 +2347,37 @@ public class NotificationsIt {
                 ""
             },
             new Object[]{
-                APPEAL_LODGED,
+                CASE_UPDATED,
                 "paper",
                 Collections.emptyList(),
                 Collections.emptyList(),
                 Collections.singletonList("747d026e-1bec-4e96-8a34-28f36e30bba5"),
+                "no",
+                "no",
+                "0",
+                "0",
+                "1",
+                "Appointee Appointee"
+            },
+            new Object[]{
+                REQUEST_INFO_INCOMPLETE,
+                "oral",
+                Collections.emptyList(),
+                Collections.emptyList(),
+                Collections.singletonList("f4ef3253-bae7-4fa6-8e3d-9b3e83bec356"),
+                "yes",
+                "yes",
+                "0",
+                "0",
+                "1",
+                "Appointee Appointee"
+            },
+            new Object[]{
+                REQUEST_INFO_INCOMPLETE,
+                "oral",
+                Collections.emptyList(),
+                Collections.emptyList(),
+                Collections.singletonList("f4ef3253-bae7-4fa6-8e3d-9b3e83bec356"),
                 "no",
                 "no",
                 "0",
