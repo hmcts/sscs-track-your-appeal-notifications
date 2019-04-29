@@ -213,4 +213,13 @@
         <gav regex="true">^org\.springframework\.security:spring-security-crypto:.*$</gav>
         <cpe>cpe:/a:pivotal_software:spring_security</cpe>
     </suppress>
+  <suppress>
+    <notes><![CDATA[
+            file name: tomcat-embed-websocket-8.5.32.jar
+            ]]></notes>
+    <gav regex="true">^org\.apache\.tomcat\.embed:tomcat-embed-websocket:.*$</gav>
+    <cpe>CVE-2018-11784</cpe>
+    <cpe>CVE-2019-0199</cpe>
+    <cpe>CVE-2019-0232</cpe>
+  </suppress>
 </suppressions>
