@@ -218,17 +218,23 @@
             file name: tomcat-embed-websocket-8.5.32.jar
             ]]></notes>
     <gav regex="true">^org\.apache\.tomcat\.embed:tomcat-embed-websocket:.*$</gav>
-    <cpe>CVE-2018-11784</cpe>
-    <cpe>CVE-2019-0199</cpe>
-    <cpe>CVE-2019-0232</cpe>
+    <cpe>cpe:/a:apache_software_foundation:tomcat:8.5.32</cpe>
+    <cpe>cpe:/a:apache:tomcat:8.5.32</cpe>
+    <cpe>cpe:/a:apache_tomcat:apache_tomcat:8.5.32</cpe>
+    <cve>CVE-2018-11784</cve>
+    <cve>CVE-2019-0199</cve>
+    <cve>CVE-2019-0232</cve>
   </suppress>
   <suppress>
     <notes><![CDATA[
             file name: tomcat-embed-core-8.5.32.jar
             ]]></notes>
     <gav regex="true">^org\.apache\.tomcat\.embed:tomcat-embed-core:.*$</gav>
-    <cpe>CVE-2018-11784</cpe>
-    <cpe>CVE-2019-0199</cpe>
-    <cpe>CVE-2019-0232</cpe>
+    <cpe>cpe:/a:apache_software_foundation</cpe>
+    <cpe>cpe:/a:apache:tomcat</cpe>
+    <cpe>cpe:/a:apache_tomcat:apache_tomcat</cpe>
+    <cve>CVE-2018-11784</cve>
+    <cve>CVE-2019-0199</cve>
+    <cve>CVE-2019-0232</cve>
   </suppress>
 </suppressions>
