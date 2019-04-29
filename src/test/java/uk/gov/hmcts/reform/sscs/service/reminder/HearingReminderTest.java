@@ -14,6 +14,8 @@ import org.mockito.ArgumentCaptor;
 import org.mockito.Mock;
 import org.mockito.junit.MockitoJUnitRunner;
 import uk.gov.hmcts.reform.sscs.SscsCaseDataUtils;
+import uk.gov.hmcts.reform.sscs.ccd.domain.HearingType;
+import uk.gov.hmcts.reform.sscs.config.AppealHearingType;
 import uk.gov.hmcts.reform.sscs.domain.notify.NotificationEventType;
 import uk.gov.hmcts.reform.sscs.factory.CcdNotificationWrapper;
 import uk.gov.hmcts.reform.sscs.jobscheduler.model.Job;
@@ -40,11 +42,12 @@ public class HearingReminderTest {
     }
 
     @Test
-    public void canHandleEvent() {
+    public void canHandleEventWhenOralHearingType() {
 
         for (NotificationEventType eventType : NotificationEventType.values()) {
 
-            CcdNotificationWrapper wrapper = SscsCaseDataUtils.buildBasicCcdNotificationWrapper(eventType);
+            CcdNotificationWrapper wrapper = SscsCaseDataUtils.buildBasicCcdNotificationWrapper(eventType,
+                    AppealHearingType.ORAL.name());
 
             if (eventType == HEARING_BOOKED_NOTIFICATION) {
                 assertTrue(hearingReminder.canHandle(wrapper));
@@ -59,6 +62,22 @@ public class HearingReminderTest {
     }
 
     @Test
+    public void canHandleEventWhenPaperHearingType() {
+
+        for (NotificationEventType eventType : NotificationEventType.values()) {
+
+            CcdNotificationWrapper wrapper = SscsCaseDataUtils.buildBasicCcdNotificationWrapper(eventType,
+                    AppealHearingType.PAPER.name());
+
+            assertFalse(hearingReminder.canHandle(wrapper));
+            assertThatThrownBy(() -> hearingReminder.handle(wrapper))
+                    .hasMessage("cannot handle ccdResponse")
+                    .isExactlyInstanceOf(IllegalArgumentException.class);
+
+        }
+    }
+
+    @Test
     public void schedulesReminder() {
 
         final String expectedJobGroup = "ID_EVENT";
@@ -68,8 +87,9 @@ public class HearingReminderTest {
         String hearingDate = "2018-01-01";
         String hearingTime = "14:01:18";
 
-        CcdNotificationWrapper wrapper = SscsCaseDataUtils.buildBasicCcdNotificationWrapperWithHearing(
+        CcdNotificationWrapper wrapper = SscsCaseDataUtils.buildBasicCcdNotificationWrapperWithHearingAndHearingType(
             HEARING_BOOKED_NOTIFICATION,
+            HearingType.ORAL,
             hearingDate,
             hearingTime
         );
@@ -105,8 +125,9 @@ public class HearingReminderTest {
         String hearingDate = "2018-01-01";
         String hearingTime = "14:01:18";
 
-        CcdNotificationWrapper wrapper = SscsCaseDataUtils.buildBasicCcdNotificationWrapperWithHearing(
+        CcdNotificationWrapper wrapper = SscsCaseDataUtils.buildBasicCcdNotificationWrapperWithHearingAndHearingType(
                 HEARING_BOOKED_NOTIFICATION,
+                HearingType.ORAL,
                 hearingDate,
                 hearingTime
         );

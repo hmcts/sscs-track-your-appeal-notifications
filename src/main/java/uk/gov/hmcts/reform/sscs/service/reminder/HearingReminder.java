@@ -3,6 +3,7 @@ package uk.gov.hmcts.reform.sscs.service.reminder;
 import static org.slf4j.LoggerFactory.getLogger;
 import static uk.gov.hmcts.reform.sscs.domain.notify.NotificationEventType.HEARING_BOOKED_NOTIFICATION;
 import static uk.gov.hmcts.reform.sscs.domain.notify.NotificationEventType.HEARING_REMINDER_NOTIFICATION;
+import static uk.gov.hmcts.reform.sscs.domain.notify.NotificationEventType.HEARING_REQUIRED_NOTIFICATION;
 
 import java.time.LocalDateTime;
 import java.time.ZoneId;
@@ -13,6 +14,7 @@ import org.springframework.stereotype.Component;
 import uk.gov.hmcts.reform.sscs.ccd.domain.Hearing;
 import uk.gov.hmcts.reform.sscs.ccd.domain.SscsCaseData;
 import uk.gov.hmcts.reform.sscs.config.AppConstants;
+import uk.gov.hmcts.reform.sscs.config.AppealHearingType;
 import uk.gov.hmcts.reform.sscs.factory.NotificationWrapper;
 import uk.gov.hmcts.reform.sscs.jobscheduler.model.Job;
 import uk.gov.hmcts.reform.sscs.jobscheduler.services.JobScheduler;
@@ -44,7 +46,12 @@ public class HearingReminder implements ReminderHandler {
     public boolean canHandle(NotificationWrapper wrapper) {
         return wrapper
             .getNotificationType()
-            .equals(HEARING_BOOKED_NOTIFICATION);
+            .equals(HEARING_BOOKED_NOTIFICATION) && isAllowedForHearingType(wrapper.getHearingType());
+    }
+
+    private boolean isAllowedForHearingType(AppealHearingType hearingType) {
+        return ((AppealHearingType.PAPER.equals(hearingType) && HEARING_REMINDER_NOTIFICATION.isSendForPaperCase())
+                || (AppealHearingType.ORAL.equals(hearingType) && HEARING_REMINDER_NOTIFICATION.isSendForOralCase()));
     }
 
     public boolean canSchedule(NotificationWrapper wrapper) {
