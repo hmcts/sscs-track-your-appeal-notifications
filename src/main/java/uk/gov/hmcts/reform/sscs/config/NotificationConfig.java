@@ -17,8 +17,6 @@ public class NotificationConfig {
 
     @Value("${manage.emails.link}")
     private String manageEmailsLink;
-    @Value("${hmcts.phone.number}")
-    private String hmctsPhoneNumber;
     @Value("${track.appeal.link}")
     private String trackAppealLink;
     @Value("${evidence.submission.info.link}")
@@ -34,10 +32,6 @@ public class NotificationConfig {
 
     NotificationConfig(@Autowired Environment env) {
         this.env = env;
-    }
-
-    public String getHmctsPhoneNumber() {
-        return hmctsPhoneNumber;
     }
 
     public Link getManageEmailsLink() {

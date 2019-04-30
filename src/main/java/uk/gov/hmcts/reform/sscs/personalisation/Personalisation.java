@@ -81,7 +81,6 @@ public class Personalisation<E extends NotificationWrapper> {
         personalisation.put(APPEAL_REF, getAppealReference(ccdResponse));
         personalisation.put(APPELLANT_NAME, ccdResponse.getAppeal().getAppellant().getName().getFullNameNoTitle());
         personalisation.put(NAME, getName(subscriptionWithType.getSubscriptionType(), ccdResponse, responseWrapper));
-        personalisation.put(PHONE_NUMBER, config.getHmctsPhoneNumber());
         personalisation.put(CCD_ID, StringUtils.defaultIfBlank(ccdResponse.getCcdCaseId(), StringUtils.EMPTY));
 
         // Some templates (noteably letters) can be sent out before the SC Ref is added to the case
@@ -266,6 +265,7 @@ public class Personalisation<E extends NotificationWrapper> {
             personalisation.put(COUNTY_LITERAL, rpc.getCity());
             personalisation.put(POSTCODE_LITERAL, rpc.getPostcode());
             personalisation.put(REGIONAL_OFFICE_POSTCODE_LITERAL, rpc.getPostcode());
+            personalisation.put(PHONE_NUMBER, rpc.getPhoneNumber());
         }
 
         setHearingArrangementDetails(personalisation, ccdResponse);

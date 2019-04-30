@@ -63,6 +63,7 @@ public class PersonalisationTest {
     private static final String ADDRESS4 = "36 Dale Street";
     private static final String CITY = "LIVERPOOL";
     private static final String POSTCODE = "L2 5UZ";
+    private static final String PHONE = "0300 999 8888";
     private static final String DATE = "2018-07-01T14:01:18.243";
 
     @Mock
@@ -87,10 +88,11 @@ public class PersonalisationTest {
 
     private Name name;
 
+    private  RegionalProcessingCenter rpc;
+
     @Before
     public void setup() {
         initMocks(this);
-        when(config.getHmctsPhoneNumber()).thenReturn("01234543225");
         when(config.getManageEmailsLink()).thenReturn(Link.builder().linkUrl("http://manageemails.com/mac").build());
         when(config.getTrackAppealLink()).thenReturn(Link.builder().linkUrl("http://tyalink.com/appeal_id").build());
         when(config.getEvidenceSubmissionInfoLink()).thenReturn(Link.builder().linkUrl("http://link.com/appeal_id").build());
@@ -106,8 +108,8 @@ public class PersonalisationTest {
         when(macService.generateToken("GLSCRR", ESA.name())).thenReturn("ZYX");
         when(hearingContactDateExtractor.extract(any())).thenReturn(Optional.empty());
 
-        RegionalProcessingCenter rpc = RegionalProcessingCenter.builder()
-                .name("LIVERPOOL").address1(ADDRESS1).address2(ADDRESS2).address3(ADDRESS3).address4(ADDRESS4).city(CITY).postcode(POSTCODE).build();
+        rpc = RegionalProcessingCenter.builder()
+                .name("LIVERPOOL").address1(ADDRESS1).address2(ADDRESS2).address3(ADDRESS3).address4(ADDRESS4).city(CITY).postcode(POSTCODE).phoneNumber(PHONE).build();
 
         when(regionalProcessingCenterService.getByScReferenceCode("SC/1234/5")).thenReturn(rpc);
 
@@ -243,6 +245,7 @@ public class PersonalisationTest {
 
         SscsCaseData response = SscsCaseData.builder()
                 .ccdCaseId(CASE_ID).caseReference("SC/1234/5")
+                .regionalProcessingCenter(rpc)
                 .appeal(Appeal.builder().benefitType(BenefitType.builder().code(benefitType).build())
                         .appellant(Appellant.builder().name(name).build())
                         .build())
@@ -266,7 +269,7 @@ public class PersonalisationTest {
         assertEquals("GLSCRR", result.get(APPEAL_ID));
         assertEquals("Harry Kane", result.get(NAME));
         assertEquals("Harry Kane", result.get(APPELLANT_NAME));
-        assertEquals("01234543225", result.get(PHONE_NUMBER));
+        assertEquals("0300 999 8888", result.get(PHONE_NUMBER));
         assertEquals("http://link.com/manage-email-notifications/ZYX", result.get(MANAGE_EMAILS_LINK_LITERAL));
         assertEquals("http://tyalink.com/GLSCRR", result.get(TRACK_APPEAL_LINK_LITERAL));
         assertEquals(DWP_ACRONYM, result.get(FIRST_TIER_AGENCY_ACRONYM));
@@ -288,6 +291,27 @@ public class PersonalisationTest {
         assertEquals("1 February 2018", result.get(ACCEPT_VIEW_BY_DATE_LITERAL));
         assertEquals("1 January 2018", result.get(QUESTION_ROUND_EXPIRES_DATE_LITERAL));
         assertEquals("", result.get(APPOINTEE_DESCRIPTION));
+    }
+
+    @Test
+    public void givenNoRpc_thenGivePhoneNumberBasedOnSc() {
+        List<Event> events = new ArrayList<>();
+        events.add(Event.builder().value(EventDetails.builder().date(DATE).type(APPEAL_RECEIVED.getCcdType()).build()).build());
+
+        SscsCaseData response = SscsCaseData.builder()
+                .ccdCaseId(CASE_ID).caseReference("SC/1234/5")
+                .regionalProcessingCenter(null)
+                .appeal(Appeal.builder().benefitType(BenefitType.builder().code("PIP").build())
+                        .appellant(Appellant.builder().name(name).build())
+                        .build())
+                .subscriptions(subscriptions)
+                .events(events)
+                .build();
+
+        Map<String, String> result = personalisation.create(SscsCaseDataWrapper.builder().newSscsCaseData(response)
+                .notificationEventType(APPEAL_RECEIVED_NOTIFICATION).build(), new SubscriptionWithType(subscriptions.getAppellantSubscription(), APPELLANT));
+
+        assertEquals("0300 999 8888", result.get(PHONE_NUMBER));
     }
 
     @Test
