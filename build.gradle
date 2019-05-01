@@ -103,6 +103,12 @@ dependencyManagement {
         dependencySet(group: 'com.google.guava', version: '27.1-jre') {
             entry 'guava'
         }
+        // CVE-2019-0232, CVE-2019-0199 - command line injections on windows
+        dependencySet(group: 'org.apache.tomcat.embed', version: '9.0.19') {
+            entry 'tomcat-embed-core'
+            entry 'tomcat-embed-el'
+            entry 'tomcat-embed-websocket'
+        }
     }
 }
 
@@ -224,7 +230,7 @@ dependencies {
     compile group: 'uk.gov.hmcts.reform', name: 'java-logging-httpcomponents', version: versions.reformLogging
     compile group: 'uk.gov.hmcts.reform', name: 'java-logging-appinsights', version: versions.reformLogging
     compile group: 'uk.gov.hmcts.reform', name: 'http-proxy-spring-boot-autoconfigure', version: '2.0.0'
-    compile group: 'uk.gov.hmcts.reform', name: 'sscs-job-scheduler', version: '1.5.3'
+    compile group: 'uk.gov.hmcts.reform', name: 'sscs-job-scheduler', version: '1.5.2'
     compile group: 'uk.gov.hmcts.reform', name: 'service-auth-provider-client', version: '3.0.0'
 
     compile group: 'uk.gov.hmcts.reform', name: 'sscs-common', version: '2.0.7'
