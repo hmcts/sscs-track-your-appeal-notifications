@@ -238,7 +238,7 @@ dependencies {
     compile group: 'uk.gov.hmcts.reform', name: 'sscs-pdf-email-common', version: '1.0.4'
 
     compile group: 'uk.gov.service.notify', name: 'notifications-java-client', version: '3.14.2-RELEASE'
-    compile group: 'io.github.openfeign.form', name: 'feign-form', version: '3.7.0'
+    compile group: 'io.github.openfeign.form', name: 'feign-form', version: '3.8.0'
 
     compile group: 'org.apache.pdfbox', name: 'pdfbox', version: '2.0.15'
 
