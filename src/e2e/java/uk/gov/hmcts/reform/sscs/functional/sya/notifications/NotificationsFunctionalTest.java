@@ -330,7 +330,7 @@ public class NotificationsFunctionalTest extends AbstractFunctionalTest {
                 hearingAdjournedAppointeeSmsId
         );
         Notification emailNotification = notifications.stream().filter(f -> f.getTemplateId().toString().equals(hearingAdjournedAppointeeEmailId)).collect(Collectors.toList()).get(0);
-        assertTrue(emailNotification.getBody().contains("Dear Appointee User\r\n\r\nYou are receiving this update as the appointee for Appellant User.\r\n\r\n"));
+        assertTrue(emailNotification.getBody().contains("Dear Appointee User"));
     }
 
     @Test
@@ -358,7 +358,7 @@ public class NotificationsFunctionalTest extends AbstractFunctionalTest {
         );
         Notification emailNotification = notifications.stream().filter(f -> f.getTemplateId().toString().equals(paperAppointeeResponseReceivedEmailId)).collect(Collectors.toList()).get(0);
         assertTrue(emailNotification.getBody().contains("Dear Appointee User"));
-        assertTrue(emailNotification.getBody().contains("You are receiving this update as the appointee for"));
+        assertTrue(emailNotification.getBody().contains("You should have received a copy"));
     }
 
     public void shouldSendAppointeeAppealWithdrawnNotification() throws NotificationClientException, IOException {
@@ -404,7 +404,7 @@ public class NotificationsFunctionalTest extends AbstractFunctionalTest {
         Notification emailNotification = notifications.get(0);
 
         assertTrue(emailNotification.getBody().contains("Dear Appointee User"));
-        assertTrue(emailNotification.getBody().contains("You are receiving this update as the appointee for"));
+        assertTrue(emailNotification.getBody().contains("You will receive another email"));
     }
 
 }
