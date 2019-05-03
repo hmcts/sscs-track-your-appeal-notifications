@@ -12,7 +12,7 @@ postgresql:
 java:
   image: ${IMAGE_NAME}
   ingressHost: ${SERVICE_FQDN}
-  applicationPort: 8091
+  applicationPort: 8081
   keyVaults:
     sscs:
       resourceGroup: sscs
