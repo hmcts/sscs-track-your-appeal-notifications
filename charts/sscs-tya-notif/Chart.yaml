@@ -1,5 +1,5 @@
-name: sscs-tya-notifications
-description: SSCS Track your Appeal Notifications
+name: sscs-tya-notif
+description: SSCS Track Your Appeal Notifications
 home: https://github.com/hmcts/sscs-track-your-appeal-notifications
 apiVersion: v1
 appVersion: "1.0"

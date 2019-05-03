@@ -32,7 +32,7 @@ java:
       - sscs-asb-primary-send-and-listen-shared-access-key
   environment:
     REFORM_TEAM: sscs
-    REFORM_SERVICE_NAME: sscs-tya-notifications
+    REFORM_SERVICE_NAME: tya-notifications
     REFORM_SERVICE_TYPE: java
     REFORM_ENVIRONMENT: preview
     ROOT_LOGGING_LEVEL: INFO
