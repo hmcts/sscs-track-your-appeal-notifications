@@ -28,11 +28,11 @@ public class ReminderNotificationsFunctionalTest extends AbstractFunctionalTest 
     @Value("${notification.oral.evidenceReminder.representative.smsId}")
     private String evidenceReminderOralRepresentativeSmsTemplateId;
 
-    @Value("${notification.oral.responseReceived.emailId}")
-    private String responseReceivedOralEmailTemplateId;
+    @Value("${notification.oral.responseReceived.appellant.emailId}")
+    private String responseReceivedOralAppellantEmailTemplateId;
 
-    @Value("${notification.oral.responseReceived.smsId}")
-    private String responseReceivedOralSmsTemplateId;
+    @Value("${notification.oral.responseReceived.appellant.smsId}")
+    private String responseReceivedOralAppellantSmsTemplateId;
 
     @Value("${notification.paper.evidenceReminder.appellant.emailId}")
     private String evidenceReminderPaperAppellantEmailTemplateId;
@@ -46,11 +46,11 @@ public class ReminderNotificationsFunctionalTest extends AbstractFunctionalTest 
     @Value("${notification.paper.evidenceReminder.representative.smsId}")
     private String evidenceReminderPaperRepresentativeSmsTemplateId;
 
-    @Value("${notification.paper.responseReceived.emailId}")
-    private String responseReceivedPaperEmailTemplateId;
+    @Value("${notification.paper.responseReceived.appellant.emailId}")
+    private String responseReceivedPaperAppellantEmailTemplateId;
 
-    @Value("${notification.paper.responseReceived.smsId}")
-    private String responseReceivedPaperSmsTemplateId;
+    @Value("${notification.paper.responseReceived.appellant.smsId}")
+    private String responseReceivedPaperAppellantSmsTemplateId;
 
     @Value("${notification.hearingReminder.appellant.emailId}")
     private String hearingReminderAppellantEmailTemplateId;
@@ -75,8 +75,8 @@ public class ReminderNotificationsFunctionalTest extends AbstractFunctionalTest 
 
         List<Notification> notifications =
             tryFetchNotificationsForTestCase(
-                responseReceivedOralEmailTemplateId,
-                responseReceivedOralSmsTemplateId,
+                responseReceivedOralAppellantEmailTemplateId,
+                responseReceivedOralAppellantSmsTemplateId,
                 evidenceReminderOralAppellantEmailTemplateId,
                 evidenceReminderOralAppellantSmsTemplateId,
                 evidenceReminderOralRepresentativeEmailTemplateId,
@@ -96,27 +96,27 @@ public class ReminderNotificationsFunctionalTest extends AbstractFunctionalTest 
 
         assertNotificationBodyContains(notifications, evidenceReminderOralAppellantSmsTemplateId, "ESA");
 
-        assertNotificationSubjectContains(notifications, responseReceivedOralEmailTemplateId, "ESA");
+        assertNotificationSubjectContains(notifications, responseReceivedOralAppellantEmailTemplateId, "ESA");
         assertNotificationBodyContains(
             notifications,
-            responseReceivedOralEmailTemplateId,
+            responseReceivedOralAppellantEmailTemplateId,
             caseReference,
             "User Test",
             "ESA",
             "DWP",
             "response",
             "/trackyourappeal",
-            "12 March 2016"
+            "how long"
         );
 
         assertNotificationBodyContains(
             notifications,
-            responseReceivedOralSmsTemplateId,
+            responseReceivedOralAppellantSmsTemplateId,
             "ESA",
             "DWP",
             "response",
             "/trackyourappeal",
-            "12 March 2016"
+            "how long"
         );
     }
 
@@ -129,8 +129,8 @@ public class ReminderNotificationsFunctionalTest extends AbstractFunctionalTest 
 
         List<Notification> notifications =
             tryFetchNotificationsForTestCase(
-                responseReceivedPaperEmailTemplateId,
-                responseReceivedPaperSmsTemplateId,
+                responseReceivedPaperAppellantEmailTemplateId,
+                responseReceivedPaperAppellantSmsTemplateId,
                 evidenceReminderPaperAppellantEmailTemplateId,
                 evidenceReminderPaperAppellantSmsTemplateId,
                 evidenceReminderPaperRepresentativeEmailTemplateId,
@@ -149,27 +149,27 @@ public class ReminderNotificationsFunctionalTest extends AbstractFunctionalTest 
 
         assertNotificationBodyContains(notifications, evidenceReminderPaperAppellantSmsTemplateId, "ESA");
 
-        assertNotificationSubjectContains(notifications, responseReceivedPaperEmailTemplateId, "ESA");
+        assertNotificationSubjectContains(notifications, responseReceivedPaperAppellantEmailTemplateId, "ESA");
         assertNotificationBodyContains(
                 notifications,
-                responseReceivedPaperEmailTemplateId,
+                responseReceivedPaperAppellantEmailTemplateId,
                 caseReference,
                 "User Test",
                 "ESA",
                 "DWP",
                 "response",
                 "/trackyourappeal",
-                "9 April 2016"
+                "how long"
         );
 
         assertNotificationBodyContains(
                 notifications,
-                responseReceivedPaperSmsTemplateId,
+                responseReceivedPaperAppellantSmsTemplateId,
                 "ESA",
                 "DWP",
                 "response",
                 "/trackyourappeal",
-                "9 April 2016"
+                "how long"
         );
     }
 
@@ -181,8 +181,8 @@ public class ReminderNotificationsFunctionalTest extends AbstractFunctionalTest 
 
         List<Notification> notifications =
                 tryFetchNotificationsForTestCase(
-                        responseReceivedOralEmailTemplateId,
-                        responseReceivedOralSmsTemplateId,
+                        responseReceivedOralAppellantEmailTemplateId,
+                        responseReceivedOralAppellantSmsTemplateId,
                         evidenceReminderOralRepresentativeEmailTemplateId,
                         evidenceReminderOralRepresentativeSmsTemplateId
                 );
@@ -199,27 +199,27 @@ public class ReminderNotificationsFunctionalTest extends AbstractFunctionalTest 
 
         assertNotificationBodyContains(notifications, evidenceReminderOralRepresentativeSmsTemplateId, "ESA");
 
-        assertNotificationSubjectContains(notifications, responseReceivedOralEmailTemplateId, "ESA");
+        assertNotificationSubjectContains(notifications, responseReceivedOralAppellantEmailTemplateId, "ESA");
         assertNotificationBodyContains(
                 notifications,
-                responseReceivedOralEmailTemplateId,
+                responseReceivedOralAppellantEmailTemplateId,
                 caseReference,
                 "User Test",
                 "ESA",
                 "DWP",
                 "response",
                 "/trackyourappeal",
-                "12 March 2016"
+                "how long"
         );
 
         assertNotificationBodyContains(
                 notifications,
-                responseReceivedOralSmsTemplateId,
+                responseReceivedOralAppellantSmsTemplateId,
                 "ESA",
                 "DWP",
                 "response",
                 "/trackyourappeal",
-                "12 March 2016"
+                "how long"
         );
     }
 
@@ -232,8 +232,8 @@ public class ReminderNotificationsFunctionalTest extends AbstractFunctionalTest 
 
         List<Notification> notifications =
                 tryFetchNotificationsForTestCase(
-                        responseReceivedPaperEmailTemplateId,
-                        responseReceivedPaperSmsTemplateId,
+                        responseReceivedPaperAppellantEmailTemplateId,
+                        responseReceivedPaperAppellantSmsTemplateId,
                         evidenceReminderPaperRepresentativeEmailTemplateId,
                         evidenceReminderPaperRepresentativeSmsTemplateId
                 );
@@ -250,27 +250,27 @@ public class ReminderNotificationsFunctionalTest extends AbstractFunctionalTest 
 
         assertNotificationBodyContains(notifications, evidenceReminderPaperRepresentativeSmsTemplateId, "ESA");
 
-        assertNotificationSubjectContains(notifications, responseReceivedPaperEmailTemplateId, "ESA");
+        assertNotificationSubjectContains(notifications, responseReceivedPaperAppellantEmailTemplateId, "ESA");
         assertNotificationBodyContains(
                 notifications,
-                responseReceivedPaperEmailTemplateId,
+                responseReceivedPaperAppellantEmailTemplateId,
                 caseReference,
                 "User Test",
                 "ESA",
                 "DWP",
                 "response",
                 "/trackyourappeal",
-                "9 April 2016"
+                "how long"
         );
 
         assertNotificationBodyContains(
                 notifications,
-                responseReceivedPaperSmsTemplateId,
+                responseReceivedPaperAppellantSmsTemplateId,
                 "ESA",
                 "DWP",
                 "response",
                 "/trackyourappeal",
-                "9 April 2016"
+                "how long"
         );
     }
 
