@@ -1,0 +1,22 @@
+spring:
+  cloud:
+    propertiesvolume:
+      paths: /mnt/secrets/sscs
+      prefixed: false
+      aliases:
+        idam-api: IDAM_URL
+        idam-sscs-systemupdate-user: IDAM_SSCS_SYSTEMUPDATE_USER
+        idam-sscs-systemupdate-password: IDAM_SSCS_SYSTEMUPDATE_PASSWORD
+        notification-key: NOTIFICATION_API_KEY
+        notification-test-key: NOTIFICATION_API_TEST_KEY
+        sscs-email-mac-secret-text: EMAIL_MAC_SECRET_TEXT
+        idam-sscs-oauth2-client-secret: IDAM_OAUTH2_CLIENT_SECRET
+        idam-oauth-user: IDAM_OAUTH2_CLIENT_ID
+        ccd-api: CORE_CASE_DATA_API_URL
+        ccd-jid: CORE_CASE_DATA_API_URL
+        ccd-tid: CORE_CASE_DATA_API_URL
+        idam-redirect: IDAM_OAUTH2_REDIRECT_URL
+        tya-link: SSCS_TRACK_YOUR_APPEAL_LINK
+        idam-s2s-api: IDAM_S2S_AUTH
+        sscs-s2s-secret: IDAM_S2S_AUTH_TOTP_SECRET
+        s2s-micro: IDAM_S2S_AUTH_MICROSERVICE
