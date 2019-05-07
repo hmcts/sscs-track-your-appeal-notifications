@@ -1,0 +1,65 @@
+postgresql:
+  postgresqlUsername: sscs
+  postgresqlPassword: sscs
+  postgresqlDatabase: preview
+  persistence:
+    enabled: false
+  service:
+    type: LoadBalancer
+    annotations:
+      service.beta.kubernetes.io/azure-load-balancer-internal: "true"
+
+java:
+  image: ${IMAGE_NAME}
+  ingressHost: ${SERVICE_FQDN}
+  applicationPort: 8081
+  keyVaults:
+    sscs:
+      resourceGroup: sscs
+      secrets:
+      - idam-api
+      - idam-oauth-user
+      - idam-redirect
+      - idam-sscs-systemupdate-user
+      - idam-sscs-systemupdate-password
+      - idam-sscs-oauth2-client-secret
+      - ccd-api
+      - ccd-jid
+      - ccd-tid
+      - idam-s2s-api
+      - sscs-s2s-secret
+      - s2s-micro
+      - sscs-asb-primary-send-and-listen-shared-access-key
+  environment:
+    REFORM_TEAM: sscs
+    REFORM_SERVICE_NAME: tya-notifications
+    REFORM_SERVICE_TYPE: java
+    REFORM_ENVIRONMENT: preview
+    ROOT_LOGGING_LEVEL: INFO
+    LOG_OUTPUT: single
+    IDAM_API_URL: ${IDAM_URL}
+    IDAM_SSCS_SYSTEMUPDATE_USER: ${IDAM_SSCS_SYSTEMUPDATE_USER}
+    IDAM_SSCS_SYSTEMUPDATE_PASSWORD: ${IDAM_SSCS_SYSTEMUPDATE_PASSWORD}
+    IDAM_OAUTH2_CLIENT_ID: "sscs"
+    IDAM_OAUTH2_CLIENT_SECRET: ${IDAM_OAUTH2_CLIENT_SECRET}
+    IDAM_S2S_AUTH_MICROSERVICE: ${IDAM_S2S_AUTH_MICROSERVICE}
+    IDAM_S2S_AUTH_TOTP_SECRET: ${IDAM_S2S_AUTH_TOTP_SECRET}
+    IDAM_S2S_AUTH: ${IDAM_S2S_AUTH}
+    INFRASTRUCTURE_ENV: preprod
+    CORE_CASE_DATA_JURISDICTION_ID: SSCS
+    CORE_CASE_DATA_CASE_TYPE_ID: Benefit
+    NOTIFICATION_API_KEY: ${NOTIFICATION_API_KEY}
+    NOTIFICATION_API_TEST_KEY: ${NOTIFICATION_API_TEST_KEY}
+    JOB_SCHEDULER_POLL_INTERVAL: "30000"
+    EMAIL_MAC_SECRET_TEXT: ${EMAIL_MAC_SECRET_TEXT}
+    JOB_SCHEDULER_DB_HOST: ${SERVICE_NAME}-postgresql
+    JOB_SCHEDULER_DB_PORT: "5432"
+    JOB_SCHEDULER_DB_PASSWORD:  sscs
+    JOB_SCHEDULER_DB_USERNAME: sscs
+    JOB_SCHEDULER_DB_NAME: preview
+    JOB_SCHEDULER_DB_CONNECTION_OPTIONS: ""
+    MAX_ACTIVE_DB_CONNECTIONS: 70
+    HOURS_START_TIME: 0
+    HOURS_END_TIME: 23
+
+
