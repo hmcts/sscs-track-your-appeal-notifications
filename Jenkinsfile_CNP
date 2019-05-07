@@ -6,8 +6,8 @@ properties([
 
 @Library("Infrastructure")
 
-def product = "sscs-tya"
-def component = "notif"
+def product = "sscs"
+def component = "tya-notif"
 
 def secrets = [
   'sscs-${env}': [
