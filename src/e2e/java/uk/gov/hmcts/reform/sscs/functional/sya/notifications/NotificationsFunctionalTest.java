@@ -49,10 +49,10 @@ public class NotificationsFunctionalTest extends AbstractFunctionalTest {
     @Value("${notification.online.responseReceived.emailId}")
     private String onlineResponseReceivedEmailId;
 
-    @Value("${notification.paper.responseReceived.emailId}")
+    @Value("${notification.paper.responseReceived.appellant.emailId}")
     private String paperResponseReceivedEmailId;
 
-    @Value("${notification.paper.responseReceived.smsId}")
+    @Value("${notification.paper.responseReceived.appellant.smsId}")
     private String paperResponseReceivedSmsId;
 
     @Value("${notification.subscriptionUpdated.emailId}")
@@ -73,10 +73,10 @@ public class NotificationsFunctionalTest extends AbstractFunctionalTest {
     @Value("${notification.paper.evidenceReceived.appointee.smsId}")
     private String paperAppointeeEvidenceReceivedSmsId;
 
-    @Value("${notification.paper.responseReceived.emailId}")
+    @Value("${notification.paper.responseReceived.appointee.emailId}")
     private String paperAppointeeResponseReceivedEmailId;
 
-    @Value("${notification.paper.responseReceived.smsId}")
+    @Value("${notification.paper.responseReceived.appointee.smsId}")
     private String paperAppointeeResponseReceivedSmsId;
 
     @Value("${notification.oral.evidenceReminder.appointee.emailId}")
@@ -217,7 +217,7 @@ public class NotificationsFunctionalTest extends AbstractFunctionalTest {
         List<Notification> notifications = tryFetchNotificationsForTestCase(
                 paperResponseReceivedEmailId, paperResponseReceivedSmsId);
 
-        String expectedHearingContactDate = "9 April 2016";
+        String expectedHearingContactDate = "how long";
         String expectedTyaLink = tyaLink.replace(APPEAL_ID, TYA);
         assertNotificationBodyContains(notifications, paperResponseReceivedEmailId, caseData.getCaseReference(),
                 expectedPanelComposition, expectedHearingContactDate, expectedTyaLink);
@@ -330,7 +330,7 @@ public class NotificationsFunctionalTest extends AbstractFunctionalTest {
                 hearingAdjournedAppointeeSmsId
         );
         Notification emailNotification = notifications.stream().filter(f -> f.getTemplateId().toString().equals(hearingAdjournedAppointeeEmailId)).collect(Collectors.toList()).get(0);
-        assertTrue(emailNotification.getBody().contains("Dear Appointee User\r\n\r\nYou are receiving this update as the appointee for Appellant User.\r\n\r\n"));
+        assertTrue(emailNotification.getBody().contains("Dear Appointee User"));
     }
 
     @Test
@@ -358,7 +358,7 @@ public class NotificationsFunctionalTest extends AbstractFunctionalTest {
         );
         Notification emailNotification = notifications.stream().filter(f -> f.getTemplateId().toString().equals(paperAppointeeResponseReceivedEmailId)).collect(Collectors.toList()).get(0);
         assertTrue(emailNotification.getBody().contains("Dear Appointee User"));
-        assertTrue(emailNotification.getBody().contains("You are receiving this update as the appointee for"));
+        assertTrue(emailNotification.getBody().contains("You should have received a copy"));
     }
 
     public void shouldSendAppointeeAppealWithdrawnNotification() throws NotificationClientException, IOException {
@@ -404,7 +404,7 @@ public class NotificationsFunctionalTest extends AbstractFunctionalTest {
         Notification emailNotification = notifications.get(0);
 
         assertTrue(emailNotification.getBody().contains("Dear Appointee User"));
-        assertTrue(emailNotification.getBody().contains("You are receiving this update as the appointee for"));
+        assertTrue(emailNotification.getBody().contains("You will receive another email"));
     }
 
 }

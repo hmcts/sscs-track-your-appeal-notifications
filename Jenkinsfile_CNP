@@ -6,32 +6,34 @@ properties([
 
 @Library("Infrastructure")
 
-def product = "sscs-tya"
-def component = "notif"
+def product = "sscs"
+def component = "tya-notif"
 
-List<LinkedHashMap<String, Object>> secrets = [
-  secret('idam-api', 'IDAM_URL'),
-  secret('idam-sscs-systemupdate-user', 'IDAM_SSCS_SYSTEMUPDATE_USER'),
-  secret('idam-sscs-systemupdate-password', 'IDAM_SSCS_SYSTEMUPDATE_PASSWORD'),
-  secret('notification-key', 'NOTIFICATION_API_KEY'),
-  secret('notification-test-key', 'NOTIFICATION_API_TEST_KEY'),
-  secret('sscs-email-mac-secret-text', 'EMAIL_MAC_SECRET_TEXT'),
-  secret('idam-sscs-oauth2-client-secret', 'IDAM_OAUTH2_CLIENT_SECRET'),
-  secret('idam-oauth-user', 'IDAM_OAUTH2_CLIENT_ID'),
-  secret('ccd-api', 'CORE_CASE_DATA_API_URL'),
-  secret('ccd-jid', 'CORE_CASE_DATA_JURISDICTION_ID'),
-  secret('ccd-tid', 'CORE_CASE_DATA_CASE_TYPE_ID'),
-  secret('idam-redirect', 'IDAM_OAUTH2_REDIRECT_URL'),
-  secret('tya-link', 'SSCS_TRACK_YOUR_APPEAL_LINK'),
+def secrets = [
+  'sscs-${env}': [
+    secret('idam-api', 'IDAM_URL'),
+    secret('idam-sscs-systemupdate-user', 'IDAM_SSCS_SYSTEMUPDATE_USER'),
+    secret('idam-sscs-systemupdate-password', 'IDAM_SSCS_SYSTEMUPDATE_PASSWORD'),
+    secret('notification-key', 'NOTIFICATION_API_KEY'),
+    secret('notification-test-key', 'NOTIFICATION_API_TEST_KEY'),
+    secret('sscs-email-mac-secret-text', 'EMAIL_MAC_SECRET_TEXT'),
+    secret('idam-sscs-oauth2-client-secret', 'IDAM_OAUTH2_CLIENT_SECRET'),
+    secret('idam-oauth-user', 'IDAM_OAUTH2_CLIENT_ID'),
+    secret('ccd-api', 'CORE_CASE_DATA_API_URL'),
+    secret('ccd-jid', 'CORE_CASE_DATA_JURISDICTION_ID'),
+    secret('ccd-tid', 'CORE_CASE_DATA_CASE_TYPE_ID'),
+    secret('idam-redirect', 'IDAM_OAUTH2_REDIRECT_URL'),
+    secret('tya-link', 'SSCS_TRACK_YOUR_APPEAL_LINK'),
 
-  secret('idam-s2s-api', 'IDAM.S2S-AUTH'),
-  secret('sscs-s2s-secret', 'IDAM.S2S-AUTH.TOTP_SECRET'),
-  secret('s2s-micro', 'IDAM.S2S-AUTH.MICROSERVICE'),
+    secret('idam-s2s-api', 'IDAM.S2S-AUTH'),
+    secret('sscs-s2s-secret', 'IDAM.S2S-AUTH.TOTP_SECRET'),
+    secret('s2s-micro', 'IDAM.S2S-AUTH.MICROSERVICE'),
 
-  // Used by Kubernetes
-  secret('idam-s2s-api', 'IDAM_S2S_AUTH'),
-  secret('sscs-s2s-secret', 'IDAM_S2S_AUTH_TOTP_SECRET'),
-  secret('s2s-micro', 'IDAM_S2S_AUTH_MICROSERVICE'),
+    // Used by Kubernetes
+    secret('idam-s2s-api', 'IDAM_S2S_AUTH'),
+    secret('sscs-s2s-secret', 'IDAM_S2S_AUTH_TOTP_SECRET'),
+    secret('s2s-micro', 'IDAM_S2S_AUTH_MICROSERVICE')
+  ]
 ]
 
 static LinkedHashMap<String, Object> secret(String secretName, String envVar) {
@@ -45,9 +47,9 @@ static LinkedHashMap<String, Object> secret(String secretName, String envVar) {
 
 withPipeline("java", product, component) {
   enableDockerBuild()
-  enableDeployToAKS()
-  enableSlackNotifications('#sscs-tech')
+  installCharts()
   setVaultName('sscs')
   loadVaultSecrets(secrets)
+  enableSlackNotifications('#sscs-tech')
 }
 
