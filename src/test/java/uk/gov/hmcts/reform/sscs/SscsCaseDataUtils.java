@@ -213,6 +213,32 @@ public final class SscsCaseDataUtils {
                 .build());
     }
 
+    public static CcdNotificationWrapper buildBasicCcdNotificationWrapperWithHearingAndHearingType(
+            NotificationEventType notificationType,
+            HearingType hearingType,
+            String hearingDate,
+            String hearingTime
+    ) {
+        Hearing hearing = Hearing
+                .builder()
+                .value(HearingDetails
+                        .builder()
+                        .hearingDate(hearingDate)
+                        .time(hearingTime)
+                        .build()
+                )
+                .build();
+
+        return new CcdNotificationWrapper(SscsCaseDataWrapper.builder()
+                .notificationEventType(notificationType)
+                .newSscsCaseData(SscsCaseData.builder()
+                        .ccdCaseId(CASE_ID).appeal(Appeal.builder().hearingType(hearingType.getValue()).build())
+                        .events(Collections.emptyList())
+                        .hearings(Collections.singletonList(hearing))
+                        .build())
+                .build());
+    }
+
     public static void addEventTypeToCase(SscsCaseData response, EventType eventType) {
         Date now = new Date();
         SimpleDateFormat dt1 = new SimpleDateFormat("yyyy-MM-dd'T'hh:mm:ss.SSS");
