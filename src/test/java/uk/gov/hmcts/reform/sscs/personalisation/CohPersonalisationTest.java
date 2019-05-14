@@ -72,7 +72,6 @@ public class CohPersonalisationTest {
     @Before
     public void setup() {
         initMocks(this);
-        when(config.getHmctsPhoneNumber()).thenReturn("01234543225");
         when(config.getManageEmailsLink()).thenReturn(Link.builder().linkUrl("http://manageemails.com/mac").build());
         when(config.getTrackAppealLink()).thenReturn(Link.builder().linkUrl("http://tyalink.com/appeal_id").build());
         when(config.getEvidenceSubmissionInfoLink()).thenReturn(Link.builder().linkUrl("http://link.com/appeal_id").build());

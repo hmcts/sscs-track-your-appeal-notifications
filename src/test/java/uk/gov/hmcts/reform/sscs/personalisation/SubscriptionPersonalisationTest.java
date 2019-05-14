@@ -59,7 +59,6 @@ public class SubscriptionPersonalisationTest {
     @Before
     public void setup() {
         initMocks(this);
-        when(config.getHmctsPhoneNumber()).thenReturn("01234543225");
         when(config.getManageEmailsLink()).thenReturn(Link.builder().linkUrl("http://manageemails.com/mac").build());
         when(config.getTrackAppealLink()).thenReturn(Link.builder().linkUrl("http://tyalink.com/appeal_id").build());
         when(config.getEvidenceSubmissionInfoLink()).thenReturn(Link.builder().linkUrl("http://link.com/appeal_id").build());
@@ -72,7 +71,7 @@ public class SubscriptionPersonalisationTest {
         when(hearingContactDateExtractor.extract(any())).thenReturn(Optional.empty());
 
         RegionalProcessingCenter rpc = RegionalProcessingCenter.builder()
-                .name("Venue").address1("HMCTS").address2("The Road").address3("Town").address4("City").city("Birmingham").postcode("B23 1EH").build();
+                .name("Venue").address1("HMCTS").address2("The Road").address3("Town").address4("City").city("Birmingham").postcode("B23 1EH").phoneNumber("01234543225").build();
 
         when(regionalProcessingCenterService.getByScReferenceCode("1234")).thenReturn(rpc);
 
