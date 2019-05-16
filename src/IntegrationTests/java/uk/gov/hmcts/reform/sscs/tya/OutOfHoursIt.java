@@ -121,6 +121,9 @@ public class OutOfHoursIt {
     @Autowired
     private JobGroupGenerator jobGroupGenerator;
 
+    @Autowired
+    private BundledLetterTemplateUtil bundledLetterTemplateUtil;
+
     @Mock
     private SscsGeneratePdfService sscsGeneratePdfService;
 
@@ -132,7 +135,7 @@ public class OutOfHoursIt {
     public void setup() throws Exception {
         NotificationSender sender = new NotificationSender(notificationClient, null, notificationBlacklist);
 
-        SendNotificationService sendNotificationService = new SendNotificationService(sender, evidenceManagementService, sscsGeneratePdfService, notificationHandler, notificationValidService);
+        SendNotificationService sendNotificationService = new SendNotificationService(sender, evidenceManagementService, sscsGeneratePdfService, notificationHandler, notificationValidService, bundledLetterTemplateUtil);
         ReflectionTestUtils.setField(sendNotificationService, "bundledLettersOn", true);
 
         outOfHoursCalculator = mock(OutOfHoursCalculator.class);
