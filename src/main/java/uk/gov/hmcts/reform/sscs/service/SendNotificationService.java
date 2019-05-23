@@ -9,6 +9,7 @@ import static uk.gov.hmcts.reform.sscs.service.NotificationUtils.*;
 import static uk.gov.hmcts.reform.sscs.service.NotificationUtils.hasAppointee;
 import static uk.gov.hmcts.reform.sscs.service.NotificationUtils.isOkToSendEmailNotification;
 import static uk.gov.hmcts.reform.sscs.service.NotificationUtils.isOkToSendSmsNotification;
+import static uk.gov.hmcts.reform.sscs.service.NotificationValidService.INTERLOC_LETTERS;
 import static uk.gov.hmcts.reform.sscs.service.NotificationValidService.isBundledLetter;
 
 import java.io.IOException;
@@ -44,6 +45,9 @@ public class SendNotificationService {
 
     @Value("${feature.letters_on}")
     Boolean lettersOn;
+
+    @Value("${feature.interloc_letters_on}")
+    Boolean interlocLettersOn;
 
     @Value("${reminder.dwpResponseLateReminder.delay.seconds}")
     long delay;
@@ -83,7 +87,8 @@ public class SendNotificationService {
         sendEmailNotification(wrapper, subscriptionWithType.getSubscription(), notification);
         sendSmsNotification(wrapper, subscriptionWithType.getSubscription(), notification, eventType);
 
-        if (lettersOn) {
+        boolean isInterlocLetter = INTERLOC_LETTERS.contains(eventType);
+        if ((lettersOn && !isInterlocLetter) || (interlocLettersOn && isInterlocLetter)) {
             sendLetterNotification(wrapper, subscriptionWithType.getSubscription(), notification, subscriptionWithType, eventType);
         }
     }

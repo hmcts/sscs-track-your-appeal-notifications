@@ -150,6 +150,7 @@ public class NotificationServiceForSubscriptionUpdatedTest {
         ReflectionTestUtils.setField(sendNotificationService, "strikeOutLetterTemplate", "/templates/non_compliant_case_letter_template.html");
         ReflectionTestUtils.setField(sendNotificationService, "bundledLettersOn", false);
         ReflectionTestUtils.setField(sendNotificationService, "lettersOn", false);
+        ReflectionTestUtils.setField(sendNotificationService, "interlocLettersOn", false);
         return new NotificationService(notificationFactory, reminderService,
                 notificationValidService, notificationHandler, outOfHoursCalculator, notificationConfig, sendNotificationService
         );

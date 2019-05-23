@@ -123,7 +123,7 @@ public class NotificationServiceTest {
     public void setup() {
         initMocks(this);
 
-        notificationService = getNotificationService(true, true);
+        notificationService = getNotificationService(true, true, true);
 
         sscsCaseData = SscsCaseData.builder()
             .appeal(
@@ -1597,7 +1597,7 @@ public class NotificationServiceTest {
 
         when(factory.create(struckOutCcdNotificationWrapper, getSubscriptionWithType(ccdNotificationWrapper))).thenReturn(notification);
 
-        getNotificationService(false, false).manageNotificationAndSubscription(struckOutCcdNotificationWrapper);
+        getNotificationService(false, false, false).manageNotificationAndSubscription(struckOutCcdNotificationWrapper);
 
         verify(notificationHandler, times(0)).sendNotification(eq(struckOutCcdNotificationWrapper), eq(LETTER_TEMPLATE_ID_STRUCKOUT), eq(LETTER), any(NotificationHandler.SendNotification.class));
     }
@@ -1632,7 +1632,7 @@ public class NotificationServiceTest {
     }
 
 
-    private NotificationService getNotificationService(Boolean bundledLettersOn, Boolean lettersOn) {
+    private NotificationService getNotificationService(Boolean bundledLettersOn, Boolean lettersOn, Boolean interlocLettersOn) {
         SendNotificationService sendNotificationService = new SendNotificationService(notificationSender, evidenceManagementService, sscsGeneratePdfService, notificationHandler, notificationValidService);
 
         final NotificationService notificationService = new NotificationService(factory, reminderService,
@@ -1642,6 +1642,7 @@ public class NotificationServiceTest {
         ReflectionTestUtils.setField(sendNotificationService, "directionNoticeLetterTemplate", "/templates/direction_notice_letter_template.html");
         ReflectionTestUtils.setField(sendNotificationService, "bundledLettersOn", bundledLettersOn);
         ReflectionTestUtils.setField(sendNotificationService, "lettersOn", lettersOn);
+        ReflectionTestUtils.setField(sendNotificationService, "interlocLettersOn", lettersOn);
         return notificationService;
     }
 
