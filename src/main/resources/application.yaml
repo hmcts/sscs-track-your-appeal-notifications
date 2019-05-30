@@ -218,13 +218,6 @@ notification:
     emailId: 62e72e11-5eb6-4048-83f4-0b0c5c59fcb9
   corDecision:
     emailId: 5b0df251-49b9-46d5-b347-37a81ab77f19
-  caseUpdated:
-    appellant:
-      emailId: 01293b93-b23e-40a3-ad78-2c6cd01cd21c
-    appointee:
-      emailId: 01293b93-b23e-40a3-ad78-2c6cd01cd21c
-    representative:
-      emailId: 652753bf-59b4-46eb-9c24-bd762338a098
   requestInfoIncompleteApplication:
     appellant:
       letterId: bc943cf3-9fd1-4d14-a0c0-b183572c21a7
