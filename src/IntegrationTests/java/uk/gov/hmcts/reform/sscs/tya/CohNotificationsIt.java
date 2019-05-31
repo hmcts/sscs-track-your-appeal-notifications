@@ -112,6 +112,10 @@ public class CohNotificationsIt {
     @Autowired
     private NotificationConfig notificationConfig;
 
+    @Autowired
+    private BundledLetterTemplateUtil bundledLetterTemplateUtil;
+
+
     @Mock
     private SscsGeneratePdfService sscsGeneratePdfService;
 
@@ -121,7 +125,7 @@ public class CohNotificationsIt {
     public void setup() throws Exception {
         NotificationSender sender = new NotificationSender(notificationClient, null, notificationBlacklist);
 
-        SendNotificationService sendNotificationService = new SendNotificationService(sender, evidenceManagementService, sscsGeneratePdfService, notificationHandler, notificationValidService);
+        SendNotificationService sendNotificationService = new SendNotificationService(sender, evidenceManagementService, sscsGeneratePdfService, notificationHandler, notificationValidService, bundledLetterTemplateUtil);
         ReflectionTestUtils.setField(sendNotificationService, "bundledLettersOn", true);
         ReflectionTestUtils.setField(sendNotificationService, "lettersOn", true);
 
