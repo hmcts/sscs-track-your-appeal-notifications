@@ -1051,6 +1051,34 @@ public class NotificationsIt {
                 "0",
                 "0",
                 "2"
+            },
+            new Object[]{
+                INTERLOC_VALID_APPEAL,
+                "oral",
+                Collections.emptyList(),
+                Collections.emptyList(),
+                Arrays.asList("114cadaa-7760-4699-9add-d3a252f68909", "5745f77c-6512-4082-8c34-63851f24eab1"),
+                "yes",
+                "yes",
+                "yes",
+                "yes",
+                "0",
+                "0",
+                "2"
+            },
+            new Object[]{
+                INTERLOC_VALID_APPEAL,
+                "paper",
+                Collections.emptyList(),
+                Collections.emptyList(),
+                Arrays.asList("114cadaa-7760-4699-9add-d3a252f68909", "5745f77c-6512-4082-8c34-63851f24eab1"),
+                "no",
+                "no",
+                "no",
+                "no",
+                "0",
+                "0",
+                "2"
             }
         };
     }
@@ -1659,6 +1687,34 @@ public class NotificationsIt {
                 Collections.emptyList(),
                 Collections.emptyList(),
                 Arrays.asList("bc943cf3-9fd1-4d14-a0c0-b183572c21a7", "a2a4a88a-b91a-4e6d-94f0-507179292058"),
+                "no",
+                "no",
+                "no",
+                "no",
+                "0",
+                "0",
+                "2"
+            },
+            new Object[]{
+                INTERLOC_VALID_APPEAL,
+                "oral",
+                Collections.emptyList(),
+                Collections.emptyList(),
+                Arrays.asList("114cadaa-7760-4699-9add-d3a252f68909", "5745f77c-6512-4082-8c34-63851f24eab1"),
+                "yes",
+                "yes",
+                "yes",
+                "yes",
+                "0",
+                "0",
+                "2"
+            },
+            new Object[]{
+                INTERLOC_VALID_APPEAL,
+                "paper",
+                Collections.emptyList(),
+                Collections.emptyList(),
+                Arrays.asList("114cadaa-7760-4699-9add-d3a252f68909", "5745f77c-6512-4082-8c34-63851f24eab1"),
                 "no",
                 "no",
                 "no",

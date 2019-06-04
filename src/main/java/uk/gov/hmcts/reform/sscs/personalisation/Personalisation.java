@@ -345,7 +345,8 @@ public class Personalisation<E extends NotificationWrapper> {
             && ((FALLBACK_LETTER_SUBSCRIPTION_TYPES.contains(notificationEventType)
             || APPEAL_WITHDRAWN_NOTIFICATION.equals(notificationEventType)
             || HEARING_BOOKED_NOTIFICATION.equals(notificationEventType))
-            || REQUEST_INFO_INCOMPLETE.equals(notificationEventType))) {
+            || REQUEST_INFO_INCOMPLETE.equals(notificationEventType))
+            || INTERLOC_VALID_APPEAL.equals(notificationEventType)) {
             letterTemplateName = letterTemplateName + "." + subscriptionType.name().toLowerCase();
         }
         return letterTemplateName;

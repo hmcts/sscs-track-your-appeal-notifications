@@ -31,6 +31,7 @@ public enum NotificationEventType {
     APPEAL_LODGED("appealLodged", true, true, true, false, false),
     DIRECTION_ISSUED("directionIssued", true, true, true, false, false),
     REQUEST_INFO_INCOMPLETE("requestInfoIncompleteApplication", true, true, true, false, false),
+    INTERLOC_VALID_APPEAL("interlocValidAppeal", true, true, true, false, false),
     DO_NOT_SEND("");
 
     private String id;
