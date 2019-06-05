@@ -10,6 +10,7 @@ import static uk.gov.hmcts.reform.sscs.config.AppConstants.REP_SALUTATION;
 import static uk.gov.hmcts.reform.sscs.config.SubscriptionType.APPELLANT;
 import static uk.gov.hmcts.reform.sscs.config.SubscriptionType.APPOINTEE;
 import static uk.gov.hmcts.reform.sscs.config.SubscriptionType.REPRESENTATIVE;
+import static uk.gov.hmcts.reform.sscs.domain.notify.NotificationEventType.*;
 import static uk.gov.hmcts.reform.sscs.service.LetterUtils.getAddressToUseForLetter;
 import static uk.gov.hmcts.reform.sscs.service.NotificationValidService.BUNDLED_LETTER_EVENT_TYPES;
 import static uk.gov.hmcts.reform.sscs.service.NotificationValidService.FALLBACK_LETTER_SUBSCRIPTION_TYPES;
@@ -24,7 +25,6 @@ import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.Mock;
-import org.springframework.test.util.ReflectionTestUtils;
 import uk.gov.hmcts.reform.sscs.ccd.domain.*;
 import uk.gov.hmcts.reform.sscs.config.AppealHearingType;
 import uk.gov.hmcts.reform.sscs.config.SubscriptionType;
@@ -126,6 +126,9 @@ public class SendNotificationServiceTest {
     @Mock
     private NotificationValidService notificationValidService;
 
+    @Mock
+    private BundledLetterTemplateUtil bundledLetterTemplateUtil;
+
     private SendNotificationService classUnderTest;
 
     @Before
@@ -133,8 +136,6 @@ public class SendNotificationServiceTest {
         initMocks(this);
 
         classUnderTest = new SendNotificationService(notificationSender, evidenceManagementService, pdfService, notificationHandler, notificationValidService, bundledLetterTemplateUtil);
-        ReflectionTestUtils.setField(classUnderTest, "strikeOutLetterTemplate", "/templates/strike_out_letter_template.html");
-        ReflectionTestUtils.setField(classUnderTest, "directionNoticeLetterTemplate", "/templates/direction_notice_letter_template.html");
         classUnderTest.bundledLettersOn = true;
         classUnderTest.lettersOn = true;
         classUnderTest.interlocLettersOn = true;
@@ -169,7 +170,7 @@ public class SendNotificationServiceTest {
     @Test
     public void getRepAddressToUseForLetter() {
         Address expectedAddress = REP_WITH_ADDRESS.getAddress();
-        CcdNotificationWrapper wrapper = buildBaseWrapper(APPELLANT_WITH_ADDRESS_AND_APPOINTEE, NotificationEventType.STRUCK_OUT, REP_WITH_ADDRESS);
+        CcdNotificationWrapper wrapper = buildBaseWrapper(APPELLANT_WITH_ADDRESS_AND_APPOINTEE, STRUCK_OUT, REP_WITH_ADDRESS);
 
         Address actualAddress = getAddressToUseForLetter(wrapper, REPRESENTATIVE);
         assertEquals(expectedAddress.getLine1(), actualAddress.getLine1());
@@ -375,7 +376,7 @@ public class SendNotificationServiceTest {
     }
 
     private CcdNotificationWrapper buildBaseWrapper(Appellant appellant) {
-        return buildBaseWrapper(appellant, NotificationEventType.STRUCK_OUT, null);
+        return buildBaseWrapper(appellant, STRUCK_OUT, null);
     }
 
     private CcdNotificationWrapper buildBaseWrapper(Appellant appellant, NotificationEventType eventType) {

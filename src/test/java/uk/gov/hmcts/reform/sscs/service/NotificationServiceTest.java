@@ -1542,6 +1542,9 @@ public class NotificationServiceTest {
         when((notificationValidService).isHearingTypeValidToSendNotification(any(), any())).thenReturn(true);
         when(sscsGeneratePdfService.generatePdf(anyString(), any(), any(), any())).thenReturn(sampleDirectionCoversheet);
 
+        String template = STRUCK_OUT.equals(eventType) ? "/templates/strike_out_letter_template.html" : "/templates/direction_notice_letter_template.html";
+        when(bundledLetterTemplateUtil.getBundledLetterTemplate(eventType, wrapper.getNewSscsCaseData(), APPELLANT)).thenReturn(template);
+
         when(factory.create(wrapper, getSubscriptionWithType(ccdNotificationWrapper))).thenReturn(notification);
         notificationService.manageNotificationAndSubscription(wrapper);
 
@@ -1579,6 +1582,8 @@ public class NotificationServiceTest {
         doThrow(new NotificationServiceException("Forced exception", new RuntimeException())).when(notificationHandler).sendNotification(eq(struckOutCcdNotificationWrapper), eq(LETTER_TEMPLATE_ID_STRUCKOUT), eq(LETTER), any(NotificationHandler.SendNotification.class));
 
         when(factory.create(struckOutCcdNotificationWrapper, getSubscriptionWithType(ccdNotificationWrapper))).thenReturn(notification);
+        when(bundledLetterTemplateUtil.getBundledLetterTemplate(STRUCK_OUT, struckOutCcdNotificationWrapper.getNewSscsCaseData(), APPELLANT)).thenReturn("/templates/strike_out_letter_template.html");
+
         notificationService.manageNotificationAndSubscription(struckOutCcdNotificationWrapper);
     }
 
@@ -1635,17 +1640,15 @@ public class NotificationServiceTest {
     }
 
 
-    private NotificationService getNotificationService(Boolean bundledLettersOn, Boolean lettersOn) {
-        SendNotificationService sendNotificationService = new SendNotificationService(notificationSender, evidenceManagementService, sscsGeneratePdfService, notificationHandler, notificationValidService);
+    private NotificationService getNotificationService(Boolean bundledLettersOn, Boolean lettersOn, Boolean interlocLettersOn) {
+        SendNotificationService sendNotificationService = new SendNotificationService(notificationSender, evidenceManagementService, sscsGeneratePdfService, notificationHandler, notificationValidService, bundledLetterTemplateUtil);
 
         final NotificationService notificationService = new NotificationService(factory, reminderService,
             notificationValidService, notificationHandler, outOfHoursCalculator, notificationConfig, sendNotificationService
         );
-        ReflectionTestUtils.setField(sendNotificationService, "strikeOutLetterTemplate", "/templates/strike_out_letter_template.html");
-        ReflectionTestUtils.setField(sendNotificationService, "directionNoticeLetterTemplate", "/templates/direction_notice_letter_template.html");
         ReflectionTestUtils.setField(sendNotificationService, "bundledLettersOn", bundledLettersOn);
         ReflectionTestUtils.setField(sendNotificationService, "lettersOn", lettersOn);
-        ReflectionTestUtils.setField(sendNotificationService, "interlocLettersOn", lettersOn);
+        ReflectionTestUtils.setField(sendNotificationService, "interlocLettersOn", interlocLettersOn);
         return notificationService;
     }
 

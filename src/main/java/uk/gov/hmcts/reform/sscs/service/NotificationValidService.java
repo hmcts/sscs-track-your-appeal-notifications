@@ -22,7 +22,7 @@ public class NotificationValidService {
     private static final List<NotificationEventType> MANDATORY_LETTER_EVENT_TYPES = Arrays.asList(APPEAL_WITHDRAWN_NOTIFICATION, STRUCK_OUT, HEARING_BOOKED_NOTIFICATION, DIRECTION_ISSUED, REQUEST_INFO_INCOMPLETE, INTERLOC_VALID_APPEAL);
     protected static final List<NotificationEventType> LETTER_EVENT_TYPES = Stream.concat(FALLBACK_LETTER_SUBSCRIPTION_TYPES.stream(), MANDATORY_LETTER_EVENT_TYPES. stream()).collect(Collectors.toList());
     protected static final List<NotificationEventType> BUNDLED_LETTER_EVENT_TYPES = Arrays.asList(STRUCK_OUT, DIRECTION_ISSUED);
-    protected static final List<NotificationEventType> INTERLOC_LETTERS = Arrays.asList(STRUCK_OUT, DIRECTION_ISSUED, REQUEST_INFO_INCOMPLETE);
+    protected static final List<NotificationEventType> INTERLOC_LETTERS = Arrays.asList(STRUCK_OUT, DIRECTION_ISSUED, REQUEST_INFO_INCOMPLETE, INTERLOC_VALID_APPEAL);
     private static final String HEARING_TYPE_ONLINE_RESOLUTION = "cor";
 
     static boolean isMandatoryLetterEventType(NotificationEventType eventType) {
