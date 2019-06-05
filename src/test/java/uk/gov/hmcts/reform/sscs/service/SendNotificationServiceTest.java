@@ -1,32 +1,28 @@
 package uk.gov.hmcts.reform.sscs.service;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertNull;
+import static org.junit.Assert.*;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.*;
 import static org.mockito.MockitoAnnotations.initMocks;
 import static uk.gov.hmcts.reform.sscs.config.AppConstants.REP_SALUTATION;
-import static uk.gov.hmcts.reform.sscs.config.SubscriptionType.APPELLANT;
-import static uk.gov.hmcts.reform.sscs.config.SubscriptionType.APPOINTEE;
-import static uk.gov.hmcts.reform.sscs.config.SubscriptionType.REPRESENTATIVE;
 import static uk.gov.hmcts.reform.sscs.domain.notify.NotificationEventType.*;
-import static uk.gov.hmcts.reform.sscs.domain.notify.NotificationEventType.HEARING_BOOKED_NOTIFICATION;
+import static uk.gov.hmcts.reform.sscs.config.SubscriptionType.*;
 import static uk.gov.hmcts.reform.sscs.service.LetterUtils.getAddressToUseForLetter;
 import static uk.gov.hmcts.reform.sscs.service.NotificationValidService.BUNDLED_LETTER_EVENT_TYPES;
 import static uk.gov.hmcts.reform.sscs.service.NotificationValidService.FALLBACK_LETTER_SUBSCRIPTION_TYPES;
 import static uk.gov.hmcts.reform.sscs.service.SendNotificationService.getBundledLetterFileType;
 import static uk.gov.hmcts.reform.sscs.service.SendNotificationService.getRepSalutation;
 
-import java.util.*;
-
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Collections;
+import java.util.HashMap;
 import junitparams.JUnitParamsRunner;
 import junitparams.Parameters;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.Mock;
-import org.springframework.test.util.ReflectionTestUtils;
 import uk.gov.hmcts.reform.sscs.ccd.domain.*;
 import uk.gov.hmcts.reform.sscs.config.AppealHearingType;
 import uk.gov.hmcts.reform.sscs.config.SubscriptionType;
@@ -128,15 +124,16 @@ public class SendNotificationServiceTest {
     @Mock
     private NotificationValidService notificationValidService;
 
+    @Mock
+    private BundledLetterTemplateUtil bundledLetterTemplateUtil;
+
     private SendNotificationService classUnderTest;
 
     @Before
     public void setup() {
         initMocks(this);
 
-        classUnderTest = new SendNotificationService(notificationSender, evidenceManagementService, pdfService, notificationHandler, notificationValidService);
-        ReflectionTestUtils.setField(classUnderTest, "strikeOutLetterTemplate", "/templates/strike_out_letter_template.html");
-        ReflectionTestUtils.setField(classUnderTest, "directionNoticeLetterTemplate", "/templates/direction_notice_letter_template.html");
+        classUnderTest = new SendNotificationService(notificationSender, evidenceManagementService, pdfService, notificationHandler, notificationValidService, bundledLetterTemplateUtil);
         classUnderTest.bundledLettersOn = true;
         classUnderTest.lettersOn = true;
         classUnderTest.interlocLettersOn = true;
@@ -362,18 +359,6 @@ public class SendNotificationServiceTest {
     public void getRepSalutationWhenRepHasOrgAndName() {
         CcdNotificationWrapper wrapper = buildBaseWrapper(APPELLANT_WITH_ADDRESS, NotificationEventType.CASE_UPDATED, REP_ORG_WITH_NAME_AND_ADDRESS);
         assertEquals(REP_ORG_WITH_NAME_AND_ADDRESS.getName().getFullNameNoTitle(), getRepSalutation(wrapper.getNewSscsCaseData().getAppeal().getRep()));
-    }
-
-    @Test
-    @Parameters(method = "bundledLetterTemplates")
-    public void validBundledLetterTemplate(NotificationEventType eventType) {
-        assertNotNull(classUnderTest.getBundledLetterTemplate(eventType, buildBaseWrapper(APPELLANT_WITH_ADDRESS, eventType).getNewSscsCaseData()));
-    }
-
-    @Test
-    @Parameters(method = "nonBundledLetterTemplates")
-    public void invalidBundledLetterTemplate(NotificationEventType eventType) {
-        assertNull(classUnderTest.getBundledLetterTemplate(eventType, buildBaseWrapper(APPELLANT_WITH_ADDRESS, eventType).getNewSscsCaseData()));
     }
 
     @Test

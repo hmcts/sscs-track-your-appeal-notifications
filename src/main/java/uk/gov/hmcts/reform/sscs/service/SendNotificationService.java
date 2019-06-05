@@ -57,12 +57,7 @@ public class SendNotificationService {
     private final SscsGeneratePdfService sscsGeneratePdfService;
     private final NotificationHandler notificationHandler;
     private final NotificationValidService notificationValidService;
-
-    @Value("${strikeOutLetterTemplate.appeal.html.template.path}")
-    String strikeOutLetterTemplate;
-
-    @Value("${directionNoticeLetterTemplate.appeal.html.template.path}")
-    String directionNoticeLetterTemplate;
+    private final BundledLetterTemplateUtil bundledLetterTemplateUtil;
 
     @Autowired
     public SendNotificationService(
@@ -70,13 +65,15 @@ public class SendNotificationService {
             EvidenceManagementService evidenceManagementService,
             SscsGeneratePdfService sscsGeneratePdfService,
             NotificationHandler notificationHandler,
-            NotificationValidService notificationValidService
+            NotificationValidService notificationValidService,
+            BundledLetterTemplateUtil bundledLetterTemplateUtil
     ) {
         this.notificationSender = notificationSender;
         this.evidenceManagementService = evidenceManagementService;
         this.sscsGeneratePdfService = sscsGeneratePdfService;
         this.notificationHandler = notificationHandler;
         this.notificationValidService = notificationValidService;
+        this.bundledLetterTemplateUtil = bundledLetterTemplateUtil;
     }
 
     void sendEmailSmsLetterNotification(
@@ -101,14 +98,14 @@ public class SendNotificationService {
             }
 
             NotificationHandler.SendNotification sendNotification = () ->
-                notificationSender.sendSms(
-                        notification.getSmsTemplate(),
-                        notification.getMobile(),
-                        notification.getPlaceholders(),
-                        notification.getReference(),
-                        notification.getSmsSenderTemplate(),
-                        wrapper.getCaseId()
-                );
+                    notificationSender.sendSms(
+                            notification.getSmsTemplate(),
+                            notification.getMobile(),
+                            notification.getPlaceholders(),
+                            notification.getReference(),
+                            notification.getSmsSenderTemplate(),
+                            wrapper.getCaseId()
+                    );
             notificationHandler.sendNotification(wrapper, notification.getSmsTemplate(), "SMS", sendNotification);
         }
     }
@@ -146,7 +143,7 @@ public class SendNotificationService {
             };
 
             if (bundledLettersOn && isBundledLetter(wrapper.getNotificationType())) {
-                sendBundledLetterNotification(wrapper, notification, getAddressToUseForLetter(wrapper, subscriptionType), getNameToUseForLetter(wrapper, subscriptionType));
+                sendBundledLetterNotification(wrapper, notification, getAddressToUseForLetter(wrapper, subscriptionType), getNameToUseForLetter(wrapper, subscriptionType), subscriptionType);
             } else if (hasLetterTemplate(notification)) {
                 notificationHandler.sendNotification(wrapper, notification.getLetterTemplate(), NOTIFICATION_TYPE_LETTER, sendNotification);
             }
@@ -162,7 +159,7 @@ public class SendNotificationService {
             };
 
             if (bundledLettersOn && isBundledLetter(wrapper.getNotificationType())) {
-                sendBundledLetterNotification(wrapper, notification, getAddressToUseForLetter(wrapper, subscriptionWithType.getSubscriptionType()), getNameToUseForLetter(wrapper, subscriptionWithType.getSubscriptionType()));
+                sendBundledLetterNotification(wrapper, notification, getAddressToUseForLetter(wrapper, subscriptionWithType.getSubscriptionType()), getNameToUseForLetter(wrapper, subscriptionWithType.getSubscriptionType()), subscriptionWithType.getSubscriptionType());
             } else {
                 notificationHandler.sendNotification(wrapper, notification.getLetterTemplate(), NOTIFICATION_TYPE_LETTER, sendNotification);
             }
@@ -171,8 +168,8 @@ public class SendNotificationService {
 
     public static String getRepSalutation(Representative rep) {
         if (null == rep.getName()
-            || null == rep.getName().getFirstName()
-            || null == rep.getName().getLastName()) {
+                || null == rep.getName().getFirstName()
+                || null == rep.getName().getLastName()) {
             return REP_SALUTATION;
         } else {
             return rep.getName().getFullNameNoTitle();
@@ -203,10 +200,10 @@ public class SendNotificationService {
             }
 
             notificationSender.sendLetter(
-                notification.getLetterTemplate(),
-                addressToUse,
-                notification.getPlaceholders(),
-                wrapper.getCaseId()
+                    notification.getLetterTemplate(),
+                    addressToUse,
+                    notification.getPlaceholders(),
+                    wrapper.getCaseId()
             );
         } else {
             log.warn("Attempting to send letter for case id: " + wrapper.getCaseId() + ", no address present");
@@ -215,11 +212,11 @@ public class SendNotificationService {
 
     private static boolean isValidLetterAddress(Address addressToUse) {
         return null != addressToUse
-            && null != addressToUse.getLine1()
-            && null != addressToUse.getPostcode();
+                && null != addressToUse.getLine1()
+                && null != addressToUse.getPostcode();
     }
 
-    private void sendBundledLetterNotification(NotificationWrapper wrapper, Notification notification, Address addressToUse, Name nameToUse) {
+    private void sendBundledLetterNotification(NotificationWrapper wrapper, Notification notification, Address addressToUse, Name nameToUse, SubscriptionType subscriptionType) {
         try {
             notification.getPlaceholders().put(AppConstants.LETTER_ADDRESS_LINE_1, addressToUse.getLine1());
             notification.getPlaceholders().put(AppConstants.LETTER_ADDRESS_LINE_2, addressToUse.getLine2());
@@ -229,7 +226,7 @@ public class SendNotificationService {
             notification.getPlaceholders().put(AppConstants.LETTER_NAME, nameToUse.getFullNameNoTitle());
 
             byte[] bundledLetter = buildBundledLetter(
-                    generateCoveringLetter(wrapper, notification),
+                    generateCoveringLetter(wrapper, notification, subscriptionType),
                     downloadAssociatedCasePdf(wrapper)
             );
 
@@ -247,11 +244,14 @@ public class SendNotificationService {
         }
     }
 
-    private byte[] generateCoveringLetter(NotificationWrapper wrapper, Notification notification) {
+    private byte[] generateCoveringLetter(NotificationWrapper wrapper, Notification notification, SubscriptionType subscriptionType) {
+        String bundledLetterTemplate = bundledLetterTemplateUtil.getBundledLetterTemplate(
+                wrapper.getNotificationType(), wrapper.getNewSscsCaseData(), subscriptionType
+        );
         return sscsGeneratePdfService.generatePdf(
-            getBundledLetterTemplate(wrapper.getNotificationType(), wrapper.getNewSscsCaseData()),
-            wrapper.getNewSscsCaseData(),
-            Long.parseLong(wrapper.getNewSscsCaseData().getCcdCaseId()), notification.getPlaceholders()
+                bundledLetterTemplate,
+                wrapper.getNewSscsCaseData(),
+                Long.parseLong(wrapper.getNewSscsCaseData().getCcdCaseId()), notification.getPlaceholders()
         );
     }
 
@@ -266,8 +266,8 @@ public class SendNotificationService {
             for (SscsDocument sscsDocument : newSscsCaseData.getSscsDocument()) {
                 if (filetype.equalsIgnoreCase(sscsDocument.getValue().getDocumentType())) {
                     associatedCasePdf = evidenceManagementService.download(
-                        URI.create(sscsDocument.getValue().getDocumentLink().getDocumentUrl()),
-                        DM_STORE_USER_ID
+                            URI.create(sscsDocument.getValue().getDocumentLink().getDocumentUrl()),
+                            DM_STORE_USER_ID
                     );
 
                     break;
@@ -285,24 +285,10 @@ public class SendNotificationService {
                 && !newSscsCaseData.getSscsDocument().isEmpty())) {
             filetype = STRIKE_OUT_NOTICE;
         } else if ((DIRECTION_ISSUED.equals(notificationEventType))
-            && (newSscsCaseData.getSscsDocument() != null
-            && !newSscsCaseData.getSscsDocument().isEmpty())) {
+                && (newSscsCaseData.getSscsDocument() != null
+                && !newSscsCaseData.getSscsDocument().isEmpty())) {
             filetype = DIRECTION_TEXT;
         }
         return filetype;
-    }
-
-    protected String getBundledLetterTemplate(NotificationEventType notificationEventType, SscsCaseData newSscsCaseData) {
-        String bundledLetterTemplate = null;
-        if ((STRUCK_OUT.equals(notificationEventType))
-            && (newSscsCaseData.getSscsDocument() != null
-            && !newSscsCaseData.getSscsDocument().isEmpty())) {
-            bundledLetterTemplate = strikeOutLetterTemplate;
-        } else if ((DIRECTION_ISSUED.equals(notificationEventType))
-            && (newSscsCaseData.getSscsDocument() != null
-            && !newSscsCaseData.getSscsDocument().isEmpty())) {
-            bundledLetterTemplate = directionNoticeLetterTemplate;
-        }
-        return bundledLetterTemplate;
     }
 }
