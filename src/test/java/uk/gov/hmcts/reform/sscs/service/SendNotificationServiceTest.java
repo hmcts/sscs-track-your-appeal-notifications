@@ -1,27 +1,30 @@
 package uk.gov.hmcts.reform.sscs.service;
 
-import static org.junit.Assert.*;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertNull;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.*;
 import static org.mockito.MockitoAnnotations.initMocks;
 import static uk.gov.hmcts.reform.sscs.config.AppConstants.REP_SALUTATION;
-import static uk.gov.hmcts.reform.sscs.config.SubscriptionType.*;
+import static uk.gov.hmcts.reform.sscs.config.SubscriptionType.APPELLANT;
+import static uk.gov.hmcts.reform.sscs.config.SubscriptionType.APPOINTEE;
+import static uk.gov.hmcts.reform.sscs.config.SubscriptionType.REPRESENTATIVE;
 import static uk.gov.hmcts.reform.sscs.service.LetterUtils.getAddressToUseForLetter;
 import static uk.gov.hmcts.reform.sscs.service.NotificationValidService.BUNDLED_LETTER_EVENT_TYPES;
 import static uk.gov.hmcts.reform.sscs.service.NotificationValidService.FALLBACK_LETTER_SUBSCRIPTION_TYPES;
 import static uk.gov.hmcts.reform.sscs.service.SendNotificationService.getBundledLetterFileType;
 import static uk.gov.hmcts.reform.sscs.service.SendNotificationService.getRepSalutation;
 
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Collections;
-import java.util.HashMap;
+import java.util.*;
+
 import junitparams.JUnitParamsRunner;
 import junitparams.Parameters;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.Mock;
+import org.springframework.test.util.ReflectionTestUtils;
 import uk.gov.hmcts.reform.sscs.ccd.domain.*;
 import uk.gov.hmcts.reform.sscs.config.AppealHearingType;
 import uk.gov.hmcts.reform.sscs.config.SubscriptionType;
@@ -123,9 +126,6 @@ public class SendNotificationServiceTest {
     @Mock
     private NotificationValidService notificationValidService;
 
-    @Mock
-    private BundledLetterTemplateUtil bundledLetterTemplateUtil;
-
     private SendNotificationService classUnderTest;
 
     @Before
@@ -133,8 +133,11 @@ public class SendNotificationServiceTest {
         initMocks(this);
 
         classUnderTest = new SendNotificationService(notificationSender, evidenceManagementService, pdfService, notificationHandler, notificationValidService, bundledLetterTemplateUtil);
+        ReflectionTestUtils.setField(classUnderTest, "strikeOutLetterTemplate", "/templates/strike_out_letter_template.html");
+        ReflectionTestUtils.setField(classUnderTest, "directionNoticeLetterTemplate", "/templates/direction_notice_letter_template.html");
         classUnderTest.bundledLettersOn = true;
         classUnderTest.lettersOn = true;
+        classUnderTest.interlocLettersOn = true;
     }
 
     @Test
@@ -225,13 +228,44 @@ public class SendNotificationServiceTest {
     }
 
     @Test
-    public void doNotSendFallbackLetterNotificationToAppellantWhenToggledOff() {
+    @Parameters(method = "getFallbackLettersEventTypes")
+    public void doNotSendFallbackLetterNotificationToAppellantWhenToggledOff(NotificationEventType eventType) {
         SubscriptionWithType appellantEmptySubscription = new SubscriptionWithType(EMPTY_SUBSCRIPTION, APPELLANT);
 
         classUnderTest.lettersOn = false;
-        classUnderTest.sendEmailSmsLetterNotification(buildBaseWrapper(APPELLANT_WITH_ADDRESS, NotificationEventType.CASE_UPDATED), LETTER_NOTIFICATION, appellantEmptySubscription, FALLBACK_LETTER_SUBSCRIPTION_TYPES.get(0));
+        classUnderTest.interlocLettersOn = false;
+        classUnderTest.sendEmailSmsLetterNotification(buildBaseWrapper(APPELLANT_WITH_ADDRESS, eventType), LETTER_NOTIFICATION, appellantEmptySubscription, eventType);
 
         verifyZeroInteractions(notificationHandler);
+    }
+
+    private Object[] getFallbackLettersEventTypes() {
+        return new Object[] {
+            APPEAL_WITHDRAWN_NOTIFICATION,
+            STRUCK_OUT,
+            HEARING_BOOKED_NOTIFICATION,
+            DIRECTION_ISSUED,
+            REQUEST_INFO_INCOMPLETE
+        };
+    }
+
+    @Test
+    @Parameters(method = "getInterlocLettersEventTypes")
+    public void doNotSendInterlocLetterNotificationToAppellantWhenToggledOff(NotificationEventType eventType) {
+        SubscriptionWithType appellantEmptySubscription = new SubscriptionWithType(EMPTY_SUBSCRIPTION, APPELLANT);
+
+        classUnderTest.interlocLettersOn = false;
+        classUnderTest.sendEmailSmsLetterNotification(buildBaseWrapper(APPELLANT_WITH_ADDRESS, eventType), LETTER_NOTIFICATION, appellantEmptySubscription, eventType);
+
+        verifyZeroInteractions(notificationHandler);
+    }
+
+    private Object[] getInterlocLettersEventTypes() {
+        return new Object[] {
+            STRUCK_OUT,
+            DIRECTION_ISSUED,
+            REQUEST_INFO_INCOMPLETE
+        };
     }
 
     @Test

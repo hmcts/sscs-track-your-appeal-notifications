@@ -136,6 +136,8 @@ module "track-your-appeal-notifications" {
     BUNDLED_LETTERS_ON                  = "${var.bundled_letters_on}"
 
     LETTERS_ON                          = "${var.letters_on}"
+
+    INTERLOC_LETTERS_ON                 = "${var.interloc_letters_on}"
   }
 }
 
