@@ -7,3 +7,4 @@ hearing_info_link = "https://www.track-benefit-appeal.service.gov.uk/abouthearin
 claiming_expenses_link = "https://www.track-benefit-appeal.service.gov.uk/expenses/appeal_id"
 
 idam_redirect_url = "https://sscs-case-loader-prod.service.core-compute-prod.internal"
+online_hearing_link = "https://www.manage.appeal-benefit-decision.service.gov.uk/"
