@@ -15,7 +15,6 @@ import org.springframework.boot.autoconfigure.condition.ConditionalOnMissingBean
 import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 import org.springframework.boot.autoconfigure.flyway.FlywayMigrationInitializer;
 import org.springframework.boot.web.servlet.ServletListenerRegistrationBean;
-import org.springframework.cache.annotation.EnableCaching;
 import org.springframework.cloud.openfeign.EnableFeignClients;
 import org.springframework.context.ApplicationContext;
 import org.springframework.context.MessageSource;
@@ -47,7 +46,6 @@ import uk.gov.service.notify.NotificationClient;
         })
 @EnableRetry
 @EnableScheduling
-@EnableCaching
 public class TrackYourAppealNotificationsApplication {
 
     public static final String UTC = "UTC";
