@@ -28,6 +28,7 @@ import org.springframework.web.client.RestTemplate;
 import uk.gov.hmcts.reform.sscs.ccd.config.CcdRequestDetails;
 import uk.gov.hmcts.reform.sscs.ccd.deserialisation.SscsCaseCallbackDeserializer;
 import uk.gov.hmcts.reform.sscs.ccd.service.CcdService;
+import uk.gov.hmcts.reform.sscs.docmosis.service.DocmosisPdfGenerationService;
 import uk.gov.hmcts.reform.sscs.idam.IdamService;
 import uk.gov.hmcts.reform.sscs.jobscheduler.config.QuartzConfiguration;
 import uk.gov.hmcts.reform.sscs.jobscheduler.services.quartz.JobClassMapper;
@@ -162,5 +163,14 @@ public class TrackYourAppealNotificationsApplication {
                 new JobClassMapping<>(CohJobPayload.class, cohActionSerializer),
                 new JobClassMapping<>(String.class, ccdActionSerializer)
         ));
+    }
+
+    @Bean
+    public DocmosisPdfGenerationService docmosisPdfGenerationService(
+            @Value("${pdf-service.uri}") String pdfServiceEndpoint,
+            @Value("${pdf-service.accessKey}") String pdfServiceAccessKey,
+            RestTemplate restTemplate
+    ) {
+        return new DocmosisPdfGenerationService(pdfServiceEndpoint, pdfServiceAccessKey, restTemplate);
     }
 }

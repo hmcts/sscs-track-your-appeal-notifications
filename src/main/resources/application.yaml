@@ -354,6 +354,11 @@ robotics.schema.resource.location: /schema/sscs-robotics.json
 feature.bundled_letters_on: ${BUNDLED_LETTERS_ON:true}
 feature.letters_on: ${LETTERS_ON:true}
 
+pdf-service:
+  uri: ${PDF_SERVICE_BASE_URL:https://docmosis-development.platform.hmcts.net/rs/render}
+  accessKey: ${PDF_SERVICE_ACCESS_KEY:ZDYxMTkzZTQtMGY2Mi00NDM1LWIyN2ItNGRkNzdjOTczMjAwOjQ1NTE0ODQ}
+  templates:
+    appealReceived: 'TB-SCS-GNO-ENG-00012.doc'
 
 ---
 # default profile (development, production etc.)
