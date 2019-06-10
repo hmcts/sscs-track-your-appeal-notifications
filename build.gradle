@@ -244,7 +244,7 @@ dependencies {
 
     compile group: 'org.apache.pdfbox', name: 'pdfbox', version: '2.0.15'
 
-    compileOnly 'org.projectlombok:lombok:1.18.6'
+    compileOnly 'org.projectlombok:lombok:1.18.8'
     compileOnly("org.springframework.boot:spring-boot-devtools")
 
     annotationProcessor "org.projectlombok:lombok:1.18.6"
