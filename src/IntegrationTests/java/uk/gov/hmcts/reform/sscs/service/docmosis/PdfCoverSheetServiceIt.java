@@ -1,5 +1,12 @@
 package uk.gov.hmcts.reform.sscs.service.docmosis;
 
+import static org.junit.Assert.assertNotNull;
+import static uk.gov.hmcts.reform.sscs.ccd.domain.EventType.APPEAL_RECEIVED;
+
+import java.io.File;
+import java.io.IOException;
+import java.util.ArrayList;
+import java.util.List;
 import junitparams.JUnitParamsRunner;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.io.FileUtils;
@@ -22,14 +29,6 @@ import uk.gov.hmcts.reform.sscs.domain.SscsCaseDataWrapper;
 import uk.gov.hmcts.reform.sscs.domain.notify.NotificationEventType;
 import uk.gov.hmcts.reform.sscs.factory.CcdNotificationWrapper;
 import uk.gov.hmcts.reform.sscs.factory.NotificationWrapper;
-
-import java.io.File;
-import java.io.IOException;
-import java.util.ArrayList;
-import java.util.List;
-
-import static org.junit.Assert.assertNotNull;
-import static uk.gov.hmcts.reform.sscs.ccd.domain.EventType.APPEAL_RECEIVED;
 
 @RunWith(JUnitParamsRunner.class)
 @SpringBootTest
