@@ -9,7 +9,6 @@ import static org.mockito.Mockito.verifyZeroInteractions;
 import static org.mockito.Mockito.when;
 import static uk.gov.hmcts.reform.sscs.ccd.domain.EventType.APPEAL_RECEIVED;
 
-import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 import junitparams.JUnitParamsRunner;
@@ -63,7 +62,7 @@ public class PdfCoverSheetServiceIt {
     private DocmosisPdfService docmosisPdfService;
 
     @Test
-    public void canGenerateACoversheetOnAppealReceived() throws IOException {
+    public void canGenerateACoversheetOnAppealReceived() {
         when(docmosisPdfService.createPdf(any(Object.class), anyString())).thenReturn(new byte[2]);
         SscsCaseData sscsCaseData = getSscsCaseData();
         SscsCaseDataWrapper dataWrapper = SscsCaseDataWrapper.builder()
