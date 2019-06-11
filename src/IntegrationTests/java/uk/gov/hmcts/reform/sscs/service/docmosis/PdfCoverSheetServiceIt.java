@@ -1,17 +1,19 @@
 package uk.gov.hmcts.reform.sscs.service.docmosis;
 
 import static org.junit.Assert.assertNotNull;
+import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.ArgumentMatchers.anyString;
+import static org.mockito.ArgumentMatchers.eq;
+import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.verifyZeroInteractions;
+import static org.mockito.Mockito.when;
 import static uk.gov.hmcts.reform.sscs.ccd.domain.EventType.APPEAL_RECEIVED;
 
-import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 import junitparams.JUnitParamsRunner;
 import lombok.extern.slf4j.Slf4j;
-import org.apache.commons.io.FileUtils;
-import org.apache.pdfbox.io.RandomAccessFile;
-import org.apache.pdfbox.pdfparser.PDFParser;
 import org.junit.ClassRule;
 import org.junit.Rule;
 import org.junit.Test;
@@ -19,17 +21,21 @@ import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.context.junit4.rules.SpringClassRule;
 import org.springframework.test.context.junit4.rules.SpringMethodRule;
 import uk.gov.hmcts.reform.sscs.ccd.domain.*;
 import uk.gov.hmcts.reform.sscs.config.AppealHearingType;
+import uk.gov.hmcts.reform.sscs.config.DocmosisTemplatesConfig;
 import uk.gov.hmcts.reform.sscs.config.SubscriptionType;
 import uk.gov.hmcts.reform.sscs.domain.SscsCaseDataWrapper;
+import uk.gov.hmcts.reform.sscs.domain.docmosis.PdfCoverSheet;
 import uk.gov.hmcts.reform.sscs.domain.notify.NotificationEventType;
 import uk.gov.hmcts.reform.sscs.exception.PdfGenerationException;
 import uk.gov.hmcts.reform.sscs.factory.CcdNotificationWrapper;
 import uk.gov.hmcts.reform.sscs.factory.NotificationWrapper;
+import uk.gov.hmcts.reform.sscs.service.DocmosisPdfService;
 
 @RunWith(JUnitParamsRunner.class)
 @SpringBootTest
@@ -50,9 +56,15 @@ public class PdfCoverSheetServiceIt {
     @Autowired
     private PdfCoverSheetService pdfCoverSheetService;
 
+    @Autowired
+    private DocmosisTemplatesConfig docmosisTemplatesConfig;
+
+    @MockBean
+    private DocmosisPdfService docmosisPdfService;
+
     @Test
     public void canGenerateACoversheetOnAppealReceived() throws IOException {
-
+        when(docmosisPdfService.createPdf(any(Object.class), anyString())).thenReturn(new byte[2]);
         SscsCaseData sscsCaseData = getSscsCaseData();
         SscsCaseDataWrapper dataWrapper = SscsCaseDataWrapper.builder()
                 .newSscsCaseData(sscsCaseData)
@@ -62,7 +74,15 @@ public class PdfCoverSheetServiceIt {
         NotificationWrapper wrapper = new CcdNotificationWrapper(dataWrapper);
         byte[] bytes = pdfCoverSheetService.generateCoversheet(wrapper, SubscriptionType.APPELLANT);
         assertNotNull(bytes);
-        assertPdfIsValid(bytes);
+        PdfCoverSheet pdfCoverSheet = new PdfCoverSheet(
+                wrapper.getCaseId(),
+                wrapper.getNewSscsCaseData().getAppeal().getAppellant().getAddress().getLine1(),
+                wrapper.getNewSscsCaseData().getAppeal().getAppellant().getAddress().getLine2(),
+                wrapper.getNewSscsCaseData().getAppeal().getAppellant().getAddress().getTown(),
+                wrapper.getNewSscsCaseData().getAppeal().getAppellant().getAddress().getCounty(),
+                wrapper.getNewSscsCaseData().getAppeal().getAppellant().getAddress().getPostcode()
+        );
+        verify(docmosisPdfService).createPdf(eq(pdfCoverSheet), eq(docmosisTemplatesConfig.getTemplates().get(APPEAL_RECEIVED.getType())));
     }
 
     @Test(expected = PdfGenerationException.class)
@@ -76,16 +96,7 @@ public class PdfCoverSheetServiceIt {
                 .build();
         NotificationWrapper wrapper = new CcdNotificationWrapper(dataWrapper);
         pdfCoverSheetService.generateCoversheet(wrapper, SubscriptionType.APPELLANT);
-    }
-
-    private void assertPdfIsValid(byte[] bytes) throws IOException {
-        File tempFile = File.createTempFile("test", ".pdf");
-        log.info("Creating PDF temp file: " + tempFile.getAbsoluteFile());
-        FileUtils.writeByteArrayToFile(tempFile, bytes);
-        RandomAccessFile accessFile = new RandomAccessFile(tempFile, "r");
-        PDFParser parser = new PDFParser(accessFile);
-        parser.setLenient(false);
-        parser.parse();
+        verifyZeroInteractions(docmosisPdfService);
     }
 
     private SscsCaseData getSscsCaseData() {
