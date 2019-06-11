@@ -3,6 +3,7 @@ package uk.gov.hmcts.reform.sscs.service.docmosis;
 import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.verify;
+import static uk.gov.hmcts.reform.sscs.domain.notify.NotificationEventType.APPEAL_LAPSED_NOTIFICATION;
 import static uk.gov.hmcts.reform.sscs.domain.notify.NotificationEventType.APPEAL_RECEIVED_NOTIFICATION;
 
 import java.util.Map;
@@ -15,6 +16,7 @@ import uk.gov.hmcts.reform.sscs.ccd.domain.*;
 import uk.gov.hmcts.reform.sscs.config.DocmosisTemplatesConfig;
 import uk.gov.hmcts.reform.sscs.config.SubscriptionType;
 import uk.gov.hmcts.reform.sscs.domain.docmosis.PdfCoverSheet;
+import uk.gov.hmcts.reform.sscs.exception.PdfGenerationException;
 import uk.gov.hmcts.reform.sscs.factory.NotificationWrapper;
 import uk.gov.hmcts.reform.sscs.service.DocmosisPdfService;
 import uk.gov.hmcts.reform.sscs.service.NotificationServiceTest;
@@ -69,5 +71,17 @@ public class PdfCoverSheetServiceTest {
                 address.getPostcode()
         );
         verify(docmosisPdfService).createPdf(eq(pdfCoverSheet), eq("my01.doc"));
+    }
+
+    @Test(expected = PdfGenerationException.class)
+    public void willThrowAnErrorIfIncorrectEventIsSentToGenerateACoversheet() {
+        NotificationWrapper wrapper = NotificationServiceTest.buildBaseWrapper(
+                APPEAL_LAPSED_NOTIFICATION,
+                APPELLANT,
+                REPRESENTATIVE,
+                null
+        );
+
+        pdfCoverSheetService.generateCoversheet(wrapper, SubscriptionType.APPELLANT);
     }
 }

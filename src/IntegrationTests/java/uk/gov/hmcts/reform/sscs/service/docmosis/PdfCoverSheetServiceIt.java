@@ -27,6 +27,7 @@ import uk.gov.hmcts.reform.sscs.config.AppealHearingType;
 import uk.gov.hmcts.reform.sscs.config.SubscriptionType;
 import uk.gov.hmcts.reform.sscs.domain.SscsCaseDataWrapper;
 import uk.gov.hmcts.reform.sscs.domain.notify.NotificationEventType;
+import uk.gov.hmcts.reform.sscs.exception.PdfGenerationException;
 import uk.gov.hmcts.reform.sscs.factory.CcdNotificationWrapper;
 import uk.gov.hmcts.reform.sscs.factory.NotificationWrapper;
 
@@ -62,6 +63,19 @@ public class PdfCoverSheetServiceIt {
         byte[] bytes = pdfCoverSheetService.generateCoversheet(wrapper, SubscriptionType.APPELLANT);
         assertNotNull(bytes);
         assertPdfIsValid(bytes);
+    }
+
+    @Test(expected = PdfGenerationException.class)
+    public void willNotGenerateACoversheetOnAppealDormant() {
+
+        SscsCaseData sscsCaseData = getSscsCaseData();
+        SscsCaseDataWrapper dataWrapper = SscsCaseDataWrapper.builder()
+                .newSscsCaseData(sscsCaseData)
+                .oldSscsCaseData(sscsCaseData)
+                .notificationEventType(NotificationEventType.APPEAL_DORMANT_NOTIFICATION)
+                .build();
+        NotificationWrapper wrapper = new CcdNotificationWrapper(dataWrapper);
+        pdfCoverSheetService.generateCoversheet(wrapper, SubscriptionType.APPELLANT);
     }
 
     private void assertPdfIsValid(byte[] bytes) throws IOException {

@@ -3,12 +3,15 @@ package uk.gov.hmcts.reform.sscs.service.docmosis;
 import static uk.gov.hmcts.reform.sscs.service.LetterUtils.getAddressToUseForLetter;
 
 import java.util.Map;
+
+import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import uk.gov.hmcts.reform.sscs.ccd.domain.Address;
 import uk.gov.hmcts.reform.sscs.config.DocmosisTemplatesConfig;
 import uk.gov.hmcts.reform.sscs.config.SubscriptionType;
 import uk.gov.hmcts.reform.sscs.domain.docmosis.PdfCoverSheet;
+import uk.gov.hmcts.reform.sscs.exception.PdfGenerationException;
 import uk.gov.hmcts.reform.sscs.factory.NotificationWrapper;
 import uk.gov.hmcts.reform.sscs.service.DocmosisPdfService;
 
@@ -35,6 +38,11 @@ public class PdfCoverSheetService {
                 addressToUse.getPostcode()
         );
         String templatePath = templateNames.get(wrapper.getNotificationType().getId());
+        if (StringUtils.isBlank(templatePath))
+            throw new PdfGenerationException(
+                    String.format("There is no template for notificationType %s",
+                            wrapper.getNotificationType().getId()),
+                    new RuntimeException("Invalid notification type for docmosis coversheet."));
         return docmosisPdfService.createPdf(pdfCoverSheet, templatePath);
     }
 
