@@ -1,7 +1,9 @@
 package uk.gov.hmcts.reform.sscs.service.docmosis;
 
+import static uk.gov.hmcts.reform.sscs.service.LetterUtils.getAddressToUseForLetter;
+
+import java.util.Map;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 import uk.gov.hmcts.reform.sscs.ccd.domain.Address;
 import uk.gov.hmcts.reform.sscs.config.DocmosisTemplatesConfig;
@@ -9,10 +11,6 @@ import uk.gov.hmcts.reform.sscs.config.SubscriptionType;
 import uk.gov.hmcts.reform.sscs.domain.docmosis.PdfCoverSheet;
 import uk.gov.hmcts.reform.sscs.factory.NotificationWrapper;
 import uk.gov.hmcts.reform.sscs.service.DocmosisPdfService;
-
-import java.util.Map;
-
-import static uk.gov.hmcts.reform.sscs.service.LetterUtils.getAddressToUseForLetter;
 
 @Service
 public class PdfCoverSheetService {

@@ -1,17 +1,16 @@
 package uk.gov.hmcts.reform.sscs.service;
 
-import org.junit.Before;
-import org.junit.Test;
-import uk.gov.hmcts.reform.sscs.docmosis.service.DocmosisPdfGenerationService;
-import uk.gov.hmcts.reform.sscs.domain.docmosis.PdfCoverSheet;
-
-import java.util.HashMap;
-
 import static org.hamcrest.Matchers.is;
 import static org.junit.Assert.assertThat;
 import static org.mockito.ArgumentMatchers.argThat;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
+
+import java.util.HashMap;
+import org.junit.Before;
+import org.junit.Test;
+import uk.gov.hmcts.reform.sscs.docmosis.service.DocmosisPdfGenerationService;
+import uk.gov.hmcts.reform.sscs.domain.docmosis.PdfCoverSheet;
 
 public class DocmosisPdfServiceTest {
 
@@ -44,9 +43,9 @@ public class DocmosisPdfServiceTest {
     public void canCreatePdf() {
         when(docmosisPdfGenerationService.generatePdf(
                 argThat(argument ->
-                        argument.getPlaceholders().equals(expectedPlaceholders) &&
-                                argument.getTemplate().getTemplateName().equals(template) &&
-                                argument.getTemplate().getHmctsDocName().equals("")
+                        argument.getPlaceholders().equals(expectedPlaceholders)
+                                && argument.getTemplate().getTemplateName().equals(template)
+                                && argument.getTemplate().getHmctsDocName().equals("")
                 )
         )).thenReturn(expectedPdf);
 

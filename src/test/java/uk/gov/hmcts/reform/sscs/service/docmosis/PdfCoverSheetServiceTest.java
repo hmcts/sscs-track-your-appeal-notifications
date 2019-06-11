@@ -1,5 +1,12 @@
 package uk.gov.hmcts.reform.sscs.service.docmosis;
 
+import static org.mockito.ArgumentMatchers.eq;
+import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.verify;
+import static uk.gov.hmcts.reform.sscs.domain.notify.NotificationEventType.APPEAL_RECEIVED_NOTIFICATION;
+
+import java.util.Map;
+import java.util.concurrent.ConcurrentHashMap;
 import junitparams.JUnitParamsRunner;
 import junitparams.Parameters;
 import org.junit.Test;
@@ -12,14 +19,6 @@ import uk.gov.hmcts.reform.sscs.factory.NotificationWrapper;
 import uk.gov.hmcts.reform.sscs.service.DocmosisPdfService;
 import uk.gov.hmcts.reform.sscs.service.NotificationServiceTest;
 
-import java.util.Map;
-import java.util.concurrent.ConcurrentHashMap;
-
-import static org.mockito.ArgumentMatchers.eq;
-import static org.mockito.Mockito.mock;
-import static org.mockito.Mockito.verify;
-import static uk.gov.hmcts.reform.sscs.domain.notify.NotificationEventType.APPEAL_RECEIVED_NOTIFICATION;
-
 @RunWith(JUnitParamsRunner.class)
 public class PdfCoverSheetServiceTest {
 
@@ -27,6 +26,7 @@ public class PdfCoverSheetServiceTest {
 
     private static final Map<String, String> TEMPLATE_NAMES = new ConcurrentHashMap<>();
     private static final DocmosisTemplatesConfig DOCMOSIS_TEMPLATES_CONFIG = new DocmosisTemplatesConfig();
+
     static {
         TEMPLATE_NAMES.put(APPEAL_RECEIVED_NOTIFICATION.getId(), "my01.doc");
         DOCMOSIS_TEMPLATES_CONFIG.setTemplates(TEMPLATE_NAMES);
@@ -59,8 +59,8 @@ public class PdfCoverSheetServiceTest {
 
         pdfCoverSheetService.generateCoversheet(wrapper, subscriptionType);
 
-        Address address = subscriptionType.equals(SubscriptionType.APPELLANT) ?
-                APPELLANT.getAddress() : REPRESENTATIVE.getAddress();
+        Address address = subscriptionType.equals(SubscriptionType.APPELLANT)
+                ? APPELLANT.getAddress() : REPRESENTATIVE.getAddress();
         PdfCoverSheet pdfCoverSheet = new PdfCoverSheet(wrapper.getCaseId(),
                 address.getLine1(),
                 address.getLine2(),
