@@ -10,3 +10,6 @@ java:
     CLAIMING_EXPENSES_LINK: "https://track-appeal.preview.platform.hmcts.net/expenses/appeal_id"
     ONLINE_HEARING_LINK: "https://sscs-cor-frontend-aat.service.core-compute-aat.internal"
     DOCUMENT_MANAGEMENT_URL: "http://dm-store-aat.service.core-compute-aat.internal"
+    PDF_SERVICE_BASE_URL: ${PDF_SERVICE_BASE_URL}rs/render
+    PDF_SERVICE_ACCESS_KEY: ${PDF_SERVICE_ACCESS_KEY}
+    PDF_SERVICE_HEALTH_URL: ${PDF_SERVICE_BASE_URL}rs/status

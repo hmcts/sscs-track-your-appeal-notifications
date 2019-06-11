@@ -38,11 +38,12 @@ public class PdfCoverSheetService {
                 addressToUse.getPostcode()
         );
         String templatePath = templateNames.get(wrapper.getNotificationType().getId());
-        if (StringUtils.isBlank(templatePath))
+        if (StringUtils.isBlank(templatePath)) {
             throw new PdfGenerationException(
                     String.format("There is no template for notificationType %s",
                             wrapper.getNotificationType().getId()),
                     new RuntimeException("Invalid notification type for docmosis coversheet."));
+        }
         return docmosisPdfService.createPdf(pdfCoverSheet, templatePath);
     }
 
