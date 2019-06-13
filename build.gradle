@@ -104,7 +104,7 @@ dependencyManagement {
             entry 'guava'
         }
         // CVE-2019-0232, CVE-2019-0199 - command line injections on windows
-        dependencySet(group: 'org.apache.tomcat.embed', version: '9.0.19') {
+        dependencySet(group: 'org.apache.tomcat.embed', version: '9.0.21') {
             entry 'tomcat-embed-core'
             entry 'tomcat-embed-el'
             entry 'tomcat-embed-websocket'
@@ -214,7 +214,7 @@ dependencies {
     compile group: 'com.mchange', name: 'c3p0', version: '0.9.5.4'
     compile group: 'org.flywaydb', name: 'flyway-core', version: '5.1.0'
     compile group: 'org.postgresql', name: 'postgresql', version: '42.2.2'
-    compile group: 'net.bytebuddy', name: 'byte-buddy', version: '1.9.12'
+    compile group: 'net.bytebuddy', name: 'byte-buddy', version: '1.9.13'
 
     compile group: 'org.springframework.boot', name: 'spring-boot-starter-actuator'
     compile group: 'org.springframework.boot', name: 'spring-boot-starter-aop'
@@ -236,7 +236,7 @@ dependencies {
     compile group: 'uk.gov.hmcts.reform', name: 'sscs-job-scheduler', version: '1.5.2'
     compile group: 'uk.gov.hmcts.reform', name: 'service-auth-provider-client', version: '3.0.0'
 
-    compile group: 'uk.gov.hmcts.reform', name: 'sscs-common', version: '2.0.14'
+    compile group: 'uk.gov.hmcts.reform', name: 'sscs-common', version: '3.0.3'
     compile group: 'uk.gov.hmcts.reform', name: 'sscs-pdf-email-common', version: '1.0.5'
 
     compile group: 'uk.gov.service.notify', name: 'notifications-java-client', version: '3.14.2-RELEASE'
@@ -244,7 +244,7 @@ dependencies {
 
     compile group: 'org.apache.pdfbox', name: 'pdfbox', version: '2.0.15'
 
-    compileOnly 'org.projectlombok:lombok:1.18.6'
+    compileOnly 'org.projectlombok:lombok:1.18.8'
     compileOnly("org.springframework.boot:spring-boot-devtools")
 
     annotationProcessor "org.projectlombok:lombok:1.18.6"
