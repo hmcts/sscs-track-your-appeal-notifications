@@ -13,6 +13,8 @@ import static uk.gov.hmcts.reform.sscs.service.NotificationServiceTest.*;
 import static uk.gov.hmcts.reform.sscs.service.NotificationUtils.*;
 import static uk.gov.hmcts.reform.sscs.service.SendNotificationServiceTest.APPELLANT_WITH_ADDRESS_AND_APPOINTEE;
 
+import java.util.Arrays;
+
 import junitparams.JUnitParamsRunner;
 import junitparams.Parameters;
 import org.junit.Before;
@@ -28,10 +30,6 @@ import uk.gov.hmcts.reform.sscs.domain.notify.*;
 import uk.gov.hmcts.reform.sscs.factory.CcdNotificationWrapper;
 import uk.gov.hmcts.reform.sscs.factory.NotificationWrapper;
 
-import java.time.LocalDate;
-import java.time.format.DateTimeFormatter;
-import java.util.Arrays;
-import java.util.Collections;
 
 @RunWith(JUnitParamsRunner.class)
 public class NotificationUtilsTest {
@@ -549,43 +547,42 @@ public class NotificationUtilsTest {
 
     public Object[] getLatestHearingScenarios() {
         return new Object[] {
-                new Object[] {
-                    SscsCaseData.builder()
-                    .hearings(Arrays.asList(
-                                createHearing("1", "2019-06-01", "14:00"),
-                                createHearing("1", "2019-06-01", "14:01"),
-                                createHearing("2", "2019-06-01", "10:00")))
-                    .build(),
-                    "2"
-                },
-                new Object[] {
-                    SscsCaseData.builder()
-                    .hearings(Arrays.asList(
-                                createHearing("1", "2019-06-01", "10:00"),
-                                createHearing("1", "2019-06-01", "14:01"),
-                                createHearing("2", "2019-06-01", "14:00")))
-                    .build(),
-                    "2"
-                },
-                new Object[] {
-                    SscsCaseData.builder()
-                    .hearings(Arrays.asList(
-                                createHearing("3", "2019-06-01", "14:00"),
-                                createHearing("1", "2019-06-01", "14:01"),
-                                createHearing("2", "2019-06-01", "10:00")))
-                    .build(),
-                    "3"
-                }
-                ,
-                new Object[] {
-                    SscsCaseData.builder()
-                    .hearings(Arrays.asList(
-                                createHearing("1", "2019-06-01", "14:00"),
-                                createHearing("4", "2019-06-01", "14:01"),
-                                createHearing("1", "2019-06-01", "10:00")))
-                    .build(),
-                    "4"
-                }
+            new Object[] {
+                SscsCaseData.builder()
+                .hearings(Arrays.asList(
+                        createHearing("1", "2019-06-01", "14:00"),
+                        createHearing("1", "2019-06-01", "14:01"),
+                        createHearing("2", "2019-06-01", "10:00")))
+                .build(),
+                "2"
+            },
+            new Object[] {
+                SscsCaseData.builder()
+                .hearings(Arrays.asList(
+                        createHearing("1", "2019-06-01", "10:00"),
+                        createHearing("1", "2019-06-01", "14:01"),
+                        createHearing("2", "2019-06-01", "14:00")))
+                .build(),
+                "2"
+            },
+            new Object[] {
+                SscsCaseData.builder()
+                .hearings(Arrays.asList(
+                        createHearing("3", "2019-06-01", "14:00"),
+                        createHearing("1", "2019-06-01", "14:01"),
+                        createHearing("2", "2019-06-01", "10:00")))
+                .build(),
+                "3"
+            },
+            new Object[] {
+                SscsCaseData.builder()
+                .hearings(Arrays.asList(
+                        createHearing("1", "2019-06-01", "14:00"),
+                        createHearing("4", "2019-06-01", "14:01"),
+                        createHearing("1", "2019-06-01", "10:00")))
+                .build(),
+                "4"
+            }
         };
     }
 }
