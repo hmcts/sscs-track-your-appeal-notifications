@@ -1,7 +1,6 @@
 package uk.gov.hmcts.reform.sscs.service;
 
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertTrue;
+import static org.junit.Assert.*;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.when;
 import static org.mockito.MockitoAnnotations.initMocks;
@@ -28,6 +27,11 @@ import uk.gov.hmcts.reform.sscs.domain.SubscriptionWithType;
 import uk.gov.hmcts.reform.sscs.domain.notify.*;
 import uk.gov.hmcts.reform.sscs.factory.CcdNotificationWrapper;
 import uk.gov.hmcts.reform.sscs.factory.NotificationWrapper;
+
+import java.time.LocalDate;
+import java.time.format.DateTimeFormatter;
+import java.util.Arrays;
+import java.util.Collections;
 
 @RunWith(JUnitParamsRunner.class)
 public class NotificationUtilsTest {
@@ -525,6 +529,63 @@ public class NotificationUtilsTest {
                     .template(Template.builder().build())
                     .build()
             }
+        };
+    }
+
+    @Test
+    @Parameters(method = "getLatestHearingScenarios")
+    public void getLatestHearingTest(SscsCaseData sscsCaseData, String expectedHearingId) {
+        Hearing hearing = NotificationUtils.getLatestHearing(sscsCaseData);
+        assertEquals(expectedHearingId, hearing.getValue().getHearingId());
+    }
+
+    private Hearing createHearing(String hearingId, String hearingDate, String hearingTime) {
+        return Hearing.builder().value(HearingDetails.builder()
+                .hearingDate(hearingDate)
+                .hearingId(hearingId)
+                .time(hearingTime)
+                .build()).build();
+    }
+
+    public Object[] getLatestHearingScenarios() {
+        return new Object[] {
+                new Object[] {
+                    SscsCaseData.builder()
+                    .hearings(Arrays.asList(
+                                createHearing("1", "2019-06-01", "14:00"),
+                                createHearing("1", "2019-06-01", "14:01"),
+                                createHearing("2", "2019-06-01", "10:00")))
+                    .build(),
+                    "2"
+                },
+                new Object[] {
+                    SscsCaseData.builder()
+                    .hearings(Arrays.asList(
+                                createHearing("1", "2019-06-01", "10:00"),
+                                createHearing("1", "2019-06-01", "14:01"),
+                                createHearing("2", "2019-06-01", "14:00")))
+                    .build(),
+                    "2"
+                },
+                new Object[] {
+                    SscsCaseData.builder()
+                    .hearings(Arrays.asList(
+                                createHearing("3", "2019-06-01", "14:00"),
+                                createHearing("1", "2019-06-01", "14:01"),
+                                createHearing("2", "2019-06-01", "10:00")))
+                    .build(),
+                    "3"
+                }
+                ,
+                new Object[] {
+                    SscsCaseData.builder()
+                    .hearings(Arrays.asList(
+                                createHearing("1", "2019-06-01", "14:00"),
+                                createHearing("4", "2019-06-01", "14:01"),
+                                createHearing("1", "2019-06-01", "10:00")))
+                    .build(),
+                    "4"
+                }
         };
     }
 }

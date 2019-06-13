@@ -15,10 +15,7 @@ import static uk.gov.hmcts.reform.sscs.service.NotificationValidService.LETTER_E
 import java.util.Arrays;
 import java.util.List;
 
-import uk.gov.hmcts.reform.sscs.ccd.domain.Appeal;
-import uk.gov.hmcts.reform.sscs.ccd.domain.Appointee;
-import uk.gov.hmcts.reform.sscs.ccd.domain.SscsCaseData;
-import uk.gov.hmcts.reform.sscs.ccd.domain.Subscription;
+import uk.gov.hmcts.reform.sscs.ccd.domain.*;
 import uk.gov.hmcts.reform.sscs.config.SubscriptionType;
 
 import uk.gov.hmcts.reform.sscs.domain.SscsCaseDataWrapper;
@@ -148,5 +145,24 @@ public class NotificationUtils {
         return APPELLANT.equals(subscriptionType)
             || APPOINTEE.equals(subscriptionType)
             || (REPRESENTATIVE.equals(subscriptionType) && null != wrapper.getNewSscsCaseData().getAppeal().getRep());
+    }
+
+    public static final Hearing getLatestHearing(SscsCaseData sscsCaseData) {
+        List<Hearing> hearings = sscsCaseData.getHearings();
+
+        Integer latestHearingId = 0;
+        Integer latestHearingIndex = 0;
+        Integer currentIndex = 0;
+
+        for (Hearing hearing : hearings) {
+            Integer hearingId = Integer.parseInt((hearing.getValue().getHearingId()));
+            latestHearingId = Math.max(latestHearingId, hearingId);
+            if (latestHearingId == hearingId) {
+                latestHearingIndex = currentIndex;
+            }
+            currentIndex++;
+        }
+
+        return sscsCaseData.getHearings().get(latestHearingIndex);
     }
 }
