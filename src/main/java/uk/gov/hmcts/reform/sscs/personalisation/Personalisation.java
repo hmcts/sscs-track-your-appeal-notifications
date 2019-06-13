@@ -45,7 +45,7 @@ import uk.gov.hmcts.reform.sscs.service.SendNotificationService;
 @Component
 @Slf4j
 public class Personalisation<E extends NotificationWrapper> {
-    private static final List<NotificationEventType> FALLBACK_LETTER_SUBSCRIPTION_TYPES = Arrays.asList(DWP_RESPONSE_RECEIVED_NOTIFICATION, APPEAL_LODGED, SYA_APPEAL_CREATED_NOTIFICATION, EVIDENCE_RECEIVED_NOTIFICATION);
+    private static final List<NotificationEventType> FALLBACK_LETTER_SUBSCRIPTION_TYPES = Arrays.asList(DWP_RESPONSE_RECEIVED_NOTIFICATION, APPEAL_RECEIVED_NOTIFICATION, SYA_APPEAL_CREATED_NOTIFICATION, EVIDENCE_RECEIVED_NOTIFICATION);
     private static final String CRLF = String.format("%c%c", (char) 0x0D, (char) 0x0A);
 
     private boolean sendSmsSubscriptionConfirmation;
@@ -321,7 +321,6 @@ public class Personalisation<E extends NotificationWrapper> {
         if (ADJOURNED_NOTIFICATION.equals(notificationEventType)
             || APPEAL_DORMANT_NOTIFICATION.equals(notificationEventType)
             || APPEAL_LAPSED_NOTIFICATION.equals(notificationEventType)
-            || APPEAL_LODGED.equals(notificationEventType)
             || APPEAL_RECEIVED_NOTIFICATION.equals(notificationEventType)
             || APPEAL_WITHDRAWN_NOTIFICATION.equals(notificationEventType)
             || CASE_UPDATED.equals(notificationEventType)
