@@ -23,7 +23,7 @@ public enum NotificationEventType {
     QUESTION_ROUND_ISSUED_NOTIFICATION("question_round_issued", false, false, true, false, false),
     QUESTION_DEADLINE_ELAPSED_NOTIFICATION("question_deadline_elapsed", false, false, true, false, false),
     QUESTION_DEADLINE_REMINDER_NOTIFICATION("question_deadline_reminder", false, false, true, false, true),
-    HEARING_REQUIRED_NOTIFICATION("continuous_online_hearing_relisted", false, false, true, false, false),
+    HEARING_REQUIRED_NOTIFICATION("continuous_online_hearing_relisted", true, true, true, false, false),
     VIEW_ISSUED("decision_issued", false, false, true, false, false),
     DECISION_ISSUED_2("corDecision", false, false, true, false, false),
     STRUCK_OUT("struckOut", true, true, false, false, false),
