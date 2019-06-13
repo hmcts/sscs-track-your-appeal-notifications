@@ -24,6 +24,7 @@ import org.springframework.context.support.ReloadableResourceBundleMessageSource
 import org.springframework.mail.javamail.JavaMailSender;
 import org.springframework.mail.javamail.JavaMailSenderImpl;
 import org.springframework.retry.annotation.EnableRetry;
+import org.springframework.scheduling.annotation.EnableScheduling;
 import org.springframework.web.client.RestTemplate;
 import uk.gov.hmcts.reform.sscs.ccd.config.CcdRequestDetails;
 import uk.gov.hmcts.reform.sscs.ccd.deserialisation.SscsCaseCallbackDeserializer;
@@ -45,6 +46,7 @@ import uk.gov.service.notify.NotificationClient;
                 "uk.gov.hmcts.reform.sscs.service.coh"
         })
 @EnableRetry
+@EnableScheduling
 public class TrackYourAppealNotificationsApplication {
 
     public static final String UTC = "UTC";
