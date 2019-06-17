@@ -147,6 +147,11 @@ public class NotificationUtils {
     }
 
     public static final Hearing getLatestHearing(SscsCaseData sscsCaseData) {
+
+        if (sscsCaseData.getHearings() == null || sscsCaseData.getHearings().isEmpty()) {
+            return null;
+        }
+
         List<Hearing> hearings = new ArrayList<Hearing>(sscsCaseData.getHearings());
 
         Comparator<Hearing> compareByIdAndDate = new Comparator<Hearing>() {
