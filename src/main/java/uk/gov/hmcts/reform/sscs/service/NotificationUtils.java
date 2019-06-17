@@ -12,7 +12,6 @@ import static uk.gov.hmcts.reform.sscs.domain.notify.NotificationEventType.STRUC
 import static uk.gov.hmcts.reform.sscs.service.NotificationValidService.FALLBACK_LETTER_SUBSCRIPTION_TYPES;
 import static uk.gov.hmcts.reform.sscs.service.NotificationValidService.LETTER_EVENT_TYPES;
 
-import java.time.LocalDateTime;
 import java.util.*;
 
 import uk.gov.hmcts.reform.sscs.ccd.domain.*;
