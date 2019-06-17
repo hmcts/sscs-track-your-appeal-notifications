@@ -139,7 +139,13 @@ public class NotificationConfigTest {
             new Object[]{"221095a2-aee8-466b-a7ab-beee516cc6cc", null, null, ORAL, getTemplateName(POSTPONEMENT_NOTIFICATION, APPOINTEE)},
             new Object[]{"221095a2-aee8-466b-a7ab-beee516cc6cc", null, null, PAPER, getTemplateName(POSTPONEMENT_NOTIFICATION, APPOINTEE)},
             new Object[]{"e2ee8609-7d56-4857-b3f8-79028e8960aa", null, null, ORAL, getTemplateName(APPEAL_DORMANT_NOTIFICATION, REPRESENTATIVE)},
-            new Object[]{"fc9d0618-68c4-48ec-9481-a84b225a57a9", null, null, ORAL, getTemplateName(APPEAL_DORMANT_NOTIFICATION, APPELLANT)}
+            new Object[]{"fc9d0618-68c4-48ec-9481-a84b225a57a9", null, null, ORAL, getTemplateName(APPEAL_DORMANT_NOTIFICATION, APPELLANT)},
+            new Object[]{null, null, "a2a4a88a-b91a-4e6d-94f0-507179292058", PAPER, getTemplateName(REQUEST_INFO_INCOMPLETE, REPRESENTATIVE)},
+            new Object[]{null, null, "a2a4a88a-b91a-4e6d-94f0-507179292058", ORAL, getTemplateName(REQUEST_INFO_INCOMPLETE, REPRESENTATIVE)},
+            new Object[]{null, null, "bc943cf3-9fd1-4d14-a0c0-b183572c21a7", PAPER, getTemplateName(REQUEST_INFO_INCOMPLETE, APPELLANT)},
+            new Object[]{null, null, "bc943cf3-9fd1-4d14-a0c0-b183572c21a7", ORAL, getTemplateName(REQUEST_INFO_INCOMPLETE, APPELLANT)},
+            new Object[]{null, null, "bc943cf3-9fd1-4d14-a0c0-b183572c21a7", ORAL, getTemplateName(REQUEST_INFO_INCOMPLETE, APPOINTEE)},
+            new Object[]{null, null, "bc943cf3-9fd1-4d14-a0c0-b183572c21a7", PAPER, getTemplateName(REQUEST_INFO_INCOMPLETE, APPOINTEE)}
         };
     }
 
