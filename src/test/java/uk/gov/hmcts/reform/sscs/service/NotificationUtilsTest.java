@@ -531,9 +531,12 @@ public class NotificationUtilsTest {
 
     @Test
     @Parameters(method = "getLatestHearingScenarios")
-    public void getLatestHearingTest(SscsCaseData sscsCaseData, String expectedHearingId) {
+    public void getLatestHearingTest(
+            SscsCaseData sscsCaseData, String expectedHearingId, String expectedDate, String exptectedTime) {
         Hearing hearing = NotificationUtils.getLatestHearing(sscsCaseData);
         assertEquals(expectedHearingId, hearing.getValue().getHearingId());
+        assertEquals(expectedDate, hearing.getValue().getHearingDate());
+        assertEquals(exptectedTime, hearing.getValue().getTime());
     }
 
     private Hearing createHearing(String hearingId, String hearingDate, String hearingTime) {
@@ -553,7 +556,7 @@ public class NotificationUtilsTest {
                         createHearing("1", "2019-06-01", "14:01"),
                         createHearing("2", "2019-06-01", "10:00")))
                 .build(),
-                "2"
+                "2","2019-06-01","10:00"
             },
             new Object[] {
                 SscsCaseData.builder()
@@ -562,7 +565,7 @@ public class NotificationUtilsTest {
                         createHearing("1", "2019-06-01", "14:01"),
                         createHearing("2", "2019-06-01", "14:00")))
                 .build(),
-                "2"
+                "2","2019-06-01","14:00"
             },
             new Object[] {
                 SscsCaseData.builder()
@@ -571,7 +574,7 @@ public class NotificationUtilsTest {
                         createHearing("1", "2019-06-01", "14:01"),
                         createHearing("2", "2019-06-01", "10:00")))
                 .build(),
-                "3"
+                "3","2019-06-01","14:00"
             },
             new Object[] {
                 SscsCaseData.builder()
@@ -580,7 +583,27 @@ public class NotificationUtilsTest {
                         createHearing("4", "2019-06-01", "14:01"),
                         createHearing("1", "2019-06-01", "10:00")))
                 .build(),
-                "4"
+                "4","2019-06-01","14:01"
+            },
+            new Object[] {
+                SscsCaseData.builder()
+                .hearings(Arrays.asList(
+                        createHearing("1", "2019-06-01", "14:00"),
+                        createHearing("4", "2019-06-01", "14:01"),
+                        createHearing("4", "2019-06-01", "13:00"),
+                        createHearing("1", "2019-06-01", "10:00")))
+                .build(),
+                "4","2019-06-01","14:01"
+            },
+            new Object[]{
+                SscsCaseData.builder()
+                .hearings(Arrays.asList(
+                        createHearing("1", "2019-06-01", "14:00"),
+                        createHearing("4", "2019-06-01", "13:00"),
+                        createHearing("4", "2019-06-01", "14:01"),
+                        createHearing("1", "2019-06-01", "10:00")))
+                .build(),
+                "4", "2019-06-01", "14:01"
             }
         };
     }
