@@ -26,7 +26,9 @@ def secrets = [
         secret('IdamSscsPass', 'IDAM_SSCS_SYSTEMUPDATE_PASSWORD'),
         secret('IdamAuthCid','IDAM_OAUTH2_CLIENT_ID'),
         secret('IdamAuthSecret','IDAM_OAUTH2_CLIENT_SECRET'),
-        secret('IdamAuthUrl','IDAM_OAUTH2_REDIRECT_URL')
+        secret('IdamAuthUrl','IDAM_OAUTH2_REDIRECT_URL'),
+        secret('docmosis-endpoint', 'PDF_SERVICE_BASE_URL'),
+        secret('docmosis-api-key', 'PDF_SERVICE_ACCESS_KEY')
     ]
 ]
 
