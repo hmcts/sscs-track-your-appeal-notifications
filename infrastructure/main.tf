@@ -57,6 +57,17 @@ data "azurerm_key_vault_secret" "email-mac-secret" {
   vault_uri = "${data.azurerm_key_vault.sscs_key_vault.vault_uri}"
 }
 
+data "azurerm_key_vault_secret" "pdf_service_base_url" {
+  name      = "docmosis-endpoint"
+  vault_uri = "${data.azurerm_key_vault.sscs_key_vault.vault_uri}"
+}
+
+data "azurerm_key_vault_secret" "pdf_service_access_key" {
+  name      = "docmosis-api-key"
+  vault_uri = "${data.azurerm_key_vault.sscs_key_vault.vault_uri}"
+}
+
+
 locals {
   local_ase = "${data.terraform_remote_state.core_apps_compute.ase_name[0]}"
 
@@ -118,6 +129,9 @@ module "track-your-appeal-notifications" {
     ONLINE_HEARING_LINK           = "${var.online_hearing_link}"
 
     PDF_API_URL                   = "${local.pdfService}"
+    PDF_SERVICE_BASE_URL        = "${data.azurerm_key_vault_secret.pdf_service_base_url.value}rs/render"
+    PDF_SERVICE_ACCESS_KEY      = "${data.azurerm_key_vault_secret.pdf_service_access_key.value}"
+    PDF_SERVICE_HEALTH_URL      = "${data.azurerm_key_vault_secret.pdf_service_base_url.value}rs/status"
 
     // db vars
     JOB_SCHEDULER_DB_HOST               = "${module.db-notif.host_name}"
