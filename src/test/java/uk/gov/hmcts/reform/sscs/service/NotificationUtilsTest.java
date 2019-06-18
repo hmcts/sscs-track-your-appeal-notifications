@@ -1,6 +1,9 @@
 package uk.gov.hmcts.reform.sscs.service;
 
-import static org.junit.Assert.*;
+import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertTrue;
+import static org.junit.Assert.assertNull;
+import static org.junit.Assert.assertEquals;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.when;
 import static org.mockito.MockitoAnnotations.initMocks;
@@ -539,6 +542,13 @@ public class NotificationUtilsTest {
         assertEquals(exptectedTime, hearing.getValue().getTime());
     }
 
+    @Test
+    public void whenGettingLatestHearing_shouldReturnNullIfNoHearings() {
+        SscsCaseData sscsCaseData = SscsCaseData.builder().build();
+        Hearing hearing = NotificationUtils.getLatestHearing(sscsCaseData);
+        assertNull(hearing);
+    }
+
     private Hearing createHearing(String hearingId, String hearingDate, String hearingTime) {
         return Hearing.builder().value(HearingDetails.builder()
                 .hearingDate(hearingDate)
@@ -549,6 +559,13 @@ public class NotificationUtilsTest {
 
     public Object[] getLatestHearingScenarios() {
         return new Object[] {
+            new Object[] {
+                SscsCaseData.builder()
+                .hearings(Arrays.asList(
+                        createHearing("1", "2019-06-01", "14:00")))
+                .build(),
+                "1","2019-06-01","14:00"
+            },
             new Object[] {
                 SscsCaseData.builder()
                 .hearings(Arrays.asList(
@@ -563,15 +580,15 @@ public class NotificationUtilsTest {
                 .hearings(Arrays.asList(
                         createHearing("1", "2019-06-01", "10:00"),
                         createHearing("1", "2019-06-01", "14:01"),
-                        createHearing("2", "2019-06-01", "14:00")))
+                        createHearing("2", "2019-06-02", "14:00")))
                 .build(),
-                "2","2019-06-01","14:00"
+                "2","2019-06-02","14:00"
             },
             new Object[] {
                 SscsCaseData.builder()
                 .hearings(Arrays.asList(
                         createHearing("3", "2019-06-01", "14:00"),
-                        createHearing("1", "2019-06-01", "14:01"),
+                        createHearing("1", "2019-06-02", "14:01"),
                         createHearing("2", "2019-06-01", "10:00")))
                 .build(),
                 "3","2019-06-01","14:00"

@@ -12,9 +12,12 @@ import static uk.gov.hmcts.reform.sscs.domain.notify.NotificationEventType.STRUC
 import static uk.gov.hmcts.reform.sscs.service.NotificationValidService.FALLBACK_LETTER_SUBSCRIPTION_TYPES;
 import static uk.gov.hmcts.reform.sscs.service.NotificationValidService.LETTER_EVENT_TYPES;
 
-import java.util.*;
+import java.util.Arrays;
+import java.util.List;
 
-import uk.gov.hmcts.reform.sscs.ccd.domain.*;
+import uk.gov.hmcts.reform.sscs.ccd.domain.Appointee;
+import uk.gov.hmcts.reform.sscs.ccd.domain.SscsCaseData;
+import uk.gov.hmcts.reform.sscs.ccd.domain.Subscription;
 import uk.gov.hmcts.reform.sscs.config.SubscriptionType;
 
 import uk.gov.hmcts.reform.sscs.domain.SscsCaseDataWrapper;
