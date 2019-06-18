@@ -185,9 +185,4 @@ public class NotificationService {
         }
         return subscription;
     }
-
-    private boolean hasCaseRefBeenAdded(SscsCaseData oldSscsData, SscsCaseData newSscsData) {
-        return (null == oldSscsData || null == oldSscsData.getCaseReference() || oldSscsData.getCaseReference().isEmpty())
-                && (null != newSscsData.getCaseReference() && !newSscsData.getCaseReference().isEmpty());
-    }
 }
