@@ -10,8 +10,6 @@ postgresql:
       service.beta.kubernetes.io/azure-load-balancer-internal: "true"
 
 java:
-  image: ${IMAGE_NAME}
-  ingressHost: ${SERVICE_FQDN}
   applicationPort: 8081
   keyVaults:
     sscs:
@@ -30,6 +28,8 @@ java:
       - sscs-s2s-secret
       - s2s-micro
       - sscs-asb-primary-send-and-listen-shared-access-key
+      - docmosis-endpoint
+      - docmosis-api-key
   environment:
     REFORM_TEAM: sscs
     REFORM_SERVICE_NAME: tya-notifications
@@ -37,22 +37,11 @@ java:
     REFORM_ENVIRONMENT: preview
     ROOT_LOGGING_LEVEL: INFO
     LOG_OUTPUT: single
-    IDAM_API_URL: ${IDAM_URL}
-    IDAM_SSCS_SYSTEMUPDATE_USER: ${IDAM_SSCS_SYSTEMUPDATE_USER}
-    IDAM_SSCS_SYSTEMUPDATE_PASSWORD: ${IDAM_SSCS_SYSTEMUPDATE_PASSWORD}
     IDAM_OAUTH2_CLIENT_ID: "sscs"
-    IDAM_OAUTH2_CLIENT_SECRET: ${IDAM_OAUTH2_CLIENT_SECRET}
-    IDAM_S2S_AUTH_MICROSERVICE: ${IDAM_S2S_AUTH_MICROSERVICE}
-    IDAM_S2S_AUTH_TOTP_SECRET: ${IDAM_S2S_AUTH_TOTP_SECRET}
-    IDAM_S2S_AUTH: ${IDAM_S2S_AUTH}
     INFRASTRUCTURE_ENV: preprod
     CORE_CASE_DATA_JURISDICTION_ID: SSCS
     CORE_CASE_DATA_CASE_TYPE_ID: Benefit
-    NOTIFICATION_API_KEY: ${NOTIFICATION_API_KEY}
-    NOTIFICATION_API_TEST_KEY: ${NOTIFICATION_API_TEST_KEY}
     JOB_SCHEDULER_POLL_INTERVAL: "30000"
-    EMAIL_MAC_SECRET_TEXT: ${EMAIL_MAC_SECRET_TEXT}
-    JOB_SCHEDULER_DB_HOST: ${SERVICE_NAME}-postgresql
     JOB_SCHEDULER_DB_PORT: "5432"
     JOB_SCHEDULER_DB_PASSWORD:  sscs
     JOB_SCHEDULER_DB_USERNAME: sscs
