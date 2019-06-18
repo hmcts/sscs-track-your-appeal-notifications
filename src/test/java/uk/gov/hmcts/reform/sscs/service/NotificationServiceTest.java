@@ -537,61 +537,6 @@ public class NotificationServiceTest {
                         Subscription.builder().build(),
                         Subscription.builder().build(),
                         new SubscriptionType[]{APPOINTEE, REPRESENTATIVE},  // Fallback letter
-                },
-                new Object[]{
-                    APPEAL_LODGED,
-                        2,
-                        0,
-                        null,
-                        Subscription.builder()
-                                .tya(APPEAL_NUMBER)
-                                .email(EMAIL)
-                                .subscribeEmail(YES)
-                                .build(),
-                        Subscription.builder()
-                                .tya(APPEAL_NUMBER)
-                                .email(EMAIL)
-                                .subscribeEmail(YES)
-                                .build(),
-                        new SubscriptionType[]{APPOINTEE, REPRESENTATIVE},
-                },
-                new Object[]{
-                    APPEAL_LODGED,
-                        1,
-                        1,
-                        null,
-                        Subscription.builder()
-                                .tya(APPEAL_NUMBER)
-                                .email(EMAIL)
-                                .subscribeEmail(YES)
-                                .build(),
-                        Subscription.builder()
-                                .tya(APPEAL_NUMBER)
-                                .mobile(MOBILE_NUMBER_1)
-                                .subscribeSms(YES)
-                                .build(),
-                        new SubscriptionType[]{APPOINTEE, REPRESENTATIVE},
-                },
-                new Object[]{
-                    APPEAL_LODGED,
-                        0,
-                        2,
-                        Subscription.builder()
-                                .tya(APPEAL_NUMBER)
-                                .mobile(MOBILE_NUMBER_1)
-                                .subscribeSms("Yes")
-                                .build(),
-                        Subscription.builder()
-                                .tya(APPEAL_NUMBER)
-                                .mobile(MOBILE_NUMBER_1)
-                                .subscribeSms("Yes")
-                                .build(),
-                        Subscription.builder()
-                                .tya(APPEAL_NUMBER)
-                                .mobile(MOBILE_NUMBER_1)
-                                .subscribeSms(YES)
-                                .build(),
-                        new SubscriptionType[]{APPOINTEE, REPRESENTATIVE},
                 }
         };
     }
@@ -767,60 +712,6 @@ public class NotificationServiceTest {
                 Subscription.builder().build(),
                 Subscription.builder().build(),
                 new SubscriptionType[]{},
-            },
-            new Object[]{
-                APPEAL_LODGED,
-                2,
-                0,
-                null,
-                Subscription.builder()
-                    .tya(APPEAL_NUMBER)
-                    .email(EMAIL)
-                    .subscribeEmail(YES)
-                    .mobile(MOBILE_NUMBER_1)
-                    .build(),
-                Subscription.builder()
-                    .tya(APPEAL_NUMBER)
-                    .email(EMAIL)
-                    .subscribeEmail(YES)
-                    .mobile(MOBILE_NUMBER_1)
-                    .build(),
-                new SubscriptionType[]{APPOINTEE, REPRESENTATIVE},
-            },
-            new Object[]{
-                APPEAL_LODGED,
-                1,
-                0,
-                null,
-                Subscription.builder()
-                    .tya(APPEAL_NUMBER)
-                    .email(EMAIL)
-                    .subscribeEmail(YES)
-                    .mobile(MOBILE_NUMBER_1)
-                    .build(),
-                Subscription.builder()
-                    .tya(APPEAL_NUMBER)
-                    .mobile(MOBILE_NUMBER_1)
-                    .build(),
-                new SubscriptionType[]{APPOINTEE, REPRESENTATIVE},
-            },
-            new Object[]{
-                APPEAL_LODGED,
-                0,
-                0,
-                Subscription.builder()
-                    .tya(APPEAL_NUMBER)
-                    .mobile(MOBILE_NUMBER_1)
-                    .build(),
-                Subscription.builder()
-                    .tya(APPEAL_NUMBER)
-                    .mobile(MOBILE_NUMBER_1)
-                    .build(),
-                Subscription.builder()
-                    .tya(APPEAL_NUMBER)
-                    .mobile(MOBILE_NUMBER_1)
-                    .build(),
-                new SubscriptionType[]{APPOINTEE, REPRESENTATIVE},
             }
         };
     }
