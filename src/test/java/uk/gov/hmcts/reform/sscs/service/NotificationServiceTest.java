@@ -1559,7 +1559,7 @@ public class NotificationServiceTest {
         return new SubscriptionWithType(getSubscription(ccdNotificationWrapper.getNewSscsCaseData(), SubscriptionType.APPELLANT), SubscriptionType.APPELLANT);
     }
 
-    protected static CcdNotificationWrapper buildBaseWrapper(NotificationEventType eventType, Appellant appellant, Representative rep, SscsDocument sscsDocument) {
+    public static CcdNotificationWrapper buildBaseWrapper(NotificationEventType eventType, Appellant appellant, Representative rep, SscsDocument sscsDocument) {
         SscsCaseData sscsCaseDataWithDocuments = getSscsCaseDataBuilder(appellant, rep, sscsDocument).build();
 
         SscsCaseDataWrapper caseDataWrapper = SscsCaseDataWrapper.builder()
