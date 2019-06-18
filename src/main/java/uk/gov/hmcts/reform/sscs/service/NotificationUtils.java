@@ -24,7 +24,7 @@ import uk.gov.hmcts.reform.sscs.domain.notify.NotificationEventType;
 import uk.gov.hmcts.reform.sscs.factory.NotificationWrapper;
 
 public class NotificationUtils {
-    private static final List<NotificationEventType> MANDATORY_LETTERS = Arrays.asList(APPEAL_WITHDRAWN_NOTIFICATION, STRUCK_OUT, HEARING_BOOKED_NOTIFICATION, DIRECTION_ISSUED, REQUEST_INFO_INCOMPLETE, APPEAL_RECEIVED_NOTIFICATION);
+    private static final List<NotificationEventType> MANDATORY_LETTERS = Arrays.asList(APPEAL_WITHDRAWN_NOTIFICATION, STRUCK_OUT, HEARING_BOOKED_NOTIFICATION, DIRECTION_ISSUED, REQUEST_INFO_INCOMPLETE, APPEAL_RECEIVED_NOTIFICATION, NON_COMPLIANT_NOTIFICATION);
 
     private NotificationUtils() {
         // empty

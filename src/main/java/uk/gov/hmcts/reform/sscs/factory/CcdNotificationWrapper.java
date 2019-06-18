@@ -109,6 +109,7 @@ public class CcdNotificationWrapper implements NotificationWrapper {
                 || HEARING_REMINDER_NOTIFICATION.equals(getNotificationType())
                 || STRUCK_OUT.equals(getNotificationType())
                 || DIRECTION_ISSUED.equals(getNotificationType())
+                || NON_COMPLIANT_NOTIFICATION.equals(getNotificationType())
             || REQUEST_INFO_INCOMPLETE.equals(getNotificationType()))
         ) {
             subscriptionWithTypeList.add(new SubscriptionWithType(getAppointeeSubscription(), APPOINTEE));
@@ -134,6 +135,7 @@ public class CcdNotificationWrapper implements NotificationWrapper {
                 || HEARING_REMINDER_NOTIFICATION.equals(getNotificationType())
                 || STRUCK_OUT.equals(getNotificationType())
                 || DIRECTION_ISSUED.equals(getNotificationType())
+                || NON_COMPLIANT_NOTIFICATION.equals(getNotificationType())
                 || REQUEST_INFO_INCOMPLETE.equals(getNotificationType()))
         ) {
             subscriptionWithTypeList.add(new SubscriptionWithType(getRepresentativeSubscription(), REPRESENTATIVE));

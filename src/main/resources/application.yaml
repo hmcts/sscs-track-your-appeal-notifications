@@ -228,6 +228,13 @@ notification:
       letterId: a2a4a88a-b91a-4e6d-94f0-507179292058
     appointee:
       letterId: f4ef3253-bae7-4fa6-8e3d-9b3e83bec356
+  nonCompliant:
+    appellant:
+      letterId: 114cadaa-7760-4699-9add-d3a252f68909
+    representative:
+      letterId: 5745f77c-6512-4082-8c34-63851f24eab1
+    appointee:
+      letterId: 114cadaa-7760-4699-9add-d3a252f68909
   online:
     responseReceived:
       emailId: 90f0ed29-a616-4ce0-b4ef-108391f5d90e
