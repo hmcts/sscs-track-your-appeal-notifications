@@ -55,16 +55,15 @@ public class NotificationUtils {
     }
 
     public static boolean hasAppointeeSubscriptionOrIsMandatoryAppointeeLetter(SscsCaseDataWrapper wrapper) {
-        return ((null != getSubscription(wrapper.getNewSscsCaseData(), APPOINTEE))
+        return ((null != getSubscription(wrapper.getNewSscsCaseData(), APPOINTEE) && getSubscription(wrapper.getNewSscsCaseData(), APPOINTEE).doesCaseHaveSubscriptions())
             || (hasAppointee(wrapper.getNewSscsCaseData().getAppeal().getAppellant().getAppointee())
             && LETTER_EVENT_TYPES.contains(wrapper.getNotificationEventType())));
     }
 
     public static boolean hasRepSubscriptionOrIsMandatoryRepLetter(SscsCaseDataWrapper wrapper) {
-        return ((null != getSubscription(wrapper.getNewSscsCaseData(), REPRESENTATIVE))
+        return ((null != getSubscription(wrapper.getNewSscsCaseData(), REPRESENTATIVE) && getSubscription(wrapper.getNewSscsCaseData(), REPRESENTATIVE).doesCaseHaveSubscriptions())
             || (hasRepresentative(wrapper.getNewSscsCaseData().getAppeal())
             && LETTER_EVENT_TYPES.contains(wrapper.getNotificationEventType())));
-
     }
 
     public static Subscription getSubscription(SscsCaseData sscsCaseData, SubscriptionType subscriptionType) {
