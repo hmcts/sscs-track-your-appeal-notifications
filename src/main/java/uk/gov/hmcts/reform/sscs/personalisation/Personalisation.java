@@ -219,7 +219,7 @@ public class Personalisation<E extends NotificationWrapper> {
             for (Event event : ccdResponse.getEvents()) {
                 if ((event.getValue() != null)
                     && ((notificationEventType.equals(APPEAL_RECEIVED_NOTIFICATION) && event.getValue().getEventType().equals(APPEAL_RECEIVED)))
-                    || notificationEventType.equals(CASE_UPDATED)) {
+                    || notificationEventType.equals(CASE_UPDATED) || INTERLOC_VALID_APPEAL.equals(notificationEventType)) {
                     return setAppealReceivedDetails(personalisation, event.getValue());
                 }
             }

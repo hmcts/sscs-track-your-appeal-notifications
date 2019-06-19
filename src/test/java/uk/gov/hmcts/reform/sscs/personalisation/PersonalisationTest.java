@@ -395,6 +395,22 @@ public class PersonalisationTest {
     }
 
     @Test
+    public void setInterlocValidAppealEventData() {
+        List<Event> events = new ArrayList<>();
+        events.add(Event.builder().value(EventDetails.builder().date(DATE).type(EventType.INTERLOC_VALID_APPEAL.getCcdType()).build()).build());
+
+        SscsCaseData response = SscsCaseData.builder()
+                .ccdCaseId(CASE_ID).caseReference("SC/1234/5")
+                .appeal(Appeal.builder().benefitType(BenefitType.builder().code("PIP").build()).build())
+                .events(events)
+                .build();
+
+        Map<String, String> result = personalisation.setEventData(new HashMap<>(), response, INTERLOC_VALID_APPEAL);
+
+        assertEquals("5 August 2018", result.get(APPEAL_RESPOND_DATE));
+    }
+
+    @Test
     public void setEvidenceReceivedEventData() {
         List<Document> documents = new ArrayList<>();
 
