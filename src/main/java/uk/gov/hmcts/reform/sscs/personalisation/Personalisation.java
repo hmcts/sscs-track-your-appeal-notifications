@@ -28,10 +28,7 @@ import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 import uk.gov.hmcts.reform.sscs.ccd.domain.*;
-import uk.gov.hmcts.reform.sscs.config.AppConstants;
-import uk.gov.hmcts.reform.sscs.config.AppealHearingType;
-import uk.gov.hmcts.reform.sscs.config.NotificationConfig;
-import uk.gov.hmcts.reform.sscs.config.SubscriptionType;
+import uk.gov.hmcts.reform.sscs.config.*;
 import uk.gov.hmcts.reform.sscs.domain.SscsCaseDataWrapper;
 import uk.gov.hmcts.reform.sscs.domain.SubscriptionWithType;
 import uk.gov.hmcts.reform.sscs.domain.notify.NotificationEventType;
@@ -64,6 +61,9 @@ public class Personalisation<E extends NotificationWrapper> {
 
     @Autowired
     private NotificationDateConverterUtil notificationDateConverterUtil;
+
+    @Autowired
+    private DocmosisTemplatesConfig docmosisTemplatesConfig;
 
     public Map<String, String> create(final E notificationWrapper, final SubscriptionWithType subscriptionWithType) {
         return create(notificationWrapper.getSscsCaseDataWrapper(), subscriptionWithType);
@@ -121,6 +121,7 @@ public class Personalisation<E extends NotificationWrapper> {
         personalisation.put(ONLINE_HEARING_SIGN_IN_LINK_LITERAL, config.getOnlineHearingLink() + "/sign-in");
 
         personalisation.put(APPOINTEE_DESCRIPTION, getAppointeeDescription(subscriptionWithType.getSubscriptionType(), ccdResponse));
+        personalisation.put(docmosisTemplatesConfig.getHmctsImgKey(), docmosisTemplatesConfig.getHmctsImgVal());
 
         return personalisation;
     }

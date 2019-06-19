@@ -47,6 +47,7 @@ import uk.gov.hmcts.reform.sscs.domain.notify.NotificationEventType;
 import uk.gov.hmcts.reform.sscs.factory.NotificationFactory;
 import uk.gov.hmcts.reform.sscs.idam.IdamService;
 import uk.gov.hmcts.reform.sscs.service.*;
+import uk.gov.hmcts.reform.sscs.service.docmosis.PdfLetterService;
 import uk.gov.service.notify.*;
 
 @RunWith(JUnitParamsRunner.class)
@@ -113,6 +114,9 @@ public class NotificationsIt {
     @Autowired
     private BundledLetterTemplateUtil bundledLetterTemplateUtil;
 
+    @Autowired
+    private PdfLetterService pdfLetterService;
+
     @Mock
     private EvidenceManagementService evidenceManagementService;
 
@@ -129,10 +133,11 @@ public class NotificationsIt {
     public void setup() throws Exception {
         NotificationSender sender = new NotificationSender(notificationClient, null, notificationBlacklist);
 
-        SendNotificationService sendNotificationService = new SendNotificationService(sender, evidenceManagementService, sscsGeneratePdfService, notificationHandler, notificationValidService, bundledLetterTemplateUtil);
+        SendNotificationService sendNotificationService = new SendNotificationService(sender, evidenceManagementService, sscsGeneratePdfService, notificationHandler, notificationValidService, bundledLetterTemplateUtil, pdfLetterService);
 
         ReflectionTestUtils.setField(sendNotificationService, "bundledLettersOn", true);
         ReflectionTestUtils.setField(sendNotificationService, "lettersOn", true);
+        ReflectionTestUtils.setField(sendNotificationService, "docmosisLettersOn", false);
 
         NotificationService service = new NotificationService(factory, reminderService, notificationValidService, notificationHandler, outOfHoursCalculator, notificationConfig, sendNotificationService);
         NotificationController controller = new NotificationController(service, authorisationService, ccdService, deserializer, idamService);

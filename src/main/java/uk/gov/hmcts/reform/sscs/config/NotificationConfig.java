@@ -69,6 +69,7 @@ public class NotificationConfig {
                 .smsTemplateId(getTemplate(appealHearingType, smsTemplateName, "smsId"))
                 .smsSenderTemplateId(env.getProperty("smsSender." + benefit.toString().toLowerCase(Locale.ENGLISH)))
                 .letterTemplateId(getTemplate(appealHearingType, letterTemplateName, "letterId"))
+                .docmosisTemplateId(getTemplate(appealHearingType, letterTemplateName, "docmosisId"))
                 .build();
     }
 

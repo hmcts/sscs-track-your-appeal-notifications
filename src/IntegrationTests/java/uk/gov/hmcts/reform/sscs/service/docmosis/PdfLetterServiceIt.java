@@ -37,13 +37,13 @@ import uk.gov.hmcts.reform.sscs.service.DocmosisPdfService;
 @ActiveProfiles("integration")
 @AutoConfigureMockMvc
 @Slf4j
-public class PdfCoverSheetServiceIt {
+public class PdfLetterServiceIt {
     private static final String CASE_ID = "1000001";
     private static final String DATE = "2018-01-01T14:01:18.243";
     private static final String YES = "Yes";
 
     @Autowired
-    private PdfCoverSheetService pdfCoverSheetService;
+    private PdfLetterService pdfLetterService;
 
     @Autowired
     private DocmosisTemplatesConfig docmosisTemplatesConfig;
@@ -61,7 +61,7 @@ public class PdfCoverSheetServiceIt {
                 .notificationEventType(NotificationEventType.APPEAL_RECEIVED_NOTIFICATION)
                 .build();
         NotificationWrapper wrapper = new CcdNotificationWrapper(dataWrapper);
-        byte[] bytes = pdfCoverSheetService.generateCoversheet(wrapper, SubscriptionType.APPELLANT);
+        byte[] bytes = pdfLetterService.generateCoversheet(wrapper, SubscriptionType.APPELLANT);
         assertNotNull(bytes);
         PdfCoverSheet pdfCoverSheet = new PdfCoverSheet(
                 wrapper.getCaseId(),
@@ -71,7 +71,7 @@ public class PdfCoverSheetServiceIt {
                 wrapper.getNewSscsCaseData().getAppeal().getAppellant().getAddress().getCounty(),
                 wrapper.getNewSscsCaseData().getAppeal().getAppellant().getAddress().getPostcode()
         );
-        verify(docmosisPdfService).createPdf(eq(pdfCoverSheet), eq(docmosisTemplatesConfig.getTemplates().get(APPEAL_RECEIVED.getType())));
+        verify(docmosisPdfService).createPdf(eq(pdfCoverSheet), eq(docmosisTemplatesConfig.getCoversheets().get(APPEAL_RECEIVED.getType())));
     }
 
     @Test(expected = PdfGenerationException.class)
@@ -84,7 +84,7 @@ public class PdfCoverSheetServiceIt {
                 .notificationEventType(NotificationEventType.APPEAL_DORMANT_NOTIFICATION)
                 .build();
         NotificationWrapper wrapper = new CcdNotificationWrapper(dataWrapper);
-        pdfCoverSheetService.generateCoversheet(wrapper, SubscriptionType.APPELLANT);
+        pdfLetterService.generateCoversheet(wrapper, SubscriptionType.APPELLANT);
         verifyZeroInteractions(docmosisPdfService);
     }
 

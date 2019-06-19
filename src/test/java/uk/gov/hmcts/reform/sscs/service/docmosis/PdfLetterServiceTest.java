@@ -22,7 +22,7 @@ import uk.gov.hmcts.reform.sscs.service.DocmosisPdfService;
 import uk.gov.hmcts.reform.sscs.service.NotificationServiceTest;
 
 @RunWith(JUnitParamsRunner.class)
-public class PdfCoverSheetServiceTest {
+public class PdfLetterServiceTest {
 
     private final DocmosisPdfService docmosisPdfService = mock(DocmosisPdfService.class);
 
@@ -31,12 +31,12 @@ public class PdfCoverSheetServiceTest {
 
     static {
         TEMPLATE_NAMES.put(APPEAL_RECEIVED_NOTIFICATION.getId(), "my01.doc");
-        DOCMOSIS_TEMPLATES_CONFIG.setTemplates(TEMPLATE_NAMES);
+        DOCMOSIS_TEMPLATES_CONFIG.setCoversheets(TEMPLATE_NAMES);
     }
 
 
-    private final PdfCoverSheetService pdfCoverSheetService =
-            new PdfCoverSheetService(docmosisPdfService, DOCMOSIS_TEMPLATES_CONFIG);
+    private final PdfLetterService pdfLetterService =
+            new PdfLetterService(docmosisPdfService, DOCMOSIS_TEMPLATES_CONFIG);
 
     private static final Appellant APPELLANT = Appellant.builder()
             .name(Name.builder().firstName("Ap").lastName("pellant").build())
@@ -59,7 +59,7 @@ public class PdfCoverSheetServiceTest {
                 null
         );
 
-        pdfCoverSheetService.generateCoversheet(wrapper, subscriptionType);
+        pdfLetterService.generateCoversheet(wrapper, subscriptionType);
 
         Address address = subscriptionType.equals(SubscriptionType.APPELLANT)
                 ? APPELLANT.getAddress() : REPRESENTATIVE.getAddress();
@@ -82,6 +82,6 @@ public class PdfCoverSheetServiceTest {
                 null
         );
 
-        pdfCoverSheetService.generateCoversheet(wrapper, SubscriptionType.APPELLANT);
+        pdfLetterService.generateCoversheet(wrapper, SubscriptionType.APPELLANT);
     }
 }

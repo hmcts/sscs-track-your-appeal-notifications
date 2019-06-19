@@ -41,6 +41,7 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import uk.gov.hmcts.reform.sscs.ccd.domain.*;
 import uk.gov.hmcts.reform.sscs.config.AppealHearingType;
+import uk.gov.hmcts.reform.sscs.config.DocmosisTemplatesConfig;
 import uk.gov.hmcts.reform.sscs.config.NotificationConfig;
 import uk.gov.hmcts.reform.sscs.config.SubscriptionType;
 import uk.gov.hmcts.reform.sscs.domain.SscsCaseDataWrapper;
@@ -81,6 +82,9 @@ public class PersonalisationTest {
     @Mock
     private NotificationDateConverterUtil notificationDateConverterUtil;
 
+    @Mock
+    private DocmosisTemplatesConfig docmosisTemplatesConfig;
+
     @InjectMocks
     public Personalisation personalisation;
 
@@ -107,6 +111,8 @@ public class PersonalisationTest {
         when(macService.generateToken("GLSCRR", PIP.name())).thenReturn("ZYX");
         when(macService.generateToken("GLSCRR", ESA.name())).thenReturn("ZYX");
         when(hearingContactDateExtractor.extract(any())).thenReturn(Optional.empty());
+        when(docmosisTemplatesConfig.getHmctsImgKey()).thenReturn("hmcts2");
+        when(docmosisTemplatesConfig.getHmctsImgVal()).thenReturn("[userImage:hmcts.png]");
 
         rpc = RegionalProcessingCenter.builder()
                 .name("LIVERPOOL").address1(ADDRESS1).address2(ADDRESS2).address3(ADDRESS3).address4(ADDRESS4).city(CITY).postcode(POSTCODE).phoneNumber(PHONE).build();

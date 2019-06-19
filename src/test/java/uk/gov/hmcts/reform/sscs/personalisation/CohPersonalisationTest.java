@@ -32,6 +32,7 @@ import uk.gov.hmcts.reform.sscs.ccd.domain.RegionalProcessingCenter;
 import uk.gov.hmcts.reform.sscs.ccd.domain.SscsCaseData;
 import uk.gov.hmcts.reform.sscs.ccd.domain.Subscription;
 import uk.gov.hmcts.reform.sscs.ccd.domain.Subscriptions;
+import uk.gov.hmcts.reform.sscs.config.DocmosisTemplatesConfig;
 import uk.gov.hmcts.reform.sscs.config.NotificationConfig;
 import uk.gov.hmcts.reform.sscs.domain.SscsCaseDataWrapper;
 import uk.gov.hmcts.reform.sscs.domain.SubscriptionWithType;
@@ -61,6 +62,9 @@ public class CohPersonalisationTest {
     private HearingContactDateExtractor hearingContactDateExtractor;
 
     @Mock
+    private DocmosisTemplatesConfig docmosisTemplatesConfig;
+
+    @Mock
     private QuestionService questionService;
 
     @Mock
@@ -83,6 +87,8 @@ public class CohPersonalisationTest {
 
         RegionalProcessingCenter rpc = RegionalProcessingCenter.builder().build();
         when(regionalProcessingCenterService.getByScReferenceCode("SC/1234/5")).thenReturn(rpc);
+        when(docmosisTemplatesConfig.getHmctsImgKey()).thenReturn("hmcts2");
+        when(docmosisTemplatesConfig.getHmctsImgVal()).thenReturn("[userImage:hmcts.png]");
     }
 
     @Test

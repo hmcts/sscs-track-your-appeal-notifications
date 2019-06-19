@@ -20,6 +20,7 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import uk.gov.hmcts.reform.sscs.ccd.domain.*;
 import uk.gov.hmcts.reform.sscs.config.AppConstants;
+import uk.gov.hmcts.reform.sscs.config.DocmosisTemplatesConfig;
 import uk.gov.hmcts.reform.sscs.config.NotificationConfig;
 import uk.gov.hmcts.reform.sscs.domain.SscsCaseDataWrapper;
 import uk.gov.hmcts.reform.sscs.domain.SubscriptionWithType;
@@ -48,6 +49,9 @@ public class SubscriptionPersonalisationTest {
     @Mock
     private NotificationDateConverterUtil notificationDateConverterUtil;
 
+    @Mock
+    private DocmosisTemplatesConfig docmosisTemplatesConfig;
+
     @InjectMocks
     @Resource
     SubscriptionPersonalisation personalisation;
@@ -69,6 +73,8 @@ public class SubscriptionPersonalisationTest {
         when(notificationDateConverterUtil.toEmailDate(any(LocalDate.class))).thenReturn("1 January 2018");
         when(macService.generateToken("GLSCRR", PIP.name())).thenReturn("ZYX");
         when(hearingContactDateExtractor.extract(any())).thenReturn(Optional.empty());
+        when(docmosisTemplatesConfig.getHmctsImgKey()).thenReturn("hmcts2");
+        when(docmosisTemplatesConfig.getHmctsImgVal()).thenReturn("[userImage:hmcts.png]");
 
         RegionalProcessingCenter rpc = RegionalProcessingCenter.builder()
                 .name("Venue").address1("HMCTS").address2("The Road").address3("Town").address4("City").city("Birmingham").postcode("B23 1EH").phoneNumber("01234543225").build();

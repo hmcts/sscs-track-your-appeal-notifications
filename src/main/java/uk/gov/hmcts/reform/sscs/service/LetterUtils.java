@@ -10,6 +10,7 @@ import java.io.IOException;
 
 import org.apache.pdfbox.multipdf.PDFMergerUtility;
 import org.apache.pdfbox.pdmodel.PDDocument;
+import org.apache.pdfbox.pdmodel.PDPage;
 import uk.gov.hmcts.reform.sscs.ccd.domain.Address;
 import uk.gov.hmcts.reform.sscs.ccd.domain.Name;
 import uk.gov.hmcts.reform.sscs.config.SubscriptionType;
@@ -59,6 +60,19 @@ public class LetterUtils {
                 return wrapper.getNewSscsCaseData().getAppeal().getAppellant().getName();
             }
         }
+    }
+
+    public static byte[] addBlankPageAtTheEndIfOddPage(byte[] letter) throws IOException {
+        PDDocument loadDoc = PDDocument.load(letter);
+        if (loadDoc.getNumberOfPages() % 2 != 0) {
+            loadDoc.addPage(new PDPage());
+        }
+        ByteArrayOutputStream baos = new ByteArrayOutputStream();
+        loadDoc.save(baos);
+        loadDoc.close();
+        byte[] bytes = baos.toByteArray();
+        baos.close();
+        return bytes;
     }
 
     public static byte[] buildBundledLetter(byte[] coveringLetter, byte[] directionText) throws IOException {

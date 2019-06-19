@@ -62,6 +62,7 @@ public class NotificationConfigTest {
         assertNull(template.getEmailTemplateId());
         assertNull(template.getSmsTemplateId());
         assertNull(template.getLetterTemplateId());
+        assertNull(template.getDocmosisTemplateId());
     }
 
     @SuppressWarnings({"Indentation", "unused"})

@@ -17,6 +17,7 @@ import java.time.format.DateTimeFormatter;
 import java.util.Map;
 
 import lombok.extern.slf4j.Slf4j;
+import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
@@ -28,6 +29,7 @@ import uk.gov.hmcts.reform.sscs.domain.notify.Notification;
 import uk.gov.hmcts.reform.sscs.domain.notify.NotificationEventType;
 import uk.gov.hmcts.reform.sscs.exception.NotificationServiceException;
 import uk.gov.hmcts.reform.sscs.factory.NotificationWrapper;
+import uk.gov.hmcts.reform.sscs.service.docmosis.PdfLetterService;
 import uk.gov.service.notify.NotificationClientException;
 
 @Service
@@ -41,6 +43,9 @@ public class SendNotificationService {
     @Value("${feature.bundled_letters_on}")
     Boolean bundledLettersOn;
 
+    @Value("${feature.docmosis_letters_on}")
+    Boolean docmosisLettersOn;
+
     @Value("${feature.letters_on}")
     Boolean lettersOn;
 
@@ -53,6 +58,7 @@ public class SendNotificationService {
     private final NotificationHandler notificationHandler;
     private final NotificationValidService notificationValidService;
     private final BundledLetterTemplateUtil bundledLetterTemplateUtil;
+    private final PdfLetterService pdfLetterService;
 
     @Autowired
     public SendNotificationService(
@@ -61,7 +67,8 @@ public class SendNotificationService {
             SscsGeneratePdfService sscsGeneratePdfService,
             NotificationHandler notificationHandler,
             NotificationValidService notificationValidService,
-            BundledLetterTemplateUtil bundledLetterTemplateUtil
+            BundledLetterTemplateUtil bundledLetterTemplateUtil,
+            PdfLetterService pdfLetterService
     ) {
         this.notificationSender = notificationSender;
         this.evidenceManagementService = evidenceManagementService;
@@ -69,6 +76,7 @@ public class SendNotificationService {
         this.notificationHandler = notificationHandler;
         this.notificationValidService = notificationValidService;
         this.bundledLetterTemplateUtil = bundledLetterTemplateUtil;
+        this.pdfLetterService = pdfLetterService;
     }
 
     void sendEmailSmsLetterNotification(
@@ -122,15 +130,14 @@ public class SendNotificationService {
 
     private void sendMandatoryLetterNotification(NotificationWrapper wrapper, Notification notification, SubscriptionType subscriptionType) {
         if (isMandatoryLetterEventType(wrapper)) {
-            NotificationHandler.SendNotification sendNotification = () -> {
-                Address addressToUse = getAddressToUseForLetter(wrapper, subscriptionType);
-
-                sendLetterNotificationToAddress(wrapper, notification, addressToUse);
-            };
-
-            if (bundledLettersOn && isBundledLetter(wrapper.getNotificationType())) {
-                sendBundledLetterNotification(wrapper, notification, getAddressToUseForLetter(wrapper, subscriptionType), getNameToUseForLetter(wrapper, subscriptionType), subscriptionType);
+            Address addressToUse = getAddressToUseForLetter(wrapper, subscriptionType);
+            if ((bundledLettersOn && isBundledLetter(wrapper.getNotificationType())) || (docmosisLettersOn && StringUtils.isNotBlank(notification.getDocmosisLetterTemplate())) ) {
+                sendBundledLetterNotification(wrapper, notification, addressToUse, getNameToUseForLetter(wrapper, subscriptionType), subscriptionType);
             } else if (hasLetterTemplate(notification)) {
+                NotificationHandler.SendNotification sendNotification = () -> {
+
+                    sendLetterNotificationToAddress(wrapper, notification, addressToUse);
+                };
                 notificationHandler.sendNotification(wrapper, notification.getLetterTemplate(), NOTIFICATION_TYPE_LETTER, sendNotification);
             }
         }
@@ -138,15 +145,14 @@ public class SendNotificationService {
 
     private void sendFallbackLetterNotification(NotificationWrapper wrapper, Subscription subscription, Notification notification, SubscriptionWithType subscriptionWithType, NotificationEventType eventType) {
         if (hasNoSubscriptions(subscription) && hasLetterTemplate(notification) && isFallbackLetterRequired(wrapper, subscriptionWithType, subscription, eventType, notificationValidService)) {
-            NotificationHandler.SendNotification sendNotification = () -> {
-                Address addressToUse = getAddressToUseForLetter(wrapper, subscriptionWithType.getSubscriptionType());
-
-                sendLetterNotificationToAddress(wrapper, notification, addressToUse);
-            };
-
+            Address addressToUse = getAddressToUseForLetter(wrapper, subscriptionWithType.getSubscriptionType());
             if (bundledLettersOn && isBundledLetter(wrapper.getNotificationType())) {
-                sendBundledLetterNotification(wrapper, notification, getAddressToUseForLetter(wrapper, subscriptionWithType.getSubscriptionType()), getNameToUseForLetter(wrapper, subscriptionWithType.getSubscriptionType()), subscriptionWithType.getSubscriptionType());
+                sendBundledLetterNotification(wrapper, notification, addressToUse, getNameToUseForLetter(wrapper, subscriptionWithType.getSubscriptionType()), subscriptionWithType.getSubscriptionType());
             } else {
+                NotificationHandler.SendNotification sendNotification = () -> {
+
+                    sendLetterNotificationToAddress(wrapper, notification, addressToUse);
+                };
                 notificationHandler.sendNotification(wrapper, notification.getLetterTemplate(), NOTIFICATION_TYPE_LETTER, sendNotification);
             }
         }
@@ -204,17 +210,22 @@ public class SendNotificationService {
 
     private void sendBundledLetterNotification(NotificationWrapper wrapper, Notification notification, Address addressToUse, Name nameToUse, SubscriptionType subscriptionType) {
         try {
-            notification.getPlaceholders().put(AppConstants.LETTER_ADDRESS_LINE_1, addressToUse.getLine1());
-            notification.getPlaceholders().put(AppConstants.LETTER_ADDRESS_LINE_2, addressToUse.getLine2());
-            notification.getPlaceholders().put(AppConstants.LETTER_ADDRESS_LINE_3, addressToUse.getTown());
-            notification.getPlaceholders().put(AppConstants.LETTER_ADDRESS_LINE_4, addressToUse.getCounty());
-            notification.getPlaceholders().put(AppConstants.LETTER_ADDRESS_POSTCODE, addressToUse.getPostcode());
-            notification.getPlaceholders().put(AppConstants.LETTER_NAME, nameToUse.getFullNameNoTitle());
+            byte[] bundledLetter;
+            if (StringUtils.isNotBlank(notification.getDocmosisLetterTemplate())) {
+                bundledLetter = pdfLetterService.generateLetter(wrapper, notification, subscriptionType);
+            } else {
+                notification.getPlaceholders().put(AppConstants.LETTER_ADDRESS_LINE_1, addressToUse.getLine1());
+                notification.getPlaceholders().put(AppConstants.LETTER_ADDRESS_LINE_2, addressToUse.getLine2());
+                notification.getPlaceholders().put(AppConstants.LETTER_ADDRESS_LINE_3, addressToUse.getTown());
+                notification.getPlaceholders().put(AppConstants.LETTER_ADDRESS_LINE_4, addressToUse.getCounty());
+                notification.getPlaceholders().put(AppConstants.LETTER_ADDRESS_POSTCODE, addressToUse.getPostcode());
+                notification.getPlaceholders().put(AppConstants.LETTER_NAME, nameToUse.getFullNameNoTitle());
 
-            byte[] bundledLetter = buildBundledLetter(
-                    generateCoveringLetter(wrapper, notification, subscriptionType),
-                    downloadAssociatedCasePdf(wrapper)
-            );
+                bundledLetter = buildBundledLetter(
+                        generateCoveringLetter(wrapper, notification, subscriptionType),
+                        downloadAssociatedCasePdf(wrapper)
+                );
+            }
 
             NotificationHandler.SendNotification sendNotification = () ->
                     notificationSender.sendBundledLetter(

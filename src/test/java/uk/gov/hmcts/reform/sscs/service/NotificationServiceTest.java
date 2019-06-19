@@ -39,6 +39,7 @@ import uk.gov.hmcts.reform.sscs.factory.NotificationFactory;
 import uk.gov.hmcts.reform.sscs.factory.NotificationWrapper;
 import uk.gov.hmcts.reform.sscs.idam.IdamService;
 import uk.gov.hmcts.reform.sscs.idam.IdamTokens;
+import uk.gov.hmcts.reform.sscs.service.docmosis.PdfLetterService;
 
 @RunWith(JUnitParamsRunner.class)
 public class NotificationServiceTest {
@@ -101,6 +102,9 @@ public class NotificationServiceTest {
 
     @Mock
     private BundledLetterTemplateUtil bundledLetterTemplateUtil;
+
+    @Mock
+    private PdfLetterService pdfLetterService;
 
     private SscsCaseData sscsCaseData;
     private CcdNotificationWrapper ccdNotificationWrapper;
@@ -1522,7 +1526,7 @@ public class NotificationServiceTest {
     }
 
     private NotificationService getNotificationService(Boolean bundledLettersOn, Boolean lettersOn) {
-        SendNotificationService sendNotificationService = new SendNotificationService(notificationSender, evidenceManagementService, sscsGeneratePdfService, notificationHandler, notificationValidService, bundledLetterTemplateUtil);
+        SendNotificationService sendNotificationService = new SendNotificationService(notificationSender, evidenceManagementService, sscsGeneratePdfService, notificationHandler, notificationValidService, bundledLetterTemplateUtil, pdfLetterService);
 
         final NotificationService notificationService = new NotificationService(factory, reminderService,
             notificationValidService, notificationHandler, outOfHoursCalculator, notificationConfig, sendNotificationService
