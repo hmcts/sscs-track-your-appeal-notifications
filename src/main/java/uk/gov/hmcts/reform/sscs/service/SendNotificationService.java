@@ -1,7 +1,6 @@
 package uk.gov.hmcts.reform.sscs.service;
 
 import static uk.gov.hmcts.reform.sscs.config.AppConstants.*;
-import static uk.gov.hmcts.reform.sscs.domain.notify.NotificationEventType.APPEAL_LODGED;
 import static uk.gov.hmcts.reform.sscs.domain.notify.NotificationEventType.DIRECTION_ISSUED;
 import static uk.gov.hmcts.reform.sscs.domain.notify.NotificationEventType.STRUCK_OUT;
 import static uk.gov.hmcts.reform.sscs.service.LetterUtils.*;
@@ -87,10 +86,6 @@ public class SendNotificationService {
 
     private void sendSmsNotification(NotificationWrapper wrapper, Subscription subscription, Notification notification, NotificationEventType eventType) {
         if (isOkToSendSmsNotification(wrapper, subscription, notification, eventType, notificationValidService)) {
-            if (APPEAL_LODGED.equals(wrapper.getNotificationType())) {
-                ZonedDateTime appealReceivedDate = ZonedDateTime.now().plusSeconds(delay);
-                notification.getPlaceholders().put(APPEAL_RESPOND_DATE, appealReceivedDate.format(DateTimeFormatter.ofPattern(RESPONSE_DATE_FORMAT)));
-            }
 
             NotificationHandler.SendNotification sendNotification = () ->
                     notificationSender.sendSms(
@@ -107,10 +102,6 @@ public class SendNotificationService {
 
     private void sendEmailNotification(NotificationWrapper wrapper, Subscription subscription, Notification notification) {
         if (isOkToSendEmailNotification(wrapper, subscription, notification, notificationValidService)) {
-            if (APPEAL_LODGED.equals(wrapper.getNotificationType())) {
-                ZonedDateTime appealReceivedDate = ZonedDateTime.now().plusSeconds(delay);
-                notification.getPlaceholders().put(APPEAL_RESPOND_DATE, appealReceivedDate.format(DateTimeFormatter.ofPattern(RESPONSE_DATE_FORMAT)));
-            }
 
             NotificationHandler.SendNotification sendNotification = () ->
                     notificationSender.sendEmail(
