@@ -228,13 +228,6 @@ notification:
       letterId: a2a4a88a-b91a-4e6d-94f0-507179292058
     appointee:
       letterId: f4ef3253-bae7-4fa6-8e3d-9b3e83bec356
-  interlocValidAppeal:
-    appellant:
-      letterId: 7c3ebe0a-504b-4bc8-9273-d4247b576b40
-    representative:
-      letterId: 37070f8d-d48b-4f71-9e3b-f527d1368338
-    appointee:
-      letterId: 7c3ebe0a-504b-4bc8-9273-d4247b576b40
   online:
     responseReceived:
       emailId: 90f0ed29-a616-4ce0-b4ef-108391f5d90e
@@ -352,6 +345,9 @@ strikeOutLetterTemplate.rep.appeal.html.template.path: /templates/strike_out_let
 directionNoticeLetterTemplate.appeal.html.template.path: /templates/direction_notice_letter_template.html
 directionNoticeLetterTemplate.appelant.appeal.html.template.path: /templates/direction_notice_letter_template.html
 directionNoticeLetterTemplate.rep.appeal.html.template.path: /templates/direction_notice_letter_template_rep.html
+validAppealCreatedLetterTemplate.appellant.appeal.html.template.path: /templates/valid_appeal_created_template.html
+validAppealCreatedLetterTemplate.rep.appeal.html.template.path: /templates/valid_appeal_created_template_rep.html
+
 
 pdf.api.url: ${PDF_API_URL:http://localhost:5500}
 

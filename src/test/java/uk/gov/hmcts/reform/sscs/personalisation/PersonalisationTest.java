@@ -226,13 +226,7 @@ public class PersonalisationTest {
                 new Object[]{HEARING_BOOKED_NOTIFICATION, APPELLANT, ONLINE, true, true, true},
                 new Object[]{HEARING_BOOKED_NOTIFICATION, REPRESENTATIVE, PAPER, true, true, true},
                 new Object[]{HEARING_BOOKED_NOTIFICATION, REPRESENTATIVE, REGULAR, true, true, true},
-                new Object[]{HEARING_BOOKED_NOTIFICATION, REPRESENTATIVE, ONLINE, true, true, true},
-                new Object[]{INTERLOC_VALID_APPEAL, APPELLANT, PAPER, false, false, true},
-                new Object[]{INTERLOC_VALID_APPEAL, APPELLANT, REGULAR, false, false, true},
-                new Object[]{INTERLOC_VALID_APPEAL, APPELLANT, ONLINE, false, false, true},
-                new Object[]{INTERLOC_VALID_APPEAL, REPRESENTATIVE, PAPER, false, false, true},
-                new Object[]{INTERLOC_VALID_APPEAL, REPRESENTATIVE, REGULAR, false, false, true},
-                new Object[]{INTERLOC_VALID_APPEAL, REPRESENTATIVE, ONLINE, false, false, true}
+                new Object[]{HEARING_BOOKED_NOTIFICATION, REPRESENTATIVE, ONLINE, true, true, true}
         };
     }
 
@@ -395,9 +389,9 @@ public class PersonalisationTest {
     }
 
     @Test
-    public void setInterlocValidAppealEventData() {
+    public void setJudgeDecisionAppealToProceedEventData() {
         List<Event> events = new ArrayList<>();
-        events.add(Event.builder().value(EventDetails.builder().date(DATE).type(EventType.INTERLOC_VALID_APPEAL.getCcdType()).build()).build());
+        events.add(Event.builder().value(EventDetails.builder().date(DATE).type(JUDGE_DECISION_APPEAL_TO_PROCEED.getId()).build()).build());
 
         SscsCaseData response = SscsCaseData.builder()
                 .ccdCaseId(CASE_ID).caseReference("SC/1234/5")
@@ -405,7 +399,23 @@ public class PersonalisationTest {
                 .events(events)
                 .build();
 
-        Map<String, String> result = personalisation.setEventData(new HashMap<>(), response, INTERLOC_VALID_APPEAL);
+        Map<String, String> result = personalisation.setEventData(new HashMap<>(), response, JUDGE_DECISION_APPEAL_TO_PROCEED);
+
+        assertEquals("5 August 2018", result.get(APPEAL_RESPOND_DATE));
+    }
+
+    @Test
+    public void setTcwDecisionAppealToProceedEventData() {
+        List<Event> events = new ArrayList<>();
+        events.add(Event.builder().value(EventDetails.builder().date(DATE).type(TCW_DECISION_APPEAL_TO_PROCEED.getId()).build()).build());
+
+        SscsCaseData response = SscsCaseData.builder()
+                .ccdCaseId(CASE_ID).caseReference("SC/1234/5")
+                .appeal(Appeal.builder().benefitType(BenefitType.builder().code("PIP").build()).build())
+                .events(events)
+                .build();
+
+        Map<String, String> result = personalisation.setEventData(new HashMap<>(), response, TCW_DECISION_APPEAL_TO_PROCEED);
 
         assertEquals("5 August 2018", result.get(APPEAL_RESPOND_DATE));
     }

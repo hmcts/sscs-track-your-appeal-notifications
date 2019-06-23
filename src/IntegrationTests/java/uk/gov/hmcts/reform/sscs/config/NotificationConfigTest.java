@@ -30,7 +30,7 @@ import uk.gov.hmcts.reform.sscs.domain.notify.Template;
 @SpringBootTest
 @ActiveProfiles("integration")
 public class NotificationConfigTest {
-    private static final List<NotificationEventType> BUNDLED_LETTER_EVENT_TYPES = Arrays.asList(STRUCK_OUT, DIRECTION_ISSUED);
+    private static final List<NotificationEventType> BUNDLED_LETTER_EVENT_TYPES = Arrays.asList(STRUCK_OUT, DIRECTION_ISSUED, JUDGE_DECISION_APPEAL_TO_PROCEED, TCW_DECISION_APPEAL_TO_PROCEED);
 
     // Below rules are needed to use the junitParamsRunner together with SpringRunner
     @ClassRule
@@ -139,13 +139,7 @@ public class NotificationConfigTest {
             new Object[]{"221095a2-aee8-466b-a7ab-beee516cc6cc", null, null, ORAL, getTemplateName(POSTPONEMENT_NOTIFICATION, APPOINTEE)},
             new Object[]{"221095a2-aee8-466b-a7ab-beee516cc6cc", null, null, PAPER, getTemplateName(POSTPONEMENT_NOTIFICATION, APPOINTEE)},
             new Object[]{"e2ee8609-7d56-4857-b3f8-79028e8960aa", null, null, ORAL, getTemplateName(APPEAL_DORMANT_NOTIFICATION, REPRESENTATIVE)},
-            new Object[]{"fc9d0618-68c4-48ec-9481-a84b225a57a9", null, null, ORAL, getTemplateName(APPEAL_DORMANT_NOTIFICATION, APPELLANT)},
-            new Object[]{null, null, "37070f8d-d48b-4f71-9e3b-f527d1368338", PAPER, getTemplateName(INTERLOC_VALID_APPEAL, REPRESENTATIVE)},
-            new Object[]{null, null, "37070f8d-d48b-4f71-9e3b-f527d1368338", ORAL, getTemplateName(INTERLOC_VALID_APPEAL, REPRESENTATIVE)},
-            new Object[]{null, null, "7c3ebe0a-504b-4bc8-9273-d4247b576b40", PAPER, getTemplateName(INTERLOC_VALID_APPEAL, APPELLANT)},
-            new Object[]{null, null, "7c3ebe0a-504b-4bc8-9273-d4247b576b40", ORAL, getTemplateName(INTERLOC_VALID_APPEAL, APPELLANT)},
-            new Object[]{null, null, "7c3ebe0a-504b-4bc8-9273-d4247b576b40", ORAL, getTemplateName(INTERLOC_VALID_APPEAL, APPOINTEE)},
-            new Object[]{null, null, "7c3ebe0a-504b-4bc8-9273-d4247b576b40", PAPER, getTemplateName(INTERLOC_VALID_APPEAL, APPOINTEE)}
+            new Object[]{"fc9d0618-68c4-48ec-9481-a84b225a57a9", null, null, ORAL, getTemplateName(APPEAL_DORMANT_NOTIFICATION, APPELLANT)}
         };
     }
 

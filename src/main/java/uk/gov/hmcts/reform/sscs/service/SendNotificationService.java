@@ -1,8 +1,7 @@
 package uk.gov.hmcts.reform.sscs.service;
 
 import static uk.gov.hmcts.reform.sscs.config.AppConstants.*;
-import static uk.gov.hmcts.reform.sscs.domain.notify.NotificationEventType.DIRECTION_ISSUED;
-import static uk.gov.hmcts.reform.sscs.domain.notify.NotificationEventType.STRUCK_OUT;
+import static uk.gov.hmcts.reform.sscs.domain.notify.NotificationEventType.*;
 import static uk.gov.hmcts.reform.sscs.service.LetterUtils.*;
 import static uk.gov.hmcts.reform.sscs.service.NotificationUtils.*;
 import static uk.gov.hmcts.reform.sscs.service.NotificationUtils.hasAppointee;
@@ -38,6 +37,7 @@ public class SendNotificationService {
     protected static final String DIRECTION_TEXT = "Direction Text";
     static final String DM_STORE_USER_ID = "sscs";
     private static final String NOTIFICATION_TYPE_LETTER = "Letter";
+    protected static final String SSCS_INTERLOC_DIRECTION_DOCUMENT = "FL_InterlocDecision";
 
     @Value("${feature.bundled_letters_on}")
     Boolean bundledLettersOn;
@@ -279,6 +279,10 @@ public class SendNotificationService {
                 && (newSscsCaseData.getSscsDocument() != null
                 && !newSscsCaseData.getSscsDocument().isEmpty())) {
             filetype = DIRECTION_TEXT;
+        } else if ((JUDGE_DECISION_APPEAL_TO_PROCEED.equals(notificationEventType) || TCW_DECISION_APPEAL_TO_PROCEED.equals(notificationEventType))
+                && (newSscsCaseData.getSscsDocument() != null
+                && !newSscsCaseData.getSscsDocument().isEmpty())) {
+            filetype = SSCS_INTERLOC_DIRECTION_DOCUMENT;
         }
         return filetype;
     }

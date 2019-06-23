@@ -1052,34 +1052,6 @@ public class NotificationsIt {
                 "0",
                 "0",
                 "2"
-            },
-            new Object[]{
-                INTERLOC_VALID_APPEAL,
-                "oral",
-                Collections.emptyList(),
-                Collections.emptyList(),
-                Arrays.asList("7c3ebe0a-504b-4bc8-9273-d4247b576b40", "37070f8d-d48b-4f71-9e3b-f527d1368338"),
-                "yes",
-                "yes",
-                "yes",
-                "yes",
-                "0",
-                "0",
-                "2"
-            },
-            new Object[]{
-                INTERLOC_VALID_APPEAL,
-                "paper",
-                Collections.emptyList(),
-                Collections.emptyList(),
-                Arrays.asList("7c3ebe0a-504b-4bc8-9273-d4247b576b40", "37070f8d-d48b-4f71-9e3b-f527d1368338"),
-                "no",
-                "no",
-                "no",
-                "no",
-                "0",
-                "0",
-                "2"
             }
         };
     }
@@ -1199,7 +1171,113 @@ public class NotificationsIt {
                 true,
                 true,
                 "2"
+            },
+            new Object[]{
+                JUDGE_DECISION_APPEAL_TO_PROCEED,
+                "paper",
+                false,
+                false,
+                "1"
+            },
+            new Object[]{
+                JUDGE_DECISION_APPEAL_TO_PROCEED,
+                "oral",
+                false,
+                false,
+                "1"
+            },
+            new Object[]{
+                JUDGE_DECISION_APPEAL_TO_PROCEED,
+                "paper",
+                false,
+                true,
+                "1"
+            },
+            new Object[]{
+                JUDGE_DECISION_APPEAL_TO_PROCEED,
+                "oral",
+                false,
+                true,
+                "1"
+            },
+            new Object[]{
+                JUDGE_DECISION_APPEAL_TO_PROCEED,
+                "paper",
+                true,
+                false,
+                "2"
+            },
+            new Object[]{
+                JUDGE_DECISION_APPEAL_TO_PROCEED,
+                "oral",
+                true,
+                false,
+                "2"
+            },
+            new Object[]{
+                JUDGE_DECISION_APPEAL_TO_PROCEED,
+                "paper",
+                true,
+                true,
+                "2"
+            },
+            new Object[]{
+                JUDGE_DECISION_APPEAL_TO_PROCEED,
+                "oral",
+                true,
+                true,
+                "2"
+            },
+            new Object[]{
+                TCW_DECISION_APPEAL_TO_PROCEED,
+                "oral",
+                false,
+                false,
+                "1"
+            },
+            new Object[]{
+                TCW_DECISION_APPEAL_TO_PROCEED,
+                "paper",
+                false,
+                true,
+                "1"
+            },
+            new Object[]{
+                TCW_DECISION_APPEAL_TO_PROCEED,
+                "oral",
+                false,
+                true,
+                "1"
+            },
+            new Object[]{
+                TCW_DECISION_APPEAL_TO_PROCEED,
+                "paper",
+                true,
+                false,
+                "2"
+            },
+            new Object[]{
+                TCW_DECISION_APPEAL_TO_PROCEED,
+                "oral",
+                true,
+                false,
+                "2"
+            },
+            new Object[]{
+                TCW_DECISION_APPEAL_TO_PROCEED,
+                "paper",
+                true,
+                true,
+                "2"
+            },
+            new Object[]{
+                TCW_DECISION_APPEAL_TO_PROCEED,
+                "oral",
+                true,
+                true,
+                "2"
             }
+
         };
     }
 
@@ -1688,34 +1766,6 @@ public class NotificationsIt {
                 Collections.emptyList(),
                 Collections.emptyList(),
                 Arrays.asList("bc943cf3-9fd1-4d14-a0c0-b183572c21a7", "a2a4a88a-b91a-4e6d-94f0-507179292058"),
-                "no",
-                "no",
-                "no",
-                "no",
-                "0",
-                "0",
-                "2"
-            },
-            new Object[]{
-                INTERLOC_VALID_APPEAL,
-                "oral",
-                Collections.emptyList(),
-                Collections.emptyList(),
-                Arrays.asList("7c3ebe0a-504b-4bc8-9273-d4247b576b40", "37070f8d-d48b-4f71-9e3b-f527d1368338"),
-                "yes",
-                "yes",
-                "yes",
-                "yes",
-                "0",
-                "0",
-                "2"
-            },
-            new Object[]{
-                INTERLOC_VALID_APPEAL,
-                "paper",
-                Collections.emptyList(),
-                Collections.emptyList(),
-                Arrays.asList("7c3ebe0a-504b-4bc8-9273-d4247b576b40", "37070f8d-d48b-4f71-9e3b-f527d1368338"),
                 "no",
                 "no",
                 "no",

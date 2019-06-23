@@ -11,9 +11,7 @@ import static org.mockito.MockitoAnnotations.initMocks;
 import static uk.gov.hmcts.reform.sscs.config.SubscriptionType.*;
 import static uk.gov.hmcts.reform.sscs.domain.notify.NotificationEventType.*;
 import static uk.gov.hmcts.reform.sscs.service.NotificationUtils.getSubscription;
-import static uk.gov.hmcts.reform.sscs.service.SendNotificationService.DIRECTION_TEXT;
-import static uk.gov.hmcts.reform.sscs.service.SendNotificationService.DM_STORE_USER_ID;
-import static uk.gov.hmcts.reform.sscs.service.SendNotificationService.STRIKE_OUT_NOTICE;
+import static uk.gov.hmcts.reform.sscs.service.SendNotificationService.*;
 
 import java.io.IOException;
 import java.net.URI;
@@ -65,6 +63,7 @@ public class NotificationServiceTest {
     private static final String SMS_TEMPLATE_ID = "sms-template-id";
     private static final String LETTER_TEMPLATE_ID_STRUCKOUT = "struckOut";
     private static final String LETTER_TEMPLATE_ID_DIRECTION_ISSUED = "directionIssued";
+    private static final String LETTER_TEMPLATE_ID_VALID_APPEAL_CREATED = "validAppealCreated";
     private static final String SAME_TEST_EMAIL_COM = "sametest@email.com";
     private static final String NEW_TEST_EMAIL_COM = "newtest@email.com";
     private static final String NO = "No";
@@ -1418,10 +1417,10 @@ public class NotificationServiceTest {
 
     @Test
     @Parameters(method = "bundledLetters")
-    public void sendBundledLetterToGovNotifyWhenStruckOutNotification(NotificationEventType eventType, String letterTemplateId) throws IOException {
+    public void sendBundledLetterToGovNotifyWhenStruckOutNotification(NotificationEventType eventType, String letterTemplateId, String templatePath, String documentType) throws IOException {
         String fileUrl = "http://dm-store:4506/documents/1e1eb3d2-5b6c-430d-8dad-ebcea1ad7ecf";
 
-        CcdNotificationWrapper wrapper = buildWrapperWithDocuments(eventType, fileUrl, APPELLANT_WITH_ADDRESS, null);
+        CcdNotificationWrapper wrapper = buildWrapperWithDocuments(eventType, fileUrl, APPELLANT_WITH_ADDRESS, null, documentType);
 
         Notification notification = new Notification(Template.builder().letterTemplateId(letterTemplateId).build(), Destination.builder().build(), new HashMap<>(), new Reference(), null);
 
@@ -1433,8 +1432,7 @@ public class NotificationServiceTest {
         when((notificationValidService).isHearingTypeValidToSendNotification(any(), any())).thenReturn(true);
         when(sscsGeneratePdfService.generatePdf(anyString(), any(), any(), any())).thenReturn(sampleDirectionCoversheet);
 
-        String template = STRUCK_OUT.equals(eventType) ? "/templates/strike_out_letter_template.html" : "/templates/direction_notice_letter_template.html";
-        when(bundledLetterTemplateUtil.getBundledLetterTemplate(eventType, wrapper.getNewSscsCaseData(), APPELLANT)).thenReturn(template);
+        when(bundledLetterTemplateUtil.getBundledLetterTemplate(eventType, wrapper.getNewSscsCaseData(), APPELLANT)).thenReturn(templatePath);
 
         when(factory.create(wrapper, getSubscriptionWithType(ccdNotificationWrapper))).thenReturn(notification);
         notificationService.manageNotificationAndSubscription(wrapper);
@@ -1445,10 +1443,13 @@ public class NotificationServiceTest {
     private Object[] bundledLetters() {
         return new Object[] {
             new Object[] {
-                STRUCK_OUT, LETTER_TEMPLATE_ID_STRUCKOUT
+                STRUCK_OUT, LETTER_TEMPLATE_ID_STRUCKOUT, "/templates/strike_out_letter_template.html", STRIKE_OUT_NOTICE
             },
             new Object[] {
-                DIRECTION_ISSUED, LETTER_TEMPLATE_ID_DIRECTION_ISSUED
+                DIRECTION_ISSUED, LETTER_TEMPLATE_ID_DIRECTION_ISSUED, "/templates/direction_notice_letter_template.html", DIRECTION_TEXT
+            },
+            new Object[] {
+                JUDGE_DECISION_APPEAL_TO_PROCEED, LETTER_TEMPLATE_ID_VALID_APPEAL_CREATED, "/templates/valid_appeal_created_template.html", SSCS_INTERLOC_DIRECTION_DOCUMENT
             }
         };
     }
@@ -1457,7 +1458,7 @@ public class NotificationServiceTest {
     public void sendBundledLettersToGovNotifyWhenStruckOutNotificationFailsAtNotify() throws IOException {
         String fileUrl = "http://dm-store:4506/documents/1e1eb3d2-5b6c-430d-8dad-ebcea1ad7ecf";
 
-        CcdNotificationWrapper struckOutCcdNotificationWrapper = buildWrapperWithDocuments(STRUCK_OUT, fileUrl, APPELLANT_WITH_ADDRESS, null);
+        CcdNotificationWrapper struckOutCcdNotificationWrapper = buildWrapperWithDocuments(STRUCK_OUT, fileUrl, APPELLANT_WITH_ADDRESS, null, STRIKE_OUT_NOTICE);
 
         Notification notification = new Notification(Template.builder().letterTemplateId(LETTER_TEMPLATE_ID_STRUCKOUT).build(), Destination.builder().build(), new HashMap<>(), new Reference(), null);
 
@@ -1482,7 +1483,7 @@ public class NotificationServiceTest {
     public void doNotSendBundledLettersToGovNotifyWhenStruckOutNotificationWhenFeatureToggledOff() throws IOException {
         String fileUrl = "http://dm-store:4506/documents/1e1eb3d2-5b6c-430d-8dad-ebcea1ad7ecf";
 
-        CcdNotificationWrapper struckOutCcdNotificationWrapper = buildWrapperWithDocuments(STRUCK_OUT, fileUrl, APPELLANT_WITH_ADDRESS, null);
+        CcdNotificationWrapper struckOutCcdNotificationWrapper = buildWrapperWithDocuments(STRUCK_OUT, fileUrl, APPELLANT_WITH_ADDRESS, null, STRIKE_OUT_NOTICE);
 
         Notification notification = new Notification(Template.builder().letterTemplateId(LETTER_TEMPLATE_ID_STRUCKOUT).build(), Destination.builder().build(), new HashMap<>(), new Reference(), null);
 
@@ -1543,11 +1544,7 @@ public class NotificationServiceTest {
         return notificationService;
     }
 
-    private CcdNotificationWrapper buildWrapperWithDocuments(NotificationEventType eventType, String fileUrl, Appellant appellant, Representative rep) {
-        String documentType = STRIKE_OUT_NOTICE;
-        if (DIRECTION_ISSUED.equals(eventType)) {
-            documentType = DIRECTION_TEXT;
-        }
+    private CcdNotificationWrapper buildWrapperWithDocuments(NotificationEventType eventType, String fileUrl, Appellant appellant, Representative rep, String documentType) {
 
         SscsDocumentDetails sscsDocumentDetails = SscsDocumentDetails.builder()
             .documentType(documentType)
