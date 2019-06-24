@@ -223,7 +223,16 @@ public class PersonalisationTest {
                 new Object[]{HEARING_BOOKED_NOTIFICATION, APPELLANT, ONLINE},
                 new Object[]{HEARING_BOOKED_NOTIFICATION, REPRESENTATIVE, PAPER},
                 new Object[]{HEARING_BOOKED_NOTIFICATION, REPRESENTATIVE, REGULAR},
-                new Object[]{HEARING_BOOKED_NOTIFICATION, REPRESENTATIVE, ONLINE}
+                new Object[]{HEARING_BOOKED_NOTIFICATION, REPRESENTATIVE, ONLINE},
+                new Object[]{VALID_APPEAL_CREATED, APPELLANT, PAPER},
+                new Object[]{VALID_APPEAL_CREATED, APPELLANT, REGULAR},
+                new Object[]{VALID_APPEAL_CREATED, APPELLANT, ONLINE},
+                new Object[]{VALID_APPEAL_CREATED, REPRESENTATIVE, PAPER},
+                new Object[]{VALID_APPEAL_CREATED, REPRESENTATIVE, REGULAR},
+                new Object[]{VALID_APPEAL_CREATED, REPRESENTATIVE, ONLINE},
+                new Object[]{VALID_APPEAL_CREATED, APPOINTEE, PAPER},
+                new Object[]{VALID_APPEAL_CREATED, APPOINTEE, REGULAR},
+                new Object[]{VALID_APPEAL_CREATED, APPOINTEE, ONLINE},
         };
     }
 

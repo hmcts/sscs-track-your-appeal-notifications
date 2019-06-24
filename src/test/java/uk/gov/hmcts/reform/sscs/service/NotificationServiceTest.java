@@ -383,6 +383,19 @@ public class NotificationServiceTest {
                         new SubscriptionType[]{APPELLANT},
                 },
                 new Object[]{
+                        VALID_APPEAL_CREATED,
+                        1,
+                        0,
+                        Subscription.builder()
+                                .tya(APPEAL_NUMBER)
+                                .email(EMAIL)
+                                .subscribeEmail(YES)
+                                .build(),
+                        null,
+                        null,
+                        new SubscriptionType[]{APPELLANT},
+                },
+                new Object[]{
                         APPEAL_LAPSED_NOTIFICATION,
                         1,
                         1,
@@ -531,6 +544,52 @@ public class NotificationServiceTest {
                 },
                 new Object[]{
                         SYA_APPEAL_CREATED_NOTIFICATION,
+                        0,
+                        0,
+                        Subscription.builder().build(),
+                        Subscription.builder().build(),
+                        Subscription.builder().build(),
+                        new SubscriptionType[]{APPOINTEE, REPRESENTATIVE},  // Fallback letter
+                },
+                new Object[]{
+                        VALID_APPEAL_CREATED,
+                        0,
+                        0,
+                        null,
+                        null,
+                        null,
+                        new SubscriptionType[]{APPELLANT},  // Fallback letter
+                },
+                new Object[]{
+                        VALID_APPEAL_CREATED,
+                        1,
+                        0,
+                        Subscription.builder()
+                                .tya(APPEAL_NUMBER)
+                                .email(EMAIL)
+                                .subscribeEmail(YES)
+                                .build(),
+                        null,
+                        null,
+                        new SubscriptionType[]{APPELLANT},
+                },
+                new Object[]{
+                        VALID_APPEAL_CREATED,
+                        1,
+                        1,
+                        Subscription.builder()
+                                .tya(APPEAL_NUMBER)
+                                .email(EMAIL)
+                                .subscribeEmail(YES)
+                                .subscribeSms(YES)
+                                .mobile(MOBILE_NUMBER_1)
+                                .build(),
+                        null,
+                        null,
+                        new SubscriptionType[]{APPELLANT},
+                },
+                new Object[]{
+                        VALID_APPEAL_CREATED,
                         0,
                         0,
                         Subscription.builder().build(),
@@ -712,6 +771,52 @@ public class NotificationServiceTest {
                 Subscription.builder().build(),
                 Subscription.builder().build(),
                 new SubscriptionType[]{},
+            },
+            new Object[]{
+                VALID_APPEAL_CREATED,
+                0,
+                0,
+                null,
+                null,
+                null,
+                new SubscriptionType[]{},
+            },
+            new Object[]{
+                VALID_APPEAL_CREATED,
+                1,
+                0,
+                Subscription.builder()
+                        .tya(APPEAL_NUMBER)
+                        .email(EMAIL)
+                        .subscribeEmail(YES)
+                        .build(),
+                null,
+                null,
+                new SubscriptionType[]{APPELLANT},
+            },
+            new Object[]{
+                VALID_APPEAL_CREATED,
+                1,
+                1,
+                Subscription.builder()
+                        .tya(APPEAL_NUMBER)
+                        .email(EMAIL)
+                        .subscribeEmail(YES)
+                        .subscribeSms(YES)
+                        .mobile(MOBILE_NUMBER_1)
+                        .build(),
+                null,
+                null,
+                new SubscriptionType[]{APPELLANT},
+            },
+            new Object[]{
+                VALID_APPEAL_CREATED,
+                0,
+                0,
+                Subscription.builder().build(),
+                Subscription.builder().build(),
+                Subscription.builder().build(),
+                new SubscriptionType[]{},
             }
         };
     }
@@ -862,6 +967,48 @@ public class NotificationServiceTest {
                     .build(),
                 null,
                 new SubscriptionType[]{APPOINTEE},
+            },
+            new Object[]{
+                VALID_APPEAL_CREATED,
+                0,
+                0,
+                null,
+                null,
+                new SubscriptionType[]{APPELLANT},
+            },
+            new Object[]{
+                VALID_APPEAL_CREATED,
+                1,
+                0,
+                Subscription.builder()
+                        .tya(APPEAL_NUMBER)
+                        .email(EMAIL)
+                        .subscribeEmail(YES)
+                        .build(),
+                null,
+                new SubscriptionType[]{APPOINTEE},
+            },
+            new Object[]{
+                VALID_APPEAL_CREATED,
+                1,
+                1,
+                Subscription.builder()
+                        .tya(APPEAL_NUMBER)
+                        .email(EMAIL)
+                        .subscribeEmail(YES)
+                        .subscribeSms(YES)
+                        .mobile(MOBILE_NUMBER_1)
+                        .build(),
+                null,
+                new SubscriptionType[]{APPOINTEE},
+            },
+            new Object[]{
+                VALID_APPEAL_CREATED,
+                0,
+                0,
+                Subscription.builder().build(),
+                Subscription.builder().build(),
+                new SubscriptionType[]{APPOINTEE, REPRESENTATIVE},
             }
         };
     }
@@ -1001,6 +1148,48 @@ public class NotificationServiceTest {
                 null,
                 new SubscriptionType[]{APPOINTEE},
             },
+            new Object[]{
+                VALID_APPEAL_CREATED,
+                0,
+                0,
+                null,
+                null,
+                new SubscriptionType[]{},
+            },
+            new Object[]{
+                VALID_APPEAL_CREATED,
+                1,
+                0,
+                Subscription.builder()
+                        .tya(APPEAL_NUMBER)
+                        .email(EMAIL)
+                        .subscribeEmail(YES)
+                        .build(),
+                null,
+                new SubscriptionType[]{APPOINTEE},
+            },
+            new Object[]{
+                VALID_APPEAL_CREATED,
+                1,
+                1,
+                Subscription.builder()
+                        .tya(APPEAL_NUMBER)
+                        .email(EMAIL)
+                        .subscribeEmail(YES)
+                        .subscribeSms(YES)
+                        .mobile(MOBILE_NUMBER_1)
+                        .build(),
+                null,
+                new SubscriptionType[]{APPOINTEE},
+            },
+            new Object[]{
+                VALID_APPEAL_CREATED,
+                0,
+                0,
+                Subscription.builder().build(),
+                Subscription.builder().build(),
+                new SubscriptionType[]{},
+            }
         };
     }
 
