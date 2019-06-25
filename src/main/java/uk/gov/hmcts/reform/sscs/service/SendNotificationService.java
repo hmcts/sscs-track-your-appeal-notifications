@@ -37,7 +37,7 @@ public class SendNotificationService {
     protected static final String DIRECTION_TEXT = "Direction Text";
     static final String DM_STORE_USER_ID = "sscs";
     private static final String NOTIFICATION_TYPE_LETTER = "Letter";
-    protected static final String SSCS_INTERLOC_DIRECTION_DOCUMENT = "FL_InterlocDecision";
+    protected static final String SSCS_INTERLOC_DECISIONS_DOCUMENT = "Interloc Decisions";
 
     @Value("${feature.bundled_letters_on}")
     Boolean bundledLettersOn;
@@ -282,7 +282,7 @@ public class SendNotificationService {
         } else if ((JUDGE_DECISION_APPEAL_TO_PROCEED.equals(notificationEventType) || TCW_DECISION_APPEAL_TO_PROCEED.equals(notificationEventType))
                 && (newSscsCaseData.getSscsDocument() != null
                 && !newSscsCaseData.getSscsDocument().isEmpty())) {
-            filetype = SSCS_INTERLOC_DIRECTION_DOCUMENT;
+            filetype = SSCS_INTERLOC_DECISIONS_DOCUMENT;
         }
         return filetype;
     }

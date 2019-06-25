@@ -1449,7 +1449,7 @@ public class NotificationServiceTest {
                 DIRECTION_ISSUED, LETTER_TEMPLATE_ID_DIRECTION_ISSUED, "/templates/direction_notice_letter_template.html", DIRECTION_TEXT
             },
             new Object[] {
-                JUDGE_DECISION_APPEAL_TO_PROCEED, LETTER_TEMPLATE_ID_VALID_APPEAL_CREATED, "/templates/valid_appeal_created_template.html", SSCS_INTERLOC_DIRECTION_DOCUMENT
+                JUDGE_DECISION_APPEAL_TO_PROCEED, LETTER_TEMPLATE_ID_VALID_APPEAL_CREATED, "/templates/valid_appeal_created_template.html", SSCS_INTERLOC_DECISIONS_DOCUMENT
             }
         };
     }
