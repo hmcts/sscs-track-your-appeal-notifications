@@ -135,7 +135,7 @@
         },
         "hearingType": ""
       },
-      "sscsDocument":[{"value":{"documentType":"Interloc Decisions","documentEmailContent":"Interloc Decisions","documentLink":{"document_url":"http://dm-store:4506/documents/5b7bab64-3d42-4c8b-bf2f-9f695cc70f4c","document_binary_url":"http://dm-store:4506/documents/5b7bab64-3d42-4c8b-bf2f-9f695cc70f4c/binary","document_filename":"Interloc Decisions - sample - Postponement Directions Notice form 5.pdf"},"documentDateAdded":"2019-03-27","documentComment":"Interloc Decisions document uploaded","documentFileName":"Interloc Decisions.pdf"},"id":"3b6d23e6-d027-47cc-951b-77abb58f4a0b"}],
+      "sscsDocument":[{"value":{"documentType":"Decision Notice","documentEmailContent":"Decision Notice","documentLink":{"document_url":"http://dm-store:4506/documents/5b7bab64-3d42-4c8b-bf2f-9f695cc70f4c","document_binary_url":"http://dm-store:4506/documents/5b7bab64-3d42-4c8b-bf2f-9f695cc70f4c/binary","document_filename":"Decision Notice - sample - Postponement Directions Notice form 5.pdf"},"documentDateAdded":"2019-03-27","documentComment":"Decision Notice document uploaded","documentFileName":"Decision Notice.pdf"},"id":"3b6d23e6-d027-47cc-951b-77abb58f4a0b"}],
       "evidence": {
         "documents":[
           {

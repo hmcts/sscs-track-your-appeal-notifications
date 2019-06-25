@@ -37,7 +37,7 @@ public class SendNotificationService {
     protected static final String DIRECTION_TEXT = "Direction Text";
     static final String DM_STORE_USER_ID = "sscs";
     private static final String NOTIFICATION_TYPE_LETTER = "Letter";
-    protected static final String SSCS_INTERLOC_DECISIONS_DOCUMENT = "Interloc Decisions";
+    protected static final String SSCS_INTERLOC_DECISIONS_DOCUMENT = "Decision Notice";
 
     @Value("${feature.bundled_letters_on}")
     Boolean bundledLettersOn;
