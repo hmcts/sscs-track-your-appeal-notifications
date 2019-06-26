@@ -34,10 +34,8 @@ import uk.gov.service.notify.NotificationClientException;
 @Slf4j
 public class SendNotificationService {
     protected static final String STRIKE_OUT_NOTICE = "Strike Out Notice";
-    protected static final String DIRECTION_TEXT = "Direction Text";
     static final String DM_STORE_USER_ID = "sscs";
     private static final String NOTIFICATION_TYPE_LETTER = "Letter";
-    protected static final String SSCS_INTERLOC_DECISIONS_DOCUMENT = "Decision Notice";
 
     @Value("${feature.bundled_letters_on}")
     Boolean bundledLettersOn;
@@ -256,40 +254,36 @@ public class SendNotificationService {
         SscsCaseData newSscsCaseData = wrapper.getNewSscsCaseData();
 
         byte[] associatedCasePdf = null;
-        String filetype = getBundledLetterFileType(notificationEventType, newSscsCaseData);
+        String documentUrl = getBundledLetterDocumentUrl(notificationEventType, newSscsCaseData);
 
-        if (null != filetype) {
-            for (SscsDocument sscsDocument : newSscsCaseData.getSscsDocument()) {
-                if (filetype.equalsIgnoreCase(sscsDocument.getValue().getDocumentType())) {
-                    associatedCasePdf = evidenceManagementService.download(
-                            URI.create(sscsDocument.getValue().getDocumentLink().getDocumentUrl()),
-                            DM_STORE_USER_ID
-                    );
+        if (null != documentUrl) {
 
-                    break;
-                }
-            }
+            associatedCasePdf = evidenceManagementService.download(URI.create(documentUrl), DM_STORE_USER_ID);
 
         }
 
         return associatedCasePdf;
     }
 
-    protected static String getBundledLetterFileType(NotificationEventType notificationEventType, SscsCaseData newSscsCaseData) {
-        String filetype = null;
+    protected static String getBundledLetterDocumentUrl(NotificationEventType notificationEventType, SscsCaseData newSscsCaseData) {
+        String documentUrl = null;
         if ((STRUCK_OUT.equals(notificationEventType))
                 && (newSscsCaseData.getSscsDocument() != null
                 && !newSscsCaseData.getSscsDocument().isEmpty())) {
-            filetype = STRIKE_OUT_NOTICE;
+            for (SscsDocument sscsDocument : newSscsCaseData.getSscsDocument()) {
+                if (STRIKE_OUT_NOTICE.equalsIgnoreCase(sscsDocument.getValue().getDocumentType())) {
+                    documentUrl = sscsDocument.getValue().getDocumentLink().getDocumentUrl();
+                    break;
+                }
+            }
         } else if ((DIRECTION_ISSUED.equals(notificationEventType))
-                && (newSscsCaseData.getSscsDocument() != null
-                && !newSscsCaseData.getSscsDocument().isEmpty())) {
-            filetype = DIRECTION_TEXT;
+                && (newSscsCaseData.getSscsInterlocDirectionDocument() != null)) {
+            documentUrl = newSscsCaseData.getSscsInterlocDirectionDocument().getDocumentLink().getDocumentUrl();
         } else if ((JUDGE_DECISION_APPEAL_TO_PROCEED.equals(notificationEventType) || TCW_DECISION_APPEAL_TO_PROCEED.equals(notificationEventType))
-                && (newSscsCaseData.getSscsDocument() != null
-                && !newSscsCaseData.getSscsDocument().isEmpty())) {
-            filetype = SSCS_INTERLOC_DECISIONS_DOCUMENT;
+                && (newSscsCaseData.getSscsInterlocDecisionDocument() != null)) {
+            documentUrl = newSscsCaseData.getSscsInterlocDecisionDocument().getDocumentLink().getDocumentUrl();
         }
-        return filetype;
+        return documentUrl;
     }
+
 }

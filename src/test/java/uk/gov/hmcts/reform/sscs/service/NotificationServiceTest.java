@@ -1446,10 +1446,10 @@ public class NotificationServiceTest {
                 STRUCK_OUT, LETTER_TEMPLATE_ID_STRUCKOUT, "/templates/strike_out_letter_template.html", STRIKE_OUT_NOTICE
             },
             new Object[] {
-                DIRECTION_ISSUED, LETTER_TEMPLATE_ID_DIRECTION_ISSUED, "/templates/direction_notice_letter_template.html", DIRECTION_TEXT
+                DIRECTION_ISSUED, LETTER_TEMPLATE_ID_DIRECTION_ISSUED, "/templates/direction_notice_letter_template.html", ""
             },
             new Object[] {
-                JUDGE_DECISION_APPEAL_TO_PROCEED, LETTER_TEMPLATE_ID_VALID_APPEAL_CREATED, "/templates/valid_appeal_created_template.html", SSCS_INTERLOC_DECISIONS_DOCUMENT
+                JUDGE_DECISION_APPEAL_TO_PROCEED, LETTER_TEMPLATE_ID_VALID_APPEAL_CREATED, "/templates/valid_appeal_created_template.html", ""
             }
         };
     }
@@ -1598,6 +1598,12 @@ public class NotificationServiceTest {
                 )
                 .build())
             .caseReference(CASE_REFERENCE)
+            .sscsInterlocDecisionDocument(SscsInterlocDecisionDocument.builder().documentLink(DocumentLink.builder().documentUrl("http://dm-store:4506/documents/1e1eb3d2-5b6c-430d-8dad-ebcea1ad7ecf")
+                    .documentFilename("test.pdf")
+                    .documentBinaryUrl("test/binary").build()).build())
+            .sscsInterlocDirectionDocument(SscsInterlocDirectionDocument.builder().documentLink(DocumentLink.builder().documentUrl("http://dm-store:4506/documents/1e1eb3d2-5b6c-430d-8dad-ebcea1ad7ecf")
+                    .documentFilename("test.pdf")
+                    .documentBinaryUrl("test/binary").build()).build())
             .ccdCaseId(CASE_ID)
             .sscsDocument(new ArrayList<>(Collections.singletonList(sscsDocument)));
     }

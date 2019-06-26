@@ -14,7 +14,8 @@ import static uk.gov.hmcts.reform.sscs.domain.notify.NotificationEventType.*;
 import static uk.gov.hmcts.reform.sscs.service.LetterUtils.getAddressToUseForLetter;
 import static uk.gov.hmcts.reform.sscs.service.NotificationValidService.BUNDLED_LETTER_EVENT_TYPES;
 import static uk.gov.hmcts.reform.sscs.service.NotificationValidService.FALLBACK_LETTER_SUBSCRIPTION_TYPES;
-import static uk.gov.hmcts.reform.sscs.service.SendNotificationService.getBundledLetterFileType;
+import static uk.gov.hmcts.reform.sscs.service.SendNotificationService.STRIKE_OUT_NOTICE;
+import static uk.gov.hmcts.reform.sscs.service.SendNotificationService.getBundledLetterDocumentUrl;
 import static uk.gov.hmcts.reform.sscs.service.SendNotificationService.getRepSalutation;
 
 import java.util.*;
@@ -366,13 +367,13 @@ public class SendNotificationServiceTest {
     @Test
     @Parameters(method = "bundledLetterTemplates")
     public void validBundledLetterType(NotificationEventType eventType) {
-        assertNotNull(getBundledLetterFileType(eventType, buildBaseWrapper(APPELLANT_WITH_ADDRESS, eventType).getNewSscsCaseData()));
+        assertNotNull(getBundledLetterDocumentUrl(eventType, buildBaseWrapper(APPELLANT_WITH_ADDRESS, eventType).getNewSscsCaseData()));
     }
 
     @Test
     @Parameters(method = "nonBundledLetterTemplates")
     public void invalidBundledLetterTileType(NotificationEventType eventType) {
-        assertNull(getBundledLetterFileType(eventType, buildBaseWrapper(APPELLANT_WITH_ADDRESS, eventType).getNewSscsCaseData()));
+        assertNull(getBundledLetterDocumentUrl(eventType, buildBaseWrapper(APPELLANT_WITH_ADDRESS, eventType).getNewSscsCaseData()));
     }
 
     private CcdNotificationWrapper buildBaseWrapper(Appellant appellant) {
@@ -394,6 +395,12 @@ public class SendNotificationServiceTest {
             appellantSubscription = Subscription.builder().tya("GLSCRR").email("Email").mobile("07983495065").subscribeEmail(YES).subscribeSms(YES).build();
         }
 
+        SscsDocument sscsDocument = SscsDocument.builder().value(SscsDocumentDetails.builder()
+                .documentType(STRIKE_OUT_NOTICE).documentLink(DocumentLink.builder().documentUrl("testUrl")
+                        .build()).build()).build();
+        List<SscsDocument> sscsDocumentList = new ArrayList<>();
+        sscsDocumentList.add(sscsDocument);
+
         SscsCaseData sscsCaseDataWithDocuments = SscsCaseData.builder()
             .appeal(
                 Appeal
@@ -410,7 +417,9 @@ public class SendNotificationServiceTest {
                     .build())
             .caseReference(CASE_REFERENCE)
             .ccdCaseId(CASE_ID)
-            .sscsDocument(new ArrayList<>(Collections.singletonList(null)))
+            .sscsDocument(sscsDocumentList)
+            .sscsInterlocDecisionDocument(SscsInterlocDecisionDocument.builder().documentLink(DocumentLink.builder().documentUrl("testUrl").build()).build())
+            .sscsInterlocDirectionDocument(SscsInterlocDirectionDocument.builder().documentLink(DocumentLink.builder().documentUrl("testUrl").build()).build())
             .build();
 
         SscsCaseDataWrapper struckOutSscsCaseDataWrapper = SscsCaseDataWrapper.builder()
