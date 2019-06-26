@@ -216,6 +216,11 @@ public class SendNotificationService {
             notification.getPlaceholders().put(AppConstants.LETTER_ADDRESS_POSTCODE, addressToUse.getPostcode());
             notification.getPlaceholders().put(AppConstants.LETTER_NAME, nameToUse.getFullNameNoTitle());
 
+            if (!notification.getPlaceholders().containsKey(APPEAL_RESPOND_DATE)) {
+                ZonedDateTime appealReceivedDate = ZonedDateTime.now().plusSeconds(delay);
+                notification.getPlaceholders().put(APPEAL_RESPOND_DATE, appealReceivedDate.format(DateTimeFormatter.ofPattern(RESPONSE_DATE_FORMAT)));
+            }
+
             byte[] bundledLetter = buildBundledLetter(
                     generateCoveringLetter(wrapper, notification, subscriptionType),
                     downloadAssociatedCasePdf(wrapper)
@@ -264,6 +269,7 @@ public class SendNotificationService {
                     break;
                 }
             }
+
         }
 
         return associatedCasePdf;
