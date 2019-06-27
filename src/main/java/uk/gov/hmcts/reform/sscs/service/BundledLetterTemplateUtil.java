@@ -37,20 +37,20 @@ public class BundledLetterTemplateUtil {
     }
 
     public String getBundledLetterTemplate(NotificationEventType notificationEventType, SscsCaseData newSscsCaseData, SubscriptionType subscriptionType) {
-        if ((STRUCK_OUT.equals(notificationEventType)) && hasSscsDocument(newSscsCaseData)) {
+        if ((STRUCK_OUT.equals(notificationEventType)) && newSscsCaseData != null && newSscsCaseData.getSscsStrikeOutDocument() != null) {
             if (REPRESENTATIVE.equals(subscriptionType)) {
                 return strikeOutLetterTemplateRep;
             } else {
                 return strikeOutLetterTemplate;
             }
-        } else if ((DIRECTION_ISSUED.equals(notificationEventType)) && (hasSscsDocument(newSscsCaseData))) {
+        } else if ((DIRECTION_ISSUED.equals(notificationEventType)) && newSscsCaseData != null && newSscsCaseData.getSscsInterlocDirectionDocument() != null) {
             if (REPRESENTATIVE.equals(subscriptionType)) {
                 return directionNoticeLetterTemplateRep;
             } else {
                 return directionNoticeLetterTemplate;
             }
         } else if ((JUDGE_DECISION_APPEAL_TO_PROCEED.equals(notificationEventType) || TCW_DECISION_APPEAL_TO_PROCEED.equals(notificationEventType))
-                && (hasSscsDocument(newSscsCaseData))) {
+                && (newSscsCaseData != null && newSscsCaseData.getSscsInterlocDecisionDocument() != null)) {
             if (REPRESENTATIVE.equals(subscriptionType)) {
                 return validAppealCreatedLetterTemplateRep;
             } else {
