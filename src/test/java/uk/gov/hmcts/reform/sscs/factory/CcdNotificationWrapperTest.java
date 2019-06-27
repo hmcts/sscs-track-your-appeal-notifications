@@ -209,6 +209,7 @@ public class CcdNotificationWrapperTest {
                 || type.equals(HEARING_BOOKED_NOTIFICATION)
                 || type.equals(SUBSCRIPTION_UPDATED_NOTIFICATION)
                 || type.equals(REQUEST_INFO_INCOMPLETE)
+                || type.equals(NON_COMPLIANT_NOTIFICATION)
             )).toArray();
     }
 

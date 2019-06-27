@@ -152,6 +152,7 @@ public class NotificationServiceForSubscriptionUpdatedTest {
                 evidenceManagementService, sscsGeneratePdfService, notificationHandler, notificationValidService, bundledLetterTemplateUtil);
         ReflectionTestUtils.setField(sendNotificationService, "bundledLettersOn", false);
         ReflectionTestUtils.setField(sendNotificationService, "lettersOn", false);
+        ReflectionTestUtils.setField(sendNotificationService, "interlocLettersOn", false);
         return new NotificationService(notificationFactory, reminderService,
                 notificationValidService, notificationHandler, outOfHoursCalculator, notificationConfig, sendNotificationService
         );
