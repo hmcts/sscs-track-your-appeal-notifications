@@ -219,8 +219,7 @@ public class Personalisation<E extends NotificationWrapper> {
         if (ccdResponse.getEvents() != null) {
 
             for (Event event : ccdResponse.getEvents()) {
-                if ((event.getValue() != null)
-                    && ((notificationEventType.equals(APPEAL_RECEIVED_NOTIFICATION) && event.getValue().getEventType().equals(APPEAL_RECEIVED)))
+                if ((event.getValue() != null) && isAppealReceivedAndUpdated(notificationEventType, event)
                     || notificationEventType.equals(CASE_UPDATED) || JUDGE_DECISION_APPEAL_TO_PROCEED.equals(notificationEventType)
                     || TCW_DECISION_APPEAL_TO_PROCEED.equals(notificationEventType)) {
                     return setAppealReceivedDetails(personalisation, event.getValue());
@@ -228,6 +227,10 @@ public class Personalisation<E extends NotificationWrapper> {
             }
         }
         return personalisation;
+    }
+
+    private boolean isAppealReceivedAndUpdated(NotificationEventType notificationEventType, Event event) {
+        return notificationEventType.equals(APPEAL_RECEIVED_NOTIFICATION) && event.getValue().getEventType().equals(APPEAL_RECEIVED);
     }
 
     Map<String, String> setEvidenceReceivedNotificationData(Map<String, String> personalisation,
