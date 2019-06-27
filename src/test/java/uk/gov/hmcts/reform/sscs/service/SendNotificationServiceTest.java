@@ -229,8 +229,8 @@ public class SendNotificationServiceTest {
     }
 
     @Test
-    @Parameters(method = "getFallbackLettersEventTypes")
-    public void doNotSendFallbackLetterNotificationToAppellantWhenToggledOff(NotificationEventType eventType) {
+    @Parameters(method = "getMandatoryLettersEventTypes")
+    public void doNotSendMandatoryLetterNotificationToAppellantWhenToggledOff(NotificationEventType eventType) {
         SubscriptionWithType appellantEmptySubscription = new SubscriptionWithType(EMPTY_SUBSCRIPTION, APPELLANT);
 
         classUnderTest.lettersOn = false;
@@ -240,7 +240,7 @@ public class SendNotificationServiceTest {
         verifyZeroInteractions(notificationHandler);
     }
 
-    private Object[] getFallbackLettersEventTypes() {
+    private Object[] getMandatoryLettersEventTypes() {
         return new Object[] {
             APPEAL_WITHDRAWN_NOTIFICATION,
             STRUCK_OUT,
@@ -265,7 +265,10 @@ public class SendNotificationServiceTest {
         return new Object[] {
             STRUCK_OUT,
             DIRECTION_ISSUED,
-            REQUEST_INFO_INCOMPLETE
+            REQUEST_INFO_INCOMPLETE,
+            JUDGE_DECISION_APPEAL_TO_PROCEED,
+            TCW_DECISION_APPEAL_TO_PROCEED,
+            NON_COMPLIANT_NOTIFICATION
         };
     }
 
