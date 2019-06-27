@@ -33,7 +33,6 @@ import uk.gov.service.notify.NotificationClientException;
 @Service
 @Slf4j
 public class SendNotificationService {
-    protected static final String STRIKE_OUT_NOTICE = "Strike Out Notice";
     static final String DM_STORE_USER_ID = "sscs";
     private static final String NOTIFICATION_TYPE_LETTER = "Letter";
 
@@ -268,14 +267,8 @@ public class SendNotificationService {
     protected static String getBundledLetterDocumentUrl(NotificationEventType notificationEventType, SscsCaseData newSscsCaseData) {
         String documentUrl = null;
         if ((STRUCK_OUT.equals(notificationEventType))
-                && (newSscsCaseData.getSscsDocument() != null
-                && !newSscsCaseData.getSscsDocument().isEmpty())) {
-            for (SscsDocument sscsDocument : newSscsCaseData.getSscsDocument()) {
-                if (STRIKE_OUT_NOTICE.equalsIgnoreCase(sscsDocument.getValue().getDocumentType())) {
-                    documentUrl = sscsDocument.getValue().getDocumentLink().getDocumentUrl();
-                    break;
-                }
-            }
+                && (newSscsCaseData.getSscsStrikeOutDocument() != null)) {
+            documentUrl = newSscsCaseData.getSscsStrikeOutDocument().getDocumentLink().getDocumentUrl();
         } else if ((DIRECTION_ISSUED.equals(notificationEventType))
                 && (newSscsCaseData.getSscsInterlocDirectionDocument() != null)) {
             documentUrl = newSscsCaseData.getSscsInterlocDirectionDocument().getDocumentLink().getDocumentUrl();

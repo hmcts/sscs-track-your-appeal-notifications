@@ -1443,7 +1443,7 @@ public class NotificationServiceTest {
     private Object[] bundledLetters() {
         return new Object[] {
             new Object[] {
-                STRUCK_OUT, LETTER_TEMPLATE_ID_STRUCKOUT, "/templates/strike_out_letter_template.html", STRIKE_OUT_NOTICE
+                STRUCK_OUT, LETTER_TEMPLATE_ID_STRUCKOUT, "/templates/strike_out_letter_template.html", ""
             },
             new Object[] {
                 DIRECTION_ISSUED, LETTER_TEMPLATE_ID_DIRECTION_ISSUED, "/templates/direction_notice_letter_template.html", ""
@@ -1458,7 +1458,7 @@ public class NotificationServiceTest {
     public void sendBundledLettersToGovNotifyWhenStruckOutNotificationFailsAtNotify() throws IOException {
         String fileUrl = "http://dm-store:4506/documents/1e1eb3d2-5b6c-430d-8dad-ebcea1ad7ecf";
 
-        CcdNotificationWrapper struckOutCcdNotificationWrapper = buildWrapperWithDocuments(STRUCK_OUT, fileUrl, APPELLANT_WITH_ADDRESS, null, STRIKE_OUT_NOTICE);
+        CcdNotificationWrapper struckOutCcdNotificationWrapper = buildWrapperWithDocuments(STRUCK_OUT, fileUrl, APPELLANT_WITH_ADDRESS, null, "");
 
         Notification notification = new Notification(Template.builder().letterTemplateId(LETTER_TEMPLATE_ID_STRUCKOUT).build(), Destination.builder().build(), new HashMap<>(), new Reference(), null);
 
@@ -1483,7 +1483,7 @@ public class NotificationServiceTest {
     public void doNotSendBundledLettersToGovNotifyWhenStruckOutNotificationWhenFeatureToggledOff() throws IOException {
         String fileUrl = "http://dm-store:4506/documents/1e1eb3d2-5b6c-430d-8dad-ebcea1ad7ecf";
 
-        CcdNotificationWrapper struckOutCcdNotificationWrapper = buildWrapperWithDocuments(STRUCK_OUT, fileUrl, APPELLANT_WITH_ADDRESS, null, STRIKE_OUT_NOTICE);
+        CcdNotificationWrapper struckOutCcdNotificationWrapper = buildWrapperWithDocuments(STRUCK_OUT, fileUrl, APPELLANT_WITH_ADDRESS, null, "");
 
         Notification notification = new Notification(Template.builder().letterTemplateId(LETTER_TEMPLATE_ID_STRUCKOUT).build(), Destination.builder().build(), new HashMap<>(), new Reference(), null);
 
@@ -1602,6 +1602,9 @@ public class NotificationServiceTest {
                     .documentFilename("test.pdf")
                     .documentBinaryUrl("test/binary").build()).build())
             .sscsInterlocDirectionDocument(SscsInterlocDirectionDocument.builder().documentLink(DocumentLink.builder().documentUrl("http://dm-store:4506/documents/1e1eb3d2-5b6c-430d-8dad-ebcea1ad7ecf")
+                    .documentFilename("test.pdf")
+                    .documentBinaryUrl("test/binary").build()).build())
+            .sscsStrikeOutDocument(SscsStrikeOutDocument.builder().build().builder().documentLink(DocumentLink.builder().documentUrl("http://dm-store:4506/documents/1e1eb3d2-5b6c-430d-8dad-ebcea1ad7ecf")
                     .documentFilename("test.pdf")
                     .documentBinaryUrl("test/binary").build()).build())
             .ccdCaseId(CASE_ID)
