@@ -20,6 +20,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
+import org.springframework.util.StringUtils;
 import uk.gov.hmcts.reform.sscs.ccd.domain.*;
 import uk.gov.hmcts.reform.sscs.config.AppConstants;
 import uk.gov.hmcts.reform.sscs.config.SubscriptionType;
@@ -166,7 +167,7 @@ public class SendNotificationService {
         if (isValidLetterAddress(addressToUse)) {
             Map<String, String> placeholders = notification.getPlaceholders();
             placeholders.put(ADDRESS_LINE_1, addressToUse.getLine1());
-            placeholders.put(ADDRESS_LINE_2, addressToUse.getLine2() == null ? " " : addressToUse.getLine2());
+            placeholders.put(ADDRESS_LINE_2, StringUtils.isEmpty(addressToUse.getLine2()) ? " " : addressToUse.getLine2());
             placeholders.put(ADDRESS_LINE_3, addressToUse.getTown() == null ? " " : addressToUse.getTown());
             placeholders.put(ADDRESS_LINE_4, addressToUse.getCounty() == null ? " " : addressToUse.getCounty());
             placeholders.put(POSTCODE_LITERAL, addressToUse.getPostcode());
