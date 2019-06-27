@@ -112,7 +112,7 @@ public class CcdNotificationWrapper implements NotificationWrapper {
                 || JUDGE_DECISION_APPEAL_TO_PROCEED.equals(getNotificationType())
                 || TCW_DECISION_APPEAL_TO_PROCEED.equals(getNotificationType()))
                 || NON_COMPLIANT_NOTIFICATION.equals(getNotificationType())
-            || REQUEST_INFO_INCOMPLETE.equals(getNotificationType()))
+                || REQUEST_INFO_INCOMPLETE.equals(getNotificationType())
         ) {
             subscriptionWithTypeList.add(new SubscriptionWithType(getAppointeeSubscription(), APPOINTEE));
         } else {
@@ -140,7 +140,7 @@ public class CcdNotificationWrapper implements NotificationWrapper {
                 || JUDGE_DECISION_APPEAL_TO_PROCEED.equals(getNotificationType())
                 || TCW_DECISION_APPEAL_TO_PROCEED.equals(getNotificationType()))
                 || NON_COMPLIANT_NOTIFICATION.equals(getNotificationType())
-                || REQUEST_INFO_INCOMPLETE.equals(getNotificationType()))
+                || REQUEST_INFO_INCOMPLETE.equals(getNotificationType())
         ) {
             subscriptionWithTypeList.add(new SubscriptionWithType(getRepresentativeSubscription(), REPRESENTATIVE));
         }
