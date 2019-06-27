@@ -30,6 +30,8 @@ public enum NotificationEventType {
     CASE_UPDATED("caseUpdated", true, true, true, false, false),
     DIRECTION_ISSUED("directionIssued", true, true, true, false, false),
     REQUEST_INFO_INCOMPLETE("requestInfoIncompleteApplication", true, true, true, false, false),
+    JUDGE_DECISION_APPEAL_TO_PROCEED("judgeDecisionAppealToProceed", true, true, true, false, false),
+    TCW_DECISION_APPEAL_TO_PROCEED("tcwDecisionAppealToProceed", true, true, true, false, false),
     NON_COMPLIANT_NOTIFICATION("nonCompliant", true, true, true, false, false),
     DO_NOT_SEND("");
 

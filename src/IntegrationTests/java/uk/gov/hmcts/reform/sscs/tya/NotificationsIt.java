@@ -133,6 +133,7 @@ public class NotificationsIt {
 
         ReflectionTestUtils.setField(sendNotificationService, "bundledLettersOn", true);
         ReflectionTestUtils.setField(sendNotificationService, "lettersOn", true);
+        ReflectionTestUtils.setField(sendNotificationService, "interlocLettersOn", true);
 
         NotificationService service = new NotificationService(factory, reminderService, notificationValidService, notificationHandler, outOfHoursCalculator, notificationConfig, sendNotificationService);
         NotificationController controller = new NotificationController(service, authorisationService, ccdService, deserializer, idamService);
@@ -1198,7 +1199,113 @@ public class NotificationsIt {
                 true,
                 true,
                 "2"
+            },
+            new Object[]{
+                JUDGE_DECISION_APPEAL_TO_PROCEED,
+                "paper",
+                false,
+                false,
+                "1"
+            },
+            new Object[]{
+                JUDGE_DECISION_APPEAL_TO_PROCEED,
+                "oral",
+                false,
+                false,
+                "1"
+            },
+            new Object[]{
+                JUDGE_DECISION_APPEAL_TO_PROCEED,
+                "paper",
+                false,
+                true,
+                "1"
+            },
+            new Object[]{
+                JUDGE_DECISION_APPEAL_TO_PROCEED,
+                "oral",
+                false,
+                true,
+                "1"
+            },
+            new Object[]{
+                JUDGE_DECISION_APPEAL_TO_PROCEED,
+                "paper",
+                true,
+                false,
+                "2"
+            },
+            new Object[]{
+                JUDGE_DECISION_APPEAL_TO_PROCEED,
+                "oral",
+                true,
+                false,
+                "2"
+            },
+            new Object[]{
+                JUDGE_DECISION_APPEAL_TO_PROCEED,
+                "paper",
+                true,
+                true,
+                "2"
+            },
+            new Object[]{
+                JUDGE_DECISION_APPEAL_TO_PROCEED,
+                "oral",
+                true,
+                true,
+                "2"
+            },
+            new Object[]{
+                TCW_DECISION_APPEAL_TO_PROCEED,
+                "oral",
+                false,
+                false,
+                "1"
+            },
+            new Object[]{
+                TCW_DECISION_APPEAL_TO_PROCEED,
+                "paper",
+                false,
+                true,
+                "1"
+            },
+            new Object[]{
+                TCW_DECISION_APPEAL_TO_PROCEED,
+                "oral",
+                false,
+                true,
+                "1"
+            },
+            new Object[]{
+                TCW_DECISION_APPEAL_TO_PROCEED,
+                "paper",
+                true,
+                false,
+                "2"
+            },
+            new Object[]{
+                TCW_DECISION_APPEAL_TO_PROCEED,
+                "oral",
+                true,
+                false,
+                "2"
+            },
+            new Object[]{
+                TCW_DECISION_APPEAL_TO_PROCEED,
+                "paper",
+                true,
+                true,
+                "2"
+            },
+            new Object[]{
+                TCW_DECISION_APPEAL_TO_PROCEED,
+                "oral",
+                true,
+                true,
+                "2"
             }
+
         };
     }
 

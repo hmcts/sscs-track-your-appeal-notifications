@@ -1,13 +1,13 @@
 package uk.gov.hmcts.reform.sscs.service;
 
 import static uk.gov.hmcts.reform.sscs.config.AppConstants.*;
-import static uk.gov.hmcts.reform.sscs.domain.notify.NotificationEventType.DIRECTION_ISSUED;
-import static uk.gov.hmcts.reform.sscs.domain.notify.NotificationEventType.STRUCK_OUT;
+import static uk.gov.hmcts.reform.sscs.domain.notify.NotificationEventType.*;
 import static uk.gov.hmcts.reform.sscs.service.LetterUtils.*;
 import static uk.gov.hmcts.reform.sscs.service.NotificationUtils.*;
 import static uk.gov.hmcts.reform.sscs.service.NotificationUtils.hasAppointee;
 import static uk.gov.hmcts.reform.sscs.service.NotificationUtils.isOkToSendEmailNotification;
 import static uk.gov.hmcts.reform.sscs.service.NotificationUtils.isOkToSendSmsNotification;
+import static uk.gov.hmcts.reform.sscs.service.NotificationValidService.INTERLOC_LETTERS;
 import static uk.gov.hmcts.reform.sscs.service.NotificationValidService.isBundledLetter;
 
 import java.io.IOException;
@@ -34,8 +34,6 @@ import uk.gov.service.notify.NotificationClientException;
 @Service
 @Slf4j
 public class SendNotificationService {
-    protected static final String STRIKE_OUT_NOTICE = "Strike Out Notice";
-    protected static final String DIRECTION_TEXT = "Direction Text";
     static final String DM_STORE_USER_ID = "sscs";
     private static final String NOTIFICATION_TYPE_LETTER = "Letter";
 
@@ -44,6 +42,9 @@ public class SendNotificationService {
 
     @Value("${feature.letters_on}")
     Boolean lettersOn;
+
+    @Value("${feature.interloc_letters_on}")
+    Boolean interlocLettersOn;
 
     @Value("${reminder.dwpResponseLateReminder.delay.seconds}")
     long delay;
@@ -80,7 +81,8 @@ public class SendNotificationService {
         sendEmailNotification(wrapper, subscriptionWithType.getSubscription(), notification);
         sendSmsNotification(wrapper, subscriptionWithType.getSubscription(), notification, eventType);
 
-        if (lettersOn) {
+        boolean isInterlocLetter = INTERLOC_LETTERS.contains(eventType);
+        if ((lettersOn && !isInterlocLetter) || (interlocLettersOn && isInterlocLetter)) {
             sendLetterNotification(wrapper, subscriptionWithType.getSubscription(), notification, subscriptionWithType, eventType);
         }
     }
@@ -212,6 +214,11 @@ public class SendNotificationService {
             notification.getPlaceholders().put(AppConstants.LETTER_ADDRESS_POSTCODE, addressToUse.getPostcode());
             notification.getPlaceholders().put(AppConstants.LETTER_NAME, nameToUse.getFullNameNoTitle());
 
+            if (!notification.getPlaceholders().containsKey(APPEAL_RESPOND_DATE)) {
+                ZonedDateTime appealReceivedDate = ZonedDateTime.now().plusSeconds(delay);
+                notification.getPlaceholders().put(APPEAL_RESPOND_DATE, appealReceivedDate.format(DateTimeFormatter.ofPattern(RESPONSE_DATE_FORMAT)));
+            }
+
             byte[] bundledLetter = buildBundledLetter(
                     generateCoveringLetter(wrapper, notification, subscriptionType),
                     downloadAssociatedCasePdf(wrapper)
@@ -247,35 +254,30 @@ public class SendNotificationService {
         SscsCaseData newSscsCaseData = wrapper.getNewSscsCaseData();
 
         byte[] associatedCasePdf = null;
-        String filetype = getBundledLetterFileType(notificationEventType, newSscsCaseData);
+        String documentUrl = getBundledLetterDocumentUrl(notificationEventType, newSscsCaseData);
 
-        if (null != filetype) {
-            for (SscsDocument sscsDocument : newSscsCaseData.getSscsDocument()) {
-                if (filetype.equalsIgnoreCase(sscsDocument.getValue().getDocumentType())) {
-                    associatedCasePdf = evidenceManagementService.download(
-                            URI.create(sscsDocument.getValue().getDocumentLink().getDocumentUrl()),
-                            DM_STORE_USER_ID
-                    );
+        if (null != documentUrl) {
 
-                    break;
-                }
-            }
+            associatedCasePdf = evidenceManagementService.download(URI.create(documentUrl), DM_STORE_USER_ID);
+
         }
 
         return associatedCasePdf;
     }
 
-    protected static String getBundledLetterFileType(NotificationEventType notificationEventType, SscsCaseData newSscsCaseData) {
-        String filetype = null;
+    protected static String getBundledLetterDocumentUrl(NotificationEventType notificationEventType, SscsCaseData newSscsCaseData) {
+        String documentUrl = null;
         if ((STRUCK_OUT.equals(notificationEventType))
-                && (newSscsCaseData.getSscsDocument() != null
-                && !newSscsCaseData.getSscsDocument().isEmpty())) {
-            filetype = STRIKE_OUT_NOTICE;
+                && (newSscsCaseData.getSscsStrikeOutDocument() != null)) {
+            documentUrl = newSscsCaseData.getSscsStrikeOutDocument().getDocumentLink().getDocumentUrl();
         } else if ((DIRECTION_ISSUED.equals(notificationEventType))
-                && (newSscsCaseData.getSscsDocument() != null
-                && !newSscsCaseData.getSscsDocument().isEmpty())) {
-            filetype = DIRECTION_TEXT;
+                && (newSscsCaseData.getSscsInterlocDirectionDocument() != null)) {
+            documentUrl = newSscsCaseData.getSscsInterlocDirectionDocument().getDocumentLink().getDocumentUrl();
+        } else if ((JUDGE_DECISION_APPEAL_TO_PROCEED.equals(notificationEventType) || TCW_DECISION_APPEAL_TO_PROCEED.equals(notificationEventType))
+                && (newSscsCaseData.getSscsInterlocDecisionDocument() != null)) {
+            documentUrl = newSscsCaseData.getSscsInterlocDecisionDocument().getDocumentLink().getDocumentUrl();
         }
-        return filetype;
+        return documentUrl;
     }
+
 }

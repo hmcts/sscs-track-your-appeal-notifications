@@ -31,6 +31,28 @@
           "identity": {
             "dob": "1998-07-01",
             "nino": "JT098230B"
+          },
+          "appointee": {
+            "name": {
+              "title": "Mr",
+              "firstName": "Appointee",
+              "lastName": "Appointee"
+            },
+            "contact": {
+              "email": "test@tester.com",
+              "mobile": "07848484848"
+            },
+            "address": {
+              "line1": "1 Appointee Street",
+              "line2": "Newcastle",
+              "town": "Newcastle",
+              "county": "Tyne and Wear",
+              "postcode": "NE1 1AW"
+            },
+            "identity": {
+              "dob": "1998-07-01",
+              "nino": ""
+            }
           }
         },
         "benefitType":{
@@ -113,7 +135,7 @@
         },
         "hearingType": ""
       },
-      "sscsInterlocDirectionDocument":{"documentType":"Direction Notice","documentLink":{"document_url":"http://dm-store:4506/documents/5b7bab64-3d42-4c8b-bf2f-9f695cc70f4c","document_binary_url":"http://dm-store:4506/documents/5b7bab64-3d42-4c8b-bf2f-9f695cc70f4c/binary","document_filename":"Direction Notice - sample - Postponement Directions Notice form 5.pdf"},"documentDateAdded":"2019-03-27","documentFileName":"Direction Notice.pdf"},
+      "sscsInterlocDecisionDocument":{"documentType":"Decision Notice","documentLink":{"document_url":"http://dm-store:4506/documents/5b7bab64-3d42-4c8b-bf2f-9f695cc70f4c","document_binary_url":"http://dm-store:4506/documents/5b7bab64-3d42-4c8b-bf2f-9f695cc70f4c/binary","document_filename":"Decision Notice - sample - Postponement Directions Notice form 5.pdf"},"documentDateAdded":"2019-03-27","documentFileName":"Decision Notice.pdf"},
       "evidence": {
         "documents":[
           {
@@ -384,5 +406,5 @@
     "state": "appealCreated",
     "id": "12345656789"
   },
-  "event_id": "directionIssued"
+  "event_id": "judgeDecisionAppealToProceed"
 }
