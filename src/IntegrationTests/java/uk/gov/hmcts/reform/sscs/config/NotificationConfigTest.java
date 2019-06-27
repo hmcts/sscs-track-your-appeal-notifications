@@ -145,7 +145,13 @@ public class NotificationConfigTest {
             new Object[]{null, null, "114cadaa-7760-4699-9add-d3a252f68909", PAPER, getTemplateName(NON_COMPLIANT_NOTIFICATION, APPELLANT)},
             new Object[]{null, null, "114cadaa-7760-4699-9add-d3a252f68909", ORAL, getTemplateName(NON_COMPLIANT_NOTIFICATION, APPELLANT)},
             new Object[]{null, null, "114cadaa-7760-4699-9add-d3a252f68909", ORAL, getTemplateName(NON_COMPLIANT_NOTIFICATION, APPOINTEE)},
-            new Object[]{null, null, "114cadaa-7760-4699-9add-d3a252f68909", PAPER, getTemplateName(NON_COMPLIANT_NOTIFICATION, APPOINTEE)}
+            new Object[]{null, null, "114cadaa-7760-4699-9add-d3a252f68909", PAPER, getTemplateName(NON_COMPLIANT_NOTIFICATION, APPOINTEE)},
+            new Object[]{null, null, "a2a4a88a-b91a-4e6d-94f0-507179292058", PAPER, getTemplateName(REQUEST_INFO_INCOMPLETE, REPRESENTATIVE)},
+            new Object[]{null, null, "a2a4a88a-b91a-4e6d-94f0-507179292058", ORAL, getTemplateName(REQUEST_INFO_INCOMPLETE, REPRESENTATIVE)},
+            new Object[]{null, null, "bc943cf3-9fd1-4d14-a0c0-b183572c21a7", PAPER, getTemplateName(REQUEST_INFO_INCOMPLETE, APPELLANT)},
+            new Object[]{null, null, "bc943cf3-9fd1-4d14-a0c0-b183572c21a7", ORAL, getTemplateName(REQUEST_INFO_INCOMPLETE, APPELLANT)},
+            new Object[]{null, null, "bc943cf3-9fd1-4d14-a0c0-b183572c21a7", ORAL, getTemplateName(REQUEST_INFO_INCOMPLETE, APPOINTEE)},
+            new Object[]{null, null, "bc943cf3-9fd1-4d14-a0c0-b183572c21a7", PAPER, getTemplateName(REQUEST_INFO_INCOMPLETE, APPOINTEE)}
         };
     }
 
