@@ -144,7 +144,6 @@ public class CcdNotificationWrapperTest {
                         .build())
                     .subscriptions(Subscriptions.builder()
                         .appellantSubscription(Subscription.builder().build())
-                        .appointeeSubscription(Subscription.builder().build())
                         .build())
                     .build())
                 .notificationEventType(notificationEventType)

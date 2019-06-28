@@ -227,15 +227,15 @@ public class PersonalisationTest {
                 new Object[]{HEARING_BOOKED_NOTIFICATION, REPRESENTATIVE, PAPER, true, true, true},
                 new Object[]{HEARING_BOOKED_NOTIFICATION, REPRESENTATIVE, REGULAR, true, true, true},
                 new Object[]{HEARING_BOOKED_NOTIFICATION, REPRESENTATIVE, ONLINE, true, true, true},
-                new Object[]{VALID_APPEAL_CREATED, APPELLANT, PAPER},
-                new Object[]{VALID_APPEAL_CREATED, APPELLANT, REGULAR},
-                new Object[]{VALID_APPEAL_CREATED, APPELLANT, ONLINE},
-                new Object[]{VALID_APPEAL_CREATED, REPRESENTATIVE, PAPER},
-                new Object[]{VALID_APPEAL_CREATED, REPRESENTATIVE, REGULAR},
-                new Object[]{VALID_APPEAL_CREATED, REPRESENTATIVE, ONLINE},
-                new Object[]{VALID_APPEAL_CREATED, APPOINTEE, PAPER},
-                new Object[]{VALID_APPEAL_CREATED, APPOINTEE, REGULAR},
-                new Object[]{VALID_APPEAL_CREATED, APPOINTEE, ONLINE}
+                new Object[]{VALID_APPEAL_CREATED, APPELLANT, PAPER, true, true, true},
+                new Object[]{VALID_APPEAL_CREATED, APPELLANT, REGULAR, true, true, true},
+                new Object[]{VALID_APPEAL_CREATED, APPELLANT, ONLINE, true, true, true},
+                new Object[]{VALID_APPEAL_CREATED, REPRESENTATIVE, PAPER, true, true, true},
+                new Object[]{VALID_APPEAL_CREATED, REPRESENTATIVE, REGULAR, true, true, true},
+                new Object[]{VALID_APPEAL_CREATED, REPRESENTATIVE, ONLINE, true, true, true},
+                new Object[]{VALID_APPEAL_CREATED, APPOINTEE, PAPER, true, true, true},
+                new Object[]{VALID_APPEAL_CREATED, APPOINTEE, REGULAR, true, true, true},
+                new Object[]{VALID_APPEAL_CREATED, APPOINTEE, ONLINE, true, true, true}
         };
     }
 
