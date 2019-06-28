@@ -38,24 +38,12 @@ public class BundledLetterTemplateUtil {
 
     public String getBundledLetterTemplate(NotificationEventType notificationEventType, SscsCaseData newSscsCaseData, SubscriptionType subscriptionType) {
         if ((STRUCK_OUT.equals(notificationEventType)) && newSscsCaseData != null && newSscsCaseData.getSscsStrikeOutDocument() != null) {
-            if (REPRESENTATIVE.equals(subscriptionType)) {
-                return strikeOutLetterTemplateRep;
-            } else {
-                return strikeOutLetterTemplate;
-            }
+            return (REPRESENTATIVE.equals(subscriptionType)) ? strikeOutLetterTemplateRep : strikeOutLetterTemplate;
         } else if ((DIRECTION_ISSUED.equals(notificationEventType)) && newSscsCaseData != null && newSscsCaseData.getSscsInterlocDirectionDocument() != null) {
-            if (REPRESENTATIVE.equals(subscriptionType)) {
-                return directionNoticeLetterTemplateRep;
-            } else {
-                return directionNoticeLetterTemplate;
-            }
+            return (REPRESENTATIVE.equals(subscriptionType)) ? directionNoticeLetterTemplateRep : directionNoticeLetterTemplate;
         } else if ((JUDGE_DECISION_APPEAL_TO_PROCEED.equals(notificationEventType) || TCW_DECISION_APPEAL_TO_PROCEED.equals(notificationEventType))
                 && (newSscsCaseData != null && newSscsCaseData.getSscsInterlocDecisionDocument() != null)) {
-            if (REPRESENTATIVE.equals(subscriptionType)) {
-                return validAppealCreatedLetterTemplateRep;
-            } else {
-                return validAppealCreatedLetterTemplate;
-            }
+            return (REPRESENTATIVE.equals(subscriptionType)) ? validAppealCreatedLetterTemplateRep : validAppealCreatedLetterTemplate;
         }
         return null;
     }
