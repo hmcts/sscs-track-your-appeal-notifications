@@ -24,7 +24,7 @@ import uk.gov.hmcts.reform.sscs.domain.notify.NotificationEventType;
 import uk.gov.hmcts.reform.sscs.factory.NotificationWrapper;
 
 public class NotificationUtils {
-    private static final List<NotificationEventType> MANDATORY_LETTERS = Arrays.asList(APPEAL_WITHDRAWN_NOTIFICATION, STRUCK_OUT, HEARING_BOOKED_NOTIFICATION, DIRECTION_ISSUED, REQUEST_INFO_INCOMPLETE, APPEAL_RECEIVED_NOTIFICATION);
+    private static final List<NotificationEventType> MANDATORY_LETTERS = Arrays.asList(APPEAL_WITHDRAWN_NOTIFICATION, STRUCK_OUT, HEARING_BOOKED_NOTIFICATION, DIRECTION_ISSUED, REQUEST_INFO_INCOMPLETE, APPEAL_RECEIVED_NOTIFICATION, NON_COMPLIANT_NOTIFICATION, JUDGE_DECISION_APPEAL_TO_PROCEED, TCW_DECISION_APPEAL_TO_PROCEED);
 
     private NotificationUtils() {
         // empty
@@ -55,16 +55,17 @@ public class NotificationUtils {
     }
 
     public static boolean hasAppointeeSubscriptionOrIsMandatoryAppointeeLetter(SscsCaseDataWrapper wrapper) {
-        return ((null != getSubscription(wrapper.getNewSscsCaseData(), APPOINTEE))
+        Subscription subscription = getSubscription(wrapper.getNewSscsCaseData(), APPOINTEE);
+        return ((null != subscription && subscription.doesCaseHaveSubscriptions())
             || (hasAppointee(wrapper.getNewSscsCaseData().getAppeal().getAppellant().getAppointee())
             && LETTER_EVENT_TYPES.contains(wrapper.getNotificationEventType())));
     }
 
     public static boolean hasRepSubscriptionOrIsMandatoryRepLetter(SscsCaseDataWrapper wrapper) {
-        return ((null != getSubscription(wrapper.getNewSscsCaseData(), REPRESENTATIVE))
+        Subscription subscription = getSubscription(wrapper.getNewSscsCaseData(), REPRESENTATIVE);
+        return ((null != subscription && subscription.doesCaseHaveSubscriptions())
             || (hasRepresentative(wrapper.getNewSscsCaseData().getAppeal())
             && LETTER_EVENT_TYPES.contains(wrapper.getNotificationEventType())));
-
     }
 
     public static Subscription getSubscription(SscsCaseData sscsCaseData, SubscriptionType subscriptionType) {

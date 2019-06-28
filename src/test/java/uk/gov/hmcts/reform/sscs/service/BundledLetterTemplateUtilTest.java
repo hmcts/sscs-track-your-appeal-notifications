@@ -4,14 +4,11 @@ import static org.hamcrest.CoreMatchers.is;
 import static org.hamcrest.CoreMatchers.nullValue;
 import static org.junit.Assert.assertThat;
 import static uk.gov.hmcts.reform.sscs.config.SubscriptionType.*;
-import static uk.gov.hmcts.reform.sscs.domain.notify.NotificationEventType.DIRECTION_ISSUED;
-import static uk.gov.hmcts.reform.sscs.domain.notify.NotificationEventType.STRUCK_OUT;
+import static uk.gov.hmcts.reform.sscs.domain.notify.NotificationEventType.*;
 
-import java.util.Collections;
 import org.junit.Before;
 import org.junit.Test;
-import uk.gov.hmcts.reform.sscs.ccd.domain.SscsCaseData;
-import uk.gov.hmcts.reform.sscs.ccd.domain.SscsDocument;
+import uk.gov.hmcts.reform.sscs.ccd.domain.*;
 import uk.gov.hmcts.reform.sscs.config.SubscriptionType;
 import uk.gov.hmcts.reform.sscs.domain.notify.NotificationEventType;
 
@@ -21,6 +18,8 @@ public class BundledLetterTemplateUtilTest {
     private String strikeoutRepTemplate;
     private String directionTemplate;
     private String directionRepTemplate;
+    private String validAppealCreatedLetterTemplate;
+    private String validAppealCreatedLetterTemplateRep;
     private BundledLetterTemplateUtil bundledLetterTemplateUtil;
     private SscsCaseData sscsCaseDataWithDocument;
     private SscsCaseData sscsCaseDataWithoutDocument;
@@ -31,12 +30,17 @@ public class BundledLetterTemplateUtilTest {
         strikeoutRepTemplate = "strikeoutRepTemplate";
         directionTemplate = "directionTemplate";
         directionRepTemplate = "directionRepTemplate";
+        validAppealCreatedLetterTemplate = "validAppealCreatedLetterTemplate";
+        validAppealCreatedLetterTemplateRep = "validAppealCreatedLetterTemplateRep";
+
 
         bundledLetterTemplateUtil = new BundledLetterTemplateUtil(
-                strikeoutTemplate, strikeoutRepTemplate, directionTemplate, directionRepTemplate
+                strikeoutTemplate, strikeoutRepTemplate, directionTemplate, directionRepTemplate, validAppealCreatedLetterTemplate, validAppealCreatedLetterTemplateRep
         );
 
-        sscsCaseDataWithDocument = SscsCaseData.builder().sscsDocument(Collections.singletonList(SscsDocument.builder().build())).build();
+        sscsCaseDataWithDocument = SscsCaseData.builder().sscsStrikeOutDocument(SscsStrikeOutDocument.builder().build())
+                .sscsInterlocDecisionDocument(SscsInterlocDecisionDocument.builder().build())
+                .sscsInterlocDirectionDocument(SscsInterlocDirectionDocument.builder().build()).build();
         sscsCaseDataWithoutDocument = SscsCaseData.builder().build();
     }
 
@@ -80,6 +84,50 @@ public class BundledLetterTemplateUtilTest {
     @Test
     public void noTemplateWhenDirectionIssuedAndDoNotHaveDocumentTemplate() {
         String bundledLetterTemplate = bundledLetterTemplateUtil.getBundledLetterTemplate(DIRECTION_ISSUED, sscsCaseDataWithoutDocument, APPELLANT);
+
+        assertThat(bundledLetterTemplate, is(nullValue()));
+    }
+
+    @Test
+    public void getValidAppealTemplateWhenAppellantJudgeDecisionToProceedAndHaveDocumentTemplate() {
+        check(JUDGE_DECISION_APPEAL_TO_PROCEED, APPELLANT, validAppealCreatedLetterTemplate);
+    }
+
+    @Test
+    public void getValidAppealTemplateWhenAppointeeJudgeDecisionToProceedHaveDocumentTemplate() {
+        check(JUDGE_DECISION_APPEAL_TO_PROCEED, APPOINTEE, validAppealCreatedLetterTemplate);
+    }
+
+    @Test
+    public void getValidAppealTemplateWhenRepJudgeDecisionToProceedHaveDocumentTemplate() {
+        check(JUDGE_DECISION_APPEAL_TO_PROCEED, REPRESENTATIVE, validAppealCreatedLetterTemplateRep);
+    }
+
+    @Test
+    public void noTemplateWhenJudgeDecisionToProceedAndDoNotHaveDocumentTemplate() {
+        String bundledLetterTemplate = bundledLetterTemplateUtil.getBundledLetterTemplate(JUDGE_DECISION_APPEAL_TO_PROCEED, sscsCaseDataWithoutDocument, APPELLANT);
+
+        assertThat(bundledLetterTemplate, is(nullValue()));
+    }
+
+    @Test
+    public void getValidAppealTemplateWhenAppellantTcwDecisionToProceedAndHaveDocumentTemplate() {
+        check(TCW_DECISION_APPEAL_TO_PROCEED, APPELLANT, validAppealCreatedLetterTemplate);
+    }
+
+    @Test
+    public void getValidAppealTemplateWhenAppointeeTcsDecisionToProceedHaveDocumentTemplate() {
+        check(TCW_DECISION_APPEAL_TO_PROCEED, APPOINTEE, validAppealCreatedLetterTemplate);
+    }
+
+    @Test
+    public void getValidAppealTemplateWhenRepTcsDecisionToProceedHaveDocumentTemplate() {
+        check(TCW_DECISION_APPEAL_TO_PROCEED, REPRESENTATIVE, validAppealCreatedLetterTemplateRep);
+    }
+
+    @Test
+    public void noTemplateWhenTcsDecisionToProceedAndDoNotHaveDocumentTemplate() {
+        String bundledLetterTemplate = bundledLetterTemplateUtil.getBundledLetterTemplate(TCW_DECISION_APPEAL_TO_PROCEED, sscsCaseDataWithoutDocument, APPELLANT);
 
         assertThat(bundledLetterTemplate, is(nullValue()));
     }

@@ -240,7 +240,14 @@ notification:
     representative:
       letterId: a2a4a88a-b91a-4e6d-94f0-507179292058
     appointee:
-      letterId: f4ef3253-bae7-4fa6-8e3d-9b3e83bec356
+      letterId: bc943cf3-9fd1-4d14-a0c0-b183572c21a7
+  nonCompliant:
+    appellant:
+      letterId: 114cadaa-7760-4699-9add-d3a252f68909
+    representative:
+      letterId: 5745f77c-6512-4082-8c34-63851f24eab1
+    appointee:
+      letterId: 114cadaa-7760-4699-9add-d3a252f68909
   online:
     responseReceived:
       emailId: 90f0ed29-a616-4ce0-b4ef-108391f5d90e
@@ -358,6 +365,9 @@ strikeOutLetterTemplate.rep.appeal.html.template.path: /templates/strike_out_let
 directionNoticeLetterTemplate.appeal.html.template.path: /templates/direction_notice_letter_template.html
 directionNoticeLetterTemplate.appelant.appeal.html.template.path: /templates/direction_notice_letter_template.html
 directionNoticeLetterTemplate.rep.appeal.html.template.path: /templates/direction_notice_letter_template_rep.html
+validAppealCreatedLetterTemplate.appellant.appeal.html.template.path: /templates/valid_appeal_created_template.html
+validAppealCreatedLetterTemplate.rep.appeal.html.template.path: /templates/valid_appeal_created_template_rep.html
+
 
 pdf.api.url: ${PDF_API_URL:http://localhost:5500}
 
@@ -369,6 +379,7 @@ robotics.schema.resource.location: /schema/sscs-robotics.json
 
 feature.bundled_letters_on: ${BUNDLED_LETTERS_ON:true}
 feature.letters_on: ${LETTERS_ON:true}
+feature.interloc_letters_on: ${INTERLOC_LETTERS_ON:true}
 
 pdf-service:
   uri: ${PDF_SERVICE_BASE_URL:https://docmosis-development.platform.hmcts.net/rs/render}

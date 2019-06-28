@@ -210,6 +210,7 @@ public class CcdNotificationWrapperTest {
                 || type.equals(SUBSCRIPTION_UPDATED_NOTIFICATION)
                 || type.equals(VALID_APPEAL_CREATED)
                 || type.equals(REQUEST_INFO_INCOMPLETE)
+                || type.equals(NON_COMPLIANT_NOTIFICATION)
             )).toArray();
     }
 
