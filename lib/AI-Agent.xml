@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="utf-8"?>
+<ApplicationInsightsAgent>
+    <AgentLogger>INFO</AgentLogger>
+    <Instrumentation>
+        <BuiltIn enabled="true">
+            <HTTP enabled="true" W3C="true" enableW3CBackCompat="true"/>
+            <MaxStatementQueryLimitInMS>1000</MaxStatementQueryLimitInMS>
+        </BuiltIn>
+        <Class name="uk.gov.hmcts.reform.sscs.service.docmosis.PdfCoverSheetService">
+            <Method name="generateCoversheet" reportCaughtExceptions="true" reportExecutionTime="true"/>
+        </Class>
+        <Class name="uk.gov.hmcts.reform.sscs.service.NotificationHandler">
+            <Method name="sendNotification" reportCaughtExceptions="true" reportExecutionTime="true"/>
+            <Method name="scheduleNotification" reportCaughtExceptions="true" reportExecutionTime="true"/>
+        </Class>
+        <Class name="uk.gov.hmcts.reform.sscs.service.NotificationSender">
+            <Method name="sendEmail" reportCaughtExceptions="true" reportExecutionTime="true"/>
+            <Method name="sendSms" reportCaughtExceptions="true" reportExecutionTime="true"/>
+            <Method name="sendLetter" reportCaughtExceptions="true" reportExecutionTime="true"/>
+            <Method name="sendBundledLetter" reportCaughtExceptions="true" reportExecutionTime="true"/>
+        </Class>
+        <Class name="uk.gov.hmcts.reform.sscs.service.NotificationSender">
+            <Method name="manageNotificationAndSubscription" reportCaughtExceptions="true" reportExecutionTime="true"/>
+        </Class>
+    </Instrumentation>
+</ApplicationInsightsAgent>
+

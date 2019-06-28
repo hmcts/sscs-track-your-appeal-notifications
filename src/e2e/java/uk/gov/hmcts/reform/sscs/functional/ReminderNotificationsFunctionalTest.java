@@ -64,6 +64,12 @@ public class ReminderNotificationsFunctionalTest extends AbstractFunctionalTest 
     @Value("${notification.hearingReminder.representative.smsId}")
     private String hearingReminderRepresentativeSmsTemplateId;
 
+    @Value("${notification.hearingReminder.appointee.emailId}")
+    private String hearingReminderAppointeeEmailTemplateId;
+
+    @Value("${notification.hearingReminder.appointee.smsId}")
+    private String hearingReminderAppointeeSmsTemplateId;
+
     public ReminderNotificationsFunctionalTest() {
         super(90);
     }
@@ -284,9 +290,9 @@ public class ReminderNotificationsFunctionalTest extends AbstractFunctionalTest 
         List<Notification> notifications =
             tryFetchNotificationsForTestCase(
                     hearingReminderAppellantEmailTemplateId,
-                    hearingReminderAppellantEmailTemplateId,
+                    hearingReminderAppointeeEmailTemplateId,
                     hearingReminderAppellantSmsTemplateId,
-                    hearingReminderAppellantSmsTemplateId
+                    hearingReminderAppointeeSmsTemplateId
             );
 
         assertNotificationSubjectContains(notifications, hearingReminderAppellantEmailTemplateId, "ESA");

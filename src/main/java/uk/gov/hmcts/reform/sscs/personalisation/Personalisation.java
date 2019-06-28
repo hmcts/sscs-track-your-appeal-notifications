@@ -42,7 +42,9 @@ import uk.gov.hmcts.reform.sscs.service.SendNotificationService;
 @Component
 @Slf4j
 public class Personalisation<E extends NotificationWrapper> {
-    private static final List<NotificationEventType> LETTER_SUBSCRIPTION_TYPES = Arrays.asList(DWP_RESPONSE_RECEIVED_NOTIFICATION, APPEAL_RECEIVED_NOTIFICATION, SYA_APPEAL_CREATED_NOTIFICATION, EVIDENCE_RECEIVED_NOTIFICATION);
+    private static final List<NotificationEventType> LETTER_SUBSCRIPTION_TYPES = Arrays.asList(DWP_RESPONSE_RECEIVED_NOTIFICATION,
+            APPEAL_RECEIVED_NOTIFICATION, SYA_APPEAL_CREATED_NOTIFICATION, EVIDENCE_RECEIVED_NOTIFICATION, NON_COMPLIANT_NOTIFICATION);
+
     private static final String CRLF = String.format("%c%c", (char) 0x0D, (char) 0x0A);
 
     private boolean sendSmsSubscriptionConfirmation;
@@ -214,14 +216,18 @@ public class Personalisation<E extends NotificationWrapper> {
         if (ccdResponse.getEvents() != null) {
 
             for (Event event : ccdResponse.getEvents()) {
-                if ((event.getValue() != null)
-                    && ((notificationEventType.equals(APPEAL_RECEIVED_NOTIFICATION) && event.getValue().getEventType().equals(APPEAL_RECEIVED)))
-                    || notificationEventType.equals(CASE_UPDATED)) {
+                if ((event.getValue() != null) && isAppealReceivedAndUpdated(notificationEventType, event)
+                    || notificationEventType.equals(CASE_UPDATED) || JUDGE_DECISION_APPEAL_TO_PROCEED.equals(notificationEventType)
+                    || TCW_DECISION_APPEAL_TO_PROCEED.equals(notificationEventType)) {
                     return setAppealReceivedDetails(personalisation, event.getValue());
                 }
             }
         }
         return personalisation;
+    }
+
+    private boolean isAppealReceivedAndUpdated(NotificationEventType notificationEventType, Event event) {
+        return notificationEventType.equals(APPEAL_RECEIVED_NOTIFICATION) && event.getValue().getEventType().equals(APPEAL_RECEIVED);
     }
 
     Map<String, String> setEvidenceReceivedNotificationData(Map<String, String> personalisation,
@@ -341,7 +347,9 @@ public class Personalisation<E extends NotificationWrapper> {
             && ((LETTER_SUBSCRIPTION_TYPES.contains(notificationEventType)
             || APPEAL_WITHDRAWN_NOTIFICATION.equals(notificationEventType)
             || HEARING_BOOKED_NOTIFICATION.equals(notificationEventType))
-            || REQUEST_INFO_INCOMPLETE.equals(notificationEventType))) {
+            || REQUEST_INFO_INCOMPLETE.equals(notificationEventType)
+            || JUDGE_DECISION_APPEAL_TO_PROCEED.equals(notificationEventType)
+            || TCW_DECISION_APPEAL_TO_PROCEED.equals(notificationEventType))) {
             letterTemplateName = letterTemplateName + "." + subscriptionType.name().toLowerCase();
         }
         return letterTemplateName;
