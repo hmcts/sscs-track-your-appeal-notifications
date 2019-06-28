@@ -1,14 +1,16 @@
 package uk.gov.hmcts.reform.sscs.functional.sya.notifications;
 
+import static org.junit.Assert.assertEquals;
+
 import java.io.IOException;
+import java.util.List;
 import junitparams.JUnitParamsRunner;
 import org.junit.Test;
 import org.junit.runner.RunWith;
-import org.springframework.beans.factory.annotation.Autowired;
 import uk.gov.hmcts.reform.sscs.domain.notify.NotificationEventType;
 import uk.gov.hmcts.reform.sscs.functional.AbstractFunctionalTest;
-import uk.gov.hmcts.reform.sscs.service.NotificationSender;
-
+import uk.gov.service.notify.Notification;
+import uk.gov.service.notify.NotificationClientException;
 
 @RunWith(JUnitParamsRunner.class)
 public class AppealReceivedLetterFunctionalTest extends AbstractFunctionalTest {
@@ -17,17 +19,20 @@ public class AppealReceivedLetterFunctionalTest extends AbstractFunctionalTest {
         super(30);
     }
 
-    @Autowired
-    private NotificationSender notificationSender;
-
     @Test
-    public void sendsAppealReceivedLetterToAppellant() throws IOException {
+    public void sendsAppealReceivedLetterToAppellant() throws IOException, NotificationClientException {
 
         NotificationEventType notificationEventType = NotificationEventType.APPEAL_RECEIVED_NOTIFICATION;
 
         simulateCcdCallback(notificationEventType,
                 "appellant-" + notificationEventType.getId() + "Callback.json");
 
+        List<Notification> notifications = fetchLetters();
+
+        assertEquals(1, notifications.size());
+        assertEquals("Pre-compiled PDF", notifications.get(0).getSubject().orElse("Unknown Subject"));
     }
+
+
 
 }

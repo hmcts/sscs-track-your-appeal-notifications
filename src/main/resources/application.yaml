@@ -364,10 +364,11 @@ pdf-service:
   accessKey: ${PDF_SERVICE_ACCESS_KEY:ZDYxMTkzZTQtMGY2Mi00NDM1LWIyN2ItNGRkNzdjOTczMjAwOjQ1NTE0ODQ}
   health:
     uri: ${PDF_SERVICE_HEALTH_URL:https://docmosis-development.platform.hmcts.net/rs/status}
+  hmctsImgKey1: "hmcts"
   hmctsImgKey: "hmcts2"
   hmctsImgVal: "[userImage:hmcts.png]"
   coverSheets:
-    appealReceived: 'TB-SCS-GNO-ENG-00012.doc'
+    appealReceived: 'TB-SCS-GNO-ENG-00012.docx'
 
 ---
 # default profile (development, production etc.)

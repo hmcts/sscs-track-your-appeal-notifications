@@ -16,4 +16,5 @@ public class DocmosisTemplatesConfig {
     private Map<String, String> coversheets;
     private String hmctsImgKey;
     private String hmctsImgVal;
+    private String hmctsImgKey1;
 }

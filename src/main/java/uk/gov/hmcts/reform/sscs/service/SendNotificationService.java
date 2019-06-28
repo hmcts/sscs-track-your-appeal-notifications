@@ -22,7 +22,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 import uk.gov.hmcts.reform.sscs.ccd.domain.*;
-import uk.gov.hmcts.reform.sscs.config.AppConstants;
 import uk.gov.hmcts.reform.sscs.config.SubscriptionType;
 import uk.gov.hmcts.reform.sscs.domain.SubscriptionWithType;
 import uk.gov.hmcts.reform.sscs.domain.notify.Notification;
@@ -211,15 +210,15 @@ public class SendNotificationService {
     private void sendBundledLetterNotification(NotificationWrapper wrapper, Notification notification, Address addressToUse, Name nameToUse, SubscriptionType subscriptionType) {
         try {
             byte[] bundledLetter;
-            notification.getPlaceholders().put(AppConstants.LETTER_ADDRESS_LINE_1, addressToUse.getLine1());
-            notification.getPlaceholders().put(AppConstants.LETTER_ADDRESS_LINE_2, addressToUse.getLine2());
-            notification.getPlaceholders().put(AppConstants.LETTER_ADDRESS_LINE_3, addressToUse.getTown());
-            notification.getPlaceholders().put(AppConstants.LETTER_ADDRESS_LINE_4, addressToUse.getCounty());
-            notification.getPlaceholders().put(AppConstants.LETTER_ADDRESS_POSTCODE, addressToUse.getPostcode());
-            notification.getPlaceholders().put(AppConstants.LETTER_NAME, nameToUse.getFullNameNoTitle());
             if (StringUtils.isNotBlank(notification.getDocmosisLetterTemplate())) {
                 bundledLetter = pdfLetterService.generateLetter(wrapper, notification, subscriptionType);
             } else {
+                notification.getPlaceholders().put(LETTER_ADDRESS_LINE_1, addressToUse.getLine1());
+                notification.getPlaceholders().put(LETTER_ADDRESS_LINE_2, addressToUse.getLine2());
+                notification.getPlaceholders().put(LETTER_ADDRESS_LINE_3, addressToUse.getTown());
+                notification.getPlaceholders().put(LETTER_ADDRESS_LINE_4, addressToUse.getCounty());
+                notification.getPlaceholders().put(LETTER_ADDRESS_POSTCODE, addressToUse.getPostcode());
+                notification.getPlaceholders().put(LETTER_NAME, nameToUse.getFullNameNoTitle());
                 bundledLetter = buildBundledLetter(
                         generateCoveringLetter(wrapper, notification, subscriptionType),
                         downloadAssociatedCasePdf(wrapper)

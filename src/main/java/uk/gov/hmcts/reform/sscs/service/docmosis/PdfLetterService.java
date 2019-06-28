@@ -27,7 +27,7 @@ import uk.gov.hmcts.reform.sscs.service.LetterUtils;
 @Slf4j
 public class PdfLetterService {
     private static final String SSCS_URL_LITERAL = "sscs_url";
-    public static final String SSCS_URL = "http://www.tribunals.gov.uk/";
+    public static final String SSCS_URL = "www.gov.uk/appeal-benefit-decision";
     public static final String GENERATED_DATE_LITERAL = "generated_date";
 
     private final DocmosisPdfService docmosisPdfService;
@@ -69,12 +69,12 @@ public class PdfLetterService {
                 Map<String, String> placeholders = notification.getPlaceholders();
                 placeholders.put(SSCS_URL_LITERAL, SSCS_URL);
                 placeholders.put(GENERATED_DATE_LITERAL, LocalDateTime.now().toLocalDate().toString());
-                placeholders.put(docmosisTemplatesConfig.getHmctsImgKey(), docmosisTemplatesConfig.getHmctsImgVal());
-                placeholders.put("address_line1", addressToUse.getLine1());
-                placeholders.put("address_line2", addressToUse.getLine2() == null ? " " : addressToUse.getLine2());
-                placeholders.put("address_line3", addressToUse.getTown() == null ? " " : addressToUse.getTown());
-                placeholders.put("address_line4", addressToUse.getCounty() == null ? " " : addressToUse.getCounty());
+                placeholders.put(ADDRESS_LINE_1, addressToUse.getLine1());
+                placeholders.put(ADDRESS_LINE_2, addressToUse.getLine2() == null ? " " : addressToUse.getLine2());
+                placeholders.put(ADDRESS_LINE_3, addressToUse.getTown() == null ? " " : addressToUse.getTown());
+                placeholders.put(ADDRESS_LINE_4, addressToUse.getCounty() == null ? " " : addressToUse.getCounty());
                 placeholders.put(POSTCODE_LITERAL, addressToUse.getPostcode());
+                placeholders.put(docmosisTemplatesConfig.getHmctsImgKey1(), docmosisTemplatesConfig.getHmctsImgVal());
                 byte[] letter = docmosisPdfService.createPdf(placeholders, notification.getDocmosisLetterTemplate());
 
                 byte[] coversheet = LetterUtils.addBlankPageAtTheEndIfOddPage(generateCoversheet(wrapper, subscriptionType));
