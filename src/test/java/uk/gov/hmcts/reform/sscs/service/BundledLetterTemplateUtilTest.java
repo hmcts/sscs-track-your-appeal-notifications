@@ -6,11 +6,9 @@ import static org.junit.Assert.assertThat;
 import static uk.gov.hmcts.reform.sscs.config.SubscriptionType.*;
 import static uk.gov.hmcts.reform.sscs.domain.notify.NotificationEventType.*;
 
-import java.util.Collections;
 import org.junit.Before;
 import org.junit.Test;
-import uk.gov.hmcts.reform.sscs.ccd.domain.SscsCaseData;
-import uk.gov.hmcts.reform.sscs.ccd.domain.SscsDocument;
+import uk.gov.hmcts.reform.sscs.ccd.domain.*;
 import uk.gov.hmcts.reform.sscs.config.SubscriptionType;
 import uk.gov.hmcts.reform.sscs.domain.notify.NotificationEventType;
 
@@ -40,7 +38,9 @@ public class BundledLetterTemplateUtilTest {
                 strikeoutTemplate, strikeoutRepTemplate, directionTemplate, directionRepTemplate, validAppealCreatedLetterTemplate, validAppealCreatedLetterTemplateRep
         );
 
-        sscsCaseDataWithDocument = SscsCaseData.builder().sscsDocument(Collections.singletonList(SscsDocument.builder().build())).build();
+        sscsCaseDataWithDocument = SscsCaseData.builder().sscsStrikeOutDocument(SscsStrikeOutDocument.builder().build())
+                .sscsInterlocDecisionDocument(SscsInterlocDecisionDocument.builder().build())
+                .sscsInterlocDirectionDocument(SscsInterlocDirectionDocument.builder().build()).build();
         sscsCaseDataWithoutDocument = SscsCaseData.builder().build();
     }
 

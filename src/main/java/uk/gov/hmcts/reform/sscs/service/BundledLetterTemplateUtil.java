@@ -37,25 +37,13 @@ public class BundledLetterTemplateUtil {
     }
 
     public String getBundledLetterTemplate(NotificationEventType notificationEventType, SscsCaseData newSscsCaseData, SubscriptionType subscriptionType) {
-        if ((STRUCK_OUT.equals(notificationEventType)) && hasSscsDocument(newSscsCaseData)) {
-            if (REPRESENTATIVE.equals(subscriptionType)) {
-                return strikeOutLetterTemplateRep;
-            } else {
-                return strikeOutLetterTemplate;
-            }
-        } else if ((DIRECTION_ISSUED.equals(notificationEventType)) && (hasSscsDocument(newSscsCaseData))) {
-            if (REPRESENTATIVE.equals(subscriptionType)) {
-                return directionNoticeLetterTemplateRep;
-            } else {
-                return directionNoticeLetterTemplate;
-            }
+        if ((STRUCK_OUT.equals(notificationEventType)) && newSscsCaseData != null && newSscsCaseData.getSscsStrikeOutDocument() != null) {
+            return (REPRESENTATIVE.equals(subscriptionType)) ? strikeOutLetterTemplateRep : strikeOutLetterTemplate;
+        } else if ((DIRECTION_ISSUED.equals(notificationEventType)) && newSscsCaseData != null && newSscsCaseData.getSscsInterlocDirectionDocument() != null) {
+            return (REPRESENTATIVE.equals(subscriptionType)) ? directionNoticeLetterTemplateRep : directionNoticeLetterTemplate;
         } else if ((JUDGE_DECISION_APPEAL_TO_PROCEED.equals(notificationEventType) || TCW_DECISION_APPEAL_TO_PROCEED.equals(notificationEventType))
-                && (hasSscsDocument(newSscsCaseData))) {
-            if (REPRESENTATIVE.equals(subscriptionType)) {
-                return validAppealCreatedLetterTemplateRep;
-            } else {
-                return validAppealCreatedLetterTemplate;
-            }
+                && (newSscsCaseData != null && newSscsCaseData.getSscsInterlocDecisionDocument() != null)) {
+            return (REPRESENTATIVE.equals(subscriptionType)) ? validAppealCreatedLetterTemplateRep : validAppealCreatedLetterTemplate;
         }
         return null;
     }
