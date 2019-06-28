@@ -121,7 +121,7 @@ public class NotificationServiceTest {
     public void setup() {
         initMocks(this);
 
-        notificationService = getNotificationService(true, true);
+        notificationService = getNotificationService(true, true, true);
 
         sscsCaseData = SscsCaseData.builder()
             .appeal(
@@ -1491,9 +1491,29 @@ public class NotificationServiceTest {
 
         when(factory.create(struckOutCcdNotificationWrapper, getSubscriptionWithType(ccdNotificationWrapper))).thenReturn(notification);
 
-        getNotificationService(false, false).manageNotificationAndSubscription(struckOutCcdNotificationWrapper);
+        getNotificationService(false, false, false).manageNotificationAndSubscription(struckOutCcdNotificationWrapper);
 
         verify(notificationHandler, times(0)).sendNotification(eq(struckOutCcdNotificationWrapper), eq(LETTER_TEMPLATE_ID_STRUCKOUT), eq(LETTER), any(NotificationHandler.SendNotification.class));
+    }
+
+    @Test
+    public void sendAppellantLetterOnAppealReceived() throws IOException {
+        String fileUrl = "http://dm-store:4506/documents/1e1eb3d2-5b6c-430d-8dad-ebcea1ad7ecf";
+        String docmosisId = "docmosis-id.doc";
+        CcdNotificationWrapper ccdNotificationWrapper = buildWrapperWithDocuments(APPEAL_RECEIVED_NOTIFICATION, fileUrl, APPELLANT_WITH_ADDRESS, null);
+        Notification notification = new Notification(Template.builder().docmosisTemplateId(docmosisId).build(), Destination.builder().build(), new HashMap<>(), new Reference(), null);
+
+        byte[] sampleDirectionCoversheet = IOUtils.toByteArray(getClass().getClassLoader().getResourceAsStream("pdfs/direction-notice-coversheet-sample.pdf"));
+
+        when((notificationValidService).isNotificationStillValidToSend(any(), any())).thenReturn(true);
+        when((notificationValidService).isHearingTypeValidToSendNotification(any(), any())).thenReturn(true);
+        when(pdfLetterService.generateLetter(any(), any(), any())).thenReturn(sampleDirectionCoversheet);
+
+        when(factory.create(ccdNotificationWrapper, getSubscriptionWithType(ccdNotificationWrapper))).thenReturn(notification);
+
+        getNotificationService(true, true, true).manageNotificationAndSubscription(ccdNotificationWrapper);
+
+        verify(notificationHandler, times(0)).sendNotification(eq(ccdNotificationWrapper), eq(docmosisId), eq(LETTER), any(NotificationHandler.SendNotification.class));
     }
 
     @Test
@@ -1525,7 +1545,7 @@ public class NotificationServiceTest {
         assertTrue(NotificationService.hasCaseJustSubscribed(subscription, oldSubscription));
     }
 
-    private NotificationService getNotificationService(Boolean bundledLettersOn, Boolean lettersOn) {
+    private NotificationService getNotificationService(Boolean bundledLettersOn, Boolean lettersOn, Boolean docmosisLettersOn) {
         SendNotificationService sendNotificationService = new SendNotificationService(notificationSender, evidenceManagementService, sscsGeneratePdfService, notificationHandler, notificationValidService, bundledLetterTemplateUtil, pdfLetterService);
 
         final NotificationService notificationService = new NotificationService(factory, reminderService,
@@ -1533,6 +1553,7 @@ public class NotificationServiceTest {
         );
         ReflectionTestUtils.setField(sendNotificationService, "bundledLettersOn", bundledLettersOn);
         ReflectionTestUtils.setField(sendNotificationService, "lettersOn", lettersOn);
+        ReflectionTestUtils.setField(sendNotificationService, "docmosisLettersOn", docmosisLettersOn);
         return notificationService;
 
     }

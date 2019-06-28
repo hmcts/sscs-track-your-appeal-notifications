@@ -29,7 +29,6 @@ import org.junit.runner.RunWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import uk.gov.hmcts.reform.sscs.ccd.domain.*;
-import uk.gov.hmcts.reform.sscs.config.DocmosisTemplatesConfig;
 import uk.gov.hmcts.reform.sscs.config.NotificationConfig;
 import uk.gov.hmcts.reform.sscs.config.SubscriptionType;
 import uk.gov.hmcts.reform.sscs.domain.SscsCaseDataWrapper;
@@ -71,9 +70,6 @@ public class NotificationFactoryTest {
 
     @Mock
     private NotificationDateConverterUtil notificationDateConverterUtil;
-
-    @Mock
-    private DocmosisTemplatesConfig docmosisTemplatesConfig;
 
     @InjectMocks
     @Resource
@@ -117,8 +113,6 @@ public class NotificationFactoryTest {
         when(regionalProcessingCenterService.getByScReferenceCode("SC/1234/5")).thenReturn(rpc);
         when(hearingContactDateExtractor.extract(any())).thenReturn(Optional.empty());
         when(notificationDateConverterUtil.toEmailDate(any(LocalDate.class))).thenReturn("1 January 2018");
-        when(docmosisTemplatesConfig.getHmctsImgKey()).thenReturn("hmcts2");
-        when(docmosisTemplatesConfig.getHmctsImgVal()).thenReturn("[userImage:hmcts.png]");
     }
 
     @Test

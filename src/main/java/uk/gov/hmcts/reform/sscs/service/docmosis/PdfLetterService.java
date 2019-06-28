@@ -1,5 +1,7 @@
 package uk.gov.hmcts.reform.sscs.service.docmosis;
 
+import static uk.gov.hmcts.reform.sscs.config.AppConstants.*;
+import static uk.gov.hmcts.reform.sscs.config.AppConstants.POSTCODE_LITERAL;
 import static uk.gov.hmcts.reform.sscs.service.LetterUtils.getAddressToUseForLetter;
 
 import java.io.IOException;
@@ -62,13 +64,20 @@ public class PdfLetterService {
         try {
             if (NotificationEventType.APPEAL_RECEIVED_NOTIFICATION.getId().equalsIgnoreCase(wrapper.getNotificationType().getId())) {
 
-                byte[] coversheet = LetterUtils.addBlankPageAtTheEndIfOddPage(generateCoversheet(wrapper, subscriptionType));
 
+                Address addressToUse = getAddressToUseForLetter(wrapper, subscriptionType);
                 Map<String, String> placeholders = notification.getPlaceholders();
                 placeholders.put(SSCS_URL_LITERAL, SSCS_URL);
                 placeholders.put(GENERATED_DATE_LITERAL, LocalDateTime.now().toLocalDate().toString());
+                placeholders.put(docmosisTemplatesConfig.getHmctsImgKey(), docmosisTemplatesConfig.getHmctsImgVal());
+                placeholders.put("address_line1", addressToUse.getLine1());
+                placeholders.put("address_line2", addressToUse.getLine2() == null ? " " : addressToUse.getLine2());
+                placeholders.put("address_line3", addressToUse.getTown() == null ? " " : addressToUse.getTown());
+                placeholders.put("address_line4", addressToUse.getCounty() == null ? " " : addressToUse.getCounty());
+                placeholders.put(POSTCODE_LITERAL, addressToUse.getPostcode());
                 byte[] letter = docmosisPdfService.createPdf(placeholders, notification.getDocmosisLetterTemplate());
 
+                byte[] coversheet = LetterUtils.addBlankPageAtTheEndIfOddPage(generateCoversheet(wrapper, subscriptionType));
                 return LetterUtils.buildBundledLetter(LetterUtils.buildBundledLetter(letter, coversheet), coversheet);
             }
         } catch (IOException e) {

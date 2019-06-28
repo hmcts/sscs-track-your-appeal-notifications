@@ -62,9 +62,6 @@ public class Personalisation<E extends NotificationWrapper> {
     @Autowired
     private NotificationDateConverterUtil notificationDateConverterUtil;
 
-    @Autowired
-    private DocmosisTemplatesConfig docmosisTemplatesConfig;
-
     public Map<String, String> create(final E notificationWrapper, final SubscriptionWithType subscriptionWithType) {
         return create(notificationWrapper.getSscsCaseDataWrapper(), subscriptionWithType);
     }
@@ -121,7 +118,6 @@ public class Personalisation<E extends NotificationWrapper> {
         personalisation.put(ONLINE_HEARING_SIGN_IN_LINK_LITERAL, config.getOnlineHearingLink() + "/sign-in");
 
         personalisation.put(APPOINTEE_DESCRIPTION, getAppointeeDescription(subscriptionWithType.getSubscriptionType(), ccdResponse));
-        personalisation.put(docmosisTemplatesConfig.getHmctsImgKey(), docmosisTemplatesConfig.getHmctsImgVal());
 
         return personalisation;
     }
