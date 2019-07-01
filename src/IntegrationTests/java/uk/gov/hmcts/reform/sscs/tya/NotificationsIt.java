@@ -114,7 +114,7 @@ public class NotificationsIt {
     @Autowired
     private BundledLetterTemplateUtil bundledLetterTemplateUtil;
 
-    @Autowired
+    @MockBean
     private PdfLetterService pdfLetterService;
 
     @Mock
@@ -137,7 +137,7 @@ public class NotificationsIt {
 
         ReflectionTestUtils.setField(sendNotificationService, "bundledLettersOn", true);
         ReflectionTestUtils.setField(sendNotificationService, "lettersOn", true);
-        ReflectionTestUtils.setField(sendNotificationService, "docmosisLettersOn", false);
+        ReflectionTestUtils.setField(sendNotificationService, "docmosisLettersOn", true);
         ReflectionTestUtils.setField(sendNotificationService, "interlocLettersOn", true);
 
         NotificationService service = new NotificationService(factory, reminderService, notificationValidService, notificationHandler, outOfHoursCalculator, notificationConfig, sendNotificationService);
@@ -162,6 +162,8 @@ public class NotificationsIt {
 
         outOfHoursCalculator = mock(OutOfHoursCalculator.class);
         when(outOfHoursCalculator.isItOutOfHours()).thenReturn(false);
+
+        when(pdfLetterService.generateLetter(any(), any(), any())).thenReturn("%PDF".getBytes());
     }
 
     @Test
@@ -424,9 +426,14 @@ public class NotificationsIt {
     private void validateLetterNotifications(List<String> expectedLetterTemplateIds, int wantedNumberOfSendLetterInvocations, String expectedName) throws NotificationClientException {
         ArgumentCaptor<Map<String, String>> letterPersonalisationCaptor = ArgumentCaptor.forClass(Map.class);
         ArgumentCaptor<String> letterTemplateIdCaptor = ArgumentCaptor.forClass(String.class);
-        verify(notificationClient, times(wantedNumberOfSendLetterInvocations))
+        verify(notificationClient, atMost(wantedNumberOfSendLetterInvocations))
             .sendLetter(letterTemplateIdCaptor.capture(), letterPersonalisationCaptor.capture(), any());
-        assertArrayEquals(expectedLetterTemplateIds.toArray(), letterTemplateIdCaptor.getAllValues().toArray());
+        assertArrayEquals(expectedLetterTemplateIds.stream().filter(f -> !(f.endsWith(".doc") || f.endsWith(".docx"))).toArray(), letterTemplateIdCaptor.getAllValues().toArray());
+
+        int expectedDocmosisLetters = expectedLetterTemplateIds.stream().filter(f -> f.endsWith(".doc") || f.endsWith(".docx")).toArray().length;
+        if (expectedDocmosisLetters > 0) {
+            verify(notificationClient, times(expectedDocmosisLetters)).sendPrecompiledLetterWithInputStream(any(), any());
+        }
 
         if (0 < wantedNumberOfSendLetterInvocations) {
             Map<String, String> personalisation = letterPersonalisationCaptor.getValue();
@@ -699,56 +706,56 @@ public class NotificationsIt {
                 "paper",
                 Arrays.asList("b90df52f-c628-409c-8875-4b0b9663a053", "4b1ee55b-abd1-4e7e-b0ed-693d8df1e741"),
                 Arrays.asList("ede384aa-0b6e-4311-9f01-ee547573a07b", "99bd4a56-256c-4de8-b187-d43a8dde466f"),
-                Arrays.asList("91143b85-dd9d-430c-ba23-e42ec90f44f8", "77ea8a2f-06df-4279-9c1f-0f23cb2d9bbf"),
+                Arrays.asList("TB-SCS-GNO-ENG-00060.doc", "77ea8a2f-06df-4279-9c1f-0f23cb2d9bbf"),
                 "yes",
                 "yes",
                 "yes",
                 "yes",
                 "2",
                 "2",
-                "2"
+                "1"
             },
             new Object[]{
                 APPEAL_RECEIVED_NOTIFICATION,
                 "oral",
                 Arrays.asList("b90df52f-c628-409c-8875-4b0b9663a053", "4b1ee55b-abd1-4e7e-b0ed-693d8df1e741"),
                 Arrays.asList("ede384aa-0b6e-4311-9f01-ee547573a07b", "99bd4a56-256c-4de8-b187-d43a8dde466f"),
-                Arrays.asList("91143b85-dd9d-430c-ba23-e42ec90f44f8", "77ea8a2f-06df-4279-9c1f-0f23cb2d9bbf"),
+                Arrays.asList("TB-SCS-GNO-ENG-00060.doc", "77ea8a2f-06df-4279-9c1f-0f23cb2d9bbf"),
                 "yes",
                 "yes",
                 "yes",
                 "yes",
                 "2",
                 "2",
-                "2"
+                "1"
             },
             new Object[]{
                 APPEAL_RECEIVED_NOTIFICATION,
                 "paper",
                 Collections.singletonList("4b1ee55b-abd1-4e7e-b0ed-693d8df1e741"),
                 Arrays.asList("ede384aa-0b6e-4311-9f01-ee547573a07b", "99bd4a56-256c-4de8-b187-d43a8dde466f"),
-                Arrays.asList("91143b85-dd9d-430c-ba23-e42ec90f44f8", "77ea8a2f-06df-4279-9c1f-0f23cb2d9bbf"),
+                Arrays.asList("TB-SCS-GNO-ENG-00060.doc", "77ea8a2f-06df-4279-9c1f-0f23cb2d9bbf"),
                 "no",
                 "yes",
                 "yes",
                 "yes",
                 "1",
                 "2",
-                "2"
+                "1"
             },
             new Object[]{
                 APPEAL_RECEIVED_NOTIFICATION,
                 "paper",
                 Collections.emptyList(),
                 Collections.emptyList(),
-                Arrays.asList("91143b85-dd9d-430c-ba23-e42ec90f44f8", "77ea8a2f-06df-4279-9c1f-0f23cb2d9bbf"),
+                Arrays.asList("TB-SCS-GNO-ENG-00060.doc", "77ea8a2f-06df-4279-9c1f-0f23cb2d9bbf"),
                 "no",
                 "no",
                 "no",
                 "no",
                 "0",
                 "0",
-                "2"
+                "1"
             },
             new Object[]{
                 APPEAL_DORMANT_NOTIFICATION,
@@ -1518,21 +1525,21 @@ public class NotificationsIt {
                 "paper",
                 Arrays.asList("b90df52f-c628-409c-8875-4b0b9663a053", "4b1ee55b-abd1-4e7e-b0ed-693d8df1e741"),
                 Arrays.asList("ede384aa-0b6e-4311-9f01-ee547573a07b", "99bd4a56-256c-4de8-b187-d43a8dde466f"),
-                Arrays.asList("91143b85-dd9d-430c-ba23-e42ec90f44f8", "77ea8a2f-06df-4279-9c1f-0f23cb2d9bbf"),
+                Arrays.asList("TB-SCS-GNO-ENG-00060.doc", "77ea8a2f-06df-4279-9c1f-0f23cb2d9bbf"),
                 "yes",
                 "yes",
                 "yes",
                 "yes",
                 "2",
                 "2",
-                "2"
+                "1"
             },
             new Object[]{
                 APPEAL_RECEIVED_NOTIFICATION,
                 "oral",
                 Arrays.asList("b90df52f-c628-409c-8875-4b0b9663a053", "4b1ee55b-abd1-4e7e-b0ed-693d8df1e741"),
                 Arrays.asList("ede384aa-0b6e-4311-9f01-ee547573a07b", "99bd4a56-256c-4de8-b187-d43a8dde466f"),
-                Arrays.asList("91143b85-dd9d-430c-ba23-e42ec90f44f8", "77ea8a2f-06df-4279-9c1f-0f23cb2d9bbf"),
+                Arrays.asList("TB-SCS-GNO-ENG-00060.doc", "77ea8a2f-06df-4279-9c1f-0f23cb2d9bbf"),
                 "yes",
                 "yes",
                 "yes",
@@ -1546,28 +1553,28 @@ public class NotificationsIt {
                 "paper",
                 Collections.singletonList("4b1ee55b-abd1-4e7e-b0ed-693d8df1e741"),
                 Arrays.asList("ede384aa-0b6e-4311-9f01-ee547573a07b", "99bd4a56-256c-4de8-b187-d43a8dde466f"),
-                Arrays.asList("91143b85-dd9d-430c-ba23-e42ec90f44f8", "77ea8a2f-06df-4279-9c1f-0f23cb2d9bbf"),
+                Arrays.asList("TB-SCS-GNO-ENG-00060.doc", "77ea8a2f-06df-4279-9c1f-0f23cb2d9bbf"),
                 "no",
                 "yes",
                 "yes",
                 "yes",
                 "1",
                 "2",
-                "2"
+                "1"
             },
             new Object[]{
                 APPEAL_RECEIVED_NOTIFICATION,
                 "paper",
                 Collections.emptyList(),
                 Collections.emptyList(),
-                Arrays.asList("91143b85-dd9d-430c-ba23-e42ec90f44f8", "77ea8a2f-06df-4279-9c1f-0f23cb2d9bbf"),
+                Arrays.asList("TB-SCS-GNO-ENG-00060.doc", "77ea8a2f-06df-4279-9c1f-0f23cb2d9bbf"),
                 "no",
                 "no",
                 "no",
                 "no",
                 "0",
                 "0",
-                "2"
+                "1"
             },
             new Object[]{
                 APPEAL_DORMANT_NOTIFICATION,

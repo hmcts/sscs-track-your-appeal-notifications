@@ -81,10 +81,14 @@ public class PdfLetterService {
                 return LetterUtils.buildBundledLetter(LetterUtils.buildBundledLetter(letter, coversheet), coversheet);
             }
         } catch (IOException e) {
-            log.error("Cannot generate letter", e);
+            log.error(
+                    String.format("Cannot '%s' generate letter to %s.",
+                            wrapper.getNotificationType().getId(),
+                            subscriptionType.name()),
+                    e);
         }
 
-        return null;
+        return new byte[0];
     }
 
 }
