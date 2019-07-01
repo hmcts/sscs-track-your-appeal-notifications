@@ -46,7 +46,7 @@ public class Notification {
     }
 
     public String getDocmosisLetterTemplate() {
-        return template.getDocmosisTemplateId();
+        return template == null ? null : template.getDocmosisTemplateId();
     }
 
     public String getSmsSenderTemplate() {

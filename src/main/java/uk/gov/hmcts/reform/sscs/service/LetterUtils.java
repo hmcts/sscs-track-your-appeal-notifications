@@ -8,6 +8,7 @@ import static uk.gov.hmcts.reform.sscs.service.NotificationUtils.hasAppointee;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 
+import org.apache.commons.lang3.ArrayUtils;
 import org.apache.pdfbox.multipdf.PDFMergerUtility;
 import org.apache.pdfbox.pdmodel.PDDocument;
 import org.apache.pdfbox.pdmodel.PDPage;
@@ -63,16 +64,19 @@ public class LetterUtils {
     }
 
     public static byte[] addBlankPageAtTheEndIfOddPage(byte[] letter) throws IOException {
-        PDDocument loadDoc = PDDocument.load(letter);
-        if (loadDoc.getNumberOfPages() % 2 != 0) {
-            loadDoc.addPage(new PDPage());
+        if (ArrayUtils.isNotEmpty(letter)) {
+            PDDocument loadDoc = PDDocument.load(letter);
+            if (loadDoc.getNumberOfPages() % 2 != 0) {
+                loadDoc.addPage(new PDPage());
+                ByteArrayOutputStream baos = new ByteArrayOutputStream();
+                loadDoc.save(baos);
+                loadDoc.close();
+                byte[] bytes = baos.toByteArray();
+                baos.close();
+                return bytes;
+            }
         }
-        ByteArrayOutputStream baos = new ByteArrayOutputStream();
-        loadDoc.save(baos);
-        loadDoc.close();
-        byte[] bytes = baos.toByteArray();
-        baos.close();
-        return bytes;
+        return letter;
     }
 
     public static byte[] buildBundledLetter(byte[] coveringLetter, byte[] directionText) throws IOException {

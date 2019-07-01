@@ -6,6 +6,7 @@ import static uk.gov.hmcts.reform.sscs.service.LetterUtils.getAddressToUseForLet
 
 import java.io.IOException;
 import java.time.LocalDateTime;
+import java.util.HashMap;
 import java.util.Map;
 
 import lombok.extern.slf4j.Slf4j;
@@ -18,6 +19,7 @@ import uk.gov.hmcts.reform.sscs.config.SubscriptionType;
 import uk.gov.hmcts.reform.sscs.domain.docmosis.PdfCoverSheet;
 import uk.gov.hmcts.reform.sscs.domain.notify.Notification;
 import uk.gov.hmcts.reform.sscs.domain.notify.NotificationEventType;
+import uk.gov.hmcts.reform.sscs.exception.NotificationClientRuntimeException;
 import uk.gov.hmcts.reform.sscs.exception.PdfGenerationException;
 import uk.gov.hmcts.reform.sscs.factory.NotificationWrapper;
 import uk.gov.hmcts.reform.sscs.service.DocmosisPdfService;
@@ -62,11 +64,12 @@ public class PdfLetterService {
 
     public byte[] generateLetter(NotificationWrapper wrapper, Notification notification, SubscriptionType subscriptionType) {
         try {
-            if (NotificationEventType.APPEAL_RECEIVED_NOTIFICATION.getId().equalsIgnoreCase(wrapper.getNotificationType().getId())) {
-
+            if (NotificationEventType.APPEAL_RECEIVED_NOTIFICATION.getId().equalsIgnoreCase(
+                    wrapper.getNotificationType().getId())
+                    && StringUtils.isNotBlank(notification.getDocmosisLetterTemplate())) {
 
                 Address addressToUse = getAddressToUseForLetter(wrapper, subscriptionType);
-                Map<String, String> placeholders = notification.getPlaceholders();
+                Map<String, Object> placeholders = new HashMap<>(notification.getPlaceholders());
                 placeholders.put(SSCS_URL_LITERAL, SSCS_URL);
                 placeholders.put(GENERATED_DATE_LITERAL, LocalDateTime.now().toLocalDate().toString());
                 placeholders.put(ADDRESS_LINE_1, addressToUse.getLine1());
@@ -75,17 +78,17 @@ public class PdfLetterService {
                 placeholders.put(ADDRESS_LINE_4, addressToUse.getCounty() == null ? " " : addressToUse.getCounty());
                 placeholders.put(POSTCODE_LITERAL, addressToUse.getPostcode());
                 placeholders.put(docmosisTemplatesConfig.getHmctsImgKey1(), docmosisTemplatesConfig.getHmctsImgVal());
-                byte[] letter = docmosisPdfService.createPdf(placeholders, notification.getDocmosisLetterTemplate());
+                byte[] letter = docmosisPdfService.createPdfFromMap(placeholders, notification.getDocmosisLetterTemplate());
 
                 byte[] coversheet = LetterUtils.addBlankPageAtTheEndIfOddPage(generateCoversheet(wrapper, subscriptionType));
                 return LetterUtils.buildBundledLetter(LetterUtils.buildBundledLetter(letter, coversheet), coversheet);
             }
         } catch (IOException e) {
-            log.error(
-                    String.format("Cannot '%s' generate letter to %s.",
-                            wrapper.getNotificationType().getId(),
-                            subscriptionType.name()),
-                    e);
+            String message = String.format("Cannot '%s' generate letter to %s.",
+                    wrapper.getNotificationType().getId(),
+                    subscriptionType.name());
+            log.error(message, e);
+            throw new NotificationClientRuntimeException(message);
         }
 
         return new byte[0];

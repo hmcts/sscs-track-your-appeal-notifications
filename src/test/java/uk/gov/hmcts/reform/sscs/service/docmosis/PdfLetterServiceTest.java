@@ -1,21 +1,31 @@
 package uk.gov.hmcts.reform.sscs.service.docmosis;
 
+import static org.junit.Assert.assertTrue;
 import static org.mockito.ArgumentMatchers.eq;
-import static org.mockito.Mockito.mock;
-import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.*;
 import static uk.gov.hmcts.reform.sscs.domain.notify.NotificationEventType.APPEAL_LAPSED_NOTIFICATION;
 import static uk.gov.hmcts.reform.sscs.domain.notify.NotificationEventType.APPEAL_RECEIVED_NOTIFICATION;
 
+import java.io.ByteArrayOutputStream;
+import java.io.IOException;
+import java.util.HashMap;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 import junitparams.JUnitParamsRunner;
 import junitparams.Parameters;
+import org.apache.commons.lang3.ArrayUtils;
+import org.apache.pdfbox.pdmodel.PDDocument;
+import org.apache.pdfbox.pdmodel.PDPage;
 import org.junit.Test;
 import org.junit.runner.RunWith;
+import org.mockito.Mockito;
 import uk.gov.hmcts.reform.sscs.ccd.domain.*;
 import uk.gov.hmcts.reform.sscs.config.DocmosisTemplatesConfig;
 import uk.gov.hmcts.reform.sscs.config.SubscriptionType;
 import uk.gov.hmcts.reform.sscs.domain.docmosis.PdfCoverSheet;
+import uk.gov.hmcts.reform.sscs.domain.notify.Notification;
+import uk.gov.hmcts.reform.sscs.domain.notify.Template;
+import uk.gov.hmcts.reform.sscs.exception.NotificationClientRuntimeException;
 import uk.gov.hmcts.reform.sscs.exception.PdfGenerationException;
 import uk.gov.hmcts.reform.sscs.factory.NotificationWrapper;
 import uk.gov.hmcts.reform.sscs.service.DocmosisPdfService;
@@ -83,5 +93,59 @@ public class PdfLetterServiceTest {
         );
 
         pdfLetterService.generateCoversheet(wrapper, SubscriptionType.APPELLANT);
+    }
+
+    @Test
+    public void willGenerateALetter() throws IOException {
+        PDDocument doc = new PDDocument();
+        doc.addPage(new PDPage());
+        ByteArrayOutputStream baos = new ByteArrayOutputStream();
+        doc.save(baos);
+        Mockito.reset(docmosisPdfService);
+        when(docmosisPdfService.createPdfFromMap(any(), anyString())).thenReturn(baos.toByteArray());
+        when(docmosisPdfService.createPdf(any(), anyString())).thenReturn(baos.toByteArray());
+        baos.close();
+        doc.close();
+        NotificationWrapper wrapper = NotificationServiceTest.buildBaseWrapper(
+                APPEAL_RECEIVED_NOTIFICATION,
+                APPELLANT,
+                REPRESENTATIVE,
+                null
+        );
+        Notification notification = Notification.builder().template(Template.builder().docmosisTemplateId("docmosis.doc").build()).placeholders(new HashMap<>()).build();
+        byte[] bytes = pdfLetterService.generateLetter(wrapper, notification, SubscriptionType.APPELLANT);
+        assertTrue(ArrayUtils.isNotEmpty(bytes));
+        verify(docmosisPdfService).createPdfFromMap(any(), eq(notification.getDocmosisLetterTemplate()));
+        verify(docmosisPdfService).createPdf(any(), anyString());
+    }
+
+    @Test
+    public void willNotGenerateALetterIfNoDocmosisTemplateExists() {
+        NotificationWrapper wrapper = NotificationServiceTest.buildBaseWrapper(
+                APPEAL_RECEIVED_NOTIFICATION,
+                APPELLANT,
+                REPRESENTATIVE,
+                null
+        );
+        Notification notification = Notification.builder().template(Template.builder().docmosisTemplateId(null).build()).placeholders(new HashMap<>()).build();
+
+        byte[] bytes = pdfLetterService.generateLetter(wrapper, notification, SubscriptionType.REPRESENTATIVE);
+        verifyZeroInteractions(docmosisPdfService);
+        assertTrue(ArrayUtils.isEmpty(bytes));
+    }
+
+    @Test(expected = NotificationClientRuntimeException.class)
+    public void willHandleLoadingAnInvalidPdf() {
+        NotificationWrapper wrapper = NotificationServiceTest.buildBaseWrapper(
+                APPEAL_RECEIVED_NOTIFICATION,
+                APPELLANT,
+                REPRESENTATIVE,
+                null
+        );
+        Notification notification = Notification.builder().template(Template.builder().docmosisTemplateId("some.doc").build()).placeholders(new HashMap<>()).build();
+
+        when(docmosisPdfService.createPdfFromMap(any(), anyString())).thenReturn("Invalid PDF".getBytes());
+        when(docmosisPdfService.createPdf(any(), anyString())).thenReturn("Invalid PDF".getBytes());
+        pdfLetterService.generateLetter(wrapper, notification, SubscriptionType.REPRESENTATIVE);
     }
 }

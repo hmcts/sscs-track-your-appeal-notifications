@@ -65,7 +65,7 @@ public class NotificationController {
             authorisationService.authorise(serviceAuthHeader);
             notificationService.manageNotificationAndSubscription(new CcdNotificationWrapper(sscsCaseDataWrapper));
         } catch (Exception e) {
-            log.error("Exception thrown", e);
+            log.info("Exception thrown", e);
             throw e;
         }
     }

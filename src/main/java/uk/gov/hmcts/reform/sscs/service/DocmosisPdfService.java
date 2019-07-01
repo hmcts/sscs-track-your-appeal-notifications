@@ -24,10 +24,10 @@ public class DocmosisPdfService  {
                 new TypeReference<Map<String, Object>>() {
                 }
         );
-        return createPdf(placeholders, templatePath);
+        return createPdfFromMap(placeholders, templatePath);
     }
 
-    public byte[] createPdf(Map<String, Object> placeholders, String templatePath) {
+    public byte[] createPdfFromMap(Map<String, Object> placeholders, String templatePath) {
         return docmosisPdfGenerationService.generatePdf(DocumentHolder.builder()
                 .template(new Template(templatePath, ""))
                 .placeholders(placeholders)
