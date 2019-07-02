@@ -4,7 +4,7 @@ import static uk.gov.hmcts.reform.sscs.config.AppConstants.*;
 import static uk.gov.hmcts.reform.sscs.config.AppConstants.POSTCODE_LITERAL;
 import static uk.gov.hmcts.reform.sscs.service.LetterUtils.getAddressToUseForLetter;
 
-import java.io.IOException;
+import java.io.*;
 import java.time.LocalDateTime;
 import java.util.HashMap;
 import java.util.Map;
@@ -80,7 +80,17 @@ public class PdfLetterService {
                 placeholders.put(docmosisTemplatesConfig.getHmctsImgKey1(), docmosisTemplatesConfig.getHmctsImgVal());
                 byte[] letter = docmosisPdfService.createPdfFromMap(placeholders, notification.getDocmosisLetterTemplate());
 
-                byte[] coversheet = LetterUtils.addBlankPageAtTheEndIfOddPage(generateCoversheet(wrapper, subscriptionType));
+                byte[] coversheetFromDocmosis = generateCoversheet(wrapper, subscriptionType);
+                try {
+                    File f = File.createTempFile("test", ".pdf");
+                    log.info("pdf file is saved in " + f.getAbsolutePath());
+                    FileOutputStream fos = new FileOutputStream(f);
+                    fos.write(coversheetFromDocmosis);
+                    fos.close();
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
+                byte[] coversheet = LetterUtils.addBlankPageAtTheEndIfOddPage(coversheetFromDocmosis);
                 return LetterUtils.buildBundledLetter(LetterUtils.buildBundledLetter(letter, coversheet), coversheet);
             }
         } catch (IOException e) {
