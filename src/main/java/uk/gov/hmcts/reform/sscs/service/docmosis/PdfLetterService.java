@@ -84,9 +84,9 @@ public class PdfLetterService {
                 try {
                     File f = File.createTempFile("test", ".pdf");
                     log.info("pdf file is saved in " + f.getAbsolutePath());
-                    FileOutputStream fos = new FileOutputStream(f);
-                    fos.write(coversheetFromDocmosis);
-                    fos.close();
+                    try (FileOutputStream fos = new FileOutputStream(f)) {
+                        fos.write(coversheetFromDocmosis);
+                    }
                 } catch (IOException e) {
                     e.printStackTrace();
                 }
