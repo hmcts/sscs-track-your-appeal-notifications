@@ -371,7 +371,7 @@ feature.interloc_letters_on: ${INTERLOC_LETTERS_ON:true}
 
 pdf-service:
   uri: ${PDF_SERVICE_BASE_URL:https://docmosis-development.platform.hmcts.net/rs/render}
-  accessKey: ${PDF_SERVICE_ACCESS_KEY:ZDYxMTkzZTQtMGY2Mi00NDM1LWIyN2ItNGRkNzdjOTczMjAwOjQ1NTE0ODQ}
+  accessKey: ${PDF_SERVICE_ACCESS_KEY:secret-key-not-supplied}
   health:
     uri: ${PDF_SERVICE_HEALTH_URL:https://docmosis-development.platform.hmcts.net/rs/status}
   hmctsImgKey1: "hmcts"
