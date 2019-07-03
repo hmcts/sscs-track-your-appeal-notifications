@@ -8,7 +8,6 @@ import java.io.*;
 import java.time.LocalDateTime;
 import java.util.HashMap;
 import java.util.Map;
-
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -79,9 +78,7 @@ public class PdfLetterService {
                 placeholders.put(POSTCODE_LITERAL, addressToUse.getPostcode());
                 placeholders.put(docmosisTemplatesConfig.getHmctsImgKey1(), docmosisTemplatesConfig.getHmctsImgVal());
                 byte[] letter = docmosisPdfService.createPdfFromMap(placeholders, notification.getDocmosisLetterTemplate());
-                writeToFile(letter);
                 byte[] coversheetFromDocmosis = generateCoversheet(wrapper, subscriptionType);
-                writeToFile(coversheetFromDocmosis);
                 byte[] coversheet = LetterUtils.addBlankPageAtTheEndIfOddPage(coversheetFromDocmosis);
                 return LetterUtils.buildBundledLetter(LetterUtils.buildBundledLetter(letter, coversheet), coversheet);
             }
@@ -94,18 +91,6 @@ public class PdfLetterService {
         }
 
         return new byte[0];
-    }
-
-    private void writeToFile(byte[] coversheetFromDocmosis) {
-        try {
-            File f = File.createTempFile("test", ".pdf");
-            log.info("The pdf file is saved in " + f.getAbsolutePath());
-            try (FileOutputStream fos = new FileOutputStream(f)) {
-                fos.write(coversheetFromDocmosis);
-            }
-        } catch (IOException e) {
-            log.error("Could not write the pdf",e);
-        }
     }
 
 }
