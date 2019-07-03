@@ -158,6 +158,7 @@ public class NotificationServiceForSubscriptionUpdatedTest {
         ReflectionTestUtils.setField(sendNotificationService, "bundledLettersOn", false);
         ReflectionTestUtils.setField(sendNotificationService, "lettersOn", false);
         ReflectionTestUtils.setField(sendNotificationService, "interlocLettersOn", false);
+        ReflectionTestUtils.setField(sendNotificationService, "docmosisLettersOn", false);
         return new NotificationService(notificationFactory, reminderService,
                 notificationValidService, notificationHandler, outOfHoursCalculator, notificationConfig, sendNotificationService
         );
