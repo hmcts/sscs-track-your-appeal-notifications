@@ -2022,12 +2022,12 @@ public class NotificationsIt {
                 "paper",
                 Collections.singletonList("08365e91-9e07-4a5c-bf96-ef56fd0ada63"),
                 Collections.singletonList("ede384aa-0b6e-4311-9f01-ee547573a07b"),
-                Collections.singletonList("747d026e-1bec-4e96-8a34-28f36e30bba5"),
+                Collections.singletonList("TB-SCS-GNO-ENG-00060.doc"),
                 "yes",
                 "yes",
                 "1",
                 "1",
-                "1",
+                "0",
                 "Appointee Appointee"
             },
             new Object[]{
@@ -2035,12 +2035,12 @@ public class NotificationsIt {
                 "oral",
                 Collections.singletonList("08365e91-9e07-4a5c-bf96-ef56fd0ada63"),
                 Collections.singletonList("ede384aa-0b6e-4311-9f01-ee547573a07b"),
-                Collections.singletonList("747d026e-1bec-4e96-8a34-28f36e30bba5"),
+                Collections.singletonList("TB-SCS-GNO-ENG-00060.doc"),
                 "yes",
                 "yes",
                 "1",
                 "1",
-                "1",
+                "0",
                 "Appointee Appointee"
             },
             new Object[]{
@@ -2048,12 +2048,12 @@ public class NotificationsIt {
                 "paper",
                 Collections.emptyList(),
                 Collections.emptyList(),
-                Collections.singletonList("747d026e-1bec-4e96-8a34-28f36e30bba5"),
+                Collections.singletonList("TB-SCS-GNO-ENG-00060.doc"),
                 "no",
                 "no",
                 "0",
                 "0",
-                "1",
+                "0",
                 "Appointee Appointee"
             },
             new Object[]{
@@ -2315,12 +2315,12 @@ public class NotificationsIt {
                 "paper",
                 Collections.singletonList("08365e91-9e07-4a5c-bf96-ef56fd0ada63"),
                 Collections.singletonList("ede384aa-0b6e-4311-9f01-ee547573a07b"),
-                Collections.singletonList("747d026e-1bec-4e96-8a34-28f36e30bba5"),
+                Collections.singletonList("TB-SCS-GNO-ENG-00060.doc"),
                 "yes",
                 "yes",
                 "1",
                 "1",
-                "1",
+                "0",
                 "Appointee Appointee"
             },
             new Object[]{
@@ -2367,12 +2367,12 @@ public class NotificationsIt {
                 "oral",
                 Collections.singletonList("08365e91-9e07-4a5c-bf96-ef56fd0ada63"),
                 Collections.singletonList("ede384aa-0b6e-4311-9f01-ee547573a07b"),
-                Collections.singletonList("747d026e-1bec-4e96-8a34-28f36e30bba5"),
+                Collections.singletonList("TB-SCS-GNO-ENG-00060.doc"),
                 "yes",
                 "yes",
                 "1",
                 "1",
-                "1",
+                "0",
                 "Appointee Appointee"
             },
             new Object[]{
@@ -2419,12 +2419,12 @@ public class NotificationsIt {
                 "paper",
                 Collections.singletonList("08365e91-9e07-4a5c-bf96-ef56fd0ada63"),
                 Collections.singletonList("ede384aa-0b6e-4311-9f01-ee547573a07b"),
-                Collections.singletonList("747d026e-1bec-4e96-8a34-28f36e30bba5"),
+                Collections.singletonList("TB-SCS-GNO-ENG-00060.doc"),
                 "yes",
                 "yes",
                 "1",
                 "1",
-                "1",
+                "0",
                 "Appointee Appointee"
             },
             new Object[]{
@@ -2432,12 +2432,12 @@ public class NotificationsIt {
                 "oral",
                 Collections.singletonList("08365e91-9e07-4a5c-bf96-ef56fd0ada63"),
                 Collections.singletonList("ede384aa-0b6e-4311-9f01-ee547573a07b"),
-                Collections.singletonList("747d026e-1bec-4e96-8a34-28f36e30bba5"),
+                Collections.singletonList("TB-SCS-GNO-ENG-00060.doc"),
                 "yes",
                 "yes",
                 "1",
                 "1",
-                "1",
+                "0",
                 "Appointee Appointee"
             },
             new Object[]{
@@ -2445,12 +2445,12 @@ public class NotificationsIt {
                 "paper",
                 Collections.emptyList(),
                 Collections.emptyList(),
-                Collections.singletonList("747d026e-1bec-4e96-8a34-28f36e30bba5"),
+                Collections.singletonList("TB-SCS-GNO-ENG-00060.doc"),
                 "no",
                 "no",
                 "0",
                 "0",
-                "1",
+                "0",
                 "Appointee Appointee"
             },
             new Object[]{
