@@ -322,28 +322,32 @@ public class SendNotificationServiceTest {
 
     @Test
     public void sendLetterNotificationForAppellant() throws NotificationClientException {
-        classUnderTest.sendLetterNotificationToAddress(buildBaseWrapper(APPELLANT_WITH_ADDRESS, NotificationEventType.CASE_UPDATED), LETTER_NOTIFICATION, APPELLANT_WITH_ADDRESS.getAddress());
+        SubscriptionWithType appellantEmptySubscription = new SubscriptionWithType(EMPTY_SUBSCRIPTION, SubscriptionType.APPELLANT);
+        classUnderTest.sendLetterNotificationToAddress(buildBaseWrapper(APPELLANT_WITH_ADDRESS, NotificationEventType.CASE_UPDATED), LETTER_NOTIFICATION, APPELLANT_WITH_ADDRESS.getAddress(), appellantEmptySubscription.getSubscriptionType());
 
         verify(notificationSender).sendLetter(eq(LETTER_NOTIFICATION.getLetterTemplate()), eq(APPELLANT_WITH_ADDRESS.getAddress()), any(), any());
     }
 
     @Test
     public void sendLetterNotificationForRep() throws NotificationClientException {
-        classUnderTest.sendLetterNotificationToAddress(buildBaseWrapper(APPELLANT_WITH_ADDRESS, NotificationEventType.CASE_UPDATED), LETTER_NOTIFICATION, REP_WITH_ADDRESS.getAddress());
+        SubscriptionWithType representativeEmptySubscription = new SubscriptionWithType(EMPTY_SUBSCRIPTION, SubscriptionType.REPRESENTATIVE);
+        classUnderTest.sendLetterNotificationToAddress(buildBaseWrapper(APPELLANT_WITH_ADDRESS, NotificationEventType.CASE_UPDATED, REP_WITH_ADDRESS), LETTER_NOTIFICATION, REP_WITH_ADDRESS.getAddress(), representativeEmptySubscription.getSubscriptionType());
 
         verify(notificationSender).sendLetter(eq(LETTER_NOTIFICATION.getLetterTemplate()), eq(REP_WITH_ADDRESS.getAddress()), any(), any());
     }
 
     @Test
     public void doNotSendLetterNotificationIfAddressEmpty() throws NotificationClientException {
-        classUnderTest.sendLetterNotificationToAddress(buildBaseWrapper(APPELLANT_WITH_EMPTY_ADDRESS, NotificationEventType.CASE_UPDATED), LETTER_NOTIFICATION, APPELLANT_WITH_EMPTY_ADDRESS.getAddress());
+        SubscriptionWithType appellantEmptySubscription = new SubscriptionWithType(EMPTY_SUBSCRIPTION, SubscriptionType.APPELLANT);
+        classUnderTest.sendLetterNotificationToAddress(buildBaseWrapper(APPELLANT_WITH_EMPTY_ADDRESS, NotificationEventType.CASE_UPDATED), LETTER_NOTIFICATION, APPELLANT_WITH_EMPTY_ADDRESS.getAddress(), appellantEmptySubscription.getSubscriptionType());
 
         verifyZeroInteractions(notificationSender);
     }
 
     @Test
     public void doNotSendLetterNotificationIfNoAddress() throws NotificationClientException {
-        classUnderTest.sendLetterNotificationToAddress(buildBaseWrapper(APPELLANT_WITH_NO_ADDRESS, NotificationEventType.CASE_UPDATED), LETTER_NOTIFICATION, APPELLANT_WITH_NO_ADDRESS.getAddress());
+        SubscriptionWithType appellantEmptySubscription = new SubscriptionWithType(EMPTY_SUBSCRIPTION, SubscriptionType.APPELLANT);
+        classUnderTest.sendLetterNotificationToAddress(buildBaseWrapper(APPELLANT_WITH_NO_ADDRESS, NotificationEventType.CASE_UPDATED), LETTER_NOTIFICATION, APPELLANT_WITH_NO_ADDRESS.getAddress(), appellantEmptySubscription.getSubscriptionType());
 
         verifyZeroInteractions(notificationSender);
     }

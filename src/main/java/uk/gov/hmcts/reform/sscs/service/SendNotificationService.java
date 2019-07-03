@@ -4,7 +4,6 @@ import static uk.gov.hmcts.reform.sscs.config.AppConstants.*;
 import static uk.gov.hmcts.reform.sscs.domain.notify.NotificationEventType.*;
 import static uk.gov.hmcts.reform.sscs.service.LetterUtils.*;
 import static uk.gov.hmcts.reform.sscs.service.NotificationUtils.*;
-import static uk.gov.hmcts.reform.sscs.service.NotificationUtils.hasAppointee;
 import static uk.gov.hmcts.reform.sscs.service.NotificationUtils.isOkToSendEmailNotification;
 import static uk.gov.hmcts.reform.sscs.service.NotificationUtils.isOkToSendSmsNotification;
 import static uk.gov.hmcts.reform.sscs.service.NotificationValidService.INTERLOC_LETTERS;
@@ -128,7 +127,7 @@ public class SendNotificationService {
             NotificationHandler.SendNotification sendNotification = () -> {
                 Address addressToUse = getAddressToUseForLetter(wrapper, subscriptionType);
 
-                sendLetterNotificationToAddress(wrapper, notification, addressToUse);
+                sendLetterNotificationToAddress(wrapper, notification, addressToUse, subscriptionType);
             };
 
             if (bundledLettersOn && isBundledLetter(wrapper.getNotificationType())) {
@@ -144,7 +143,7 @@ public class SendNotificationService {
             NotificationHandler.SendNotification sendNotification = () -> {
                 Address addressToUse = getAddressToUseForLetter(wrapper, subscriptionWithType.getSubscriptionType());
 
-                sendLetterNotificationToAddress(wrapper, notification, addressToUse);
+                sendLetterNotificationToAddress(wrapper, notification, addressToUse, subscriptionWithType.getSubscriptionType());
             };
 
             if (bundledLettersOn && isBundledLetter(wrapper.getNotificationType())) {
@@ -165,7 +164,15 @@ public class SendNotificationService {
         }
     }
 
-    protected void sendLetterNotificationToAddress(NotificationWrapper wrapper, Notification notification, final Address addressToUse) throws NotificationClientException {
+    public static String getRepSalutation(String fullNameNoTitle) {
+        if (StringUtils.isEmpty(fullNameNoTitle)) {
+            return REP_SALUTATION;
+        } else {
+            return fullNameNoTitle;
+        }
+    }
+
+    protected void sendLetterNotificationToAddress(NotificationWrapper wrapper, Notification notification, final Address addressToUse, SubscriptionType subscriptionType) throws NotificationClientException {
         if (isValidLetterAddress(addressToUse)) {
             Map<String, String> placeholders = notification.getPlaceholders();
             placeholders.put(ADDRESS_LINE_1, addressToUse.getLine1());
@@ -173,15 +180,17 @@ public class SendNotificationService {
             placeholders.put(ADDRESS_LINE_3, addressToUse.getTown() == null ? " " : addressToUse.getTown());
             placeholders.put(ADDRESS_LINE_4, addressToUse.getCounty() == null ? " " : addressToUse.getCounty());
             placeholders.put(POSTCODE_LITERAL, addressToUse.getPostcode());
-            if (hasRepresentative(wrapper.getSscsCaseDataWrapper())) {
-                String repSalutation = getRepSalutation(wrapper.getNewSscsCaseData().getAppeal().getRep());
-                placeholders.put(REPRESENTATIVE_NAME, repSalutation);
+
+            Name nameToUse = getNameToUseForLetter(wrapper, subscriptionType);
+
+            placeholders.put(NAME, nameToUse.getFullNameNoTitle());
+            if (SubscriptionType.REPRESENTATIVE.equals(subscriptionType)) {
+                placeholders.put(REPRESENTATIVE_NAME, getRepSalutation(nameToUse.getFullNameNoTitle()));
+                placeholders.put(APPELLANT_NAME, wrapper.getNewSscsCaseData().getAppeal().getAppellant().getName().getFullNameNoTitle());
             }
 
-            if (hasAppointee(wrapper.getSscsCaseDataWrapper())) {
-                placeholders.put(APPOINTEE_NAME, wrapper.getNewSscsCaseData().getAppeal().getAppellant().getAppointee().getName().getFullNameNoTitle());
-                placeholders.put(CLAIMANT_NAME, wrapper.getNewSscsCaseData().getAppeal().getAppellant().getName().getFullNameNoTitle());
-            }
+            placeholders.put(CLAIMANT_NAME, wrapper.getNewSscsCaseData().getAppeal().getAppellant().getName().getFullNameNoTitle());
+
 
             if (!placeholders.containsKey(APPEAL_RESPOND_DATE)) {
                 ZonedDateTime appealReceivedDate = ZonedDateTime.now().plusSeconds(delay);
