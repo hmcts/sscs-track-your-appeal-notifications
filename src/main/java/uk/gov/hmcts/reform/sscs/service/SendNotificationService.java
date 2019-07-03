@@ -7,6 +7,7 @@ import static uk.gov.hmcts.reform.sscs.service.NotificationUtils.*;
 import static uk.gov.hmcts.reform.sscs.service.NotificationUtils.hasAppointee;
 import static uk.gov.hmcts.reform.sscs.service.NotificationUtils.isOkToSendEmailNotification;
 import static uk.gov.hmcts.reform.sscs.service.NotificationUtils.isOkToSendSmsNotification;
+import static uk.gov.hmcts.reform.sscs.service.NotificationValidService.DOCMOSIS_LETTERS;
 import static uk.gov.hmcts.reform.sscs.service.NotificationValidService.INTERLOC_LETTERS;
 import static uk.gov.hmcts.reform.sscs.service.NotificationValidService.isBundledLetter;
 
@@ -89,7 +90,8 @@ public class SendNotificationService {
         sendSmsNotification(wrapper, subscriptionWithType.getSubscription(), notification, eventType);
 
         boolean isInterlocLetter = INTERLOC_LETTERS.contains(eventType);
-        if ((lettersOn && !isInterlocLetter) || (interlocLettersOn && isInterlocLetter)) {
+        boolean isDocmosisLetter = DOCMOSIS_LETTERS.contains(eventType);
+        if ((lettersOn && !isInterlocLetter) || (interlocLettersOn && isInterlocLetter) || (docmosisLettersOn && isDocmosisLetter)) {
             sendLetterNotification(wrapper, subscriptionWithType.getSubscription(), notification, subscriptionWithType, eventType);
         }
     }
