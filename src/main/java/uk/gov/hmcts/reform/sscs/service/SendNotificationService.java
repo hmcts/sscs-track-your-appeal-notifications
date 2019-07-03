@@ -155,20 +155,18 @@ public class SendNotificationService {
     }
 
     public static String getRepSalutation(Representative rep) {
-        if (null == rep.getName()
-                || null == rep.getName().getFirstName()
-                || null == rep.getName().getLastName()) {
+        if (null == rep.getName() || null == rep.getName().getFirstName() || null == rep.getName().getLastName()) {
             return REP_SALUTATION;
         } else {
             return rep.getName().getFullNameNoTitle();
         }
     }
 
-    public static String getRepSalutation(String fullNameNoTitle) {
-        if (StringUtils.isEmpty(fullNameNoTitle)) {
+    public static String getRepSalutation(Name name) {
+        if (null == name || null == name.getFirstName() || null == name.getLastName()) {
             return REP_SALUTATION;
         } else {
-            return fullNameNoTitle;
+            return name.getFullNameNoTitle();
         }
     }
 
@@ -183,9 +181,11 @@ public class SendNotificationService {
 
             Name nameToUse = getNameToUseForLetter(wrapper, subscriptionType);
 
-            placeholders.put(NAME, nameToUse.getFullNameNoTitle());
+            String fullNameNoTitle = (nameToUse == null) ? getRepSalutation(nameToUse) : nameToUse.getFullNameNoTitle();
+
+            placeholders.put(NAME, fullNameNoTitle);
             if (SubscriptionType.REPRESENTATIVE.equals(subscriptionType)) {
-                placeholders.put(REPRESENTATIVE_NAME, getRepSalutation(nameToUse.getFullNameNoTitle()));
+                placeholders.put(REPRESENTATIVE_NAME, fullNameNoTitle);
                 placeholders.put(APPELLANT_NAME, wrapper.getNewSscsCaseData().getAppeal().getAppellant().getName().getFullNameNoTitle());
             }
 

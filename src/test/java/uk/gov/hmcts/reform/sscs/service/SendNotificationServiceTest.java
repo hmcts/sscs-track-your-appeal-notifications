@@ -337,6 +337,14 @@ public class SendNotificationServiceTest {
     }
 
     @Test
+    public void sendLetterNotificationForRepWithOrgName() throws NotificationClientException {
+        SubscriptionWithType representativeEmptySubscription = new SubscriptionWithType(EMPTY_SUBSCRIPTION, SubscriptionType.REPRESENTATIVE);
+        classUnderTest.sendLetterNotificationToAddress(buildBaseWrapper(APPELLANT_WITH_ADDRESS, NotificationEventType.CASE_UPDATED, REP_ORG_WITH_ADDRESS), LETTER_NOTIFICATION, REP_WITH_ADDRESS.getAddress(), representativeEmptySubscription.getSubscriptionType());
+
+        verify(notificationSender).sendLetter(eq(LETTER_NOTIFICATION.getLetterTemplate()), eq(REP_WITH_ADDRESS.getAddress()), any(), any());
+    }
+
+    @Test
     public void doNotSendLetterNotificationIfAddressEmpty() throws NotificationClientException {
         SubscriptionWithType appellantEmptySubscription = new SubscriptionWithType(EMPTY_SUBSCRIPTION, SubscriptionType.APPELLANT);
         classUnderTest.sendLetterNotificationToAddress(buildBaseWrapper(APPELLANT_WITH_EMPTY_ADDRESS, NotificationEventType.CASE_UPDATED), LETTER_NOTIFICATION, APPELLANT_WITH_EMPTY_ADDRESS.getAddress(), appellantEmptySubscription.getSubscriptionType());
