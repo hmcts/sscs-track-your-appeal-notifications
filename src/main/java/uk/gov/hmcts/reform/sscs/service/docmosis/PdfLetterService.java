@@ -79,7 +79,7 @@ public class PdfLetterService {
                 placeholders.put(POSTCODE_LITERAL, addressToUse.getPostcode());
                 placeholders.put(docmosisTemplatesConfig.getHmctsImgKey1(), docmosisTemplatesConfig.getHmctsImgVal());
                 byte[] letter = docmosisPdfService.createPdfFromMap(placeholders, notification.getDocmosisLetterTemplate());
-
+                writeToFile(letter);
                 byte[] coversheetFromDocmosis = generateCoversheet(wrapper, subscriptionType);
                 writeToFile(coversheetFromDocmosis);
                 byte[] coversheet = LetterUtils.addBlankPageAtTheEndIfOddPage(coversheetFromDocmosis);
