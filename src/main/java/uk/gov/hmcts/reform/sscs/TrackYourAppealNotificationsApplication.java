@@ -7,6 +7,8 @@ import java.util.Properties;
 import java.util.TimeZone;
 import javax.annotation.PostConstruct;
 import javax.servlet.ServletContextListener;
+
+import lombok.extern.slf4j.Slf4j;
 import org.quartz.spi.JobFactory;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.SpringApplication;
@@ -47,6 +49,7 @@ import uk.gov.service.notify.NotificationClient;
         })
 @EnableRetry
 @EnableScheduling
+@Slf4j
 public class TrackYourAppealNotificationsApplication {
 
     public static final String UTC = "UTC";
@@ -173,6 +176,7 @@ public class TrackYourAppealNotificationsApplication {
             @Value("${pdf-service.accessKey}") String pdfServiceAccessKey,
             RestTemplate restTemplate
     ) {
+        log.info(String.format("Creating DocmosisPdfGenerationService bean with endpoint '%s' and access key '%s'.", pdfServiceEndpoint, pdfServiceAccessKey));
         return new DocmosisPdfGenerationService(pdfServiceEndpoint, pdfServiceAccessKey, restTemplate);
     }
 }
