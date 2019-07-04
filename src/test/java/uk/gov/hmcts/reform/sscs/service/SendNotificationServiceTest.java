@@ -379,6 +379,24 @@ public class SendNotificationServiceTest {
     }
 
     @Test
+    public void getRepSalutationWhenNameIsNotnull() {
+        CcdNotificationWrapper wrapper = buildBaseWrapper(APPELLANT_WITH_ADDRESS, NotificationEventType.CASE_UPDATED, REP_WITH_ADDRESS);
+        assertEquals(REP_WITH_ADDRESS.getName().getFullNameNoTitle(), getRepSalutation(wrapper.getNewSscsCaseData().getAppeal().getRep().getName()));
+    }
+
+    @Test
+    public void getRepSalutationWhenNameNoFirstName() {
+        CcdNotificationWrapper wrapper = buildBaseWrapper(APPELLANT_WITH_ADDRESS, NotificationEventType.CASE_UPDATED, REP_ORG_WITH_ADDRESS);
+        assertEquals(REP_SALUTATION, getRepSalutation(wrapper.getNewSscsCaseData().getAppeal().getRep().getName()));
+    }
+
+    @Test
+    public void getRepSalutationWhenNameHasFirstNameLastNameAndOrg() {
+        CcdNotificationWrapper wrapper = buildBaseWrapper(APPELLANT_WITH_ADDRESS, NotificationEventType.CASE_UPDATED, REP_ORG_WITH_NAME_AND_ADDRESS);
+        assertEquals(REP_ORG_WITH_NAME_AND_ADDRESS.getName().getFullNameNoTitle(), getRepSalutation(wrapper.getNewSscsCaseData().getAppeal().getRep().getName()));
+    }
+
+    @Test
     @Parameters(method = "bundledLetterTemplates")
     public void validBundledLetterType(NotificationEventType eventType) {
         assertNotNull(getBundledLetterDocumentUrl(eventType, buildBaseWrapper(APPELLANT_WITH_ADDRESS, eventType).getNewSscsCaseData()));
