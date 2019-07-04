@@ -46,6 +46,11 @@ public class NotificationHandlerTest {
     }
 
     @Test
+    public void shouldSendValidAppealCreatedNotificationIfNotificationTypeCanBeSentOutOfHouseAndItIsInHours() throws NotificationClientException {
+        canSendNotification(NotificationEventType.VALID_APPEAL_CREATED, false);
+    }
+
+    @Test
     public void shouldSendNotificationIfNotificationTypeCanBeSentOutOfHouseAndItIsOutOfHours() throws NotificationClientException {
         canSendNotification(A_NOTIFICATION_THAT_CAN_TRIGGER_OUT_OF_HOURS, true);
     }

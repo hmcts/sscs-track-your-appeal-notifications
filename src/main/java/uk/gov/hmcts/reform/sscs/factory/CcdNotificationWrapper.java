@@ -108,11 +108,12 @@ public class CcdNotificationWrapper implements NotificationWrapper {
                 || EVIDENCE_REMINDER_NOTIFICATION.equals(getNotificationType())
                 || HEARING_REMINDER_NOTIFICATION.equals(getNotificationType())
                 || STRUCK_OUT.equals(getNotificationType())
+                || VALID_APPEAL_CREATED.equals(getNotificationType())
                 || DIRECTION_ISSUED.equals(getNotificationType())
                 || JUDGE_DECISION_APPEAL_TO_PROCEED.equals(getNotificationType())
-                || TCW_DECISION_APPEAL_TO_PROCEED.equals(getNotificationType()))
+                || TCW_DECISION_APPEAL_TO_PROCEED.equals(getNotificationType())
                 || NON_COMPLIANT_NOTIFICATION.equals(getNotificationType())
-                || REQUEST_INFO_INCOMPLETE.equals(getNotificationType())
+                || REQUEST_INFO_INCOMPLETE.equals(getNotificationType()))
         ) {
             subscriptionWithTypeList.add(new SubscriptionWithType(getAppointeeSubscription(), APPOINTEE));
         } else {
@@ -138,9 +139,10 @@ public class CcdNotificationWrapper implements NotificationWrapper {
                 || STRUCK_OUT.equals(getNotificationType())
                 || DIRECTION_ISSUED.equals(getNotificationType())
                 || JUDGE_DECISION_APPEAL_TO_PROCEED.equals(getNotificationType())
-                || TCW_DECISION_APPEAL_TO_PROCEED.equals(getNotificationType()))
+                || TCW_DECISION_APPEAL_TO_PROCEED.equals(getNotificationType())
                 || NON_COMPLIANT_NOTIFICATION.equals(getNotificationType())
-                || REQUEST_INFO_INCOMPLETE.equals(getNotificationType())
+                || VALID_APPEAL_CREATED.equals(getNotificationType())
+                || REQUEST_INFO_INCOMPLETE.equals(getNotificationType()))
         ) {
             subscriptionWithTypeList.add(new SubscriptionWithType(getRepresentativeSubscription(), REPRESENTATIVE));
         }

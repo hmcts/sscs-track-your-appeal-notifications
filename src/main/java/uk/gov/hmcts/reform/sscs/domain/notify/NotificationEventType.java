@@ -29,6 +29,7 @@ public enum NotificationEventType {
     STRUCK_OUT("struckOut", true, true, false, false, false),
     CASE_UPDATED("caseUpdated", true, true, true, false, false),
     DIRECTION_ISSUED("directionIssued", true, true, true, false, false),
+    VALID_APPEAL_CREATED("validAppealCreated", true, true, false, true, false),
     REQUEST_INFO_INCOMPLETE("requestInfoIncompleteApplication", true, true, true, false, false),
     JUDGE_DECISION_APPEAL_TO_PROCEED("judgeDecisionAppealToProceed", true, true, true, false, false),
     TCW_DECISION_APPEAL_TO_PROCEED("tcwDecisionAppealToProceed", true, true, true, false, false),
