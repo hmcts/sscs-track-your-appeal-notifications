@@ -1066,6 +1066,62 @@ public class NotificationsIt {
                 "2"
             },
             new Object[]{
+                VALID_APPEAL_CREATED,
+                "paper",
+                Arrays.asList("01293b93-b23e-40a3-ad78-2c6cd01cd21c", "652753bf-59b4-46eb-9c24-bd762338a098"),
+                Arrays.asList("f41222ef-c05c-4682-9634-6b034a166368", "a6c09fad-6265-4c7c-8b95-36245ffa5352"),
+                Collections.emptyList(),
+                "yes",
+                "yes",
+                "yes",
+                "yes",
+                "2",
+                "2",
+                "0"
+            },
+            new Object[]{
+                VALID_APPEAL_CREATED,
+                "oral",
+                Arrays.asList("01293b93-b23e-40a3-ad78-2c6cd01cd21c", "652753bf-59b4-46eb-9c24-bd762338a098"),
+                Arrays.asList("f41222ef-c05c-4682-9634-6b034a166368", "a6c09fad-6265-4c7c-8b95-36245ffa5352"),
+                Collections.emptyList(),
+                "yes",
+                "yes",
+                "yes",
+                "yes",
+                "2",
+                "2",
+                "0"
+            },
+            new Object[]{
+                VALID_APPEAL_CREATED,
+                "paper",
+                Collections.singletonList("652753bf-59b4-46eb-9c24-bd762338a098"),
+                Arrays.asList("f41222ef-c05c-4682-9634-6b034a166368", "a6c09fad-6265-4c7c-8b95-36245ffa5352"),
+                Collections.emptyList(),
+                "no",
+                "yes",
+                "yes",
+                "yes",
+                "1",
+                "2",
+                "0"
+            },
+            new Object[]{
+                VALID_APPEAL_CREATED,
+                "paper",
+                Collections.emptyList(),
+                Collections.emptyList(),
+                Collections.emptyList(),
+                "no",
+                "no",
+                "no",
+                "no",
+                "0",
+                "0",
+                "0"
+            },
+            new Object[]{
                 NON_COMPLIANT_NOTIFICATION,
                 "oral",
                 Collections.emptyList(),
@@ -1815,6 +1871,62 @@ public class NotificationsIt {
                 "2"
             },
             new Object[]{
+                VALID_APPEAL_CREATED,
+                "paper",
+                Arrays.asList("01293b93-b23e-40a3-ad78-2c6cd01cd21c", "652753bf-59b4-46eb-9c24-bd762338a098"),
+                Arrays.asList("f41222ef-c05c-4682-9634-6b034a166368", "a6c09fad-6265-4c7c-8b95-36245ffa5352"),
+                Collections.emptyList(),
+                "yes",
+                "yes",
+                "yes",
+                "yes",
+                "2",
+                "2",
+                "0"
+            },
+            new Object[]{
+                VALID_APPEAL_CREATED,
+                "oral",
+                Arrays.asList("01293b93-b23e-40a3-ad78-2c6cd01cd21c", "652753bf-59b4-46eb-9c24-bd762338a098"),
+                Arrays.asList("f41222ef-c05c-4682-9634-6b034a166368", "a6c09fad-6265-4c7c-8b95-36245ffa5352"),
+                Collections.emptyList(),
+                "yes",
+                "yes",
+                "yes",
+                "yes",
+                "2",
+                "2",
+                "0"
+            },
+            new Object[]{
+                VALID_APPEAL_CREATED,
+                "paper",
+                Collections.singletonList("652753bf-59b4-46eb-9c24-bd762338a098"),
+                Arrays.asList("f41222ef-c05c-4682-9634-6b034a166368", "a6c09fad-6265-4c7c-8b95-36245ffa5352"),
+                Collections.emptyList(),
+                "no",
+                "yes",
+                "yes",
+                "yes",
+                "1",
+                "2",
+                "0"
+            },
+            new Object[]{
+                VALID_APPEAL_CREATED,
+                "paper",
+                Collections.emptyList(),
+                Collections.emptyList(),
+                Arrays.asList("91143b85-dd9d-430c-ba23-e42ec90f44f8", "77ea8a2f-06df-4279-9c1f-0f23cb2d9bbf"),
+                "no",
+                "no",
+                "no",
+                "no",
+                "0",
+                "0",
+                "2"
+            },
+            new Object[]{
                 NON_COMPLIANT_NOTIFICATION,
                 "oral",
                 Collections.emptyList(),
@@ -2172,6 +2284,45 @@ public class NotificationsIt {
                 "0",
                 "1",
                 "Appointee Appointee"
+            },
+            new Object[]{
+                VALID_APPEAL_CREATED,
+                "oral",
+                Collections.singletonList("362d9a85-e0e4-412b-b874-020c0464e2b4"),
+                Collections.singletonList("f41222ef-c05c-4682-9634-6b034a166368"),
+                Collections.emptyList(),
+                "yes",
+                "yes",
+                "1",
+                "1",
+                "0",
+                "Appointee Appointee"
+            },
+            new Object[]{
+                VALID_APPEAL_CREATED,
+                "oral",
+                Collections.singletonList("362d9a85-e0e4-412b-b874-020c0464e2b4"),
+                Collections.singletonList("f41222ef-c05c-4682-9634-6b034a166368"),
+                Collections.emptyList(),
+                "yes",
+                "yes",
+                "1",
+                "1",
+                "0",
+                "Appointee Appointee"
+            },
+            new Object[]{
+                VALID_APPEAL_CREATED,
+                "oral",
+                Collections.emptyList(),
+                Collections.emptyList(),
+                Collections.emptyList(),
+                "no",
+                "no",
+                "0",
+                "0",
+                "0",
+                ""
             }
         };
     }
@@ -2503,6 +2654,32 @@ public class NotificationsIt {
                 "0",
                 "0",
                 "1",
+                "Appointee Appointee"
+            },
+            new Object[]{
+                VALID_APPEAL_CREATED,
+                "oral",
+                Collections.singletonList("362d9a85-e0e4-412b-b874-020c0464e2b4"),
+                Collections.singletonList("f41222ef-c05c-4682-9634-6b034a166368"),
+                Collections.emptyList(),
+                "yes",
+                "yes",
+                "1",
+                "1",
+                "0",
+                "Appointee Appointee"
+            },
+            new Object[]{
+                VALID_APPEAL_CREATED,
+                "oral",
+                Collections.singletonList("362d9a85-e0e4-412b-b874-020c0464e2b4"),
+                Collections.singletonList("f41222ef-c05c-4682-9634-6b034a166368"),
+                Collections.emptyList(),
+                "yes",
+                "yes",
+                "1",
+                "1",
+                "0",
                 "Appointee Appointee"
             }
         };

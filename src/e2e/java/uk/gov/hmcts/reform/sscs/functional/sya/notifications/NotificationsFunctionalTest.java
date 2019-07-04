@@ -198,8 +198,24 @@ public class NotificationsFunctionalTest extends AbstractFunctionalTest {
     }
 
     @Test
+    public void shouldSendValidAppealCreatedAppellantNotification() throws NotificationClientException, IOException {
+        simulateCcdCallback(VALID_APPEAL_CREATED, SYA_APPEAL_CREATED_NOTIFICATION.getId() + "Callback.json");
+        List<Notification> notifications = tryFetchNotificationsForTestCase(appealCreatedAppellantEmailId, appealCreatedAppellantSmsId);
+
+        assertNotificationBodyContains(notifications, appealCreatedAppellantEmailId, "appeal has been received");
+    }
+
+    @Test
     public void shouldSendAppealCreatedAppointeeNotification() throws NotificationClientException, IOException {
         simulateCcdCallback(SYA_APPEAL_CREATED_NOTIFICATION, SYA_APPEAL_CREATED_NOTIFICATION.getId() + "AppointeeCallback.json");
+        List<Notification> notifications = tryFetchNotificationsForTestCase(appealCreatedAppointeeEmailId, appealCreatedAppointeeSmsId);
+
+        assertNotificationBodyContains(notifications, appealCreatedAppointeeEmailId, "appointee");
+    }
+
+    @Test
+    public void shouldSendValidAppealCreatedAppointeeNotification() throws NotificationClientException, IOException {
+        simulateCcdCallback(VALID_APPEAL_CREATED, SYA_APPEAL_CREATED_NOTIFICATION.getId() + "AppointeeCallback.json");
         List<Notification> notifications = tryFetchNotificationsForTestCase(appealCreatedAppointeeEmailId, appealCreatedAppointeeSmsId);
 
         assertNotificationBodyContains(notifications, appealCreatedAppointeeEmailId, "appointee");

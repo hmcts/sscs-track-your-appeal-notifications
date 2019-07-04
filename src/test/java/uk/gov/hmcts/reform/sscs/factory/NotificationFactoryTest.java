@@ -191,6 +191,45 @@ public class NotificationFactoryTest {
     }
 
     @Test
+    @Parameters({"APPOINTEE, appointeeEmail", "REPRESENTATIVE, repsEmail"})
+    public void givenValidAppealCreatedEventAndSubscriptionType_shouldInferRightSubscriptionToCreateNotification(
+            SubscriptionType subscriptionType, String expectedEmail) {
+        factory = new NotificationFactory(personalisationFactory);
+        SscsCaseDataWrapper wrapper = SscsCaseDataWrapper.builder()
+                .newSscsCaseData(SscsCaseData.builder()
+                        .appeal(Appeal.builder().appellant(Appellant.builder().appointee(Appointee.builder().build()).build())
+                                .benefitType(BenefitType.builder()
+                                        .code("PIP")
+                                        .build())
+                                .build())
+                        .subscriptions(Subscriptions.builder()
+                                .appellantSubscription(Subscription.builder()
+                                        .email("appellantEmail")
+                                        .build())
+                                .appointeeSubscription(Subscription.builder()
+                                        .email("appointeeEmail")
+                                        .build())
+                                .representativeSubscription(Subscription.builder()
+                                        .email("repsEmail")
+                                        .build())
+                                .build())
+                        .build())
+                .notificationEventType(VALID_APPEAL_CREATED)
+                .build();
+        CcdNotificationWrapper notificationWrapper = new CcdNotificationWrapper(wrapper);
+
+        given(personalisationFactory.apply(any(NotificationEventType.class)))
+                .willReturn(withRepresentativePersonalisation);
+
+        Notification notification = factory.create(notificationWrapper, getSubscriptionWithType(wrapper, subscriptionType));
+        assertEquals(expectedEmail, notification.getEmail());
+
+        then(withRepresentativePersonalisation).should()
+                .getTemplate(eq(notificationWrapper), eq(PIP), eq(subscriptionType));
+
+    }
+
+    @Test
     public void buildSubscriptionCreatedSmsNotificationFromSscsCaseDataWithSubscriptionUpdatedNotificationAndSmsFirstSubscribed() {
         when(personalisationFactory.apply(SUBSCRIPTION_UPDATED_NOTIFICATION)).thenReturn(subscriptionPersonalisation);
         when(config.getTemplate(SUBSCRIPTION_UPDATED_NOTIFICATION.getId(), SUBSCRIPTION_CREATED_NOTIFICATION.getId() + ".appellant", SUBSCRIPTION_UPDATED_NOTIFICATION.getId(), PIP, ORAL)).thenReturn(Template.builder().emailTemplateId(null).smsTemplateId("123").build());
