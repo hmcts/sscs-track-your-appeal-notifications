@@ -643,7 +643,7 @@ public class PersonalisationTest {
                 .build(), new SubscriptionWithType(subscriptions.getAppellantSubscription(), APPELLANT));
 
         assertEquals("http://link.com/onlineHearing?email=test%40email.com", result.get(ONLINE_HEARING_LINK_LITERAL));
-        assertEquals("http://link.com/register", result.get(ONLINE_HEARING_REGISTER_LINK_LITERAL));
+        assertEquals("http://link.com/register?tya=GLSCRR", result.get(ONLINE_HEARING_REGISTER_LINK_LITERAL));
         assertEquals("http://link.com/sign-in", result.get(ONLINE_HEARING_SIGN_IN_LINK_LITERAL));
     }
 
