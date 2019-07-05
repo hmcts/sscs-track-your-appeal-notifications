@@ -2,11 +2,16 @@ package uk.gov.hmcts.reform.sscs.service.docmosis;
 
 import static uk.gov.hmcts.reform.sscs.config.AppConstants.*;
 import static uk.gov.hmcts.reform.sscs.config.AppConstants.POSTCODE_LITERAL;
+import static uk.gov.hmcts.reform.sscs.domain.notify.NotificationEventType.APPEAL_RECEIVED_NOTIFICATION;
+import static uk.gov.hmcts.reform.sscs.service.LetterUtils.addBlankPageAtTheEndIfOddPage;
+import static uk.gov.hmcts.reform.sscs.service.LetterUtils.buildBundledLetter;
 import static uk.gov.hmcts.reform.sscs.service.LetterUtils.getAddressToUseForLetter;
 
 import java.io.*;
 import java.time.LocalDateTime;
+import java.util.Collections;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.StringUtils;
@@ -22,7 +27,6 @@ import uk.gov.hmcts.reform.sscs.exception.NotificationClientRuntimeException;
 import uk.gov.hmcts.reform.sscs.exception.PdfGenerationException;
 import uk.gov.hmcts.reform.sscs.factory.NotificationWrapper;
 import uk.gov.hmcts.reform.sscs.service.DocmosisPdfService;
-import uk.gov.hmcts.reform.sscs.service.LetterUtils;
 
 @Service
 @Slf4j
@@ -30,6 +34,7 @@ public class PdfLetterService {
     private static final String SSCS_URL_LITERAL = "sscs_url";
     public static final String SSCS_URL = "www.gov.uk/appeal-benefit-decision";
     public static final String GENERATED_DATE_LITERAL = "generated_date";
+    public static final List<NotificationEventType> REQUIRES_TWO_COVERSHEET = Collections.singletonList(APPEAL_RECEIVED_NOTIFICATION);
 
     private final DocmosisPdfService docmosisPdfService;
     private final DocmosisTemplatesConfig docmosisTemplatesConfig;
@@ -63,10 +68,7 @@ public class PdfLetterService {
 
     public byte[] generateLetter(NotificationWrapper wrapper, Notification notification, SubscriptionType subscriptionType) {
         try {
-            if (NotificationEventType.APPEAL_RECEIVED_NOTIFICATION.getId().equalsIgnoreCase(
-                    wrapper.getNotificationType().getId())
-                    && StringUtils.isNotBlank(notification.getDocmosisLetterTemplate())) {
-
+            if (StringUtils.isNotBlank(notification.getDocmosisLetterTemplate())) {
                 Address addressToUse = getAddressToUseForLetter(wrapper, subscriptionType);
                 Map<String, Object> placeholders = new HashMap<>(notification.getPlaceholders());
                 placeholders.put(SSCS_URL_LITERAL, SSCS_URL);
@@ -77,10 +79,13 @@ public class PdfLetterService {
                 placeholders.put(ADDRESS_LINE_4, addressToUse.getCounty() == null ? " " : addressToUse.getCounty());
                 placeholders.put(POSTCODE_LITERAL, addressToUse.getPostcode());
                 placeholders.put(docmosisTemplatesConfig.getHmctsImgKey1(), docmosisTemplatesConfig.getHmctsImgVal());
-                byte[] letter = docmosisPdfService.createPdfFromMap(placeholders, notification.getDocmosisLetterTemplate());
+                byte[] letter = addBlankPageAtTheEndIfOddPage(docmosisPdfService.createPdfFromMap(placeholders, notification.getDocmosisLetterTemplate()));
                 byte[] coversheetFromDocmosis = generateCoversheet(wrapper, subscriptionType);
-                byte[] coversheet = LetterUtils.addBlankPageAtTheEndIfOddPage(coversheetFromDocmosis);
-                return LetterUtils.buildBundledLetter(LetterUtils.buildBundledLetter(letter, coversheet), coversheet);
+                byte[] coversheet = addBlankPageAtTheEndIfOddPage(coversheetFromDocmosis);
+                if (REQUIRES_TWO_COVERSHEET.contains(wrapper.getNotificationType())) {
+                    return buildBundledLetter(buildBundledLetter(letter, coversheet), coversheet);
+                }
+                return buildBundledLetter(letter, coversheet);
             }
         } catch (IOException e) {
             String message = String.format("Cannot '%s' generate letter to %s.",

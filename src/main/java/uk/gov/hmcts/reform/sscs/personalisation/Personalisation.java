@@ -312,7 +312,9 @@ public class Personalisation<E extends NotificationWrapper> {
         String smsTemplateName = isSendSmsSubscriptionConfirmation() ? SUBSCRIPTION_CREATED_NOTIFICATION.getId() + "." + subscriptionType.toString().toLowerCase() :
                 templateConfig;
         String letterTemplateName = getLetterTemplateName(subscriptionType, notificationWrapper.getNotificationType());
-        return config.getTemplate(templateConfig, smsTemplateName, letterTemplateName, benefit, notificationWrapper.getHearingType());
+        String docmosisTemplateName = getDocmosisTemplateName(subscriptionType, notificationWrapper.getNotificationType());
+
+        return config.getTemplate(templateConfig, smsTemplateName, letterTemplateName, docmosisTemplateName, benefit, notificationWrapper.getHearingType());
     }
 
     private String getEmailTemplateName(SubscriptionType subscriptionType,
@@ -340,6 +342,16 @@ public class Personalisation<E extends NotificationWrapper> {
             emailTemplateName = emailTemplateName + "." + StringUtils.lowerCase(subscriptionType.name());
         }
         return emailTemplateName;
+    }
+
+    private String getDocmosisTemplateName(SubscriptionType subscriptionType, NotificationEventType notificationEventType) {
+        String letterTemplateName = notificationEventType.getId();
+        if (subscriptionType != null
+                && (APPEAL_RECEIVED_NOTIFICATION.equals(notificationEventType)
+                || DIRECTION_ISSUED.equals(notificationEventType))) {
+            letterTemplateName = letterTemplateName + "." + subscriptionType.name().toLowerCase();
+        }
+        return letterTemplateName;
     }
 
     private String getLetterTemplateName(SubscriptionType subscriptionType, NotificationEventType notificationEventType) {

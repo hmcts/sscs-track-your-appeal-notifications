@@ -10,6 +10,7 @@ import static uk.gov.hmcts.reform.sscs.domain.notify.NotificationEventType.*;
 
 import java.util.Arrays;
 import java.util.List;
+import java.util.stream.Collectors;
 
 import junitparams.JUnitParamsRunner;
 import junitparams.Parameters;
@@ -50,7 +51,7 @@ public class NotificationConfigTest {
                                                                             String expectedDocmosisTemplateId,
                                                                             AppealHearingType appealHearingType,
                                                                             String templateName) {
-        Template template = notificationConfig.getTemplate(templateName, templateName, templateName, Benefit.PIP, appealHearingType);
+        Template template = notificationConfig.getTemplate(templateName, templateName, templateName, templateName, Benefit.PIP, appealHearingType);
         assertEquals(expectedEmailTemplateId, template.getEmailTemplateId());
         assertEquals(expectedSmsTemplateId, template.getSmsTemplateId());
         assertEquals(expectedLetterTemplateId, template.getLetterTemplateId());
@@ -60,7 +61,7 @@ public class NotificationConfigTest {
     @Test
     @Parameters(method = "bundledLetterTemplateNames")
     public void given_bundledLetters_should_notHaveTemplate(AppealHearingType appealHearingType, String templateName) {
-        Template template = notificationConfig.getTemplate(templateName, templateName, templateName, Benefit.PIP, appealHearingType);
+        Template template = notificationConfig.getTemplate(templateName, templateName, templateName, templateName, Benefit.PIP, appealHearingType);
         assertNull(template.getEmailTemplateId());
         assertNull(template.getSmsTemplateId());
         assertNull(template.getLetterTemplateId());
@@ -158,7 +159,11 @@ public class NotificationConfigTest {
             new Object[]{null, null, "bc943cf3-9fd1-4d14-a0c0-b183572c21a7", null, PAPER, getTemplateName(REQUEST_INFO_INCOMPLETE, APPELLANT)},
             new Object[]{null, null, "bc943cf3-9fd1-4d14-a0c0-b183572c21a7", null, ORAL, getTemplateName(REQUEST_INFO_INCOMPLETE, APPELLANT)},
             new Object[]{null, null, "bc943cf3-9fd1-4d14-a0c0-b183572c21a7", null, ORAL, getTemplateName(REQUEST_INFO_INCOMPLETE, APPOINTEE)},
-            new Object[]{null, null, "bc943cf3-9fd1-4d14-a0c0-b183572c21a7", null, PAPER, getTemplateName(REQUEST_INFO_INCOMPLETE, APPOINTEE)}
+            new Object[]{null, null, "bc943cf3-9fd1-4d14-a0c0-b183572c21a7", null, PAPER, getTemplateName(REQUEST_INFO_INCOMPLETE, APPOINTEE)},
+            new Object[]{null, null, null, "TB-SCS-GNO-ENG-00067.docx", ORAL, getTemplateName(DIRECTION_ISSUED, APPELLANT)},
+            new Object[]{null, null, null, "TB-SCS-GNO-ENG-00067.docx", PAPER, getTemplateName(DIRECTION_ISSUED, APPOINTEE)},
+            new Object[]{null, null, null, null, ORAL, getTemplateName(DIRECTION_ISSUED, REPRESENTATIVE)},
+
         };
     }
 
@@ -166,10 +171,10 @@ public class NotificationConfigTest {
     @SuppressWarnings({"Indentation", "unused"})
     private Object[] bundledLetterTemplateNames() {
         List<SubscriptionType> subscriptionTypes = Arrays.asList(APPELLANT, APPOINTEE, REPRESENTATIVE);
-        Object[] result = new Object[BUNDLED_LETTER_EVENT_TYPES.size() * subscriptionTypes.size() * 2];
+        Object[] result = new Object[(BUNDLED_LETTER_EVENT_TYPES.size() - 1) * subscriptionTypes.size() * 2];
 
         int i = 0;
-        for (NotificationEventType eventType : BUNDLED_LETTER_EVENT_TYPES) {
+        for (NotificationEventType eventType : BUNDLED_LETTER_EVENT_TYPES.stream().filter(f -> !f.equals(DIRECTION_ISSUED)).collect(Collectors.toList())) {
             for (SubscriptionType subscriptionType : subscriptionTypes) {
                 result[i++] = new Object[]{PAPER, getTemplateName(eventType, subscriptionType)};
                 result[i++] = new Object[]{ORAL, getTemplateName(eventType, subscriptionType)};

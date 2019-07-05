@@ -163,7 +163,8 @@ public class NotificationsIt {
         outOfHoursCalculator = mock(OutOfHoursCalculator.class);
         when(outOfHoursCalculator.isItOutOfHours()).thenReturn(false);
 
-        when(pdfLetterService.generateLetter(any(), any(), any())).thenReturn("%PDF".getBytes());
+        byte[] pdfbytes = IOUtils.toByteArray(getClass().getClassLoader().getResourceAsStream("pdfs/direction-notice-coversheet-sample.pdf"));
+        when(pdfLetterService.generateLetter(any(), any(), any())).thenReturn(pdfbytes);
     }
 
     @Test

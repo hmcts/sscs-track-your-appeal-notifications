@@ -236,10 +236,10 @@ public class SendNotificationServiceTest {
     @Test
     @Parameters(method = "getMandatoryLettersEventTypes")
     public void doNotSendMandatoryLetterNotificationToAppellantWhenToggledOff(NotificationEventType eventType) {
-        SubscriptionWithType appellantEmptySubscription = new SubscriptionWithType(EMPTY_SUBSCRIPTION, APPELLANT);
-
         classUnderTest.lettersOn = false;
         classUnderTest.interlocLettersOn = false;
+        classUnderTest.docmosisLettersOn = false;
+        SubscriptionWithType appellantEmptySubscription = new SubscriptionWithType(EMPTY_SUBSCRIPTION, APPELLANT);
         classUnderTest.sendEmailSmsLetterNotification(buildBaseWrapper(APPELLANT_WITH_ADDRESS, eventType), LETTER_NOTIFICATION, appellantEmptySubscription, eventType);
 
         verifyZeroInteractions(notificationHandler);
@@ -261,6 +261,7 @@ public class SendNotificationServiceTest {
         SubscriptionWithType appellantEmptySubscription = new SubscriptionWithType(EMPTY_SUBSCRIPTION, APPELLANT);
 
         classUnderTest.interlocLettersOn = false;
+        classUnderTest.docmosisLettersOn = false;
         classUnderTest.sendEmailSmsLetterNotification(buildBaseWrapper(APPELLANT_WITH_ADDRESS, eventType), LETTER_NOTIFICATION, appellantEmptySubscription, eventType);
 
         verifyZeroInteractions(notificationHandler);

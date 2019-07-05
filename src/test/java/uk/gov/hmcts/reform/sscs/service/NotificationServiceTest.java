@@ -1489,7 +1489,7 @@ public class NotificationServiceTest {
         when(notificationValidService.isHearingTypeValidToSendNotification(any(), any())).thenReturn(true);
 
         when(factory.create(ccdNotificationWrapper, getSubscriptionWithType(ccdNotificationWrapper))).thenReturn(notification);
-        when(notificationConfig.getTemplate(any(), any(), any(), any(), any())).thenReturn(Template.builder().emailTemplateId(EMAIL_TEMPLATE_ID).smsTemplateId(SMS_TEMPLATE_ID).build());
+        when(notificationConfig.getTemplate(any(), any(), any(), any(), any(), any())).thenReturn(Template.builder().emailTemplateId(EMAIL_TEMPLATE_ID).smsTemplateId(SMS_TEMPLATE_ID).build());
 
         notificationService.manageNotificationAndSubscription(ccdNotificationWrapper);
 
@@ -1529,7 +1529,7 @@ public class NotificationServiceTest {
         when(notificationValidService.isHearingTypeValidToSendNotification(any(), any())).thenReturn(true);
 
         when(factory.create(ccdNotificationWrapper, getSubscriptionWithType(ccdNotificationWrapper))).thenReturn(notification);
-        when(notificationConfig.getTemplate(any(), any(), any(), any(), any())).thenReturn(Template.builder().emailTemplateId(EMAIL_TEMPLATE_ID).smsTemplateId(SMS_TEMPLATE_ID).build());
+        when(notificationConfig.getTemplate(any(), any(), any(), any(), any(), any())).thenReturn(Template.builder().emailTemplateId(EMAIL_TEMPLATE_ID).smsTemplateId(SMS_TEMPLATE_ID).build());
 
         notificationService.manageNotificationAndSubscription(ccdNotificationWrapper);
 
@@ -1600,7 +1600,7 @@ public class NotificationServiceTest {
         when(notificationValidService.isHearingTypeValidToSendNotification(any(), any())).thenReturn(true);
 
         when(factory.create(ccdNotificationWrapper, getSubscriptionWithType(ccdNotificationWrapper))).thenReturn(notification);
-        when(notificationConfig.getTemplate(any(), any(), any(), any(), any())).thenReturn(Template.builder().emailTemplateId(EMAIL_TEMPLATE_ID).smsTemplateId(SMS_TEMPLATE_ID).build());
+        when(notificationConfig.getTemplate(any(), any(), any(), any(), any(), any())).thenReturn(Template.builder().emailTemplateId(EMAIL_TEMPLATE_ID).smsTemplateId(SMS_TEMPLATE_ID).build());
 
         notificationService.manageNotificationAndSubscription(ccdNotificationWrapper);
 

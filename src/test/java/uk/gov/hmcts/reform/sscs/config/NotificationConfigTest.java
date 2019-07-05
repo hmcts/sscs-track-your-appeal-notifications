@@ -35,7 +35,7 @@ public class NotificationConfigTest {
         when(env.getProperty(docmosisTemplateKey)).thenReturn(docmosisTemplateId);
         when(env.containsProperty(letterTemplateKey)).thenReturn(true);
 
-        Template template = new NotificationConfig(env).getTemplate(emailTemplateName, smsTemplateName, letterTemplateName, Benefit.PIP, ONLINE);
+        Template template = new NotificationConfig(env).getTemplate(emailTemplateName, smsTemplateName, letterTemplateName, letterTemplateName, Benefit.PIP, ONLINE);
 
         assertThat(template.getEmailTemplateId(), is(emailTemplateId));
         assertThat(template.getSmsTemplateId(), is(smsTemplateId));

@@ -214,7 +214,12 @@ public class SendNotificationService {
         try {
             byte[] bundledLetter;
             if (StringUtils.isNotBlank(notification.getDocmosisLetterTemplate())) {
-                bundledLetter = pdfLetterService.generateLetter(wrapper, notification, subscriptionType);
+                byte[] letter = pdfLetterService.generateLetter(wrapper, notification, subscriptionType);
+                final byte[] associatedCasePdf = downloadAssociatedCasePdf(wrapper);
+                if (ArrayUtils.isNotEmpty(associatedCasePdf)) {
+                    letter = buildBundledLetter(letter, associatedCasePdf);
+                }
+                bundledLetter = letter;
             } else {
                 notification.getPlaceholders().put(LETTER_ADDRESS_LINE_1, addressToUse.getLine1());
                 notification.getPlaceholders().put(LETTER_ADDRESS_LINE_2, addressToUse.getLine2());

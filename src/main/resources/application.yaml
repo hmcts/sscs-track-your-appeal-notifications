@@ -234,6 +234,11 @@ notification:
     emailId: 46cc347a-1a5c-40ce-993a-49769dfce626
   decision_issued:
     emailId: 62e72e11-5eb6-4048-83f4-0b0c5c59fcb9
+  directionIssued:
+    appellant:
+      docmosisId: TB-SCS-GNO-ENG-00067.docx
+    appointee:
+      docmosisId: TB-SCS-GNO-ENG-00067.docx
   corDecision:
     emailId: 5b0df251-49b9-46d5-b347-37a81ab77f19
   requestInfoIncompleteApplication:
@@ -393,6 +398,7 @@ pdf-service:
   hmctsImgVal: "[userImage:hmcts.png]"
   coverSheets:
     appealReceived: 'TB-SCS-GNO-ENG-00012.docx'
+    directionIssued: 'TB-SCS-GNO-ENG-00012.docx'
 
 ---
 # default profile (development, production etc.)

@@ -13,9 +13,9 @@ import uk.gov.service.notify.Notification;
 import uk.gov.service.notify.NotificationClientException;
 
 @RunWith(JUnitParamsRunner.class)
-public class AppealReceivedLetterFunctionalTest extends AbstractFunctionalTest {
+public class DocmosisWithGovNotifyLetterFunctionalTest extends AbstractFunctionalTest {
 
-    public AppealReceivedLetterFunctionalTest() {
+    public DocmosisWithGovNotifyLetterFunctionalTest() {
         super(30);
     }
 
@@ -23,6 +23,21 @@ public class AppealReceivedLetterFunctionalTest extends AbstractFunctionalTest {
     public void sendsAppealReceivedLetterToAppellant() throws IOException, NotificationClientException {
 
         NotificationEventType notificationEventType = NotificationEventType.APPEAL_RECEIVED_NOTIFICATION;
+
+        simulateCcdCallback(notificationEventType,
+                "appellant-" + notificationEventType.getId() + "Callback.json");
+
+        List<Notification> notifications = fetchLetters();
+
+        assertEquals(1, notifications.size());
+        assertEquals("Pre-compiled PDF", notifications.get(0).getSubject().orElse("Unknown Subject"));
+    }
+
+
+    @Test
+    public void sendsDirectionIssuedLetterToAppellant() throws IOException, NotificationClientException {
+
+        NotificationEventType notificationEventType = NotificationEventType.DIRECTION_ISSUED;
 
         simulateCcdCallback(notificationEventType,
                 "appellant-" + notificationEventType.getId() + "Callback.json");

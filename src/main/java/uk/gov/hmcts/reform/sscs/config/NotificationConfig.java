@@ -62,14 +62,14 @@ public class NotificationConfig {
         return onlineHearingLink;
     }
 
-    public Template getTemplate(String emailTemplateName, String smsTemplateName, String letterTemplateName, Benefit benefit,
-                                AppealHearingType appealHearingType) {
+    public Template getTemplate(String emailTemplateName, String smsTemplateName, String letterTemplateName,
+                                String docmosisTemplateName, Benefit benefit, AppealHearingType appealHearingType) {
         return Template.builder()
                 .emailTemplateId(getTemplate(appealHearingType, emailTemplateName, "emailId"))
                 .smsTemplateId(getTemplate(appealHearingType, smsTemplateName, "smsId"))
                 .smsSenderTemplateId(env.getProperty("smsSender." + benefit.toString().toLowerCase(Locale.ENGLISH)))
                 .letterTemplateId(getTemplate(appealHearingType, letterTemplateName, "letterId"))
-                .docmosisTemplateId(getTemplate(appealHearingType, letterTemplateName, "docmosisId"))
+                .docmosisTemplateId(getTemplate(appealHearingType, docmosisTemplateName, "docmosisId"))
                 .build();
     }
 
