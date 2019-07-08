@@ -303,7 +303,7 @@ public class NotificationUtilsTest {
 
         CcdNotificationWrapper wrapper = buildBaseWrapper(null, null);
 
-        Subscription subscription = Subscription.builder().subscribeSms("Yes").build();
+        Subscription subscription = Subscription.builder().subscribeSms("Yes").wantSmsNotifications("Yes").build();
         Notification notification = Notification.builder()
             .reference(new Reference("someref"))
             .destination(Destination.builder().sms("07800123456").build())

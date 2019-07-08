@@ -54,7 +54,7 @@ public class SubscriptionPersonalisationTest {
 
     private static final Subscription NEW_SUBSCRIPTION = Subscription.builder()
             .tya("GLSCRR").email("test@email.com")
-            .mobile("07983495065").subscribeEmail("Yes").subscribeSms("Yes").build();
+            .mobile("07983495065").subscribeEmail("Yes").subscribeSms("Yes").wantSmsNotifications("Yes").build();
 
     @Before
     public void setup() {
@@ -224,7 +224,7 @@ public class SubscriptionPersonalisationTest {
 
 
     private Subscription buildSubscriptionWithNothingSubscribed() {
-        return NEW_SUBSCRIPTION.toBuilder().subscribeEmail("No").subscribeSms("No").build();
+        return NEW_SUBSCRIPTION.toBuilder().subscribeEmail("No").subscribeSms("No").wantSmsNotifications("No").build();
     }
 
     private SubscriptionWithType getSubscriptionWithType(CcdNotificationWrapper ccdNotificationWrapper) {

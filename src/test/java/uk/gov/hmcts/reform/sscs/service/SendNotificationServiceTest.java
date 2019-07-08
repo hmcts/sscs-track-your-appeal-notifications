@@ -84,7 +84,7 @@ public class SendNotificationServiceTest {
         .address(Address.builder().line1("Rep Org Line 1").town("Rep Town").county("Rep County").postcode("RE9 3LL").build())
         .build();
 
-    private static Subscription SMS_SUBSCRIPTION = Subscription.builder().mobile("07831292000").subscribeSms("Yes").build();
+    private static Subscription SMS_SUBSCRIPTION = Subscription.builder().mobile("07831292000").subscribeSms("Yes").wantSmsNotifications("Yes").build();
 
     private static Notification SMS_NOTIFICATION = Notification.builder()
         .destination(Destination.builder().sms("07831292000").build())
