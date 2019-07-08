@@ -356,6 +356,22 @@ public class NotificationUtilsTest {
         assertFalse(isOkToSendEmailNotification(wrapper, subscription, notification, notificationValidService));
     }
 
+    @Test
+    public void hasNoAppointeeSubscriptionsIfAppointeeIsNotSubscribed() {
+        Subscription subscription = Subscription.builder().wantSmsNotifications("No").subscribeSms("No").subscribeEmail("No").build();
+        CcdNotificationWrapper wrapper = buildBaseWrapper(subscription, null);
+        wrapper.getSscsCaseDataWrapper().getNewSscsCaseData().setSubscriptions(wrapper.getSscsCaseDataWrapper().getNewSscsCaseData().getSubscriptions().toBuilder().appointeeSubscription(subscription).build());
+        assertFalse(hasAppointeeSubscriptionOrIsMandatoryAppointeeLetter(wrapper.getSscsCaseDataWrapper()));
+    }
+
+    @Test
+    public void hasNoRepresentativeSubscriptionsIfRepresentativeIsNotSubscribed() {
+        Subscription subscription = Subscription.builder().wantSmsNotifications("No").subscribeSms("No").subscribeEmail("No").build();
+        CcdNotificationWrapper wrapper = buildBaseWrapper(subscription, null);
+        wrapper.getSscsCaseDataWrapper().getNewSscsCaseData().setSubscriptions(wrapper.getSscsCaseDataWrapper().getNewSscsCaseData().getSubscriptions().toBuilder().appointeeSubscription(subscription).build());
+        assertFalse(hasRepSubscriptionOrIsMandatoryRepLetter(wrapper.getSscsCaseDataWrapper()));
+    }
+
     private Object[] mandatoryNotificationTypes() {
         return new Object[]{
             STRUCK_OUT,
@@ -413,6 +429,7 @@ public class NotificationUtilsTest {
             .appeal(
                 Appeal
                     .builder()
+                    .appellant(Appellant.builder().build())
                     .hearingType(AppealHearingType.ORAL.name())
                     .hearingOptions(HearingOptions.builder().wantsToAttend(YES).build())
                     .build())

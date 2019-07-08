@@ -1,13 +1,12 @@
 package uk.gov.hmcts.reform.sscs.service;
 
 import static uk.gov.hmcts.reform.sscs.config.AppConstants.*;
-import static uk.gov.hmcts.reform.sscs.domain.notify.NotificationEventType.DIRECTION_ISSUED;
-import static uk.gov.hmcts.reform.sscs.domain.notify.NotificationEventType.STRUCK_OUT;
+import static uk.gov.hmcts.reform.sscs.domain.notify.NotificationEventType.*;
 import static uk.gov.hmcts.reform.sscs.service.LetterUtils.*;
 import static uk.gov.hmcts.reform.sscs.service.NotificationUtils.*;
-import static uk.gov.hmcts.reform.sscs.service.NotificationUtils.hasAppointee;
 import static uk.gov.hmcts.reform.sscs.service.NotificationUtils.isOkToSendEmailNotification;
 import static uk.gov.hmcts.reform.sscs.service.NotificationUtils.isOkToSendSmsNotification;
+import static uk.gov.hmcts.reform.sscs.service.NotificationValidService.INTERLOC_LETTERS;
 import static uk.gov.hmcts.reform.sscs.service.NotificationValidService.isBundledLetter;
 
 import java.io.IOException;
@@ -20,6 +19,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
+import org.springframework.util.StringUtils;
 import uk.gov.hmcts.reform.sscs.ccd.domain.*;
 import uk.gov.hmcts.reform.sscs.config.AppConstants;
 import uk.gov.hmcts.reform.sscs.config.SubscriptionType;
@@ -33,8 +33,6 @@ import uk.gov.service.notify.NotificationClientException;
 @Service
 @Slf4j
 public class SendNotificationService {
-    protected static final String STRIKE_OUT_NOTICE = "Strike Out Notice";
-    protected static final String DIRECTION_TEXT = "Direction Text";
     static final String DM_STORE_USER_ID = "sscs";
     private static final String NOTIFICATION_TYPE_LETTER = "Letter";
 
@@ -43,6 +41,9 @@ public class SendNotificationService {
 
     @Value("${feature.letters_on}")
     Boolean lettersOn;
+
+    @Value("${feature.interloc_letters_on}")
+    Boolean interlocLettersOn;
 
     @Value("${reminder.dwpResponseLateReminder.delay.seconds}")
     long delay;
@@ -79,7 +80,8 @@ public class SendNotificationService {
         sendEmailNotification(wrapper, subscriptionWithType.getSubscription(), notification);
         sendSmsNotification(wrapper, subscriptionWithType.getSubscription(), notification, eventType);
 
-        if (lettersOn) {
+        boolean isInterlocLetter = INTERLOC_LETTERS.contains(eventType);
+        if ((lettersOn && !isInterlocLetter) || (interlocLettersOn && isInterlocLetter)) {
             sendLetterNotification(wrapper, subscriptionWithType.getSubscription(), notification, subscriptionWithType, eventType);
         }
     }
@@ -125,7 +127,7 @@ public class SendNotificationService {
             NotificationHandler.SendNotification sendNotification = () -> {
                 Address addressToUse = getAddressToUseForLetter(wrapper, subscriptionType);
 
-                sendLetterNotificationToAddress(wrapper, notification, addressToUse);
+                sendLetterNotificationToAddress(wrapper, notification, addressToUse, subscriptionType);
             };
 
             if (bundledLettersOn && isBundledLetter(wrapper.getNotificationType())) {
@@ -141,7 +143,7 @@ public class SendNotificationService {
             NotificationHandler.SendNotification sendNotification = () -> {
                 Address addressToUse = getAddressToUseForLetter(wrapper, subscriptionWithType.getSubscriptionType());
 
-                sendLetterNotificationToAddress(wrapper, notification, addressToUse);
+                sendLetterNotificationToAddress(wrapper, notification, addressToUse, subscriptionWithType.getSubscriptionType());
             };
 
             if (bundledLettersOn && isBundledLetter(wrapper.getNotificationType())) {
@@ -153,32 +155,42 @@ public class SendNotificationService {
     }
 
     public static String getRepSalutation(Representative rep) {
-        if (null == rep.getName()
-                || null == rep.getName().getFirstName()
-                || null == rep.getName().getLastName()) {
+        if (null == rep.getName() || null == rep.getName().getFirstName() || null == rep.getName().getLastName()) {
             return REP_SALUTATION;
         } else {
             return rep.getName().getFullNameNoTitle();
         }
     }
 
-    protected void sendLetterNotificationToAddress(NotificationWrapper wrapper, Notification notification, final Address addressToUse) throws NotificationClientException {
+    public static String getRepSalutation(Name name) {
+        if (null == name || null == name.getFirstName() || null == name.getLastName()) {
+            return REP_SALUTATION;
+        } else {
+            return name.getFullNameNoTitle();
+        }
+    }
+
+    protected void sendLetterNotificationToAddress(NotificationWrapper wrapper, Notification notification, final Address addressToUse, SubscriptionType subscriptionType) throws NotificationClientException {
         if (isValidLetterAddress(addressToUse)) {
             Map<String, String> placeholders = notification.getPlaceholders();
             placeholders.put(ADDRESS_LINE_1, addressToUse.getLine1());
-            placeholders.put(ADDRESS_LINE_2, addressToUse.getLine2() == null ? " " : addressToUse.getLine2());
+            placeholders.put(ADDRESS_LINE_2, StringUtils.isEmpty(addressToUse.getLine2()) ? " " : addressToUse.getLine2());
             placeholders.put(ADDRESS_LINE_3, addressToUse.getTown() == null ? " " : addressToUse.getTown());
             placeholders.put(ADDRESS_LINE_4, addressToUse.getCounty() == null ? " " : addressToUse.getCounty());
             placeholders.put(POSTCODE_LITERAL, addressToUse.getPostcode());
-            if (hasRepresentative(wrapper.getSscsCaseDataWrapper())) {
-                String repSalutation = getRepSalutation(wrapper.getNewSscsCaseData().getAppeal().getRep());
-                placeholders.put(REPRESENTATIVE_NAME, repSalutation);
+
+            Name nameToUse = getNameToUseForLetter(wrapper, subscriptionType);
+
+            String fullNameNoTitle = (nameToUse == null) ? getRepSalutation(nameToUse) : nameToUse.getFullNameNoTitle();
+
+            placeholders.put(NAME, fullNameNoTitle);
+            if (SubscriptionType.REPRESENTATIVE.equals(subscriptionType)) {
+                placeholders.put(REPRESENTATIVE_NAME, fullNameNoTitle);
+                placeholders.put(APPELLANT_NAME, wrapper.getNewSscsCaseData().getAppeal().getAppellant().getName().getFullNameNoTitle());
             }
 
-            if (hasAppointee(wrapper.getSscsCaseDataWrapper())) {
-                placeholders.put(APPOINTEE_NAME, wrapper.getNewSscsCaseData().getAppeal().getAppellant().getAppointee().getName().getFullNameNoTitle());
-                placeholders.put(CLAIMANT_NAME, wrapper.getNewSscsCaseData().getAppeal().getAppellant().getName().getFullNameNoTitle());
-            }
+            placeholders.put(CLAIMANT_NAME, wrapper.getNewSscsCaseData().getAppeal().getAppellant().getName().getFullNameNoTitle());
+
 
             if (!placeholders.containsKey(APPEAL_RESPOND_DATE)) {
                 ZonedDateTime appealReceivedDate = ZonedDateTime.now().plusSeconds(delay);
@@ -210,6 +222,11 @@ public class SendNotificationService {
             notification.getPlaceholders().put(AppConstants.LETTER_ADDRESS_LINE_4, addressToUse.getCounty());
             notification.getPlaceholders().put(AppConstants.LETTER_ADDRESS_POSTCODE, addressToUse.getPostcode());
             notification.getPlaceholders().put(AppConstants.LETTER_NAME, nameToUse.getFullNameNoTitle());
+
+            if (!notification.getPlaceholders().containsKey(APPEAL_RESPOND_DATE)) {
+                ZonedDateTime appealReceivedDate = ZonedDateTime.now().plusSeconds(delay);
+                notification.getPlaceholders().put(APPEAL_RESPOND_DATE, appealReceivedDate.format(DateTimeFormatter.ofPattern(RESPONSE_DATE_FORMAT)));
+            }
 
             byte[] bundledLetter = buildBundledLetter(
                     generateCoveringLetter(wrapper, notification, subscriptionType),
@@ -246,35 +263,30 @@ public class SendNotificationService {
         SscsCaseData newSscsCaseData = wrapper.getNewSscsCaseData();
 
         byte[] associatedCasePdf = null;
-        String filetype = getBundledLetterFileType(notificationEventType, newSscsCaseData);
+        String documentUrl = getBundledLetterDocumentUrl(notificationEventType, newSscsCaseData);
 
-        if (null != filetype) {
-            for (SscsDocument sscsDocument : newSscsCaseData.getSscsDocument()) {
-                if (filetype.equalsIgnoreCase(sscsDocument.getValue().getDocumentType())) {
-                    associatedCasePdf = evidenceManagementService.download(
-                            URI.create(sscsDocument.getValue().getDocumentLink().getDocumentUrl()),
-                            DM_STORE_USER_ID
-                    );
+        if (null != documentUrl) {
 
-                    break;
-                }
-            }
+            associatedCasePdf = evidenceManagementService.download(URI.create(documentUrl), DM_STORE_USER_ID);
+
         }
 
         return associatedCasePdf;
     }
 
-    protected static String getBundledLetterFileType(NotificationEventType notificationEventType, SscsCaseData newSscsCaseData) {
-        String filetype = null;
+    protected static String getBundledLetterDocumentUrl(NotificationEventType notificationEventType, SscsCaseData newSscsCaseData) {
+        String documentUrl = null;
         if ((STRUCK_OUT.equals(notificationEventType))
-                && (newSscsCaseData.getSscsDocument() != null
-                && !newSscsCaseData.getSscsDocument().isEmpty())) {
-            filetype = STRIKE_OUT_NOTICE;
+                && (newSscsCaseData.getSscsStrikeOutDocument() != null)) {
+            documentUrl = newSscsCaseData.getSscsStrikeOutDocument().getDocumentLink().getDocumentUrl();
         } else if ((DIRECTION_ISSUED.equals(notificationEventType))
-                && (newSscsCaseData.getSscsDocument() != null
-                && !newSscsCaseData.getSscsDocument().isEmpty())) {
-            filetype = DIRECTION_TEXT;
+                && (newSscsCaseData.getSscsInterlocDirectionDocument() != null)) {
+            documentUrl = newSscsCaseData.getSscsInterlocDirectionDocument().getDocumentLink().getDocumentUrl();
+        } else if ((JUDGE_DECISION_APPEAL_TO_PROCEED.equals(notificationEventType) || TCW_DECISION_APPEAL_TO_PROCEED.equals(notificationEventType))
+                && (newSscsCaseData.getSscsInterlocDecisionDocument() != null)) {
+            documentUrl = newSscsCaseData.getSscsInterlocDecisionDocument().getDocumentLink().getDocumentUrl();
         }
-        return filetype;
+        return documentUrl;
     }
+
 }

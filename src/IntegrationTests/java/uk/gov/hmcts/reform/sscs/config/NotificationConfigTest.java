@@ -30,7 +30,7 @@ import uk.gov.hmcts.reform.sscs.domain.notify.Template;
 @SpringBootTest
 @ActiveProfiles("integration")
 public class NotificationConfigTest {
-    private static final List<NotificationEventType> BUNDLED_LETTER_EVENT_TYPES = Arrays.asList(STRUCK_OUT, DIRECTION_ISSUED);
+    private static final List<NotificationEventType> BUNDLED_LETTER_EVENT_TYPES = Arrays.asList(STRUCK_OUT, DIRECTION_ISSUED, JUDGE_DECISION_APPEAL_TO_PROCEED, TCW_DECISION_APPEAL_TO_PROCEED);
 
     // Below rules are needed to use the junitParamsRunner together with SpringRunner
     @ClassRule
@@ -87,6 +87,12 @@ public class NotificationConfigTest {
             new Object[]{"01293b93-b23e-40a3-ad78-2c6cd01cd21c", "f41222ef-c05c-4682-9634-6b034a166368", "91143b85-dd9d-430c-ba23-e42ec90f44f8", ORAL, getTemplateName(SYA_APPEAL_CREATED_NOTIFICATION, APPELLANT)},
             new Object[]{"362d9a85-e0e4-412b-b874-020c0464e2b4", "f41222ef-c05c-4682-9634-6b034a166368", "747d026e-1bec-4e96-8a34-28f36e30bba5", PAPER, getTemplateName(SYA_APPEAL_CREATED_NOTIFICATION, APPOINTEE)},
             new Object[]{"362d9a85-e0e4-412b-b874-020c0464e2b4", "f41222ef-c05c-4682-9634-6b034a166368", "747d026e-1bec-4e96-8a34-28f36e30bba5", ORAL, getTemplateName(SYA_APPEAL_CREATED_NOTIFICATION, APPOINTEE)},
+            new Object[]{"652753bf-59b4-46eb-9c24-bd762338a098", "a6c09fad-6265-4c7c-8b95-36245ffa5352", "77ea8a2f-06df-4279-9c1f-0f23cb2d9bbf", PAPER, getTemplateName(VALID_APPEAL_CREATED, REPRESENTATIVE)},
+            new Object[]{"652753bf-59b4-46eb-9c24-bd762338a098", "a6c09fad-6265-4c7c-8b95-36245ffa5352", "77ea8a2f-06df-4279-9c1f-0f23cb2d9bbf", ORAL, getTemplateName(VALID_APPEAL_CREATED, REPRESENTATIVE)},
+            new Object[]{"01293b93-b23e-40a3-ad78-2c6cd01cd21c", "f41222ef-c05c-4682-9634-6b034a166368", "91143b85-dd9d-430c-ba23-e42ec90f44f8", PAPER, getTemplateName(VALID_APPEAL_CREATED, APPELLANT)},
+            new Object[]{"01293b93-b23e-40a3-ad78-2c6cd01cd21c", "f41222ef-c05c-4682-9634-6b034a166368", "91143b85-dd9d-430c-ba23-e42ec90f44f8", ORAL, getTemplateName(VALID_APPEAL_CREATED, APPELLANT)},
+            new Object[]{"362d9a85-e0e4-412b-b874-020c0464e2b4", "f41222ef-c05c-4682-9634-6b034a166368", "747d026e-1bec-4e96-8a34-28f36e30bba5", PAPER, getTemplateName(VALID_APPEAL_CREATED, APPOINTEE)},
+            new Object[]{"362d9a85-e0e4-412b-b874-020c0464e2b4", "f41222ef-c05c-4682-9634-6b034a166368", "747d026e-1bec-4e96-8a34-28f36e30bba5", ORAL, getTemplateName(VALID_APPEAL_CREATED, APPOINTEE)},
             new Object[]{"e93dd744-84a1-4173-847a-6d023b55637f", "ee58f7d0-8de7-4bee-acd4-252213db6b7b", null, PAPER, getTemplateName(APPEAL_LAPSED_NOTIFICATION, REPRESENTATIVE)},
             new Object[]{"e93dd744-84a1-4173-847a-6d023b55637f", "ee58f7d0-8de7-4bee-acd4-252213db6b7b", null, ORAL, getTemplateName(APPEAL_LAPSED_NOTIFICATION, REPRESENTATIVE)},
             new Object[]{"8ce8d794-75e8-49a0-b4d2-0c6cd2061c11", "d2b4394b-d1c9-4d5c-a44e-b382e41c67e5", null, PAPER, getTemplateName(APPEAL_LAPSED_NOTIFICATION, APPELLANT)},
@@ -139,7 +145,19 @@ public class NotificationConfigTest {
             new Object[]{"221095a2-aee8-466b-a7ab-beee516cc6cc", null, null, ORAL, getTemplateName(POSTPONEMENT_NOTIFICATION, APPOINTEE)},
             new Object[]{"221095a2-aee8-466b-a7ab-beee516cc6cc", null, null, PAPER, getTemplateName(POSTPONEMENT_NOTIFICATION, APPOINTEE)},
             new Object[]{"e2ee8609-7d56-4857-b3f8-79028e8960aa", null, null, ORAL, getTemplateName(APPEAL_DORMANT_NOTIFICATION, REPRESENTATIVE)},
-            new Object[]{"fc9d0618-68c4-48ec-9481-a84b225a57a9", null, null, ORAL, getTemplateName(APPEAL_DORMANT_NOTIFICATION, APPELLANT)}
+            new Object[]{"fc9d0618-68c4-48ec-9481-a84b225a57a9", null, null, ORAL, getTemplateName(APPEAL_DORMANT_NOTIFICATION, APPELLANT)},
+            new Object[]{null, null, "5745f77c-6512-4082-8c34-63851f24eab1", PAPER, getTemplateName(NON_COMPLIANT_NOTIFICATION, REPRESENTATIVE)},
+            new Object[]{null, null, "5745f77c-6512-4082-8c34-63851f24eab1", ORAL, getTemplateName(NON_COMPLIANT_NOTIFICATION, REPRESENTATIVE)},
+            new Object[]{null, null, "114cadaa-7760-4699-9add-d3a252f68909", PAPER, getTemplateName(NON_COMPLIANT_NOTIFICATION, APPELLANT)},
+            new Object[]{null, null, "114cadaa-7760-4699-9add-d3a252f68909", ORAL, getTemplateName(NON_COMPLIANT_NOTIFICATION, APPELLANT)},
+            new Object[]{null, null, "114cadaa-7760-4699-9add-d3a252f68909", ORAL, getTemplateName(NON_COMPLIANT_NOTIFICATION, APPOINTEE)},
+            new Object[]{null, null, "114cadaa-7760-4699-9add-d3a252f68909", PAPER, getTemplateName(NON_COMPLIANT_NOTIFICATION, APPOINTEE)},
+            new Object[]{null, null, "a2a4a88a-b91a-4e6d-94f0-507179292058", PAPER, getTemplateName(REQUEST_INFO_INCOMPLETE, REPRESENTATIVE)},
+            new Object[]{null, null, "a2a4a88a-b91a-4e6d-94f0-507179292058", ORAL, getTemplateName(REQUEST_INFO_INCOMPLETE, REPRESENTATIVE)},
+            new Object[]{null, null, "bc943cf3-9fd1-4d14-a0c0-b183572c21a7", PAPER, getTemplateName(REQUEST_INFO_INCOMPLETE, APPELLANT)},
+            new Object[]{null, null, "bc943cf3-9fd1-4d14-a0c0-b183572c21a7", ORAL, getTemplateName(REQUEST_INFO_INCOMPLETE, APPELLANT)},
+            new Object[]{null, null, "bc943cf3-9fd1-4d14-a0c0-b183572c21a7", ORAL, getTemplateName(REQUEST_INFO_INCOMPLETE, APPOINTEE)},
+            new Object[]{null, null, "bc943cf3-9fd1-4d14-a0c0-b183572c21a7", PAPER, getTemplateName(REQUEST_INFO_INCOMPLETE, APPOINTEE)}
         };
     }
 

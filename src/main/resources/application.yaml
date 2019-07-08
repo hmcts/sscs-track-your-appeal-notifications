@@ -190,6 +190,19 @@ notification:
       emailId: 362d9a85-e0e4-412b-b874-020c0464e2b4
       smsId: f41222ef-c05c-4682-9634-6b034a166368
       letterId: 747d026e-1bec-4e96-8a34-28f36e30bba5
+  validAppealCreated:
+    appellant:
+      emailId: 01293b93-b23e-40a3-ad78-2c6cd01cd21c
+      smsId: f41222ef-c05c-4682-9634-6b034a166368
+      letterId: 91143b85-dd9d-430c-ba23-e42ec90f44f8
+    representative:
+      emailId: 652753bf-59b4-46eb-9c24-bd762338a098
+      smsId: a6c09fad-6265-4c7c-8b95-36245ffa5352
+      letterId: 77ea8a2f-06df-4279-9c1f-0f23cb2d9bbf
+    appointee:
+      emailId: 362d9a85-e0e4-412b-b874-020c0464e2b4
+      smsId: f41222ef-c05c-4682-9634-6b034a166368
+      letterId: 747d026e-1bec-4e96-8a34-28f36e30bba5
   resendAppealCreated:
     appellant:
       emailId: 01293b93-b23e-40a3-ad78-2c6cd01cd21c
@@ -227,7 +240,14 @@ notification:
     representative:
       letterId: a2a4a88a-b91a-4e6d-94f0-507179292058
     appointee:
-      letterId: f4ef3253-bae7-4fa6-8e3d-9b3e83bec356
+      letterId: bc943cf3-9fd1-4d14-a0c0-b183572c21a7
+  nonCompliant:
+    appellant:
+      letterId: 114cadaa-7760-4699-9add-d3a252f68909
+    representative:
+      letterId: 5745f77c-6512-4082-8c34-63851f24eab1
+    appointee:
+      letterId: 114cadaa-7760-4699-9add-d3a252f68909
   online:
     responseReceived:
       emailId: 90f0ed29-a616-4ce0-b4ef-108391f5d90e
@@ -345,6 +365,9 @@ strikeOutLetterTemplate.rep.appeal.html.template.path: /templates/strike_out_let
 directionNoticeLetterTemplate.appeal.html.template.path: /templates/direction_notice_letter_template.html
 directionNoticeLetterTemplate.appelant.appeal.html.template.path: /templates/direction_notice_letter_template.html
 directionNoticeLetterTemplate.rep.appeal.html.template.path: /templates/direction_notice_letter_template_rep.html
+validAppealCreatedLetterTemplate.appellant.appeal.html.template.path: /templates/valid_appeal_created_template.html
+validAppealCreatedLetterTemplate.rep.appeal.html.template.path: /templates/valid_appeal_created_template_rep.html
+
 
 pdf.api.url: ${PDF_API_URL:http://localhost:5500}
 
@@ -356,6 +379,7 @@ robotics.schema.resource.location: /schema/sscs-robotics.json
 
 feature.bundled_letters_on: ${BUNDLED_LETTERS_ON:true}
 feature.letters_on: ${LETTERS_ON:true}
+feature.interloc_letters_on: ${INTERLOC_LETTERS_ON:true}
 
 pdf-service:
   uri: ${PDF_SERVICE_BASE_URL:https://docmosis-development.platform.hmcts.net/rs/render}

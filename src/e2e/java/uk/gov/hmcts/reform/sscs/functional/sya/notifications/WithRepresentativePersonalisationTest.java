@@ -75,6 +75,15 @@ public class WithRepresentativePersonalisationTest extends AbstractFunctionalTes
     @Value("${notification.hearingPostponed.representative.emailId}")
     private String hearingPostponedRepsEmailId;
 
+    @Value("${notification.validAppealCreated.appellant.emailId}")
+    private String validAppealCreatedAppellantEmailId;
+    @Value("${notification.validAppealCreated.appellant.smsId}")
+    private String validAppealCreatedAppellantSmsId;
+    @Value("${notification.validAppealCreated.representative.emailId}")
+    private String validAppealCreatedRepsEmailId;
+    @Value("${notification.validAppealCreated.representative.smsId}")
+    private String validAppealCreatedRepsSmsId;
+
     public WithRepresentativePersonalisationTest() {
         super(30);
     }
@@ -135,7 +144,8 @@ public class WithRepresentativePersonalisationTest extends AbstractFunctionalTes
             new Object[]{APPEAL_DORMANT_NOTIFICATION},
             new Object[]{ADJOURNED_NOTIFICATION},
             new Object[]{APPEAL_RECEIVED_NOTIFICATION},
-            new Object[]{HEARING_BOOKED_NOTIFICATION}
+            new Object[]{HEARING_BOOKED_NOTIFICATION},
+            new Object[]{VALID_APPEAL_CREATED}
         };
     }
 }

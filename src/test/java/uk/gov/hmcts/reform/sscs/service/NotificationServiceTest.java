@@ -1,6 +1,8 @@
 package uk.gov.hmcts.reform.sscs.service;
 
-import static org.junit.Assert.*;
+import static org.junit.Assert.assertArrayEquals;
+import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertTrue;
 import static org.mockito.ArgumentMatchers.anyList;
 import static org.mockito.BDDMockito.given;
 import static org.mockito.BDDMockito.then;
@@ -16,6 +18,7 @@ import java.net.URI;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashMap;
+
 import junitparams.JUnitParamsRunner;
 import junitparams.Parameters;
 import org.apache.pdfbox.io.IOUtils;
@@ -31,7 +34,11 @@ import uk.gov.hmcts.reform.sscs.config.NotificationConfig;
 import uk.gov.hmcts.reform.sscs.config.SubscriptionType;
 import uk.gov.hmcts.reform.sscs.domain.SscsCaseDataWrapper;
 import uk.gov.hmcts.reform.sscs.domain.SubscriptionWithType;
-import uk.gov.hmcts.reform.sscs.domain.notify.*;
+import uk.gov.hmcts.reform.sscs.domain.notify.Destination;
+import uk.gov.hmcts.reform.sscs.domain.notify.Notification;
+import uk.gov.hmcts.reform.sscs.domain.notify.NotificationEventType;
+import uk.gov.hmcts.reform.sscs.domain.notify.Reference;
+import uk.gov.hmcts.reform.sscs.domain.notify.Template;
 import uk.gov.hmcts.reform.sscs.exception.NotificationServiceException;
 import uk.gov.hmcts.reform.sscs.factory.CcdNotificationWrapper;
 import uk.gov.hmcts.reform.sscs.factory.CohNotificationWrapper;
@@ -56,6 +63,7 @@ public class NotificationServiceTest {
     private static final String SMS_TEMPLATE_ID = "sms-template-id";
     private static final String LETTER_TEMPLATE_ID_STRUCKOUT = "struckOut";
     private static final String LETTER_TEMPLATE_ID_DIRECTION_ISSUED = "directionIssued";
+    private static final String LETTER_TEMPLATE_ID_VALID_APPEAL_CREATED = "validAppealCreated";
     private static final String SAME_TEST_EMAIL_COM = "sametest@email.com";
     private static final String NEW_TEST_EMAIL_COM = "newtest@email.com";
     private static final String NO = "No";
@@ -117,7 +125,7 @@ public class NotificationServiceTest {
     public void setup() {
         initMocks(this);
 
-        notificationService = getNotificationService(true, true);
+        notificationService = getNotificationService(true, true, true);
 
         sscsCaseData = SscsCaseData.builder()
             .appeal(
@@ -383,6 +391,19 @@ public class NotificationServiceTest {
                         new SubscriptionType[]{APPELLANT},
                 },
                 new Object[]{
+                        VALID_APPEAL_CREATED,
+                        1,
+                        0,
+                        Subscription.builder()
+                                .tya(APPEAL_NUMBER)
+                                .email(EMAIL)
+                                .subscribeEmail(YES)
+                                .build(),
+                        null,
+                        null,
+                        new SubscriptionType[]{APPELLANT},
+                },
+                new Object[]{
                         APPEAL_LAPSED_NOTIFICATION,
                         1,
                         1,
@@ -531,6 +552,52 @@ public class NotificationServiceTest {
                 },
                 new Object[]{
                         SYA_APPEAL_CREATED_NOTIFICATION,
+                        0,
+                        0,
+                        Subscription.builder().build(),
+                        Subscription.builder().build(),
+                        Subscription.builder().build(),
+                        new SubscriptionType[]{APPOINTEE, REPRESENTATIVE},  // Fallback letter
+                },
+                new Object[]{
+                        VALID_APPEAL_CREATED,
+                        0,
+                        0,
+                        null,
+                        null,
+                        null,
+                        new SubscriptionType[]{APPELLANT},  // Fallback letter
+                },
+                new Object[]{
+                        VALID_APPEAL_CREATED,
+                        1,
+                        0,
+                        Subscription.builder()
+                                .tya(APPEAL_NUMBER)
+                                .email(EMAIL)
+                                .subscribeEmail(YES)
+                                .build(),
+                        null,
+                        null,
+                        new SubscriptionType[]{APPELLANT},
+                },
+                new Object[]{
+                        VALID_APPEAL_CREATED,
+                        1,
+                        1,
+                        Subscription.builder()
+                                .tya(APPEAL_NUMBER)
+                                .email(EMAIL)
+                                .subscribeEmail(YES)
+                                .subscribeSms(YES)
+                                .mobile(MOBILE_NUMBER_1)
+                                .build(),
+                        null,
+                        null,
+                        new SubscriptionType[]{APPELLANT},
+                },
+                new Object[]{
+                        VALID_APPEAL_CREATED,
                         0,
                         0,
                         Subscription.builder().build(),
@@ -712,6 +779,52 @@ public class NotificationServiceTest {
                 Subscription.builder().build(),
                 Subscription.builder().build(),
                 new SubscriptionType[]{},
+            },
+            new Object[]{
+                VALID_APPEAL_CREATED,
+                0,
+                0,
+                null,
+                null,
+                null,
+                new SubscriptionType[]{},
+            },
+            new Object[]{
+                VALID_APPEAL_CREATED,
+                1,
+                0,
+                Subscription.builder()
+                        .tya(APPEAL_NUMBER)
+                        .email(EMAIL)
+                        .subscribeEmail(YES)
+                        .build(),
+                null,
+                null,
+                new SubscriptionType[]{APPELLANT},
+            },
+            new Object[]{
+                VALID_APPEAL_CREATED,
+                1,
+                1,
+                Subscription.builder()
+                        .tya(APPEAL_NUMBER)
+                        .email(EMAIL)
+                        .subscribeEmail(YES)
+                        .subscribeSms(YES)
+                        .mobile(MOBILE_NUMBER_1)
+                        .build(),
+                null,
+                null,
+                new SubscriptionType[]{APPELLANT},
+            },
+            new Object[]{
+                VALID_APPEAL_CREATED,
+                0,
+                0,
+                Subscription.builder().build(),
+                Subscription.builder().build(),
+                Subscription.builder().build(),
+                new SubscriptionType[]{},
             }
         };
     }
@@ -862,6 +975,48 @@ public class NotificationServiceTest {
                     .build(),
                 null,
                 new SubscriptionType[]{APPOINTEE},
+            },
+            new Object[]{
+                VALID_APPEAL_CREATED,
+                0,
+                0,
+                null,
+                null,
+                new SubscriptionType[]{APPELLANT},
+            },
+            new Object[]{
+                VALID_APPEAL_CREATED,
+                1,
+                0,
+                Subscription.builder()
+                        .tya(APPEAL_NUMBER)
+                        .email(EMAIL)
+                        .subscribeEmail(YES)
+                        .build(),
+                null,
+                new SubscriptionType[]{APPOINTEE},
+            },
+            new Object[]{
+                VALID_APPEAL_CREATED,
+                1,
+                1,
+                Subscription.builder()
+                        .tya(APPEAL_NUMBER)
+                        .email(EMAIL)
+                        .subscribeEmail(YES)
+                        .subscribeSms(YES)
+                        .mobile(MOBILE_NUMBER_1)
+                        .build(),
+                null,
+                new SubscriptionType[]{APPOINTEE},
+            },
+            new Object[]{
+                VALID_APPEAL_CREATED,
+                0,
+                0,
+                Subscription.builder().build(),
+                Subscription.builder().build(),
+                new SubscriptionType[]{APPOINTEE, REPRESENTATIVE},
             }
         };
     }
@@ -1001,6 +1156,48 @@ public class NotificationServiceTest {
                 null,
                 new SubscriptionType[]{APPOINTEE},
             },
+            new Object[]{
+                VALID_APPEAL_CREATED,
+                0,
+                0,
+                null,
+                null,
+                new SubscriptionType[]{},
+            },
+            new Object[]{
+                VALID_APPEAL_CREATED,
+                1,
+                0,
+                Subscription.builder()
+                        .tya(APPEAL_NUMBER)
+                        .email(EMAIL)
+                        .subscribeEmail(YES)
+                        .build(),
+                null,
+                new SubscriptionType[]{APPOINTEE},
+            },
+            new Object[]{
+                VALID_APPEAL_CREATED,
+                1,
+                1,
+                Subscription.builder()
+                        .tya(APPEAL_NUMBER)
+                        .email(EMAIL)
+                        .subscribeEmail(YES)
+                        .subscribeSms(YES)
+                        .mobile(MOBILE_NUMBER_1)
+                        .build(),
+                null,
+                new SubscriptionType[]{APPOINTEE},
+            },
+            new Object[]{
+                VALID_APPEAL_CREATED,
+                0,
+                0,
+                Subscription.builder().build(),
+                Subscription.builder().build(),
+                new SubscriptionType[]{},
+            }
         };
     }
 
@@ -1409,10 +1606,10 @@ public class NotificationServiceTest {
 
     @Test
     @Parameters(method = "bundledLetters")
-    public void sendBundledLetterToGovNotifyWhenStruckOutNotification(NotificationEventType eventType, String letterTemplateId) throws IOException {
+    public void sendBundledLetterToGovNotifyWhenStruckOutNotification(NotificationEventType eventType, String letterTemplateId, String templatePath, String documentType) throws IOException {
         String fileUrl = "http://dm-store:4506/documents/1e1eb3d2-5b6c-430d-8dad-ebcea1ad7ecf";
 
-        CcdNotificationWrapper wrapper = buildWrapperWithDocuments(eventType, fileUrl, APPELLANT_WITH_ADDRESS, null);
+        CcdNotificationWrapper wrapper = buildWrapperWithDocuments(eventType, fileUrl, APPELLANT_WITH_ADDRESS, null, documentType);
 
         Notification notification = new Notification(Template.builder().letterTemplateId(letterTemplateId).build(), Destination.builder().build(), new HashMap<>(), new Reference(), null);
 
@@ -1424,8 +1621,7 @@ public class NotificationServiceTest {
         when((notificationValidService).isHearingTypeValidToSendNotification(any(), any())).thenReturn(true);
         when(sscsGeneratePdfService.generatePdf(anyString(), any(), any(), any())).thenReturn(sampleDirectionCoversheet);
 
-        String template = STRUCK_OUT.equals(eventType) ? "/templates/strike_out_letter_template.html" : "/templates/direction_notice_letter_template.html";
-        when(bundledLetterTemplateUtil.getBundledLetterTemplate(eventType, wrapper.getNewSscsCaseData(), APPELLANT)).thenReturn(template);
+        when(bundledLetterTemplateUtil.getBundledLetterTemplate(eventType, wrapper.getNewSscsCaseData(), APPELLANT)).thenReturn(templatePath);
 
         when(factory.create(wrapper, getSubscriptionWithType(ccdNotificationWrapper))).thenReturn(notification);
         notificationService.manageNotificationAndSubscription(wrapper);
@@ -1436,10 +1632,13 @@ public class NotificationServiceTest {
     private Object[] bundledLetters() {
         return new Object[] {
             new Object[] {
-                STRUCK_OUT, LETTER_TEMPLATE_ID_STRUCKOUT
+                STRUCK_OUT, LETTER_TEMPLATE_ID_STRUCKOUT, "/templates/strike_out_letter_template.html", ""
             },
             new Object[] {
-                DIRECTION_ISSUED, LETTER_TEMPLATE_ID_DIRECTION_ISSUED
+                DIRECTION_ISSUED, LETTER_TEMPLATE_ID_DIRECTION_ISSUED, "/templates/direction_notice_letter_template.html", ""
+            },
+            new Object[] {
+                JUDGE_DECISION_APPEAL_TO_PROCEED, LETTER_TEMPLATE_ID_VALID_APPEAL_CREATED, "/templates/valid_appeal_created_template.html", ""
             }
         };
     }
@@ -1448,7 +1647,7 @@ public class NotificationServiceTest {
     public void sendBundledLettersToGovNotifyWhenStruckOutNotificationFailsAtNotify() throws IOException {
         String fileUrl = "http://dm-store:4506/documents/1e1eb3d2-5b6c-430d-8dad-ebcea1ad7ecf";
 
-        CcdNotificationWrapper struckOutCcdNotificationWrapper = buildWrapperWithDocuments(STRUCK_OUT, fileUrl, APPELLANT_WITH_ADDRESS, null);
+        CcdNotificationWrapper struckOutCcdNotificationWrapper = buildWrapperWithDocuments(STRUCK_OUT, fileUrl, APPELLANT_WITH_ADDRESS, null, "");
 
         Notification notification = new Notification(Template.builder().letterTemplateId(LETTER_TEMPLATE_ID_STRUCKOUT).build(), Destination.builder().build(), new HashMap<>(), new Reference(), null);
 
@@ -1473,7 +1672,7 @@ public class NotificationServiceTest {
     public void doNotSendBundledLettersToGovNotifyWhenStruckOutNotificationWhenFeatureToggledOff() throws IOException {
         String fileUrl = "http://dm-store:4506/documents/1e1eb3d2-5b6c-430d-8dad-ebcea1ad7ecf";
 
-        CcdNotificationWrapper struckOutCcdNotificationWrapper = buildWrapperWithDocuments(STRUCK_OUT, fileUrl, APPELLANT_WITH_ADDRESS, null);
+        CcdNotificationWrapper struckOutCcdNotificationWrapper = buildWrapperWithDocuments(STRUCK_OUT, fileUrl, APPELLANT_WITH_ADDRESS, null, "");
 
         Notification notification = new Notification(Template.builder().letterTemplateId(LETTER_TEMPLATE_ID_STRUCKOUT).build(), Destination.builder().build(), new HashMap<>(), new Reference(), null);
 
@@ -1487,7 +1686,7 @@ public class NotificationServiceTest {
 
         when(factory.create(struckOutCcdNotificationWrapper, getSubscriptionWithType(ccdNotificationWrapper))).thenReturn(notification);
 
-        getNotificationService(false, false).manageNotificationAndSubscription(struckOutCcdNotificationWrapper);
+        getNotificationService(false, false, false).manageNotificationAndSubscription(struckOutCcdNotificationWrapper);
 
         verify(notificationHandler, times(0)).sendNotification(eq(struckOutCcdNotificationWrapper), eq(LETTER_TEMPLATE_ID_STRUCKOUT), eq(LETTER), any(NotificationHandler.SendNotification.class));
     }
@@ -1521,7 +1720,8 @@ public class NotificationServiceTest {
         assertTrue(NotificationService.hasCaseJustSubscribed(subscription, oldSubscription));
     }
 
-    private NotificationService getNotificationService(Boolean bundledLettersOn, Boolean lettersOn) {
+
+    private NotificationService getNotificationService(Boolean bundledLettersOn, Boolean lettersOn, Boolean interlocLettersOn) {
         SendNotificationService sendNotificationService = new SendNotificationService(notificationSender, evidenceManagementService, sscsGeneratePdfService, notificationHandler, notificationValidService, bundledLetterTemplateUtil);
 
         final NotificationService notificationService = new NotificationService(factory, reminderService,
@@ -1529,15 +1729,11 @@ public class NotificationServiceTest {
         );
         ReflectionTestUtils.setField(sendNotificationService, "bundledLettersOn", bundledLettersOn);
         ReflectionTestUtils.setField(sendNotificationService, "lettersOn", lettersOn);
+        ReflectionTestUtils.setField(sendNotificationService, "interlocLettersOn", interlocLettersOn);
         return notificationService;
-
     }
 
-    private CcdNotificationWrapper buildWrapperWithDocuments(NotificationEventType eventType, String fileUrl, Appellant appellant, Representative rep) {
-        String documentType = STRIKE_OUT_NOTICE;
-        if (DIRECTION_ISSUED.equals(eventType)) {
-            documentType = DIRECTION_TEXT;
-        }
+    private CcdNotificationWrapper buildWrapperWithDocuments(NotificationEventType eventType, String fileUrl, Appellant appellant, Representative rep, String documentType) {
 
         SscsDocumentDetails sscsDocumentDetails = SscsDocumentDetails.builder()
             .documentType(documentType)
@@ -1591,6 +1787,15 @@ public class NotificationServiceTest {
                 )
                 .build())
             .caseReference(CASE_REFERENCE)
+            .sscsInterlocDecisionDocument(SscsInterlocDecisionDocument.builder().documentLink(DocumentLink.builder().documentUrl("http://dm-store:4506/documents/1e1eb3d2-5b6c-430d-8dad-ebcea1ad7ecf")
+                    .documentFilename("test.pdf")
+                    .documentBinaryUrl("test/binary").build()).build())
+            .sscsInterlocDirectionDocument(SscsInterlocDirectionDocument.builder().documentLink(DocumentLink.builder().documentUrl("http://dm-store:4506/documents/1e1eb3d2-5b6c-430d-8dad-ebcea1ad7ecf")
+                    .documentFilename("test.pdf")
+                    .documentBinaryUrl("test/binary").build()).build())
+            .sscsStrikeOutDocument(SscsStrikeOutDocument.builder().build().builder().documentLink(DocumentLink.builder().documentUrl("http://dm-store:4506/documents/1e1eb3d2-5b6c-430d-8dad-ebcea1ad7ecf")
+                    .documentFilename("test.pdf")
+                    .documentBinaryUrl("test/binary").build()).build())
             .ccdCaseId(CASE_ID)
             .sscsDocument(new ArrayList<>(Collections.singletonList(sscsDocument)));
     }

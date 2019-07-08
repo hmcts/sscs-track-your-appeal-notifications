@@ -46,7 +46,9 @@ import uk.gov.hmcts.reform.sscs.service.SendNotificationService;
 @Component
 @Slf4j
 public class Personalisation<E extends NotificationWrapper> {
-    private static final List<NotificationEventType> LETTER_SUBSCRIPTION_TYPES = Arrays.asList(DWP_RESPONSE_RECEIVED_NOTIFICATION, APPEAL_RECEIVED_NOTIFICATION, SYA_APPEAL_CREATED_NOTIFICATION, EVIDENCE_RECEIVED_NOTIFICATION);
+    private static final List<NotificationEventType> LETTER_SUBSCRIPTION_TYPES = Arrays.asList(DWP_RESPONSE_RECEIVED_NOTIFICATION,
+            APPEAL_RECEIVED_NOTIFICATION, SYA_APPEAL_CREATED_NOTIFICATION, EVIDENCE_RECEIVED_NOTIFICATION, NON_COMPLIANT_NOTIFICATION, VALID_APPEAL_CREATED);
+
     private static final String CRLF = String.format("%c%c", (char) 0x0D, (char) 0x0A);
 
     private boolean sendSmsSubscriptionConfirmation;
@@ -90,7 +92,8 @@ public class Personalisation<E extends NotificationWrapper> {
 
         personalisation.put(INFO_REQUEST_DETAIL, StringUtils.defaultIfBlank(getLatestInfoRequestDetail(ccdResponse), StringUtils.EMPTY));
 
-        subscriptionDetails(personalisation, subscriptionWithType.getSubscription(), benefit);
+        Subscription subscription = subscriptionWithType.getSubscription();
+        subscriptionDetails(personalisation, subscription, benefit);
 
         personalisation.put(FIRST_TIER_AGENCY_ACRONYM, DWP_ACRONYM);
         personalisation.put(FIRST_TIER_AGENCY_FULL_NAME, DWP_FUL_NAME);
@@ -119,7 +122,8 @@ public class Personalisation<E extends NotificationWrapper> {
         personalisation.put(ACCEPT_VIEW_BY_DATE_LITERAL, notificationDateConverterUtil.toEmailDate(today.plusDays(7)));
         personalisation.put(QUESTION_ROUND_EXPIRES_DATE_LITERAL, notificationDateConverterUtil.toEmailDate(today.plusDays(1)));
 
-        personalisation.put(ONLINE_HEARING_REGISTER_LINK_LITERAL, config.getOnlineHearingLink() + "/register");
+        final String tya = tya(subscription);
+        personalisation.put(ONLINE_HEARING_REGISTER_LINK_LITERAL, config.getOnlineHearingLink() + "/register?tya=" + tya);
         personalisation.put(ONLINE_HEARING_SIGN_IN_LINK_LITERAL, config.getOnlineHearingLink() + "/sign-in");
 
         personalisation.put(APPOINTEE_DESCRIPTION, getAppointeeDescription(subscriptionWithType.getSubscriptionType(), ccdResponse));
@@ -219,14 +223,18 @@ public class Personalisation<E extends NotificationWrapper> {
         if (ccdResponse.getEvents() != null) {
 
             for (Event event : ccdResponse.getEvents()) {
-                if ((event.getValue() != null)
-                    && ((notificationEventType.equals(APPEAL_RECEIVED_NOTIFICATION) && event.getValue().getEventType().equals(APPEAL_RECEIVED)))
-                    || notificationEventType.equals(CASE_UPDATED)) {
+                if ((event.getValue() != null) && isAppealReceivedAndUpdated(notificationEventType, event)
+                    || notificationEventType.equals(CASE_UPDATED) || JUDGE_DECISION_APPEAL_TO_PROCEED.equals(notificationEventType)
+                    || TCW_DECISION_APPEAL_TO_PROCEED.equals(notificationEventType)) {
                     return setAppealReceivedDetails(personalisation, event.getValue());
                 }
             }
         }
         return personalisation;
+    }
+
+    private boolean isAppealReceivedAndUpdated(NotificationEventType notificationEventType, Event event) {
+        return notificationEventType.equals(APPEAL_RECEIVED_NOTIFICATION) && event.getValue().getEventType().equals(APPEAL_RECEIVED);
     }
 
     Map<String, String> setEvidenceReceivedNotificationData(Map<String, String> personalisation,
@@ -334,6 +342,7 @@ public class Personalisation<E extends NotificationWrapper> {
             || (DWP_RESPONSE_RECEIVED_NOTIFICATION.equals(notificationEventType)
                 && !notificationWrapper.getHearingType().equals(AppealHearingType.ONLINE))
             || RESEND_APPEAL_CREATED_NOTIFICATION.equals(notificationEventType)
+            || VALID_APPEAL_CREATED.equals(notificationEventType)
             || SYA_APPEAL_CREATED_NOTIFICATION.equals(notificationEventType)) {
             emailTemplateName = emailTemplateName + "." + StringUtils.lowerCase(subscriptionType.name());
         }
@@ -346,7 +355,9 @@ public class Personalisation<E extends NotificationWrapper> {
             && ((LETTER_SUBSCRIPTION_TYPES.contains(notificationEventType)
             || APPEAL_WITHDRAWN_NOTIFICATION.equals(notificationEventType)
             || HEARING_BOOKED_NOTIFICATION.equals(notificationEventType))
-            || REQUEST_INFO_INCOMPLETE.equals(notificationEventType))) {
+            || REQUEST_INFO_INCOMPLETE.equals(notificationEventType)
+            || JUDGE_DECISION_APPEAL_TO_PROCEED.equals(notificationEventType)
+            || TCW_DECISION_APPEAL_TO_PROCEED.equals(notificationEventType))) {
             letterTemplateName = letterTemplateName + "." + subscriptionType.name().toLowerCase();
         }
         return letterTemplateName;
