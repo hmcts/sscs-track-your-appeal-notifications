@@ -36,6 +36,7 @@ import uk.gov.hmcts.reform.sscs.domain.notify.Template;
 import uk.gov.hmcts.reform.sscs.extractor.HearingContactDateExtractor;
 import uk.gov.hmcts.reform.sscs.factory.NotificationWrapper;
 import uk.gov.hmcts.reform.sscs.service.MessageAuthenticationServiceImpl;
+import uk.gov.hmcts.reform.sscs.service.NotificationUtils;
 import uk.gov.hmcts.reform.sscs.service.RegionalProcessingCenterService;
 import uk.gov.hmcts.reform.sscs.service.SendNotificationService;
 
@@ -95,7 +96,8 @@ public class Personalisation<E extends NotificationWrapper> {
         personalisation.put(FIRST_TIER_AGENCY_FULL_NAME, DWP_FUL_NAME);
 
         if (ccdResponse.getHearings() != null && !ccdResponse.getHearings().isEmpty()) {
-            Hearing latestHearing = ccdResponse.getHearings().get(0);
+
+            Hearing latestHearing = NotificationUtils.getLatestHearing(ccdResponse);
             LocalDateTime hearingDateTime = latestHearing.getValue().getHearingDateTime();
 
             personalisation.put(HEARING_DATE, formatLocalDate(hearingDateTime.toLocalDate()));
