@@ -8,11 +8,15 @@ import static uk.gov.hmcts.reform.sscs.domain.notify.NotificationEventType.*;
 import static uk.gov.hmcts.reform.sscs.service.NotificationValidService.FALLBACK_LETTER_SUBSCRIPTION_TYPES;
 import static uk.gov.hmcts.reform.sscs.service.NotificationValidService.LETTER_EVENT_TYPES;
 
+import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collections;
+import java.util.Comparator;
 import java.util.List;
 
 import uk.gov.hmcts.reform.sscs.ccd.domain.Appeal;
 import uk.gov.hmcts.reform.sscs.ccd.domain.Appointee;
+import uk.gov.hmcts.reform.sscs.ccd.domain.Hearing;
 import uk.gov.hmcts.reform.sscs.ccd.domain.SscsCaseData;
 import uk.gov.hmcts.reform.sscs.ccd.domain.Subscription;
 import uk.gov.hmcts.reform.sscs.config.SubscriptionType;
@@ -145,5 +149,29 @@ public class NotificationUtils {
         return APPELLANT.equals(subscriptionType)
             || APPOINTEE.equals(subscriptionType)
             || (REPRESENTATIVE.equals(subscriptionType) && null != wrapper.getNewSscsCaseData().getAppeal().getRep());
+    }
+
+    public static final Hearing getLatestHearing(SscsCaseData sscsCaseData) {
+
+        if (sscsCaseData.getHearings() == null || sscsCaseData.getHearings().isEmpty()) {
+            return null;
+        }
+
+        List<Hearing> hearings = new ArrayList<Hearing>(sscsCaseData.getHearings());
+
+        Comparator<Hearing> compareByIdAndDate = new Comparator<Hearing>() {
+            @Override
+            public int compare(Hearing o1, Hearing o2) {
+                Integer idCompare = o1.getValue().getHearingId().compareTo(o2.getValue().getHearingId());
+                if (idCompare != 0) {
+                    return -1 * idCompare;
+                }
+                return -1 * o1.getValue().getHearingDateTime().compareTo(o2.getValue().getHearingDateTime());
+            }
+        };
+
+        Collections.sort(hearings, compareByIdAndDate);
+
+        return hearings.get(0);
     }
 }
