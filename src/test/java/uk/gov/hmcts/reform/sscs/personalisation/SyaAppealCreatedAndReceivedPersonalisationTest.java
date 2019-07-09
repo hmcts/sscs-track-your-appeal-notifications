@@ -120,7 +120,7 @@ public class SyaAppealCreatedAndReceivedPersonalisationTest {
                 .ccdCaseId(CASE_ID).caseReference("SC/1234/5")
                 .subscriptions(Subscriptions.builder()
                         .appellantSubscription(Subscription.builder()
-                                .subscribeSms("Yes")
+                                .subscribeSms("Yes").wantSmsNotifications("Yes")
                                 .mobile("07955555708").build()).build())
                 .build();
 
@@ -462,17 +462,17 @@ public class SyaAppealCreatedAndReceivedPersonalisationTest {
         final Name bothName = Name.builder().firstName("FIRST").lastName("LAST").build();
         final Name allName = Name.builder().title("MX").firstName("FIRST").lastName("LAST").build();
 
-        assertEquals("expected", syaAppealCreatedAndReceivedPersonalisation.getOptionalField(null, "expected"));
-        assertEquals("expected", syaAppealCreatedAndReceivedPersonalisation.getOptionalField(emptyName.getFullName(), "expected"));
-        assertEquals("expected", syaAppealCreatedAndReceivedPersonalisation.getOptionalField(emptyName.getFullNameNoTitle(), "expected"));
-        assertEquals("null FIRST null", syaAppealCreatedAndReceivedPersonalisation.getOptionalField(firstName.getFullName(), "expected"));
-        assertEquals("FIRST null", syaAppealCreatedAndReceivedPersonalisation.getOptionalField(firstName.getFullNameNoTitle(), "expected"));
-        assertEquals("null null LAST", syaAppealCreatedAndReceivedPersonalisation.getOptionalField(lastName.getFullName(), "expected"));
-        assertEquals("null LAST", syaAppealCreatedAndReceivedPersonalisation.getOptionalField(lastName.getFullNameNoTitle(), "expected"));
-        assertEquals("null FIRST LAST", syaAppealCreatedAndReceivedPersonalisation.getOptionalField(bothName.getFullName(), "expected"));
-        assertEquals("FIRST LAST", syaAppealCreatedAndReceivedPersonalisation.getOptionalField(bothName.getFullNameNoTitle(), "expected"));
-        assertEquals("MX FIRST LAST", syaAppealCreatedAndReceivedPersonalisation.getOptionalField(allName.getFullName(), "expected"));
-        assertEquals("FIRST LAST", syaAppealCreatedAndReceivedPersonalisation.getOptionalField(allName.getFullNameNoTitle(), "expected"));
+        assertEquals("expected", SyaAppealCreatedAndReceivedPersonalisation.getOptionalField(null, "expected"));
+        assertEquals("expected", SyaAppealCreatedAndReceivedPersonalisation.getOptionalField(emptyName.getFullName(), "expected"));
+        assertEquals("expected", SyaAppealCreatedAndReceivedPersonalisation.getOptionalField(emptyName.getFullNameNoTitle(), "expected"));
+        assertEquals("null FIRST null", SyaAppealCreatedAndReceivedPersonalisation.getOptionalField(firstName.getFullName(), "expected"));
+        assertEquals("FIRST null", SyaAppealCreatedAndReceivedPersonalisation.getOptionalField(firstName.getFullNameNoTitle(), "expected"));
+        assertEquals("null null LAST", SyaAppealCreatedAndReceivedPersonalisation.getOptionalField(lastName.getFullName(), "expected"));
+        assertEquals("null LAST", SyaAppealCreatedAndReceivedPersonalisation.getOptionalField(lastName.getFullNameNoTitle(), "expected"));
+        assertEquals("null FIRST LAST", SyaAppealCreatedAndReceivedPersonalisation.getOptionalField(bothName.getFullName(), "expected"));
+        assertEquals("FIRST LAST", SyaAppealCreatedAndReceivedPersonalisation.getOptionalField(bothName.getFullNameNoTitle(), "expected"));
+        assertEquals("MX FIRST LAST", SyaAppealCreatedAndReceivedPersonalisation.getOptionalField(allName.getFullName(), "expected"));
+        assertEquals("FIRST LAST", SyaAppealCreatedAndReceivedPersonalisation.getOptionalField(allName.getFullNameNoTitle(), "expected"));
     }
 
 }

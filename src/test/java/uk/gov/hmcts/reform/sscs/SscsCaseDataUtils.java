@@ -97,14 +97,14 @@ public final class SscsCaseDataUtils {
                 .email("sscstest+notify@greencroftconsulting.com")
                 .mobile("07398785050")
                 .subscribeEmail(subscribeEmail)
-                .subscribeSms(subscribeSms)
+                .subscribeSms(subscribeSms).wantSmsNotifications(subscribeSms)
                 .build();
         Subscription representativeSubscription = Subscription.builder()
                 .tya("")
                 .email("")
                 .mobile("")
                 .subscribeEmail("No")
-                .subscribeSms("No")
+                .subscribeSms("No").wantSmsNotifications("No")
                 .build();
         Subscriptions subscriptions = Subscriptions.builder()
                 .appellantSubscription(appellantSubscription)
@@ -131,7 +131,7 @@ public final class SscsCaseDataUtils {
                 .email("sscstest+notify@greencroftconsulting.com")
                 .mobile("07398785050")
                 .subscribeEmail("Yes")
-                .subscribeSms("Yes")
+                .subscribeSms("Yes").wantSmsNotifications("Yes")
                 .build();
 
         Subscriptions subscriptions = Subscriptions.builder()
@@ -304,7 +304,7 @@ public final class SscsCaseDataUtils {
                 .email("sscstest+notify2@greencroftconsulting.com")
                 .mobile("07398785051")
                 .subscribeEmail("Yes")
-                .subscribeSms("Yes")
+                .subscribeSms("Yes").wantSmsNotifications("Yes")
                 .build();
         Subscriptions subscriptions = response.getSubscriptions().toBuilder()
                 .appointeeSubscription(appointeeSubscription).build();

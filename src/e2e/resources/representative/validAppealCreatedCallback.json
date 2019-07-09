@@ -58,6 +58,7 @@
           "mobile": "07398785050",
           "subscribeEmail": "No",
           "subscribeSms": "No",
+          "wantSmsNotifications": "No",
           "reason": ""
         },
         "representativeSubscription": {
@@ -67,6 +68,7 @@
           "mobile": "07398785050",
           "subscribeEmail": "Yes",
           "subscribeSms": "Yes",
+          "wantSmsNotifications": "Yes",
           "reason": ""
         }
       },
@@ -229,6 +231,7 @@
               "mobile": "PUBLIC",
               "subscribeEmail": "PUBLIC",
               "subscribeSms": "PUBLIC",
+              "wantSmsNotifications": "PUBLIC",
               "reason": "PUBLIC"
             }
           },
@@ -241,6 +244,7 @@
               "mobile": "PUBLIC",
               "subscribeEmail": "PUBLIC",
               "subscribeSms": "PUBLIC",
+              "wantSmsNotifications": "PUBLIC",
               "reason": "PUBLIC"
             }
           }
@@ -437,6 +441,7 @@
               "mobile": "PUBLIC",
               "subscribeEmail": "PUBLIC",
               "subscribeSms": "PUBLIC",
+              "wantSmsNotifications": "PUBLIC",
               "reason": "PUBLIC"
             }
           },
@@ -449,6 +454,7 @@
               "mobile": "PUBLIC",
               "subscribeEmail": "PUBLIC",
               "subscribeSms": "PUBLIC",
+              "wantSmsNotifications": "PUBLIC",
               "reason": "PUBLIC"
             }
           }
