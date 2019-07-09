@@ -120,7 +120,7 @@ public class SyaAppealCreatedAndReceivedPersonalisationTest {
                 .ccdCaseId(CASE_ID).caseReference("SC/1234/5")
                 .subscriptions(Subscriptions.builder()
                         .appellantSubscription(Subscription.builder()
-                                .subscribeSms("Yes")
+                                .subscribeSms("Yes").wantSmsNotifications("Yes")
                                 .mobile("07955555708").build()).build())
                 .build();
 
