@@ -30,6 +30,7 @@
           "email": "sscstest+notify@greencroftconsulting.com",
           "mobile": "07398785050",
           "subscribeSms": "No",
+          "wantSmsNotifications": "No",
           "subscribeEmail": "No"
         },
         "representativeSubscription": {
@@ -37,6 +38,7 @@
           "email": "sscstest+notify@greencroftconsulting.com",
           "mobile": "07398785050",
           "subscribeSms": "Yes",
+          "wantSmsNotifications": "Yes",
           "subscribeEmail": "Yes"
         }
       },
@@ -118,6 +120,7 @@
               "email": "PUBLIC",
               "mobile": "PUBLIC",
               "subscribeSms": "PUBLIC",
+              "wantSmsNotifications": "PUBLIC",
               "subscribeEmail": "PUBLIC"
             }
           },
@@ -128,6 +131,7 @@
               "email": "PUBLIC",
               "mobile": "PUBLIC",
               "subscribeSms": "PUBLIC",
+              "wantSmsNotifications": "PUBLIC",
               "subscribeEmail": "PUBLIC"
             }
           }
@@ -234,6 +238,7 @@
               "email": "PUBLIC",
               "mobile": "PUBLIC",
               "subscribeSms": "PUBLIC",
+              "wantSmsNotifications": "PUBLIC",
               "subscribeEmail": "PUBLIC"
             }
           },
@@ -244,6 +249,7 @@
               "email": "PUBLIC",
               "mobile": "PUBLIC",
               "subscribeSms": "PUBLIC",
+              "wantSmsNotifications": "PUBLIC",
               "subscribeEmail": "PUBLIC"
             }
           }
@@ -368,6 +374,7 @@
           "email": "sscstest+notify@greencroftconsulting.com",
           "mobile": "07398785050",
           "subscribeSms": "No",
+          "wantSmsNotifications": "No",
           "subscribeEmail": "No"
         },
         "representativeSubscription": {
@@ -375,6 +382,7 @@
           "email": "sscstest+notify@greencroftconsulting.com",
           "mobile": "07398785050",
           "subscribeSms": "Yes",
+          "wantSmsNotifications": "Yes",
           "subscribeEmail": "Yes"
         }
       },
@@ -446,6 +454,7 @@
               "email": "PUBLIC",
               "mobile": "PUBLIC",
               "subscribeSms": "PUBLIC",
+              "wantSmsNotifications": "PUBLIC",
               "subscribeEmail": "PUBLIC"
             },
             "classification": "PUBLIC"
@@ -456,6 +465,7 @@
               "email": "PUBLIC",
               "mobile": "PUBLIC",
               "subscribeSms": "PUBLIC",
+              "wantSmsNotifications": "PUBLIC",
               "subscribeEmail": "PUBLIC"
             },
             "classification": "PUBLIC"
@@ -554,6 +564,7 @@
               "email": "PUBLIC",
               "mobile": "PUBLIC",
               "subscribeSms": "PUBLIC",
+              "wantSmsNotifications": "PUBLIC",
               "subscribeEmail": "PUBLIC"
             },
             "classification": "PUBLIC"
@@ -564,6 +575,7 @@
               "email": "PUBLIC",
               "mobile": "PUBLIC",
               "subscribeSms": "PUBLIC",
+              "wantSmsNotifications": "PUBLIC",
               "subscribeEmail": "PUBLIC"
             },
             "classification": "PUBLIC"

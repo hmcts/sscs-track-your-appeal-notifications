@@ -167,6 +167,7 @@
           "reason": null,
           "subscribeEmail": "Yes",
           "subscribeSms": "Yes",
+          "wantSmsNotifications" : "Yes",
           "tya": "543212345"
         },
         "representativeSubscription": {
@@ -175,6 +176,7 @@
           "reason": null,
           "subscribeEmail": "No",
           "subscribeSms": "Yes",
+          "wantSmsNotifications" : "Yes",
           "tya": "232929249492"
         }
       },
@@ -324,6 +326,7 @@
           "reason": null,
           "subscribeEmail": "No",
           "subscribeSms": "No",
+          "wantSmsNotifications" : "No",
           "tya": "543212345"
         },
         "representativeSubscription": {
@@ -332,6 +335,7 @@
           "reason": null,
           "subscribeEmail": "No",
           "subscribeSms": "Yes",
+          "wantSmsNotifications" : "Yes",
           "tya": "232929249492"
         }
       },

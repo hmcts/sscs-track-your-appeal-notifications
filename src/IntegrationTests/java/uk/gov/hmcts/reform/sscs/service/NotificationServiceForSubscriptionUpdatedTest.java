@@ -131,7 +131,7 @@ public class NotificationServiceForSubscriptionUpdatedTest {
     private IdamService idamService;
 
     private final Subscription subscription = Subscription.builder().tya(APPEAL_NUMBER).email(EMAIL_TEST_1)
-                .mobile(MOBILE_NUMBER_1).subscribeEmail(YES).subscribeSms(YES).build();
+                .mobile(MOBILE_NUMBER_1).subscribeEmail(YES).subscribeSms(YES).wantSmsNotifications(YES).build();
 
     @Before
     public void setup() {
