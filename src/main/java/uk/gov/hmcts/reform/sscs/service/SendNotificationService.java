@@ -118,6 +118,8 @@ public class SendNotificationService {
     }
 
     private void sendLetterNotification(NotificationWrapper wrapper, Subscription subscription, Notification notification, SubscriptionWithType subscriptionWithType, NotificationEventType eventType) {
+
+        log.info("Sending the letter for event {} and case id {}.", eventType.getId(), wrapper.getCaseId());
         sendMandatoryLetterNotification(wrapper, notification, subscriptionWithType.getSubscriptionType());
         sendFallbackLetterNotification(wrapper, subscription, notification, subscriptionWithType, eventType);
     }
