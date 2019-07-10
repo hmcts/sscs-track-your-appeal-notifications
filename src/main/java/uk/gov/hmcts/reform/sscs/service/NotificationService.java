@@ -11,6 +11,7 @@ import static uk.gov.hmcts.reform.sscs.service.NotificationValidService.isMandat
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.util.StringUtils;
 import uk.gov.hmcts.reform.sscs.ccd.domain.Benefit;
 import uk.gov.hmcts.reform.sscs.ccd.domain.SscsCaseData;
 import uk.gov.hmcts.reform.sscs.ccd.domain.Subscription;
@@ -53,6 +54,10 @@ public class NotificationService {
     public void manageNotificationAndSubscription(NotificationWrapper notificationWrapper) {
         NotificationEventType notificationType = notificationWrapper.getNotificationType();
         final String caseId = notificationWrapper.getCaseId();
+
+        if (!isEventAllowedToProceedWithValidData(notificationWrapper, notificationType)) {
+            return;
+        }
 
         log.info("Notification event triggered {} for case id {}", notificationType.getId(), caseId);
 
@@ -185,5 +190,17 @@ public class NotificationService {
             subscription = oldSubscription;
         }
         return subscription;
+    }
+
+    private boolean isEventAllowedToProceedWithValidData(NotificationWrapper notificationWrapper,
+                                                         NotificationEventType notificationType) {
+        boolean isAllowed = true;
+        if (NotificationEventType.REQUEST_INFO_INCOMPLETE.equals(notificationType)) {
+            if (StringUtils.isEmpty(notificationWrapper.getNewSscsCaseData().getInformationFromAppellant())
+                    || "No".equalsIgnoreCase(notificationWrapper.getNewSscsCaseData().getInformationFromAppellant())) {
+                isAllowed = false;
+            }
+        }
+        return isAllowed;
     }
 }

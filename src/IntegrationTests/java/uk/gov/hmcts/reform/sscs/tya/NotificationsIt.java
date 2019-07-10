@@ -1,6 +1,7 @@
 package uk.gov.hmcts.reform.sscs.tya;
 
 import static helper.IntegrationTestHelper.*;
+import static helper.IntegrationTestHelper.updateEmbeddedJson;
 import static org.junit.Assert.assertArrayEquals;
 import static org.junit.Assert.assertEquals;
 import static org.mockito.Mockito.*;
@@ -274,6 +275,10 @@ public class NotificationsIt {
                 "representativeSubscription", "subscribeSms");
         json = updateEmbeddedJson(json, notificationEventType.getId(), "event_id");
 
+        if (notificationEventType.equals(REQUEST_INFO_INCOMPLETE)) {
+            json = updateEmbeddedJson(json, "Yes", "case_details", "case_data", "informationFromAppellant");
+        }
+
         HttpServletResponse response = getResponse(getRequestWithAuthHeader(json));
         assertHttpStatus(response, HttpStatus.OK);
 
@@ -329,6 +334,10 @@ public class NotificationsIt {
             "representativeSubscription", "subscribeSms");
         json = updateEmbeddedJson(json, notificationEventType.getId(), "event_id");
 
+        if (notificationEventType.equals(REQUEST_INFO_INCOMPLETE)) {
+            json = updateEmbeddedJson(json, "Yes", "case_details", "case_data", "informationFromAppellant");
+        }
+
         HttpServletResponse response = getResponse(getRequestWithAuthHeader(json));
         assertHttpStatus(response, HttpStatus.OK);
 
@@ -361,6 +370,10 @@ public class NotificationsIt {
             jsonAppointee = jsonAppointee.replace("2018-01-12", LocalDate.now().plusDays(2).toString());
         }
 
+        if (notificationEventType.equals(REQUEST_INFO_INCOMPLETE)) {
+            jsonAppointee = updateEmbeddedJson(jsonAppointee, "Yes", "case_details", "case_data", "informationFromAppellant");
+        }
+
         jsonAppointee = updateEmbeddedJson(jsonAppointee, notificationEventType.getId(), "event_id");
 
         HttpServletResponse response = getResponse(getRequestWithAuthHeader(jsonAppointee));
@@ -387,6 +400,10 @@ public class NotificationsIt {
             "appointeeSubscription", "subscribeEmail");
         jsonAppointee = updateEmbeddedJson(jsonAppointee, appointeeSmsSubs, "case_details", "case_data", "subscriptions",
             "appointeeSubscription", "subscribeSms");
+
+        if (notificationEventType.equals(REQUEST_INFO_INCOMPLETE)) {
+            jsonAppointee = updateEmbeddedJson(jsonAppointee, "Yes", "case_details", "case_data", "informationFromAppellant");
+        }
 
         jsonAppointee = updateEmbeddedJson(jsonAppointee, notificationEventType.getId(), "event_id");
 

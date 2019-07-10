@@ -117,6 +117,7 @@
         },
         "hearingType": ""
       },
+      "informationFromAppellant": "No",
       "evidence": {
         "documents":[
           {
@@ -171,6 +172,7 @@
           "reason": null,
           "subscribeEmail": "no",
           "subscribeSms": "no",
+          "wantSmsNotifications" : "No",
           "tya": "543212345"
         },
         "appointeeSubscription": {
@@ -179,6 +181,7 @@
           "reason": null,
           "subscribeEmail": "Yes",
           "subscribeSms": "Yes",
+          "wantSmsNotifications" : "Yes",
           "tya": "53949249492"
         }
       },
@@ -343,6 +346,7 @@
           "reason": null,
           "subscribeEmail": "No",
           "subscribeSms": "No",
+          "wantSmsNotifications" : "No",
           "tya": "543212345"
         },
         "appointeeSubscription": {
@@ -351,6 +355,7 @@
           "reason": null,
           "subscribeEmail": "Yes",
           "subscribeSms": "Yes",
+          "wantSmsNotifications" : "Yes",
           "tya": "232929249492"
         }
       },

@@ -859,6 +859,7 @@ public class PersonalisationTest {
         return Hearing.builder().value(HearingDetails.builder()
                 .hearingDate(hearingDate.format(DateTimeFormatter.ofPattern("yyyy-MM-dd")))
                 .time("12:00")
+                .hearingId("1")
                 .venue(Venue.builder()
                         .name("The venue")
                         .address(Address.builder()

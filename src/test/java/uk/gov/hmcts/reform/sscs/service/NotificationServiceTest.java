@@ -122,7 +122,7 @@ public class NotificationServiceTest {
             .email(EMAIL)
             .mobile(MOBILE_NUMBER_1)
             .subscribeEmail(YES)
-            .subscribeSms(YES)
+            .subscribeSms(YES).wantSmsNotifications(YES)
             .build();
 
     @Before
@@ -416,7 +416,7 @@ public class NotificationServiceTest {
                                 .email(EMAIL)
                                 .subscribeEmail(YES)
                                 .mobile(MOBILE_NUMBER_1)
-                                .subscribeSms(YES)
+                                .subscribeSms(YES).wantSmsNotifications(YES)
                                 .build(),
                         null,
                         null,
@@ -431,7 +431,7 @@ public class NotificationServiceTest {
                                 .email(EMAIL)
                                 .subscribeEmail(YES)
                                 .mobile(MOBILE_NUMBER_1)
-                                .subscribeSms(YES)
+                                .subscribeSms(YES).wantSmsNotifications(YES)
                                 .build(),
                         Subscription.builder()
                                 .tya(APPEAL_NUMBER)
@@ -450,14 +450,14 @@ public class NotificationServiceTest {
                                 .email(EMAIL)
                                 .subscribeEmail(YES)
                                 .mobile(MOBILE_NUMBER_1)
-                                .subscribeSms(YES)
+                                .subscribeSms(YES).wantSmsNotifications(YES)
                                 .build(),
                         Subscription.builder()
                                 .tya(APPEAL_NUMBER)
                                 .email(EMAIL)
                                 .subscribeEmail(YES)
                                 .mobile(MOBILE_NUMBER_1)
-                                .subscribeSms(YES)
+                                .subscribeSms(YES).wantSmsNotifications(YES)
                                 .build(),
                         null,
                         new SubscriptionType[]{APPELLANT, REPRESENTATIVE},
@@ -471,7 +471,7 @@ public class NotificationServiceTest {
                         .email(EMAIL)
                         .subscribeEmail(YES)
                         .mobile(MOBILE_NUMBER_1)
-                        .subscribeSms(YES)
+                        .subscribeSms(YES).wantSmsNotifications(YES)
                         .build(),
                     null,
                     null,
@@ -486,7 +486,7 @@ public class NotificationServiceTest {
                         .email(EMAIL)
                         .subscribeEmail(YES)
                         .mobile(MOBILE_NUMBER_1)
-                        .subscribeSms(YES)
+                        .subscribeSms(YES).wantSmsNotifications(YES)
                         .build(),
                     Subscription.builder()
                         .tya(APPEAL_NUMBER)
@@ -505,14 +505,14 @@ public class NotificationServiceTest {
                         .email(EMAIL)
                         .subscribeEmail(YES)
                         .mobile(MOBILE_NUMBER_1)
-                        .subscribeSms(YES)
+                        .subscribeSms(YES).wantSmsNotifications(YES)
                         .build(),
                     Subscription.builder()
                         .tya(APPEAL_NUMBER)
                         .email(EMAIL)
                         .subscribeEmail(YES)
                         .mobile(MOBILE_NUMBER_1)
-                        .subscribeSms(YES)
+                        .subscribeSms(YES).wantSmsNotifications(YES)
                         .build(),
                     null,
                     new SubscriptionType[]{APPELLANT, REPRESENTATIVE},
@@ -547,7 +547,7 @@ public class NotificationServiceTest {
                                 .tya(APPEAL_NUMBER)
                                 .email(EMAIL)
                                 .subscribeEmail(YES)
-                                .subscribeSms(YES)
+                                .subscribeSms(YES).wantSmsNotifications(YES)
                                 .mobile(MOBILE_NUMBER_1)
                                 .build(),
                         null,
@@ -593,7 +593,7 @@ public class NotificationServiceTest {
                                 .tya(APPEAL_NUMBER)
                                 .email(EMAIL)
                                 .subscribeEmail(YES)
-                                .subscribeSms(YES)
+                                .subscribeSms(YES).wantSmsNotifications(YES)
                                 .mobile(MOBILE_NUMBER_1)
                                 .build(),
                         null,
@@ -637,7 +637,7 @@ public class NotificationServiceTest {
                     .email(EMAIL)
                     .subscribeEmail(YES)
                     .mobile(MOBILE_NUMBER_1)
-                    .subscribeSms(YES)
+                    .subscribeSms(YES).wantSmsNotifications(YES)
                     .build(),
                 null,
                 null,
@@ -652,7 +652,7 @@ public class NotificationServiceTest {
                     .email(EMAIL)
                     .subscribeEmail(YES)
                     .mobile(MOBILE_NUMBER_1)
-                    .subscribeSms(YES)
+                    .subscribeSms(YES).wantSmsNotifications(YES)
                     .build(),
                 Subscription.builder()
                     .tya(APPEAL_NUMBER)
@@ -671,14 +671,14 @@ public class NotificationServiceTest {
                     .email(EMAIL)
                     .subscribeEmail(YES)
                     .mobile(MOBILE_NUMBER_1)
-                    .subscribeSms(YES)
+                    .subscribeSms(YES).wantSmsNotifications(YES)
                     .build(),
                 Subscription.builder()
                     .tya(APPEAL_NUMBER)
                     .email(EMAIL)
                     .subscribeEmail(YES)
                     .mobile(MOBILE_NUMBER_1)
-                    .subscribeSms(YES)
+                    .subscribeSms(YES).wantSmsNotifications(YES)
                     .build(),
                 null,
                 new SubscriptionType[]{APPELLANT, REPRESENTATIVE},
@@ -692,7 +692,7 @@ public class NotificationServiceTest {
                     .email(EMAIL)
                     .subscribeEmail(YES)
                     .mobile(MOBILE_NUMBER_1)
-                    .subscribeSms(YES)
+                    .subscribeSms(YES).wantSmsNotifications(YES)
                     .build(),
                 null,
                 null,
@@ -707,7 +707,7 @@ public class NotificationServiceTest {
                     .email(EMAIL)
                     .subscribeEmail(YES)
                     .mobile(MOBILE_NUMBER_1)
-                    .subscribeSms(YES)
+                    .subscribeSms(YES).wantSmsNotifications(YES)
                     .build(),
                 Subscription.builder()
                     .tya(APPEAL_NUMBER)
@@ -726,14 +726,14 @@ public class NotificationServiceTest {
                     .email(EMAIL)
                     .subscribeEmail(YES)
                     .mobile(MOBILE_NUMBER_1)
-                    .subscribeSms(YES)
+                    .subscribeSms(YES).wantSmsNotifications(YES)
                     .build(),
                 Subscription.builder()
                     .tya(APPEAL_NUMBER)
                     .email(EMAIL)
                     .subscribeEmail(YES)
                     .mobile(MOBILE_NUMBER_1)
-                    .subscribeSms(YES)
+                    .subscribeSms(YES).wantSmsNotifications(YES)
                     .build(),
                 null,
                 new SubscriptionType[]{APPELLANT, REPRESENTATIVE},
@@ -768,7 +768,7 @@ public class NotificationServiceTest {
                     .tya(APPEAL_NUMBER)
                     .email(EMAIL)
                     .subscribeEmail(YES)
-                    .subscribeSms(YES)
+                    .subscribeSms(YES).wantSmsNotifications(YES)
                     .mobile(MOBILE_NUMBER_1)
                     .build(),
                 null,
@@ -814,7 +814,7 @@ public class NotificationServiceTest {
                         .tya(APPEAL_NUMBER)
                         .email(EMAIL)
                         .subscribeEmail(YES)
-                        .subscribeSms(YES)
+                        .subscribeSms(YES).wantSmsNotifications(YES)
                         .mobile(MOBILE_NUMBER_1)
                         .build(),
                 null,
@@ -857,7 +857,7 @@ public class NotificationServiceTest {
                     .email(EMAIL)
                     .subscribeEmail(YES)
                     .mobile(MOBILE_NUMBER_1)
-                    .subscribeSms(YES)
+                    .subscribeSms(YES).wantSmsNotifications(YES)
                     .build(),
                 null,
                 new SubscriptionType[]{APPOINTEE},
@@ -871,7 +871,7 @@ public class NotificationServiceTest {
                     .email(EMAIL)
                     .subscribeEmail(YES)
                     .mobile(MOBILE_NUMBER_1)
-                    .subscribeSms(YES)
+                    .subscribeSms(YES).wantSmsNotifications(YES)
                     .build(),
                 Subscription.builder()
                     .tya(APPEAL_NUMBER)
@@ -889,14 +889,14 @@ public class NotificationServiceTest {
                     .email(EMAIL)
                     .subscribeEmail(YES)
                     .mobile(MOBILE_NUMBER_1)
-                    .subscribeSms(YES)
+                    .subscribeSms(YES).wantSmsNotifications(YES)
                     .build(),
                 Subscription.builder()
                     .tya(APPEAL_NUMBER)
                     .email(EMAIL)
                     .subscribeEmail(YES)
                     .mobile(MOBILE_NUMBER_1)
-                    .subscribeSms(YES)
+                    .subscribeSms(YES).wantSmsNotifications(YES)
                     .build(),
                 new SubscriptionType[]{APPOINTEE, REPRESENTATIVE},
             },
@@ -928,7 +928,7 @@ public class NotificationServiceTest {
                     .tya(APPEAL_NUMBER)
                     .email(EMAIL)
                     .subscribeEmail(YES)
-                    .subscribeSms(YES)
+                    .subscribeSms(YES).wantSmsNotifications(YES)
                     .mobile(MOBILE_NUMBER_1)
                     .build(),
                 null,
@@ -950,7 +950,7 @@ public class NotificationServiceTest {
                         .tya(APPEAL_NUMBER)
                         .email(EMAIL)
                         .subscribeEmail(YES)
-                        .subscribeSms(YES)
+                        .subscribeSms(YES).wantSmsNotifications(YES)
                         .mobile(MOBILE_NUMBER_1)
                         .build(),
                 null,
@@ -974,7 +974,7 @@ public class NotificationServiceTest {
                 1,
                 Subscription.builder()
                     .tya(APPEAL_NUMBER)
-                    .subscribeSms(YES)
+                    .subscribeSms(YES).wantSmsNotifications(YES)
                     .mobile(MOBILE_NUMBER_1)
                     .build(),
                 null,
@@ -1008,7 +1008,7 @@ public class NotificationServiceTest {
                         .tya(APPEAL_NUMBER)
                         .email(EMAIL)
                         .subscribeEmail(YES)
-                        .subscribeSms(YES)
+                        .subscribeSms(YES).wantSmsNotifications(YES)
                         .mobile(MOBILE_NUMBER_1)
                         .build(),
                 null,
@@ -1049,7 +1049,7 @@ public class NotificationServiceTest {
                     .email(EMAIL)
                     .subscribeEmail(YES)
                     .mobile(MOBILE_NUMBER_1)
-                    .subscribeSms(YES)
+                    .subscribeSms(YES).wantSmsNotifications(YES)
                     .build(),
                 null,
                 new SubscriptionType[]{APPOINTEE},
@@ -1063,7 +1063,7 @@ public class NotificationServiceTest {
                     .email(EMAIL)
                     .subscribeEmail(YES)
                     .mobile(MOBILE_NUMBER_1)
-                    .subscribeSms(YES)
+                    .subscribeSms(YES).wantSmsNotifications(YES)
                     .build(),
                 Subscription.builder()
                     .tya(APPEAL_NUMBER)
@@ -1081,14 +1081,14 @@ public class NotificationServiceTest {
                     .email(EMAIL)
                     .subscribeEmail(YES)
                     .mobile(MOBILE_NUMBER_1)
-                    .subscribeSms(YES)
+                    .subscribeSms(YES).wantSmsNotifications(YES)
                     .build(),
                 Subscription.builder()
                     .tya(APPEAL_NUMBER)
                     .email(EMAIL)
                     .subscribeEmail(YES)
                     .mobile(MOBILE_NUMBER_1)
-                    .subscribeSms(YES)
+                    .subscribeSms(YES).wantSmsNotifications(YES)
                     .build(),
                 new SubscriptionType[]{APPOINTEE, REPRESENTATIVE},
             },
@@ -1120,7 +1120,7 @@ public class NotificationServiceTest {
                     .tya(APPEAL_NUMBER)
                     .email(EMAIL)
                     .subscribeEmail(YES)
-                    .subscribeSms(YES)
+                    .subscribeSms(YES).wantSmsNotifications(YES)
                     .mobile(MOBILE_NUMBER_1)
                     .build(),
                 null,
@@ -1155,7 +1155,7 @@ public class NotificationServiceTest {
                     .email(EMAIL)
                     .subscribeEmail(YES)
                     .mobile(MOBILE_NUMBER_1)
-                    .subscribeSms(YES)
+                    .subscribeSms(YES).wantSmsNotifications(YES)
                     .build(),
                 null,
                 new SubscriptionType[]{APPOINTEE},
@@ -1188,7 +1188,7 @@ public class NotificationServiceTest {
                         .tya(APPEAL_NUMBER)
                         .email(EMAIL)
                         .subscribeEmail(YES)
-                        .subscribeSms(YES)
+                        .subscribeSms(YES).wantSmsNotifications(YES)
                         .mobile(MOBILE_NUMBER_1)
                         .build(),
                 null,
@@ -1463,9 +1463,9 @@ public class NotificationServiceTest {
     @Test
     public void shouldSendEmailAndSmsToOldEmailAddressForEmailSubscriptionUpdateForPaperCase() {
         Subscription appellantNewSubscription = Subscription.builder().tya(APPEAL_NUMBER).email(NEW_TEST_EMAIL_COM)
-                .mobile(MOBILE_NUMBER_1).subscribeEmail(YES).subscribeSms(YES).build();
+                .mobile(MOBILE_NUMBER_1).subscribeEmail(YES).subscribeSms(YES).wantSmsNotifications(YES).build();
         Subscription appellantOldSubscription = Subscription.builder().tya(APPEAL_NUMBER).email("oldtest@email.com")
-                .mobile(MOBILE_NUMBER_2).subscribeEmail(YES).subscribeSms(YES).build();
+                .mobile(MOBILE_NUMBER_2).subscribeEmail(YES).subscribeSms(YES).wantSmsNotifications(YES).build();
 
         SscsCaseData newSscsCaseData = SscsCaseData.builder()
                 .appeal(Appeal.builder().appellant(Appellant.builder().build())
@@ -1501,9 +1501,9 @@ public class NotificationServiceTest {
     @Test
     public void shouldNotSendEmailOrSmsToOldEmailAddressIfOldAndNewEmailAndSmsAreSame() {
         Subscription appellantNewSubscription = Subscription.builder().tya(APPEAL_NUMBER).email(SAME_TEST_EMAIL_COM)
-                .mobile(MOBILE_NUMBER_1).subscribeEmail(YES).subscribeSms(YES).build();
+                .mobile(MOBILE_NUMBER_1).subscribeEmail(YES).subscribeSms(YES).wantSmsNotifications(YES).build();
         Subscription appellantOldSubscription = Subscription.builder().tya(APPEAL_NUMBER).email(SAME_TEST_EMAIL_COM)
-                .mobile(MOBILE_NUMBER_1).subscribeEmail(YES).subscribeSms(YES).build();
+                .mobile(MOBILE_NUMBER_1).subscribeEmail(YES).subscribeSms(YES).wantSmsNotifications(YES).build();
 
         SscsCaseData newSscsCaseData = SscsCaseData.builder()
                 .appeal(Appeal.builder().appellant(Appellant.builder().build())
@@ -1545,7 +1545,7 @@ public class NotificationServiceTest {
                 .email(SAME_TEST_EMAIL_COM)
                 .mobile(MOBILE_NUMBER_1)
                 .subscribeEmail(YES)
-                .subscribeSms(YES)
+                .subscribeSms(YES).wantSmsNotifications(YES)
                 .build();
         Subscription appellantOldSubscription = Subscription.builder()
                 .tya(APPEAL_NUMBER)
@@ -1722,13 +1722,13 @@ public class NotificationServiceTest {
 
     @Test
     public void hasJustSubscribedUnsubscribedEmailAndSms_returnsFalse() {
-        Subscription newSubscription = subscription.toBuilder().subscribeEmail(NO).subscribeSms(NO).build();
+        Subscription newSubscription = subscription.toBuilder().subscribeEmail(NO).subscribeSms(NO).wantSmsNotifications(NO).build();
         assertFalse(NotificationService.hasCaseJustSubscribed(newSubscription, subscription));
     }
 
     @Test
     public void hasJustSubscribedEmailAndMobile_returnsTrue() {
-        Subscription oldSubscription = subscription.toBuilder().subscribeEmail(NO).subscribeSms(NO).build();
+        Subscription oldSubscription = subscription.toBuilder().subscribeEmail(NO).subscribeSms(NO).wantSmsNotifications(NO).build();
         assertTrue(NotificationService.hasCaseJustSubscribed(subscription, oldSubscription));
     }
 
@@ -1740,7 +1740,7 @@ public class NotificationServiceTest {
 
     @Test
     public void hasJustSubscribedSms_returnsTrue() {
-        Subscription oldSubscription = subscription.toBuilder().subscribeSms(NO).build();
+        Subscription oldSubscription = subscription.toBuilder().subscribeSms(NO).wantSmsNotifications(NO).build();
         assertTrue(NotificationService.hasCaseJustSubscribed(subscription, oldSubscription));
     }
 
@@ -1806,7 +1806,7 @@ public class NotificationServiceTest {
                     .email(EMAIL)
                     .mobile(MOBILE_NUMBER_1)
                     .subscribeEmail(YES)
-                    .subscribeSms(YES)
+                    .subscribeSms(YES).wantSmsNotifications(YES)
                     .build()
                 )
                 .build())

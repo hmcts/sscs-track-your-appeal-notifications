@@ -76,6 +76,7 @@
           "mobile": "07398785050",
           "subscribeEmail": "No",
           "subscribeSms": "No",
+          "wantSmsNotifications": "No",
           "tya": ""
         },
         "representativeSubscription": {
@@ -83,6 +84,7 @@
           "mobile": "07398785050",
           "subscribeEmail": "Yes",
           "subscribeSms": "Yes",
+          "wantSmsNotifications": "Yes",
           "tya": ""
         }
       }
@@ -207,6 +209,7 @@
               "mobile": "PUBLIC",
               "subscribeEmail": "PUBLIC",
               "subscribeSms": "PUBLIC",
+              "wantSmsNotifications": "PUBLIC",
               "tya": "PUBLIC"
             }
           },
@@ -217,6 +220,7 @@
               "mobile": "PUBLIC",
               "subscribeEmail": "PUBLIC",
               "subscribeSms": "PUBLIC",
+              "wantSmsNotifications": "PUBLIC",
               "tya": "PUBLIC"
             }
           }
@@ -332,6 +336,7 @@
               "mobile": "PUBLIC",
               "subscribeEmail": "PUBLIC",
               "subscribeSms": "PUBLIC",
+              "wantSmsNotifications": "PUBLIC",
               "tya": "PUBLIC"
             }
           },
@@ -342,6 +347,7 @@
               "mobile": "PUBLIC",
               "subscribeEmail": "PUBLIC",
               "subscribeSms": "PUBLIC",
+              "wantSmsNotifications": "PUBLIC",
               "tya": "PUBLIC"
             }
           }
@@ -403,6 +409,7 @@
           "mobile": "07398785050",
           "subscribeEmail": "No",
           "subscribeSms": "No",
+          "wantSmsNotifications": "No",
           "tya": ""
         },
         "representativeSubscription": {
@@ -410,6 +417,7 @@
           "mobile": "07398785050",
           "subscribeEmail": "Yes",
           "subscribeSms": "Yes",
+          "wantSmsNotifications": "Yes",
           "tya": ""
         }
       }
@@ -513,6 +521,7 @@
               "mobile": "PUBLIC",
               "subscribeEmail": "PUBLIC",
               "subscribeSms": "PUBLIC",
+              "wantSmsNotifications": "PUBLIC",
               "tya": "PUBLIC"
             }
           },
@@ -523,6 +532,7 @@
               "mobile": "PUBLIC",
               "subscribeEmail": "PUBLIC",
               "subscribeSms": "PUBLIC",
+              "wantSmsNotifications": "PUBLIC",
               "tya": "PUBLIC"
             }
           }
@@ -630,6 +640,7 @@
               "mobile": "PUBLIC",
               "subscribeEmail": "PUBLIC",
               "subscribeSms": "PUBLIC",
+              "wantSmsNotifications": "PUBLIC",
               "tya": "PUBLIC"
             }
           },
@@ -640,6 +651,7 @@
               "mobile": "PUBLIC",
               "subscribeEmail": "PUBLIC",
               "subscribeSms": "PUBLIC",
+              "wantSmsNotifications": "PUBLIC",
               "tya": "PUBLIC"
             }
           }
