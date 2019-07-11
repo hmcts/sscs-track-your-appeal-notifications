@@ -139,7 +139,7 @@ public class NotificationService {
     }
 
     private void processOldSubscriptionNotifications(NotificationWrapper wrapper, Notification notification, SubscriptionWithType subscriptionWithType, NotificationEventType eventType) {
-        if (wrapper.getNotificationType() == NotificationEventType.SUBSCRIPTION_UPDATED_NOTIFICATION) {
+        if (wrapper.getNotificationType() == SUBSCRIPTION_UPDATED_NOTIFICATION) {
             Subscription newSubscription;
             Subscription oldSubscription;
             if (REPRESENTATIVE.equals(subscriptionWithType.getSubscriptionType())) {
@@ -163,9 +163,9 @@ public class NotificationService {
                     .getNewSscsCaseData().getAppeal().getBenefitType().getCode());
 
             Template template = notificationConfig.getTemplate(
-                    NotificationEventType.SUBSCRIPTION_OLD_NOTIFICATION.getId(),
-                    NotificationEventType.SUBSCRIPTION_OLD_NOTIFICATION.getId(),
-                    NotificationEventType.SUBSCRIPTION_OLD_NOTIFICATION.getId(),
+                    SUBSCRIPTION_OLD_NOTIFICATION.getId(),
+                    SUBSCRIPTION_OLD_NOTIFICATION.getId(),
+                    SUBSCRIPTION_OLD_NOTIFICATION.getId(),
                     benefit,
                     wrapper.getHearingType()
             );
@@ -194,11 +194,13 @@ public class NotificationService {
     private boolean isEventAllowedToProceedWithValidData(NotificationWrapper notificationWrapper,
                                                          NotificationEventType notificationType) {
         boolean isAllowed = true;
-        if (NotificationEventType.REQUEST_INFO_INCOMPLETE.equals(notificationType)) {
+        if (REQUEST_INFO_INCOMPLETE.equals(notificationType)) {
             if (StringUtils.isEmpty(notificationWrapper.getNewSscsCaseData().getInformationFromAppellant())
                     || "No".equalsIgnoreCase(notificationWrapper.getNewSscsCaseData().getInformationFromAppellant())) {
                 isAllowed = false;
             }
+        } else if (CASE_UPDATED.equals(notificationType)) {
+            isAllowed = false;
         }
         return isAllowed;
     }
