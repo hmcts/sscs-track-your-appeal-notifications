@@ -48,7 +48,8 @@ public class PdfLetterService {
                 addressToUse.getLine2(),
                 addressToUse.getTown(),
                 addressToUse.getCounty(),
-                addressToUse.getPostcode()
+                addressToUse.getPostcode(),
+                docmosisTemplatesConfig.getHmctsImgVal()
         );
         String templatePath = docmosisTemplatesConfig.getCoversheets().get(wrapper.getNotificationType().getId());
         if (StringUtils.isBlank(templatePath)) {
