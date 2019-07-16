@@ -19,3 +19,5 @@ letters_on = "true"
 interloc_letters_on = "true"
 
 docmosis_letters_on = "true"
+
+appeal_received_letter_on = "true"

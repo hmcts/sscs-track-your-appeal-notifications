@@ -10,3 +10,6 @@ online_hearing_link = "https://sscs-cor-frontend-demo.service.core-compute-demo.
 
 idam_redirect_url = "https://evidence-sharing-preprod.sscs.reform.hmcts.net"
 notification_key = "notification-key-demo"
+
+docmosis_letters_on = "false"
+appeal_received_letter_on = "false"

@@ -14,3 +14,6 @@ bundled_letters_on = "true"
 letters_on = "false"
 
 interloc_letters_on = "true"
+
+docmosis_letters_on = "false"
+appeal_received_letter_on = "false"
