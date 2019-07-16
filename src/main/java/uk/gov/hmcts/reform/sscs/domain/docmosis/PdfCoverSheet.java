@@ -17,19 +17,23 @@ public class PdfCoverSheet {
     private final String addressCounty;
     @JsonProperty("address_postcode")
     private final String addressPostcode;
+    @JsonProperty("hmcts")
+    private final String hmcts;
 
     public PdfCoverSheet(String caseId,
                          String addressLine1,
                          String addressLine2,
                          String addressTown,
                          String addressCounty,
-                         String addressPostcode) {
+                         String addressPostcode,
+                         String hmcts) {
         this.caseId = caseId;
         this.addressLine1 = addressLine1;
         this.addressLine2 = addressLine2;
         this.addressTown = addressTown;
         this.addressCounty = addressCounty;
         this.addressPostcode = addressPostcode;
+        this.hmcts = hmcts;
     }
 
 }
