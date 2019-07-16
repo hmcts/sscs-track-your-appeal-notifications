@@ -382,6 +382,7 @@ feature.bundled_letters_on: ${BUNDLED_LETTERS_ON:true}
 feature.letters_on: ${LETTERS_ON:true}
 feature.docmosis_letters_on: ${DOCMOSIS_LETTERS_ON:true}
 feature.interloc_letters_on: ${INTERLOC_LETTERS_ON:true}
+feature.docmosis_leters.appealReceived_on: ${APPEAL_RECEIVED_LETTER_ON:true}
 
 pdf-service:
   uri: ${PDF_SERVICE_BASE_URL:https://docmosis-development.platform.hmcts.net/rs/render}
