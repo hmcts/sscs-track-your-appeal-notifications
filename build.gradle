@@ -6,7 +6,7 @@ plugins {
     id 'jacoco'
     id 'io.spring.dependency-management' version '1.0.7.RELEASE'
     id 'org.springframework.boot' version '2.0.4.RELEASE'
-    id 'org.owasp.dependencycheck' version '4.0.2'
+    id 'org.owasp.dependencycheck' version '5.1.0'
     id 'com.github.ben-manes.versions' version '0.21.0'
     id 'net.ltgt.apt' version '0.21'
     id "org.flywaydb.flyway" version "5.0.7"
@@ -33,7 +33,7 @@ mainClassName = 'uk.gov.hmcts.reform.sscs.TrackYourAppealNotificationsApplicatio
 
 checkstyle {
     maxWarnings = 0
-    toolVersion = '8.8'
+    toolVersion = '8.18'
     // need to set configDir to rootDir otherwise submodule will use submodule/config/checkstyle
     configDir = new File(rootDir, 'config/checkstyle')
 }
@@ -208,6 +208,16 @@ def versions = [
         springfoxSwagger: '2.8.0'
 ]
 
+configurations.all {
+    resolutionStrategy {
+        eachDependency { DependencyResolveDetails details ->
+            if (details.requested.group in ['com.fasterxml.jackson.core', 'com.fasterxml.jackson.module', 'com.fasterxml.jackson.datatype']) {
+                details.useVersion '2.9.9'
+            }
+        }
+    }
+}
+
 dependencies {
     compile group: 'commons-io', name: 'commons-io', version: '2.6'
 
@@ -236,7 +246,7 @@ dependencies {
     compile group: 'uk.gov.hmcts.reform', name: 'sscs-job-scheduler', version: '1.5.2'
     compile group: 'uk.gov.hmcts.reform', name: 'service-auth-provider-client', version: '3.0.0'
 
-    compile group: 'uk.gov.hmcts.reform', name: 'sscs-common', version: '3.0.28'
+    compile group: 'uk.gov.hmcts.reform', name: 'sscs-common', version: '3.0.33'
     compile group: 'uk.gov.hmcts.reform', name: 'sscs-pdf-email-common', version: '1.0.11'
 
     compile group: 'uk.gov.service.notify', name: 'notifications-java-client', version: '3.14.2-RELEASE'
