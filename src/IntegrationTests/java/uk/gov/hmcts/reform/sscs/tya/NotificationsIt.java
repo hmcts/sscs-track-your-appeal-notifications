@@ -2897,6 +2897,34 @@ public class NotificationsIt {
         verify(notificationClient, never()).sendEmail(any(), any(), any(), any(), any());
     }
 
+    @Test
+    @Parameters({"subscriptionUpdated", "appealReceived", "struckOut", "directionIssued", "nonCompliant"})
+    public void shouldNotSendNotificationWhenAppealDormantAndNotificationType(String notificationEventType) throws Exception {
+        json = json.replace("appealCreated", "dormantAppealState");
+        json = json.replace("appealReceived", notificationEventType);
+
+        HttpServletResponse response = getResponse(getRequestWithAuthHeader(json));
+
+        assertHttpStatus(response, HttpStatus.OK);
+        verify(notificationClient, never()).sendEmail(any(), any(), any(), any());
+        verify(notificationClient, never()).sendSms(any(), any(), any(), any(), any());
+    }
+
+    @Test
+    @Parameters({"appealLapsed", "corDecision", "appealDormant"})
+    public void shouldSendNotificationWhenAppealDormantAndNotificationType(String notificationEventType) throws Exception {
+        json = json.replace("appealCreated", "dormantAppealState");
+        json = json.replace("appealReceived", notificationEventType);
+
+        HttpServletResponse response = getResponse(getRequestWithAuthHeader(json));
+
+        assertHttpStatus(response, HttpStatus.OK);
+        verify(notificationClient, atMostOnce()).sendEmail(any(), any(), any(), any());
+        verify(notificationClient, atMost(2)).sendSms(any(), any(), any(), any(), any());
+        verify(notificationClient, atMostOnce()).sendPrecompiledLetterWithInputStream(any(), any());
+        verifyNoMoreInteractions(notificationClient);
+    }
+
     private MockHttpServletResponse getResponse(MockHttpServletRequestBuilder requestBuilder) throws Exception {
         return mockMvc.perform(requestBuilder).andReturn().getResponse();
     }

@@ -1,6 +1,7 @@
 package uk.gov.hmcts.reform.sscs.service;
 
 import static uk.gov.hmcts.reform.sscs.ccd.domain.Benefit.getBenefitByCode;
+import static uk.gov.hmcts.reform.sscs.ccd.domain.EventType.LAPSED_REVISED;
 import static uk.gov.hmcts.reform.sscs.ccd.domain.EventType.SUBSCRIPTION_UPDATED;
 import static uk.gov.hmcts.reform.sscs.config.SubscriptionType.APPOINTEE;
 import static uk.gov.hmcts.reform.sscs.config.SubscriptionType.REPRESENTATIVE;
@@ -14,6 +15,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.util.StringUtils;
 import uk.gov.hmcts.reform.sscs.ccd.domain.Benefit;
 import uk.gov.hmcts.reform.sscs.ccd.domain.SscsCaseData;
+import uk.gov.hmcts.reform.sscs.ccd.domain.State;
 import uk.gov.hmcts.reform.sscs.ccd.domain.Subscription;
 import uk.gov.hmcts.reform.sscs.config.NotificationConfig;
 import uk.gov.hmcts.reform.sscs.domain.SubscriptionWithType;
@@ -197,6 +199,16 @@ public class NotificationService {
         if (NotificationEventType.REQUEST_INFO_INCOMPLETE.equals(notificationType)) {
             if (StringUtils.isEmpty(notificationWrapper.getNewSscsCaseData().getInformationFromAppellant())
                     || "No".equalsIgnoreCase(notificationWrapper.getNewSscsCaseData().getInformationFromAppellant())) {
+                isAllowed = false;
+            }
+        }
+
+        if (notificationWrapper.getSscsCaseDataWrapper().getState().equals(State.DORMANT_APPEAL_STATE)) {
+            if (!(NotificationEventType.APPEAL_DORMANT_NOTIFICATION.equals(notificationType) ||
+                    NotificationEventType.APPEAL_LAPSED_NOTIFICATION.equals(notificationType) ||
+                    NotificationEventType.DECISION_ISSUED_2.equals(notificationType))) {
+                log.debug(String.format("Cannot complete notification %s as the appeal was dormant caseId %s.",
+                        notificationType.getId(), notificationWrapper.getCaseId()));
                 isAllowed = false;
             }
         }
