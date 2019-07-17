@@ -1,5 +1,10 @@
 package uk.gov.hmcts.reform.sscs.service.reminder;
 
+import static uk.gov.hmcts.reform.sscs.domain.notify.NotificationEventType.*;
+
+import java.util.Arrays;
+import java.util.Collections;
+import java.util.List;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
@@ -7,12 +12,6 @@ import uk.gov.hmcts.reform.sscs.domain.notify.NotificationEventType;
 import uk.gov.hmcts.reform.sscs.factory.NotificationWrapper;
 import uk.gov.hmcts.reform.sscs.jobscheduler.services.JobNotFoundException;
 import uk.gov.hmcts.reform.sscs.jobscheduler.services.JobRemover;
-
-import java.util.Arrays;
-import java.util.Collections;
-import java.util.List;
-
-import static uk.gov.hmcts.reform.sscs.domain.notify.NotificationEventType.*;
 
 @Component
 @Slf4j

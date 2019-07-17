@@ -1,28 +1,25 @@
 package uk.gov.hmcts.reform.sscs.service.reminder;
 
-import junitparams.JUnitParamsRunner;
-import junitparams.Parameters;
-import org.junit.Before;
-import org.junit.Test;
-import org.junit.runner.RunWith;
-import org.mockito.Mock;
-import org.mockito.junit.MockitoJUnitRunner;
-import uk.gov.hmcts.reform.sscs.SscsCaseDataUtils;
-import uk.gov.hmcts.reform.sscs.domain.notify.NotificationEventType;
-import uk.gov.hmcts.reform.sscs.factory.CcdNotificationWrapper;
-import uk.gov.hmcts.reform.sscs.jobscheduler.services.JobNotFoundException;
-import uk.gov.hmcts.reform.sscs.jobscheduler.services.JobRemover;
-
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
-import java.util.stream.Collectors;
-
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
 import static org.mockito.Mockito.*;
 import static uk.gov.hmcts.reform.sscs.domain.notify.NotificationEventType.*;
+
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
+import java.util.stream.Collectors;
+import junitparams.JUnitParamsRunner;
+import junitparams.Parameters;
+import org.junit.Before;
+import org.junit.Test;
+import org.junit.runner.RunWith;
+import uk.gov.hmcts.reform.sscs.SscsCaseDataUtils;
+import uk.gov.hmcts.reform.sscs.domain.notify.NotificationEventType;
+import uk.gov.hmcts.reform.sscs.factory.CcdNotificationWrapper;
+import uk.gov.hmcts.reform.sscs.jobscheduler.services.JobNotFoundException;
+import uk.gov.hmcts.reform.sscs.jobscheduler.services.JobRemover;
 
 @RunWith(JUnitParamsRunner.class)
 public class AllReminderRemoverTest {

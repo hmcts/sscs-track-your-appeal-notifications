@@ -101,7 +101,7 @@ public class NotificationController {
     }
 
     private State getStateFromString(String value) {
-        return Arrays.stream(State.values()).filter(s-> s.toString().equalsIgnoreCase(value)).findFirst().orElse(State.UNKNOWN);
+        return Arrays.stream(State.values()).filter(s -> s.toString().equalsIgnoreCase(value)).findFirst().orElse(State.UNKNOWN);
     }
 
     private SscsCaseDataWrapper buildSscsCaseDataWrapper(SscsCaseData caseData, SscsCaseData caseDataBefore, NotificationEventType event, State state) {
