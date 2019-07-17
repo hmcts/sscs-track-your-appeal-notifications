@@ -40,6 +40,7 @@ import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.request.MockHttpServletRequestBuilder;
 import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 import uk.gov.hmcts.reform.sscs.ccd.deserialisation.SscsCaseCallbackDeserializer;
+import uk.gov.hmcts.reform.sscs.ccd.domain.State;
 import uk.gov.hmcts.reform.sscs.ccd.service.CcdService;
 import uk.gov.hmcts.reform.sscs.config.NotificationBlacklist;
 import uk.gov.hmcts.reform.sscs.config.NotificationConfig;
@@ -2900,7 +2901,7 @@ public class NotificationsIt {
     @Test
     @Parameters({"subscriptionUpdated", "appealReceived", "struckOut", "directionIssued", "nonCompliant"})
     public void shouldNotSendNotificationWhenAppealDormantAndNotificationType(String notificationEventType) throws Exception {
-        json = json.replace("appealCreated", "dormantAppealState");
+        json = json.replace("appealCreated", State.DORMANT_APPEAL_STATE.toString());
         json = json.replace("appealReceived", notificationEventType);
 
         HttpServletResponse response = getResponse(getRequestWithAuthHeader(json));
@@ -2913,7 +2914,7 @@ public class NotificationsIt {
     @Test
     @Parameters({"appealLapsed", "corDecision", "appealDormant"})
     public void shouldSendNotificationWhenAppealDormantAndNotificationType(String notificationEventType) throws Exception {
-        json = json.replace("appealCreated", "dormantAppealState");
+        json = json.replace("appealCreated", State.DORMANT_APPEAL_STATE.toString());
         json = json.replace("appealReceived", notificationEventType);
 
         HttpServletResponse response = getResponse(getRequestWithAuthHeader(json));
