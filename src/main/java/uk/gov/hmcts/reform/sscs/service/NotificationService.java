@@ -202,7 +202,7 @@ public class NotificationService {
             }
         }
 
-        if (notificationWrapper.getSscsCaseDataWrapper().getState().equals(State.DORMANT_APPEAL_STATE)) {
+        if (notificationWrapper.getSscsCaseDataWrapper().getState() != null && notificationWrapper.getSscsCaseDataWrapper().getState().equals(State.DORMANT_APPEAL_STATE)) {
             if (!(NotificationEventType.APPEAL_DORMANT_NOTIFICATION.equals(notificationType)
                     || NotificationEventType.APPEAL_LAPSED_NOTIFICATION.equals(notificationType)
                     || NotificationEventType.DECISION_ISSUED_2.equals(notificationType))) {
