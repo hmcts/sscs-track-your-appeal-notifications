@@ -9,9 +9,11 @@ import static org.mockito.Mockito.verifyZeroInteractions;
 import static org.mockito.Mockito.when;
 import static uk.gov.hmcts.reform.sscs.ccd.domain.EventType.APPEAL_RECEIVED;
 
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 import lombok.extern.slf4j.Slf4j;
+import org.apache.pdfbox.io.IOUtils;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -52,8 +54,10 @@ public class PdfLetterServiceIt {
     private DocmosisPdfService docmosisPdfService;
 
     @Test
-    public void canGenerateACoversheetOnAppealReceived() {
-        when(docmosisPdfService.createPdf(any(Object.class), anyString())).thenReturn(new byte[2]);
+    public void canGenerateACoversheetOnAppealReceived() throws IOException {
+        byte[] pdfbytes = IOUtils.toByteArray(getClass().getClassLoader().getResourceAsStream(
+                "pdfs/direction-notice-coversheet-sample.pdf"));
+        when(docmosisPdfService.createPdf(any(Object.class), anyString())).thenReturn(pdfbytes);
         SscsCaseData sscsCaseData = getSscsCaseData();
         SscsCaseDataWrapper dataWrapper = SscsCaseDataWrapper.builder()
                 .newSscsCaseData(sscsCaseData)
@@ -61,7 +65,7 @@ public class PdfLetterServiceIt {
                 .notificationEventType(NotificationEventType.APPEAL_RECEIVED_NOTIFICATION)
                 .build();
         NotificationWrapper wrapper = new CcdNotificationWrapper(dataWrapper);
-        byte[] bytes = pdfLetterService.generateCoversheet(wrapper, SubscriptionType.APPELLANT);
+        byte[] bytes = pdfLetterService.buildCoversheet(wrapper, SubscriptionType.APPELLANT);
         assertNotNull(bytes);
         PdfCoverSheet pdfCoverSheet = new PdfCoverSheet(
                 wrapper.getCaseId(),
@@ -85,7 +89,7 @@ public class PdfLetterServiceIt {
                 .notificationEventType(NotificationEventType.APPEAL_DORMANT_NOTIFICATION)
                 .build();
         NotificationWrapper wrapper = new CcdNotificationWrapper(dataWrapper);
-        pdfLetterService.generateCoversheet(wrapper, SubscriptionType.APPELLANT);
+        pdfLetterService.buildCoversheet(wrapper, SubscriptionType.APPELLANT);
         verifyZeroInteractions(docmosisPdfService);
     }
 

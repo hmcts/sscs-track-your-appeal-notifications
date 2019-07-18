@@ -69,7 +69,7 @@ public class PdfLetterServiceTest {
                 null
         );
 
-        pdfLetterService.generateCoversheet(wrapper, subscriptionType);
+        pdfLetterService.buildCoversheet(wrapper, subscriptionType);
 
         Address address = subscriptionType.equals(SubscriptionType.APPELLANT)
                 ? APPELLANT.getAddress() : REPRESENTATIVE.getAddress();
@@ -93,7 +93,7 @@ public class PdfLetterServiceTest {
                 null
         );
 
-        pdfLetterService.generateCoversheet(wrapper, SubscriptionType.APPELLANT);
+        pdfLetterService.buildCoversheet(wrapper, SubscriptionType.APPELLANT);
     }
 
     @Test
@@ -114,8 +114,10 @@ public class PdfLetterServiceTest {
                 null
         );
         Notification notification = Notification.builder().template(Template.builder().docmosisTemplateId("docmosis.doc").build()).placeholders(new HashMap<>()).build();
-        byte[] bytes = pdfLetterService.generateLetter(wrapper, notification, SubscriptionType.APPELLANT);
-        assertTrue(ArrayUtils.isNotEmpty(bytes));
+        byte[] letter = pdfLetterService.generateLetter(wrapper, notification, SubscriptionType.APPELLANT);
+        byte[] coversheet = pdfLetterService.buildCoversheet(wrapper, SubscriptionType.APPELLANT);
+        assertTrue(ArrayUtils.isNotEmpty(letter));
+        assertTrue(ArrayUtils.isNotEmpty(coversheet));
         verify(docmosisPdfService).createPdfFromMap(any(), eq(notification.getDocmosisLetterTemplate()));
         verify(docmosisPdfService).createPdf(any(), anyString());
     }
@@ -148,5 +150,6 @@ public class PdfLetterServiceTest {
         when(docmosisPdfService.createPdfFromMap(any(), anyString())).thenReturn("Invalid PDF".getBytes());
         when(docmosisPdfService.createPdf(any(), anyString())).thenReturn("Invalid PDF".getBytes());
         pdfLetterService.generateLetter(wrapper, notification, SubscriptionType.REPRESENTATIVE);
+        pdfLetterService.buildCoversheet(wrapper, SubscriptionType.REPRESENTATIVE);
     }
 }

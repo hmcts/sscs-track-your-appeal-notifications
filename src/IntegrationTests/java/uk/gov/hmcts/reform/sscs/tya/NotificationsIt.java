@@ -166,6 +166,7 @@ public class NotificationsIt {
 
         byte[] pdfbytes = IOUtils.toByteArray(getClass().getClassLoader().getResourceAsStream("pdfs/direction-notice-coversheet-sample.pdf"));
         when(pdfLetterService.generateLetter(any(), any(), any())).thenReturn(pdfbytes);
+        when(pdfLetterService.buildCoversheet(any(), any())).thenReturn(pdfbytes);
     }
 
     @Test
@@ -2147,6 +2148,19 @@ public class NotificationsIt {
                 "0",
                 "Harry Potter"
             },
+            new Object[]{
+                DIRECTION_ISSUED,
+                "paper",
+                Collections.emptyList(),
+                Collections.emptyList(),
+                Collections.singletonList("TB-SCS-GNO-ENG-00067.docx"),
+                "yes",
+                "yes",
+                "0",
+                "0",
+                "0",
+                "Appointee Appointee"
+        },
             new Object[]{
                 APPEAL_RECEIVED_NOTIFICATION,
                 "paper",

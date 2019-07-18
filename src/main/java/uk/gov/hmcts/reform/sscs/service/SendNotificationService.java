@@ -228,7 +228,11 @@ public class SendNotificationService {
                 byte[] letter = pdfLetterService.generateLetter(wrapper, notification, subscriptionType);
                 final byte[] associatedCasePdf = downloadAssociatedCasePdf(wrapper);
                 if (ArrayUtils.isNotEmpty(associatedCasePdf)) {
-                    letter = buildBundledLetter(letter, associatedCasePdf);
+                    letter = buildBundledLetter(addBlankPageAtTheEndIfOddPage(letter), associatedCasePdf);
+                }
+                byte[] coversheet = pdfLetterService.buildCoversheet(wrapper, subscriptionType);
+                if (ArrayUtils.isNotEmpty(coversheet)) {
+                    letter = buildBundledLetter(addBlankPageAtTheEndIfOddPage(letter), coversheet);
                 }
                 bundledLetter = letter;
             } else {
