@@ -32,6 +32,9 @@ public enum NotificationEventType {
     VALID_APPEAL_CREATED("validAppealCreated", true, true, false, true, false),
     REQUEST_INFO_INCOMPLETE("requestInfoIncompleteApplication", true, true, true, false, false),
     JUDGE_DECISION_APPEAL_TO_PROCEED("judgeDecisionAppealToProceed", true, true, true, false, false),
+    ASSIGN_TO_JUDGE("assignToJudge", false, false, false, false, false),
+    TCW_DIRECTION_ISSUED("tcwDirectionIssued", false, false, false, false, false),
+    JUDGE_DIRECTION_ISSUED("judgeDirectionIssued", false, false, false, false, false),
     TCW_DECISION_APPEAL_TO_PROCEED("tcwDecisionAppealToProceed", true, true, true, false, false),
     NON_COMPLIANT_NOTIFICATION("nonCompliant", true, true, true, false, false),
     DO_NOT_SEND("");
