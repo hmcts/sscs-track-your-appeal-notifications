@@ -12,6 +12,8 @@ import org.apache.commons.lang3.ArrayUtils;
 import org.apache.pdfbox.multipdf.PDFMergerUtility;
 import org.apache.pdfbox.pdmodel.PDDocument;
 import org.apache.pdfbox.pdmodel.PDPage;
+import org.apache.pdfbox.pdmodel.PDPageContentStream;
+import org.apache.pdfbox.pdmodel.common.PDRectangle;
 import uk.gov.hmcts.reform.sscs.ccd.domain.Address;
 import uk.gov.hmcts.reform.sscs.ccd.domain.Name;
 import uk.gov.hmcts.reform.sscs.config.SubscriptionType;
@@ -67,7 +69,13 @@ public class LetterUtils {
         if (ArrayUtils.isNotEmpty(letter)) {
             PDDocument loadDoc = PDDocument.load(letter);
             if (loadDoc.getNumberOfPages() % 2 != 0) {
-                loadDoc.addPage(new PDPage());
+                final PDPage blankPage = new PDPage(PDRectangle.A4);
+                // need to add PDPageContentStream here to pass gov notify validation!
+                PDPageContentStream contents = new PDPageContentStream(loadDoc, blankPage);
+                contents.beginText();
+                contents.endText();
+                contents.close();
+                loadDoc.addPage(blankPage);
                 ByteArrayOutputStream baos = new ByteArrayOutputStream();
                 loadDoc.save(baos);
                 loadDoc.close();
