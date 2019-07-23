@@ -7,6 +7,8 @@ import lombok.Data;
 public class PdfCoverSheet {
     @JsonProperty("case_id")
     private final String caseId;
+    @JsonProperty("name")
+    private String name;
     @JsonProperty("address_line1")
     private final String addressLine1;
     @JsonProperty("address_line2")
@@ -21,6 +23,7 @@ public class PdfCoverSheet {
     private final String hmcts;
 
     public PdfCoverSheet(String caseId,
+                         String name,
                          String addressLine1,
                          String addressLine2,
                          String addressTown,
@@ -28,6 +31,7 @@ public class PdfCoverSheet {
                          String addressPostcode,
                          String hmcts) {
         this.caseId = caseId;
+        this.name = name;
         this.addressLine1 = addressLine1;
         this.addressLine2 = addressLine2;
         this.addressTown = addressTown;

@@ -69,6 +69,7 @@ public class PdfLetterServiceIt {
         assertNotNull(bytes);
         PdfCoverSheet pdfCoverSheet = new PdfCoverSheet(
                 wrapper.getCaseId(),
+                wrapper.getNewSscsCaseData().getAppeal().getAppellant().getName().getFullNameNoTitle(),
                 wrapper.getNewSscsCaseData().getAppeal().getAppellant().getAddress().getLine1(),
                 wrapper.getNewSscsCaseData().getAppeal().getAppellant().getAddress().getLine2(),
                 wrapper.getNewSscsCaseData().getAppeal().getAppellant().getAddress().getTown(),

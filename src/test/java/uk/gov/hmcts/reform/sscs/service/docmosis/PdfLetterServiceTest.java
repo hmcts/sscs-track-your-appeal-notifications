@@ -73,7 +73,10 @@ public class PdfLetterServiceTest {
 
         Address address = subscriptionType.equals(SubscriptionType.APPELLANT)
                 ? APPELLANT.getAddress() : REPRESENTATIVE.getAddress();
+        Name name = subscriptionType.equals(SubscriptionType.APPELLANT)
+                ? APPELLANT.getName() : REPRESENTATIVE.getName();
         PdfCoverSheet pdfCoverSheet = new PdfCoverSheet(wrapper.getCaseId(),
+                name.getFullNameNoTitle(),
                 address.getLine1(),
                 address.getLine2(),
                 address.getTown(),

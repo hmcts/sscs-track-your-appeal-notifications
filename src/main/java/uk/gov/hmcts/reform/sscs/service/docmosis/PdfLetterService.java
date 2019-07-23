@@ -3,9 +3,7 @@ package uk.gov.hmcts.reform.sscs.service.docmosis;
 import static uk.gov.hmcts.reform.sscs.config.AppConstants.*;
 import static uk.gov.hmcts.reform.sscs.config.AppConstants.POSTCODE_LITERAL;
 import static uk.gov.hmcts.reform.sscs.domain.notify.NotificationEventType.APPEAL_RECEIVED_NOTIFICATION;
-import static uk.gov.hmcts.reform.sscs.service.LetterUtils.addBlankPageAtTheEndIfOddPage;
-import static uk.gov.hmcts.reform.sscs.service.LetterUtils.buildBundledLetter;
-import static uk.gov.hmcts.reform.sscs.service.LetterUtils.getAddressToUseForLetter;
+import static uk.gov.hmcts.reform.sscs.service.LetterUtils.*;
 
 import java.io.*;
 import java.time.LocalDateTime;
@@ -19,6 +17,7 @@ import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import uk.gov.hmcts.reform.sscs.ccd.domain.Address;
+import uk.gov.hmcts.reform.sscs.ccd.domain.Name;
 import uk.gov.hmcts.reform.sscs.config.DocmosisTemplatesConfig;
 import uk.gov.hmcts.reform.sscs.config.SubscriptionType;
 import uk.gov.hmcts.reform.sscs.domain.docmosis.PdfCoverSheet;
@@ -66,8 +65,10 @@ public class PdfLetterService {
 
     private byte[] generateCoversheet(NotificationWrapper wrapper, SubscriptionType subscriptionType) {
         Address addressToUse = getAddressToUseForLetter(wrapper, subscriptionType);
+        Name name = getNameToUseForLetter(wrapper, subscriptionType);
         PdfCoverSheet pdfCoverSheet = new PdfCoverSheet(
                 wrapper.getCaseId(),
+                name.getFullNameNoTitle(),
                 addressToUse.getLine1(),
                 addressToUse.getLine2(),
                 addressToUse.getTown(),
