@@ -14,11 +14,8 @@ import java.util.Collections;
 import java.util.Comparator;
 import java.util.List;
 
-import uk.gov.hmcts.reform.sscs.ccd.domain.Appeal;
-import uk.gov.hmcts.reform.sscs.ccd.domain.Appointee;
-import uk.gov.hmcts.reform.sscs.ccd.domain.Hearing;
-import uk.gov.hmcts.reform.sscs.ccd.domain.SscsCaseData;
-import uk.gov.hmcts.reform.sscs.ccd.domain.Subscription;
+import org.apache.commons.lang.StringUtils;
+import uk.gov.hmcts.reform.sscs.ccd.domain.*;
 import uk.gov.hmcts.reform.sscs.config.SubscriptionType;
 
 import uk.gov.hmcts.reform.sscs.domain.SscsCaseDataWrapper;
@@ -162,11 +159,18 @@ public class NotificationUtils {
         Comparator<Hearing> compareByIdAndDate = new Comparator<Hearing>() {
             @Override
             public int compare(Hearing o1, Hearing o2) {
-                Integer idCompare = o1.getValue().getHearingId().compareTo(o2.getValue().getHearingId());
+                HearingDetails hearingDetails = o1.getValue();
+                HearingDetails nextHearingDetails = o2.getValue();
+                Integer idCompare = 0;
+
+                if (!StringUtils.isEmpty(hearingDetails.getHearingId()) && !StringUtils.isEmpty(nextHearingDetails.getHearingId())) {
+                    idCompare = hearingDetails.getHearingId().compareTo(nextHearingDetails.getHearingId());
+                }
+
                 if (idCompare != 0) {
                     return -1 * idCompare;
                 }
-                return -1 * o1.getValue().getHearingDateTime().compareTo(o2.getValue().getHearingDateTime());
+                return -1 * hearingDetails.getHearingDateTime().compareTo(nextHearingDetails.getHearingDateTime());
             }
         };
 
