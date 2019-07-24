@@ -252,7 +252,7 @@ dependencies {
     compile group: 'uk.gov.service.notify', name: 'notifications-java-client', version: '3.14.2-RELEASE'
     compile group: 'io.github.openfeign.form', name: 'feign-form', version: '3.8.0'
 
-    compile group: 'org.apache.pdfbox', name: 'pdfbox', version: '2.0.15'
+    compile group: 'org.apache.pdfbox', name: 'pdfbox', version: '2.0.16'
 
     compileOnly 'org.projectlombok:lombok:1.18.8'
     compileOnly("org.springframework.boot:spring-boot-devtools")
