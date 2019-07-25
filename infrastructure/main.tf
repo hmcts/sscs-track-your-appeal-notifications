@@ -163,4 +163,5 @@ module "db-notif" {
   postgresql_user = "${var.postgresql_user}"
   database_name   = "${var.database_name}"
   common_tags     = "${var.common_tags}"
+  subscription          = "${var.subscription}"
 }
