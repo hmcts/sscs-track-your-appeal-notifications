@@ -9,9 +9,11 @@ import static org.mockito.Mockito.verifyZeroInteractions;
 import static org.mockito.Mockito.when;
 import static uk.gov.hmcts.reform.sscs.ccd.domain.EventType.APPEAL_RECEIVED;
 
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 import lombok.extern.slf4j.Slf4j;
+import org.apache.pdfbox.io.IOUtils;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -37,13 +39,13 @@ import uk.gov.hmcts.reform.sscs.service.DocmosisPdfService;
 @ActiveProfiles("integration")
 @AutoConfigureMockMvc
 @Slf4j
-public class PdfCoverSheetServiceIt {
+public class PdfLetterServiceIt {
     private static final String CASE_ID = "1000001";
     private static final String DATE = "2018-01-01T14:01:18.243";
     private static final String YES = "Yes";
 
     @Autowired
-    private PdfCoverSheetService pdfCoverSheetService;
+    private PdfLetterService pdfLetterService;
 
     @Autowired
     private DocmosisTemplatesConfig docmosisTemplatesConfig;
@@ -52,8 +54,10 @@ public class PdfCoverSheetServiceIt {
     private DocmosisPdfService docmosisPdfService;
 
     @Test
-    public void canGenerateACoversheetOnAppealReceived() {
-        when(docmosisPdfService.createPdf(any(Object.class), anyString())).thenReturn(new byte[2]);
+    public void canGenerateACoversheetOnAppealReceived() throws IOException {
+        byte[] pdfbytes = IOUtils.toByteArray(getClass().getClassLoader().getResourceAsStream(
+                "pdfs/direction-notice-coversheet-sample.pdf"));
+        when(docmosisPdfService.createPdf(any(Object.class), anyString())).thenReturn(pdfbytes);
         SscsCaseData sscsCaseData = getSscsCaseData();
         SscsCaseDataWrapper dataWrapper = SscsCaseDataWrapper.builder()
                 .newSscsCaseData(sscsCaseData)
@@ -61,17 +65,19 @@ public class PdfCoverSheetServiceIt {
                 .notificationEventType(NotificationEventType.APPEAL_RECEIVED_NOTIFICATION)
                 .build();
         NotificationWrapper wrapper = new CcdNotificationWrapper(dataWrapper);
-        byte[] bytes = pdfCoverSheetService.generateCoversheet(wrapper, SubscriptionType.APPELLANT);
+        byte[] bytes = pdfLetterService.buildCoversheet(wrapper, SubscriptionType.APPELLANT);
         assertNotNull(bytes);
         PdfCoverSheet pdfCoverSheet = new PdfCoverSheet(
                 wrapper.getCaseId(),
+                wrapper.getNewSscsCaseData().getAppeal().getAppellant().getName().getFullNameNoTitle(),
                 wrapper.getNewSscsCaseData().getAppeal().getAppellant().getAddress().getLine1(),
                 wrapper.getNewSscsCaseData().getAppeal().getAppellant().getAddress().getLine2(),
                 wrapper.getNewSscsCaseData().getAppeal().getAppellant().getAddress().getTown(),
                 wrapper.getNewSscsCaseData().getAppeal().getAppellant().getAddress().getCounty(),
-                wrapper.getNewSscsCaseData().getAppeal().getAppellant().getAddress().getPostcode()
+                wrapper.getNewSscsCaseData().getAppeal().getAppellant().getAddress().getPostcode(),
+                docmosisTemplatesConfig.getHmctsImgVal()
         );
-        verify(docmosisPdfService).createPdf(eq(pdfCoverSheet), eq(docmosisTemplatesConfig.getTemplates().get(APPEAL_RECEIVED.getType())));
+        verify(docmosisPdfService).createPdf(eq(pdfCoverSheet), eq(docmosisTemplatesConfig.getCoversheets().get(APPEAL_RECEIVED.getType())));
     }
 
     @Test(expected = PdfGenerationException.class)
@@ -84,7 +90,7 @@ public class PdfCoverSheetServiceIt {
                 .notificationEventType(NotificationEventType.APPEAL_DORMANT_NOTIFICATION)
                 .build();
         NotificationWrapper wrapper = new CcdNotificationWrapper(dataWrapper);
-        pdfCoverSheetService.generateCoversheet(wrapper, SubscriptionType.APPELLANT);
+        pdfLetterService.buildCoversheet(wrapper, SubscriptionType.APPELLANT);
         verifyZeroInteractions(docmosisPdfService);
     }
 

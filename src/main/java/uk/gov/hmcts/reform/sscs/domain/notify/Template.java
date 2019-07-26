@@ -10,4 +10,5 @@ public class Template {
     private final String smsTemplateId;
     private final String smsSenderTemplateId;
     private final String letterTemplateId;
+    private final String docmosisTemplateId;
 }

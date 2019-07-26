@@ -20,3 +20,5 @@ bundled_letters_on = "true"
 letters_on = "true"
 
 interloc_letters_on = "true"
+
+docmosis_letters_on = "true"

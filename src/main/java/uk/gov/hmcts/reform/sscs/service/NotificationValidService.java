@@ -23,6 +23,8 @@ public class NotificationValidService {
     protected static final List<NotificationEventType> LETTER_EVENT_TYPES = Stream.concat(FALLBACK_LETTER_SUBSCRIPTION_TYPES.stream(), MANDATORY_LETTER_EVENT_TYPES. stream()).collect(Collectors.toList());
     protected static final List<NotificationEventType> BUNDLED_LETTER_EVENT_TYPES = Arrays.asList(STRUCK_OUT, DIRECTION_ISSUED, JUDGE_DECISION_APPEAL_TO_PROCEED, TCW_DECISION_APPEAL_TO_PROCEED);
     protected static final List<NotificationEventType> INTERLOC_LETTERS = Arrays.asList(STRUCK_OUT, DIRECTION_ISSUED, REQUEST_INFO_INCOMPLETE, JUDGE_DECISION_APPEAL_TO_PROCEED, TCW_DECISION_APPEAL_TO_PROCEED, NON_COMPLIANT_NOTIFICATION, VALID_APPEAL_CREATED);
+    protected static final List<NotificationEventType> DOCMOSIS_LETTERS = Arrays.asList(APPEAL_RECEIVED_NOTIFICATION, DIRECTION_ISSUED);
+
     private static final String HEARING_TYPE_ONLINE_RESOLUTION = "cor";
 
     static boolean isMandatoryLetterEventType(NotificationEventType eventType) {

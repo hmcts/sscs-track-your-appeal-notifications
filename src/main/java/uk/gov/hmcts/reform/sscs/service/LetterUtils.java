@@ -8,8 +8,12 @@ import static uk.gov.hmcts.reform.sscs.service.NotificationUtils.hasAppointee;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 
+import org.apache.commons.lang3.ArrayUtils;
 import org.apache.pdfbox.multipdf.PDFMergerUtility;
 import org.apache.pdfbox.pdmodel.PDDocument;
+import org.apache.pdfbox.pdmodel.PDPage;
+import org.apache.pdfbox.pdmodel.PDPageContentStream;
+import org.apache.pdfbox.pdmodel.common.PDRectangle;
 import uk.gov.hmcts.reform.sscs.ccd.domain.Address;
 import uk.gov.hmcts.reform.sscs.ccd.domain.Name;
 import uk.gov.hmcts.reform.sscs.config.SubscriptionType;
@@ -59,6 +63,28 @@ public class LetterUtils {
                 return wrapper.getNewSscsCaseData().getAppeal().getAppellant().getName();
             }
         }
+    }
+
+    public static byte[] addBlankPageAtTheEndIfOddPage(byte[] letter) throws IOException {
+        if (ArrayUtils.isNotEmpty(letter)) {
+            PDDocument loadDoc = PDDocument.load(letter);
+            if (loadDoc.getNumberOfPages() % 2 != 0) {
+                final PDPage blankPage = new PDPage(PDRectangle.A4);
+                // need to add PDPageContentStream here to pass gov notify validation!
+                PDPageContentStream contents = new PDPageContentStream(loadDoc, blankPage);
+                contents.beginText();
+                contents.endText();
+                contents.close();
+                loadDoc.addPage(blankPage);
+                ByteArrayOutputStream baos = new ByteArrayOutputStream();
+                loadDoc.save(baos);
+                loadDoc.close();
+                byte[] bytes = baos.toByteArray();
+                baos.close();
+                return bytes;
+            }
+        }
+        return letter;
     }
 
     public static byte[] buildBundledLetter(byte[] coveringLetter, byte[] directionText) throws IOException {

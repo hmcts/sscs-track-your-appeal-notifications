@@ -31,6 +31,7 @@ import uk.gov.hmcts.reform.sscs.factory.CcdNotificationWrapper;
 import uk.gov.hmcts.reform.sscs.factory.NotificationFactory;
 import uk.gov.hmcts.reform.sscs.idam.IdamService;
 import uk.gov.hmcts.reform.sscs.idam.IdamTokens;
+import uk.gov.hmcts.reform.sscs.service.docmosis.PdfLetterService;
 import uk.gov.service.notify.NotificationClientException;
 
 @RunWith(JUnitParamsRunner.class)
@@ -128,6 +129,9 @@ public class NotificationServiceForSubscriptionUpdatedTest {
     private SscsGeneratePdfService sscsGeneratePdfService;
 
     @Mock
+    private PdfLetterService pdfLetterService;
+
+    @Mock
     private IdamService idamService;
 
     private final Subscription subscription = Subscription.builder().tya(APPEAL_NUMBER).email(EMAIL_TEST_1)
@@ -149,10 +153,12 @@ public class NotificationServiceForSubscriptionUpdatedTest {
 
     private NotificationService getNotificationService() {
         SendNotificationService sendNotificationService = new SendNotificationService(notificationSender,
-                evidenceManagementService, sscsGeneratePdfService, notificationHandler, notificationValidService, bundledLetterTemplateUtil);
+                evidenceManagementService, sscsGeneratePdfService, notificationHandler, notificationValidService,
+                bundledLetterTemplateUtil, pdfLetterService);
         ReflectionTestUtils.setField(sendNotificationService, "bundledLettersOn", false);
         ReflectionTestUtils.setField(sendNotificationService, "lettersOn", false);
         ReflectionTestUtils.setField(sendNotificationService, "interlocLettersOn", false);
+        ReflectionTestUtils.setField(sendNotificationService, "docmosisLettersOn", false);
         return new NotificationService(notificationFactory, reminderService,
                 notificationValidService, notificationHandler, outOfHoursCalculator, notificationConfig, sendNotificationService
         );

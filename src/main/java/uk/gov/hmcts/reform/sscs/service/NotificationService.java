@@ -166,6 +166,7 @@ public class NotificationService {
                     NotificationEventType.SUBSCRIPTION_OLD_NOTIFICATION.getId(),
                     NotificationEventType.SUBSCRIPTION_OLD_NOTIFICATION.getId(),
                     NotificationEventType.SUBSCRIPTION_OLD_NOTIFICATION.getId(),
+                    NotificationEventType.SUBSCRIPTION_OLD_NOTIFICATION.getId(),
                     benefit,
                     wrapper.getHearingType()
             );
