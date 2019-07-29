@@ -10,6 +10,7 @@ postgresql:
       service.beta.kubernetes.io/azure-load-balancer-internal: "true"
 
 java:
+  image: 'https://hmctspublic.azurecr.io/hmcts/sscs/tya-notif:latest'
   applicationPort: 8081
   keyVaults:
     sscs:

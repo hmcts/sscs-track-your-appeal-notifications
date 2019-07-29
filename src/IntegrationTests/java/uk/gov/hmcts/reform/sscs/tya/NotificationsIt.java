@@ -49,6 +49,7 @@ import uk.gov.hmcts.reform.sscs.domain.notify.NotificationEventType;
 import uk.gov.hmcts.reform.sscs.factory.NotificationFactory;
 import uk.gov.hmcts.reform.sscs.idam.IdamService;
 import uk.gov.hmcts.reform.sscs.service.*;
+import uk.gov.hmcts.reform.sscs.service.docmosis.PdfLetterService;
 import uk.gov.service.notify.*;
 
 @RunWith(JUnitParamsRunner.class)
@@ -115,6 +116,9 @@ public class NotificationsIt {
     @Autowired
     private BundledLetterTemplateUtil bundledLetterTemplateUtil;
 
+    @MockBean
+    private PdfLetterService pdfLetterService;
+
     @Mock
     private EvidenceManagementService evidenceManagementService;
 
@@ -131,10 +135,11 @@ public class NotificationsIt {
     public void setup() throws Exception {
         NotificationSender sender = new NotificationSender(notificationClient, null, notificationBlacklist);
 
-        SendNotificationService sendNotificationService = new SendNotificationService(sender, evidenceManagementService, sscsGeneratePdfService, notificationHandler, notificationValidService, bundledLetterTemplateUtil);
+        SendNotificationService sendNotificationService = new SendNotificationService(sender, evidenceManagementService, sscsGeneratePdfService, notificationHandler, notificationValidService, bundledLetterTemplateUtil, pdfLetterService);
 
         ReflectionTestUtils.setField(sendNotificationService, "bundledLettersOn", true);
         ReflectionTestUtils.setField(sendNotificationService, "lettersOn", true);
+        ReflectionTestUtils.setField(sendNotificationService, "docmosisLettersOn", true);
         ReflectionTestUtils.setField(sendNotificationService, "interlocLettersOn", true);
 
         NotificationService service = new NotificationService(factory, reminderService, notificationValidService, notificationHandler, outOfHoursCalculator, notificationConfig, sendNotificationService);
@@ -159,6 +164,10 @@ public class NotificationsIt {
 
         outOfHoursCalculator = mock(OutOfHoursCalculator.class);
         when(outOfHoursCalculator.isItOutOfHours()).thenReturn(false);
+
+        byte[] pdfbytes = IOUtils.toByteArray(getClass().getClassLoader().getResourceAsStream("pdfs/direction-notice-coversheet-sample.pdf"));
+        when(pdfLetterService.generateLetter(any(), any(), any())).thenReturn(pdfbytes);
+        when(pdfLetterService.buildCoversheet(any(), any())).thenReturn(pdfbytes);
     }
 
     @Test
@@ -437,9 +446,14 @@ public class NotificationsIt {
     private void validateLetterNotifications(List<String> expectedLetterTemplateIds, int wantedNumberOfSendLetterInvocations, String expectedName) throws NotificationClientException {
         ArgumentCaptor<Map<String, String>> letterPersonalisationCaptor = ArgumentCaptor.forClass(Map.class);
         ArgumentCaptor<String> letterTemplateIdCaptor = ArgumentCaptor.forClass(String.class);
-        verify(notificationClient, times(wantedNumberOfSendLetterInvocations))
+        verify(notificationClient, atMost(wantedNumberOfSendLetterInvocations))
             .sendLetter(letterTemplateIdCaptor.capture(), letterPersonalisationCaptor.capture(), any());
-        assertArrayEquals(expectedLetterTemplateIds.toArray(), letterTemplateIdCaptor.getAllValues().toArray());
+        assertArrayEquals(expectedLetterTemplateIds.stream().filter(f -> !(f.endsWith(".doc") || f.endsWith(".docx"))).toArray(), letterTemplateIdCaptor.getAllValues().toArray());
+
+        int expectedDocmosisLetters = expectedLetterTemplateIds.stream().filter(f -> f.endsWith(".doc") || f.endsWith(".docx")).toArray().length;
+        if (expectedDocmosisLetters > 0) {
+            verify(notificationClient, times(expectedDocmosisLetters)).sendPrecompiledLetterWithInputStream(any(), any());
+        }
 
         if (0 < wantedNumberOfSendLetterInvocations) {
             Map<String, String> personalisation = letterPersonalisationCaptor.getValue();
@@ -712,56 +726,56 @@ public class NotificationsIt {
                 "paper",
                 Arrays.asList("b90df52f-c628-409c-8875-4b0b9663a053", "4b1ee55b-abd1-4e7e-b0ed-693d8df1e741"),
                 Arrays.asList("ede384aa-0b6e-4311-9f01-ee547573a07b", "99bd4a56-256c-4de8-b187-d43a8dde466f"),
-                Arrays.asList("91143b85-dd9d-430c-ba23-e42ec90f44f8", "77ea8a2f-06df-4279-9c1f-0f23cb2d9bbf"),
+                Arrays.asList("TB-SCS-GNO-ENG-00060.doc", "77ea8a2f-06df-4279-9c1f-0f23cb2d9bbf"),
                 "yes",
                 "yes",
                 "yes",
                 "yes",
                 "2",
                 "2",
-                "2"
+                "1"
             },
             new Object[]{
                 APPEAL_RECEIVED_NOTIFICATION,
                 "oral",
                 Arrays.asList("b90df52f-c628-409c-8875-4b0b9663a053", "4b1ee55b-abd1-4e7e-b0ed-693d8df1e741"),
                 Arrays.asList("ede384aa-0b6e-4311-9f01-ee547573a07b", "99bd4a56-256c-4de8-b187-d43a8dde466f"),
-                Arrays.asList("91143b85-dd9d-430c-ba23-e42ec90f44f8", "77ea8a2f-06df-4279-9c1f-0f23cb2d9bbf"),
+                Arrays.asList("TB-SCS-GNO-ENG-00060.doc", "77ea8a2f-06df-4279-9c1f-0f23cb2d9bbf"),
                 "yes",
                 "yes",
                 "yes",
                 "yes",
                 "2",
                 "2",
-                "2"
+                "1"
             },
             new Object[]{
                 APPEAL_RECEIVED_NOTIFICATION,
                 "paper",
                 Collections.singletonList("4b1ee55b-abd1-4e7e-b0ed-693d8df1e741"),
                 Arrays.asList("ede384aa-0b6e-4311-9f01-ee547573a07b", "99bd4a56-256c-4de8-b187-d43a8dde466f"),
-                Arrays.asList("91143b85-dd9d-430c-ba23-e42ec90f44f8", "77ea8a2f-06df-4279-9c1f-0f23cb2d9bbf"),
+                Arrays.asList("TB-SCS-GNO-ENG-00060.doc", "77ea8a2f-06df-4279-9c1f-0f23cb2d9bbf"),
                 "no",
                 "yes",
                 "yes",
                 "yes",
                 "1",
                 "2",
-                "2"
+                "1"
             },
             new Object[]{
                 APPEAL_RECEIVED_NOTIFICATION,
                 "paper",
                 Collections.emptyList(),
                 Collections.emptyList(),
-                Arrays.asList("91143b85-dd9d-430c-ba23-e42ec90f44f8", "77ea8a2f-06df-4279-9c1f-0f23cb2d9bbf"),
+                Arrays.asList("TB-SCS-GNO-ENG-00060.doc", "77ea8a2f-06df-4279-9c1f-0f23cb2d9bbf"),
                 "no",
                 "no",
                 "no",
                 "no",
                 "0",
                 "0",
-                "2"
+                "1"
             },
             new Object[]{
                 APPEAL_DORMANT_NOTIFICATION,
@@ -1587,21 +1601,21 @@ public class NotificationsIt {
                 "paper",
                 Arrays.asList("b90df52f-c628-409c-8875-4b0b9663a053", "4b1ee55b-abd1-4e7e-b0ed-693d8df1e741"),
                 Arrays.asList("ede384aa-0b6e-4311-9f01-ee547573a07b", "99bd4a56-256c-4de8-b187-d43a8dde466f"),
-                Arrays.asList("91143b85-dd9d-430c-ba23-e42ec90f44f8", "77ea8a2f-06df-4279-9c1f-0f23cb2d9bbf"),
+                Arrays.asList("TB-SCS-GNO-ENG-00060.doc", "77ea8a2f-06df-4279-9c1f-0f23cb2d9bbf"),
                 "yes",
                 "yes",
                 "yes",
                 "yes",
                 "2",
                 "2",
-                "2"
+                "1"
             },
             new Object[]{
                 APPEAL_RECEIVED_NOTIFICATION,
                 "oral",
                 Arrays.asList("b90df52f-c628-409c-8875-4b0b9663a053", "4b1ee55b-abd1-4e7e-b0ed-693d8df1e741"),
                 Arrays.asList("ede384aa-0b6e-4311-9f01-ee547573a07b", "99bd4a56-256c-4de8-b187-d43a8dde466f"),
-                Arrays.asList("91143b85-dd9d-430c-ba23-e42ec90f44f8", "77ea8a2f-06df-4279-9c1f-0f23cb2d9bbf"),
+                Arrays.asList("TB-SCS-GNO-ENG-00060.doc", "77ea8a2f-06df-4279-9c1f-0f23cb2d9bbf"),
                 "yes",
                 "yes",
                 "yes",
@@ -1615,28 +1629,28 @@ public class NotificationsIt {
                 "paper",
                 Collections.singletonList("4b1ee55b-abd1-4e7e-b0ed-693d8df1e741"),
                 Arrays.asList("ede384aa-0b6e-4311-9f01-ee547573a07b", "99bd4a56-256c-4de8-b187-d43a8dde466f"),
-                Arrays.asList("91143b85-dd9d-430c-ba23-e42ec90f44f8", "77ea8a2f-06df-4279-9c1f-0f23cb2d9bbf"),
+                Arrays.asList("TB-SCS-GNO-ENG-00060.doc", "77ea8a2f-06df-4279-9c1f-0f23cb2d9bbf"),
                 "no",
                 "yes",
                 "yes",
                 "yes",
                 "1",
                 "2",
-                "2"
+                "1"
             },
             new Object[]{
                 APPEAL_RECEIVED_NOTIFICATION,
                 "paper",
                 Collections.emptyList(),
                 Collections.emptyList(),
-                Arrays.asList("91143b85-dd9d-430c-ba23-e42ec90f44f8", "77ea8a2f-06df-4279-9c1f-0f23cb2d9bbf"),
+                Arrays.asList("TB-SCS-GNO-ENG-00060.doc", "77ea8a2f-06df-4279-9c1f-0f23cb2d9bbf"),
                 "no",
                 "no",
                 "no",
                 "no",
                 "0",
                 "0",
-                "2"
+                "1"
             },
             new Object[]{
                 APPEAL_DORMANT_NOTIFICATION,
@@ -2136,16 +2150,29 @@ public class NotificationsIt {
                 "Harry Potter"
             },
             new Object[]{
+                DIRECTION_ISSUED,
+                "paper",
+                Collections.emptyList(),
+                Collections.emptyList(),
+                Collections.singletonList("TB-SCS-GNO-ENG-00067.docx"),
+                "yes",
+                "yes",
+                "0",
+                "0",
+                "0",
+                "Appointee Appointee"
+        },
+            new Object[]{
                 APPEAL_RECEIVED_NOTIFICATION,
                 "paper",
                 Collections.singletonList("08365e91-9e07-4a5c-bf96-ef56fd0ada63"),
                 Collections.singletonList("ede384aa-0b6e-4311-9f01-ee547573a07b"),
-                Collections.singletonList("747d026e-1bec-4e96-8a34-28f36e30bba5"),
+                Collections.singletonList("TB-SCS-GNO-ENG-00060.doc"),
                 "yes",
                 "yes",
                 "1",
                 "1",
-                "1",
+                "0",
                 "Appointee Appointee"
             },
             new Object[]{
@@ -2153,12 +2180,12 @@ public class NotificationsIt {
                 "oral",
                 Collections.singletonList("08365e91-9e07-4a5c-bf96-ef56fd0ada63"),
                 Collections.singletonList("ede384aa-0b6e-4311-9f01-ee547573a07b"),
-                Collections.singletonList("747d026e-1bec-4e96-8a34-28f36e30bba5"),
+                Collections.singletonList("TB-SCS-GNO-ENG-00060.doc"),
                 "yes",
                 "yes",
                 "1",
                 "1",
-                "1",
+                "0",
                 "Appointee Appointee"
             },
             new Object[]{
@@ -2166,12 +2193,12 @@ public class NotificationsIt {
                 "paper",
                 Collections.emptyList(),
                 Collections.emptyList(),
-                Collections.singletonList("747d026e-1bec-4e96-8a34-28f36e30bba5"),
+                Collections.singletonList("TB-SCS-GNO-ENG-00060.doc"),
                 "no",
                 "no",
                 "0",
                 "0",
-                "1",
+                "0",
                 "Appointee Appointee"
             },
             new Object[]{
@@ -2472,12 +2499,12 @@ public class NotificationsIt {
                 "paper",
                 Collections.singletonList("08365e91-9e07-4a5c-bf96-ef56fd0ada63"),
                 Collections.singletonList("ede384aa-0b6e-4311-9f01-ee547573a07b"),
-                Collections.singletonList("747d026e-1bec-4e96-8a34-28f36e30bba5"),
+                Collections.singletonList("TB-SCS-GNO-ENG-00060.doc"),
                 "yes",
                 "yes",
                 "1",
                 "1",
-                "1",
+                "0",
                 "Appointee Appointee"
             },
             new Object[]{
@@ -2524,12 +2551,12 @@ public class NotificationsIt {
                 "oral",
                 Collections.singletonList("08365e91-9e07-4a5c-bf96-ef56fd0ada63"),
                 Collections.singletonList("ede384aa-0b6e-4311-9f01-ee547573a07b"),
-                Collections.singletonList("747d026e-1bec-4e96-8a34-28f36e30bba5"),
+                Collections.singletonList("TB-SCS-GNO-ENG-00060.doc"),
                 "yes",
                 "yes",
                 "1",
                 "1",
-                "1",
+                "0",
                 "Appointee Appointee"
             },
             new Object[]{
@@ -2576,12 +2603,12 @@ public class NotificationsIt {
                 "paper",
                 Collections.singletonList("08365e91-9e07-4a5c-bf96-ef56fd0ada63"),
                 Collections.singletonList("ede384aa-0b6e-4311-9f01-ee547573a07b"),
-                Collections.singletonList("747d026e-1bec-4e96-8a34-28f36e30bba5"),
+                Collections.singletonList("TB-SCS-GNO-ENG-00060.doc"),
                 "yes",
                 "yes",
                 "1",
                 "1",
-                "1",
+                "0",
                 "Appointee Appointee"
             },
             new Object[]{
@@ -2589,12 +2616,12 @@ public class NotificationsIt {
                 "oral",
                 Collections.singletonList("08365e91-9e07-4a5c-bf96-ef56fd0ada63"),
                 Collections.singletonList("ede384aa-0b6e-4311-9f01-ee547573a07b"),
-                Collections.singletonList("747d026e-1bec-4e96-8a34-28f36e30bba5"),
+                Collections.singletonList("TB-SCS-GNO-ENG-00060.doc"),
                 "yes",
                 "yes",
                 "1",
                 "1",
-                "1",
+                "0",
                 "Appointee Appointee"
             },
             new Object[]{
@@ -2602,12 +2629,12 @@ public class NotificationsIt {
                 "paper",
                 Collections.emptyList(),
                 Collections.emptyList(),
-                Collections.singletonList("747d026e-1bec-4e96-8a34-28f36e30bba5"),
+                Collections.singletonList("TB-SCS-GNO-ENG-00060.doc"),
                 "no",
                 "no",
                 "0",
                 "0",
-                "1",
+                "0",
                 "Appointee Appointee"
             },
             new Object[]{

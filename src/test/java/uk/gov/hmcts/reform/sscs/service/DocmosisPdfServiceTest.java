@@ -27,14 +27,16 @@ public class DocmosisPdfServiceTest {
 
         expectedPlaceholders = new HashMap<>();
         expectedPlaceholders.put("case_id", "caseId");
+        expectedPlaceholders.put("name", "name");
         expectedPlaceholders.put("address_line1", "addressLine1");
         expectedPlaceholders.put("address_line2", "addressLine2");
         expectedPlaceholders.put("address_town", "addressTown");
         expectedPlaceholders.put("address_county", "addressCounty");
         expectedPlaceholders.put("address_postcode", "addressPostcode");
+        expectedPlaceholders.put("hmcts", "image");
 
         pdfCoverSheet = new PdfCoverSheet(
-                "caseId", "addressLine1", "addressLine2", "addressTown", "addressCounty", "addressPostcode"
+                "caseId",  "name","addressLine1", "addressLine2", "addressTown", "addressCounty", "addressPostcode", "image"
         );
         docmosisPdfGenerationService = mock(DocmosisPdfGenerationService.class);
     }

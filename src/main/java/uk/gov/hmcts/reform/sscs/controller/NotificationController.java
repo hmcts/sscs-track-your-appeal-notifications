@@ -55,20 +55,25 @@ public class NotificationController {
     public void sendNotification(
             @RequestHeader(AuthorisationService.SERVICE_AUTHORISATION_HEADER) String serviceAuthHeader,
             @RequestBody String message) {
-        Callback<SscsCaseData> callback = deserializer.deserialize(message);
+        try {
+            Callback<SscsCaseData> callback = deserializer.deserialize(message);
 
-        CaseDetails<SscsCaseData> caseDetailsBefore = callback.getCaseDetailsBefore().orElse(null);
+            CaseDetails<SscsCaseData> caseDetailsBefore = callback.getCaseDetailsBefore().orElse(null);
 
-        SscsCaseDataWrapper sscsCaseDataWrapper = buildSscsCaseDataWrapper(
+            SscsCaseDataWrapper sscsCaseDataWrapper = buildSscsCaseDataWrapper(
                 callback.getCaseDetails().getCaseData(),
                 caseDetailsBefore != null ? caseDetailsBefore.getCaseData() : null,
                 getNotificationByCcdEvent(callback.getEvent()),
                 callback.getCaseDetails().getState());
 
-        log.info("Ccd Response received for case id: {} , {}", sscsCaseDataWrapper.getNewSscsCaseData().getCcdCaseId(), sscsCaseDataWrapper.getNotificationEventType());
+            log.info("Ccd Response received for case id: {} , {}", sscsCaseDataWrapper.getNewSscsCaseData().getCcdCaseId(), sscsCaseDataWrapper.getNotificationEventType());
 
-        authorisationService.authorise(serviceAuthHeader);
-        notificationService.manageNotificationAndSubscription(new CcdNotificationWrapper(sscsCaseDataWrapper));
+            authorisationService.authorise(serviceAuthHeader);
+            notificationService.manageNotificationAndSubscription(new CcdNotificationWrapper(sscsCaseDataWrapper));
+        } catch (Exception e) {
+            log.info("Exception thrown", e);
+            throw e;
+        }
     }
 
     @PostMapping(value = "/coh-send", produces = APPLICATION_JSON_VALUE)
