@@ -75,6 +75,8 @@ public class NotificationService {
             if (isValidNotification(notificationWrapper, subscriptionWithType, notificationType)) {
                 sendNotification(notificationWrapper, subscriptionWithType, notificationType);
                 resendLastNotification(notificationWrapper, subscriptionWithType, notificationType);
+            } else {
+                log.error("Is not a valid notification event {} for case id {}, not sending notification.", notificationType.getId(), notificationWrapper.getCaseId());
             }
         }
     }

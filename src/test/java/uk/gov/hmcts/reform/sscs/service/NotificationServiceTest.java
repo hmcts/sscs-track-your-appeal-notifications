@@ -211,6 +211,8 @@ public class NotificationServiceTest {
         then(notificationHandler).should(times(wantedNumberOfSmsNotificationsSent)).sendNotification(
                 eq(ccdNotificationWrapper), eq(SMS_TEMPLATE_ID), eq("SMS"),
                 any(NotificationHandler.SendNotification.class));
+
+        verifyNoErrorsLogged();
     }
 
     @Test
@@ -277,6 +279,7 @@ public class NotificationServiceTest {
             eq(ccdNotificationWrapper), eq(SMS_TEMPLATE_ID), eq("SMS"),
             any(NotificationHandler.SendNotification.class));
 
+        verifyExpectedLogErrorCount(wantedNumberOfEmailNotificationsSent, wantedNumberOfSmsNotificationsSent);
     }
 
     @Test
@@ -326,6 +329,7 @@ public class NotificationServiceTest {
             eq(ccdNotificationWrapper), eq(SMS_TEMPLATE_ID), eq("SMS"),
             any(NotificationHandler.SendNotification.class));
 
+        verifyNoErrorsLogged();
     }
 
     @Test
@@ -388,6 +392,7 @@ public class NotificationServiceTest {
                 eq(ccdNotificationWrapper), eq(SMS_TEMPLATE_ID), eq("SMS"),
                 any(NotificationHandler.SendNotification.class));
 
+        verifyExpectedLogErrorCount(wantedNumberOfEmailNotificationsSent, wantedNumberOfSmsNotificationsSent);
     }
 
     @SuppressWarnings({"Indentation", "UnusedPrivateMethod"})
@@ -1334,6 +1339,8 @@ public class NotificationServiceTest {
         notificationService.manageNotificationAndSubscription(ccdNotificationWrapper);
 
         verify(notificationHandler, times(1)).sendNotification(eq(ccdNotificationWrapper), eq(emailTemplateId), eq(EMAIL), any(NotificationHandler.SendNotification.class));
+
+        verifyNoErrorsLogged();
     }
 
     @Test
@@ -1347,6 +1354,8 @@ public class NotificationServiceTest {
         notificationService.manageNotificationAndSubscription(ccdNotificationWrapper);
 
         verify(notificationHandler, times(1)).sendNotification(eq(ccdNotificationWrapper), eq(smsTemplateId), eq(SMS), any(NotificationHandler.SendNotification.class));
+
+        verifyNoErrorsLogged();
     }
 
     @Test
@@ -1362,6 +1371,8 @@ public class NotificationServiceTest {
 
         verify(notificationHandler, times(1)).sendNotification(eq(ccdNotificationWrapper), eq(emailTemplateId), eq(EMAIL), any(NotificationHandler.SendNotification.class));
         verify(notificationHandler, times(1)).sendNotification(eq(ccdNotificationWrapper), eq(smsTemplateId), eq(SMS), any(NotificationHandler.SendNotification.class));
+
+        verifyNoErrorsLogged();
     }
 
     @Test
@@ -1371,6 +1382,8 @@ public class NotificationServiceTest {
         notificationService.manageNotificationAndSubscription(ccdNotificationWrapper);
 
         verify(notificationSender, never()).sendEmail(notification.getEmailTemplate(), notification.getEmail(), notification.getPlaceholders(), notification.getReference(), ccdNotificationWrapper.getCaseId());
+
+        verifyNoErrorsLogged();
     }
 
     @Test
@@ -1380,6 +1393,8 @@ public class NotificationServiceTest {
         notificationService.manageNotificationAndSubscription(ccdNotificationWrapper);
 
         verify(notificationSender, never()).sendSms(notification.getSmsTemplate(), notification.getMobile(), notification.getPlaceholders(), notification.getReference(), notification.getSmsSenderTemplate(), ccdNotificationWrapper.getCaseId());
+
+        verifyNoErrorsLogged();
     }
 
     @Test
@@ -1389,6 +1404,8 @@ public class NotificationServiceTest {
         notificationService.manageNotificationAndSubscription(ccdNotificationWrapper);
 
         verify(notificationSender, never()).sendEmail(notification.getEmailTemplate(), notification.getEmail(), notification.getPlaceholders(), notification.getReference(), ccdNotificationWrapper.getCaseId());
+
+        verifyNoErrorsLogged();
     }
 
     @Test
@@ -1398,6 +1415,8 @@ public class NotificationServiceTest {
         notificationService.manageNotificationAndSubscription(ccdNotificationWrapper);
 
         verify(notificationSender, never()).sendSms(notification.getSmsTemplate(), notification.getMobile(), notification.getPlaceholders(), notification.getReference(), notification.getSmsSenderTemplate(), ccdNotificationWrapper.getCaseId());
+
+        verifyNoErrorsLogged();
     }
 
     @Test
@@ -1417,6 +1436,8 @@ public class NotificationServiceTest {
 
         verify(notificationSender, never()).sendSms(notification.getSmsTemplate(), notification.getMobile(), notification.getPlaceholders(), notification.getReference(), notification.getSmsSenderTemplate(), ccdNotificationWrapper.getCaseId());
         verify(notificationSender, never()).sendEmail(notification.getEmailTemplate(), notification.getEmail(), notification.getPlaceholders(), notification.getReference(), ccdNotificationWrapper.getCaseId());
+
+        verifyNoErrorsLogged();
     }
 
     @Test
@@ -1431,6 +1452,8 @@ public class NotificationServiceTest {
         notificationService.manageNotificationAndSubscription(ccdNotificationWrapper);
 
         verify(reminderService).createReminders(ccdNotificationWrapper);
+
+        verifyNoErrorsLogged();
     }
 
     @Test
@@ -1442,6 +1465,8 @@ public class NotificationServiceTest {
         notificationService.manageNotificationAndSubscription(ccdNotificationWrapper);
 
         verify(notificationSender, never()).sendEmail(notification.getEmailTemplate(), notification.getEmail(), notification.getPlaceholders(), notification.getReference(), ccdNotificationWrapper.getCaseId());
+
+        verifyNoErrorsLogged();
     }
 
     @Test
@@ -1453,6 +1478,8 @@ public class NotificationServiceTest {
         notificationService.manageNotificationAndSubscription(ccdNotificationWrapper);
 
         verify(notificationSender, never()).sendEmail(notification.getEmailTemplate(), notification.getEmail(), notification.getPlaceholders(), notification.getReference(), ccdNotificationWrapper.getCaseId());
+
+        verifyNoErrorsLogged();
     }
 
     @Test
@@ -1470,6 +1497,8 @@ public class NotificationServiceTest {
         verify(notificationHandler, never()).sendNotification(any(), any(), any(), any());
         verify(notificationHandler).scheduleNotification(ccdNotificationWrapper);
         verifyNoMoreInteractions(reminderService);
+
+        verifyNoErrorsLogged();
     }
 
     @Test
@@ -1507,6 +1536,8 @@ public class NotificationServiceTest {
 
         verify(notificationHandler, times(2)).sendNotification(eq(ccdNotificationWrapper), any(), eq(EMAIL), any(NotificationHandler.SendNotification.class));
         verify(notificationHandler, times(2)).sendNotification(eq(ccdNotificationWrapper), any(), eq(SMS), any(NotificationHandler.SendNotification.class));
+
+        verifyNoErrorsLogged();
     }
 
 
@@ -1548,6 +1579,7 @@ public class NotificationServiceTest {
         verify(notificationHandler, times(1)).sendNotification(eq(ccdNotificationWrapper), any(), eq(EMAIL), any(NotificationHandler.SendNotification.class));
         verify(notificationHandler, times(1)).sendNotification(eq(ccdNotificationWrapper), any(), eq(SMS), any(NotificationHandler.SendNotification.class));
 
+        verifyNoErrorsLogged();
     }
 
     @Test
@@ -1618,6 +1650,8 @@ public class NotificationServiceTest {
 
         verify(notificationHandler, times(1)).sendNotification(eq(ccdNotificationWrapper), any(), eq(EMAIL), any(NotificationHandler.SendNotification.class));
         verify(notificationHandler, times(1)).sendNotification(eq(ccdNotificationWrapper), any(), eq(SMS), any(NotificationHandler.SendNotification.class));
+
+        verifyNoErrorsLogged();
     }
 
     @Test
@@ -1644,11 +1678,7 @@ public class NotificationServiceTest {
 
         verify(notificationHandler, times(1)).sendNotification(eq(wrapper), eq(letterTemplateId), eq(LETTER), any(NotificationHandler.SendNotification.class));
 
-        verify(mockAppender).doAppend(
-            (ILoggingEvent) captorLoggingEvent.capture()
-        );
-        List<ILoggingEvent> logEvents = (List<ILoggingEvent>) captorLoggingEvent.getAllValues();
-        assertTrue(logEvents.stream().noneMatch(e -> e.getLevel().equals(Level.ERROR)));
+        verifyNoErrorsLogged();
     }
 
     private Object[] bundledLetters() {
@@ -1688,6 +1718,8 @@ public class NotificationServiceTest {
         when(bundledLetterTemplateUtil.getBundledLetterTemplate(STRUCK_OUT, struckOutCcdNotificationWrapper.getNewSscsCaseData(), APPELLANT)).thenReturn("/templates/strike_out_letter_template.html");
 
         notificationService.manageNotificationAndSubscription(struckOutCcdNotificationWrapper);
+
+        verifyNoErrorsLogged();
     }
 
     @Test
@@ -1711,6 +1743,8 @@ public class NotificationServiceTest {
         getNotificationService(false, false, false, false).manageNotificationAndSubscription(struckOutCcdNotificationWrapper);
 
         verify(notificationHandler, times(0)).sendNotification(eq(struckOutCcdNotificationWrapper), eq(LETTER_TEMPLATE_ID_STRUCKOUT), eq(LETTER), any(NotificationHandler.SendNotification.class));
+
+        verifyNoErrorsLogged();
     }
 
     @Test
@@ -1731,6 +1765,8 @@ public class NotificationServiceTest {
         getNotificationService(true, true, true, true).manageNotificationAndSubscription(ccdNotificationWrapper);
 
         verify(notificationHandler, times(0)).sendNotification(eq(ccdNotificationWrapper), eq(docmosisId), eq(LETTER), any(NotificationHandler.SendNotification.class));
+
+        verifyNoErrorsLogged();
     }
 
     @Test
@@ -1742,14 +1778,7 @@ public class NotificationServiceTest {
 
         getNotificationService(true, true, true, true).manageNotificationAndSubscription(wrapper);
 
-        verify(mockAppender).doAppend(
-            (ILoggingEvent) captorLoggingEvent.capture()
-        );
-        List<ILoggingEvent> logEvents = (List<ILoggingEvent>) captorLoggingEvent.getAllValues();
-        assertEquals(Level.ERROR, logEvents.get(0).getLevel());
-        assertTrue(logEvents.get(0).getFormattedMessage().contains("Request Incomplete Information"));
-        assertTrue(logEvents.get(0).getFormattedMessage().contains("ccdCaseId"));
-        assertTrue(logEvents.get(0).getFormattedMessage().contains(wrapper.getNewSscsCaseData().getCcdCaseId()));
+        verifyExpectedErrorLogMessage(wrapper, "Request Incomplete Information");
     }
 
     @Test
@@ -1761,14 +1790,7 @@ public class NotificationServiceTest {
 
         getNotificationService(true, true, true, true).manageNotificationAndSubscription(wrapper);
 
-        verify(mockAppender).doAppend(
-            (ILoggingEvent) captorLoggingEvent.capture()
-        );
-        List<ILoggingEvent> logEvents = (List<ILoggingEvent>) captorLoggingEvent.getAllValues();
-        assertEquals(Level.ERROR, logEvents.get(0).getLevel());
-        assertTrue(logEvents.get(0).getFormattedMessage().contains("Request Incomplete Information"));
-        assertTrue(logEvents.get(0).getFormattedMessage().contains("ccdCaseId"));
-        assertTrue(logEvents.get(0).getFormattedMessage().contains(wrapper.getNewSscsCaseData().getCcdCaseId()));
+        verifyExpectedErrorLogMessage(wrapper, "Request Incomplete Information");
     }
 
     @Test
@@ -1794,11 +1816,7 @@ public class NotificationServiceTest {
 
         getNotificationService(true, true, true, true).manageNotificationAndSubscription(wrapper);
 
-        verify(mockAppender).doAppend(
-            (ILoggingEvent) captorLoggingEvent.capture()
-        );
-        List<ILoggingEvent> logEvents = (List<ILoggingEvent>) captorLoggingEvent.getAllValues();
-        assertTrue(logEvents.stream().noneMatch(e -> e.getLevel().equals(Level.ERROR)));
+        verifyNoErrorsLogged();
     }
 
     @Test
@@ -1825,11 +1843,33 @@ public class NotificationServiceTest {
 
         getNotificationService(true, true, true, true).manageNotificationAndSubscription(wrapper);
 
-        verify(mockAppender).doAppend(
-            (ILoggingEvent) captorLoggingEvent.capture()
+        verifyErrorLogMessageNotLogged("Request Incomplete Information");
+    }
+
+    @Test
+    public void shouldLogErrorWhenNotValidationNotification() {
+        CcdNotificationWrapper wrapper = buildBaseWrapperWithCaseData(
+            getSscsCaseDataBuilderSettingInformationFromAppellant(APPELLANT_WITH_ADDRESS, null, null, "yes").build(),
+            ADJOURNED_NOTIFICATION
         );
-        List<ILoggingEvent> logEvents = (List<ILoggingEvent>) captorLoggingEvent.getAllValues();
-        assertTrue(logEvents.stream().noneMatch(e -> e.getLevel().equals(Level.ERROR)));
+
+        given(factory.create(any(NotificationWrapper.class), any(SubscriptionWithType.class)))
+            .willReturn(new Notification(
+                Template.builder()
+                    .emailTemplateId(EMAIL_TEMPLATE_ID)
+                    .smsTemplateId(SMS_TEMPLATE_ID)
+                    .build(),
+                Destination.builder()
+                    .email(EMAIL)
+                    .sms(SMS_MOBILE)
+                    .build(),
+                new HashMap<>(),
+                new Reference(),
+                null));
+
+        getNotificationService(true, true, true, true).manageNotificationAndSubscription(wrapper);
+
+        verifyExpectedErrorLogMessage(wrapper, "Is not a valid notification event");
     }
 
     @SuppressWarnings({"Indentation", "UnusedPrivateMethod"})
@@ -1984,5 +2024,48 @@ public class NotificationServiceTest {
             .ccdCaseId(CASE_ID)
             .sscsDocument(new ArrayList<>(Collections.singletonList(sscsDocument)))
             .informationFromAppellant(informationFromAppellant);
+    }
+
+    private void verifyExpectedLogErrorCount(int wantedNumberOfEmailNotificationsSent, int wantedNumberOfSmsNotificationsSent) {
+        int expectedErrors = 0;
+        if (wantedNumberOfEmailNotificationsSent > 0
+            || wantedNumberOfSmsNotificationsSent > 0) {
+            expectedErrors = 1;
+        }
+        verify(mockAppender, atLeast(expectedErrors)).doAppend(
+            (ILoggingEvent) captorLoggingEvent.capture()
+        );
+        List<ILoggingEvent> logEvents = (List<ILoggingEvent>) captorLoggingEvent.getAllValues();
+        if (expectedErrors == 0) {
+            assertFalse(logEvents.stream().noneMatch(e -> e.getLevel().equals(Level.ERROR)));
+        } else {
+            assertTrue(logEvents.stream().noneMatch(e -> e.getLevel().equals(Level.ERROR)));
+        }
+    }
+
+    private void verifyNoErrorsLogged() {
+        verify(mockAppender).doAppend(
+            (ILoggingEvent) captorLoggingEvent.capture()
+        );
+        List<ILoggingEvent> logEvents = (List<ILoggingEvent>) captorLoggingEvent.getAllValues();
+        assertTrue(logEvents.stream().noneMatch(e -> e.getLevel().equals(Level.ERROR)));
+    }
+
+    private void verifyExpectedErrorLogMessage(CcdNotificationWrapper wrapper, String errorMessage) {
+        verify(mockAppender, atLeastOnce()).doAppend(
+            (ILoggingEvent) captorLoggingEvent.capture()
+        );
+        List<ILoggingEvent> logEvents = (List<ILoggingEvent>) captorLoggingEvent.getAllValues();
+        assertFalse(logEvents.stream().noneMatch(e -> e.getLevel().equals(Level.ERROR)));
+        assertEquals(1, logEvents.stream().filter(logEvent -> logEvent.getFormattedMessage().contains(errorMessage)).count());
+        assertTrue(logEvents.stream().filter(logEvent -> logEvent.getFormattedMessage().contains(wrapper.getNewSscsCaseData().getCcdCaseId())).count() >= 1);
+    }
+
+    private void verifyErrorLogMessageNotLogged(String errorText) {
+        verify(mockAppender, atLeastOnce()).doAppend(
+            (ILoggingEvent) captorLoggingEvent.capture()
+        );
+        List<ILoggingEvent> logEvents = (List<ILoggingEvent>) captorLoggingEvent.getAllValues();
+        assertEquals(0, logEvents.stream().filter(logEvent -> logEvent.getFormattedMessage().contains(errorText)).count());
     }
 }
