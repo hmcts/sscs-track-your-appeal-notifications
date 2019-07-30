@@ -199,6 +199,8 @@ public class NotificationService {
             if (StringUtils.isEmpty(notificationWrapper.getNewSscsCaseData().getInformationFromAppellant())
                     || "No".equalsIgnoreCase(notificationWrapper.getNewSscsCaseData().getInformationFromAppellant())) {
                 isAllowed = false;
+
+                log.error("Request Incomplete Information for ccdCaseId {}.", notificationWrapper.getNewSscsCaseData().getCcdCaseId());
             }
         }
         return isAllowed;
