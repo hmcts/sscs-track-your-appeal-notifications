@@ -29,15 +29,19 @@ public class NotificationHandler {
         this.jobGroupGenerator = jobGroupGenerator;
     }
 
-    public void sendNotification(NotificationWrapper wrapper, String notificationTemplate, final String notificationType, SendNotification sendNotification) {
+    public boolean sendNotification(NotificationWrapper wrapper, String notificationTemplate, final String notificationType, SendNotification sendNotification) {
         final String caseId = wrapper.getCaseId();
         try {
             LOG.info("Sending {} template {} for case id: {}", notificationType, notificationTemplate, caseId);
             sendNotification.send();
             LOG.info("{} template {} sent for case id: {}", notificationType, notificationTemplate, caseId);
+
+            return true;
         } catch (Exception ex) {
             wrapAndThrowNotificationExceptionIfRequired(caseId, notificationTemplate, ex);
         }
+
+        return false;
     }
 
     public void scheduleNotification(NotificationWrapper wrapper) {

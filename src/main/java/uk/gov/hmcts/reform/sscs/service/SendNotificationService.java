@@ -80,22 +80,31 @@ public class SendNotificationService {
         this.pdfLetterService = pdfLetterService;
     }
 
-    void sendEmailSmsLetterNotification(
+    boolean sendEmailSmsLetterNotification(
             NotificationWrapper wrapper,
             Notification notification,
             SubscriptionWithType subscriptionWithType,
             NotificationEventType eventType) {
-        sendEmailNotification(wrapper, subscriptionWithType.getSubscription(), notification);
-        sendSmsNotification(wrapper, subscriptionWithType.getSubscription(), notification, eventType);
+        boolean emailSent = sendEmailNotification(wrapper, subscriptionWithType.getSubscription(), notification);
+        boolean smsSent = sendSmsNotification(wrapper, subscriptionWithType.getSubscription(), notification, eventType);
 
         boolean isInterlocLetter = INTERLOC_LETTERS.contains(eventType);
         boolean isDocmosisLetter = DOCMOSIS_LETTERS.contains(eventType);
+        boolean letterSent = false;
         if ((lettersOn && !isInterlocLetter) || (interlocLettersOn && isInterlocLetter) || (docmosisLettersOn && isDocmosisLetter)) {
-            sendLetterNotification(wrapper, subscriptionWithType.getSubscription(), notification, subscriptionWithType, eventType);
+            letterSent = sendLetterNotification(wrapper, subscriptionWithType.getSubscription(), notification, subscriptionWithType, eventType);
         }
+
+        boolean notificationSent = emailSent | smsSent | letterSent;
+
+        if (!notificationSent) {
+            log.error("Did not send a notification for event {} for case id {}.", eventType.getId(), wrapper.getCaseId());
+        }
+
+        return notificationSent;
     }
 
-    private void sendSmsNotification(NotificationWrapper wrapper, Subscription subscription, Notification notification, NotificationEventType eventType) {
+    private boolean sendSmsNotification(NotificationWrapper wrapper, Subscription subscription, Notification notification, NotificationEventType eventType) {
         if (isOkToSendSmsNotification(wrapper, subscription, notification, eventType, notificationValidService)) {
 
             NotificationHandler.SendNotification sendNotification = () ->
@@ -107,11 +116,13 @@ public class SendNotificationService {
                             notification.getSmsSenderTemplate(),
                             wrapper.getCaseId()
                     );
-            notificationHandler.sendNotification(wrapper, notification.getSmsTemplate(), "SMS", sendNotification);
+            return notificationHandler.sendNotification(wrapper, notification.getSmsTemplate(), "SMS", sendNotification);
         }
+
+        return false;
     }
 
-    private void sendEmailNotification(NotificationWrapper wrapper, Subscription subscription, Notification notification) {
+    private boolean sendEmailNotification(NotificationWrapper wrapper, Subscription subscription, Notification notification) {
         if (isOkToSendEmailNotification(wrapper, subscription, notification, notificationValidService)) {
 
             NotificationHandler.SendNotification sendNotification = () ->
@@ -122,18 +133,22 @@ public class SendNotificationService {
                             notification.getReference(),
                             wrapper.getCaseId()
                     );
-            notificationHandler.sendNotification(wrapper, notification.getEmailTemplate(), "Email", sendNotification);
+            return notificationHandler.sendNotification(wrapper, notification.getEmailTemplate(), "Email", sendNotification);
         }
+
+        return false;
     }
 
-    private void sendLetterNotification(NotificationWrapper wrapper, Subscription subscription, Notification notification, SubscriptionWithType subscriptionWithType, NotificationEventType eventType) {
+    private boolean sendLetterNotification(NotificationWrapper wrapper, Subscription subscription, Notification notification, SubscriptionWithType subscriptionWithType, NotificationEventType eventType) {
 
         log.info("Sending the letter for event {} and case id {}.", eventType.getId(), wrapper.getCaseId());
-        sendMandatoryLetterNotification(wrapper, notification, subscriptionWithType.getSubscriptionType());
-        sendFallbackLetterNotification(wrapper, subscription, notification, subscriptionWithType, eventType);
+        boolean mandatoryLetterSent = sendMandatoryLetterNotification(wrapper, notification, subscriptionWithType.getSubscriptionType());
+        boolean fallbackLetterSent = sendFallbackLetterNotification(wrapper, subscription, notification, subscriptionWithType, eventType);
+
+        return mandatoryLetterSent | fallbackLetterSent;
     }
 
-    private void sendMandatoryLetterNotification(NotificationWrapper wrapper, Notification notification, SubscriptionType subscriptionType) {
+    private boolean sendMandatoryLetterNotification(NotificationWrapper wrapper, Notification notification, SubscriptionType subscriptionType) {
         if (isMandatoryLetterEventType(wrapper)) {
             Address addressToUse = getAddressToUseForLetter(wrapper, subscriptionType);
             if ((bundledLettersOn && isBundledLetter(wrapper.getNotificationType())) || (docmosisLettersOn && StringUtils.isNotBlank(notification.getDocmosisLetterTemplate()))) {
@@ -142,12 +157,14 @@ public class SendNotificationService {
                 NotificationHandler.SendNotification sendNotification = () ->
                     sendLetterNotificationToAddress(wrapper, notification, addressToUse, subscriptionType);
 
-                notificationHandler.sendNotification(wrapper, notification.getLetterTemplate(), NOTIFICATION_TYPE_LETTER, sendNotification);
+                return notificationHandler.sendNotification(wrapper, notification.getLetterTemplate(), NOTIFICATION_TYPE_LETTER, sendNotification);
             }
         }
+
+        return false;
     }
 
-    private void sendFallbackLetterNotification(NotificationWrapper wrapper, Subscription subscription, Notification notification, SubscriptionWithType subscriptionWithType, NotificationEventType eventType) {
+    private boolean sendFallbackLetterNotification(NotificationWrapper wrapper, Subscription subscription, Notification notification, SubscriptionWithType subscriptionWithType, NotificationEventType eventType) {
         if (hasNoSubscriptions(subscription) && hasLetterTemplate(notification) && isFallbackLetterRequired(wrapper, subscriptionWithType, subscription, eventType, notificationValidService)) {
             Address addressToUse = getAddressToUseForLetter(wrapper, subscriptionWithType.getSubscriptionType());
             if (bundledLettersOn && isBundledLetter(wrapper.getNotificationType()) || (docmosisLettersOn && StringUtils.isNotBlank(notification.getDocmosisLetterTemplate()))) {
@@ -156,9 +173,11 @@ public class SendNotificationService {
                 NotificationHandler.SendNotification sendNotification = () ->
                     sendLetterNotificationToAddress(wrapper, notification, addressToUse, subscriptionWithType.getSubscriptionType());
 
-                notificationHandler.sendNotification(wrapper, notification.getLetterTemplate(), NOTIFICATION_TYPE_LETTER, sendNotification);
+                return notificationHandler.sendNotification(wrapper, notification.getLetterTemplate(), NOTIFICATION_TYPE_LETTER, sendNotification);
             }
         }
+
+        return false;
     }
 
     public static String getRepSalutation(Representative rep) {
@@ -211,7 +230,7 @@ public class SendNotificationService {
                     wrapper.getCaseId()
             );
         } else {
-            log.warn("Attempting to send letter for case id: " + wrapper.getCaseId() + ", no address present");
+            log.error("Failed to send letter for event id: {} for case id: {}, no address present", wrapper.getNotificationType().getId(), wrapper.getCaseId());
         }
     }
 
