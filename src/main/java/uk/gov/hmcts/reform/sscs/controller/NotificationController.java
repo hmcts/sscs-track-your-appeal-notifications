@@ -4,6 +4,7 @@ import static org.springframework.util.MimeTypeUtils.APPLICATION_JSON_VALUE;
 import static uk.gov.hmcts.reform.sscs.domain.notify.NotificationEventType.getNotificationByCcdEvent;
 import static uk.gov.hmcts.reform.sscs.domain.notify.NotificationEventType.getNotificationById;
 
+import java.util.Arrays;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
@@ -16,6 +17,7 @@ import uk.gov.hmcts.reform.sscs.ccd.deserialisation.SscsCaseCallbackDeserializer
 import uk.gov.hmcts.reform.sscs.ccd.domain.CaseDetails;
 import uk.gov.hmcts.reform.sscs.ccd.domain.SscsCaseData;
 import uk.gov.hmcts.reform.sscs.ccd.domain.SscsCaseDetails;
+import uk.gov.hmcts.reform.sscs.ccd.domain.State;
 import uk.gov.hmcts.reform.sscs.ccd.service.CcdService;
 import uk.gov.hmcts.reform.sscs.domain.CohEvent;
 import uk.gov.hmcts.reform.sscs.domain.SscsCaseDataWrapper;
@@ -53,16 +55,25 @@ public class NotificationController {
     public void sendNotification(
             @RequestHeader(AuthorisationService.SERVICE_AUTHORISATION_HEADER) String serviceAuthHeader,
             @RequestBody String message) {
-        Callback<SscsCaseData> callback = deserializer.deserialize(message);
+        try {
+            Callback<SscsCaseData> callback = deserializer.deserialize(message);
 
-        CaseDetails<SscsCaseData> caseDetailsBefore = callback.getCaseDetailsBefore().orElse(null);
+            CaseDetails<SscsCaseData> caseDetailsBefore = callback.getCaseDetailsBefore().orElse(null);
 
-        SscsCaseDataWrapper sscsCaseDataWrapper = buildSscsCaseDataWrapper(callback.getCaseDetails().getCaseData(), caseDetailsBefore != null ? caseDetailsBefore.getCaseData() : null, getNotificationByCcdEvent(callback.getEvent()));
+            SscsCaseDataWrapper sscsCaseDataWrapper = buildSscsCaseDataWrapper(
+                callback.getCaseDetails().getCaseData(),
+                caseDetailsBefore != null ? caseDetailsBefore.getCaseData() : null,
+                getNotificationByCcdEvent(callback.getEvent()),
+                callback.getCaseDetails().getState());
 
-        log.info("Ccd Response received for case id: {} , {}", sscsCaseDataWrapper.getNewSscsCaseData().getCcdCaseId(), sscsCaseDataWrapper.getNotificationEventType());
+            log.info("Ccd Response received for case id: {} , {}", sscsCaseDataWrapper.getNewSscsCaseData().getCcdCaseId(), sscsCaseDataWrapper.getNotificationEventType());
 
-        authorisationService.authorise(serviceAuthHeader);
-        notificationService.manageNotificationAndSubscription(new CcdNotificationWrapper(sscsCaseDataWrapper));
+            authorisationService.authorise(serviceAuthHeader);
+            notificationService.manageNotificationAndSubscription(new CcdNotificationWrapper(sscsCaseDataWrapper));
+        } catch (Exception e) {
+            log.info("Exception thrown", e);
+            throw e;
+        }
     }
 
     @PostMapping(value = "/coh-send", produces = APPLICATION_JSON_VALUE)
@@ -81,7 +92,11 @@ public class NotificationController {
 
         String eventId = cohEvent.getNotificationEventType();
         if (caseDetails != null) {
-            SscsCaseDataWrapper wrapper = buildSscsCaseDataWrapper(caseDetails.getData(), null, getNotificationById(eventId));
+            SscsCaseDataWrapper wrapper = buildSscsCaseDataWrapper(caseDetails.getData(),
+                    null,
+                    getNotificationById(eventId),
+                    getStateFromString(caseDetails.getState())
+            );
             notificationService.manageNotificationAndSubscription(new CohNotificationWrapper(cohEvent.getOnlineHearingId(), wrapper));
         } else {
             log.warn("Case id: {} could not be found for event: {}", caseId, eventId);
@@ -90,11 +105,16 @@ public class NotificationController {
         return ResponseEntity.ok("");
     }
 
-    private SscsCaseDataWrapper buildSscsCaseDataWrapper(SscsCaseData caseData, SscsCaseData caseDataBefore, NotificationEventType event) {
+    private State getStateFromString(String value) {
+        return Arrays.stream(State.values()).filter(s -> s.toString().equalsIgnoreCase(value)).findFirst().orElse(State.UNKNOWN);
+    }
+
+    private SscsCaseDataWrapper buildSscsCaseDataWrapper(SscsCaseData caseData, SscsCaseData caseDataBefore, NotificationEventType event, State state) {
         return SscsCaseDataWrapper.builder()
                 .newSscsCaseData(caseData)
                 .oldSscsCaseData(caseDataBefore)
-                .notificationEventType(event).build();
+                .notificationEventType(event)
+                .state(state).build();
     }
 
 }

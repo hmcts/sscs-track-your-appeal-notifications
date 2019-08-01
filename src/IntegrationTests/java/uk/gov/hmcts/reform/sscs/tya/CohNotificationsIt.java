@@ -42,6 +42,7 @@ import uk.gov.hmcts.reform.sscs.service.coh.CohClient;
 import uk.gov.hmcts.reform.sscs.service.coh.QuestionReferences;
 import uk.gov.hmcts.reform.sscs.service.coh.QuestionRound;
 import uk.gov.hmcts.reform.sscs.service.coh.QuestionRounds;
+import uk.gov.hmcts.reform.sscs.service.docmosis.PdfLetterService;
 import uk.gov.service.notify.NotificationClient;
 import uk.gov.service.notify.SendEmailResponse;
 import uk.gov.service.notify.SendSmsResponse;
@@ -119,13 +120,16 @@ public class CohNotificationsIt {
     @Mock
     private SscsGeneratePdfService sscsGeneratePdfService;
 
+    @Mock
+    private PdfLetterService pdfLetterService;
+
     String json;
 
     @Before
     public void setup() throws Exception {
         NotificationSender sender = new NotificationSender(notificationClient, null, notificationBlacklist);
 
-        SendNotificationService sendNotificationService = new SendNotificationService(sender, evidenceManagementService, sscsGeneratePdfService, notificationHandler, notificationValidService, bundledLetterTemplateUtil);
+        SendNotificationService sendNotificationService = new SendNotificationService(sender, evidenceManagementService, sscsGeneratePdfService, notificationHandler, notificationValidService, bundledLetterTemplateUtil, pdfLetterService);
         ReflectionTestUtils.setField(sendNotificationService, "bundledLettersOn", true);
         ReflectionTestUtils.setField(sendNotificationService, "lettersOn", true);
 

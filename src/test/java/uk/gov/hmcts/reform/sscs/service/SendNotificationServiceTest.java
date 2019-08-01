@@ -35,6 +35,7 @@ import uk.gov.hmcts.reform.sscs.domain.notify.Notification;
 import uk.gov.hmcts.reform.sscs.domain.notify.NotificationEventType;
 import uk.gov.hmcts.reform.sscs.domain.notify.Template;
 import uk.gov.hmcts.reform.sscs.factory.CcdNotificationWrapper;
+import uk.gov.hmcts.reform.sscs.service.docmosis.PdfLetterService;
 import uk.gov.service.notify.NotificationClientException;
 
 @RunWith(JUnitParamsRunner.class)
@@ -129,15 +130,19 @@ public class SendNotificationServiceTest {
     @Mock
     private BundledLetterTemplateUtil bundledLetterTemplateUtil;
 
+    @Mock
+    private PdfLetterService pdfLetterService;
+
     private SendNotificationService classUnderTest;
 
     @Before
     public void setup() {
         initMocks(this);
 
-        classUnderTest = new SendNotificationService(notificationSender, evidenceManagementService, pdfService, notificationHandler, notificationValidService, bundledLetterTemplateUtil);
+        classUnderTest = new SendNotificationService(notificationSender, evidenceManagementService, pdfService, notificationHandler, notificationValidService, bundledLetterTemplateUtil, pdfLetterService);
         classUnderTest.bundledLettersOn = true;
         classUnderTest.lettersOn = true;
+        classUnderTest.docmosisLettersOn = true;
         classUnderTest.interlocLettersOn = true;
     }
 
@@ -231,10 +236,10 @@ public class SendNotificationServiceTest {
     @Test
     @Parameters(method = "getMandatoryLettersEventTypes")
     public void doNotSendMandatoryLetterNotificationToAppellantWhenToggledOff(NotificationEventType eventType) {
-        SubscriptionWithType appellantEmptySubscription = new SubscriptionWithType(EMPTY_SUBSCRIPTION, APPELLANT);
-
         classUnderTest.lettersOn = false;
         classUnderTest.interlocLettersOn = false;
+        classUnderTest.docmosisLettersOn = false;
+        SubscriptionWithType appellantEmptySubscription = new SubscriptionWithType(EMPTY_SUBSCRIPTION, APPELLANT);
         classUnderTest.sendEmailSmsLetterNotification(buildBaseWrapper(APPELLANT_WITH_ADDRESS, eventType), LETTER_NOTIFICATION, appellantEmptySubscription, eventType);
 
         verifyZeroInteractions(notificationHandler);
@@ -256,6 +261,7 @@ public class SendNotificationServiceTest {
         SubscriptionWithType appellantEmptySubscription = new SubscriptionWithType(EMPTY_SUBSCRIPTION, APPELLANT);
 
         classUnderTest.interlocLettersOn = false;
+        classUnderTest.docmosisLettersOn = false;
         classUnderTest.sendEmailSmsLetterNotification(buildBaseWrapper(APPELLANT_WITH_ADDRESS, eventType), LETTER_NOTIFICATION, appellantEmptySubscription, eventType);
 
         verifyZeroInteractions(notificationHandler);

@@ -171,8 +171,7 @@ public class TrackYourAppealNotificationsApplication {
     public DocmosisPdfGenerationService docmosisPdfGenerationService(
             @Value("${pdf-service.uri}") String pdfServiceEndpoint,
             @Value("${pdf-service.accessKey}") String pdfServiceAccessKey,
-            RestTemplate restTemplate
-    ) {
+            RestTemplate restTemplate) {
         return new DocmosisPdfGenerationService(pdfServiceEndpoint, pdfServiceAccessKey, restTemplate);
     }
 }
