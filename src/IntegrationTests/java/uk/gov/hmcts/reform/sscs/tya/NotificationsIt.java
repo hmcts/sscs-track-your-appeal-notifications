@@ -40,6 +40,7 @@ import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.request.MockHttpServletRequestBuilder;
 import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 import uk.gov.hmcts.reform.sscs.ccd.deserialisation.SscsCaseCallbackDeserializer;
+import uk.gov.hmcts.reform.sscs.ccd.domain.State;
 import uk.gov.hmcts.reform.sscs.ccd.service.CcdService;
 import uk.gov.hmcts.reform.sscs.config.NotificationBlacklist;
 import uk.gov.hmcts.reform.sscs.config.NotificationConfig;
@@ -2922,6 +2923,34 @@ public class NotificationsIt {
         assertHttpStatus(response, HttpStatus.BAD_REQUEST);
         verify(authorisationService, never()).authorise(anyString());
         verify(notificationClient, never()).sendEmail(any(), any(), any(), any(), any());
+    }
+
+    @Test
+    @Parameters({"subscriptionUpdated", "appealReceived", "struckOut", "directionIssued", "nonCompliant"})
+    public void shouldNotSendNotificationWhenAppealDormantAndNotificationType(String notificationEventType) throws Exception {
+        json = json.replace("appealCreated", State.DORMANT_APPEAL_STATE.toString());
+        json = json.replace("appealReceived", notificationEventType);
+
+        HttpServletResponse response = getResponse(getRequestWithAuthHeader(json));
+
+        assertHttpStatus(response, HttpStatus.OK);
+        verify(notificationClient, never()).sendEmail(any(), any(), any(), any());
+        verify(notificationClient, never()).sendSms(any(), any(), any(), any(), any());
+    }
+
+    @Test
+    @Parameters({"appealLapsed", "corDecision", "appealDormant"})
+    public void shouldSendNotificationWhenAppealDormantAndNotificationType(String notificationEventType) throws Exception {
+        json = json.replace("appealCreated", State.DORMANT_APPEAL_STATE.toString());
+        json = json.replace("appealReceived", notificationEventType);
+
+        HttpServletResponse response = getResponse(getRequestWithAuthHeader(json));
+
+        assertHttpStatus(response, HttpStatus.OK);
+        verify(notificationClient, atMostOnce()).sendEmail(any(), any(), any(), any());
+        verify(notificationClient, atMost(2)).sendSms(any(), any(), any(), any(), any());
+        verify(notificationClient, atMostOnce()).sendPrecompiledLetterWithInputStream(any(), any());
+        verifyNoMoreInteractions(notificationClient);
     }
 
     private MockHttpServletResponse getResponse(MockHttpServletRequestBuilder requestBuilder) throws Exception {

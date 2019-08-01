@@ -14,6 +14,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.util.StringUtils;
 import uk.gov.hmcts.reform.sscs.ccd.domain.Benefit;
 import uk.gov.hmcts.reform.sscs.ccd.domain.SscsCaseData;
+import uk.gov.hmcts.reform.sscs.ccd.domain.State;
 import uk.gov.hmcts.reform.sscs.ccd.domain.Subscription;
 import uk.gov.hmcts.reform.sscs.config.NotificationConfig;
 import uk.gov.hmcts.reform.sscs.domain.SubscriptionWithType;
@@ -203,6 +204,16 @@ public class NotificationService {
                 isAllowed = false;
 
                 log.error("Request Incomplete Information with empty or no Information From Appellant for ccdCaseId {}.", notificationWrapper.getNewSscsCaseData().getCcdCaseId());
+            }
+        }
+
+        if (notificationWrapper.getSscsCaseDataWrapper().getState() != null && notificationWrapper.getSscsCaseDataWrapper().getState().equals(State.DORMANT_APPEAL_STATE)) {
+            if (!(NotificationEventType.APPEAL_DORMANT_NOTIFICATION.equals(notificationType)
+                    || NotificationEventType.APPEAL_LAPSED_NOTIFICATION.equals(notificationType)
+                    || NotificationEventType.DECISION_ISSUED_2.equals(notificationType))) {
+                log.debug(String.format("Cannot complete notification %s as the appeal was dormant caseId %s.",
+                        notificationType.getId(), notificationWrapper.getCaseId()));
+                isAllowed = false;
             }
         }
         return isAllowed;
