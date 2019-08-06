@@ -155,9 +155,9 @@ module "track-your-appeal-notifications" {
 
     DOCMOSIS_LETTERS_ON                 = "${var.docmosis_letters_on}"
 
-	APPEAL_RECEIVED_LETTER_ON           = "${var.appeal_received_letter_on}"
+    APPEAL_RECEIVED_LETTER_ON           = "${var.appeal_received_letter_on}"
 
-	DIRECTION_ISSUED_LETTER_ON           = "${var.direction_issued_letter_on}"
+    DIRECTION_ISSUED_LETTER_ON           = "${var.direction_issued_letter_on}"
   }
 }
 
