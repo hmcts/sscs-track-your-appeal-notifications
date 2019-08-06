@@ -1778,7 +1778,7 @@ public class NotificationServiceTest {
 
         getNotificationService(true, true, true, true).manageNotificationAndSubscription(wrapper);
 
-        verifyExpectedErrorLogMessage(mockAppender, captorLoggingEvent, wrapper, "Request Incomplete Information");
+        verifyExpectedErrorLogMessage(mockAppender, captorLoggingEvent, wrapper.getNewSscsCaseData().getCcdCaseId(), "Request Incomplete Information");
     }
 
     @Test
@@ -1790,7 +1790,7 @@ public class NotificationServiceTest {
 
         getNotificationService(true, true, true, true).manageNotificationAndSubscription(wrapper);
 
-        verifyExpectedErrorLogMessage(mockAppender, captorLoggingEvent, wrapper, "Request Incomplete Information");
+        verifyExpectedErrorLogMessage(mockAppender, captorLoggingEvent, wrapper.getNewSscsCaseData().getCcdCaseId(), "Request Incomplete Information");
     }
 
     @Test
@@ -1869,7 +1869,7 @@ public class NotificationServiceTest {
 
         getNotificationService(true, true, true, true).manageNotificationAndSubscription(wrapper);
 
-        verifyExpectedErrorLogMessage(mockAppender, captorLoggingEvent, wrapper, "Is not a valid notification event");
+        verifyExpectedErrorLogMessage(mockAppender, captorLoggingEvent, wrapper.getNewSscsCaseData().getCcdCaseId(), "Is not a valid notification event");
     }
 
     @SuppressWarnings({"Indentation", "UnusedPrivateMethod"})
@@ -2051,14 +2051,14 @@ public class NotificationServiceTest {
         assertTrue(logEvents.stream().noneMatch(e -> e.getLevel().equals(Level.ERROR)));
     }
 
-    protected static void verifyExpectedErrorLogMessage(Appender<ILoggingEvent> mockAppender, ArgumentCaptor captorLoggingEvent, CcdNotificationWrapper wrapper, String errorMessage) {
+    protected static void verifyExpectedErrorLogMessage(Appender<ILoggingEvent> mockAppender, ArgumentCaptor captorLoggingEvent, String ccdCaseId, String errorMessage) {
         verify(mockAppender, atLeastOnce()).doAppend(
             (ILoggingEvent) captorLoggingEvent.capture()
         );
         List<ILoggingEvent> logEvents = (List<ILoggingEvent>) captorLoggingEvent.getAllValues();
         assertFalse(logEvents.stream().noneMatch(e -> e.getLevel().equals(Level.ERROR)));
         assertEquals(1, logEvents.stream().filter(logEvent -> logEvent.getFormattedMessage().contains(errorMessage)).count());
-        assertTrue(logEvents.stream().filter(logEvent -> logEvent.getFormattedMessage().contains(wrapper.getNewSscsCaseData().getCcdCaseId())).count() >= 1);
+        assertTrue(logEvents.stream().filter(logEvent -> logEvent.getFormattedMessage().contains(ccdCaseId)).count() >= 1);
     }
 
     private static void verifyErrorLogMessageNotLogged(Appender<ILoggingEvent> mockAppender, ArgumentCaptor captorLoggingEvent, String errorText) {

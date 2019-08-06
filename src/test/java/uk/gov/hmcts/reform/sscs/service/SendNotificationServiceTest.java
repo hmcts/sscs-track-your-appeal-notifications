@@ -215,7 +215,7 @@ public class SendNotificationServiceTest {
         classUnderTest.sendEmailSmsLetterNotification(wrapper, SMS_NOTIFICATION, appellantSmsSubscription, FALLBACK_LETTER_SUBSCRIPTION_TYPES.get(0));
 
         verify(notificationHandler).sendNotification(any(), eq(SMS_NOTIFICATION.getSmsTemplate()), any(), any());
-        verifyExpectedErrorLogMessage(mockAppender, captorLoggingEvent, wrapper, "Did not send a notification for event");
+        verifyExpectedErrorLogMessage(mockAppender, captorLoggingEvent, wrapper.getNewSscsCaseData().getCcdCaseId(), "Did not send a notification for event");
     }
 
     @Test
@@ -231,7 +231,7 @@ public class SendNotificationServiceTest {
         classUnderTest.sendEmailSmsLetterNotification(wrapper, EMAIL_NOTIFICATION, appellantEmailSubscription, FALLBACK_LETTER_SUBSCRIPTION_TYPES.get(0));
 
         verify(notificationHandler).sendNotification(any(), eq(EMAIL_NOTIFICATION.getEmailTemplate()), any(), any());
-        verifyExpectedErrorLogMessage(mockAppender, captorLoggingEvent, wrapper, "Did not send a notification for event");
+        verifyExpectedErrorLogMessage(mockAppender, captorLoggingEvent, wrapper.getNewSscsCaseData().getCcdCaseId(), "Did not send a notification for event");
     }
 
     @Test
@@ -242,7 +242,7 @@ public class SendNotificationServiceTest {
         classUnderTest.sendEmailSmsLetterNotification(wrapper, EMPTY_TEMPLATE_NOTIFICATION, appellantEmptySubscription, FALLBACK_LETTER_SUBSCRIPTION_TYPES.get(0));
 
         verifyZeroInteractions(notificationHandler);
-        verifyExpectedErrorLogMessage(mockAppender, captorLoggingEvent, wrapper, "Did not send a notification for event");
+        verifyExpectedErrorLogMessage(mockAppender, captorLoggingEvent, wrapper.getNewSscsCaseData().getCcdCaseId(), "Did not send a notification for event");
     }
 
     @Test
@@ -269,7 +269,7 @@ public class SendNotificationServiceTest {
         classUnderTest.sendEmailSmsLetterNotification(wrapper, LETTER_NOTIFICATION, appellantEmptySubscription, eventType);
 
         verifyZeroInteractions(notificationHandler);
-        verifyExpectedErrorLogMessage(mockAppender, captorLoggingEvent, wrapper, "Did not send a notification for event");
+        verifyExpectedErrorLogMessage(mockAppender, captorLoggingEvent, wrapper.getNewSscsCaseData().getCcdCaseId(), "Did not send a notification for event");
     }
 
     private Object[] getMandatoryLettersEventTypes() {
@@ -293,7 +293,7 @@ public class SendNotificationServiceTest {
         classUnderTest.sendEmailSmsLetterNotification(wrapper, LETTER_NOTIFICATION, appellantEmptySubscription, eventType);
 
         verifyZeroInteractions(notificationHandler);
-        verifyExpectedErrorLogMessage(mockAppender, captorLoggingEvent, wrapper, "Did not send a notification for event");
+        verifyExpectedErrorLogMessage(mockAppender, captorLoggingEvent, wrapper.getNewSscsCaseData().getCcdCaseId(), "Did not send a notification for event");
     }
 
     private Object[] getInterlocLettersEventTypes() {
@@ -318,7 +318,7 @@ public class SendNotificationServiceTest {
         classUnderTest.sendEmailSmsLetterNotification(wrapper, SMS_NOTIFICATION, appellantSmsSubscription, FALLBACK_LETTER_SUBSCRIPTION_TYPES.get(0));
 
         verify(notificationHandler).sendNotification(any(), eq(SMS_NOTIFICATION.getSmsTemplate()), any(), any());
-        verifyExpectedErrorLogMessage(mockAppender, captorLoggingEvent, wrapper, "Did not send a notification for event");
+        verifyExpectedErrorLogMessage(mockAppender, captorLoggingEvent, wrapper.getNewSscsCaseData().getCcdCaseId(), "Did not send a notification for event");
     }
 
     @Test
@@ -332,7 +332,7 @@ public class SendNotificationServiceTest {
         classUnderTest.sendEmailSmsLetterNotification(wrapper, EMAIL_NOTIFICATION, appellantEmailSubscription, FALLBACK_LETTER_SUBSCRIPTION_TYPES.get(0));
 
         verify(notificationHandler).sendNotification(any(), eq(EMAIL_NOTIFICATION.getEmailTemplate()), any(), any());
-        verifyExpectedErrorLogMessage(mockAppender, captorLoggingEvent, wrapper, "Did not send a notification for event");
+        verifyExpectedErrorLogMessage(mockAppender, captorLoggingEvent, wrapper.getNewSscsCaseData().getCcdCaseId(), "Did not send a notification for event");
     }
 
     @Test
@@ -346,7 +346,7 @@ public class SendNotificationServiceTest {
         classUnderTest.sendEmailSmsLetterNotification(wrapper, EMPTY_TEMPLATE_NOTIFICATION, appellantEmptySubscription, FALLBACK_LETTER_SUBSCRIPTION_TYPES.get(0));
 
         verifyZeroInteractions(notificationHandler);
-        verifyExpectedErrorLogMessage(mockAppender, captorLoggingEvent, wrapper, "Did not send a notification for event");
+        verifyExpectedErrorLogMessage(mockAppender, captorLoggingEvent, wrapper.getNewSscsCaseData().getCcdCaseId(), "Did not send a notification for event");
     }
 
     @Test
@@ -398,7 +398,7 @@ public class SendNotificationServiceTest {
         classUnderTest.sendLetterNotificationToAddress(wrapper, LETTER_NOTIFICATION, APPELLANT_WITH_EMPTY_ADDRESS.getAddress(), appellantEmptySubscription.getSubscriptionType());
 
         verifyZeroInteractions(notificationSender);
-        verifyExpectedErrorLogMessage(mockAppender, captorLoggingEvent, wrapper, "Failed to send letter for event id");
+        verifyExpectedErrorLogMessage(mockAppender, captorLoggingEvent, wrapper.getNewSscsCaseData().getCcdCaseId(), "Failed to send letter for event id");
     }
 
     @Test
@@ -408,7 +408,7 @@ public class SendNotificationServiceTest {
         classUnderTest.sendLetterNotificationToAddress(wrapper, LETTER_NOTIFICATION, APPELLANT_WITH_NO_ADDRESS.getAddress(), appellantEmptySubscription.getSubscriptionType());
 
         verifyZeroInteractions(notificationSender);
-        verifyExpectedErrorLogMessage(mockAppender, captorLoggingEvent, wrapper, "Failed to send letter for event id");
+        verifyExpectedErrorLogMessage(mockAppender, captorLoggingEvent, wrapper.getNewSscsCaseData().getCcdCaseId(), "Failed to send letter for event id");
     }
 
     @Test
@@ -422,7 +422,7 @@ public class SendNotificationServiceTest {
             APPEAL_RECEIVED_NOTIFICATION
         );
 
-        verifyExpectedErrorLogMessage(mockAppender, captorLoggingEvent, wrapper, "Did not send a notification for event");
+        verifyExpectedErrorLogMessage(mockAppender, captorLoggingEvent, wrapper.getNewSscsCaseData().getCcdCaseId(), "Did not send a notification for event");
     }
 
     @Test

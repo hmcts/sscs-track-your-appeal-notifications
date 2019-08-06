@@ -4,12 +4,24 @@ import static org.hamcrest.CoreMatchers.is;
 import static org.junit.Assert.assertThat;
 import static org.junit.Assert.fail;
 import static org.mockito.Mockito.*;
+import static uk.gov.hmcts.reform.sscs.service.NotificationServiceTest.verifyExpectedErrorLogMessage;
+
+import ch.qos.logback.classic.Logger;
+import ch.qos.logback.classic.spi.ILoggingEvent;
+import ch.qos.logback.core.Appender;
 
 import java.net.UnknownHostException;
 import java.time.ZonedDateTime;
+
 import org.junit.Before;
 import org.junit.Test;
+import org.junit.runner.RunWith;
 import org.mockito.ArgumentCaptor;
+import org.mockito.Captor;
+import org.mockito.Mock;
+import org.mockito.junit.MockitoJUnitRunner;
+import org.slf4j.LoggerFactory;
+import uk.gov.hmcts.reform.sscs.ccd.domain.SscsCaseData;
 import uk.gov.hmcts.reform.sscs.domain.notify.NotificationEventType;
 import uk.gov.hmcts.reform.sscs.exception.NotificationClientRuntimeException;
 import uk.gov.hmcts.reform.sscs.factory.NotificationWrapper;
@@ -18,6 +30,7 @@ import uk.gov.hmcts.reform.sscs.jobscheduler.services.JobScheduler;
 import uk.gov.hmcts.reform.sscs.service.reminder.JobGroupGenerator;
 import uk.gov.service.notify.NotificationClientException;
 
+@RunWith(MockitoJUnitRunner.class)
 public class NotificationHandlerTest {
 
     private static final NotificationEventType A_NOTIFICATION_THAT_CAN_TRIGGER_OUT_OF_HOURS = NotificationEventType.SYA_APPEAL_CREATED_NOTIFICATION;
@@ -29,6 +42,11 @@ public class NotificationHandlerTest {
     private NotificationHandler.SendNotification sendNotification;
     private NotificationHandler underTest;
 
+    @Mock
+    private Appender<ILoggingEvent> mockAppender;
+    @Captor
+    private ArgumentCaptor captorLoggingEvent;
+
     @Before
     public void setUp() {
         outOfHoursCalculator = mock(OutOfHoursCalculator.class);
@@ -38,6 +56,9 @@ public class NotificationHandlerTest {
         sendNotification = mock(NotificationHandler.SendNotification.class);
 
         underTest = new NotificationHandler(outOfHoursCalculator, jobScheduler, jobGroupGenerator);
+
+        Logger logger = (Logger) LoggerFactory.getLogger(NotificationHandler.class.getName());
+        logger.addAppender(mockAppender);
     }
 
     @Test
@@ -85,9 +106,6 @@ public class NotificationHandlerTest {
     }
 
     private void canSendNotification(NotificationEventType notificationEventType, boolean isOutOfHours) throws NotificationClientException {
-        when(notificationWrapper.getNotificationType()).thenReturn(notificationEventType);
-        when(outOfHoursCalculator.isItOutOfHours()).thenReturn(isOutOfHours);
-
         underTest.sendNotification(notificationWrapper, "someTemplate", "Email", sendNotification);
 
         verify(sendNotification).send();
@@ -95,25 +113,31 @@ public class NotificationHandlerTest {
 
     @Test(expected = NotificationClientRuntimeException.class)
     public void shouldThrowNotificationClientRuntimeExceptionForAnyNotificationException() throws Exception {
-        when(notificationWrapper.getNotificationType()).thenReturn(A_NOTIFICATION_THAT_CAN_TRIGGER_OUT_OF_HOURS);
-        when(outOfHoursCalculator.isItOutOfHours()).thenReturn(false);
+        SscsCaseData stubbedCaseData = SscsCaseData.builder().build();
+        when(notificationWrapper.getNewSscsCaseData()).thenReturn(stubbedCaseData);
         doThrow(new NotificationClientException(new UnknownHostException()))
                 .when(sendNotification)
                 .send();
 
         underTest.sendNotification(notificationWrapper, "someTemplate", "Email", sendNotification);
+
+        verifyExpectedErrorLogMessage(mockAppender, captorLoggingEvent, notificationWrapper.getNewSscsCaseData().getCcdCaseId(), "Could not send notification for case id:");
     }
 
     @Test
     public void shouldContinueAndHandleAGovNotifyException() throws Exception {
-        when(notificationWrapper.getNotificationType()).thenReturn(A_NOTIFICATION_THAT_CAN_TRIGGER_OUT_OF_HOURS);
-        when(outOfHoursCalculator.isItOutOfHours()).thenReturn(false);
+        String caseId = "123";
+        when(notificationWrapper.getCaseId()).thenReturn(caseId);
+        SscsCaseData stubbedCaseData = SscsCaseData.builder().ccdCaseId(caseId).build();
+        when(notificationWrapper.getNewSscsCaseData()).thenReturn(stubbedCaseData);
         doThrow(new NotificationClientException(new RuntimeException()))
                 .when(sendNotification)
                 .send();
 
         try {
             underTest.sendNotification(notificationWrapper, "someTemplate", "Email", sendNotification);
+
+            verifyExpectedErrorLogMessage(mockAppender, captorLoggingEvent, notificationWrapper.getNewSscsCaseData().getCcdCaseId(), "Could not send notification for case id:");
         } catch (Throwable throwable) {
             fail("should not throw an error");
         }
