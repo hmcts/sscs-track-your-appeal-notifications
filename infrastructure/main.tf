@@ -152,6 +152,12 @@ module "track-your-appeal-notifications" {
     LETTERS_ON                          = "${var.letters_on}"
 
     INTERLOC_LETTERS_ON                 = "${var.interloc_letters_on}"
+
+    DOCMOSIS_LETTERS_ON                 = "${var.docmosis_letters_on}"
+
+	APPEAL_RECEIVED_LETTER_ON           = "${var.appeal_received_letter_on}"
+
+	DIRECTION_ISSUED_LETTER_ON           = "${var.direction_issued_letter_on}"
   }
 }
 
