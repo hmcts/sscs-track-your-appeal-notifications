@@ -15,6 +15,6 @@ letters_on = "false"
 
 interloc_letters_on = "true"
 
-docmosis_letters_on = "false"
+docmosis_letters_on = "true"
 appeal_received_letter_on = "false"
-direction_issued_letter_on = "false"
+direction_issued_letter_on = "true"
