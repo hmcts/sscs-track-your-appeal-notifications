@@ -141,6 +141,16 @@
     </suppress>
     <suppress>
         <notes><![CDATA[
+   file name: jackson-databind-2.9.9.jar.
+   CVE-2019-14379: We do not use ehcache so safe to suppress.
+   CVE-2019-14439: We do not use ehcache so safe to suppress.
+   ]]></notes>
+        <gav regex="true">^com\.fasterxml\.jackson\.core:jackson-databind:.*$</gav>
+        <cve>CVE-2019-14379</cve>
+        <cve>CVE-2019-14439</cve>
+    </suppress>
+    <suppress>
+        <notes><![CDATA[
    file name: guava-20.0.jar
    ]]></notes>
         <gav regex="true">^com\.google\.guava:guava:.*$</gav>

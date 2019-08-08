@@ -62,13 +62,21 @@ public class NotificationConfig {
         return onlineHearingLink;
     }
 
-    public Template getTemplate(String emailTemplateName, String smsTemplateName, String letterTemplateName, Benefit benefit,
-                                AppealHearingType appealHearingType) {
+    public Template getTemplate(String emailTemplateName, String smsTemplateName, String letterTemplateName,
+                                String docmosisTemplateName, Benefit benefit, AppealHearingType appealHearingType) {
+
+        String docmosisTemplateId = getTemplate(appealHearingType, docmosisTemplateName, "docmosisId");
+        if (StringUtils.isNotBlank(docmosisTemplateId)) {
+            if (!Boolean.valueOf(env.getProperty("feature.docmosis_leters." + docmosisTemplateName.split("\\.")[0] + "_on"))) {
+                docmosisTemplateId = null;
+            }
+        }
         return Template.builder()
                 .emailTemplateId(getTemplate(appealHearingType, emailTemplateName, "emailId"))
                 .smsTemplateId(getTemplate(appealHearingType, smsTemplateName, "smsId"))
                 .smsSenderTemplateId(env.getProperty("smsSender." + benefit.toString().toLowerCase(Locale.ENGLISH)))
                 .letterTemplateId(getTemplate(appealHearingType, letterTemplateName, "letterId"))
+                .docmosisTemplateId(docmosisTemplateId)
                 .build();
     }
 
