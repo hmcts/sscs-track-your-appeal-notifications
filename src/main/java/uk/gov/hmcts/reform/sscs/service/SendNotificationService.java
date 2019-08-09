@@ -90,7 +90,7 @@ public class SendNotificationService {
 
         boolean isInterlocLetter = INTERLOC_LETTERS.contains(eventType);
         boolean isDocmosisLetter = DOCMOSIS_LETTERS.contains(eventType);
-        if ((lettersOn && !isInterlocLetter) || (interlocLettersOn && isInterlocLetter) || (docmosisLettersOn && isDocmosisLetter)) {
+        if ((lettersOn && !isInterlocLetter) || (interlocLettersOn && isInterlocLetter) || (docmosisLettersOn && isDocmosisLetter && StringUtils.isNotBlank(notification.getDocmosisLetterTemplate()))) {
             sendLetterNotification(wrapper, subscriptionWithType.getSubscription(), notification, subscriptionWithType, eventType);
         }
     }

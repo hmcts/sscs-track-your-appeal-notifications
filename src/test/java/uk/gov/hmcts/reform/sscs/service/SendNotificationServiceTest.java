@@ -112,6 +112,11 @@ public class SendNotificationServiceTest {
         .placeholders(new HashMap<>())
         .build();
 
+    private static Notification DOCMOSIS_LETTER_NOTIFICATION = Notification.builder()
+            .destination(Destination.builder().build())
+            .template(Template.builder().docmosisTemplateId("AWord.doc").letterTemplateId("someLetterTemplateId").build())
+            .placeholders(new HashMap<>())
+            .build();
     @Mock
     private NotificationSender notificationSender;
 
@@ -412,6 +417,27 @@ public class SendNotificationServiceTest {
     @Parameters(method = "nonBundledLetterTemplates")
     public void invalidBundledLetterTileType(NotificationEventType eventType) {
         assertNull(getBundledLetterDocumentUrl(eventType, buildBaseWrapper(APPELLANT_WITH_ADDRESS, eventType).getNewSscsCaseData()));
+    }
+
+    @Test
+    public void willNotSendAppealLodgedLettersIfDocmosisLetterIsSwitchedOnAndLetterIsSwitchedOff() throws NotificationClientException {
+        classUnderTest.docmosisLettersOn = true;
+        classUnderTest.interlocLettersOn = true;
+        classUnderTest.lettersOn = false;
+        SubscriptionWithType appellantEmptySubscription = new SubscriptionWithType(EMPTY_SUBSCRIPTION, APPELLANT);
+        classUnderTest.sendEmailSmsLetterNotification(buildBaseWrapper(APPELLANT_WITH_ADDRESS, NotificationEventType.APPEAL_RECEIVED_NOTIFICATION), LETTER_NOTIFICATION, appellantEmptySubscription, NotificationEventType.APPEAL_RECEIVED_NOTIFICATION);
+        verifyZeroInteractions(notificationHandler);
+    }
+
+    @Test
+    public void willSendAppealLodgedLettersIfDocmosisLetterIsSwitchedOnAndLetterIsSwitchedOn() throws NotificationClientException {
+        classUnderTest.docmosisLettersOn = true;
+        classUnderTest.interlocLettersOn = true;
+        classUnderTest.lettersOn = false;
+        SubscriptionWithType appellantEmptySubscription = new SubscriptionWithType(EMPTY_SUBSCRIPTION, APPELLANT);
+        when(pdfLetterService.generateLetter(any(), any(), any())).thenReturn("PDF".getBytes());
+        classUnderTest.sendEmailSmsLetterNotification(buildBaseWrapper(APPELLANT_WITH_ADDRESS, NotificationEventType.APPEAL_RECEIVED_NOTIFICATION), DOCMOSIS_LETTER_NOTIFICATION, appellantEmptySubscription, NotificationEventType.APPEAL_RECEIVED_NOTIFICATION);
+        verify(notificationHandler, atLeastOnce()).sendNotification(any(), any(), eq("Letter"), any());
     }
 
     private CcdNotificationWrapper buildBaseWrapper(Appellant appellant) {
