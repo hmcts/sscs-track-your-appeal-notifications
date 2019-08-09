@@ -1,5 +1,6 @@
 package uk.gov.hmcts.reform.sscs.service;
 
+import static com.microsoft.applicationinsights.web.dependencies.apachecommons.lang3.StringUtils.isNotBlank;
 import static uk.gov.hmcts.reform.sscs.config.AppConstants.*;
 import static uk.gov.hmcts.reform.sscs.domain.notify.NotificationEventType.*;
 import static uk.gov.hmcts.reform.sscs.service.LetterUtils.*;
@@ -236,8 +237,8 @@ public class SendNotificationService {
 
     private static boolean isValidLetterAddress(Address addressToUse) {
         return null != addressToUse
-                && null != addressToUse.getLine1()
-                && null != addressToUse.getPostcode();
+            && isNotBlank(addressToUse.getLine1())
+            && isNotBlank(addressToUse.getPostcode());
     }
 
     private void sendBundledLetterNotification(NotificationWrapper wrapper, Notification notification, Address addressToUse, Name nameToUse, SubscriptionType subscriptionType) {

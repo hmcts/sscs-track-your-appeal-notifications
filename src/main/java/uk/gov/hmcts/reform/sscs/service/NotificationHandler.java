@@ -38,7 +38,7 @@ public class NotificationHandler {
 
             return true;
         } catch (Exception ex) {
-            LOG.error("Could not send notification for case id: ", wrapper.getNewSscsCaseData().getCcdCaseId());
+            LOG.error("Could not send notification for case id: ", wrapper.getCaseId());
             wrapAndThrowNotificationExceptionIfRequired(caseId, notificationTemplate, ex);
         }
 

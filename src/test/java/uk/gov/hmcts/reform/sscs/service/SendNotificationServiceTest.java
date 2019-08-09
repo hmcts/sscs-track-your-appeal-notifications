@@ -59,7 +59,7 @@ public class SendNotificationServiceTest {
 
     private static Appellant APPELLANT_WITH_EMPTY_ADDRESS = Appellant.builder()
         .name(Name.builder().firstName("Ap").lastName("pellant").build())
-        .address(Address.builder().build())
+        .address(Address.builder().line1("").postcode("").build())
         .build();
 
     private static Appellant APPELLANT_WITH_ADDRESS = Appellant.builder()

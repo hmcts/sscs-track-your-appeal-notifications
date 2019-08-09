@@ -114,7 +114,6 @@ public class NotificationHandlerTest {
     @Test(expected = NotificationClientRuntimeException.class)
     public void shouldThrowNotificationClientRuntimeExceptionForAnyNotificationException() throws Exception {
         SscsCaseData stubbedCaseData = SscsCaseData.builder().build();
-        when(notificationWrapper.getNewSscsCaseData()).thenReturn(stubbedCaseData);
         doThrow(new NotificationClientException(new UnknownHostException()))
                 .when(sendNotification)
                 .send();
