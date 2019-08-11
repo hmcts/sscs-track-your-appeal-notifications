@@ -16,7 +16,6 @@ import org.junit.Test;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
-import uk.gov.hmcts.reform.sscs.ccd.domain.OnlinePanel;
 import uk.gov.hmcts.reform.sscs.ccd.domain.SscsCaseData;
 import uk.gov.service.notify.Notification;
 import uk.gov.service.notify.NotificationClientException;
@@ -46,12 +45,10 @@ public class CohNotificationFunctionalTest extends AbstractFunctionalTest {
     @Override
     protected SscsCaseData createCaseData() {
         SscsCaseData.SscsCaseDataBuilder sscsCaseDataBuilder = builderSscsCaseData(caseReference, "Yes", "Yes", SYA_APPEAL_CREATED, "cor");
-        return sscsCaseDataBuilder.onlinePanel(
-                OnlinePanel.builder()
-                        .assignedTo("Judge")
-                        .medicalMember("medic")
-                        .disabilityQualifiedMember("disQualMember")
-                        .build())
+        return sscsCaseDataBuilder
+                .assignedToJudge("Judge")
+                .assignedToMedicalMember("medic")
+                .assignedToDisabilityMember("disQualMember")
                 .build();
     }
 
