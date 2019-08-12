@@ -35,6 +35,7 @@ import uk.gov.hmcts.reform.sscs.domain.notify.Notification;
 import uk.gov.hmcts.reform.sscs.domain.notify.NotificationEventType;
 import uk.gov.hmcts.reform.sscs.domain.notify.Template;
 import uk.gov.hmcts.reform.sscs.factory.CcdNotificationWrapper;
+import uk.gov.hmcts.reform.sscs.service.docmosis.PdfLetterService;
 import uk.gov.service.notify.NotificationClientException;
 
 @RunWith(JUnitParamsRunner.class)
@@ -111,6 +112,11 @@ public class SendNotificationServiceTest {
         .placeholders(new HashMap<>())
         .build();
 
+    private static Notification DOCMOSIS_LETTER_NOTIFICATION = Notification.builder()
+            .destination(Destination.builder().build())
+            .template(Template.builder().docmosisTemplateId("AWord.doc").letterTemplateId("someLetterTemplateId").build())
+            .placeholders(new HashMap<>())
+            .build();
     @Mock
     private NotificationSender notificationSender;
 
@@ -129,15 +135,19 @@ public class SendNotificationServiceTest {
     @Mock
     private BundledLetterTemplateUtil bundledLetterTemplateUtil;
 
+    @Mock
+    private PdfLetterService pdfLetterService;
+
     private SendNotificationService classUnderTest;
 
     @Before
     public void setup() {
         initMocks(this);
 
-        classUnderTest = new SendNotificationService(notificationSender, evidenceManagementService, pdfService, notificationHandler, notificationValidService, bundledLetterTemplateUtil);
+        classUnderTest = new SendNotificationService(notificationSender, evidenceManagementService, pdfService, notificationHandler, notificationValidService, bundledLetterTemplateUtil, pdfLetterService);
         classUnderTest.bundledLettersOn = true;
         classUnderTest.lettersOn = true;
+        classUnderTest.docmosisLettersOn = true;
         classUnderTest.interlocLettersOn = true;
     }
 
@@ -231,10 +241,10 @@ public class SendNotificationServiceTest {
     @Test
     @Parameters(method = "getMandatoryLettersEventTypes")
     public void doNotSendMandatoryLetterNotificationToAppellantWhenToggledOff(NotificationEventType eventType) {
-        SubscriptionWithType appellantEmptySubscription = new SubscriptionWithType(EMPTY_SUBSCRIPTION, APPELLANT);
-
         classUnderTest.lettersOn = false;
         classUnderTest.interlocLettersOn = false;
+        classUnderTest.docmosisLettersOn = false;
+        SubscriptionWithType appellantEmptySubscription = new SubscriptionWithType(EMPTY_SUBSCRIPTION, APPELLANT);
         classUnderTest.sendEmailSmsLetterNotification(buildBaseWrapper(APPELLANT_WITH_ADDRESS, eventType), LETTER_NOTIFICATION, appellantEmptySubscription, eventType);
 
         verifyZeroInteractions(notificationHandler);
@@ -256,6 +266,7 @@ public class SendNotificationServiceTest {
         SubscriptionWithType appellantEmptySubscription = new SubscriptionWithType(EMPTY_SUBSCRIPTION, APPELLANT);
 
         classUnderTest.interlocLettersOn = false;
+        classUnderTest.docmosisLettersOn = false;
         classUnderTest.sendEmailSmsLetterNotification(buildBaseWrapper(APPELLANT_WITH_ADDRESS, eventType), LETTER_NOTIFICATION, appellantEmptySubscription, eventType);
 
         verifyZeroInteractions(notificationHandler);
@@ -406,6 +417,27 @@ public class SendNotificationServiceTest {
     @Parameters(method = "nonBundledLetterTemplates")
     public void invalidBundledLetterTileType(NotificationEventType eventType) {
         assertNull(getBundledLetterDocumentUrl(eventType, buildBaseWrapper(APPELLANT_WITH_ADDRESS, eventType).getNewSscsCaseData()));
+    }
+
+    @Test
+    public void willNotSendAppealLodgedLettersIfDocmosisLetterIsSwitchedOnAndLetterIsSwitchedOff() throws NotificationClientException {
+        classUnderTest.docmosisLettersOn = true;
+        classUnderTest.interlocLettersOn = true;
+        classUnderTest.lettersOn = false;
+        SubscriptionWithType appellantEmptySubscription = new SubscriptionWithType(EMPTY_SUBSCRIPTION, APPELLANT);
+        classUnderTest.sendEmailSmsLetterNotification(buildBaseWrapper(APPELLANT_WITH_ADDRESS, NotificationEventType.APPEAL_RECEIVED_NOTIFICATION), LETTER_NOTIFICATION, appellantEmptySubscription, NotificationEventType.APPEAL_RECEIVED_NOTIFICATION);
+        verifyZeroInteractions(notificationHandler);
+    }
+
+    @Test
+    public void willSendAppealLodgedLettersIfDocmosisLetterIsSwitchedOnAndLetterIsSwitchedOn() throws NotificationClientException {
+        classUnderTest.docmosisLettersOn = true;
+        classUnderTest.interlocLettersOn = true;
+        classUnderTest.lettersOn = false;
+        SubscriptionWithType appellantEmptySubscription = new SubscriptionWithType(EMPTY_SUBSCRIPTION, APPELLANT);
+        when(pdfLetterService.generateLetter(any(), any(), any())).thenReturn("PDF".getBytes());
+        classUnderTest.sendEmailSmsLetterNotification(buildBaseWrapper(APPELLANT_WITH_ADDRESS, NotificationEventType.APPEAL_RECEIVED_NOTIFICATION), DOCMOSIS_LETTER_NOTIFICATION, appellantEmptySubscription, NotificationEventType.APPEAL_RECEIVED_NOTIFICATION);
+        verify(notificationHandler, atLeastOnce()).sendNotification(any(), any(), eq("Letter"), any());
     }
 
     private CcdNotificationWrapper buildBaseWrapper(Appellant appellant) {

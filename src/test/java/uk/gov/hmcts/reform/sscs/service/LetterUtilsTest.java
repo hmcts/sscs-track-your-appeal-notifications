@@ -13,11 +13,13 @@ import static uk.gov.hmcts.reform.sscs.service.NotificationServiceTest.APPELLANT
 import static uk.gov.hmcts.reform.sscs.service.SendNotificationServiceTest.APPELLANT_WITH_ADDRESS_AND_APPOINTEE;
 import static uk.gov.hmcts.reform.sscs.service.SendNotificationServiceTest.REP_WITH_ADDRESS;
 
+import java.io.ByteArrayOutputStream;
 import java.io.IOException;
-
 import junitparams.JUnitParamsRunner;
 import junitparams.Parameters;
 import org.apache.pdfbox.io.IOUtils;
+import org.apache.pdfbox.pdmodel.PDDocument;
+import org.apache.pdfbox.pdmodel.PDPage;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import uk.gov.hmcts.reform.sscs.domain.notify.NotificationEventType;
@@ -175,4 +177,29 @@ public class LetterUtilsTest {
 
         buildBundledLetter(sampleDirectionCoversheet, null);
     }
+
+    @Test
+    @Parameters({"1", "2", "3", "4"})
+    public void willAddABlankPageAtTheEndIfAnOddPageIsGiven(int pages) throws IOException {
+        PDDocument originalDocument = new PDDocument();
+
+        // Create a new blank page and add it to the originalDocument
+        PDPage blankPage = new PDPage();
+        for (int i = 1; i <= pages; i++) {
+            originalDocument.addPage(blankPage);
+        }
+        assertEquals(pages, originalDocument.getNumberOfPages());
+
+        ByteArrayOutputStream baos = new ByteArrayOutputStream();
+        originalDocument.save(baos);
+        originalDocument.close();
+        byte[] bytes = baos.toByteArray();
+        baos.close();
+
+        byte[] newBytes = addBlankPageAtTheEndIfOddPage(bytes);
+        PDDocument newDocument = PDDocument.load(newBytes);
+        int expectedPages = (pages % 2 == 0) ? pages : pages + 1;
+        assertEquals(expectedPages, newDocument.getNumberOfPages());
+    }
+
 }

@@ -211,6 +211,23 @@ public abstract class AbstractFunctionalTest {
         } while (true);
     }
 
+    public List<Notification> fetchLetters() throws NotificationClientException {
+        List<Notification> allNotifications = new ArrayList<>();
+        allNotifications = client.getNotifications("", "letter", caseId.toString(), "").getNotifications();
+        int secondsLeft = maxSecondsToWaitForNotification;
+        while (allNotifications.size() == 0 && secondsLeft < 0) {
+            try {
+                Thread.sleep(5000);
+            } catch (InterruptedException e) {
+                // noop
+            }
+            secondsLeft -= 5;
+            allNotifications = client.getNotifications("", "letter", caseId.toString(), "").getNotifications();
+
+        }
+        return allNotifications;
+    }
+
     protected void simulateCcdCallback(NotificationEventType eventType) throws IOException {
         String resource = eventType.getId() + "Callback.json";
         simulateCcdCallback(eventType, resource);
