@@ -57,8 +57,9 @@
           }
         },
         "benefitType":{
-          "code":"ESA"
+          "code":"PIP"
         },
+        "receivedVia": "Online",
         "hearingOptions":{
           "wantsToAttend":"Yes",
           "wantsSupport":"No",
@@ -278,8 +279,9 @@
           }
         },
         "benefitType": {
-          "code": "ESA"
+          "code": "PIP"
         },
+        "receivedVia": "Online",
         "hearingOptions": {
           "wantsToAttend": "Yes",
           "wantsSupport": "No",
