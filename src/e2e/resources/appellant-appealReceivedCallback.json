@@ -30,7 +30,7 @@
           }
         },
         "benefitType": {
-          "code": "ESA"
+          "code": "PIP"
         },
         "hearingOptions": {
           "languageInterpreter": "Yes",
@@ -41,7 +41,8 @@
         "mrnDetails": {},
         "rep": {},
         "signer": null,
-        "hearingType": "paper"
+        "hearingType": "paper",
+        "receivedVia": "Online"
       },
       "caseReference": "SC022/14/12423",
       "events": [
