@@ -430,13 +430,27 @@ public class SendNotificationServiceTest {
     }
 
     @Test
-    public void willSendAppealLodgedLettersForPipAndOnlineIfDocmosisLetterIsSwitchedOnAndLetterIsSwitchedOn() throws NotificationClientException {
+    public void willSendAppealLodgedLettersForPipAndOnlineIfDocmosisLetterIsSwitchedOn() {
         classUnderTest.docmosisLettersOn = true;
         classUnderTest.interlocLettersOn = true;
         classUnderTest.lettersOn = false;
         SubscriptionWithType appellantEmptySubscription = new SubscriptionWithType(EMPTY_SUBSCRIPTION, APPELLANT);
         when(pdfLetterService.generateLetter(any(), any(), any())).thenReturn("PDF".getBytes());
         classUnderTest.sendEmailSmsLetterNotification(buildBaseWrapper(APPELLANT_WITH_ADDRESS, NotificationEventType.APPEAL_RECEIVED_NOTIFICATION), DOCMOSIS_LETTER_NOTIFICATION, appellantEmptySubscription, NotificationEventType.APPEAL_RECEIVED_NOTIFICATION);
+        verify(pdfLetterService).generateLetter(any(), any(), any());
+        verify(pdfLetterService).buildCoversheet(any(), any());
+        verifyNoMoreInteractions(pdfLetterService);
+        verify(notificationHandler, atLeastOnce()).sendNotification(any(), any(), eq("Letter"), any());
+    }
+
+    @Test
+    public void directionIssuedLetterWillBeSentIfDocmosisLetterIsOn() {
+        classUnderTest.docmosisLettersOn = true;
+        classUnderTest.interlocLettersOn = true;
+        classUnderTest.lettersOn = false;
+        SubscriptionWithType appellantEmptySubscription = new SubscriptionWithType(EMPTY_SUBSCRIPTION, APPELLANT);
+        when(pdfLetterService.generateLetter(any(), any(), any())).thenReturn("PDF".getBytes());
+        classUnderTest.sendEmailSmsLetterNotification(buildBaseWrapper(APPELLANT_WITH_ADDRESS, NotificationEventType.DIRECTION_ISSUED), DOCMOSIS_LETTER_NOTIFICATION, appellantEmptySubscription, NotificationEventType.APPEAL_RECEIVED_NOTIFICATION);
         verify(pdfLetterService).generateLetter(any(), any(), any());
         verify(pdfLetterService).buildCoversheet(any(), any());
         verifyNoMoreInteractions(pdfLetterService);
