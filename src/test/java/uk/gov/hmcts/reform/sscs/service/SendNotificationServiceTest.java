@@ -447,6 +447,7 @@ public class SendNotificationServiceTest {
     public void directionIssuedLetterWillBeSentIfDocmosisLetterIsOn() {
         classUnderTest.docmosisLettersOn = true;
         classUnderTest.interlocLettersOn = true;
+        classUnderTest.bundledLettersOn = false;
         classUnderTest.lettersOn = false;
         SubscriptionWithType appellantEmptySubscription = new SubscriptionWithType(EMPTY_SUBSCRIPTION, APPELLANT);
         when(pdfLetterService.generateLetter(any(), any(), any())).thenReturn("PDF".getBytes());
