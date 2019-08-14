@@ -99,6 +99,7 @@ public class CcdNotificationWrapper implements NotificationWrapper {
                 || ADJOURNED_NOTIFICATION.equals(getNotificationType())
                 || APPEAL_RECEIVED_NOTIFICATION.equals(getNotificationType())
                 || APPEAL_LAPSED_NOTIFICATION.equals(getNotificationType())
+                || DWP_APPEAL_LAPSED_NOTIFICATION.equals(getNotificationType())
                 || DWP_RESPONSE_RECEIVED_NOTIFICATION.equals(getNotificationType())
                 || APPEAL_WITHDRAWN_NOTIFICATION.equals(getNotificationType())
                 || EVIDENCE_RECEIVED_NOTIFICATION.equals(getNotificationType())
@@ -122,6 +123,7 @@ public class CcdNotificationWrapper implements NotificationWrapper {
 
         if (hasRepSubscriptionOrIsMandatoryRepLetter(responseWrapper)
             && (APPEAL_LAPSED_NOTIFICATION.equals(getNotificationType())
+                || DWP_APPEAL_LAPSED_NOTIFICATION.equals(getNotificationType())
                 || APPEAL_WITHDRAWN_NOTIFICATION.equals(getNotificationType())
                 || EVIDENCE_RECEIVED_NOTIFICATION.equals(getNotificationType())
                 || SYA_APPEAL_CREATED_NOTIFICATION.equals(getNotificationType())

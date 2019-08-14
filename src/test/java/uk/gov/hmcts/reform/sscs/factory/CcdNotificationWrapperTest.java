@@ -152,7 +152,7 @@ public class CcdNotificationWrapperTest {
     }
 
     @Test
-    @Parameters({"APPEAL_LAPSED_NOTIFICATION","APPEAL_WITHDRAWN_NOTIFICATION","EVIDENCE_RECEIVED_NOTIFICATION",
+    @Parameters({"APPEAL_LAPSED_NOTIFICATION","DWP_APPEAL_LAPSED_NOTIFICATION","APPEAL_WITHDRAWN_NOTIFICATION","EVIDENCE_RECEIVED_NOTIFICATION",
             "POSTPONEMENT_NOTIFICATION","HEARING_BOOKED_NOTIFICATION","SYA_APPEAL_CREATED_NOTIFICATION","VALID_APPEAL_CREATED",
             "RESEND_APPEAL_CREATED_NOTIFICATION", "APPEAL_RECEIVED_NOTIFICATION", "ADJOURNED_NOTIFICATION",
             "APPEAL_DORMANT_NOTIFICATION"})
@@ -165,7 +165,7 @@ public class CcdNotificationWrapperTest {
     }
 
     @Test
-    @Parameters({"SYA_APPEAL_CREATED_NOTIFICATION, cor", "DWP_RESPONSE_RECEIVED_NOTIFICATION, oral", "ADJOURNED_NOTIFICATION, oral", "DWP_RESPONSE_RECEIVED_NOTIFICATION, paper", "APPEAL_LAPSED_NOTIFICATION, paper", "SUBSCRIPTION_UPDATED_NOTIFICATION, paper", "APPEAL_WITHDRAWN_NOTIFICATION, paper", "EVIDENCE_RECEIVED_NOTIFICATION, oral", "EVIDENCE_RECEIVED_NOTIFICATION, paper", "VALID_APPEAL_CREATED, cor", "HEARING_BOOKED_NOTIFICATION, paper", "POSTPONEMENT_NOTIFICATION, oral", "HEARING_REMINDER_NOTIFICATION, oral"})
+    @Parameters({"SYA_APPEAL_CREATED_NOTIFICATION, cor", "DWP_RESPONSE_RECEIVED_NOTIFICATION, oral", "ADJOURNED_NOTIFICATION, oral", "DWP_RESPONSE_RECEIVED_NOTIFICATION, paper", "APPEAL_LAPSED_NOTIFICATION, paper", "DWP_APPEAL_LAPSED_NOTIFICATION, paper", "SUBSCRIPTION_UPDATED_NOTIFICATION, paper", "APPEAL_WITHDRAWN_NOTIFICATION, paper", "EVIDENCE_RECEIVED_NOTIFICATION, oral", "EVIDENCE_RECEIVED_NOTIFICATION, paper", "VALID_APPEAL_CREATED, cor", "HEARING_BOOKED_NOTIFICATION, paper", "POSTPONEMENT_NOTIFICATION, oral", "HEARING_REMINDER_NOTIFICATION, oral"})
     public void givenSubscriptions_shouldGetSubscriptionTypeListWithAppointee(NotificationEventType notificationEventType, String hearingType) {
         ccdNotificationWrapper = buildCcdNotificationWrapperBasedOnEventTypeWithAppointee(notificationEventType, hearingType);
         List<SubscriptionWithType> subsWithTypeList = ccdNotificationWrapper.getSubscriptionsBasedOnNotificationType();
@@ -195,6 +195,7 @@ public class CcdNotificationWrapperTest {
     private Object[] getEventTypeFilteredOnReps() {
         return Arrays.stream(values())
             .filter(type -> !(type.equals(APPEAL_LAPSED_NOTIFICATION)
+                || type.equals(DWP_APPEAL_LAPSED_NOTIFICATION)
                 || type.equals(APPEAL_WITHDRAWN_NOTIFICATION)
                 || type.equals(EVIDENCE_RECEIVED_NOTIFICATION)
                 || type.equals(SYA_APPEAL_CREATED_NOTIFICATION)

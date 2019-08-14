@@ -51,6 +51,8 @@ public class NotificationConfigTest {
                                                                             String expectedDocmosisTemplateId,
                                                                             AppealHearingType appealHearingType,
                                                                             String templateName) {
+        System.out.println("expectedEmailTemplateId" + expectedEmailTemplateId);
+        System.out.println("templateName" + templateName);
         Template template = notificationConfig.getTemplate(templateName, templateName, templateName, templateName, Benefit.PIP, appealHearingType);
         assertEquals(expectedEmailTemplateId, template.getEmailTemplateId());
         assertEquals(expectedSmsTemplateId, template.getSmsTemplateId());
@@ -100,6 +102,11 @@ public class NotificationConfigTest {
             new Object[]{"8ce8d794-75e8-49a0-b4d2-0c6cd2061c11", "d2b4394b-d1c9-4d5c-a44e-b382e41c67e5", null, null, PAPER, getTemplateName(APPEAL_LAPSED_NOTIFICATION, APPELLANT)},
             new Object[]{"8ce8d794-75e8-49a0-b4d2-0c6cd2061c11", "d2b4394b-d1c9-4d5c-a44e-b382e41c67e5", null, null, ORAL, getTemplateName(APPEAL_LAPSED_NOTIFICATION, APPELLANT)},
             new Object[]{"8ce8d794-75e8-49a0-b4d2-0c6cd2061c11", "d2b4394b-d1c9-4d5c-a44e-b382e41c67e5", null, null, ORAL, getTemplateName(APPEAL_LAPSED_NOTIFICATION, APPOINTEE)},
+            new Object[]{"e93dd744-84a1-4173-847a-6d023b55637f", "ee58f7d0-8de7-4bee-acd4-252213db6b7b", null, null, PAPER, getTemplateName(DWP_APPEAL_LAPSED_NOTIFICATION, REPRESENTATIVE)},
+            new Object[]{"e93dd744-84a1-4173-847a-6d023b55637f", "ee58f7d0-8de7-4bee-acd4-252213db6b7b", null, null, ORAL, getTemplateName(DWP_APPEAL_LAPSED_NOTIFICATION, REPRESENTATIVE)},
+            new Object[]{"8ce8d794-75e8-49a0-b4d2-0c6cd2061c11", "d2b4394b-d1c9-4d5c-a44e-b382e41c67e5", null, null, PAPER, getTemplateName(DWP_APPEAL_LAPSED_NOTIFICATION, APPELLANT)},
+            new Object[]{"8ce8d794-75e8-49a0-b4d2-0c6cd2061c11", "d2b4394b-d1c9-4d5c-a44e-b382e41c67e5", null, null, ORAL, getTemplateName(DWP_APPEAL_LAPSED_NOTIFICATION, APPELLANT)},
+            new Object[]{"8ce8d794-75e8-49a0-b4d2-0c6cd2061c11", "d2b4394b-d1c9-4d5c-a44e-b382e41c67e5", null, null, ORAL, getTemplateName(DWP_APPEAL_LAPSED_NOTIFICATION, APPOINTEE)},
             new Object[]{"e29a2275-553f-4e70-97f4-2994c095f281", "f59440ee-19ca-4d47-a702-13e9cecaccbd", "d4ca58d1-8b48-44eb-9af9-0bfc14a0d72d", null, PAPER, getTemplateName(APPEAL_WITHDRAWN_NOTIFICATION, REPRESENTATIVE)},
             new Object[]{"e29a2275-553f-4e70-97f4-2994c095f281", "f59440ee-19ca-4d47-a702-13e9cecaccbd", "d4ca58d1-8b48-44eb-9af9-0bfc14a0d72d", null, ORAL, getTemplateName(APPEAL_WITHDRAWN_NOTIFICATION, REPRESENTATIVE)},
             new Object[]{"8620e023-f663-477e-a771-9cfad50ee30f", "446c7b23-7342-42e1-adff-b4c367e951cb", "d4ca58d1-8b48-44eb-9af9-0bfc14a0d72d", null, PAPER, getTemplateName(APPEAL_WITHDRAWN_NOTIFICATION, APPELLANT)},
