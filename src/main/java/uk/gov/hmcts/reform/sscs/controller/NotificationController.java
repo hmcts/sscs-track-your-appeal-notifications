@@ -56,6 +56,8 @@ public class NotificationController {
             @RequestHeader(AuthorisationService.SERVICE_AUTHORISATION_HEADER) String serviceAuthHeader,
             @RequestBody String message) {
         try {
+            log.info("Message " + message);
+
             Callback<SscsCaseData> callback = deserializer.deserialize(message);
 
             CaseDetails<SscsCaseData> caseDetailsBefore = callback.getCaseDetailsBefore().orElse(null);
