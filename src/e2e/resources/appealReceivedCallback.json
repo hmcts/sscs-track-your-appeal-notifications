@@ -39,7 +39,23 @@
           "wantsToAttend": "Yes"
         },
         "mrnDetails": {},
-        "rep": {},
+        "rep": {
+          "hasRepresentative": "Yes",
+          "name": {
+            "title": "Mr",
+            "firstName": "Harry",
+            "lastName": "Potter"
+          },
+          "address": {
+            "line1": "123 Hairy Lane",
+            "line2": "Off Hairy Park",
+            "town": "Town",
+            "county": "County",
+            "postcode": "TS2 2ST"
+          },
+          "contact": {},
+          "organisation": "HP Ltd"
+        },
         "signer": null,
         "hearingType": "paper",
         "receivedVia": "Online"
