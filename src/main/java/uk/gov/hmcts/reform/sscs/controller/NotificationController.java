@@ -60,6 +60,10 @@ public class NotificationController {
 
             CaseDetails<SscsCaseData> caseDetailsBefore = callback.getCaseDetailsBefore().orElse(null);
 
+            if (callback.getEvent() != null) {
+                log.info("Received a callback of event type " + callback.getEvent().getType());
+            }
+
             SscsCaseDataWrapper sscsCaseDataWrapper = buildSscsCaseDataWrapper(
                 callback.getCaseDetails().getCaseData(),
                 caseDetailsBefore != null ? caseDetailsBefore.getCaseData() : null,
