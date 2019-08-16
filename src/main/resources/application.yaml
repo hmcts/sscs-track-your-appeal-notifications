@@ -144,7 +144,7 @@ notification:
     appointee:
       emailId: 8ce8d794-75e8-49a0-b4d2-0c6cd2061c11
       smsId: d2b4394b-d1c9-4d5c-a44e-b382e41c67e5
-  dwpAppealLapsed:
+  dwpLapseCase:
     appellant:
       emailId: 8ce8d794-75e8-49a0-b4d2-0c6cd2061c11
       smsId: d2b4394b-d1c9-4d5c-a44e-b382e41c67e5
