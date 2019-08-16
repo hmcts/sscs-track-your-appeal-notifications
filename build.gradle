@@ -100,7 +100,7 @@ dependencyManagement {
     }
     dependencies {
         // checkstyle needs a certain version and so does spring fox swagger, so can't use latest
-        dependencySet(group: 'com.google.guava', version: '27.1-jre') {
+        dependencySet(group: 'com.google.guava', version: '28.0-jre') {
             entry 'guava'
         }
         // CVE-2019-0232, CVE-2019-0199 - command line injections on windows
