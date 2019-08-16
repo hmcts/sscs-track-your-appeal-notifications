@@ -90,9 +90,23 @@ public class SendNotificationService {
 
         boolean isInterlocLetter = INTERLOC_LETTERS.contains(eventType);
         boolean isDocmosisLetter = DOCMOSIS_LETTERS.contains(eventType);
-        if ((lettersOn && !isInterlocLetter) || (interlocLettersOn && isInterlocLetter) || (docmosisLettersOn && isDocmosisLetter)) {
+        if (allowNonInterlocLetterToBeSent(isInterlocLetter)
+                || allowInterlocLetterToBeSent(isInterlocLetter)
+                || allowDocmosisLetterToBeSent(notification, isDocmosisLetter)) {
             sendLetterNotification(wrapper, subscriptionWithType.getSubscription(), notification, subscriptionWithType, eventType);
         }
+    }
+
+    private boolean allowDocmosisLetterToBeSent(Notification notification, boolean isDocmosisLetter) {
+        return docmosisLettersOn && isDocmosisLetter && StringUtils.isNotBlank(notification.getDocmosisLetterTemplate());
+    }
+
+    private boolean allowInterlocLetterToBeSent(boolean isInterlocLetter) {
+        return interlocLettersOn && isInterlocLetter;
+    }
+
+    private boolean allowNonInterlocLetterToBeSent(boolean isInterlocLetter) {
+        return lettersOn && !isInterlocLetter;
     }
 
     private void sendSmsNotification(NotificationWrapper wrapper, Subscription subscription, Notification notification, NotificationEventType eventType) {
