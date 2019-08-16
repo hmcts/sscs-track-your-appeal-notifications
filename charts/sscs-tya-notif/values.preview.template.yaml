@@ -12,7 +12,7 @@ java:
     NOTIFICATION_API_KEY: ${NOTIFICATION_API_KEY}
     NOTIFICATION_API_TEST_KEY: ${NOTIFICATION_API_TEST_KEY}
     EMAIL_MAC_SECRET_TEXT: ${EMAIL_MAC_SECRET_TEXT}
-    JOB_SCHEDULER_DB_HOST: ${SERVICE_NAME}-postgresql
+    JOB_SCHEDULER_DB_HOST: "{{ .Release.Name }}-postgresql"
     IDAM_OAUTH2_REDIRECT_URL: "https://evidence-sharing-preprod.sscs.reform.hmcts.net"
     CORE_CASE_DATA_API_URL: "http://ccd-data-store-api-aat.service.core-compute-aat.internal"
     COH_URL: "http://coh-cor-aat.service.core-compute-aat.internal"
