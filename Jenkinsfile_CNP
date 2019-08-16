@@ -51,7 +51,6 @@ static LinkedHashMap<String, Object> secret(String secretName, String envVar) {
 withPipeline("java", product, component) {
   enableDockerBuild()
   installCharts()
-  setVaultName('sscs')
   loadVaultSecrets(secrets)
   enableSlackNotifications('#sscs-tech')
 }
