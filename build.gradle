@@ -245,8 +245,8 @@ dependencies {
     compile group: 'uk.gov.hmcts.reform', name: 'http-proxy-spring-boot-autoconfigure', version: '2.0.0'
     compile group: 'uk.gov.hmcts.reform', name: 'sscs-job-scheduler', version: '1.5.2'
     compile group: 'uk.gov.hmcts.reform', name: 'service-auth-provider-client', version: '3.0.0'
-
-    compile group: 'uk.gov.hmcts.reform', name: 'sscs-common', version: '3.0.44'
+    
+    compile group: 'uk.gov.hmcts.reform', name: 'sscs-common', version: '3.0.47-RC-SSCS-6319'
     compile group: 'uk.gov.hmcts.reform', name: 'sscs-pdf-email-common', version: '1.1.2'
 
     compile group: 'uk.gov.service.notify', name: 'notifications-java-client', version: '3.14.2-RELEASE'
