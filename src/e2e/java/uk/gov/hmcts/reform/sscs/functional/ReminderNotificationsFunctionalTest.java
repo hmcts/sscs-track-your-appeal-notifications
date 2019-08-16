@@ -280,7 +280,6 @@ public class ReminderNotificationsFunctionalTest extends AbstractFunctionalTest 
         );
     }
 
-    @Ignore
     @Test
     public void shouldSendNotificationsWhenHearingBookedEventIsReceivedWhenAnAppellantIsSubscribed() throws IOException, NotificationClientException {
 
