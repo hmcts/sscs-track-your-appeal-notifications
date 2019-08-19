@@ -2926,7 +2926,7 @@ public class NotificationsIt {
     }
 
     @Test
-    @Parameters({"subscriptionUpdated", "appealReceived", "struckOut", "directionIssued", "nonCompliant"})
+    @Parameters({"subscriptionUpdated", "appealReceived", "directionIssued", "nonCompliant"})
     public void shouldNotSendNotificationWhenAppealDormantAndNotificationType(String notificationEventType) throws Exception {
         json = json.replace("appealCreated", State.DORMANT_APPEAL_STATE.toString());
         json = json.replace("appealReceived", notificationEventType);
@@ -2943,6 +2943,44 @@ public class NotificationsIt {
     public void shouldSendNotificationWhenAppealDormantAndNotificationType(String notificationEventType) throws Exception {
         json = json.replace("appealCreated", State.DORMANT_APPEAL_STATE.toString());
         json = json.replace("appealReceived", notificationEventType);
+
+        HttpServletResponse response = getResponse(getRequestWithAuthHeader(json));
+
+        assertHttpStatus(response, HttpStatus.OK);
+        verify(notificationClient, atMostOnce()).sendEmail(any(), any(), any(), any());
+        verify(notificationClient, atMost(2)).sendSms(any(), any(), any(), any(), any());
+        verify(notificationClient, atMostOnce()).sendPrecompiledLetterWithInputStream(any(), any());
+        verifyNoMoreInteractions(notificationClient);
+    }
+
+    @Test
+    @Parameters({"appealWithdrawn"})
+    public void shouldSendNotificationLetterWhenAppealDormantAndNotificationType(String notificationEventType) throws Exception {
+        json = json.replace("appealCreated", State.DORMANT_APPEAL_STATE.toString());
+        json = json.replace("appealReceived", notificationEventType);
+
+        HttpServletResponse response = getResponse(getRequestWithAuthHeader(json));
+
+        assertHttpStatus(response, HttpStatus.OK);
+        verify(notificationClient, atMostOnce()).sendEmail(any(), any(), any(), any());
+        verify(notificationClient, atMost(2)).sendSms(any(), any(), any(), any(), any());
+        verify(notificationClient, atMost(2)).sendLetter(any(), any(), any());
+        verifyNoMoreInteractions(notificationClient);
+    }
+
+    @Test
+    public void givenAStruckOutEvent_shouldStillSendStruckOutNotificationWhenAppealDormant() throws Exception {
+
+        String filename = "json/ccdResponse_struckOut.json";
+        String path = getClass().getClassLoader().getResource(filename).getFile();
+        String json = FileUtils.readFileToString(new File(path), StandardCharsets.UTF_8.name());
+
+        json = json.replace("appealCreated", State.DORMANT_APPEAL_STATE.toString());
+
+        byte[] sampleDirectionCoversheet = IOUtils.toByteArray(getClass().getClassLoader().getResourceAsStream("pdfs/direction-notice-coversheet-sample.pdf"));
+        when(sscsGeneratePdfService.generatePdf(any(), any(), any(), any())).thenReturn(sampleDirectionCoversheet);
+        byte[] sampleDirectionNotice = IOUtils.toByteArray(getClass().getClassLoader().getResourceAsStream("pdfs/direction-text.pdf"));
+        when(evidenceManagementService.download(any(), any())).thenReturn(sampleDirectionNotice);
 
         HttpServletResponse response = getResponse(getRequestWithAuthHeader(json));
 
