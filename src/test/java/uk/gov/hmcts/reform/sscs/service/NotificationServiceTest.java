@@ -1795,6 +1795,8 @@ public class NotificationServiceTest {
             .appeal(
                 Appeal
                     .builder()
+                    .benefitType(BenefitType.builder().code(Benefit.PIP.name()).description(Benefit.PIP.getDescription()).build())
+                    .receivedVia("Online")
                     .hearingType(AppealHearingType.ORAL.name())
                     .hearingOptions(HearingOptions.builder().wantsToAttend(YES).build())
                     .appellant(appellant)
@@ -1817,7 +1819,7 @@ public class NotificationServiceTest {
             .sscsInterlocDirectionDocument(SscsInterlocDirectionDocument.builder().documentLink(DocumentLink.builder().documentUrl("http://dm-store:4506/documents/1e1eb3d2-5b6c-430d-8dad-ebcea1ad7ecf")
                     .documentFilename("test.pdf")
                     .documentBinaryUrl("test/binary").build()).build())
-            .sscsStrikeOutDocument(SscsStrikeOutDocument.builder().build().builder().documentLink(DocumentLink.builder().documentUrl("http://dm-store:4506/documents/1e1eb3d2-5b6c-430d-8dad-ebcea1ad7ecf")
+            .sscsStrikeOutDocument(SscsStrikeOutDocument.builder().documentLink(DocumentLink.builder().documentUrl("http://dm-store:4506/documents/1e1eb3d2-5b6c-430d-8dad-ebcea1ad7ecf")
                     .documentFilename("test.pdf")
                     .documentBinaryUrl("test/binary").build()).build())
             .ccdCaseId(CASE_ID)

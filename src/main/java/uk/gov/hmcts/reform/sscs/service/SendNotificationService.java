@@ -1,5 +1,8 @@
 package uk.gov.hmcts.reform.sscs.service;
 
+import static org.apache.commons.lang3.StringUtils.equalsIgnoreCase;
+import static org.apache.commons.lang3.StringUtils.isEmpty;
+import static org.apache.commons.lang3.StringUtils.isNotBlank;
 import static uk.gov.hmcts.reform.sscs.config.AppConstants.*;
 import static uk.gov.hmcts.reform.sscs.domain.notify.NotificationEventType.*;
 import static uk.gov.hmcts.reform.sscs.service.LetterUtils.*;
@@ -18,7 +21,6 @@ import java.util.Map;
 
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.ArrayUtils;
-import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
@@ -98,7 +100,7 @@ public class SendNotificationService {
     }
 
     private boolean allowDocmosisLetterToBeSent(Notification notification, boolean isDocmosisLetter) {
-        return docmosisLettersOn && isDocmosisLetter && StringUtils.isNotBlank(notification.getDocmosisLetterTemplate());
+        return docmosisLettersOn && isDocmosisLetter && isNotBlank(notification.getDocmosisLetterTemplate());
     }
 
     private boolean allowInterlocLetterToBeSent(boolean isInterlocLetter) {
@@ -150,7 +152,7 @@ public class SendNotificationService {
     private void sendMandatoryLetterNotification(NotificationWrapper wrapper, Notification notification, SubscriptionType subscriptionType) {
         if (isMandatoryLetterEventType(wrapper)) {
             Address addressToUse = getAddressToUseForLetter(wrapper, subscriptionType);
-            if ((bundledLettersOn && isBundledLetter(wrapper.getNotificationType())) || (docmosisLettersOn && StringUtils.isNotBlank(notification.getDocmosisLetterTemplate()))) {
+            if ((bundledLettersOn && isBundledLetter(wrapper.getNotificationType())) || (docmosisLettersOn && isNotBlank(notification.getDocmosisLetterTemplate()) && isDocmosisLetterValidToSend(wrapper))) {
                 sendBundledLetterNotification(wrapper, notification, addressToUse, getNameToUseForLetter(wrapper, subscriptionType), subscriptionType);
             } else if (hasLetterTemplate(notification)) {
                 NotificationHandler.SendNotification sendNotification = () ->
@@ -164,7 +166,7 @@ public class SendNotificationService {
     private void sendFallbackLetterNotification(NotificationWrapper wrapper, Subscription subscription, Notification notification, SubscriptionWithType subscriptionWithType, NotificationEventType eventType) {
         if (hasNoSubscriptions(subscription) && hasLetterTemplate(notification) && isFallbackLetterRequired(wrapper, subscriptionWithType, subscription, eventType, notificationValidService)) {
             Address addressToUse = getAddressToUseForLetter(wrapper, subscriptionWithType.getSubscriptionType());
-            if (bundledLettersOn && isBundledLetter(wrapper.getNotificationType()) || (docmosisLettersOn && StringUtils.isNotBlank(notification.getDocmosisLetterTemplate()))) {
+            if (bundledLettersOn && isBundledLetter(wrapper.getNotificationType()) || (docmosisLettersOn && isNotBlank(notification.getDocmosisLetterTemplate())) && isDocmosisLetterValidToSend(wrapper)) {
                 sendBundledLetterNotification(wrapper, notification, getAddressToUseForLetter(wrapper, subscriptionWithType.getSubscriptionType()), getNameToUseForLetter(wrapper, subscriptionWithType.getSubscriptionType()), subscriptionWithType.getSubscriptionType());
             } else {
                 NotificationHandler.SendNotification sendNotification = () ->
@@ -173,6 +175,14 @@ public class SendNotificationService {
                 notificationHandler.sendNotification(wrapper, notification.getLetterTemplate(), NOTIFICATION_TYPE_LETTER, sendNotification);
             }
         }
+    }
+
+    private boolean isDocmosisLetterValidToSend(NotificationWrapper wrapper) {
+        if (NotificationEventType.APPEAL_RECEIVED_NOTIFICATION.equals(wrapper.getNotificationType())) {
+            return equalsIgnoreCase(wrapper.getNewSscsCaseData().getAppeal().getBenefitType().getCode(), Benefit.PIP.name())
+                    && equalsIgnoreCase(wrapper.getNewSscsCaseData().getAppeal().getReceivedVia(), "Online");
+        }
+        return true;
     }
 
     public static String getRepSalutation(Representative rep) {
@@ -195,7 +205,7 @@ public class SendNotificationService {
         if (isValidLetterAddress(addressToUse)) {
             Map<String, String> placeholders = notification.getPlaceholders();
             placeholders.put(ADDRESS_LINE_1, addressToUse.getLine1());
-            placeholders.put(ADDRESS_LINE_2, StringUtils.isEmpty(addressToUse.getLine2()) ? " " : addressToUse.getLine2());
+            placeholders.put(ADDRESS_LINE_2, isEmpty(addressToUse.getLine2()) ? " " : addressToUse.getLine2());
             placeholders.put(ADDRESS_LINE_3, addressToUse.getTown() == null ? " " : addressToUse.getTown());
             placeholders.put(ADDRESS_LINE_4, addressToUse.getCounty() == null ? " " : addressToUse.getCounty());
             placeholders.put(POSTCODE_LITERAL, addressToUse.getPostcode());
@@ -238,7 +248,7 @@ public class SendNotificationService {
     private void sendBundledLetterNotification(NotificationWrapper wrapper, Notification notification, Address addressToUse, Name nameToUse, SubscriptionType subscriptionType) {
         try {
             byte[] bundledLetter;
-            if (StringUtils.isNotBlank(notification.getDocmosisLetterTemplate())) {
+            if (isNotBlank(notification.getDocmosisLetterTemplate())) {
                 byte[] letter = pdfLetterService.generateLetter(wrapper, notification, subscriptionType);
                 final byte[] associatedCasePdf = downloadAssociatedCasePdf(wrapper);
                 if (ArrayUtils.isNotEmpty(associatedCasePdf)) {

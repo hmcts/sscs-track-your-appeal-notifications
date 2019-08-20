@@ -30,7 +30,7 @@
           }
         },
         "benefitType": {
-          "code": "ESA"
+          "code": "PIP"
         },
         "hearingOptions": {
           "languageInterpreter": "Yes",
@@ -57,7 +57,8 @@
           "organisation": "HP Ltd"
         },
         "signer": null,
-        "hearingType": "paper"
+        "hearingType": "paper",
+        "receivedVia": "Online"
       },
       "caseReference": "SC022/14/12423",
       "events": [
