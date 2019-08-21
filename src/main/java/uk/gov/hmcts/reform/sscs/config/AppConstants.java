@@ -73,6 +73,7 @@ public final class AppConstants {
     public static final String YOUR_DETAILS_LITERAL = "your_details";
     public static final String ZONE_ID = "Europe/London";
 
+    public static final String ADDRESS_NAME = "address_name";
     public static final String ADDRESS_LINE_1 = "address_line_1";
     public static final String ADDRESS_LINE_2 = "address_line_2";
     public static final String ADDRESS_LINE_3 = "address_line_3";
