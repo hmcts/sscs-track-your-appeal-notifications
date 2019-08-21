@@ -637,6 +637,24 @@ public class NotificationUtilsTest {
                         createHearing("1", "2019-06-01", "10:00")))
                 .build(),
                 "4", "2019-06-01", "14:01"
+            },
+            new Object[]{
+                SscsCaseData.builder()
+                        .hearings(Arrays.asList(
+                                createHearing("1", "2019-05-28", "14:01"),
+                                createHearing(null, "2018-05-28", "14:01")))
+                        .build(),
+                "1", "2019-05-28", "14:01"
+            },
+            new Object[]{
+                SscsCaseData.builder()
+                        .hearings(Arrays.asList(
+                                createHearing(null, "2019-06-01", "14:00"),
+                                createHearing(null, "2019-06-01", "13:00"),
+                                createHearing(null, "2019-06-01", "14:01"),
+                                createHearing(null, "2019-06-01", "10:00")))
+                        .build(),
+                null, "2019-06-01", "14:01"
             }
         };
     }

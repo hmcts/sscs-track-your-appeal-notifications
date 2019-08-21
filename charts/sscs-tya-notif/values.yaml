@@ -44,9 +44,9 @@ java:
     CORE_CASE_DATA_CASE_TYPE_ID: Benefit
     JOB_SCHEDULER_POLL_INTERVAL: "30000"
     JOB_SCHEDULER_DB_PORT: "5432"
-    JOB_SCHEDULER_DB_PASSWORD:  sscs
-    JOB_SCHEDULER_DB_USERNAME: sscs
-    JOB_SCHEDULER_DB_NAME: preview
+    JOB_SCHEDULER_DB_PASSWORD:  "{{ .Values.postgresql.postgresqlPassword}}"
+    JOB_SCHEDULER_DB_USERNAME: "{{ .Values.postgresql.postgresqlUsername}}"
+    JOB_SCHEDULER_DB_NAME: "{{ .Values.postgresql.postgresqlDatabase}}"
     JOB_SCHEDULER_DB_CONNECTION_OPTIONS: ""
     MAX_ACTIVE_DB_CONNECTIONS: 70
     HOURS_START_TIME: 0
