@@ -430,25 +430,61 @@ public class SendNotificationServiceTest {
     }
 
     @Test
-    public void willSendAppealLodgedLettersIfDocmosisLetterIsSwitchedOnAndLetterIsSwitchedOn() throws NotificationClientException {
+    public void willSendAppealLodgedLettersForPipAndOnlineIfDocmosisLetterIsSwitchedOn() {
         classUnderTest.docmosisLettersOn = true;
         classUnderTest.interlocLettersOn = true;
         classUnderTest.lettersOn = false;
         SubscriptionWithType appellantEmptySubscription = new SubscriptionWithType(EMPTY_SUBSCRIPTION, APPELLANT);
         when(pdfLetterService.generateLetter(any(), any(), any())).thenReturn("PDF".getBytes());
         classUnderTest.sendEmailSmsLetterNotification(buildBaseWrapper(APPELLANT_WITH_ADDRESS, NotificationEventType.APPEAL_RECEIVED_NOTIFICATION), DOCMOSIS_LETTER_NOTIFICATION, appellantEmptySubscription, NotificationEventType.APPEAL_RECEIVED_NOTIFICATION);
+        verify(pdfLetterService).generateLetter(any(), any(), any());
+        verify(pdfLetterService).buildCoversheet(any(), any());
+        verifyNoMoreInteractions(pdfLetterService);
+        verify(notificationHandler, atLeastOnce()).sendNotification(any(), any(), eq("Letter"), any());
+    }
+
+    @Test
+    public void directionIssuedLetterWillBeSentIfDocmosisLetterIsOn() {
+        classUnderTest.docmosisLettersOn = true;
+        classUnderTest.interlocLettersOn = true;
+        classUnderTest.bundledLettersOn = false;
+        classUnderTest.lettersOn = false;
+        SubscriptionWithType appellantEmptySubscription = new SubscriptionWithType(EMPTY_SUBSCRIPTION, APPELLANT);
+        when(pdfLetterService.generateLetter(any(), any(), any())).thenReturn("PDF".getBytes());
+        classUnderTest.sendEmailSmsLetterNotification(buildBaseWrapper(APPELLANT_WITH_ADDRESS, NotificationEventType.DIRECTION_ISSUED), DOCMOSIS_LETTER_NOTIFICATION, appellantEmptySubscription, NotificationEventType.APPEAL_RECEIVED_NOTIFICATION);
+        verify(pdfLetterService).generateLetter(any(), any(), any());
+        verify(pdfLetterService).buildCoversheet(any(), any());
+        verifyNoMoreInteractions(pdfLetterService);
+        verify(notificationHandler, atLeastOnce()).sendNotification(any(), any(), eq("Letter"), any());
+    }
+
+    @Test
+    @Parameters({"ESA, Online", "PIP, Paper", "JSA, Paper"})
+    public void willNotSendAppealLodgedLetterViaDocmosis(Benefit benefit, String receivedVia) {
+        classUnderTest.docmosisLettersOn = true;
+        classUnderTest.interlocLettersOn = true;
+        classUnderTest.lettersOn = false;
+        SubscriptionWithType appellantEmptySubscription = new SubscriptionWithType(EMPTY_SUBSCRIPTION, APPELLANT);
+        classUnderTest.sendEmailSmsLetterNotification(
+                buildBaseWrapper(APPELLANT_WITH_ADDRESS, NotificationEventType.APPEAL_RECEIVED_NOTIFICATION, null, benefit, receivedVia),
+                DOCMOSIS_LETTER_NOTIFICATION, appellantEmptySubscription, NotificationEventType.APPEAL_RECEIVED_NOTIFICATION);
+        verifyZeroInteractions(pdfLetterService);
         verify(notificationHandler, atLeastOnce()).sendNotification(any(), any(), eq("Letter"), any());
     }
 
     private CcdNotificationWrapper buildBaseWrapper(Appellant appellant) {
-        return buildBaseWrapper(appellant, STRUCK_OUT, null);
+        return buildBaseWrapper(appellant, STRUCK_OUT, null, Benefit.PIP, "Online");
     }
 
     private CcdNotificationWrapper buildBaseWrapper(Appellant appellant, NotificationEventType eventType) {
-        return buildBaseWrapper(appellant, eventType, null);
+        return buildBaseWrapper(appellant, eventType, null, Benefit.PIP, "Online");
     }
 
     private CcdNotificationWrapper buildBaseWrapper(Appellant appellant, NotificationEventType eventType, Representative representative) {
+        return buildBaseWrapper(appellant, eventType, representative, Benefit.PIP, "Online");
+    }
+
+    private CcdNotificationWrapper buildBaseWrapper(Appellant appellant, NotificationEventType eventType, Representative representative, Benefit benefit, String receivedVia) {
         Subscription repSubscription = null;
         if (null != representative) {
             repSubscription = Subscription.builder().email("test@test.com").subscribeEmail(YES).mobile("07800000000").subscribeSms(YES).build();
@@ -463,10 +499,12 @@ public class SendNotificationServiceTest {
             .appeal(
                 Appeal
                     .builder()
+                    .benefitType(BenefitType.builder().code(benefit.name()).description(benefit.getDescription()).build())
                     .hearingType(AppealHearingType.ORAL.name())
                     .hearingOptions(HearingOptions.builder().wantsToAttend(YES).build())
                     .appellant(appellant)
                     .rep(representative)
+                    .receivedVia(receivedVia)
                     .build())
             .subscriptions(
                 Subscriptions.builder()
