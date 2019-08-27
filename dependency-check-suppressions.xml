@@ -240,6 +240,13 @@
         <cve>CVE-2019-12086</cve>
     </suppress>
     <suppress>
+        <notes><![CDATA[
+   file name: jackson-databind-2.9.6.jar
+   ]]></notes>
+        <gav regex="true">^com\.fasterxml\.jackson\.core:jackson-databind:.*$</gav>
+        <cve>CVE-2019-12384</cve>
+    </suppress>
+    <suppress>
         <notes>Ignore CVE-2018-15756 for spring 5.0.8-RELEASE</notes>
         <gav regex="true">^org\.springframework:spring-.+:.*$</gav>
         <cve>CVE-2018-15756</cve>

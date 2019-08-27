@@ -218,16 +218,6 @@ def versions = [
         springfoxSwagger: '2.8.0'
 ]
 
-configurations.all {
-    resolutionStrategy {
-        eachDependency { DependencyResolveDetails details ->
-            if (details.requested.group in ['com.fasterxml.jackson.core', 'com.fasterxml.jackson.module', 'com.fasterxml.jackson.datatype']) {
-                details.useVersion '2.9.9.3'
-            }
-        }
-    }
-}
-
 dependencies {
     compile group: 'commons-io', name: 'commons-io', version: '2.6'
 
@@ -242,12 +232,6 @@ dependencies {
     compile group: 'org.springframework.cloud', name: 'spring-cloud-starter-openfeign'
     compile group: 'org.springframework.cloud', name: 'spring-cloud-starter-hystrix', version: versions.springHystrix
     compile group: 'org.springframework.retry', name: 'spring-retry', version: '1.2.4.RELEASE'
-
-    // Safe to remove once Spring update their dependencies - see CVE-2019-14439 and add 'com.fasterxml.jackson.core' configurations.all above
-    compile group: 'com.fasterxml.jackson.core', name: 'jackson-databind', version: '2.9.9.3'
-    compile group: 'com.fasterxml.jackson.module', name: 'jackson-module-parameter-names'
-    compile group: 'com.fasterxml.jackson.datatype', name: 'jackson-datatype-jdk8'
-    compile group: 'com.fasterxml.jackson.datatype', name: 'jackson-datatype-jsr310'
 
     compile group: 'io.rest-assured', name: 'rest-assured', version: '3.3.0'
     compile group: 'io.springfox', name: 'springfox-swagger2', version: versions.springfoxSwagger
