@@ -1,8 +1,10 @@
 package uk.gov.hmcts.reform.sscs.service.docmosis;
 
+import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
 import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.Mockito.*;
+import static uk.gov.hmcts.reform.sscs.config.AppConstants.*;
 import static uk.gov.hmcts.reform.sscs.domain.notify.NotificationEventType.APPEAL_LAPSED_NOTIFICATION;
 import static uk.gov.hmcts.reform.sscs.domain.notify.NotificationEventType.APPEAL_RECEIVED_NOTIFICATION;
 
@@ -18,6 +20,7 @@ import org.apache.pdfbox.pdmodel.PDDocument;
 import org.apache.pdfbox.pdmodel.PDPage;
 import org.junit.Test;
 import org.junit.runner.RunWith;
+import org.mockito.ArgumentCaptor;
 import org.mockito.Mockito;
 import uk.gov.hmcts.reform.sscs.ccd.domain.*;
 import uk.gov.hmcts.reform.sscs.config.DocmosisTemplatesConfig;
@@ -123,6 +126,51 @@ public class PdfLetterServiceTest {
         assertTrue(ArrayUtils.isNotEmpty(coversheet));
         verify(docmosisPdfService).createPdfFromMap(any(), eq(notification.getDocmosisLetterTemplate()));
         verify(docmosisPdfService).createPdf(any(), anyString());
+    }
+
+    @Test
+    public void givenAnAddressWithMoreThan45CharactersInEachLine_willTruncateAddressAndGenerateALetter() throws IOException {
+        PDDocument doc = new PDDocument();
+        doc.addPage(new PDPage());
+        ByteArrayOutputStream baos = new ByteArrayOutputStream();
+        doc.save(baos);
+        Mockito.reset(docmosisPdfService);
+        when(docmosisPdfService.createPdfFromMap(any(), anyString())).thenReturn(baos.toByteArray());
+        when(docmosisPdfService.createPdf(any(), anyString())).thenReturn(baos.toByteArray());
+        baos.close();
+        doc.close();
+
+        Name name = Name.builder().firstName("Jimmy").lastName("AVeryLongNameWithLotsaAdLotsAndLotsOfCharacters").build();
+
+        Address address = Address.builder()
+                .line1("MyFirstVeryVeryLongAddressLineWithLotsOfCharacters")
+                .line2("MySecondVeryVeryLongAddressLineWithLotsOfCharacters")
+                .town("MyTownVeryVeryLongAddressLineWithLotsOfCharacters")
+                .county("MyCountyVeryVeryLongAddressLineWithLotsOfCharacters")
+                .postcode("L2 5UZ").build();
+
+        APPELLANT.setName(name);
+        APPELLANT.setAddress(address);
+
+        NotificationWrapper wrapper = NotificationServiceTest.buildBaseWrapper(
+                APPEAL_RECEIVED_NOTIFICATION,
+                APPELLANT,
+                REPRESENTATIVE,
+                null
+        );
+        Notification notification = Notification.builder().template(Template.builder().docmosisTemplateId("docmosis.doc").build()).placeholders(new HashMap<>()).build();
+        byte[] letter = pdfLetterService.generateLetter(wrapper, notification, SubscriptionType.APPELLANT);
+        assertTrue(ArrayUtils.isNotEmpty(letter));
+
+        ArgumentCaptor<Map<String, Object>> placeholderCaptor = ArgumentCaptor.forClass(Map.class);
+
+        verify(docmosisPdfService).createPdfFromMap(placeholderCaptor.capture(), eq(notification.getDocmosisLetterTemplate()));
+        assertEquals("Jimmy AVeryLongNameWithLotsaAdLotsAndLotsOfCh", placeholderCaptor.getValue().get(ADDRESS_NAME));
+        assertEquals("MyFirstVeryVeryLongAddressLineWithLotsOfChara", placeholderCaptor.getValue().get(ADDRESS_LINE_1));
+        assertEquals("MySecondVeryVeryLongAddressLineWithLotsOfChar", placeholderCaptor.getValue().get(ADDRESS_LINE_2));
+        assertEquals("MyTownVeryVeryLongAddressLineWithLotsOfCharac", placeholderCaptor.getValue().get(ADDRESS_LINE_3));
+        assertEquals("MyCountyVeryVeryLongAddressLineWithLotsOfChar", placeholderCaptor.getValue().get(ADDRESS_LINE_4));
+        assertEquals("L2 5UZ", placeholderCaptor.getValue().get(POSTCODE_LITERAL));
     }
 
     @Test
