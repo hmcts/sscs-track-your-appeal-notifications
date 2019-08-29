@@ -208,16 +208,6 @@ def versions = [
         springfoxSwagger: '2.8.0'
 ]
 
-configurations.all {
-    resolutionStrategy {
-        eachDependency { DependencyResolveDetails details ->
-            if (details.requested.group in ['com.fasterxml.jackson.core', 'com.fasterxml.jackson.module', 'com.fasterxml.jackson.datatype']) {
-                details.useVersion '2.9.9'
-            }
-        }
-    }
-}
-
 dependencies {
     compile group: 'commons-io', name: 'commons-io', version: '2.6'
 
@@ -253,6 +243,8 @@ dependencies {
     compile group: 'io.github.openfeign.form', name: 'feign-form', version: '3.8.0'
 
     compile group: 'org.apache.pdfbox', name: 'pdfbox', version: '2.0.16'
+
+    compile group: 'com.fasterxml.jackson.core', name: 'jackson-databind', version: '2.9.9.3'
 
     compileOnly 'org.projectlombok:lombok:1.18.8'
     compileOnly("org.springframework.boot:spring-boot-devtools")

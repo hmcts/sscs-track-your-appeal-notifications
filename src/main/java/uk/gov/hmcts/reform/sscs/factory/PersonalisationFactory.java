@@ -48,6 +48,7 @@ public class PersonalisationFactory implements Function<NotificationEventType, P
                 || APPEAL_DORMANT_NOTIFICATION.equals(notificationType)
                 || ADJOURNED_NOTIFICATION.equals(notificationType)
                 || POSTPONEMENT_NOTIFICATION.equals(notificationType)
+                || DWP_RESPONSE_RECEIVED_NOTIFICATION.equals(notificationType)
                 || HEARING_BOOKED_NOTIFICATION.equals(notificationType)) {
                 selectedPersonalisation = withRepresentativePersonalisation;
             } else if (SUBSCRIPTION_UPDATED_NOTIFICATION.equals(notificationType)) {
