@@ -14,11 +14,13 @@ import org.junit.Before;
 import org.junit.Test;
 import org.mockito.Mock;
 import uk.gov.hmcts.reform.sscs.ccd.domain.Address;
+import uk.gov.hmcts.reform.sscs.ccd.domain.SscsCaseData;
 import uk.gov.hmcts.reform.sscs.config.NotificationBlacklist;
 import uk.gov.service.notify.*;
 
 public class NotificationSenderTest {
     public static final String CCD_CASE_ID = "78980909090099";
+    public static final SscsCaseData SSCS_CASE_DATA = SscsCaseData.builder().build();
     public static final String SMS_SENDER = "sms-sender";
     private NotificationClient notificationClient;
     private NotificationClient testNotificationClient;
@@ -38,6 +40,9 @@ public class NotificationSenderTest {
     private LetterResponse letterResponse;
 
     @Mock
+    private CcdPdfService ccdPdfService;
+
+    @Mock
     private SendLetterResponse sendLetterResponse;
 
     @Before
@@ -51,7 +56,7 @@ public class NotificationSenderTest {
         personalisation = Collections.emptyMap();
         reference = "reference";
 
-        notificationSender = new NotificationSender(notificationClient, testNotificationClient, blacklist);
+        notificationSender = new NotificationSender(notificationClient, testNotificationClient, blacklist, ccdPdfService);
     }
 
     @Test
@@ -61,7 +66,7 @@ public class NotificationSenderTest {
                 .thenReturn(sendEmailResponse);
         when(sendEmailResponse.getNotificationId()).thenReturn(UUID.randomUUID());
 
-        notificationSender.sendEmail(templateId, emailAddress, personalisation, reference, CCD_CASE_ID);
+        notificationSender.sendEmail(templateId, emailAddress, personalisation, reference, SSCS_CASE_DATA);
 
         verifyZeroInteractions(notificationClient);
         verify(testNotificationClient).sendEmail(templateId, emailAddress, personalisation, reference);
@@ -74,7 +79,7 @@ public class NotificationSenderTest {
                 .thenReturn(sendEmailResponse);
         when(sendEmailResponse.getNotificationId()).thenReturn(UUID.randomUUID());
 
-        notificationSender.sendEmail(templateId, emailAddress, personalisation, reference, CCD_CASE_ID);
+        notificationSender.sendEmail(templateId, emailAddress, personalisation, reference, SSCS_CASE_DATA);
 
         verifyZeroInteractions(testNotificationClient);
         verify(notificationClient).sendEmail(templateId, emailAddress, personalisation, reference);
@@ -88,7 +93,7 @@ public class NotificationSenderTest {
                 .thenReturn(sendEmailResponse);
         when(sendEmailResponse.getNotificationId()).thenReturn(UUID.randomUUID());
 
-        notificationSender.sendEmail(templateId, emailAddress, personalisation, reference, CCD_CASE_ID);
+        notificationSender.sendEmail(templateId, emailAddress, personalisation, reference, SSCS_CASE_DATA);
 
         verifyZeroInteractions(notificationClient);
         verify(testNotificationClient).sendEmail(templateId, emailAddress, personalisation, reference);

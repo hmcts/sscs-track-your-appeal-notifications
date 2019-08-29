@@ -3,13 +3,15 @@ package uk.gov.hmcts.reform.sscs.service;
 import static org.slf4j.LoggerFactory.getLogger;
 
 import java.io.ByteArrayInputStream;
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 import java.util.Map;
 
 import org.slf4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Component;
-import uk.gov.hmcts.reform.sscs.ccd.domain.Address;
+import uk.gov.hmcts.reform.sscs.ccd.domain.*;
 import uk.gov.hmcts.reform.sscs.config.NotificationBlacklist;
 import uk.gov.service.notify.*;
 
@@ -18,22 +20,27 @@ public class NotificationSender {
 
     private static final Logger LOG = getLogger(NotificationSender.class);
     public static final String USING_TEST_GOV_NOTIFY_KEY_FOR = "Using test GovNotify key {} for {}";
+    private static final DateTimeFormatter DATE_TIME_FORMATTER = DateTimeFormatter.ofPattern("d MMM Y HH:mm");
 
     private final NotificationClient notificationClient;
     private final NotificationClient testNotificationClient;
     private final NotificationBlacklist notificationBlacklist;
+    private final CcdPdfService ccdPdfService;
 
     @Autowired
     public NotificationSender(@Qualifier("notificationClient") NotificationClient notificationClient,
                               @Qualifier("testNotificationClient") NotificationClient testNotificationClient,
-                              NotificationBlacklist notificationBlacklist) {
+                              NotificationBlacklist notificationBlacklist,
+                              CcdPdfService ccdPdfService
+    ) {
         this.notificationClient = notificationClient;
         this.testNotificationClient = testNotificationClient;
         this.notificationBlacklist = notificationBlacklist;
+        this.ccdPdfService = ccdPdfService;
     }
 
     public void sendEmail(String templateId, String emailAddress, Map<String, String> personalisation, String reference,
-                          String ccdCaseId) throws NotificationClientException {
+                          SscsCaseData sscsCaseData) throws NotificationClientException {
 
         NotificationClient client;
 
@@ -47,7 +54,23 @@ public class NotificationSender {
 
         SendEmailResponse sendEmailResponse = client.sendEmail(templateId, emailAddress, personalisation, reference);
 
-        LOG.info("Email Notification send for case id : {}, Gov notify id: {} ", ccdCaseId,
+
+        Correspondence correspondence = Correspondence.builder().value(
+                CorrespondenceDetails.builder()
+                        .body(sendEmailResponse.getBody())
+                        .subject(sendEmailResponse.getSubject())
+                        .from(sendEmailResponse.getFromEmail().orElse(""))
+                        .to(emailAddress)
+                        .correspondenceType(CorrespondenceType.EMAIL)
+                        .sentOn(LocalDateTime.now().format(DATE_TIME_FORMATTER))
+                        .build()
+        ).build();
+
+        LOG.info(correspondence.getValue().getBody());
+
+        ccdPdfService.mergeCorrespondenceIntoCcd(sscsCaseData, correspondence);
+
+        LOG.info("Email Notification send for case id : {}, Gov notify id: {} ", sscsCaseData.getCcdCaseId(),
                 sendEmailResponse.getNotificationId());
     }
 

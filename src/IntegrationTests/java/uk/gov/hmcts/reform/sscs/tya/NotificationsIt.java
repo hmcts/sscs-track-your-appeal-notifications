@@ -128,12 +128,15 @@ public class NotificationsIt {
     @Value("${notification.subscriptionUpdated.emailId}")
     private String subscriptionUpdatedEmailId;
 
+    @Mock
+    private CcdPdfService ccdPdfService;
+
     @Value("${notification.subscriptionCreated.appellant.smsId}")
     private String subscriptionCreatedSmsId;
 
     @Before
     public void setup() throws Exception {
-        NotificationSender sender = new NotificationSender(notificationClient, null, notificationBlacklist);
+        NotificationSender sender = new NotificationSender(notificationClient, null, notificationBlacklist, ccdPdfService);
 
         SendNotificationService sendNotificationService = new SendNotificationService(sender, evidenceManagementService, sscsGeneratePdfService, notificationHandler, notificationValidService, bundledLetterTemplateUtil, pdfLetterService);
 
