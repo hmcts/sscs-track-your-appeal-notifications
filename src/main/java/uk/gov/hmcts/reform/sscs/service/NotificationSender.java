@@ -10,9 +10,11 @@ import java.util.Map;
 import org.slf4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 import uk.gov.hmcts.reform.sscs.ccd.domain.*;
 import uk.gov.hmcts.reform.sscs.config.NotificationBlacklist;
+import uk.gov.hmcts.reform.sscs.domain.notify.NotificationEventType;
 import uk.gov.service.notify.*;
 
 @Component
@@ -26,20 +28,27 @@ public class NotificationSender {
     private final NotificationClient testNotificationClient;
     private final NotificationBlacklist notificationBlacklist;
     private final CcdPdfService ccdPdfService;
+    private final MarkdownTransformationService markdownTransformationService;
+    private final Boolean saveCorrespondence;
 
     @Autowired
     public NotificationSender(@Qualifier("notificationClient") NotificationClient notificationClient,
                               @Qualifier("testNotificationClient") NotificationClient testNotificationClient,
                               NotificationBlacklist notificationBlacklist,
-                              CcdPdfService ccdPdfService
+                              CcdPdfService ccdPdfService,
+                              MarkdownTransformationService markdownTransformationService,
+                              @Value("${feature.save_correspondence}") Boolean saveCorrespondence
     ) {
         this.notificationClient = notificationClient;
         this.testNotificationClient = testNotificationClient;
         this.notificationBlacklist = notificationBlacklist;
         this.ccdPdfService = ccdPdfService;
+        this.markdownTransformationService = markdownTransformationService;
+        this.saveCorrespondence = saveCorrespondence;
     }
 
     public void sendEmail(String templateId, String emailAddress, Map<String, String> personalisation, String reference,
+                          NotificationEventType notificationEventType,
                           SscsCaseData sscsCaseData) throws NotificationClientException {
 
         NotificationClient client;
@@ -54,21 +63,21 @@ public class NotificationSender {
 
         SendEmailResponse sendEmailResponse = client.sendEmail(templateId, emailAddress, personalisation, reference);
 
+        if (saveCorrespondence) {
+            Correspondence correspondence = Correspondence.builder().value(
+                    CorrespondenceDetails.builder()
+                            .body(markdownTransformationService.toHtml(sendEmailResponse.getBody()))
+                            .subject(sendEmailResponse.getSubject())
+                            .from(sendEmailResponse.getFromEmail().orElse(""))
+                            .to(emailAddress)
+                            .eventType(notificationEventType.name())
+                            .correspondenceType(CorrespondenceType.Email)
+                            .sentOn(LocalDateTime.now().format(DATE_TIME_FORMATTER))
+                            .build()
+            ).build();
 
-        Correspondence correspondence = Correspondence.builder().value(
-                CorrespondenceDetails.builder()
-                        .body(sendEmailResponse.getBody())
-                        .subject(sendEmailResponse.getSubject())
-                        .from(sendEmailResponse.getFromEmail().orElse(""))
-                        .to(emailAddress)
-                        .correspondenceType(CorrespondenceType.EMAIL)
-                        .sentOn(LocalDateTime.now().format(DATE_TIME_FORMATTER))
-                        .build()
-        ).build();
-
-        LOG.info(correspondence.getValue().getBody());
-
-        ccdPdfService.mergeCorrespondenceIntoCcd(sscsCaseData, correspondence);
+            ccdPdfService.mergeCorrespondenceIntoCcd(sscsCaseData, correspondence);
+        }
 
         LOG.info("Email Notification send for case id : {}, Gov notify id: {} ", sscsCaseData.getCcdCaseId(),
                 sendEmailResponse.getNotificationId());

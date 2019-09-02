@@ -128,9 +128,13 @@ public class CohNotificationsIt {
 
     String json;
 
+    @Mock
+    private MarkdownTransformationService markdownTransformationService;
+
     @Before
     public void setup() throws Exception {
-        NotificationSender sender = new NotificationSender(notificationClient, null, notificationBlacklist, ccdPdfService);
+        Boolean saveCorrespondence = false;
+        NotificationSender sender = new NotificationSender(notificationClient, null, notificationBlacklist, ccdPdfService, markdownTransformationService, saveCorrespondence);
 
         SendNotificationService sendNotificationService = new SendNotificationService(sender, evidenceManagementService, sscsGeneratePdfService, notificationHandler, notificationValidService, bundledLetterTemplateUtil, pdfLetterService);
         ReflectionTestUtils.setField(sendNotificationService, "bundledLettersOn", true);
