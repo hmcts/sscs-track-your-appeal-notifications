@@ -99,6 +99,9 @@ dependencyManagement {
         mavenBom "org.springframework.cloud:spring-cloud-dependencies:${springCloudVersion}"
     }
     dependencies {
+        // Solves CVE-2019-10086
+        dependency group: 'commons-beanutils', name: 'commons-beanutils', version: '1.9.4'
+
         // checkstyle needs a certain version and so does spring fox swagger, so can't use latest
         dependencySet(group: 'com.google.guava', version: '27.1-jre') {
             entry 'guava'
@@ -262,13 +265,6 @@ dependencies {
     testCompile 'pl.pragmatists:JUnitParams:1.1.1'
 
     runtime "org.springframework.boot:spring-boot-properties-migrator"
-}
-
-dependencyManagement {
-    // Solves CVE-2019-10086
-    dependencies {
-        dependency group: 'commons-beanutils', name: 'commons-beanutils', version: '1.9.4'
-    }
 }
 
 bootJar {
