@@ -4,7 +4,7 @@ plugins {
     id 'pmd'
     id 'org.sonarqube' version '2.7.1'
     id 'jacoco'
-    id 'io.spring.dependency-management' version '1.0.7.RELEASE'
+    id 'io.spring.dependency-management' version '1.0.8.RELEASE'
     id 'org.springframework.boot' version '2.0.4.RELEASE'
     id 'org.owasp.dependencycheck' version '5.1.0'
     id 'com.github.ben-manes.versions' version '0.21.0'
@@ -103,7 +103,7 @@ dependencyManagement {
         dependency group: 'commons-beanutils', name: 'commons-beanutils', version: '1.9.4'
 
         // checkstyle needs a certain version and so does spring fox swagger, so can't use latest
-        dependencySet(group: 'com.google.guava', version: '27.1-jre') {
+        dependencySet(group: 'com.google.guava', version: '28.1-jre') {
             entry 'guava'
         }
         // CVE-2019-0232, CVE-2019-0199 - command line injections on windows
@@ -216,7 +216,7 @@ dependencies {
 
     compile group: 'com.mchange', name: 'c3p0', version: '0.9.5.4'
     compile group: 'org.flywaydb', name: 'flyway-core', version: '5.1.0'
-    compile group: 'org.postgresql', name: 'postgresql', version: '42.2.2'
+    compile group: 'org.postgresql', name: 'postgresql', version: '42.2.6'
     compile group: 'net.bytebuddy', name: 'byte-buddy', version: '1.10.0'
 
     compile group: 'org.springframework.boot', name: 'spring-boot-starter-actuator'
