@@ -8,13 +8,13 @@ import java.io.IOException;
 import java.util.Collections;
 import java.util.Map;
 import java.util.UUID;
-
+import org.apache.commons.lang3.builder.EqualsBuilder;
 import org.apache.pdfbox.io.IOUtils;
 import org.junit.Before;
 import org.junit.Test;
 import org.mockito.Mock;
-import uk.gov.hmcts.reform.sscs.ccd.domain.Address;
-import uk.gov.hmcts.reform.sscs.ccd.domain.SscsCaseData;
+import org.springframework.test.util.ReflectionTestUtils;
+import uk.gov.hmcts.reform.sscs.ccd.domain.*;
 import uk.gov.hmcts.reform.sscs.config.NotificationBlacklist;
 import uk.gov.hmcts.reform.sscs.domain.notify.NotificationEventType;
 import uk.gov.service.notify.*;
@@ -47,7 +47,7 @@ public class NotificationSenderTest {
     private SendLetterResponse sendLetterResponse;
 
 
-    private final Boolean saveCorrespondence = false;
+    private Boolean saveCorrespondence = false;
 
     @Mock
     private MarkdownTransformationService markdownTransformationService;
@@ -189,5 +189,34 @@ public class NotificationSenderTest {
 
         verifyZeroInteractions(notificationClient);
         verify(testNotificationClient).sendLetter(any(), any(), any());
+    }
+
+    @Test
+    public void whenAnEmailIsSentWillSaveEmailTheEmailNotificationInCcd() throws NotificationClientException {
+
+        ReflectionTestUtils.setField(notificationSender, "saveCorrespondence", true);
+
+        String emailAddress = "random@example.com";
+        when(notificationClient.sendEmail(templateId, emailAddress, personalisation, reference))
+                .thenReturn(sendEmailResponse);
+        when(sendEmailResponse.getNotificationId()).thenReturn(UUID.randomUUID());
+        when(markdownTransformationService.toHtml(anyString())).thenReturn("the body");
+        when(ccdPdfService.mergeCorrespondenceIntoCcd(any(), any())).thenReturn(SscsCaseData.builder().build());
+
+        notificationSender.sendEmail(templateId, emailAddress, personalisation, reference, NotificationEventType.APPEAL_RECEIVED_NOTIFICATION, SSCS_CASE_DATA);
+
+        verifyZeroInteractions(testNotificationClient);
+        verify(notificationClient).sendEmail(templateId, emailAddress, personalisation, reference);
+        verify(markdownTransformationService).toHtml(eq(null));
+
+        Correspondence expectedCorrespondence = Correspondence.builder().value(CorrespondenceDetails.builder()
+                .to(emailAddress)
+                .from("")
+                .correspondenceType(CorrespondenceType.Email)
+                .eventType(NotificationEventType.APPEAL_RECEIVED_NOTIFICATION.getId())
+                .sentOn("this field is ignored")
+                .build()).build();
+        verify(ccdPdfService).mergeCorrespondenceIntoCcd(eq(SscsCaseData.builder().build()),
+               argThat(((Correspondence arg) -> EqualsBuilder.reflectionEquals(arg.getValue(), expectedCorrespondence.getValue(), "sentOn"))));
     }
 }
