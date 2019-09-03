@@ -70,7 +70,7 @@ public class NotificationSender {
                             .subject(sendEmailResponse.getSubject())
                             .from(sendEmailResponse.getFromEmail().orElse(""))
                             .to(emailAddress)
-                            .eventType(notificationEventType.name())
+                            .eventType(notificationEventType.getId())
                             .correspondenceType(CorrespondenceType.Email)
                             .sentOn(LocalDateTime.now().format(DATE_TIME_FORMATTER))
                             .build()

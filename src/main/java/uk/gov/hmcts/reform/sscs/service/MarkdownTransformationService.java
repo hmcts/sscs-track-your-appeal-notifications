@@ -9,7 +9,7 @@ import org.springframework.stereotype.Service;
 public class MarkdownTransformationService {
 
     private final Parser parser = Parser.builder().build();
-    private final HtmlRenderer renderer = HtmlRenderer.builder().build();
+    private final HtmlRenderer renderer = HtmlRenderer.builder().softbreak("<br/>").escapeHtml(true).build();
 
     public String toHtml(String markdown) {
         Node document = parser.parse(markdown);
