@@ -33,7 +33,7 @@ mainClassName = 'uk.gov.hmcts.reform.sscs.TrackYourAppealNotificationsApplicatio
 
 checkstyle {
     maxWarnings = 0
-    toolVersion = '8.18'
+    toolVersion = '8.24'
     // need to set configDir to rootDir otherwise submodule will use submodule/config/checkstyle
     configDir = new File(rootDir, 'config/checkstyle')
 }
@@ -262,6 +262,13 @@ dependencies {
     testCompile 'pl.pragmatists:JUnitParams:1.1.1'
 
     runtime "org.springframework.boot:spring-boot-properties-migrator"
+}
+
+dependencyManagement {
+    // Solves CVE-2019-10086
+    dependencies {
+        dependency group: 'commons-beanutils', name: 'commons-beanutils', version: '1.9.4'
+    }
 }
 
 bootJar {
