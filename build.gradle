@@ -103,6 +103,10 @@ dependencyManagement {
         dependencySet(group: 'com.google.guava', version: '28.1-jre') {
             entry 'guava'
         }
+
+        // CVE-2019-10086
+        dependency group: 'commons-beanutils', name: 'commons-beanutils', version: '1.9.4'
+
         // CVE-2019-0232, CVE-2019-0199 - command line injections on windows
         dependencySet(group: 'org.apache.tomcat.embed', version: '9.0.22') {
             entry 'tomcat-embed-core'
