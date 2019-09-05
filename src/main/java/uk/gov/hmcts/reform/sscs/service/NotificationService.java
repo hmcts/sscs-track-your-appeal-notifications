@@ -14,6 +14,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.util.StringUtils;
 import uk.gov.hmcts.reform.sscs.ccd.domain.Benefit;
 import uk.gov.hmcts.reform.sscs.ccd.domain.SscsCaseData;
+import uk.gov.hmcts.reform.sscs.ccd.domain.State;
 import uk.gov.hmcts.reform.sscs.ccd.domain.Subscription;
 import uk.gov.hmcts.reform.sscs.config.NotificationConfig;
 import uk.gov.hmcts.reform.sscs.domain.SubscriptionWithType;
@@ -163,9 +164,10 @@ public class NotificationService {
                     .getNewSscsCaseData().getAppeal().getBenefitType().getCode());
 
             Template template = notificationConfig.getTemplate(
-                    SUBSCRIPTION_OLD_NOTIFICATION.getId(),
-                    SUBSCRIPTION_OLD_NOTIFICATION.getId(),
-                    SUBSCRIPTION_OLD_NOTIFICATION.getId(),
+                    NotificationEventType.SUBSCRIPTION_OLD_NOTIFICATION.getId(),
+                    NotificationEventType.SUBSCRIPTION_OLD_NOTIFICATION.getId(),
+                    NotificationEventType.SUBSCRIPTION_OLD_NOTIFICATION.getId(),
+                    NotificationEventType.SUBSCRIPTION_OLD_NOTIFICATION.getId(),
                     benefit,
                     wrapper.getHearingType()
             );
@@ -201,6 +203,18 @@ public class NotificationService {
             }
         } else if (CASE_UPDATED.equals(notificationType)) {
             isAllowed = false;
+        }
+
+        if (notificationWrapper.getSscsCaseDataWrapper().getState() != null && notificationWrapper.getSscsCaseDataWrapper().getState().equals(State.DORMANT_APPEAL_STATE)) {
+            if (!(APPEAL_DORMANT_NOTIFICATION.equals(notificationType)
+                    || APPEAL_LAPSED_NOTIFICATION.equals(notificationType)
+                    || APPEAL_WITHDRAWN_NOTIFICATION.equals(notificationType)
+                    || STRUCK_OUT.equals(notificationType)
+                    || NotificationEventType.DECISION_ISSUED_2.equals(notificationType))) {
+                log.debug(String.format("Cannot complete notification %s as the appeal was dormant caseId %s.",
+                        notificationType.getId(), notificationWrapper.getCaseId()));
+                isAllowed = false;
+            }
         }
         return isAllowed;
     }
