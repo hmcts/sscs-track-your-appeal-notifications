@@ -2172,7 +2172,11 @@ public class NotificationServiceTest {
         );
         List<ILoggingEvent> logEvents = (List<ILoggingEvent>) captorLoggingEvent.getAllValues();
         if (expectedErrors == 0) {
-            assertFalse(logEvents.stream().noneMatch(e -> e.getLevel().equals(Level.ERROR)));
+            if (logEvents.isEmpty()) {
+                assertEquals(logEvents.size(), expectedErrors);
+            } else {
+                assertFalse(logEvents.stream().noneMatch(e -> e.getLevel().equals(Level.ERROR)));
+            }
         } else {
             assertTrue(logEvents.stream().noneMatch(e -> e.getLevel().equals(Level.ERROR)));
         }
