@@ -45,6 +45,10 @@ public class Notification {
         return template.getLetterTemplateId();
     }
 
+    public String getDocmosisLetterTemplate() {
+        return template == null ? null : template.getDocmosisTemplateId();
+    }
+
     public String getSmsSenderTemplate() {
         return template.getSmsSenderTemplateId();
     }
