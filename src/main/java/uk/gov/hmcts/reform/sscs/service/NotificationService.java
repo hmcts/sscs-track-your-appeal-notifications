@@ -76,6 +76,8 @@ public class NotificationService {
             if (isValidNotification(notificationWrapper, subscriptionWithType, notificationType)) {
                 sendNotification(notificationWrapper, subscriptionWithType, notificationType);
                 resendLastNotification(notificationWrapper, subscriptionWithType, notificationType);
+            } else {
+                log.error("Is not a valid notification event {} for case id {}, not sending notification.", notificationType.getId(), notificationWrapper.getCaseId());
             }
         }
     }
@@ -200,6 +202,8 @@ public class NotificationService {
             if (StringUtils.isEmpty(notificationWrapper.getNewSscsCaseData().getInformationFromAppellant())
                     || "No".equalsIgnoreCase(notificationWrapper.getNewSscsCaseData().getInformationFromAppellant())) {
                 isAllowed = false;
+
+                log.error("Request Incomplete Information with empty or no Information From Appellant for ccdCaseId {}.", notificationWrapper.getNewSscsCaseData().getCcdCaseId());
             }
         } else if (CASE_UPDATED.equals(notificationType)) {
             isAllowed = false;
