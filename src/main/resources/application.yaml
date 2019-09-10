@@ -396,9 +396,8 @@ pdf-service:
   accessKey: ${PDF_SERVICE_ACCESS_KEY:secret-key-not-supplied}
   health:
     uri: ${PDF_SERVICE_HEALTH_URL:https://docmosis-development.platform.hmcts.net/rs/status}
-  hmctsImgKey1: "hmcts"
-  hmctsImgKey: "hmcts2"
-  hmctsImgVal: "[userImage:hmcts.png]"
+  hmctsImgKey: hmcts2
+  hmctsImgVal: "[userImage:hmcts-2.png]"
   coverSheets:
     appealReceived: 'TB-SCS-GNO-ENG-00012.docx'
     directionIssued: 'TB-SCS-GNO-ENG-00012.docx'
