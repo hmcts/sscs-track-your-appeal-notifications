@@ -36,17 +36,18 @@ public class DocmosisWithGovNotifyLetterFunctionalTest extends AbstractFunctiona
 
 
     @Test
-    public void sendsDirectionIssuedLetterToAppellant() throws IOException, NotificationClientException {
+    public void sendsDirectionIssuedLetterToAppellantAndRepresentative() throws IOException, NotificationClientException {
 
         NotificationEventType notificationEventType = NotificationEventType.DIRECTION_ISSUED;
 
         simulateCcdCallback(notificationEventType,
-                "appellant-" + notificationEventType.getId() + "Callback.json");
+                notificationEventType.getId() + "Callback.json");
 
         List<Notification> notifications = fetchLetters();
 
-        assertEquals(1, notifications.size());
+        assertEquals(2, notifications.size());
         assertEquals("Pre-compiled PDF", notifications.get(0).getSubject().orElse("Unknown Subject"));
+        assertEquals("Pre-compiled PDF", notifications.get(1).getSubject().orElse("Unknown Subject"));
     }
 
 
