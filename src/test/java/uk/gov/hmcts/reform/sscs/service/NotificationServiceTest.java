@@ -1820,9 +1820,6 @@ public class NotificationServiceTest {
                 STRUCK_OUT, LETTER_TEMPLATE_ID_STRUCKOUT, "/templates/strike_out_letter_template.html", ""
             },
             new Object[] {
-                DIRECTION_ISSUED, LETTER_TEMPLATE_ID_DIRECTION_ISSUED, "/templates/direction_notice_letter_template.html", ""
-            },
-            new Object[] {
                 JUDGE_DECISION_APPEAL_TO_PROCEED, LETTER_TEMPLATE_ID_VALID_APPEAL_CREATED, "/templates/valid_appeal_created_template.html", ""
             }
         };
