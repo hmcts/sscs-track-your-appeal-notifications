@@ -16,8 +16,6 @@ public class BundledLetterTemplateUtilTest {
 
     private String strikeoutTemplate;
     private String strikeoutRepTemplate;
-    private String directionTemplate;
-    private String directionRepTemplate;
     private String validAppealCreatedLetterTemplate;
     private String validAppealCreatedLetterTemplateRep;
     private BundledLetterTemplateUtil bundledLetterTemplateUtil;
@@ -28,14 +26,12 @@ public class BundledLetterTemplateUtilTest {
     public void setUp() {
         strikeoutTemplate = "strikeoutTemplate";
         strikeoutRepTemplate = "strikeoutRepTemplate";
-        directionTemplate = "directionTemplate";
-        directionRepTemplate = "directionRepTemplate";
         validAppealCreatedLetterTemplate = "validAppealCreatedLetterTemplate";
         validAppealCreatedLetterTemplateRep = "validAppealCreatedLetterTemplateRep";
 
 
         bundledLetterTemplateUtil = new BundledLetterTemplateUtil(
-                strikeoutTemplate, strikeoutRepTemplate, directionTemplate, directionRepTemplate, validAppealCreatedLetterTemplate, validAppealCreatedLetterTemplateRep
+                strikeoutTemplate, strikeoutRepTemplate, validAppealCreatedLetterTemplate, validAppealCreatedLetterTemplateRep
         );
 
         sscsCaseDataWithDocument = SscsCaseData.builder().sscsStrikeOutDocument(SscsStrikeOutDocument.builder().build())
@@ -62,28 +58,6 @@ public class BundledLetterTemplateUtilTest {
     @Test
     public void noTemplateWhenStruckOutAndDoNotHaveDocumentTemplate() {
         String bundledLetterTemplate = bundledLetterTemplateUtil.getBundledLetterTemplate(STRUCK_OUT, sscsCaseDataWithoutDocument, APPELLANT);
-
-        assertThat(bundledLetterTemplate, is(nullValue()));
-    }
-
-    @Test
-    public void getDirectionTemplateWhenAppellantDirectionIssuedHaveDocumentTemplate() {
-        check(DIRECTION_ISSUED, APPELLANT, directionTemplate);
-    }
-
-    @Test
-    public void getDirectionTemplateWhenAppointeeDirectionIssuedHaveDocumentTemplate() {
-        check(DIRECTION_ISSUED, APPOINTEE, directionTemplate);
-    }
-
-    @Test
-    public void getDirectionTemplateWhenRepDirectionIssuedHaveDocumentTemplate() {
-        check(DIRECTION_ISSUED, REPRESENTATIVE, directionRepTemplate);
-    }
-
-    @Test
-    public void noTemplateWhenDirectionIssuedAndDoNotHaveDocumentTemplate() {
-        String bundledLetterTemplate = bundledLetterTemplateUtil.getBundledLetterTemplate(DIRECTION_ISSUED, sscsCaseDataWithoutDocument, APPELLANT);
 
         assertThat(bundledLetterTemplate, is(nullValue()));
     }
