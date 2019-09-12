@@ -162,7 +162,7 @@ module "track-your-appeal-notifications" {
 }
 
 module "db-notif" {
-  source          = "git@github.com:hmcts/moj-module-postgres?ref=master"
+  source          = "git@github.com:hmcts/cnp-module-postgres?ref=master"
   product         = "${var.product}-${var.component}-postgres-db"
   location        = "${var.location}"
   env             = "${var.env}"
