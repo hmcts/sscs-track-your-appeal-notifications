@@ -148,7 +148,9 @@ public class SendNotificationService {
                             notification.getEmail(),
                             notification.getPlaceholders(),
                             notification.getReference(),
-                            wrapper.getCaseId()
+                            wrapper.getNotificationType(),
+                            wrapper.getNewSscsCaseData()
+
                     );
             return notificationHandler.sendNotification(wrapper, notification.getEmailTemplate(), "Email", sendNotification);
         }

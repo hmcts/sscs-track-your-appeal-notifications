@@ -33,7 +33,7 @@ mainClassName = 'uk.gov.hmcts.reform.sscs.TrackYourAppealNotificationsApplicatio
 
 checkstyle {
     maxWarnings = 0
-    toolVersion = '8.18'
+    toolVersion = '8.24'
     // need to set configDir to rootDir otherwise submodule will use submodule/config/checkstyle
     configDir = new File(rootDir, 'config/checkstyle')
 }
@@ -99,6 +99,9 @@ dependencyManagement {
         mavenBom "org.springframework.cloud:spring-cloud-dependencies:${springCloudVersion}"
     }
     dependencies {
+        // Solves CVE-2019-10086
+        dependency group: 'commons-beanutils', name: 'commons-beanutils', version: '1.9.4'
+
         // checkstyle needs a certain version and so does spring fox swagger, so can't use latest
         dependencySet(group: 'com.google.guava', version: '28.1-jre') {
             entry 'guava'
@@ -228,6 +231,7 @@ dependencies {
     compile group: 'io.rest-assured', name: 'rest-assured', version: '3.3.0'
     compile group: 'io.springfox', name: 'springfox-swagger2', version: versions.springfoxSwagger
     compile group: 'io.springfox', name: 'springfox-swagger-ui', version: versions.springfoxSwagger
+    compile group: 'com.atlassian.commonmark', name: 'commonmark', version: '0.13.0'
 
     compile group: 'uk.gov.hmcts.reform', name: 'health-spring-boot-starter', version:'0.0.4'
     compile group: 'uk.gov.hmcts.reform', name: 'properties-volume-spring-boot-starter', version:'0.0.4'
@@ -238,8 +242,8 @@ dependencies {
     compile group: 'uk.gov.hmcts.reform', name: 'sscs-job-scheduler', version: '1.5.2'
     compile group: 'uk.gov.hmcts.reform', name: 'service-auth-provider-client', version: '3.0.0'
 
-    compile group: 'uk.gov.hmcts.reform', name: 'sscs-common', version: '3.0.45'
-    compile group: 'uk.gov.hmcts.reform', name: 'sscs-pdf-email-common', version: '1.1.2'
+    compile group: 'uk.gov.hmcts.reform', name: 'sscs-common', version: '3.0.60'
+    compile group: 'uk.gov.hmcts.reform', name: 'sscs-pdf-email-common', version: '1.1.4'
 
     compile group: 'uk.gov.service.notify', name: 'notifications-java-client', version: '3.14.2-RELEASE'
     compile group: 'io.github.openfeign.form', name: 'feign-form', version: '3.8.0'

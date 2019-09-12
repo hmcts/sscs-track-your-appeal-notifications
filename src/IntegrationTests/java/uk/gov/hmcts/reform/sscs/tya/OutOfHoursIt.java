@@ -131,13 +131,19 @@ public class OutOfHoursIt {
     @Mock
     private SscsGeneratePdfService sscsGeneratePdfService;
 
+    @Mock
+    private CcdPdfService ccdPdfService;
+
     @Autowired
     @Qualifier("scheduler")
     private Scheduler quartzScheduler;
 
+    @Mock
+    private MarkdownTransformationService markdownTransformationService;
+
     @Before
     public void setup() throws Exception {
-        NotificationSender sender = new NotificationSender(notificationClient, null, notificationBlacklist);
+        NotificationSender sender = new NotificationSender(notificationClient, null, notificationBlacklist, ccdPdfService, markdownTransformationService, false);
 
         SendNotificationService sendNotificationService = new SendNotificationService(sender, evidenceManagementService, sscsGeneratePdfService, notificationHandler, notificationValidService, bundledLetterTemplateUtil, pdfLetterService);
         ReflectionTestUtils.setField(sendNotificationService, "bundledLettersOn", true);
