@@ -19,7 +19,7 @@ public class PdfCoverSheet {
     private final String addressCounty;
     @JsonProperty("address_postcode")
     private final String addressPostcode;
-    @JsonProperty("hmcts")
+    @JsonProperty("hmcts2")
     private final String hmcts;
 
     public PdfCoverSheet(String caseId,
