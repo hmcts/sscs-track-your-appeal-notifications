@@ -162,7 +162,8 @@ public class NotificationConfigTest {
             new Object[]{null, null, "bc943cf3-9fd1-4d14-a0c0-b183572c21a7", null, PAPER, getTemplateName(REQUEST_INFO_INCOMPLETE, APPOINTEE)},
             new Object[]{null, null, null, "TB-SCS-GNO-ENG-00067.docx", ORAL, getTemplateName(DIRECTION_ISSUED, APPELLANT)},
             new Object[]{null, null, null, "TB-SCS-GNO-ENG-00067.docx", PAPER, getTemplateName(DIRECTION_ISSUED, APPOINTEE)},
-            new Object[]{null, null, null, null, ORAL, getTemplateName(DIRECTION_ISSUED, REPRESENTATIVE)},
+            new Object[]{null, null, null, "TB-SCS-GNO-ENG-00089.docx", ORAL, getTemplateName(DIRECTION_ISSUED, REPRESENTATIVE)},
+            new Object[]{null, null, null, "TB-SCS-GNO-ENG-00089.docx", PAPER, getTemplateName(DIRECTION_ISSUED, REPRESENTATIVE)},
         };
     }
 
