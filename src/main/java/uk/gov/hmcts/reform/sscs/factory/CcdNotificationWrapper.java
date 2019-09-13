@@ -99,7 +99,6 @@ public class CcdNotificationWrapper implements NotificationWrapper {
                 || ADJOURNED_NOTIFICATION.equals(getNotificationType())
                 || APPEAL_RECEIVED_NOTIFICATION.equals(getNotificationType())
                 || APPEAL_LAPSED_NOTIFICATION.equals(getNotificationType())
-                || APPEAL_LODGED.equals(getNotificationType())
                 || DWP_RESPONSE_RECEIVED_NOTIFICATION.equals(getNotificationType())
                 || APPEAL_WITHDRAWN_NOTIFICATION.equals(getNotificationType())
                 || EVIDENCE_RECEIVED_NOTIFICATION.equals(getNotificationType())
@@ -109,8 +108,12 @@ public class CcdNotificationWrapper implements NotificationWrapper {
                 || EVIDENCE_REMINDER_NOTIFICATION.equals(getNotificationType())
                 || HEARING_REMINDER_NOTIFICATION.equals(getNotificationType())
                 || STRUCK_OUT.equals(getNotificationType())
+                || VALID_APPEAL_CREATED.equals(getNotificationType())
                 || DIRECTION_ISSUED.equals(getNotificationType())
-            || REQUEST_INFO_INCOMPLETE.equals(getNotificationType()))
+                || JUDGE_DECISION_APPEAL_TO_PROCEED.equals(getNotificationType())
+                || TCW_DECISION_APPEAL_TO_PROCEED.equals(getNotificationType())
+                || NON_COMPLIANT_NOTIFICATION.equals(getNotificationType())
+                || REQUEST_INFO_INCOMPLETE.equals(getNotificationType()))
         ) {
             subscriptionWithTypeList.add(new SubscriptionWithType(getAppointeeSubscription(), APPOINTEE));
         } else {
@@ -126,16 +129,19 @@ public class CcdNotificationWrapper implements NotificationWrapper {
                 || APPEAL_DORMANT_NOTIFICATION.equals(getNotificationType())
                 || ADJOURNED_NOTIFICATION.equals(getNotificationType())
                 || APPEAL_RECEIVED_NOTIFICATION.equals(getNotificationType())
-                || DWP_RESPONSE_RECEIVED_NOTIFICATION.equals(getNotificationType()) && !getRepresentativeSubscription().doesCaseHaveSubscriptions()
+                || DWP_RESPONSE_RECEIVED_NOTIFICATION.equals(getNotificationType())
                 || POSTPONEMENT_NOTIFICATION.equals(getNotificationType())
                 || HEARING_BOOKED_NOTIFICATION.equals(getNotificationType())
                 || SUBSCRIPTION_UPDATED_NOTIFICATION.equals(getNotificationType())
                 || CASE_UPDATED.equals(getNotificationType())
-                || APPEAL_LODGED.equals(getNotificationType())
                 || EVIDENCE_REMINDER_NOTIFICATION.equals(getNotificationType())
                 || HEARING_REMINDER_NOTIFICATION.equals(getNotificationType())
                 || STRUCK_OUT.equals(getNotificationType())
                 || DIRECTION_ISSUED.equals(getNotificationType())
+                || JUDGE_DECISION_APPEAL_TO_PROCEED.equals(getNotificationType())
+                || TCW_DECISION_APPEAL_TO_PROCEED.equals(getNotificationType())
+                || NON_COMPLIANT_NOTIFICATION.equals(getNotificationType())
+                || VALID_APPEAL_CREATED.equals(getNotificationType())
                 || REQUEST_INFO_INCOMPLETE.equals(getNotificationType()))
         ) {
             subscriptionWithTypeList.add(new SubscriptionWithType(getRepresentativeSubscription(), REPRESENTATIVE));

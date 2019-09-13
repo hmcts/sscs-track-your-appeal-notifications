@@ -42,6 +42,7 @@ import uk.gov.hmcts.reform.sscs.service.coh.CohClient;
 import uk.gov.hmcts.reform.sscs.service.coh.QuestionReferences;
 import uk.gov.hmcts.reform.sscs.service.coh.QuestionRound;
 import uk.gov.hmcts.reform.sscs.service.coh.QuestionRounds;
+import uk.gov.hmcts.reform.sscs.service.docmosis.PdfLetterService;
 import uk.gov.service.notify.NotificationClient;
 import uk.gov.service.notify.SendEmailResponse;
 import uk.gov.service.notify.SendSmsResponse;
@@ -112,16 +113,30 @@ public class CohNotificationsIt {
     @Autowired
     private NotificationConfig notificationConfig;
 
+    @Autowired
+    private BundledLetterTemplateUtil bundledLetterTemplateUtil;
+
+
     @Mock
     private SscsGeneratePdfService sscsGeneratePdfService;
 
+    @Mock
+    private PdfLetterService pdfLetterService;
+
+    @Mock
+    private CcdPdfService ccdPdfService;
+
     String json;
+
+    @Mock
+    private MarkdownTransformationService markdownTransformationService;
 
     @Before
     public void setup() throws Exception {
-        NotificationSender sender = new NotificationSender(notificationClient, null, notificationBlacklist);
+        Boolean saveCorrespondence = false;
+        NotificationSender sender = new NotificationSender(notificationClient, null, notificationBlacklist, ccdPdfService, markdownTransformationService, saveCorrespondence);
 
-        SendNotificationService sendNotificationService = new SendNotificationService(sender, evidenceManagementService, sscsGeneratePdfService, notificationHandler, notificationValidService);
+        SendNotificationService sendNotificationService = new SendNotificationService(sender, evidenceManagementService, sscsGeneratePdfService, notificationHandler, notificationValidService, bundledLetterTemplateUtil, pdfLetterService);
         ReflectionTestUtils.setField(sendNotificationService, "bundledLettersOn", true);
         ReflectionTestUtils.setField(sendNotificationService, "lettersOn", true);
 

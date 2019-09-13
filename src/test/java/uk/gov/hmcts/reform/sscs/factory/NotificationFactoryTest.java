@@ -191,18 +191,57 @@ public class NotificationFactoryTest {
     }
 
     @Test
+    @Parameters({"APPOINTEE, appointeeEmail", "REPRESENTATIVE, repsEmail"})
+    public void givenValidAppealCreatedEventAndSubscriptionType_shouldInferRightSubscriptionToCreateNotification(
+            SubscriptionType subscriptionType, String expectedEmail) {
+        factory = new NotificationFactory(personalisationFactory);
+        SscsCaseDataWrapper wrapper = SscsCaseDataWrapper.builder()
+                .newSscsCaseData(SscsCaseData.builder()
+                        .appeal(Appeal.builder().appellant(Appellant.builder().appointee(Appointee.builder().build()).build())
+                                .benefitType(BenefitType.builder()
+                                        .code("PIP")
+                                        .build())
+                                .build())
+                        .subscriptions(Subscriptions.builder()
+                                .appellantSubscription(Subscription.builder()
+                                        .email("appellantEmail")
+                                        .build())
+                                .appointeeSubscription(Subscription.builder()
+                                        .email("appointeeEmail")
+                                        .build())
+                                .representativeSubscription(Subscription.builder()
+                                        .email("repsEmail")
+                                        .build())
+                                .build())
+                        .build())
+                .notificationEventType(VALID_APPEAL_CREATED)
+                .build();
+        CcdNotificationWrapper notificationWrapper = new CcdNotificationWrapper(wrapper);
+
+        given(personalisationFactory.apply(any(NotificationEventType.class)))
+                .willReturn(withRepresentativePersonalisation);
+
+        Notification notification = factory.create(notificationWrapper, getSubscriptionWithType(wrapper, subscriptionType));
+        assertEquals(expectedEmail, notification.getEmail());
+
+        then(withRepresentativePersonalisation).should()
+                .getTemplate(eq(notificationWrapper), eq(PIP), eq(subscriptionType));
+
+    }
+
+    @Test
     public void buildSubscriptionCreatedSmsNotificationFromSscsCaseDataWithSubscriptionUpdatedNotificationAndSmsFirstSubscribed() {
         when(personalisationFactory.apply(SUBSCRIPTION_UPDATED_NOTIFICATION)).thenReturn(subscriptionPersonalisation);
-        when(config.getTemplate(SUBSCRIPTION_UPDATED_NOTIFICATION.getId(), SUBSCRIPTION_CREATED_NOTIFICATION.getId() + ".appellant", SUBSCRIPTION_UPDATED_NOTIFICATION.getId(), PIP, ORAL)).thenReturn(Template.builder().emailTemplateId(null).smsTemplateId("123").build());
+        when(config.getTemplate(SUBSCRIPTION_UPDATED_NOTIFICATION.getId(), SUBSCRIPTION_CREATED_NOTIFICATION.getId() + ".appellant", SUBSCRIPTION_UPDATED_NOTIFICATION.getId(), SUBSCRIPTION_UPDATED_NOTIFICATION.getId(), PIP, ORAL)).thenReturn(Template.builder().emailTemplateId(null).smsTemplateId("123").build());
 
         wrapper = SscsCaseDataWrapper.builder()
                 .newSscsCaseData(
                         ccdResponse.toBuilder()
-                                .subscriptions(Subscriptions.builder().appellantSubscription(subscription.toBuilder().subscribeSms("Yes").subscribeEmail("No").build()).build())
+                                .subscriptions(Subscriptions.builder().appellantSubscription(subscription.toBuilder().subscribeSms("Yes").wantSmsNotifications("Yes").subscribeEmail("No").build()).build())
                                 .build())
                 .oldSscsCaseData(
                         ccdResponse.toBuilder()
-                                .subscriptions(Subscriptions.builder().appellantSubscription(subscription.toBuilder().subscribeSms("No").subscribeEmail("No").build()).build())
+                                .subscriptions(Subscriptions.builder().appellantSubscription(subscription.toBuilder().subscribeSms("No").wantSmsNotifications("No").subscribeEmail("No").build()).build())
                                 .build())
                 .notificationEventType(SUBSCRIPTION_UPDATED_NOTIFICATION)
                 .build();
@@ -215,16 +254,16 @@ public class NotificationFactoryTest {
     @Test
     public void buildSubscriptionUpdatedSmsNotificationFromSscsCaseDataWithSubscriptionUpdatedNotificationAndSmsAlreadySubscribed() {
         when(personalisationFactory.apply(SUBSCRIPTION_UPDATED_NOTIFICATION)).thenReturn(subscriptionPersonalisation);
-        when(config.getTemplate(SUBSCRIPTION_UPDATED_NOTIFICATION.getId(), SUBSCRIPTION_UPDATED_NOTIFICATION.getId(), SUBSCRIPTION_UPDATED_NOTIFICATION.getId(), PIP, ORAL)).thenReturn(Template.builder().emailTemplateId("123").smsTemplateId("123").build());
+        when(config.getTemplate(SUBSCRIPTION_UPDATED_NOTIFICATION.getId(), SUBSCRIPTION_UPDATED_NOTIFICATION.getId(), SUBSCRIPTION_UPDATED_NOTIFICATION.getId(), SUBSCRIPTION_UPDATED_NOTIFICATION.getId(), PIP, ORAL)).thenReturn(Template.builder().emailTemplateId("123").smsTemplateId("123").build());
 
         wrapper = SscsCaseDataWrapper.builder()
                 .newSscsCaseData(
                         ccdResponse.toBuilder()
-                                .subscriptions(Subscriptions.builder().appellantSubscription(subscription.toBuilder().subscribeSms("Yes").subscribeEmail("No").build()).build())
+                                .subscriptions(Subscriptions.builder().appellantSubscription(subscription.toBuilder().subscribeSms("Yes").wantSmsNotifications("Yes").subscribeEmail("No").build()).build())
                                 .build())
                 .oldSscsCaseData(
                         ccdResponse.toBuilder()
-                                .subscriptions(Subscriptions.builder().appellantSubscription(subscription.toBuilder().subscribeSms("Yes").subscribeEmail("Yes").build()).build())
+                                .subscriptions(Subscriptions.builder().appellantSubscription(subscription.toBuilder().subscribeSms("Yes").wantSmsNotifications("Yes").subscribeEmail("Yes").build()).build())
                                 .build())
                 .notificationEventType(SUBSCRIPTION_UPDATED_NOTIFICATION)
                 .build();
@@ -237,7 +276,7 @@ public class NotificationFactoryTest {
     @Test
     public void buildLastNotificationFromSscsCaseDataEventWhenSmsFirstSubscribed() {
         when(personalisationFactory.apply(SUBSCRIPTION_UPDATED_NOTIFICATION)).thenReturn(subscriptionPersonalisation);
-        when(config.getTemplate(SUBSCRIPTION_UPDATED_NOTIFICATION.getId(), SUBSCRIPTION_CREATED_NOTIFICATION.getId() + ".appellant", SUBSCRIPTION_UPDATED_NOTIFICATION.getId(), PIP, ORAL)).thenReturn(Template.builder().emailTemplateId("123").smsTemplateId("123").build());
+        when(config.getTemplate(SUBSCRIPTION_UPDATED_NOTIFICATION.getId(), SUBSCRIPTION_CREATED_NOTIFICATION.getId() + ".appellant", SUBSCRIPTION_UPDATED_NOTIFICATION.getId(), SUBSCRIPTION_UPDATED_NOTIFICATION.getId(), PIP, ORAL)).thenReturn(Template.builder().emailTemplateId("123").smsTemplateId("123").build());
 
         List<Event> event = new ArrayList<>();
         event.add(Event.builder().value(EventDetails.builder().date(DATE).type(APPEAL_RECEIVED_NOTIFICATION.getId()).build()).build());
@@ -245,12 +284,12 @@ public class NotificationFactoryTest {
         SscsCaseDataWrapper wrapper = SscsCaseDataWrapper.builder()
                 .newSscsCaseData(
                         ccdResponse.toBuilder()
-                                .subscriptions(Subscriptions.builder().appellantSubscription(subscription.toBuilder().subscribeSms("Yes").subscribeEmail("Yes").build()).build())
+                                .subscriptions(Subscriptions.builder().appellantSubscription(subscription.toBuilder().subscribeSms("Yes").wantSmsNotifications("Yes").subscribeEmail("Yes").build()).build())
                                 .events(event)
                                 .build())
                 .oldSscsCaseData(
                         ccdResponse.toBuilder()
-                                .subscriptions(Subscriptions.builder().appellantSubscription(subscription.toBuilder().subscribeSms("No").subscribeEmail("Yes").build()).build())
+                                .subscriptions(Subscriptions.builder().appellantSubscription(subscription.toBuilder().subscribeSms("No").wantSmsNotifications("No").subscribeEmail("Yes").build()).build())
                                 .build())
                 .notificationEventType(SUBSCRIPTION_UPDATED_NOTIFICATION)
                 .build();
@@ -267,7 +306,7 @@ public class NotificationFactoryTest {
     @Test
     public void buildNoNotificationFromSscsCaseDataWhenSubscriptionUpdateReceivedWithNoChangeInSubscription() {
         when(personalisationFactory.apply(SUBSCRIPTION_UPDATED_NOTIFICATION)).thenReturn(subscriptionPersonalisation);
-        when(config.getTemplate(SUBSCRIPTION_UPDATED_NOTIFICATION.getId(), SUBSCRIPTION_UPDATED_NOTIFICATION.getId(), SUBSCRIPTION_UPDATED_NOTIFICATION.getId(), PIP, ORAL)).thenReturn(Template.builder().emailTemplateId("123").smsTemplateId("123").build());
+        when(config.getTemplate(SUBSCRIPTION_UPDATED_NOTIFICATION.getId(), SUBSCRIPTION_UPDATED_NOTIFICATION.getId(), SUBSCRIPTION_UPDATED_NOTIFICATION.getId(), SUBSCRIPTION_UPDATED_NOTIFICATION.getId(), PIP, ORAL)).thenReturn(Template.builder().emailTemplateId("123").smsTemplateId("123").build());
 
         List<Event> events = new ArrayList<>();
         events.add(Event.builder().value(EventDetails.builder().date(DATE).type(APPEAL_RECEIVED_NOTIFICATION.getId()).build()).build());
@@ -275,12 +314,12 @@ public class NotificationFactoryTest {
         SscsCaseDataWrapper wrapper = SscsCaseDataWrapper.builder()
                 .newSscsCaseData(
                         ccdResponse.toBuilder()
-                                .subscriptions(Subscriptions.builder().appellantSubscription(subscription.toBuilder().subscribeSms("Yes").subscribeEmail("Yes").build()).build())
+                                .subscriptions(Subscriptions.builder().appellantSubscription(subscription.toBuilder().subscribeSms("Yes").wantSmsNotifications("Yes").subscribeEmail("Yes").build()).build())
                                 .events(events)
                                 .build())
                 .oldSscsCaseData(
                         ccdResponse.toBuilder()
-                                .subscriptions(Subscriptions.builder().appellantSubscription(subscription.toBuilder().subscribeSms("Yes").subscribeEmail("Yes").build()).build())
+                                .subscriptions(Subscriptions.builder().appellantSubscription(subscription.toBuilder().subscribeSms("Yes").wantSmsNotifications("Yes").subscribeEmail("Yes").build()).build())
                                 .build())
                 .notificationEventType(SUBSCRIPTION_UPDATED_NOTIFICATION)
                 .build();
@@ -296,7 +335,7 @@ public class NotificationFactoryTest {
     @Test
     public void buildSubscriptionUpdatedNotificationFromSscsCaseDataWhenEmailIsChanged() {
         when(personalisationFactory.apply(SUBSCRIPTION_UPDATED_NOTIFICATION)).thenReturn(subscriptionPersonalisation);
-        when(config.getTemplate(SUBSCRIPTION_UPDATED_NOTIFICATION.getId(), SUBSCRIPTION_UPDATED_NOTIFICATION.getId(), SUBSCRIPTION_UPDATED_NOTIFICATION.getId(), PIP, ORAL)).thenReturn(Template.builder().emailTemplateId("123").smsTemplateId("123").build());
+        when(config.getTemplate(SUBSCRIPTION_UPDATED_NOTIFICATION.getId(), SUBSCRIPTION_UPDATED_NOTIFICATION.getId(), SUBSCRIPTION_UPDATED_NOTIFICATION.getId(), SUBSCRIPTION_UPDATED_NOTIFICATION.getId(), PIP, ORAL)).thenReturn(Template.builder().emailTemplateId("123").smsTemplateId("123").build());
 
         List<Event> events = new ArrayList<>();
         events.add(Event.builder().value(EventDetails.builder().date(DATE).type(APPEAL_RECEIVED_NOTIFICATION.getId()).build()).build());
@@ -304,12 +343,12 @@ public class NotificationFactoryTest {
         wrapper = SscsCaseDataWrapper.builder()
                 .newSscsCaseData(
                         ccdResponse.toBuilder()
-                                .subscriptions(Subscriptions.builder().appellantSubscription(subscription.toBuilder().email("changed@testing.com").subscribeSms("Yes").subscribeEmail("Yes").build()).build())
+                                .subscriptions(Subscriptions.builder().appellantSubscription(subscription.toBuilder().email("changed@testing.com").subscribeSms("Yes").wantSmsNotifications("Yes").subscribeEmail("Yes").build()).build())
                                 .events(events)
                                 .build())
                 .oldSscsCaseData(
                         ccdResponse.toBuilder()
-                                .subscriptions(Subscriptions.builder().appellantSubscription(subscription.toBuilder().subscribeSms("Yes").subscribeEmail("Yes").build()).build())
+                                .subscriptions(Subscriptions.builder().appellantSubscription(subscription.toBuilder().subscribeSms("Yes").wantSmsNotifications("Yes").subscribeEmail("Yes").build()).build())
                                 .build())
                 .notificationEventType(SUBSCRIPTION_UPDATED_NOTIFICATION)
                 .build();

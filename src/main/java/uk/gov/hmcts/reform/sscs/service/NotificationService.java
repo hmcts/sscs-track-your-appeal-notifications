@@ -11,8 +11,10 @@ import static uk.gov.hmcts.reform.sscs.service.NotificationValidService.isMandat
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.util.StringUtils;
 import uk.gov.hmcts.reform.sscs.ccd.domain.Benefit;
 import uk.gov.hmcts.reform.sscs.ccd.domain.SscsCaseData;
+import uk.gov.hmcts.reform.sscs.ccd.domain.State;
 import uk.gov.hmcts.reform.sscs.ccd.domain.Subscription;
 import uk.gov.hmcts.reform.sscs.config.NotificationConfig;
 import uk.gov.hmcts.reform.sscs.domain.SubscriptionWithType;
@@ -54,6 +56,10 @@ public class NotificationService {
         NotificationEventType notificationType = notificationWrapper.getNotificationType();
         final String caseId = notificationWrapper.getCaseId();
 
+        if (!isEventAllowedToProceedWithValidData(notificationWrapper, notificationType)) {
+            return;
+        }
+
         log.info("Notification event triggered {} for case id {}", notificationType.getId(), caseId);
 
         if (notificationWrapper.getNotificationType().isAllowOutOfHours() || !outOfHoursCalculator.isItOutOfHours()) {
@@ -70,6 +76,8 @@ public class NotificationService {
             if (isValidNotification(notificationWrapper, subscriptionWithType, notificationType)) {
                 sendNotification(notificationWrapper, subscriptionWithType, notificationType);
                 resendLastNotification(notificationWrapper, subscriptionWithType, notificationType);
+            } else {
+                log.error("Is not a valid notification event {} for case id {}, not sending notification.", notificationType.getId(), notificationWrapper.getCaseId());
             }
         }
     }
@@ -134,7 +142,7 @@ public class NotificationService {
     }
 
     private void processOldSubscriptionNotifications(NotificationWrapper wrapper, Notification notification, SubscriptionWithType subscriptionWithType, NotificationEventType eventType) {
-        if (wrapper.getNotificationType() == NotificationEventType.SUBSCRIPTION_UPDATED_NOTIFICATION) {
+        if (wrapper.getNotificationType() == SUBSCRIPTION_UPDATED_NOTIFICATION) {
             Subscription newSubscription;
             Subscription oldSubscription;
             if (REPRESENTATIVE.equals(subscriptionWithType.getSubscriptionType())) {
@@ -158,6 +166,7 @@ public class NotificationService {
                     .getNewSscsCaseData().getAppeal().getBenefitType().getCode());
 
             Template template = notificationConfig.getTemplate(
+                    NotificationEventType.SUBSCRIPTION_OLD_NOTIFICATION.getId(),
                     NotificationEventType.SUBSCRIPTION_OLD_NOTIFICATION.getId(),
                     NotificationEventType.SUBSCRIPTION_OLD_NOTIFICATION.getId(),
                     NotificationEventType.SUBSCRIPTION_OLD_NOTIFICATION.getId(),
@@ -186,8 +195,31 @@ public class NotificationService {
         return subscription;
     }
 
-    private boolean hasCaseRefBeenAdded(SscsCaseData oldSscsData, SscsCaseData newSscsData) {
-        return (null == oldSscsData || null == oldSscsData.getCaseReference() || oldSscsData.getCaseReference().isEmpty())
-                && (null != newSscsData.getCaseReference() && !newSscsData.getCaseReference().isEmpty());
+    private boolean isEventAllowedToProceedWithValidData(NotificationWrapper notificationWrapper,
+                                                         NotificationEventType notificationType) {
+        boolean isAllowed = true;
+        if (REQUEST_INFO_INCOMPLETE.equals(notificationType)) {
+            if (StringUtils.isEmpty(notificationWrapper.getNewSscsCaseData().getInformationFromAppellant())
+                    || "No".equalsIgnoreCase(notificationWrapper.getNewSscsCaseData().getInformationFromAppellant())) {
+                isAllowed = false;
+
+                log.error("Request Incomplete Information with empty or no Information From Appellant for ccdCaseId {}.", notificationWrapper.getNewSscsCaseData().getCcdCaseId());
+            }
+        } else if (CASE_UPDATED.equals(notificationType)) {
+            isAllowed = false;
+        }
+
+        if (notificationWrapper.getSscsCaseDataWrapper().getState() != null && notificationWrapper.getSscsCaseDataWrapper().getState().equals(State.DORMANT_APPEAL_STATE)) {
+            if (!(APPEAL_DORMANT_NOTIFICATION.equals(notificationType)
+                    || APPEAL_LAPSED_NOTIFICATION.equals(notificationType)
+                    || APPEAL_WITHDRAWN_NOTIFICATION.equals(notificationType)
+                    || STRUCK_OUT.equals(notificationType)
+                    || NotificationEventType.DECISION_ISSUED_2.equals(notificationType))) {
+                log.debug(String.format("Cannot complete notification %s as the appeal was dormant caseId %s.",
+                        notificationType.getId(), notificationWrapper.getCaseId()));
+                isAllowed = false;
+            }
+        }
+        return isAllowed;
     }
 }

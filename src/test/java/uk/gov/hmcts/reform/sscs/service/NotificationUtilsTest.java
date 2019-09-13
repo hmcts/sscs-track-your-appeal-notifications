@@ -1,6 +1,8 @@
 package uk.gov.hmcts.reform.sscs.service;
 
+import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertTrue;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.when;
@@ -13,6 +15,8 @@ import static uk.gov.hmcts.reform.sscs.domain.notify.NotificationEventType.*;
 import static uk.gov.hmcts.reform.sscs.service.NotificationServiceTest.*;
 import static uk.gov.hmcts.reform.sscs.service.NotificationUtils.*;
 import static uk.gov.hmcts.reform.sscs.service.SendNotificationServiceTest.APPELLANT_WITH_ADDRESS_AND_APPOINTEE;
+
+import java.util.Arrays;
 
 import junitparams.JUnitParamsRunner;
 import junitparams.Parameters;
@@ -303,7 +307,7 @@ public class NotificationUtilsTest {
 
         CcdNotificationWrapper wrapper = buildBaseWrapper(null, null);
 
-        Subscription subscription = Subscription.builder().subscribeSms("Yes").build();
+        Subscription subscription = Subscription.builder().subscribeSms("Yes").wantSmsNotifications("Yes").build();
         Notification notification = Notification.builder()
             .reference(new Reference("someref"))
             .destination(Destination.builder().sms("07800123456").build())
@@ -352,6 +356,22 @@ public class NotificationUtilsTest {
         assertFalse(isOkToSendEmailNotification(wrapper, subscription, notification, notificationValidService));
     }
 
+    @Test
+    public void hasNoAppointeeSubscriptionsIfAppointeeIsNotSubscribed() {
+        Subscription subscription = Subscription.builder().wantSmsNotifications("No").subscribeSms("No").subscribeEmail("No").build();
+        CcdNotificationWrapper wrapper = buildBaseWrapper(subscription, null);
+        wrapper.getSscsCaseDataWrapper().getNewSscsCaseData().setSubscriptions(wrapper.getSscsCaseDataWrapper().getNewSscsCaseData().getSubscriptions().toBuilder().appointeeSubscription(subscription).build());
+        assertFalse(hasAppointeeSubscriptionOrIsMandatoryAppointeeLetter(wrapper.getSscsCaseDataWrapper()));
+    }
+
+    @Test
+    public void hasNoRepresentativeSubscriptionsIfRepresentativeIsNotSubscribed() {
+        Subscription subscription = Subscription.builder().wantSmsNotifications("No").subscribeSms("No").subscribeEmail("No").build();
+        CcdNotificationWrapper wrapper = buildBaseWrapper(subscription, null);
+        wrapper.getSscsCaseDataWrapper().getNewSscsCaseData().setSubscriptions(wrapper.getSscsCaseDataWrapper().getNewSscsCaseData().getSubscriptions().toBuilder().appointeeSubscription(subscription).build());
+        assertFalse(hasRepSubscriptionOrIsMandatoryRepLetter(wrapper.getSscsCaseDataWrapper()));
+    }
+
     private Object[] mandatoryNotificationTypes() {
         return new Object[]{
             STRUCK_OUT,
@@ -365,7 +385,6 @@ public class NotificationUtilsTest {
             SYA_APPEAL_CREATED_NOTIFICATION,
             RESEND_APPEAL_CREATED_NOTIFICATION,
             APPEAL_LAPSED_NOTIFICATION,
-            APPEAL_RECEIVED_NOTIFICATION,
             APPEAL_DORMANT_NOTIFICATION,
             EVIDENCE_RECEIVED_NOTIFICATION,
             DWP_RESPONSE_RECEIVED_NOTIFICATION,
@@ -410,6 +429,7 @@ public class NotificationUtilsTest {
             .appeal(
                 Appeal
                     .builder()
+                    .appellant(Appellant.builder().build())
                     .hearingType(AppealHearingType.ORAL.name())
                     .hearingOptions(HearingOptions.builder().wantsToAttend(YES).build())
                     .build())
@@ -524,6 +544,117 @@ public class NotificationUtilsTest {
                     .destination(Destination.builder().email("test@test.com").build())
                     .template(Template.builder().build())
                     .build()
+            }
+        };
+    }
+
+    @Test
+    @Parameters(method = "getLatestHearingScenarios")
+    public void getLatestHearingTest(
+            SscsCaseData sscsCaseData, String expectedHearingId, String expectedDate, String exptectedTime) {
+        Hearing hearing = NotificationUtils.getLatestHearing(sscsCaseData);
+        assertEquals(expectedHearingId, hearing.getValue().getHearingId());
+        assertEquals(expectedDate, hearing.getValue().getHearingDate());
+        assertEquals(exptectedTime, hearing.getValue().getTime());
+    }
+
+    @Test
+    public void whenGettingLatestHearing_shouldReturnNullIfNoHearings() {
+        SscsCaseData sscsCaseData = SscsCaseData.builder().build();
+        Hearing hearing = NotificationUtils.getLatestHearing(sscsCaseData);
+        assertNull(hearing);
+    }
+
+    private Hearing createHearing(String hearingId, String hearingDate, String hearingTime) {
+        return Hearing.builder().value(HearingDetails.builder()
+                .hearingDate(hearingDate)
+                .hearingId(hearingId)
+                .time(hearingTime)
+                .build()).build();
+    }
+
+    public Object[] getLatestHearingScenarios() {
+        return new Object[] {
+            new Object[] {
+                SscsCaseData.builder()
+                .hearings(Arrays.asList(
+                        createHearing("1", "2019-06-01", "14:00")))
+                .build(),
+                "1","2019-06-01","14:00"
+            },
+            new Object[] {
+                SscsCaseData.builder()
+                .hearings(Arrays.asList(
+                        createHearing("1", "2019-06-01", "14:00"),
+                        createHearing("1", "2019-06-01", "14:01"),
+                        createHearing("2", "2019-06-01", "10:00")))
+                .build(),
+                "2","2019-06-01","10:00"
+            },
+            new Object[] {
+                SscsCaseData.builder()
+                .hearings(Arrays.asList(
+                        createHearing("1", "2019-06-01", "10:00"),
+                        createHearing("1", "2019-06-01", "14:01"),
+                        createHearing("2", "2019-06-02", "14:00")))
+                .build(),
+                "2","2019-06-02","14:00"
+            },
+            new Object[] {
+                SscsCaseData.builder()
+                .hearings(Arrays.asList(
+                        createHearing("3", "2019-06-01", "14:00"),
+                        createHearing("1", "2019-06-02", "14:01"),
+                        createHearing("2", "2019-06-01", "10:00")))
+                .build(),
+                "3","2019-06-01","14:00"
+            },
+            new Object[] {
+                SscsCaseData.builder()
+                .hearings(Arrays.asList(
+                        createHearing("1", "2019-06-01", "14:00"),
+                        createHearing("4", "2019-06-01", "14:01"),
+                        createHearing("1", "2019-06-01", "10:00")))
+                .build(),
+                "4","2019-06-01","14:01"
+            },
+            new Object[] {
+                SscsCaseData.builder()
+                .hearings(Arrays.asList(
+                        createHearing("1", "2019-06-01", "14:00"),
+                        createHearing("4", "2019-06-01", "14:01"),
+                        createHearing("4", "2019-06-01", "13:00"),
+                        createHearing("1", "2019-06-01", "10:00")))
+                .build(),
+                "4","2019-06-01","14:01"
+            },
+            new Object[]{
+                SscsCaseData.builder()
+                .hearings(Arrays.asList(
+                        createHearing("1", "2019-06-01", "14:00"),
+                        createHearing("4", "2019-06-01", "13:00"),
+                        createHearing("4", "2019-06-01", "14:01"),
+                        createHearing("1", "2019-06-01", "10:00")))
+                .build(),
+                "4", "2019-06-01", "14:01"
+            },
+            new Object[]{
+                SscsCaseData.builder()
+                        .hearings(Arrays.asList(
+                                createHearing("1", "2019-05-28", "14:01"),
+                                createHearing(null, "2018-05-28", "14:01")))
+                        .build(),
+                "1", "2019-05-28", "14:01"
+            },
+            new Object[]{
+                SscsCaseData.builder()
+                        .hearings(Arrays.asList(
+                                createHearing(null, "2019-06-01", "14:00"),
+                                createHearing(null, "2019-06-01", "13:00"),
+                                createHearing(null, "2019-06-01", "14:01"),
+                                createHearing(null, "2019-06-01", "10:00")))
+                        .build(),
+                null, "2019-06-01", "14:01"
             }
         };
     }

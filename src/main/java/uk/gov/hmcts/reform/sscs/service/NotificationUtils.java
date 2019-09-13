@@ -4,21 +4,18 @@ import static uk.gov.hmcts.reform.sscs.config.AppealHearingType.ORAL;
 import static uk.gov.hmcts.reform.sscs.config.SubscriptionType.APPELLANT;
 import static uk.gov.hmcts.reform.sscs.config.SubscriptionType.APPOINTEE;
 import static uk.gov.hmcts.reform.sscs.config.SubscriptionType.REPRESENTATIVE;
-import static uk.gov.hmcts.reform.sscs.domain.notify.NotificationEventType.APPEAL_WITHDRAWN_NOTIFICATION;
-import static uk.gov.hmcts.reform.sscs.domain.notify.NotificationEventType.DIRECTION_ISSUED;
-import static uk.gov.hmcts.reform.sscs.domain.notify.NotificationEventType.HEARING_BOOKED_NOTIFICATION;
-import static uk.gov.hmcts.reform.sscs.domain.notify.NotificationEventType.REQUEST_INFO_INCOMPLETE;
-import static uk.gov.hmcts.reform.sscs.domain.notify.NotificationEventType.STRUCK_OUT;
+import static uk.gov.hmcts.reform.sscs.domain.notify.NotificationEventType.*;
 import static uk.gov.hmcts.reform.sscs.service.NotificationValidService.FALLBACK_LETTER_SUBSCRIPTION_TYPES;
 import static uk.gov.hmcts.reform.sscs.service.NotificationValidService.LETTER_EVENT_TYPES;
 
+import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collections;
+import java.util.Comparator;
 import java.util.List;
 
-import uk.gov.hmcts.reform.sscs.ccd.domain.Appeal;
-import uk.gov.hmcts.reform.sscs.ccd.domain.Appointee;
-import uk.gov.hmcts.reform.sscs.ccd.domain.SscsCaseData;
-import uk.gov.hmcts.reform.sscs.ccd.domain.Subscription;
+import org.apache.commons.lang.StringUtils;
+import uk.gov.hmcts.reform.sscs.ccd.domain.*;
 import uk.gov.hmcts.reform.sscs.config.SubscriptionType;
 
 import uk.gov.hmcts.reform.sscs.domain.SscsCaseDataWrapper;
@@ -28,7 +25,7 @@ import uk.gov.hmcts.reform.sscs.domain.notify.NotificationEventType;
 import uk.gov.hmcts.reform.sscs.factory.NotificationWrapper;
 
 public class NotificationUtils {
-    private static final List<NotificationEventType> MANDATORY_LETTERS = Arrays.asList(APPEAL_WITHDRAWN_NOTIFICATION, STRUCK_OUT, HEARING_BOOKED_NOTIFICATION, DIRECTION_ISSUED, REQUEST_INFO_INCOMPLETE);
+    private static final List<NotificationEventType> MANDATORY_LETTERS = Arrays.asList(APPEAL_WITHDRAWN_NOTIFICATION, STRUCK_OUT, HEARING_BOOKED_NOTIFICATION, DIRECTION_ISSUED, REQUEST_INFO_INCOMPLETE, APPEAL_RECEIVED_NOTIFICATION, NON_COMPLIANT_NOTIFICATION, JUDGE_DECISION_APPEAL_TO_PROCEED, TCW_DECISION_APPEAL_TO_PROCEED);
 
     private NotificationUtils() {
         // empty
@@ -59,16 +56,17 @@ public class NotificationUtils {
     }
 
     public static boolean hasAppointeeSubscriptionOrIsMandatoryAppointeeLetter(SscsCaseDataWrapper wrapper) {
-        return ((null != getSubscription(wrapper.getNewSscsCaseData(), APPOINTEE))
+        Subscription subscription = getSubscription(wrapper.getNewSscsCaseData(), APPOINTEE);
+        return ((null != subscription && subscription.doesCaseHaveSubscriptions())
             || (hasAppointee(wrapper.getNewSscsCaseData().getAppeal().getAppellant().getAppointee())
             && LETTER_EVENT_TYPES.contains(wrapper.getNotificationEventType())));
     }
 
     public static boolean hasRepSubscriptionOrIsMandatoryRepLetter(SscsCaseDataWrapper wrapper) {
-        return ((null != getSubscription(wrapper.getNewSscsCaseData(), REPRESENTATIVE))
+        Subscription subscription = getSubscription(wrapper.getNewSscsCaseData(), REPRESENTATIVE);
+        return ((null != subscription && subscription.doesCaseHaveSubscriptions())
             || (hasRepresentative(wrapper.getNewSscsCaseData().getAppeal())
             && LETTER_EVENT_TYPES.contains(wrapper.getNotificationEventType())));
-
     }
 
     public static Subscription getSubscription(SscsCaseData sscsCaseData, SubscriptionType subscriptionType) {
@@ -148,5 +146,36 @@ public class NotificationUtils {
         return APPELLANT.equals(subscriptionType)
             || APPOINTEE.equals(subscriptionType)
             || (REPRESENTATIVE.equals(subscriptionType) && null != wrapper.getNewSscsCaseData().getAppeal().getRep());
+    }
+
+    public static final Hearing getLatestHearing(SscsCaseData sscsCaseData) {
+
+        if (sscsCaseData.getHearings() == null || sscsCaseData.getHearings().isEmpty()) {
+            return null;
+        }
+
+        List<Hearing> hearings = new ArrayList<Hearing>(sscsCaseData.getHearings());
+
+        Comparator<Hearing> compareByIdAndDate = new Comparator<Hearing>() {
+            @Override
+            public int compare(Hearing o1, Hearing o2) {
+                HearingDetails hearingDetails = o1.getValue();
+                HearingDetails nextHearingDetails = o2.getValue();
+                Integer idCompare = 0;
+
+                if (!StringUtils.isEmpty(hearingDetails.getHearingId()) && !StringUtils.isEmpty(nextHearingDetails.getHearingId())) {
+                    idCompare = hearingDetails.getHearingId().compareTo(nextHearingDetails.getHearingId());
+                }
+
+                if (idCompare != 0) {
+                    return -1 * idCompare;
+                }
+                return -1 * hearingDetails.getHearingDateTime().compareTo(nextHearingDetails.getHearingDateTime());
+            }
+        };
+
+        Collections.sort(hearings, compareByIdAndDate);
+
+        return hearings.get(0);
     }
 }

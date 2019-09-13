@@ -128,7 +128,8 @@ public class PersonalisationTest {
     @Test
     @Parameters(method = "generateNotificationTypeAndSubscriptionsScenarios")
     public void givenSubscriptionType_shouldGenerateEmailAndSmsTemplateNamesPerSubscription(
-            NotificationEventType notificationEventType, SubscriptionType subscriptionType, HearingType hearingType) {
+            NotificationEventType notificationEventType, SubscriptionType subscriptionType, HearingType hearingType,
+            boolean hasEmailTemplate, boolean hasSmsTemplate, boolean hasLetterTemplate, boolean hasDocmosisTemplate) {
         NotificationWrapper notificationWrapper = new CcdNotificationWrapper(SscsCaseDataWrapper.builder()
                 .newSscsCaseData(SscsCaseData.builder()
                         .appeal(Appeal.builder()
@@ -140,8 +141,11 @@ public class PersonalisationTest {
 
         personalisation.getTemplate(notificationWrapper, PIP, subscriptionType);
 
-        verify(config).getTemplate(eq(getExpectedTemplateName(notificationEventType, subscriptionType)),
-                anyString(), anyString(), any(Benefit.class), any(AppealHearingType.class)
+        verify(config).getTemplate(eq(hasEmailTemplate ? getExpectedTemplateName(notificationEventType, subscriptionType) : notificationEventType.getId()),
+                eq(hasSmsTemplate ? getExpectedTemplateName(notificationEventType, subscriptionType) : notificationEventType.getId()),
+                eq(hasLetterTemplate ? getExpectedTemplateName(notificationEventType, subscriptionType) : notificationEventType.getId()),
+                eq(hasDocmosisTemplate ? getExpectedTemplateName(notificationEventType, subscriptionType) : notificationEventType.getId()),
+                any(Benefit.class), any(AppealHearingType.class)
         );
     }
 
@@ -154,82 +158,88 @@ public class PersonalisationTest {
     @SuppressWarnings({"Indentation", "unused"})
     private Object[] generateNotificationTypeAndSubscriptionsScenarios() {
         return new Object[]{
-                new Object[]{APPEAL_RECEIVED_NOTIFICATION, APPELLANT, PAPER},
-                new Object[]{APPEAL_RECEIVED_NOTIFICATION, APPELLANT, REGULAR},
-                new Object[]{APPEAL_RECEIVED_NOTIFICATION, APPELLANT, ONLINE},
-                new Object[]{APPEAL_RECEIVED_NOTIFICATION, REPRESENTATIVE, PAPER},
-                new Object[]{APPEAL_RECEIVED_NOTIFICATION, REPRESENTATIVE, REGULAR},
-                new Object[]{APPEAL_RECEIVED_NOTIFICATION, REPRESENTATIVE, ONLINE},
-                new Object[]{APPEAL_RECEIVED_NOTIFICATION, APPOINTEE, PAPER},
-                new Object[]{APPEAL_RECEIVED_NOTIFICATION, APPOINTEE, REGULAR},
-                new Object[]{APPEAL_RECEIVED_NOTIFICATION, APPOINTEE, ONLINE},
-                new Object[]{APPEAL_LAPSED_NOTIFICATION, APPELLANT, PAPER},
-                new Object[]{APPEAL_LAPSED_NOTIFICATION, APPELLANT, REGULAR},
-                new Object[]{APPEAL_LAPSED_NOTIFICATION, APPELLANT, ONLINE},
-                new Object[]{APPEAL_LAPSED_NOTIFICATION, REPRESENTATIVE, PAPER},
-                new Object[]{APPEAL_LAPSED_NOTIFICATION, REPRESENTATIVE, REGULAR},
-                new Object[]{APPEAL_LAPSED_NOTIFICATION, REPRESENTATIVE, ONLINE},
-                new Object[]{APPEAL_WITHDRAWN_NOTIFICATION, APPELLANT, PAPER},
-                new Object[]{APPEAL_WITHDRAWN_NOTIFICATION, APPELLANT, REGULAR},
-                new Object[]{APPEAL_WITHDRAWN_NOTIFICATION, APPELLANT, ONLINE},
-                new Object[]{APPEAL_WITHDRAWN_NOTIFICATION, REPRESENTATIVE, PAPER},
-                new Object[]{APPEAL_WITHDRAWN_NOTIFICATION, REPRESENTATIVE, REGULAR},
-                new Object[]{APPEAL_WITHDRAWN_NOTIFICATION, REPRESENTATIVE, ONLINE},
-                new Object[]{SYA_APPEAL_CREATED_NOTIFICATION, APPELLANT, PAPER},
-                new Object[]{SYA_APPEAL_CREATED_NOTIFICATION, APPELLANT, REGULAR},
-                new Object[]{SYA_APPEAL_CREATED_NOTIFICATION, APPELLANT, ONLINE},
-                new Object[]{SYA_APPEAL_CREATED_NOTIFICATION, REPRESENTATIVE, PAPER},
-                new Object[]{SYA_APPEAL_CREATED_NOTIFICATION, REPRESENTATIVE, REGULAR},
-                new Object[]{SYA_APPEAL_CREATED_NOTIFICATION, REPRESENTATIVE, ONLINE},
-                new Object[]{SYA_APPEAL_CREATED_NOTIFICATION, APPOINTEE, PAPER},
-                new Object[]{SYA_APPEAL_CREATED_NOTIFICATION, APPOINTEE, REGULAR},
-                new Object[]{SYA_APPEAL_CREATED_NOTIFICATION, APPOINTEE, ONLINE},
-                new Object[]{DWP_RESPONSE_RECEIVED_NOTIFICATION, APPELLANT, ONLINE},
-                new Object[]{DWP_RESPONSE_RECEIVED_NOTIFICATION, REPRESENTATIVE, ONLINE},
-                new Object[]{DWP_RESPONSE_RECEIVED_NOTIFICATION, APPOINTEE, ONLINE},
-                new Object[]{DWP_RESPONSE_RECEIVED_NOTIFICATION, APPELLANT, PAPER},
-                new Object[]{DWP_RESPONSE_RECEIVED_NOTIFICATION, REPRESENTATIVE, PAPER},
-                new Object[]{DWP_RESPONSE_RECEIVED_NOTIFICATION, APPOINTEE, PAPER},
-                new Object[]{APPEAL_DORMANT_NOTIFICATION, APPELLANT, PAPER},
-                new Object[]{APPEAL_LODGED, APPELLANT, PAPER},
-                new Object[]{APPEAL_LODGED, APPELLANT, REGULAR},
-                new Object[]{APPEAL_LODGED, APPELLANT, ONLINE},
-                new Object[]{APPEAL_LODGED, REPRESENTATIVE, PAPER},
-                new Object[]{APPEAL_LODGED, REPRESENTATIVE, REGULAR},
-                new Object[]{APPEAL_LODGED, REPRESENTATIVE, ONLINE},
-                new Object[]{EVIDENCE_RECEIVED_NOTIFICATION, APPELLANT, PAPER},
-                new Object[]{EVIDENCE_RECEIVED_NOTIFICATION, APPELLANT, REGULAR},
-                new Object[]{EVIDENCE_RECEIVED_NOTIFICATION, APPELLANT, ONLINE},
-                new Object[]{EVIDENCE_RECEIVED_NOTIFICATION, REPRESENTATIVE, PAPER},
-                new Object[]{EVIDENCE_RECEIVED_NOTIFICATION, REPRESENTATIVE, REGULAR},
-                new Object[]{EVIDENCE_RECEIVED_NOTIFICATION, REPRESENTATIVE, ONLINE},
-                new Object[]{RESEND_APPEAL_CREATED_NOTIFICATION, APPELLANT, PAPER},
-                new Object[]{RESEND_APPEAL_CREATED_NOTIFICATION, APPELLANT, REGULAR},
-                new Object[]{RESEND_APPEAL_CREATED_NOTIFICATION, APPELLANT, ONLINE},
-                new Object[]{RESEND_APPEAL_CREATED_NOTIFICATION, REPRESENTATIVE, PAPER},
-                new Object[]{RESEND_APPEAL_CREATED_NOTIFICATION, REPRESENTATIVE, REGULAR},
-                new Object[]{RESEND_APPEAL_CREATED_NOTIFICATION, REPRESENTATIVE, ONLINE},
-                new Object[]{APPEAL_DORMANT_NOTIFICATION, REPRESENTATIVE, PAPER},
-                new Object[]{APPEAL_DORMANT_NOTIFICATION, APPELLANT, ORAL},
-                new Object[]{APPEAL_DORMANT_NOTIFICATION, REPRESENTATIVE, ORAL},
-                new Object[]{ADJOURNED_NOTIFICATION, APPELLANT, PAPER},
-                new Object[]{ADJOURNED_NOTIFICATION, APPELLANT, REGULAR},
-                new Object[]{ADJOURNED_NOTIFICATION, APPELLANT, ONLINE},
-                new Object[]{ADJOURNED_NOTIFICATION, REPRESENTATIVE, PAPER},
-                new Object[]{ADJOURNED_NOTIFICATION, REPRESENTATIVE, REGULAR},
-                new Object[]{ADJOURNED_NOTIFICATION, REPRESENTATIVE, ONLINE},
-                new Object[]{POSTPONEMENT_NOTIFICATION, APPELLANT, PAPER},
-                new Object[]{POSTPONEMENT_NOTIFICATION, APPELLANT, REGULAR},
-                new Object[]{POSTPONEMENT_NOTIFICATION, APPELLANT, ONLINE},
-                new Object[]{POSTPONEMENT_NOTIFICATION, REPRESENTATIVE, PAPER},
-                new Object[]{POSTPONEMENT_NOTIFICATION, REPRESENTATIVE, REGULAR},
-                new Object[]{POSTPONEMENT_NOTIFICATION, REPRESENTATIVE, ONLINE},
-                new Object[]{HEARING_BOOKED_NOTIFICATION, APPELLANT, PAPER},
-                new Object[]{HEARING_BOOKED_NOTIFICATION, APPELLANT, REGULAR},
-                new Object[]{HEARING_BOOKED_NOTIFICATION, APPELLANT, ONLINE},
-                new Object[]{HEARING_BOOKED_NOTIFICATION, REPRESENTATIVE, PAPER},
-                new Object[]{HEARING_BOOKED_NOTIFICATION, REPRESENTATIVE, REGULAR},
-                new Object[]{HEARING_BOOKED_NOTIFICATION, REPRESENTATIVE, ONLINE}
+                new Object[]{APPEAL_RECEIVED_NOTIFICATION, APPELLANT, PAPER, true, true, true, true},
+                new Object[]{APPEAL_RECEIVED_NOTIFICATION, APPELLANT, REGULAR, true, true, true, true},
+                new Object[]{APPEAL_RECEIVED_NOTIFICATION, APPELLANT, ONLINE, true, true, true, true},
+                new Object[]{APPEAL_RECEIVED_NOTIFICATION, REPRESENTATIVE, PAPER, true, true, true, true},
+                new Object[]{APPEAL_RECEIVED_NOTIFICATION, REPRESENTATIVE, REGULAR, true, true, true, true},
+                new Object[]{APPEAL_RECEIVED_NOTIFICATION, REPRESENTATIVE, ONLINE, true, true, true, true},
+                new Object[]{APPEAL_RECEIVED_NOTIFICATION, APPOINTEE, PAPER, true, true, true, true},
+                new Object[]{APPEAL_RECEIVED_NOTIFICATION, APPOINTEE, REGULAR, true, true, true, true},
+                new Object[]{APPEAL_RECEIVED_NOTIFICATION, APPOINTEE, ONLINE, true, true, true, true},
+                new Object[]{APPEAL_LAPSED_NOTIFICATION, APPELLANT, PAPER, true, true, false, false},
+                new Object[]{APPEAL_LAPSED_NOTIFICATION, APPELLANT, REGULAR, true, true, false, false},
+                new Object[]{APPEAL_LAPSED_NOTIFICATION, APPELLANT, ONLINE, true, true, false, false},
+                new Object[]{APPEAL_LAPSED_NOTIFICATION, REPRESENTATIVE, PAPER, true, true, false, false},
+                new Object[]{APPEAL_LAPSED_NOTIFICATION, REPRESENTATIVE, REGULAR, true, true, false, false},
+                new Object[]{APPEAL_LAPSED_NOTIFICATION, REPRESENTATIVE, ONLINE, true, true, false, false},
+                new Object[]{APPEAL_WITHDRAWN_NOTIFICATION, APPELLANT, PAPER, true, true, true, false},
+                new Object[]{APPEAL_WITHDRAWN_NOTIFICATION, APPELLANT, REGULAR, true, true, true, false},
+                new Object[]{APPEAL_WITHDRAWN_NOTIFICATION, APPELLANT, ONLINE, true, true, true, false},
+                new Object[]{APPEAL_WITHDRAWN_NOTIFICATION, REPRESENTATIVE, PAPER, true, true, true, false},
+                new Object[]{APPEAL_WITHDRAWN_NOTIFICATION, REPRESENTATIVE, REGULAR, true, true, true, false},
+                new Object[]{APPEAL_WITHDRAWN_NOTIFICATION, REPRESENTATIVE, ONLINE, true, true, true, false},
+                new Object[]{SYA_APPEAL_CREATED_NOTIFICATION, APPELLANT, PAPER, true, true, true, false},
+                new Object[]{SYA_APPEAL_CREATED_NOTIFICATION, APPELLANT, REGULAR, true, true, true, false},
+                new Object[]{SYA_APPEAL_CREATED_NOTIFICATION, APPELLANT, ONLINE, true, true, true, false},
+                new Object[]{SYA_APPEAL_CREATED_NOTIFICATION, REPRESENTATIVE, PAPER, true, true, true, false},
+                new Object[]{SYA_APPEAL_CREATED_NOTIFICATION, REPRESENTATIVE, REGULAR, true, true, true, false},
+                new Object[]{SYA_APPEAL_CREATED_NOTIFICATION, REPRESENTATIVE, ONLINE, true, true, true, false},
+                new Object[]{SYA_APPEAL_CREATED_NOTIFICATION, APPOINTEE, PAPER, true, true, true, false},
+                new Object[]{SYA_APPEAL_CREATED_NOTIFICATION, APPOINTEE, REGULAR, true, true, true, false},
+                new Object[]{SYA_APPEAL_CREATED_NOTIFICATION, APPOINTEE, ONLINE, true, true, true, false},
+                new Object[]{DWP_RESPONSE_RECEIVED_NOTIFICATION, APPELLANT, ONLINE, true, true, true, false},
+                new Object[]{DWP_RESPONSE_RECEIVED_NOTIFICATION, REPRESENTATIVE, ONLINE, true, true, true, false},
+                new Object[]{DWP_RESPONSE_RECEIVED_NOTIFICATION, APPOINTEE, ONLINE, true, true, true, false},
+                new Object[]{DWP_RESPONSE_RECEIVED_NOTIFICATION, APPELLANT, PAPER, true, true, true, false},
+                new Object[]{DWP_RESPONSE_RECEIVED_NOTIFICATION, REPRESENTATIVE, PAPER, true, true, true, false},
+                new Object[]{DWP_RESPONSE_RECEIVED_NOTIFICATION, APPOINTEE, PAPER, true, true, true, false},
+                new Object[]{APPEAL_DORMANT_NOTIFICATION, APPELLANT, PAPER, true, true, false, false},
+                new Object[]{EVIDENCE_RECEIVED_NOTIFICATION, APPELLANT, PAPER, true, true, true, false},
+                new Object[]{EVIDENCE_RECEIVED_NOTIFICATION, APPELLANT, REGULAR, true, true, true, false},
+                new Object[]{EVIDENCE_RECEIVED_NOTIFICATION, APPELLANT, ONLINE, true, true, true, false},
+                new Object[]{EVIDENCE_RECEIVED_NOTIFICATION, REPRESENTATIVE, PAPER, true, true, true, false},
+                new Object[]{EVIDENCE_RECEIVED_NOTIFICATION, REPRESENTATIVE, REGULAR, true, true, true, false},
+                new Object[]{EVIDENCE_RECEIVED_NOTIFICATION, REPRESENTATIVE, ONLINE, true, true, true, false},
+                new Object[]{RESEND_APPEAL_CREATED_NOTIFICATION, APPELLANT, PAPER, true, true, false, false},
+                new Object[]{RESEND_APPEAL_CREATED_NOTIFICATION, APPELLANT, REGULAR, true, true, false, false},
+                new Object[]{RESEND_APPEAL_CREATED_NOTIFICATION, APPELLANT, ONLINE, true, true, false, false},
+                new Object[]{RESEND_APPEAL_CREATED_NOTIFICATION, REPRESENTATIVE, PAPER, true, true, false, false},
+                new Object[]{RESEND_APPEAL_CREATED_NOTIFICATION, REPRESENTATIVE, REGULAR, true, true, false, false},
+                new Object[]{RESEND_APPEAL_CREATED_NOTIFICATION, REPRESENTATIVE, ONLINE, true, true, false, false},
+                new Object[]{APPEAL_DORMANT_NOTIFICATION, REPRESENTATIVE, PAPER, true, true, false, false},
+                new Object[]{APPEAL_DORMANT_NOTIFICATION, APPELLANT, ORAL, true, true, false, false},
+                new Object[]{APPEAL_DORMANT_NOTIFICATION, REPRESENTATIVE, ORAL, true, true, false, false},
+                new Object[]{ADJOURNED_NOTIFICATION, APPELLANT, PAPER, true, true, false, false},
+                new Object[]{ADJOURNED_NOTIFICATION, APPELLANT, REGULAR, true, true, false, false},
+                new Object[]{ADJOURNED_NOTIFICATION, APPELLANT, ONLINE, true, true, false, false},
+                new Object[]{ADJOURNED_NOTIFICATION, REPRESENTATIVE, PAPER, true, true, false, false},
+                new Object[]{ADJOURNED_NOTIFICATION, REPRESENTATIVE, REGULAR, true, true, false, false},
+                new Object[]{ADJOURNED_NOTIFICATION, REPRESENTATIVE, ONLINE, true, true, false, false},
+                new Object[]{POSTPONEMENT_NOTIFICATION, APPELLANT, PAPER, true, true, false, false},
+                new Object[]{POSTPONEMENT_NOTIFICATION, APPELLANT, REGULAR, true, true, false, false},
+                new Object[]{POSTPONEMENT_NOTIFICATION, APPELLANT, ONLINE, true, true, false, false},
+                new Object[]{POSTPONEMENT_NOTIFICATION, REPRESENTATIVE, PAPER, true, true, false, false},
+                new Object[]{POSTPONEMENT_NOTIFICATION, REPRESENTATIVE, REGULAR, true, true, false, false},
+                new Object[]{POSTPONEMENT_NOTIFICATION, REPRESENTATIVE, ONLINE, true, true, false, false},
+                new Object[]{HEARING_BOOKED_NOTIFICATION, APPELLANT, PAPER, true, true, true, false},
+                new Object[]{HEARING_BOOKED_NOTIFICATION, APPELLANT, REGULAR, true, true, true, false},
+                new Object[]{HEARING_BOOKED_NOTIFICATION, APPELLANT, ONLINE, true, true, true, false},
+                new Object[]{HEARING_BOOKED_NOTIFICATION, REPRESENTATIVE, PAPER, true, true, true, false},
+                new Object[]{HEARING_BOOKED_NOTIFICATION, REPRESENTATIVE, REGULAR, true, true, true, false},
+                new Object[]{HEARING_BOOKED_NOTIFICATION, REPRESENTATIVE, ONLINE, true, true, true, false},
+                new Object[]{DIRECTION_ISSUED, APPELLANT, ONLINE, false, false, false, true},
+                new Object[]{DIRECTION_ISSUED, APPOINTEE, ONLINE, false, false, false, true},
+                new Object[]{DIRECTION_ISSUED, REPRESENTATIVE, ONLINE, false, false, false, true},
+                new Object[]{VALID_APPEAL_CREATED, APPELLANT, PAPER, true, true, true, false},
+                new Object[]{VALID_APPEAL_CREATED, APPELLANT, REGULAR, true, true, true, false},
+                new Object[]{VALID_APPEAL_CREATED, APPELLANT, ONLINE, true, true, true, false},
+                new Object[]{VALID_APPEAL_CREATED, REPRESENTATIVE, PAPER, true, true, true, false},
+                new Object[]{VALID_APPEAL_CREATED, REPRESENTATIVE, REGULAR, true, true, true, false},
+                new Object[]{VALID_APPEAL_CREATED, REPRESENTATIVE, ONLINE, true, true, true, false},
+                new Object[]{VALID_APPEAL_CREATED, APPOINTEE, PAPER, true, true, true, false},
+                new Object[]{VALID_APPEAL_CREATED, APPOINTEE, REGULAR, true, true, true, false},
+                new Object[]{VALID_APPEAL_CREATED, APPOINTEE, ONLINE, true, true, true, false}
         };
     }
 
@@ -387,6 +397,38 @@ public class PersonalisationTest {
                 .build();
 
         Map<String, String> result = personalisation.setEventData(new HashMap<>(), response, APPEAL_RECEIVED_NOTIFICATION);
+
+        assertEquals("5 August 2018", result.get(APPEAL_RESPOND_DATE));
+    }
+
+    @Test
+    public void setJudgeDecisionAppealToProceedEventData() {
+        List<Event> events = new ArrayList<>();
+        events.add(Event.builder().value(EventDetails.builder().date(DATE).type(JUDGE_DECISION_APPEAL_TO_PROCEED.getId()).build()).build());
+
+        SscsCaseData response = SscsCaseData.builder()
+                .ccdCaseId(CASE_ID).caseReference("SC/1234/5")
+                .appeal(Appeal.builder().benefitType(BenefitType.builder().code("PIP").build()).build())
+                .events(events)
+                .build();
+
+        Map<String, String> result = personalisation.setEventData(new HashMap<>(), response, JUDGE_DECISION_APPEAL_TO_PROCEED);
+
+        assertEquals("5 August 2018", result.get(APPEAL_RESPOND_DATE));
+    }
+
+    @Test
+    public void setTcwDecisionAppealToProceedEventData() {
+        List<Event> events = new ArrayList<>();
+        events.add(Event.builder().value(EventDetails.builder().date(DATE).type(TCW_DECISION_APPEAL_TO_PROCEED.getId()).build()).build());
+
+        SscsCaseData response = SscsCaseData.builder()
+                .ccdCaseId(CASE_ID).caseReference("SC/1234/5")
+                .appeal(Appeal.builder().benefitType(BenefitType.builder().code("PIP").build()).build())
+                .events(events)
+                .build();
+
+        Map<String, String> result = personalisation.setEventData(new HashMap<>(), response, TCW_DECISION_APPEAL_TO_PROCEED);
 
         assertEquals("5 August 2018", result.get(APPEAL_RESPOND_DATE));
     }
@@ -605,7 +647,7 @@ public class PersonalisationTest {
                 .build(), new SubscriptionWithType(subscriptions.getAppellantSubscription(), APPELLANT));
 
         assertEquals("http://link.com/onlineHearing?email=test%40email.com", result.get(ONLINE_HEARING_LINK_LITERAL));
-        assertEquals("http://link.com/register", result.get(ONLINE_HEARING_REGISTER_LINK_LITERAL));
+        assertEquals("http://link.com/register?tya=GLSCRR", result.get(ONLINE_HEARING_REGISTER_LINK_LITERAL));
         assertEquals("http://link.com/sign-in", result.get(ONLINE_HEARING_SIGN_IN_LINK_LITERAL));
     }
 
@@ -817,6 +859,7 @@ public class PersonalisationTest {
         return Hearing.builder().value(HearingDetails.builder()
                 .hearingDate(hearingDate.format(DateTimeFormatter.ofPattern("yyyy-MM-dd")))
                 .time("12:00")
+                .hearingId("1")
                 .venue(Venue.builder()
                         .name("The venue")
                         .address(Address.builder()

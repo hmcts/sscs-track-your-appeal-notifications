@@ -73,6 +73,12 @@ public class PersonalisationFactoryTest {
     }
 
     @Test
+    public void createSyaAppealCreatedPersonalisationWhenValidAppealCreateNotificationApplied() {
+        Personalisation result = factory.apply(VALID_APPEAL_CREATED);
+        assertEquals(syaAppealCreatedAndReceivedPersonalisation, result);
+    }
+
+    @Test
     public void createRepsPersonalisationWhenAppealDormantNotificationApplied() {
         Personalisation result = factory.apply(APPEAL_DORMANT_NOTIFICATION);
         assertEquals(withRepresentativePersonalisation, result);
@@ -117,6 +123,18 @@ public class PersonalisationFactoryTest {
     @Test
     public void createRepsPersonalisationWhenHearingReminderNotificationApplied() {
         Personalisation result = factory.apply(HEARING_REMINDER_NOTIFICATION);
+        assertEquals(withRepresentativePersonalisation, result);
+    }
+
+    @Test
+    public void createRepsPersonalisationWhenDwpResponseNotificationApplied() {
+        Personalisation result = factory.apply(DWP_RESPONSE_RECEIVED_NOTIFICATION);
+        assertEquals(withRepresentativePersonalisation, result);
+    }
+
+    @Test
+    public void createRepsPersonalisationWhenDirectionIssuedNotificationApplied() {
+        Personalisation result = factory.apply(DIRECTION_ISSUED);
         assertEquals(withRepresentativePersonalisation, result);
     }
 

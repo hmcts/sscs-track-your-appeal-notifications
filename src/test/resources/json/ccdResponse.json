@@ -34,8 +34,9 @@
           }
         },
         "benefitType":{
-          "code":"ESA"
+          "code":"PIP"
         },
+        "receivedVia": "Online",
         "hearingOptions":{
           "wantsToAttend":"Yes",
           "wantsSupport":"No",
@@ -113,6 +114,7 @@
         },
         "hearingType": ""
       },
+      "informationFromAppellant": "No",
       "evidence": {
         "documents":[
           {
@@ -167,6 +169,7 @@
           "reason": null,
           "subscribeEmail": "Yes",
           "subscribeSms": "Yes",
+          "wantSmsNotifications" : "Yes",
           "tya": "543212345"
         },
         "representativeSubscription": {
@@ -175,6 +178,7 @@
           "reason": null,
           "subscribeEmail": "No",
           "subscribeSms": "Yes",
+          "wantSmsNotifications" : "Yes",
           "tya": "232929249492"
         }
       },
@@ -249,8 +253,9 @@
           }
         },
         "benefitType": {
-          "code": "ESA"
+          "code": "PIP"
         },
+        "receivedVia": "Online",
         "hearingOptions": {
           "wantsToAttend": "Yes",
           "wantsSupport": "No",
@@ -336,6 +341,7 @@
           "reason": null,
           "subscribeEmail": "No",
           "subscribeSms": "No",
+          "wantSmsNotifications" : "No",
           "tya": "543212345"
         },
         "representativeSubscription": {
@@ -344,6 +350,7 @@
           "reason": null,
           "subscribeEmail": "No",
           "subscribeSms": "Yes",
+          "wantSmsNotifications" : "Yes",
           "tya": "232929249492"
         }
       },

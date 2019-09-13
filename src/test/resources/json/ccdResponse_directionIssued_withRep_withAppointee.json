@@ -135,7 +135,7 @@
         },
         "hearingType": ""
       },
-      "sscsDocument":[{"value":{"documentType":"Direction Text","documentEmailContent":"Direction text","documentLink":{"document_url":"http://dm-store:4506/documents/5b7bab64-3d42-4c8b-bf2f-9f695cc70f4c","document_binary_url":"http://dm-store:4506/documents/5b7bab64-3d42-4c8b-bf2f-9f695cc70f4c/binary","document_filename":"Direction Notice - sample - Postponement Directions Notice form 5.pdf"},"documentDateAdded":"2019-03-27","documentComment":"Direction text document uploaded","documentFileName":"direction-text.pdf"},"id":"3b6d23e6-d027-47cc-951b-77abb58f4a0b"}],
+      "sscsInterlocDirectionDocument":{"documentType":"Direction Notice","documentLink":{"document_url":"http://dm-store:4506/documents/5b7bab64-3d42-4c8b-bf2f-9f695cc70f4c","document_binary_url":"http://dm-store:4506/documents/5b7bab64-3d42-4c8b-bf2f-9f695cc70f4c/binary","document_filename":"Direction Notice - sample - Postponement Directions Notice form 5.pdf"},"documentDateAdded":"2019-03-27","documentFileName":"Direction Notice.pdf"},
       "evidence": {
         "documents":[
           {

@@ -96,6 +96,7 @@
         "mobile": "07411333333",
         "subscribeEmail": "Yes",
         "subscribeSms": "Yes",
+        "wantSmsNotifications" : "Yes",
         "reason": null
       }
     }

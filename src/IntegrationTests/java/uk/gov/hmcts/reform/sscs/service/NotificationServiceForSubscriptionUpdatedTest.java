@@ -31,6 +31,7 @@ import uk.gov.hmcts.reform.sscs.factory.CcdNotificationWrapper;
 import uk.gov.hmcts.reform.sscs.factory.NotificationFactory;
 import uk.gov.hmcts.reform.sscs.idam.IdamService;
 import uk.gov.hmcts.reform.sscs.idam.IdamTokens;
+import uk.gov.hmcts.reform.sscs.service.docmosis.PdfLetterService;
 import uk.gov.service.notify.NotificationClientException;
 
 @RunWith(JUnitParamsRunner.class)
@@ -109,6 +110,9 @@ public class NotificationServiceForSubscriptionUpdatedTest {
     @Autowired
     private NotificationHandler notificationHandler;
 
+    @Autowired
+    private BundledLetterTemplateUtil bundledLetterTemplateUtil;
+
     @Mock
     private NotificationSender notificationSender;
 
@@ -125,10 +129,13 @@ public class NotificationServiceForSubscriptionUpdatedTest {
     private SscsGeneratePdfService sscsGeneratePdfService;
 
     @Mock
+    private PdfLetterService pdfLetterService;
+
+    @Mock
     private IdamService idamService;
 
     private final Subscription subscription = Subscription.builder().tya(APPEAL_NUMBER).email(EMAIL_TEST_1)
-                .mobile(MOBILE_NUMBER_1).subscribeEmail(YES).subscribeSms(YES).build();
+                .mobile(MOBILE_NUMBER_1).subscribeEmail(YES).subscribeSms(YES).wantSmsNotifications(YES).build();
 
     @Before
     public void setup() {
@@ -146,10 +153,12 @@ public class NotificationServiceForSubscriptionUpdatedTest {
 
     private NotificationService getNotificationService() {
         SendNotificationService sendNotificationService = new SendNotificationService(notificationSender,
-                evidenceManagementService, sscsGeneratePdfService, notificationHandler, notificationValidService);
-        ReflectionTestUtils.setField(sendNotificationService, "strikeOutLetterTemplate", "/templates/non_compliant_case_letter_template.html");
+                evidenceManagementService, sscsGeneratePdfService, notificationHandler, notificationValidService,
+                bundledLetterTemplateUtil, pdfLetterService);
         ReflectionTestUtils.setField(sendNotificationService, "bundledLettersOn", false);
         ReflectionTestUtils.setField(sendNotificationService, "lettersOn", false);
+        ReflectionTestUtils.setField(sendNotificationService, "interlocLettersOn", false);
+        ReflectionTestUtils.setField(sendNotificationService, "docmosisLettersOn", false);
         return new NotificationService(notificationFactory, reminderService,
                 notificationValidService, notificationHandler, outOfHoursCalculator, notificationConfig, sendNotificationService
         );
@@ -186,8 +195,8 @@ public class NotificationServiceForSubscriptionUpdatedTest {
         SscsCaseDataWrapper wrapper = getSscsCaseDataWrapper(newSscsCaseData, oldSscsCaseData);
 
         notificationService.manageNotificationAndSubscription(new CcdNotificationWrapper(wrapper));
-        verify(notificationSender).sendEmail(eq(subscriptionUpdatedEmailId), eq(newSubscription.getEmail()), any(), any(), any());
-        verify(notificationSender).sendEmail(eq(getAppealReceivedEmailId(who)), eq(newSubscription.getEmail()), any(), any(), any());
+        verify(notificationSender).sendEmail(eq(subscriptionUpdatedEmailId), eq(newSubscription.getEmail()), any(), any(), any(), any());
+        verify(notificationSender).sendEmail(eq(getAppealReceivedEmailId(who)), eq(newSubscription.getEmail()), any(), any(), any(), any());
         verifyNoMoreInteractions(notificationSender);
     }
 
@@ -246,8 +255,8 @@ public class NotificationServiceForSubscriptionUpdatedTest {
         SscsCaseDataWrapper wrapper = getSscsCaseDataWrapper(newSscsCaseData, oldSscsCaseData);
 
         notificationService.manageNotificationAndSubscription(new CcdNotificationWrapper(wrapper));
-        verify(notificationSender).sendEmail(eq(subscriptionUpdatedEmailId), eq(newSubscription.getEmail()), any(), any(), any());
-        verify(notificationSender).sendEmail(eq(getAppealReceivedEmailId(appellant)), eq(newSubscription.getEmail()), any(), any(), any());
+        verify(notificationSender).sendEmail(eq(subscriptionUpdatedEmailId), eq(newSubscription.getEmail()), any(), any(), any(), any());
+        verify(notificationSender).sendEmail(eq(getAppealReceivedEmailId(appellant)), eq(newSubscription.getEmail()), any(), any(), any(), any());
         verify(notificationSender).sendSms(eq(subscriptionCreatedAppellantSmsId), eq(newSubscription.getMobile()), any(), any(), any(), any());
         verify(notificationSender).sendSms(eq(getAppealReceivedSmsId(appellant)), eq(newSubscription.getMobile()), any(), any(), any(), any());
 
@@ -264,8 +273,8 @@ public class NotificationServiceForSubscriptionUpdatedTest {
         SscsCaseDataWrapper wrapper = getSscsCaseDataWrapper(newSscsCaseData, oldSscsCaseData);
 
         notificationService.manageNotificationAndSubscription(new CcdNotificationWrapper(wrapper));
-        verify(notificationSender).sendEmail(eq(subscriptionUpdatedEmailId), eq(newSubscription.getEmail()), any(), any(), any());
-        verify(notificationSender).sendEmail(eq(getAppealReceivedEmailId(appointee)), eq(newSubscription.getEmail()), any(), any(), any());
+        verify(notificationSender).sendEmail(eq(subscriptionUpdatedEmailId), eq(newSubscription.getEmail()), any(), any(), any(), any());
+        verify(notificationSender).sendEmail(eq(getAppealReceivedEmailId(appointee)), eq(newSubscription.getEmail()), any(), any(), any(), any());
         verify(notificationSender).sendSms(eq(subscriptionCreatedAppointeeSmsId), eq(newSubscription.getMobile()), any(), any(), any(), any());
         verify(notificationSender).sendSms(eq(getAppealReceivedSmsId(appointee)), eq(newSubscription.getMobile()), any(), any(), any(), any());
 
@@ -282,8 +291,8 @@ public class NotificationServiceForSubscriptionUpdatedTest {
         SscsCaseDataWrapper wrapper = getSscsCaseDataWrapper(newSscsCaseData, oldSscsCaseData);
 
         notificationService.manageNotificationAndSubscription(new CcdNotificationWrapper(wrapper));
-        verify(notificationSender).sendEmail(eq(subscriptionUpdatedEmailId), eq(newSubscription.getEmail()), any(), any(), any());
-        verify(notificationSender).sendEmail(eq(getAppealReceivedEmailId(representative)), eq(newSubscription.getEmail()), any(), any(), any());
+        verify(notificationSender).sendEmail(eq(subscriptionUpdatedEmailId), eq(newSubscription.getEmail()), any(), any(), any(), any());
+        verify(notificationSender).sendEmail(eq(getAppealReceivedEmailId(representative)), eq(newSubscription.getEmail()), any(), any(), any(), any());
         verify(notificationSender).sendSms(eq(subscriptionCreatedRepresentativeSmsId), eq(newSubscription.getMobile()), any(), any(), any(), any());
         verify(notificationSender).sendSms(eq(getAppealReceivedSmsId(representative)), eq(newSubscription.getMobile()), any(), any(), any(), any());
 
@@ -302,8 +311,8 @@ public class NotificationServiceForSubscriptionUpdatedTest {
 
         notificationService.manageNotificationAndSubscription(new CcdNotificationWrapper(wrapper));
 
-        verify(notificationSender).sendEmail(eq(subscriptionUpdatedEmailId), eq(subscription.getEmail()), any(), any(), any());
-        verify(notificationSender).sendEmail(eq(subscriptionOldEmailId), eq(oldSubscription.getEmail()), any(), any(), any());
+        verify(notificationSender).sendEmail(eq(subscriptionUpdatedEmailId), eq(subscription.getEmail()), any(), any(), any(), any());
+        verify(notificationSender).sendEmail(eq(subscriptionOldEmailId), eq(oldSubscription.getEmail()), any(), any(), any(), any());
 
         verifyNoMoreInteractions(notificationSender);
     }
@@ -375,8 +384,8 @@ public class NotificationServiceForSubscriptionUpdatedTest {
 
         notificationService.manageNotificationAndSubscription(new CcdNotificationWrapper(wrapper));
 
-        verify(notificationSender).sendEmail(eq(subscriptionUpdatedEmailId), eq(subscription.getEmail()), any(), any(), any());
-        verify(notificationSender).sendEmail(eq(subscriptionOldEmailId), eq(oldSubscription.getEmail()), any(), any(), any());
+        verify(notificationSender).sendEmail(eq(subscriptionUpdatedEmailId), eq(subscription.getEmail()), any(), any(), any(), any());
+        verify(notificationSender).sendEmail(eq(subscriptionOldEmailId), eq(oldSubscription.getEmail()), any(), any(), any(), any());
         verify(notificationSender).sendSms(eq(subscriptionCreatedAppellantSmsId), eq(subscription.getMobile()), any(), any(), any(), any());
         verify(notificationSender).sendSms(eq(subscriptionOldSmsId), eq(oldSubscription.getMobile()), any(), any(), any(), any());
 
@@ -395,8 +404,8 @@ public class NotificationServiceForSubscriptionUpdatedTest {
 
         notificationService.manageNotificationAndSubscription(new CcdNotificationWrapper(wrapper));
 
-        verify(notificationSender).sendEmail(eq(subscriptionUpdatedEmailId), eq(subscription.getEmail()), any(), any(), any());
-        verify(notificationSender).sendEmail(eq(subscriptionOldEmailId), eq(oldSubscription.getEmail()), any(), any(), any());
+        verify(notificationSender).sendEmail(eq(subscriptionUpdatedEmailId), eq(subscription.getEmail()), any(), any(), any(), any());
+        verify(notificationSender).sendEmail(eq(subscriptionOldEmailId), eq(oldSubscription.getEmail()), any(), any(), any(), any());
         verify(notificationSender).sendSms(eq(subscriptionCreatedAppointeeSmsId), eq(subscription.getMobile()), any(), any(), any(), any());
         verify(notificationSender).sendSms(eq(subscriptionOldSmsId), eq(oldSubscription.getMobile()), any(), any(), any(), any());
 
@@ -415,8 +424,8 @@ public class NotificationServiceForSubscriptionUpdatedTest {
 
         notificationService.manageNotificationAndSubscription(new CcdNotificationWrapper(wrapper));
 
-        verify(notificationSender).sendEmail(eq(subscriptionUpdatedEmailId), eq(subscription.getEmail()), any(), any(), any());
-        verify(notificationSender).sendEmail(eq(subscriptionOldEmailId), eq(oldSubscription.getEmail()), any(), any(), any());
+        verify(notificationSender).sendEmail(eq(subscriptionUpdatedEmailId), eq(subscription.getEmail()), any(), any(), any(), any());
+        verify(notificationSender).sendEmail(eq(subscriptionOldEmailId), eq(oldSubscription.getEmail()), any(), any(), any(), any());
         verify(notificationSender).sendSms(eq(subscriptionCreatedRepresentativeSmsId), eq(subscription.getMobile()), any(), any(), any(), any());
         verify(notificationSender).sendSms(eq(subscriptionOldSmsId), eq(oldSubscription.getMobile()), any(), any(), any(), any());
 

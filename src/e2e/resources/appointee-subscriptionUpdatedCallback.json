@@ -76,6 +76,7 @@
           "mobile": "07398785050",
           "subscribeEmail": "Yes",
           "subscribeSms": "Yes",
+          "wantSmsNotifications": "Yes",
           "tya": ""
         }
       }
@@ -180,6 +181,7 @@
               "mobile": "PUBLIC",
               "subscribeEmail": "PUBLIC",
               "subscribeSms": "PUBLIC",
+              "wantSmsNotifications": "PUBLIC",
               "tya": "PUBLIC"
             }
           }
@@ -288,6 +290,7 @@
               "mobile": "PUBLIC",
               "subscribeEmail": "PUBLIC",
               "subscribeSms": "PUBLIC",
+              "wantSmsNotifications": "PUBLIC",
               "tya": "PUBLIC"
             }
           }
@@ -351,6 +354,7 @@
           "mobile": "07398785051",
           "subscribeEmail": "Yes",
           "subscribeSms": "Yes",
+          "wantSmsNotifications": "Yes",
           "tya": ""
         }
       }
@@ -455,6 +459,7 @@
               "mobile": "PUBLIC",
               "subscribeEmail": "PUBLIC",
               "subscribeSms": "PUBLIC",
+              "wantSmsNotifications": "PUBLIC",
               "tya": "PUBLIC"
             }
           }
@@ -563,6 +568,7 @@
               "mobile": "PUBLIC",
               "subscribeEmail": "PUBLIC",
               "subscribeSms": "PUBLIC",
+              "wantSmsNotifications": "PUBLIC",
               "tya": "PUBLIC"
             }
           }
