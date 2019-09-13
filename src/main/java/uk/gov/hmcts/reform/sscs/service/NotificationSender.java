@@ -29,7 +29,7 @@ public class NotificationSender {
     private final NotificationClient notificationClient;
     private final NotificationClient testNotificationClient;
     private final NotificationBlacklist notificationBlacklist;
-    private final CcdPdfService ccdPdfService;
+    private final CcdNotificationsPdfService ccdNotificationsPdfService;
     private final MarkdownTransformationService markdownTransformationService;
     private final Boolean saveCorrespondence;
 
@@ -37,14 +37,14 @@ public class NotificationSender {
     public NotificationSender(@Qualifier("notificationClient") NotificationClient notificationClient,
                               @Qualifier("testNotificationClient") NotificationClient testNotificationClient,
                               NotificationBlacklist notificationBlacklist,
-                              CcdPdfService ccdPdfService,
+                              CcdNotificationsPdfService ccdNotificationsPdfService,
                               MarkdownTransformationService markdownTransformationService,
                               @Value("${feature.save_correspondence}") Boolean saveCorrespondence
     ) {
         this.notificationClient = notificationClient;
         this.testNotificationClient = testNotificationClient;
         this.notificationBlacklist = notificationBlacklist;
-        this.ccdPdfService = ccdPdfService;
+        this.ccdNotificationsPdfService = ccdNotificationsPdfService;
         this.markdownTransformationService = markdownTransformationService;
         this.saveCorrespondence = saveCorrespondence;
     }
@@ -78,7 +78,8 @@ public class NotificationSender {
                             .build()
             ).build();
 
-            ccdPdfService.mergeCorrespondenceIntoCcd(sscsCaseData, correspondence);
+            ccdNotificationsPdfService.mergeCorrespondenceIntoCcd(sscsCaseData, correspondence);
+            LOG.info("Uploaded email pdf into ccd for case id {}.", sscsCaseData.getCcdCaseId());
         }
 
         LOG.info("Email Notification send for case id : {}, Gov notify id: {} ", sscsCaseData.getCcdCaseId(),
