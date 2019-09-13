@@ -41,7 +41,7 @@ public class NotificationSenderTest {
     private LetterResponse letterResponse;
 
     @Mock
-    private CcdPdfService ccdPdfService;
+    private CcdNotificationsPdfService ccdNotificationsPdfService;
 
     @Mock
     private SendLetterResponse sendLetterResponse;
@@ -63,7 +63,7 @@ public class NotificationSenderTest {
         personalisation = Collections.emptyMap();
         reference = "reference";
 
-        notificationSender = new NotificationSender(notificationClient, testNotificationClient, blacklist, ccdPdfService, markdownTransformationService, saveCorrespondence);
+        notificationSender = new NotificationSender(notificationClient, testNotificationClient, blacklist, ccdNotificationsPdfService, markdownTransformationService, saveCorrespondence);
     }
 
     @Test
@@ -201,7 +201,7 @@ public class NotificationSenderTest {
                 .thenReturn(sendEmailResponse);
         when(sendEmailResponse.getNotificationId()).thenReturn(UUID.randomUUID());
         when(markdownTransformationService.toHtml(anyString())).thenReturn("the body");
-        when(ccdPdfService.mergeCorrespondenceIntoCcd(any(), any())).thenReturn(SscsCaseData.builder().build());
+        when(ccdNotificationsPdfService.mergeCorrespondenceIntoCcd(any(), any())).thenReturn(SscsCaseData.builder().build());
 
         notificationSender.sendEmail(templateId, emailAddress, personalisation, reference, NotificationEventType.APPEAL_RECEIVED_NOTIFICATION, SSCS_CASE_DATA);
 
@@ -216,7 +216,7 @@ public class NotificationSenderTest {
                 .eventType(NotificationEventType.APPEAL_RECEIVED_NOTIFICATION.getId())
                 .sentOn("this field is ignored")
                 .build()).build();
-        verify(ccdPdfService).mergeCorrespondenceIntoCcd(eq(SscsCaseData.builder().build()),
+        verify(ccdNotificationsPdfService).mergeCorrespondenceIntoCcd(eq(SscsCaseData.builder().build()),
                argThat(((Correspondence arg) -> EqualsBuilder.reflectionEquals(arg.getValue(), expectedCorrespondence.getValue(), "sentOn"))));
     }
 }
