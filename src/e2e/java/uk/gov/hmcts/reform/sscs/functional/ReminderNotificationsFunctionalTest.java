@@ -290,6 +290,7 @@ public class ReminderNotificationsFunctionalTest extends AbstractFunctionalTest 
         List<Notification> notifications =
             tryFetchNotificationsForTestCase(
                     hearingReminderAppellantEmailTemplateId,
+                    hearingReminderAppellantEmailTemplateId,
                     hearingReminderAppointeeEmailTemplateId,
                     hearingReminderAppellantSmsTemplateId,
                     hearingReminderAppointeeSmsTemplateId
