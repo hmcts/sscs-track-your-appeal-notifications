@@ -71,7 +71,7 @@ public class ReminderNotificationsFunctionalTest extends AbstractFunctionalTest 
     private String hearingReminderAppointeeSmsTemplateId;
 
     public ReminderNotificationsFunctionalTest() {
-        super(90);
+        super(120);
     }
 
     @Test
@@ -289,7 +289,6 @@ public class ReminderNotificationsFunctionalTest extends AbstractFunctionalTest 
 
         List<Notification> notifications =
             tryFetchNotificationsForTestCase(
-                    hearingReminderAppellantEmailTemplateId,
                     hearingReminderAppellantEmailTemplateId,
                     hearingReminderAppointeeEmailTemplateId,
                     hearingReminderAppellantSmsTemplateId,
