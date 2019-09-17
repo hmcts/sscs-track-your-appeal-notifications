@@ -81,7 +81,7 @@ locals {
 }
 
 module "track-your-appeal-notifications" {
-  source       = "git@github.com:contino/moj-module-webapp?ref=master"
+  source       = "git@github.com:hmcts/cnp-module-webapp?ref=master"
   product      = "${var.product}-${var.component}"
   location     = "${var.location}"
   env          = "${var.env}"
@@ -157,12 +157,14 @@ module "track-your-appeal-notifications" {
 
     APPEAL_RECEIVED_LETTER_ON           = "${var.appeal_received_letter_on}"
 
-    DIRECTION_ISSUED_LETTER_ON           = "${var.direction_issued_letter_on}"
+    DIRECTION_ISSUED_LETTER_ON          = "${var.direction_issued_letter_on}"
+
+    SAVE_CORRESPONDENCE                 = "${var.save_correspondence}"
   }
 }
 
 module "db-notif" {
-  source          = "git@github.com:hmcts/moj-module-postgres?ref=master"
+  source          = "git@github.com:hmcts/cnp-module-postgres?ref=master"
   product         = "${var.product}-${var.component}-postgres-db"
   location        = "${var.location}"
   env             = "${var.env}"

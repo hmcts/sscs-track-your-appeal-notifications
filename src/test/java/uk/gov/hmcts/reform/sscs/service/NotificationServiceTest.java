@@ -1514,7 +1514,7 @@ public class NotificationServiceTest {
         when(factory.create(ccdNotificationWrapper, getSubscriptionWithType(ccdNotificationWrapper))).thenReturn(notification);
         notificationService.manageNotificationAndSubscription(ccdNotificationWrapper);
 
-        verify(notificationSender, never()).sendEmail(notification.getEmailTemplate(), notification.getEmail(), notification.getPlaceholders(), notification.getReference(), ccdNotificationWrapper.getCaseId());
+        verify(notificationSender, never()).sendEmail(notification.getEmailTemplate(), notification.getEmail(), notification.getPlaceholders(), notification.getReference(), sscsCaseDataWrapper.getNotificationEventType(), ccdNotificationWrapper.getNewSscsCaseData());
 
         verifyNoErrorsLogged(mockAppender, captorLoggingEvent);
     }
@@ -1536,8 +1536,7 @@ public class NotificationServiceTest {
         when(factory.create(ccdNotificationWrapper, getSubscriptionWithType(ccdNotificationWrapper))).thenReturn(notification);
         notificationService.manageNotificationAndSubscription(ccdNotificationWrapper);
 
-        verify(notificationSender, never()).sendEmail(notification.getEmailTemplate(), notification.getEmail(), notification.getPlaceholders(), notification.getReference(), ccdNotificationWrapper.getCaseId());
-
+        verify(notificationSender, never()).sendEmail(notification.getEmailTemplate(), notification.getEmail(), notification.getPlaceholders(), notification.getReference(), sscsCaseDataWrapper.getNotificationEventType(), ccdNotificationWrapper.getNewSscsCaseData());
         verifyNoErrorsLogged(mockAppender, captorLoggingEvent);
     }
 
@@ -1568,7 +1567,7 @@ public class NotificationServiceTest {
         notificationService.manageNotificationAndSubscription(ccdNotificationWrapper);
 
         verify(notificationSender, never()).sendSms(notification.getSmsTemplate(), notification.getMobile(), notification.getPlaceholders(), notification.getReference(), notification.getSmsSenderTemplate(), ccdNotificationWrapper.getCaseId());
-        verify(notificationSender, never()).sendEmail(notification.getEmailTemplate(), notification.getEmail(), notification.getPlaceholders(), notification.getReference(), ccdNotificationWrapper.getCaseId());
+        verify(notificationSender, never()).sendEmail(notification.getEmailTemplate(), notification.getEmail(), notification.getPlaceholders(), notification.getReference(), sscsCaseDataWrapper.getNotificationEventType(), ccdNotificationWrapper.getNewSscsCaseData());
 
         verifyNoErrorsLogged(mockAppender, captorLoggingEvent);
     }
@@ -1597,7 +1596,7 @@ public class NotificationServiceTest {
 
         notificationService.manageNotificationAndSubscription(ccdNotificationWrapper);
 
-        verify(notificationSender, never()).sendEmail(notification.getEmailTemplate(), notification.getEmail(), notification.getPlaceholders(), notification.getReference(), ccdNotificationWrapper.getCaseId());
+        verify(notificationSender, never()).sendEmail(notification.getEmailTemplate(), notification.getEmail(), notification.getPlaceholders(), notification.getReference(), sscsCaseDataWrapper.getNotificationEventType(), ccdNotificationWrapper.getNewSscsCaseData());
 
         verifyNoErrorsLogged(mockAppender, captorLoggingEvent);
     }
@@ -1610,7 +1609,7 @@ public class NotificationServiceTest {
 
         notificationService.manageNotificationAndSubscription(ccdNotificationWrapper);
 
-        verify(notificationSender, never()).sendEmail(notification.getEmailTemplate(), notification.getEmail(), notification.getPlaceholders(), notification.getReference(), ccdNotificationWrapper.getCaseId());
+        verify(notificationSender, never()).sendEmail(notification.getEmailTemplate(), notification.getEmail(), notification.getPlaceholders(), notification.getReference(), sscsCaseDataWrapper.getNotificationEventType(),  ccdNotificationWrapper.getNewSscsCaseData());
 
         verifyNoErrorsLogged(mockAppender, captorLoggingEvent);
     }
@@ -1818,9 +1817,6 @@ public class NotificationServiceTest {
         return new Object[] {
             new Object[] {
                 STRUCK_OUT, LETTER_TEMPLATE_ID_STRUCKOUT, "/templates/strike_out_letter_template.html", ""
-            },
-            new Object[] {
-                DIRECTION_ISSUED, LETTER_TEMPLATE_ID_DIRECTION_ISSUED, "/templates/direction_notice_letter_template.html", ""
             },
             new Object[] {
                 JUDGE_DECISION_APPEAL_TO_PROCEED, LETTER_TEMPLATE_ID_VALID_APPEAL_CREATED, "/templates/valid_appeal_created_template.html", ""
