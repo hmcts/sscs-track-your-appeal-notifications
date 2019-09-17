@@ -336,6 +336,7 @@ notification:
 smsSender:
   pip: 80b11be7-5c10-2773-8351-070e22d5ab6b
   esa: f84a568d-bd01-4940-a48a-5bcfc52940e0
+  uc: 2811c776-2d38-4413-96c6-efa639eabc40
 
 reminder:
   evidenceReminder.delay.seconds: 604800

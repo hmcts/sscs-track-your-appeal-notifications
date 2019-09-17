@@ -205,8 +205,11 @@ public class Personalisation<E extends NotificationWrapper> {
     private String getPanelCompositionByBenefitType(Benefit benefit) {
         if (Benefit.PIP.equals(benefit)) {
             return PIP_PANEL_COMPOSITION;
+        } else if (Benefit.ESA.equals(benefit)) {
+            return ESA_PANEL_COMPOSITION;
+        } else {
+            return UC_PANEL_COMPOSITION;
         }
-        return ESA_PANEL_COMPOSITION;
     }
 
     void setHearingContactDate(Map<String, String> personalisation, SscsCaseDataWrapper wrapper) {
