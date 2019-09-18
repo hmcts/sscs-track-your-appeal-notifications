@@ -1,27 +1,14 @@
 package uk.gov.hmcts.reform.sscs.personalisation;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertNull;
+import static org.junit.Assert.*;
 import static org.mockito.ArgumentMatchers.eq;
-import static org.mockito.Mockito.any;
-import static org.mockito.Mockito.anyString;
-import static org.mockito.Mockito.never;
-import static org.mockito.Mockito.verify;
-import static org.mockito.Mockito.when;
+import static org.mockito.Mockito.*;
 import static org.mockito.MockitoAnnotations.initMocks;
-import static uk.gov.hmcts.reform.sscs.ccd.domain.Benefit.ESA;
 import static uk.gov.hmcts.reform.sscs.ccd.domain.Benefit.PIP;
 import static uk.gov.hmcts.reform.sscs.ccd.domain.EventType.APPEAL_RECEIVED;
-import static uk.gov.hmcts.reform.sscs.ccd.domain.HearingType.ONLINE;
-import static uk.gov.hmcts.reform.sscs.ccd.domain.HearingType.ORAL;
-import static uk.gov.hmcts.reform.sscs.ccd.domain.HearingType.PAPER;
-import static uk.gov.hmcts.reform.sscs.ccd.domain.HearingType.REGULAR;
+import static uk.gov.hmcts.reform.sscs.ccd.domain.HearingType.*;
 import static uk.gov.hmcts.reform.sscs.config.AppConstants.*;
-import static uk.gov.hmcts.reform.sscs.config.SubscriptionType.APPELLANT;
-import static uk.gov.hmcts.reform.sscs.config.SubscriptionType.APPOINTEE;
-import static uk.gov.hmcts.reform.sscs.config.SubscriptionType.REPRESENTATIVE;
+import static uk.gov.hmcts.reform.sscs.config.SubscriptionType.*;
 import static uk.gov.hmcts.reform.sscs.domain.notify.NotificationEventType.*;
 
 import java.time.Instant;
@@ -30,7 +17,6 @@ import java.time.ZoneId;
 import java.time.ZonedDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.*;
-
 import junitparams.JUnitParamsRunner;
 import junitparams.Parameters;
 import org.apache.commons.lang3.StringUtils;
@@ -104,8 +90,7 @@ public class PersonalisationTest {
         when(notificationDateConverterUtil.toEmailDate(LocalDate.now().plusDays(1))).thenReturn("1 January 2018");
         when(notificationDateConverterUtil.toEmailDate(LocalDate.now().plusDays(7))).thenReturn("1 February 2018");
         when(notificationDateConverterUtil.toEmailDate(LocalDate.now().plusDays(56))).thenReturn("1 February 2019");
-        when(macService.generateToken("GLSCRR", PIP.name())).thenReturn("ZYX");
-        when(macService.generateToken("GLSCRR", ESA.name())).thenReturn("ZYX");
+        when(macService.generateToken(eq("GLSCRR"), any())).thenReturn("ZYX");
         when(hearingContactDateExtractor.extract(any())).thenReturn(Optional.empty());
 
         rpc = RegionalProcessingCenter.builder()
@@ -246,7 +231,8 @@ public class PersonalisationTest {
     @Test
     @Parameters({
             "PIP,judge\\, doctor and disability expert, Personal Independence Payment",
-            "ESA,judge and a doctor, Employment and Support Allowance"
+            "ESA,judge and a doctor, Employment and Support Allowance",
+            "UC,judge\\, doctor and disability expert (if applicable), Universal Credit"
     })
     public void customisePersonalisation(String benefitType, String expectedPanelComposition, String
             expectedBenefitDesc) {
