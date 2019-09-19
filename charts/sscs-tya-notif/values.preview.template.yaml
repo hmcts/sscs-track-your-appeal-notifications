@@ -1,3 +1,7 @@
+tags:
+  ccd-idam-pr: true
+  postgresql-pod: false
+
 java:
   image: ${IMAGE_NAME}
   ingressHost: ${SERVICE_FQDN}
@@ -35,9 +39,6 @@ memoryRequests: "1024Mi"
 cpuRequests: "25m"
 memoryLimits: "4096Mi"
 cpuLimits: "2500m"
-
-tags:
-  ccd-idam-pr: true
 
 ccd:
   ingressHost: ${SERVICE_FQDN}
