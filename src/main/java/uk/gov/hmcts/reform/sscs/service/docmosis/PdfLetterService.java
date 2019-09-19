@@ -1,7 +1,6 @@
 package uk.gov.hmcts.reform.sscs.service.docmosis;
 
 import static uk.gov.hmcts.reform.sscs.config.AppConstants.*;
-import static uk.gov.hmcts.reform.sscs.config.AppConstants.POSTCODE_LITERAL;
 import static uk.gov.hmcts.reform.sscs.domain.notify.NotificationEventType.APPEAL_RECEIVED_NOTIFICATION;
 import static uk.gov.hmcts.reform.sscs.service.LetterUtils.*;
 
@@ -101,7 +100,7 @@ public class PdfLetterService {
 
             Address addressToUse = getAddressToUseForLetter(wrapper, subscriptionType);
             buildRecipientAddressPlaceholders(addressToUse, placeholders);
-            placeholders.put(docmosisTemplatesConfig.getHmctsImgKey1(), docmosisTemplatesConfig.getHmctsImgVal());
+            placeholders.put(docmosisTemplatesConfig.getHmctsImgKey(), docmosisTemplatesConfig.getHmctsImgVal());
             return docmosisPdfService.createPdfFromMap(placeholders, notification.getDocmosisLetterTemplate());
         }
         return new byte[0];
@@ -111,19 +110,19 @@ public class PdfLetterService {
         String[] lines = lines(address);
 
         if (lines.length >= 1) {
-            placeholders.put(ADDRESS_LINE_1, truncateAddressLine(defaultToEmptyStringIfNull(lines[0])));
+            placeholders.put(LETTER_ADDRESS_LINE_1, truncateAddressLine(defaultToEmptyStringIfNull(lines[0])));
         }
         if (lines.length >= 2) {
-            placeholders.put(ADDRESS_LINE_2, truncateAddressLine(defaultToEmptyStringIfNull(lines[1])));
+            placeholders.put(LETTER_ADDRESS_LINE_2, truncateAddressLine(defaultToEmptyStringIfNull(lines[1])));
         }
         if (lines.length >= 3) {
-            placeholders.put(ADDRESS_LINE_3, truncateAddressLine(defaultToEmptyStringIfNull(lines[2])));
+            placeholders.put(LETTER_ADDRESS_LINE_3, truncateAddressLine(defaultToEmptyStringIfNull(lines[2])));
         }
         if (lines.length >= 4) {
-            placeholders.put(ADDRESS_LINE_4, truncateAddressLine(defaultToEmptyStringIfNull(lines[3])));
+            placeholders.put(LETTER_ADDRESS_LINE_4, truncateAddressLine(defaultToEmptyStringIfNull(lines[3])));
         }
         if (lines.length >= 5) {
-            placeholders.put(POSTCODE_LITERAL, truncateAddressLine(defaultToEmptyStringIfNull(lines[4])));
+            placeholders.put(LETTER_ADDRESS_POSTCODE, truncateAddressLine(defaultToEmptyStringIfNull(lines[4])));
         }
     }
 
