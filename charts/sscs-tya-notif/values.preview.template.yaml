@@ -31,13 +31,13 @@ java:
 postgresql:
   enabled: true
 
-tags:
-  ccd-idam-pr: true
-
 memoryRequests: "1024Mi"
 cpuRequests: "25m"
 memoryLimits: "4096Mi"
 cpuLimits: "2500m"
+
+tags:
+  ccd-idam-pr: true
 
 ccd:
   ingressHost: ${SERVICE_FQDN}
