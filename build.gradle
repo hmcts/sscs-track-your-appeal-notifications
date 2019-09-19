@@ -250,7 +250,7 @@ dependencies {
 
     compile group: 'org.apache.pdfbox', name: 'pdfbox', version: '2.0.16'
 
-    compile group: 'com.fasterxml.jackson.core', name: 'jackson-databind', version: '2.9.9.3'
+    compile group: 'com.fasterxml.jackson.core', name: 'jackson-databind', version: '2.9.10'
 
     compileOnly 'org.projectlombok:lombok:1.18.8'
     compileOnly("org.springframework.boot:spring-boot-devtools")
