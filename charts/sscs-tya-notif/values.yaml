@@ -51,5 +51,10 @@ java:
     MAX_ACTIVE_DB_CONNECTIONS: 70
     HOURS_START_TIME: 0
     HOURS_END_TIME: 23
+    TRUST_ALL_CERTS: "false"
+    SUBSCRIPTION_NAME: "sscs-notifications-subscription-{{ .Values.global.environment }}"
+    TOPIC_NAME: "sscs-evidenceshare-topic-{{ .Values.global.environment }}"
+    AMQP_HOST: "sscs-servicebus-{{ .Values.global.environment }}.servicebus.windows.net"
+    AMQP_USERNAME: "SendAndListenSharedAccessKey"
 
 
