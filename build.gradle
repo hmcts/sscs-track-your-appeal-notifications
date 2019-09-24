@@ -80,6 +80,7 @@ sonarqube {
         property "sonar.jacoco.itReportPath", "${project.buildDir}/jacoco/integration.exec"
         property "sonar.exclusions", "src/main/java/uk/gov/hmcts/reform/sscs/domain/**," +
                 "src/main/java/uk/gov/hmcts/reform/sscs/TrackYourAppealNotificationsApplication.java," +
+                "src/main/java/uk/gov/hmcts/reform/sscs/servicebus/messaging/**," +
                 "src/main/java/uk/gov/hmcts/reform/sscs/config/**,"
     }
 }
@@ -232,7 +233,9 @@ dependencies {
     compile group: 'io.springfox', name: 'springfox-swagger2', version: versions.springfoxSwagger
     compile group: 'io.springfox', name: 'springfox-swagger-ui', version: versions.springfoxSwagger
     compile group: 'com.atlassian.commonmark', name: 'commonmark', version: '0.13.0'
-
+    compile group: 'org.springframework', name: 'spring-jms'
+    compile group: 'org.apache.qpid', name: 'qpid-jms-client', version: '0.45.0'
+    
     compile group: 'uk.gov.hmcts.reform', name: 'health-spring-boot-starter', version:'0.0.4'
     compile group: 'uk.gov.hmcts.reform', name: 'properties-volume-spring-boot-starter', version:'0.0.4'
     compile group: 'uk.gov.hmcts.reform', name: 'java-logging-spring', version: versions.reformLogging
