@@ -261,4 +261,12 @@
         <cve>CVE-2019-14540</cve>
         <cve>CVE-2019-16335</cve>
     </suppress>
+    <suppress>
+        <notes><![CDATA[ I can't upgrade qpid-jms-client-0.40.0.ja so I'm suppressing the vulnerability... ]]></notes>
+        <cve>CVE-2016-3094</cve>
+    </suppress>
+    <suppress>
+        <notes><![CDATA[ I can't upgrade qpid-jms-client-0.40.0.ja so I'm suppressing the vulnerability... ]]></notes>
+        <cve>CVE-2016-4432</cve>
+    </suppress>
 </suppressions>
