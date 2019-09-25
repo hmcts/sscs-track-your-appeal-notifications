@@ -1,6 +1,5 @@
 package uk.gov.hmcts.reform.sscs.callback.handlers;
 
-import uk.gov.hmcts.reform.sscs.ccd.domain.EventType;
 import uk.gov.hmcts.reform.sscs.ccd.domain.SscsCaseData;
 import uk.gov.hmcts.reform.sscs.ccd.domain.State;
 import uk.gov.hmcts.reform.sscs.domain.SscsCaseDataWrapper;
