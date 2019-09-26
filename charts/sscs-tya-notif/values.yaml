@@ -1,14 +1,3 @@
-postgresql:
-  postgresqlUsername: sscs
-  postgresqlPassword: sscs
-  postgresqlDatabase: preview
-  persistence:
-    enabled: false
-  service:
-    type: LoadBalancer
-    annotations:
-      service.beta.kubernetes.io/azure-load-balancer-internal: "true"
-
 java:
   image: 'https://hmctspublic.azurecr.io/sscs/tya-notif:latest'
   applicationPort: 8081
