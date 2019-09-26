@@ -160,6 +160,8 @@ module "track-your-appeal-notifications" {
     DIRECTION_ISSUED_LETTER_ON          = "${var.direction_issued_letter_on}"
 
     SAVE_CORRESPONDENCE                 = "${var.save_correspondence}"
+
+    READY_TO_LIST_ROBOTICS_ENABLED      = "${var.ready_to_list_robotics_enabled}"
   }
 }
 

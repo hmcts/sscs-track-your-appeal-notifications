@@ -51,6 +51,7 @@ import uk.gov.hmcts.reform.sscs.factory.NotificationWrapper;
 import uk.gov.hmcts.reform.sscs.idam.IdamService;
 import uk.gov.hmcts.reform.sscs.idam.IdamTokens;
 import uk.gov.hmcts.reform.sscs.service.docmosis.PdfLetterService;
+import uk.gov.service.notify.NotificationClientException;
 
 @RunWith(JUnitParamsRunner.class)
 public class NotificationServiceTest {
@@ -2001,6 +2002,40 @@ public class NotificationServiceTest {
         verifyExpectedErrorLogMessage(mockAppender, captorLoggingEvent, wrapper.getNewSscsCaseData().getCcdCaseId(), "Is not a valid notification event");
     }
 
+    @Test
+    public void willSendDwpUpload_whenReadyToListFeatureFlagIsOn() throws NotificationClientException {
+        CcdNotificationWrapper ccdNotificationWrapper = buildBaseWrapper(DWP_UPLOAD_RESPONSE_NOTIFICATION,  APPELLANT_WITH_ADDRESS, null, null);
+        Notification notification = new Notification(Template.builder().emailTemplateId(EMAIL_TEMPLATE_ID).smsTemplateId(null).build(), Destination.builder().email("test@testing.com").sms("07823456746").build(), null, new Reference(), null);
+        given(factory.create(ccdNotificationWrapper, getSubscriptionWithType(ccdNotificationWrapper))).willReturn(notification);
+        given(notificationValidService.isHearingTypeValidToSendNotification(
+                any(SscsCaseData.class), eq(DWP_UPLOAD_RESPONSE_NOTIFICATION))).willReturn(true);
+        given(notificationValidService.isNotificationStillValidToSend(anyList(), eq(DWP_UPLOAD_RESPONSE_NOTIFICATION)))
+                .willReturn(true);
+        given(notificationValidService.isFallbackLetterRequiredForSubscriptionType(any(), any(), any())).willReturn(true);
+
+        getNotificationService(true, true, true, true).manageNotificationAndSubscription(ccdNotificationWrapper);
+
+        then(notificationHandler).should(atLeastOnce()).sendNotification(
+                eq(ccdNotificationWrapper), eq(EMAIL_TEMPLATE_ID), eq("Email"),
+                any(NotificationHandler.SendNotification.class));
+    }
+
+    @Test
+    public void willNotSendDwpUpload_whenReadyToListFeatureFlagIsOff() {
+        CcdNotificationWrapper ccdNotificationWrapper = buildBaseWrapper(DWP_UPLOAD_RESPONSE_NOTIFICATION,  APPELLANT_WITH_ADDRESS, null, null);
+        Notification notification = new Notification(Template.builder().emailTemplateId(EMAIL_TEMPLATE_ID).smsTemplateId(null).build(), Destination.builder().email("test@testing.com").sms("07823456746").build(), null, new Reference(), null);
+        given(factory.create(ccdNotificationWrapper, getSubscriptionWithType(ccdNotificationWrapper))).willReturn(notification);
+        given(notificationValidService.isHearingTypeValidToSendNotification(
+                any(SscsCaseData.class), eq(DWP_UPLOAD_RESPONSE_NOTIFICATION))).willReturn(true);
+        given(notificationValidService.isNotificationStillValidToSend(anyList(), eq(DWP_UPLOAD_RESPONSE_NOTIFICATION)))
+                .willReturn(true);
+        given(notificationValidService.isFallbackLetterRequiredForSubscriptionType(any(), any(), any())).willReturn(true);
+
+        getNotificationService(true, true, true, true, false).manageNotificationAndSubscription(ccdNotificationWrapper);
+
+        then(notificationHandler).shouldHaveNoMoreInteractions();
+    }
+
     @SuppressWarnings({"Indentation", "UnusedPrivateMethod"})
     private Object[] allEventTypesExceptRequestInfoIncomplete() {
         return Arrays.stream(NotificationEventType.values()).filter(eventType ->
@@ -2039,10 +2074,14 @@ public class NotificationServiceTest {
     }
 
     private NotificationService getNotificationService(Boolean bundledLettersOn, Boolean lettersOn, Boolean interlocLettersOn, Boolean docmosisLettersOn) {
+        return getNotificationService(bundledLettersOn, lettersOn, interlocLettersOn, docmosisLettersOn, true);
+    }
+
+    private NotificationService getNotificationService(Boolean bundledLettersOn, Boolean lettersOn, Boolean interlocLettersOn, Boolean docmosisLettersOn, boolean readyToListFeatureEnabled) {
         SendNotificationService sendNotificationService = new SendNotificationService(notificationSender, evidenceManagementService, sscsGeneratePdfService, notificationHandler, notificationValidService, bundledLetterTemplateUtil, pdfLetterService);
 
         final NotificationService notificationService = new NotificationService(factory, reminderService,
-            notificationValidService, notificationHandler, outOfHoursCalculator, notificationConfig, sendNotificationService
+            notificationValidService, notificationHandler, outOfHoursCalculator, notificationConfig, sendNotificationService, readyToListFeatureEnabled
         );
         ReflectionTestUtils.setField(sendNotificationService, "bundledLettersOn", bundledLettersOn);
         ReflectionTestUtils.setField(sendNotificationService, "lettersOn", lettersOn);
@@ -2119,6 +2158,7 @@ public class NotificationServiceTest {
                     .documentFilename("test.pdf")
                     .documentBinaryUrl("test/binary").build()).build())
             .ccdCaseId(CASE_ID)
+            .hearings(Collections.emptyList())
             .sscsDocument(new ArrayList<>(Collections.singletonList(sscsDocument)));
     }
 

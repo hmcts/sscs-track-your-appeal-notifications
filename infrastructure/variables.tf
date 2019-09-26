@@ -144,6 +144,11 @@ variable "save_correspondence" {
   default = true
 }
 
+variable "ready_to_list_robotics_enabled" {
+  type = "string"
+  default = false
+}
+
 variable "appinsights_instrumentation_key" {
   description = "Instrumentation key of the App Insights instance this webapp should use. Module will create own App Insights resource if this is not provided"
   default     = ""

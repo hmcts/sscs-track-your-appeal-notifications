@@ -23,3 +23,5 @@ docmosis_letters_on = "true"
 appeal_received_letter_on = "true"
 
 direction_issued_letter_on = "true"
+
+ready_to_list_robotics_enabled = "false"
