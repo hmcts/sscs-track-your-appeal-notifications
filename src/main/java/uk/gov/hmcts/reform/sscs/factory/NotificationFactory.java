@@ -13,6 +13,7 @@ import uk.gov.hmcts.reform.sscs.ccd.domain.SscsCaseData;
 import uk.gov.hmcts.reform.sscs.ccd.domain.Subscription;
 import uk.gov.hmcts.reform.sscs.domain.SubscriptionWithType;
 import uk.gov.hmcts.reform.sscs.domain.notify.*;
+import uk.gov.hmcts.reform.sscs.exception.BenefitMappingException;
 import uk.gov.hmcts.reform.sscs.personalisation.Personalisation;
 import uk.gov.hmcts.reform.sscs.utility.PhoneNumbersUtil;
 
@@ -41,8 +42,13 @@ public class NotificationFactory {
             return null;
         }
 
-        Benefit benefit = getBenefitByCode(notificationWrapper
+        Benefit benefit = null;
+        try {
+            benefit = getBenefitByCode(notificationWrapper
                 .getSscsCaseDataWrapper().getNewSscsCaseData().getAppeal().getBenefitType().getCode());
+        } catch (BenefitMappingException bme) {
+            // Ignore the fact that we have no benefit, as some letters can be sent without them
+        }
         Template template = personalisation.getTemplate(notificationWrapper, benefit, subscriptionWithType.getSubscriptionType());
 
         SscsCaseData ccdResponse = notificationWrapper.getSscsCaseDataWrapper().getNewSscsCaseData();
