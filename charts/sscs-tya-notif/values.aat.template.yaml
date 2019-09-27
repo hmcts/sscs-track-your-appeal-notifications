@@ -16,11 +16,11 @@ java:
     IDAM_OAUTH2_REDIRECT_URL: "https://evidence-sharing-preprod.sscs.reform.hmcts.net"
     CORE_CASE_DATA_API_URL: "http://ccd-data-store-api-aat.service.core-compute-aat.internal"
     COH_URL: "http://coh-cor-aat.service.core-compute-aat.internal"
-    EVIDENCE_SUBMISSION_INFO_LINK: "https://track-appeal.preview.platform.hmcts.net/evidence/appeal_id"
-    SSCS_MANAGE_EMAILS_LINK: "https://track-appeal.preview.platform.hmcts.net/manage-email-notifications/mac"
-    SSCS_TRACK_YOUR_APPEAL_LINK: "https://track-appeal.nonprod.platform.hmcts.net/trackyourappeal/appeal_id"
-    HEARING_INFO_LINK: "https://track-appeal.preview.platform.hmcts.net/abouthearing/appeal_id"
-    CLAIMING_EXPENSES_LINK: "https://track-appeal.preview.platform.hmcts.net/expenses/appeal_id"
+    EVIDENCE_SUBMISSION_INFO_LINK: "https://track-appeal.aat.platform.hmcts.net/evidence/appeal_id"
+    SSCS_MANAGE_EMAILS_LINK: "https://track-appeal.aat.platform.hmcts.net/manage-email-notifications/mac"
+    SSCS_TRACK_YOUR_APPEAL_LINK: "https://track-appeal.nonprod.aat.hmcts.net/trackyourappeal/appeal_id"
+    HEARING_INFO_LINK: "https://track-appeal.aat.platform.hmcts.net/abouthearing/appeal_id"
+    CLAIMING_EXPENSES_LINK: "https://track-appeal.aat.platform.hmcts.net/expenses/appeal_id"
     ONLINE_HEARING_LINK: "https://sscs-cor-frontend-aat.service.core-compute-aat.internal"
     DOCUMENT_MANAGEMENT_URL: "http://dm-store-aat.service.core-compute-aat.internal"
     PDF_SERVICE_BASE_URL: ${PDF_SERVICE_BASE_URL}rs/render
@@ -28,6 +28,4 @@ java:
     PDF_SERVICE_HEALTH_URL: ${PDF_SERVICE_BASE_URL}rs/status
     HOURS_START_TIME: 0
     HOURS_END_TIME: 23
-postgresql:
-  enabled: true
 

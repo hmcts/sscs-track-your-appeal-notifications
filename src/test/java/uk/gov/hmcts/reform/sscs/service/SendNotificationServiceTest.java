@@ -12,10 +12,16 @@ import static uk.gov.hmcts.reform.sscs.config.SubscriptionType.APPOINTEE;
 import static uk.gov.hmcts.reform.sscs.config.SubscriptionType.REPRESENTATIVE;
 import static uk.gov.hmcts.reform.sscs.domain.notify.NotificationEventType.*;
 import static uk.gov.hmcts.reform.sscs.service.LetterUtils.getAddressToUseForLetter;
+import static uk.gov.hmcts.reform.sscs.service.NotificationServiceTest.verifyExpectedErrorLogMessage;
+import static uk.gov.hmcts.reform.sscs.service.NotificationServiceTest.verifyNoErrorsLogged;
 import static uk.gov.hmcts.reform.sscs.service.NotificationValidService.BUNDLED_LETTER_EVENT_TYPES;
 import static uk.gov.hmcts.reform.sscs.service.NotificationValidService.FALLBACK_LETTER_SUBSCRIPTION_TYPES;
 import static uk.gov.hmcts.reform.sscs.service.SendNotificationService.getBundledLetterDocumentUrl;
 import static uk.gov.hmcts.reform.sscs.service.SendNotificationService.getRepSalutation;
+
+import ch.qos.logback.classic.Logger;
+import ch.qos.logback.classic.spi.ILoggingEvent;
+import ch.qos.logback.core.Appender;
 
 import java.util.*;
 
@@ -24,7 +30,10 @@ import junitparams.Parameters;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
+import org.mockito.ArgumentCaptor;
+import org.mockito.Captor;
 import org.mockito.Mock;
+import org.slf4j.LoggerFactory;
 import uk.gov.hmcts.reform.sscs.ccd.domain.*;
 import uk.gov.hmcts.reform.sscs.config.AppealHearingType;
 import uk.gov.hmcts.reform.sscs.config.SubscriptionType;
@@ -50,7 +59,7 @@ public class SendNotificationServiceTest {
 
     private static Appellant APPELLANT_WITH_EMPTY_ADDRESS = Appellant.builder()
         .name(Name.builder().firstName("Ap").lastName("pellant").build())
-        .address(Address.builder().build())
+        .address(Address.builder().line1("").postcode("").build())
         .build();
 
     private static Appellant APPELLANT_WITH_ADDRESS = Appellant.builder()
@@ -140,6 +149,11 @@ public class SendNotificationServiceTest {
 
     private SendNotificationService classUnderTest;
 
+    @Mock
+    private Appender<ILoggingEvent> mockAppender;
+    @Captor
+    private ArgumentCaptor captorLoggingEvent;
+
     @Before
     public void setup() {
         initMocks(this);
@@ -149,6 +163,9 @@ public class SendNotificationServiceTest {
         classUnderTest.lettersOn = true;
         classUnderTest.docmosisLettersOn = true;
         classUnderTest.interlocLettersOn = true;
+
+        Logger logger = (Logger) LoggerFactory.getLogger(SendNotificationService.class.getName());
+        logger.addAppender(mockAppender);
     }
 
     @Test
@@ -199,9 +216,11 @@ public class SendNotificationServiceTest {
         when(notificationValidService.isHearingTypeValidToSendNotification(any(), any())).thenReturn(true);
 
         SubscriptionWithType appellantSmsSubscription = new SubscriptionWithType(SMS_SUBSCRIPTION, APPELLANT);
-        classUnderTest.sendEmailSmsLetterNotification(buildBaseWrapper(APPELLANT_WITH_ADDRESS, NotificationEventType.CASE_UPDATED), SMS_NOTIFICATION, appellantSmsSubscription, FALLBACK_LETTER_SUBSCRIPTION_TYPES.get(0));
+        CcdNotificationWrapper wrapper = buildBaseWrapper(APPELLANT_WITH_ADDRESS, CASE_UPDATED);
+        classUnderTest.sendEmailSmsLetterNotification(wrapper, SMS_NOTIFICATION, appellantSmsSubscription, FALLBACK_LETTER_SUBSCRIPTION_TYPES.get(0));
 
         verify(notificationHandler).sendNotification(any(), eq(SMS_NOTIFICATION.getSmsTemplate()), any(), any());
+        verifyExpectedErrorLogMessage(mockAppender, captorLoggingEvent, wrapper.getNewSscsCaseData().getCcdCaseId(), "Did not send a notification for event");
     }
 
     @Test
@@ -213,18 +232,22 @@ public class SendNotificationServiceTest {
         when(notificationValidService.isHearingTypeValidToSendNotification(any(), any())).thenReturn(true);
 
         SubscriptionWithType appellantEmailSubscription = new SubscriptionWithType(EMAIL_SUBSCRIPTION, APPELLANT);
-        classUnderTest.sendEmailSmsLetterNotification(buildBaseWrapper(APPELLANT_WITH_ADDRESS, NotificationEventType.CASE_UPDATED), EMAIL_NOTIFICATION, appellantEmailSubscription, FALLBACK_LETTER_SUBSCRIPTION_TYPES.get(0));
+        CcdNotificationWrapper wrapper = buildBaseWrapper(APPELLANT_WITH_ADDRESS, CASE_UPDATED);
+        classUnderTest.sendEmailSmsLetterNotification(wrapper, EMAIL_NOTIFICATION, appellantEmailSubscription, FALLBACK_LETTER_SUBSCRIPTION_TYPES.get(0));
 
         verify(notificationHandler).sendNotification(any(), eq(EMAIL_NOTIFICATION.getEmailTemplate()), any(), any());
+        verifyExpectedErrorLogMessage(mockAppender, captorLoggingEvent, wrapper.getNewSscsCaseData().getCcdCaseId(), "Did not send a notification for event");
     }
 
     @Test
     public void doNotSendFallbackLetterNotificationToAppellantWhenNoLetterTemplate() {
         SubscriptionWithType appellantEmptySubscription = new SubscriptionWithType(EMPTY_SUBSCRIPTION, APPELLANT);
 
-        classUnderTest.sendEmailSmsLetterNotification(buildBaseWrapper(APPELLANT_WITH_ADDRESS, NotificationEventType.CASE_UPDATED), EMPTY_TEMPLATE_NOTIFICATION, appellantEmptySubscription, FALLBACK_LETTER_SUBSCRIPTION_TYPES.get(0));
+        CcdNotificationWrapper wrapper = buildBaseWrapper(APPELLANT_WITH_ADDRESS, CASE_UPDATED);
+        classUnderTest.sendEmailSmsLetterNotification(wrapper, EMPTY_TEMPLATE_NOTIFICATION, appellantEmptySubscription, FALLBACK_LETTER_SUBSCRIPTION_TYPES.get(0));
 
         verifyZeroInteractions(notificationHandler);
+        verifyExpectedErrorLogMessage(mockAppender, captorLoggingEvent, wrapper.getNewSscsCaseData().getCcdCaseId(), "Did not send a notification for event");
     }
 
     @Test
@@ -232,10 +255,12 @@ public class SendNotificationServiceTest {
         SubscriptionWithType appellantEmptySubscription = new SubscriptionWithType(EMPTY_SUBSCRIPTION, APPELLANT);
 
         when(notificationValidService.isFallbackLetterRequiredForSubscriptionType(any(), any(), any())).thenReturn(true);
+        when(notificationHandler.sendNotification(any(), eq(LETTER_NOTIFICATION.getLetterTemplate()), any(), any())).thenReturn(true);
 
         classUnderTest.sendEmailSmsLetterNotification(buildBaseWrapper(APPELLANT_WITH_ADDRESS, NotificationEventType.CASE_UPDATED), LETTER_NOTIFICATION, appellantEmptySubscription, FALLBACK_LETTER_SUBSCRIPTION_TYPES.get(0));
 
         verify(notificationHandler).sendNotification(any(), eq(LETTER_NOTIFICATION.getLetterTemplate()), any(), any());
+        verifyNoErrorsLogged(mockAppender, captorLoggingEvent);
     }
 
     @Test
@@ -245,9 +270,11 @@ public class SendNotificationServiceTest {
         classUnderTest.interlocLettersOn = false;
         classUnderTest.docmosisLettersOn = false;
         SubscriptionWithType appellantEmptySubscription = new SubscriptionWithType(EMPTY_SUBSCRIPTION, APPELLANT);
-        classUnderTest.sendEmailSmsLetterNotification(buildBaseWrapper(APPELLANT_WITH_ADDRESS, eventType), LETTER_NOTIFICATION, appellantEmptySubscription, eventType);
+        CcdNotificationWrapper wrapper = buildBaseWrapper(APPELLANT_WITH_ADDRESS, eventType);
+        classUnderTest.sendEmailSmsLetterNotification(wrapper, LETTER_NOTIFICATION, appellantEmptySubscription, eventType);
 
         verifyZeroInteractions(notificationHandler);
+        verifyExpectedErrorLogMessage(mockAppender, captorLoggingEvent, wrapper.getNewSscsCaseData().getCcdCaseId(), "Did not send a notification for event");
     }
 
     private Object[] getMandatoryLettersEventTypes() {
@@ -267,9 +294,11 @@ public class SendNotificationServiceTest {
 
         classUnderTest.interlocLettersOn = false;
         classUnderTest.docmosisLettersOn = false;
-        classUnderTest.sendEmailSmsLetterNotification(buildBaseWrapper(APPELLANT_WITH_ADDRESS, eventType), LETTER_NOTIFICATION, appellantEmptySubscription, eventType);
+        CcdNotificationWrapper wrapper = buildBaseWrapper(APPELLANT_WITH_ADDRESS, eventType);
+        classUnderTest.sendEmailSmsLetterNotification(wrapper, LETTER_NOTIFICATION, appellantEmptySubscription, eventType);
 
         verifyZeroInteractions(notificationHandler);
+        verifyExpectedErrorLogMessage(mockAppender, captorLoggingEvent, wrapper.getNewSscsCaseData().getCcdCaseId(), "Did not send a notification for event");
     }
 
     private Object[] getInterlocLettersEventTypes() {
@@ -290,9 +319,11 @@ public class SendNotificationServiceTest {
         when(notificationValidService.isNotificationStillValidToSend(any(), any())).thenReturn(true);
         when(notificationValidService.isHearingTypeValidToSendNotification(any(), any())).thenReturn(true);
 
-        classUnderTest.sendEmailSmsLetterNotification(buildBaseWrapper(APPELLANT_WITH_ADDRESS, NotificationEventType.CASE_UPDATED, REP_WITH_ADDRESS), SMS_NOTIFICATION, appellantSmsSubscription, FALLBACK_LETTER_SUBSCRIPTION_TYPES.get(0));
+        CcdNotificationWrapper wrapper = buildBaseWrapper(APPELLANT_WITH_ADDRESS, CASE_UPDATED, REP_WITH_ADDRESS);
+        classUnderTest.sendEmailSmsLetterNotification(wrapper, SMS_NOTIFICATION, appellantSmsSubscription, FALLBACK_LETTER_SUBSCRIPTION_TYPES.get(0));
 
         verify(notificationHandler).sendNotification(any(), eq(SMS_NOTIFICATION.getSmsTemplate()), any(), any());
+        verifyExpectedErrorLogMessage(mockAppender, captorLoggingEvent, wrapper.getNewSscsCaseData().getCcdCaseId(), "Did not send a notification for event");
     }
 
     @Test
@@ -302,9 +333,11 @@ public class SendNotificationServiceTest {
         when(notificationValidService.isNotificationStillValidToSend(any(), any())).thenReturn(true);
         when(notificationValidService.isHearingTypeValidToSendNotification(any(), any())).thenReturn(true);
 
-        classUnderTest.sendEmailSmsLetterNotification(buildBaseWrapper(APPELLANT_WITH_ADDRESS, NotificationEventType.CASE_UPDATED, REP_WITH_ADDRESS), EMAIL_NOTIFICATION, appellantEmailSubscription, FALLBACK_LETTER_SUBSCRIPTION_TYPES.get(0));
+        CcdNotificationWrapper wrapper = buildBaseWrapper(APPELLANT_WITH_ADDRESS, CASE_UPDATED, REP_WITH_ADDRESS);
+        classUnderTest.sendEmailSmsLetterNotification(wrapper, EMAIL_NOTIFICATION, appellantEmailSubscription, FALLBACK_LETTER_SUBSCRIPTION_TYPES.get(0));
 
         verify(notificationHandler).sendNotification(any(), eq(EMAIL_NOTIFICATION.getEmailTemplate()), any(), any());
+        verifyExpectedErrorLogMessage(mockAppender, captorLoggingEvent, wrapper.getNewSscsCaseData().getCcdCaseId(), "Did not send a notification for event");
     }
 
     @Test
@@ -314,9 +347,11 @@ public class SendNotificationServiceTest {
         when(notificationValidService.isNotificationStillValidToSend(any(), any())).thenReturn(true);
         when(notificationValidService.isHearingTypeValidToSendNotification(any(), any())).thenReturn(true);
 
-        classUnderTest.sendEmailSmsLetterNotification(buildBaseWrapper(APPELLANT_WITH_ADDRESS, NotificationEventType.CASE_UPDATED, REP_WITH_ADDRESS), EMPTY_TEMPLATE_NOTIFICATION, appellantEmptySubscription, FALLBACK_LETTER_SUBSCRIPTION_TYPES.get(0));
+        CcdNotificationWrapper wrapper = buildBaseWrapper(APPELLANT_WITH_ADDRESS, NotificationEventType.CASE_UPDATED, REP_WITH_ADDRESS);
+        classUnderTest.sendEmailSmsLetterNotification(wrapper, EMPTY_TEMPLATE_NOTIFICATION, appellantEmptySubscription, FALLBACK_LETTER_SUBSCRIPTION_TYPES.get(0));
 
         verifyZeroInteractions(notificationHandler);
+        verifyExpectedErrorLogMessage(mockAppender, captorLoggingEvent, wrapper.getNewSscsCaseData().getCcdCaseId(), "Did not send a notification for event");
     }
 
     @Test
@@ -324,11 +359,13 @@ public class SendNotificationServiceTest {
         when(notificationValidService.isNotificationStillValidToSend(any(), any())).thenReturn(true);
         when(notificationValidService.isHearingTypeValidToSendNotification(any(), any())).thenReturn(true);
         when(notificationValidService.isFallbackLetterRequiredForSubscriptionType(any(), any(), any())).thenReturn(true);
+        when(notificationHandler.sendNotification(any(), eq(LETTER_NOTIFICATION.getLetterTemplate()), any(), any())).thenReturn(true);
 
         SubscriptionWithType appellantEmptySubscription = new SubscriptionWithType(EMPTY_SUBSCRIPTION, SubscriptionType.REPRESENTATIVE);
         classUnderTest.sendEmailSmsLetterNotification(buildBaseWrapper(APPELLANT_WITH_ADDRESS, NotificationEventType.CASE_UPDATED, REP_WITH_ADDRESS), LETTER_NOTIFICATION, appellantEmptySubscription, FALLBACK_LETTER_SUBSCRIPTION_TYPES.get(0));
 
         verify(notificationHandler).sendNotification(any(), eq(LETTER_NOTIFICATION.getLetterTemplate()), any(), any());
+        verifyNoErrorsLogged(mockAppender, captorLoggingEvent);
     }
 
     @Test
@@ -337,6 +374,7 @@ public class SendNotificationServiceTest {
         classUnderTest.sendLetterNotificationToAddress(buildBaseWrapper(APPELLANT_WITH_ADDRESS, NotificationEventType.CASE_UPDATED), LETTER_NOTIFICATION, APPELLANT_WITH_ADDRESS.getAddress(), appellantEmptySubscription.getSubscriptionType());
 
         verify(notificationSender).sendLetter(eq(LETTER_NOTIFICATION.getLetterTemplate()), eq(APPELLANT_WITH_ADDRESS.getAddress()), any(), any());
+        verifyNoErrorsLogged(mockAppender, captorLoggingEvent);
     }
 
     @Test
@@ -345,30 +383,51 @@ public class SendNotificationServiceTest {
         classUnderTest.sendLetterNotificationToAddress(buildBaseWrapper(APPELLANT_WITH_ADDRESS, NotificationEventType.CASE_UPDATED, REP_WITH_ADDRESS), LETTER_NOTIFICATION, REP_WITH_ADDRESS.getAddress(), representativeEmptySubscription.getSubscriptionType());
 
         verify(notificationSender).sendLetter(eq(LETTER_NOTIFICATION.getLetterTemplate()), eq(REP_WITH_ADDRESS.getAddress()), any(), any());
+        verifyNoErrorsLogged(mockAppender, captorLoggingEvent);
     }
 
     @Test
     public void sendLetterNotificationForRepWithOrgName() throws NotificationClientException {
         SubscriptionWithType representativeEmptySubscription = new SubscriptionWithType(EMPTY_SUBSCRIPTION, SubscriptionType.REPRESENTATIVE);
-        classUnderTest.sendLetterNotificationToAddress(buildBaseWrapper(APPELLANT_WITH_ADDRESS, NotificationEventType.CASE_UPDATED, REP_ORG_WITH_ADDRESS), LETTER_NOTIFICATION, REP_WITH_ADDRESS.getAddress(), representativeEmptySubscription.getSubscriptionType());
+        CcdNotificationWrapper wrapper = buildBaseWrapper(APPELLANT_WITH_ADDRESS, NotificationEventType.CASE_UPDATED, REP_ORG_WITH_ADDRESS);
+        classUnderTest.sendLetterNotificationToAddress(wrapper, LETTER_NOTIFICATION, REP_WITH_ADDRESS.getAddress(), representativeEmptySubscription.getSubscriptionType());
 
         verify(notificationSender).sendLetter(eq(LETTER_NOTIFICATION.getLetterTemplate()), eq(REP_WITH_ADDRESS.getAddress()), any(), any());
+        verifyNoErrorsLogged(mockAppender, captorLoggingEvent);
     }
 
     @Test
     public void doNotSendLetterNotificationIfAddressEmpty() throws NotificationClientException {
         SubscriptionWithType appellantEmptySubscription = new SubscriptionWithType(EMPTY_SUBSCRIPTION, SubscriptionType.APPELLANT);
-        classUnderTest.sendLetterNotificationToAddress(buildBaseWrapper(APPELLANT_WITH_EMPTY_ADDRESS, NotificationEventType.CASE_UPDATED), LETTER_NOTIFICATION, APPELLANT_WITH_EMPTY_ADDRESS.getAddress(), appellantEmptySubscription.getSubscriptionType());
+        CcdNotificationWrapper wrapper = buildBaseWrapper(APPELLANT_WITH_EMPTY_ADDRESS, NotificationEventType.CASE_UPDATED);
+        classUnderTest.sendLetterNotification(wrapper, appellantEmptySubscription.getSubscription(), LETTER_NOTIFICATION, appellantEmptySubscription, NotificationEventType.CASE_UPDATED);
 
         verifyZeroInteractions(notificationSender);
+        verifyExpectedErrorLogMessage(mockAppender, captorLoggingEvent, wrapper.getNewSscsCaseData().getCcdCaseId(), "Failed to send letter for event id");
     }
 
     @Test
     public void doNotSendLetterNotificationIfNoAddress() throws NotificationClientException {
         SubscriptionWithType appellantEmptySubscription = new SubscriptionWithType(EMPTY_SUBSCRIPTION, SubscriptionType.APPELLANT);
-        classUnderTest.sendLetterNotificationToAddress(buildBaseWrapper(APPELLANT_WITH_NO_ADDRESS, NotificationEventType.CASE_UPDATED), LETTER_NOTIFICATION, APPELLANT_WITH_NO_ADDRESS.getAddress(), appellantEmptySubscription.getSubscriptionType());
+        CcdNotificationWrapper wrapper = buildBaseWrapper(APPELLANT_WITH_NO_ADDRESS, NotificationEventType.CASE_UPDATED);
+        classUnderTest.sendLetterNotification(wrapper, appellantEmptySubscription.getSubscription(), LETTER_NOTIFICATION, appellantEmptySubscription, NotificationEventType.CASE_UPDATED);
 
         verifyZeroInteractions(notificationSender);
+        verifyExpectedErrorLogMessage(mockAppender, captorLoggingEvent, wrapper.getNewSscsCaseData().getCcdCaseId(), "Failed to send letter for event id");
+    }
+
+    @Test
+    public void logErrorMessageWhenNoNotificationSent() {
+        SubscriptionWithType appellantEmptySubscription = new SubscriptionWithType(EMPTY_SUBSCRIPTION, SubscriptionType.APPELLANT);
+        CcdNotificationWrapper wrapper = buildBaseWrapper(APPELLANT_WITH_NO_ADDRESS, NotificationEventType.CASE_UPDATED);
+        classUnderTest.sendEmailSmsLetterNotification(
+            wrapper,
+            LETTER_NOTIFICATION,
+            appellantEmptySubscription,
+            APPEAL_RECEIVED_NOTIFICATION
+        );
+
+        verifyExpectedErrorLogMessage(mockAppender, captorLoggingEvent, wrapper.getNewSscsCaseData().getCcdCaseId(), "Did not send a notification for event");
     }
 
     @Test

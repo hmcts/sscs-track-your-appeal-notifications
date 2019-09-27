@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<suppressions xmlns="https://jeremylong.github.io/DependencyCheck/dependency-suppression.1.1.xsd">
+<suppressions xmlns="https://jeremylong.github.io/DependencyCheck/dependency-suppression.1.3.xsd">
     <suppress>
         <notes><![CDATA[
    CVE-2018-1257: we do not use STOMP message broker, so this does not affect us
@@ -259,5 +259,13 @@
         <notes><![CDATA[file name: sscs-pdf-email-common-1.0.11.jar: jquery-1.11.3.js]]></notes>
         <cve>CVE-2015-9251</cve>
         <cve>CVE-2019-11358</cve>
+    </suppress>
+    <suppress until="2019-10-01">
+        <notes><![CDATA[
+        file name: jackson-databind-2.9.9.3.jar
+        ]]></notes>
+        <gav regex="true">^com\.fasterxml\.jackson\.core:jackson-databind:.*$</gav>
+        <cve>CVE-2019-14540</cve>
+        <cve>CVE-2019-16335</cve>
     </suppress>
 </suppressions>
