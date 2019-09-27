@@ -45,6 +45,7 @@ java:
     CLAIMING_EXPENSES_LINK: "https://track-appeal.{{ .Values.global.environment }}.platform.hmcts.net/expenses/appeal_id"
     IDAM_S2S_AUTH: "http://rpe-service-auth-provider-{{ .Values.global.environment }}.service.core-compute-{{ .Values.global.environment }}.internal"
     IDAM_API_URL: "https://idam-api.{{ .Values.global.environment }}.platform.hmcts.net"
+    CORE_CASE_DATA_API_URL: "http://ccd-data-store-api-{{ .Values.global.environment }}.service.core-compute-{{ .Values.global.environment }}.internal"
     JOB_SCHEDULER_DB_CONNECTION_OPTIONS: ""
     MAX_ACTIVE_DB_CONNECTIONS: 70
     HOURS_START_TIME: 0

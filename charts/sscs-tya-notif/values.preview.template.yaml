@@ -2,7 +2,6 @@ java:
   image: ${IMAGE_NAME}
   ingressHost: ${SERVICE_FQDN}
   environment:
-    CORE_CASE_DATA_API_URL: "http://ccd-data-store-api-aat.service.core-compute-aat.internal"
     COH_URL: "http://coh-cor-aat.service.core-compute-aat.internal"
     ONLINE_HEARING_LINK: "https://sscs-cor-frontend-aat.service.core-compute-aat.internal"
     DOCUMENT_MANAGEMENT_URL: "http://dm-store-aat.service.core-compute-aat.internal"
