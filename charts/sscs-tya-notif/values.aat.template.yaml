@@ -28,4 +28,5 @@ java:
     PDF_SERVICE_HEALTH_URL: ${PDF_SERVICE_BASE_URL}rs/status
     HOURS_START_TIME: 0
     HOURS_END_TIME: 23
-
+postgresql:
+  enabled: true
