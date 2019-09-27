@@ -383,7 +383,8 @@ public class Personalisation<E extends NotificationWrapper> {
             || HEARING_BOOKED_NOTIFICATION.equals(notificationEventType))
             || REQUEST_INFO_INCOMPLETE.equals(notificationEventType)
             || JUDGE_DECISION_APPEAL_TO_PROCEED.equals(notificationEventType)
-            || TCW_DECISION_APPEAL_TO_PROCEED.equals(notificationEventType))) {
+            || TCW_DECISION_APPEAL_TO_PROCEED.equals(notificationEventType)
+            || DWP_APPEAL_LAPSED_NOTIFICATION.equals(notificationEventType))) {
             letterTemplateName = letterTemplateName + "." + subscriptionType.name().toLowerCase();
         }
         return letterTemplateName;
