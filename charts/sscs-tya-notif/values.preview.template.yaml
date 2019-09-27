@@ -30,4 +30,3 @@ java:
     HOURS_END_TIME: 23
 postgresql:
   enabled: true
-
