@@ -36,6 +36,17 @@ java:
     JOB_SCHEDULER_DB_PASSWORD:  "{{ .Values.postgresql.postgresqlPassword}}"
     JOB_SCHEDULER_DB_USERNAME: "{{ .Values.postgresql.postgresqlUsername}}"
     JOB_SCHEDULER_DB_NAME: "{{ .Values.postgresql.postgresqlDatabase}}"
+    JOB_SCHEDULER_DB_HOST: "{{ .Release.Name }}-postgresql"
+    IDAM_OAUTH2_REDIRECT_URL: "https://evidence-sharing-preprod.sscs.reform.hmcts.net"
+    EVIDENCE_SUBMISSION_INFO_LINK: "https://track-appeal.{{ .Values.global.environment }}.platform.hmcts.net/evidence/appeal_id"
+    SSCS_MANAGE_EMAILS_LINK: "https://track-appeal.{{ .Values.global.environment }}.platform.hmcts.net/manage-email-notifications/mac"
+    SSCS_TRACK_YOUR_APPEAL_LINK: "https://track-appeal.nonprod.platform.hmcts.net/trackyourappeal/appeal_id"
+    HEARING_INFO_LINK: "https://track-appeal.{{ .Values.global.environment }}.platform.hmcts.net/abouthearing/appeal_id"
+    CLAIMING_EXPENSES_LINK: "https://track-appeal.{{ .Values.global.environment }}.platform.hmcts.net/expenses/appeal_id"
+    IDAM_S2S_AUTH: "http://rpe-service-auth-provider-{{ .Values.global.environment }}.service.core-compute-{{ .Values.global.environment }}.internal"
+    IDAM_API_URL: "https://idam-api.{{ .Values.global.environment }}.platform.hmcts.net"
+    CORE_CASE_DATA_API_URL: "http://ccd-data-store-api-{{ .Values.global.environment }}.service.core-compute-{{ .Values.global.environment }}.internal"
+    DOCUMENT_MANAGEMENT_URL: "http://dm-store-{{ .Values.global.environment }}.service.core-compute-{{ .Values.global.environment }}.internal"
     JOB_SCHEDULER_DB_CONNECTION_OPTIONS: ""
     MAX_ACTIVE_DB_CONNECTIONS: 70
     HOURS_START_TIME: 0
