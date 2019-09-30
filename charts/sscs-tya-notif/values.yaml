@@ -1,5 +1,7 @@
 java:
   image: 'https://hmctspublic.azurecr.io/sscs/tya-notif:latest'
+  ingressHost: sscs-tya-notif-{{ .Values.global.environment }}.service.core-compute-{{ .Values.global.environment }}.internal
+  aadIdentityName: sscs
   applicationPort: 8081
   keyVaults:
     sscs:
