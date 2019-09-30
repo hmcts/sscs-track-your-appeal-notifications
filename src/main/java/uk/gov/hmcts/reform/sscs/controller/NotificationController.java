@@ -60,8 +60,6 @@ public class NotificationController {
 
             CaseDetails<SscsCaseData> caseDetailsBefore = callback.getCaseDetailsBefore().orElse(null);
 
-            log.info("callback.getEvent() " + callback.getEvent().getType());
-
             SscsCaseDataWrapper sscsCaseDataWrapper = buildSscsCaseDataWrapper(
                 callback.getCaseDetails().getCaseData(),
                 caseDetailsBefore != null ? caseDetailsBefore.getCaseData() : null,
