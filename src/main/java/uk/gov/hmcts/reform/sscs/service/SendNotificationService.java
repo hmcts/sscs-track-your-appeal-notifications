@@ -131,7 +131,8 @@ public class SendNotificationService {
                             notification.getPlaceholders(),
                             notification.getReference(),
                             notification.getSmsSenderTemplate(),
-                            wrapper.getCaseId()
+                            wrapper.getNotificationType(),
+                            wrapper.getNewSscsCaseData()
                     );
             return notificationHandler.sendNotification(wrapper, notification.getSmsTemplate(), "SMS", sendNotification);
         }

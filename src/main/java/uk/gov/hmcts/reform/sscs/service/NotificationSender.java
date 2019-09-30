@@ -15,6 +15,7 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 import uk.gov.hmcts.reform.sscs.ccd.domain.*;
 import uk.gov.hmcts.reform.sscs.config.NotificationBlacklist;
+import uk.gov.hmcts.reform.sscs.domain.NotifyResponse;
 import uk.gov.hmcts.reform.sscs.domain.notify.NotificationEventType;
 import uk.gov.service.notify.*;
 
@@ -66,20 +67,13 @@ public class NotificationSender {
         SendEmailResponse sendEmailResponse = client.sendEmail(templateId, emailAddress, personalisation, reference);
 
         if (saveCorrespondence) {
-            Correspondence correspondence = Correspondence.builder().value(
-                    CorrespondenceDetails.builder()
-                            .body(markdownTransformationService.toHtml(sendEmailResponse.getBody()))
-                            .subject(sendEmailResponse.getSubject())
-                            .from(sendEmailResponse.getFromEmail().orElse(""))
-                            .to(emailAddress)
-                            .eventType(notificationEventType.getId())
-                            .correspondenceType(CorrespondenceType.Email)
-                            .sentOn(LocalDateTime.now(ZONE_ID_LONDON).format(DATE_TIME_FORMATTER))
-                            .build()
-            ).build();
+            NotifyResponse response = new NotifyResponse(
+                    sendEmailResponse.getBody(),
+                    sendEmailResponse.getSubject(),
+                    sendEmailResponse.getFromEmail(),
+                    emailAddress);
 
-            ccdNotificationsPdfService.mergeCorrespondenceIntoCcd(sscsCaseData, correspondence);
-            LOG.info("Uploaded email pdf into ccd for case id {}.", sscsCaseData.getCcdCaseId());
+            saveCorrespondence(response, notificationEventType, sscsCaseData, CorrespondenceType.Email);
         }
 
         LOG.info("Email Notification send for case id : {}, Gov notify id: {} ", sscsCaseData.getCcdCaseId(),
@@ -92,7 +86,8 @@ public class NotificationSender {
             Map<String, String> personalisation,
             String reference,
             String smsSender,
-            String ccdCaseId
+            NotificationEventType notificationEventType,
+            SscsCaseData sscsCaseData
     ) throws NotificationClientException {
 
         NotificationClient client;
@@ -112,7 +107,18 @@ public class NotificationSender {
                 smsSender
         );
 
-        LOG.info("Sms Notification send for case id : {}, Gov notify id: {} ", ccdCaseId, sendSmsResponse.getNotificationId());
+        if (saveCorrespondence) {
+            NotifyResponse response = new NotifyResponse(
+                    sendSmsResponse.getBody(),
+                    "SMS correspondence",
+                    sendSmsResponse.getFromNumber(),
+                    phoneNumber);
+
+            saveCorrespondence(response, notificationEventType, sscsCaseData, CorrespondenceType.Sms);
+        }
+
+        LOG.info("Sms Notification send for case id : {}, Gov notify id: {} ", sscsCaseData.getCcdCaseId(),
+                sendSmsResponse.getNotificationId());
     }
 
     public void sendLetter(String templateId, Address address, Map<String, String> personalisation,
@@ -124,6 +130,24 @@ public class NotificationSender {
 
         LOG.info("Letter Notification send for case id : {}, Gov notify id: {} ", ccdCaseId,
             sendLetterResponse.getNotificationId());
+    }
+
+    private void saveCorrespondence(NotifyResponse response, NotificationEventType notificationEventType,
+                                    SscsCaseData sscsCaseData, CorrespondenceType correspondenceType) {
+        Correspondence correspondence = Correspondence.builder().value(
+                CorrespondenceDetails.builder()
+                        .body(markdownTransformationService.toHtml(response.getBody()))
+                        .subject(response.getSubject())
+                        .from(response.getFrom().orElse(""))
+                        .to(response.getTo())
+                        .eventType(notificationEventType.getId())
+                        .correspondenceType(correspondenceType)
+                        .sentOn(LocalDateTime.now(ZONE_ID_LONDON).format(DATE_TIME_FORMATTER))
+                        .build()
+        ).build();
+
+        ccdNotificationsPdfService.mergeCorrespondenceIntoCcd(sscsCaseData, correspondence);
+        LOG.info("Uploaded correspondence into ccd for case id {}.", sscsCaseData.getCcdCaseId());
     }
 
     public void sendBundledLetter(String appellantPostcode, byte[] directionText, String ccdCaseId) throws NotificationClientException {
