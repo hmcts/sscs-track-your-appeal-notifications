@@ -207,7 +207,7 @@ functional.shouldRunAfter(test)
 
 def versions = [
         logback         : '1.2.3',
-        reformLogging   : '5.0.1',
+        reformLogging   : '5.1.1',
         springBoot      : springBootVersion,
         springHystrix   : '1.4.2.RELEASE',
         springfoxSwagger: '2.8.0'
@@ -235,9 +235,9 @@ dependencies {
 
     compile group: 'uk.gov.hmcts.reform', name: 'health-spring-boot-starter', version:'0.0.4'
     compile group: 'uk.gov.hmcts.reform', name: 'properties-volume-spring-boot-starter', version:'0.0.4'
-    compile group: 'uk.gov.hmcts.reform', name: 'java-logging-spring', version: versions.reformLogging
-    compile group: 'uk.gov.hmcts.reform', name: 'java-logging-httpcomponents', version: versions.reformLogging
-    compile group: 'uk.gov.hmcts.reform', name: 'java-logging-appinsights', version: versions.reformLogging
+    compile group: 'uk.gov.hmcts.reform', name: 'logging-spring', version: versions.reformLogging
+    compile group: 'uk.gov.hmcts.reform', name: 'logging-httpcomponents', version: versions.reformLogging
+    compile group: 'uk.gov.hmcts.reform', name: 'logging-appinsights', version: versions.reformLogging
     compile group: 'uk.gov.hmcts.reform', name: 'http-proxy-spring-boot-autoconfigure', version: '2.0.0'
     compile group: 'uk.gov.hmcts.reform', name: 'sscs-job-scheduler', version: '1.5.2'
     compile group: 'uk.gov.hmcts.reform', name: 'service-auth-provider-client', version: '3.0.0'
@@ -250,7 +250,7 @@ dependencies {
 
     compile group: 'org.apache.pdfbox', name: 'pdfbox', version: '2.0.16'
 
-    compile group: 'com.fasterxml.jackson.core', name: 'jackson-databind', version: '2.9.9.3'
+    compile group: 'com.fasterxml.jackson.core', name: 'jackson-databind', version: '2.9.10'
 
     compileOnly 'org.projectlombok:lombok:1.18.8'
     compileOnly("org.springframework.boot:spring-boot-devtools")
