@@ -33,6 +33,7 @@ import uk.gov.hmcts.reform.sscs.domain.SscsCaseDataWrapper;
 import uk.gov.hmcts.reform.sscs.domain.SubscriptionWithType;
 import uk.gov.hmcts.reform.sscs.domain.notify.NotificationEventType;
 import uk.gov.hmcts.reform.sscs.domain.notify.Template;
+import uk.gov.hmcts.reform.sscs.exception.BenefitMappingException;
 import uk.gov.hmcts.reform.sscs.extractor.HearingContactDateExtractor;
 import uk.gov.hmcts.reform.sscs.factory.NotificationWrapper;
 import uk.gov.hmcts.reform.sscs.service.MessageAuthenticationServiceImpl;
@@ -72,12 +73,23 @@ public class Personalisation<E extends NotificationWrapper> {
     protected Map<String, String> create(final SscsCaseDataWrapper responseWrapper, final SubscriptionWithType subscriptionWithType) {
         SscsCaseData ccdResponse = responseWrapper.getNewSscsCaseData();
         Map<String, String> personalisation = new HashMap<>();
-        Benefit benefit = getBenefitByCode(ccdResponse.getAppeal().getBenefitType().getCode());
+        Benefit benefit = null;
+        try {
+            if (ccdResponse.getAppeal() != null
+                && ccdResponse.getAppeal().getBenefitType() != null
+                && ccdResponse.getAppeal().getBenefitType().getCode() != null) {
+                benefit = getBenefitByCode(ccdResponse.getAppeal().getBenefitType().getCode());
+                personalisation.put(BENEFIT_NAME_ACRONYM_LITERAL, benefit.name());
+                personalisation.put(BENEFIT_NAME_ACRONYM_SHORT_LITERAL, benefit.name());
+                personalisation.put(BENEFIT_FULL_NAME_LITERAL, benefit.getDescription());
+            } else {
+                log.warn("Proceeding with 'null' benefit type for case !");
+            }
+        } catch (BenefitMappingException bme) {
+            log.warn("Proceeding with 'null' benefit type for case !");
+        }
         personalisation.put(PANEL_COMPOSITION, getPanelCompositionByBenefitType(benefit));
         personalisation.put(DECISION_POSTED_RECEIVE_DATE, formatLocalDate(LocalDate.now().plusDays(7)));
-        personalisation.put(BENEFIT_NAME_ACRONYM_LITERAL, benefit.name());
-        personalisation.put(BENEFIT_NAME_ACRONYM_SHORT_LITERAL, benefit.name());
-        personalisation.put(BENEFIT_FULL_NAME_LITERAL, benefit.getDescription());
         personalisation.put(APPEAL_REF, getAppealReference(ccdResponse));
         personalisation.put(APPELLANT_NAME, ccdResponse.getAppeal().getAppellant().getName().getFullNameNoTitle());
         personalisation.put(NAME, getName(subscriptionWithType.getSubscriptionType(), ccdResponse, responseWrapper));
@@ -170,8 +182,9 @@ public class Personalisation<E extends NotificationWrapper> {
     private void subscriptionDetails(Map<String, String> personalisation, Subscription subscription, Benefit benefit) {
         final String tya = tya(subscription);
         personalisation.put(APPEAL_ID, tya);
-        personalisation.put(MANAGE_EMAILS_LINK_LITERAL, config.getManageEmailsLink().replace(MAC_LITERAL,
-                getMacToken(tya, benefit.name())));
+        if (benefit != null) {
+            personalisation.put(MANAGE_EMAILS_LINK_LITERAL, config.getManageEmailsLink().replace(MAC_LITERAL, getMacToken(tya, benefit.name())));
+        }
         personalisation.put(TRACK_APPEAL_LINK_LITERAL, config.getTrackAppealLink() != null ? config.getTrackAppealLink().replace(APPEAL_ID_LITERAL, tya) : null);
         personalisation.put(SUBMIT_EVIDENCE_LINK_LITERAL, config.getEvidenceSubmissionInfoLink().replace(APPEAL_ID, tya));
         personalisation.put(SUBMIT_EVIDENCE_INFO_LINK_LITERAL, config.getEvidenceSubmissionInfoLink().replace(APPEAL_ID_LITERAL, tya));

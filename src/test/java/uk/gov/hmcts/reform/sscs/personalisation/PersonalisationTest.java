@@ -296,6 +296,64 @@ public class PersonalisationTest {
     }
 
     @Test
+    @Parameters({
+        "judge\\, doctor and disability expert (if applicable)"
+    })
+    public void givenNoBenefitType_customisePersonalisation(String expectedPanelComposition) {
+        List<Event> events = new ArrayList<>();
+        events.add(Event.builder().value(EventDetails.builder().date(DATE).type(APPEAL_RECEIVED.getCcdType()).build()).build());
+
+        SscsCaseData response = SscsCaseData.builder()
+            .ccdCaseId(CASE_ID).caseReference("SC/1234/5")
+            .regionalProcessingCenter(rpc)
+            .appeal(Appeal.builder()
+                .appellant(Appellant.builder().name(name).build())
+                .build())
+            .subscriptions(subscriptions)
+            .events(events)
+            .build();
+
+        Map<String, String> result = personalisation.create(SscsCaseDataWrapper.builder().newSscsCaseData(response)
+            .notificationEventType(APPEAL_RECEIVED_NOTIFICATION).build(), new SubscriptionWithType(subscriptions.getAppellantSubscription(), APPELLANT));
+
+        DateTimeFormatter dateFormatter = DateTimeFormatter.ofPattern("d MMMM yyyy");
+        String expectedDecisionPostedReceiveDate = dateFormatter.format(LocalDate.now().plusDays(7));
+        assertEquals(expectedDecisionPostedReceiveDate, result.get("decision_posted_receive_date"));
+
+        assertEquals(expectedPanelComposition, result.get(PANEL_COMPOSITION));
+
+        assertNull(result.get(BENEFIT_NAME_ACRONYM_LITERAL));
+        assertNull(result.get(BENEFIT_FULL_NAME_LITERAL));
+        assertEquals("SC/1234/5", result.get(APPEAL_REF));
+        assertEquals("SC/1234/5", result.get(CASE_REFERENCE_ID));
+        assertEquals("GLSCRR", result.get(APPEAL_ID));
+        assertEquals("Harry Kane", result.get(NAME));
+        assertEquals("Harry Kane", result.get(APPELLANT_NAME));
+        assertEquals("0300 999 8888", result.get(PHONE_NUMBER));
+        assertNull(result.get(MANAGE_EMAILS_LINK_LITERAL));
+        assertEquals("http://tyalink.com/GLSCRR", result.get(TRACK_APPEAL_LINK_LITERAL));
+        assertEquals(DWP_ACRONYM, result.get(FIRST_TIER_AGENCY_ACRONYM));
+        assertEquals(DWP_FUL_NAME, result.get(FIRST_TIER_AGENCY_FULL_NAME));
+        assertEquals("5 August 2018", result.get(APPEAL_RESPOND_DATE));
+        assertEquals("http://link.com/GLSCRR", result.get(SUBMIT_EVIDENCE_LINK_LITERAL));
+        assertEquals("http://link.com/progress/GLSCRR/expenses", result.get(CLAIMING_EXPENSES_LINK_LITERAL));
+        assertEquals("http://link.com/progress/GLSCRR/abouthearing", result.get(HEARING_INFO_LINK_LITERAL));
+        assertNull(result.get(EVIDENCE_RECEIVED_DATE_LITERAL));
+
+        assertEquals(ADDRESS1, result.get(REGIONAL_OFFICE_NAME_LITERAL));
+        assertEquals(ADDRESS2, result.get(SUPPORT_CENTRE_NAME_LITERAL));
+        assertEquals(ADDRESS3, result.get(ADDRESS_LINE_LITERAL));
+        assertEquals(ADDRESS4, result.get(TOWN_LITERAL));
+        assertEquals(CITY, result.get(COUNTY_LITERAL));
+        assertEquals(POSTCODE, result.get(POSTCODE_LITERAL));
+        assertEquals(CASE_ID, result.get(CCD_ID));
+        assertEquals("1 February 2019", result.get(TRIBUNAL_RESPONSE_DATE_LITERAL));
+        assertEquals("1 February 2018", result.get(ACCEPT_VIEW_BY_DATE_LITERAL));
+        assertEquals("1 January 2018", result.get(QUESTION_ROUND_EXPIRES_DATE_LITERAL));
+        assertEquals("", result.get(APPOINTEE_DESCRIPTION));
+    }
+
+    @Test
     public void givenNoRpc_thenGivePhoneNumberBasedOnSc() {
         List<Event> events = new ArrayList<>();
         events.add(Event.builder().value(EventDetails.builder().date(DATE).type(APPEAL_RECEIVED.getCcdType()).build()).build());

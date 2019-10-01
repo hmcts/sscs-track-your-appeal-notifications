@@ -113,7 +113,7 @@ public class NotificationSenderTest {
                 .thenReturn(sendSmsResponse);
         when(sendSmsResponse.getNotificationId()).thenReturn(UUID.randomUUID());
 
-        notificationSender.sendSms(templateId, phoneNumber, personalisation, reference, SMS_SENDER, CCD_CASE_ID);
+        notificationSender.sendSms(templateId, phoneNumber, personalisation, reference, SMS_SENDER, NotificationEventType.APPEAL_RECEIVED_NOTIFICATION, SSCS_CASE_DATA);
 
         verifyZeroInteractions(testNotificationClient);
         verify(notificationClient).sendSms(templateId, phoneNumber, personalisation, reference, SMS_SENDER);
@@ -127,7 +127,7 @@ public class NotificationSenderTest {
                 .thenReturn(sendSmsResponse);
         when(sendSmsResponse.getNotificationId()).thenReturn(UUID.randomUUID());
 
-        notificationSender.sendSms(templateId, phoneNumber, personalisation, reference, SMS_SENDER, CCD_CASE_ID);
+        notificationSender.sendSms(templateId, phoneNumber, personalisation, reference, SMS_SENDER, NotificationEventType.APPEAL_RECEIVED_NOTIFICATION, SSCS_CASE_DATA);
 
         verifyZeroInteractions(notificationClient);
         verify(testNotificationClient).sendSms(templateId, phoneNumber, personalisation, reference, SMS_SENDER);
@@ -192,7 +192,7 @@ public class NotificationSenderTest {
     }
 
     @Test
-    public void whenAnEmailIsSentWillSaveEmailTheEmailNotificationInCcd() throws NotificationClientException {
+    public void whenAnEmailIsSentWillSaveEmailNotificationInCcd() throws NotificationClientException {
 
         ReflectionTestUtils.setField(notificationSender, "saveCorrespondence", true);
 
@@ -218,5 +218,35 @@ public class NotificationSenderTest {
                 .build()).build();
         verify(ccdNotificationsPdfService).mergeCorrespondenceIntoCcd(eq(SscsCaseData.builder().build()),
                argThat(((Correspondence arg) -> EqualsBuilder.reflectionEquals(arg.getValue(), expectedCorrespondence.getValue(), "sentOn"))));
+    }
+
+    @Test
+    public void whenAnSmsIsSentWillSaveSmsNotificationInCcd() throws NotificationClientException {
+
+        ReflectionTestUtils.setField(notificationSender, "saveCorrespondence", true);
+
+        String smsNumber = "07999999000";
+        when(notificationClient.sendSms(templateId, smsNumber, personalisation, reference, "Sender"))
+                .thenReturn(sendSmsResponse);
+        when(sendEmailResponse.getNotificationId()).thenReturn(UUID.randomUUID());
+        when(markdownTransformationService.toHtml(anyString())).thenReturn("the body");
+        when(ccdNotificationsPdfService.mergeCorrespondenceIntoCcd(any(), any())).thenReturn(SscsCaseData.builder().build());
+
+        notificationSender.sendSms(templateId, smsNumber, personalisation, reference, "Sender", NotificationEventType.APPEAL_RECEIVED_NOTIFICATION, SSCS_CASE_DATA);
+
+        verifyZeroInteractions(testNotificationClient);
+        verify(notificationClient).sendSms(templateId, smsNumber, personalisation, reference, "Sender");
+        verify(markdownTransformationService).toHtml(eq(null));
+
+        Correspondence expectedCorrespondence = Correspondence.builder().value(CorrespondenceDetails.builder()
+                .to(smsNumber)
+                .from("")
+                .subject("SMS correspondence")
+                .correspondenceType(CorrespondenceType.Sms)
+                .eventType(NotificationEventType.APPEAL_RECEIVED_NOTIFICATION.getId())
+                .sentOn("this field is ignored")
+                .build()).build();
+        verify(ccdNotificationsPdfService).mergeCorrespondenceIntoCcd(eq(SscsCaseData.builder().build()),
+                argThat(((Correspondence arg) -> EqualsBuilder.reflectionEquals(arg.getValue(), expectedCorrespondence.getValue(), "sentOn"))));
     }
 }
