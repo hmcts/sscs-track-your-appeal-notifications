@@ -89,8 +89,6 @@ bootRun {
     systemProperty 'server.port', '8081'
 }
 
-def springBootVersion = '2.0.5.RELEASE'
-
 ext {
     springCloudVersion = 'Finchley.SR1'
 }
@@ -209,7 +207,6 @@ functional.shouldRunAfter(test)
 def versions = [
         logback         : '1.2.3',
         reformLogging   : '5.0.1',
-        springBoot      : springBootVersion,
         springHystrix   : '1.4.2.RELEASE',
         springfoxSwagger: '2.8.0'
 ]
@@ -253,7 +250,10 @@ dependencies {
 
     compile group: 'org.apache.pdfbox', name: 'pdfbox', version: '2.0.16'
 
-    compile group: 'com.fasterxml.jackson.core', name: 'jackson-databind', version: '2.9.9.3'
+    compile group: 'com.fasterxml.jackson.core', name: 'jackson-databind', version: '2.9.10'
+
+    compile group: 'com.microsoft.azure', name: 'applicationinsights-logging-logback', version: '2.4.1'
+    compile group: 'com.microsoft.azure', name: 'applicationinsights-spring-boot-starter', version: '2.4.1'
 
     compileOnly 'org.projectlombok:lombok:1.18.8'
     compileOnly("org.springframework.boot:spring-boot-devtools")
