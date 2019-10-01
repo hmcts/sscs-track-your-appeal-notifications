@@ -229,7 +229,7 @@ dependencies {
     compile group: 'org.springframework.retry', name: 'spring-retry', version: '1.2.4.RELEASE'
 
     // CVE-2019-16869
-    compile group: 'io.netty', name: 'netty-all', version: '4.1.36.Final'
+    compile group: 'io.netty', name: 'netty-all', version: '4.1.42.Final'
 
     compile group: 'io.rest-assured', name: 'rest-assured', version: '3.3.0'
     compile group: 'io.springfox', name: 'springfox-swagger2', version: versions.springfoxSwagger
