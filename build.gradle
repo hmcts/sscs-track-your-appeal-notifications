@@ -269,10 +269,10 @@ dependencies {
     compile group: 'com.microsoft.azure', name: 'applicationinsights-logging-logback', version: '2.4.1'
     compile group: 'com.microsoft.azure', name: 'applicationinsights-spring-boot-starter', version: '2.4.1'
 
-    compileOnly 'org.projectlombok:lombok:1.18.8'
+    compileOnly 'org.projectlombok:lombok:1.18.10'
     compileOnly("org.springframework.boot:spring-boot-devtools")
 
-    annotationProcessor "org.projectlombok:lombok:1.18.6"
+    annotationProcessor "org.projectlombok:lombok:1.18.10"
 
     integrationTestCompileOnly 'org.projectlombok:lombok:1.18.6'
     integrationTestAnnotationProcessor "org.projectlombok:lombok:1.18.6"
