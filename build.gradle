@@ -222,7 +222,7 @@ def versions = [
         logback         : '1.2.3',
         reformLogging   : '5.1.0',
         springHystrix   : '1.4.2.RELEASE',
-        springfoxSwagger: '2.8.0'
+        springfoxSwagger: '2.9.2'
 ]
 
 dependencies {

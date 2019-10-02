@@ -5,6 +5,7 @@
         <BuiltIn enabled="true">
             <HTTP enabled="true" W3C="true" enableW3CBackCompat="true"/>
             <MaxStatementQueryLimitInMS>1000</MaxStatementQueryLimitInMS>
+            <Logging enabled="false" /><!-- So to capture logging in hmcts way -->
         </BuiltIn>
         <Class name="uk.gov.hmcts.reform.sscs.service.docmosis.PdfCoverSheetService">
             <Method name="generateCoversheet" reportCaughtExceptions="true" reportExecutionTime="true"/>
