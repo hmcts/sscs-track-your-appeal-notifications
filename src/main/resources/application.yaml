@@ -403,6 +403,15 @@ pdf-service:
     appealReceived: 'TB-SCS-GNO-ENG-00012.docx'
     directionIssued: 'TB-SCS-GNO-ENG-00012.docx'
 
+amqp:
+  host: ${AMQP_HOST:localhost}
+  username: ${AMQP_USERNAME:guest}
+  password: ${AMQP_PASSWORD:guest}
+  topic: ${TOPIC_NAME:test.topic}
+  subscription: ${SUBSCRIPTION_NAME:test2.queue}
+  # DO NOT SET THIS 'true' IN PRODUCTION!
+  trustAllCerts: ${TRUST_ALL_CERTS:true}
+
 ---
 # default profile (development, production etc.)
 spring:

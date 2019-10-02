@@ -17,5 +17,9 @@ java:
     PDF_SERVICE_HEALTH_URL: ${PDF_SERVICE_BASE_URL}rs/status
     HOURS_START_TIME: 0
     HOURS_END_TIME: 23
+    SUBSCRIPTION_NAME: "sscs-notifications-subscription-aat"
+    TOPIC_NAME: "sscs-evidenceshare-topic-aat"
+    AMQP_HOST: "sscs-servicebus-aat.servicebus.windows.net"
+    AMQP_USERNAME: "SendAndListenSharedAccessKey"
 postgresql:
   enabled: true
