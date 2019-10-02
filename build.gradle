@@ -80,6 +80,7 @@ sonarqube {
         property "sonar.jacoco.itReportPath", "${project.buildDir}/jacoco/integration.exec"
         property "sonar.exclusions", "src/main/java/uk/gov/hmcts/reform/sscs/domain/**," +
                 "src/main/java/uk/gov/hmcts/reform/sscs/TrackYourAppealNotificationsApplication.java," +
+                "src/main/java/uk/gov/hmcts/reform/sscs/servicebus/messaging/**," +
                 "src/main/java/uk/gov/hmcts/reform/sscs/config/**,"
     }
 }
@@ -109,6 +110,20 @@ dependencyManagement {
             entry 'tomcat-embed-core'
             entry 'tomcat-embed-el'
             entry 'tomcat-embed-websocket'
+        }
+
+        // CVE-2019-16869 - brought in by qpid-jms-client
+        dependencySet(group: 'io.netty', version: '4.1.37.Final') {
+            entry 'netty-handler'
+            entry 'netty-transport-native-epoll'
+            entry 'netty-transport-native-kqueue'
+            entry 'netty-codec-http'
+            entry 'netty-codec'
+            entry 'netty-transport-native-unix-common'
+            entry 'netty-transport'
+            entry 'netty-buffer'
+            entry 'netty-resolver'
+            entry 'netty-common'
         }
 
         dependency group: 'commons-beanutils', name: 'commons-beanutils', version: '1.9.4'
@@ -229,6 +244,8 @@ dependencies {
     compile group: 'io.springfox', name: 'springfox-swagger2', version: versions.springfoxSwagger
     compile group: 'io.springfox', name: 'springfox-swagger-ui', version: versions.springfoxSwagger
     compile group: 'com.atlassian.commonmark', name: 'commonmark', version: '0.13.0'
+    compile group: 'org.springframework', name: 'spring-jms'
+    compile group: 'org.apache.qpid', name: 'qpid-jms-client', version: '0.46.0'
 
     compile group: 'uk.gov.hmcts.reform', name: 'health-spring-boot-starter', version:'0.0.4'
     compile group: 'uk.gov.hmcts.reform', name: 'properties-volume-spring-boot-starter', version:'0.0.4'
