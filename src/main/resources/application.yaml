@@ -27,6 +27,8 @@ spring:
       log-abandoned: true
       abandon-when-percentage-full: 0
 
+spring.main.allow-bean-definition-overriding: true  # https://github.com/spring-projects/spring-boot/wiki/Spring-Boot-2.1-Release-Notes#bean-overriding
+
 core_case_data:
   api:
     url: ${CORE_CASE_DATA_API_URL:http://localhost:4452}
