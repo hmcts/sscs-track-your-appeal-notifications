@@ -14,7 +14,6 @@ import org.springframework.stereotype.Component;
 @Setter
 public class DocmosisTemplatesConfig {
     private Map<String, String> coversheets;
-    private String hmctsImgKey;
     private String hmctsImgVal;
-    private String hmctsImgKey1;
+    private String hmctsImgKey;
 }

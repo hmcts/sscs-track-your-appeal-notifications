@@ -99,6 +99,7 @@ notification:
       emailId: 4b1ee55b-abd1-4e7e-b0ed-693d8df1e741
       smsId: 99bd4a56-256c-4de8-b187-d43a8dde466f
       letterId: 77ea8a2f-06df-4279-9c1f-0f23cb2d9bbf
+      docmosisId: TB-SCS-GNO-ENG-00079.doc
     appointee:
       emailId: 08365e91-9e07-4a5c-bf96-ef56fd0ada63
       smsId: ede384aa-0b6e-4311-9f01-ee547573a07b
@@ -249,6 +250,8 @@ notification:
       docmosisId: TB-SCS-GNO-ENG-00067.docx
     appointee:
       docmosisId: TB-SCS-GNO-ENG-00067.docx
+    representative:
+      docmosisId: TB-SCS-GNO-ENG-00089.docx
   corDecision:
     emailId: 5b0df251-49b9-46d5-b347-37a81ab77f19
   requestInfoIncompleteApplication:
@@ -343,6 +346,7 @@ notification:
 smsSender:
   pip: 80b11be7-5c10-2773-8351-070e22d5ab6b
   esa: f84a568d-bd01-4940-a48a-5bcfc52940e0
+  uc: 2811c776-2d38-4413-96c6-efa639eabc40
 
 reminder:
   evidenceReminder.delay.seconds: 604800
@@ -364,7 +368,7 @@ feign:
         decode404: true
 
 # Document store
-document_management.url: ${DOCUMENT_MANAGEMENT_URL:http://dm-store:4506}
+document_management.url: ${DOCUMENT_MANAGEMENT_URL:http://dm-store:5005}
 
 appeal.email.host: ${EMAIL_SERVER_HOST:localhost}
 appeal.email.port: ${EMAIL_SERVER_PORT:1025}
@@ -379,9 +383,6 @@ appeal.email.message: ${EMAIL_MESSAGE:Your appeal has been created \nPlease do n
 appellant.appeal.html.template.path: /templates/appellant_appeal_template.html
 strikeOutLetterTemplate.appelant.appeal.html.template.path: /templates/strike_out_letter_template.html
 strikeOutLetterTemplate.rep.appeal.html.template.path: /templates/strike_out_letter_template_rep.html
-directionNoticeLetterTemplate.appeal.html.template.path: /templates/direction_notice_letter_template.html
-directionNoticeLetterTemplate.appelant.appeal.html.template.path: /templates/direction_notice_letter_template.html
-directionNoticeLetterTemplate.rep.appeal.html.template.path: /templates/direction_notice_letter_template_rep.html
 validAppealCreatedLetterTemplate.appellant.appeal.html.template.path: /templates/valid_appeal_created_template.html
 validAppealCreatedLetterTemplate.rep.appeal.html.template.path: /templates/valid_appeal_created_template_rep.html
 
@@ -399,15 +400,15 @@ feature.docmosis_letters_on: ${DOCMOSIS_LETTERS_ON:true}
 feature.interloc_letters_on: ${INTERLOC_LETTERS_ON:true}
 feature.docmosis_leters.appealReceived_on: ${APPEAL_RECEIVED_LETTER_ON:true}
 feature.docmosis_leters.directionIssued_on: ${DIRECTION_ISSUED_LETTER_ON:true}
+feature.save_correspondence: ${SAVE_CORRESPONDENCE:true}
 
 pdf-service:
   uri: ${PDF_SERVICE_BASE_URL:https://docmosis-development.platform.hmcts.net/rs/render}
   accessKey: ${PDF_SERVICE_ACCESS_KEY:secret-key-not-supplied}
   health:
     uri: ${PDF_SERVICE_HEALTH_URL:https://docmosis-development.platform.hmcts.net/rs/status}
-  hmctsImgKey1: "hmcts"
-  hmctsImgKey: "hmcts2"
-  hmctsImgVal: "[userImage:hmcts.png]"
+  hmctsImgKey: hmcts2
+  hmctsImgVal: "[userImage:hmcts-2.png]"
   coverSheets:
     appealReceived: 'TB-SCS-GNO-ENG-00012.docx'
     directionIssued: 'TB-SCS-GNO-ENG-00012.docx'

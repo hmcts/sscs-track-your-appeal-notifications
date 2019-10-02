@@ -68,11 +68,13 @@ public final class AppConstants {
     public static final String TOWN_LITERAL = "town";
     public static final String TRACK_APPEAL_LINK_LITERAL = "track_appeal_link";
     public static final String TRIBUNAL_RESPONSE_DATE_LITERAL = "tribunal_response_date";
+    public static final String UC_PANEL_COMPOSITION = "judge, doctor and disability expert (if applicable)";
     public static final String VENUE_ADDRESS_LITERAL = "venue_address";
     public static final String VENUE_MAP_LINK_LITERAL = "venue_map_link";
     public static final String YOUR_DETAILS_LITERAL = "your_details";
     public static final String ZONE_ID = "Europe/London";
 
+    public static final String ADDRESS_NAME = "address_name";
     public static final String ADDRESS_LINE_1 = "address_line_1";
     public static final String ADDRESS_LINE_2 = "address_line_2";
     public static final String ADDRESS_LINE_3 = "address_line_3";

@@ -8,17 +8,20 @@ import java.io.IOException;
 import java.util.Collections;
 import java.util.Map;
 import java.util.UUID;
-
+import org.apache.commons.lang3.builder.EqualsBuilder;
 import org.apache.pdfbox.io.IOUtils;
 import org.junit.Before;
 import org.junit.Test;
 import org.mockito.Mock;
-import uk.gov.hmcts.reform.sscs.ccd.domain.Address;
+import org.springframework.test.util.ReflectionTestUtils;
+import uk.gov.hmcts.reform.sscs.ccd.domain.*;
 import uk.gov.hmcts.reform.sscs.config.NotificationBlacklist;
+import uk.gov.hmcts.reform.sscs.domain.notify.NotificationEventType;
 import uk.gov.service.notify.*;
 
 public class NotificationSenderTest {
     public static final String CCD_CASE_ID = "78980909090099";
+    public static final SscsCaseData SSCS_CASE_DATA = SscsCaseData.builder().build();
     public static final String SMS_SENDER = "sms-sender";
     private NotificationClient notificationClient;
     private NotificationClient testNotificationClient;
@@ -38,7 +41,16 @@ public class NotificationSenderTest {
     private LetterResponse letterResponse;
 
     @Mock
+    private CcdNotificationsPdfService ccdNotificationsPdfService;
+
+    @Mock
     private SendLetterResponse sendLetterResponse;
+
+
+    private Boolean saveCorrespondence = false;
+
+    @Mock
+    private MarkdownTransformationService markdownTransformationService;
 
     @Before
     public void setUp() {
@@ -51,7 +63,7 @@ public class NotificationSenderTest {
         personalisation = Collections.emptyMap();
         reference = "reference";
 
-        notificationSender = new NotificationSender(notificationClient, testNotificationClient, blacklist);
+        notificationSender = new NotificationSender(notificationClient, testNotificationClient, blacklist, ccdNotificationsPdfService, markdownTransformationService, saveCorrespondence);
     }
 
     @Test
@@ -61,7 +73,7 @@ public class NotificationSenderTest {
                 .thenReturn(sendEmailResponse);
         when(sendEmailResponse.getNotificationId()).thenReturn(UUID.randomUUID());
 
-        notificationSender.sendEmail(templateId, emailAddress, personalisation, reference, CCD_CASE_ID);
+        notificationSender.sendEmail(templateId, emailAddress, personalisation, reference, NotificationEventType.APPEAL_RECEIVED_NOTIFICATION, SSCS_CASE_DATA);
 
         verifyZeroInteractions(notificationClient);
         verify(testNotificationClient).sendEmail(templateId, emailAddress, personalisation, reference);
@@ -74,7 +86,7 @@ public class NotificationSenderTest {
                 .thenReturn(sendEmailResponse);
         when(sendEmailResponse.getNotificationId()).thenReturn(UUID.randomUUID());
 
-        notificationSender.sendEmail(templateId, emailAddress, personalisation, reference, CCD_CASE_ID);
+        notificationSender.sendEmail(templateId, emailAddress, personalisation, reference, NotificationEventType.APPEAL_RECEIVED_NOTIFICATION, SSCS_CASE_DATA);
 
         verifyZeroInteractions(testNotificationClient);
         verify(notificationClient).sendEmail(templateId, emailAddress, personalisation, reference);
@@ -88,7 +100,7 @@ public class NotificationSenderTest {
                 .thenReturn(sendEmailResponse);
         when(sendEmailResponse.getNotificationId()).thenReturn(UUID.randomUUID());
 
-        notificationSender.sendEmail(templateId, emailAddress, personalisation, reference, CCD_CASE_ID);
+        notificationSender.sendEmail(templateId, emailAddress, personalisation, reference, NotificationEventType.APPEAL_RECEIVED_NOTIFICATION, SSCS_CASE_DATA);
 
         verifyZeroInteractions(notificationClient);
         verify(testNotificationClient).sendEmail(templateId, emailAddress, personalisation, reference);
@@ -101,7 +113,7 @@ public class NotificationSenderTest {
                 .thenReturn(sendSmsResponse);
         when(sendSmsResponse.getNotificationId()).thenReturn(UUID.randomUUID());
 
-        notificationSender.sendSms(templateId, phoneNumber, personalisation, reference, SMS_SENDER, CCD_CASE_ID);
+        notificationSender.sendSms(templateId, phoneNumber, personalisation, reference, SMS_SENDER, NotificationEventType.APPEAL_RECEIVED_NOTIFICATION, SSCS_CASE_DATA);
 
         verifyZeroInteractions(testNotificationClient);
         verify(notificationClient).sendSms(templateId, phoneNumber, personalisation, reference, SMS_SENDER);
@@ -115,7 +127,7 @@ public class NotificationSenderTest {
                 .thenReturn(sendSmsResponse);
         when(sendSmsResponse.getNotificationId()).thenReturn(UUID.randomUUID());
 
-        notificationSender.sendSms(templateId, phoneNumber, personalisation, reference, SMS_SENDER, CCD_CASE_ID);
+        notificationSender.sendSms(templateId, phoneNumber, personalisation, reference, SMS_SENDER, NotificationEventType.APPEAL_RECEIVED_NOTIFICATION, SSCS_CASE_DATA);
 
         verifyZeroInteractions(notificationClient);
         verify(testNotificationClient).sendSms(templateId, phoneNumber, personalisation, reference, SMS_SENDER);
@@ -177,5 +189,64 @@ public class NotificationSenderTest {
 
         verifyZeroInteractions(notificationClient);
         verify(testNotificationClient).sendLetter(any(), any(), any());
+    }
+
+    @Test
+    public void whenAnEmailIsSentWillSaveEmailNotificationInCcd() throws NotificationClientException {
+
+        ReflectionTestUtils.setField(notificationSender, "saveCorrespondence", true);
+
+        String emailAddress = "random@example.com";
+        when(notificationClient.sendEmail(templateId, emailAddress, personalisation, reference))
+                .thenReturn(sendEmailResponse);
+        when(sendEmailResponse.getNotificationId()).thenReturn(UUID.randomUUID());
+        when(markdownTransformationService.toHtml(anyString())).thenReturn("the body");
+        when(ccdNotificationsPdfService.mergeCorrespondenceIntoCcd(any(), any())).thenReturn(SscsCaseData.builder().build());
+
+        notificationSender.sendEmail(templateId, emailAddress, personalisation, reference, NotificationEventType.APPEAL_RECEIVED_NOTIFICATION, SSCS_CASE_DATA);
+
+        verifyZeroInteractions(testNotificationClient);
+        verify(notificationClient).sendEmail(templateId, emailAddress, personalisation, reference);
+        verify(markdownTransformationService).toHtml(eq(null));
+
+        Correspondence expectedCorrespondence = Correspondence.builder().value(CorrespondenceDetails.builder()
+                .to(emailAddress)
+                .from("")
+                .correspondenceType(CorrespondenceType.Email)
+                .eventType(NotificationEventType.APPEAL_RECEIVED_NOTIFICATION.getId())
+                .sentOn("this field is ignored")
+                .build()).build();
+        verify(ccdNotificationsPdfService).mergeCorrespondenceIntoCcd(eq(SscsCaseData.builder().build()),
+               argThat(((Correspondence arg) -> EqualsBuilder.reflectionEquals(arg.getValue(), expectedCorrespondence.getValue(), "sentOn"))));
+    }
+
+    @Test
+    public void whenAnSmsIsSentWillSaveSmsNotificationInCcd() throws NotificationClientException {
+
+        ReflectionTestUtils.setField(notificationSender, "saveCorrespondence", true);
+
+        String smsNumber = "07999999000";
+        when(notificationClient.sendSms(templateId, smsNumber, personalisation, reference, "Sender"))
+                .thenReturn(sendSmsResponse);
+        when(sendEmailResponse.getNotificationId()).thenReturn(UUID.randomUUID());
+        when(markdownTransformationService.toHtml(anyString())).thenReturn("the body");
+        when(ccdNotificationsPdfService.mergeCorrespondenceIntoCcd(any(), any())).thenReturn(SscsCaseData.builder().build());
+
+        notificationSender.sendSms(templateId, smsNumber, personalisation, reference, "Sender", NotificationEventType.APPEAL_RECEIVED_NOTIFICATION, SSCS_CASE_DATA);
+
+        verifyZeroInteractions(testNotificationClient);
+        verify(notificationClient).sendSms(templateId, smsNumber, personalisation, reference, "Sender");
+        verify(markdownTransformationService).toHtml(eq(null));
+
+        Correspondence expectedCorrespondence = Correspondence.builder().value(CorrespondenceDetails.builder()
+                .to(smsNumber)
+                .from("")
+                .subject("SMS correspondence")
+                .correspondenceType(CorrespondenceType.Sms)
+                .eventType(NotificationEventType.APPEAL_RECEIVED_NOTIFICATION.getId())
+                .sentOn("this field is ignored")
+                .build()).build();
+        verify(ccdNotificationsPdfService).mergeCorrespondenceIntoCcd(eq(SscsCaseData.builder().build()),
+                argThat(((Correspondence arg) -> EqualsBuilder.reflectionEquals(arg.getValue(), expectedCorrespondence.getValue(), "sentOn"))));
     }
 }

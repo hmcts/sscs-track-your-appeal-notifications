@@ -1,7 +1,6 @@
 package uk.gov.hmcts.reform.sscs.service.docmosis;
 
 import static uk.gov.hmcts.reform.sscs.config.AppConstants.*;
-import static uk.gov.hmcts.reform.sscs.config.AppConstants.POSTCODE_LITERAL;
 import static uk.gov.hmcts.reform.sscs.domain.notify.NotificationEventType.APPEAL_RECEIVED_NOTIFICATION;
 import static uk.gov.hmcts.reform.sscs.service.LetterUtils.*;
 
@@ -11,6 +10,7 @@ import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.stream.Stream;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.ArrayUtils;
 import org.apache.commons.lang3.StringUtils;
@@ -90,19 +90,54 @@ public class PdfLetterService {
     public byte[] generateLetter(NotificationWrapper wrapper, Notification notification,
                                  SubscriptionType subscriptionType) {
         if (StringUtils.isNotBlank(notification.getDocmosisLetterTemplate())) {
-            Address addressToUse = getAddressToUseForLetter(wrapper, subscriptionType);
+
             Map<String, Object> placeholders = new HashMap<>(notification.getPlaceholders());
             placeholders.put(SSCS_URL_LITERAL, SSCS_URL);
             placeholders.put(GENERATED_DATE_LITERAL, LocalDateTime.now().toLocalDate().toString());
-            placeholders.put(ADDRESS_LINE_1, addressToUse.getLine1());
-            placeholders.put(ADDRESS_LINE_2, addressToUse.getLine2() == null ? " " : addressToUse.getLine2());
-            placeholders.put(ADDRESS_LINE_3, addressToUse.getTown() == null ? " " : addressToUse.getTown());
-            placeholders.put(ADDRESS_LINE_4, addressToUse.getCounty() == null ? " " : addressToUse.getCounty());
-            placeholders.put(POSTCODE_LITERAL, addressToUse.getPostcode());
-            placeholders.put(docmosisTemplatesConfig.getHmctsImgKey1(), docmosisTemplatesConfig.getHmctsImgVal());
+
+            Name nameToUse = getNameToUseForLetter(wrapper, subscriptionType);
+            placeholders.put(ADDRESS_NAME, truncateAddressLine(nameToUse.getFullNameNoTitle()));
+
+            Address addressToUse = getAddressToUseForLetter(wrapper, subscriptionType);
+            buildRecipientAddressPlaceholders(addressToUse, placeholders);
+            placeholders.put(docmosisTemplatesConfig.getHmctsImgKey(), docmosisTemplatesConfig.getHmctsImgVal());
             return docmosisPdfService.createPdfFromMap(placeholders, notification.getDocmosisLetterTemplate());
         }
         return new byte[0];
+    }
+
+    private void buildRecipientAddressPlaceholders(Address address, Map<String, Object> placeholders) {
+        String[] lines = lines(address);
+
+        if (lines.length >= 1) {
+            placeholders.put(LETTER_ADDRESS_LINE_1, truncateAddressLine(defaultToEmptyStringIfNull(lines[0])));
+        }
+        if (lines.length >= 2) {
+            placeholders.put(LETTER_ADDRESS_LINE_2, truncateAddressLine(defaultToEmptyStringIfNull(lines[1])));
+        }
+        if (lines.length >= 3) {
+            placeholders.put(LETTER_ADDRESS_LINE_3, truncateAddressLine(defaultToEmptyStringIfNull(lines[2])));
+        }
+        if (lines.length >= 4) {
+            placeholders.put(LETTER_ADDRESS_LINE_4, truncateAddressLine(defaultToEmptyStringIfNull(lines[3])));
+        }
+        if (lines.length >= 5) {
+            placeholders.put(LETTER_ADDRESS_POSTCODE, truncateAddressLine(defaultToEmptyStringIfNull(lines[4])));
+        }
+    }
+
+    private static String[] lines(Address address) {
+        return Stream.of(address.getLine1(), address.getLine2(), address.getTown(), address.getCounty(), address.getPostcode())
+                .filter(x -> x != null)
+                .toArray(String[]::new);
+    }
+
+    private static String defaultToEmptyStringIfNull(String value) {
+        return (value == null) ? StringUtils.EMPTY : value;
+    }
+
+    private static String truncateAddressLine(String addressLine) {
+        return addressLine != null && addressLine.length() > 45  ? addressLine.substring(0, 45) : addressLine;
     }
 
 }

@@ -1,5 +1,8 @@
 package uk.gov.hmcts.reform.sscs.service;
 
+import static org.apache.commons.lang3.StringUtils.equalsIgnoreCase;
+import static org.apache.commons.lang3.StringUtils.isEmpty;
+import static org.apache.commons.lang3.StringUtils.isNotBlank;
 import static uk.gov.hmcts.reform.sscs.config.AppConstants.*;
 import static uk.gov.hmcts.reform.sscs.domain.notify.NotificationEventType.*;
 import static uk.gov.hmcts.reform.sscs.service.LetterUtils.*;
@@ -18,7 +21,6 @@ import java.util.Map;
 
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.ArrayUtils;
-import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
@@ -80,22 +82,46 @@ public class SendNotificationService {
         this.pdfLetterService = pdfLetterService;
     }
 
-    void sendEmailSmsLetterNotification(
+    boolean sendEmailSmsLetterNotification(
             NotificationWrapper wrapper,
             Notification notification,
             SubscriptionWithType subscriptionWithType,
             NotificationEventType eventType) {
-        sendEmailNotification(wrapper, subscriptionWithType.getSubscription(), notification);
-        sendSmsNotification(wrapper, subscriptionWithType.getSubscription(), notification, eventType);
+        boolean emailSent = sendEmailNotification(wrapper, subscriptionWithType.getSubscription(), notification);
+        boolean smsSent = sendSmsNotification(wrapper, subscriptionWithType.getSubscription(), notification, eventType);
 
         boolean isInterlocLetter = INTERLOC_LETTERS.contains(eventType);
         boolean isDocmosisLetter = DOCMOSIS_LETTERS.contains(eventType);
-        if ((lettersOn && !isInterlocLetter) || (interlocLettersOn && isInterlocLetter) || (docmosisLettersOn && isDocmosisLetter)) {
-            sendLetterNotification(wrapper, subscriptionWithType.getSubscription(), notification, subscriptionWithType, eventType);
+
+        boolean letterSent = false;
+        if (allowNonInterlocLetterToBeSent(isInterlocLetter)
+                || allowInterlocLetterToBeSent(isInterlocLetter)
+                || allowDocmosisLetterToBeSent(notification, isDocmosisLetter)) {
+            letterSent = sendLetterNotification(wrapper, subscriptionWithType.getSubscription(), notification, subscriptionWithType, eventType);
         }
+
+        boolean notificationSent = emailSent | smsSent | letterSent;
+
+        if (!notificationSent) {
+            log.error("Did not send a notification for event {} for case id {}.", eventType.getId(), wrapper.getCaseId());
+        }
+
+        return notificationSent;
     }
 
-    private void sendSmsNotification(NotificationWrapper wrapper, Subscription subscription, Notification notification, NotificationEventType eventType) {
+    private boolean allowDocmosisLetterToBeSent(Notification notification, boolean isDocmosisLetter) {
+        return docmosisLettersOn && isDocmosisLetter && isNotBlank(notification.getDocmosisLetterTemplate());
+    }
+
+    private boolean allowInterlocLetterToBeSent(boolean isInterlocLetter) {
+        return interlocLettersOn && isInterlocLetter;
+    }
+
+    private boolean allowNonInterlocLetterToBeSent(boolean isInterlocLetter) {
+        return lettersOn && !isInterlocLetter;
+    }
+
+    private boolean sendSmsNotification(NotificationWrapper wrapper, Subscription subscription, Notification notification, NotificationEventType eventType) {
         if (isOkToSendSmsNotification(wrapper, subscription, notification, eventType, notificationValidService)) {
 
             NotificationHandler.SendNotification sendNotification = () ->
@@ -105,13 +131,16 @@ public class SendNotificationService {
                             notification.getPlaceholders(),
                             notification.getReference(),
                             notification.getSmsSenderTemplate(),
-                            wrapper.getCaseId()
+                            wrapper.getNotificationType(),
+                            wrapper.getNewSscsCaseData()
                     );
-            notificationHandler.sendNotification(wrapper, notification.getSmsTemplate(), "SMS", sendNotification);
+            return notificationHandler.sendNotification(wrapper, notification.getSmsTemplate(), "SMS", sendNotification);
         }
+
+        return false;
     }
 
-    private void sendEmailNotification(NotificationWrapper wrapper, Subscription subscription, Notification notification) {
+    private boolean sendEmailNotification(NotificationWrapper wrapper, Subscription subscription, Notification notification) {
         if (isOkToSendEmailNotification(wrapper, subscription, notification, notificationValidService)) {
 
             NotificationHandler.SendNotification sendNotification = () ->
@@ -120,45 +149,69 @@ public class SendNotificationService {
                             notification.getEmail(),
                             notification.getPlaceholders(),
                             notification.getReference(),
-                            wrapper.getCaseId()
+                            wrapper.getNotificationType(),
+                            wrapper.getNewSscsCaseData()
+
                     );
-            notificationHandler.sendNotification(wrapper, notification.getEmailTemplate(), "Email", sendNotification);
+            return notificationHandler.sendNotification(wrapper, notification.getEmailTemplate(), "Email", sendNotification);
+        }
+
+        return false;
+    }
+
+    protected boolean sendLetterNotification(NotificationWrapper wrapper, Subscription subscription, Notification notification, SubscriptionWithType subscriptionWithType, NotificationEventType eventType) {
+
+        log.info("Sending the letter for event {} and case id {}.", eventType.getId(), wrapper.getCaseId());
+        Address addressToUse = getAddressToUseForLetter(wrapper, subscriptionWithType.getSubscriptionType());
+
+        if (isValidLetterAddress(addressToUse)) {
+            boolean mandatoryLetterSent = sendMandatoryLetterNotification(wrapper, notification, subscriptionWithType.getSubscriptionType(), addressToUse);
+            boolean fallbackLetterSent = sendFallbackLetterNotification(wrapper, subscription, notification, subscriptionWithType, eventType, addressToUse);
+
+            return mandatoryLetterSent | fallbackLetterSent;
+        } else {
+            log.error("Failed to send letter for event id: {} for case id: {}, no address present", wrapper.getNotificationType().getId(), wrapper.getCaseId());
+
+            return false;
         }
     }
 
-    private void sendLetterNotification(NotificationWrapper wrapper, Subscription subscription, Notification notification, SubscriptionWithType subscriptionWithType, NotificationEventType eventType) {
-
-        log.info("Sending the letter for event {} and case id {}.", eventType.getId(), wrapper.getCaseId());
-        sendMandatoryLetterNotification(wrapper, notification, subscriptionWithType.getSubscriptionType());
-        sendFallbackLetterNotification(wrapper, subscription, notification, subscriptionWithType, eventType);
-    }
-
-    private void sendMandatoryLetterNotification(NotificationWrapper wrapper, Notification notification, SubscriptionType subscriptionType) {
+    private boolean sendMandatoryLetterNotification(NotificationWrapper wrapper, Notification notification, SubscriptionType subscriptionType, Address addressToUse) {
         if (isMandatoryLetterEventType(wrapper)) {
-            Address addressToUse = getAddressToUseForLetter(wrapper, subscriptionType);
-            if ((bundledLettersOn && isBundledLetter(wrapper.getNotificationType())) || (docmosisLettersOn && StringUtils.isNotBlank(notification.getDocmosisLetterTemplate()))) {
+            if ((bundledLettersOn && isBundledLetter(wrapper.getNotificationType())) || (docmosisLettersOn && isNotBlank(notification.getDocmosisLetterTemplate()) && isDocmosisLetterValidToSend(wrapper))) {
                 sendBundledLetterNotification(wrapper, notification, addressToUse, getNameToUseForLetter(wrapper, subscriptionType), subscriptionType);
             } else if (hasLetterTemplate(notification)) {
                 NotificationHandler.SendNotification sendNotification = () ->
                     sendLetterNotificationToAddress(wrapper, notification, addressToUse, subscriptionType);
 
-                notificationHandler.sendNotification(wrapper, notification.getLetterTemplate(), NOTIFICATION_TYPE_LETTER, sendNotification);
+                return notificationHandler.sendNotification(wrapper, notification.getLetterTemplate(), NOTIFICATION_TYPE_LETTER, sendNotification);
             }
         }
+
+        return false;
     }
 
-    private void sendFallbackLetterNotification(NotificationWrapper wrapper, Subscription subscription, Notification notification, SubscriptionWithType subscriptionWithType, NotificationEventType eventType) {
+    private boolean sendFallbackLetterNotification(NotificationWrapper wrapper, Subscription subscription, Notification notification, SubscriptionWithType subscriptionWithType, NotificationEventType eventType, Address addressToUse) {
         if (hasNoSubscriptions(subscription) && hasLetterTemplate(notification) && isFallbackLetterRequired(wrapper, subscriptionWithType, subscription, eventType, notificationValidService)) {
-            Address addressToUse = getAddressToUseForLetter(wrapper, subscriptionWithType.getSubscriptionType());
-            if (bundledLettersOn && isBundledLetter(wrapper.getNotificationType()) || (docmosisLettersOn && StringUtils.isNotBlank(notification.getDocmosisLetterTemplate()))) {
+            if (bundledLettersOn && isBundledLetter(wrapper.getNotificationType()) || (docmosisLettersOn && isNotBlank(notification.getDocmosisLetterTemplate())) && isDocmosisLetterValidToSend(wrapper)) {
                 sendBundledLetterNotification(wrapper, notification, getAddressToUseForLetter(wrapper, subscriptionWithType.getSubscriptionType()), getNameToUseForLetter(wrapper, subscriptionWithType.getSubscriptionType()), subscriptionWithType.getSubscriptionType());
             } else {
                 NotificationHandler.SendNotification sendNotification = () ->
                     sendLetterNotificationToAddress(wrapper, notification, addressToUse, subscriptionWithType.getSubscriptionType());
 
-                notificationHandler.sendNotification(wrapper, notification.getLetterTemplate(), NOTIFICATION_TYPE_LETTER, sendNotification);
+                return notificationHandler.sendNotification(wrapper, notification.getLetterTemplate(), NOTIFICATION_TYPE_LETTER, sendNotification);
             }
         }
+
+        return false;
+    }
+
+    private boolean isDocmosisLetterValidToSend(NotificationWrapper wrapper) {
+        if (NotificationEventType.APPEAL_RECEIVED_NOTIFICATION.equals(wrapper.getNotificationType())) {
+            return equalsIgnoreCase(wrapper.getNewSscsCaseData().getAppeal().getBenefitType().getCode(), Benefit.PIP.name())
+                    && equalsIgnoreCase(wrapper.getNewSscsCaseData().getAppeal().getReceivedVia(), "Online");
+        }
+        return true;
     }
 
     public static String getRepSalutation(Representative rep) {
@@ -178,10 +231,10 @@ public class SendNotificationService {
     }
 
     protected void sendLetterNotificationToAddress(NotificationWrapper wrapper, Notification notification, final Address addressToUse, SubscriptionType subscriptionType) throws NotificationClientException {
-        if (isValidLetterAddress(addressToUse)) {
+        if (addressToUse != null) {
             Map<String, String> placeholders = notification.getPlaceholders();
             placeholders.put(ADDRESS_LINE_1, addressToUse.getLine1());
-            placeholders.put(ADDRESS_LINE_2, StringUtils.isEmpty(addressToUse.getLine2()) ? " " : addressToUse.getLine2());
+            placeholders.put(ADDRESS_LINE_2, isEmpty(addressToUse.getLine2()) ? " " : addressToUse.getLine2());
             placeholders.put(ADDRESS_LINE_3, addressToUse.getTown() == null ? " " : addressToUse.getTown());
             placeholders.put(ADDRESS_LINE_4, addressToUse.getCounty() == null ? " " : addressToUse.getCounty());
             placeholders.put(POSTCODE_LITERAL, addressToUse.getPostcode());
@@ -205,26 +258,24 @@ public class SendNotificationService {
             }
 
             notificationSender.sendLetter(
-                    notification.getLetterTemplate(),
-                    addressToUse,
-                    notification.getPlaceholders(),
-                    wrapper.getCaseId()
+                notification.getLetterTemplate(),
+                addressToUse,
+                notification.getPlaceholders(),
+                wrapper.getCaseId()
             );
-        } else {
-            log.warn("Attempting to send letter for case id: " + wrapper.getCaseId() + ", no address present");
         }
     }
 
     private static boolean isValidLetterAddress(Address addressToUse) {
         return null != addressToUse
-                && null != addressToUse.getLine1()
-                && null != addressToUse.getPostcode();
+            && isNotBlank(addressToUse.getLine1())
+            && isNotBlank(addressToUse.getPostcode());
     }
 
     private void sendBundledLetterNotification(NotificationWrapper wrapper, Notification notification, Address addressToUse, Name nameToUse, SubscriptionType subscriptionType) {
         try {
             byte[] bundledLetter;
-            if (StringUtils.isNotBlank(notification.getDocmosisLetterTemplate())) {
+            if (isNotBlank(notification.getDocmosisLetterTemplate())) {
                 byte[] letter = pdfLetterService.generateLetter(wrapper, notification, subscriptionType);
                 final byte[] associatedCasePdf = downloadAssociatedCasePdf(wrapper);
                 if (ArrayUtils.isNotEmpty(associatedCasePdf)) {
@@ -247,17 +298,17 @@ public class SendNotificationService {
                     notification.getPlaceholders().put(APPEAL_RESPOND_DATE, appealReceivedDate.format(DateTimeFormatter.ofPattern(RESPONSE_DATE_FORMAT)));
                 }
                 bundledLetter = buildBundledLetter(
-                        generateCoveringLetter(wrapper, notification, subscriptionType),
-                        downloadAssociatedCasePdf(wrapper)
+                    generateCoveringLetter(wrapper, notification, subscriptionType),
+                    downloadAssociatedCasePdf(wrapper)
                 );
             }
 
             NotificationHandler.SendNotification sendNotification = () ->
-                    notificationSender.sendBundledLetter(
-                            wrapper.getNewSscsCaseData().getAppeal().getAppellant().getAddress().getPostcode(),   // Used for whitelisting only
-                            bundledLetter,
-                            wrapper.getCaseId()
-                    );
+                notificationSender.sendBundledLetter(
+                    wrapper.getNewSscsCaseData().getAppeal().getAppellant().getAddress().getPostcode(),   // Used for whitelisting only
+                    bundledLetter,
+                    wrapper.getCaseId()
+                );
             if (ArrayUtils.isNotEmpty(bundledLetter)) {
                 notificationHandler.sendNotification(wrapper, notification.getLetterTemplate(), NOTIFICATION_TYPE_LETTER, sendNotification);
             }

@@ -1,7 +1,4 @@
 dependencies:
-  - name: postgresql
-    version: ~2.6.5
-    repository: '@stable'
   - name: java
-    version: ~2.2.2
+    version: ~2.9.1
     repository: '@hmctspublic'
