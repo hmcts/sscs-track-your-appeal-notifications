@@ -20,5 +20,6 @@ spring:
         idam-s2s-api: IDAM_S2S_AUTH
         sscs-s2s-secret: IDAM_S2S_AUTH_TOTP_SECRET
         s2s-micro: IDAM_S2S_AUTH_MICROSERVICE
+        sscs-asb-primary-send-and-listen-shared-access-key: AMQP_PASSWORD
 #        docmosis-endpoint: PDF_SERVICE_BASE_URL
         docmosis-api-key: PDF_SERVICE_ACCESS_KEY
