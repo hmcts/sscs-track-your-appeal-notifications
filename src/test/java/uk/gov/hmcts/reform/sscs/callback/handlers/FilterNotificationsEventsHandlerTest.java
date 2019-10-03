@@ -34,7 +34,7 @@ public class FilterNotificationsEventsHandlerTest {
     }
 
     @Test
-    @Parameters({"DWP_UPLOAD_RESPONSE"})
+    @Parameters({"DWP_UPLOAD_RESPONSE_NOTIFICATION"})
     public void willHandleEvents(NotificationEventType notificationEventType) {
         SscsCaseDataWrapper callback = SscsCaseDataWrapper.builder().notificationEventType(notificationEventType).build();
         handler.handle(callback);
