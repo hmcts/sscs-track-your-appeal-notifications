@@ -67,6 +67,10 @@ data "azurerm_key_vault_secret" "pdf_service_access_key" {
   vault_uri = "${data.azurerm_key_vault.sscs_key_vault.vault_uri}"
 }
 
+data "azurerm_key_vault_secret" "sscs_asb_primary_send_and_listen_shared_access_key" {
+  name      = "sscs-asb-primary-send-and-listen-shared-access-key"
+  vault_uri = "${data.azurerm_key_vault.sscs_key_vault.vault_uri}"
+}
 
 locals {
   local_ase = "${data.terraform_remote_state.core_apps_compute.ase_name[0]}"
@@ -141,6 +145,14 @@ module "track-your-appeal-notifications" {
     JOB_SCHEDULER_DB_NAME               = "${module.db-notif.postgresql_database}"
     JOB_SCHEDULER_DB_CONNECTION_OPTIONS = "?ssl"
     MAX_ACTIVE_DB_CONNECTIONS           = 70
+
+    // In Azure Service bus, rulename/key is used as username/password
+    AMQP_HOST         = "sscs-servicebus-${var.env}.servicebus.windows.net"
+    AMQP_USERNAME     = "SendAndListenSharedAccessKey"
+    AMQP_PASSWORD     = "${data.azurerm_key_vault_secret.sscs_asb_primary_send_and_listen_shared_access_key.value}"
+    TOPIC_NAME        = "sscs-evidenceshare-topic-${var.env}"
+    SUBSCRIPTION_NAME = "sscs-notifications-subscription-${var.env}"
+    TRUST_ALL_CERTS         = "${var.trust_all_certs}"
 
     HOURS_START_TIME                    = "${var.hours_start_time}"
     HOURS_END_TIME                      = "${var.hours_end_time}"
