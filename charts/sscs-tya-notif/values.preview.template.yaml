@@ -43,6 +43,7 @@ java:
     JOB_SCHEDULER_DB_USERNAME: "{{ .Values.postgresql.postgresqlUsername}}"
     JOB_SCHEDULER_DB_NAME: "{{ .Values.postgresql.postgresqlDatabase}}"
     JOB_SCHEDULER_DB_HOST: "{{ .Release.Name }}-postgresql"
+    JOB_SCHEDULER_DB_CONNECTION_OPTIONS: ""
     HOURS_START_TIME: 0
     HOURS_END_TIME: 23
 postgresql:
