@@ -35,6 +35,7 @@ java:
     CORE_CASE_DATA_JURISDICTION_ID: SSCS
     CORE_CASE_DATA_CASE_TYPE_ID: Benefit
     JOB_SCHEDULER_POLL_INTERVAL: "30000"
+    JOB_SCHEDULER_DB_PORT: "5432"
     IDAM_OAUTH2_REDIRECT_URL: "https://evidence-sharing-preprod.sscs.reform.hmcts.net"
     EVIDENCE_SUBMISSION_INFO_LINK: "https://track-appeal.{{ .Values.global.environment }}.platform.hmcts.net/evidence/appeal_id"
     SSCS_MANAGE_EMAILS_LINK: "https://track-appeal.{{ .Values.global.environment }}.platform.hmcts.net/manage-email-notifications/mac"
