@@ -51,4 +51,19 @@ public class DwpResponseReceivedDateExtractorTest {
         assertFalse(dwpResponseReceivedDate.isPresent());
     }
 
+    @Test
+    public void returnsDwpResponseDateWhenThereAreNoEvents() {
+        ZonedDateTime expectedDwpResponseReceivedDate = ZonedDateTime.parse("2018-01-25T00:00:00Z[Europe/London]");
+
+        CcdNotificationWrapper ccdResponse = SscsCaseDataUtils.buildBasicCcdNotificationWrapper(
+                APPEAL_RECEIVED_NOTIFICATION
+        );
+        ccdResponse.getSscsCaseDataWrapper().getNewSscsCaseData().setDwpResponseDate("2018-01-25");
+
+        Optional<ZonedDateTime> dwpResponseReceivedDate = dwpResponseReceivedDateExtractor.extract(ccdResponse.getNewSscsCaseData());
+
+        assertTrue(dwpResponseReceivedDate.isPresent());
+        assertEquals(expectedDwpResponseReceivedDate, dwpResponseReceivedDate.get());
+    }
+
 }

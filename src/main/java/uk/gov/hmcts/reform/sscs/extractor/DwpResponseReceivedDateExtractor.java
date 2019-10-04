@@ -1,31 +1,30 @@
 package uk.gov.hmcts.reform.sscs.extractor;
 
 import static uk.gov.hmcts.reform.sscs.ccd.domain.EventType.DWP_RESPOND;
-import static uk.gov.hmcts.reform.sscs.ccd.domain.EventType.DWP_UPLOAD_RESPONSE;
+import static uk.gov.hmcts.reform.sscs.config.SscsConstants.ZONE_ID;
 
+import java.time.ZoneId;
 import java.time.ZonedDateTime;
-import java.util.Arrays;
+import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
 import org.springframework.stereotype.Component;
 import uk.gov.hmcts.reform.sscs.ccd.domain.Event;
-import uk.gov.hmcts.reform.sscs.ccd.domain.EventType;
 import uk.gov.hmcts.reform.sscs.ccd.domain.SscsCaseData;
 
 @Component
 public class DwpResponseReceivedDateExtractor {
 
-    private static final List<EventType> DWP_RESPONSE_EVENT_TYPES = Arrays.asList(DWP_RESPOND, DWP_UPLOAD_RESPONSE);
-
     public Optional<ZonedDateTime> extract(SscsCaseData caseData) {
 
-        for (Event event : caseData.getEvents()) {
-            if (event.getValue() != null && DWP_RESPONSE_EVENT_TYPES.contains(event.getValue().getEventType())) {
+        final List<Event> allCaseEvents = Optional.ofNullable(caseData.getEvents()).orElse(Collections.emptyList());
+        for (Event event : allCaseEvents) {
+            if (event.getValue() != null && DWP_RESPOND.equals(event.getValue().getEventType())) {
                 return Optional.of(event.getValue().getDateTime());
             }
         }
 
-        return Optional.empty();
+        return Optional.ofNullable(caseData.getDwpResponseDate()).map(date -> ZonedDateTime.parse(date + "T00:00:00Z").toInstant().atZone(ZoneId.of(ZONE_ID)));
     }
 
 }

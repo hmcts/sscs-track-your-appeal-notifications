@@ -256,7 +256,7 @@ dependencies {
     compile group: 'uk.gov.hmcts.reform', name: 'sscs-job-scheduler', version: '1.5.2'
     compile group: 'uk.gov.hmcts.reform', name: 'service-auth-provider-client', version: '3.0.0'
 
-    compile group: 'uk.gov.hmcts.reform', name: 'sscs-common', version: '3.0.74'
+    compile group: 'uk.gov.hmcts.reform', name: 'sscs-common', version: '3.0.75'
     compile group: 'uk.gov.hmcts.reform', name: 'sscs-pdf-email-common', version: '1.1.8'
 
     compile group: 'uk.gov.service.notify', name: 'notifications-java-client', version: '3.14.2-RELEASE'
@@ -301,7 +301,7 @@ applicationDefaultJvmArgs = ["-Dfile.encoding=UTF-8"]
 run {
     def debug = System.getProperty("debug")
     if (debug == 'true') {
-        jvmArgs = ['-agentlib:jdwp=transport=dt_socket,server=y,suspend=y,address=5005']
+        jvmArgs = ['-agentlib:jdwp=transport=dt_socket,server=y,suspend=y,address=5006']
     }
 }
 
