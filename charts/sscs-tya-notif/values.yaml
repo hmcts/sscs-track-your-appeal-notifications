@@ -1,6 +1,8 @@
 java:
   image: 'https://hmctspublic.azurecr.io/sscs/tya-notif:latest'
   applicationPort: 8081
+  aadIdentityName: sscs
+  ingressHost: sscs-tya-notif-{{ .Values.global.environment }}.service.core-compute-{{ .Values.global.environment }}.internal
   keyVaults:
     sscs:
       resourceGroup: sscs
@@ -20,6 +22,7 @@ java:
       - sscs-asb-primary-send-and-listen-shared-access-key
       - docmosis-endpoint
       - docmosis-api-key
+      - notification-job-scheduler-db-password
   environment:
     REFORM_TEAM: sscs
     REFORM_SERVICE_NAME: tya-notifications
@@ -33,10 +36,9 @@ java:
     CORE_CASE_DATA_CASE_TYPE_ID: Benefit
     JOB_SCHEDULER_POLL_INTERVAL: "30000"
     JOB_SCHEDULER_DB_PORT: "5432"
-    JOB_SCHEDULER_DB_PASSWORD:  "{{ .Values.postgresql.postgresqlPassword}}"
-    JOB_SCHEDULER_DB_USERNAME: "{{ .Values.postgresql.postgresqlUsername}}"
-    JOB_SCHEDULER_DB_NAME: "{{ .Values.postgresql.postgresqlDatabase}}"
-    JOB_SCHEDULER_DB_HOST: "{{ .Release.Name }}-postgresql"
+    JOB_SCHEDULER_DB_USERNAME: "notification@sscs-tya-notif-postgres-db-{{ .Values.global.environment }}"
+    JOB_SCHEDULER_DB_NAME: "notification"
+    JOB_SCHEDULER_DB_HOST: "sscs-tya-notif-postgres-db-{{ .Values.global.environment }}.postgres.database.azure.com"
     IDAM_OAUTH2_REDIRECT_URL: "https://evidence-sharing-preprod.sscs.reform.hmcts.net"
     EVIDENCE_SUBMISSION_INFO_LINK: "https://track-appeal.{{ .Values.global.environment }}.platform.hmcts.net/evidence/appeal_id"
     SSCS_MANAGE_EMAILS_LINK: "https://track-appeal.{{ .Values.global.environment }}.platform.hmcts.net/manage-email-notifications/mac"
@@ -47,9 +49,16 @@ java:
     IDAM_API_URL: "https://idam-api.{{ .Values.global.environment }}.platform.hmcts.net"
     CORE_CASE_DATA_API_URL: "http://ccd-data-store-api-{{ .Values.global.environment }}.service.core-compute-{{ .Values.global.environment }}.internal"
     DOCUMENT_MANAGEMENT_URL: "http://dm-store-{{ .Values.global.environment }}.service.core-compute-{{ .Values.global.environment }}.internal"
-    JOB_SCHEDULER_DB_CONNECTION_OPTIONS: ""
+    COH_URL: "http://coh-cor-{{ .Values.global.environment }}.service.core-compute-{{ .Values.global.environment }}.internal"
+    ONLINE_HEARING_LINK: "https://sscs-cor-frontend-{{ .Values.global.environment }}.service.core-compute-{{ .Values.global.environment }}.internal"
+    JOB_SCHEDULER_DB_CONNECTION_OPTIONS: ?sslmode=require
     MAX_ACTIVE_DB_CONNECTIONS: 70
-    HOURS_START_TIME: 0
-    HOURS_END_TIME: 23
+    HOURS_START_TIME: 9
+    HOURS_END_TIME: 17
+    TRUST_ALL_CERTS: "false"
+    SUBSCRIPTION_NAME: "sscs-notifications-subscription-{{ .Values.global.environment }}"
+    TOPIC_NAME: "sscs-evidenceshare-topic-{{ .Values.global.environment }}"
+    AMQP_HOST: "sscs-servicebus-{{ .Values.global.environment }}.servicebus.windows.net"
+    AMQP_USERNAME: "SendAndListenSharedAccessKey"
 
 
