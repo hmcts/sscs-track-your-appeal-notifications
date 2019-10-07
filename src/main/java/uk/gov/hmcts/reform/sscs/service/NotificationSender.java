@@ -32,6 +32,7 @@ public class NotificationSender {
     private final NotificationBlacklist notificationBlacklist;
     private final CcdNotificationsPdfService ccdNotificationsPdfService;
     private final MarkdownTransformationService markdownTransformationService;
+    private final SaveLetterCorrespondenceAsyncService saveLetterCorrespondenceAsyncService;
     private final Boolean saveCorrespondence;
 
     @Autowired
@@ -40,6 +41,7 @@ public class NotificationSender {
                               NotificationBlacklist notificationBlacklist,
                               CcdNotificationsPdfService ccdNotificationsPdfService,
                               MarkdownTransformationService markdownTransformationService,
+                              SaveLetterCorrespondenceAsyncService saveLetterCorrespondenceAsyncService,
                               @Value("${feature.save_correspondence}") Boolean saveCorrespondence
     ) {
         this.notificationClient = notificationClient;
@@ -48,6 +50,7 @@ public class NotificationSender {
         this.ccdNotificationsPdfService = ccdNotificationsPdfService;
         this.markdownTransformationService = markdownTransformationService;
         this.saveCorrespondence = saveCorrespondence;
+        this.saveLetterCorrespondenceAsyncService = saveLetterCorrespondenceAsyncService;
     }
 
     public void sendEmail(String templateId, String emailAddress, Map<String, String> personalisation, String reference,
@@ -122,11 +125,17 @@ public class NotificationSender {
     }
 
     public void sendLetter(String templateId, Address address, Map<String, String> personalisation,
-                           String ccdCaseId) throws NotificationClientException {
+                           NotificationEventType notificationEventType,
+                           String name, String ccdCaseId) throws NotificationClientException {
 
         NotificationClient client = getLetterNotificationClient(address.getPostcode());
 
         SendLetterResponse sendLetterResponse = client.sendLetter(templateId, personalisation, ccdCaseId);
+
+        if (saveCorrespondence) {
+            final Correspondence correspondence = getLetterCorrespondence(notificationEventType, name);
+            saveLetterCorrespondenceAsyncService.saveLetter(client, sendLetterResponse.getNotificationId().toString(), correspondence, ccdCaseId);
+        }
 
         LOG.info("Letter Notification send for case id : {}, Gov notify id: {} ", ccdCaseId,
             sendLetterResponse.getNotificationId());
@@ -150,13 +159,29 @@ public class NotificationSender {
         LOG.info("Uploaded correspondence into ccd for case id {}.", sscsCaseData.getCcdCaseId());
     }
 
-    public void sendBundledLetter(String appellantPostcode, byte[] directionText, String ccdCaseId) throws NotificationClientException {
+    private Correspondence getLetterCorrespondence(NotificationEventType notificationEventType, String name) {
+        return Correspondence.builder().value(
+                    CorrespondenceDetails.builder()
+                            .eventType(notificationEventType.getId())
+                            .to(name)
+                            .correspondenceType(CorrespondenceType.Letter)
+                            .sentOn(LocalDateTime.now(ZONE_ID_LONDON).format(DATE_TIME_FORMATTER))
+                            .build()
+            ).build();
+    }
+
+    public void sendBundledLetter(String appellantPostcode, byte[] directionText, NotificationEventType notificationEventType, String name, String ccdCaseId) throws NotificationClientException {
         if (directionText != null) {
             NotificationClient client = getLetterNotificationClient(appellantPostcode);
 
             ByteArrayInputStream bis = new ByteArrayInputStream(directionText);
 
             LetterResponse sendLetterResponse = client.sendPrecompiledLetterWithInputStream(ccdCaseId, bis);
+
+            if (saveCorrespondence) {
+                final Correspondence correspondence = getLetterCorrespondence(notificationEventType, name);
+                saveLetterCorrespondenceAsyncService.saveLetter(client, sendLetterResponse.getNotificationId().toString(), correspondence, ccdCaseId);
+            }
 
             LOG.info("Letter Notification send for case id : {}, Gov notify id: {} ", ccdCaseId,
                 sendLetterResponse.getNotificationId());
