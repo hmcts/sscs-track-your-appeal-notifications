@@ -261,6 +261,8 @@ public class SendNotificationService {
                 notification.getLetterTemplate(),
                 addressToUse,
                 notification.getPlaceholders(),
+                wrapper.getNotificationType(),
+                fullNameNoTitle,
                 wrapper.getCaseId()
             );
         }
@@ -307,6 +309,8 @@ public class SendNotificationService {
                 notificationSender.sendBundledLetter(
                     wrapper.getNewSscsCaseData().getAppeal().getAppellant().getAddress().getPostcode(),   // Used for whitelisting only
                     bundledLetter,
+                    wrapper.getNotificationType(),
+                    nameToUse.getFullNameNoTitle(),
                     wrapper.getCaseId()
                 );
             if (ArrayUtils.isNotEmpty(bundledLetter)) {
