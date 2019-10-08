@@ -244,6 +244,13 @@ notification:
       docmosisId: TB-SCS-GNO-ENG-00067.docx
     representative:
       docmosisId: TB-SCS-GNO-ENG-00089.docx
+  decisionIssued:
+    appellant:
+      docmosisId: TB-SCS-GNO-ENG-00067.docx
+    appointee:
+      docmosisId: TB-SCS-GNO-ENG-00067.docx
+    representative:
+      docmosisId: TB-SCS-GNO-ENG-00089.docx
   corDecision:
     emailId: 5b0df251-49b9-46d5-b347-37a81ab77f19
   requestInfoIncompleteApplication:
@@ -391,7 +398,8 @@ feature.letters_on: ${LETTERS_ON:true}
 feature.docmosis_letters_on: ${DOCMOSIS_LETTERS_ON:true}
 feature.interloc_letters_on: ${INTERLOC_LETTERS_ON:true}
 feature.docmosis_leters.appealReceived_on: ${APPEAL_RECEIVED_LETTER_ON:true}
-feature.docmosis_leters.directionIssued_on: ${DIRECTION_ISSUED_LETTER_ON:true}
+feature.docmosis_leters.directionIssued_on: true
+feature.docmosis_leters.decisionIssued_on: true
 feature.save_correspondence: ${SAVE_CORRESPONDENCE:true}
 
 letterAsync:
@@ -409,6 +417,7 @@ pdf-service:
   coverSheets:
     appealReceived: 'TB-SCS-GNO-ENG-00012.docx'
     directionIssued: 'TB-SCS-GNO-ENG-00012.docx'
+    decisionIssued: 'TB-SCS-GNO-ENG-00012.docx'
 
 amqp:
   host: ${AMQP_HOST:localhost}

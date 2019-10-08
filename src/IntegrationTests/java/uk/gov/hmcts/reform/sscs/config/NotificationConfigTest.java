@@ -10,6 +10,7 @@ import static uk.gov.hmcts.reform.sscs.domain.notify.NotificationEventType.*;
 
 import java.util.Arrays;
 import java.util.List;
+import java.util.Objects;
 import java.util.stream.Collectors;
 
 import junitparams.JUnitParamsRunner;
@@ -31,7 +32,7 @@ import uk.gov.hmcts.reform.sscs.domain.notify.Template;
 @SpringBootTest
 @ActiveProfiles("integration")
 public class NotificationConfigTest {
-    public static final List<NotificationEventType> BUNDLED_LETTER_EVENT_TYPES = Arrays.asList(STRUCK_OUT, DIRECTION_ISSUED, JUDGE_DECISION_APPEAL_TO_PROCEED, TCW_DECISION_APPEAL_TO_PROCEED);
+    public static final List<NotificationEventType> BUNDLED_LETTER_EVENT_TYPES = Arrays.asList(STRUCK_OUT, DIRECTION_ISSUED, DECISION_ISSUED, JUDGE_DECISION_APPEAL_TO_PROCEED, TCW_DECISION_APPEAL_TO_PROCEED);
 
     // Below rules are needed to use the junitParamsRunner together with SpringRunner
     @ClassRule
@@ -164,6 +165,10 @@ public class NotificationConfigTest {
             new Object[]{null, null, null, "TB-SCS-GNO-ENG-00067.docx", PAPER, getTemplateName(DIRECTION_ISSUED, APPOINTEE)},
             new Object[]{null, null, null, "TB-SCS-GNO-ENG-00089.docx", ORAL, getTemplateName(DIRECTION_ISSUED, REPRESENTATIVE)},
             new Object[]{null, null, null, "TB-SCS-GNO-ENG-00089.docx", PAPER, getTemplateName(DIRECTION_ISSUED, REPRESENTATIVE)},
+            new Object[]{null, null, null, "TB-SCS-GNO-ENG-00067.docx", ORAL, getTemplateName(DECISION_ISSUED, APPELLANT)},
+            new Object[]{null, null, null, "TB-SCS-GNO-ENG-00067.docx", PAPER, getTemplateName(DECISION_ISSUED, APPOINTEE)},
+            new Object[]{null, null, null, "TB-SCS-GNO-ENG-00089.docx", ORAL, getTemplateName(DECISION_ISSUED, REPRESENTATIVE)},
+            new Object[]{null, null, null, "TB-SCS-GNO-ENG-00089.docx", PAPER, getTemplateName(DECISION_ISSUED, REPRESENTATIVE)},
         };
     }
 
@@ -171,17 +176,20 @@ public class NotificationConfigTest {
     @SuppressWarnings({"Indentation", "unused"})
     private Object[] bundledLetterTemplateNames() {
         List<SubscriptionType> subscriptionTypes = Arrays.asList(APPELLANT, APPOINTEE, REPRESENTATIVE);
-        Object[] result = new Object[(BUNDLED_LETTER_EVENT_TYPES.size() - 1) * subscriptionTypes.size() * 2];
+        Object[] result = new Object[(BUNDLED_LETTER_EVENT_TYPES.size()) * subscriptionTypes.size() * 2];
 
         int i = 0;
-        for (NotificationEventType eventType : BUNDLED_LETTER_EVENT_TYPES.stream().filter(f -> !f.equals(DIRECTION_ISSUED)).collect(Collectors.toList())) {
+        for (NotificationEventType eventType : BUNDLED_LETTER_EVENT_TYPES.stream()
+                .filter(f -> !f.equals(DIRECTION_ISSUED)).filter(f -> !f.equals(DECISION_ISSUED)).collect(Collectors.toList())) {
             for (SubscriptionType subscriptionType : subscriptionTypes) {
                 result[i++] = new Object[]{PAPER, getTemplateName(eventType, subscriptionType)};
                 result[i++] = new Object[]{ORAL, getTemplateName(eventType, subscriptionType)};
             }
         }
 
-        return result;
+        return Arrays.stream(result)
+                .filter(Objects::nonNull)
+                .toArray();
     }
 
     private String getTemplateName(NotificationEventType notificationEventType, SubscriptionType subscriptionType) {

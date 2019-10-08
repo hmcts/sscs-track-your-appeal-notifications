@@ -1194,6 +1194,20 @@ public class NotificationsIt {
                 "0",
                 "0"
             },
+            new Object[]{
+                DECISION_ISSUED,
+                "paper",
+                Collections.emptyList(),
+                Collections.emptyList(),
+                Arrays.asList("TB-SCS-GNO-ENG-00067.docx", "TB-SCS-GNO-ENG-00089.docx"),
+                "no",
+                "no",
+                "no",
+                "no",
+                "0",
+                "0",
+                "0"
+            },
         };
     }
 
@@ -1272,6 +1286,20 @@ public class NotificationsIt {
                 "1"
             },
             new Object[]{
+                DECISION_ISSUED,
+                "paper",
+                false,
+                false,
+                "1"
+            },
+            new Object[]{
+                DECISION_ISSUED,
+                "oral",
+                false,
+                false,
+                "1"
+            },
+            new Object[]{
                 STRUCK_OUT,
                 "paper",
                 false,
@@ -1308,6 +1336,41 @@ public class NotificationsIt {
             },
             new Object[]{
                 DIRECTION_ISSUED,
+                "oral",
+                true,
+                true,
+                "2"
+            },
+            new Object[]{
+                DECISION_ISSUED,
+                "oral",
+                false,
+                true,
+                "1"
+            },
+            new Object[]{
+                DECISION_ISSUED,
+                "paper",
+                true,
+                false,
+                "2"
+            },
+            new Object[]{
+                DECISION_ISSUED,
+                "oral",
+                true,
+                false,
+                "2"
+            },
+            new Object[]{
+                DECISION_ISSUED,
+                "paper",
+                true,
+                true,
+                "2"
+            },
+            new Object[]{
+                DECISION_ISSUED,
                 "oral",
                 true,
                 true,
@@ -2013,6 +2076,20 @@ public class NotificationsIt {
                 "0",
                 "0"
             },
+            new Object[]{
+                DECISION_ISSUED,
+                "paper",
+                Collections.emptyList(),
+                Collections.emptyList(),
+                Arrays.asList("TB-SCS-GNO-ENG-00067.docx", "TB-SCS-GNO-ENG-00089.docx"),
+                "no",
+                "no",
+                "no",
+                "no",
+                "0",
+                "0",
+                "0"
+            },
         };
     }
 
@@ -2200,7 +2277,20 @@ public class NotificationsIt {
                 "0",
                 "0",
                 "Appointee Appointee"
-        },
+            },
+            new Object[]{
+                DECISION_ISSUED,
+                "paper",
+                Collections.emptyList(),
+                Collections.emptyList(),
+                Collections.singletonList("TB-SCS-GNO-ENG-00067.docx"),
+                "yes",
+                "yes",
+                "0",
+                "0",
+                "0",
+                "Appointee Appointee"
+            },
             new Object[]{
                 APPEAL_RECEIVED_NOTIFICATION,
                 "paper",

@@ -358,7 +358,7 @@ public class SendNotificationService {
         } else if ((DIRECTION_ISSUED.equals(notificationEventType))
                 && (newSscsCaseData.getSscsInterlocDirectionDocument() != null)) {
             documentUrl = newSscsCaseData.getSscsInterlocDirectionDocument().getDocumentLink().getDocumentUrl();
-        } else if ((JUDGE_DECISION_APPEAL_TO_PROCEED.equals(notificationEventType) || TCW_DECISION_APPEAL_TO_PROCEED.equals(notificationEventType))
+        } else if ((DECISION_ISSUED.equals(notificationEventType) || JUDGE_DECISION_APPEAL_TO_PROCEED.equals(notificationEventType) || TCW_DECISION_APPEAL_TO_PROCEED.equals(notificationEventType))
                 && (newSscsCaseData.getSscsInterlocDecisionDocument() != null)) {
             documentUrl = newSscsCaseData.getSscsInterlocDecisionDocument().getDocumentLink().getDocumentUrl();
         }
