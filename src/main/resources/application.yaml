@@ -414,7 +414,7 @@ amqp:
   host: ${AMQP_HOST:localhost}
   username: ${AMQP_USERNAME:guest}
   password: ${AMQP_PASSWORD:guest}
-  topic: ${TOPIC_NAME:test.topic}
+  topic: ${TOPIC_NAME}
   subscription: ${SUBSCRIPTION_NAME:test2.queue}
   # DO NOT SET THIS 'true' IN PRODUCTION!
   trustAllCerts: ${TRUST_ALL_CERTS:true}

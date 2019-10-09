@@ -1,0 +1,11 @@
+#logging.level.root: DEBUG
+
+logging.level:
+  org.springframework.web: ${LOG_LEVEL_SPRING_WEB:debug}
+  uk.gov.hmcts.reform.sscs: ${LOG_LEVEL_SSCS:debug}
+  uk.gov.hmcts.reform.sscs.idam.IdamApiClient: DEBUG
+  uk.gov.hmcts.reform.ccd.client.CoreCaseDataApi: DEBUG
+
+amqp:
+  topic: ${TOPIC_NAME:test.topic}
+  password: ${AMQP_PASSWORD:guest}
