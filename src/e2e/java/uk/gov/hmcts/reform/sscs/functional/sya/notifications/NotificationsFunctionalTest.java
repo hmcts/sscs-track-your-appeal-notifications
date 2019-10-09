@@ -115,6 +115,9 @@ public class NotificationsFunctionalTest extends AbstractFunctionalTest {
     @Value("${notification.appealLapsed.appointee.smsId}")
     private String appealLapsedAppointeeSmsTemplateId;
 
+    @Value("${notification.appealLapsed.appointee.letterId}")
+    private String appealLapsedAppointeeLetterTemplateId;
+
     @Value("${notification.appealWithdrawn.appointee.emailId}")
     private String appointeeAppealWithdrawnEmailId;
 
@@ -383,7 +386,8 @@ public class NotificationsFunctionalTest extends AbstractFunctionalTest {
                 "appointee/dwpAppealLapsedCallback.json");
         List<Notification> notifications = tryFetchNotificationsForTestCase(
                 appealLapsedAppointeeEmailTemplateId,
-                appealLapsedAppointeeSmsTemplateId
+                appealLapsedAppointeeSmsTemplateId,
+                appealLapsedAppointeeLetterTemplateId
         );
         Notification emailNotification = notifications.stream().filter(f -> f.getTemplateId().toString().equals(appealLapsedAppointeeEmailTemplateId)).collect(Collectors.toList()).get(0);
 
