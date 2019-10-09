@@ -420,6 +420,11 @@ feature.docmosis_leters.appealReceived_on: ${APPEAL_RECEIVED_LETTER_ON:true}
 feature.docmosis_leters.directionIssued_on: ${DIRECTION_ISSUED_LETTER_ON:true}
 feature.save_correspondence: ${SAVE_CORRESPONDENCE:true}
 
+letterAsync:
+  maxAttempts: ${LETTER_ASYNC_MAX_ATTEMPTS:5}
+  delay: ${LETTER_ASYNC_DELAY:3000}
+  multiplier: ${LETTER_ASYNC_MULTIPLIER:10}
+
 pdf-service:
   uri: ${PDF_SERVICE_BASE_URL:https://docmosis-development.platform.hmcts.net/rs/render}
   accessKey: ${PDF_SERVICE_ACCESS_KEY:secret-key-not-supplied}

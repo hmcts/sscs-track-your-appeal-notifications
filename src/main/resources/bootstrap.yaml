@@ -9,6 +9,7 @@ spring:
         idam-sscs-systemupdate-password: IDAM_SSCS_SYSTEMUPDATE_PASSWORD
         notification-key: NOTIFICATION_API_KEY
         notification-test-key: NOTIFICATION_API_TEST_KEY
+        notification-job-scheduler-db-password: JOB_SCHEDULER_DB_PASSWORD
         sscs-email-mac-secret-text: EMAIL_MAC_SECRET_TEXT
         idam-sscs-oauth2-client-secret: IDAM_OAUTH2_CLIENT_SECRET
         idam-oauth-user: IDAM_OAUTH2_CLIENT_ID
