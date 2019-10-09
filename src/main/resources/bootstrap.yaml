@@ -24,3 +24,4 @@ spring:
         sscs-asb-primary-send-and-listen-shared-access-key: AMQP_PASSWORD
 #        docmosis-endpoint: PDF_SERVICE_BASE_URL
         docmosis-api-key: PDF_SERVICE_ACCESS_KEY
+        topic-name: TOPIC_NAME
