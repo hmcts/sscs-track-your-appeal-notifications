@@ -410,15 +410,6 @@ pdf-service:
     appealReceived: 'TB-SCS-GNO-ENG-00012.docx'
     directionIssued: 'TB-SCS-GNO-ENG-00012.docx'
 
-amqp:
-  host: ${AMQP_HOST}
-  username: ${AMQP_USERNAME}
-  password: ${AMQP_PASSWORD}
-  topic: ${TOPIC_NAME}
-  subscription: ${SUBSCRIPTION_NAME}
-  # DO NOT SET THIS 'true' IN PRODUCTION!
-  trustAllCerts: ${TRUST_ALL_CERTS}
-
 ---
 # default profile (development, production etc.)
 spring:
@@ -445,6 +436,14 @@ job.scheduler:
       threadPool:
         class: org.quartz.simpl.SimpleThreadPool
         threadCount: 8
+amqp:
+  host: ${AMQP_HOST:}
+  username: ${AMQP_USERNAME:}
+  password: ${AMQP_PASSWORD:}
+  topic: ${TOPIC_NAME:}
+  subscription: ${SUBSCRIPTION_NAME:}
+  trustAllCerts: ${TRUST_ALL_CERTS:}
+
 ---
 # integration & functional profile
 spring:
@@ -460,3 +459,10 @@ job.scheduler:
         instanceId: AUTO
       jobStore:
         class: org.quartz.simpl.RAMJobStore
+amqp:
+  host: ${AMQP_HOST:localhost}
+  username: ${AMQP_USERNAME:}
+  password: ${AMQP_PASSWORD:}
+  topic: ${TOPIC_NAME:}
+  subscription: ${SUBSCRIPTION_NAME:}
+  trustAllCerts: ${TRUST_ALL_CERTS:false}
