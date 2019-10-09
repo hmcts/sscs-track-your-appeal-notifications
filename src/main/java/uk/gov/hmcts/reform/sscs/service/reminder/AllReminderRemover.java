@@ -17,7 +17,7 @@ import uk.gov.hmcts.reform.sscs.jobscheduler.services.JobRemover;
 public class AllReminderRemover implements ReminderHandler {
 
     private static final List<NotificationEventType> NOTIFICATION_EVENT_TYPES =
-            Arrays.asList(APPEAL_LAPSED_NOTIFICATION, DWP_APPEAL_LAPSED_NOTIFICATION);
+            Arrays.asList(APPEAL_LAPSED_NOTIFICATION, HMCTS_APPEAL_LAPSED_NOTIFICATION, DWP_APPEAL_LAPSED_NOTIFICATION);
 
     private static final List<NotificationEventType> REMINDERS_TO_REMOVE =
             Arrays.asList(HEARING_REMINDER_NOTIFICATION, EVIDENCE_RECEIVED_NOTIFICATION);

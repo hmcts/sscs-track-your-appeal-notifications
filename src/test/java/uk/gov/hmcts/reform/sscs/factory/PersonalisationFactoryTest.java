@@ -61,8 +61,20 @@ public class PersonalisationFactoryTest {
     }
 
     @Test
-    public void createRepsPersonalisationWhenDwpLapsedNotificationApplied() {
+    public void createRepsPersonalisationWhenAppealLapsedNotificationApplied() {
+        Personalisation result = factory.apply(APPEAL_LAPSED_NOTIFICATION);
+        assertEquals(withRepresentativePersonalisation, result);
+    }
+
+    @Test
+    public void createRepsPersonalisationWhenHmtsLapsedNotificationApplied() {
         Personalisation result = factory.apply(DWP_APPEAL_LAPSED_NOTIFICATION);
+        assertEquals(withRepresentativePersonalisation, result);
+    }
+
+    @Test
+    public void createRepsPersonalisationWhenDwpLapsedNotificationApplied() {
+        Personalisation result = factory.apply(HMCTS_APPEAL_LAPSED_NOTIFICATION);
         assertEquals(withRepresentativePersonalisation, result);
     }
 

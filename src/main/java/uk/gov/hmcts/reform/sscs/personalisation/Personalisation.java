@@ -346,6 +346,7 @@ public class Personalisation<E extends NotificationWrapper> {
         if (ADJOURNED_NOTIFICATION.equals(notificationEventType)
             || APPEAL_DORMANT_NOTIFICATION.equals(notificationEventType)
             || APPEAL_LAPSED_NOTIFICATION.equals(notificationEventType)
+            || HMCTS_APPEAL_LAPSED_NOTIFICATION.equals(notificationEventType)
             || DWP_APPEAL_LAPSED_NOTIFICATION.equals(notificationEventType)
             || APPEAL_RECEIVED_NOTIFICATION.equals(notificationEventType)
             || APPEAL_WITHDRAWN_NOTIFICATION.equals(notificationEventType)

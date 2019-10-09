@@ -378,6 +378,20 @@ public class NotificationsFunctionalTest extends AbstractFunctionalTest {
     }
 
     @Test
+    public void shouldSendAppointeeHmctsAppealLapsedNotification() throws NotificationClientException, IOException {
+        simulateCcdCallback(HMCTS_APPEAL_LAPSED_NOTIFICATION,
+                "appointee/dwpAppealLapsedCallback.json");
+        List<Notification> notifications = tryFetchNotificationsForTestCase(
+                appealLapsedAppointeeEmailTemplateId,
+                appealLapsedAppointeeSmsTemplateId
+        );
+        Notification emailNotification = notifications.stream().filter(f -> f.getTemplateId().toString().equals(appealLapsedAppointeeEmailTemplateId)).collect(Collectors.toList()).get(0);
+
+        assertTrue(emailNotification.getBody().contains("Dear Appointee User"));
+        assertTrue(emailNotification.getBody().contains("You are receiving this update as the appointee for"));
+    }
+
+    @Test
     public void shouldSendAppointeeResponseReceivedForPaperCaseNotification() throws NotificationClientException, IOException {
         simulateCcdCallback(DWP_RESPONSE_RECEIVED_NOTIFICATION,
                 "appointee/" + DWP_RESPONSE_RECEIVED_NOTIFICATION.getId() + "Callback.json");

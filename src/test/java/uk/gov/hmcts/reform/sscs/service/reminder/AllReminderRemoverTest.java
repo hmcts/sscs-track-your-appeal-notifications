@@ -30,7 +30,8 @@ public class AllReminderRemoverTest {
     private AllReminderRemover allReminderRemover;
     private static final List<NotificationEventType> ALL_UNHANDLED_EVENTS =
             Arrays.stream(NotificationEventType.values())
-                    .filter(f -> (!f.equals(APPEAL_LAPSED_NOTIFICATION) && !f.equals(DWP_APPEAL_LAPSED_NOTIFICATION)))
+                    .filter(f -> (!f.equals(APPEAL_LAPSED_NOTIFICATION) && !f.equals(DWP_APPEAL_LAPSED_NOTIFICATION)
+                            && !f.equals(HMCTS_APPEAL_LAPSED_NOTIFICATION)))
                     .collect(Collectors.toCollection(ArrayList::new));
 
     @Before
@@ -48,7 +49,8 @@ public class AllReminderRemoverTest {
 
             CcdNotificationWrapper wrapper = SscsCaseDataUtils.buildBasicCcdNotificationWrapper(eventType);
 
-            if (eventType == APPEAL_LAPSED_NOTIFICATION || eventType == DWP_APPEAL_LAPSED_NOTIFICATION) {
+            if (eventType == APPEAL_LAPSED_NOTIFICATION || eventType == DWP_APPEAL_LAPSED_NOTIFICATION
+                    || eventType == HMCTS_APPEAL_LAPSED_NOTIFICATION) {
                 assertTrue(allReminderRemover.canHandle(wrapper));
             } else {
                 assertFalse(allReminderRemover.canHandle(wrapper));
