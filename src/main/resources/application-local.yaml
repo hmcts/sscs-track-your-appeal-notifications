@@ -7,5 +7,10 @@ logging.level:
   uk.gov.hmcts.reform.ccd.client.CoreCaseDataApi: DEBUG
 
 amqp:
-  topic: ${TOPIC_NAME:test.topic}
+  host: ${AMQP_HOST:localhost}
+  username: ${AMQP_USERNAME:guest}
   password: ${AMQP_PASSWORD:guest}
+  topic: ${TOPIC_NAME:test.topic}
+  subscription: ${SUBSCRIPTION_NAME:test2.queue}
+  # DO NOT SET THIS 'true' IN PRODUCTION!
+  trustAllCerts: ${TRUST_ALL_CERTS:true}

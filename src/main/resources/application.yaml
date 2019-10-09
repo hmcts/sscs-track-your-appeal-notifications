@@ -411,13 +411,13 @@ pdf-service:
     directionIssued: 'TB-SCS-GNO-ENG-00012.docx'
 
 amqp:
-  host: ${AMQP_HOST:localhost}
-  username: ${AMQP_USERNAME:guest}
-  password: ${AMQP_PASSWORD:guest}
+  host: ${AMQP_HOST}
+  username: ${AMQP_USERNAME}
+  password: ${AMQP_PASSWORD}
   topic: ${TOPIC_NAME}
-  subscription: ${SUBSCRIPTION_NAME:test2.queue}
+  subscription: ${SUBSCRIPTION_NAME}
   # DO NOT SET THIS 'true' IN PRODUCTION!
-  trustAllCerts: ${TRUST_ALL_CERTS:true}
+  trustAllCerts: ${TRUST_ALL_CERTS}
 
 ---
 # default profile (development, production etc.)
