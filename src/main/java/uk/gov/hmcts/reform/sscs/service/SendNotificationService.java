@@ -289,6 +289,7 @@ public class SendNotificationService {
                 }
                 bundledLetter = letter;
             } else {
+                //FIXME: Remove this when we have removed all templates from pdf common
                 notification.getPlaceholders().put(LETTER_ADDRESS_LINE_1, addressToUse.getLine1());
                 notification.getPlaceholders().put(LETTER_ADDRESS_LINE_2, addressToUse.getLine2());
                 notification.getPlaceholders().put(LETTER_ADDRESS_LINE_3, addressToUse.getTown());
