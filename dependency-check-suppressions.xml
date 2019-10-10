@@ -261,4 +261,12 @@
         <notes><![CDATA[ I can't upgrade qpid-jms-client-0.40.0.ja so I'm suppressing the vulnerability... ]]></notes>
         <cve>CVE-2016-4432</cve>
     </suppress>
+    <suppress until="2019-10-15">
+        <notes><![CDATA[
+   file name: jackson-databind-2.9.9.3.jar
+   ]]></notes>
+        <gav regex="true">^com\.fasterxml\.jackson\.core:jackson-databind:.*$</gav>
+        <cve>CVE-2019-16943</cve>
+        <cve>CVE-2019-16942</cve>
+    </suppress>
 </suppressions>
