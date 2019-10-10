@@ -32,7 +32,6 @@ def secrets = [
     secret('docmosis-endpoint', 'PDF_SERVICE_BASE_URL'),
     secret('docmosis-api-key', 'PDF_SERVICE_ACCESS_KEY'),
     secret('sscs-asb-primary-send-and-listen-shared-access-key', 'AMQP_PASSWORD'),
-    secret('topic-name', 'TOPIC_NAME'),
 
     // Used by Kubernetes
     secret('idam-s2s-api', 'IDAM_S2S_AUTH'),
@@ -56,5 +55,11 @@ withPipeline("java", product, component) {
   loadVaultSecrets(secrets)
   enableSlackNotifications('#sscs-tech')
   enableAksStagingDeployment()
+
+  env.TOPIC_NAME = "sscs-evidenceshare-topic-aat"
+  env.AMQP_USERNAME  = "SendAndListenSharedAccessKey"
+  env.AMQP_HOST = "sscs-servicebus-aat.servicebus.windows.net"
+  env.SUBSCRIPTION_NAME = "sscs-notifications-subscription-aat"
+  env.TRUST_ALL_CERTS = false
 }
 
