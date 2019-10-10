@@ -2,8 +2,6 @@ java:
   image: ${IMAGE_NAME}
   ingressHost: ${SERVICE_FQDN}
   environment:
-    COH_URL: "http://coh-cor-aat.service.core-compute-aat.internal"
-    ONLINE_HEARING_LINK: "https://sscs-cor-frontend-aat.service.core-compute-aat.internal"
     IDAM_SSCS_SYSTEMUPDATE_USER: ${IDAM_SSCS_SYSTEMUPDATE_USER}
     IDAM_SSCS_SYSTEMUPDATE_PASSWORD: ${IDAM_SSCS_SYSTEMUPDATE_PASSWORD}
     IDAM_OAUTH2_CLIENT_SECRET: ${IDAM_OAUTH2_CLIENT_SECRET}
@@ -15,5 +13,3 @@ java:
     PDF_SERVICE_BASE_URL: ${PDF_SERVICE_BASE_URL}rs/render
     PDF_SERVICE_ACCESS_KEY: ${PDF_SERVICE_ACCESS_KEY}
     PDF_SERVICE_HEALTH_URL: ${PDF_SERVICE_BASE_URL}rs/status
-    HOURS_START_TIME: 0
-    HOURS_END_TIME: 23

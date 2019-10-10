@@ -35,8 +35,6 @@ java:
     PDF_SERVICE_BASE_URL: ${PDF_SERVICE_BASE_URL}rs/render
     PDF_SERVICE_ACCESS_KEY: ${PDF_SERVICE_ACCESS_KEY}
     PDF_SERVICE_HEALTH_URL: ${PDF_SERVICE_BASE_URL}rs/status
-    HOURS_START_TIME: 0
-    HOURS_END_TIME: 23
     SUBSCRIPTION_NAME: "sscs-notifications-subscription-aat"
     TOPIC_NAME: "sscs-evidenceshare-topic-aat"
     AMQP_HOST: "sscs-servicebus-aat.servicebus.windows.net"
@@ -45,5 +43,8 @@ java:
     JOB_SCHEDULER_DB_USERNAME: "{{ .Values.postgresql.postgresqlUsername}}"
     JOB_SCHEDULER_DB_NAME: "{{ .Values.postgresql.postgresqlDatabase}}"
     JOB_SCHEDULER_DB_HOST: "{{ .Release.Name }}-postgresql"
+    JOB_SCHEDULER_DB_CONNECTION_OPTIONS: ""
+    HOURS_START_TIME: 0
+    HOURS_END_TIME: 23
 postgresql:
   enabled: true
