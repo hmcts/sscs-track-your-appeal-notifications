@@ -1,29 +1,26 @@
 package uk.gov.hmcts.reform.sscs.service;
 
-import static org.apache.commons.lang3.StringUtils.equalsIgnoreCase;
-import static org.apache.commons.lang3.StringUtils.isEmpty;
-import static org.apache.commons.lang3.StringUtils.isNotBlank;
+import static org.apache.commons.lang3.StringUtils.*;
 import static uk.gov.hmcts.reform.sscs.config.AppConstants.*;
 import static uk.gov.hmcts.reform.sscs.domain.notify.NotificationEventType.*;
 import static uk.gov.hmcts.reform.sscs.service.LetterUtils.*;
 import static uk.gov.hmcts.reform.sscs.service.NotificationUtils.*;
-import static uk.gov.hmcts.reform.sscs.service.NotificationUtils.isOkToSendEmailNotification;
-import static uk.gov.hmcts.reform.sscs.service.NotificationUtils.isOkToSendSmsNotification;
-import static uk.gov.hmcts.reform.sscs.service.NotificationValidService.DOCMOSIS_LETTERS;
-import static uk.gov.hmcts.reform.sscs.service.NotificationValidService.INTERLOC_LETTERS;
-import static uk.gov.hmcts.reform.sscs.service.NotificationValidService.isBundledLetter;
+import static uk.gov.hmcts.reform.sscs.service.NotificationUtils.isMandatoryLetterEventType;
+import static uk.gov.hmcts.reform.sscs.service.NotificationValidService.*;
 
 import java.io.IOException;
 import java.net.URI;
 import java.time.ZonedDateTime;
 import java.time.format.DateTimeFormatter;
-import java.util.Map;
-
+import java.util.*;
+import java.util.stream.Collectors;
+import java.util.stream.Stream;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.ArrayUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
+import uk.gov.hmcts.reform.sscs.ccd.callback.DocumentType;
 import uk.gov.hmcts.reform.sscs.ccd.domain.*;
 import uk.gov.hmcts.reform.sscs.config.SubscriptionType;
 import uk.gov.hmcts.reform.sscs.domain.SubscriptionWithType;

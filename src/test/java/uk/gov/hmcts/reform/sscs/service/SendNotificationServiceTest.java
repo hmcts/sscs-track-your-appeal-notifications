@@ -23,6 +23,7 @@ import ch.qos.logback.classic.Logger;
 import ch.qos.logback.classic.spi.ILoggingEvent;
 import ch.qos.logback.core.Appender;
 
+import java.time.LocalDate;
 import java.util.*;
 
 import junitparams.JUnitParamsRunner;
@@ -34,6 +35,7 @@ import org.mockito.ArgumentCaptor;
 import org.mockito.Captor;
 import org.mockito.Mock;
 import org.slf4j.LoggerFactory;
+import uk.gov.hmcts.reform.sscs.ccd.callback.DocumentType;
 import uk.gov.hmcts.reform.sscs.ccd.domain.*;
 import uk.gov.hmcts.reform.sscs.config.AppealHearingType;
 import uk.gov.hmcts.reform.sscs.config.SubscriptionType;
@@ -481,6 +483,34 @@ public class SendNotificationServiceTest {
     }
 
     @Test
+    public void givenADirectionNoticeIsIssuedAndCaseHasOneDirectionNotice_thenPickDocumentUrl() {
+        String result = getBundledLetterDocumentUrl(DIRECTION_ISSUED, buildBaseWrapper(APPELLANT_WITH_ADDRESS, DIRECTION_ISSUED).getNewSscsCaseData());
+
+        assertEquals("testUrl", result);
+    }
+
+    @Test
+    public void givenADirectionNoticeIsIssuedAndCaseHasMultipleDirectionNotices_thenPickLatestDocumentUrl() {
+        SscsCaseData sscsCaseData = buildBaseWrapper(APPELLANT_WITH_ADDRESS, DIRECTION_ISSUED).getNewSscsCaseData();
+
+        sscsCaseData.getSscsDocument().add(SscsDocument.builder().value(
+                SscsDocumentDetails.builder().documentType(DocumentType.DIRECTION_NOTICE.getValue())
+                        .documentLink(DocumentLink.builder().documentUrl("latestTestUrl").build())
+                        .documentDateAdded(LocalDate.now().toString())
+                        .build()).build());
+
+        sscsCaseData.getSscsDocument().add(SscsDocument.builder().value(
+                SscsDocumentDetails.builder().documentType(DocumentType.DIRECTION_NOTICE.getValue())
+                        .documentLink(DocumentLink.builder().documentUrl("oldTestUrl").build())
+                        .documentDateAdded(LocalDate.now().minusDays(2).toString())
+                        .build()).build());
+
+        String result = getBundledLetterDocumentUrl(DIRECTION_ISSUED, sscsCaseData);
+
+        assertEquals("latestTestUrl", result);
+    }
+
+    @Test
     public void willNotSendAppealLodgedLettersIfDocmosisLetterIsSwitchedOnAndLetterIsSwitchedOff() throws NotificationClientException {
         classUnderTest.docmosisLettersOn = true;
         classUnderTest.interlocLettersOn = true;
@@ -571,6 +601,15 @@ public class SendNotificationServiceTest {
             appellantSubscription = Subscription.builder().tya("GLSCRR").email("Email").mobile("07983495065").subscribeEmail(YES).subscribeSms(YES).build();
         }
 
+        List<SscsDocument> documents = new ArrayList<>();
+
+        documents.add(SscsDocument.builder().value(
+                SscsDocumentDetails.builder().documentType(DocumentType.DIRECTION_NOTICE.getValue())
+                        .documentLink(DocumentLink.builder().documentUrl("testUrl").build())
+                        .documentDateAdded(LocalDate.now().minusDays(1).toString())
+                    .build())
+                .build());
+
         SscsCaseData sscsCaseDataWithDocuments = SscsCaseData.builder()
             .appeal(
                 Appeal
@@ -587,10 +626,10 @@ public class SendNotificationServiceTest {
                     .appellantSubscription(appellantSubscription)
                     .representativeSubscription(repSubscription)
                     .build())
+            .sscsDocument(documents)
             .caseReference(CASE_REFERENCE)
             .ccdCaseId(CASE_ID)
             .sscsInterlocDecisionDocument(SscsInterlocDecisionDocument.builder().documentLink(DocumentLink.builder().documentUrl("testUrl").build()).build())
-            .sscsInterlocDirectionDocument(SscsInterlocDirectionDocument.builder().documentLink(DocumentLink.builder().documentUrl("testUrl").build()).build())
             .sscsStrikeOutDocument(SscsStrikeOutDocument.builder().documentLink(DocumentLink.builder().documentUrl("testUrl").build()).build())
             .build();
 
