@@ -165,10 +165,10 @@ public class NotificationConfigTest {
             new Object[]{null, null, null, "TB-SCS-GNO-ENG-00067.docx", PAPER, getTemplateName(DIRECTION_ISSUED, APPOINTEE)},
             new Object[]{null, null, null, "TB-SCS-GNO-ENG-00089.docx", ORAL, getTemplateName(DIRECTION_ISSUED, REPRESENTATIVE)},
             new Object[]{null, null, null, "TB-SCS-GNO-ENG-00089.docx", PAPER, getTemplateName(DIRECTION_ISSUED, REPRESENTATIVE)},
-            new Object[]{null, null, null, "TB-SCS-GNO-ENG-00067.docx", ORAL, getTemplateName(DECISION_ISSUED, APPELLANT)},
-            new Object[]{null, null, null, "TB-SCS-GNO-ENG-00067.docx", PAPER, getTemplateName(DECISION_ISSUED, APPOINTEE)},
-            new Object[]{null, null, null, "TB-SCS-GNO-ENG-00089.docx", ORAL, getTemplateName(DECISION_ISSUED, REPRESENTATIVE)},
-            new Object[]{null, null, null, "TB-SCS-GNO-ENG-00089.docx", PAPER, getTemplateName(DECISION_ISSUED, REPRESENTATIVE)},
+            new Object[]{null, null, null, "TB-SCS-GNO-ENG-00094.docx", ORAL, getTemplateName(DECISION_ISSUED, APPELLANT)},
+            new Object[]{null, null, null, "TB-SCS-GNO-ENG-00094.docx", PAPER, getTemplateName(DECISION_ISSUED, APPOINTEE)},
+            new Object[]{null, null, null, "TB-SCS-GNO-ENG-00095.docx", ORAL, getTemplateName(DECISION_ISSUED, REPRESENTATIVE)},
+            new Object[]{null, null, null, "TB-SCS-GNO-ENG-00095.docx", PAPER, getTemplateName(DECISION_ISSUED, REPRESENTATIVE)},
         };
     }
 
