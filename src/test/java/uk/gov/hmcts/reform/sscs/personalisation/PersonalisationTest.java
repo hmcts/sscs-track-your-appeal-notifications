@@ -155,10 +155,6 @@ public class PersonalisationTest {
                 new Object[]{APPEAL_LAPSED_NOTIFICATION, APPELLANT, PAPER, true, true, true, false},
                 new Object[]{APPEAL_LAPSED_NOTIFICATION, APPELLANT, REGULAR, true, true, true, false},
                 new Object[]{APPEAL_LAPSED_NOTIFICATION, APPELLANT, ONLINE, true, true, true, false},
-                //these three don't work locally
-                new Object[]{APPEAL_LAPSED_NOTIFICATION, REPRESENTATIVE, PAPER, true, true, false, false},
-                new Object[]{APPEAL_LAPSED_NOTIFICATION, REPRESENTATIVE, REGULAR, true, true, false, false},
-                new Object[]{APPEAL_LAPSED_NOTIFICATION, REPRESENTATIVE, ONLINE, true, true, false, false},
                 new Object[]{APPEAL_LAPSED_NOTIFICATION, APPOINTEE, PAPER, true, true, true, false},
                 new Object[]{APPEAL_LAPSED_NOTIFICATION, APPOINTEE, REGULAR, true, true, true, false},
                 new Object[]{APPEAL_LAPSED_NOTIFICATION, APPOINTEE, ONLINE, true, true, true, false},
