@@ -157,6 +157,12 @@ public class PersonalisationFactoryTest {
     }
 
     @Test
+    public void createRepsPersonalisationWhenDecisionIssuedNotificationApplied() {
+        Personalisation result = factory.apply(DECISION_ISSUED);
+        assertEquals(withRepresentativePersonalisation, result);
+    }
+
+    @Test
     public void shouldReturnNullWhenNotificationTypeIsNull() {
         Personalisation personalisation = factory.apply(null);
         assertNull(personalisation);

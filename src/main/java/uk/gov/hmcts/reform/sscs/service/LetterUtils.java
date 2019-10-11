@@ -1,8 +1,7 @@
 package uk.gov.hmcts.reform.sscs.service;
 
 import static uk.gov.hmcts.reform.sscs.config.SubscriptionType.REPRESENTATIVE;
-import static uk.gov.hmcts.reform.sscs.domain.notify.NotificationEventType.DIRECTION_ISSUED;
-import static uk.gov.hmcts.reform.sscs.domain.notify.NotificationEventType.STRUCK_OUT;
+import static uk.gov.hmcts.reform.sscs.domain.notify.NotificationEventType.*;
 import static uk.gov.hmcts.reform.sscs.service.NotificationUtils.hasAppointee;
 
 import java.io.ByteArrayOutputStream;
@@ -23,6 +22,7 @@ import uk.gov.hmcts.reform.sscs.factory.NotificationWrapper;
 public class LetterUtils {
     public static final String PDF_STRUCK_OUT = "Struck_Out.pdf";
     public static final String PDF_DIRECTION_NOTICE = "Direction_Notice.pdf";
+    public static final String PDF_DECISION_NOTICE = "Decision_Notice.pdf";
     public static final String PDF_UNKNOWN = "unknown.pdf";
     public static final String COMMENT_UNKNOWN = "Unknown";
     public static final String COMMENT_DIRECTION_NOTICE = "Direction Notice";
@@ -48,6 +48,8 @@ public class LetterUtils {
             return PDF_STRUCK_OUT;
         } else if (DIRECTION_ISSUED.equals(wrapper.getNotificationType())) {
             return PDF_DIRECTION_NOTICE;
+        } else if (DECISION_ISSUED.equals(wrapper.getNotificationType())) {
+            return PDF_DECISION_NOTICE;
         }
 
         return PDF_UNKNOWN;
