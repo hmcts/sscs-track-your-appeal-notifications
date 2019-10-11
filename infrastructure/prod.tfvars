@@ -16,6 +16,5 @@ letters_on = "false"
 interloc_letters_on = "true"
 
 docmosis_letters_on = "true"
-appeal_received_letter_on = "false"
-direction_issued_letter_on = "true"
 ready_to_list_robotics_enabled = "false"
+appeal_received_letter_on = "false"

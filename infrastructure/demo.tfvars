@@ -12,6 +12,6 @@ idam_redirect_url = "https://evidence-sharing-preprod.sscs.reform.hmcts.net"
 notification_key = "notification-key-demo"
 
 docmosis_letters_on = "false"
-appeal_received_letter_on = "false"
-direction_issued_letter_on = "false"
+
 ready_to_list_robotics_enabled = "false"
+appeal_received_letter_on = "false"
