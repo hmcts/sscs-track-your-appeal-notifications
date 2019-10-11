@@ -417,7 +417,6 @@ pdf-service:
   coverSheets:
     appealReceived: 'TB-SCS-GNO-ENG-00012.docx'
     directionIssued: 'TB-SCS-GNO-ENG-00012.docx'
-    decisionIssued: 'TB-SCS-GNO-ENG-00012.docx'
 
 amqp:
   host: ${AMQP_HOST:localhost}

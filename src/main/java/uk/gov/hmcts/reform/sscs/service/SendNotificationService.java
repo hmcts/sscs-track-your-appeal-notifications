@@ -253,20 +253,20 @@ public class SendNotificationService {
             }
 
             notificationSender.sendLetter(
-                notification.getLetterTemplate(),
-                addressToUse,
-                notification.getPlaceholders(),
-                wrapper.getNotificationType(),
-                fullNameNoTitle,
-                wrapper.getCaseId()
+                    notification.getLetterTemplate(),
+                    addressToUse,
+                    notification.getPlaceholders(),
+                    wrapper.getNotificationType(),
+                    fullNameNoTitle,
+                    wrapper.getCaseId()
             );
         }
     }
 
     private static boolean isValidLetterAddress(Address addressToUse) {
         return null != addressToUse
-            && isNotBlank(addressToUse.getLine1())
-            && isNotBlank(addressToUse.getPostcode());
+                && isNotBlank(addressToUse.getLine1())
+                && isNotBlank(addressToUse.getPostcode());
     }
 
     private void sendBundledLetterNotification(NotificationWrapper wrapper, Notification notification, Address addressToUse, Name nameToUse, SubscriptionType subscriptionType) {
@@ -296,19 +296,19 @@ public class SendNotificationService {
                     notification.getPlaceholders().put(APPEAL_RESPOND_DATE, appealReceivedDate.format(DateTimeFormatter.ofPattern(RESPONSE_DATE_FORMAT)));
                 }
                 bundledLetter = buildBundledLetter(
-                    generateCoveringLetter(wrapper, notification, subscriptionType),
-                    downloadAssociatedCasePdf(wrapper)
+                        generateCoveringLetter(wrapper, notification, subscriptionType),
+                        downloadAssociatedCasePdf(wrapper)
                 );
             }
 
             NotificationHandler.SendNotification sendNotification = () ->
-                notificationSender.sendBundledLetter(
-                    wrapper.getNewSscsCaseData().getAppeal().getAppellant().getAddress().getPostcode(),   // Used for whitelisting only
-                    bundledLetter,
-                    wrapper.getNotificationType(),
-                    nameToUse.getFullNameNoTitle(),
-                    wrapper.getCaseId()
-                );
+                    notificationSender.sendBundledLetter(
+                            wrapper.getNewSscsCaseData().getAppeal().getAppellant().getAddress().getPostcode(),   // Used for whitelisting only
+                            bundledLetter,
+                            wrapper.getNotificationType(),
+                            nameToUse.getFullNameNoTitle(),
+                            wrapper.getCaseId()
+                    );
             if (ArrayUtils.isNotEmpty(bundledLetter)) {
                 notificationHandler.sendNotification(wrapper, notification.getLetterTemplate(), NOTIFICATION_TYPE_LETTER, sendNotification);
             }
