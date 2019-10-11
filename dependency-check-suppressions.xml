@@ -117,40 +117,6 @@
     </suppress>
     <suppress>
         <notes><![CDATA[
-   file name: jackson-databind-2.9.3.jar
-   ]]></notes>
-        <gav regex="true">^com\.fasterxml\.jackson\.core:jackson-databind:.*$</gav>
-        <cve>CVE-2017-17485</cve>
-        <cve>CVE-2018-5968</cve>
-        <cve>CVE-2018-7489</cve>
-    </suppress>
-    <suppress>
-        <notes><![CDATA[
-   file name: jackson-databind-2.9.6.jar
-   ]]></notes>
-        <gav regex="true">^com\.fasterxml\.jackson\.core:jackson-databind:.*$</gav>
-        <cve>CVE-2018-1000873</cve>
-        <cve>CVE-2018-14718</cve>
-        <cve>CVE-2018-14719</cve>
-        <cve>CVE-2018-14720</cve>
-        <cve>CVE-2018-14721</cve>
-        <cve>CVE-2018-19360</cve>
-        <cve>CVE-2018-19361</cve>
-        <cve>CVE-2018-19362</cve>
-		<cve>CVE-2019-12086</cve>
-    </suppress>
-    <suppress>
-        <notes><![CDATA[
-   file name: jackson-databind-2.9.9.jar.
-   CVE-2019-14379: We do not use ehcache so safe to suppress.
-   CVE-2019-14439: We do not use ehcache so safe to suppress.
-   ]]></notes>
-        <gav regex="true">^com\.fasterxml\.jackson\.core:jackson-databind:.*$</gav>
-        <cve>CVE-2019-14379</cve>
-        <cve>CVE-2019-14439</cve>
-    </suppress>
-    <suppress>
-        <notes><![CDATA[
    file name: guava-20.0.jar
    ]]></notes>
         <gav regex="true">^com\.google\.guava:guava:.*$</gav>
@@ -181,20 +147,6 @@
    file name: fontbox-2.0.1.jar
    ]]></notes>
         <cve>CVE-2018-11797</cve>
-    </suppress>
-    <suppress>
-        <notes><![CDATA[
-   file name: jackson-databind-2.9.6.jar
-   ]]></notes>
-        <gav regex="true">^com\.fasterxml\.jackson\.core:jackson-databind:.*$</gav>
-        <cve>CVE-2018-1000873</cve>
-        <cve>CVE-2018-14718</cve>
-        <cve>CVE-2018-14719</cve>
-        <cve>CVE-2018-14720</cve>
-        <cve>CVE-2018-14721</cve>
-        <cve>CVE-2018-19360</cve>
-        <cve>CVE-2018-19361</cve>
-        <cve>CVE-2018-19362</cve>
     </suppress>
     <suppress>
         <notes><![CDATA[
@@ -233,20 +185,9 @@
         <cpe>cpe:/a:pivotal_software:spring_security</cpe>
     </suppress>
     <suppress>
-        <notes><![CDATA[
-   file name: jackson-databind-2.9.6.jar
-   ]]></notes>
-        <gav regex="true">^com\.fasterxml\.jackson\.core:jackson-databind:.*$</gav>
-        <cve>CVE-2019-12086</cve>
-    </suppress>
-    <suppress>
         <notes>Ignore CVE-2018-15756 for spring 5.0.8-RELEASE</notes>
         <gav regex="true">^org\.springframework:spring-.+:.*$</gav>
         <cve>CVE-2018-15756</cve>
-    </suppress>
-    <suppress>
-        <notes><![CDATA[Ignore CVE-2019-12814 until Jackson 2.9.9.1 or 2.9.10 has been released]]></notes>
-        <cve>CVE-2019-12814</cve>
     </suppress>
     <suppress>
         <notes><![CDATA[file name: sscs-pdf-email-common-1.0.11.jar: jquery-1.11.3.js]]></notes>
@@ -260,5 +201,14 @@
     <suppress>
         <notes><![CDATA[ I can't upgrade qpid-jms-client-0.40.0.ja so I'm suppressing the vulnerability... ]]></notes>
         <cve>CVE-2016-4432</cve>
+    </suppress>
+    <suppress until="2019-10-31">
+        <notes><![CDATA[
+   file name: jackson-databind-2.9.10.jar
+   No fix available
+   ]]></notes>
+        <packageUrl regex="true">^pkg:maven/com\.fasterxml\.jackson\.core/jackson\-databind@.*$</packageUrl>
+        <cve>CVE-2019-16942</cve>
+        <cve>CVE-2019-16943</cve>
     </suppress>
 </suppressions>
