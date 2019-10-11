@@ -2166,12 +2166,12 @@ public class NotificationsIt {
                 "oral",
                 Collections.singletonList("2c5644db-1f7b-429b-b10a-8b23a80ed26a"),
                 Collections.singletonList("f20ffcb1-c5f0-4bff-b2d1-a1094f8014e6"),
-                Collections.emptyList(),
+                Collections.singletonList("8b11f3f4-6452-4a35-93d8-a94996af6499"),
                 "yes",
                 "yes",
                 "1",
                 "1",
-                "0",
+                "1",
                 "Appointee Appointee"
             },
             new Object[]{
@@ -2179,12 +2179,12 @@ public class NotificationsIt {
                 "oral",
                 Collections.emptyList(),
                 Collections.emptyList(),
-                Collections.emptyList(),
+                Collections.singletonList("8b11f3f4-6452-4a35-93d8-a94996af6499"),
                 "no",
                 "no",
                 "0",
                 "0",
-                "0",
+                "1",
                 "Appointee Appointee"
             },
             new Object[]{
@@ -2602,12 +2602,12 @@ public class NotificationsIt {
                     "oral",
                     Collections.singletonList("2c5644db-1f7b-429b-b10a-8b23a80ed26a"),
                     Collections.singletonList("f20ffcb1-c5f0-4bff-b2d1-a1094f8014e6"),
-                    Collections.emptyList(),
+                    Collections.singletonList("8b11f3f4-6452-4a35-93d8-a94996af6499"),
                     "yes",
                     "yes",
                     "1",
                     "1",
-                    "0",
+                    "1",
                     "Appointee Appointee"
             },
             new Object[]{
