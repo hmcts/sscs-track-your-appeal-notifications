@@ -483,34 +483,6 @@ public class SendNotificationServiceTest {
     }
 
     @Test
-    public void givenADirectionNoticeIsIssuedAndCaseHasOneDirectionNotice_thenPickDocumentUrl() {
-        String result = getBundledLetterDocumentUrl(DIRECTION_ISSUED, buildBaseWrapper(APPELLANT_WITH_ADDRESS, DIRECTION_ISSUED).getNewSscsCaseData());
-
-        assertEquals("testUrl", result);
-    }
-
-    @Test
-    public void givenADirectionNoticeIsIssuedAndCaseHasMultipleDirectionNotices_thenPickLatestDocumentUrl() {
-        SscsCaseData sscsCaseData = buildBaseWrapper(APPELLANT_WITH_ADDRESS, DIRECTION_ISSUED).getNewSscsCaseData();
-
-        sscsCaseData.getSscsDocument().add(SscsDocument.builder().value(
-                SscsDocumentDetails.builder().documentType(DocumentType.DIRECTION_NOTICE.getValue())
-                        .documentLink(DocumentLink.builder().documentUrl("latestTestUrl").build())
-                        .documentDateAdded(LocalDate.now().toString())
-                        .build()).build());
-
-        sscsCaseData.getSscsDocument().add(SscsDocument.builder().value(
-                SscsDocumentDetails.builder().documentType(DocumentType.DIRECTION_NOTICE.getValue())
-                        .documentLink(DocumentLink.builder().documentUrl("oldTestUrl").build())
-                        .documentDateAdded(LocalDate.now().minusDays(2).toString())
-                        .build()).build());
-
-        String result = getBundledLetterDocumentUrl(DIRECTION_ISSUED, sscsCaseData);
-
-        assertEquals("latestTestUrl", result);
-    }
-
-    @Test
     public void willNotSendAppealLodgedLettersIfDocmosisLetterIsSwitchedOnAndLetterIsSwitchedOff() throws NotificationClientException {
         classUnderTest.docmosisLettersOn = true;
         classUnderTest.interlocLettersOn = true;
@@ -608,6 +580,13 @@ public class SendNotificationServiceTest {
                         .documentLink(DocumentLink.builder().documentUrl("testUrl").build())
                         .documentDateAdded(LocalDate.now().minusDays(1).toString())
                     .build())
+                .build());
+
+        documents.add(SscsDocument.builder().value(
+                SscsDocumentDetails.builder().documentType(DocumentType.DECISION_NOTICE.getValue())
+                        .documentLink(DocumentLink.builder().documentUrl("testUrl2").build())
+                        .documentDateAdded(LocalDate.now().minusDays(1).toString())
+                        .build())
                 .build());
 
         SscsCaseData sscsCaseDataWithDocuments = SscsCaseData.builder()

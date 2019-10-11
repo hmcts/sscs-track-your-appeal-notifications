@@ -12,9 +12,7 @@ import java.io.IOException;
 import java.net.URI;
 import java.time.ZonedDateTime;
 import java.time.format.DateTimeFormatter;
-import java.util.*;
-import java.util.stream.Collectors;
-import java.util.stream.Stream;
+import java.util.Map;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.ArrayUtils;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -353,10 +351,17 @@ public class SendNotificationService {
         if ((STRUCK_OUT.equals(notificationEventType))
                 && (newSscsCaseData.getSscsStrikeOutDocument() != null)) {
             documentUrl = newSscsCaseData.getSscsStrikeOutDocument().getDocumentLink().getDocumentUrl();
-        } else if ((DIRECTION_ISSUED.equals(notificationEventType))
-                && (newSscsCaseData.getSscsInterlocDirectionDocument() != null)) {
-            documentUrl = newSscsCaseData.getSscsInterlocDirectionDocument().getDocumentLink().getDocumentUrl();
-        } else if ((DECISION_ISSUED.equals(notificationEventType) || JUDGE_DECISION_APPEAL_TO_PROCEED.equals(notificationEventType) || TCW_DECISION_APPEAL_TO_PROCEED.equals(notificationEventType))
+        } else if (DIRECTION_ISSUED.equals(notificationEventType)) {
+            SscsDocument sscsDocument = newSscsCaseData.getLatestDocumentForDocumentType(DocumentType.DIRECTION_NOTICE);
+            if (sscsDocument != null) {
+                documentUrl = sscsDocument.getValue().getDocumentLink().getDocumentUrl();
+            }
+        } else if (DECISION_ISSUED.equals(notificationEventType)) {
+            SscsDocument sscsDocument = newSscsCaseData.getLatestDocumentForDocumentType(DocumentType.DECISION_NOTICE);
+            if (sscsDocument != null) {
+                documentUrl = sscsDocument.getValue().getDocumentLink().getDocumentUrl();
+            }
+        } else if ((JUDGE_DECISION_APPEAL_TO_PROCEED.equals(notificationEventType) || TCW_DECISION_APPEAL_TO_PROCEED.equals(notificationEventType))
                 && (newSscsCaseData.getSscsInterlocDecisionDocument() != null)) {
             documentUrl = newSscsCaseData.getSscsInterlocDecisionDocument().getDocumentLink().getDocumentUrl();
         }
