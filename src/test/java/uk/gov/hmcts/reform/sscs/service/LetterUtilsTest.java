@@ -5,9 +5,7 @@ import static org.junit.Assert.assertNotNull;
 import static uk.gov.hmcts.reform.sscs.config.SubscriptionType.APPELLANT;
 import static uk.gov.hmcts.reform.sscs.config.SubscriptionType.APPOINTEE;
 import static uk.gov.hmcts.reform.sscs.config.SubscriptionType.REPRESENTATIVE;
-import static uk.gov.hmcts.reform.sscs.domain.notify.NotificationEventType.DIRECTION_ISSUED;
-import static uk.gov.hmcts.reform.sscs.domain.notify.NotificationEventType.STRUCK_OUT;
-import static uk.gov.hmcts.reform.sscs.domain.notify.NotificationEventType.SYA_APPEAL_CREATED_NOTIFICATION;
+import static uk.gov.hmcts.reform.sscs.domain.notify.NotificationEventType.*;
 import static uk.gov.hmcts.reform.sscs.service.LetterUtils.*;
 import static uk.gov.hmcts.reform.sscs.service.NotificationServiceTest.APPELLANT_WITH_ADDRESS;
 import static uk.gov.hmcts.reform.sscs.service.SendNotificationServiceTest.APPELLANT_WITH_ADDRESS_AND_APPOINTEE;
@@ -80,7 +78,8 @@ public class LetterUtilsTest {
     public Object[] filenameForLetter() {
         return new Object[] {
             new Object[] { STRUCK_OUT, PDF_STRUCK_OUT},
-            new Object[] { DIRECTION_ISSUED, PDF_DIRECTION_NOTICE}
+            new Object[] { DIRECTION_ISSUED, PDF_DIRECTION_NOTICE},
+            new Object[] { DECISION_ISSUED, PDF_DECISION_NOTICE}
         };
     }
 

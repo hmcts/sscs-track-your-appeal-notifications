@@ -169,8 +169,6 @@ module "track-your-appeal-notifications" {
 
     APPEAL_RECEIVED_LETTER_ON           = "${var.appeal_received_letter_on}"
 
-    DIRECTION_ISSUED_LETTER_ON          = "${var.direction_issued_letter_on}"
-
     SAVE_CORRESPONDENCE                 = "${var.save_correspondence}"
   }
 }

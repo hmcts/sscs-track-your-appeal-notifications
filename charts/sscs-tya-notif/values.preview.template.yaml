@@ -1,6 +1,26 @@
 java:
   image: ${IMAGE_NAME}
   ingressHost: ${SERVICE_FQDN}
+  aadIdentityName:
+  keyVaults:
+    sscs:
+      resourceGroup: sscs
+      secrets:
+        - idam-api
+        - idam-oauth-user
+        - idam-redirect
+        - idam-sscs-systemupdate-user
+        - idam-sscs-systemupdate-password
+        - idam-sscs-oauth2-client-secret
+        - ccd-api
+        - ccd-jid
+        - ccd-tid
+        - idam-s2s-api
+        - sscs-s2s-secret
+        - s2s-micro
+        - sscs-asb-primary-send-and-listen-shared-access-key
+        - docmosis-endpoint
+        - docmosis-api-key
   environment:
     COH_URL: "http://coh-cor-aat.service.core-compute-aat.internal"
     ONLINE_HEARING_LINK: "https://sscs-cor-frontend-aat.service.core-compute-aat.internal"
@@ -15,11 +35,16 @@ java:
     PDF_SERVICE_BASE_URL: ${PDF_SERVICE_BASE_URL}rs/render
     PDF_SERVICE_ACCESS_KEY: ${PDF_SERVICE_ACCESS_KEY}
     PDF_SERVICE_HEALTH_URL: ${PDF_SERVICE_BASE_URL}rs/status
-    HOURS_START_TIME: 0
-    HOURS_END_TIME: 23
     SUBSCRIPTION_NAME: "sscs-notifications-subscription-aat"
     TOPIC_NAME: "sscs-evidenceshare-topic-aat"
     AMQP_HOST: "sscs-servicebus-aat.servicebus.windows.net"
     AMQP_USERNAME: "SendAndListenSharedAccessKey"
+    JOB_SCHEDULER_DB_PASSWORD:  "{{ .Values.postgresql.postgresqlPassword}}"
+    JOB_SCHEDULER_DB_USERNAME: "{{ .Values.postgresql.postgresqlUsername}}"
+    JOB_SCHEDULER_DB_NAME: "{{ .Values.postgresql.postgresqlDatabase}}"
+    JOB_SCHEDULER_DB_HOST: "{{ .Release.Name }}-postgresql"
+    JOB_SCHEDULER_DB_CONNECTION_OPTIONS: ""
+    HOURS_START_TIME: 0
+    HOURS_END_TIME: 23
 postgresql:
   enabled: true

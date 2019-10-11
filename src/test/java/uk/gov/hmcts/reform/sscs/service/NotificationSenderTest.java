@@ -52,6 +52,9 @@ public class NotificationSenderTest {
     @Mock
     private MarkdownTransformationService markdownTransformationService;
 
+    @Mock
+    private SaveLetterCorrespondenceAsyncService saveLetterCorrespondenceAsyncService;
+
     @Before
     public void setUp() {
         initMocks(this);
@@ -63,7 +66,7 @@ public class NotificationSenderTest {
         personalisation = Collections.emptyMap();
         reference = "reference";
 
-        notificationSender = new NotificationSender(notificationClient, testNotificationClient, blacklist, ccdNotificationsPdfService, markdownTransformationService, saveCorrespondence);
+        notificationSender = new NotificationSender(notificationClient, testNotificationClient, blacklist, ccdNotificationsPdfService, markdownTransformationService, saveLetterCorrespondenceAsyncService, saveCorrespondence);
     }
 
     @Test
@@ -141,7 +144,7 @@ public class NotificationSenderTest {
         when(letterResponse.getNotificationId()).thenReturn(UUID.randomUUID());
 
         byte[] sampleDirectionCoversheet = IOUtils.toByteArray(getClass().getClassLoader().getResourceAsStream("pdfs/direction-notice-coversheet-sample.pdf"));
-        notificationSender.sendBundledLetter(postcode, sampleDirectionCoversheet, CCD_CASE_ID);
+        notificationSender.sendBundledLetter(postcode, sampleDirectionCoversheet, NotificationEventType.APPEAL_RECEIVED_NOTIFICATION, "Bob Squires", CCD_CASE_ID);
 
         verifyZeroInteractions(testNotificationClient);
         verify(notificationClient).sendPrecompiledLetterWithInputStream(any(), any());
@@ -156,7 +159,7 @@ public class NotificationSenderTest {
         when(letterResponse.getNotificationId()).thenReturn(UUID.randomUUID());
 
         byte[] sampleDirectionCoversheet = IOUtils.toByteArray(getClass().getClassLoader().getResourceAsStream("pdfs/direction-notice-coversheet-sample.pdf"));
-        notificationSender.sendBundledLetter(postcode, sampleDirectionCoversheet, CCD_CASE_ID);
+        notificationSender.sendBundledLetter(postcode, sampleDirectionCoversheet, NotificationEventType.APPEAL_RECEIVED_NOTIFICATION, "Bob Squires", CCD_CASE_ID);
 
         verifyZeroInteractions(notificationClient);
         verify(testNotificationClient).sendPrecompiledLetterWithInputStream(any(), any());
@@ -170,7 +173,7 @@ public class NotificationSenderTest {
         when(sendLetterResponse.getNotificationId()).thenReturn(UUID.randomUUID());
 
         Address address = Address.builder().line1("1 Appellant Ave").town("Sometown").county("Somecounty").postcode(postcode).build();
-        notificationSender.sendLetter(templateId, address, personalisation, CCD_CASE_ID);
+        notificationSender.sendLetter(templateId, address, personalisation, NotificationEventType.APPEAL_RECEIVED_NOTIFICATION, "Bob Squires", CCD_CASE_ID);
 
         verifyZeroInteractions(testNotificationClient);
         verify(notificationClient).sendLetter(any(), any(), any());
@@ -185,7 +188,7 @@ public class NotificationSenderTest {
         when(sendLetterResponse.getNotificationId()).thenReturn(UUID.randomUUID());
 
         Address address = Address.builder().line1("1 Appellant Ave").town("Sometown").county("Somecounty").postcode(postcode).build();
-        notificationSender.sendLetter(templateId, address, personalisation, CCD_CASE_ID);
+        notificationSender.sendLetter(templateId, address, personalisation, NotificationEventType.APPEAL_RECEIVED_NOTIFICATION, "Bob Squires", CCD_CASE_ID);
 
         verifyZeroInteractions(notificationClient);
         verify(testNotificationClient).sendLetter(any(), any(), any());
