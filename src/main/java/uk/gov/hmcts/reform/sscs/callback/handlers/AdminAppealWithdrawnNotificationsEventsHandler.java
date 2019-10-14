@@ -30,6 +30,7 @@ public class AdminAppealWithdrawnNotificationsEventsHandler implements CallbackH
             throw new IllegalStateException("Cannot handle callback");
         }
         System.out.println("*** ADMIN_APPEAL_WITHDRAWN ***");
+        notificationService.manageNotificationAndSubscription(new CcdNotificationWrapper(callback));
     }
 
     @Override

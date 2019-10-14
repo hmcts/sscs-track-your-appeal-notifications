@@ -1,6 +1,20 @@
 package uk.gov.hmcts.reform.sscs.service;
 
-import static uk.gov.hmcts.reform.sscs.domain.notify.NotificationEventType.*;
+import static uk.gov.hmcts.reform.sscs.domain.notify.NotificationEventType.APPEAL_RECEIVED_NOTIFICATION;
+import static uk.gov.hmcts.reform.sscs.domain.notify.NotificationEventType.APPEAL_WITHDRAWN_NOTIFICATION;
+import static uk.gov.hmcts.reform.sscs.domain.notify.NotificationEventType.DECISION_ISSUED;
+import static uk.gov.hmcts.reform.sscs.domain.notify.NotificationEventType.DIRECTION_ISSUED;
+import static uk.gov.hmcts.reform.sscs.domain.notify.NotificationEventType.DWP_RESPONSE_RECEIVED_NOTIFICATION;
+import static uk.gov.hmcts.reform.sscs.domain.notify.NotificationEventType.DWP_UPLOAD_RESPONSE_NOTIFICATION;
+import static uk.gov.hmcts.reform.sscs.domain.notify.NotificationEventType.EVIDENCE_RECEIVED_NOTIFICATION;
+import static uk.gov.hmcts.reform.sscs.domain.notify.NotificationEventType.HEARING_BOOKED_NOTIFICATION;
+import static uk.gov.hmcts.reform.sscs.domain.notify.NotificationEventType.JUDGE_DECISION_APPEAL_TO_PROCEED;
+import static uk.gov.hmcts.reform.sscs.domain.notify.NotificationEventType.NON_COMPLIANT_NOTIFICATION;
+import static uk.gov.hmcts.reform.sscs.domain.notify.NotificationEventType.REQUEST_INFO_INCOMPLETE;
+import static uk.gov.hmcts.reform.sscs.domain.notify.NotificationEventType.STRUCK_OUT;
+import static uk.gov.hmcts.reform.sscs.domain.notify.NotificationEventType.SYA_APPEAL_CREATED_NOTIFICATION;
+import static uk.gov.hmcts.reform.sscs.domain.notify.NotificationEventType.TCW_DECISION_APPEAL_TO_PROCEED;
+import static uk.gov.hmcts.reform.sscs.domain.notify.NotificationEventType.VALID_APPEAL_CREATED;
 import static uk.gov.hmcts.reform.sscs.service.NotificationUtils.hasSubscription;
 
 import java.time.LocalDateTime;
@@ -8,7 +22,6 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
-
 import org.springframework.stereotype.Service;
 import uk.gov.hmcts.reform.sscs.ccd.domain.Hearing;
 import uk.gov.hmcts.reform.sscs.ccd.domain.SscsCaseData;
@@ -21,10 +34,10 @@ public class NotificationValidService {
     protected static final List<NotificationEventType> FALLBACK_LETTER_SUBSCRIPTION_TYPES = Arrays.asList(DWP_RESPONSE_RECEIVED_NOTIFICATION, SYA_APPEAL_CREATED_NOTIFICATION, EVIDENCE_RECEIVED_NOTIFICATION, VALID_APPEAL_CREATED);
     private static final List<NotificationEventType> MANDATORY_LETTER_EVENT_TYPES = Arrays.asList(DWP_UPLOAD_RESPONSE_NOTIFICATION, APPEAL_WITHDRAWN_NOTIFICATION, STRUCK_OUT, APPEAL_RECEIVED_NOTIFICATION, HEARING_BOOKED_NOTIFICATION, DIRECTION_ISSUED, DECISION_ISSUED, REQUEST_INFO_INCOMPLETE, NON_COMPLIANT_NOTIFICATION, JUDGE_DECISION_APPEAL_TO_PROCEED, TCW_DECISION_APPEAL_TO_PROCEED);
 
-    protected static final List<NotificationEventType> LETTER_EVENT_TYPES = Stream.concat(FALLBACK_LETTER_SUBSCRIPTION_TYPES.stream(), MANDATORY_LETTER_EVENT_TYPES. stream()).collect(Collectors.toList());
+    static final List<NotificationEventType> LETTER_EVENT_TYPES = Stream.concat(FALLBACK_LETTER_SUBSCRIPTION_TYPES.stream(), MANDATORY_LETTER_EVENT_TYPES.stream()).collect(Collectors.toList());
     protected static final List<NotificationEventType> BUNDLED_LETTER_EVENT_TYPES = Arrays.asList(STRUCK_OUT, DIRECTION_ISSUED, DECISION_ISSUED, JUDGE_DECISION_APPEAL_TO_PROCEED, TCW_DECISION_APPEAL_TO_PROCEED);
-    protected static final List<NotificationEventType> INTERLOC_LETTERS = Arrays.asList(STRUCK_OUT, DIRECTION_ISSUED, DECISION_ISSUED, REQUEST_INFO_INCOMPLETE, JUDGE_DECISION_APPEAL_TO_PROCEED, TCW_DECISION_APPEAL_TO_PROCEED, NON_COMPLIANT_NOTIFICATION, VALID_APPEAL_CREATED);
-    protected static final List<NotificationEventType> DOCMOSIS_LETTERS = Arrays.asList(APPEAL_RECEIVED_NOTIFICATION, DIRECTION_ISSUED, DECISION_ISSUED);
+    static final List<NotificationEventType> INTERLOC_LETTERS = Arrays.asList(STRUCK_OUT, DIRECTION_ISSUED, DECISION_ISSUED, REQUEST_INFO_INCOMPLETE, JUDGE_DECISION_APPEAL_TO_PROCEED, TCW_DECISION_APPEAL_TO_PROCEED, NON_COMPLIANT_NOTIFICATION, VALID_APPEAL_CREATED);
+    static final List<NotificationEventType> DOCMOSIS_LETTERS = Arrays.asList(APPEAL_RECEIVED_NOTIFICATION, DIRECTION_ISSUED, DECISION_ISSUED);
 
     private static final String HEARING_TYPE_ONLINE_RESOLUTION = "cor";
 
@@ -53,7 +66,7 @@ public class NotificationValidService {
         return true;
     }
 
-    static final boolean isBundledLetter(NotificationEventType eventType) {
+    static boolean isBundledLetter(NotificationEventType eventType) {
         return BUNDLED_LETTER_EVENT_TYPES.contains(eventType);
     }
 
@@ -73,7 +86,6 @@ public class NotificationValidService {
     boolean isNotificationStillValidToSend(List<Hearing> hearings, NotificationEventType eventType) {
         switch (eventType) {
             case HEARING_BOOKED_NOTIFICATION:
-                return checkHearingIsInFuture(hearings);
             case HEARING_REMINDER_NOTIFICATION:
                 return checkHearingIsInFuture(hearings);
             default:

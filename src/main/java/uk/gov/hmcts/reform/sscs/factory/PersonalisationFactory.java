@@ -42,6 +42,7 @@ public class PersonalisationFactory implements Function<NotificationEventType, P
                 selectedPersonalisation = syaAppealCreatedAndReceivedPersonalisation;
             } else if (APPEAL_LAPSED_NOTIFICATION.equals(notificationType)
                 || APPEAL_WITHDRAWN_NOTIFICATION.equals(notificationType)
+                || ADMIN_APPEAL_WITHDRAWN.equals(notificationType)
                 || EVIDENCE_RECEIVED_NOTIFICATION.equals(notificationType)
                 || EVIDENCE_REMINDER_NOTIFICATION.equals(notificationType)
                 || HEARING_REMINDER_NOTIFICATION.equals(notificationType)

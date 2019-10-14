@@ -4,20 +4,30 @@ import static uk.gov.hmcts.reform.sscs.config.AppealHearingType.ORAL;
 import static uk.gov.hmcts.reform.sscs.config.SubscriptionType.APPELLANT;
 import static uk.gov.hmcts.reform.sscs.config.SubscriptionType.APPOINTEE;
 import static uk.gov.hmcts.reform.sscs.config.SubscriptionType.REPRESENTATIVE;
-import static uk.gov.hmcts.reform.sscs.domain.notify.NotificationEventType.*;
+import static uk.gov.hmcts.reform.sscs.domain.notify.NotificationEventType.APPEAL_RECEIVED_NOTIFICATION;
+import static uk.gov.hmcts.reform.sscs.domain.notify.NotificationEventType.APPEAL_WITHDRAWN_NOTIFICATION;
+import static uk.gov.hmcts.reform.sscs.domain.notify.NotificationEventType.DIRECTION_ISSUED;
+import static uk.gov.hmcts.reform.sscs.domain.notify.NotificationEventType.HEARING_BOOKED_NOTIFICATION;
+import static uk.gov.hmcts.reform.sscs.domain.notify.NotificationEventType.JUDGE_DECISION_APPEAL_TO_PROCEED;
+import static uk.gov.hmcts.reform.sscs.domain.notify.NotificationEventType.NON_COMPLIANT_NOTIFICATION;
+import static uk.gov.hmcts.reform.sscs.domain.notify.NotificationEventType.REQUEST_INFO_INCOMPLETE;
+import static uk.gov.hmcts.reform.sscs.domain.notify.NotificationEventType.STRUCK_OUT;
+import static uk.gov.hmcts.reform.sscs.domain.notify.NotificationEventType.TCW_DECISION_APPEAL_TO_PROCEED;
 import static uk.gov.hmcts.reform.sscs.service.NotificationValidService.FALLBACK_LETTER_SUBSCRIPTION_TYPES;
 import static uk.gov.hmcts.reform.sscs.service.NotificationValidService.LETTER_EVENT_TYPES;
 
 import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.Collections;
 import java.util.Comparator;
 import java.util.List;
-
 import org.apache.commons.lang.StringUtils;
-import uk.gov.hmcts.reform.sscs.ccd.domain.*;
+import uk.gov.hmcts.reform.sscs.ccd.domain.Appeal;
+import uk.gov.hmcts.reform.sscs.ccd.domain.Appointee;
+import uk.gov.hmcts.reform.sscs.ccd.domain.Hearing;
+import uk.gov.hmcts.reform.sscs.ccd.domain.HearingDetails;
+import uk.gov.hmcts.reform.sscs.ccd.domain.SscsCaseData;
+import uk.gov.hmcts.reform.sscs.ccd.domain.Subscription;
 import uk.gov.hmcts.reform.sscs.config.SubscriptionType;
-
 import uk.gov.hmcts.reform.sscs.domain.SscsCaseDataWrapper;
 import uk.gov.hmcts.reform.sscs.domain.SubscriptionWithType;
 import uk.gov.hmcts.reform.sscs.domain.notify.Notification;
@@ -40,7 +50,7 @@ public class NotificationUtils {
 
     public static boolean hasAppointee(Appointee appointee) {
         return appointee != null && appointee.getName() != null && appointee.getName().getFirstName() != null
-                && appointee.getName().getLastName() != null;
+            && appointee.getName().getLastName() != null;
     }
 
     /* Sometimes the data for the appointee comes in with null populated objects */
@@ -79,7 +89,7 @@ public class NotificationUtils {
         }
     }
 
-    public static Subscription getPopulatedSubscriptionOrNull(Subscription subscription) {
+    private static Subscription getPopulatedSubscriptionOrNull(Subscription subscription) {
         if (null == subscription
             || (null == subscription.getWantSmsNotifications()
             && null == subscription.getTya()
@@ -110,9 +120,12 @@ public class NotificationUtils {
             && notificationValidService.isHearingTypeValidToSendNotification(wrapper.getNewSscsCaseData(), notificationType);
     }
 
-    static boolean isFallbackLetterRequired(NotificationWrapper wrapper, SubscriptionWithType subscriptionWithType, Subscription subscription, NotificationEventType eventType, NotificationValidService notificationValidService) {
+    static boolean isFallbackLetterRequired(NotificationWrapper wrapper, SubscriptionWithType subscriptionWithType,
+                                            Subscription subscription, NotificationEventType eventType,
+                                            NotificationValidService notificationValidService) {
         return (subscription != null && subscription.doesCaseHaveSubscriptions())
-            || (subscription != null && !subscription.doesCaseHaveSubscriptions() && notificationValidService.isFallbackLetterRequiredForSubscriptionType(wrapper, subscriptionWithType.getSubscriptionType(), eventType))
+            || (subscription != null && !subscription.doesCaseHaveSubscriptions()
+            && notificationValidService.isFallbackLetterRequiredForSubscriptionType(wrapper, subscriptionWithType.getSubscriptionType(), eventType))
             || (subscription == null && notificationValidService.isFallbackLetterRequiredForSubscriptionType(wrapper, subscriptionWithType.getSubscriptionType(), eventType));
     }
 
@@ -134,47 +147,44 @@ public class NotificationUtils {
             && isOkToSendNotification(wrapper, wrapper.getNotificationType(), subscription, notificationValidService);
     }
 
-    public static boolean hasLetterTemplate(Notification notification) {
+    static boolean hasLetterTemplate(Notification notification) {
         return notification.getLetterTemplate() != null;
     }
 
-    public static boolean hasNoSubscriptions(Subscription subscription) {
+    static boolean hasNoSubscriptions(Subscription subscription) {
         return subscription == null || (!subscription.isSmsSubscribed() && !subscription.isEmailSubscribed());
     }
 
-    public static final boolean hasSubscription(NotificationWrapper wrapper, SubscriptionType subscriptionType) {
+    static boolean hasSubscription(NotificationWrapper wrapper, SubscriptionType subscriptionType) {
         return APPELLANT.equals(subscriptionType)
             || APPOINTEE.equals(subscriptionType)
             || (REPRESENTATIVE.equals(subscriptionType) && null != wrapper.getNewSscsCaseData().getAppeal().getRep());
     }
 
-    public static final Hearing getLatestHearing(SscsCaseData sscsCaseData) {
+    public static Hearing getLatestHearing(SscsCaseData sscsCaseData) {
 
         if (sscsCaseData.getHearings() == null || sscsCaseData.getHearings().isEmpty()) {
             return null;
         }
 
-        List<Hearing> hearings = new ArrayList<Hearing>(sscsCaseData.getHearings());
+        List<Hearing> hearings = new ArrayList<>(sscsCaseData.getHearings());
 
-        Comparator<Hearing> compareByIdAndDate = new Comparator<Hearing>() {
-            @Override
-            public int compare(Hearing o1, Hearing o2) {
-                HearingDetails hearingDetails = o1.getValue();
-                HearingDetails nextHearingDetails = o2.getValue();
-                Integer idCompare = 0;
+        Comparator<Hearing> compareByIdAndDate = (o1, o2) -> {
+            HearingDetails hearingDetails = o1.getValue();
+            HearingDetails nextHearingDetails = o2.getValue();
+            int idCompare = 0;
 
-                if (!StringUtils.isEmpty(hearingDetails.getHearingId()) && !StringUtils.isEmpty(nextHearingDetails.getHearingId())) {
-                    idCompare = hearingDetails.getHearingId().compareTo(nextHearingDetails.getHearingId());
-                }
-
-                if (idCompare != 0) {
-                    return -1 * idCompare;
-                }
-                return -1 * hearingDetails.getHearingDateTime().compareTo(nextHearingDetails.getHearingDateTime());
+            if (!StringUtils.isEmpty(hearingDetails.getHearingId()) && !StringUtils.isEmpty(nextHearingDetails.getHearingId())) {
+                idCompare = hearingDetails.getHearingId().compareTo(nextHearingDetails.getHearingId());
             }
+
+            if (idCompare != 0) {
+                return -1 * idCompare;
+            }
+            return -1 * hearingDetails.getHearingDateTime().compareTo(nextHearingDetails.getHearingDateTime());
         };
 
-        Collections.sort(hearings, compareByIdAndDate);
+        hearings.sort(compareByIdAndDate);
 
         return hearings.get(0);
     }
