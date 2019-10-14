@@ -1,5 +1,6 @@
 package uk.gov.hmcts.reform.sscs.factory;
 
+import static com.google.common.collect.Maps.newHashMap;
 import static uk.gov.hmcts.reform.sscs.ccd.domain.Benefit.getBenefitByCode;
 
 import java.util.Map;
@@ -13,6 +14,7 @@ import uk.gov.hmcts.reform.sscs.ccd.domain.Subscription;
 import uk.gov.hmcts.reform.sscs.domain.SubscriptionWithType;
 import uk.gov.hmcts.reform.sscs.domain.notify.Destination;
 import uk.gov.hmcts.reform.sscs.domain.notify.Notification;
+import uk.gov.hmcts.reform.sscs.domain.notify.NotificationEventType;
 import uk.gov.hmcts.reform.sscs.domain.notify.Reference;
 import uk.gov.hmcts.reform.sscs.domain.notify.Template;
 import uk.gov.hmcts.reform.sscs.exception.BenefitMappingException;
@@ -24,6 +26,7 @@ import uk.gov.hmcts.reform.sscs.utility.PhoneNumbersUtil;
 public class NotificationFactory {
 
     private final PersonalisationFactory personalisationFactory;
+    private final Map<NotificationEventType, Personalisation> map = newHashMap();
 
     @Autowired
     NotificationFactory(PersonalisationFactory personalisationFactory) {
@@ -70,8 +73,7 @@ public class NotificationFactory {
     }
 
     private <E extends NotificationWrapper> Personalisation<E> getPersonalisation(E notificationWrapper) {
-        //noinspection unchecked
-        return personalisationFactory.apply(notificationWrapper.getNotificationType());
+        return map.computeIfAbsent(notificationWrapper.getNotificationType(), personalisationFactory);
     }
 
     private Destination getDestination(Subscription subscription) {

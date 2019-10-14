@@ -447,6 +447,7 @@ public class Personalisation<E extends NotificationWrapper> {
             || APPEAL_LAPSED_NOTIFICATION.equals(notificationEventType)
             || APPEAL_RECEIVED_NOTIFICATION.equals(notificationEventType)
             || APPEAL_WITHDRAWN_NOTIFICATION.equals(notificationEventType)
+            || ADMIN_APPEAL_WITHDRAWN.equals(notificationEventType)
             || CASE_UPDATED.equals(notificationEventType)
             || EVIDENCE_RECEIVED_NOTIFICATION.equals(notificationEventType)
             || EVIDENCE_REMINDER_NOTIFICATION.equals(notificationEventType)
@@ -482,6 +483,7 @@ public class Personalisation<E extends NotificationWrapper> {
         if (subscriptionType != null
             && ((LETTER_SUBSCRIPTION_TYPES.contains(notificationEventType)
             || APPEAL_WITHDRAWN_NOTIFICATION.equals(notificationEventType)
+            || ADMIN_APPEAL_WITHDRAWN.equals(notificationEventType)
             || HEARING_BOOKED_NOTIFICATION.equals(notificationEventType))
             || REQUEST_INFO_INCOMPLETE.equals(notificationEventType)
             || JUDGE_DECISION_APPEAL_TO_PROCEED.equals(notificationEventType)

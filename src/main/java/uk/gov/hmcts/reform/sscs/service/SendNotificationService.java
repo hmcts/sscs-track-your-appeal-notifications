@@ -100,7 +100,7 @@ public class SendNotificationService {
             letterSent = sendLetterNotification(wrapper, subscriptionWithType.getSubscription(), notification, subscriptionWithType, eventType);
         }
 
-        boolean notificationSent = emailSent | smsSent | letterSent;
+        boolean notificationSent = emailSent || smsSent || letterSent;
 
         if (!notificationSent) {
             log.error("Did not send a notification for event {} for case id {}.", eventType.getId(), wrapper.getCaseId());
