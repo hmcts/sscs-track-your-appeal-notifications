@@ -62,7 +62,4 @@ public class AdminAppealWithdrawnNotificationsEventsHandlerTest {
         handler.handle(callback);
     }
 
-    @Test
-    public void getPriority() {
-    }
 }
