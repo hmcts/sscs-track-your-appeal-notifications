@@ -78,7 +78,10 @@ public class PdfLetterService {
         );
         String templatePath = docmosisTemplatesConfig.getCoversheets().get(wrapper.getNotificationType().getId());
         if (StringUtils.isBlank(templatePath)) {
-            return null;
+            throw new PdfGenerationException(
+                    String.format("There is no template for notificationType %s",
+                            wrapper.getNotificationType().getId()),
+                    new RuntimeException("Invalid notification type for docmosis coversheet."));
         }
         return docmosisPdfService.createPdf(pdfCoverSheet, templatePath);
     }

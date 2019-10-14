@@ -1,7 +1,6 @@
 package uk.gov.hmcts.reform.sscs.tya;
 
 import static helper.IntegrationTestHelper.*;
-import static helper.IntegrationTestHelper.updateEmbeddedJson;
 import static org.junit.Assert.assertArrayEquals;
 import static org.junit.Assert.assertEquals;
 import static org.mockito.Mockito.*;
@@ -185,7 +184,6 @@ public class NotificationsIt {
 
         byte[] pdfbytes = IOUtils.toByteArray(getClass().getClassLoader().getResourceAsStream("pdfs/direction-notice-coversheet-sample.pdf"));
         when(docmosisPdfGenerationService.generatePdf(any())).thenReturn(pdfbytes);
-//        when(pdfLetterService.buildCoversheet(any(), any())).thenReturn(pdfbytes);
     }
 
     @Test
