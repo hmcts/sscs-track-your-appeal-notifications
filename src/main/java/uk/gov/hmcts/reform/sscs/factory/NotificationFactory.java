@@ -73,6 +73,7 @@ public class NotificationFactory {
     }
 
     private <E extends NotificationWrapper> Personalisation<E> getPersonalisation(E notificationWrapper) {
+        //noinspection unchecked
         return map.computeIfAbsent(notificationWrapper.getNotificationType(), personalisationFactory);
     }
 
