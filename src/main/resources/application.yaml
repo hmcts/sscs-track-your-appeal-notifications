@@ -289,12 +289,15 @@ notification:
       appellant:
         emailId: e1084d78-5e2d-45d2-a54f-84339da141c1
         smsId: 505be856-ceca-4bbc-ba70-29024585056f
+        letterId: 16c141bc-4e16-48ed-8b60-4db58207201c
       appointee:
         emailId: e1084d78-5e2d-45d2-a54f-84339da141c1
         smsId: 505be856-ceca-4bbc-ba70-29024585056f
+        letterId: 16c141bc-4e16-48ed-8b60-4db58207201c
       representative:
         emailId: 5abc83d8-f6b8-4385-805b-ffbb0f64b84b
         smsId: b2d187cd-089b-4fe1-b460-a310c0af46fe
+        letterId: 59a392a1-5946-4e55-ac82-048fd32b15a5
     appealDormant:
       appellant:
         emailId: 976bdb6c-8a86-48cf-9e0f-7989acaec0c2
