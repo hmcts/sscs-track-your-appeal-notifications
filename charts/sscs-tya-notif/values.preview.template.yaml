@@ -25,7 +25,6 @@ java:
   environment:
     COH_URL: "http://coh-cor-aat.service.core-compute-aat.internal"
     ONLINE_HEARING_LINK: "https://sscs-cor-frontend-aat.service.core-compute-aat.internal"
-    PDF_API_URL: "http://cmc-pdf-service-aat.service.core-compute-aat.internal"
     PDF_SERVICE_BASE_URL: ${PDF_SERVICE_BASE_URL}rs/render
     PDF_SERVICE_HEALTH_URL: ${PDF_SERVICE_BASE_URL}rs/status
     SUBSCRIPTION_NAME: "sscs-notifications-subscription-aat"
