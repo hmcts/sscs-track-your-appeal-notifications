@@ -14,6 +14,7 @@ import uk.gov.hmcts.reform.sscs.config.AppConstants;
 import uk.gov.service.notify.Notification;
 import uk.gov.service.notify.NotificationClientException;
 
+@Ignore("Temp disable")
 public class ReminderNotificationsFunctionalTest extends AbstractFunctionalTest {
 
     @Value("${notification.oral.evidenceReminder.appellant.emailId}")
