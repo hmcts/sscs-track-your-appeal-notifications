@@ -5,8 +5,8 @@ spring:
       prefixed: false
       aliases:
         idam-api: IDAM_URL
-        idam-sscs-systemupdate-user: IDAM_SSCS_SYSTEMUPDATE_USER
-        idam-sscs-systemupdate-password: IDAM_SSCS_SYSTEMUPDATE_PASSWORD
+        idam-sscs-systemupdate-user: idam.oauth2.user.email
+        idam-sscs-systemupdate-password: idam.oauth2.user.password
         notification-key: NOTIFICATION_API_KEY
         notification-test-key: NOTIFICATION_API_TEST_KEY
         notification-job-scheduler-db-password: JOB_SCHEDULER_DB_PASSWORD
@@ -19,7 +19,7 @@ spring:
         idam-redirect: IDAM_OAUTH2_REDIRECT_URL
         tya-link: SSCS_TRACK_YOUR_APPEAL_LINK
         idam-s2s-api: IDAM_S2S_AUTH
-        sscs-s2s-secret: IDAM_S2S_AUTH_TOTP_SECRET
+        sscs-s2s-secret: idam.s2s-auth.totp_secret
         s2s-micro: IDAM_S2S_AUTH_MICROSERVICE
         sscs-asb-primary-send-and-listen-shared-access-key: AMQP_PASSWORD
 #        docmosis-endpoint: PDF_SERVICE_BASE_URL
