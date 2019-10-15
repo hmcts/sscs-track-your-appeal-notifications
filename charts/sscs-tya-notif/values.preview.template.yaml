@@ -3,6 +3,23 @@ java:
   ingressHost: ${SERVICE_FQDN}
   aadIdentityName:
   readinessDelay: 45
+  keyVaults:
+    sscs:
+      secrets:
+        - idam-api
+        - idam-oauth-user
+        - idam-redirect
+        - idam-sscs-systemupdate-user
+        - idam-sscs-systemupdate-password
+        - sscs-email-mac-secret-text
+        - idam-sscs-oauth2-client-secret
+        - idam-s2s-api
+        - sscs-s2s-secret
+        - s2s-micro
+        - sscs-asb-primary-send-and-listen-shared-access-key
+        - docmosis-api-key
+        - notification-key
+        - notification-test-key
   environment:
     COH_URL: "http://coh-cor-aat.service.core-compute-aat.internal"
     ONLINE_HEARING_LINK: "https://sscs-cor-frontend-aat.service.core-compute-aat.internal"
