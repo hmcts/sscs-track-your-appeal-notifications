@@ -165,10 +165,12 @@ public class SendNotificationService {
         Address addressToUse = getAddressToUseForLetter(wrapper, subscriptionWithType.getSubscriptionType());
 
         if (isValidLetterAddress(addressToUse)) {
+            // mandatory letters should always be sent
+            // fallback letters are sent only if there's no email or SMS subscription
             boolean mandatoryLetterSent = sendMandatoryLetterNotification(wrapper, notification, subscriptionWithType.getSubscriptionType(), addressToUse);
             boolean fallbackLetterSent = sendFallbackLetterNotification(wrapper, subscription, notification, subscriptionWithType, eventType, addressToUse);
 
-            return mandatoryLetterSent | fallbackLetterSent;
+            return mandatoryLetterSent || fallbackLetterSent;
         } else {
             log.error("Failed to send letter for event id: {} for case id: {}, no address present", wrapper.getNotificationType().getId(), wrapper.getCaseId());
 

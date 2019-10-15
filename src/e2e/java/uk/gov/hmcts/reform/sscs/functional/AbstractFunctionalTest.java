@@ -84,7 +84,7 @@ public abstract class AbstractFunctionalTest {
 
     protected String caseReference;
 
-    protected Long caseId;
+    Long caseId;
 
     protected SscsCaseData caseData;
 
@@ -120,7 +120,7 @@ public abstract class AbstractFunctionalTest {
         return buildSscsCaseData(caseReference, "Yes", "Yes", SYA_APPEAL_CREATED, "oral");
     }
 
-    protected String generateRandomCaseReference() {
+    private String generateRandomCaseReference() {
         String epoch = String.valueOf(Instant.now().toEpochMilli());
         Map<String,String> sscCodeMap = regionalProcessingCenterService.getSccodeRegionalProcessingCentermap();
         String scNumber = generateScNumber(Instant.now(),sscCodeMap);
@@ -236,7 +236,7 @@ public abstract class AbstractFunctionalTest {
     public void simulateCcdCallback(NotificationEventType eventType, String resource) throws IOException {
         final String callbackUrl = getEnvOrEmpty("TEST_URL") + "/send";
 
-        String path = getClass().getClassLoader().getResource(resource).getFile();
+        String path = Objects.requireNonNull(getClass().getClassLoader().getResource(resource)).getFile();
         String json = FileUtils.readFileToString(new File(path), StandardCharsets.UTF_8.name());
 
         json = updateJson(json, eventType);
@@ -253,7 +253,7 @@ public abstract class AbstractFunctionalTest {
                 .statusCode(HttpStatus.OK.value());
     }
 
-    protected void simulateCohCallback(NotificationEventType eventType, String hearingId) throws IOException {
+    void simulateCohCallback(NotificationEventType eventType, String hearingId) throws IOException {
 
         final String callbackUrl = getEnvOrEmpty("TEST_URL") + "/coh-send";
 
@@ -287,16 +287,16 @@ public abstract class AbstractFunctionalTest {
         return json;
     }
 
-    protected void subscribeRepresentative() {
+    void subscribeRepresentative() {
         subscribeRep(caseData);
     }
 
-    protected void triggerEventWithHearingType(NotificationEventType eventType, String hearingType) {
+    void triggerEventWithHearingType(NotificationEventType eventType, String hearingType) {
         caseData.getAppeal().setHearingType(hearingType);
         triggerEvent(eventType);
     }
 
-    protected void triggerEvent(NotificationEventType eventType) {
+    void triggerEvent(NotificationEventType eventType) {
 
         Event events = Event.builder()
                 .value(EventDetails.builder()
@@ -313,7 +313,7 @@ public abstract class AbstractFunctionalTest {
         ccdService.updateCase(caseData, caseId, eventType.getId(), "CCD Case", "Notification Service updated case", idamTokens);
     }
 
-    protected void assertNotificationSubjectContains(List<Notification> notifications, String templateId, String... matches) {
+    void assertNotificationSubjectContains(List<Notification> notifications, String templateId, String... matches) {
         String bodies =
                 notifications
                         .stream()
@@ -337,7 +337,7 @@ public abstract class AbstractFunctionalTest {
                 notifications
                         .stream()
                         .filter(notification -> notification.getTemplateId().equals(UUID.fromString(templateId)))
-                        .map(notification -> notification.getBody())
+                        .map(Notification::getBody)
                         .collect(Collectors.joining("\n--\n"));
 
         for (String match : matches) {
