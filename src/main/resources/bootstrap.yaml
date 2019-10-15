@@ -7,17 +7,15 @@ spring:
         idam-api: idam.url
         idam-sscs-systemupdate-user: idam.oauth2.user.email
         idam-sscs-systemupdate-password: idam.oauth2.user.password
-        notification-key: gov.uk.notification.api.key
-        notification-test-key: gov.uk.notification.api.testKey
         notification-job-scheduler-db-password: spring.datasource.password
         sscs-email-mac-secret-text: subscription.hmac.secret.text
         idam-sscs-oauth2-client-secret: idam.oauth2.client.secret
         idam-oauth-user: idam.oauth2.client.id
-        ccd-api: core_case_data.api.url
         idam-redirect: idam.oauth2.redirectUrl
-        tya-link: track.appeal.link
         idam-s2s-api: idam.s2s-auth.url
         sscs-s2s-secret: idam.s2s-auth.totp_secret
         s2s-micro: idam.s2s-auth.microservice
         sscs-asb-primary-send-and-listen-shared-access-key: amqp.password
         docmosis-api-key: pdf-service.accessKey
+        notification-key: gov.uk.notification.api.key
+        notification-test-key: gov.uk.notification.api.testKey
