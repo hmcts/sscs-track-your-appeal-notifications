@@ -1,5 +1,6 @@
 package uk.gov.hmcts.reform.sscs.service;
 
+import static uk.gov.hmcts.reform.sscs.domain.notify.NotificationEventType.ADMIN_APPEAL_WITHDRAWN;
 import static uk.gov.hmcts.reform.sscs.domain.notify.NotificationEventType.APPEAL_RECEIVED_NOTIFICATION;
 import static uk.gov.hmcts.reform.sscs.domain.notify.NotificationEventType.APPEAL_WITHDRAWN_NOTIFICATION;
 import static uk.gov.hmcts.reform.sscs.domain.notify.NotificationEventType.DECISION_ISSUED;
@@ -31,13 +32,30 @@ import uk.gov.hmcts.reform.sscs.factory.NotificationWrapper;
 
 @Service
 public class NotificationValidService {
-    protected static final List<NotificationEventType> FALLBACK_LETTER_SUBSCRIPTION_TYPES = Arrays.asList(DWP_RESPONSE_RECEIVED_NOTIFICATION, SYA_APPEAL_CREATED_NOTIFICATION, EVIDENCE_RECEIVED_NOTIFICATION, VALID_APPEAL_CREATED);
-    private static final List<NotificationEventType> MANDATORY_LETTER_EVENT_TYPES = Arrays.asList(DWP_UPLOAD_RESPONSE_NOTIFICATION, APPEAL_WITHDRAWN_NOTIFICATION, STRUCK_OUT, APPEAL_RECEIVED_NOTIFICATION, HEARING_BOOKED_NOTIFICATION, DIRECTION_ISSUED, DECISION_ISSUED, REQUEST_INFO_INCOMPLETE, NON_COMPLIANT_NOTIFICATION, JUDGE_DECISION_APPEAL_TO_PROCEED, TCW_DECISION_APPEAL_TO_PROCEED);
+    // mandatory letters should always be sent
+    // fallback letters are sent only if there's no email or SMS subscription
+    protected static final List<NotificationEventType> FALLBACK_LETTER_SUBSCRIPTION_TYPES =
+        Arrays.asList(DWP_RESPONSE_RECEIVED_NOTIFICATION, SYA_APPEAL_CREATED_NOTIFICATION,
+            EVIDENCE_RECEIVED_NOTIFICATION, VALID_APPEAL_CREATED);
 
-    static final List<NotificationEventType> LETTER_EVENT_TYPES = Stream.concat(FALLBACK_LETTER_SUBSCRIPTION_TYPES.stream(), MANDATORY_LETTER_EVENT_TYPES.stream()).collect(Collectors.toList());
-    protected static final List<NotificationEventType> BUNDLED_LETTER_EVENT_TYPES = Arrays.asList(STRUCK_OUT, DIRECTION_ISSUED, DECISION_ISSUED, JUDGE_DECISION_APPEAL_TO_PROCEED, TCW_DECISION_APPEAL_TO_PROCEED);
-    static final List<NotificationEventType> INTERLOC_LETTERS = Arrays.asList(STRUCK_OUT, DIRECTION_ISSUED, DECISION_ISSUED, REQUEST_INFO_INCOMPLETE, JUDGE_DECISION_APPEAL_TO_PROCEED, TCW_DECISION_APPEAL_TO_PROCEED, NON_COMPLIANT_NOTIFICATION, VALID_APPEAL_CREATED);
-    static final List<NotificationEventType> DOCMOSIS_LETTERS = Arrays.asList(APPEAL_RECEIVED_NOTIFICATION, DIRECTION_ISSUED, DECISION_ISSUED);
+    private static final List<NotificationEventType> MANDATORY_LETTER_EVENT_TYPES =
+        Arrays.asList(DWP_UPLOAD_RESPONSE_NOTIFICATION, ADMIN_APPEAL_WITHDRAWN, APPEAL_WITHDRAWN_NOTIFICATION,
+            STRUCK_OUT, APPEAL_RECEIVED_NOTIFICATION, HEARING_BOOKED_NOTIFICATION, DIRECTION_ISSUED, DECISION_ISSUED,
+            REQUEST_INFO_INCOMPLETE, NON_COMPLIANT_NOTIFICATION, JUDGE_DECISION_APPEAL_TO_PROCEED,
+            TCW_DECISION_APPEAL_TO_PROCEED);
+
+    static final List<NotificationEventType> LETTER_EVENT_TYPES = Stream.concat(FALLBACK_LETTER_SUBSCRIPTION_TYPES.stream(),
+        MANDATORY_LETTER_EVENT_TYPES.stream()).collect(Collectors.toList());
+
+    protected static final List<NotificationEventType> BUNDLED_LETTER_EVENT_TYPES = Arrays.asList(STRUCK_OUT,
+        DIRECTION_ISSUED, DECISION_ISSUED, JUDGE_DECISION_APPEAL_TO_PROCEED, TCW_DECISION_APPEAL_TO_PROCEED);
+
+    static final List<NotificationEventType> INTERLOC_LETTERS = Arrays.asList(STRUCK_OUT, DIRECTION_ISSUED,
+        DECISION_ISSUED, REQUEST_INFO_INCOMPLETE, JUDGE_DECISION_APPEAL_TO_PROCEED, TCW_DECISION_APPEAL_TO_PROCEED,
+        NON_COMPLIANT_NOTIFICATION, VALID_APPEAL_CREATED);
+
+    static final List<NotificationEventType> DOCMOSIS_LETTERS = Arrays.asList(APPEAL_RECEIVED_NOTIFICATION,
+        DIRECTION_ISSUED, DECISION_ISSUED);
 
     private static final String HEARING_TYPE_ONLINE_RESOLUTION = "cor";
 
