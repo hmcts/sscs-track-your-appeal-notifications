@@ -5,7 +5,6 @@ java:
   ingressHost: sscs-tya-notif-{{ .Values.global.environment }}.service.core-compute-{{ .Values.global.environment }}.internal
   keyVaults:
     sscs:
-      resourceGroup: sscs
       secrets:
       - idam-api
       - idam-oauth-user
