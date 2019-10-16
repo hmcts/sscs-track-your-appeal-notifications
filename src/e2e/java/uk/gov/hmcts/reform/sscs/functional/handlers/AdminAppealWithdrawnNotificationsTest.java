@@ -22,9 +22,9 @@ public class AdminAppealWithdrawnNotificationsTest extends AbstractFunctionalTes
 
     @Test
     @Parameters({"Appellant", "Appointee"})
-    public void givenCallbackWithSubscriptions_shouldSendEmailSmsAndLetterNotifications(String party)
+    public void givenCallbackWithSubscriptions_shouldSendEmailSmsAndLetterNotifications(String subscription)
         throws Exception {
-        simulateCcdCallback(ADMIN_APPEAL_WITHDRAWN, "handlers/" + ADMIN_APPEAL_WITHDRAWN.getId() + party
+        simulateCcdCallback(ADMIN_APPEAL_WITHDRAWN, "handlers/" + ADMIN_APPEAL_WITHDRAWN.getId() + subscription
             + "Callback.json");
 
         delayAssertionInSeconds();
