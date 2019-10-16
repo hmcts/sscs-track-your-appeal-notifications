@@ -261,6 +261,8 @@ public class SendNotificationService {
                 notification.getLetterTemplate(),
                 addressToUse,
                 notification.getPlaceholders(),
+                wrapper.getNotificationType(),
+                fullNameNoTitle,
                 wrapper.getCaseId()
             );
         }
@@ -287,6 +289,7 @@ public class SendNotificationService {
                 }
                 bundledLetter = letter;
             } else {
+                //FIXME: Remove this when we have removed all templates from pdf common
                 notification.getPlaceholders().put(LETTER_ADDRESS_LINE_1, addressToUse.getLine1());
                 notification.getPlaceholders().put(LETTER_ADDRESS_LINE_2, addressToUse.getLine2());
                 notification.getPlaceholders().put(LETTER_ADDRESS_LINE_3, addressToUse.getTown());
@@ -307,6 +310,8 @@ public class SendNotificationService {
                 notificationSender.sendBundledLetter(
                     wrapper.getNewSscsCaseData().getAppeal().getAppellant().getAddress().getPostcode(),   // Used for whitelisting only
                     bundledLetter,
+                    wrapper.getNotificationType(),
+                    nameToUse.getFullNameNoTitle(),
                     wrapper.getCaseId()
                 );
             if (ArrayUtils.isNotEmpty(bundledLetter)) {
@@ -354,7 +359,7 @@ public class SendNotificationService {
         } else if ((DIRECTION_ISSUED.equals(notificationEventType))
                 && (newSscsCaseData.getSscsInterlocDirectionDocument() != null)) {
             documentUrl = newSscsCaseData.getSscsInterlocDirectionDocument().getDocumentLink().getDocumentUrl();
-        } else if ((JUDGE_DECISION_APPEAL_TO_PROCEED.equals(notificationEventType) || TCW_DECISION_APPEAL_TO_PROCEED.equals(notificationEventType))
+        } else if ((DECISION_ISSUED.equals(notificationEventType) || JUDGE_DECISION_APPEAL_TO_PROCEED.equals(notificationEventType) || TCW_DECISION_APPEAL_TO_PROCEED.equals(notificationEventType))
                 && (newSscsCaseData.getSscsInterlocDecisionDocument() != null)) {
             documentUrl = newSscsCaseData.getSscsInterlocDecisionDocument().getDocumentLink().getDocumentUrl();
         }

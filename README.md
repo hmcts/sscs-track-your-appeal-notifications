@@ -3,8 +3,7 @@
 ## Purpose
 Track Your Appeal Notifications is a spring boot based application used to send notifications to gov notify. 
 
-The [Job-Scheduler](https://github.com/hmcts/job-scheduler) is used to start notification requests using callbacks. 
-
+The [Job-Scheduler](https://github.com/hmcts/job-scheduler) is used to start notification requests using callbacks.
 
 ### Prerequisites
 

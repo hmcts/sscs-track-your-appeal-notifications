@@ -131,10 +131,13 @@ public class CohNotificationsIt {
     @Mock
     private MarkdownTransformationService markdownTransformationService;
 
+    @Mock
+    private SaveLetterCorrespondenceAsyncService saveLetterCorrespondenceAsyncService;
+
     @Before
     public void setup() throws Exception {
         Boolean saveCorrespondence = false;
-        NotificationSender sender = new NotificationSender(notificationClient, null, notificationBlacklist, ccdNotificationsPdfService, markdownTransformationService, saveCorrespondence);
+        NotificationSender sender = new NotificationSender(notificationClient, null, notificationBlacklist, ccdNotificationsPdfService, markdownTransformationService, saveLetterCorrespondenceAsyncService, saveCorrespondence);
 
         SendNotificationService sendNotificationService = new SendNotificationService(sender, evidenceManagementService, sscsGeneratePdfService, notificationHandler, notificationValidService, bundledLetterTemplateUtil, pdfLetterService);
         ReflectionTestUtils.setField(sendNotificationService, "bundledLettersOn", true);

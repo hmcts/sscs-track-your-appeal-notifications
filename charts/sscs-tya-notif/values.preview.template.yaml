@@ -2,38 +2,28 @@ java:
   image: ${IMAGE_NAME}
   ingressHost: ${SERVICE_FQDN}
   aadIdentityName:
+  readinessDelay: 45
   keyVaults:
     sscs:
-      resourceGroup: sscs
       secrets:
         - idam-api
         - idam-oauth-user
         - idam-redirect
         - idam-sscs-systemupdate-user
         - idam-sscs-systemupdate-password
+        - sscs-email-mac-secret-text
         - idam-sscs-oauth2-client-secret
-        - ccd-api
-        - ccd-jid
-        - ccd-tid
         - idam-s2s-api
         - sscs-s2s-secret
         - s2s-micro
         - sscs-asb-primary-send-and-listen-shared-access-key
-        - docmosis-endpoint
         - docmosis-api-key
+        - notification-key
+        - notification-test-key
   environment:
     COH_URL: "http://coh-cor-aat.service.core-compute-aat.internal"
     ONLINE_HEARING_LINK: "https://sscs-cor-frontend-aat.service.core-compute-aat.internal"
-    IDAM_SSCS_SYSTEMUPDATE_USER: ${IDAM_SSCS_SYSTEMUPDATE_USER}
-    IDAM_SSCS_SYSTEMUPDATE_PASSWORD: ${IDAM_SSCS_SYSTEMUPDATE_PASSWORD}
-    IDAM_OAUTH2_CLIENT_SECRET: ${IDAM_OAUTH2_CLIENT_SECRET}
-    IDAM_S2S_AUTH_MICROSERVICE: ${IDAM_S2S_AUTH_MICROSERVICE}
-    IDAM_S2S_AUTH_TOTP_SECRET: ${IDAM_S2S_AUTH_TOTP_SECRET}
-    NOTIFICATION_API_KEY: ${NOTIFICATION_API_KEY}
-    NOTIFICATION_API_TEST_KEY: ${NOTIFICATION_API_TEST_KEY}
-    EMAIL_MAC_SECRET_TEXT: ${EMAIL_MAC_SECRET_TEXT}
     PDF_SERVICE_BASE_URL: ${PDF_SERVICE_BASE_URL}rs/render
-    PDF_SERVICE_ACCESS_KEY: ${PDF_SERVICE_ACCESS_KEY}
     PDF_SERVICE_HEALTH_URL: ${PDF_SERVICE_BASE_URL}rs/status
     SUBSCRIPTION_NAME: "sscs-notifications-subscription-aat"
     TOPIC_NAME: "sscs-evidenceshare-topic-aat"
