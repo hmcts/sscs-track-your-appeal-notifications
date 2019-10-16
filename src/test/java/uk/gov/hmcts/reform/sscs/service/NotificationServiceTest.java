@@ -261,7 +261,12 @@ public class NotificationServiceTest {
         ArgumentCaptor<SubscriptionWithType> subscriptionWithTypeCaptor = ArgumentCaptor.forClass(SubscriptionWithType.class);
         then(factory).should(times(wantedNumberOfFactoryCreateCalls))
             .create(any(NotificationWrapper.class), subscriptionWithTypeCaptor.capture());
-        assertArrayEquals(expectedSubscriptionTypes, subscriptionWithTypeCaptor.getAllValues().stream().map(SubscriptionWithType::getSubscriptionType).toArray());
+        SubscriptionType actualSubscriptionType = subscriptionWithTypeCaptor.getAllValues().stream()
+            .map(SubscriptionWithType::getSubscriptionType)
+            .findFirst().orElse(null);
+        if (expectedSubscriptionTypes != null) {
+            assertTrue(Arrays.asList(expectedSubscriptionTypes).contains(actualSubscriptionType));
+        }
 
         then(notificationHandler).should(times(wantedNumberOfEmailNotificationsSent)).sendNotification(
             eq(ccdNotificationWrapper), eq(EMAIL_TEMPLATE_ID), eq("Email"),
@@ -540,6 +545,28 @@ public class NotificationServiceTest {
                 false
             },
             new Object[]{
+                ADMIN_APPEAL_WITHDRAWN,
+                2,
+                1,
+                2,
+                2,
+                Subscription.builder()
+                    .tya(APPEAL_NUMBER)
+                    .email(EMAIL)
+                    .subscribeEmail(YES)
+                    .mobile(MOBILE_NUMBER_1)
+                    .subscribeSms(YES).wantSmsNotifications(YES)
+                    .build(),
+                Subscription.builder()
+                    .tya(APPEAL_NUMBER)
+                    .email(EMAIL)
+                    .subscribeEmail(YES)
+                    .build(),
+                null,
+                new SubscriptionType[]{APPELLANT, REPRESENTATIVE},
+                false
+            },
+            new Object[]{
                 APPEAL_LAPSED_NOTIFICATION,
                 2,
                 1,
@@ -778,7 +805,7 @@ public class NotificationServiceTest {
                     .build(),
                 null,
                 null,
-                new SubscriptionType[]{},
+                null,
                 true
             },
             new Object[]{
@@ -796,7 +823,7 @@ public class NotificationServiceTest {
                     .build(),
                 null,
                 null,
-                new SubscriptionType[]{},
+                null,
                 true
             }
         };
