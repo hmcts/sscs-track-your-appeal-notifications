@@ -117,7 +117,7 @@ public class NotificationServiceTest {
     private static final String EMAIL_TEMPLATE_ID = "email-template-id";
     private static final String SMS_TEMPLATE_ID = "sms-template-id";
     private static final String LETTER_TEMPLATE_ID_STRUCKOUT = "struckOut";
-    private static final String LETTER_TEMPLATE_ID_VALID_APPEAL_CREATED = "validAppealCreated";
+    private static final String LETTER_TEMPLATE_ID = "letter-template-id";
     private static final String SAME_TEST_EMAIL_COM = "sametest@email.com";
     private static final String NEW_TEST_EMAIL_COM = "newtest@email.com";
     private static final String NO = "No";
@@ -217,9 +217,16 @@ public class NotificationServiceTest {
     @Test
     @Parameters(method = "generateNotificationTypeAndSubscriptionsScenarios")
     public void givenNotificationEventTypeAndDifferentSubscriptionCombinations_shouldManageNotificationAndSubscriptionAccordingly(
-        NotificationEventType notificationEventType, int wantedNumberOfEmailNotificationsSent,
-        int wantedNumberOfSmsNotificationsSent, Subscription appellantSubscription, Subscription repsSubscription,
-        Subscription appointeeSubscription, SubscriptionType[] expectedSubscriptionTypes, boolean fallbackLetter) {
+        NotificationEventType notificationEventType,
+        int wantedNumberOfEmailNotificationsSent,
+        int wantedNumberOfSmsNotificationsSent,
+        int wantedNumberOfLetterNotificationsSent,
+        int wantedNumberOfFactoryCreateCalls,
+        Subscription appellantSubscription,
+        Subscription repsSubscription,
+        Subscription appointeeSubscription,
+        SubscriptionType[] expectedSubscriptionTypes,
+        boolean fallbackLetter) {
 
         ccdNotificationWrapper = buildNotificationWrapperGivenNotificationTypeAndSubscriptions(
             notificationEventType, appellantSubscription, repsSubscription, appointeeSubscription);
@@ -239,6 +246,7 @@ public class NotificationServiceTest {
                 Template.builder()
                     .emailTemplateId(EMAIL_TEMPLATE_ID)
                     .smsTemplateId(SMS_TEMPLATE_ID)
+                    .letterTemplateId(LETTER_TEMPLATE_ID)
                     .build(),
                 Destination.builder()
                     .email(EMAIL)
@@ -251,7 +259,7 @@ public class NotificationServiceTest {
         notificationService.manageNotificationAndSubscription(ccdNotificationWrapper);
 
         ArgumentCaptor<SubscriptionWithType> subscriptionWithTypeCaptor = ArgumentCaptor.forClass(SubscriptionWithType.class);
-        then(factory).should(times(expectedSubscriptionTypes.length))
+        then(factory).should(times(wantedNumberOfFactoryCreateCalls))
             .create(any(NotificationWrapper.class), subscriptionWithTypeCaptor.capture());
         assertArrayEquals(expectedSubscriptionTypes, subscriptionWithTypeCaptor.getAllValues().stream().map(SubscriptionWithType::getSubscriptionType).toArray());
 
@@ -260,6 +268,9 @@ public class NotificationServiceTest {
             any(NotificationHandler.SendNotification.class));
         then(notificationHandler).should(times(wantedNumberOfSmsNotificationsSent)).sendNotification(
             eq(ccdNotificationWrapper), eq(SMS_TEMPLATE_ID), eq("SMS"),
+            any(NotificationHandler.SendNotification.class));
+        then(notificationHandler).should(times(wantedNumberOfLetterNotificationsSent)).sendNotification(
+            eq(ccdNotificationWrapper), eq(LETTER_TEMPLATE_ID), eq("Letter"),
             any(NotificationHandler.SendNotification.class));
 
         verifyNoErrorsLogged(mockAppender, captorLoggingEvent);
@@ -452,6 +463,8 @@ public class NotificationServiceTest {
                 SYA_APPEAL_CREATED_NOTIFICATION,
                 1,
                 0,
+                0,
+                1,
                 Subscription.builder()
                     .tya(APPEAL_NUMBER)
                     .email(EMAIL)
@@ -466,6 +479,8 @@ public class NotificationServiceTest {
                 VALID_APPEAL_CREATED,
                 1,
                 0,
+                0,
+                1,
                 Subscription.builder()
                     .tya(APPEAL_NUMBER)
                     .email(EMAIL)
@@ -479,6 +494,8 @@ public class NotificationServiceTest {
             new Object[]{
                 APPEAL_LAPSED_NOTIFICATION,
                 1,
+                1,
+                0,
                 1,
                 Subscription.builder()
                     .tya(APPEAL_NUMBER)
@@ -496,6 +513,8 @@ public class NotificationServiceTest {
                 ADMIN_APPEAL_WITHDRAWN,
                 1,
                 1,
+                1,
+                1,
                 Subscription.builder()
                     .tya(APPEAL_NUMBER)
                     .email(EMAIL)
@@ -509,9 +528,23 @@ public class NotificationServiceTest {
                 false
             },
             new Object[]{
+                ADMIN_APPEAL_WITHDRAWN,
+                0,
+                0,
+                1,
+                1,
+                null,
+                null,
+                null,
+                new SubscriptionType[]{APPELLANT},
+                false
+            },
+            new Object[]{
                 APPEAL_LAPSED_NOTIFICATION,
                 2,
                 1,
+                0,
+                2,
                 Subscription.builder()
                     .tya(APPEAL_NUMBER)
                     .email(EMAIL)
@@ -531,6 +564,8 @@ public class NotificationServiceTest {
             new Object[]{
                 APPEAL_LAPSED_NOTIFICATION,
                 2,
+                2,
+                0,
                 2,
                 Subscription.builder()
                     .tya(APPEAL_NUMBER)
@@ -552,6 +587,8 @@ public class NotificationServiceTest {
             },
             new Object[]{
                 APPEAL_RECEIVED_NOTIFICATION,
+                1,
+                1,
                 1,
                 1,
                 Subscription.builder()
@@ -570,6 +607,8 @@ public class NotificationServiceTest {
                 APPEAL_RECEIVED_NOTIFICATION,
                 2,
                 1,
+                2,
+                2,
                 Subscription.builder()
                     .tya(APPEAL_NUMBER)
                     .email(EMAIL)
@@ -588,6 +627,8 @@ public class NotificationServiceTest {
             },
             new Object[]{
                 APPEAL_RECEIVED_NOTIFICATION,
+                2,
+                2,
                 2,
                 2,
                 Subscription.builder()
@@ -612,6 +653,8 @@ public class NotificationServiceTest {
                 SYA_APPEAL_CREATED_NOTIFICATION,
                 0,
                 0,
+                1,
+                1,
                 null,
                 null,
                 null,
@@ -622,6 +665,8 @@ public class NotificationServiceTest {
                 SYA_APPEAL_CREATED_NOTIFICATION,
                 1,
                 0,
+                0,
+                1,
                 Subscription.builder()
                     .tya(APPEAL_NUMBER)
                     .email(EMAIL)
@@ -635,6 +680,8 @@ public class NotificationServiceTest {
             new Object[]{
                 SYA_APPEAL_CREATED_NOTIFICATION,
                 1,
+                1,
+                0,
                 1,
                 Subscription.builder()
                     .tya(APPEAL_NUMBER)
@@ -652,6 +699,8 @@ public class NotificationServiceTest {
                 SYA_APPEAL_CREATED_NOTIFICATION,
                 0,
                 0,
+                1,
+                2,
                 Subscription.builder().build(),
                 Subscription.builder().build(),
                 Subscription.builder().build(),
@@ -662,6 +711,8 @@ public class NotificationServiceTest {
                 VALID_APPEAL_CREATED,
                 0,
                 0,
+                1,
+                1,
                 null,
                 null,
                 null,
@@ -672,6 +723,8 @@ public class NotificationServiceTest {
                 VALID_APPEAL_CREATED,
                 1,
                 0,
+                0,
+                1,
                 Subscription.builder()
                     .tya(APPEAL_NUMBER)
                     .email(EMAIL)
@@ -685,6 +738,8 @@ public class NotificationServiceTest {
             new Object[]{
                 VALID_APPEAL_CREATED,
                 1,
+                1,
+                0,
                 1,
                 Subscription.builder()
                     .tya(APPEAL_NUMBER)
@@ -702,6 +757,8 @@ public class NotificationServiceTest {
                 VALID_APPEAL_CREATED,
                 0,
                 0,
+                1,
+                2,
                 Subscription.builder().build(),
                 Subscription.builder().build(),
                 Subscription.builder().build(),
@@ -710,6 +767,8 @@ public class NotificationServiceTest {
             },
             new Object[]{
                 CASE_UPDATED,
+                0,
+                0,
                 0,
                 0,
                 Subscription.builder()
@@ -724,6 +783,8 @@ public class NotificationServiceTest {
             },
             new Object[]{
                 CASE_UPDATED,
+                0,
+                0,
                 0,
                 0,
                 Subscription.builder()
@@ -1459,7 +1520,9 @@ public class NotificationServiceTest {
                 .build();
         }
 
-        Appellant appellant = Appellant.builder().build();
+        Appellant appellant = Appellant.builder()
+            .address(Address.builder().line1("Appellant Line 1").town("Appellant Town").county("Appellant County").postcode("AP9 7LL").build())
+            .build();
         if (appointeeSubscription != null) {
             appellant.setAppointee(Appointee.builder()
                 .name(Name.builder().firstName("Jack").lastName("Smith").build())
@@ -1904,7 +1967,7 @@ public class NotificationServiceTest {
                 STRUCK_OUT, LETTER_TEMPLATE_ID_STRUCKOUT, "/templates/strike_out_letter_template.html", ""
             },
             new Object[]{
-                JUDGE_DECISION_APPEAL_TO_PROCEED, LETTER_TEMPLATE_ID_VALID_APPEAL_CREATED, "/templates/valid_appeal_created_template.html", ""
+                JUDGE_DECISION_APPEAL_TO_PROCEED, LETTER_TEMPLATE_ID, "/templates/valid_appeal_created_template.html", ""
             }
         };
     }
