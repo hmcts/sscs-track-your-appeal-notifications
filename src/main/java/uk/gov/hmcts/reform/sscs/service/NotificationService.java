@@ -230,7 +230,8 @@ public class NotificationService {
             isAllowed = false;
         }
 
-        if (notificationWrapper.getSscsCaseDataWrapper().getState() != null && notificationWrapper.getSscsCaseDataWrapper().getState().equals(State.DORMANT_APPEAL_STATE)) {
+        if (notificationWrapper.getSscsCaseDataWrapper().getState() != null
+            && notificationWrapper.getSscsCaseDataWrapper().getState().equals(State.DORMANT_APPEAL_STATE)) {
             if (!(APPEAL_DORMANT_NOTIFICATION.equals(notificationType)
                 || APPEAL_LAPSED_NOTIFICATION.equals(notificationType)
                 || APPEAL_WITHDRAWN_NOTIFICATION.equals(notificationType)
