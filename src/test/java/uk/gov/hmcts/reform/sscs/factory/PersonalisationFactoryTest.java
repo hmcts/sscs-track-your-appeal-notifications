@@ -151,6 +151,12 @@ public class PersonalisationFactoryTest {
     }
 
     @Test
+    public void createRepsPersonalisationWhenDwpUploadResponseNotificationApplied() {
+        Personalisation result = factory.apply(DWP_UPLOAD_RESPONSE_NOTIFICATION);
+        assertEquals(withRepresentativePersonalisation, result);
+    }
+
+    @Test
     public void createRepsPersonalisationWhenDirectionIssuedNotificationApplied() {
         Personalisation result = factory.apply(DIRECTION_ISSUED);
         assertEquals(withRepresentativePersonalisation, result);

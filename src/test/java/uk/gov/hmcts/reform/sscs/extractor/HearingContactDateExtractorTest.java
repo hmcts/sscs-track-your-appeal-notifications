@@ -65,11 +65,12 @@ public class HearingContactDateExtractorTest {
     }
 
     @Test
-    public void givenDwpResponseReceivedEvent_thenExtractDateForReferenceEvent() {
+    @Parameters({"DWP_RESPONSE_RECEIVED_NOTIFICATION", "DWP_UPLOAD_RESPONSE_NOTIFICATION"})
+    public void givenDwpResponseReceivedEvent_thenExtractDateForReferenceEvent(NotificationEventType eventType) {
 
         ZonedDateTime expectedHearingContactDate = ZonedDateTime.parse("2018-01-01T14:02:18Z[Europe/London]");
 
-        CcdNotificationWrapper wrapper = SscsCaseDataUtils.buildBasicCcdNotificationWrapper(DWP_RESPONSE_RECEIVED_NOTIFICATION);
+        CcdNotificationWrapper wrapper = SscsCaseDataUtils.buildBasicCcdNotificationWrapper(eventType);
 
         when(dwpResponseReceivedDateExtractor.extract(wrapper.getNewSscsCaseData())).thenReturn(Optional.of(dwpResponseReceivedDate));
 

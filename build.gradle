@@ -301,7 +301,7 @@ applicationDefaultJvmArgs = ["-Dfile.encoding=UTF-8"]
 run {
     def debug = System.getProperty("debug")
     if (debug == 'true') {
-        jvmArgs = ['-agentlib:jdwp=transport=dt_socket,server=y,suspend=y,address=5005']
+        jvmArgs = ['-agentlib:jdwp=transport=dt_socket,server=y,suspend=y,address=5006']
     }
 }
 

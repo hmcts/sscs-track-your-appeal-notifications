@@ -51,6 +51,7 @@ public class PersonalisationFactory implements Function<NotificationEventType, P
                 || ADJOURNED_NOTIFICATION.equals(notificationType)
                 || POSTPONEMENT_NOTIFICATION.equals(notificationType)
                 || DWP_RESPONSE_RECEIVED_NOTIFICATION.equals(notificationType)
+                || DWP_UPLOAD_RESPONSE_NOTIFICATION.equals(notificationType)
                 || DIRECTION_ISSUED.equals(notificationType)
                 || DECISION_ISSUED.equals(notificationType)
                 || HEARING_BOOKED_NOTIFICATION.equals(notificationType)) {

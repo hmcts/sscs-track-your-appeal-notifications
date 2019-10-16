@@ -15,6 +15,7 @@ public enum NotificationEventType {
     APPEAL_DORMANT_NOTIFICATION("appealDormant", true, true, false, false, false),
     EVIDENCE_RECEIVED_NOTIFICATION("evidenceReceived", true, true, true, false, false),
     DWP_RESPONSE_RECEIVED_NOTIFICATION("responseReceived", true, true, true, false, false),
+    DWP_UPLOAD_RESPONSE_NOTIFICATION("dwpUploadResponse", true, true, true, false, false),
     HEARING_BOOKED_NOTIFICATION("hearingBooked", true, false, false, false, false),
     POSTPONEMENT_NOTIFICATION("hearingPostponed", true, false, false, false, false),
     SUBSCRIPTION_CREATED_NOTIFICATION("subscriptionCreated", true, true, false, false, false),
@@ -37,7 +38,6 @@ public enum NotificationEventType {
     JUDGE_DECISION_APPEAL_TO_PROCEED("judgeDecisionAppealToProceed", true, true, true, false, false),
     TCW_DECISION_APPEAL_TO_PROCEED("tcwDecisionAppealToProceed", true, true, true, false, false),
     NON_COMPLIANT_NOTIFICATION("nonCompliant", true, true, true, false, false),
-    DWP_UPLOAD_RESPONSE("dwpUploadResponse", true, true, true, false, false),
     DO_NOT_SEND("");
 
     private String id;

@@ -10,6 +10,7 @@ import static uk.gov.hmcts.reform.sscs.service.NotificationValidService.isMandat
 
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 import org.springframework.util.StringUtils;
 import uk.gov.hmcts.reform.sscs.ccd.domain.Benefit;
@@ -33,6 +34,7 @@ public class NotificationService {
     private final OutOfHoursCalculator outOfHoursCalculator;
     private final NotificationConfig notificationConfig;
     private final SendNotificationService sendNotificationService;
+    private final boolean readyToListFeatureEnabled;
 
     @Autowired
     public NotificationService(
@@ -42,7 +44,8 @@ public class NotificationService {
             NotificationHandler notificationHandler,
             OutOfHoursCalculator outOfHoursCalculator,
             NotificationConfig notificationConfig,
-            SendNotificationService sendNotificationService) {
+            SendNotificationService sendNotificationService,
+            @Value("${feature.readyToListRobotics_on}") boolean readyToListFeatureEnabled) {
         this.notificationFactory = notificationFactory;
         this.reminderService = reminderService;
         this.notificationValidService = notificationValidService;
@@ -50,6 +53,7 @@ public class NotificationService {
         this.outOfHoursCalculator = outOfHoursCalculator;
         this.notificationConfig = notificationConfig;
         this.sendNotificationService = sendNotificationService;
+        this.readyToListFeatureEnabled = readyToListFeatureEnabled;
     }
 
     public void manageNotificationAndSubscription(NotificationWrapper notificationWrapper) {
@@ -223,6 +227,11 @@ public class NotificationService {
                 isAllowed = false;
             }
         }
+
+        if (!readyToListFeatureEnabled && DWP_UPLOAD_RESPONSE_NOTIFICATION.equals(notificationType)) {
+            isAllowed = false;
+        }
+
         return isAllowed;
     }
 }

@@ -42,6 +42,7 @@ public class HearingContactDateExtractor {
         switch (referenceNotificationEventType) {
 
             case DWP_RESPONSE_RECEIVED_NOTIFICATION:
+            case DWP_UPLOAD_RESPONSE_NOTIFICATION:
                 delay = getDwpResponseReceivedNotificationDelay(sscsCaseData);
                 break;
 

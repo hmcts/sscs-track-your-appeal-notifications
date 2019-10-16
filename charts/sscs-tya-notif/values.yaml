@@ -5,24 +5,22 @@ java:
   ingressHost: sscs-tya-notif-{{ .Values.global.environment }}.service.core-compute-{{ .Values.global.environment }}.internal
   keyVaults:
     sscs:
-      resourceGroup: sscs
       secrets:
       - idam-api
       - idam-oauth-user
       - idam-redirect
       - idam-sscs-systemupdate-user
       - idam-sscs-systemupdate-password
+      - sscs-email-mac-secret-text
       - idam-sscs-oauth2-client-secret
-      - ccd-api
-      - ccd-jid
-      - ccd-tid
       - idam-s2s-api
       - sscs-s2s-secret
       - s2s-micro
       - sscs-asb-primary-send-and-listen-shared-access-key
-      - docmosis-endpoint
       - docmosis-api-key
       - notification-job-scheduler-db-password
+      - notification-key
+      - notification-test-key
   environment:
     REFORM_TEAM: sscs
     REFORM_SERVICE_NAME: tya-notifications
@@ -61,6 +59,5 @@ java:
     TOPIC_NAME: "sscs-evidenceshare-topic-{{ .Values.global.environment }}"
     AMQP_HOST: "sscs-servicebus-{{ .Values.global.environment }}.servicebus.windows.net"
     AMQP_USERNAME: "SendAndListenSharedAccessKey"
-
-
-
+    PDF_SERVICE_BASE_URL: "https://docmosis-development.platform.hmcts.net/rs/render"
+    PDF_SERVICE_HEALTH_URL: "https://docmosis-development.platform.hmcts.net/rs/status"
