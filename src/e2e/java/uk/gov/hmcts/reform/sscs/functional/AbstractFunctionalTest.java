@@ -73,6 +73,7 @@ public abstract class AbstractFunctionalTest {
 
     @Autowired
     @Qualifier("testNotificationClient")
+    @Getter
     private NotificationClient client;
 
     @Autowired

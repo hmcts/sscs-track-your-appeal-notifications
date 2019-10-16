@@ -5,6 +5,7 @@ import static org.junit.Assert.assertTrue;
 import static uk.gov.hmcts.reform.sscs.domain.notify.NotificationEventType.ADMIN_APPEAL_WITHDRAWN;
 
 import java.util.List;
+import java.util.UUID;
 import java.util.concurrent.TimeUnit;
 import junitparams.Parameters;
 import org.junit.Test;
@@ -21,19 +22,26 @@ public class AdminAppealWithdrawnNotificationsTest extends AbstractFunctionalTes
 
     @Test
     @Parameters({"Appellant", "Appointee"})
-    public void givenCallbackWithAppellantSubscription_shouldSendEmailSmsAndLetterNotifications(String party) throws Exception {
-        simulateCcdCallback(ADMIN_APPEAL_WITHDRAWN, "handlers/" + ADMIN_APPEAL_WITHDRAWN.getId() + party + "Callback.json");
+    public void givenCallbackWithSubscriptions_shouldSendEmailSmsAndLetterNotifications(String party)
+        throws Exception {
+        simulateCcdCallback(ADMIN_APPEAL_WITHDRAWN, "handlers/" + ADMIN_APPEAL_WITHDRAWN.getId() + party
+            + "Callback.json");
 
         delayAssertionInSeconds();
-
+        List<Notification> notifications = getClient()
+            .getNotifications("", "", caseReference, "").getNotifications();
 
         String emailId = "8620e023-f663-477e-a771-9cfad50ee30f";
         String smsId = "446c7b23-7342-42e1-adff-b4c367e951cb";
-        List<Notification> notifications = tryFetchNotificationsForTestCase(emailId, smsId);
-
-        assertNotificationBodyContains(notifications, emailId);
-        assertNotificationBodyContains(notifications, smsId);
+        assertEquals(1, getNumberOfNotificationsForGivenEmailOrSmsTemplateId(notifications, emailId));
+        assertEquals(1, getNumberOfNotificationsForGivenEmailOrSmsTemplateId(notifications, smsId));
         assertEquals(1, getNumberOfLetterCorrespondence());
+    }
+
+    private long getNumberOfNotificationsForGivenEmailOrSmsTemplateId(List<Notification> notifications, String emailId) {
+        return notifications.stream()
+            .filter(notification -> notification.getTemplateId().equals(UUID.fromString(emailId)))
+            .count();
     }
 
     @Test
@@ -42,11 +50,8 @@ public class AdminAppealWithdrawnNotificationsTest extends AbstractFunctionalTes
             + "NoSubscriptions" + "Callback.json");
 
         delayAssertionInSeconds();
-
-
-        String emailId = "8620e023-f663-477e-a771-9cfad50ee30f";
-        String smsId = "446c7b23-7342-42e1-adff-b4c367e951cb";
-        List<Notification> notifications = tryFetchNotificationsForTestCaseWithFlag(true, emailId, smsId);
+        List<Notification> notifications = getClient()
+            .getNotifications("", "", caseReference, "").getNotifications();
 
         assertTrue(notifications.isEmpty());
         assertEquals(1, getNumberOfLetterCorrespondence());
