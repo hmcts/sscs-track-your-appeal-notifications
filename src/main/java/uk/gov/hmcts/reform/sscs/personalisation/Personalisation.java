@@ -44,7 +44,7 @@ import uk.gov.hmcts.reform.sscs.service.SendNotificationService;
 @Component
 @Slf4j
 public class Personalisation<E extends NotificationWrapper> {
-    private static final List<NotificationEventType> LETTER_SUBSCRIPTION_TYPES = Arrays.asList(DWP_RESPONSE_RECEIVED_NOTIFICATION,
+    private static final List<NotificationEventType> LETTER_SUBSCRIPTION_TYPES = Arrays.asList(DWP_RESPONSE_RECEIVED_NOTIFICATION, DWP_UPLOAD_RESPONSE_NOTIFICATION,
             APPEAL_RECEIVED_NOTIFICATION, SYA_APPEAL_CREATED_NOTIFICATION, EVIDENCE_RECEIVED_NOTIFICATION, NON_COMPLIANT_NOTIFICATION, VALID_APPEAL_CREATED);
 
     private static final String CRLF = String.format("%c%c", (char) 0x0D, (char) 0x0A);
@@ -355,6 +355,8 @@ public class Personalisation<E extends NotificationWrapper> {
             || HEARING_REMINDER_NOTIFICATION.equals(notificationEventType)
             || POSTPONEMENT_NOTIFICATION.equals(notificationEventType)
             || (DWP_RESPONSE_RECEIVED_NOTIFICATION.equals(notificationEventType)
+                && !notificationWrapper.getHearingType().equals(AppealHearingType.ONLINE))
+            || (DWP_UPLOAD_RESPONSE_NOTIFICATION.equals(notificationEventType)
                 && !notificationWrapper.getHearingType().equals(AppealHearingType.ONLINE))
             || RESEND_APPEAL_CREATED_NOTIFICATION.equals(notificationEventType)
             || VALID_APPEAL_CREATED.equals(notificationEventType)

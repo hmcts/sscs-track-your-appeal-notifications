@@ -190,6 +190,14 @@ public class NotificationsFunctionalTest extends AbstractFunctionalTest {
     }
 
     @Test
+    public void shouldSendOnlineDwpUploadResponseReceivedNotification() throws NotificationClientException, IOException {
+        simulateCcdCallback(DWP_UPLOAD_RESPONSE_NOTIFICATION, "online-" + DWP_UPLOAD_RESPONSE_NOTIFICATION.getId() + "Callback.json");
+        List<Notification> notifications = tryFetchNotificationsForTestCase(onlineResponseReceivedEmailId);
+
+        assertNotificationBodyContains(notifications, onlineResponseReceivedEmailId, caseData.getCaseReference());
+    }
+
+    @Test
     public void shouldSendAppealCreatedAppellantNotification() throws NotificationClientException, IOException {
         simulateCcdCallback(SYA_APPEAL_CREATED_NOTIFICATION, SYA_APPEAL_CREATED_NOTIFICATION.getId() + "Callback.json");
         List<Notification> notifications = tryFetchNotificationsForTestCase(appealCreatedAppellantEmailId, appealCreatedAppellantSmsId);

@@ -3,6 +3,7 @@ package uk.gov.hmcts.reform.sscs.service.reminder;
 import static org.slf4j.LoggerFactory.getLogger;
 import static uk.gov.hmcts.reform.sscs.ccd.domain.EventType.EVIDENCE_REMINDER;
 import static uk.gov.hmcts.reform.sscs.domain.notify.NotificationEventType.DWP_RESPONSE_RECEIVED_NOTIFICATION;
+import static uk.gov.hmcts.reform.sscs.domain.notify.NotificationEventType.DWP_UPLOAD_RESPONSE_NOTIFICATION;
 
 import java.time.ZonedDateTime;
 import java.util.Optional;
@@ -41,7 +42,8 @@ public class EvidenceReminder implements ReminderHandler {
     public boolean canHandle(NotificationWrapper wrapper) {
         return wrapper
             .getNotificationType()
-            .equals(DWP_RESPONSE_RECEIVED_NOTIFICATION);
+            .equals(DWP_RESPONSE_RECEIVED_NOTIFICATION)
+                || wrapper.getNotificationType().equals(DWP_UPLOAD_RESPONSE_NOTIFICATION);
     }
 
     public boolean canSchedule(NotificationWrapper wrapper) {
