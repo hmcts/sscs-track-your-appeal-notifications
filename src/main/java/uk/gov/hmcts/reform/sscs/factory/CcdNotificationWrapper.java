@@ -126,7 +126,6 @@ public class CcdNotificationWrapper implements NotificationWrapper {
         if (hasRepSubscriptionOrIsMandatoryRepLetter(responseWrapper)
             && (APPEAL_LAPSED_NOTIFICATION.equals(getNotificationType())
                 || APPEAL_WITHDRAWN_NOTIFICATION.equals(getNotificationType())
-                || ADMIN_APPEAL_WITHDRAWN.equals(getNotificationType())
                 || EVIDENCE_RECEIVED_NOTIFICATION.equals(getNotificationType())
                 || SYA_APPEAL_CREATED_NOTIFICATION.equals(getNotificationType())
                 || RESEND_APPEAL_CREATED_NOTIFICATION.equals(getNotificationType())

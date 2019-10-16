@@ -21,6 +21,7 @@ import java.time.LocalDate;
 import java.util.*;
 import java.util.stream.Collectors;
 import junitparams.JUnitParamsRunner;
+import lombok.Getter;
 import org.apache.commons.io.FileUtils;
 import org.hamcrest.CoreMatchers;
 import org.junit.Assert;
@@ -80,15 +81,18 @@ public abstract class AbstractFunctionalTest {
     @Autowired
     private IdamService idamService;
 
+    @Getter
     private IdamTokens idamTokens;
 
     protected String caseReference;
 
+    @Getter
     Long caseId;
 
     protected SscsCaseData caseData;
 
     @Autowired
+    @Getter
     private CcdService ccdService;
 
     @Before
