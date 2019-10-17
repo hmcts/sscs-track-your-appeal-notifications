@@ -12,6 +12,8 @@ import junitparams.Parameters;
 import org.junit.Before;
 import org.junit.Rule;
 import org.junit.Test;
+import org.junit.rules.Timeout;
+import uk.gov.hmcts.reform.sscs.ccd.domain.Correspondence;
 import uk.gov.hmcts.reform.sscs.ccd.domain.CorrespondenceType;
 import uk.gov.hmcts.reform.sscs.functional.AbstractFunctionalTest;
 import uk.gov.hmcts.reform.sscs.functional.Retry;
@@ -26,6 +28,9 @@ public class AdminAppealWithdrawnNotificationsTest extends AbstractFunctionalTes
 
     @Rule
     public Retry retry = new Retry(0);
+
+    @Rule
+    public Timeout globalTimeout = Timeout.seconds(120);
 
     @Before
     public void setUp() {
@@ -50,13 +55,20 @@ public class AdminAppealWithdrawnNotificationsTest extends AbstractFunctionalTes
         simulateCcdCallback(ADMIN_APPEAL_WITHDRAWN, "handlers/" + ADMIN_APPEAL_WITHDRAWN.getId() + subscription
             + "Callback.json");
 
-        delayInSeconds(60); //Allow some time to ensure callback and notifications have finished
-        List<Notification> notifications = getClient()
-            .getNotifications("", "", getCaseReference(), "").getNotifications();
+        List<Notification> notifications = tryFetchNotificationsForTestCase(emailId, smsId);
 
         assertEquals(expectedNumEmailNotifications, getNumberOfNotificationsForGivenEmailOrSmsTemplateId(notifications, emailId));
         assertEquals(expectedNumSmsNotifications, getNumberOfNotificationsForGivenEmailOrSmsTemplateId(notifications, smsId));
-        assertEquals(expectedNumLetters, getNumberOfLetterCorrespondence());
+        assertTrue(fetchLetters(expectedNumLetters));
+    }
+
+    private boolean fetchLetters(int expectedNumLetters) {
+        do {
+            if (getNumberOfLetterCorrespondence() == expectedNumLetters) {
+                return true;
+            }
+            delayInSeconds(5);
+        } while (true);
     }
 
     @Test
@@ -64,12 +76,12 @@ public class AdminAppealWithdrawnNotificationsTest extends AbstractFunctionalTes
         simulateCcdCallback(ADMIN_APPEAL_WITHDRAWN, "handlers/" + ADMIN_APPEAL_WITHDRAWN.getId()
             + "NoSubscriptions" + "Callback.json");
 
-        delayInSeconds(60); //Allow some time to ensure callback and notifications have finished
-        List<Notification> notifications = getClient()
-            .getNotifications("", "", getCaseReference(), "").getNotifications();
+        String emailId = "8620e023-f663-477e-a771-9cfad50ee30f";
+        String smsId = "446c7b23-7342-42e1-adff-b4c367e951cb";
+        List<Notification> notifications = tryFetchNotificationsForTestCaseWithFlag(true, emailId, smsId);
 
         assertTrue(notifications.isEmpty());
-        assertEquals(1, getNumberOfLetterCorrespondence());
+        assertTrue(fetchLetters(1));
     }
 
     private void initialiseCcdCase() {
@@ -94,7 +106,12 @@ public class AdminAppealWithdrawnNotificationsTest extends AbstractFunctionalTes
     }
 
     private long getNumberOfLetterCorrespondence() {
-        return getCcdService().getByCaseId(getCaseId(), getIdamTokens()).getData().getCorrespondence().stream()
+        List<Correspondence> correspondence = getCcdService()
+            .getByCaseId(getCaseId(), getIdamTokens()).getData().getCorrespondence();
+        if (correspondence == null) {
+            return 0;
+        }
+        return correspondence.stream()
             .filter(c -> c.getValue().getCorrespondenceType() == CorrespondenceType.Letter)
             .count();
     }
