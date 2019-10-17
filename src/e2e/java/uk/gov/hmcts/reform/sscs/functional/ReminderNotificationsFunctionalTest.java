@@ -71,7 +71,7 @@ public class ReminderNotificationsFunctionalTest extends AbstractFunctionalTest 
     private String hearingReminderAppointeeSmsTemplateId;
 
     public ReminderNotificationsFunctionalTest() {
-        super(120);
+        super(150);
     }
 
     @Test
