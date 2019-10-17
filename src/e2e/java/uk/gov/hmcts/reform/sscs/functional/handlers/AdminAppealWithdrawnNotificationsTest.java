@@ -23,7 +23,7 @@ import uk.gov.service.notify.Notification;
 public class AdminAppealWithdrawnNotificationsTest extends AbstractFunctionalTest {
 
     public AdminAppealWithdrawnNotificationsTest() {
-        super(3);
+        super(30);
     }
 
     @Rule
