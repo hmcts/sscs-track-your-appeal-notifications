@@ -12,7 +12,15 @@ public class Retry implements TestRule {
     }
 
     public Statement apply(Statement base, Description description) {
-        return statement(base, description);
+        if (retryCount != 0) {
+            return statement(base, description);
+        }
+        return new Statement() {
+            @Override
+            public void evaluate() throws Throwable {
+                base.evaluate();
+            }
+        };
     }
 
     private Statement statement(final Statement base, final Description description) {

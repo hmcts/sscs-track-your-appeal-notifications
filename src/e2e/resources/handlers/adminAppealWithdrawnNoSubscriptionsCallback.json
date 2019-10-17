@@ -140,7 +140,7 @@
           "otherReasons": "Another reason"
         },
         "rep": {
-          "hasRepresentative": "Yes",
+          "hasRepresentative": "No",
           "organisation": null,
           "name": {
             "title": null,
