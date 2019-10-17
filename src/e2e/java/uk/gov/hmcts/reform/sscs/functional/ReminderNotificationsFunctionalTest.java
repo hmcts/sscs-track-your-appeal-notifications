@@ -77,7 +77,7 @@ public class ReminderNotificationsFunctionalTest extends AbstractFunctionalTest 
     @Test
     public void shouldSendNotificationsWhenDwpResponseReceivedEventIsReceivedForOralWithAnAppellantSubscribed() throws IOException, NotificationClientException {
         triggerEventWithHearingType(DWP_RESPONSE_RECEIVED_NOTIFICATION, "oral");
-        simulateCcdCallback(DWP_RESPONSE_RECEIVED_NOTIFICATION,"oral-" + DWP_RESPONSE_RECEIVED_NOTIFICATION.getId() + "Callback.json");
+        simulateCcdCallback(DWP_RESPONSE_RECEIVED_NOTIFICATION,"representative/oral-" + DWP_RESPONSE_RECEIVED_NOTIFICATION.getId() + "Callback.json");
 
         List<Notification> notifications =
             tryFetchNotificationsForTestCase(
@@ -131,7 +131,7 @@ public class ReminderNotificationsFunctionalTest extends AbstractFunctionalTest 
     public void shouldSendNotificationsWhenDwpResponseReceivedEventIsReceivedForPaperWithAnAppellantSubscribed() throws IOException, NotificationClientException {
 
         triggerEventWithHearingType(DWP_RESPONSE_RECEIVED_NOTIFICATION, "paper");
-        simulateCcdCallback(DWP_RESPONSE_RECEIVED_NOTIFICATION,"paper-" + DWP_RESPONSE_RECEIVED_NOTIFICATION.getId() + "Callback.json");
+        simulateCcdCallback(DWP_RESPONSE_RECEIVED_NOTIFICATION,"representative/paper-" + DWP_RESPONSE_RECEIVED_NOTIFICATION.getId() + "Callback.json");
 
         List<Notification> notifications =
             tryFetchNotificationsForTestCase(
@@ -287,17 +287,17 @@ public class ReminderNotificationsFunctionalTest extends AbstractFunctionalTest 
         triggerEvent(HEARING_BOOKED_NOTIFICATION);
         simulateCcdCallback(HEARING_BOOKED_NOTIFICATION);
 
+        String formattedString = LocalDate.now().format(DateTimeFormatter.ofPattern(AppConstants.RESPONSE_DATE_FORMAT));
+
         List<Notification> notifications =
-            tryFetchNotificationsForTestCase(
-                    hearingReminderAppellantEmailTemplateId,
-                    hearingReminderAppointeeEmailTemplateId,
-                    hearingReminderAppellantSmsTemplateId,
-                    hearingReminderAppointeeSmsTemplateId
+            tryFetchNotificationsForTestCaseWithExpectedText(formattedString,
+                hearingReminderAppellantEmailTemplateId,
+                hearingReminderAppointeeEmailTemplateId,
+                hearingReminderAppellantSmsTemplateId,
+                hearingReminderAppointeeSmsTemplateId
             );
 
         assertNotificationSubjectContains(notifications, hearingReminderAppellantEmailTemplateId, "ESA");
-
-        String formattedString = LocalDate.now().format(DateTimeFormatter.ofPattern(AppConstants.RESPONSE_DATE_FORMAT));
 
         assertNotificationBodyContains(
             notifications,
