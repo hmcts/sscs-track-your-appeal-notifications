@@ -8,9 +8,11 @@ import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
 import java.util.List;
 import org.junit.Ignore;
+import org.junit.Rule;
 import org.junit.Test;
 import org.springframework.beans.factory.annotation.Value;
 import uk.gov.hmcts.reform.sscs.config.AppConstants;
+import uk.gov.hmcts.reform.sscs.functional.handlers.AdminAppealWithdrawnNotificationsTest;
 import uk.gov.service.notify.Notification;
 import uk.gov.service.notify.NotificationClientException;
 
@@ -69,6 +71,9 @@ public class ReminderNotificationsFunctionalTest extends AbstractFunctionalTest 
 
     @Value("${notification.hearingReminder.appointee.smsId}")
     private String hearingReminderAppointeeSmsTemplateId;
+
+    @Rule
+    public Retry retry = new Retry(0);
 
     public ReminderNotificationsFunctionalTest() {
         super(120);
@@ -281,10 +286,13 @@ public class ReminderNotificationsFunctionalTest extends AbstractFunctionalTest 
     }
 
     @Test
-    public void shouldSendNotificationsWhenHearingBookedEventIsReceivedWhenAnAppellantIsSubscribed() throws IOException, NotificationClientException {
+    public void shouldSendNotificationsWhenHearingBookedEventIsReceivedWhenAnAppellantIsSubscribed()
+        throws IOException, NotificationClientException {
 
         addHearing(getCaseData(), 0);
         triggerEvent(HEARING_BOOKED_NOTIFICATION);
+        AdminAppealWithdrawnNotificationsTest.delayInSeconds(20);
+
         simulateCcdCallback(HEARING_BOOKED_NOTIFICATION);
 
         List<Notification> notifications =

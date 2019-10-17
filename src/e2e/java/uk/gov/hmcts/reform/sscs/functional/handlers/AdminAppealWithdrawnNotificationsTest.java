@@ -97,7 +97,7 @@ public class AdminAppealWithdrawnNotificationsTest extends AbstractFunctionalTes
             .count();
     }
 
-    private void delayInSeconds(int timeout) {
+    public static void delayInSeconds(int timeout) {
         try {
             TimeUnit.SECONDS.sleep(timeout);
         } catch (InterruptedException ie) {
