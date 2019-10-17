@@ -190,7 +190,8 @@ public class NotificationService {
                 NotificationEventType.SUBSCRIPTION_OLD_NOTIFICATION.getId(),
                 NotificationEventType.SUBSCRIPTION_OLD_NOTIFICATION.getId(),
                 benefit,
-                wrapper.getHearingType()
+                wrapper.getHearingType(),
+                "validAppeal"
             );
 
             Notification oldNotification = Notification.builder().template(template).appealNumber(notification.getAppealNumber())

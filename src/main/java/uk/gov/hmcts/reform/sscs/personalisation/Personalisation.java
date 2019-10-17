@@ -437,7 +437,8 @@ public class Personalisation<E extends NotificationWrapper> {
         String letterTemplateName = getLetterTemplateName(subscriptionType, notificationWrapper.getNotificationType());
         String docmosisTemplateName = getDocmosisTemplateName(subscriptionType, notificationWrapper.getNotificationType());
 
-        return config.getTemplate(templateConfig, smsTemplateName, letterTemplateName, docmosisTemplateName, benefit, notificationWrapper.getHearingType());
+        return config.getTemplate(templateConfig, smsTemplateName, letterTemplateName, docmosisTemplateName,
+                benefit, notificationWrapper.getHearingType(), notificationWrapper.getNewSscsCaseData().getCreatedInGapsFrom());
     }
 
     private String getEmailTemplateName(SubscriptionType subscriptionType,

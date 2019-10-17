@@ -167,8 +167,6 @@ module "track-your-appeal-notifications" {
 
     DOCMOSIS_LETTERS_ON                 = "${var.docmosis_letters_on}"
 
-    APPEAL_RECEIVED_LETTER_ON           = "${var.appeal_received_letter_on}"
-
     SAVE_CORRESPONDENCE                 = "${var.save_correspondence}"
 
     READY_TO_LIST_ROBOTICS_ENABLED      = "${var.ready_to_list_robotics_enabled}"
