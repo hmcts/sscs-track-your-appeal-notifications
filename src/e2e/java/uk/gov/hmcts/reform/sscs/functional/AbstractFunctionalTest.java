@@ -69,7 +69,7 @@ public abstract class AbstractFunctionalTest {
     //end of rules needed for junitParamsRunner
 
     @Rule
-    public Retry retry = new Retry(3);
+    public Retry retry = new Retry(2);
 
 
     private final int maxSecondsToWaitForNotification;
@@ -290,6 +290,7 @@ public abstract class AbstractFunctionalTest {
         json = json.replace("SC022/14/12423", caseReference);
 
         if (eventType.equals(NotificationEventType.HEARING_BOOKED_NOTIFICATION)) {
+            json = json.replace("2048-01-01", LocalDate.now().toString());
             json = json.replace("2016-01-01", LocalDate.now().toString());
         }
 
@@ -319,7 +320,7 @@ public abstract class AbstractFunctionalTest {
         allEvents.add(events);
         caseData.setEvents(allEvents);
 
-        ccdService.updateCase(caseData, caseId, eventType.getId(), "CCD Case", "Notification Service updated case", idamTokens);
+        ccdService.updateCase(caseData, caseId, "caseUpdated", "CCD Case", "Notification Service updated case", idamTokens);
     }
 
     protected void assertNotificationSubjectContains(List<Notification> notifications, String templateId, String... matches) {

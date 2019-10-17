@@ -285,7 +285,7 @@ public class ReminderNotificationsFunctionalTest extends AbstractFunctionalTest 
 
         addHearing(caseData, 0);
         triggerEvent(HEARING_BOOKED_NOTIFICATION);
-        simulateCcdCallback(HEARING_BOOKED_NOTIFICATION);
+        simulateCcdCallback(HEARING_BOOKED_NOTIFICATION, "appointee/" + HEARING_BOOKED_NOTIFICATION.getId() + "Callback.json");
 
         String formattedString = LocalDate.now().format(DateTimeFormatter.ofPattern(AppConstants.RESPONSE_DATE_FORMAT));
 
