@@ -186,7 +186,7 @@ public class NotificationsFunctionalTest extends AbstractFunctionalTest {
         simulateCcdCallback(DWP_RESPONSE_RECEIVED_NOTIFICATION, "online-" + DWP_RESPONSE_RECEIVED_NOTIFICATION.getId() + "Callback.json");
         List<Notification> notifications = tryFetchNotificationsForTestCase(onlineResponseReceivedEmailId);
 
-        assertNotificationBodyContains(notifications, onlineResponseReceivedEmailId, caseData.getCaseReference());
+        assertNotificationBodyContains(notifications, onlineResponseReceivedEmailId, getCaseData().getCaseReference());
     }
 
     @Test
@@ -194,7 +194,7 @@ public class NotificationsFunctionalTest extends AbstractFunctionalTest {
         simulateCcdCallback(DWP_UPLOAD_RESPONSE_NOTIFICATION, "online-" + DWP_UPLOAD_RESPONSE_NOTIFICATION.getId() + "Callback.json");
         List<Notification> notifications = tryFetchNotificationsForTestCase(onlineResponseReceivedEmailId);
 
-        assertNotificationBodyContains(notifications, onlineResponseReceivedEmailId, caseData.getCaseReference());
+        assertNotificationBodyContains(notifications, onlineResponseReceivedEmailId, getCaseData().getCaseReference());
     }
 
     @Test
@@ -243,7 +243,7 @@ public class NotificationsFunctionalTest extends AbstractFunctionalTest {
 
         String expectedHearingContactDate = "how long";
         String expectedTyaLink = tyaLink.replace(APPEAL_ID, TYA);
-        assertNotificationBodyContains(notifications, paperResponseReceivedEmailId, caseData.getCaseReference(),
+        assertNotificationBodyContains(notifications, paperResponseReceivedEmailId, getCaseData().getCaseReference(),
                 expectedPanelComposition, expectedHearingContactDate, expectedTyaLink);
         assertNotificationBodyContains(notifications, paperResponseReceivedSmsId, expectedHearingContactDate,
                 expectedTyaLink);

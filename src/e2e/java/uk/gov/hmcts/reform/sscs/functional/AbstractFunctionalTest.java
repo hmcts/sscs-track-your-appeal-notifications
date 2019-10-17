@@ -85,12 +85,14 @@ public abstract class AbstractFunctionalTest {
     @Getter
     private IdamTokens idamTokens;
 
-    protected String caseReference;
+    @Getter
+    private String caseReference;
 
     @Getter
-    Long caseId;
+    private Long caseId;
 
-    protected SscsCaseData caseData;
+    @Getter
+    private SscsCaseData caseData;
 
     @Autowired
     @Getter
@@ -98,7 +100,6 @@ public abstract class AbstractFunctionalTest {
 
     @Before
     public void setup() {
-
         idamTokens = idamService.getIdamTokens();
 
         createCase();

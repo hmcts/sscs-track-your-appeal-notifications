@@ -94,7 +94,7 @@ public class ReminderNotificationsFunctionalTest extends AbstractFunctionalTest 
         assertNotificationBodyContains(
             notifications,
                 evidenceReminderOralAppellantEmailTemplateId,
-            caseReference,
+            getCaseReference(),
             "User Test",
             "ESA",
             "/evidence"
@@ -106,7 +106,7 @@ public class ReminderNotificationsFunctionalTest extends AbstractFunctionalTest 
         assertNotificationBodyContains(
             notifications,
             responseReceivedOralAppellantEmailTemplateId,
-            caseReference,
+            getCaseReference(),
             "User Test",
             "ESA",
             "DWP",
@@ -147,7 +147,7 @@ public class ReminderNotificationsFunctionalTest extends AbstractFunctionalTest 
         assertNotificationBodyContains(
                 notifications,
                 evidenceReminderPaperAppellantEmailTemplateId,
-                caseReference,
+                getCaseReference(),
                 "User Test",
                 "ESA",
                 "/evidence"
@@ -159,7 +159,7 @@ public class ReminderNotificationsFunctionalTest extends AbstractFunctionalTest 
         assertNotificationBodyContains(
                 notifications,
                 responseReceivedPaperAppellantEmailTemplateId,
-                caseReference,
+                getCaseReference(),
                 "User Test",
                 "ESA",
                 "DWP",
@@ -197,7 +197,7 @@ public class ReminderNotificationsFunctionalTest extends AbstractFunctionalTest 
         assertNotificationBodyContains(
                 notifications,
                 evidenceReminderOralRepresentativeEmailTemplateId,
-                caseReference,
+                getCaseReference(),
                 "Harry Potter",
                 "ESA",
                 "/evidence"
@@ -209,7 +209,7 @@ public class ReminderNotificationsFunctionalTest extends AbstractFunctionalTest 
         assertNotificationBodyContains(
                 notifications,
                 responseReceivedOralAppellantEmailTemplateId,
-                caseReference,
+                getCaseReference(),
                 "User Test",
                 "ESA",
                 "DWP",
@@ -248,7 +248,7 @@ public class ReminderNotificationsFunctionalTest extends AbstractFunctionalTest 
         assertNotificationBodyContains(
                 notifications,
                 evidenceReminderPaperRepresentativeEmailTemplateId,
-                caseReference,
+                getCaseReference(),
                 "Harry Potter",
                 "ESA",
                 "/evidence"
@@ -260,7 +260,7 @@ public class ReminderNotificationsFunctionalTest extends AbstractFunctionalTest 
         assertNotificationBodyContains(
                 notifications,
                 responseReceivedPaperAppellantEmailTemplateId,
-                caseReference,
+                getCaseReference(),
                 "User Test",
                 "ESA",
                 "DWP",
@@ -283,7 +283,7 @@ public class ReminderNotificationsFunctionalTest extends AbstractFunctionalTest 
     @Test
     public void shouldSendNotificationsWhenHearingBookedEventIsReceivedWhenAnAppellantIsSubscribed() throws IOException, NotificationClientException {
 
-        addHearing(caseData, 0);
+        addHearing(getCaseData(), 0);
         triggerEvent(HEARING_BOOKED_NOTIFICATION);
         simulateCcdCallback(HEARING_BOOKED_NOTIFICATION);
 
@@ -302,7 +302,7 @@ public class ReminderNotificationsFunctionalTest extends AbstractFunctionalTest 
         assertNotificationBodyContains(
             notifications,
                 hearingReminderAppellantEmailTemplateId,
-            caseReference,
+            getCaseReference(),
             "ESA",
             "reminder",
             formattedString,
@@ -327,7 +327,7 @@ public class ReminderNotificationsFunctionalTest extends AbstractFunctionalTest 
     @Ignore
     public void shouldSendNotificationsWhenHearingBookedEventIsReceivedWhenARepresentativeIsSubscribed() throws IOException, NotificationClientException {
         subscribeRepresentative();
-        addHearing(caseData, 0);
+        addHearing(getCaseData(), 0);
         triggerEvent(HEARING_BOOKED_NOTIFICATION);
         simulateCcdCallback(HEARING_BOOKED_NOTIFICATION,"representative/" + HEARING_BOOKED_NOTIFICATION.getId() + "Callback.json");
 
@@ -346,7 +346,7 @@ public class ReminderNotificationsFunctionalTest extends AbstractFunctionalTest 
         assertNotificationBodyContains(
                 notifications,
                 hearingReminderRepresentativeEmailTemplateId,
-                caseReference,
+                getCaseReference(),
                 "ESA",
                 "reminder",
                 formattedString,
