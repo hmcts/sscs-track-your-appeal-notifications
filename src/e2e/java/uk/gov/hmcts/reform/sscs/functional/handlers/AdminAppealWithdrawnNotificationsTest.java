@@ -30,11 +30,10 @@ public class AdminAppealWithdrawnNotificationsTest extends AbstractFunctionalTes
     public Retry retry = new Retry(0);
 
     @Rule
-    public Timeout globalTimeout = Timeout.seconds(120);
+    public Timeout globalTimeout = Timeout.seconds(60);
 
     @Before
     public void setUp() {
-        delayInSeconds(10); //Allow some time to finish potential callbacks as part of the AppealCreated event
         initialiseCcdCase();
     }
 
@@ -67,21 +66,8 @@ public class AdminAppealWithdrawnNotificationsTest extends AbstractFunctionalTes
             if (getNumberOfLetterCorrespondence() == expectedNumLetters) {
                 return true;
             }
-            delayInSeconds(5);
+            delayInSeconds();
         } while (true);
-    }
-
-    @Test
-    public void givenCallbackWithNoSubscription_shouldSendLetterNotifications() throws Exception {
-        simulateCcdCallback(ADMIN_APPEAL_WITHDRAWN, "handlers/" + ADMIN_APPEAL_WITHDRAWN.getId()
-            + "NoSubscriptions" + "Callback.json");
-
-        String emailId = "8620e023-f663-477e-a771-9cfad50ee30f";
-        String smsId = "446c7b23-7342-42e1-adff-b4c367e951cb";
-        List<Notification> notifications = tryFetchNotificationsForTestCaseWithFlag(true, emailId, smsId);
-
-        assertTrue(notifications.isEmpty());
-        assertTrue(fetchLetters(1));
     }
 
     private void initialiseCcdCase() {
@@ -97,9 +83,9 @@ public class AdminAppealWithdrawnNotificationsTest extends AbstractFunctionalTes
             .count();
     }
 
-    private void delayInSeconds(int timeout) {
+    private void delayInSeconds() {
         try {
-            TimeUnit.SECONDS.sleep(timeout);
+            TimeUnit.SECONDS.sleep(5);
         } catch (InterruptedException ie) {
             Thread.currentThread().interrupt();
         }
