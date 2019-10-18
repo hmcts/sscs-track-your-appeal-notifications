@@ -8,6 +8,8 @@ import static uk.gov.hmcts.reform.sscs.domain.notify.NotificationEventType.CASE_
 import java.util.List;
 import java.util.UUID;
 import java.util.concurrent.TimeUnit;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 import junitparams.Parameters;
 import org.junit.Before;
 import org.junit.Rule;
@@ -58,12 +60,12 @@ public class AdminAppealWithdrawnNotificationsTest extends AbstractFunctionalTes
 
         assertEquals(expectedNumEmailNotifications, getNumberOfNotificationsForGivenEmailOrSmsTemplateId(notifications, emailId));
         assertEquals(expectedNumSmsNotifications, getNumberOfNotificationsForGivenEmailOrSmsTemplateId(notifications, smsId));
-        assertTrue(fetchLetters(expectedNumLetters));
+        assertTrue(fetchLetters(expectedNumLetters, subscription));
     }
 
-    private boolean fetchLetters(int expectedNumLetters) {
+    private boolean fetchLetters(int expectedNumLetters, String subscription) {
         do {
-            if (getNumberOfLetterCorrespondence() == expectedNumLetters) {
+            if (getNumberOfLetterCorrespondence(subscription) == expectedNumLetters) {
                 return true;
             }
             delayInSeconds();
@@ -91,7 +93,7 @@ public class AdminAppealWithdrawnNotificationsTest extends AbstractFunctionalTes
         }
     }
 
-    private long getNumberOfLetterCorrespondence() {
+    private long getNumberOfLetterCorrespondence(String subscription) {
         List<Correspondence> correspondence = getCcdService()
             .getByCaseId(getCaseId(), getIdamTokens()).getData().getCorrespondence();
         if (correspondence == null) {
@@ -99,6 +101,23 @@ public class AdminAppealWithdrawnNotificationsTest extends AbstractFunctionalTes
         }
         return correspondence.stream()
             .filter(c -> c.getValue().getCorrespondenceType() == CorrespondenceType.Letter)
+            .filter(c -> c.getValue().getDocumentLink().getDocumentFilename().contains(ADMIN_APPEAL_WITHDRAWN.getId()))
+            .filter(c -> isAMatch(subscription, c.getValue().getTo()))
             .count();
     }
+
+    private boolean isAMatch(String subscription, String text) {
+        Pattern pattern = Pattern.compile(setRegExpBasedOnSubscription(subscription), Pattern.CASE_INSENSITIVE);
+        Matcher matcher = pattern.matcher(text);
+        return matcher.find();
+    }
+
+    private String setRegExpBasedOnSubscription(String subscription) {
+        String regexp = subscription;
+        if ("Reps".equals(subscription)) {
+            regexp = "(\\bAppellant\\b|\\bReps\\b)";
+        }
+        return regexp;
+    }
+
 }

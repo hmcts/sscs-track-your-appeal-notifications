@@ -18,7 +18,14 @@ import java.io.IOException;
 import java.nio.charset.StandardCharsets;
 import java.time.Instant;
 import java.time.LocalDate;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Map;
+import java.util.Objects;
+import java.util.Set;
+import java.util.UUID;
 import java.util.stream.Collectors;
 import junitparams.JUnitParamsRunner;
 import lombok.Getter;
@@ -160,7 +167,10 @@ public abstract class AbstractFunctionalTest {
         return tryFetchNotificationsForTestCaseWithFlag(false, null, expectedTemplateIds);
     }
 
-    public List<Notification> tryFetchNotificationsForTestCaseWithFlag(boolean notificationNotFoundFlag, String expectedText, String... expectedTemplateIds) throws NotificationClientException {
+    public List<Notification> tryFetchNotificationsForTestCaseWithFlag(boolean notificationNotFoundFlag,
+                                                                       String expectedText,
+                                                                       String... expectedTemplateIds)
+        throws NotificationClientException {
 
         List<Notification> allNotifications = new ArrayList<>();
         Set<Notification> matchingNotifications = new HashSet<>();
