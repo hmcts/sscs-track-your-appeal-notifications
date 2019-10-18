@@ -15,7 +15,7 @@ spring:
         idam-s2s-api: idam.s2s-auth.url
         sscs-s2s-secret: idam.s2s-auth.totp_secret
         s2s-micro: idam.s2s-auth.microservice
-        sscs-asb-primary-send-and-listen-shared-access-key: amqp.password
-        docmosis-api-key: pdf-service.accessKey
-        notification-key: gov.uk.notification.api.key
-        notification-test-key: gov.uk.notification.api.testKey
+        sscs-asb-primary-send-and-listen-shared-access-key: AMQP_PASSWORD
+        docmosis-api-key: PDF_SERVICE_ACCESS_KEY
+        notification-key: NOTIFICATION_API_KEY
+        notification-test-key: NOTIFICATION_API_TEST_KEY
