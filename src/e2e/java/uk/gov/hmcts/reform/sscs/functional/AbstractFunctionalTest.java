@@ -2,7 +2,7 @@ package uk.gov.hmcts.reform.sscs.functional;
 
 import static helper.EnvironmentProfileValueSource.getEnvOrEmpty;
 import static java.util.Arrays.asList;
-import static java.util.stream.Collectors.toList;
+import static java.util.stream.Collectors.toSet;
 import static junit.framework.TestCase.fail;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNotNull;
@@ -23,6 +23,7 @@ import java.util.stream.Collectors;
 import junitparams.JUnitParamsRunner;
 import lombok.Getter;
 import org.apache.commons.io.FileUtils;
+import org.apache.commons.lang.StringUtils;
 import org.hamcrest.CoreMatchers;
 import org.junit.Assert;
 import org.junit.Before;
@@ -38,7 +39,10 @@ import org.springframework.test.annotation.ProfileValueSourceConfiguration;
 import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.context.junit4.rules.SpringClassRule;
 import org.springframework.test.context.junit4.rules.SpringMethodRule;
-import uk.gov.hmcts.reform.sscs.ccd.domain.*;
+import uk.gov.hmcts.reform.sscs.ccd.domain.Event;
+import uk.gov.hmcts.reform.sscs.ccd.domain.EventDetails;
+import uk.gov.hmcts.reform.sscs.ccd.domain.SscsCaseData;
+import uk.gov.hmcts.reform.sscs.ccd.domain.SscsCaseDetails;
 import uk.gov.hmcts.reform.sscs.ccd.service.CcdService;
 import uk.gov.hmcts.reform.sscs.domain.notify.NotificationEventType;
 import uk.gov.hmcts.reform.sscs.idam.IdamService;
@@ -66,7 +70,7 @@ public abstract class AbstractFunctionalTest {
     //end of rules needed for junitParamsRunner
 
     @Rule
-    public Retry retry = new Retry(3);
+    public Retry retry = new Retry(2);
 
 
     private final int maxSecondsToWaitForNotification;
@@ -148,14 +152,18 @@ public abstract class AbstractFunctionalTest {
         return scNumber;
     }
 
-    public List<Notification> tryFetchNotificationsForTestCase(String... expectedTemplateIds) throws NotificationClientException {
-        return tryFetchNotificationsForTestCaseWithFlag(false, expectedTemplateIds);
+    public List<Notification> tryFetchNotificationsForTestCaseWithExpectedText(String expectedText, String... expectedTemplateIds) throws NotificationClientException {
+        return tryFetchNotificationsForTestCaseWithFlag(false, expectedText, expectedTemplateIds);
     }
 
-    public List<Notification> tryFetchNotificationsForTestCaseWithFlag(boolean notificationNotFoundFlag, String... expectedTemplateIds) throws NotificationClientException {
+    public List<Notification> tryFetchNotificationsForTestCase(String... expectedTemplateIds) throws NotificationClientException {
+        return tryFetchNotificationsForTestCaseWithFlag(false, null, expectedTemplateIds);
+    }
+
+    public List<Notification> tryFetchNotificationsForTestCaseWithFlag(boolean notificationNotFoundFlag, String expectedText, String... expectedTemplateIds) throws NotificationClientException {
 
         List<Notification> allNotifications = new ArrayList<>();
-        List<Notification> matchingNotifications = new ArrayList<>();
+        Set<Notification> matchingNotifications = new HashSet<>();
 
         int waitForAtLeastNumberOfNotifications = expectedTemplateIds.length;
 
@@ -199,8 +207,9 @@ public abstract class AbstractFunctionalTest {
                 matchingNotifications =
                         allNotifications
                                 .stream()
+                                .filter(notification -> expectedText == null || StringUtils.contains(notification.getBody(), expectedText))
                                 .filter(notification -> asList(expectedTemplateIds).contains(notification.getTemplateId().toString()))
-                                .collect(toList());
+                                .collect(toSet());
             }
             if (matchingNotifications.size() >= waitForAtLeastNumberOfNotifications) {
 
@@ -211,7 +220,7 @@ public abstract class AbstractFunctionalTest {
                 log.info("Test case notifications have been delivered "
                         + "[" + matchingNotifications.size() + "/" + waitForAtLeastNumberOfNotifications + "]");
 
-                return matchingNotifications;
+                return new ArrayList<>(matchingNotifications);
             }
 
         } while (true);
@@ -287,6 +296,7 @@ public abstract class AbstractFunctionalTest {
         json = json.replace("SC022/14/12423", caseReference);
 
         if (eventType.equals(NotificationEventType.HEARING_BOOKED_NOTIFICATION)) {
+            json = json.replace("2048-01-01", LocalDate.now().toString());
             json = json.replace("2016-01-01", LocalDate.now().toString());
         }
 
@@ -316,7 +326,7 @@ public abstract class AbstractFunctionalTest {
         allEvents.add(events);
         caseData.setEvents(allEvents);
 
-        ccdService.updateCase(caseData, caseId, eventType.getId(), "CCD Case", "Notification Service updated case", idamTokens);
+        ccdService.updateCase(caseData, caseId, "caseUpdated", "CCD Case", "Notification Service updated case", idamTokens);
     }
 
     void assertNotificationSubjectContains(List<Notification> notifications, String templateId, String... matches) {
