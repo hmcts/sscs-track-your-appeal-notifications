@@ -5,24 +5,22 @@ java:
   ingressHost: sscs-tya-notif-{{ .Values.global.environment }}.service.core-compute-{{ .Values.global.environment }}.internal
   keyVaults:
     sscs:
-      resourceGroup: sscs
       secrets:
       - idam-api
       - idam-oauth-user
       - idam-redirect
       - idam-sscs-systemupdate-user
       - idam-sscs-systemupdate-password
+      - sscs-email-mac-secret-text
       - idam-sscs-oauth2-client-secret
-      - ccd-api
-      - ccd-jid
-      - ccd-tid
       - idam-s2s-api
       - sscs-s2s-secret
       - s2s-micro
       - sscs-asb-primary-send-and-listen-shared-access-key
-      - docmosis-endpoint
       - docmosis-api-key
       - notification-job-scheduler-db-password
+      - notification-key
+      - notification-test-key
   environment:
     REFORM_TEAM: sscs
     REFORM_SERVICE_NAME: tya-notifications
@@ -51,6 +49,7 @@ java:
     DOCUMENT_MANAGEMENT_URL: "http://dm-store-{{ .Values.global.environment }}.service.core-compute-{{ .Values.global.environment }}.internal"
     COH_URL: "http://coh-cor-{{ .Values.global.environment }}.service.core-compute-{{ .Values.global.environment }}.internal"
     ONLINE_HEARING_LINK: "https://sscs-cor-frontend-{{ .Values.global.environment }}.service.core-compute-{{ .Values.global.environment }}.internal"
+    PDF_API_URL: "http://cmc-pdf-service-{{ .Values.global.environment }}.service.core-compute-{{ .Values.global.environment }}.internal"
     JOB_SCHEDULER_DB_CONNECTION_OPTIONS: ?sslmode=require
     MAX_ACTIVE_DB_CONNECTIONS: 70
     HOURS_START_TIME: 9
@@ -60,5 +59,5 @@ java:
     TOPIC_NAME: "sscs-evidenceshare-topic-{{ .Values.global.environment }}"
     AMQP_HOST: "sscs-servicebus-{{ .Values.global.environment }}.servicebus.windows.net"
     AMQP_USERNAME: "SendAndListenSharedAccessKey"
-
-
+    PDF_SERVICE_BASE_URL: "https://docmosis-development.platform.hmcts.net/rs/render"
+    PDF_SERVICE_HEALTH_URL: "https://docmosis-development.platform.hmcts.net/rs/status"

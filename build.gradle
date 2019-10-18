@@ -277,7 +277,7 @@ dependencies {
     integrationTestCompileOnly 'org.projectlombok:lombok:1.18.6'
     integrationTestAnnotationProcessor "org.projectlombok:lombok:1.18.6"
 
-    testCompile(group: 'org.springframework.boot', name: 'spring-boot-starter-test', version: '2.1.8.RELEASE') {
+    testCompile(group: 'org.springframework.boot', name: 'spring-boot-starter-test', version: '2.1.9.RELEASE') {
         exclude group: "com.vaadin.external.google", module:"android-json"
     }
     testCompile group: 'org.mockito', name: 'mockito-core', version: '3.0.0'
@@ -301,7 +301,7 @@ applicationDefaultJvmArgs = ["-Dfile.encoding=UTF-8"]
 run {
     def debug = System.getProperty("debug")
     if (debug == 'true') {
-        jvmArgs = ['-agentlib:jdwp=transport=dt_socket,server=y,suspend=y,address=5005']
+        jvmArgs = ['-agentlib:jdwp=transport=dt_socket,server=y,suspend=y,address=5006']
     }
 }
 

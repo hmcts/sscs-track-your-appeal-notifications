@@ -4,23 +4,18 @@ spring:
       paths: /mnt/secrets/sscs
       prefixed: false
       aliases:
-        idam-api: IDAM_URL
-        idam-sscs-systemupdate-user: IDAM_SSCS_SYSTEMUPDATE_USER
-        idam-sscs-systemupdate-password: IDAM_SSCS_SYSTEMUPDATE_PASSWORD
+        idam-api: idam.url
+        idam-sscs-systemupdate-user: idam.oauth2.user.email
+        idam-sscs-systemupdate-password: idam.oauth2.user.password
+        notification-job-scheduler-db-password: spring.datasource.password
+        sscs-email-mac-secret-text: subscription.hmac.secret.text
+        idam-sscs-oauth2-client-secret: idam.oauth2.client.secret
+        idam-oauth-user: idam.oauth2.client.id
+        idam-redirect: idam.oauth2.redirectUrl
+        idam-s2s-api: idam.s2s-auth.url
+        sscs-s2s-secret: idam.s2s-auth.totp_secret
+        s2s-micro: idam.s2s-auth.microservice
+        sscs-asb-primary-send-and-listen-shared-access-key: AMQP_PASSWORD
+        docmosis-api-key: PDF_SERVICE_ACCESS_KEY
         notification-key: NOTIFICATION_API_KEY
         notification-test-key: NOTIFICATION_API_TEST_KEY
-        notification-job-scheduler-db-password: JOB_SCHEDULER_DB_PASSWORD
-        sscs-email-mac-secret-text: EMAIL_MAC_SECRET_TEXT
-        idam-sscs-oauth2-client-secret: IDAM_OAUTH2_CLIENT_SECRET
-        idam-oauth-user: IDAM_OAUTH2_CLIENT_ID
-        ccd-api: CORE_CASE_DATA_API_URL
-        ccd-jid: CORE_CASE_DATA_API_URL
-        ccd-tid: CORE_CASE_DATA_API_URL
-        idam-redirect: IDAM_OAUTH2_REDIRECT_URL
-        tya-link: SSCS_TRACK_YOUR_APPEAL_LINK
-        idam-s2s-api: IDAM_S2S_AUTH
-        sscs-s2s-secret: IDAM_S2S_AUTH_TOTP_SECRET
-        s2s-micro: IDAM_S2S_AUTH_MICROSERVICE
-        sscs-asb-primary-send-and-listen-shared-access-key: AMQP_PASSWORD
-#        docmosis-endpoint: PDF_SERVICE_BASE_URL
-        docmosis-api-key: PDF_SERVICE_ACCESS_KEY

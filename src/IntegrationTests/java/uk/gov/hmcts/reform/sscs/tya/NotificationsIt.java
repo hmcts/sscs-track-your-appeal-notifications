@@ -159,7 +159,7 @@ public class NotificationsIt {
         ReflectionTestUtils.setField(sendNotificationService, "docmosisLettersOn", true);
         ReflectionTestUtils.setField(sendNotificationService, "interlocLettersOn", true);
 
-        NotificationService service = new NotificationService(factory, reminderService, notificationValidService, notificationHandler, outOfHoursCalculator, notificationConfig, sendNotificationService);
+        NotificationService service = new NotificationService(factory, reminderService, notificationValidService, notificationHandler, outOfHoursCalculator, notificationConfig, sendNotificationService, true);
         NotificationController controller = new NotificationController(service, authorisationService, ccdService, deserializer, idamService);
         this.mockMvc = MockMvcBuilders.standaloneSetup(controller).build();
         String path = getClass().getClassLoader().getResource("json/ccdResponse.json").getFile();
@@ -2167,6 +2167,32 @@ public class NotificationsIt {
                 "Appointee Appointee"
             },
             new Object[]{
+                DWP_UPLOAD_RESPONSE_NOTIFICATION,
+                "oral",
+                Collections.singletonList("2c5644db-1f7b-429b-b10a-8b23a80ed26a"),
+                Collections.singletonList("f20ffcb1-c5f0-4bff-b2d1-a1094f8014e6"),
+                Collections.singletonList("8b11f3f4-6452-4a35-93d8-a94996af6499"),
+                "yes",
+                "yes",
+                "1",
+                "1",
+                "1",
+                "Appointee Appointee"
+            },
+            new Object[]{
+                DWP_UPLOAD_RESPONSE_NOTIFICATION,
+                "oral",
+                Collections.emptyList(),
+                Collections.emptyList(),
+                Collections.singletonList("8b11f3f4-6452-4a35-93d8-a94996af6499"),
+                "no",
+                "no",
+                "0",
+                "0",
+                "1",
+                "Appointee Appointee"
+            },
+            new Object[]{
                 EVIDENCE_REMINDER_NOTIFICATION,
                 "oral",
                 Arrays.asList("b9e47ec4-3b58-4b8d-9304-f77ac27fb7f2"),
@@ -2577,6 +2603,32 @@ public class NotificationsIt {
                 "Appointee Appointee"
             },
             new Object[]{
+                    DWP_UPLOAD_RESPONSE_NOTIFICATION,
+                    "oral",
+                    Collections.singletonList("2c5644db-1f7b-429b-b10a-8b23a80ed26a"),
+                    Collections.singletonList("f20ffcb1-c5f0-4bff-b2d1-a1094f8014e6"),
+                    Collections.singletonList("8b11f3f4-6452-4a35-93d8-a94996af6499"),
+                    "yes",
+                    "yes",
+                    "1",
+                    "1",
+                    "1",
+                    "Appointee Appointee"
+            },
+            new Object[]{
+                    DWP_UPLOAD_RESPONSE_NOTIFICATION,
+                    "oral",
+                    Collections.emptyList(),
+                    Collections.emptyList(),
+                    Collections.singletonList("8b11f3f4-6452-4a35-93d8-a94996af6499"),
+                    "no",
+                    "no",
+                    "0",
+                    "0",
+                    "1",
+                    "Appointee Appointee"
+            },
+            new Object[]{
                 EVIDENCE_REMINDER_NOTIFICATION,
                 "oral",
                 Arrays.asList("b9e47ec4-3b58-4b8d-9304-f77ac27fb7f2"),
@@ -2665,6 +2717,19 @@ public class NotificationsIt {
                 "1",
                 "1",
                 "0",
+                "Appointee Appointee"
+            },
+            new Object[]{
+                DWP_UPLOAD_RESPONSE_NOTIFICATION,
+                "paper",
+                Collections.singletonList("e1084d78-5e2d-45d2-a54f-84339da141c1"),
+                Collections.singletonList("505be856-ceca-4bbc-ba70-29024585056f"),
+                Collections.singletonList("16c141bc-4e16-48ed-8b60-4db58207201c"),
+                "yes",
+                "yes",
+                "1",
+                "1",
+                "1",
                 "Appointee Appointee"
             },
             new Object[]{
