@@ -53,7 +53,7 @@ public class SendNotificationService {
     Boolean interlocLettersOn;
 
     @Value("${reminder.dwpResponseLateReminder.delay.seconds}")
-    long delay;
+    private long delay;
 
     private final NotificationSender notificationSender;
     private final EvidenceManagementService evidenceManagementService;
