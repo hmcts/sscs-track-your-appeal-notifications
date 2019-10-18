@@ -6,7 +6,9 @@ import java.util.ArrayList;
 import java.util.List;
 import junitparams.JUnitParamsRunner;
 import lombok.Getter;
+import lombok.Setter;
 import org.junit.Before;
+import org.junit.BeforeClass;
 import org.junit.ClassRule;
 import org.junit.Rule;
 import org.junit.runner.RunWith;
@@ -16,6 +18,7 @@ import org.mockito.MockitoAnnotations;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.context.junit4.rules.SpringClassRule;
 import org.springframework.test.context.junit4.rules.SpringMethodRule;
@@ -68,6 +71,7 @@ public class NotificationServiceBase {
     static final String MOBILE_NUMBER_1 = "+447983495065";
     static final String MOBILE_NUMBER_2 = "+447123456789";
 
+    @Setter
     private NotificationService notificationService;
 
     @Autowired
@@ -79,7 +83,7 @@ public class NotificationServiceBase {
     @Autowired
     private NotificationConfig notificationConfig;
 
-    @Autowired
+    @MockBean
     private NotificationHandler notificationHandler;
 
     @Autowired
