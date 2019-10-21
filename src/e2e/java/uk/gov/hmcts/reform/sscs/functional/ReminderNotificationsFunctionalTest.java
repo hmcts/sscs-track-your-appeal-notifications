@@ -14,6 +14,7 @@ import uk.gov.hmcts.reform.sscs.config.AppConstants;
 import uk.gov.service.notify.Notification;
 import uk.gov.service.notify.NotificationClientException;
 
+@Ignore
 public class ReminderNotificationsFunctionalTest extends AbstractFunctionalTest {
 
     @Value("${notification.oral.evidenceReminder.appellant.emailId}")
@@ -324,7 +325,6 @@ public class ReminderNotificationsFunctionalTest extends AbstractFunctionalTest 
     }
 
     @Test
-    @Ignore
     public void shouldSendNotificationsWhenHearingBookedEventIsReceivedWhenARepresentativeIsSubscribed() throws IOException, NotificationClientException {
         subscribeRepresentative();
         addHearing(caseData, 0);
