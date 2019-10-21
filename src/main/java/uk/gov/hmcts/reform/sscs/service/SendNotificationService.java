@@ -1,29 +1,24 @@
 package uk.gov.hmcts.reform.sscs.service;
 
-import static org.apache.commons.lang3.StringUtils.equalsIgnoreCase;
-import static org.apache.commons.lang3.StringUtils.isEmpty;
-import static org.apache.commons.lang3.StringUtils.isNotBlank;
+import static org.apache.commons.lang3.StringUtils.*;
 import static uk.gov.hmcts.reform.sscs.config.AppConstants.*;
 import static uk.gov.hmcts.reform.sscs.domain.notify.NotificationEventType.*;
 import static uk.gov.hmcts.reform.sscs.service.LetterUtils.*;
 import static uk.gov.hmcts.reform.sscs.service.NotificationUtils.*;
-import static uk.gov.hmcts.reform.sscs.service.NotificationUtils.isOkToSendEmailNotification;
-import static uk.gov.hmcts.reform.sscs.service.NotificationUtils.isOkToSendSmsNotification;
-import static uk.gov.hmcts.reform.sscs.service.NotificationValidService.DOCMOSIS_LETTERS;
-import static uk.gov.hmcts.reform.sscs.service.NotificationValidService.INTERLOC_LETTERS;
-import static uk.gov.hmcts.reform.sscs.service.NotificationValidService.isBundledLetter;
+import static uk.gov.hmcts.reform.sscs.service.NotificationUtils.isMandatoryLetterEventType;
+import static uk.gov.hmcts.reform.sscs.service.NotificationValidService.*;
 
 import java.io.IOException;
 import java.net.URI;
 import java.time.ZonedDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.Map;
-
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.ArrayUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
+import uk.gov.hmcts.reform.sscs.ccd.callback.DocumentType;
 import uk.gov.hmcts.reform.sscs.ccd.domain.*;
 import uk.gov.hmcts.reform.sscs.config.SubscriptionType;
 import uk.gov.hmcts.reform.sscs.domain.SubscriptionWithType;
@@ -260,20 +255,20 @@ public class SendNotificationService {
             }
 
             notificationSender.sendLetter(
-                notification.getLetterTemplate(),
-                addressToUse,
-                notification.getPlaceholders(),
-                wrapper.getNotificationType(),
-                fullNameNoTitle,
-                wrapper.getCaseId()
+                    notification.getLetterTemplate(),
+                    addressToUse,
+                    notification.getPlaceholders(),
+                    wrapper.getNotificationType(),
+                    fullNameNoTitle,
+                    wrapper.getCaseId()
             );
         }
     }
 
     private static boolean isValidLetterAddress(Address addressToUse) {
         return null != addressToUse
-            && isNotBlank(addressToUse.getLine1())
-            && isNotBlank(addressToUse.getPostcode());
+                && isNotBlank(addressToUse.getLine1())
+                && isNotBlank(addressToUse.getPostcode());
     }
 
     private void sendBundledLetterNotification(NotificationWrapper wrapper, Notification notification, Address addressToUse, Name nameToUse, SubscriptionType subscriptionType) {
@@ -303,19 +298,19 @@ public class SendNotificationService {
                     notification.getPlaceholders().put(APPEAL_RESPOND_DATE, appealReceivedDate.format(DateTimeFormatter.ofPattern(RESPONSE_DATE_FORMAT)));
                 }
                 bundledLetter = buildBundledLetter(
-                    generateCoveringLetter(wrapper, notification, subscriptionType),
-                    downloadAssociatedCasePdf(wrapper)
+                        generateCoveringLetter(wrapper, notification, subscriptionType),
+                        downloadAssociatedCasePdf(wrapper)
                 );
             }
 
             NotificationHandler.SendNotification sendNotification = () ->
-                notificationSender.sendBundledLetter(
-                    wrapper.getNewSscsCaseData().getAppeal().getAppellant().getAddress().getPostcode(),   // Used for whitelisting only
-                    bundledLetter,
-                    wrapper.getNotificationType(),
-                    nameToUse.getFullNameNoTitle(),
-                    wrapper.getCaseId()
-                );
+                    notificationSender.sendBundledLetter(
+                            wrapper.getNewSscsCaseData().getAppeal().getAppellant().getAddress().getPostcode(),   // Used for whitelisting only
+                            bundledLetter,
+                            wrapper.getNotificationType(),
+                            nameToUse.getFullNameNoTitle(),
+                            wrapper.getCaseId()
+                    );
             if (ArrayUtils.isNotEmpty(bundledLetter)) {
                 notificationHandler.sendNotification(wrapper, notification.getLetterTemplate(), NOTIFICATION_TYPE_LETTER, sendNotification);
             }
@@ -358,10 +353,17 @@ public class SendNotificationService {
         if ((STRUCK_OUT.equals(notificationEventType))
                 && (newSscsCaseData.getSscsStrikeOutDocument() != null)) {
             documentUrl = newSscsCaseData.getSscsStrikeOutDocument().getDocumentLink().getDocumentUrl();
-        } else if ((DIRECTION_ISSUED.equals(notificationEventType))
-                && (newSscsCaseData.getSscsInterlocDirectionDocument() != null)) {
-            documentUrl = newSscsCaseData.getSscsInterlocDirectionDocument().getDocumentLink().getDocumentUrl();
-        } else if ((DECISION_ISSUED.equals(notificationEventType) || JUDGE_DECISION_APPEAL_TO_PROCEED.equals(notificationEventType) || TCW_DECISION_APPEAL_TO_PROCEED.equals(notificationEventType))
+        } else if (DIRECTION_ISSUED.equals(notificationEventType)) {
+            SscsDocument sscsDocument = newSscsCaseData.getLatestDocumentForDocumentType(DocumentType.DIRECTION_NOTICE);
+            if (sscsDocument != null) {
+                documentUrl = sscsDocument.getValue().getDocumentLink().getDocumentUrl();
+            }
+        } else if (DECISION_ISSUED.equals(notificationEventType)) {
+            SscsDocument sscsDocument = newSscsCaseData.getLatestDocumentForDocumentType(DocumentType.DECISION_NOTICE);
+            if (sscsDocument != null) {
+                documentUrl = sscsDocument.getValue().getDocumentLink().getDocumentUrl();
+            }
+        } else if ((JUDGE_DECISION_APPEAL_TO_PROCEED.equals(notificationEventType) || TCW_DECISION_APPEAL_TO_PROCEED.equals(notificationEventType))
                 && (newSscsCaseData.getSscsInterlocDecisionDocument() != null)) {
             documentUrl = newSscsCaseData.getSscsInterlocDecisionDocument().getDocumentLink().getDocumentUrl();
         }
