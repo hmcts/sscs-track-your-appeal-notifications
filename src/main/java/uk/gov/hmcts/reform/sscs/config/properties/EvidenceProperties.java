@@ -1,0 +1,25 @@
+package uk.gov.hmcts.reform.sscs.config.properties;
+
+import lombok.Builder;
+import lombok.Getter;
+import org.springframework.boot.context.properties.ConfigurationProperties;
+import org.springframework.context.annotation.Configuration;
+
+@Configuration
+@ConfigurationProperties(prefix = "evidence")
+@Getter
+public class EvidenceProperties {
+    private EvidenceAddress address;
+
+    @Getter
+    @Builder
+    public static class EvidenceAddress {
+        private String line1;
+        private String line2;
+        private String line3;
+        private String town;
+        private String county;
+        private String postcode;
+        private String telephone;
+    }
+}

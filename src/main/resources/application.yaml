@@ -509,6 +509,15 @@ job.scheduler:
       threadPool:
         class: org.quartz.simpl.SimpleThreadPool
         threadCount: 8
+evidence:
+  address:
+    line1:
+    line2: HMCTS SSCS
+    line3: PO BOX 12626
+    town: Harlow
+    county: Essex
+    postcode: CM20 9QF
+    telephone: 0300 123 1142
 ---
 # integration & functional profile
 spring:
