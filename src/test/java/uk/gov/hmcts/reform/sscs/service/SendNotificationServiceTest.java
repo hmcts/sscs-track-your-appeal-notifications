@@ -23,6 +23,7 @@ import ch.qos.logback.classic.Logger;
 import ch.qos.logback.classic.spi.ILoggingEvent;
 import ch.qos.logback.core.Appender;
 
+import java.time.LocalDate;
 import java.util.*;
 
 import junitparams.JUnitParamsRunner;
@@ -34,6 +35,7 @@ import org.mockito.ArgumentCaptor;
 import org.mockito.Captor;
 import org.mockito.Mock;
 import org.slf4j.LoggerFactory;
+import uk.gov.hmcts.reform.sscs.ccd.callback.DocumentType;
 import uk.gov.hmcts.reform.sscs.ccd.domain.*;
 import uk.gov.hmcts.reform.sscs.config.AppealHearingType;
 import uk.gov.hmcts.reform.sscs.config.SubscriptionType;
@@ -571,6 +573,22 @@ public class SendNotificationServiceTest {
             appellantSubscription = Subscription.builder().tya("GLSCRR").email("Email").mobile("07983495065").subscribeEmail(YES).subscribeSms(YES).build();
         }
 
+        List<SscsDocument> documents = new ArrayList<>();
+
+        documents.add(SscsDocument.builder().value(
+                SscsDocumentDetails.builder().documentType(DocumentType.DIRECTION_NOTICE.getValue())
+                        .documentLink(DocumentLink.builder().documentUrl("testUrl").build())
+                        .documentDateAdded(LocalDate.now().minusDays(1).toString())
+                    .build())
+                .build());
+
+        documents.add(SscsDocument.builder().value(
+                SscsDocumentDetails.builder().documentType(DocumentType.DECISION_NOTICE.getValue())
+                        .documentLink(DocumentLink.builder().documentUrl("testUrl2").build())
+                        .documentDateAdded(LocalDate.now().minusDays(1).toString())
+                        .build())
+                .build());
+
         SscsCaseData sscsCaseDataWithDocuments = SscsCaseData.builder()
             .appeal(
                 Appeal
@@ -587,10 +605,10 @@ public class SendNotificationServiceTest {
                     .appellantSubscription(appellantSubscription)
                     .representativeSubscription(repSubscription)
                     .build())
+            .sscsDocument(documents)
             .caseReference(CASE_REFERENCE)
             .ccdCaseId(CASE_ID)
             .sscsInterlocDecisionDocument(SscsInterlocDecisionDocument.builder().documentLink(DocumentLink.builder().documentUrl("testUrl").build()).build())
-            .sscsInterlocDirectionDocument(SscsInterlocDirectionDocument.builder().documentLink(DocumentLink.builder().documentUrl("testUrl").build()).build())
             .sscsStrikeOutDocument(SscsStrikeOutDocument.builder().documentLink(DocumentLink.builder().documentUrl("testUrl").build()).build())
             .build();
 

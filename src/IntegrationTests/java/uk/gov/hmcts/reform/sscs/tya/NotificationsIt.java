@@ -1,7 +1,6 @@
 package uk.gov.hmcts.reform.sscs.tya;
 
 import static helper.IntegrationTestHelper.*;
-import static helper.IntegrationTestHelper.updateEmbeddedJson;
 import static org.junit.Assert.assertArrayEquals;
 import static org.junit.Assert.assertEquals;
 import static org.mockito.Mockito.*;
@@ -45,6 +44,7 @@ import uk.gov.hmcts.reform.sscs.ccd.service.CcdService;
 import uk.gov.hmcts.reform.sscs.config.NotificationBlacklist;
 import uk.gov.hmcts.reform.sscs.config.NotificationConfig;
 import uk.gov.hmcts.reform.sscs.controller.NotificationController;
+import uk.gov.hmcts.reform.sscs.docmosis.service.DocmosisPdfGenerationService;
 import uk.gov.hmcts.reform.sscs.domain.notify.NotificationEventType;
 import uk.gov.hmcts.reform.sscs.factory.NotificationFactory;
 import uk.gov.hmcts.reform.sscs.idam.IdamService;
@@ -116,8 +116,14 @@ public class NotificationsIt {
     @Autowired
     private BundledLetterTemplateUtil bundledLetterTemplateUtil;
 
-    @MockBean
+    @Autowired
     private PdfLetterService pdfLetterService;
+
+    @Autowired
+    private DocmosisPdfService docmosisPdfService;
+
+    @MockBean
+    private DocmosisPdfGenerationService docmosisPdfGenerationService;
 
     @Mock
     private EvidenceManagementService evidenceManagementService;
@@ -177,8 +183,7 @@ public class NotificationsIt {
         when(outOfHoursCalculator.isItOutOfHours()).thenReturn(false);
 
         byte[] pdfbytes = IOUtils.toByteArray(getClass().getClassLoader().getResourceAsStream("pdfs/direction-notice-coversheet-sample.pdf"));
-        when(pdfLetterService.generateLetter(any(), any(), any())).thenReturn(pdfbytes);
-        when(pdfLetterService.buildCoversheet(any(), any())).thenReturn(pdfbytes);
+        when(docmosisPdfGenerationService.generatePdf(any())).thenReturn(pdfbytes);
     }
 
     @Test
