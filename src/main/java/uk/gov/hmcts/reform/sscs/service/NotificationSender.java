@@ -155,7 +155,7 @@ public class NotificationSender {
                         .build()
         ).build();
 
-        ccdNotificationsPdfService.mergeCorrespondenceIntoCcd(sscsCaseData, correspondence);
+        ccdNotificationsPdfService.mergeCorrespondenceIntoCcd(Long.valueOf(sscsCaseData.getCcdCaseId()), correspondence);
         LOG.info("Uploaded correspondence into ccd for case id {}.", sscsCaseData.getCcdCaseId());
     }
 

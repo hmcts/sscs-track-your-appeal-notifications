@@ -21,7 +21,7 @@ import uk.gov.service.notify.*;
 
 public class NotificationSenderTest {
     public static final String CCD_CASE_ID = "78980909090099";
-    public static final SscsCaseData SSCS_CASE_DATA = SscsCaseData.builder().build();
+    public static final SscsCaseData SSCS_CASE_DATA = SscsCaseData.builder().ccdCaseId(CCD_CASE_ID).build();
     public static final String SMS_SENDER = "sms-sender";
     private NotificationClient notificationClient;
     private NotificationClient testNotificationClient;
@@ -204,7 +204,7 @@ public class NotificationSenderTest {
                 .thenReturn(sendEmailResponse);
         when(sendEmailResponse.getNotificationId()).thenReturn(UUID.randomUUID());
         when(markdownTransformationService.toHtml(anyString())).thenReturn("the body");
-        when(ccdNotificationsPdfService.mergeCorrespondenceIntoCcd(any(), any())).thenReturn(SscsCaseData.builder().build());
+        when(ccdNotificationsPdfService.mergeCorrespondenceIntoCcd(any(), any())).thenReturn(SSCS_CASE_DATA);
 
         notificationSender.sendEmail(templateId, emailAddress, personalisation, reference, NotificationEventType.APPEAL_RECEIVED_NOTIFICATION, SSCS_CASE_DATA);
 
@@ -219,7 +219,7 @@ public class NotificationSenderTest {
                 .eventType(NotificationEventType.APPEAL_RECEIVED_NOTIFICATION.getId())
                 .sentOn("this field is ignored")
                 .build()).build();
-        verify(ccdNotificationsPdfService).mergeCorrespondenceIntoCcd(eq(SscsCaseData.builder().build()),
+        verify(ccdNotificationsPdfService).mergeCorrespondenceIntoCcd(eq(Long.valueOf(CCD_CASE_ID)),
                argThat(((Correspondence arg) -> EqualsBuilder.reflectionEquals(arg.getValue(), expectedCorrespondence.getValue(), "sentOn"))));
     }
 
@@ -233,7 +233,7 @@ public class NotificationSenderTest {
                 .thenReturn(sendSmsResponse);
         when(sendEmailResponse.getNotificationId()).thenReturn(UUID.randomUUID());
         when(markdownTransformationService.toHtml(anyString())).thenReturn("the body");
-        when(ccdNotificationsPdfService.mergeCorrespondenceIntoCcd(any(), any())).thenReturn(SscsCaseData.builder().build());
+        when(ccdNotificationsPdfService.mergeCorrespondenceIntoCcd(any(), any())).thenReturn(SSCS_CASE_DATA);
 
         notificationSender.sendSms(templateId, smsNumber, personalisation, reference, "Sender", NotificationEventType.APPEAL_RECEIVED_NOTIFICATION, SSCS_CASE_DATA);
 
@@ -249,7 +249,7 @@ public class NotificationSenderTest {
                 .eventType(NotificationEventType.APPEAL_RECEIVED_NOTIFICATION.getId())
                 .sentOn("this field is ignored")
                 .build()).build();
-        verify(ccdNotificationsPdfService).mergeCorrespondenceIntoCcd(eq(SscsCaseData.builder().build()),
+        verify(ccdNotificationsPdfService).mergeCorrespondenceIntoCcd(eq(Long.valueOf(CCD_CASE_ID)),
                 argThat(((Correspondence arg) -> EqualsBuilder.reflectionEquals(arg.getValue(), expectedCorrespondence.getValue(), "sentOn"))));
     }
 }
