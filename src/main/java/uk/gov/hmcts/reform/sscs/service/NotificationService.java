@@ -214,8 +214,10 @@ public class NotificationService {
         }
 
         if (notificationWrapper.getSscsCaseDataWrapper().getState() != null && notificationWrapper.getSscsCaseDataWrapper().getState().equals(State.DORMANT_APPEAL_STATE)) {
-            if (!(APPEAL_DORMANT_NOTIFICATION.equals(notificationType)
-                    || APPEAL_LAPSED_NOTIFICATION.equals(notificationType)
+            if (!(NotificationEventType.APPEAL_DORMANT_NOTIFICATION.equals(notificationType)
+                    || NotificationEventType.APPEAL_LAPSED_NOTIFICATION.equals(notificationType)
+                    || NotificationEventType.HMCTS_APPEAL_LAPSED_NOTIFICATION.equals(notificationType)
+                    || NotificationEventType.DWP_APPEAL_LAPSED_NOTIFICATION.equals(notificationType)
                     || APPEAL_WITHDRAWN_NOTIFICATION.equals(notificationType)
                     || STRUCK_OUT.equals(notificationType)
                     || DECISION_ISSUED.equals(notificationType)

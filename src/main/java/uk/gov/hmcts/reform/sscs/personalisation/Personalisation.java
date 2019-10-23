@@ -346,6 +346,8 @@ public class Personalisation<E extends NotificationWrapper> {
         if (ADJOURNED_NOTIFICATION.equals(notificationEventType)
             || APPEAL_DORMANT_NOTIFICATION.equals(notificationEventType)
             || APPEAL_LAPSED_NOTIFICATION.equals(notificationEventType)
+            || HMCTS_APPEAL_LAPSED_NOTIFICATION.equals(notificationEventType)
+            || DWP_APPEAL_LAPSED_NOTIFICATION.equals(notificationEventType)
             || APPEAL_RECEIVED_NOTIFICATION.equals(notificationEventType)
             || APPEAL_WITHDRAWN_NOTIFICATION.equals(notificationEventType)
             || CASE_UPDATED.equals(notificationEventType)
@@ -385,7 +387,10 @@ public class Personalisation<E extends NotificationWrapper> {
             || HEARING_BOOKED_NOTIFICATION.equals(notificationEventType))
             || REQUEST_INFO_INCOMPLETE.equals(notificationEventType)
             || JUDGE_DECISION_APPEAL_TO_PROCEED.equals(notificationEventType)
-            || TCW_DECISION_APPEAL_TO_PROCEED.equals(notificationEventType))) {
+            || TCW_DECISION_APPEAL_TO_PROCEED.equals(notificationEventType)
+            || APPEAL_LAPSED_NOTIFICATION.equals(notificationEventType)
+            || HMCTS_APPEAL_LAPSED_NOTIFICATION.equals(notificationEventType)
+            || DWP_APPEAL_LAPSED_NOTIFICATION.equals(notificationEventType))) {
             letterTemplateName = letterTemplateName + "." + subscriptionType.name().toLowerCase();
         }
         return letterTemplateName;

@@ -8,6 +8,8 @@ public enum NotificationEventType {
     SYA_APPEAL_CREATED_NOTIFICATION("appealCreated", true, true, false, true, false),
     RESEND_APPEAL_CREATED_NOTIFICATION("resendAppealCreated", true, true, false, true, false),
     APPEAL_LAPSED_NOTIFICATION("appealLapsed", true, true, false, false, false),
+    HMCTS_APPEAL_LAPSED_NOTIFICATION("hmctsLapseCase", true, true, false, false, false),
+    DWP_APPEAL_LAPSED_NOTIFICATION("dwpLapseCase", true, true, false, false, false),
     APPEAL_RECEIVED_NOTIFICATION("appealReceived", true, true, false, false, false),
     APPEAL_WITHDRAWN_NOTIFICATION("appealWithdrawn", true, true, false, false, false),
     APPEAL_DORMANT_NOTIFICATION("appealDormant", true, true, false, false, false),

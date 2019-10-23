@@ -3,7 +3,6 @@ package uk.gov.hmcts.reform.sscs.service.reminder;
 import static uk.gov.hmcts.reform.sscs.domain.notify.NotificationEventType.*;
 
 import java.util.Arrays;
-import java.util.Collections;
 import java.util.List;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -18,7 +17,7 @@ import uk.gov.hmcts.reform.sscs.jobscheduler.services.JobRemover;
 public class AllReminderRemover implements ReminderHandler {
 
     private static final List<NotificationEventType> NOTIFICATION_EVENT_TYPES =
-            Collections.singletonList(APPEAL_LAPSED_NOTIFICATION);
+            Arrays.asList(APPEAL_LAPSED_NOTIFICATION, HMCTS_APPEAL_LAPSED_NOTIFICATION, DWP_APPEAL_LAPSED_NOTIFICATION);
 
     private static final List<NotificationEventType> REMINDERS_TO_REMOVE =
             Arrays.asList(HEARING_REMINDER_NOTIFICATION, EVIDENCE_RECEIVED_NOTIFICATION);
