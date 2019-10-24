@@ -501,7 +501,7 @@ public class NotificationServiceTest {
                 APPEAL_LAPSED_NOTIFICATION,
                 1,
                 1,
-                0,
+                1,
                 1,
                 Subscription.builder()
                     .tya(APPEAL_NUMBER)
@@ -571,7 +571,7 @@ public class NotificationServiceTest {
                 APPEAL_LAPSED_NOTIFICATION,
                 2,
                 1,
-                0,
+                2,
                 2,
                 Subscription.builder()
                     .tya(APPEAL_NUMBER)
@@ -593,7 +593,7 @@ public class NotificationServiceTest {
                 APPEAL_LAPSED_NOTIFICATION,
                 2,
                 2,
-                0,
+                2,
                 2,
                 Subscription.builder()
                     .tya(APPEAL_NUMBER)
