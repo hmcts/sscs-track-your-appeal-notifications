@@ -30,7 +30,8 @@ public class AllReminderRemoverTest {
     private AllReminderRemover allReminderRemover;
     private static final List<NotificationEventType> ALL_UNHANDLED_EVENTS =
             Arrays.stream(NotificationEventType.values())
-                    .filter(f -> !f.equals(APPEAL_LAPSED_NOTIFICATION))
+                    .filter(f -> (!f.equals(APPEAL_LAPSED_NOTIFICATION) && !f.equals(DWP_APPEAL_LAPSED_NOTIFICATION)
+                            && !f.equals(HMCTS_APPEAL_LAPSED_NOTIFICATION)))
                     .collect(Collectors.toCollection(ArrayList::new));
 
     @Before
@@ -48,10 +49,10 @@ public class AllReminderRemoverTest {
 
             CcdNotificationWrapper wrapper = SscsCaseDataUtils.buildBasicCcdNotificationWrapper(eventType);
 
-            if (eventType == APPEAL_LAPSED_NOTIFICATION) {
+            if (eventType == APPEAL_LAPSED_NOTIFICATION || eventType == DWP_APPEAL_LAPSED_NOTIFICATION
+                    || eventType == HMCTS_APPEAL_LAPSED_NOTIFICATION) {
                 assertTrue(allReminderRemover.canHandle(wrapper));
             } else {
-
                 assertFalse(allReminderRemover.canHandle(wrapper));
                 assertThatThrownBy(() -> allReminderRemover.handle(wrapper))
                     .hasMessage("cannot handle ccdResponse")
@@ -73,6 +74,31 @@ public class AllReminderRemoverTest {
             APPEAL_LAPSED_NOTIFICATION,
             hearingDate,
             hearingTime
+        );
+
+        when(jobGroupGenerator.generate(wrapper.getCaseId(), HEARING_REMINDER_NOTIFICATION.getId())).thenReturn(expectedHearingJobGroup);
+
+        when(jobGroupGenerator.generate(wrapper.getCaseId(), EVIDENCE_RECEIVED_NOTIFICATION.getId())).thenReturn(expectedEvidenceJobGroup);
+
+        allReminderRemover.handle(wrapper);
+
+        verify(jobRemover, times(1)).removeGroup(expectedHearingJobGroup);
+        verify(jobRemover, times(1)).removeGroup(expectedEvidenceJobGroup);
+    }
+
+    @Test
+    public void removedHearingReminderForDwpLapsed() {
+
+        final String expectedHearingJobGroup = "ID_EVENT_HEARING";
+        final String expectedEvidenceJobGroup = "ID_EVENT_EVIDENCE";
+
+        String hearingDate = "2018-01-01";
+        String hearingTime = "14:01:18";
+
+        CcdNotificationWrapper wrapper = SscsCaseDataUtils.buildBasicCcdNotificationWrapperWithHearing(
+                DWP_APPEAL_LAPSED_NOTIFICATION,
+                hearingDate,
+                hearingTime
         );
 
         when(jobGroupGenerator.generate(wrapper.getCaseId(), HEARING_REMINDER_NOTIFICATION.getId())).thenReturn(expectedHearingJobGroup);

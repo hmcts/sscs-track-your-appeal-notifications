@@ -1,14 +1,17 @@
 package uk.gov.hmcts.reform.sscs.service;
 
 import static uk.gov.hmcts.reform.sscs.domain.notify.NotificationEventType.ADMIN_APPEAL_WITHDRAWN;
+import static uk.gov.hmcts.reform.sscs.domain.notify.NotificationEventType.APPEAL_LAPSED_NOTIFICATION;
 import static uk.gov.hmcts.reform.sscs.domain.notify.NotificationEventType.APPEAL_RECEIVED_NOTIFICATION;
 import static uk.gov.hmcts.reform.sscs.domain.notify.NotificationEventType.APPEAL_WITHDRAWN_NOTIFICATION;
 import static uk.gov.hmcts.reform.sscs.domain.notify.NotificationEventType.DECISION_ISSUED;
 import static uk.gov.hmcts.reform.sscs.domain.notify.NotificationEventType.DIRECTION_ISSUED;
+import static uk.gov.hmcts.reform.sscs.domain.notify.NotificationEventType.DWP_APPEAL_LAPSED_NOTIFICATION;
 import static uk.gov.hmcts.reform.sscs.domain.notify.NotificationEventType.DWP_RESPONSE_RECEIVED_NOTIFICATION;
 import static uk.gov.hmcts.reform.sscs.domain.notify.NotificationEventType.DWP_UPLOAD_RESPONSE_NOTIFICATION;
 import static uk.gov.hmcts.reform.sscs.domain.notify.NotificationEventType.EVIDENCE_RECEIVED_NOTIFICATION;
 import static uk.gov.hmcts.reform.sscs.domain.notify.NotificationEventType.HEARING_BOOKED_NOTIFICATION;
+import static uk.gov.hmcts.reform.sscs.domain.notify.NotificationEventType.HMCTS_APPEAL_LAPSED_NOTIFICATION;
 import static uk.gov.hmcts.reform.sscs.domain.notify.NotificationEventType.JUDGE_DECISION_APPEAL_TO_PROCEED;
 import static uk.gov.hmcts.reform.sscs.domain.notify.NotificationEventType.NON_COMPLIANT_NOTIFICATION;
 import static uk.gov.hmcts.reform.sscs.domain.notify.NotificationEventType.REQUEST_INFO_INCOMPLETE;
@@ -36,16 +39,13 @@ public class NotificationValidService {
     // fallback letters are sent only if there's no email or SMS subscription
     protected static final List<NotificationEventType> FALLBACK_LETTER_SUBSCRIPTION_TYPES =
         Arrays.asList(DWP_RESPONSE_RECEIVED_NOTIFICATION, SYA_APPEAL_CREATED_NOTIFICATION,
-            EVIDENCE_RECEIVED_NOTIFICATION, VALID_APPEAL_CREATED);
-
+            EVIDENCE_RECEIVED_NOTIFICATION, VALID_APPEAL_CREATED, DWP_APPEAL_LAPSED_NOTIFICATION);
     private static final List<NotificationEventType> MANDATORY_LETTER_EVENT_TYPES =
         Arrays.asList(DWP_UPLOAD_RESPONSE_NOTIFICATION, ADMIN_APPEAL_WITHDRAWN, APPEAL_WITHDRAWN_NOTIFICATION,
             STRUCK_OUT, APPEAL_RECEIVED_NOTIFICATION, HEARING_BOOKED_NOTIFICATION, DIRECTION_ISSUED, DECISION_ISSUED,
             REQUEST_INFO_INCOMPLETE, NON_COMPLIANT_NOTIFICATION, JUDGE_DECISION_APPEAL_TO_PROCEED,
-            TCW_DECISION_APPEAL_TO_PROCEED);
-
-    static final List<NotificationEventType> LETTER_EVENT_TYPES = Stream.concat(FALLBACK_LETTER_SUBSCRIPTION_TYPES.stream(),
-        MANDATORY_LETTER_EVENT_TYPES.stream()).collect(Collectors.toList());
+            TCW_DECISION_APPEAL_TO_PROCEED, APPEAL_LAPSED_NOTIFICATION, HMCTS_APPEAL_LAPSED_NOTIFICATION,
+            DWP_APPEAL_LAPSED_NOTIFICATION);
 
     protected static final List<NotificationEventType> BUNDLED_LETTER_EVENT_TYPES = Arrays.asList(STRUCK_OUT,
         DIRECTION_ISSUED, DECISION_ISSUED, JUDGE_DECISION_APPEAL_TO_PROCEED, TCW_DECISION_APPEAL_TO_PROCEED);

@@ -5,12 +5,15 @@ import static uk.gov.hmcts.reform.sscs.config.SubscriptionType.APPELLANT;
 import static uk.gov.hmcts.reform.sscs.config.SubscriptionType.APPOINTEE;
 import static uk.gov.hmcts.reform.sscs.config.SubscriptionType.REPRESENTATIVE;
 import static uk.gov.hmcts.reform.sscs.domain.notify.NotificationEventType.ADMIN_APPEAL_WITHDRAWN;
+import static uk.gov.hmcts.reform.sscs.domain.notify.NotificationEventType.APPEAL_LAPSED_NOTIFICATION;
 import static uk.gov.hmcts.reform.sscs.domain.notify.NotificationEventType.APPEAL_RECEIVED_NOTIFICATION;
 import static uk.gov.hmcts.reform.sscs.domain.notify.NotificationEventType.APPEAL_WITHDRAWN_NOTIFICATION;
 import static uk.gov.hmcts.reform.sscs.domain.notify.NotificationEventType.DECISION_ISSUED;
 import static uk.gov.hmcts.reform.sscs.domain.notify.NotificationEventType.DIRECTION_ISSUED;
+import static uk.gov.hmcts.reform.sscs.domain.notify.NotificationEventType.DWP_APPEAL_LAPSED_NOTIFICATION;
 import static uk.gov.hmcts.reform.sscs.domain.notify.NotificationEventType.DWP_UPLOAD_RESPONSE_NOTIFICATION;
 import static uk.gov.hmcts.reform.sscs.domain.notify.NotificationEventType.HEARING_BOOKED_NOTIFICATION;
+import static uk.gov.hmcts.reform.sscs.domain.notify.NotificationEventType.HMCTS_APPEAL_LAPSED_NOTIFICATION;
 import static uk.gov.hmcts.reform.sscs.domain.notify.NotificationEventType.JUDGE_DECISION_APPEAL_TO_PROCEED;
 import static uk.gov.hmcts.reform.sscs.domain.notify.NotificationEventType.NON_COMPLIANT_NOTIFICATION;
 import static uk.gov.hmcts.reform.sscs.domain.notify.NotificationEventType.REQUEST_INFO_INCOMPLETE;
@@ -41,7 +44,8 @@ public class NotificationUtils {
     private static final List<NotificationEventType> MANDATORY_LETTERS = Arrays.asList(APPEAL_WITHDRAWN_NOTIFICATION,
         ADMIN_APPEAL_WITHDRAWN, DWP_UPLOAD_RESPONSE_NOTIFICATION, STRUCK_OUT, HEARING_BOOKED_NOTIFICATION,
         DIRECTION_ISSUED, DECISION_ISSUED, REQUEST_INFO_INCOMPLETE, APPEAL_RECEIVED_NOTIFICATION,
-        NON_COMPLIANT_NOTIFICATION, JUDGE_DECISION_APPEAL_TO_PROCEED, TCW_DECISION_APPEAL_TO_PROCEED);
+        NON_COMPLIANT_NOTIFICATION, JUDGE_DECISION_APPEAL_TO_PROCEED, TCW_DECISION_APPEAL_TO_PROCEED,
+        APPEAL_LAPSED_NOTIFICATION, HMCTS_APPEAL_LAPSED_NOTIFICATION, DWP_APPEAL_LAPSED_NOTIFICATION);
 
     private NotificationUtils() {
         // empty
@@ -114,14 +118,20 @@ public class NotificationUtils {
     public static boolean isMandatoryLetterEventType(NotificationWrapper wrapper) {
         if (MANDATORY_LETTERS.contains(wrapper.getNotificationType())) {
             return (HEARING_BOOKED_NOTIFICATION.equals(wrapper.getNotificationType()) && ORAL.equals(wrapper.getHearingType()))
+                || APPEAL_LAPSED_NOTIFICATION.equals(wrapper.getNotificationType())
+                || HMCTS_APPEAL_LAPSED_NOTIFICATION.equals(wrapper.getNotificationType())
+                || DWP_APPEAL_LAPSED_NOTIFICATION.equals(wrapper.getNotificationType())
                 || (!HEARING_BOOKED_NOTIFICATION.equals(wrapper.getNotificationType()));
         }
 
         return false;
     }
 
-    static boolean isOkToSendNotification(NotificationWrapper wrapper, NotificationEventType notificationType, Subscription subscription, NotificationValidService notificationValidService) {
-        return ((subscription != null && subscription.doesCaseHaveSubscriptions()) || FALLBACK_LETTER_SUBSCRIPTION_TYPES.contains(notificationType))
+    static boolean isOkToSendNotification(NotificationWrapper wrapper, NotificationEventType notificationType,
+                                          Subscription subscription,
+                                          NotificationValidService notificationValidService) {
+        return ((subscription != null && subscription.doesCaseHaveSubscriptions())
+            || FALLBACK_LETTER_SUBSCRIPTION_TYPES.contains(notificationType))
             && notificationValidService.isNotificationStillValidToSend(wrapper.getNewSscsCaseData().getHearings(), notificationType)
             && notificationValidService.isHearingTypeValidToSendNotification(wrapper.getNewSscsCaseData(), notificationType);
     }
@@ -135,7 +145,9 @@ public class NotificationUtils {
             || (subscription == null && notificationValidService.isFallbackLetterRequiredForSubscriptionType(wrapper, subscriptionWithType.getSubscriptionType(), eventType));
     }
 
-    protected static boolean isOkToSendSmsNotification(NotificationWrapper wrapper, Subscription subscription, Notification notification, NotificationEventType notificationType, NotificationValidService notificationValidService) {
+    protected static boolean isOkToSendSmsNotification(NotificationWrapper wrapper, Subscription subscription,
+                                                       Notification notification, NotificationEventType notificationType,
+                                                       NotificationValidService notificationValidService) {
         return subscription != null
             && subscription.isSmsSubscribed()
             && notification.isSms()
@@ -145,7 +157,9 @@ public class NotificationUtils {
             && notificationValidService.isHearingTypeValidToSendNotification(wrapper.getNewSscsCaseData(), notificationType);
     }
 
-    protected static boolean isOkToSendEmailNotification(NotificationWrapper wrapper, Subscription subscription, Notification notification, NotificationValidService notificationValidService) {
+    protected static boolean isOkToSendEmailNotification(NotificationWrapper wrapper, Subscription subscription,
+                                                         Notification notification,
+                                                         NotificationValidService notificationValidService) {
         return subscription != null
             && subscription.isEmailSubscribed()
             && notification.isEmail()
