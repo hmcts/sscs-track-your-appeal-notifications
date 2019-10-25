@@ -41,6 +41,8 @@ public class PersonalisationFactory implements Function<NotificationEventType, P
                     || VALID_APPEAL_CREATED.equals(notificationType)) {
                 selectedPersonalisation = syaAppealCreatedAndReceivedPersonalisation;
             } else if (APPEAL_LAPSED_NOTIFICATION.equals(notificationType)
+                || HMCTS_APPEAL_LAPSED_NOTIFICATION.equals(notificationType)
+                || DWP_APPEAL_LAPSED_NOTIFICATION.equals(notificationType)
                 || APPEAL_WITHDRAWN_NOTIFICATION.equals(notificationType)
                 || EVIDENCE_RECEIVED_NOTIFICATION.equals(notificationType)
                 || EVIDENCE_REMINDER_NOTIFICATION.equals(notificationType)
@@ -49,6 +51,7 @@ public class PersonalisationFactory implements Function<NotificationEventType, P
                 || ADJOURNED_NOTIFICATION.equals(notificationType)
                 || POSTPONEMENT_NOTIFICATION.equals(notificationType)
                 || DWP_RESPONSE_RECEIVED_NOTIFICATION.equals(notificationType)
+                || DWP_UPLOAD_RESPONSE_NOTIFICATION.equals(notificationType)
                 || DIRECTION_ISSUED.equals(notificationType)
                 || DECISION_ISSUED.equals(notificationType)
                 || HEARING_BOOKED_NOTIFICATION.equals(notificationType)) {

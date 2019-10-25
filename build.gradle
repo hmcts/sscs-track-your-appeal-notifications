@@ -256,7 +256,7 @@ dependencies {
     compile group: 'uk.gov.hmcts.reform', name: 'sscs-job-scheduler', version: '1.5.2'
     compile group: 'uk.gov.hmcts.reform', name: 'service-auth-provider-client', version: '3.0.0'
 
-    compile group: 'uk.gov.hmcts.reform', name: 'sscs-common', version: '3.0.77'
+    compile group: 'uk.gov.hmcts.reform', name: 'sscs-common', version: '3.0.82'
     compile group: 'uk.gov.hmcts.reform', name: 'sscs-pdf-email-common', version: '1.1.9'
 
     compile group: 'uk.gov.service.notify', name: 'notifications-java-client', version: '3.15.0-RELEASE'
@@ -267,7 +267,7 @@ dependencies {
     compile group: 'com.fasterxml.jackson.core', name: 'jackson-databind', version: '2.9.10'
 
     compile group: 'com.microsoft.azure', name: 'applicationinsights-logging-logback', version: '2.5.0'
-    compile group: 'com.microsoft.azure', name: 'applicationinsights-spring-boot-starter', version: '2.4.1'
+    compile group: 'com.microsoft.azure', name: 'applicationinsights-spring-boot-starter', version: '2.5.0'
 
     compileOnly 'org.projectlombok:lombok:1.18.10'
     compileOnly("org.springframework.boot:spring-boot-devtools")
@@ -301,7 +301,7 @@ applicationDefaultJvmArgs = ["-Dfile.encoding=UTF-8"]
 run {
     def debug = System.getProperty("debug")
     if (debug == 'true') {
-        jvmArgs = ['-agentlib:jdwp=transport=dt_socket,server=y,suspend=y,address=5005']
+        jvmArgs = ['-agentlib:jdwp=transport=dt_socket,server=y,suspend=y,address=5006']
     }
 }
 

@@ -59,6 +59,5 @@ java:
     TOPIC_NAME: "sscs-evidenceshare-topic-{{ .Values.global.environment }}"
     AMQP_HOST: "sscs-servicebus-{{ .Values.global.environment }}.servicebus.windows.net"
     AMQP_USERNAME: "SendAndListenSharedAccessKey"
-
-
-
+    PDF_SERVICE_BASE_URL: "https://docmosis-development.platform.hmcts.net/rs/render"
+    PDF_SERVICE_HEALTH_URL: "https://docmosis-development.platform.hmcts.net/rs/status"

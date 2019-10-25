@@ -44,7 +44,7 @@ import uk.gov.hmcts.reform.sscs.service.SendNotificationService;
 @Component
 @Slf4j
 public class Personalisation<E extends NotificationWrapper> {
-    private static final List<NotificationEventType> LETTER_SUBSCRIPTION_TYPES = Arrays.asList(DWP_RESPONSE_RECEIVED_NOTIFICATION,
+    private static final List<NotificationEventType> LETTER_SUBSCRIPTION_TYPES = Arrays.asList(DWP_RESPONSE_RECEIVED_NOTIFICATION, DWP_UPLOAD_RESPONSE_NOTIFICATION,
             APPEAL_RECEIVED_NOTIFICATION, SYA_APPEAL_CREATED_NOTIFICATION, EVIDENCE_RECEIVED_NOTIFICATION, NON_COMPLIANT_NOTIFICATION, VALID_APPEAL_CREATED);
 
     private static final String CRLF = String.format("%c%c", (char) 0x0D, (char) 0x0A);
@@ -346,6 +346,8 @@ public class Personalisation<E extends NotificationWrapper> {
         if (ADJOURNED_NOTIFICATION.equals(notificationEventType)
             || APPEAL_DORMANT_NOTIFICATION.equals(notificationEventType)
             || APPEAL_LAPSED_NOTIFICATION.equals(notificationEventType)
+            || HMCTS_APPEAL_LAPSED_NOTIFICATION.equals(notificationEventType)
+            || DWP_APPEAL_LAPSED_NOTIFICATION.equals(notificationEventType)
             || APPEAL_RECEIVED_NOTIFICATION.equals(notificationEventType)
             || APPEAL_WITHDRAWN_NOTIFICATION.equals(notificationEventType)
             || CASE_UPDATED.equals(notificationEventType)
@@ -355,6 +357,8 @@ public class Personalisation<E extends NotificationWrapper> {
             || HEARING_REMINDER_NOTIFICATION.equals(notificationEventType)
             || POSTPONEMENT_NOTIFICATION.equals(notificationEventType)
             || (DWP_RESPONSE_RECEIVED_NOTIFICATION.equals(notificationEventType)
+                && !notificationWrapper.getHearingType().equals(AppealHearingType.ONLINE))
+            || (DWP_UPLOAD_RESPONSE_NOTIFICATION.equals(notificationEventType)
                 && !notificationWrapper.getHearingType().equals(AppealHearingType.ONLINE))
             || RESEND_APPEAL_CREATED_NOTIFICATION.equals(notificationEventType)
             || VALID_APPEAL_CREATED.equals(notificationEventType)
@@ -383,7 +387,10 @@ public class Personalisation<E extends NotificationWrapper> {
             || HEARING_BOOKED_NOTIFICATION.equals(notificationEventType))
             || REQUEST_INFO_INCOMPLETE.equals(notificationEventType)
             || JUDGE_DECISION_APPEAL_TO_PROCEED.equals(notificationEventType)
-            || TCW_DECISION_APPEAL_TO_PROCEED.equals(notificationEventType))) {
+            || TCW_DECISION_APPEAL_TO_PROCEED.equals(notificationEventType)
+            || APPEAL_LAPSED_NOTIFICATION.equals(notificationEventType)
+            || HMCTS_APPEAL_LAPSED_NOTIFICATION.equals(notificationEventType)
+            || DWP_APPEAL_LAPSED_NOTIFICATION.equals(notificationEventType))) {
             letterTemplateName = letterTemplateName + "." + subscriptionType.name().toLowerCase();
         }
         return letterTemplateName;

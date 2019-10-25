@@ -3,18 +3,24 @@ package uk.gov.hmcts.reform.sscs.service.reminder;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.junit.Assert.*;
 import static org.mockito.Mockito.*;
+import static org.mockito.MockitoAnnotations.initMocks;
 import static uk.gov.hmcts.reform.sscs.ccd.domain.EventType.DWP_RESPOND;
 import static uk.gov.hmcts.reform.sscs.domain.notify.NotificationEventType.DWP_RESPONSE_RECEIVED_NOTIFICATION;
+import static uk.gov.hmcts.reform.sscs.domain.notify.NotificationEventType.DWP_UPLOAD_RESPONSE_NOTIFICATION;
 import static uk.gov.hmcts.reform.sscs.domain.notify.NotificationEventType.EVIDENCE_REMINDER_NOTIFICATION;
 
 import java.time.ZonedDateTime;
+import java.util.Arrays;
+import java.util.List;
 import java.util.Optional;
+
+import junitparams.JUnitParamsRunner;
+import junitparams.Parameters;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.ArgumentCaptor;
 import org.mockito.Mock;
-import org.mockito.junit.MockitoJUnitRunner;
 import uk.gov.hmcts.reform.sscs.SscsCaseDataUtils;
 import uk.gov.hmcts.reform.sscs.domain.notify.NotificationEventType;
 import uk.gov.hmcts.reform.sscs.extractor.DwpResponseReceivedDateExtractor;
@@ -22,13 +28,15 @@ import uk.gov.hmcts.reform.sscs.factory.CcdNotificationWrapper;
 import uk.gov.hmcts.reform.sscs.jobscheduler.model.Job;
 import uk.gov.hmcts.reform.sscs.jobscheduler.services.JobScheduler;
 
-@RunWith(MockitoJUnitRunner.class)
+@RunWith(JUnitParamsRunner.class)
 public class EvidenceReminderTest {
 
     @Mock
     private DwpResponseReceivedDateExtractor dwpResponseReceivedDateExtractor;
+
     @Mock
     private JobGroupGenerator jobGroupGenerator;
+
     @Mock
     private JobScheduler jobScheduler;
 
@@ -36,6 +44,7 @@ public class EvidenceReminderTest {
 
     @Before
     public void setup() {
+        initMocks(this);
         evidenceReminder = new EvidenceReminder(
             dwpResponseReceivedDateExtractor,
             jobGroupGenerator,
@@ -46,12 +55,13 @@ public class EvidenceReminderTest {
 
     @Test
     public void canHandleEvent() {
+        final List<NotificationEventType> handledEventTypes = Arrays.asList(DWP_RESPONSE_RECEIVED_NOTIFICATION, DWP_UPLOAD_RESPONSE_NOTIFICATION);
 
         for (NotificationEventType eventType : NotificationEventType.values()) {
 
             CcdNotificationWrapper ccdResponse = SscsCaseDataUtils.buildBasicCcdNotificationWrapper(eventType);
 
-            if (eventType == DWP_RESPONSE_RECEIVED_NOTIFICATION) {
+            if (handledEventTypes.contains(eventType)) {
                 assertTrue(evidenceReminder.canHandle(ccdResponse));
             } else {
 
@@ -64,7 +74,8 @@ public class EvidenceReminderTest {
     }
 
     @Test
-    public void schedulesReminder() {
+    @Parameters({"DWP_RESPONSE_RECEIVED_NOTIFICATION", "DWP_UPLOAD_RESPONSE_NOTIFICATION"})
+    public void schedulesReminder(NotificationEventType eventType) {
 
         final String expectedJobGroup = "ID_EVENT";
         final String expectedTriggerAt = "2018-01-03T14:01:18Z[Europe/London]";
@@ -72,7 +83,7 @@ public class EvidenceReminderTest {
         ZonedDateTime dwpResponseReceivedDate = ZonedDateTime.parse("2018-01-01T14:01:18Z[Europe/London]");
 
         CcdNotificationWrapper wrapper = SscsCaseDataUtils.buildBasicCcdNotificationWrapperWithEvent(
-            DWP_RESPONSE_RECEIVED_NOTIFICATION,
+            eventType,
             DWP_RESPOND,
             dwpResponseReceivedDate.toString()
         );
@@ -82,7 +93,7 @@ public class EvidenceReminderTest {
 
         evidenceReminder.handle(wrapper);
 
-        ArgumentCaptor<Job> jobCaptor = ArgumentCaptor.forClass(Job.class);
+        ArgumentCaptor<Job<String>> jobCaptor = ArgumentCaptor.forClass(Job.class);
 
         verify(jobScheduler, times(1)).schedule(
             jobCaptor.capture()

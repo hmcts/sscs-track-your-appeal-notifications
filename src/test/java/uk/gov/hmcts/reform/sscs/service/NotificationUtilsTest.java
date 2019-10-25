@@ -375,7 +375,8 @@ public class NotificationUtilsTest {
     private Object[] mandatoryNotificationTypes() {
         return new Object[]{
             STRUCK_OUT,
-            HEARING_BOOKED_NOTIFICATION
+            HEARING_BOOKED_NOTIFICATION,
+            DWP_UPLOAD_RESPONSE_NOTIFICATION
         };
     }
 
@@ -384,7 +385,6 @@ public class NotificationUtilsTest {
             ADJOURNED_NOTIFICATION,
             SYA_APPEAL_CREATED_NOTIFICATION,
             RESEND_APPEAL_CREATED_NOTIFICATION,
-            APPEAL_LAPSED_NOTIFICATION,
             APPEAL_DORMANT_NOTIFICATION,
             EVIDENCE_RECEIVED_NOTIFICATION,
             DWP_RESPONSE_RECEIVED_NOTIFICATION,

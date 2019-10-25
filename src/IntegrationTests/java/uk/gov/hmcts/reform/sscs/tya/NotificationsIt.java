@@ -1,7 +1,6 @@
 package uk.gov.hmcts.reform.sscs.tya;
 
 import static helper.IntegrationTestHelper.*;
-import static helper.IntegrationTestHelper.updateEmbeddedJson;
 import static org.junit.Assert.assertArrayEquals;
 import static org.junit.Assert.assertEquals;
 import static org.mockito.Mockito.*;
@@ -45,6 +44,7 @@ import uk.gov.hmcts.reform.sscs.ccd.service.CcdService;
 import uk.gov.hmcts.reform.sscs.config.NotificationBlacklist;
 import uk.gov.hmcts.reform.sscs.config.NotificationConfig;
 import uk.gov.hmcts.reform.sscs.controller.NotificationController;
+import uk.gov.hmcts.reform.sscs.docmosis.service.DocmosisPdfGenerationService;
 import uk.gov.hmcts.reform.sscs.domain.notify.NotificationEventType;
 import uk.gov.hmcts.reform.sscs.factory.NotificationFactory;
 import uk.gov.hmcts.reform.sscs.idam.IdamService;
@@ -116,8 +116,14 @@ public class NotificationsIt {
     @Autowired
     private BundledLetterTemplateUtil bundledLetterTemplateUtil;
 
-    @MockBean
+    @Autowired
     private PdfLetterService pdfLetterService;
+
+    @Autowired
+    private DocmosisPdfService docmosisPdfService;
+
+    @MockBean
+    private DocmosisPdfGenerationService docmosisPdfGenerationService;
 
     @Mock
     private EvidenceManagementService evidenceManagementService;
@@ -153,7 +159,7 @@ public class NotificationsIt {
         ReflectionTestUtils.setField(sendNotificationService, "docmosisLettersOn", true);
         ReflectionTestUtils.setField(sendNotificationService, "interlocLettersOn", true);
 
-        NotificationService service = new NotificationService(factory, reminderService, notificationValidService, notificationHandler, outOfHoursCalculator, notificationConfig, sendNotificationService);
+        NotificationService service = new NotificationService(factory, reminderService, notificationValidService, notificationHandler, outOfHoursCalculator, notificationConfig, sendNotificationService, true);
         NotificationController controller = new NotificationController(service, authorisationService, ccdService, deserializer, idamService);
         this.mockMvc = MockMvcBuilders.standaloneSetup(controller).build();
         String path = getClass().getClassLoader().getResource("json/ccdResponse.json").getFile();
@@ -177,8 +183,7 @@ public class NotificationsIt {
         when(outOfHoursCalculator.isItOutOfHours()).thenReturn(false);
 
         byte[] pdfbytes = IOUtils.toByteArray(getClass().getClassLoader().getResourceAsStream("pdfs/direction-notice-coversheet-sample.pdf"));
-        when(pdfLetterService.generateLetter(any(), any(), any())).thenReturn(pdfbytes);
-        when(pdfLetterService.buildCoversheet(any(), any())).thenReturn(pdfbytes);
+        when(docmosisPdfGenerationService.generatePdf(any())).thenReturn(pdfbytes);
     }
 
     @Test
@@ -569,56 +574,56 @@ public class NotificationsIt {
                 "paper",
                 Arrays.asList("8ce8d794-75e8-49a0-b4d2-0c6cd2061c11", "e93dd744-84a1-4173-847a-6d023b55637f"),
                 Arrays.asList("d2b4394b-d1c9-4d5c-a44e-b382e41c67e5", "ee58f7d0-8de7-4bee-acd4-252213db6b7b"),
-                Collections.emptyList(),
+                Arrays.asList("85a81e3c-a59f-4ae9-9c99-266dfd5ca95f"),
                 "yes",
                 "yes",
                 "yes",
                 "yes",
                 "2",
                 "2",
-                "0"
+                "2"
             },
             new Object[]{
                 APPEAL_LAPSED_NOTIFICATION,
                 "oral",
                 Arrays.asList("8ce8d794-75e8-49a0-b4d2-0c6cd2061c11", "e93dd744-84a1-4173-847a-6d023b55637f"),
                 Arrays.asList("d2b4394b-d1c9-4d5c-a44e-b382e41c67e5", "ee58f7d0-8de7-4bee-acd4-252213db6b7b"),
-                Collections.emptyList(),
+                Arrays.asList("85a81e3c-a59f-4ae9-9c99-266dfd5ca95f"),
                 "yes",
                 "yes",
                 "yes",
                 "yes",
                 "2",
                 "2",
-                "0"
+                "2"
             },
             new Object[]{
                 APPEAL_LAPSED_NOTIFICATION,
                 "paper",
                 Collections.singletonList("e93dd744-84a1-4173-847a-6d023b55637f"),
                 Arrays.asList("d2b4394b-d1c9-4d5c-a44e-b382e41c67e5", "ee58f7d0-8de7-4bee-acd4-252213db6b7b"),
-                Collections.emptyList(),
+                Arrays.asList("85a81e3c-a59f-4ae9-9c99-266dfd5ca95f"),
                 "no",
                 "yes",
                 "yes",
                 "yes",
                 "1",
                 "2",
-                "0"
+                "1"
             },
             new Object[]{
                 APPEAL_LAPSED_NOTIFICATION,
                 "paper",
                 Collections.emptyList(),
                 Collections.emptyList(),
-                Collections.emptyList(),
+                Arrays.asList("85a81e3c-a59f-4ae9-9c99-266dfd5ca95f"),
                 "no",
                 "no",
                 "no",
                 "no",
                 "0",
                 "0",
-                "0"
+                "1"
             },
             new Object[]{
                 APPEAL_WITHDRAWN_NOTIFICATION,
@@ -1521,56 +1526,56 @@ public class NotificationsIt {
                 "paper",
                 Arrays.asList("8ce8d794-75e8-49a0-b4d2-0c6cd2061c11", "e93dd744-84a1-4173-847a-6d023b55637f"),
                 Arrays.asList("d2b4394b-d1c9-4d5c-a44e-b382e41c67e5", "ee58f7d0-8de7-4bee-acd4-252213db6b7b"),
-                Collections.emptyList(),
+                Arrays.asList("85a81e3c-a59f-4ae9-9c99-266dfd5ca95f"),
                 "yes",
                 "yes",
                 "yes",
                 "yes",
                 "2",
                 "2",
-                "0"
+                "1"
             },
             new Object[]{
                 APPEAL_LAPSED_NOTIFICATION,
                 "oral",
                 Arrays.asList("8ce8d794-75e8-49a0-b4d2-0c6cd2061c11", "e93dd744-84a1-4173-847a-6d023b55637f"),
                 Arrays.asList("d2b4394b-d1c9-4d5c-a44e-b382e41c67e5", "ee58f7d0-8de7-4bee-acd4-252213db6b7b"),
-                Collections.emptyList(),
+                Arrays.asList("85a81e3c-a59f-4ae9-9c99-266dfd5ca95f"),
                 "yes",
                 "yes",
                 "yes",
                 "yes",
                 "2",
                 "2",
-                "0"
+                "1"
             },
             new Object[]{
                 APPEAL_LAPSED_NOTIFICATION,
                 "paper",
                 Collections.singletonList("e93dd744-84a1-4173-847a-6d023b55637f"),
                 Arrays.asList("d2b4394b-d1c9-4d5c-a44e-b382e41c67e5", "ee58f7d0-8de7-4bee-acd4-252213db6b7b"),
-                Collections.emptyList(),
+                Arrays.asList("85a81e3c-a59f-4ae9-9c99-266dfd5ca95f"),
                 "no",
                 "yes",
                 "yes",
                 "yes",
                 "1",
                 "2",
-                "0"
+                "1"
             },
             new Object[]{
                 APPEAL_LAPSED_NOTIFICATION,
                 "paper",
                 Collections.emptyList(),
                 Collections.emptyList(),
-                Collections.emptyList(),
+                Arrays.asList("85a81e3c-a59f-4ae9-9c99-266dfd5ca95f"),
                 "no",
                 "no",
                 "no",
                 "no",
                 "0",
                 "0",
-                "0"
+                "1"
             },
             new Object[]{
                 APPEAL_WITHDRAWN_NOTIFICATION,
@@ -2162,6 +2167,32 @@ public class NotificationsIt {
                 "Appointee Appointee"
             },
             new Object[]{
+                DWP_UPLOAD_RESPONSE_NOTIFICATION,
+                "oral",
+                Collections.singletonList("2c5644db-1f7b-429b-b10a-8b23a80ed26a"),
+                Collections.singletonList("f20ffcb1-c5f0-4bff-b2d1-a1094f8014e6"),
+                Collections.singletonList("8b11f3f4-6452-4a35-93d8-a94996af6499"),
+                "yes",
+                "yes",
+                "1",
+                "1",
+                "1",
+                "Appointee Appointee"
+            },
+            new Object[]{
+                DWP_UPLOAD_RESPONSE_NOTIFICATION,
+                "oral",
+                Collections.emptyList(),
+                Collections.emptyList(),
+                Collections.singletonList("8b11f3f4-6452-4a35-93d8-a94996af6499"),
+                "no",
+                "no",
+                "0",
+                "0",
+                "1",
+                "Appointee Appointee"
+            },
+            new Object[]{
                 EVIDENCE_REMINDER_NOTIFICATION,
                 "oral",
                 Arrays.asList("b9e47ec4-3b58-4b8d-9304-f77ac27fb7f2"),
@@ -2572,6 +2603,32 @@ public class NotificationsIt {
                 "Appointee Appointee"
             },
             new Object[]{
+                    DWP_UPLOAD_RESPONSE_NOTIFICATION,
+                    "oral",
+                    Collections.singletonList("2c5644db-1f7b-429b-b10a-8b23a80ed26a"),
+                    Collections.singletonList("f20ffcb1-c5f0-4bff-b2d1-a1094f8014e6"),
+                    Collections.singletonList("8b11f3f4-6452-4a35-93d8-a94996af6499"),
+                    "yes",
+                    "yes",
+                    "1",
+                    "1",
+                    "1",
+                    "Appointee Appointee"
+            },
+            new Object[]{
+                    DWP_UPLOAD_RESPONSE_NOTIFICATION,
+                    "oral",
+                    Collections.emptyList(),
+                    Collections.emptyList(),
+                    Collections.singletonList("8b11f3f4-6452-4a35-93d8-a94996af6499"),
+                    "no",
+                    "no",
+                    "0",
+                    "0",
+                    "1",
+                    "Appointee Appointee"
+            },
+            new Object[]{
                 EVIDENCE_REMINDER_NOTIFICATION,
                 "oral",
                 Arrays.asList("b9e47ec4-3b58-4b8d-9304-f77ac27fb7f2"),
@@ -2602,12 +2659,12 @@ public class NotificationsIt {
                 "oral",
                 Collections.singletonList("8ce8d794-75e8-49a0-b4d2-0c6cd2061c11"),
                 Collections.singletonList("d2b4394b-d1c9-4d5c-a44e-b382e41c67e5"),
-                Collections.emptyList(),
+                    Arrays.asList("85a81e3c-a59f-4ae9-9c99-266dfd5ca95f"),
                 "yes",
                 "yes",
                 "1",
                 "1",
-                "0",
+                "1",
                 "Appointee Appointee"
             },
             new Object[]{
@@ -2660,6 +2717,19 @@ public class NotificationsIt {
                 "1",
                 "1",
                 "0",
+                "Appointee Appointee"
+            },
+            new Object[]{
+                DWP_UPLOAD_RESPONSE_NOTIFICATION,
+                "paper",
+                Collections.singletonList("e1084d78-5e2d-45d2-a54f-84339da141c1"),
+                Collections.singletonList("505be856-ceca-4bbc-ba70-29024585056f"),
+                Collections.singletonList("16c141bc-4e16-48ed-8b60-4db58207201c"),
+                "yes",
+                "yes",
+                "1",
+                "1",
+                "1",
                 "Appointee Appointee"
             },
             new Object[]{
@@ -3079,6 +3149,10 @@ public class NotificationsIt {
         verify(notificationClient, atMostOnce()).sendEmail(any(), any(), any(), any());
         verify(notificationClient, atMost(2)).sendSms(any(), any(), any(), any(), any());
         verify(notificationClient, atMostOnce()).sendPrecompiledLetterWithInputStream(any(), any());
+
+        if (notificationEventType.equals(APPEAL_LAPSED_NOTIFICATION.getId())) {
+            verify(notificationClient, atMostOnce()).sendLetter(any(), any(), any());
+        }
         verifyNoMoreInteractions(notificationClient);
     }
 

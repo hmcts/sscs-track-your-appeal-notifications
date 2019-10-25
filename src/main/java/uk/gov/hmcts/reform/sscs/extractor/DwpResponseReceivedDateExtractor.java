@@ -1,8 +1,12 @@
 package uk.gov.hmcts.reform.sscs.extractor;
 
 import static uk.gov.hmcts.reform.sscs.ccd.domain.EventType.DWP_RESPOND;
+import static uk.gov.hmcts.reform.sscs.config.SscsConstants.ZONE_ID;
 
+import java.time.ZoneId;
 import java.time.ZonedDateTime;
+import java.util.Collections;
+import java.util.List;
 import java.util.Optional;
 import org.springframework.stereotype.Component;
 import uk.gov.hmcts.reform.sscs.ccd.domain.Event;
@@ -13,13 +17,14 @@ public class DwpResponseReceivedDateExtractor {
 
     public Optional<ZonedDateTime> extract(SscsCaseData caseData) {
 
-        for (Event event : caseData.getEvents()) {
-            if (event.getValue() != null && event.getValue().getEventType().equals(DWP_RESPOND)) {
+        final List<Event> allCaseEvents = Optional.ofNullable(caseData.getEvents()).orElse(Collections.emptyList());
+        for (Event event : allCaseEvents) {
+            if (event.getValue() != null && DWP_RESPOND.equals(event.getValue().getEventType())) {
                 return Optional.of(event.getValue().getDateTime());
             }
         }
 
-        return Optional.empty();
+        return Optional.ofNullable(caseData.getDwpResponseDate()).map(date -> ZonedDateTime.parse(date + "T00:00:00Z").toInstant().atZone(ZoneId.of(ZONE_ID)));
     }
 
 }

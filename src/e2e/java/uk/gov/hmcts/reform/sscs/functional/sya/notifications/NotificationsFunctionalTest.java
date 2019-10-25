@@ -115,6 +115,9 @@ public class NotificationsFunctionalTest extends AbstractFunctionalTest {
     @Value("${notification.appealLapsed.appointee.smsId}")
     private String appealLapsedAppointeeSmsTemplateId;
 
+    @Value("${notification.appealLapsed.appointee.letterId}")
+    private String appealLapsedAppointeeLetterTemplateId;
+
     @Value("${notification.appealWithdrawn.appointee.emailId}")
     private String appointeeAppealWithdrawnEmailId;
 
@@ -184,6 +187,14 @@ public class NotificationsFunctionalTest extends AbstractFunctionalTest {
     @Test
     public void shouldSendOnlineDwpResponseReceivedNotification() throws NotificationClientException, IOException {
         simulateCcdCallback(DWP_RESPONSE_RECEIVED_NOTIFICATION, "online-" + DWP_RESPONSE_RECEIVED_NOTIFICATION.getId() + "Callback.json");
+        List<Notification> notifications = tryFetchNotificationsForTestCase(onlineResponseReceivedEmailId);
+
+        assertNotificationBodyContains(notifications, onlineResponseReceivedEmailId, caseData.getCaseReference());
+    }
+
+    @Test
+    public void shouldSendOnlineDwpUploadResponseReceivedNotification() throws NotificationClientException, IOException {
+        simulateCcdCallback(DWP_UPLOAD_RESPONSE_NOTIFICATION, "online-" + DWP_UPLOAD_RESPONSE_NOTIFICATION.getId() + "Callback.json");
         List<Notification> notifications = tryFetchNotificationsForTestCase(onlineResponseReceivedEmailId);
 
         assertNotificationBodyContains(notifications, onlineResponseReceivedEmailId, caseData.getCaseReference());
@@ -353,6 +364,20 @@ public class NotificationsFunctionalTest extends AbstractFunctionalTest {
     public void shouldSendAppointeeAppealLapsedNotification() throws NotificationClientException, IOException {
         simulateCcdCallback(APPEAL_LAPSED_NOTIFICATION,
                 "appointee/" + APPEAL_LAPSED_NOTIFICATION.getId() + "Callback.json");
+        List<Notification> notifications = tryFetchNotificationsForTestCase(
+                appealLapsedAppointeeEmailTemplateId,
+                appealLapsedAppointeeSmsTemplateId
+        );
+        Notification emailNotification = notifications.stream().filter(f -> f.getTemplateId().toString().equals(appealLapsedAppointeeEmailTemplateId)).collect(Collectors.toList()).get(0);
+
+        assertTrue(emailNotification.getBody().contains("Dear Appointee User"));
+        assertTrue(emailNotification.getBody().contains("You are receiving this update as the appointee for"));
+    }
+
+    @Test
+    public void shouldSendAppointeeDwpAppealLapsedNotification() throws NotificationClientException, IOException {
+        simulateCcdCallback(APPEAL_LAPSED_NOTIFICATION,
+                "appointee/dwpAppealLapsedCallback.json");
         List<Notification> notifications = tryFetchNotificationsForTestCase(
                 appealLapsedAppointeeEmailTemplateId,
                 appealLapsedAppointeeSmsTemplateId
