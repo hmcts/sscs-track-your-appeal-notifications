@@ -574,56 +574,56 @@ public class NotificationsIt {
                 "paper",
                 Arrays.asList("8ce8d794-75e8-49a0-b4d2-0c6cd2061c11", "e93dd744-84a1-4173-847a-6d023b55637f"),
                 Arrays.asList("d2b4394b-d1c9-4d5c-a44e-b382e41c67e5", "ee58f7d0-8de7-4bee-acd4-252213db6b7b"),
-                Collections.emptyList(),
+                Arrays.asList("85a81e3c-a59f-4ae9-9c99-266dfd5ca95f"),
                 "yes",
                 "yes",
                 "yes",
                 "yes",
                 "2",
                 "2",
-                "0"
+                "2"
             },
             new Object[]{
                 APPEAL_LAPSED_NOTIFICATION,
                 "oral",
                 Arrays.asList("8ce8d794-75e8-49a0-b4d2-0c6cd2061c11", "e93dd744-84a1-4173-847a-6d023b55637f"),
                 Arrays.asList("d2b4394b-d1c9-4d5c-a44e-b382e41c67e5", "ee58f7d0-8de7-4bee-acd4-252213db6b7b"),
-                Collections.emptyList(),
+                Arrays.asList("85a81e3c-a59f-4ae9-9c99-266dfd5ca95f"),
                 "yes",
                 "yes",
                 "yes",
                 "yes",
                 "2",
                 "2",
-                "0"
+                "2"
             },
             new Object[]{
                 APPEAL_LAPSED_NOTIFICATION,
                 "paper",
                 Collections.singletonList("e93dd744-84a1-4173-847a-6d023b55637f"),
                 Arrays.asList("d2b4394b-d1c9-4d5c-a44e-b382e41c67e5", "ee58f7d0-8de7-4bee-acd4-252213db6b7b"),
-                Collections.emptyList(),
+                Arrays.asList("85a81e3c-a59f-4ae9-9c99-266dfd5ca95f"),
                 "no",
                 "yes",
                 "yes",
                 "yes",
                 "1",
                 "2",
-                "0"
+                "1"
             },
             new Object[]{
                 APPEAL_LAPSED_NOTIFICATION,
                 "paper",
                 Collections.emptyList(),
                 Collections.emptyList(),
-                Collections.emptyList(),
+                Arrays.asList("85a81e3c-a59f-4ae9-9c99-266dfd5ca95f"),
                 "no",
                 "no",
                 "no",
                 "no",
                 "0",
                 "0",
-                "0"
+                "1"
             },
             new Object[]{
                 APPEAL_WITHDRAWN_NOTIFICATION,
@@ -1526,56 +1526,56 @@ public class NotificationsIt {
                 "paper",
                 Arrays.asList("8ce8d794-75e8-49a0-b4d2-0c6cd2061c11", "e93dd744-84a1-4173-847a-6d023b55637f"),
                 Arrays.asList("d2b4394b-d1c9-4d5c-a44e-b382e41c67e5", "ee58f7d0-8de7-4bee-acd4-252213db6b7b"),
-                Collections.emptyList(),
+                Arrays.asList("85a81e3c-a59f-4ae9-9c99-266dfd5ca95f"),
                 "yes",
                 "yes",
                 "yes",
                 "yes",
                 "2",
                 "2",
-                "0"
+                "1"
             },
             new Object[]{
                 APPEAL_LAPSED_NOTIFICATION,
                 "oral",
                 Arrays.asList("8ce8d794-75e8-49a0-b4d2-0c6cd2061c11", "e93dd744-84a1-4173-847a-6d023b55637f"),
                 Arrays.asList("d2b4394b-d1c9-4d5c-a44e-b382e41c67e5", "ee58f7d0-8de7-4bee-acd4-252213db6b7b"),
-                Collections.emptyList(),
+                Arrays.asList("85a81e3c-a59f-4ae9-9c99-266dfd5ca95f"),
                 "yes",
                 "yes",
                 "yes",
                 "yes",
                 "2",
                 "2",
-                "0"
+                "1"
             },
             new Object[]{
                 APPEAL_LAPSED_NOTIFICATION,
                 "paper",
                 Collections.singletonList("e93dd744-84a1-4173-847a-6d023b55637f"),
                 Arrays.asList("d2b4394b-d1c9-4d5c-a44e-b382e41c67e5", "ee58f7d0-8de7-4bee-acd4-252213db6b7b"),
-                Collections.emptyList(),
+                Arrays.asList("85a81e3c-a59f-4ae9-9c99-266dfd5ca95f"),
                 "no",
                 "yes",
                 "yes",
                 "yes",
                 "1",
                 "2",
-                "0"
+                "1"
             },
             new Object[]{
                 APPEAL_LAPSED_NOTIFICATION,
                 "paper",
                 Collections.emptyList(),
                 Collections.emptyList(),
-                Collections.emptyList(),
+                Arrays.asList("85a81e3c-a59f-4ae9-9c99-266dfd5ca95f"),
                 "no",
                 "no",
                 "no",
                 "no",
                 "0",
                 "0",
-                "0"
+                "1"
             },
             new Object[]{
                 APPEAL_WITHDRAWN_NOTIFICATION,
@@ -2659,12 +2659,12 @@ public class NotificationsIt {
                 "oral",
                 Collections.singletonList("8ce8d794-75e8-49a0-b4d2-0c6cd2061c11"),
                 Collections.singletonList("d2b4394b-d1c9-4d5c-a44e-b382e41c67e5"),
-                Collections.emptyList(),
+                    Arrays.asList("85a81e3c-a59f-4ae9-9c99-266dfd5ca95f"),
                 "yes",
                 "yes",
                 "1",
                 "1",
-                "0",
+                "1",
                 "Appointee Appointee"
             },
             new Object[]{
@@ -3149,6 +3149,10 @@ public class NotificationsIt {
         verify(notificationClient, atMostOnce()).sendEmail(any(), any(), any(), any());
         verify(notificationClient, atMost(2)).sendSms(any(), any(), any(), any(), any());
         verify(notificationClient, atMostOnce()).sendPrecompiledLetterWithInputStream(any(), any());
+
+        if (notificationEventType.equals(APPEAL_LAPSED_NOTIFICATION.getId())) {
+            verify(notificationClient, atMostOnce()).sendLetter(any(), any(), any());
+        }
         verifyNoMoreInteractions(notificationClient);
     }
 
