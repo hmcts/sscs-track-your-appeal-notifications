@@ -1,10 +1,5 @@
 package uk.gov.hmcts.reform.sscs.callback.handlers;
 
-import static uk.gov.hmcts.reform.sscs.domain.notify.NotificationEventType.DIRECTION_ISSUED;
-import static uk.gov.hmcts.reform.sscs.domain.notify.NotificationEventType.DWP_UPLOAD_RESPONSE_NOTIFICATION;
-
-import com.google.common.collect.ImmutableSet;
-import java.util.Set;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import uk.gov.hmcts.reform.sscs.callback.CallbackHandler;
@@ -19,9 +14,6 @@ public class FilterNotificationsEventsHandler implements CallbackHandler {
 
     private final NotificationService notificationService;
 
-    private static final Set<NotificationEventType> ALLOWED_EVENTS =
-            ImmutableSet.of(DWP_UPLOAD_RESPONSE_NOTIFICATION, DIRECTION_ISSUED);
-
     @Autowired
     public FilterNotificationsEventsHandler(NotificationService notificationService) {
         this.notificationService = notificationService;
@@ -29,7 +21,7 @@ public class FilterNotificationsEventsHandler implements CallbackHandler {
 
     @Override
     public boolean canHandle(SscsCaseDataWrapper callback) {
-        return ALLOWED_EVENTS.contains(callback.getNotificationEventType());
+        return callback.getNotificationEventType() == NotificationEventType.DWP_UPLOAD_RESPONSE_NOTIFICATION;
     }
 
     @Override
