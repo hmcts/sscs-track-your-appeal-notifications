@@ -244,7 +244,8 @@ public class Personalisation<E extends NotificationWrapper> {
 
     private String getAppealReference(SscsCaseData ccdResponse) {
         final String caseReference = ccdResponse.getCaseReference();
-        return StringUtils.isBlank(caseReference) ? ccdResponse.getCcdCaseId() : caseReference;
+        return StringUtils.isBlank(caseReference) || (ccdResponse.getCreatedInGapsFrom() != null && ccdResponse.getCreatedInGapsFrom().equals("readyToList"))
+                ? ccdResponse.getCcdCaseId() : caseReference;
     }
 
     private String getName(SubscriptionType subscriptionType, SscsCaseData ccdResponse, SscsCaseDataWrapper wrapper) {
