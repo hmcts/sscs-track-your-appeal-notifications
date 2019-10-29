@@ -48,7 +48,7 @@ public class SendNotificationService {
     Boolean interlocLettersOn;
 
     @Value("${reminder.dwpResponseLateReminder.delay.seconds}")
-    long delay;
+    private long delay;
 
     private final NotificationSender notificationSender;
     private final EvidenceManagementService evidenceManagementService;
@@ -95,7 +95,7 @@ public class SendNotificationService {
             letterSent = sendLetterNotification(wrapper, subscriptionWithType.getSubscription(), notification, subscriptionWithType, eventType);
         }
 
-        boolean notificationSent = emailSent | smsSent | letterSent;
+        boolean notificationSent = emailSent || smsSent || letterSent;
 
         if (!notificationSent) {
             log.error("Did not send a notification for event {} for case id {}.", eventType.getId(), wrapper.getCaseId());
@@ -160,10 +160,12 @@ public class SendNotificationService {
         Address addressToUse = getAddressToUseForLetter(wrapper, subscriptionWithType.getSubscriptionType());
 
         if (isValidLetterAddress(addressToUse)) {
+            // mandatory letters should always be sent
+            // fallback letters are sent only if there's no email or SMS subscription
             boolean mandatoryLetterSent = sendMandatoryLetterNotification(wrapper, notification, subscriptionWithType.getSubscriptionType(), addressToUse);
             boolean fallbackLetterSent = sendFallbackLetterNotification(wrapper, subscription, notification, subscriptionWithType, eventType, addressToUse);
 
-            return mandatoryLetterSent | fallbackLetterSent;
+            return mandatoryLetterSent || fallbackLetterSent;
         } else {
             log.error("Failed to send letter for event id: {} for case id: {}, no address present", wrapper.getNotificationType().getId(), wrapper.getCaseId());
 

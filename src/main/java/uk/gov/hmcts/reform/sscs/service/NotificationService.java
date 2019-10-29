@@ -4,8 +4,18 @@ import static uk.gov.hmcts.reform.sscs.ccd.domain.Benefit.getBenefitByCode;
 import static uk.gov.hmcts.reform.sscs.ccd.domain.EventType.SUBSCRIPTION_UPDATED;
 import static uk.gov.hmcts.reform.sscs.config.SubscriptionType.APPOINTEE;
 import static uk.gov.hmcts.reform.sscs.config.SubscriptionType.REPRESENTATIVE;
-import static uk.gov.hmcts.reform.sscs.domain.notify.NotificationEventType.*;
-import static uk.gov.hmcts.reform.sscs.service.NotificationUtils.*;
+import static uk.gov.hmcts.reform.sscs.domain.notify.NotificationEventType.ADMIN_APPEAL_WITHDRAWN;
+import static uk.gov.hmcts.reform.sscs.domain.notify.NotificationEventType.APPEAL_WITHDRAWN_NOTIFICATION;
+import static uk.gov.hmcts.reform.sscs.domain.notify.NotificationEventType.CASE_UPDATED;
+import static uk.gov.hmcts.reform.sscs.domain.notify.NotificationEventType.DECISION_ISSUED;
+import static uk.gov.hmcts.reform.sscs.domain.notify.NotificationEventType.DWP_UPLOAD_RESPONSE_NOTIFICATION;
+import static uk.gov.hmcts.reform.sscs.domain.notify.NotificationEventType.REQUEST_INFO_INCOMPLETE;
+import static uk.gov.hmcts.reform.sscs.domain.notify.NotificationEventType.STRUCK_OUT;
+import static uk.gov.hmcts.reform.sscs.domain.notify.NotificationEventType.SUBSCRIPTION_UPDATED_NOTIFICATION;
+import static uk.gov.hmcts.reform.sscs.domain.notify.NotificationEventType.getNotificationByCcdEvent;
+import static uk.gov.hmcts.reform.sscs.service.NotificationUtils.getSubscription;
+import static uk.gov.hmcts.reform.sscs.service.NotificationUtils.isFallbackLetterRequired;
+import static uk.gov.hmcts.reform.sscs.service.NotificationUtils.isOkToSendNotification;
 import static uk.gov.hmcts.reform.sscs.service.NotificationValidService.isMandatoryLetterEventType;
 
 import lombok.extern.slf4j.Slf4j;
@@ -19,7 +29,11 @@ import uk.gov.hmcts.reform.sscs.ccd.domain.State;
 import uk.gov.hmcts.reform.sscs.ccd.domain.Subscription;
 import uk.gov.hmcts.reform.sscs.config.NotificationConfig;
 import uk.gov.hmcts.reform.sscs.domain.SubscriptionWithType;
-import uk.gov.hmcts.reform.sscs.domain.notify.*;
+import uk.gov.hmcts.reform.sscs.domain.notify.Destination;
+import uk.gov.hmcts.reform.sscs.domain.notify.Notification;
+import uk.gov.hmcts.reform.sscs.domain.notify.NotificationEventType;
+import uk.gov.hmcts.reform.sscs.domain.notify.Reference;
+import uk.gov.hmcts.reform.sscs.domain.notify.Template;
 import uk.gov.hmcts.reform.sscs.factory.NotificationFactory;
 import uk.gov.hmcts.reform.sscs.factory.NotificationWrapper;
 import uk.gov.hmcts.reform.sscs.utility.PhoneNumbersUtil;
@@ -38,14 +52,15 @@ public class NotificationService {
 
     @Autowired
     public NotificationService(
-            NotificationFactory notificationFactory,
-            ReminderService reminderService,
-            NotificationValidService notificationValidService,
-            NotificationHandler notificationHandler,
-            OutOfHoursCalculator outOfHoursCalculator,
-            NotificationConfig notificationConfig,
-            SendNotificationService sendNotificationService,
-            @Value("${feature.readyToListRobotics_on}") boolean readyToListFeatureEnabled) {
+        NotificationFactory notificationFactory,
+        ReminderService reminderService,
+        NotificationValidService notificationValidService,
+        NotificationHandler notificationHandler,
+        OutOfHoursCalculator outOfHoursCalculator,
+        NotificationConfig notificationConfig,
+        SendNotificationService sendNotificationService,
+        @Value("${feature.readyToListRobotics_on}") boolean readyToListFeatureEnabled) {
+
         this.notificationFactory = notificationFactory;
         this.reminderService = reminderService;
         this.notificationValidService = notificationValidService;
@@ -90,7 +105,7 @@ public class NotificationService {
                                         NotificationEventType notificationType) {
         if (subscriptionWithType.getSubscription() != null && shouldProcessLastNotification(notificationWrapper, subscriptionWithType)) {
             NotificationEventType lastEvent = getNotificationByCcdEvent(notificationWrapper.getNewSscsCaseData().getEvents().get(0)
-                    .getValue().getEventType());
+                .getValue().getEventType());
             log.info("Resending the last notification for event {} and case id {}.", lastEvent.getId(), notificationWrapper.getCaseId());
             scrubEmailAndSmsIfSubscribedBefore(notificationWrapper, subscriptionWithType);
             notificationWrapper.getSscsCaseDataWrapper().setNotificationEventType(lastEvent);
@@ -109,20 +124,20 @@ public class NotificationService {
 
     private boolean shouldProcessLastNotification(NotificationWrapper notificationWrapper, SubscriptionWithType subscriptionWithType) {
         return SUBSCRIPTION_UPDATED_NOTIFICATION.equals(notificationWrapper.getSscsCaseDataWrapper().getNotificationEventType())
-                && hasCaseJustSubscribed(subscriptionWithType.getSubscription(), getSubscription(notificationWrapper.getOldSscsCaseData(), subscriptionWithType.getSubscriptionType()))
-                && thereIsALastEventThatIsNotSubscriptionUpdated(notificationWrapper.getNewSscsCaseData());
+            && hasCaseJustSubscribed(subscriptionWithType.getSubscription(), getSubscription(notificationWrapper.getOldSscsCaseData(), subscriptionWithType.getSubscriptionType()))
+            && thereIsALastEventThatIsNotSubscriptionUpdated(notificationWrapper.getNewSscsCaseData());
     }
 
     static Boolean hasCaseJustSubscribed(Subscription newSubscription, Subscription oldSubscription) {
         return ((oldSubscription == null || !oldSubscription.isEmailSubscribed()) && newSubscription.isEmailSubscribed()
-                || ((oldSubscription == null || !oldSubscription.isSmsSubscribed()) && newSubscription.isSmsSubscribed()));
+            || ((oldSubscription == null || !oldSubscription.isSmsSubscribed()) && newSubscription.isSmsSubscribed()));
     }
 
     private static boolean thereIsALastEventThatIsNotSubscriptionUpdated(final SscsCaseData newSscsCaseData) {
         boolean thereIsALastEventThatIsNotSubscriptionUpdated = newSscsCaseData.getEvents() != null
-                && !newSscsCaseData.getEvents().isEmpty()
-                && newSscsCaseData.getEvents().get(0).getValue().getEventType() != null
-                && !SUBSCRIPTION_UPDATED.equals(newSscsCaseData.getEvents().get(0).getValue().getEventType());
+            && !newSscsCaseData.getEvents().isEmpty()
+            && newSscsCaseData.getEvents().get(0).getValue().getEventType() != null
+            && !SUBSCRIPTION_UPDATED.equals(newSscsCaseData.getEvents().get(0).getValue().getEventType());
         if (!thereIsALastEventThatIsNotSubscriptionUpdated) {
             log.info("Not re-sending the last subscription as there is no last event for ccdCaseId {}.", newSscsCaseData.getCcdCaseId());
         }
@@ -136,8 +151,8 @@ public class NotificationService {
         processOldSubscriptionNotifications(notificationWrapper, notification, subscriptionWithType, notificationType);
     }
 
-    private boolean isValidNotification(NotificationWrapper wrapper, SubscriptionWithType
-            subscriptionWithType, NotificationEventType notificationType) {
+    private boolean isValidNotification(NotificationWrapper wrapper, SubscriptionWithType subscriptionWithType,
+                                        NotificationEventType notificationType) {
         Subscription subscription = subscriptionWithType.getSubscription();
 
         return (isMandatoryLetterEventType(notificationType)
@@ -164,25 +179,25 @@ public class NotificationService {
             String smsNumber = getSubscriptionDetails(newSubscription.getMobile(), oldSubscription.getMobile());
 
             Destination destination = Destination.builder().email(emailAddress)
-                    .sms(PhoneNumbersUtil.cleanPhoneNumber(smsNumber).orElse(smsNumber)).build();
+                .sms(PhoneNumbersUtil.cleanPhoneNumber(smsNumber).orElse(smsNumber)).build();
 
             Benefit benefit = getBenefitByCode(wrapper.getSscsCaseDataWrapper()
-                    .getNewSscsCaseData().getAppeal().getBenefitType().getCode());
+                .getNewSscsCaseData().getAppeal().getBenefitType().getCode());
 
             Template template = notificationConfig.getTemplate(
-                    NotificationEventType.SUBSCRIPTION_OLD_NOTIFICATION.getId(),
-                    NotificationEventType.SUBSCRIPTION_OLD_NOTIFICATION.getId(),
-                    NotificationEventType.SUBSCRIPTION_OLD_NOTIFICATION.getId(),
-                    NotificationEventType.SUBSCRIPTION_OLD_NOTIFICATION.getId(),
-                    benefit,
-                    wrapper.getHearingType()
+                NotificationEventType.SUBSCRIPTION_OLD_NOTIFICATION.getId(),
+                NotificationEventType.SUBSCRIPTION_OLD_NOTIFICATION.getId(),
+                NotificationEventType.SUBSCRIPTION_OLD_NOTIFICATION.getId(),
+                NotificationEventType.SUBSCRIPTION_OLD_NOTIFICATION.getId(),
+                benefit,
+                wrapper.getHearingType()
             );
 
             Notification oldNotification = Notification.builder().template(template).appealNumber(notification.getAppealNumber())
-                    .destination(destination)
-                    .reference(new Reference(wrapper.getOldSscsCaseData().getCaseReference()))
-                    .appealNumber(notification.getAppealNumber())
-                    .placeholders(notification.getPlaceholders()).build();
+                .destination(destination)
+                .reference(new Reference(wrapper.getOldSscsCaseData().getCaseReference()))
+                .appealNumber(notification.getAppealNumber())
+                .placeholders(notification.getPlaceholders()).build();
 
             SubscriptionWithType updatedSubscriptionWithType = new SubscriptionWithType(oldSubscription, subscriptionWithType.getSubscriptionType());
             sendNotificationService.sendEmailSmsLetterNotification(wrapper, oldNotification, updatedSubscriptionWithType, eventType);
@@ -204,7 +219,7 @@ public class NotificationService {
         boolean isAllowed = true;
         if (REQUEST_INFO_INCOMPLETE.equals(notificationType)) {
             if (StringUtils.isEmpty(notificationWrapper.getNewSscsCaseData().getInformationFromAppellant())
-                    || "No".equalsIgnoreCase(notificationWrapper.getNewSscsCaseData().getInformationFromAppellant())) {
+                || "No".equalsIgnoreCase(notificationWrapper.getNewSscsCaseData().getInformationFromAppellant())) {
                 isAllowed = false;
 
                 log.error("Request Incomplete Information with empty or no Information From Appellant for ccdCaseId {}.", notificationWrapper.getNewSscsCaseData().getCcdCaseId());
@@ -213,17 +228,19 @@ public class NotificationService {
             isAllowed = false;
         }
 
-        if (notificationWrapper.getSscsCaseDataWrapper().getState() != null && notificationWrapper.getSscsCaseDataWrapper().getState().equals(State.DORMANT_APPEAL_STATE)) {
+        if (notificationWrapper.getSscsCaseDataWrapper().getState() != null
+            && notificationWrapper.getSscsCaseDataWrapper().getState().equals(State.DORMANT_APPEAL_STATE)) {
             if (!(NotificationEventType.APPEAL_DORMANT_NOTIFICATION.equals(notificationType)
                     || NotificationEventType.APPEAL_LAPSED_NOTIFICATION.equals(notificationType)
                     || NotificationEventType.HMCTS_APPEAL_LAPSED_NOTIFICATION.equals(notificationType)
                     || NotificationEventType.DWP_APPEAL_LAPSED_NOTIFICATION.equals(notificationType)
+                    || ADMIN_APPEAL_WITHDRAWN.equals(notificationType)
                     || APPEAL_WITHDRAWN_NOTIFICATION.equals(notificationType)
                     || STRUCK_OUT.equals(notificationType)
                     || DECISION_ISSUED.equals(notificationType)
                     || NotificationEventType.DECISION_ISSUED_2.equals(notificationType))) {
                 log.debug(String.format("Cannot complete notification %s as the appeal was dormant caseId %s.",
-                        notificationType.getId(), notificationWrapper.getCaseId()));
+                    notificationType.getId(), notificationWrapper.getCaseId()));
                 isAllowed = false;
             }
         }

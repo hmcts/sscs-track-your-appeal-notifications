@@ -38,6 +38,7 @@ public enum NotificationEventType {
     JUDGE_DECISION_APPEAL_TO_PROCEED("judgeDecisionAppealToProceed", true, true, true, false, false),
     TCW_DECISION_APPEAL_TO_PROCEED("tcwDecisionAppealToProceed", true, true, true, false, false),
     NON_COMPLIANT_NOTIFICATION("nonCompliant", true, true, true, false, false),
+    ADMIN_APPEAL_WITHDRAWN("adminAppealWithdrawn", true, true, true, false, false),
     DO_NOT_SEND("");
 
     private String id;
