@@ -1,9 +1,7 @@
 package uk.gov.hmcts.reform.sscs.service;
 
-import static org.slf4j.LoggerFactory.getLogger;
-
 import java.net.UnknownHostException;
-import org.slf4j.Logger;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import uk.gov.hmcts.reform.sscs.exception.NotificationClientRuntimeException;
@@ -15,8 +13,8 @@ import uk.gov.hmcts.reform.sscs.service.reminder.JobGroupGenerator;
 import uk.gov.service.notify.NotificationClientException;
 
 @Service
+@Slf4j
 public class NotificationHandler {
-    private static final Logger LOG = getLogger(NotificationHandler.class);
 
     private final OutOfHoursCalculator outOfHoursCalculator;
     private final JobScheduler jobScheduler;
@@ -32,13 +30,13 @@ public class NotificationHandler {
     public boolean sendNotification(NotificationWrapper wrapper, String notificationTemplate, final String notificationType, SendNotification sendNotification) {
         final String caseId = wrapper.getCaseId();
         try {
-            LOG.info("Sending {} template {} for case id: {}", notificationType, notificationTemplate, caseId);
+            log.info("Sending {} template {} for case id: {}", notificationType, notificationTemplate, caseId);
             sendNotification.send();
-            LOG.info("{} template {} sent for case id: {}", notificationType, notificationTemplate, caseId);
+            log.info("{} template {} sent for case id: {}", notificationType, notificationTemplate, caseId);
 
             return true;
         } catch (Exception ex) {
-            LOG.error("Could not send notification for case id: ", wrapper.getCaseId());
+            log.error("Could not send notification for case id: ", wrapper.getCaseId());
             wrapAndThrowNotificationExceptionIfRequired(caseId, notificationTemplate, ex);
         }
 
@@ -49,7 +47,7 @@ public class NotificationHandler {
         final String caseId = wrapper.getCaseId();
         String eventId = wrapper.getNotificationType().getId();
         String jobGroup = jobGroupGenerator.generate(caseId, eventId);
-        LOG.info("Scheduled {} for case id: {} @ {}", eventId, caseId, outOfHoursCalculator.getStartOfNextInHoursPeriod());
+        log.info("Scheduled {} for case id: {} @ {}", eventId, caseId, outOfHoursCalculator.getStartOfNextInHoursPeriod());
 
         jobScheduler.schedule(new Job<>(
                 jobGroup,
@@ -62,11 +60,11 @@ public class NotificationHandler {
     private void wrapAndThrowNotificationExceptionIfRequired(String caseId, String templateId, Exception ex) {
         if (ex.getCause() instanceof UnknownHostException) {
             NotificationClientRuntimeException exception = new NotificationClientRuntimeException(caseId, ex);
-            LOG.error("Runtime error on GovUKNotify for case id: {}, template: {}", caseId, templateId, exception);
+            log.error("Runtime error on GovUKNotify for case id: {}, template: {}", caseId, templateId, exception);
             throw exception;
         } else {
             NotificationServiceException exception = new NotificationServiceException(caseId, ex);
-            LOG.error("Error on GovUKNotify for case id: {}, template: {}", caseId, templateId, exception);
+            log.error("Error on GovUKNotify for case id: {}, template: {}", caseId, templateId, exception);
         }
     }
 
