@@ -212,4 +212,11 @@
         <cve>CVE-2019-16943</cve>
         <cve>CVE-2019-17531</cve>
     </suppress>
+    <suppress until="2019-11-28">
+        <notes><![CDATA[
+   file name: quartz-2.3.1.jar
+   No fix available
+   ]]></notes>
+        <cve>CVE-2019-13990</cve>
+    </suppress>
 </suppressions>
