@@ -127,6 +127,14 @@ dependencyManagement {
         }
 
         dependency group: 'commons-beanutils', name: 'commons-beanutils', version: '1.9.4'
+
+        // solves CVE-2019-13990
+        dependencySet(
+                group: 'org.quartz-scheduler',
+                version: '2.3.2'
+        ) {
+            entry 'quartz'
+        }
     }
 }
 
