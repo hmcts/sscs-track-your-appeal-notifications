@@ -15,7 +15,7 @@ import uk.gov.hmcts.reform.sscs.service.coh.QuestionService;
 @Component
 public class CohPersonalisation extends Personalisation<CohNotificationWrapper> {
 
-    public static final String FOLLOW_UP_QUESTION_ROUND_ISSUED = "follow_up_question_round_issued";
+    private static final String FOLLOW_UP_QUESTION_ROUND_ISSUED = "follow_up_question_round_issued";
     @Autowired
     private QuestionService questionService;
 

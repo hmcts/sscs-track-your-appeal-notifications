@@ -67,7 +67,7 @@ public class NotificationConfig {
 
         String docmosisTemplateId = getTemplate(appealHearingType, docmosisTemplateName, "docmosisId");
         if (StringUtils.isNotBlank(docmosisTemplateId)) {
-            if (!Boolean.valueOf(env.getProperty("feature.docmosis_leters." + docmosisTemplateName.split("\\.")[0] + "_on"))) {
+            if (!Boolean.parseBoolean(env.getProperty("feature.docmosis_leters." + docmosisTemplateName.split("\\.")[0] + "_on"))) {
                 docmosisTemplateId = null;
             }
         }
