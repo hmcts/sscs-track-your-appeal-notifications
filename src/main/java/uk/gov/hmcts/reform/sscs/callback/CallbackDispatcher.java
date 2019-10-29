@@ -22,8 +22,6 @@ public class CallbackDispatcher {
     }
 
     public void handle(SscsCaseDataWrapper sscsCaseDataWrapper) {
-
-
         Stream.of(DispatchPriority.values())
             .forEach(dispatchPriority ->
                 dispatchToHandlers(sscsCaseDataWrapper, getCallbackHandlersByPriority(dispatchPriority)));

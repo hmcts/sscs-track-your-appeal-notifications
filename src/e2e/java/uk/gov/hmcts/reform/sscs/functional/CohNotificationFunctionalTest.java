@@ -2,7 +2,9 @@ package uk.gov.hmcts.reform.sscs.functional;
 
 import static uk.gov.hmcts.reform.sscs.SscsCaseDataUtils.builderSscsCaseData;
 import static uk.gov.hmcts.reform.sscs.ccd.domain.EventType.SYA_APPEAL_CREATED;
-import static uk.gov.hmcts.reform.sscs.domain.notify.NotificationEventType.*;
+import static uk.gov.hmcts.reform.sscs.domain.notify.NotificationEventType.QUESTION_DEADLINE_ELAPSED_NOTIFICATION;
+import static uk.gov.hmcts.reform.sscs.domain.notify.NotificationEventType.QUESTION_ROUND_ISSUED_NOTIFICATION;
+import static uk.gov.hmcts.reform.sscs.domain.notify.NotificationEventType.VIEW_ISSUED;
 
 import io.restassured.RestAssured;
 import io.restassured.http.ContentType;
@@ -44,17 +46,18 @@ public class CohNotificationFunctionalTest extends AbstractFunctionalTest {
 
     @Override
     protected SscsCaseData createCaseData() {
-        SscsCaseData.SscsCaseDataBuilder sscsCaseDataBuilder = builderSscsCaseData(caseReference, "Yes", "Yes", SYA_APPEAL_CREATED, "cor");
+        SscsCaseData.SscsCaseDataBuilder sscsCaseDataBuilder = builderSscsCaseData(getCaseReference(),
+            "Yes", "Yes", SYA_APPEAL_CREATED, "cor");
         return sscsCaseDataBuilder
-                .assignedToJudge("Judge")
-                .assignedToMedicalMember("medic")
-                .assignedToDisabilityMember("disQualMember")
-                .build();
+            .assignedToJudge("Judge")
+            .assignedToMedicalMember("medic")
+            .assignedToDisabilityMember("disQualMember")
+            .build();
     }
 
     @Test
     public void shouldSendQuestionsReadyNotifications() throws IOException, InterruptedException, NotificationClientException {
-        String hearingId = createHearingWithQuestions(caseId);
+        String hearingId = createHearingWithQuestions(getCaseId());
         // Issuing the question round will cause these notifications to be fired from AAT
         tryFetchNotificationsForTestCase(questionRoundIssuedEmailTemplateId);
 
@@ -63,12 +66,12 @@ public class CohNotificationFunctionalTest extends AbstractFunctionalTest {
         // Need to check for two sets of notifications one from AAT and from the test being run.
         List<Notification> notifications = tryFetchNotificationsForTestCase(questionRoundIssuedEmailTemplateId, questionRoundIssuedEmailTemplateId);
 
-        assertNotificationBodyContains(notifications, questionRoundIssuedEmailTemplateId, caseData.getCaseReference());
+        assertNotificationBodyContains(notifications, questionRoundIssuedEmailTemplateId, getCaseData().getCaseReference());
     }
 
     @Test
     public void shouldSendFollowUpQuestionsReadyNotifications() throws IOException, InterruptedException, NotificationClientException {
-        String hearingId = createHearingWithQuestions(caseId);
+        String hearingId = createHearingWithQuestions(getCaseId());
         createQuestion(hearingId, 2);
         issueQuestions(hearingId, 2);
         // Issuing the question round will cause these notifications to be fired from AAT todo put in once this is deployed to AAT
@@ -78,34 +81,34 @@ public class CohNotificationFunctionalTest extends AbstractFunctionalTest {
 
         // Need to check for two sets of notifications one from AAT and from the test being run.
         List<Notification> notifications = tryFetchNotificationsForTestCase(
-                followupQuestionRoundIssuedEmailTemplateId
+            followupQuestionRoundIssuedEmailTemplateId
         );
 
-        assertNotificationBodyContains(notifications, followupQuestionRoundIssuedEmailTemplateId, caseData.getCaseReference());
+        assertNotificationBodyContains(notifications, followupQuestionRoundIssuedEmailTemplateId, getCaseData().getCaseReference());
     }
 
     @Test
     public void shouldSendQuestionDeadlineElapsedNotifications() throws IOException, InterruptedException, NotificationClientException {
-        String hearingId = createHearingWithQuestions(caseId);
+        String hearingId = createHearingWithQuestions(getCaseId());
 
         simulateCohCallback(QUESTION_DEADLINE_ELAPSED_NOTIFICATION, hearingId);
 
         List<Notification> notifications = tryFetchNotificationsForTestCase(
-                questionDeadlineElapsedEmailTemplateId);
+            questionDeadlineElapsedEmailTemplateId);
 
-        assertNotificationBodyContains(notifications, questionDeadlineElapsedEmailTemplateId, caseData.getCaseReference());
+        assertNotificationBodyContains(notifications, questionDeadlineElapsedEmailTemplateId, getCaseData().getCaseReference());
     }
 
     @Test
     public void shouldSendViewIssuedNotifications() throws IOException, InterruptedException, NotificationClientException {
-        String hearingId = createHearingWithQuestions(caseId);
+        String hearingId = createHearingWithQuestions(getCaseId());
 
         simulateCohCallback(VIEW_ISSUED, hearingId);
 
         List<Notification> notifications = tryFetchNotificationsForTestCase(
-                viewIssuedEmailTemplateId);
+            viewIssuedEmailTemplateId);
 
-        assertNotificationBodyContains(notifications, viewIssuedEmailTemplateId, caseData.getCaseReference());
+        assertNotificationBodyContains(notifications, viewIssuedEmailTemplateId, getCaseData().getCaseReference());
     }
 
     private String createHearingWithQuestions(Long caseId) throws InterruptedException {
@@ -119,73 +122,73 @@ public class CohNotificationFunctionalTest extends AbstractFunctionalTest {
 
     private String createHearing(Long caseId) {
         String createHearingJson = "{\n"
-                + "  \"case_id\": \"" + caseId + "\",\n"
-                + "  \"jurisdiction\": \"SSCS\",\n"
-                + "  \"start_date\": \"2018-08-17T15:20:37.746Z\",\n"
-                + "  \"state\": \"string\"\n"
-                + "}";
+            + "  \"case_id\": \"" + caseId + "\",\n"
+            + "  \"jurisdiction\": \"SSCS\",\n"
+            + "  \"start_date\": \"2018-08-17T15:20:37.746Z\",\n"
+            + "  \"state\": \"string\"\n"
+            + "}";
 
         RestAssured.useRelaxedHTTPSValidation();
         Response createHearingResponse = makeRequest(createHearingJson)
-                .post(COH_URL + "/continuous-online-hearings");
+            .post(COH_URL + "/continuous-online-hearings");
         return checkResponseCreated(createHearingResponse)
-                .contentType(ContentType.JSON)
-                .extract().response()
-                .jsonPath().getString("online_hearing_id");
+            .contentType(ContentType.JSON)
+            .extract().response()
+            .jsonPath().getString("online_hearing_id");
     }
 
     private void createQuestion(String hearingId, int round) {
         String createQuestionJson = "{\n"
-                + "  \"owner_reference\": \"string\",\n"
-                + "  \"question_body_text\": \"string\",\n"
-                + "  \"question_header_text\": \"string\",\n"
-                + "  \"question_ordinal\": \"1\",\n"
-                + "  \"question_round\": \"" + round + "\"\n"
-                + "}";
+            + "  \"owner_reference\": \"string\",\n"
+            + "  \"question_body_text\": \"string\",\n"
+            + "  \"question_header_text\": \"string\",\n"
+            + "  \"question_ordinal\": \"1\",\n"
+            + "  \"question_round\": \"" + round + "\"\n"
+            + "}";
         Response createQuestionResponse = makeRequest(createQuestionJson)
-                .post(COH_URL + "/continuous-online-hearings/" + hearingId + "/questions");
+            .post(COH_URL + "/continuous-online-hearings/" + hearingId + "/questions");
         checkResponseCreated(createQuestionResponse);
     }
 
     private void issueQuestions(String hearingId, int round) throws InterruptedException {
         makeRequest("{\"state_name\": \"question_issue_pending\"}")
-                .put(COH_URL + "/continuous-online-hearings/" + hearingId + "/questionrounds/" + round)
-                .then()
-                .statusCode(HttpStatus.OK.value());
+            .put(COH_URL + "/continuous-online-hearings/" + hearingId + "/questionrounds/" + round)
+            .then()
+            .statusCode(HttpStatus.OK.value());
 
         waitUntil(roundIssued(hearingId, round), 20L);
     }
 
     private ValidatableResponse checkResponseCreated(Response request) {
         return request
-                .then()
-                .statusCode(HttpStatus.CREATED.value());
+            .then()
+            .statusCode(HttpStatus.CREATED.value());
     }
 
     private RequestSpecification makeRequest(String createQuestionJson) {
         return RestAssured
-                .given()
-                .header(HttpHeaders.AUTHORIZATION, "someValue")
-                .header("ServiceAuthorization", "someValue")
-                .contentType("application/json")
-                .body(createQuestionJson)
-                .when();
+            .given()
+            .header(HttpHeaders.AUTHORIZATION, "someValue")
+            .header("ServiceAuthorization", "someValue")
+            .contentType("application/json")
+            .body(createQuestionJson)
+            .when();
     }
 
     private Supplier<Boolean> roundIssued(String hearingId, int round) {
         return () -> {
             Response response = RestAssured
-                    .given()
-                    .header(HttpHeaders.AUTHORIZATION, "someValue")
-                    .header("ServiceAuthorization", "someValue")
-                    .when()
-                    .get(COH_URL + "/continuous-online-hearings/" + hearingId + "/questionrounds/" + round);
+                .given()
+                .header(HttpHeaders.AUTHORIZATION, "someValue")
+                .header("ServiceAuthorization", "someValue")
+                .when()
+                .get(COH_URL + "/continuous-online-hearings/" + hearingId + "/questionrounds/" + round);
             String roundState = response.then()
-                    .statusCode(HttpStatus.OK.value())
-                    .contentType(ContentType.JSON)
-                    .extract()
-                    .response()
-                    .jsonPath().getString("question_round_state.state_name");
+                .statusCode(HttpStatus.OK.value())
+                .contentType(ContentType.JSON)
+                .extract()
+                .response()
+                .jsonPath().getString("question_round_state.state_name");
             return "question_issued".equals(roundState);
         };
     }
