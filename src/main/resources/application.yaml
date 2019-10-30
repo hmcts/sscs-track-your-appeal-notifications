@@ -66,15 +66,15 @@ management:
 gov.uk.notification.api.key: ${NOTIFICATION_API_KEY:emailnotificationkey}
 gov.uk.notification.api.testKey: ${NOTIFICATION_API_TEST_KEY:emailnotificationtestkey}
 gov.uk.notification.api.testRecipients:
-- "sscstest+notify@greencroftconsulting.com"
-- "sscstest+notify2@greencroftconsulting.com"
-- "07398785050"
-- "07398785051"
-- "+447398785050"
-- "+447398785051"
-- "TS1 1ST"
-- "TS2 2ST"
-- "TS3 3ST"
+  - "sscstest+notify@greencroftconsulting.com"
+  - "sscstest+notify2@greencroftconsulting.com"
+  - "07398785050"
+  - "07398785051"
+  - "+447398785050"
+  - "+447398785051"
+  - "TS1 1ST"
+  - "TS2 2ST"
+  - "TS3 3ST"
 
 subscription.hmac.secret.text: ${EMAIL_MAC_SECRET_TEXT:our-big-secret}
 
@@ -140,12 +140,38 @@ notification:
     appellant:
       emailId: 8ce8d794-75e8-49a0-b4d2-0c6cd2061c11
       smsId: d2b4394b-d1c9-4d5c-a44e-b382e41c67e5
+      letterId: 85a81e3c-a59f-4ae9-9c99-266dfd5ca95f
     representative:
       emailId: e93dd744-84a1-4173-847a-6d023b55637f
       smsId: ee58f7d0-8de7-4bee-acd4-252213db6b7b
     appointee:
       emailId: 8ce8d794-75e8-49a0-b4d2-0c6cd2061c11
       smsId: d2b4394b-d1c9-4d5c-a44e-b382e41c67e5
+      letterId: 85a81e3c-a59f-4ae9-9c99-266dfd5ca95f
+  dwpLapseCase:
+    appellant:
+      emailId: 8ce8d794-75e8-49a0-b4d2-0c6cd2061c11
+      smsId: d2b4394b-d1c9-4d5c-a44e-b382e41c67e5
+      letterId: 85a81e3c-a59f-4ae9-9c99-266dfd5ca95f
+    representative:
+      emailId: e93dd744-84a1-4173-847a-6d023b55637f
+      smsId: ee58f7d0-8de7-4bee-acd4-252213db6b7b
+    appointee:
+      emailId: 8ce8d794-75e8-49a0-b4d2-0c6cd2061c11
+      smsId: d2b4394b-d1c9-4d5c-a44e-b382e41c67e5
+      letterId: 85a81e3c-a59f-4ae9-9c99-266dfd5ca95f
+  hmctsLapseCase:
+    appellant:
+      emailId: 8ce8d794-75e8-49a0-b4d2-0c6cd2061c11
+      smsId: d2b4394b-d1c9-4d5c-a44e-b382e41c67e5
+      letterId: 85a81e3c-a59f-4ae9-9c99-266dfd5ca95f
+    representative:
+      emailId: e93dd744-84a1-4173-847a-6d023b55637f
+      smsId: ee58f7d0-8de7-4bee-acd4-252213db6b7b
+    appointee:
+      emailId: 8ce8d794-75e8-49a0-b4d2-0c6cd2061c11
+      smsId: d2b4394b-d1c9-4d5c-a44e-b382e41c67e5
+      letterId: 85a81e3c-a59f-4ae9-9c99-266dfd5ca95f
   appealWithdrawn:
     appellant:
       emailId: 8620e023-f663-477e-a771-9cfad50ee30f
@@ -158,6 +184,19 @@ notification:
     appointee:
       emailId: 8620e023-f663-477e-a771-9cfad50ee30f
       smsId: 446c7b23-7342-42e1-adff-b4c367e951cb
+      letterId: d4ca58d1-8b48-44eb-9af9-0bfc14a0d72d
+  adminAppealWithdrawn:
+    appellant:
+      emailId: 8620e023-f663-477e-a771-9cfad50ee30f
+      smsId: 446c7b23-7342-42e1-adff-b4c367e951cb
+      letterId: d4ca58d1-8b48-44eb-9af9-0bfc14a0d72d
+    appointee:
+      emailId: 8620e023-f663-477e-a771-9cfad50ee30f
+      smsId: 446c7b23-7342-42e1-adff-b4c367e951cb
+      letterId: d4ca58d1-8b48-44eb-9af9-0bfc14a0d72d
+    representative:
+      emailId: e29a2275-553f-4e70-97f4-2994c095f281
+      smsId: f59440ee-19ca-4d47-a702-13e9cecaccbd
       letterId: d4ca58d1-8b48-44eb-9af9-0bfc14a0d72d
   subscriptionCreated:
     appellant.smsId: 7397a76f-14cb-468c-b1a7-0570940ead91
@@ -488,7 +527,7 @@ job.scheduler:
 spring:
   profiles: integration, functional
   autoconfigure.exclude:
-  - org.springframework.boot.autoconfigure.jdbc.DataSourceAutoConfiguration
+    - org.springframework.boot.autoconfigure.jdbc.DataSourceAutoConfiguration
   flyway.enabled: false
 job.scheduler:
   autoStart: false

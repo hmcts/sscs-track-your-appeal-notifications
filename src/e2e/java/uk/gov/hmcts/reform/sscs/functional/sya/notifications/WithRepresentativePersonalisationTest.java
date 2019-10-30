@@ -99,8 +99,7 @@ public class WithRepresentativePersonalisationTest extends AbstractFunctionalTes
         simulateCcdCallback(notificationEventType,
             "representative/" + notificationEventType.getId() + "Callback.json");
 
-        List<Notification> notifications = tryFetchNotificationsForTestCase(
-                repsEmailId, repsSmsId);
+        List<Notification> notifications = tryFetchNotificationsForTestCase(repsEmailId, repsSmsId);
 
         String representativeName = "Harry Potter";
         assertNotificationBodyContains(notifications, repsEmailId, representativeName);

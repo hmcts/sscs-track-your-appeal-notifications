@@ -152,6 +152,42 @@ public class NotificationFactoryTest {
     }
 
     @Test
+    @Parameters({"APPELLANT, appellantEmail", "REPRESENTATIVE, repsEmail"})
+    public void givenAppealDwpLapsedEventAndSubscriptionType_shouldInferRightSubscriptionToCreateNotification(
+            SubscriptionType subscriptionType, String expectedEmail) {
+        factory = new NotificationFactory(personalisationFactory);
+        SscsCaseDataWrapper sscsCaseDataWrapper = SscsCaseDataWrapper.builder()
+                .newSscsCaseData(SscsCaseData.builder()
+                        .appeal(Appeal.builder()
+                                .benefitType(BenefitType.builder()
+                                        .code("PIP")
+                                        .build())
+                                .build())
+                        .subscriptions(Subscriptions.builder()
+                                .appellantSubscription(Subscription.builder()
+                                        .email("appellantEmail")
+                                        .build())
+                                .representativeSubscription(Subscription.builder()
+                                        .email("repsEmail")
+                                        .build())
+                                .build())
+                        .build())
+                .notificationEventType(DWP_APPEAL_LAPSED_NOTIFICATION)
+                .build();
+        CcdNotificationWrapper notificationWrapper = new CcdNotificationWrapper(sscsCaseDataWrapper);
+
+        given(personalisationFactory.apply(any(NotificationEventType.class)))
+                .willReturn(withRepresentativePersonalisation);
+
+        Notification notification = factory.create(notificationWrapper, getSubscriptionWithType(sscsCaseDataWrapper, subscriptionType));
+        assertEquals(expectedEmail, notification.getEmail());
+
+        then(withRepresentativePersonalisation).should()
+                .getTemplate(eq(notificationWrapper), eq(PIP), eq(subscriptionType));
+
+    }
+
+    @Test
     @Parameters({"APPOINTEE, appointeeEmail", "REPRESENTATIVE, repsEmail"})
     public void givenAppealCreatedEventAndSubscriptionType_shouldInferRightSubscriptionToCreateNotification(
         SubscriptionType subscriptionType, String expectedEmail) {

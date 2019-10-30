@@ -152,12 +152,12 @@ public class PersonalisationTest {
                 new Object[]{APPEAL_RECEIVED_NOTIFICATION, APPOINTEE, PAPER, true, true, true, true},
                 new Object[]{APPEAL_RECEIVED_NOTIFICATION, APPOINTEE, REGULAR, true, true, true, true},
                 new Object[]{APPEAL_RECEIVED_NOTIFICATION, APPOINTEE, ONLINE, true, true, true, true},
-                new Object[]{APPEAL_LAPSED_NOTIFICATION, APPELLANT, PAPER, true, true, false, false},
-                new Object[]{APPEAL_LAPSED_NOTIFICATION, APPELLANT, REGULAR, true, true, false, false},
-                new Object[]{APPEAL_LAPSED_NOTIFICATION, APPELLANT, ONLINE, true, true, false, false},
-                new Object[]{APPEAL_LAPSED_NOTIFICATION, REPRESENTATIVE, PAPER, true, true, false, false},
-                new Object[]{APPEAL_LAPSED_NOTIFICATION, REPRESENTATIVE, REGULAR, true, true, false, false},
-                new Object[]{APPEAL_LAPSED_NOTIFICATION, REPRESENTATIVE, ONLINE, true, true, false, false},
+                new Object[]{APPEAL_LAPSED_NOTIFICATION, APPELLANT, PAPER, true, true, true, false},
+                new Object[]{APPEAL_LAPSED_NOTIFICATION, APPELLANT, REGULAR, true, true, true, false},
+                new Object[]{APPEAL_LAPSED_NOTIFICATION, APPELLANT, ONLINE, true, true, true, false},
+                new Object[]{APPEAL_LAPSED_NOTIFICATION, APPOINTEE, PAPER, true, true, true, false},
+                new Object[]{APPEAL_LAPSED_NOTIFICATION, APPOINTEE, REGULAR, true, true, true, false},
+                new Object[]{APPEAL_LAPSED_NOTIFICATION, APPOINTEE, ONLINE, true, true, true, false},
                 new Object[]{APPEAL_WITHDRAWN_NOTIFICATION, APPELLANT, PAPER, true, true, true, false},
                 new Object[]{APPEAL_WITHDRAWN_NOTIFICATION, APPELLANT, REGULAR, true, true, true, false},
                 new Object[]{APPEAL_WITHDRAWN_NOTIFICATION, APPELLANT, ONLINE, true, true, true, false},
@@ -397,6 +397,46 @@ public class PersonalisationTest {
     }
 
     @Test
+    public void appealRefWillReturnCcdCaseIdWhenCreatedInGapsFromReadyToList() {
+        RegionalProcessingCenter rpc = regionalProcessingCenterService.getByScReferenceCode("SC/1234/5");
+        SscsCaseData response = SscsCaseData.builder()
+                .ccdCaseId(CASE_ID).caseReference("SC/1234/5")
+                .regionalProcessingCenter(rpc)
+                .appeal(Appeal.builder().benefitType(BenefitType.builder().code("PIP").build())
+                        .appellant(Appellant.builder().name(name).build())
+                        .build())
+                .subscriptions(subscriptions)
+                .createdInGapsFrom("readyToList")
+                .build();
+
+        Map result = personalisation.create(SscsCaseDataWrapper.builder().newSscsCaseData(response)
+                .notificationEventType(APPEAL_RECEIVED_NOTIFICATION).build(), new SubscriptionWithType(subscriptions.getAppellantSubscription(), APPELLANT));
+
+        assertEquals(CASE_ID, result.get(APPEAL_REF));
+        assertEquals(CASE_ID, result.get(CASE_REFERENCE_ID));
+    }
+
+    @Test
+    public void appealRefWillReturnCaseReferenceWhenCreatedInGapsFromValidAppeal() {
+        RegionalProcessingCenter rpc = regionalProcessingCenterService.getByScReferenceCode("SC/1234/5");
+        SscsCaseData response = SscsCaseData.builder()
+                .ccdCaseId(CASE_ID).caseReference("SC/1234/5")
+                .regionalProcessingCenter(rpc)
+                .appeal(Appeal.builder().benefitType(BenefitType.builder().code("PIP").build())
+                        .appellant(Appellant.builder().name(name).build())
+                        .build())
+                .subscriptions(subscriptions)
+                .createdInGapsFrom("validAppeal")
+                .build();
+
+        Map result = personalisation.create(SscsCaseDataWrapper.builder().newSscsCaseData(response)
+                .notificationEventType(APPEAL_RECEIVED_NOTIFICATION).build(), new SubscriptionWithType(subscriptions.getAppellantSubscription(), APPELLANT));
+
+        assertEquals("SC/1234/5", result.get(APPEAL_REF));
+        assertEquals("SC/1234/5", result.get(CASE_REFERENCE_ID));
+    }
+
+    @Test
     public void givenEvidenceReceivedNotification_customisePersonalisation() {
         List<Event> events = new ArrayList<>();
         events.add(Event.builder().value(EventDetails.builder().date(DATE).type(APPEAL_RECEIVED.getCcdType()).build()).build());
@@ -569,7 +609,7 @@ public class PersonalisationTest {
         };
     }
 
-        @Test
+    @Test
     public void givenOnlyOneDayUntilHearing_correctlySetTheDaysToHearingText() {
         LocalDate hearingDate = LocalDate.now().plusDays(1);
 

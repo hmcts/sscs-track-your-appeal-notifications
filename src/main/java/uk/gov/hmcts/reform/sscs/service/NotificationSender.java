@@ -1,29 +1,35 @@
 package uk.gov.hmcts.reform.sscs.service;
 
-import static org.slf4j.LoggerFactory.getLogger;
-
 import java.io.ByteArrayInputStream;
 import java.time.LocalDateTime;
 import java.time.ZoneId;
 import java.time.format.DateTimeFormatter;
 import java.util.Map;
-
-import org.slf4j.Logger;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
-import uk.gov.hmcts.reform.sscs.ccd.domain.*;
+import uk.gov.hmcts.reform.sscs.ccd.domain.Address;
+import uk.gov.hmcts.reform.sscs.ccd.domain.Correspondence;
+import uk.gov.hmcts.reform.sscs.ccd.domain.CorrespondenceDetails;
+import uk.gov.hmcts.reform.sscs.ccd.domain.CorrespondenceType;
+import uk.gov.hmcts.reform.sscs.ccd.domain.SscsCaseData;
 import uk.gov.hmcts.reform.sscs.config.NotificationBlacklist;
 import uk.gov.hmcts.reform.sscs.domain.NotifyResponse;
 import uk.gov.hmcts.reform.sscs.domain.notify.NotificationEventType;
-import uk.gov.service.notify.*;
+import uk.gov.service.notify.LetterResponse;
+import uk.gov.service.notify.NotificationClient;
+import uk.gov.service.notify.NotificationClientException;
+import uk.gov.service.notify.SendEmailResponse;
+import uk.gov.service.notify.SendLetterResponse;
+import uk.gov.service.notify.SendSmsResponse;
 
 @Component
+@Slf4j
 public class NotificationSender {
 
-    private static final Logger LOG = getLogger(NotificationSender.class);
-    public static final String USING_TEST_GOV_NOTIFY_KEY_FOR = "Using test GovNotify key {} for {}";
+    private static final String USING_TEST_GOV_NOTIFY_KEY_FOR = "Using test GovNotify key {} for {}";
     private static final DateTimeFormatter DATE_TIME_FORMATTER = DateTimeFormatter.ofPattern("d MMM Y HH:mm");
     private static final ZoneId ZONE_ID_LONDON = ZoneId.of("Europe/London");
 
@@ -61,7 +67,7 @@ public class NotificationSender {
 
         if (notificationBlacklist.getTestRecipients().contains(emailAddress)
                 || emailAddress.matches("test[\\d]+@hmcts.net")) {
-            LOG.info(USING_TEST_GOV_NOTIFY_KEY_FOR, testNotificationClient.getApiKey(), emailAddress);
+            log.info(USING_TEST_GOV_NOTIFY_KEY_FOR, testNotificationClient.getApiKey(), emailAddress);
             client = testNotificationClient;
         } else {
             client = notificationClient;
@@ -79,7 +85,7 @@ public class NotificationSender {
             saveCorrespondence(response, notificationEventType, sscsCaseData, CorrespondenceType.Email);
         }
 
-        LOG.info("Email Notification send for case id : {}, Gov notify id: {} ", sscsCaseData.getCcdCaseId(),
+        log.info("Email Notification send for case id : {}, Gov notify id: {} ", sscsCaseData.getCcdCaseId(),
                 sendEmailResponse.getNotificationId());
     }
 
@@ -96,7 +102,7 @@ public class NotificationSender {
         NotificationClient client;
 
         if (notificationBlacklist.getTestRecipients().contains(phoneNumber)) {
-            LOG.info(USING_TEST_GOV_NOTIFY_KEY_FOR, testNotificationClient.getApiKey(), phoneNumber);
+            log.info(USING_TEST_GOV_NOTIFY_KEY_FOR, testNotificationClient.getApiKey(), phoneNumber);
             client = testNotificationClient;
         } else {
             client = notificationClient;
@@ -120,7 +126,7 @@ public class NotificationSender {
             saveCorrespondence(response, notificationEventType, sscsCaseData, CorrespondenceType.Sms);
         }
 
-        LOG.info("Sms Notification send for case id : {}, Gov notify id: {} ", sscsCaseData.getCcdCaseId(),
+        log.info("Sms Notification send for case id : {}, Gov notify id: {} ", sscsCaseData.getCcdCaseId(),
                 sendSmsResponse.getNotificationId());
     }
 
@@ -137,7 +143,7 @@ public class NotificationSender {
             saveLetterCorrespondenceAsyncService.saveLetter(client, sendLetterResponse.getNotificationId().toString(), correspondence, ccdCaseId);
         }
 
-        LOG.info("Letter Notification send for case id : {}, Gov notify id: {} ", ccdCaseId,
+        log.info("Letter Notification send for case id : {}, Gov notify id: {} ", ccdCaseId,
             sendLetterResponse.getNotificationId());
     }
 
@@ -155,8 +161,8 @@ public class NotificationSender {
                         .build()
         ).build();
 
-        ccdNotificationsPdfService.mergeCorrespondenceIntoCcd(Long.valueOf(sscsCaseData.getCcdCaseId()), correspondence);
-        LOG.info("Uploaded correspondence into ccd for case id {}.", sscsCaseData.getCcdCaseId());
+        ccdNotificationsPdfService.mergeCorrespondenceIntoCcd(sscsCaseData, correspondence);
+        log.info("Uploaded correspondence into ccd for case id {}.", sscsCaseData.getCcdCaseId());
     }
 
     private Correspondence getLetterCorrespondence(NotificationEventType notificationEventType, String name) {
@@ -183,7 +189,7 @@ public class NotificationSender {
                 saveLetterCorrespondenceAsyncService.saveLetter(client, sendLetterResponse.getNotificationId().toString(), correspondence, ccdCaseId);
             }
 
-            LOG.info("Letter Notification send for case id : {}, Gov notify id: {} ", ccdCaseId,
+            log.info("Letter Notification send for case id : {}, Gov notify id: {} ", ccdCaseId,
                 sendLetterResponse.getNotificationId());
         }
     }
@@ -191,7 +197,7 @@ public class NotificationSender {
     private NotificationClient getLetterNotificationClient(String postcode) {
         NotificationClient client;
         if (notificationBlacklist.getTestRecipients().contains(postcode)) {
-            LOG.info(USING_TEST_GOV_NOTIFY_KEY_FOR, testNotificationClient.getApiKey(), postcode);
+            log.info(USING_TEST_GOV_NOTIFY_KEY_FOR, testNotificationClient.getApiKey(), postcode);
             client = testNotificationClient;
         } else {
             client = notificationClient;
