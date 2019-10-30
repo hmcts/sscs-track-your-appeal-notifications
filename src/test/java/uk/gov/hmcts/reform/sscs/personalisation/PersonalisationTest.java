@@ -127,15 +127,16 @@ public class PersonalisationTest {
         evidenceAddressCounty = "county";
         evidenceAddressPostcode = "postcode";
         evidenceAddressTelephone = "telephone";
-        when(evidenceProperties.getAddress()).thenReturn(EvidenceProperties.EvidenceAddress.builder()
-                .line1(evidenceAddressLine1)
-                .line2(evidenceAddressLine2)
-                .line3(evidenceAddressLine3)
-                .town(evidenceAddressTown)
-                .county(evidenceAddressCounty)
-                .postcode(evidenceAddressPostcode)
-                .telephone(evidenceAddressTelephone)
-                .build());
+
+        EvidenceProperties.EvidenceAddress evidenceAddress = new EvidenceProperties.EvidenceAddress();
+        evidenceAddress.setLine1(evidenceAddressLine1);
+        evidenceAddress.setLine2(evidenceAddressLine2);
+        evidenceAddress.setLine3(evidenceAddressLine3);
+        evidenceAddress.setTown(evidenceAddressTown);
+        evidenceAddress.setCounty(evidenceAddressCounty);
+        evidenceAddress.setPostcode(evidenceAddressPostcode);
+        evidenceAddress.setTelephone(evidenceAddressTelephone);
+        when(evidenceProperties.getAddress()).thenReturn(evidenceAddress);
     }
 
     @Test

@@ -2,17 +2,21 @@ package uk.gov.hmcts.reform.sscs.config.properties;
 
 import lombok.Builder;
 import lombok.Getter;
+import lombok.Setter;
 import org.springframework.boot.context.properties.ConfigurationProperties;
 import org.springframework.context.annotation.Configuration;
+
 
 @Configuration
 @ConfigurationProperties(prefix = "evidence")
 @Getter
 public class EvidenceProperties {
-    private EvidenceAddress address;
-
     @Getter
-    @Builder
+    @Setter
+    private EvidenceAddress address;
+    
+    @Getter
+    @Setter
     public static class EvidenceAddress {
         private String line1;
         private String line2;
