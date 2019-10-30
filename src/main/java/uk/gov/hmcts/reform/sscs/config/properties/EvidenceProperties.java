@@ -1,6 +1,5 @@
 package uk.gov.hmcts.reform.sscs.config.properties;
 
-import lombok.Builder;
 import lombok.Getter;
 import lombok.Setter;
 import org.springframework.boot.context.properties.ConfigurationProperties;
@@ -14,7 +13,7 @@ public class EvidenceProperties {
     @Getter
     @Setter
     private EvidenceAddress address;
-    
+
     @Getter
     @Setter
     public static class EvidenceAddress {
