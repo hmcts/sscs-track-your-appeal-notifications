@@ -197,7 +197,7 @@ notification:
     representative:
       emailId: e29a2275-553f-4e70-97f4-2994c095f281
       smsId: f59440ee-19ca-4d47-a702-13e9cecaccbd
-      letterId: d4ca58d1-8b48-44eb-9af9-0bfc14a0d72d
+      letterId: 8c719552-6b6b-4df3-9edb-9fe1635755b9
   subscriptionCreated:
     appellant.smsId: 7397a76f-14cb-468c-b1a7-0570940ead91
     appointee.smsId: 7397a76f-14cb-468c-b1a7-0570940ead91
