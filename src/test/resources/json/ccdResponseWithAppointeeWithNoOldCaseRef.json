@@ -4,6 +4,7 @@
     "callback_response_status": null,
     "callback_response_status_code": null,
     "case_data": {
+      "createdInGapsFrom": "readyToList",
       "appeal": {
         "mrnDetails": {
           "dwpIssuingOffice": "Birmingham",

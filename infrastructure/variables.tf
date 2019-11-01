@@ -129,11 +129,6 @@ variable "docmosis_letters_on" {
   default = false
 }
 
-variable "appeal_received_letter_on" {
-  type = "string"
-  default = false
-}
-
 variable "save_correspondence" {
   type = "string"
   default = true
