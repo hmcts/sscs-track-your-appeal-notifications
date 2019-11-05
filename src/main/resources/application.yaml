@@ -464,9 +464,6 @@ feature.bundled_letters_on: ${BUNDLED_LETTERS_ON:true}
 feature.letters_on: ${LETTERS_ON:true}
 feature.docmosis_letters_on: ${DOCMOSIS_LETTERS_ON:true}
 feature.interloc_letters_on: ${INTERLOC_LETTERS_ON:true}
-feature.docmosis_leters.appealReceived_on: ${APPEAL_RECEIVED_LETTER_ON:true}
-feature.docmosis_leters.directionIssued_on: true
-feature.docmosis_leters.decisionIssued_on: true
 feature.save_correspondence: ${SAVE_CORRESPONDENCE:true}
 feature.readyToListRobotics_on: ${READY_TO_LIST_ROBOTICS_ENABLED:true}
 

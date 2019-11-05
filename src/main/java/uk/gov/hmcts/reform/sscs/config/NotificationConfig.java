@@ -63,11 +63,11 @@ public class NotificationConfig {
     }
 
     public Template getTemplate(String emailTemplateName, String smsTemplateName, String letterTemplateName,
-                                String docmosisTemplateName, Benefit benefit, AppealHearingType appealHearingType) {
+                                String docmosisTemplateName, Benefit benefit, AppealHearingType appealHearingType, String createdInGapsFrom) {
 
         String docmosisTemplateId = getTemplate(appealHearingType, docmosisTemplateName, "docmosisId");
         if (StringUtils.isNotBlank(docmosisTemplateId)) {
-            if (!Boolean.parseBoolean(env.getProperty("feature.docmosis_leters." + docmosisTemplateName.split("\\.")[0] + "_on"))) {
+            if (docmosisTemplateName.split("\\.")[0].equals("appealReceived") && (createdInGapsFrom == null || !createdInGapsFrom.equals("readyToList"))) {
                 docmosisTemplateId = null;
             }
         }
