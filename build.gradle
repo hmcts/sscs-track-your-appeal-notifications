@@ -7,7 +7,7 @@ plugins {
     id 'io.spring.dependency-management' version '1.0.8.RELEASE'
     id 'org.springframework.boot' version '2.1.4.RELEASE'
     id 'org.owasp.dependencycheck' version '5.2.2'
-    id 'com.github.ben-manes.versions' version '0.25.0'
+    id 'com.github.ben-manes.versions' version '0.27.0'
     id 'net.ltgt.apt' version '0.21'
     id "org.flywaydb.flyway" version "5.0.7"
 }
@@ -106,14 +106,14 @@ dependencyManagement {
             entry 'guava'
         }
         // CVE-2019-0232, CVE-2019-0199 - command line injections on windows
-        dependencySet(group: 'org.apache.tomcat.embed', version: '9.0.24') {
+        dependencySet(group: 'org.apache.tomcat.embed', version: '9.0.27') {
             entry 'tomcat-embed-core'
             entry 'tomcat-embed-el'
             entry 'tomcat-embed-websocket'
         }
 
         // CVE-2019-16869 - brought in by qpid-jms-client
-        dependencySet(group: 'io.netty', version: '4.1.37.Final') {
+        dependencySet(group: 'io.netty', version: '4.1.42.Final') {
             entry 'netty-handler'
             entry 'netty-transport-native-epoll'
             entry 'netty-transport-native-kqueue'
@@ -127,6 +127,14 @@ dependencyManagement {
         }
 
         dependency group: 'commons-beanutils', name: 'commons-beanutils', version: '1.9.4'
+
+        // solves CVE-2019-13990
+        dependencySet(
+                group: 'org.quartz-scheduler',
+                version: '2.3.2'
+        ) {
+            entry 'quartz'
+        }
     }
 }
 
@@ -256,13 +264,13 @@ dependencies {
     compile group: 'uk.gov.hmcts.reform', name: 'sscs-job-scheduler', version: '1.5.2'
     compile group: 'uk.gov.hmcts.reform', name: 'service-auth-provider-client', version: '3.0.0'
 
-    compile group: 'uk.gov.hmcts.reform', name: 'sscs-common', version: '3.0.82'
-    compile group: 'uk.gov.hmcts.reform', name: 'sscs-pdf-email-common', version: '1.1.9'
+    compile group: 'uk.gov.hmcts.reform', name: 'sscs-common', version: '3.0.88'
+    compile group: 'uk.gov.hmcts.reform', name: 'sscs-pdf-email-common', version: '1.1.10'
 
     compile group: 'uk.gov.service.notify', name: 'notifications-java-client', version: '3.15.0-RELEASE'
     compile group: 'io.github.openfeign.form', name: 'feign-form', version: '3.8.0'
 
-    compile group: 'org.apache.pdfbox', name: 'pdfbox', version: '2.0.16'
+    compile group: 'org.apache.pdfbox', name: 'pdfbox', version: '2.0.17'
 
     compile group: 'com.fasterxml.jackson.core', name: 'jackson-databind', version: '2.9.10'
 

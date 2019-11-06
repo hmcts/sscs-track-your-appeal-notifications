@@ -330,7 +330,12 @@ public class Personalisation<E extends NotificationWrapper> {
     }
 
     Map<String, String> setEventData(Map<String, String> personalisation, SscsCaseData ccdResponse, NotificationEventType notificationEventType) {
-        if (ccdResponse.getEvents() != null) {
+        if (ccdResponse.getCreatedInGapsFrom() != null && ccdResponse.getCreatedInGapsFrom().equals("readyToList")) {
+            String dwpResponseDateString = formatLocalDate(LocalDate.parse(Optional.ofNullable(ccdResponse.getDateSentToDwp()).orElse(LocalDate.now().toString())).plusDays(MAX_DWP_RESPONSE_DAYS));
+            personalisation.put(APPEAL_RESPOND_DATE, dwpResponseDateString);
+            return personalisation;
+        } else if (ccdResponse.getEvents() != null) {
+            //FIXME: Remove this block once digital RTL journey is live
 
             for (Event event : ccdResponse.getEvents()) {
                 if ((event.getValue() != null) && isAppealReceivedAndUpdated(notificationEventType, event)
@@ -440,7 +445,8 @@ public class Personalisation<E extends NotificationWrapper> {
         String letterTemplateName = getLetterTemplateName(subscriptionType, notificationWrapper.getNotificationType());
         String docmosisTemplateName = getDocmosisTemplateName(subscriptionType, notificationWrapper.getNotificationType());
 
-        return config.getTemplate(templateConfig, smsTemplateName, letterTemplateName, docmosisTemplateName, benefit, notificationWrapper.getHearingType());
+        return config.getTemplate(templateConfig, smsTemplateName, letterTemplateName, docmosisTemplateName,
+                benefit, notificationWrapper.getHearingType(), notificationWrapper.getNewSscsCaseData().getCreatedInGapsFrom());
     }
 
     private String getEmailTemplateName(SubscriptionType subscriptionType,

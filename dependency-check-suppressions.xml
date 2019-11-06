@@ -202,7 +202,7 @@
         <notes><![CDATA[ I can't upgrade qpid-jms-client-0.40.0.ja so I'm suppressing the vulnerability... ]]></notes>
         <cve>CVE-2016-4432</cve>
     </suppress>
-    <suppress until="2019-10-31">
+    <suppress until="2019-11-07">
         <notes><![CDATA[
    file name: jackson-databind-2.9.10.jar
    No fix available
@@ -211,12 +211,5 @@
         <cve>CVE-2019-16942</cve>
         <cve>CVE-2019-16943</cve>
         <cve>CVE-2019-17531</cve>
-    </suppress>
-    <suppress until="2019-11-28">
-        <notes><![CDATA[
-   file name: quartz-2.3.1.jar
-   No fix available
-   ]]></notes>
-        <cve>CVE-2019-13990</cve>
     </suppress>
 </suppressions>

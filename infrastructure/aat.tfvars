@@ -21,4 +21,3 @@ interloc_letters_on = "true"
 docmosis_letters_on = "true"
 
 ready_to_list_robotics_enabled = "false"
-appeal_received_letter_on = "true"
