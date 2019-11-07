@@ -29,6 +29,7 @@ import uk.gov.hmcts.reform.sscs.ccd.domain.*;
 import uk.gov.hmcts.reform.sscs.config.AppealHearingType;
 import uk.gov.hmcts.reform.sscs.config.NotificationConfig;
 import uk.gov.hmcts.reform.sscs.config.SubscriptionType;
+import uk.gov.hmcts.reform.sscs.config.properties.EvidenceProperties;
 import uk.gov.hmcts.reform.sscs.domain.SscsCaseDataWrapper;
 import uk.gov.hmcts.reform.sscs.domain.SubscriptionWithType;
 import uk.gov.hmcts.reform.sscs.domain.notify.Link;
@@ -67,6 +68,9 @@ public class PersonalisationTest {
     @Mock
     private NotificationDateConverterUtil notificationDateConverterUtil;
 
+    @Mock
+    private EvidenceProperties evidenceProperties;
+
     @InjectMocks
     public Personalisation personalisation;
 
@@ -75,6 +79,13 @@ public class PersonalisationTest {
     private Name name;
 
     private  RegionalProcessingCenter rpc;
+    private String evidenceAddressLine1;
+    private String evidenceAddressLine2;
+    private String evidenceAddressLine3;
+    private String evidenceAddressTown;
+    private String evidenceAddressCounty;
+    private String evidenceAddressPostcode;
+    private String evidenceAddressTelephone;
 
     @Before
     public void setup() {
@@ -108,6 +119,24 @@ public class PersonalisationTest {
 
         subscriptions = Subscriptions.builder().appellantSubscription(appellantSubscription).build();
         name = Name.builder().firstName("Harry").lastName("Kane").title("Mr").build();
+
+        evidenceAddressLine1 = "line1";
+        evidenceAddressLine2 = "line2";
+        evidenceAddressLine3 = "line3";
+        evidenceAddressTown = "town";
+        evidenceAddressCounty = "county";
+        evidenceAddressPostcode = "postcode";
+        evidenceAddressTelephone = "telephone";
+
+        EvidenceProperties.EvidenceAddress evidenceAddress = new EvidenceProperties.EvidenceAddress();
+        evidenceAddress.setLine1(evidenceAddressLine1);
+        evidenceAddress.setLine2(evidenceAddressLine2);
+        evidenceAddress.setLine3(evidenceAddressLine3);
+        evidenceAddress.setTown(evidenceAddressTown);
+        evidenceAddress.setCounty(evidenceAddressCounty);
+        evidenceAddress.setPostcode(evidenceAddressPostcode);
+        evidenceAddress.setTelephone(evidenceAddressTelephone);
+        when(evidenceProperties.getAddress()).thenReturn(evidenceAddress);
     }
 
     @Test
@@ -702,6 +731,23 @@ public class PersonalisationTest {
         assertEquals(ADDRESS4, result.get(TOWN_LITERAL));
         assertEquals(CITY, result.get(COUNTY_LITERAL));
         assertEquals(POSTCODE, result.get(POSTCODE_LITERAL));
+    }
+
+    @Test
+    public void shouldPopulateSendEvidenceAddressToDigitalAddressWhenOnTheDigitalJourney() {
+        SscsCaseData response = SscsCaseData.builder()
+                .createdInGapsFrom(EventType.READY_TO_LIST.getCcdType())
+                .build();
+
+        Map<String, String> result = personalisation.setEvidenceProcessingAddress(new HashMap<>(), response);
+
+        assertEquals(evidenceAddressLine1, result.get(REGIONAL_OFFICE_NAME_LITERAL));
+        assertEquals(evidenceAddressLine2, result.get(SUPPORT_CENTRE_NAME_LITERAL));
+        assertEquals(evidenceAddressLine3, result.get(ADDRESS_LINE_LITERAL));
+        assertEquals(evidenceAddressTown, result.get(TOWN_LITERAL));
+        assertEquals(evidenceAddressCounty, result.get(COUNTY_LITERAL));
+        assertEquals(evidenceAddressPostcode, result.get(POSTCODE_LITERAL));
+        assertEquals(evidenceAddressTelephone, result.get(PHONE_NUMBER));
     }
 
     @Test

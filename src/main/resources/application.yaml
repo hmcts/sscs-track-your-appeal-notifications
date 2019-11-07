@@ -85,6 +85,16 @@ hearing.info.link: ${HEARING_INFO_LINK:http://localhost:3000/abouthearing/appeal
 claiming.expenses.link: ${CLAIMING_EXPENSES_LINK:http://localhost:3000/expenses/appeal_id}
 online.hearing.link: ${ONLINE_HEARING_LINK:http://localhost:3000}
 
+evidence.address.line1:
+evidence.address.line2: HMCTS SSCS
+evidence.address.line3: PO BOX 12626
+evidence.address.town: Harlow
+evidence.address.county: Essex
+evidence.address.postcode: CM20 9QF
+evidence.address.telephone: 0300 123 1142
+
+
+
 job.scheduler:
   retryPolicy:
     maxNumberOfJobExecutions: 2
@@ -519,6 +529,7 @@ job.scheduler:
       threadPool:
         class: org.quartz.simpl.SimpleThreadPool
         threadCount: 8
+
 ---
 # integration & functional profile
 spring:
