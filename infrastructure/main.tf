@@ -126,6 +126,7 @@ module "track-your-appeal-notifications" {
     EVIDENCE_SUBMISSION_INFO_LINK = "${var.evidence_submission_info_link}"
     SSCS_MANAGE_EMAILS_LINK       = "${var.sscs_manage_emails_link}"
     SSCS_TRACK_YOUR_APPEAL_LINK   = "${var.sscs_track_your_appeal_link}"
+    MYA_LINK                      = "${var.mya_link}"
     HEARING_INFO_LINK             = "${var.hearing_info_link}"
     CLAIMING_EXPENSES_LINK        = "${var.claiming_expenses_link}"
     JOB_SCHEDULER_POLL_INTERVAL   = "${var.job_scheduler_poll_interval}"
