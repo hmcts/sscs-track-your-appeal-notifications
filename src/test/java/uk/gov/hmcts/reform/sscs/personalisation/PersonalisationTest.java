@@ -92,6 +92,7 @@ public class PersonalisationTest {
         initMocks(this);
         when(config.getManageEmailsLink()).thenReturn(Link.builder().linkUrl("http://manageemails.com/mac").build());
         when(config.getTrackAppealLink()).thenReturn(Link.builder().linkUrl("http://tyalink.com/appeal_id").build());
+        when(config.getMyaLink()).thenReturn(Link.builder().linkUrl("http://myalink.com/appeal_id").build());
         when(config.getEvidenceSubmissionInfoLink()).thenReturn(Link.builder().linkUrl("http://link.com/appeal_id").build());
         when(config.getManageEmailsLink()).thenReturn(Link.builder().linkUrl("http://link.com/manage-email-notifications/mac").build());
         when(config.getClaimingExpensesLink()).thenReturn(Link.builder().linkUrl("http://link.com/progress/appeal_id/expenses").build());
@@ -153,6 +154,7 @@ public class PersonalisationTest {
                 .notificationEventType(notificationEventType)
                 .build());
 
+        //noinspection unchecked
         personalisation.getTemplate(notificationWrapper, PIP, subscriptionType);
 
         verify(config).getTemplate(eq(hasEmailTemplate ? getExpectedTemplateName(notificationEventType, subscriptionType) : notificationEventType.getId()),
@@ -287,7 +289,7 @@ public class PersonalisationTest {
                 .events(events)
                 .build();
 
-        Map<String, String> result = personalisation.create(SscsCaseDataWrapper.builder().newSscsCaseData(response)
+        Map result = personalisation.create(SscsCaseDataWrapper.builder().newSscsCaseData(response)
                 .notificationEventType(APPEAL_RECEIVED_NOTIFICATION).build(), new SubscriptionWithType(subscriptions.getAppellantSubscription(), APPELLANT));
 
         DateTimeFormatter dateFormatter = DateTimeFormatter.ofPattern("d MMMM yyyy");
@@ -306,6 +308,7 @@ public class PersonalisationTest {
         assertEquals("0300 999 8888", result.get(PHONE_NUMBER));
         assertEquals("http://link.com/manage-email-notifications/ZYX", result.get(MANAGE_EMAILS_LINK_LITERAL));
         assertEquals("http://tyalink.com/GLSCRR", result.get(TRACK_APPEAL_LINK_LITERAL));
+        assertEquals("http://myalink.com/GLSCRR", result.get(MYA_LINK_LITERAL));
         assertEquals(DWP_ACRONYM, result.get(FIRST_TIER_AGENCY_ACRONYM));
         assertEquals(DWP_FUL_NAME, result.get(FIRST_TIER_AGENCY_FULL_NAME));
         assertEquals("5 August 2018", result.get(APPEAL_RESPOND_DATE));
@@ -328,10 +331,7 @@ public class PersonalisationTest {
     }
 
     @Test
-    @Parameters({
-        "judge\\, doctor and disability expert (if applicable)"
-    })
-    public void givenNoBenefitType_customisePersonalisation(String expectedPanelComposition) {
+    public void givenNoBenefitType_customisePersonalisation() {
         List<Event> events = new ArrayList<>();
         events.add(Event.builder().value(EventDetails.builder().date(DATE).type(APPEAL_RECEIVED.getCcdType()).build()).build());
 
@@ -345,14 +345,14 @@ public class PersonalisationTest {
             .events(events)
             .build();
 
-        Map<String, String> result = personalisation.create(SscsCaseDataWrapper.builder().newSscsCaseData(response)
+        Map result = personalisation.create(SscsCaseDataWrapper.builder().newSscsCaseData(response)
             .notificationEventType(APPEAL_RECEIVED_NOTIFICATION).build(), new SubscriptionWithType(subscriptions.getAppellantSubscription(), APPELLANT));
 
         DateTimeFormatter dateFormatter = DateTimeFormatter.ofPattern("d MMMM yyyy");
         String expectedDecisionPostedReceiveDate = dateFormatter.format(LocalDate.now().plusDays(7));
         assertEquals(expectedDecisionPostedReceiveDate, result.get("decision_posted_receive_date"));
 
-        assertEquals(expectedPanelComposition, result.get(PANEL_COMPOSITION));
+        assertEquals("judge, doctor and disability expert (if applicable)", result.get(PANEL_COMPOSITION));
 
         assertNull(result.get(BENEFIT_NAME_ACRONYM_LITERAL));
         assertNull(result.get(BENEFIT_FULL_NAME_LITERAL));
@@ -364,6 +364,7 @@ public class PersonalisationTest {
         assertEquals("0300 999 8888", result.get(PHONE_NUMBER));
         assertNull(result.get(MANAGE_EMAILS_LINK_LITERAL));
         assertEquals("http://tyalink.com/GLSCRR", result.get(TRACK_APPEAL_LINK_LITERAL));
+        assertEquals("http://myalink.com/GLSCRR", result.get(MYA_LINK_LITERAL));
         assertEquals(DWP_ACRONYM, result.get(FIRST_TIER_AGENCY_ACRONYM));
         assertEquals(DWP_FUL_NAME, result.get(FIRST_TIER_AGENCY_FULL_NAME));
         assertEquals("5 August 2018", result.get(APPEAL_RESPOND_DATE));
@@ -400,7 +401,7 @@ public class PersonalisationTest {
                 .events(events)
                 .build();
 
-        Map<String, String> result = personalisation.create(SscsCaseDataWrapper.builder().newSscsCaseData(response)
+        Map result = personalisation.create(SscsCaseDataWrapper.builder().newSscsCaseData(response)
                 .notificationEventType(APPEAL_RECEIVED_NOTIFICATION).build(), new SubscriptionWithType(subscriptions.getAppellantSubscription(), APPELLANT));
 
         assertEquals("0300 999 8888", result.get(PHONE_NUMBER));
@@ -501,7 +502,7 @@ public class PersonalisationTest {
                 .evidence(evidence)
                 .build();
 
-        Map<String, String> result = personalisation.create(SscsCaseDataWrapper.builder()
+        Map result = personalisation.create(SscsCaseDataWrapper.builder()
                 .newSscsCaseData(response).notificationEventType(EVIDENCE_RECEIVED_NOTIFICATION).build(), new SubscriptionWithType(subscriptions.getAppellantSubscription(), APPELLANT));
 
         assertEquals("1 July 2018", result.get(EVIDENCE_RECEIVED_DATE_LITERAL));
@@ -518,7 +519,7 @@ public class PersonalisationTest {
                 .events(events)
                 .build();
 
-        Map<String, String> result = personalisation.setEventData(new HashMap<>(), response, APPEAL_RECEIVED_NOTIFICATION);
+        Map result = personalisation.setEventData(new HashMap<>(), response, APPEAL_RECEIVED_NOTIFICATION);
 
         assertEquals("5 August 2018", result.get(APPEAL_RESPOND_DATE));
     }
@@ -545,7 +546,7 @@ public class PersonalisationTest {
                 .createdInGapsFrom("readyToList")
                 .build();
 
-        Map<String, String> result = personalisation.setEventData(new HashMap<>(), response, APPEAL_RECEIVED_NOTIFICATION);
+        Map result = personalisation.setEventData(new HashMap<>(), response, APPEAL_RECEIVED_NOTIFICATION);
 
         assertEquals(LocalDate.now().plusDays(MAX_DWP_RESPONSE_DAYS).format(DateTimeFormatter.ofPattern(RESPONSE_DATE_FORMAT)), result.get(APPEAL_RESPOND_DATE));
     }
@@ -561,7 +562,7 @@ public class PersonalisationTest {
                 .events(events)
                 .build();
 
-        Map<String, String> result = personalisation.setEventData(new HashMap<>(), response, JUDGE_DECISION_APPEAL_TO_PROCEED);
+        Map result = personalisation.setEventData(new HashMap<>(), response, JUDGE_DECISION_APPEAL_TO_PROCEED);
 
         assertEquals("5 August 2018", result.get(APPEAL_RESPOND_DATE));
     }
@@ -577,7 +578,7 @@ public class PersonalisationTest {
                 .events(events)
                 .build();
 
-        Map<String, String> result = personalisation.setEventData(new HashMap<>(), response, TCW_DECISION_APPEAL_TO_PROCEED);
+        Map result = personalisation.setEventData(new HashMap<>(), response, TCW_DECISION_APPEAL_TO_PROCEED);
 
         assertEquals("5 August 2018", result.get(APPEAL_RESPOND_DATE));
     }
@@ -601,7 +602,7 @@ public class PersonalisationTest {
                 .evidence(evidence)
                 .build();
 
-        Map<String, String> result = personalisation.setEvidenceReceivedNotificationData(new HashMap<>(), response, EVIDENCE_RECEIVED_NOTIFICATION);
+        Map result = personalisation.setEvidenceReceivedNotificationData(new HashMap<>(), response, EVIDENCE_RECEIVED_NOTIFICATION);
 
         assertEquals("1 July 2018", result.get(EVIDENCE_RECEIVED_DATE_LITERAL));
     }
@@ -618,7 +619,7 @@ public class PersonalisationTest {
                 .evidence(evidence)
                 .build();
 
-        Map<String, String> result = personalisation.setEvidenceReceivedNotificationData(new HashMap<>(), response, EVIDENCE_RECEIVED_NOTIFICATION);
+        Map result = personalisation.setEvidenceReceivedNotificationData(new HashMap<>(), response, EVIDENCE_RECEIVED_NOTIFICATION);
 
         assertEquals("", result.get(EVIDENCE_RECEIVED_DATE_LITERAL));
     }
@@ -643,7 +644,7 @@ public class PersonalisationTest {
                 .hearings(hearingList)
                 .build();
 
-        Map<String, String> result = personalisation.create(SscsCaseDataWrapper.builder()
+        Map result = personalisation.create(SscsCaseDataWrapper.builder()
                 .newSscsCaseData(response).notificationEventType(hearingNotificationEventType).build(),
                 new SubscriptionWithType(subscriptions.getAppellantSubscription(), subscriptionType));
 
@@ -683,7 +684,7 @@ public class PersonalisationTest {
                 .hearings(hearingList)
                 .build();
 
-        Map<String, String> result = personalisation.create(SscsCaseDataWrapper.builder().newSscsCaseData(response)
+        Map result = personalisation.create(SscsCaseDataWrapper.builder().newSscsCaseData(response)
                 .notificationEventType(HEARING_BOOKED_NOTIFICATION).build(), new SubscriptionWithType(subscriptions.getAppellantSubscription(), APPELLANT));
 
         assertEquals("tomorrow", result.get(DAYS_TO_HEARING_LITERAL));
@@ -696,7 +697,7 @@ public class PersonalisationTest {
                 .appeal(Appeal.builder().benefitType(BenefitType.builder().code("PIP").build()).build())
                 .build();
 
-        Map<String, String> result = personalisation.setEventData(new HashMap<>(), response, POSTPONEMENT_NOTIFICATION);
+        Map result = personalisation.setEventData(new HashMap<>(), response, POSTPONEMENT_NOTIFICATION);
 
         assertEquals(new HashMap<>(), result);
     }
@@ -706,10 +707,10 @@ public class PersonalisationTest {
         SscsCaseData response = SscsCaseData.builder()
                 .ccdCaseId(CASE_ID).caseReference("SC/1234/5")
                 .appeal(Appeal.builder().benefitType(BenefitType.builder().code("PIP").build()).build())
-                .events(new ArrayList())
+                .events(Collections.emptyList())
                 .build();
 
-        Map<String, String> result = personalisation.setEventData(new HashMap<>(), response, POSTPONEMENT_NOTIFICATION);
+        Map result = personalisation.setEventData(new HashMap<>(), response, POSTPONEMENT_NOTIFICATION);
 
         assertEquals(new HashMap<>(), result);
     }
@@ -721,7 +722,7 @@ public class PersonalisationTest {
 
         SscsCaseData response = SscsCaseData.builder().regionalProcessingCenter(rpc).build();
 
-        Map<String, String> result = personalisation.setEvidenceProcessingAddress(new HashMap<>(), response);
+        Map result = personalisation.setEvidenceProcessingAddress(new HashMap<>(), response);
 
         verify(regionalProcessingCenterService, never()).getByScReferenceCode(anyString());
 
@@ -739,7 +740,7 @@ public class PersonalisationTest {
                 .createdInGapsFrom(EventType.READY_TO_LIST.getCcdType())
                 .build();
 
-        Map<String, String> result = personalisation.setEvidenceProcessingAddress(new HashMap<>(), response);
+        Map result = personalisation.setEvidenceProcessingAddress(new HashMap<>(), response);
 
         assertEquals(evidenceAddressLine1, result.get(REGIONAL_OFFICE_NAME_LITERAL));
         assertEquals(evidenceAddressLine2, result.get(SUPPORT_CENTRE_NAME_LITERAL));
@@ -757,7 +758,7 @@ public class PersonalisationTest {
 
         when(regionalProcessingCenterService.getByScReferenceCode("SC/1234/5")).thenReturn(null);
 
-        Map<String, String> result = personalisation.setEvidenceProcessingAddress(new HashMap<>(), response);
+        Map result = personalisation.setEvidenceProcessingAddress(new HashMap<>(), response);
 
         verify(regionalProcessingCenterService, never()).getByScReferenceCode(anyString());
 
@@ -886,6 +887,7 @@ public class PersonalisationTest {
         assertEquals(tyaNumber, result.get(APPEAL_ID));
         assertEquals("http://link.com/manage-email-notifications/ZYX", result.get(MANAGE_EMAILS_LINK_LITERAL));
         assertEquals("http://tyalink.com/" + tyaNumber, result.get(TRACK_APPEAL_LINK_LITERAL));
+        assertEquals("http://myalink.com/" + tyaNumber, result.get(MYA_LINK_LITERAL));
         assertEquals("You are receiving this update as the appointee for Harry Kane.\r\n\r\n", result.get(APPOINTEE_DESCRIPTION));
     }
 
@@ -934,6 +936,7 @@ public class PersonalisationTest {
         assertEquals(repTyaNumber, result.get(APPEAL_ID));
         assertEquals("http://link.com/manage-email-notifications/ZYX", result.get(MANAGE_EMAILS_LINK_LITERAL));
         assertEquals("http://tyalink.com/" + repTyaNumber, result.get(TRACK_APPEAL_LINK_LITERAL));
+        assertEquals("http://myalink.com/" + repTyaNumber, result.get(MYA_LINK_LITERAL));
         assertEquals("http://link.com/" + repTyaNumber, result.get(SUBMIT_EVIDENCE_LINK_LITERAL));
         assertEquals("http://link.com/" + repTyaNumber, result.get(SUBMIT_EVIDENCE_INFO_LINK_LITERAL));
     }
