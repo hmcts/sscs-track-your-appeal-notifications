@@ -21,7 +21,8 @@ public class FilterNotificationsEventsHandler implements CallbackHandler {
 
     @Override
     public boolean canHandle(SscsCaseDataWrapper callback) {
-        return callback.getNotificationEventType() == NotificationEventType.DWP_UPLOAD_RESPONSE_NOTIFICATION;
+        return callback.getNotificationEventType() == NotificationEventType.DWP_UPLOAD_RESPONSE_NOTIFICATION
+                || callback.getNotificationEventType() == NotificationEventType.DIRECTION_ISSUED;
     }
 
     @Override
