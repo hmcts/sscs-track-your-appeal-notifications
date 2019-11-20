@@ -113,7 +113,7 @@ dependencyManagement {
         }
 
         // CVE-2019-16869 - brought in by qpid-jms-client
-        dependencySet(group: 'io.netty', version: '4.1.37.Final') {
+        dependencySet(group: 'io.netty', version: '4.1.42.Final') {
             entry 'netty-handler'
             entry 'netty-transport-native-epoll'
             entry 'netty-transport-native-kqueue'
@@ -264,7 +264,7 @@ dependencies {
     compile group: 'uk.gov.hmcts.reform', name: 'sscs-job-scheduler', version: '1.5.2'
     compile group: 'uk.gov.hmcts.reform', name: 'service-auth-provider-client', version: '3.0.0'
 
-    compile group: 'uk.gov.hmcts.reform', name: 'sscs-common', version: '3.0.87'
+    compile group: 'uk.gov.hmcts.reform', name: 'sscs-common', version: '3.0.96'
     compile group: 'uk.gov.hmcts.reform', name: 'sscs-pdf-email-common', version: '1.1.10'
 
     compile group: 'uk.gov.service.notify', name: 'notifications-java-client', version: '3.15.0-RELEASE'

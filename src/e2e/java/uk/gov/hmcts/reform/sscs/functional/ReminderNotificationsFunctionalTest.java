@@ -120,7 +120,6 @@ public class ReminderNotificationsFunctionalTest extends AbstractFunctionalTest 
             "ESA",
             "DWP",
             "response",
-            "/trackyourappeal",
             "how long"
         );
     }
@@ -173,7 +172,6 @@ public class ReminderNotificationsFunctionalTest extends AbstractFunctionalTest 
                 "ESA",
                 "DWP",
                 "response",
-                "/trackyourappeal",
                 "how long"
         );
     }
@@ -223,7 +221,6 @@ public class ReminderNotificationsFunctionalTest extends AbstractFunctionalTest 
                 "ESA",
                 "DWP",
                 "response",
-                "/trackyourappeal",
                 "how long"
         );
     }
@@ -274,7 +271,6 @@ public class ReminderNotificationsFunctionalTest extends AbstractFunctionalTest 
                 "ESA",
                 "DWP",
                 "response",
-                "/trackyourappeal",
                 "how long"
         );
     }

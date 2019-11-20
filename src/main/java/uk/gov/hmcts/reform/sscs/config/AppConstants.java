@@ -67,6 +67,7 @@ public final class AppConstants {
     public static final String TOMORROW_STRING = "tomorrow";
     public static final String TOWN_LITERAL = "town";
     public static final String TRACK_APPEAL_LINK_LITERAL = "track_appeal_link";
+    public static final String MYA_LINK_LITERAL = "mya_link";
     public static final String TRIBUNAL_RESPONSE_DATE_LITERAL = "tribunal_response_date";
     public static final String UC_PANEL_COMPOSITION = "judge, doctor and disability expert (if applicable)";
     public static final String VENUE_ADDRESS_LITERAL = "venue_address";

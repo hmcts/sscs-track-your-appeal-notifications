@@ -38,6 +38,7 @@ import static uk.gov.hmcts.reform.sscs.config.AppConstants.INFO_REQUEST_DETAIL;
 import static uk.gov.hmcts.reform.sscs.config.AppConstants.MAC_LITERAL;
 import static uk.gov.hmcts.reform.sscs.config.AppConstants.MANAGE_EMAILS_LINK_LITERAL;
 import static uk.gov.hmcts.reform.sscs.config.AppConstants.MAX_DWP_RESPONSE_DAYS;
+import static uk.gov.hmcts.reform.sscs.config.AppConstants.MYA_LINK_LITERAL;
 import static uk.gov.hmcts.reform.sscs.config.AppConstants.NAME;
 import static uk.gov.hmcts.reform.sscs.config.AppConstants.ONLINE_HEARING_LINK_LITERAL;
 import static uk.gov.hmcts.reform.sscs.config.AppConstants.ONLINE_HEARING_REGISTER_LINK_LITERAL;
@@ -118,6 +119,7 @@ import uk.gov.hmcts.reform.sscs.ccd.domain.AppellantInfoRequest;
 import uk.gov.hmcts.reform.sscs.ccd.domain.Benefit;
 import uk.gov.hmcts.reform.sscs.ccd.domain.Event;
 import uk.gov.hmcts.reform.sscs.ccd.domain.EventDetails;
+import uk.gov.hmcts.reform.sscs.ccd.domain.EventType;
 import uk.gov.hmcts.reform.sscs.ccd.domain.Hearing;
 import uk.gov.hmcts.reform.sscs.ccd.domain.HearingDetails;
 import uk.gov.hmcts.reform.sscs.ccd.domain.HearingOptions;
@@ -129,6 +131,7 @@ import uk.gov.hmcts.reform.sscs.config.AppConstants;
 import uk.gov.hmcts.reform.sscs.config.AppealHearingType;
 import uk.gov.hmcts.reform.sscs.config.NotificationConfig;
 import uk.gov.hmcts.reform.sscs.config.SubscriptionType;
+import uk.gov.hmcts.reform.sscs.config.properties.EvidenceProperties;
 import uk.gov.hmcts.reform.sscs.domain.SscsCaseDataWrapper;
 import uk.gov.hmcts.reform.sscs.domain.SubscriptionWithType;
 import uk.gov.hmcts.reform.sscs.domain.notify.NotificationEventType;
@@ -166,6 +169,9 @@ public class Personalisation<E extends NotificationWrapper> {
     @Autowired
     private NotificationDateConverterUtil notificationDateConverterUtil;
 
+    @Autowired
+    private EvidenceProperties evidenceProperties;
+
     public Map<String, String> create(final E notificationWrapper, final SubscriptionWithType subscriptionWithType) {
         return create(notificationWrapper.getSscsCaseDataWrapper(), subscriptionWithType);
     }
@@ -195,7 +201,7 @@ public class Personalisation<E extends NotificationWrapper> {
         personalisation.put(NAME, getName(subscriptionWithType.getSubscriptionType(), ccdResponse, responseWrapper));
         personalisation.put(CCD_ID, StringUtils.defaultIfBlank(ccdResponse.getCcdCaseId(), StringUtils.EMPTY));
 
-        // Some templates (noteably letters) can be sent out before the SC Ref is added to the case
+        // Some templates (notably letters) can be sent out before the SC Ref is added to the case
         // this allows those templates to be populated with either the CCD Id or SC Ref
         personalisation.put(CASE_REFERENCE_ID, getAppealReference(ccdResponse));
 
@@ -245,7 +251,7 @@ public class Personalisation<E extends NotificationWrapper> {
     private String getAppealReference(SscsCaseData ccdResponse) {
         final String caseReference = ccdResponse.getCaseReference();
         return StringUtils.isBlank(caseReference) || (ccdResponse.getCreatedInGapsFrom() != null && ccdResponse.getCreatedInGapsFrom().equals("readyToList"))
-                ? ccdResponse.getCcdCaseId() : caseReference;
+            ? ccdResponse.getCcdCaseId() : caseReference;
     }
 
     private String getName(SubscriptionType subscriptionType, SscsCaseData ccdResponse, SscsCaseDataWrapper wrapper) {
@@ -289,6 +295,7 @@ public class Personalisation<E extends NotificationWrapper> {
             personalisation.put(MANAGE_EMAILS_LINK_LITERAL, config.getManageEmailsLink().replace(MAC_LITERAL, getMacToken(tya, benefit.name())));
         }
         personalisation.put(TRACK_APPEAL_LINK_LITERAL, config.getTrackAppealLink() != null ? config.getTrackAppealLink().replace(APPEAL_ID_LITERAL, tya) : null);
+        personalisation.put(MYA_LINK_LITERAL, config.getMyaLink() != null ? config.getMyaLink().replace(APPEAL_ID_LITERAL, tya) : null);
         personalisation.put(SUBMIT_EVIDENCE_LINK_LITERAL, config.getEvidenceSubmissionInfoLink().replace(APPEAL_ID, tya));
         personalisation.put(SUBMIT_EVIDENCE_INFO_LINK_LITERAL, config.getEvidenceSubmissionInfoLink().replace(APPEAL_ID_LITERAL, tya));
         personalisation.put(CLAIMING_EXPENSES_LINK_LITERAL, config.getClaimingExpensesLink().replace(APPEAL_ID, tya));
@@ -336,7 +343,12 @@ public class Personalisation<E extends NotificationWrapper> {
     }
 
     Map<String, String> setEventData(Map<String, String> personalisation, SscsCaseData ccdResponse, NotificationEventType notificationEventType) {
-        if (ccdResponse.getEvents() != null) {
+        if (ccdResponse.getCreatedInGapsFrom() != null && ccdResponse.getCreatedInGapsFrom().equals("readyToList")) {
+            String dwpResponseDateString = formatLocalDate(LocalDate.parse(Optional.ofNullable(ccdResponse.getDateSentToDwp()).orElse(LocalDate.now().toString())).plusDays(MAX_DWP_RESPONSE_DAYS));
+            personalisation.put(APPEAL_RESPOND_DATE, dwpResponseDateString);
+            return personalisation;
+        } else if (ccdResponse.getEvents() != null) {
+            //FIXME: Remove this block once digital RTL journey is live
 
             for (Event event : ccdResponse.getEvents()) {
                 if ((event.getValue() != null) && isAppealReceivedAndUpdated(notificationEventType, event)
@@ -383,7 +395,16 @@ public class Personalisation<E extends NotificationWrapper> {
         } else {
             rpc = regionalProcessingCenterService.getByScReferenceCode(ccdResponse.getCaseReference());
         }
-        if (rpc != null) {
+        if (EventType.READY_TO_LIST.getCcdType().equals(ccdResponse.getCreatedInGapsFrom())) {
+            personalisation.put(REGIONAL_OFFICE_NAME_LITERAL, evidenceProperties.getAddress().getLine1());
+            personalisation.put(SUPPORT_CENTRE_NAME_LITERAL, evidenceProperties.getAddress().getLine2());
+            personalisation.put(ADDRESS_LINE_LITERAL, evidenceProperties.getAddress().getLine3());
+            personalisation.put(TOWN_LITERAL, evidenceProperties.getAddress().getTown());
+            personalisation.put(COUNTY_LITERAL, evidenceProperties.getAddress().getCounty());
+            personalisation.put(POSTCODE_LITERAL, evidenceProperties.getAddress().getPostcode());
+            personalisation.put(REGIONAL_OFFICE_POSTCODE_LITERAL, evidenceProperties.getAddress().getPostcode());
+            personalisation.put(PHONE_NUMBER, evidenceProperties.getAddress().getTelephone());
+        } else if (rpc != null) {
             personalisation.put(REGIONAL_OFFICE_NAME_LITERAL, rpc.getAddress1());
             personalisation.put(SUPPORT_CENTRE_NAME_LITERAL, rpc.getAddress2());
             personalisation.put(ADDRESS_LINE_LITERAL, rpc.getAddress3());
@@ -437,7 +458,8 @@ public class Personalisation<E extends NotificationWrapper> {
         String letterTemplateName = getLetterTemplateName(subscriptionType, notificationWrapper.getNotificationType());
         String docmosisTemplateName = getDocmosisTemplateName(subscriptionType, notificationWrapper.getNotificationType());
 
-        return config.getTemplate(templateConfig, smsTemplateName, letterTemplateName, docmosisTemplateName, benefit, notificationWrapper.getHearingType());
+        return config.getTemplate(templateConfig, smsTemplateName, letterTemplateName, docmosisTemplateName,
+            benefit, notificationWrapper.getHearingType(), notificationWrapper.getNewSscsCaseData().getCreatedInGapsFrom());
     }
 
     private String getEmailTemplateName(SubscriptionType subscriptionType,

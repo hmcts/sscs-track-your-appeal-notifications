@@ -57,6 +57,11 @@ variable "sscs_track_your_appeal_link" {
   default = "http://localhost:3000/trackyourappeal/appeal_id"
 }
 
+variable "mya_link" {
+  type    = "string"
+  default = "http://localhost:8081/sign-in/tya=appeal_id"
+}
+
 variable "hearing_info_link" {
   type    = "string"
   default = "http://localhost:3000/abouthearing/appeal_id"
@@ -125,11 +130,6 @@ variable "interloc_letters_on" {
 }
 
 variable "docmosis_letters_on" {
-  type = "string"
-  default = false
-}
-
-variable "appeal_received_letter_on" {
   type = "string"
   default = false
 }

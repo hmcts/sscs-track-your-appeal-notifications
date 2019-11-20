@@ -248,8 +248,7 @@ public class NotificationsFunctionalTest extends AbstractFunctionalTest {
         String expectedTyaLink = tyaLink.replace(APPEAL_ID, TYA);
         assertNotificationBodyContains(notifications, paperResponseReceivedEmailId, getCaseData().getCaseReference(),
                 expectedPanelComposition, expectedHearingContactDate, expectedTyaLink);
-        assertNotificationBodyContains(notifications, paperResponseReceivedSmsId, expectedHearingContactDate,
-                expectedTyaLink);
+        assertNotificationBodyContains(notifications, paperResponseReceivedSmsId, expectedHearingContactDate);
     }
 
     @Test

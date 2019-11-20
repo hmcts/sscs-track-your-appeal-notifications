@@ -17,29 +17,7 @@ import static org.mockito.Mockito.when;
 import static uk.gov.hmcts.reform.sscs.config.AppConstants.APPELLANT_NAME;
 import static uk.gov.hmcts.reform.sscs.config.AppConstants.NAME;
 import static uk.gov.hmcts.reform.sscs.config.AppConstants.REPRESENTATIVE_NAME;
-import static uk.gov.hmcts.reform.sscs.domain.notify.NotificationEventType.ADJOURNED_NOTIFICATION;
-import static uk.gov.hmcts.reform.sscs.domain.notify.NotificationEventType.APPEAL_DORMANT_NOTIFICATION;
-import static uk.gov.hmcts.reform.sscs.domain.notify.NotificationEventType.APPEAL_LAPSED_NOTIFICATION;
-import static uk.gov.hmcts.reform.sscs.domain.notify.NotificationEventType.APPEAL_RECEIVED_NOTIFICATION;
-import static uk.gov.hmcts.reform.sscs.domain.notify.NotificationEventType.APPEAL_WITHDRAWN_NOTIFICATION;
-import static uk.gov.hmcts.reform.sscs.domain.notify.NotificationEventType.CASE_UPDATED;
-import static uk.gov.hmcts.reform.sscs.domain.notify.NotificationEventType.DECISION_ISSUED;
-import static uk.gov.hmcts.reform.sscs.domain.notify.NotificationEventType.DIRECTION_ISSUED;
-import static uk.gov.hmcts.reform.sscs.domain.notify.NotificationEventType.DWP_RESPONSE_RECEIVED_NOTIFICATION;
-import static uk.gov.hmcts.reform.sscs.domain.notify.NotificationEventType.DWP_UPLOAD_RESPONSE_NOTIFICATION;
-import static uk.gov.hmcts.reform.sscs.domain.notify.NotificationEventType.EVIDENCE_RECEIVED_NOTIFICATION;
-import static uk.gov.hmcts.reform.sscs.domain.notify.NotificationEventType.EVIDENCE_REMINDER_NOTIFICATION;
-import static uk.gov.hmcts.reform.sscs.domain.notify.NotificationEventType.HEARING_BOOKED_NOTIFICATION;
-import static uk.gov.hmcts.reform.sscs.domain.notify.NotificationEventType.HEARING_REMINDER_NOTIFICATION;
-import static uk.gov.hmcts.reform.sscs.domain.notify.NotificationEventType.JUDGE_DECISION_APPEAL_TO_PROCEED;
-import static uk.gov.hmcts.reform.sscs.domain.notify.NotificationEventType.NON_COMPLIANT_NOTIFICATION;
-import static uk.gov.hmcts.reform.sscs.domain.notify.NotificationEventType.POSTPONEMENT_NOTIFICATION;
-import static uk.gov.hmcts.reform.sscs.domain.notify.NotificationEventType.REQUEST_INFO_INCOMPLETE;
-import static uk.gov.hmcts.reform.sscs.domain.notify.NotificationEventType.STRUCK_OUT;
-import static uk.gov.hmcts.reform.sscs.domain.notify.NotificationEventType.SUBSCRIPTION_UPDATED_NOTIFICATION;
-import static uk.gov.hmcts.reform.sscs.domain.notify.NotificationEventType.SYA_APPEAL_CREATED_NOTIFICATION;
-import static uk.gov.hmcts.reform.sscs.domain.notify.NotificationEventType.TCW_DECISION_APPEAL_TO_PROCEED;
-import static uk.gov.hmcts.reform.sscs.domain.notify.NotificationEventType.VALID_APPEAL_CREATED;
+import static uk.gov.hmcts.reform.sscs.domain.notify.NotificationEventType.*;
 
 import java.io.File;
 import java.io.IOException;
@@ -701,7 +679,7 @@ public class NotificationsIt {
                 "paper",
                 Arrays.asList("8620e023-f663-477e-a771-9cfad50ee30f", "e29a2275-553f-4e70-97f4-2994c095f281"),
                 Arrays.asList("446c7b23-7342-42e1-adff-b4c367e951cb", "f59440ee-19ca-4d47-a702-13e9cecaccbd"),
-                Arrays.asList("d4ca58d1-8b48-44eb-9af9-0bfc14a0d72d", "d4ca58d1-8b48-44eb-9af9-0bfc14a0d72d"),
+                Arrays.asList("d4ca58d1-8b48-44eb-9af9-0bfc14a0d72d", "8c719552-6b6b-4df3-9edb-9fe1635755b9"),
                 "yes",
                 "yes",
                 "yes",
@@ -715,7 +693,7 @@ public class NotificationsIt {
                 "oral",
                 Arrays.asList("8620e023-f663-477e-a771-9cfad50ee30f", "e29a2275-553f-4e70-97f4-2994c095f281"),
                 Arrays.asList("446c7b23-7342-42e1-adff-b4c367e951cb", "f59440ee-19ca-4d47-a702-13e9cecaccbd"),
-                Arrays.asList("d4ca58d1-8b48-44eb-9af9-0bfc14a0d72d", "d4ca58d1-8b48-44eb-9af9-0bfc14a0d72d"),
+                Arrays.asList("d4ca58d1-8b48-44eb-9af9-0bfc14a0d72d", "8c719552-6b6b-4df3-9edb-9fe1635755b9"),
                 "yes",
                 "yes",
                 "yes",
@@ -729,7 +707,7 @@ public class NotificationsIt {
                 "paper",
                 Collections.singletonList("e29a2275-553f-4e70-97f4-2994c095f281"),
                 Arrays.asList("446c7b23-7342-42e1-adff-b4c367e951cb", "f59440ee-19ca-4d47-a702-13e9cecaccbd"),
-                Arrays.asList("d4ca58d1-8b48-44eb-9af9-0bfc14a0d72d", "d4ca58d1-8b48-44eb-9af9-0bfc14a0d72d"),
+                Arrays.asList("d4ca58d1-8b48-44eb-9af9-0bfc14a0d72d", "8c719552-6b6b-4df3-9edb-9fe1635755b9"),
                 "no",
                 "yes",
                 "yes",
@@ -743,13 +721,27 @@ public class NotificationsIt {
                 "paper",
                 Collections.emptyList(),
                 Collections.emptyList(),
-                Arrays.asList("d4ca58d1-8b48-44eb-9af9-0bfc14a0d72d", "d4ca58d1-8b48-44eb-9af9-0bfc14a0d72d"),
+                Arrays.asList("d4ca58d1-8b48-44eb-9af9-0bfc14a0d72d", "8c719552-6b6b-4df3-9edb-9fe1635755b9"),
                 "no",
                 "no",
                 "no",
                 "no",
                 "0",
                 "0",
+                "2"
+            },
+            new Object[]{
+                ADMIN_APPEAL_WITHDRAWN,
+                "paper",
+                Collections.singletonList("e29a2275-553f-4e70-97f4-2994c095f281"),
+                Arrays.asList("446c7b23-7342-42e1-adff-b4c367e951cb", "f59440ee-19ca-4d47-a702-13e9cecaccbd"),
+                Arrays.asList("d4ca58d1-8b48-44eb-9af9-0bfc14a0d72d", "8c719552-6b6b-4df3-9edb-9fe1635755b9"),
+                "no",
+                "yes",
+                "yes",
+                "yes",
+                "1",
+                "2",
                 "2"
             },
             new Object[]{
@@ -1653,7 +1645,7 @@ public class NotificationsIt {
                 "paper",
                 Arrays.asList("8620e023-f663-477e-a771-9cfad50ee30f", "e29a2275-553f-4e70-97f4-2994c095f281"),
                 Arrays.asList("446c7b23-7342-42e1-adff-b4c367e951cb", "f59440ee-19ca-4d47-a702-13e9cecaccbd"),
-                Arrays.asList("d4ca58d1-8b48-44eb-9af9-0bfc14a0d72d", "d4ca58d1-8b48-44eb-9af9-0bfc14a0d72d"),
+                Arrays.asList("d4ca58d1-8b48-44eb-9af9-0bfc14a0d72d", "8c719552-6b6b-4df3-9edb-9fe1635755b9"),
                 "yes",
                 "yes",
                 "yes",
@@ -1667,7 +1659,7 @@ public class NotificationsIt {
                 "oral",
                 Arrays.asList("8620e023-f663-477e-a771-9cfad50ee30f", "e29a2275-553f-4e70-97f4-2994c095f281"),
                 Arrays.asList("446c7b23-7342-42e1-adff-b4c367e951cb", "f59440ee-19ca-4d47-a702-13e9cecaccbd"),
-                Arrays.asList("d4ca58d1-8b48-44eb-9af9-0bfc14a0d72d", "d4ca58d1-8b48-44eb-9af9-0bfc14a0d72d"),
+                Arrays.asList("d4ca58d1-8b48-44eb-9af9-0bfc14a0d72d", "8c719552-6b6b-4df3-9edb-9fe1635755b9"),
                 "yes",
                 "yes",
                 "yes",
@@ -1681,7 +1673,7 @@ public class NotificationsIt {
                 "paper",
                 Collections.singletonList("e29a2275-553f-4e70-97f4-2994c095f281"),
                 Arrays.asList("446c7b23-7342-42e1-adff-b4c367e951cb", "f59440ee-19ca-4d47-a702-13e9cecaccbd"),
-                Arrays.asList("d4ca58d1-8b48-44eb-9af9-0bfc14a0d72d", "d4ca58d1-8b48-44eb-9af9-0bfc14a0d72d"),
+                Arrays.asList("d4ca58d1-8b48-44eb-9af9-0bfc14a0d72d", "8c719552-6b6b-4df3-9edb-9fe1635755b9"),
                 "no",
                 "yes",
                 "yes",
@@ -1695,7 +1687,7 @@ public class NotificationsIt {
                 "paper",
                 Collections.emptyList(),
                 Collections.emptyList(),
-                Arrays.asList("d4ca58d1-8b48-44eb-9af9-0bfc14a0d72d", "d4ca58d1-8b48-44eb-9af9-0bfc14a0d72d"),
+                Arrays.asList("d4ca58d1-8b48-44eb-9af9-0bfc14a0d72d", "8c719552-6b6b-4df3-9edb-9fe1635755b9"),
                 "no",
                 "no",
                 "no",
@@ -2834,7 +2826,7 @@ public class NotificationsIt {
                 "oral",
                 Collections.singletonList("8620e023-f663-477e-a771-9cfad50ee30f"),
                 Collections.singletonList("446c7b23-7342-42e1-adff-b4c367e951cb"),
-                Arrays.asList("d4ca58d1-8b48-44eb-9af9-0bfc14a0d72d"),
+                Collections.singletonList("d4ca58d1-8b48-44eb-9af9-0bfc14a0d72d"),
                 "yes",
                 "yes",
                 "1",

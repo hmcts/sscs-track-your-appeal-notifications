@@ -146,7 +146,7 @@ public class CohPersonalisationTest {
             QUESTION_ROUND_ISSUED_NOTIFICATION.getId(),
             QUESTION_ROUND_ISSUED_NOTIFICATION.getId(),
             QUESTION_ROUND_ISSUED_NOTIFICATION.getId(),
-            Benefit.PIP, ONLINE))
+            Benefit.PIP, ONLINE, null))
             .thenReturn(expectedTemplate);
 
         Template template = cohPersonalisation.getTemplate(cohNotificationWrapper, Benefit.PIP, APPELLANT);
@@ -168,7 +168,7 @@ public class CohPersonalisationTest {
                         )
                         .build());
         Template expectedTemplate = Template.builder().build();
-        when(config.getTemplate("follow_up_question_round_issued", "follow_up_question_round_issued", "follow_up_question_round_issued", "follow_up_question_round_issued", Benefit.PIP, ONLINE)).thenReturn(expectedTemplate);
+        when(config.getTemplate("follow_up_question_round_issued", "follow_up_question_round_issued", "follow_up_question_round_issued", "follow_up_question_round_issued", Benefit.PIP, ONLINE, null)).thenReturn(expectedTemplate);
 
         Template template = cohPersonalisation.getTemplate(cohNotificationWrapper, Benefit.PIP, APPELLANT);
         assertThat(template, is(expectedTemplate));

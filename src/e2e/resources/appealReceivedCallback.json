@@ -61,6 +61,7 @@
         "receivedVia": "Online"
       },
       "caseReference": "SC022/14/12423",
+      "createdInGapsFrom": "readyToList",
       "events": [
         {
           "value": {
