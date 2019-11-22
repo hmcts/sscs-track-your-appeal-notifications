@@ -792,40 +792,6 @@ public class NotificationServiceTest {
                 Subscription.builder().build(),
                 new SubscriptionType[]{APPOINTEE, REPRESENTATIVE},  // Fallback letter
                 true
-            },
-            new Object[]{
-                CASE_UPDATED,
-                0,
-                0,
-                0,
-                0,
-                Subscription.builder()
-                    .tya(APPEAL_NUMBER)
-                    .email(EMAIL)
-                    .subscribeEmail(YES)
-                    .build(),
-                null,
-                null,
-                null,
-                true
-            },
-            new Object[]{
-                CASE_UPDATED,
-                0,
-                0,
-                0,
-                0,
-                Subscription.builder()
-                    .tya(APPEAL_NUMBER)
-                    .email(EMAIL)
-                    .subscribeEmail(YES)
-                    .subscribeSms(YES).wantSmsNotifications(YES)
-                    .mobile(MOBILE_NUMBER_1)
-                    .build(),
-                null,
-                null,
-                null,
-                true
             }
         };
     }
@@ -1052,34 +1018,6 @@ public class NotificationServiceTest {
                 CASE_UPDATED,
                 0,
                 0,
-                Subscription.builder()
-                    .tya(APPEAL_NUMBER)
-                    .email(EMAIL)
-                    .subscribeEmail(YES)
-                    .build(),
-                null,
-                null,
-                new SubscriptionType[]{},
-            },
-            new Object[]{
-                CASE_UPDATED,
-                0,
-                0,
-                Subscription.builder()
-                    .tya(APPEAL_NUMBER)
-                    .email(EMAIL)
-                    .subscribeEmail(YES)
-                    .subscribeSms(YES).wantSmsNotifications(YES)
-                    .mobile(MOBILE_NUMBER_1)
-                    .build(),
-                null,
-                null,
-                new SubscriptionType[]{},
-            },
-            new Object[]{
-                CASE_UPDATED,
-                0,
-                0,
                 Subscription.builder().build(),
                 Subscription.builder().build(),
                 Subscription.builder().build(),
@@ -1276,40 +1214,6 @@ public class NotificationServiceTest {
                 Subscription.builder().build(),
                 Subscription.builder().build(),
                 new SubscriptionType[]{APPOINTEE, REPRESENTATIVE},
-            },
-            new Object[]{
-                CASE_UPDATED,
-                0,
-                0,
-                Subscription.builder()
-                    .tya(APPEAL_NUMBER)
-                    .email(EMAIL)
-                    .subscribeEmail(YES)
-                    .build(),
-                null,
-                new SubscriptionType[]{},
-            },
-            new Object[]{
-                CASE_UPDATED,
-                0,
-                0,
-                Subscription.builder()
-                    .tya(APPEAL_NUMBER)
-                    .email(EMAIL)
-                    .subscribeEmail(YES)
-                    .subscribeSms(YES).wantSmsNotifications(YES)
-                    .mobile(MOBILE_NUMBER_1)
-                    .build(),
-                null,
-                new SubscriptionType[]{},
-            },
-            new Object[]{
-                CASE_UPDATED,
-                0,
-                0,
-                Subscription.builder().build(),
-                Subscription.builder().build(),
-                new SubscriptionType[]{},
             }
         };
     }
