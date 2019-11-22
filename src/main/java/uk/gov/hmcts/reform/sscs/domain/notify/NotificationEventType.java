@@ -30,7 +30,7 @@ public enum NotificationEventType {
     VIEW_ISSUED("decision_issued", false, false, true, false, false),
     DECISION_ISSUED_2("corDecision", false, false, true, false, false),
     STRUCK_OUT("struckOut", true, true, false, false, false),
-    CASE_UPDATED("caseUpdated", true, true, true, false, false),
+    CASE_UPDATED("caseUpdated", false, false, false, false, false),
     DIRECTION_ISSUED("directionIssued", true, true, true, false, false),
     DECISION_ISSUED("decisionIssued", true, true, true, false, false),
     VALID_APPEAL_CREATED("validAppealCreated", true, true, false, true, false),
