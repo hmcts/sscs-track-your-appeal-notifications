@@ -126,8 +126,6 @@ dependencyManagement {
             entry 'netty-common'
         }
 
-        dependency group: 'commons-beanutils', name: 'commons-beanutils', version: '1.9.4'
-
         // solves CVE-2019-13990
         dependencySet(
                 group: 'org.quartz-scheduler',
@@ -233,6 +231,16 @@ def versions = [
         springfoxSwagger: '2.8.0'
 ]
 
+configurations.all {
+    resolutionStrategy {
+        eachDependency { DependencyResolveDetails details ->
+            if (details.requested.group in ['com.fasterxml.jackson.core', 'com.fasterxml.jackson.module', 'com.fasterxml.jackson.datatype']) {
+                details.useVersion '2.10.0'
+            }
+        }
+    }
+}
+
 dependencies {
     compile group: 'commons-io', name: 'commons-io', version: '2.6'
 
@@ -271,8 +279,6 @@ dependencies {
     compile group: 'io.github.openfeign.form', name: 'feign-form', version: '3.8.0'
 
     compile group: 'org.apache.pdfbox', name: 'pdfbox', version: '2.0.17'
-
-    compile group: 'com.fasterxml.jackson.core', name: 'jackson-databind', version: '2.10.1'
 
     compile group: 'com.microsoft.azure', name: 'applicationinsights-logging-logback', version: '2.5.0'
     compile group: 'com.microsoft.azure', name: 'applicationinsights-spring-boot-starter', version: '2.5.0'
