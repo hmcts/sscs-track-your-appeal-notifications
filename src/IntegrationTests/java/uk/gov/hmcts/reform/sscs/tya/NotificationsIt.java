@@ -194,7 +194,7 @@ public class NotificationsIt {
         ReflectionTestUtils.setField(sendNotificationService, "docmosisLettersOn", true);
         ReflectionTestUtils.setField(sendNotificationService, "interlocLettersOn", true);
 
-        NotificationService service = new NotificationService(factory, reminderService, notificationValidService, notificationHandler, outOfHoursCalculator, notificationConfig, sendNotificationService, true);
+        NotificationService service = new NotificationService(factory, reminderService, notificationValidService, notificationHandler, outOfHoursCalculator, notificationConfig, sendNotificationService);
         NotificationController controller = new NotificationController(service, authorisationService, ccdService, deserializer, idamService);
         this.mockMvc = MockMvcBuilders.standaloneSetup(controller).build();
         String path = getClass().getClassLoader().getResource("json/ccdResponse.json").getFile();

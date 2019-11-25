@@ -142,8 +142,7 @@ public class NotificationServiceBase {
         ReflectionTestUtils.setField(sendNotificationService, "interlocLettersOn", false);
         ReflectionTestUtils.setField(sendNotificationService, "docmosisLettersOn", false);
         return new NotificationService(notificationFactory, reminderService, notificationValidService,
-            notificationHandler, outOfHoursCalculator, notificationConfig, sendNotificationService,
-            true
+            notificationHandler, outOfHoursCalculator, notificationConfig, sendNotificationService
         );
     }
 

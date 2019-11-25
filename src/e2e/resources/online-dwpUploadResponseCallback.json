@@ -5,6 +5,7 @@
     "callback_response_status_code": null,
     "case_data": {
       "onlinePanel": {},
+      "createdInGapsFrom": "readyToList",
       "appeal": {
         "appealReasons": {},
         "appellant": {
