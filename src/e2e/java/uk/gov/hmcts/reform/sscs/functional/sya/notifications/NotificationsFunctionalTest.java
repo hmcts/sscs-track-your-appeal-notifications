@@ -197,7 +197,7 @@ public class NotificationsFunctionalTest extends AbstractFunctionalTest {
         simulateCcdCallback(DWP_UPLOAD_RESPONSE_NOTIFICATION, "online-" + DWP_UPLOAD_RESPONSE_NOTIFICATION.getId() + "Callback.json");
         List<Notification> notifications = tryFetchNotificationsForTestCase(onlineResponseReceivedEmailId);
 
-        assertNotificationBodyContains(notifications, onlineResponseReceivedEmailId, getCaseData().getCaseReference());
+        assertNotificationBodyContains(notifications, onlineResponseReceivedEmailId, getCaseId().toString());
     }
 
     @Test
