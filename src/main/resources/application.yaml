@@ -476,7 +476,7 @@ feature.letters_on: ${LETTERS_ON:true}
 feature.docmosis_letters_on: ${DOCMOSIS_LETTERS_ON:true}
 feature.interloc_letters_on: ${INTERLOC_LETTERS_ON:true}
 feature.save_correspondence: ${SAVE_CORRESPONDENCE:true}
-feature.readyToListRobotics_on: ${READY_TO_LIST_ROBOTICS_ENABLED:false}
+feature.readyToListRobotics_on: ${READY_TO_LIST_ROBOTICS_ENABLED:true}
 
 letterAsync:
   maxAttempts: ${LETTER_ASYNC_MAX_ATTEMPTS:5}
