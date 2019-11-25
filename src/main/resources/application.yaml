@@ -159,7 +159,7 @@ notification:
       emailId: 8ce8d794-75e8-49a0-b4d2-0c6cd2061c11
       smsId: d2b4394b-d1c9-4d5c-a44e-b382e41c67e5
       letterId: 85a81e3c-a59f-4ae9-9c99-266dfd5ca95f
-  dwpLapseCase:
+  confirmLapsed:
     appellant:
       emailId: 8ce8d794-75e8-49a0-b4d2-0c6cd2061c11
       smsId: d2b4394b-d1c9-4d5c-a44e-b382e41c67e5
