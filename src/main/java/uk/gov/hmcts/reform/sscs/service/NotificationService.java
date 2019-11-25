@@ -10,7 +10,6 @@ import static uk.gov.hmcts.reform.sscs.service.NotificationValidService.isMandat
 
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 import org.springframework.util.StringUtils;
 import uk.gov.hmcts.reform.sscs.ccd.domain.Benefit;
@@ -34,7 +33,6 @@ public class NotificationService {
     private final OutOfHoursCalculator outOfHoursCalculator;
     private final NotificationConfig notificationConfig;
     private final SendNotificationService sendNotificationService;
-    private final boolean readyToListFeatureEnabled;
 
     @Autowired
     public NotificationService(
@@ -44,8 +42,7 @@ public class NotificationService {
         NotificationHandler notificationHandler,
         OutOfHoursCalculator outOfHoursCalculator,
         NotificationConfig notificationConfig,
-        SendNotificationService sendNotificationService,
-        @Value("${feature.readyToListRobotics_on}") boolean readyToListFeatureEnabled) {
+        SendNotificationService sendNotificationService) {
 
         this.notificationFactory = notificationFactory;
         this.reminderService = reminderService;
@@ -54,7 +51,6 @@ public class NotificationService {
         this.outOfHoursCalculator = outOfHoursCalculator;
         this.notificationConfig = notificationConfig;
         this.sendNotificationService = sendNotificationService;
-        this.readyToListFeatureEnabled = readyToListFeatureEnabled;
     }
 
     public void manageNotificationAndSubscription(NotificationWrapper notificationWrapper) {
@@ -223,6 +219,7 @@ public class NotificationService {
                     || APPEAL_WITHDRAWN_NOTIFICATION.equals(notificationType)
                     || STRUCK_OUT.equals(notificationType)
                     || DECISION_ISSUED.equals(notificationType)
+                    || DIRECTION_ISSUED.equals(notificationType)
                     || NotificationEventType.DECISION_ISSUED_2.equals(notificationType))) {
                 log.info(String.format("Cannot complete notification %s as the appeal was dormant for caseId %s.",
                     notificationType.getId(), notificationWrapper.getCaseId()));
@@ -230,7 +227,8 @@ public class NotificationService {
             }
         }
 
-        if (!readyToListFeatureEnabled && DWP_UPLOAD_RESPONSE_NOTIFICATION.equals(notificationType)) {
+        if (!State.READY_TO_LIST.getId().equals(notificationWrapper.getSscsCaseDataWrapper().getNewSscsCaseData().getCreatedInGapsFrom())
+                && DWP_UPLOAD_RESPONSE_NOTIFICATION.equals(notificationType)) {
             log.info(String.format("Cannot complete notification %s as the appeal was dwpUploadResponse for caseId %s.",
                     notificationType.getId(), notificationWrapper.getCaseId()));
             return false;

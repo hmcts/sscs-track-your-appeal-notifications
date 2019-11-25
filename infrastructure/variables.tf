@@ -139,11 +139,6 @@ variable "save_correspondence" {
   default = true
 }
 
-variable "ready_to_list_robotics_enabled" {
-  type = "string"
-  default = false
-}
-
 variable "trust_all_certs" {
   default = false
 }

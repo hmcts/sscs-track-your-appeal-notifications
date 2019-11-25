@@ -64,25 +64,7 @@ import org.mockito.Captor;
 import org.mockito.Mock;
 import org.slf4j.LoggerFactory;
 import org.springframework.test.util.ReflectionTestUtils;
-import uk.gov.hmcts.reform.sscs.ccd.domain.Address;
-import uk.gov.hmcts.reform.sscs.ccd.domain.Appeal;
-import uk.gov.hmcts.reform.sscs.ccd.domain.Appellant;
-import uk.gov.hmcts.reform.sscs.ccd.domain.Appointee;
-import uk.gov.hmcts.reform.sscs.ccd.domain.Benefit;
-import uk.gov.hmcts.reform.sscs.ccd.domain.BenefitType;
-import uk.gov.hmcts.reform.sscs.ccd.domain.DocumentLink;
-import uk.gov.hmcts.reform.sscs.ccd.domain.Hearing;
-import uk.gov.hmcts.reform.sscs.ccd.domain.HearingOptions;
-import uk.gov.hmcts.reform.sscs.ccd.domain.Name;
-import uk.gov.hmcts.reform.sscs.ccd.domain.Representative;
-import uk.gov.hmcts.reform.sscs.ccd.domain.SscsCaseData;
-import uk.gov.hmcts.reform.sscs.ccd.domain.SscsDocument;
-import uk.gov.hmcts.reform.sscs.ccd.domain.SscsDocumentDetails;
-import uk.gov.hmcts.reform.sscs.ccd.domain.SscsInterlocDecisionDocument;
-import uk.gov.hmcts.reform.sscs.ccd.domain.SscsInterlocDirectionDocument;
-import uk.gov.hmcts.reform.sscs.ccd.domain.SscsStrikeOutDocument;
-import uk.gov.hmcts.reform.sscs.ccd.domain.Subscription;
-import uk.gov.hmcts.reform.sscs.ccd.domain.Subscriptions;
+import uk.gov.hmcts.reform.sscs.ccd.domain.*;
 import uk.gov.hmcts.reform.sscs.config.AppealHearingType;
 import uk.gov.hmcts.reform.sscs.config.NotificationConfig;
 import uk.gov.hmcts.reform.sscs.config.SubscriptionType;
@@ -2082,8 +2064,10 @@ public class NotificationServiceTest {
     }
 
     @Test
-    public void willSendDwpUpload_whenReadyToListFeatureFlagIsOn() throws NotificationClientException {
+    public void willSendDwpUpload_whenCreatedInGapsFromIsReadyToList() throws NotificationClientException {
         CcdNotificationWrapper ccdNotificationWrapper = buildBaseWrapper(DWP_UPLOAD_RESPONSE_NOTIFICATION,  APPELLANT_WITH_ADDRESS, null, null);
+        ccdNotificationWrapper.getNewSscsCaseData().setCreatedInGapsFrom(State.READY_TO_LIST.getId());
+
         Notification notification = new Notification(Template.builder().emailTemplateId(EMAIL_TEMPLATE_ID).smsTemplateId(null).build(), Destination.builder().email("test@testing.com").sms("07823456746").build(), null, new Reference(), null);
         given(factory.create(ccdNotificationWrapper, getSubscriptionWithType(ccdNotificationWrapper))).willReturn(notification);
         given(notificationValidService.isHearingTypeValidToSendNotification(
@@ -2100,8 +2084,10 @@ public class NotificationServiceTest {
     }
 
     @Test
-    public void willNotSendDwpUpload_whenReadyToListFeatureFlagIsOff() {
+    public void willNotSendDwpUpload_whenCreatedInGapsFromIsValidAppeal() {
         CcdNotificationWrapper ccdNotificationWrapper = buildBaseWrapper(DWP_UPLOAD_RESPONSE_NOTIFICATION,  APPELLANT_WITH_ADDRESS, null, null);
+        ccdNotificationWrapper.getNewSscsCaseData().setCreatedInGapsFrom(State.VALID_APPEAL.getId());
+
         Notification notification = new Notification(Template.builder().emailTemplateId(EMAIL_TEMPLATE_ID).smsTemplateId(null).build(), Destination.builder().email("test@testing.com").sms("07823456746").build(), null, new Reference(), null);
         given(factory.create(ccdNotificationWrapper, getSubscriptionWithType(ccdNotificationWrapper))).willReturn(notification);
         given(notificationValidService.isHearingTypeValidToSendNotification(
@@ -2110,7 +2096,7 @@ public class NotificationServiceTest {
                 .willReturn(true);
         given(notificationValidService.isFallbackLetterRequiredForSubscriptionType(any(), any(), any())).willReturn(true);
 
-        getNotificationService(true, true, true, true, false).manageNotificationAndSubscription(ccdNotificationWrapper);
+        getNotificationService(true, true, true, true).manageNotificationAndSubscription(ccdNotificationWrapper);
 
         then(notificationHandler).shouldHaveNoMoreInteractions();
     }
@@ -2153,14 +2139,10 @@ public class NotificationServiceTest {
     }
 
     private NotificationService getNotificationService(Boolean bundledLettersOn, Boolean lettersOn, Boolean interlocLettersOn, Boolean docmosisLettersOn) {
-        return getNotificationService(bundledLettersOn, lettersOn, interlocLettersOn, docmosisLettersOn, true);
-    }
-
-    private NotificationService getNotificationService(Boolean bundledLettersOn, Boolean lettersOn, Boolean interlocLettersOn, Boolean docmosisLettersOn, boolean readyToListFeatureEnabled) {
         SendNotificationService sendNotificationService = new SendNotificationService(notificationSender, evidenceManagementService, sscsGeneratePdfService, notificationHandler, notificationValidService, bundledLetterTemplateUtil, pdfLetterService);
 
         final NotificationService notificationService = new NotificationService(factory, reminderService,
-            notificationValidService, notificationHandler, outOfHoursCalculator, notificationConfig, sendNotificationService, readyToListFeatureEnabled
+            notificationValidService, notificationHandler, outOfHoursCalculator, notificationConfig, sendNotificationService
         );
         ReflectionTestUtils.setField(sendNotificationService, "bundledLettersOn", bundledLettersOn);
         ReflectionTestUtils.setField(sendNotificationService, "lettersOn", lettersOn);
