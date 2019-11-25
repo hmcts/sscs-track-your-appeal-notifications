@@ -3220,7 +3220,7 @@ public class NotificationsIt {
     }
 
     @Test
-    @Parameters({"appealWithdrawn"})
+    @Parameters({"appealWithdrawn", "directionIssued"})
     public void shouldSendNotificationLetterWhenAppealDormantAndNotificationType(String notificationEventType) throws Exception {
         json = json.replace("appealCreated", State.DORMANT_APPEAL_STATE.toString());
         json = json.replace("appealReceived", notificationEventType);
@@ -3231,6 +3231,9 @@ public class NotificationsIt {
         verify(notificationClient, atMostOnce()).sendEmail(any(), any(), any(), any());
         verify(notificationClient, atMost(2)).sendSms(any(), any(), any(), any(), any());
         verify(notificationClient, atMost(2)).sendLetter(any(), any(), any());
+        if (notificationEventType.equals(DIRECTION_ISSUED.getId())) {
+            verify(notificationClient, atMost(2)).sendPrecompiledLetterWithInputStream(any(), any());
+        }
         verifyNoMoreInteractions(notificationClient);
     }
 
