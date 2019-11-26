@@ -90,7 +90,7 @@ bootRun {
 }
 
 ext {
-    springCloudVersion = 'Finchley.SR1'
+    springCloudVersion = 'Greenwich.SR4'
 }
 
 dependencyManagement {
