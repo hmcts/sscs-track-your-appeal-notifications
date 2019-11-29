@@ -91,7 +91,7 @@ public class NotificationSenderTest {
 
         notificationSender.sendEmail(templateId, emailAddress, personalisation, reference, NotificationEventType.APPEAL_RECEIVED_NOTIFICATION, SSCS_CASE_DATA);
 
-        verifyZeroInteractions(testNotificationClient);
+        verifyNoInteractions(testNotificationClient);
         verify(notificationClient).sendEmail(templateId, emailAddress, personalisation, reference);
     }
 
@@ -118,7 +118,7 @@ public class NotificationSenderTest {
 
         notificationSender.sendSms(templateId, phoneNumber, personalisation, reference, SMS_SENDER, NotificationEventType.APPEAL_RECEIVED_NOTIFICATION, SSCS_CASE_DATA);
 
-        verifyZeroInteractions(testNotificationClient);
+        verifyNoInteractions(testNotificationClient);
         verify(notificationClient).sendSms(templateId, phoneNumber, personalisation, reference, SMS_SENDER);
     }
 
@@ -132,7 +132,7 @@ public class NotificationSenderTest {
 
         notificationSender.sendSms(templateId, phoneNumber, personalisation, reference, SMS_SENDER, NotificationEventType.APPEAL_RECEIVED_NOTIFICATION, SSCS_CASE_DATA);
 
-        verifyZeroInteractions(notificationClient);
+        verifyNoInteractions(notificationClient);
         verify(testNotificationClient).sendSms(templateId, phoneNumber, personalisation, reference, SMS_SENDER);
     }
 
@@ -146,7 +146,7 @@ public class NotificationSenderTest {
         byte[] sampleDirectionCoversheet = IOUtils.toByteArray(getClass().getClassLoader().getResourceAsStream("pdfs/direction-notice-coversheet-sample.pdf"));
         notificationSender.sendBundledLetter(postcode, sampleDirectionCoversheet, NotificationEventType.APPEAL_RECEIVED_NOTIFICATION, "Bob Squires", CCD_CASE_ID);
 
-        verifyZeroInteractions(testNotificationClient);
+        verifyNoInteractions(testNotificationClient);
         verify(notificationClient).sendPrecompiledLetterWithInputStream(any(), any());
     }
 
@@ -161,7 +161,7 @@ public class NotificationSenderTest {
         byte[] sampleDirectionCoversheet = IOUtils.toByteArray(getClass().getClassLoader().getResourceAsStream("pdfs/direction-notice-coversheet-sample.pdf"));
         notificationSender.sendBundledLetter(postcode, sampleDirectionCoversheet, NotificationEventType.APPEAL_RECEIVED_NOTIFICATION, "Bob Squires", CCD_CASE_ID);
 
-        verifyZeroInteractions(notificationClient);
+        verifyNoInteractions(notificationClient);
         verify(testNotificationClient).sendPrecompiledLetterWithInputStream(any(), any());
     }
 
@@ -175,7 +175,7 @@ public class NotificationSenderTest {
         Address address = Address.builder().line1("1 Appellant Ave").town("Sometown").county("Somecounty").postcode(postcode).build();
         notificationSender.sendLetter(templateId, address, personalisation, NotificationEventType.APPEAL_RECEIVED_NOTIFICATION, "Bob Squires", CCD_CASE_ID);
 
-        verifyZeroInteractions(testNotificationClient);
+        verifyNoInteractions(testNotificationClient);
         verify(notificationClient).sendLetter(any(), any(), any());
     }
 
@@ -190,7 +190,7 @@ public class NotificationSenderTest {
         Address address = Address.builder().line1("1 Appellant Ave").town("Sometown").county("Somecounty").postcode(postcode).build();
         notificationSender.sendLetter(templateId, address, personalisation, NotificationEventType.APPEAL_RECEIVED_NOTIFICATION, "Bob Squires", CCD_CASE_ID);
 
-        verifyZeroInteractions(notificationClient);
+        verifyNoInteractions(notificationClient);
         verify(testNotificationClient).sendLetter(any(), any(), any());
     }
 
@@ -208,7 +208,7 @@ public class NotificationSenderTest {
 
         notificationSender.sendEmail(templateId, emailAddress, personalisation, reference, NotificationEventType.APPEAL_RECEIVED_NOTIFICATION, SSCS_CASE_DATA);
 
-        verifyZeroInteractions(testNotificationClient);
+        verifyNoInteractions(testNotificationClient);
         verify(notificationClient).sendEmail(templateId, emailAddress, personalisation, reference);
         verify(markdownTransformationService).toHtml(eq(null));
 
@@ -237,7 +237,7 @@ public class NotificationSenderTest {
 
         notificationSender.sendSms(templateId, smsNumber, personalisation, reference, "Sender", NotificationEventType.APPEAL_RECEIVED_NOTIFICATION, SSCS_CASE_DATA);
 
-        verifyZeroInteractions(testNotificationClient);
+        verifyNoInteractions(testNotificationClient);
         verify(notificationClient).sendSms(templateId, smsNumber, personalisation, reference, "Sender");
         verify(markdownTransformationService).toHtml(eq(null));
 

@@ -55,7 +55,6 @@ public class SendNotificationService {
     private final SscsGeneratePdfService sscsGeneratePdfService;
     private final NotificationHandler notificationHandler;
     private final NotificationValidService notificationValidService;
-    private final BundledLetterTemplateUtil bundledLetterTemplateUtil;
     private final PdfLetterService pdfLetterService;
 
     @Autowired
@@ -65,7 +64,6 @@ public class SendNotificationService {
             SscsGeneratePdfService sscsGeneratePdfService,
             NotificationHandler notificationHandler,
             NotificationValidService notificationValidService,
-            BundledLetterTemplateUtil bundledLetterTemplateUtil,
             PdfLetterService pdfLetterService
     ) {
         this.notificationSender = notificationSender;
@@ -73,7 +71,6 @@ public class SendNotificationService {
         this.sscsGeneratePdfService = sscsGeneratePdfService;
         this.notificationHandler = notificationHandler;
         this.notificationValidService = notificationValidService;
-        this.bundledLetterTemplateUtil = bundledLetterTemplateUtil;
         this.pdfLetterService = pdfLetterService;
     }
 
@@ -285,35 +282,19 @@ public class SendNotificationService {
                     letter = buildBundledLetter(addBlankPageAtTheEndIfOddPage(letter), coversheet);
                 }
                 bundledLetter = letter;
-            } else {
-                //FIXME: Remove this when we have removed all templates from pdf common
-                notification.getPlaceholders().put(LETTER_ADDRESS_LINE_1, addressToUse.getLine1());
-                notification.getPlaceholders().put(LETTER_ADDRESS_LINE_2, addressToUse.getLine2());
-                notification.getPlaceholders().put(LETTER_ADDRESS_LINE_3, addressToUse.getTown());
-                notification.getPlaceholders().put(LETTER_ADDRESS_LINE_4, addressToUse.getCounty());
-                notification.getPlaceholders().put(LETTER_ADDRESS_POSTCODE, addressToUse.getPostcode());
-                notification.getPlaceholders().put(LETTER_NAME, nameToUse.getFullNameNoTitle());
-                if (!notification.getPlaceholders().containsKey(APPEAL_RESPOND_DATE)) {
-                    ZonedDateTime appealReceivedDate = ZonedDateTime.now().plusSeconds(delay);
-                    notification.getPlaceholders().put(APPEAL_RESPOND_DATE, appealReceivedDate.format(DateTimeFormatter.ofPattern(RESPONSE_DATE_FORMAT)));
-                }
-                bundledLetter = buildBundledLetter(
-                        generateCoveringLetter(wrapper, notification, subscriptionType),
-                        downloadAssociatedCasePdf(wrapper)
-                );
-            }
 
-            NotificationHandler.SendNotification sendNotification = () ->
-                    notificationSender.sendBundledLetter(
-                            wrapper.getNewSscsCaseData().getAppeal().getAppellant().getAddress().getPostcode(),   // Used for whitelisting only
-                            bundledLetter,
-                            wrapper.getNotificationType(),
-                            nameToUse.getFullNameNoTitle(),
-                            wrapper.getCaseId()
-                    );
-            if (ArrayUtils.isNotEmpty(bundledLetter)) {
-                notificationHandler.sendNotification(wrapper, notification.getLetterTemplate(), NOTIFICATION_TYPE_LETTER, sendNotification);
-                return true;
+                NotificationHandler.SendNotification sendNotification = () ->
+                        notificationSender.sendBundledLetter(
+                                wrapper.getNewSscsCaseData().getAppeal().getAppellant().getAddress().getPostcode(),   // Used for whitelisting only
+                                bundledLetter,
+                                wrapper.getNotificationType(),
+                                nameToUse.getFullNameNoTitle(),
+                                wrapper.getCaseId()
+                        );
+                if (ArrayUtils.isNotEmpty(bundledLetter)) {
+                    notificationHandler.sendNotification(wrapper, notification.getLetterTemplate(), NOTIFICATION_TYPE_LETTER, sendNotification);
+                    return true;
+                }
             }
         } catch (IOException ioe) {
             NotificationServiceException exception = new NotificationServiceException(wrapper.getCaseId(), ioe);
@@ -321,17 +302,6 @@ public class SendNotificationService {
             throw exception;
         }
         return false;
-    }
-
-    private byte[] generateCoveringLetter(NotificationWrapper wrapper, Notification notification, SubscriptionType subscriptionType) {
-        String bundledLetterTemplate = bundledLetterTemplateUtil.getBundledLetterTemplate(
-                wrapper.getNotificationType(), wrapper.getNewSscsCaseData(), subscriptionType
-        );
-        return sscsGeneratePdfService.generatePdf(
-                bundledLetterTemplate,
-                wrapper.getNewSscsCaseData(),
-                Long.parseLong(wrapper.getNewSscsCaseData().getCcdCaseId()), notification.getPlaceholders()
-        );
     }
 
     private byte[] downloadAssociatedCasePdf(NotificationWrapper wrapper) {
@@ -352,10 +322,7 @@ public class SendNotificationService {
 
     protected static String getBundledLetterDocumentUrl(NotificationEventType notificationEventType, SscsCaseData newSscsCaseData) {
         String documentUrl = null;
-        if ((STRUCK_OUT.equals(notificationEventType))
-                && (newSscsCaseData.getSscsStrikeOutDocument() != null)) {
-            documentUrl = newSscsCaseData.getSscsStrikeOutDocument().getDocumentLink().getDocumentUrl();
-        } else if (DIRECTION_ISSUED.equals(notificationEventType)) {
+        if (DIRECTION_ISSUED.equals(notificationEventType)) {
             SscsDocument sscsDocument = newSscsCaseData.getLatestDocumentForDocumentType(DocumentType.DIRECTION_NOTICE);
             if (sscsDocument != null) {
                 documentUrl = sscsDocument.getValue().getDocumentLink().getDocumentUrl();
@@ -365,9 +332,6 @@ public class SendNotificationService {
             if (sscsDocument != null) {
                 documentUrl = sscsDocument.getValue().getDocumentLink().getDocumentUrl();
             }
-        } else if ((JUDGE_DECISION_APPEAL_TO_PROCEED.equals(notificationEventType) || TCW_DECISION_APPEAL_TO_PROCEED.equals(notificationEventType))
-                && (newSscsCaseData.getSscsInterlocDecisionDocument() != null)) {
-            documentUrl = newSscsCaseData.getSscsInterlocDecisionDocument().getDocumentLink().getDocumentUrl();
         }
         return documentUrl;
     }

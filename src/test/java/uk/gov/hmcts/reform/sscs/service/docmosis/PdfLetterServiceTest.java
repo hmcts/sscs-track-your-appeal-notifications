@@ -184,7 +184,7 @@ public class PdfLetterServiceTest {
         Notification notification = Notification.builder().template(Template.builder().docmosisTemplateId(null).build()).placeholders(new HashMap<>()).build();
 
         byte[] bytes = pdfLetterService.generateLetter(wrapper, notification, SubscriptionType.REPRESENTATIVE);
-        verifyZeroInteractions(docmosisPdfService);
+        verifyNoInteractions(docmosisPdfService);
         assertTrue(ArrayUtils.isEmpty(bytes));
     }
 

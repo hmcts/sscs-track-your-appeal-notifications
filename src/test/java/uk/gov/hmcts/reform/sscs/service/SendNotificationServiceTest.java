@@ -144,9 +144,6 @@ public class SendNotificationServiceTest {
     private NotificationValidService notificationValidService;
 
     @Mock
-    private BundledLetterTemplateUtil bundledLetterTemplateUtil;
-
-    @Mock
     private PdfLetterService pdfLetterService;
 
     private SendNotificationService classUnderTest;
@@ -160,7 +157,7 @@ public class SendNotificationServiceTest {
     public void setup() {
         initMocks(this);
 
-        classUnderTest = new SendNotificationService(notificationSender, evidenceManagementService, pdfService, notificationHandler, notificationValidService, bundledLetterTemplateUtil, pdfLetterService);
+        classUnderTest = new SendNotificationService(notificationSender, evidenceManagementService, pdfService, notificationHandler, notificationValidService, pdfLetterService);
         classUnderTest.bundledLettersOn = true;
         classUnderTest.lettersOn = true;
         classUnderTest.docmosisLettersOn = true;
@@ -248,7 +245,7 @@ public class SendNotificationServiceTest {
         CcdNotificationWrapper wrapper = buildBaseWrapper(APPELLANT_WITH_ADDRESS, CASE_UPDATED);
         classUnderTest.sendEmailSmsLetterNotification(wrapper, EMPTY_TEMPLATE_NOTIFICATION, appellantEmptySubscription, FALLBACK_LETTER_SUBSCRIPTION_TYPES.get(0));
 
-        verifyZeroInteractions(notificationHandler);
+        verifyNoInteractions(notificationHandler);
         verifyExpectedErrorLogMessage(mockAppender, captorLoggingEvent, wrapper.getNewSscsCaseData().getCcdCaseId(), "Did not send a notification for event");
     }
 
@@ -275,7 +272,7 @@ public class SendNotificationServiceTest {
         CcdNotificationWrapper wrapper = buildBaseWrapper(APPELLANT_WITH_ADDRESS, eventType);
         classUnderTest.sendEmailSmsLetterNotification(wrapper, LETTER_NOTIFICATION, appellantEmptySubscription, eventType);
 
-        verifyZeroInteractions(notificationHandler);
+        verifyNoInteractions(notificationHandler);
         verifyExpectedErrorLogMessage(mockAppender, captorLoggingEvent, wrapper.getNewSscsCaseData().getCcdCaseId(), "Did not send a notification for event");
     }
 
@@ -300,18 +297,15 @@ public class SendNotificationServiceTest {
         CcdNotificationWrapper wrapper = buildBaseWrapper(APPELLANT_WITH_ADDRESS, eventType);
         classUnderTest.sendEmailSmsLetterNotification(wrapper, LETTER_NOTIFICATION, appellantEmptySubscription, eventType);
 
-        verifyZeroInteractions(notificationHandler);
+        verifyNoInteractions(notificationHandler);
         verifyExpectedErrorLogMessage(mockAppender, captorLoggingEvent, wrapper.getNewSscsCaseData().getCcdCaseId(), "Did not send a notification for event");
     }
 
     private Object[] getInterlocLettersEventTypes() {
         return new Object[] {
-            STRUCK_OUT,
             DIRECTION_ISSUED,
             DECISION_ISSUED,
             REQUEST_INFO_INCOMPLETE,
-            JUDGE_DECISION_APPEAL_TO_PROCEED,
-            TCW_DECISION_APPEAL_TO_PROCEED,
             NON_COMPLIANT_NOTIFICATION
         };
     }
@@ -354,7 +348,7 @@ public class SendNotificationServiceTest {
         CcdNotificationWrapper wrapper = buildBaseWrapper(APPELLANT_WITH_ADDRESS, NotificationEventType.CASE_UPDATED, REP_WITH_ADDRESS);
         classUnderTest.sendEmailSmsLetterNotification(wrapper, EMPTY_TEMPLATE_NOTIFICATION, appellantEmptySubscription, FALLBACK_LETTER_SUBSCRIPTION_TYPES.get(0));
 
-        verifyZeroInteractions(notificationHandler);
+        verifyNoInteractions(notificationHandler);
         verifyExpectedErrorLogMessage(mockAppender, captorLoggingEvent, wrapper.getNewSscsCaseData().getCcdCaseId(), "Did not send a notification for event");
     }
 
@@ -406,7 +400,7 @@ public class SendNotificationServiceTest {
         CcdNotificationWrapper wrapper = buildBaseWrapper(APPELLANT_WITH_EMPTY_ADDRESS, NotificationEventType.CASE_UPDATED);
         classUnderTest.sendLetterNotification(wrapper, appellantEmptySubscription.getSubscription(), LETTER_NOTIFICATION, appellantEmptySubscription, NotificationEventType.CASE_UPDATED);
 
-        verifyZeroInteractions(notificationSender);
+        verifyNoInteractions(notificationSender);
         verifyExpectedErrorLogMessage(mockAppender, captorLoggingEvent, wrapper.getNewSscsCaseData().getCcdCaseId(), "Failed to send letter for event id");
     }
 
@@ -416,7 +410,7 @@ public class SendNotificationServiceTest {
         CcdNotificationWrapper wrapper = buildBaseWrapper(APPELLANT_WITH_NO_ADDRESS, NotificationEventType.CASE_UPDATED);
         classUnderTest.sendLetterNotification(wrapper, appellantEmptySubscription.getSubscription(), LETTER_NOTIFICATION, appellantEmptySubscription, NotificationEventType.CASE_UPDATED);
 
-        verifyZeroInteractions(notificationSender);
+        verifyNoInteractions(notificationSender);
         verifyExpectedErrorLogMessage(mockAppender, captorLoggingEvent, wrapper.getNewSscsCaseData().getCcdCaseId(), "Failed to send letter for event id");
     }
 
@@ -489,7 +483,7 @@ public class SendNotificationServiceTest {
         classUnderTest.lettersOn = false;
         SubscriptionWithType appellantEmptySubscription = new SubscriptionWithType(EMPTY_SUBSCRIPTION, APPELLANT);
         classUnderTest.sendEmailSmsLetterNotification(buildBaseWrapper(APPELLANT_WITH_ADDRESS, NotificationEventType.APPEAL_RECEIVED_NOTIFICATION), LETTER_NOTIFICATION, appellantEmptySubscription, NotificationEventType.APPEAL_RECEIVED_NOTIFICATION);
-        verifyZeroInteractions(notificationHandler);
+        verifyNoInteractions(notificationHandler);
     }
 
     @Test
@@ -546,7 +540,7 @@ public class SendNotificationServiceTest {
         classUnderTest.sendEmailSmsLetterNotification(
                 buildBaseWrapper(APPELLANT_WITH_ADDRESS, NotificationEventType.APPEAL_RECEIVED_NOTIFICATION, null, benefit, receivedVia),
                 DOCMOSIS_LETTER_NOTIFICATION, appellantEmptySubscription, NotificationEventType.APPEAL_RECEIVED_NOTIFICATION);
-        verifyZeroInteractions(pdfLetterService);
+        verifyNoInteractions(pdfLetterService);
         verify(notificationHandler, atLeastOnce()).sendNotification(any(), any(), eq("Letter"), any());
     }
 

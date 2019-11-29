@@ -66,7 +66,6 @@ import uk.gov.hmcts.reform.sscs.domain.notify.NotificationEventType;
 import uk.gov.hmcts.reform.sscs.factory.NotificationFactory;
 import uk.gov.hmcts.reform.sscs.idam.IdamService;
 import uk.gov.hmcts.reform.sscs.service.AuthorisationService;
-import uk.gov.hmcts.reform.sscs.service.BundledLetterTemplateUtil;
 import uk.gov.hmcts.reform.sscs.service.CcdNotificationsPdfService;
 import uk.gov.hmcts.reform.sscs.service.DocmosisPdfService;
 import uk.gov.hmcts.reform.sscs.service.EvidenceManagementService;
@@ -149,9 +148,6 @@ public class NotificationsIt {
     private NotificationConfig notificationConfig;
 
     @Autowired
-    private BundledLetterTemplateUtil bundledLetterTemplateUtil;
-
-    @Autowired
     private PdfLetterService pdfLetterService;
 
     @Autowired
@@ -187,7 +183,7 @@ public class NotificationsIt {
     public void setup() throws Exception {
         NotificationSender sender = new NotificationSender(notificationClient, null, notificationBlacklist, ccdNotificationsPdfService, markdownTransformationService, saveLetterCorrespondenceAsyncService, saveCorrespondence);
 
-        SendNotificationService sendNotificationService = new SendNotificationService(sender, evidenceManagementService, sscsGeneratePdfService, notificationHandler, notificationValidService, bundledLetterTemplateUtil, pdfLetterService);
+        SendNotificationService sendNotificationService = new SendNotificationService(sender, evidenceManagementService, sscsGeneratePdfService, notificationHandler, notificationValidService, pdfLetterService);
 
         ReflectionTestUtils.setField(sendNotificationService, "bundledLettersOn", true);
         ReflectionTestUtils.setField(sendNotificationService, "lettersOn", true);
@@ -1284,62 +1280,6 @@ public class NotificationsIt {
     private Object[] generateBundledLetterNotificationScenarios() {
         return new Object[]{
             new Object[]{
-                STRUCK_OUT,
-                "paper",
-                false,
-                false,
-                "1"
-            },
-            new Object[]{
-                STRUCK_OUT,
-                "oral",
-                false,
-                false,
-                "1"
-            },
-            new Object[]{
-                STRUCK_OUT,
-                "paper",
-                false,
-                true,
-                "1"
-            },
-            new Object[]{
-                STRUCK_OUT,
-                "oral",
-                false,
-                true,
-                "1"
-            },
-            new Object[]{
-                STRUCK_OUT,
-                "paper",
-                true,
-                false,
-                "2"
-            },
-            new Object[]{
-                STRUCK_OUT,
-                "oral",
-                true,
-                false,
-                "2"
-            },
-            new Object[]{
-                STRUCK_OUT,
-                "paper",
-                true,
-                true,
-                "2"
-            },
-            new Object[]{
-                STRUCK_OUT,
-                "oral",
-                true,
-                true,
-                "2"
-            },
-            new Object[]{
                 DIRECTION_ISSUED,
                 "paper",
                 false,
@@ -1365,13 +1305,6 @@ public class NotificationsIt {
                 "oral",
                 false,
                 false,
-                "1"
-            },
-            new Object[]{
-                STRUCK_OUT,
-                "paper",
-                false,
-                true,
                 "1"
             },
             new Object[]{
@@ -1439,117 +1372,11 @@ public class NotificationsIt {
             },
             new Object[]{
                 DECISION_ISSUED,
-                "oral",
-                true,
-                true,
-                "2"
-            },
-            new Object[]{
-                JUDGE_DECISION_APPEAL_TO_PROCEED,
-                "paper",
-                false,
-                false,
-                "1"
-            },
-            new Object[]{
-                JUDGE_DECISION_APPEAL_TO_PROCEED,
-                "oral",
-                false,
-                false,
-                "1"
-            },
-            new Object[]{
-                JUDGE_DECISION_APPEAL_TO_PROCEED,
-                "paper",
-                false,
-                true,
-                "1"
-            },
-            new Object[]{
-                JUDGE_DECISION_APPEAL_TO_PROCEED,
-                "oral",
-                false,
-                true,
-                "1"
-            },
-            new Object[]{
-                JUDGE_DECISION_APPEAL_TO_PROCEED,
-                "paper",
-                true,
-                false,
-                "2"
-            },
-            new Object[]{
-                JUDGE_DECISION_APPEAL_TO_PROCEED,
-                "oral",
-                true,
-                false,
-                "2"
-            },
-            new Object[]{
-                JUDGE_DECISION_APPEAL_TO_PROCEED,
-                "paper",
-                true,
-                true,
-                "2"
-            },
-            new Object[]{
-                JUDGE_DECISION_APPEAL_TO_PROCEED,
-                "oral",
-                true,
-                true,
-                "2"
-            },
-            new Object[]{
-                TCW_DECISION_APPEAL_TO_PROCEED,
-                "oral",
-                false,
-                false,
-                "1"
-            },
-            new Object[]{
-                TCW_DECISION_APPEAL_TO_PROCEED,
-                "paper",
-                false,
-                true,
-                "1"
-            },
-            new Object[]{
-                TCW_DECISION_APPEAL_TO_PROCEED,
-                "oral",
-                false,
-                true,
-                "1"
-            },
-            new Object[]{
-                TCW_DECISION_APPEAL_TO_PROCEED,
-                "paper",
-                true,
-                false,
-                "2"
-            },
-            new Object[]{
-                TCW_DECISION_APPEAL_TO_PROCEED,
-                "oral",
-                true,
-                false,
-                "2"
-            },
-            new Object[]{
-                TCW_DECISION_APPEAL_TO_PROCEED,
-                "paper",
-                true,
-                true,
-                "2"
-            },
-            new Object[]{
-                TCW_DECISION_APPEAL_TO_PROCEED,
                 "oral",
                 true,
                 true,
                 "2"
             }
-
         };
     }
 
