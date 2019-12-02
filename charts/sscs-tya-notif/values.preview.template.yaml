@@ -34,5 +34,5 @@ java:
     JOB_SCHEDULER_DB_CONNECTION_OPTIONS: ""
     HOURS_START_TIME: 0
     HOURS_END_TIME: 23
-postgresql:
-  enabled: true
+  postgresql:
+    enabled: true
