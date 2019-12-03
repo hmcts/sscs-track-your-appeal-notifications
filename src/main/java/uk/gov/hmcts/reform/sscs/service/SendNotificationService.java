@@ -52,7 +52,6 @@ public class SendNotificationService {
 
     private final NotificationSender notificationSender;
     private final EvidenceManagementService evidenceManagementService;
-    private final SscsGeneratePdfService sscsGeneratePdfService;
     private final NotificationHandler notificationHandler;
     private final NotificationValidService notificationValidService;
     private final PdfLetterService pdfLetterService;
@@ -61,14 +60,12 @@ public class SendNotificationService {
     public SendNotificationService(
             NotificationSender notificationSender,
             EvidenceManagementService evidenceManagementService,
-            SscsGeneratePdfService sscsGeneratePdfService,
             NotificationHandler notificationHandler,
             NotificationValidService notificationValidService,
             PdfLetterService pdfLetterService
     ) {
         this.notificationSender = notificationSender;
         this.evidenceManagementService = evidenceManagementService;
-        this.sscsGeneratePdfService = sscsGeneratePdfService;
         this.notificationHandler = notificationHandler;
         this.notificationValidService = notificationValidService;
         this.pdfLetterService = pdfLetterService;
@@ -173,7 +170,7 @@ public class SendNotificationService {
     private boolean sendMandatoryLetterNotification(NotificationWrapper wrapper, Notification notification, SubscriptionType subscriptionType, Address addressToUse) {
         if (isMandatoryLetterEventType(wrapper)) {
             if ((bundledLettersOn && isBundledLetter(wrapper.getNotificationType())) || (docmosisLettersOn && isNotBlank(notification.getDocmosisLetterTemplate()) && isDocmosisLetterValidToSend(wrapper))) {
-                return sendBundledLetterNotification(wrapper, notification, addressToUse, getNameToUseForLetter(wrapper, subscriptionType), subscriptionType);
+                return sendBundledLetterNotification(wrapper, notification, getNameToUseForLetter(wrapper, subscriptionType), subscriptionType);
             } else if (hasLetterTemplate(notification)) {
                 NotificationHandler.SendNotification sendNotification = () ->
                     sendLetterNotificationToAddress(wrapper, notification, addressToUse, subscriptionType);
@@ -188,7 +185,7 @@ public class SendNotificationService {
     private boolean sendFallbackLetterNotification(NotificationWrapper wrapper, Subscription subscription, Notification notification, SubscriptionWithType subscriptionWithType, NotificationEventType eventType, Address addressToUse) {
         if (hasNoSubscriptions(subscription) && hasLetterTemplate(notification) && isFallbackLetterRequired(wrapper, subscriptionWithType, subscription, eventType, notificationValidService)) {
             if (bundledLettersOn && isBundledLetter(wrapper.getNotificationType()) || (docmosisLettersOn && isNotBlank(notification.getDocmosisLetterTemplate())) && isDocmosisLetterValidToSend(wrapper)) {
-                return sendBundledLetterNotification(wrapper, notification, getAddressToUseForLetter(wrapper, subscriptionWithType.getSubscriptionType()), getNameToUseForLetter(wrapper, subscriptionWithType.getSubscriptionType()), subscriptionWithType.getSubscriptionType());
+                return sendBundledLetterNotification(wrapper, notification, getNameToUseForLetter(wrapper, subscriptionWithType.getSubscriptionType()), subscriptionWithType.getSubscriptionType());
             } else {
                 NotificationHandler.SendNotification sendNotification = () ->
                     sendLetterNotificationToAddress(wrapper, notification, addressToUse, subscriptionWithType.getSubscriptionType());
@@ -268,7 +265,7 @@ public class SendNotificationService {
                 && isNotBlank(addressToUse.getPostcode());
     }
 
-    private boolean sendBundledLetterNotification(NotificationWrapper wrapper, Notification notification, Address addressToUse, Name nameToUse, SubscriptionType subscriptionType) {
+    private boolean sendBundledLetterNotification(NotificationWrapper wrapper, Notification notification, Name nameToUse, SubscriptionType subscriptionType) {
         try {
             byte[] bundledLetter;
             if (isNotBlank(notification.getDocmosisLetterTemplate())) {

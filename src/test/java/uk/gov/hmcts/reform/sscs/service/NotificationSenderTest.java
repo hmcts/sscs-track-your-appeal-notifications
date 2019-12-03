@@ -78,7 +78,7 @@ public class NotificationSenderTest {
 
         notificationSender.sendEmail(templateId, emailAddress, personalisation, reference, NotificationEventType.APPEAL_RECEIVED_NOTIFICATION, SSCS_CASE_DATA);
 
-        verifyZeroInteractions(notificationClient);
+        verifyNoInteractions(notificationClient);
         verify(testNotificationClient).sendEmail(templateId, emailAddress, personalisation, reference);
     }
 
@@ -105,7 +105,7 @@ public class NotificationSenderTest {
 
         notificationSender.sendEmail(templateId, emailAddress, personalisation, reference, NotificationEventType.APPEAL_RECEIVED_NOTIFICATION, SSCS_CASE_DATA);
 
-        verifyZeroInteractions(notificationClient);
+        verifyNoInteractions(notificationClient);
         verify(testNotificationClient).sendEmail(templateId, emailAddress, personalisation, reference);
     }
 

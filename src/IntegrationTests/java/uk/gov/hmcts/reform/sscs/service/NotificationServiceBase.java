@@ -98,9 +98,6 @@ public class NotificationServiceBase {
     private EvidenceManagementService evidenceManagementService;
 
     @Mock
-    private SscsGeneratePdfService sscsGeneratePdfService;
-
-    @Mock
     private PdfLetterService pdfLetterService;
 
     @Mock
@@ -132,7 +129,7 @@ public class NotificationServiceBase {
 
     NotificationService initialiseNotificationService(boolean lettersOn) {
         SendNotificationService sendNotificationService = new SendNotificationService(notificationSender,
-            evidenceManagementService, sscsGeneratePdfService, notificationHandler, notificationValidService, pdfLetterService);
+            evidenceManagementService, notificationHandler, notificationValidService, pdfLetterService);
         ReflectionTestUtils.setField(sendNotificationService, "bundledLettersOn", false);
         ReflectionTestUtils.setField(sendNotificationService, "lettersOn", lettersOn);
         ReflectionTestUtils.setField(sendNotificationService, "interlocLettersOn", false);
