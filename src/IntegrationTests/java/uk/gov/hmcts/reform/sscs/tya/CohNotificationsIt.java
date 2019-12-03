@@ -133,7 +133,6 @@ public class CohNotificationsIt {
         NotificationSender sender = new NotificationSender(notificationClient, null, notificationBlacklist, ccdNotificationsPdfService, markdownTransformationService, saveLetterCorrespondenceAsyncService, saveCorrespondence);
 
         SendNotificationService sendNotificationService = new SendNotificationService(sender, evidenceManagementService, notificationHandler, notificationValidService, pdfLetterService);
-        ReflectionTestUtils.setField(sendNotificationService, "bundledLettersOn", true);
         ReflectionTestUtils.setField(sendNotificationService, "lettersOn", true);
 
         NotificationService service = new NotificationService(factory, reminderService, notificationValidService, notificationHandler, outOfHoursCalculator, notificationConfig, sendNotificationService);

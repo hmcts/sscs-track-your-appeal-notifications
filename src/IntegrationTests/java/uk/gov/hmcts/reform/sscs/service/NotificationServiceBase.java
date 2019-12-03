@@ -130,10 +130,7 @@ public class NotificationServiceBase {
     NotificationService initialiseNotificationService(boolean lettersOn) {
         SendNotificationService sendNotificationService = new SendNotificationService(notificationSender,
             evidenceManagementService, notificationHandler, notificationValidService, pdfLetterService);
-        ReflectionTestUtils.setField(sendNotificationService, "bundledLettersOn", false);
         ReflectionTestUtils.setField(sendNotificationService, "lettersOn", lettersOn);
-        ReflectionTestUtils.setField(sendNotificationService, "interlocLettersOn", false);
-        ReflectionTestUtils.setField(sendNotificationService, "docmosisLettersOn", false);
         return new NotificationService(notificationFactory, reminderService, notificationValidService,
             notificationHandler, outOfHoursCalculator, notificationConfig, sendNotificationService
         );

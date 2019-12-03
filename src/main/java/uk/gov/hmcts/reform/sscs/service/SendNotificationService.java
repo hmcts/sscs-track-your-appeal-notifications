@@ -35,17 +35,8 @@ public class SendNotificationService {
     static final String DM_STORE_USER_ID = "sscs";
     private static final String NOTIFICATION_TYPE_LETTER = "Letter";
 
-    @Value("${feature.bundled_letters_on}")
-    Boolean bundledLettersOn;
-
-    @Value("${feature.docmosis_letters_on}")
-    Boolean docmosisLettersOn;
-
     @Value("${feature.letters_on}")
     Boolean lettersOn;
-
-    @Value("${feature.interloc_letters_on}")
-    Boolean interlocLettersOn;
 
     @Value("${reminder.dwpResponseLateReminder.delay.seconds}")
     private long delay;
@@ -83,8 +74,8 @@ public class SendNotificationService {
         boolean isDocmosisLetter = DOCMOSIS_LETTERS.contains(eventType);
 
         boolean letterSent = false;
-        if (allowNonInterlocLetterToBeSent(isInterlocLetter)
-                || allowInterlocLetterToBeSent(isInterlocLetter)
+        if (allowNonInterlocLetterToBeSent(notification, isInterlocLetter)
+                || allowInterlocLetterToBeSent(notification, isInterlocLetter)
                 || allowDocmosisLetterToBeSent(notification, isDocmosisLetter)) {
             letterSent = sendLetterNotification(wrapper, subscriptionWithType.getSubscription(), notification, subscriptionWithType, eventType);
         }
@@ -99,15 +90,15 @@ public class SendNotificationService {
     }
 
     private boolean allowDocmosisLetterToBeSent(Notification notification, boolean isDocmosisLetter) {
-        return docmosisLettersOn && isDocmosisLetter && isNotBlank(notification.getDocmosisLetterTemplate());
+        return isDocmosisLetter && isNotBlank(notification.getDocmosisLetterTemplate());
     }
 
-    private boolean allowInterlocLetterToBeSent(boolean isInterlocLetter) {
-        return interlocLettersOn && isInterlocLetter;
+    private boolean allowInterlocLetterToBeSent(Notification notification, boolean isInterlocLetter) {
+        return isInterlocLetter && isNotBlank(notification.getLetterTemplate());
     }
 
-    private boolean allowNonInterlocLetterToBeSent(boolean isInterlocLetter) {
-        return lettersOn && !isInterlocLetter;
+    private boolean allowNonInterlocLetterToBeSent(Notification notification, boolean isInterlocLetter) {
+        return lettersOn && !isInterlocLetter && isNotBlank(notification.getLetterTemplate());
     }
 
     private boolean sendSmsNotification(NotificationWrapper wrapper, Subscription subscription, Notification notification, NotificationEventType eventType) {
@@ -169,7 +160,7 @@ public class SendNotificationService {
 
     private boolean sendMandatoryLetterNotification(NotificationWrapper wrapper, Notification notification, SubscriptionType subscriptionType, Address addressToUse) {
         if (isMandatoryLetterEventType(wrapper)) {
-            if ((bundledLettersOn && isBundledLetter(wrapper.getNotificationType())) || (docmosisLettersOn && isNotBlank(notification.getDocmosisLetterTemplate()) && isDocmosisLetterValidToSend(wrapper))) {
+            if (isBundledLetter(wrapper.getNotificationType()) || (isNotBlank(notification.getDocmosisLetterTemplate()) && isDocmosisLetterValidToSend(wrapper))) {
                 return sendBundledLetterNotification(wrapper, notification, getNameToUseForLetter(wrapper, subscriptionType), subscriptionType);
             } else if (hasLetterTemplate(notification)) {
                 NotificationHandler.SendNotification sendNotification = () ->
@@ -184,7 +175,7 @@ public class SendNotificationService {
 
     private boolean sendFallbackLetterNotification(NotificationWrapper wrapper, Subscription subscription, Notification notification, SubscriptionWithType subscriptionWithType, NotificationEventType eventType, Address addressToUse) {
         if (hasNoSubscriptions(subscription) && hasLetterTemplate(notification) && isFallbackLetterRequired(wrapper, subscriptionWithType, subscription, eventType, notificationValidService)) {
-            if (bundledLettersOn && isBundledLetter(wrapper.getNotificationType()) || (docmosisLettersOn && isNotBlank(notification.getDocmosisLetterTemplate())) && isDocmosisLetterValidToSend(wrapper)) {
+            if (isBundledLetter(wrapper.getNotificationType()) || (isNotBlank(notification.getDocmosisLetterTemplate())) && isDocmosisLetterValidToSend(wrapper)) {
                 return sendBundledLetterNotification(wrapper, notification, getNameToUseForLetter(wrapper, subscriptionWithType.getSubscriptionType()), subscriptionWithType.getSubscriptionType());
             } else {
                 NotificationHandler.SendNotification sendNotification = () ->

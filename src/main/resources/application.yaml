@@ -456,10 +456,7 @@ appeal.email.message: ${EMAIL_MESSAGE:Your appeal has been created \nPlease do n
 
 pdf.api.url: ${PDF_API_URL:http://localhost:5500}
 
-feature.bundled_letters_on: ${BUNDLED_LETTERS_ON:true}
 feature.letters_on: ${LETTERS_ON:true}
-feature.docmosis_letters_on: ${DOCMOSIS_LETTERS_ON:true}
-feature.interloc_letters_on: ${INTERLOC_LETTERS_ON:true}
 feature.save_correspondence: ${SAVE_CORRESPONDENCE:true}
 
 letterAsync:

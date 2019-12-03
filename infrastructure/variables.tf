@@ -114,22 +114,7 @@ variable "hours_end_time" {
   default = "17"
 }
 
-variable "bundled_letters_on" {
-  type = "string"
-  default = false
-}
-
 variable "letters_on" {
-  type = "string"
-  default = false
-}
-
-variable "interloc_letters_on" {
-  type = "string"
-  default = false
-}
-
-variable "docmosis_letters_on" {
   type = "string"
   default = false
 }

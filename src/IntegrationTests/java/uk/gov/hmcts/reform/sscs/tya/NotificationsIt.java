@@ -148,10 +148,7 @@ public class NotificationsIt {
 
         SendNotificationService sendNotificationService = new SendNotificationService(sender, evidenceManagementService, notificationHandler, notificationValidService, pdfLetterService);
 
-        ReflectionTestUtils.setField(sendNotificationService, "bundledLettersOn", true);
         ReflectionTestUtils.setField(sendNotificationService, "lettersOn", true);
-        ReflectionTestUtils.setField(sendNotificationService, "docmosisLettersOn", true);
-        ReflectionTestUtils.setField(sendNotificationService, "interlocLettersOn", true);
 
         NotificationService service = new NotificationService(factory, reminderService, notificationValidService, notificationHandler, outOfHoursCalculator, notificationConfig, sendNotificationService);
         NotificationController controller = new NotificationController(service, authorisationService, ccdService, deserializer, idamService);
