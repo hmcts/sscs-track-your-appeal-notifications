@@ -3,32 +3,15 @@ package uk.gov.hmcts.reform.sscs.tya;
 import static helper.IntegrationTestHelper.*;
 import static org.junit.Assert.assertArrayEquals;
 import static org.junit.Assert.assertEquals;
-import static org.mockito.Mockito.any;
-import static org.mockito.Mockito.anyString;
-import static org.mockito.Mockito.atMost;
-import static org.mockito.Mockito.atMostOnce;
-import static org.mockito.Mockito.eq;
-import static org.mockito.Mockito.mock;
-import static org.mockito.Mockito.never;
-import static org.mockito.Mockito.times;
-import static org.mockito.Mockito.verify;
-import static org.mockito.Mockito.verifyNoMoreInteractions;
-import static org.mockito.Mockito.when;
-import static uk.gov.hmcts.reform.sscs.config.AppConstants.APPELLANT_NAME;
-import static uk.gov.hmcts.reform.sscs.config.AppConstants.NAME;
-import static uk.gov.hmcts.reform.sscs.config.AppConstants.REPRESENTATIVE_NAME;
+import static org.mockito.Mockito.*;
+import static uk.gov.hmcts.reform.sscs.config.AppConstants.*;
 import static uk.gov.hmcts.reform.sscs.domain.notify.NotificationEventType.*;
 
 import java.io.File;
 import java.io.IOException;
 import java.nio.charset.StandardCharsets;
 import java.time.LocalDate;
-import java.util.Arrays;
-import java.util.Collections;
-import java.util.List;
-import java.util.Map;
-import java.util.Objects;
-import java.util.UUID;
+import java.util.*;
 import javax.servlet.http.HttpServletResponse;
 import junitparams.JUnitParamsRunner;
 import junitparams.Parameters;
@@ -65,27 +48,9 @@ import uk.gov.hmcts.reform.sscs.docmosis.service.DocmosisPdfGenerationService;
 import uk.gov.hmcts.reform.sscs.domain.notify.NotificationEventType;
 import uk.gov.hmcts.reform.sscs.factory.NotificationFactory;
 import uk.gov.hmcts.reform.sscs.idam.IdamService;
-import uk.gov.hmcts.reform.sscs.service.AuthorisationService;
-import uk.gov.hmcts.reform.sscs.service.BundledLetterTemplateUtil;
-import uk.gov.hmcts.reform.sscs.service.CcdNotificationsPdfService;
-import uk.gov.hmcts.reform.sscs.service.DocmosisPdfService;
-import uk.gov.hmcts.reform.sscs.service.EvidenceManagementService;
-import uk.gov.hmcts.reform.sscs.service.MarkdownTransformationService;
-import uk.gov.hmcts.reform.sscs.service.NotificationHandler;
-import uk.gov.hmcts.reform.sscs.service.NotificationSender;
-import uk.gov.hmcts.reform.sscs.service.NotificationService;
-import uk.gov.hmcts.reform.sscs.service.NotificationValidService;
-import uk.gov.hmcts.reform.sscs.service.OutOfHoursCalculator;
-import uk.gov.hmcts.reform.sscs.service.ReminderService;
-import uk.gov.hmcts.reform.sscs.service.SaveLetterCorrespondenceAsyncService;
-import uk.gov.hmcts.reform.sscs.service.SendNotificationService;
-import uk.gov.hmcts.reform.sscs.service.SscsGeneratePdfService;
+import uk.gov.hmcts.reform.sscs.service.*;
 import uk.gov.hmcts.reform.sscs.service.docmosis.PdfLetterService;
-import uk.gov.service.notify.NotificationClient;
-import uk.gov.service.notify.NotificationClientException;
-import uk.gov.service.notify.SendEmailResponse;
-import uk.gov.service.notify.SendLetterResponse;
-import uk.gov.service.notify.SendSmsResponse;
+import uk.gov.service.notify.*;
 
 @RunWith(JUnitParamsRunner.class)
 @SpringBootTest
@@ -149,9 +114,6 @@ public class NotificationsIt {
     private NotificationConfig notificationConfig;
 
     @Autowired
-    private BundledLetterTemplateUtil bundledLetterTemplateUtil;
-
-    @Autowired
     private PdfLetterService pdfLetterService;
 
     @Autowired
@@ -162,9 +124,6 @@ public class NotificationsIt {
 
     @Mock
     private EvidenceManagementService evidenceManagementService;
-
-    @Mock
-    private SscsGeneratePdfService sscsGeneratePdfService;
 
     @Value("${notification.subscriptionUpdated.emailId}")
     private String subscriptionUpdatedEmailId;
@@ -187,7 +146,7 @@ public class NotificationsIt {
     public void setup() throws Exception {
         NotificationSender sender = new NotificationSender(notificationClient, null, notificationBlacklist, ccdNotificationsPdfService, markdownTransformationService, saveLetterCorrespondenceAsyncService, saveCorrespondence);
 
-        SendNotificationService sendNotificationService = new SendNotificationService(sender, evidenceManagementService, sscsGeneratePdfService, notificationHandler, notificationValidService, bundledLetterTemplateUtil, pdfLetterService);
+        SendNotificationService sendNotificationService = new SendNotificationService(sender, evidenceManagementService, notificationHandler, notificationValidService, pdfLetterService);
 
         ReflectionTestUtils.setField(sendNotificationService, "bundledLettersOn", true);
         ReflectionTestUtils.setField(sendNotificationService, "lettersOn", true);
@@ -346,8 +305,6 @@ public class NotificationsIt {
     public void shouldSendRepsBundledLetterNotificationsForAnEventForAnOralOrPaperHearingAndForEachSubscription(
         NotificationEventType notificationEventType, String hearingType, boolean hasRep, boolean hasAppointee, int wantedNumberOfSendLetterInvocations) throws Exception {
 
-        byte[] sampleDirectionCoversheet = IOUtils.toByteArray(getClass().getClassLoader().getResourceAsStream("pdfs/direction-notice-coversheet-sample.pdf"));
-        when(sscsGeneratePdfService.generatePdf(any(), any(), any(), any())).thenReturn(sampleDirectionCoversheet);
         byte[] sampleDirectionNotice = IOUtils.toByteArray(getClass().getClassLoader().getResourceAsStream("pdfs/direction-text.pdf"));
         when(evidenceManagementService.download(any(), any())).thenReturn(sampleDirectionNotice);
 
@@ -1284,62 +1241,6 @@ public class NotificationsIt {
     private Object[] generateBundledLetterNotificationScenarios() {
         return new Object[]{
             new Object[]{
-                STRUCK_OUT,
-                "paper",
-                false,
-                false,
-                "1"
-            },
-            new Object[]{
-                STRUCK_OUT,
-                "oral",
-                false,
-                false,
-                "1"
-            },
-            new Object[]{
-                STRUCK_OUT,
-                "paper",
-                false,
-                true,
-                "1"
-            },
-            new Object[]{
-                STRUCK_OUT,
-                "oral",
-                false,
-                true,
-                "1"
-            },
-            new Object[]{
-                STRUCK_OUT,
-                "paper",
-                true,
-                false,
-                "2"
-            },
-            new Object[]{
-                STRUCK_OUT,
-                "oral",
-                true,
-                false,
-                "2"
-            },
-            new Object[]{
-                STRUCK_OUT,
-                "paper",
-                true,
-                true,
-                "2"
-            },
-            new Object[]{
-                STRUCK_OUT,
-                "oral",
-                true,
-                true,
-                "2"
-            },
-            new Object[]{
                 DIRECTION_ISSUED,
                 "paper",
                 false,
@@ -1365,13 +1266,6 @@ public class NotificationsIt {
                 "oral",
                 false,
                 false,
-                "1"
-            },
-            new Object[]{
-                STRUCK_OUT,
-                "paper",
-                false,
-                true,
                 "1"
             },
             new Object[]{
@@ -1439,117 +1333,11 @@ public class NotificationsIt {
             },
             new Object[]{
                 DECISION_ISSUED,
-                "oral",
-                true,
-                true,
-                "2"
-            },
-            new Object[]{
-                JUDGE_DECISION_APPEAL_TO_PROCEED,
-                "paper",
-                false,
-                false,
-                "1"
-            },
-            new Object[]{
-                JUDGE_DECISION_APPEAL_TO_PROCEED,
-                "oral",
-                false,
-                false,
-                "1"
-            },
-            new Object[]{
-                JUDGE_DECISION_APPEAL_TO_PROCEED,
-                "paper",
-                false,
-                true,
-                "1"
-            },
-            new Object[]{
-                JUDGE_DECISION_APPEAL_TO_PROCEED,
-                "oral",
-                false,
-                true,
-                "1"
-            },
-            new Object[]{
-                JUDGE_DECISION_APPEAL_TO_PROCEED,
-                "paper",
-                true,
-                false,
-                "2"
-            },
-            new Object[]{
-                JUDGE_DECISION_APPEAL_TO_PROCEED,
-                "oral",
-                true,
-                false,
-                "2"
-            },
-            new Object[]{
-                JUDGE_DECISION_APPEAL_TO_PROCEED,
-                "paper",
-                true,
-                true,
-                "2"
-            },
-            new Object[]{
-                JUDGE_DECISION_APPEAL_TO_PROCEED,
-                "oral",
-                true,
-                true,
-                "2"
-            },
-            new Object[]{
-                TCW_DECISION_APPEAL_TO_PROCEED,
-                "oral",
-                false,
-                false,
-                "1"
-            },
-            new Object[]{
-                TCW_DECISION_APPEAL_TO_PROCEED,
-                "paper",
-                false,
-                true,
-                "1"
-            },
-            new Object[]{
-                TCW_DECISION_APPEAL_TO_PROCEED,
-                "oral",
-                false,
-                true,
-                "1"
-            },
-            new Object[]{
-                TCW_DECISION_APPEAL_TO_PROCEED,
-                "paper",
-                true,
-                false,
-                "2"
-            },
-            new Object[]{
-                TCW_DECISION_APPEAL_TO_PROCEED,
-                "oral",
-                true,
-                false,
-                "2"
-            },
-            new Object[]{
-                TCW_DECISION_APPEAL_TO_PROCEED,
-                "paper",
-                true,
-                true,
-                "2"
-            },
-            new Object[]{
-                TCW_DECISION_APPEAL_TO_PROCEED,
                 "oral",
                 true,
                 true,
                 "2"
             }
-
         };
     }
 
@@ -3246,8 +3034,6 @@ public class NotificationsIt {
 
         json = json.replace("appealCreated", State.DORMANT_APPEAL_STATE.toString());
 
-        byte[] sampleDirectionCoversheet = IOUtils.toByteArray(getClass().getClassLoader().getResourceAsStream("pdfs/direction-notice-coversheet-sample.pdf"));
-        when(sscsGeneratePdfService.generatePdf(any(), any(), any(), any())).thenReturn(sampleDirectionCoversheet);
         byte[] sampleDirectionNotice = IOUtils.toByteArray(getClass().getClassLoader().getResourceAsStream("pdfs/direction-text.pdf"));
         when(evidenceManagementService.download(any(), any())).thenReturn(sampleDirectionNotice);
 

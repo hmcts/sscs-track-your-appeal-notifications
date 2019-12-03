@@ -85,9 +85,6 @@ public class NotificationServiceBase {
     @SpyBean
     private NotificationHandler notificationHandler;
 
-    @Autowired
-    private BundledLetterTemplateUtil bundledLetterTemplateUtil;
-
     @Mock
     private NotificationSender notificationSender;
 
@@ -99,9 +96,6 @@ public class NotificationServiceBase {
 
     @Mock
     private EvidenceManagementService evidenceManagementService;
-
-    @Mock
-    private SscsGeneratePdfService sscsGeneratePdfService;
 
     @Mock
     private PdfLetterService pdfLetterService;
@@ -135,8 +129,7 @@ public class NotificationServiceBase {
 
     NotificationService initialiseNotificationService(boolean lettersOn) {
         SendNotificationService sendNotificationService = new SendNotificationService(notificationSender,
-            evidenceManagementService, sscsGeneratePdfService, notificationHandler, notificationValidService,
-            bundledLetterTemplateUtil, pdfLetterService);
+            evidenceManagementService, notificationHandler, notificationValidService, pdfLetterService);
         ReflectionTestUtils.setField(sendNotificationService, "bundledLettersOn", false);
         ReflectionTestUtils.setField(sendNotificationService, "lettersOn", lettersOn);
         ReflectionTestUtils.setField(sendNotificationService, "interlocLettersOn", false);
