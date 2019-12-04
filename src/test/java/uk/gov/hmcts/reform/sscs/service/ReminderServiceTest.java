@@ -55,8 +55,8 @@ public class ReminderServiceTest {
 
         reminderService.createReminders(notificationWrapper);
 
-        verifyZeroInteractions(reminderHandler1);
-        verifyZeroInteractions(reminderHandler2);
-        verifyZeroInteractions(reminderHandler3);
+        verifyNoInteractions(reminderHandler1);
+        verifyNoInteractions(reminderHandler2);
+        verifyNoInteractions(reminderHandler3);
     }
 }

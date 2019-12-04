@@ -115,7 +115,7 @@ public class NotificationControllerTest {
 
         notificationController.sendCohNotification("", CohEvent.builder().caseId(CASE_ID).eventType(eventType).build());
 
-        verifyZeroInteractions(notificationService);
+        verifyNoInteractions(notificationService);
     }
 
     private JsonNode hasFields(String eventType, long caseDetailsId) {
