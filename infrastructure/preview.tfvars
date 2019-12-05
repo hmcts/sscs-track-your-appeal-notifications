@@ -16,10 +16,4 @@ idam_redirect_url = "https://evidence-sharing-preprod.sscs.reform.hmcts.net"
 hours_start_time = "0"
 hours_end_time = "23"
 
-bundled_letters_on = "true"
-
 letters_on = "true"
-
-interloc_letters_on = "true"
-
-docmosis_letters_on = "true"

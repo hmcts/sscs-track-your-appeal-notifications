@@ -10,14 +10,12 @@ import static uk.gov.hmcts.reform.sscs.config.SubscriptionType.*;
 import static uk.gov.hmcts.reform.sscs.domain.notify.NotificationEventType.*;
 import static uk.gov.hmcts.reform.sscs.service.NotificationUtils.getSubscription;
 import static uk.gov.hmcts.reform.sscs.service.NotificationValidService.BUNDLED_LETTER_EVENT_TYPES;
-import static uk.gov.hmcts.reform.sscs.service.SendNotificationService.DM_STORE_USER_ID;
 
 import ch.qos.logback.classic.Level;
 import ch.qos.logback.classic.Logger;
 import ch.qos.logback.classic.spi.ILoggingEvent;
 import ch.qos.logback.core.Appender;
 import java.io.IOException;
-import java.net.URI;
 import java.util.*;
 import junitparams.JUnitParamsRunner;
 import junitparams.Parameters;
@@ -125,7 +123,7 @@ public class NotificationServiceTest {
     public void setup() {
         initMocks(this);
 
-        notificationService = getNotificationService(true, true, true, true);
+        notificationService = getNotificationService(true);
 
         sscsCaseData = SscsCaseData.builder()
             .appeal(
@@ -1804,29 +1802,6 @@ public class NotificationServiceTest {
     }
 
     @Test
-    public void doNotSendBundledLettersToGovNotifyWhenStruckOutNotificationWhenFeatureToggledOff() throws IOException {
-        String fileUrl = "http://dm-store:4506/documents/1e1eb3d2-5b6c-430d-8dad-ebcea1ad7ecf";
-
-        CcdNotificationWrapper struckOutCcdNotificationWrapper = buildWrapperWithDocuments(STRUCK_OUT, fileUrl, APPELLANT_WITH_ADDRESS, null, "");
-
-        Notification notification = new Notification(Template.builder().letterTemplateId(LETTER_TEMPLATE_ID_STRUCKOUT).build(), Destination.builder().build(), new HashMap<>(), new Reference(), null);
-
-        byte[] sampleDirectionText = IOUtils.toByteArray(getClass().getClassLoader().getResourceAsStream("pdfs/direction-text.pdf"));
-
-        when(evidenceManagementService.download(URI.create(fileUrl), DM_STORE_USER_ID)).thenReturn(sampleDirectionText);
-        when((notificationValidService).isNotificationStillValidToSend(any(), any())).thenReturn(true);
-        when((notificationValidService).isHearingTypeValidToSendNotification(any(), any())).thenReturn(true);
-
-        when(factory.create(struckOutCcdNotificationWrapper, getSubscriptionWithType(ccdNotificationWrapper))).thenReturn(notification);
-
-        getNotificationService(false, false, false, false).manageNotificationAndSubscription(struckOutCcdNotificationWrapper);
-
-        verify(notificationHandler, times(0)).sendNotification(eq(struckOutCcdNotificationWrapper), eq(LETTER_TEMPLATE_ID_STRUCKOUT), eq(LETTER), any(NotificationHandler.SendNotification.class));
-
-        verifyNoErrorsLogged(mockAppender, captorLoggingEvent);
-    }
-
-    @Test
     public void sendAppellantLetterOnAppealReceived() throws IOException {
         String fileUrl = "http://dm-store:4506/documents/1e1eb3d2-5b6c-430d-8dad-ebcea1ad7ecf";
         String docmosisId = "docmosis-id.doc";
@@ -1841,7 +1816,7 @@ public class NotificationServiceTest {
 
         when(factory.create(ccdNotificationWrapper, getSubscriptionWithType(ccdNotificationWrapper))).thenReturn(notification);
 
-        getNotificationService(true, true, true, true).manageNotificationAndSubscription(ccdNotificationWrapper);
+        getNotificationService(true).manageNotificationAndSubscription(ccdNotificationWrapper);
 
         verify(notificationHandler, times(0)).sendNotification(eq(ccdNotificationWrapper), eq(docmosisId), eq(LETTER), any(NotificationHandler.SendNotification.class));
 
@@ -1855,7 +1830,7 @@ public class NotificationServiceTest {
             REQUEST_INFO_INCOMPLETE
         );
 
-        getNotificationService(true, true, true, true).manageNotificationAndSubscription(wrapper);
+        getNotificationService(true).manageNotificationAndSubscription(wrapper);
 
         verifyExpectedErrorLogMessage(mockAppender, captorLoggingEvent, wrapper.getNewSscsCaseData().getCcdCaseId(), "Request Incomplete Information");
     }
@@ -1867,7 +1842,7 @@ public class NotificationServiceTest {
             REQUEST_INFO_INCOMPLETE
         );
 
-        getNotificationService(true, true, true, true).manageNotificationAndSubscription(wrapper);
+        getNotificationService(true).manageNotificationAndSubscription(wrapper);
 
         verifyExpectedErrorLogMessage(mockAppender, captorLoggingEvent, wrapper.getNewSscsCaseData().getCcdCaseId(), "Request Incomplete Information");
     }
@@ -1893,7 +1868,7 @@ public class NotificationServiceTest {
                 new Reference(),
                 null));
 
-        getNotificationService(true, true, true, true).manageNotificationAndSubscription(wrapper);
+        getNotificationService(true).manageNotificationAndSubscription(wrapper);
 
         verifyNoErrorsLogged(mockAppender, captorLoggingEvent);
     }
@@ -1920,7 +1895,7 @@ public class NotificationServiceTest {
                 new Reference(),
                 null));
 
-        getNotificationService(true, true, true, true).manageNotificationAndSubscription(wrapper);
+        getNotificationService(true).manageNotificationAndSubscription(wrapper);
 
         verifyErrorLogMessageNotLogged(mockAppender, captorLoggingEvent, "Request Incomplete Information");
     }
@@ -1946,7 +1921,7 @@ public class NotificationServiceTest {
                 new Reference(),
                 null));
 
-        getNotificationService(true, true, true, true).manageNotificationAndSubscription(wrapper);
+        getNotificationService(true).manageNotificationAndSubscription(wrapper);
 
         verifyExpectedErrorLogMessage(mockAppender, captorLoggingEvent, wrapper.getNewSscsCaseData().getCcdCaseId(), "Is not a valid notification event");
     }
@@ -1964,7 +1939,7 @@ public class NotificationServiceTest {
                 .willReturn(true);
         given(notificationValidService.isFallbackLetterRequiredForSubscriptionType(any(), any(), any())).willReturn(true);
 
-        getNotificationService(true, true, true, true).manageNotificationAndSubscription(ccdNotificationWrapper);
+        getNotificationService(true).manageNotificationAndSubscription(ccdNotificationWrapper);
 
         then(notificationHandler).should(atLeastOnce()).sendNotification(
                 eq(ccdNotificationWrapper), eq(EMAIL_TEMPLATE_ID), eq("Email"),
@@ -1984,7 +1959,7 @@ public class NotificationServiceTest {
                 .willReturn(true);
         given(notificationValidService.isFallbackLetterRequiredForSubscriptionType(any(), any(), any())).willReturn(true);
 
-        getNotificationService(true, true, true, true).manageNotificationAndSubscription(ccdNotificationWrapper);
+        getNotificationService(true).manageNotificationAndSubscription(ccdNotificationWrapper);
 
         then(notificationHandler).shouldHaveNoMoreInteractions();
     }
@@ -2026,16 +2001,13 @@ public class NotificationServiceTest {
         assertTrue(NotificationService.hasCaseJustSubscribed(subscription, oldSubscription));
     }
 
-    private NotificationService getNotificationService(Boolean bundledLettersOn, Boolean lettersOn, Boolean interlocLettersOn, Boolean docmosisLettersOn) {
+    private NotificationService getNotificationService(Boolean lettersOn) {
         SendNotificationService sendNotificationService = new SendNotificationService(notificationSender, evidenceManagementService, notificationHandler, notificationValidService, pdfLetterService);
 
         final NotificationService notificationService = new NotificationService(factory, reminderService,
             notificationValidService, notificationHandler, outOfHoursCalculator, notificationConfig, sendNotificationService
         );
-        ReflectionTestUtils.setField(sendNotificationService, "bundledLettersOn", bundledLettersOn);
         ReflectionTestUtils.setField(sendNotificationService, "lettersOn", lettersOn);
-        ReflectionTestUtils.setField(sendNotificationService, "interlocLettersOn", interlocLettersOn);
-        ReflectionTestUtils.setField(sendNotificationService, "docmosisLettersOn", docmosisLettersOn);
         return notificationService;
     }
 

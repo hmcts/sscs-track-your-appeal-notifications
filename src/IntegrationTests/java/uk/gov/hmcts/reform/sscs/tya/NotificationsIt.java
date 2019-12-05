@@ -148,10 +148,7 @@ public class NotificationsIt {
 
         SendNotificationService sendNotificationService = new SendNotificationService(sender, evidenceManagementService, notificationHandler, notificationValidService, pdfLetterService);
 
-        ReflectionTestUtils.setField(sendNotificationService, "bundledLettersOn", true);
         ReflectionTestUtils.setField(sendNotificationService, "lettersOn", true);
-        ReflectionTestUtils.setField(sendNotificationService, "docmosisLettersOn", true);
-        ReflectionTestUtils.setField(sendNotificationService, "interlocLettersOn", true);
 
         NotificationService service = new NotificationService(factory, reminderService, notificationValidService, notificationHandler, outOfHoursCalculator, notificationConfig, sendNotificationService);
         NotificationController controller = new NotificationController(service, authorisationService, ccdService, deserializer, idamService);
@@ -2588,12 +2585,12 @@ public class NotificationsIt {
                 "oral",
                 Collections.singletonList("fee16753-0bdb-43f1-9abb-b14b826e3b26"),
                 Collections.singletonList("693c9bfb-151e-4add-a6f2-af1cbc94eef5"),
-                Collections.singletonList("22e51eec-6ba9-489a-aea0-a9e919716935"),
+                Collections.emptyList(),
                 "yes",
                 "yes",
                 "1",
                 "1",
-                "1",
+                "0",
                 "Appointee Appointee"
             },
             new Object[]{
