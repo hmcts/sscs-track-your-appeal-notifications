@@ -11,3 +11,5 @@ idam_redirect_url = "https://sscs-case-loader-prod.service.core-compute-prod.int
 online_hearing_link = "https://www.manage.appeal-benefit-decision.service.gov.uk/"
 
 letters_on = "false"
+
+enable_ase = true

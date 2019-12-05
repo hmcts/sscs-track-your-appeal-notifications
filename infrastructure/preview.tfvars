@@ -17,3 +17,5 @@ hours_start_time = "0"
 hours_end_time = "23"
 
 letters_on = "true"
+
+enable_ase = false

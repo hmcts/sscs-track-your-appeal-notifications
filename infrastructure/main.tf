@@ -96,6 +96,7 @@ module "track-your-appeal-notifications" {
   common_tags  = "${var.common_tags}"
   asp_rg       = "${var.product}-${var.component}-${var.env}"
   asp_name     = "${var.product}-${var.component}-${var.env}"
+  enable_ase          = "${var.enable_ase}"
 
   appinsights_instrumentation_key = "${var.appinsights_instrumentation_key}"
 
