@@ -6,6 +6,7 @@ import static org.mockito.BDDMockito.given;
 import static org.mockito.BDDMockito.then;
 import static org.mockito.Mockito.*;
 import static org.mockito.MockitoAnnotations.initMocks;
+import static uk.gov.hmcts.reform.sscs.ccd.domain.State.READY_TO_LIST;
 import static uk.gov.hmcts.reform.sscs.config.SubscriptionType.*;
 import static uk.gov.hmcts.reform.sscs.domain.notify.NotificationEventType.*;
 import static uk.gov.hmcts.reform.sscs.service.NotificationUtils.getSubscription;
@@ -27,7 +28,6 @@ import org.mockito.ArgumentCaptor;
 import org.mockito.Captor;
 import org.mockito.Mock;
 import org.slf4j.LoggerFactory;
-import org.springframework.test.util.ReflectionTestUtils;
 import uk.gov.hmcts.reform.sscs.ccd.domain.*;
 import uk.gov.hmcts.reform.sscs.config.AppealHearingType;
 import uk.gov.hmcts.reform.sscs.config.NotificationConfig;
@@ -123,7 +123,7 @@ public class NotificationServiceTest {
     public void setup() {
         initMocks(this);
 
-        notificationService = getNotificationService(true);
+        notificationService = getNotificationService();
 
         sscsCaseData = SscsCaseData.builder()
             .appeal(
@@ -135,6 +135,7 @@ public class NotificationServiceTest {
             )
             .subscriptions(Subscriptions.builder().appellantSubscription(subscription).build())
             .caseReference(CASE_REFERENCE)
+            .createdInGapsFrom(READY_TO_LIST.getId())
             .build();
         sscsCaseDataWrapper = SscsCaseDataWrapper.builder().newSscsCaseData(sscsCaseData).oldSscsCaseData(sscsCaseData).notificationEventType(APPEAL_WITHDRAWN_NOTIFICATION).build();
         ccdNotificationWrapper = new CcdNotificationWrapper(sscsCaseDataWrapper);
@@ -1412,6 +1413,7 @@ public class NotificationServiceTest {
                 .build())
             .caseReference(CASE_REFERENCE)
             .hearings(Collections.singletonList(Hearing.builder().build()))
+            .createdInGapsFrom(READY_TO_LIST.getId())
             .build();
 
         sscsCaseDataWrapper = SscsCaseDataWrapper.builder()
@@ -1816,7 +1818,7 @@ public class NotificationServiceTest {
 
         when(factory.create(ccdNotificationWrapper, getSubscriptionWithType(ccdNotificationWrapper))).thenReturn(notification);
 
-        getNotificationService(true).manageNotificationAndSubscription(ccdNotificationWrapper);
+        getNotificationService().manageNotificationAndSubscription(ccdNotificationWrapper);
 
         verify(notificationHandler, times(0)).sendNotification(eq(ccdNotificationWrapper), eq(docmosisId), eq(LETTER), any(NotificationHandler.SendNotification.class));
 
@@ -1830,7 +1832,7 @@ public class NotificationServiceTest {
             REQUEST_INFO_INCOMPLETE
         );
 
-        getNotificationService(true).manageNotificationAndSubscription(wrapper);
+        getNotificationService().manageNotificationAndSubscription(wrapper);
 
         verifyExpectedErrorLogMessage(mockAppender, captorLoggingEvent, wrapper.getNewSscsCaseData().getCcdCaseId(), "Request Incomplete Information");
     }
@@ -1842,7 +1844,7 @@ public class NotificationServiceTest {
             REQUEST_INFO_INCOMPLETE
         );
 
-        getNotificationService(true).manageNotificationAndSubscription(wrapper);
+        getNotificationService().manageNotificationAndSubscription(wrapper);
 
         verifyExpectedErrorLogMessage(mockAppender, captorLoggingEvent, wrapper.getNewSscsCaseData().getCcdCaseId(), "Request Incomplete Information");
     }
@@ -1868,7 +1870,7 @@ public class NotificationServiceTest {
                 new Reference(),
                 null));
 
-        getNotificationService(true).manageNotificationAndSubscription(wrapper);
+        getNotificationService().manageNotificationAndSubscription(wrapper);
 
         verifyNoErrorsLogged(mockAppender, captorLoggingEvent);
     }
@@ -1895,7 +1897,7 @@ public class NotificationServiceTest {
                 new Reference(),
                 null));
 
-        getNotificationService(true).manageNotificationAndSubscription(wrapper);
+        getNotificationService().manageNotificationAndSubscription(wrapper);
 
         verifyErrorLogMessageNotLogged(mockAppender, captorLoggingEvent, "Request Incomplete Information");
     }
@@ -1921,7 +1923,7 @@ public class NotificationServiceTest {
                 new Reference(),
                 null));
 
-        getNotificationService(true).manageNotificationAndSubscription(wrapper);
+        getNotificationService().manageNotificationAndSubscription(wrapper);
 
         verifyExpectedErrorLogMessage(mockAppender, captorLoggingEvent, wrapper.getNewSscsCaseData().getCcdCaseId(), "Is not a valid notification event");
     }
@@ -1929,7 +1931,7 @@ public class NotificationServiceTest {
     @Test
     public void willSendDwpUpload_whenCreatedInGapsFromIsReadyToList() throws NotificationClientException {
         CcdNotificationWrapper ccdNotificationWrapper = buildBaseWrapper(DWP_UPLOAD_RESPONSE_NOTIFICATION,  APPELLANT_WITH_ADDRESS, null, null);
-        ccdNotificationWrapper.getNewSscsCaseData().setCreatedInGapsFrom(State.READY_TO_LIST.getId());
+        ccdNotificationWrapper.getNewSscsCaseData().setCreatedInGapsFrom(READY_TO_LIST.getId());
 
         Notification notification = new Notification(Template.builder().emailTemplateId(EMAIL_TEMPLATE_ID).smsTemplateId(null).build(), Destination.builder().email("test@testing.com").sms("07823456746").build(), null, new Reference(), null);
         given(factory.create(ccdNotificationWrapper, getSubscriptionWithType(ccdNotificationWrapper))).willReturn(notification);
@@ -1939,7 +1941,7 @@ public class NotificationServiceTest {
                 .willReturn(true);
         given(notificationValidService.isFallbackLetterRequiredForSubscriptionType(any(), any(), any())).willReturn(true);
 
-        getNotificationService(true).manageNotificationAndSubscription(ccdNotificationWrapper);
+        getNotificationService().manageNotificationAndSubscription(ccdNotificationWrapper);
 
         then(notificationHandler).should(atLeastOnce()).sendNotification(
                 eq(ccdNotificationWrapper), eq(EMAIL_TEMPLATE_ID), eq("Email"),
@@ -1959,7 +1961,7 @@ public class NotificationServiceTest {
                 .willReturn(true);
         given(notificationValidService.isFallbackLetterRequiredForSubscriptionType(any(), any(), any())).willReturn(true);
 
-        getNotificationService(true).manageNotificationAndSubscription(ccdNotificationWrapper);
+        getNotificationService().manageNotificationAndSubscription(ccdNotificationWrapper);
 
         then(notificationHandler).shouldHaveNoMoreInteractions();
     }
@@ -2001,13 +2003,12 @@ public class NotificationServiceTest {
         assertTrue(NotificationService.hasCaseJustSubscribed(subscription, oldSubscription));
     }
 
-    private NotificationService getNotificationService(Boolean lettersOn) {
+    private NotificationService getNotificationService() {
         SendNotificationService sendNotificationService = new SendNotificationService(notificationSender, evidenceManagementService, notificationHandler, notificationValidService, pdfLetterService);
 
         final NotificationService notificationService = new NotificationService(factory, reminderService,
             notificationValidService, notificationHandler, outOfHoursCalculator, notificationConfig, sendNotificationService
         );
-        ReflectionTestUtils.setField(sendNotificationService, "lettersOn", lettersOn);
         return notificationService;
     }
 

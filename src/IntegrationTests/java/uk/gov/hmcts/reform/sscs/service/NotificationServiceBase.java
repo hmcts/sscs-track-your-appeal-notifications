@@ -21,25 +21,7 @@ import org.springframework.boot.test.mock.mockito.SpyBean;
 import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.context.junit4.rules.SpringClassRule;
 import org.springframework.test.context.junit4.rules.SpringMethodRule;
-import org.springframework.test.util.ReflectionTestUtils;
-import uk.gov.hmcts.reform.sscs.ccd.domain.Address;
-import uk.gov.hmcts.reform.sscs.ccd.domain.Appeal;
-import uk.gov.hmcts.reform.sscs.ccd.domain.AppealReasons;
-import uk.gov.hmcts.reform.sscs.ccd.domain.Appellant;
-import uk.gov.hmcts.reform.sscs.ccd.domain.Appointee;
-import uk.gov.hmcts.reform.sscs.ccd.domain.Benefit;
-import uk.gov.hmcts.reform.sscs.ccd.domain.BenefitType;
-import uk.gov.hmcts.reform.sscs.ccd.domain.Contact;
-import uk.gov.hmcts.reform.sscs.ccd.domain.Event;
-import uk.gov.hmcts.reform.sscs.ccd.domain.EventDetails;
-import uk.gov.hmcts.reform.sscs.ccd.domain.HearingOptions;
-import uk.gov.hmcts.reform.sscs.ccd.domain.Identity;
-import uk.gov.hmcts.reform.sscs.ccd.domain.MrnDetails;
-import uk.gov.hmcts.reform.sscs.ccd.domain.Name;
-import uk.gov.hmcts.reform.sscs.ccd.domain.Representative;
-import uk.gov.hmcts.reform.sscs.ccd.domain.SscsCaseData;
-import uk.gov.hmcts.reform.sscs.ccd.domain.Subscription;
-import uk.gov.hmcts.reform.sscs.ccd.domain.Subscriptions;
+import uk.gov.hmcts.reform.sscs.ccd.domain.*;
 import uk.gov.hmcts.reform.sscs.config.AppealHearingType;
 import uk.gov.hmcts.reform.sscs.config.NotificationConfig;
 import uk.gov.hmcts.reform.sscs.domain.SscsCaseDataWrapper;
@@ -116,7 +98,7 @@ public class NotificationServiceBase {
     @Before
     public void setup() {
         MockitoAnnotations.initMocks(this);
-        notificationService = initialiseNotificationService(false);
+        notificationService = initialiseNotificationService();
 
         Mockito.when(outOfHoursCalculator.isItOutOfHours()).thenReturn(false);
 
@@ -127,10 +109,9 @@ public class NotificationServiceBase {
         Mockito.when(idamService.getIdamTokens()).thenReturn(idamTokens);
     }
 
-    NotificationService initialiseNotificationService(boolean lettersOn) {
+    NotificationService initialiseNotificationService() {
         SendNotificationService sendNotificationService = new SendNotificationService(notificationSender,
             evidenceManagementService, notificationHandler, notificationValidService, pdfLetterService);
-        ReflectionTestUtils.setField(sendNotificationService, "lettersOn", lettersOn);
         return new NotificationService(notificationFactory, reminderService, notificationValidService,
             notificationHandler, outOfHoursCalculator, notificationConfig, sendNotificationService
         );

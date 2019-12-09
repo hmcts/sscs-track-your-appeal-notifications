@@ -8,6 +8,7 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.core.env.Environment;
 import org.springframework.stereotype.Component;
 import uk.gov.hmcts.reform.sscs.ccd.domain.Benefit;
+import uk.gov.hmcts.reform.sscs.ccd.domain.State;
 import uk.gov.hmcts.reform.sscs.domain.notify.Link;
 import uk.gov.hmcts.reform.sscs.domain.notify.Template;
 
@@ -72,7 +73,7 @@ public class NotificationConfig {
 
         String docmosisTemplateId = getTemplate(appealHearingType, docmosisTemplateName, "docmosisId");
         if (StringUtils.isNotBlank(docmosisTemplateId)) {
-            if (docmosisTemplateName.split("\\.")[0].equals("appealReceived") && (createdInGapsFrom == null || !createdInGapsFrom.equals("readyToList"))) {
+            if (docmosisTemplateName.split("\\.")[0].equals("appealReceived") && !State.READY_TO_LIST.getId().equals(createdInGapsFrom)) {
                 docmosisTemplateId = null;
             }
         }
