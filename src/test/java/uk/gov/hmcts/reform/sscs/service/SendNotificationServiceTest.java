@@ -2,8 +2,11 @@ package uk.gov.hmcts.reform.sscs.service;
 
 import static org.junit.Assert.*;
 import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.BDDMockito.given;
 import static org.mockito.Mockito.*;
 import static org.mockito.MockitoAnnotations.initMocks;
+import static uk.gov.hmcts.reform.sscs.ccd.domain.State.READY_TO_LIST;
+import static uk.gov.hmcts.reform.sscs.ccd.domain.State.VALID_APPEAL;
 import static uk.gov.hmcts.reform.sscs.config.AppConstants.REP_SALUTATION;
 import static uk.gov.hmcts.reform.sscs.config.SubscriptionType.*;
 import static uk.gov.hmcts.reform.sscs.domain.notify.NotificationEventType.*;
@@ -152,7 +155,6 @@ public class SendNotificationServiceTest {
         initMocks(this);
 
         classUnderTest = new SendNotificationService(notificationSender, evidenceManagementService, notificationHandler, notificationValidService, pdfLetterService);
-        classUnderTest.lettersOn = true;
 
         Logger logger = (Logger) LoggerFactory.getLogger(SendNotificationService.class.getName());
         logger.addAppender(mockAppender);
@@ -206,7 +208,7 @@ public class SendNotificationServiceTest {
         when(notificationValidService.isHearingTypeValidToSendNotification(any(), any())).thenReturn(true);
 
         SubscriptionWithType appellantSmsSubscription = new SubscriptionWithType(SMS_SUBSCRIPTION, APPELLANT);
-        CcdNotificationWrapper wrapper = buildBaseWrapper(APPELLANT_WITH_ADDRESS, CASE_UPDATED);
+        CcdNotificationWrapper wrapper = buildBaseWrapper(APPELLANT_WITH_ADDRESS, CASE_UPDATED, READY_TO_LIST.getId());
         classUnderTest.sendEmailSmsLetterNotification(wrapper, SMS_NOTIFICATION, appellantSmsSubscription, FALLBACK_LETTER_SUBSCRIPTION_TYPES.get(0));
 
         verify(notificationHandler).sendNotification(any(), eq(SMS_NOTIFICATION.getSmsTemplate()), any(), any());
@@ -222,7 +224,7 @@ public class SendNotificationServiceTest {
         when(notificationValidService.isHearingTypeValidToSendNotification(any(), any())).thenReturn(true);
 
         SubscriptionWithType appellantEmailSubscription = new SubscriptionWithType(EMAIL_SUBSCRIPTION, APPELLANT);
-        CcdNotificationWrapper wrapper = buildBaseWrapper(APPELLANT_WITH_ADDRESS, CASE_UPDATED);
+        CcdNotificationWrapper wrapper = buildBaseWrapper(APPELLANT_WITH_ADDRESS, CASE_UPDATED, READY_TO_LIST.getId());
         classUnderTest.sendEmailSmsLetterNotification(wrapper, EMAIL_NOTIFICATION, appellantEmailSubscription, FALLBACK_LETTER_SUBSCRIPTION_TYPES.get(0));
 
         verify(notificationHandler).sendNotification(any(), eq(EMAIL_NOTIFICATION.getEmailTemplate()), any(), any());
@@ -233,7 +235,7 @@ public class SendNotificationServiceTest {
     public void doNotSendFallbackLetterNotificationToAppellantWhenNoLetterTemplate() {
         SubscriptionWithType appellantEmptySubscription = new SubscriptionWithType(EMPTY_SUBSCRIPTION, APPELLANT);
 
-        CcdNotificationWrapper wrapper = buildBaseWrapper(APPELLANT_WITH_ADDRESS, CASE_UPDATED);
+        CcdNotificationWrapper wrapper = buildBaseWrapper(APPELLANT_WITH_ADDRESS, CASE_UPDATED, READY_TO_LIST.getId());
         classUnderTest.sendEmailSmsLetterNotification(wrapper, EMPTY_TEMPLATE_NOTIFICATION, appellantEmptySubscription, FALLBACK_LETTER_SUBSCRIPTION_TYPES.get(0));
 
         verifyNoInteractions(notificationHandler);
@@ -247,7 +249,7 @@ public class SendNotificationServiceTest {
         when(notificationValidService.isFallbackLetterRequiredForSubscriptionType(any(), any(), any())).thenReturn(true);
         when(notificationHandler.sendNotification(any(), eq(LETTER_NOTIFICATION.getLetterTemplate()), any(), any())).thenReturn(true);
 
-        classUnderTest.sendEmailSmsLetterNotification(buildBaseWrapper(APPELLANT_WITH_ADDRESS, NotificationEventType.CASE_UPDATED), LETTER_NOTIFICATION, appellantEmptySubscription, FALLBACK_LETTER_SUBSCRIPTION_TYPES.get(0));
+        classUnderTest.sendEmailSmsLetterNotification(buildBaseWrapper(APPELLANT_WITH_ADDRESS, NotificationEventType.CASE_UPDATED, READY_TO_LIST.getId()), LETTER_NOTIFICATION, appellantEmptySubscription, FALLBACK_LETTER_SUBSCRIPTION_TYPES.get(0));
 
         verify(notificationHandler).sendNotification(any(), eq(LETTER_NOTIFICATION.getLetterTemplate()), any(), any());
         verifyNoErrorsLogged(mockAppender, captorLoggingEvent);
@@ -296,7 +298,7 @@ public class SendNotificationServiceTest {
     }
 
     @Test
-    public void sendFallbackLetterNotificationToRep() {
+    public void givenDigitalCase_sendFallbackLetterNotificationToRep() {
         when(notificationValidService.isNotificationStillValidToSend(any(), any())).thenReturn(true);
         when(notificationValidService.isHearingTypeValidToSendNotification(any(), any())).thenReturn(true);
         when(notificationValidService.isFallbackLetterRequiredForSubscriptionType(any(), any(), any())).thenReturn(true);
@@ -312,7 +314,7 @@ public class SendNotificationServiceTest {
     @Test
     public void sendLetterNotificationForAppellant() throws NotificationClientException {
         SubscriptionWithType appellantEmptySubscription = new SubscriptionWithType(EMPTY_SUBSCRIPTION, SubscriptionType.APPELLANT);
-        classUnderTest.sendLetterNotificationToAddress(buildBaseWrapper(APPELLANT_WITH_ADDRESS, NotificationEventType.CASE_UPDATED), LETTER_NOTIFICATION, APPELLANT_WITH_ADDRESS.getAddress(), appellantEmptySubscription.getSubscriptionType());
+        classUnderTest.sendLetterNotificationToAddress(buildBaseWrapper(APPELLANT_WITH_ADDRESS, NotificationEventType.CASE_UPDATED, READY_TO_LIST.getId()), LETTER_NOTIFICATION, APPELLANT_WITH_ADDRESS.getAddress(), appellantEmptySubscription.getSubscriptionType());
 
         verify(notificationSender).sendLetter(eq(LETTER_NOTIFICATION.getLetterTemplate()), eq(APPELLANT_WITH_ADDRESS.getAddress()), any(), any(), any(), any());
         verifyNoErrorsLogged(mockAppender, captorLoggingEvent);
@@ -340,7 +342,7 @@ public class SendNotificationServiceTest {
     @Test
     public void doNotSendLetterNotificationIfAddressEmpty() throws NotificationClientException {
         SubscriptionWithType appellantEmptySubscription = new SubscriptionWithType(EMPTY_SUBSCRIPTION, SubscriptionType.APPELLANT);
-        CcdNotificationWrapper wrapper = buildBaseWrapper(APPELLANT_WITH_EMPTY_ADDRESS, NotificationEventType.CASE_UPDATED);
+        CcdNotificationWrapper wrapper = buildBaseWrapper(APPELLANT_WITH_EMPTY_ADDRESS, NotificationEventType.CASE_UPDATED, READY_TO_LIST.getId());
         classUnderTest.sendLetterNotification(wrapper, appellantEmptySubscription.getSubscription(), LETTER_NOTIFICATION, appellantEmptySubscription, NotificationEventType.CASE_UPDATED);
 
         verifyNoInteractions(notificationSender);
@@ -348,9 +350,9 @@ public class SendNotificationServiceTest {
     }
 
     @Test
-    public void doNotSendLetterNotificationIfNoAddress() throws NotificationClientException {
+    public void doNotSendLetterNotificationIfNoAddress() {
         SubscriptionWithType appellantEmptySubscription = new SubscriptionWithType(EMPTY_SUBSCRIPTION, SubscriptionType.APPELLANT);
-        CcdNotificationWrapper wrapper = buildBaseWrapper(APPELLANT_WITH_NO_ADDRESS, NotificationEventType.CASE_UPDATED);
+        CcdNotificationWrapper wrapper = buildBaseWrapper(APPELLANT_WITH_NO_ADDRESS, NotificationEventType.CASE_UPDATED, READY_TO_LIST.getId());
         classUnderTest.sendLetterNotification(wrapper, appellantEmptySubscription.getSubscription(), LETTER_NOTIFICATION, appellantEmptySubscription, NotificationEventType.CASE_UPDATED);
 
         verifyNoInteractions(notificationSender);
@@ -360,7 +362,7 @@ public class SendNotificationServiceTest {
     @Test
     public void logErrorMessageWhenNoNotificationSent() {
         SubscriptionWithType appellantEmptySubscription = new SubscriptionWithType(EMPTY_SUBSCRIPTION, SubscriptionType.APPELLANT);
-        CcdNotificationWrapper wrapper = buildBaseWrapper(APPELLANT_WITH_NO_ADDRESS, NotificationEventType.CASE_UPDATED);
+        CcdNotificationWrapper wrapper = buildBaseWrapper(APPELLANT_WITH_NO_ADDRESS, NotificationEventType.CASE_UPDATED, READY_TO_LIST.getId());
         classUnderTest.sendEmailSmsLetterNotification(
             wrapper,
             LETTER_NOTIFICATION,
@@ -410,84 +412,59 @@ public class SendNotificationServiceTest {
     @Test
     @Parameters(method = "bundledLetterTemplates")
     public void validBundledLetterType(NotificationEventType eventType) {
-        assertNotNull(getBundledLetterDocumentUrl(eventType, buildBaseWrapper(APPELLANT_WITH_ADDRESS, eventType).getNewSscsCaseData()));
+        assertNotNull(getBundledLetterDocumentUrl(eventType, buildBaseWrapper(APPELLANT_WITH_ADDRESS, eventType, READY_TO_LIST.getId()).getNewSscsCaseData()));
     }
 
     @Test
     @Parameters(method = "nonBundledLetterTemplates")
     public void invalidBundledLetterTileType(NotificationEventType eventType) {
-        assertNull(getBundledLetterDocumentUrl(eventType, buildBaseWrapper(APPELLANT_WITH_ADDRESS, eventType).getNewSscsCaseData()));
+        assertNull(getBundledLetterDocumentUrl(eventType, buildBaseWrapper(APPELLANT_WITH_ADDRESS, eventType, READY_TO_LIST.getId()).getNewSscsCaseData()));
     }
 
     @Test
-    public void willNotSendAppealLodgedLettersIfDocmosisLetterIsSwitchedOnAndLetterIsSwitchedOff() throws NotificationClientException {
-        classUnderTest.lettersOn = false;
+    @Parameters({"APPEAL_RECEIVED_NOTIFICATION", "DIRECTION_ISSUED", "DECISION_ISSUED"})
+    public void sendLetterForNotificationType(NotificationEventType notificationEventType) {
         SubscriptionWithType appellantEmptySubscription = new SubscriptionWithType(EMPTY_SUBSCRIPTION, APPELLANT);
-        classUnderTest.sendEmailSmsLetterNotification(buildBaseWrapper(APPELLANT_WITH_ADDRESS, NotificationEventType.APPEAL_RECEIVED_NOTIFICATION), LETTER_NOTIFICATION, appellantEmptySubscription, NotificationEventType.APPEAL_RECEIVED_NOTIFICATION);
+        when(pdfLetterService.generateLetter(any(), any(), any())).thenReturn("PDF".getBytes());
+        classUnderTest.sendEmailSmsLetterNotification(buildBaseWrapper(APPELLANT_WITH_ADDRESS, notificationEventType, VALID_APPEAL.getId()), DOCMOSIS_LETTER_NOTIFICATION, appellantEmptySubscription, NotificationEventType.APPEAL_RECEIVED_NOTIFICATION);
+        verify(pdfLetterService).generateLetter(any(), any(), any());
+        verify(pdfLetterService).buildCoversheet(any(), any());
+        verifyNoMoreInteractions(pdfLetterService);
+        verify(notificationHandler, atLeastOnce()).sendNotification(any(), any(), eq("Letter"), any());
+    }
+
+    @Test
+    public void givenNonDigitalCase_willNotSendAppealLodgedLetters() {
+        SubscriptionWithType appellantEmptySubscription = new SubscriptionWithType(EMPTY_SUBSCRIPTION, APPELLANT);
+        classUnderTest.sendEmailSmsLetterNotification(buildBaseWrapper(APPELLANT_WITH_ADDRESS, NotificationEventType.APPEAL_RECEIVED_NOTIFICATION, State.VALID_APPEAL.getId()), LETTER_NOTIFICATION, appellantEmptySubscription, NotificationEventType.APPEAL_RECEIVED_NOTIFICATION);
         verifyNoInteractions(notificationHandler);
     }
 
     @Test
-    public void willSendAppealLodgedLettersForPipAndOnlineIfDocmosisLetterIsSwitchedOn() {
-        classUnderTest.lettersOn = false;
-        SubscriptionWithType appellantEmptySubscription = new SubscriptionWithType(EMPTY_SUBSCRIPTION, APPELLANT);
-        when(pdfLetterService.generateLetter(any(), any(), any())).thenReturn("PDF".getBytes());
-        classUnderTest.sendEmailSmsLetterNotification(buildBaseWrapper(APPELLANT_WITH_ADDRESS, NotificationEventType.APPEAL_RECEIVED_NOTIFICATION), DOCMOSIS_LETTER_NOTIFICATION, appellantEmptySubscription, NotificationEventType.APPEAL_RECEIVED_NOTIFICATION);
-        verify(pdfLetterService).generateLetter(any(), any(), any());
-        verify(pdfLetterService).buildCoversheet(any(), any());
-        verifyNoMoreInteractions(pdfLetterService);
-        verify(notificationHandler, atLeastOnce()).sendNotification(any(), any(), eq("Letter"), any());
-    }
-
-    @Test
-    public void directionIssuedLetterWillBeSentIfDocmosisLetterIsOn() {
-        classUnderTest.lettersOn = false;
-        SubscriptionWithType appellantEmptySubscription = new SubscriptionWithType(EMPTY_SUBSCRIPTION, APPELLANT);
-        when(pdfLetterService.generateLetter(any(), any(), any())).thenReturn("PDF".getBytes());
-        classUnderTest.sendEmailSmsLetterNotification(buildBaseWrapper(APPELLANT_WITH_ADDRESS, NotificationEventType.DIRECTION_ISSUED), DOCMOSIS_LETTER_NOTIFICATION, appellantEmptySubscription, NotificationEventType.APPEAL_RECEIVED_NOTIFICATION);
-        verify(pdfLetterService).generateLetter(any(), any(), any());
-        verify(pdfLetterService).buildCoversheet(any(), any());
-        verifyNoMoreInteractions(pdfLetterService);
-        verify(notificationHandler, atLeastOnce()).sendNotification(any(), any(), eq("Letter"), any());
-    }
-
-    @Test
-    public void decisionIssuedLetterWillBeSentIfDocmosisLetterIsOn() {
-        classUnderTest.lettersOn = false;
-        SubscriptionWithType appellantEmptySubscription = new SubscriptionWithType(EMPTY_SUBSCRIPTION, APPELLANT);
-        when(pdfLetterService.generateLetter(any(), any(), any())).thenReturn("PDF".getBytes());
-        classUnderTest.sendEmailSmsLetterNotification(buildBaseWrapper(APPELLANT_WITH_ADDRESS, NotificationEventType.DECISION_ISSUED), DOCMOSIS_LETTER_NOTIFICATION, appellantEmptySubscription, NotificationEventType.APPEAL_RECEIVED_NOTIFICATION);
-        verify(pdfLetterService).generateLetter(any(), any(), any());
-        verify(pdfLetterService).buildCoversheet(any(), any());
-        verifyNoMoreInteractions(pdfLetterService);
-        verify(notificationHandler, atLeastOnce()).sendNotification(any(), any(), eq("Letter"), any());
-    }
-
-    @Test
-    @Parameters({"ESA, Online", "PIP, Paper", "JSA, Paper"})
-    public void willNotSendAppealLodgedLetterViaDocmosis(Benefit benefit, String receivedVia) {
-        classUnderTest.lettersOn = false;
+    @Parameters({"ESA, Online", "PIP, Paper"})
+    public void givenNonDigitalCase_willNotSendAppealLodgedLetterViaDocmosis(Benefit benefit, String receivedVia) {
+        given(notificationHandler.sendNotification(any(), any(), eq("Letter"), any())).willReturn(true);
         SubscriptionWithType appellantEmptySubscription = new SubscriptionWithType(EMPTY_SUBSCRIPTION, APPELLANT);
         classUnderTest.sendEmailSmsLetterNotification(
-                buildBaseWrapper(APPELLANT_WITH_ADDRESS, NotificationEventType.APPEAL_RECEIVED_NOTIFICATION, null, benefit, receivedVia),
+                buildBaseWrapper(APPELLANT_WITH_ADDRESS, NotificationEventType.APPEAL_RECEIVED_NOTIFICATION, null, benefit, receivedVia, VALID_APPEAL.getId()),
                 DOCMOSIS_LETTER_NOTIFICATION, appellantEmptySubscription, NotificationEventType.APPEAL_RECEIVED_NOTIFICATION);
         verifyNoInteractions(pdfLetterService);
         verify(notificationHandler, atLeastOnce()).sendNotification(any(), any(), eq("Letter"), any());
     }
 
     private CcdNotificationWrapper buildBaseWrapper(Appellant appellant) {
-        return buildBaseWrapper(appellant, STRUCK_OUT, null, Benefit.PIP, "Online");
+        return buildBaseWrapper(appellant, STRUCK_OUT, null, Benefit.PIP, "Online", READY_TO_LIST.getId());
     }
 
-    private CcdNotificationWrapper buildBaseWrapper(Appellant appellant, NotificationEventType eventType) {
-        return buildBaseWrapper(appellant, eventType, null, Benefit.PIP, "Online");
+    private CcdNotificationWrapper buildBaseWrapper(Appellant appellant, NotificationEventType eventType, String createdInGapsFrom) {
+        return buildBaseWrapper(appellant, eventType, null, Benefit.PIP, "Online", createdInGapsFrom);
     }
 
     private CcdNotificationWrapper buildBaseWrapper(Appellant appellant, NotificationEventType eventType, Representative representative) {
-        return buildBaseWrapper(appellant, eventType, representative, Benefit.PIP, "Online");
+        return buildBaseWrapper(appellant, eventType, representative, Benefit.PIP, "Online", READY_TO_LIST.getId());
     }
 
-    private CcdNotificationWrapper buildBaseWrapper(Appellant appellant, NotificationEventType eventType, Representative representative, Benefit benefit, String receivedVia) {
+    private CcdNotificationWrapper buildBaseWrapper(Appellant appellant, NotificationEventType eventType, Representative representative, Benefit benefit, String receivedVia, String createdInGapsFrom) {
         Subscription repSubscription = null;
         if (null != representative) {
             repSubscription = Subscription.builder().email("test@test.com").subscribeEmail(YES).mobile("07800000000").subscribeSms(YES).build();
@@ -530,6 +507,7 @@ public class SendNotificationServiceTest {
                     .appellantSubscription(appellantSubscription)
                     .representativeSubscription(repSubscription)
                     .build())
+            .createdInGapsFrom(createdInGapsFrom)
             .sscsDocument(documents)
             .caseReference(CASE_REFERENCE)
             .ccdCaseId(CASE_ID)

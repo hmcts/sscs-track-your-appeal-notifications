@@ -35,9 +35,6 @@ public class SendNotificationService {
     static final String DM_STORE_USER_ID = "sscs";
     private static final String NOTIFICATION_TYPE_LETTER = "Letter";
 
-    @Value("${feature.letters_on}")
-    Boolean lettersOn;
-
     @Value("${reminder.dwpResponseLateReminder.delay.seconds}")
     private long delay;
 
@@ -74,7 +71,7 @@ public class SendNotificationService {
         boolean isDocmosisLetter = DOCMOSIS_LETTERS.contains(eventType);
 
         boolean letterSent = false;
-        if (allowNonInterlocLetterToBeSent(notification, isInterlocLetter)
+        if (allowNonInterlocLetterToBeSent(notification, isInterlocLetter, wrapper.getSscsCaseDataWrapper().getNewSscsCaseData().getCreatedInGapsFrom())
                 || allowInterlocLetterToBeSent(notification, isInterlocLetter)
                 || allowDocmosisLetterToBeSent(notification, isDocmosisLetter)) {
             letterSent = sendLetterNotification(wrapper, subscriptionWithType.getSubscription(), notification, subscriptionWithType, eventType);
@@ -97,8 +94,8 @@ public class SendNotificationService {
         return isInterlocLetter && isNotBlank(notification.getLetterTemplate());
     }
 
-    private boolean allowNonInterlocLetterToBeSent(Notification notification, boolean isInterlocLetter) {
-        return lettersOn && !isInterlocLetter && isNotBlank(notification.getLetterTemplate());
+    private boolean allowNonInterlocLetterToBeSent(Notification notification, boolean isInterlocLetter, String createdInGapsFrom) {
+        return !isInterlocLetter && isNotBlank(notification.getLetterTemplate()) && State.READY_TO_LIST.getId().equals(createdInGapsFrom);
     }
 
     private boolean sendSmsNotification(NotificationWrapper wrapper, Subscription subscription, Notification notification, NotificationEventType eventType) {
