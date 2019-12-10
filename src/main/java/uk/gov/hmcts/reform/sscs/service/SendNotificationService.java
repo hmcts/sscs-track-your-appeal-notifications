@@ -215,15 +215,15 @@ public class SendNotificationService {
     protected void sendLetterNotificationToAddress(NotificationWrapper wrapper, Notification notification, final Address addressToUse, SubscriptionType subscriptionType) throws NotificationClientException {
         if (addressToUse != null) {
             Map<String, String> placeholders = notification.getPlaceholders();
-            placeholders.put(ADDRESS_LINE_1, addressToUse.getLine1());
-            placeholders.put(ADDRESS_LINE_2, isEmpty(addressToUse.getLine2()) ? " " : addressToUse.getLine2());
-            placeholders.put(ADDRESS_LINE_3, addressToUse.getTown() == null ? " " : addressToUse.getTown());
-            placeholders.put(ADDRESS_LINE_4, addressToUse.getCounty() == null ? " " : addressToUse.getCounty());
-            placeholders.put(POSTCODE_LITERAL, addressToUse.getPostcode());
-
             Name nameToUse = getNameToUseForLetter(wrapper, subscriptionType);
-
             String fullNameNoTitle = (nameToUse == null) ? getRepSalutation(nameToUse) : nameToUse.getFullNameNoTitle();
+
+            placeholders.put(ADDRESS_LINE_1, fullNameNoTitle);
+            placeholders.put(ADDRESS_LINE_2, addressToUse.getLine1());
+            placeholders.put(ADDRESS_LINE_3, isEmpty(addressToUse.getLine2()) ? " " : addressToUse.getLine2());
+            placeholders.put(ADDRESS_LINE_4, addressToUse.getTown() == null ? " " : addressToUse.getTown());
+            placeholders.put(ADDRESS_LINE_5, addressToUse.getCounty() == null ? " " : addressToUse.getCounty());
+            placeholders.put(POSTCODE_LITERAL, addressToUse.getPostcode());
 
             placeholders.put(NAME, fullNameNoTitle);
             if (SubscriptionType.REPRESENTATIVE.equals(subscriptionType)) {

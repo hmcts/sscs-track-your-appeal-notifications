@@ -4,6 +4,7 @@ import static org.junit.Assert.*;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.*;
 import static org.mockito.MockitoAnnotations.initMocks;
+import static uk.gov.hmcts.reform.sscs.config.AppConstants.ADDRESS_LINE_1;
 import static uk.gov.hmcts.reform.sscs.config.AppConstants.REP_SALUTATION;
 import static uk.gov.hmcts.reform.sscs.config.SubscriptionType.*;
 import static uk.gov.hmcts.reform.sscs.domain.notify.NotificationEventType.*;
@@ -324,6 +325,7 @@ public class SendNotificationServiceTest {
         classUnderTest.sendLetterNotificationToAddress(buildBaseWrapper(APPELLANT_WITH_ADDRESS, NotificationEventType.CASE_UPDATED, REP_WITH_ADDRESS), LETTER_NOTIFICATION, REP_WITH_ADDRESS.getAddress(), representativeEmptySubscription.getSubscriptionType());
 
         verify(notificationSender).sendLetter(eq(LETTER_NOTIFICATION.getLetterTemplate()), eq(REP_WITH_ADDRESS.getAddress()), any(), any(), any(), any());
+        assertEquals(REP_WITH_ADDRESS.getName().getFullNameNoTitle(), LETTER_NOTIFICATION.getPlaceholders().get(ADDRESS_LINE_1));
         verifyNoErrorsLogged(mockAppender, captorLoggingEvent);
     }
 
@@ -334,6 +336,7 @@ public class SendNotificationServiceTest {
         classUnderTest.sendLetterNotificationToAddress(wrapper, LETTER_NOTIFICATION, REP_WITH_ADDRESS.getAddress(), representativeEmptySubscription.getSubscriptionType());
 
         verify(notificationSender).sendLetter(eq(LETTER_NOTIFICATION.getLetterTemplate()), eq(REP_WITH_ADDRESS.getAddress()), any(), any(), any(),any());
+        assertEquals(REP_SALUTATION, LETTER_NOTIFICATION.getPlaceholders().get(ADDRESS_LINE_1));
         verifyNoErrorsLogged(mockAppender, captorLoggingEvent);
     }
 
