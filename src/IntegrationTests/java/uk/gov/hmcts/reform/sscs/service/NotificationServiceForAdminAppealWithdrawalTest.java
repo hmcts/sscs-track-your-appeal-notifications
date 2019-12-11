@@ -4,6 +4,7 @@ import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.Mockito.any;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
+import static uk.gov.hmcts.reform.sscs.ccd.domain.State.READY_TO_LIST;
 import static uk.gov.hmcts.reform.sscs.domain.notify.NotificationEventType.ADMIN_APPEAL_WITHDRAWN;
 
 import org.junit.Before;
@@ -21,12 +22,13 @@ public class NotificationServiceForAdminAppealWithdrawalTest extends Notificatio
 
     @Before
     public void setUp() {
-        setNotificationService(initialiseNotificationService(true));
+        setNotificationService(initialiseNotificationService());
     }
 
     @Test
     public void adminAppealWithdrawalWhenNoSubscription_shouldSendMandatoryLetter() throws Exception {
         SscsCaseDataWrapper sscsCaseDataWrapper = initTestData();
+        sscsCaseDataWrapper.getNewSscsCaseData().setCreatedInGapsFrom(READY_TO_LIST.getId());
         getNotificationService().manageNotificationAndSubscription(new CcdNotificationWrapper(sscsCaseDataWrapper));
 
         verify(getNotificationSender(), times(0)).sendEmail(any(), any(), any(), any(), any(), any());

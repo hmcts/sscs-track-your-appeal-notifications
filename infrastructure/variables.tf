@@ -114,11 +114,6 @@ variable "hours_end_time" {
   default = "17"
 }
 
-variable "letters_on" {
-  type = "string"
-  default = false
-}
-
 variable "save_correspondence" {
   type = "string"
   default = true
