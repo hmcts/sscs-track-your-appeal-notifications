@@ -34,7 +34,6 @@ import org.springframework.mock.web.MockHttpServletResponse;
 import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.context.junit4.rules.SpringClassRule;
 import org.springframework.test.context.junit4.rules.SpringMethodRule;
-import org.springframework.test.util.ReflectionTestUtils;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.request.MockHttpServletRequestBuilder;
 import org.springframework.test.web.servlet.setup.MockMvcBuilders;
@@ -147,8 +146,6 @@ public class NotificationsIt {
         NotificationSender sender = new NotificationSender(notificationClient, null, notificationBlacklist, ccdNotificationsPdfService, markdownTransformationService, saveLetterCorrespondenceAsyncService, saveCorrespondence);
 
         SendNotificationService sendNotificationService = new SendNotificationService(sender, evidenceManagementService, notificationHandler, notificationValidService, pdfLetterService);
-
-        ReflectionTestUtils.setField(sendNotificationService, "lettersOn", true);
 
         NotificationService service = new NotificationService(factory, reminderService, notificationValidService, notificationHandler, outOfHoursCalculator, notificationConfig, sendNotificationService);
         NotificationController controller = new NotificationController(service, authorisationService, ccdService, deserializer, idamService);
@@ -493,28 +490,28 @@ public class NotificationsIt {
                 "paper",
                 Collections.emptyList(),
                 Collections.emptyList(),
-                Arrays.asList("6af62d46-98e5-4ade-aa72-e4a11c56286e", "8eb75404-a442-47aa-bab2-c4ba83a70900"),
+                Collections.emptyList(),
                 "no",
                 "no",
                 "no",
                 "no",
                 "0",
                 "0",
-                "2"
+                "0"
             },
             new Object[]{
                 EVIDENCE_RECEIVED_NOTIFICATION,
                 "paper",
                 Arrays.asList("7af36950-fc63-45d1-907d-f472fac7af06"),
                 Collections.emptyList(),
-                Arrays.asList("6af62d46-98e5-4ade-aa72-e4a11c56286e"),
+                Collections.emptyList(),
                 "no",
                 "no",
                 "yes",
                 "no",
                 "1",
                 "0",
-                "1"
+                "0"
             },
             new Object[]{
                 EVIDENCE_RECEIVED_NOTIFICATION,
@@ -535,28 +532,28 @@ public class NotificationsIt {
                 "oral",
                 Collections.emptyList(),
                 Collections.emptyList(),
-                Arrays.asList("6af62d46-98e5-4ade-aa72-e4a11c56286e", "8eb75404-a442-47aa-bab2-c4ba83a70900"),
+                Collections.emptyList(),
                 "no",
                 "no",
                 "no",
                 "no",
                 "0",
                 "0",
-                "2"
+                "0"
             },
             new Object[]{
                 EVIDENCE_RECEIVED_NOTIFICATION,
                 "oral",
                 Arrays.asList("30260c0b-5575-4f4e-bce4-73cf3f245c2d"),
                 Collections.emptyList(),
-                Arrays.asList("6af62d46-98e5-4ade-aa72-e4a11c56286e"),
+                Collections.emptyList(),
                 "no",
                 "no",
                 "yes",
                 "no",
                 "1",
                 "0",
-                "1"
+                "0"
             },
             new Object[]{
                 EVIDENCE_RECEIVED_NOTIFICATION,
@@ -1346,14 +1343,14 @@ public class NotificationsIt {
                 "paper",
                 Collections.emptyList(),
                 Collections.emptyList(),
-                Arrays.asList("6af62d46-98e5-4ade-aa72-e4a11c56286e", "8eb75404-a442-47aa-bab2-c4ba83a70900"),
+                Collections.emptyList(),
                 "no",
                 "no",
                 "no",
                 "no",
                 "0",
                 "0",
-                "2"
+                "0"
             },
             new Object[]{
                 EVIDENCE_RECEIVED_NOTIFICATION,
@@ -2084,12 +2081,12 @@ public class NotificationsIt {
                 "paper",
                 Collections.emptyList(),
                 Collections.emptyList(),
-                Arrays.asList("6af62d46-98e5-4ade-aa72-e4a11c56286e"),
+                Collections.emptyList(),
                 "no",
                 "no",
                 "0",
                 "0",
-                "1",
+                "0",
                 "Appointee Appointee"
             },
             new Object[]{
@@ -2097,12 +2094,12 @@ public class NotificationsIt {
                 "oral",
                 Collections.emptyList(),
                 Collections.emptyList(),
-                Arrays.asList("6af62d46-98e5-4ade-aa72-e4a11c56286e"),
+                Collections.emptyList(),
                 "no",
                 "no",
                 "0",
                 "0",
-                "1",
+                "0",
                 "Appointee Appointee"
             },
             new Object[]{

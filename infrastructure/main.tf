@@ -161,8 +161,6 @@ module "track-your-appeal-notifications" {
 
     DOCUMENT_MANAGEMENT_URL = "${local.documentStore}"
 
-    LETTERS_ON                          = "${var.letters_on}"
-
     SAVE_CORRESPONDENCE                 = "${var.save_correspondence}"
   }
 }
