@@ -2,7 +2,6 @@ package uk.gov.hmcts.reform.sscs.service;
 
 import static org.junit.Assert.*;
 import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.BDDMockito.given;
 import static org.mockito.Mockito.*;
 import static org.mockito.MockitoAnnotations.initMocks;
 import static uk.gov.hmcts.reform.sscs.ccd.domain.State.READY_TO_LIST;
@@ -438,18 +437,6 @@ public class SendNotificationServiceTest {
         SubscriptionWithType appellantEmptySubscription = new SubscriptionWithType(EMPTY_SUBSCRIPTION, APPELLANT);
         classUnderTest.sendEmailSmsLetterNotification(buildBaseWrapper(APPELLANT_WITH_ADDRESS, NotificationEventType.APPEAL_RECEIVED_NOTIFICATION, State.VALID_APPEAL.getId()), LETTER_NOTIFICATION, appellantEmptySubscription, NotificationEventType.APPEAL_RECEIVED_NOTIFICATION);
         verifyNoInteractions(notificationHandler);
-    }
-
-    @Test
-    @Parameters({"ESA, Online", "PIP, Paper"})
-    public void givenNonDigitalCase_willNotSendAppealLodgedLetterViaDocmosis(Benefit benefit, String receivedVia) {
-        given(notificationHandler.sendNotification(any(), any(), eq("Letter"), any())).willReturn(true);
-        SubscriptionWithType appellantEmptySubscription = new SubscriptionWithType(EMPTY_SUBSCRIPTION, APPELLANT);
-        classUnderTest.sendEmailSmsLetterNotification(
-                buildBaseWrapper(APPELLANT_WITH_ADDRESS, NotificationEventType.APPEAL_RECEIVED_NOTIFICATION, null, benefit, receivedVia, VALID_APPEAL.getId()),
-                DOCMOSIS_LETTER_NOTIFICATION, appellantEmptySubscription, NotificationEventType.APPEAL_RECEIVED_NOTIFICATION);
-        verifyNoInteractions(pdfLetterService);
-        verify(notificationHandler, atLeastOnce()).sendNotification(any(), any(), eq("Letter"), any());
     }
 
     private CcdNotificationWrapper buildBaseWrapper(Appellant appellant) {
