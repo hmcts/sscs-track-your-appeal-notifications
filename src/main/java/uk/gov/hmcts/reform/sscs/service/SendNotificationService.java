@@ -157,7 +157,7 @@ public class SendNotificationService {
 
     private boolean sendMandatoryLetterNotification(NotificationWrapper wrapper, Notification notification, SubscriptionType subscriptionType, Address addressToUse) {
         if (isMandatoryLetterEventType(wrapper)) {
-            if (isBundledLetter(wrapper.getNotificationType()) || (isNotBlank(notification.getDocmosisLetterTemplate()) && isDocmosisLetterValidToSend(wrapper))) {
+            if (isBundledLetter(wrapper.getNotificationType()) || (isNotBlank(notification.getDocmosisLetterTemplate()))) {
                 return sendBundledLetterNotification(wrapper, notification, getNameToUseForLetter(wrapper, subscriptionType), subscriptionType);
             } else if (hasLetterTemplate(notification)) {
                 NotificationHandler.SendNotification sendNotification = () ->
@@ -172,7 +172,7 @@ public class SendNotificationService {
 
     private boolean sendFallbackLetterNotification(NotificationWrapper wrapper, Subscription subscription, Notification notification, SubscriptionWithType subscriptionWithType, NotificationEventType eventType, Address addressToUse) {
         if (hasNoSubscriptions(subscription) && hasLetterTemplate(notification) && isFallbackLetterRequired(wrapper, subscriptionWithType, subscription, eventType, notificationValidService)) {
-            if (isBundledLetter(wrapper.getNotificationType()) || (isNotBlank(notification.getDocmosisLetterTemplate())) && isDocmosisLetterValidToSend(wrapper)) {
+            if (isBundledLetter(wrapper.getNotificationType()) || (isNotBlank(notification.getDocmosisLetterTemplate()))) {
                 return sendBundledLetterNotification(wrapper, notification, getNameToUseForLetter(wrapper, subscriptionWithType.getSubscriptionType()), subscriptionWithType.getSubscriptionType());
             } else {
                 NotificationHandler.SendNotification sendNotification = () ->
@@ -183,14 +183,6 @@ public class SendNotificationService {
         }
 
         return false;
-    }
-
-    private boolean isDocmosisLetterValidToSend(NotificationWrapper wrapper) {
-        if (NotificationEventType.APPEAL_RECEIVED_NOTIFICATION.equals(wrapper.getNotificationType())) {
-            return equalsIgnoreCase(wrapper.getNewSscsCaseData().getAppeal().getBenefitType().getCode(), Benefit.PIP.name())
-                    && equalsIgnoreCase(wrapper.getNewSscsCaseData().getAppeal().getReceivedVia(), "Online");
-        }
-        return true;
     }
 
     public static String getRepSalutation(Representative rep) {

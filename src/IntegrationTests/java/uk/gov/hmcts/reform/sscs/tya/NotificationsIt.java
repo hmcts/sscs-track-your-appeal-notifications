@@ -1871,20 +1871,6 @@ public class NotificationsIt {
                 "0"
             },
             new Object[]{
-                VALID_APPEAL_CREATED,
-                "paper",
-                Collections.emptyList(),
-                Collections.emptyList(),
-                Arrays.asList("91143b85-dd9d-430c-ba23-e42ec90f44f8", "77ea8a2f-06df-4279-9c1f-0f23cb2d9bbf"),
-                "no",
-                "no",
-                "no",
-                "no",
-                "0",
-                "0",
-                "2"
-            },
-            new Object[]{
                 NON_COMPLIANT_NOTIFICATION,
                 "oral",
                 Collections.emptyList(),
