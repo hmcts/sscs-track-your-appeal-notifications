@@ -233,6 +233,7 @@ public class NotificationService {
                     notificationType.getId(), notificationWrapper.getCaseId()));
             return false;
         }
+        log.info(String.format("Notification valid to send for case id %s and event %s in state %s", notificationWrapper.getCaseId(), notificationType.getId(), notificationWrapper.getSscsCaseDataWrapper().getState()));
         return true;
     }
 }
