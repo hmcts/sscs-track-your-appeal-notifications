@@ -76,8 +76,7 @@ sonarqube {
     properties {
         property "sonar.projectName", "SSCS - Track Your Appeal Notifications"
         property "sonar.projectKey", "SSCSTYANS"
-        property "sonar.jacoco.reportPath", "${project.buildDir}/jacoco/test.exec"
-        property "sonar.jacoco.itReportPath", "${project.buildDir}/jacoco/integration.exec"
+        property "sonar.coverage.jacoco.xmlReportPaths", "${project.buildDir}/reports/jacoco/test/jacocoTestReport.xml"
         property "sonar.exclusions", "src/main/java/uk/gov/hmcts/reform/sscs/domain/**," +
                 "src/main/java/uk/gov/hmcts/reform/sscs/TrackYourAppealNotificationsApplication.java," +
                 "src/main/java/uk/gov/hmcts/reform/sscs/servicebus/messaging/**," +
@@ -215,7 +214,7 @@ jacocoTestReport {
     }
 }
 
-project.tasks['sonarqube'].dependsOn test, integration
+project.tasks['sonarqube'].dependsOn test, integration, jacocoTestReport
 check.dependsOn integration
 checkstyleMain.shouldRunAfter(compileJava)
 test.shouldRunAfter(checkstyleTest)

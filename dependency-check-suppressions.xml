@@ -202,4 +202,9 @@
         <notes><![CDATA[ I can't upgrade qpid-jms-client-0.40.0.ja so I'm suppressing the vulnerability... ]]></notes>
         <cve>CVE-2016-4432</cve>
     </suppress>
+    <suppress until="2020-01-31">
+        <notes>Tomcat needs to be upgraded in a new spring boot, Tomcat 9.0.29 is still in Spring boot 2.2.2</notes>
+        <cve>CVE-2019-12418</cve>
+        <cve>CVE-2019-17563</cve>
+    </suppress>
 </suppressions>
