@@ -110,6 +110,7 @@ module "track-your-appeal-notifications" {
     COH_URL = "${local.cohApi}"
 
     IDAM_URL = "${data.azurerm_key_vault_secret.idam-api.value}"
+    IDAM_API_JWK_URL = "${data.azurerm_key_vault_secret.idam-api.value}/jwks"
 
     IDAM.S2S-AUTH.TOTP_SECRET  = "${data.azurerm_key_vault_secret.sscs-s2s-secret.value}"
     IDAM.S2S-AUTH              = "${local.s2sCnpUrl}"
