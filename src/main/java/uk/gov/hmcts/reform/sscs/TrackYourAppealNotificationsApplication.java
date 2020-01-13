@@ -5,8 +5,10 @@ import static java.util.Arrays.asList;
 import com.microsoft.applicationinsights.web.internal.ApplicationInsightsServletContextListener;
 import java.util.Properties;
 import java.util.TimeZone;
+import java.util.concurrent.TimeUnit;
 import javax.annotation.PostConstruct;
 import javax.servlet.ServletContextListener;
+import okhttp3.OkHttpClient;
 import org.quartz.spi.JobFactory;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.SpringApplication;
@@ -75,6 +77,16 @@ public class TrackYourAppealNotificationsApplication {
 
     public static void main(String[] args) {
         SpringApplication.run(TrackYourAppealNotificationsApplication.class, args);
+    }
+
+    @Bean
+    public OkHttpClient okHttpClient() {
+        int timeout = 10;
+        return new OkHttpClient.Builder()
+                .connectTimeout(timeout, TimeUnit.MINUTES)
+                .readTimeout(timeout, TimeUnit.MINUTES)
+                .retryOnConnectionFailure(true)
+                .build();
     }
 
     @Bean
