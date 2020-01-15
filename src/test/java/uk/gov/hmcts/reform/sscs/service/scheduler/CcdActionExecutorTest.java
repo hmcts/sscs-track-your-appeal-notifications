@@ -63,7 +63,7 @@ public class CcdActionExecutorTest {
 
         ccdActionExecutor = new CcdActionExecutor(notificationService, ccdService, idamService, deserializer);
 
-        caseDetails = SscsCaseDetails.builder().id(456L).caseTypeId("123").build();
+        caseDetails = SscsCaseDetails.builder().id(456L).caseTypeId("123").state("appealCreated").build();
 
         newSscsCaseData = SscsCaseData.builder().ccdCaseId("456").build();
         caseDetails.setData(newSscsCaseData);
