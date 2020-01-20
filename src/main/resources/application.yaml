@@ -49,6 +49,7 @@ idam:
       id: ${IDAM_OAUTH2_CLIENT_ID:sscs}
       secret: ${IDAM_OAUTH2_CLIENT_SECRET:QM5RQQ53LZFOSIXJ}
     redirectUrl: ${IDAM_OAUTH2_REDIRECT_URL:https://localhost:3000/authenticated}
+    jwkUrl: ${IDAM_API_JWK_URL:http://localhost:5000/jwks}
 
 coh:
   url: ${COH_URL:http://localhost:8081}
@@ -472,6 +473,11 @@ pdf-service:
     directionIssued: 'TB-SCS-GNO-ENG-00012.docx'
     decisionIssued: 'TB-SCS-GNO-ENG-00012.docx'
     validAppealCreated: 'TB-SCS-GNO-ENG-00012.docx'
+
+docmosis:
+  accessKey:
+  convert:
+    endpoint:
 
 amqp:
   host: ${AMQP_HOST:localhost}
