@@ -9,7 +9,7 @@ plugins {
     id 'org.owasp.dependencycheck' version '5.2.2'
     id 'com.github.ben-manes.versions' version '0.27.0'
     id 'net.ltgt.apt' version '0.21'
-    id "org.flywaydb.flyway" version "5.0.7"
+    id "org.flywaydb.flyway" version "6.2.0"
 }
 
 apply plugin: 'org.springframework.boot'
