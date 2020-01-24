@@ -84,7 +84,8 @@ public class NotificationValidService {
 
             Hearing latestHearing = hearings.get(0);
             LocalDateTime hearingDateTime = latestHearing.getValue().getHearingDateTime();
-            return hearingDateTime.isAfter(LocalDateTime.now());
+            String hearingAdjourned = latestHearing.getValue().getAdjourned();
+            return hearingDateTime.isAfter(LocalDateTime.now()) && !"YES".equalsIgnoreCase(hearingAdjourned);
         } else {
             return false;
         }

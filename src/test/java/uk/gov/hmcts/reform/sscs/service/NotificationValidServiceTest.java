@@ -51,6 +51,20 @@ public class NotificationValidServiceTest {
     }
 
     @Test
+    public void givenHearingIsInFutureAdjournedAndEventIsHearingBooked_thenNotificationIsNotValidToSend() {
+        assertFalse(
+                notificationValidService.isNotificationStillValidToSend(SscsCaseDataUtils.addHearing(sscsCaseData, 1, "Yes"), HEARING_BOOKED_NOTIFICATION)
+        );
+    }
+
+    @Test
+    public void givenHearingIsInFutureAdjournedAndEventIsHearingReminder_thenNotificationIsNotValidToSend() {
+        assertFalse(
+                notificationValidService.isNotificationStillValidToSend(SscsCaseDataUtils.addHearing(sscsCaseData, 1, "Yes"), HEARING_REMINDER_NOTIFICATION)
+        );
+    }
+
+    @Test
     public void givenCaseDoesNotContainHearingAndEventIsHearingBooked_thenNotificationIsNotValidToSend() {
         assertFalse(
             notificationValidService.isNotificationStillValidToSend(null, HEARING_BOOKED_NOTIFICATION)

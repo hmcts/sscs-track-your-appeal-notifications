@@ -272,8 +272,13 @@ public final class SscsCaseDataUtils {
     }
 
     public static List<Hearing> addHearing(SscsCaseData response, Integer hearingDaysFromNow) {
+        return addHearing(response, hearingDaysFromNow, null);
+    }
+
+    public static List<Hearing> addHearing(SscsCaseData response, Integer hearingDaysFromNow, String adjourned) {
         Hearing hearing = Hearing.builder().value(HearingDetails.builder()
                 .hearingDate(LocalDate.now().plusDays(hearingDaysFromNow).toString())
+                .adjourned(adjourned)
                 .time("23:59")
                 .venue(Venue.builder()
                         .name("The venue")
