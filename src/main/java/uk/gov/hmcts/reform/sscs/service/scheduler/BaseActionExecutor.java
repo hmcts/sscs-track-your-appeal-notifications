@@ -13,6 +13,7 @@ import uk.gov.hmcts.reform.sscs.ccd.callback.Callback;
 import uk.gov.hmcts.reform.sscs.ccd.deserialisation.SscsCaseCallbackDeserializer;
 import uk.gov.hmcts.reform.sscs.ccd.domain.SscsCaseData;
 import uk.gov.hmcts.reform.sscs.ccd.domain.SscsCaseDetails;
+import uk.gov.hmcts.reform.sscs.ccd.domain.State;
 import uk.gov.hmcts.reform.sscs.ccd.service.CcdService;
 import uk.gov.hmcts.reform.sscs.domain.SscsCaseDataWrapper;
 import uk.gov.hmcts.reform.sscs.domain.notify.NotificationEventType;
@@ -52,7 +53,7 @@ public abstract class BaseActionExecutor<T> implements JobExecutor<T> {
 
                 Callback<SscsCaseData> callback = deserializer.deserialize(buildCcdNode(caseDetails, eventId));
 
-                SscsCaseDataWrapper wrapper = buildSscsCaseDataWrapper(callback.getCaseDetails().getCaseData(), null, getNotificationById(eventId));
+                SscsCaseDataWrapper wrapper = buildSscsCaseDataWrapper(callback.getCaseDetails().getCaseData(), null, getNotificationById(eventId), callback.getCaseDetails().getState());
 
                 notificationService.manageNotificationAndSubscription(getWrapper(wrapper, payload));
                 if (wrapper.getNotificationEventType().isReminder()) {
@@ -81,10 +82,11 @@ public abstract class BaseActionExecutor<T> implements JobExecutor<T> {
         return mapper.writeValueAsString(node);
     }
 
-    private SscsCaseDataWrapper buildSscsCaseDataWrapper(SscsCaseData caseData, SscsCaseData caseDataBefore, NotificationEventType event) {
+    private SscsCaseDataWrapper buildSscsCaseDataWrapper(SscsCaseData caseData, SscsCaseData caseDataBefore, NotificationEventType event, State state) {
         return SscsCaseDataWrapper.builder()
                 .newSscsCaseData(caseData)
                 .oldSscsCaseData(caseDataBefore)
+                .state(state)
                 .notificationEventType(event).build();
     }
 
