@@ -1024,6 +1024,44 @@ public class PersonalisationTest {
         assertEquals(expected, latestInfoRequest);
     }
 
+    @Test
+    public void trackYourAppealWillReturnMyaLinkWhenCreatedInGapsFromReadyToList() {
+        RegionalProcessingCenter rpc = regionalProcessingCenterService.getByScReferenceCode("SC/1234/5");
+        SscsCaseData response = SscsCaseData.builder()
+            .ccdCaseId(CASE_ID).caseReference("SC/1234/5")
+            .regionalProcessingCenter(rpc)
+            .appeal(Appeal.builder().benefitType(BenefitType.builder().code("PIP").build())
+                .appellant(Appellant.builder().name(name).build())
+                .build())
+            .subscriptions(subscriptions)
+            .createdInGapsFrom("readyToList")
+            .build();
+
+        Map result = personalisation.create(SscsCaseDataWrapper.builder().newSscsCaseData(response)
+            .notificationEventType(APPEAL_RECEIVED_NOTIFICATION).build(), new SubscriptionWithType(subscriptions.getAppellantSubscription(), APPELLANT));
+
+        assertEquals("http://myalink.com/GLSCRR", result.get(TRACK_APPEAL_LINK_LITERAL));
+    }
+
+    @Test
+    public void trackYourAppealWillReturnTyaLinkWhenCreatedInGapsFromIsNotReadyToList() {
+        RegionalProcessingCenter rpc = regionalProcessingCenterService.getByScReferenceCode("SC/1234/5");
+        SscsCaseData response = SscsCaseData.builder()
+            .ccdCaseId(CASE_ID).caseReference("SC/1234/5")
+            .regionalProcessingCenter(rpc)
+            .appeal(Appeal.builder().benefitType(BenefitType.builder().code("PIP").build())
+                .appellant(Appellant.builder().name(name).build())
+                .build())
+            .subscriptions(subscriptions)
+            .createdInGapsFrom("validAppeal")
+            .build();
+
+        Map result = personalisation.create(SscsCaseDataWrapper.builder().newSscsCaseData(response)
+            .notificationEventType(APPEAL_RECEIVED_NOTIFICATION).build(), new SubscriptionWithType(subscriptions.getAppellantSubscription(), APPELLANT));
+
+        assertEquals("http://tyalink.com/GLSCRR", result.get(TRACK_APPEAL_LINK_LITERAL));
+    }
+
     private Hearing createHearing(LocalDate hearingDate) {
         return Hearing.builder().value(HearingDetails.builder()
                 .hearingDate(hearingDate.format(DateTimeFormatter.ofPattern("yyyy-MM-dd")))

@@ -4,96 +4,10 @@ import static com.google.common.collect.Lists.newArrayList;
 import static uk.gov.hmcts.reform.sscs.ccd.domain.Benefit.getBenefitByCode;
 import static uk.gov.hmcts.reform.sscs.ccd.domain.EventType.APPEAL_RECEIVED;
 import static uk.gov.hmcts.reform.sscs.ccd.util.CaseDataUtils.YES;
-import static uk.gov.hmcts.reform.sscs.config.AppConstants.ACCEPT_VIEW_BY_DATE_LITERAL;
-import static uk.gov.hmcts.reform.sscs.config.AppConstants.ADDRESS_LINE_LITERAL;
-import static uk.gov.hmcts.reform.sscs.config.AppConstants.APPEAL_ID;
-import static uk.gov.hmcts.reform.sscs.config.AppConstants.APPEAL_ID_LITERAL;
-import static uk.gov.hmcts.reform.sscs.config.AppConstants.APPEAL_REF;
-import static uk.gov.hmcts.reform.sscs.config.AppConstants.APPEAL_RESPOND_DATE;
-import static uk.gov.hmcts.reform.sscs.config.AppConstants.APPELLANT_NAME;
-import static uk.gov.hmcts.reform.sscs.config.AppConstants.APPOINTEE_DESCRIPTION;
-import static uk.gov.hmcts.reform.sscs.config.AppConstants.BENEFIT_FULL_NAME_LITERAL;
-import static uk.gov.hmcts.reform.sscs.config.AppConstants.BENEFIT_NAME_ACRONYM_LITERAL;
-import static uk.gov.hmcts.reform.sscs.config.AppConstants.BENEFIT_NAME_ACRONYM_SHORT_LITERAL;
-import static uk.gov.hmcts.reform.sscs.config.AppConstants.CASE_REFERENCE_ID;
-import static uk.gov.hmcts.reform.sscs.config.AppConstants.CCD_ID;
-import static uk.gov.hmcts.reform.sscs.config.AppConstants.CC_DATE_FORMAT;
-import static uk.gov.hmcts.reform.sscs.config.AppConstants.CLAIMING_EXPENSES_LINK_LITERAL;
-import static uk.gov.hmcts.reform.sscs.config.AppConstants.COUNTY_LITERAL;
-import static uk.gov.hmcts.reform.sscs.config.AppConstants.DAYS_STRING;
-import static uk.gov.hmcts.reform.sscs.config.AppConstants.DAYS_TO_HEARING_LITERAL;
-import static uk.gov.hmcts.reform.sscs.config.AppConstants.DECISION_POSTED_RECEIVE_DATE;
-import static uk.gov.hmcts.reform.sscs.config.AppConstants.DWP_ACRONYM;
-import static uk.gov.hmcts.reform.sscs.config.AppConstants.DWP_FUL_NAME;
-import static uk.gov.hmcts.reform.sscs.config.AppConstants.ESA_PANEL_COMPOSITION;
-import static uk.gov.hmcts.reform.sscs.config.AppConstants.EVIDENCE_RECEIVED_DATE_LITERAL;
-import static uk.gov.hmcts.reform.sscs.config.AppConstants.FIRST_TIER_AGENCY_ACRONYM;
-import static uk.gov.hmcts.reform.sscs.config.AppConstants.FIRST_TIER_AGENCY_FULL_NAME;
-import static uk.gov.hmcts.reform.sscs.config.AppConstants.HEARING_CONTACT_DATE;
-import static uk.gov.hmcts.reform.sscs.config.AppConstants.HEARING_DATE;
-import static uk.gov.hmcts.reform.sscs.config.AppConstants.HEARING_INFO_LINK_LITERAL;
-import static uk.gov.hmcts.reform.sscs.config.AppConstants.HEARING_TIME;
-import static uk.gov.hmcts.reform.sscs.config.AppConstants.HEARING_TIME_FORMAT;
-import static uk.gov.hmcts.reform.sscs.config.AppConstants.INFO_REQUEST_DETAIL;
-import static uk.gov.hmcts.reform.sscs.config.AppConstants.MAC_LITERAL;
-import static uk.gov.hmcts.reform.sscs.config.AppConstants.MANAGE_EMAILS_LINK_LITERAL;
-import static uk.gov.hmcts.reform.sscs.config.AppConstants.MAX_DWP_RESPONSE_DAYS;
-import static uk.gov.hmcts.reform.sscs.config.AppConstants.MYA_LINK_LITERAL;
-import static uk.gov.hmcts.reform.sscs.config.AppConstants.NAME;
-import static uk.gov.hmcts.reform.sscs.config.AppConstants.ONLINE_HEARING_LINK_LITERAL;
-import static uk.gov.hmcts.reform.sscs.config.AppConstants.ONLINE_HEARING_REGISTER_LINK_LITERAL;
-import static uk.gov.hmcts.reform.sscs.config.AppConstants.ONLINE_HEARING_SIGN_IN_LINK_LITERAL;
-import static uk.gov.hmcts.reform.sscs.config.AppConstants.PANEL_COMPOSITION;
-import static uk.gov.hmcts.reform.sscs.config.AppConstants.PHONE_NUMBER;
-import static uk.gov.hmcts.reform.sscs.config.AppConstants.PIP_PANEL_COMPOSITION;
-import static uk.gov.hmcts.reform.sscs.config.AppConstants.POSTCODE_LITERAL;
-import static uk.gov.hmcts.reform.sscs.config.AppConstants.QUESTION_ROUND_EXPIRES_DATE_LITERAL;
-import static uk.gov.hmcts.reform.sscs.config.AppConstants.REGIONAL_OFFICE_NAME_LITERAL;
-import static uk.gov.hmcts.reform.sscs.config.AppConstants.REGIONAL_OFFICE_POSTCODE_LITERAL;
-import static uk.gov.hmcts.reform.sscs.config.AppConstants.RESPONSE_DATE_FORMAT;
-import static uk.gov.hmcts.reform.sscs.config.AppConstants.SUBMIT_EVIDENCE_INFO_LINK_LITERAL;
-import static uk.gov.hmcts.reform.sscs.config.AppConstants.SUBMIT_EVIDENCE_LINK_LITERAL;
-import static uk.gov.hmcts.reform.sscs.config.AppConstants.SUPPORT_CENTRE_NAME_LITERAL;
-import static uk.gov.hmcts.reform.sscs.config.AppConstants.TOMORROW_STRING;
-import static uk.gov.hmcts.reform.sscs.config.AppConstants.TOWN_LITERAL;
-import static uk.gov.hmcts.reform.sscs.config.AppConstants.TRACK_APPEAL_LINK_LITERAL;
-import static uk.gov.hmcts.reform.sscs.config.AppConstants.TRIBUNAL_RESPONSE_DATE_LITERAL;
-import static uk.gov.hmcts.reform.sscs.config.AppConstants.UC_PANEL_COMPOSITION;
-import static uk.gov.hmcts.reform.sscs.config.AppConstants.VENUE_ADDRESS_LITERAL;
-import static uk.gov.hmcts.reform.sscs.config.AppConstants.VENUE_MAP_LINK_LITERAL;
-import static uk.gov.hmcts.reform.sscs.config.SubscriptionType.APPELLANT;
-import static uk.gov.hmcts.reform.sscs.config.SubscriptionType.APPOINTEE;
-import static uk.gov.hmcts.reform.sscs.config.SubscriptionType.REPRESENTATIVE;
-import static uk.gov.hmcts.reform.sscs.domain.notify.NotificationEventType.ADJOURNED_NOTIFICATION;
-import static uk.gov.hmcts.reform.sscs.domain.notify.NotificationEventType.ADMIN_APPEAL_WITHDRAWN;
-import static uk.gov.hmcts.reform.sscs.domain.notify.NotificationEventType.APPEAL_DORMANT_NOTIFICATION;
-import static uk.gov.hmcts.reform.sscs.domain.notify.NotificationEventType.APPEAL_LAPSED_NOTIFICATION;
-import static uk.gov.hmcts.reform.sscs.domain.notify.NotificationEventType.APPEAL_RECEIVED_NOTIFICATION;
-import static uk.gov.hmcts.reform.sscs.domain.notify.NotificationEventType.APPEAL_WITHDRAWN_NOTIFICATION;
-import static uk.gov.hmcts.reform.sscs.domain.notify.NotificationEventType.CASE_UPDATED;
-import static uk.gov.hmcts.reform.sscs.domain.notify.NotificationEventType.DECISION_ISSUED;
-import static uk.gov.hmcts.reform.sscs.domain.notify.NotificationEventType.DIRECTION_ISSUED;
-import static uk.gov.hmcts.reform.sscs.domain.notify.NotificationEventType.DWP_APPEAL_LAPSED_NOTIFICATION;
-import static uk.gov.hmcts.reform.sscs.domain.notify.NotificationEventType.DWP_RESPONSE_RECEIVED_NOTIFICATION;
-import static uk.gov.hmcts.reform.sscs.domain.notify.NotificationEventType.DWP_UPLOAD_RESPONSE_NOTIFICATION;
-import static uk.gov.hmcts.reform.sscs.domain.notify.NotificationEventType.EVIDENCE_RECEIVED_NOTIFICATION;
-import static uk.gov.hmcts.reform.sscs.domain.notify.NotificationEventType.EVIDENCE_REMINDER_NOTIFICATION;
-import static uk.gov.hmcts.reform.sscs.domain.notify.NotificationEventType.HEARING_BOOKED_NOTIFICATION;
-import static uk.gov.hmcts.reform.sscs.domain.notify.NotificationEventType.HEARING_REMINDER_NOTIFICATION;
-import static uk.gov.hmcts.reform.sscs.domain.notify.NotificationEventType.HMCTS_APPEAL_LAPSED_NOTIFICATION;
-import static uk.gov.hmcts.reform.sscs.domain.notify.NotificationEventType.JUDGE_DECISION_APPEAL_TO_PROCEED;
-import static uk.gov.hmcts.reform.sscs.domain.notify.NotificationEventType.NON_COMPLIANT_NOTIFICATION;
-import static uk.gov.hmcts.reform.sscs.domain.notify.NotificationEventType.POSTPONEMENT_NOTIFICATION;
-import static uk.gov.hmcts.reform.sscs.domain.notify.NotificationEventType.REQUEST_INFO_INCOMPLETE;
-import static uk.gov.hmcts.reform.sscs.domain.notify.NotificationEventType.RESEND_APPEAL_CREATED_NOTIFICATION;
-import static uk.gov.hmcts.reform.sscs.domain.notify.NotificationEventType.SUBSCRIPTION_CREATED_NOTIFICATION;
-import static uk.gov.hmcts.reform.sscs.domain.notify.NotificationEventType.SYA_APPEAL_CREATED_NOTIFICATION;
-import static uk.gov.hmcts.reform.sscs.domain.notify.NotificationEventType.TCW_DECISION_APPEAL_TO_PROCEED;
-import static uk.gov.hmcts.reform.sscs.domain.notify.NotificationEventType.VALID_APPEAL_CREATED;
-import static uk.gov.hmcts.reform.sscs.personalisation.SyaAppealCreatedAndReceivedPersonalisation.NOT_REQUIRED;
-import static uk.gov.hmcts.reform.sscs.personalisation.SyaAppealCreatedAndReceivedPersonalisation.REQUIRED;
-import static uk.gov.hmcts.reform.sscs.personalisation.SyaAppealCreatedAndReceivedPersonalisation.TWO_NEW_LINES;
-import static uk.gov.hmcts.reform.sscs.personalisation.SyaAppealCreatedAndReceivedPersonalisation.getOptionalField;
+import static uk.gov.hmcts.reform.sscs.config.AppConstants.*;
+import static uk.gov.hmcts.reform.sscs.config.SubscriptionType.*;
+import static uk.gov.hmcts.reform.sscs.domain.notify.NotificationEventType.*;
+import static uk.gov.hmcts.reform.sscs.personalisation.SyaAppealCreatedAndReceivedPersonalisation.*;
 import static uk.gov.hmcts.reform.sscs.service.NotificationUtils.hasAppointee;
 import static uk.gov.hmcts.reform.sscs.service.NotificationUtils.hasRepresentative;
 
@@ -105,28 +19,13 @@ import java.time.LocalDateTime;
 import java.time.ZonedDateTime;
 import java.time.format.DateTimeFormatter;
 import java.time.temporal.ChronoUnit;
-import java.util.Arrays;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.Optional;
+import java.util.*;
 import java.util.stream.Collectors;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
-import uk.gov.hmcts.reform.sscs.ccd.domain.AppellantInfoRequest;
-import uk.gov.hmcts.reform.sscs.ccd.domain.Benefit;
-import uk.gov.hmcts.reform.sscs.ccd.domain.Event;
-import uk.gov.hmcts.reform.sscs.ccd.domain.EventDetails;
-import uk.gov.hmcts.reform.sscs.ccd.domain.EventType;
-import uk.gov.hmcts.reform.sscs.ccd.domain.Hearing;
-import uk.gov.hmcts.reform.sscs.ccd.domain.HearingDetails;
-import uk.gov.hmcts.reform.sscs.ccd.domain.HearingOptions;
-import uk.gov.hmcts.reform.sscs.ccd.domain.Name;
-import uk.gov.hmcts.reform.sscs.ccd.domain.RegionalProcessingCenter;
-import uk.gov.hmcts.reform.sscs.ccd.domain.SscsCaseData;
-import uk.gov.hmcts.reform.sscs.ccd.domain.Subscription;
+import uk.gov.hmcts.reform.sscs.ccd.domain.*;
 import uk.gov.hmcts.reform.sscs.config.AppConstants;
 import uk.gov.hmcts.reform.sscs.config.AppealHearingType;
 import uk.gov.hmcts.reform.sscs.config.NotificationConfig;
@@ -151,12 +50,10 @@ public class Personalisation<E extends NotificationWrapper> {
         APPEAL_RECEIVED_NOTIFICATION, SYA_APPEAL_CREATED_NOTIFICATION, EVIDENCE_RECEIVED_NOTIFICATION, NON_COMPLIANT_NOTIFICATION, VALID_APPEAL_CREATED);
 
     private static final String CRLF = String.format("%c%c", (char) 0x0D, (char) 0x0A);
-
-    private boolean sendSmsSubscriptionConfirmation;
-
+    private static final String READY_TO_LIST = "readyToList";
     @Autowired
     protected NotificationConfig config;
-
+    private boolean sendSmsSubscriptionConfirmation;
     @Autowired
     private HearingContactDateExtractor hearingContactDateExtractor;
 
@@ -171,6 +68,58 @@ public class Personalisation<E extends NotificationWrapper> {
 
     @Autowired
     private EvidenceProperties evidenceProperties;
+
+    private static String tya(Subscription subscription) {
+        if (subscription != null) {
+            return StringUtils.defaultIfBlank(subscription.getTya(), StringUtils.EMPTY);
+        } else {
+            return StringUtils.EMPTY;
+        }
+    }
+
+    private static String email(Subscription subscription) {
+        return subscription != null ? subscription.getEmail() : null;
+    }
+
+    private static boolean hasRegionalProcessingCenter(SscsCaseData ccdResponse) {
+        return null != ccdResponse.getRegionalProcessingCenter()
+            && null != ccdResponse.getRegionalProcessingCenter().getName();
+    }
+
+    protected static String getLatestInfoRequestDetail(SscsCaseData ccdResponse) {
+        if (ccdResponse.getInfoRequests() != null) {
+            List<AppellantInfoRequest> infoRequests = ccdResponse.getInfoRequests().getAppellantInfoRequest();
+
+            if (infoRequests.isEmpty()) {
+                return null;
+            }
+
+            AppellantInfoRequest latestAppellantInfoRequest = null;
+            for (AppellantInfoRequest infoRequest : infoRequests) {
+                latestAppellantInfoRequest = getLatestAppellantInfoRequest(latestAppellantInfoRequest, infoRequest);
+            }
+
+            if (latestAppellantInfoRequest != null && latestAppellantInfoRequest.getAppellantInfo() != null) {
+                return latestAppellantInfoRequest.getAppellantInfo().getParagraph();
+            }
+        }
+
+        return null;
+    }
+
+    private static AppellantInfoRequest getLatestAppellantInfoRequest(AppellantInfoRequest
+                                                                          latestAppellantInfoRequest, AppellantInfoRequest infoRequest) {
+        if (latestAppellantInfoRequest == null) {
+            latestAppellantInfoRequest = infoRequest;
+        } else {
+            LocalDate latestDate = LocalDate.parse(latestAppellantInfoRequest.getAppellantInfo().getRequestDate(), CC_DATE_FORMAT);
+            LocalDate currentDate = LocalDate.parse(infoRequest.getAppellantInfo().getRequestDate(), CC_DATE_FORMAT);
+            if (currentDate.isAfter(latestDate)) {
+                latestAppellantInfoRequest = infoRequest;
+            }
+        }
+        return latestAppellantInfoRequest;
+    }
 
     public Map<String, String> create(final E notificationWrapper, final SubscriptionWithType subscriptionWithType) {
         return create(notificationWrapper.getSscsCaseDataWrapper(), subscriptionWithType);
@@ -208,7 +157,7 @@ public class Personalisation<E extends NotificationWrapper> {
         personalisation.put(INFO_REQUEST_DETAIL, StringUtils.defaultIfBlank(getLatestInfoRequestDetail(ccdResponse), StringUtils.EMPTY));
 
         Subscription subscription = subscriptionWithType.getSubscription();
-        subscriptionDetails(personalisation, subscription, benefit);
+        subscriptionDetails(personalisation, subscription, benefit, ccdResponse);
 
         personalisation.put(FIRST_TIER_AGENCY_ACRONYM, DWP_ACRONYM);
         personalisation.put(FIRST_TIER_AGENCY_FULL_NAME, DWP_FUL_NAME);
@@ -288,13 +237,16 @@ public class Personalisation<E extends NotificationWrapper> {
         }
     }
 
-    private void subscriptionDetails(Map<String, String> personalisation, Subscription subscription, Benefit benefit) {
+    private void subscriptionDetails(Map<String, String> personalisation, Subscription subscription, Benefit benefit, SscsCaseData sscsCaseData) {
         final String tya = tya(subscription);
         personalisation.put(APPEAL_ID, tya);
         if (benefit != null) {
             personalisation.put(MANAGE_EMAILS_LINK_LITERAL, config.getManageEmailsLink().replace(MAC_LITERAL, getMacToken(tya, benefit.name())));
         }
         personalisation.put(TRACK_APPEAL_LINK_LITERAL, config.getTrackAppealLink() != null ? config.getTrackAppealLink().replace(APPEAL_ID_LITERAL, tya) : null);
+        if (StringUtils.equalsAnyIgnoreCase(READY_TO_LIST, sscsCaseData.getCreatedInGapsFrom())) {
+            personalisation.put(TRACK_APPEAL_LINK_LITERAL, config.getMyaLink() != null ? config.getMyaLink().replace(APPEAL_ID_LITERAL, tya) : null);
+        }
         personalisation.put(MYA_LINK_LITERAL, config.getMyaLink() != null ? config.getMyaLink().replace(APPEAL_ID_LITERAL, tya) : null);
         personalisation.put(SUBMIT_EVIDENCE_LINK_LITERAL, config.getEvidenceSubmissionInfoLink().replace(APPEAL_ID, tya));
         personalisation.put(SUBMIT_EVIDENCE_INFO_LINK_LITERAL, config.getEvidenceSubmissionInfoLink().replace(APPEAL_ID_LITERAL, tya));
@@ -311,18 +263,6 @@ public class Personalisation<E extends NotificationWrapper> {
                 throw new RuntimeException(e);
             }
         }
-    }
-
-    private static String tya(Subscription subscription) {
-        if (subscription != null) {
-            return StringUtils.defaultIfBlank(subscription.getTya(), StringUtils.EMPTY);
-        } else {
-            return StringUtils.EMPTY;
-        }
-    }
-
-    private static String email(Subscription subscription) {
-        return subscription != null ? subscription.getEmail() : null;
     }
 
     private String getPanelCompositionByBenefitType(Benefit benefit) {
@@ -418,11 +358,6 @@ public class Personalisation<E extends NotificationWrapper> {
         setHearingArrangementDetails(personalisation, ccdResponse);
 
         return personalisation;
-    }
-
-    private static boolean hasRegionalProcessingCenter(SscsCaseData ccdResponse) {
-        return null != ccdResponse.getRegionalProcessingCenter()
-            && null != ccdResponse.getRegionalProcessingCenter().getName();
     }
 
     private String formatAddress(Hearing hearing) {
@@ -564,40 +499,5 @@ public class Personalisation<E extends NotificationWrapper> {
 
     private String convertBooleanToRequiredText(Boolean bool) {
         return bool ? REQUIRED : NOT_REQUIRED;
-    }
-
-    protected static String getLatestInfoRequestDetail(SscsCaseData ccdResponse) {
-        if (ccdResponse.getInfoRequests() != null) {
-            List<AppellantInfoRequest> infoRequests = ccdResponse.getInfoRequests().getAppellantInfoRequest();
-
-            if (infoRequests.isEmpty()) {
-                return null;
-            }
-
-            AppellantInfoRequest latestAppellantInfoRequest = null;
-            for (AppellantInfoRequest infoRequest : infoRequests) {
-                latestAppellantInfoRequest = getLatestAppellantInfoRequest(latestAppellantInfoRequest, infoRequest);
-            }
-
-            if (latestAppellantInfoRequest != null && latestAppellantInfoRequest.getAppellantInfo() != null) {
-                return latestAppellantInfoRequest.getAppellantInfo().getParagraph();
-            }
-        }
-
-        return null;
-    }
-
-    private static AppellantInfoRequest getLatestAppellantInfoRequest(AppellantInfoRequest
-                                                                          latestAppellantInfoRequest, AppellantInfoRequest infoRequest) {
-        if (latestAppellantInfoRequest == null) {
-            latestAppellantInfoRequest = infoRequest;
-        } else {
-            LocalDate latestDate = LocalDate.parse(latestAppellantInfoRequest.getAppellantInfo().getRequestDate(), CC_DATE_FORMAT);
-            LocalDate currentDate = LocalDate.parse(infoRequest.getAppellantInfo().getRequestDate(), CC_DATE_FORMAT);
-            if (currentDate.isAfter(latestDate)) {
-                latestAppellantInfoRequest = infoRequest;
-            }
-        }
-        return latestAppellantInfoRequest;
     }
 }
