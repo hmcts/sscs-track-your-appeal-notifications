@@ -50,7 +50,7 @@ public class Personalisation<E extends NotificationWrapper> {
         APPEAL_RECEIVED_NOTIFICATION, SYA_APPEAL_CREATED_NOTIFICATION, EVIDENCE_RECEIVED_NOTIFICATION, NON_COMPLIANT_NOTIFICATION, VALID_APPEAL_CREATED);
 
     private static final String CRLF = String.format("%c%c", (char) 0x0D, (char) 0x0A);
-    private static final String READY_TO_LIST = "readyToList";
+
     @Autowired
     protected NotificationConfig config;
     private boolean sendSmsSubscriptionConfirmation;
@@ -243,9 +243,10 @@ public class Personalisation<E extends NotificationWrapper> {
         if (benefit != null) {
             personalisation.put(MANAGE_EMAILS_LINK_LITERAL, config.getManageEmailsLink().replace(MAC_LITERAL, getMacToken(tya, benefit.name())));
         }
-        personalisation.put(TRACK_APPEAL_LINK_LITERAL, config.getTrackAppealLink() != null ? config.getTrackAppealLink().replace(APPEAL_ID_LITERAL, tya) : null);
-        if (StringUtils.equalsAnyIgnoreCase(READY_TO_LIST, sscsCaseData.getCreatedInGapsFrom())) {
+        if (StringUtils.equalsIgnoreCase(State.READY_TO_LIST.getId(), sscsCaseData.getCreatedInGapsFrom())) {
             personalisation.put(TRACK_APPEAL_LINK_LITERAL, config.getMyaLink() != null ? config.getMyaLink().replace(APPEAL_ID_LITERAL, tya) : null);
+        } else {
+            personalisation.put(TRACK_APPEAL_LINK_LITERAL, config.getTrackAppealLink() != null ? config.getTrackAppealLink().replace(APPEAL_ID_LITERAL, tya) : null);
         }
         personalisation.put(MYA_LINK_LITERAL, config.getMyaLink() != null ? config.getMyaLink().replace(APPEAL_ID_LITERAL, tya) : null);
         personalisation.put(SUBMIT_EVIDENCE_LINK_LITERAL, config.getEvidenceSubmissionInfoLink().replace(APPEAL_ID, tya));
