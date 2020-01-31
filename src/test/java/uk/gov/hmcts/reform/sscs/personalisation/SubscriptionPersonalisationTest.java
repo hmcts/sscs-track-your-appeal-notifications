@@ -85,7 +85,7 @@ public class SubscriptionPersonalisationTest {
         assertEquals("PIP", result.get(AppConstants.BENEFIT_NAME_ACRONYM_LITERAL));
         assertEquals("Personal Independence Payment", result.get(AppConstants.BENEFIT_FULL_NAME_LITERAL));
         assertEquals("1234", result.get(AppConstants.APPEAL_REF));
-        assertEquals("GLSCRR", result.get(AppConstants.APPEAL_ID));
+        assertEquals("GLSCRR", result.get(AppConstants.APPEAL_ID_LITERAL));
         assertEquals("Harry Kane", result.get(AppConstants.NAME));
         assertEquals("01234543225", result.get(AppConstants.PHONE_NUMBER));
         assertEquals("http://link.com/manage-email-notifications/ZYX", result.get(AppConstants.MANAGE_EMAILS_LINK_LITERAL));

@@ -19,8 +19,6 @@ public class NotificationConfig {
     private String manageEmailsLink;
     @Value("${track.appeal.link}")
     private String trackAppealLink;
-    @Value("${mya.link}")
-    private String myaLink;
     @Value("${evidence.submission.info.link}")
     private String evidenceSubmissionInfoLink;
     @Value("${claiming.expenses.link}")
@@ -29,6 +27,14 @@ public class NotificationConfig {
     private String hearingInfoLink;
     @Value("${online.hearing.link}")
     private String onlineHearingLink;
+    @Value("${mya.link}")
+    private String myaLink;
+    @Value("${mya.evidence.submission.info.link}")
+    private String myaEvidenceSubmissionInfoLink;
+    @Value("${mya.hearing.info.link}")
+    private String myaHearingInfoLink;
+    @Value("${mya.claiming.expenses.link}")
+    private String myaClaimingExpensesLink;
 
     private Environment env;
 
@@ -46,6 +52,18 @@ public class NotificationConfig {
 
     public Link getMyaLink() {
         return Link.builder().linkUrl(myaLink).build();
+    }
+
+    public Link getMyaEvidenceSubmissionInfoLink() {
+        return Link.builder().linkUrl(myaEvidenceSubmissionInfoLink).build();
+    }
+
+    public Link getMyaHearingInfoLink() {
+        return Link.builder().linkUrl(myaHearingInfoLink).build();
+    }
+
+    public Link getMyaClaimingExpensesLink() {
+        return Link.builder().linkUrl(myaClaimingExpensesLink).build();
     }
 
     public Link getEvidenceSubmissionInfoLink() {

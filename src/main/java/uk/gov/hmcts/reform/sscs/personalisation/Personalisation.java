@@ -239,21 +239,23 @@ public class Personalisation<E extends NotificationWrapper> {
 
     private void subscriptionDetails(Map<String, String> personalisation, Subscription subscription, Benefit benefit, SscsCaseData sscsCaseData) {
         final String tya = tya(subscription);
-        personalisation.put(APPEAL_ID, tya);
+        personalisation.put(APPEAL_ID_LITERAL, tya);
         if (benefit != null) {
             personalisation.put(MANAGE_EMAILS_LINK_LITERAL, config.getManageEmailsLink().replace(MAC_LITERAL, getMacToken(tya, benefit.name())));
         }
         if (StringUtils.equalsIgnoreCase(State.READY_TO_LIST.getId(), sscsCaseData.getCreatedInGapsFrom())) {
             personalisation.put(TRACK_APPEAL_LINK_LITERAL, config.getMyaLink() != null ? config.getMyaLink().replace(APPEAL_ID_LITERAL, tya) : null);
+            personalisation.put(CLAIMING_EXPENSES_LINK_LITERAL, config.getMyaClaimingExpensesLink().getLinkUrl());
+            personalisation.put(SUBMIT_EVIDENCE_LINK_LITERAL, config.getMyaEvidenceSubmissionInfoLink().getLinkUrl());
+            personalisation.put(SUBMIT_EVIDENCE_INFO_LINK_LITERAL, config.getMyaEvidenceSubmissionInfoLink().getLinkUrl());
+            personalisation.put(HEARING_INFO_LINK_LITERAL, config.getMyaHearingInfoLink().getLinkUrl());
         } else {
             personalisation.put(TRACK_APPEAL_LINK_LITERAL, config.getTrackAppealLink() != null ? config.getTrackAppealLink().replace(APPEAL_ID_LITERAL, tya) : null);
+            personalisation.put(CLAIMING_EXPENSES_LINK_LITERAL, config.getClaimingExpensesLink().replace(APPEAL_ID_LITERAL, tya));
+            personalisation.put(SUBMIT_EVIDENCE_LINK_LITERAL, config.getEvidenceSubmissionInfoLink().replace(APPEAL_ID_LITERAL, tya));
+            personalisation.put(SUBMIT_EVIDENCE_INFO_LINK_LITERAL, config.getEvidenceSubmissionInfoLink().replace(APPEAL_ID_LITERAL, tya));
+            personalisation.put(HEARING_INFO_LINK_LITERAL, config.getHearingInfoLink().replace(APPEAL_ID_LITERAL, tya));
         }
-        personalisation.put(MYA_LINK_LITERAL, config.getMyaLink() != null ? config.getMyaLink().replace(APPEAL_ID_LITERAL, tya) : null);
-        personalisation.put(SUBMIT_EVIDENCE_LINK_LITERAL, config.getEvidenceSubmissionInfoLink().replace(APPEAL_ID, tya));
-        personalisation.put(SUBMIT_EVIDENCE_INFO_LINK_LITERAL, config.getEvidenceSubmissionInfoLink().replace(APPEAL_ID_LITERAL, tya));
-        personalisation.put(CLAIMING_EXPENSES_LINK_LITERAL, config.getClaimingExpensesLink().replace(APPEAL_ID, tya));
-        personalisation.put(HEARING_INFO_LINK_LITERAL,
-            config.getHearingInfoLink().replace(APPEAL_ID_LITERAL, tya));
 
         String email = email(subscription);
         if (email != null) {

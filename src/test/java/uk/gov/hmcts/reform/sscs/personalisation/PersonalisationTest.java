@@ -78,7 +78,7 @@ public class PersonalisationTest {
 
     private Name name;
 
-    private  RegionalProcessingCenter rpc;
+    private RegionalProcessingCenter rpc;
     private String evidenceAddressLine1;
     private String evidenceAddressLine2;
     private String evidenceAddressLine3;
@@ -90,9 +90,11 @@ public class PersonalisationTest {
     @Before
     public void setup() {
         initMocks(this);
-        when(config.getManageEmailsLink()).thenReturn(Link.builder().linkUrl("http://manageemails.com/mac").build());
         when(config.getTrackAppealLink()).thenReturn(Link.builder().linkUrl("http://tyalink.com/appeal_id").build());
         when(config.getMyaLink()).thenReturn(Link.builder().linkUrl("http://myalink.com/appeal_id").build());
+        when(config.getMyaClaimingExpensesLink()).thenReturn(Link.builder().linkUrl("http://myalink.com/claimingExpenses").build());
+        when(config.getMyaEvidenceSubmissionInfoLink()).thenReturn(Link.builder().linkUrl("http://myalink.com/evidenceSubmission").build());
+        when(config.getMyaHearingInfoLink()).thenReturn(Link.builder().linkUrl("http://myalink.com/hearingInfo").build());
         when(config.getEvidenceSubmissionInfoLink()).thenReturn(Link.builder().linkUrl("http://link.com/appeal_id").build());
         when(config.getManageEmailsLink()).thenReturn(Link.builder().linkUrl("http://link.com/manage-email-notifications/mac").build());
         when(config.getClaimingExpensesLink()).thenReturn(Link.builder().linkUrl("http://link.com/progress/appeal_id/expenses").build());
@@ -302,13 +304,12 @@ public class PersonalisationTest {
         assertEquals(expectedBenefitDesc, result.get(BENEFIT_FULL_NAME_LITERAL));
         assertEquals("SC/1234/5", result.get(APPEAL_REF));
         assertEquals("SC/1234/5", result.get(CASE_REFERENCE_ID));
-        assertEquals("GLSCRR", result.get(APPEAL_ID));
+        assertEquals("GLSCRR", result.get(APPEAL_ID_LITERAL));
         assertEquals("Harry Kane", result.get(NAME));
         assertEquals("Harry Kane", result.get(APPELLANT_NAME));
         assertEquals("0300 999 8888", result.get(PHONE_NUMBER));
         assertEquals("http://link.com/manage-email-notifications/ZYX", result.get(MANAGE_EMAILS_LINK_LITERAL));
         assertEquals("http://tyalink.com/GLSCRR", result.get(TRACK_APPEAL_LINK_LITERAL));
-        assertEquals("http://myalink.com/GLSCRR", result.get(MYA_LINK_LITERAL));
         assertEquals(DWP_ACRONYM, result.get(FIRST_TIER_AGENCY_ACRONYM));
         assertEquals(DWP_FUL_NAME, result.get(FIRST_TIER_AGENCY_FULL_NAME));
         assertEquals("5 August 2018", result.get(APPEAL_RESPOND_DATE));
@@ -358,13 +359,12 @@ public class PersonalisationTest {
         assertNull(result.get(BENEFIT_FULL_NAME_LITERAL));
         assertEquals("SC/1234/5", result.get(APPEAL_REF));
         assertEquals("SC/1234/5", result.get(CASE_REFERENCE_ID));
-        assertEquals("GLSCRR", result.get(APPEAL_ID));
+        assertEquals("GLSCRR", result.get(APPEAL_ID_LITERAL));
         assertEquals("Harry Kane", result.get(NAME));
         assertEquals("Harry Kane", result.get(APPELLANT_NAME));
         assertEquals("0300 999 8888", result.get(PHONE_NUMBER));
         assertNull(result.get(MANAGE_EMAILS_LINK_LITERAL));
         assertEquals("http://tyalink.com/GLSCRR", result.get(TRACK_APPEAL_LINK_LITERAL));
-        assertEquals("http://myalink.com/GLSCRR", result.get(MYA_LINK_LITERAL));
         assertEquals(DWP_ACRONYM, result.get(FIRST_TIER_AGENCY_ACRONYM));
         assertEquals(DWP_FUL_NAME, result.get(FIRST_TIER_AGENCY_FULL_NAME));
         assertEquals("5 August 2018", result.get(APPEAL_RESPOND_DATE));
@@ -884,10 +884,9 @@ public class PersonalisationTest {
         assertEquals(CASE_ID, result.get(CCD_ID));
         assertEquals(appointeeName.getFullNameNoTitle(), result.get(NAME));
         assertEquals(name.getFullNameNoTitle(), result.get(APPELLANT_NAME));
-        assertEquals(tyaNumber, result.get(APPEAL_ID));
+        assertEquals(tyaNumber, result.get(APPEAL_ID_LITERAL));
         assertEquals("http://link.com/manage-email-notifications/ZYX", result.get(MANAGE_EMAILS_LINK_LITERAL));
         assertEquals("http://tyalink.com/" + tyaNumber, result.get(TRACK_APPEAL_LINK_LITERAL));
-        assertEquals("http://myalink.com/" + tyaNumber, result.get(MYA_LINK_LITERAL));
         assertEquals("You are receiving this update as the appointee for Harry Kane.\r\n\r\n", result.get(APPOINTEE_DESCRIPTION));
     }
 
@@ -933,10 +932,9 @@ public class PersonalisationTest {
                         .getRepresentativeSubscription(), REPRESENTATIVE));
 
         assertNotNull(result);
-        assertEquals(repTyaNumber, result.get(APPEAL_ID));
+        assertEquals(repTyaNumber, result.get(APPEAL_ID_LITERAL));
         assertEquals("http://link.com/manage-email-notifications/ZYX", result.get(MANAGE_EMAILS_LINK_LITERAL));
         assertEquals("http://tyalink.com/" + repTyaNumber, result.get(TRACK_APPEAL_LINK_LITERAL));
-        assertEquals("http://myalink.com/" + repTyaNumber, result.get(MYA_LINK_LITERAL));
         assertEquals("http://link.com/" + repTyaNumber, result.get(SUBMIT_EVIDENCE_LINK_LITERAL));
         assertEquals("http://link.com/" + repTyaNumber, result.get(SUBMIT_EVIDENCE_INFO_LINK_LITERAL));
     }
@@ -1041,6 +1039,10 @@ public class PersonalisationTest {
             .notificationEventType(APPEAL_RECEIVED_NOTIFICATION).build(), new SubscriptionWithType(subscriptions.getAppellantSubscription(), APPELLANT));
 
         assertEquals("http://myalink.com/GLSCRR", result.get(TRACK_APPEAL_LINK_LITERAL));
+        assertEquals("http://myalink.com/claimingExpenses", result.get(CLAIMING_EXPENSES_LINK_LITERAL));
+        assertEquals("http://myalink.com/evidenceSubmission", result.get(SUBMIT_EVIDENCE_INFO_LINK_LITERAL));
+        assertEquals("http://myalink.com/evidenceSubmission", result.get(SUBMIT_EVIDENCE_LINK_LITERAL));
+        assertEquals("http://myalink.com/hearingInfo", result.get(HEARING_INFO_LINK_LITERAL));
     }
 
     @Test
@@ -1060,6 +1062,10 @@ public class PersonalisationTest {
             .notificationEventType(APPEAL_RECEIVED_NOTIFICATION).build(), new SubscriptionWithType(subscriptions.getAppellantSubscription(), APPELLANT));
 
         assertEquals("http://tyalink.com/GLSCRR", result.get(TRACK_APPEAL_LINK_LITERAL));
+        assertEquals("http://link.com/progress/GLSCRR/expenses", result.get(CLAIMING_EXPENSES_LINK_LITERAL));
+        assertEquals("http://link.com/GLSCRR", result.get(SUBMIT_EVIDENCE_INFO_LINK_LITERAL));
+        assertEquals("http://link.com/GLSCRR", result.get(SUBMIT_EVIDENCE_LINK_LITERAL));
+        assertEquals("http://link.com/progress/GLSCRR/abouthearing", result.get(HEARING_INFO_LINK_LITERAL));
     }
 
     private Hearing createHearing(LocalDate hearingDate) {
