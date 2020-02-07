@@ -21,6 +21,7 @@ java:
       - notification-job-scheduler-db-password
       - notification-key
       - notification-test-key
+      - AppInsightsInstrumentationKey
   environment:
     REFORM_TEAM: sscs
     REFORM_SERVICE_NAME: tya-notifications

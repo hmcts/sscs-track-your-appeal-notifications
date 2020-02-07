@@ -72,6 +72,11 @@ data "azurerm_key_vault_secret" "sscs_asb_primary_send_and_listen_shared_access_
   vault_uri = "${data.azurerm_key_vault.sscs_key_vault.vault_uri}"
 }
 
+data "azurerm_key_vault_secret" "appinsights_instrumentation_key" {
+  name      = "AppInsightsInstrumentationKey"
+  vault_uri = "${data.azurerm_key_vault.sscs_key_vault.vault_uri}"
+}
+
 locals {
   local_ase = "${data.terraform_remote_state.core_apps_compute.ase_name[0]}"
 

@@ -19,3 +19,4 @@ spring:
         docmosis-api-key: PDF_SERVICE_ACCESS_KEY
         notification-key: NOTIFICATION_API_KEY
         notification-test-key: NOTIFICATION_API_TEST_KEY
+        AppInsightsInstrumentationKey: azure.application-insights.instrumentation-key
