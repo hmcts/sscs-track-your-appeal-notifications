@@ -9,10 +9,8 @@ import static uk.gov.hmcts.reform.sscs.service.NotificationServiceTest.verifyExp
 import ch.qos.logback.classic.Logger;
 import ch.qos.logback.classic.spi.ILoggingEvent;
 import ch.qos.logback.core.Appender;
-
 import java.net.UnknownHostException;
 import java.time.ZonedDateTime;
-
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
