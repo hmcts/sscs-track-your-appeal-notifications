@@ -291,11 +291,11 @@ dependencies {
 
     compileOnly("org.springframework.boot:spring-boot-devtools")
 
-    compile 'org.projectlombok:lombok:1.18.10'
+    compile 'org.projectlombok:lombok:1.18.12'
     annotationProcessor "org.projectlombok:lombok:1.18.10"
-    testCompileOnly 'org.projectlombok:lombok:1.18.8'
+    testCompileOnly 'org.projectlombok:lombok:1.18.12'
     testAnnotationProcessor "org.projectlombok:lombok:1.18.8"
-    integrationTestCompileOnly 'org.projectlombok:lombok:1.18.6'
+    integrationTestCompileOnly 'org.projectlombok:lombok:1.18.12'
     integrationTestAnnotationProcessor "org.projectlombok:lombok:1.18.6"
 
     testCompile(group: 'org.springframework.boot', name: 'spring-boot-starter-test', version: '2.2.4.RELEASE') {
