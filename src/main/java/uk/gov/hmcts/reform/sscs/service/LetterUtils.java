@@ -6,7 +6,6 @@ import static uk.gov.hmcts.reform.sscs.service.NotificationUtils.hasAppointee;
 
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
-
 import org.apache.commons.lang3.ArrayUtils;
 import org.apache.pdfbox.multipdf.PDFMergerUtility;
 import org.apache.pdfbox.pdmodel.PDDocument;
