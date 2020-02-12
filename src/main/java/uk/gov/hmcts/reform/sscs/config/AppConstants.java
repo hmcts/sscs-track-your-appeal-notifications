@@ -7,7 +7,6 @@ public final class AppConstants {
     public static final int MAX_DWP_RESPONSE_DAYS = 35;
     public static final String ACCEPT_VIEW_BY_DATE_LITERAL = "accept_view_by_date";
     public static final String ADDRESS_LINE_LITERAL = "address_line";
-    public static final String APPEAL_ID = "appeal_id";
     public static final String APPEAL_ID_LITERAL = "appeal_id";
     public static final String APPEAL_REF = "appeal_ref";
     public static final String APPEAL_RESPOND_DATE = "appeal_respond_date";
@@ -67,7 +66,6 @@ public final class AppConstants {
     public static final String TOMORROW_STRING = "tomorrow";
     public static final String TOWN_LITERAL = "town";
     public static final String TRACK_APPEAL_LINK_LITERAL = "track_appeal_link";
-    public static final String MYA_LINK_LITERAL = "mya_link";
     public static final String TRIBUNAL_RESPONSE_DATE_LITERAL = "tribunal_response_date";
     public static final String UC_PANEL_COMPOSITION = "judge, doctor and disability expert (if applicable)";
     public static final String VENUE_ADDRESS_LITERAL = "venue_address";

@@ -62,6 +62,21 @@ variable "mya_link" {
   default = "http://localhost:8081/sign-in/tya=appeal_id"
 }
 
+variable "mya_evidence_link" {
+  type    = "string"
+  default = "http://localhost:8081/support-evidence"
+}
+
+variable "mya_hearing_link" {
+  type    = "string"
+  default = "http://localhost:8081/support-hearing"
+}
+
+variable "mya_expenses_link" {
+  type    = "string"
+  default = "http://localhost:8081/support-hearing-expenses"
+}
+
 variable "hearing_info_link" {
   type    = "string"
   default = "http://localhost:3000/abouthearing/appeal_id"
