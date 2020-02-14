@@ -87,7 +87,7 @@ ifconfig
 ```
 Copy the inet value from en0 and place this value in the callback column in the definition spreadsheet.
 
-Start CCD application 
+Start CCD application
 ```
 ./compose-frontend.sh up -d
 ```
