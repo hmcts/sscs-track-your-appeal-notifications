@@ -77,6 +77,12 @@ data "azurerm_key_vault_secret" "appinsights_instrumentation_key" {
   vault_uri = "${data.azurerm_key_vault.sscs_key_vault.vault_uri}"
 }
 
+resource "azurerm_key_vault_secret" "notification_job_scheduler_db_password" {
+  name         = "notification-job-scheduler-db-password"
+  value        = "${module.db-notif.postgresql_password}"
+  vault_uri = "${data.azurerm_key_vault.sscs_key_vault.vault_uri}"
+}
+
 locals {
   local_ase = "${data.terraform_remote_state.core_apps_compute.ase_name[0]}"
 
