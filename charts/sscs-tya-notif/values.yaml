@@ -18,7 +18,6 @@ java:
       - s2s-micro
       - sscs-asb-primary-send-and-listen-shared-access-key
       - docmosis-api-key
-      - notification-job-scheduler-db-password
       - notification-key
       - notification-test-key
       - AppInsightsInstrumentationKey
