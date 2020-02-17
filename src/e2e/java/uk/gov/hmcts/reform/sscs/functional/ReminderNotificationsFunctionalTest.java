@@ -7,12 +7,14 @@ import java.io.IOException;
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
 import java.util.List;
+import org.junit.Ignore;
 import org.junit.Test;
 import org.springframework.beans.factory.annotation.Value;
 import uk.gov.hmcts.reform.sscs.config.AppConstants;
 import uk.gov.service.notify.Notification;
 import uk.gov.service.notify.NotificationClientException;
 
+@Ignore
 public class ReminderNotificationsFunctionalTest extends AbstractFunctionalTest {
 
     @Value("${notification.oral.evidenceReminder.appellant.emailId}")
