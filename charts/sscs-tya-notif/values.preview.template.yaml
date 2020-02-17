@@ -13,7 +13,6 @@ java:
         - idam-sscs-systemupdate-password
         - sscs-email-mac-secret-text
         - idam-sscs-oauth2-client-secret
-        - idam-s2s-api
         - sscs-s2s-secret
         - s2s-micro
         - sscs-asb-primary-send-and-listen-shared-access-key

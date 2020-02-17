@@ -37,11 +37,6 @@ data "azurerm_key_vault_secret" "idam-api" {
   vault_uri = "${data.azurerm_key_vault.sscs_key_vault.vault_uri}"
 }
 
-data "azurerm_key_vault_secret" "idam-s2s-api" {
-  name = "idam-s2s-api"
-  vault_uri = "${data.azurerm_key_vault.sscs_key_vault.vault_uri}"
-}
-
 data "azurerm_key_vault_secret" "sscs-notify-api-key" {
   name = "notification-key"
   vault_uri = "${data.azurerm_key_vault.sscs_key_vault.vault_uri}"
@@ -123,9 +118,8 @@ module "track-your-appeal-notifications" {
     IDAM_URL = "${data.azurerm_key_vault_secret.idam-api.value}"
     IDAM_API_JWK_URL = "${data.azurerm_key_vault_secret.idam-api.value}/jwks"
 
-    IDAM.S2S-AUTH.TOTP_SECRET  = "${data.azurerm_key_vault_secret.sscs-s2s-secret.value}"
-    IDAM.S2S-AUTH              = "${local.s2sCnpUrl}"
-    IDAM.S2S-AUTH.MICROSERVICE = "${var.idam_s2s_auth_microservice}"
+    IDAM_S2S_AUTH_TOTP_SECRET  = "${data.azurerm_key_vault_secret.sscs-s2s-secret.value}"
+    IDAM_S2S_AUTH              = "${local.s2sCnpUrl}"
 
     IDAM_SSCS_SYSTEMUPDATE_USER = "${data.azurerm_key_vault_secret.idam-sscs-systemupdate-user.value}"
     IDAM_SSCS_SYSTEMUPDATE_PASSWORD = "${data.azurerm_key_vault_secret.idam-sscs-systemupdate-password.value}"

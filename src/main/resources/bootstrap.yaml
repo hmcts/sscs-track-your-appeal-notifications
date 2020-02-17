@@ -12,9 +12,7 @@ spring:
         idam-sscs-oauth2-client-secret: idam.oauth2.client.secret
         idam-oauth-user: idam.oauth2.client.id
         idam-redirect: idam.oauth2.redirectUrl
-        idam-s2s-api: idam.s2s-auth.url
-        sscs-s2s-secret: idam.s2s-auth.totp_secret
-        s2s-micro: idam.s2s-auth.microservice
+        sscs-s2s-secret: IDAM_S2S_AUTH_TOTP_SECRET
         sscs-asb-primary-send-and-listen-shared-access-key: AMQP_PASSWORD
         docmosis-api-key: PDF_SERVICE_ACCESS_KEY
         notification-key: NOTIFICATION_API_KEY
