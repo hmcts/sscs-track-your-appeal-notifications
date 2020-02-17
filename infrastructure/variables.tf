@@ -34,10 +34,6 @@ variable "core_case_data_case_type_id" {
   default = "Benefit"
 }
 
-variable "idam_s2s_auth_microservice" {
-  default = "sscs"
-}
-
 variable "idam_oauth2_client_id" {
   default = "sscs"
 }
