@@ -466,7 +466,7 @@ letterAsync:
 
 pdf-service:
   uri: ${PDF_SERVICE_BASE_URL:https://docmosis-development.platform.hmcts.net/rs/render}
-  accessKey: ${PDF_SERVICE_ACCESS_KEY:secret-key-not-supplied}
+  accessKey: ${PDF_SERVICE_ACCESS_KEY:}
   health:
     uri: ${PDF_SERVICE_HEALTH_URL:https://docmosis-development.platform.hmcts.net/rs/status}
   hmctsImgKey: hmcts2
