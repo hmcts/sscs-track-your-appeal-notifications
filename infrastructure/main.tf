@@ -12,167 +12,17 @@ data "azurerm_key_vault" "sscs_key_vault" {
   resource_group_name = "${local.azureVaultName}"
 }
 
-data "azurerm_key_vault_secret" "sscs-s2s-secret" {
-  name = "sscs-s2s-secret"
-  vault_uri = "${data.azurerm_key_vault.sscs_key_vault.vault_uri}"
-}
-
-data "azurerm_key_vault_secret" "idam-sscs-systemupdate-user" {
-  name = "idam-sscs-systemupdate-user"
-  vault_uri = "${data.azurerm_key_vault.sscs_key_vault.vault_uri}"
-}
-
-data "azurerm_key_vault_secret" "idam-sscs-systemupdate-password" {
-  name = "idam-sscs-systemupdate-password"
-  vault_uri = "${data.azurerm_key_vault.sscs_key_vault.vault_uri}"
-}
-
-data "azurerm_key_vault_secret" "idam-sscs-oauth2-client-secret" {
-  name = "idam-sscs-oauth2-client-secret"
-  vault_uri = "${data.azurerm_key_vault.sscs_key_vault.vault_uri}"
-}
-
-data "azurerm_key_vault_secret" "idam-api" {
-  name = "idam-api"
-  vault_uri = "${data.azurerm_key_vault.sscs_key_vault.vault_uri}"
-}
-
-data "azurerm_key_vault_secret" "sscs-notify-api-key" {
-  name = "notification-key"
-  vault_uri = "${data.azurerm_key_vault.sscs_key_vault.vault_uri}"
-}
-
-data "azurerm_key_vault_secret" "sscs-notify-api-test-key" {
-  name = "notification-test-key"
-  vault_uri = "${data.azurerm_key_vault.sscs_key_vault.vault_uri}"
-}
-
-data "azurerm_key_vault_secret" "email-mac-secret" {
-  name = "sscs-email-mac-secret-text"
-  vault_uri = "${data.azurerm_key_vault.sscs_key_vault.vault_uri}"
-}
-
-data "azurerm_key_vault_secret" "pdf_service_base_url" {
-  name      = "docmosis-endpoint"
-  vault_uri = "${data.azurerm_key_vault.sscs_key_vault.vault_uri}"
-}
-
-data "azurerm_key_vault_secret" "pdf_service_access_key" {
-  name      = "docmosis-api-key"
-  vault_uri = "${data.azurerm_key_vault.sscs_key_vault.vault_uri}"
-}
-
-data "azurerm_key_vault_secret" "sscs_asb_primary_send_and_listen_shared_access_key" {
-  name      = "sscs-asb-primary-send-and-listen-shared-access-key"
-  vault_uri = "${data.azurerm_key_vault.sscs_key_vault.vault_uri}"
-}
-
-data "azurerm_key_vault_secret" "appinsights_instrumentation_key" {
-  name      = "AppInsightsInstrumentationKey"
-  vault_uri = "${data.azurerm_key_vault.sscs_key_vault.vault_uri}"
-}
-
 resource "azurerm_key_vault_secret" "notification_job_scheduler_db_password" {
   name         = "notification-job-scheduler-db-password"
   value        = "${module.db-notif.postgresql_password}"
-  vault_uri = "${data.azurerm_key_vault.sscs_key_vault.vault_uri}"
+  key_vault_id = data.azurerm_key_vault.sscs_key_vault.id
 }
 
 locals {
-  local_ase = "${data.terraform_remote_state.core_apps_compute.ase_name[0]}"
-
-  ccdApi    = "http://ccd-data-store-api-${var.env}.service.${local.local_ase}.internal"
-  s2sCnpUrl = "http://rpe-service-auth-provider-${var.env}.service.${local.local_ase}.internal"
-  cohApi    = "http://coh-cor-${var.env}.service.${local.local_ase}.internal"
-  documentStore = "http://dm-store-${var.env}.service.${local.local_ase}.internal"
-  pdfService    = "http://cmc-pdf-service-${var.env}.service.${local.local_ase}.internal"
-
   azureVaultName = "sscs-${var.env}"
 }
 
-module "track-your-appeal-notifications" {
-  source       = "git@github.com:hmcts/cnp-module-webapp?ref=master"
-  product      = "${var.product}-${var.component}"
-  location     = "${var.location}"
-  env          = "${var.env}"
-  ilbIp        = "${var.ilbIp}"
-  is_frontend  = false
-  subscription = "${var.subscription}"
-  capacity     = 2
-  common_tags  = "${var.common_tags}"
-  asp_rg       = "${var.product}-${var.component}-${var.env}"
-  asp_name     = "${var.product}-${var.component}-${var.env}"
-  enable_ase          = "${var.enable_ase}"
 
-  appinsights_instrumentation_key = "${var.appinsights_instrumentation_key}"
-
-  app_settings = {
-    INFRASTRUCTURE_ENV          = "${var.env}"
-
-    CORE_CASE_DATA_API_URL         = "${local.ccdApi}"
-    CORE_CASE_DATA_JURISDICTION_ID = "${var.core_case_data_jurisdiction_id}"
-    CORE_CASE_DATA_CASE_TYPE_ID    = "${var.core_case_data_case_type_id}"
-
-    COH_URL = "${local.cohApi}"
-
-    IDAM_URL = "${data.azurerm_key_vault_secret.idam-api.value}"
-    IDAM_API_JWK_URL = "${data.azurerm_key_vault_secret.idam-api.value}/jwks"
-
-    IDAM_S2S_AUTH_TOTP_SECRET  = "${data.azurerm_key_vault_secret.sscs-s2s-secret.value}"
-    IDAM_S2S_AUTH              = "${local.s2sCnpUrl}"
-
-    IDAM_SSCS_SYSTEMUPDATE_USER = "${data.azurerm_key_vault_secret.idam-sscs-systemupdate-user.value}"
-    IDAM_SSCS_SYSTEMUPDATE_PASSWORD = "${data.azurerm_key_vault_secret.idam-sscs-systemupdate-password.value}"
-
-    IDAM_OAUTH2_CLIENT_ID     = "${var.idam_oauth2_client_id}"
-    IDAM_OAUTH2_CLIENT_SECRET = "${data.azurerm_key_vault_secret.idam-sscs-oauth2-client-secret.value}"
-    IDAM_OAUTH2_REDIRECT_URL  = "${var.idam_redirect_url}"
-
-    NOTIFICATION_API_KEY          = "${data.azurerm_key_vault_secret.sscs-notify-api-key.value}"
-    NOTIFICATION_API_TEST_KEY     = "${data.azurerm_key_vault_secret.sscs-notify-api-test-key.value}"
-    EVIDENCE_SUBMISSION_INFO_LINK = "${var.evidence_submission_info_link}"
-    SSCS_MANAGE_EMAILS_LINK       = "${var.sscs_manage_emails_link}"
-    SSCS_TRACK_YOUR_APPEAL_LINK   = "${var.sscs_track_your_appeal_link}"
-    MYA_LINK                      = "${var.mya_link}"
-    MYA_EVIDENCE_LINK             = "${var.mya_evidence_link}"
-    MYA_HEARING_LINK              = "${var.mya_hearing_link}"
-    MYA_EXPENSES_LINK             = "${var.mya_expenses_link}"
-    HEARING_INFO_LINK             = "${var.hearing_info_link}"
-    CLAIMING_EXPENSES_LINK        = "${var.claiming_expenses_link}"
-    JOB_SCHEDULER_POLL_INTERVAL   = "${var.job_scheduler_poll_interval}"
-    EMAIL_MAC_SECRET_TEXT         = "${data.azurerm_key_vault_secret.email-mac-secret.value}"
-    ONLINE_HEARING_LINK           = "${var.online_hearing_link}"
-
-    PDF_API_URL                   = "${local.pdfService}"
-    PDF_SERVICE_BASE_URL        = "${data.azurerm_key_vault_secret.pdf_service_base_url.value}rs/render"
-    PDF_SERVICE_ACCESS_KEY      = "${data.azurerm_key_vault_secret.pdf_service_access_key.value}"
-    PDF_SERVICE_HEALTH_URL      = "${data.azurerm_key_vault_secret.pdf_service_base_url.value}rs/status"
-
-    // db vars
-    JOB_SCHEDULER_DB_HOST               = "${module.db-notif.host_name}"
-    JOB_SCHEDULER_DB_PORT               = "${module.db-notif.postgresql_listen_port}"
-    JOB_SCHEDULER_DB_PASSWORD           = "${module.db-notif.postgresql_password}"
-    JOB_SCHEDULER_DB_USERNAME           = "${module.db-notif.user_name}"
-    JOB_SCHEDULER_DB_NAME               = "${module.db-notif.postgresql_database}"
-    JOB_SCHEDULER_DB_CONNECTION_OPTIONS = "?ssl"
-    MAX_ACTIVE_DB_CONNECTIONS           = 70
-
-    // In Azure Service bus, rulename/key is used as username/password
-    AMQP_HOST         = "sscs-servicebus-${var.env}.servicebus.windows.net"
-    AMQP_USERNAME     = "SendAndListenSharedAccessKey"
-    AMQP_PASSWORD     = "${data.azurerm_key_vault_secret.sscs_asb_primary_send_and_listen_shared_access_key.value}"
-    TOPIC_NAME        = "sscs-evidenceshare-topic-${var.env}"
-    SUBSCRIPTION_NAME = "sscs-notifications-subscription-${var.env}"
-    TRUST_ALL_CERTS         = "${var.trust_all_certs}"
-
-    HOURS_START_TIME                    = "${var.hours_start_time}"
-    HOURS_END_TIME                      = "${var.hours_end_time}"
-
-    DOCUMENT_MANAGEMENT_URL = "${local.documentStore}"
-
-    SAVE_CORRESPONDENCE                 = "${var.save_correspondence}"
-  }
-}
 
 module "db-notif" {
   source          = "git@github.com:hmcts/cnp-module-postgres?ref=master"
