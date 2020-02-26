@@ -1,12 +1,3 @@
-resource "azurerm_resource_group" "rg" {
-  name     = "${var.product}-${var.component}-${var.env}"
-  location = "${var.location}"
-
-  tags = "${merge(var.common_tags,
-    map("lastUpdated", "${timestamp()}")
-    )}"
-}
-
 data "azurerm_key_vault" "sscs_key_vault" {
   name = "${local.azureVaultName}"
   resource_group_name = "${local.azureVaultName}"
