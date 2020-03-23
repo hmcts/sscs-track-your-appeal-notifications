@@ -10,6 +10,7 @@ import static uk.gov.hmcts.reform.sscs.service.NotificationValidService.isMandat
 
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 import org.springframework.util.StringUtils;
 import uk.gov.hmcts.reform.sscs.ccd.domain.Benefit;
@@ -33,6 +34,7 @@ public class NotificationService {
     private final OutOfHoursCalculator outOfHoursCalculator;
     private final NotificationConfig notificationConfig;
     private final SendNotificationService sendNotificationService;
+    private final Boolean covid19Feature;
 
     @Autowired
     public NotificationService(
@@ -42,7 +44,8 @@ public class NotificationService {
         NotificationHandler notificationHandler,
         OutOfHoursCalculator outOfHoursCalculator,
         NotificationConfig notificationConfig,
-        SendNotificationService sendNotificationService) {
+        SendNotificationService sendNotificationService,
+        @Value("${feature.covid19}") Boolean covid19Feature) {
 
         this.notificationFactory = notificationFactory;
         this.reminderService = reminderService;
@@ -51,6 +54,7 @@ public class NotificationService {
         this.outOfHoursCalculator = outOfHoursCalculator;
         this.notificationConfig = notificationConfig;
         this.sendNotificationService = sendNotificationService;
+        this.covid19Feature = covid19Feature;
     }
 
     public void manageNotificationAndSubscription(NotificationWrapper notificationWrapper) {
@@ -231,6 +235,11 @@ public class NotificationService {
                 && DWP_UPLOAD_RESPONSE_NOTIFICATION.equals(notificationType)) {
             log.info(String.format("Cannot complete notification %s as the appeal was dwpUploadResponse for caseId %s.",
                     notificationType.getId(), notificationWrapper.getCaseId()));
+            return false;
+        }
+
+        if (covid19Feature && (HEARING_BOOKED_NOTIFICATION.equals(notificationType) || HEARING_REMINDER_NOTIFICATION.equals(notificationType))) {
+            log.info(String.format("Notification not valid to send as covid 19 feature flag on for case id %s and event %s in state %s", notificationWrapper.getCaseId(), notificationType.getId(), notificationWrapper.getSscsCaseDataWrapper().getState()));
             return false;
         }
         log.info(String.format("Notification valid to send for case id %s and event %s in state %s", notificationWrapper.getCaseId(), notificationType.getId(), notificationWrapper.getSscsCaseDataWrapper().getState()));

@@ -1966,6 +1966,31 @@ public class NotificationServiceTest {
         then(notificationHandler).shouldHaveNoMoreInteractions();
     }
 
+    @Test
+    @Parameters({"HEARING_BOOKED_NOTIFICATION", "HEARING_REMINDER_NOTIFICATION"})
+    public void willNotSendHearingNotifications_whenCovid19FeatureTrue(NotificationEventType notificationEventType) {
+        CcdNotificationWrapper ccdNotificationWrapper = buildBaseWrapper(notificationEventType,  APPELLANT_WITH_ADDRESS, null, null);
+        ccdNotificationWrapper.getNewSscsCaseData().setCreatedInGapsFrom(State.VALID_APPEAL.getId());
+
+        Notification notification = new Notification(Template.builder().emailTemplateId(EMAIL_TEMPLATE_ID).smsTemplateId(null).build(), Destination.builder().email("test@testing.com").sms("07823456746").build(), null, new Reference(), null);
+        given(factory.create(ccdNotificationWrapper, getSubscriptionWithType(ccdNotificationWrapper))).willReturn(notification);
+        given(notificationValidService.isHearingTypeValidToSendNotification(
+                any(SscsCaseData.class), eq(notificationEventType))).willReturn(true);
+        given(notificationValidService.isNotificationStillValidToSend(anyList(), eq(notificationEventType)))
+                .willReturn(true);
+        given(notificationValidService.isFallbackLetterRequiredForSubscriptionType(any(), any(), any())).willReturn(true);
+
+        SendNotificationService sendNotificationService = new SendNotificationService(notificationSender, evidenceManagementService, notificationHandler, notificationValidService, pdfLetterService);
+
+        final NotificationService notificationService = new NotificationService(factory, reminderService,
+                notificationValidService, notificationHandler, outOfHoursCalculator, notificationConfig, sendNotificationService, true
+        );
+
+        notificationService.manageNotificationAndSubscription(ccdNotificationWrapper);
+
+        then(notificationHandler).shouldHaveNoMoreInteractions();
+    }
+
     @SuppressWarnings({"Indentation", "UnusedPrivateMethod"})
     private Object[] allEventTypesExceptRequestInfoIncomplete() {
         return Arrays.stream(NotificationEventType.values()).filter(eventType ->
@@ -2007,7 +2032,7 @@ public class NotificationServiceTest {
         SendNotificationService sendNotificationService = new SendNotificationService(notificationSender, evidenceManagementService, notificationHandler, notificationValidService, pdfLetterService);
 
         final NotificationService notificationService = new NotificationService(factory, reminderService,
-            notificationValidService, notificationHandler, outOfHoursCalculator, notificationConfig, sendNotificationService
+            notificationValidService, notificationHandler, outOfHoursCalculator, notificationConfig, sendNotificationService, false
         );
         return notificationService;
     }

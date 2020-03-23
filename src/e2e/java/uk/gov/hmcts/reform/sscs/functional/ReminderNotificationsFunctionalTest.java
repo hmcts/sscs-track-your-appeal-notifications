@@ -9,10 +9,12 @@ import java.time.format.DateTimeFormatter;
 import java.util.List;
 import org.junit.Test;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.test.context.TestPropertySource;
 import uk.gov.hmcts.reform.sscs.config.AppConstants;
 import uk.gov.service.notify.Notification;
 import uk.gov.service.notify.NotificationClientException;
 
+@TestPropertySource(locations = "classpath:application_e2e.yaml")
 public class ReminderNotificationsFunctionalTest extends AbstractFunctionalTest {
 
     @Value("${notification.oral.evidenceReminder.appellant.emailId}")
