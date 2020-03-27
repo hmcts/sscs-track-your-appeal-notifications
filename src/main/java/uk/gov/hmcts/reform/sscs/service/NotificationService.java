@@ -33,19 +33,18 @@ public class NotificationService {
     private final NotificationHandler notificationHandler;
     private final OutOfHoursCalculator outOfHoursCalculator;
     private final NotificationConfig notificationConfig;
-    private final SendNotificationService sendNotificationService;
-    private final Boolean covid19Feature;
 
+    @SuppressWarnings("squid:S107")
     @Autowired
     public NotificationService(
-        NotificationFactory notificationFactory,
-        ReminderService reminderService,
-        NotificationValidService notificationValidService,
-        NotificationHandler notificationHandler,
-        OutOfHoursCalculator outOfHoursCalculator,
-        NotificationConfig notificationConfig,
-        SendNotificationService sendNotificationService,
-        @Value("${feature.covid19}") Boolean covid19Feature) {
+            NotificationFactory notificationFactory,
+            ReminderService reminderService,
+            NotificationValidService notificationValidService,
+            NotificationHandler notificationHandler,
+            OutOfHoursCalculator outOfHoursCalculator,
+            NotificationConfig notificationConfig,
+            SendNotificationService sendNotificationService,
+            @Value("${feature.covid19}") boolean covid19Feature) {
 
         this.notificationFactory = notificationFactory;
         this.reminderService = reminderService;
@@ -56,6 +55,10 @@ public class NotificationService {
         this.sendNotificationService = sendNotificationService;
         this.covid19Feature = covid19Feature;
     }
+
+    private final SendNotificationService sendNotificationService;
+
+    private final boolean covid19Feature;
 
     public void manageNotificationAndSubscription(NotificationWrapper notificationWrapper) {
         NotificationEventType notificationType = notificationWrapper.getNotificationType();
