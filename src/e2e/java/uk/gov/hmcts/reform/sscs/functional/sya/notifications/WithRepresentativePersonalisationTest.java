@@ -143,7 +143,7 @@ public class WithRepresentativePersonalisationTest extends AbstractFunctionalTes
             new Object[]{APPEAL_DORMANT_NOTIFICATION},
             new Object[]{ADJOURNED_NOTIFICATION},
             new Object[]{APPEAL_RECEIVED_NOTIFICATION},
-            new Object[]{HEARING_BOOKED_NOTIFICATION},
+            // Put back when covid19 feature turned off: new Object[]{HEARING_BOOKED_NOTIFICATION},
             new Object[]{VALID_APPEAL_CREATED}
         };
     }
