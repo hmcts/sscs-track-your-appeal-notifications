@@ -27,6 +27,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.mock.web.MockHttpServletResponse;
 import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.context.junit4.SpringRunner;
+import org.springframework.test.util.ReflectionTestUtils;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.request.MockHttpServletRequestBuilder;
 import org.springframework.test.web.servlet.setup.MockMvcBuilders;
@@ -106,6 +107,8 @@ public class HearingReminderIt {
 
     @Test
     public void shouldScheduleHearingReminderThenRemoveWhenPostponed() throws Exception {
+
+        ReflectionTestUtils.setField(notificationService, "covid19Feature", false);
 
         try {
             quartzScheduler.clear();

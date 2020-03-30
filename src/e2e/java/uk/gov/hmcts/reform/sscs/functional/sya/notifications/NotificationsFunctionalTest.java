@@ -8,6 +8,7 @@ import java.io.IOException;
 import java.util.List;
 import java.util.stream.Collectors;
 import junitparams.Parameters;
+import org.junit.Ignore;
 import org.junit.Test;
 import org.springframework.beans.factory.annotation.Value;
 import uk.gov.hmcts.reform.sscs.functional.AbstractFunctionalTest;
@@ -414,6 +415,8 @@ public class NotificationsFunctionalTest extends AbstractFunctionalTest {
     }
 
     @Test
+    // Put back when covid19 feature turned off
+    @Ignore
     public void shouldSendAppointeeHearingBookedNotification() throws NotificationClientException, IOException {
         simulateCcdCallback(HEARING_BOOKED_NOTIFICATION,
                 "appointee/" + HEARING_BOOKED_NOTIFICATION.getId() + "Callback.json");

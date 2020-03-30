@@ -147,7 +147,7 @@ public class NotificationsIt {
 
         SendNotificationService sendNotificationService = new SendNotificationService(sender, evidenceManagementService, notificationHandler, notificationValidService, pdfLetterService);
 
-        NotificationService service = new NotificationService(factory, reminderService, notificationValidService, notificationHandler, outOfHoursCalculator, notificationConfig, sendNotificationService);
+        NotificationService service = new NotificationService(factory, reminderService, notificationValidService, notificationHandler, outOfHoursCalculator, notificationConfig, sendNotificationService, false);
         NotificationController controller = new NotificationController(service, authorisationService, ccdService, deserializer, idamService);
         this.mockMvc = MockMvcBuilders.standaloneSetup(controller).build();
         String path = getClass().getClassLoader().getResource("json/ccdResponse.json").getFile();
