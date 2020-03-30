@@ -89,7 +89,7 @@ bootRun {
 }
 
 ext {
-    springCloudVersion = 'Finchley.SR1'
+    springCloudVersion = 'Hoxton.SR3'
 }
 
 dependencyManagement {
