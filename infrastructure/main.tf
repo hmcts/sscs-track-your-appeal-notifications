@@ -25,6 +25,7 @@ module "db-notif" {
   location        = "${var.location}"
   env             = "${var.env}"
   postgresql_user = "${var.postgresql_user}"
+  postgresql_version    = "11"
   database_name   = "${var.database_name}"
   common_tags     = "${var.common_tags}"
   subscription          = "${var.subscription}"
