@@ -32,6 +32,7 @@ public final class AppConstants {
     public static final String EVIDENCE_RECEIVED_DATE_LITERAL = "evidence_received_date";
     public static final String FIRST_TIER_AGENCY_ACRONYM = "first_tier_agency_acronym";
     public static final String FIRST_TIER_AGENCY_FULL_NAME = "first_tier_agency_full_name";
+    public static final String REPRESENTATIVE = "representative";
     public static final String HEARING_ARRANGEMENT_DETAILS_LITERAL = "hearing_arrangement_details";
     public static final String HEARING_CONTACT_DATE = "hearing_contact_date";
     public static final String HEARING_DATE = "hearing_date";
@@ -39,6 +40,7 @@ public final class AppConstants {
     public static final String HEARING_INFO_LINK_LITERAL = "hearing_info_link";
     public static final String HEARING_TIME = "hearing_time";
     public static final String HEARING_TIME_FORMAT = "hh:mm a";
+    public static final String HEARING_TYPE = "hearing_type";
     public static final String INFO_REQUEST_DETAIL = "info_request_detail";
     public static final String MAC_ALGO = "HmacSHA256";
     public static final String MAC_LITERAL = "mac";

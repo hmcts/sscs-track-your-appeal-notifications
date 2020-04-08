@@ -421,7 +421,7 @@ public class SendNotificationServiceTest {
     }
 
     @Test
-    @Parameters({"APPEAL_RECEIVED_NOTIFICATION", "DIRECTION_ISSUED", "DECISION_ISSUED"})
+    @Parameters({"APPEAL_RECEIVED_NOTIFICATION", "DIRECTION_ISSUED", "DECISION_ISSUED", "DWP_UPLOAD_RESPONSE_NOTIFICATION"})
     public void sendLetterForNotificationType(NotificationEventType notificationEventType) {
         SubscriptionWithType appellantEmptySubscription = new SubscriptionWithType(EMPTY_SUBSCRIPTION, APPELLANT);
         when(pdfLetterService.generateLetter(any(), any(), any())).thenReturn("PDF".getBytes());
