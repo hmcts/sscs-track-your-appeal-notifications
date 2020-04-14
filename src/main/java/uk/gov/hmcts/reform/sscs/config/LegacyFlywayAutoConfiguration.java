@@ -33,9 +33,7 @@ public class LegacyFlywayAutoConfiguration {
 
     @Bean(initMethod = "migrate")
     public Flyway flyway(DataSource dataSource) {
-        Flyway flyway = new Flyway();
-        flyway.setBaselineOnMigrate(true);
-        flyway.setDataSource(dataSource);
+        Flyway flyway = Flyway.configure().baselineOnMigrate(true).dataSource(dataSource).load();
         return flyway;
     }
 
