@@ -9,7 +9,7 @@ data "azurerm_key_vault" "sscs_key_vault" {
 
 resource "azurerm_key_vault_secret" "notification_job_scheduler_db_password" {
   name         = "notification-job-scheduler-db-password"
-  value        = "${module.db-notif-v11.postgresql_password}"
+  value        = "${module.db-notif.postgresql_password}"
   key_vault_id = "${data.azurerm_key_vault.sscs_key_vault.id}"
 }
 
@@ -17,9 +17,9 @@ locals {
   azureVaultName = "sscs-${var.env}"
 }
 
-module "db-notif-v11" {
+module "db-notif" {
   source          = "git@github.com:hmcts/cnp-module-postgres?ref=master"
-  product         = "${var.product}-${var.component}-postgres-v11-db"
+  product         = "${var.product}-${var.component}-postgres-db"
   location        = "${var.location}"
   env             = "${var.env}"
   postgresql_user = "${var.postgresql_user}"
