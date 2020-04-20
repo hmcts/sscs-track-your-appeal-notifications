@@ -43,7 +43,7 @@ public class TopicConsumerTest {
                 SscsCaseData.builder().build(),
                 null
         );
-        Callback<SscsCaseData> callback = new Callback<>(caseDetails, Optional.empty(), EventType.EVIDENCE_RECEIVED);
+        Callback<SscsCaseData> callback = new Callback<>(caseDetails, Optional.empty(), EventType.EVIDENCE_RECEIVED, true);
         when(deserializer.deserialize(any())).thenReturn(callback);
     }
 
