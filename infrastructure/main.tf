@@ -19,7 +19,7 @@ locals {
 
 module "db-notif" {
   source          = "git@github.com:hmcts/cnp-module-postgres?ref=master"
-  product         = "${var.product}-${var.component}-postgres-db"
+  product         = "${var.product}-${var.component}-postgres-v11-db"
   location        = "${var.location}"
   env             = "${var.env}"
   postgresql_user = "${var.postgresql_user}"

@@ -34,9 +34,9 @@ java:
     CORE_CASE_DATA_CASE_TYPE_ID: Benefit
     JOB_SCHEDULER_POLL_INTERVAL: "30000"
     JOB_SCHEDULER_DB_PORT: "5432"
-    JOB_SCHEDULER_DB_USERNAME: "notification@sscs-tya-notif-postgres-db-{{ .Values.global.environment }}"
+    JOB_SCHEDULER_DB_USERNAME: "notification@sscs-tya-notif-postgres-v11-db-{{ .Values.global.environment }}"
     JOB_SCHEDULER_DB_NAME: "notification"
-    JOB_SCHEDULER_DB_HOST: "sscs-tya-notif-postgres-db-{{ .Values.global.environment }}.postgres.database.azure.com"
+    JOB_SCHEDULER_DB_HOST: "sscs-tya-notif-postgres-v11-db-{{ .Values.global.environment }}.postgres.database.azure.com"
     IDAM_OAUTH2_REDIRECT_URL: "https://evidence-sharing-preprod.sscs.reform.hmcts.net"
     EVIDENCE_SUBMISSION_INFO_LINK: "https://track-appeal.{{ .Values.global.environment }}.platform.hmcts.net/evidence/appeal_id"
     SSCS_MANAGE_EMAILS_LINK: "https://track-appeal.{{ .Values.global.environment }}.platform.hmcts.net/manage-email-notifications/mac"
