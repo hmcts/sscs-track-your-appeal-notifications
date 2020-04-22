@@ -42,7 +42,7 @@ public class NotificationFactory {
 
         Benefit benefit = null;
         if (notificationWrapper.getSscsCaseDataWrapper().getNewSscsCaseData().getAppeal().getBenefitType() != null
-                && notificationWrapper.getSscsCaseDataWrapper().getNewSscsCaseData().getAppeal().getBenefitType().getCode() != null) {
+                && !StringUtils.isEmpty(notificationWrapper.getSscsCaseDataWrapper().getNewSscsCaseData().getAppeal().getBenefitType().getCode())) {
             benefit = getBenefitByCode(notificationWrapper
                 .getSscsCaseDataWrapper().getNewSscsCaseData().getAppeal().getBenefitType().getCode());
         }

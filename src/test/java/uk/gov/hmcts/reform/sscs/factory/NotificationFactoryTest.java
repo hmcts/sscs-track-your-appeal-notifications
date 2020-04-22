@@ -22,6 +22,7 @@ import java.util.Optional;
 import javax.annotation.Resource;
 import junitparams.JUnitParamsRunner;
 import junitparams.Parameters;
+import junitparams.converters.Nullable;
 import org.apache.commons.lang3.StringUtils;
 import org.junit.Before;
 import org.junit.Test;
@@ -402,13 +403,14 @@ public class NotificationFactoryTest {
     }
 
     @Test
-    public void givenAnEmptyBenefitType_shouldNotThrowExceptionAndGenerateTemplate() {
+    @Parameters({"null", ""})
+    public void givenAnEmptyBenefitType_shouldNotThrowExceptionAndGenerateTemplate(@Nullable String benefitType) {
 
         SscsCaseDataWrapper sscsCaseDataWrapper = SscsCaseDataWrapper.builder()
                 .newSscsCaseData(SscsCaseData.builder()
                         .appeal(Appeal.builder()
                                 .benefitType(BenefitType.builder()
-                                        .code(null)
+                                        .code(benefitType)
                                         .build())
                                 .build())
                         .build())
