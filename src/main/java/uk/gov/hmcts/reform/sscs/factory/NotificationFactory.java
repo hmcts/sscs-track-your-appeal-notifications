@@ -12,12 +12,7 @@ import uk.gov.hmcts.reform.sscs.ccd.domain.Benefit;
 import uk.gov.hmcts.reform.sscs.ccd.domain.SscsCaseData;
 import uk.gov.hmcts.reform.sscs.ccd.domain.Subscription;
 import uk.gov.hmcts.reform.sscs.domain.SubscriptionWithType;
-import uk.gov.hmcts.reform.sscs.domain.notify.Destination;
-import uk.gov.hmcts.reform.sscs.domain.notify.Notification;
-import uk.gov.hmcts.reform.sscs.domain.notify.NotificationEventType;
-import uk.gov.hmcts.reform.sscs.domain.notify.Reference;
-import uk.gov.hmcts.reform.sscs.domain.notify.Template;
-import uk.gov.hmcts.reform.sscs.exception.BenefitMappingException;
+import uk.gov.hmcts.reform.sscs.domain.notify.*;
 import uk.gov.hmcts.reform.sscs.personalisation.Personalisation;
 import uk.gov.hmcts.reform.sscs.utility.PhoneNumbersUtil;
 
@@ -46,11 +41,10 @@ public class NotificationFactory {
         }
 
         Benefit benefit = null;
-        try {
+        if (notificationWrapper.getSscsCaseDataWrapper().getNewSscsCaseData().getAppeal().getBenefitType() != null
+                && !StringUtils.isEmpty(notificationWrapper.getSscsCaseDataWrapper().getNewSscsCaseData().getAppeal().getBenefitType().getCode())) {
             benefit = getBenefitByCode(notificationWrapper
                 .getSscsCaseDataWrapper().getNewSscsCaseData().getAppeal().getBenefitType().getCode());
-        } catch (BenefitMappingException bme) {
-            // Ignore the fact that we have no benefit, as some letters can be sent without them
         }
         Template template = personalisation.getTemplate(notificationWrapper, benefit, subscriptionWithType.getSubscriptionType());
 
