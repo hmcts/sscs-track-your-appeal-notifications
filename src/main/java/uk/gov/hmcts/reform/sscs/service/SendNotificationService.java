@@ -111,6 +111,7 @@ public class SendNotificationService {
                             wrapper.getNotificationType(),
                             wrapper.getNewSscsCaseData()
                     );
+            log.info("In sendSmsNotification method notificationSender is available {} ", notificationSender != null);
             return notificationHandler.sendNotification(wrapper, notification.getSmsTemplate(), "SMS", sendNotification);
         }
 
@@ -130,6 +131,7 @@ public class SendNotificationService {
                             wrapper.getNewSscsCaseData()
 
                     );
+            log.info("In sendEmailNotification method notificationSender is available {} ", notificationSender != null);
             return notificationHandler.sendNotification(wrapper, notification.getEmailTemplate(), "Email", sendNotification);
         }
 
@@ -228,6 +230,8 @@ public class SendNotificationService {
                 placeholders.put(APPEAL_RESPOND_DATE, appealReceivedDate.format(DateTimeFormatter.ofPattern(RESPONSE_DATE_FORMAT)));
             }
 
+            log.info("In sendLetterNotificationToAddress method notificationSender is available {} ", notificationSender != null);
+
             notificationSender.sendLetter(
                     notification.getLetterTemplate(),
                     addressToUse,
@@ -268,6 +272,7 @@ public class SendNotificationService {
                                 nameToUse.getFullNameNoTitle(),
                                 wrapper.getCaseId()
                         );
+                log.info("In sendBundledLetterNotification method notificationSender is available {} ", notificationSender != null);
                 if (ArrayUtils.isNotEmpty(bundledLetter)) {
                     notificationHandler.sendNotification(wrapper, notification.getLetterTemplate(), NOTIFICATION_TYPE_LETTER, sendNotification);
                     return true;
