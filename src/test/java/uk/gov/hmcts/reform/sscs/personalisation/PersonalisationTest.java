@@ -20,6 +20,7 @@ import java.time.format.DateTimeFormatter;
 import java.util.*;
 import junitparams.JUnitParamsRunner;
 import junitparams.Parameters;
+import junitparams.converters.Nullable;
 import org.apache.commons.lang3.StringUtils;
 import org.junit.Before;
 import org.junit.Test;
@@ -333,7 +334,8 @@ public class PersonalisationTest {
     }
 
     @Test
-    public void givenNoBenefitType_customisePersonalisation() {
+    @Parameters({"null", ""})
+    public void givenNoBenefitType_customisePersonalisation(@Nullable String benefitType) {
         List<Event> events = new ArrayList<>();
         events.add(Event.builder().value(EventDetails.builder().date(DATE).type(APPEAL_RECEIVED.getCcdType()).build()).build());
 
@@ -342,6 +344,7 @@ public class PersonalisationTest {
             .regionalProcessingCenter(rpc)
             .appeal(Appeal.builder()
                 .appellant(Appellant.builder().name(name).build())
+                .benefitType(BenefitType.builder().code(benefitType).build())
                 .build())
             .subscriptions(subscriptions)
             .events(events)

@@ -133,7 +133,7 @@ public class Personalisation<E extends NotificationWrapper> {
         try {
             if (ccdResponse.getAppeal() != null
                 && ccdResponse.getAppeal().getBenefitType() != null
-                && ccdResponse.getAppeal().getBenefitType().getCode() != null) {
+                && !StringUtils.isEmpty(ccdResponse.getAppeal().getBenefitType().getCode())) {
                 benefit = getBenefitByCode(ccdResponse.getAppeal().getBenefitType().getCode());
                 personalisation.put(BENEFIT_NAME_ACRONYM_LITERAL, benefit.name());
                 personalisation.put(BENEFIT_NAME_ACRONYM_SHORT_LITERAL, benefit.name());

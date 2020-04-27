@@ -22,6 +22,7 @@ import java.util.Optional;
 import javax.annotation.Resource;
 import junitparams.JUnitParamsRunner;
 import junitparams.Parameters;
+import junitparams.converters.Nullable;
 import org.apache.commons.lang3.StringUtils;
 import org.junit.Before;
 import org.junit.Test;
@@ -119,7 +120,6 @@ public class NotificationFactoryTest {
     @Parameters({"APPELLANT, appellantEmail", "REPRESENTATIVE, repsEmail"})
     public void givenAppealLapsedEventAndSubscriptionType_shouldInferRightSubscriptionToCreateNotification(
             SubscriptionType subscriptionType, String expectedEmail) {
-        factory = new NotificationFactory(personalisationFactory);
         SscsCaseDataWrapper sscsCaseDataWrapper = SscsCaseDataWrapper.builder()
                 .newSscsCaseData(SscsCaseData.builder()
                         .appeal(Appeal.builder()
@@ -155,7 +155,6 @@ public class NotificationFactoryTest {
     @Parameters({"APPELLANT, appellantEmail", "REPRESENTATIVE, repsEmail"})
     public void givenAppealDwpLapsedEventAndSubscriptionType_shouldInferRightSubscriptionToCreateNotification(
             SubscriptionType subscriptionType, String expectedEmail) {
-        factory = new NotificationFactory(personalisationFactory);
         SscsCaseDataWrapper sscsCaseDataWrapper = SscsCaseDataWrapper.builder()
                 .newSscsCaseData(SscsCaseData.builder()
                         .appeal(Appeal.builder()
@@ -191,7 +190,6 @@ public class NotificationFactoryTest {
     @Parameters({"APPOINTEE, appointeeEmail", "REPRESENTATIVE, repsEmail"})
     public void givenAppealCreatedEventAndSubscriptionType_shouldInferRightSubscriptionToCreateNotification(
         SubscriptionType subscriptionType, String expectedEmail) {
-        factory = new NotificationFactory(personalisationFactory);
         SscsCaseDataWrapper wrapper = SscsCaseDataWrapper.builder()
                 .newSscsCaseData(SscsCaseData.builder()
                         .appeal(Appeal.builder().appellant(Appellant.builder().appointee(Appointee.builder().build()).build())
@@ -230,7 +228,6 @@ public class NotificationFactoryTest {
     @Parameters({"APPOINTEE, appointeeEmail", "REPRESENTATIVE, repsEmail"})
     public void givenValidAppealCreatedEventAndSubscriptionType_shouldInferRightSubscriptionToCreateNotification(
             SubscriptionType subscriptionType, String expectedEmail) {
-        factory = new NotificationFactory(personalisationFactory);
         SscsCaseDataWrapper wrapper = SscsCaseDataWrapper.builder()
                 .newSscsCaseData(SscsCaseData.builder()
                         .appeal(Appeal.builder().appellant(Appellant.builder().appointee(Appointee.builder().build()).build())
@@ -406,8 +403,33 @@ public class NotificationFactoryTest {
     }
 
     @Test
+    @Parameters({"null", ""})
+    public void givenAnEmptyBenefitType_shouldNotThrowExceptionAndGenerateTemplate(@Nullable String benefitType) {
+
+        SscsCaseDataWrapper sscsCaseDataWrapper = SscsCaseDataWrapper.builder()
+                .newSscsCaseData(SscsCaseData.builder()
+                        .appeal(Appeal.builder()
+                                .benefitType(BenefitType.builder()
+                                        .code(benefitType)
+                                        .build())
+                                .build())
+                        .build())
+                .notificationEventType(APPEAL_RECEIVED_NOTIFICATION)
+                .build();
+
+        given(personalisationFactory.apply(any(NotificationEventType.class)))
+                .willReturn(withRepresentativePersonalisation);
+
+        CcdNotificationWrapper notificationWrapper = new CcdNotificationWrapper(sscsCaseDataWrapper);
+
+        factory.create(notificationWrapper, new SubscriptionWithType(null, APPELLANT));
+
+        then(withRepresentativePersonalisation).should()
+                .getTemplate(eq(notificationWrapper), eq(null), eq(APPELLANT));
+    }
+
+    @Test
     public void shouldHandleNoSubscription() {
-        factory = new NotificationFactory(personalisationFactory);
         SscsCaseDataWrapper sscsCaseDataWrapper = SscsCaseDataWrapper.builder()
                 .newSscsCaseData(SscsCaseData.builder()
                         .appeal(Appeal.builder()
