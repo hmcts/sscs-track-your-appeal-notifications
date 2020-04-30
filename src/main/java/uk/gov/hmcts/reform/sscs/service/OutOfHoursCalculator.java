@@ -2,6 +2,7 @@ package uk.gov.hmcts.reform.sscs.service;
 
 import java.time.ZoneId;
 import java.time.ZonedDateTime;
+import java.util.Random;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
@@ -35,6 +36,11 @@ public class OutOfHoursCalculator {
 
         ZonedDateTime startDay = (nowInUk.getHour() >= startTime) ? nowInUk.plusDays(1) : nowInUk;
 
-        return startDay.withHour(startTime).withMinute(0).withSecond(0).withNano(0).withZoneSameInstant(now.getZone());
+        Random rand = new Random();
+
+        // SSCS-7472 Hack to stop all notifications getting scheduled as soon as 'out of hours' finishes, causing the reminder database to bombard our service and resulting in notifications going missing
+        int randomMinute = rand.nextInt(59);
+
+        return startDay.withHour(startTime).withMinute(randomMinute).withSecond(0).withNano(0).withZoneSameInstant(now.getZone());
     }
 }
