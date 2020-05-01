@@ -187,16 +187,13 @@ public class SendNotificationService {
         return false;
     }
 
-    public static String getRepSalutation(Representative rep) {
-        if (null == rep.getName() || null == rep.getName().getFirstName() || null == rep.getName().getLastName()) {
-            return REP_SALUTATION;
-        } else {
-            return rep.getName().getFullNameNoTitle();
-        }
-    }
-
     public static String getRepSalutation(Name name) {
-        if (null == name || null == name.getFirstName() || null == name.getLastName()) {
+        if (null == name
+                || null == name.getFirstName()
+                || "undefined".equalsIgnoreCase(name.getFirstName())
+                || null == name.getLastName()
+                || "undefined".equalsIgnoreCase(name.getLastName())
+        ) {
             return REP_SALUTATION;
         } else {
             return name.getFullNameNoTitle();
@@ -206,8 +203,7 @@ public class SendNotificationService {
     protected void sendLetterNotificationToAddress(NotificationWrapper wrapper, Notification notification, final Address addressToUse, SubscriptionType subscriptionType) throws NotificationClientException {
         if (addressToUse != null) {
             Map<String, String> placeholders = notification.getPlaceholders();
-            Name nameToUse = getNameToUseForLetter(wrapper, subscriptionType);
-            String fullNameNoTitle = (nameToUse == null) ? getRepSalutation(nameToUse) : nameToUse.getFullNameNoTitle();
+            String fullNameNoTitle = getNameToUseForLetter(wrapper, subscriptionType);
 
             placeholders.put(ADDRESS_LINE_1, fullNameNoTitle);
             placeholders.put(ADDRESS_LINE_2, addressToUse.getLine1());
@@ -249,7 +245,7 @@ public class SendNotificationService {
                 && isNotBlank(addressToUse.getPostcode());
     }
 
-    private boolean sendBundledLetterNotification(NotificationWrapper wrapper, Notification notification, Name nameToUse, SubscriptionType subscriptionType) {
+    private boolean sendBundledLetterNotification(NotificationWrapper wrapper, Notification notification, String nameToUse, SubscriptionType subscriptionType) {
         try {
             byte[] bundledLetter;
             if (isNotBlank(notification.getDocmosisLetterTemplate())) {
@@ -269,7 +265,7 @@ public class SendNotificationService {
                                 wrapper.getNewSscsCaseData().getAppeal().getAppellant().getAddress().getPostcode(),   // Used for whitelisting only
                                 bundledLetter,
                                 wrapper.getNotificationType(),
-                                nameToUse.getFullNameNoTitle(),
+                                nameToUse,
                                 wrapper.getCaseId()
                         );
                 log.info("In sendBundledLetterNotification method notificationSender is available {} ", notificationSender != null);

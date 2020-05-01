@@ -220,7 +220,7 @@ public class Personalisation<E extends NotificationWrapper> {
             return getDefaultName(ccdResponse.getAppeal().getAppellant().getName());
         } else if (subscriptionType.equals(REPRESENTATIVE)
             && hasRepresentative(wrapper)) {
-            return SendNotificationService.getRepSalutation(ccdResponse.getAppeal().getRep());
+            return SendNotificationService.getRepSalutation(ccdResponse.getAppeal().getRep().getName());
         } else if (subscriptionType.equals(APPOINTEE)
             && hasAppointee(wrapper)) {
             return getDefaultName(ccdResponse.getAppeal().getAppellant().getAppointee().getName());
