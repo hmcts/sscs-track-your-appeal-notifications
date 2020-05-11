@@ -187,19 +187,6 @@ public class SendNotificationService {
         return false;
     }
 
-    public static String getRepSalutation(Name name) {
-        if (null == name
-                || null == name.getFirstName()
-                || "undefined".equalsIgnoreCase(name.getFirstName())
-                || null == name.getLastName()
-                || "undefined".equalsIgnoreCase(name.getLastName())
-        ) {
-            return REP_SALUTATION;
-        } else {
-            return name.getFullNameNoTitle();
-        }
-    }
-
     protected void sendLetterNotificationToAddress(NotificationWrapper wrapper, Notification notification, final Address addressToUse, SubscriptionType subscriptionType) throws NotificationClientException {
         if (addressToUse != null) {
             Map<String, String> placeholders = notification.getPlaceholders();

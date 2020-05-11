@@ -3,9 +3,7 @@ package uk.gov.hmcts.reform.sscs.service;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
 import static uk.gov.hmcts.reform.sscs.config.AppConstants.REP_SALUTATION;
-import static uk.gov.hmcts.reform.sscs.config.SubscriptionType.APPELLANT;
-import static uk.gov.hmcts.reform.sscs.config.SubscriptionType.APPOINTEE;
-import static uk.gov.hmcts.reform.sscs.config.SubscriptionType.REPRESENTATIVE;
+import static uk.gov.hmcts.reform.sscs.config.SubscriptionType.*;
 import static uk.gov.hmcts.reform.sscs.domain.notify.NotificationEventType.*;
 import static uk.gov.hmcts.reform.sscs.service.LetterUtils.*;
 import static uk.gov.hmcts.reform.sscs.service.NotificationServiceTest.APPELLANT_WITH_ADDRESS;
@@ -139,10 +137,11 @@ public class LetterUtilsTest {
     }
 
     private Object[] repNamesForLetters() {
+
         return new Object[] {
-                new Object[]{REP_WITH_ADDRESS.getName(), REP_WITH_ADDRESS.getName().getFullNameNoTitle()},
-                new Object[]{Name.builder().build(), REP_SALUTATION},
-                new Object[]{Name.builder().firstName("undefined").lastName("undefined").build(), REP_SALUTATION}
+            new Object[]{Name.builder().firstName("Re").lastName("Presentative").build(), "Re Presentative"},
+            new Object[]{Name.builder().build(), REP_SALUTATION},
+            new Object[]{Name.builder().firstName("undefined").lastName("undefined").build(), REP_SALUTATION}
         };
     }
 

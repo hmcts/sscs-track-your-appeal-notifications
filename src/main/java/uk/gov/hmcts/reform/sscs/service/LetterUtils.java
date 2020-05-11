@@ -55,7 +55,7 @@ public class LetterUtils {
 
     public static String getNameToUseForLetter(NotificationWrapper wrapper, SubscriptionType subscriptionType) {
         if (REPRESENTATIVE.equals(subscriptionType)) {
-            return SendNotificationService.getRepSalutation(wrapper.getNewSscsCaseData().getAppeal().getRep().getName());
+            return SendNotificationHelper.getRepSalutation(wrapper.getNewSscsCaseData().getAppeal().getRep(), false);
         } else {
             if (hasAppointee(wrapper.getSscsCaseDataWrapper())) {
                 return wrapper.getNewSscsCaseData().getAppeal().getAppellant().getAppointee().getName().getFullNameNoTitle();
