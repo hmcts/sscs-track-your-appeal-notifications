@@ -100,6 +100,9 @@ dependencyManagement {
         // Solves CVE-2019-10086
         dependency group: 'commons-beanutils', name: 'commons-beanutils', version: '1.9.4'
 
+        dependency group: 'org.apache.logging.log4j', name: 'log4j-api', version: '2.13.2'
+        dependency group: 'org.apache.logging.log4j', name: 'log4j-to-slf4j', version: '2.13.2'
+
         // checkstyle needs a certain version and so does spring fox swagger, so can't use latest
         dependencySet(group: 'com.google.guava', version: '29.0-jre') {
             entry 'guava'
