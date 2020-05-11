@@ -1,6 +1,7 @@
 package uk.gov.hmcts.reform.sscs.service;
 
 import static org.hamcrest.CoreMatchers.is;
+import static org.hamcrest.Matchers.closeTo;
 import static org.junit.Assert.assertThat;
 
 import java.time.ZoneId;
@@ -49,7 +50,11 @@ public class OutOfHoursCalculatorTest {
         ZonedDateTime now = nowAtHour(END_HOUR);
         ZonedDateTime nextInHoursTime = new OutOfHoursCalculator(new FixedDateTimeProvider(now), START_HOUR, END_HOUR).getStartOfNextInHoursPeriod();
 
-        assertThat(nextInHoursTime, is(ZonedDateTime.of(2018, 9, 19, START_HOUR, 0, 0, 0, ZoneId.of("Europe/London"))));
+        assertThat(nextInHoursTime.getYear(), is(2018));
+        assertThat(nextInHoursTime.getMonthValue(), is(9));
+        assertThat(nextInHoursTime.getDayOfMonth(), is(19));
+        assertThat(nextInHoursTime.getHour(), is(START_HOUR));
+        assertThat(new Double(nextInHoursTime.getMinute()), closeTo(0, 59));
     }
 
     @Test
@@ -57,7 +62,11 @@ public class OutOfHoursCalculatorTest {
         ZonedDateTime now = nowAtHour(1);
         ZonedDateTime nextInHoursTime = new OutOfHoursCalculator(new FixedDateTimeProvider(now), START_HOUR, END_HOUR).getStartOfNextInHoursPeriod();
 
-        assertThat(nextInHoursTime, is(ZonedDateTime.of(2018, 9, 18, START_HOUR, 0, 0, 0, ZoneId.of("Europe/London"))));
+        assertThat(nextInHoursTime.getYear(), is(2018));
+        assertThat(nextInHoursTime.getMonthValue(), is(9));
+        assertThat(nextInHoursTime.getDayOfMonth(), is(18));
+        assertThat(nextInHoursTime.getHour(), is(START_HOUR));
+        assertThat(new Double(nextInHoursTime.getMinute()), closeTo(0, 59));
     }
 
 
