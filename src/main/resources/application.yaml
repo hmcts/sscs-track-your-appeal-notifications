@@ -494,7 +494,7 @@ amqp:
 spring:
   profiles: default
   profiles.include: ${INFRASTRUCTURE_ENV:aat}-${SLOT:STAGING}-slot
-  flyway.enabled: true
+  flyway.enabled: ${RUN_DB_MIGRATION_ON_STARTUP:true}
 job.scheduler:
   quartzProperties:
     org.quartz:
