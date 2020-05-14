@@ -392,19 +392,35 @@ public class SendNotificationServiceTest {
 
     @Test
     public void getRepOrganisationWhenRepHasOrgButNameSetToUndefined() {
-        Representative rep = REP_ORG_WITH_ADDRESS;
-        rep.setName(Name.builder().firstName("undefined").lastName("undefined").build());
+        Representative repOrgWithAddressUndefinedName = Representative.builder()
+            .organisation("Rep Org")
+            .name(Name.builder().firstName("undefined").lastName("undefined").build())
+            .address(Address.builder().line1("Rep Org Line 1").town("Rep Town").county("Rep County").postcode("RE9 3LL").build())
+            .build();
 
         CcdNotificationWrapper wrapper = buildBaseWrapper(APPELLANT_WITH_ADDRESS, NotificationEventType.CASE_UPDATED, REP_ORG_WITH_ADDRESS);
-        assertEquals(rep.getOrganisation(), getRepSalutation(wrapper.getNewSscsCaseData().getAppeal().getRep(), false));
+        assertEquals(repOrgWithAddressUndefinedName.getOrganisation(), getRepSalutation(wrapper.getNewSscsCaseData().getAppeal().getRep(), false));
     }
 
     @Test
     public void getRepSalutationWhenRepHasNoOrgAndNameSetToUndefined() {
-        Representative rep = REP_WITH_ADDRESS;
-        rep.setName(Name.builder().firstName("undefined").lastName("undefined").build());
+        Representative repWithAddressAndUndefinedName = Representative.builder()
+                .name(Name.builder().firstName("undefined").lastName("undefined").build())
+                .address(Address.builder().line1("Rep Line 1").town("Rep Town").county("Rep County").postcode("RE9 3LL").build())
+                .build();
 
-        CcdNotificationWrapper wrapper = buildBaseWrapper(APPELLANT_WITH_ADDRESS, NotificationEventType.CASE_UPDATED, rep);
+        CcdNotificationWrapper wrapper = buildBaseWrapper(APPELLANT_WITH_ADDRESS, NotificationEventType.CASE_UPDATED, repWithAddressAndUndefinedName);
+        assertEquals(REP_SALUTATION, getRepSalutation(wrapper.getNewSscsCaseData().getAppeal().getRep(), false));
+    }
+
+    @Test
+    public void getRepSalutationWhenRepHasNoOrgAndNameSetToEmptyString() {
+        Representative repWithAddressNoName = Representative.builder()
+                .name(Name.builder().firstName("").lastName("").build())
+                .address(Address.builder().line1("Rep Line 1").town("Rep Town").county("Rep County").postcode("RE9 3LL").build())
+                .build();
+
+        CcdNotificationWrapper wrapper = buildBaseWrapper(APPELLANT_WITH_ADDRESS, NotificationEventType.CASE_UPDATED, repWithAddressNoName);
         assertEquals(REP_SALUTATION, getRepSalutation(wrapper.getNewSscsCaseData().getAppeal().getRep(), false));
     }
 

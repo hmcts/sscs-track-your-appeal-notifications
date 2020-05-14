@@ -15,8 +15,10 @@ public class SendNotificationHelper {
         Name name = rep.getName();
         if (null == name
                 || null == name.getFirstName()
+                || "".equalsIgnoreCase(name.getFirstName())
                 || "undefined".equalsIgnoreCase(name.getFirstName())
                 || null == name.getLastName()
+                || "".equalsIgnoreCase(name.getLastName())
                 || "undefined".equalsIgnoreCase(name.getLastName())
         ) {
             return !ignoreOrg && null != rep.getOrganisation()  ? rep.getOrganisation() : REP_SALUTATION;
