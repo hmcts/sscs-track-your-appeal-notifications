@@ -425,6 +425,18 @@ public class SendNotificationServiceTest {
     }
 
     @Test
+    public void getRepSalutationWhenOrgAndNameBothSetToEmptyString() {
+        Representative repWithAddressNoName = Representative.builder()
+                .organisation("")
+                .name(Name.builder().firstName("").lastName("").build())
+                .address(Address.builder().line1("Rep Line 1").town("Rep Town").county("Rep County").postcode("RE9 3LL").build())
+                .build();
+
+        CcdNotificationWrapper wrapper = buildBaseWrapper(APPELLANT_WITH_ADDRESS, NotificationEventType.CASE_UPDATED, repWithAddressNoName);
+        assertEquals(REP_SALUTATION, getRepSalutation(wrapper.getNewSscsCaseData().getAppeal().getRep(), false));
+    }
+
+    @Test
     public void getRepNameWhenRepHasOrgAndName() {
         CcdNotificationWrapper wrapper = buildBaseWrapper(APPELLANT_WITH_ADDRESS, NotificationEventType.CASE_UPDATED, REP_ORG_WITH_NAME_AND_ADDRESS);
         assertEquals(REP_ORG_WITH_NAME_AND_ADDRESS.getName().getFullNameNoTitle(), getRepSalutation(wrapper.getNewSscsCaseData().getAppeal().getRep(), false));

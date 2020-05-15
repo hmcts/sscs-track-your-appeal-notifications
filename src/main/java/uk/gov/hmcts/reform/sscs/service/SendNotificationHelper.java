@@ -21,7 +21,7 @@ public class SendNotificationHelper {
                 || "".equalsIgnoreCase(name.getLastName())
                 || "undefined".equalsIgnoreCase(name.getLastName())
         ) {
-            return !ignoreOrg && null != rep.getOrganisation()  ? rep.getOrganisation() : REP_SALUTATION;
+            return !ignoreOrg && null != rep.getOrganisation() && !"".equals(rep.getOrganisation()) ? rep.getOrganisation() : REP_SALUTATION;
         } else {
             return name.getFullNameNoTitle();
         }
