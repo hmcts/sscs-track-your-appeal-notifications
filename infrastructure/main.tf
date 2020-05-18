@@ -17,15 +17,16 @@ locals {
   azureVaultName = "sscs-${var.env}"
 }
 
-
-
 module "db-notif" {
   source          = "git@github.com:hmcts/cnp-module-postgres?ref=master"
-  product         = "${var.product}-${var.component}-postgres-db"
+  product         = "${var.product}-${var.component}-postgres-v11-db"
   location        = "${var.location}"
   env             = "${var.env}"
   postgresql_user = "${var.postgresql_user}"
+  postgresql_version = "11"
   database_name   = "${var.database_name}"
   common_tags     = "${var.common_tags}"
   subscription          = "${var.subscription}"
 }
+
+

@@ -109,7 +109,7 @@ This starts the CCD applications with Track-your-appeal-notifications in Docker 
 
 This project imports the sscs job scheduler service JAR (https://github.com/hmcts/sscs-job-scheduler).
 This is used to schedule reminders in the future. The management of the database is handled within this 
-project using a PostgreSQL database.
+project using a PostgresSQL database.
 
 ## Gotchas
 

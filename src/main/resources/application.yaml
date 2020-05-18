@@ -467,7 +467,7 @@ pdf-service:
   health:
     uri: ${PDF_SERVICE_HEALTH_URL:https://docmosis-development.platform.hmcts.net/rs/status}
   hmctsImgKey: hmcts2
-  hmctsImgVal: "[userImage:hmcts-2.png]"
+  hmctsImgVal: "[userImage:hmcts.png]"
   coverSheets:
     appealReceived: 'TB-SCS-GNO-ENG-00012.docx'
     directionIssued: 'TB-SCS-GNO-ENG-00012.docx'
@@ -494,7 +494,7 @@ amqp:
 spring:
   profiles: default
   profiles.include: ${INFRASTRUCTURE_ENV:aat}-${SLOT:STAGING}-slot
-  flyway.enabled: true
+  flyway.enabled: ${RUN_DB_MIGRATION_ON_STARTUP:true}
 job.scheduler:
   quartzProperties:
     org.quartz:
