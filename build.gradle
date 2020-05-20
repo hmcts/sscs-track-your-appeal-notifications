@@ -89,7 +89,7 @@ bootRun {
 }
 
 ext {
-    springCloudVersion = 'Hoxton.SR3'
+    springCloudVersion = 'Hoxton.SR4'
 }
 
 dependencyManagement {
@@ -118,7 +118,7 @@ dependencyManagement {
         }
 
         // CVE-2019-16869 - brought in by qpid-jms-client
-        dependencySet(group: 'io.netty', version: '4.1.48.Final') {
+        dependencySet(group: 'io.netty', version: '4.1.50.Final') {
             entry 'netty-handler'
             entry 'netty-transport-native-epoll'
             entry 'netty-transport-native-kqueue'
