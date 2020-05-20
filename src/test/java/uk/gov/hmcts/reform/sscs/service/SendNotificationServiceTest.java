@@ -14,8 +14,8 @@ import static uk.gov.hmcts.reform.sscs.service.NotificationServiceTest.verifyExp
 import static uk.gov.hmcts.reform.sscs.service.NotificationServiceTest.verifyNoErrorsLogged;
 import static uk.gov.hmcts.reform.sscs.service.NotificationValidService.BUNDLED_LETTER_EVENT_TYPES;
 import static uk.gov.hmcts.reform.sscs.service.NotificationValidService.FALLBACK_LETTER_SUBSCRIPTION_TYPES;
+import static uk.gov.hmcts.reform.sscs.service.SendNotificationHelper.getRepSalutation;
 import static uk.gov.hmcts.reform.sscs.service.SendNotificationService.getBundledLetterDocumentUrl;
-import static uk.gov.hmcts.reform.sscs.service.SendNotificationService.getRepSalutation;
 
 import ch.qos.logback.classic.Logger;
 import ch.qos.logback.classic.spi.ILoggingEvent;
@@ -373,39 +373,91 @@ public class SendNotificationServiceTest {
     }
 
     @Test
-    public void getRepSalutationWhenRepHasName() {
+    public void getRepNameWhenRepHasName() {
         CcdNotificationWrapper wrapper = buildBaseWrapper(APPELLANT_WITH_ADDRESS, NotificationEventType.CASE_UPDATED, REP_WITH_ADDRESS);
-        assertEquals(REP_WITH_ADDRESS.getName().getFullNameNoTitle(), getRepSalutation(wrapper.getNewSscsCaseData().getAppeal().getRep()));
+        assertEquals(REP_WITH_ADDRESS.getName().getFullNameNoTitle(), getRepSalutation(wrapper.getNewSscsCaseData().getAppeal().getRep(), false));
     }
 
     @Test
-    public void getRepSalutationWhenRepHasOrgButNoName() {
+    public void getRepOrganisationWhenRepHasOrgButNoName() {
         CcdNotificationWrapper wrapper = buildBaseWrapper(APPELLANT_WITH_ADDRESS, NotificationEventType.CASE_UPDATED, REP_ORG_WITH_ADDRESS);
-        assertEquals(REP_SALUTATION, getRepSalutation(wrapper.getNewSscsCaseData().getAppeal().getRep()));
+        assertEquals(wrapper.getNewSscsCaseData().getAppeal().getRep().getOrganisation(), getRepSalutation(wrapper.getNewSscsCaseData().getAppeal().getRep(), false));
     }
 
     @Test
-    public void getRepSalutationWhenRepHasOrgAndName() {
+    public void getRepSalutationWhenRepHasOrgAndNoNameAndIngnoreOrgFlagSet() {
+        CcdNotificationWrapper wrapper = buildBaseWrapper(APPELLANT_WITH_ADDRESS, NotificationEventType.CASE_UPDATED, REP_ORG_WITH_ADDRESS);
+        assertEquals(REP_SALUTATION, getRepSalutation(wrapper.getNewSscsCaseData().getAppeal().getRep(), true));
+    }
+
+    @Test
+    public void getRepOrganisationWhenRepHasOrgButNameSetToUndefined() {
+        Representative repOrgWithAddressUndefinedName = Representative.builder()
+            .organisation("Rep Org")
+            .name(Name.builder().firstName("undefined").lastName("undefined").build())
+            .address(Address.builder().line1("Rep Org Line 1").town("Rep Town").county("Rep County").postcode("RE9 3LL").build())
+            .build();
+
+        CcdNotificationWrapper wrapper = buildBaseWrapper(APPELLANT_WITH_ADDRESS, NotificationEventType.CASE_UPDATED, REP_ORG_WITH_ADDRESS);
+        assertEquals(repOrgWithAddressUndefinedName.getOrganisation(), getRepSalutation(wrapper.getNewSscsCaseData().getAppeal().getRep(), false));
+    }
+
+    @Test
+    public void getRepSalutationWhenRepHasNoOrgAndNameSetToUndefined() {
+        Representative repWithAddressAndUndefinedName = Representative.builder()
+                .name(Name.builder().firstName("undefined").lastName("undefined").build())
+                .address(Address.builder().line1("Rep Line 1").town("Rep Town").county("Rep County").postcode("RE9 3LL").build())
+                .build();
+
+        CcdNotificationWrapper wrapper = buildBaseWrapper(APPELLANT_WITH_ADDRESS, NotificationEventType.CASE_UPDATED, repWithAddressAndUndefinedName);
+        assertEquals(REP_SALUTATION, getRepSalutation(wrapper.getNewSscsCaseData().getAppeal().getRep(), false));
+    }
+
+    @Test
+    public void getRepSalutationWhenRepHasNoOrgAndNameSetToEmptyString() {
+        Representative repWithAddressNoName = Representative.builder()
+                .name(Name.builder().firstName("").lastName("").build())
+                .address(Address.builder().line1("Rep Line 1").town("Rep Town").county("Rep County").postcode("RE9 3LL").build())
+                .build();
+
+        CcdNotificationWrapper wrapper = buildBaseWrapper(APPELLANT_WITH_ADDRESS, NotificationEventType.CASE_UPDATED, repWithAddressNoName);
+        assertEquals(REP_SALUTATION, getRepSalutation(wrapper.getNewSscsCaseData().getAppeal().getRep(), false));
+    }
+
+    @Test
+    public void getRepSalutationWhenOrgAndNameBothSetToEmptyString() {
+        Representative repWithAddressNoName = Representative.builder()
+                .organisation("")
+                .name(Name.builder().firstName("").lastName("").build())
+                .address(Address.builder().line1("Rep Line 1").town("Rep Town").county("Rep County").postcode("RE9 3LL").build())
+                .build();
+
+        CcdNotificationWrapper wrapper = buildBaseWrapper(APPELLANT_WITH_ADDRESS, NotificationEventType.CASE_UPDATED, repWithAddressNoName);
+        assertEquals(REP_SALUTATION, getRepSalutation(wrapper.getNewSscsCaseData().getAppeal().getRep(), false));
+    }
+
+    @Test
+    public void getRepNameWhenRepHasOrgAndName() {
         CcdNotificationWrapper wrapper = buildBaseWrapper(APPELLANT_WITH_ADDRESS, NotificationEventType.CASE_UPDATED, REP_ORG_WITH_NAME_AND_ADDRESS);
-        assertEquals(REP_ORG_WITH_NAME_AND_ADDRESS.getName().getFullNameNoTitle(), getRepSalutation(wrapper.getNewSscsCaseData().getAppeal().getRep()));
+        assertEquals(REP_ORG_WITH_NAME_AND_ADDRESS.getName().getFullNameNoTitle(), getRepSalutation(wrapper.getNewSscsCaseData().getAppeal().getRep(), false));
     }
 
     @Test
-    public void getRepSalutationWhenNameIsNotnull() {
+    public void getRepNameWhenNameIsNotnull() {
         CcdNotificationWrapper wrapper = buildBaseWrapper(APPELLANT_WITH_ADDRESS, NotificationEventType.CASE_UPDATED, REP_WITH_ADDRESS);
-        assertEquals(REP_WITH_ADDRESS.getName().getFullNameNoTitle(), getRepSalutation(wrapper.getNewSscsCaseData().getAppeal().getRep().getName()));
+        assertEquals(REP_WITH_ADDRESS.getName().getFullNameNoTitle(), getRepSalutation(wrapper.getNewSscsCaseData().getAppeal().getRep(), false));
     }
 
     @Test
-    public void getRepSalutationWhenNameNoFirstName() {
+    public void getRepOrganisationWhenNameNoFirstName() {
         CcdNotificationWrapper wrapper = buildBaseWrapper(APPELLANT_WITH_ADDRESS, NotificationEventType.CASE_UPDATED, REP_ORG_WITH_ADDRESS);
-        assertEquals(REP_SALUTATION, getRepSalutation(wrapper.getNewSscsCaseData().getAppeal().getRep().getName()));
+        assertEquals(wrapper.getNewSscsCaseData().getAppeal().getRep().getOrganisation(), getRepSalutation(wrapper.getNewSscsCaseData().getAppeal().getRep(), false));
     }
 
     @Test
-    public void getRepSalutationWhenNameHasFirstNameLastNameAndOrg() {
+    public void getRepNameWhenNameHasFirstNameLastNameAndOrg() {
         CcdNotificationWrapper wrapper = buildBaseWrapper(APPELLANT_WITH_ADDRESS, NotificationEventType.CASE_UPDATED, REP_ORG_WITH_NAME_AND_ADDRESS);
-        assertEquals(REP_ORG_WITH_NAME_AND_ADDRESS.getName().getFullNameNoTitle(), getRepSalutation(wrapper.getNewSscsCaseData().getAppeal().getRep().getName()));
+        assertEquals(REP_ORG_WITH_NAME_AND_ADDRESS.getName().getFullNameNoTitle(), getRepSalutation(wrapper.getNewSscsCaseData().getAppeal().getRep(), false));
     }
 
     @Test

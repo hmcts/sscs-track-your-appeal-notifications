@@ -4,7 +4,7 @@ import static uk.gov.hmcts.reform.sscs.config.AppConstants.*;
 import static uk.gov.hmcts.reform.sscs.domain.notify.NotificationEventType.APPEAL_RECEIVED_NOTIFICATION;
 import static uk.gov.hmcts.reform.sscs.service.LetterUtils.*;
 
-import java.io.*;
+import java.io.IOException;
 import java.time.LocalDateTime;
 import java.util.Collections;
 import java.util.HashMap;
@@ -17,7 +17,6 @@ import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import uk.gov.hmcts.reform.sscs.ccd.domain.Address;
-import uk.gov.hmcts.reform.sscs.ccd.domain.Name;
 import uk.gov.hmcts.reform.sscs.config.DocmosisTemplatesConfig;
 import uk.gov.hmcts.reform.sscs.config.SubscriptionType;
 import uk.gov.hmcts.reform.sscs.domain.docmosis.PdfCoverSheet;
@@ -65,10 +64,10 @@ public class PdfLetterService {
 
     private byte[] generateCoversheet(NotificationWrapper wrapper, SubscriptionType subscriptionType) {
         Address addressToUse = getAddressToUseForLetter(wrapper, subscriptionType);
-        Name name = getNameToUseForLetter(wrapper, subscriptionType);
+        String name = getNameToUseForLetter(wrapper, subscriptionType);
         PdfCoverSheet pdfCoverSheet = new PdfCoverSheet(
                 wrapper.getCaseId(),
-                name.getFullNameNoTitle(),
+                name,
                 addressToUse.getLine1(),
                 addressToUse.getLine2(),
                 addressToUse.getTown(),
@@ -95,8 +94,7 @@ public class PdfLetterService {
             placeholders.put(SSCS_URL_LITERAL, SSCS_URL);
             placeholders.put(GENERATED_DATE_LITERAL, LocalDateTime.now().toLocalDate().toString());
 
-            Name nameToUse = getNameToUseForLetter(wrapper, subscriptionType);
-            placeholders.put(ADDRESS_NAME, truncateAddressLine(nameToUse.getFullNameNoTitle()));
+            placeholders.put(ADDRESS_NAME, truncateAddressLine(getNameToUseForLetter(wrapper, subscriptionType)));
 
             Address addressToUse = getAddressToUseForLetter(wrapper, subscriptionType);
             buildRecipientAddressPlaceholders(addressToUse, placeholders);

@@ -39,10 +39,7 @@ import uk.gov.hmcts.reform.sscs.domain.notify.Template;
 import uk.gov.hmcts.reform.sscs.exception.BenefitMappingException;
 import uk.gov.hmcts.reform.sscs.extractor.HearingContactDateExtractor;
 import uk.gov.hmcts.reform.sscs.factory.NotificationWrapper;
-import uk.gov.hmcts.reform.sscs.service.MessageAuthenticationServiceImpl;
-import uk.gov.hmcts.reform.sscs.service.NotificationUtils;
-import uk.gov.hmcts.reform.sscs.service.RegionalProcessingCenterService;
-import uk.gov.hmcts.reform.sscs.service.SendNotificationService;
+import uk.gov.hmcts.reform.sscs.service.*;
 
 @Component
 @Slf4j
@@ -220,7 +217,7 @@ public class Personalisation<E extends NotificationWrapper> {
             return getDefaultName(ccdResponse.getAppeal().getAppellant().getName());
         } else if (subscriptionType.equals(REPRESENTATIVE)
             && hasRepresentative(wrapper)) {
-            return SendNotificationService.getRepSalutation(ccdResponse.getAppeal().getRep());
+            return SendNotificationHelper.getRepSalutation(ccdResponse.getAppeal().getRep(), true);
         } else if (subscriptionType.equals(APPOINTEE)
             && hasAppointee(wrapper)) {
             return getDefaultName(ccdResponse.getAppeal().getAppellant().getAppointee().getName());
