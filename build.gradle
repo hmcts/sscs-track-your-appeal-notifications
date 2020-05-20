@@ -257,7 +257,7 @@ dependencies {
     compile group: 'com.mchange', name: 'c3p0', version: '0.9.5.5'
     compile group: 'org.flywaydb', name: 'flyway-core', version: '6.4.2'
     compile group: 'org.postgresql', name: 'postgresql', version: '42.2.12'
-    compile group: 'net.bytebuddy', name: 'byte-buddy', version: '1.10.9'
+    compile group: 'net.bytebuddy', name: 'byte-buddy', version: '1.10.10'
 
     compile group: 'org.springframework.boot', name: 'spring-boot-starter-actuator'
     compile group: 'org.springframework.boot', name: 'spring-boot-starter-aop'
@@ -271,7 +271,7 @@ dependencies {
     compile group: 'io.springfox', name: 'springfox-swagger-ui', version: versions.springfoxSwagger
     compile group: 'com.atlassian.commonmark', name: 'commonmark', version: '0.14.0'
     compile group: 'org.springframework', name: 'spring-jms'
-    compile group: 'org.apache.qpid', name: 'qpid-jms-client', version: '0.50.0'
+    compile group: 'org.apache.qpid', name: 'qpid-jms-client', version: '0.51.0'
 
     compile group: 'uk.gov.hmcts.reform', name: 'health-spring-boot-starter', version:'0.0.5'
     compile group: 'uk.gov.hmcts.reform', name: 'properties-volume-spring-boot-starter', version:'0.0.4'
