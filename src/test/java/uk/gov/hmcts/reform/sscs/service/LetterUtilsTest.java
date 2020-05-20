@@ -19,6 +19,7 @@ import org.apache.pdfbox.pdmodel.PDDocument;
 import org.apache.pdfbox.pdmodel.PDPage;
 import org.junit.Test;
 import org.junit.runner.RunWith;
+import uk.gov.hmcts.reform.sscs.ccd.domain.Address;
 import uk.gov.hmcts.reform.sscs.ccd.domain.Name;
 import uk.gov.hmcts.reform.sscs.ccd.domain.Representative;
 import uk.gov.hmcts.reform.sscs.domain.notify.NotificationEventType;
@@ -123,8 +124,10 @@ public class LetterUtilsTest {
     @Test
     @Parameters(method = "repNamesForLetters")
     public void useRepNameForLetter(Name name, String expectedResult) {
-        Representative rep = REP_WITH_ADDRESS;
-        rep.setName(name);
+        Representative rep = Representative.builder()
+                .name(name)
+                .address(Address.builder().line1("Rep Line 1").town("Rep Town").county("Rep County").postcode("RE9 3LL").build())
+                .build();
 
         NotificationWrapper wrapper = NotificationServiceTest.buildBaseWrapper(
             SYA_APPEAL_CREATED_NOTIFICATION,
