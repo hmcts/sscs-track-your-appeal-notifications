@@ -257,7 +257,7 @@ dependencies {
     compile group: 'com.mchange', name: 'c3p0', version: '0.9.5.5'
     compile group: 'org.flywaydb', name: 'flyway-core', version: '6.4.2'
     compile group: 'org.postgresql', name: 'postgresql', version: '42.2.12'
-    compile group: 'net.bytebuddy', name: 'byte-buddy', version: '1.10.9'
+    compile group: 'net.bytebuddy', name: 'byte-buddy', version: '1.10.10'
 
     compile group: 'org.springframework.boot', name: 'spring-boot-starter-actuator'
     compile group: 'org.springframework.boot', name: 'spring-boot-starter-aop'
