@@ -2,9 +2,8 @@ package uk.gov.hmcts.reform.sscs.service;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
-import static uk.gov.hmcts.reform.sscs.config.SubscriptionType.APPELLANT;
-import static uk.gov.hmcts.reform.sscs.config.SubscriptionType.APPOINTEE;
-import static uk.gov.hmcts.reform.sscs.config.SubscriptionType.REPRESENTATIVE;
+import static uk.gov.hmcts.reform.sscs.config.AppConstants.REP_SALUTATION;
+import static uk.gov.hmcts.reform.sscs.config.SubscriptionType.*;
 import static uk.gov.hmcts.reform.sscs.domain.notify.NotificationEventType.*;
 import static uk.gov.hmcts.reform.sscs.service.LetterUtils.*;
 import static uk.gov.hmcts.reform.sscs.service.NotificationServiceTest.APPELLANT_WITH_ADDRESS;
@@ -20,6 +19,9 @@ import org.apache.pdfbox.pdmodel.PDDocument;
 import org.apache.pdfbox.pdmodel.PDPage;
 import org.junit.Test;
 import org.junit.runner.RunWith;
+import uk.gov.hmcts.reform.sscs.ccd.domain.Address;
+import uk.gov.hmcts.reform.sscs.ccd.domain.Name;
+import uk.gov.hmcts.reform.sscs.ccd.domain.Representative;
 import uk.gov.hmcts.reform.sscs.domain.notify.NotificationEventType;
 import uk.gov.hmcts.reform.sscs.exception.NotificationClientRuntimeException;
 import uk.gov.hmcts.reform.sscs.factory.NotificationWrapper;
@@ -104,7 +106,7 @@ public class LetterUtilsTest {
             null
         );
 
-        assertEquals(APPELLANT_WITH_ADDRESS.getName(), getNameToUseForLetter(wrapper, APPELLANT));
+        assertEquals(APPELLANT_WITH_ADDRESS.getName().getFullNameNoTitle(), getNameToUseForLetter(wrapper, APPELLANT));
     }
 
     @Test
@@ -116,19 +118,34 @@ public class LetterUtilsTest {
             null
         );
 
-        assertEquals(APPELLANT_WITH_ADDRESS_AND_APPOINTEE.getAppointee().getName(), getNameToUseForLetter(wrapper, APPOINTEE));
+        assertEquals(APPELLANT_WITH_ADDRESS_AND_APPOINTEE.getAppointee().getName().getFullNameNoTitle(), getNameToUseForLetter(wrapper, APPOINTEE));
     }
 
     @Test
-    public void useRepNameForLetter() {
+    @Parameters(method = "repNamesForLetters")
+    public void useRepNameForLetter(Name name, String expectedResult) {
+        Representative rep = Representative.builder()
+                .name(name)
+                .address(Address.builder().line1("Rep Line 1").town("Rep Town").county("Rep County").postcode("RE9 3LL").build())
+                .build();
+
         NotificationWrapper wrapper = NotificationServiceTest.buildBaseWrapper(
             SYA_APPEAL_CREATED_NOTIFICATION,
             APPELLANT_WITH_ADDRESS_AND_APPOINTEE,
-            REP_WITH_ADDRESS,
+            rep,
             null
         );
 
-        assertEquals(REP_WITH_ADDRESS.getName(), getNameToUseForLetter(wrapper, REPRESENTATIVE));
+        assertEquals(expectedResult, getNameToUseForLetter(wrapper, REPRESENTATIVE));
+    }
+
+    private Object[] repNamesForLetters() {
+
+        return new Object[] {
+            new Object[]{Name.builder().firstName("Re").lastName("Presentative").build(), "Re Presentative"},
+            new Object[]{Name.builder().build(), REP_SALUTATION},
+            new Object[]{Name.builder().firstName("undefined").lastName("undefined").build(), REP_SALUTATION}
+        };
     }
 
     @Test

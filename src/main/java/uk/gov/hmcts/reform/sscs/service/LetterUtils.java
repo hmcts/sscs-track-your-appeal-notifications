@@ -13,7 +13,6 @@ import org.apache.pdfbox.pdmodel.PDPage;
 import org.apache.pdfbox.pdmodel.PDPageContentStream;
 import org.apache.pdfbox.pdmodel.common.PDRectangle;
 import uk.gov.hmcts.reform.sscs.ccd.domain.Address;
-import uk.gov.hmcts.reform.sscs.ccd.domain.Name;
 import uk.gov.hmcts.reform.sscs.config.SubscriptionType;
 import uk.gov.hmcts.reform.sscs.exception.NotificationClientRuntimeException;
 import uk.gov.hmcts.reform.sscs.factory.NotificationWrapper;
@@ -54,14 +53,14 @@ public class LetterUtils {
         return PDF_UNKNOWN;
     }
 
-    public static Name getNameToUseForLetter(NotificationWrapper wrapper, SubscriptionType subscriptionType) {
+    public static String getNameToUseForLetter(NotificationWrapper wrapper, SubscriptionType subscriptionType) {
         if (REPRESENTATIVE.equals(subscriptionType)) {
-            return wrapper.getNewSscsCaseData().getAppeal().getRep().getName();
+            return SendNotificationHelper.getRepSalutation(wrapper.getNewSscsCaseData().getAppeal().getRep(), false);
         } else {
             if (hasAppointee(wrapper.getSscsCaseDataWrapper())) {
-                return wrapper.getNewSscsCaseData().getAppeal().getAppellant().getAppointee().getName();
+                return wrapper.getNewSscsCaseData().getAppeal().getAppellant().getAppointee().getName().getFullNameNoTitle();
             } else {
-                return wrapper.getNewSscsCaseData().getAppeal().getAppellant().getName();
+                return wrapper.getNewSscsCaseData().getAppeal().getAppellant().getName().getFullNameNoTitle();
             }
         }
     }
