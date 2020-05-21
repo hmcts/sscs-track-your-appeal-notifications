@@ -239,7 +239,7 @@ def versions = [
         reformLogging   : '5.0.1',
         springHystrix   : '1.4.2.RELEASE',
         springfoxSwagger: '2.8.0',
-        restAssured     : '4.3.0'
+        restAssured     : '4.2.0'
 ]
 
 configurations.all {
