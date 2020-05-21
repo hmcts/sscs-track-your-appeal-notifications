@@ -46,7 +46,7 @@ public class CohNotificationFunctionalTest extends AbstractFunctionalTest {
 
     @Override
     protected SscsCaseData createCaseData() {
-        SscsCaseData.SscsCaseDataBuilder sscsCaseDataBuilder = builderSscsCaseData(getCaseReference(),
+        SscsCaseData.SscsCaseDataBuilder sscsCaseDataBuilder = builderSscsCaseData(caseReference,
             "Yes", "Yes", SYA_APPEAL_CREATED, "cor");
         return sscsCaseDataBuilder
             .assignedToJudge("Judge")
@@ -57,7 +57,7 @@ public class CohNotificationFunctionalTest extends AbstractFunctionalTest {
 
     @Test
     public void shouldSendQuestionsReadyNotifications() throws IOException, InterruptedException, NotificationClientException {
-        String hearingId = createHearingWithQuestions(getCaseId());
+        String hearingId = createHearingWithQuestions(caseId);
         // Issuing the question round will cause these notifications to be fired from AAT
         tryFetchNotificationsForTestCase(questionRoundIssuedEmailTemplateId);
 
@@ -66,12 +66,12 @@ public class CohNotificationFunctionalTest extends AbstractFunctionalTest {
         // Need to check for two sets of notifications one from AAT and from the test being run.
         List<Notification> notifications = tryFetchNotificationsForTestCase(questionRoundIssuedEmailTemplateId, questionRoundIssuedEmailTemplateId);
 
-        assertNotificationBodyContains(notifications, questionRoundIssuedEmailTemplateId, getCaseData().getCaseReference());
+        assertNotificationBodyContains(notifications, questionRoundIssuedEmailTemplateId, caseData.getCaseReference());
     }
 
     @Test
     public void shouldSendFollowUpQuestionsReadyNotifications() throws IOException, InterruptedException, NotificationClientException {
-        String hearingId = createHearingWithQuestions(getCaseId());
+        String hearingId = createHearingWithQuestions(caseId);
         createQuestion(hearingId, 2);
         issueQuestions(hearingId, 2);
         // Issuing the question round will cause these notifications to be fired from AAT todo put in once this is deployed to AAT
@@ -84,31 +84,31 @@ public class CohNotificationFunctionalTest extends AbstractFunctionalTest {
             followupQuestionRoundIssuedEmailTemplateId
         );
 
-        assertNotificationBodyContains(notifications, followupQuestionRoundIssuedEmailTemplateId, getCaseData().getCaseReference());
+        assertNotificationBodyContains(notifications, followupQuestionRoundIssuedEmailTemplateId, caseData.getCaseReference());
     }
 
     @Test
     public void shouldSendQuestionDeadlineElapsedNotifications() throws IOException, InterruptedException, NotificationClientException {
-        String hearingId = createHearingWithQuestions(getCaseId());
+        String hearingId = createHearingWithQuestions(caseId);
 
         simulateCohCallback(QUESTION_DEADLINE_ELAPSED_NOTIFICATION, hearingId);
 
         List<Notification> notifications = tryFetchNotificationsForTestCase(
             questionDeadlineElapsedEmailTemplateId);
 
-        assertNotificationBodyContains(notifications, questionDeadlineElapsedEmailTemplateId, getCaseData().getCaseReference());
+        assertNotificationBodyContains(notifications, questionDeadlineElapsedEmailTemplateId, caseData.getCaseReference());
     }
 
     @Test
     public void shouldSendViewIssuedNotifications() throws IOException, InterruptedException, NotificationClientException {
-        String hearingId = createHearingWithQuestions(getCaseId());
+        String hearingId = createHearingWithQuestions(caseId);
 
         simulateCohCallback(VIEW_ISSUED, hearingId);
 
         List<Notification> notifications = tryFetchNotificationsForTestCase(
             viewIssuedEmailTemplateId);
 
-        assertNotificationBodyContains(notifications, viewIssuedEmailTemplateId, getCaseData().getCaseReference());
+        assertNotificationBodyContains(notifications, viewIssuedEmailTemplateId, caseData.getCaseReference());
     }
 
     private String createHearingWithQuestions(Long caseId) throws InterruptedException {
