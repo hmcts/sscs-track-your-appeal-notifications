@@ -140,7 +140,7 @@ dependencyManagement {
         }
 
         // resolves: CVE-2019-10101, CVE-2019-10102, CVE-2019-10103
-        dependencySet(group: 'org.jetbrains.kotlin', version: '1.3.71') {
+        dependencySet(group: 'org.jetbrains.kotlin', version: '1.3.72') {
             entry 'kotlin-stdlib'
         }
     }
