@@ -73,10 +73,10 @@ public class AdminAppealWithdrawnNotificationsTest extends AbstractFunctionalTes
     }
 
     private void initialiseCcdCase() {
-        getCaseData().setCorrespondence(null);
-        getCaseData().setSubscriptions(null);
-        getCcdService().updateCase(getCaseData(), getCaseId(), CASE_UPDATED.getId(), "create by Test",
-            "Notification Service updated case", getIdamTokens());
+        caseData.setCorrespondence(null);
+        caseData.setSubscriptions(null);
+        ccdService.updateCase(caseData, caseId, CASE_UPDATED.getId(), "create by Test",
+            "Notification Service updated case", idamTokens);
     }
 
     private long getNumberOfNotificationsForGivenEmailOrSmsTemplateId(List<Notification> notifications, String emailId) {
@@ -94,8 +94,8 @@ public class AdminAppealWithdrawnNotificationsTest extends AbstractFunctionalTes
     }
 
     private long getNumberOfLetterCorrespondence(String subscription) {
-        List<Correspondence> correspondence = getCcdService()
-            .getByCaseId(getCaseId(), getIdamTokens()).getData().getCorrespondence();
+        List<Correspondence> correspondence = ccdService
+            .getByCaseId(caseId, idamTokens).getData().getCorrespondence();
         if (correspondence == null) {
             return 0;
         }

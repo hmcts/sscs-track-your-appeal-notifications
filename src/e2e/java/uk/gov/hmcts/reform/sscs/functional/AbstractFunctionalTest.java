@@ -93,21 +93,16 @@ public abstract class AbstractFunctionalTest {
     @Autowired
     private IdamService idamService;
 
-    @Getter
-    private IdamTokens idamTokens;
+    protected IdamTokens idamTokens;
 
-    @Getter
-    private String caseReference;
+    protected String caseReference;
 
-    @Getter
-    private Long caseId;
+    protected Long caseId;
 
-    @Getter
-    private SscsCaseData caseData;
+    protected SscsCaseData caseData;
 
     @Autowired
-    @Getter
-    private CcdService ccdService;
+    protected CcdService ccdService;
 
     @Before
     public void setup() {
