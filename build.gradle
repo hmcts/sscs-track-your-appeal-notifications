@@ -246,7 +246,7 @@ configurations.all {
     resolutionStrategy {
         eachDependency { DependencyResolveDetails details ->
             if (details.requested.group in ['com.fasterxml.jackson.core', 'com.fasterxml.jackson.module', 'com.fasterxml.jackson.datatype']) {
-                details.useVersion '2.10.0'
+                details.useVersion '2.11.0'
             }
         }
     }
@@ -285,7 +285,7 @@ dependencies {
     compile group: 'uk.gov.hmcts.reform', name: 'sscs-job-scheduler', version: '1.5.2'
     compile group: 'uk.gov.hmcts.reform', name: 'service-auth-provider-client', version: '3.1.2'
 
-    compile group: 'uk.gov.hmcts.reform', name: 'sscs-common', version: '3.2.28'
+    compile group: 'uk.gov.hmcts.reform', name: 'sscs-common', version: '3.2.29'
     compile group: 'uk.gov.hmcts.reform', name: 'sscs-pdf-email-common', version: '1.4.1'
 
     compile group: 'uk.gov.service.notify', name: 'notifications-java-client', version: '3.15.1-RELEASE'
