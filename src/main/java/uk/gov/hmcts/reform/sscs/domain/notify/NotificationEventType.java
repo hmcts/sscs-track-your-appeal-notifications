@@ -4,41 +4,41 @@ import uk.gov.hmcts.reform.sscs.ccd.domain.EventType;
 
 public enum NotificationEventType {
 
-    ADJOURNED_NOTIFICATION("hearingAdjourned", true, false, false, false, false),
-    SYA_APPEAL_CREATED_NOTIFICATION("appealCreated", true, true, false, true, false),
-    RESEND_APPEAL_CREATED_NOTIFICATION("resendAppealCreated", true, true, false, true, false),
-    APPEAL_LAPSED_NOTIFICATION("appealLapsed", true, true, false, false, false),
-    HMCTS_APPEAL_LAPSED_NOTIFICATION("hmctsLapseCase", true, true, false, false, false),
-    DWP_APPEAL_LAPSED_NOTIFICATION("confirmLapsed", true, true, false, false, false),
-    APPEAL_RECEIVED_NOTIFICATION("appealReceived", true, true, false, false, false),
-    APPEAL_WITHDRAWN_NOTIFICATION("appealWithdrawn", true, true, false, false, false),
-    APPEAL_DORMANT_NOTIFICATION("appealDormant", true, true, false, false, false),
-    EVIDENCE_RECEIVED_NOTIFICATION("evidenceReceived", true, true, true, false, false),
-    DWP_RESPONSE_RECEIVED_NOTIFICATION("responseReceived", true, true, true, false, false),
-    DWP_UPLOAD_RESPONSE_NOTIFICATION("dwpUploadResponse", true, true, true, false, false),
-    HEARING_BOOKED_NOTIFICATION("hearingBooked", true, false, false, false, false),
-    POSTPONEMENT_NOTIFICATION("hearingPostponed", true, false, false, false, false),
-    SUBSCRIPTION_CREATED_NOTIFICATION("subscriptionCreated", true, true, false, false, false),
-    SUBSCRIPTION_UPDATED_NOTIFICATION("subscriptionUpdated", true, true, false, true, false),
-    SUBSCRIPTION_OLD_NOTIFICATION("subscriptionOld", false, true, false, true, false),
-    EVIDENCE_REMINDER_NOTIFICATION("evidenceReminder", true, true, false, false, true),
-    HEARING_REMINDER_NOTIFICATION("hearingReminder", true, false, false, false, true),
-    QUESTION_ROUND_ISSUED_NOTIFICATION("question_round_issued", false, false, true, false, false),
-    QUESTION_DEADLINE_ELAPSED_NOTIFICATION("question_deadline_elapsed", false, false, true, false, false),
-    QUESTION_DEADLINE_REMINDER_NOTIFICATION("question_deadline_reminder", false, false, true, false, true),
-    HEARING_REQUIRED_NOTIFICATION("continuous_online_hearing_relisted", true, true, true, false, false),
-    VIEW_ISSUED("decision_issued", false, false, true, false, false),
-    DECISION_ISSUED_2("corDecision", false, false, true, false, false),
-    STRUCK_OUT("struckOut", true, true, false, false, false),
-    CASE_UPDATED("caseUpdated", false, false, false, false, false),
-    DIRECTION_ISSUED("directionIssued", true, true, true, false, false),
-    DECISION_ISSUED("decisionIssued", true, true, true, false, false),
-    VALID_APPEAL_CREATED("validAppealCreated", true, true, false, true, false),
-    REQUEST_INFO_INCOMPLETE("requestInfoIncompleteApplication", true, true, true, false, false),
-    JUDGE_DECISION_APPEAL_TO_PROCEED("judgeDecisionAppealToProceed", true, true, true, false, false),
-    TCW_DECISION_APPEAL_TO_PROCEED("tcwDecisionAppealToProceed", true, true, true, false, false),
-    NON_COMPLIANT_NOTIFICATION("nonCompliant", true, true, true, false, false),
-    ADMIN_APPEAL_WITHDRAWN("adminAppealWithdrawn", true, true, true, false, false),
+    ADJOURNED_NOTIFICATION("hearingAdjourned", true, false, false, false, false, false),
+    SYA_APPEAL_CREATED_NOTIFICATION("appealCreated", true, true, false, true, false, false),
+    RESEND_APPEAL_CREATED_NOTIFICATION("resendAppealCreated", true, true, false, true, false, false),
+    APPEAL_LAPSED_NOTIFICATION("appealLapsed", true, true, false, false, false, false),
+    HMCTS_APPEAL_LAPSED_NOTIFICATION("hmctsLapseCase", true, true, false, false, false, false),
+    DWP_APPEAL_LAPSED_NOTIFICATION("confirmLapsed", true, true, false, false, false, false),
+    APPEAL_RECEIVED_NOTIFICATION("appealReceived", true, true, false, false, false, true),
+    APPEAL_WITHDRAWN_NOTIFICATION("appealWithdrawn", true, true, false, false, false, false),
+    APPEAL_DORMANT_NOTIFICATION("appealDormant", true, true, false, false, false, false),
+    EVIDENCE_RECEIVED_NOTIFICATION("evidenceReceived", true, true, true, false, false, false),
+    DWP_RESPONSE_RECEIVED_NOTIFICATION("responseReceived", true, true, true, false, false, false),
+    DWP_UPLOAD_RESPONSE_NOTIFICATION("dwpUploadResponse", true, true, true, false, false, false),
+    HEARING_BOOKED_NOTIFICATION("hearingBooked", true, false, false, false, false, false),
+    POSTPONEMENT_NOTIFICATION("hearingPostponed", true, false, false, false, false, false),
+    SUBSCRIPTION_CREATED_NOTIFICATION("subscriptionCreated", true, true, false, false, false, false),
+    SUBSCRIPTION_UPDATED_NOTIFICATION("subscriptionUpdated", true, true, false, true, false, false),
+    SUBSCRIPTION_OLD_NOTIFICATION("subscriptionOld", false, true, false, true, false, false),
+    EVIDENCE_REMINDER_NOTIFICATION("evidenceReminder", true, true, false, false, true, false),
+    HEARING_REMINDER_NOTIFICATION("hearingReminder", true, false, false, false, true, false),
+    QUESTION_ROUND_ISSUED_NOTIFICATION("question_round_issued", false, false, true, false, false, false),
+    QUESTION_DEADLINE_ELAPSED_NOTIFICATION("question_deadline_elapsed", false, false, true, false, false, false),
+    QUESTION_DEADLINE_REMINDER_NOTIFICATION("question_deadline_reminder", false, false, true, false, true, false),
+    HEARING_REQUIRED_NOTIFICATION("continuous_online_hearing_relisted", true, true, true, false, false, false),
+    VIEW_ISSUED("decision_issued", false, false, true, false, false, false),
+    DECISION_ISSUED_2("corDecision", false, false, true, false, false, false),
+    STRUCK_OUT("struckOut", true, true, false, false, false, false),
+    CASE_UPDATED("caseUpdated", false, false, false, false, false, false),
+    DIRECTION_ISSUED("directionIssued", true, true, true, false, false, false),
+    DECISION_ISSUED("decisionIssued", true, true, true, false, false, false),
+    VALID_APPEAL_CREATED("validAppealCreated", true, true, false, true, false, true),
+    REQUEST_INFO_INCOMPLETE("requestInfoIncompleteApplication", true, true, true, false, false, false),
+    JUDGE_DECISION_APPEAL_TO_PROCEED("judgeDecisionAppealToProceed", true, true, true, false, false, false),
+    TCW_DECISION_APPEAL_TO_PROCEED("tcwDecisionAppealToProceed", true, true, true, false, false, false),
+    NON_COMPLIANT_NOTIFICATION("nonCompliant", true, true, true, false, false, false),
+    ADMIN_APPEAL_WITHDRAWN("adminAppealWithdrawn", true, true, true, false, false, false),
     DO_NOT_SEND("");
 
     private String id;
@@ -47,18 +47,20 @@ public enum NotificationEventType {
     private boolean sendForCohCase;
     private boolean allowOutOfHours;
     private boolean isReminder;
+    private boolean isToBeDelayed;
 
     NotificationEventType(String id) {
         this.id = id;
     }
 
-    NotificationEventType(String id, Boolean sendForOralCase, Boolean sendForPaperCase, Boolean sendForCohCase, Boolean allowOutOfHours, Boolean isReminder) {
+    NotificationEventType(String id, boolean sendForOralCase, boolean sendForPaperCase, boolean sendForCohCase, boolean allowOutOfHours, boolean isReminder, boolean isToBeDelayed) {
         this.id = id;
         this.sendForOralCase = sendForOralCase;
         this.sendForPaperCase = sendForPaperCase;
         this.sendForCohCase = sendForCohCase;
         this.allowOutOfHours = allowOutOfHours;
         this.isReminder = isReminder;
+        this.isToBeDelayed = isToBeDelayed;
     }
 
     public static NotificationEventType getNotificationById(String id) {
@@ -112,5 +114,9 @@ public enum NotificationEventType {
 
     public boolean isAllowOutOfHours() {
         return allowOutOfHours;
+    }
+
+    public boolean isToBeDelayed() {
+        return isToBeDelayed;
     }
 }

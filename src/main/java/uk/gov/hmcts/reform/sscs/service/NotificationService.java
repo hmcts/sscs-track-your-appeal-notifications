@@ -4,11 +4,25 @@ import static uk.gov.hmcts.reform.sscs.ccd.domain.Benefit.getBenefitByCode;
 import static uk.gov.hmcts.reform.sscs.ccd.domain.EventType.SUBSCRIPTION_UPDATED;
 import static uk.gov.hmcts.reform.sscs.config.SubscriptionType.APPOINTEE;
 import static uk.gov.hmcts.reform.sscs.config.SubscriptionType.REPRESENTATIVE;
-import static uk.gov.hmcts.reform.sscs.domain.notify.NotificationEventType.*;
-import static uk.gov.hmcts.reform.sscs.service.NotificationUtils.*;
+import static uk.gov.hmcts.reform.sscs.domain.notify.NotificationEventType.ADMIN_APPEAL_WITHDRAWN;
+import static uk.gov.hmcts.reform.sscs.domain.notify.NotificationEventType.APPEAL_WITHDRAWN_NOTIFICATION;
+import static uk.gov.hmcts.reform.sscs.domain.notify.NotificationEventType.DECISION_ISSUED;
+import static uk.gov.hmcts.reform.sscs.domain.notify.NotificationEventType.DIRECTION_ISSUED;
+import static uk.gov.hmcts.reform.sscs.domain.notify.NotificationEventType.DWP_UPLOAD_RESPONSE_NOTIFICATION;
+import static uk.gov.hmcts.reform.sscs.domain.notify.NotificationEventType.HEARING_BOOKED_NOTIFICATION;
+import static uk.gov.hmcts.reform.sscs.domain.notify.NotificationEventType.HEARING_REMINDER_NOTIFICATION;
+import static uk.gov.hmcts.reform.sscs.domain.notify.NotificationEventType.REQUEST_INFO_INCOMPLETE;
+import static uk.gov.hmcts.reform.sscs.domain.notify.NotificationEventType.STRUCK_OUT;
+import static uk.gov.hmcts.reform.sscs.domain.notify.NotificationEventType.SUBSCRIPTION_UPDATED_NOTIFICATION;
+import static uk.gov.hmcts.reform.sscs.domain.notify.NotificationEventType.getNotificationByCcdEvent;
+import static uk.gov.hmcts.reform.sscs.service.NotificationUtils.getSubscription;
+import static uk.gov.hmcts.reform.sscs.service.NotificationUtils.isFallbackLetterRequired;
+import static uk.gov.hmcts.reform.sscs.service.NotificationUtils.isOkToSendNotification;
 import static uk.gov.hmcts.reform.sscs.service.NotificationValidService.isMandatoryLetterEventType;
 
+import java.time.ZonedDateTime;
 import lombok.extern.slf4j.Slf4j;
+import org.apache.commons.collections.CollectionUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
@@ -19,7 +33,11 @@ import uk.gov.hmcts.reform.sscs.ccd.domain.State;
 import uk.gov.hmcts.reform.sscs.ccd.domain.Subscription;
 import uk.gov.hmcts.reform.sscs.config.NotificationConfig;
 import uk.gov.hmcts.reform.sscs.domain.SubscriptionWithType;
-import uk.gov.hmcts.reform.sscs.domain.notify.*;
+import uk.gov.hmcts.reform.sscs.domain.notify.Destination;
+import uk.gov.hmcts.reform.sscs.domain.notify.Notification;
+import uk.gov.hmcts.reform.sscs.domain.notify.NotificationEventType;
+import uk.gov.hmcts.reform.sscs.domain.notify.Reference;
+import uk.gov.hmcts.reform.sscs.domain.notify.Template;
 import uk.gov.hmcts.reform.sscs.factory.NotificationFactory;
 import uk.gov.hmcts.reform.sscs.factory.NotificationWrapper;
 import uk.gov.hmcts.reform.sscs.utility.PhoneNumbersUtil;
@@ -33,6 +51,7 @@ public class NotificationService {
     private final NotificationHandler notificationHandler;
     private final OutOfHoursCalculator outOfHoursCalculator;
     private final NotificationConfig notificationConfig;
+    private final long delayTimeInSeconds;
 
     @SuppressWarnings("squid:S107")
     @Autowired
@@ -44,7 +63,8 @@ public class NotificationService {
             OutOfHoursCalculator outOfHoursCalculator,
             NotificationConfig notificationConfig,
             SendNotificationService sendNotificationService,
-            @Value("${feature.covid19}") boolean covid19Feature) {
+            @Value("${feature.covid19}") boolean covid19Feature,
+            @Value("${delayEvent.timeInSeconds}") long delayTimeInSeconds) {
 
         this.notificationFactory = notificationFactory;
         this.reminderService = reminderService;
@@ -54,6 +74,7 @@ public class NotificationService {
         this.notificationConfig = notificationConfig;
         this.sendNotificationService = sendNotificationService;
         this.covid19Feature = covid19Feature;
+        this.delayTimeInSeconds = delayTimeInSeconds;
     }
 
     private final SendNotificationService sendNotificationService;
@@ -71,7 +92,11 @@ public class NotificationService {
 
         log.info("Notification event triggered {} for case id {}", notificationType.getId(), caseId);
 
-        if (notificationWrapper.getNotificationType().isAllowOutOfHours() || !outOfHoursCalculator.isItOutOfHours()) {
+        if (notificationWrapper.getNotificationType().isToBeDelayed()
+                && (CollectionUtils.isNotEmpty(notificationWrapper.getNewSscsCaseData().getEvents())
+                && notificationWrapper.getNewSscsCaseData().getEvents().get(0).getValue().getDateTime().plusSeconds(delayTimeInSeconds).isAfter(ZonedDateTime.now()))) {
+            notificationHandler.scheduleNotification(notificationWrapper, ZonedDateTime.now().plusSeconds(delayTimeInSeconds));
+        } else if (notificationWrapper.getNotificationType().isAllowOutOfHours() || !outOfHoursCalculator.isItOutOfHours()) {
             sendNotificationPerSubscription(notificationWrapper, notificationType);
             reminderService.createReminders(notificationWrapper);
         } else {
@@ -120,7 +145,7 @@ public class NotificationService {
 
     static Boolean hasCaseJustSubscribed(Subscription newSubscription, Subscription oldSubscription) {
         return ((oldSubscription == null || !oldSubscription.isEmailSubscribed()) && newSubscription.isEmailSubscribed()
-            || ((oldSubscription == null || !oldSubscription.isSmsSubscribed()) && newSubscription.isSmsSubscribed()));
+                || ((oldSubscription == null || !oldSubscription.isSmsSubscribed()) && newSubscription.isSmsSubscribed()));
     }
 
     private static boolean thereIsALastEventThatIsNotSubscriptionUpdated(final SscsCaseData newSscsCaseData) {

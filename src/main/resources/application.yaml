@@ -100,6 +100,8 @@ evidence.address.county: Essex
 evidence.address.postcode: CM20 9QF
 evidence.address.telephone: 0300 123 1142
 
+delayEvent.timeInSeconds: 300
+
 job.scheduler:
   retryPolicy:
     maxNumberOfJobExecutions: 2
