@@ -42,7 +42,7 @@ public class FilterNotificationsEventsHandlerTest {
     }
 
     @Test
-    @Parameters({"ADJOURNED_NOTIFICATION", "DECISION_ISSUED"})
+    @Parameters({"ADJOURNED_NOTIFICATION", "DECISION_ISSUED", "ISSUE_FINAL_DECISION"})
     public void willNotHandleEvents(NotificationEventType notificationEventType) {
         SscsCaseDataWrapper callback = SscsCaseDataWrapper.builder().notificationEventType(notificationEventType).build();
         assertFalse(handler.canHandle(callback));

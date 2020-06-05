@@ -31,7 +31,7 @@ import uk.gov.hmcts.reform.sscs.domain.notify.Template;
 @SpringBootTest
 @ActiveProfiles("integration")
 public class NotificationConfigTest {
-    public static final List<NotificationEventType> BUNDLED_LETTER_EVENT_TYPES = Arrays.asList(STRUCK_OUT, DIRECTION_ISSUED, DECISION_ISSUED, JUDGE_DECISION_APPEAL_TO_PROCEED, TCW_DECISION_APPEAL_TO_PROCEED);
+    public static final List<NotificationEventType> BUNDLED_LETTER_EVENT_TYPES = Arrays.asList(STRUCK_OUT, DIRECTION_ISSUED, DECISION_ISSUED, ISSUE_FINAL_DECISION, JUDGE_DECISION_APPEAL_TO_PROCEED, TCW_DECISION_APPEAL_TO_PROCEED);
 
     // Below rules are needed to use the junitParamsRunner together with SpringRunner
     @ClassRule
@@ -192,6 +192,10 @@ public class NotificationConfigTest {
             new Object[]{null, null, null, "TB-SCS-GNO-ENG-00094.docx", PAPER, getTemplateName(DECISION_ISSUED, APPOINTEE), null},
             new Object[]{null, null, null, "TB-SCS-GNO-ENG-00095.docx", ORAL, getTemplateName(DECISION_ISSUED, REPRESENTATIVE), null},
             new Object[]{null, null, null, "TB-SCS-GNO-ENG-00095.docx", PAPER, getTemplateName(DECISION_ISSUED, REPRESENTATIVE), null},
+            new Object[]{null, null, null, "TB-SCS-GNO-ENG-00094.docx", ORAL, getTemplateName(ISSUE_FINAL_DECISION, APPELLANT), null},
+            new Object[]{null, null, null, "TB-SCS-GNO-ENG-00094.docx", PAPER, getTemplateName(ISSUE_FINAL_DECISION, APPOINTEE), null},
+            new Object[]{null, null, null, "TB-SCS-GNO-ENG-00095.docx", ORAL, getTemplateName(ISSUE_FINAL_DECISION, REPRESENTATIVE), null},
+            new Object[]{null, null, null, "TB-SCS-GNO-ENG-00095.docx", PAPER, getTemplateName(ISSUE_FINAL_DECISION, REPRESENTATIVE), null}
         };
     }
 
@@ -203,7 +207,10 @@ public class NotificationConfigTest {
 
         int i = 0;
         for (NotificationEventType eventType : BUNDLED_LETTER_EVENT_TYPES.stream()
-                .filter(f -> !f.equals(DIRECTION_ISSUED)).filter(f -> !f.equals(DECISION_ISSUED)).collect(Collectors.toList())) {
+                .filter(f -> !f.equals(DIRECTION_ISSUED))
+                .filter(f -> !f.equals(DECISION_ISSUED))
+                .filter(f -> !f.equals(ISSUE_FINAL_DECISION))
+                .collect(Collectors.toList())) {
             for (SubscriptionType subscriptionType : subscriptionTypes) {
                 result[i++] = new Object[]{PAPER, getTemplateName(eventType, subscriptionType)};
                 result[i++] = new Object[]{ORAL, getTemplateName(eventType, subscriptionType)};
