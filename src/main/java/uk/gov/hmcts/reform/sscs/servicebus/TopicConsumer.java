@@ -4,6 +4,7 @@ import static java.lang.String.format;
 import static java.util.Objects.requireNonNull;
 import static uk.gov.hmcts.reform.sscs.domain.notify.NotificationEventType.getNotificationByCcdEvent;
 
+import java.time.LocalDateTime;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.context.annotation.Lazy;
 import org.springframework.jms.annotation.JmsListener;
@@ -51,6 +52,7 @@ public class TopicConsumer {
                     callback.getCaseDetails().getCaseData(),
                     caseDetailsBefore != null ? caseDetailsBefore.getCaseData() : null,
                     getNotificationByCcdEvent(callback.getEvent()),
+                    callback.getCaseDetails().getCreatedDate(),
                     callback.getCaseDetails().getState());
 
             log.info("Ccd Response received for case id: {} , {}", sscsCaseDataWrapper.getNewSscsCaseData().getCcdCaseId(), sscsCaseDataWrapper.getNotificationEventType());
@@ -62,11 +64,12 @@ public class TopicConsumer {
         }
     }
 
-    private SscsCaseDataWrapper buildSscsCaseDataWrapper(SscsCaseData caseData, SscsCaseData caseDataBefore, NotificationEventType event, State state) {
+    private SscsCaseDataWrapper buildSscsCaseDataWrapper(SscsCaseData caseData, SscsCaseData caseDataBefore, NotificationEventType event, LocalDateTime createdDate, State state) {
         return SscsCaseDataWrapper.builder()
                 .newSscsCaseData(caseData)
                 .oldSscsCaseData(caseDataBefore)
                 .notificationEventType(event)
+                .createdDate(createdDate)
                 .state(state).build();
     }
 }

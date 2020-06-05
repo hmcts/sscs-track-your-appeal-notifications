@@ -20,8 +20,8 @@ import ch.qos.logback.classic.Logger;
 import ch.qos.logback.classic.spi.ILoggingEvent;
 import ch.qos.logback.core.Appender;
 import java.io.IOException;
+import java.time.LocalDateTime;
 import java.time.ZonedDateTime;
-import java.time.format.DateTimeFormatter;
 import java.util.*;
 import junitparams.JUnitParamsRunner;
 import junitparams.Parameters;
@@ -1656,16 +1656,13 @@ public class NotificationServiceTest {
     }
 
     @Test
-    public void delayScheduleOfEvents() {
-        Event events = Event.builder()
-                .value(EventDetails.builder()
-                        .type(VALID_APPEAL_CREATED.getId())
-                        .description(VALID_APPEAL_CREATED.getId())
-                        .date(ZonedDateTime.now().toLocalDateTime().format(DateTimeFormatter.ISO_DATE_TIME))
-                        .build())
+    @Parameters({"VALID_APPEAL_CREATED", "APPEAL_RECEIVED_NOTIFICATION"})
+    public void delayScheduleOfEvents(NotificationEventType eventType) {
+        SscsCaseDataWrapper wrapper = SscsCaseDataWrapper.builder()
+                .newSscsCaseData(sscsCaseData).oldSscsCaseData(sscsCaseData)
+                .notificationEventType(eventType)
+                .createdDate(LocalDateTime.now())
                 .build();
-        sscsCaseData.setEvents(singletonList(events));
-        SscsCaseDataWrapper wrapper = SscsCaseDataWrapper.builder().newSscsCaseData(sscsCaseData).oldSscsCaseData(sscsCaseData).notificationEventType(VALID_APPEAL_CREATED).build();
         ccdNotificationWrapper = new CohNotificationWrapper("someHearingId", wrapper);
         when(notificationValidService.isNotificationStillValidToSend(any(), any())).thenReturn(true);
         when(notificationValidService.isHearingTypeValidToSendNotification(any(), any())).thenReturn(true);
@@ -2016,7 +2013,7 @@ public class NotificationServiceTest {
         SendNotificationService sendNotificationService = new SendNotificationService(notificationSender, evidenceManagementService, notificationHandler, notificationValidService, pdfLetterService);
 
         final NotificationService notificationService = new NotificationService(factory, reminderService,
-                notificationValidService, notificationHandler, outOfHoursCalculator, notificationConfig, sendNotificationService, true, 300L
+                notificationValidService, notificationHandler, outOfHoursCalculator, notificationConfig, sendNotificationService, true
         );
 
         notificationService.manageNotificationAndSubscription(ccdNotificationWrapper);
@@ -2065,7 +2062,7 @@ public class NotificationServiceTest {
         SendNotificationService sendNotificationService = new SendNotificationService(notificationSender, evidenceManagementService, notificationHandler, notificationValidService, pdfLetterService);
 
         final NotificationService notificationService = new NotificationService(factory, reminderService,
-            notificationValidService, notificationHandler, outOfHoursCalculator, notificationConfig, sendNotificationService, false, 300L
+            notificationValidService, notificationHandler, outOfHoursCalculator, notificationConfig, sendNotificationService, false
         );
         return notificationService;
     }

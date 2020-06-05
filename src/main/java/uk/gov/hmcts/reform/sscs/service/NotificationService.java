@@ -1,5 +1,6 @@
 package uk.gov.hmcts.reform.sscs.service;
 
+import static java.util.Objects.nonNull;
 import static uk.gov.hmcts.reform.sscs.ccd.domain.Benefit.getBenefitByCode;
 import static uk.gov.hmcts.reform.sscs.ccd.domain.EventType.SUBSCRIPTION_UPDATED;
 import static uk.gov.hmcts.reform.sscs.config.SubscriptionType.APPOINTEE;
@@ -20,9 +21,9 @@ import static uk.gov.hmcts.reform.sscs.service.NotificationUtils.isFallbackLette
 import static uk.gov.hmcts.reform.sscs.service.NotificationUtils.isOkToSendNotification;
 import static uk.gov.hmcts.reform.sscs.service.NotificationValidService.isMandatoryLetterEventType;
 
+import java.time.LocalDateTime;
 import java.time.ZonedDateTime;
 import lombok.extern.slf4j.Slf4j;
-import org.apache.commons.collections.CollectionUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
@@ -51,7 +52,6 @@ public class NotificationService {
     private final NotificationHandler notificationHandler;
     private final OutOfHoursCalculator outOfHoursCalculator;
     private final NotificationConfig notificationConfig;
-    private final long delayTimeInSeconds;
 
     @SuppressWarnings("squid:S107")
     @Autowired
@@ -63,8 +63,7 @@ public class NotificationService {
             OutOfHoursCalculator outOfHoursCalculator,
             NotificationConfig notificationConfig,
             SendNotificationService sendNotificationService,
-            @Value("${feature.covid19}") boolean covid19Feature,
-            @Value("${delayEvent.timeInSeconds}") long delayTimeInSeconds) {
+            @Value("${feature.covid19}") boolean covid19Feature) {
 
         this.notificationFactory = notificationFactory;
         this.reminderService = reminderService;
@@ -74,7 +73,6 @@ public class NotificationService {
         this.notificationConfig = notificationConfig;
         this.sendNotificationService = sendNotificationService;
         this.covid19Feature = covid19Feature;
-        this.delayTimeInSeconds = delayTimeInSeconds;
     }
 
     private final SendNotificationService sendNotificationService;
@@ -92,14 +90,17 @@ public class NotificationService {
 
         log.info("Notification event triggered {} for case id {}", notificationType.getId(), caseId);
 
-        if (notificationWrapper.getNotificationType().isToBeDelayed()
-                && (CollectionUtils.isNotEmpty(notificationWrapper.getNewSscsCaseData().getEvents())
-                && notificationWrapper.getNewSscsCaseData().getEvents().get(0).getValue().getDateTime().plusSeconds(delayTimeInSeconds).isAfter(ZonedDateTime.now()))) {
-            notificationHandler.scheduleNotification(notificationWrapper, ZonedDateTime.now().plusSeconds(delayTimeInSeconds));
-        } else if (notificationWrapper.getNotificationType().isAllowOutOfHours() || !outOfHoursCalculator.isItOutOfHours()) {
-            sendNotificationPerSubscription(notificationWrapper, notificationType);
-            reminderService.createReminders(notificationWrapper);
-        } else {
+        if (notificationType.isAllowOutOfHours() || !outOfHoursCalculator.isItOutOfHours()) {
+            if (notificationType.isToBeDelayed() && nonNull(notificationWrapper.getCreatedDate())
+                    && notificationWrapper.getCreatedDate()
+                    .plusSeconds(notificationType.getDelayInSeconds())
+                    .isAfter(LocalDateTime.now())) {
+                notificationHandler.scheduleNotification(notificationWrapper, ZonedDateTime.now().plusSeconds(notificationType.getDelayInSeconds()));
+            } else {
+                sendNotificationPerSubscription(notificationWrapper, notificationType);
+                reminderService.createReminders(notificationWrapper);
+            }
+        } else if (outOfHoursCalculator.isItOutOfHours()) {
             notificationHandler.scheduleNotification(notificationWrapper);
         }
     }

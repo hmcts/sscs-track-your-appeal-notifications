@@ -8,6 +8,7 @@ import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.node.JsonNodeFactory;
 import com.fasterxml.jackson.databind.node.ObjectNode;
+import java.time.LocalDateTime;
 import org.slf4j.Logger;
 import uk.gov.hmcts.reform.sscs.ccd.callback.Callback;
 import uk.gov.hmcts.reform.sscs.ccd.deserialisation.SscsCaseCallbackDeserializer;
@@ -53,7 +54,12 @@ public abstract class BaseActionExecutor<T> implements JobExecutor<T> {
 
                 Callback<SscsCaseData> callback = deserializer.deserialize(buildCcdNode(caseDetails, eventId));
 
-                SscsCaseDataWrapper wrapper = buildSscsCaseDataWrapper(callback.getCaseDetails().getCaseData(), null, getNotificationById(eventId), callback.getCaseDetails().getState());
+                SscsCaseDataWrapper wrapper = buildSscsCaseDataWrapper(
+                        callback.getCaseDetails().getCaseData(),
+                        null,
+                        getNotificationById(eventId),
+                        caseDetails.getCreatedDate(),
+                        callback.getCaseDetails().getState());
 
                 notificationService.manageNotificationAndSubscription(getWrapper(wrapper, payload));
                 if (wrapper.getNotificationEventType().isReminder()) {
@@ -82,10 +88,11 @@ public abstract class BaseActionExecutor<T> implements JobExecutor<T> {
         return mapper.writeValueAsString(node);
     }
 
-    private SscsCaseDataWrapper buildSscsCaseDataWrapper(SscsCaseData caseData, SscsCaseData caseDataBefore, NotificationEventType event, State state) {
+    private SscsCaseDataWrapper buildSscsCaseDataWrapper(SscsCaseData caseData, SscsCaseData caseDataBefore, NotificationEventType event, LocalDateTime createdDate, State state) {
         return SscsCaseDataWrapper.builder()
                 .newSscsCaseData(caseData)
                 .oldSscsCaseData(caseDataBefore)
+                .createdDate(createdDate)
                 .state(state)
                 .notificationEventType(event).build();
     }
