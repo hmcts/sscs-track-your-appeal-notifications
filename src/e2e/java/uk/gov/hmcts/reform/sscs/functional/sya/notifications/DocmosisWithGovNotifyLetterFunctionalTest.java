@@ -80,6 +80,4 @@ public class DocmosisWithGovNotifyLetterFunctionalTest extends AbstractFunctiona
         assertEquals("Pre-compiled PDF", notifications.get(1).getSubject().orElse("Unknown Subject"));
     }
 
-
-
 }
