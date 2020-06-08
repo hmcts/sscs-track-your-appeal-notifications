@@ -33,6 +33,7 @@ public enum NotificationEventType {
     CASE_UPDATED("caseUpdated", false, false, false, false, false),
     DIRECTION_ISSUED("directionIssued", true, true, true, false, false),
     DECISION_ISSUED("decisionIssued", true, true, true, false, false),
+    ISSUE_FINAL_DECISION("issueFinalDecision", true, true, true, false, false),
     VALID_APPEAL_CREATED("validAppealCreated", true, true, false, true, false),
     REQUEST_INFO_INCOMPLETE("requestInfoIncompleteApplication", true, true, true, false, false),
     JUDGE_DECISION_APPEAL_TO_PROCEED("judgeDecisionAppealToProceed", true, true, true, false, false),
