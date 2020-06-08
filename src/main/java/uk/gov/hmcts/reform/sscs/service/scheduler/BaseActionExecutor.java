@@ -52,6 +52,9 @@ public abstract class BaseActionExecutor<T> implements JobExecutor<T> {
 
             if (caseDetails != null) {
 
+                //The deserialiser does things the ccd find method doesn't do. e.g. sorts collections,
+                // notifications relies on events being sorted. If there are multiple hearings on the case
+                // the notification should refer to the latest one.
                 Callback<SscsCaseData> callback = deserializer.deserialize(buildCcdNode(caseDetails, eventId));
 
                 SscsCaseDataWrapper wrapper = buildSscsCaseDataWrapper(
