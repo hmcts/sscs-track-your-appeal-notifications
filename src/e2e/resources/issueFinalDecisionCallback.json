@@ -78,6 +78,27 @@
           "id": "57416cbe-54f2-4d53-933d-e25050a05623"
         }
       ],
+      "hearings": [
+        {
+          "id": "609523de-ba0a-45e7-8f0b-af3f82ab347c",
+          "value": {
+            "adjourned": null,
+            "hearingDate": "2048-01-01",
+            "time": "23:59",
+            "venue": {
+              "address": {
+                "county": "Aberdeenshire",
+                "line1": "12 The Road Avenue",
+                "line2": "Village",
+                "postcode": "AB12 0HN",
+                "town": "Aberdeen"
+              },
+              "googleMapLink": "http://www.googlemaps.com/aberdeenvenue",
+              "name": "The venue"
+            }
+          }
+        }
+      ],
       "subscriptions": {
         "appellantSubscription": {
           "email": "sscstest+notify2@greencroftconsulting.com",
