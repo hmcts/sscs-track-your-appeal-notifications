@@ -51,7 +51,7 @@ idam:
     redirectUrl: ${IDAM_OAUTH2_REDIRECT_URL:https://localhost:3000/authenticated}
     jwkUrl: ${IDAM_API_JWK_URL:http://localhost:5000/jwks}
   api:
-    url: ${IDAM_URL:http://localhost:5000}
+    url: ${IDAM_API_URL:http://localhost:5000}
   client:
     id: ${IDAM_OAUTH2_CLIENT_ID:sscs}
     secret: ${IDAM_OAUTH2_CLIENT_SECRET:QM5RQQ53LZFOSIXJ}
