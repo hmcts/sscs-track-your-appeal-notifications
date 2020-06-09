@@ -81,7 +81,8 @@ public class LetterUtilsTest {
         return new Object[] {
             new Object[] { STRUCK_OUT, PDF_STRUCK_OUT},
             new Object[] { DIRECTION_ISSUED, PDF_DIRECTION_NOTICE},
-            new Object[] { DECISION_ISSUED, PDF_DECISION_NOTICE}
+            new Object[] { DECISION_ISSUED, PDF_DECISION_NOTICE},
+            new Object[] { ISSUE_FINAL_DECISION, PDF_DECISION_NOTICE}
         };
     }
 
