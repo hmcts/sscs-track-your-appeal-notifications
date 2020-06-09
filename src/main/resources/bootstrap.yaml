@@ -4,7 +4,6 @@ spring:
       paths: /mnt/secrets/sscs
       prefixed: false
       aliases:
-        idam-api: idam.url
         idam-sscs-systemupdate-user: idam.oauth2.user.email
         idam-sscs-systemupdate-password: idam.oauth2.user.password
         notification-job-scheduler-db-password: spring.datasource.password
