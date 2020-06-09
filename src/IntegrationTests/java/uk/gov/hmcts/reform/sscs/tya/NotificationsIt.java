@@ -1094,28 +1094,28 @@ public class NotificationsIt {
                 "paper",
                 Collections.emptyList(),
                 Collections.emptyList(),
-                Arrays.asList("bc943cf3-9fd1-4d14-a0c0-b183572c21a7", "a2a4a88a-b91a-4e6d-94f0-507179292058"),
+                Arrays.asList("TB-SCS-GNO-ENG-00452.docx", "TB-SCS-GNO-ENG-00452.docx"),
                 "yes",
                 "yes",
                 "yes",
                 "yes",
                 "0",
                 "0",
-                "2"
+                "0"
             },
             new Object[]{
                 REQUEST_INFO_INCOMPLETE,
                 "paper",
                 Collections.emptyList(),
                 Collections.emptyList(),
-                Arrays.asList("bc943cf3-9fd1-4d14-a0c0-b183572c21a7", "a2a4a88a-b91a-4e6d-94f0-507179292058"),
+                Arrays.asList("TB-SCS-GNO-ENG-00452.docx", "TB-SCS-GNO-ENG-00452.docx"),
                 "no",
                 "no",
                 "no",
                 "no",
                 "0",
                 "0",
-                "2"
+                "0"
             },
             new Object[]{
                 VALID_APPEAL_CREATED,
@@ -1863,28 +1863,28 @@ public class NotificationsIt {
                 "paper",
                 Collections.emptyList(),
                 Collections.emptyList(),
-                Arrays.asList("bc943cf3-9fd1-4d14-a0c0-b183572c21a7", "a2a4a88a-b91a-4e6d-94f0-507179292058"),
+                Arrays.asList("TB-SCS-GNO-ENG-00452.docx", "TB-SCS-GNO-ENG-00452.docx"),
                 "yes",
                 "yes",
                 "yes",
                 "yes",
                 "0",
                 "0",
-                "2"
+                "0"
             },
             new Object[]{
                 REQUEST_INFO_INCOMPLETE,
                 "paper",
                 Collections.emptyList(),
                 Collections.emptyList(),
-                Arrays.asList("bc943cf3-9fd1-4d14-a0c0-b183572c21a7", "a2a4a88a-b91a-4e6d-94f0-507179292058"),
+                Arrays.asList("TB-SCS-GNO-ENG-00452.docx", "TB-SCS-GNO-ENG-00452.docx"),
                 "no",
                 "no",
                 "no",
                 "no",
                 "0",
                 "0",
-                "2"
+                "0"
             },
             new Object[]{
                 VALID_APPEAL_CREATED,
@@ -2362,12 +2362,12 @@ public class NotificationsIt {
                 "oral",
                 Collections.emptyList(),
                 Collections.emptyList(),
-                Collections.singletonList("bc943cf3-9fd1-4d14-a0c0-b183572c21a7"),
+                Collections.singletonList("TB-SCS-GNO-ENG-00452.docx"),
                 "yes",
                 "yes",
                 "0",
                 "0",
-                "1",
+                "0",
                 "Appointee Appointee"
             },
             new Object[]{
@@ -2375,12 +2375,12 @@ public class NotificationsIt {
                 "oral",
                 Collections.emptyList(),
                 Collections.emptyList(),
-                Collections.singletonList("bc943cf3-9fd1-4d14-a0c0-b183572c21a7"),
+                Collections.singletonList("TB-SCS-GNO-ENG-00452.docx"),
                 "no",
                 "no",
                 "0",
                 "0",
-                "1",
+                "0",
                 "Appointee Appointee"
             },
             new Object[]{
@@ -2811,12 +2811,12 @@ public class NotificationsIt {
                 "oral",
                 Collections.emptyList(),
                 Collections.emptyList(),
-                Collections.singletonList("bc943cf3-9fd1-4d14-a0c0-b183572c21a7"),
+                Collections.singletonList("TB-SCS-GNO-ENG-00452.docx"),
                 "yes",
                 "yes",
                 "0",
                 "0",
-                "1",
+                "0",
                 "Appointee Appointee"
             },
             new Object[]{
@@ -2824,12 +2824,12 @@ public class NotificationsIt {
                 "oral",
                 Collections.emptyList(),
                 Collections.emptyList(),
-                Collections.singletonList("bc943cf3-9fd1-4d14-a0c0-b183572c21a7"),
+                Collections.singletonList("TB-SCS-GNO-ENG-00452.docx"),
                 "no",
                 "no",
                 "0",
                 "0",
-                "1",
+                "0",
                 "Appointee Appointee"
             },
             new Object[]{
