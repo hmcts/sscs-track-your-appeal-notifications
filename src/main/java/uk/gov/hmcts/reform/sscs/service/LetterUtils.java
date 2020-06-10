@@ -26,7 +26,7 @@ public class LetterUtils {
     public static final String COMMENT_DIRECTION_NOTICE = "Direction Notice";
 
     private LetterUtils() {
-        // Hiding utility class constructor
+        // Hiding  utility class constructors
     }
 
     public static Address getAddressToUseForLetter(NotificationWrapper wrapper, SubscriptionType subscriptionType) {
