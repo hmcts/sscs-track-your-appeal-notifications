@@ -1,8 +1,12 @@
 name: sscs-tya-notif
 description: SSCS Track Your Appeal Notifications
 home: https://github.com/hmcts/sscs-track-your-appeal-notifications
-apiVersion: v1
+apiVersion: v2
 appVersion: "1.0"
-version: 0.0.15
+version: 0.0.16
 maintainers:
   - name: HMCTS SSCS Team
+dependencies:
+  - name: java
+    version: 3.0.2
+    repository: https://hmctspublic.azurecr.io/helm/v1/repo/
