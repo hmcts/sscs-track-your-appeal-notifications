@@ -1,12 +1,11 @@
 plugins {
     id 'application'
-    id 'checkstyle'
     id 'pmd'
     id 'org.sonarqube' version '3.0'
     id 'jacoco'
     id 'io.spring.dependency-management' version '1.0.9.RELEASE'
     id 'org.springframework.boot' version '2.3.0.RELEASE'
-    id 'org.owasp.dependencycheck' version '5.3.2.1'
+    id 'uk.gov.hmcts.java' version '0.5.0'
     id 'com.github.ben-manes.versions' version '0.28.0'
     id 'net.ltgt.apt' version '0.21'
     id "org.flywaydb.flyway" version "6.4.3"
@@ -31,14 +30,6 @@ compileTestJava {
 
 mainClassName = 'uk.gov.hmcts.reform.sscs.TrackYourAppealNotificationsApplication'
 
-checkstyle {
-    maxWarnings = 0
-    toolVersion = '8.29'
-    // need to set configDir to rootDir otherwise submodule will use submodule/config/checkstyle
-    configDir = new File(rootDir, 'config/checkstyle')
-}
-
-
 pmd {
     toolVersion = "6.5.0"
     ignoreFailures = true
@@ -62,14 +53,7 @@ dependencyUpdates.resolutionStrategy = {
 
 // https://jeremylong.github.io/DependencyCheck/dependency-check-gradle/configuration.html
 dependencyCheck {
-    // Specifies if the build should be failed if a CVSS score above a specified level is identified.
-    // range of 0-10 fails the build, anything greater and it doesn't fail the build
-    failBuildOnCVSS = System.getProperty('dependencyCheck.failBuild') == 'true' ? 0 : 11
     suppressionFile = 'dependency-check-suppressions.xml'
-    analyzers {
-        // Disable scanning of .NET related binaries
-        assemblyEnabled = false
-    }
 }
 
 sonarqube {
