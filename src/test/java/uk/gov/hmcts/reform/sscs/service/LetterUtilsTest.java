@@ -22,7 +22,6 @@ import org.junit.runner.RunWith;
 import uk.gov.hmcts.reform.sscs.ccd.domain.Address;
 import uk.gov.hmcts.reform.sscs.ccd.domain.Name;
 import uk.gov.hmcts.reform.sscs.ccd.domain.Representative;
-import uk.gov.hmcts.reform.sscs.domain.notify.NotificationEventType;
 import uk.gov.hmcts.reform.sscs.exception.NotificationClientRuntimeException;
 import uk.gov.hmcts.reform.sscs.factory.NotificationWrapper;
 
@@ -62,40 +61,6 @@ public class LetterUtilsTest {
         );
 
         assertEquals(REP_WITH_ADDRESS.getAddress(), getAddressToUseForLetter(wrapper, REPRESENTATIVE));
-    }
-
-    @Test
-    @Parameters(method = "filenameForLetter")
-    public void useCorrectFilenameForLetter(NotificationEventType eventType, String filename) {
-        NotificationWrapper wrapper = NotificationServiceTest.buildBaseWrapper(
-            eventType,
-            APPELLANT_WITH_ADDRESS,
-            null,
-            null
-        );
-
-        assertEquals(filename, getFilename(wrapper));
-    }
-
-    public Object[] filenameForLetter() {
-        return new Object[] {
-            new Object[] { STRUCK_OUT, PDF_STRUCK_OUT},
-            new Object[] { DIRECTION_ISSUED, PDF_DIRECTION_NOTICE},
-            new Object[] { DECISION_ISSUED, PDF_DECISION_NOTICE},
-            new Object[] { ISSUE_FINAL_DECISION, PDF_DECISION_NOTICE}
-        };
-    }
-
-    @Test
-    public void useUnknownFilenameForLetter() {
-        NotificationWrapper wrapper = NotificationServiceTest.buildBaseWrapper(
-            SYA_APPEAL_CREATED_NOTIFICATION,
-            APPELLANT_WITH_ADDRESS,
-            null,
-            null
-        );
-
-        assertEquals(PDF_UNKNOWN, getFilename(wrapper));
     }
 
     @Test
@@ -147,30 +112,6 @@ public class LetterUtilsTest {
             new Object[]{Name.builder().build(), REP_SALUTATION},
             new Object[]{Name.builder().firstName("undefined").lastName("undefined").build(), REP_SALUTATION}
         };
-    }
-
-    @Test
-    public void useStruckOutSystemCommentForLetter() {
-        NotificationWrapper wrapper = NotificationServiceTest.buildBaseWrapper(
-            STRUCK_OUT,
-            APPELLANT_WITH_ADDRESS,
-            null,
-            null
-        );
-
-        assertEquals(COMMENT_DIRECTION_NOTICE, getSystemComment(wrapper));
-    }
-
-    @Test
-    public void useUnknownSystemCommentForLetter() {
-        NotificationWrapper wrapper = NotificationServiceTest.buildBaseWrapper(
-            SYA_APPEAL_CREATED_NOTIFICATION,
-            APPELLANT_WITH_ADDRESS,
-            null,
-            null
-        );
-
-        assertEquals(COMMENT_UNKNOWN, getSystemComment(wrapper));
     }
 
     @Test

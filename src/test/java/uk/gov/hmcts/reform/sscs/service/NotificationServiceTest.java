@@ -58,7 +58,6 @@ public class NotificationServiceTest {
     private static final String CASE_ID = "1000001";
     private static final String EMAIL_TEMPLATE_ID = "email-template-id";
     private static final String SMS_TEMPLATE_ID = "sms-template-id";
-    private static final String LETTER_TEMPLATE_ID_STRUCKOUT = "struckOut";
     private static final String LETTER_TEMPLATE_ID = "letter-template-id";
     private static final String SAME_TEST_EMAIL_COM = "sametest@email.com";
     private static final String NEW_TEST_EMAIL_COM = "newtest@email.com";
