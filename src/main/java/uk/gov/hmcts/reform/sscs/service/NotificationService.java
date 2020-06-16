@@ -253,6 +253,7 @@ public class NotificationService {
                     || STRUCK_OUT.equals(notificationType)
                     || DECISION_ISSUED.equals(notificationType)
                     || DIRECTION_ISSUED.equals(notificationType)
+                    || ISSUE_FINAL_DECISION.equals(notificationType)
                     || NotificationEventType.DECISION_ISSUED_2.equals(notificationType))) {
                 log.info(String.format("Cannot complete notification %s as the appeal was dormant for caseId %s.",
                     notificationType.getId(), notificationWrapper.getCaseId()));

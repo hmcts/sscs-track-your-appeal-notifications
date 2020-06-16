@@ -441,7 +441,8 @@ public class Personalisation<E extends NotificationWrapper> {
         if (subscriptionType != null
             && (APPEAL_RECEIVED_NOTIFICATION.equals(notificationEventType)
             || DIRECTION_ISSUED.equals(notificationEventType)
-            || DECISION_ISSUED.equals(notificationEventType))) {
+            || DECISION_ISSUED.equals(notificationEventType)
+            || ISSUE_FINAL_DECISION.equals(notificationEventType))) {
             letterTemplateName = letterTemplateName + "." + subscriptionType.name().toLowerCase();
         }
         return letterTemplateName;

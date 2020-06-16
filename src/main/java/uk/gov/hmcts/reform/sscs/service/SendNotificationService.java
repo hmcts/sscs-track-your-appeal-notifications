@@ -292,7 +292,7 @@ public class SendNotificationService {
             if (sscsDocument != null) {
                 documentUrl = sscsDocument.getValue().getDocumentLink().getDocumentUrl();
             }
-        } else if (DECISION_ISSUED.equals(notificationEventType)) {
+        } else if (DECISION_ISSUED.equals(notificationEventType) || ISSUE_FINAL_DECISION.equals(notificationEventType)) {
             SscsDocument sscsDocument = newSscsCaseData.getLatestDocumentForDocumentType(DocumentType.DECISION_NOTICE);
             if (sscsDocument != null) {
                 documentUrl = sscsDocument.getValue().getDocumentLink().getDocumentUrl();
