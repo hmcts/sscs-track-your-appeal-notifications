@@ -322,11 +322,11 @@ notification:
     emailId: 5b0df251-49b9-46d5-b347-37a81ab77f19
   requestInfoIncompleteApplication:
     appellant:
-      letterId: bc943cf3-9fd1-4d14-a0c0-b183572c21a7
+      docmosisId: TB-SCS-GNO-ENG-00452.docx
     representative:
-      letterId: a2a4a88a-b91a-4e6d-94f0-507179292058
+      docmosisId: TB-SCS-GNO-ENG-00452.docx
     appointee:
-      letterId: bc943cf3-9fd1-4d14-a0c0-b183572c21a7
+      docmosisId: TB-SCS-GNO-ENG-00452.docx
   nonCompliant:
     appellant:
       letterId: 114cadaa-7760-4699-9add-d3a252f68909
@@ -495,6 +495,7 @@ pdf-service:
     validAppealCreated: 'TB-SCS-GNO-ENG-00012.docx'
     dwpUploadResponse: 'TB-SCS-GNO-ENG-00012.docx'
     resendAppealCreated: 'TB-SCS-GNO-ENG-00012.docx'
+    requestInfoIncompleteApplication: 'TB-SCS-GNO-ENG-00012.docx'
 
 docmosis:
   accessKey:
