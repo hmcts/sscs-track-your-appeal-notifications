@@ -112,5 +112,4 @@ This is used to schedule reminders in the future. The management of the database
 project using a PostgresSQL database.
 
 ## Gotchas
-
 PRs that start with _"Bump"_ won't have a preview environment. The decision was made after we realised that most the preview environments were created by Depandabot.
