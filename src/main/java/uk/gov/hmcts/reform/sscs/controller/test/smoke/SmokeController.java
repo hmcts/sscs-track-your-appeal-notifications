@@ -22,6 +22,7 @@ public class SmokeController {
     @GetMapping("/smoke-test")
     @ResponseBody
     public List<SscsCaseDetails> smoke() {
+
         return ccdService.findCaseBy(ImmutableMap.of("case.caseReference", "SC068/18/01217"), idamService.getIdamTokens());
     }
 
