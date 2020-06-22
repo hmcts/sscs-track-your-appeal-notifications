@@ -10,6 +10,7 @@ public final class AppConstants {
     public static final String APPEAL_ID_LITERAL = "appeal_id";
     public static final String APPEAL_REF = "appeal_ref";
     public static final String APPEAL_RESPOND_DATE = "appeal_respond_date";
+    public static final String WELSH_APPEAL_RESPOND_DATE = "welsh_appeal_respond_date";
     public static final String APPELLANT_NAME = "appellant_name";
     public static final String APPOINTEE_DESCRIPTION = "appointee_description";
     public static final String APPOINTEE_DETAILS_LITERAL = "appointee_details";

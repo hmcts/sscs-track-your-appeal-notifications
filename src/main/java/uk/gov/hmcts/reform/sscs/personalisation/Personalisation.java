@@ -5,10 +5,14 @@ import static uk.gov.hmcts.reform.sscs.ccd.domain.Benefit.getBenefitByCode;
 import static uk.gov.hmcts.reform.sscs.ccd.domain.EventType.APPEAL_RECEIVED;
 import static uk.gov.hmcts.reform.sscs.ccd.util.CaseDataUtils.YES;
 import static uk.gov.hmcts.reform.sscs.config.AppConstants.*;
-import static uk.gov.hmcts.reform.sscs.config.SubscriptionType.*;
+import static uk.gov.hmcts.reform.sscs.config.SubscriptionType.APPELLANT;
+import static uk.gov.hmcts.reform.sscs.config.SubscriptionType.APPOINTEE;
 import static uk.gov.hmcts.reform.sscs.config.SubscriptionType.REPRESENTATIVE;
 import static uk.gov.hmcts.reform.sscs.domain.notify.NotificationEventType.*;
-import static uk.gov.hmcts.reform.sscs.personalisation.SyaAppealCreatedAndReceivedPersonalisation.*;
+import static uk.gov.hmcts.reform.sscs.personalisation.SyaAppealCreatedAndReceivedPersonalisation.NOT_REQUIRED;
+import static uk.gov.hmcts.reform.sscs.personalisation.SyaAppealCreatedAndReceivedPersonalisation.REQUIRED;
+import static uk.gov.hmcts.reform.sscs.personalisation.SyaAppealCreatedAndReceivedPersonalisation.TWO_NEW_LINES;
+import static uk.gov.hmcts.reform.sscs.personalisation.SyaAppealCreatedAndReceivedPersonalisation.getOptionalField;
 import static uk.gov.hmcts.reform.sscs.service.NotificationUtils.hasAppointee;
 import static uk.gov.hmcts.reform.sscs.service.NotificationUtils.hasRepresentative;
 
@@ -20,13 +24,30 @@ import java.time.LocalDateTime;
 import java.time.ZonedDateTime;
 import java.time.format.DateTimeFormatter;
 import java.time.temporal.ChronoUnit;
-import java.util.*;
+import java.util.Arrays;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.Optional;
 import java.util.stream.Collectors;
+
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
-import uk.gov.hmcts.reform.sscs.ccd.domain.*;
+import uk.gov.hmcts.reform.sscs.ccd.domain.AppellantInfoRequest;
+import uk.gov.hmcts.reform.sscs.ccd.domain.Benefit;
+import uk.gov.hmcts.reform.sscs.ccd.domain.Event;
+import uk.gov.hmcts.reform.sscs.ccd.domain.EventDetails;
+import uk.gov.hmcts.reform.sscs.ccd.domain.EventType;
+import uk.gov.hmcts.reform.sscs.ccd.domain.Hearing;
+import uk.gov.hmcts.reform.sscs.ccd.domain.HearingDetails;
+import uk.gov.hmcts.reform.sscs.ccd.domain.HearingOptions;
+import uk.gov.hmcts.reform.sscs.ccd.domain.Name;
+import uk.gov.hmcts.reform.sscs.ccd.domain.RegionalProcessingCenter;
+import uk.gov.hmcts.reform.sscs.ccd.domain.SscsCaseData;
+import uk.gov.hmcts.reform.sscs.ccd.domain.State;
+import uk.gov.hmcts.reform.sscs.ccd.domain.Subscription;
 import uk.gov.hmcts.reform.sscs.config.AppConstants;
 import uk.gov.hmcts.reform.sscs.config.AppealHearingType;
 import uk.gov.hmcts.reform.sscs.config.NotificationConfig;
@@ -39,7 +60,11 @@ import uk.gov.hmcts.reform.sscs.domain.notify.Template;
 import uk.gov.hmcts.reform.sscs.exception.BenefitMappingException;
 import uk.gov.hmcts.reform.sscs.extractor.HearingContactDateExtractor;
 import uk.gov.hmcts.reform.sscs.factory.NotificationWrapper;
-import uk.gov.hmcts.reform.sscs.service.*;
+import uk.gov.hmcts.reform.sscs.service.MessageAuthenticationServiceImpl;
+import uk.gov.hmcts.reform.sscs.service.NotificationUtils;
+import uk.gov.hmcts.reform.sscs.service.RegionalProcessingCenterService;
+import uk.gov.hmcts.reform.sscs.service.SendNotificationHelper;
+import uk.gov.hmcts.reform.sscs.service.conversion.LocalDateToWelshStringConverter;
 
 @Component
 @Slf4j
@@ -66,6 +91,9 @@ public class Personalisation<E extends NotificationWrapper> {
 
     @Autowired
     private EvidenceProperties evidenceProperties;
+
+    @Autowired
+    private LocalDateToWelshStringConverter localDateToWelshStringConverter;
 
     private static String tya(Subscription subscription) {
         if (subscription != null) {
@@ -117,6 +145,12 @@ public class Personalisation<E extends NotificationWrapper> {
             }
         }
         return latestAppellantInfoRequest;
+    }
+
+    public void translateToWelshDate(String key, LocalDate localDate, SscsCaseData sscsCaseData, Map<String, String> placeholders) {
+        if (sscsCaseData.isLanguagePreferenceWelsh()) {
+            placeholders.put(key, localDateToWelshStringConverter.convert(localDate));
+        }
     }
 
     public Map<String, String> create(final E notificationWrapper, final SubscriptionWithType subscriptionWithType) {
@@ -291,8 +325,11 @@ public class Personalisation<E extends NotificationWrapper> {
 
     Map<String, String> setEventData(Map<String, String> personalisation, SscsCaseData ccdResponse, NotificationEventType notificationEventType) {
         if (ccdResponse.getCreatedInGapsFrom() != null && ccdResponse.getCreatedInGapsFrom().equals("readyToList")) {
-            String dwpResponseDateString = formatLocalDate(LocalDate.parse(Optional.ofNullable(ccdResponse.getDateSentToDwp()).orElse(LocalDate.now().toString())).plusDays(MAX_DWP_RESPONSE_DAYS));
+            LocalDate localDate = LocalDate.parse(Optional.ofNullable(ccdResponse.getDateSentToDwp()).orElse(LocalDate.now().toString())).plusDays(MAX_DWP_RESPONSE_DAYS);
+            String dwpResponseDateString = formatLocalDate(localDate);
             personalisation.put(APPEAL_RESPOND_DATE, dwpResponseDateString);
+            translateToWelshDate(WELSH_APPEAL_RESPOND_DATE, localDate, ccdResponse, personalisation);
+
             return personalisation;
         } else if (ccdResponse.getEvents() != null) {
             //FIXME: Remove this block once digital RTL journey is live
@@ -301,7 +338,7 @@ public class Personalisation<E extends NotificationWrapper> {
                 if ((event.getValue() != null) && isAppealReceivedAndUpdated(notificationEventType, event)
                     || notificationEventType.equals(CASE_UPDATED) || JUDGE_DECISION_APPEAL_TO_PROCEED.equals(notificationEventType)
                     || TCW_DECISION_APPEAL_TO_PROCEED.equals(notificationEventType)) {
-                    return setAppealReceivedDetails(personalisation, event.getValue());
+                    return setAppealReceivedDetails(personalisation, event.getValue(), ccdResponse);
                 }
             }
         }
@@ -328,11 +365,14 @@ public class Personalisation<E extends NotificationWrapper> {
         return personalisation;
     }
 
-    private Map<String, String> setAppealReceivedDetails(Map<String, String> personalisation, EventDetails eventDetails) {
-        String dwpResponseDateString = formatLocalDate(eventDetails.getDateTime().plusDays(MAX_DWP_RESPONSE_DAYS).toLocalDate());
+    private Map<String, String> setAppealReceivedDetails(Map<String, String> personalisation, EventDetails eventDetails, SscsCaseData ccdResponse) {
+        LocalDate localDate = eventDetails.getDateTime().plusDays(MAX_DWP_RESPONSE_DAYS).toLocalDate();
+        String dwpResponseDateString = formatLocalDate(localDate);
         personalisation.put(APPEAL_RESPOND_DATE, dwpResponseDateString);
+        translateToWelshDate(WELSH_APPEAL_RESPOND_DATE, localDate, ccdResponse, personalisation);
         return personalisation;
     }
+
 
     Map<String, String> setEvidenceProcessingAddress(Map<String, String> personalisation, SscsCaseData ccdResponse) {
         RegionalProcessingCenter rpc;

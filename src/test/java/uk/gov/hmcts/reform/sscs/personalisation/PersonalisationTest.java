@@ -1,14 +1,26 @@
 package uk.gov.hmcts.reform.sscs.personalisation;
 
-import static org.junit.Assert.*;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertNull;
 import static org.mockito.ArgumentMatchers.eq;
-import static org.mockito.Mockito.*;
+import static org.mockito.Mockito.any;
+import static org.mockito.Mockito.anyString;
+import static org.mockito.Mockito.isA;
+import static org.mockito.Mockito.never;
+import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.when;
 import static org.mockito.MockitoAnnotations.initMocks;
 import static uk.gov.hmcts.reform.sscs.ccd.domain.Benefit.PIP;
 import static uk.gov.hmcts.reform.sscs.ccd.domain.EventType.APPEAL_RECEIVED;
-import static uk.gov.hmcts.reform.sscs.ccd.domain.HearingType.*;
+import static uk.gov.hmcts.reform.sscs.ccd.domain.HearingType.ONLINE;
+import static uk.gov.hmcts.reform.sscs.ccd.domain.HearingType.ORAL;
+import static uk.gov.hmcts.reform.sscs.ccd.domain.HearingType.PAPER;
+import static uk.gov.hmcts.reform.sscs.ccd.domain.HearingType.REGULAR;
 import static uk.gov.hmcts.reform.sscs.config.AppConstants.*;
-import static uk.gov.hmcts.reform.sscs.config.SubscriptionType.*;
+import static uk.gov.hmcts.reform.sscs.config.SubscriptionType.APPELLANT;
+import static uk.gov.hmcts.reform.sscs.config.SubscriptionType.APPOINTEE;
 import static uk.gov.hmcts.reform.sscs.config.SubscriptionType.REPRESENTATIVE;
 import static uk.gov.hmcts.reform.sscs.domain.notify.NotificationEventType.*;
 
@@ -17,7 +29,14 @@ import java.time.LocalDate;
 import java.time.ZoneId;
 import java.time.ZonedDateTime;
 import java.time.format.DateTimeFormatter;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Collections;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.Optional;
+
 import junitparams.JUnitParamsRunner;
 import junitparams.Parameters;
 import junitparams.converters.Nullable;
@@ -41,6 +60,7 @@ import uk.gov.hmcts.reform.sscs.factory.CcdNotificationWrapper;
 import uk.gov.hmcts.reform.sscs.factory.NotificationWrapper;
 import uk.gov.hmcts.reform.sscs.service.MessageAuthenticationServiceImpl;
 import uk.gov.hmcts.reform.sscs.service.RegionalProcessingCenterService;
+import uk.gov.hmcts.reform.sscs.service.conversion.LocalDateToWelshStringConverter;
 
 @RunWith(JUnitParamsRunner.class)
 public class PersonalisationTest {
@@ -72,6 +92,9 @@ public class PersonalisationTest {
 
     @Mock
     private EvidenceProperties evidenceProperties;
+
+    @Mock
+    private LocalDateToWelshStringConverter localDateToWelshStringConverter;
 
     @InjectMocks
     public Personalisation personalisation;
@@ -142,6 +165,8 @@ public class PersonalisationTest {
         evidenceAddress.setPostcode(evidenceAddressPostcode);
         evidenceAddress.setTelephone(evidenceAddressTelephone);
         when(evidenceProperties.getAddress()).thenReturn(evidenceAddress);
+
+        when(localDateToWelshStringConverter.convert(isA(LocalDate.class))).thenReturn("22-Mehefin-2020");
     }
 
     @Test
@@ -534,6 +559,26 @@ public class PersonalisationTest {
         assertEquals("5 August 2018", result.get(APPEAL_RESPOND_DATE));
     }
 
+
+    @Test
+    public void setAppealReceivedEventData_Welsh() {
+        List<Event> events = new ArrayList<>();
+        events.add(Event.builder().value(EventDetails.builder().date(DATE).type(APPEAL_RECEIVED.getCcdType()).build()).build());
+
+        SscsCaseData response = SscsCaseData.builder()
+                .ccdCaseId(CASE_ID).caseReference("SC/1234/5")
+                .appeal(Appeal.builder().benefitType(BenefitType.builder().code("PIP").build()).build())
+                .events(events)
+                .languagePreferenceWelsh("yes")
+                .build();
+
+        Map result = personalisation.setEventData(new HashMap<>(), response, APPEAL_RECEIVED_NOTIFICATION);
+
+        verify(localDateToWelshStringConverter).convert(isA(LocalDate.class));
+        assertNotNull("Welsh date is set ", result.get(WELSH_APPEAL_RESPOND_DATE));
+        assertEquals("5 August 2018", result.get(APPEAL_RESPOND_DATE));
+    }
+
     @Test
     public void givenDigitalCaseWithDateSentToDwp_thenUseCaseSentToDwpDateForAppealRespondDate() {
         SscsCaseData response = SscsCaseData.builder()
@@ -545,6 +590,23 @@ public class PersonalisationTest {
 
         Map<String, String> result = personalisation.setEventData(new HashMap<>(), response, APPEAL_RECEIVED_NOTIFICATION);
 
+        assertEquals("5 August 2018", result.get(APPEAL_RESPOND_DATE));
+    }
+
+    @Test
+    public void givenDigitalCaseWithDateSentToDwp_thenUseCaseSentToDwpDateForAppealRespondDate_Welsh() {
+        SscsCaseData response = SscsCaseData.builder()
+                .ccdCaseId(CASE_ID).caseReference("SC/1234/5")
+                .appeal(Appeal.builder().benefitType(BenefitType.builder().code("PIP").build()).build())
+                .createdInGapsFrom("readyToList")
+                .dateSentToDwp("2018-07-01")
+                .languagePreferenceWelsh("yes")
+                .build();
+
+        Map<String, String> result = personalisation.setEventData(new HashMap<>(), response, APPEAL_RECEIVED_NOTIFICATION);
+
+        verify(localDateToWelshStringConverter).convert(isA(LocalDate.class));
+        assertNotNull("Welsh date is set ", result.get(WELSH_APPEAL_RESPOND_DATE));
         assertEquals("5 August 2018", result.get(APPEAL_RESPOND_DATE));
     }
 

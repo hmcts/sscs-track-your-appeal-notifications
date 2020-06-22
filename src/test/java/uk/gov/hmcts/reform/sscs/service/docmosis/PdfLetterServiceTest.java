@@ -3,16 +3,31 @@ package uk.gov.hmcts.reform.sscs.service.docmosis;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
 import static org.mockito.ArgumentMatchers.eq;
-import static org.mockito.Mockito.*;
-import static uk.gov.hmcts.reform.sscs.config.AppConstants.*;
+import static org.mockito.Mockito.any;
+import static org.mockito.Mockito.anyMap;
+import static org.mockito.Mockito.anyString;
+import static org.mockito.Mockito.isA;
+import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.verifyNoInteractions;
+import static org.mockito.Mockito.when;
+import static uk.gov.hmcts.reform.sscs.config.AppConstants.ADDRESS_NAME;
+import static uk.gov.hmcts.reform.sscs.config.AppConstants.LETTER_ADDRESS_LINE_1;
+import static uk.gov.hmcts.reform.sscs.config.AppConstants.LETTER_ADDRESS_LINE_2;
+import static uk.gov.hmcts.reform.sscs.config.AppConstants.LETTER_ADDRESS_LINE_3;
+import static uk.gov.hmcts.reform.sscs.config.AppConstants.LETTER_ADDRESS_LINE_4;
+import static uk.gov.hmcts.reform.sscs.config.AppConstants.LETTER_ADDRESS_POSTCODE;
 import static uk.gov.hmcts.reform.sscs.domain.notify.NotificationEventType.APPEAL_LAPSED_NOTIFICATION;
 import static uk.gov.hmcts.reform.sscs.domain.notify.NotificationEventType.APPEAL_RECEIVED_NOTIFICATION;
+import static uk.gov.hmcts.reform.sscs.service.docmosis.PdfLetterService.WELSH_GENERATED_DATE_LITERAL;
 
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
+import java.time.LocalDate;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
+
 import junitparams.JUnitParamsRunner;
 import junitparams.Parameters;
 import org.apache.commons.lang3.ArrayUtils;
@@ -22,7 +37,12 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.ArgumentCaptor;
 import org.mockito.Mockito;
-import uk.gov.hmcts.reform.sscs.ccd.domain.*;
+import uk.gov.hmcts.reform.sscs.ccd.domain.Address;
+import uk.gov.hmcts.reform.sscs.ccd.domain.Appellant;
+import uk.gov.hmcts.reform.sscs.ccd.domain.Appointee;
+import uk.gov.hmcts.reform.sscs.ccd.domain.Name;
+import uk.gov.hmcts.reform.sscs.ccd.domain.Representative;
+import uk.gov.hmcts.reform.sscs.ccd.domain.SscsCaseData;
 import uk.gov.hmcts.reform.sscs.config.DocmosisTemplatesConfig;
 import uk.gov.hmcts.reform.sscs.config.SubscriptionType;
 import uk.gov.hmcts.reform.sscs.domain.docmosis.PdfCoverSheet;
@@ -31,6 +51,7 @@ import uk.gov.hmcts.reform.sscs.domain.notify.Template;
 import uk.gov.hmcts.reform.sscs.exception.NotificationClientRuntimeException;
 import uk.gov.hmcts.reform.sscs.exception.PdfGenerationException;
 import uk.gov.hmcts.reform.sscs.factory.NotificationWrapper;
+import uk.gov.hmcts.reform.sscs.personalisation.Personalisation;
 import uk.gov.hmcts.reform.sscs.service.DocmosisPdfService;
 import uk.gov.hmcts.reform.sscs.service.NotificationServiceTest;
 
@@ -38,6 +59,7 @@ import uk.gov.hmcts.reform.sscs.service.NotificationServiceTest;
 public class PdfLetterServiceTest {
 
     private final DocmosisPdfService docmosisPdfService = mock(DocmosisPdfService.class);
+    private final Personalisation personalisation = mock(Personalisation.class);
 
     private static final Map<String, String> TEMPLATE_NAMES = new ConcurrentHashMap<>();
     private static final DocmosisTemplatesConfig DOCMOSIS_TEMPLATES_CONFIG = new DocmosisTemplatesConfig();
@@ -48,8 +70,9 @@ public class PdfLetterServiceTest {
     }
 
 
+
     private final PdfLetterService pdfLetterService =
-            new PdfLetterService(docmosisPdfService, DOCMOSIS_TEMPLATES_CONFIG);
+            new PdfLetterService(docmosisPdfService, DOCMOSIS_TEMPLATES_CONFIG, personalisation);
 
     private final Appellant appellant = Appellant.builder()
             .name(Name.builder().firstName("Ap").lastName("pellant").build())
@@ -126,6 +149,9 @@ public class PdfLetterServiceTest {
         assertTrue(ArrayUtils.isNotEmpty(coversheet));
         verify(docmosisPdfService).createPdfFromMap(any(), eq(notification.getDocmosisLetterTemplate()));
         verify(docmosisPdfService).createPdf(any(), anyString());
+
+        verify(personalisation).translateToWelshDate(eq(WELSH_GENERATED_DATE_LITERAL), isA(LocalDate.class),
+                isA(SscsCaseData.class), anyMap());
     }
 
     @Test
@@ -171,6 +197,9 @@ public class PdfLetterServiceTest {
         assertEquals("MyTownVeryVeryLongAddressLineWithLotsOfCharac", placeholderCaptor.getValue().get(LETTER_ADDRESS_LINE_3));
         assertEquals("MyCountyVeryVeryLongAddressLineWithLotsOfChar", placeholderCaptor.getValue().get(LETTER_ADDRESS_LINE_4));
         assertEquals("L2 5UZ", placeholderCaptor.getValue().get(LETTER_ADDRESS_POSTCODE));
+
+        verify(personalisation).translateToWelshDate(eq(WELSH_GENERATED_DATE_LITERAL), isA(LocalDate.class),
+                isA(SscsCaseData.class), anyMap());
     }
 
     @Test
@@ -215,6 +244,9 @@ public class PdfLetterServiceTest {
         assertEquals("Town", placeholderCaptor.getValue().get(LETTER_ADDRESS_LINE_3));
         assertEquals("County", placeholderCaptor.getValue().get(LETTER_ADDRESS_LINE_4));
         assertEquals("L2 5UZ", placeholderCaptor.getValue().get(LETTER_ADDRESS_POSTCODE));
+
+        verify(personalisation).translateToWelshDate(eq(WELSH_GENERATED_DATE_LITERAL), isA(LocalDate.class),
+                isA(SscsCaseData.class), anyMap());
     }
 
     @Test
@@ -259,6 +291,9 @@ public class PdfLetterServiceTest {
         assertEquals("Town", placeholderCaptor.getValue().get(LETTER_ADDRESS_LINE_3));
         assertEquals("County", placeholderCaptor.getValue().get(LETTER_ADDRESS_LINE_4));
         assertEquals("L2 5UZ", placeholderCaptor.getValue().get(LETTER_ADDRESS_POSTCODE));
+
+        verify(personalisation).translateToWelshDate(eq(WELSH_GENERATED_DATE_LITERAL), isA(LocalDate.class),
+                isA(SscsCaseData.class), anyMap());
     }
 
     @Test
@@ -290,5 +325,8 @@ public class PdfLetterServiceTest {
         when(docmosisPdfService.createPdf(any(), anyString())).thenReturn("Invalid PDF".getBytes());
         pdfLetterService.generateLetter(wrapper, notification, SubscriptionType.REPRESENTATIVE);
         pdfLetterService.buildCoversheet(wrapper, SubscriptionType.REPRESENTATIVE);
+
+        verify(personalisation).translateToWelshDate(eq(WELSH_GENERATED_DATE_LITERAL), isA(LocalDate.class),
+                isA(SscsCaseData.class), anyMap());
     }
 }

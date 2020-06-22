@@ -25,6 +25,7 @@ import uk.gov.hmcts.reform.sscs.domain.notify.NotificationEventType;
 import uk.gov.hmcts.reform.sscs.exception.NotificationClientRuntimeException;
 import uk.gov.hmcts.reform.sscs.exception.PdfGenerationException;
 import uk.gov.hmcts.reform.sscs.factory.NotificationWrapper;
+import uk.gov.hmcts.reform.sscs.personalisation.Personalisation;
 import uk.gov.hmcts.reform.sscs.service.DocmosisPdfService;
 
 @Service
@@ -33,16 +34,19 @@ public class PdfLetterService {
     private static final String SSCS_URL_LITERAL = "sscs_url";
     private static final String SSCS_URL = "www.gov.uk/appeal-benefit-decision";
     private static final String GENERATED_DATE_LITERAL = "generated_date";
+    protected static final String WELSH_GENERATED_DATE_LITERAL = "welsh_generated_date";
     private static final List<NotificationEventType> REQUIRES_TWO_COVERSHEET =
             Collections.singletonList(APPEAL_RECEIVED_NOTIFICATION);
 
     private final DocmosisPdfService docmosisPdfService;
     private final DocmosisTemplatesConfig docmosisTemplatesConfig;
+    private final Personalisation personalisation;
 
     @Autowired
-    public PdfLetterService(DocmosisPdfService docmosisPdfService, DocmosisTemplatesConfig docmosisTemplatesConfig) {
+    public PdfLetterService(DocmosisPdfService docmosisPdfService, DocmosisTemplatesConfig docmosisTemplatesConfig, Personalisation personalisation) {
         this.docmosisPdfService = docmosisPdfService;
         this.docmosisTemplatesConfig = docmosisTemplatesConfig;
+        this.personalisation = personalisation;
     }
 
     public byte[] buildCoversheet(NotificationWrapper wrapper, SubscriptionType subscriptionType) {
@@ -93,6 +97,8 @@ public class PdfLetterService {
             Map<String, Object> placeholders = new HashMap<>(notification.getPlaceholders());
             placeholders.put(SSCS_URL_LITERAL, SSCS_URL);
             placeholders.put(GENERATED_DATE_LITERAL, LocalDateTime.now().toLocalDate().toString());
+            personalisation.translateToWelshDate(WELSH_GENERATED_DATE_LITERAL,
+                    LocalDateTime.now().toLocalDate(), wrapper.getNewSscsCaseData(), placeholders);
 
             placeholders.put(ADDRESS_NAME, truncateAddressLine(getNameToUseForLetter(wrapper, subscriptionType)));
 
