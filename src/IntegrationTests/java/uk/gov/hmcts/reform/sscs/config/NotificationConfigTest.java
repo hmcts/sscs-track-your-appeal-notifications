@@ -24,6 +24,7 @@ import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.context.junit4.rules.SpringClassRule;
 import org.springframework.test.context.junit4.rules.SpringMethodRule;
 import uk.gov.hmcts.reform.sscs.ccd.domain.Benefit;
+import uk.gov.hmcts.reform.sscs.ccd.domain.LanguagePreference;
 import uk.gov.hmcts.reform.sscs.domain.notify.NotificationEventType;
 import uk.gov.hmcts.reform.sscs.domain.notify.Template;
 
@@ -52,7 +53,7 @@ public class NotificationConfigTest {
                                                                             AppealHearingType appealHearingType,
                                                                             String templateName,
                                                                             String createdInGapsFrom) {
-        Template template = notificationConfig.getTemplate(templateName, templateName, templateName, templateName, Benefit.PIP, appealHearingType, createdInGapsFrom);
+        Template template = notificationConfig.getTemplate(templateName, templateName, templateName, templateName, Benefit.PIP, appealHearingType, createdInGapsFrom, LanguagePreference.ENGLISH);
         assertEquals(expectedEmailTemplateId, template.getEmailTemplateId());
         assertEquals(expectedSmsTemplateId, template.getSmsTemplateId());
         assertEquals(expectedLetterTemplateId, template.getLetterTemplateId());
@@ -62,7 +63,7 @@ public class NotificationConfigTest {
     @Test
     @Parameters(method = "bundledLetterTemplateNames")
     public void given_bundledLetters_should_notHaveTemplate(AppealHearingType appealHearingType, String templateName) {
-        Template template = notificationConfig.getTemplate(templateName, templateName, templateName, templateName, Benefit.PIP, appealHearingType, null);
+        Template template = notificationConfig.getTemplate(templateName, templateName, templateName, templateName, Benefit.PIP, appealHearingType, null, LanguagePreference.ENGLISH);
         assertNull(template.getEmailTemplateId());
         assertNull(template.getSmsTemplateId());
         assertNull(template.getLetterTemplateId());

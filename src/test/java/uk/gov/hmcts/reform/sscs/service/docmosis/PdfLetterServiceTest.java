@@ -10,6 +10,7 @@ import static uk.gov.hmcts.reform.sscs.domain.notify.NotificationEventType.APPEA
 
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
@@ -39,11 +40,12 @@ public class PdfLetterServiceTest {
 
     private final DocmosisPdfService docmosisPdfService = mock(DocmosisPdfService.class);
 
-    private static final Map<String, String> TEMPLATE_NAMES = new ConcurrentHashMap<>();
+    private static final Map<LanguagePreference, Map<String, String>> TEMPLATE_NAMES = new ConcurrentHashMap<>();
     private static final DocmosisTemplatesConfig DOCMOSIS_TEMPLATES_CONFIG = new DocmosisTemplatesConfig();
 
+
     static {
-        TEMPLATE_NAMES.put(APPEAL_RECEIVED_NOTIFICATION.getId(), "my01.doc");
+        TEMPLATE_NAMES.put(LanguagePreference.ENGLISH, Collections.singletonMap(APPEAL_RECEIVED_NOTIFICATION.getId(), "my01.doc"));
         DOCMOSIS_TEMPLATES_CONFIG.setCoversheets(TEMPLATE_NAMES);
     }
 

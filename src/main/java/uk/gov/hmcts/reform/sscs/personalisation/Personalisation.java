@@ -401,7 +401,8 @@ public class Personalisation<E extends NotificationWrapper> {
         String docmosisTemplateName = getDocmosisTemplateName(subscriptionType, notificationWrapper.getNotificationType());
 
         return config.getTemplate(templateConfig, smsTemplateName, letterTemplateName, docmosisTemplateName,
-            benefit, notificationWrapper.getHearingType(), notificationWrapper.getNewSscsCaseData().getCreatedInGapsFrom());
+            benefit, notificationWrapper.getHearingType(), notificationWrapper.getNewSscsCaseData().getCreatedInGapsFrom(),
+                notificationWrapper.getNewSscsCaseData().getLanguagePreference());
     }
 
     private String getEmailTemplateName(SubscriptionType subscriptionType,

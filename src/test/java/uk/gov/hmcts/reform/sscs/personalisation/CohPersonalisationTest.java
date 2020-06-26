@@ -2,7 +2,7 @@ package uk.gov.hmcts.reform.sscs.personalisation;
 
 import static org.hamcrest.CoreMatchers.is;
 import static org.hamcrest.collection.IsMapContaining.hasEntry;
-import static org.junit.Assert.assertThat;
+import static org.junit.Assert.*;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 import static org.mockito.MockitoAnnotations.initMocks;
@@ -27,6 +27,7 @@ import uk.gov.hmcts.reform.sscs.ccd.domain.Benefit;
 import uk.gov.hmcts.reform.sscs.ccd.domain.BenefitType;
 import uk.gov.hmcts.reform.sscs.ccd.domain.Event;
 import uk.gov.hmcts.reform.sscs.ccd.domain.EventDetails;
+import uk.gov.hmcts.reform.sscs.ccd.domain.LanguagePreference;
 import uk.gov.hmcts.reform.sscs.ccd.domain.Name;
 import uk.gov.hmcts.reform.sscs.ccd.domain.RegionalProcessingCenter;
 import uk.gov.hmcts.reform.sscs.ccd.domain.SscsCaseData;
@@ -137,17 +138,19 @@ public class CohPersonalisationTest {
                 SscsCaseDataWrapper.builder()
                         .newSscsCaseData(SscsCaseData.builder()
                                 .appeal(Appeal.builder().hearingType("cor").build())
+                                .languagePreferenceWelsh("No")
                                 .build())
                         .notificationEventType(QUESTION_ROUND_ISSUED_NOTIFICATION)
                         .build());
         Template expectedTemplate = Template.builder().build();
         when(config.getTemplate(
-            QUESTION_ROUND_ISSUED_NOTIFICATION.getId(),
-            QUESTION_ROUND_ISSUED_NOTIFICATION.getId(),
-            QUESTION_ROUND_ISSUED_NOTIFICATION.getId(),
-            QUESTION_ROUND_ISSUED_NOTIFICATION.getId(),
-            Benefit.PIP, ONLINE, null))
-            .thenReturn(expectedTemplate);
+                QUESTION_ROUND_ISSUED_NOTIFICATION.getId(),
+                QUESTION_ROUND_ISSUED_NOTIFICATION.getId(),
+                QUESTION_ROUND_ISSUED_NOTIFICATION.getId(),
+                QUESTION_ROUND_ISSUED_NOTIFICATION.getId(),
+                Benefit.PIP, ONLINE, null,
+                LanguagePreference.ENGLISH))
+                .thenReturn(expectedTemplate);
 
         Template template = cohPersonalisation.getTemplate(cohNotificationWrapper, Benefit.PIP, APPELLANT);
         assertThat(template, is(expectedTemplate));
@@ -164,11 +167,12 @@ public class CohPersonalisationTest {
                         .newSscsCaseData(
                                 SscsCaseData.builder()
                                         .appeal(Appeal.builder().hearingType("cor").build())
+                                        .languagePreferenceWelsh("No")
                                         .build()
                         )
                         .build());
         Template expectedTemplate = Template.builder().build();
-        when(config.getTemplate("follow_up_question_round_issued", "follow_up_question_round_issued", "follow_up_question_round_issued", "follow_up_question_round_issued", Benefit.PIP, ONLINE, null)).thenReturn(expectedTemplate);
+        when(config.getTemplate("follow_up_question_round_issued", "follow_up_question_round_issued", "follow_up_question_round_issued", "follow_up_question_round_issued", Benefit.PIP, ONLINE, null, LanguagePreference.ENGLISH)).thenReturn(expectedTemplate);
 
         Template template = cohPersonalisation.getTemplate(cohNotificationWrapper, Benefit.PIP, APPELLANT);
         assertThat(template, is(expectedTemplate));

@@ -165,7 +165,7 @@ public class PersonalisationTest {
                 eq(hasSmsTemplate ? getExpectedTemplateName(notificationEventType, subscriptionType) : notificationEventType.getId()),
                 eq(hasLetterTemplate ? getExpectedTemplateName(notificationEventType, subscriptionType) : notificationEventType.getId()),
                 eq(hasDocmosisTemplate ? getExpectedTemplateName(notificationEventType, subscriptionType) : notificationEventType.getId()),
-                any(Benefit.class), any(AppealHearingType.class), eq(null)
+                any(Benefit.class), any(AppealHearingType.class), eq(null), eq(LanguagePreference.ENGLISH)
         );
     }
 
