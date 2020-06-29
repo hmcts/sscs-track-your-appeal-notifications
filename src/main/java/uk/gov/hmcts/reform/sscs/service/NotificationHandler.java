@@ -1,6 +1,7 @@
 package uk.gov.hmcts.reform.sscs.service;
 
 import java.net.UnknownHostException;
+import java.time.ZonedDateTime;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -44,16 +45,20 @@ public class NotificationHandler {
     }
 
     public void scheduleNotification(NotificationWrapper wrapper) {
+        scheduleNotification(wrapper, outOfHoursCalculator.getStartOfNextInHoursPeriod());
+    }
+
+    public void scheduleNotification(NotificationWrapper wrapper, ZonedDateTime dateTime) {
         final String caseId = wrapper.getCaseId();
         String eventId = wrapper.getNotificationType().getId();
         String jobGroup = jobGroupGenerator.generate(caseId, eventId);
-        log.info("Scheduled {} for case id: {} @ {}", eventId, caseId, outOfHoursCalculator.getStartOfNextInHoursPeriod());
+        log.info("Scheduled {} for case id: {} @ {}", eventId, caseId, dateTime);
 
         jobScheduler.schedule(new Job<>(
                 jobGroup,
                 eventId,
                 wrapper.getSchedulerPayload(),
-                outOfHoursCalculator.getStartOfNextInHoursPeriod()
+                dateTime
         ));
     }
 

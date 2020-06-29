@@ -10,6 +10,7 @@ import static uk.gov.hmcts.reform.sscs.domain.notify.NotificationEventType.EVIDE
 import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
+import java.time.LocalDateTime;
 import java.util.UUID;
 import org.junit.Before;
 import org.junit.Test;
@@ -63,12 +64,17 @@ public class CohActionExecutorTest {
 
         cohActionExecutor = new CohActionExecutor(notificationService, ccdService, idamService, deserializer);
 
-        caseDetails = SscsCaseDetails.builder().state("appealCreated").id(456L).caseTypeId("123").build();
+        caseDetails = SscsCaseDetails.builder().state("appealCreated").id(456L)
+                .caseTypeId("123").createdDate(LocalDateTime.now().minusMinutes(10)).build();
 
         SscsCaseData newSscsCaseData = SscsCaseData.builder().ccdCaseId("456").build();
         caseDetails.setData(newSscsCaseData);
 
-        wrapper = SscsCaseDataWrapper.builder().state(State.APPEAL_CREATED).newSscsCaseData(newSscsCaseData).notificationEventType(EVIDENCE_REMINDER_NOTIFICATION).build();
+        wrapper = SscsCaseDataWrapper.builder().state(State.APPEAL_CREATED)
+                .newSscsCaseData(newSscsCaseData)
+                .notificationEventType(EVIDENCE_REMINDER_NOTIFICATION)
+                .createdDate(caseDetails.getCreatedDate())
+                .build();
 
         idamTokens = IdamTokens.builder().build();
         when(idamService.getIdamTokens()).thenReturn(idamTokens);

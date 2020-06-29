@@ -1,7 +1,7 @@
 package uk.gov.hmcts.reform.sscs.service;
 
 import static org.hamcrest.CoreMatchers.is;
-import static org.junit.Assert.assertThat;
+import static org.hamcrest.MatcherAssert.assertThat;
 import static org.junit.Assert.fail;
 import static org.mockito.Mockito.*;
 import static uk.gov.hmcts.reform.sscs.service.NotificationServiceTest.verifyExpectedErrorLogMessage;
@@ -93,6 +93,29 @@ public class NotificationHandlerTest {
         when(jobGroupGenerator.generate(caseId, A_NOTIFICATION_THAT_CANNOT_TRIGGER_OUT_OF_HOURS.getId())).thenReturn(group);
 
         underTest.scheduleNotification(notificationWrapper);
+        ArgumentCaptor<Job> argument = ArgumentCaptor.forClass(Job.class);
+        verify(jobScheduler).schedule(argument.capture());
+
+        Job value = argument.getValue();
+        assertThat(value.triggerAt, is(whenToScheduleJob));
+        assertThat(value.group, is(group));
+        assertThat(value.name, is(A_NOTIFICATION_THAT_CANNOT_TRIGGER_OUT_OF_HOURS.getId()));
+        assertThat(value.payload, is(payload));
+    }
+
+    @Test
+    public void canScheduleNotificationsAtASpecifiedTime() {
+        when(notificationWrapper.getNotificationType()).thenReturn(A_NOTIFICATION_THAT_CANNOT_TRIGGER_OUT_OF_HOURS);
+        String payload = "payload";
+        when(notificationWrapper.getSchedulerPayload()).thenReturn(payload);
+        String caseId = "caseId";
+        when(notificationWrapper.getCaseId()).thenReturn(caseId);
+
+        ZonedDateTime whenToScheduleJob = ZonedDateTime.now();
+        String group = "group";
+        when(jobGroupGenerator.generate(caseId, A_NOTIFICATION_THAT_CANNOT_TRIGGER_OUT_OF_HOURS.getId())).thenReturn(group);
+
+        underTest.scheduleNotification(notificationWrapper, whenToScheduleJob);
         ArgumentCaptor<Job> argument = ArgumentCaptor.forClass(Job.class);
         verify(jobScheduler).schedule(argument.capture());
 
