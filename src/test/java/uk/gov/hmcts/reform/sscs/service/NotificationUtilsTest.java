@@ -19,6 +19,7 @@ import static uk.gov.hmcts.reform.sscs.service.SendNotificationServiceTest.APPEL
 import java.util.Arrays;
 import junitparams.JUnitParamsRunner;
 import junitparams.Parameters;
+import junitparams.converters.Nullable;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -181,7 +182,7 @@ public class NotificationUtilsTest {
         NotificationEventType eventType = HEARING_BOOKED_NOTIFICATION;
         NotificationWrapper wrapper = buildNotificationWrapper(eventType);
 
-        Subscription subscription = Subscription.builder().subscribeSms("Yes").subscribeEmail("Yes").build();
+        SubscriptionWithType subscription = new SubscriptionWithType(Subscription.builder().subscribeSms("Yes").subscribeEmail("Yes").build(), SubscriptionType.APPELLANT);
 
         when(notificationValidService.isNotificationStillValidToSend(wrapper.getNewSscsCaseData().getHearings(), eventType)).thenReturn(true);
         when(notificationValidService.isHearingTypeValidToSendNotification(wrapper.getNewSscsCaseData(), eventType)).thenReturn(true);
@@ -194,7 +195,7 @@ public class NotificationUtilsTest {
         NotificationEventType eventType = HEARING_BOOKED_NOTIFICATION;
         NotificationWrapper wrapper = buildNotificationWrapper(eventType);
 
-        Subscription subscription = Subscription.builder().subscribeSms("Yes").subscribeEmail("Yes").build();
+        SubscriptionWithType subscription = new SubscriptionWithType(Subscription.builder().subscribeSms("Yes").subscribeEmail("Yes").build(), SubscriptionType.APPELLANT);
 
         when(notificationValidService.isNotificationStillValidToSend(wrapper.getNewSscsCaseData().getHearings(), eventType)).thenReturn(true);
         when(notificationValidService.isHearingTypeValidToSendNotification(wrapper.getNewSscsCaseData(), eventType)).thenReturn(false);
@@ -207,9 +208,96 @@ public class NotificationUtilsTest {
         NotificationEventType eventType = HEARING_BOOKED_NOTIFICATION;
         NotificationWrapper wrapper = buildNotificationWrapper(eventType);
 
-        Subscription subscription = Subscription.builder().subscribeSms("Yes").subscribeEmail("Yes").build();
+        SubscriptionWithType subscription = new SubscriptionWithType(Subscription.builder().subscribeSms("Yes").subscribeEmail("Yes").build(), SubscriptionType.APPELLANT);
 
         when(notificationValidService.isNotificationStillValidToSend(wrapper.getNewSscsCaseData().getHearings(), eventType)).thenReturn(false);
+        when(notificationValidService.isHearingTypeValidToSendNotification(wrapper.getNewSscsCaseData(), eventType)).thenReturn(true);
+
+        assertFalse(isOkToSendNotification(wrapper, eventType, subscription, notificationValidService));
+    }
+
+    @Test
+    public void givenReissueDocumentEventAndCaseHasAppellantSubscriptionAndReissueToAppellant_thenIssueNotification() {
+        NotificationEventType eventType = REISSUE_DOCUMENT;
+        NotificationWrapper wrapper = buildNotificationWrapper(eventType);
+        wrapper.getNewSscsCaseData().setResendToAppellant("Yes");
+
+        SubscriptionWithType subscription = new SubscriptionWithType(Subscription.builder().subscribeSms("Yes").subscribeEmail("Yes").build(), SubscriptionType.APPELLANT);
+
+        when(notificationValidService.isNotificationStillValidToSend(wrapper.getNewSscsCaseData().getHearings(), eventType)).thenReturn(true);
+        when(notificationValidService.isHearingTypeValidToSendNotification(wrapper.getNewSscsCaseData(), eventType)).thenReturn(true);
+
+        assertTrue(isOkToSendNotification(wrapper, eventType, subscription, notificationValidService));
+    }
+
+    @Test
+    @Parameters({"No", "null"})
+    public void givenReissueDocumentEventAndCaseHasAppellantSubscriptionAndReissueToAppellantNotSet_thenDoNotIssueNotification(@Nullable String sendToAppellant) {
+        NotificationEventType eventType = REISSUE_DOCUMENT;
+        NotificationWrapper wrapper = buildNotificationWrapper(eventType);
+        wrapper.getNewSscsCaseData().setResendToAppellant(sendToAppellant);
+
+        SubscriptionWithType subscription = new SubscriptionWithType(Subscription.builder().subscribeSms("Yes").subscribeEmail("Yes").build(), SubscriptionType.APPELLANT);
+
+        when(notificationValidService.isNotificationStillValidToSend(wrapper.getNewSscsCaseData().getHearings(), eventType)).thenReturn(true);
+        when(notificationValidService.isHearingTypeValidToSendNotification(wrapper.getNewSscsCaseData(), eventType)).thenReturn(true);
+
+        assertFalse(isOkToSendNotification(wrapper, eventType, subscription, notificationValidService));
+    }
+
+    @Test
+    public void givenReissueDocumentEventAndCaseHasAppointeeSubscriptionAndReissueToAppellant_thenIssueNotification() {
+        NotificationEventType eventType = REISSUE_DOCUMENT;
+        NotificationWrapper wrapper = buildNotificationWrapper(eventType);
+        wrapper.getNewSscsCaseData().setResendToAppellant("Yes");
+
+        SubscriptionWithType subscription = new SubscriptionWithType(Subscription.builder().subscribeSms("Yes").subscribeEmail("Yes").build(), SubscriptionType.APPOINTEE);
+
+        when(notificationValidService.isNotificationStillValidToSend(wrapper.getNewSscsCaseData().getHearings(), eventType)).thenReturn(true);
+        when(notificationValidService.isHearingTypeValidToSendNotification(wrapper.getNewSscsCaseData(), eventType)).thenReturn(true);
+
+        assertTrue(isOkToSendNotification(wrapper, eventType, subscription, notificationValidService));
+    }
+
+    @Test
+    @Parameters({"No", "null"})
+    public void givenReissueDocumentEventAndCaseHasAppointeeSubscriptionAndReissueToAppellantNotSet_thenDoNotIssueNotification(@Nullable String sendToAppointee) {
+        NotificationEventType eventType = REISSUE_DOCUMENT;
+        NotificationWrapper wrapper = buildNotificationWrapper(eventType);
+        wrapper.getNewSscsCaseData().setResendToAppellant(sendToAppointee);
+
+        SubscriptionWithType subscription = new SubscriptionWithType(Subscription.builder().subscribeSms("Yes").subscribeEmail("Yes").build(), SubscriptionType.APPOINTEE);
+
+        when(notificationValidService.isNotificationStillValidToSend(wrapper.getNewSscsCaseData().getHearings(), eventType)).thenReturn(true);
+        when(notificationValidService.isHearingTypeValidToSendNotification(wrapper.getNewSscsCaseData(), eventType)).thenReturn(true);
+
+        assertFalse(isOkToSendNotification(wrapper, eventType, subscription, notificationValidService));
+    }
+
+    @Test
+    public void givenReissueDocumentEventAndCaseHasRepSubscriptionAndReissueToRep_thenIssueNotification() {
+        NotificationEventType eventType = REISSUE_DOCUMENT;
+        NotificationWrapper wrapper = buildNotificationWrapper(eventType);
+        wrapper.getNewSscsCaseData().setResendToRepresentative("Yes");
+
+        SubscriptionWithType subscription = new SubscriptionWithType(Subscription.builder().subscribeSms("Yes").subscribeEmail("Yes").build(), SubscriptionType.REPRESENTATIVE);
+
+        when(notificationValidService.isNotificationStillValidToSend(wrapper.getNewSscsCaseData().getHearings(), eventType)).thenReturn(true);
+        when(notificationValidService.isHearingTypeValidToSendNotification(wrapper.getNewSscsCaseData(), eventType)).thenReturn(true);
+
+        assertTrue(isOkToSendNotification(wrapper, eventType, subscription, notificationValidService));
+    }
+
+    @Test
+    @Parameters({"No", "null"})
+    public void givenReissueDocumentEventAndCaseHasRepSubscriptionAndReissueToAppellantNotSet_thenDoNotIssueNotification(@Nullable String sendToRep) {
+        NotificationEventType eventType = REISSUE_DOCUMENT;
+        NotificationWrapper wrapper = buildNotificationWrapper(eventType);
+        wrapper.getNewSscsCaseData().setResendToRepresentative(sendToRep);
+
+        SubscriptionWithType subscription = new SubscriptionWithType(Subscription.builder().subscribeSms("Yes").subscribeEmail("Yes").build(), SubscriptionType.REPRESENTATIVE);
+
+        when(notificationValidService.isNotificationStillValidToSend(wrapper.getNewSscsCaseData().getHearings(), eventType)).thenReturn(true);
         when(notificationValidService.isHearingTypeValidToSendNotification(wrapper.getNewSscsCaseData(), eventType)).thenReturn(true);
 
         assertFalse(isOkToSendNotification(wrapper, eventType, subscription, notificationValidService));
@@ -253,7 +341,7 @@ public class NotificationUtilsTest {
             null
         );
 
-        Subscription subscription = Subscription.builder().subscribeEmail("test@test.com").subscribeSms("07800000000").build();
+        SubscriptionWithType subscription = new SubscriptionWithType(Subscription.builder().subscribeEmail("test@test.com").subscribeSms("07800000000").build(), SubscriptionType.APPELLANT);
 
         when(notificationValidService.isNotificationStillValidToSend(any(), any())).thenReturn(true);
         when(notificationValidService.isHearingTypeValidToSendNotification(any(), any())).thenReturn(true);
@@ -271,7 +359,7 @@ public class NotificationUtilsTest {
             null
         );
 
-        Subscription subscription = Subscription.builder().subscribeEmail("test@test.com").subscribeSms("07800000000").build();
+        SubscriptionWithType subscription = new SubscriptionWithType(Subscription.builder().subscribeEmail("test@test.com").subscribeSms("07800000000").build(), SubscriptionType.APPELLANT);
 
         when(notificationValidService.isNotificationStillValidToSend(any(), any())).thenReturn(isNotificationStillValidToSendResponse);
         when(notificationValidService.isHearingTypeValidToSendNotification(any(), any())).thenReturn(isHearingTypeValidToSendNotificationResponse);
@@ -334,7 +422,7 @@ public class NotificationUtilsTest {
 
         CcdNotificationWrapper wrapper = buildBaseWrapper(null, null);
 
-        Subscription subscription = Subscription.builder().subscribeEmail("Yes").build();
+        SubscriptionWithType subscription = new SubscriptionWithType(Subscription.builder().subscribeEmail("Yes").build(), SubscriptionType.APPELLANT);
         Notification notification = Notification.builder()
             .reference(new Reference("someref"))
             .destination(Destination.builder().email("test@test.com").build())
@@ -346,7 +434,7 @@ public class NotificationUtilsTest {
 
     @Test
     @Parameters(method = "isNotOkToSendEmailNotificationScenarios")
-    public void okToSendEmailNotificationisNotValid(Subscription subscription, Notification notification) {
+    public void okToSendEmailNotificationisNotValid(SubscriptionWithType subscription, Notification notification) {
         when(notificationValidService.isNotificationStillValidToSend(any(), any())).thenReturn(true);
         when(notificationValidService.isHearingTypeValidToSendNotification(any(), any())).thenReturn(true);
 
@@ -529,7 +617,7 @@ public class NotificationUtilsTest {
                     .build()
             },
             new Object[] {
-                Subscription.builder().subscribeSms("Yes").build(),
+                new SubscriptionWithType(Subscription.builder().subscribeSms("Yes").build(), SubscriptionType.APPELLANT),
                 Notification.builder()
                     .reference(new Reference("someref"))
                     .destination(Destination.builder().build())
@@ -537,7 +625,7 @@ public class NotificationUtilsTest {
                     .build()
             },
             new Object[] {
-                Subscription.builder().subscribeSms("Yes").build(),
+                new SubscriptionWithType(Subscription.builder().subscribeSms("Yes").build(), SubscriptionType.APPELLANT),
                 Notification.builder()
                     .reference(new Reference("someref"))
                     .destination(Destination.builder().email("test@test.com").build())

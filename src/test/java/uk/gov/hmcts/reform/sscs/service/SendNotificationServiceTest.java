@@ -530,6 +530,13 @@ public class SendNotificationServiceTest {
                         .build())
                 .build());
 
+        documents.add(SscsDocument.builder().value(
+                SscsDocumentDetails.builder().documentType(DocumentType.FINAL_DECISION_NOTICE.getValue())
+                        .documentLink(DocumentLink.builder().documentUrl("testUrl3").build())
+                        .documentDateAdded(LocalDate.now().minusDays(1).toString())
+                        .build())
+                .build());
+
         SscsCaseData sscsCaseDataWithDocuments = SscsCaseData.builder()
             .appeal(
                 Appeal

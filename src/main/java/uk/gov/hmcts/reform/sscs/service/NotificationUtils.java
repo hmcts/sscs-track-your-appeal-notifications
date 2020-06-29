@@ -114,12 +114,28 @@ public class NotificationUtils {
     }
 
     static boolean isOkToSendNotification(NotificationWrapper wrapper, NotificationEventType notificationType,
-                                          Subscription subscription,
+                                          SubscriptionWithType subscriptionWithType,
                                           NotificationValidService notificationValidService) {
-        return ((subscription != null && subscription.doesCaseHaveSubscriptions())
-            || FALLBACK_LETTER_SUBSCRIPTION_TYPES.contains(notificationType))
+        return ((subscriptionWithType.getSubscription() != null
+                && subscriptionWithType.getSubscription().doesCaseHaveSubscriptions()
+                && isSubscriptionOverridden(wrapper, notificationType, subscriptionWithType))
+                || FALLBACK_LETTER_SUBSCRIPTION_TYPES.contains(notificationType))
             && notificationValidService.isNotificationStillValidToSend(wrapper.getNewSscsCaseData().getHearings(), notificationType)
             && notificationValidService.isHearingTypeValidToSendNotification(wrapper.getNewSscsCaseData(), notificationType);
+    }
+
+    private static boolean isSubscriptionOverridden(NotificationWrapper wrapper, NotificationEventType notificationType, SubscriptionWithType subscriptionWithType) {
+        if (NotificationEventType.REISSUE_DOCUMENT.equals(notificationType)) {
+            if ((APPELLANT.equals(subscriptionWithType.getSubscriptionType()) || APPOINTEE.equals(subscriptionWithType.getSubscriptionType()))
+                    && !"Yes".equalsIgnoreCase(wrapper.getNewSscsCaseData().getResendToAppellant())) {
+                return false;
+            }
+            if (REPRESENTATIVE.equals(subscriptionWithType.getSubscriptionType())
+                    && !"Yes".equalsIgnoreCase(wrapper.getNewSscsCaseData().getResendToRepresentative())) {
+                return false;
+            }
+        }
+        return true;
     }
 
     static boolean isFallbackLetterRequired(NotificationWrapper wrapper, SubscriptionWithType subscriptionWithType,
@@ -143,14 +159,15 @@ public class NotificationUtils {
             && notificationValidService.isHearingTypeValidToSendNotification(wrapper.getNewSscsCaseData(), notificationType);
     }
 
-    protected static boolean isOkToSendEmailNotification(NotificationWrapper wrapper, Subscription subscription,
+    protected static boolean isOkToSendEmailNotification(NotificationWrapper wrapper, SubscriptionWithType subscriptionWithType,
                                                          Notification notification,
                                                          NotificationValidService notificationValidService) {
-        return subscription != null
-            && subscription.isEmailSubscribed()
+        return subscriptionWithType != null
+            && subscriptionWithType.getSubscription() != null
+            && subscriptionWithType.getSubscription().isEmailSubscribed()
             && notification.isEmail()
             && notification.getEmailTemplate() != null
-            && isOkToSendNotification(wrapper, wrapper.getNotificationType(), subscription, notificationValidService);
+            && isOkToSendNotification(wrapper, wrapper.getNotificationType(), subscriptionWithType, notificationValidService);
     }
 
     static boolean hasLetterTemplate(Notification notification) {

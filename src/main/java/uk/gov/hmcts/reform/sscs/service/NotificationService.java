@@ -19,10 +19,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 import org.springframework.util.StringUtils;
-import uk.gov.hmcts.reform.sscs.ccd.domain.Benefit;
-import uk.gov.hmcts.reform.sscs.ccd.domain.SscsCaseData;
-import uk.gov.hmcts.reform.sscs.ccd.domain.State;
-import uk.gov.hmcts.reform.sscs.ccd.domain.Subscription;
+import uk.gov.hmcts.reform.sscs.ccd.domain.*;
 import uk.gov.hmcts.reform.sscs.config.NotificationConfig;
 import uk.gov.hmcts.reform.sscs.domain.SubscriptionWithType;
 import uk.gov.hmcts.reform.sscs.domain.notify.Destination;
@@ -100,6 +97,7 @@ public class NotificationService {
                                                  NotificationEventType notificationType) {
         for (SubscriptionWithType subscriptionWithType : notificationWrapper.getSubscriptionsBasedOnNotificationType()) {
             if (isValidNotification(notificationWrapper, subscriptionWithType, notificationType)) {
+                notificationType = overrideNotification(notificationWrapper, notificationType);
                 sendNotification(notificationWrapper, subscriptionWithType, notificationType);
                 resendLastNotification(notificationWrapper, subscriptionWithType, notificationType);
             } else {
@@ -119,6 +117,23 @@ public class NotificationService {
             sendNotification(notificationWrapper, subscriptionWithType, notificationType);
             notificationWrapper.getSscsCaseDataWrapper().setNotificationEventType(SUBSCRIPTION_UPDATED_NOTIFICATION);
         }
+    }
+
+    private NotificationEventType overrideNotification(NotificationWrapper notificationWrapper, NotificationEventType notificationType) {
+
+        if (REISSUE_DOCUMENT.equals(notificationType) && null != notificationWrapper.getNewSscsCaseData().getReissueFurtherEvidenceDocument()) {
+            String code = notificationWrapper.getNewSscsCaseData().getReissueFurtherEvidenceDocument().getValue().getCode();
+            if (code.equals(EventType.ISSUE_FINAL_DECISION.getCcdType())) {
+                notificationType = ISSUE_FINAL_DECISION;
+            } else if (code.equals(EventType.DECISION_ISSUED.getCcdType())) {
+                notificationType = DECISION_ISSUED;
+            } else if (code.equals(EventType.DIRECTION_ISSUED.getCcdType())) {
+                notificationType = DIRECTION_ISSUED;
+            }
+        }
+        notificationWrapper.setNotificationType(notificationType);
+
+        return notificationType;
     }
 
     private void scrubEmailAndSmsIfSubscribedBefore(NotificationWrapper notificationWrapper, SubscriptionWithType subscriptionWithType) {
@@ -164,7 +179,7 @@ public class NotificationService {
 
         return (isMandatoryLetterEventType(notificationType)
             || (isFallbackLetterRequired(wrapper, subscriptionWithType, subscription, notificationType, notificationValidService)
-            && isOkToSendNotification(wrapper, notificationType, subscription, notificationValidService)));
+            && isOkToSendNotification(wrapper, notificationType, subscriptionWithType, notificationValidService)));
     }
 
     private void processOldSubscriptionNotifications(NotificationWrapper wrapper, Notification notification, SubscriptionWithType subscriptionWithType, NotificationEventType eventType) {
@@ -245,6 +260,7 @@ public class NotificationService {
                     || DECISION_ISSUED.equals(notificationType)
                     || DIRECTION_ISSUED.equals(notificationType)
                     || ISSUE_FINAL_DECISION.equals(notificationType)
+                    || REISSUE_DOCUMENT.equals(notificationType)
                     || NotificationEventType.DECISION_ISSUED_2.equals(notificationType))) {
                 log.info(String.format("Cannot complete notification %s as the appeal was dormant for caseId %s.",
                     notificationType.getId(), notificationWrapper.getCaseId()));

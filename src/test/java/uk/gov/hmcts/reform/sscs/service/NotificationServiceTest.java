@@ -124,6 +124,9 @@ public class NotificationServiceTest {
     @Captor
     private ArgumentCaptor captorLoggingEvent;
 
+    @Captor
+    private ArgumentCaptor<CcdNotificationWrapper> ccdNotificationWrapperCaptor;
+
     @Before
     public void setup() {
         initMocks(this);
@@ -2019,6 +2022,37 @@ public class NotificationServiceTest {
         notificationService.manageNotificationAndSubscription(ccdNotificationWrapper);
 
         then(notificationHandler).shouldHaveNoMoreInteractions();
+    }
+
+    @Test
+    @Parameters({"DIRECTION_ISSUED, directionIssued", "DECISION_ISSUED, decisionIssued", "ISSUE_FINAL_DECISION, issueFinalDecision"})
+    public void overrideNotificationType_whenReissueDocumentEventReceived(NotificationEventType notificationEventType, String eventType) {
+        CcdNotificationWrapper ccdNotificationWrapper = buildBaseWrapper(REISSUE_DOCUMENT,  APPELLANT_WITH_ADDRESS, null, null);
+        ccdNotificationWrapper.getNewSscsCaseData().setCreatedInGapsFrom(State.VALID_APPEAL.getId());
+        ccdNotificationWrapper.getNewSscsCaseData().setResendToAppellant("Yes");
+        ccdNotificationWrapper.getNewSscsCaseData().setReissueFurtherEvidenceDocument(new DynamicList(eventType));
+
+        Notification notification = new Notification(Template.builder().emailTemplateId(EMAIL_TEMPLATE_ID).smsTemplateId(null).build(), Destination.builder().email("test@testing.com").sms("07823456746").build(), null, new Reference(), null);
+        given(factory.create(ccdNotificationWrapperCaptor.capture(), eq(getSubscriptionWithType(ccdNotificationWrapper)))).willReturn(notification);
+        given(notificationValidService.isHearingTypeValidToSendNotification(
+                any(SscsCaseData.class), any())).willReturn(true);
+        given(notificationValidService.isNotificationStillValidToSend(anyList(), any()))
+                .willReturn(true);
+        given(notificationValidService.isFallbackLetterRequiredForSubscriptionType(any(), any(), any())).willReturn(true);
+
+        SendNotificationService sendNotificationService = new SendNotificationService(notificationSender, evidenceManagementService, notificationHandler, notificationValidService, pdfLetterService);
+
+        final NotificationService notificationService = new NotificationService(factory, reminderService,
+                notificationValidService, notificationHandler, outOfHoursCalculator, notificationConfig, sendNotificationService, false
+        );
+
+        notificationService.manageNotificationAndSubscription(ccdNotificationWrapper);
+
+        assertEquals(notificationEventType, ccdNotificationWrapperCaptor.getValue().getNotificationType());
+
+        then(notificationHandler).should(atLeastOnce()).sendNotification(
+                eq(ccdNotificationWrapper), eq(EMAIL_TEMPLATE_ID), eq("Email"),
+                any(NotificationHandler.SendNotification.class));
     }
 
     @SuppressWarnings({"Indentation", "UnusedPrivateMethod"})
