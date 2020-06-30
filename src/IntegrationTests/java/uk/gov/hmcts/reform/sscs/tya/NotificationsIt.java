@@ -1094,28 +1094,28 @@ public class NotificationsIt {
                 "paper",
                 Collections.emptyList(),
                 Collections.emptyList(),
-                Arrays.asList("bc943cf3-9fd1-4d14-a0c0-b183572c21a7", "a2a4a88a-b91a-4e6d-94f0-507179292058"),
+                Arrays.asList("TB-SCS-GNO-ENG-00452.docx", "TB-SCS-GNO-ENG-00452.docx"),
                 "yes",
                 "yes",
                 "yes",
                 "yes",
                 "0",
                 "0",
-                "2"
+                "0"
             },
             new Object[]{
                 REQUEST_INFO_INCOMPLETE,
                 "paper",
                 Collections.emptyList(),
                 Collections.emptyList(),
-                Arrays.asList("bc943cf3-9fd1-4d14-a0c0-b183572c21a7", "a2a4a88a-b91a-4e6d-94f0-507179292058"),
+                Arrays.asList("TB-SCS-GNO-ENG-00452.docx", "TB-SCS-GNO-ENG-00452.docx"),
                 "no",
                 "no",
                 "no",
                 "no",
                 "0",
                 "0",
-                "2"
+                "0"
             },
             new Object[]{
                 VALID_APPEAL_CREATED,
@@ -1273,6 +1273,20 @@ public class NotificationsIt {
             },
             new Object[]{
                 DECISION_ISSUED,
+                "paper",
+                Collections.emptyList(),
+                Collections.emptyList(),
+                Arrays.asList("TB-SCS-GNO-ENG-00067.docx", "TB-SCS-GNO-ENG-00089.docx"),
+                "no",
+                "no",
+                "no",
+                "no",
+                "0",
+                "0",
+                "0"
+            },
+            new Object[]{
+                ISSUE_FINAL_DECISION,
                 "paper",
                 Collections.emptyList(),
                 Collections.emptyList(),
@@ -1307,22 +1321,15 @@ public class NotificationsIt {
                 "1"
             },
             new Object[]{
-                DECISION_ISSUED,
-                "paper",
-                false,
-                false,
-                "1"
-            },
-            new Object[]{
-                DECISION_ISSUED,
+                DIRECTION_ISSUED,
                 "oral",
                 false,
-                false,
+                true,
                 "1"
             },
             new Object[]{
                 DIRECTION_ISSUED,
-                "oral",
+                "paper",
                 false,
                 true,
                 "1"
@@ -1357,7 +1364,28 @@ public class NotificationsIt {
             },
             new Object[]{
                 DECISION_ISSUED,
+                "paper",
+                false,
+                false,
+                "1"
+            },
+            new Object[]{
+                DECISION_ISSUED,
                 "oral",
+                false,
+                false,
+                "1"
+            },
+            new Object[]{
+                DECISION_ISSUED,
+                "oral",
+                false,
+                true,
+                "1"
+            },
+            new Object[]{
+                DECISION_ISSUED,
+                "paper",
                 false,
                 true,
                 "1"
@@ -1385,6 +1413,62 @@ public class NotificationsIt {
             },
             new Object[]{
                 DECISION_ISSUED,
+                "oral",
+                true,
+                true,
+                "2"
+            },
+            new Object[]{
+                ISSUE_FINAL_DECISION,
+                "paper",
+                false,
+                false,
+                "1"
+            },
+            new Object[]{
+                ISSUE_FINAL_DECISION,
+                "oral",
+                false,
+                false,
+                "1"
+            },
+            new Object[]{
+                ISSUE_FINAL_DECISION,
+                "oral",
+                false,
+                true,
+                "1"
+            },
+            new Object[]{
+                ISSUE_FINAL_DECISION,
+                "paper",
+                false,
+                true,
+                "1"
+            },
+            new Object[]{
+                ISSUE_FINAL_DECISION,
+                "paper",
+                true,
+                false,
+                "2"
+            },
+            new Object[]{
+                ISSUE_FINAL_DECISION,
+                "oral",
+                true,
+                false,
+                "2"
+            },
+            new Object[]{
+                ISSUE_FINAL_DECISION,
+                "paper",
+                true,
+                true,
+                "2"
+            },
+            new Object[]{
+                ISSUE_FINAL_DECISION,
                 "oral",
                 true,
                 true,
@@ -1863,28 +1947,28 @@ public class NotificationsIt {
                 "paper",
                 Collections.emptyList(),
                 Collections.emptyList(),
-                Arrays.asList("bc943cf3-9fd1-4d14-a0c0-b183572c21a7", "a2a4a88a-b91a-4e6d-94f0-507179292058"),
+                Arrays.asList("TB-SCS-GNO-ENG-00452.docx", "TB-SCS-GNO-ENG-00452.docx"),
                 "yes",
                 "yes",
                 "yes",
                 "yes",
                 "0",
                 "0",
-                "2"
+                "0"
             },
             new Object[]{
                 REQUEST_INFO_INCOMPLETE,
                 "paper",
                 Collections.emptyList(),
                 Collections.emptyList(),
-                Arrays.asList("bc943cf3-9fd1-4d14-a0c0-b183572c21a7", "a2a4a88a-b91a-4e6d-94f0-507179292058"),
+                Arrays.asList("TB-SCS-GNO-ENG-00452.docx", "TB-SCS-GNO-ENG-00452.docx"),
                 "no",
                 "no",
                 "no",
                 "no",
                 "0",
                 "0",
-                "2"
+                "0"
             },
             new Object[]{
                 VALID_APPEAL_CREATED,
@@ -2014,6 +2098,20 @@ public class NotificationsIt {
             },
             new Object[]{
                 DECISION_ISSUED,
+                "paper",
+                Collections.emptyList(),
+                Collections.emptyList(),
+                Arrays.asList("TB-SCS-GNO-ENG-00067.docx", "TB-SCS-GNO-ENG-00089.docx"),
+                "no",
+                "no",
+                "no",
+                "no",
+                "0",
+                "0",
+                "0"
+            },
+            new Object[]{
+                ISSUE_FINAL_DECISION,
                 "paper",
                 Collections.emptyList(),
                 Collections.emptyList(),
@@ -2254,6 +2352,19 @@ public class NotificationsIt {
                 "Appointee Appointee"
             },
             new Object[]{
+                ISSUE_FINAL_DECISION,
+                "paper",
+                Collections.emptyList(),
+                Collections.emptyList(),
+                Collections.singletonList("TB-SCS-GNO-ENG-00067.docx"),
+                "yes",
+                "yes",
+                "0",
+                "0",
+                "0",
+                "Appointee Appointee"
+            },
+            new Object[]{
                 APPEAL_RECEIVED_NOTIFICATION,
                 "paper",
                 Collections.singletonList("08365e91-9e07-4a5c-bf96-ef56fd0ada63"),
@@ -2362,12 +2473,12 @@ public class NotificationsIt {
                 "oral",
                 Collections.emptyList(),
                 Collections.emptyList(),
-                Collections.singletonList("bc943cf3-9fd1-4d14-a0c0-b183572c21a7"),
+                Collections.singletonList("TB-SCS-GNO-ENG-00452.docx"),
                 "yes",
                 "yes",
                 "0",
                 "0",
-                "1",
+                "0",
                 "Appointee Appointee"
             },
             new Object[]{
@@ -2375,12 +2486,12 @@ public class NotificationsIt {
                 "oral",
                 Collections.emptyList(),
                 Collections.emptyList(),
-                Collections.singletonList("bc943cf3-9fd1-4d14-a0c0-b183572c21a7"),
+                Collections.singletonList("TB-SCS-GNO-ENG-00452.docx"),
                 "no",
                 "no",
                 "0",
                 "0",
-                "1",
+                "0",
                 "Appointee Appointee"
             },
             new Object[]{
@@ -2811,12 +2922,12 @@ public class NotificationsIt {
                 "oral",
                 Collections.emptyList(),
                 Collections.emptyList(),
-                Collections.singletonList("bc943cf3-9fd1-4d14-a0c0-b183572c21a7"),
+                Collections.singletonList("TB-SCS-GNO-ENG-00452.docx"),
                 "yes",
                 "yes",
                 "0",
                 "0",
-                "1",
+                "0",
                 "Appointee Appointee"
             },
             new Object[]{
@@ -2824,12 +2935,12 @@ public class NotificationsIt {
                 "oral",
                 Collections.emptyList(),
                 Collections.emptyList(),
-                Collections.singletonList("bc943cf3-9fd1-4d14-a0c0-b183572c21a7"),
+                Collections.singletonList("TB-SCS-GNO-ENG-00452.docx"),
                 "no",
                 "no",
                 "0",
                 "0",
-                "1",
+                "0",
                 "Appointee Appointee"
             },
             new Object[]{

@@ -32,7 +32,7 @@ import uk.gov.hmcts.reform.sscs.domain.notify.Template;
 @SpringBootTest
 @ActiveProfiles("integration")
 public class NotificationConfigTest {
-    public static final List<NotificationEventType> BUNDLED_LETTER_EVENT_TYPES = Arrays.asList(STRUCK_OUT, DIRECTION_ISSUED, DECISION_ISSUED, JUDGE_DECISION_APPEAL_TO_PROCEED, TCW_DECISION_APPEAL_TO_PROCEED);
+    public static final List<NotificationEventType> BUNDLED_LETTER_EVENT_TYPES = Arrays.asList(STRUCK_OUT, DIRECTION_ISSUED, DECISION_ISSUED, ISSUE_FINAL_DECISION, JUDGE_DECISION_APPEAL_TO_PROCEED, TCW_DECISION_APPEAL_TO_PROCEED);
 
     // Below rules are needed to use the junitParamsRunner together with SpringRunner
     @ClassRule
@@ -179,12 +179,12 @@ public class NotificationConfigTest {
             new Object[]{null, null, "114cadaa-7760-4699-9add-d3a252f68909", null, ORAL, getTemplateName(NON_COMPLIANT_NOTIFICATION, APPELLANT), null},
             new Object[]{null, null, "114cadaa-7760-4699-9add-d3a252f68909", null, ORAL, getTemplateName(NON_COMPLIANT_NOTIFICATION, APPOINTEE), null},
             new Object[]{null, null, "114cadaa-7760-4699-9add-d3a252f68909", null, PAPER, getTemplateName(NON_COMPLIANT_NOTIFICATION, APPOINTEE), null},
-            new Object[]{null, null, "a2a4a88a-b91a-4e6d-94f0-507179292058", null, PAPER, getTemplateName(REQUEST_INFO_INCOMPLETE, REPRESENTATIVE), null},
-            new Object[]{null, null, "a2a4a88a-b91a-4e6d-94f0-507179292058", null, ORAL, getTemplateName(REQUEST_INFO_INCOMPLETE, REPRESENTATIVE), null},
-            new Object[]{null, null, "bc943cf3-9fd1-4d14-a0c0-b183572c21a7", null, PAPER, getTemplateName(REQUEST_INFO_INCOMPLETE, APPELLANT), null},
-            new Object[]{null, null, "bc943cf3-9fd1-4d14-a0c0-b183572c21a7", null, ORAL, getTemplateName(REQUEST_INFO_INCOMPLETE, APPELLANT), null},
-            new Object[]{null, null, "bc943cf3-9fd1-4d14-a0c0-b183572c21a7", null, ORAL, getTemplateName(REQUEST_INFO_INCOMPLETE, APPOINTEE), null},
-            new Object[]{null, null, "bc943cf3-9fd1-4d14-a0c0-b183572c21a7", null, PAPER, getTemplateName(REQUEST_INFO_INCOMPLETE, APPOINTEE), null},
+            new Object[]{null, null, null, "TB-SCS-GNO-ENG-00452.docx", PAPER, getTemplateName(REQUEST_INFO_INCOMPLETE, REPRESENTATIVE), null},
+            new Object[]{null, null, null, "TB-SCS-GNO-ENG-00452.docx", ORAL, getTemplateName(REQUEST_INFO_INCOMPLETE, REPRESENTATIVE), null},
+            new Object[]{null, null, null, "TB-SCS-GNO-ENG-00452.docx", PAPER, getTemplateName(REQUEST_INFO_INCOMPLETE, APPELLANT), null},
+            new Object[]{null, null, null, "TB-SCS-GNO-ENG-00452.docx", ORAL, getTemplateName(REQUEST_INFO_INCOMPLETE, APPELLANT), null},
+            new Object[]{null, null, null, "TB-SCS-GNO-ENG-00452.docx", ORAL, getTemplateName(REQUEST_INFO_INCOMPLETE, APPOINTEE), null},
+            new Object[]{null, null, null, "TB-SCS-GNO-ENG-00452.docx", PAPER, getTemplateName(REQUEST_INFO_INCOMPLETE, APPOINTEE), null},
             new Object[]{null, null, null, "TB-SCS-GNO-ENG-00067.docx", ORAL, getTemplateName(DIRECTION_ISSUED, APPELLANT), null},
             new Object[]{null, null, null, "TB-SCS-GNO-ENG-00067.docx", PAPER, getTemplateName(DIRECTION_ISSUED, APPOINTEE), null},
             new Object[]{null, null, null, "TB-SCS-GNO-ENG-00089.docx", ORAL, getTemplateName(DIRECTION_ISSUED, REPRESENTATIVE), null},
@@ -193,6 +193,10 @@ public class NotificationConfigTest {
             new Object[]{null, null, null, "TB-SCS-GNO-ENG-00094.docx", PAPER, getTemplateName(DECISION_ISSUED, APPOINTEE), null},
             new Object[]{null, null, null, "TB-SCS-GNO-ENG-00095.docx", ORAL, getTemplateName(DECISION_ISSUED, REPRESENTATIVE), null},
             new Object[]{null, null, null, "TB-SCS-GNO-ENG-00095.docx", PAPER, getTemplateName(DECISION_ISSUED, REPRESENTATIVE), null},
+            new Object[]{null, null, null, "TB-SCS-GNO-ENG-00454.docx", ORAL, getTemplateName(ISSUE_FINAL_DECISION, APPELLANT), null},
+            new Object[]{null, null, null, "TB-SCS-GNO-ENG-00454.docx", PAPER, getTemplateName(ISSUE_FINAL_DECISION, APPOINTEE), null},
+            new Object[]{null, null, null, "TB-SCS-GNO-ENG-00455.docx", ORAL, getTemplateName(ISSUE_FINAL_DECISION, REPRESENTATIVE), null},
+            new Object[]{null, null, null, "TB-SCS-GNO-ENG-00455.docx", PAPER, getTemplateName(ISSUE_FINAL_DECISION, REPRESENTATIVE), null}
         };
     }
 
@@ -204,7 +208,10 @@ public class NotificationConfigTest {
 
         int i = 0;
         for (NotificationEventType eventType : BUNDLED_LETTER_EVENT_TYPES.stream()
-                .filter(f -> !f.equals(DIRECTION_ISSUED)).filter(f -> !f.equals(DECISION_ISSUED)).collect(Collectors.toList())) {
+                .filter(f -> !f.equals(DIRECTION_ISSUED))
+                .filter(f -> !f.equals(DECISION_ISSUED))
+                .filter(f -> !f.equals(ISSUE_FINAL_DECISION))
+                .collect(Collectors.toList())) {
             for (SubscriptionType subscriptionType : subscriptionTypes) {
                 result[i++] = new Object[]{PAPER, getTemplateName(eventType, subscriptionType)};
                 result[i++] = new Object[]{ORAL, getTemplateName(eventType, subscriptionType)};

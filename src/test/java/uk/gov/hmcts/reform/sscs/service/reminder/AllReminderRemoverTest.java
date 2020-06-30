@@ -33,7 +33,8 @@ public class AllReminderRemoverTest {
                     .filter(f -> (!f.equals(APPEAL_LAPSED_NOTIFICATION) && !f.equals(DWP_APPEAL_LAPSED_NOTIFICATION)
                             && !f.equals(HMCTS_APPEAL_LAPSED_NOTIFICATION) && !f.equals(APPEAL_WITHDRAWN_NOTIFICATION)
                             && !f.equals(ADMIN_APPEAL_WITHDRAWN) && !f.equals(APPEAL_DORMANT_NOTIFICATION)
-                            && !f.equals(DECISION_ISSUED)))
+                            && !f.equals(DECISION_ISSUED)
+                            && !f.equals(ISSUE_FINAL_DECISION)))
                     .collect(Collectors.toCollection(ArrayList::new));
 
     @Before

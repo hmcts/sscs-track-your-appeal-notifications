@@ -1,5 +1,6 @@
 package uk.gov.hmcts.reform.sscs.factory;
 
+import java.time.LocalDateTime;
 import java.util.List;
 import uk.gov.hmcts.reform.sscs.ccd.domain.SscsCaseData;
 import uk.gov.hmcts.reform.sscs.ccd.domain.Subscription;
@@ -16,6 +17,8 @@ public interface NotificationWrapper {
     SscsCaseData getNewSscsCaseData();
 
     String getCaseId();
+
+    LocalDateTime getCreatedDate();
 
     Subscription getAppellantSubscription();
 

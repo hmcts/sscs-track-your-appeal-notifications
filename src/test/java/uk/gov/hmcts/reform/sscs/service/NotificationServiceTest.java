@@ -1,5 +1,8 @@
 package uk.gov.hmcts.reform.sscs.service;
 
+import static java.util.Collections.*;
+import static org.hamcrest.MatcherAssert.assertThat;
+import static org.hamcrest.Matchers.is;
 import static org.junit.Assert.*;
 import static org.mockito.ArgumentMatchers.anyList;
 import static org.mockito.BDDMockito.given;
@@ -17,6 +20,8 @@ import ch.qos.logback.classic.Logger;
 import ch.qos.logback.classic.spi.ILoggingEvent;
 import ch.qos.logback.core.Appender;
 import java.io.IOException;
+import java.time.LocalDateTime;
+import java.time.ZonedDateTime;
 import java.util.*;
 import junitparams.JUnitParamsRunner;
 import junitparams.Parameters;
@@ -238,7 +243,7 @@ public class NotificationServiceTest {
                 .representativeSubscription(repsSubscription)
                 .build())
             .caseReference(CASE_REFERENCE)
-            .hearings(Collections.singletonList(Hearing.builder().build()))
+            .hearings(singletonList(Hearing.builder().build()))
             .build();
 
         ccdNotificationWrapper = buildNotificationWrapperGivenNotificationTypeAndSubscriptions(
@@ -355,7 +360,7 @@ public class NotificationServiceTest {
                 .representativeSubscription(repsSubscription)
                 .build())
             .caseReference(CASE_REFERENCE)
-            .hearings(Collections.singletonList(Hearing.builder().build()))
+            .hearings(singletonList(Hearing.builder().build()))
             .build();
 
         ccdNotificationWrapper = buildNotificationWrapperGivenNotificationTypeAndAppointeeSubscriptions(
@@ -1412,7 +1417,7 @@ public class NotificationServiceTest {
                 .appointeeSubscription(appointeeSubscription)
                 .build())
             .caseReference(CASE_REFERENCE)
-            .hearings(Collections.singletonList(Hearing.builder().build()))
+            .hearings(singletonList(Hearing.builder().build()))
             .createdInGapsFrom(READY_TO_LIST.getId())
             .build();
 
@@ -1466,7 +1471,7 @@ public class NotificationServiceTest {
                 .representativeSubscription(repsSubscription)
                 .build())
             .caseReference(CASE_REFERENCE)
-            .hearings(Collections.singletonList(Hearing.builder().build()))
+            .hearings(singletonList(Hearing.builder().build()))
             .build();
 
         sscsCaseDataWrapper = SscsCaseDataWrapper.builder()
@@ -1645,6 +1650,31 @@ public class NotificationServiceTest {
 
         verify(notificationHandler, never()).sendNotification(any(), any(), any(), any());
         verify(notificationHandler).scheduleNotification(ccdNotificationWrapper);
+        verifyNoMoreInteractions(reminderService);
+
+        verifyNoErrorsLogged(mockAppender, captorLoggingEvent);
+    }
+
+    @Test
+    @Parameters({"VALID_APPEAL_CREATED", "APPEAL_RECEIVED_NOTIFICATION"})
+    public void delayScheduleOfEvents(NotificationEventType eventType) {
+        SscsCaseDataWrapper wrapper = SscsCaseDataWrapper.builder()
+                .newSscsCaseData(sscsCaseData).oldSscsCaseData(sscsCaseData)
+                .notificationEventType(eventType)
+                .createdDate(LocalDateTime.now())
+                .build();
+        ccdNotificationWrapper = new CohNotificationWrapper("someHearingId", wrapper);
+        when(notificationValidService.isNotificationStillValidToSend(any(), any())).thenReturn(true);
+        when(notificationValidService.isHearingTypeValidToSendNotification(any(), any())).thenReturn(true);
+
+        Notification notification = new Notification(Template.builder().emailTemplateId("abc").smsTemplateId("123").build(), Destination.builder().email("test@testing.com").sms("07823456746").build(), null, new Reference(), null);
+        when(factory.create(ccdNotificationWrapper, getSubscriptionWithType(ccdNotificationWrapper))).thenReturn(notification);
+        notificationService.manageNotificationAndSubscription(ccdNotificationWrapper);
+
+        verify(notificationHandler, never()).sendNotification(any(), any(), any(), any());
+        ArgumentCaptor<ZonedDateTime> argument = ArgumentCaptor.forClass(ZonedDateTime.class);
+        verify(notificationHandler).scheduleNotification(eq(ccdNotificationWrapper), argument.capture());
+        assertThat(argument.getValue().isBefore(ZonedDateTime.now().plusMinutes(6)), is(true));
         verifyNoMoreInteractions(reminderService);
 
         verifyNoErrorsLogged(mockAppender, captorLoggingEvent);
@@ -2105,8 +2135,8 @@ public class NotificationServiceTest {
                 .documentFilename("test.pdf")
                 .documentBinaryUrl("test/binary").build()).build())
             .ccdCaseId(CASE_ID)
-            .hearings(Collections.emptyList())
-            .sscsDocument(new ArrayList<>(Collections.singletonList(sscsDocument)));
+            .hearings(emptyList())
+            .sscsDocument(new ArrayList<>(singletonList(sscsDocument)));
     }
 
     protected static SscsCaseData.SscsCaseDataBuilder getSscsCaseDataBuilderSettingInformationFromAppellant(Appellant appellant, Representative rep, SscsDocument sscsDocument, String informationFromAppellant) {
@@ -2140,7 +2170,7 @@ public class NotificationServiceTest {
                 .documentFilename("test.pdf")
                 .documentBinaryUrl("test/binary").build()).build())
             .ccdCaseId(CASE_ID)
-            .sscsDocument(new ArrayList<>(Collections.singletonList(sscsDocument)))
+            .sscsDocument(new ArrayList<>(singletonList(sscsDocument)))
             .informationFromAppellant(informationFromAppellant);
     }
 

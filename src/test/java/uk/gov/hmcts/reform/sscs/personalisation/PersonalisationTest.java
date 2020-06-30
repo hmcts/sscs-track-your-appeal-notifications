@@ -260,6 +260,9 @@ public class PersonalisationTest {
                 new Object[]{DECISION_ISSUED, APPELLANT, ONLINE, false, false, false, true},
                 new Object[]{DECISION_ISSUED, APPOINTEE, ONLINE, false, false, false, true},
                 new Object[]{DECISION_ISSUED, REPRESENTATIVE, ONLINE, false, false, false, true},
+                new Object[]{ISSUE_FINAL_DECISION, APPELLANT, ONLINE, false, false, false, true},
+                new Object[]{ISSUE_FINAL_DECISION, APPOINTEE, ONLINE, false, false, false, true},
+                new Object[]{ISSUE_FINAL_DECISION, REPRESENTATIVE, ONLINE, false, false, false, true},
                 new Object[]{VALID_APPEAL_CREATED, APPELLANT, PAPER, true, true, true, false},
                 new Object[]{VALID_APPEAL_CREATED, APPELLANT, REGULAR, true, true, true, false},
                 new Object[]{VALID_APPEAL_CREATED, APPELLANT, ONLINE, true, true, true, false},
@@ -268,7 +271,10 @@ public class PersonalisationTest {
                 new Object[]{VALID_APPEAL_CREATED, REPRESENTATIVE, ONLINE, true, true, true, false},
                 new Object[]{VALID_APPEAL_CREATED, APPOINTEE, PAPER, true, true, true, false},
                 new Object[]{VALID_APPEAL_CREATED, APPOINTEE, REGULAR, true, true, true, false},
-                new Object[]{VALID_APPEAL_CREATED, APPOINTEE, ONLINE, true, true, true, false}
+                new Object[]{VALID_APPEAL_CREATED, APPOINTEE, ONLINE, true, true, true, false},
+                new Object[]{REQUEST_INFO_INCOMPLETE, APPELLANT, ONLINE, false, false, false, true},
+                new Object[]{REQUEST_INFO_INCOMPLETE, APPOINTEE, ONLINE, false, false, false, true},
+                new Object[]{REQUEST_INFO_INCOMPLETE, REPRESENTATIVE, ONLINE, false, false, false, true}
         };
     }
 

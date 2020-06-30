@@ -6,6 +6,7 @@ import static org.mockito.Mockito.*;
 import static uk.gov.hmcts.reform.sscs.ccd.domain.EventType.APPEAL_RECEIVED;
 
 import java.io.IOException;
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 import lombok.extern.slf4j.Slf4j;
@@ -58,6 +59,7 @@ public class PdfLetterServiceIt {
         SscsCaseDataWrapper dataWrapper = SscsCaseDataWrapper.builder()
                 .newSscsCaseData(sscsCaseData)
                 .oldSscsCaseData(sscsCaseData)
+                .createdDate(LocalDateTime.now().minusMinutes(10))
                 .notificationEventType(NotificationEventType.APPEAL_RECEIVED_NOTIFICATION)
                 .build();
         NotificationWrapper wrapper = new CcdNotificationWrapper(dataWrapper);
@@ -84,6 +86,7 @@ public class PdfLetterServiceIt {
         SscsCaseDataWrapper dataWrapper = SscsCaseDataWrapper.builder()
                 .newSscsCaseData(sscsCaseData)
                 .oldSscsCaseData(sscsCaseData)
+                .createdDate(LocalDateTime.now().minusMinutes(10))
                 .notificationEventType(NotificationEventType.APPEAL_DORMANT_NOTIFICATION)
                 .build();
         NotificationWrapper wrapper = new CcdNotificationWrapper(dataWrapper);

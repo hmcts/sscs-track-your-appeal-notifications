@@ -46,7 +46,7 @@ public class LetterUtils {
             return PDF_STRUCK_OUT;
         } else if (DIRECTION_ISSUED.equals(wrapper.getNotificationType())) {
             return PDF_DIRECTION_NOTICE;
-        } else if (DECISION_ISSUED.equals(wrapper.getNotificationType())) {
+        } else if (DECISION_ISSUED.equals(wrapper.getNotificationType()) || ISSUE_FINAL_DECISION.equals(wrapper.getNotificationType())) {
             return PDF_DECISION_NOTICE;
         }
 

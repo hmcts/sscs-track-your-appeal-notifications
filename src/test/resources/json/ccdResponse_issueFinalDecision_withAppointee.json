@@ -115,7 +115,7 @@
         },
         "hearingType": ""
       },
-      "sscsInterlocDirectionDocument":{"documentType":"Direction Notice","documentLink":{"document_url":"http://dm-store:4506/documents/5b7bab64-3d42-4c8b-bf2f-9f695cc70f4c","document_binary_url":"http://dm-store:4506/documents/5b7bab64-3d42-4c8b-bf2f-9f695cc70f4c/binary","document_filename":"Direction Notice - sample - Postponement Directions Notice form 5.pdf"},"documentDateAdded":"2019-03-27","documentFileName":"Direction Notice.pdf"},
+      "sscsInterlocDecisionDocument":{"documentType":"Decision Notice","documentLink":{"document_url":"http://dm-store:4506/documents/5b7bab64-3d42-4c8b-bf2f-9f695cc70f4c","document_binary_url":"http://dm-store:4506/documents/5b7bab64-3d42-4c8b-bf2f-9f695cc70f4c/binary","document_filename":"Decision Notice - sample - Postponement Decision Notice form 5.pdf"},"documentDateAdded":"2019-03-27","documentFileName":"Decision Notice.pdf"},
       "evidence": {
         "documents":[
           {
@@ -206,7 +206,7 @@
     },
     "case_type_id": "Benefit",
     "state": "appealCreated",
-    "created_date": [2019, 9, 1, 13, 20, 21, 73000000],
+    "created_date": [2018, 2, 13, 13, 20, 21, 73000000],
     "id": "12345656789"
   },
   "case_details_before": {
@@ -351,5 +351,5 @@
     "state": "appealCreated",
     "id": "12345656789"
   },
-  "event_id": "directionIssued"
+  "event_id": "issueFinalDecision"
 }

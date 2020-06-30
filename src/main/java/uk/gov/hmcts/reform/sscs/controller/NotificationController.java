@@ -4,6 +4,7 @@ import static org.springframework.util.MimeTypeUtils.APPLICATION_JSON_VALUE;
 import static uk.gov.hmcts.reform.sscs.domain.notify.NotificationEventType.getNotificationByCcdEvent;
 import static uk.gov.hmcts.reform.sscs.domain.notify.NotificationEventType.getNotificationById;
 
+import java.time.LocalDateTime;
 import java.util.Arrays;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -64,10 +65,12 @@ public class NotificationController {
                 callback.getCaseDetails().getCaseData(),
                 caseDetailsBefore != null ? caseDetailsBefore.getCaseData() : null,
                 getNotificationByCcdEvent(callback.getEvent()),
+                callback.getCaseDetails().getCreatedDate(),
                 callback.getCaseDetails().getState());
 
             log.info("Ccd Response received for case id: {} , {}", sscsCaseDataWrapper.getNewSscsCaseData().getCcdCaseId(), sscsCaseDataWrapper.getNotificationEventType());
 
+            callback.getCaseDetails().getCreatedDate();
             authorisationService.authorise(serviceAuthHeader);
             notificationService.manageNotificationAndSubscription(new CcdNotificationWrapper(sscsCaseDataWrapper));
         } catch (Exception e) {
@@ -95,6 +98,7 @@ public class NotificationController {
             SscsCaseDataWrapper wrapper = buildSscsCaseDataWrapper(caseDetails.getData(),
                     null,
                     getNotificationById(eventId),
+                    caseDetails.getCreatedDate(),
                     getStateFromString(caseDetails.getState())
             );
             notificationService.manageNotificationAndSubscription(new CohNotificationWrapper(cohEvent.getOnlineHearingId(), wrapper));
@@ -109,11 +113,12 @@ public class NotificationController {
         return Arrays.stream(State.values()).filter(s -> s.toString().equalsIgnoreCase(value)).findFirst().orElse(State.UNKNOWN);
     }
 
-    private SscsCaseDataWrapper buildSscsCaseDataWrapper(SscsCaseData caseData, SscsCaseData caseDataBefore, NotificationEventType event, State state) {
+    private SscsCaseDataWrapper buildSscsCaseDataWrapper(SscsCaseData caseData, SscsCaseData caseDataBefore, NotificationEventType event, LocalDateTime createdDate, State state) {
         return SscsCaseDataWrapper.builder()
                 .newSscsCaseData(caseData)
                 .oldSscsCaseData(caseDataBefore)
                 .notificationEventType(event)
+                .createdDate(createdDate)
                 .state(state).build();
     }
 

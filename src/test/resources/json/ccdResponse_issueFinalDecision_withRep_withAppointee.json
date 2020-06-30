@@ -100,6 +100,26 @@
           ],
           "otherReasons": "Another reason"
         },
+        "rep": {
+          "hasRepresentative": "Yes",
+          "name": {
+            "title": "Mr",
+            "firstName": "Harry",
+            "lastName": "Potter"
+          },
+          "address": {
+            "line1": "123 Hairy Lane",
+            "line2": "Off Hairy Park",
+            "town": "Town",
+            "county": "County",
+            "postcode": "CM14 4LQ"
+          },
+          "contact": {
+            "email": "harry.potter@wizards.com",
+            "mobile": "07411999999"
+          },
+          "organisation": "HP Ltd"
+        },
         "signer":"Yes",
         "supporter": {
           "contact": {
@@ -115,7 +135,7 @@
         },
         "hearingType": ""
       },
-      "sscsInterlocDirectionDocument":{"documentType":"Direction Notice","documentLink":{"document_url":"http://dm-store:4506/documents/5b7bab64-3d42-4c8b-bf2f-9f695cc70f4c","document_binary_url":"http://dm-store:4506/documents/5b7bab64-3d42-4c8b-bf2f-9f695cc70f4c/binary","document_filename":"Direction Notice - sample - Postponement Directions Notice form 5.pdf"},"documentDateAdded":"2019-03-27","documentFileName":"Direction Notice.pdf"},
+      "sscsInterlocDecisionDocument":{"documentType":"Decision Notice","documentLink":{"document_url":"http://dm-store:4506/documents/5b7bab64-3d42-4c8b-bf2f-9f695cc70f4c","document_binary_url":"http://dm-store:4506/documents/5b7bab64-3d42-4c8b-bf2f-9f695cc70f4c/binary","document_filename":"Decision Notice - sample - Postponement Decision Notice form 5.pdf"},"documentDateAdded":"2019-03-27","documentFileName":"Decision Notice.pdf"},
       "evidence": {
         "documents":[
           {
@@ -171,6 +191,14 @@
           "subscribeEmail": "Yes",
           "subscribeSms": "Yes",
           "tya": "543212345"
+        },
+        "representativeSubscription": {
+          "email": "supporter@hmcts.net",
+          "mobile": "07983469702",
+          "reason": null,
+          "subscribeEmail": "No",
+          "subscribeSms": "Yes",
+          "tya": "232929249492"
         }
       },
       "region" : "CARDIFF",
@@ -206,7 +234,7 @@
     },
     "case_type_id": "Benefit",
     "state": "appealCreated",
-    "created_date": [2019, 9, 1, 13, 20, 21, 73000000],
+    "created_date": [2018, 2, 13, 13, 20, 21, 73000000],
     "id": "12345656789"
   },
   "case_details_before": {
@@ -289,6 +317,26 @@
           ],
           "otherReasons": "Another reason"
         },
+        "rep": {
+          "hasRepresentative": "Yes",
+          "name": {
+            "title": "Mr",
+            "firstName": "Harry",
+            "lastName": "Potter"
+          },
+          "address": {
+            "line1": "123 Hairy Lane",
+            "line2": "Off Hairy Park",
+            "town": "Town",
+            "county": "County",
+            "postcode": "CM14 4LQ"
+          },
+          "contact": {
+            "email": "harry.potter@wizards.com",
+            "mobile": "07411999999"
+          },
+          "organisation": "HP Ltd"
+        },
         "signer": "Yes",
         "supporter": {
           "contact": {
@@ -313,6 +361,14 @@
           "subscribeEmail": "No",
           "subscribeSms": "No",
           "tya": "543212345"
+        },
+        "representativeSubscription": {
+          "email": "supporter@hmcts.net",
+          "mobile": "07983469702",
+          "reason": null,
+          "subscribeEmail": "No",
+          "subscribeSms": "Yes",
+          "tya": "232929249492"
         }
       },
       "region": "CARDIFF",
@@ -351,5 +407,5 @@
     "state": "appealCreated",
     "id": "12345656789"
   },
-  "event_id": "directionIssued"
+  "event_id": "issueFinalDecision"
 }

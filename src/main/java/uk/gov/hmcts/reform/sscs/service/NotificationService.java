@@ -1,13 +1,19 @@
 package uk.gov.hmcts.reform.sscs.service;
 
+import static java.util.Objects.nonNull;
 import static uk.gov.hmcts.reform.sscs.ccd.domain.Benefit.getBenefitByCode;
 import static uk.gov.hmcts.reform.sscs.ccd.domain.EventType.SUBSCRIPTION_UPDATED;
 import static uk.gov.hmcts.reform.sscs.config.SubscriptionType.APPOINTEE;
 import static uk.gov.hmcts.reform.sscs.config.SubscriptionType.REPRESENTATIVE;
 import static uk.gov.hmcts.reform.sscs.domain.notify.NotificationEventType.*;
-import static uk.gov.hmcts.reform.sscs.service.NotificationUtils.*;
+import static uk.gov.hmcts.reform.sscs.domain.notify.NotificationEventType.getNotificationByCcdEvent;
+import static uk.gov.hmcts.reform.sscs.service.NotificationUtils.getSubscription;
+import static uk.gov.hmcts.reform.sscs.service.NotificationUtils.isFallbackLetterRequired;
+import static uk.gov.hmcts.reform.sscs.service.NotificationUtils.isOkToSendNotification;
 import static uk.gov.hmcts.reform.sscs.service.NotificationValidService.isMandatoryLetterEventType;
 
+import java.time.LocalDateTime;
+import java.time.ZonedDateTime;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
@@ -20,7 +26,11 @@ import uk.gov.hmcts.reform.sscs.ccd.domain.State;
 import uk.gov.hmcts.reform.sscs.ccd.domain.Subscription;
 import uk.gov.hmcts.reform.sscs.config.NotificationConfig;
 import uk.gov.hmcts.reform.sscs.domain.SubscriptionWithType;
-import uk.gov.hmcts.reform.sscs.domain.notify.*;
+import uk.gov.hmcts.reform.sscs.domain.notify.Destination;
+import uk.gov.hmcts.reform.sscs.domain.notify.Notification;
+import uk.gov.hmcts.reform.sscs.domain.notify.NotificationEventType;
+import uk.gov.hmcts.reform.sscs.domain.notify.Reference;
+import uk.gov.hmcts.reform.sscs.domain.notify.Template;
 import uk.gov.hmcts.reform.sscs.factory.NotificationFactory;
 import uk.gov.hmcts.reform.sscs.factory.NotificationWrapper;
 import uk.gov.hmcts.reform.sscs.utility.PhoneNumbersUtil;
@@ -72,10 +82,17 @@ public class NotificationService {
 
         log.info("Notification event triggered {} for case id {}", notificationType.getId(), caseId);
 
-        if (notificationWrapper.getNotificationType().isAllowOutOfHours() || !outOfHoursCalculator.isItOutOfHours()) {
-            sendNotificationPerSubscription(notificationWrapper, notificationType);
-            reminderService.createReminders(notificationWrapper);
-        } else {
+        if (notificationType.isAllowOutOfHours() || !outOfHoursCalculator.isItOutOfHours()) {
+            if (notificationType.isToBeDelayed() && nonNull(notificationWrapper.getCreatedDate())
+                    && notificationWrapper.getCreatedDate()
+                    .plusSeconds(notificationType.getDelayInSeconds())
+                    .isAfter(LocalDateTime.now())) {
+                notificationHandler.scheduleNotification(notificationWrapper, ZonedDateTime.now().plusSeconds(notificationType.getDelayInSeconds()));
+            } else {
+                sendNotificationPerSubscription(notificationWrapper, notificationType);
+                reminderService.createReminders(notificationWrapper);
+            }
+        } else if (outOfHoursCalculator.isItOutOfHours()) {
             notificationHandler.scheduleNotification(notificationWrapper);
         }
     }
@@ -230,6 +247,7 @@ public class NotificationService {
                     || STRUCK_OUT.equals(notificationType)
                     || DECISION_ISSUED.equals(notificationType)
                     || DIRECTION_ISSUED.equals(notificationType)
+                    || ISSUE_FINAL_DECISION.equals(notificationType)
                     || NotificationEventType.DECISION_ISSUED_2.equals(notificationType))) {
                 log.info(String.format("Cannot complete notification %s as the appeal was dormant for caseId %s.",
                         notificationType.getId(), notificationWrapper.getCaseId()));
