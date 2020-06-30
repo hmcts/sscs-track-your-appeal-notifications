@@ -286,7 +286,7 @@ dependencies {
     compile group: 'uk.gov.hmcts.reform', name: 'sscs-job-scheduler', version: '1.5.2'
     compile group: 'uk.gov.hmcts.reform', name: 'service-auth-provider-client', version: '3.1.2'
 
-    compile group: 'uk.gov.hmcts.reform', name: 'sscs-common', version: '3.3.5-RC-WLA-531'
+    compile group: 'uk.gov.hmcts.reform', name: 'sscs-common', version: '3.3.11-RC-WLA-555'
     compile group: 'uk.gov.hmcts.reform', name: 'sscs-pdf-email-common', version: '1.4.5-RC-WLA-532'
 
     compile group: 'uk.gov.service.notify', name: 'notifications-java-client', version: '3.15.1-RELEASE'
