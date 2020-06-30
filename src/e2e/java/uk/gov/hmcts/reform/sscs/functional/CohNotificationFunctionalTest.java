@@ -25,19 +25,19 @@ import uk.gov.service.notify.NotificationClientException;
 public class CohNotificationFunctionalTest extends AbstractFunctionalTest {
     private static final String COH_URL = "http://coh-cor-aat.service.core-compute-aat.internal";
 
-    @Value("${notification.question_round_issued.emailId}")
+    @Value("${notification.english.question_round_issued.emailId}")
     private String questionRoundIssuedEmailTemplateId;
 
-    @Value("${notification.follow_up_question_round_issued.emailId}")
+    @Value("${notification.english.follow_up_question_round_issued.emailId}")
     private String followupQuestionRoundIssuedEmailTemplateId;
 
-    @Value("${notification.question_deadline_elapsed.emailId}")
+    @Value("${notification.english.question_deadline_elapsed.emailId}")
     private String questionDeadlineElapsedEmailTemplateId;
 
-    @Value("${notification.online.responseReceived.emailId}")
+    @Value("${notification.english.online.responseReceived.emailId}")
     private String onlineResponseReceivedEmailId;
 
-    @Value("${notification.decision_issued.emailId}")
+    @Value("${notification.english.decision_issued.emailId}")
     private String viewIssuedEmailTemplateId;
 
     public CohNotificationFunctionalTest() {
