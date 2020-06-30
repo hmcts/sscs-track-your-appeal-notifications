@@ -1,7 +1,7 @@
 package uk.gov.hmcts.reform.sscs.personalisation;
 
 import static org.hamcrest.CoreMatchers.is;
-import static org.junit.Assert.*;
+import static org.hamcrest.MatcherAssert.assertThat;
 
 import java.time.LocalDate;
 import org.junit.Test;

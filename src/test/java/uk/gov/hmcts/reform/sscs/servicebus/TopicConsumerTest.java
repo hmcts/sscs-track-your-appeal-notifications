@@ -5,6 +5,7 @@ import static org.mockito.Mockito.*;
 import static org.mockito.Mockito.atLeastOnce;
 import static org.mockito.MockitoAnnotations.initMocks;
 
+import java.time.LocalDateTime;
 import java.util.Optional;
 import org.junit.Before;
 import org.junit.Test;
@@ -41,7 +42,7 @@ public class TopicConsumerTest {
                 "jurisdiction",
                 State.APPEAL_CREATED,
                 SscsCaseData.builder().build(),
-                null
+                LocalDateTime.now().minusMinutes(10)
         );
         Callback<SscsCaseData> callback = new Callback<>(caseDetails, Optional.empty(), EventType.EVIDENCE_RECEIVED, true);
         when(deserializer.deserialize(any())).thenReturn(callback);

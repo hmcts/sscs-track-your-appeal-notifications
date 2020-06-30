@@ -1,8 +1,8 @@
 package uk.gov.hmcts.reform.sscs.service;
 
 import static org.hamcrest.CoreMatchers.is;
+import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.closeTo;
-import static org.junit.Assert.assertThat;
 
 import java.security.NoSuchAlgorithmException;
 import java.time.ZoneId;

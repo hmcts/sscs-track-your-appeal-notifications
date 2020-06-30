@@ -2,6 +2,7 @@ package uk.gov.hmcts.reform.sscs.service;
 
 import static uk.gov.hmcts.reform.sscs.ccd.domain.EventType.APPEAL_RECEIVED;
 
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 import junitparams.JUnitParamsRunner;
@@ -190,6 +191,7 @@ public class NotificationServiceBase {
         return SscsCaseDataWrapper.builder()
             .newSscsCaseData(newSscsCaseData)
             .oldSscsCaseData(oldSscsCaseData)
+            .createdDate(LocalDateTime.now().minusMinutes(10))
             .notificationEventType(subscriptionUpdatedNotification).build();
     }
 }
