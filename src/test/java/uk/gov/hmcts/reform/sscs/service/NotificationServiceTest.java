@@ -2026,19 +2026,23 @@ public class NotificationServiceTest {
 
     @Test
     @Parameters({"DIRECTION_ISSUED, directionIssued", "DECISION_ISSUED, decisionIssued", "ISSUE_FINAL_DECISION, issueFinalDecision"})
-    public void overrideNotificationType_whenReissueDocumentEventReceived(NotificationEventType notificationEventType, String eventType) {
-        CcdNotificationWrapper ccdNotificationWrapper = buildBaseWrapper(REISSUE_DOCUMENT,  APPELLANT_WITH_ADDRESS, null, null);
+    public void overrideNotificationType_whenReissueDocumentEventReceived(NotificationEventType notificationEventType, String eventType) throws NotificationClientException, IOException {
+        CcdNotificationWrapper ccdNotificationWrapper = buildBaseWrapper(REISSUE_DOCUMENT,  APPELLANT_WITH_ADDRESS, null, SscsDocument.builder().value(SscsDocumentDetails.builder().build()).build());
         ccdNotificationWrapper.getNewSscsCaseData().setCreatedInGapsFrom(State.VALID_APPEAL.getId());
         ccdNotificationWrapper.getNewSscsCaseData().setResendToAppellant("Yes");
         ccdNotificationWrapper.getNewSscsCaseData().setReissueFurtherEvidenceDocument(new DynamicList(eventType));
+        ccdNotificationWrapper.getNewSscsCaseData().setSubscriptions(null);
 
-        Notification notification = new Notification(Template.builder().emailTemplateId(EMAIL_TEMPLATE_ID).smsTemplateId(null).build(), Destination.builder().email("test@testing.com").sms("07823456746").build(), null, new Reference(), null);
+        Notification notification = new Notification(Template.builder().docmosisTemplateId(LETTER_TEMPLATE_ID).emailTemplateId(null).smsTemplateId(null).build(), Destination.builder().email("test@testing.com").sms("07823456746").build(), null, new Reference(), null);
         given(factory.create(ccdNotificationWrapperCaptor.capture(), eq(getSubscriptionWithType(ccdNotificationWrapper)))).willReturn(notification);
         given(notificationValidService.isHearingTypeValidToSendNotification(
                 any(SscsCaseData.class), any())).willReturn(true);
         given(notificationValidService.isNotificationStillValidToSend(anyList(), any()))
                 .willReturn(true);
         given(notificationValidService.isFallbackLetterRequiredForSubscriptionType(any(), any(), any())).willReturn(true);
+
+        byte[] sampleDirectionCoversheet = IOUtils.toByteArray(getClass().getClassLoader().getResourceAsStream("pdfs/direction-notice-coversheet-sample.pdf"));
+        given(pdfLetterService.generateLetter(any(), any(), any())).willReturn(sampleDirectionCoversheet);
 
         SendNotificationService sendNotificationService = new SendNotificationService(notificationSender, evidenceManagementService, notificationHandler, notificationValidService, pdfLetterService);
 
@@ -2051,7 +2055,7 @@ public class NotificationServiceTest {
         assertEquals(notificationEventType, ccdNotificationWrapperCaptor.getValue().getNotificationType());
 
         then(notificationHandler).should(atLeastOnce()).sendNotification(
-                eq(ccdNotificationWrapper), eq(EMAIL_TEMPLATE_ID), eq("Email"),
+                eq(ccdNotificationWrapper), any(), eq("Letter"),
                 any(NotificationHandler.SendNotification.class));
     }
 

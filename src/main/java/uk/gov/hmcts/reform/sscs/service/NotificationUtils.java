@@ -5,8 +5,7 @@ import static uk.gov.hmcts.reform.sscs.config.SubscriptionType.APPELLANT;
 import static uk.gov.hmcts.reform.sscs.config.SubscriptionType.APPOINTEE;
 import static uk.gov.hmcts.reform.sscs.config.SubscriptionType.REPRESENTATIVE;
 import static uk.gov.hmcts.reform.sscs.domain.notify.NotificationEventType.*;
-import static uk.gov.hmcts.reform.sscs.service.NotificationValidService.FALLBACK_LETTER_SUBSCRIPTION_TYPES;
-import static uk.gov.hmcts.reform.sscs.service.NotificationValidService.LETTER_EVENT_TYPES;
+import static uk.gov.hmcts.reform.sscs.service.NotificationValidService.*;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -117,9 +116,9 @@ public class NotificationUtils {
                                           SubscriptionWithType subscriptionWithType,
                                           NotificationValidService notificationValidService) {
         return ((subscriptionWithType.getSubscription() != null
-                && subscriptionWithType.getSubscription().doesCaseHaveSubscriptions()
-                && isSubscriptionOverridden(wrapper, notificationType, subscriptionWithType))
-                || FALLBACK_LETTER_SUBSCRIPTION_TYPES.contains(notificationType))
+                && subscriptionWithType.getSubscription().doesCaseHaveSubscriptions())
+                || FALLBACK_LETTER_SUBSCRIPTION_TYPES.contains(notificationType)
+                || isSubscriptionOverridden(wrapper, notificationType, subscriptionWithType))
             && notificationValidService.isNotificationStillValidToSend(wrapper.getNewSscsCaseData().getHearings(), notificationType)
             && notificationValidService.isHearingTypeValidToSendNotification(wrapper.getNewSscsCaseData(), notificationType);
     }
@@ -127,15 +126,15 @@ public class NotificationUtils {
     private static boolean isSubscriptionOverridden(NotificationWrapper wrapper, NotificationEventType notificationType, SubscriptionWithType subscriptionWithType) {
         if (NotificationEventType.REISSUE_DOCUMENT.equals(notificationType)) {
             if ((APPELLANT.equals(subscriptionWithType.getSubscriptionType()) || APPOINTEE.equals(subscriptionWithType.getSubscriptionType()))
-                    && !"Yes".equalsIgnoreCase(wrapper.getNewSscsCaseData().getResendToAppellant())) {
-                return false;
+                    && "Yes".equalsIgnoreCase(wrapper.getNewSscsCaseData().getResendToAppellant())) {
+                return true;
             }
             if (REPRESENTATIVE.equals(subscriptionWithType.getSubscriptionType())
-                    && !"Yes".equalsIgnoreCase(wrapper.getNewSscsCaseData().getResendToRepresentative())) {
-                return false;
+                    && "Yes".equalsIgnoreCase(wrapper.getNewSscsCaseData().getResendToRepresentative())) {
+                return true;
             }
         }
-        return true;
+        return false;
     }
 
     static boolean isFallbackLetterRequired(NotificationWrapper wrapper, SubscriptionWithType subscriptionWithType,
