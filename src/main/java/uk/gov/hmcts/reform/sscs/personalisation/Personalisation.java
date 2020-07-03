@@ -92,9 +92,6 @@ public class Personalisation<E extends NotificationWrapper> {
     @Autowired
     private EvidenceProperties evidenceProperties;
 
-    @Autowired
-    private LocalDateToWelshStringConverter localDateToWelshStringConverter;
-
     private static String tya(Subscription subscription) {
         if (subscription != null) {
             return StringUtils.defaultIfBlank(subscription.getTya(), StringUtils.EMPTY);
@@ -149,7 +146,7 @@ public class Personalisation<E extends NotificationWrapper> {
 
     public void translateToWelshDate(String key, LocalDate localDate, SscsCaseData sscsCaseData, Map<String, String> placeholders) {
         if (sscsCaseData.isLanguagePreferenceWelsh()) {
-            placeholders.put(key, localDateToWelshStringConverter.convert(localDate));
+            placeholders.put(key, LocalDateToWelshStringConverter.convert(localDate));
         }
     }
 

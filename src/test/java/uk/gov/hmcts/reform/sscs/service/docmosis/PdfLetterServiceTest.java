@@ -108,8 +108,8 @@ public class PdfLetterServiceTest {
                 address.getTown(),
                 address.getCounty(),
                 address.getPostcode(),
-                DOCMOSIS_TEMPLATES_CONFIG.getHmctsImgVal()
-        );
+                DOCMOSIS_TEMPLATES_CONFIG.getHmctsImgVal(),
+                DOCMOSIS_TEMPLATES_CONFIG.getWelshHmctsImgVal());
         verify(docmosisPdfService).createPdf(eq(pdfCoverSheet), eq("my01.doc"));
     }
 

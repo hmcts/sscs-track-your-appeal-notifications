@@ -15,4 +15,6 @@ public class DocmosisTemplatesConfig {
     private Map<String, String> coversheets;
     private String hmctsImgVal;
     private String hmctsImgKey;
+    private String welshHmctsImgVal;
+    private String welshHmctsImgKey;
 }

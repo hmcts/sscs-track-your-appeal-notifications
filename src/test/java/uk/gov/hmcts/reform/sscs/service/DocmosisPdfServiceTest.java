@@ -34,10 +34,11 @@ public class DocmosisPdfServiceTest {
         expectedPlaceholders.put("address_county", "addressCounty");
         expectedPlaceholders.put("address_postcode", "addressPostcode");
         expectedPlaceholders.put("hmcts2", "image");
+        expectedPlaceholders.put("welsh_hmcts_img", "welshImg");
 
         pdfCoverSheet = new PdfCoverSheet(
-                "caseId",  "name","addressLine1", "addressLine2", "addressTown", "addressCounty", "addressPostcode", "image"
-        );
+                "caseId",  "name","addressLine1", "addressLine2", "addressTown", "addressCounty", "addressPostcode", "image",
+                "welshImg");
         docmosisPdfGenerationService = mock(DocmosisPdfGenerationService.class);
     }
 

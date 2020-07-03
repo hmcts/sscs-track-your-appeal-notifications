@@ -77,8 +77,8 @@ public class PdfLetterService {
                 addressToUse.getTown(),
                 addressToUse.getCounty(),
                 addressToUse.getPostcode(),
-                docmosisTemplatesConfig.getHmctsImgVal()
-        );
+                docmosisTemplatesConfig.getHmctsImgVal(),
+                docmosisTemplatesConfig.getWelshHmctsImgVal());
         String templatePath = docmosisTemplatesConfig.getCoversheets().get(wrapper.getNotificationType().getId());
         if (StringUtils.isBlank(templatePath)) {
             throw new PdfGenerationException(
@@ -105,6 +105,7 @@ public class PdfLetterService {
             Address addressToUse = getAddressToUseForLetter(wrapper, subscriptionType);
             buildRecipientAddressPlaceholders(addressToUse, placeholders);
             placeholders.put(docmosisTemplatesConfig.getHmctsImgKey(), docmosisTemplatesConfig.getHmctsImgVal());
+            placeholders.put(docmosisTemplatesConfig.getWelshHmctsImgKey(), docmosisTemplatesConfig.getWelshHmctsImgVal());
             return docmosisPdfService.createPdfFromMap(placeholders, notification.getDocmosisLetterTemplate());
         }
         return new byte[0];

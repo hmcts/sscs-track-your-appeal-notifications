@@ -7,7 +7,6 @@ import static org.junit.Assert.assertNull;
 import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.Mockito.any;
 import static org.mockito.Mockito.anyString;
-import static org.mockito.Mockito.isA;
 import static org.mockito.Mockito.never;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
@@ -60,7 +59,6 @@ import uk.gov.hmcts.reform.sscs.factory.CcdNotificationWrapper;
 import uk.gov.hmcts.reform.sscs.factory.NotificationWrapper;
 import uk.gov.hmcts.reform.sscs.service.MessageAuthenticationServiceImpl;
 import uk.gov.hmcts.reform.sscs.service.RegionalProcessingCenterService;
-import uk.gov.hmcts.reform.sscs.service.conversion.LocalDateToWelshStringConverter;
 
 @RunWith(JUnitParamsRunner.class)
 public class PersonalisationTest {
@@ -92,9 +90,6 @@ public class PersonalisationTest {
 
     @Mock
     private EvidenceProperties evidenceProperties;
-
-    @Mock
-    private LocalDateToWelshStringConverter localDateToWelshStringConverter;
 
     @InjectMocks
     public Personalisation personalisation;
@@ -165,8 +160,6 @@ public class PersonalisationTest {
         evidenceAddress.setPostcode(evidenceAddressPostcode);
         evidenceAddress.setTelephone(evidenceAddressTelephone);
         when(evidenceProperties.getAddress()).thenReturn(evidenceAddress);
-
-        when(localDateToWelshStringConverter.convert(isA(LocalDate.class))).thenReturn("22-Mehefin-2020");
     }
 
     @Test
@@ -555,7 +548,7 @@ public class PersonalisationTest {
                 .build();
 
         Map result = personalisation.setEventData(new HashMap<>(), response, APPEAL_RECEIVED_NOTIFICATION);
-
+        assertNull("Welsh date is set ", result.get(WELSH_APPEAL_RESPOND_DATE));
         assertEquals("5 August 2018", result.get(APPEAL_RESPOND_DATE));
     }
 
@@ -574,7 +567,6 @@ public class PersonalisationTest {
 
         Map result = personalisation.setEventData(new HashMap<>(), response, APPEAL_RECEIVED_NOTIFICATION);
 
-        verify(localDateToWelshStringConverter).convert(isA(LocalDate.class));
         assertNotNull("Welsh date is set ", result.get(WELSH_APPEAL_RESPOND_DATE));
         assertEquals("5 August 2018", result.get(APPEAL_RESPOND_DATE));
     }
@@ -589,7 +581,7 @@ public class PersonalisationTest {
                 .build();
 
         Map<String, String> result = personalisation.setEventData(new HashMap<>(), response, APPEAL_RECEIVED_NOTIFICATION);
-
+        assertNull("Welsh date is set ", result.get(WELSH_APPEAL_RESPOND_DATE));
         assertEquals("5 August 2018", result.get(APPEAL_RESPOND_DATE));
     }
 
@@ -605,7 +597,6 @@ public class PersonalisationTest {
 
         Map<String, String> result = personalisation.setEventData(new HashMap<>(), response, APPEAL_RECEIVED_NOTIFICATION);
 
-        verify(localDateToWelshStringConverter).convert(isA(LocalDate.class));
         assertNotNull("Welsh date is set ", result.get(WELSH_APPEAL_RESPOND_DATE));
         assertEquals("5 August 2018", result.get(APPEAL_RESPOND_DATE));
     }

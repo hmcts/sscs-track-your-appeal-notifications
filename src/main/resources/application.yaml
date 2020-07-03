@@ -489,6 +489,8 @@ pdf-service:
     uri: ${PDF_SERVICE_HEALTH_URL:https://docmosis-development.platform.hmcts.net/rs/status}
   hmctsImgKey: hmcts2
   hmctsImgVal: "[userImage:hmcts.png]"
+  welshHmctsImgKey: welshHmcts2
+  welshHmctsImgVal: "[userImage:welshhmcts.png]"
   coverSheets:
     appealReceived: 'TB-SCS-GNO-ENG-00012.docx'
     directionIssued: 'TB-SCS-GNO-ENG-00012.docx'
