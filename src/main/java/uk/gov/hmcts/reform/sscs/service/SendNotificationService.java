@@ -64,7 +64,7 @@ public class SendNotificationService {
             Notification notification,
             SubscriptionWithType subscriptionWithType,
             NotificationEventType eventType) {
-        boolean emailSent = sendEmailNotification(wrapper, subscriptionWithType, notification);
+        boolean emailSent = sendEmailNotification(wrapper, subscriptionWithType.getSubscription(), notification);
         boolean smsSent = sendSmsNotification(wrapper, subscriptionWithType.getSubscription(), notification, eventType);
 
         boolean isInterlocLetter = INTERLOC_LETTERS.contains(eventType);
@@ -118,8 +118,8 @@ public class SendNotificationService {
         return false;
     }
 
-    private boolean sendEmailNotification(NotificationWrapper wrapper, SubscriptionWithType subscriptionWithType, Notification notification) {
-        if (isOkToSendEmailNotification(wrapper, subscriptionWithType, notification, notificationValidService)) {
+    private boolean sendEmailNotification(NotificationWrapper wrapper, Subscription subscription, Notification notification) {
+        if (isOkToSendEmailNotification(wrapper, subscription, notification, notificationValidService)) {
 
             NotificationHandler.SendNotification sendNotification = () ->
                     notificationSender.sendEmail(

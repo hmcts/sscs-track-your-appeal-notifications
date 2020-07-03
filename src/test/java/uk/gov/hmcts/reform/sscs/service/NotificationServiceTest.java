@@ -25,6 +25,7 @@ import java.time.ZonedDateTime;
 import java.util.*;
 import junitparams.JUnitParamsRunner;
 import junitparams.Parameters;
+import junitparams.converters.Nullable;
 import org.apache.pdfbox.io.IOUtils;
 import org.junit.Before;
 import org.junit.Test;
@@ -2025,12 +2026,11 @@ public class NotificationServiceTest {
     }
 
     @Test
-    @Parameters({"DIRECTION_ISSUED, directionIssued", "DECISION_ISSUED, decisionIssued", "ISSUE_FINAL_DECISION, issueFinalDecision"})
-    public void overrideNotificationType_whenReissueDocumentEventReceived(NotificationEventType notificationEventType, String eventType) throws NotificationClientException, IOException {
+    @Parameters({"DIRECTION_ISSUED", "DECISION_ISSUED", "ISSUE_FINAL_DECISION"})
+    public void givenReissueDocumentEventReceivedAndResendToAppellantYes_thenOverrideNotificationTypeAndSendToAppellant(NotificationEventType notificationEventType) throws IOException {
         CcdNotificationWrapper ccdNotificationWrapper = buildBaseWrapper(REISSUE_DOCUMENT,  APPELLANT_WITH_ADDRESS, null, SscsDocument.builder().value(SscsDocumentDetails.builder().build()).build());
-        ccdNotificationWrapper.getNewSscsCaseData().setCreatedInGapsFrom(State.VALID_APPEAL.getId());
         ccdNotificationWrapper.getNewSscsCaseData().setResendToAppellant("Yes");
-        ccdNotificationWrapper.getNewSscsCaseData().setReissueFurtherEvidenceDocument(new DynamicList(eventType));
+        ccdNotificationWrapper.getNewSscsCaseData().setReissueFurtherEvidenceDocument(new DynamicList(notificationEventType.getId()));
         ccdNotificationWrapper.getNewSscsCaseData().setSubscriptions(null);
 
         Notification notification = new Notification(Template.builder().docmosisTemplateId(LETTER_TEMPLATE_ID).emailTemplateId(null).smsTemplateId(null).build(), Destination.builder().email("test@testing.com").sms("07823456746").build(), null, new Reference(), null);
@@ -2044,11 +2044,46 @@ public class NotificationServiceTest {
         byte[] sampleDirectionCoversheet = IOUtils.toByteArray(getClass().getClassLoader().getResourceAsStream("pdfs/direction-notice-coversheet-sample.pdf"));
         given(pdfLetterService.generateLetter(any(), any(), any())).willReturn(sampleDirectionCoversheet);
 
-        SendNotificationService sendNotificationService = new SendNotificationService(notificationSender, evidenceManagementService, notificationHandler, notificationValidService, pdfLetterService);
+        notificationService.manageNotificationAndSubscription(ccdNotificationWrapper);
 
-        final NotificationService notificationService = new NotificationService(factory, reminderService,
-                notificationValidService, notificationHandler, outOfHoursCalculator, notificationConfig, sendNotificationService, false
-        );
+        assertEquals(notificationEventType, ccdNotificationWrapperCaptor.getValue().getNotificationType());
+
+        then(notificationHandler).should(atLeastOnce()).sendNotification(
+                eq(ccdNotificationWrapper), any(), eq("Letter"),
+                any(NotificationHandler.SendNotification.class));
+    }
+
+    @Test
+    @Parameters({"DIRECTION_ISSUED, No", "DIRECTION_ISSUED, null", "DECISION_ISSUED, No", "DECISION_ISSUED, null", "ISSUE_FINAL_DECISION, No", "ISSUE_FINAL_DECISION, null"})
+    public void givenReissueDocumentEventReceivedAndResendToAppellantNotSet_thenDoNotSendToAppellant(NotificationEventType notificationEventType, @Nullable String resendToAppellant) {
+        CcdNotificationWrapper ccdNotificationWrapper = buildBaseWrapper(REISSUE_DOCUMENT,  APPELLANT_WITH_ADDRESS, null, SscsDocument.builder().value(SscsDocumentDetails.builder().build()).build());
+        ccdNotificationWrapper.getNewSscsCaseData().setResendToAppellant(resendToAppellant);
+        ccdNotificationWrapper.getNewSscsCaseData().setReissueFurtherEvidenceDocument(new DynamicList(notificationEventType.getId()));
+        ccdNotificationWrapper.getNewSscsCaseData().setSubscriptions(null);
+
+        notificationService.manageNotificationAndSubscription(ccdNotificationWrapper);
+
+        verifyNoInteractions(notificationHandler);
+    }
+
+    @Test
+    @Parameters({"DIRECTION_ISSUED", "DECISION_ISSUED", "ISSUE_FINAL_DECISION"})
+    public void givenReissueDocumentEventReceivedAndResendToRepYes_thenOverrideNotificationTypeAndSendToRep(NotificationEventType notificationEventType) throws IOException {
+        CcdNotificationWrapper ccdNotificationWrapper = buildBaseWrapper(REISSUE_DOCUMENT,  APPELLANT_WITH_ADDRESS, Representative.builder().hasRepresentative("yes").address(Address.builder().line1("test").postcode("Bla").build()).build(), SscsDocument.builder().value(SscsDocumentDetails.builder().build()).build());
+        ccdNotificationWrapper.getNewSscsCaseData().setResendToRepresentative("Yes");
+        ccdNotificationWrapper.getNewSscsCaseData().setReissueFurtherEvidenceDocument(new DynamicList(notificationEventType.getId()));
+        ccdNotificationWrapper.getNewSscsCaseData().setSubscriptions(null);
+
+        Notification notification = new Notification(Template.builder().docmosisTemplateId(LETTER_TEMPLATE_ID).emailTemplateId(null).smsTemplateId(null).build(), Destination.builder().email("test@testing.com").sms("07823456746").build(), null, new Reference(), null);
+        given(factory.create(ccdNotificationWrapperCaptor.capture(), eq(getSubscriptionWithTypeRep(ccdNotificationWrapper)))).willReturn(notification);
+        given(notificationValidService.isHearingTypeValidToSendNotification(
+                any(SscsCaseData.class), any())).willReturn(true);
+        given(notificationValidService.isNotificationStillValidToSend(anyList(), any()))
+                .willReturn(true);
+        given(notificationValidService.isFallbackLetterRequiredForSubscriptionType(any(), any(), any())).willReturn(true);
+
+        byte[] sampleDirectionCoversheet = IOUtils.toByteArray(getClass().getClassLoader().getResourceAsStream("pdfs/direction-notice-coversheet-sample.pdf"));
+        given(pdfLetterService.generateLetter(any(), any(), any())).willReturn(sampleDirectionCoversheet);
 
         notificationService.manageNotificationAndSubscription(ccdNotificationWrapper);
 
@@ -2058,6 +2093,20 @@ public class NotificationServiceTest {
                 eq(ccdNotificationWrapper), any(), eq("Letter"),
                 any(NotificationHandler.SendNotification.class));
     }
+
+    @Test
+    @Parameters({"DIRECTION_ISSUED, No", "DIRECTION_ISSUED, null", "DECISION_ISSUED, No", "DECISION_ISSUED, null", "ISSUE_FINAL_DECISION, No", "ISSUE_FINAL_DECISION, null"})
+    public void givenReissueDocumentEventReceivedAndResendToRepNotSet_thenDoNotSendToRep(NotificationEventType notificationEventType, @Nullable String resendToRep) {
+        CcdNotificationWrapper ccdNotificationWrapper = buildBaseWrapper(REISSUE_DOCUMENT,  APPELLANT_WITH_ADDRESS, Representative.builder().hasRepresentative("yes").build(), SscsDocument.builder().value(SscsDocumentDetails.builder().build()).build());
+        ccdNotificationWrapper.getNewSscsCaseData().setResendToRepresentative(resendToRep);
+        ccdNotificationWrapper.getNewSscsCaseData().setReissueFurtherEvidenceDocument(new DynamicList(notificationEventType.getId()));
+        ccdNotificationWrapper.getNewSscsCaseData().setSubscriptions(null);
+
+        notificationService.manageNotificationAndSubscription(ccdNotificationWrapper);
+
+        verifyNoInteractions(notificationHandler);
+    }
+
 
     @SuppressWarnings({"Indentation", "UnusedPrivateMethod"})
     private Object[] allEventTypesExceptRequestInfoIncomplete() {
@@ -2125,6 +2174,10 @@ public class NotificationServiceTest {
 
     private SubscriptionWithType getSubscriptionWithType(CcdNotificationWrapper ccdNotificationWrapper) {
         return new SubscriptionWithType(getSubscription(ccdNotificationWrapper.getNewSscsCaseData(), SubscriptionType.APPELLANT), SubscriptionType.APPELLANT);
+    }
+
+    private SubscriptionWithType getSubscriptionWithTypeRep(CcdNotificationWrapper ccdNotificationWrapper) {
+        return new SubscriptionWithType(getSubscription(ccdNotificationWrapper.getNewSscsCaseData(), REPRESENTATIVE), SubscriptionType.REPRESENTATIVE);
     }
 
     public static CcdNotificationWrapper buildBaseWrapper(NotificationEventType eventType, Appellant appellant, Representative rep, SscsDocument sscsDocument) {
