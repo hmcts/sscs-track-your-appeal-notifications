@@ -37,6 +37,7 @@ public final class AppConstants {
     public static final String HEARING_ARRANGEMENT_DETAILS_LITERAL = "hearing_arrangement_details";
     public static final String HEARING_CONTACT_DATE = "hearing_contact_date";
     public static final String HEARING_DATE = "hearing_date";
+    public static final String WELSH_HEARING_DATE = "welsh_hearing_date";
     public static final String HEARING_DETAILS_LITERAL = "hearing_details";
     public static final String HEARING_INFO_LINK_LITERAL = "hearing_info_link";
     public static final String HEARING_TIME = "hearing_time";

@@ -198,6 +198,7 @@ public class Personalisation<E extends NotificationWrapper> {
                 HearingDetails latestHearingValue = latestHearing.getValue();
                 LocalDateTime hearingDateTime = latestHearingValue.getHearingDateTime();
                 personalisation.put(HEARING_DATE, formatLocalDate(hearingDateTime.toLocalDate()));
+                translateToWelshDate(WELSH_HEARING_DATE, hearingDateTime.toLocalDate(), ccdResponse, personalisation);
                 personalisation.put(HEARING_TIME, formatLocalTime(hearingDateTime));
                 personalisation.put(VENUE_ADDRESS_LITERAL, formatAddress(latestHearing));
                 personalisation.put(VENUE_MAP_LINK_LITERAL, latestHearingValue.getVenue().getGoogleMapLink());

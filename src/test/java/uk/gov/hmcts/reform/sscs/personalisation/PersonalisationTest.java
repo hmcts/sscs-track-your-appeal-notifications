@@ -59,6 +59,7 @@ import uk.gov.hmcts.reform.sscs.factory.CcdNotificationWrapper;
 import uk.gov.hmcts.reform.sscs.factory.NotificationWrapper;
 import uk.gov.hmcts.reform.sscs.service.MessageAuthenticationServiceImpl;
 import uk.gov.hmcts.reform.sscs.service.RegionalProcessingCenterService;
+import uk.gov.hmcts.reform.sscs.service.conversion.LocalDateToWelshStringConverter;
 
 @RunWith(JUnitParamsRunner.class)
 public class PersonalisationTest {
@@ -711,6 +712,40 @@ public class PersonalisationTest {
                 .newSscsCaseData(response).notificationEventType(hearingNotificationEventType).build(),
                 new SubscriptionWithType(subscriptions.getAppellantSubscription(), subscriptionType));
 
+        assertEquals(hearingDate.format(DateTimeFormatter.ofPattern(RESPONSE_DATE_FORMAT)), result.get(HEARING_DATE));
+        assertEquals("12:00 PM", result.get(HEARING_TIME));
+        assertEquals("The venue, 12 The Road Avenue, Village, Aberdeen, Aberdeenshire, AB12 0HN", result.get(VENUE_ADDRESS_LITERAL));
+        assertEquals("http://www.googlemaps.com/aberdeenvenue", result.get(VENUE_MAP_LINK_LITERAL));
+        assertEquals("in 7 days", result.get(DAYS_TO_HEARING_LITERAL));
+        assertNull("Welsh hearing date should not be set", result.get(WELSH_HEARING_DATE));
+    }
+
+    @Test
+    @Parameters(method = "generateHearingNotificationTypeAndSubscriptionsScenarios")
+    public void givenHearingData_correctlySetTheHearingDetails_welsh(NotificationEventType hearingNotificationEventType,
+                                                               SubscriptionType subscriptionType) {
+        LocalDate hearingDate = LocalDate.now().plusDays(7);
+
+        Hearing hearing = createHearing(hearingDate);
+
+        List<Hearing> hearingList = new ArrayList<>();
+        hearingList.add(hearing);
+
+        SscsCaseData response = SscsCaseData.builder()
+                .ccdCaseId(CASE_ID).caseReference("SC/1234/5")
+                .appeal(Appeal.builder().benefitType(BenefitType.builder().code("PIP").build())
+                        .appellant(Appellant.builder().name(name).build())
+                        .build())
+                .subscriptions(subscriptions)
+                .hearings(hearingList)
+                .languagePreferenceWelsh("Yes")
+                .build();
+
+        Map result = personalisation.create(SscsCaseDataWrapper.builder()
+                .newSscsCaseData(response).notificationEventType(hearingNotificationEventType).build(),
+                new SubscriptionWithType(subscriptions.getAppellantSubscription(), subscriptionType));
+
+        assertEquals("Welsh hearing date is not set", LocalDateToWelshStringConverter.convert(hearingDate), result.get(WELSH_HEARING_DATE));
         assertEquals(hearingDate.format(DateTimeFormatter.ofPattern(RESPONSE_DATE_FORMAT)), result.get(HEARING_DATE));
         assertEquals("12:00 PM", result.get(HEARING_TIME));
         assertEquals("The venue, 12 The Road Avenue, Village, Aberdeen, Aberdeenshire, AB12 0HN", result.get(VENUE_ADDRESS_LITERAL));
