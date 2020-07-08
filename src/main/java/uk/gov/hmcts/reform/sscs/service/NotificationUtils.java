@@ -5,8 +5,7 @@ import static uk.gov.hmcts.reform.sscs.config.SubscriptionType.APPELLANT;
 import static uk.gov.hmcts.reform.sscs.config.SubscriptionType.APPOINTEE;
 import static uk.gov.hmcts.reform.sscs.config.SubscriptionType.REPRESENTATIVE;
 import static uk.gov.hmcts.reform.sscs.domain.notify.NotificationEventType.*;
-import static uk.gov.hmcts.reform.sscs.service.NotificationValidService.FALLBACK_LETTER_SUBSCRIPTION_TYPES;
-import static uk.gov.hmcts.reform.sscs.service.NotificationValidService.LETTER_EVENT_TYPES;
+import static uk.gov.hmcts.reform.sscs.service.NotificationValidService.*;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -116,8 +115,9 @@ public class NotificationUtils {
     static boolean isOkToSendNotification(NotificationWrapper wrapper, NotificationEventType notificationType,
                                           Subscription subscription,
                                           NotificationValidService notificationValidService) {
-        return ((subscription != null && subscription.doesCaseHaveSubscriptions())
-            || FALLBACK_LETTER_SUBSCRIPTION_TYPES.contains(notificationType))
+        return ((subscription != null
+                && subscription.doesCaseHaveSubscriptions())
+                || FALLBACK_LETTER_SUBSCRIPTION_TYPES.contains(notificationType))
             && notificationValidService.isNotificationStillValidToSend(wrapper.getNewSscsCaseData().getHearings(), notificationType)
             && notificationValidService.isHearingTypeValidToSendNotification(wrapper.getNewSscsCaseData(), notificationType);
     }
