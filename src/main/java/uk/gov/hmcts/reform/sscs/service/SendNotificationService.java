@@ -1,6 +1,7 @@
 package uk.gov.hmcts.reform.sscs.service;
 
 import static org.apache.commons.lang3.StringUtils.*;
+import static uk.gov.hmcts.reform.sscs.ccd.callback.DocumentType.*;
 import static uk.gov.hmcts.reform.sscs.config.AppConstants.*;
 import static uk.gov.hmcts.reform.sscs.domain.notify.NotificationEventType.*;
 import static uk.gov.hmcts.reform.sscs.service.LetterUtils.*;
@@ -18,7 +19,6 @@ import org.apache.commons.lang3.ArrayUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
-import uk.gov.hmcts.reform.sscs.ccd.callback.DocumentType;
 import uk.gov.hmcts.reform.sscs.ccd.domain.*;
 import uk.gov.hmcts.reform.sscs.config.SubscriptionType;
 import uk.gov.hmcts.reform.sscs.domain.SubscriptionWithType;
@@ -286,19 +286,21 @@ public class SendNotificationService {
     }
 
     protected static String getBundledLetterDocumentUrl(NotificationEventType notificationEventType, SscsCaseData newSscsCaseData) {
-        String documentUrl = null;
         if (DIRECTION_ISSUED.equals(notificationEventType)) {
-            SscsDocument sscsDocument = newSscsCaseData.getLatestDocumentForDocumentType(DocumentType.DIRECTION_NOTICE);
-            if (sscsDocument != null) {
-                documentUrl = sscsDocument.getValue().getDocumentLink().getDocumentUrl();
-            }
-        } else if (DECISION_ISSUED.equals(notificationEventType) || ISSUE_FINAL_DECISION.equals(notificationEventType)) {
-            SscsDocument sscsDocument = newSscsCaseData.getLatestDocumentForDocumentType(DocumentType.DECISION_NOTICE);
-            if (sscsDocument != null) {
-                documentUrl = sscsDocument.getValue().getDocumentLink().getDocumentUrl();
-            }
+            return getDocumentForType(newSscsCaseData.getLatestDocumentForDocumentType(DIRECTION_NOTICE));
+        } else if (DECISION_ISSUED.equals(notificationEventType)) {
+            return getDocumentForType(newSscsCaseData.getLatestDocumentForDocumentType(DECISION_NOTICE));
+        } else if (ISSUE_FINAL_DECISION.equals(notificationEventType)) {
+            return getDocumentForType(newSscsCaseData.getLatestDocumentForDocumentType(FINAL_DECISION_NOTICE));
         }
-        return documentUrl;
+        return null;
+    }
+
+    private static String getDocumentForType(SscsDocument sscsDocument) {
+        if (sscsDocument != null) {
+            return sscsDocument.getValue().getDocumentLink().getDocumentUrl();
+        }
+        return null;
     }
 
 }
