@@ -184,8 +184,8 @@ public class SyaAppealCreatedAndReceivedPersonalisation extends WithRepresentati
 
         if (appealReasons.getReasons() != null && !appealReasons.getReasons().isEmpty()) {
             for (AppealReason reason : appealReasons.getReasons()) {
-                appealReasonsBuilder.append("What you disagree with: ").append(reason.getValue().getDescription()).append(TWO_NEW_LINES)
-                    .append("Why you disagree with it: ").append(reason.getValue().getReason()).append(TWO_NEW_LINES);
+                appealReasonsBuilder.append("What you disagree with: ").append(reason.getValue().getReason()).append(TWO_NEW_LINES)
+                    .append("Why you disagree with it: ").append(reason.getValue().getDescription()).append(TWO_NEW_LINES);
             }
         }
 
