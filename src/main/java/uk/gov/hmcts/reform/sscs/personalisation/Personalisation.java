@@ -174,7 +174,9 @@ public class Personalisation<E extends NotificationWrapper> {
         }
         translateToWelshDate(WELSH_CURRENT_DATE, LocalDate.now(), ccdResponse, personalisation);
         personalisation.put(PANEL_COMPOSITION, getPanelCompositionByBenefitType(benefit));
-        personalisation.put(DECISION_POSTED_RECEIVE_DATE, formatLocalDate(LocalDate.now().plusDays(7)));
+        LocalDate decisionPostedReceivedDate = LocalDate.now().plusDays(7);
+        personalisation.put(DECISION_POSTED_RECEIVE_DATE, formatLocalDate(decisionPostedReceivedDate));
+        translateToWelshDate(WELSH_DECISION_POSTED_RECEIVE_DATE, decisionPostedReceivedDate, ccdResponse, personalisation);
         personalisation.put(APPEAL_REF, getAppealReference(ccdResponse));
         personalisation.put(APPELLANT_NAME, ccdResponse.getAppeal().getAppellant().getName().getFullNameNoTitle());
         personalisation.put(NAME, getName(subscriptionWithType.getSubscriptionType(), ccdResponse, responseWrapper));

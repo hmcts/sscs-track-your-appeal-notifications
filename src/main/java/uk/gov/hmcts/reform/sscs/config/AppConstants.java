@@ -27,6 +27,7 @@ public final class AppConstants {
     public static final String DAYS_STRING = " days";
     public static final String DAYS_TO_HEARING_LITERAL = "days_to_hearing_text";
     public static final String DECISION_POSTED_RECEIVE_DATE = "decision_posted_receive_date";
+    public static final String WELSH_DECISION_POSTED_RECEIVE_DATE = "welsh_decision_posted_receive_date";
     public static final String DWP_ACRONYM = "DWP";
     public static final String DWP_FUL_NAME = "Department for Work and Pensions";
     public static final String ESA_PANEL_COMPOSITION = "judge and a doctor";

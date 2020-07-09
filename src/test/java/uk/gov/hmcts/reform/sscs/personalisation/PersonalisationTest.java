@@ -25,6 +25,7 @@ import static uk.gov.hmcts.reform.sscs.domain.notify.NotificationEventType.*;
 
 import java.time.Instant;
 import java.time.LocalDate;
+import java.time.Month;
 import java.time.ZoneId;
 import java.time.ZonedDateTime;
 import java.time.format.DateTimeFormatter;
@@ -35,6 +36,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
+import java.util.function.BiFunction;
 
 import junitparams.JUnitParamsRunner;
 import junitparams.Parameters;
@@ -568,7 +570,7 @@ public class PersonalisationTest {
                 .build();
 
         Map result = personalisation.setEventData(new HashMap<>(), response, APPEAL_RECEIVED_NOTIFICATION);
-        assertEquals("Welsh date is set ", LocalDateToWelshStringConverter.convert(LocalDate.of(2018, 8, 5)), result.get(WELSH_APPEAL_RESPOND_DATE));
+        assertEquals("Welsh date is set ", getWelshDate().apply(APPEAL_RESPOND_DATE, result), result.get(WELSH_APPEAL_RESPOND_DATE));
         assertEquals("5 August 2018", result.get(APPEAL_RESPOND_DATE));
     }
 
@@ -598,7 +600,7 @@ public class PersonalisationTest {
 
         Map<String, String> result = personalisation.setEventData(new HashMap<>(), response, APPEAL_RECEIVED_NOTIFICATION);
 
-        assertEquals("Welsh date is set ", LocalDateToWelshStringConverter.convert(LocalDate.of(2018, 8, 5)), result.get(WELSH_APPEAL_RESPOND_DATE));
+        assertEquals("Welsh date is set ", getWelshDate().apply(APPEAL_RESPOND_DATE, result), result.get(WELSH_APPEAL_RESPOND_DATE));
         assertEquals("5 August 2018", result.get(APPEAL_RESPOND_DATE));
     }
 
@@ -789,7 +791,7 @@ public class PersonalisationTest {
     }
 
     @Test
-    public void checkWelshCurrentDataIsSet() {
+    public void checkWelshDatesAreSet() {
         LocalDate hearingDate = LocalDate.now().plusDays(1);
 
         Hearing hearing = createHearing(hearingDate);
@@ -810,11 +812,22 @@ public class PersonalisationTest {
         Map result = personalisation.create(SscsCaseDataWrapper.builder().newSscsCaseData(response)
                 .notificationEventType(HEARING_BOOKED_NOTIFICATION).build(), new SubscriptionWithType(subscriptions.getAppellantSubscription(), APPELLANT));
         assertEquals("Welsh current date is set", LocalDateToWelshStringConverter.convert(LocalDate.now()), result.get(WELSH_CURRENT_DATE));
+        assertEquals("Welsh decision posted receive date", getWelshDate().apply(DECISION_POSTED_RECEIVE_DATE, result), result.get(WELSH_DECISION_POSTED_RECEIVE_DATE));
         assertEquals("tomorrow", result.get(DAYS_TO_HEARING_LITERAL));
     }
 
+    public BiFunction<String, Map<String, String>, String> getWelshDate() {
+        return (dateKey, result) -> {
+            String decisionPostedReviveDate = result.get(dateKey);
+            String[] s = decisionPostedReviveDate.split(" ");
+            Month month = Month.valueOf(s[1].toUpperCase());
+            LocalDate localDate = LocalDate.of(Integer.parseInt(s[2]), month, Integer.parseInt(s[0]));
+            return LocalDateToWelshStringConverter.convert(localDate);
+        };
+    }
+
     @Test
-    public void checkWelshCurrentDataIsNotSet() {
+    public void checkWelshDataAreNotSet() {
         LocalDate hearingDate = LocalDate.now().plusDays(1);
 
         Hearing hearing = createHearing(hearingDate);
@@ -834,6 +847,7 @@ public class PersonalisationTest {
         Map result = personalisation.create(SscsCaseDataWrapper.builder().newSscsCaseData(response)
                 .notificationEventType(HEARING_BOOKED_NOTIFICATION).build(), new SubscriptionWithType(subscriptions.getAppellantSubscription(), APPELLANT));
         assertNull("Welsh current date is not set", result.get(WELSH_CURRENT_DATE));
+        assertNull("Welsh decision posted receive date is not set", result.get(WELSH_DECISION_POSTED_RECEIVE_DATE));
         assertEquals("tomorrow", result.get(DAYS_TO_HEARING_LITERAL));
     }
 
