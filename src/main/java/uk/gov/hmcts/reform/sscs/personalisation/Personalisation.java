@@ -172,6 +172,7 @@ public class Personalisation<E extends NotificationWrapper> {
         } catch (BenefitMappingException bme) {
             log.warn("Proceeding with 'null' benefit type for case !");
         }
+        translateToWelshDate(WELSH_CURRENT_DATE, LocalDate.now(), ccdResponse, personalisation);
         personalisation.put(PANEL_COMPOSITION, getPanelCompositionByBenefitType(benefit));
         personalisation.put(DECISION_POSTED_RECEIVE_DATE, formatLocalDate(LocalDate.now().plusDays(7)));
         personalisation.put(APPEAL_REF, getAppealReference(ccdResponse));

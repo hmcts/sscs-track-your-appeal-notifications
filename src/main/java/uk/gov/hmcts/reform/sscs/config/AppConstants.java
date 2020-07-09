@@ -76,6 +76,7 @@ public final class AppConstants {
     public static final String VENUE_MAP_LINK_LITERAL = "venue_map_link";
     public static final String YOUR_DETAILS_LITERAL = "your_details";
     public static final String ZONE_ID = "Europe/London";
+    public static final String WELSH_CURRENT_DATE = "welsh_current_date";
 
     public static final String ADDRESS_NAME = "address_name";
     public static final String ADDRESS_LINE_1 = "address_line_1";

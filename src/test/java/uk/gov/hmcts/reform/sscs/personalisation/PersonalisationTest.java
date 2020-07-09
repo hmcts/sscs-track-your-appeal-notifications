@@ -549,7 +549,8 @@ public class PersonalisationTest {
                 .build();
 
         Map result = personalisation.setEventData(new HashMap<>(), response, APPEAL_RECEIVED_NOTIFICATION);
-        assertNull("Welsh date is set ", result.get(WELSH_APPEAL_RESPOND_DATE));
+
+        assertNull("Welsh date is not set ",  result.get(WELSH_APPEAL_RESPOND_DATE));
         assertEquals("5 August 2018", result.get(APPEAL_RESPOND_DATE));
     }
 
@@ -567,8 +568,7 @@ public class PersonalisationTest {
                 .build();
 
         Map result = personalisation.setEventData(new HashMap<>(), response, APPEAL_RECEIVED_NOTIFICATION);
-
-        assertNotNull("Welsh date is set ", result.get(WELSH_APPEAL_RESPOND_DATE));
+        assertEquals("Welsh date is set ", LocalDateToWelshStringConverter.convert(LocalDate.of(2018, 8, 5)), result.get(WELSH_APPEAL_RESPOND_DATE));
         assertEquals("5 August 2018", result.get(APPEAL_RESPOND_DATE));
     }
 
@@ -598,7 +598,7 @@ public class PersonalisationTest {
 
         Map<String, String> result = personalisation.setEventData(new HashMap<>(), response, APPEAL_RECEIVED_NOTIFICATION);
 
-        assertNotNull("Welsh date is set ", result.get(WELSH_APPEAL_RESPOND_DATE));
+        assertEquals("Welsh date is set ", LocalDateToWelshStringConverter.convert(LocalDate.of(2018, 8, 5)), result.get(WELSH_APPEAL_RESPOND_DATE));
         assertEquals("5 August 2018", result.get(APPEAL_RESPOND_DATE));
     }
 
@@ -785,6 +785,55 @@ public class PersonalisationTest {
         Map result = personalisation.create(SscsCaseDataWrapper.builder().newSscsCaseData(response)
                 .notificationEventType(HEARING_BOOKED_NOTIFICATION).build(), new SubscriptionWithType(subscriptions.getAppellantSubscription(), APPELLANT));
 
+        assertEquals("tomorrow", result.get(DAYS_TO_HEARING_LITERAL));
+    }
+
+    @Test
+    public void checkWelshCurrentDataIsSet() {
+        LocalDate hearingDate = LocalDate.now().plusDays(1);
+
+        Hearing hearing = createHearing(hearingDate);
+
+        List<Hearing> hearingList = new ArrayList<>();
+        hearingList.add(hearing);
+
+        SscsCaseData response = SscsCaseData.builder()
+                .ccdCaseId(CASE_ID).caseReference("SC/1234/5")
+                .appeal(Appeal.builder().benefitType(BenefitType.builder().code("PIP").build())
+                        .appellant(Appellant.builder().name(name).build())
+                        .build())
+                .subscriptions(subscriptions)
+                .hearings(hearingList)
+                .languagePreferenceWelsh("Yes")
+                .build();
+
+        Map result = personalisation.create(SscsCaseDataWrapper.builder().newSscsCaseData(response)
+                .notificationEventType(HEARING_BOOKED_NOTIFICATION).build(), new SubscriptionWithType(subscriptions.getAppellantSubscription(), APPELLANT));
+        assertEquals("Welsh current date is set", LocalDateToWelshStringConverter.convert(LocalDate.now()), result.get(WELSH_CURRENT_DATE));
+        assertEquals("tomorrow", result.get(DAYS_TO_HEARING_LITERAL));
+    }
+
+    @Test
+    public void checkWelshCurrentDataIsNotSet() {
+        LocalDate hearingDate = LocalDate.now().plusDays(1);
+
+        Hearing hearing = createHearing(hearingDate);
+
+        List<Hearing> hearingList = new ArrayList<>();
+        hearingList.add(hearing);
+
+        SscsCaseData response = SscsCaseData.builder()
+                .ccdCaseId(CASE_ID).caseReference("SC/1234/5")
+                .appeal(Appeal.builder().benefitType(BenefitType.builder().code("PIP").build())
+                        .appellant(Appellant.builder().name(name).build())
+                        .build())
+                .subscriptions(subscriptions)
+                .hearings(hearingList)
+                .build();
+
+        Map result = personalisation.create(SscsCaseDataWrapper.builder().newSscsCaseData(response)
+                .notificationEventType(HEARING_BOOKED_NOTIFICATION).build(), new SubscriptionWithType(subscriptions.getAppellantSubscription(), APPELLANT));
+        assertNull("Welsh current date is not set", result.get(WELSH_CURRENT_DATE));
         assertEquals("tomorrow", result.get(DAYS_TO_HEARING_LITERAL));
     }
 
