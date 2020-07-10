@@ -356,14 +356,17 @@ public class Personalisation<E extends NotificationWrapper> {
         if (notificationEventType.equals(EVIDENCE_RECEIVED_NOTIFICATION)) {
             if (ccdResponse.getEvidence() != null && ccdResponse.getEvidence().getDocuments() != null
                 && !ccdResponse.getEvidence().getDocuments().isEmpty()) {
+                LocalDate evidenceDateTimeFormatted = ccdResponse.getEvidence().getDocuments().get(0).getValue()
+                        .getEvidenceDateTimeFormatted();
                 personalisation.put(EVIDENCE_RECEIVED_DATE_LITERAL,
-                    formatLocalDate(ccdResponse.getEvidence().getDocuments().get(0).getValue()
-                        .getEvidenceDateTimeFormatted()));
+                    formatLocalDate(evidenceDateTimeFormatted));
+                translateToWelshDate(WELSH_EVIDENCE_RECEIVED_DATE_LITERAL, evidenceDateTimeFormatted,ccdResponse, personalisation);
             } else {
                 personalisation.put(EVIDENCE_RECEIVED_DATE_LITERAL, StringUtils.EMPTY);
             }
         }
         return personalisation;
+
     }
 
     private Map<String, String> setAppealReceivedDetails(Map<String, String> personalisation, EventDetails eventDetails, SscsCaseData ccdResponse) {

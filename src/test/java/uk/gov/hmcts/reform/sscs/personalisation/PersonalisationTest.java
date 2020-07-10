@@ -25,7 +25,6 @@ import static uk.gov.hmcts.reform.sscs.domain.notify.NotificationEventType.*;
 
 import java.time.Instant;
 import java.time.LocalDate;
-import java.time.Month;
 import java.time.ZoneId;
 import java.time.ZonedDateTime;
 import java.time.format.DateTimeFormatter;
@@ -537,6 +536,52 @@ public class PersonalisationTest {
                 .newSscsCaseData(response).notificationEventType(EVIDENCE_RECEIVED_NOTIFICATION).build(), new SubscriptionWithType(subscriptions.getAppellantSubscription(), APPELLANT));
 
         assertEquals("1 July 2018", result.get(EVIDENCE_RECEIVED_DATE_LITERAL));
+        assertNull("Welsh evidence received date not set", result.get(WELSH_EVIDENCE_RECEIVED_DATE_LITERAL));
+    }
+
+
+    @Test
+    public void givenEvidenceReceivedNotification_customisePersonalisation_welsh() {
+        List<Event> events = new ArrayList<>();
+        events.add(Event.builder().value(EventDetails.builder().date(DATE).type(APPEAL_RECEIVED.getCcdType()).build()).build());
+
+        List<Document> documents = new ArrayList<>();
+
+        Document doc = Document.builder().value(DocumentDetails.builder()
+                .dateReceived("2018-07-01")
+                .evidenceType("Medical")
+                .evidenceProvidedBy("Caseworker").build()).build();
+
+        documents.add(doc);
+
+        Evidence evidence = Evidence.builder().documents(documents).build();
+
+        Subscription appellantSubscription = Subscription.builder()
+                .tya("GLSCRR")
+                .email("test@email.com")
+                .mobile("07983495065")
+                .subscribeEmail("Yes")
+                .subscribeSms("No")
+                .build();
+
+        Subscriptions subscriptions = Subscriptions.builder().appellantSubscription(appellantSubscription).build();
+
+        SscsCaseData response = SscsCaseData.builder()
+                .ccdCaseId(CASE_ID).caseReference("SC/1234/5")
+                .appeal(Appeal.builder().benefitType(BenefitType.builder().code("PIP").build())
+                        .appellant(Appellant.builder().name(name).build())
+                        .build())
+                .subscriptions(subscriptions)
+                .events(events)
+                .evidence(evidence)
+                .languagePreferenceWelsh("Yes")
+                .build();
+
+        Map result = personalisation.create(SscsCaseDataWrapper.builder()
+                .newSscsCaseData(response).notificationEventType(EVIDENCE_RECEIVED_NOTIFICATION).build(), new SubscriptionWithType(subscriptions.getAppellantSubscription(), APPELLANT));
+
+        assertEquals("1 July 2018", result.get(EVIDENCE_RECEIVED_DATE_LITERAL));
+        assertEquals("Welsh evidence received date not set", getWelshDate().apply(EVIDENCE_RECEIVED_DATE_LITERAL, result), result.get(WELSH_EVIDENCE_RECEIVED_DATE_LITERAL));
     }
 
     @Test
@@ -814,16 +859,6 @@ public class PersonalisationTest {
         assertEquals("Welsh current date is set", LocalDateToWelshStringConverter.convert(LocalDate.now()), result.get(WELSH_CURRENT_DATE));
         assertEquals("Welsh decision posted receive date", getWelshDate().apply(DECISION_POSTED_RECEIVE_DATE, result), result.get(WELSH_DECISION_POSTED_RECEIVE_DATE));
         assertEquals("tomorrow", result.get(DAYS_TO_HEARING_LITERAL));
-    }
-
-    public BiFunction<String, Map<String, String>, String> getWelshDate() {
-        return (dateKey, result) -> {
-            String decisionPostedReviveDate = result.get(dateKey);
-            String[] s = decisionPostedReviveDate.split(" ");
-            Month month = Month.valueOf(s[1].toUpperCase());
-            LocalDate localDate = LocalDate.of(Integer.parseInt(s[2]), month, Integer.parseInt(s[0]));
-            return LocalDateToWelshStringConverter.convert(localDate);
-        };
     }
 
     @Test
@@ -1267,4 +1302,13 @@ public class PersonalisationTest {
             .infoRequests(infoRequests)
             .build();
     }
+
+    private BiFunction<String, Map<String, String>, String> getWelshDate() {
+        return (dateKey, result) -> {
+            String date = result.get(dateKey);
+            LocalDate localDate = LocalDate.parse(date, DateTimeFormatter.ofPattern("d MMMM yyyy"));
+            return LocalDateToWelshStringConverter.convert(localDate);
+        };
+    }
+
 }

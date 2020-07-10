@@ -32,6 +32,7 @@ public final class AppConstants {
     public static final String DWP_FUL_NAME = "Department for Work and Pensions";
     public static final String ESA_PANEL_COMPOSITION = "judge and a doctor";
     public static final String EVIDENCE_RECEIVED_DATE_LITERAL = "evidence_received_date";
+    public static final String WELSH_EVIDENCE_RECEIVED_DATE_LITERAL = "welsh_evidence_received_date";
     public static final String FIRST_TIER_AGENCY_ACRONYM = "first_tier_agency_acronym";
     public static final String FIRST_TIER_AGENCY_FULL_NAME = "first_tier_agency_full_name";
     public static final String REPRESENTATIVE = "representative";
