@@ -2,6 +2,7 @@ package uk.gov.hmcts.reform.sscs.service.docmosis;
 
 import static uk.gov.hmcts.reform.sscs.config.AppConstants.*;
 import static uk.gov.hmcts.reform.sscs.domain.notify.NotificationEventType.APPEAL_RECEIVED_NOTIFICATION;
+import static uk.gov.hmcts.reform.sscs.personalisation.Personalisation.translateToWelshDate;
 import static uk.gov.hmcts.reform.sscs.service.LetterUtils.*;
 
 import java.io.IOException;
@@ -95,7 +96,7 @@ public class PdfLetterService {
             Map<String, Object> placeholders = new HashMap<>(notification.getPlaceholders());
             placeholders.put(SSCS_URL_LITERAL, SSCS_URL);
             placeholders.put(GENERATED_DATE_LITERAL, LocalDateTime.now().toLocalDate().toString());
-            Personalisation.translateToWelshDate(LocalDateTime.now().toLocalDate(), wrapper.getNewSscsCaseData(), (value) -> placeholders.put(WELSH_GENERATED_DATE_LITERAL, value));
+            translateToWelshDate(LocalDateTime.now().toLocalDate(), wrapper.getNewSscsCaseData(), (value) -> placeholders.put(WELSH_GENERATED_DATE_LITERAL, value));
 
             placeholders.put(ADDRESS_NAME, truncateAddressLine(getNameToUseForLetter(wrapper, subscriptionType)));
 
