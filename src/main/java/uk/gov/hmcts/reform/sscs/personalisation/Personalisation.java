@@ -29,6 +29,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
+import java.util.function.Consumer;
 import java.util.stream.Collectors;
 
 import lombok.extern.slf4j.Slf4j;
@@ -144,11 +145,13 @@ public class Personalisation<E extends NotificationWrapper> {
         return latestAppellantInfoRequest;
     }
 
-    public void translateToWelshDate(String key, LocalDate localDate, SscsCaseData sscsCaseData, Map<String, String> placeholders) {
+    public static void translateToWelshDate(LocalDate localDate, SscsCaseData sscsCaseData, Consumer<? super String> placeholders) {
         if (sscsCaseData.isLanguagePreferenceWelsh()) {
-            placeholders.put(key, LocalDateToWelshStringConverter.convert(localDate));
+            String translatedDate = LocalDateToWelshStringConverter.convert(localDate);
+            placeholders.accept(translatedDate);
         }
     }
+
 
     public Map<String, String> create(final E notificationWrapper, final SubscriptionWithType subscriptionWithType) {
         return create(notificationWrapper.getSscsCaseDataWrapper(), subscriptionWithType);
@@ -172,11 +175,11 @@ public class Personalisation<E extends NotificationWrapper> {
         } catch (BenefitMappingException bme) {
             log.warn("Proceeding with 'null' benefit type for case !");
         }
-        translateToWelshDate(WELSH_CURRENT_DATE, LocalDate.now(), ccdResponse, personalisation);
+        translateToWelshDate(LocalDate.now(), ccdResponse, (value) -> personalisation.put(WELSH_CURRENT_DATE, value));
         personalisation.put(PANEL_COMPOSITION, getPanelCompositionByBenefitType(benefit));
         LocalDate decisionPostedReceivedDate = LocalDate.now().plusDays(7);
         personalisation.put(DECISION_POSTED_RECEIVE_DATE, formatLocalDate(decisionPostedReceivedDate));
-        translateToWelshDate(WELSH_DECISION_POSTED_RECEIVE_DATE, decisionPostedReceivedDate, ccdResponse, personalisation);
+        translateToWelshDate(decisionPostedReceivedDate, ccdResponse,(value) -> personalisation.put(WELSH_DECISION_POSTED_RECEIVE_DATE, value));
         personalisation.put(APPEAL_REF, getAppealReference(ccdResponse));
         personalisation.put(APPELLANT_NAME, ccdResponse.getAppeal().getAppellant().getName().getFullNameNoTitle());
         personalisation.put(NAME, getName(subscriptionWithType.getSubscriptionType(), ccdResponse, responseWrapper));
@@ -201,7 +204,7 @@ public class Personalisation<E extends NotificationWrapper> {
                 HearingDetails latestHearingValue = latestHearing.getValue();
                 LocalDateTime hearingDateTime = latestHearingValue.getHearingDateTime();
                 personalisation.put(HEARING_DATE, formatLocalDate(hearingDateTime.toLocalDate()));
-                translateToWelshDate(WELSH_HEARING_DATE, hearingDateTime.toLocalDate(), ccdResponse, personalisation);
+                translateToWelshDate(hearingDateTime.toLocalDate(), ccdResponse, (value) -> personalisation.put(WELSH_HEARING_DATE, value));
                 personalisation.put(HEARING_TIME, formatLocalTime(hearingDateTime));
                 personalisation.put(VENUE_ADDRESS_LITERAL, formatAddress(latestHearing));
                 personalisation.put(VENUE_MAP_LINK_LITERAL, latestHearingValue.getVenue().getGoogleMapLink());
@@ -329,7 +332,9 @@ public class Personalisation<E extends NotificationWrapper> {
             LocalDate localDate = LocalDate.parse(Optional.ofNullable(ccdResponse.getDateSentToDwp()).orElse(LocalDate.now().toString())).plusDays(MAX_DWP_RESPONSE_DAYS);
             String dwpResponseDateString = formatLocalDate(localDate);
             personalisation.put(APPEAL_RESPOND_DATE, dwpResponseDateString);
-            translateToWelshDate(WELSH_APPEAL_RESPOND_DATE, localDate, ccdResponse, personalisation);
+            translateToWelshDate(localDate, ccdResponse,  (value) ->
+                personalisation.put(WELSH_APPEAL_RESPOND_DATE, value)
+            );
 
             return personalisation;
         } else if (ccdResponse.getEvents() != null) {
@@ -360,7 +365,9 @@ public class Personalisation<E extends NotificationWrapper> {
                         .getEvidenceDateTimeFormatted();
                 personalisation.put(EVIDENCE_RECEIVED_DATE_LITERAL,
                     formatLocalDate(evidenceDateTimeFormatted));
-                translateToWelshDate(WELSH_EVIDENCE_RECEIVED_DATE_LITERAL, evidenceDateTimeFormatted,ccdResponse, personalisation);
+                translateToWelshDate(evidenceDateTimeFormatted, ccdResponse,  (value) ->
+                    personalisation.put(WELSH_EVIDENCE_RECEIVED_DATE_LITERAL, value)
+                );
             } else {
                 personalisation.put(EVIDENCE_RECEIVED_DATE_LITERAL, StringUtils.EMPTY);
             }
@@ -373,7 +380,9 @@ public class Personalisation<E extends NotificationWrapper> {
         LocalDate localDate = eventDetails.getDateTime().plusDays(MAX_DWP_RESPONSE_DAYS).toLocalDate();
         String dwpResponseDateString = formatLocalDate(localDate);
         personalisation.put(APPEAL_RESPOND_DATE, dwpResponseDateString);
-        translateToWelshDate(WELSH_APPEAL_RESPOND_DATE, localDate, ccdResponse, personalisation);
+        translateToWelshDate(localDate, ccdResponse, (value) ->
+            personalisation.put(WELSH_APPEAL_RESPOND_DATE, value)
+        );
         return personalisation;
     }
 

@@ -11,6 +11,7 @@ import static org.mockito.Mockito.never;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 import static org.mockito.MockitoAnnotations.initMocks;
+import static uk.gov.hmcts.reform.sscs.SscsCaseDataUtils.*;
 import static uk.gov.hmcts.reform.sscs.ccd.domain.Benefit.PIP;
 import static uk.gov.hmcts.reform.sscs.ccd.domain.EventType.APPEAL_RECEIVED;
 import static uk.gov.hmcts.reform.sscs.ccd.domain.HearingType.ONLINE;
@@ -35,7 +36,6 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
-import java.util.function.BiFunction;
 
 import junitparams.JUnitParamsRunner;
 import junitparams.Parameters;
@@ -581,7 +581,7 @@ public class PersonalisationTest {
                 .newSscsCaseData(response).notificationEventType(EVIDENCE_RECEIVED_NOTIFICATION).build(), new SubscriptionWithType(subscriptions.getAppellantSubscription(), APPELLANT));
 
         assertEquals("1 July 2018", result.get(EVIDENCE_RECEIVED_DATE_LITERAL));
-        assertEquals("Welsh evidence received date not set", getWelshDate().apply(EVIDENCE_RECEIVED_DATE_LITERAL, result), result.get(WELSH_EVIDENCE_RECEIVED_DATE_LITERAL));
+        assertEquals("Welsh evidence received date not set", getWelshDate("d MMMM yyyy").apply(EVIDENCE_RECEIVED_DATE_LITERAL, result), result.get(WELSH_EVIDENCE_RECEIVED_DATE_LITERAL));
     }
 
     @Test
@@ -615,7 +615,7 @@ public class PersonalisationTest {
                 .build();
 
         Map result = personalisation.setEventData(new HashMap<>(), response, APPEAL_RECEIVED_NOTIFICATION);
-        assertEquals("Welsh date is set ", getWelshDate().apply(APPEAL_RESPOND_DATE, result), result.get(WELSH_APPEAL_RESPOND_DATE));
+        assertEquals("Welsh date is set ", getWelshDate("d MMMM yyyy").apply(APPEAL_RESPOND_DATE, result), result.get(WELSH_APPEAL_RESPOND_DATE));
         assertEquals("5 August 2018", result.get(APPEAL_RESPOND_DATE));
     }
 
@@ -645,7 +645,7 @@ public class PersonalisationTest {
 
         Map<String, String> result = personalisation.setEventData(new HashMap<>(), response, APPEAL_RECEIVED_NOTIFICATION);
 
-        assertEquals("Welsh date is set ", getWelshDate().apply(APPEAL_RESPOND_DATE, result), result.get(WELSH_APPEAL_RESPOND_DATE));
+        assertEquals("Welsh date is set ", getWelshDate("d MMMM yyyy").apply(APPEAL_RESPOND_DATE, result), result.get(WELSH_APPEAL_RESPOND_DATE));
         assertEquals("5 August 2018", result.get(APPEAL_RESPOND_DATE));
     }
 
@@ -857,7 +857,7 @@ public class PersonalisationTest {
         Map result = personalisation.create(SscsCaseDataWrapper.builder().newSscsCaseData(response)
                 .notificationEventType(HEARING_BOOKED_NOTIFICATION).build(), new SubscriptionWithType(subscriptions.getAppellantSubscription(), APPELLANT));
         assertEquals("Welsh current date is set", LocalDateToWelshStringConverter.convert(LocalDate.now()), result.get(WELSH_CURRENT_DATE));
-        assertEquals("Welsh decision posted receive date", getWelshDate().apply(DECISION_POSTED_RECEIVE_DATE, result), result.get(WELSH_DECISION_POSTED_RECEIVE_DATE));
+        assertEquals("Welsh decision posted receive date", getWelshDate("d MMMM yyyy").apply(DECISION_POSTED_RECEIVE_DATE, result), result.get(WELSH_DECISION_POSTED_RECEIVE_DATE));
         assertEquals("tomorrow", result.get(DAYS_TO_HEARING_LITERAL));
     }
 
@@ -1302,13 +1302,4 @@ public class PersonalisationTest {
             .infoRequests(infoRequests)
             .build();
     }
-
-    private BiFunction<String, Map<String, String>, String> getWelshDate() {
-        return (dateKey, result) -> {
-            String date = result.get(dateKey);
-            LocalDate localDate = LocalDate.parse(date, DateTimeFormatter.ofPattern("d MMMM yyyy"));
-            return LocalDateToWelshStringConverter.convert(localDate);
-        };
-    }
-
 }
