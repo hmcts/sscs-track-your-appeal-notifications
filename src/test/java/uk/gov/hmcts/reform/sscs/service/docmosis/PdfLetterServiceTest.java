@@ -24,9 +24,11 @@ import static uk.gov.hmcts.reform.sscs.service.docmosis.PdfLetterService.WELSH_G
 
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
+import java.time.format.DateTimeFormatter;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
+import java.util.function.Function;
 
 import junitparams.JUnitParamsRunner;
 import junitparams.Parameters;
@@ -60,6 +62,7 @@ public class PdfLetterServiceTest {
 
     private static final Map<String, String> TEMPLATE_NAMES = new ConcurrentHashMap<>();
     private static final DocmosisTemplatesConfig DOCMOSIS_TEMPLATES_CONFIG = new DocmosisTemplatesConfig();
+    private static DateTimeFormatter dateTimeFormatter = DateTimeFormatter.ofPattern("yyyy-MM-d");
 
     static {
         TEMPLATE_NAMES.put(APPEAL_RECEIVED_NOTIFICATION.getId(), "my01.doc");
@@ -173,9 +176,11 @@ public class PdfLetterServiceTest {
         verify(docmosisPdfService).createPdfFromMap(placeholderCaptor.capture(), eq(notification.getDocmosisLetterTemplate()));
         verify(docmosisPdfService).createPdf(any(), anyString());
         Map<String, Object> placeholderCaptorValue = placeholderCaptor.getValue();
-        assertEquals("Welsh generated date", getWelshDate("yyyy-MM-d").apply(GENERATED_DATE_LITERAL,
-                placeholderCaptorValue),placeholderCaptorValue.get(WELSH_GENERATED_DATE_LITERAL));
+        assertEquals("Welsh generated date", getWelshDate().apply(placeholderCaptorValue.get(GENERATED_DATE_LITERAL),
+                dateTimeFormatter),placeholderCaptorValue.get(WELSH_GENERATED_DATE_LITERAL));
     }
+
+
 
     @Test
     public void givenAnAddressWithMoreThan45CharactersInEachLine_willTruncateAddressAndGenerateALetter() throws IOException {

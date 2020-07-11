@@ -8,6 +8,7 @@ import java.util.Collections;
 import java.util.Date;
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
 import java.util.function.BiFunction;
 
 import uk.gov.hmcts.reform.sscs.ccd.domain.*;
@@ -331,13 +332,15 @@ public final class SscsCaseDataUtils {
         return options;
     }
 
-    public static BiFunction<String, Map<String, ?>, String> getWelshDate(String format) {
-        return (dateKey, result) -> {
-            String date = (String)result.get(dateKey);
-            LocalDate localDate = LocalDate.parse(date, DateTimeFormatter.ofPattern(format));
-            return LocalDateToWelshStringConverter.convert(localDate);
+    public static BiFunction<Object, DateTimeFormatter, String> getWelshDate() {
+        return (date, dateTimeFormatter) -> {
+            Optional<String> value = Optional.ofNullable(date).map(Object::toString);
+            if (value.isPresent()) {
+                LocalDate localDate = LocalDate.parse(value.get(), dateTimeFormatter);
+                return LocalDateToWelshStringConverter.convert(localDate);
+            }
+            return "No date present for translation";
         };
     }
-
 }
 

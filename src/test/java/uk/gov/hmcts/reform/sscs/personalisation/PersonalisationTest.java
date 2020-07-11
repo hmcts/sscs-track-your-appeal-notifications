@@ -108,6 +108,7 @@ public class PersonalisationTest {
     private String evidenceAddressCounty;
     private String evidenceAddressPostcode;
     private String evidenceAddressTelephone;
+    private static DateTimeFormatter dateTimeFormatter = DateTimeFormatter.ofPattern("d MMMM yyyy");
 
     @Before
     public void setup() {
@@ -581,7 +582,7 @@ public class PersonalisationTest {
                 .newSscsCaseData(response).notificationEventType(EVIDENCE_RECEIVED_NOTIFICATION).build(), new SubscriptionWithType(subscriptions.getAppellantSubscription(), APPELLANT));
 
         assertEquals("1 July 2018", result.get(EVIDENCE_RECEIVED_DATE_LITERAL));
-        assertEquals("Welsh evidence received date not set", getWelshDate("d MMMM yyyy").apply(EVIDENCE_RECEIVED_DATE_LITERAL, result), result.get(WELSH_EVIDENCE_RECEIVED_DATE_LITERAL));
+        assertEquals("Welsh evidence received date not set", getWelshDate().apply(result.get(EVIDENCE_RECEIVED_DATE_LITERAL), dateTimeFormatter), result.get(WELSH_EVIDENCE_RECEIVED_DATE_LITERAL));
     }
 
     @Test
@@ -615,7 +616,7 @@ public class PersonalisationTest {
                 .build();
 
         Map result = personalisation.setEventData(new HashMap<>(), response, APPEAL_RECEIVED_NOTIFICATION);
-        assertEquals("Welsh date is set ", getWelshDate("d MMMM yyyy").apply(APPEAL_RESPOND_DATE, result), result.get(WELSH_APPEAL_RESPOND_DATE));
+        assertEquals("Welsh date is set ", getWelshDate().apply(result.get(APPEAL_RESPOND_DATE), dateTimeFormatter), result.get(WELSH_APPEAL_RESPOND_DATE));
         assertEquals("5 August 2018", result.get(APPEAL_RESPOND_DATE));
     }
 
@@ -645,7 +646,7 @@ public class PersonalisationTest {
 
         Map<String, String> result = personalisation.setEventData(new HashMap<>(), response, APPEAL_RECEIVED_NOTIFICATION);
 
-        assertEquals("Welsh date is set ", getWelshDate("d MMMM yyyy").apply(APPEAL_RESPOND_DATE, result), result.get(WELSH_APPEAL_RESPOND_DATE));
+        assertEquals("Welsh date is set ", getWelshDate().apply(result.get(APPEAL_RESPOND_DATE), dateTimeFormatter), result.get(WELSH_APPEAL_RESPOND_DATE));
         assertEquals("5 August 2018", result.get(APPEAL_RESPOND_DATE));
     }
 
@@ -857,7 +858,7 @@ public class PersonalisationTest {
         Map result = personalisation.create(SscsCaseDataWrapper.builder().newSscsCaseData(response)
                 .notificationEventType(HEARING_BOOKED_NOTIFICATION).build(), new SubscriptionWithType(subscriptions.getAppellantSubscription(), APPELLANT));
         assertEquals("Welsh current date is set", LocalDateToWelshStringConverter.convert(LocalDate.now()), result.get(WELSH_CURRENT_DATE));
-        assertEquals("Welsh decision posted receive date", getWelshDate("d MMMM yyyy").apply(DECISION_POSTED_RECEIVE_DATE, result), result.get(WELSH_DECISION_POSTED_RECEIVE_DATE));
+        assertEquals("Welsh decision posted receive date", getWelshDate().apply(result.get(DECISION_POSTED_RECEIVE_DATE), dateTimeFormatter), result.get(WELSH_DECISION_POSTED_RECEIVE_DATE));
         assertEquals("tomorrow", result.get(DAYS_TO_HEARING_LITERAL));
     }
 
