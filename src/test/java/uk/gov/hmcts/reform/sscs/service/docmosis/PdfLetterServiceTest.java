@@ -28,7 +28,6 @@ import java.time.format.DateTimeFormatter;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
-import java.util.function.Function;
 
 import junitparams.JUnitParamsRunner;
 import junitparams.Parameters;

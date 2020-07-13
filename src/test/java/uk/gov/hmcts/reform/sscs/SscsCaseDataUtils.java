@@ -7,7 +7,6 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Date;
 import java.util.List;
-import java.util.Map;
 import java.util.Optional;
 import java.util.function.BiFunction;
 
@@ -333,14 +332,10 @@ public final class SscsCaseDataUtils {
     }
 
     public static BiFunction<Object, DateTimeFormatter, String> getWelshDate() {
-        return (date, dateTimeFormatter) -> {
-            Optional<String> value = Optional.ofNullable(date).map(Object::toString);
-            if (value.isPresent()) {
-                LocalDate localDate = LocalDate.parse(value.get(), dateTimeFormatter);
-                return LocalDateToWelshStringConverter.convert(localDate);
-            }
-            return "No date present for translation";
-        };
+        return (date, dateTimeFormatter) -> Optional.ofNullable(date).map(data -> {
+            LocalDate localDate = LocalDate.parse((String) data, dateTimeFormatter);
+            return LocalDateToWelshStringConverter.convert(localDate);
+        }).orElse("No date present for translation");
     }
 }
 
