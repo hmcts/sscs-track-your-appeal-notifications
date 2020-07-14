@@ -7,21 +7,27 @@ import java.io.IOException;
 import java.util.Collections;
 import java.util.Map;
 import java.util.UUID;
+import junitparams.JUnitParamsRunner;
+import junitparams.Parameters;
 import org.apache.commons.lang3.builder.EqualsBuilder;
 import org.apache.pdfbox.io.IOUtils;
 import org.junit.Before;
+import org.junit.Rule;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.Mock;
-import org.mockito.junit.MockitoJUnitRunner;
+import org.mockito.junit.MockitoJUnit;
+import org.mockito.junit.MockitoRule;
 import org.springframework.test.util.ReflectionTestUtils;
 import uk.gov.hmcts.reform.sscs.ccd.domain.*;
 import uk.gov.hmcts.reform.sscs.config.NotificationBlacklist;
 import uk.gov.hmcts.reform.sscs.domain.notify.NotificationEventType;
 import uk.gov.service.notify.*;
 
-@RunWith(MockitoJUnitRunner.class)
+@RunWith(JUnitParamsRunner.class)
 public class NotificationSenderTest {
+    @Rule
+    public MockitoRule rule = MockitoJUnit.rule();
     public static final String CCD_CASE_ID = "78980909090099";
     public static final SscsCaseData SSCS_CASE_DATA = SscsCaseData.builder().build();
     public static final String SMS_SENDER = "sms-sender";
@@ -260,28 +266,33 @@ public class NotificationSenderTest {
     }
 
     @Test(expected = NotificationClientException.class)
-    public void shouldCatchAndThrowAnyExceptionFromGovNotifyOnSendSms() throws NotificationClientException {
+    @Parameters({"null", "NotificationClientException"})
+    public void shouldCatchAndThrowAnyExceptionFromGovNotifyOnSendSms(String error) throws NotificationClientException {
         String smsNumber = "07999999000";
-        doThrow(new NullPointerException("error")).when(notificationClient).sendSms(templateId, smsNumber, personalisation, reference, "Sender");
+        Exception exception = (error.equals("null")) ? new NullPointerException(error) : new NotificationClientException(error);
+        doThrow(exception).when(notificationClient).sendSms(templateId, smsNumber, personalisation, reference, "Sender");
 
         notificationSender.sendSms(templateId, smsNumber, personalisation, reference, "Sender", NotificationEventType.APPEAL_RECEIVED_NOTIFICATION, SSCS_CASE_DATA);
     }
 
     @Test(expected = NotificationClientException.class)
-    public void shouldCatchAndThrowAnyExceptionFromGovNotifyOnSendLetter() throws NotificationClientException {
+    @Parameters({"null", "NotificationClientException"})
+    public void shouldCatchAndThrowAnyExceptionFromGovNotifyOnSendLetter(String error) throws NotificationClientException {
         String postcode = "TS1 1ST";
         Address address = Address.builder().line1("1 Appellant Ave").town("Sometown").county("Somecounty").postcode(postcode).build();
-        doThrow(new NullPointerException("error")).when(notificationClient).sendLetter(any(), any(), any());
+        Exception exception = (error.equals("null")) ? new NullPointerException(error) : new NotificationClientException(error);
+        doThrow(exception).when(notificationClient).sendLetter(any(), any(), any());
 
         notificationSender.sendLetter(templateId, address, personalisation, NotificationEventType.APPEAL_RECEIVED_NOTIFICATION, "Bob Squires", CCD_CASE_ID);
     }
 
     @Test(expected = NotificationClientException.class)
-    public void shouldCatchAndThrowAnyExceptionFromGovNotifyOnSendBundledLetter() throws NotificationClientException, IOException {
+    @Parameters({"null", "NotificationClientException"})
+    public void shouldCatchAndThrowAnyExceptionFromGovNotifyOnSendBundledLetter(String error) throws NotificationClientException, IOException {
+        Exception exception = (error.equals("null")) ? new NullPointerException(error) : new NotificationClientException(error);
+        doThrow(exception).when(notificationClient).sendPrecompiledLetterWithInputStream(any(), any());
+
         String postcode = "LN8 4DX";
-
-        doThrow(new NullPointerException("error")).when(notificationClient).sendPrecompiledLetterWithInputStream(any(), any());
-
         byte[] sampleDirectionCoversheet = IOUtils.toByteArray(getClass().getClassLoader().getResourceAsStream("pdfs/direction-notice-coversheet-sample.pdf"));
         notificationSender.sendBundledLetter(postcode, sampleDirectionCoversheet, NotificationEventType.APPEAL_RECEIVED_NOTIFICATION, "Bob Squires", CCD_CASE_ID);
     }
