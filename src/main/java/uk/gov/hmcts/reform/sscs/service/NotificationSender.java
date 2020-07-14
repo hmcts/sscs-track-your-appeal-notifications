@@ -73,7 +73,15 @@ public class NotificationSender {
             client = notificationClient;
         }
 
-        SendEmailResponse sendEmailResponse = client.sendEmail(templateId, emailAddress, personalisation, reference);
+        final SendEmailResponse sendEmailResponse;
+        try {
+            sendEmailResponse = client.sendEmail(templateId, emailAddress, personalisation, reference);
+        } catch (Exception e) {
+            if (e instanceof NotificationClientException) {
+                throw e;
+            }
+            throw new NotificationClientException(e);
+        }
 
         if (saveCorrespondence) {
             NotifyResponse response = new NotifyResponse(
@@ -108,13 +116,21 @@ public class NotificationSender {
             client = notificationClient;
         }
 
-        SendSmsResponse sendSmsResponse = client.sendSms(
-                templateId,
-                phoneNumber,
-                personalisation,
-                reference,
-                smsSender
-        );
+        final SendSmsResponse sendSmsResponse;
+        try {
+            sendSmsResponse = client.sendSms(
+                    templateId,
+                    phoneNumber,
+                    personalisation,
+                    reference,
+                    smsSender
+            );
+        } catch (Exception e) {
+            if (e instanceof NotificationClientException) {
+                throw e;
+            }
+            throw new NotificationClientException(e);
+        }
 
         if (saveCorrespondence) {
             NotifyResponse response = new NotifyResponse(
@@ -136,15 +152,22 @@ public class NotificationSender {
 
         NotificationClient client = getLetterNotificationClient(address.getPostcode());
 
-        SendLetterResponse sendLetterResponse = client.sendLetter(templateId, personalisation, ccdCaseId);
+        final SendLetterResponse sendLetterResponse;
+        try {
+            sendLetterResponse = client.sendLetter(templateId, personalisation, ccdCaseId);
+        } catch (Exception e) {
+            if (e instanceof NotificationClientException) {
+                throw e;
+            }
+            throw new NotificationClientException(e);
+        }
 
         if (saveCorrespondence) {
             final Correspondence correspondence = getLetterCorrespondence(notificationEventType, name);
             saveLetterCorrespondenceAsyncService.saveLetter(client, sendLetterResponse.getNotificationId().toString(), correspondence, ccdCaseId);
         }
 
-        log.info("Letter Notification send for case id : {}, Gov notify id: {} ", ccdCaseId,
-            sendLetterResponse.getNotificationId());
+        log.info("Letter Notification send for case id : {}, Gov notify id: {} ", ccdCaseId, sendLetterResponse.getNotificationId());
     }
 
     private void saveCorrespondence(NotifyResponse response, NotificationEventType notificationEventType,
@@ -167,13 +190,13 @@ public class NotificationSender {
 
     private Correspondence getLetterCorrespondence(NotificationEventType notificationEventType, String name) {
         return Correspondence.builder().value(
-                    CorrespondenceDetails.builder()
-                            .eventType(notificationEventType.getId())
-                            .to(name)
-                            .correspondenceType(CorrespondenceType.Letter)
-                            .sentOn(LocalDateTime.now(ZONE_ID_LONDON).format(DATE_TIME_FORMATTER))
-                            .build()
-            ).build();
+                CorrespondenceDetails.builder()
+                        .eventType(notificationEventType.getId())
+                        .to(name)
+                        .correspondenceType(CorrespondenceType.Letter)
+                        .sentOn(LocalDateTime.now(ZONE_ID_LONDON).format(DATE_TIME_FORMATTER))
+                        .build()
+        ).build();
     }
 
     public void sendBundledLetter(String appellantPostcode, byte[] directionText, NotificationEventType notificationEventType, String name, String ccdCaseId) throws NotificationClientException {
@@ -182,15 +205,22 @@ public class NotificationSender {
 
             ByteArrayInputStream bis = new ByteArrayInputStream(directionText);
 
-            LetterResponse sendLetterResponse = client.sendPrecompiledLetterWithInputStream(ccdCaseId, bis);
+            final LetterResponse sendLetterResponse;
+            try {
+                sendLetterResponse = client.sendPrecompiledLetterWithInputStream(ccdCaseId, bis);
+            } catch (Exception e) {
+                if (e instanceof NotificationClientException) {
+                    throw e;
+                }
+                throw new NotificationClientException(e);
+            }
 
             if (saveCorrespondence) {
                 final Correspondence correspondence = getLetterCorrespondence(notificationEventType, name);
                 saveLetterCorrespondenceAsyncService.saveLetter(client, sendLetterResponse.getNotificationId().toString(), correspondence, ccdCaseId);
             }
 
-            log.info("Letter Notification send for case id : {}, Gov notify id: {} ", ccdCaseId,
-                sendLetterResponse.getNotificationId());
+            log.info("Letter Notification send for case id : {}, Gov notify id: {} ", ccdCaseId, sendLetterResponse.getNotificationId());
         }
     }
 

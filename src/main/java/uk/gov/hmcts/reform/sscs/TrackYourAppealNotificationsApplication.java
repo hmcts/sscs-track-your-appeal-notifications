@@ -32,6 +32,7 @@ import org.springframework.web.client.RestTemplate;
 import uk.gov.hmcts.reform.sscs.ccd.config.CcdRequestDetails;
 import uk.gov.hmcts.reform.sscs.ccd.deserialisation.SscsCaseCallbackDeserializer;
 import uk.gov.hmcts.reform.sscs.ccd.service.CcdService;
+import uk.gov.hmcts.reform.sscs.config.RetryConfig;
 import uk.gov.hmcts.reform.sscs.docmosis.service.DocmosisPdfGenerationService;
 import uk.gov.hmcts.reform.sscs.idam.IdamService;
 import uk.gov.hmcts.reform.sscs.jobscheduler.config.QuartzConfiguration;
@@ -40,6 +41,7 @@ import uk.gov.hmcts.reform.sscs.jobscheduler.services.quartz.JobClassMapping;
 import uk.gov.hmcts.reform.sscs.jobscheduler.services.quartz.JobMapper;
 import uk.gov.hmcts.reform.sscs.jobscheduler.services.quartz.JobMapping;
 import uk.gov.hmcts.reform.sscs.service.NotificationService;
+import uk.gov.hmcts.reform.sscs.service.RetryNotificationService;
 import uk.gov.hmcts.reform.sscs.service.scheduler.*;
 import uk.gov.service.notify.NotificationClient;
 
@@ -160,12 +162,14 @@ public class TrackYourAppealNotificationsApplication {
     public JobMapper getJobMapper(CohActionDeserializer cohActionDeserializer,
                                   CcdActionDeserializer ccdActionDeserializer,
                                   NotificationService notificationService,
+                                  RetryConfig retryConfig,
+                                  RetryNotificationService retryNotificationService,
                                   CcdService ccdService,
                                   IdamService idamService,
                                   SscsCaseCallbackDeserializer deserializer) {
         // Had to wire these up like this Spring will not wire up CcdActionExecutor otherwise.
-        CohActionExecutor cohActionExecutor = new CohActionExecutor(notificationService, ccdService, idamService, deserializer);
-        CcdActionExecutor ccdActionExecutor = new CcdActionExecutor(notificationService, ccdService, idamService, deserializer);
+        CohActionExecutor cohActionExecutor = new CohActionExecutor(notificationService, retryNotificationService, retryConfig.getMax(), ccdService, idamService, deserializer);
+        CcdActionExecutor ccdActionExecutor = new CcdActionExecutor(notificationService, retryNotificationService, ccdService, idamService, deserializer);
         return new JobMapper(asList(
                 new JobMapping<>(payload -> payload.contains("onlineHearingId"), cohActionDeserializer, cohActionExecutor),
                 new JobMapping<>(payload -> !payload.contains("onlineHearingId"), ccdActionDeserializer, ccdActionExecutor)
