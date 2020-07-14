@@ -258,9 +258,11 @@ public class NotificationSenderTest {
     }
 
     @Test(expected = NotificationClientException.class)
-    public void shouldCatchAndThrowAnyExceptionFromGovNotifyOnSendEmail() throws NotificationClientException {
+    @Parameters({"null", "NotificationClientException"})
+    public void shouldCatchAndThrowAnyExceptionFromGovNotifyOnSendEmail(String error) throws NotificationClientException {
         String emailAddress = "test123@hmcts.net";
-        doThrow(new NullPointerException("error")).when(testNotificationClient).sendEmail(templateId, emailAddress, personalisation, reference);
+        Exception exception = (error.equals("null")) ? new NullPointerException(error) : new NotificationClientException(error);
+        doThrow(exception).when(testNotificationClient).sendEmail(templateId, emailAddress, personalisation, reference);
 
         notificationSender.sendEmail(templateId, emailAddress, personalisation, reference, NotificationEventType.APPEAL_RECEIVED_NOTIFICATION, SSCS_CASE_DATA);
     }
