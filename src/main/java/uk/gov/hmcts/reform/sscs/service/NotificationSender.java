@@ -76,10 +76,9 @@ public class NotificationSender {
         final SendEmailResponse sendEmailResponse;
         try {
             sendEmailResponse = client.sendEmail(templateId, emailAddress, personalisation, reference);
+        } catch (NotificationClientException e) {
+            throw e;
         } catch (Exception e) {
-            if (e instanceof NotificationClientException) {
-                throw e;
-            }
             throw new NotificationClientException(e);
         }
 
@@ -125,10 +124,9 @@ public class NotificationSender {
                     reference,
                     smsSender
             );
+        } catch (NotificationClientException e) {
+            throw e;
         } catch (Exception e) {
-            if (e instanceof NotificationClientException) {
-                throw e;
-            }
             throw new NotificationClientException(e);
         }
 
@@ -155,10 +153,9 @@ public class NotificationSender {
         final SendLetterResponse sendLetterResponse;
         try {
             sendLetterResponse = client.sendLetter(templateId, personalisation, ccdCaseId);
+        } catch (NotificationClientException e) {
+            throw e;
         } catch (Exception e) {
-            if (e instanceof NotificationClientException) {
-                throw e;
-            }
             throw new NotificationClientException(e);
         }
 
@@ -208,10 +205,9 @@ public class NotificationSender {
             final LetterResponse sendLetterResponse;
             try {
                 sendLetterResponse = client.sendPrecompiledLetterWithInputStream(ccdCaseId, bis);
+            } catch (NotificationClientException e) {
+                throw e;
             } catch (Exception e) {
-                if (e instanceof NotificationClientException) {
-                    throw e;
-                }
                 throw new NotificationClientException(e);
             }
 
