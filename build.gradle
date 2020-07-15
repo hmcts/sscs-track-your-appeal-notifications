@@ -17,8 +17,8 @@ apply plugin: 'io.spring.dependency-management'
 group = 'uk.gov.hmcts.reform'
 version = '1.0.0'
 
-sourceCompatibility = 1.8
-targetCompatibility = 1.8
+sourceCompatibility = 11
+targetCompatibility = 11
 
 compileJava {
     options.compilerArgs << '-parameters' << '-Xlint:deprecation'
@@ -38,13 +38,15 @@ pmd {
     ruleSetFiles = files("config/pmd/ruleset.xml")
 }
 
-dependencyUpdates.resolutionStrategy = {
+dependencyUpdates.resolutionStrategy {
     componentSelection { rules ->
-        rules.all { ComponentSelection selection ->
-            boolean rejected = ['alpha', 'beta', 'rc', 'cr', 'm'].any { qualifier ->
-                selection.candidate.version ==~ /(?i).*[.-]${qualifier}[.\d-]*/
+        rules.all {
+            def isNonStable = { String version ->
+                def stableKeyword = ['RELEASE', 'FINAL', 'GA'].any { qualifier -> version.toUpperCase().contains(qualifier) }
+                def regex = /^[0-9,.v-]+(-r)?$/
+                return !stableKeyword && !(version ==~ regex)
             }
-            if (rejected) {
+            if (isNonStable(candidate.version) && !isNonStable(currentVersion)) {
                 selection.reject('Release candidate')
             }
         }
@@ -223,7 +225,7 @@ def versions = [
         reformLogging   : '5.0.1',
         springHystrix   : '1.4.2.RELEASE',
         springfoxSwagger: '2.8.0',
-        restAssured     : '4.2.0'
+        restAssured     : '4.3.0'
 ]
 
 configurations.all {
@@ -231,6 +233,10 @@ configurations.all {
         eachDependency { DependencyResolveDetails details ->
             if (details.requested.group in ['com.fasterxml.jackson.core', 'com.fasterxml.jackson.module', 'com.fasterxml.jackson.datatype']) {
                 details.useVersion '2.11.0'
+            }
+            if (details.requested.group == 'org.codehaus.groovy') {
+                details.useVersion "3.0.2"
+                details.because "needed by rest-assured>=4.3"
             }
         }
     }
@@ -266,8 +272,9 @@ dependencies {
     compile group: 'uk.gov.hmcts.reform', name: 'java-logging-spring', version: versions.reformLogging
     compile group: 'uk.gov.hmcts.reform', name: 'java-logging-httpcomponents', version: versions.reformLogging
     compile group: 'uk.gov.hmcts.reform', name: 'java-logging-appinsights', version: versions.reformLogging
-    compile group: 'uk.gov.hmcts.reform', name: 'http-proxy-spring-boot-autoconfigure', version: '2.0.0'
-    compile group: 'uk.gov.hmcts.reform', name: 'sscs-job-scheduler', version: '1.5.2'
+    compile (group: 'uk.gov.hmcts.reform', name: 'sscs-job-scheduler', version: '1.5.2') {
+        exclude group: "uk.gov.hmcts.reform", module:"http-proxy-spring-boot-autoconfigure"
+    }
     compile group: 'uk.gov.hmcts.reform', name: 'service-auth-provider-client', version: '3.1.2'
     compile group: 'uk.gov.hmcts.reform', name: 'sscs-common', version: '3.3.21'
     compile group: 'uk.gov.hmcts.reform', name: 'sscs-pdf-email-common', version: '1.4.6'
