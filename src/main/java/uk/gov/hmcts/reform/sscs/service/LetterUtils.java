@@ -1,7 +1,6 @@
 package uk.gov.hmcts.reform.sscs.service;
 
 import static uk.gov.hmcts.reform.sscs.config.SubscriptionType.REPRESENTATIVE;
-import static uk.gov.hmcts.reform.sscs.domain.notify.NotificationEventType.*;
 import static uk.gov.hmcts.reform.sscs.service.NotificationUtils.hasAppointee;
 
 import java.io.ByteArrayOutputStream;
@@ -18,12 +17,6 @@ import uk.gov.hmcts.reform.sscs.exception.NotificationClientRuntimeException;
 import uk.gov.hmcts.reform.sscs.factory.NotificationWrapper;
 
 public class LetterUtils {
-    public static final String PDF_STRUCK_OUT = "Struck_Out.pdf";
-    public static final String PDF_DIRECTION_NOTICE = "Direction_Notice.pdf";
-    public static final String PDF_DECISION_NOTICE = "Decision_Notice.pdf";
-    public static final String PDF_UNKNOWN = "unknown.pdf";
-    public static final String COMMENT_UNKNOWN = "Unknown";
-    public static final String COMMENT_DIRECTION_NOTICE = "Direction Notice";
 
     private LetterUtils() {
         // Hiding utility class constructor
@@ -39,18 +32,6 @@ public class LetterUtils {
 
             return wrapper.getNewSscsCaseData().getAppeal().getAppellant().getAddress();
         }
-    }
-
-    public static String getFilename(NotificationWrapper wrapper) {
-        if (STRUCK_OUT.equals(wrapper.getNotificationType())) {
-            return PDF_STRUCK_OUT;
-        } else if (DIRECTION_ISSUED.equals(wrapper.getNotificationType())) {
-            return PDF_DIRECTION_NOTICE;
-        } else if (DECISION_ISSUED.equals(wrapper.getNotificationType()) || ISSUE_FINAL_DECISION.equals(wrapper.getNotificationType())) {
-            return PDF_DECISION_NOTICE;
-        }
-
-        return PDF_UNKNOWN;
     }
 
     public static String getNameToUseForLetter(NotificationWrapper wrapper, SubscriptionType subscriptionType) {
@@ -104,13 +85,5 @@ public class LetterUtils {
         } else {
             throw new NotificationClientRuntimeException("Can not bundle empty documents");
         }
-    }
-
-    public static String getSystemComment(NotificationWrapper wrapper) {
-        if (STRUCK_OUT.equals(wrapper.getNotificationType())) {
-            return COMMENT_DIRECTION_NOTICE;
-        }
-
-        return COMMENT_UNKNOWN;
     }
 }

@@ -155,7 +155,7 @@ public class CcdNotificationWrapperTest {
     @Parameters({"APPEAL_LAPSED_NOTIFICATION","HMCTS_APPEAL_LAPSED_NOTIFICATION","DWP_APPEAL_LAPSED_NOTIFICATION","APPEAL_WITHDRAWN_NOTIFICATION","EVIDENCE_RECEIVED_NOTIFICATION",
             "POSTPONEMENT_NOTIFICATION","HEARING_BOOKED_NOTIFICATION","SYA_APPEAL_CREATED_NOTIFICATION","VALID_APPEAL_CREATED",
             "RESEND_APPEAL_CREATED_NOTIFICATION", "APPEAL_RECEIVED_NOTIFICATION", "ADJOURNED_NOTIFICATION",
-            "APPEAL_DORMANT_NOTIFICATION", "DWP_RESPONSE_RECEIVED_NOTIFICATION"})
+            "APPEAL_DORMANT_NOTIFICATION", "DWP_RESPONSE_RECEIVED_NOTIFICATION", "STRUCK_OUT"})
     public void givenSubscriptions_shouldGetAppellantAndRepSubscriptionTypeList(NotificationEventType notificationEventType) {
         ccdNotificationWrapper = buildCcdNotificationWrapperBasedOnEventTypeWithRep(notificationEventType);
         List<SubscriptionWithType> subsWithTypeList = ccdNotificationWrapper.getSubscriptionsBasedOnNotificationType();
@@ -171,7 +171,8 @@ public class CcdNotificationWrapperTest {
             "DWP_APPEAL_LAPSED_NOTIFICATION, paper", "DWP_APPEAL_LAPSED_NOTIFICATION, oral",
             "SUBSCRIPTION_UPDATED_NOTIFICATION, paper", "APPEAL_WITHDRAWN_NOTIFICATION, paper", "EVIDENCE_RECEIVED_NOTIFICATION, oral",
             "EVIDENCE_RECEIVED_NOTIFICATION, paper", "VALID_APPEAL_CREATED, cor", "RESEND_APPEAL_CREATED_NOTIFICATION, cor", "HEARING_BOOKED_NOTIFICATION, paper",
-            "POSTPONEMENT_NOTIFICATION, oral", "HEARING_REMINDER_NOTIFICATION, oral"})
+            "POSTPONEMENT_NOTIFICATION, oral", "HEARING_REMINDER_NOTIFICATION, oral",
+            "STRUCK_OUT, paper"})
     public void givenSubscriptions_shouldGetSubscriptionTypeListWithAppointee(NotificationEventType notificationEventType, String hearingType) {
         ccdNotificationWrapper = buildCcdNotificationWrapperBasedOnEventTypeWithAppointee(notificationEventType, hearingType);
         List<SubscriptionWithType> subsWithTypeList = ccdNotificationWrapper.getSubscriptionsBasedOnNotificationType();
@@ -214,7 +215,7 @@ public class CcdNotificationWrapperTest {
                 || type.equals(POSTPONEMENT_NOTIFICATION)
                 || type.equals(SUBSCRIPTION_UPDATED_NOTIFICATION)
                 || type.equals(HEARING_BOOKED_NOTIFICATION)
-                || type.equals(SUBSCRIPTION_UPDATED_NOTIFICATION)
+                || type.equals(STRUCK_OUT)
                 || type.equals(VALID_APPEAL_CREATED)
                 || type.equals(REQUEST_INFO_INCOMPLETE)
                 || type.equals(NON_COMPLIANT_NOTIFICATION)
