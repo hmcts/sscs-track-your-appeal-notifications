@@ -17,4 +17,6 @@ public class DocmosisTemplatesConfig {
     private Map<LanguagePreference, Map<String, String>> coversheets;
     private String hmctsImgVal;
     private String hmctsImgKey;
+    private String hmctsWelshImgVal;
+    private String hmctsWelshImgKey;
 }

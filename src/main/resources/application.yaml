@@ -451,7 +451,7 @@ notification:
         emailId: 5ac371f7-c406-48de-bf5c-df0a12aa79e6
         smsId: 1e59e3e7-5ff9-4a5a-85b1-e8fcc88bbcf1
         letterId: 95b0b0f8-fdf6-450f-b805-6aab46d63bf7
-        docmosisId: TB-SCS-GNO-WEL-00467.docx
+        docmosisId: pdf-service
     evidenceReceived:
       appellant:
         emailId: 148e1bbb-2e1e-4353-8cf3-8472131f0efc
@@ -811,6 +811,8 @@ pdf-service:
     uri: ${PDF_SERVICE_HEALTH_URL:https://docmosis-development.platform.hmcts.net/rs/status}
   hmctsImgKey: hmcts2
   hmctsImgVal: "[userImage:hmcts.png]"
+  hmctsWelshImgKey: welshhmcts2
+  hmctsWelshImgVal: "[userImage:welshhmcts.png]"
   coverSheets:
     english:
       appealReceived: 'TB-SCS-GNO-ENG-00012.docx'

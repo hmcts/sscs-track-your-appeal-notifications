@@ -5,6 +5,7 @@ import static uk.gov.hmcts.reform.sscs.domain.notify.NotificationEventType.APPEA
 import static uk.gov.hmcts.reform.sscs.service.LetterUtils.*;
 
 import java.io.IOException;
+import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.Collections;
 import java.util.HashMap;
@@ -27,6 +28,7 @@ import uk.gov.hmcts.reform.sscs.exception.NotificationClientRuntimeException;
 import uk.gov.hmcts.reform.sscs.exception.PdfGenerationException;
 import uk.gov.hmcts.reform.sscs.factory.NotificationWrapper;
 import uk.gov.hmcts.reform.sscs.service.DocmosisPdfService;
+import uk.gov.hmcts.reform.sscs.service.conversion.LocalDateToWelshStringConverter;
 
 @Service
 @Slf4j
@@ -34,6 +36,7 @@ public class PdfLetterService {
     private static final String SSCS_URL_LITERAL = "sscs_url";
     private static final String SSCS_URL = "www.gov.uk/appeal-benefit-decision";
     private static final String GENERATED_DATE_LITERAL = "generated_date";
+    private static final String WELSH_GENERATED_DATE_LITERAL = "welsh_generated_date";
     private static final List<NotificationEventType> REQUIRES_TWO_COVERSHEET =
             Collections.singletonList(APPEAL_RECEIVED_NOTIFICATION);
 
@@ -99,12 +102,17 @@ public class PdfLetterService {
             Map<String, Object> placeholders = new HashMap<>(notification.getPlaceholders());
             placeholders.put(SSCS_URL_LITERAL, SSCS_URL);
             placeholders.put(GENERATED_DATE_LITERAL, LocalDateTime.now().toLocalDate().toString());
-
             placeholders.put(ADDRESS_NAME, truncateAddressLine(getNameToUseForLetter(wrapper, subscriptionType)));
 
             Address addressToUse = getAddressToUseForLetter(wrapper, subscriptionType);
             buildRecipientAddressPlaceholders(addressToUse, placeholders);
             placeholders.put(docmosisTemplatesConfig.getHmctsImgKey(), docmosisTemplatesConfig.getHmctsImgVal());
+
+            if (wrapper.getNewSscsCaseData().isLanguagePreferenceWelsh()) {
+                placeholders.put(docmosisTemplatesConfig.getHmctsWelshImgKey(),
+                        docmosisTemplatesConfig.getHmctsWelshImgVal());
+                placeholders.put(WELSH_GENERATED_DATE_LITERAL, LocalDateToWelshStringConverter.convert(LocalDate.now()));
+            }
             return docmosisPdfService.createPdfFromMap(placeholders, notification.getDocmosisLetterTemplate());
         }
         return new byte[0];
