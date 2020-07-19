@@ -488,6 +488,20 @@ public class NotificationsIt {
     private Object[] generateRepsNotificationScenarios() {
         return new Object[]{
             new Object[]{
+                    STRUCK_OUT,
+                    "paper",
+                    Collections.emptyList(),
+                    Collections.emptyList(),
+                    Arrays.asList("TB-SCS-GNO-ENG-00466.docx", "TB-SCS-GNO-ENG-00466.docx"),
+                    "no",
+                    "no",
+                    "no",
+                    "no",
+                    "0",
+                    "0",
+                    "0"
+            },
+            new Object[]{
                 EVIDENCE_RECEIVED_NOTIFICATION,
                 "paper",
                 Collections.emptyList(),
@@ -1306,6 +1320,20 @@ public class NotificationsIt {
     @SuppressWarnings({"Indentation", "unused"})
     private Object[] generateBundledLetterNotificationScenarios() {
         return new Object[]{
+            new Object[]{
+                    STRUCK_OUT,
+                    "paper",
+                    false,
+                    false,
+                    "1"
+            },
+            new Object[]{
+                    STRUCK_OUT,
+                    "oral",
+                    false,
+                    false,
+                    "1"
+            },
             new Object[]{
                 DIRECTION_ISSUED,
                 "paper",
@@ -2130,6 +2158,19 @@ public class NotificationsIt {
     @SuppressWarnings({"Indentation", "unused"})
     private Object[] generateAppointeeNotificationScenarios() {
         return new Object[]{
+            new Object[]{
+                    STRUCK_OUT,
+                    "oral",
+                    Collections.emptyList(),
+                    Collections.emptyList(),
+                    Collections.singletonList("TB-SCS-GNO-ENG-00466.docx"),
+                    "no",
+                    "no",
+                    "0",
+                    "0",
+                    "0",
+                    "Appointee Appointee"
+            },
             new Object[]{
                 SYA_APPEAL_CREATED_NOTIFICATION,
                 "oral",
@@ -3272,6 +3313,29 @@ public class NotificationsIt {
         assertHttpStatus(response, HttpStatus.OK);
         verify(notificationClient, atMostOnce()).sendEmail(any(), any(), any(), any());
         verify(notificationClient, atMost(2)).sendSms(any(), any(), any(), any(), any());
+        verify(notificationClient, atMostOnce()).sendPrecompiledLetterWithInputStream(any(), any());
+        verifyNoMoreInteractions(notificationClient);
+    }
+
+    @Test
+    @Parameters({"issueFinalDecision", "decisionIssued", "directionIssued"})
+    public void givenAReissueEvent_shouldStillSendDirectionIssued(String furtherEvidenceType) throws Exception {
+
+        String filename = "json/ccdResponse_reissueDocument.json";
+        String path = getClass().getClassLoader().getResource(filename).getFile();
+        String json = FileUtils.readFileToString(new File(path), StandardCharsets.UTF_8.name());
+
+        json = json.replace("appealCreated", State.DORMANT_APPEAL_STATE.toString());
+        json = json.replace("REISSUE_DOCUMENT", furtherEvidenceType);
+
+        byte[] sampleDirectionNotice = IOUtils.toByteArray(getClass().getClassLoader().getResourceAsStream("pdfs/direction-text.pdf"));
+        when(evidenceManagementService.download(any(), any())).thenReturn(sampleDirectionNotice);
+
+        HttpServletResponse response = getResponse(getRequestWithAuthHeader(json));
+
+        assertHttpStatus(response, HttpStatus.OK);
+        verify(notificationClient, times(0)).sendEmail(any(), any(), any(), any());
+        verify(notificationClient, times(0)).sendSms(any(), any(), any(), any(), any());
         verify(notificationClient, atMostOnce()).sendPrecompiledLetterWithInputStream(any(), any());
         verifyNoMoreInteractions(notificationClient);
     }
