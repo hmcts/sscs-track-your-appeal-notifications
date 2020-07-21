@@ -14,6 +14,7 @@ public final class AppConstants {
     public static final String APPELLANT_NAME = "appellant_name";
     public static final String APPOINTEE_DESCRIPTION = "appointee_description";
     public static final String APPOINTEE_DETAILS_LITERAL = "appointee_details";
+    public static final String WELSH_APPOINTEE_DETAILS_LITERAL = "welsh_appointee_details";
     public static final String APPOINTEE_NAME = "appointee_name";
     public static final String BENEFIT_FULL_NAME_LITERAL = "benefit_full_name";
     public static final String BENEFIT_NAME_ACRONYM_LITERAL = "benefit_name_acronym";
@@ -37,10 +38,12 @@ public final class AppConstants {
     public static final String FIRST_TIER_AGENCY_FULL_NAME = "first_tier_agency_full_name";
     public static final String REPRESENTATIVE = "representative";
     public static final String HEARING_ARRANGEMENT_DETAILS_LITERAL = "hearing_arrangement_details";
+    public static final String WELSH_HEARING_ARRANGEMENT_DETAILS_LITERAL = "welsh_hearing_arrangement_details";
     public static final String HEARING_CONTACT_DATE = "hearing_contact_date";
     public static final String HEARING_DATE = "hearing_date";
     public static final String WELSH_HEARING_DATE = "welsh_hearing_date";
     public static final String HEARING_DETAILS_LITERAL = "hearing_details";
+    public static final String WELSH_HEARING_DETAILS_LITERAL = "welsh_hearing_details";
     public static final String HEARING_INFO_LINK_LITERAL = "hearing_info_link";
     public static final String HEARING_TIME = "hearing_time";
     public static final String HEARING_TIME_FORMAT = "hh:mm a";
@@ -50,6 +53,7 @@ public final class AppConstants {
     public static final String MAC_LITERAL = "mac";
     public static final String MANAGE_EMAILS_LINK_LITERAL = "manage_emails_link";
     public static final String MRN_DETAILS_LITERAL = "mrn_details";
+    public static final String WELSH_MRN_DETAILS_LITERAL = "welsh_mrn_details";
     public static final String NAME = "name";
     public static final String ONLINE_HEARING_LINK_LITERAL = "online_hearing_link";
     public static final String ONLINE_HEARING_REGISTER_LINK_LITERAL = "online_hearing_register_link";
@@ -60,15 +64,18 @@ public final class AppConstants {
     public static final String POSTCODE_LITERAL = "postcode";
     public static final String QUESTION_ROUND_EXPIRES_DATE_LITERAL = "question_round_expires_date";
     public static final String REASONS_FOR_APPEALING_DETAILS_LITERAL = "reasons_for_appealing_details";
+    public static final String WELSH_REASONS_FOR_APPEALING_DETAILS_LITERAL = "welsh_reasons_for_appealing_details";
     public static final String REGIONAL_OFFICE_NAME_LITERAL = "regional_office_name";
     public static final String REGIONAL_OFFICE_POSTCODE_LITERAL = "regional_office_postcode";
     public static final String REPRESENTATIVE_DETAILS_LITERAL = "representative_details";
+    public static final String WELSH_REPRESENTATIVE_DETAILS_LITERAL = "welsh_representative_details";
     public static final String REPRESENTATIVE_NAME = "representative_name";
     public static final String RESPONSE_DATE_FORMAT = "d MMMM yyyy";
     public static final String SUBMIT_EVIDENCE_INFO_LINK_LITERAL = "submit_evidence_info_link";
     public static final String SUBMIT_EVIDENCE_LINK_LITERAL = "submit_evidence_link";
     public static final String SUPPORT_CENTRE_NAME_LITERAL = "support_centre_name";
     public static final String TEXT_MESSAGE_REMINDER_DETAILS_LITERAL = "text_message_reminder_details";
+    public static final String WELSH_TEXT_MESSAGE_REMINDER_DETAILS_LITERAL = "welsh_text_message_reminder_details";
     public static final String TOMORROW_STRING = "tomorrow";
     public static final String TOWN_LITERAL = "town";
     public static final String TRACK_APPEAL_LINK_LITERAL = "track_appeal_link";
@@ -77,6 +84,7 @@ public final class AppConstants {
     public static final String VENUE_ADDRESS_LITERAL = "venue_address";
     public static final String VENUE_MAP_LINK_LITERAL = "venue_map_link";
     public static final String YOUR_DETAILS_LITERAL = "your_details";
+    public static final String WELSH_YOUR_DETAILS_LITERAL = "welsh_your_details";
     public static final String ZONE_ID = "Europe/London";
     public static final String WELSH_CURRENT_DATE = "welsh_current_date";
 
