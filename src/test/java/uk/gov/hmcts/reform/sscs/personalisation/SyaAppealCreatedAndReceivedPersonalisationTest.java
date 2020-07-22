@@ -3,7 +3,6 @@ package uk.gov.hmcts.reform.sscs.personalisation;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNull;
 import static org.mockito.MockitoAnnotations.initMocks;
-import static uk.gov.hmcts.reform.sscs.config.PersonalisationConfiguration.*;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -17,6 +16,7 @@ import org.mockito.Spy;
 import uk.gov.hmcts.reform.sscs.ccd.domain.*;
 import uk.gov.hmcts.reform.sscs.config.AppConstants;
 import uk.gov.hmcts.reform.sscs.config.PersonalisationConfiguration;
+import uk.gov.hmcts.reform.sscs.config.PersonalisationKey;
 
 public class SyaAppealCreatedAndReceivedPersonalisationTest {
 
