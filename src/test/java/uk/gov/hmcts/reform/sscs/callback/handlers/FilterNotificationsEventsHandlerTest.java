@@ -48,7 +48,7 @@ public class FilterNotificationsEventsHandlerTest {
     }
 
     @Test
-    @Parameters({"DO_NOT_SEND", "SYA_APPEAL_CREATED_NOTIFICATION", "ISSUE_FINAL_DECISION"})
+    @Parameters({"DO_NOT_SEND", "SYA_APPEAL_CREATED_NOTIFICATION"})
     public void willNotHandleEvents(NotificationEventType notificationEventType) {
         SscsCaseDataWrapper callback = SscsCaseDataWrapper.builder().notificationEventType(notificationEventType).build();
         assertFalse(handler.canHandle(callback));
