@@ -17,43 +17,43 @@ import uk.gov.service.notify.NotificationClientException;
 
 public class NotificationServiceForSubscriptionUpdatedTest extends NotificationServiceBase {
 
-    @Value("${notification.appealReceived.appellant.emailId}")
+    @Value("${notification.english.appealReceived.appellant.emailId}")
     private String appealReceivedAppellantEmailId;
 
-    @Value("${notification.appealReceived.appellant.smsId}")
+    @Value("${notification.english.appealReceived.appellant.smsId}")
     private String appealReceivedAppellantSmsId;
 
-    @Value("${notification.appealReceived.representative.emailId}")
+    @Value("${notification.english.appealReceived.representative.emailId}")
     private String appealReceivedRepresentativeEmailId;
 
-    @Value("${notification.appealReceived.representative.smsId}")
+    @Value("${notification.english.appealReceived.representative.smsId}")
     private String appealReceivedRepresentativeSmsId;
 
-    @Value("${notification.appealReceived.appointee.emailId}")
+    @Value("${notification.english.appealReceived.appointee.emailId}")
     private String appealReceivedAppointeeEmailId;
 
-    @Value("${notification.appealReceived.appointee.smsId}")
+    @Value("${notification.english.appealReceived.appointee.smsId}")
     private String appealReceivedAppointeeSmsId;
 
-    @Value("${notification.subscriptionUpdated.emailId}")
+    @Value("${notification.english.subscriptionUpdated.emailId}")
     private String subscriptionUpdatedEmailId;
 
-    @Value("${notification.subscriptionUpdated.smsId}")
+    @Value("${notification.english.subscriptionUpdated.smsId}")
     private String subscriptionUpdatedSmsId;
 
-    @Value("${notification.subscriptionCreated.appellant.smsId}")
+    @Value("${notification.english.subscriptionCreated.appellant.smsId}")
     private String subscriptionCreatedAppellantSmsId;
 
-    @Value("${notification.subscriptionCreated.appointee.smsId}")
+    @Value("${notification.english.subscriptionCreated.appointee.smsId}")
     private String subscriptionCreatedAppointeeSmsId;
 
-    @Value("${notification.subscriptionCreated.representative.smsId}")
+    @Value("${notification.english.subscriptionCreated.representative.smsId}")
     private String subscriptionCreatedRepresentativeSmsId;
 
-    @Value("${notification.subscriptionOld.emailId}")
+    @Value("${notification.english.subscriptionOld.emailId}")
     private String subscriptionOldEmailId;
 
-    @Value("${notification.subscriptionOld.smsId}")
+    @Value("${notification.english.subscriptionOld.smsId}")
     private String subscriptionOldSmsId;
 
     @Test

@@ -4,6 +4,7 @@ import java.util.Map;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 import uk.gov.hmcts.reform.sscs.ccd.domain.Benefit;
+import uk.gov.hmcts.reform.sscs.ccd.domain.LanguagePreference;
 import uk.gov.hmcts.reform.sscs.config.SubscriptionType;
 import uk.gov.hmcts.reform.sscs.domain.SubscriptionWithType;
 import uk.gov.hmcts.reform.sscs.domain.notify.NotificationEventType;
@@ -39,9 +40,10 @@ public class CohPersonalisation extends Personalisation<CohNotificationWrapper> 
                                 SubscriptionType subscriptionType) {
         // If we remembered the question rounds before we would not need to make this call but currently Personalisation is a singleton
         QuestionRounds questionRounds = questionService.getQuestionRounds(notificationWrapper.getOnlineHearingId());
+        LanguagePreference languagePreference = notificationWrapper.getSscsCaseDataWrapper().getNewSscsCaseData().getLanguagePreference();
         if (questionRounds.getCurrentQuestionRound() == 1) {
             NotificationEventType type = notificationWrapper.getNotificationType();
-            return config.getTemplate(type.getId(), type.getId(), type.getId(), type.getId(), benefit, notificationWrapper.getHearingType(), null);
+            return config.getTemplate(type.getId(), type.getId(), type.getId(), type.getId(), benefit, notificationWrapper.getHearingType(), null, languagePreference);
         }
         return config.getTemplate(
             FOLLOW_UP_QUESTION_ROUND_ISSUED,
@@ -50,7 +52,7 @@ public class CohPersonalisation extends Personalisation<CohNotificationWrapper> 
             FOLLOW_UP_QUESTION_ROUND_ISSUED,
             benefit,
             notificationWrapper.getHearingType(),
-            null
+            null, languagePreference
         );
     }
 }

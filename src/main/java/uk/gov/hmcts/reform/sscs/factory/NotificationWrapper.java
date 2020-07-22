@@ -35,4 +35,8 @@ public interface NotificationWrapper {
     SscsCaseData getOldSscsCaseData();
 
     List<SubscriptionWithType> getSubscriptionsBasedOnNotificationType();
+
+    void setNotificationEventTypeOverridden(boolean notificationEventTypeOverridden);
+
+    boolean hasNotificationEventBeenOverridden();
 }

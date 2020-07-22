@@ -75,7 +75,9 @@ public class PdfLetterServiceIt {
                 wrapper.getNewSscsCaseData().getAppeal().getAppellant().getAddress().getPostcode(),
                 docmosisTemplatesConfig.getHmctsImgVal(),
                 docmosisTemplatesConfig.getWelshHmctsImgVal());
-        verify(docmosisPdfService).createPdf(eq(pdfCoverSheet), eq(docmosisTemplatesConfig.getCoversheets().get(APPEAL_RECEIVED.getType())));
+
+        verify(docmosisPdfService).createPdf(eq(pdfCoverSheet), eq(docmosisTemplatesConfig.getCoversheets()
+                .get(LanguagePreference.ENGLISH).get(APPEAL_RECEIVED.getType())));
     }
 
     @Test(expected = PdfGenerationException.class)

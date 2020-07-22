@@ -242,8 +242,8 @@ public class SyaAppealCreatedAndReceivedPersonalisation extends WithRepresentati
 
         if (appealReasons.getReasons() != null && !appealReasons.getReasons().isEmpty()) {
             for (AppealReason reason : appealReasons.getReasons()) {
-                appealReasonsBuilder.append(titleText.get(WHAT_DISAGREE_WITH)).append(reason.getValue().getDescription()).append(TWO_NEW_LINES)
-                    .append(titleText.get(WHY_DISAGREE_WITH)).append(reason.getValue().getReason()).append(TWO_NEW_LINES);
+                appealReasonsBuilder.append(titleText.get(WHAT_DISAGREE_WITH)).append(reason.getValue().getReason()).append(TWO_NEW_LINES)
+                    .append(titleText.get(WHY_DISAGREE_WITH)).append(reason.getValue().getDescription()).append(TWO_NEW_LINES);
             }
         }
 
