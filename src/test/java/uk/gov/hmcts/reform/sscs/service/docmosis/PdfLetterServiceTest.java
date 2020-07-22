@@ -1,8 +1,8 @@
 package uk.gov.hmcts.reform.sscs.service.docmosis;
 
 import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertTrue;
 import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.Mockito.any;
@@ -25,8 +25,8 @@ import static uk.gov.hmcts.reform.sscs.service.docmosis.PdfLetterService.WELSH_G
 
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
-import java.util.Collections;
 import java.time.format.DateTimeFormatter;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
@@ -40,11 +40,7 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.ArgumentCaptor;
 import org.mockito.Mockito;
-import uk.gov.hmcts.reform.sscs.ccd.domain.Address;
-import uk.gov.hmcts.reform.sscs.ccd.domain.Appellant;
-import uk.gov.hmcts.reform.sscs.ccd.domain.Appointee;
-import uk.gov.hmcts.reform.sscs.ccd.domain.Name;
-import uk.gov.hmcts.reform.sscs.ccd.domain.Representative;
+import uk.gov.hmcts.reform.sscs.ccd.domain.*;
 import uk.gov.hmcts.reform.sscs.config.DocmosisTemplatesConfig;
 import uk.gov.hmcts.reform.sscs.config.SubscriptionType;
 import uk.gov.hmcts.reform.sscs.domain.docmosis.PdfCoverSheet;
@@ -68,6 +64,7 @@ public class PdfLetterServiceTest {
 
     static {
         TEMPLATE_NAMES.put(LanguagePreference.ENGLISH, Collections.singletonMap(APPEAL_RECEIVED_NOTIFICATION.getId(), "my01.doc"));
+        TEMPLATE_NAMES.put(LanguagePreference.WELSH, Collections.singletonMap(APPEAL_RECEIVED_NOTIFICATION.getId(), "my01.doc"));
         DOCMOSIS_TEMPLATES_CONFIG.setCoversheets(TEMPLATE_NAMES);
         DOCMOSIS_TEMPLATES_CONFIG.setHmctsWelshImgKey("welshhmcts");
         DOCMOSIS_TEMPLATES_CONFIG.setHmctsWelshImgVal("welshhmcts.png");
@@ -111,7 +108,7 @@ public class PdfLetterServiceTest {
                 address.getCounty(),
                 address.getPostcode(),
                 DOCMOSIS_TEMPLATES_CONFIG.getHmctsImgVal(),
-                DOCMOSIS_TEMPLATES_CONFIG.getWelshHmctsImgVal());
+                DOCMOSIS_TEMPLATES_CONFIG.getHmctsWelshImgVal());
         verify(docmosisPdfService).createPdf(eq(pdfCoverSheet), eq("my01.doc"));
     }
 

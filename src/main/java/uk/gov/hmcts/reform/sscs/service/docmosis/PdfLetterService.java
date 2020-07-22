@@ -36,8 +36,8 @@ import uk.gov.hmcts.reform.sscs.service.conversion.LocalDateToWelshStringConvert
 public class PdfLetterService {
     private static final String SSCS_URL_LITERAL = "sscs_url";
     private static final String SSCS_URL = "www.gov.uk/appeal-benefit-decision";
-    private static final String GENERATED_DATE_LITERAL = "generated_date";
-    private static final String WELSH_GENERATED_DATE_LITERAL = "welsh_generated_date";
+    protected static final String GENERATED_DATE_LITERAL = "generated_date";
+    protected static final String WELSH_GENERATED_DATE_LITERAL = "welsh_generated_date";
     private static final List<NotificationEventType> REQUIRES_TWO_COVERSHEET =
             Collections.singletonList(APPEAL_RECEIVED_NOTIFICATION);
 
@@ -79,7 +79,7 @@ public class PdfLetterService {
                 addressToUse.getCounty(),
                 addressToUse.getPostcode(),
                 docmosisTemplatesConfig.getHmctsImgVal(),
-                docmosisTemplatesConfig.getWelshHmctsImgVal());
+                docmosisTemplatesConfig.getHmctsWelshImgVal());
         LanguagePreference languagePreference =
                 wrapper.getSscsCaseDataWrapper().getNewSscsCaseData().getLanguagePreference();
 
@@ -110,7 +110,7 @@ public class PdfLetterService {
             Address addressToUse = getAddressToUseForLetter(wrapper, subscriptionType);
             buildRecipientAddressPlaceholders(addressToUse, placeholders);
             placeholders.put(docmosisTemplatesConfig.getHmctsImgKey(), docmosisTemplatesConfig.getHmctsImgVal());
-            placeholders.put(docmosisTemplatesConfig.getWelshHmctsImgKey(), docmosisTemplatesConfig.getWelshHmctsImgVal());
+            placeholders.put(docmosisTemplatesConfig.getHmctsWelshImgKey(), docmosisTemplatesConfig.getHmctsWelshImgVal());
 
             if (wrapper.getNewSscsCaseData().isLanguagePreferenceWelsh()) {
                 placeholders.put(docmosisTemplatesConfig.getHmctsWelshImgKey(),

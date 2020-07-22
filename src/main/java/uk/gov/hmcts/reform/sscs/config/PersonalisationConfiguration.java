@@ -59,5 +59,5 @@ public class PersonalisationConfiguration {
             return Arrays.stream(PersonalisationKey.values()).filter(personalisationKey -> personalisationKey.value.equals(keyValue)).findAny()
                     .orElseThrow(() -> new IllegalArgumentException(String.format(ERROR_MESSAGE, keyValue)));
         }
-    };
+    }
 }

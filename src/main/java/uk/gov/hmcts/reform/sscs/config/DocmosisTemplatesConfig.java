@@ -19,6 +19,4 @@ public class DocmosisTemplatesConfig {
     private String hmctsImgKey;
     private String hmctsWelshImgVal;
     private String hmctsWelshImgKey;
-    private String welshHmctsImgVal;
-    private String welshHmctsImgKey;
 }

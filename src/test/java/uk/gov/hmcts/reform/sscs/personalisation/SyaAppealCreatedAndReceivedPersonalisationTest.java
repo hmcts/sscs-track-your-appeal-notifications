@@ -5,7 +5,6 @@ import static org.junit.Assert.assertNull;
 import static org.mockito.MockitoAnnotations.initMocks;
 import static uk.gov.hmcts.reform.sscs.config.PersonalisationConfiguration.*;
 
-import java.nio.file.WatchEvent;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -58,6 +57,7 @@ public class SyaAppealCreatedAndReceivedPersonalisationTest {
         englishMap.put(PersonalisationKey.ORGANISATION, "Organisation: ");
         englishMap.put(PersonalisationKey.WHAT_DISAGREE_WITH, "What you disagree with: ");
         englishMap.put(PersonalisationKey.WHY_DISAGREE_WITH, "Why you disagree with it: ");
+        englishMap.put(PersonalisationKey.ANYTHING, "Anything else you want to tell the tribunal: ");
         englishMap.put(PersonalisationKey.LANGUAGE_INTERPRETER, "Language interpreter: ");
         englishMap.put(PersonalisationKey.SIGN_INTERPRETER, "Sign interpreter: ");
         englishMap.put(PersonalisationKey.HEARING_LOOP, "Hearing loop: ");
@@ -143,7 +143,7 @@ public class SyaAppealCreatedAndReceivedPersonalisationTest {
         assertNull("Welsh mrn details should be set", result.get(AppConstants.WELSH_HEARING_DETAILS_LITERAL));
     }
 
-  @Test
+    @Test
     public void givenAnAppeal_setMrnDetailsForTemplateWhenReasonForNoMrnMissing_welsh() {
         response = SscsCaseData.builder()
                 .ccdCaseId(CASE_ID).caseReference("SC/1234/5")
@@ -187,7 +187,7 @@ public class SyaAppealCreatedAndReceivedPersonalisationTest {
                 result.get(AppConstants.YOUR_DETAILS_LITERAL));
     }
 
-  @Test
+    @Test
     public void givenAnAppeal_setYourDetailsForTemplate_Welsh() {
         response = SscsCaseData.builder()
                 .ccdCaseId(CASE_ID).caseReference("SC/1234/5")
@@ -244,7 +244,7 @@ public class SyaAppealCreatedAndReceivedPersonalisationTest {
                 result.get(AppConstants.YOUR_DETAILS_LITERAL));
     }
 
-   @Test
+    @Test
     public void givenAnAppealWithNoEmailOrPhoneProvided_setYourDetailsForTemplate_Welsh() {
         response = SscsCaseData.builder()
                 .ccdCaseId(CASE_ID).caseReference("SC/1234/5")
@@ -592,10 +592,10 @@ public class SyaAppealCreatedAndReceivedPersonalisationTest {
                 result.get(AppConstants.REASONS_FOR_APPEALING_DETAILS_LITERAL));
     }
 
-  @Test
+    @Test
     public void givenASyaAppealWithOneReasonForAppealing_setReasonForAppealingDetailsForTemplate_Welsh() {
         List<AppealReason> appealReasonList = new ArrayList<>();
-        AppealReason reason = AppealReason.builder().value(AppealReasonDetails.builder().description("I want to appeal").reason("Because I do").build()).build();
+        AppealReason reason = AppealReason.builder().value(AppealReasonDetails.builder().reason("I want to appeal").description("Because I do").build()).build();
         appealReasonList.add(reason);
 
         response = SscsCaseData.builder()
@@ -792,7 +792,7 @@ public class SyaAppealCreatedAndReceivedPersonalisationTest {
 
     }
 
-  @Test
+    @Test
     public void givenASyaAppealWithHearingArrangements_setHearingArrangementsForTemplate_Welsh() {
 
         List<String> arrangementList = new ArrayList<>();
@@ -820,7 +820,7 @@ public class SyaAppealCreatedAndReceivedPersonalisationTest {
                         + "\nAny other arrangements: Other",
                 result.get(AppConstants.HEARING_ARRANGEMENT_DETAILS_LITERAL));
 
-         assertEquals("Dehonglydd iaith arwyddion: Gofynnol\n"
+        assertEquals("Dehonglydd iaith arwyddion: Gofynnol\n"
                         + "\nDehonglydd iaith arwyddion: Gofynnol\n"
                         + "\nDolen glyw: Gofynnol\n"
                         + "\nMynediad i bobl anab: Gofynnol\n"

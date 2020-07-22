@@ -8,7 +8,6 @@ import static uk.gov.hmcts.reform.sscs.config.PersonalisationConfiguration.Perso
 import static uk.gov.hmcts.reform.sscs.config.PersonalisationConfiguration.PersonalisationKey.HAVE_A_REPRESENTATIVE;
 import static uk.gov.hmcts.reform.sscs.config.PersonalisationConfiguration.PersonalisationKey.HEARING_LOOP;
 import static uk.gov.hmcts.reform.sscs.config.PersonalisationConfiguration.PersonalisationKey.LANGUAGE_INTERPRETER;
-import static uk.gov.hmcts.reform.sscs.config.PersonalisationConfiguration.PersonalisationKey.MOBILE;
 import static uk.gov.hmcts.reform.sscs.config.PersonalisationConfiguration.PersonalisationKey.NINO;
 import static uk.gov.hmcts.reform.sscs.config.PersonalisationConfiguration.PersonalisationKey.ORGANISATION;
 import static uk.gov.hmcts.reform.sscs.config.PersonalisationConfiguration.PersonalisationKey.OTHER_ARRANGEMENTS;
@@ -90,7 +89,7 @@ public class SyaAppealCreatedAndReceivedPersonalisation extends WithRepresentati
         personalisation.put(AppConstants.MRN_DETAILS_LITERAL,
                 buildMrnDetails(ccdResponse.getAppeal().getMrnDetails(), personalisationConfiguration.getPersonalisation().get(LanguagePreference.ENGLISH),  Function.identity()));
 
-        if(ccdResponse.isLanguagePreferenceWelsh()) {
+        if (ccdResponse.isLanguagePreferenceWelsh()) {
             personalisation.put(AppConstants.WELSH_MRN_DETAILS_LITERAL,
                     buildMrnDetails(ccdResponse.getAppeal().getMrnDetails(), personalisationConfiguration.getPersonalisation().get(LanguagePreference.WELSH), this::convertLongFormattedLocalDateToWelshDate));
         }
@@ -102,13 +101,15 @@ public class SyaAppealCreatedAndReceivedPersonalisation extends WithRepresentati
         List<String> details = new ArrayList<>();
 
         if (mrnDetails.getMrnDate() != null) {
-            details.add( titleText.get(DATE_OF_MRN) + mrnDate.apply(mrnDetails.getMrnDate()));
+            details.add(titleText.get(DATE_OF_MRN) + mrnDate.apply(mrnDetails.getMrnDate()));
         }
+
         if (mrnDetails.getMrnLateReason() != null) {
-            details.add( titleText.get(REASON_FOR_LATE_APPEAL) + mrnDetails.getMrnLateReason());
+            details.add(titleText.get(REASON_FOR_LATE_APPEAL) + mrnDetails.getMrnLateReason());
         }
+
         if (mrnDetails.getMrnMissingReason() != null) {
-            details.add( titleText.get(REASON_FOR_NO_MRN) + mrnDetails.getMrnMissingReason());
+            details.add(titleText.get(REASON_FOR_NO_MRN) + mrnDetails.getMrnMissingReason());
         }
 
         return StringUtils.join(details.toArray(), TWO_NEW_LINES);
@@ -143,8 +144,8 @@ public class SyaAppealCreatedAndReceivedPersonalisation extends WithRepresentati
     private String buildTextMessageDetails(Subscription subscription, Map<PersonalisationKey, String> titleText) {
         StringBuilder buildTextMessage = new StringBuilder()
             .append(titleText.get(RECEIVE_TEXT_MESSAGE_REMINDER))
-            .append(null != subscription && null != subscription.getSubscribeSms() ?
-                    titleText.get(getPersonalisationKey(subscription.getSubscribeSms().toLowerCase(Locale.ENGLISH))) :  titleText.get(getPersonalisationKey(NO)));
+            .append(null != subscription && null != subscription.getSubscribeSms()
+                    ? titleText.get(getPersonalisationKey(subscription.getSubscribeSms().toLowerCase(Locale.ENGLISH))) :  titleText.get(getPersonalisationKey(NO)));
 
         if (null != subscription && subscription.isSmsSubscribed()) {
             buildTextMessage
@@ -176,7 +177,7 @@ public class SyaAppealCreatedAndReceivedPersonalisation extends WithRepresentati
     }
 
     private String convertLongFormattedLocalDateToWelshDate(String date) {
-        if(NOT_PROVIDED.equals(date)) {
+        if (NOT_PROVIDED.equals(date)) {
             return personalisationConfiguration.getPersonalisation().get(LanguagePreference.WELSH).get(PersonalisationKey.NOT_PROVIDED);
         }
         LocalDate localDate = LocalDate.parse(date, longFormatter);
@@ -318,7 +319,7 @@ public class SyaAppealCreatedAndReceivedPersonalisation extends WithRepresentati
         return titleText.get(LANGUAGE_INTERPRETER) + languageInterpreterRequired + TWO_NEW_LINES + titleText.get(SIGN_INTERPRETER)
             + convertBooleanToRequiredText(findHearingArrangement("signLanguageInterpreter", hearingOptions.getArrangements()),titleText)
             + TWO_NEW_LINES + titleText.get(HEARING_LOOP) + convertBooleanToRequiredText(findHearingArrangement("hearingLoop", hearingOptions.getArrangements()), titleText)
-            + TWO_NEW_LINES + titleText.get(DISABLED_ACCESS)+ convertBooleanToRequiredText(findHearingArrangement("disabledAccess", hearingOptions.getArrangements()), titleText)
+            + TWO_NEW_LINES + titleText.get(DISABLED_ACCESS) + convertBooleanToRequiredText(findHearingArrangement("disabledAccess", hearingOptions.getArrangements()), titleText)
             + TWO_NEW_LINES + titleText.get(OTHER_ARRANGEMENTS) + getOptionalField(hearingOptions.getOther(), titleText.get(PersonalisationKey.NOT_REQUIRED));
     }
 
