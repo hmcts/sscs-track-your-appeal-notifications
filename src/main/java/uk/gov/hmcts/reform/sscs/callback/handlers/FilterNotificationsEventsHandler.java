@@ -38,7 +38,7 @@ import uk.gov.hmcts.reform.sscs.service.NotificationService;
 @Service
 public class FilterNotificationsEventsHandler implements CallbackHandler {
 
-    private final List<NotificationEventType> EVENTS_LIST = unmodifiableList(asList(
+    private static final List<NotificationEventType> EVENTS_LIST = unmodifiableList(asList(
             ADJOURNED_NOTIFICATION,
             ADMIN_APPEAL_WITHDRAWN,
             APPEAL_DORMANT_NOTIFICATION,
