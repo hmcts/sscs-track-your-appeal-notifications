@@ -159,6 +159,7 @@ public class Personalisation<E extends NotificationWrapper> {
 
         personalisation.put(FIRST_TIER_AGENCY_ACRONYM, DWP_ACRONYM);
         personalisation.put(FIRST_TIER_AGENCY_FULL_NAME, DWP_FUL_NAME);
+        personalisation.put(CREATED_DATE, ccdResponse.getCaseCreated());
 
         if (ccdResponse.getHearings() != null && !ccdResponse.getHearings().isEmpty()) {
 
