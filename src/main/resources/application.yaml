@@ -901,7 +901,7 @@ personalisation:
     PHONE: "Rhif ffôn: "
     RECEIVE_TEXT_MESSAGE_REMINDER: "Eisiau negeseuon testun atgoffa: "
     MOBILE: "Rhif ffôn symudol: "
-    HAVE_AN_APPOINTEE: "Have an appointee: "
+    HAVE_AN_APPOINTEE: "A oes gennych chi benodai: "
     NOT_PROVIDED: "Nis ddarparwyd"
     HAVE_A_REPRESENTATIVE: "A oes gennych chi gynrychiolydd: "
     ORGANISATION: "Sefydliad: "
@@ -915,7 +915,7 @@ personalisation:
     OTHER_ARRANGEMENTS: "Unrhyw drefniadau eraill: "
     REQUIRED: "Gofynnol"
     NOT_REQUIRED: "Dim yn ofynnol"
-    OTHER: "Other"
+    OTHER: "Arall"
 
 
 ---
