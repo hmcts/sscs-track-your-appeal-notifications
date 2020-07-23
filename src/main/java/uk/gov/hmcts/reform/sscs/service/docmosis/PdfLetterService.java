@@ -80,6 +80,7 @@ public class PdfLetterService {
                 addressToUse.getPostcode(),
                 docmosisTemplatesConfig.getHmctsImgVal(),
                 docmosisTemplatesConfig.getHmctsWelshImgVal());
+
         LanguagePreference languagePreference =
                 wrapper.getSscsCaseDataWrapper().getNewSscsCaseData().getLanguagePreference();
 
@@ -103,8 +104,8 @@ public class PdfLetterService {
             Map<String, Object> placeholders = new HashMap<>(notification.getPlaceholders());
             placeholders.put(SSCS_URL_LITERAL, SSCS_URL);
             placeholders.put(GENERATED_DATE_LITERAL, LocalDateTime.now().toLocalDate().toString());
-            translateToWelshDate(LocalDateTime.now().toLocalDate(), wrapper.getNewSscsCaseData(), (value) -> placeholders.put(WELSH_GENERATED_DATE_LITERAL, value));
 
+            translateToWelshDate(LocalDateTime.now().toLocalDate(), wrapper.getNewSscsCaseData(), (value) -> placeholders.put(WELSH_GENERATED_DATE_LITERAL, value));
             placeholders.put(ADDRESS_NAME, truncateAddressLine(getNameToUseForLetter(wrapper, subscriptionType)));
 
             Address addressToUse = getAddressToUseForLetter(wrapper, subscriptionType);
