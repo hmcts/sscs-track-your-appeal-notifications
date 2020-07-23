@@ -10,7 +10,7 @@ import java.util.List;
 import java.util.Locale;
 import java.util.Map;
 import java.util.StringJoiner;
-import java.util.function.Function;
+import java.util.function.UnaryOperator;
 
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -69,7 +69,7 @@ public class SyaAppealCreatedAndReceivedPersonalisation extends WithRepresentati
 
     public Map<String, String> setMrnDetails(Map<String, String> personalisation, SscsCaseData ccdResponse) {
         personalisation.put(AppConstants.MRN_DETAILS_LITERAL,
-                buildMrnDetails(ccdResponse.getAppeal().getMrnDetails(), personalisationConfiguration.getPersonalisation().get(LanguagePreference.ENGLISH),  Function.identity()));
+                buildMrnDetails(ccdResponse.getAppeal().getMrnDetails(), personalisationConfiguration.getPersonalisation().get(LanguagePreference.ENGLISH),  UnaryOperator.identity()));
 
         if (ccdResponse.isLanguagePreferenceWelsh()) {
             personalisation.put(AppConstants.WELSH_MRN_DETAILS_LITERAL,
@@ -78,7 +78,7 @@ public class SyaAppealCreatedAndReceivedPersonalisation extends WithRepresentati
         return personalisation;
     }
 
-    private String buildMrnDetails(MrnDetails mrnDetails, Map<String, String> titleText, Function<String, String> mrnDate) {
+    private String buildMrnDetails(MrnDetails mrnDetails, Map<String, String> titleText, UnaryOperator<String> mrnDate) {
 
         List<String> details = new ArrayList<>();
 
@@ -99,7 +99,7 @@ public class SyaAppealCreatedAndReceivedPersonalisation extends WithRepresentati
 
     public Map<String, String> setYourDetails(Map<String, String> personalisation, SscsCaseData ccdResponse) {
         personalisation.put(AppConstants.YOUR_DETAILS_LITERAL,
-                buildYourDetails(ccdResponse.getAppeal(), personalisationConfiguration.getPersonalisation().get(LanguagePreference.ENGLISH), Function.identity()));
+                buildYourDetails(ccdResponse.getAppeal(), personalisationConfiguration.getPersonalisation().get(LanguagePreference.ENGLISH), UnaryOperator.identity()));
         if (ccdResponse.isLanguagePreferenceWelsh()) {
             personalisation.put(AppConstants.WELSH_YOUR_DETAILS_LITERAL,
                     buildYourDetails(ccdResponse.getAppeal(), personalisationConfiguration.getPersonalisation().get(LanguagePreference.WELSH), this::convertLongFormattedLocalDateToWelshDate));
@@ -107,7 +107,7 @@ public class SyaAppealCreatedAndReceivedPersonalisation extends WithRepresentati
         return personalisation;
     }
 
-    private String buildYourDetails(Appeal appeal, Map<String, String> titleText, Function<String, String> convertDate) {
+    private String buildYourDetails(Appeal appeal, Map<String, String> titleText, UnaryOperator<String> convertDate) {
 
         return titleText.get(PersonalisationConfiguration.PersonalisationKey.NAME.name()) + appeal.getAppellant().getName().getFullNameNoTitle() + TWO_NEW_LINES
             + titleText.get(DATE_OF_BIRTH.name()) + convertDate.apply(getOptionalField(appeal.getAppellant().getIdentity().getDob(), NOT_PROVIDED))
@@ -151,7 +151,7 @@ public class SyaAppealCreatedAndReceivedPersonalisation extends WithRepresentati
 
 
     public Map<String, String> setAppointeeDetails(Map<String, String> personalisation, SscsCaseData ccdResponse) {
-        personalisation.put(AppConstants.APPOINTEE_DETAILS_LITERAL, buildAppointeeDetails(ccdResponse.getAppeal().getAppellant().getAppointee(), personalisationConfiguration.getPersonalisation().get(LanguagePreference.ENGLISH), Function.identity()));
+        personalisation.put(AppConstants.APPOINTEE_DETAILS_LITERAL, buildAppointeeDetails(ccdResponse.getAppeal().getAppellant().getAppointee(), personalisationConfiguration.getPersonalisation().get(LanguagePreference.ENGLISH), UnaryOperator.identity()));
         if (ccdResponse.isLanguagePreferenceWelsh()) {
             personalisation.put(AppConstants.WELSH_APPOINTEE_DETAILS_LITERAL, buildAppointeeDetails(ccdResponse.getAppeal().getAppellant().getAppointee(), personalisationConfiguration.getPersonalisation().get(LanguagePreference.WELSH), this::convertLongFormattedLocalDateToWelshDate));
         }
@@ -166,7 +166,7 @@ public class SyaAppealCreatedAndReceivedPersonalisation extends WithRepresentati
         return LocalDateToWelshStringConverter.convert(localDate);
     }
 
-    private String buildAppointeeDetails(Appointee appointee, Map<String, String> titleText, Function<String, String> convertDate) {
+    private String buildAppointeeDetails(Appointee appointee, Map<String, String> titleText, UnaryOperator<String> convertDate) {
         String hasAppointee = hasAppointee(appointee) ? YES : NO;
 
         StringBuilder appointeeBuilder = new StringBuilder()
@@ -247,7 +247,7 @@ public class SyaAppealCreatedAndReceivedPersonalisation extends WithRepresentati
         return personalisation;
     }
 
-    private String buildHearingDetails(HearingOptions hearingOptions, Map<String, String> titleText, Function<String, String> convertor) {
+    private String buildHearingDetails(HearingOptions hearingOptions, Map<String, String> titleText, UnaryOperator<String> convertor) {
         String decisionKey = getYesNoKey(hearingOptions.getWantsToAttend().toLowerCase(Locale.ENGLISH));
         StringBuilder hearingOptionsBuilder = new StringBuilder()
             .append(titleText.get(PersonalisationConfiguration.PersonalisationKey.ATTENDING_HEARING.name()))
@@ -266,7 +266,7 @@ public class SyaAppealCreatedAndReceivedPersonalisation extends WithRepresentati
         return hearingOptionsBuilder.toString();
     }
 
-    private String buildDateRangeString(DateRange range, Function<String, String> convertor) {
+    private String buildDateRangeString(DateRange range, UnaryOperator<String> convertor) {
 
         if (range.getStart() != null) {
             return convertor.apply(range.getStart());
@@ -309,7 +309,7 @@ public class SyaAppealCreatedAndReceivedPersonalisation extends WithRepresentati
         return arrangements != null && arrangements.contains(field);
     }
 
-    private String convertBooleanToRequiredText(Boolean bool, Map<String, String> titleText) {
+    private String convertBooleanToRequiredText(boolean bool, Map<String, String> titleText) {
         return bool ? titleText.get(PersonalisationConfiguration.PersonalisationKey.REQUIRED.name()) : titleText.get(PersonalisationConfiguration.PersonalisationKey.NOT_REQUIRED.name());
     }
 
