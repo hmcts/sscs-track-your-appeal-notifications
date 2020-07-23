@@ -35,71 +35,71 @@ public class SyaAppealCreatedAndReceivedPersonalisationTest {
     @Before
     public void setup() {
         initMocks(this);
-        Map<PersonalisationKey, String> englishMap = new HashMap<>();
-        englishMap.put(PersonalisationKey.ATTENDING_HEARING, "Attending the hearing: ");
-        englishMap.put(PersonalisationKey.YES, "yes");
-        englishMap.put(PersonalisationKey.NO, "no");
-        englishMap.put(PersonalisationKey.DATES_NOT_ATTENDING, "Dates you can't attend: ");
-        englishMap.put(PersonalisationKey.DATE_OF_MRN, "Date of MRN: ");
-        englishMap.put(PersonalisationKey.REASON_FOR_LATE_APPEAL, "Reason for late appeal: ");
-        englishMap.put(PersonalisationKey.REASON_FOR_NO_MRN, "Reason for no MRN: ");
-        englishMap.put(PersonalisationKey.NAME, "Name: ");
-        englishMap.put(PersonalisationKey.DATE_OF_BIRTH, "Date of birth: ");
-        englishMap.put(PersonalisationKey.NINO, "National Insurance number: ");
-        englishMap.put(PersonalisationKey.ADDRESS, "Address: ");
-        englishMap.put(PersonalisationKey.EMAIL, "Email: ");
-        englishMap.put(PersonalisationKey.PHONE, "Phone: ");
-        englishMap.put(PersonalisationKey.RECEIVE_TEXT_MESSAGE_REMINDER, "Receive text message reminders: ");
-        englishMap.put(PersonalisationKey.MOBILE, "Mobile number: ");
-        englishMap.put(PersonalisationKey.HAVE_AN_APPOINTEE, "Have an appointee: ");
-        englishMap.put(PersonalisationKey.NOT_PROVIDED, "Not provided");
-        englishMap.put(PersonalisationKey.HAVE_A_REPRESENTATIVE, "Have a representative: ");
-        englishMap.put(PersonalisationKey.ORGANISATION, "Organisation: ");
-        englishMap.put(PersonalisationKey.WHAT_DISAGREE_WITH, "What you disagree with: ");
-        englishMap.put(PersonalisationKey.WHY_DISAGREE_WITH, "Why you disagree with it: ");
-        englishMap.put(PersonalisationKey.ANYTHING, "Anything else you want to tell the tribunal: ");
-        englishMap.put(PersonalisationKey.LANGUAGE_INTERPRETER, "Language interpreter: ");
-        englishMap.put(PersonalisationKey.SIGN_INTERPRETER, "Sign interpreter: ");
-        englishMap.put(PersonalisationKey.HEARING_LOOP, "Hearing loop: ");
-        englishMap.put(PersonalisationKey.DISABLED_ACCESS, "Disabled access: ");
-        englishMap.put(PersonalisationKey.OTHER_ARRANGEMENTS, "Any other arrangements: ");
-        englishMap.put(PersonalisationKey.REQUIRED, "Required");
-        englishMap.put(PersonalisationKey.NOT_REQUIRED, "Not required");
-        englishMap.put(PersonalisationKey.OTHER, "Other");
+        Map<String, String> englishMap = new HashMap<>();
+        englishMap.put(PersonalisationKey.ATTENDING_HEARING.name(), "Attending the hearing: ");
+        englishMap.put(PersonalisationKey.YES.name(), "yes");
+        englishMap.put(PersonalisationKey.NO.name(), "no");
+        englishMap.put(PersonalisationKey.DATES_NOT_ATTENDING.name(), "Dates you can't attend: ");
+        englishMap.put(PersonalisationKey.DATE_OF_MRN.name(), "Date of MRN: ");
+        englishMap.put(PersonalisationKey.REASON_FOR_LATE_APPEAL.name(), "Reason for late appeal: ");
+        englishMap.put(PersonalisationKey.REASON_FOR_NO_MRN.name(), "Reason for no MRN: ");
+        englishMap.put(PersonalisationKey.NAME.name(), "Name: ");
+        englishMap.put(PersonalisationKey.DATE_OF_BIRTH.name(), "Date of birth: ");
+        englishMap.put(PersonalisationKey.NINO.name(), "National Insurance number: ");
+        englishMap.put(PersonalisationKey.ADDRESS.name(), "Address: ");
+        englishMap.put(PersonalisationKey.EMAIL.name(), "Email: ");
+        englishMap.put(PersonalisationKey.PHONE.name(), "Phone: ");
+        englishMap.put(PersonalisationKey.RECEIVE_TEXT_MESSAGE_REMINDER.name(), "Receive text message reminders: ");
+        englishMap.put(PersonalisationKey.MOBILE.name(), "Mobile number: ");
+        englishMap.put(PersonalisationKey.HAVE_AN_APPOINTEE.name(), "Have an appointee: ");
+        englishMap.put(PersonalisationKey.NOT_PROVIDED.name(), "Not provided");
+        englishMap.put(PersonalisationKey.HAVE_A_REPRESENTATIVE.name(), "Have a representative: ");
+        englishMap.put(PersonalisationKey.ORGANISATION.name(), "Organisation: ");
+        englishMap.put(PersonalisationKey.WHAT_DISAGREE_WITH.name(), "What you disagree with: ");
+        englishMap.put(PersonalisationKey.WHY_DISAGREE_WITH.name(), "Why you disagree with it: ");
+        englishMap.put(PersonalisationKey.ANYTHING.name(), "Anything else you want to tell the tribunal: ");
+        englishMap.put(PersonalisationKey.LANGUAGE_INTERPRETER.name(), "Language interpreter: ");
+        englishMap.put(PersonalisationKey.SIGN_INTERPRETER.name(), "Sign interpreter: ");
+        englishMap.put(PersonalisationKey.HEARING_LOOP.name(), "Hearing loop: ");
+        englishMap.put(PersonalisationKey.DISABLED_ACCESS.name(), "Disabled access: ");
+        englishMap.put(PersonalisationKey.OTHER_ARRANGEMENTS.name(), "Any other arrangements: ");
+        englishMap.put(PersonalisationKey.REQUIRED.name(), "Required");
+        englishMap.put(PersonalisationKey.NOT_REQUIRED.name(), "Not required");
+        englishMap.put(PersonalisationKey.OTHER.name(), "Other");
 
-        Map<PersonalisationKey, String> welshMap = new HashMap<>();
-        welshMap.put(PersonalisationKey.ATTENDING_HEARING, "Ydych chi'n bwriadu mynychu'r gwrandawiad: ");
-        welshMap.put(PersonalisationKey.YES, "ydw");
-        welshMap.put(PersonalisationKey.NO, "nac ydw");
-        welshMap.put(PersonalisationKey.DATES_NOT_ATTENDING, "Dyddiadau na allwch fynychu: ");
-        welshMap.put(PersonalisationKey.DATE_OF_MRN, "Dyddiad yr MRN: ");
-        welshMap.put(PersonalisationKey.REASON_FOR_LATE_APPEAL, "Rheswm dros apêl hwyr: ");
-        welshMap.put(PersonalisationKey.REASON_FOR_NO_MRN, "Rheswm dros ddim MRN: ");
-        welshMap.put(PersonalisationKey.NAME, "Enw: ");
-        welshMap.put(PersonalisationKey.DATE_OF_BIRTH, "Dyddiad geni: ");
-        welshMap.put(PersonalisationKey.NINO, "Rhif Yswiriant Gwladol: ");
-        welshMap.put(PersonalisationKey.ADDRESS, "Cyfeiriad: ");
-        welshMap.put(PersonalisationKey.EMAIL, "E-bost: ");
-        welshMap.put(PersonalisationKey.PHONE, "Rhif ffôn: ");
-        welshMap.put(PersonalisationKey.RECEIVE_TEXT_MESSAGE_REMINDER, "Eisiau negeseuon testun atgoffa: ");
-        welshMap.put(PersonalisationKey.MOBILE, "Rhif ffôn symudol: ");
-        welshMap.put(PersonalisationKey.HAVE_AN_APPOINTEE, "Have an appointee: ");
-        welshMap.put(PersonalisationKey.NOT_PROVIDED, "Nis ddarparwyd");
-        welshMap.put(PersonalisationKey.HAVE_A_REPRESENTATIVE, "A oes gennych chi gynrychiolydd: ");
-        welshMap.put(PersonalisationKey.ORGANISATION, "Sefydliad: ");
-        welshMap.put(PersonalisationKey.WHAT_DISAGREE_WITH, "Beth ydych chi’n anghytuno ag o: ");
-        welshMap.put(PersonalisationKey.WHY_DISAGREE_WITH, "Pam ydych chi’n anghytuno ag o: ");
-        welshMap.put(PersonalisationKey.ANYTHING, "Unrhyw beth arall yr hoffech ddweud wrth y tribiwnlys: ");
-        welshMap.put(PersonalisationKey.LANGUAGE_INTERPRETER, "Dehonglydd iaith arwyddion: ");
-        welshMap.put(PersonalisationKey.SIGN_INTERPRETER, "Dehonglydd iaith arwyddion: ");
-        welshMap.put(PersonalisationKey.HEARING_LOOP, "Dolen glyw: ");
-        welshMap.put(PersonalisationKey.DISABLED_ACCESS, "Mynediad i bobl anab: ");
-        welshMap.put(PersonalisationKey.OTHER_ARRANGEMENTS, "Unrhyw drefniadau eraill: ");
-        welshMap.put(PersonalisationKey.REQUIRED, "Gofynnol");
-        welshMap.put(PersonalisationKey.NOT_REQUIRED, "Dim yn ofynnol");
-        welshMap.put(PersonalisationKey.OTHER, "Other");
+        Map<String, String> welshMap = new HashMap<>();
+        welshMap.put(PersonalisationKey.ATTENDING_HEARING.name(), "Ydych chi'n bwriadu mynychu'r gwrandawiad: ");
+        welshMap.put(PersonalisationKey.YES.name(), "ydw");
+        welshMap.put(PersonalisationKey.NO.name(), "nac ydw");
+        welshMap.put(PersonalisationKey.DATES_NOT_ATTENDING.name(), "Dyddiadau na allwch fynychu: ");
+        welshMap.put(PersonalisationKey.DATE_OF_MRN.name(), "Dyddiad yr MRN: ");
+        welshMap.put(PersonalisationKey.REASON_FOR_LATE_APPEAL.name(), "Rheswm dros apêl hwyr: ");
+        welshMap.put(PersonalisationKey.REASON_FOR_NO_MRN.name(), "Rheswm dros ddim MRN: ");
+        welshMap.put(PersonalisationKey.NAME.name(), "Enw: ");
+        welshMap.put(PersonalisationKey.DATE_OF_BIRTH.name(), "Dyddiad geni: ");
+        welshMap.put(PersonalisationKey.NINO.name(), "Rhif Yswiriant Gwladol: ");
+        welshMap.put(PersonalisationKey.ADDRESS.name(), "Cyfeiriad: ");
+        welshMap.put(PersonalisationKey.EMAIL.name(), "E-bost: ");
+        welshMap.put(PersonalisationKey.PHONE.name(), "Rhif ffôn: ");
+        welshMap.put(PersonalisationKey.RECEIVE_TEXT_MESSAGE_REMINDER.name(), "Eisiau negeseuon testun atgoffa: ");
+        welshMap.put(PersonalisationKey.MOBILE.name(), "Rhif ffôn symudol: ");
+        welshMap.put(PersonalisationKey.HAVE_AN_APPOINTEE.name(), "A oes gennych chi benodai: ");
+        welshMap.put(PersonalisationKey.NOT_PROVIDED.name(), "Nis ddarparwyd");
+        welshMap.put(PersonalisationKey.HAVE_A_REPRESENTATIVE.name(), "A oes gennych chi gynrychiolydd: ");
+        welshMap.put(PersonalisationKey.ORGANISATION.name(), "Sefydliad: ");
+        welshMap.put(PersonalisationKey.WHAT_DISAGREE_WITH.name(), "Beth ydych chi’n anghytuno ag o: ");
+        welshMap.put(PersonalisationKey.WHY_DISAGREE_WITH.name(), "Pam ydych chi’n anghytuno ag o: ");
+        welshMap.put(PersonalisationKey.ANYTHING.name(), "Unrhyw beth arall yr hoffech ddweud wrth y tribiwnlys: ");
+        welshMap.put(PersonalisationKey.LANGUAGE_INTERPRETER.name(), "Dehonglydd iaith arwyddion: ");
+        welshMap.put(PersonalisationKey.SIGN_INTERPRETER.name(), "Dehonglydd iaith arwyddion: ");
+        welshMap.put(PersonalisationKey.HEARING_LOOP.name(), "Dolen glyw: ");
+        welshMap.put(PersonalisationKey.DISABLED_ACCESS.name(), "Mynediad i bobl anab: ");
+        welshMap.put(PersonalisationKey.OTHER_ARRANGEMENTS.name(), "Unrhyw drefniadau eraill: ");
+        welshMap.put(PersonalisationKey.REQUIRED.name(), "Gofynnol");
+        welshMap.put(PersonalisationKey.NOT_REQUIRED.name(), "Dim yn ofynnol");
+        welshMap.put(PersonalisationKey.OTHER.name(), "Arall");
 
-        Map<LanguagePreference, Map<PersonalisationKey, String>> personalisations = new HashMap<>();
+        Map<LanguagePreference, Map<String, String>> personalisations = new HashMap<>();
         personalisations.put(LanguagePreference.ENGLISH, englishMap);
         personalisations.put(LanguagePreference.WELSH, welshMap);
 
@@ -400,7 +400,7 @@ public class SyaAppealCreatedAndReceivedPersonalisationTest {
                         + "\nPhone: 03444 77 1010",
                 result.get(AppConstants.APPOINTEE_DETAILS_LITERAL));
 
-        assertEquals("Have an appointee: ydw\n"
+        assertEquals("A oes gennych chi benodai: ydw\n"
                         + "\nEnw: Peter Smith\n"
                         + "\nDyddiad geni: 12 Mawrth 1981\n"
                         + "\nCyfeiriad: Ground Floor, Gazette Buildings, 168 Corporation Street, Cardiff, CF11 6TF\n"

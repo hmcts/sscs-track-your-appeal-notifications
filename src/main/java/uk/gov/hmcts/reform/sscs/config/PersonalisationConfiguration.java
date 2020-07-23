@@ -1,17 +1,17 @@
 package uk.gov.hmcts.reform.sscs.config;
 
 import java.util.Map;
-
 import lombok.Getter;
 import lombok.Setter;
+import org.springframework.boot.context.properties.ConfigurationProperties;
 import org.springframework.context.annotation.Configuration;
-import org.springframework.stereotype.Component;
 import uk.gov.hmcts.reform.sscs.ccd.domain.LanguagePreference;
+
 
 @Getter
 @Setter
-@Component
 @Configuration
+@ConfigurationProperties(prefix = "text")
 public class PersonalisationConfiguration {
-    public Map<LanguagePreference, Map<PersonalisationKey, String>> personalisation;
+    public Map<LanguagePreference, Map<String, String>> personalisation;
 }
