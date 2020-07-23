@@ -73,7 +73,7 @@ public class SyaAppealCreatedAndReceivedPersonalisation extends WithRepresentati
 
         if (ccdResponse.isLanguagePreferenceWelsh()) {
             personalisation.put(AppConstants.WELSH_MRN_DETAILS_LITERAL,
-                    buildMrnDetails(ccdResponse.getAppeal().getMrnDetails(), personalisationConfiguration.getPersonalisation().get(LanguagePreference.WELSH), this::convertLongFormattedLocalDateToWelshDate));
+                    buildMrnDetails(ccdResponse.getAppeal().getMrnDetails(), personalisationConfiguration.getPersonalisation().get(LanguagePreference.WELSH), this::convertLocalDateToWelshDateWithDefaultNotProvided));
         }
         return personalisation;
     }
@@ -97,12 +97,20 @@ public class SyaAppealCreatedAndReceivedPersonalisation extends WithRepresentati
         return StringUtils.join(details.toArray(), TWO_NEW_LINES);
     }
 
+    private String convertLocalDateToWelshDateWithDefaultNotProvided(String date) {
+        if (NOT_PROVIDED.equals(date)) {
+            return personalisationConfiguration.getPersonalisation().get(LanguagePreference.WELSH).get(PersonalisationConfiguration.PersonalisationKey.NOT_PROVIDED.name());
+        }
+        LocalDate localDate = LocalDate.parse(date, formatter);
+        return LocalDateToWelshStringConverter.convert(localDate);
+    }
+
     public Map<String, String> setYourDetails(Map<String, String> personalisation, SscsCaseData ccdResponse) {
         personalisation.put(AppConstants.YOUR_DETAILS_LITERAL,
                 buildYourDetails(ccdResponse.getAppeal(), personalisationConfiguration.getPersonalisation().get(LanguagePreference.ENGLISH), UnaryOperator.identity()));
         if (ccdResponse.isLanguagePreferenceWelsh()) {
             personalisation.put(AppConstants.WELSH_YOUR_DETAILS_LITERAL,
-                    buildYourDetails(ccdResponse.getAppeal(), personalisationConfiguration.getPersonalisation().get(LanguagePreference.WELSH), this::convertLongFormattedLocalDateToWelshDate));
+                    buildYourDetails(ccdResponse.getAppeal(), personalisationConfiguration.getPersonalisation().get(LanguagePreference.WELSH), this::convertLocalDateToWelshDateString));
         }
         return personalisation;
     }
@@ -153,17 +161,9 @@ public class SyaAppealCreatedAndReceivedPersonalisation extends WithRepresentati
     public Map<String, String> setAppointeeDetails(Map<String, String> personalisation, SscsCaseData ccdResponse) {
         personalisation.put(AppConstants.APPOINTEE_DETAILS_LITERAL, buildAppointeeDetails(ccdResponse.getAppeal().getAppellant().getAppointee(), personalisationConfiguration.getPersonalisation().get(LanguagePreference.ENGLISH), UnaryOperator.identity()));
         if (ccdResponse.isLanguagePreferenceWelsh()) {
-            personalisation.put(AppConstants.WELSH_APPOINTEE_DETAILS_LITERAL, buildAppointeeDetails(ccdResponse.getAppeal().getAppellant().getAppointee(), personalisationConfiguration.getPersonalisation().get(LanguagePreference.WELSH), this::convertLongFormattedLocalDateToWelshDate));
+            personalisation.put(AppConstants.WELSH_APPOINTEE_DETAILS_LITERAL, buildAppointeeDetails(ccdResponse.getAppeal().getAppellant().getAppointee(), personalisationConfiguration.getPersonalisation().get(LanguagePreference.WELSH), this::convertLocalDateToWelshDateString));
         }
         return personalisation;
-    }
-
-    private String convertLongFormattedLocalDateToWelshDate(String date) {
-        if (NOT_PROVIDED.equals(date)) {
-            return personalisationConfiguration.getPersonalisation().get(LanguagePreference.WELSH).get(PersonalisationConfiguration.PersonalisationKey.NOT_PROVIDED.name());
-        }
-        LocalDate localDate = LocalDate.parse(date, longFormatter);
-        return LocalDateToWelshStringConverter.convert(localDate);
     }
 
     private String buildAppointeeDetails(Appointee appointee, Map<String, String> titleText, UnaryOperator<String> convertDate) {

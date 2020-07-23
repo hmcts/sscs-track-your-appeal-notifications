@@ -148,12 +148,12 @@ public class SyaAppealCreatedAndReceivedPersonalisationTest {
                 .ccdCaseId(CASE_ID).caseReference("SC/1234/5")
                 .languagePreferenceWelsh("Yes")
                 .appeal(Appeal.builder().benefitType(BenefitType.builder().code("PIP").build())
-                        .mrnDetails(MrnDetails.builder().mrnDate("3 May 2018").mrnLateReason("My train was cancelled.").build()).build())
+                        .mrnDetails(MrnDetails.builder().mrnDate("2018-05-03").mrnLateReason("My train was cancelled.").build()).build())
                 .build();
 
         Map<String, String> result = syaAppealCreatedAndReceivedPersonalisation.setMrnDetails(new HashMap<>(), response);
 
-        assertEquals("Date of MRN: 3 May 2018\n"
+        assertEquals("Date of MRN: 2018-05-03\n"
                         + "\nReason for late appeal: My train was cancelled.",
                 result.get(AppConstants.MRN_DETAILS_LITERAL));
 
@@ -193,7 +193,7 @@ public class SyaAppealCreatedAndReceivedPersonalisationTest {
                 .appeal(Appeal.builder().benefitType(BenefitType.builder().code("PIP").build())
                         .appellant(Appellant.builder()
                                 .name(Name.builder().firstName("Manish").lastName("Sharma").title("Mrs").build())
-                                .identity(Identity.builder().nino("NP 27 28 67 B").dob("12 March 1971").build())
+                                .identity(Identity.builder().nino("NP 27 28 67 B").dob("1971-03-12").build())
                                 .address(Address.builder().line1("122 Breach Street").line2("The Village").town("My town").county("Cardiff").postcode("CF11 2HB").build())
                                 .contact(Contact.builder().email("manish.sharma@gmail.com").phone("0797 243 8179").build())
                                 .build()).build())
@@ -203,7 +203,7 @@ public class SyaAppealCreatedAndReceivedPersonalisationTest {
         Map<String, String> result = syaAppealCreatedAndReceivedPersonalisation.setYourDetails(new HashMap<>(), response);
 
         assertEquals("Name: Manish Sharma\n"
-                      + "\nDate of birth: 12 March 1971\n"
+                      + "\nDate of birth: 1971-03-12\n"
                       + "\nNational Insurance number: NP 27 28 67 B\n"
                       + "\nAddress: 122 Breach Street, The Village, My town, Cardiff, CF11 2HB\n"
                       + "\nEmail: manish.sharma@gmail.com\n"
@@ -250,7 +250,7 @@ public class SyaAppealCreatedAndReceivedPersonalisationTest {
                 .appeal(Appeal.builder().benefitType(BenefitType.builder().code("PIP").build())
                         .appellant(Appellant.builder()
                                 .name(Name.builder().firstName("Manish").lastName("Sharma").title("Mrs").build())
-                                .identity(Identity.builder().nino("NP 27 28 67 B").dob("12 March 1971").build())
+                                .identity(Identity.builder().nino("NP 27 28 67 B").dob("1971-03-12").build())
                                 .address(Address.builder().line1("122 Breach Street").town("My town").county("Cardiff").postcode("CF11 2HB").build())
                                 .contact(Contact.builder().build())
                                 .build()).build())
@@ -260,7 +260,7 @@ public class SyaAppealCreatedAndReceivedPersonalisationTest {
         Map<String, String> result = syaAppealCreatedAndReceivedPersonalisation.setYourDetails(new HashMap<>(), response);
 
         assertEquals("Name: Manish Sharma\n"
-                        + "\nDate of birth: 12 March 1971\n"
+                        + "\nDate of birth: 1971-03-12\n"
                         + "\nNational Insurance number: NP 27 28 67 B\n"
                         + "\nAddress: 122 Breach Street, My town, Cardiff, CF11 2HB\n"
                         + "\nEmail: Not provided\n"
@@ -371,6 +371,8 @@ public class SyaAppealCreatedAndReceivedPersonalisationTest {
                         + "\nEmail: peter.smith@cab.org.uk\n"
                         + "\nPhone: 03444 77 1010",
                 result.get(AppConstants.APPOINTEE_DETAILS_LITERAL));
+
+        assertNull(result.get(AppConstants.WELSH_APPOINTEE_DETAILS_LITERAL));
     }
 
     @Test
@@ -380,12 +382,12 @@ public class SyaAppealCreatedAndReceivedPersonalisationTest {
                 .languagePreferenceWelsh("yes")
                 .appeal(Appeal.builder().appellant(Appellant.builder()
                     .name(Name.builder().firstName("Manish").lastName("Sharma").title("Mrs").build())
-                    .identity(Identity.builder().nino("NP 27 28 67 B").dob("12 March 1971").build())
+                    .identity(Identity.builder().nino("NP 27 28 67 B").dob("1971-03-12").build())
                     .address(Address.builder().line1("122 Breach Street").town("My town").county("Cardiff").postcode("CF11 2HB").build())
                     .appointee(Appointee.builder().name(Name.builder().firstName("Peter").lastName("Smith").build())
                         .address(Address.builder().line1("Ground Floor").line2("Gazette Buildings").town("168 Corporation Street").county("Cardiff").postcode("CF11 6TF").build())
                         .contact(Contact.builder().email("peter.smith@cab.org.uk").phone("03444 77 1010").build())
-                        .identity(Identity.builder().dob("12 March 1981").build())
+                        .identity(Identity.builder().dob("1971-03-12").build())
                         .build())
                     .contact(Contact.builder().build()).build()).build()).build();
 
@@ -393,7 +395,7 @@ public class SyaAppealCreatedAndReceivedPersonalisationTest {
 
         assertEquals("Have an appointee: yes\n"
                         + "\nName: Peter Smith\n"
-                        + "\nDate of birth: 12 March 1981\n"
+                        + "\nDate of birth: 1971-03-12\n"
                         + "\nAddress: Ground Floor, Gazette Buildings, 168 Corporation Street, Cardiff, CF11 6TF\n"
                         + "\nEmail: peter.smith@cab.org.uk\n"
                         + "\nPhone: 03444 77 1010",
@@ -401,7 +403,7 @@ public class SyaAppealCreatedAndReceivedPersonalisationTest {
 
         assertEquals("A oes gennych chi benodai: ydw\n"
                         + "\nEnw: Peter Smith\n"
-                        + "\nDyddiad geni: 12 Mawrth 1981\n"
+                        + "\nDyddiad geni: 12 Mawrth 1971\n"
                         + "\nCyfeiriad: Ground Floor, Gazette Buildings, 168 Corporation Street, Cardiff, CF11 6TF\n"
                         + "\nE-bost: peter.smith@cab.org.uk\n"
                         + "\nRhif ffôn: 03444 77 1010",
@@ -468,6 +470,8 @@ public class SyaAppealCreatedAndReceivedPersonalisationTest {
                 + "\nEmail: peter.smith@cab.org.uk\n"
                 + "\nPhone: 03444 77 1010",
             result.get(AppConstants.REPRESENTATIVE_DETAILS_LITERAL));
+
+        assertNull(result.get(AppConstants.WELSH_REPRESENTATIVE_DETAILS_LITERAL));
     }
 
     @Test
@@ -522,6 +526,7 @@ public class SyaAppealCreatedAndReceivedPersonalisationTest {
                 + "\nEmail: Not provided\n"
                 + "\nPhone: Not provided",
             result.get(AppConstants.REPRESENTATIVE_DETAILS_LITERAL));
+        assertNull(result.get(AppConstants.WELSH_REPRESENTATIVE_DETAILS_LITERAL));
     }
 
     @Test
@@ -589,6 +594,7 @@ public class SyaAppealCreatedAndReceivedPersonalisationTest {
                         + "\nWhy you disagree with it: Because I do\n"
                         + "\nAnything else you want to tell the tribunal: Some other reason",
                 result.get(AppConstants.REASONS_FOR_APPEALING_DETAILS_LITERAL));
+        assertNull(result.get(AppConstants.WELSH_REASONS_FOR_APPEALING_DETAILS_LITERAL));
     }
 
     @Test
@@ -788,6 +794,7 @@ public class SyaAppealCreatedAndReceivedPersonalisationTest {
                         + "\nDisabled access: Required\n"
                         + "\nAny other arrangements: Other",
                 result.get(AppConstants.HEARING_ARRANGEMENT_DETAILS_LITERAL));
+        assertNull(result.get(AppConstants.WELSH_HEARING_ARRANGEMENT_DETAILS_LITERAL));
 
     }
 
@@ -846,6 +853,7 @@ public class SyaAppealCreatedAndReceivedPersonalisationTest {
                         + "\nDisabled access: Not required\n"
                         + "\nAny other arrangements: Not required",
                 result.get(AppConstants.HEARING_ARRANGEMENT_DETAILS_LITERAL));
+        assertNull(result.get(AppConstants.WELSH_HEARING_ARRANGEMENT_DETAILS_LITERAL));
     }
 
     @Test
