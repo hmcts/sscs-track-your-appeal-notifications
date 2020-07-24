@@ -73,8 +73,9 @@ public class PdfLetterServiceIt {
                 wrapper.getNewSscsCaseData().getAppeal().getAppellant().getAddress().getTown(),
                 wrapper.getNewSscsCaseData().getAppeal().getAppellant().getAddress().getCounty(),
                 wrapper.getNewSscsCaseData().getAppeal().getAppellant().getAddress().getPostcode(),
-                docmosisTemplatesConfig.getHmctsImgVal()
-        );
+                docmosisTemplatesConfig.getHmctsImgVal(),
+                docmosisTemplatesConfig.getHmctsWelshImgVal());
+
         verify(docmosisPdfService).createPdf(eq(pdfCoverSheet), eq(docmosisTemplatesConfig.getCoversheets()
                 .get(LanguagePreference.ENGLISH).get(APPEAL_RECEIVED.getType())));
     }
