@@ -55,7 +55,7 @@ public class NotificationConfigTest {
                                                                             String createdInGapsFrom) {
         Template template = notificationConfig.getTemplate(templateName, templateName, templateName, templateName, Benefit.PIP, appealHearingType, createdInGapsFrom, LanguagePreference.ENGLISH);
         assertEquals(expectedEmailTemplateId, template.getEmailTemplateId());
-        assertEquals(expectedSmsTemplateId, template.getSmsTemplateId());
+        assertEquals(expectedSmsTemplateId, template.getSmsTemplateId().get(0));
         assertEquals(expectedLetterTemplateId, template.getLetterTemplateId());
         assertEquals(expectedDocmosisTemplateId, template.getDocmosisTemplateId());
     }
@@ -65,7 +65,7 @@ public class NotificationConfigTest {
     public void given_bundledLetters_should_notHaveTemplate(AppealHearingType appealHearingType, String templateName) {
         Template template = notificationConfig.getTemplate(templateName, templateName, templateName, templateName, Benefit.PIP, appealHearingType, null, LanguagePreference.ENGLISH);
         assertNull(template.getEmailTemplateId());
-        assertNull(template.getSmsTemplateId());
+        assertNull(template.getSmsTemplateId().get(0));
         assertNull(template.getLetterTemplateId());
         assertNull(template.getDocmosisTemplateId());
     }

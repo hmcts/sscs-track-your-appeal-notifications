@@ -17,6 +17,7 @@ import static uk.gov.hmcts.reform.sscs.service.NotificationUtils.getSubscription
 
 import java.time.LocalDate;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 import java.util.Optional;
 import javax.annotation.Resource;
@@ -265,7 +266,7 @@ public class NotificationFactoryTest {
     @Test
     public void buildSubscriptionCreatedSmsNotificationFromSscsCaseDataWithSubscriptionUpdatedNotificationAndSmsFirstSubscribed() {
         when(personalisationFactory.apply(SUBSCRIPTION_UPDATED_NOTIFICATION)).thenReturn(subscriptionPersonalisation);
-        when(config.getTemplate(SUBSCRIPTION_UPDATED_NOTIFICATION.getId(), SUBSCRIPTION_CREATED_NOTIFICATION.getId() + ".appellant", SUBSCRIPTION_UPDATED_NOTIFICATION.getId(), SUBSCRIPTION_UPDATED_NOTIFICATION.getId(), PIP, ORAL, null,LanguagePreference.ENGLISH)).thenReturn(Template.builder().emailTemplateId(null).smsTemplateId("123").build());
+        when(config.getTemplate(SUBSCRIPTION_UPDATED_NOTIFICATION.getId(), SUBSCRIPTION_CREATED_NOTIFICATION.getId() + ".appellant", SUBSCRIPTION_UPDATED_NOTIFICATION.getId(), SUBSCRIPTION_UPDATED_NOTIFICATION.getId(), PIP, ORAL, null,LanguagePreference.ENGLISH)).thenReturn(Template.builder().emailTemplateId(null).smsTemplateId(Arrays.asList("123")).build());
 
         wrapper = SscsCaseDataWrapper.builder()
                 .newSscsCaseData(
@@ -281,13 +282,13 @@ public class NotificationFactoryTest {
 
         Notification result = factory.create(new CcdNotificationWrapper(wrapper), getSubscriptionWithType(wrapper, APPELLANT));
 
-        assertEquals("123", result.getSmsTemplate());
+        assertEquals("123", result.getSmsTemplate().get(0));
     }
 
     @Test
     public void buildSubscriptionUpdatedSmsNotificationFromSscsCaseDataWithSubscriptionUpdatedNotificationAndSmsAlreadySubscribed() {
         when(personalisationFactory.apply(SUBSCRIPTION_UPDATED_NOTIFICATION)).thenReturn(subscriptionPersonalisation);
-        when(config.getTemplate(SUBSCRIPTION_UPDATED_NOTIFICATION.getId(), SUBSCRIPTION_UPDATED_NOTIFICATION.getId(), SUBSCRIPTION_UPDATED_NOTIFICATION.getId(), SUBSCRIPTION_UPDATED_NOTIFICATION.getId(), PIP, ORAL, null, LanguagePreference.ENGLISH)).thenReturn(Template.builder().emailTemplateId("123").smsTemplateId("123").build());
+        when(config.getTemplate(SUBSCRIPTION_UPDATED_NOTIFICATION.getId(), SUBSCRIPTION_UPDATED_NOTIFICATION.getId(), SUBSCRIPTION_UPDATED_NOTIFICATION.getId(), SUBSCRIPTION_UPDATED_NOTIFICATION.getId(), PIP, ORAL, null, LanguagePreference.ENGLISH)).thenReturn(Template.builder().emailTemplateId("123").smsTemplateId(Arrays.asList("123")).build());
 
         wrapper = SscsCaseDataWrapper.builder()
                 .newSscsCaseData(
@@ -303,13 +304,13 @@ public class NotificationFactoryTest {
 
         Notification result = factory.create(new CcdNotificationWrapper(wrapper), getSubscriptionWithType(wrapper, APPELLANT));
 
-        assertEquals("123", result.getSmsTemplate());
+        assertEquals("123", result.getSmsTemplate().get(0));
     }
 
     @Test
     public void buildLastNotificationFromSscsCaseDataEventWhenSmsFirstSubscribed() {
         when(personalisationFactory.apply(SUBSCRIPTION_UPDATED_NOTIFICATION)).thenReturn(subscriptionPersonalisation);
-        when(config.getTemplate(SUBSCRIPTION_UPDATED_NOTIFICATION.getId(), SUBSCRIPTION_CREATED_NOTIFICATION.getId() + ".appellant", SUBSCRIPTION_UPDATED_NOTIFICATION.getId(), SUBSCRIPTION_UPDATED_NOTIFICATION.getId(), PIP, ORAL, null, LanguagePreference.ENGLISH)).thenReturn(Template.builder().emailTemplateId("123").smsTemplateId("123").build());
+        when(config.getTemplate(SUBSCRIPTION_UPDATED_NOTIFICATION.getId(), SUBSCRIPTION_CREATED_NOTIFICATION.getId() + ".appellant", SUBSCRIPTION_UPDATED_NOTIFICATION.getId(), SUBSCRIPTION_UPDATED_NOTIFICATION.getId(), PIP, ORAL, null, LanguagePreference.ENGLISH)).thenReturn(Template.builder().emailTemplateId("123").smsTemplateId(Arrays.asList("123")).build());
 
         List<Event> event = new ArrayList<>();
         event.add(Event.builder().value(EventDetails.builder().date(DATE).type(APPEAL_RECEIVED_NOTIFICATION.getId()).build()).build());
@@ -333,13 +334,13 @@ public class NotificationFactoryTest {
         assertNotNull(subscription.getMobile());
         assertEquals(PhoneNumbersUtil.cleanPhoneNumber(subscription.getMobile()).orElse(subscription.getMobile()),
                 result.getDestination().sms);
-        assertEquals("123", result.getSmsTemplate());
+        assertEquals("123", result.getSmsTemplate().get(0));
     }
 
     @Test
     public void buildNoNotificationFromSscsCaseDataWhenSubscriptionUpdateReceivedWithNoChangeInSubscription() {
         when(personalisationFactory.apply(SUBSCRIPTION_UPDATED_NOTIFICATION)).thenReturn(subscriptionPersonalisation);
-        when(config.getTemplate(SUBSCRIPTION_UPDATED_NOTIFICATION.getId(), SUBSCRIPTION_UPDATED_NOTIFICATION.getId(), SUBSCRIPTION_UPDATED_NOTIFICATION.getId(), SUBSCRIPTION_UPDATED_NOTIFICATION.getId(), PIP, ORAL, null, LanguagePreference.ENGLISH)).thenReturn(Template.builder().emailTemplateId("123").smsTemplateId("123").build());
+        when(config.getTemplate(SUBSCRIPTION_UPDATED_NOTIFICATION.getId(), SUBSCRIPTION_UPDATED_NOTIFICATION.getId(), SUBSCRIPTION_UPDATED_NOTIFICATION.getId(), SUBSCRIPTION_UPDATED_NOTIFICATION.getId(), PIP, ORAL, null, LanguagePreference.ENGLISH)).thenReturn(Template.builder().emailTemplateId("123").smsTemplateId(Arrays.asList("123")).build());
 
         List<Event> events = new ArrayList<>();
         events.add(Event.builder().value(EventDetails.builder().date(DATE).type(APPEAL_RECEIVED_NOTIFICATION.getId()).build()).build());
@@ -360,7 +361,7 @@ public class NotificationFactoryTest {
         Notification result = factory.create(new CcdNotificationWrapper(wrapper), getSubscriptionWithType(wrapper, APPELLANT));
 
         assertEquals("123", result.getEmailTemplate());
-        assertEquals("123", result.getSmsTemplate());
+        assertEquals("123", result.getSmsTemplate().get(0));
         assertNull(result.getDestination().email);
         assertNull(result.getDestination().sms);
     }
@@ -368,7 +369,7 @@ public class NotificationFactoryTest {
     @Test
     public void buildSubscriptionUpdatedNotificationFromSscsCaseDataWhenEmailIsChanged() {
         when(personalisationFactory.apply(SUBSCRIPTION_UPDATED_NOTIFICATION)).thenReturn(subscriptionPersonalisation);
-        when(config.getTemplate(SUBSCRIPTION_UPDATED_NOTIFICATION.getId(), SUBSCRIPTION_UPDATED_NOTIFICATION.getId(), SUBSCRIPTION_UPDATED_NOTIFICATION.getId(), SUBSCRIPTION_UPDATED_NOTIFICATION.getId(), PIP, ORAL, null, LanguagePreference.ENGLISH)).thenReturn(Template.builder().emailTemplateId("123").smsTemplateId("123").build());
+        when(config.getTemplate(SUBSCRIPTION_UPDATED_NOTIFICATION.getId(), SUBSCRIPTION_UPDATED_NOTIFICATION.getId(), SUBSCRIPTION_UPDATED_NOTIFICATION.getId(), SUBSCRIPTION_UPDATED_NOTIFICATION.getId(), PIP, ORAL, null, LanguagePreference.ENGLISH)).thenReturn(Template.builder().emailTemplateId("123").smsTemplateId(Arrays.asList("123")).build());
 
         List<Event> events = new ArrayList<>();
         events.add(Event.builder().value(EventDetails.builder().date(DATE).type(APPEAL_RECEIVED_NOTIFICATION.getId()).build()).build());
@@ -389,7 +390,7 @@ public class NotificationFactoryTest {
         Notification result = factory.create(new CcdNotificationWrapper(wrapper), getSubscriptionWithType(wrapper, APPELLANT));
 
         assertEquals("123", result.getEmailTemplate());
-        assertEquals("123", result.getSmsTemplate());
+        assertEquals("123", result.getSmsTemplate().get(0));
         assertEquals("changed@testing.com", result.getDestination().email);
         assertNull(result.getDestination().sms);
     }

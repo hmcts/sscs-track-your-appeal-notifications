@@ -14,6 +14,7 @@ import java.net.URI;
 import java.time.ZonedDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.Map;
+
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.ArrayUtils;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -100,22 +101,24 @@ public class SendNotificationService {
 
     private boolean sendSmsNotification(NotificationWrapper wrapper, Subscription subscription, Notification notification, NotificationEventType eventType) {
         if (isOkToSendSmsNotification(wrapper, subscription, notification, eventType, notificationValidService)) {
-
-            NotificationHandler.SendNotification sendNotification = () ->
-                    notificationSender.sendSms(
-                            notification.getSmsTemplate(),
-                            notification.getMobile(),
-                            notification.getPlaceholders(),
-                            notification.getReference(),
-                            notification.getSmsSenderTemplate(),
-                            wrapper.getNotificationType(),
-                            wrapper.getNewSscsCaseData()
-                    );
-            log.info("In sendSmsNotification method notificationSender is available {} ", notificationSender != null);
-            return notificationHandler.sendNotification(wrapper, notification.getSmsTemplate(), "SMS", sendNotification);
+            return notification.getSmsTemplate().stream().map(smsTemplateId -> sendSmsNotification(wrapper, notification, smsTemplateId)).reduce((U, T) -> U && T).orElse(false);
         }
-
         return false;
+    }
+
+    private boolean sendSmsNotification(NotificationWrapper wrapper, Notification notification, String smsTemplateId) {
+        NotificationHandler.SendNotification sendNotification = () ->
+                notificationSender.sendSms(
+                        smsTemplateId,
+                        notification.getMobile(),
+                        notification.getPlaceholders(),
+                        notification.getReference(),
+                        notification.getSmsSenderTemplate(),
+                        wrapper.getNotificationType(),
+                        wrapper.getNewSscsCaseData()
+                );
+        log.info("In sendSmsNotification method notificationSender is available {} ", notificationSender != null);
+        return notificationHandler.sendNotification(wrapper, smsTemplateId, "SMS", sendNotification);
     }
 
     private boolean sendEmailNotification(NotificationWrapper wrapper, Subscription subscription, Notification notification) {
