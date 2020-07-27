@@ -1,8 +1,6 @@
 package uk.gov.hmcts.reform.sscs.config;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Locale;
+import java.util.*;
 import javax.validation.constraints.NotNull;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -109,12 +107,14 @@ public class NotificationConfig {
 
     private List<String> getSmsTemplates(@NotNull AppealHearingType appealHearingType, String smsTemplateName,
                                          final String notificationType, LanguagePreference languagePreference) {
-        List<String> smsTemplateIds = new ArrayList<>();
-        smsTemplateIds.add(getTemplateId(appealHearingType, smsTemplateName, "smsId",languagePreference));
-        if (LanguagePreference.WELSH.equals(languagePreference)) {
-            smsTemplateIds.add(getTemplateId(appealHearingType, smsTemplateName, "smsId",LanguagePreference.ENGLISH));
-        }
-        return  smsTemplateIds;
+        return Optional.ofNullable(getTemplateId(appealHearingType, smsTemplateName, notificationType, languagePreference)).map(value -> {
+            List<String> ids = new ArrayList<>();
+            ids.add(value);
+            if (LanguagePreference.WELSH.equals(languagePreference)) {
+                ids.add(getTemplateId(appealHearingType, smsTemplateName, notificationType,LanguagePreference.ENGLISH));
+            }
+            return ids;
+        }).orElse(Collections.emptyList());
     }
 
     private String getTemplateId(@NotNull AppealHearingType appealHearingType, String templateName,

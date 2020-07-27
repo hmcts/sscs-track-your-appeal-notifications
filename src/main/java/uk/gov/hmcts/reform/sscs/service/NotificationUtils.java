@@ -7,10 +7,8 @@ import static uk.gov.hmcts.reform.sscs.config.SubscriptionType.REPRESENTATIVE;
 import static uk.gov.hmcts.reform.sscs.domain.notify.NotificationEventType.*;
 import static uk.gov.hmcts.reform.sscs.service.NotificationValidService.*;
 
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Comparator;
-import java.util.List;
+import java.util.*;
+
 import org.apache.commons.lang.StringUtils;
 import uk.gov.hmcts.reform.sscs.ccd.domain.Appeal;
 import uk.gov.hmcts.reform.sscs.ccd.domain.Appointee;
@@ -137,7 +135,7 @@ public class NotificationUtils {
         return subscription != null
             && subscription.isSmsSubscribed()
             && notification.isSms()
-            && notification.getSmsTemplate() != null
+            && Optional.ofNullable(notification.getSmsTemplate()).map(templates -> !templates.isEmpty()).orElse(false)
             && subscription.doesCaseHaveSubscriptions()
             && notificationValidService.isNotificationStillValidToSend(wrapper.getNewSscsCaseData().getHearings(), notificationType)
             && notificationValidService.isHearingTypeValidToSendNotification(wrapper.getNewSscsCaseData(), notificationType);
