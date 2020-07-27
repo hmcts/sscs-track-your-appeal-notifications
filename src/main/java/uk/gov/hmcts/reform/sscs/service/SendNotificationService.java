@@ -101,7 +101,7 @@ public class SendNotificationService {
 
     private boolean sendSmsNotification(NotificationWrapper wrapper, Subscription subscription, Notification notification, NotificationEventType eventType) {
         if (isOkToSendSmsNotification(wrapper, subscription, notification, eventType, notificationValidService)) {
-            return notification.getSmsTemplate().stream().map(smsTemplateId -> sendSmsNotification(wrapper, notification, smsTemplateId)).reduce((U, T) -> U && T).orElse(false);
+            return notification.getSmsTemplate().stream().map(smsTemplateId -> sendSmsNotification(wrapper, notification, smsTemplateId)).reduce((current, previous) -> current && previous).orElse(false);
         }
         return false;
     }
