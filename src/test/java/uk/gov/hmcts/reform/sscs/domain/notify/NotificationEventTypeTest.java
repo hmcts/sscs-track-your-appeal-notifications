@@ -23,13 +23,8 @@ public class NotificationEventTypeTest {
         event = "question_deadline_reminder";
         assertTrue(NotificationEventType.checkEvent(event));
 
-        event = "continuous_online_hearing_relisted";
-        assertTrue(NotificationEventType.checkEvent(event));
-
         event = "decision_issued";
         assertTrue(NotificationEventType.checkEvent(event));
 
-        event = "corDecision";
-        assertTrue(NotificationEventType.checkEvent(event));
     }
 }

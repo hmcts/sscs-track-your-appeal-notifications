@@ -83,6 +83,7 @@ public class NotificationController {
     public ResponseEntity<String> sendCohNotification(
             @RequestHeader(AuthorisationService.SERVICE_AUTHORISATION_HEADER) String serviceAuthHeader,
             @RequestBody CohEvent cohEvent) {
+
         String caseId = cohEvent.getCaseId();
         log.info("Coh Response received for case id: {} event: {}", caseId, cohEvent.getNotificationEventType());
 

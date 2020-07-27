@@ -288,18 +288,6 @@ notification:
       representative:
         emailId: 97c58e23-c11f-40b3-b981-2d4cfa38b8fd
         smsId: bb3df0ea-8259-43c4-95de-9eef96206575
-    question_round_issued:
-      emailId: ccfbfcac-847d-4e55-955c-096802c131a0
-    follow_up_question_round_issued:
-      emailId: 71efa426-bfa9-473e-b3cf-da5d99e39461
-    question_deadline_elapsed:
-      emailId: 48f2b7d1-cb71-4f60-b145-dfcf63cc4fcd
-    question_deadline_reminder:
-      emailId: 29820a6a-1aa4-4518-8d08-f06f09c5d808
-    continuous_online_hearing_relisted:
-      emailId: 46cc347a-1a5c-40ce-993a-49769dfce626
-    decision_issued:
-      emailId: 62e72e11-5eb6-4048-83f4-0b0c5c59fcb9
     struckOut:
       docmosisId: TB-SCS-GNO-ENG-00466.docx
     directionIssued:
@@ -330,8 +318,6 @@ notification:
         docmosisId: TB-SCS-GNO-ENG-00510.docx
       representative:
         docmosisId: TB-SCS-GNO-ENG-00512.docx
-    corDecision:
-      emailId: 5b0df251-49b9-46d5-b347-37a81ab77f19
     requestInfoIncompleteApplication:
       appellant:
         docmosisId: TB-SCS-GNO-ENG-00452.docx

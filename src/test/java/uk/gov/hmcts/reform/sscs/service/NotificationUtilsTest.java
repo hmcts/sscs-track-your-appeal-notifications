@@ -396,9 +396,7 @@ public class NotificationUtilsTest {
             QUESTION_ROUND_ISSUED_NOTIFICATION,
             QUESTION_DEADLINE_ELAPSED_NOTIFICATION,
             QUESTION_DEADLINE_REMINDER_NOTIFICATION,
-            HEARING_REQUIRED_NOTIFICATION,
             VIEW_ISSUED,
-            DECISION_ISSUED_2,
             CASE_UPDATED,
             DO_NOT_SEND
         };
