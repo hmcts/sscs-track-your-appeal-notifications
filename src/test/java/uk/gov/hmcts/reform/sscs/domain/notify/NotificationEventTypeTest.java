@@ -14,16 +14,16 @@ public class NotificationEventTypeTest {
 
     @Test
     public void checkEventWeDoHandle() {
-        String event = "question_round_issued";
+        String event = "confirmLapsed";
         assertTrue(NotificationEventType.checkEvent(event));
 
-        event = "question_deadline_elapsed";
+        event = "subscriptionCreated";
         assertTrue(NotificationEventType.checkEvent(event));
 
-        event = "question_deadline_reminder";
+        event = "hearingReminder";
         assertTrue(NotificationEventType.checkEvent(event));
 
-        event = "decision_issued";
+        event = "validAppealCreated";
         assertTrue(NotificationEventType.checkEvent(event));
 
     }

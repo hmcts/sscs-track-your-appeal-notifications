@@ -6,7 +6,6 @@ import java.util.function.Function;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 import uk.gov.hmcts.reform.sscs.domain.notify.NotificationEventType;
-import uk.gov.hmcts.reform.sscs.personalisation.CohPersonalisation;
 import uk.gov.hmcts.reform.sscs.personalisation.Personalisation;
 import uk.gov.hmcts.reform.sscs.personalisation.SubscriptionPersonalisation;
 import uk.gov.hmcts.reform.sscs.personalisation.SyaAppealCreatedAndReceivedPersonalisation;
@@ -26,9 +25,6 @@ public class PersonalisationFactory implements Function<NotificationEventType, P
 
     @Autowired
     private Personalisation personalisation;
-
-    @Autowired
-    private CohPersonalisation cohPersonalisation;
 
     @Override
     public Personalisation apply(NotificationEventType notificationType) {
@@ -63,8 +59,6 @@ public class PersonalisationFactory implements Function<NotificationEventType, P
                 selectedPersonalisation = withRepresentativePersonalisation;
             } else if (SUBSCRIPTION_UPDATED_NOTIFICATION.equals(notificationType)) {
                 selectedPersonalisation = subscriptionPersonalisation;
-            } else if (QUESTION_ROUND_ISSUED_NOTIFICATION.equals(notificationType)) {
-                selectedPersonalisation = cohPersonalisation;
             } else {
                 selectedPersonalisation = this.personalisation;
             }

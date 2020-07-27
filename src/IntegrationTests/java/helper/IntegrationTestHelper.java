@@ -41,17 +41,6 @@ public class IntegrationTestHelper {
              .content(json);
     }
 
-    public static MockHttpServletRequestBuilder getCohRequestWithAuthHeader(String json) {
-        return getCohRequestWithoutAuthHeader(json)
-                .header(AuthorisationService.SERVICE_AUTHORISATION_HEADER, "some-auth-header");
-    }
-
-    public static MockHttpServletRequestBuilder getCohRequestWithoutAuthHeader(String json) {
-        return post("/coh-send")
-                .contentType(APPLICATION_JSON)
-                .content(json);
-    }
-
     public static void assertHttpStatus(HttpServletResponse response, HttpStatus status) {
         assertThat(response.getStatus()).isEqualTo(status.value());
     }

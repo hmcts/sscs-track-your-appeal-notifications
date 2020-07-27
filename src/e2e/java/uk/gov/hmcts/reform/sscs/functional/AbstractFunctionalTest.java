@@ -273,29 +273,6 @@ public abstract class AbstractFunctionalTest {
                 .statusCode(HttpStatus.OK.value());
     }
 
-    void simulateCohCallback(NotificationEventType eventType, String hearingId) throws IOException {
-
-        final String callbackUrl = getEnvOrEmpty("TEST_URL") + "/coh-send";
-
-        String path = getClass().getClassLoader().getResource("cohCallback.json").getFile();
-        String json = FileUtils.readFileToString(new File(path), StandardCharsets.UTF_8.name());
-
-        json = json.replace("{eventType}", eventType.getId());
-        json = json.replace("{caseId}", caseId.toString());
-        json = json.replace("{hearingId}", hearingId);
-
-        RestAssured.useRelaxedHTTPSValidation();
-        RestAssured
-                .given()
-                .header("ServiceAuthorization", "" + idamTokens.getServiceAuthorization())
-                .contentType("application/json")
-                .body(json)
-                .when()
-                .post(callbackUrl)
-                .then()
-                .statusCode(HttpStatus.OK.value());
-    }
-
     private String updateJson(String json, NotificationEventType eventType) {
         json = json.replace("12345656789", caseId.toString());
         json = json.replace("SC022/14/12423", caseReference);
