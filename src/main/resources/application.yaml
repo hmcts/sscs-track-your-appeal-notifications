@@ -299,6 +299,8 @@ notification:
     emailId: 46cc347a-1a5c-40ce-993a-49769dfce626
   decision_issued:
     emailId: 62e72e11-5eb6-4048-83f4-0b0c5c59fcb9
+  struckOut:
+    docmosisId: TB-SCS-GNO-ENG-00466.docx
   directionIssued:
     appellant:
       docmosisId: TB-SCS-GNO-ENG-00067.docx
@@ -505,6 +507,7 @@ pdf-service:
     dwpUploadResponse: 'TB-SCS-GNO-ENG-00012.docx'
     resendAppealCreated: 'TB-SCS-GNO-ENG-00012.docx'
     requestInfoIncompleteApplication: 'TB-SCS-GNO-ENG-00012.docx'
+    struckOut: 'TB-SCS-GNO-ENG-00012.docx'
 
 docmosis:
   accessKey:
