@@ -21,6 +21,8 @@ public class PdfCoverSheet {
     private final String addressPostcode;
     @JsonProperty("hmcts2")
     private final String hmcts;
+    @JsonProperty("hmctsWelshImgVal")
+    private final String hmctsWelshImgVal;
 
     public PdfCoverSheet(String caseId,
                          String name,
@@ -29,7 +31,8 @@ public class PdfCoverSheet {
                          String addressTown,
                          String addressCounty,
                          String addressPostcode,
-                         String hmcts) {
+                         String hmcts,
+                         String hmctsWelshImgVal) {
         this.caseId = caseId;
         this.name = name;
         this.addressLine1 = addressLine1;
@@ -38,6 +41,6 @@ public class PdfCoverSheet {
         this.addressCounty = addressCounty;
         this.addressPostcode = addressPostcode;
         this.hmcts = hmcts;
+        this.hmctsWelshImgVal = hmctsWelshImgVal;
     }
-
 }

@@ -1,18 +1,36 @@
 package uk.gov.hmcts.reform.sscs.service.docmosis;
 
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertTrue;
 import static org.mockito.ArgumentMatchers.eq;
-import static org.mockito.Mockito.*;
-import static uk.gov.hmcts.reform.sscs.config.AppConstants.*;
+import static org.mockito.Mockito.any;
+import static org.mockito.Mockito.anyString;
+import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.verifyNoInteractions;
+import static org.mockito.Mockito.when;
+import static uk.gov.hmcts.reform.sscs.SscsCaseDataUtils.getWelshDate;
+import static uk.gov.hmcts.reform.sscs.config.AppConstants.ADDRESS_NAME;
+import static uk.gov.hmcts.reform.sscs.config.AppConstants.LETTER_ADDRESS_LINE_1;
+import static uk.gov.hmcts.reform.sscs.config.AppConstants.LETTER_ADDRESS_LINE_2;
+import static uk.gov.hmcts.reform.sscs.config.AppConstants.LETTER_ADDRESS_LINE_3;
+import static uk.gov.hmcts.reform.sscs.config.AppConstants.LETTER_ADDRESS_LINE_4;
+import static uk.gov.hmcts.reform.sscs.config.AppConstants.LETTER_ADDRESS_POSTCODE;
 import static uk.gov.hmcts.reform.sscs.domain.notify.NotificationEventType.APPEAL_LAPSED_NOTIFICATION;
 import static uk.gov.hmcts.reform.sscs.domain.notify.NotificationEventType.APPEAL_RECEIVED_NOTIFICATION;
+import static uk.gov.hmcts.reform.sscs.service.docmosis.PdfLetterService.GENERATED_DATE_LITERAL;
+import static uk.gov.hmcts.reform.sscs.service.docmosis.PdfLetterService.WELSH_GENERATED_DATE_LITERAL;
 
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
+import java.time.format.DateTimeFormatter;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
+
 import junitparams.JUnitParamsRunner;
 import junitparams.Parameters;
 import org.apache.commons.lang3.ArrayUtils;
@@ -39,14 +57,19 @@ public class PdfLetterServiceTest {
 
     private final DocmosisPdfService docmosisPdfService = mock(DocmosisPdfService.class);
 
-    private static final Map<String, String> TEMPLATE_NAMES = new ConcurrentHashMap<>();
+    private static final Map<LanguagePreference, Map<String, String>> TEMPLATE_NAMES = new ConcurrentHashMap<>();
     private static final DocmosisTemplatesConfig DOCMOSIS_TEMPLATES_CONFIG = new DocmosisTemplatesConfig();
+    private static DateTimeFormatter dateTimeFormatter = DateTimeFormatter.ofPattern("yyyy-MM-d");
+
+
 
     static {
-        TEMPLATE_NAMES.put(APPEAL_RECEIVED_NOTIFICATION.getId(), "my01.doc");
+        TEMPLATE_NAMES.put(LanguagePreference.ENGLISH, Collections.singletonMap(APPEAL_RECEIVED_NOTIFICATION.getId(), "my01.doc"));
+        TEMPLATE_NAMES.put(LanguagePreference.WELSH, Collections.singletonMap(APPEAL_RECEIVED_NOTIFICATION.getId(), "my01.doc"));
         DOCMOSIS_TEMPLATES_CONFIG.setCoversheets(TEMPLATE_NAMES);
+        DOCMOSIS_TEMPLATES_CONFIG.setHmctsWelshImgKey("welshhmcts");
+        DOCMOSIS_TEMPLATES_CONFIG.setHmctsWelshImgVal("welshhmcts.png");
     }
-
 
     private final PdfLetterService pdfLetterService =
             new PdfLetterService(docmosisPdfService, DOCMOSIS_TEMPLATES_CONFIG);
@@ -85,8 +108,8 @@ public class PdfLetterServiceTest {
                 address.getTown(),
                 address.getCounty(),
                 address.getPostcode(),
-                DOCMOSIS_TEMPLATES_CONFIG.getHmctsImgVal()
-        );
+                DOCMOSIS_TEMPLATES_CONFIG.getHmctsImgVal(),
+                DOCMOSIS_TEMPLATES_CONFIG.getHmctsWelshImgVal());
         verify(docmosisPdfService).createPdf(eq(pdfCoverSheet), eq("my01.doc"));
     }
 
@@ -127,6 +150,39 @@ public class PdfLetterServiceTest {
         verify(docmosisPdfService).createPdfFromMap(any(), eq(notification.getDocmosisLetterTemplate()));
         verify(docmosisPdfService).createPdf(any(), anyString());
     }
+
+    @Test
+    public void willGenerateALetter_Welsh() throws IOException {
+        PDDocument doc = new PDDocument();
+        doc.addPage(new PDPage());
+        ByteArrayOutputStream baos = new ByteArrayOutputStream();
+        doc.save(baos);
+        Mockito.reset(docmosisPdfService);
+        when(docmosisPdfService.createPdfFromMap(any(), anyString())).thenReturn(baos.toByteArray());
+        when(docmosisPdfService.createPdf(any(), anyString())).thenReturn(baos.toByteArray());
+        baos.close();
+        doc.close();
+        NotificationWrapper wrapper = NotificationServiceTest.buildBaseWrapper(
+                APPEAL_RECEIVED_NOTIFICATION,
+                appellant,
+                representative,
+                null
+         );
+        wrapper.getNewSscsCaseData().setLanguagePreferenceWelsh("Yes");
+        Notification notification = Notification.builder().template(Template.builder().docmosisTemplateId("docmosis.doc").build()).placeholders(new HashMap<>()).build();
+        byte[] letter = pdfLetterService.generateLetter(wrapper, notification, SubscriptionType.APPELLANT);
+        byte[] coversheet = pdfLetterService.buildCoversheet(wrapper, SubscriptionType.APPELLANT);
+        assertTrue(ArrayUtils.isNotEmpty(letter));
+        assertTrue(ArrayUtils.isNotEmpty(coversheet));
+        ArgumentCaptor<Map<String, Object>> placeholderCaptor = ArgumentCaptor.forClass(Map.class);
+        verify(docmosisPdfService).createPdfFromMap(placeholderCaptor.capture(), eq(notification.getDocmosisLetterTemplate()));
+        verify(docmosisPdfService).createPdf(any(), anyString());
+        Map<String, Object> placeholderCaptorValue = placeholderCaptor.getValue();
+        assertEquals("Welsh generated date", getWelshDate().apply(placeholderCaptorValue.get(GENERATED_DATE_LITERAL),
+                dateTimeFormatter),placeholderCaptorValue.get(WELSH_GENERATED_DATE_LITERAL));
+    }
+
+
 
     @Test
     public void givenAnAddressWithMoreThan45CharactersInEachLine_willTruncateAddressAndGenerateALetter() throws IOException {
@@ -171,6 +227,7 @@ public class PdfLetterServiceTest {
         assertEquals("MyTownVeryVeryLongAddressLineWithLotsOfCharac", placeholderCaptor.getValue().get(LETTER_ADDRESS_LINE_3));
         assertEquals("MyCountyVeryVeryLongAddressLineWithLotsOfChar", placeholderCaptor.getValue().get(LETTER_ADDRESS_LINE_4));
         assertEquals("L2 5UZ", placeholderCaptor.getValue().get(LETTER_ADDRESS_POSTCODE));
+        assertNull(placeholderCaptor.getValue().get(WELSH_GENERATED_DATE_LITERAL));
     }
 
     @Test
@@ -290,5 +347,53 @@ public class PdfLetterServiceTest {
         when(docmosisPdfService.createPdf(any(), anyString())).thenReturn("Invalid PDF".getBytes());
         pdfLetterService.generateLetter(wrapper, notification, SubscriptionType.REPRESENTATIVE);
         pdfLetterService.buildCoversheet(wrapper, SubscriptionType.REPRESENTATIVE);
+    }
+
+    @Test
+    public void givenAnAddressWithMoreThan45CharactersInEachLine_willTruncateAddressAndGenerateALetter_welsh() throws IOException {
+        PDDocument doc = new PDDocument();
+        doc.addPage(new PDPage());
+        ByteArrayOutputStream baos = new ByteArrayOutputStream();
+        doc.save(baos);
+        Mockito.reset(docmosisPdfService);
+        when(docmosisPdfService.createPdfFromMap(any(), anyString())).thenReturn(baos.toByteArray());
+        when(docmosisPdfService.createPdf(any(), anyString())).thenReturn(baos.toByteArray());
+        baos.close();
+        doc.close();
+
+        Name name = Name.builder().firstName("Jimmy").lastName("AVeryLongNameWithLotsaAdLotsAndLotsOfCharacters").build();
+
+        Address address = Address.builder()
+                .line1("MyFirstVeryVeryLongAddressLineWithLotsOfCharacters")
+                .line2("MySecondVeryVeryLongAddressLineWithLotsOfCharacters")
+                .town("MyTownVeryVeryLongAddressLineWithLotsOfCharacters")
+                .county("MyCountyVeryVeryLongAddressLineWithLotsOfCharacters")
+                .postcode("L2 5UZ").build();
+
+        appellant.setName(name);
+        appellant.setAddress(address);
+
+        NotificationWrapper wrapper = NotificationServiceTest.buildBaseWrapper(
+                APPEAL_RECEIVED_NOTIFICATION,
+                appellant,
+                representative,
+                null
+        );
+        wrapper.getNewSscsCaseData().setLanguagePreferenceWelsh("Yes");
+        Notification notification = Notification.builder().template(Template.builder().docmosisTemplateId("docmosis.doc").build()).placeholders(new HashMap<>()).build();
+        byte[] letter = pdfLetterService.generateLetter(wrapper, notification, SubscriptionType.APPELLANT);
+        assertTrue(ArrayUtils.isNotEmpty(letter));
+
+        ArgumentCaptor<Map<String, Object>> placeholderCaptor = ArgumentCaptor.forClass(Map.class);
+
+        verify(docmosisPdfService).createPdfFromMap(placeholderCaptor.capture(), eq(notification.getDocmosisLetterTemplate()));
+        assertEquals("Jimmy AVeryLongNameWithLotsaAdLotsAndLotsOfCh", placeholderCaptor.getValue().get(ADDRESS_NAME));
+        assertEquals("MyFirstVeryVeryLongAddressLineWithLotsOfChara", placeholderCaptor.getValue().get(LETTER_ADDRESS_LINE_1));
+        assertEquals("MySecondVeryVeryLongAddressLineWithLotsOfChar", placeholderCaptor.getValue().get(LETTER_ADDRESS_LINE_2));
+        assertEquals("MyTownVeryVeryLongAddressLineWithLotsOfCharac", placeholderCaptor.getValue().get(LETTER_ADDRESS_LINE_3));
+        assertEquals("MyCountyVeryVeryLongAddressLineWithLotsOfChar", placeholderCaptor.getValue().get(LETTER_ADDRESS_LINE_4));
+        assertEquals("L2 5UZ", placeholderCaptor.getValue().get(LETTER_ADDRESS_POSTCODE));
+        assertNotNull(placeholderCaptor.getValue().get("welsh_generated_date"));
+        assertEquals("welshhmcts.png",placeholderCaptor.getValue().get(DOCMOSIS_TEMPLATES_CONFIG.getHmctsWelshImgKey()));
     }
 }
