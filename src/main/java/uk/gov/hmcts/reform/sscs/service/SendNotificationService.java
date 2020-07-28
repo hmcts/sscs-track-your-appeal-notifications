@@ -13,7 +13,8 @@ import java.io.IOException;
 import java.net.URI;
 import java.time.ZonedDateTime;
 import java.time.format.DateTimeFormatter;
-import java.util.Map;
+import java.util.*;
+import java.util.stream.Stream;
 
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.ArrayUtils;
@@ -101,7 +102,8 @@ public class SendNotificationService {
 
     private boolean sendSmsNotification(NotificationWrapper wrapper, Subscription subscription, Notification notification, NotificationEventType eventType) {
         if (isOkToSendSmsNotification(wrapper, subscription, notification, eventType, notificationValidService)) {
-            return notification.getSmsTemplate().stream().map(smsTemplateId -> sendSmsNotification(wrapper, notification, smsTemplateId)).reduce((current, previous) -> current && previous).orElse(false);
+            return Optional.ofNullable(notification.getSmsTemplate()).map(Collection::stream).orElseGet(Stream::empty)
+                    .map(smsTemplateId -> sendSmsNotification(wrapper, notification, smsTemplateId)).reduce((previous, current) -> previous && current).orElse(false);
         }
         return false;
     }

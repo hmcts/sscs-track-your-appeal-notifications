@@ -135,7 +135,6 @@ public class NotificationUtils {
         return subscription != null
             && subscription.isSmsSubscribed()
             && notification.isSms()
-            && Optional.ofNullable(notification.getSmsTemplate()).map(templates -> !templates.isEmpty()).orElse(false)
             && subscription.doesCaseHaveSubscriptions()
             && notificationValidService.isNotificationStillValidToSend(wrapper.getNewSscsCaseData().getHearings(), notificationType)
             && notificationValidService.isHearingTypeValidToSendNotification(wrapper.getNewSscsCaseData(), notificationType);
