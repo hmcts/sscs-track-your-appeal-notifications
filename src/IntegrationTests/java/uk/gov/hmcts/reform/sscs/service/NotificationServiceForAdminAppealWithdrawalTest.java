@@ -17,7 +17,7 @@ import uk.gov.hmcts.reform.sscs.factory.NotificationWrapper;
 
 public class NotificationServiceForAdminAppealWithdrawalTest extends NotificationServiceBase {
 
-    @Value("${notification.appealWithdrawn.appellant.letterId}")
+    @Value("${notification.english.appealWithdrawn.appellant.letterId}")
     private String adminAppealWithdrawalLetterId;
 
     @Before
