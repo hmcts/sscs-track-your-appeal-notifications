@@ -257,6 +257,23 @@ public class SendNotificationServiceTest {
     }
 
     @Test
+    public void nullSmstemplateSet() {
+        Notification notification = Notification.builder()
+                .destination(Destination.builder().sms("07831292000").build())
+                .template(Template.builder().build())
+                .build();
+        when(notificationValidService.isNotificationStillValidToSend(any(), any())).thenReturn(true);
+        when(notificationValidService.isHearingTypeValidToSendNotification(any(), any())).thenReturn(true);
+
+        SubscriptionWithType appellantSmsSubscription = new SubscriptionWithType(SMS_SUBSCRIPTION, APPELLANT);
+        CcdNotificationWrapper wrapper = buildBaseWrapper(APPELLANT_WITH_ADDRESS, CASE_UPDATED, READY_TO_LIST.getId());
+        boolean result =  classUnderTest.sendEmailSmsLetterNotification(wrapper, notification, appellantSmsSubscription, FALLBACK_LETTER_SUBSCRIPTION_TYPES.get(0));
+        assertThat(result, CoreMatchers.equalTo(false));
+        verify(notificationHandler, never()).sendNotification(any(), any(), any(), any());
+        verifyExpectedErrorLogMessage(mockAppender, captorLoggingEvent, wrapper.getNewSscsCaseData().getCcdCaseId(), "Did not send a notification for event");
+    }
+
+    @Test
     public void firstSmsFailed() {
         when(notificationValidService.isNotificationStillValidToSend(any(), any())).thenReturn(true);
         when(notificationValidService.isHearingTypeValidToSendNotification(any(), any())).thenReturn(true);
