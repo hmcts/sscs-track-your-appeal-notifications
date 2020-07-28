@@ -12,76 +12,76 @@ import uk.gov.hmcts.reform.sscs.functional.AbstractFunctionalTest;
 import uk.gov.service.notify.Notification;
 
 public class WithRepresentativePersonalisationTest extends AbstractFunctionalTest {
-    @Value("${notification.appealLapsed.appellant.emailId}")
+    @Value("${notification.english.appealLapsed.appellant.emailId}")
     private String appealLapsedAppellantEmailId;
-    @Value("${notification.appealLapsed.appellant.smsId}")
+    @Value("${notification.english.appealLapsed.appellant.smsId}")
     private String appealLapsedAppellantSmsId;
-    @Value("${notification.appealLapsed.representative.emailId}")
+    @Value("${notification.english.appealLapsed.representative.emailId}")
     private String appealLapsedRepsEmailId;
-    @Value("${notification.appealLapsed.representative.smsId}")
+    @Value("${notification.english.appealLapsed.representative.smsId}")
     private String appealLapsedRepsSmsId;
-    @Value("${notification.appealWithdrawn.appellant.emailId}")
+    @Value("${notification.english.appealWithdrawn.appellant.emailId}")
     private String appealWithdrawnAppellantEmailId;
-    @Value("${notification.appealWithdrawn.appellant.smsId}")
+    @Value("${notification.english.appealWithdrawn.appellant.smsId}")
     private String appealWithdrawnAppellantSmsId;
-    @Value("${notification.appealWithdrawn.representative.emailId}")
+    @Value("${notification.english.appealWithdrawn.representative.emailId}")
     private String appealWithdrawnRepsEmailId;
-    @Value("${notification.appealWithdrawn.representative.smsId}")
+    @Value("${notification.english.appealWithdrawn.representative.smsId}")
     private String appealWithdrawnRepsSmsId;
-    @Value("${notification.hearingBooked.appellant.emailId}")
+    @Value("${notification.english.hearingBooked.appellant.emailId}")
     private String hearingBookedAppellantEmailId;
-    @Value("${notification.hearingBooked.appellant.smsId}")
+    @Value("${notification.english.hearingBooked.appellant.smsId}")
     private String hearingBookedAppellantSmsId;
-    @Value("${notification.hearingBooked.representative.emailId}")
+    @Value("${notification.english.hearingBooked.representative.emailId}")
     private String hearingBookedRepsEmailId;
-    @Value("${notification.hearingBooked.representative.smsId}")
+    @Value("${notification.english.hearingBooked.representative.smsId}")
     private String hearingBookedRepsSmsId;
-    @Value("${notification.appealCreated.appellant.emailId}")
+    @Value("${notification.english.appealCreated.appellant.emailId}")
     private String appealCreatedAppellantEmailId;
-    @Value("${notification.appealCreated.appellant.smsId}")
+    @Value("${notification.english.appealCreated.appellant.smsId}")
     private String appealCreatedAppellantSmsId;
-    @Value("${notification.appealCreated.representative.emailId}")
+    @Value("${notification.english.appealCreated.representative.emailId}")
     private String appealCreatedRepsEmailId;
-    @Value("${notification.appealCreated.representative.smsId}")
+    @Value("${notification.english.appealCreated.representative.smsId}")
     private String appealCreatedRepsSmsId;
-    @Value("${notification.paper.appealDormant.appellant.emailId}")
+    @Value("${notification.english.paper.appealDormant.appellant.emailId}")
     private String appealDormantAppellantEmailId;
-    @Value("${notification.paper.appealDormant.appellant.smsId}")
+    @Value("${notification.english.paper.appealDormant.appellant.smsId}")
     private String appealDormantAppellantSmsId;
-    @Value("${notification.paper.appealDormant.representative.emailId}")
+    @Value("${notification.english.paper.appealDormant.representative.emailId}")
     private String appealDormantRepsEmailId;
-    @Value("${notification.paper.appealDormant.representative.smsId}")
+    @Value("${notification.english.paper.appealDormant.representative.smsId}")
     private String appealDormantRepsSmsId;
 
-    @Value("${notification.hearingAdjourned.appellant.emailId}")
+    @Value("${notification.english.hearingAdjourned.appellant.emailId}")
     private String hearingAdjournedAppellantEmailId;
-    @Value("${notification.hearingAdjourned.appellant.smsId}")
+    @Value("${notification.english.hearingAdjourned.appellant.smsId}")
     private String hearingAdjournedAppellantSmsId;
-    @Value("${notification.hearingAdjourned.representative.emailId}")
+    @Value("${notification.english.hearingAdjourned.representative.emailId}")
     private String hearingAdjournedRepsEmailId;
-    @Value("${notification.hearingAdjourned.representative.smsId}")
+    @Value("${notification.english.hearingAdjourned.representative.smsId}")
     private String hearingAdjournedRepsSmsId;
-    @Value("${notification.appealReceived.appellant.emailId}")
+    @Value("${notification.english.appealReceived.appellant.emailId}")
     private String appealReceivedAppellantEmailId;
-    @Value("${notification.appealReceived.appellant.smsId}")
+    @Value("${notification.english.appealReceived.appellant.smsId}")
     private String appealReceivedAppellantSmsId;
-    @Value("${notification.appealReceived.representative.emailId}")
+    @Value("${notification.english.appealReceived.representative.emailId}")
     private String appealReceivedRepsEmailId;
-    @Value("${notification.appealReceived.representative.smsId}")
+    @Value("${notification.english.appealReceived.representative.smsId}")
     private String appealReceivedRepsSmsId;
 
-    @Value("${notification.hearingPostponed.appellant.emailId}")
+    @Value("${notification.english.hearingPostponed.appellant.emailId}")
     private String hearingPostponedAppellantEmailId;
-    @Value("${notification.hearingPostponed.representative.emailId}")
+    @Value("${notification.english.hearingPostponed.representative.emailId}")
     private String hearingPostponedRepsEmailId;
 
-    @Value("${notification.validAppealCreated.appellant.emailId}")
+    @Value("${notification.english.validAppealCreated.appellant.emailId}")
     private String validAppealCreatedAppellantEmailId;
-    @Value("${notification.validAppealCreated.appellant.smsId}")
+    @Value("${notification.english.validAppealCreated.appellant.smsId}")
     private String validAppealCreatedAppellantSmsId;
-    @Value("${notification.validAppealCreated.representative.emailId}")
+    @Value("${notification.english.validAppealCreated.representative.emailId}")
     private String validAppealCreatedRepsEmailId;
-    @Value("${notification.validAppealCreated.representative.smsId}")
+    @Value("${notification.english.validAppealCreated.representative.smsId}")
     private String validAppealCreatedRepsSmsId;
 
     public WithRepresentativePersonalisationTest() {

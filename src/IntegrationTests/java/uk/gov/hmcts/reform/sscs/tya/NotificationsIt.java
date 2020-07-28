@@ -124,13 +124,13 @@ public class NotificationsIt {
     @Mock
     private EvidenceManagementService evidenceManagementService;
 
-    @Value("${notification.subscriptionUpdated.emailId}")
+    @Value("${notification.english.subscriptionUpdated.emailId}")
     private String subscriptionUpdatedEmailId;
 
     @Mock
     private CcdNotificationsPdfService ccdNotificationsPdfService;
 
-    @Value("${notification.subscriptionCreated.appellant.smsId}")
+    @Value("${notification.english.subscriptionCreated.appellant.smsId}")
     private String subscriptionCreatedSmsId;
 
     private final Boolean saveCorrespondence = false;
