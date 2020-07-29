@@ -323,6 +323,13 @@ notification:
         docmosisId: TB-SCS-GNO-ENG-00454.docx
       representative:
         docmosisId: TB-SCS-GNO-ENG-00455.docx
+    issueAdjournment:
+      appellant:
+        docmosisId: TB-SCS-GNO-ENG-00510.docx
+      appointee:
+        docmosisId: TB-SCS-GNO-ENG-00510.docx
+      representative:
+        docmosisId: TB-SCS-GNO-ENG-00512.docx
     corDecision:
       emailId: 5b0df251-49b9-46d5-b347-37a81ab77f19
     requestInfoIncompleteApplication:
@@ -823,6 +830,7 @@ pdf-service:
       directionIssued: 'TB-SCS-GNO-ENG-00012.docx'
       decisionIssued: 'TB-SCS-GNO-ENG-00012.docx'
       issueFinalDecision: 'TB-SCS-GNO-ENG-00012.docx'
+      issueAdjournment: 'TB-SCS-GNO-ENG-00012.docx'
       validAppealCreated: 'TB-SCS-GNO-ENG-00012.docx'
       dwpUploadResponse: 'TB-SCS-GNO-ENG-00012.docx'
       resendAppealCreated: 'TB-SCS-GNO-ENG-00012.docx'
@@ -833,6 +841,7 @@ pdf-service:
       directionIssued: 'TB-SCS-GNO-WEL-00479.docx'
       decisionIssued: 'TB-SCS-GNO-WEL-00479.docx'
       issueFinalDecision: 'TB-SCS-GNO-ENG-00012.docx'
+      issueAdjournment: 'TB-SCS-GNO-ENG-00012.docx'
       validAppealCreated: 'TB-SCS-GNO-WEL-00479.docx'
       dwpUploadResponse: 'TB-SCS-GNO-WEL-00479.docx'
       resendAppealCreated: 'TB-SCS-GNO-WEL-00479.docx'

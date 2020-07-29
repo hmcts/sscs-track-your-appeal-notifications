@@ -292,6 +292,8 @@ public class SendNotificationService {
             return getDocumentForType(newSscsCaseData.getLatestDocumentForDocumentType(DECISION_NOTICE));
         } else if (ISSUE_FINAL_DECISION.equals(notificationEventType)) {
             return getDocumentForType(newSscsCaseData.getLatestDocumentForDocumentType(FINAL_DECISION_NOTICE));
+        } else if (ISSUE_ADJOURNMENT.equals(notificationEventType)) {
+            return getDocumentForType(newSscsCaseData.getLatestDocumentForDocumentType(ADJOURNMENT_NOTICE));
         }
         return null;
     }
