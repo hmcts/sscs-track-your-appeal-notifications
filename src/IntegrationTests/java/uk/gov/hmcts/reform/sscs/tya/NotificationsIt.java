@@ -3415,7 +3415,7 @@ public class NotificationsIt {
     }
 
     @Test
-    @Parameters({"issueFinalDecision", "decisionIssued", "directionIssued"})
+    @Parameters({"adjournCase", "issueFinalDecision", "decisionIssued", "directionIssued"})
     public void givenAReissueEvent_shouldStillSendDirectionIssued(String furtherEvidenceType) throws Exception {
 
         String filename = "json/ccdResponse_reissueDocument.json";
