@@ -34,12 +34,16 @@ public enum NotificationEventType {
     DIRECTION_ISSUED("directionIssued", true, true, true, false, false, 0),
     DECISION_ISSUED("decisionIssued", true, true, true, false, false, 0),
     ISSUE_FINAL_DECISION("issueFinalDecision", true, true, true, false, false, 0),
+    ISSUE_ADJOURNMENT("issueAdjournment", true, true, true, false, false, 0),
     VALID_APPEAL_CREATED("validAppealCreated", true, true, false, true, false, 240L),
     REQUEST_INFO_INCOMPLETE("requestInfoIncompleteApplication", true, true, true, false, false, 0),
     JUDGE_DECISION_APPEAL_TO_PROCEED("judgeDecisionAppealToProceed", true, true, true, false, false, 0),
     TCW_DECISION_APPEAL_TO_PROCEED("tcwDecisionAppealToProceed", true, true, true, false, false, 0),
     NON_COMPLIANT_NOTIFICATION("nonCompliant", true, true, true, false, false, 0),
     ADMIN_APPEAL_WITHDRAWN("adminAppealWithdrawn", true, true, true, false, false, 0),
+    // Allow out of hours for this event as we rely on the case data to decide who to send to. It could get out of sync if we wait a few hours to send, for example they could try to reissue to 2 parties so this event would be triggered twice.
+    // If the reminder service looks the case up from CCD, the original request for who to send the notification to will be lost and the second party would receive the notification twice.
+    REISSUE_DOCUMENT("reissueDocument", true, true, true, true, false, 0),
     DO_NOT_SEND("");
 
     private String id;

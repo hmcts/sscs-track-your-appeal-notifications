@@ -57,6 +57,8 @@ public class PersonalisationFactory implements Function<NotificationEventType, P
                 || DECISION_ISSUED.equals(notificationType)
                 || REQUEST_INFO_INCOMPLETE.equals(notificationType)
                 || ISSUE_FINAL_DECISION.equals(notificationType)
+                || ISSUE_ADJOURNMENT.equals(notificationType)
+                || STRUCK_OUT.equals(notificationType)
                 || HEARING_BOOKED_NOTIFICATION.equals(notificationType)) {
                 selectedPersonalisation = withRepresentativePersonalisation;
             } else if (SUBSCRIPTION_UPDATED_NOTIFICATION.equals(notificationType)) {

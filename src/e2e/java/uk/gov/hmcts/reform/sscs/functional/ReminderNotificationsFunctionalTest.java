@@ -16,58 +16,58 @@ import uk.gov.service.notify.NotificationClientException;
 
 public class ReminderNotificationsFunctionalTest extends AbstractFunctionalTest {
 
-    @Value("${notification.oral.evidenceReminder.appellant.emailId}")
+    @Value("${notification.english.oral.evidenceReminder.appellant.emailId}")
     private String evidenceReminderOralAppellantEmailTemplateId;
 
-    @Value("${notification.oral.evidenceReminder.appellant.smsId}")
+    @Value("${notification.english.oral.evidenceReminder.appellant.smsId}")
     private String evidenceReminderOralAppellantSmsTemplateId;
 
-    @Value("${notification.oral.evidenceReminder.representative.emailId}")
+    @Value("${notification.english.oral.evidenceReminder.representative.emailId}")
     private String evidenceReminderOralRepresentativeEmailTemplateId;
 
-    @Value("${notification.oral.evidenceReminder.representative.smsId}")
+    @Value("${notification.english.oral.evidenceReminder.representative.smsId}")
     private String evidenceReminderOralRepresentativeSmsTemplateId;
 
-    @Value("${notification.oral.responseReceived.appellant.emailId}")
+    @Value("${notification.english.oral.responseReceived.appellant.emailId}")
     private String responseReceivedOralAppellantEmailTemplateId;
 
-    @Value("${notification.oral.responseReceived.appellant.smsId}")
+    @Value("${notification.english.oral.responseReceived.appellant.smsId}")
     private String responseReceivedOralAppellantSmsTemplateId;
 
-    @Value("${notification.paper.evidenceReminder.appellant.emailId}")
+    @Value("${notification.english.paper.evidenceReminder.appellant.emailId}")
     private String evidenceReminderPaperAppellantEmailTemplateId;
 
-    @Value("${notification.paper.evidenceReminder.appellant.smsId}")
+    @Value("${notification.english.paper.evidenceReminder.appellant.smsId}")
     private String evidenceReminderPaperAppellantSmsTemplateId;
 
-    @Value("${notification.paper.evidenceReminder.representative.emailId}")
+    @Value("${notification.english.paper.evidenceReminder.representative.emailId}")
     private String evidenceReminderPaperRepresentativeEmailTemplateId;
 
-    @Value("${notification.paper.evidenceReminder.representative.smsId}")
+    @Value("${notification.english.paper.evidenceReminder.representative.smsId}")
     private String evidenceReminderPaperRepresentativeSmsTemplateId;
 
-    @Value("${notification.paper.responseReceived.appellant.emailId}")
+    @Value("${notification.english.paper.responseReceived.appellant.emailId}")
     private String responseReceivedPaperAppellantEmailTemplateId;
 
-    @Value("${notification.paper.responseReceived.appellant.smsId}")
+    @Value("${notification.english.paper.responseReceived.appellant.smsId}")
     private String responseReceivedPaperAppellantSmsTemplateId;
 
-    @Value("${notification.hearingReminder.appellant.emailId}")
+    @Value("${notification.english.hearingReminder.appellant.emailId}")
     private String hearingReminderAppellantEmailTemplateId;
 
-    @Value("${notification.hearingReminder.appellant.smsId}")
+    @Value("${notification.english.hearingReminder.appellant.smsId}")
     private String hearingReminderAppellantSmsTemplateId;
 
-    @Value("${notification.hearingReminder.representative.emailId}")
+    @Value("${notification.english.hearingReminder.representative.emailId}")
     private String hearingReminderRepresentativeEmailTemplateId;
 
-    @Value("${notification.hearingReminder.representative.smsId}")
+    @Value("${notification.english.hearingReminder.representative.smsId}")
     private String hearingReminderRepresentativeSmsTemplateId;
 
-    @Value("${notification.hearingReminder.appointee.emailId}")
+    @Value("${notification.english.hearingReminder.appointee.emailId}")
     private String hearingReminderAppointeeEmailTemplateId;
 
-    @Value("${notification.hearingReminder.appointee.smsId}")
+    @Value("${notification.english.hearingReminder.appointee.smsId}")
     private String hearingReminderAppointeeSmsTemplateId;
 
     public ReminderNotificationsFunctionalTest() {

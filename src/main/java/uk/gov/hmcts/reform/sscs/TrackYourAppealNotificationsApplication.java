@@ -46,7 +46,8 @@ import uk.gov.service.notify.NotificationClient;
 @SpringBootApplication
 @EnableFeignClients(basePackages =
         {
-                "uk.gov.hmcts.reform.sscs.service.coh"
+                "uk.gov.hmcts.reform.sscs.service.coh",
+                "uk.gov.hmcts.reform.idam.client"
         })
 @EnableRetry
 @EnableScheduling

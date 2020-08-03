@@ -473,7 +473,7 @@ public class SendNotificationServiceTest {
     }
 
     @Test
-    @Parameters({"APPEAL_RECEIVED_NOTIFICATION", "DIRECTION_ISSUED", "DECISION_ISSUED", "ISSUE_FINAL_DECISION", "DWP_UPLOAD_RESPONSE_NOTIFICATION"})
+    @Parameters({"APPEAL_RECEIVED_NOTIFICATION", "DIRECTION_ISSUED", "DECISION_ISSUED", "ISSUE_FINAL_DECISION", "ISSUE_ADJOURNMENT", "DWP_UPLOAD_RESPONSE_NOTIFICATION"})
     public void sendLetterForNotificationType(NotificationEventType notificationEventType) {
         SubscriptionWithType appellantEmptySubscription = new SubscriptionWithType(EMPTY_SUBSCRIPTION, APPELLANT);
         when(pdfLetterService.generateLetter(any(), any(), any())).thenReturn("PDF".getBytes());
@@ -526,6 +526,20 @@ public class SendNotificationServiceTest {
         documents.add(SscsDocument.builder().value(
                 SscsDocumentDetails.builder().documentType(DocumentType.DECISION_NOTICE.getValue())
                         .documentLink(DocumentLink.builder().documentUrl("testUrl2").build())
+                        .documentDateAdded(LocalDate.now().minusDays(1).toString())
+                        .build())
+                .build());
+
+        documents.add(SscsDocument.builder().value(
+                SscsDocumentDetails.builder().documentType(DocumentType.FINAL_DECISION_NOTICE.getValue())
+                        .documentLink(DocumentLink.builder().documentUrl("testUrl3").build())
+                        .documentDateAdded(LocalDate.now().minusDays(1).toString())
+                        .build())
+                .build());
+
+        documents.add(SscsDocument.builder().value(
+                SscsDocumentDetails.builder().documentType(DocumentType.ADJOURNMENT_NOTICE.getValue())
+                        .documentLink(DocumentLink.builder().documentUrl("testUrl4").build())
                         .documentDateAdded(LocalDate.now().minusDays(1).toString())
                         .build())
                 .build());

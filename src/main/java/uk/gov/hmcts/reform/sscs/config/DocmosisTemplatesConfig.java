@@ -5,6 +5,7 @@ import lombok.Getter;
 import lombok.Setter;
 import org.springframework.boot.context.properties.ConfigurationProperties;
 import org.springframework.stereotype.Component;
+import uk.gov.hmcts.reform.sscs.ccd.domain.LanguagePreference;
 
 
 @Component
@@ -12,7 +13,10 @@ import org.springframework.stereotype.Component;
 @Getter
 @Setter
 public class DocmosisTemplatesConfig {
-    private Map<String, String> coversheets;
+
+    private Map<LanguagePreference, Map<String, String>> coversheets;
     private String hmctsImgVal;
     private String hmctsImgKey;
+    private String hmctsWelshImgVal;
+    private String hmctsWelshImgKey;
 }

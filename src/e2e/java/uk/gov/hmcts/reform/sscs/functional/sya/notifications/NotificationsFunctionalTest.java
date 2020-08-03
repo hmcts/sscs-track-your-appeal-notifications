@@ -26,118 +26,118 @@ public class NotificationsFunctionalTest extends AbstractFunctionalTest {
     @Value("${track.appeal.link}")
     private String tyaLink;
 
-    @Value("${notification.evidenceReceived.appellant.emailId}")
+    @Value("${notification.english.evidenceReceived.appellant.emailId}")
     private String evidenceReceivedEmailTemplateId;
 
-    @Value("${notification.evidenceReceived.appellant.smsId}")
+    @Value("${notification.english.evidenceReceived.appellant.smsId}")
     private String evidenceReceivedSmsTemplateId;
 
-    @Value("${notification.hearingPostponed.appellant.emailId}")
+    @Value("${notification.english.hearingPostponed.appellant.emailId}")
     private String hearingPostponedEmailTemplateId;
 
-    @Value("${notification.hearingAdjourned.appellant.emailId}")
+    @Value("${notification.english.hearingAdjourned.appellant.emailId}")
     private String hearingAdjournedEmailTemplateId;
 
-    @Value("${notification.hearingAdjourned.appellant.smsId}")
+    @Value("${notification.english.hearingAdjourned.appellant.smsId}")
     private String hearingAdjournedSmsTemplateId;
 
-    @Value("${notification.subscriptionCreated.appellant.smsId}")
+    @Value("${notification.english.subscriptionCreated.appellant.smsId}")
     private String subscriptionCreatedSmsTemplateId;
 
-    @Value("${notification.subscriptionUpdated.emailId}")
+    @Value("${notification.english.subscriptionUpdated.emailId}")
     private String subscriptionUpdatedEmailTemplateId;
 
-    @Value("${notification.online.responseReceived.emailId}")
+    @Value("${notification.english.online.responseReceived.emailId}")
     private String onlineResponseReceivedEmailId;
 
-    @Value("${notification.paper.responseReceived.appellant.emailId}")
+    @Value("${notification.english.paper.responseReceived.appellant.emailId}")
     private String paperResponseReceivedEmailId;
 
-    @Value("${notification.paper.responseReceived.appellant.smsId}")
+    @Value("${notification.english.paper.responseReceived.appellant.smsId}")
     private String paperResponseReceivedSmsId;
 
-    @Value("${notification.subscriptionUpdated.emailId}")
+    @Value("${notification.english.subscriptionUpdated.emailId}")
     private String subscriptionUpdateEmailId;
 
-    @Value("${notification.subscriptionUpdated.smsId}")
+    @Value("${notification.english.subscriptionUpdated.smsId}")
     private String subscriptionUpdateSmsId;
 
-    @Value("${notification.subscriptionOld.emailId}")
+    @Value("${notification.english.subscriptionOld.emailId}")
     private String subscriptionUpdateOldEmailId;
 
-    @Value("${notification.subscriptionOld.smsId}")
+    @Value("${notification.english.subscriptionOld.smsId}")
     private String subscriptionUpdateOldSmsId;
 
-    @Value("${notification.paper.evidenceReceived.appointee.emailId}")
+    @Value("${notification.english.paper.evidenceReceived.appointee.emailId}")
     private String paperAppointeeEvidenceReceivedEmailId;
 
-    @Value("${notification.paper.evidenceReceived.appointee.smsId}")
+    @Value("${notification.english.paper.evidenceReceived.appointee.smsId}")
     private String paperAppointeeEvidenceReceivedSmsId;
 
-    @Value("${notification.paper.responseReceived.appointee.emailId}")
+    @Value("${notification.english.paper.responseReceived.appointee.emailId}")
     private String paperAppointeeResponseReceivedEmailId;
 
-    @Value("${notification.paper.responseReceived.appointee.smsId}")
+    @Value("${notification.english.paper.responseReceived.appointee.smsId}")
     private String paperAppointeeResponseReceivedSmsId;
 
-    @Value("${notification.oral.evidenceReminder.appointee.emailId}")
+    @Value("${notification.english.oral.evidenceReminder.appointee.emailId}")
     private String oralAppointeeEvidenceReminderEmailId;
 
-    @Value("${notification.oral.evidenceReminder.appointee.smsId}")
+    @Value("${notification.english.oral.evidenceReminder.appointee.smsId}")
     private String oralAppointeeEvidenceReminderSmsId;
 
-    @Value("${notification.paper.evidenceReminder.appointee.emailId}")
+    @Value("${notification.english.paper.evidenceReminder.appointee.emailId}")
     private String paperAppointeeEvidenceReminderEmailId;
 
-    @Value("${notification.paper.evidenceReminder.appointee.smsId}")
+    @Value("${notification.english.paper.evidenceReminder.appointee.smsId}")
     private String paperAppointeeEvidenceReminderSmsId;
 
-    @Value("${notification.appealCreated.appellant.smsId}")
+    @Value("${notification.english.appealCreated.appellant.smsId}")
     private String appealCreatedAppellantSmsId;
 
-    @Value("${notification.appealCreated.appellant.emailId}")
+    @Value("${notification.english.appealCreated.appellant.emailId}")
     private String appealCreatedAppellantEmailId;
 
-    @Value("${notification.appealCreated.appointee.smsId}")
+    @Value("${notification.english.appealCreated.appointee.smsId}")
     private String appealCreatedAppointeeSmsId;
 
-    @Value("${notification.appealCreated.appointee.emailId}")
+    @Value("${notification.english.appealCreated.appointee.emailId}")
     private String appealCreatedAppointeeEmailId;
 
-    @Value("${notification.hearingAdjourned.appointee.emailId}")
+    @Value("${notification.english.hearingAdjourned.appointee.emailId}")
     private String hearingAdjournedAppointeeEmailId;
 
-    @Value("${notification.hearingAdjourned.appointee.smsId}")
+    @Value("${notification.english.hearingAdjourned.appointee.smsId}")
     private String hearingAdjournedAppointeeSmsId;
 
-    @Value("${notification.appealLapsed.appointee.emailId}")
+    @Value("${notification.english.appealLapsed.appointee.emailId}")
     private String appealLapsedAppointeeEmailTemplateId;
 
-    @Value("${notification.appealLapsed.appointee.smsId}")
+    @Value("${notification.english.appealLapsed.appointee.smsId}")
     private String appealLapsedAppointeeSmsTemplateId;
 
-    @Value("${notification.appealLapsed.appointee.letterId}")
+    @Value("${notification.english.appealLapsed.appointee.letterId}")
     private String appealLapsedAppointeeLetterTemplateId;
 
-    @Value("${notification.appealWithdrawn.appointee.emailId}")
+    @Value("${notification.english.appealWithdrawn.appointee.emailId}")
     private String appointeeAppealWithdrawnEmailId;
 
-    @Value("${notification.appealWithdrawn.appointee.smsId}")
+    @Value("${notification.english.appealWithdrawn.appointee.smsId}")
     private String appointeeAppealWithdrawnSmsId;
 
-    @Value("${notification.hearingBooked.appointee.emailId}")
+    @Value("${notification.english.hearingBooked.appointee.emailId}")
     private String appointeeHearingBookedEmailId;
 
-    @Value("${notification.hearingBooked.appointee.smsId}")
+    @Value("${notification.english.hearingBooked.appointee.smsId}")
     private String appointeeHearingBookedSmsId;
 
-    @Value("${notification.evidenceReceived.appellant.emailId}")
+    @Value("${notification.english.evidenceReceived.appellant.emailId}")
     private String appointeeEvidenceReceivedEmailId;
 
-    @Value("${notification.evidenceReceived.appellant.smsId}")
+    @Value("${notification.english.evidenceReceived.appellant.smsId}")
     private String appointeeEvidenceReceivedSmsId;
 
-    @Value("${notification.hearingPostponed.appointee.emailId}")
+    @Value("${notification.english.hearingPostponed.appointee.emailId}")
     private String appointeeHearingPostponedEmailId;
 
     public NotificationsFunctionalTest() {

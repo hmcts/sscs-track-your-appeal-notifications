@@ -28,6 +28,8 @@ public class CcdNotificationWrapper implements NotificationWrapper {
 
     private final SscsCaseDataWrapper responseWrapper;
 
+    private boolean notificationEventTypeOverridden = false;
+
     public CcdNotificationWrapper(SscsCaseDataWrapper responseWrapper) {
         this.responseWrapper = responseWrapper;
     }
@@ -124,6 +126,7 @@ public class CcdNotificationWrapper implements NotificationWrapper {
             || DIRECTION_ISSUED.equals(getNotificationType())
             || DECISION_ISSUED.equals(getNotificationType())
             || ISSUE_FINAL_DECISION.equals(getNotificationType())
+            || ISSUE_ADJOURNMENT.equals(getNotificationType())
             || JUDGE_DECISION_APPEAL_TO_PROCEED.equals(getNotificationType())
             || TCW_DECISION_APPEAL_TO_PROCEED.equals(getNotificationType())
             || NON_COMPLIANT_NOTIFICATION.equals(getNotificationType())
@@ -159,6 +162,7 @@ public class CcdNotificationWrapper implements NotificationWrapper {
             || DIRECTION_ISSUED.equals(getNotificationType())
             || DECISION_ISSUED.equals(getNotificationType())
             || ISSUE_FINAL_DECISION.equals(getNotificationType())
+            || ISSUE_ADJOURNMENT.equals(getNotificationType())
             || JUDGE_DECISION_APPEAL_TO_PROCEED.equals(getNotificationType())
             || TCW_DECISION_APPEAL_TO_PROCEED.equals(getNotificationType())
             || NON_COMPLIANT_NOTIFICATION.equals(getNotificationType())
@@ -168,6 +172,16 @@ public class CcdNotificationWrapper implements NotificationWrapper {
             subscriptionWithTypeList.add(new SubscriptionWithType(getRepresentativeSubscription(), REPRESENTATIVE));
         }
         return subscriptionWithTypeList;
+    }
+
+    @Override
+    public void setNotificationEventTypeOverridden(boolean notificationEventTypeOverridden) {
+        this.notificationEventTypeOverridden = notificationEventTypeOverridden;
+    }
+
+    @Override
+    public boolean hasNotificationEventBeenOverridden() {
+        return notificationEventTypeOverridden;
     }
 
     @Override

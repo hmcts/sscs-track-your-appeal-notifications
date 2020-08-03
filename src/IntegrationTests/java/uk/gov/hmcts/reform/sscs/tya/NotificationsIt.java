@@ -124,13 +124,13 @@ public class NotificationsIt {
     @Mock
     private EvidenceManagementService evidenceManagementService;
 
-    @Value("${notification.subscriptionUpdated.emailId}")
+    @Value("${notification.english.subscriptionUpdated.emailId}")
     private String subscriptionUpdatedEmailId;
 
     @Mock
     private CcdNotificationsPdfService ccdNotificationsPdfService;
 
-    @Value("${notification.subscriptionCreated.appellant.smsId}")
+    @Value("${notification.english.subscriptionCreated.appellant.smsId}")
     private String subscriptionCreatedSmsId;
 
     private final Boolean saveCorrespondence = false;
@@ -487,6 +487,20 @@ public class NotificationsIt {
     @SuppressWarnings({"Indentation", "unused"})
     private Object[] generateRepsNotificationScenarios() {
         return new Object[]{
+            new Object[]{
+                    STRUCK_OUT,
+                    "paper",
+                    Collections.emptyList(),
+                    Collections.emptyList(),
+                    Arrays.asList("TB-SCS-GNO-ENG-00466.docx", "TB-SCS-GNO-ENG-00466.docx"),
+                    "no",
+                    "no",
+                    "no",
+                    "no",
+                    "0",
+                    "0",
+                    "0"
+            },
             new Object[]{
                 EVIDENCE_RECEIVED_NOTIFICATION,
                 "paper",
@@ -1299,6 +1313,20 @@ public class NotificationsIt {
                 "0",
                 "0"
             },
+            new Object[]{
+                ISSUE_ADJOURNMENT,
+                "paper",
+                Collections.emptyList(),
+                Collections.emptyList(),
+                Arrays.asList("TB-SCS-GNO-ENG-00067.docx", "TB-SCS-GNO-ENG-00089.docx"),
+                "no",
+                "no",
+                "no",
+                "no",
+                "0",
+                "0",
+                "0"
+            },
         };
     }
 
@@ -1307,6 +1335,20 @@ public class NotificationsIt {
     private Object[] generateBundledLetterNotificationScenarios() {
         return new Object[]{
             new Object[]{
+                    STRUCK_OUT,
+                    "paper",
+                    false,
+                    false,
+                    "1"
+            },
+            new Object[]{
+                    STRUCK_OUT,
+                    "oral",
+                    false,
+                    false,
+                    "1"
+            },
+            new Object[]{
                 DIRECTION_ISSUED,
                 "paper",
                 false,
@@ -1469,6 +1511,62 @@ public class NotificationsIt {
             },
             new Object[]{
                 ISSUE_FINAL_DECISION,
+                "oral",
+                true,
+                true,
+                "2"
+            },
+            new Object[]{
+                ISSUE_ADJOURNMENT,
+                "paper",
+                false,
+                false,
+                "1"
+            },
+            new Object[]{
+                ISSUE_ADJOURNMENT,
+                "oral",
+                false,
+                false,
+                "1"
+            },
+            new Object[]{
+                ISSUE_ADJOURNMENT,
+                "oral",
+                false,
+                true,
+                "1"
+            },
+            new Object[]{
+                ISSUE_ADJOURNMENT,
+                "paper",
+                false,
+                true,
+                "1"
+            },
+            new Object[]{
+                ISSUE_ADJOURNMENT,
+                "paper",
+                true,
+                false,
+                "2"
+            },
+            new Object[]{
+                ISSUE_ADJOURNMENT,
+                "oral",
+                true,
+                false,
+                "2"
+            },
+            new Object[]{
+                ISSUE_ADJOURNMENT,
+                "paper",
+                true,
+                true,
+                "2"
+            },
+            new Object[]{
+                ISSUE_ADJOURNMENT,
                 "oral",
                 true,
                 true,
@@ -2124,12 +2222,39 @@ public class NotificationsIt {
                 "0",
                 "0"
             },
+                new Object[]{
+                ISSUE_ADJOURNMENT,
+                "paper",
+                Collections.emptyList(),
+                Collections.emptyList(),
+                Arrays.asList("TB-SCS-GNO-ENG-00067.docx", "TB-SCS-GNO-ENG-00089.docx"),
+                "no",
+                "no",
+                "no",
+                "no",
+                "0",
+                "0",
+                "0"
+            },
         };
     }
 
     @SuppressWarnings({"Indentation", "unused"})
     private Object[] generateAppointeeNotificationScenarios() {
         return new Object[]{
+            new Object[]{
+                    STRUCK_OUT,
+                    "oral",
+                    Collections.emptyList(),
+                    Collections.emptyList(),
+                    Collections.singletonList("TB-SCS-GNO-ENG-00466.docx"),
+                    "no",
+                    "no",
+                    "0",
+                    "0",
+                    "0",
+                    "Appointee Appointee"
+            },
             new Object[]{
                 SYA_APPEAL_CREATED_NOTIFICATION,
                 "oral",
@@ -2353,6 +2478,19 @@ public class NotificationsIt {
             },
             new Object[]{
                 ISSUE_FINAL_DECISION,
+                "paper",
+                Collections.emptyList(),
+                Collections.emptyList(),
+                Collections.singletonList("TB-SCS-GNO-ENG-00067.docx"),
+                "yes",
+                "yes",
+                "0",
+                "0",
+                "0",
+                "Appointee Appointee"
+            },
+            new Object[]{
+                ISSUE_ADJOURNMENT,
                 "paper",
                 Collections.emptyList(),
                 Collections.emptyList(),
@@ -3272,6 +3410,29 @@ public class NotificationsIt {
         assertHttpStatus(response, HttpStatus.OK);
         verify(notificationClient, atMostOnce()).sendEmail(any(), any(), any(), any());
         verify(notificationClient, atMost(2)).sendSms(any(), any(), any(), any(), any());
+        verify(notificationClient, atMostOnce()).sendPrecompiledLetterWithInputStream(any(), any());
+        verifyNoMoreInteractions(notificationClient);
+    }
+
+    @Test
+    @Parameters({"issueFinalDecision", "decisionIssued", "directionIssued"})
+    public void givenAReissueEvent_shouldStillSendDirectionIssued(String furtherEvidenceType) throws Exception {
+
+        String filename = "json/ccdResponse_reissueDocument.json";
+        String path = getClass().getClassLoader().getResource(filename).getFile();
+        String json = FileUtils.readFileToString(new File(path), StandardCharsets.UTF_8.name());
+
+        json = json.replace("appealCreated", State.DORMANT_APPEAL_STATE.toString());
+        json = json.replace("REISSUE_DOCUMENT", furtherEvidenceType);
+
+        byte[] sampleDirectionNotice = IOUtils.toByteArray(getClass().getClassLoader().getResourceAsStream("pdfs/direction-text.pdf"));
+        when(evidenceManagementService.download(any(), any())).thenReturn(sampleDirectionNotice);
+
+        HttpServletResponse response = getResponse(getRequestWithAuthHeader(json));
+
+        assertHttpStatus(response, HttpStatus.OK);
+        verify(notificationClient, times(0)).sendEmail(any(), any(), any(), any());
+        verify(notificationClient, times(0)).sendSms(any(), any(), any(), any(), any());
         verify(notificationClient, atMostOnce()).sendPrecompiledLetterWithInputStream(any(), any());
         verifyNoMoreInteractions(notificationClient);
     }
