@@ -1517,56 +1517,56 @@ public class NotificationsIt {
                 "2"
             },
             new Object[]{
-                ISSUE_ADJOURNMENT,
+                ISSUE_ADJOURNMENT_NOTICE,
                 "paper",
                 false,
                 false,
                 "1"
             },
             new Object[]{
-                ISSUE_ADJOURNMENT,
+                ISSUE_ADJOURNMENT_NOTICE,
                 "oral",
                 false,
                 false,
                 "1"
             },
             new Object[]{
-                ISSUE_ADJOURNMENT,
+                ISSUE_ADJOURNMENT_NOTICE,
                 "oral",
                 false,
                 true,
                 "1"
             },
             new Object[]{
-                ISSUE_ADJOURNMENT,
+                ISSUE_ADJOURNMENT_NOTICE,
                 "paper",
                 false,
                 true,
                 "1"
             },
             new Object[]{
-                ISSUE_ADJOURNMENT,
+                ISSUE_ADJOURNMENT_NOTICE,
                 "paper",
                 true,
                 false,
                 "2"
             },
             new Object[]{
-                ISSUE_ADJOURNMENT,
+                ISSUE_ADJOURNMENT_NOTICE,
                 "oral",
                 true,
                 false,
                 "2"
             },
             new Object[]{
-                ISSUE_ADJOURNMENT,
+                ISSUE_ADJOURNMENT_NOTICE,
                 "paper",
                 true,
                 true,
                 "2"
             },
             new Object[]{
-                ISSUE_ADJOURNMENT,
+                ISSUE_ADJOURNMENT_NOTICE,
                 "oral",
                 true,
                 true,
@@ -2223,7 +2223,7 @@ public class NotificationsIt {
                 "0"
             },
                 new Object[]{
-                ISSUE_ADJOURNMENT,
+                ISSUE_ADJOURNMENT_NOTICE,
                 "paper",
                 Collections.emptyList(),
                 Collections.emptyList(),
@@ -2490,7 +2490,7 @@ public class NotificationsIt {
                 "Appointee Appointee"
             },
             new Object[]{
-                ISSUE_ADJOURNMENT,
+                ISSUE_ADJOURNMENT_NOTICE,
                 "paper",
                 Collections.emptyList(),
                 Collections.emptyList(),
