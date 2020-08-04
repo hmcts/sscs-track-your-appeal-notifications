@@ -77,7 +77,7 @@ bootRun {
 }
 
 ext {
-    springCloudVersion = 'Hoxton.SR6'
+    springCloudVersion = 'Hoxton.SR7'
 }
 
 dependencyManagement {
