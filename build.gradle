@@ -77,7 +77,7 @@ bootRun {
 }
 
 ext {
-    springCloudVersion = 'Hoxton.SR6'
+    springCloudVersion = 'Hoxton.SR7'
 }
 
 dependencyManagement {
@@ -278,10 +278,10 @@ dependencies {
         exclude group: "uk.gov.hmcts.reform", module:"http-proxy-spring-boot-autoconfigure"
     }
     compile group: 'uk.gov.hmcts.reform', name: 'service-auth-provider-client', version: '3.1.2'
-    compile group: 'uk.gov.hmcts.reform', name: 'sscs-common', version: '3.3.32'
+    compile group: 'uk.gov.hmcts.reform', name: 'sscs-common', version: '3.3.33'
     compile group: 'uk.gov.hmcts.reform', name: 'sscs-pdf-email-common', version: '1.4.8'
 
-    compile group: 'uk.gov.service.notify', name: 'notifications-java-client', version: '3.15.1-RELEASE'
+    compile group: 'uk.gov.service.notify', name: 'notifications-java-client', version: '3.15.3-RELEASE'
     compile group: 'com.squareup.okhttp3', name: 'okhttp', version: '4.8.0'
     compile group: 'commons-fileupload', name: 'commons-fileupload', version: '1.4'
     compile group: 'io.github.openfeign.form', name: 'feign-form', version: '3.8.0'
