@@ -54,7 +54,7 @@ java:
     DOCUMENT_MANAGEMENT_URL: "http://dm-store-{{ .Values.global.environment }}.service.core-compute-{{ .Values.global.environment }}.internal"
     COH_URL: "http://coh-cor-{{ .Values.global.environment }}.service.core-compute-{{ .Values.global.environment }}.internal"
     ONLINE_HEARING_LINK: "https://sscs-cor-frontend-{{ .Values.global.environment }}.service.core-compute-{{ .Values.global.environment }}.internal"
-    PDF_API_URL: "http://cmc-pdf-service-{{ .Values.global.environment }}.service.core-compute-{{ .Values.global.environment }}.internal"
+    PDF_API_URL: "http://rpe-pdf-service-{{ .Values.global.environment }}.service.core-compute-{{ .Values.global.environment }}.internal"
     JOB_SCHEDULER_DB_CONNECTION_OPTIONS: ?sslmode=require
     MAX_ACTIVE_DB_CONNECTIONS: 70
     HOURS_START_TIME: 9
