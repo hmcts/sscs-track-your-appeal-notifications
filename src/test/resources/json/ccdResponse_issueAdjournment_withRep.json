@@ -385,5 +385,5 @@
     "state": "appealCreated",
     "id": "12345656789"
   },
-  "event_id": "issueAdjournment"
+  "event_id": "issueAdjournmentNotice"
 }

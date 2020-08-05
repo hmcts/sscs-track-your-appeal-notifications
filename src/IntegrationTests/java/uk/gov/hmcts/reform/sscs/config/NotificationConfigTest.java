@@ -32,7 +32,7 @@ import uk.gov.hmcts.reform.sscs.domain.notify.Template;
 @SpringBootTest
 @ActiveProfiles("integration")
 public class NotificationConfigTest {
-    public static final List<NotificationEventType> BUNDLED_LETTER_EVENT_TYPES = Arrays.asList(STRUCK_OUT, DIRECTION_ISSUED, DECISION_ISSUED, ISSUE_FINAL_DECISION, ISSUE_ADJOURNMENT, JUDGE_DECISION_APPEAL_TO_PROCEED, TCW_DECISION_APPEAL_TO_PROCEED);
+    public static final List<NotificationEventType> BUNDLED_LETTER_EVENT_TYPES = Arrays.asList(STRUCK_OUT, DIRECTION_ISSUED, DECISION_ISSUED, ISSUE_FINAL_DECISION, ISSUE_ADJOURNMENT_NOTICE, JUDGE_DECISION_APPEAL_TO_PROCEED, TCW_DECISION_APPEAL_TO_PROCEED);
 
     // Below rules are needed to use the junitParamsRunner together with SpringRunner
     @ClassRule
@@ -197,10 +197,10 @@ public class NotificationConfigTest {
             new Object[]{null, null, null, "TB-SCS-GNO-ENG-00454.docx", PAPER, getTemplateName(ISSUE_FINAL_DECISION, APPOINTEE), null},
             new Object[]{null, null, null, "TB-SCS-GNO-ENG-00455.docx", ORAL, getTemplateName(ISSUE_FINAL_DECISION, REPRESENTATIVE), null},
             new Object[]{null, null, null, "TB-SCS-GNO-ENG-00455.docx", PAPER, getTemplateName(ISSUE_FINAL_DECISION, REPRESENTATIVE), null},
-            new Object[]{null, null, null, "TB-SCS-GNO-ENG-00510.docx", ORAL, getTemplateName(ISSUE_ADJOURNMENT, APPELLANT), null},
-            new Object[]{null, null, null, "TB-SCS-GNO-ENG-00510.docx", PAPER, getTemplateName(ISSUE_ADJOURNMENT, APPOINTEE), null},
-            new Object[]{null, null, null, "TB-SCS-GNO-ENG-00512.docx", ORAL, getTemplateName(ISSUE_ADJOURNMENT, REPRESENTATIVE), null},
-            new Object[]{null, null, null, "TB-SCS-GNO-ENG-00512.docx", PAPER, getTemplateName(ISSUE_ADJOURNMENT, REPRESENTATIVE), null}
+            new Object[]{null, null, null, "TB-SCS-GNO-ENG-00510.docx", ORAL, getTemplateName(ISSUE_ADJOURNMENT_NOTICE, APPELLANT), null},
+            new Object[]{null, null, null, "TB-SCS-GNO-ENG-00510.docx", PAPER, getTemplateName(ISSUE_ADJOURNMENT_NOTICE, APPOINTEE), null},
+            new Object[]{null, null, null, "TB-SCS-GNO-ENG-00512.docx", ORAL, getTemplateName(ISSUE_ADJOURNMENT_NOTICE, REPRESENTATIVE), null},
+            new Object[]{null, null, null, "TB-SCS-GNO-ENG-00512.docx", PAPER, getTemplateName(ISSUE_ADJOURNMENT_NOTICE, REPRESENTATIVE), null}
         };
     }
 
@@ -215,7 +215,7 @@ public class NotificationConfigTest {
                 .filter(f -> !f.equals(DIRECTION_ISSUED))
                 .filter(f -> !f.equals(DECISION_ISSUED))
                 .filter(f -> !f.equals(ISSUE_FINAL_DECISION))
-                .filter(f -> !f.equals(ISSUE_ADJOURNMENT))
+                .filter(f -> !f.equals(ISSUE_ADJOURNMENT_NOTICE))
                 .collect(Collectors.toList())) {
             for (SubscriptionType subscriptionType : subscriptionTypes) {
                 result[i++] = new Object[]{PAPER, getTemplateName(eventType, subscriptionType)};

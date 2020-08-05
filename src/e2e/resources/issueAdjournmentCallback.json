@@ -657,5 +657,5 @@
     },
     "state": "appealCreated"
   },
-  "event_id": "issueAdjournment"
+  "event_id": "issueAdjournmentNotice"
 }

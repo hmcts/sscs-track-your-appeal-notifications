@@ -1314,7 +1314,7 @@ public class NotificationsIt {
                 "0"
             },
             new Object[]{
-                ISSUE_ADJOURNMENT,
+                ISSUE_ADJOURNMENT_NOTICE,
                 "paper",
                 Collections.emptyList(),
                 Collections.emptyList(),
