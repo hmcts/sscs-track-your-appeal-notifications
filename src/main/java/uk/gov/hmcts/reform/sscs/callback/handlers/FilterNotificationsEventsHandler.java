@@ -27,7 +27,7 @@ public class FilterNotificationsEventsHandler implements CallbackHandler {
                 || callback.getNotificationEventType() == NotificationEventType.STRUCK_OUT
                 || callback.getNotificationEventType() == NotificationEventType.NON_COMPLIANT_NOTIFICATION
                 || callback.getNotificationEventType() == NotificationEventType.REISSUE_DOCUMENT
-                || callback.getNotificationEventType() == NotificationEventType.ISSUE_ADJOURNMENT;
+                || callback.getNotificationEventType() == NotificationEventType.ISSUE_ADJOURNMENT_NOTICE;
     }
 
     @Override

@@ -98,7 +98,7 @@ public class DocmosisWithGovNotifyLetterFunctionalTest extends AbstractFunctiona
     @Test
     public void sendsAdjournmentIssuedLetterToAppellantAndRepresentative() throws IOException, NotificationClientException {
 
-        NotificationEventType notificationEventType = NotificationEventType.ISSUE_ADJOURNMENT;
+        NotificationEventType notificationEventType = NotificationEventType.ISSUE_ADJOURNMENT_NOTICE;
 
         simulateCcdCallback(notificationEventType,
                 notificationEventType.getId() + "Callback.json");

@@ -34,7 +34,7 @@ public enum NotificationEventType {
     DIRECTION_ISSUED("directionIssued", true, true, true, false, false, 0),
     DECISION_ISSUED("decisionIssued", true, true, true, false, false, 0),
     ISSUE_FINAL_DECISION("issueFinalDecision", true, true, true, false, false, 0),
-    ISSUE_ADJOURNMENT("issueAdjournment", true, true, true, false, false, 0),
+    ISSUE_ADJOURNMENT_NOTICE("issueAdjournmentNotice", true, true, true, false, false, 0),
     VALID_APPEAL_CREATED("validAppealCreated", true, true, false, true, false, 240L),
     REQUEST_INFO_INCOMPLETE("requestInfoIncompleteApplication", true, true, true, false, false, 0),
     JUDGE_DECISION_APPEAL_TO_PROCEED("judgeDecisionAppealToProceed", true, true, true, false, false, 0),
