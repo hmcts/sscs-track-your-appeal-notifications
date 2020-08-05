@@ -133,6 +133,9 @@ public class NotificationService {
             } else if (code.equals(EventType.DIRECTION_ISSUED.getCcdType())) {
                 wrapper.setNotificationType(DIRECTION_ISSUED);
                 wrapper.setNotificationEventTypeOverridden(true);
+            }  else if (code.equals(EventType.ISSUE_ADJOURNMENT.getCcdType())) {
+                wrapper.setNotificationType(ISSUE_ADJOURNMENT);
+                wrapper.setNotificationEventTypeOverridden(true);
             }
         }
     }
