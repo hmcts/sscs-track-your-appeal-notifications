@@ -31,28 +31,6 @@
           "identity": {
             "dob": "1998-07-01",
             "nino": "JT098230B"
-          },
-          "appointee": {
-            "name": {
-              "title": "Mr",
-              "firstName": "Appointee",
-              "lastName": "Appointee"
-            },
-            "contact": {
-              "email": "test@tester.com",
-              "mobile": "07848484848"
-            },
-            "address": {
-              "line1": "1 Appointee Street",
-              "line2": "Newcastle",
-              "town": "Newcastle",
-              "county": "Tyne and Wear",
-              "postcode": "NE1 1AW"
-            },
-            "identity": {
-              "dob": "1998-07-01",
-              "nino": ""
-            }
           }
         },
         "benefitType":{
@@ -407,5 +385,5 @@
     "state": "appealCreated",
     "id": "12345656789"
   },
-  "event_id": "issueAdjournment"
+  "event_id": "issueAdjournmentNotice"
 }

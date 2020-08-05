@@ -2053,7 +2053,7 @@ public class NotificationServiceTest {
     }
 
     @Test
-    @Parameters({"DIRECTION_ISSUED, No", "DIRECTION_ISSUED, null", "DECISION_ISSUED, No", "DECISION_ISSUED, null", "ISSUE_FINAL_DECISION, No", "ISSUE_FINAL_DECISION, null", "ISSUE_ADJOURNMENT, No", "ISSUE_ADJOURNMENT, null"})
+    @Parameters({"DIRECTION_ISSUED, No", "DIRECTION_ISSUED, null", "DECISION_ISSUED, No", "DECISION_ISSUED, null", "ISSUE_FINAL_DECISION, No", "ISSUE_FINAL_DECISION, null", "ISSUE_ADJOURNMENT_NOTICE, No", "ISSUE_ADJOURNMENT_NOTICE, null"})
     public void givenReissueDocumentEventReceivedAndResendToAppellantNotSet_thenDoNotSendToAppellant(NotificationEventType notificationEventType, @Nullable String resendToAppellant) {
         CcdNotificationWrapper ccdNotificationWrapper = buildBaseWrapper(REISSUE_DOCUMENT,  APPELLANT_WITH_ADDRESS, null, SscsDocument.builder().value(SscsDocumentDetails.builder().build()).build());
         ccdNotificationWrapper.getNewSscsCaseData().setResendToAppellant(resendToAppellant);
@@ -2066,7 +2066,7 @@ public class NotificationServiceTest {
     }
 
     @Test
-    @Parameters({"DIRECTION_ISSUED", "DECISION_ISSUED", "ISSUE_FINAL_DECISION", "ISSUE_ADJOURNMENT"})
+    @Parameters({"DIRECTION_ISSUED", "DECISION_ISSUED", "ISSUE_FINAL_DECISION", "ISSUE_ADJOURNMENT_NOTICE"})
     public void givenReissueDocumentEventReceivedAndResendToRepYes_thenOverrideNotificationTypeAndSendToRep(NotificationEventType notificationEventType) throws IOException {
         CcdNotificationWrapper ccdNotificationWrapper = buildBaseWrapper(REISSUE_DOCUMENT,  APPELLANT_WITH_ADDRESS, Representative.builder().hasRepresentative("yes").address(Address.builder().line1("test").postcode("Bla").build()).build(), SscsDocument.builder().value(SscsDocumentDetails.builder().build()).build());
         ccdNotificationWrapper.getNewSscsCaseData().setResendToRepresentative("Yes");
@@ -2094,7 +2094,7 @@ public class NotificationServiceTest {
     }
 
     @Test
-    @Parameters({"DIRECTION_ISSUED, No", "DIRECTION_ISSUED, null", "DECISION_ISSUED, No", "DECISION_ISSUED, null", "ISSUE_FINAL_DECISION, No", "ISSUE_FINAL_DECISION, null", "ISSUE_ADJOURNMENT, No", "ISSUE_ADJOURNMENT, null"})
+    @Parameters({"DIRECTION_ISSUED, No", "DIRECTION_ISSUED, null", "DECISION_ISSUED, No", "DECISION_ISSUED, null", "ISSUE_FINAL_DECISION, No", "ISSUE_FINAL_DECISION, null", "ISSUE_ADJOURNMENT_NOTICE, No", "ISSUE_ADJOURNMENT_NOTICE, null"})
     public void givenReissueDocumentEventReceivedAndResendToRepNotSet_thenDoNotSendToRep(NotificationEventType notificationEventType, @Nullable String resendToRep) {
         CcdNotificationWrapper ccdNotificationWrapper = buildBaseWrapper(REISSUE_DOCUMENT,  APPELLANT_WITH_ADDRESS, Representative.builder().hasRepresentative("yes").build(), SscsDocument.builder().value(SscsDocumentDetails.builder().build()).build());
         ccdNotificationWrapper.getNewSscsCaseData().setResendToRepresentative(resendToRep);
