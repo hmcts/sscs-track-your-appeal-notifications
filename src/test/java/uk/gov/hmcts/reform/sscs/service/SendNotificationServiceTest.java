@@ -1,5 +1,6 @@
 package uk.gov.hmcts.reform.sscs.service;
 
+import static org.hamcrest.MatcherAssert.assertThat;
 import static org.junit.Assert.*;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.*;
@@ -21,12 +22,12 @@ import ch.qos.logback.classic.Logger;
 import ch.qos.logback.classic.spi.ILoggingEvent;
 import ch.qos.logback.core.Appender;
 import java.time.LocalDate;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.HashMap;
-import java.util.List;
+import java.util.*;
+
 import junitparams.JUnitParamsRunner;
 import junitparams.Parameters;
+import org.hamcrest.CoreMatchers;
+import org.hamcrest.Matchers;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -99,8 +100,13 @@ public class SendNotificationServiceTest {
 
     private static Notification SMS_NOTIFICATION = Notification.builder()
         .destination(Destination.builder().sms("07831292000").build())
-        .template(Template.builder().smsTemplateId("someSmsTemplateId").build())
+        .template(Template.builder().smsTemplateId(Arrays.asList("someSmsTemplateId")).build())
         .build();
+
+    private static Notification WELSH_SMS_NOTIFICATION = Notification.builder()
+            .destination(Destination.builder().sms("07831292000").build())
+            .template(Template.builder().smsTemplateId(Arrays.asList("englishSmsTemplateId", "welshSmsTemplateId")).build())
+            .build();
 
     private static Subscription EMAIL_SUBSCRIPTION = Subscription.builder().email("test@some.com").subscribeEmail("Yes").build();
 
@@ -148,6 +154,10 @@ public class SendNotificationServiceTest {
     private Appender<ILoggingEvent> mockAppender;
     @Captor
     private ArgumentCaptor captorLoggingEvent;
+
+
+    @Captor
+    private ArgumentCaptor<String> smsTemplateIdCaptor;
 
     @Before
     public void setup() {
@@ -210,8 +220,93 @@ public class SendNotificationServiceTest {
         CcdNotificationWrapper wrapper = buildBaseWrapper(APPELLANT_WITH_ADDRESS, CASE_UPDATED, READY_TO_LIST.getId());
         classUnderTest.sendEmailSmsLetterNotification(wrapper, SMS_NOTIFICATION, appellantSmsSubscription, FALLBACK_LETTER_SUBSCRIPTION_TYPES.get(0));
 
-        verify(notificationHandler).sendNotification(any(), eq(SMS_NOTIFICATION.getSmsTemplate()), any(), any());
+        verify(notificationHandler).sendNotification(any(), eq(SMS_NOTIFICATION.getSmsTemplate().get(0)), any(), any());
         verifyExpectedErrorLogMessage(mockAppender, captorLoggingEvent, wrapper.getNewSscsCaseData().getCcdCaseId(), "Did not send a notification for event");
+    }
+
+    @Test
+    public void doNotSendFallbackLetterNotificationToAppellantWhenSubscribedForSms_Welsh() {
+        when(notificationValidService.isNotificationStillValidToSend(any(), any())).thenReturn(true);
+        when(notificationValidService.isHearingTypeValidToSendNotification(any(), any())).thenReturn(true);
+
+        SubscriptionWithType appellantSmsSubscription = new SubscriptionWithType(SMS_SUBSCRIPTION, APPELLANT);
+        CcdNotificationWrapper wrapper = buildBaseWrapper(APPELLANT_WITH_ADDRESS, CASE_UPDATED, READY_TO_LIST.getId());
+        classUnderTest.sendEmailSmsLetterNotification(wrapper, WELSH_SMS_NOTIFICATION, appellantSmsSubscription, FALLBACK_LETTER_SUBSCRIPTION_TYPES.get(0));
+
+        verify(notificationHandler, times(2)).sendNotification(any(), smsTemplateIdCaptor.capture(), any(), any());
+        List<String> smsTemplateIdCaptorAllValues = smsTemplateIdCaptor.getAllValues();
+        assertThat(smsTemplateIdCaptorAllValues, Matchers.contains(WELSH_SMS_NOTIFICATION.getTemplate().getSmsTemplateId().get(0), WELSH_SMS_NOTIFICATION.getTemplate().getSmsTemplateId().get(1)));
+        verifyExpectedErrorLogMessage(mockAppender, captorLoggingEvent, wrapper.getNewSscsCaseData().getCcdCaseId(), "Did not send a notification for event");
+    }
+
+    @Test
+    public void noSmstemplateSet() {
+        Notification notification = Notification.builder()
+                .destination(Destination.builder().sms("07831292000").build())
+                .template(Template.builder().smsTemplateId(Collections.EMPTY_LIST).build())
+                .build();
+        when(notificationValidService.isNotificationStillValidToSend(any(), any())).thenReturn(true);
+        when(notificationValidService.isHearingTypeValidToSendNotification(any(), any())).thenReturn(true);
+
+        SubscriptionWithType appellantSmsSubscription = new SubscriptionWithType(SMS_SUBSCRIPTION, APPELLANT);
+        CcdNotificationWrapper wrapper = buildBaseWrapper(APPELLANT_WITH_ADDRESS, CASE_UPDATED, READY_TO_LIST.getId());
+        boolean result =  classUnderTest.sendEmailSmsLetterNotification(wrapper, notification, appellantSmsSubscription, FALLBACK_LETTER_SUBSCRIPTION_TYPES.get(0));
+        assertThat(result, CoreMatchers.equalTo(false));
+        verify(notificationHandler, never()).sendNotification(any(), any(), any(), any());
+        verifyExpectedErrorLogMessage(mockAppender, captorLoggingEvent, wrapper.getNewSscsCaseData().getCcdCaseId(), "Did not send a notification for event");
+    }
+
+    @Test
+    public void nullSmstemplateSet() {
+        Notification notification = Notification.builder()
+                .destination(Destination.builder().sms("07831292000").build())
+                .template(Template.builder().build())
+                .build();
+        when(notificationValidService.isNotificationStillValidToSend(any(), any())).thenReturn(true);
+        when(notificationValidService.isHearingTypeValidToSendNotification(any(), any())).thenReturn(true);
+
+        SubscriptionWithType appellantSmsSubscription = new SubscriptionWithType(SMS_SUBSCRIPTION, APPELLANT);
+        CcdNotificationWrapper wrapper = buildBaseWrapper(APPELLANT_WITH_ADDRESS, CASE_UPDATED, READY_TO_LIST.getId());
+        boolean result =  classUnderTest.sendEmailSmsLetterNotification(wrapper, notification, appellantSmsSubscription, FALLBACK_LETTER_SUBSCRIPTION_TYPES.get(0));
+        assertThat(result, CoreMatchers.equalTo(false));
+        verify(notificationHandler, never()).sendNotification(any(), any(), any(), any());
+        verifyExpectedErrorLogMessage(mockAppender, captorLoggingEvent, wrapper.getNewSscsCaseData().getCcdCaseId(), "Did not send a notification for event");
+    }
+
+    @Test
+    public void firstSmsFailed() {
+        when(notificationValidService.isNotificationStillValidToSend(any(), any())).thenReturn(true);
+        when(notificationValidService.isHearingTypeValidToSendNotification(any(), any())).thenReturn(true);
+
+        when(notificationValidService.isNotificationStillValidToSend(any(), any())).thenReturn(true);
+        when(notificationValidService.isHearingTypeValidToSendNotification(any(), any())).thenReturn(true);
+
+        when(notificationHandler.sendNotification(any(), anyString(), any(), any())).thenReturn(false, true);
+        SubscriptionWithType appellantSmsSubscription = new SubscriptionWithType(SMS_SUBSCRIPTION, APPELLANT);
+        CcdNotificationWrapper wrapper = buildBaseWrapper(APPELLANT_WITH_ADDRESS, CASE_UPDATED, READY_TO_LIST.getId());
+        boolean result =  classUnderTest.sendEmailSmsLetterNotification(wrapper, WELSH_SMS_NOTIFICATION, appellantSmsSubscription, FALLBACK_LETTER_SUBSCRIPTION_TYPES.get(0));
+
+        assertThat(result, CoreMatchers.equalTo(false));
+
+        verify(notificationHandler, times(2)).sendNotification(any(), any(), any(), any());
+        verifyExpectedErrorLogMessage(mockAppender, captorLoggingEvent, wrapper.getNewSscsCaseData().getCcdCaseId(), "Did not send a notification for event");
+    }
+
+    @Test
+    public void bothSmsSuccessfull() {
+        when(notificationValidService.isNotificationStillValidToSend(any(), any())).thenReturn(true);
+        when(notificationValidService.isHearingTypeValidToSendNotification(any(), any())).thenReturn(true);
+
+        when(notificationValidService.isNotificationStillValidToSend(any(), any())).thenReturn(true);
+        when(notificationValidService.isHearingTypeValidToSendNotification(any(), any())).thenReturn(true);
+
+        when(notificationHandler.sendNotification(any(), any(), any(), any())).thenReturn(true);
+        SubscriptionWithType appellantSmsSubscription = new SubscriptionWithType(SMS_SUBSCRIPTION, APPELLANT);
+        CcdNotificationWrapper wrapper = buildBaseWrapper(APPELLANT_WITH_ADDRESS, CASE_UPDATED, READY_TO_LIST.getId());
+        boolean result =  classUnderTest.sendEmailSmsLetterNotification(wrapper, WELSH_SMS_NOTIFICATION, appellantSmsSubscription, FALLBACK_LETTER_SUBSCRIPTION_TYPES.get(0));
+
+        assertThat(result, CoreMatchers.equalTo(true));
+        verify(notificationHandler, times(2)).sendNotification(any(), any(), any(), any());
     }
 
     @Test
@@ -264,7 +359,7 @@ public class SendNotificationServiceTest {
         CcdNotificationWrapper wrapper = buildBaseWrapper(APPELLANT_WITH_ADDRESS, CASE_UPDATED, REP_WITH_ADDRESS);
         classUnderTest.sendEmailSmsLetterNotification(wrapper, SMS_NOTIFICATION, appellantSmsSubscription, FALLBACK_LETTER_SUBSCRIPTION_TYPES.get(0));
 
-        verify(notificationHandler).sendNotification(any(), eq(SMS_NOTIFICATION.getSmsTemplate()), any(), any());
+        verify(notificationHandler).sendNotification(any(), eq(SMS_NOTIFICATION.getSmsTemplate().get(0)), any(), any());
         verifyExpectedErrorLogMessage(mockAppender, captorLoggingEvent, wrapper.getNewSscsCaseData().getCcdCaseId(), "Did not send a notification for event");
     }
 
