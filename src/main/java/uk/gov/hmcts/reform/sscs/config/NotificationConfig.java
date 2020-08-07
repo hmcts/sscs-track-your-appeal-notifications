@@ -1,6 +1,6 @@
 package uk.gov.hmcts.reform.sscs.config;
 
-import java.util.Locale;
+import java.util.*;
 import javax.validation.constraints.NotNull;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -90,23 +90,35 @@ public class NotificationConfig {
     public Template getTemplate(String emailTemplateName, String smsTemplateName, String letterTemplateName,
                                 String docmosisTemplateName, Benefit benefit, AppealHearingType appealHearingType, String createdInGapsFrom, LanguagePreference languagePreference) {
 
-        String docmosisTemplateId = getTemplate(appealHearingType, docmosisTemplateName, "docmosisId", languagePreference);
+        String docmosisTemplateId = getTemplateId(appealHearingType, docmosisTemplateName, "docmosisId", languagePreference);
         if (StringUtils.isNotBlank(docmosisTemplateId)) {
             if (docmosisTemplateName.split("\\.")[0].equals("appealReceived") && !State.READY_TO_LIST.getId().equals(createdInGapsFrom)) {
                 docmosisTemplateId = null;
             }
         }
         return Template.builder()
-            .emailTemplateId(getTemplate(appealHearingType, emailTemplateName, "emailId", languagePreference))
-            .smsTemplateId(getTemplate(appealHearingType, smsTemplateName, "smsId",languagePreference))
+            .emailTemplateId(getTemplateId(appealHearingType, emailTemplateName, "emailId", languagePreference))
+            .smsTemplateId(getSmsTemplates(appealHearingType, smsTemplateName, "smsId",languagePreference))
             .smsSenderTemplateId(benefit == null ? "" : env.getProperty("smsSender." + benefit.toString().toLowerCase(Locale.ENGLISH)))
-            .letterTemplateId(getTemplate(appealHearingType, letterTemplateName, "letterId",languagePreference))
+            .letterTemplateId(getTemplateId(appealHearingType, letterTemplateName, "letterId",languagePreference))
             .docmosisTemplateId(docmosisTemplateId)
             .build();
     }
 
-    private String getTemplate(@NotNull AppealHearingType appealHearingType, String templateName,
-                               final String notificationType, LanguagePreference languagePreference) {
+    private List<String> getSmsTemplates(@NotNull AppealHearingType appealHearingType, String smsTemplateName,
+                                         final String notificationType, LanguagePreference languagePreference) {
+        return Optional.ofNullable(getTemplateId(appealHearingType, smsTemplateName, notificationType, languagePreference)).map(value -> {
+            List<String> ids = new ArrayList<>();
+            ids.add(value);
+            if (LanguagePreference.WELSH.equals(languagePreference)) {
+                ids.add(getTemplateId(appealHearingType, smsTemplateName, notificationType,LanguagePreference.ENGLISH));
+            }
+            return ids;
+        }).orElse(Collections.emptyList());
+    }
+
+    private String getTemplateId(@NotNull AppealHearingType appealHearingType, String templateName,
+                                 final String notificationType, LanguagePreference languagePreference) {
         String hearingTypeName = appealHearingType.name().toLowerCase(Locale.ENGLISH);
         String name = "notification." + languagePreference.getCode() + "." + hearingTypeName + "." + templateName + "."
             + notificationType;

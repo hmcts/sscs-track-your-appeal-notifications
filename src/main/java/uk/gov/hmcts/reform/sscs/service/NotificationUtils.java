@@ -7,10 +7,8 @@ import static uk.gov.hmcts.reform.sscs.config.SubscriptionType.REPRESENTATIVE;
 import static uk.gov.hmcts.reform.sscs.domain.notify.NotificationEventType.*;
 import static uk.gov.hmcts.reform.sscs.service.NotificationValidService.*;
 
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Comparator;
-import java.util.List;
+import java.util.*;
+
 import org.apache.commons.lang.StringUtils;
 import uk.gov.hmcts.reform.sscs.ccd.domain.Appeal;
 import uk.gov.hmcts.reform.sscs.ccd.domain.Appointee;
@@ -28,8 +26,8 @@ import uk.gov.hmcts.reform.sscs.factory.NotificationWrapper;
 public class NotificationUtils {
     private static final List<NotificationEventType> MANDATORY_LETTERS = Arrays.asList(APPEAL_WITHDRAWN_NOTIFICATION,
         ADMIN_APPEAL_WITHDRAWN, DWP_UPLOAD_RESPONSE_NOTIFICATION, STRUCK_OUT, HEARING_BOOKED_NOTIFICATION,
-        DIRECTION_ISSUED, DECISION_ISSUED, ISSUE_FINAL_DECISION, REQUEST_INFO_INCOMPLETE, APPEAL_RECEIVED_NOTIFICATION,
-        NON_COMPLIANT_NOTIFICATION, JUDGE_DECISION_APPEAL_TO_PROCEED, TCW_DECISION_APPEAL_TO_PROCEED,
+        DIRECTION_ISSUED, DECISION_ISSUED, ISSUE_FINAL_DECISION, ISSUE_ADJOURNMENT_NOTICE, REQUEST_INFO_INCOMPLETE,
+        APPEAL_RECEIVED_NOTIFICATION, NON_COMPLIANT_NOTIFICATION, JUDGE_DECISION_APPEAL_TO_PROCEED, TCW_DECISION_APPEAL_TO_PROCEED,
         APPEAL_LAPSED_NOTIFICATION, HMCTS_APPEAL_LAPSED_NOTIFICATION, DWP_APPEAL_LAPSED_NOTIFICATION);
 
     private NotificationUtils() {
@@ -137,7 +135,6 @@ public class NotificationUtils {
         return subscription != null
             && subscription.isSmsSubscribed()
             && notification.isSms()
-            && notification.getSmsTemplate() != null
             && subscription.doesCaseHaveSubscriptions()
             && notificationValidService.isNotificationStillValidToSend(wrapper.getNewSscsCaseData().getHearings(), notificationType)
             && notificationValidService.isHearingTypeValidToSendNotification(wrapper.getNewSscsCaseData(), notificationType);

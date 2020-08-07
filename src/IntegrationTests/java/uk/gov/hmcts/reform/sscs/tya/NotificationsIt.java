@@ -1313,6 +1313,20 @@ public class NotificationsIt {
                 "0",
                 "0"
             },
+            new Object[]{
+                ISSUE_ADJOURNMENT_NOTICE,
+                "paper",
+                Collections.emptyList(),
+                Collections.emptyList(),
+                Arrays.asList("TB-SCS-GNO-ENG-00067.docx", "TB-SCS-GNO-ENG-00089.docx"),
+                "no",
+                "no",
+                "no",
+                "no",
+                "0",
+                "0",
+                "0"
+            },
         };
     }
 
@@ -1497,6 +1511,62 @@ public class NotificationsIt {
             },
             new Object[]{
                 ISSUE_FINAL_DECISION,
+                "oral",
+                true,
+                true,
+                "2"
+            },
+            new Object[]{
+                ISSUE_ADJOURNMENT_NOTICE,
+                "paper",
+                false,
+                false,
+                "1"
+            },
+            new Object[]{
+                ISSUE_ADJOURNMENT_NOTICE,
+                "oral",
+                false,
+                false,
+                "1"
+            },
+            new Object[]{
+                ISSUE_ADJOURNMENT_NOTICE,
+                "oral",
+                false,
+                true,
+                "1"
+            },
+            new Object[]{
+                ISSUE_ADJOURNMENT_NOTICE,
+                "paper",
+                false,
+                true,
+                "1"
+            },
+            new Object[]{
+                ISSUE_ADJOURNMENT_NOTICE,
+                "paper",
+                true,
+                false,
+                "2"
+            },
+            new Object[]{
+                ISSUE_ADJOURNMENT_NOTICE,
+                "oral",
+                true,
+                false,
+                "2"
+            },
+            new Object[]{
+                ISSUE_ADJOURNMENT_NOTICE,
+                "paper",
+                true,
+                true,
+                "2"
+            },
+            new Object[]{
+                ISSUE_ADJOURNMENT_NOTICE,
                 "oral",
                 true,
                 true,
@@ -2152,6 +2222,20 @@ public class NotificationsIt {
                 "0",
                 "0"
             },
+                new Object[]{
+                ISSUE_ADJOURNMENT_NOTICE,
+                "paper",
+                Collections.emptyList(),
+                Collections.emptyList(),
+                Arrays.asList("TB-SCS-GNO-ENG-00067.docx", "TB-SCS-GNO-ENG-00089.docx"),
+                "no",
+                "no",
+                "no",
+                "no",
+                "0",
+                "0",
+                "0"
+            },
         };
     }
 
@@ -2394,6 +2478,19 @@ public class NotificationsIt {
             },
             new Object[]{
                 ISSUE_FINAL_DECISION,
+                "paper",
+                Collections.emptyList(),
+                Collections.emptyList(),
+                Collections.singletonList("TB-SCS-GNO-ENG-00067.docx"),
+                "yes",
+                "yes",
+                "0",
+                "0",
+                "0",
+                "Appointee Appointee"
+            },
+            new Object[]{
+                ISSUE_ADJOURNMENT_NOTICE,
                 "paper",
                 Collections.emptyList(),
                 Collections.emptyList(),
@@ -3318,7 +3415,7 @@ public class NotificationsIt {
     }
 
     @Test
-    @Parameters({"issueFinalDecision", "decisionIssued", "directionIssued"})
+    @Parameters({"adjournCase", "issueFinalDecision", "decisionIssued", "directionIssued"})
     public void givenAReissueEvent_shouldStillSendDirectionIssued(String furtherEvidenceType) throws Exception {
 
         String filename = "json/ccdResponse_reissueDocument.json";

@@ -52,6 +52,7 @@ public class FilterNotificationsEventsHandler implements CallbackHandler {
             DWP_UPLOAD_RESPONSE_NOTIFICATION,
             EVIDENCE_RECEIVED_NOTIFICATION,
             HEARING_BOOKED_NOTIFICATION,
+            ISSUE_ADJOURNMENT_NOTICE,
             ISSUE_FINAL_DECISION,
             NON_COMPLIANT_NOTIFICATION,
             POSTPONEMENT_NOTIFICATION,

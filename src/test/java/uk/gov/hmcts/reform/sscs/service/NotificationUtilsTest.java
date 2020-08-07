@@ -310,7 +310,7 @@ public class NotificationUtilsTest {
         Notification notification = Notification.builder()
             .reference(new Reference("someref"))
             .destination(Destination.builder().sms("07800123456").build())
-            .template(Template.builder().smsTemplateId("some.template").build())
+            .template(Template.builder().smsTemplateId(Arrays.asList("some.template")).build())
             .build();
 
         assertTrue(isOkToSendSmsNotification(wrapper, subscription, notification, VIEW_ISSUED, notificationValidService));
@@ -492,7 +492,7 @@ public class NotificationUtilsTest {
                 Notification.builder()
                     .reference(new Reference("someref"))
                     .destination(Destination.builder().sms("07800123456").build())
-                    .template(Template.builder().smsTemplateId("some.template").build())
+                    .template(Template.builder().smsTemplateId(Arrays.asList("some.template")).build())
                     .build()
             },
             new Object[] {
@@ -500,7 +500,7 @@ public class NotificationUtilsTest {
                 Notification.builder()
                     .reference(new Reference("someref"))
                     .destination(Destination.builder().build())
-                    .template(Template.builder().smsTemplateId("some.template").build())
+                    .template(Template.builder().smsTemplateId(Arrays.asList("some.template")).build())
                     .build()
             },
             new Object[] {
