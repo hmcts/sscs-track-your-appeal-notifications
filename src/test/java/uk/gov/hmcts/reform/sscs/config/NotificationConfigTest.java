@@ -44,7 +44,39 @@ public class NotificationConfigTest {
         Template template = new NotificationConfig(env).getTemplate(emailTemplateName, smsTemplateName, letterTemplateName, letterTemplateName, Benefit.PIP, ONLINE, createdInGapsFrom, LanguagePreference.ENGLISH);
 
         assertThat(template.getEmailTemplateId(), is(emailTemplateId));
-        assertThat(template.getSmsTemplateId(), is(smsTemplateId));
+        assertThat(template.getSmsTemplateId().size(), is(1));
+        assertThat(template.getSmsTemplateId().get(0), is(smsTemplateId));
+        assertThat(template.getLetterTemplateId(), is(letterTemplateId));
+        assertThat(template.getDocmosisTemplateId(), is(expectedDocmosisTemplateId));
+    }
+
+    @Test
+    @Parameters({
+            "emailTemplateName, notification.welsh.emailTemplateName.emailId, emailTemplateId, smsTemplateName, notification.welsh.smsTemplateName.smsId, smsTemplateId, letterTemplateName, notification.welsh.letterTemplateName.letterId, letterTemplateId, notification.welsh.letterTemplateName.docmosisId, docmosisTemplateId, docmosisTemplateId, validAppeal",
+            "emailTemplateName, notification.welsh.online.emailTemplateName.emailId, onlineEmailTemplateId, smsTemplateName, notification.welsh.online.smsTemplateName.smsId, onlineSmsTemplateId, appealReceived, notification.welsh.online.appealReceived.letterId, onlineLetterTemplateId, notification.welsh.online.appealReceived.docmosisId, docmosisTemplateId, docmosisTemplateId, readyToList",
+            "emailTemplateName, notification.welsh.online.emailTemplateName.emailId, onlineEmailTemplateId, smsTemplateName, notification.welsh.online.smsTemplateName.smsId, onlineSmsTemplateId, appealReceived, notification.welsh.online.appealReceived.letterId, onlineLetterTemplateId, notification.welsh.online.appealReceived.docmosisId, docmosisTemplateId, null, validAppeal"
+    })
+    public void getWelshTemplate(String emailTemplateName, String emailTemplateKey, String emailTemplateId,
+                                   String smsTemplateName, String smsTemplateKey, String smsTemplateId,
+                                   String letterTemplateName, String letterTemplateKey, String letterTemplateId,
+                                   String docmosisTemplateKey, String docmosisTemplateId, @Nullable String expectedDocmosisTemplateId, String createdInGapsFrom) {
+        String englishSmsTemplateId = "smsEnglishTemplateId";
+        when(env.getProperty(emailTemplateKey)).thenReturn(emailTemplateId);
+        when(env.containsProperty(emailTemplateKey)).thenReturn(true);
+        when(env.getProperty(smsTemplateKey)).thenReturn(smsTemplateId);
+        when(env.getProperty("notification.english.online.smsTemplateName.smsId")).thenReturn(englishSmsTemplateId);
+        when(env.containsProperty(smsTemplateKey)).thenReturn(true);
+        when(env.getProperty(letterTemplateKey)).thenReturn(letterTemplateId);
+        when(env.getProperty(docmosisTemplateKey)).thenReturn(docmosisTemplateId);
+        when(env.containsProperty(letterTemplateKey)).thenReturn(true);
+        when(env.getProperty("feature.docmosis_leters.letterTemplateName_on")).thenReturn("true");
+
+        Template template = new NotificationConfig(env).getTemplate(emailTemplateName, smsTemplateName, letterTemplateName, letterTemplateName, Benefit.PIP, ONLINE, createdInGapsFrom, LanguagePreference.WELSH);
+
+        assertThat(template.getEmailTemplateId(), is(emailTemplateId));
+        assertThat(template.getSmsTemplateId().size(), is(2));
+        assertThat(template.getSmsTemplateId().get(0), is(smsTemplateId));
+        assertThat(template.getSmsTemplateId().get(1), is(englishSmsTemplateId));
         assertThat(template.getLetterTemplateId(), is(letterTemplateId));
         assertThat(template.getDocmosisTemplateId(), is(expectedDocmosisTemplateId));
     }

@@ -2,6 +2,7 @@ package uk.gov.hmcts.reform.sscs.domain.notify;
 
 import static org.apache.commons.lang3.StringUtils.isNotBlank;
 
+import java.util.List;
 import java.util.Map;
 import lombok.Builder;
 import lombok.Value;
@@ -37,7 +38,7 @@ public class Notification {
         return template.getEmailTemplateId();
     }
 
-    public String getSmsTemplate() {
+    public List<String> getSmsTemplate() {
         return template.getSmsTemplateId();
     }
 
