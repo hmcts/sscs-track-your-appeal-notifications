@@ -3357,7 +3357,7 @@ public class NotificationsIt {
     }
 
     @Test
-    @Parameters({"appealLapsed", "corDecision", "appealDormant"})
+    @Parameters({"appealLapsed", "appealDormant"})
     public void shouldSendNotificationWhenAppealDormantAndNotificationType(String notificationEventType) throws Exception {
         json = json.replace("appealCreated", State.DORMANT_APPEAL_STATE.toString());
         json = json.replace("appealReceived", notificationEventType);
