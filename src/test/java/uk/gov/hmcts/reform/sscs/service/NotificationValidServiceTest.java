@@ -108,20 +108,6 @@ public class NotificationValidServiceTest {
     }
 
     @Test
-    public void givenCaseIsCohCaseAndNotificationTypeIsSentForCoh_thenReturnTrue() {
-        SscsCaseData caseData = SscsCaseData.builder().appeal(
-                Appeal.builder()
-                        .hearingType("cor")
-                        .hearingOptions(HearingOptions.builder().wantsToAttend("No").build())
-                        .build())
-                .build();
-
-        assertTrue(
-                notificationValidService.isHearingTypeValidToSendNotification(caseData, QUESTION_ROUND_ISSUED_NOTIFICATION)
-        );
-    }
-
-    @Test
     public void givenCaseIsACohCaseAndNotificationTypeIsNotSentForCoh_thenReturnFalse() {
         SscsCaseData caseData = SscsCaseData.builder().appeal(Appeal.builder().hearingOptions(HearingOptions.builder().wantsToAttend("No").build()).build()).build();
 

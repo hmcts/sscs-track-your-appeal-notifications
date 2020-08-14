@@ -164,11 +164,9 @@ public class TrackYourAppealNotificationsApplication {
                                   CcdService ccdService,
                                   IdamService idamService,
                                   SscsCaseCallbackDeserializer deserializer) {
-        // Had to wire these up like this Spring will not wire up CcdActionExecutor otherwise.
-        CohActionExecutor cohActionExecutor = new CohActionExecutor(notificationService, ccdService, idamService, deserializer);
+
         CcdActionExecutor ccdActionExecutor = new CcdActionExecutor(notificationService, ccdService, idamService, deserializer);
         return new JobMapper(asList(
-                new JobMapping<>(payload -> payload.contains("onlineHearingId"), cohActionDeserializer, cohActionExecutor),
                 new JobMapping<>(payload -> !payload.contains("onlineHearingId"), ccdActionDeserializer, ccdActionExecutor)
         ));
     }
