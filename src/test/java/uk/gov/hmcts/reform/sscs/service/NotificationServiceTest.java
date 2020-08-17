@@ -2109,6 +2109,20 @@ public class NotificationServiceTest {
     }
 
 
+    @Test
+    @Parameters({"DIRECTION_ISSUED, Yes", "DIRECTION_ISSUED, Yes", "DECISION_ISSUED, Yes", "DECISION_ISSUED, Yes"})
+    public void givenIssueDocumentEventReceivedAndWelsh_thenDoNotSendToNotifications(NotificationEventType notificationEventType, @Nullable String languagePrefWelsh) {
+        CcdNotificationWrapper ccdNotificationWrapper = buildBaseWrapper(notificationEventType,  APPELLANT_WITH_ADDRESS, Representative.builder().hasRepresentative("no").build(), SscsDocument.builder().value(SscsDocumentDetails.builder().build()).build());
+
+        ccdNotificationWrapper.getNewSscsCaseData().setState(State.WITH_DWP);
+        ccdNotificationWrapper.getNewSscsCaseData().setSubscriptions(null);
+        ccdNotificationWrapper.getNewSscsCaseData().setLanguagePreferenceWelsh(languagePrefWelsh);
+        notificationService.manageNotificationAndSubscription(ccdNotificationWrapper);
+
+        verifyNoInteractions(notificationHandler);
+    }
+
+
     @SuppressWarnings({"Indentation", "UnusedPrivateMethod"})
     private Object[] allEventTypesExceptRequestInfoIncomplete() {
         return Arrays.stream(NotificationEventType.values()).filter(eventType ->
