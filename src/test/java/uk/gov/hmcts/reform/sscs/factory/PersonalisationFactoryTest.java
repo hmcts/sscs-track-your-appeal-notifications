@@ -25,9 +25,6 @@ public class PersonalisationFactoryTest {
     private Personalisation personalisation;
 
     @Mock
-    private CohPersonalisation cohPersonalisation;
-
-    @Mock
     private WithRepresentativePersonalisation withRepresentativePersonalisation;
 
     @Mock
@@ -51,12 +48,6 @@ public class PersonalisationFactoryTest {
     public void createSubscriptionPersonalisationWhenSubscriptionUpdatedNotificationApplied() {
         Personalisation result = factory.apply(SUBSCRIPTION_UPDATED_NOTIFICATION);
         assertEquals(subscriptionPersonalisation, result);
-    }
-
-    @Test
-    public void createCohPersonalisationWhenQuestionRoundIssuedNotificationApplied() {
-        Personalisation result = factory.apply(QUESTION_ROUND_ISSUED_NOTIFICATION);
-        assertEquals(cohPersonalisation, result);
     }
 
     @Test

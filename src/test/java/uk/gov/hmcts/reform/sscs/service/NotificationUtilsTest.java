@@ -325,7 +325,7 @@ public class NotificationUtilsTest {
             .template(Template.builder().smsTemplateId(Arrays.asList("some.template")).build())
             .build();
 
-        assertTrue(isOkToSendSmsNotification(wrapper, subscription, notification, VIEW_ISSUED, notificationValidService));
+        assertTrue(isOkToSendSmsNotification(wrapper, subscription, notification, STRUCK_OUT, notificationValidService));
     }
 
     @Test
@@ -336,7 +336,7 @@ public class NotificationUtilsTest {
 
         CcdNotificationWrapper wrapper = buildBaseWrapper(null, null);
 
-        assertFalse(isOkToSendSmsNotification(wrapper, subscription, notification, VIEW_ISSUED, notificationValidService));
+        assertFalse(isOkToSendSmsNotification(wrapper, subscription, notification, STRUCK_OUT, notificationValidService));
     }
 
     @Test
@@ -405,12 +405,6 @@ public class NotificationUtilsTest {
             SUBSCRIPTION_OLD_NOTIFICATION,
             EVIDENCE_REMINDER_NOTIFICATION,
             HEARING_REMINDER_NOTIFICATION,
-            QUESTION_ROUND_ISSUED_NOTIFICATION,
-            QUESTION_DEADLINE_ELAPSED_NOTIFICATION,
-            QUESTION_DEADLINE_REMINDER_NOTIFICATION,
-            HEARING_REQUIRED_NOTIFICATION,
-            VIEW_ISSUED,
-            DECISION_ISSUED_2,
             CASE_UPDATED,
             DO_NOT_SEND
         };
