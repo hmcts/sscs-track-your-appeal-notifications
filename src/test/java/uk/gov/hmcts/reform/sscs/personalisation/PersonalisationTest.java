@@ -997,49 +997,6 @@ public class PersonalisationTest {
         assertFalse(values.containsKey(HEARING_CONTACT_DATE));
     }
 
-    @Test
-    public void shouldSetOnlineHearingLink() {
-        LocalDate hearingDate = LocalDate.now().plusDays(1);
-
-        Hearing hearing = createHearing(hearingDate);
-
-        List<Hearing> hearingList = new ArrayList<>();
-        hearingList.add(hearing);
-
-        SscsCaseData response = createResponseWithHearings(hearingList);
-
-        Map result = personalisation.create(SscsCaseDataWrapper.builder()
-                .newSscsCaseData(response)
-                .notificationEventType(QUESTION_ROUND_ISSUED_NOTIFICATION)
-                .build(), new SubscriptionWithType(subscriptions.getAppellantSubscription(), APPELLANT));
-
-        assertEquals("http://link.com/onlineHearing?email=test%40email.com", result.get(ONLINE_HEARING_LINK_LITERAL));
-        assertEquals("http://link.com/register?tya=GLSCRR", result.get(ONLINE_HEARING_REGISTER_LINK_LITERAL));
-        assertEquals("http://link.com/sign-in", result.get(ONLINE_HEARING_SIGN_IN_LINK_LITERAL));
-    }
-
-    @Test
-    public void shouldNotSetOnlineHearingLinkIfEmailAddressDoesNotExist() {
-        LocalDate hearingDate = LocalDate.now().plusDays(1);
-
-        Hearing hearing = createHearing(hearingDate);
-
-        List<Hearing> hearingList = new ArrayList<>();
-        hearingList.add(hearing);
-
-        SscsCaseData response = createResponseWithHearings(hearingList);
-        Subscription subscriptionsWithoutEmail = response.getSubscriptions().getAppellantSubscription().toBuilder()
-                .email(null).build();
-        Subscriptions subscriptions = response.getSubscriptions().toBuilder().appellantSubscription(subscriptionsWithoutEmail).build();
-        response.setSubscriptions(subscriptions);
-
-        Map result = personalisation.create(SscsCaseDataWrapper.builder()
-                .newSscsCaseData(response)
-                .notificationEventType(QUESTION_ROUND_ISSUED_NOTIFICATION)
-                .build(), new SubscriptionWithType(subscriptionsWithoutEmail, APPELLANT));
-
-        assertNull(result.get(ONLINE_HEARING_LINK_LITERAL));
-    }
 
     @Test
     public void shouldPopulateAppointeeSubscriptionPersonalisation() {

@@ -42,7 +42,6 @@ import uk.gov.hmcts.reform.sscs.domain.SscsCaseDataWrapper;
 import uk.gov.hmcts.reform.sscs.domain.SubscriptionWithType;
 import uk.gov.hmcts.reform.sscs.domain.notify.*;
 import uk.gov.hmcts.reform.sscs.factory.CcdNotificationWrapper;
-import uk.gov.hmcts.reform.sscs.factory.CohNotificationWrapper;
 import uk.gov.hmcts.reform.sscs.factory.NotificationFactory;
 import uk.gov.hmcts.reform.sscs.factory.NotificationWrapper;
 import uk.gov.hmcts.reform.sscs.idam.IdamService;
@@ -1643,8 +1642,8 @@ public class NotificationServiceTest {
 
     @Test
     public void doNotSendNotificationsOutOfHours() {
-        SscsCaseDataWrapper wrapper = SscsCaseDataWrapper.builder().newSscsCaseData(sscsCaseData).oldSscsCaseData(sscsCaseData).notificationEventType(QUESTION_ROUND_ISSUED_NOTIFICATION).build();
-        ccdNotificationWrapper = new CohNotificationWrapper("someHearingId", wrapper);
+        SscsCaseDataWrapper wrapper = SscsCaseDataWrapper.builder().newSscsCaseData(sscsCaseData).oldSscsCaseData(sscsCaseData).notificationEventType(HEARING_REMINDER_NOTIFICATION).build();
+        ccdNotificationWrapper = new CcdNotificationWrapper(wrapper);
         when(notificationValidService.isNotificationStillValidToSend(any(), any())).thenReturn(true);
         when(notificationValidService.isHearingTypeValidToSendNotification(any(), any())).thenReturn(true);
 
@@ -1668,7 +1667,7 @@ public class NotificationServiceTest {
                 .notificationEventType(eventType)
                 .createdDate(LocalDateTime.now())
                 .build();
-        ccdNotificationWrapper = new CohNotificationWrapper("someHearingId", wrapper);
+        ccdNotificationWrapper = new CcdNotificationWrapper(wrapper);
         when(notificationValidService.isNotificationStillValidToSend(any(), any())).thenReturn(true);
         when(notificationValidService.isHearingTypeValidToSendNotification(any(), any())).thenReturn(true);
 
