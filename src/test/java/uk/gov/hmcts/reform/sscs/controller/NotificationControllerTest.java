@@ -4,7 +4,6 @@ import static com.fasterxml.jackson.databind.DeserializationFeature.READ_ENUMS_U
 import static com.fasterxml.jackson.databind.DeserializationFeature.READ_UNKNOWN_ENUM_VALUES_USING_DEFAULT_VALUE;
 import static com.fasterxml.jackson.databind.SerializationFeature.WRITE_ENUMS_USING_TO_STRING;
 import static org.mockito.ArgumentMatchers.argThat;
-import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.Mockito.*;
 import static org.mockito.MockitoAnnotations.initMocks;
 
@@ -22,12 +21,8 @@ import org.mockito.Mock;
 import org.springframework.http.converter.json.Jackson2ObjectMapperBuilder;
 import org.springframework.test.context.ActiveProfiles;
 import uk.gov.hmcts.reform.sscs.ccd.deserialisation.SscsCaseCallbackDeserializer;
-import uk.gov.hmcts.reform.sscs.ccd.domain.SscsCaseData;
-import uk.gov.hmcts.reform.sscs.ccd.domain.SscsCaseDetails;
 import uk.gov.hmcts.reform.sscs.ccd.service.CcdService;
-import uk.gov.hmcts.reform.sscs.domain.CohEvent;
 import uk.gov.hmcts.reform.sscs.factory.CcdNotificationWrapper;
-import uk.gov.hmcts.reform.sscs.factory.CohNotificationWrapper;
 import uk.gov.hmcts.reform.sscs.idam.IdamService;
 import uk.gov.hmcts.reform.sscs.idam.IdamTokens;
 import uk.gov.hmcts.reform.sscs.service.AuthorisationService;
@@ -89,33 +84,6 @@ public class NotificationControllerTest {
     public void shouldCreateAndSendNotificationForSscsCaseData() {
         notificationController.sendNotification("", json);
         verify(notificationService).manageNotificationAndSubscription(new CcdNotificationWrapper(any()));
-    }
-
-    @Test
-    public void shouldCreateAndSendNotificationForCohResponse() {
-        long caseDetailsId = 123L;
-        String onlineHearingId = "onlineHearingId";
-
-        SscsCaseDetails caseDetails = SscsCaseDetails.builder().id(caseDetailsId).data(SscsCaseData.builder().region("My region").build()).build();
-
-        when(ccdService.getByCaseId(Long.valueOf(CASE_ID), idamTokens)).thenReturn(caseDetails);
-
-        CohEvent cohEvent = CohEvent.builder().caseId(CASE_ID).onlineHearingId(onlineHearingId).eventType(eventType).build();
-        notificationController.sendCohNotification("", cohEvent);
-
-        verify(notificationService).manageNotificationAndSubscription(argThat(argument ->
-                argument instanceof CohNotificationWrapper
-                        && ((CohNotificationWrapper) argument).getOnlineHearingId().equals(onlineHearingId)
-                        && argument.getSscsCaseDataWrapper().getNewSscsCaseData().equals(caseDetails.getData())));
-    }
-
-    @Test
-    public void handlesNotFindingCcdDetails() {
-        when(ccdService.getByCaseId(eq(Long.valueOf(CASE_ID)), eq(idamTokens))).thenReturn(null);
-
-        notificationController.sendCohNotification("", CohEvent.builder().caseId(CASE_ID).eventType(eventType).build());
-
-        verifyNoInteractions(notificationService);
     }
 
     private JsonNode hasFields(String eventType, long caseDetailsId) {
