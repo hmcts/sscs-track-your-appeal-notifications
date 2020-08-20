@@ -248,7 +248,7 @@ dependencies {
     compile group: 'commons-io', name: 'commons-io', version: '2.7'
 
     compile group: 'com.mchange', name: 'c3p0', version: '0.9.5.5'
-    compile group: 'org.flywaydb', name: 'flyway-core', version: '6.5.4'
+    compile group: 'org.flywaydb', name: 'flyway-core', version: '6.5.5'
     compile group: 'org.postgresql', name: 'postgresql', version: '42.2.14'
     compile group: 'net.bytebuddy', name: 'byte-buddy', version: '1.10.14'
 
@@ -267,7 +267,7 @@ dependencies {
     compile group: 'io.springfox', name: 'springfox-swagger-ui', version: versions.springfoxSwagger
     compile group: 'com.atlassian.commonmark', name: 'commonmark', version: '0.15.2'
     compile group: 'org.springframework', name: 'spring-jms'
-    compile group: 'org.apache.qpid', name: 'qpid-jms-client', version: '0.53.0'
+    compile group: 'org.apache.qpid', name: 'qpid-jms-client', version: '0.54.0'
     compile group: 'org.jadira.usertype', name: 'usertype.core', version: '7.0.0.CR1'
 
     compile group: 'uk.gov.hmcts.reform', name: 'properties-volume-spring-boot-starter', version:'0.1.0'
@@ -278,7 +278,7 @@ dependencies {
         exclude group: "uk.gov.hmcts.reform", module:"http-proxy-spring-boot-autoconfigure"
     }
     compile group: 'uk.gov.hmcts.reform', name: 'service-auth-provider-client', version: '3.1.2'
-    compile group: 'uk.gov.hmcts.reform', name: 'sscs-common', version: '3.3.45'
+    compile group: 'uk.gov.hmcts.reform', name: 'sscs-common', version: '3.4.6'
     compile group: 'uk.gov.hmcts.reform', name: 'sscs-pdf-email-common', version: '1.4.8'
 
     compile group: 'uk.gov.service.notify', name: 'notifications-java-client', version: '3.17.0-RELEASE'
@@ -303,7 +303,7 @@ dependencies {
     testCompile(group: 'org.springframework.boot', name: 'spring-boot-starter-test', version: '2.3.3.RELEASE') {
         exclude group: "com.vaadin.external.google", module:"android-json"
     }
-    testCompile group: 'org.mockito', name: 'mockito-core', version: '3.5.0'
+    testCompile group: 'org.mockito', name: 'mockito-core', version: '3.5.2'
     testCompile 'pl.pragmatists:JUnitParams:1.1.1'
 
     runtime "org.springframework.boot:spring-boot-properties-migrator"
