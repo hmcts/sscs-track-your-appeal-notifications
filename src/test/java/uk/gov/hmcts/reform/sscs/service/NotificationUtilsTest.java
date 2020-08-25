@@ -6,7 +6,7 @@ import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertTrue;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.when;
-import static org.mockito.MockitoAnnotations.initMocks;
+import static org.mockito.MockitoAnnotations.openMocks;
 import static uk.gov.hmcts.reform.sscs.SscsCaseDataUtils.CASE_ID;
 import static uk.gov.hmcts.reform.sscs.SscsCaseDataUtils.addHearing;
 import static uk.gov.hmcts.reform.sscs.SscsCaseDataUtils.addHearingOptions;
@@ -19,6 +19,7 @@ import static uk.gov.hmcts.reform.sscs.service.SendNotificationServiceTest.APPEL
 import java.util.Arrays;
 import junitparams.JUnitParamsRunner;
 import junitparams.Parameters;
+import junitparams.converters.Nullable;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -39,7 +40,7 @@ public class NotificationUtilsTest {
 
     @Before
     public void setup() {
-        initMocks(this);
+        openMocks(this);
     }
 
     @Test
@@ -86,17 +87,28 @@ public class NotificationUtilsTest {
 
     @Test
     public void falseWhenNoFirstName() {
-        assertFalse(hasAppointee(Appointee.builder().name(Name.builder().lastName("Last").build()).build()));
+        assertFalse(hasAppointee(Appointee.builder().name(Name.builder().lastName("Last").build()).build(), "Yes"));
     }
 
     @Test
     public void falseWhenNoLastName() {
-        assertFalse(hasAppointee(Appointee.builder().name(Name.builder().firstName("First").build()).build()));
+        assertFalse(hasAppointee(Appointee.builder().name(Name.builder().firstName("First").build()).build(), "Yes"));
     }
 
     @Test
     public void trueWhenHasFirstAndLastName() {
-        assertTrue(hasAppointee(Appointee.builder().name(Name.builder().firstName("First").lastName("Last").build()).build()));
+        assertTrue(hasAppointee(Appointee.builder().name(Name.builder().firstName("First").lastName("Last").build()).build(), "Yes"));
+    }
+
+    @Test
+    public void falseWhenIsAppointeeIsNo() {
+        assertFalse(hasAppointee(Appointee.builder().name(Name.builder().firstName("First").lastName("Last").build()).build(), "No"));
+    }
+
+    @Test
+    @Parameters({"Yes", "", "null"})
+    public void trueWhenIsAppointeeIs(@Nullable String value) {
+        assertTrue(hasAppointee(Appointee.builder().name(Name.builder().firstName("First").lastName("Last").build()).build(), value));
     }
 
     @Test
