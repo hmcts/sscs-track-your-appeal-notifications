@@ -1,5 +1,7 @@
 package uk.gov.hmcts.reform.sscs.service;
 
+import static java.util.Objects.nonNull;
+import static org.apache.commons.lang.StringUtils.equalsIgnoreCase;
 import static uk.gov.hmcts.reform.sscs.config.AppealHearingType.ORAL;
 import static uk.gov.hmcts.reform.sscs.config.SubscriptionType.APPELLANT;
 import static uk.gov.hmcts.reform.sscs.config.SubscriptionType.APPOINTEE;
@@ -38,11 +40,12 @@ public class NotificationUtils {
     public static boolean hasAppointee(SscsCaseDataWrapper wrapper) {
         return wrapper.getNewSscsCaseData().getAppeal() != null
             && wrapper.getNewSscsCaseData().getAppeal().getAppellant() != null
-            && hasAppointee(wrapper.getNewSscsCaseData().getAppeal().getAppellant().getAppointee());
+            && hasAppointee(wrapper.getNewSscsCaseData().getAppeal().getAppellant().getAppointee(),
+                wrapper.getNewSscsCaseData().getAppeal().getAppellant().getIsAppointee());
     }
 
-    public static boolean hasAppointee(Appointee appointee) {
-        return appointee != null && appointee.getName() != null && appointee.getName().getFirstName() != null
+    public static boolean hasAppointee(Appointee appointee, String isAppointee) {
+        return !equalsIgnoreCase(isAppointee, "No") && appointee != null && appointee.getName() != null && appointee.getName().getFirstName() != null
             && appointee.getName().getLastName() != null;
     }
 
@@ -60,9 +63,10 @@ public class NotificationUtils {
 
     public static boolean hasAppointeeSubscriptionOrIsMandatoryAppointeeLetter(SscsCaseDataWrapper wrapper) {
         Subscription subscription = getSubscription(wrapper.getNewSscsCaseData(), APPOINTEE);
-        return ((null != subscription && subscription.doesCaseHaveSubscriptions())
-            || (hasAppointee(wrapper.getNewSscsCaseData().getAppeal().getAppellant().getAppointee())
-            && LETTER_EVENT_TYPES.contains(wrapper.getNotificationEventType())));
+        return hasAppointee(wrapper.getNewSscsCaseData().getAppeal().getAppellant().getAppointee(),
+                wrapper.getNewSscsCaseData().getAppeal().getAppellant().getIsAppointee())
+                && ((nonNull(subscription) && subscription.doesCaseHaveSubscriptions())
+                || LETTER_EVENT_TYPES.contains(wrapper.getNotificationEventType()));
     }
 
     public static boolean hasRepSubscriptionOrIsMandatoryRepLetter(SscsCaseDataWrapper wrapper) {
