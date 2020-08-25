@@ -18,11 +18,13 @@ import uk.gov.hmcts.reform.sscs.ccd.domain.State;
 import uk.gov.hmcts.reform.sscs.ccd.service.CcdService;
 import uk.gov.hmcts.reform.sscs.domain.SscsCaseDataWrapper;
 import uk.gov.hmcts.reform.sscs.domain.notify.NotificationEventType;
+import uk.gov.hmcts.reform.sscs.exception.NotificationServiceException;
 import uk.gov.hmcts.reform.sscs.factory.NotificationWrapper;
 import uk.gov.hmcts.reform.sscs.idam.IdamService;
 import uk.gov.hmcts.reform.sscs.idam.IdamTokens;
 import uk.gov.hmcts.reform.sscs.jobscheduler.services.JobExecutor;
 import uk.gov.hmcts.reform.sscs.service.NotificationService;
+import uk.gov.hmcts.reform.sscs.service.RetryNotificationService;
 
 public abstract class BaseActionExecutor<T> implements JobExecutor<T> {
     protected static final Logger LOG = getLogger(BaseActionExecutor.class);
@@ -30,10 +32,11 @@ public abstract class BaseActionExecutor<T> implements JobExecutor<T> {
     protected final CcdService ccdService;
     protected final IdamService idamService;
     private final SscsCaseCallbackDeserializer deserializer;
+    private final RetryNotificationService retryNotificationService;
 
-
-    BaseActionExecutor(NotificationService notificationService, CcdService ccdService, IdamService idamService, SscsCaseCallbackDeserializer deserializer) {
+    BaseActionExecutor(NotificationService notificationService, RetryNotificationService retryNotificationService, CcdService ccdService, IdamService idamService, SscsCaseCallbackDeserializer deserializer) {
         this.notificationService = notificationService;
+        this.retryNotificationService = retryNotificationService;
         this.ccdService = ccdService;
         this.idamService = idamService;
         this.deserializer = deserializer;
@@ -43,6 +46,7 @@ public abstract class BaseActionExecutor<T> implements JobExecutor<T> {
     public void execute(String jobId, String jobGroup, String eventId, T payload) {
 
         long caseId = getCaseId(payload);
+        int retry = getRetry(payload);
         try {
             LOG.info("Scheduled event: {} triggered for case id: {}", eventId, caseId);
 
@@ -64,9 +68,16 @@ public abstract class BaseActionExecutor<T> implements JobExecutor<T> {
                         caseDetails.getCreatedDate(),
                         callback.getCaseDetails().getState());
 
-                notificationService.manageNotificationAndSubscription(getWrapper(wrapper, payload));
-                if (wrapper.getNotificationEventType().isReminder()) {
-                    updateCase(caseId, wrapper, idamTokens);
+                NotificationWrapper notificationWrapper = getWrapper(wrapper, payload);
+
+                try {
+                    notificationService.manageNotificationAndSubscription(notificationWrapper);
+                    if (wrapper.getNotificationEventType().isReminder()) {
+                        updateCase(caseId, wrapper, idamTokens);
+                    }
+                } catch (NotificationServiceException e) {
+                    retryNotificationService.rescheduleIfHandledGovNotifyErrorStatus(retry + 1, notificationWrapper, e);
+                    throw e;
                 }
             } else {
                 LOG.warn("Case id: {} could not be found for event: {}", caseId, eventId);
@@ -105,4 +116,7 @@ public abstract class BaseActionExecutor<T> implements JobExecutor<T> {
     protected abstract NotificationWrapper getWrapper(SscsCaseDataWrapper wrapper, T payload);
 
     protected abstract long getCaseId(T payload);
+
+    protected abstract int getRetry(T payload);
+
 }
