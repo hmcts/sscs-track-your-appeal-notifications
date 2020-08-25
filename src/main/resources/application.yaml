@@ -787,6 +787,13 @@ letterAsync:
   delay: ${LETTER_ASYNC_DELAY:3000}
   multiplier: ${LETTER_ASYNC_MULTIPLIER:10}
 
+retry:
+  max: 3
+  delayInSeconds:
+    1: ${RETRY_DELAY_1:60}
+    2: ${RETRY_DELAY_2:120}
+    3: ${RETRY_DELAY_3:1800}
+
 pdf-service:
   uri: ${PDF_SERVICE_BASE_URL:https://docmosis-development.platform.hmcts.net/rs/render}
   accessKey: ${PDF_SERVICE_ACCESS_KEY:}

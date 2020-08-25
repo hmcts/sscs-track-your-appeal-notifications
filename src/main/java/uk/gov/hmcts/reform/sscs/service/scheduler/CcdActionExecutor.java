@@ -1,6 +1,10 @@
 package uk.gov.hmcts.reform.sscs.service.scheduler;
 
-import org.springframework.beans.factory.annotation.Autowired;
+import static java.lang.Integer.parseInt;
+import static java.lang.Long.parseLong;
+import static org.apache.commons.lang3.RegExUtils.replaceAll;
+import static org.apache.commons.lang3.StringUtils.EMPTY;
+
 import uk.gov.hmcts.reform.sscs.ccd.deserialisation.SscsCaseCallbackDeserializer;
 import uk.gov.hmcts.reform.sscs.ccd.domain.SscsCaseData;
 import uk.gov.hmcts.reform.sscs.ccd.service.CcdService;
@@ -10,15 +14,16 @@ import uk.gov.hmcts.reform.sscs.factory.NotificationWrapper;
 import uk.gov.hmcts.reform.sscs.idam.IdamService;
 import uk.gov.hmcts.reform.sscs.idam.IdamTokens;
 import uk.gov.hmcts.reform.sscs.service.NotificationService;
+import uk.gov.hmcts.reform.sscs.service.RetryNotificationService;
 
 public class CcdActionExecutor extends BaseActionExecutor<String> {
 
-    @Autowired
     public CcdActionExecutor(NotificationService notificationService,
+                             RetryNotificationService retryNotificationService,
                              CcdService ccdService,
                              IdamService idamService,
                              SscsCaseCallbackDeserializer deserializer) {
-        super(notificationService, ccdService, idamService, deserializer);
+        super(notificationService, retryNotificationService, ccdService, idamService, deserializer);
     }
 
     @Override
@@ -34,6 +39,12 @@ public class CcdActionExecutor extends BaseActionExecutor<String> {
 
     @Override
     protected long getCaseId(String payload) {
-        return Long.valueOf(payload);
+        return parseLong(replaceAll(payload,",.*", EMPTY));
+    }
+
+    @Override
+    protected int getRetry(String payload) {
+        String[] strings = payload.split(",");
+        return strings.length > 1 ? parseInt(strings[1]) : 0;
     }
 }

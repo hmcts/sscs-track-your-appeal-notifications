@@ -48,6 +48,20 @@ public class NotificationHandler {
         scheduleNotification(wrapper, outOfHoursCalculator.getStartOfNextInHoursPeriod());
     }
 
+    public void scheduleNotification(NotificationWrapper wrapper, int retry, ZonedDateTime dateTime) {
+        final String caseId = wrapper.getCaseId();
+        String eventId = wrapper.getNotificationType().getId();
+        String jobGroup = jobGroupGenerator.generate(caseId, eventId);
+        log.info("Scheduled retry {} - {} for case id: {} @ {}", retry, eventId, caseId, dateTime);
+
+        jobScheduler.schedule(new Job<>(
+                jobGroup,
+                eventId,
+                wrapper.getSchedulerPayload() + "," + retry,
+                dateTime
+        ));
+    }
+
     public void scheduleNotification(NotificationWrapper wrapper, ZonedDateTime dateTime) {
         final String caseId = wrapper.getCaseId();
         String eventId = wrapper.getNotificationType().getId();
@@ -70,6 +84,9 @@ public class NotificationHandler {
         } else {
             NotificationServiceException exception = new NotificationServiceException(caseId, ex);
             log.error("Error on GovUKNotify for case id: {}, template: {}", caseId, templateId, exception);
+            if (ex instanceof NotificationClientException) {
+                throw exception;
+            }
         }
     }
 
