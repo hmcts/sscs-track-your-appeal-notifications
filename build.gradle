@@ -278,7 +278,7 @@ dependencies {
         exclude group: "uk.gov.hmcts.reform", module:"http-proxy-spring-boot-autoconfigure"
     }
     compile group: 'uk.gov.hmcts.reform', name: 'service-auth-provider-client', version: '3.1.2'
-    compile group: 'uk.gov.hmcts.reform', name: 'sscs-common', version: '3.4.52-RC-WLA-595-v1'
+    compile group: 'uk.gov.hmcts.reform', name: 'sscs-common', version: '3.4.53-RC-WLA-595'
     compile group: 'uk.gov.hmcts.reform', name: 'sscs-pdf-email-common', version: '1.4.9-RC-2-WLA-595'
 
     compile group: 'uk.gov.service.notify', name: 'notifications-java-client', version: '3.17.0-RELEASE'
