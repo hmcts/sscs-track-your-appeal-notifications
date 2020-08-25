@@ -149,7 +149,7 @@ public class SyaAppealCreatedAndReceivedPersonalisation extends WithRepresentati
 
     private Map<String, String> setAppointeeName(Map<String, String> personalisation, SscsCaseData sscsCaseData) {
         Appointee appointee = sscsCaseData.getAppeal().getAppellant().getAppointee();
-        if (hasAppointee(appointee)) {
+        if (hasAppointee(appointee, sscsCaseData.getAppeal().getAppellant().getIsAppointee())) {
             personalisation.put(AppConstants.APPOINTEE_NAME, String.format("%s %s",
                 appointee.getName().getFirstName(),
                 appointee.getName().getLastName()));
@@ -159,15 +159,16 @@ public class SyaAppealCreatedAndReceivedPersonalisation extends WithRepresentati
 
 
     public Map<String, String> setAppointeeDetails(Map<String, String> personalisation, SscsCaseData ccdResponse) {
-        personalisation.put(AppConstants.APPOINTEE_DETAILS_LITERAL, buildAppointeeDetails(ccdResponse.getAppeal().getAppellant().getAppointee(), personalisationConfiguration.getPersonalisation().get(LanguagePreference.ENGLISH), UnaryOperator.identity()));
+        String isAppointee = ccdResponse.getAppeal().getAppellant().getIsAppointee();
+        personalisation.put(AppConstants.APPOINTEE_DETAILS_LITERAL, buildAppointeeDetails(ccdResponse.getAppeal().getAppellant().getAppointee(), isAppointee, personalisationConfiguration.getPersonalisation().get(LanguagePreference.ENGLISH), UnaryOperator.identity()));
         if (ccdResponse.isLanguagePreferenceWelsh()) {
-            personalisation.put(AppConstants.WELSH_APPOINTEE_DETAILS_LITERAL, buildAppointeeDetails(ccdResponse.getAppeal().getAppellant().getAppointee(), personalisationConfiguration.getPersonalisation().get(LanguagePreference.WELSH), this::convertLocalDateToWelshDateString));
+            personalisation.put(AppConstants.WELSH_APPOINTEE_DETAILS_LITERAL, buildAppointeeDetails(ccdResponse.getAppeal().getAppellant().getAppointee(), isAppointee, personalisationConfiguration.getPersonalisation().get(LanguagePreference.WELSH), this::convertLocalDateToWelshDateString));
         }
         return personalisation;
     }
 
-    private String buildAppointeeDetails(Appointee appointee, Map<String, String> titleText, UnaryOperator<String> convertDate) {
-        String hasAppointee = hasAppointee(appointee) ? YES : NO;
+    private String buildAppointeeDetails(Appointee appointee, String isAppointee, Map<String, String> titleText, UnaryOperator<String> convertDate) {
+        String hasAppointee = hasAppointee(appointee, isAppointee) ? YES : NO;
 
         StringBuilder appointeeBuilder = new StringBuilder()
             .append(titleText.get(HAVE_AN_APPOINTEE.name()))
