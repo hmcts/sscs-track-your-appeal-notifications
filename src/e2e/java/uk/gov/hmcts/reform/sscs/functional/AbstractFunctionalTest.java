@@ -8,6 +8,7 @@ import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNotNull;
 import static org.slf4j.LoggerFactory.getLogger;
 import static uk.gov.hmcts.reform.sscs.SscsCaseDataUtils.buildSscsCaseData;
+import static uk.gov.hmcts.reform.sscs.SscsCaseDataUtils.buildSscsCaseDataWelsh;
 import static uk.gov.hmcts.reform.sscs.SscsCaseDataUtils.subscribeRep;
 import static uk.gov.hmcts.reform.sscs.ccd.domain.EventType.SYA_APPEAL_CREATED;
 
@@ -91,7 +92,7 @@ public abstract class AbstractFunctionalTest {
     private RegionalProcessingCenterService regionalProcessingCenterService;
 
     @Autowired
-    private IdamService idamService;
+    protected IdamService idamService;
 
     protected IdamTokens idamTokens;
 
@@ -107,7 +108,6 @@ public abstract class AbstractFunctionalTest {
     @Before
     public void setup() {
         idamTokens = idamService.getIdamTokens();
-
         createCase();
     }
 
@@ -115,11 +115,16 @@ public abstract class AbstractFunctionalTest {
         this.maxSecondsToWaitForNotification = maxSecondsToWaitForNotification;
     }
 
-    private void createCase() {
+    protected void createCase() {
+        this.createCase(false);
+
+    }
+
+    protected void createCase(boolean isWelsh) {
 
         caseReference = generateRandomCaseReference();
 
-        caseData = createCaseData();
+        caseData = isWelsh ? createWelshCaseData() : createCaseData();
 
         SscsCaseDetails caseDetails = ccdService.createCase(caseData, "appealCreated", "Appeal created summary", "Appeal created description", idamTokens);
 
@@ -130,6 +135,10 @@ public abstract class AbstractFunctionalTest {
 
     protected SscsCaseData createCaseData() {
         return buildSscsCaseData(caseReference, "Yes", "Yes", SYA_APPEAL_CREATED, "oral");
+    }
+
+    protected SscsCaseData createWelshCaseData() {
+        return buildSscsCaseDataWelsh(caseReference, "Yes", "Yes", SYA_APPEAL_CREATED, "oral");
     }
 
     private String generateRandomCaseReference() {
@@ -246,6 +255,11 @@ public abstract class AbstractFunctionalTest {
 
         }
         return allNotifications;
+    }
+
+    protected void simulateWelshCcdCallback(NotificationEventType eventType) throws IOException {
+        String resource = eventType.getId() + "CallbackWelsh.json";
+        simulateCcdCallback(eventType, resource);
     }
 
     protected void simulateCcdCallback(NotificationEventType eventType) throws IOException {

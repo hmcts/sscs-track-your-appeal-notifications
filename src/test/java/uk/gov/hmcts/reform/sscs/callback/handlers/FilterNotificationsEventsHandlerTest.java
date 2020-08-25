@@ -34,7 +34,7 @@ public class FilterNotificationsEventsHandlerTest {
     }
 
     @Test
-    @Parameters({"DWP_UPLOAD_RESPONSE_NOTIFICATION", "DIRECTION_ISSUED", "VALID_APPEAL_CREATED", "NON_COMPLIANT_NOTIFICATION", "REISSUE_DOCUMENT", "STRUCK_OUT", "ISSUE_ADJOURNMENT_NOTICE"})
+    @Parameters({"DWP_UPLOAD_RESPONSE_NOTIFICATION", "DIRECTION_ISSUED", "DIRECTION_ISSUED_WELSH", "VALID_APPEAL_CREATED", "NON_COMPLIANT_NOTIFICATION", "REISSUE_DOCUMENT", "STRUCK_OUT", "ISSUE_ADJOURNMENT_NOTICE"})
     public void willHandleEvents(NotificationEventType notificationEventType) {
         SscsCaseDataWrapper callback = SscsCaseDataWrapper.builder().notificationEventType(notificationEventType).build();
         handler.handle(callback);
@@ -42,7 +42,7 @@ public class FilterNotificationsEventsHandlerTest {
     }
 
     @Test
-    @Parameters({"ADJOURNED_NOTIFICATION", "DECISION_ISSUED", "ISSUE_FINAL_DECISION"})
+    @Parameters({"ADJOURNED_NOTIFICATION", "DECISION_ISSUED",  "DECISION_ISSUED_WELSH", "ISSUE_FINAL_DECISION"})
     public void willNotHandleEvents(NotificationEventType notificationEventType) {
         SscsCaseDataWrapper callback = SscsCaseDataWrapper.builder().notificationEventType(notificationEventType).build();
         assertFalse(handler.canHandle(callback));

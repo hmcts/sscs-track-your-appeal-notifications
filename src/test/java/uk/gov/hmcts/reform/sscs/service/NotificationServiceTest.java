@@ -2109,8 +2109,8 @@ public class NotificationServiceTest {
 
 
     @Test
-    @Parameters({"DIRECTION_ISSUED, Yes", "DIRECTION_ISSUED, Yes", "DECISION_ISSUED, Yes", "DECISION_ISSUED, Yes"})
-    public void givenIssueDocumentEventReceivedAndWelsh_thenDoNotSendToNotifications(NotificationEventType notificationEventType, @Nullable String languagePrefWelsh) {
+    @Parameters({"DIRECTION_ISSUED, Yes", "DECISION_ISSUED, Yes"})
+    public void givenIssueDocumentEventReceivedAndWelshLanguagePref_thenDoNotSendToNotifications(NotificationEventType notificationEventType, @Nullable String languagePrefWelsh) {
         CcdNotificationWrapper ccdNotificationWrapper = buildBaseWrapper(notificationEventType,  APPELLANT_WITH_ADDRESS, Representative.builder().hasRepresentative("no").build(), SscsDocument.builder().value(SscsDocumentDetails.builder().build()).build());
 
         ccdNotificationWrapper.getNewSscsCaseData().setState(State.WITH_DWP);
@@ -2120,6 +2120,34 @@ public class NotificationServiceTest {
 
         verifyNoInteractions(notificationHandler);
     }
+
+    @Test
+    @Parameters({"DIRECTION_ISSUED_WELSH, Yes", "DECISION_ISSUED_WELSH, Yes"})
+    public void givenIssueDocumentEventReceivedAndEventWelsh_thenDoSendNotifications(NotificationEventType notificationEventType, @Nullable String languagePrefWelsh) {
+        CcdNotificationWrapper ccdNotificationWrapper = buildBaseWrapper(notificationEventType,  APPELLANT_WITH_ADDRESS, Representative.builder().hasRepresentative("no").build(), SscsDocument.builder().value(SscsDocumentDetails.builder().build()).build());
+        ccdNotificationWrapper.getNewSscsCaseData().setState(State.WITH_DWP);
+        ccdNotificationWrapper.getNewSscsCaseData().setSubscriptions(Subscriptions.builder().appellantSubscription(Subscription.builder()
+                .tya(APPEAL_NUMBER)
+                .email(EMAIL)
+                .subscribeEmail(YES)
+                .mobile(MOBILE_NUMBER_1)
+                .subscribeSms(YES).wantSmsNotifications(YES)
+                .build()).build());
+        ccdNotificationWrapper.getNewSscsCaseData().setLanguagePreferenceWelsh(languagePrefWelsh);
+
+        String emailTemplateId = "abc";
+        Notification notification = new Notification(Template.builder().emailTemplateId(emailTemplateId).smsTemplateId(null).build(), Destination.builder().email("test@testing.com").sms(null).build(), null, new Reference(), null);
+        when(notificationValidService.isNotificationStillValidToSend(any(), any())).thenReturn(true);
+        when(notificationValidService.isHearingTypeValidToSendNotification(any(), any())).thenReturn(true);
+
+        when(factory.create(ccdNotificationWrapper, getSubscriptionWithType(ccdNotificationWrapper))).thenReturn(notification);
+        notificationService.manageNotificationAndSubscription(ccdNotificationWrapper);
+
+        then(notificationHandler).should(atLeastOnce()).sendNotification(
+                eq(ccdNotificationWrapper), eq(emailTemplateId), eq("Email"),
+                any(NotificationHandler.SendNotification.class));
+    }
+
 
 
     @SuppressWarnings({"Indentation", "UnusedPrivateMethod"})
