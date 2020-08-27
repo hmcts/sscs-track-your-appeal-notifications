@@ -2026,7 +2026,7 @@ public class NotificationServiceTest {
     }
 
     @Test
-    @Parameters({"DIRECTION_ISSUED", "DECISION_ISSUED", "ISSUE_FINAL_DECISION"})
+    @Parameters({"DIRECTION_ISSUED", "DECISION_ISSUED", "ISSUE_FINAL_DECISION", "DIRECTION_ISSUED_WELSH", "DECISION_ISSUED_WELSH"})
     public void givenReissueDocumentEventReceivedAndResendToAppellantYes_thenOverrideNotificationTypeAndSendToAppellant(NotificationEventType notificationEventType) throws IOException {
         CcdNotificationWrapper ccdNotificationWrapper = buildBaseWrapper(REISSUE_DOCUMENT,  APPELLANT_WITH_ADDRESS, null, SscsDocument.builder().value(SscsDocumentDetails.builder().build()).build());
         ccdNotificationWrapper.getNewSscsCaseData().setResendToAppellant("Yes");
