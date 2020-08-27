@@ -744,6 +744,7 @@ public class PersonalisationTest {
         Map result = personalisation.setEvidenceReceivedNotificationData(new HashMap<>(), response, EVIDENCE_RECEIVED_NOTIFICATION);
 
         assertEquals("", result.get(EVIDENCE_RECEIVED_DATE_LITERAL));
+        assertEquals("", result.get(WELSH_EVIDENCE_RECEIVED_DATE_LITERAL));
     }
 
     @Test

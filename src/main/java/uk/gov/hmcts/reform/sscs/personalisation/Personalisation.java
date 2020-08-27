@@ -460,6 +460,7 @@ public class Personalisation<E extends NotificationWrapper> {
                 );
             } else {
                 personalisation.put(EVIDENCE_RECEIVED_DATE_LITERAL, StringUtils.EMPTY);
+                personalisation.put(WELSH_EVIDENCE_RECEIVED_DATE_LITERAL, StringUtils.EMPTY);
             }
         }
         return personalisation;
