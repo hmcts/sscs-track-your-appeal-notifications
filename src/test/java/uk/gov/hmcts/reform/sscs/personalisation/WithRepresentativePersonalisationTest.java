@@ -2,17 +2,23 @@ package uk.gov.hmcts.reform.sscs.personalisation;
 
 import static org.junit.Assert.assertEquals;
 
+import java.time.LocalDate;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 import junitparams.JUnitParamsRunner;
 import junitparams.Parameters;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import uk.gov.hmcts.reform.sscs.ccd.domain.Appeal;
+import uk.gov.hmcts.reform.sscs.ccd.domain.Document;
+import uk.gov.hmcts.reform.sscs.ccd.domain.DocumentDetails;
+import uk.gov.hmcts.reform.sscs.ccd.domain.Evidence;
 import uk.gov.hmcts.reform.sscs.ccd.domain.Name;
 import uk.gov.hmcts.reform.sscs.ccd.domain.Representative;
 import uk.gov.hmcts.reform.sscs.ccd.domain.SscsCaseData;
 import uk.gov.hmcts.reform.sscs.config.AppConstants;
+import uk.gov.hmcts.reform.sscs.domain.notify.NotificationEventType;
 
 @RunWith(JUnitParamsRunner.class)
 public class WithRepresentativePersonalisationTest {
@@ -29,8 +35,35 @@ public class WithRepresentativePersonalisationTest {
         assertEquals(expected, personalisation.get(AppConstants.REPRESENTATIVE_NAME));
     }
 
+    @Test
+    @Parameters(method = "generateSscsCaseDataForWelshReceivedDate")
+    public void givenSscsCaseData_shouldSetRepresentativeNameIfPresentOne(
+            SscsCaseData sscsCaseData, String expected) {
+
+        Map<String, String> personalisation = withRepresentativePersonalisation.setWelshEvidenceReceivedDate(
+                new HashMap<>(), sscsCaseData, NotificationEventType.EVIDENCE_RECEIVED_NOTIFICATION);
+        assertEquals(expected, personalisation.get(AppConstants.WELSH_EVIDENCE_RECEIVED_DATE_LITERAL));
+    }
+
+
     @SuppressWarnings({"unused"})
     private Object[] generateSscsCaseDataForTest() {
+        SscsCaseData sscsCaseDataWithRepsFlagYesWithDate = SscsCaseData.builder()
+                .appeal(Appeal.builder()
+                        .rep(Representative.builder()
+                                .hasRepresentative("yes")
+                                .name(Name.builder()
+                                        .firstName("Manish")
+                                        .lastName("Sharma")
+                                        .title("Mrs")
+                                        .build())
+                                .build())
+                        .build())
+                .evidence(Evidence.builder()
+                        .documents(List.of(Document.builder().value(DocumentDetails.builder().dateReceived(LocalDate.now().toString()).build()).build()))
+                        .build())
+                .build();
+
         SscsCaseData sscsCaseDataWithRepsFlagYes = SscsCaseData.builder()
             .appeal(Appeal.builder()
                 .rep(Representative.builder()
@@ -102,4 +135,27 @@ public class WithRepresentativePersonalisationTest {
         };
     }
 
+    @SuppressWarnings({"unused"})
+    private Object[] generateSscsCaseDataForWelshReceivedDate() {
+        SscsCaseData sscsCaseDataWithRepsHasWelshDate = SscsCaseData.builder()
+                .languagePreferenceWelsh("Yes")
+                .appeal(Appeal.builder()
+                        .rep(Representative.builder()
+                                .hasRepresentative("yes")
+                                .name(Name.builder()
+                                        .firstName("Manish")
+                                        .lastName("Sharma")
+                                        .title("Mrs")
+                                        .build())
+                                .build())
+                        .build())
+                .evidence(Evidence.builder()
+                        .documents(List.of(Document.builder().value(DocumentDetails.builder().dateReceived(LocalDate.of(2020, 7,23).toString()).build()).build()))
+                        .build())
+                .build();
+
+        return new Object[]{
+            new Object[]{sscsCaseDataWithRepsHasWelshDate, "23 Gorffennaf 2020"}
+        };
+    }
 }
