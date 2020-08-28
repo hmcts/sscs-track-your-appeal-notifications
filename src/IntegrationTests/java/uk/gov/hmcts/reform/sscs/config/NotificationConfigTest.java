@@ -1,6 +1,7 @@
 package uk.gov.hmcts.reform.sscs.config;
 
 import static org.junit.Assert.*;
+import static uk.gov.hmcts.reform.sscs.ccd.domain.Benefit.PIP;
 import static uk.gov.hmcts.reform.sscs.config.AppealHearingType.ONLINE;
 import static uk.gov.hmcts.reform.sscs.config.AppealHearingType.ORAL;
 import static uk.gov.hmcts.reform.sscs.config.AppealHearingType.PAPER;
@@ -25,10 +26,21 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.context.junit4.rules.SpringClassRule;
 import org.springframework.test.context.junit4.rules.SpringMethodRule;
+import org.springframework.test.util.ReflectionTestUtils;
+
+import uk.gov.hmcts.reform.sscs.ccd.domain.Appeal;
 import uk.gov.hmcts.reform.sscs.ccd.domain.Benefit;
+import uk.gov.hmcts.reform.sscs.ccd.domain.DirectionType;
+import uk.gov.hmcts.reform.sscs.ccd.domain.DynamicList;
+import uk.gov.hmcts.reform.sscs.ccd.domain.HearingType;
 import uk.gov.hmcts.reform.sscs.ccd.domain.LanguagePreference;
+import uk.gov.hmcts.reform.sscs.ccd.domain.SscsCaseData;
+import uk.gov.hmcts.reform.sscs.domain.SscsCaseDataWrapper;
 import uk.gov.hmcts.reform.sscs.domain.notify.NotificationEventType;
 import uk.gov.hmcts.reform.sscs.domain.notify.Template;
+import uk.gov.hmcts.reform.sscs.factory.CcdNotificationWrapper;
+import uk.gov.hmcts.reform.sscs.factory.NotificationWrapper;
+import uk.gov.hmcts.reform.sscs.personalisation.Personalisation;
 
 @RunWith(JUnitParamsRunner.class)
 @SpringBootTest
@@ -88,6 +100,31 @@ public class NotificationConfigTest {
         assertTrue(template.getSmsTemplateId().isEmpty());
         assertNull(template.getLetterTemplateId());
         assertNull(template.getDocmosisTemplateId());
+    }
+
+    @Test
+    @Parameters({"APPEAL_TO_PROCEED, TB-SCS-GNO-ENG-00551.docx",
+            "PROVIDE_INFORMATION, TB-SCS-GNO-ENG-00067.docx",
+            "GRANT_EXTENSION, TB-SCS-GNO-ENG-00067.docx",
+            "REFUSE_EXTENSION, TB-SCS-GNO-ENG-00067.docx"})
+    public void shouldGiveCorrectDocmosisIdForDirectionIssued(DirectionType directionType, String templateConfig) {
+        NotificationWrapper wrapper = new CcdNotificationWrapper(SscsCaseDataWrapper.builder()
+                .newSscsCaseData(SscsCaseData.builder()
+                        .directionTypeDl(new DynamicList(directionType.toString()))
+                        .appeal(Appeal.builder()
+                                .hearingType(HearingType.ONLINE.getValue())
+                                .build())
+                        .build())
+                .notificationEventType(DIRECTION_ISSUED)
+                .build());
+        Personalisation personalisation = new Personalisation();
+        ReflectionTestUtils.setField(personalisation, "config", notificationConfig);
+
+        Template template = personalisation.getTemplate(wrapper, PIP, APPELLANT);
+        assertNull(template.getEmailTemplateId());
+        assertTrue(template.getSmsTemplateId().isEmpty());
+        assertNull(template.getLetterTemplateId());
+        assertEquals(templateConfig, template.getDocmosisTemplateId());
     }
 
     @SuppressWarnings({"Indentation", "unused"})

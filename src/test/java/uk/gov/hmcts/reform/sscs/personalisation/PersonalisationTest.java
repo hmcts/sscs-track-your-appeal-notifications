@@ -1,5 +1,6 @@
 package uk.gov.hmcts.reform.sscs.personalisation;
 
+import static org.apache.commons.lang3.StringUtils.lowerCase;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNotNull;
@@ -37,7 +38,6 @@ import java.util.List;
 import java.util.Locale;
 import java.util.Map;
 import java.util.Optional;
-
 import junitparams.JUnitParamsRunner;
 import junitparams.Parameters;
 import junitparams.converters.Nullable;
@@ -166,6 +166,36 @@ public class PersonalisationTest {
         when(evidenceProperties.getAddress()).thenReturn(evidenceAddress);
     }
 
+
+    @Test
+    @Parameters({"APPEAL_TO_PROCEED, directionIssued.appealToProceed, APPELLANT",
+            "PROVIDE_INFORMATION, directionIssued.provideInformation, REPRESENTATIVE",
+            "GRANT_EXTENSION, directionIssued, APPOINTEE",
+            "REFUSE_EXTENSION, directionIssued, APPELLANT"})
+    public void whenDirectionIssuedAndDirectionTypeShouldGenerateCorrectTemplate(DirectionType directionType,
+                                                                                 String templateConfig,
+                                                                                 SubscriptionType subscriptionType) {
+        NotificationWrapper notificationWrapper = new CcdNotificationWrapper(SscsCaseDataWrapper.builder()
+                .newSscsCaseData(SscsCaseData.builder()
+                        .directionTypeDl(new DynamicList(directionType.toString()))
+                        .appeal(Appeal.builder()
+                                .hearingType(ONLINE.getValue())
+                                .build())
+                        .build())
+                .notificationEventType(DIRECTION_ISSUED)
+                .build());
+
+        personalisation.getTemplate(notificationWrapper, PIP, subscriptionType);
+
+        verify(config).getTemplate(eq(DIRECTION_ISSUED.getId()),
+                eq(DIRECTION_ISSUED.getId()),
+                eq(DIRECTION_ISSUED.getId()),
+                eq(templateConfig + "." + lowerCase(subscriptionType.toString())),
+                any(Benefit.class), any(AppealHearingType.class), eq(null),
+                eq(LanguagePreference.ENGLISH)
+        );
+    }
+
     @Test
     @Parameters(method = "generateNotificationTypeAndSubscriptionsScenarios")
     public void givenSubscriptionType_shouldGenerateEmailAndSmsTemplateNamesPerSubscription(
@@ -173,6 +203,7 @@ public class PersonalisationTest {
             boolean hasEmailTemplate, boolean hasSmsTemplate, boolean hasLetterTemplate, boolean hasDocmosisTemplate) {
         NotificationWrapper notificationWrapper = new CcdNotificationWrapper(SscsCaseDataWrapper.builder()
                 .newSscsCaseData(SscsCaseData.builder()
+                        .directionTypeDl(new DynamicList(DirectionType.PROVIDE_INFORMATION.toString()))
                         .appeal(Appeal.builder()
                                 .hearingType(hearingType.name())
                                 .build())
@@ -194,7 +225,7 @@ public class PersonalisationTest {
     private String getExpectedTemplateName(NotificationEventType notificationEventType,
                                            SubscriptionType subscriptionType) {
         return notificationEventType.getId() + (subscriptionType == null ? "" :
-                "." + StringUtils.lowerCase(subscriptionType.name()));
+                "." + lowerCase(subscriptionType.name()));
     }
 
     @SuppressWarnings({"Indentation", "unused"})
@@ -276,9 +307,6 @@ public class PersonalisationTest {
                 new Object[]{HEARING_BOOKED_NOTIFICATION, REPRESENTATIVE, PAPER, true, true, true, false},
                 new Object[]{HEARING_BOOKED_NOTIFICATION, REPRESENTATIVE, REGULAR, true, true, true, false},
                 new Object[]{HEARING_BOOKED_NOTIFICATION, REPRESENTATIVE, ONLINE, true, true, true, false},
-                new Object[]{DIRECTION_ISSUED, APPELLANT, ONLINE, false, false, false, true},
-                new Object[]{DIRECTION_ISSUED, APPOINTEE, ONLINE, false, false, false, true},
-                new Object[]{DIRECTION_ISSUED, REPRESENTATIVE, ONLINE, false, false, false, true},
                 new Object[]{DECISION_ISSUED, APPELLANT, ONLINE, false, false, false, true},
                 new Object[]{DECISION_ISSUED, APPOINTEE, ONLINE, false, false, false, true},
                 new Object[]{DECISION_ISSUED, REPRESENTATIVE, ONLINE, false, false, false, true},

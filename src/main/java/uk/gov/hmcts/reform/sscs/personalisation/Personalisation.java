@@ -38,6 +38,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 import uk.gov.hmcts.reform.sscs.ccd.domain.AppellantInfoRequest;
 import uk.gov.hmcts.reform.sscs.ccd.domain.Benefit;
+import uk.gov.hmcts.reform.sscs.ccd.domain.DirectionType;
 import uk.gov.hmcts.reform.sscs.ccd.domain.Event;
 import uk.gov.hmcts.reform.sscs.ccd.domain.EventDetails;
 import uk.gov.hmcts.reform.sscs.ccd.domain.EventType;
@@ -452,7 +453,7 @@ public class Personalisation<E extends NotificationWrapper> {
         String smsTemplateName = isSendSmsSubscriptionConfirmation() ? SUBSCRIPTION_CREATED_NOTIFICATION.getId() + "." + subscriptionType.toString().toLowerCase() :
             templateConfig;
         String letterTemplateName = getLetterTemplateName(subscriptionType, notificationWrapper.getNotificationType());
-        String docmosisTemplateName = getDocmosisTemplateName(subscriptionType, notificationWrapper.getNotificationType());
+        String docmosisTemplateName = getDocmosisTemplateName(subscriptionType, notificationWrapper.getNotificationType(), notificationWrapper.getNewSscsCaseData());
 
         return config.getTemplate(templateConfig, smsTemplateName, letterTemplateName, docmosisTemplateName,
             benefit, notificationWrapper.getHearingType(), notificationWrapper.getNewSscsCaseData().getCreatedInGapsFrom(),
@@ -491,9 +492,14 @@ public class Personalisation<E extends NotificationWrapper> {
         return emailTemplateName;
     }
 
-    private String getDocmosisTemplateName(SubscriptionType subscriptionType, NotificationEventType notificationEventType) {
+    private String getDocmosisTemplateName(SubscriptionType subscriptionType, NotificationEventType notificationEventType, SscsCaseData caseData) {
         String letterTemplateName = notificationEventType.getId();
-        if (subscriptionType != null
+        if (subscriptionType != null && DIRECTION_ISSUED.equals(notificationEventType)
+                && caseData.getDirectionTypeDl() != null && caseData.getDirectionTypeDl().getValue() != null
+                && (DirectionType.APPEAL_TO_PROCEED.toString().equals(caseData.getDirectionTypeDl().getValue().getCode())
+                || DirectionType.PROVIDE_INFORMATION.toString().equals(caseData.getDirectionTypeDl().getValue().getCode()))) {
+            letterTemplateName = letterTemplateName + "." + caseData.getDirectionTypeDl().getValue().getCode() + "." + subscriptionType.name().toLowerCase();
+        } else if (subscriptionType != null
             && (APPEAL_RECEIVED_NOTIFICATION.equals(notificationEventType)
             || DIRECTION_ISSUED.equals(notificationEventType)
             || DECISION_ISSUED.equals(notificationEventType)
@@ -502,6 +508,7 @@ public class Personalisation<E extends NotificationWrapper> {
             || ISSUE_ADJOURNMENT_NOTICE.equals(notificationEventType))) {
             letterTemplateName = letterTemplateName + "." + subscriptionType.name().toLowerCase();
         }
+
         return letterTemplateName;
     }
 

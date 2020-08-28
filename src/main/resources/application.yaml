@@ -291,6 +291,20 @@ notification:
     struckOut:
       docmosisId: TB-SCS-GNO-ENG-00466.docx
     directionIssued:
+      appealToProceed:
+        appellant:
+          docmosisId: TB-SCS-GNO-ENG-00551.docx
+        appointee:
+          docmosisId: TB-SCS-GNO-ENG-00551.docx
+        representative:
+          docmosisId: TB-SCS-GNO-ENG-00551.docx
+      provideInformation:
+        appellant:
+          docmosisId: TB-SCS-GNO-ENG-00067.docx
+        appointee:
+          docmosisId: TB-SCS-GNO-ENG-00067.docx
+        representative:
+          docmosisId: TB-SCS-GNO-ENG-00089.docx
       appellant:
         docmosisId: TB-SCS-GNO-ENG-00067.docx
       appointee:
