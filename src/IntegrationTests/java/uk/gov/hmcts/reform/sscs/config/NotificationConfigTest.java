@@ -105,8 +105,8 @@ public class NotificationConfigTest {
     @Test
     @Parameters({"APPEAL_TO_PROCEED, TB-SCS-GNO-ENG-00551.docx",
             "PROVIDE_INFORMATION, TB-SCS-GNO-ENG-00067.docx",
-            "GRANT_EXTENSION, TB-SCS-GNO-ENG-00067.docx",
-            "REFUSE_EXTENSION, TB-SCS-GNO-ENG-00067.docx"})
+            "GRANT_EXTENSION, TB-SCS-GNO-ENG-00556.docx",
+            "REFUSE_EXTENSION, TB-SCS-GNO-ENG-00557.docx"})
     public void shouldGiveCorrectDocmosisIdForDirectionIssued(DirectionType directionType, String templateConfig) {
         NotificationWrapper wrapper = new CcdNotificationWrapper(SscsCaseDataWrapper.builder()
                 .newSscsCaseData(SscsCaseData.builder()
