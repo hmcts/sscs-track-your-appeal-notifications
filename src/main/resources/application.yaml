@@ -305,6 +305,20 @@ notification:
           docmosisId: TB-SCS-GNO-ENG-00067.docx
         representative:
           docmosisId: TB-SCS-GNO-ENG-00089.docx
+      grantExtension:
+        appellant:
+          docmosisId: TB-SCS-GNO-ENG-00556.docx
+        appointee:
+          docmosisId: TB-SCS-GNO-ENG-00556.docx
+        representative:
+          docmosisId: TB-SCS-GNO-ENG-00556.docx
+      refuseExtension:
+        appellant:
+          docmosisId: TB-SCS-GNO-ENG-00557.docx
+        appointee:
+          docmosisId: TB-SCS-GNO-ENG-00557.docx
+        representative:
+          docmosisId: TB-SCS-GNO-ENG-00557.docx
       appellant:
         docmosisId: TB-SCS-GNO-ENG-00067.docx
       appointee:

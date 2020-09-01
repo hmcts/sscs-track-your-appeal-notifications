@@ -497,6 +497,8 @@ public class Personalisation<E extends NotificationWrapper> {
         if (subscriptionType != null && DIRECTION_ISSUED.equals(notificationEventType)
                 && caseData.getDirectionTypeDl() != null && caseData.getDirectionTypeDl().getValue() != null
                 && (DirectionType.APPEAL_TO_PROCEED.toString().equals(caseData.getDirectionTypeDl().getValue().getCode())
+                || DirectionType.GRANT_EXTENSION.toString().equals(caseData.getDirectionTypeDl().getValue().getCode())
+                || DirectionType.REFUSE_EXTENSION.toString().equals(caseData.getDirectionTypeDl().getValue().getCode())
                 || DirectionType.PROVIDE_INFORMATION.toString().equals(caseData.getDirectionTypeDl().getValue().getCode()))) {
             letterTemplateName = letterTemplateName + "." + caseData.getDirectionTypeDl().getValue().getCode() + "." + subscriptionType.name().toLowerCase();
         } else if (subscriptionType != null
