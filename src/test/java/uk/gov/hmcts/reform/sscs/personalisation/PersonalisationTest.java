@@ -170,8 +170,8 @@ public class PersonalisationTest {
     @Test
     @Parameters({"APPEAL_TO_PROCEED, directionIssued.appealToProceed, APPELLANT",
             "PROVIDE_INFORMATION, directionIssued.provideInformation, REPRESENTATIVE",
-            "GRANT_EXTENSION, directionIssued, APPOINTEE",
-            "REFUSE_EXTENSION, directionIssued, APPELLANT"})
+            "GRANT_EXTENSION, directionIssued.grantExtension, APPOINTEE",
+            "REFUSE_EXTENSION, directionIssued.refuseExtension, APPELLANT"})
     public void whenDirectionIssuedAndDirectionTypeShouldGenerateCorrectTemplate(DirectionType directionType,
                                                                                  String templateConfig,
                                                                                  SubscriptionType subscriptionType) {

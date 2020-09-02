@@ -103,13 +103,20 @@ public class NotificationConfigTest {
     }
 
     @Test
-    @Parameters({"APPEAL_TO_PROCEED, TB-SCS-GNO-ENG-00551.docx",
-            "PROVIDE_INFORMATION, TB-SCS-GNO-ENG-00067.docx",
-            "GRANT_EXTENSION, TB-SCS-GNO-ENG-00556.docx",
-            "REFUSE_EXTENSION, TB-SCS-GNO-ENG-00557.docx"})
-    public void shouldGiveCorrectDocmosisIdForDirectionIssued(DirectionType directionType, String templateConfig) {
+    @Parameters({
+            "APPEAL_TO_PROCEED, TB-SCS-GNO-ENG-00551.docx, TB-SCS-GNO-ENG-00551.docx",
+            "PROVIDE_INFORMATION, TB-SCS-GNO-ENG-00067.docx, TB-SCS-GNO-ENG-00089.docx",
+            "GRANT_EXTENSION, TB-SCS-GNO-ENG-00556.docx, TB-SCS-GNO-ENG-00556.docx",
+            "REFUSE_EXTENSION, TB-SCS-GNO-ENG-00557.docx, TB-SCS-GNO-ENG-00557.docx",
+            "APPEAL_TO_PROCEED, TB-SCS-GNO-WEL-00468.docx, TB-SCS-GNO-WEL-00472.docx",
+            "PROVIDE_INFORMATION, TB-SCS-GNO-WEL-00468.docx, TB-SCS-GNO-WEL-00472.docx",
+            "GRANT_EXTENSION, TB-SCS-GNO-WEL-00468.docx, TB-SCS-GNO-WEL-00472.docx",
+            "REFUSE_EXTENSION, TB-SCS-GNO-WEL-00468.docx, TB-SCS-GNO-WEL-00472.docx"
+    })
+    public void shouldGiveCorrectDocmosisIdForDirectionIssued(DirectionType directionType, String configAppellantOrAppointee, String configRep) {
         NotificationWrapper wrapper = new CcdNotificationWrapper(SscsCaseDataWrapper.builder()
                 .newSscsCaseData(SscsCaseData.builder()
+                        .languagePreferenceWelsh(configAppellantOrAppointee.contains("-WEL-") ? "Yes" : "No")
                         .directionTypeDl(new DynamicList(directionType.toString()))
                         .appeal(Appeal.builder()
                                 .hearingType(HearingType.ONLINE.getValue())
@@ -120,11 +127,15 @@ public class NotificationConfigTest {
         Personalisation personalisation = new Personalisation();
         ReflectionTestUtils.setField(personalisation, "config", notificationConfig);
 
-        Template template = personalisation.getTemplate(wrapper, PIP, APPELLANT);
-        assertNull(template.getEmailTemplateId());
-        assertTrue(template.getSmsTemplateId().isEmpty());
-        assertNull(template.getLetterTemplateId());
-        assertEquals(templateConfig, template.getDocmosisTemplateId());
+        Template templateAppellant = personalisation.getTemplate(wrapper, PIP, APPELLANT);
+        assertNull(templateAppellant.getEmailTemplateId());
+        assertTrue(templateAppellant.getSmsTemplateId().isEmpty());
+        assertNull(templateAppellant.getLetterTemplateId());
+        assertEquals(configAppellantOrAppointee, templateAppellant.getDocmosisTemplateId());
+        Template templateAppointee = personalisation.getTemplate(wrapper, PIP, APPOINTEE);
+        assertEquals(configAppellantOrAppointee, templateAppointee.getDocmosisTemplateId());
+        Template templateRep = personalisation.getTemplate(wrapper, PIP, REPRESENTATIVE);
+        assertEquals(configRep, templateRep.getDocmosisTemplateId());
     }
 
     @SuppressWarnings({"Indentation", "unused"})
@@ -252,10 +263,6 @@ public class NotificationConfigTest {
                 new Object[]{null, Collections.EMPTY_LIST, null, "TB-SCS-GNO-ENG-00452.docx", ORAL, getTemplateName(REQUEST_INFO_INCOMPLETE, APPELLANT), null},
                 new Object[]{null, Collections.EMPTY_LIST, null, "TB-SCS-GNO-ENG-00452.docx", ORAL, getTemplateName(REQUEST_INFO_INCOMPLETE, APPOINTEE), null},
                 new Object[]{null, Collections.EMPTY_LIST, null, "TB-SCS-GNO-ENG-00452.docx", PAPER, getTemplateName(REQUEST_INFO_INCOMPLETE, APPOINTEE), null},
-                new Object[]{null, Collections.EMPTY_LIST, null, "TB-SCS-GNO-ENG-00067.docx", ORAL, getTemplateName(DIRECTION_ISSUED, APPELLANT), null},
-                new Object[]{null, Collections.EMPTY_LIST, null, "TB-SCS-GNO-ENG-00067.docx", PAPER, getTemplateName(DIRECTION_ISSUED, APPOINTEE), null},
-                new Object[]{null, Collections.EMPTY_LIST, null, "TB-SCS-GNO-ENG-00089.docx", ORAL, getTemplateName(DIRECTION_ISSUED, REPRESENTATIVE), null},
-                new Object[]{null, Collections.EMPTY_LIST, null, "TB-SCS-GNO-ENG-00089.docx", PAPER, getTemplateName(DIRECTION_ISSUED, REPRESENTATIVE), null},
                 new Object[]{null, Collections.EMPTY_LIST, null, "TB-SCS-GNO-ENG-00094.docx", ORAL, getTemplateName(DECISION_ISSUED, APPELLANT), null},
                 new Object[]{null, Collections.EMPTY_LIST, null, "TB-SCS-GNO-ENG-00094.docx", PAPER, getTemplateName(DECISION_ISSUED, APPOINTEE), null},
                 new Object[]{null, Collections.EMPTY_LIST, null, "TB-SCS-GNO-ENG-00095.docx", ORAL, getTemplateName(DECISION_ISSUED, REPRESENTATIVE), null},

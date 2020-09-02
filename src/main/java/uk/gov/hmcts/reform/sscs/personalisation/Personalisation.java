@@ -38,7 +38,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 import uk.gov.hmcts.reform.sscs.ccd.domain.AppellantInfoRequest;
 import uk.gov.hmcts.reform.sscs.ccd.domain.Benefit;
-import uk.gov.hmcts.reform.sscs.ccd.domain.DirectionType;
 import uk.gov.hmcts.reform.sscs.ccd.domain.Event;
 import uk.gov.hmcts.reform.sscs.ccd.domain.EventDetails;
 import uk.gov.hmcts.reform.sscs.ccd.domain.EventType;
@@ -495,11 +494,7 @@ public class Personalisation<E extends NotificationWrapper> {
     private String getDocmosisTemplateName(SubscriptionType subscriptionType, NotificationEventType notificationEventType, SscsCaseData caseData) {
         String letterTemplateName = notificationEventType.getId();
         if (subscriptionType != null && DIRECTION_ISSUED.equals(notificationEventType)
-                && caseData.getDirectionTypeDl() != null && caseData.getDirectionTypeDl().getValue() != null
-                && (DirectionType.APPEAL_TO_PROCEED.toString().equals(caseData.getDirectionTypeDl().getValue().getCode())
-                || DirectionType.GRANT_EXTENSION.toString().equals(caseData.getDirectionTypeDl().getValue().getCode())
-                || DirectionType.REFUSE_EXTENSION.toString().equals(caseData.getDirectionTypeDl().getValue().getCode())
-                || DirectionType.PROVIDE_INFORMATION.toString().equals(caseData.getDirectionTypeDl().getValue().getCode()))) {
+                && caseData.getDirectionTypeDl() != null && caseData.getDirectionTypeDl().getValue() != null) {
             letterTemplateName = letterTemplateName + "." + caseData.getDirectionTypeDl().getValue().getCode() + "." + subscriptionType.name().toLowerCase();
         } else if (subscriptionType != null
             && (APPEAL_RECEIVED_NOTIFICATION.equals(notificationEventType)

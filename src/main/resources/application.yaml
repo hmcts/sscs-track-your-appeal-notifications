@@ -319,12 +319,6 @@ notification:
           docmosisId: TB-SCS-GNO-ENG-00557.docx
         representative:
           docmosisId: TB-SCS-GNO-ENG-00557.docx
-      appellant:
-        docmosisId: TB-SCS-GNO-ENG-00067.docx
-      appointee:
-        docmosisId: TB-SCS-GNO-ENG-00067.docx
-      representative:
-        docmosisId: TB-SCS-GNO-ENG-00089.docx
     decisionIssued:
       appellant:
         docmosisId: TB-SCS-GNO-ENG-00094.docx
@@ -635,12 +629,34 @@ notification:
     struckOut:
       docmosisId: TB-SCS-GNO-ENG-00466.docx
     directionIssued:
-      appellant:
-        docmosisId: TB-SCS-GNO-WEL-00468.docx
-      appointee:
-        docmosisId: TB-SCS-GNO-WEL-00468.docx
-      representative:
-        docmosisId: TB-SCS-GNO-WEL-00472.docx
+      appealToProceed:
+        appellant:
+          docmosisId: TB-SCS-GNO-WEL-00468.docx
+        appointee:
+          docmosisId: TB-SCS-GNO-WEL-00468.docx
+        representative:
+          docmosisId: TB-SCS-GNO-WEL-00472.docx
+      provideInformation:
+        appellant:
+          docmosisId: TB-SCS-GNO-WEL-00468.docx
+        appointee:
+          docmosisId: TB-SCS-GNO-WEL-00468.docx
+        representative:
+          docmosisId: TB-SCS-GNO-WEL-00472.docx
+      grantExtension:
+        appellant:
+          docmosisId: TB-SCS-GNO-WEL-00468.docx
+        appointee:
+          docmosisId: TB-SCS-GNO-WEL-00468.docx
+        representative:
+          docmosisId: TB-SCS-GNO-WEL-00472.docx
+      refuseExtension:
+        appellant:
+          docmosisId: TB-SCS-GNO-WEL-00468.docx
+        appointee:
+          docmosisId: TB-SCS-GNO-WEL-00468.docx
+        representative:
+          docmosisId: TB-SCS-GNO-WEL-00472.docx
     decisionIssued:
       appellant:
         docmosisId: TB-SCS-GNO-WEL-00474.docx
