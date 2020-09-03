@@ -82,6 +82,7 @@ gov.uk.notification.api.testRecipients:
   - "TS1 1ST"
   - "TS2 2ST"
   - "TS3 3ST"
+  - "TS4 4ST"
 
 subscription.hmac.secret.text: ${EMAIL_MAC_SECRET_TEXT:our-big-secret}
 
@@ -166,6 +167,10 @@ notification:
         emailId: e93dd744-84a1-4173-847a-6d023b55637f
         smsId: ee58f7d0-8de7-4bee-acd4-252213db6b7b
       appointee:
+        emailId: 8ce8d794-75e8-49a0-b4d2-0c6cd2061c11
+        smsId: d2b4394b-d1c9-4d5c-a44e-b382e41c67e5
+        letterId: 85a81e3c-a59f-4ae9-9c99-266dfd5ca95f
+      joint_party:
         emailId: 8ce8d794-75e8-49a0-b4d2-0c6cd2061c11
         smsId: d2b4394b-d1c9-4d5c-a44e-b382e41c67e5
         letterId: 85a81e3c-a59f-4ae9-9c99-266dfd5ca95f
@@ -482,6 +487,10 @@ notification:
         emailId: eb75f528-b2e5-495d-a20d-af74b680150b
         smsId: 3cc24409-b7be-4fea-8cdb-0288d151c265
       appointee:
+        emailId: 89302ee1-291f-4a76-b388-5b9d8dbfbd4b
+        smsId: a3585b50-7a4e-4b84-9a3a-c1323ef26d3a
+        letterId: 4d7a4cd2-1314-4638-80bc-bc6b1281de30
+      joint_party:
         emailId: 89302ee1-291f-4a76-b388-5b9d8dbfbd4b
         smsId: a3585b50-7a4e-4b84-9a3a-c1323ef26d3a
         letterId: 4d7a4cd2-1314-4638-80bc-bc6b1281de30

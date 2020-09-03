@@ -1,12 +1,20 @@
 package uk.gov.hmcts.reform.sscs.personalisation;
 
 import static com.google.common.collect.Lists.newArrayList;
+import static java.lang.String.format;
+import static org.apache.commons.lang3.StringUtils.EMPTY;
+import static org.apache.commons.lang3.StringUtils.defaultIfBlank;
+import static org.apache.commons.lang3.StringUtils.equalsIgnoreCase;
+import static org.apache.commons.lang3.StringUtils.isBlank;
+import static org.apache.commons.lang3.StringUtils.isEmpty;
+import static org.apache.commons.lang3.StringUtils.lowerCase;
 import static uk.gov.hmcts.reform.sscs.ccd.domain.Benefit.getBenefitByCode;
 import static uk.gov.hmcts.reform.sscs.ccd.domain.EventType.APPEAL_RECEIVED;
 import static uk.gov.hmcts.reform.sscs.ccd.util.CaseDataUtils.YES;
 import static uk.gov.hmcts.reform.sscs.config.AppConstants.*;
 import static uk.gov.hmcts.reform.sscs.config.SubscriptionType.APPELLANT;
 import static uk.gov.hmcts.reform.sscs.config.SubscriptionType.APPOINTEE;
+import static uk.gov.hmcts.reform.sscs.config.SubscriptionType.JOINT_PARTY;
 import static uk.gov.hmcts.reform.sscs.config.SubscriptionType.REPRESENTATIVE;
 import static uk.gov.hmcts.reform.sscs.domain.notify.NotificationEventType.*;
 import static uk.gov.hmcts.reform.sscs.personalisation.SyaAppealCreatedAndReceivedPersonalisation.NOT_REQUIRED;
@@ -14,6 +22,7 @@ import static uk.gov.hmcts.reform.sscs.personalisation.SyaAppealCreatedAndReceiv
 import static uk.gov.hmcts.reform.sscs.personalisation.SyaAppealCreatedAndReceivedPersonalisation.TWO_NEW_LINES;
 import static uk.gov.hmcts.reform.sscs.personalisation.SyaAppealCreatedAndReceivedPersonalisation.getOptionalField;
 import static uk.gov.hmcts.reform.sscs.service.NotificationUtils.hasAppointee;
+import static uk.gov.hmcts.reform.sscs.service.NotificationUtils.hasJointParty;
 import static uk.gov.hmcts.reform.sscs.service.NotificationUtils.hasRepresentative;
 
 import java.io.UnsupportedEncodingException;
@@ -44,6 +53,7 @@ import uk.gov.hmcts.reform.sscs.ccd.domain.EventType;
 import uk.gov.hmcts.reform.sscs.ccd.domain.Hearing;
 import uk.gov.hmcts.reform.sscs.ccd.domain.HearingDetails;
 import uk.gov.hmcts.reform.sscs.ccd.domain.HearingOptions;
+import uk.gov.hmcts.reform.sscs.ccd.domain.JointPartyName;
 import uk.gov.hmcts.reform.sscs.ccd.domain.Name;
 import uk.gov.hmcts.reform.sscs.ccd.domain.RegionalProcessingCenter;
 import uk.gov.hmcts.reform.sscs.ccd.domain.SscsCaseData;
@@ -73,7 +83,7 @@ public class Personalisation<E extends NotificationWrapper> {
     private static final List<NotificationEventType> LETTER_SUBSCRIPTION_TYPES = Arrays.asList(DWP_RESPONSE_RECEIVED_NOTIFICATION, DWP_UPLOAD_RESPONSE_NOTIFICATION,
         APPEAL_RECEIVED_NOTIFICATION, SYA_APPEAL_CREATED_NOTIFICATION, EVIDENCE_RECEIVED_NOTIFICATION, NON_COMPLIANT_NOTIFICATION, VALID_APPEAL_CREATED);
 
-    private static final String CRLF = String.format("%c%c", (char) 0x0D, (char) 0x0A);
+    private static final String CRLF = format("%c%c", (char) 0x0D, (char) 0x0A);
 
     @Autowired
     protected NotificationConfig config;
@@ -95,9 +105,9 @@ public class Personalisation<E extends NotificationWrapper> {
 
     private static String tya(Subscription subscription) {
         if (subscription != null) {
-            return StringUtils.defaultIfBlank(subscription.getTya(), StringUtils.EMPTY);
+            return defaultIfBlank(subscription.getTya(), EMPTY);
         } else {
-            return StringUtils.EMPTY;
+            return EMPTY;
         }
     }
 
@@ -164,7 +174,7 @@ public class Personalisation<E extends NotificationWrapper> {
         try {
             if (ccdResponse.getAppeal() != null
                 && ccdResponse.getAppeal().getBenefitType() != null
-                && !StringUtils.isEmpty(ccdResponse.getAppeal().getBenefitType().getCode())) {
+                && !isEmpty(ccdResponse.getAppeal().getBenefitType().getCode())) {
                 benefit = getBenefitByCode(ccdResponse.getAppeal().getBenefitType().getCode());
                 personalisation.put(BENEFIT_NAME_ACRONYM_LITERAL, benefit.name());
                 personalisation.put(BENEFIT_NAME_ACRONYM_SHORT_LITERAL, benefit.name());
@@ -183,13 +193,13 @@ public class Personalisation<E extends NotificationWrapper> {
         personalisation.put(APPEAL_REF, getAppealReference(ccdResponse));
         personalisation.put(APPELLANT_NAME, ccdResponse.getAppeal().getAppellant().getName().getFullNameNoTitle());
         personalisation.put(NAME, getName(subscriptionWithType.getSubscriptionType(), ccdResponse, responseWrapper));
-        personalisation.put(CCD_ID, StringUtils.defaultIfBlank(ccdResponse.getCcdCaseId(), StringUtils.EMPTY));
+        personalisation.put(CCD_ID, defaultIfBlank(ccdResponse.getCcdCaseId(), EMPTY));
 
         // Some templates (notably letters) can be sent out before the SC Ref is added to the case
         // this allows those templates to be populated with either the CCD Id or SC Ref
         personalisation.put(CASE_REFERENCE_ID, getAppealReference(ccdResponse));
 
-        personalisation.put(INFO_REQUEST_DETAIL, StringUtils.defaultIfBlank(getLatestInfoRequestDetail(ccdResponse), StringUtils.EMPTY));
+        personalisation.put(INFO_REQUEST_DETAIL, defaultIfBlank(getLatestInfoRequestDetail(ccdResponse), EMPTY));
 
         Subscription subscription = subscriptionWithType.getSubscription();
         subscriptionDetails(personalisation, subscription, benefit, ccdResponse);
@@ -242,13 +252,13 @@ public class Personalisation<E extends NotificationWrapper> {
 
     private String getAppealReference(SscsCaseData ccdResponse) {
         final String caseReference = ccdResponse.getCaseReference();
-        return StringUtils.isBlank(caseReference) || (ccdResponse.getCreatedInGapsFrom() != null && ccdResponse.getCreatedInGapsFrom().equals("readyToList"))
+        return isBlank(caseReference) || (ccdResponse.getCreatedInGapsFrom() != null && ccdResponse.getCreatedInGapsFrom().equals("readyToList"))
             ? ccdResponse.getCcdCaseId() : caseReference;
     }
 
     private String getName(SubscriptionType subscriptionType, SscsCaseData ccdResponse, SscsCaseDataWrapper wrapper) {
         if (ccdResponse.getAppeal() == null) {
-            return "";
+            return EMPTY;
         }
 
         if (subscriptionType.equals(APPELLANT)
@@ -260,23 +270,26 @@ public class Personalisation<E extends NotificationWrapper> {
         } else if (subscriptionType.equals(APPOINTEE)
             && hasAppointee(wrapper)) {
             return getDefaultName(ccdResponse.getAppeal().getAppellant().getAppointee().getName());
+        } else if (subscriptionType.equals(JOINT_PARTY) && hasJointParty(ccdResponse)) {
+            JointPartyName partyName = ccdResponse.getJointPartyName();
+            return (partyName == null) ? EMPTY :
+               getDefaultName(new Name(partyName.getTitle(), partyName.getFirstName(), partyName.getLastName()));
         }
-
-        return "";
+        return EMPTY;
     }
 
     private String getDefaultName(Name name) {
-        return name == null || name.getFirstName() == null || StringUtils.isBlank(name.getFirstName())
-            || name.getLastName() == null || StringUtils.isBlank(name.getLastName()) ? "" : name.getFullNameNoTitle();
+        return name == null || name.getFirstName() == null || isBlank(name.getFirstName())
+            || name.getLastName() == null || isBlank(name.getLastName()) ? EMPTY : name.getFullNameNoTitle();
     }
 
     private String getAppointeeDescription(SubscriptionType subscriptionType, SscsCaseData ccdResponse) {
         if (APPOINTEE.equals(subscriptionType) && ccdResponse.getAppeal() != null
             && ccdResponse.getAppeal().getAppellant().getName() != null) {
-            return String.format("You are receiving this update as the appointee for %s.%s%s",
+            return format("You are receiving this update as the appointee for %s.%s%s",
                 ccdResponse.getAppeal().getAppellant().getName().getFullNameNoTitle(), CRLF, CRLF);
         } else {
-            return "";
+            return EMPTY;
         }
     }
 
@@ -286,7 +299,7 @@ public class Personalisation<E extends NotificationWrapper> {
         if (benefit != null) {
             personalisation.put(MANAGE_EMAILS_LINK_LITERAL, config.getManageEmailsLink().replace(MAC_LITERAL, getMacToken(tya, benefit.name())));
         }
-        if (StringUtils.equalsIgnoreCase(State.READY_TO_LIST.getId(), sscsCaseData.getCreatedInGapsFrom())) {
+        if (equalsIgnoreCase(State.READY_TO_LIST.getId(), sscsCaseData.getCreatedInGapsFrom())) {
             personalisation.put(TRACK_APPEAL_LINK_LITERAL, config.getMyaLink() != null ? config.getMyaLink().replace(APPEAL_ID_LITERAL, tya) : null);
             personalisation.put(CLAIMING_EXPENSES_LINK_LITERAL, config.getMyaClaimingExpensesLink().getLinkUrl());
             personalisation.put(SUBMIT_EVIDENCE_LINK_LITERAL, config.getMyaEvidenceSubmissionInfoLink().getLinkUrl());
@@ -370,7 +383,7 @@ public class Personalisation<E extends NotificationWrapper> {
                     personalisation.put(WELSH_EVIDENCE_RECEIVED_DATE_LITERAL, value)
                 );
             } else {
-                personalisation.put(EVIDENCE_RECEIVED_DATE_LITERAL, StringUtils.EMPTY);
+                personalisation.put(EVIDENCE_RECEIVED_DATE_LITERAL, EMPTY);
             }
         }
         return personalisation;
@@ -430,7 +443,7 @@ public class Personalisation<E extends NotificationWrapper> {
     }
 
     private String calculateDaysToHearingText(LocalDate hearingDate) {
-        Long daysBetween = ChronoUnit.DAYS.between(LocalDate.now(), hearingDate);
+        long daysBetween = ChronoUnit.DAYS.between(LocalDate.now(), hearingDate);
 
         return daysBetween == 1 ? TOMORROW_STRING : "in " + daysBetween + DAYS_STRING;
     }
@@ -486,7 +499,7 @@ public class Personalisation<E extends NotificationWrapper> {
             || RESEND_APPEAL_CREATED_NOTIFICATION.equals(notificationEventType)
             || VALID_APPEAL_CREATED.equals(notificationEventType)
             || SYA_APPEAL_CREATED_NOTIFICATION.equals(notificationEventType)) {
-            emailTemplateName = emailTemplateName + "." + StringUtils.lowerCase(subscriptionType.name());
+            emailTemplateName = emailTemplateName + "." + lowerCase(subscriptionType.name());
         }
         return emailTemplateName;
     }
@@ -545,7 +558,7 @@ public class Personalisation<E extends NotificationWrapper> {
     private String buildHearingArrangements(HearingOptions hearingOptions) {
         if (null != hearingOptions) {
             String languageInterpreterRequired = convertBooleanToRequiredText(hearingOptions.getLanguageInterpreter() != null
-                && StringUtils.equalsIgnoreCase(YES, hearingOptions.getLanguageInterpreter()));
+                && equalsIgnoreCase(YES, hearingOptions.getLanguageInterpreter()));
 
             return "Language interpreter: " + languageInterpreterRequired + TWO_NEW_LINES + "Sign interpreter: "
                 + convertBooleanToRequiredText(findHearingArrangement("signLanguageInterpreter", hearingOptions.getArrangements()))

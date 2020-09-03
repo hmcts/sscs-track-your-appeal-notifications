@@ -5,9 +5,11 @@ import static uk.gov.hmcts.reform.sscs.config.AppealHearingType.ORAL;
 import static uk.gov.hmcts.reform.sscs.config.AppealHearingType.PAPER;
 import static uk.gov.hmcts.reform.sscs.config.SubscriptionType.APPELLANT;
 import static uk.gov.hmcts.reform.sscs.config.SubscriptionType.APPOINTEE;
+import static uk.gov.hmcts.reform.sscs.config.SubscriptionType.JOINT_PARTY;
 import static uk.gov.hmcts.reform.sscs.config.SubscriptionType.REPRESENTATIVE;
 import static uk.gov.hmcts.reform.sscs.domain.notify.NotificationEventType.*;
 import static uk.gov.hmcts.reform.sscs.service.NotificationUtils.hasAppointeeSubscriptionOrIsMandatoryAppointeeLetter;
+import static uk.gov.hmcts.reform.sscs.service.NotificationUtils.hasJointPartySubscription;
 import static uk.gov.hmcts.reform.sscs.service.NotificationUtils.hasRepSubscriptionOrIsMandatoryRepLetter;
 
 import java.time.LocalDateTime;
@@ -62,6 +64,11 @@ public class CcdNotificationWrapper implements NotificationWrapper {
     @Override
     public Subscription getAppointeeSubscription() {
         return responseWrapper.getNewSscsCaseData().getSubscriptions().getAppointeeSubscription();
+    }
+
+    @Override
+    public Subscription getJointPartySubscription() {
+        return responseWrapper.getNewSscsCaseData().getSubscriptions().getJointPartySubscription();
     }
 
     @Override
@@ -170,6 +177,11 @@ public class CcdNotificationWrapper implements NotificationWrapper {
             || REQUEST_INFO_INCOMPLETE.equals(getNotificationType()))
         ) {
             subscriptionWithTypeList.add(new SubscriptionWithType(getRepresentativeSubscription(), REPRESENTATIVE));
+        }
+
+        if (hasJointPartySubscription(responseWrapper)
+            && APPEAL_LAPSED_NOTIFICATION.equals(getNotificationType())) {
+            subscriptionWithTypeList.add(new SubscriptionWithType(getJointPartySubscription(), JOINT_PARTY));
         }
         return subscriptionWithTypeList;
     }

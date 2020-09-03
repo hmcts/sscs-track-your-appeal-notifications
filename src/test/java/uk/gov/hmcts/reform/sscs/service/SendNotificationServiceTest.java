@@ -4,7 +4,7 @@ import static org.hamcrest.MatcherAssert.assertThat;
 import static org.junit.Assert.*;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.*;
-import static org.mockito.MockitoAnnotations.initMocks;
+import static org.mockito.MockitoAnnotations.openMocks;
 import static uk.gov.hmcts.reform.sscs.ccd.domain.State.READY_TO_LIST;
 import static uk.gov.hmcts.reform.sscs.ccd.domain.State.VALID_APPEAL;
 import static uk.gov.hmcts.reform.sscs.config.AppConstants.REP_SALUTATION;
@@ -52,6 +52,7 @@ import uk.gov.service.notify.NotificationClientException;
 @RunWith(JUnitParamsRunner.class)
 public class SendNotificationServiceTest {
     private static final String YES = "Yes";
+    public static final String NO = "No";
     private static final String CASE_REFERENCE = "ABC123";
     private static final String CASE_ID = "1000001";
 
@@ -84,6 +85,9 @@ public class SendNotificationServiceTest {
         .name(Name.builder().firstName("Re").lastName("Presentative").build())
         .address(Address.builder().line1("Rep Line 1").town("Rep Town").county("Rep County").postcode("RE9 3LL").build())
         .build();
+
+    protected static Address JOINT_PARTY_ADDRESS = Address.builder().line1("JP Line 1")
+            .town("Jp Town").county("Jp County").postcode("RE9 3LL").build();
 
     private static Representative REP_ORG_WITH_ADDRESS = Representative.builder()
         .organisation("Rep Org")
@@ -161,7 +165,7 @@ public class SendNotificationServiceTest {
 
     @Before
     public void setup() {
-        initMocks(this);
+        openMocks(this);
 
         classUnderTest = new SendNotificationService(notificationSender, evidenceManagementService, notificationHandler, notificationValidService, pdfLetterService);
 
@@ -434,6 +438,16 @@ public class SendNotificationServiceTest {
     }
 
     @Test
+    public void sendLetterNotificationForJointParty() throws NotificationClientException {
+        SubscriptionWithType jointPartyEmptySubscription = new SubscriptionWithType(EMPTY_SUBSCRIPTION, JOINT_PARTY);
+        final CcdNotificationWrapper wrapper = buildBaseWrapper(APPELLANT_WITH_ADDRESS, CASE_UPDATED, JointPartyName.builder().firstName("Jp").lastName("Party").build(), JOINT_PARTY_ADDRESS);
+        classUnderTest.sendLetterNotificationToAddress(wrapper, LETTER_NOTIFICATION, JOINT_PARTY_ADDRESS, jointPartyEmptySubscription.getSubscriptionType());
+
+        verify(notificationSender).sendLetter(eq(LETTER_NOTIFICATION.getLetterTemplate()), eq(JOINT_PARTY_ADDRESS), any(), any(), any(), any());
+        verifyNoErrorsLogged(mockAppender, captorLoggingEvent);
+    }
+
+    @Test
     public void doNotSendLetterNotificationIfAddressEmpty() throws NotificationClientException {
         SubscriptionWithType appellantEmptySubscription = new SubscriptionWithType(EMPTY_SUBSCRIPTION, SubscriptionType.APPELLANT);
         CcdNotificationWrapper wrapper = buildBaseWrapper(APPELLANT_WITH_EMPTY_ADDRESS, NotificationEventType.CASE_UPDATED, READY_TO_LIST.getId());
@@ -596,6 +610,20 @@ public class SendNotificationServiceTest {
 
     private CcdNotificationWrapper buildBaseWrapper(Appellant appellant, NotificationEventType eventType, Representative representative) {
         return buildBaseWrapper(appellant, eventType, representative, Benefit.PIP, "Online", READY_TO_LIST.getId());
+    }
+
+    private CcdNotificationWrapper buildBaseWrapper(final Appellant appellant, final NotificationEventType eventType, final JointPartyName jointPartyName, final Address jointPartyAddress) {
+        CcdNotificationWrapper wrapper = buildBaseWrapper(appellant, eventType, null, Benefit.PIP, "Online", READY_TO_LIST.getId());
+        SscsCaseData sscsCaseData = wrapper.getNewSscsCaseData().toBuilder().jointParty(YES)
+                .jointPartyName(jointPartyName)
+                .jointPartyAddressSameAsAppellant(jointPartyAddress == null ? YES : NO)
+                .jointPartyAddress(jointPartyAddress).build();
+        SscsCaseDataWrapper wraper = SscsCaseDataWrapper.builder()
+                .newSscsCaseData(sscsCaseData)
+                .oldSscsCaseData(sscsCaseData)
+                .notificationEventType(eventType)
+                .build();
+        return new CcdNotificationWrapper(wraper);
     }
 
     private CcdNotificationWrapper buildBaseWrapper(Appellant appellant, NotificationEventType eventType, Representative representative, Benefit benefit, String receivedVia, String createdInGapsFrom) {

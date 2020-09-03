@@ -208,6 +208,8 @@ public class SendNotificationService {
             if (SubscriptionType.REPRESENTATIVE.equals(subscriptionType)) {
                 placeholders.put(REPRESENTATIVE_NAME, fullNameNoTitle);
                 placeholders.put(APPELLANT_NAME, wrapper.getNewSscsCaseData().getAppeal().getAppellant().getName().getFullNameNoTitle());
+            } else if (SubscriptionType.JOINT_PARTY.equals(subscriptionType)) {
+                placeholders.put(APPELLANT_NAME, wrapper.getNewSscsCaseData().getAppeal().getAppellant().getName().getFullNameNoTitle());
             }
 
             placeholders.put(CLAIMANT_NAME, wrapper.getNewSscsCaseData().getAppeal().getAppellant().getName().getFullNameNoTitle());

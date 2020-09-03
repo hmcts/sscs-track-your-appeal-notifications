@@ -21,6 +21,7 @@ import static uk.gov.hmcts.reform.sscs.ccd.domain.HearingType.REGULAR;
 import static uk.gov.hmcts.reform.sscs.config.AppConstants.*;
 import static uk.gov.hmcts.reform.sscs.config.SubscriptionType.APPELLANT;
 import static uk.gov.hmcts.reform.sscs.config.SubscriptionType.APPOINTEE;
+import static uk.gov.hmcts.reform.sscs.config.SubscriptionType.JOINT_PARTY;
 import static uk.gov.hmcts.reform.sscs.config.SubscriptionType.REPRESENTATIVE;
 import static uk.gov.hmcts.reform.sscs.domain.notify.NotificationEventType.*;
 
@@ -1095,6 +1096,59 @@ public class PersonalisationTest {
         assertEquals("http://tyalink.com/" + repTyaNumber, result.get(TRACK_APPEAL_LINK_LITERAL));
         assertEquals("http://link.com/" + repTyaNumber, result.get(SUBMIT_EVIDENCE_LINK_LITERAL));
         assertEquals("http://link.com/" + repTyaNumber, result.get(SUBMIT_EVIDENCE_INFO_LINK_LITERAL));
+    }
+
+    @Test
+    public void shouldPopulateJointPartySubscriptionPersonalisation() {
+        final String tyaNumber = "tya";
+        final String jointPartyTyaNumber = "jointPartyTya";
+        when(macService.generateToken(jointPartyTyaNumber, PIP.name())).thenReturn("ZYX");
+
+        final SscsCaseData sscsCaseData = SscsCaseData.builder()
+                .ccdCaseId(CASE_ID)
+                .jointParty("yes")
+                .jointPartyName(JointPartyName.builder().title("Mr").firstName("Bob").lastName("Builder").build())
+                .jointPartyAddressSameAsAppellant("Yes")
+                .caseReference("SC/1234/5")
+                .appeal(Appeal.builder()
+                        .benefitType(BenefitType.builder()
+                                .code(PIP.name())
+                                .build())
+                        .appellant(Appellant.builder()
+                                .name(name)
+                                .build())
+                        .rep(Representative.builder()
+                                .name(name)
+                                .build())
+                        .build())
+                .subscriptions(Subscriptions.builder()
+                        .appellantSubscription(Subscription.builder()
+                                .tya(tyaNumber)
+                                .subscribeEmail("Yes")
+                                .email("appointee@example.com")
+                                .build())
+                        .jointPartySubscription(Subscription.builder()
+                                .tya(jointPartyTyaNumber)
+                                .subscribeEmail("Yes")
+                                .email("jp@example.com")
+                                .build())
+                        .build())
+                .build();
+
+        Map result = personalisation.create(SscsCaseDataWrapper.builder()
+                        .newSscsCaseData(sscsCaseData)
+                        .notificationEventType(SUBSCRIPTION_CREATED_NOTIFICATION)
+                        .build(),
+                new SubscriptionWithType(sscsCaseData.getSubscriptions()
+                        .getJointPartySubscription(), JOINT_PARTY));
+
+        assertNotNull(result);
+        assertEquals(jointPartyTyaNumber, result.get(APPEAL_ID_LITERAL));
+        assertEquals("Bob Builder", result.get(NAME));
+        assertEquals("http://link.com/manage-email-notifications/ZYX", result.get(MANAGE_EMAILS_LINK_LITERAL));
+        assertEquals("http://tyalink.com/" + jointPartyTyaNumber, result.get(TRACK_APPEAL_LINK_LITERAL));
+        assertEquals("http://link.com/" + jointPartyTyaNumber, result.get(SUBMIT_EVIDENCE_LINK_LITERAL));
+        assertEquals("http://link.com/" + jointPartyTyaNumber, result.get(SUBMIT_EVIDENCE_INFO_LINK_LITERAL));
     }
 
     @Test

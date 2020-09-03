@@ -1,5 +1,8 @@
 package uk.gov.hmcts.reform.sscs.service;
 
+import static java.lang.String.format;
+import static org.apache.commons.lang3.StringUtils.equalsIgnoreCase;
+import static uk.gov.hmcts.reform.sscs.config.SubscriptionType.JOINT_PARTY;
 import static uk.gov.hmcts.reform.sscs.config.SubscriptionType.REPRESENTATIVE;
 import static uk.gov.hmcts.reform.sscs.service.NotificationUtils.hasAppointee;
 
@@ -25,6 +28,12 @@ public class LetterUtils {
     public static Address getAddressToUseForLetter(NotificationWrapper wrapper, SubscriptionType subscriptionType) {
         if (REPRESENTATIVE.equals(subscriptionType)) {
             return wrapper.getNewSscsCaseData().getAppeal().getRep().getAddress();
+        } else if (JOINT_PARTY.equals(subscriptionType)) {
+            if (equalsIgnoreCase("yes",
+                    wrapper.getNewSscsCaseData().getJointPartyAddressSameAsAppellant())) {
+                return wrapper.getNewSscsCaseData().getAppeal().getAppellant().getAddress();
+            }
+            return wrapper.getNewSscsCaseData().getJointPartyAddress();
         } else {
             if (hasAppointee(wrapper.getSscsCaseDataWrapper())) {
                 return wrapper.getNewSscsCaseData().getAppeal().getAppellant().getAppointee().getAddress();
@@ -37,6 +46,8 @@ public class LetterUtils {
     public static String getNameToUseForLetter(NotificationWrapper wrapper, SubscriptionType subscriptionType) {
         if (REPRESENTATIVE.equals(subscriptionType)) {
             return SendNotificationHelper.getRepSalutation(wrapper.getNewSscsCaseData().getAppeal().getRep(), false);
+        } else if (JOINT_PARTY.equals(subscriptionType)) {
+            return format("%s %s",wrapper.getNewSscsCaseData().getJointPartyName().getFirstName(), wrapper.getNewSscsCaseData().getJointPartyName().getLastName());
         } else {
             if (hasAppointee(wrapper.getSscsCaseDataWrapper())) {
                 return wrapper.getNewSscsCaseData().getAppeal().getAppellant().getAppointee().getName().getFullNameNoTitle();

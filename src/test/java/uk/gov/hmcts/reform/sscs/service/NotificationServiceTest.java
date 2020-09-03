@@ -2184,6 +2184,17 @@ public class NotificationServiceTest {
         return buildBaseWrapperWithCaseData(getSscsCaseDataBuilder(appellant, rep, sscsDocument).build(), eventType);
     }
 
+    public static CcdNotificationWrapper buildBaseWrapperJointParty(NotificationEventType eventType, Appellant appellant, JointPartyName jointPartyName, Address address, SscsDocument sscsDocument) {
+        SscsCaseData sscsCaseData = getSscsCaseDataBuilder(appellant, null, sscsDocument)
+                .jointParty(YES)
+                .jointPartyName(jointPartyName)
+                .jointPartyAddressSameAsAppellant(address == null ? "Yes" : "No")
+                .jointPartyAddress(address)
+                .build();
+        CcdNotificationWrapper ccdNotificationWrapper = buildBaseWrapperWithCaseData(sscsCaseData, eventType);
+        return ccdNotificationWrapper;
+    }
+
     public static CcdNotificationWrapper buildBaseWrapperWithCaseData(SscsCaseData sscsCaseDataWithDocuments, NotificationEventType eventType) {
         SscsCaseDataWrapper caseDataWrapper = SscsCaseDataWrapper.builder()
             .newSscsCaseData(sscsCaseDataWithDocuments)

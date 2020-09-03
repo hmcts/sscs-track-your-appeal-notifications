@@ -1,17 +1,22 @@
 package uk.gov.hmcts.reform.sscs.service;
 
 import static java.util.Objects.nonNull;
-import static org.apache.commons.lang.StringUtils.equalsIgnoreCase;
+import static org.apache.commons.lang3.StringUtils.equalsIgnoreCase;
+import static org.apache.commons.lang3.StringUtils.isEmpty;
+import static org.apache.commons.lang3.StringUtils.isNotBlank;
+import static org.apache.commons.lang3.StringUtils.trimToNull;
 import static uk.gov.hmcts.reform.sscs.config.AppealHearingType.ORAL;
 import static uk.gov.hmcts.reform.sscs.config.SubscriptionType.APPELLANT;
 import static uk.gov.hmcts.reform.sscs.config.SubscriptionType.APPOINTEE;
+import static uk.gov.hmcts.reform.sscs.config.SubscriptionType.JOINT_PARTY;
 import static uk.gov.hmcts.reform.sscs.config.SubscriptionType.REPRESENTATIVE;
 import static uk.gov.hmcts.reform.sscs.domain.notify.NotificationEventType.*;
 import static uk.gov.hmcts.reform.sscs.service.NotificationValidService.*;
 
-import java.util.*;
-
-import org.apache.commons.lang.StringUtils;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Comparator;
+import java.util.List;
 import uk.gov.hmcts.reform.sscs.ccd.domain.Appeal;
 import uk.gov.hmcts.reform.sscs.ccd.domain.Appointee;
 import uk.gov.hmcts.reform.sscs.ccd.domain.Hearing;
@@ -61,6 +66,11 @@ public class NotificationUtils {
             && appeal.getRep().getHasRepresentative().equalsIgnoreCase("yes");
     }
 
+    public static boolean hasJointParty(SscsCaseData caseData) {
+        return caseData.isThereAJointParty()
+                && isNotBlank(trimToNull(caseData.getJointPartyName().getFullName()));
+    }
+
     public static boolean hasAppointeeSubscriptionOrIsMandatoryAppointeeLetter(SscsCaseDataWrapper wrapper) {
         Subscription subscription = getSubscription(wrapper.getNewSscsCaseData(), APPOINTEE);
         return hasAppointee(wrapper.getNewSscsCaseData().getAppeal().getAppellant().getAppointee(),
@@ -76,11 +86,20 @@ public class NotificationUtils {
             && LETTER_EVENT_TYPES.contains(wrapper.getNotificationEventType())));
     }
 
+    public static boolean hasJointPartySubscription(SscsCaseDataWrapper wrapper) {
+        Subscription subscription = getSubscription(wrapper.getNewSscsCaseData(), JOINT_PARTY);
+        return ((null != subscription && subscription.doesCaseHaveSubscriptions())
+                || (hasJointParty(wrapper.getNewSscsCaseData())
+                && LETTER_EVENT_TYPES.contains(wrapper.getNotificationEventType())));
+    }
+
     public static Subscription getSubscription(SscsCaseData sscsCaseData, SubscriptionType subscriptionType) {
         if (REPRESENTATIVE.equals(subscriptionType)) {
             return getPopulatedSubscriptionOrNull(sscsCaseData.getSubscriptions().getRepresentativeSubscription());
         } else if (APPELLANT.equals(subscriptionType)) {
             return getPopulatedSubscriptionOrNull(sscsCaseData.getSubscriptions().getAppellantSubscription());
+        } else if (JOINT_PARTY.equals(subscriptionType)) {
+            return getPopulatedSubscriptionOrNull(sscsCaseData.getSubscriptions().getJointPartySubscription());
         } else {
             return getPopulatedSubscriptionOrNull(sscsCaseData.getSubscriptions().getAppointeeSubscription());
         }
@@ -165,6 +184,7 @@ public class NotificationUtils {
     static boolean hasSubscription(NotificationWrapper wrapper, SubscriptionType subscriptionType) {
         return APPELLANT.equals(subscriptionType)
             || APPOINTEE.equals(subscriptionType)
+            || JOINT_PARTY.equals(subscriptionType)
             || (REPRESENTATIVE.equals(subscriptionType) && null != wrapper.getNewSscsCaseData().getAppeal().getRep());
     }
 
@@ -181,7 +201,7 @@ public class NotificationUtils {
             HearingDetails nextHearingDetails = o2.getValue();
             int idCompare = 0;
 
-            if (!StringUtils.isEmpty(hearingDetails.getHearingId()) && !StringUtils.isEmpty(nextHearingDetails.getHearingId())) {
+            if (!isEmpty(hearingDetails.getHearingId()) && !isEmpty(nextHearingDetails.getHearingId())) {
                 idCompare = hearingDetails.getHearingId().compareTo(nextHearingDetails.getHearingId());
             }
 
