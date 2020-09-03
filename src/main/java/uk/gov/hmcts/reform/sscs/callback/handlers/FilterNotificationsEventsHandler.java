@@ -68,7 +68,8 @@ public class FilterNotificationsEventsHandler implements CallbackHandler {
             RESEND_APPEAL_CREATED_NOTIFICATION,
             STRUCK_OUT,
             SUBSCRIPTION_UPDATED_NOTIFICATION,
-            VALID_APPEAL_CREATED
+            VALID_APPEAL_CREATED,
+            DIRECTION_ISSUED_WELSH
     ));
     private final NotificationService notificationService;
     private static final int RETRY = 1;
