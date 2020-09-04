@@ -567,7 +567,19 @@ public class NotificationsIt {
                         "0",
                         "0",
                         "2"
-                }
+                },
+                new Object[]{
+                        EVIDENCE_REMINDER_NOTIFICATION,
+                        "oral",
+                        Collections.singletonList("d994236b-d7c4-44ef-9627-12372bb0434a"),
+                        Collections.singletonList("7d36718b-1193-4b3d-86bd-db54612c5363"),
+                        Collections.emptyList(),
+                        "yes",
+                        "yes",
+                        "1",
+                        "1",
+                        "0"
+                },
         };
     }
 
