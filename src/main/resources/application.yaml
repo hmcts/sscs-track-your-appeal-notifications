@@ -979,4 +979,6 @@ welsh-months:
   12: "Rhagfyr"
 
 robotics:
-  schema.resource.location: /dummyLocation
+  schema:
+    resource:
+      location: /dummyLocation
