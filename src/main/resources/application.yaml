@@ -978,7 +978,4 @@ welsh-months:
   11: "Tachwedd"
   12: "Rhagfyr"
 
-robotics:
-  schema:
-    resource:
-      location: /dummyLocation
+robotics.schema.resource.location: "/dummyLocation"
