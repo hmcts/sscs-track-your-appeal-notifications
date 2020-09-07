@@ -419,11 +419,11 @@ notification:
           smsId: 9fe3a4f1-b8e2-4aed-aafb-6360d6ba2874
       evidenceReminder:
         appellant:
-          emailId: b9e47ec4-3b58-4b8d-9304-f77ac27fb7f2
-          smsId: e3f71440-d1ac-43c8-a8cc-a088c4f3c959
+          emailId: d994236b-d7c4-44ef-9627-12372bb0434a
+          smsId: 7d36718b-1193-4b3d-86bd-db54612c5363
         appointee:
-          emailId: b9e47ec4-3b58-4b8d-9304-f77ac27fb7f2
-          smsId: e3f71440-d1ac-43c8-a8cc-a088c4f3c959
+          emailId: d994236b-d7c4-44ef-9627-12372bb0434a
+          smsId: 7d36718b-1193-4b3d-86bd-db54612c5363
         representative:
           emailId: df0803aa-f804-49fe-a2ac-c27adc4bb585
           smsId: 5f91012e-0d3f-465b-b301-ee3ee5a50100
