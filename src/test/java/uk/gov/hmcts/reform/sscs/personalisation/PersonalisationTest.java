@@ -1,5 +1,6 @@
 package uk.gov.hmcts.reform.sscs.personalisation;
 
+import static org.apache.commons.lang3.StringUtils.EMPTY;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNotNull;
@@ -38,7 +39,6 @@ import java.util.List;
 import java.util.Locale;
 import java.util.Map;
 import java.util.Optional;
-
 import junitparams.JUnitParamsRunner;
 import junitparams.Parameters;
 import junitparams.converters.Nullable;
@@ -351,6 +351,7 @@ public class PersonalisationTest {
         assertEquals("http://link.com/progress/GLSCRR/expenses", result.get(CLAIMING_EXPENSES_LINK_LITERAL));
         assertEquals("http://link.com/progress/GLSCRR/abouthearing", result.get(HEARING_INFO_LINK_LITERAL));
         assertNull(result.get(EVIDENCE_RECEIVED_DATE_LITERAL));
+        assertEquals(EMPTY, result.get(JOINT));
 
         assertEquals(ADDRESS1, result.get(REGIONAL_OFFICE_NAME_LITERAL));
         assertEquals(ADDRESS2, result.get(SUPPORT_CENTRE_NAME_LITERAL));
@@ -1044,6 +1045,7 @@ public class PersonalisationTest {
         assertEquals(appointeeName.getFullNameNoTitle(), result.get(NAME));
         assertEquals(name.getFullNameNoTitle(), result.get(APPELLANT_NAME));
         assertEquals(tyaNumber, result.get(APPEAL_ID_LITERAL));
+        assertEquals(EMPTY, result.get(JOINT));
         assertEquals("http://link.com/manage-email-notifications/ZYX", result.get(MANAGE_EMAILS_LINK_LITERAL));
         assertEquals("http://tyalink.com/" + tyaNumber, result.get(TRACK_APPEAL_LINK_LITERAL));
         assertEquals("You are receiving this update as the appointee for Harry Kane.\r\n\r\n", result.get(APPOINTEE_DESCRIPTION));
@@ -1092,6 +1094,7 @@ public class PersonalisationTest {
 
         assertNotNull(result);
         assertEquals(repTyaNumber, result.get(APPEAL_ID_LITERAL));
+        assertEquals(EMPTY, result.get(JOINT));
         assertEquals("http://link.com/manage-email-notifications/ZYX", result.get(MANAGE_EMAILS_LINK_LITERAL));
         assertEquals("http://tyalink.com/" + repTyaNumber, result.get(TRACK_APPEAL_LINK_LITERAL));
         assertEquals("http://link.com/" + repTyaNumber, result.get(SUBMIT_EVIDENCE_LINK_LITERAL));
@@ -1145,6 +1148,7 @@ public class PersonalisationTest {
         assertNotNull(result);
         assertEquals(jointPartyTyaNumber, result.get(APPEAL_ID_LITERAL));
         assertEquals("Bob Builder", result.get(NAME));
+        assertEquals("joint ", result.get(JOINT));
         assertEquals("http://link.com/manage-email-notifications/ZYX", result.get(MANAGE_EMAILS_LINK_LITERAL));
         assertEquals("http://tyalink.com/" + jointPartyTyaNumber, result.get(TRACK_APPEAL_LINK_LITERAL));
         assertEquals("http://link.com/" + jointPartyTyaNumber, result.get(SUBMIT_EVIDENCE_LINK_LITERAL));
@@ -1153,7 +1157,7 @@ public class PersonalisationTest {
 
     @Test
     public void shouldHandleNoSubscription() {
-        when(macService.generateToken(StringUtils.EMPTY, PIP.name())).thenReturn("ZYX");
+        when(macService.generateToken(EMPTY, PIP.name())).thenReturn("ZYX");
         SscsCaseData response = SscsCaseData.builder()
                 .ccdCaseId(CASE_ID).caseReference(null)
                 .appeal(Appeal.builder().benefitType(BenefitType.builder().code("PIP").build())

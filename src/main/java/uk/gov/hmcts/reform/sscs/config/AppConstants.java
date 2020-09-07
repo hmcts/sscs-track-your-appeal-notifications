@@ -50,6 +50,7 @@ public final class AppConstants {
     public static final String HEARING_TIME_FORMAT = "hh:mm a";
     public static final String HEARING_TYPE = "hearing_type";
     public static final String INFO_REQUEST_DETAIL = "info_request_detail";
+    public static final String JOINT = "joint";
     public static final String MAC_ALGO = "HmacSHA256";
     public static final String MAC_LITERAL = "mac";
     public static final String MANAGE_EMAILS_LINK_LITERAL = "manage_emails_link";
