@@ -174,7 +174,7 @@ public class CcdNotificationWrapperTest {
     }
 
     @Test
-    @Parameters({"SYA_APPEAL_CREATED_NOTIFICATION, cor", "DWP_RESPONSE_RECEIVED_NOTIFICATION, oral", "ADJOURNED_NOTIFICATION, oral",
+    @Parameters({"SYA_APPEAL_CREATED_NOTIFICATION, cor", "ADJOURNED_NOTIFICATION, oral",
             "DWP_RESPONSE_RECEIVED_NOTIFICATION, paper",
             "HMCTS_APPEAL_LAPSED_NOTIFICATION, paper", "HMCTS_APPEAL_LAPSED_NOTIFICATION, oral",
             "DWP_APPEAL_LAPSED_NOTIFICATION, paper", "DWP_APPEAL_LAPSED_NOTIFICATION, oral",
@@ -190,7 +190,7 @@ public class CcdNotificationWrapperTest {
     }
 
     @Test
-    @Parameters({"APPEAL_LAPSED_NOTIFICATION, paper", "APPEAL_LAPSED_NOTIFICATION, oral", "EVIDENCE_REMINDER_NOTIFICATION, oral"})
+    @Parameters({"APPEAL_LAPSED_NOTIFICATION, paper", "APPEAL_LAPSED_NOTIFICATION, oral", "EVIDENCE_REMINDER_NOTIFICATION, oral", "DWP_RESPONSE_RECEIVED_NOTIFICATION, oral"})
     public void givenSubscriptions_shouldGetSubscriptionTypeListWithAppointeeAndJointParty(NotificationEventType notificationEventType, String hearingType) {
         ccdNotificationWrapper = buildCcdNotificationWrapperBasedOnEventTypeWithAppointeeAndJointParty(notificationEventType, hearingType);
         List<SubscriptionWithType> subsWithTypeList = ccdNotificationWrapper.getSubscriptionsBasedOnNotificationType();

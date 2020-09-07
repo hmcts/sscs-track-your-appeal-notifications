@@ -580,6 +580,18 @@ public class NotificationsIt {
                         "1",
                         "0"
                 },
+                new Object[]{
+                        DWP_RESPONSE_RECEIVED_NOTIFICATION,
+                        "oral",
+                        Collections.singletonList("ffa58120-24e4-44cb-8026-0becf1416684"),
+                        Collections.singletonList("f0444380-a8a4-4805-b9c2-563d1bd199cd"),
+                        Collections.emptyList(),
+                        "yes",
+                        "yes",
+                        "1",
+                        "1",
+                        "0"
+            },
         };
     }
 
