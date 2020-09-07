@@ -585,12 +585,12 @@ public class NotificationsIt {
                         "oral",
                         Collections.singletonList("ffa58120-24e4-44cb-8026-0becf1416684"),
                         Collections.singletonList("f0444380-a8a4-4805-b9c2-563d1bd199cd"),
-                        Collections.emptyList(),
+                        Collections.singletonList("f6be07b6-8451-4df8-90ef-191d9b6d18a1"),
                         "yes",
                         "yes",
                         "1",
                         "1",
-                        "0"
+                        "1"
             },
         };
     }

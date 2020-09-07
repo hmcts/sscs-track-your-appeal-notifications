@@ -6,6 +6,7 @@ import static org.apache.commons.lang3.StringUtils.defaultIfBlank;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
 import static uk.gov.hmcts.reform.sscs.domain.notify.NotificationEventType.APPEAL_LAPSED_NOTIFICATION;
+import static uk.gov.hmcts.reform.sscs.domain.notify.NotificationEventType.DWP_RESPONSE_RECEIVED_NOTIFICATION;
 import static uk.gov.hmcts.reform.sscs.domain.notify.NotificationEventType.DWP_UPLOAD_RESPONSE_NOTIFICATION;
 import static uk.gov.hmcts.reform.sscs.domain.notify.NotificationEventType.EVIDENCE_REMINDER_NOTIFICATION;
 
@@ -35,6 +36,8 @@ public class JointPartyFunctionalTest extends AbstractFunctionalTest {
     private String oralResponseReceivedJointPartyEmailId;
     @Value("${notification.english.oral.responseReceived.joint_party.smsId}")
     private String oralResponseReceivedJointPartySmsId;
+    @Value("${notification.english.oral.responseReceived.joint_party.letterId}")
+    private String oralResponseReceivedJointPartyLetterId;
 
     public JointPartyFunctionalTest() {
         super(30);
@@ -93,7 +96,7 @@ public class JointPartyFunctionalTest extends AbstractFunctionalTest {
         return new Object[]{
             new Object[]{APPEAL_LAPSED_NOTIFICATION, NO_HEARING_TYPE, expectedNumberOfLettersIsTwo},
             new Object[]{EVIDENCE_REMINDER_NOTIFICATION, ORAL, expectedNumberOfLettersIsZero},
-            new Object[]{DWP_UPLOAD_RESPONSE_NOTIFICATION, ORAL, expectedNumberOfLettersIsZero}
+            new Object[]{DWP_RESPONSE_RECEIVED_NOTIFICATION, ORAL, expectedNumberOfLettersIsTwo}
         };
     }
 }
