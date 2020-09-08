@@ -42,6 +42,19 @@ public final class SscsCaseDataUtils {
         return builderSscsCaseData(caseReference, subscribeEmail, subscribeSms, eventType, hearingType).build();
     }
 
+    public static SscsCaseData buildSscsCaseDataWelsh(
+            String caseReference,
+            String subscribeEmail,
+            String subscribeSms,
+            EventType eventType,
+            String hearingType
+    ) {
+        SscsCaseData caseData = builderSscsCaseData(caseReference, subscribeEmail, subscribeSms, eventType, hearingType).build();
+        caseData.setLanguagePreferenceWelsh("Yes");
+        return caseData;
+    }
+
+
     public static SscsCaseData.SscsCaseDataBuilder builderSscsCaseData(
             String caseReference,
             String subscribeEmail,
