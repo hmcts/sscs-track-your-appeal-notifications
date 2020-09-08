@@ -582,7 +582,7 @@ public class SendNotificationServiceTest {
     }
 
     @Test
-    @Parameters({"APPEAL_RECEIVED_NOTIFICATION", "DIRECTION_ISSUED", "DECISION_ISSUED", "ISSUE_FINAL_DECISION", "ISSUE_ADJOURNMENT_NOTICE", "DWP_UPLOAD_RESPONSE_NOTIFICATION"})
+    @Parameters({"APPEAL_RECEIVED_NOTIFICATION", "DIRECTION_ISSUED",  "DIRECTION_ISSUED_WELSH", "DECISION_ISSUED", "DECISION_ISSUED_WELSH", "ISSUE_FINAL_DECISION", "ISSUE_ADJOURNMENT_NOTICE", "DWP_UPLOAD_RESPONSE_NOTIFICATION"})
     public void sendLetterForNotificationType(NotificationEventType notificationEventType) {
         SubscriptionWithType appellantEmptySubscription = new SubscriptionWithType(EMPTY_SUBSCRIPTION, APPELLANT);
         when(pdfLetterService.generateLetter(any(), any(), any())).thenReturn("PDF".getBytes());
@@ -667,6 +667,36 @@ public class SendNotificationServiceTest {
                         .build())
                 .build());
 
+        List<SscsWelshDocument> welshDocuments = new ArrayList<>();
+
+        welshDocuments.add(SscsWelshDocument.builder().value(
+                SscsWelshDocumentDetails.builder().documentType(DocumentType.DIRECTION_NOTICE.getValue())
+                        .documentLink(DocumentLink.builder().documentUrl("testUrl").build())
+                        .documentDateAdded(LocalDate.now().minusDays(1).toString())
+                        .build())
+                .build());
+
+        welshDocuments.add(SscsWelshDocument.builder().value(
+                SscsWelshDocumentDetails.builder().documentType(DocumentType.DECISION_NOTICE.getValue())
+                        .documentLink(DocumentLink.builder().documentUrl("testUrl2").build())
+                        .documentDateAdded(LocalDate.now().minusDays(1).toString())
+                        .build())
+                .build());
+
+        welshDocuments.add(SscsWelshDocument.builder().value(
+                SscsWelshDocumentDetails.builder().documentType(DocumentType.FINAL_DECISION_NOTICE.getValue())
+                        .documentLink(DocumentLink.builder().documentUrl("testUrl3").build())
+                        .documentDateAdded(LocalDate.now().minusDays(1).toString())
+                        .build())
+                .build());
+
+        welshDocuments.add(SscsWelshDocument.builder().value(
+                SscsWelshDocumentDetails.builder().documentType(DocumentType.ADJOURNMENT_NOTICE.getValue())
+                        .documentLink(DocumentLink.builder().documentUrl("testUrl4").build())
+                        .documentDateAdded(LocalDate.now().minusDays(1).toString())
+                        .build())
+                .build());
+
         SscsCaseData sscsCaseDataWithDocuments = SscsCaseData.builder()
             .appeal(
                 Appeal
@@ -685,6 +715,7 @@ public class SendNotificationServiceTest {
                     .build())
             .createdInGapsFrom(createdInGapsFrom)
             .sscsDocument(documents)
+            .sscsWelshDocuments(welshDocuments)
             .caseReference(CASE_REFERENCE)
             .ccdCaseId(CASE_ID)
             .sscsInterlocDecisionDocument(SscsInterlocDecisionDocument.builder().documentLink(DocumentLink.builder().documentUrl("testUrl").build()).build())

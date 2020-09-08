@@ -4,17 +4,11 @@
     "callback_response_status": null,
     "callback_response_status_code": null,
     "case_data": {
-      "directionTypeDl": "appealToProceed",
+      "languagePreferenceWelsh" : "Yes",
       "appeal": {
         "appealReasons": {},
         "appellant": {
-          "address": {
-            "line1": "36 Dale Street",
-            "line2": "Village",
-            "town": "Liverpool",
-            "county": "Merseyside",
-            "postcode": "TS1 1ST"
-          },
+          "address": {},
           "contact": {
             "email": "mail@email.com",
             "phone": "01234567890"
@@ -23,15 +17,37 @@
             "dob": "1904-03-10",
             "nino": "AB 22 55 66 B"
           },
-          "isAppointee": null,
           "name": {
             "firstName": "Appellant",
             "lastName": "User",
             "title": "Mr"
+          },
+          "isAddressSameAsAppointee":"no",
+          "appointee": {
+            "name": {
+              "title": "Mr",
+              "firstName": "Appointee",
+              "lastName": "User"
+            },
+            "contact": {
+              "email": "test@tester.com",
+              "mobile": "07848484848"
+            },
+            "address": {
+              "line1": "1 Appointee Street",
+              "line2": "Newcastle",
+              "town": "Newcastle",
+              "county": "Tyne and Wear",
+              "postcode": "NE1 1AW"
+            },
+            "identity": {
+              "dob": "1998-07-01",
+              "nino": ""
+            }
           }
         },
         "benefitType": {
-          "code": "ESA"
+          "code": "PIP"
         },
         "hearingOptions": {
           "languageInterpreter": "Yes",
@@ -40,52 +56,45 @@
           "wantsToAttend": "Yes"
         },
         "mrnDetails": {},
-        "rep": {
-          "hasRepresentative": "Yes",
-          "name": {
-            "title": "Mr",
-            "firstName": "Harry",
-            "lastName": "Potter"
-          },
-          "address": {
-            "line1": "123 Hairy Lane",
-            "line2": "Off Hairy Park",
-            "town": "Town",
-            "county": "County",
-            "postcode": "TS2 2ST"
-          },
-          "contact": {},
-          "organisation": "HP Ltd"
-        },
+        "rep": {},
         "signer": null,
-        "hearingType": "paper"
+        "hearingType": "oral"
       },
       "caseReference": "SC022/14/12423",
       "events": [
         {
+          "id": "a95eb829-2da3-4ff4-9d21-90d22583facf",
           "value": {
             "date": "2017-05-24T14:01:18.243",
-            "type": "appealCreated",
-            "description": "Some Events"
-          },
-          "id": "2af58638-1d07-4848-9307-4ae831661b2e"
+            "description": "Some Events",
+            "type": "appealCreated"
+          }
         },
         {
+          "id": "89a668da-de45-4532-ba56-7ce5e14096a8",
           "value": {
-            "date": "2017-06-16T12:34:56.789",
-            "type": "appealReceived",
-            "description": "appealReceived"
-          },
-          "id": "57416cbe-54f2-4d53-933d-e25050a05623"
+            "date": "2016-01-16T12:34:56.789",
+            "description": "responseReceived",
+            "type": "responseReceived"
+          }
         }
       ],
       "subscriptions": {
-        "appellantSubscription": {
-          "email": "sscstest+notify2@greencroftconsulting.com",
+        "appointeeSubscription": {
+          "email": "sscstest+notify@greencroftconsulting.com",
           "mobile": "07398785050",
+          "subscribeEmail": "Yes",
+          "subscribeSms": "Yes",
+          "wantSmsNotifications": "Yes",
+          "tya": "v8eg15XeZk"
+        },
+        "representativeSubscription": {
+          "email": "",
+          "mobile": "",
           "subscribeEmail": "No",
           "subscribeSms": "No",
-          "tya": "abc123xyz"
+          "wantSmsNotifications": "No",
+          "tya": ""
         }
       }
     },
@@ -93,11 +102,11 @@
     "created_date": [
       2018,
       7,
-      25,
-      15,
-      59,
-      7,
-      699000000
+      26,
+      10,
+      51,
+      3,
+      45000000
     ],
     "data_classification": {
       "appeal": {
@@ -170,33 +179,45 @@
         "classification": "PUBLIC",
         "value": [
           {
+            "id": "a95eb829-2da3-4ff4-9d21-90d22583facf",
             "value": {
               "date": "PUBLIC",
-              "type": "PUBLIC",
-              "description": "PUBLIC"
-            },
-            "id": "2af58638-1d07-4848-9307-4ae831661b2e"
+              "description": "PUBLIC",
+              "type": "PUBLIC"
+            }
           },
           {
+            "id": "89a668da-de45-4532-ba56-7ce5e14096a8",
             "value": {
               "date": "PUBLIC",
-              "type": "PUBLIC",
-              "description": "PUBLIC"
-            },
-            "id": "57416cbe-54f2-4d53-933d-e25050a05623"
+              "description": "PUBLIC",
+              "type": "PUBLIC"
+            }
           }
         ]
       },
       "subscriptions": {
         "classification": "PUBLIC",
         "value": {
-          "appellantSubscription": {
+          "appointeeSubscription": {
             "classification": "PUBLIC",
             "value": {
               "email": "PUBLIC",
               "mobile": "PUBLIC",
               "subscribeEmail": "PUBLIC",
               "subscribeSms": "PUBLIC",
+              "wantSmsNotifications": "PUBLIC",
+              "tya": "PUBLIC"
+            }
+          },
+          "representativeSubscription": {
+            "classification": "PUBLIC",
+            "value": {
+              "email": "PUBLIC",
+              "mobile": "PUBLIC",
+              "subscribeEmail": "PUBLIC",
+              "subscribeSms": "PUBLIC",
+              "wantSmsNotifications": "PUBLIC",
               "tya": "PUBLIC"
             }
           }
@@ -208,11 +229,11 @@
     "last_modified": [
       2018,
       7,
-      25,
-      15,
-      59,
-      8,
-      768000000
+      26,
+      10,
+      51,
+      4,
+      255000000
     ],
     "security_classification": "PUBLIC",
     "security_classifications": {
@@ -286,43 +307,45 @@
         "classification": "PUBLIC",
         "value": [
           {
+            "id": "a95eb829-2da3-4ff4-9d21-90d22583facf",
             "value": {
               "date": "PUBLIC",
-              "type": "PUBLIC",
-              "description": "PUBLIC"
-            },
-            "id": "2af58638-1d07-4848-9307-4ae831661b2e"
+              "description": "PUBLIC",
+              "type": "PUBLIC"
+            }
           },
           {
+            "id": "89a668da-de45-4532-ba56-7ce5e14096a8",
             "value": {
               "date": "PUBLIC",
-              "type": "PUBLIC",
-              "description": "PUBLIC"
-            },
-            "id": "57416cbe-54f2-4d53-933d-e25050a05623"
+              "description": "PUBLIC",
+              "type": "PUBLIC"
+            }
           }
         ]
       },
       "subscriptions": {
         "classification": "PUBLIC",
         "value": {
-          "appellantSubscription": {
+          "appointeeSubscription": {
             "classification": "PUBLIC",
             "value": {
               "email": "PUBLIC",
               "mobile": "PUBLIC",
               "subscribeEmail": "PUBLIC",
               "subscribeSms": "PUBLIC",
+              "wantSmsNotifications": "PUBLIC",
               "tya": "PUBLIC"
             }
           },
-          "supporterSubscription": {
+          "representativeSubscription": {
             "classification": "PUBLIC",
             "value": {
               "email": "PUBLIC",
               "mobile": "PUBLIC",
               "subscribeEmail": "PUBLIC",
               "subscribeSms": "PUBLIC",
+              "wantSmsNotifications": "PUBLIC",
               "tya": "PUBLIC"
             }
           }
@@ -336,16 +359,11 @@
     "callback_response_status": null,
     "callback_response_status_code": null,
     "case_data": {
+      "languagePreferenceWelsh" : "Yes",
       "appeal": {
         "appealReasons": {},
         "appellant": {
-          "address": {
-            "line1": "36 Dale Street",
-            "line2": "Village",
-            "town": "Liverpool",
-            "county": "Merseyside",
-            "postcode": "TS1 1ST"
-          },
+          "address": {},
           "contact": {
             "email": "mail@email.com",
             "phone": "01234567890"
@@ -354,15 +372,37 @@
             "dob": "1904-03-10",
             "nino": "AB 22 55 66 B"
           },
-          "isAppointee": null,
           "name": {
-            "firstName": "User",
-            "lastName": "Test",
+            "firstName": "Appellant",
+            "lastName": "User",
             "title": "Mr"
+          },
+          "isAddressSameAsAppointee":"no",
+          "appointee": {
+            "name": {
+              "title": "Mr",
+              "firstName": "Appointee",
+              "lastName": "User"
+            },
+            "contact": {
+              "email": "test@tester.com",
+              "mobile": "07848484848"
+            },
+            "address": {
+              "line1": "1 Appointee Street",
+              "line2": "Newcastle",
+              "town": "Newcastle",
+              "county": "Tyne and Wear",
+              "postcode": "NE1 1AW"
+            },
+            "identity": {
+              "dob": "1998-07-01",
+              "nino": ""
+            }
           }
         },
         "benefitType": {
-          "code": "ESA"
+          "code": "PIP"
         },
         "hearingOptions": {
           "languageInterpreter": "Yes",
@@ -373,25 +413,34 @@
         "mrnDetails": {},
         "rep": {},
         "signer": null,
-        "hearingType": "paper"
+        "hearingType": "oral"
       },
       "caseReference": "SC022/14/12423",
       "events": [
         {
-          "id": "8069618d-603d-4838-8b98-7872ca8e93ac",
+          "id": "d5169475-fbfd-4fd3-9d55-d7fa3ebd645f",
           "value": {
             "date": "2017-05-24T14:01:18.243",
             "description": "Some Events",
-            "type": "appealReceived"
+            "type": "appealCreated"
           }
         }
       ],
       "subscriptions": {
-        "appellantSubscription": {
+        "appointeeSubscription": {
           "email": "sscstest+notify@greencroftconsulting.com",
-          "mobile": "07398785051",
+          "mobile": "07398785050",
+          "subscribeEmail": "Yes",
+          "subscribeSms": "Yes",
+          "wantSmsNotifications": "Yes",
+          "tya": "v8eg15XeZk"
+        },
+        "representativeSubscription": {
+          "email": "",
+          "mobile": "",
           "subscribeEmail": "No",
           "subscribeSms": "No",
+          "wantSmsNotifications": "No",
           "tya": ""
         }
       }
@@ -400,11 +449,11 @@
     "created_date": [
       2018,
       7,
-      25,
-      15,
-      59,
-      7,
-      699000000
+      26,
+      10,
+      51,
+      3,
+      45000000
     ],
     "data_classification": {
       "appeal": {
@@ -477,7 +526,7 @@
         "classification": "PUBLIC",
         "value": [
           {
-            "id": "8069618d-603d-4838-8b98-7872ca8e93ac",
+            "id": "d5169475-fbfd-4fd3-9d55-d7fa3ebd645f",
             "value": {
               "date": "PUBLIC",
               "description": "PUBLIC",
@@ -489,23 +538,25 @@
       "subscriptions": {
         "classification": "PUBLIC",
         "value": {
-          "appellantSubscription": {
+          "appointeeSubscription": {
             "classification": "PUBLIC",
             "value": {
               "email": "PUBLIC",
               "mobile": "PUBLIC",
               "subscribeEmail": "PUBLIC",
               "subscribeSms": "PUBLIC",
+              "wantSmsNotifications": "PUBLIC",
               "tya": "PUBLIC"
             }
           },
-          "supporterSubscription": {
+          "representativeSubscription": {
             "classification": "PUBLIC",
             "value": {
               "email": "PUBLIC",
               "mobile": "PUBLIC",
               "subscribeEmail": "PUBLIC",
               "subscribeSms": "PUBLIC",
+              "wantSmsNotifications": "PUBLIC",
               "tya": "PUBLIC"
             }
           }
@@ -517,11 +568,11 @@
     "last_modified": [
       2018,
       7,
-      25,
-      15,
-      59,
-      7,
-      701000000
+      26,
+      10,
+      51,
+      3,
+      47000000
     ],
     "security_classification": "PUBLIC",
     "security_classifications": {
@@ -595,7 +646,7 @@
         "classification": "PUBLIC",
         "value": [
           {
-            "id": "8069618d-603d-4838-8b98-7872ca8e93ac",
+            "id": "d5169475-fbfd-4fd3-9d55-d7fa3ebd645f",
             "value": {
               "date": "PUBLIC",
               "description": "PUBLIC",
@@ -607,13 +658,25 @@
       "subscriptions": {
         "classification": "PUBLIC",
         "value": {
-          "appellantSubscription": {
+          "appointeeSubscription": {
             "classification": "PUBLIC",
             "value": {
               "email": "PUBLIC",
               "mobile": "PUBLIC",
               "subscribeEmail": "PUBLIC",
               "subscribeSms": "PUBLIC",
+              "wantSmsNotifications": "PUBLIC",
+              "tya": "PUBLIC"
+            }
+          },
+          "representativeSubscription": {
+            "classification": "PUBLIC",
+            "value": {
+              "email": "PUBLIC",
+              "mobile": "PUBLIC",
+              "subscribeEmail": "PUBLIC",
+              "subscribeSms": "PUBLIC",
+              "wantSmsNotifications": "PUBLIC",
               "tya": "PUBLIC"
             }
           }
@@ -622,5 +685,5 @@
     },
     "state": "appealCreated"
   },
-  "event_id": "directionIssued"
+  "event_id": "evidenceReminder"
 }
