@@ -833,6 +833,8 @@ pdf-service:
       appealReceived: 'TB-SCS-GNO-WEL-00479.docx'
       directionIssued: 'TB-SCS-GNO-WEL-00479.docx'
       decisionIssued: 'TB-SCS-GNO-WEL-00479.docx'
+      directionIssuedWelsh: 'TB-SCS-GNO-WEL-00479.docx'
+      decisionIssuedWelsh: 'TB-SCS-GNO-WEL-00479.docx'
       issueFinalDecision: 'TB-SCS-GNO-ENG-00012.docx'
       issueAdjournmentNotice: 'TB-SCS-GNO-ENG-00012.docx'
       validAppealCreated: 'TB-SCS-GNO-WEL-00479.docx'
