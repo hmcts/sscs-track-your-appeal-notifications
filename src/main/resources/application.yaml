@@ -406,10 +406,6 @@ notification:
           emailId: 0d844af4-b390-42d7-94d5-4fd1ae9388d9
           smsId: 9fe3a4f1-b8e2-4aed-aafb-6360d6ba2874
           letterId: 419beb1c-4f26-45e7-8db3-69bfe5e9224d
-        joint_party:
-          emailId: ffa58120-24e4-44cb-8026-0becf1416684
-          smsId: f0444380-a8a4-4805-b9c2-563d1bd199cd
-          letterId: f6be07b6-8451-4df8-90ef-191d9b6d18a1
       dwpUploadResponse:
         docmosisId: TB-SCS-GNO-ENG-00261.docx
         appellant:
@@ -421,6 +417,9 @@ notification:
         representative:
           emailId: 0d844af4-b390-42d7-94d5-4fd1ae9388d9
           smsId: 9fe3a4f1-b8e2-4aed-aafb-6360d6ba2874
+        joint_party:
+          emailId: ffa58120-24e4-44cb-8026-0becf1416684
+          smsId: f0444380-a8a4-4805-b9c2-563d1bd199cd
       evidenceReminder:
         appellant:
           emailId: d994236b-d7c4-44ef-9627-12372bb0434a
@@ -726,10 +725,6 @@ notification:
           emailId: 47c91b7a-86d7-4a84-aaed-f9d85dfa866d
           smsId: 2406597b-636b-4f35-9a5c-03d25f03546c
           letterId: 419beb1c-4f26-45e7-8db3-69bfe5e9224d
-        joint_party:
-          emailId: affe1879-368a-4c22-a7da-8fc56cfd16e5
-          smsId: 434b1974-6392-43d4-a7d7-8673b85fcde1
-          letterId: 62737372-1345-4a90-a72b-4cbfa3981d1e
       dwpUploadResponse:
         docmosisId: TB-SCS-GNO-WEL-00478.docx
         appellant:
@@ -741,6 +736,9 @@ notification:
         representative:
           emailId: 47c91b7a-86d7-4a84-aaed-f9d85dfa866d
           smsId: 2406597b-636b-4f35-9a5c-03d25f03546c
+        joint_party:
+          emailId: affe1879-368a-4c22-a7da-8fc56cfd16e5
+          smsId: 434b1974-6392-43d4-a7d7-8673b85fcde1
       evidenceReminder:
         appellant:
           emailId: 738b40f4-e7fe-4121-b09d-0a76be4d2fe9

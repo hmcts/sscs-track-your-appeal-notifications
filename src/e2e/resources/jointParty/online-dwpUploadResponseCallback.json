@@ -4,6 +4,8 @@
     "callback_response_status": null,
     "callback_response_status_code": null,
     "case_data": {
+      "onlinePanel": {},
+      "createdInGapsFrom": "readyToList",
       "jointParty": "Yes",
       "jointPartyName": {
         "title": "mr",
@@ -48,7 +50,7 @@
         "mrnDetails": {},
         "rep": {},
         "signer": null,
-        "hearingType": "oral"
+        "hearingType": "cor"
       },
       "caseReference": "SC022/14/12423",
       "events": [
@@ -390,8 +392,7 @@
         },
         "mrnDetails": {},
         "rep": {},
-        "signer": null,
-        "hearingType": "oral"
+        "signer": null
       },
       "caseReference": "SC022/14/12423",
       "events": [
@@ -661,5 +662,5 @@
     },
     "state": "appealCreated"
   },
-  "event_id": "responseReceived"
+  "event_id": "dwpUploadResponse"
 }
