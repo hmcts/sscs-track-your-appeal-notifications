@@ -542,7 +542,7 @@ public class Personalisation<E extends NotificationWrapper> {
         String smsTemplateName = isSendSmsSubscriptionConfirmation() ? SUBSCRIPTION_CREATED_NOTIFICATION.getId() + "." + subscriptionType.toString().toLowerCase() :
                 templateConfig;
         String letterTemplateName = getLetterTemplateName(subscriptionType, notificationWrapper.getNotificationType());
-        String docmosisTemplateName = getDocmosisTemplateName(subscriptionType, notificationWrapper.getNotificationType());
+        String docmosisTemplateName = getDocmosisTemplateName(subscriptionType, notificationWrapper.getNotificationType(), notificationWrapper.getNewSscsCaseData());
 
         return config.getTemplate(templateConfig, smsTemplateName, letterTemplateName, docmosisTemplateName,
                 benefit, notificationWrapper.getHearingType(), notificationWrapper.getNewSscsCaseData().getCreatedInGapsFrom(),
@@ -581,19 +581,23 @@ public class Personalisation<E extends NotificationWrapper> {
         return emailTemplateName;
     }
 
-    private String getDocmosisTemplateName(SubscriptionType subscriptionType, NotificationEventType notificationEventType) {
+    private String getDocmosisTemplateName(SubscriptionType subscriptionType, NotificationEventType notificationEventType, SscsCaseData caseData) {
         String letterTemplateName = notificationEventType.getId();
-        if (subscriptionType != null
-                && (APPEAL_RECEIVED_NOTIFICATION.equals(notificationEventType)
-                || DIRECTION_ISSUED.equals(notificationEventType)
-                || DECISION_ISSUED.equals(notificationEventType)
+        if (subscriptionType != null && DIRECTION_ISSUED.equals(notificationEventType)
+                && caseData.getDirectionTypeDl() != null && caseData.getDirectionTypeDl().getValue() != null) {
+            letterTemplateName = letterTemplateName + "." + caseData.getDirectionTypeDl().getValue().getCode() + "." + subscriptionType.name().toLowerCase();
+        } else if (subscriptionType != null
+            && (APPEAL_RECEIVED_NOTIFICATION.equals(notificationEventType)
+            || DIRECTION_ISSUED.equals(notificationEventType)
+            || DECISION_ISSUED.equals(notificationEventType)
                 || DIRECTION_ISSUED_WELSH.equals(notificationEventType)
                 || DECISION_ISSUED_WELSH.equals(notificationEventType)
-                || REQUEST_INFO_INCOMPLETE.equals(notificationEventType)
-                || ISSUE_FINAL_DECISION.equals(notificationEventType)
-                || ISSUE_ADJOURNMENT_NOTICE.equals(notificationEventType))) {
+            || REQUEST_INFO_INCOMPLETE.equals(notificationEventType)
+            || ISSUE_FINAL_DECISION.equals(notificationEventType)
+            || ISSUE_ADJOURNMENT_NOTICE.equals(notificationEventType))) {
             letterTemplateName = letterTemplateName + "." + subscriptionType.name().toLowerCase();
         }
+
         return letterTemplateName;
     }
 

@@ -1,6 +1,7 @@
 package uk.gov.hmcts.reform.sscs.config;
 
 import static org.junit.Assert.*;
+import static uk.gov.hmcts.reform.sscs.ccd.domain.Benefit.PIP;
 import static uk.gov.hmcts.reform.sscs.config.AppealHearingType.ONLINE;
 import static uk.gov.hmcts.reform.sscs.config.AppealHearingType.ORAL;
 import static uk.gov.hmcts.reform.sscs.config.AppealHearingType.PAPER;
@@ -25,10 +26,21 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.context.junit4.rules.SpringClassRule;
 import org.springframework.test.context.junit4.rules.SpringMethodRule;
+import org.springframework.test.util.ReflectionTestUtils;
+
+import uk.gov.hmcts.reform.sscs.ccd.domain.Appeal;
 import uk.gov.hmcts.reform.sscs.ccd.domain.Benefit;
+import uk.gov.hmcts.reform.sscs.ccd.domain.DirectionType;
+import uk.gov.hmcts.reform.sscs.ccd.domain.DynamicList;
+import uk.gov.hmcts.reform.sscs.ccd.domain.HearingType;
 import uk.gov.hmcts.reform.sscs.ccd.domain.LanguagePreference;
+import uk.gov.hmcts.reform.sscs.ccd.domain.SscsCaseData;
+import uk.gov.hmcts.reform.sscs.domain.SscsCaseDataWrapper;
 import uk.gov.hmcts.reform.sscs.domain.notify.NotificationEventType;
 import uk.gov.hmcts.reform.sscs.domain.notify.Template;
+import uk.gov.hmcts.reform.sscs.factory.CcdNotificationWrapper;
+import uk.gov.hmcts.reform.sscs.factory.NotificationWrapper;
+import uk.gov.hmcts.reform.sscs.personalisation.Personalisation;
 
 @RunWith(JUnitParamsRunner.class)
 @SpringBootTest
@@ -88,6 +100,42 @@ public class NotificationConfigTest {
         assertTrue(template.getSmsTemplateId().isEmpty());
         assertNull(template.getLetterTemplateId());
         assertNull(template.getDocmosisTemplateId());
+    }
+
+    @Test
+    @Parameters({
+            "APPEAL_TO_PROCEED, TB-SCS-GNO-ENG-00551.docx, TB-SCS-GNO-ENG-00551.docx",
+            "PROVIDE_INFORMATION, TB-SCS-GNO-ENG-00067.docx, TB-SCS-GNO-ENG-00089.docx",
+            "GRANT_EXTENSION, TB-SCS-GNO-ENG-00556.docx, TB-SCS-GNO-ENG-00556.docx",
+            "REFUSE_EXTENSION, TB-SCS-GNO-ENG-00557.docx, TB-SCS-GNO-ENG-00557.docx",
+            "APPEAL_TO_PROCEED, TB-SCS-GNO-WEL-00468.docx, TB-SCS-GNO-WEL-00472.docx",
+            "PROVIDE_INFORMATION, TB-SCS-GNO-WEL-00468.docx, TB-SCS-GNO-WEL-00472.docx",
+            "GRANT_EXTENSION, TB-SCS-GNO-WEL-00468.docx, TB-SCS-GNO-WEL-00472.docx",
+            "REFUSE_EXTENSION, TB-SCS-GNO-WEL-00468.docx, TB-SCS-GNO-WEL-00472.docx"
+    })
+    public void shouldGiveCorrectDocmosisIdForDirectionIssued(DirectionType directionType, String configAppellantOrAppointee, String configRep) {
+        NotificationWrapper wrapper = new CcdNotificationWrapper(SscsCaseDataWrapper.builder()
+                .newSscsCaseData(SscsCaseData.builder()
+                        .languagePreferenceWelsh(configAppellantOrAppointee.contains("-WEL-") ? "Yes" : "No")
+                        .directionTypeDl(new DynamicList(directionType.toString()))
+                        .appeal(Appeal.builder()
+                                .hearingType(HearingType.ONLINE.getValue())
+                                .build())
+                        .build())
+                .notificationEventType(DIRECTION_ISSUED)
+                .build());
+        Personalisation personalisation = new Personalisation();
+        ReflectionTestUtils.setField(personalisation, "config", notificationConfig);
+
+        Template templateAppellant = personalisation.getTemplate(wrapper, PIP, APPELLANT);
+        assertNull(templateAppellant.getEmailTemplateId());
+        assertTrue(templateAppellant.getSmsTemplateId().isEmpty());
+        assertNull(templateAppellant.getLetterTemplateId());
+        assertEquals(configAppellantOrAppointee, templateAppellant.getDocmosisTemplateId());
+        Template templateAppointee = personalisation.getTemplate(wrapper, PIP, APPOINTEE);
+        assertEquals(configAppellantOrAppointee, templateAppointee.getDocmosisTemplateId());
+        Template templateRep = personalisation.getTemplate(wrapper, PIP, REPRESENTATIVE);
+        assertEquals(configRep, templateRep.getDocmosisTemplateId());
     }
 
     @SuppressWarnings({"Indentation", "unused"})
@@ -215,10 +263,6 @@ public class NotificationConfigTest {
                 new Object[]{null, Collections.EMPTY_LIST, null, "TB-SCS-GNO-ENG-00452.docx", ORAL, getTemplateName(REQUEST_INFO_INCOMPLETE, APPELLANT), null},
                 new Object[]{null, Collections.EMPTY_LIST, null, "TB-SCS-GNO-ENG-00452.docx", ORAL, getTemplateName(REQUEST_INFO_INCOMPLETE, APPOINTEE), null},
                 new Object[]{null, Collections.EMPTY_LIST, null, "TB-SCS-GNO-ENG-00452.docx", PAPER, getTemplateName(REQUEST_INFO_INCOMPLETE, APPOINTEE), null},
-                new Object[]{null, Collections.EMPTY_LIST, null, "TB-SCS-GNO-ENG-00067.docx", ORAL, getTemplateName(DIRECTION_ISSUED, APPELLANT), null},
-                new Object[]{null, Collections.EMPTY_LIST, null, "TB-SCS-GNO-ENG-00067.docx", PAPER, getTemplateName(DIRECTION_ISSUED, APPOINTEE), null},
-                new Object[]{null, Collections.EMPTY_LIST, null, "TB-SCS-GNO-ENG-00089.docx", ORAL, getTemplateName(DIRECTION_ISSUED, REPRESENTATIVE), null},
-                new Object[]{null, Collections.EMPTY_LIST, null, "TB-SCS-GNO-ENG-00089.docx", PAPER, getTemplateName(DIRECTION_ISSUED, REPRESENTATIVE), null},
                 new Object[]{null, Collections.EMPTY_LIST, null, "TB-SCS-GNO-ENG-00094.docx", ORAL, getTemplateName(DECISION_ISSUED, APPELLANT), null},
                 new Object[]{null, Collections.EMPTY_LIST, null, "TB-SCS-GNO-ENG-00094.docx", PAPER, getTemplateName(DECISION_ISSUED, APPOINTEE), null},
                 new Object[]{null, Collections.EMPTY_LIST, null, "TB-SCS-GNO-ENG-00095.docx", ORAL, getTemplateName(DECISION_ISSUED, REPRESENTATIVE), null},
