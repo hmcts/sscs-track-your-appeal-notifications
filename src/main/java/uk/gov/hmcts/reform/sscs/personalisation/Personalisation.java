@@ -587,14 +587,14 @@ public class Personalisation<E extends NotificationWrapper> {
                 && caseData.getDirectionTypeDl() != null && caseData.getDirectionTypeDl().getValue() != null) {
             letterTemplateName = letterTemplateName + "." + caseData.getDirectionTypeDl().getValue().getCode() + "." + subscriptionType.name().toLowerCase();
         } else if (subscriptionType != null
-            && (APPEAL_RECEIVED_NOTIFICATION.equals(notificationEventType)
-            || DIRECTION_ISSUED.equals(notificationEventType)
-            || DECISION_ISSUED.equals(notificationEventType)
+                && (APPEAL_RECEIVED_NOTIFICATION.equals(notificationEventType)
+                || DIRECTION_ISSUED.equals(notificationEventType)
+                || DECISION_ISSUED.equals(notificationEventType)
                 || DIRECTION_ISSUED_WELSH.equals(notificationEventType)
                 || DECISION_ISSUED_WELSH.equals(notificationEventType)
-            || REQUEST_INFO_INCOMPLETE.equals(notificationEventType)
-            || ISSUE_FINAL_DECISION.equals(notificationEventType)
-            || ISSUE_ADJOURNMENT_NOTICE.equals(notificationEventType))) {
+                || REQUEST_INFO_INCOMPLETE.equals(notificationEventType)
+                || ISSUE_FINAL_DECISION.equals(notificationEventType)
+                || ISSUE_ADJOURNMENT_NOTICE.equals(notificationEventType))) {
             letterTemplateName = letterTemplateName + "." + subscriptionType.name().toLowerCase();
         }
 
