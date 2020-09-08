@@ -32,12 +32,10 @@ public class JointPartyFunctionalTest extends AbstractFunctionalTest {
     private String oralEvidenceReminderJointPartyEmailId;
     @Value("${notification.english.oral.evidenceReminder.joint_party.smsId}")
     private String oralEvidenceReminderJointPartySmsId;
-    @Value("${notification.english.oral.responseReceived.joint_party.emailId}")
+    @Value("${notification.english.oral.uploadResponse.joint_party.emailId}")
     private String oralResponseReceivedJointPartyEmailId;
     @Value("${notification.english.oral.uploadResponse.joint_party.smsId}")
     private String oralUploadResponseJointPartySmsId;
-    @Value("${notification.english.oral.uploadResponse.joint_party.letterId}")
-    private String oralUploadResponseJointPartyLetterId;
 
     public JointPartyFunctionalTest() {
         super(30);
