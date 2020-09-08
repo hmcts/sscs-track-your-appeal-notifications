@@ -664,6 +664,20 @@ notification:
         docmosisId: TB-SCS-GNO-WEL-00474.docx
       representative:
         docmosisId: TB-SCS-GNO-WEL-00475.docx
+    directionIssuedWelsh:
+      appellant:
+        docmosisId: TB-SCS-GNO-WEL-00468.docx
+      appointee:
+        docmosisId: TB-SCS-GNO-WEL-00468.docx
+      representative:
+        docmosisId: TB-SCS-GNO-WEL-00472.docx
+    decisionIssuedWelsh:
+      appellant:
+        docmosisId: TB-SCS-GNO-WEL-00474.docx
+      appointee:
+        docmosisId: TB-SCS-GNO-WEL-00474.docx
+      representative:
+        docmosisId: TB-SCS-GNO-WEL-00475.docx
     issueFinalDecision:
       appellant:
         docmosisId: TB-SCS-GNO-ENG-00454.docx
@@ -863,6 +877,8 @@ pdf-service:
       appealReceived: 'TB-SCS-GNO-WEL-00479.docx'
       directionIssued: 'TB-SCS-GNO-WEL-00479.docx'
       decisionIssued: 'TB-SCS-GNO-WEL-00479.docx'
+      directionIssuedWelsh: 'TB-SCS-GNO-WEL-00479.docx'
+      decisionIssuedWelsh: 'TB-SCS-GNO-WEL-00479.docx'
       issueFinalDecision: 'TB-SCS-GNO-ENG-00012.docx'
       issueAdjournmentNotice: 'TB-SCS-GNO-ENG-00012.docx'
       validAppealCreated: 'TB-SCS-GNO-WEL-00479.docx'

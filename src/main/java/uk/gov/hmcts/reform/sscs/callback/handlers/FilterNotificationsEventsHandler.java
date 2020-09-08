@@ -9,7 +9,9 @@ import static uk.gov.hmcts.reform.sscs.domain.notify.NotificationEventType.APPEA
 import static uk.gov.hmcts.reform.sscs.domain.notify.NotificationEventType.APPEAL_RECEIVED_NOTIFICATION;
 import static uk.gov.hmcts.reform.sscs.domain.notify.NotificationEventType.APPEAL_WITHDRAWN_NOTIFICATION;
 import static uk.gov.hmcts.reform.sscs.domain.notify.NotificationEventType.DECISION_ISSUED;
+import static uk.gov.hmcts.reform.sscs.domain.notify.NotificationEventType.DECISION_ISSUED_WELSH;
 import static uk.gov.hmcts.reform.sscs.domain.notify.NotificationEventType.DIRECTION_ISSUED;
+import static uk.gov.hmcts.reform.sscs.domain.notify.NotificationEventType.DIRECTION_ISSUED_WELSH;
 import static uk.gov.hmcts.reform.sscs.domain.notify.NotificationEventType.DWP_APPEAL_LAPSED_NOTIFICATION;
 import static uk.gov.hmcts.reform.sscs.domain.notify.NotificationEventType.DWP_RESPONSE_RECEIVED_NOTIFICATION;
 import static uk.gov.hmcts.reform.sscs.domain.notify.NotificationEventType.DWP_UPLOAD_RESPONSE_NOTIFICATION;
@@ -50,6 +52,8 @@ public class FilterNotificationsEventsHandler implements CallbackHandler {
             APPEAL_WITHDRAWN_NOTIFICATION,
             DECISION_ISSUED,
             DIRECTION_ISSUED,
+            DECISION_ISSUED_WELSH,
+            DIRECTION_ISSUED_WELSH,
             DWP_APPEAL_LAPSED_NOTIFICATION,
             DWP_RESPONSE_RECEIVED_NOTIFICATION,
             DWP_UPLOAD_RESPONSE_NOTIFICATION,
@@ -64,7 +68,8 @@ public class FilterNotificationsEventsHandler implements CallbackHandler {
             RESEND_APPEAL_CREATED_NOTIFICATION,
             STRUCK_OUT,
             SUBSCRIPTION_UPDATED_NOTIFICATION,
-            VALID_APPEAL_CREATED
+            VALID_APPEAL_CREATED,
+            DIRECTION_ISSUED_WELSH
     ));
     private final NotificationService notificationService;
     private static final int RETRY = 1;

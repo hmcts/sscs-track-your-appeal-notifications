@@ -310,6 +310,12 @@ public class PersonalisationTest {
                 new Object[]{DECISION_ISSUED, APPELLANT, ONLINE, false, false, false, true},
                 new Object[]{DECISION_ISSUED, APPOINTEE, ONLINE, false, false, false, true},
                 new Object[]{DECISION_ISSUED, REPRESENTATIVE, ONLINE, false, false, false, true},
+                new Object[]{DIRECTION_ISSUED_WELSH, APPELLANT, ONLINE, false, false, false, true},
+                new Object[]{DIRECTION_ISSUED_WELSH, APPOINTEE, ONLINE, false, false, false, true},
+                new Object[]{DIRECTION_ISSUED_WELSH, REPRESENTATIVE, ONLINE, false, false, false, true},
+                new Object[]{DECISION_ISSUED_WELSH, APPELLANT, ONLINE, false, false, false, true},
+                new Object[]{DECISION_ISSUED_WELSH, APPOINTEE, ONLINE, false, false, false, true},
+                new Object[]{DECISION_ISSUED_WELSH, REPRESENTATIVE, ONLINE, false, false, false, true},
                 new Object[]{ISSUE_FINAL_DECISION, APPELLANT, ONLINE, false, false, false, true},
                 new Object[]{ISSUE_FINAL_DECISION, APPOINTEE, ONLINE, false, false, false, true},
                 new Object[]{ISSUE_FINAL_DECISION, REPRESENTATIVE, ONLINE, false, false, false, true},
@@ -766,6 +772,7 @@ public class PersonalisationTest {
         Map result = personalisation.setEvidenceReceivedNotificationData(new HashMap<>(), response, EVIDENCE_RECEIVED_NOTIFICATION);
 
         assertEquals("", result.get(EVIDENCE_RECEIVED_DATE_LITERAL));
+        assertEquals("", result.get(WELSH_EVIDENCE_RECEIVED_DATE_LITERAL));
     }
 
     @Test
