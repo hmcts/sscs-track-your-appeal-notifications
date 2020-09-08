@@ -84,7 +84,7 @@ gov.uk.notification.api.testRecipients:
   - "TS3 3ST"
 
 subscription.hmac.secret.text: ${EMAIL_MAC_SECRET_TEXT:our-big-secret}
-robotics.schema.resource.location: "/dummyLocation"
+
 evidence.submission.info.link: ${EVIDENCE_SUBMISSION_INFO_LINK:http://localhost:3000/evidence/appeal_id}
 manage.emails.link: ${SSCS_MANAGE_EMAILS_LINK:http://localhost:3000/manage-email-notifications/mac}
 track.appeal.link: ${SSCS_TRACK_YOUR_APPEAL_LINK:http://localhost:3000/trackyourappeal/appeal_id}
