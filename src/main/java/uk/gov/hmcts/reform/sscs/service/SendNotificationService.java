@@ -284,11 +284,9 @@ public class SendNotificationService {
         String documentUrl = getBundledLetterDocumentUrl(notificationEventType, newSscsCaseData);
 
         if (null != documentUrl) {
-
             associatedCasePdf = evidenceManagementService.download(URI.create(documentUrl), DM_STORE_USER_ID);
 
         }
-
         return associatedCasePdf;
     }
 
@@ -301,11 +299,15 @@ public class SendNotificationService {
             return getDocumentForType(newSscsCaseData.getLatestDocumentForDocumentType(FINAL_DECISION_NOTICE));
         } else if (ISSUE_ADJOURNMENT_NOTICE.equals(notificationEventType)) {
             return getDocumentForType(newSscsCaseData.getLatestDocumentForDocumentType(ADJOURNMENT_NOTICE));
+        } else if (DECISION_ISSUED_WELSH.equals(notificationEventType)) {
+            return getDocumentForType(newSscsCaseData.getLatestWelshDocumentForDocumentType(DECISION_NOTICE).orElse(null));
+        } else if (DIRECTION_ISSUED_WELSH.equals(notificationEventType)) {
+            return getDocumentForType(newSscsCaseData.getLatestWelshDocumentForDocumentType(DIRECTION_NOTICE).orElse(null));
         }
         return null;
     }
 
-    private static String getDocumentForType(SscsDocument sscsDocument) {
+    private static String getDocumentForType(AbstractDocument sscsDocument) {
         if (sscsDocument != null) {
             return sscsDocument.getValue().getDocumentLink().getDocumentUrl();
         }

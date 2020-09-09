@@ -4,7 +4,7 @@
     "callback_response_status": null,
     "callback_response_status_code": null,
     "case_data": {
-      "directionTypeDl": "appealToProceed",
+      "languagePreferenceWelsh" : "Yes",
       "appeal": {
         "appealReasons": {},
         "appellant": {
@@ -31,7 +31,7 @@
           }
         },
         "benefitType": {
-          "code": "ESA"
+          "code": "PIP"
         },
         "hearingOptions": {
           "languageInterpreter": "Yes",
@@ -58,9 +58,11 @@
           "organisation": "HP Ltd"
         },
         "signer": null,
-        "hearingType": "paper"
+        "hearingType": "paper",
+        "receivedVia": "Online"
       },
       "caseReference": "SC022/14/12423",
+      "createdInGapsFrom": "readyToList",
       "events": [
         {
           "value": {
@@ -336,6 +338,7 @@
     "callback_response_status": null,
     "callback_response_status_code": null,
     "case_data": {
+      "languagePreferenceWelsh" : "Yes",
       "appeal": {
         "appealReasons": {},
         "appellant": {
@@ -622,5 +625,5 @@
     },
     "state": "appealCreated"
   },
-  "event_id": "directionIssued"
+  "event_id": "appealReceived"
 }

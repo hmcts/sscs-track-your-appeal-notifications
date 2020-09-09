@@ -264,6 +264,7 @@ dependencies {
     compile group: 'io.rest-assured', name: 'json-path', version: versions.restAssured
     compile group: 'io.rest-assured', name: 'xml-path', version: versions.restAssured
     compile group: 'io.springfox', name: 'springfox-swagger2', version: versions.springfoxSwagger
+    compile group: 'io.springfox', name: 'springfox-swagger2', version: versions.springfoxSwagger
     compile group: 'io.springfox', name: 'springfox-swagger-ui', version: versions.springfoxSwagger
     compile group: 'com.atlassian.commonmark', name: 'commonmark', version: '0.15.2'
     compile group: 'org.springframework', name: 'spring-jms'
@@ -278,8 +279,8 @@ dependencies {
         exclude group: "uk.gov.hmcts.reform", module:"http-proxy-spring-boot-autoconfigure"
     }
     compile group: 'uk.gov.hmcts.reform', name: 'service-auth-provider-client', version: '3.1.2'
-    compile group: 'uk.gov.hmcts.reform', name: 'sscs-common', version: '3.4.59-RC-SSCS-7977'
-    compile group: 'uk.gov.hmcts.reform', name: 'sscs-pdf-email-common', version: '1.4.9'
+    compile group: 'uk.gov.hmcts.reform', name: 'sscs-common', version: '3.4.60'
+    compile group: 'uk.gov.hmcts.reform', name: 'sscs-pdf-email-common', version: '1.4.11'
 
     compile group: 'uk.gov.service.notify', name: 'notifications-java-client', version: '3.17.0-RELEASE'
     compile group: 'com.squareup.okhttp3', name: 'okhttp', version: '4.8.1'

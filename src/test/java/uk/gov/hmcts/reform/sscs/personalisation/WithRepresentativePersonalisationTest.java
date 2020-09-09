@@ -18,7 +18,7 @@ import uk.gov.hmcts.reform.sscs.config.AppConstants;
 public class WithRepresentativePersonalisationTest {
 
     private WithRepresentativePersonalisation withRepresentativePersonalisation =
-        new WithRepresentativePersonalisation();
+            new WithRepresentativePersonalisation();
 
     @Test
     @Parameters(method = "generateSscsCaseDataForTest")
@@ -32,65 +32,65 @@ public class WithRepresentativePersonalisationTest {
     @SuppressWarnings({"unused"})
     private Object[] generateSscsCaseDataForTest() {
         SscsCaseData sscsCaseDataWithRepsFlagYes = SscsCaseData.builder()
-            .appeal(Appeal.builder()
-                .rep(Representative.builder()
-                    .hasRepresentative("yes")
-                    .name(Name.builder()
-                        .firstName("Manish")
-                        .lastName("Sharma")
-                        .title("Mrs")
+                .appeal(Appeal.builder()
+                        .rep(Representative.builder()
+                                .hasRepresentative("yes")
+                                .name(Name.builder()
+                                        .firstName("Manish")
+                                        .lastName("Sharma")
+                                        .title("Mrs")
+                                        .build())
+                                .build())
                         .build())
-                    .build())
-                .build())
-            .build();
+                .build();
         SscsCaseData sscsCaseDataWithRepsFlagNo = SscsCaseData.builder()
-            .appeal(Appeal.builder()
-                .rep(Representative.builder()
-                    .hasRepresentative("no")
-                    .name(Name.builder()
-                        .firstName("Manish")
-                        .lastName("Sharma")
-                        .title("Mrs")
+                .appeal(Appeal.builder()
+                        .rep(Representative.builder()
+                                .hasRepresentative("no")
+                                .name(Name.builder()
+                                        .firstName("Manish")
+                                        .lastName("Sharma")
+                                        .title("Mrs")
+                                        .build())
+                                .build())
                         .build())
-                    .build())
-                .build())
-            .build();
+                .build();
         SscsCaseData sscsCaseDataWithRepsOrgOnlyFlagYes = SscsCaseData.builder()
-            .appeal(Appeal.builder()
-                .rep(Representative.builder()
-                    .hasRepresentative("yes")
-                    .name(Name.builder().build())
-                        .organisation("organisation")
+                .appeal(Appeal.builder()
+                        .rep(Representative.builder()
+                                .hasRepresentative("yes")
+                                .name(Name.builder().build())
+                                .organisation("organisation")
+                                .build())
                         .build())
-                .build())
-            .build();
+                .build();
         SscsCaseData sscsCaseDataWithRepsOrgOnlyFlagNo = SscsCaseData.builder()
-            .appeal(Appeal.builder()
-                .rep(Representative.builder()
-                    .hasRepresentative("no")
-                    .name(Name.builder().build())
-                        .organisation("organisation")
+                .appeal(Appeal.builder()
+                        .rep(Representative.builder()
+                                .hasRepresentative("no")
+                                .name(Name.builder().build())
+                                .organisation("organisation")
+                                .build())
                         .build())
-                .build())
-            .build();
+                .build();
         SscsCaseData sscsCaseDataWithNoReps = SscsCaseData.builder()
-            .appeal(Appeal.builder()
-                .rep(null)
-                .build())
-            .build();
+                .appeal(Appeal.builder()
+                        .rep(null)
+                        .build())
+                .build();
         SscsCaseData sscsCaseDataWithEmptyReps = SscsCaseData.builder()
-            .appeal(Appeal.builder()
-                .rep(Representative.builder().build())
-                .build())
-            .build();
+                .appeal(Appeal.builder()
+                        .rep(Representative.builder().build())
+                        .build())
+                .build();
         SscsCaseData sscsCaseDataWithEmptyRepsAndEmptyNamesFlagYes = SscsCaseData.builder()
-            .appeal(Appeal.builder()
-                .rep(Representative.builder()
-                    .hasRepresentative("yes")
-                    .name(Name.builder().build())
-                    .build())
-                .build())
-            .build();
+                .appeal(Appeal.builder()
+                        .rep(Representative.builder()
+                                .hasRepresentative("yes")
+                                .name(Name.builder().build())
+                                .build())
+                        .build())
+                .build();
         return new Object[]{
             new Object[]{sscsCaseDataWithRepsFlagYes, "Manish Sharma"},
             new Object[]{sscsCaseDataWithRepsFlagNo, null},
