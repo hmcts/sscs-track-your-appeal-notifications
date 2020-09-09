@@ -430,6 +430,39 @@ public class NotificationsIt {
         validateLetterNotifications(expectedLetterTemplateIds, wantedNumberOfSendLetterInvocations, expectedName);
     }
 
+    @Test
+    @Parameters(method = "generateJointPartyNotificationScenarios")
+    public void shouldSendJointPartyNotificationsForAnEventForAnOralOrPaperHearingAndForEachSubscription(
+            NotificationEventType notificationEventType, String hearingType, List<String> expectedEmailTemplateIds,
+            List<String> expectedSmsTemplateIds, List<String> expectedLetterTemplateIds, String jointPartyEmailSubs,
+            String jointPartySmsSubs, int wantedNumberOfSendEmailInvocations, int wantedNumberOfSendSmsInvocations, int wantedNumberOfSendLetterInvocations) throws Exception {
+        String path = getClass().getClassLoader().getResource("json/ccdResponseWithJointParty.json").getFile();
+        String json = FileUtils.readFileToString(new File(path), StandardCharsets.UTF_8.name());
+
+        json = updateEmbeddedJson(json, hearingType, "case_details", "case_data", "appeal", "hearingType");
+        json = updateEmbeddedJson(json, "no", "case_details", "case_data", "subscriptions",
+                "appellantSubscription", "subscribeEmail");
+        json = updateEmbeddedJson(json, "no", "case_details", "case_data", "subscriptions",
+                "appellantSubscription", "subscribeSms");
+        json = updateEmbeddedJson(json, jointPartyEmailSubs, "case_details", "case_data", "subscriptions",
+                "jointPartySubscription", "subscribeEmail");
+        json = updateEmbeddedJson(json, jointPartySmsSubs, "case_details", "case_data", "subscriptions",
+                "jointPartySubscription", "subscribeSms");
+        json = updateEmbeddedJson(json, notificationEventType.getId(), "event_id");
+
+        if (notificationEventType.equals(REQUEST_INFO_INCOMPLETE)) {
+            json = updateEmbeddedJson(json, "Yes", "case_details", "case_data", "informationFromAppellant");
+        }
+
+        HttpServletResponse response = getResponse(getRequestWithAuthHeader(json));
+        assertHttpStatus(response, HttpStatus.OK);
+
+        String expectedName = "Joint Party";
+        validateEmailNotifications(expectedEmailTemplateIds, wantedNumberOfSendEmailInvocations, expectedName);
+        validateSmsNotifications(expectedSmsTemplateIds, wantedNumberOfSendSmsInvocations);
+        validateLetterNotifications(expectedLetterTemplateIds, wantedNumberOfSendLetterInvocations, expectedName);
+    }
+
     private void validateEmailNotifications(List<String> expectedEmailTemplateIds,
                                             int wantedNumberOfSendEmailInvocations, String expectedName)
         throws NotificationClientException {
@@ -482,6 +515,60 @@ public class NotificationsIt {
             }
             assertEquals("Dexter Vasquez", personalisation.get(APPELLANT_NAME));
         }
+    }
+
+    @SuppressWarnings({"Indentation", "unused"})
+    private Object[] generateJointPartyNotificationScenarios() {
+        return new Object[]{
+                new Object[]{
+                        APPEAL_LAPSED_NOTIFICATION,
+                        "paper",
+                        Collections.singletonList("8ce8d794-75e8-49a0-b4d2-0c6cd2061c11"),
+                        Collections.singletonList("d2b4394b-d1c9-4d5c-a44e-b382e41c67e5"),
+                        Arrays.asList("85a81e3c-a59f-4ae9-9c99-266dfd5ca95f", "85a81e3c-a59f-4ae9-9c99-266dfd5ca95f"),
+                        "yes",
+                        "yes",
+                        "1",
+                        "1",
+                        "2"
+                },
+                new Object[]{
+                        APPEAL_LAPSED_NOTIFICATION,
+                        "oral",
+                        Collections.singletonList("8ce8d794-75e8-49a0-b4d2-0c6cd2061c11"),
+                        Collections.singletonList("d2b4394b-d1c9-4d5c-a44e-b382e41c67e5"),
+                        Arrays.asList("85a81e3c-a59f-4ae9-9c99-266dfd5ca95f", "85a81e3c-a59f-4ae9-9c99-266dfd5ca95f"),
+                        "yes",
+                        "yes",
+                        "1",
+                        "1",
+                        "2"
+                },
+                new Object[]{
+                        APPEAL_LAPSED_NOTIFICATION,
+                        "paper",
+                        Collections.emptyList(),
+                        Collections.singletonList("d2b4394b-d1c9-4d5c-a44e-b382e41c67e5"),
+                        Arrays.asList("85a81e3c-a59f-4ae9-9c99-266dfd5ca95f", "85a81e3c-a59f-4ae9-9c99-266dfd5ca95f"),
+                        "no",
+                        "yes",
+                        "0",
+                        "1",
+                        "2"
+                },
+                new Object[]{
+                        APPEAL_LAPSED_NOTIFICATION,
+                        "paper",
+                        Collections.emptyList(),
+                        Collections.emptyList(),
+                        Arrays.asList("85a81e3c-a59f-4ae9-9c99-266dfd5ca95f", "85a81e3c-a59f-4ae9-9c99-266dfd5ca95f"),
+                        "no",
+                        "no",
+                        "0",
+                        "0",
+                        "2"
+                }
+        };
     }
 
     @SuppressWarnings({"Indentation", "unused"})

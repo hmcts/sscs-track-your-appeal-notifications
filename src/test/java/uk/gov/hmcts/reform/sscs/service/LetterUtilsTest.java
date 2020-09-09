@@ -20,6 +20,7 @@ import org.apache.pdfbox.pdmodel.PDPage;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import uk.gov.hmcts.reform.sscs.ccd.domain.Address;
+import uk.gov.hmcts.reform.sscs.ccd.domain.JointPartyName;
 import uk.gov.hmcts.reform.sscs.ccd.domain.Name;
 import uk.gov.hmcts.reform.sscs.ccd.domain.Representative;
 import uk.gov.hmcts.reform.sscs.exception.NotificationClientRuntimeException;
@@ -85,6 +86,34 @@ public class LetterUtilsTest {
         );
 
         assertEquals(APPELLANT_WITH_ADDRESS_AND_APPOINTEE.getAppointee().getName().getFullNameNoTitle(), getNameToUseForLetter(wrapper, APPOINTEE));
+    }
+
+    @Test
+    public void useJointPartyAddressForLetter() {
+        Address jointPartyAddress = Address.builder().county("county").line1("line1").line2("line2").postcode("EN1 1AF").build();
+        NotificationWrapper wrapper = NotificationServiceTest.buildBaseWrapperJointParty(
+                SYA_APPEAL_CREATED_NOTIFICATION,
+                APPELLANT_WITH_ADDRESS_AND_APPOINTEE,
+                JointPartyName.builder().title("Mr").firstName("Joint").lastName("Party").build(),
+                jointPartyAddress,
+                null
+        );
+        assertEquals(jointPartyAddress, getAddressToUseForLetter(wrapper, JOINT_PARTY));
+        assertEquals("Joint Party", getNameToUseForLetter(wrapper, JOINT_PARTY));
+    }
+
+    @Test
+    public void useAppellantAddressForJointPartyIfSameAsAppellantLetter() {
+        NotificationWrapper wrapper = NotificationServiceTest.buildBaseWrapperJointParty(
+                SYA_APPEAL_CREATED_NOTIFICATION,
+                APPELLANT_WITH_ADDRESS_AND_APPOINTEE,
+                JointPartyName.builder().title("Mrs").firstName("Betty").lastName("Bloom").build(),
+                null,
+                null
+        );
+        Address appellantAddress = wrapper.getNewSscsCaseData().getAppeal().getAppellant().getAddress();
+        assertEquals(appellantAddress, getAddressToUseForLetter(wrapper, JOINT_PARTY));
+        assertEquals("Betty Bloom", getNameToUseForLetter(wrapper, JOINT_PARTY));
     }
 
     @Test

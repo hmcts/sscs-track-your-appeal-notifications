@@ -383,6 +383,27 @@ public class NotificationUtilsTest {
         assertFalse(hasRepSubscriptionOrIsMandatoryRepLetter(wrapper.getSscsCaseDataWrapper()));
     }
 
+    @Test
+    public void shouldReturnFalseWhenThereIsNoJointParty() {
+        assertFalse(hasJointParty(buildBaseWrapper(null, null).getNewSscsCaseData()));
+    }
+
+    @Test
+    public void shouldReturnTrueWhenThereIsAJointParty() {
+        assertTrue(hasJointParty(buildJointPartyWrapper(null, null).getNewSscsCaseData()));
+    }
+
+    @Test
+    public void shouldReturnTrueWhenThereIsAJointPartySubscription() {
+        Subscription subscription = Subscription.builder().subscribeSms(YES).subscribeEmail(YES).build();
+        assertTrue(hasJointPartySubscription(buildJointPartyWrapper(subscription, null).getSscsCaseDataWrapper()));
+    }
+
+    @Test
+    public void shouldReturnFalseWhenThereIsANoJointPartySubscription() {
+        assertFalse(hasJointPartySubscription(buildJointPartyWrapper(null, null).getSscsCaseDataWrapper()));
+    }
+
     private Object[] mandatoryNotificationTypes() {
         return new Object[]{
             STRUCK_OUT,
@@ -422,6 +443,21 @@ public class NotificationUtilsTest {
                 true, false
             }
         };
+    }
+
+    private static CcdNotificationWrapper buildJointPartyWrapper(Subscription subscription, NotificationEventType eventType) {
+        CcdNotificationWrapper ccdNotificationWrapper = buildBaseWrapper(subscription, eventType);
+        final SscsCaseData sscsCaseData = ccdNotificationWrapper.getNewSscsCaseData().toBuilder()
+                .jointParty(YES)
+                .jointPartyAddressSameAsAppellant(YES)
+                .jointPartyName(JointPartyName.builder().firstName("Joint").lastName("Party").build())
+                .subscriptions(Subscriptions.builder().appellantSubscription(subscription).jointPartySubscription(subscription).build())
+                .build();
+        return new CcdNotificationWrapper(SscsCaseDataWrapper.builder()
+                .newSscsCaseData(sscsCaseData)
+                .oldSscsCaseData(sscsCaseData)
+                .notificationEventType(eventType)
+                .build());
     }
 
     private static CcdNotificationWrapper buildBaseWrapper(Subscription subscription, NotificationEventType eventType) {
