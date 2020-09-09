@@ -5,8 +5,7 @@ import static org.apache.commons.lang3.StringUtils.EMPTY;
 import static org.apache.commons.lang3.StringUtils.defaultIfBlank;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
-import static uk.gov.hmcts.reform.sscs.domain.notify.NotificationEventType.APPEAL_LAPSED_NOTIFICATION;
-import static uk.gov.hmcts.reform.sscs.domain.notify.NotificationEventType.EVIDENCE_REMINDER_NOTIFICATION;
+import static uk.gov.hmcts.reform.sscs.domain.notify.NotificationEventType.*;
 
 import java.lang.reflect.Field;
 import java.util.List;
@@ -26,6 +25,10 @@ public class JointPartyFunctionalTest extends AbstractFunctionalTest {
     private String appealLapsedJointPartyEmailId;
     @Value("${notification.english.appealLapsed.joint_party.smsId}")
     private String appealLapsedJointPartySmsId;
+    @Value("${notification.english.hearingAdjourned.joint_party.emailId}")
+    private String hearingAdjournedJointPartyEmailId;
+    @Value("${notification.english.hearingAdjourned.joint_party.smsId}")
+    private String hearingAdjournedJointPartySmsId;
     @Value("${notification.english.oral.evidenceReminder.joint_party.emailId}")
     private String oralEvidenceReminderJointPartyEmailId;
     @Value("${notification.english.oral.evidenceReminder.joint_party.smsId}")
@@ -87,6 +90,7 @@ public class JointPartyFunctionalTest extends AbstractFunctionalTest {
         final int expectedNumberOfLettersIsZero = 0;
         return new Object[]{
             new Object[]{APPEAL_LAPSED_NOTIFICATION, NO_HEARING_TYPE, expectedNumberOfLettersIsTwo},
+            new Object[]{ADJOURNED_NOTIFICATION, NO_HEARING_TYPE, expectedNumberOfLettersIsZero},
             new Object[]{EVIDENCE_REMINDER_NOTIFICATION, ORAL, expectedNumberOfLettersIsZero}
         };
     }

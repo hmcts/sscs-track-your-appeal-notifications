@@ -174,7 +174,7 @@ public class CcdNotificationWrapperTest {
     }
 
     @Test
-    @Parameters({"SYA_APPEAL_CREATED_NOTIFICATION, cor", "DWP_RESPONSE_RECEIVED_NOTIFICATION, oral", "ADJOURNED_NOTIFICATION, oral",
+    @Parameters({"SYA_APPEAL_CREATED_NOTIFICATION, cor", "DWP_RESPONSE_RECEIVED_NOTIFICATION, oral",
             "DWP_RESPONSE_RECEIVED_NOTIFICATION, paper",
             "HMCTS_APPEAL_LAPSED_NOTIFICATION, paper", "HMCTS_APPEAL_LAPSED_NOTIFICATION, oral",
             "DWP_APPEAL_LAPSED_NOTIFICATION, paper", "DWP_APPEAL_LAPSED_NOTIFICATION, oral",
@@ -185,16 +185,17 @@ public class CcdNotificationWrapperTest {
     public void givenSubscriptions_shouldGetSubscriptionTypeListWithAppointee(NotificationEventType notificationEventType, String hearingType) {
         ccdNotificationWrapper = buildCcdNotificationWrapperBasedOnEventTypeWithAppointeeAndJointParty(notificationEventType, hearingType);
         List<SubscriptionWithType> subsWithTypeList = ccdNotificationWrapper.getSubscriptionsBasedOnNotificationType();
-        Assert.assertEquals(1,subsWithTypeList.size());
+        Assert.assertEquals(1, subsWithTypeList.size());
         Assert.assertEquals(SubscriptionType.APPOINTEE, subsWithTypeList.get(0).getSubscriptionType());
     }
 
     @Test
-    @Parameters({"APPEAL_LAPSED_NOTIFICATION, paper", "APPEAL_LAPSED_NOTIFICATION, oral", "EVIDENCE_REMINDER_NOTIFICATION, oral"})
+    @Parameters({"APPEAL_LAPSED_NOTIFICATION, paper", "APPEAL_LAPSED_NOTIFICATION, oral", "EVIDENCE_REMINDER_NOTIFICATION, oral",
+            "ADJOURNED_NOTIFICATION, paper", "ADJOURNED_NOTIFICATION, oral"})
     public void givenSubscriptions_shouldGetSubscriptionTypeListWithAppointeeAndJointParty(NotificationEventType notificationEventType, String hearingType) {
         ccdNotificationWrapper = buildCcdNotificationWrapperBasedOnEventTypeWithAppointeeAndJointParty(notificationEventType, hearingType);
         List<SubscriptionWithType> subsWithTypeList = ccdNotificationWrapper.getSubscriptionsBasedOnNotificationType();
-        Assert.assertEquals(2,subsWithTypeList.size());
+        Assert.assertEquals(2, subsWithTypeList.size());
         Assert.assertEquals(SubscriptionType.APPOINTEE, subsWithTypeList.get(0).getSubscriptionType());
         Assert.assertEquals(SubscriptionType.JOINT_PARTY, subsWithTypeList.get(1).getSubscriptionType());
     }
