@@ -50,7 +50,7 @@
         "mrnDetails": {},
         "rep": {},
         "signer": null,
-        "hearingType": "cor"
+        "hearingType": "oral"
       },
       "caseReference": "SC022/14/12423",
       "events": [
@@ -392,7 +392,8 @@
         },
         "mrnDetails": {},
         "rep": {},
-        "signer": null
+        "signer": null,
+        "hearingType": "oral"
       },
       "caseReference": "SC022/14/12423",
       "events": [
