@@ -449,9 +449,6 @@ notification:
         representative:
           emailId: df0803aa-f804-49fe-a2ac-c27adc4bb585
           smsId: 5f91012e-0d3f-465b-b301-ee3ee5a50100
-        joint_party:
-          emailId: d994236b-d7c4-44ef-9627-12372bb0434a
-          smsId: 7d36718b-1193-4b3d-86bd-db54612c5363
       evidenceReceived:
         representative:
           emailId: 30260c0b-5575-4f4e-bce4-73cf3f245c2d
@@ -801,9 +798,6 @@ notification:
         representative:
           emailId: 3260b6ec-9930-44b6-aa65-58905dd9a5b3
           smsId: a2745961-214a-4138-95b0-89300b395a3e
-        joint_party:
-          emailId: 738b40f4-e7fe-4121-b09d-0a76be4d2fe9
-          smsId: 00c36e89-6cf0-42a1-b080-6eac4edfca25
       evidenceReceived:
         representative:
           emailId: ce8510b0-00e1-419c-b9fa-8bdfe7bd6866
