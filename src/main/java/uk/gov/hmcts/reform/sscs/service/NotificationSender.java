@@ -204,7 +204,6 @@ public class NotificationSender {
 
             final LetterResponse sendLetterResponse;
             try {
-                log.info("Postcode = " + appellantPostcode);
                 sendLetterResponse = client.sendPrecompiledLetterWithInputStream(ccdCaseId, bis);
             } catch (NotificationClientException e) {
                 throw e;
