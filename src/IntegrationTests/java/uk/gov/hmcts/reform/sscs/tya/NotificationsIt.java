@@ -580,6 +580,30 @@ public class NotificationsIt {
                         "1",
                         "0"
                 },
+                new Object[]{
+                        ADJOURNED_NOTIFICATION,
+                        "paper",
+                        Collections.singletonList("77ea995b-9744-4167-9250-e627c85e5eda"),
+                        Collections.singletonList("7455de19-aa3b-48f0-b765-ab2757ba6a88"),
+                        Collections.emptyList(),
+                        "yes",
+                        "yes",
+                        "1",
+                        "1",
+                        "0"
+                },
+                new Object[]{
+                        ADJOURNED_NOTIFICATION,
+                        "oral",
+                        Collections.singletonList("77ea995b-9744-4167-9250-e627c85e5eda"),
+                        Collections.singletonList("7455de19-aa3b-48f0-b765-ab2757ba6a88"),
+                        Collections.emptyList(),
+                        "yes",
+                        "yes",
+                        "1",
+                        "1",
+                        "0"
+                },
         };
     }
 
