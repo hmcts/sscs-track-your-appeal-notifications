@@ -151,6 +151,9 @@ notification:
       appointee:
         emailId: 77ea995b-9744-4167-9250-e627c85e5eda
         smsId: 7455de19-aa3b-48f0-b765-ab2757ba6a88
+      joint_party:
+        emailId: 77ea995b-9744-4167-9250-e627c85e5eda
+        smsId: 7455de19-aa3b-48f0-b765-ab2757ba6a88
     hearingPostponed:
       appellant:
         emailId: 221095a2-aee8-466b-a7ab-beee516cc6cc
@@ -494,6 +497,9 @@ notification:
         emailId: fd13e20c-f412-48eb-9905-a25e91ccc5ed
         smsId: 4d1caa6f-b0e8-4c07-aa76-84841880be9a
       appointee:
+        emailId: 06c91850-a81f-44bb-9577-1bc528913850
+        smsId: a26c0e22-b132-4528-86a5-e221cc9b6325
+      joint_party:
         emailId: 06c91850-a81f-44bb-9577-1bc528913850
         smsId: a26c0e22-b132-4528-86a5-e221cc9b6325
     hearingPostponed:
