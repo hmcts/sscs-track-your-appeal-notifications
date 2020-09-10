@@ -3,6 +3,7 @@ package uk.gov.hmcts.reform.sscs.functional.sya.notifications;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
 import static uk.gov.hmcts.reform.sscs.domain.notify.NotificationEventType.APPEAL_LAPSED_NOTIFICATION;
+import static uk.gov.hmcts.reform.sscs.domain.notify.NotificationEventType.HEARING_BOOKED_NOTIFICATION;
 
 import java.lang.reflect.Field;
 import java.util.List;
@@ -75,9 +76,10 @@ public class JointPartyFunctionalTest extends AbstractFunctionalTest {
     @SuppressWarnings({"Indentation", "unused"})
     private Object[] eventTypeAndSubscriptions() {
         int expectedNumberOfLettersIsTwo = 2;
+        int expectedNumberOfLettersIsZero = 0;
         return new Object[]{
             new Object[]{APPEAL_LAPSED_NOTIFICATION, expectedNumberOfLettersIsTwo},
-            //new Object[]{HEARING_BOOKED_NOTIFICATION, expectedNumberOfLettersIsZero}, remove when the covid19 feature has been removed.
+            new Object[]{HEARING_BOOKED_NOTIFICATION, expectedNumberOfLettersIsZero}
         };
     }
 }
