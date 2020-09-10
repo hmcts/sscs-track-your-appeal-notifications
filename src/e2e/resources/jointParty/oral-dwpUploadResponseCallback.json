@@ -4,7 +4,6 @@
     "callback_response_status": null,
     "callback_response_status_code": null,
     "case_data": {
-      "onlinePanel": {},
       "createdInGapsFrom": "readyToList",
       "jointParty": "Yes",
       "jointPartyName": {
@@ -23,7 +22,9 @@
       "appeal": {
         "appealReasons": {},
         "appellant": {
-          "address": {},
+          "address": {
+            "postcode": "TS1 1ST"
+          },
           "contact": {
             "email": "mail@email.com",
             "phone": "01234567890"
@@ -33,13 +34,36 @@
             "nino": "AB 22 55 66 B"
           },
           "name": {
-            "firstName": "User",
-            "lastName": "Test",
+            "firstName": "Appellant",
+            "lastName": "User",
             "title": "Mr"
+          },
+          "isAddressSameAsAppointee":"no",
+          "appointee": {
+            "name": {
+              "title": "Mr",
+              "firstName": "Appointee",
+              "lastName": "User"
+            },
+            "contact": {
+              "email": "test@tester.com",
+              "mobile": "07848484848"
+            },
+            "address": {
+              "line1": "1 Appointee Street",
+              "line2": "Newcastle",
+              "town": "Newcastle",
+              "county": "Tyne and Wear",
+              "postcode": "TS2 2ST"
+            },
+            "identity": {
+              "dob": "1998-07-01",
+              "nino": ""
+            }
           }
         },
         "benefitType": {
-          "code": "ESA"
+          "code": "PIP"
         },
         "hearingOptions": {
           "languageInterpreter": "Yes",
@@ -72,21 +96,22 @@
         }
       ],
       "subscriptions": {
-        "appellantSubscription": {
+        "appointeeSubscription": {
           "email": "sscstest+notify@greencroftconsulting.com",
           "mobile": "07398785050",
-          "subscribeEmail": "Yes",
-          "subscribeSms": "Yes",
-          "wantSmsNotifications": "Yes",
-          "tya": ""
-        },
-        "jointPartySubscription": {
-          "email": "",
-          "mobile": "",
           "subscribeEmail": "No",
           "subscribeSms": "No",
           "wantSmsNotifications": "No",
-          "tya": ""
+          "tya": "v8eg15XeZk"
+        },
+        "jointPartySubscription": {
+          "email": "sscstest+notify2@greencroftconsulting.com",
+          "mobile": "07398785051",
+          "reason": null,
+          "subscribeEmail": "Yes",
+          "subscribeSms": "Yes",
+          "wantSmsNotifications" : "Yes",
+          "tya": "232929249492"
         }
       }
     },
@@ -129,6 +154,7 @@
                   "nino": "PUBLIC"
                 }
               },
+              "isAppointee": "PUBLIC",
               "name": {
                 "classification": "PUBLIC",
                 "value": {
@@ -190,7 +216,7 @@
       "subscriptions": {
         "classification": "PUBLIC",
         "value": {
-          "appellantSubscription": {
+          "appointeeSubscription": {
             "classification": "PUBLIC",
             "value": {
               "email": "PUBLIC",
@@ -256,6 +282,7 @@
                   "nino": "PUBLIC"
                 }
               },
+              "isAppointee": "PUBLIC",
               "name": {
                 "classification": "PUBLIC",
                 "value": {
@@ -317,7 +344,7 @@
       "subscriptions": {
         "classification": "PUBLIC",
         "value": {
-          "appellantSubscription": {
+          "appointeeSubscription": {
             "classification": "PUBLIC",
             "value": {
               "email": "PUBLIC",
@@ -342,13 +369,14 @@
         }
       }
     },
-    "state": "appealCreated"
+    "state": "readyToList"
   },
   "case_details_before": {
     "after_submit_callback_response": null,
     "callback_response_status": null,
     "callback_response_status_code": null,
     "case_data": {
+      "createdInGapsFrom": "readyToList",
       "jointParty": "Yes",
       "jointPartyName": {
         "title": "mr",
@@ -376,13 +404,36 @@
             "nino": "AB 22 55 66 B"
           },
           "name": {
-            "firstName": "User",
-            "lastName": "Test",
+            "firstName": "Appellant",
+            "lastName": "User",
             "title": "Mr"
+          },
+          "isAddressSameAsAppointee":"no",
+          "appointee": {
+            "name": {
+              "title": "Mr",
+              "firstName": "Appointee",
+              "lastName": "User"
+            },
+            "contact": {
+              "email": "test@tester.com",
+              "mobile": "07848484848"
+            },
+            "address": {
+              "line1": "1 Appointee Street",
+              "line2": "Newcastle",
+              "town": "Newcastle",
+              "county": "Tyne and Wear",
+              "postcode": "TS2 2ST"
+            },
+            "identity": {
+              "dob": "1998-07-01",
+              "nino": ""
+            }
           }
         },
         "benefitType": {
-          "code": "ESA"
+          "code": "PIP"
         },
         "hearingOptions": {
           "languageInterpreter": "Yes",
@@ -407,21 +458,22 @@
         }
       ],
       "subscriptions": {
-        "appellantSubscription": {
+        "appointeeSubscription": {
           "email": "sscstest+notify@greencroftconsulting.com",
           "mobile": "07398785050",
-          "subscribeEmail": "Yes",
-          "subscribeSms": "Yes",
-          "wantSmsNotifications": "Yes",
-          "tya": ""
-        },
-        "jointPartySubscription": {
-          "email": "",
-          "mobile": "",
           "subscribeEmail": "No",
           "subscribeSms": "No",
-          "wantSmsNotifications": "No",
-          "tya": ""
+          "wantSmsNotifications": "Yes",
+          "tya": "v8eg15XeZk"
+        },
+        "jointPartySubscription": {
+          "email": "sscstest+notify2@greencroftconsulting.com",
+          "mobile": "07398785051",
+          "reason": null,
+          "subscribeEmail": "Yes",
+          "subscribeSms": "Yes",
+          "wantSmsNotifications" : "Yes",
+          "tya": "232929249492"
         }
       }
     },
@@ -464,6 +516,7 @@
                   "nino": "PUBLIC"
                 }
               },
+              "isAppointee": "PUBLIC",
               "name": {
                 "classification": "PUBLIC",
                 "value": {
@@ -517,7 +570,7 @@
       "subscriptions": {
         "classification": "PUBLIC",
         "value": {
-          "appellantSubscription": {
+          "appointeeSubscription": {
             "classification": "PUBLIC",
             "value": {
               "email": "PUBLIC",
@@ -583,6 +636,7 @@
                   "nino": "PUBLIC"
                 }
               },
+              "isAppointee": "PUBLIC",
               "name": {
                 "classification": "PUBLIC",
                 "value": {
@@ -636,7 +690,7 @@
       "subscriptions": {
         "classification": "PUBLIC",
         "value": {
-          "appellantSubscription": {
+          "appointeeSubscription": {
             "classification": "PUBLIC",
             "value": {
               "email": "PUBLIC",
@@ -661,7 +715,7 @@
         }
       }
     },
-    "state": "appealCreated"
+    "state": "readyToList"
   },
   "event_id": "dwpUploadResponse"
 }
