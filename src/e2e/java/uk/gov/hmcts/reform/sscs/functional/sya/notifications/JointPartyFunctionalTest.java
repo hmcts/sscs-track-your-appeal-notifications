@@ -32,9 +32,9 @@ public class JointPartyFunctionalTest extends AbstractFunctionalTest {
     @Value("${notification.english.oral.evidenceReminder.joint_party.smsId}")
     private String oralEvidenceReminderJointPartySmsId;
     @Value("${notification.english.oral.dwpUploadResponse.joint_party.emailId}")
-    private String oralResponseReceivedJointPartyEmailId;
+    private String oralDwpUploadResponseJointPartyEmailId;
     @Value("${notification.english.oral.dwpUploadResponse.joint_party.smsId}")
-    private String oralUploadResponseJointPartySmsId;
+    private String oralDwpUploadResponseJointPartySmsId;
 
     public JointPartyFunctionalTest() {
         super(30);
@@ -43,8 +43,9 @@ public class JointPartyFunctionalTest extends AbstractFunctionalTest {
     @Test
     @Parameters(method = "eventTypeAndSubscriptions")
     public void givenEventAndJointPartySubscription_shouldSendNotificationToJointParty(
-            NotificationEventType notificationEventType, @Nullable String hearingType, int expectedNumberOfLetters)
-            throws Exception {
+        NotificationEventType notificationEventType, @Nullable String hearingType,
+        int expectedNumberOfLetters, boolean isDocmosisLetter)
+        throws Exception {
         //Given
         final String jointPartyEmailId = getFieldValue(hearingType, notificationEventType, "JointPartyEmailId");
         final String jointPartySmsId = getFieldValue(hearingType, notificationEventType, "JointPartySmsId");
@@ -63,11 +64,16 @@ public class JointPartyFunctionalTest extends AbstractFunctionalTest {
         if (expectedNumberOfLetters > 0) {
             List<Notification> notificationLetters = fetchLetters();
             assertEquals(expectedNumberOfLetters, notificationLetters.size());
-            Optional<Notification> notificationOptional =
+            if (!isDocmosisLetter) {
+                Optional<Notification> notificationOptional =
                     notificationLetters.stream().filter(notification ->
-                            notification.getLine1().map(f -> f.contains(jointPartyName)).orElse(false)).findFirst();
-            assertTrue(notificationOptional.isPresent());
-            assertTrue(notificationOptional.get().getBody().contains("Dear " + jointPartyName));
+                        notification.getLine1().map(f -> f.contains(jointPartyName)).orElse(false)).findFirst();
+                assertTrue(notificationOptional.isPresent());
+                assertTrue(notificationOptional.get().getBody().contains("Dear " + jointPartyName));
+            } else {
+                notificationLetters.forEach(n ->
+                    assertEquals("Pre-compiled PDF", n.getSubject().orElse("Unknown Subject")));
+            }
         }
     }
 
@@ -75,9 +81,9 @@ public class JointPartyFunctionalTest extends AbstractFunctionalTest {
         String fieldValue;
         try {
             Field field = this.getClass().getDeclaredField(
-                    defaultIfBlank(hearingType, EMPTY)
-                            + ((hearingType == null) ? notificationEventType.getId() : capitalize(notificationEventType.getId()))
-                            + fieldName);
+                defaultIfBlank(hearingType, EMPTY)
+                    + ((hearingType == null) ? notificationEventType.getId() : capitalize(notificationEventType.getId()))
+                    + fieldName);
             field.setAccessible(true);
             fieldValue = (String) field.get(this);
         } catch (NoSuchFieldException e) {
@@ -90,10 +96,12 @@ public class JointPartyFunctionalTest extends AbstractFunctionalTest {
     private Object[] eventTypeAndSubscriptions() {
         final int expectedNumberOfLettersIsTwo = 2;
         final int expectedNumberOfLettersIsZero = 0;
+        final boolean isDocmosisLetterTrue = true;
+        final boolean isDocmosisLetterFalse = false;
         return new Object[]{
-            new Object[]{APPEAL_LAPSED_NOTIFICATION, NO_HEARING_TYPE, expectedNumberOfLettersIsTwo},
-            new Object[]{EVIDENCE_REMINDER_NOTIFICATION, ORAL, expectedNumberOfLettersIsZero},
-            new Object[]{DWP_UPLOAD_RESPONSE_NOTIFICATION, ORAL, expectedNumberOfLettersIsTwo}
+            new Object[]{APPEAL_LAPSED_NOTIFICATION, NO_HEARING_TYPE, expectedNumberOfLettersIsTwo, isDocmosisLetterFalse},
+            new Object[]{DWP_UPLOAD_RESPONSE_NOTIFICATION, ORAL, expectedNumberOfLettersIsTwo, isDocmosisLetterTrue},
+            new Object[]{EVIDENCE_REMINDER_NOTIFICATION, ORAL, expectedNumberOfLettersIsZero, isDocmosisLetterFalse}
         };
     }
 }
