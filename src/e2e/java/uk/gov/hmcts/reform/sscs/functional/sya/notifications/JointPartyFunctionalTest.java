@@ -77,7 +77,7 @@ public class JointPartyFunctionalTest extends AbstractFunctionalTest {
         int expectedNumberOfLettersIsTwo = 2;
         return new Object[]{
             new Object[]{APPEAL_LAPSED_NOTIFICATION, expectedNumberOfLettersIsTwo},
-            //new Object[]{HEARING_BOOKED_NOTIFICATION, expectedNumberOfLettersIsZero},
+            //new Object[]{HEARING_BOOKED_NOTIFICATION, expectedNumberOfLettersIsZero}, remove when the covid19 feature has been removed.
         };
     }
 }
