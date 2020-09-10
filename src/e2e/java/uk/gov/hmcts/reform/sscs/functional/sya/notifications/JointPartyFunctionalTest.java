@@ -3,11 +3,11 @@ package uk.gov.hmcts.reform.sscs.functional.sya.notifications;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
 import static uk.gov.hmcts.reform.sscs.domain.notify.NotificationEventType.APPEAL_LAPSED_NOTIFICATION;
+import static uk.gov.hmcts.reform.sscs.domain.notify.NotificationEventType.HEARING_REMINDER_NOTIFICATION;
 
 import java.lang.reflect.Field;
 import java.util.List;
 import java.util.Optional;
-
 import junitparams.Parameters;
 import org.junit.Test;
 import org.springframework.beans.factory.annotation.Value;
@@ -20,7 +20,10 @@ public class JointPartyFunctionalTest extends AbstractFunctionalTest {
     private String appealLapsedJointPartyEmailId;
     @Value("${notification.english.appealLapsed.joint_party.smsId}")
     private String appealLapsedJointPartySmsId;
-
+    @Value("${notification.english.hearingReminder.joint_party.emailId}")
+    private String hearingReminderJointPartyEmailId;
+    @Value("${notification.english.hearingReminder.joint_party.smsId}")
+    private String hearingReminderJointPartySmsId;
 
     public JointPartyFunctionalTest() {
         super(30);
@@ -73,8 +76,10 @@ public class JointPartyFunctionalTest extends AbstractFunctionalTest {
     @SuppressWarnings({"Indentation", "unused"})
     private Object[] eventTypeAndSubscriptions() {
         int expectedNumberOfLettersIsTwo = 2;
+        int expectedNumberOfLettersIsZero = 0;
         return new Object[]{
-            new Object[]{APPEAL_LAPSED_NOTIFICATION, expectedNumberOfLettersIsTwo}
+            new Object[]{APPEAL_LAPSED_NOTIFICATION, expectedNumberOfLettersIsTwo},
+            new Object[]{HEARING_REMINDER_NOTIFICATION, expectedNumberOfLettersIsZero}
         };
     }
 }

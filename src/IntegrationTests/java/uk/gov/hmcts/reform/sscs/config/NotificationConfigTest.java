@@ -142,6 +142,7 @@ public class NotificationConfigTest {
     @SuppressWarnings({"Indentation", "unused"})
     private Object[] templateIdsWithHearingAndEventTypesWelsh() {
         return new Object[]{
+                new Object[]{"6a0caa25-a066-4923-80ad-4120674c13e5", Arrays.asList("1c6eeac6-dbec-4e42-92b3-7a9dfeec0125", "18960596-1983-4da8-8b5c-dc1c851bb19b"), null, null, PAPER, getTemplateName(HEARING_REMINDER_NOTIFICATION, JOINT_PARTY), null},
                 new Object[]{"8666f5a7-afe7-423d-a2a9-af5b7aff79cc", Arrays.asList("e4a574f8-dd1e-4c31-8826-88fff5427db3", "505be856-ceca-4bbc-ba70-29024585056f"), null, null, PAPER, getTemplateName(DWP_RESPONSE_RECEIVED_NOTIFICATION, APPELLANT), null},
                 new Object[]{"8666f5a7-afe7-423d-a2a9-af5b7aff79cc", Arrays.asList("e4a574f8-dd1e-4c31-8826-88fff5427db3", "505be856-ceca-4bbc-ba70-29024585056f"), null, null, PAPER, getTemplateName(DWP_RESPONSE_RECEIVED_NOTIFICATION, APPOINTEE), null},
                 new Object[]{"5abc83d8-f6b8-4385-805b-ffbb0f64b84b", Arrays.asList("7e068c25-fc93-4997-831c-717a319730c1", "b2d187cd-089b-4fe1-b460-a310c0af46fe"), null, null, PAPER, getTemplateName(DWP_RESPONSE_RECEIVED_NOTIFICATION, REPRESENTATIVE), null},
@@ -219,10 +220,12 @@ public class NotificationConfigTest {
                 new Object[]{"30260c0b-5575-4f4e-bce4-73cf3f245c2d", Arrays.asList("345f802b-7089-4f46-a17f-bf534b272740"), null, null, ORAL, getTemplateName(EVIDENCE_RECEIVED_NOTIFICATION, REPRESENTATIVE), null},
                 new Object[]{"c5654134-2e13-4541-ac73-334a5b5cdbb6", Arrays.asList("74bda35f-040b-4355-bda3-faf0e4f5ae6e"), null, null, PAPER, getTemplateName(EVIDENCE_RECEIVED_NOTIFICATION, APPOINTEE), null},
                 new Object[]{"c5654134-2e13-4541-ac73-334a5b5cdbb6", Arrays.asList("74bda35f-040b-4355-bda3-faf0e4f5ae6e"), null, null, ORAL, getTemplateName(EVIDENCE_RECEIVED_NOTIFICATION, APPOINTEE), null},
-                new Object[]{"774a5cba-fab6-4b8c-a9d9-03f913ed2dca", Arrays.asList("fcb93790-8308-4f4f-9674-65b777b7fe8c"), null, null, PAPER, getTemplateName(HEARING_REMINDER_NOTIFICATION, APPELLANT), null},
-                new Object[]{"774a5cba-fab6-4b8c-a9d9-03f913ed2dca", Arrays.asList("fcb93790-8308-4f4f-9674-65b777b7fe8c"), null, null, ORAL, getTemplateName(HEARING_REMINDER_NOTIFICATION, APPELLANT), null},
-                new Object[]{"774a5cba-fab6-4b8c-a9d9-03f913ed2dca", Arrays.asList("fcb93790-8308-4f4f-9674-65b777b7fe8c"), null, null, PAPER, getTemplateName(HEARING_REMINDER_NOTIFICATION, APPOINTEE), null},
-                new Object[]{"774a5cba-fab6-4b8c-a9d9-03f913ed2dca", Arrays.asList("fcb93790-8308-4f4f-9674-65b777b7fe8c"), null, null, ORAL, getTemplateName(HEARING_REMINDER_NOTIFICATION, APPOINTEE), null},
+                new Object[]{"07bebee4-f07a-4a0d-9c50-65be30dc72a5", Arrays.asList("18960596-1983-4da8-8b5c-dc1c851bb19b"), null, null, PAPER, getTemplateName(HEARING_REMINDER_NOTIFICATION, APPELLANT), null},
+                new Object[]{"07bebee4-f07a-4a0d-9c50-65be30dc72a5", Arrays.asList("18960596-1983-4da8-8b5c-dc1c851bb19b"), null, null, ORAL, getTemplateName(HEARING_REMINDER_NOTIFICATION, APPELLANT), null},
+                new Object[]{"07bebee4-f07a-4a0d-9c50-65be30dc72a5", Arrays.asList("18960596-1983-4da8-8b5c-dc1c851bb19b"), null, null, PAPER, getTemplateName(HEARING_REMINDER_NOTIFICATION, JOINT_PARTY), null},
+                new Object[]{"07bebee4-f07a-4a0d-9c50-65be30dc72a5", Arrays.asList("18960596-1983-4da8-8b5c-dc1c851bb19b"), null, null, ORAL, getTemplateName(HEARING_REMINDER_NOTIFICATION, JOINT_PARTY), null},
+                new Object[]{"07bebee4-f07a-4a0d-9c50-65be30dc72a5", Arrays.asList("18960596-1983-4da8-8b5c-dc1c851bb19b"), null, null, PAPER, getTemplateName(HEARING_REMINDER_NOTIFICATION, APPOINTEE), null},
+                new Object[]{"07bebee4-f07a-4a0d-9c50-65be30dc72a5", Arrays.asList("18960596-1983-4da8-8b5c-dc1c851bb19b"), null, null, ORAL, getTemplateName(HEARING_REMINDER_NOTIFICATION, APPOINTEE), null},
                 new Object[]{"97c58e23-c11f-40b3-b981-2d4cfa38b8fd", Arrays.asList("bb3df0ea-8259-43c4-95de-9eef96206575"), null, null, PAPER, getTemplateName(HEARING_REMINDER_NOTIFICATION, REPRESENTATIVE), null},
                 new Object[]{"97c58e23-c11f-40b3-b981-2d4cfa38b8fd", Arrays.asList("bb3df0ea-8259-43c4-95de-9eef96206575"), null, null, ORAL, getTemplateName(HEARING_REMINDER_NOTIFICATION, REPRESENTATIVE), null},
                 new Object[]{"fee16753-0bdb-43f1-9abb-b14b826e3b26", Arrays.asList("693c9bfb-151e-4add-a6f2-af1cbc94eef5"), null, null, PAPER, getTemplateName(HEARING_BOOKED_NOTIFICATION, APPELLANT), null},
