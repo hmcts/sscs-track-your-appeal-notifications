@@ -567,7 +567,31 @@ public class NotificationsIt {
                         "0",
                         "0",
                         "2"
-                }
+                },
+                new Object[]{
+                        HEARING_BOOKED_NOTIFICATION,
+                        "oral",
+                        Collections.singletonList("aa0930a3-e1bd-4b50-ac6b-34df73ec8378"),
+                        Collections.singletonList("8aa77a9c-9bc6-424d-8716-1c948681270e"),
+                        Collections.emptyList(),
+                        "yes",
+                        "yes",
+                        "1",
+                        "1",
+                        "0"
+                },
+                new Object[]{
+                        HEARING_BOOKED_NOTIFICATION,
+                        "paper",
+                        Collections.singletonList("aa0930a3-e1bd-4b50-ac6b-34df73ec8378"),
+                        Collections.singletonList("8aa77a9c-9bc6-424d-8716-1c948681270e"),
+                        Collections.emptyList(),
+                        "yes",
+                        "yes",
+                        "1",
+                        "1",
+                        "0"
+                },
         };
     }
 
@@ -3041,8 +3065,8 @@ public class NotificationsIt {
             new Object[]{
                 HEARING_BOOKED_NOTIFICATION,
                 "oral",
-                Collections.singletonList("fee16753-0bdb-43f1-9abb-b14b826e3b26"),
-                Collections.singletonList("693c9bfb-151e-4add-a6f2-af1cbc94eef5"),
+                Collections.singletonList("aa0930a3-e1bd-4b50-ac6b-34df73ec8378"),
+                Collections.singletonList("8aa77a9c-9bc6-424d-8716-1c948681270e"),
                 Collections.emptyList(),
                 "yes",
                 "yes",

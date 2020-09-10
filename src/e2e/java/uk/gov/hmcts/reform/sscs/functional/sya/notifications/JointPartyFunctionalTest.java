@@ -7,7 +7,6 @@ import static uk.gov.hmcts.reform.sscs.domain.notify.NotificationEventType.APPEA
 import java.lang.reflect.Field;
 import java.util.List;
 import java.util.Optional;
-
 import junitparams.Parameters;
 import org.junit.Test;
 import org.springframework.beans.factory.annotation.Value;
@@ -20,7 +19,10 @@ public class JointPartyFunctionalTest extends AbstractFunctionalTest {
     private String appealLapsedJointPartyEmailId;
     @Value("${notification.english.appealLapsed.joint_party.smsId}")
     private String appealLapsedJointPartySmsId;
-
+    @Value("${notification.english.hearingBooked.joint_party.emailId}")
+    private String hearingBookedJointPartyEmailId;
+    @Value("${notification.english.hearingBooked.joint_party.smsId}")
+    private String hearingBookedJointPartySmsId;
 
     public JointPartyFunctionalTest() {
         super(30);
@@ -74,7 +76,8 @@ public class JointPartyFunctionalTest extends AbstractFunctionalTest {
     private Object[] eventTypeAndSubscriptions() {
         int expectedNumberOfLettersIsTwo = 2;
         return new Object[]{
-            new Object[]{APPEAL_LAPSED_NOTIFICATION, expectedNumberOfLettersIsTwo}
+            new Object[]{APPEAL_LAPSED_NOTIFICATION, expectedNumberOfLettersIsTwo},
+            //new Object[]{HEARING_BOOKED_NOTIFICATION, expectedNumberOfLettersIsZero},
         };
     }
 }

@@ -179,7 +179,7 @@ public class CcdNotificationWrapperTest {
             "HMCTS_APPEAL_LAPSED_NOTIFICATION, paper", "HMCTS_APPEAL_LAPSED_NOTIFICATION, oral",
             "DWP_APPEAL_LAPSED_NOTIFICATION, paper", "DWP_APPEAL_LAPSED_NOTIFICATION, oral",
             "SUBSCRIPTION_UPDATED_NOTIFICATION, paper", "APPEAL_WITHDRAWN_NOTIFICATION, paper", "EVIDENCE_RECEIVED_NOTIFICATION, oral",
-            "EVIDENCE_RECEIVED_NOTIFICATION, paper", "VALID_APPEAL_CREATED, cor", "RESEND_APPEAL_CREATED_NOTIFICATION, cor", "HEARING_BOOKED_NOTIFICATION, paper",
+            "EVIDENCE_RECEIVED_NOTIFICATION, paper", "VALID_APPEAL_CREATED, cor", "RESEND_APPEAL_CREATED_NOTIFICATION, cor",
             "POSTPONEMENT_NOTIFICATION, oral", "HEARING_REMINDER_NOTIFICATION, oral",
             "STRUCK_OUT, paper"})
     public void givenSubscriptions_shouldGetSubscriptionTypeListWithAppointee(NotificationEventType notificationEventType, String hearingType) {
@@ -190,8 +190,8 @@ public class CcdNotificationWrapperTest {
     }
 
     @Test
-    @Parameters({"APPEAL_LAPSED_NOTIFICATION, paper", "APPEAL_LAPSED_NOTIFICATION, oral",})
-    public void givenSubscriptions_shouldGetSubscriptionTypeListWithAppointeeAndKointParty(NotificationEventType notificationEventType, String hearingType) {
+    @Parameters({"APPEAL_LAPSED_NOTIFICATION, paper", "APPEAL_LAPSED_NOTIFICATION, oral", "HEARING_BOOKED_NOTIFICATION, oral", "HEARING_BOOKED_NOTIFICATION, paper"})
+    public void givenSubscriptions_shouldGetSubscriptionTypeListWithAppointeeAndJointParty(NotificationEventType notificationEventType, String hearingType) {
         ccdNotificationWrapper = buildCcdNotificationWrapperBasedOnEventTypeWithAppointeeAndJointParty(notificationEventType, hearingType);
         List<SubscriptionWithType> subsWithTypeList = ccdNotificationWrapper.getSubscriptionsBasedOnNotificationType();
         Assert.assertEquals(2,subsWithTypeList.size());
