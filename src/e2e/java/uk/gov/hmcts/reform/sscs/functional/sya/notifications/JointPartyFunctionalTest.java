@@ -102,10 +102,10 @@ public class JointPartyFunctionalTest extends AbstractFunctionalTest {
         final int expectedNumberOfLettersIsTwo = 2;
         final int expectedNumberOfLettersIsZero = 0;
         return new Object[]{
-//            new Object[]{APPEAL_LAPSED_NOTIFICATION, NO_HEARING_TYPE, expectedNumberOfLettersIsTwo},
-//            new Object[]{ADJOURNED_NOTIFICATION, NO_HEARING_TYPE, expectedNumberOfLettersIsZero},
+            new Object[]{APPEAL_LAPSED_NOTIFICATION, NO_HEARING_TYPE, expectedNumberOfLettersIsTwo},
+            new Object[]{ADJOURNED_NOTIFICATION, NO_HEARING_TYPE, expectedNumberOfLettersIsZero},
             new Object[]{POSTPONEMENT_NOTIFICATION, NO_HEARING_TYPE, expectedNumberOfLettersIsZero},
-//            new Object[]{EVIDENCE_REMINDER_NOTIFICATION, ORAL, expectedNumberOfLettersIsZero}
+            new Object[]{EVIDENCE_REMINDER_NOTIFICATION, ORAL, expectedNumberOfLettersIsZero}
         };
     }
 }
