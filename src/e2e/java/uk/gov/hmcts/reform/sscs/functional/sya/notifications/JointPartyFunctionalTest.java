@@ -8,6 +8,7 @@ import static org.junit.Assert.assertTrue;
 import static uk.gov.hmcts.reform.sscs.domain.notify.NotificationEventType.*;
 
 import java.lang.reflect.Field;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 import junitparams.Parameters;
@@ -29,6 +30,8 @@ public class JointPartyFunctionalTest extends AbstractFunctionalTest {
     private String hearingAdjournedJointPartyEmailId;
     @Value("${notification.english.hearingAdjourned.joint_party.smsId}")
     private String hearingAdjournedJointPartySmsId;
+    @Value("${notification.english.hearingPostponed.joint_party.emailId}")
+    private String hearingPostponedJointPartyEmailId;
     @Value("${notification.english.oral.evidenceReminder.joint_party.emailId}")
     private String oralEvidenceReminderJointPartyEmailId;
     @Value("${notification.english.oral.evidenceReminder.joint_party.smsId}")
@@ -50,9 +53,19 @@ public class JointPartyFunctionalTest extends AbstractFunctionalTest {
         simulateCcdCallback(notificationEventType,
             "jointParty/" + ((hearingType == null) ? EMPTY : (hearingType + "-")) + notificationEventType.getId() + "Callback.json");
 
-        List<Notification> notifications = tryFetchNotificationsForTestCase(jointPartyEmailId, jointPartySmsId);
+        List<String> expectedIds = new ArrayList<>();
 
-        assertEquals(2, notifications.size());
+        if (jointPartyEmailId != null) {
+            expectedIds.add(jointPartyEmailId);
+        }
+
+        if (jointPartySmsId != null) {
+            expectedIds.add(jointPartySmsId);
+        }
+
+        List<Notification> notifications = tryFetchNotificationsForTestCase(expectedIds.toArray(new String[expectedIds.size()]));
+
+        assertEquals(expectedIds.size(), notifications.size());
 
         String jointPartyName = "Joint Party";
         assertNotificationBodyContains(notifications, jointPartyEmailId, jointPartyName);
@@ -91,6 +104,7 @@ public class JointPartyFunctionalTest extends AbstractFunctionalTest {
         return new Object[]{
             new Object[]{APPEAL_LAPSED_NOTIFICATION, NO_HEARING_TYPE, expectedNumberOfLettersIsTwo},
             new Object[]{ADJOURNED_NOTIFICATION, NO_HEARING_TYPE, expectedNumberOfLettersIsZero},
+            new Object[]{POSTPONEMENT_NOTIFICATION, NO_HEARING_TYPE, expectedNumberOfLettersIsZero},
             new Object[]{EVIDENCE_REMINDER_NOTIFICATION, ORAL, expectedNumberOfLettersIsZero}
         };
     }

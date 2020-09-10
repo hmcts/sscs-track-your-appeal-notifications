@@ -604,6 +604,30 @@ public class NotificationsIt {
                         "1",
                         "0"
                 },
+                new Object[]{
+                        POSTPONEMENT_NOTIFICATION,
+                        "paper",
+                        Collections.singletonList("732ec1a2-243f-4047-b963-e8427cb007b8"),
+                        Collections.emptyList(),
+                        Collections.emptyList(),
+                        "yes",
+                        "yes",
+                        "1",
+                        "0",
+                        "0"
+                },
+                new Object[]{
+                        POSTPONEMENT_NOTIFICATION,
+                        "oral",
+                        Collections.singletonList("732ec1a2-243f-4047-b963-e8427cb007b8"),
+                        Collections.emptyList(),
+                        Collections.emptyList(),
+                        "yes",
+                        "yes",
+                        "1",
+                        "0",
+                        "0"
+                },
         };
     }
 
@@ -1075,7 +1099,7 @@ public class NotificationsIt {
             new Object[]{
                 POSTPONEMENT_NOTIFICATION,
                 "paper",
-                Arrays.asList("221095a2-aee8-466b-a7ab-beee516cc6cc", "e07b7dba-f383-49ca-a0ba-b5b61be27da6"),
+                Arrays.asList("732ec1a2-243f-4047-b963-e8427cb007b8", "e07b7dba-f383-49ca-a0ba-b5b61be27da6"),
                 Collections.emptyList(),
                 Collections.emptyList(),
                 "yes",
@@ -1089,7 +1113,7 @@ public class NotificationsIt {
             new Object[]{
                 POSTPONEMENT_NOTIFICATION,
                 "oral",
-                Arrays.asList("221095a2-aee8-466b-a7ab-beee516cc6cc", "e07b7dba-f383-49ca-a0ba-b5b61be27da6"),
+                Arrays.asList("732ec1a2-243f-4047-b963-e8427cb007b8", "e07b7dba-f383-49ca-a0ba-b5b61be27da6"),
                 Collections.emptyList(),
                 Collections.emptyList(),
                 "yes",
@@ -2082,7 +2106,7 @@ public class NotificationsIt {
             new Object[]{
                 POSTPONEMENT_NOTIFICATION,
                 "paper",
-                Arrays.asList("221095a2-aee8-466b-a7ab-beee516cc6cc", "e07b7dba-f383-49ca-a0ba-b5b61be27da6"),
+                Arrays.asList("732ec1a2-243f-4047-b963-e8427cb007b8", "e07b7dba-f383-49ca-a0ba-b5b61be27da6"),
                 Collections.emptyList(),
                 Collections.emptyList(),
                 "yes",
@@ -2096,7 +2120,7 @@ public class NotificationsIt {
             new Object[]{
                 POSTPONEMENT_NOTIFICATION,
                 "oral",
-                Arrays.asList("221095a2-aee8-466b-a7ab-beee516cc6cc", "e07b7dba-f383-49ca-a0ba-b5b61be27da6"),
+                Arrays.asList("732ec1a2-243f-4047-b963-e8427cb007b8", "e07b7dba-f383-49ca-a0ba-b5b61be27da6"),
                 Collections.emptyList(),
                 Collections.emptyList(),
                 "yes",
