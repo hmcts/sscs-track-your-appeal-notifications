@@ -26,16 +26,16 @@ public class NotificationsFunctionalTest extends AbstractFunctionalTest {
     @Value("${track.appeal.link}")
     private String tyaLink;
 
-    @Value("${notification.english.evidenceReceived.appellant.emailId}")
+    @Value("${notification.english.oral.evidenceReceived.appellant.emailId}")
     private String evidenceReceivedEmailTemplateId;
 
-    @Value("${notification.welsh.evidenceReceived.appellant.emailId}")
+    @Value("${notification.welsh.oral.evidenceReceived.appellant.emailId}")
     private String evidenceReceivedEmailTemplateIdWelsh;
 
-    @Value("${notification.english.evidenceReceived.appellant.smsId}")
+    @Value("${notification.english.oral.evidenceReceived.appellant.smsId}")
     private String evidenceReceivedSmsTemplateId;
 
-    @Value("${notification.welsh.evidenceReceived.appellant.smsId}")
+    @Value("${notification.welsh.oral.evidenceReceived.appellant.smsId}")
     private String evidenceReceivedSmsTemplateIdWelsh;
 
     @Value("${notification.english.hearingPostponed.appellant.emailId}")
