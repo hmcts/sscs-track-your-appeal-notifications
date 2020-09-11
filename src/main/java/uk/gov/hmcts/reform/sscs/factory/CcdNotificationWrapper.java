@@ -218,6 +218,8 @@ public class CcdNotificationWrapper implements NotificationWrapper {
             || ADJOURNED_NOTIFICATION.equals(getNotificationType())
             || POSTPONEMENT_NOTIFICATION.equals(getNotificationType())
             || EVIDENCE_RECEIVED_NOTIFICATION.equals(getNotificationType())
+            || APPEAL_WITHDRAWN_NOTIFICATION.equals(getNotificationType())
+            || ADMIN_APPEAL_WITHDRAWN.equals(getNotificationType())
             || EVIDENCE_REMINDER_NOTIFICATION.equals(getNotificationType()) && ORAL.equals(getHearingType()))
         ) {
             subscriptionWithTypeList.add(new SubscriptionWithType(getJointPartySubscription(), JOINT_PARTY));

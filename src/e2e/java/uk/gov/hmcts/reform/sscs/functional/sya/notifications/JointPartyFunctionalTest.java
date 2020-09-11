@@ -40,6 +40,10 @@ public class JointPartyFunctionalTest extends AbstractFunctionalTest {
     private String oralEvidenceReceivedJointPartyEmailId;
     @Value("${notification.english.oral.evidenceReceived.joint_party.smsId}")
     private String oralEvidenceReceivedJointPartySmsId;
+    @Value("${notification.english.appealWithdrawn.joint_party.emailId}")
+    private String appealWithdrawnJointPartyEmailId;
+    @Value("${notification.english.appealWithdrawn.joint_party.smsId}")
+    private String appealWithdrawnJointPartySmsId;
 
 
     public JointPartyFunctionalTest() {
@@ -111,7 +115,8 @@ public class JointPartyFunctionalTest extends AbstractFunctionalTest {
             new Object[]{ADJOURNED_NOTIFICATION, NO_HEARING_TYPE, expectedNumberOfLettersIsZero},
             new Object[]{POSTPONEMENT_NOTIFICATION, NO_HEARING_TYPE, expectedNumberOfLettersIsZero},
             new Object[]{EVIDENCE_REMINDER_NOTIFICATION, ORAL, expectedNumberOfLettersIsZero},
-            new Object[]{EVIDENCE_RECEIVED_NOTIFICATION, ORAL, expectedNumberOfLettersIsZero}
+            new Object[]{EVIDENCE_RECEIVED_NOTIFICATION, ORAL, expectedNumberOfLettersIsZero},
+            new Object[]{APPEAL_WITHDRAWN_NOTIFICATION, ORAL, expectedNumberOfLettersIsTwo}
         };
     }
 }
