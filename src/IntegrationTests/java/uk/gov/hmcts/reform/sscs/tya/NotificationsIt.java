@@ -567,6 +567,18 @@ public class NotificationsIt {
                         "0",
                         "0",
                         "2"
+                },
+                new Object[]{
+                        EVIDENCE_REMINDER_NOTIFICATION,
+                        "paper",
+                        Collections.singletonList("c507a630-9e6a-43c9-8e39-dcabdcffaf53"),
+                        Collections.singletonList("56a6c0c8-a251-482d-be83-95a7a1bf528c"),
+                        Collections.emptyList(),
+                        "yes",
+                        "yes",
+                        "1",
+                        "1",
+                        "0"
                 }
         };
     }
@@ -2449,8 +2461,8 @@ public class NotificationsIt {
             new Object[]{
                 EVIDENCE_REMINDER_NOTIFICATION,
                 "paper",
-                Arrays.asList("a3b22e07-e90b-4b52-a293-30823802c209"),
-                Arrays.asList("aaa1aad4-7abc-4a7a-b8fb-8b0567c09365"),
+                Arrays.asList("c507a630-9e6a-43c9-8e39-dcabdcffaf53"),
+                Arrays.asList("56a6c0c8-a251-482d-be83-95a7a1bf528c"),
                 Collections.emptyList(),
                 "yes",
                 "yes",
@@ -2950,8 +2962,8 @@ public class NotificationsIt {
             new Object[]{
                 EVIDENCE_REMINDER_NOTIFICATION,
                 "paper",
-                Arrays.asList("a3b22e07-e90b-4b52-a293-30823802c209"),
-                Arrays.asList("aaa1aad4-7abc-4a7a-b8fb-8b0567c09365"),
+                Arrays.asList("c507a630-9e6a-43c9-8e39-dcabdcffaf53"),
+                Arrays.asList("56a6c0c8-a251-482d-be83-95a7a1bf528c"),
                 Collections.emptyList(),
                 "yes",
                 "yes",
@@ -3278,8 +3290,8 @@ public class NotificationsIt {
         HttpServletResponse response = getResponse(getRequestWithAuthHeader(json));
 
         assertHttpStatus(response, HttpStatus.OK);
-        verify(notificationClient).sendEmail(eq("a3b22e07-e90b-4b52-a293-30823802c209"), any(), any(), any());
-        verify(notificationClient).sendSms(eq("aaa1aad4-7abc-4a7a-b8fb-8b0567c09365"), any(), any(), any(), any());
+        verify(notificationClient).sendEmail(eq("c507a630-9e6a-43c9-8e39-dcabdcffaf53"), any(), any(), any());
+        verify(notificationClient).sendSms(eq("56a6c0c8-a251-482d-be83-95a7a1bf528c"), any(), any(), any(), any());
     }
 
     @Test

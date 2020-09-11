@@ -397,14 +397,17 @@ notification:
           smsId: 4562984e-2854-4191-81d9-cffbe5111015
       evidenceReminder:
         appellant:
-          emailId: a3b22e07-e90b-4b52-a293-30823802c209
-          smsId: aaa1aad4-7abc-4a7a-b8fb-8b0567c09365
+          emailId: c507a630-9e6a-43c9-8e39-dcabdcffaf53
+          smsId: 56a6c0c8-a251-482d-be83-95a7a1bf528c
         appointee:
-          emailId: a3b22e07-e90b-4b52-a293-30823802c209
-          smsId: aaa1aad4-7abc-4a7a-b8fb-8b0567c09365
+          emailId: c507a630-9e6a-43c9-8e39-dcabdcffaf53
+          smsId: 56a6c0c8-a251-482d-be83-95a7a1bf528c
         representative:
           emailId: 81fa38cc-b7cc-469c-8109-67c801dc9c84
           smsId: f1076482-a76d-4389-b411-9865373cfc42
+        joint_party:
+          emailId: c507a630-9e6a-43c9-8e39-dcabdcffaf53
+          smsId: 56a6c0c8-a251-482d-be83-95a7a1bf528c
       evidenceReceived:
         appellant:
           emailId: cab48431-a4f0-41f5-b753-2cecf20ab5d4
@@ -754,6 +757,9 @@ notification:
         representative:
           emailId: 86a52d91-6e48-4198-995a-6cd8ebfea05f
           smsId: 7c6980fe-fa12-46a4-a9aa-c7553a163fba
+        joint_party:
+          emailId: d99855c1-2df1-4ffe-99d7-da4111c2b3e8
+          smsId: bfee6b55-9718-41c6-904c-50ecff324c3e
       evidenceReceived:
         appellant:
           emailId: fd16e0cb-c556-45d3-8900-067e119a0dff
