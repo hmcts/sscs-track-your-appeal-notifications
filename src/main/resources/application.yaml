@@ -114,6 +114,9 @@ job.scheduler:
     maxNumberOfJobExecutions: 2
     delayBetweenAttemptsInMs: 1000
 
+feature:
+  universal-credit.enabled: ${UC_ENABLED:false}
+
 notification:
   english:
     appealReceived:
@@ -1032,6 +1035,3 @@ welsh-months:
   10: "Hydref"
   11: "Tachwedd"
   12: "Rhagfyr"
-
-feature:
-  universal-credit.enabled: ${UC_ENABLED:false}
