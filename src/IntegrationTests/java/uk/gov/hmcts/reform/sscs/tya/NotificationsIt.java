@@ -652,6 +652,30 @@ public class NotificationsIt {
                         "1",
                         "0"
                 },
+                new Object[]{
+                        HEARING_REMINDER_NOTIFICATION,
+                        "oral",
+                        Collections.singletonList("07bebee4-f07a-4a0d-9c50-65be30dc72a5"),
+                        Collections.singletonList("18960596-1983-4da8-8b5c-dc1c851bb19b"),
+                        Collections.emptyList(),
+                        "yes",
+                        "yes",
+                        "1",
+                        "1",
+                        "0"
+                },
+                new Object[]{
+                        HEARING_REMINDER_NOTIFICATION,
+                        "paper",
+                        Collections.singletonList("07bebee4-f07a-4a0d-9c50-65be30dc72a5"),
+                        Collections.singletonList("18960596-1983-4da8-8b5c-dc1c851bb19b"),
+                        Collections.emptyList(),
+                        "yes",
+                        "yes",
+                        "1",
+                        "1",
+                        "0"
+                }
         };
     }
 
@@ -2728,8 +2752,8 @@ public class NotificationsIt {
             new Object[]{
                 HEARING_REMINDER_NOTIFICATION,
                 "oral",
-                Collections.singletonList("774a5cba-fab6-4b8c-a9d9-03f913ed2dca"),
-                Collections.singletonList("fcb93790-8308-4f4f-9674-65b777b7fe8c"),
+                Collections.singletonList("07bebee4-f07a-4a0d-9c50-65be30dc72a5"),
+                Collections.singletonList("18960596-1983-4da8-8b5c-dc1c851bb19b"),
                 Collections.emptyList(),
                 "yes",
                 "yes",
@@ -2741,7 +2765,7 @@ public class NotificationsIt {
             new Object[]{
                 HEARING_REMINDER_NOTIFICATION,
                 "oral",
-                Collections.singletonList("774a5cba-fab6-4b8c-a9d9-03f913ed2dca"),
+                Collections.singletonList("07bebee4-f07a-4a0d-9c50-65be30dc72a5"),
                 Collections.emptyList(),
                 Collections.emptyList(),
                 "yes",
@@ -2755,7 +2779,7 @@ public class NotificationsIt {
                 HEARING_REMINDER_NOTIFICATION,
                 "oral",
                 Collections.emptyList(),
-                Collections.singletonList("fcb93790-8308-4f4f-9674-65b777b7fe8c"),
+                Collections.singletonList("18960596-1983-4da8-8b5c-dc1c851bb19b"),
                 Collections.emptyList(),
                 "no",
                 "yes",
