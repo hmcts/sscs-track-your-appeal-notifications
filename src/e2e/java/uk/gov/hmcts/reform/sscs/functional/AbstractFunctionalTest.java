@@ -345,20 +345,23 @@ public abstract class AbstractFunctionalTest {
     }
 
     protected void assertNotificationBodyContains(List<Notification> notifications, String templateId, String... matches) {
-        String bodies =
-                notifications
-                        .stream()
-                        .filter(notification -> notification.getTemplateId().equals(UUID.fromString(templateId)))
-                        .map(Notification::getBody)
-                        .collect(Collectors.joining("\n--\n"));
 
-        for (String match : matches) {
+        if (templateId != null) {
+            String bodies =
+                    notifications
+                            .stream()
+                            .filter(notification -> notification.getTemplateId().equals(UUID.fromString(templateId)))
+                            .map(Notification::getBody)
+                            .collect(Collectors.joining("\n--\n"));
 
-            Assert.assertThat(
-                    "Notification template " + templateId + " [body] contains '" + match + "'",
-                    bodies,
-                    CoreMatchers.containsString(match)
-            );
+            for (String match : matches) {
+
+                Assert.assertThat(
+                        "Notification template " + templateId + " [body] contains '" + match + "'",
+                        bodies,
+                        CoreMatchers.containsString(match)
+                );
+            }
         }
     }
 
