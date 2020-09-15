@@ -45,16 +45,7 @@ public class FilterNotificationsEventsHandlerTest {
     }
 
     @Test
-    @Parameters({"ADJOURNED_NOTIFICATION", "ADMIN_APPEAL_WITHDRAWN", "APPEAL_DORMANT_NOTIFICATION",
-            "APPEAL_LAPSED_NOTIFICATION", "APPEAL_RECEIVED_NOTIFICATION",
-            "APPEAL_WITHDRAWN_NOTIFICATION", "DECISION_ISSUED", "DIRECTION_ISSUED", "DIRECTION_ISSUED_WELSH",
-            "DWP_APPEAL_LAPSED_NOTIFICATION", "DWP_RESPONSE_RECEIVED_NOTIFICATION",
-            "DWP_UPLOAD_RESPONSE_NOTIFICATION", "EVIDENCE_RECEIVED_NOTIFICATION",
-            "HEARING_BOOKED_NOTIFICATION", "ISSUE_ADJOURNMENT_NOTICE", "ISSUE_FINAL_DECISION",
-            "NON_COMPLIANT_NOTIFICATION", "POSTPONEMENT_NOTIFICATION", "REISSUE_DOCUMENT",
-            "REQUEST_INFO_INCOMPLETE", "RESEND_APPEAL_CREATED_NOTIFICATION", "STRUCK_OUT",
-            "SUBSCRIPTION_UPDATED_NOTIFICATION", "VALID_APPEAL_CREATED", "DIRECTION_ISSUED_WELSH",
-            "DECISION_ISSUED_WELSH"})
+    @Parameters({"ADMIN_APPEAL_WITHDRAWN", "DWP_UPLOAD_RESPONSE_NOTIFICATION", "DIRECTION_ISSUED", "DIRECTION_ISSUED_WELSH", "VALID_APPEAL_CREATED", "NON_COMPLIANT_NOTIFICATION", "REISSUE_DOCUMENT", "STRUCK_OUT", "ISSUE_ADJOURNMENT_NOTICE"})
     public void willHandleEvents(NotificationEventType notificationEventType) {
         SscsCaseDataWrapper callback = SscsCaseDataWrapper.builder().notificationEventType(notificationEventType).build();
         assertTrue(handler.canHandle(callback));
@@ -64,14 +55,14 @@ public class FilterNotificationsEventsHandlerTest {
     }
 
     @Test
-    @Parameters({"DO_NOT_SEND", "SYA_APPEAL_CREATED_NOTIFICATION"})
+    @Parameters({"ADJOURNED_NOTIFICATION", "DECISION_ISSUED",  "DECISION_ISSUED_WELSH", "ISSUE_FINAL_DECISION"})
     public void willNotHandleEvents(NotificationEventType notificationEventType) {
         SscsCaseDataWrapper callback = SscsCaseDataWrapper.builder().notificationEventType(notificationEventType).build();
         assertFalse(handler.canHandle(callback));
     }
 
     @Test(expected = IllegalStateException.class)
-    @Parameters({"DO_NOT_SEND", "SYA_APPEAL_CREATED_NOTIFICATION"})
+    @Parameters({"ADJOURNED_NOTIFICATION", "APPEAL_LAPSED_NOTIFICATION"})
     public void willThrowExceptionIfTriesToHandleEvents(NotificationEventType notificationEventType) {
         SscsCaseDataWrapper callback = SscsCaseDataWrapper.builder().notificationEventType(notificationEventType).build();
         handler.handle(callback);
