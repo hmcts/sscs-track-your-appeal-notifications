@@ -236,16 +236,16 @@ public class NotificationsFunctionalTest extends AbstractFunctionalTest {
     @Value("${notification.welsh.hearingBooked.appointee.smsId}")
     private String appointeeHearingBookedSmsIdWelsh;
 
-    @Value("${notification.english.evidenceReceived.appellant.emailId}")
+    @Value("${notification.english.oral.evidenceReceived.appellant.emailId}")
     private String appointeeEvidenceReceivedEmailId;
 
-    @Value("${notification.welsh.evidenceReceived.appellant.emailId}")
+    @Value("${notification.welsh.oral.evidenceReceived.appellant.emailId}")
     private String appointeeEvidenceReceivedEmailIdWelsh;
 
-    @Value("${notification.english.evidenceReceived.appellant.smsId}")
+    @Value("${notification.english.oral.evidenceReceived.appellant.smsId}")
     private String appointeeEvidenceReceivedSmsId;
 
-    @Value("${notification.welsh.evidenceReceived.appellant.smsId}")
+    @Value("${notification.welsh.oral.evidenceReceived.appellant.smsId}")
     private String appointeeEvidenceReceivedSmsIdWelsh;
 
     @Value("${notification.english.hearingPostponed.appointee.emailId}")

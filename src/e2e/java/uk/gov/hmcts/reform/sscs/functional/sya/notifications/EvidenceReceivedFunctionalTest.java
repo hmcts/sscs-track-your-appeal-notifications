@@ -16,20 +16,22 @@ import uk.gov.service.notify.Notification;
 
 public class EvidenceReceivedFunctionalTest extends AbstractFunctionalTest {
 
-    @Value("${notification.english.evidenceReceived.appellant.emailId}")
-    private String evidenceReceivedAppellantEmailId;
-    @Value("${notification.english.evidenceReceived.appellant.smsId}")
-    private String evidenceReceivedAppellantSmsId;
+    @Value("${notification.english.oral.evidenceReceived.appellant.emailId}")
+    private String oralEvidenceReceivedAppellantEmailId;
+    @Value("${notification.english.oral.evidenceReceived.appellant.smsId}")
+    private String oralEvidenceReceivedAppellantSmsId;
     @Value("${notification.english.paper.evidenceReceived.appellant.emailId}")
     private String paperEvidenceReceivedAppellantEmailId;
-    @Value("${notification.english.paper.evidenceReceived.representative.emailId}")
-    private String paperEvidenceReceivedRepsEmailId;
-    @Value("${notification.english.evidenceReceived.representative.smsId}")
-    private String paperEvidenceReceivedRepsSmsId;
+    @Value("${notification.english.paper.evidenceReceived.appellant.smsId}")
+    private String paperEvidenceReceivedAppellantSmsId;
     @Value("${notification.english.oral.evidenceReceived.representative.emailId}")
     private String oralEvidenceReceivedRepsEmailId;
-    @Value("${notification.english.evidenceReceived.representative.smsId}")
+    @Value("${notification.english.oral.evidenceReceived.representative.smsId}")
     private String oralEvidenceReceivedRepsSmsId;
+    @Value("${notification.english.paper.evidenceReceived.representative.emailId}")
+    private String paperEvidenceReceivedRepsEmailId;
+    @Value("${notification.english.paper.evidenceReceived.representative.smsId}")
+    private String paperEvidenceReceivedRepsSmsId;
 
     public EvidenceReceivedFunctionalTest() {
         super(30);
