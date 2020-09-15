@@ -114,6 +114,9 @@ job.scheduler:
     maxNumberOfJobExecutions: 2
     delayBetweenAttemptsInMs: 1000
 
+feature:
+  universal-credit.enabled: ${UC_ENABLED:false}
+
 notification:
   english:
     appealReceived:
@@ -479,7 +482,7 @@ notification:
         emailId: 5ac371f7-c406-48de-bf5c-df0a12aa79e6
         smsId: 1e59e3e7-5ff9-4a5a-85b1-e8fcc88bbcf1
         letterId: 95b0b0f8-fdf6-450f-b805-6aab46d63bf7
-        docmosisId: pdf-service
+        docmosisId: TB-SCS-GNO-WEL-00467.docx
     evidenceReceived:
       appellant:
         emailId: 148e1bbb-2e1e-4353-8cf3-8472131f0efc
