@@ -78,6 +78,12 @@ public class WelshNotificationsFunctionalTest extends AbstractFunctionalTest {
     @Value("${notification.welsh.paper.evidenceReceived.appointee.smsId}")
     private String paperAppointeeEvidenceReceivedSmsIdWelsh;
 
+    @Value("${notification.welsh.paper.evidenceReceived.appointee.emailId}")
+    private String appointeeEvidenceReceivedEmailIdWelsh;
+
+    @Value("${notification.welsh.paper.evidenceReceived.appointee.smsId}")
+    private String appointeeEvidenceReceivedSmsIdWelsh;
+
     @Value("${notification.welsh.paper.responseReceived.appointee.emailId}")
     private String paperAppointeeResponseReceivedEmailIdWelsh;
 
@@ -134,12 +140,6 @@ public class WelshNotificationsFunctionalTest extends AbstractFunctionalTest {
 
     @Value("${notification.welsh.hearingBooked.appointee.smsId}")
     private String appointeeHearingBookedSmsIdWelsh;
-
-    @Value("${notification.welsh.evidenceReceived.appellant.emailId}")
-    private String appointeeEvidenceReceivedEmailIdWelsh;
-
-    @Value("${notification.welsh.evidenceReceived.appellant.smsId}")
-    private String appointeeEvidenceReceivedSmsIdWelsh;
 
     @Value("${notification.welsh.hearingPostponed.appointee.emailId}")
     private String appointeeHearingPostponedEmailIdWelsh;
