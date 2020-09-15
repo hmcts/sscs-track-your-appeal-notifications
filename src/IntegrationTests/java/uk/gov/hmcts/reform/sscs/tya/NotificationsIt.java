@@ -652,6 +652,30 @@ public class NotificationsIt {
                         "1",
                         "0"
                 },
+                new Object[]{
+                        HEARING_BOOKED_NOTIFICATION,
+                        "oral",
+                        Collections.singletonList("aa0930a3-e1bd-4b50-ac6b-34df73ec8378"),
+                        Collections.singletonList("8aa77a9c-9bc6-424d-8716-1c948681270e"),
+                        Collections.emptyList(),
+                        "yes",
+                        "yes",
+                        "1",
+                        "1",
+                        "0"
+                },
+                new Object[]{
+                        HEARING_BOOKED_NOTIFICATION,
+                        "paper",
+                        Collections.singletonList("aa0930a3-e1bd-4b50-ac6b-34df73ec8378"),
+                        Collections.singletonList("8aa77a9c-9bc6-424d-8716-1c948681270e"),
+                        Collections.emptyList(),
+                        "yes",
+                        "yes",
+                        "1",
+                        "1",
+                        "0"
+                },
         };
     }
 
@@ -2520,8 +2544,8 @@ public class NotificationsIt {
             new Object[]{
                 EVIDENCE_REMINDER_NOTIFICATION,
                 "oral",
-                Arrays.asList("b9e47ec4-3b58-4b8d-9304-f77ac27fb7f2"),
-                Arrays.asList("e3f71440-d1ac-43c8-a8cc-a088c4f3c959"),
+                Arrays.asList("d994236b-d7c4-44ef-9627-12372bb0434a"),
+                Arrays.asList("7d36718b-1193-4b3d-86bd-db54612c5363"),
                 Collections.emptyList(),
                 "yes",
                 "yes",
@@ -3021,8 +3045,8 @@ public class NotificationsIt {
             new Object[]{
                 EVIDENCE_REMINDER_NOTIFICATION,
                 "oral",
-                Collections.singletonList("b9e47ec4-3b58-4b8d-9304-f77ac27fb7f2"),
-                Collections.singletonList("e3f71440-d1ac-43c8-a8cc-a088c4f3c959"),
+                Collections.singletonList("d994236b-d7c4-44ef-9627-12372bb0434a"),
+                Collections.singletonList("7d36718b-1193-4b3d-86bd-db54612c5363"),
                 Collections.emptyList(),
                 "yes",
                 "yes",
@@ -3125,8 +3149,8 @@ public class NotificationsIt {
             new Object[]{
                 HEARING_BOOKED_NOTIFICATION,
                 "oral",
-                Collections.singletonList("fee16753-0bdb-43f1-9abb-b14b826e3b26"),
-                Collections.singletonList("693c9bfb-151e-4add-a6f2-af1cbc94eef5"),
+                Collections.singletonList("aa0930a3-e1bd-4b50-ac6b-34df73ec8378"),
+                Collections.singletonList("8aa77a9c-9bc6-424d-8716-1c948681270e"),
                 Collections.emptyList(),
                 "yes",
                 "yes",
@@ -3350,8 +3374,8 @@ public class NotificationsIt {
         HttpServletResponse response = getResponse(getRequestWithAuthHeader(json));
 
         assertHttpStatus(response, HttpStatus.OK);
-        verify(notificationClient).sendEmail(eq("b9e47ec4-3b58-4b8d-9304-f77ac27fb7f2"), any(), any(), any());
-        verify(notificationClient).sendSms(eq("e3f71440-d1ac-43c8-a8cc-a088c4f3c959"), any(), any(), any(), any());
+        verify(notificationClient).sendEmail(eq("d994236b-d7c4-44ef-9627-12372bb0434a"), any(), any(), any());
+        verify(notificationClient).sendSms(eq("7d36718b-1193-4b3d-86bd-db54612c5363"), any(), any(), any(), any());
     }
 
     @Test
