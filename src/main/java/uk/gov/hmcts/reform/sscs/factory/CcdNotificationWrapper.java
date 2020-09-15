@@ -214,7 +214,9 @@ public class CcdNotificationWrapper implements NotificationWrapper {
         }
 
         if (hasJointPartySubscription(responseWrapper)
-            && APPEAL_LAPSED_NOTIFICATION.equals(getNotificationType())) {
+            && (APPEAL_LAPSED_NOTIFICATION.equals(getNotificationType())
+            || EVIDENCE_REMINDER_NOTIFICATION.equals(getNotificationType()) && ORAL.equals(getHearingType()))
+        ) {
             subscriptionWithTypeList.add(new SubscriptionWithType(getJointPartySubscription(), JOINT_PARTY));
         }
         return subscriptionWithTypeList;
