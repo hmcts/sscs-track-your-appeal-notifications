@@ -244,14 +244,17 @@ notification:
       smsId: 759c712a-6b55-485e-bcf7-1cf5c4896eb1
     hearingBooked:
       appellant:
-        emailId: fee16753-0bdb-43f1-9abb-b14b826e3b26
-        smsId: 693c9bfb-151e-4add-a6f2-af1cbc94eef5
+        emailId: aa0930a3-e1bd-4b50-ac6b-34df73ec8378
+        smsId: 8aa77a9c-9bc6-424d-8716-1c948681270e
       representative:
         emailId: a56e67cb-6b4b-41e3-8f4c-cd1cdb6809c1
         smsId: e04c548d-1ba9-40b5-bf9b-ea5e7bbadbac
       appointee:
-        emailId: fee16753-0bdb-43f1-9abb-b14b826e3b26
-        smsId: 693c9bfb-151e-4add-a6f2-af1cbc94eef5
+        emailId: aa0930a3-e1bd-4b50-ac6b-34df73ec8378
+        smsId: 8aa77a9c-9bc6-424d-8716-1c948681270e
+      joint_party:
+        emailId: aa0930a3-e1bd-4b50-ac6b-34df73ec8378
+        smsId: 8aa77a9c-9bc6-424d-8716-1c948681270e
     appealCreated:
       appellant:
         emailId: 01293b93-b23e-40a3-ad78-2c6cd01cd21c
@@ -595,13 +598,16 @@ notification:
     hearingBooked:
       appellant:
         emailId: 19b4f9c7-d4f6-49b1-9f61-ace2d0930c2a
-        smsId: 693c9bfb-151e-4add-a6f2-af1cbc94eef5
+        smsId: 8aa77a9c-9bc6-424d-8716-1c948681270e
       representative:
         emailId: ddbc2437-604d-4ba3-a174-c3664efca8ee
         smsId: 1b4cd26e-5219-44c5-ba6c-b21e33ddbeba
       appointee:
         emailId: 19b4f9c7-d4f6-49b1-9f61-ace2d0930c2a
-        smsId: 693c9bfb-151e-4add-a6f2-af1cbc94eef5
+        smsId: 8aa77a9c-9bc6-424d-8716-1c948681270e
+      joint_party:
+        emailId: 19b4f9c7-d4f6-49b1-9f61-ace2d0930c2a
+        smsId: 8aa77a9c-9bc6-424d-8716-1c948681270e
     appealCreated:
       appellant:
         emailId: 3b219534-1c9a-49cb-9113-eef877942ae9
@@ -866,7 +872,7 @@ appeal.email.message: ${EMAIL_MESSAGE:Your appeal has been created \nPlease do n
 pdf.api.url: ${PDF_API_URL:http://localhost:5500}
 
 feature.save_correspondence: ${SAVE_CORRESPONDENCE:true}
-feature.covid19: ${COVID_19_NOTIFICATION_FEATURE:true}
+feature.covid19: ${COVID_19_NOTIFICATION_FEATURE:false}
 
 letterAsync:
   maxAttempts: ${LETTER_ASYNC_MAX_ATTEMPTS:5}
