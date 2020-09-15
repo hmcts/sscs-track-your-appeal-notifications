@@ -1,14 +1,18 @@
 package uk.gov.hmcts.reform.sscs.functional.sya.notifications;
 
+import static org.apache.commons.lang.WordUtils.capitalize;
+import static org.apache.commons.lang3.StringUtils.EMPTY;
+import static org.apache.commons.lang3.StringUtils.defaultIfBlank;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
-import static uk.gov.hmcts.reform.sscs.domain.notify.NotificationEventType.APPEAL_LAPSED_NOTIFICATION;
-import static uk.gov.hmcts.reform.sscs.domain.notify.NotificationEventType.HEARING_BOOKED_NOTIFICATION;
+import static uk.gov.hmcts.reform.sscs.domain.notify.NotificationEventType.*;
 
 import java.lang.reflect.Field;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 import junitparams.Parameters;
+import junitparams.converters.Nullable;
 import org.junit.Test;
 import org.springframework.beans.factory.annotation.Value;
 import uk.gov.hmcts.reform.sscs.domain.notify.NotificationEventType;
@@ -16,10 +20,22 @@ import uk.gov.hmcts.reform.sscs.functional.AbstractFunctionalTest;
 import uk.gov.service.notify.Notification;
 
 public class JointPartyFunctionalTest extends AbstractFunctionalTest {
+    private static final String NO_HEARING_TYPE = null;
+    private static final String ORAL = "oral";
     @Value("${notification.english.appealLapsed.joint_party.emailId}")
     private String appealLapsedJointPartyEmailId;
     @Value("${notification.english.appealLapsed.joint_party.smsId}")
     private String appealLapsedJointPartySmsId;
+    @Value("${notification.english.hearingAdjourned.joint_party.emailId}")
+    private String hearingAdjournedJointPartyEmailId;
+    @Value("${notification.english.hearingAdjourned.joint_party.smsId}")
+    private String hearingAdjournedJointPartySmsId;
+    @Value("${notification.english.hearingPostponed.joint_party.emailId}")
+    private String hearingPostponedJointPartyEmailId;
+    @Value("${notification.english.oral.evidenceReminder.joint_party.emailId}")
+    private String oralEvidenceReminderJointPartyEmailId;
+    @Value("${notification.english.oral.evidenceReminder.joint_party.smsId}")
+    private String oralEvidenceReminderJointPartySmsId;
     @Value("${notification.english.hearingBooked.joint_party.emailId}")
     private String hearingBookedJointPartyEmailId;
     @Value("${notification.english.hearingBooked.joint_party.smsId}")
@@ -32,18 +48,28 @@ public class JointPartyFunctionalTest extends AbstractFunctionalTest {
     @Test
     @Parameters(method = "eventTypeAndSubscriptions")
     public void givenEventAndJointPartySubscription_shouldSendNotificationToJointParty(
-            NotificationEventType notificationEventType, int expectedNumberOfLetters)
+            NotificationEventType notificationEventType, @Nullable String hearingType, int expectedNumberOfLetters)
             throws Exception {
         //Given
-        final String jointPartyEmailId = getFieldValue(notificationEventType, "JointPartyEmailId");
-        final String jointPartySmsId = getFieldValue(notificationEventType, "JointPartySmsId");
+        final String jointPartyEmailId = getFieldValue(hearingType, notificationEventType, "JointPartyEmailId");
+        final String jointPartySmsId = getFieldValue(hearingType, notificationEventType, "JointPartySmsId");
 
         simulateCcdCallback(notificationEventType,
-            "jointParty/" + notificationEventType.getId() + "Callback.json");
+            "jointParty/" + ((hearingType == null) ? EMPTY : (hearingType + "-")) + notificationEventType.getId() + "Callback.json");
 
-        List<Notification> notifications = tryFetchNotificationsForTestCase(jointPartyEmailId, jointPartySmsId);
+        List<String> expectedIds = new ArrayList<>();
 
-        assertEquals(2, notifications.size());
+        if (jointPartyEmailId != null) {
+            expectedIds.add(jointPartyEmailId);
+        }
+
+        if (jointPartySmsId != null) {
+            expectedIds.add(jointPartySmsId);
+        }
+
+        List<Notification> notifications = tryFetchNotificationsForTestCase(expectedIds.toArray(new String[expectedIds.size()]));
+
+        assertEquals(expectedIds.size(), notifications.size());
 
         String jointPartyName = "Joint Party";
         assertNotificationBodyContains(notifications, jointPartyEmailId, jointPartyName);
@@ -57,14 +83,16 @@ public class JointPartyFunctionalTest extends AbstractFunctionalTest {
                             notification.getLine1().map(f -> f.contains(jointPartyName)).orElse(false)).findFirst();
             assertTrue(notificationOptional.isPresent());
             assertTrue(notificationOptional.get().getBody().contains("Dear " + jointPartyName));
-
         }
     }
 
-    private String getFieldValue(NotificationEventType notificationEventType, String fieldName) throws Exception {
+    private String getFieldValue(String hearingType, NotificationEventType notificationEventType, String fieldName) throws Exception {
         String fieldValue;
         try {
-            Field field = this.getClass().getDeclaredField(notificationEventType.getId() + fieldName);
+            Field field = this.getClass().getDeclaredField(
+                    defaultIfBlank(hearingType, EMPTY)
+                            + ((hearingType == null) ? notificationEventType.getId() : capitalize(notificationEventType.getId()))
+                            + fieldName);
             field.setAccessible(true);
             fieldValue = (String) field.get(this);
         } catch (NoSuchFieldException e) {
@@ -75,11 +103,14 @@ public class JointPartyFunctionalTest extends AbstractFunctionalTest {
 
     @SuppressWarnings({"Indentation", "unused"})
     private Object[] eventTypeAndSubscriptions() {
-        int expectedNumberOfLettersIsTwo = 2;
-        int expectedNumberOfLettersIsZero = 0;
+        final int expectedNumberOfLettersIsTwo = 2;
+        final int expectedNumberOfLettersIsZero = 0;
         return new Object[]{
-            new Object[]{APPEAL_LAPSED_NOTIFICATION, expectedNumberOfLettersIsTwo},
-            new Object[]{HEARING_BOOKED_NOTIFICATION, expectedNumberOfLettersIsZero}
+            new Object[]{APPEAL_LAPSED_NOTIFICATION, NO_HEARING_TYPE, expectedNumberOfLettersIsTwo},
+            new Object[]{ADJOURNED_NOTIFICATION, NO_HEARING_TYPE, expectedNumberOfLettersIsZero},
+            new Object[]{POSTPONEMENT_NOTIFICATION, NO_HEARING_TYPE, expectedNumberOfLettersIsZero},
+            new Object[]{HEARING_BOOKED_NOTIFICATION, NO_HEARING_TYPE, expectedNumberOfLettersIsZero},
+            new Object[]{EVIDENCE_REMINDER_NOTIFICATION, ORAL, expectedNumberOfLettersIsZero}
         };
     }
 }
