@@ -75,7 +75,6 @@ public class ReminderNotificationsFunctionalTest extends AbstractFunctionalTest 
     }
 
     @Test
-    @Ignore("temp ignore as we think it's running on old code in AAT")
     public void shouldSendNotificationsWhenDwpResponseReceivedEventIsReceivedForOralWithAnAppellantSubscribed() throws IOException, NotificationClientException {
         triggerEventWithHearingType(DWP_RESPONSE_RECEIVED_NOTIFICATION, "oral");
         simulateCcdCallback(DWP_RESPONSE_RECEIVED_NOTIFICATION,"representative/oral-" + DWP_RESPONSE_RECEIVED_NOTIFICATION.getId() + "Callback.json");
