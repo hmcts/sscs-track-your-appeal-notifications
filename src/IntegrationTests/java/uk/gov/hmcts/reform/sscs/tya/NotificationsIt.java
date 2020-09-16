@@ -629,6 +629,30 @@ public class NotificationsIt {
                         "0"
                 },
                 new Object[]{
+                        EVIDENCE_RECEIVED_NOTIFICATION,
+                        "paper",
+                        Collections.singletonList("8509fb1b-eb15-449f-b4ee-15ce286ab404"),
+                        Collections.singletonList("e7868511-3a1f-4b8e-8bb3-b36c2bd99799"),
+                        Collections.emptyList(),
+                        "yes",
+                        "yes",
+                        "1",
+                        "1",
+                        "0"
+                },
+                new Object[]{
+                        EVIDENCE_RECEIVED_NOTIFICATION,
+                        "oral",
+                        Collections.singletonList("bd78cbc4-27d3-4692-a491-6c1770df174e"),
+                        Collections.singletonList("e7868511-3a1f-4b8e-8bb3-b36c2bd99799"),
+                        Collections.emptyList(),
+                        "yes",
+                        "yes",
+                        "1",
+                        "1",
+                        "0"
+                },
+                new Object[]{
                         HEARING_BOOKED_NOTIFICATION,
                         "oral",
                         Collections.singletonList("aa0930a3-e1bd-4b50-ac6b-34df73ec8378"),
@@ -727,7 +751,7 @@ public class NotificationsIt {
             new Object[]{
                 EVIDENCE_RECEIVED_NOTIFICATION,
                 "paper",
-                Arrays.asList("cab48431-a4f0-41f5-b753-2cecf20ab5d4", "7af36950-fc63-45d1-907d-f472fac7af06"),
+                Arrays.asList("8509fb1b-eb15-449f-b4ee-15ce286ab404", "7af36950-fc63-45d1-907d-f472fac7af06"),
                 Collections.emptyList(),
                 Collections.emptyList(),
                 "yes",
@@ -769,7 +793,7 @@ public class NotificationsIt {
             new Object[]{
                 EVIDENCE_RECEIVED_NOTIFICATION,
                 "oral",
-                Arrays.asList("c5654134-2e13-4541-ac73-334a5b5cdbb6", "30260c0b-5575-4f4e-bce4-73cf3f245c2d"),
+                Arrays.asList("bd78cbc4-27d3-4692-a491-6c1770df174e", "30260c0b-5575-4f4e-bce4-73cf3f245c2d"),
                 Collections.emptyList(),
                 Collections.emptyList(),
                 "yes",
@@ -1790,7 +1814,7 @@ public class NotificationsIt {
             new Object[]{
                 EVIDENCE_RECEIVED_NOTIFICATION,
                 "paper",
-                Arrays.asList("cab48431-a4f0-41f5-b753-2cecf20ab5d4", "7af36950-fc63-45d1-907d-f472fac7af06"),
+                Arrays.asList("8509fb1b-eb15-449f-b4ee-15ce286ab404", "7af36950-fc63-45d1-907d-f472fac7af06"),
                 Collections.emptyList(),
                 Collections.emptyList(),
                 "yes",
@@ -2570,8 +2594,8 @@ public class NotificationsIt {
             new Object[]{
                 EVIDENCE_RECEIVED_NOTIFICATION,
                 "paper",
-                Collections.singletonList("c5654134-2e13-4541-ac73-334a5b5cdbb6"),
-                Collections.singletonList("74bda35f-040b-4355-bda3-faf0e4f5ae6e"),
+                Collections.singletonList("8509fb1b-eb15-449f-b4ee-15ce286ab404"),
+                Collections.singletonList("e7868511-3a1f-4b8e-8bb3-b36c2bd99799"),
                 Collections.emptyList(),
                 "yes",
                 "yes",
@@ -2609,8 +2633,8 @@ public class NotificationsIt {
             new Object[]{
                 EVIDENCE_RECEIVED_NOTIFICATION,
                 "oral",
-                Arrays.asList("c5654134-2e13-4541-ac73-334a5b5cdbb6"),
-                Arrays.asList("74bda35f-040b-4355-bda3-faf0e4f5ae6e"),
+                Arrays.asList("bd78cbc4-27d3-4692-a491-6c1770df174e"),
+                Arrays.asList("e7868511-3a1f-4b8e-8bb3-b36c2bd99799"),
                 Collections.emptyList(),
                 "yes",
                 "yes",
@@ -2967,8 +2991,8 @@ public class NotificationsIt {
             new Object[]{
                 EVIDENCE_RECEIVED_NOTIFICATION,
                 "oral",
-                Collections.singletonList("c5654134-2e13-4541-ac73-334a5b5cdbb6"),
-                Collections.singletonList("74bda35f-040b-4355-bda3-faf0e4f5ae6e"),
+                Collections.singletonList("bd78cbc4-27d3-4692-a491-6c1770df174e"),
+                Collections.singletonList("e7868511-3a1f-4b8e-8bb3-b36c2bd99799"),
                 Collections.emptyList(),
                 "yes",
                 "yes",
