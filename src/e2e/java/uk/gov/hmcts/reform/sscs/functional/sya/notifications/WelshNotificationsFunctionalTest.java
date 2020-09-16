@@ -29,11 +29,6 @@ public class WelshNotificationsFunctionalTest extends AbstractFunctionalTest {
     @Value("${track.appeal.link}")
     private String tyaLink;
 
-    @Value("${notification.welsh.evidenceReceived.appellant.emailId}")
-    private String evidenceReceivedEmailTemplateIdWelsh;
-
-    @Value("${notification.welsh.evidenceReceived.appellant.smsId}")
-    private String evidenceReceivedSmsTemplateIdWelsh;
 
     @Value("${notification.welsh.hearingPostponed.appellant.emailId}")
     private String hearingPostponedEmailTemplateIdWelsh;
@@ -71,11 +66,23 @@ public class WelshNotificationsFunctionalTest extends AbstractFunctionalTest {
     @Value("${notification.welsh.subscriptionOld.smsId}")
     private String subscriptionUpdateOldSmsIdWelsh;
 
+    @Value("${notification.welsh.oral.evidenceReceived.appointee.emailId}")
+    private String oralEvidenceReceivedEmailTemplateIdWelsh;
+
+    @Value("${notification.welsh.oral.evidenceReceived.appointee.smsId}")
+    private String oralEvidenceReceivedSmsTemplateIdWelsh;
+
     @Value("${notification.welsh.paper.evidenceReceived.appointee.emailId}")
     private String paperAppointeeEvidenceReceivedEmailIdWelsh;
 
     @Value("${notification.welsh.paper.evidenceReceived.appointee.smsId}")
     private String paperAppointeeEvidenceReceivedSmsIdWelsh;
+
+    @Value("${notification.welsh.paper.evidenceReceived.appointee.emailId}")
+    private String appointeeEvidenceReceivedEmailIdWelsh;
+
+    @Value("${notification.welsh.paper.evidenceReceived.appointee.smsId}")
+    private String appointeeEvidenceReceivedSmsIdWelsh;
 
     @Value("${notification.welsh.paper.responseReceived.appointee.emailId}")
     private String paperAppointeeResponseReceivedEmailIdWelsh;
@@ -134,12 +141,6 @@ public class WelshNotificationsFunctionalTest extends AbstractFunctionalTest {
     @Value("${notification.welsh.hearingBooked.appointee.smsId}")
     private String appointeeHearingBookedSmsIdWelsh;
 
-    @Value("${notification.welsh.evidenceReceived.appellant.emailId}")
-    private String appointeeEvidenceReceivedEmailIdWelsh;
-
-    @Value("${notification.welsh.evidenceReceived.appellant.smsId}")
-    private String appointeeEvidenceReceivedSmsIdWelsh;
-
     @Value("${notification.welsh.hearingPostponed.appointee.emailId}")
     private String appointeeHearingPostponedEmailIdWelsh;
 
@@ -157,8 +158,8 @@ public class WelshNotificationsFunctionalTest extends AbstractFunctionalTest {
     public void shouldSendEvidenceReceivedNotificationWelsh() throws NotificationClientException, IOException {
         simulateWelshCcdCallback(EVIDENCE_RECEIVED_NOTIFICATION);
         tryFetchNotificationsForTestCase(
-                evidenceReceivedEmailTemplateIdWelsh,
-                evidenceReceivedSmsTemplateIdWelsh
+                oralEvidenceReceivedEmailTemplateIdWelsh,
+                oralEvidenceReceivedSmsTemplateIdWelsh
         );
     }
 
