@@ -219,6 +219,7 @@ public class CcdNotificationWrapper implements NotificationWrapper {
             || HEARING_BOOKED_NOTIFICATION.equals(getNotificationType())
             || HEARING_REMINDER_NOTIFICATION.equals(getNotificationType())
             || POSTPONEMENT_NOTIFICATION.equals(getNotificationType())
+            || EVIDENCE_RECEIVED_NOTIFICATION.equals(getNotificationType())
             || EVIDENCE_REMINDER_NOTIFICATION.equals(getNotificationType()) && ORAL.equals(getHearingType()))
         ) {
             subscriptionWithTypeList.add(new SubscriptionWithType(getJointPartySubscription(), JOINT_PARTY));
