@@ -22,6 +22,7 @@ import uk.gov.service.notify.Notification;
 public class JointPartyFunctionalTest extends AbstractFunctionalTest {
     private static final String NO_HEARING_TYPE = null;
     private static final String ORAL = "oral";
+    private static final String PAPER = "paper";
     @Value("${notification.english.appealLapsed.joint_party.emailId}")
     private String appealLapsedJointPartyEmailId;
     @Value("${notification.english.appealLapsed.joint_party.smsId}")
@@ -48,6 +49,12 @@ public class JointPartyFunctionalTest extends AbstractFunctionalTest {
     private String hearingReminderJointPartyEmailId;
     @Value("${notification.english.hearingReminder.joint_party.smsId}")
     private String hearingReminderJointPartySmsId;
+    @Value("${notification.english.oral.appealDormant.joint_party.emailId}")
+    private String oralAppealDormantJointPartyEmailId;
+    @Value("${notification.english.paper.appealDormant.joint_party.emailId}")
+    private String paperAppealDormantJointPartyEmailId;
+    @Value("${notification.english.paper.appealDormant.joint_party.smsId}")
+    private String paperAppealDormantJointPartySmsId;
 
     public JointPartyFunctionalTest() {
         super(30);
@@ -115,6 +122,8 @@ public class JointPartyFunctionalTest extends AbstractFunctionalTest {
         final int expectedNumberOfLettersIsZero = 0;
         return new Object[]{
             new Object[]{APPEAL_LAPSED_NOTIFICATION, NO_HEARING_TYPE, expectedNumberOfLettersIsTwo},
+            new Object[]{APPEAL_DORMANT_NOTIFICATION, ORAL, expectedNumberOfLettersIsZero},
+            new Object[]{APPEAL_DORMANT_NOTIFICATION, PAPER, expectedNumberOfLettersIsZero},
             new Object[]{ADJOURNED_NOTIFICATION, NO_HEARING_TYPE, expectedNumberOfLettersIsZero},
             new Object[]{POSTPONEMENT_NOTIFICATION, NO_HEARING_TYPE, expectedNumberOfLettersIsZero},
             new Object[]{EVIDENCE_REMINDER_NOTIFICATION, ORAL, expectedNumberOfLettersIsZero},
