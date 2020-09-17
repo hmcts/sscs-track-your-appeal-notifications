@@ -3234,7 +3234,7 @@ public class NotificationsIt {
             new Object[]{
                 DWP_UPLOAD_RESPONSE_NOTIFICATION,
                 "paper",
-                Collections.singletonList("8c4770ca-13c9-49ea-9df1-f2952030f95e"),
+                Collections.singletonList("e1084d78-5e2d-45d2-a54f-84339da141c1"),
                 Collections.singletonList("5e5cfe8d-b893-4f87-817f-9d05d22d657a"),
                 Collections.singletonList("TB-SCS-GNO-ENG-00261.doc"),
                 "yes",

@@ -393,10 +393,10 @@ notification:
       dwpUploadResponse:
         docmosisId: TB-SCS-GNO-ENG-00261.docx
         appellant:
-          emailId: 8c4770ca-13c9-49ea-9df1-f2952030f95e
+          emailId: e1084d78-5e2d-45d2-a54f-84339da141c1
           smsId: 5e5cfe8d-b893-4f87-817f-9d05d22d657a
         appointee:
-          emailId: 8c4770ca-13c9-49ea-9df1-f2952030f95e
+          emailId: e1084d78-5e2d-45d2-a54f-84339da141c1
           smsId: 5e5cfe8d-b893-4f87-817f-9d05d22d657a
         representative:
           emailId: 8dc0510c-70d5-4791-9217-87d70361a54c
