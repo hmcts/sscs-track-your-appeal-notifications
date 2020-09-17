@@ -283,7 +283,7 @@ dependencies {
     compile group: 'uk.gov.hmcts.reform', name: 'sscs-pdf-email-common', version: '1.4.14'
 
     compile group: 'uk.gov.service.notify', name: 'notifications-java-client', version: '3.17.0-RELEASE'
-    compile group: 'com.squareup.okhttp3', name: 'okhttp', version: '4.8.1'
+    compile group: 'com.squareup.okhttp3', name: 'okhttp', version: '4.9.0'
     compile group: 'commons-fileupload', name: 'commons-fileupload', version: '1.4'
     compile group: 'io.github.openfeign.form', name: 'feign-form', version: '3.8.0'
 
