@@ -570,6 +570,18 @@ public class NotificationsIt {
                 },
                 new Object[]{
                         EVIDENCE_REMINDER_NOTIFICATION,
+                        "paper",
+                        Collections.singletonList("c507a630-9e6a-43c9-8e39-dcabdcffaf53"),
+                        Collections.singletonList("56a6c0c8-a251-482d-be83-95a7a1bf528c"),
+                        Collections.emptyList(),
+                        "yes",
+                        "yes",
+                        "1",
+                        "1",
+                        "0"
+                },
+                new Object[]{
+                        EVIDENCE_REMINDER_NOTIFICATION,
                         "oral",
                         Collections.singletonList("d994236b-d7c4-44ef-9627-12372bb0434a"),
                         Collections.singletonList("7d36718b-1193-4b3d-86bd-db54612c5363"),
@@ -579,6 +591,150 @@ public class NotificationsIt {
                         "1",
                         "1",
                         "0"
+                },
+                new Object[]{
+                        ADJOURNED_NOTIFICATION,
+                        "paper",
+                        Collections.singletonList("77ea995b-9744-4167-9250-e627c85e5eda"),
+                        Collections.singletonList("7455de19-aa3b-48f0-b765-ab2757ba6a88"),
+                        Collections.emptyList(),
+                        "yes",
+                        "yes",
+                        "1",
+                        "1",
+                        "0"
+                },
+                new Object[]{
+                        ADJOURNED_NOTIFICATION,
+                        "oral",
+                        Collections.singletonList("77ea995b-9744-4167-9250-e627c85e5eda"),
+                        Collections.singletonList("7455de19-aa3b-48f0-b765-ab2757ba6a88"),
+                        Collections.emptyList(),
+                        "yes",
+                        "yes",
+                        "1",
+                        "1",
+                        "0"
+                },
+                new Object[]{
+                        POSTPONEMENT_NOTIFICATION,
+                        "paper",
+                        Collections.singletonList("732ec1a2-243f-4047-b963-e8427cb007b8"),
+                        Collections.emptyList(),
+                        Collections.emptyList(),
+                        "yes",
+                        "yes",
+                        "1",
+                        "0",
+                        "0"
+                },
+                new Object[]{
+                        POSTPONEMENT_NOTIFICATION,
+                        "oral",
+                        Collections.singletonList("732ec1a2-243f-4047-b963-e8427cb007b8"),
+                        Collections.emptyList(),
+                        Collections.emptyList(),
+                        "yes",
+                        "yes",
+                        "1",
+                        "0",
+                        "0"
+                },
+                new Object[]{
+                        EVIDENCE_RECEIVED_NOTIFICATION,
+                        "paper",
+                        Collections.singletonList("8509fb1b-eb15-449f-b4ee-15ce286ab404"),
+                        Collections.singletonList("e7868511-3a1f-4b8e-8bb3-b36c2bd99799"),
+                        Collections.emptyList(),
+                        "yes",
+                        "yes",
+                        "1",
+                        "1",
+                        "0"
+                },
+                new Object[]{
+                        EVIDENCE_RECEIVED_NOTIFICATION,
+                        "oral",
+                        Collections.singletonList("bd78cbc4-27d3-4692-a491-6c1770df174e"),
+                        Collections.singletonList("e7868511-3a1f-4b8e-8bb3-b36c2bd99799"),
+                        Collections.emptyList(),
+                        "yes",
+                        "yes",
+                        "1",
+                        "1",
+                        "0"
+                },
+                new Object[]{
+                        HEARING_BOOKED_NOTIFICATION,
+                        "oral",
+                        Collections.singletonList("aa0930a3-e1bd-4b50-ac6b-34df73ec8378"),
+                        Collections.singletonList("8aa77a9c-9bc6-424d-8716-1c948681270e"),
+                        Collections.emptyList(),
+                        "yes",
+                        "yes",
+                        "1",
+                        "1",
+                        "0"
+                },
+                new Object[]{
+                        HEARING_BOOKED_NOTIFICATION,
+                        "paper",
+                        Collections.singletonList("aa0930a3-e1bd-4b50-ac6b-34df73ec8378"),
+                        Collections.singletonList("8aa77a9c-9bc6-424d-8716-1c948681270e"),
+                        Collections.emptyList(),
+                        "yes",
+                        "yes",
+                        "1",
+                        "1",
+                        "0"
+                },
+                new Object[]{
+                        HEARING_REMINDER_NOTIFICATION,
+                        "oral",
+                        Collections.singletonList("07bebee4-f07a-4a0d-9c50-65be30dc72a5"),
+                        Collections.singletonList("18960596-1983-4da8-8b5c-dc1c851bb19b"),
+                        Collections.emptyList(),
+                        "yes",
+                        "yes",
+                        "1",
+                        "1",
+                        "0"
+                },
+                new Object[]{
+                        HEARING_REMINDER_NOTIFICATION,
+                        "paper",
+                        Collections.singletonList("07bebee4-f07a-4a0d-9c50-65be30dc72a5"),
+                        Collections.singletonList("18960596-1983-4da8-8b5c-dc1c851bb19b"),
+                        Collections.emptyList(),
+                        "yes",
+                        "yes",
+                        "1",
+                        "1",
+                        "0"
+                },
+                new Object[]{
+                        APPEAL_WITHDRAWN_NOTIFICATION,
+                        "paper",
+                        Collections.singletonList("6ce5e7b0-b94f-4f6e-878b-012ec0ee17d1"),
+                        Collections.singletonList("c4db4fca-6876-4130-b4eb-09e900ae45a8"),
+                        Arrays.asList("d4ca58d1-8b48-44eb-9af9-0bfc14a0d72d", "094b5d1d-e2a8-4727-8941-ad33ee22a182"),
+                        "yes",
+                        "yes",
+                        "1",
+                        "1",
+                        "2"
+                },
+                new Object[]{
+                        APPEAL_WITHDRAWN_NOTIFICATION,
+                        "oral",
+                        Collections.singletonList("6ce5e7b0-b94f-4f6e-878b-012ec0ee17d1"),
+                        Collections.singletonList("c4db4fca-6876-4130-b4eb-09e900ae45a8"),
+                        Arrays.asList("d4ca58d1-8b48-44eb-9af9-0bfc14a0d72d", "094b5d1d-e2a8-4727-8941-ad33ee22a182"),
+                        "yes",
+                        "yes",
+                        "1",
+                        "1",
+                        "2"
                 },
                 new Object[]{
                         DWP_UPLOAD_RESPONSE_NOTIFICATION,
@@ -643,7 +799,7 @@ public class NotificationsIt {
             new Object[]{
                 EVIDENCE_RECEIVED_NOTIFICATION,
                 "paper",
-                Arrays.asList("cab48431-a4f0-41f5-b753-2cecf20ab5d4", "7af36950-fc63-45d1-907d-f472fac7af06"),
+                Arrays.asList("8509fb1b-eb15-449f-b4ee-15ce286ab404", "7af36950-fc63-45d1-907d-f472fac7af06"),
                 Collections.emptyList(),
                 Collections.emptyList(),
                 "yes",
@@ -685,7 +841,7 @@ public class NotificationsIt {
             new Object[]{
                 EVIDENCE_RECEIVED_NOTIFICATION,
                 "oral",
-                Arrays.asList("c5654134-2e13-4541-ac73-334a5b5cdbb6", "30260c0b-5575-4f4e-bce4-73cf3f245c2d"),
+                Arrays.asList("bd78cbc4-27d3-4692-a491-6c1770df174e", "30260c0b-5575-4f4e-bce4-73cf3f245c2d"),
                 Collections.emptyList(),
                 Collections.emptyList(),
                 "yes",
@@ -825,8 +981,8 @@ public class NotificationsIt {
             new Object[]{
                 ADJOURNED_NOTIFICATION,
                 "paper",
-                Arrays.asList("cff1be5f-20cf-4cfa-9a90-4a75d3341ba8", "ecf7db7d-a257-4496-a2bf-768e560c80e7"),
-                Arrays.asList("f71772b1-ae1d-49d6-87c6-a41da97a4039", "259b8e81-b44a-4271-a57b-ba7f8bdfcb33"),
+                Arrays.asList("77ea995b-9744-4167-9250-e627c85e5eda", "ecf7db7d-a257-4496-a2bf-768e560c80e7"),
+                Arrays.asList("7455de19-aa3b-48f0-b765-ab2757ba6a88", "259b8e81-b44a-4271-a57b-ba7f8bdfcb33"),
                 Collections.emptyList(),
                 "yes",
                 "yes",
@@ -839,8 +995,8 @@ public class NotificationsIt {
             new Object[]{
                 ADJOURNED_NOTIFICATION,
                 "oral",
-                Arrays.asList("cff1be5f-20cf-4cfa-9a90-4a75d3341ba8", "ecf7db7d-a257-4496-a2bf-768e560c80e7"),
-                Arrays.asList("f71772b1-ae1d-49d6-87c6-a41da97a4039", "259b8e81-b44a-4271-a57b-ba7f8bdfcb33"),
+                Arrays.asList("77ea995b-9744-4167-9250-e627c85e5eda", "ecf7db7d-a257-4496-a2bf-768e560c80e7"),
+                Arrays.asList("7455de19-aa3b-48f0-b765-ab2757ba6a88", "259b8e81-b44a-4271-a57b-ba7f8bdfcb33"),
                 Collections.emptyList(),
                 "yes",
                 "yes",
@@ -854,7 +1010,7 @@ public class NotificationsIt {
                 ADJOURNED_NOTIFICATION,
                 "paper",
                 Collections.singletonList("ecf7db7d-a257-4496-a2bf-768e560c80e7"),
-                Arrays.asList("f71772b1-ae1d-49d6-87c6-a41da97a4039", "259b8e81-b44a-4271-a57b-ba7f8bdfcb33"),
+                Arrays.asList("7455de19-aa3b-48f0-b765-ab2757ba6a88", "259b8e81-b44a-4271-a57b-ba7f8bdfcb33"),
                 Collections.emptyList(),
                 "no",
                 "yes",
@@ -1063,7 +1219,7 @@ public class NotificationsIt {
             new Object[]{
                 POSTPONEMENT_NOTIFICATION,
                 "paper",
-                Arrays.asList("221095a2-aee8-466b-a7ab-beee516cc6cc", "e07b7dba-f383-49ca-a0ba-b5b61be27da6"),
+                Arrays.asList("732ec1a2-243f-4047-b963-e8427cb007b8", "e07b7dba-f383-49ca-a0ba-b5b61be27da6"),
                 Collections.emptyList(),
                 Collections.emptyList(),
                 "yes",
@@ -1077,7 +1233,7 @@ public class NotificationsIt {
             new Object[]{
                 POSTPONEMENT_NOTIFICATION,
                 "oral",
-                Arrays.asList("221095a2-aee8-466b-a7ab-beee516cc6cc", "e07b7dba-f383-49ca-a0ba-b5b61be27da6"),
+                Arrays.asList("732ec1a2-243f-4047-b963-e8427cb007b8", "e07b7dba-f383-49ca-a0ba-b5b61be27da6"),
                 Collections.emptyList(),
                 Collections.emptyList(),
                 "yes",
@@ -1706,7 +1862,7 @@ public class NotificationsIt {
             new Object[]{
                 EVIDENCE_RECEIVED_NOTIFICATION,
                 "paper",
-                Arrays.asList("cab48431-a4f0-41f5-b753-2cecf20ab5d4", "7af36950-fc63-45d1-907d-f472fac7af06"),
+                Arrays.asList("8509fb1b-eb15-449f-b4ee-15ce286ab404", "7af36950-fc63-45d1-907d-f472fac7af06"),
                 Collections.emptyList(),
                 Collections.emptyList(),
                 "yes",
@@ -1832,8 +1988,8 @@ public class NotificationsIt {
             new Object[]{
                 ADJOURNED_NOTIFICATION,
                 "paper",
-                Arrays.asList("cff1be5f-20cf-4cfa-9a90-4a75d3341ba8", "ecf7db7d-a257-4496-a2bf-768e560c80e7"),
-                Arrays.asList("f71772b1-ae1d-49d6-87c6-a41da97a4039", "259b8e81-b44a-4271-a57b-ba7f8bdfcb33"),
+                Arrays.asList("77ea995b-9744-4167-9250-e627c85e5eda", "ecf7db7d-a257-4496-a2bf-768e560c80e7"),
+                Arrays.asList("7455de19-aa3b-48f0-b765-ab2757ba6a88", "259b8e81-b44a-4271-a57b-ba7f8bdfcb33"),
                 Collections.emptyList(),
                 "yes",
                 "yes",
@@ -1846,8 +2002,8 @@ public class NotificationsIt {
             new Object[]{
                 ADJOURNED_NOTIFICATION,
                 "oral",
-                Arrays.asList("cff1be5f-20cf-4cfa-9a90-4a75d3341ba8", "ecf7db7d-a257-4496-a2bf-768e560c80e7"),
-                Arrays.asList("f71772b1-ae1d-49d6-87c6-a41da97a4039", "259b8e81-b44a-4271-a57b-ba7f8bdfcb33"),
+                Arrays.asList("77ea995b-9744-4167-9250-e627c85e5eda", "ecf7db7d-a257-4496-a2bf-768e560c80e7"),
+                Arrays.asList("7455de19-aa3b-48f0-b765-ab2757ba6a88", "259b8e81-b44a-4271-a57b-ba7f8bdfcb33"),
                 Collections.emptyList(),
                 "yes",
                 "yes",
@@ -1861,7 +2017,7 @@ public class NotificationsIt {
                 ADJOURNED_NOTIFICATION,
                 "paper",
                 Collections.singletonList("ecf7db7d-a257-4496-a2bf-768e560c80e7"),
-                Arrays.asList("f71772b1-ae1d-49d6-87c6-a41da97a4039", "259b8e81-b44a-4271-a57b-ba7f8bdfcb33"),
+                Arrays.asList("7455de19-aa3b-48f0-b765-ab2757ba6a88", "259b8e81-b44a-4271-a57b-ba7f8bdfcb33"),
                 Collections.emptyList(),
                 "no",
                 "yes",
@@ -2070,7 +2226,7 @@ public class NotificationsIt {
             new Object[]{
                 POSTPONEMENT_NOTIFICATION,
                 "paper",
-                Arrays.asList("221095a2-aee8-466b-a7ab-beee516cc6cc", "e07b7dba-f383-49ca-a0ba-b5b61be27da6"),
+                Arrays.asList("732ec1a2-243f-4047-b963-e8427cb007b8", "e07b7dba-f383-49ca-a0ba-b5b61be27da6"),
                 Collections.emptyList(),
                 Collections.emptyList(),
                 "yes",
@@ -2084,7 +2240,7 @@ public class NotificationsIt {
             new Object[]{
                 POSTPONEMENT_NOTIFICATION,
                 "oral",
-                Arrays.asList("221095a2-aee8-466b-a7ab-beee516cc6cc", "e07b7dba-f383-49ca-a0ba-b5b61be27da6"),
+                Arrays.asList("732ec1a2-243f-4047-b963-e8427cb007b8", "e07b7dba-f383-49ca-a0ba-b5b61be27da6"),
                 Collections.emptyList(),
                 Collections.emptyList(),
                 "yes",
@@ -2473,8 +2629,8 @@ public class NotificationsIt {
             new Object[]{
                 EVIDENCE_REMINDER_NOTIFICATION,
                 "paper",
-                Arrays.asList("a3b22e07-e90b-4b52-a293-30823802c209"),
-                Arrays.asList("aaa1aad4-7abc-4a7a-b8fb-8b0567c09365"),
+                Arrays.asList("c507a630-9e6a-43c9-8e39-dcabdcffaf53"),
+                Arrays.asList("56a6c0c8-a251-482d-be83-95a7a1bf528c"),
                 Collections.emptyList(),
                 "yes",
                 "yes",
@@ -2486,8 +2642,8 @@ public class NotificationsIt {
             new Object[]{
                 EVIDENCE_RECEIVED_NOTIFICATION,
                 "paper",
-                Collections.singletonList("c5654134-2e13-4541-ac73-334a5b5cdbb6"),
-                Collections.singletonList("74bda35f-040b-4355-bda3-faf0e4f5ae6e"),
+                Collections.singletonList("8509fb1b-eb15-449f-b4ee-15ce286ab404"),
+                Collections.singletonList("e7868511-3a1f-4b8e-8bb3-b36c2bd99799"),
                 Collections.emptyList(),
                 "yes",
                 "yes",
@@ -2525,8 +2681,8 @@ public class NotificationsIt {
             new Object[]{
                 EVIDENCE_RECEIVED_NOTIFICATION,
                 "oral",
-                Arrays.asList("c5654134-2e13-4541-ac73-334a5b5cdbb6"),
-                Arrays.asList("74bda35f-040b-4355-bda3-faf0e4f5ae6e"),
+                Arrays.asList("bd78cbc4-27d3-4692-a491-6c1770df174e"),
+                Arrays.asList("e7868511-3a1f-4b8e-8bb3-b36c2bd99799"),
                 Collections.emptyList(),
                 "yes",
                 "yes",
@@ -2668,8 +2824,8 @@ public class NotificationsIt {
             new Object[]{
                 HEARING_REMINDER_NOTIFICATION,
                 "oral",
-                Collections.singletonList("774a5cba-fab6-4b8c-a9d9-03f913ed2dca"),
-                Collections.singletonList("fcb93790-8308-4f4f-9674-65b777b7fe8c"),
+                Collections.singletonList("07bebee4-f07a-4a0d-9c50-65be30dc72a5"),
+                Collections.singletonList("18960596-1983-4da8-8b5c-dc1c851bb19b"),
                 Collections.emptyList(),
                 "yes",
                 "yes",
@@ -2681,7 +2837,7 @@ public class NotificationsIt {
             new Object[]{
                 HEARING_REMINDER_NOTIFICATION,
                 "oral",
-                Collections.singletonList("774a5cba-fab6-4b8c-a9d9-03f913ed2dca"),
+                Collections.singletonList("07bebee4-f07a-4a0d-9c50-65be30dc72a5"),
                 Collections.emptyList(),
                 Collections.emptyList(),
                 "yes",
@@ -2695,7 +2851,7 @@ public class NotificationsIt {
                 HEARING_REMINDER_NOTIFICATION,
                 "oral",
                 Collections.emptyList(),
-                Collections.singletonList("fcb93790-8308-4f4f-9674-65b777b7fe8c"),
+                Collections.singletonList("18960596-1983-4da8-8b5c-dc1c851bb19b"),
                 Collections.emptyList(),
                 "no",
                 "yes",
@@ -2809,6 +2965,32 @@ public class NotificationsIt {
                 ""
             },
             new Object[]{
+                APPEAL_WITHDRAWN_NOTIFICATION,
+                "paper",
+                Collections.singletonList("8620e023-f663-477e-a771-9cfad50ee30f"),
+                Collections.singletonList("446c7b23-7342-42e1-adff-b4c367e951cb"),
+                Collections.singletonList("d4ca58d1-8b48-44eb-9af9-0bfc14a0d72d"),
+                "yes",
+                "yes",
+                "1",
+                "1",
+                "1",
+                "Appointee Appointee"
+            },
+            new Object[]{
+                APPEAL_WITHDRAWN_NOTIFICATION,
+                "oral",
+                Collections.singletonList("8620e023-f663-477e-a771-9cfad50ee30f"),
+                Collections.singletonList("446c7b23-7342-42e1-adff-b4c367e951cb"),
+                Collections.singletonList("d4ca58d1-8b48-44eb-9af9-0bfc14a0d72d"),
+                "yes",
+                "yes",
+                "1",
+                "1",
+                "1",
+                "Appointee Appointee"
+            },
+            new Object[]{
                 RESEND_APPEAL_CREATED_NOTIFICATION,
                 "oral",
                 Collections.singletonList("362d9a85-e0e4-412b-b874-020c0464e2b4"),
@@ -2883,8 +3065,8 @@ public class NotificationsIt {
             new Object[]{
                 EVIDENCE_RECEIVED_NOTIFICATION,
                 "oral",
-                Collections.singletonList("c5654134-2e13-4541-ac73-334a5b5cdbb6"),
-                Collections.singletonList("74bda35f-040b-4355-bda3-faf0e4f5ae6e"),
+                Collections.singletonList("bd78cbc4-27d3-4692-a491-6c1770df174e"),
+                Collections.singletonList("e7868511-3a1f-4b8e-8bb3-b36c2bd99799"),
                 Collections.emptyList(),
                 "yes",
                 "yes",
@@ -2974,8 +3156,8 @@ public class NotificationsIt {
             new Object[]{
                 EVIDENCE_REMINDER_NOTIFICATION,
                 "paper",
-                Arrays.asList("a3b22e07-e90b-4b52-a293-30823802c209"),
-                Arrays.asList("aaa1aad4-7abc-4a7a-b8fb-8b0567c09365"),
+                Arrays.asList("c507a630-9e6a-43c9-8e39-dcabdcffaf53"),
+                Arrays.asList("56a6c0c8-a251-482d-be83-95a7a1bf528c"),
                 Collections.emptyList(),
                 "yes",
                 "yes",
@@ -3026,8 +3208,8 @@ public class NotificationsIt {
             new Object[]{
                 ADJOURNED_NOTIFICATION,
                 "oral",
-                Collections.singletonList("cff1be5f-20cf-4cfa-9a90-4a75d3341ba8"),
-                Collections.singletonList("f71772b1-ae1d-49d6-87c6-a41da97a4039"),
+                Collections.singletonList("77ea995b-9744-4167-9250-e627c85e5eda"),
+                Collections.singletonList("7455de19-aa3b-48f0-b765-ab2757ba6a88"),
                 Collections.emptyList(),
                 "yes",
                 "yes",
@@ -3065,8 +3247,8 @@ public class NotificationsIt {
             new Object[]{
                 HEARING_BOOKED_NOTIFICATION,
                 "oral",
-                Collections.singletonList("fee16753-0bdb-43f1-9abb-b14b826e3b26"),
-                Collections.singletonList("693c9bfb-151e-4add-a6f2-af1cbc94eef5"),
+                Collections.singletonList("aa0930a3-e1bd-4b50-ac6b-34df73ec8378"),
+                Collections.singletonList("8aa77a9c-9bc6-424d-8716-1c948681270e"),
                 Collections.emptyList(),
                 "yes",
                 "yes",
@@ -3086,6 +3268,19 @@ public class NotificationsIt {
                 "1",
                 "1",
                 "0",
+                "Appointee Appointee"
+            },
+            new Object[]{
+                APPEAL_WITHDRAWN_NOTIFICATION,
+                "paper",
+                Collections.singletonList("8620e023-f663-477e-a771-9cfad50ee30f"),
+                Collections.singletonList("446c7b23-7342-42e1-adff-b4c367e951cb"),
+                Collections.singletonList("d4ca58d1-8b48-44eb-9af9-0bfc14a0d72d"),
+                "yes",
+                "yes",
+                "1",
+                "1",
+                "1",
                 "Appointee Appointee"
             },
             new Object[]{
@@ -3302,8 +3497,8 @@ public class NotificationsIt {
         HttpServletResponse response = getResponse(getRequestWithAuthHeader(json));
 
         assertHttpStatus(response, HttpStatus.OK);
-        verify(notificationClient).sendEmail(eq("a3b22e07-e90b-4b52-a293-30823802c209"), any(), any(), any());
-        verify(notificationClient).sendSms(eq("aaa1aad4-7abc-4a7a-b8fb-8b0567c09365"), any(), any(), any(), any());
+        verify(notificationClient).sendEmail(eq("c507a630-9e6a-43c9-8e39-dcabdcffaf53"), any(), any(), any());
+        verify(notificationClient).sendSms(eq("56a6c0c8-a251-482d-be83-95a7a1bf528c"), any(), any(), any(), any());
     }
 
     @Test

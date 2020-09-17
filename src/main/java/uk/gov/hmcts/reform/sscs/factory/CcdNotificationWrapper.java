@@ -215,8 +215,15 @@ public class CcdNotificationWrapper implements NotificationWrapper {
 
         if (hasJointPartySubscription(responseWrapper)
             && (APPEAL_LAPSED_NOTIFICATION.equals(getNotificationType())
+            || ADJOURNED_NOTIFICATION.equals(getNotificationType())
+            || HEARING_BOOKED_NOTIFICATION.equals(getNotificationType())
+            || HEARING_REMINDER_NOTIFICATION.equals(getNotificationType())
+            || POSTPONEMENT_NOTIFICATION.equals(getNotificationType())
+            || EVIDENCE_RECEIVED_NOTIFICATION.equals(getNotificationType())
+            || APPEAL_WITHDRAWN_NOTIFICATION.equals(getNotificationType())
+            || ADMIN_APPEAL_WITHDRAWN.equals(getNotificationType())
             || DWP_UPLOAD_RESPONSE_NOTIFICATION.equals(getNotificationType()) && PAPER.equals(getHearingType())
-            || EVIDENCE_REMINDER_NOTIFICATION.equals(getNotificationType()) && ORAL.equals(getHearingType()))
+            || EVIDENCE_REMINDER_NOTIFICATION.equals(getNotificationType()))
         ) {
             subscriptionWithTypeList.add(new SubscriptionWithType(getJointPartySubscription(), JOINT_PARTY));
         }
