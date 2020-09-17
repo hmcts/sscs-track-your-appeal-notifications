@@ -127,7 +127,6 @@ public class ReminderNotificationsFunctionalTest extends AbstractFunctionalTest 
 
 
     @Test
-    @Ignore("temp ignore this test as it's a template id has changed")
     public void shouldSendNotificationsWhenDwpResponseReceivedEventIsReceivedForPaperWithAnAppellantSubscribed() throws IOException, NotificationClientException {
 
         triggerEventWithHearingType(DWP_RESPONSE_RECEIVED_NOTIFICATION, "paper");
