@@ -22,6 +22,7 @@ import uk.gov.service.notify.Notification;
 public class JointPartyFunctionalTest extends AbstractFunctionalTest {
     private static final String NO_HEARING_TYPE = null;
     private static final String ORAL = "oral";
+    private static final String PAPER = "paper";
     @Value("${notification.english.appealLapsed.joint_party.emailId}")
     private String appealLapsedJointPartyEmailId;
     @Value("${notification.english.appealLapsed.joint_party.smsId}")
@@ -36,6 +37,10 @@ public class JointPartyFunctionalTest extends AbstractFunctionalTest {
     private String oralEvidenceReminderJointPartyEmailId;
     @Value("${notification.english.oral.evidenceReminder.joint_party.smsId}")
     private String oralEvidenceReminderJointPartySmsId;
+    @Value("${notification.english.paper.evidenceReminder.joint_party.emailId}")
+    private String paperEvidenceReminderJointPartyEmailId;
+    @Value("${notification.english.paper.evidenceReminder.joint_party.smsId}")
+    private String paperEvidenceReminderJointPartySmsId;
     @Value("${notification.english.oral.evidenceReceived.joint_party.emailId}")
     private String oralEvidenceReceivedJointPartyEmailId;
     @Value("${notification.english.oral.evidenceReceived.joint_party.smsId}")
@@ -126,6 +131,7 @@ public class JointPartyFunctionalTest extends AbstractFunctionalTest {
             new Object[]{HEARING_BOOKED_NOTIFICATION, NO_HEARING_TYPE, expectedNumberOfLettersIsZero},
             new Object[]{HEARING_REMINDER_NOTIFICATION, NO_HEARING_TYPE, expectedNumberOfLettersIsZero},
             new Object[]{EVIDENCE_RECEIVED_NOTIFICATION, ORAL, expectedNumberOfLettersIsZero},
+            new Object[]{EVIDENCE_REMINDER_NOTIFICATION, PAPER, expectedNumberOfLettersIsZero},
             new Object[]{APPEAL_WITHDRAWN_NOTIFICATION, NO_HEARING_TYPE, expectedNumberOfLettersIsTwo}
         };
     }
