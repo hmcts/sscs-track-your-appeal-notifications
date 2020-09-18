@@ -145,6 +145,7 @@ public class CcdNotificationWrapper implements NotificationWrapper {
                 && (SYA_APPEAL_CREATED_NOTIFICATION.equals(getNotificationType())
                 || ADJOURNED_NOTIFICATION.equals(getNotificationType())
                 || APPEAL_RECEIVED_NOTIFICATION.equals(getNotificationType())
+                || APPEAL_DORMANT_NOTIFICATION.equals(getNotificationType())
                 || APPEAL_LAPSED_NOTIFICATION.equals(getNotificationType())
                 || HMCTS_APPEAL_LAPSED_NOTIFICATION.equals(getNotificationType())
                 || DWP_APPEAL_LAPSED_NOTIFICATION.equals(getNotificationType())
@@ -215,6 +216,7 @@ public class CcdNotificationWrapper implements NotificationWrapper {
 
         if (hasJointPartySubscription(responseWrapper)
             && (APPEAL_LAPSED_NOTIFICATION.equals(getNotificationType())
+            || APPEAL_DORMANT_NOTIFICATION.equals(getNotificationType())
             || ADJOURNED_NOTIFICATION.equals(getNotificationType())
             || HEARING_BOOKED_NOTIFICATION.equals(getNotificationType())
             || HEARING_REMINDER_NOTIFICATION.equals(getNotificationType())
