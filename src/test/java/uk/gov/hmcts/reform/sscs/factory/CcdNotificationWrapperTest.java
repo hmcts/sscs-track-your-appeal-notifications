@@ -177,8 +177,7 @@ public class CcdNotificationWrapperTest {
     @Parameters({"SYA_APPEAL_CREATED_NOTIFICATION, cor", "DWP_RESPONSE_RECEIVED_NOTIFICATION, oral",
             "DWP_RESPONSE_RECEIVED_NOTIFICATION, paper", "HMCTS_APPEAL_LAPSED_NOTIFICATION, paper", "HMCTS_APPEAL_LAPSED_NOTIFICATION, oral",
             "DWP_APPEAL_LAPSED_NOTIFICATION, paper", "DWP_APPEAL_LAPSED_NOTIFICATION, oral", "SUBSCRIPTION_UPDATED_NOTIFICATION, paper",
-            "VALID_APPEAL_CREATED, cor", "RESEND_APPEAL_CREATED_NOTIFICATION, cor",
-             "STRUCK_OUT, paper"})
+            "VALID_APPEAL_CREATED, cor", "RESEND_APPEAL_CREATED_NOTIFICATION, cor"})
     public void givenSubscriptions_shouldGetSubscriptionTypeListWithAppointee(NotificationEventType notificationEventType, String hearingType) {
         ccdNotificationWrapper = buildCcdNotificationWrapperBasedOnEventTypeWithAppointeeAndJointParty(notificationEventType, hearingType);
         List<SubscriptionWithType> subsWithTypeList = ccdNotificationWrapper.getSubscriptionsBasedOnNotificationType();
