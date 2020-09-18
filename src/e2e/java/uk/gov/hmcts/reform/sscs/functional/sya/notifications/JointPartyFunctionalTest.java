@@ -66,7 +66,8 @@ public class JointPartyFunctionalTest extends AbstractFunctionalTest {
     @Test
     @Parameters(method = "eventTypeAndSubscriptions")
     public void givenEventAndJointPartySubscription_shouldSendNotificationToJointParty(
-            NotificationEventType notificationEventType, @Nullable String hearingType, int expectedNumberOfLetters)
+            NotificationEventType notificationEventType, @Nullable String hearingType,
+            int expectedNumberOfLetters, boolean isDocmosisLetter)
             throws Exception {
         //Given
         final String jointPartyEmailId = getFieldValue(hearingType, notificationEventType, "JointPartyEmailId");
@@ -96,11 +97,15 @@ public class JointPartyFunctionalTest extends AbstractFunctionalTest {
         if (expectedNumberOfLetters > 0) {
             List<Notification> notificationLetters = fetchLetters();
             assertEquals(expectedNumberOfLetters, notificationLetters.size());
-            Optional<Notification> notificationOptional =
-                    notificationLetters.stream().filter(notification ->
-                            notification.getLine1().map(f -> f.contains(jointPartyName)).orElse(false)).findFirst();
-            assertTrue(notificationOptional.isPresent());
-            assertTrue(notificationOptional.get().getBody().contains("Dear " + jointPartyName));
+            if (!isDocmosisLetter) {
+                Optional<Notification> notificationOptional =
+                        notificationLetters.stream().filter(notification ->
+                                notification.getLine1().map(f -> f.contains(jointPartyName)).orElse(false)).findFirst();
+                assertTrue(notificationOptional.isPresent());
+                assertTrue(notificationOptional.get().getBody().contains("Dear " + jointPartyName));
+            } else {
+                notificationLetters.forEach(n -> assertEquals("Pre-compiled PDF", n.getSubject().orElse("Unknown Subject")));
+            }
         }
     }
 
@@ -123,16 +128,19 @@ public class JointPartyFunctionalTest extends AbstractFunctionalTest {
     private Object[] eventTypeAndSubscriptions() {
         final int expectedNumberOfLettersIsTwo = 2;
         final int expectedNumberOfLettersIsZero = 0;
+        final boolean isDocmosisLetterTrue = true;
+        final boolean isDocmosisLetterFalse = false;
         return new Object[]{
-            new Object[]{APPEAL_LAPSED_NOTIFICATION, NO_HEARING_TYPE, expectedNumberOfLettersIsTwo},
-            new Object[]{ADJOURNED_NOTIFICATION, NO_HEARING_TYPE, expectedNumberOfLettersIsZero},
-            new Object[]{POSTPONEMENT_NOTIFICATION, NO_HEARING_TYPE, expectedNumberOfLettersIsZero},
-            new Object[]{EVIDENCE_REMINDER_NOTIFICATION, ORAL, expectedNumberOfLettersIsZero},
-            new Object[]{HEARING_BOOKED_NOTIFICATION, NO_HEARING_TYPE, expectedNumberOfLettersIsZero},
-            new Object[]{HEARING_REMINDER_NOTIFICATION, NO_HEARING_TYPE, expectedNumberOfLettersIsZero},
-            new Object[]{EVIDENCE_RECEIVED_NOTIFICATION, ORAL, expectedNumberOfLettersIsZero},
-            new Object[]{EVIDENCE_REMINDER_NOTIFICATION, PAPER, expectedNumberOfLettersIsZero},
-            new Object[]{APPEAL_WITHDRAWN_NOTIFICATION, NO_HEARING_TYPE, expectedNumberOfLettersIsTwo}
+            new Object[]{APPEAL_LAPSED_NOTIFICATION, NO_HEARING_TYPE, expectedNumberOfLettersIsTwo, isDocmosisLetterFalse},
+            new Object[]{ADJOURNED_NOTIFICATION, NO_HEARING_TYPE, expectedNumberOfLettersIsZero, isDocmosisLetterFalse},
+            new Object[]{POSTPONEMENT_NOTIFICATION, NO_HEARING_TYPE, expectedNumberOfLettersIsZero, isDocmosisLetterFalse},
+            new Object[]{EVIDENCE_REMINDER_NOTIFICATION, ORAL, expectedNumberOfLettersIsZero, isDocmosisLetterFalse},
+            new Object[]{HEARING_BOOKED_NOTIFICATION, NO_HEARING_TYPE, expectedNumberOfLettersIsZero, isDocmosisLetterFalse},
+            new Object[]{HEARING_REMINDER_NOTIFICATION, NO_HEARING_TYPE, expectedNumberOfLettersIsZero, isDocmosisLetterFalse},
+            new Object[]{EVIDENCE_RECEIVED_NOTIFICATION, ORAL, expectedNumberOfLettersIsZero, isDocmosisLetterFalse},
+            new Object[]{EVIDENCE_REMINDER_NOTIFICATION, PAPER, expectedNumberOfLettersIsZero, isDocmosisLetterFalse},
+            new Object[]{STRUCK_OUT, PAPER, expectedNumberOfLettersIsTwo, isDocmosisLetterTrue},
+            new Object[]{APPEAL_WITHDRAWN_NOTIFICATION, NO_HEARING_TYPE, expectedNumberOfLettersIsTwo, isDocmosisLetterFalse}
         };
     }
 }
