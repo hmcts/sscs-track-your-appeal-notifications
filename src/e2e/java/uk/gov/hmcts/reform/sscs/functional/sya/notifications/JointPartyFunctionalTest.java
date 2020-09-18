@@ -37,6 +37,10 @@ public class JointPartyFunctionalTest extends AbstractFunctionalTest {
     private String oralEvidenceReminderJointPartyEmailId;
     @Value("${notification.english.oral.evidenceReminder.joint_party.smsId}")
     private String oralEvidenceReminderJointPartySmsId;
+    @Value("${notification.english.paper.evidenceReminder.joint_party.emailId}")
+    private String paperEvidenceReminderJointPartyEmailId;
+    @Value("${notification.english.paper.evidenceReminder.joint_party.smsId}")
+    private String paperEvidenceReminderJointPartySmsId;
     @Value("${notification.english.oral.evidenceReceived.joint_party.emailId}")
     private String oralEvidenceReceivedJointPartyEmailId;
     @Value("${notification.english.oral.evidenceReceived.joint_party.smsId}")
@@ -49,6 +53,10 @@ public class JointPartyFunctionalTest extends AbstractFunctionalTest {
     private String hearingReminderJointPartyEmailId;
     @Value("${notification.english.hearingReminder.joint_party.smsId}")
     private String hearingReminderJointPartySmsId;
+    @Value("${notification.english.appealWithdrawn.joint_party.emailId}")
+    private String appealWithdrawnJointPartyEmailId;
+    @Value("${notification.english.appealWithdrawn.joint_party.smsId}")
+    private String appealWithdrawnJointPartySmsId;
     @Value("${notification.english.oral.appealDormant.joint_party.emailId}")
     private String oralAppealDormantJointPartyEmailId;
     @Value("${notification.english.paper.appealDormant.joint_party.emailId}")
@@ -129,7 +137,9 @@ public class JointPartyFunctionalTest extends AbstractFunctionalTest {
             new Object[]{EVIDENCE_REMINDER_NOTIFICATION, ORAL, expectedNumberOfLettersIsZero},
             new Object[]{HEARING_BOOKED_NOTIFICATION, NO_HEARING_TYPE, expectedNumberOfLettersIsZero},
             new Object[]{HEARING_REMINDER_NOTIFICATION, NO_HEARING_TYPE, expectedNumberOfLettersIsZero},
-            new Object[]{EVIDENCE_RECEIVED_NOTIFICATION, ORAL, expectedNumberOfLettersIsZero}
+            new Object[]{EVIDENCE_RECEIVED_NOTIFICATION, ORAL, expectedNumberOfLettersIsZero},
+            new Object[]{EVIDENCE_REMINDER_NOTIFICATION, PAPER, expectedNumberOfLettersIsZero},
+            new Object[]{APPEAL_WITHDRAWN_NOTIFICATION, NO_HEARING_TYPE, expectedNumberOfLettersIsTwo}
         };
     }
 }

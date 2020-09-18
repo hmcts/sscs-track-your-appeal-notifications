@@ -594,6 +594,18 @@ public class NotificationsIt {
                 },
                 new Object[]{
                         EVIDENCE_REMINDER_NOTIFICATION,
+                        "paper",
+                        Collections.singletonList("c507a630-9e6a-43c9-8e39-dcabdcffaf53"),
+                        Collections.singletonList("56a6c0c8-a251-482d-be83-95a7a1bf528c"),
+                        Collections.emptyList(),
+                        "yes",
+                        "yes",
+                        "1",
+                        "1",
+                        "0"
+                },
+                new Object[]{
+                        EVIDENCE_REMINDER_NOTIFICATION,
                         "oral",
                         Collections.singletonList("d994236b-d7c4-44ef-9627-12372bb0434a"),
                         Collections.singletonList("7d36718b-1193-4b3d-86bd-db54612c5363"),
@@ -723,7 +735,31 @@ public class NotificationsIt {
                         "1",
                         "1",
                         "0"
-                }
+                },
+                new Object[]{
+                        APPEAL_WITHDRAWN_NOTIFICATION,
+                        "paper",
+                        Collections.singletonList("6ce5e7b0-b94f-4f6e-878b-012ec0ee17d1"),
+                        Collections.singletonList("c4db4fca-6876-4130-b4eb-09e900ae45a8"),
+                        Arrays.asList("d4ca58d1-8b48-44eb-9af9-0bfc14a0d72d", "094b5d1d-e2a8-4727-8941-ad33ee22a182"),
+                        "yes",
+                        "yes",
+                        "1",
+                        "1",
+                        "2"
+                },
+                new Object[]{
+                        APPEAL_WITHDRAWN_NOTIFICATION,
+                        "oral",
+                        Collections.singletonList("6ce5e7b0-b94f-4f6e-878b-012ec0ee17d1"),
+                        Collections.singletonList("c4db4fca-6876-4130-b4eb-09e900ae45a8"),
+                        Arrays.asList("d4ca58d1-8b48-44eb-9af9-0bfc14a0d72d", "094b5d1d-e2a8-4727-8941-ad33ee22a182"),
+                        "yes",
+                        "yes",
+                        "1",
+                        "1",
+                        "2"
+                },
         };
     }
 
@@ -2631,8 +2667,8 @@ public class NotificationsIt {
             new Object[]{
                 EVIDENCE_REMINDER_NOTIFICATION,
                 "paper",
-                Arrays.asList("a3b22e07-e90b-4b52-a293-30823802c209"),
-                Arrays.asList("aaa1aad4-7abc-4a7a-b8fb-8b0567c09365"),
+                Arrays.asList("c507a630-9e6a-43c9-8e39-dcabdcffaf53"),
+                Arrays.asList("56a6c0c8-a251-482d-be83-95a7a1bf528c"),
                 Collections.emptyList(),
                 "yes",
                 "yes",
@@ -2967,6 +3003,32 @@ public class NotificationsIt {
                 ""
             },
             new Object[]{
+                APPEAL_WITHDRAWN_NOTIFICATION,
+                "paper",
+                Collections.singletonList("8620e023-f663-477e-a771-9cfad50ee30f"),
+                Collections.singletonList("446c7b23-7342-42e1-adff-b4c367e951cb"),
+                Collections.singletonList("d4ca58d1-8b48-44eb-9af9-0bfc14a0d72d"),
+                "yes",
+                "yes",
+                "1",
+                "1",
+                "1",
+                "Appointee Appointee"
+            },
+            new Object[]{
+                APPEAL_WITHDRAWN_NOTIFICATION,
+                "oral",
+                Collections.singletonList("8620e023-f663-477e-a771-9cfad50ee30f"),
+                Collections.singletonList("446c7b23-7342-42e1-adff-b4c367e951cb"),
+                Collections.singletonList("d4ca58d1-8b48-44eb-9af9-0bfc14a0d72d"),
+                "yes",
+                "yes",
+                "1",
+                "1",
+                "1",
+                "Appointee Appointee"
+            },
+            new Object[]{
                 RESEND_APPEAL_CREATED_NOTIFICATION,
                 "oral",
                 Collections.singletonList("362d9a85-e0e4-412b-b874-020c0464e2b4"),
@@ -3132,8 +3194,8 @@ public class NotificationsIt {
             new Object[]{
                 EVIDENCE_REMINDER_NOTIFICATION,
                 "paper",
-                Arrays.asList("a3b22e07-e90b-4b52-a293-30823802c209"),
-                Arrays.asList("aaa1aad4-7abc-4a7a-b8fb-8b0567c09365"),
+                Arrays.asList("c507a630-9e6a-43c9-8e39-dcabdcffaf53"),
+                Arrays.asList("56a6c0c8-a251-482d-be83-95a7a1bf528c"),
                 Collections.emptyList(),
                 "yes",
                 "yes",
@@ -3244,6 +3306,19 @@ public class NotificationsIt {
                 "1",
                 "1",
                 "0",
+                "Appointee Appointee"
+            },
+            new Object[]{
+                APPEAL_WITHDRAWN_NOTIFICATION,
+                "paper",
+                Collections.singletonList("8620e023-f663-477e-a771-9cfad50ee30f"),
+                Collections.singletonList("446c7b23-7342-42e1-adff-b4c367e951cb"),
+                Collections.singletonList("d4ca58d1-8b48-44eb-9af9-0bfc14a0d72d"),
+                "yes",
+                "yes",
+                "1",
+                "1",
+                "1",
                 "Appointee Appointee"
             },
             new Object[]{
@@ -3460,8 +3535,8 @@ public class NotificationsIt {
         HttpServletResponse response = getResponse(getRequestWithAuthHeader(json));
 
         assertHttpStatus(response, HttpStatus.OK);
-        verify(notificationClient).sendEmail(eq("a3b22e07-e90b-4b52-a293-30823802c209"), any(), any(), any());
-        verify(notificationClient).sendSms(eq("aaa1aad4-7abc-4a7a-b8fb-8b0567c09365"), any(), any(), any(), any());
+        verify(notificationClient).sendEmail(eq("c507a630-9e6a-43c9-8e39-dcabdcffaf53"), any(), any(), any());
+        verify(notificationClient).sendSms(eq("56a6c0c8-a251-482d-be83-95a7a1bf528c"), any(), any(), any(), any());
     }
 
     @Test
