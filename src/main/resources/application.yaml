@@ -366,6 +366,8 @@ notification:
         docmosisId: TB-SCS-GNO-ENG-00452.docx
       appointee:
         docmosisId: TB-SCS-GNO-ENG-00452.docx
+      joint_party:
+        docmosisId: TB-SCS-GNO-ENG-00452.docx
     nonCompliant:
       appellant:
         letterId: 114cadaa-7760-4699-9add-d3a252f68909
