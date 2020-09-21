@@ -282,7 +282,7 @@ public class Personalisation<E extends NotificationWrapper> {
         LocalDate decisionPostedReceivedDate = LocalDate.now().plusDays(7);
         personalisation.put(DECISION_POSTED_RECEIVE_DATE, formatLocalDate(decisionPostedReceivedDate));
         translateToWelshDate(decisionPostedReceivedDate, ccdResponse, value -> personalisation.put(WELSH_DECISION_POSTED_RECEIVE_DATE, value));
-        personalisation.put(PHONE_NUMBER_WELSH, evidenceProperties.getAddress().getTelephoneWelsh());
+
         personalisation.put(APPEAL_REF, getAppealReference(ccdResponse));
         personalisation.put(APPELLANT_NAME, ccdResponse.getAppeal().getAppellant().getName().getFullNameNoTitle());
         personalisation.put(NAME, getName(subscriptionWithType.getSubscriptionType(), ccdResponse, responseWrapper));
