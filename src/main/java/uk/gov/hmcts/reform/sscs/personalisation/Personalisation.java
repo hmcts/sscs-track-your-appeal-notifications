@@ -442,6 +442,8 @@ public class Personalisation<E extends NotificationWrapper> {
         personalisation.put(PHONE_NUMBER_WELSH, evidenceProperties.getAddress().getTelephoneWelsh());
         personalisation.put(PHONE_NUMBER, determinePhoneNumber(rpc));
 
+        personalisation.put(PHONE_NUMBER, determinePhoneNumber(rpc));
+
         setHearingArrangementDetails(personalisation, ccdResponse);
 
         return personalisation;
