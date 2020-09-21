@@ -5,6 +5,7 @@ import static org.junit.Assert.assertEquals;
 import java.io.IOException;
 import java.util.List;
 import junitparams.JUnitParamsRunner;
+import lombok.extern.slf4j.Slf4j;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import uk.gov.hmcts.reform.sscs.domain.notify.NotificationEventType;
@@ -12,6 +13,7 @@ import uk.gov.hmcts.reform.sscs.functional.AbstractFunctionalTest;
 import uk.gov.service.notify.Notification;
 import uk.gov.service.notify.NotificationClientException;
 
+@Slf4j
 @RunWith(JUnitParamsRunner.class)
 public class DocmosisWithGovNotifyLetterFunctionalTest extends AbstractFunctionalTest {
 
@@ -105,9 +107,29 @@ public class DocmosisWithGovNotifyLetterFunctionalTest extends AbstractFunctiona
 
         List<Notification> notifications = fetchLetters();
 
+        log.info("caseid=" + caseId);
+
         assertEquals(2, notifications.size());
         assertEquals("Pre-compiled PDF", notifications.get(0).getSubject().orElse("Unknown Subject"));
         assertEquals("Pre-compiled PDF", notifications.get(1).getSubject().orElse("Unknown Subject"));
+    }
+
+    @Test
+    public void sendsIncompleteInfoLetterToAppellantRepresentativeAndJointParty() throws IOException, NotificationClientException {
+
+        NotificationEventType notificationEventType = NotificationEventType.REQUEST_INFO_INCOMPLETE;
+
+        simulateCcdCallback(notificationEventType,
+                notificationEventType.getId() + "Callback.json");
+
+        List<Notification> notifications = fetchLetters();
+
+        log.info("caseid=" + caseId);
+
+        assertEquals(3, notifications.size());
+        assertEquals("Pre-compiled PDF", notifications.get(0).getSubject().orElse("Unknown Subject"));
+        assertEquals("Pre-compiled PDF", notifications.get(1).getSubject().orElse("Unknown Subject"));
+        assertEquals("Pre-compiled PDF", notifications.get(2).getSubject().orElse("Unknown Subject"));
     }
 
 }
