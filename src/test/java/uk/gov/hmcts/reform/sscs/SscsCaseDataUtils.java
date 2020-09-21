@@ -124,16 +124,33 @@ public final class SscsCaseDataUtils {
                 .subscribeEmail("No")
                 .subscribeSms("No").wantSmsNotifications("No")
                 .build();
+        Subscription jointPartySubscription = Subscription.builder()
+                .tya("")
+                .email("")
+                .mobile("")
+                .subscribeEmail("No")
+                .subscribeSms("No").wantSmsNotifications("No")
+                .build();
         Subscriptions subscriptions = Subscriptions.builder()
                 .appellantSubscription(appellantSubscription)
                 .representativeSubscription(representativeSubscription)
+                .jointPartySubscription(jointPartySubscription)
                 .build();
 
         return SscsCaseData.builder()
                 .caseReference(caseReference)
                 .appeal(appeal)
                 .events(Collections.singletonList(events))
-                .subscriptions(subscriptions);
+                .subscriptions(subscriptions)
+                .jointParty("yes")
+                .jointPartyAddressSameAsAppellant("no")
+                .jointPartyName(JointPartyName.builder().title("mr").firstName("Jon").lastName("Party").build())
+                .jointPartyAddress(Address.builder()
+                        .line1("1 Appellant Ave")
+                        .town("Appellanton")
+                        .county("Appellanty")
+                        .postcode("TS1 1ST")
+                        .build());
     }
 
     public static SscsCaseData subscribeRep(SscsCaseData sscsCaseData) {
