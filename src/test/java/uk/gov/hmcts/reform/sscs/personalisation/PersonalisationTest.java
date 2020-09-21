@@ -75,7 +75,7 @@ public class PersonalisationTest {
     private static final String CITY = "LIVERPOOL";
     private static final String POSTCODE = "L2 5UZ";
     private static final String PHONE = "0300 999 8888";
-    private static final String PHONE_WELSH = "telephoneWelsh";
+    private static final String PHONE_WELSH = "0300 999 9999";
     private static final String DATE = "2018-07-01T14:01:18.243";
 
     @Mock
