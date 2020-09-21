@@ -24,5 +24,6 @@ public class EvidenceProperties {
         private String county;
         private String postcode;
         private String telephone;
+        private String telephoneWelsh;
     }
 }
