@@ -396,12 +396,12 @@ public class NotificationUtilsTest {
     @Test
     public void shouldReturnTrueWhenThereIsAJointPartySubscription() {
         Subscription subscription = Subscription.builder().subscribeSms(YES).subscribeEmail(YES).build();
-        assertTrue(hasJointPartySubscription(buildJointPartyWrapper(subscription, null).getSscsCaseDataWrapper()));
+        assertTrue(hasJointPartySubscriptionOrIsMandatoryJointPartyLetter(buildJointPartyWrapper(subscription, null).getSscsCaseDataWrapper()));
     }
 
     @Test
     public void shouldReturnFalseWhenThereIsANoJointPartySubscription() {
-        assertFalse(hasJointPartySubscription(buildJointPartyWrapper(null, null).getSscsCaseDataWrapper()));
+        assertFalse(hasJointPartySubscriptionOrIsMandatoryJointPartyLetter(buildJointPartyWrapper(null, null).getSscsCaseDataWrapper()));
     }
 
     private Object[] mandatoryNotificationTypes() {
