@@ -39,7 +39,7 @@ import static uk.gov.hmcts.reform.sscs.domain.notify.NotificationEventType.SYA_A
 import static uk.gov.hmcts.reform.sscs.domain.notify.NotificationEventType.TCW_DECISION_APPEAL_TO_PROCEED;
 import static uk.gov.hmcts.reform.sscs.domain.notify.NotificationEventType.VALID_APPEAL_CREATED;
 import static uk.gov.hmcts.reform.sscs.service.NotificationUtils.hasAppointeeSubscriptionOrIsMandatoryAppointeeLetter;
-import static uk.gov.hmcts.reform.sscs.service.NotificationUtils.hasJointPartySubscriptionOrIsMandatoryJointPartyLetter;
+import static uk.gov.hmcts.reform.sscs.service.NotificationUtils.hasJointPartySubscription;
 import static uk.gov.hmcts.reform.sscs.service.NotificationUtils.hasRepSubscriptionOrIsMandatoryRepLetter;
 
 import java.time.LocalDateTime;
@@ -214,7 +214,7 @@ public class CcdNotificationWrapper implements NotificationWrapper {
             subscriptionWithTypeList.add(new SubscriptionWithType(getRepresentativeSubscription(), REPRESENTATIVE));
         }
 
-        if (hasJointPartySubscriptionOrIsMandatoryJointPartyLetter(responseWrapper)
+        if (hasJointPartySubscription(responseWrapper)
             && (APPEAL_LAPSED_NOTIFICATION.equals(getNotificationType())
             || APPEAL_DORMANT_NOTIFICATION.equals(getNotificationType())
             || ADJOURNED_NOTIFICATION.equals(getNotificationType())
