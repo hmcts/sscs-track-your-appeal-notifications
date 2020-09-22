@@ -146,6 +146,7 @@ import uk.gov.hmcts.reform.sscs.ccd.domain.SscsCaseData;
 import uk.gov.hmcts.reform.sscs.ccd.domain.Subscription;
 import uk.gov.hmcts.reform.sscs.ccd.domain.Subscriptions;
 import uk.gov.hmcts.reform.sscs.ccd.domain.Venue;
+import uk.gov.hmcts.reform.sscs.config.AppConstants;
 import uk.gov.hmcts.reform.sscs.config.AppealHearingType;
 import uk.gov.hmcts.reform.sscs.config.NotificationConfig;
 import uk.gov.hmcts.reform.sscs.config.SubscriptionType;
@@ -483,6 +484,7 @@ public class PersonalisationTest {
         assertEquals("http://link.com/progress/GLSCRR/abouthearing", result.get(HEARING_INFO_LINK_LITERAL));
         assertNull(result.get(EVIDENCE_RECEIVED_DATE_LITERAL));
         assertEquals(EMPTY, result.get(JOINT));
+        assertNull(result.get(AppConstants.JOINT_PARTY));
 
         assertEquals(ADDRESS1, result.get(REGIONAL_OFFICE_NAME_LITERAL));
         assertEquals(ADDRESS2, result.get(SUPPORT_CENTRE_NAME_LITERAL));
@@ -1281,6 +1283,7 @@ public class PersonalisationTest {
         assertEquals(jointPartyTyaNumber, result.get(APPEAL_ID_LITERAL));
         assertEquals("Bob Builder", result.get(NAME));
         assertEquals("joint ", result.get(JOINT));
+        assertEquals("Yes", result.get(AppConstants.JOINT_PARTY));
         assertEquals("http://link.com/manage-email-notifications/ZYX", result.get(MANAGE_EMAILS_LINK_LITERAL));
         assertEquals("http://tyalink.com/" + jointPartyTyaNumber, result.get(TRACK_APPEAL_LINK_LITERAL));
         assertEquals("http://link.com/" + jointPartyTyaNumber, result.get(SUBMIT_EVIDENCE_LINK_LITERAL));
