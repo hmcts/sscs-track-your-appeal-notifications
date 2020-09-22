@@ -47,6 +47,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
 import org.apache.commons.lang3.StringUtils;
+import uk.gov.hmcts.reform.sscs.ccd.domain.DirectionType;
 import uk.gov.hmcts.reform.sscs.ccd.domain.SscsCaseData;
 import uk.gov.hmcts.reform.sscs.ccd.domain.Subscription;
 import uk.gov.hmcts.reform.sscs.config.AppealHearingType;
@@ -224,12 +225,22 @@ public class CcdNotificationWrapper implements NotificationWrapper {
             || EVIDENCE_RECEIVED_NOTIFICATION.equals(getNotificationType())
             || APPEAL_WITHDRAWN_NOTIFICATION.equals(getNotificationType())
             || ADMIN_APPEAL_WITHDRAWN.equals(getNotificationType())
-            || EVIDENCE_REMINDER_NOTIFICATION.equals(getNotificationType()))
+            || EVIDENCE_REMINDER_NOTIFICATION.equals(getNotificationType())
+            || (DIRECTION_ISSUED.equals(getNotificationType()) && directionForJointParty()))
         ) {
             subscriptionWithTypeList.add(new SubscriptionWithType(getJointPartySubscription(), JOINT_PARTY));
         }
         return subscriptionWithTypeList;
     }
+
+    public boolean directionForJointParty() {
+        if (getNewSscsCaseData() != null && getNewSscsCaseData().getDirectionTypeDl() != null) {
+            return getNewSscsCaseData().getDirectionTypeDl().getValue().getCode().equals(DirectionType.PROVIDE_INFORMATION.toString());
+        }
+        return false;
+    }
+
+
 
     @Override
     public void setNotificationEventTypeOverridden(boolean notificationEventTypeOverridden) {
