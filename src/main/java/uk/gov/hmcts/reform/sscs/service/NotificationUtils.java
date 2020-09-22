@@ -86,7 +86,7 @@ public class NotificationUtils {
             && LETTER_EVENT_TYPES.contains(wrapper.getNotificationEventType())));
     }
 
-    public static boolean hasJointPartySubscriptionOrIsMandatoryJointPartyLetter(SscsCaseDataWrapper wrapper) {
+    public static boolean hasJointPartySubscription(SscsCaseDataWrapper wrapper) {
         Subscription subscription = getSubscription(wrapper.getNewSscsCaseData(), JOINT_PARTY);
         return ((null != subscription && subscription.doesCaseHaveSubscriptions())
                 || (hasJointParty(wrapper.getNewSscsCaseData())
