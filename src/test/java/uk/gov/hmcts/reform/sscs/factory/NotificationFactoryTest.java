@@ -33,6 +33,7 @@ import org.mockito.Mock;
 import uk.gov.hmcts.reform.sscs.ccd.domain.*;
 import uk.gov.hmcts.reform.sscs.config.NotificationConfig;
 import uk.gov.hmcts.reform.sscs.config.SubscriptionType;
+import uk.gov.hmcts.reform.sscs.config.properties.EvidenceProperties;
 import uk.gov.hmcts.reform.sscs.domain.SscsCaseDataWrapper;
 import uk.gov.hmcts.reform.sscs.domain.SubscriptionWithType;
 import uk.gov.hmcts.reform.sscs.domain.notify.Destination;
@@ -60,6 +61,12 @@ public class NotificationFactoryTest {
 
     @Mock
     private PersonalisationFactory personalisationFactory;
+
+    @Mock
+    private EvidenceProperties evidenceProperties;
+
+    @Mock
+    private EvidenceProperties.EvidenceAddress evidencePropertiesAddress;
 
     @Mock
     private RegionalProcessingCenterService regionalProcessingCenterService;
@@ -115,6 +122,8 @@ public class NotificationFactoryTest {
         when(regionalProcessingCenterService.getByScReferenceCode("SC/1234/5")).thenReturn(rpc);
         when(hearingContactDateExtractor.extract(any())).thenReturn(Optional.empty());
         when(notificationDateConverterUtil.toEmailDate(any(LocalDate.class))).thenReturn("1 January 2018");
+
+        when(evidenceProperties.getAddress()).thenReturn(evidencePropertiesAddress);
     }
 
     @Test

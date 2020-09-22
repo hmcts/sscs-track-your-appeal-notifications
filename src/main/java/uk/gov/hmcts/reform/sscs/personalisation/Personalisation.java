@@ -53,6 +53,7 @@ import static uk.gov.hmcts.reform.sscs.config.AppConstants.ONLINE_HEARING_REGIST
 import static uk.gov.hmcts.reform.sscs.config.AppConstants.ONLINE_HEARING_SIGN_IN_LINK_LITERAL;
 import static uk.gov.hmcts.reform.sscs.config.AppConstants.PANEL_COMPOSITION;
 import static uk.gov.hmcts.reform.sscs.config.AppConstants.PHONE_NUMBER;
+import static uk.gov.hmcts.reform.sscs.config.AppConstants.PHONE_NUMBER_WELSH;
 import static uk.gov.hmcts.reform.sscs.config.AppConstants.PIP_PANEL_COMPOSITION;
 import static uk.gov.hmcts.reform.sscs.config.AppConstants.POSTCODE_LITERAL;
 import static uk.gov.hmcts.reform.sscs.config.AppConstants.QUESTION_ROUND_EXPIRES_DATE_LITERAL;
@@ -281,6 +282,7 @@ public class Personalisation<E extends NotificationWrapper> {
         LocalDate decisionPostedReceivedDate = LocalDate.now().plusDays(7);
         personalisation.put(DECISION_POSTED_RECEIVE_DATE, formatLocalDate(decisionPostedReceivedDate));
         translateToWelshDate(decisionPostedReceivedDate, ccdResponse, value -> personalisation.put(WELSH_DECISION_POSTED_RECEIVE_DATE, value));
+
         personalisation.put(APPEAL_REF, getAppealReference(ccdResponse));
         personalisation.put(APPELLANT_NAME, ccdResponse.getAppeal().getAppellant().getName().getFullNameNoTitle());
         personalisation.put(NAME, getName(subscriptionWithType.getSubscriptionType(), ccdResponse, responseWrapper));
@@ -521,7 +523,7 @@ public class Personalisation<E extends NotificationWrapper> {
             personalisation.put(REGIONAL_OFFICE_POSTCODE_LITERAL, rpc.getPostcode());
             personalisation.put(PHONE_NUMBER, rpc.getPhoneNumber());
         }
-
+        personalisation.put(PHONE_NUMBER_WELSH, evidenceProperties.getAddress().getTelephoneWelsh());
         setHearingArrangementDetails(personalisation, ccdResponse);
 
         return personalisation;
