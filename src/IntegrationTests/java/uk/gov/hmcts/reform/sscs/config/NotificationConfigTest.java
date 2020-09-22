@@ -125,7 +125,9 @@ public class NotificationConfigTest {
             "APPEAL_TO_PROCEED, TB-SCS-GNO-WEL-00468.docx, TB-SCS-GNO-WEL-00472.docx, null",
             "PROVIDE_INFORMATION, TB-SCS-GNO-WEL-00468.docx, TB-SCS-GNO-WEL-00472.docx, null",
             "GRANT_EXTENSION, TB-SCS-GNO-WEL-00468.docx, TB-SCS-GNO-WEL-00472.docx, null",
-            "REFUSE_EXTENSION, TB-SCS-GNO-WEL-00468.docx, TB-SCS-GNO-WEL-00472.docx, null"
+            "REFUSE_EXTENSION, TB-SCS-GNO-WEL-00468.docx, TB-SCS-GNO-WEL-00472.docx, null",
+            "REFUSE_EXTENSION, TB-SCS-GNO-WEL-00468.docx, TB-SCS-GNO-WEL-00472.docx",
+            "GRANT_REINSTATEMENT, TB-SCS-GNO-ENG-00558.docx, TB-SCS-GNO-ENG-00558.docx"
     })
     public void shouldGiveCorrectDocmosisIdForDirectionIssued(DirectionType directionType, String configAppellantOrAppointee, String configRep, @Nullable String configJointParty) {
         NotificationWrapper wrapper = new CcdNotificationWrapper(SscsCaseDataWrapper.builder()
@@ -138,6 +140,7 @@ public class NotificationConfigTest {
                         .build())
                 .notificationEventType(DIRECTION_ISSUED)
                 .build());
+
         Personalisation personalisation = new Personalisation();
         ReflectionTestUtils.setField(personalisation, "config", notificationConfig);
 

@@ -178,10 +178,13 @@ public class PersonalisationTest {
             "APPEAL_TO_PROCEED, directionIssued.appealToProceed, JOINT_PARTY",
             "PROVIDE_INFORMATION, directionIssued.provideInformation, REPRESENTATIVE",
             "GRANT_EXTENSION, directionIssued.grantExtension, APPOINTEE",
-            "REFUSE_EXTENSION, directionIssued.refuseExtension, APPELLANT"})
+            "REFUSE_EXTENSION, directionIssued.refuseExtension, APPELLANT",
+            "GRANT_REINSTATEMENT, directionIssued.grantReinstatement, APPELLANT"
+    })
     public void whenDirectionIssuedAndDirectionTypeShouldGenerateCorrectTemplate(DirectionType directionType,
                                                                                  String templateConfig,
                                                                                  SubscriptionType subscriptionType) {
+
         NotificationWrapper notificationWrapper = new CcdNotificationWrapper(SscsCaseDataWrapper.builder()
                 .newSscsCaseData(SscsCaseData.builder()
                         .directionTypeDl(new DynamicList(directionType.toString()))

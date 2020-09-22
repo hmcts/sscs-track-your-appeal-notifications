@@ -344,8 +344,18 @@ notification:
           docmosisId: TB-SCS-GNO-ENG-00557.docx
         representative:
           docmosisId: TB-SCS-GNO-ENG-00557.docx
+<<<<<<< HEAD
         joint_party:
           docmosisId: TB-SCS-GNO-ENG-00557.docx
+=======
+      grantReinstatement:
+        appellant:
+          docmosisId: TB-SCS-GNO-ENG-00558.docx
+        appointee:
+          docmosisId: TB-SCS-GNO-ENG-00558.docx
+        representative:
+          docmosisId: TB-SCS-GNO-ENG-00558.docx
+>>>>>>> SSCS-7810 Add Grant Reinstatement for Issue Direction Notice
     decisionIssued:
       appellant:
         docmosisId: TB-SCS-GNO-ENG-00094.docx
