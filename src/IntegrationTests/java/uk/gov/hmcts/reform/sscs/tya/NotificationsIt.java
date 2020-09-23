@@ -760,6 +760,30 @@ public class NotificationsIt {
                         "1",
                         "2"
                 },
+                new Object[]{
+                        DWP_UPLOAD_RESPONSE_NOTIFICATION,
+                        "oral",
+                        Collections.singletonList("ffa58120-24e4-44cb-8026-0becf1416684"),
+                        Collections.singletonList("f0444380-a8a4-4805-b9c2-563d1bd199cd"),
+                        Arrays.asList("TB-SCS-GNO-ENG-00261.docx", "TB-SCS-GNO-WEL-00478.docx"),
+                        "yes",
+                        "yes",
+                        "1",
+                        "1",
+                        "0"
+                },
+                new Object[] {
+                    DWP_UPLOAD_RESPONSE_NOTIFICATION,
+                    "oral",
+                    Collections.emptyList(),
+                    Collections.emptyList(),
+                    Arrays.asList("TB-SCS-GNO-ENG-00261.docx", "TB-SCS-GNO-WEL-00478.docx"),
+                    "no",
+                    "no",
+                    "0",
+                    "0",
+                    "0"
+                }
         };
     }
 
@@ -2628,8 +2652,8 @@ public class NotificationsIt {
             new Object[]{
                 DWP_UPLOAD_RESPONSE_NOTIFICATION,
                 "oral",
-                Collections.singletonList("2c5644db-1f7b-429b-b10a-8b23a80ed26a"),
-                Collections.singletonList("f20ffcb1-c5f0-4bff-b2d1-a1094f8014e6"),
+                Collections.singletonList("ffa58120-24e4-44cb-8026-0becf1416684"),
+                Collections.singletonList("f0444380-a8a4-4805-b9c2-563d1bd199cd"),
                 Collections.singletonList("TB-SCS-GNO-ENG-00261.doc"),
                 "yes",
                 "yes",
@@ -3155,8 +3179,8 @@ public class NotificationsIt {
             new Object[]{
                 DWP_UPLOAD_RESPONSE_NOTIFICATION,
                 "oral",
-                Collections.singletonList("2c5644db-1f7b-429b-b10a-8b23a80ed26a"),
-                Collections.singletonList("f20ffcb1-c5f0-4bff-b2d1-a1094f8014e6"),
+                Collections.singletonList("ffa58120-24e4-44cb-8026-0becf1416684"),
+                Collections.singletonList("f0444380-a8a4-4805-b9c2-563d1bd199cd"),
                 Collections.singletonList("TB-SCS-GNO-ENG-00261.doc"),
                 "yes",
                 "yes",
