@@ -50,6 +50,7 @@ import static uk.gov.hmcts.reform.sscs.config.AppConstants.MAX_DWP_RESPONSE_DAYS
 import static uk.gov.hmcts.reform.sscs.config.AppConstants.NAME;
 import static uk.gov.hmcts.reform.sscs.config.AppConstants.PANEL_COMPOSITION;
 import static uk.gov.hmcts.reform.sscs.config.AppConstants.PHONE_NUMBER;
+import static uk.gov.hmcts.reform.sscs.config.AppConstants.PHONE_NUMBER_WELSH;
 import static uk.gov.hmcts.reform.sscs.config.AppConstants.POSTCODE_LITERAL;
 import static uk.gov.hmcts.reform.sscs.config.AppConstants.QUESTION_ROUND_EXPIRES_DATE_LITERAL;
 import static uk.gov.hmcts.reform.sscs.config.AppConstants.REGIONAL_OFFICE_NAME_LITERAL;
