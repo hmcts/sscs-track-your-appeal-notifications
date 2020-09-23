@@ -57,7 +57,12 @@ public class JointPartyFunctionalTest extends AbstractFunctionalTest {
     private String appealWithdrawnJointPartyEmailId;
     @Value("${notification.english.appealWithdrawn.joint_party.smsId}")
     private String appealWithdrawnJointPartySmsId;
-
+    @Value("${notification.english.oral.appealDormant.joint_party.emailId}")
+    private String oralAppealDormantJointPartyEmailId;
+    @Value("${notification.english.paper.appealDormant.joint_party.emailId}")
+    private String paperAppealDormantJointPartyEmailId;
+    @Value("${notification.english.paper.appealDormant.joint_party.smsId}")
+    private String paperAppealDormantJointPartySmsId;
 
     public JointPartyFunctionalTest() {
         super(30);
@@ -132,6 +137,8 @@ public class JointPartyFunctionalTest extends AbstractFunctionalTest {
         final boolean isDocmosisLetterFalse = false;
         return new Object[]{
             new Object[]{APPEAL_LAPSED_NOTIFICATION, NO_HEARING_TYPE, expectedNumberOfLettersIsTwo, isDocmosisLetterFalse},
+            new Object[]{APPEAL_DORMANT_NOTIFICATION, ORAL, expectedNumberOfLettersIsZero, isDocmosisLetterFalse},
+            new Object[]{APPEAL_DORMANT_NOTIFICATION, PAPER, expectedNumberOfLettersIsZero, isDocmosisLetterFalse},
             new Object[]{ADJOURNED_NOTIFICATION, NO_HEARING_TYPE, expectedNumberOfLettersIsZero, isDocmosisLetterFalse},
             new Object[]{POSTPONEMENT_NOTIFICATION, NO_HEARING_TYPE, expectedNumberOfLettersIsZero, isDocmosisLetterFalse},
             new Object[]{EVIDENCE_REMINDER_NOTIFICATION, ORAL, expectedNumberOfLettersIsZero, isDocmosisLetterFalse},

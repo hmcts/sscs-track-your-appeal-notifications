@@ -75,6 +75,7 @@ public class PersonalisationTest {
     private static final String CITY = "LIVERPOOL";
     private static final String POSTCODE = "L2 5UZ";
     private static final String PHONE = "0300 999 8888";
+    private static final String PHONE_WELSH = "0300 999 9999";
     private static final String DATE = "2018-07-01T14:01:18.243";
 
     @Mock
@@ -110,6 +111,7 @@ public class PersonalisationTest {
     private String evidenceAddressCounty;
     private String evidenceAddressPostcode;
     private String evidenceAddressTelephone;
+    private String evidenceAddressTelephoneWelsh;
     private static DateTimeFormatter dateTimeFormatter = DateTimeFormatter.ofPattern("d MMMM yyyy");
 
     @Before
@@ -155,6 +157,7 @@ public class PersonalisationTest {
         evidenceAddressCounty = "county";
         evidenceAddressPostcode = "postcode";
         evidenceAddressTelephone = "telephone";
+        evidenceAddressTelephoneWelsh = PHONE_WELSH;
 
         EvidenceProperties.EvidenceAddress evidenceAddress = new EvidenceProperties.EvidenceAddress();
         evidenceAddress.setLine1(evidenceAddressLine1);
@@ -164,6 +167,7 @@ public class PersonalisationTest {
         evidenceAddress.setCounty(evidenceAddressCounty);
         evidenceAddress.setPostcode(evidenceAddressPostcode);
         evidenceAddress.setTelephone(evidenceAddressTelephone);
+        evidenceAddress.setTelephoneWelsh(evidenceAddressTelephoneWelsh);
         when(evidenceProperties.getAddress()).thenReturn(evidenceAddress);
     }
 
@@ -376,6 +380,7 @@ public class PersonalisationTest {
         assertEquals("Harry Kane", result.get(NAME));
         assertEquals("Harry Kane", result.get(APPELLANT_NAME));
         assertEquals("0300 999 8888", result.get(PHONE_NUMBER));
+        assertEquals(PHONE_WELSH, result.get(PHONE_NUMBER_WELSH));
         assertEquals("http://link.com/manage-email-notifications/ZYX", result.get(MANAGE_EMAILS_LINK_LITERAL));
         assertEquals("http://tyalink.com/GLSCRR", result.get(TRACK_APPEAL_LINK_LITERAL));
         assertEquals(DWP_ACRONYM, result.get(FIRST_TIER_AGENCY_ACRONYM));
@@ -434,6 +439,7 @@ public class PersonalisationTest {
         assertEquals("Harry Kane", result.get(NAME));
         assertEquals("Harry Kane", result.get(APPELLANT_NAME));
         assertEquals("0300 999 8888", result.get(PHONE_NUMBER));
+        assertEquals(PHONE_WELSH, result.get(PHONE_NUMBER_WELSH));
         assertNull(result.get(MANAGE_EMAILS_LINK_LITERAL));
         assertEquals("http://tyalink.com/GLSCRR", result.get(TRACK_APPEAL_LINK_LITERAL));
         assertEquals(DWP_ACRONYM, result.get(FIRST_TIER_AGENCY_ACRONYM));
@@ -987,6 +993,7 @@ public class PersonalisationTest {
         assertEquals(evidenceAddressCounty, result.get(COUNTY_LITERAL));
         assertEquals(evidenceAddressPostcode, result.get(POSTCODE_LITERAL));
         assertEquals(evidenceAddressTelephone, result.get(PHONE_NUMBER));
+        assertEquals(evidenceAddressTelephoneWelsh, result.get(PHONE_NUMBER_WELSH));
     }
 
     @Test
