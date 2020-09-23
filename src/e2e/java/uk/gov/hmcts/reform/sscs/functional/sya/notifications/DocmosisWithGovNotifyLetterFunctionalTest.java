@@ -50,22 +50,6 @@ public class DocmosisWithGovNotifyLetterFunctionalTest extends AbstractFunctiona
         assertEquals("Pre-compiled PDF", notifications.get(1).getSubject().orElse("Unknown Subject"));
     }
 
-    @Test
-    public void sendsDirectionIssuedProvideInformationLetterToAppellantRepresentativeAndJointParty() throws IOException, NotificationClientException {
-
-        NotificationEventType notificationEventType = NotificationEventType.DIRECTION_ISSUED;
-
-        simulateCcdCallback(notificationEventType,
-                notificationEventType.getId() + "ProvideInformationCallback.json");
-
-        List<Notification> notifications = fetchLetters();
-
-        assertEquals(3, notifications.size());
-        assertEquals("Pre-compiled PDF", notifications.get(0).getSubject().orElse("Unknown Subject"));
-        assertEquals("Pre-compiled PDF", notifications.get(1).getSubject().orElse("Unknown Subject"));
-        assertEquals("Pre-compiled PDF", notifications.get(2).getSubject().orElse("Unknown Subject"));
-    }
-
 
     @Test
     public void sendsDecisionIssuedLetterToAppellantAndRepresentative() throws IOException, NotificationClientException {

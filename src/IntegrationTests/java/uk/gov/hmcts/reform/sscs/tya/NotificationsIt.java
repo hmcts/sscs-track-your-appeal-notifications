@@ -760,6 +760,30 @@ public class NotificationsIt {
                         "1",
                         "2"
                 },
+                new Object[]{
+                        DIRECTION_ISSUED,
+                        "paper",
+                        Collections.emptyList(),
+                        Collections.emptyList(),
+                        Arrays.asList("TB-SCS-GNO-ENG-00067.docx", "TB-SCS-GNO-ENG-00067.docx"),
+                        "yes",
+                        "yes",
+                        "0",
+                        "0",
+                        "0"
+                },
+                new Object[]{
+                        DIRECTION_ISSUED,
+                        "oral",
+                        Collections.emptyList(),
+                        Collections.emptyList(),
+                        Arrays.asList("TB-SCS-GNO-ENG-00067.docx", "TB-SCS-GNO-ENG-00067.docx"),
+                        "yes",
+                        "yes",
+                        "0",
+                        "0",
+                        "0"
+                },
         };
     }
 

@@ -7,6 +7,7 @@ import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
 import static uk.gov.hmcts.reform.sscs.domain.notify.NotificationEventType.*;
 
+import java.io.IOException;
 import java.lang.reflect.Field;
 import java.util.ArrayList;
 import java.util.List;
@@ -18,6 +19,7 @@ import org.springframework.beans.factory.annotation.Value;
 import uk.gov.hmcts.reform.sscs.domain.notify.NotificationEventType;
 import uk.gov.hmcts.reform.sscs.functional.AbstractFunctionalTest;
 import uk.gov.service.notify.Notification;
+import uk.gov.service.notify.NotificationClientException;
 
 public class JointPartyFunctionalTest extends AbstractFunctionalTest {
     private static final String NO_HEARING_TYPE = null;
@@ -107,6 +109,22 @@ public class JointPartyFunctionalTest extends AbstractFunctionalTest {
             assertTrue(notificationOptional.isPresent());
             assertTrue(notificationOptional.get().getBody().contains("Dear " + jointPartyName));
         }
+    }
+
+    @Test
+    public void sendsDirectionIssuedProvideInformationLetterToAppellantRepresentativeAndJointParty() throws IOException, NotificationClientException {
+
+        NotificationEventType notificationEventType = NotificationEventType.DIRECTION_ISSUED;
+
+        simulateCcdCallback(notificationEventType,
+                notificationEventType.getId() + "ProvideInformationCallback.json");
+
+        List<Notification> notifications = fetchLetters();
+
+        assertEquals(3, notifications.size());
+        assertEquals("Pre-compiled PDF", notifications.get(0).getSubject().orElse("Unknown Subject"));
+        assertEquals("Pre-compiled PDF", notifications.get(1).getSubject().orElse("Unknown Subject"));
+        assertEquals("Pre-compiled PDF", notifications.get(2).getSubject().orElse("Unknown Subject"));
     }
 
     private String getFieldValue(String hearingType, NotificationEventType notificationEventType, String fieldName) throws Exception {
