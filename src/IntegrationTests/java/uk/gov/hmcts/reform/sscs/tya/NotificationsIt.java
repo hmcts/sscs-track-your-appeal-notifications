@@ -569,18 +569,6 @@ public class NotificationsIt {
                         "2"
                 },
                 new Object[]{
-                        EVIDENCE_REMINDER_NOTIFICATION,
-                        "oral",
-                        Collections.singletonList("d994236b-d7c4-44ef-9627-12372bb0434a"),
-                        Collections.singletonList("7d36718b-1193-4b3d-86bd-db54612c5363"),
-                        Collections.emptyList(),
-                        "yes",
-                        "yes",
-                        "1",
-                        "1",
-                        "0"
-                },
-                new Object[]{
                         DWP_UPLOAD_RESPONSE_NOTIFICATION,
                         "oral",
                         Collections.singletonList("ffa58120-24e4-44cb-8026-0becf1416684"),
@@ -2472,8 +2460,8 @@ public class NotificationsIt {
             new Object[]{
                 EVIDENCE_REMINDER_NOTIFICATION,
                 "oral",
-                Arrays.asList("d994236b-d7c4-44ef-9627-12372bb0434a"),
-                Arrays.asList("7d36718b-1193-4b3d-86bd-db54612c5363"),
+                Arrays.asList("b9e47ec4-3b58-4b8d-9304-f77ac27fb7f2"),
+                Arrays.asList("e3f71440-d1ac-43c8-a8cc-a088c4f3c959"),
                 Collections.emptyList(),
                 "yes",
                 "yes",
@@ -2973,8 +2961,8 @@ public class NotificationsIt {
             new Object[]{
                 EVIDENCE_REMINDER_NOTIFICATION,
                 "oral",
-                Collections.singletonList("d994236b-d7c4-44ef-9627-12372bb0434a"),
-                Collections.singletonList("7d36718b-1193-4b3d-86bd-db54612c5363"),
+                Collections.singletonList("b9e47ec4-3b58-4b8d-9304-f77ac27fb7f2"),
+                Collections.singletonList("e3f71440-d1ac-43c8-a8cc-a088c4f3c959"),
                 Collections.emptyList(),
                 "yes",
                 "yes",
@@ -3302,8 +3290,8 @@ public class NotificationsIt {
         HttpServletResponse response = getResponse(getRequestWithAuthHeader(json));
 
         assertHttpStatus(response, HttpStatus.OK);
-        verify(notificationClient).sendEmail(eq("d994236b-d7c4-44ef-9627-12372bb0434a"), any(), any(), any());
-        verify(notificationClient).sendSms(eq("7d36718b-1193-4b3d-86bd-db54612c5363"), any(), any(), any(), any());
+        verify(notificationClient).sendEmail(eq("b9e47ec4-3b58-4b8d-9304-f77ac27fb7f2"), any(), any(), any());
+        verify(notificationClient).sendSms(eq("e3f71440-d1ac-43c8-a8cc-a088c4f3c959"), any(), any(), any(), any());
     }
 
     @Test

@@ -27,10 +27,6 @@ public class JointPartyFunctionalTest extends AbstractFunctionalTest {
     private String appealLapsedJointPartyEmailId;
     @Value("${notification.english.appealLapsed.joint_party.smsId}")
     private String appealLapsedJointPartySmsId;
-    @Value("${notification.english.oral.evidenceReminder.joint_party.emailId}")
-    private String oralEvidenceReminderJointPartyEmailId;
-    @Value("${notification.english.oral.evidenceReminder.joint_party.smsId}")
-    private String oralEvidenceReminderJointPartySmsId;
     @Value("${notification.english.oral.dwpUploadResponse.joint_party.emailId}")
     private String oralDwpUploadResponseJointPartyEmailId;
     @Value("${notification.english.oral.dwpUploadResponse.joint_party.smsId}")
@@ -100,8 +96,7 @@ public class JointPartyFunctionalTest extends AbstractFunctionalTest {
         final boolean isDocmosisLetterFalse = false;
         return new Object[]{
             new Object[]{APPEAL_LAPSED_NOTIFICATION, NO_HEARING_TYPE, expectedNumberOfLettersIsTwo, isDocmosisLetterFalse},
-            new Object[]{DWP_UPLOAD_RESPONSE_NOTIFICATION, ORAL, expectedNumberOfLettersIsTwo, isDocmosisLetterTrue},
-            new Object[]{EVIDENCE_REMINDER_NOTIFICATION, ORAL, expectedNumberOfLettersIsZero, isDocmosisLetterFalse}
+            new Object[]{DWP_UPLOAD_RESPONSE_NOTIFICATION, ORAL, expectedNumberOfLettersIsTwo, isDocmosisLetterTrue}
         };
     }
 }
