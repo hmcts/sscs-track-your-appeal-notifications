@@ -38,6 +38,7 @@ public final class AppConstants {
     public static final String FIRST_TIER_AGENCY_ACRONYM = "first_tier_agency_acronym";
     public static final String FIRST_TIER_AGENCY_FULL_NAME = "first_tier_agency_full_name";
     public static final String REPRESENTATIVE = "representative";
+    public static final String JOINT_PARTY = "joint_party";
     public static final String HEARING_ARRANGEMENT_DETAILS_LITERAL = "hearing_arrangement_details";
     public static final String WELSH_HEARING_ARRANGEMENT_DETAILS_LITERAL = "welsh_hearing_arrangement_details";
     public static final String HEARING_CONTACT_DATE = "hearing_contact_date";
@@ -62,6 +63,7 @@ public final class AppConstants {
     public static final String ONLINE_HEARING_SIGN_IN_LINK_LITERAL = "online_hearing_sign_in_link";
     public static final String PANEL_COMPOSITION = "panel_composition";
     public static final String PHONE_NUMBER = "phone_number";
+    public static final String PHONE_NUMBER_WELSH = "phone_number_welsh";
     public static final String PIP_PANEL_COMPOSITION = "judge, doctor and disability expert";
     public static final String POSTCODE_LITERAL = "postcode";
     public static final String QUESTION_ROUND_EXPIRES_DATE_LITERAL = "question_round_expires_date";
