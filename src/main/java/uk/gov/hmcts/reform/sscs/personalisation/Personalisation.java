@@ -340,6 +340,9 @@ public class Personalisation<E extends NotificationWrapper> {
         if (subscriptionWithType.getSubscriptionType().equals(REPRESENTATIVE)) {
             personalisation.put(AppConstants.REPRESENTATIVE, "Yes");
         }
+        if (subscriptionWithType.getSubscriptionType().equals(JOINT_PARTY)) {
+            personalisation.put(AppConstants.JOINT_PARTY, "Yes");
+        }
 
         return personalisation;
     }
