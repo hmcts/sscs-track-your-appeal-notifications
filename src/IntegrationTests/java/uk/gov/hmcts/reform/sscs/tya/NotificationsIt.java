@@ -772,6 +772,18 @@ public class NotificationsIt {
                         "0",
                         "0"
                 },
+                new Object[]{
+                        DWP_UPLOAD_RESPONSE_NOTIFICATION,
+                        "paper",
+                        Collections.singletonList("8c4770ca-13c9-49ea-9df1-f2952030f95e"),
+                        Collections.singletonList("5e5cfe8d-b893-4f87-817f-9d05d22d657a"),
+                        Arrays.asList("TB-SCS-GNO-ENG-00261.docx", "TB-SCS-GNO-ENG-00261.docx"),
+                        "yes",
+                        "yes",
+                        "1",
+                        "1",
+                        "0"
+                },
         };
     }
 
@@ -3285,7 +3297,7 @@ public class NotificationsIt {
                 DWP_UPLOAD_RESPONSE_NOTIFICATION,
                 "paper",
                 Collections.singletonList("e1084d78-5e2d-45d2-a54f-84339da141c1"),
-                Collections.singletonList("505be856-ceca-4bbc-ba70-29024585056f"),
+                Collections.singletonList("5e5cfe8d-b893-4f87-817f-9d05d22d657a"),
                 Collections.singletonList("TB-SCS-GNO-ENG-00261.doc"),
                 "yes",
                 "yes",

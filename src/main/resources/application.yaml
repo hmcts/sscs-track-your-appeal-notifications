@@ -399,13 +399,16 @@ notification:
         docmosisId: TB-SCS-GNO-ENG-00261.docx
         appellant:
           emailId: e1084d78-5e2d-45d2-a54f-84339da141c1
-          smsId: 505be856-ceca-4bbc-ba70-29024585056f
+          smsId: 5e5cfe8d-b893-4f87-817f-9d05d22d657a
         appointee:
           emailId: e1084d78-5e2d-45d2-a54f-84339da141c1
-          smsId: 505be856-ceca-4bbc-ba70-29024585056f
+          smsId: 5e5cfe8d-b893-4f87-817f-9d05d22d657a
         representative:
           emailId: 8dc0510c-70d5-4791-9217-87d70361a54c
           smsId: b2d187cd-089b-4fe1-b460-a310c0af46fe
+        joint_party:
+          emailId: 8c4770ca-13c9-49ea-9df1-f2952030f95e
+          smsId: 5e5cfe8d-b893-4f87-817f-9d05d22d657a
       appealDormant:
         appellant:
           emailId: 976bdb6c-8a86-48cf-9e0f-7989acaec0c2
@@ -795,6 +798,9 @@ notification:
         representative:
           emailId: ebde7b04-7264-4dd0-b569-195ba596dabd
           smsId: 7e068c25-fc93-4997-831c-717a319730c1
+        joint_party:
+          emailId: 8666f5a7-afe7-423d-a2a9-af5b7aff79cc
+          smsId: e4a574f8-dd1e-4c31-8826-88fff5427db3
       appealDormant:
         appellant:
           emailId: 042ba4c4-1d95-4072-bb56-b65988300ba5
