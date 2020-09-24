@@ -11,70 +11,7 @@ import static org.apache.commons.lang3.StringUtils.lowerCase;
 import static uk.gov.hmcts.reform.sscs.ccd.domain.Benefit.getBenefitByCode;
 import static uk.gov.hmcts.reform.sscs.ccd.domain.EventType.APPEAL_RECEIVED;
 import static uk.gov.hmcts.reform.sscs.ccd.util.CaseDataUtils.YES;
-import static uk.gov.hmcts.reform.sscs.config.AppConstants.ACCEPT_VIEW_BY_DATE_LITERAL;
-import static uk.gov.hmcts.reform.sscs.config.AppConstants.ADDRESS_LINE_LITERAL;
-import static uk.gov.hmcts.reform.sscs.config.AppConstants.APPEAL_ID_LITERAL;
-import static uk.gov.hmcts.reform.sscs.config.AppConstants.APPEAL_REF;
-import static uk.gov.hmcts.reform.sscs.config.AppConstants.APPEAL_RESPOND_DATE;
-import static uk.gov.hmcts.reform.sscs.config.AppConstants.APPELLANT_NAME;
-import static uk.gov.hmcts.reform.sscs.config.AppConstants.APPOINTEE_DESCRIPTION;
-import static uk.gov.hmcts.reform.sscs.config.AppConstants.BENEFIT_FULL_NAME_LITERAL;
-import static uk.gov.hmcts.reform.sscs.config.AppConstants.BENEFIT_NAME_ACRONYM_LITERAL;
-import static uk.gov.hmcts.reform.sscs.config.AppConstants.BENEFIT_NAME_ACRONYM_SHORT_LITERAL;
-import static uk.gov.hmcts.reform.sscs.config.AppConstants.CASE_REFERENCE_ID;
-import static uk.gov.hmcts.reform.sscs.config.AppConstants.CCD_ID;
-import static uk.gov.hmcts.reform.sscs.config.AppConstants.CC_DATE_FORMAT;
-import static uk.gov.hmcts.reform.sscs.config.AppConstants.CLAIMING_EXPENSES_LINK_LITERAL;
-import static uk.gov.hmcts.reform.sscs.config.AppConstants.COUNTY_LITERAL;
-import static uk.gov.hmcts.reform.sscs.config.AppConstants.CREATED_DATE;
-import static uk.gov.hmcts.reform.sscs.config.AppConstants.DAYS_STRING;
-import static uk.gov.hmcts.reform.sscs.config.AppConstants.DAYS_TO_HEARING_LITERAL;
-import static uk.gov.hmcts.reform.sscs.config.AppConstants.DECISION_POSTED_RECEIVE_DATE;
-import static uk.gov.hmcts.reform.sscs.config.AppConstants.DWP_ACRONYM;
-import static uk.gov.hmcts.reform.sscs.config.AppConstants.DWP_FUL_NAME;
-import static uk.gov.hmcts.reform.sscs.config.AppConstants.ESA_PANEL_COMPOSITION;
-import static uk.gov.hmcts.reform.sscs.config.AppConstants.EVIDENCE_RECEIVED_DATE_LITERAL;
-import static uk.gov.hmcts.reform.sscs.config.AppConstants.FIRST_TIER_AGENCY_ACRONYM;
-import static uk.gov.hmcts.reform.sscs.config.AppConstants.FIRST_TIER_AGENCY_FULL_NAME;
-import static uk.gov.hmcts.reform.sscs.config.AppConstants.HEARING_CONTACT_DATE;
-import static uk.gov.hmcts.reform.sscs.config.AppConstants.HEARING_DATE;
-import static uk.gov.hmcts.reform.sscs.config.AppConstants.HEARING_INFO_LINK_LITERAL;
-import static uk.gov.hmcts.reform.sscs.config.AppConstants.HEARING_TIME;
-import static uk.gov.hmcts.reform.sscs.config.AppConstants.HEARING_TIME_FORMAT;
-import static uk.gov.hmcts.reform.sscs.config.AppConstants.HEARING_TYPE;
-import static uk.gov.hmcts.reform.sscs.config.AppConstants.INFO_REQUEST_DETAIL;
-import static uk.gov.hmcts.reform.sscs.config.AppConstants.JOINT;
-import static uk.gov.hmcts.reform.sscs.config.AppConstants.MAC_LITERAL;
-import static uk.gov.hmcts.reform.sscs.config.AppConstants.MANAGE_EMAILS_LINK_LITERAL;
-import static uk.gov.hmcts.reform.sscs.config.AppConstants.MAX_DWP_RESPONSE_DAYS;
-import static uk.gov.hmcts.reform.sscs.config.AppConstants.NAME;
-import static uk.gov.hmcts.reform.sscs.config.AppConstants.ONLINE_HEARING_LINK_LITERAL;
-import static uk.gov.hmcts.reform.sscs.config.AppConstants.ONLINE_HEARING_REGISTER_LINK_LITERAL;
-import static uk.gov.hmcts.reform.sscs.config.AppConstants.ONLINE_HEARING_SIGN_IN_LINK_LITERAL;
-import static uk.gov.hmcts.reform.sscs.config.AppConstants.PANEL_COMPOSITION;
-import static uk.gov.hmcts.reform.sscs.config.AppConstants.PHONE_NUMBER;
-import static uk.gov.hmcts.reform.sscs.config.AppConstants.PHONE_NUMBER_WELSH;
-import static uk.gov.hmcts.reform.sscs.config.AppConstants.PIP_PANEL_COMPOSITION;
-import static uk.gov.hmcts.reform.sscs.config.AppConstants.POSTCODE_LITERAL;
-import static uk.gov.hmcts.reform.sscs.config.AppConstants.QUESTION_ROUND_EXPIRES_DATE_LITERAL;
-import static uk.gov.hmcts.reform.sscs.config.AppConstants.REGIONAL_OFFICE_NAME_LITERAL;
-import static uk.gov.hmcts.reform.sscs.config.AppConstants.REGIONAL_OFFICE_POSTCODE_LITERAL;
-import static uk.gov.hmcts.reform.sscs.config.AppConstants.RESPONSE_DATE_FORMAT;
-import static uk.gov.hmcts.reform.sscs.config.AppConstants.SUBMIT_EVIDENCE_INFO_LINK_LITERAL;
-import static uk.gov.hmcts.reform.sscs.config.AppConstants.SUBMIT_EVIDENCE_LINK_LITERAL;
-import static uk.gov.hmcts.reform.sscs.config.AppConstants.SUPPORT_CENTRE_NAME_LITERAL;
-import static uk.gov.hmcts.reform.sscs.config.AppConstants.TOMORROW_STRING;
-import static uk.gov.hmcts.reform.sscs.config.AppConstants.TOWN_LITERAL;
-import static uk.gov.hmcts.reform.sscs.config.AppConstants.TRACK_APPEAL_LINK_LITERAL;
-import static uk.gov.hmcts.reform.sscs.config.AppConstants.TRIBUNAL_RESPONSE_DATE_LITERAL;
-import static uk.gov.hmcts.reform.sscs.config.AppConstants.UC_PANEL_COMPOSITION;
-import static uk.gov.hmcts.reform.sscs.config.AppConstants.VENUE_ADDRESS_LITERAL;
-import static uk.gov.hmcts.reform.sscs.config.AppConstants.VENUE_MAP_LINK_LITERAL;
-import static uk.gov.hmcts.reform.sscs.config.AppConstants.WELSH_APPEAL_RESPOND_DATE;
-import static uk.gov.hmcts.reform.sscs.config.AppConstants.WELSH_CURRENT_DATE;
-import static uk.gov.hmcts.reform.sscs.config.AppConstants.WELSH_DECISION_POSTED_RECEIVE_DATE;
-import static uk.gov.hmcts.reform.sscs.config.AppConstants.WELSH_EVIDENCE_RECEIVED_DATE_LITERAL;
-import static uk.gov.hmcts.reform.sscs.config.AppConstants.WELSH_HEARING_DATE;
+import static uk.gov.hmcts.reform.sscs.config.AppConstants.*;
 import static uk.gov.hmcts.reform.sscs.config.SubscriptionType.APPELLANT;
 import static uk.gov.hmcts.reform.sscs.config.SubscriptionType.APPOINTEE;
 import static uk.gov.hmcts.reform.sscs.config.SubscriptionType.JOINT_PARTY;
@@ -302,6 +239,8 @@ public class Personalisation<E extends NotificationWrapper> {
         personalisation.put(CREATED_DATE, ccdResponse.getCaseCreated());
         personalisation.put(JOINT, subscriptionWithType.getSubscriptionType().equals(JOINT_PARTY) ? JOINT_TEXT_WITH_A_SPACE : EMPTY);
 
+        personalisation.put(JOINT_PARTY_APPEAL, StringUtils.equalsIgnoreCase(ccdResponse.getJointParty(), "yes") ? "Yes" : "No");
+
         if (ccdResponse.getHearings() != null && !ccdResponse.getHearings().isEmpty()) {
 
             Hearing latestHearing = NotificationUtils.getLatestHearing(ccdResponse);
@@ -339,6 +278,9 @@ public class Personalisation<E extends NotificationWrapper> {
 
         if (subscriptionWithType.getSubscriptionType().equals(REPRESENTATIVE)) {
             personalisation.put(AppConstants.REPRESENTATIVE, "Yes");
+        }
+        if (subscriptionWithType.getSubscriptionType().equals(JOINT_PARTY)) {
+            personalisation.put(AppConstants.JOINT_PARTY, "Yes");
         }
 
         return personalisation;
