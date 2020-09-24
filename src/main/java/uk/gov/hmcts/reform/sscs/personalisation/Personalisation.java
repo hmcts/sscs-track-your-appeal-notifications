@@ -195,6 +195,14 @@ public class Personalisation<E extends NotificationWrapper> {
         personalisation.put(FIRST_TIER_AGENCY_ACRONYM, DWP_ACRONYM);
         personalisation.put(FIRST_TIER_AGENCY_FULL_NAME, DWP_FUL_NAME);
         personalisation.put(CREATED_DATE, ccdResponse.getCaseCreated());
+
+        if (StringUtils.equalsIgnoreCase("yes", ccdResponse.getJointParty())) {
+            JointPartyName partyName = ccdResponse.getJointPartyName();
+            if (partyName != null) {
+                String jointPartyName = getDefaultName(new Name(partyName.getTitle(), partyName.getFirstName(), partyName.getLastName()));
+                personalisation.put(JOINT_PARTY_NAME, jointPartyName);
+            }
+        }
         personalisation.put(JOINT, subscriptionWithType.getSubscriptionType().equals(JOINT_PARTY) ? JOINT_TEXT_WITH_A_SPACE : EMPTY);
 
         personalisation.put(JOINT_PARTY_APPEAL, StringUtils.equalsIgnoreCase(ccdResponse.getJointParty(), "yes") ? "Yes" : "No");
@@ -513,7 +521,8 @@ public class Personalisation<E extends NotificationWrapper> {
                 && !notificationWrapper.getHearingType().equals(AppealHearingType.ONLINE))
                 || RESEND_APPEAL_CREATED_NOTIFICATION.equals(notificationEventType)
                 || VALID_APPEAL_CREATED.equals(notificationEventType)
-                || SYA_APPEAL_CREATED_NOTIFICATION.equals(notificationEventType)) {
+                || SYA_APPEAL_CREATED_NOTIFICATION.equals(notificationEventType)
+                || SUBSCRIPTION_UPDATED_NOTIFICATION.equals(notificationEventType)) {
             emailTemplateName = emailTemplateName + "." + lowerCase(subscriptionType.name());
         }
         return emailTemplateName;

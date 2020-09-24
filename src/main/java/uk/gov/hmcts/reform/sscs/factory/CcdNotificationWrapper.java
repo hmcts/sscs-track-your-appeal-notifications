@@ -143,7 +143,8 @@ public class CcdNotificationWrapper implements NotificationWrapper {
                 || TCW_DECISION_APPEAL_TO_PROCEED.equals(getNotificationType())
                 || NON_COMPLIANT_NOTIFICATION.equals(getNotificationType())
                 || RESEND_APPEAL_CREATED_NOTIFICATION.equals(getNotificationType())
-                || REQUEST_INFO_INCOMPLETE.equals(getNotificationType()))
+                || REQUEST_INFO_INCOMPLETE.equals(getNotificationType())
+                || (SUBSCRIPTION_UPDATED_NOTIFICATION.equals(getNotificationType()) && isJointPartySubscription()))
         ) {
             subscriptionWithTypeList.add(new SubscriptionWithType(getAppointeeSubscription(), APPOINTEE));
         } else if (getOldSscsCaseData() != null && isValidReviewConfidentialityRequest(getOldSscsCaseData().getConfidentialityRequestOutcomeAppellant(), getNewSscsCaseData().getConfidentialityRequestOutcomeAppellant())) {
@@ -203,11 +204,20 @@ public class CcdNotificationWrapper implements NotificationWrapper {
             || DWP_UPLOAD_RESPONSE_NOTIFICATION.equals(getNotificationType()) && PAPER.equals(getHearingType())
             || EVIDENCE_REMINDER_NOTIFICATION.equals(getNotificationType())
             || REQUEST_INFO_INCOMPLETE.equals(getNotificationType())
-            || (getOldSscsCaseData() != null && isValidReviewConfidentialityRequest(getOldSscsCaseData().getConfidentialityRequestOutcomeJointParty(), getNewSscsCaseData().getConfidentialityRequestOutcomeJointParty())))
+            || (getOldSscsCaseData() != null && isValidReviewConfidentialityRequest(getOldSscsCaseData().getConfidentialityRequestOutcomeJointParty(), getNewSscsCaseData().getConfidentialityRequestOutcomeJointParty()))
+            || (SUBSCRIPTION_UPDATED_NOTIFICATION.equals(getNotificationType()) && isJointPartySubscription()))
         ) {
             subscriptionWithTypeList.add(new SubscriptionWithType(getJointPartySubscription(), JOINT_PARTY));
         }
         return subscriptionWithTypeList;
+    }
+
+    public boolean isJointPartySubscription() {
+        if ((getNewSscsCaseData().getSubscriptions().getJointPartySubscription() != null)
+                && getOldSscsCaseData().getSubscriptions().getJointPartySubscription() == null) {
+            return true;
+        }
+        return false;
     }
 
     private boolean isValidReviewConfidentialityRequest(DatedRequestOutcome previousRequestOutcome, DatedRequestOutcome latestRequestOutcome) {

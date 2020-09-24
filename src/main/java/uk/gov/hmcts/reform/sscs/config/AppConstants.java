@@ -75,6 +75,7 @@ public final class AppConstants {
     public static final String REPRESENTATIVE_DETAILS_LITERAL = "representative_details";
     public static final String WELSH_REPRESENTATIVE_DETAILS_LITERAL = "welsh_representative_details";
     public static final String REPRESENTATIVE_NAME = "representative_name";
+    public static final String JOINT_PARTY_NAME = "joint_party_name";
     public static final String RESPONSE_DATE_FORMAT = "d MMMM yyyy";
     public static final String SUBMIT_EVIDENCE_INFO_LINK_LITERAL = "submit_evidence_info_link";
     public static final String SUBMIT_EVIDENCE_LINK_LITERAL = "submit_evidence_link";
