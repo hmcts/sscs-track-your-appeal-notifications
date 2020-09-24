@@ -224,6 +224,7 @@ public class CcdNotificationWrapper implements NotificationWrapper {
             || EVIDENCE_RECEIVED_NOTIFICATION.equals(getNotificationType())
             || APPEAL_WITHDRAWN_NOTIFICATION.equals(getNotificationType())
             || ADMIN_APPEAL_WITHDRAWN.equals(getNotificationType())
+            || STRUCK_OUT.equals(getNotificationType())
             || EVIDENCE_REMINDER_NOTIFICATION.equals(getNotificationType()))
         ) {
             subscriptionWithTypeList.add(new SubscriptionWithType(getJointPartySubscription(), JOINT_PARTY));

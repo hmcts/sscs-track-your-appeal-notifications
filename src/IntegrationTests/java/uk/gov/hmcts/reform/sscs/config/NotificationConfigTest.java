@@ -436,7 +436,7 @@ public class NotificationConfigTest {
 
     @SuppressWarnings({"Indentation", "unused"})
     private Object[] bundledLetterTemplateNames() {
-        List<SubscriptionType> subscriptionTypes = Arrays.asList(APPELLANT, APPOINTEE, REPRESENTATIVE);
+        List<SubscriptionType> subscriptionTypes = Arrays.asList(APPELLANT, APPOINTEE, REPRESENTATIVE, JOINT_PARTY);
         Object[] result = new Object[(BUNDLED_LETTER_EVENT_TYPES.size()) * subscriptionTypes.size() * 2];
 
         int i = 0;
