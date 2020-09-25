@@ -741,5 +741,5 @@
     },
     "state": "readyToList"
   },
-  "event_id": "reviewConfidentiality"
+  "event_id": "reviewConfidentialityRequest"
 }

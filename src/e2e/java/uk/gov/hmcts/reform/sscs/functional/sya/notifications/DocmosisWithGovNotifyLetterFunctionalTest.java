@@ -120,9 +120,8 @@ public class DocmosisWithGovNotifyLetterFunctionalTest extends AbstractFunctiona
 
         List<Notification> notifications = fetchLetters();
 
-        assertEquals(2, notifications.size());
+        assertEquals(1, notifications.size());
         assertEquals("Pre-compiled PDF", notifications.get(0).getSubject().orElse("Unknown Subject"));
-        assertEquals("Pre-compiled PDF", notifications.get(1).getSubject().orElse("Unknown Subject"));
     }
 
 }
