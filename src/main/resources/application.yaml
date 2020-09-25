@@ -342,6 +342,8 @@ notification:
           docmosisId: TB-SCS-GNO-ENG-00557.docx
         representative:
           docmosisId: TB-SCS-GNO-ENG-00557.docx
+        joint_party:
+          docmosisId: TB-SCS-GNO-ENG-00557.docx
     decisionIssued:
       appellant:
         docmosisId: TB-SCS-GNO-ENG-00094.docx
