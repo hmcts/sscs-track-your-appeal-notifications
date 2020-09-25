@@ -63,6 +63,10 @@ public class JointPartyFunctionalTest extends AbstractFunctionalTest {
     private String paperAppealDormantJointPartyEmailId;
     @Value("${notification.english.paper.appealDormant.joint_party.smsId}")
     private String paperAppealDormantJointPartySmsId;
+    @Value("${notification.english.paper.dwpUploadResponse.joint_party.emailId}")
+    private String paperDwpUploadResponseJointPartyEmailId;
+    @Value("${notification.english.paper.dwpUploadResponse.joint_party.smsId}")
+    private String paperDwpUploadResponseJointPartySmsId;
 
     public JointPartyFunctionalTest() {
         super(30);
@@ -146,8 +150,10 @@ public class JointPartyFunctionalTest extends AbstractFunctionalTest {
             new Object[]{HEARING_REMINDER_NOTIFICATION, NO_HEARING_TYPE, expectedNumberOfLettersIsZero, isDocmosisLetterFalse},
             new Object[]{EVIDENCE_RECEIVED_NOTIFICATION, ORAL, expectedNumberOfLettersIsZero, isDocmosisLetterFalse},
             new Object[]{EVIDENCE_REMINDER_NOTIFICATION, PAPER, expectedNumberOfLettersIsZero, isDocmosisLetterFalse},
+            new Object[]{STRUCK_OUT, PAPER, expectedNumberOfLettersIsTwo, isDocmosisLetterTrue},
             new Object[]{APPEAL_WITHDRAWN_NOTIFICATION, NO_HEARING_TYPE, expectedNumberOfLettersIsTwo, isDocmosisLetterFalse},
-            new Object[]{DIRECTION_ISSUED, NO_HEARING_TYPE, expectedNumberOfLettersIsTwo, isDocmosisLetterTrue}
+            new Object[]{DIRECTION_ISSUED, NO_HEARING_TYPE, expectedNumberOfLettersIsTwo, isDocmosisLetterTrue},
+            new Object[]{DWP_UPLOAD_RESPONSE_NOTIFICATION, PAPER, expectedNumberOfLettersIsTwo, isDocmosisLetterTrue}
         };
     }
 }
