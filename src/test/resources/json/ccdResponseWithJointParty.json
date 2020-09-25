@@ -5,6 +5,8 @@
     "callback_response_status_code": null,
     "case_data": {
       "createdInGapsFrom": "readyToList",
+      "confidentialityRequestOutcomeAppellant": null,
+      "confidentialityRequestOutcomeJointParty": null,
       "jointParty": "Yes",
       "jointPartyName": {
         "title": "Mr",
@@ -383,5 +385,5 @@
     "state": "appealCreated",
     "id": "12345656789"
   },
-  "event_id": "appealReceived"
+  "event_id": "reviewConfidentialityRequest"
 }

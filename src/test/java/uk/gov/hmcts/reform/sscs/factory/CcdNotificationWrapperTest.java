@@ -49,14 +49,18 @@ public class CcdNotificationWrapperTest {
     }
 
     private CcdNotificationWrapper buildCcdNotificationWrapperBasedOnEventTypeWithRep(NotificationEventType notificationEventType) {
-        return buildCcdNotificationWrapperBasedOnEventType(notificationEventType, null, Representative.builder().hasRepresentative("Yes").build());
+        return buildCcdNotificationWrapperBasedOnEventType(notificationEventType, null, Representative.builder().hasRepresentative("Yes").build(), false);
+    }
+
+    private CcdNotificationWrapper buildCcdNotificationWrapperBasedOnEventTypeWithJointParty(NotificationEventType notificationEventType, Representative rep, boolean jointParty) {
+        return buildCcdNotificationWrapperBasedOnEventType(notificationEventType, null, rep, jointParty);
     }
 
     private CcdNotificationWrapper buildCcdNotificationWrapperBasedOnEventType(NotificationEventType notificationEventType) {
-        return buildCcdNotificationWrapperBasedOnEventType(notificationEventType, null, null);
+        return buildCcdNotificationWrapperBasedOnEventType(notificationEventType, null, null, false);
     }
 
-    private CcdNotificationWrapper buildCcdNotificationWrapperBasedOnEventType(NotificationEventType notificationEventType, Appointee appointee, Representative representative) {
+    private CcdNotificationWrapper buildCcdNotificationWrapperBasedOnEventType(NotificationEventType notificationEventType, Appointee appointee, Representative representative, boolean jointParty) {
         Appellant appellant = Appellant.builder().build();
         Subscription appointeeSubscription = null;
         if (null != appointee) {
@@ -80,8 +84,17 @@ public class CcdNotificationWrapperTest {
                 .build();
         }
 
+        Subscription jointPartySubscription = null;
+        if (jointParty) {
+            jointPartySubscription = Subscription.builder()
+                    .email("joint@test.com")
+                    .subscribeEmail("Yes")
+                    .build();;
+        }
+
         return new CcdNotificationWrapper(
             SscsCaseDataWrapper.builder()
+                .oldSscsCaseData(SscsCaseData.builder().build())
                 .newSscsCaseData(SscsCaseData.builder()
                     .appeal(Appeal.builder()
                         .appellant(appellant)
@@ -92,6 +105,7 @@ public class CcdNotificationWrapperTest {
                         .appellantSubscription(Subscription.builder().build())
                         .representativeSubscription(repSubscription)
                         .appointeeSubscription(appointeeSubscription)
+                        .jointPartySubscription(jointPartySubscription)
                         .build())
                     .build())
                 .notificationEventType(notificationEventType)
@@ -143,23 +157,6 @@ public class CcdNotificationWrapperTest {
         );
     }
 
-    private CcdNotificationWrapper buildCcdNotificationWrapperBasedOnEventTypeWithoutAppointee(NotificationEventType notificationEventType) {
-        return new CcdNotificationWrapper(
-            SscsCaseDataWrapper.builder()
-                .newSscsCaseData(SscsCaseData.builder()
-                    .appeal(Appeal.builder()
-                        .hearingType("cor")
-                        .appellant(Appellant.builder().appointee(Appointee.builder().name(Name.builder().build()).build()).build())
-                        .build())
-                    .subscriptions(Subscriptions.builder()
-                        .appellantSubscription(Subscription.builder().build())
-                        .build())
-                    .build())
-                .notificationEventType(notificationEventType)
-                .build()
-        );
-    }
-
     @Test
     @Parameters({"APPEAL_LAPSED_NOTIFICATION","HMCTS_APPEAL_LAPSED_NOTIFICATION","DWP_APPEAL_LAPSED_NOTIFICATION","APPEAL_WITHDRAWN_NOTIFICATION","EVIDENCE_RECEIVED_NOTIFICATION",
             "POSTPONEMENT_NOTIFICATION","HEARING_BOOKED_NOTIFICATION","SYA_APPEAL_CREATED_NOTIFICATION","VALID_APPEAL_CREATED",
@@ -199,34 +196,66 @@ public class CcdNotificationWrapperTest {
     }
 
     @Test
-    @Parameters({"SYA_APPEAL_CREATED_NOTIFICATION", "VALID_APPEAL_CREATED", "RESEND_APPEAL_CREATED_NOTIFICATION"})
-    public void givenSubscriptions_shouldGetSubscriptionTypeListWithoutAppointee(NotificationEventType notificationEventType) {
-        ccdNotificationWrapper = buildCcdNotificationWrapperBasedOnEventTypeWithoutAppointee(notificationEventType);
+    public void givenSubscriptionForAppellantRepAndJointParty_shouldGetSubscriptionTypeListForAppellantAndJointPartyOnlyWhenBothGranted() {
+        ccdNotificationWrapper = buildCcdNotificationWrapperBasedOnEventTypeWithJointParty(REVIEW_CONFIDENTIALITY_REQUEST, Representative.builder().hasRepresentative("Yes").build(), true);
+        ccdNotificationWrapper.getNewSscsCaseData().setConfidentialityRequestOutcomeAppellant(RequestOutcome.GRANTED);
+        ccdNotificationWrapper.getNewSscsCaseData().setConfidentialityRequestOutcomeJointParty(RequestOutcome.GRANTED);
         List<SubscriptionWithType> subsWithTypeList = ccdNotificationWrapper.getSubscriptionsBasedOnNotificationType();
-        Assert.assertEquals(1,subsWithTypeList.size());
+        Assert.assertEquals(2, subsWithTypeList.size());
+        Assert.assertEquals(SubscriptionType.APPELLANT, subsWithTypeList.get(0).getSubscriptionType());
+        Assert.assertEquals(SubscriptionType.JOINT_PARTY, subsWithTypeList.get(1).getSubscriptionType());
+    }
+
+    @Test
+    public void givenSubscriptionForAppellantRepAndJointParty_shouldGetSubscriptionTypeListForAppellantOnlyWhenOnlyAppellantGranted() {
+        ccdNotificationWrapper = buildCcdNotificationWrapperBasedOnEventTypeWithJointParty(REVIEW_CONFIDENTIALITY_REQUEST, Representative.builder().hasRepresentative("Yes").build(), true);
+        ccdNotificationWrapper.getNewSscsCaseData().setConfidentialityRequestOutcomeAppellant(RequestOutcome.GRANTED);
+        ccdNotificationWrapper.getNewSscsCaseData().setConfidentialityRequestOutcomeJointParty(null);
+        List<SubscriptionWithType> subsWithTypeList = ccdNotificationWrapper.getSubscriptionsBasedOnNotificationType();
+        Assert.assertEquals(1, subsWithTypeList.size());
         Assert.assertEquals(SubscriptionType.APPELLANT, subsWithTypeList.get(0).getSubscriptionType());
     }
 
     @Test
-    @Parameters(method = "getEventTypeFilteredOnReps")
-    public void givenSubscriptions_shouldGetSubscriptionTypeListWithoutReps(NotificationEventType notificationEventType) {
+    public void givenSubscriptionForAppellantRepAndJointParty_shouldGetSubscriptionTypeListForJointPartyOnlyWhenOnlyJointPartyGranted() {
+        ccdNotificationWrapper = buildCcdNotificationWrapperBasedOnEventTypeWithJointParty(REVIEW_CONFIDENTIALITY_REQUEST, Representative.builder().hasRepresentative("Yes").build(), true);
+        ccdNotificationWrapper.getNewSscsCaseData().setConfidentialityRequestOutcomeAppellant(null);
+        ccdNotificationWrapper.getNewSscsCaseData().setConfidentialityRequestOutcomeJointParty(RequestOutcome.GRANTED);
+        List<SubscriptionWithType> subsWithTypeList = ccdNotificationWrapper.getSubscriptionsBasedOnNotificationType();
+        Assert.assertEquals(1, subsWithTypeList.size());
+        Assert.assertEquals(SubscriptionType.JOINT_PARTY, subsWithTypeList.get(0).getSubscriptionType());
+    }
+
+    @Test
+    public void givenSubscriptionForAppellantRepAndJointParty_shouldGetSubscriptionTypeListForJointPartyOnlyWhenOnlyJointPartyIsNewlyGranted() {
+        ccdNotificationWrapper = buildCcdNotificationWrapperBasedOnEventTypeWithJointParty(REVIEW_CONFIDENTIALITY_REQUEST, Representative.builder().hasRepresentative("Yes").build(), true);
+        ccdNotificationWrapper.getOldSscsCaseData().setConfidentialityRequestOutcomeAppellant(RequestOutcome.GRANTED);
+        ccdNotificationWrapper.getOldSscsCaseData().setConfidentialityRequestOutcomeJointParty(null);
+        ccdNotificationWrapper.getNewSscsCaseData().setConfidentialityRequestOutcomeAppellant(RequestOutcome.GRANTED);
+        ccdNotificationWrapper.getNewSscsCaseData().setConfidentialityRequestOutcomeJointParty(RequestOutcome.GRANTED);
+        List<SubscriptionWithType> subsWithTypeList = ccdNotificationWrapper.getSubscriptionsBasedOnNotificationType();
+        Assert.assertEquals(1, subsWithTypeList.size());
+        Assert.assertEquals(SubscriptionType.JOINT_PARTY, subsWithTypeList.get(0).getSubscriptionType());
+    }
+
+    @Test
+    @Parameters(method = "getEventTypeFilteredWithAppellant")
+    public void givenSubscriptions_shouldGetSubscriptionTypeListWithAppellant(NotificationEventType notificationEventType) {
         ccdNotificationWrapper = buildCcdNotificationWrapperBasedOnEventType(notificationEventType);
         List<SubscriptionWithType> subsWithTypeList = ccdNotificationWrapper.getSubscriptionsBasedOnNotificationType();
-        Assert.assertEquals(1,subsWithTypeList.size());
+        Assert.assertEquals(1, subsWithTypeList.size());
         Assert.assertEquals(SubscriptionType.APPELLANT, subsWithTypeList.get(0).getSubscriptionType());
     }
 
     @SuppressWarnings({"unused"})
-    private Object[] getEventTypeFilteredOnReps() {
+    private Object[] getEventTypeFilteredWithAppellant() {
         return Arrays.stream(values())
             .filter(type -> !(type.equals(APPEAL_LAPSED_NOTIFICATION)
                 || type.equals(HMCTS_APPEAL_LAPSED_NOTIFICATION)
                 || type.equals(DWP_APPEAL_LAPSED_NOTIFICATION)
                 || type.equals(APPEAL_WITHDRAWN_NOTIFICATION)
                 || type.equals(EVIDENCE_RECEIVED_NOTIFICATION)
-                || type.equals(SYA_APPEAL_CREATED_NOTIFICATION)
                 || type.equals(CASE_UPDATED)
-                || type.equals(RESEND_APPEAL_CREATED_NOTIFICATION)
                 || type.equals(APPEAL_DORMANT_NOTIFICATION)
                 || type.equals(ADJOURNED_NOTIFICATION)
                 || type.equals(APPEAL_RECEIVED_NOTIFICATION)
@@ -234,9 +263,9 @@ public class CcdNotificationWrapperTest {
                 || type.equals(SUBSCRIPTION_UPDATED_NOTIFICATION)
                 || type.equals(HEARING_BOOKED_NOTIFICATION)
                 || type.equals(STRUCK_OUT)
-                || type.equals(VALID_APPEAL_CREATED)
                 || type.equals(REQUEST_INFO_INCOMPLETE)
                 || type.equals(NON_COMPLIANT_NOTIFICATION)
+                || type.equals(REVIEW_CONFIDENTIALITY_REQUEST)
             )).toArray();
     }
 

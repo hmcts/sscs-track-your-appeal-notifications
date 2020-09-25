@@ -91,6 +91,8 @@ public final class AppConstants {
     public static final String WELSH_YOUR_DETAILS_LITERAL = "welsh_your_details";
     public static final String ZONE_ID = "Europe/London";
     public static final String WELSH_CURRENT_DATE = "welsh_current_date";
+    public static final String OTHER_PARTY_NAME = "other_party_name";
+    public static final String CONFIDENTIALITY_OUTCOME = "confidentiality_outcome";
 
     public static final String ADDRESS_NAME = "address_name";
     public static final String ADDRESS_LINE_1 = "address_line_1";

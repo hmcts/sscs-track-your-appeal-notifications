@@ -66,7 +66,7 @@ public class NotificationsIt {
     private MockMvc mockMvc;
 
     @Mock
-    private NotificationClient notificationClient;
+    public NotificationClient notificationClient;
 
     @Mock
     private SendEmailResponse sendEmailResponse;
@@ -3805,7 +3805,7 @@ public class NotificationsIt {
         verifyNoMoreInteractions(notificationClient);
     }
 
-    private MockHttpServletResponse getResponse(MockHttpServletRequestBuilder requestBuilder) throws Exception {
+    protected MockHttpServletResponse getResponse(MockHttpServletRequestBuilder requestBuilder) throws Exception {
         return mockMvc.perform(requestBuilder).andReturn().getResponse();
     }
 

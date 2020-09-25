@@ -245,18 +245,6 @@ public class NotificationUtilsTest {
     }
 
     @Test
-    @Parameters(method = "mandatoryNotificationTypes")
-    public void isMandatoryLetter(NotificationEventType eventType) {
-        assertTrue(isMandatoryLetterEventType(buildNotificationWrapper(eventType)));
-    }
-
-    @Test
-    @Parameters(method = "nonMandatoryNotificationTypes")
-    public void isNotMandatoryLetter(NotificationEventType eventType) {
-        assertFalse(isMandatoryLetterEventType(buildNotificationWrapper(eventType)));
-    }
-
-    @Test
     public void itIsOkToSendNotification() {
         NotificationWrapper wrapper = NotificationServiceTest.buildBaseWrapper(
             SYA_APPEAL_CREATED_NOTIFICATION,

@@ -6,7 +6,6 @@ import static uk.gov.hmcts.reform.sscs.config.AppConstants.*;
 import static uk.gov.hmcts.reform.sscs.domain.notify.NotificationEventType.*;
 import static uk.gov.hmcts.reform.sscs.service.LetterUtils.*;
 import static uk.gov.hmcts.reform.sscs.service.NotificationUtils.*;
-import static uk.gov.hmcts.reform.sscs.service.NotificationUtils.isMandatoryLetterEventType;
 import static uk.gov.hmcts.reform.sscs.service.NotificationValidService.*;
 
 import java.io.IOException;
@@ -163,7 +162,7 @@ public class SendNotificationService {
     }
 
     private boolean sendMandatoryLetterNotification(NotificationWrapper wrapper, Notification notification, SubscriptionType subscriptionType, Address addressToUse) {
-        if (isMandatoryLetterEventType(wrapper)) {
+        if (MANDATORY_LETTER_EVENT_TYPES.contains(wrapper.getNotificationType())) {
             if (isBundledLetter(wrapper.getNotificationType()) || (isNotBlank(notification.getDocmosisLetterTemplate()))) {
                 return sendBundledLetterNotification(wrapper, notification, getNameToUseForLetter(wrapper, subscriptionType), subscriptionType);
             } else if (hasLetterTemplate(notification)) {
