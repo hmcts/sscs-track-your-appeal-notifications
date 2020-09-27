@@ -144,6 +144,11 @@ public class NotificationService {
                 wrapper.setNotificationEventTypeOverridden(true);
             }
         }
+        if (SUBSCRIPTION_UPDATED_NOTIFICATION.equals(wrapper.getNotificationType())
+            && wrapper.getOldSscsCaseData().getSubscriptions().getJointPartySubscription() == null
+            && wrapper.getNewSscsCaseData().getSubscriptions().getJointPartySubscription() != null) {
+            wrapper.setNotificationType(JOINT_PARTY_SUBSCRIPTION_UPDATED_NOTIFICATION);
+        }
     }
 
     private static boolean isSubscriptionValidToSendAfterOverride(NotificationWrapper wrapper, SubscriptionWithType subscriptionWithType) {

@@ -28,6 +28,11 @@ import uk.gov.hmcts.reform.sscs.domain.notify.NotificationEventType;
 import uk.gov.hmcts.reform.sscs.factory.NotificationWrapper;
 
 public class NotificationUtils {
+    private static final List<NotificationEventType> MANDATORY_LETTERS = Arrays.asList(APPEAL_WITHDRAWN_NOTIFICATION,
+        ADMIN_APPEAL_WITHDRAWN, DWP_UPLOAD_RESPONSE_NOTIFICATION, STRUCK_OUT, HEARING_BOOKED_NOTIFICATION,
+        DIRECTION_ISSUED, DECISION_ISSUED, DIRECTION_ISSUED_WELSH, DECISION_ISSUED_WELSH,  ISSUE_FINAL_DECISION, ISSUE_ADJOURNMENT_NOTICE, REQUEST_INFO_INCOMPLETE,
+        APPEAL_RECEIVED_NOTIFICATION, NON_COMPLIANT_NOTIFICATION, JUDGE_DECISION_APPEAL_TO_PROCEED, TCW_DECISION_APPEAL_TO_PROCEED,
+        APPEAL_LAPSED_NOTIFICATION, HMCTS_APPEAL_LAPSED_NOTIFICATION, DWP_APPEAL_LAPSED_NOTIFICATION, JOINT_PARTY_SUBSCRIPTION_UPDATED_NOTIFICATION);
 
     private NotificationUtils() {
         // empty
@@ -111,6 +116,19 @@ public class NotificationUtils {
         }
 
         return subscription;
+    }
+
+    public static boolean isMandatoryLetterEventType(NotificationWrapper wrapper) {
+        if (MANDATORY_LETTERS.contains(wrapper.getNotificationType())) {
+            return (HEARING_BOOKED_NOTIFICATION.equals(wrapper.getNotificationType()) && ORAL.equals(wrapper.getHearingType()))
+                || APPEAL_LAPSED_NOTIFICATION.equals(wrapper.getNotificationType())
+                || HMCTS_APPEAL_LAPSED_NOTIFICATION.equals(wrapper.getNotificationType())
+                || DWP_APPEAL_LAPSED_NOTIFICATION.equals(wrapper.getNotificationType())
+                || (!HEARING_BOOKED_NOTIFICATION.equals(wrapper.getNotificationType()))
+                || JOINT_PARTY_SUBSCRIPTION_UPDATED_NOTIFICATION.equals(wrapper.getNotificationType());
+        }
+
+        return false;
     }
 
     static boolean isOkToSendNotification(NotificationWrapper wrapper, NotificationEventType notificationType,

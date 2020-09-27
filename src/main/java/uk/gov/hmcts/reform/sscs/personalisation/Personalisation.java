@@ -522,7 +522,7 @@ public class Personalisation<E extends NotificationWrapper> {
                 || RESEND_APPEAL_CREATED_NOTIFICATION.equals(notificationEventType)
                 || VALID_APPEAL_CREATED.equals(notificationEventType)
                 || SYA_APPEAL_CREATED_NOTIFICATION.equals(notificationEventType)
-                || SUBSCRIPTION_UPDATED_NOTIFICATION.equals(notificationEventType)) {
+                || JOINT_PARTY_SUBSCRIPTION_UPDATED_NOTIFICATION.equals(notificationEventType)) {
             emailTemplateName = emailTemplateName + "." + lowerCase(subscriptionType.name());
         }
         return emailTemplateName;
@@ -548,7 +548,8 @@ public class Personalisation<E extends NotificationWrapper> {
                 || REQUEST_INFO_INCOMPLETE.equals(notificationEventType)
                 || ISSUE_FINAL_DECISION.equals(notificationEventType)
                 || ISSUE_ADJOURNMENT_NOTICE.equals(notificationEventType)
-                || REVIEW_CONFIDENTIALITY_REQUEST.equals(notificationEventType))) {
+                || REVIEW_CONFIDENTIALITY_REQUEST.equals(notificationEventType))
+                || JOINT_PARTY_SUBSCRIPTION_UPDATED_NOTIFICATION.equals(notificationEventType))) {
             letterTemplateName = letterTemplateName + "." + subscriptionType.name().toLowerCase();
 
         }
@@ -570,7 +571,8 @@ public class Personalisation<E extends NotificationWrapper> {
                 || TCW_DECISION_APPEAL_TO_PROCEED.equals(notificationEventType)
                 || APPEAL_LAPSED_NOTIFICATION.equals(notificationEventType)
                 || HMCTS_APPEAL_LAPSED_NOTIFICATION.equals(notificationEventType)
-                || DWP_APPEAL_LAPSED_NOTIFICATION.equals(notificationEventType))) {
+                || DWP_APPEAL_LAPSED_NOTIFICATION.equals(notificationEventType)
+                || JOINT_PARTY_SUBSCRIPTION_UPDATED_NOTIFICATION.equals(notificationEventType))) {
             letterTemplateName = letterTemplateName + "." + subscriptionType.name().toLowerCase();
         }
         return letterTemplateName;

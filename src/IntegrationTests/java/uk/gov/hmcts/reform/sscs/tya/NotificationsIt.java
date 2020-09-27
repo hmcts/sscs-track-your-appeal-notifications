@@ -835,25 +835,25 @@ public class NotificationsIt {
                 new Object[]{
                         SUBSCRIPTION_UPDATED_NOTIFICATION,
                         "paper",
-                        Arrays.asList("b8b2904f-629d-42cf-acea-1b74bde5b2ff", "b8b2904f-629d-42cf-acea-1b74bde5b2ff"),
-                        Arrays.asList("7397a76f-14cb-468c-b1a7-0570940ead91", "7397a76f-14cb-468c-b1a7-0570940ead91"),
+                        Arrays.asList("b8b2904f-629d-42cf-acea-1b74bde5b2ff"),
+                        Arrays.asList("7397a76f-14cb-468c-b1a7-0570940ead91"),
                         Arrays.asList("TB-SCS-GNO-ENG-00579.docx", "TB-SCS-GNO-ENG-00579.docx"),
                         "yes",
                         "yes",
-                        "2",
-                        "2",
+                        "1",
+                        "1",
                         "0"
                 },
                 new Object[]{
                         SUBSCRIPTION_UPDATED_NOTIFICATION,
                         "oral",
-                        Arrays.asList("b8b2904f-629d-42cf-acea-1b74bde5b2ff", "b8b2904f-629d-42cf-acea-1b74bde5b2ff"),
-                        Arrays.asList("7397a76f-14cb-468c-b1a7-0570940ead91", "7397a76f-14cb-468c-b1a7-0570940ead91"),
+                        Arrays.asList("b8b2904f-629d-42cf-acea-1b74bde5b2ff"),
+                        Arrays.asList("7397a76f-14cb-468c-b1a7-0570940ead91"),
                         Arrays.asList("TB-SCS-GNO-ENG-00579.docx", "TB-SCS-GNO-ENG-00579.docx"),
                         "yes",
                         "yes",
-                        "2",
-                        "2",
+                        "1",
+                        "1",
                         "0"
                 },
         };

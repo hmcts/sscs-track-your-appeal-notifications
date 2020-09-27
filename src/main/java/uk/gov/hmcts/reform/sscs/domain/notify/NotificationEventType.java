@@ -20,6 +20,7 @@ public enum NotificationEventType {
     POSTPONEMENT_NOTIFICATION("hearingPostponed", true, false, false, false, false, 0),
     SUBSCRIPTION_CREATED_NOTIFICATION("subscriptionCreated", true, true, false, false, false, 0),
     SUBSCRIPTION_UPDATED_NOTIFICATION("subscriptionUpdated", true, true, false, true, false, 0),
+    JOINT_PARTY_SUBSCRIPTION_UPDATED_NOTIFICATION("jointPartySubscriptionUpdated", true, true, false, true, false, 0),
     SUBSCRIPTION_OLD_NOTIFICATION("subscriptionOld", false, true, false, true, false, 0),
     EVIDENCE_REMINDER_NOTIFICATION("evidenceReminder", true, true, false, false, true, 0),
     HEARING_REMINDER_NOTIFICATION("hearingReminder", true, false, false, false, true, 0),
