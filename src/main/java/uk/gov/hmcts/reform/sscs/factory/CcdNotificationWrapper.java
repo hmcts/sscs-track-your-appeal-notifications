@@ -47,7 +47,6 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
 import org.apache.commons.lang3.StringUtils;
-import uk.gov.hmcts.reform.sscs.ccd.domain.DirectionType;
 import uk.gov.hmcts.reform.sscs.ccd.domain.SscsCaseData;
 import uk.gov.hmcts.reform.sscs.ccd.domain.Subscription;
 import uk.gov.hmcts.reform.sscs.config.AppealHearingType;
@@ -235,14 +234,6 @@ public class CcdNotificationWrapper implements NotificationWrapper {
         }
         return subscriptionWithTypeList;
     }
-
-    public boolean directionForJointParty() {
-        if (getNewSscsCaseData() != null && getNewSscsCaseData().getDirectionTypeDl() != null) {
-            return getNewSscsCaseData().getDirectionTypeDl().getValue().getCode().equals(DirectionType.PROVIDE_INFORMATION.toString());
-        }
-        return false;
-    }
-
 
 
     @Override
