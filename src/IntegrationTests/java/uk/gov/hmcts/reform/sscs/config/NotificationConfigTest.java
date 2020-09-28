@@ -119,7 +119,7 @@ public class NotificationConfigTest {
     @Test
     @Parameters({
             "APPEAL_TO_PROCEED, TB-SCS-GNO-ENG-00551.docx, TB-SCS-GNO-ENG-00551.docx, TB-SCS-GNO-ENG-00551.docx",
-            "PROVIDE_INFORMATION, TB-SCS-GNO-ENG-00067.docx, TB-SCS-GNO-ENG-00089.docx, null",
+            "PROVIDE_INFORMATION, TB-SCS-GNO-ENG-00067.docx, TB-SCS-GNO-ENG-00089.docx, TB-SCS-GNO-ENG-00067.docx",
             "GRANT_EXTENSION, TB-SCS-GNO-ENG-00556.docx, TB-SCS-GNO-ENG-00556.docx, TB-SCS-GNO-ENG-00556.docx",
             "REFUSE_EXTENSION, TB-SCS-GNO-ENG-00557.docx, TB-SCS-GNO-ENG-00557.docx, TB-SCS-GNO-ENG-00557.docx",
             "APPEAL_TO_PROCEED, TB-SCS-GNO-WEL-00468.docx, TB-SCS-GNO-WEL-00472.docx, null",
