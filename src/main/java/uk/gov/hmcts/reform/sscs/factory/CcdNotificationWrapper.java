@@ -235,6 +235,7 @@ public class CcdNotificationWrapper implements NotificationWrapper {
         return subscriptionWithTypeList;
     }
 
+
     @Override
     public void setNotificationEventTypeOverridden(boolean notificationEventTypeOverridden) {
         this.notificationEventTypeOverridden = notificationEventTypeOverridden;
