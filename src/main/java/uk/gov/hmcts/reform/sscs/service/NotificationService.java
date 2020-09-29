@@ -145,8 +145,7 @@ public class NotificationService {
             }
         }
         if (SUBSCRIPTION_UPDATED_NOTIFICATION.equals(wrapper.getNotificationType())
-            && wrapper.getOldSscsCaseData().getSubscriptions().getJointPartySubscription() == null
-            && wrapper.getNewSscsCaseData().getSubscriptions().getJointPartySubscription() != null) {
+                && NotificationUtils.isJointPartySubscriptionCreate(wrapper.getNewSscsCaseData(), wrapper.getOldSscsCaseData())) {
             wrapper.setNotificationType(JOINT_PARTY_SUBSCRIPTION_UPDATED_NOTIFICATION);
         }
     }

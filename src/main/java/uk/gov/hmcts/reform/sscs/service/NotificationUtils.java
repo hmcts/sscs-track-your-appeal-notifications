@@ -213,4 +213,14 @@ public class NotificationUtils {
 
         return hearings.get(0);
     }
+
+    public static boolean isJointPartySubscriptionCreate(SscsCaseData newSscsCaseData, SscsCaseData oldSscsCaseData) {
+        if ((newSscsCaseData.getSubscriptions().getJointPartySubscription() != null
+                && newSscsCaseData.getSubscriptions().getJointPartySubscription().getWantSmsNotifications() != null)
+                && (oldSscsCaseData.getSubscriptions().getJointPartySubscription() == null
+                || oldSscsCaseData.getSubscriptions().getJointPartySubscription().getWantSmsNotifications() == null)) {
+            return true;
+        }
+        return false;
+    }
 }

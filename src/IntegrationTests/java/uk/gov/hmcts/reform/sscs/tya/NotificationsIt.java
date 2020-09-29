@@ -463,6 +463,25 @@ public class NotificationsIt {
         validateLetterNotifications(expectedLetterTemplateIds, wantedNumberOfSendLetterInvocations, expectedName);
     }
 
+    @Test
+    @Parameters(method = "generateJointPartySubscriptionNotificationScenarios")
+    public void shouldSendJointPartyNotificationsForJpSubscriptionForAnOralOrPaperHearing(
+            NotificationEventType notificationEventType, String hearingType, List<String> expectedEmailTemplateIds,
+            List<String> expectedSmsTemplateIds, List<String> expectedLetterTemplateIds, String jointPartyEmailSubs,
+            String jointPartySmsSubs, int wantedNumberOfSendEmailInvocations, int wantedNumberOfSendSmsInvocations, int wantedNumberOfSendLetterInvocations) throws Exception {
+        String path = getClass().getClassLoader().getResource("json/ccdResponseWithJointPartySubscription.json").getFile();
+        String json = FileUtils.readFileToString(new File(path), StandardCharsets.UTF_8.name());
+
+        json = updateEmbeddedJson(json, notificationEventType.getId(), "event_id");
+        json = updateEmbeddedJson(json, hearingType, "case_details", "case_data", "appeal", "hearingType");
+
+        HttpServletResponse response = getResponse(getRequestWithAuthHeader(json));
+        assertHttpStatus(response, HttpStatus.OK);
+
+        String expectedName = "Joint Party";
+        validateLetterNotifications(expectedLetterTemplateIds, wantedNumberOfSendLetterInvocations, expectedName);
+    }
+
     private void validateEmailNotifications(List<String> expectedEmailTemplateIds,
                                             int wantedNumberOfSendEmailInvocations, String expectedName)
         throws NotificationClientException {
@@ -516,6 +535,7 @@ public class NotificationsIt {
             assertEquals("Dexter Vasquez", personalisation.get(APPELLANT_NAME));
         }
     }
+
 
     @SuppressWarnings({"Indentation", "unused"})
     private Object[] generateJointPartyNotificationScenarios() {
@@ -831,31 +851,37 @@ public class NotificationsIt {
                         "1",
                         "1",
                         "0"
-                },
-                new Object[]{
-                        SUBSCRIPTION_UPDATED_NOTIFICATION,
-                        "paper",
-                        Arrays.asList("b8b2904f-629d-42cf-acea-1b74bde5b2ff"),
-                        Arrays.asList("7397a76f-14cb-468c-b1a7-0570940ead91"),
-                        Arrays.asList("TB-SCS-GNO-ENG-00579.docx", "TB-SCS-GNO-ENG-00579.docx"),
-                        "yes",
-                        "yes",
-                        "1",
-                        "1",
-                        "0"
-                },
-                new Object[]{
-                        SUBSCRIPTION_UPDATED_NOTIFICATION,
-                        "oral",
-                        Arrays.asList("b8b2904f-629d-42cf-acea-1b74bde5b2ff"),
-                        Arrays.asList("7397a76f-14cb-468c-b1a7-0570940ead91"),
-                        Arrays.asList("TB-SCS-GNO-ENG-00579.docx", "TB-SCS-GNO-ENG-00579.docx"),
-                        "yes",
-                        "yes",
-                        "1",
-                        "1",
-                        "0"
-                },
+                }
+        };
+    }
+
+    @SuppressWarnings({"Indentation", "unused"})
+    private Object[] generateJointPartySubscriptionNotificationScenarios() {
+        return new Object[]{
+            new Object[]{
+                SUBSCRIPTION_UPDATED_NOTIFICATION,
+                "paper",
+                Arrays.asList("b8b2904f-629d-42cf-acea-1b74bde5b2ff"),
+                Arrays.asList("7397a76f-14cb-468c-b1a7-0570940ead91"),
+                Arrays.asList("TB-SCS-GNO-ENG-00579.docx", "TB-SCS-GNO-ENG-00579.docx"),
+                "yes",
+                "yes",
+                "1",
+                "1",
+                "0"
+            },
+            new Object[]{
+                SUBSCRIPTION_UPDATED_NOTIFICATION,
+                "oral",
+                Arrays.asList("b8b2904f-629d-42cf-acea-1b74bde5b2ff", "b8b2904f-629d-42cf-acea-1b74bde5b2ff"),
+                Arrays.asList("7397a76f-14cb-468c-b1a7-0570940ead91", "7397a76f-14cb-468c-b1a7-0570940ead91"),
+                Arrays.asList("TB-SCS-GNO-ENG-00579.docx", "TB-SCS-GNO-ENG-00579.docx"),
+                "yes",
+                "yes",
+                "1",
+                "1",
+                "0"
+            }
         };
     }
 

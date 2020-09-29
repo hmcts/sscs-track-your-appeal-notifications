@@ -25,6 +25,7 @@ import uk.gov.hmcts.reform.sscs.config.AppealHearingType;
 import uk.gov.hmcts.reform.sscs.domain.SscsCaseDataWrapper;
 import uk.gov.hmcts.reform.sscs.domain.SubscriptionWithType;
 import uk.gov.hmcts.reform.sscs.domain.notify.NotificationEventType;
+import uk.gov.hmcts.reform.sscs.service.NotificationUtils;
 import uk.gov.hmcts.reform.sscs.service.scheduler.CcdActionSerializer;
 
 public class CcdNotificationWrapper implements NotificationWrapper {
@@ -143,8 +144,7 @@ public class CcdNotificationWrapper implements NotificationWrapper {
                 || TCW_DECISION_APPEAL_TO_PROCEED.equals(getNotificationType())
                 || NON_COMPLIANT_NOTIFICATION.equals(getNotificationType())
                 || RESEND_APPEAL_CREATED_NOTIFICATION.equals(getNotificationType())
-                || REQUEST_INFO_INCOMPLETE.equals(getNotificationType())
-                || (SUBSCRIPTION_UPDATED_NOTIFICATION.equals(getNotificationType()) && isJointPartySubscription()))
+                || REQUEST_INFO_INCOMPLETE.equals(getNotificationType()))
         ) {
             subscriptionWithTypeList.add(new SubscriptionWithType(getAppointeeSubscription(), APPOINTEE));
         } else if (getOldSscsCaseData() != null && isValidReviewConfidentialityRequest(getOldSscsCaseData().getConfidentialityRequestOutcomeAppellant(), getNewSscsCaseData().getConfidentialityRequestOutcomeAppellant())) {
@@ -205,9 +205,8 @@ public class CcdNotificationWrapper implements NotificationWrapper {
             || EVIDENCE_REMINDER_NOTIFICATION.equals(getNotificationType())
             || REQUEST_INFO_INCOMPLETE.equals(getNotificationType())
             || (getOldSscsCaseData() != null && isValidReviewConfidentialityRequest(getOldSscsCaseData().getConfidentialityRequestOutcomeJointParty(), getNewSscsCaseData().getConfidentialityRequestOutcomeJointParty()))
-            || (SUBSCRIPTION_UPDATED_NOTIFICATION.equals(getNotificationType()) && isJointPartySubscription()))
             || (SUBSCRIPTION_UPDATED_NOTIFICATION.equals(getNotificationType()) && isJointPartySubscription())
-            || (JOINT_PARTY_SUBSCRIPTION_UPDATED_NOTIFICATION.equals(getNotificationType()) && isJointPartySubscription())
+            || (JOINT_PARTY_SUBSCRIPTION_UPDATED_NOTIFICATION.equals(getNotificationType()) && isJointPartySubscription()))
         ) {
             subscriptionWithTypeList.add(new SubscriptionWithType(getJointPartySubscription(), JOINT_PARTY));
         }
