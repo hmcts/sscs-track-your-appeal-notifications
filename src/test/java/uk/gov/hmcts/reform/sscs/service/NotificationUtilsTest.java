@@ -594,6 +594,24 @@ public class NotificationUtilsTest {
         assertNull(hearing);
     }
 
+    @Test
+    public void whenJointPartySubscriptionIsAdded() {
+        Subscription subscription = Subscription.builder().subscribeSms(YES).subscribeEmail(YES).wantSmsNotifications(YES).build();
+        SscsCaseDataWrapper wrapper = buildJointPartyWrapper(subscription, null).getSscsCaseDataWrapper();
+
+        SscsCaseData oldSscsCaseData = buildBaseWrapper(null, null).getOldSscsCaseData();
+
+        assertTrue(NotificationUtils.isJointPartySubscriptionCreate(wrapper.getNewSscsCaseData(), oldSscsCaseData));
+    }
+
+    @Test
+    public void whenJointPartySubscriptionIsAlreadyThere() {
+        Subscription subscription = Subscription.builder().subscribeSms(YES).subscribeEmail(YES).wantSmsNotifications(YES).build();
+        SscsCaseDataWrapper wrapper = buildJointPartyWrapper(subscription, null).getSscsCaseDataWrapper();
+
+        assertFalse(NotificationUtils.isJointPartySubscriptionCreate(wrapper.getNewSscsCaseData(), wrapper.getOldSscsCaseData()));
+    }
+
     private Hearing createHearing(String hearingId, String hearingDate, String hearingTime) {
         return Hearing.builder().value(HearingDetails.builder()
                 .hearingDate(hearingDate)
