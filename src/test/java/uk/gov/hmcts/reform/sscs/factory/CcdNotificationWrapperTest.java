@@ -198,8 +198,8 @@ public class CcdNotificationWrapperTest {
     @Test
     public void givenSubscriptionForAppellantRepAndJointParty_shouldGetSubscriptionTypeListForAppellantAndJointPartyOnlyWhenBothGranted() {
         ccdNotificationWrapper = buildCcdNotificationWrapperBasedOnEventTypeWithJointParty(REVIEW_CONFIDENTIALITY_REQUEST, Representative.builder().hasRepresentative("Yes").build(), true);
-        ccdNotificationWrapper.getNewSscsCaseData().setConfidentialityRequestOutcomeAppellant(RequestOutcome.GRANTED);
-        ccdNotificationWrapper.getNewSscsCaseData().setConfidentialityRequestOutcomeJointParty(RequestOutcome.GRANTED);
+        ccdNotificationWrapper.getNewSscsCaseData().setConfidentialityRequestOutcomeAppellant(DatedRequestOutcome.builder().requestOutcome(RequestOutcome.GRANTED).build());
+        ccdNotificationWrapper.getNewSscsCaseData().setConfidentialityRequestOutcomeJointParty(DatedRequestOutcome.builder().requestOutcome(RequestOutcome.GRANTED).build());
         List<SubscriptionWithType> subsWithTypeList = ccdNotificationWrapper.getSubscriptionsBasedOnNotificationType();
         Assert.assertEquals(2, subsWithTypeList.size());
         Assert.assertEquals(SubscriptionType.APPELLANT, subsWithTypeList.get(0).getSubscriptionType());
@@ -209,7 +209,7 @@ public class CcdNotificationWrapperTest {
     @Test
     public void givenSubscriptionForAppellantRepAndJointParty_shouldGetSubscriptionTypeListForAppellantOnlyWhenOnlyAppellantGranted() {
         ccdNotificationWrapper = buildCcdNotificationWrapperBasedOnEventTypeWithJointParty(REVIEW_CONFIDENTIALITY_REQUEST, Representative.builder().hasRepresentative("Yes").build(), true);
-        ccdNotificationWrapper.getNewSscsCaseData().setConfidentialityRequestOutcomeAppellant(RequestOutcome.GRANTED);
+        ccdNotificationWrapper.getNewSscsCaseData().setConfidentialityRequestOutcomeAppellant(DatedRequestOutcome.builder().requestOutcome(RequestOutcome.GRANTED).build());
         ccdNotificationWrapper.getNewSscsCaseData().setConfidentialityRequestOutcomeJointParty(null);
         List<SubscriptionWithType> subsWithTypeList = ccdNotificationWrapper.getSubscriptionsBasedOnNotificationType();
         Assert.assertEquals(1, subsWithTypeList.size());
@@ -220,7 +220,7 @@ public class CcdNotificationWrapperTest {
     public void givenSubscriptionForAppellantRepAndJointParty_shouldGetSubscriptionTypeListForJointPartyOnlyWhenOnlyJointPartyGranted() {
         ccdNotificationWrapper = buildCcdNotificationWrapperBasedOnEventTypeWithJointParty(REVIEW_CONFIDENTIALITY_REQUEST, Representative.builder().hasRepresentative("Yes").build(), true);
         ccdNotificationWrapper.getNewSscsCaseData().setConfidentialityRequestOutcomeAppellant(null);
-        ccdNotificationWrapper.getNewSscsCaseData().setConfidentialityRequestOutcomeJointParty(RequestOutcome.GRANTED);
+        ccdNotificationWrapper.getNewSscsCaseData().setConfidentialityRequestOutcomeJointParty(DatedRequestOutcome.builder().requestOutcome(RequestOutcome.GRANTED).build());
         List<SubscriptionWithType> subsWithTypeList = ccdNotificationWrapper.getSubscriptionsBasedOnNotificationType();
         Assert.assertEquals(1, subsWithTypeList.size());
         Assert.assertEquals(SubscriptionType.JOINT_PARTY, subsWithTypeList.get(0).getSubscriptionType());
@@ -229,10 +229,10 @@ public class CcdNotificationWrapperTest {
     @Test
     public void givenSubscriptionForAppellantRepAndJointParty_shouldGetSubscriptionTypeListForJointPartyOnlyWhenOnlyJointPartyIsNewlyGranted() {
         ccdNotificationWrapper = buildCcdNotificationWrapperBasedOnEventTypeWithJointParty(REVIEW_CONFIDENTIALITY_REQUEST, Representative.builder().hasRepresentative("Yes").build(), true);
-        ccdNotificationWrapper.getOldSscsCaseData().setConfidentialityRequestOutcomeAppellant(RequestOutcome.GRANTED);
+        ccdNotificationWrapper.getOldSscsCaseData().setConfidentialityRequestOutcomeAppellant(DatedRequestOutcome.builder().requestOutcome(RequestOutcome.GRANTED).build());
         ccdNotificationWrapper.getOldSscsCaseData().setConfidentialityRequestOutcomeJointParty(null);
-        ccdNotificationWrapper.getNewSscsCaseData().setConfidentialityRequestOutcomeAppellant(RequestOutcome.GRANTED);
-        ccdNotificationWrapper.getNewSscsCaseData().setConfidentialityRequestOutcomeJointParty(RequestOutcome.GRANTED);
+        ccdNotificationWrapper.getNewSscsCaseData().setConfidentialityRequestOutcomeAppellant(DatedRequestOutcome.builder().requestOutcome(RequestOutcome.GRANTED).build());
+        ccdNotificationWrapper.getNewSscsCaseData().setConfidentialityRequestOutcomeJointParty(DatedRequestOutcome.builder().requestOutcome(RequestOutcome.GRANTED).build());
         List<SubscriptionWithType> subsWithTypeList = ccdNotificationWrapper.getSubscriptionsBasedOnNotificationType();
         Assert.assertEquals(1, subsWithTypeList.size());
         Assert.assertEquals(SubscriptionType.JOINT_PARTY, subsWithTypeList.get(0).getSubscriptionType());

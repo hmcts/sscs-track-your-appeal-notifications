@@ -1343,7 +1343,7 @@ public class PersonalisationTest {
                         .appellant(Appellant.builder().name(name).build())
                         .build())
                 .jointPartyName(JointPartyName.builder().firstName("Jeff").lastName("Stelling").build())
-                .confidentialityRequestOutcomeAppellant(requestOutcome)
+                .confidentialityRequestOutcomeAppellant(DatedRequestOutcome.builder().requestOutcome(requestOutcome).build())
                 .build();
 
         Map<String, String> result = personalisation.create(SscsCaseDataWrapper.builder().newSscsCaseData(response)
@@ -1362,7 +1362,7 @@ public class PersonalisationTest {
                         .appellant(Appellant.builder().name(name).build())
                         .build())
                 .jointPartyName(JointPartyName.builder().firstName("Jeff").lastName("Stelling").build())
-                .confidentialityRequestOutcomeJointParty(requestOutcome)
+                .confidentialityRequestOutcomeJointParty(DatedRequestOutcome.builder().requestOutcome(requestOutcome).build())
                 .build();
 
         Map<String, String> result = personalisation.create(SscsCaseDataWrapper.builder().newSscsCaseData(response)

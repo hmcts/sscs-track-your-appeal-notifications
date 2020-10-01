@@ -17,6 +17,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
 import org.apache.commons.lang3.StringUtils;
+import uk.gov.hmcts.reform.sscs.ccd.domain.DatedRequestOutcome;
 import uk.gov.hmcts.reform.sscs.ccd.domain.RequestOutcome;
 import uk.gov.hmcts.reform.sscs.ccd.domain.SscsCaseData;
 import uk.gov.hmcts.reform.sscs.ccd.domain.Subscription;
@@ -208,16 +209,23 @@ public class CcdNotificationWrapper implements NotificationWrapper {
         return subscriptionWithTypeList;
     }
 
-    private boolean isValidReviewConfidentialityRequest(RequestOutcome previousRequestOutcome, RequestOutcome latestRequestOutcome) {
+    private boolean isValidReviewConfidentialityRequest(DatedRequestOutcome previousRequestOutcome, DatedRequestOutcome latestRequestOutcome) {
         return REVIEW_CONFIDENTIALITY_REQUEST.equals(getNotificationType())
             && checkConfidentialityRequestOutcomeIsValidToSend(previousRequestOutcome, latestRequestOutcome);
     }
 
-    private boolean checkConfidentialityRequestOutcomeIsValidToSend(RequestOutcome previousRequestOutcome, RequestOutcome latestRequestOutcome) {
-        return (RequestOutcome.GRANTED.equals(latestRequestOutcome) && !RequestOutcome.GRANTED.equals(previousRequestOutcome))
-            || (RequestOutcome.REFUSED.equals(latestRequestOutcome) && !RequestOutcome.REFUSED.equals(previousRequestOutcome));
+    private boolean checkConfidentialityRequestOutcomeIsValidToSend(DatedRequestOutcome previousRequestOutcome, DatedRequestOutcome latestRequestOutcome) {
+        return latestRequestOutcome == null ? false : checkConfidentialityRequestOutcomeIsValidToSend(previousRequestOutcome, latestRequestOutcome.getRequestOutcome());
     }
 
+    private boolean isMatchingOutcome(DatedRequestOutcome datedRequestOutcome, RequestOutcome requestOutcome) {
+        return datedRequestOutcome != null && requestOutcome != null && requestOutcome.equals(datedRequestOutcome.getRequestOutcome());
+    }
+
+    private boolean checkConfidentialityRequestOutcomeIsValidToSend(DatedRequestOutcome previousRequestOutcome, RequestOutcome latestRequestOutcome) {
+        return (RequestOutcome.GRANTED.equals(latestRequestOutcome) && !isMatchingOutcome(previousRequestOutcome, RequestOutcome.GRANTED))
+            || (RequestOutcome.REFUSED.equals(latestRequestOutcome) && !isMatchingOutcome(previousRequestOutcome, RequestOutcome.REFUSED));
+    }
 
     @Override
     public void setNotificationEventTypeOverridden(boolean notificationEventTypeOverridden) {
