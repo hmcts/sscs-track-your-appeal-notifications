@@ -4,7 +4,10 @@
     "callback_response_status": null,
     "callback_response_status_code": null,
     "case_data": {
-      "confidentialityRequestOutcomeAppellant": "granted",
+      "confidentialityRequestOutcomeAppellant": {
+        "requestOutcome":"granted",
+        "date":"2020-09-30"
+      },
       "hearings": [
         {
           "value": {
