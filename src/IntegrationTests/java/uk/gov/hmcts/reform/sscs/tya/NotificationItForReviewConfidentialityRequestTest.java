@@ -10,7 +10,6 @@ import java.time.LocalDate;
 import junitparams.NamedParameters;
 import junitparams.Parameters;
 import org.apache.commons.io.FileUtils;
-import org.junit.Before;
 import org.junit.Test;
 import uk.gov.hmcts.reform.sscs.ccd.domain.DatedRequestOutcome;
 import uk.gov.hmcts.reform.sscs.ccd.domain.RequestOutcome;
