@@ -111,12 +111,28 @@ public class DocmosisWithGovNotifyLetterFunctionalTest extends AbstractFunctiona
     }
 
     @Test
+    public void sendsIncompleteInfoLetterToAppellantRepresentativeAndJointParty() throws IOException, NotificationClientException {
+
+        NotificationEventType notificationEventType = NotificationEventType.REQUEST_INFO_INCOMPLETE;
+
+        simulateCcdCallback(notificationEventType,
+            notificationEventType.getId() + "Callback.json");
+
+        List<Notification> notifications = fetchLetters();
+
+        assertEquals(3, notifications.size());
+        assertEquals("Pre-compiled PDF", notifications.get(0).getSubject().orElse("Unknown Subject"));
+        assertEquals("Pre-compiled PDF", notifications.get(1).getSubject().orElse("Unknown Subject"));
+        assertEquals("Pre-compiled PDF", notifications.get(2).getSubject().orElse("Unknown Subject"));
+    }
+
+    @Test
     public void sendsReviewConfidentialityRequestLetterToAppellant() throws IOException, NotificationClientException {
 
         NotificationEventType notificationEventType = NotificationEventType.REVIEW_CONFIDENTIALITY_REQUEST;
 
         simulateCcdCallback(notificationEventType,
-                notificationEventType.getId() + "Callback.json");
+            notificationEventType.getId() + "Callback.json");
 
         List<Notification> notifications = fetchLetters();
 

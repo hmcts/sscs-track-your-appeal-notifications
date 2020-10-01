@@ -197,6 +197,8 @@ public class Personalisation<E extends NotificationWrapper> {
         personalisation.put(CREATED_DATE, ccdResponse.getCaseCreated());
         personalisation.put(JOINT, subscriptionWithType.getSubscriptionType().equals(JOINT_PARTY) ? JOINT_TEXT_WITH_A_SPACE : EMPTY);
 
+        personalisation.put(JOINT_PARTY_APPEAL, StringUtils.equalsIgnoreCase(ccdResponse.getJointParty(), "yes") ? "Yes" : "No");
+
         if (ccdResponse.getHearings() != null && !ccdResponse.getHearings().isEmpty()) {
 
             Hearing latestHearing = NotificationUtils.getLatestHearing(ccdResponse);
