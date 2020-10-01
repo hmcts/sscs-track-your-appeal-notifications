@@ -552,8 +552,8 @@ notification:
         docmosisId: TB-SCS-GNO-WEL-00467.docx
     hearingAdjourned:
       appellant:
-        emailId: 06c91850-a81f-44bb-9577-1bc528913850
-        smsId: a26c0e22-b132-4528-86a5-e221cc9b6325
+        emailId: 20b4e9de-d80d-4e0d-9cc1-28093072833b
+        smsId: 4490f1c9-0b5c-46a9-8b79-75f07dfef810
       representative:
         emailId: fd13e20c-f412-48eb-9905-a25e91ccc5ed
         smsId: 4d1caa6f-b0e8-4c07-aa76-84841880be9a
