@@ -326,6 +326,8 @@ notification:
           docmosisId: TB-SCS-GNO-ENG-00067.docx
         representative:
           docmosisId: TB-SCS-GNO-ENG-00089.docx
+        joint_party:
+          docmosisId: TB-SCS-GNO-ENG-00067.docx
       grantExtension:
         appellant:
           docmosisId: TB-SCS-GNO-ENG-00556.docx
@@ -341,6 +343,8 @@ notification:
         appointee:
           docmosisId: TB-SCS-GNO-ENG-00557.docx
         representative:
+          docmosisId: TB-SCS-GNO-ENG-00557.docx
+        joint_party:
           docmosisId: TB-SCS-GNO-ENG-00557.docx
     decisionIssued:
       appellant:
@@ -369,6 +373,8 @@ notification:
       representative:
         docmosisId: TB-SCS-GNO-ENG-00452.docx
       appointee:
+        docmosisId: TB-SCS-GNO-ENG-00452.docx
+      joint_party:
         docmosisId: TB-SCS-GNO-ENG-00452.docx
     nonCompliant:
       appellant:
@@ -766,6 +772,8 @@ notification:
       representative:
         docmosisId: TB-SCS-GNO-ENG-00452.docx
       appointee:
+        docmosisId: TB-SCS-GNO-ENG-00452.docx
+      joint_party:
         docmosisId: TB-SCS-GNO-ENG-00452.docx
     nonCompliant:
       appellant:

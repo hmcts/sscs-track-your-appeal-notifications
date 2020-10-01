@@ -197,6 +197,8 @@ public class Personalisation<E extends NotificationWrapper> {
         personalisation.put(CREATED_DATE, ccdResponse.getCaseCreated());
         personalisation.put(JOINT, subscriptionWithType.getSubscriptionType().equals(JOINT_PARTY) ? JOINT_TEXT_WITH_A_SPACE : EMPTY);
 
+        personalisation.put(JOINT_PARTY_APPEAL, StringUtils.equalsIgnoreCase(ccdResponse.getJointParty(), "yes") ? "Yes" : "No");
+
         if (ccdResponse.getHearings() != null && !ccdResponse.getHearings().isEmpty()) {
 
             Hearing latestHearing = NotificationUtils.getLatestHearing(ccdResponse);
@@ -247,12 +249,16 @@ public class Personalisation<E extends NotificationWrapper> {
     private void setConfidentialFields(SscsCaseData ccdResponse, SubscriptionWithType subscriptionWithType, Map<String, String> personalisation) {
         if (subscriptionWithType.getSubscriptionType().equals(JOINT_PARTY) && null != ccdResponse.getConfidentialityRequestOutcomeJointParty()) {
             personalisation.put(OTHER_PARTY_NAME, ccdResponse.getAppeal().getAppellant().getName().getFullNameNoTitle());
-            personalisation.put(CONFIDENTIALITY_OUTCOME, ccdResponse.getConfidentialityRequestOutcomeJointParty().getValue());
+            personalisation.put(CONFIDENTIALITY_OUTCOME, getRequestOutcome(ccdResponse.getConfidentialityRequestOutcomeJointParty()));
 
         } else if (subscriptionWithType.getSubscriptionType().equals(APPELLANT) && null != ccdResponse.getJointPartyName() && null != ccdResponse.getConfidentialityRequestOutcomeAppellant()) {
             personalisation.put(OTHER_PARTY_NAME, ccdResponse.getJointPartyName().getFullNameNoTitle());
-            personalisation.put(CONFIDENTIALITY_OUTCOME, ccdResponse.getConfidentialityRequestOutcomeAppellant().getValue());
+            personalisation.put(CONFIDENTIALITY_OUTCOME, getRequestOutcome(ccdResponse.getConfidentialityRequestOutcomeAppellant()));
         }
+    }
+
+    private String getRequestOutcome(DatedRequestOutcome datedRequestOutcome) {
+        return datedRequestOutcome == null || datedRequestOutcome.getRequestOutcome() == null ? null : datedRequestOutcome.getRequestOutcome().getValue();
     }
 
     private String getAppealReference(SscsCaseData ccdResponse) {
