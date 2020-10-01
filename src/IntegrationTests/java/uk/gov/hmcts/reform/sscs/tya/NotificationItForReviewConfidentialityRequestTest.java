@@ -6,15 +6,31 @@ import static org.mockito.Mockito.*;
 
 import java.io.File;
 import java.nio.charset.StandardCharsets;
+import java.time.LocalDate;
+import junitparams.NamedParameters;
 import junitparams.Parameters;
 import org.apache.commons.io.FileUtils;
+import org.junit.Before;
 import org.junit.Test;
+import uk.gov.hmcts.reform.sscs.ccd.domain.DatedRequestOutcome;
+import uk.gov.hmcts.reform.sscs.ccd.domain.RequestOutcome;
 
 public class NotificationItForReviewConfidentialityRequestTest extends NotificationsIt {
 
+    @NamedParameters("grantedOrRefused")
+    @SuppressWarnings("unused")
+    private Object[] grantedOrRefused() {
+        return new Object[] {
+            new DatedRequestOutcome[] {DatedRequestOutcome.builder()
+                .requestOutcome(RequestOutcome.GRANTED).date(LocalDate.now()).build()},
+            new DatedRequestOutcome[] {DatedRequestOutcome.builder()
+                .requestOutcome(RequestOutcome.REFUSED).date(LocalDate.now()).build()},
+        };
+    }
+
     @Test
-    @Parameters({"granted", "refused"})
-    public void givenAppellantConfidentialityRequest_shouldSendConfidentialityLetter(String requestOutcome) throws Exception {
+    @Parameters(named = "grantedOrRefused")
+    public void givenAppellantConfidentialityRequest_shouldSendConfidentialityLetter(DatedRequestOutcome requestOutcome) throws Exception {
         String path = getClass().getClassLoader().getResource("json/ccdResponseWithJointParty.json").getFile();
         String json = FileUtils.readFileToString(new File(path), StandardCharsets.UTF_8.name());
         json = updateEmbeddedJson(json, "reviewConfidentialityRequest", "event_id");
@@ -28,8 +44,8 @@ public class NotificationItForReviewConfidentialityRequestTest extends Notificat
     }
 
     @Test
-    @Parameters({"granted", "refused"})
-    public void givenJointPartyConfidentialityRequest_shouldSendConfidentialityLetter(String requestOutcome) throws Exception {
+    @Parameters(named = "grantedOrRefused")
+    public void givenJointPartyConfidentialityRequest_shouldSendConfidentialityLetter(DatedRequestOutcome requestOutcome) throws Exception {
         String path = getClass().getClassLoader().getResource("json/ccdResponseWithJointParty.json").getFile();
         String json = FileUtils.readFileToString(new File(path), StandardCharsets.UTF_8.name());
         json = updateEmbeddedJson(json, "reviewConfidentialityRequest", "event_id");
@@ -43,8 +59,8 @@ public class NotificationItForReviewConfidentialityRequestTest extends Notificat
     }
 
     @Test
-    @Parameters({"granted", "refused"})
-    public void givenJointPartyAndAppellantConfidentialityRequest_shouldSendBothConfidentialityLetters(String requestOutcome) throws Exception {
+    @Parameters(named = "grantedOrRefused")
+    public void givenJointPartyAndAppellantConfidentialityRequest_shouldSendBothConfidentialityLetters(DatedRequestOutcome requestOutcome) throws Exception {
         String path = getClass().getClassLoader().getResource("json/ccdResponseWithJointParty.json").getFile();
         String json = FileUtils.readFileToString(new File(path), StandardCharsets.UTF_8.name());
         json = updateEmbeddedJson(json, "reviewConfidentialityRequest", "event_id");
