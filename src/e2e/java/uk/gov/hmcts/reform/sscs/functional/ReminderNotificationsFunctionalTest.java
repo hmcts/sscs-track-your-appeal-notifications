@@ -82,10 +82,10 @@ public class ReminderNotificationsFunctionalTest extends AbstractFunctionalTest 
     @Value("${notification.welsh.hearingReminder.appointee.smsId}")
     private String hearingReminderWelshAppointeeSmsTemplateId;
 
-    @Value("${notification.welsh.hearingReminder.jointParty.emailId}")
+    @Value("${notification.welsh.hearingReminder.joint_party.emailId}")
     private String hearingReminderWelshJointPartyEmailTemplateId;
 
-    @Value("${notification.welsh.hearingReminder.jointParty.smsId}")
+    @Value("${notification.welsh.hearingReminder.joint_party.smsId}")
     private String hearingReminderWelshJointPartySmsTemplateId;
 
     public ReminderNotificationsFunctionalTest() {
@@ -385,9 +385,7 @@ public class ReminderNotificationsFunctionalTest extends AbstractFunctionalTest 
     }
 
     @Test
-    // Put back when covid19 feature turned off
-    @Ignore
-    public void shouldSendNotificationsWhenHearingBookedEventIsReceivedWhenAAppellantAndJointPartyIsSubscribed() throws IOException, NotificationClientException {
+    public void shouldSendNotificationsWhenHearingBookedEventIsReceivedWhenAnAppellantAndJointPartyIsSubscribed() throws IOException, NotificationClientException {
 
         addHearing(caseData, 0);
         triggerEvent(HEARING_BOOKED_NOTIFICATION);
