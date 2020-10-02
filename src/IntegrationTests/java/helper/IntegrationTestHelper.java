@@ -45,7 +45,7 @@ public class IntegrationTestHelper {
         assertThat(response.getStatus()).isEqualTo(status.value());
     }
 
-    public static String updateEmbeddedJson(String json, String value, String... keys) throws IOException {
+    public static String updateEmbeddedJson(String json, Object value, String... keys) throws IOException {
         ObjectMapper objectMapper = new ObjectMapper();
 
         Map map = objectMapper.readValue(json, Map.class);
