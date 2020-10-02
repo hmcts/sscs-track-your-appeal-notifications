@@ -1,6 +1,7 @@
 package uk.gov.hmcts.reform.sscs.functional.sya.notifications;
 
 import static uk.gov.hmcts.reform.sscs.domain.notify.NotificationEventType.ADJOURNED_NOTIFICATION;
+import static uk.gov.hmcts.reform.sscs.domain.notify.NotificationEventType.APPEAL_DORMANT_NOTIFICATION;
 import static uk.gov.hmcts.reform.sscs.domain.notify.NotificationEventType.DWP_RESPONSE_RECEIVED_NOTIFICATION;
 import static uk.gov.hmcts.reform.sscs.domain.notify.NotificationEventType.DWP_UPLOAD_RESPONSE_NOTIFICATION;
 import static uk.gov.hmcts.reform.sscs.domain.notify.NotificationEventType.EVIDENCE_RECEIVED_NOTIFICATION;
@@ -29,6 +30,11 @@ public class WelshNotificationsFunctionalTest extends AbstractFunctionalTest {
     @Value("${track.appeal.link}")
     private String tyaLink;
 
+    @Value("${notification.welsh.oral.appealDormant.appellant.emailId}")
+    private String appealDormantOralAppellantEmailTemplateIdWelsh;
+
+    @Value("${notification.welsh.oral.appealDormant.joint_party.emailId}")
+    private String appealDormantOralJointPartyEmailTemplateIdWelsh;
 
     @Value("${notification.welsh.hearingPostponed.joint_party.emailId}")
     private String hearingPostponedEmailTemplateIdJointPartyWelsh;
@@ -250,6 +256,12 @@ public class WelshNotificationsFunctionalTest extends AbstractFunctionalTest {
         List<Notification> notifications = tryFetchNotificationsForTestCase(appealCreatedAppointeeEmailIdWelsh, appealCreatedAppointeeSmsIdWelsh);
 
         assertNotificationBodyContains(notifications, appealCreatedAppointeeEmailIdWelsh, "appointee");
+    }
+
+    @Test
+    public void shouldSendOralAppealDormantNotificationWelsh() throws NotificationClientException, IOException {
+        simulateCcdCallback(APPEAL_DORMANT_NOTIFICATION, "oral-" + APPEAL_DORMANT_NOTIFICATION.getId() + "CallbackWelsh.json");
+        tryFetchNotificationsForTestCase(appealDormantOralJointPartyEmailTemplateIdWelsh, appealDormantOralAppellantEmailTemplateIdWelsh);
     }
 
 
