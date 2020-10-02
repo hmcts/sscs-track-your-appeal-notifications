@@ -557,7 +557,7 @@ notification:
       appointee:
         emailId: cc20b48f-be92-4eb7-aab2-278997926fa7
       joint_party:
-        emailId: cc20b48f-be92-4eb7-aab2-278997926fa7
+        emailId: 366e5970-cbce-45d2-ba78-fb12e4c2aac1
     appealLapsed:
       appellant:
         emailId: 89302ee1-291f-4a76-b388-5b9d8dbfbd4b

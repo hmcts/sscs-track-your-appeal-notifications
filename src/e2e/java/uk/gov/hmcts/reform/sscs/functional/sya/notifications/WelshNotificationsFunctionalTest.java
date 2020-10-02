@@ -30,6 +30,9 @@ public class WelshNotificationsFunctionalTest extends AbstractFunctionalTest {
     private String tyaLink;
 
 
+    @Value("${notification.welsh.hearingPostponed.joint_party.emailId}")
+    private String hearingPostponedEmailTemplateIdJointPartyWelsh;
+
     @Value("${notification.welsh.hearingPostponed.appellant.emailId}")
     private String hearingPostponedEmailTemplateIdWelsh;
 
@@ -167,7 +170,7 @@ public class WelshNotificationsFunctionalTest extends AbstractFunctionalTest {
     public void shouldSendHearingPostponedNotificationWelsh() throws NotificationClientException, IOException {
         simulateWelshCcdCallback(POSTPONEMENT_NOTIFICATION);
 
-        tryFetchNotificationsForTestCase(hearingPostponedEmailTemplateIdWelsh);
+        tryFetchNotificationsForTestCase(hearingPostponedEmailTemplateIdWelsh, hearingPostponedEmailTemplateIdJointPartyWelsh);
     }
 
 
