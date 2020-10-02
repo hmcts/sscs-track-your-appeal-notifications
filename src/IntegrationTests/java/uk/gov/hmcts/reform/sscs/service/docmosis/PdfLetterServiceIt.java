@@ -26,7 +26,6 @@ import uk.gov.hmcts.reform.sscs.config.SubscriptionType;
 import uk.gov.hmcts.reform.sscs.domain.SscsCaseDataWrapper;
 import uk.gov.hmcts.reform.sscs.domain.docmosis.PdfCoverSheet;
 import uk.gov.hmcts.reform.sscs.domain.notify.NotificationEventType;
-import uk.gov.hmcts.reform.sscs.exception.PdfGenerationException;
 import uk.gov.hmcts.reform.sscs.factory.CcdNotificationWrapper;
 import uk.gov.hmcts.reform.sscs.factory.NotificationWrapper;
 import uk.gov.hmcts.reform.sscs.service.DocmosisPdfService;
@@ -80,7 +79,7 @@ public class PdfLetterServiceIt {
                 .get(LanguagePreference.ENGLISH).get(APPEAL_RECEIVED.getType())));
     }
 
-    @Test(expected = PdfGenerationException.class)
+    @Test
     public void willNotGenerateACoversheetOnAppealDormant() {
 
         SscsCaseData sscsCaseData = getSscsCaseData();
@@ -92,7 +91,7 @@ public class PdfLetterServiceIt {
                 .build();
         NotificationWrapper wrapper = new CcdNotificationWrapper(dataWrapper);
         pdfLetterService.buildCoversheet(wrapper, SubscriptionType.APPELLANT);
-        verifyZeroInteractions(docmosisPdfService);
+        verifyNoInteractions(docmosisPdfService);
     }
 
     private SscsCaseData getSscsCaseData() {

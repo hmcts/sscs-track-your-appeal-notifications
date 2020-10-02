@@ -30,6 +30,14 @@ public class WelshNotificationsFunctionalTest extends AbstractFunctionalTest {
     @Value("${track.appeal.link}")
     private String tyaLink;
 
+    @Value("${notification.welsh.oral.appealDormant.appellant.emailId}")
+    private String appealDormantOralAppellantEmailTemplateIdWelsh;
+
+    @Value("${notification.welsh.oral.appealDormant.joint_party.emailId}")
+    private String appealDormantOralJointPartyEmailTemplateIdWelsh;
+
+    @Value("${notification.welsh.hearingPostponed.joint_party.emailId}")
+    private String hearingPostponedEmailTemplateIdJointPartyWelsh;
 
     @Value("${notification.welsh.paper.appealDormant.appellant.emailId}")
     private String appealDormantPaperAppellantEmailTemplateIdWelsh;
@@ -180,7 +188,7 @@ public class WelshNotificationsFunctionalTest extends AbstractFunctionalTest {
     public void shouldSendHearingPostponedNotificationWelsh() throws NotificationClientException, IOException {
         simulateWelshCcdCallback(POSTPONEMENT_NOTIFICATION);
 
-        tryFetchNotificationsForTestCase(hearingPostponedEmailTemplateIdWelsh);
+        tryFetchNotificationsForTestCase(hearingPostponedEmailTemplateIdWelsh, hearingPostponedEmailTemplateIdJointPartyWelsh);
     }
 
 
@@ -270,6 +278,12 @@ public class WelshNotificationsFunctionalTest extends AbstractFunctionalTest {
                 appealDormantPaperAppellantSmsTemplateIdWelsh,
                 appealDormantPaperJointPartySmsTemplateIdWelsh,
                 appealDormantPaperAppellantEmailTemplateIdWelsh);
+    }
+
+    @Test
+    public void shouldSendOralAppealDormantNotificationWelsh() throws NotificationClientException, IOException {
+        simulateCcdCallback(APPEAL_DORMANT_NOTIFICATION, "oral-" + APPEAL_DORMANT_NOTIFICATION.getId() + "CallbackWelsh.json");
+        tryFetchNotificationsForTestCase(appealDormantOralJointPartyEmailTemplateIdWelsh, appealDormantOralAppellantEmailTemplateIdWelsh);
     }
 
 }

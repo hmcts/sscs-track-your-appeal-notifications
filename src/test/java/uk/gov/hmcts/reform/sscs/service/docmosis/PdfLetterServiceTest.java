@@ -18,7 +18,6 @@ import static uk.gov.hmcts.reform.sscs.config.AppConstants.LETTER_ADDRESS_LINE_2
 import static uk.gov.hmcts.reform.sscs.config.AppConstants.LETTER_ADDRESS_LINE_3;
 import static uk.gov.hmcts.reform.sscs.config.AppConstants.LETTER_ADDRESS_LINE_4;
 import static uk.gov.hmcts.reform.sscs.config.AppConstants.LETTER_ADDRESS_POSTCODE;
-import static uk.gov.hmcts.reform.sscs.domain.notify.NotificationEventType.APPEAL_LAPSED_NOTIFICATION;
 import static uk.gov.hmcts.reform.sscs.domain.notify.NotificationEventType.APPEAL_RECEIVED_NOTIFICATION;
 import static uk.gov.hmcts.reform.sscs.service.docmosis.PdfLetterService.GENERATED_DATE_LITERAL;
 import static uk.gov.hmcts.reform.sscs.service.docmosis.PdfLetterService.WELSH_GENERATED_DATE_LITERAL;
@@ -47,7 +46,6 @@ import uk.gov.hmcts.reform.sscs.domain.docmosis.PdfCoverSheet;
 import uk.gov.hmcts.reform.sscs.domain.notify.Notification;
 import uk.gov.hmcts.reform.sscs.domain.notify.Template;
 import uk.gov.hmcts.reform.sscs.exception.NotificationClientRuntimeException;
-import uk.gov.hmcts.reform.sscs.exception.PdfGenerationException;
 import uk.gov.hmcts.reform.sscs.factory.NotificationWrapper;
 import uk.gov.hmcts.reform.sscs.service.DocmosisPdfService;
 import uk.gov.hmcts.reform.sscs.service.NotificationServiceTest;
@@ -111,18 +109,6 @@ public class PdfLetterServiceTest {
                 DOCMOSIS_TEMPLATES_CONFIG.getHmctsImgVal(),
                 DOCMOSIS_TEMPLATES_CONFIG.getHmctsWelshImgVal());
         verify(docmosisPdfService).createPdf(eq(pdfCoverSheet), eq("my01.doc"));
-    }
-
-    @Test(expected = PdfGenerationException.class)
-    public void willThrowAnErrorIfIncorrectEventIsSentToGenerateACoversheet() {
-        NotificationWrapper wrapper = NotificationServiceTest.buildBaseWrapper(
-                APPEAL_LAPSED_NOTIFICATION,
-                appellant,
-                representative,
-                null
-        );
-
-        pdfLetterService.buildCoversheet(wrapper, SubscriptionType.APPELLANT);
     }
 
     @Test
