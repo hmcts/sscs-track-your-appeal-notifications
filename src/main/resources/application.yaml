@@ -907,7 +907,7 @@ notification:
         representative:
           emailId: 3bf133d1-0f73-47f6-8825-5ae07cbe45b5
         joint_party:
-          emailId: c2258883-19c9-40db-b7e1-792b05f41103
+          emailId: fe3f3364-a8c7-45cd-990f-31e101918ef6
 
 smsSender:
   pip: 80b11be7-5c10-2773-8351-070e22d5ab6b
