@@ -1,6 +1,7 @@
 package uk.gov.hmcts.reform.sscs.functional.sya.notifications;
 
 import static uk.gov.hmcts.reform.sscs.domain.notify.NotificationEventType.ADJOURNED_NOTIFICATION;
+import static uk.gov.hmcts.reform.sscs.domain.notify.NotificationEventType.APPEAL_DORMANT_NOTIFICATION;
 import static uk.gov.hmcts.reform.sscs.domain.notify.NotificationEventType.DWP_RESPONSE_RECEIVED_NOTIFICATION;
 import static uk.gov.hmcts.reform.sscs.domain.notify.NotificationEventType.DWP_UPLOAD_RESPONSE_NOTIFICATION;
 import static uk.gov.hmcts.reform.sscs.domain.notify.NotificationEventType.EVIDENCE_RECEIVED_NOTIFICATION;
@@ -30,9 +31,26 @@ public class WelshNotificationsFunctionalTest extends AbstractFunctionalTest {
     @Value("${track.appeal.link}")
     private String tyaLink;
 
+    @Value("${notification.welsh.oral.appealDormant.appellant.emailId}")
+    private String appealDormantOralAppellantEmailTemplateIdWelsh;
+
+    @Value("${notification.welsh.oral.appealDormant.joint_party.emailId}")
+    private String appealDormantOralJointPartyEmailTemplateIdWelsh;
 
     @Value("${notification.welsh.hearingPostponed.joint_party.emailId}")
     private String hearingPostponedEmailTemplateIdJointPartyWelsh;
+
+    @Value("${notification.welsh.paper.appealDormant.appellant.emailId}")
+    private String appealDormantPaperAppellantEmailTemplateIdWelsh;
+
+    @Value("${notification.welsh.paper.appealDormant.appellant.smsId}")
+    private String appealDormantPaperAppellantSmsTemplateIdWelsh;
+
+    @Value("${notification.welsh.paper.appealDormant.joint_party.emailId}")
+    private String appealDormantPaperJointPartyEmailTemplateIdWelsh;
+
+    @Value("${notification.welsh.paper.appealDormant.joint_party.smsId}")
+    private String appealDormantPaperJointPartySmsTemplateIdWelsh;
 
     @Value("${notification.welsh.hearingPostponed.appellant.emailId}")
     private String hearingPostponedEmailTemplateIdWelsh;
@@ -278,6 +296,22 @@ public class WelshNotificationsFunctionalTest extends AbstractFunctionalTest {
                 AS_APPOINTEE_FOR,
                 "/evidence/" + TYA
         );
+    }
+
+    @Test
+    public void shouldSendPaperAppealDormantNotificationWelsh() throws NotificationClientException, IOException {
+        simulateCcdCallback(APPEAL_DORMANT_NOTIFICATION, "paper-" + APPEAL_DORMANT_NOTIFICATION.getId() + "CallbackWelsh.json");
+        tryFetchNotificationsForTestCase(
+                appealDormantPaperJointPartyEmailTemplateIdWelsh,
+                appealDormantPaperAppellantSmsTemplateIdWelsh,
+                appealDormantPaperJointPartySmsTemplateIdWelsh,
+                appealDormantPaperAppellantEmailTemplateIdWelsh);
+    }
+
+    @Test
+    public void shouldSendOralAppealDormantNotificationWelsh() throws NotificationClientException, IOException {
+        simulateCcdCallback(APPEAL_DORMANT_NOTIFICATION, "oral-" + APPEAL_DORMANT_NOTIFICATION.getId() + "CallbackWelsh.json");
+        tryFetchNotificationsForTestCase(appealDormantOralJointPartyEmailTemplateIdWelsh, appealDormantOralAppellantEmailTemplateIdWelsh);
     }
 
 }
