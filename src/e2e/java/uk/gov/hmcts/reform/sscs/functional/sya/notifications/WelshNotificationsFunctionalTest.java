@@ -5,6 +5,7 @@ import static uk.gov.hmcts.reform.sscs.domain.notify.NotificationEventType.APPEA
 import static uk.gov.hmcts.reform.sscs.domain.notify.NotificationEventType.DWP_RESPONSE_RECEIVED_NOTIFICATION;
 import static uk.gov.hmcts.reform.sscs.domain.notify.NotificationEventType.DWP_UPLOAD_RESPONSE_NOTIFICATION;
 import static uk.gov.hmcts.reform.sscs.domain.notify.NotificationEventType.EVIDENCE_RECEIVED_NOTIFICATION;
+import static uk.gov.hmcts.reform.sscs.domain.notify.NotificationEventType.HEARING_BOOKED_NOTIFICATION;
 import static uk.gov.hmcts.reform.sscs.domain.notify.NotificationEventType.POSTPONEMENT_NOTIFICATION;
 import static uk.gov.hmcts.reform.sscs.domain.notify.NotificationEventType.SUBSCRIPTION_CREATED_NOTIFICATION;
 import static uk.gov.hmcts.reform.sscs.domain.notify.NotificationEventType.SUBSCRIPTION_UPDATED_NOTIFICATION;
@@ -162,6 +163,12 @@ public class WelshNotificationsFunctionalTest extends AbstractFunctionalTest {
     @Value("${notification.welsh.hearingBooked.appointee.smsId}")
     private String appointeeHearingBookedSmsIdWelsh;
 
+    @Value("${notification.welsh.hearingBooked.joint_party.emailId}")
+    private String jointPartyHearingBookedEmailIdWelsh;
+
+    @Value("${notification.welsh.hearingBooked.joint_party.smsId}")
+    private String jointPartyHearingBookedSmsIdWelsh;
+
     @Value("${notification.welsh.hearingPostponed.appointee.emailId}")
     private String appointeeHearingPostponedEmailIdWelsh;
 
@@ -189,6 +196,17 @@ public class WelshNotificationsFunctionalTest extends AbstractFunctionalTest {
         simulateWelshCcdCallback(POSTPONEMENT_NOTIFICATION);
 
         tryFetchNotificationsForTestCase(hearingPostponedEmailTemplateIdWelsh, hearingPostponedEmailTemplateIdJointPartyWelsh);
+    }
+
+    @Test
+    public void shouldSendHearingBookedNotificationWelsh() throws NotificationClientException, IOException {
+        simulateWelshCcdCallback(HEARING_BOOKED_NOTIFICATION);
+
+        tryFetchNotificationsForTestCase(
+                appointeeHearingBookedEmailIdWelsh,
+                appointeeHearingBookedSmsIdWelsh,
+                jointPartyHearingBookedEmailIdWelsh,
+                jointPartyHearingBookedSmsIdWelsh);
     }
 
 
