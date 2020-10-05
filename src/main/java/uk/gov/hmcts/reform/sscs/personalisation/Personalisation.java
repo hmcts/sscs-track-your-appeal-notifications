@@ -548,7 +548,7 @@ public class Personalisation<E extends NotificationWrapper> {
                 || REQUEST_INFO_INCOMPLETE.equals(notificationEventType)
                 || ISSUE_FINAL_DECISION.equals(notificationEventType)
                 || ISSUE_ADJOURNMENT_NOTICE.equals(notificationEventType)
-                || REVIEW_CONFIDENTIALITY_REQUEST.equals(notificationEventType))
+                || REVIEW_CONFIDENTIALITY_REQUEST.equals(notificationEventType)
                 || JOINT_PARTY_SUBSCRIPTION_UPDATED_NOTIFICATION.equals(notificationEventType))) {
             letterTemplateName = letterTemplateName + "." + subscriptionType.name().toLowerCase();
 
