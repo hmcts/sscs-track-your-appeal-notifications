@@ -907,8 +907,8 @@ notification:
           emailId: 86a52d91-6e48-4198-995a-6cd8ebfea05f
           smsId: 7c6980fe-fa12-46a4-a9aa-c7553a163fba
         joint_party:
-          emailId: d99855c1-2df1-4ffe-99d7-da4111c2b3e8
-          smsId: bfee6b55-9718-41c6-904c-50ecff324c3e
+          emailId: 50e36590-3fc2-4ad9-aedd-358e3d585b5b
+          smsId: 8b23d743-3a40-418a-bb2f-39c440e922ce
       evidenceReceived:
         appellant:
           emailId: fd16e0cb-c556-45d3-8900-067e119a0dff
