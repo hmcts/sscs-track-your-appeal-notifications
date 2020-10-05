@@ -178,10 +178,14 @@ public class PersonalisationTest {
             "APPEAL_TO_PROCEED, directionIssued.appealToProceed, JOINT_PARTY",
             "PROVIDE_INFORMATION, directionIssued.provideInformation, REPRESENTATIVE",
             "GRANT_EXTENSION, directionIssued.grantExtension, APPOINTEE",
-            "REFUSE_EXTENSION, directionIssued.refuseExtension, APPELLANT"})
+            "REFUSE_EXTENSION, directionIssued.refuseExtension, APPELLANT",
+            "GRANT_REINSTATEMENT, directionIssued.grantReinstatement, APPELLANT",
+            "REFUSE_REINSTATEMENT, directionIssued.refuseReinstatement, APPOINTEE"
+    })
     public void whenDirectionIssuedAndDirectionTypeShouldGenerateCorrectTemplate(DirectionType directionType,
                                                                                  String templateConfig,
                                                                                  SubscriptionType subscriptionType) {
+
         NotificationWrapper notificationWrapper = new CcdNotificationWrapper(SscsCaseDataWrapper.builder()
                 .newSscsCaseData(SscsCaseData.builder()
                         .directionTypeDl(new DynamicList(directionType.toString()))
@@ -200,6 +204,41 @@ public class PersonalisationTest {
                 eq(templateConfig + "." + lowerCase(subscriptionType.toString())),
                 any(Benefit.class), any(AppealHearingType.class), eq(null),
                 eq(LanguagePreference.ENGLISH)
+        );
+    }
+
+    @Test
+    @Parameters({"APPEAL_TO_PROCEED, directionIssuedWelsh.appealToProceed, APPELLANT",
+            "APPEAL_TO_PROCEED, directionIssuedWelsh.appealToProceed, JOINT_PARTY",
+            "PROVIDE_INFORMATION, directionIssuedWelsh.provideInformation, REPRESENTATIVE",
+            "GRANT_EXTENSION, directionIssuedWelsh.grantExtension, APPOINTEE",
+            "REFUSE_EXTENSION, directionIssuedWelsh.refuseExtension, APPELLANT",
+            "GRANT_REINSTATEMENT, directionIssuedWelsh.grantReinstatement, APPELLANT",
+            "REFUSE_REINSTATEMENT, directionIssuedWelsh.refuseReinstatement, APPOINTEE"
+    })
+    public void whenDirectionIssuedWelshAndDirectionTypeShouldGenerateCorrectTemplate(DirectionType directionType,
+                                                                                 String templateConfig,
+                                                                                 SubscriptionType subscriptionType) {
+
+        NotificationWrapper notificationWrapper = new CcdNotificationWrapper(SscsCaseDataWrapper.builder()
+                .newSscsCaseData(SscsCaseData.builder()
+                        .directionTypeDl(new DynamicList(directionType.toString()))
+                        .languagePreferenceWelsh("Yes")
+                        .appeal(Appeal.builder()
+                                .hearingType(ONLINE.getValue())
+                                .build())
+                        .build())
+                .notificationEventType(DIRECTION_ISSUED_WELSH)
+                .build());
+
+        personalisation.getTemplate(notificationWrapper, PIP, subscriptionType);
+
+        verify(config).getTemplate(eq(DIRECTION_ISSUED_WELSH.getId()),
+                eq(DIRECTION_ISSUED_WELSH.getId()),
+                eq(DIRECTION_ISSUED_WELSH.getId()),
+                eq(templateConfig + "." + lowerCase(subscriptionType.toString())),
+                any(Benefit.class), any(AppealHearingType.class), eq(null),
+                eq(LanguagePreference.WELSH)
         );
     }
 
@@ -317,9 +356,6 @@ public class PersonalisationTest {
                 new Object[]{DECISION_ISSUED, APPELLANT, ONLINE, false, false, false, true},
                 new Object[]{DECISION_ISSUED, APPOINTEE, ONLINE, false, false, false, true},
                 new Object[]{DECISION_ISSUED, REPRESENTATIVE, ONLINE, false, false, false, true},
-                new Object[]{DIRECTION_ISSUED_WELSH, APPELLANT, ONLINE, false, false, false, true},
-                new Object[]{DIRECTION_ISSUED_WELSH, APPOINTEE, ONLINE, false, false, false, true},
-                new Object[]{DIRECTION_ISSUED_WELSH, REPRESENTATIVE, ONLINE, false, false, false, true},
                 new Object[]{DECISION_ISSUED_WELSH, APPELLANT, ONLINE, false, false, false, true},
                 new Object[]{DECISION_ISSUED_WELSH, APPOINTEE, ONLINE, false, false, false, true},
                 new Object[]{DECISION_ISSUED_WELSH, REPRESENTATIVE, ONLINE, false, false, false, true},

@@ -125,9 +125,14 @@ public class NotificationConfigTest {
             "APPEAL_TO_PROCEED, TB-SCS-GNO-WEL-00468.docx, TB-SCS-GNO-WEL-00472.docx, null",
             "PROVIDE_INFORMATION, TB-SCS-GNO-WEL-00468.docx, TB-SCS-GNO-WEL-00472.docx, null",
             "GRANT_EXTENSION, TB-SCS-GNO-WEL-00468.docx, TB-SCS-GNO-WEL-00472.docx, null",
-            "REFUSE_EXTENSION, TB-SCS-GNO-WEL-00468.docx, TB-SCS-GNO-WEL-00472.docx, null"
+            "REFUSE_EXTENSION, TB-SCS-GNO-WEL-00468.docx, TB-SCS-GNO-WEL-00472.docx, null",
+            "GRANT_REINSTATEMENT, TB-SCS-GNO-ENG-00584.docx, TB-SCS-GNO-ENG-00584.docx, null",
+            "REFUSE_REINSTATEMENT, TB-SCS-GNO-ENG-00585.docx, TB-SCS-GNO-ENG-00585.docx, null",
+            "GRANT_REINSTATEMENT, TB-SCS-GNO-WEL-00586.docx, TB-SCS-GNO-WEL-00586.docx, null",
+            "REFUSE_REINSTATEMENT, TB-SCS-GNO-WEL-00587.docx, TB-SCS-GNO-WEL-00587.docx, null",
     })
     public void shouldGiveCorrectDocmosisIdForDirectionIssued(DirectionType directionType, String configAppellantOrAppointee, String configRep, @Nullable String configJointParty) {
+
         NotificationWrapper wrapper = new CcdNotificationWrapper(SscsCaseDataWrapper.builder()
                 .newSscsCaseData(SscsCaseData.builder()
                         .languagePreferenceWelsh(configAppellantOrAppointee.contains("-WEL-") ? "Yes" : "No")
@@ -138,6 +143,7 @@ public class NotificationConfigTest {
                         .build())
                 .notificationEventType(DIRECTION_ISSUED)
                 .build());
+
         Personalisation personalisation = new Personalisation();
         ReflectionTestUtils.setField(personalisation, "config", notificationConfig);
 
@@ -152,6 +158,44 @@ public class NotificationConfigTest {
         assertEquals(configRep, templateRep.getDocmosisTemplateId());
         Template templateJointParty = personalisation.getTemplate(wrapper, PIP, JOINT_PARTY);
         assertEquals(configJointParty, templateJointParty.getDocmosisTemplateId());
+    }
+
+    @Test
+    @Parameters({
+            "GRANT_EXTENSION, TB-SCS-GNO-WEL-00468.docx, TB-SCS-GNO-WEL-00472.docx",
+            "REFUSE_EXTENSION, TB-SCS-GNO-WEL-00468.docx, TB-SCS-GNO-WEL-00472.docx",
+            "APPEAL_TO_PROCEED, TB-SCS-GNO-WEL-00468.docx, TB-SCS-GNO-WEL-00472.docx",
+            "PROVIDE_INFORMATION, TB-SCS-GNO-WEL-00468.docx, TB-SCS-GNO-WEL-00472.docx",
+            "GRANT_EXTENSION, TB-SCS-GNO-WEL-00468.docx, TB-SCS-GNO-WEL-00472.docx",
+            "REFUSE_EXTENSION, TB-SCS-GNO-WEL-00468.docx, TB-SCS-GNO-WEL-00472.docx",
+            "GRANT_REINSTATEMENT, TB-SCS-GNO-WEL-00586.docx, TB-SCS-GNO-WEL-00586.docx",
+            "REFUSE_REINSTATEMENT, TB-SCS-GNO-WEL-00587.docx, TB-SCS-GNO-WEL-00587.docx",
+    })
+    public void shouldGiveCorrectDocmosisIdForDirectionIssuedWelsh(DirectionType directionType, String configAppellantOrAppointee, String configRep) {
+
+        NotificationWrapper wrapper = new CcdNotificationWrapper(SscsCaseDataWrapper.builder()
+                .newSscsCaseData(SscsCaseData.builder()
+                        .languagePreferenceWelsh("Yes")
+                        .directionTypeDl(new DynamicList(directionType.toString()))
+                        .appeal(Appeal.builder()
+                                .hearingType(HearingType.ONLINE.getValue())
+                                .build())
+                        .build())
+                .notificationEventType(DIRECTION_ISSUED_WELSH)
+                .build());
+
+        Personalisation personalisation = new Personalisation();
+        ReflectionTestUtils.setField(personalisation, "config", notificationConfig);
+
+        Template templateAppellant = personalisation.getTemplate(wrapper, PIP, APPELLANT);
+        assertNull(templateAppellant.getEmailTemplateId());
+        assertTrue(templateAppellant.getSmsTemplateId().isEmpty());
+        assertNull(templateAppellant.getLetterTemplateId());
+        assertEquals(configAppellantOrAppointee, templateAppellant.getDocmosisTemplateId());
+        Template templateAppointee = personalisation.getTemplate(wrapper, PIP, APPOINTEE);
+        assertEquals(configAppellantOrAppointee, templateAppointee.getDocmosisTemplateId());
+        Template templateRep = personalisation.getTemplate(wrapper, PIP, REPRESENTATIVE);
+        assertEquals(configRep, templateRep.getDocmosisTemplateId());
     }
 
     @SuppressWarnings({"Indentation", "unused"})
