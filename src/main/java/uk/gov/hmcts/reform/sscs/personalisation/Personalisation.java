@@ -473,10 +473,13 @@ public class Personalisation<E extends NotificationWrapper> {
     }
 
     public Template getTemplate(E notificationWrapper, Benefit benefit, SubscriptionType subscriptionType) {
+
         String templateConfig = getEmailTemplateName(subscriptionType, notificationWrapper);
         String smsTemplateName = isSendSmsSubscriptionConfirmation() ? SUBSCRIPTION_CREATED_NOTIFICATION.getId() + "." + subscriptionType.toString().toLowerCase() :
                 templateConfig;
+
         String letterTemplateName = getLetterTemplateName(subscriptionType, notificationWrapper.getNotificationType());
+
         String docmosisTemplateName = getDocmosisTemplateName(subscriptionType, notificationWrapper.getNotificationType(), notificationWrapper.getNewSscsCaseData());
 
         return config.getTemplate(templateConfig, smsTemplateName, letterTemplateName, docmosisTemplateName,
@@ -517,10 +520,16 @@ public class Personalisation<E extends NotificationWrapper> {
     }
 
     private String getDocmosisTemplateName(SubscriptionType subscriptionType, NotificationEventType notificationEventType, SscsCaseData caseData) {
+
         String letterTemplateName = notificationEventType.getId();
-        if (subscriptionType != null && DIRECTION_ISSUED.equals(notificationEventType)
-                && caseData.getDirectionTypeDl() != null && caseData.getDirectionTypeDl().getValue() != null) {
+
+        if (subscriptionType != null
+                && (DIRECTION_ISSUED.equals(notificationEventType) || DIRECTION_ISSUED_WELSH.equals(notificationEventType))
+                && caseData.getDirectionTypeDl() != null
+                && caseData.getDirectionTypeDl().getValue() != null) {
+
             letterTemplateName = letterTemplateName + "." + caseData.getDirectionTypeDl().getValue().getCode() + "." + subscriptionType.name().toLowerCase();
+
         } else if (subscriptionType != null
                 && (APPEAL_RECEIVED_NOTIFICATION.equals(notificationEventType)
                 || DIRECTION_ISSUED.equals(notificationEventType)
@@ -532,6 +541,7 @@ public class Personalisation<E extends NotificationWrapper> {
                 || ISSUE_ADJOURNMENT_NOTICE.equals(notificationEventType)
                 || REVIEW_CONFIDENTIALITY_REQUEST.equals(notificationEventType))) {
             letterTemplateName = letterTemplateName + "." + subscriptionType.name().toLowerCase();
+
         }
 
         return letterTemplateName;
@@ -539,7 +549,9 @@ public class Personalisation<E extends NotificationWrapper> {
 
     private String getLetterTemplateName(SubscriptionType subscriptionType, NotificationEventType
             notificationEventType) {
+
         String letterTemplateName = notificationEventType.getId();
+
         if (subscriptionType != null
                 && ((LETTER_SUBSCRIPTION_TYPES.contains(notificationEventType)
                 || APPEAL_WITHDRAWN_NOTIFICATION.equals(notificationEventType)
