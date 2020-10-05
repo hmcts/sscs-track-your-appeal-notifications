@@ -5,6 +5,7 @@ import static uk.gov.hmcts.reform.sscs.domain.notify.NotificationEventType.APPEA
 import static uk.gov.hmcts.reform.sscs.domain.notify.NotificationEventType.DWP_RESPONSE_RECEIVED_NOTIFICATION;
 import static uk.gov.hmcts.reform.sscs.domain.notify.NotificationEventType.DWP_UPLOAD_RESPONSE_NOTIFICATION;
 import static uk.gov.hmcts.reform.sscs.domain.notify.NotificationEventType.EVIDENCE_RECEIVED_NOTIFICATION;
+import static uk.gov.hmcts.reform.sscs.domain.notify.NotificationEventType.EVIDENCE_REMINDER_NOTIFICATION;
 import static uk.gov.hmcts.reform.sscs.domain.notify.NotificationEventType.POSTPONEMENT_NOTIFICATION;
 import static uk.gov.hmcts.reform.sscs.domain.notify.NotificationEventType.SUBSCRIPTION_CREATED_NOTIFICATION;
 import static uk.gov.hmcts.reform.sscs.domain.notify.NotificationEventType.SUBSCRIPTION_UPDATED_NOTIFICATION;
@@ -123,11 +124,23 @@ public class WelshNotificationsFunctionalTest extends AbstractFunctionalTest {
     @Value("${notification.welsh.oral.evidenceReminder.appointee.smsId}")
     private String oralAppointeeEvidenceReminderSmsIdWelsh;
 
+    @Value("${notification.welsh.oral.evidenceReminder.joint_party.emailId}")
+    private String oralJointPartyEvidenceReminderEmailIdWelsh;
+
+    @Value("${notification.welsh.oral.evidenceReminder.joint_party.smsId}")
+    private String oralJointPartyEvidenceReminderSmsIdWelsh;
+
     @Value("${notification.welsh.paper.evidenceReminder.appointee.emailId}")
     private String paperAppointeeEvidenceReminderEmailIdWelsh;
 
     @Value("${notification.welsh.paper.evidenceReminder.appointee.smsId}")
     private String paperAppointeeEvidenceReminderSmsIdWelsh;
+
+    @Value("${notification.welsh.paper.evidenceReminder.joint_party.emailId}")
+    private String paperJointPartyEvidenceReminderEmailIdWelsh;
+
+    @Value("${notification.welsh.paper.evidenceReminder.joint_party.smsId}")
+    private String paperJointPartyEvidenceReminderSmsIdWelsh;
 
     @Value("${notification.welsh.appealCreated.appellant.smsId}")
     private String appealCreatedAppellantSmsIdWelsh;
@@ -279,6 +292,27 @@ public class WelshNotificationsFunctionalTest extends AbstractFunctionalTest {
     }
 
     @Test
+    public void shouldSendAppointeeEvidenceReminderForPaperCaseNotification() throws NotificationClientException, IOException {
+        simulateCcdCallback(EVIDENCE_REMINDER_NOTIFICATION,
+                "appointee/paper-" + EVIDENCE_REMINDER_NOTIFICATION.getId() + "CallbackWelsh.json");
+
+        List<Notification> notifications = tryFetchNotificationsForTestCase(
+                paperAppointeeEvidenceReminderEmailIdWelsh,
+                paperAppointeeEvidenceReminderSmsIdWelsh,
+                paperJointPartyEvidenceReminderEmailIdWelsh,
+                paperJointPartyEvidenceReminderSmsIdWelsh
+        );
+
+        assertNotificationBodyContains(
+                notifications,
+                paperAppointeeEvidenceReminderEmailIdWelsh,
+                DEAR_APPOINTEE_USER,
+                AS_APPOINTEE_FOR,
+                "/evidence/" + TYA
+        );
+    }
+
+    @Test
     public void shouldSendPaperAppealDormantNotificationWelsh() throws NotificationClientException, IOException {
         simulateCcdCallback(APPEAL_DORMANT_NOTIFICATION, "paper-" + APPEAL_DORMANT_NOTIFICATION.getId() + "CallbackWelsh.json");
         tryFetchNotificationsForTestCase(
@@ -294,4 +328,24 @@ public class WelshNotificationsFunctionalTest extends AbstractFunctionalTest {
         tryFetchNotificationsForTestCase(appealDormantOralJointPartyEmailTemplateIdWelsh, appealDormantOralAppellantEmailTemplateIdWelsh);
     }
 
+    @Test
+    public void shouldSendAppointeeEvidenceReminderForOralCaseNotification() throws NotificationClientException, IOException {
+        simulateCcdCallback(EVIDENCE_REMINDER_NOTIFICATION,
+                "appointee/oral-" + EVIDENCE_REMINDER_NOTIFICATION.getId() + "CallbackWelsh.json");
+
+        List<Notification> notifications = tryFetchNotificationsForTestCase(
+                oralAppointeeEvidenceReminderEmailIdWelsh,
+                oralAppointeeEvidenceReminderSmsIdWelsh,
+                oralJointPartyEvidenceReminderEmailIdWelsh,
+                oralJointPartyEvidenceReminderSmsIdWelsh
+                );
+
+        assertNotificationBodyContains(
+                notifications,
+                oralAppointeeEvidenceReminderEmailIdWelsh,
+                DEAR_APPOINTEE_USER,
+                AS_APPOINTEE_FOR,
+                "/evidence/" + TYA
+        );
+    }
 }
