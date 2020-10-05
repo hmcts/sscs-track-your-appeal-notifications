@@ -8,9 +8,7 @@ import static uk.gov.hmcts.reform.sscs.config.SubscriptionType.APPOINTEE;
 import static uk.gov.hmcts.reform.sscs.config.SubscriptionType.JOINT_PARTY;
 import static uk.gov.hmcts.reform.sscs.config.SubscriptionType.REPRESENTATIVE;
 import static uk.gov.hmcts.reform.sscs.domain.notify.NotificationEventType.*;
-import static uk.gov.hmcts.reform.sscs.service.NotificationUtils.hasAppointeeSubscriptionOrIsMandatoryAppointeeLetter;
-import static uk.gov.hmcts.reform.sscs.service.NotificationUtils.hasJointPartySubscription;
-import static uk.gov.hmcts.reform.sscs.service.NotificationUtils.hasRepSubscriptionOrIsMandatoryRepLetter;
+import static uk.gov.hmcts.reform.sscs.service.NotificationUtils.*;
 
 import java.time.LocalDateTime;
 import java.util.ArrayList;
@@ -25,7 +23,6 @@ import uk.gov.hmcts.reform.sscs.config.AppealHearingType;
 import uk.gov.hmcts.reform.sscs.domain.SscsCaseDataWrapper;
 import uk.gov.hmcts.reform.sscs.domain.SubscriptionWithType;
 import uk.gov.hmcts.reform.sscs.domain.notify.NotificationEventType;
-import uk.gov.hmcts.reform.sscs.service.NotificationUtils;
 import uk.gov.hmcts.reform.sscs.service.scheduler.CcdActionSerializer;
 
 public class CcdNotificationWrapper implements NotificationWrapper {
@@ -204,21 +201,14 @@ public class CcdNotificationWrapper implements NotificationWrapper {
             || DWP_UPLOAD_RESPONSE_NOTIFICATION.equals(getNotificationType()) && PAPER.equals(getHearingType())
             || EVIDENCE_REMINDER_NOTIFICATION.equals(getNotificationType())
             || REQUEST_INFO_INCOMPLETE.equals(getNotificationType())
+            || (JOINT_PARTY_SUBSCRIPTION_UPDATED_NOTIFICATION.equals(getNotificationType())
+                && isJointPartySubscriptionCreate(getNewSscsCaseData(), getOldSscsCaseData()))
             || (getOldSscsCaseData() != null && isValidReviewConfidentialityRequest(getOldSscsCaseData().getConfidentialityRequestOutcomeJointParty(), getNewSscsCaseData().getConfidentialityRequestOutcomeJointParty()))
-            || (SUBSCRIPTION_UPDATED_NOTIFICATION.equals(getNotificationType()) && isJointPartySubscription())
-            || (JOINT_PARTY_SUBSCRIPTION_UPDATED_NOTIFICATION.equals(getNotificationType()) && isJointPartySubscription()))
+            || (SUBSCRIPTION_UPDATED_NOTIFICATION.equals(getNotificationType()) && isJointPartySubscription()))
         ) {
             subscriptionWithTypeList.add(new SubscriptionWithType(getJointPartySubscription(), JOINT_PARTY));
         }
         return subscriptionWithTypeList;
-    }
-
-    public boolean isJointPartySubscription() {
-        if ((getNewSscsCaseData().getSubscriptions().getJointPartySubscription() != null)
-                && getOldSscsCaseData().getSubscriptions().getJointPartySubscription() == null) {
-            return true;
-        }
-        return false;
     }
 
     private boolean isValidReviewConfidentialityRequest(DatedRequestOutcome previousRequestOutcome, DatedRequestOutcome latestRequestOutcome) {

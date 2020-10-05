@@ -81,7 +81,7 @@ public class NotificationServiceBase {
     private EvidenceManagementService evidenceManagementService;
 
     @Mock
-    private PdfLetterService pdfLetterService;
+    protected PdfLetterService pdfLetterService;
 
     @Mock
     private IdamService idamService;
@@ -123,8 +123,12 @@ public class NotificationServiceBase {
             return getSscsCaseData(subscription);
         } else if (who.equals("representative")) {
             return getSscsCaseDataForRep(subscription);
+        } else if (who.equals("jointParty")) {
+            return getSscsCaseDataForJointParty(subscription);
+        } else if (who.equals("appointee")) {
+            return getSscsCaseDataForAppointee(subscription);
         }
-        return getSscsCaseDataForAppointee(subscription);
+        return null;
     }
 
     public SscsCaseData getSscsCaseData(Subscription subscription) {
@@ -165,6 +169,14 @@ public class NotificationServiceBase {
         return sscsCaseData.toBuilder()
             .subscriptions(sscsCaseData.getSubscriptions().toBuilder().representativeSubscription(subscription).build())
             .build();
+    }
+
+    public SscsCaseData getSscsCaseDataForJointParty(Subscription subscription) {
+        Subscription jointPartySubscription = getSubscription().toBuilder().tya("JOINT_PARTY_TYA").build();
+        SscsCaseData sscsCaseData = getSscsCaseData(jointPartySubscription);
+        return sscsCaseData.toBuilder()
+                .subscriptions(sscsCaseData.getSubscriptions().toBuilder().jointPartySubscription(subscription).build())
+                .build();
     }
 
     public SscsCaseData getSscsCaseDataForAppointee(Subscription subscription) {

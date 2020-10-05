@@ -73,6 +73,12 @@ public class NotificationsFunctionalTest extends AbstractFunctionalTest {
     @Value("${notification.english.subscriptionUpdated.smsId}")
     private String subscriptionUpdateSmsId;
 
+    @Value("${notification.english.jointPartySubscriptionUpdated.appellant.smsId}")
+    private String jointPartySubscriptionUpdatedJointPartySmsId;
+
+    @Value("${notification.english.jointPartySubscriptionUpdated.appellant.emailId}")
+    private String jointPartySubscriptionUpdatedJointPartyEmailId;
+
     @Value("${notification.english.subscriptionOld.emailId}")
     private String subscriptionUpdateOldEmailId;
 
@@ -344,6 +350,18 @@ public class NotificationsFunctionalTest extends AbstractFunctionalTest {
         );
         Notification updateEmailNotification = notifications.stream().filter(f -> f.getTemplateId().toString().equals(subscriptionUpdatedEmailTemplateId)).collect(Collectors.toList()).get(0);
         assertTrue(updateEmailNotification.getBody().contains("Dear Appointee User\r\n\r\nYou are receiving this update as the appointee for Appellant User.\r\n\r\nEmails about your ESA"));
+    }
+
+    @Test
+    public void shouldSendJointPartySubscriptionUpdateNotification() throws NotificationClientException, IOException {
+        simulateCcdCallback(SUBSCRIPTION_UPDATED_NOTIFICATION,
+                "jointParty-" + SUBSCRIPTION_UPDATED_NOTIFICATION.getId() + "Callback.json");
+
+        List<Notification> letterNotifications = fetchLetters();
+
+        assertEquals(2, letterNotifications.size());
+        assertEquals("Pre-compiled PDF", letterNotifications.get(0).getSubject().orElse("Unknown Subject"));
+        assertEquals("Pre-compiled PDF", letterNotifications.get(1).getSubject().orElse("Unknown Subject"));
     }
 
     @Test

@@ -1,9 +1,6 @@
 package uk.gov.hmcts.reform.sscs.service;
 
-import static org.mockito.Mockito.any;
-import static org.mockito.Mockito.eq;
-import static org.mockito.Mockito.verify;
-import static org.mockito.Mockito.verifyNoMoreInteractions;
+import static org.mockito.Mockito.*;
 import static uk.gov.hmcts.reform.sscs.domain.notify.NotificationEventType.SUBSCRIPTION_UPDATED_NOTIFICATION;
 
 import junitparams.Parameters;
@@ -12,8 +9,10 @@ import org.springframework.beans.factory.annotation.Value;
 import uk.gov.hmcts.reform.sscs.ccd.domain.SscsCaseData;
 import uk.gov.hmcts.reform.sscs.ccd.domain.Subscription;
 import uk.gov.hmcts.reform.sscs.domain.SscsCaseDataWrapper;
+import uk.gov.hmcts.reform.sscs.domain.notify.NotificationEventType;
 import uk.gov.hmcts.reform.sscs.factory.CcdNotificationWrapper;
 import uk.gov.service.notify.NotificationClientException;
+
 
 public class NotificationServiceForSubscriptionUpdatedTest extends NotificationServiceBase {
 
@@ -40,6 +39,18 @@ public class NotificationServiceForSubscriptionUpdatedTest extends NotificationS
 
     @Value("${notification.english.subscriptionUpdated.smsId}")
     private String subscriptionUpdatedSmsId;
+
+    @Value("${notification.english.jointPartySubscriptionUpdated.appellant.smsId}")
+    private String jointPartySubscriptionUpdatedAppellantSmsId;
+
+    @Value("${notification.english.jointPartySubscriptionUpdated.appellant.emailId}")
+    private String jointPartySubscriptionUpdatedAppellantEmailId;
+
+    @Value("${notification.english.jointPartySubscriptionUpdated.appellant.docmosisId}")
+    private String jointPartySubscriptionUpdatedAppellantLetterId;
+
+    @Value("${notification.english.jointPartySubscriptionUpdated.joint_party.docmosisId}")
+    private String jointPartySubscriptionUpdatedJointPartyLetterId;
 
     @Value("${notification.english.subscriptionCreated.appellant.smsId}")
     private String subscriptionCreatedAppellantSmsId;
@@ -324,6 +335,29 @@ public class NotificationServiceForSubscriptionUpdatedTest extends NotificationS
         verify(getNotificationSender()).sendSms(eq(subscriptionCreatedRepresentativeSmsId), eq(getSubscription().getMobile()), any(), any(), any(), any(), any());
         verify(getNotificationSender()).sendSms(eq(subscriptionOldSmsId), eq(oldSubscription.getMobile()), any(), any(), any(), any(), any());
 
+        verifyNoMoreInteractions(getNotificationSender());
+    }
+
+    @Test
+    public void jointPartySubscribe_willSendSubscriptionLetter() throws NotificationClientException {
+        when(pdfLetterService.generateLetter(any(), any(), any())).thenReturn("letter content".getBytes());
+
+        String who = "jointParty";
+        Subscription newSubscription = getSubscription().toBuilder().subscribeEmail(NotificationServiceBase.NO).subscribeSms(NotificationServiceBase.NO).build();
+        Subscription oldSubscription = getSubscription().toBuilder().subscribeEmail(NotificationServiceBase.NO).subscribeSms(NotificationServiceBase.NO).build();
+        SscsCaseData newSscsCaseData = getSscsCaseData(newSubscription, who);
+        SscsCaseData oldSscsCaseData = getSscsCaseData(oldSubscription, "appellant");
+        SscsCaseDataWrapper wrapper = getSscsCaseDataWrapper(newSscsCaseData, oldSscsCaseData, SUBSCRIPTION_UPDATED_NOTIFICATION);
+
+        getNotificationService().manageNotificationAndSubscription(new CcdNotificationWrapper(wrapper));
+
+        verify(getNotificationSender()).sendSms(eq(jointPartySubscriptionUpdatedAppellantSmsId), eq(getSubscription().getMobile()), any(), any(), any(), any(), any());
+        verify(getNotificationSender()).sendEmail(eq(jointPartySubscriptionUpdatedAppellantEmailId), eq(newSubscription.getEmail()), any(), any(), any(), any());
+
+        verify(getNotificationSender()).sendBundledLetter(any(), any(), eq(NotificationEventType.JOINT_PARTY_SUBSCRIPTION_UPDATED_NOTIFICATION),
+                any(), any());
+        verify(getNotificationSender()).sendBundledLetter(any(), any(), eq(NotificationEventType.JOINT_PARTY_SUBSCRIPTION_UPDATED_NOTIFICATION),
+                any(), any());
         verifyNoMoreInteractions(getNotificationSender());
     }
 
