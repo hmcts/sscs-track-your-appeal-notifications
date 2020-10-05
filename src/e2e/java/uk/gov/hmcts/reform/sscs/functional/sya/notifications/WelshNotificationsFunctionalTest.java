@@ -5,6 +5,7 @@ import static uk.gov.hmcts.reform.sscs.domain.notify.NotificationEventType.APPEA
 import static uk.gov.hmcts.reform.sscs.domain.notify.NotificationEventType.DWP_RESPONSE_RECEIVED_NOTIFICATION;
 import static uk.gov.hmcts.reform.sscs.domain.notify.NotificationEventType.DWP_UPLOAD_RESPONSE_NOTIFICATION;
 import static uk.gov.hmcts.reform.sscs.domain.notify.NotificationEventType.EVIDENCE_RECEIVED_NOTIFICATION;
+import static uk.gov.hmcts.reform.sscs.domain.notify.NotificationEventType.EVIDENCE_REMINDER_NOTIFICATION;
 import static uk.gov.hmcts.reform.sscs.domain.notify.NotificationEventType.POSTPONEMENT_NOTIFICATION;
 import static uk.gov.hmcts.reform.sscs.domain.notify.NotificationEventType.SUBSCRIPTION_CREATED_NOTIFICATION;
 import static uk.gov.hmcts.reform.sscs.domain.notify.NotificationEventType.SUBSCRIPTION_UPDATED_NOTIFICATION;
@@ -116,6 +117,12 @@ public class WelshNotificationsFunctionalTest extends AbstractFunctionalTest {
 
     @Value("${notification.welsh.oral.evidenceReminder.appointee.smsId}")
     private String oralAppointeeEvidenceReminderSmsIdWelsh;
+
+    @Value("${notification.welsh.oral.evidenceReminder.joint_party.emailId}")
+    private String oralJointPartyEvidenceReminderEmailIdWelsh;
+
+    @Value("${notification.welsh.oral.evidenceReminder.joint_party.smsId}")
+    private String oralJointPartyEvidenceReminderSmsIdWelsh;
 
     @Value("${notification.welsh.paper.evidenceReminder.appointee.emailId}")
     private String paperAppointeeEvidenceReminderEmailIdWelsh;
@@ -286,4 +293,24 @@ public class WelshNotificationsFunctionalTest extends AbstractFunctionalTest {
         tryFetchNotificationsForTestCase(appealDormantOralJointPartyEmailTemplateIdWelsh, appealDormantOralAppellantEmailTemplateIdWelsh);
     }
 
+    @Test
+    public void shouldSendAppointeeEvidenceReminderForOralCaseNotification() throws NotificationClientException, IOException {
+        simulateCcdCallback(EVIDENCE_REMINDER_NOTIFICATION,
+                "appointee/oral-" + EVIDENCE_REMINDER_NOTIFICATION.getId() + "CallbackWelsh.json");
+
+        List<Notification> notifications = tryFetchNotificationsForTestCase(
+                oralAppointeeEvidenceReminderEmailIdWelsh,
+                oralAppointeeEvidenceReminderSmsIdWelsh,
+                oralJointPartyEvidenceReminderEmailIdWelsh,
+                oralJointPartyEvidenceReminderSmsIdWelsh
+                );
+
+        assertNotificationBodyContains(
+                notifications,
+                oralAppointeeEvidenceReminderEmailIdWelsh,
+                DEAR_APPOINTEE_USER,
+                AS_APPOINTEE_FOR,
+                "/evidence/" + TYA
+        );
+    }
 }
