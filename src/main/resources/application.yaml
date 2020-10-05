@@ -346,6 +346,20 @@ notification:
           docmosisId: TB-SCS-GNO-ENG-00557.docx
         joint_party:
           docmosisId: TB-SCS-GNO-ENG-00557.docx
+      grantReinstatement:
+        appellant:
+          docmosisId: TB-SCS-GNO-ENG-00584.docx
+        appointee:
+          docmosisId: TB-SCS-GNO-ENG-00584.docx
+        representative:
+          docmosisId: TB-SCS-GNO-ENG-00584.docx
+      refuseReinstatement:
+        appellant:
+          docmosisId: TB-SCS-GNO-ENG-00585.docx
+        appointee:
+          docmosisId: TB-SCS-GNO-ENG-00585.docx
+        representative:
+          docmosisId: TB-SCS-GNO-ENG-00585.docx
     decisionIssued:
       appellant:
         docmosisId: TB-SCS-GNO-ENG-00094.docx
@@ -738,6 +752,20 @@ notification:
           docmosisId: TB-SCS-GNO-WEL-00468.docx
         representative:
           docmosisId: TB-SCS-GNO-WEL-00472.docx
+      grantReinstatement:
+        appellant:
+          docmosisId: TB-SCS-GNO-WEL-00586.docx
+        appointee:
+          docmosisId: TB-SCS-GNO-WEL-00586.docx
+        representative:
+          docmosisId: TB-SCS-GNO-WEL-00586.docx
+      refuseReinstatement:
+        appellant:
+          docmosisId: TB-SCS-GNO-WEL-00587.docx
+        appointee:
+          docmosisId: TB-SCS-GNO-WEL-00587.docx
+        representative:
+          docmosisId: TB-SCS-GNO-WEL-00587.docx
     decisionIssued:
       appellant:
         docmosisId: TB-SCS-GNO-WEL-00474.docx
@@ -746,12 +774,48 @@ notification:
       representative:
         docmosisId: TB-SCS-GNO-WEL-00475.docx
     directionIssuedWelsh:
-      appellant:
-        docmosisId: TB-SCS-GNO-WEL-00468.docx
-      appointee:
-        docmosisId: TB-SCS-GNO-WEL-00468.docx
-      representative:
-        docmosisId: TB-SCS-GNO-WEL-00472.docx
+      appealToProceed:
+        appellant:
+          docmosisId: TB-SCS-GNO-WEL-00468.docx
+        appointee:
+          docmosisId: TB-SCS-GNO-WEL-00468.docx
+        representative:
+          docmosisId: TB-SCS-GNO-WEL-00472.docx
+      provideInformation:
+        appellant:
+          docmosisId: TB-SCS-GNO-WEL-00468.docx
+        appointee:
+          docmosisId: TB-SCS-GNO-WEL-00468.docx
+        representative:
+          docmosisId: TB-SCS-GNO-WEL-00472.docx
+      grantExtension:
+        appellant:
+          docmosisId: TB-SCS-GNO-WEL-00468.docx
+        appointee:
+          docmosisId: TB-SCS-GNO-WEL-00468.docx
+        representative:
+          docmosisId: TB-SCS-GNO-WEL-00472.docx
+      refuseExtension:
+        appellant:
+          docmosisId: TB-SCS-GNO-WEL-00468.docx
+        appointee:
+          docmosisId: TB-SCS-GNO-WEL-00468.docx
+        representative:
+          docmosisId: TB-SCS-GNO-WEL-00472.docx
+      grantReinstatement:
+        appellant:
+          docmosisId: TB-SCS-GNO-WEL-00586.docx
+        appointee:
+          docmosisId: TB-SCS-GNO-WEL-00586.docx
+        representative:
+          docmosisId: TB-SCS-GNO-WEL-00586.docx
+      refuseReinstatement:
+        appellant:
+          docmosisId: TB-SCS-GNO-WEL-00587.docx
+        appointee:
+          docmosisId: TB-SCS-GNO-WEL-00587.docx
+        representative:
+          docmosisId: TB-SCS-GNO-WEL-00587.docx
     decisionIssuedWelsh:
       appellant:
         docmosisId: TB-SCS-GNO-WEL-00474.docx
@@ -935,7 +999,7 @@ reminder:
 
 outOfHours:
   startHour: ${HOURS_START_TIME:9}
-  endHour: ${HOURS_END_TIME:17}
+  endHour: ${HOURS_END_TIME:19}
 
 feign:
   client:
