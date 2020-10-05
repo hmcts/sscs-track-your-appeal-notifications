@@ -4,9 +4,24 @@
     "callback_response_status": null,
     "callback_response_status_code": null,
     "case_data": {
+      "jointParty": "Yes",
+      "jointPartyName": {
+        "title": "mr",
+        "firstName": "Joint",
+        "lastName": "Party"
+      },
+      "jointPartyAddressSameAsAppellant": "No",
+      "jointPartyAddress": {
+        "line1": "30 Dale Street",
+        "line2": "Village",
+        "town": "Liverpool",
+        "county": "Merseyside",
+        "postcode": "TS4 4ST"
+      },
       "onlinePanel": {},
       "createdInGapsFrom": "readyToList",
       "appeal": {
+        "hearingType": "oral",
         "appealReasons": {},
         "appellant": {
           "address": {},
@@ -73,6 +88,15 @@
           "subscribeSms": "No",
           "wantSmsNotifications": "No",
           "tya": ""
+        },
+        "jointPartySubscription": {
+          "email": "sscstest+notify2@greencroftconsulting.com",
+          "mobile": "07398785051",
+          "reason": null,
+          "subscribeEmail": "Yes",
+          "subscribeSms": "Yes",
+          "wantSmsNotifications" : "Yes",
+          "tya": "232929249492"
         }
       }
     },

@@ -76,6 +76,30 @@ public class WelshNotificationsFunctionalTest extends AbstractFunctionalTest {
     @Value("${notification.welsh.paper.responseReceived.appellant.smsId}")
     private String paperResponseReceivedSmsIdWelsh;
 
+    @Value("${notification.welsh.oral.dwpUploadResponse.appellant.emailId}")
+    private String oralDwpUploadResponseAppellantEmailIdWelsh;
+
+    @Value("${notification.welsh.oral.dwpUploadResponse.appellant.smsId}")
+    private String oralDwpUploadResponseAppellantSmsIdWelsh;
+
+    @Value("${notification.welsh.oral.dwpUploadResponse.joint_party.emailId}")
+    private String oralDwpUploadResponseJointPartyEmailIdWelsh;
+
+    @Value("${notification.welsh.oral.dwpUploadResponse.joint_party.smsId}")
+    private String oralDwpUploadResponseJointPartySmsIdWelsh;
+
+    @Value("${notification.welsh.paper.dwpUploadResponse.appellant.emailId}")
+    private String paperDwpUploadResponseAppellantEmailIdWelsh;
+
+    @Value("${notification.welsh.paper.dwpUploadResponse.appellant.smsId}")
+    private String paperDwpUploadResponseAppellantSmsIdWelsh;
+
+    @Value("${notification.welsh.paper.dwpUploadResponse.joint_party.emailId}")
+    private String paperDwpUploadResponseJointPartyEmailIdWelsh;
+
+    @Value("${notification.welsh.paper.dwpUploadResponse.joint_party.smsId}")
+    private String paperDwpUploadResponseJointPartySmsIdWelsh;
+
     @Value("${notification.welsh.subscriptionUpdated.emailId}")
     private String subscriptionUpdateEmailIdWelsh;
 
@@ -246,6 +270,27 @@ public class WelshNotificationsFunctionalTest extends AbstractFunctionalTest {
         List<Notification> notifications = tryFetchNotificationsForTestCase(onlineResponseReceivedEmailIdWelsh);
 
         assertNotificationBodyContains(notifications, onlineResponseReceivedEmailIdWelsh, caseId.toString());
+    }
+
+    @Test
+    public void shouldSendOralDwpUploadResponseReceivedNotificationWelsh() throws NotificationClientException, IOException {
+        simulateCcdCallback(DWP_UPLOAD_RESPONSE_NOTIFICATION, "oral-" + DWP_UPLOAD_RESPONSE_NOTIFICATION.getId() + "CallbackWelsh.json");
+        tryFetchNotificationsForTestCase(
+                oralDwpUploadResponseAppellantEmailIdWelsh,
+                oralDwpUploadResponseAppellantSmsIdWelsh,
+                oralDwpUploadResponseJointPartyEmailIdWelsh,
+                oralDwpUploadResponseJointPartySmsIdWelsh);
+    }
+
+    @Test
+    public void shouldSendPaperDwpUploadResponseReceivedNotificationWelsh() throws NotificationClientException, IOException {
+        simulateCcdCallback(DWP_UPLOAD_RESPONSE_NOTIFICATION, "paper-" + DWP_UPLOAD_RESPONSE_NOTIFICATION.getId() + "CallbackWelsh.json");
+
+        tryFetchNotificationsForTestCase(
+                paperDwpUploadResponseAppellantEmailIdWelsh,
+                paperDwpUploadResponseAppellantSmsIdWelsh,
+                paperDwpUploadResponseJointPartyEmailIdWelsh,
+                paperDwpUploadResponseJointPartySmsIdWelsh);
     }
 
 
