@@ -69,6 +69,8 @@ public class JointPartyFunctionalTest extends AbstractFunctionalTest {
     private String paperDwpUploadResponseJointPartyEmailId;
     @Value("${notification.english.paper.dwpUploadResponse.joint_party.smsId}")
     private String paperDwpUploadResponseJointPartySmsId;
+    @Value("${notification.english.reviewConfidentialityRequest.joint_party.docmosisId}")
+    private String reviewConfidentialityRequestJointPartyLetterId;
 
     public JointPartyFunctionalTest() {
         super(30);
@@ -154,6 +156,7 @@ public class JointPartyFunctionalTest extends AbstractFunctionalTest {
     @SuppressWarnings({"Indentation", "unused"})
     private Object[] eventTypeAndSubscriptions() {
         final int expectedNumberOfLettersIsTwo = 2;
+        final int expectedNumberOfLettersIsOne = 1;
         final int expectedNumberOfLettersIsZero = 0;
         final boolean isDocmosisLetterTrue = true;
         final boolean isDocmosisLetterFalse = false;
@@ -171,7 +174,8 @@ public class JointPartyFunctionalTest extends AbstractFunctionalTest {
             new Object[]{STRUCK_OUT, PAPER, expectedNumberOfLettersIsTwo, isDocmosisLetterTrue},
             new Object[]{APPEAL_WITHDRAWN_NOTIFICATION, NO_HEARING_TYPE, expectedNumberOfLettersIsTwo, isDocmosisLetterFalse},
             new Object[]{DIRECTION_ISSUED, NO_HEARING_TYPE, expectedNumberOfLettersIsTwo, isDocmosisLetterTrue},
-            new Object[]{DWP_UPLOAD_RESPONSE_NOTIFICATION, PAPER, expectedNumberOfLettersIsTwo, isDocmosisLetterTrue}
+            new Object[]{DWP_UPLOAD_RESPONSE_NOTIFICATION, PAPER, expectedNumberOfLettersIsTwo, isDocmosisLetterTrue},
+            new Object[]{REVIEW_CONFIDENTIALITY_REQUEST, NO_HEARING_TYPE, expectedNumberOfLettersIsOne, isDocmosisLetterTrue}
         };
     }
 }

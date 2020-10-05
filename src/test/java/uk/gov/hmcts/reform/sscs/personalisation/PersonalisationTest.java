@@ -140,7 +140,7 @@ public class PersonalisationTest {
 
         when(regionalProcessingCenterService.getByScReferenceCode("SC/1234/5")).thenReturn(rpc);
 
-        Subscription appellantSubscription = Subscription.builder()
+        Subscription subscription = Subscription.builder()
                 .tya("GLSCRR")
                 .email("test@email.com")
                 .mobile("07983495065")
@@ -148,7 +148,7 @@ public class PersonalisationTest {
                 .subscribeSms("No")
                 .build();
 
-        subscriptions = Subscriptions.builder().appellantSubscription(appellantSubscription).build();
+        subscriptions = Subscriptions.builder().appellantSubscription(subscription).jointPartySubscription(subscription).build();
         name = Name.builder().firstName("Harry").lastName("Kane").title("Mr").build();
 
         evidenceAddressLine1 = "line1";
@@ -178,10 +178,14 @@ public class PersonalisationTest {
             "APPEAL_TO_PROCEED, directionIssued.appealToProceed, JOINT_PARTY",
             "PROVIDE_INFORMATION, directionIssued.provideInformation, REPRESENTATIVE",
             "GRANT_EXTENSION, directionIssued.grantExtension, APPOINTEE",
-            "REFUSE_EXTENSION, directionIssued.refuseExtension, APPELLANT"})
+            "REFUSE_EXTENSION, directionIssued.refuseExtension, APPELLANT",
+            "GRANT_REINSTATEMENT, directionIssued.grantReinstatement, APPELLANT",
+            "REFUSE_REINSTATEMENT, directionIssued.refuseReinstatement, APPOINTEE"
+    })
     public void whenDirectionIssuedAndDirectionTypeShouldGenerateCorrectTemplate(DirectionType directionType,
                                                                                  String templateConfig,
                                                                                  SubscriptionType subscriptionType) {
+
         NotificationWrapper notificationWrapper = new CcdNotificationWrapper(SscsCaseDataWrapper.builder()
                 .newSscsCaseData(SscsCaseData.builder()
                         .directionTypeDl(new DynamicList(directionType.toString()))
@@ -204,8 +208,43 @@ public class PersonalisationTest {
     }
 
     @Test
+    @Parameters({"APPEAL_TO_PROCEED, directionIssuedWelsh.appealToProceed, APPELLANT",
+            "APPEAL_TO_PROCEED, directionIssuedWelsh.appealToProceed, JOINT_PARTY",
+            "PROVIDE_INFORMATION, directionIssuedWelsh.provideInformation, REPRESENTATIVE",
+            "GRANT_EXTENSION, directionIssuedWelsh.grantExtension, APPOINTEE",
+            "REFUSE_EXTENSION, directionIssuedWelsh.refuseExtension, APPELLANT",
+            "GRANT_REINSTATEMENT, directionIssuedWelsh.grantReinstatement, APPELLANT",
+            "REFUSE_REINSTATEMENT, directionIssuedWelsh.refuseReinstatement, APPOINTEE"
+    })
+    public void whenDirectionIssuedWelshAndDirectionTypeShouldGenerateCorrectTemplate(DirectionType directionType,
+                                                                                 String templateConfig,
+                                                                                 SubscriptionType subscriptionType) {
+
+        NotificationWrapper notificationWrapper = new CcdNotificationWrapper(SscsCaseDataWrapper.builder()
+                .newSscsCaseData(SscsCaseData.builder()
+                        .directionTypeDl(new DynamicList(directionType.toString()))
+                        .languagePreferenceWelsh("Yes")
+                        .appeal(Appeal.builder()
+                                .hearingType(ONLINE.getValue())
+                                .build())
+                        .build())
+                .notificationEventType(DIRECTION_ISSUED_WELSH)
+                .build());
+
+        personalisation.getTemplate(notificationWrapper, PIP, subscriptionType);
+
+        verify(config).getTemplate(eq(DIRECTION_ISSUED_WELSH.getId()),
+                eq(DIRECTION_ISSUED_WELSH.getId()),
+                eq(DIRECTION_ISSUED_WELSH.getId()),
+                eq(templateConfig + "." + lowerCase(subscriptionType.toString())),
+                any(Benefit.class), any(AppealHearingType.class), eq(null),
+                eq(LanguagePreference.WELSH)
+        );
+    }
+
+    @Test
     @Parameters(method = "generateNotificationTypeAndSubscriptionsScenarios")
-    public void givenSubscriptionType_shouldGenerateEmailAndSmsTemplateNamesPerSubscription(
+    public void givenSubscriptionType_shouldGenerateEmailAndSmsAndLetterTemplateNamesPerSubscription(
             NotificationEventType notificationEventType, SubscriptionType subscriptionType, HearingType hearingType,
             boolean hasEmailTemplate, boolean hasSmsTemplate, boolean hasLetterTemplate, boolean hasDocmosisTemplate) {
         NotificationWrapper notificationWrapper = new CcdNotificationWrapper(SscsCaseDataWrapper.builder()
@@ -317,9 +356,6 @@ public class PersonalisationTest {
                 new Object[]{DECISION_ISSUED, APPELLANT, ONLINE, false, false, false, true},
                 new Object[]{DECISION_ISSUED, APPOINTEE, ONLINE, false, false, false, true},
                 new Object[]{DECISION_ISSUED, REPRESENTATIVE, ONLINE, false, false, false, true},
-                new Object[]{DIRECTION_ISSUED_WELSH, APPELLANT, ONLINE, false, false, false, true},
-                new Object[]{DIRECTION_ISSUED_WELSH, APPOINTEE, ONLINE, false, false, false, true},
-                new Object[]{DIRECTION_ISSUED_WELSH, REPRESENTATIVE, ONLINE, false, false, false, true},
                 new Object[]{DECISION_ISSUED_WELSH, APPELLANT, ONLINE, false, false, false, true},
                 new Object[]{DECISION_ISSUED_WELSH, APPOINTEE, ONLINE, false, false, false, true},
                 new Object[]{DECISION_ISSUED_WELSH, REPRESENTATIVE, ONLINE, false, false, false, true},
@@ -340,7 +376,11 @@ public class PersonalisationTest {
                 new Object[]{VALID_APPEAL_CREATED, APPOINTEE, ONLINE, true, true, true, false},
                 new Object[]{REQUEST_INFO_INCOMPLETE, APPELLANT, ONLINE, false, false, false, true},
                 new Object[]{REQUEST_INFO_INCOMPLETE, APPOINTEE, ONLINE, false, false, false, true},
-                new Object[]{REQUEST_INFO_INCOMPLETE, REPRESENTATIVE, ONLINE, false, false, false, true}
+                new Object[]{REQUEST_INFO_INCOMPLETE, REPRESENTATIVE, ONLINE, false, false, false, true},
+                new Object[]{REVIEW_CONFIDENTIALITY_REQUEST, APPELLANT, REGULAR, false, false, false, true},
+                new Object[]{REVIEW_CONFIDENTIALITY_REQUEST, APPOINTEE, REGULAR, false, false, false, true},
+                new Object[]{REVIEW_CONFIDENTIALITY_REQUEST, REPRESENTATIVE, REGULAR, false, false, false, true},
+                new Object[]{REVIEW_CONFIDENTIALITY_REQUEST, JOINT_PARTY, REGULAR, false, false, false, true}
         };
     }
 
@@ -1328,6 +1368,44 @@ public class PersonalisationTest {
         assertEquals("http://link.com/GLSCRR", result.get(SUBMIT_EVIDENCE_INFO_LINK_LITERAL));
         assertEquals("http://link.com/GLSCRR", result.get(SUBMIT_EVIDENCE_LINK_LITERAL));
         assertEquals("http://link.com/progress/GLSCRR/abouthearing", result.get(HEARING_INFO_LINK_LITERAL));
+    }
+
+    @Test
+    @Parameters({"GRANTED", "REFUSED"})
+    public void givenConfidentialRequestForAppellant_thenSetConfidentialFields(RequestOutcome requestOutcome) {
+        SscsCaseData response = SscsCaseData.builder()
+                .ccdCaseId(CASE_ID)
+                .appeal(Appeal.builder().benefitType(BenefitType.builder().code("PIP").build())
+                        .appellant(Appellant.builder().name(name).build())
+                        .build())
+                .jointPartyName(JointPartyName.builder().firstName("Jeff").lastName("Stelling").build())
+                .confidentialityRequestOutcomeAppellant(DatedRequestOutcome.builder().requestOutcome(requestOutcome).build())
+                .build();
+
+        Map<String, String> result = personalisation.create(SscsCaseDataWrapper.builder().newSscsCaseData(response)
+                .notificationEventType(REVIEW_CONFIDENTIALITY_REQUEST).build(), new SubscriptionWithType(subscriptions.getAppellantSubscription(), APPELLANT));
+
+        assertEquals("Jeff Stelling", result.get(OTHER_PARTY_NAME));
+        assertEquals(requestOutcome.getValue(), result.get(CONFIDENTIALITY_OUTCOME));
+    }
+
+    @Test
+    @Parameters({"GRANTED", "REFUSED"})
+    public void givenConfidentialRequestForJointParty_thenSetConfidentialFields(RequestOutcome requestOutcome) {
+        SscsCaseData response = SscsCaseData.builder()
+                .ccdCaseId(CASE_ID)
+                .appeal(Appeal.builder().benefitType(BenefitType.builder().code("PIP").build())
+                        .appellant(Appellant.builder().name(name).build())
+                        .build())
+                .jointPartyName(JointPartyName.builder().firstName("Jeff").lastName("Stelling").build())
+                .confidentialityRequestOutcomeJointParty(DatedRequestOutcome.builder().requestOutcome(requestOutcome).build())
+                .build();
+
+        Map<String, String> result = personalisation.create(SscsCaseDataWrapper.builder().newSscsCaseData(response)
+                .notificationEventType(REVIEW_CONFIDENTIALITY_REQUEST).build(), new SubscriptionWithType(subscriptions.getJointPartySubscription(), JOINT_PARTY));
+
+        assertEquals(name.getFullNameNoTitle(), result.get(OTHER_PARTY_NAME));
+        assertEquals(requestOutcome.getValue(), result.get(CONFIDENTIALITY_OUTCOME));
     }
 
     private Hearing createHearing(LocalDate hearingDate) {

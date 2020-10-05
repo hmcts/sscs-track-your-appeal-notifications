@@ -26,7 +26,6 @@ import uk.gov.hmcts.reform.sscs.domain.docmosis.PdfCoverSheet;
 import uk.gov.hmcts.reform.sscs.domain.notify.Notification;
 import uk.gov.hmcts.reform.sscs.domain.notify.NotificationEventType;
 import uk.gov.hmcts.reform.sscs.exception.NotificationClientRuntimeException;
-import uk.gov.hmcts.reform.sscs.exception.PdfGenerationException;
 import uk.gov.hmcts.reform.sscs.factory.NotificationWrapper;
 import uk.gov.hmcts.reform.sscs.service.DocmosisPdfService;
 import uk.gov.hmcts.reform.sscs.service.conversion.LocalDateToWelshStringConverter;
@@ -87,10 +86,8 @@ public class PdfLetterService {
         String templatePath = docmosisTemplatesConfig.getCoversheets().get(languagePreference)
                 .get(wrapper.getNotificationType().getId());
         if (StringUtils.isBlank(templatePath)) {
-            throw new PdfGenerationException(
-                    String.format("There is no template for notificationType %s",
-                            wrapper.getNotificationType().getId()),
-                    new RuntimeException("Invalid notification type for docmosis coversheet."));
+            log.info("There is no template for notificationType " + wrapper.getNotificationType().getId());
+            return null;
         }
 
         return docmosisPdfService.createPdf(pdfCoverSheet, templatePath);
