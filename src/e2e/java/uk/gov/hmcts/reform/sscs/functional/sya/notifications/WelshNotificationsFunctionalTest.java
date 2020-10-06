@@ -347,8 +347,8 @@ public class WelshNotificationsFunctionalTest extends AbstractFunctionalTest {
         Notification jointPartyEmail = notifications.stream()
                 .filter(f -> f.getTemplateId().toString().equals(jointPartyAppealWithdrawnEmailIdWelsh))
                 .collect(Collectors.toList()).get(0);
-        assertTrue(appointeeEmail.getBody().contains("Annwyl Joint Party"));
-        assertTrue(appointeeEmail.getBody().contains("Ysgrifennwyd yr e-bost hwn yn Gymraeg a Saesneg"));
+        assertTrue(jointPartyEmail.getBody().contains("Annwyl Joint Party"));
+        assertTrue(jointPartyEmail.getBody().contains("Ysgrifennwyd yr e-bost hwn yn Gymraeg a Saesneg"));
     }
 
     @Test
