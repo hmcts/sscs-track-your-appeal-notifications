@@ -106,6 +106,8 @@ public final class AppConstants {
     public static final String LETTER_ADDRESS_LINE_4 = "letter_address_line_4";
     public static final String LETTER_ADDRESS_POSTCODE = "letter_address_postcode";
     public static final String LETTER_NAME = "letter_name";
+    public static final String HSP_COMMENT_EXAMPLE_LITERAL = "hsp_comment_example";
+    public static final String HSP_COMMENT_EXAMPLE_TEXT = "For example, on the report that the healthcare professional (HCP) wrote when they assessed you.";
 
     private AppConstants() {
         //

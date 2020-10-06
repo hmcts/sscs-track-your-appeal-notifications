@@ -42,6 +42,8 @@ import static uk.gov.hmcts.reform.sscs.config.AppConstants.HEARING_INFO_LINK_LIT
 import static uk.gov.hmcts.reform.sscs.config.AppConstants.HEARING_TIME;
 import static uk.gov.hmcts.reform.sscs.config.AppConstants.HEARING_TIME_FORMAT;
 import static uk.gov.hmcts.reform.sscs.config.AppConstants.HEARING_TYPE;
+import static uk.gov.hmcts.reform.sscs.config.AppConstants.HSP_COMMENT_EXAMPLE_LITERAL;
+import static uk.gov.hmcts.reform.sscs.config.AppConstants.HSP_COMMENT_EXAMPLE_TEXT;
 import static uk.gov.hmcts.reform.sscs.config.AppConstants.INFO_REQUEST_DETAIL;
 import static uk.gov.hmcts.reform.sscs.config.AppConstants.JOINT;
 import static uk.gov.hmcts.reform.sscs.config.AppConstants.MAC_LITERAL;
@@ -342,6 +344,10 @@ public class Personalisation<E extends NotificationWrapper> {
         }
         if (subscriptionWithType.getSubscriptionType().equals(JOINT_PARTY)) {
             personalisation.put(AppConstants.JOINT_PARTY, "Yes");
+        }
+
+        if (!subscriptionWithType.getSubscriptionType().equals(JOINT_PARTY)) {
+            personalisation.put(HSP_COMMENT_EXAMPLE_LITERAL, HSP_COMMENT_EXAMPLE_TEXT);
         }
 
         return personalisation;

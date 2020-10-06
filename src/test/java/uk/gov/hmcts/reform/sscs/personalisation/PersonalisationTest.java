@@ -491,6 +491,8 @@ public class PersonalisationTest {
         assertNull(result.get(EVIDENCE_RECEIVED_DATE_LITERAL));
         assertEquals(EMPTY, result.get(JOINT));
         assertNull(result.get(AppConstants.JOINT_PARTY));
+        assertEquals("For example, on the report that the healthcare professional (HCP) wrote when they assessed you.",
+            result.get(AppConstants.HSP_COMMENT_EXAMPLE_LITERAL));
 
         assertEquals(ADDRESS1, result.get(REGIONAL_OFFICE_NAME_LITERAL));
         assertEquals(ADDRESS2, result.get(SUPPORT_CENTRE_NAME_LITERAL));
@@ -1292,6 +1294,8 @@ public class PersonalisationTest {
         assertEquals("Bob Builder", result.get(NAME));
         assertEquals("joint ", result.get(JOINT));
         assertEquals("Yes", result.get(AppConstants.JOINT_PARTY));
+        assertNull(result.get(AppConstants.HSP_COMMENT_EXAMPLE_LITERAL));
+
         assertEquals("http://link.com/manage-email-notifications/ZYX", result.get(MANAGE_EMAILS_LINK_LITERAL));
         assertEquals("http://tyalink.com/" + jointPartyTyaNumber, result.get(TRACK_APPEAL_LINK_LITERAL));
         assertEquals("http://link.com/" + jointPartyTyaNumber, result.get(SUBMIT_EVIDENCE_LINK_LITERAL));
