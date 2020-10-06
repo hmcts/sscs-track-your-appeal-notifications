@@ -52,7 +52,7 @@ public class TopicConsumerTest {
     public void anExceptionWillBeCaught() {
         exception = EXCEPTION;
         doThrow(exception).when(dispatcher).handle(any());
-        topicConsumer.onMessage(MESSAGE);
+        topicConsumer.onMessage(MESSAGE, "1");
         verify(dispatcher, atLeastOnce()).handle(any());
     }
 
@@ -61,7 +61,7 @@ public class TopicConsumerTest {
     public void nullPointerExceptionWillBeCaught() {
         exception = new NullPointerException();
         doThrow(exception).when(dispatcher).handle(any());
-        topicConsumer.onMessage(MESSAGE);
+        topicConsumer.onMessage(MESSAGE, "1");
         verify(dispatcher, atLeastOnce()).handle(any());
     }
 
@@ -69,13 +69,13 @@ public class TopicConsumerTest {
     public void clientAuthorisationExceptionWillBeCaught() {
         exception = new ClientAuthorisationException(EXCEPTION);
         doThrow(exception).when(dispatcher).handle(any());
-        topicConsumer.onMessage(MESSAGE);
+        topicConsumer.onMessage(MESSAGE, "1");
         verify(dispatcher, atLeastOnce()).handle(any());
     }
 
     @Test
     public void handleValidRequest() {
-        topicConsumer.onMessage(MESSAGE);
+        topicConsumer.onMessage(MESSAGE, "1");
         verify(dispatcher).handle(any());
     }
 
