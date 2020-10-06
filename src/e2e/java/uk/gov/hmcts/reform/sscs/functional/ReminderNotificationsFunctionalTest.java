@@ -385,6 +385,7 @@ public class ReminderNotificationsFunctionalTest extends AbstractFunctionalTest 
     }
 
     @Test
+    @Ignore
     public void shouldSendNotificationsWhenHearingBookedEventIsReceivedWhenAnAppellantAndJointPartyIsSubscribed() throws IOException, NotificationClientException {
 
         addHearing(caseData, 0);
@@ -410,7 +411,7 @@ public class ReminderNotificationsFunctionalTest extends AbstractFunctionalTest 
                 hearingReminderWelshJointPartyEmailTemplateId,
                 caseReference,
                 "ESA",
-                "reminder",
+                "atgoffa",
                 formattedString,
                 "11:59 PM",
                 "AB12 0HN",
@@ -421,7 +422,7 @@ public class ReminderNotificationsFunctionalTest extends AbstractFunctionalTest 
                 notifications,
                 hearingReminderWelshJointPartySmsTemplateId,
                 "ESA",
-                "reminder",
+                "atgoffa",
                 formattedString,
                 "11:59 PM",
                 "AB12 0HN",
