@@ -5,7 +5,6 @@ import static uk.gov.hmcts.reform.sscs.domain.notify.NotificationEventType.ADJOU
 import static uk.gov.hmcts.reform.sscs.domain.notify.NotificationEventType.APPEAL_LAPSED_NOTIFICATION;
 import static uk.gov.hmcts.reform.sscs.domain.notify.NotificationEventType.APPEAL_WITHDRAWN_NOTIFICATION;
 import static uk.gov.hmcts.reform.sscs.domain.notify.NotificationEventType.DWP_RESPONSE_RECEIVED_NOTIFICATION;
-import static uk.gov.hmcts.reform.sscs.domain.notify.NotificationEventType.DWP_UPLOAD_RESPONSE_NOTIFICATION;
 import static uk.gov.hmcts.reform.sscs.domain.notify.NotificationEventType.EVIDENCE_RECEIVED_NOTIFICATION;
 import static uk.gov.hmcts.reform.sscs.domain.notify.NotificationEventType.EVIDENCE_REMINDER_NOTIFICATION;
 import static uk.gov.hmcts.reform.sscs.domain.notify.NotificationEventType.HEARING_BOOKED_NOTIFICATION;
@@ -57,9 +56,6 @@ public class NotificationsFunctionalTest extends AbstractFunctionalTest {
 
     @Value("${notification.english.subscriptionUpdated.emailId}")
     private String subscriptionUpdatedEmailTemplateId;
-
-    @Value("${notification.english.online.responseReceived.emailId}")
-    private String onlineResponseReceivedEmailId;
 
     @Value("${notification.english.paper.responseReceived.appellant.emailId}")
     private String paperResponseReceivedEmailId;
@@ -196,22 +192,6 @@ public class NotificationsFunctionalTest extends AbstractFunctionalTest {
         simulateCcdCallback(SUBSCRIPTION_UPDATED_NOTIFICATION);
 
         tryFetchNotificationsForTestCase(subscriptionUpdatedEmailTemplateId);
-    }
-
-    @Test
-    public void shouldSendOnlineDwpResponseReceivedNotification() throws NotificationClientException, IOException {
-        simulateCcdCallback(DWP_RESPONSE_RECEIVED_NOTIFICATION, "online-" + DWP_RESPONSE_RECEIVED_NOTIFICATION.getId() + "Callback.json");
-        List<Notification> notifications = tryFetchNotificationsForTestCase(onlineResponseReceivedEmailId);
-
-        assertNotificationBodyContains(notifications, onlineResponseReceivedEmailId, caseData.getCaseReference());
-    }
-
-    @Test
-    public void shouldSendOnlineDwpUploadResponseReceivedNotification() throws NotificationClientException, IOException {
-        simulateCcdCallback(DWP_UPLOAD_RESPONSE_NOTIFICATION, "online-" + DWP_UPLOAD_RESPONSE_NOTIFICATION.getId() + "Callback.json");
-        List<Notification> notifications = tryFetchNotificationsForTestCase(onlineResponseReceivedEmailId);
-
-        assertNotificationBodyContains(notifications, onlineResponseReceivedEmailId, caseId.toString());
     }
 
     @Test
