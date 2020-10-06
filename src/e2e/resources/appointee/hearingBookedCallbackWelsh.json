@@ -127,14 +127,21 @@
           "wantSmsNotifications": "Yes",
           "tya": ""
         },
-        "jointPartySubscription": {
-          "email": "sscstest+notify2@greencroftconsulting.com",
-          "mobile": "07398785051",
-          "reason": null,
+        "appellantSubscription": {
+          "email": "sscstest+notify@greencroftconsulting.com",
+          "mobile": "07398785050",
           "subscribeEmail": "Yes",
           "subscribeSms": "Yes",
-          "wantSmsNotifications" : "Yes",
-          "tya": "232929249492"
+          "wantSmsNotifications": "Yes",
+          "tya": ""
+        },
+        "jointPartySubscription": {
+          "email": "sscstest+notify@greencroftconsulting.com",
+          "mobile": "07398785050",
+          "subscribeEmail": "Yes",
+          "subscribeSms": "Yes",
+          "wantSmsNotifications": "Yes",
+          "tya": ""
         }
       }
     },
