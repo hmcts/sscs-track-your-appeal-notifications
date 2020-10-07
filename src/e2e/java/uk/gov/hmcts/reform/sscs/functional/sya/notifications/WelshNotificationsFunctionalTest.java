@@ -1,11 +1,13 @@
 package uk.gov.hmcts.reform.sscs.functional.sya.notifications;
 
+import static org.junit.Assert.assertEquals;
 import static uk.gov.hmcts.reform.sscs.domain.notify.NotificationEventType.ADJOURNED_NOTIFICATION;
 import static uk.gov.hmcts.reform.sscs.domain.notify.NotificationEventType.APPEAL_DORMANT_NOTIFICATION;
 import static uk.gov.hmcts.reform.sscs.domain.notify.NotificationEventType.EVIDENCE_RECEIVED_NOTIFICATION;
 import static uk.gov.hmcts.reform.sscs.domain.notify.NotificationEventType.EVIDENCE_REMINDER_NOTIFICATION;
 import static uk.gov.hmcts.reform.sscs.domain.notify.NotificationEventType.HEARING_BOOKED_NOTIFICATION;
 import static uk.gov.hmcts.reform.sscs.domain.notify.NotificationEventType.POSTPONEMENT_NOTIFICATION;
+import static uk.gov.hmcts.reform.sscs.domain.notify.NotificationEventType.REQUEST_INFO_INCOMPLETE;
 import static uk.gov.hmcts.reform.sscs.domain.notify.NotificationEventType.SUBSCRIPTION_CREATED_NOTIFICATION;
 import static uk.gov.hmcts.reform.sscs.domain.notify.NotificationEventType.SUBSCRIPTION_UPDATED_NOTIFICATION;
 import static uk.gov.hmcts.reform.sscs.domain.notify.NotificationEventType.SYA_APPEAL_CREATED_NOTIFICATION;
@@ -13,8 +15,10 @@ import static uk.gov.hmcts.reform.sscs.domain.notify.NotificationEventType.VALID
 
 import java.io.IOException;
 import java.util.List;
+import junitparams.Parameters;
 import org.junit.Test;
 import org.springframework.beans.factory.annotation.Value;
+import uk.gov.hmcts.reform.sscs.domain.notify.NotificationEventType;
 import uk.gov.hmcts.reform.sscs.functional.AbstractFunctionalTest;
 import uk.gov.service.notify.Notification;
 import uk.gov.service.notify.NotificationClientException;
@@ -342,5 +346,27 @@ public class WelshNotificationsFunctionalTest extends AbstractFunctionalTest {
                 AS_APPOINTEE_FOR,
                 "/evidence/" + TYA
         );
+    }
+
+    @Test
+    @Parameters(method = "docmosisTestSetup")
+    public void shouldSendDocmosisLettersViaGovNotify(NotificationEventType notificationEventType, int expectedNumberOfLetters) throws IOException, NotificationClientException {
+
+        simulateCcdCallback(notificationEventType,
+                notificationEventType.getId() + "CallbackWelsh.json");
+
+        List<Notification> notifications = fetchLetters();
+
+        assertEquals(expectedNumberOfLetters, notifications.size());
+        for (int i = 0; i < expectedNumberOfLetters; i++) {
+            assertEquals("Pre-compiled PDF", notifications.get(i).getSubject().orElse("Unknown Subject"));
+        }
+    }
+
+    @SuppressWarnings({"Indentation", "unused"})
+    private Object[] docmosisTestSetup() {
+        return new Object[]{
+            new Object[]{REQUEST_INFO_INCOMPLETE, 3},
+        };
     }
 }

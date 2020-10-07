@@ -838,7 +838,7 @@ notification:
       appointee:
         docmosisId: TB-SCS-GNO-ENG-00452.docx
       joint_party:
-        docmosisId: TB-SCS-GNO-ENG-00452.docx
+        docmosisId: TB-SCS-GNO-WEL-00589.docx
     nonCompliant:
       appellant:
         letterId: dde50680-5215-4688-aca1-7f5a30ad55dc
@@ -1069,7 +1069,7 @@ pdf-service:
       validAppealCreated: 'TB-SCS-GNO-WEL-00479.docx'
       dwpUploadResponse: 'TB-SCS-GNO-WEL-00479.docx'
       resendAppealCreated: 'TB-SCS-GNO-WEL-00479.docx'
-      requestInfoIncompleteApplication: 'TB-SCS-GNO-ENG-00012.docx'
+      requestInfoIncompleteApplication: 'TB-SCS-GNO-WEL-00479.docx'
       struckOut: 'TB-SCS-GNO-ENG-00012.docx'
 
 docmosis:
