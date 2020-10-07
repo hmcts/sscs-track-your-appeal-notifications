@@ -438,10 +438,8 @@ public class Personalisation<E extends NotificationWrapper> {
             personalisation.put(POSTCODE_LITERAL, rpc.getPostcode());
             personalisation.put(REGIONAL_OFFICE_POSTCODE_LITERAL, rpc.getPostcode());
         }
-        
-        personalisation.put(PHONE_NUMBER_WELSH, evidenceProperties.getAddress().getTelephoneWelsh());
-        personalisation.put(PHONE_NUMBER, determinePhoneNumber(rpc));
 
+        personalisation.put(PHONE_NUMBER_WELSH, evidenceProperties.getAddress().getTelephoneWelsh());
         personalisation.put(PHONE_NUMBER, determinePhoneNumber(rpc));
 
         setHearingArrangementDetails(personalisation, ccdResponse);
