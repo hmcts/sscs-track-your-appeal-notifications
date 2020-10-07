@@ -60,6 +60,12 @@ public class WelshNotificationsFunctionalTest extends AbstractFunctionalTest {
     @Value("${notification.welsh.hearingAdjourned.appellant.smsId}")
     private String hearingAdjournedSmsTemplateIdWelsh;
 
+    @Value("${notification.welsh.hearingAdjourned.joint_party.emailId}")
+    private String hearingAdjournedJointPartyEmailTemplateIdWelsh;
+
+    @Value("${notification.welsh.hearingAdjourned.joint_party.smsId}")
+    private String hearingAdjournedJointPartySmsTemplateIdWelsh;
+
     @Value("${notification.welsh.subscriptionCreated.appellant.smsId}")
     private String subscriptionCreatedSmsTemplateIdWelsh;
 
@@ -224,7 +230,9 @@ public class WelshNotificationsFunctionalTest extends AbstractFunctionalTest {
 
         tryFetchNotificationsForTestCase(
                 hearingAdjournedEmailTemplateIdWelsh,
-                hearingAdjournedSmsTemplateIdWelsh
+                hearingAdjournedSmsTemplateIdWelsh,
+                hearingAdjournedJointPartyEmailTemplateIdWelsh,
+                hearingAdjournedJointPartySmsTemplateIdWelsh
         );
     }
 
