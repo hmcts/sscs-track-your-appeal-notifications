@@ -719,8 +719,8 @@ notification:
         emailId: fdd89d55-008e-4672-810b-d09a306b5127
         smsId: c72e53f4-9226-48a4-ae9f-24f73e7d5bba
       joint_party:
-        emailId: 6a0caa25-a066-4923-80ad-4120674c13e5
-        smsId: 1c6eeac6-dbec-4e42-92b3-7a9dfeec0125
+        emailId: 09aab8aa-acd1-4030-ad00-8d0a0ccbe5ce
+        smsId: bd7a6731-d807-4af8-a89d-4e075aa2b514
     struckOut:
       docmosisId: TB-SCS-GNO-ENG-00466.docx
     directionIssued:
@@ -907,8 +907,8 @@ notification:
           emailId: 86a52d91-6e48-4198-995a-6cd8ebfea05f
           smsId: 7c6980fe-fa12-46a4-a9aa-c7553a163fba
         joint_party:
-          emailId: d99855c1-2df1-4ffe-99d7-da4111c2b3e8
-          smsId: bfee6b55-9718-41c6-904c-50ecff324c3e
+          emailId: 50e36590-3fc2-4ad9-aedd-358e3d585b5b
+          smsId: 8b23d743-3a40-418a-bb2f-39c440e922ce
       evidenceReceived:
         appellant:
           emailId: fd16e0cb-c556-45d3-8900-067e119a0dff
@@ -958,8 +958,8 @@ notification:
           emailId: 3260b6ec-9930-44b6-aa65-58905dd9a5b3
           smsId: a2745961-214a-4138-95b0-89300b395a3e
         joint_party:
-          emailId: 738b40f4-e7fe-4121-b09d-0a76be4d2fe9
-          smsId: 00c36e89-6cf0-42a1-b080-6eac4edfca25
+          emailId: 69c24fac-5ed4-4ef8-88a2-ad802e3479ac
+          smsId: 0dd9bf61-81da-4a07-9dd5-35bc1e7471b0
       evidenceReceived:
         appellant:
           emailId: 148e1bbb-2e1e-4353-8cf3-8472131f0efc
@@ -999,7 +999,7 @@ reminder:
 
 outOfHours:
   startHour: ${HOURS_START_TIME:9}
-  endHour: ${HOURS_END_TIME:19}
+  endHour: ${HOURS_END_TIME:17}
 
 feign:
   client:
