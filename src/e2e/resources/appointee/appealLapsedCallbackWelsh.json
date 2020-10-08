@@ -19,6 +19,7 @@
         "county": "Merseyside",
         "postcode": "TS4 4ST"
       },
+      "createdInGapsFrom": "readyToList",
       "appeal": {
         "appealReasons": {},
         "appellant": {
@@ -52,7 +53,7 @@
               "line2": "Newcastle",
               "town": "Newcastle",
               "county": "Tyne and Wear",
-              "postcode": "NE1 1AW"
+              "postcode": "TS1 1ST"
             },
             "identity": {
               "dob": "1998-07-01",

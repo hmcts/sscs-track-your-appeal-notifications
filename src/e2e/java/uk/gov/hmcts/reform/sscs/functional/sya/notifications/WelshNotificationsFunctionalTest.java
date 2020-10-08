@@ -165,11 +165,17 @@ public class WelshNotificationsFunctionalTest extends AbstractFunctionalTest {
     @Value("${notification.welsh.appealLapsed.appointee.smsId}")
     private String appealLapsedAppointeeSmsTemplateIdWelsh;
 
+    @Value("${notification.welsh.appealLapsed.appointee.letterId}")
+    private String appealLapsedAppointeeLetterTemplateIdWelsh;
+
     @Value("${notification.welsh.appealLapsed.joint_party.emailId}")
     private String appealLapsedJointPartyEmailTemplateIdWelsh;
 
     @Value("${notification.welsh.appealLapsed.joint_party.smsId}")
     private String appealLapsedJointPartySmsTemplateIdWelsh;
+
+    @Value("${notification.welsh.appealLapsed.joint_party.letterId}")
+    private String appealLapsedJointPartyLetterTemplateIdWelsh;
 
     @Value("${notification.welsh.appealWithdrawn.appointee.emailId}")
     private String appointeeAppealWithdrawnEmailIdWelsh;
@@ -345,6 +351,10 @@ public class WelshNotificationsFunctionalTest extends AbstractFunctionalTest {
         assertTrue(emailNotification.getBody().contains("You are receiving this update as the appointee for"));
         Notification emailNotificationJp = notifications.stream().filter(f -> f.getTemplateId().toString().equals(appealLapsedJointPartyEmailTemplateIdWelsh)).collect(Collectors.toList()).get(0);
         assertTrue(emailNotificationJp.getBody().contains("Rydym felly wedi cau’r apêl hon."));
+        List<Notification> letterNotification = fetchLetters();
+        List<String> templateIds = letterNotification.stream().map(n-> n.getTemplateId().toString()).collect(Collectors.toList());
+        assertTrue(templateIds.contains(appealLapsedAppointeeLetterTemplateIdWelsh));
+        assertTrue(templateIds.contains(appealLapsedJointPartyLetterTemplateIdWelsh));
     }
 
     @Test
