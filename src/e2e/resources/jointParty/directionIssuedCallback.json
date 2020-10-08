@@ -4,13 +4,11 @@
     "callback_response_status": null,
     "callback_response_status_code": null,
     "case_data": {
-      "directionTypeDl": "provideInformation",
+      "directionTypeDl": "refuseExtension",
       "createdInGapsFrom": "readyToList",
-      "confidentialityRequestOutcomeAppellant": null,
-      "confidentialityRequestOutcomeJointParty": null,
       "jointParty": "Yes",
       "jointPartyName": {
-        "title": "Mr",
+        "title": "mr",
         "firstName": "Joint",
         "lastName": "Party"
       },
@@ -20,7 +18,7 @@
         "line2": "Village",
         "town": "Liverpool",
         "county": "Merseyside",
-        "postcode": "L2 5UZ"
+        "postcode": "TS4 4ST"
       },
       "appeal": {
         "mrnDetails": {
@@ -40,11 +38,11 @@
             "line2": "Village",
             "town": "Liverpool",
             "county": "Merseyside",
-            "postcode": "L2 5UZ"
+            "postcode": "TS1 1ST"
           },
           "contact": {
-            "email": "test@tester.com",
-            "mobile": "07848484848"
+            "email": "sscstest+notify@greencroftconsulting.com",
+            "mobile": "07398785050"
           },
           "identity": {
             "dob": "1998-07-01",
@@ -102,8 +100,8 @@
         "signer":"Yes",
         "supporter": {
           "contact": {
-            "email": "pacetest@yahoo.com",
-            "mobile": "07985223409"
+            "email": "sscstest+notify@greencroftconsulting.com",
+            "mobile": "07398785050"
           },
           "name": {
             "firstName": "Guy",
@@ -164,8 +162,8 @@
       "caseReference": "SC022/14/12423",
       "subscriptions": {
         "appellantSubscription": {
-          "email": "sscstest@greencroftconsulting.com",
-          "mobile": "07985233301",
+          "email": "sscstest+notify@greencroftconsulting.com",
+          "mobile": "07398785050",
           "reason": null,
           "subscribeEmail": "no",
           "subscribeSms": "no",
@@ -173,8 +171,8 @@
           "tya": "543212345"
         },
         "jointPartySubscription": {
-          "email": "jointParty@hmcts.net",
-          "mobile": "07983469702",
+          "email": "sscstest+notify2@greencroftconsulting.com",
+          "mobile": "07398785051",
           "reason": null,
           "subscribeEmail": "Yes",
           "subscribeSms": "Yes",
@@ -223,9 +221,10 @@
     "callback_response_status": null,
     "callback_response_status_code": null,
     "case_data": {
+      "directionTypeDl": "appealToProceed",
       "jointParty": "Yes",
       "jointPartyName": {
-        "title": "Mr",
+        "title": "mr",
         "firstName": "Joint",
         "lastName": "Party"
       },
@@ -235,7 +234,7 @@
           "line2": "Village",
           "town": "Liverpool",
           "county": "Merseyside",
-          "postcode": "L2 5UZ"
+          "postcode": "TS4 4ST"
       },
       "appeal": {
         "mrnDetails": {
@@ -255,10 +254,10 @@
             "line2": "Village",
             "town": "Liverpool",
             "county": "Merseyside",
-            "postcode": "L2 5UZ"
+            "postcode": "TS1 1ST"
           },
           "contact": {
-            "email": "test@tester.com",
+            "email": "sscstest+notify@greencroftconsulting.com",
             "mobile": "07848484848"
           },
           "identity": {
@@ -317,7 +316,7 @@
         "signer": "Yes",
         "supporter": {
           "contact": {
-            "email": "pacetest@yahoo.com",
+            "email": "sscstest+notify@greencroftconsulting.com",
             "mobile": "07985223409"
           },
           "name": {
@@ -332,8 +331,8 @@
       "caseReference": "SC022/14/12423",
       "subscriptions": {
         "appellantSubscription": {
-          "email": "tester@hmcts.net",
-          "mobile": "07985233301",
+          "email": "sscstest+notify@greencroftconsulting.com",
+          "mobile": "07398785050",
           "reason": null,
           "subscribeEmail": "No",
           "subscribeSms": "No",
@@ -341,8 +340,8 @@
           "tya": "543212345"
         },
         "jointPartySubscription": {
-          "email": "jointParty@hmcts.net",
-          "mobile": "07983469702",
+          "email": "sscstest+notify2@greencroftconsulting.com",
+          "mobile": "07398785051",
           "reason": null,
           "subscribeEmail": "Yes",
           "subscribeSms": "Yes",
@@ -386,5 +385,5 @@
     "state": "appealCreated",
     "id": "12345656789"
   },
-  "event_id": "reviewConfidentialityRequest"
+  "event_id": "directionIssued"
 }

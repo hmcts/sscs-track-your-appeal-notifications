@@ -7,6 +7,7 @@ import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
 import static uk.gov.hmcts.reform.sscs.domain.notify.NotificationEventType.*;
 
+import java.io.IOException;
 import java.lang.reflect.Field;
 import java.util.ArrayList;
 import java.util.List;
@@ -18,6 +19,7 @@ import org.springframework.beans.factory.annotation.Value;
 import uk.gov.hmcts.reform.sscs.domain.notify.NotificationEventType;
 import uk.gov.hmcts.reform.sscs.functional.AbstractFunctionalTest;
 import uk.gov.service.notify.Notification;
+import uk.gov.service.notify.NotificationClientException;
 
 public class JointPartyFunctionalTest extends AbstractFunctionalTest {
     private static final String NO_HEARING_TYPE = null;
@@ -67,6 +69,12 @@ public class JointPartyFunctionalTest extends AbstractFunctionalTest {
     private String oralDwpUploadResponseJointPartyEmailId;
     @Value("${notification.english.oral.dwpUploadResponse.joint_party.smsId}")
     private String oralDwpUploadResponseJointPartySmsId;
+    @Value("${notification.english.paper.dwpUploadResponse.joint_party.emailId}")
+    private String paperDwpUploadResponseJointPartyEmailId;
+    @Value("${notification.english.paper.dwpUploadResponse.joint_party.smsId}")
+    private String paperDwpUploadResponseJointPartySmsId;
+    @Value("${notification.english.reviewConfidentialityRequest.joint_party.docmosisId}")
+    private String reviewConfidentialityRequestJointPartyLetterId;
 
     public JointPartyFunctionalTest() {
         super(30);
@@ -75,7 +83,8 @@ public class JointPartyFunctionalTest extends AbstractFunctionalTest {
     @Test
     @Parameters(method = "eventTypeAndSubscriptions")
     public void givenEventAndJointPartySubscription_shouldSendNotificationToJointParty(
-            NotificationEventType notificationEventType, @Nullable String hearingType, int expectedNumberOfLetters, boolean isDocmosisLetter)
+            NotificationEventType notificationEventType, @Nullable String hearingType,
+            int expectedNumberOfLetters, boolean isDocmosisLetter)
             throws Exception {
         //Given
         final String jointPartyEmailId = getFieldValue(hearingType, notificationEventType, "JointPartyEmailId");
@@ -108,15 +117,30 @@ public class JointPartyFunctionalTest extends AbstractFunctionalTest {
             assertEquals(expectedNumberOfLetters, notificationLetters.size());
             if (!isDocmosisLetter) {
                 Optional<Notification> notificationOptional =
-                    notificationLetters.stream().filter(notification ->
-                        notification.getLine1().map(f -> f.contains(jointPartyName)).orElse(false)).findFirst();
+                        notificationLetters.stream().filter(notification ->
+                                notification.getLine1().map(f -> f.contains(jointPartyName)).orElse(false)).findFirst();
                 assertTrue(notificationOptional.isPresent());
                 assertTrue(notificationOptional.get().getBody().contains("Dear " + jointPartyName));
             } else {
-                notificationLetters.forEach(n ->
-                    assertEquals("Pre-compiled PDF", n.getSubject().orElse("Unknown Subject")));
+                notificationLetters.forEach(n -> assertEquals("Pre-compiled PDF", n.getSubject().orElse("Unknown Subject")));
             }
         }
+    }
+
+    @Test
+    public void sendsDirectionIssuedProvideInformationLetterToAppellantRepresentativeAndJointParty() throws IOException, NotificationClientException {
+
+        NotificationEventType notificationEventType = NotificationEventType.DIRECTION_ISSUED;
+
+        simulateCcdCallback(notificationEventType,
+                notificationEventType.getId() + "ProvideInformationCallback.json");
+
+        List<Notification> notifications = fetchLetters();
+
+        assertEquals(3, notifications.size());
+        assertEquals("Pre-compiled PDF", notifications.get(0).getSubject().orElse("Unknown Subject"));
+        assertEquals("Pre-compiled PDF", notifications.get(1).getSubject().orElse("Unknown Subject"));
+        assertEquals("Pre-compiled PDF", notifications.get(2).getSubject().orElse("Unknown Subject"));
     }
 
     private String getFieldValue(String hearingType, NotificationEventType notificationEventType, String fieldName) throws Exception {
@@ -137,6 +161,7 @@ public class JointPartyFunctionalTest extends AbstractFunctionalTest {
     @SuppressWarnings({"Indentation", "unused"})
     private Object[] eventTypeAndSubscriptions() {
         final int expectedNumberOfLettersIsTwo = 2;
+        final int expectedNumberOfLettersIsOne = 1;
         final int expectedNumberOfLettersIsZero = 0;
         final boolean isDocmosisLetterTrue = true;
         final boolean isDocmosisLetterFalse = false;
@@ -151,8 +176,12 @@ public class JointPartyFunctionalTest extends AbstractFunctionalTest {
             new Object[]{HEARING_REMINDER_NOTIFICATION, NO_HEARING_TYPE, expectedNumberOfLettersIsZero, isDocmosisLetterFalse},
             new Object[]{EVIDENCE_RECEIVED_NOTIFICATION, ORAL, expectedNumberOfLettersIsZero, isDocmosisLetterFalse},
             new Object[]{EVIDENCE_REMINDER_NOTIFICATION, PAPER, expectedNumberOfLettersIsZero, isDocmosisLetterFalse},
+            new Object[]{DWP_UPLOAD_RESPONSE_NOTIFICATION, ORAL, expectedNumberOfLettersIsTwo, isDocmosisLetterTrue},
+            new Object[]{STRUCK_OUT, PAPER, expectedNumberOfLettersIsTwo, isDocmosisLetterTrue},
             new Object[]{APPEAL_WITHDRAWN_NOTIFICATION, NO_HEARING_TYPE, expectedNumberOfLettersIsTwo, isDocmosisLetterFalse},
-            new Object[]{DWP_UPLOAD_RESPONSE_NOTIFICATION, ORAL, expectedNumberOfLettersIsTwo, isDocmosisLetterTrue}
+            new Object[]{DIRECTION_ISSUED, NO_HEARING_TYPE, expectedNumberOfLettersIsTwo, isDocmosisLetterTrue},
+            new Object[]{DWP_UPLOAD_RESPONSE_NOTIFICATION, PAPER, expectedNumberOfLettersIsTwo, isDocmosisLetterTrue},
+            new Object[]{REVIEW_CONFIDENTIALITY_REQUEST, NO_HEARING_TYPE, expectedNumberOfLettersIsOne, isDocmosisLetterTrue}
         };
     }
 }

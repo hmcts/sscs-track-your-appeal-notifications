@@ -4,7 +4,34 @@
     "callback_response_status": null,
     "callback_response_status_code": null,
     "case_data": {
-      "languagePreferenceWelsh" : "Yes",
+      "confidentialityRequestOutcomeAppellant": {
+        "requestOutcome":"granted",
+        "date":"2020-09-30"
+      },
+      "hearings": [
+        {
+          "value": {
+            "venue": {
+              "name": "Prudential House",
+              "address": {
+                "line1": "2-10 Topping Street",
+                "line2": "",
+                "town": "Blackpool",
+                "county": "",
+                "postcode": "FY1 3AB"
+              },
+              "googleMapLink": "https://www.google.com/maps/place/2-10+Topping+Street+Blackpool+FY1+3AB/@53.820175,-3.050717"
+            },
+            "hearingDate": "2130-12-01",
+            "time": "11:40:00",
+            "adjourned": "No",
+            "eventDate": null,
+            "hearingId": "3698764"
+          },
+          "id": "491adfdc-a8d3-430d-bd47-5ae3eac2149f"
+        }
+      ],
+      "createdInGapsFrom": "readyToList",
       "jointParty": "Yes",
       "jointPartyName": {
         "title": "mr",
@@ -22,7 +49,9 @@
       "appeal": {
         "appealReasons": {},
         "appellant": {
-          "address": {},
+          "address": {
+            "postcode": "TS1 1ST"
+          },
           "contact": {
             "email": "mail@email.com",
             "phone": "01234567890"
@@ -52,7 +81,7 @@
               "line2": "Newcastle",
               "town": "Newcastle",
               "county": "Tyne and Wear",
-              "postcode": "NE1 1AW"
+              "postcode": "TS2 2ST"
             },
             "identity": {
               "dob": "1998-07-01",
@@ -67,7 +96,7 @@
           "languageInterpreter": "Yes",
           "other": "No",
           "wantsSupport": "Yes",
-          "wantsToAttend": "No"
+          "wantsToAttend": "Yes"
         },
         "mrnDetails": {},
         "rep": {},
@@ -97,9 +126,9 @@
         "appointeeSubscription": {
           "email": "sscstest+notify@greencroftconsulting.com",
           "mobile": "07398785050",
-          "subscribeEmail": "Yes",
-          "subscribeSms": "Yes",
-          "wantSmsNotifications": "Yes",
+          "subscribeEmail": "No",
+          "subscribeSms": "No",
+          "wantSmsNotifications": "No",
           "tya": "v8eg15XeZk"
         },
         "jointPartySubscription": {
@@ -110,14 +139,6 @@
           "subscribeSms": "Yes",
           "wantSmsNotifications" : "Yes",
           "tya": "232929249492"
-        },
-        "representativeSubscription": {
-          "email": "",
-          "mobile": "",
-          "subscribeEmail": "No",
-          "subscribeSms": "No",
-          "wantSmsNotifications": "No",
-          "tya": ""
         }
       }
     },
@@ -233,7 +254,7 @@
               "tya": "PUBLIC"
             }
           },
-          "representativeSubscription": {
+          "jointPartySubscription": {
             "classification": "PUBLIC",
             "value": {
               "email": "PUBLIC",
@@ -361,7 +382,7 @@
               "tya": "PUBLIC"
             }
           },
-          "representativeSubscription": {
+          "jointPartySubscription": {
             "classification": "PUBLIC",
             "value": {
               "email": "PUBLIC",
@@ -375,14 +396,28 @@
         }
       }
     },
-    "state": "appealCreated"
+    "state": "readyToList"
   },
   "case_details_before": {
     "after_submit_callback_response": null,
     "callback_response_status": null,
     "callback_response_status_code": null,
     "case_data": {
-      "languagePreferenceWelsh" : "Yes",
+      "createdInGapsFrom": "readyToList",
+      "jointParty": "Yes",
+      "jointPartyName": {
+        "title": "mr",
+        "firstName": "Joint",
+        "lastName": "Party"
+      },
+      "jointPartyAddressSameAsAppellant": "No",
+      "jointPartyAddress": {
+        "line1": "30 Dale Street",
+        "line2": "Village",
+        "town": "Liverpool",
+        "county": "Merseyside",
+        "postcode": "TS4 4ST"
+      },
       "appeal": {
         "appealReasons": {},
         "appellant": {
@@ -416,7 +451,7 @@
               "line2": "Newcastle",
               "town": "Newcastle",
               "county": "Tyne and Wear",
-              "postcode": "NE1 1AW"
+              "postcode": "TS2 2ST"
             },
             "identity": {
               "dob": "1998-07-01",
@@ -431,7 +466,7 @@
           "languageInterpreter": "Yes",
           "other": "No",
           "wantsSupport": "Yes",
-          "wantsToAttend": "No"
+          "wantsToAttend": "Yes"
         },
         "mrnDetails": {},
         "rep": {},
@@ -453,18 +488,19 @@
         "appointeeSubscription": {
           "email": "sscstest+notify@greencroftconsulting.com",
           "mobile": "07398785050",
-          "subscribeEmail": "Yes",
-          "subscribeSms": "Yes",
+          "subscribeEmail": "No",
+          "subscribeSms": "No",
           "wantSmsNotifications": "Yes",
           "tya": "v8eg15XeZk"
         },
-        "representativeSubscription": {
-          "email": "",
-          "mobile": "",
-          "subscribeEmail": "No",
-          "subscribeSms": "No",
-          "wantSmsNotifications": "No",
-          "tya": ""
+        "jointPartySubscription": {
+          "email": "sscstest+notify2@greencroftconsulting.com",
+          "mobile": "07398785051",
+          "reason": null,
+          "subscribeEmail": "Yes",
+          "subscribeSms": "Yes",
+          "wantSmsNotifications" : "Yes",
+          "tya": "232929249492"
         }
       }
     },
@@ -572,7 +608,7 @@
               "tya": "PUBLIC"
             }
           },
-          "representativeSubscription": {
+          "jointPartySubscription": {
             "classification": "PUBLIC",
             "value": {
               "email": "PUBLIC",
@@ -692,7 +728,7 @@
               "tya": "PUBLIC"
             }
           },
-          "representativeSubscription": {
+          "jointPartySubscription": {
             "classification": "PUBLIC",
             "value": {
               "email": "PUBLIC",
@@ -706,7 +742,7 @@
         }
       }
     },
-    "state": "appealCreated"
+    "state": "readyToList"
   },
-  "event_id": "evidenceReminder"
+  "event_id": "reviewConfidentialityRequest"
 }

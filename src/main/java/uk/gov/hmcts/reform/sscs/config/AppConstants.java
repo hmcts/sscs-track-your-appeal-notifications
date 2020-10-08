@@ -52,6 +52,7 @@ public final class AppConstants {
     public static final String HEARING_TYPE = "hearing_type";
     public static final String INFO_REQUEST_DETAIL = "info_request_detail";
     public static final String JOINT = "joint";
+    public static final String JOINT_PARTY_APPEAL = "joint_party_appeal";
     public static final String MAC_ALGO = "HmacSHA256";
     public static final String MAC_LITERAL = "mac";
     public static final String MANAGE_EMAILS_LINK_LITERAL = "manage_emails_link";
@@ -91,6 +92,8 @@ public final class AppConstants {
     public static final String WELSH_YOUR_DETAILS_LITERAL = "welsh_your_details";
     public static final String ZONE_ID = "Europe/London";
     public static final String WELSH_CURRENT_DATE = "welsh_current_date";
+    public static final String OTHER_PARTY_NAME = "other_party_name";
+    public static final String CONFIDENTIALITY_OUTCOME = "confidentiality_outcome";
 
     public static final String ADDRESS_NAME = "address_name";
     public static final String ADDRESS_LINE_1 = "address_line_1";
