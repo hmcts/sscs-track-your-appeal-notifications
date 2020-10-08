@@ -120,6 +120,11 @@ feature:
 
 notification:
   english:
+    jointPartyAdded:
+      appellant:
+        docmosisId: TB-SCS-GNO-ENG-00579.docx
+      joint_party:
+        docmosisId: TB-SCS-GNO-ENG-00579.docx
     appealReceived:
       appellant:
         emailId: b90df52f-c628-409c-8875-4b0b9663a053
