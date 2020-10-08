@@ -206,8 +206,6 @@ public class NotificationConfigTest {
                 new Object[]{"8666f5a7-afe7-423d-a2a9-af5b7aff79cc", Arrays.asList("e4a574f8-dd1e-4c31-8826-88fff5427db3", "505be856-ceca-4bbc-ba70-29024585056f"), null, null, PAPER, getTemplateName(DWP_RESPONSE_RECEIVED_NOTIFICATION, APPOINTEE), null},
                 new Object[]{"5abc83d8-f6b8-4385-805b-ffbb0f64b84b", Arrays.asList("7e068c25-fc93-4997-831c-717a319730c1", "b2d187cd-089b-4fe1-b460-a310c0af46fe"), null, null, PAPER, getTemplateName(DWP_RESPONSE_RECEIVED_NOTIFICATION, REPRESENTATIVE), null},
                 new Object[]{"90f0ed29-a616-4ce0-b4ef-108391f5d90e", Collections.EMPTY_LIST, null, null, ONLINE, getTemplateName(DWP_RESPONSE_RECEIVED_NOTIFICATION), null},
-                new Object[]{"06c91850-a81f-44bb-9577-1bc528913850", Arrays.asList("a26c0e22-b132-4528-86a5-e221cc9b6325", "7455de19-aa3b-48f0-b765-ab2757ba6a88"), null, null, ORAL, getTemplateName(ADJOURNED_NOTIFICATION, JOINT_PARTY), null},
-                new Object[]{"06c91850-a81f-44bb-9577-1bc528913850", Arrays.asList("a26c0e22-b132-4528-86a5-e221cc9b6325", "7455de19-aa3b-48f0-b765-ab2757ba6a88"), null, null, PAPER, getTemplateName(ADJOURNED_NOTIFICATION, JOINT_PARTY), null},
                 new Object[]{"148e1bbb-2e1e-4353-8cf3-8472131f0efc", Arrays.asList("8245da79-cc7a-4953-b814-4b06cc322c0a", "e7868511-3a1f-4b8e-8bb3-b36c2bd99799"), null, null, ORAL, getTemplateName(EVIDENCE_RECEIVED_NOTIFICATION, JOINT_PARTY), null},
                 new Object[]{"fd16e0cb-c556-45d3-8900-067e119a0dff", Arrays.asList("8245da79-cc7a-4953-b814-4b06cc322c0a", "e7868511-3a1f-4b8e-8bb3-b36c2bd99799"), null, null, PAPER, getTemplateName(EVIDENCE_RECEIVED_NOTIFICATION, JOINT_PARTY), null},
                 new Object[]{"74fc911e-2e5f-49db-abc2-c793f3a964a8", Arrays.asList("ce1c3a63-7235-4b0a-960a-4b03b9a6abd4", "c4db4fca-6876-4130-b4eb-09e900ae45a8"), "b21cb376-511d-45d1-8ad2-565a74de44db", null, ORAL, getTemplateName(APPEAL_WITHDRAWN_NOTIFICATION, JOINT_PARTY), null},
@@ -237,9 +235,10 @@ public class NotificationConfigTest {
 
                 new Object[]{"06c91850-a81f-44bb-9577-1bc528913850", Arrays.asList("a26c0e22-b132-4528-86a5-e221cc9b6325","7455de19-aa3b-48f0-b765-ab2757ba6a88"), null, null, PAPER, getTemplateName(ADJOURNED_NOTIFICATION, APPELLANT), null},
                 new Object[]{"06c91850-a81f-44bb-9577-1bc528913850", Arrays.asList("a26c0e22-b132-4528-86a5-e221cc9b6325","7455de19-aa3b-48f0-b765-ab2757ba6a88"), null, null, ORAL, getTemplateName(ADJOURNED_NOTIFICATION, APPELLANT), null},
-
                 new Object[]{"fd13e20c-f412-48eb-9905-a25e91ccc5ed", Arrays.asList("4d1caa6f-b0e8-4c07-aa76-84841880be9a","259b8e81-b44a-4271-a57b-ba7f8bdfcb33"), null, null, PAPER, getTemplateName(ADJOURNED_NOTIFICATION, REPRESENTATIVE), null},
                 new Object[]{"fd13e20c-f412-48eb-9905-a25e91ccc5ed", Arrays.asList("4d1caa6f-b0e8-4c07-aa76-84841880be9a","259b8e81-b44a-4271-a57b-ba7f8bdfcb33"), null, null, ORAL, getTemplateName(ADJOURNED_NOTIFICATION, REPRESENTATIVE), null},
+                new Object[]{"20b4e9de-d80d-4e0d-9cc1-28093072833b", Arrays.asList("4490f1c9-0b5c-46a9-8b79-75f07dfef810","7455de19-aa3b-48f0-b765-ab2757ba6a88"), null, null, PAPER, getTemplateName(ADJOURNED_NOTIFICATION, JOINT_PARTY), null},
+                new Object[]{"20b4e9de-d80d-4e0d-9cc1-28093072833b", Arrays.asList("4490f1c9-0b5c-46a9-8b79-75f07dfef810","7455de19-aa3b-48f0-b765-ab2757ba6a88"), null, null, ORAL, getTemplateName(ADJOURNED_NOTIFICATION, JOINT_PARTY), null},
 
                 new Object[]{"cc20b48f-be92-4eb7-aab2-278997926fa7", Collections.EMPTY_LIST, null, null, PAPER, getTemplateName(POSTPONEMENT_NOTIFICATION, APPELLANT), null},
                 new Object[]{"cc20b48f-be92-4eb7-aab2-278997926fa7", Collections.EMPTY_LIST, null, null, ORAL, getTemplateName(POSTPONEMENT_NOTIFICATION, APPELLANT), null},
@@ -273,7 +272,7 @@ public class NotificationConfigTest {
                 new Object[]{"74fc911e-2e5f-49db-abc2-c793f3a964a8", Arrays.asList("ce1c3a63-7235-4b0a-960a-4b03b9a6abd4","446c7b23-7342-42e1-adff-b4c367e951cb"), "b21cb376-511d-45d1-8ad2-565a74de44db", null, PAPER, getTemplateName(ADMIN_APPEAL_WITHDRAWN, APPOINTEE), null},
                 new Object[]{"74fc911e-2e5f-49db-abc2-c793f3a964a8", Arrays.asList("ce1c3a63-7235-4b0a-960a-4b03b9a6abd4","446c7b23-7342-42e1-adff-b4c367e951cb"), "b21cb376-511d-45d1-8ad2-565a74de44db", null, ORAL, getTemplateName(ADMIN_APPEAL_WITHDRAWN, APPOINTEE), null},
 
-                new Object[]{"19b4f9c7-d4f6-49b1-9f61-ace2d0930c2a", Arrays.asList("8aa77a9c-9bc6-424d-8716-1c948681270e", "8aa77a9c-9bc6-424d-8716-1c948681270e"), null, null, ORAL, getTemplateName(HEARING_BOOKED_NOTIFICATION, JOINT_PARTY), null},
+                new Object[]{"cb4dd4fc-78a5-47aa-8303-5f66a9bda6e0", Arrays.asList("25a321e7-088b-40ac-9313-4c4f6471e682", "8aa77a9c-9bc6-424d-8716-1c948681270e"), null, null, ORAL, getTemplateName(HEARING_BOOKED_NOTIFICATION, JOINT_PARTY), null},
                 new Object[]{"19b4f9c7-d4f6-49b1-9f61-ace2d0930c2a", Arrays.asList("8aa77a9c-9bc6-424d-8716-1c948681270e", "8aa77a9c-9bc6-424d-8716-1c948681270e"), null, null, PAPER, getTemplateName(HEARING_BOOKED_NOTIFICATION, APPELLANT), null},
                 new Object[]{"19b4f9c7-d4f6-49b1-9f61-ace2d0930c2a", Arrays.asList("8aa77a9c-9bc6-424d-8716-1c948681270e", "8aa77a9c-9bc6-424d-8716-1c948681270e"), null, null, ORAL, getTemplateName(HEARING_BOOKED_NOTIFICATION, APPELLANT), null},
                 new Object[]{"ddbc2437-604d-4ba3-a174-c3664efca8ee", Arrays.asList("1b4cd26e-5219-44c5-ba6c-b21e33ddbeba","e04c548d-1ba9-40b5-bf9b-ea5e7bbadbac"), null, null, PAPER, getTemplateName(HEARING_BOOKED_NOTIFICATION, REPRESENTATIVE), null},
