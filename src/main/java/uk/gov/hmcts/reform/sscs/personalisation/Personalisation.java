@@ -121,7 +121,6 @@ import static uk.gov.hmcts.reform.sscs.service.NotificationUtils.hasAppointee;
 import static uk.gov.hmcts.reform.sscs.service.NotificationUtils.hasJointParty;
 import static uk.gov.hmcts.reform.sscs.service.NotificationUtils.hasRepresentative;
 
-
 import java.io.UnsupportedEncodingException;
 import java.net.URLEncoder;
 import java.nio.charset.StandardCharsets;

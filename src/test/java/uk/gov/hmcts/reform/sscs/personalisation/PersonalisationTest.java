@@ -100,7 +100,6 @@ import static uk.gov.hmcts.reform.sscs.domain.notify.NotificationEventType.SYA_A
 import static uk.gov.hmcts.reform.sscs.domain.notify.NotificationEventType.TCW_DECISION_APPEAL_TO_PROCEED;
 import static uk.gov.hmcts.reform.sscs.domain.notify.NotificationEventType.VALID_APPEAL_CREATED;
 
-
 import java.time.Instant;
 import java.time.LocalDate;
 import java.time.ZoneId;
