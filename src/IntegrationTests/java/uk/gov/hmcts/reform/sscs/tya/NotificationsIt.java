@@ -832,6 +832,18 @@ public class NotificationsIt {
                         "1",
                         "0"
                 },
+                new Object[]{
+                        JOINT_PARTY_ADDED,
+                        "paper",
+                        Collections.emptyList(),
+                        Collections.emptyList(),
+                        Arrays.asList("TB-SCS-GNO-ENG-00579.docx", "TB-SCS-GNO-ENG-00579.docx"),
+                        "yes",
+                        "yes",
+                        "0",
+                        "0",
+                        "0"
+                },
         };
     }
 

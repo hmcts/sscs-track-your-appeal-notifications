@@ -143,7 +143,8 @@ public class CcdNotificationWrapper implements NotificationWrapper {
                 || TCW_DECISION_APPEAL_TO_PROCEED.equals(getNotificationType())
                 || NON_COMPLIANT_NOTIFICATION.equals(getNotificationType())
                 || RESEND_APPEAL_CREATED_NOTIFICATION.equals(getNotificationType())
-                || REQUEST_INFO_INCOMPLETE.equals(getNotificationType()))
+                || REQUEST_INFO_INCOMPLETE.equals(getNotificationType())
+                || JOINT_PARTY_ADDED.equals(getNotificationType()))
         ) {
             subscriptionWithTypeList.add(new SubscriptionWithType(getAppointeeSubscription(), APPOINTEE));
         } else if (getOldSscsCaseData() != null && isValidReviewConfidentialityRequest(getOldSscsCaseData().getConfidentialityRequestOutcomeAppellant(), getNewSscsCaseData().getConfidentialityRequestOutcomeAppellant())) {
@@ -203,6 +204,7 @@ public class CcdNotificationWrapper implements NotificationWrapper {
             || DWP_UPLOAD_RESPONSE_NOTIFICATION.equals(getNotificationType()) && PAPER.equals(getHearingType())
             || EVIDENCE_REMINDER_NOTIFICATION.equals(getNotificationType())
             || REQUEST_INFO_INCOMPLETE.equals(getNotificationType())
+            || JOINT_PARTY_ADDED.equals(getNotificationType())
             || (getOldSscsCaseData() != null && isValidReviewConfidentialityRequest(getOldSscsCaseData().getConfidentialityRequestOutcomeJointParty(), getNewSscsCaseData().getConfidentialityRequestOutcomeJointParty())))
         ) {
             subscriptionWithTypeList.add(new SubscriptionWithType(getJointPartySubscription(), JOINT_PARTY));

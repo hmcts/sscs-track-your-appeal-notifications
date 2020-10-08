@@ -193,7 +193,13 @@ public class Personalisation<E extends NotificationWrapper> {
         personalisation.put(CREATED_DATE, ccdResponse.getCaseCreated());
         personalisation.put(JOINT, subscriptionWithType.getSubscriptionType().equals(JOINT_PARTY) ? JOINT_TEXT_WITH_A_SPACE : EMPTY);
 
-        personalisation.put(JOINT_PARTY_APPEAL, StringUtils.equalsIgnoreCase(ccdResponse.getJointParty(), "yes") ? "Yes" : "No");
+        if (StringUtils.equalsIgnoreCase(ccdResponse.getJointParty(), "yes")) {
+            personalisation.put(JOINT_PARTY_APPEAL, "Yes");
+            personalisation.put(JOINT_PARTY_NAME, ccdResponse.getJointPartyName().getFullNameNoTitle());
+        } else {
+            personalisation.put(JOINT_PARTY_APPEAL, "No");
+        }
+
 
         if (ccdResponse.getHearings() != null && !ccdResponse.getHearings().isEmpty()) {
 
@@ -535,6 +541,7 @@ public class Personalisation<E extends NotificationWrapper> {
                 || REQUEST_INFO_INCOMPLETE.equals(notificationEventType)
                 || ISSUE_FINAL_DECISION.equals(notificationEventType)
                 || ISSUE_ADJOURNMENT_NOTICE.equals(notificationEventType)
+                || JOINT_PARTY_ADDED.equals(notificationEventType)
                 || REVIEW_CONFIDENTIALITY_REQUEST.equals(notificationEventType))) {
             letterTemplateName = letterTemplateName + "." + subscriptionType.name().toLowerCase();
 
