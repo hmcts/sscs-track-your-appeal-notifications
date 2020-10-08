@@ -2,10 +2,9 @@ package uk.gov.hmcts.reform.sscs.functional.sya.notifications;
 
 import static uk.gov.hmcts.reform.sscs.domain.notify.NotificationEventType.ADJOURNED_NOTIFICATION;
 import static uk.gov.hmcts.reform.sscs.domain.notify.NotificationEventType.APPEAL_DORMANT_NOTIFICATION;
-import static uk.gov.hmcts.reform.sscs.domain.notify.NotificationEventType.DWP_RESPONSE_RECEIVED_NOTIFICATION;
-import static uk.gov.hmcts.reform.sscs.domain.notify.NotificationEventType.DWP_UPLOAD_RESPONSE_NOTIFICATION;
 import static uk.gov.hmcts.reform.sscs.domain.notify.NotificationEventType.EVIDENCE_RECEIVED_NOTIFICATION;
 import static uk.gov.hmcts.reform.sscs.domain.notify.NotificationEventType.EVIDENCE_REMINDER_NOTIFICATION;
+import static uk.gov.hmcts.reform.sscs.domain.notify.NotificationEventType.HEARING_BOOKED_NOTIFICATION;
 import static uk.gov.hmcts.reform.sscs.domain.notify.NotificationEventType.POSTPONEMENT_NOTIFICATION;
 import static uk.gov.hmcts.reform.sscs.domain.notify.NotificationEventType.SUBSCRIPTION_CREATED_NOTIFICATION;
 import static uk.gov.hmcts.reform.sscs.domain.notify.NotificationEventType.SUBSCRIPTION_UPDATED_NOTIFICATION;
@@ -61,14 +60,17 @@ public class WelshNotificationsFunctionalTest extends AbstractFunctionalTest {
     @Value("${notification.welsh.hearingAdjourned.appellant.smsId}")
     private String hearingAdjournedSmsTemplateIdWelsh;
 
+    @Value("${notification.welsh.hearingAdjourned.joint_party.emailId}")
+    private String hearingAdjournedJointPartyEmailTemplateIdWelsh;
+
+    @Value("${notification.welsh.hearingAdjourned.joint_party.smsId}")
+    private String hearingAdjournedJointPartySmsTemplateIdWelsh;
+
     @Value("${notification.welsh.subscriptionCreated.appellant.smsId}")
     private String subscriptionCreatedSmsTemplateIdWelsh;
 
     @Value("${notification.welsh.subscriptionUpdated.emailId}")
     private String subscriptionUpdatedEmailTemplateIdWelsh;
-
-    @Value("${notification.welsh.online.responseReceived.emailId}")
-    private String onlineResponseReceivedEmailIdWelsh;
 
     @Value("${notification.welsh.paper.responseReceived.appellant.emailId}")
     private String paperResponseReceivedEmailIdWelsh;
@@ -181,6 +183,12 @@ public class WelshNotificationsFunctionalTest extends AbstractFunctionalTest {
     @Value("${notification.welsh.hearingBooked.appointee.smsId}")
     private String appointeeHearingBookedSmsIdWelsh;
 
+    @Value("${notification.welsh.hearingBooked.joint_party.emailId}")
+    private String jointPartyHearingBookedEmailIdWelsh;
+
+    @Value("${notification.welsh.hearingBooked.joint_party.smsId}")
+    private String jointPartyHearingBookedSmsIdWelsh;
+
     @Value("${notification.welsh.hearingPostponed.appointee.emailId}")
     private String appointeeHearingPostponedEmailIdWelsh;
 
@@ -212,6 +220,17 @@ public class WelshNotificationsFunctionalTest extends AbstractFunctionalTest {
         tryFetchNotificationsForTestCase(hearingPostponedEmailTemplateIdWelsh, hearingPostponedEmailTemplateIdJointPartyWelsh);
     }
 
+    @Test
+    public void shouldSendHearingBookedNotificationWelsh() throws NotificationClientException, IOException {
+        simulateCcdCallback(HEARING_BOOKED_NOTIFICATION, "appointee/" + HEARING_BOOKED_NOTIFICATION.getId() + "CallbackWelsh.json");
+
+        tryFetchNotificationsForTestCase(
+                appointeeHearingBookedEmailIdWelsh,
+                appointeeHearingBookedSmsIdWelsh,
+                jointPartyHearingBookedEmailIdWelsh,
+                jointPartyHearingBookedSmsIdWelsh);
+    }
+
 
     @Test
     public void shouldSendHearingAdjournedNotificationWelsh() throws NotificationClientException, IOException {
@@ -219,7 +238,9 @@ public class WelshNotificationsFunctionalTest extends AbstractFunctionalTest {
 
         tryFetchNotificationsForTestCase(
                 hearingAdjournedEmailTemplateIdWelsh,
-                hearingAdjournedSmsTemplateIdWelsh
+                hearingAdjournedSmsTemplateIdWelsh,
+                hearingAdjournedJointPartyEmailTemplateIdWelsh,
+                hearingAdjournedJointPartySmsTemplateIdWelsh
         );
     }
 
@@ -238,24 +259,6 @@ public class WelshNotificationsFunctionalTest extends AbstractFunctionalTest {
 
         tryFetchNotificationsForTestCase(subscriptionUpdatedEmailTemplateIdWelsh);
     }
-
-
-    @Test
-    public void shouldSendOnlineDwpResponseReceivedNotificationWelsh() throws NotificationClientException, IOException {
-        simulateCcdCallback(DWP_RESPONSE_RECEIVED_NOTIFICATION, "online-" + DWP_RESPONSE_RECEIVED_NOTIFICATION.getId() + "CallbackWelsh.json");
-        List<Notification> notifications = tryFetchNotificationsForTestCase(onlineResponseReceivedEmailIdWelsh);
-
-        assertNotificationBodyContains(notifications, onlineResponseReceivedEmailIdWelsh, caseData.getCaseReference());
-    }
-
-    @Test
-    public void shouldSendOnlineDwpUploadResponseReceivedNotificationWelsh() throws NotificationClientException, IOException {
-        simulateCcdCallback(DWP_UPLOAD_RESPONSE_NOTIFICATION, "online-" + DWP_UPLOAD_RESPONSE_NOTIFICATION.getId() + "CallbackWelsh.json");
-        List<Notification> notifications = tryFetchNotificationsForTestCase(onlineResponseReceivedEmailIdWelsh);
-
-        assertNotificationBodyContains(notifications, onlineResponseReceivedEmailIdWelsh, caseId.toString());
-    }
-
 
     @Test
     public void shouldSendAppealCreatedAppellantNotificationWelsh() throws NotificationClientException, IOException {

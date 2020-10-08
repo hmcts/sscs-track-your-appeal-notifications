@@ -70,6 +70,24 @@ public class ReminderNotificationsFunctionalTest extends AbstractFunctionalTest 
     @Value("${notification.english.hearingReminder.appointee.smsId}")
     private String hearingReminderAppointeeSmsTemplateId;
 
+    @Value("${notification.welsh.hearingReminder.appellant.emailId}")
+    private String hearingReminderWelshAppellantEmailTemplateId;
+
+    @Value("${notification.welsh.hearingReminder.appellant.smsId}")
+    private String hearingReminderWelshAppellantSmsTemplateId;
+
+    @Value("${notification.welsh.hearingReminder.appointee.emailId}")
+    private String hearingReminderWelshAppointeeEmailTemplateId;
+
+    @Value("${notification.welsh.hearingReminder.appointee.smsId}")
+    private String hearingReminderWelshAppointeeSmsTemplateId;
+
+    @Value("${notification.welsh.hearingReminder.joint_party.emailId}")
+    private String hearingReminderWelshJointPartyEmailTemplateId;
+
+    @Value("${notification.welsh.hearingReminder.joint_party.smsId}")
+    private String hearingReminderWelshJointPartySmsTemplateId;
+
     public ReminderNotificationsFunctionalTest() {
         super(120);
     }
@@ -359,6 +377,52 @@ public class ReminderNotificationsFunctionalTest extends AbstractFunctionalTest 
                 hearingReminderRepresentativeSmsTemplateId,
                 "ESA",
                 "reminder",
+                formattedString,
+                "11:59 PM",
+                "AB12 0HN",
+                "/abouthearing"
+        );
+    }
+
+    @Test
+    @Ignore
+    public void shouldSendNotificationsWhenHearingBookedEventIsReceivedWhenAnAppellantAndJointPartyIsSubscribed() throws IOException, NotificationClientException {
+
+        addHearing(caseData, 0);
+        triggerEvent(HEARING_BOOKED_NOTIFICATION);
+        simulateCcdCallback(HEARING_BOOKED_NOTIFICATION, "appointee/" + HEARING_BOOKED_NOTIFICATION.getId() + "CallbackWelsh.json");
+
+        String formattedString = LocalDate.now().format(DateTimeFormatter.ofPattern(AppConstants.RESPONSE_DATE_FORMAT));
+
+        List<Notification> notifications =
+                tryFetchNotificationsForTestCaseWithExpectedText(formattedString,
+                        hearingReminderWelshAppellantEmailTemplateId,
+                        hearingReminderWelshAppellantSmsTemplateId,
+                        hearingReminderWelshAppointeeEmailTemplateId,
+                        hearingReminderWelshAppointeeSmsTemplateId,
+                        hearingReminderWelshJointPartyEmailTemplateId,
+                        hearingReminderWelshJointPartySmsTemplateId
+                );
+
+        assertNotificationSubjectContains(notifications, hearingReminderWelshAppellantEmailTemplateId, "ESA");
+
+        assertNotificationBodyContains(
+                notifications,
+                hearingReminderWelshJointPartyEmailTemplateId,
+                caseReference,
+                "ESA",
+                "atgoffa",
+                formattedString,
+                "11:59 PM",
+                "AB12 0HN",
+                "/abouthearing"
+        );
+
+        assertNotificationBodyContains(
+                notifications,
+                hearingReminderWelshJointPartySmsTemplateId,
+                "ESA",
+                "atgoffa",
                 formattedString,
                 "11:59 PM",
                 "AB12 0HN",
