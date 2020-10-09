@@ -726,11 +726,13 @@ notification:
     directionIssued:
       appealToProceed:
         appellant:
-          docmosisId: TB-SCS-GNO-WEL-00468.docx
+          docmosisId: TB-SCS-GNO-WEL-00590.docx
         appointee:
-          docmosisId: TB-SCS-GNO-WEL-00468.docx
+          docmosisId: TB-SCS-GNO-WEL-00590.docx
         representative:
-          docmosisId: TB-SCS-GNO-WEL-00472.docx
+          docmosisId: TB-SCS-GNO-WEL-00590.docx
+        joint_party:
+          docmosisId: TB-SCS-GNO-WEL-00590.docx
       provideInformation:
         appellant:
           docmosisId: TB-SCS-GNO-WEL-00468.docx
