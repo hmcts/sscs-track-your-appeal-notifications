@@ -292,7 +292,7 @@ public class NotificationService {
                 return false;
             }
         }
-        if (notificationWrapper.getNewSscsCaseData().isLanguagePreferenceWelsh() && (DECISION_ISSUED.equals(notificationType))) {
+        if (notificationWrapper.getNewSscsCaseData().isLanguagePreferenceWelsh() && (DECISION_ISSUED.equals(notificationType) || DIRECTION_ISSUED.equals(notificationType))) {
             log.info(String.format("Cannot complete notification %s as the appeal is Welsh  for caseId %s.",
                     notificationType.getId(), notificationWrapper.getCaseId()));
             return false;
