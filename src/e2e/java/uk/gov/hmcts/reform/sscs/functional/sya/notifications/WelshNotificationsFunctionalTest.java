@@ -112,6 +112,12 @@ public class WelshNotificationsFunctionalTest extends AbstractFunctionalTest {
     @Value("${notification.welsh.paper.evidenceReceived.appointee.smsId}")
     private String appointeeEvidenceReceivedSmsIdWelsh;
 
+    @Value("${notification.welsh.oral.evidenceReceived.joint_party.emailId}")
+    private String oralJointPartyEvidenceReceivedEmailIdWelsh;
+
+    @Value("${notification.welsh.oral.evidenceReceived.joint_party.smsId}")
+    private String oralJointPartyEvidenceReceivedSmsIdWelsh;
+
     @Value("${notification.welsh.paper.responseReceived.appointee.emailId}")
     private String paperAppointeeResponseReceivedEmailIdWelsh;
 
@@ -220,7 +226,9 @@ public class WelshNotificationsFunctionalTest extends AbstractFunctionalTest {
         simulateWelshCcdCallback(EVIDENCE_RECEIVED_NOTIFICATION);
         tryFetchNotificationsForTestCase(
                 oralEvidenceReceivedEmailTemplateIdWelsh,
-                oralEvidenceReceivedSmsTemplateIdWelsh
+                oralEvidenceReceivedSmsTemplateIdWelsh,
+                oralJointPartyEvidenceReceivedEmailIdWelsh,
+                oralJointPartyEvidenceReceivedSmsIdWelsh
         );
     }
 

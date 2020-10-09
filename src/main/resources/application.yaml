@@ -971,8 +971,8 @@ notification:
           emailId: 148e1bbb-2e1e-4353-8cf3-8472131f0efc
           smsId: 8245da79-cc7a-4953-b814-4b06cc322c0a
         joint_party:
-          emailId: 148e1bbb-2e1e-4353-8cf3-8472131f0efc
-          smsId: 8245da79-cc7a-4953-b814-4b06cc322c0a
+          emailId: 5e7f89cb-e9d2-4830-95f9-944b033f9227
+          smsId: 8336c537-7cbe-4232-912e-64dd10d20ad1
       appealDormant:
         appellant:
           emailId: c2258883-19c9-40db-b7e1-792b05f41103
