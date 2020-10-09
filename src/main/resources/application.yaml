@@ -590,9 +590,9 @@ notification:
         smsId: a3585b50-7a4e-4b84-9a3a-c1323ef26d3a
         letterId: 4d7a4cd2-1314-4638-80bc-bc6b1281de30
       joint_party:
-        emailId: 89302ee1-291f-4a76-b388-5b9d8dbfbd4b
-        smsId: a3585b50-7a4e-4b84-9a3a-c1323ef26d3a
-        letterId: 4d7a4cd2-1314-4638-80bc-bc6b1281de30
+        emailId: a72272a6-1eaf-41f5-84c8-ec00debbf958
+        smsId: 37cddbe4-bd2e-4027-967b-840d1f11bea8
+        letterId: 8b3c63bf-d616-4529-89ea-76357c94c709
     confirmLapsed:
       appellant:
         emailId: 89302ee1-291f-4a76-b388-5b9d8dbfbd4b
@@ -631,9 +631,9 @@ notification:
         smsId: ce1c3a63-7235-4b0a-960a-4b03b9a6abd4
         letterId: b21cb376-511d-45d1-8ad2-565a74de44db
       joint_party:
-        emailId: 74fc911e-2e5f-49db-abc2-c793f3a964a8
-        smsId: ce1c3a63-7235-4b0a-960a-4b03b9a6abd4
-        letterId: b21cb376-511d-45d1-8ad2-565a74de44db
+        emailId: 9d80acbd-e92a-4a59-9965-3061d842fa02
+        smsId: 904549fa-8054-4ece-91d9-5f57f1e40654
+        letterId: 8e23a4a5-3ed8-463d-b4d6-63a499a0f577
     adminAppealWithdrawn:
       appellant:
         emailId: 74fc911e-2e5f-49db-abc2-c793f3a964a8
@@ -648,9 +648,9 @@ notification:
         smsId: def78942-c9e2-4feb-aa2a-863a2ee7c6c5
         letterId: 8c719552-6b6b-4df3-9edb-9fe1635755b9
       joint_party:
-        emailId: 74fc911e-2e5f-49db-abc2-c793f3a964a8
-        smsId: ce1c3a63-7235-4b0a-960a-4b03b9a6abd4
-        letterId: b21cb376-511d-45d1-8ad2-565a74de44db
+        emailId: 9d80acbd-e92a-4a59-9965-3061d842fa02
+        smsId: 904549fa-8054-4ece-91d9-5f57f1e40654
+        letterId: 8e23a4a5-3ed8-463d-b4d6-63a499a0f577
     subscriptionCreated:
       appellant.smsId: 7397a76f-14cb-468c-b1a7-0570940ead91
       appointee.smsId: 7397a76f-14cb-468c-b1a7-0570940ead91
