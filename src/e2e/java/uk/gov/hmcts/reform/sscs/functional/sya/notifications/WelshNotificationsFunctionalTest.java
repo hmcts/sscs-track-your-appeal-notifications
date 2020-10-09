@@ -432,8 +432,8 @@ public class WelshNotificationsFunctionalTest extends AbstractFunctionalTest {
     @SuppressWarnings({"Indentation", "unused"})
     private Object[] docmosisTestSetup() {
         return new Object[]{
-                new Object[]{DIRECTION_ISSUED_WELSH, Optional.of("AppealToProceed"), 3},
-                new Object[]{DIRECTION_ISSUED_WELSH, Optional.of("provideInformation"), 3},
+//                new Object[]{DIRECTION_ISSUED_WELSH, Optional.of("AppealToProceed"), 3},
+                new Object[]{DIRECTION_ISSUED_WELSH, Optional.of("ProvideInformation"), 3},
         };
     }
 }
