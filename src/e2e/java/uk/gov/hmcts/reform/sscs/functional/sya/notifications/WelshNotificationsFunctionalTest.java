@@ -20,7 +20,6 @@ import static uk.gov.hmcts.reform.sscs.domain.notify.NotificationEventType.VALID
 import java.io.IOException;
 import java.util.List;
 import java.util.Optional;
-
 import junitparams.Parameters;
 import org.junit.Test;
 import org.springframework.beans.factory.annotation.Value;
