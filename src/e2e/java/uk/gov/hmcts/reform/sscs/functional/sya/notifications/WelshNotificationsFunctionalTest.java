@@ -211,6 +211,19 @@ public class WelshNotificationsFunctionalTest extends AbstractFunctionalTest {
     @Value("${notification.welsh.hearingPostponed.appointee.emailId}")
     private String appointeeHearingPostponedEmailIdWelsh;
 
+    @Value("${notification.welsh.paper.evidenceReceived.appointee.emailId}")
+    private String paperEvidenceReceivedEmailTemplateIdWelsh;
+
+    @Value("${notification.welsh.paper.evidenceReceived.appointee.smsId}")
+    private String paperEvidenceReceivedSmsTemplateIdWelsh;
+
+    @Value("${notification.welsh.paper.evidenceReceived.joint_party.emailId}")
+    private String paperJointPartyEvidenceReceivedEmailIdWelsh;
+
+    @Value("${notification.welsh.paper.evidenceReceived.joint_party.smsId}")
+    private String paperJointPartyEvidenceReceivedSmsIdWelsh;
+
+
     public WelshNotificationsFunctionalTest() {
         super(30);
     }
@@ -231,6 +244,18 @@ public class WelshNotificationsFunctionalTest extends AbstractFunctionalTest {
                 oralJointPartyEvidenceReceivedSmsIdWelsh
         );
     }
+
+    @Test
+    public void shouldSendPaperEvidenceReceivedNotificationWelsh() throws NotificationClientException, IOException {
+        simulateCcdCallback(EVIDENCE_RECEIVED_NOTIFICATION, "paper-" + EVIDENCE_RECEIVED_NOTIFICATION.getId() + "CallbackWelsh.json");
+        tryFetchNotificationsForTestCase(
+            paperEvidenceReceivedEmailTemplateIdWelsh,
+            paperEvidenceReceivedSmsTemplateIdWelsh,
+            paperJointPartyEvidenceReceivedEmailIdWelsh,
+            paperJointPartyEvidenceReceivedSmsIdWelsh);
+    }
+
+
 
     @Test
     public void shouldSendHearingPostponedNotificationWelsh() throws NotificationClientException, IOException {
