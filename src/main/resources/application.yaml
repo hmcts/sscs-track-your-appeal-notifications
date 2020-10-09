@@ -588,9 +588,9 @@ notification:
         smsId: a3585b50-7a4e-4b84-9a3a-c1323ef26d3a
         letterId: 4d7a4cd2-1314-4638-80bc-bc6b1281de30
       joint_party:
-        emailId: 89302ee1-291f-4a76-b388-5b9d8dbfbd4b
-        smsId: a3585b50-7a4e-4b84-9a3a-c1323ef26d3a
-        letterId: 4d7a4cd2-1314-4638-80bc-bc6b1281de30
+        emailId: a72272a6-1eaf-41f5-84c8-ec00debbf958
+        smsId: 37cddbe4-bd2e-4027-967b-840d1f11bea8
+        letterId: 8b3c63bf-d616-4529-89ea-76357c94c709
     confirmLapsed:
       appellant:
         emailId: 89302ee1-291f-4a76-b388-5b9d8dbfbd4b
