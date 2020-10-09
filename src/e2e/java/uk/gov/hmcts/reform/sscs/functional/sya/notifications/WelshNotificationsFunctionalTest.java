@@ -5,6 +5,7 @@ import static org.junit.Assert.assertTrue;
 import static uk.gov.hmcts.reform.sscs.domain.notify.NotificationEventType.ADJOURNED_NOTIFICATION;
 import static uk.gov.hmcts.reform.sscs.domain.notify.NotificationEventType.APPEAL_DORMANT_NOTIFICATION;
 import static uk.gov.hmcts.reform.sscs.domain.notify.NotificationEventType.APPEAL_LAPSED_NOTIFICATION;
+import static uk.gov.hmcts.reform.sscs.domain.notify.NotificationEventType.APPEAL_WITHDRAWN_NOTIFICATION;
 import static uk.gov.hmcts.reform.sscs.domain.notify.NotificationEventType.EVIDENCE_RECEIVED_NOTIFICATION;
 import static uk.gov.hmcts.reform.sscs.domain.notify.NotificationEventType.EVIDENCE_REMINDER_NOTIFICATION;
 import static uk.gov.hmcts.reform.sscs.domain.notify.NotificationEventType.HEARING_BOOKED_NOTIFICATION;
@@ -183,6 +184,12 @@ public class WelshNotificationsFunctionalTest extends AbstractFunctionalTest {
     @Value("${notification.welsh.appealWithdrawn.appointee.smsId}")
     private String appointeeAppealWithdrawnSmsIdWelsh;
 
+    @Value("${notification.welsh.appealWithdrawn.joint_party.emailId}")
+    private String jointPartyAppealWithdrawnEmailIdWelsh;
+
+    @Value("${notification.welsh.appealWithdrawn.joint_party.smsId}")
+    private String jointPartyAppealWithdrawnSmsIdWelsh;
+
     @Value("${notification.welsh.hearingBooked.appointee.emailId}")
     private String appointeeHearingBookedEmailIdWelsh;
 
@@ -355,6 +362,27 @@ public class WelshNotificationsFunctionalTest extends AbstractFunctionalTest {
         List<String> templateIds = letterNotification.stream().map(n -> n.getTemplateId().toString()).collect(toList());
         assertTrue(templateIds.contains(appealLapsedAppointeeLetterTemplateIdWelsh));
         assertTrue(templateIds.contains(appealLapsedJointPartyLetterTemplateIdWelsh));
+    }
+
+    @Test
+    public void shouldSendAppointeeAppealWithdrawnNotification() throws NotificationClientException, IOException {
+        simulateCcdCallback(APPEAL_WITHDRAWN_NOTIFICATION,
+                "appointee/" + APPEAL_WITHDRAWN_NOTIFICATION.getId() + "CallbackWelsh.json");
+        List<Notification> notifications = tryFetchNotificationsForTestCase(
+                appointeeAppealWithdrawnEmailIdWelsh,
+                appointeeAppealWithdrawnSmsIdWelsh,
+                jointPartyAppealWithdrawnEmailIdWelsh,
+                jointPartyAppealWithdrawnSmsIdWelsh);
+        Notification appointeeEmail = notifications.stream()
+                .filter(f -> f.getTemplateId().toString().equals(appointeeAppealWithdrawnEmailIdWelsh))
+                .collect(toList()).get(0);
+        assertTrue(appointeeEmail.getBody().contains("Annwyl Appointee User"));
+        assertTrue(appointeeEmail.getBody().contains("You are receiving this update as the appointee for"));
+        Notification jointPartyEmail = notifications.stream()
+                .filter(f -> f.getTemplateId().toString().equals(jointPartyAppealWithdrawnEmailIdWelsh))
+                .collect(toList()).get(0);
+        assertTrue(jointPartyEmail.getBody().contains("Annwyl Joint Party"));
+        assertTrue(jointPartyEmail.getBody().contains("Ysgrifennwyd yr e-bost hwn yn Gymraeg a Saesneg"));
     }
 
     @Test
