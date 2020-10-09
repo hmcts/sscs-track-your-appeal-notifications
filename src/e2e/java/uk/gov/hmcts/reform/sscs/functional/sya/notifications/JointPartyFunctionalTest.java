@@ -138,6 +138,22 @@ public class JointPartyFunctionalTest extends AbstractFunctionalTest {
         assertEquals("Pre-compiled PDF", notifications.get(2).getSubject().orElse("Unknown Subject"));
     }
 
+    @Test
+    public void sendsDirectionIssuedProvideInformationLetterToAppellantRepresentativeAndJointPartyWelsh() throws IOException, NotificationClientException {
+
+        NotificationEventType notificationEventType = NotificationEventType.DIRECTION_ISSUED;
+
+        simulateCcdCallback(notificationEventType,
+                notificationEventType.getId() + "ProvideInformationCallbackWelsh.json");
+
+        List<Notification> notifications = fetchLetters();
+
+        assertEquals(3, notifications.size());
+        assertEquals("Pre-compiled PDF", notifications.get(0).getSubject().orElse("Unknown Subject"));
+        assertEquals("Pre-compiled PDF", notifications.get(1).getSubject().orElse("Unknown Subject"));
+        assertEquals("Pre-compiled PDF", notifications.get(2).getSubject().orElse("Unknown Subject"));
+    }
+
     private String getFieldValue(String hearingType, NotificationEventType notificationEventType, String fieldName) throws Exception {
         String fieldValue;
         try {
