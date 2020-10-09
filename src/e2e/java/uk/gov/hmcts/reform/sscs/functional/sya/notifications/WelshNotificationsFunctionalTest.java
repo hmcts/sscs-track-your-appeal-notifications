@@ -1,16 +1,8 @@
 package uk.gov.hmcts.reform.sscs.functional.sya.notifications;
 
-import static uk.gov.hmcts.reform.sscs.domain.notify.NotificationEventType.ADJOURNED_NOTIFICATION;
-import static uk.gov.hmcts.reform.sscs.domain.notify.NotificationEventType.APPEAL_DORMANT_NOTIFICATION;
-import static uk.gov.hmcts.reform.sscs.domain.notify.NotificationEventType.DWP_RESPONSE_RECEIVED_NOTIFICATION;
-import static uk.gov.hmcts.reform.sscs.domain.notify.NotificationEventType.DWP_UPLOAD_RESPONSE_NOTIFICATION;
-import static uk.gov.hmcts.reform.sscs.domain.notify.NotificationEventType.EVIDENCE_RECEIVED_NOTIFICATION;
-import static uk.gov.hmcts.reform.sscs.domain.notify.NotificationEventType.EVIDENCE_REMINDER_NOTIFICATION;
-import static uk.gov.hmcts.reform.sscs.domain.notify.NotificationEventType.POSTPONEMENT_NOTIFICATION;
-import static uk.gov.hmcts.reform.sscs.domain.notify.NotificationEventType.SUBSCRIPTION_CREATED_NOTIFICATION;
-import static uk.gov.hmcts.reform.sscs.domain.notify.NotificationEventType.SUBSCRIPTION_UPDATED_NOTIFICATION;
-import static uk.gov.hmcts.reform.sscs.domain.notify.NotificationEventType.SYA_APPEAL_CREATED_NOTIFICATION;
-import static uk.gov.hmcts.reform.sscs.domain.notify.NotificationEventType.VALID_APPEAL_CREATED;
+import static java.util.stream.Collectors.toList;
+import static org.junit.Assert.assertTrue;
+import static uk.gov.hmcts.reform.sscs.domain.notify.NotificationEventType.*;
 
 import java.io.IOException;
 import java.util.List;
@@ -61,14 +53,17 @@ public class WelshNotificationsFunctionalTest extends AbstractFunctionalTest {
     @Value("${notification.welsh.hearingAdjourned.appellant.smsId}")
     private String hearingAdjournedSmsTemplateIdWelsh;
 
+    @Value("${notification.welsh.hearingAdjourned.joint_party.emailId}")
+    private String hearingAdjournedJointPartyEmailTemplateIdWelsh;
+
+    @Value("${notification.welsh.hearingAdjourned.joint_party.smsId}")
+    private String hearingAdjournedJointPartySmsTemplateIdWelsh;
+
     @Value("${notification.welsh.subscriptionCreated.appellant.smsId}")
     private String subscriptionCreatedSmsTemplateIdWelsh;
 
     @Value("${notification.welsh.subscriptionUpdated.emailId}")
     private String subscriptionUpdatedEmailTemplateIdWelsh;
-
-    @Value("${notification.welsh.online.responseReceived.emailId}")
-    private String onlineResponseReceivedEmailIdWelsh;
 
     @Value("${notification.welsh.paper.responseReceived.appellant.emailId}")
     private String paperResponseReceivedEmailIdWelsh;
@@ -187,17 +182,38 @@ public class WelshNotificationsFunctionalTest extends AbstractFunctionalTest {
     @Value("${notification.welsh.appealLapsed.appointee.letterId}")
     private String appealLapsedAppointeeLetterTemplateIdWelsh;
 
+    @Value("${notification.welsh.appealLapsed.joint_party.emailId}")
+    private String appealLapsedJointPartyEmailTemplateIdWelsh;
+
+    @Value("${notification.welsh.appealLapsed.joint_party.smsId}")
+    private String appealLapsedJointPartySmsTemplateIdWelsh;
+
+    @Value("${notification.welsh.appealLapsed.joint_party.letterId}")
+    private String appealLapsedJointPartyLetterTemplateIdWelsh;
+
     @Value("${notification.welsh.appealWithdrawn.appointee.emailId}")
     private String appointeeAppealWithdrawnEmailIdWelsh;
 
     @Value("${notification.welsh.appealWithdrawn.appointee.smsId}")
     private String appointeeAppealWithdrawnSmsIdWelsh;
 
+    @Value("${notification.welsh.appealWithdrawn.joint_party.emailId}")
+    private String jointPartyAppealWithdrawnEmailIdWelsh;
+
+    @Value("${notification.welsh.appealWithdrawn.joint_party.smsId}")
+    private String jointPartyAppealWithdrawnSmsIdWelsh;
+
     @Value("${notification.welsh.hearingBooked.appointee.emailId}")
     private String appointeeHearingBookedEmailIdWelsh;
 
     @Value("${notification.welsh.hearingBooked.appointee.smsId}")
     private String appointeeHearingBookedSmsIdWelsh;
+
+    @Value("${notification.welsh.hearingBooked.joint_party.emailId}")
+    private String jointPartyHearingBookedEmailIdWelsh;
+
+    @Value("${notification.welsh.hearingBooked.joint_party.smsId}")
+    private String jointPartyHearingBookedSmsIdWelsh;
 
     @Value("${notification.welsh.hearingPostponed.appointee.emailId}")
     private String appointeeHearingPostponedEmailIdWelsh;
@@ -228,6 +244,17 @@ public class WelshNotificationsFunctionalTest extends AbstractFunctionalTest {
         tryFetchNotificationsForTestCase(hearingPostponedEmailTemplateIdWelsh, hearingPostponedEmailTemplateIdJointPartyWelsh);
     }
 
+    @Test
+    public void shouldSendHearingBookedNotificationWelsh() throws NotificationClientException, IOException {
+        simulateCcdCallback(HEARING_BOOKED_NOTIFICATION, "appointee/" + HEARING_BOOKED_NOTIFICATION.getId() + "CallbackWelsh.json");
+
+        tryFetchNotificationsForTestCase(
+                appointeeHearingBookedEmailIdWelsh,
+                appointeeHearingBookedSmsIdWelsh,
+                jointPartyHearingBookedEmailIdWelsh,
+                jointPartyHearingBookedSmsIdWelsh);
+    }
+
 
     @Test
     public void shouldSendHearingAdjournedNotificationWelsh() throws NotificationClientException, IOException {
@@ -235,7 +262,9 @@ public class WelshNotificationsFunctionalTest extends AbstractFunctionalTest {
 
         tryFetchNotificationsForTestCase(
                 hearingAdjournedEmailTemplateIdWelsh,
-                hearingAdjournedSmsTemplateIdWelsh
+                hearingAdjournedSmsTemplateIdWelsh,
+                hearingAdjournedJointPartyEmailTemplateIdWelsh,
+                hearingAdjournedJointPartySmsTemplateIdWelsh
         );
     }
 
@@ -253,23 +282,6 @@ public class WelshNotificationsFunctionalTest extends AbstractFunctionalTest {
         simulateWelshCcdCallback(SUBSCRIPTION_UPDATED_NOTIFICATION);
 
         tryFetchNotificationsForTestCase(subscriptionUpdatedEmailTemplateIdWelsh);
-    }
-
-
-    @Test
-    public void shouldSendOnlineDwpResponseReceivedNotificationWelsh() throws NotificationClientException, IOException {
-        simulateCcdCallback(DWP_RESPONSE_RECEIVED_NOTIFICATION, "online-" + DWP_RESPONSE_RECEIVED_NOTIFICATION.getId() + "CallbackWelsh.json");
-        List<Notification> notifications = tryFetchNotificationsForTestCase(onlineResponseReceivedEmailIdWelsh);
-
-        assertNotificationBodyContains(notifications, onlineResponseReceivedEmailIdWelsh, caseData.getCaseReference());
-    }
-
-    @Test
-    public void shouldSendOnlineDwpUploadResponseReceivedNotificationWelsh() throws NotificationClientException, IOException {
-        simulateCcdCallback(DWP_UPLOAD_RESPONSE_NOTIFICATION, "online-" + DWP_UPLOAD_RESPONSE_NOTIFICATION.getId() + "CallbackWelsh.json");
-        List<Notification> notifications = tryFetchNotificationsForTestCase(onlineResponseReceivedEmailIdWelsh);
-
-        assertNotificationBodyContains(notifications, onlineResponseReceivedEmailIdWelsh, caseId.toString());
     }
 
     @Test
@@ -363,6 +375,49 @@ public class WelshNotificationsFunctionalTest extends AbstractFunctionalTest {
     public void shouldSendOralAppealDormantNotificationWelsh() throws NotificationClientException, IOException {
         simulateCcdCallback(APPEAL_DORMANT_NOTIFICATION, "oral-" + APPEAL_DORMANT_NOTIFICATION.getId() + "CallbackWelsh.json");
         tryFetchNotificationsForTestCase(appealDormantOralJointPartyEmailTemplateIdWelsh, appealDormantOralAppellantEmailTemplateIdWelsh);
+    }
+
+    @Test
+    public void shouldSendAppointeeAppealLapsedNotification() throws NotificationClientException, IOException {
+        simulateCcdCallback(APPEAL_LAPSED_NOTIFICATION,
+                "appointee/" + APPEAL_LAPSED_NOTIFICATION.getId() + "CallbackWelsh.json");
+        List<Notification> notifications = tryFetchNotificationsForTestCase(
+                appealLapsedAppointeeEmailTemplateIdWelsh,
+                appealLapsedAppointeeSmsTemplateIdWelsh,
+                appealLapsedJointPartyEmailTemplateIdWelsh,
+                appealLapsedJointPartySmsTemplateIdWelsh
+        );
+        Notification emailNotification = notifications.stream().filter(f -> f.getTemplateId().toString().equals(appealLapsedAppointeeEmailTemplateIdWelsh)).collect(toList()).get(0);
+
+        assertTrue(emailNotification.getBody().contains("Dear Appointee User"));
+        assertTrue(emailNotification.getBody().contains("You are receiving this update as the appointee for"));
+        Notification emailNotificationJp = notifications.stream().filter(f -> f.getTemplateId().toString().equals(appealLapsedJointPartyEmailTemplateIdWelsh)).collect(toList()).get(0);
+        assertTrue(emailNotificationJp.getBody().contains("Rydym felly wedi cau’r apêl hon."));
+        List<Notification> letterNotification = fetchLetters();
+        List<String> templateIds = letterNotification.stream().map(n -> n.getTemplateId().toString()).collect(toList());
+        assertTrue(templateIds.contains(appealLapsedAppointeeLetterTemplateIdWelsh));
+        assertTrue(templateIds.contains(appealLapsedJointPartyLetterTemplateIdWelsh));
+    }
+
+    @Test
+    public void shouldSendAppointeeAppealWithdrawnNotification() throws NotificationClientException, IOException {
+        simulateCcdCallback(APPEAL_WITHDRAWN_NOTIFICATION,
+                "appointee/" + APPEAL_WITHDRAWN_NOTIFICATION.getId() + "CallbackWelsh.json");
+        List<Notification> notifications = tryFetchNotificationsForTestCase(
+                appointeeAppealWithdrawnEmailIdWelsh,
+                appointeeAppealWithdrawnSmsIdWelsh,
+                jointPartyAppealWithdrawnEmailIdWelsh,
+                jointPartyAppealWithdrawnSmsIdWelsh);
+        Notification appointeeEmail = notifications.stream()
+                .filter(f -> f.getTemplateId().toString().equals(appointeeAppealWithdrawnEmailIdWelsh))
+                .collect(toList()).get(0);
+        assertTrue(appointeeEmail.getBody().contains("Annwyl Appointee User"));
+        assertTrue(appointeeEmail.getBody().contains("You are receiving this update as the appointee for"));
+        Notification jointPartyEmail = notifications.stream()
+                .filter(f -> f.getTemplateId().toString().equals(jointPartyAppealWithdrawnEmailIdWelsh))
+                .collect(toList()).get(0);
+        assertTrue(jointPartyEmail.getBody().contains("Annwyl Joint Party"));
+        assertTrue(jointPartyEmail.getBody().contains("Ysgrifennwyd yr e-bost hwn yn Gymraeg a Saesneg"));
     }
 
     @Test
