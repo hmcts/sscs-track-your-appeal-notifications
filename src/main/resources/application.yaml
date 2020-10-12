@@ -742,18 +742,22 @@ notification:
           docmosisId: TB-SCS-GNO-WEL-00472.docx
       grantExtension:
         appellant:
-          docmosisId: TB-SCS-GNO-WEL-00468.docx
+          docmosisId: TB-SCS-GNO-WEL-00591.docx
         appointee:
-          docmosisId: TB-SCS-GNO-WEL-00468.docx
+          docmosisId: TB-SCS-GNO-WEL-00591.docx
         representative:
-          docmosisId: TB-SCS-GNO-WEL-00472.docx
+          docmosisId: TB-SCS-GNO-WEL-00591.docx
+        joint_party:
+          docmosisId: TB-SCS-GNO-WEL-00591.docx
       refuseExtension:
         appellant:
-          docmosisId: TB-SCS-GNO-WEL-00468.docx
+          docmosisId: TB-SCS-GNO-WEL-00592.docx
         appointee:
-          docmosisId: TB-SCS-GNO-WEL-00468.docx
+          docmosisId: TB-SCS-GNO-WEL-00592.docx
         representative:
-          docmosisId: TB-SCS-GNO-WEL-00472.docx
+          docmosisId: TB-SCS-GNO-WEL-00592.docx
+        joint_party:
+          docmosisId: TB-SCS-GNO-WEL-00592.docx
       grantReinstatement:
         appellant:
           docmosisId: TB-SCS-GNO-WEL-00586.docx
