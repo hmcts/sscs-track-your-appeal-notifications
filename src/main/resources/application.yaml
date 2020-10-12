@@ -920,8 +920,8 @@ notification:
           emailId: fd16e0cb-c556-45d3-8900-067e119a0dff
           smsId: 8245da79-cc7a-4953-b814-4b06cc322c0a
         joint_party:
-          emailId: fd16e0cb-c556-45d3-8900-067e119a0dff
-          smsId: 8245da79-cc7a-4953-b814-4b06cc322c0a
+          emailId: 06ac4203-8d6c-4c5b-a173-57058f5f95a3
+          smsId: 8336c537-7cbe-4232-912e-64dd10d20ad1
     oral:
       responseReceived:
         appellant:
