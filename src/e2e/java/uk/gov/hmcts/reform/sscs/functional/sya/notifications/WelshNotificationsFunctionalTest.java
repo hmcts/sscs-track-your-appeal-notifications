@@ -12,6 +12,7 @@ import static uk.gov.hmcts.reform.sscs.domain.notify.NotificationEventType.EVIDE
 import static uk.gov.hmcts.reform.sscs.domain.notify.NotificationEventType.EVIDENCE_REMINDER_NOTIFICATION;
 import static uk.gov.hmcts.reform.sscs.domain.notify.NotificationEventType.HEARING_BOOKED_NOTIFICATION;
 import static uk.gov.hmcts.reform.sscs.domain.notify.NotificationEventType.POSTPONEMENT_NOTIFICATION;
+import static uk.gov.hmcts.reform.sscs.domain.notify.NotificationEventType.REQUEST_INFO_INCOMPLETE;
 import static uk.gov.hmcts.reform.sscs.domain.notify.NotificationEventType.SUBSCRIPTION_CREATED_NOTIFICATION;
 import static uk.gov.hmcts.reform.sscs.domain.notify.NotificationEventType.SUBSCRIPTION_UPDATED_NOTIFICATION;
 import static uk.gov.hmcts.reform.sscs.domain.notify.NotificationEventType.SYA_APPEAL_CREATED_NOTIFICATION;
@@ -216,6 +217,19 @@ public class WelshNotificationsFunctionalTest extends AbstractFunctionalTest {
     @Value("${notification.welsh.hearingPostponed.appointee.emailId}")
     private String appointeeHearingPostponedEmailIdWelsh;
 
+    @Value("${notification.welsh.paper.evidenceReceived.appointee.emailId}")
+    private String paperEvidenceReceivedEmailTemplateIdWelsh;
+
+    @Value("${notification.welsh.paper.evidenceReceived.appointee.smsId}")
+    private String paperEvidenceReceivedSmsTemplateIdWelsh;
+
+    @Value("${notification.welsh.paper.evidenceReceived.joint_party.emailId}")
+    private String paperJointPartyEvidenceReceivedEmailIdWelsh;
+
+    @Value("${notification.welsh.paper.evidenceReceived.joint_party.smsId}")
+    private String paperJointPartyEvidenceReceivedSmsIdWelsh;
+
+
     public WelshNotificationsFunctionalTest() {
         super(30);
     }
@@ -236,6 +250,18 @@ public class WelshNotificationsFunctionalTest extends AbstractFunctionalTest {
                 oralJointPartyEvidenceReceivedSmsIdWelsh
         );
     }
+
+    @Test
+    public void shouldSendPaperEvidenceReceivedNotificationWelsh() throws NotificationClientException, IOException {
+        simulateCcdCallback(EVIDENCE_RECEIVED_NOTIFICATION, "paper-" + EVIDENCE_RECEIVED_NOTIFICATION.getId() + "CallbackWelsh.json");
+        tryFetchNotificationsForTestCase(
+            paperEvidenceReceivedEmailTemplateIdWelsh,
+            paperEvidenceReceivedSmsTemplateIdWelsh,
+            paperJointPartyEvidenceReceivedEmailIdWelsh,
+            paperJointPartyEvidenceReceivedSmsIdWelsh);
+    }
+
+
 
     @Test
     public void shouldSendHearingPostponedNotificationWelsh() throws NotificationClientException, IOException {
@@ -419,7 +445,6 @@ public class WelshNotificationsFunctionalTest extends AbstractFunctionalTest {
         );
     }
 
-
     @Test
     @Parameters(method = "docmosisTestSetup")
     public void shouldSendDocmosisLettersViaGovNotify(NotificationEventType notificationEventType,
@@ -428,7 +453,6 @@ public class WelshNotificationsFunctionalTest extends AbstractFunctionalTest {
 
         simulateCcdCallback(notificationEventType,
                 notificationEventType.getId() + resourceParam.orElse("") + "CallbackWelsh.json");
-
         List<Notification> notifications = fetchLetters();
 
         assertEquals(expectedNumberOfLetters, notifications.size());
@@ -440,7 +464,8 @@ public class WelshNotificationsFunctionalTest extends AbstractFunctionalTest {
     @SuppressWarnings({"Indentation", "unused"})
     private Object[] docmosisTestSetup() {
         return new Object[]{
-                new Object[]{DIRECTION_ISSUED_WELSH, Optional.of("AppealToProceed"), 3},
+            new Object[]{REQUEST_INFO_INCOMPLETE, Optional.empty(), 3},
+            new Object[]{DIRECTION_ISSUED_WELSH, Optional.of("AppealToProceed"), 3},
         };
     }
 }
