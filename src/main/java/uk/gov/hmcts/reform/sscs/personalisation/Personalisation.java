@@ -151,9 +151,11 @@ public class Personalisation<E extends NotificationWrapper> {
     }
 
     protected Map<String, String> create(final SscsCaseDataWrapper responseWrapper, final SubscriptionWithType subscriptionWithType) {
+
         SscsCaseData ccdResponse = responseWrapper.getNewSscsCaseData();
         Map<String, String> personalisation = new HashMap<>();
         Benefit benefit = null;
+
         try {
             if (ccdResponse.getAppeal() != null
                 && ccdResponse.getAppeal().getBenefitType() != null
@@ -168,6 +170,7 @@ public class Personalisation<E extends NotificationWrapper> {
         } catch (BenefitMappingException bme) {
             log.warn("Proceeding with 'null' benefit type for case !");
         }
+
         translateToWelshDate(LocalDate.now(), ccdResponse, value -> personalisation.put(WELSH_CURRENT_DATE, value));
         personalisation.put(PANEL_COMPOSITION, getPanelCompositionByBenefitType(benefit));
         LocalDate decisionPostedReceivedDate = LocalDate.now().plusDays(7);
@@ -417,6 +420,7 @@ public class Personalisation<E extends NotificationWrapper> {
         } else {
             rpc = regionalProcessingCenterService.getByScReferenceCode(ccdResponse.getCaseReference());
         }
+
         if (EventType.READY_TO_LIST.getCcdType().equals(ccdResponse.getCreatedInGapsFrom())) {
             personalisation.put(REGIONAL_OFFICE_NAME_LITERAL, evidenceProperties.getAddress().getLine1());
             personalisation.put(SUPPORT_CENTRE_NAME_LITERAL, evidenceProperties.getAddress().getLine2());
@@ -425,7 +429,6 @@ public class Personalisation<E extends NotificationWrapper> {
             personalisation.put(COUNTY_LITERAL, evidenceProperties.getAddress().getCounty());
             personalisation.put(POSTCODE_LITERAL, evidenceProperties.getAddress().getPostcode());
             personalisation.put(REGIONAL_OFFICE_POSTCODE_LITERAL, evidenceProperties.getAddress().getPostcode());
-            personalisation.put(PHONE_NUMBER, evidenceProperties.getAddress().getTelephone());
         } else if (rpc != null) {
             personalisation.put(REGIONAL_OFFICE_NAME_LITERAL, rpc.getAddress1());
             personalisation.put(SUPPORT_CENTRE_NAME_LITERAL, rpc.getAddress2());
@@ -434,12 +437,23 @@ public class Personalisation<E extends NotificationWrapper> {
             personalisation.put(COUNTY_LITERAL, rpc.getCity());
             personalisation.put(POSTCODE_LITERAL, rpc.getPostcode());
             personalisation.put(REGIONAL_OFFICE_POSTCODE_LITERAL, rpc.getPostcode());
-            personalisation.put(PHONE_NUMBER, rpc.getPhoneNumber());
         }
+
         personalisation.put(PHONE_NUMBER_WELSH, evidenceProperties.getAddress().getTelephoneWelsh());
+        personalisation.put(PHONE_NUMBER, determinePhoneNumber(rpc));
+
         setHearingArrangementDetails(personalisation, ccdResponse);
 
         return personalisation;
+    }
+
+    private String determinePhoneNumber(RegionalProcessingCenter rpc) {
+
+        if (rpc != null) {
+            return rpc.getPhoneNumber();
+        } else {
+            return evidenceProperties.getAddress().getTelephone();
+        }
     }
 
     private String formatAddress(Hearing hearing) {
@@ -510,8 +524,11 @@ public class Personalisation<E extends NotificationWrapper> {
                 || RESEND_APPEAL_CREATED_NOTIFICATION.equals(notificationEventType)
                 || VALID_APPEAL_CREATED.equals(notificationEventType)
                 || SYA_APPEAL_CREATED_NOTIFICATION.equals(notificationEventType)) {
+
             emailTemplateName = emailTemplateName + "." + lowerCase(subscriptionType.name());
         }
+
+
         return emailTemplateName;
     }
 
