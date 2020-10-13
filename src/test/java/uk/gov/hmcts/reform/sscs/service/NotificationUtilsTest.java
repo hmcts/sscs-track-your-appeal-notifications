@@ -378,29 +378,18 @@ public class NotificationUtilsTest {
 
     @Test
     public void shouldReturnTrueWhenThereIsAJointParty() {
-        assertTrue(hasJointParty(buildJointPartyWrapper(null, null, YES).getNewSscsCaseData()));
+        assertTrue(hasJointParty(buildJointPartyWrapper(null, null).getNewSscsCaseData()));
     }
 
     @Test
-    public void shouldReturnTrueWhenThereIsAJointPartySubscriptionAndJointPartyIsYes() {
+    public void shouldReturnTrueWhenThereIsAJointPartySubscription() {
         Subscription subscription = Subscription.builder().subscribeSms(YES).subscribeEmail(YES).build();
-        assertTrue(hasJointPartySubscription(buildJointPartyWrapper(subscription, null, YES).getSscsCaseDataWrapper()));
-    }
-
-    @Test
-    public void shouldReturnFalseWhenThereIsAJointPartySubscriptionAndJointPartyIsNo() {
-        Subscription subscription = Subscription.builder().subscribeSms(YES).subscribeEmail(YES).build();
-        assertFalse(hasJointPartySubscription(buildJointPartyWrapper(subscription, null, "No").getSscsCaseDataWrapper()));
+        assertTrue(hasJointPartySubscription(buildJointPartyWrapper(subscription, null).getSscsCaseDataWrapper()));
     }
 
     @Test
     public void shouldReturnFalseWhenThereIsANoJointPartySubscription() {
-        assertFalse(hasJointPartySubscription(buildJointPartyWrapper(null, null, YES).getSscsCaseDataWrapper()));
-    }
-
-    @Test
-    public void shouldReturntrueWhenThereIsANoJointPartySubscriptionButALetterIsSent() {
-        assertTrue(hasJointPartySubscription(buildJointPartyWrapper(null, ISSUE_FINAL_DECISION, YES).getSscsCaseDataWrapper()));
+        assertFalse(hasJointPartySubscription(buildJointPartyWrapper(null, null).getSscsCaseDataWrapper()));
     }
 
     private Object[] mandatoryNotificationTypes() {
@@ -444,11 +433,10 @@ public class NotificationUtilsTest {
         };
     }
 
-    private static CcdNotificationWrapper buildJointPartyWrapper(Subscription subscription, NotificationEventType eventType,
-                                                                 String jointParty) {
+    private static CcdNotificationWrapper buildJointPartyWrapper(Subscription subscription, NotificationEventType eventType) {
         CcdNotificationWrapper ccdNotificationWrapper = buildBaseWrapper(subscription, eventType);
         final SscsCaseData sscsCaseData = ccdNotificationWrapper.getNewSscsCaseData().toBuilder()
-                .jointParty(jointParty)
+                .jointParty(YES)
                 .jointPartyAddressSameAsAppellant(YES)
                 .jointPartyName(JointPartyName.builder().firstName("Joint").lastName("Party").build())
                 .subscriptions(Subscriptions.builder().appellantSubscription(subscription).jointPartySubscription(subscription).build())
