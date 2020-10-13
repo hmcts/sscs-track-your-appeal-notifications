@@ -2,10 +2,7 @@ package uk.gov.hmcts.reform.sscs.personalisation;
 
 import static org.apache.commons.lang3.StringUtils.EMPTY;
 import static org.apache.commons.lang3.StringUtils.lowerCase;
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertNull;
+import static org.junit.Assert.*;
 import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.Mockito.any;
 import static org.mockito.Mockito.anyString;
@@ -628,6 +625,37 @@ public class PersonalisationTest {
                 .notificationEventType(APPEAL_RECEIVED_NOTIFICATION).build(), new SubscriptionWithType(subscriptions.getAppellantSubscription(), APPELLANT));
 
         assertEquals("0300 999 8888", result.get(PHONE_NUMBER));
+    }
+
+    @Test
+    @Parameters({"readyToList,0300 790 6234", ",telephone"})
+    public void givenRpcAndReadyToList_thenGiveCorrectPhoneNumber(String createdInGapsFrom, String phone) {
+        List<Event> events = new ArrayList<>();
+        events.add(Event.builder().value(EventDetails.builder().date(DATE).type(APPEAL_RECEIVED.getCcdType()).build()).build());
+
+        RegionalProcessingCenter rpc = RegionalProcessingCenter
+                .builder()
+                .name("GLASGOW")
+                .phoneNumber(phone)
+                .build();
+
+        when(regionalProcessingCenterService.getByScReferenceCode("SC085/1234/5")).thenReturn(rpc);
+
+        SscsCaseData response = SscsCaseData.builder()
+                .ccdCaseId(CASE_ID).caseReference("SC085/1234/5")
+                .regionalProcessingCenter(null)
+                .createdInGapsFrom(createdInGapsFrom)
+                .appeal(Appeal.builder().benefitType(BenefitType.builder().code("PIP").build())
+                        .appellant(Appellant.builder().name(name).build())
+                        .build())
+                .subscriptions(subscriptions)
+                .events(events)
+                .build();
+
+        Map result = personalisation.create(SscsCaseDataWrapper.builder().newSscsCaseData(response)
+                .notificationEventType(APPEAL_RECEIVED_NOTIFICATION).build(), new SubscriptionWithType(subscriptions.getAppellantSubscription(), APPELLANT));
+
+        assertEquals(phone, result.get(PHONE_NUMBER));
     }
 
     @Test
