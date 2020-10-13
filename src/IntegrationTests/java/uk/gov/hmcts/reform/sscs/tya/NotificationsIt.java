@@ -824,7 +824,7 @@ public class NotificationsIt {
                         DWP_UPLOAD_RESPONSE_NOTIFICATION,
                         "paper",
                         Collections.singletonList("8c4770ca-13c9-49ea-9df1-f2952030f95e"),
-                        Collections.singletonList("5e5cfe8d-b893-4f87-817f-9d05d22d657a"),
+                        Collections.singletonList("15cd6837-e998-4bf9-a815-af3e98922d19"),
                         Arrays.asList("TB-SCS-GNO-ENG-00261.docx", "TB-SCS-GNO-ENG-00261.docx"),
                         "yes",
                         "yes",
