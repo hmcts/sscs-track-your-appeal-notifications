@@ -194,6 +194,10 @@ public class Personalisation<E extends NotificationWrapper> {
         personalisation.put(FIRST_TIER_AGENCY_ACRONYM, DWP_ACRONYM);
         personalisation.put(FIRST_TIER_AGENCY_FULL_NAME, DWP_FUL_NAME);
         personalisation.put(CREATED_DATE, ccdResponse.getCaseCreated());
+        personalisation.put(CREATED_DATE_WELSH, ccdResponse.getCaseCreated());
+        LocalDate createdDate = LocalDate.parse(Optional.ofNullable(ccdResponse.getCaseCreated()).orElse(LocalDate.now().toString()));
+        translateToWelshDate(createdDate, ccdResponse, value -> personalisation.put(CREATED_DATE_WELSH, value));
+
         personalisation.put(JOINT, subscriptionWithType.getSubscriptionType().equals(JOINT_PARTY) ? JOINT_TEXT_WITH_A_SPACE : EMPTY);
 
         personalisation.put(JOINT_PARTY_APPEAL, StringUtils.equalsIgnoreCase(ccdResponse.getJointParty(), "yes") ? "Yes" : "No");
@@ -549,6 +553,7 @@ public class Personalisation<E extends NotificationWrapper> {
                 || DECISION_ISSUED.equals(notificationEventType)
                 || DIRECTION_ISSUED_WELSH.equals(notificationEventType)
                 || DECISION_ISSUED_WELSH.equals(notificationEventType)
+                || STRUCK_OUT.equals(notificationEventType) && caseData.getLanguagePreference().equals(LanguagePreference.WELSH) && subscriptionType.equals(REPRESENTATIVE)
                 || REQUEST_INFO_INCOMPLETE.equals(notificationEventType)
                 || ISSUE_FINAL_DECISION.equals(notificationEventType)
                 || ISSUE_ADJOURNMENT_NOTICE.equals(notificationEventType)
