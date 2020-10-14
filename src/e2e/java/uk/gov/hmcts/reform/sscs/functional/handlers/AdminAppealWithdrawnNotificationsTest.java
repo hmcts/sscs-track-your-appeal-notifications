@@ -29,7 +29,7 @@ public class AdminAppealWithdrawnNotificationsTest extends AbstractFunctionalTes
     }
 
     @Rule
-    public Retry retry = new Retry(0);
+    public Retry retry = new Retry(2);
 
     @Rule
     public Timeout globalTimeout = Timeout.seconds(90);
