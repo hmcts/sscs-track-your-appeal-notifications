@@ -725,7 +725,9 @@ notification:
         emailId: 09aab8aa-acd1-4030-ad00-8d0a0ccbe5ce
         smsId: bd7a6731-d807-4af8-a89d-4e075aa2b514
     struckOut:
-      docmosisId: TB-SCS-GNO-ENG-00466.docx
+      docmosisId: TB-SCS-GNO-WEL-00593.docx
+      representative:
+        docmosisId: TB-SCS-GNO-ENG-00466.docx
     directionIssuedWelsh:
       appealToProceed:
         appellant:
@@ -1032,7 +1034,7 @@ pdf-service:
       dwpUploadResponse: 'TB-SCS-GNO-WEL-00479.docx'
       resendAppealCreated: 'TB-SCS-GNO-WEL-00479.docx'
       requestInfoIncompleteApplication: 'TB-SCS-GNO-WEL-00479.docx'
-      struckOut: 'TB-SCS-GNO-ENG-00012.docx'
+      struckOut: 'TB-SCS-GNO-WEL-00479.docx'
 
 docmosis:
   accessKey:

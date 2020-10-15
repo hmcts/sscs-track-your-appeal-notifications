@@ -26,6 +26,7 @@ public final class AppConstants {
     public static final String CLAIMANT_NAME = "claimant_name";
     public static final String COUNTY_LITERAL = "county";
     public static final String CREATED_DATE = "created_date";
+    public static final String CREATED_DATE_WELSH = "created_date_welsh";
     public static final String DAYS_STRING = " days";
     public static final String DAYS_TO_HEARING_LITERAL = "days_to_hearing_text";
     public static final String DECISION_POSTED_RECEIVE_DATE = "decision_posted_receive_date";

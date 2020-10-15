@@ -1,5 +1,6 @@
 package uk.gov.hmcts.reform.sscs.config;
 
+import static org.apache.commons.lang3.StringUtils.lowerCase;
 import static org.junit.Assert.*;
 import static uk.gov.hmcts.reform.sscs.ccd.domain.Benefit.PIP;
 import static uk.gov.hmcts.reform.sscs.config.AppealHearingType.ONLINE;
@@ -112,7 +113,9 @@ public class NotificationConfigTest {
         assertNull(template.getEmailTemplateId());
         assertTrue(template.getSmsTemplateId().isEmpty());
         assertNull(template.getLetterTemplateId());
-        assertNull(template.getDocmosisTemplateId());
+        if (!templateName.equals(String.format("%s.%s", STRUCK_OUT.getId(), lowerCase(REPRESENTATIVE.name())))) {
+            assertNull(template.getDocmosisTemplateId());
+        }
     }
 
     @Test

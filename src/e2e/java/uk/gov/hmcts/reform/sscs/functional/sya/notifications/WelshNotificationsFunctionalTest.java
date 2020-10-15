@@ -13,6 +13,7 @@ import static uk.gov.hmcts.reform.sscs.domain.notify.NotificationEventType.EVIDE
 import static uk.gov.hmcts.reform.sscs.domain.notify.NotificationEventType.HEARING_BOOKED_NOTIFICATION;
 import static uk.gov.hmcts.reform.sscs.domain.notify.NotificationEventType.POSTPONEMENT_NOTIFICATION;
 import static uk.gov.hmcts.reform.sscs.domain.notify.NotificationEventType.REQUEST_INFO_INCOMPLETE;
+import static uk.gov.hmcts.reform.sscs.domain.notify.NotificationEventType.STRUCK_OUT;
 import static uk.gov.hmcts.reform.sscs.domain.notify.NotificationEventType.SUBSCRIPTION_CREATED_NOTIFICATION;
 import static uk.gov.hmcts.reform.sscs.domain.notify.NotificationEventType.SUBSCRIPTION_UPDATED_NOTIFICATION;
 import static uk.gov.hmcts.reform.sscs.domain.notify.NotificationEventType.SYA_APPEAL_CREATED_NOTIFICATION;
@@ -465,6 +466,7 @@ public class WelshNotificationsFunctionalTest extends AbstractFunctionalTest {
     private Object[] docmosisTestSetup() {
         return new Object[]{
             new Object[]{REQUEST_INFO_INCOMPLETE, Optional.empty(), 3},
+            new Object[]{STRUCK_OUT, Optional.empty(), 3},
             new Object[]{DIRECTION_ISSUED_WELSH, Optional.of("AppealToProceed"), 3},
             new Object[]{DIRECTION_ISSUED_WELSH, Optional.of("RefuseExtension"), 3},
             new Object[]{DIRECTION_ISSUED_WELSH, Optional.of("GrantExtension"), 3},
