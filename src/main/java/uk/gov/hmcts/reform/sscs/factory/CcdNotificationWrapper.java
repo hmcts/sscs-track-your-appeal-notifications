@@ -200,9 +200,11 @@ public class CcdNotificationWrapper implements NotificationWrapper {
             || ADMIN_APPEAL_WITHDRAWN.equals(getNotificationType())
             || STRUCK_OUT.equals(getNotificationType())
             || DIRECTION_ISSUED.equals(getNotificationType())
+            || DIRECTION_ISSUED_WELSH.equals(getNotificationType())
             || DWP_UPLOAD_RESPONSE_NOTIFICATION.equals(getNotificationType()) && PAPER.equals(getHearingType())
             || EVIDENCE_REMINDER_NOTIFICATION.equals(getNotificationType())
             || REQUEST_INFO_INCOMPLETE.equals(getNotificationType())
+            || DWP_UPLOAD_RESPONSE_NOTIFICATION.equals(getNotificationType()) && ORAL.equals(getHearingType())
             || (getOldSscsCaseData() != null && isValidReviewConfidentialityRequest(getOldSscsCaseData().getConfidentialityRequestOutcomeJointParty(), getNewSscsCaseData().getConfidentialityRequestOutcomeJointParty())))
         ) {
             subscriptionWithTypeList.add(new SubscriptionWithType(getJointPartySubscription(), JOINT_PARTY));

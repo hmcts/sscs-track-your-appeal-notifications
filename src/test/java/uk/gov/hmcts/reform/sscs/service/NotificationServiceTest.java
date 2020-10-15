@@ -1969,6 +1969,7 @@ public class NotificationServiceTest {
 
         Notification notification = new Notification(Template.builder().emailTemplateId(EMAIL_TEMPLATE_ID).smsTemplateId(null).build(), Destination.builder().email("test@testing.com").sms("07823456746").build(), null, new Reference(), null);
         given(factory.create(ccdNotificationWrapper, getSubscriptionWithType(ccdNotificationWrapper))).willReturn(notification);
+        given(factory.create(ccdNotificationWrapper, getSubscriptionWithTypeJoint(ccdNotificationWrapper))).willReturn(notification);
         given(notificationValidService.isHearingTypeValidToSendNotification(
                 any(SscsCaseData.class), eq(DWP_UPLOAD_RESPONSE_NOTIFICATION))).willReturn(true);
         given(notificationValidService.isNotificationStillValidToSend(anyList(), eq(DWP_UPLOAD_RESPONSE_NOTIFICATION)))
@@ -2220,6 +2221,10 @@ public class NotificationServiceTest {
 
     private SubscriptionWithType getSubscriptionWithType(CcdNotificationWrapper ccdNotificationWrapper) {
         return new SubscriptionWithType(getSubscription(ccdNotificationWrapper.getNewSscsCaseData(), SubscriptionType.APPELLANT), SubscriptionType.APPELLANT);
+    }
+
+    private SubscriptionWithType getSubscriptionWithTypeJoint(CcdNotificationWrapper ccdNotificationWrapper) {
+        return new SubscriptionWithType(getSubscription(ccdNotificationWrapper.getNewSscsCaseData(), JOINT_PARTY), JOINT_PARTY);
     }
 
     private SubscriptionWithType getSubscriptionWithTypeRep(CcdNotificationWrapper ccdNotificationWrapper) {
