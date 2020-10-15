@@ -1,13 +1,31 @@
 package uk.gov.hmcts.reform.sscs.functional.sya.notifications;
 
 import static java.util.stream.Collectors.toList;
+import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
-import static uk.gov.hmcts.reform.sscs.domain.notify.NotificationEventType.*;
+import static uk.gov.hmcts.reform.sscs.domain.notify.NotificationEventType.ADJOURNED_NOTIFICATION;
+import static uk.gov.hmcts.reform.sscs.domain.notify.NotificationEventType.APPEAL_DORMANT_NOTIFICATION;
+import static uk.gov.hmcts.reform.sscs.domain.notify.NotificationEventType.APPEAL_LAPSED_NOTIFICATION;
+import static uk.gov.hmcts.reform.sscs.domain.notify.NotificationEventType.APPEAL_WITHDRAWN_NOTIFICATION;
+import static uk.gov.hmcts.reform.sscs.domain.notify.NotificationEventType.DIRECTION_ISSUED_WELSH;
+import static uk.gov.hmcts.reform.sscs.domain.notify.NotificationEventType.DWP_UPLOAD_RESPONSE_NOTIFICATION;
+import static uk.gov.hmcts.reform.sscs.domain.notify.NotificationEventType.EVIDENCE_RECEIVED_NOTIFICATION;
+import static uk.gov.hmcts.reform.sscs.domain.notify.NotificationEventType.EVIDENCE_REMINDER_NOTIFICATION;
+import static uk.gov.hmcts.reform.sscs.domain.notify.NotificationEventType.HEARING_BOOKED_NOTIFICATION;
+import static uk.gov.hmcts.reform.sscs.domain.notify.NotificationEventType.POSTPONEMENT_NOTIFICATION;
+import static uk.gov.hmcts.reform.sscs.domain.notify.NotificationEventType.REQUEST_INFO_INCOMPLETE;
+import static uk.gov.hmcts.reform.sscs.domain.notify.NotificationEventType.SUBSCRIPTION_CREATED_NOTIFICATION;
+import static uk.gov.hmcts.reform.sscs.domain.notify.NotificationEventType.SUBSCRIPTION_UPDATED_NOTIFICATION;
+import static uk.gov.hmcts.reform.sscs.domain.notify.NotificationEventType.SYA_APPEAL_CREATED_NOTIFICATION;
+import static uk.gov.hmcts.reform.sscs.domain.notify.NotificationEventType.VALID_APPEAL_CREATED;
 
 import java.io.IOException;
 import java.util.List;
+import java.util.Optional;
+import junitparams.Parameters;
 import org.junit.Test;
 import org.springframework.beans.factory.annotation.Value;
+import uk.gov.hmcts.reform.sscs.domain.notify.NotificationEventType;
 import uk.gov.hmcts.reform.sscs.functional.AbstractFunctionalTest;
 import uk.gov.service.notify.Notification;
 import uk.gov.service.notify.NotificationClientException;
@@ -125,6 +143,12 @@ public class WelshNotificationsFunctionalTest extends AbstractFunctionalTest {
     @Value("${notification.welsh.paper.evidenceReceived.appointee.smsId}")
     private String appointeeEvidenceReceivedSmsIdWelsh;
 
+    @Value("${notification.welsh.oral.evidenceReceived.joint_party.emailId}")
+    private String oralJointPartyEvidenceReceivedEmailIdWelsh;
+
+    @Value("${notification.welsh.oral.evidenceReceived.joint_party.smsId}")
+    private String oralJointPartyEvidenceReceivedSmsIdWelsh;
+
     @Value("${notification.welsh.paper.responseReceived.appointee.emailId}")
     private String paperAppointeeResponseReceivedEmailIdWelsh;
 
@@ -218,6 +242,19 @@ public class WelshNotificationsFunctionalTest extends AbstractFunctionalTest {
     @Value("${notification.welsh.hearingPostponed.appointee.emailId}")
     private String appointeeHearingPostponedEmailIdWelsh;
 
+    @Value("${notification.welsh.paper.evidenceReceived.appointee.emailId}")
+    private String paperEvidenceReceivedEmailTemplateIdWelsh;
+
+    @Value("${notification.welsh.paper.evidenceReceived.appointee.smsId}")
+    private String paperEvidenceReceivedSmsTemplateIdWelsh;
+
+    @Value("${notification.welsh.paper.evidenceReceived.joint_party.emailId}")
+    private String paperJointPartyEvidenceReceivedEmailIdWelsh;
+
+    @Value("${notification.welsh.paper.evidenceReceived.joint_party.smsId}")
+    private String paperJointPartyEvidenceReceivedSmsIdWelsh;
+
+
     public WelshNotificationsFunctionalTest() {
         super(30);
     }
@@ -233,9 +270,23 @@ public class WelshNotificationsFunctionalTest extends AbstractFunctionalTest {
         simulateWelshCcdCallback(EVIDENCE_RECEIVED_NOTIFICATION);
         tryFetchNotificationsForTestCase(
                 oralEvidenceReceivedEmailTemplateIdWelsh,
-                oralEvidenceReceivedSmsTemplateIdWelsh
+                oralEvidenceReceivedSmsTemplateIdWelsh,
+                oralJointPartyEvidenceReceivedEmailIdWelsh,
+                oralJointPartyEvidenceReceivedSmsIdWelsh
         );
     }
+
+    @Test
+    public void shouldSendPaperEvidenceReceivedNotificationWelsh() throws NotificationClientException, IOException {
+        simulateCcdCallback(EVIDENCE_RECEIVED_NOTIFICATION, "paper-" + EVIDENCE_RECEIVED_NOTIFICATION.getId() + "CallbackWelsh.json");
+        tryFetchNotificationsForTestCase(
+            paperEvidenceReceivedEmailTemplateIdWelsh,
+            paperEvidenceReceivedSmsTemplateIdWelsh,
+            paperJointPartyEvidenceReceivedEmailIdWelsh,
+            paperJointPartyEvidenceReceivedSmsIdWelsh);
+    }
+
+
 
     @Test
     public void shouldSendHearingPostponedNotificationWelsh() throws NotificationClientException, IOException {
@@ -439,5 +490,31 @@ public class WelshNotificationsFunctionalTest extends AbstractFunctionalTest {
                 AS_APPOINTEE_FOR,
                 "/evidence/" + TYA
         );
+    }
+
+    @Test
+    @Parameters(method = "docmosisTestSetup")
+    public void shouldSendDocmosisLettersViaGovNotify(NotificationEventType notificationEventType,
+                                                      Optional<String> resourceParam,
+                                                      int expectedNumberOfLetters) throws IOException, NotificationClientException {
+
+        simulateCcdCallback(notificationEventType,
+                notificationEventType.getId() + resourceParam.orElse("") + "CallbackWelsh.json");
+        List<Notification> notifications = fetchLetters();
+
+        assertEquals(expectedNumberOfLetters, notifications.size());
+        for (int i = 0; i < expectedNumberOfLetters; i++) {
+            assertEquals("Pre-compiled PDF", notifications.get(i).getSubject().orElse("Unknown Subject"));
+        }
+    }
+
+    @SuppressWarnings({"Indentation", "unused"})
+    private Object[] docmosisTestSetup() {
+        return new Object[]{
+            new Object[]{REQUEST_INFO_INCOMPLETE, Optional.empty(), 3},
+            new Object[]{DIRECTION_ISSUED_WELSH, Optional.of("AppealToProceed"), 3},
+            new Object[]{DIRECTION_ISSUED_WELSH, Optional.of("RefuseExtension"), 3},
+            new Object[]{DIRECTION_ISSUED_WELSH, Optional.of("GrantExtension"), 3},
+        };
     }
 }
