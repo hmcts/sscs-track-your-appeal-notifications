@@ -726,6 +726,8 @@ notification:
         smsId: bd7a6731-d807-4af8-a89d-4e075aa2b514
     struckOut:
       docmosisId: TB-SCS-GNO-WEL-00593.docx
+      representative:
+        docmosisId: TB-SCS-GNO-ENG-00466.docx
     directionIssuedWelsh:
       appealToProceed:
         appellant:
