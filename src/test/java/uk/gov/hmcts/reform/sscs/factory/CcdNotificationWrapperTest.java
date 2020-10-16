@@ -85,7 +85,11 @@ public class CcdNotificationWrapperTest {
         }
 
         Subscription jointPartySubscription = null;
+        String jointPartyYesNo = "No";
+        JointPartyName jointPartyName = null;
         if (jointParty) {
+            jointPartyYesNo = "Yes";
+            jointPartyName = JointPartyName.builder().title("Madam").firstName("Jon").lastName("Party").build();
             jointPartySubscription = Subscription.builder()
                     .email("joint@test.com")
                     .subscribeEmail("Yes")
@@ -96,6 +100,8 @@ public class CcdNotificationWrapperTest {
             SscsCaseDataWrapper.builder()
                 .oldSscsCaseData(SscsCaseData.builder().build())
                 .newSscsCaseData(SscsCaseData.builder()
+                    .jointParty(jointPartyYesNo)
+                    .jointPartyName(jointPartyName)
                     .appeal(Appeal.builder()
                         .appellant(appellant)
                         .hearingType("cor")
