@@ -7,11 +7,13 @@ import static uk.gov.hmcts.reform.sscs.domain.notify.NotificationEventType.ADJOU
 import static uk.gov.hmcts.reform.sscs.domain.notify.NotificationEventType.APPEAL_DORMANT_NOTIFICATION;
 import static uk.gov.hmcts.reform.sscs.domain.notify.NotificationEventType.APPEAL_LAPSED_NOTIFICATION;
 import static uk.gov.hmcts.reform.sscs.domain.notify.NotificationEventType.APPEAL_WITHDRAWN_NOTIFICATION;
+import static uk.gov.hmcts.reform.sscs.domain.notify.NotificationEventType.DIRECTION_ISSUED_WELSH;
 import static uk.gov.hmcts.reform.sscs.domain.notify.NotificationEventType.EVIDENCE_RECEIVED_NOTIFICATION;
 import static uk.gov.hmcts.reform.sscs.domain.notify.NotificationEventType.EVIDENCE_REMINDER_NOTIFICATION;
 import static uk.gov.hmcts.reform.sscs.domain.notify.NotificationEventType.HEARING_BOOKED_NOTIFICATION;
 import static uk.gov.hmcts.reform.sscs.domain.notify.NotificationEventType.POSTPONEMENT_NOTIFICATION;
 import static uk.gov.hmcts.reform.sscs.domain.notify.NotificationEventType.REQUEST_INFO_INCOMPLETE;
+import static uk.gov.hmcts.reform.sscs.domain.notify.NotificationEventType.STRUCK_OUT;
 import static uk.gov.hmcts.reform.sscs.domain.notify.NotificationEventType.SUBSCRIPTION_CREATED_NOTIFICATION;
 import static uk.gov.hmcts.reform.sscs.domain.notify.NotificationEventType.SUBSCRIPTION_UPDATED_NOTIFICATION;
 import static uk.gov.hmcts.reform.sscs.domain.notify.NotificationEventType.SYA_APPEAL_CREATED_NOTIFICATION;
@@ -19,6 +21,7 @@ import static uk.gov.hmcts.reform.sscs.domain.notify.NotificationEventType.VALID
 
 import java.io.IOException;
 import java.util.List;
+import java.util.Optional;
 import junitparams.Parameters;
 import org.junit.Test;
 import org.springframework.beans.factory.annotation.Value;
@@ -445,11 +448,12 @@ public class WelshNotificationsFunctionalTest extends AbstractFunctionalTest {
 
     @Test
     @Parameters(method = "docmosisTestSetup")
-    public void shouldSendDocmosisLettersViaGovNotify(NotificationEventType notificationEventType, int expectedNumberOfLetters) throws IOException, NotificationClientException {
+    public void shouldSendDocmosisLettersViaGovNotify(NotificationEventType notificationEventType,
+                                                      Optional<String> resourceParam,
+                                                      int expectedNumberOfLetters) throws IOException, NotificationClientException {
 
         simulateCcdCallback(notificationEventType,
-                notificationEventType.getId() + "CallbackWelsh.json");
-
+                notificationEventType.getId() + resourceParam.orElse("") + "CallbackWelsh.json");
         List<Notification> notifications = fetchLetters();
 
         assertEquals(expectedNumberOfLetters, notifications.size());
@@ -461,7 +465,11 @@ public class WelshNotificationsFunctionalTest extends AbstractFunctionalTest {
     @SuppressWarnings({"Indentation", "unused"})
     private Object[] docmosisTestSetup() {
         return new Object[]{
-            new Object[]{REQUEST_INFO_INCOMPLETE, 3},
+            new Object[]{REQUEST_INFO_INCOMPLETE, Optional.empty(), 3},
+            new Object[]{STRUCK_OUT, Optional.empty(), 3},
+            new Object[]{DIRECTION_ISSUED_WELSH, Optional.of("AppealToProceed"), 3},
+            new Object[]{DIRECTION_ISSUED_WELSH, Optional.of("RefuseExtension"), 3},
+            new Object[]{DIRECTION_ISSUED_WELSH, Optional.of("GrantExtension"), 3},
         };
     }
 }
