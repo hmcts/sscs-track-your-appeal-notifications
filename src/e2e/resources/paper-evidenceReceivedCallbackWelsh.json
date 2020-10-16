@@ -47,7 +47,8 @@
         },
         "mrnDetails": {},
         "rep": {},
-        "signer": null
+        "signer": null,
+        "hearingType": "paper"
       },
       "caseReference": "SC022/14/12423",
       "events": [
