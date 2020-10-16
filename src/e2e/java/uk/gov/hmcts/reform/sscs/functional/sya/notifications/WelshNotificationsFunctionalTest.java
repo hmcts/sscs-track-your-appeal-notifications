@@ -467,6 +467,7 @@ public class WelshNotificationsFunctionalTest extends AbstractFunctionalTest {
         return new Object[]{
             new Object[]{REQUEST_INFO_INCOMPLETE, Optional.empty(), 3},
             new Object[]{STRUCK_OUT, Optional.empty(), 3},
+            new Object[]{DIRECTION_ISSUED_WELSH, Optional.of("ProvideInformation"), 3},
             new Object[]{DIRECTION_ISSUED_WELSH, Optional.of("AppealToProceed"), 3},
             new Object[]{DIRECTION_ISSUED_WELSH, Optional.of("RefuseExtension"), 3},
             new Object[]{DIRECTION_ISSUED_WELSH, Optional.of("GrantExtension"), 3},
