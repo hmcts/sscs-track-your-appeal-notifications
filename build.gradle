@@ -95,7 +95,7 @@ dependencyManagement {
         dependency group: 'org.apache.tika', name: 'tika-core', version: '1.24.1'
 
         // checkstyle needs a certain version and so does spring fox swagger, so can't use latest
-        dependencySet(group: 'com.google.guava', version: '29.0-jre') {
+        dependencySet(group: 'com.google.guava', version: '30.0-jre') {
             entry 'guava'
         }
         // CVE-2019-0232, CVE-2019-0199 - command line injections on windows
