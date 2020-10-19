@@ -85,7 +85,11 @@ public class CcdNotificationWrapperTest {
         }
 
         Subscription jointPartySubscription = null;
+        String jointPartyYesNo = "No";
+        JointPartyName jointPartyName = null;
         if (jointParty) {
+            jointPartyYesNo = "Yes";
+            jointPartyName = JointPartyName.builder().title("Madam").firstName("Jon").lastName("Party").build();
             jointPartySubscription = Subscription.builder()
                     .email("joint@test.com")
                     .subscribeEmail("Yes")
@@ -96,6 +100,8 @@ public class CcdNotificationWrapperTest {
             SscsCaseDataWrapper.builder()
                 .oldSscsCaseData(SscsCaseData.builder().build())
                 .newSscsCaseData(SscsCaseData.builder()
+                    .jointParty(jointPartyYesNo)
+                    .jointPartyName(jointPartyName)
                     .appeal(Appeal.builder()
                         .appellant(appellant)
                         .hearingType("cor")
@@ -198,8 +204,8 @@ public class CcdNotificationWrapperTest {
     @Parameters({"APPEAL_LAPSED_NOTIFICATION, paper", "APPEAL_LAPSED_NOTIFICATION, oral", "EVIDENCE_REMINDER_NOTIFICATION, oral", "EVIDENCE_REMINDER_NOTIFICATION, paper",
             "APPEAL_DORMANT_NOTIFICATION, paper", "APPEAL_DORMANT_NOTIFICATION, oral", "ADJOURNED_NOTIFICATION, paper", "ADJOURNED_NOTIFICATION, oral", "POSTPONEMENT_NOTIFICATION, paper", "POSTPONEMENT_NOTIFICATION, oral",
             "EVIDENCE_RECEIVED_NOTIFICATION, paper", "EVIDENCE_RECEIVED_NOTIFICATION, oral", "APPEAL_WITHDRAWN_NOTIFICATION, paper", "STRUCK_OUT, oral", "STRUCK_OUT, paper", "DIRECTION_ISSUED, oral", "DIRECTION_ISSUED, paper",
-            "DIRECTION_ISSUED_WELSH, oral", "DIRECTION_ISSUED_WELSH, paper",
-            "DWP_UPLOAD_RESPONSE_NOTIFICATION, paper", "DWP_UPLOAD_RESPONSE_NOTIFICATION, oral", "HEARING_BOOKED_NOTIFICATION, oral", "HEARING_BOOKED_NOTIFICATION, paper",  "HEARING_REMINDER_NOTIFICATION, oral", "HEARING_REMINDER_NOTIFICATION, paper",
+            "DIRECTION_ISSUED_WELSH, oral", "DIRECTION_ISSUED_WELSH, paper", "DWP_UPLOAD_RESPONSE_NOTIFICATION, paper",
+            "DWP_UPLOAD_RESPONSE_NOTIFICATION, oral", "HEARING_BOOKED_NOTIFICATION, oral", "HEARING_BOOKED_NOTIFICATION, paper",  "HEARING_REMINDER_NOTIFICATION, oral", "HEARING_REMINDER_NOTIFICATION, paper",
             "REQUEST_INFO_INCOMPLETE, oral", "REQUEST_INFO_INCOMPLETE, paper"})
     public void givenSubscriptions_shouldGetSubscriptionTypeListWithAppointeeAndJointParty(NotificationEventType notificationEventType, String hearingType) {
         ccdNotificationWrapper = buildCcdNotificationWrapperBasedOnEventTypeWithAppointeeAndJointParty(notificationEventType, hearingType);
