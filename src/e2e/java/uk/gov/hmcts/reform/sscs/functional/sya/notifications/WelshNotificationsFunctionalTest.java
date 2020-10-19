@@ -8,6 +8,7 @@ import static uk.gov.hmcts.reform.sscs.domain.notify.NotificationEventType.APPEA
 import static uk.gov.hmcts.reform.sscs.domain.notify.NotificationEventType.APPEAL_LAPSED_NOTIFICATION;
 import static uk.gov.hmcts.reform.sscs.domain.notify.NotificationEventType.APPEAL_WITHDRAWN_NOTIFICATION;
 import static uk.gov.hmcts.reform.sscs.domain.notify.NotificationEventType.DIRECTION_ISSUED_WELSH;
+import static uk.gov.hmcts.reform.sscs.domain.notify.NotificationEventType.DWP_UPLOAD_RESPONSE_NOTIFICATION;
 import static uk.gov.hmcts.reform.sscs.domain.notify.NotificationEventType.EVIDENCE_RECEIVED_NOTIFICATION;
 import static uk.gov.hmcts.reform.sscs.domain.notify.NotificationEventType.EVIDENCE_REMINDER_NOTIFICATION;
 import static uk.gov.hmcts.reform.sscs.domain.notify.NotificationEventType.HEARING_BOOKED_NOTIFICATION;
@@ -88,6 +89,30 @@ public class WelshNotificationsFunctionalTest extends AbstractFunctionalTest {
 
     @Value("${notification.welsh.paper.responseReceived.appellant.smsId}")
     private String paperResponseReceivedSmsIdWelsh;
+
+    @Value("${notification.welsh.oral.dwpUploadResponse.appellant.emailId}")
+    private String oralDwpUploadResponseAppellantEmailIdWelsh;
+
+    @Value("${notification.welsh.oral.dwpUploadResponse.appellant.smsId}")
+    private String oralDwpUploadResponseAppellantSmsIdWelsh;
+
+    @Value("${notification.welsh.oral.dwpUploadResponse.joint_party.emailId}")
+    private String oralDwpUploadResponseJointPartyEmailIdWelsh;
+
+    @Value("${notification.welsh.oral.dwpUploadResponse.joint_party.smsId}")
+    private String oralDwpUploadResponseJointPartySmsIdWelsh;
+
+    @Value("${notification.welsh.paper.dwpUploadResponse.appellant.emailId}")
+    private String paperDwpUploadResponseAppellantEmailIdWelsh;
+
+    @Value("${notification.welsh.paper.dwpUploadResponse.appellant.smsId}")
+    private String paperDwpUploadResponseAppellantSmsIdWelsh;
+
+    @Value("${notification.welsh.paper.dwpUploadResponse.joint_party.emailId}")
+    private String paperDwpUploadResponseJointPartyEmailIdWelsh;
+
+    @Value("${notification.welsh.paper.dwpUploadResponse.joint_party.smsId}")
+    private String paperDwpUploadResponseJointPartySmsIdWelsh;
 
     @Value("${notification.welsh.subscriptionUpdated.emailId}")
     private String subscriptionUpdateEmailIdWelsh;
@@ -310,6 +335,28 @@ public class WelshNotificationsFunctionalTest extends AbstractFunctionalTest {
 
         tryFetchNotificationsForTestCase(subscriptionUpdatedEmailTemplateIdWelsh);
     }
+
+    @Test
+    public void shouldSendOralDwpUploadResponseReceivedNotificationWelsh() throws NotificationClientException, IOException {
+        simulateCcdCallback(DWP_UPLOAD_RESPONSE_NOTIFICATION, "oral-" + DWP_UPLOAD_RESPONSE_NOTIFICATION.getId() + "CallbackWelsh.json");
+        tryFetchNotificationsForTestCase(
+                oralDwpUploadResponseAppellantEmailIdWelsh,
+                oralDwpUploadResponseAppellantSmsIdWelsh,
+                oralDwpUploadResponseJointPartyEmailIdWelsh,
+                oralDwpUploadResponseJointPartySmsIdWelsh);
+    }
+
+    @Test
+    public void shouldSendPaperDwpUploadResponseReceivedNotificationWelsh() throws NotificationClientException, IOException {
+        simulateCcdCallback(DWP_UPLOAD_RESPONSE_NOTIFICATION, "paper-" + DWP_UPLOAD_RESPONSE_NOTIFICATION.getId() + "CallbackWelsh.json");
+
+        tryFetchNotificationsForTestCase(
+                paperDwpUploadResponseAppellantEmailIdWelsh,
+                paperDwpUploadResponseAppellantSmsIdWelsh,
+                paperDwpUploadResponseJointPartyEmailIdWelsh,
+                paperDwpUploadResponseJointPartySmsIdWelsh);
+    }
+
 
     @Test
     public void shouldSendAppealCreatedAppellantNotificationWelsh() throws NotificationClientException, IOException {

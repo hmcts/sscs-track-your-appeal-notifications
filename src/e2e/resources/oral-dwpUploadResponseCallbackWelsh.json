@@ -4,15 +4,36 @@
     "callback_response_status": null,
     "callback_response_status_code": null,
     "case_data": {
-      "onlinePanel": {},
       "createdInGapsFrom": "readyToList",
+      "languagePreferenceWelsh" : "Yes",
+      "jointParty": "Yes",
+      "jointPartyName": {
+        "title": "mr",
+        "firstName": "Joint",
+        "lastName": "Party"
+      },
+      "jointPartyAddressSameAsAppellant": "No",
+      "jointPartyAddress": {
+        "line1": "30 Dale Street",
+        "line2": "Village",
+        "town": "Liverpool",
+        "county": "Merseyside",
+        "postcode": "TS4 4ST"
+      },
       "appeal": {
         "appealReasons": {},
         "appellant": {
-          "address": {},
+          "address": {
+            "town": "Hairyfield",
+            "line1": "123 Hairy Lane",
+            "line2": "Off Hairy Park",
+            "county": "Kent",
+            "postcode": "TS1 1ST"
+          },
           "contact": {
-            "email": "mail@email.com",
-            "phone": "01234567890"
+            "email": "sscstest+notify@greencroftconsulting.com",
+            "phone": null,
+            "mobile": "07411222222"
           },
           "identity": {
             "dob": "1904-03-10",
@@ -36,24 +57,53 @@
         "mrnDetails": {},
         "rep": {},
         "signer": null,
-        "hearingType": "cor"
+        "hearingType": "oral"
       },
       "caseReference": "SC022/14/12423",
       "events": [
         {
-          "id": "a95eb829-2da3-4ff4-9d21-90d22583facf",
+          "id": "560d5fa3-1a47-432c-a7e4-329eeb75c1a8",
           "value": {
             "date": "2017-05-24T14:01:18.243",
             "description": "Some Events",
-            "type": "appealCreated"
+            "type": "appealReceived"
           }
         },
         {
-          "id": "89a668da-de45-4532-ba56-7ce5e14096a8",
+          "id": "9b1652f5-dc51-4ad4-affb-01c553fbf814",
           "value": {
-            "date": "2016-01-16T12:34:56.789",
+            "date": "2018-07-25T03:17:42.856",
             "description": "responseReceived",
             "type": "responseReceived"
+          }
+        },
+        {
+          "id": "c48bc5e4-51d9-4ec5-b9c3-a6e068bdb6aa",
+          "value": {
+            "date": "2018-07-25T03:17:42.856",
+            "description": "hearingPostponed",
+            "type": "hearingPostponed"
+          }
+        }
+      ],
+      "hearings": [
+        {
+          "id": "609523de-ba0a-45e7-8f0b-af3f82ab347c",
+          "value": {
+            "adjourned": null,
+            "hearingDate": "2048-01-01",
+            "time": "23:59",
+            "venue": {
+              "address": {
+                "county": "Aberdeenshire",
+                "line1": "12 The Road Avenue",
+                "line2": "Village",
+                "postcode": "AB12 0HN",
+                "town": "Aberdeen"
+              },
+              "googleMapLink": "http://www.googlemaps.com/aberdeenvenue",
+              "name": "The venue"
+            }
           }
         }
       ],
@@ -65,6 +115,15 @@
           "subscribeSms": "Yes",
           "wantSmsNotifications": "Yes",
           "tya": ""
+        },
+        "jointPartySubscription": {
+          "email": "sscstest+notify2@greencroftconsulting.com",
+          "mobile": "07398785051",
+          "reason": null,
+          "subscribeEmail": "Yes",
+          "subscribeSms": "Yes",
+          "wantSmsNotifications" : "Yes",
+          "tya": "232929249492"
         },
         "representativeSubscription": {
           "email": "",
@@ -80,11 +139,11 @@
     "created_date": [
       2018,
       7,
-      26,
-      10,
-      51,
-      3,
-      45000000
+      25,
+      15,
+      17,
+      41,
+      285000000
     ],
     "data_classification": {
       "appeal": {
@@ -156,7 +215,7 @@
         "classification": "PUBLIC",
         "value": [
           {
-            "id": "a95eb829-2da3-4ff4-9d21-90d22583facf",
+            "id": "560d5fa3-1a47-432c-a7e4-329eeb75c1a8",
             "value": {
               "date": "PUBLIC",
               "description": "PUBLIC",
@@ -164,7 +223,15 @@
             }
           },
           {
-            "id": "89a668da-de45-4532-ba56-7ce5e14096a8",
+            "id": "9b1652f5-dc51-4ad4-affb-01c553fbf814",
+            "value": {
+              "date": "PUBLIC",
+              "description": "PUBLIC",
+              "type": "PUBLIC"
+            }
+          },
+          {
+            "id": "c48bc5e4-51d9-4ec5-b9c3-a6e068bdb6aa",
             "value": {
               "date": "PUBLIC",
               "description": "PUBLIC",
@@ -206,11 +273,11 @@
     "last_modified": [
       2018,
       7,
-      26,
-      10,
-      51,
-      4,
-      255000000
+      25,
+      15,
+      17,
+      42,
+      74000000
     ],
     "security_classification": "PUBLIC",
     "security_classifications": {
@@ -283,7 +350,7 @@
         "classification": "PUBLIC",
         "value": [
           {
-            "id": "a95eb829-2da3-4ff4-9d21-90d22583facf",
+            "id": "560d5fa3-1a47-432c-a7e4-329eeb75c1a8",
             "value": {
               "date": "PUBLIC",
               "description": "PUBLIC",
@@ -291,7 +358,15 @@
             }
           },
           {
-            "id": "89a668da-de45-4532-ba56-7ce5e14096a8",
+            "id": "9b1652f5-dc51-4ad4-affb-01c553fbf814",
+            "value": {
+              "date": "PUBLIC",
+              "description": "PUBLIC",
+              "type": "PUBLIC"
+            }
+          },
+          {
+            "id": "c48bc5e4-51d9-4ec5-b9c3-a6e068bdb6aa",
             "value": {
               "date": "PUBLIC",
               "description": "PUBLIC",
@@ -335,6 +410,7 @@
     "callback_response_status": null,
     "callback_response_status_code": null,
     "case_data": {
+      "languagePreferenceWelsh" : "Yes",
       "appeal": {
         "appealReasons": {},
         "appellant": {
@@ -369,11 +445,11 @@
       "caseReference": "SC022/14/12423",
       "events": [
         {
-          "id": "d5169475-fbfd-4fd3-9d55-d7fa3ebd645f",
+          "id": "a082fa56-8601-4412-836e-93523560148b",
           "value": {
             "date": "2017-05-24T14:01:18.243",
             "description": "Some Events",
-            "type": "appealCreated"
+            "type": "appealReceived"
           }
         }
       ],
@@ -400,11 +476,11 @@
     "created_date": [
       2018,
       7,
-      26,
-      10,
-      51,
-      3,
-      45000000
+      25,
+      15,
+      17,
+      41,
+      285000000
     ],
     "data_classification": {
       "appeal": {
@@ -476,7 +552,7 @@
         "classification": "PUBLIC",
         "value": [
           {
-            "id": "d5169475-fbfd-4fd3-9d55-d7fa3ebd645f",
+            "id": "a082fa56-8601-4412-836e-93523560148b",
             "value": {
               "date": "PUBLIC",
               "description": "PUBLIC",
@@ -518,11 +594,11 @@
     "last_modified": [
       2018,
       7,
-      26,
-      10,
-      51,
-      3,
-      47000000
+      25,
+      15,
+      17,
+      41,
+      289000000
     ],
     "security_classification": "PUBLIC",
     "security_classifications": {
@@ -595,7 +671,7 @@
         "classification": "PUBLIC",
         "value": [
           {
-            "id": "d5169475-fbfd-4fd3-9d55-d7fa3ebd645f",
+            "id": "a082fa56-8601-4412-836e-93523560148b",
             "value": {
               "date": "PUBLIC",
               "description": "PUBLIC",
