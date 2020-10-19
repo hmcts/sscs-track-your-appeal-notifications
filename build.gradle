@@ -6,11 +6,11 @@ plugins {
     id 'jacoco'
     id 'io.spring.dependency-management' version '1.0.10.RELEASE'
     id 'org.springframework.boot' version '2.3.4.RELEASE'
-    id 'uk.gov.hmcts.java' version '0.12.0'
+    id 'uk.gov.hmcts.java' version '0.12.1'
     id 'org.owasp.dependencycheck' version '6.0.2'
     id 'com.github.ben-manes.versions' version '0.33.0'
     id 'net.ltgt.apt' version '0.21'
-    id "org.flywaydb.flyway" version "7.0.2"
+    id "org.flywaydb.flyway" version "7.0.4"
 }
 
 apply plugin: 'org.springframework.boot'
@@ -95,7 +95,7 @@ dependencyManagement {
         dependency group: 'org.apache.tika', name: 'tika-core', version: '1.24.1'
 
         // checkstyle needs a certain version and so does spring fox swagger, so can't use latest
-        dependencySet(group: 'com.google.guava', version: '29.0-jre') {
+        dependencySet(group: 'com.google.guava', version: '30.0-jre') {
             entry 'guava'
         }
         // CVE-2019-0232, CVE-2019-0199 - command line injections on windows
@@ -294,9 +294,9 @@ dependencies {
 
     compileOnly("org.springframework.boot:spring-boot-devtools")
 
-    compile 'org.projectlombok:lombok:1.18.14'
+    compile 'org.projectlombok:lombok:1.18.16'
     annotationProcessor "org.projectlombok:lombok:1.18.14"
-    testCompileOnly 'org.projectlombok:lombok:1.18.12'
+    testCompileOnly 'org.projectlombok:lombok:1.18.16'
     testAnnotationProcessor "org.projectlombok:lombok:1.18.14"
     integrationTestCompileOnly 'org.projectlombok:lombok:1.18.12'
     integrationTestAnnotationProcessor "org.projectlombok:lombok:1.18.14"
