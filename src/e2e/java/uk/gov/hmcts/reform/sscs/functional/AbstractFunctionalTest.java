@@ -199,8 +199,10 @@ public abstract class AbstractFunctionalTest {
 
                 log.info("Timed out fetching notifications after "
                         + maxSecondsToWaitForNotification
-                        + " seconds. Template IDs:\n"
-                        + allTemplateIds);
+                        + " seconds. Template IDs delivered:\n"
+                        + allTemplateIds
+                        + "\n Template IDs expected:\n"
+                        + expectedTemplateIds);
                 if (notificationNotFoundFlag) {
                     return Collections.emptyList();
                 } else {
