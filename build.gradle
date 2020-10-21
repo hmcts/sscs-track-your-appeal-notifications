@@ -106,7 +106,7 @@ dependencyManagement {
         }
 
         // CVE-2019-16869 - brought in by qpid-jms-client
-        dependencySet(group: 'io.netty', version: '4.1.52.Final') {
+        dependencySet(group: 'io.netty', version: '4.1.53.Final') {
             entry 'netty-handler'
             entry 'netty-transport-native-epoll'
             entry 'netty-transport-native-kqueue'
