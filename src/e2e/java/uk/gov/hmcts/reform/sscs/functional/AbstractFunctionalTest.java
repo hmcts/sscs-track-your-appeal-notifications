@@ -197,10 +197,17 @@ public abstract class AbstractFunctionalTest {
                                 .map(notification -> notification.getTemplateId().toString())
                                 .collect(Collectors.joining("\n"));
 
+                String expected = null;
+                for (String templateId : expectedTemplateIds) {
+                    expected += templateId + "\n";
+                }
+
                 log.info("Timed out fetching notifications after "
                         + maxSecondsToWaitForNotification
-                        + " seconds. Template IDs:\n"
-                        + allTemplateIds);
+                        + " seconds. Template IDs delivered:\n"
+                        + allTemplateIds
+                        + "\n Template IDs expected:\n"
+                        + expected);
                 if (notificationNotFoundFlag) {
                     return Collections.emptyList();
                 } else {
@@ -322,7 +329,9 @@ public abstract class AbstractFunctionalTest {
         allEvents.add(events);
         caseData.setEvents(allEvents);
 
-        ccdService.updateCase(caseData, caseId, "caseUpdated", "CCD Case", "Notification Service updated case", idamTokens);
+        log.info("Functional test: updating case [" + caseId + "] with gaps event [" + eventType.getId() + "]");
+
+        ccdService.updateCase(caseData, caseId, "caseUpdated", "CCD Case", "Functional test: notification Service updated case with eventType " + eventType.getId(), idamTokens);
     }
 
     void assertNotificationSubjectContains(List<Notification> notifications, String templateId, String... matches) {
