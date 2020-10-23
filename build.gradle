@@ -280,7 +280,7 @@ dependencies {
     }
     compile group: 'uk.gov.hmcts.reform', name: 'service-auth-provider-client', version: '3.1.2'
 
-    compile group: 'uk.gov.hmcts.reform', name: 'sscs-common', version: '3.5.9.RC-SSCS-7994'
+    compile group: 'uk.gov.hmcts.reform', name: 'sscs-common', version: '3.5.14'
     compile group: 'uk.gov.hmcts.reform', name: 'sscs-pdf-email-common', version: '1.4.14'
 
     compile group: 'uk.gov.service.notify', name: 'notifications-java-client', version: '3.17.0-RELEASE'
