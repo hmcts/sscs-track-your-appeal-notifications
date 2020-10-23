@@ -820,6 +820,7 @@ public class NotificationsIt {
                         "0",
                         "0"
                 },
+
                 new Object[]{
                         DWP_UPLOAD_RESPONSE_NOTIFICATION,
                         "paper",
@@ -833,6 +834,30 @@ public class NotificationsIt {
                         "0"
                 },
                 new Object[]{
+                        DWP_UPLOAD_RESPONSE_NOTIFICATION,
+                        "oral",
+                        Collections.singletonList("ffa58120-24e4-44cb-8026-0becf1416684"),
+                        Collections.singletonList("f0444380-a8a4-4805-b9c2-563d1bd199cd"),
+                        Arrays.asList("TB-SCS-GNO-ENG-00261.docx", "TB-SCS-GNO-WEL-00478.docx"),
+                        "yes",
+                        "yes",
+                        "1",
+                        "1",
+                        "0"
+                },
+                new Object[] {
+                        DWP_UPLOAD_RESPONSE_NOTIFICATION,
+                        "oral",
+                        Collections.emptyList(),
+                        Collections.emptyList(),
+                        Arrays.asList("TB-SCS-GNO-ENG-00261.docx", "TB-SCS-GNO-WEL-00478.docx"),
+                        "no",
+                        "no",
+                        "0",
+                        "0",
+                        "0"
+                },
+                new Object[]{
                         JOINT_PARTY_ADDED,
                         "paper",
                         Collections.emptyList(),
@@ -843,29 +868,6 @@ public class NotificationsIt {
                         "0",
                         "0",
                         "0"
-                },
-                    DWP_UPLOAD_RESPONSE_NOTIFICATION,
-                    "oral",
-                    Collections.singletonList("ffa58120-24e4-44cb-8026-0becf1416684"),
-                    Collections.singletonList("f0444380-a8a4-4805-b9c2-563d1bd199cd"),
-                    Arrays.asList("TB-SCS-GNO-ENG-00261.docx", "TB-SCS-GNO-WEL-00478.docx"),
-                    "yes",
-                    "yes",
-                    "1",
-                    "1",
-                    "0"
-                },
-                new Object[] {
-                    DWP_UPLOAD_RESPONSE_NOTIFICATION,
-                    "oral",
-                    Collections.emptyList(),
-                    Collections.emptyList(),
-                    Arrays.asList("TB-SCS-GNO-ENG-00261.docx", "TB-SCS-GNO-WEL-00478.docx"),
-                    "no",
-                    "no",
-                    "0",
-                    "0",
-                    "0"
                 }
         };
     }
