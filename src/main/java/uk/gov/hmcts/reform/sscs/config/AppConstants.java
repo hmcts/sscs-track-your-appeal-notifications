@@ -54,6 +54,7 @@ public final class AppConstants {
     public static final String INFO_REQUEST_DETAIL = "info_request_detail";
     public static final String JOINT = "joint";
     public static final String JOINT_PARTY_APPEAL = "joint_party_appeal";
+    public static final String JOINT_PARTY_NAME = "joint_party_name";
     public static final String MAC_ALGO = "HmacSHA256";
     public static final String MAC_LITERAL = "mac";
     public static final String MANAGE_EMAILS_LINK_LITERAL = "manage_emails_link";

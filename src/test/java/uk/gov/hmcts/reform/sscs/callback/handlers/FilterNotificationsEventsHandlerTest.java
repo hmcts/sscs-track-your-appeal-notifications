@@ -54,7 +54,7 @@ public class FilterNotificationsEventsHandlerTest {
             "NON_COMPLIANT_NOTIFICATION", "POSTPONEMENT_NOTIFICATION", "REISSUE_DOCUMENT",
             "REQUEST_INFO_INCOMPLETE", "RESEND_APPEAL_CREATED_NOTIFICATION", "STRUCK_OUT",
             "SUBSCRIPTION_UPDATED_NOTIFICATION", "VALID_APPEAL_CREATED", "DIRECTION_ISSUED_WELSH",
-            "DECISION_ISSUED_WELSH", "REVIEW_CONFIDENTIALITY_REQUEST"})
+            "DECISION_ISSUED_WELSH", "REVIEW_CONFIDENTIALITY_REQUEST", "JOINT_PARTY_ADDED"})
     public void willHandleEvents(NotificationEventType notificationEventType) {
         SscsCaseDataWrapper callback = SscsCaseDataWrapper.builder().notificationEventType(notificationEventType).build();
         assertTrue(handler.canHandle(callback));

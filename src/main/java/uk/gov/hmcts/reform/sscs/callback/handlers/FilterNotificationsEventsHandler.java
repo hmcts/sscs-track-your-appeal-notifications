@@ -45,7 +45,8 @@ public class FilterNotificationsEventsHandler implements CallbackHandler {
             STRUCK_OUT,
             SUBSCRIPTION_UPDATED_NOTIFICATION,
             VALID_APPEAL_CREATED,
-            REVIEW_CONFIDENTIALITY_REQUEST
+            REVIEW_CONFIDENTIALITY_REQUEST,
+            JOINT_PARTY_ADDED
     ));
     private final NotificationService notificationService;
     private static final int RETRY = 1;
