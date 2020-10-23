@@ -816,9 +816,9 @@ notification:
         letterId: dde50680-5215-4688-aca1-7f5a30ad55dc
     reviewConfidentialityRequest:
       appellant:
-        docmosisId: TB-SCS-GNO-ENG-00582.docx
+        docmosisId: TB-SCS-GNO-WEL-00602.docx
       joint_party:
-        docmosisId: TB-SCS-GNO-ENG-00582.docx
+        docmosisId: TB-SCS-GNO-WEL-00602.docx
     online:
       responseReceived:
         emailId: 90f0ed29-a616-4ce0-b4ef-108391f5d90e
