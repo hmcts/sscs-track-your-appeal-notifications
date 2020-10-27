@@ -280,7 +280,7 @@ dependencies {
     }
     compile group: 'uk.gov.hmcts.reform', name: 'service-auth-provider-client', version: '3.1.2'
 
-    compile group: 'uk.gov.hmcts.reform', name: 'sscs-common', version: '3.5.14'
+    compile group: 'uk.gov.hmcts.reform', name: 'sscs-common', version: '3.5.15'
     compile group: 'uk.gov.hmcts.reform', name: 'sscs-pdf-email-common', version: '1.4.14'
 
     compile group: 'uk.gov.service.notify', name: 'notifications-java-client', version: '3.17.0-RELEASE'
@@ -305,7 +305,7 @@ dependencies {
     testCompile(group: 'org.springframework.boot', name: 'spring-boot-starter-test', version: '2.3.4.RELEASE') {
         exclude group: "com.vaadin.external.google", module:"android-json"
     }
-    testCompile group: 'org.mockito', name: 'mockito-core', version: '3.5.15'
+    testCompile group: 'org.mockito', name: 'mockito-core', version: '3.6.0'
     testCompile 'pl.pragmatists:JUnitParams:1.1.1'
 
     runtime "org.springframework.boot:spring-boot-properties-migrator"
