@@ -8,6 +8,8 @@ import java.time.LocalDateTime;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.context.annotation.Lazy;
 import org.springframework.jms.annotation.JmsListener;
+import org.springframework.jms.support.JmsHeaders;
+import org.springframework.messaging.handler.annotation.Header;
 import org.springframework.stereotype.Component;
 import uk.gov.hmcts.reform.sscs.callback.CallbackDispatcher;
 import uk.gov.hmcts.reform.sscs.ccd.callback.Callback;
@@ -37,12 +39,12 @@ public class TopicConsumer {
         containerFactory = "topicJmsListenerContainerFactory",
         subscription = "${amqp.subscription}"
     )
-    public void onMessage(String message) {
-        processMessage(message);
+    public void onMessage(String message, @Header(JmsHeaders.MESSAGE_ID) String messageId) {
+        processMessage(message, messageId);
     }
 
 
-    private void processMessage(String message) {
+    private void processMessage(String message, String messageId) {
         try {
             Callback<SscsCaseData> callback = sscsDeserializer.deserialize(message);
             requireNonNull(callback, "callback must not be null");
@@ -55,12 +57,17 @@ public class TopicConsumer {
                     callback.getCaseDetails().getCreatedDate(),
                     callback.getCaseDetails().getState());
 
-            log.info("Ccd Response received for case id: {} , {}", sscsCaseDataWrapper.getNewSscsCaseData().getCcdCaseId(), sscsCaseDataWrapper.getNotificationEventType());
+            log.info("Ccd Response received for case id: {} , {} with message id {}",
+                sscsCaseDataWrapper.getNewSscsCaseData().getCcdCaseId(),
+                sscsCaseDataWrapper.getNotificationEventType(),
+                messageId);
             dispatcher.handle(sscsCaseDataWrapper);
-            log.info("Sscs Case CCD callback `{}` handled for Case ID `{}`", callback.getEvent(), callback.getCaseDetails().getId());
+            log.info("Sscs Case CCD callback `{}` handled for Case ID `{}` with message id {}", callback.getEvent(),
+                callback.getCaseDetails().getId(),
+                messageId);
         } catch (Exception exception) {
             // unrecoverable. Catch to remove it from the queue.
-            log.error(format("Caught unrecoverable error: %s", exception.getMessage()), exception);
+            log.error(format(" Message id %s Caught unrecoverable error: %s", exception.getMessage(), messageId), exception);
         }
     }
 

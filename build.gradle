@@ -6,11 +6,11 @@ plugins {
     id 'jacoco'
     id 'io.spring.dependency-management' version '1.0.10.RELEASE'
     id 'org.springframework.boot' version '2.3.4.RELEASE'
-    id 'uk.gov.hmcts.java' version '0.12.0'
+    id 'uk.gov.hmcts.java' version '0.12.1'
     id 'org.owasp.dependencycheck' version '6.0.2'
     id 'com.github.ben-manes.versions' version '0.33.0'
     id 'net.ltgt.apt' version '0.21'
-    id "org.flywaydb.flyway" version "7.0.0"
+    id "org.flywaydb.flyway" version "7.0.4"
 }
 
 apply plugin: 'org.springframework.boot'
@@ -95,18 +95,18 @@ dependencyManagement {
         dependency group: 'org.apache.tika', name: 'tika-core', version: '1.24.1'
 
         // checkstyle needs a certain version and so does spring fox swagger, so can't use latest
-        dependencySet(group: 'com.google.guava', version: '29.0-jre') {
+        dependencySet(group: 'com.google.guava', version: '30.0-jre') {
             entry 'guava'
         }
         // CVE-2019-0232, CVE-2019-0199 - command line injections on windows
-        dependencySet(group: 'org.apache.tomcat.embed', version: '9.0.38') {
+        dependencySet(group: 'org.apache.tomcat.embed', version: '9.0.39') {
             entry 'tomcat-embed-core'
             entry 'tomcat-embed-el'
             entry 'tomcat-embed-websocket'
         }
 
         // CVE-2019-16869 - brought in by qpid-jms-client
-        dependencySet(group: 'io.netty', version: '4.1.52.Final') {
+        dependencySet(group: 'io.netty', version: '4.1.53.Final') {
             entry 'netty-handler'
             entry 'netty-transport-native-epoll'
             entry 'netty-transport-native-kqueue'
@@ -250,7 +250,7 @@ dependencies {
     compile group: 'com.mchange', name: 'c3p0', version: '0.9.5.5'
     compile group: 'org.flywaydb', name: 'flyway-core', version: '6.5.6'
     compile group: 'org.postgresql', name: 'postgresql', version: '42.2.14'
-    compile group: 'net.bytebuddy', name: 'byte-buddy', version: '1.10.16'
+    compile group: 'net.bytebuddy', name: 'byte-buddy', version: '1.10.17'
 
     compile group: 'org.springframework.boot', name: 'spring-boot-starter-actuator'
     compile group: 'org.springframework.boot', name: 'spring-boot-starter-aop'
@@ -279,7 +279,8 @@ dependencies {
         exclude group: "uk.gov.hmcts.reform", module:"http-proxy-spring-boot-autoconfigure"
     }
     compile group: 'uk.gov.hmcts.reform', name: 'service-auth-provider-client', version: '3.1.2'
-    compile group: 'uk.gov.hmcts.reform', name: 'sscs-common', version: '3.5.6'
+
+    compile group: 'uk.gov.hmcts.reform', name: 'sscs-common', version: '3.5.15'
     compile group: 'uk.gov.hmcts.reform', name: 'sscs-pdf-email-common', version: '1.4.14'
 
     compile group: 'uk.gov.service.notify', name: 'notifications-java-client', version: '3.17.0-RELEASE'
@@ -294,17 +295,17 @@ dependencies {
 
     compileOnly("org.springframework.boot:spring-boot-devtools")
 
-    compile 'org.projectlombok:lombok:1.18.12'
-    annotationProcessor "org.projectlombok:lombok:1.18.10"
-    testCompileOnly 'org.projectlombok:lombok:1.18.12'
-    testAnnotationProcessor "org.projectlombok:lombok:1.18.8"
+    compile 'org.projectlombok:lombok:1.18.16'
+    annotationProcessor "org.projectlombok:lombok:1.18.14"
+    testCompileOnly 'org.projectlombok:lombok:1.18.16'
+    testAnnotationProcessor "org.projectlombok:lombok:1.18.14"
     integrationTestCompileOnly 'org.projectlombok:lombok:1.18.12'
-    integrationTestAnnotationProcessor "org.projectlombok:lombok:1.18.6"
+    integrationTestAnnotationProcessor "org.projectlombok:lombok:1.18.14"
 
     testCompile(group: 'org.springframework.boot', name: 'spring-boot-starter-test', version: '2.3.4.RELEASE') {
         exclude group: "com.vaadin.external.google", module:"android-json"
     }
-    testCompile group: 'org.mockito', name: 'mockito-core', version: '3.5.13'
+    testCompile group: 'org.mockito', name: 'mockito-core', version: '3.6.0'
     testCompile 'pl.pragmatists:JUnitParams:1.1.1'
 
     runtime "org.springframework.boot:spring-boot-properties-migrator"

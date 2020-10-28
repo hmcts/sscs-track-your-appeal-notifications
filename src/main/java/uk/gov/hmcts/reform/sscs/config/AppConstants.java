@@ -26,6 +26,7 @@ public final class AppConstants {
     public static final String CLAIMANT_NAME = "claimant_name";
     public static final String COUNTY_LITERAL = "county";
     public static final String CREATED_DATE = "created_date";
+    public static final String CREATED_DATE_WELSH = "created_date_welsh";
     public static final String DAYS_STRING = " days";
     public static final String DAYS_TO_HEARING_LITERAL = "days_to_hearing_text";
     public static final String DECISION_POSTED_RECEIVE_DATE = "decision_posted_receive_date";
@@ -53,6 +54,7 @@ public final class AppConstants {
     public static final String INFO_REQUEST_DETAIL = "info_request_detail";
     public static final String JOINT = "joint";
     public static final String JOINT_PARTY_APPEAL = "joint_party_appeal";
+    public static final String JOINT_PARTY_NAME = "joint_party_name";
     public static final String MAC_ALGO = "HmacSHA256";
     public static final String MAC_LITERAL = "mac";
     public static final String MANAGE_EMAILS_LINK_LITERAL = "manage_emails_link";

@@ -65,6 +65,10 @@ public class JointPartyFunctionalTest extends AbstractFunctionalTest {
     private String paperAppealDormantJointPartyEmailId;
     @Value("${notification.english.paper.appealDormant.joint_party.smsId}")
     private String paperAppealDormantJointPartySmsId;
+    @Value("${notification.english.oral.dwpUploadResponse.joint_party.emailId}")
+    private String oralDwpUploadResponseJointPartyEmailId;
+    @Value("${notification.english.oral.dwpUploadResponse.joint_party.smsId}")
+    private String oralDwpUploadResponseJointPartySmsId;
     @Value("${notification.english.paper.dwpUploadResponse.joint_party.emailId}")
     private String paperDwpUploadResponseJointPartyEmailId;
     @Value("${notification.english.paper.dwpUploadResponse.joint_party.smsId}")
@@ -106,6 +110,7 @@ public class JointPartyFunctionalTest extends AbstractFunctionalTest {
         String jointPartyName = "Joint Party";
         assertNotificationBodyContains(notifications, jointPartyEmailId, jointPartyName);
         assertNotificationBodyContains(notifications, jointPartySmsId);
+
 
         if (expectedNumberOfLetters > 0) {
             List<Notification> notificationLetters = fetchLetters();
@@ -171,6 +176,7 @@ public class JointPartyFunctionalTest extends AbstractFunctionalTest {
             new Object[]{HEARING_REMINDER_NOTIFICATION, NO_HEARING_TYPE, expectedNumberOfLettersIsZero, isDocmosisLetterFalse},
             new Object[]{EVIDENCE_RECEIVED_NOTIFICATION, ORAL, expectedNumberOfLettersIsZero, isDocmosisLetterFalse},
             new Object[]{EVIDENCE_REMINDER_NOTIFICATION, PAPER, expectedNumberOfLettersIsZero, isDocmosisLetterFalse},
+            new Object[]{DWP_UPLOAD_RESPONSE_NOTIFICATION, ORAL, expectedNumberOfLettersIsTwo, isDocmosisLetterTrue},
             new Object[]{STRUCK_OUT, PAPER, expectedNumberOfLettersIsTwo, isDocmosisLetterTrue},
             new Object[]{APPEAL_WITHDRAWN_NOTIFICATION, NO_HEARING_TYPE, expectedNumberOfLettersIsTwo, isDocmosisLetterFalse},
             new Object[]{DIRECTION_ISSUED, NO_HEARING_TYPE, expectedNumberOfLettersIsTwo, isDocmosisLetterTrue},
