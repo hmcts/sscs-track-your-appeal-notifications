@@ -308,7 +308,8 @@ public class PersonalisationTest {
     }
 
     @Test
-    public void whenDirectionIssuedAndGrantUrgentHearingShouldGenerateCorrectTemplate() {
+    @Parameters({"APPELLANT","JOINT_PARTY","REPRESENTATIVE","APPOINTEE"})
+    public void whenDirectionIssuedAndGrantUrgentHearingShouldGenerateCorrectTemplate(SubscriptionType subscriptionType) {
 
         NotificationWrapper notificationWrapper = new CcdNotificationWrapper(SscsCaseDataWrapper.builder()
                 .newSscsCaseData(SscsCaseData.builder()
@@ -320,12 +321,12 @@ public class PersonalisationTest {
                 .notificationEventType(DIRECTION_ISSUED)
                 .build());
 
-        personalisation.getTemplate(notificationWrapper, PIP, APPELLANT);
+        personalisation.getTemplate(notificationWrapper, PIP, subscriptionType);
 
         verify(config).getTemplate(eq(DIRECTION_ISSUED.getId()),
                 eq(DIRECTION_ISSUED.getId()),
                 eq(DIRECTION_ISSUED.getId()),
-                eq("directionIssued.grantUrgentHearing" + "." + lowerCase(APPELLANT.toString())),
+                eq("directionIssued.grantUrgentHearing" + "." + lowerCase(subscriptionType.toString())),
                 any(Benefit.class), any(AppealHearingType.class), eq(null),
                 eq(LanguagePreference.ENGLISH)
         );
