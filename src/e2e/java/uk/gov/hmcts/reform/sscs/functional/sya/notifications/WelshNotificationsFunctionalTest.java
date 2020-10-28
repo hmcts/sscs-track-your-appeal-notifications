@@ -503,7 +503,7 @@ public class WelshNotificationsFunctionalTest extends AbstractFunctionalTest {
             new Object[]{DIRECTION_ISSUED_WELSH, Optional.of("AppealToProceed"), 3},
             new Object[]{DIRECTION_ISSUED_WELSH, Optional.of("RefuseExtension"), 3},
             new Object[]{DIRECTION_ISSUED_WELSH, Optional.of("GrantExtension"), 3},
-                new Object[]{JOINT_PARTY_ADDED, Optional.of("UploadResponse"), 2}
+            new Object[]{JOINT_PARTY_ADDED, 2}
         };
     }
 }
