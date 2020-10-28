@@ -308,6 +308,31 @@ public class PersonalisationTest {
     }
 
     @Test
+    public void whenDirectionIssuedAndGrantUrgentHearingShouldGenerateCorrectTemplate() {
+
+        NotificationWrapper notificationWrapper = new CcdNotificationWrapper(SscsCaseDataWrapper.builder()
+                .newSscsCaseData(SscsCaseData.builder()
+                        .directionTypeDl(new DynamicList("grantUrgentHearing"))
+                        .appeal(Appeal.builder()
+                                .hearingType(ONLINE.getValue())
+                                .build())
+                        .build())
+                .notificationEventType(DIRECTION_ISSUED)
+                .build());
+
+        personalisation.getTemplate(notificationWrapper, PIP, APPELLANT);
+
+        verify(config).getTemplate(eq(DIRECTION_ISSUED.getId()),
+                eq(DIRECTION_ISSUED.getId()),
+                eq(DIRECTION_ISSUED.getId()),
+                eq("directionIssued.grantUrgentHearing" + "." + lowerCase(APPELLANT.toString())),
+                any(Benefit.class), any(AppealHearingType.class), eq(null),
+                eq(LanguagePreference.ENGLISH)
+        );
+    }
+
+
+    @Test
     @Parameters({"APPEAL_TO_PROCEED, directionIssuedWelsh.appealToProceed, APPELLANT",
             "APPEAL_TO_PROCEED, directionIssuedWelsh.appealToProceed, JOINT_PARTY",
             "PROVIDE_INFORMATION, directionIssuedWelsh.provideInformation, REPRESENTATIVE",
