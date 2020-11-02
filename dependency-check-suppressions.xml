@@ -34,7 +34,7 @@
         <cve>CVE-2020-10663</cve>
         <cve>CVE-2020-7712</cve>
     </suppress>
-    <suppress until="2020-10-30">
+    <suppress until="2020-11-30">
         <notes><![CDATA[
          file name: sscs-pdf-email-common-1.4.14.jar
          Jquery included from SpringCloud. We are on latest release awaiting patch (Hoxton SR8)

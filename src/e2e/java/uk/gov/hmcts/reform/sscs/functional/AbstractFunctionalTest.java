@@ -251,7 +251,7 @@ public abstract class AbstractFunctionalTest {
         List<Notification> allNotifications = new ArrayList<>();
         allNotifications = client.getNotifications("", "letter", caseId.toString(), "").getNotifications();
         int secondsLeft = maxSecondsToWaitForNotification;
-        while (allNotifications.size() == 0 && secondsLeft < 0) {
+        while (allNotifications.size() == 0 && secondsLeft > 0) {
             try {
                 Thread.sleep(5000);
             } catch (InterruptedException e) {

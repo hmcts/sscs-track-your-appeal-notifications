@@ -365,6 +365,15 @@ notification:
           docmosisId: TB-SCS-GNO-ENG-00585.docx
         representative:
           docmosisId: TB-SCS-GNO-ENG-00585.docx
+      grantUrgentHearing:
+        appellant:
+          docmosisId: TB-SCS-GNO-ENG-00635.docx
+        appointee:
+          docmosisId: TB-SCS-GNO-ENG-00635.docx
+        representative:
+          docmosisId: TB-SCS-GNO-ENG-00635.docx
+        joint_party:
+          docmosisId: TB-SCS-GNO-ENG-00635.docx
     decisionIssued:
       appellant:
         docmosisId: TB-SCS-GNO-ENG-00094.docx
@@ -542,6 +551,11 @@ notification:
         joint_party:
           emailId: 1a2683d0-ca0f-4465-b25d-59d3d817750a
   welsh:
+    jointPartyAdded:
+      appellant:
+        docmosisId: TB-SCS-GNO-WEL-00629.docx
+      joint_party:
+        docmosisId: TB-SCS-GNO-WEL-00629.docx
     appealReceived:
       appellant:
         emailId: e16e5266-fd7e-4b80-81f6-c2f3d44f855a
