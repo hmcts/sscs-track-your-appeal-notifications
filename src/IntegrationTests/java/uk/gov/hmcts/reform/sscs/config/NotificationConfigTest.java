@@ -305,7 +305,7 @@ public class NotificationConfigTest {
                 new Object[]{"042ba4c4-1d95-4072-bb56-b65988300ba5", Arrays.asList("3b984e01-47be-40de-8c67-c4588bc8ea7d","8b459c7d-c7b9-4293-9734-26341a231695"), null, null, PAPER, getTemplateName(APPEAL_DORMANT_NOTIFICATION, APPELLANT), null},
                 new Object[]{"042ba4c4-1d95-4072-bb56-b65988300ba5", Arrays.asList("3b984e01-47be-40de-8c67-c4588bc8ea7d","8b459c7d-c7b9-4293-9734-26341a231695"), null, null, PAPER, getTemplateName(APPEAL_DORMANT_NOTIFICATION, APPOINTEE), null},
                 new Object[]{"5c9e35b4-d516-4b0a-823d-2c86449c77ba", Arrays.asList("4063a888-5d9d-4ef0-ae04-492e138ceb92","8b459c7d-c7b9-4293-9734-26341a231695"), null, null, PAPER, getTemplateName(APPEAL_DORMANT_NOTIFICATION, JOINT_PARTY), null},
-                new Object[]{"b74ea5d4-dba2-4148-b822-d102cedbea12", Arrays.asList("e02056c6-cff2-4ab1-8445-7e42ece655d2","4562984e-2854-4191-81d9-cffbe5111015"), null, null, PAPER, getTemplateName(APPEAL_DORMANT_NOTIFICATION, REPRESENTATIVE), null},
+                new Object[]{"3bf133d1-0f73-47f6-8825-5ae07cbe45b5", Arrays.asList("e02056c6-cff2-4ab1-8445-7e42ece655d2","4562984e-2854-4191-81d9-cffbe5111015"), null, null, PAPER, getTemplateName(APPEAL_DORMANT_NOTIFICATION, REPRESENTATIVE), null},
                 new Object[]{"c2258883-19c9-40db-b7e1-792b05f41103", Collections.emptyList(), null, null, ORAL, getTemplateName(APPEAL_DORMANT_NOTIFICATION, APPELLANT), null},
                 new Object[]{"c2258883-19c9-40db-b7e1-792b05f41103", Collections.emptyList(), null, null, ORAL, getTemplateName(APPEAL_DORMANT_NOTIFICATION, APPOINTEE), null},
                 new Object[]{"fe3f3364-a8c7-45cd-990f-31e101918ef6", Collections.emptyList(), null, null, ORAL, getTemplateName(APPEAL_DORMANT_NOTIFICATION, JOINT_PARTY), null},
@@ -313,7 +313,9 @@ public class NotificationConfigTest {
                 new Object[]{null, Collections.EMPTY_LIST, null, "TB-SCS-GNO-ENG-00452.docx", PAPER, getTemplateName(REQUEST_INFO_INCOMPLETE, REPRESENTATIVE), null},
                 new Object[]{null, Collections.EMPTY_LIST, null, "TB-SCS-GNO-ENG-00452.docx", PAPER, getTemplateName(REQUEST_INFO_INCOMPLETE, APPELLANT), null},
                 new Object[]{null, Collections.EMPTY_LIST, null, "TB-SCS-GNO-ENG-00452.docx", PAPER, getTemplateName(REQUEST_INFO_INCOMPLETE, APPOINTEE), null},
-                new Object[]{null, Collections.EMPTY_LIST, null, "TB-SCS-GNO-WEL-00589.docx", PAPER, getTemplateName(REQUEST_INFO_INCOMPLETE, JOINT_PARTY), null}
+                new Object[]{null, Collections.EMPTY_LIST, null, "TB-SCS-GNO-WEL-00589.docx", PAPER, getTemplateName(REQUEST_INFO_INCOMPLETE, JOINT_PARTY), null},
+                new Object[]{null, Collections.EMPTY_LIST, null, "TB-SCS-GNO-WEL-00629.docx", ORAL, getTemplateName(JOINT_PARTY_ADDED, APPELLANT), null},
+                new Object[]{null, Collections.EMPTY_LIST, null, "TB-SCS-GNO-WEL-00629.docx", PAPER, getTemplateName(JOINT_PARTY_ADDED, JOINT_PARTY), null}
         };
     }
 

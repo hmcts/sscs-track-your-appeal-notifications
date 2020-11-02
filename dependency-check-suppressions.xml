@@ -20,7 +20,7 @@
         <packageUrl regex="true">^pkg:maven/edu\.usc\.ir/sentiment-analysis-parser@0.*$</packageUrl>
         <cve>CVE-2018-18749</cve>
     </suppress>
-    <suppress until="2020-10-30">
+    <suppress until="2020-11-30">
         <notes><![CDATA[
          file name: kotlin-stdlib-common-1.4.10.jar
         ]]></notes>
@@ -34,7 +34,7 @@
         <cve>CVE-2020-10663</cve>
         <cve>CVE-2020-7712</cve>
     </suppress>
-    <suppress until="2020-10-30">
+    <suppress until="2020-11-30">
         <notes><![CDATA[
          file name: sscs-pdf-email-common-1.4.14.jar
          Jquery included from SpringCloud. We are on latest release awaiting patch (Hoxton SR8)
@@ -44,4 +44,11 @@
         <cve>CVE-2020-11022</cve>
         <cve>CVE-2020-11023</cve>
     </suppress>
+    <suppress until="2020-11-30">
+        <notes><![CDATA[
+        file name: tomcat-embed-core-9.0.39.jar/tomcat-embed-websocket-9.0.39.jar
+        Awaiting patch for Tomcat
+        ]]></notes>
+        <cve>CVE-2020-13943</cve>
+  </suppress>
 </suppressions>
