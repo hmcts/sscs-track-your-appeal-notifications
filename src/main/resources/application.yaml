@@ -681,13 +681,13 @@ notification:
     hearingBooked:
       appellant:
         emailId: 19b4f9c7-d4f6-49b1-9f61-ace2d0930c2a
-        smsId: 8aa77a9c-9bc6-424d-8716-1c948681270e
+        smsId: 847f22c9-2b19-41d4-9939-18d552834fb4
       representative:
         emailId: ddbc2437-604d-4ba3-a174-c3664efca8ee
         smsId: 1b4cd26e-5219-44c5-ba6c-b21e33ddbeba
       appointee:
         emailId: 19b4f9c7-d4f6-49b1-9f61-ace2d0930c2a
-        smsId: 8aa77a9c-9bc6-424d-8716-1c948681270e
+        smsId: 847f22c9-2b19-41d4-9939-18d552834fb4
       joint_party:
         emailId: cb4dd4fc-78a5-47aa-8303-5f66a9bda6e0
         smsId: 25a321e7-088b-40ac-9313-4c4f6471e682
