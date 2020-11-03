@@ -308,8 +308,15 @@ public class PersonalisationTest {
     }
 
     @Test
-    @Parameters({"APPELLANT","JOINT_PARTY","REPRESENTATIVE","APPOINTEE"})
-    public void whenDirectionIssuedAndGrantUrgentHearingShouldGenerateCorrectTemplate(SubscriptionType subscriptionType) {
+    @Parameters({"APPELLANT, grantUrgentHearing, directionIssued.grantUrgentHearing",
+            "JOINT_PARTY, grantUrgentHearing, directionIssued.grantUrgentHearing",
+            "REPRESENTATIVE, grantUrgentHearing, directionIssued.grantUrgentHearing",
+            "APPOINTEE, grantUrgentHearing, directionIssued.grantUrgentHearing",
+            "APPELLANT, refuseUrgentHearing, directionIssued.refuseUrgentHearing",
+            "JOINT_PARTY, refuseUrgentHearing, directionIssued.refuseUrgentHearing",
+            "REPRESENTATIVE, refuseUrgentHearing, directionIssued.refuseUrgentHearing",
+            "APPOINTEE, refuseUrgentHearing, directionIssued.refuseUrgentHearing"})
+    public void whenDirectionIssuedAndGrantOrRefuseUrgentHearingShouldGenerateCorrectTemplate(SubscriptionType subscriptionType, String directionTypeString, String templateConfig) {
 
         NotificationWrapper notificationWrapper = new CcdNotificationWrapper(SscsCaseDataWrapper.builder()
                 .newSscsCaseData(SscsCaseData.builder()
