@@ -251,7 +251,7 @@ dependencies {
     compile group: 'org.flywaydb', name: 'flyway-core', version: '6.5.6'
     compile group: 'org.postgresql', name: 'postgresql', version: '42.2.14'
     compile group: 'net.bytebuddy', name: 'byte-buddy', version: '1.10.18'
-    compile group: 'org.elasticsearch', name: 'elasticsearch', version: '7.9.2'
+    compile group: 'org.elasticsearch', name: 'elasticsearch', version: '7.9.3'
 
     compile group: 'org.springframework.boot', name: 'spring-boot-starter-actuator'
     compile group: 'org.springframework.boot', name: 'spring-boot-starter-aop'
