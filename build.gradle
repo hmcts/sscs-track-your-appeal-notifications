@@ -7,8 +7,8 @@ plugins {
     id 'io.spring.dependency-management' version '1.0.10.RELEASE'
     id 'org.springframework.boot' version '2.3.5.RELEASE'
     id 'uk.gov.hmcts.java' version '0.12.1'
-    id 'org.owasp.dependencycheck' version '6.0.2'
-    id 'com.github.ben-manes.versions' version '0.33.0'
+    id 'org.owasp.dependencycheck' version '6.0.3'
+    id 'com.github.ben-manes.versions' version '0.34.0'
     id 'net.ltgt.apt' version '0.21'
     id "org.flywaydb.flyway" version "7.1.1"
 }
@@ -251,6 +251,7 @@ dependencies {
     compile group: 'org.flywaydb', name: 'flyway-core', version: '6.5.6'
     compile group: 'org.postgresql', name: 'postgresql', version: '42.2.14'
     compile group: 'net.bytebuddy', name: 'byte-buddy', version: '1.10.18'
+    compile group: 'org.elasticsearch', name: 'elasticsearch', version: '7.9.3'
 
     compile group: 'org.springframework.boot', name: 'spring-boot-starter-actuator'
     compile group: 'org.springframework.boot', name: 'spring-boot-starter-aop'
@@ -279,8 +280,8 @@ dependencies {
         exclude group: "uk.gov.hmcts.reform", module:"http-proxy-spring-boot-autoconfigure"
     }
     compile group: 'uk.gov.hmcts.reform', name: 'service-auth-provider-client', version: '3.1.2'
-    compile group: 'uk.gov.hmcts.reform', name: 'sscs-common', version: '3.5.19'
-    compile group: 'uk.gov.hmcts.reform', name: 'sscs-pdf-email-common', version: '1.4.14'
+    compile group: 'uk.gov.hmcts.reform', name: 'sscs-common', version: '4.0.3'
+    compile group: 'uk.gov.hmcts.reform', name: 'sscs-pdf-email-common', version: '1.4.15'
 
     compile group: 'uk.gov.service.notify', name: 'notifications-java-client', version: '3.17.0-RELEASE'
     compile group: 'com.squareup.okhttp3', name: 'okhttp', version: '4.9.0'

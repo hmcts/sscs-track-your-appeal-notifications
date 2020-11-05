@@ -1,6 +1,5 @@
 package uk.gov.hmcts.reform.sscs.controller.test.smoke;
 
-import com.google.common.collect.ImmutableMap;
 import java.util.List;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
@@ -23,7 +22,7 @@ public class SmokeController {
     @ResponseBody
     public List<SscsCaseDetails> smoke() {
 
-        return ccdService.findCaseBy(ImmutableMap.of("case.caseReference", "SC068/18/01217"), idamService.getIdamTokens());
+        return ccdService.findCaseBy("case.caseReference", "SC068/18/01217", idamService.getIdamTokens());
     }
 
 }
