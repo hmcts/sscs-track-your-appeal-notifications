@@ -1084,8 +1084,8 @@ text:
   personalisation:
     english:
       ATTENDING_HEARING: "Attending the hearing: "
-      'YES': "yes"
-      'NO': "no"
+      YESSTRING: "yes"
+      NOSTRING: "no"
       DATES_NOT_ATTENDING: "Dates you can't attend: "
       DATE_OF_MRN: "Date of MRN: "
       REASON_FOR_LATE_APPEAL: "Reason for late appeal: "
@@ -1115,8 +1115,8 @@ text:
       OTHER: "Other"
     welsh:
       ATTENDING_HEARING: "Ydych chi'n bwriadu mynychu'r gwrandawiad: "
-      'YES': "ydw"
-      'NO': "nac ydw"
+      YESSTRING: "ydw"
+      NOSTRING: "nac ydw"
       DATES_NOT_ATTENDING: "Dyddiadau na allwch fynychu: "
       DATE_OF_MRN: "Dyddiad yr MRN: "
       REASON_FOR_LATE_APPEAL: "Rheswm dros apêl hwyr: "

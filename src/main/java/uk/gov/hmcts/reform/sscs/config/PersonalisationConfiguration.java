@@ -18,8 +18,8 @@ public class PersonalisationConfiguration {
 
     public enum PersonalisationKey {
         ATTENDING_HEARING,
-        YES,
-        NO,
+        YESSTRING,
+        NOSTRING,
         DATES_NOT_ATTENDING,
         DATE_OF_MRN,
         REASON_FOR_LATE_APPEAL,
@@ -49,7 +49,7 @@ public class PersonalisationConfiguration {
         OTHER;
 
         public static String getYesNoKey(String value) {
-            return Optional.ofNullable(value).filter(data -> "YES".equals(data.toUpperCase())).map(data -> YES.name()).orElse(NO.name());
+            return Optional.ofNullable(value).filter(data -> "YES".equals(data.toUpperCase())).map(data -> YESSTRING.name()).orElse(NOSTRING.name());
         }
     }
 }
