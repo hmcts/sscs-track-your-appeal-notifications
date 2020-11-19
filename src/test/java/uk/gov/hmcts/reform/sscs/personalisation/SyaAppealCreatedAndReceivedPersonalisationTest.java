@@ -36,8 +36,8 @@ public class SyaAppealCreatedAndReceivedPersonalisationTest {
         initMocks(this);
         Map<String, String> englishMap = new HashMap<>();
         englishMap.put(PersonalisationConfiguration.PersonalisationKey.ATTENDING_HEARING.name(), "Attending the hearing: ");
-        englishMap.put(PersonalisationConfiguration.PersonalisationKey.YES.name(), "yes");
-        englishMap.put(PersonalisationConfiguration.PersonalisationKey.NO.name(), "no");
+        englishMap.put(PersonalisationConfiguration.PersonalisationKey.YESSTRING.name(), "yes");
+        englishMap.put(PersonalisationConfiguration.PersonalisationKey.NOSTRING.name(), "no");
         englishMap.put(PersonalisationConfiguration.PersonalisationKey.DATES_NOT_ATTENDING.name(), "Dates you can't attend: ");
         englishMap.put(PersonalisationConfiguration.PersonalisationKey.DATE_OF_MRN.name(), "Date of MRN: ");
         englishMap.put(PersonalisationConfiguration.PersonalisationKey.REASON_FOR_LATE_APPEAL.name(), "Reason for late appeal: ");
@@ -68,8 +68,8 @@ public class SyaAppealCreatedAndReceivedPersonalisationTest {
 
         Map<String, String> welshMap = new HashMap<>();
         welshMap.put(PersonalisationConfiguration.PersonalisationKey.ATTENDING_HEARING.name(), "Ydych chi'n bwriadu mynychu'r gwrandawiad: ");
-        welshMap.put(PersonalisationConfiguration.PersonalisationKey.YES.name(), "ydw");
-        welshMap.put(PersonalisationConfiguration.PersonalisationKey.NO.name(), "nac ydw");
+        welshMap.put(PersonalisationConfiguration.PersonalisationKey.YESSTRING.name(), "ydw");
+        welshMap.put(PersonalisationConfiguration.PersonalisationKey.NOSTRING.name(), "nac ydw");
         welshMap.put(PersonalisationConfiguration.PersonalisationKey.DATES_NOT_ATTENDING.name(), "Dyddiadau na allwch fynychu: ");
         welshMap.put(PersonalisationConfiguration.PersonalisationKey.DATE_OF_MRN.name(), "Dyddiad yr MRN: ");
         welshMap.put(PersonalisationConfiguration.PersonalisationKey.REASON_FOR_LATE_APPEAL.name(), "Rheswm dros apêl hwyr: ");
