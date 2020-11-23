@@ -79,7 +79,7 @@ public class CcdActionExecutorTest {
 
         caseDetails = SscsCaseDetails.builder().id(456L).caseTypeId("123").state("appealCreated").build();
 
-        newSscsCaseData = SscsCaseData.builder().ccdCaseId("456").esaSscsCaseData(SscsEsaCaseData.builder().build()).build();
+        newSscsCaseData = SscsCaseData.builder().ccdCaseId("456").sscsEsaCaseData(SscsEsaCaseData.builder().build()).build();
         caseDetails.setData(newSscsCaseData);
 
         idamTokens = IdamTokens.builder().build();

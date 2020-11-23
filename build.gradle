@@ -141,11 +141,11 @@ repositories {
     maven {
         url "https://dl.bintray.com/hmcts/hmcts-maven"
     }
+    mavenCentral()
+    jcenter()
     maven {
         url 'https://repo.spring.io/libs-milestone'
     }
-    jcenter()
-    mavenCentral()
 
     // jitpack should be last resort
     // see: https://github.com/jitpack/jitpack.io/issues/1939
