@@ -807,6 +807,24 @@ notification:
           docmosisId: TB-SCS-GNO-WEL-00587.docx
         representative:
           docmosisId: TB-SCS-GNO-WEL-00587.docx
+      grantUrgentHearing:
+        appellant:
+          docmosisId: TB-SCS-GNO-WEL-00644.docx
+        appointee:
+          docmosisId: TB-SCS-GNO-WEL-00644.docx
+        representative:
+          docmosisId: TB-SCS-GNO-WEL-00644.docx
+        joint_party:
+          docmosisId: TB-SCS-GNO-WEL-00644.docx
+      refuseUrgentHearing:
+        appellant:
+          docmosisId: TB-SCS-GNO-WEL-00645.docx
+        appointee:
+          docmosisId: TB-SCS-GNO-WEL-00645.docx
+        representative:
+          docmosisId: TB-SCS-GNO-WEL-00645.docx
+        joint_party:
+          docmosisId: TB-SCS-GNO-WEL-00645.docx
     decisionIssuedWelsh:
       appellant:
         docmosisId: TB-SCS-GNO-WEL-00474.docx

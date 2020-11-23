@@ -347,7 +347,15 @@ public class PersonalisationTest {
             "GRANT_EXTENSION, directionIssuedWelsh.grantExtension, APPOINTEE",
             "REFUSE_EXTENSION, directionIssuedWelsh.refuseExtension, APPELLANT",
             "GRANT_REINSTATEMENT, directionIssuedWelsh.grantReinstatement, APPELLANT",
-            "REFUSE_REINSTATEMENT, directionIssuedWelsh.refuseReinstatement, APPOINTEE"
+            "REFUSE_REINSTATEMENT, directionIssuedWelsh.refuseReinstatement, APPOINTEE",
+            "GRANT_URGENT_HEARING, directionIssuedWelsh.grantUrgentHearing, APPELLANT",
+            "GRANT_URGENT_HEARING, directionIssuedWelsh.grantUrgentHearing, APPOINTEE",
+            "GRANT_URGENT_HEARING, directionIssuedWelsh.grantUrgentHearing, REPRESENTATIVE",
+            "GRANT_URGENT_HEARING, directionIssuedWelsh.grantUrgentHearing, JOINT_PARTY",
+            "REFUSE_URGENT_HEARING, directionIssuedWelsh.refuseUrgentHearing, APPELLANT",
+            "REFUSE_URGENT_HEARING, directionIssuedWelsh.refuseUrgentHearing, APPOINTEE",
+            "REFUSE_URGENT_HEARING, directionIssuedWelsh.refuseUrgentHearing, REPRESENTATIVE",
+            "REFUSE_URGENT_HEARING, directionIssuedWelsh.refuseUrgentHearing, JOINT_PARTY"
     })
     public void whenDirectionIssuedWelshAndDirectionTypeShouldGenerateCorrectTemplate(DirectionType directionType,
                                                                                  String templateConfig,
