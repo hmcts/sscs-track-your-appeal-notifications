@@ -105,6 +105,15 @@ dependencyManagement {
             entry 'tomcat-embed-websocket'
         }
 
+        // CVE-2020-13954
+        dependencySet(group: 'org.apache.cxf', version: '3.4.1') {
+            entry 'cxf-core'
+            entry 'cxf-rt-frontend-jaxrs'
+            entry 'cxf-rt-rs-client'
+            entry 'cxf-rt-security'
+            entry 'cxf-rt-transports-http'
+        }
+
         // CVE-2019-16869 - brought in by qpid-jms-client
         dependencySet(group: 'io.netty', version: '4.1.54.Final') {
             entry 'netty-handler'
