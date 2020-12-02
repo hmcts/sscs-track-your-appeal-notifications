@@ -76,6 +76,7 @@ public abstract class BaseActionExecutor<T> implements JobExecutor<T> {
                         updateCase(caseId, wrapper, idamTokens);
                     }
                 } catch (NotificationServiceException e) {
+                    LOG.error("Gov notify error, Notification event {} is rescheduled for case id {}", eventId, caseId, e);
                     retryNotificationService.rescheduleIfHandledGovNotifyErrorStatus(retry + 1, notificationWrapper, e);
                     throw e;
                 }
