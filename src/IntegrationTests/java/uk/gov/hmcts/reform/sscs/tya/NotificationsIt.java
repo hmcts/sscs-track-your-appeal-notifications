@@ -280,7 +280,9 @@ public class NotificationsIt {
         json = updateEmbeddedJson(json, repsSmsSubs, "case_details", "case_data", "subscriptions",
             "representativeSubscription", "subscribeSms");
         json = updateEmbeddedJson(json, notificationEventType.getId(), "event_id");
-
+        if (notificationEventType.getId().contains("Welsh")) {
+            json = updateEmbeddedJson(json, "Yes", "case_details", "case_data", "languagePreferenceWelsh");
+        }
         if (notificationEventType.equals(REQUEST_INFO_INCOMPLETE)) {
             json = updateEmbeddedJson(json, "Yes", "case_details", "case_data", "informationFromAppellant");
         }
@@ -337,7 +339,9 @@ public class NotificationsIt {
         json = updateEmbeddedJson(json, repsSmsSubs, "case_details", "case_data", "subscriptions",
             "representativeSubscription", "subscribeSms");
         json = updateEmbeddedJson(json, notificationEventType.getId(), "event_id");
-
+        if (notificationEventType.getId().contains("Welsh")) {
+            json = updateEmbeddedJson(json, "Yes", "case_details", "case_data", "languagePreferenceWelsh");
+        }
         if (notificationEventType.equals(REQUEST_INFO_INCOMPLETE)) {
             json = updateEmbeddedJson(json, "Yes", "case_details", "case_data", "informationFromAppellant");
         }
@@ -364,6 +368,9 @@ public class NotificationsIt {
         String jsonAppointee = FileUtils.readFileToString(new File(path), StandardCharsets.UTF_8.name());
         jsonAppointee = updateEmbeddedJson(jsonAppointee, hearingType, "case_details", "case_data", "appeal", "hearingType");
 
+        if (notificationEventType.getId().contains("Welsh")) {
+            jsonAppointee = updateEmbeddedJson(jsonAppointee, "Yes", "case_details", "case_data", "languagePreferenceWelsh");
+        }
         jsonAppointee = updateEmbeddedJson(jsonAppointee, appointeeEmailSubs, "case_details", "case_data", "subscriptions",
             "appointeeSubscription", "subscribeEmail");
         jsonAppointee = updateEmbeddedJson(jsonAppointee, appointeeSmsSubs, "case_details", "case_data", "subscriptions",
@@ -1714,6 +1721,20 @@ public class NotificationsIt {
                 "0",
                 "0"
             },
+            new Object[]{
+                    ISSUE_ADJOURNMENT_NOTICE_WELSH,
+                    "paper",
+                    Collections.emptyList(),
+                    Collections.emptyList(),
+                    Arrays.asList("TB-SCS-GNO-ENG-00067.docx", "TB-SCS-GNO-ENG-00089.docx"),
+                    "no",
+                    "no",
+                    "no",
+                    "no",
+                    "0",
+                    "0",
+                    "0"
+            },
         };
     }
 
@@ -1954,6 +1975,62 @@ public class NotificationsIt {
             },
             new Object[]{
                 ISSUE_ADJOURNMENT_NOTICE,
+                "oral",
+                true,
+                true,
+                "2"
+            },
+            new Object[]{
+                ISSUE_ADJOURNMENT_NOTICE_WELSH,
+                "paper",
+                false,
+                false,
+                "1"
+            },
+            new Object[]{
+                ISSUE_ADJOURNMENT_NOTICE_WELSH,
+                "oral",
+                false,
+                false,
+                "1"
+            },
+            new Object[]{
+                ISSUE_ADJOURNMENT_NOTICE_WELSH,
+                "oral",
+                false,
+                true,
+                "1"
+            },
+            new Object[]{
+                ISSUE_ADJOURNMENT_NOTICE_WELSH,
+                "paper",
+                false,
+                true,
+                "1"
+            },
+            new Object[]{
+                ISSUE_ADJOURNMENT_NOTICE_WELSH,
+                "paper",
+                true,
+                false,
+                "2"
+            },
+            new Object[]{
+                ISSUE_ADJOURNMENT_NOTICE_WELSH,
+                "oral",
+                true,
+                false,
+                "2"
+            },
+            new Object[]{
+                ISSUE_ADJOURNMENT_NOTICE_WELSH,
+                "paper",
+                true,
+                true,
+                "2"
+            },
+            new Object[]{
+                ISSUE_ADJOURNMENT_NOTICE_WELSH,
                 "oral",
                 true,
                 true,
@@ -2609,8 +2686,22 @@ public class NotificationsIt {
                 "0",
                 "0"
             },
-                new Object[]{
+            new Object[]{
                 ISSUE_ADJOURNMENT_NOTICE,
+                "paper",
+                Collections.emptyList(),
+                Collections.emptyList(),
+                Arrays.asList("TB-SCS-GNO-ENG-00067.docx", "TB-SCS-GNO-ENG-00089.docx"),
+                "no",
+                "no",
+                "no",
+                "no",
+                "0",
+                "0",
+                "0"
+            },
+            new Object[]{
+                ISSUE_ADJOURNMENT_NOTICE_WELSH,
                 "paper",
                 Collections.emptyList(),
                 Collections.emptyList(),
@@ -2904,6 +2995,19 @@ public class NotificationsIt {
             },
             new Object[]{
                 ISSUE_ADJOURNMENT_NOTICE,
+                "paper",
+                Collections.emptyList(),
+                Collections.emptyList(),
+                Collections.singletonList("TB-SCS-GNO-ENG-00067.docx"),
+                "yes",
+                "yes",
+                "0",
+                "0",
+                "0",
+                "Appointee Appointee"
+            },
+            new Object[]{
+                ISSUE_ADJOURNMENT_NOTICE_WELSH,
                 "paper",
                 Collections.emptyList(),
                 Collections.emptyList(),

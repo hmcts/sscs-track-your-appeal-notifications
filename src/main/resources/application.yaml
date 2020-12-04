@@ -814,6 +814,13 @@ notification:
         docmosisId: TB-SCS-GNO-WEL-00474.docx
       representative:
         docmosisId: TB-SCS-GNO-WEL-00475.docx
+    issueAdjournmentNoticeWelsh:
+      appellant:
+        docmosisId: TB-SCS-GNO-ENG-00510.docx
+      appointee:
+        docmosisId: TB-SCS-GNO-ENG-00510.docx
+      representative:
+        docmosisId: TB-SCS-GNO-ENG-00512.docx
     issueFinalDecision:
       appellant:
         docmosisId: TB-SCS-GNO-ENG-00454.docx

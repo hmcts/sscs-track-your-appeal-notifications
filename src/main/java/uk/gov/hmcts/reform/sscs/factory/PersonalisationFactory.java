@@ -20,6 +20,7 @@ import static uk.gov.hmcts.reform.sscs.domain.notify.NotificationEventType.HEARI
 import static uk.gov.hmcts.reform.sscs.domain.notify.NotificationEventType.HEARING_REMINDER_NOTIFICATION;
 import static uk.gov.hmcts.reform.sscs.domain.notify.NotificationEventType.HMCTS_APPEAL_LAPSED_NOTIFICATION;
 import static uk.gov.hmcts.reform.sscs.domain.notify.NotificationEventType.ISSUE_ADJOURNMENT_NOTICE;
+import static uk.gov.hmcts.reform.sscs.domain.notify.NotificationEventType.ISSUE_ADJOURNMENT_NOTICE_WELSH;
 import static uk.gov.hmcts.reform.sscs.domain.notify.NotificationEventType.ISSUE_FINAL_DECISION;
 import static uk.gov.hmcts.reform.sscs.domain.notify.NotificationEventType.POSTPONEMENT_NOTIFICATION;
 import static uk.gov.hmcts.reform.sscs.domain.notify.NotificationEventType.REQUEST_INFO_INCOMPLETE;
@@ -83,6 +84,7 @@ public class PersonalisationFactory implements Function<NotificationEventType, P
                     || REQUEST_INFO_INCOMPLETE.equals(notificationType)
                     || ISSUE_FINAL_DECISION.equals(notificationType)
                     || ISSUE_ADJOURNMENT_NOTICE.equals(notificationType)
+                    || ISSUE_ADJOURNMENT_NOTICE_WELSH.equals(notificationType)
                     || STRUCK_OUT.equals(notificationType)
                     || HEARING_BOOKED_NOTIFICATION.equals(notificationType)) {
                 selectedPersonalisation = withRepresentativePersonalisation;
