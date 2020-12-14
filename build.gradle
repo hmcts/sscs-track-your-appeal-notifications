@@ -92,7 +92,7 @@ dependencyManagement {
         dependency group: 'org.apache.logging.log4j', name: 'log4j-to-slf4j', version: '2.14.0'
 
         // resolves: CVE-2020-9489
-        dependency group: 'org.apache.tika', name: 'tika-core', version: '1.24.1'
+        dependency group: 'org.apache.tika', name: 'tika-core', version: '1.25'
 
         // checkstyle needs a certain version and so does spring fox swagger, so can't use latest
         dependencySet(group: 'com.google.guava', version: '30.0-jre') {
@@ -115,7 +115,7 @@ dependencyManagement {
         }
 
         // CVE-2019-16869 - brought in by qpid-jms-client
-        dependencySet(group: 'io.netty', version: '4.1.54.Final') {
+        dependencySet(group: 'io.netty', version: '4.1.55.Final') {
             entry 'netty-handler'
             entry 'netty-transport-native-epoll'
             entry 'netty-transport-native-kqueue'
@@ -137,7 +137,7 @@ dependencyManagement {
         }
 
         // resolves: CVE-2019-10101, CVE-2019-10102, CVE-2019-10103
-        dependencySet(group: 'org.jetbrains.kotlin', version: '1.4.20') {
+        dependencySet(group: 'org.jetbrains.kotlin', version: '1.4.21') {
             entry 'kotlin-stdlib'
         }
     }
@@ -260,7 +260,7 @@ dependencies {
     compile group: 'org.flywaydb', name: 'flyway-core', version: '6.5.6'
     compile group: 'org.postgresql', name: 'postgresql', version: '42.2.14'
     compile group: 'net.bytebuddy', name: 'byte-buddy', version: '1.10.18'
-    compile group: 'org.elasticsearch', name: 'elasticsearch', version: '7.10.0'
+    compile group: 'org.elasticsearch', name: 'elasticsearch', version: '7.10.1'
 
     compile group: 'org.springframework.boot', name: 'spring-boot-starter-actuator'
     compile group: 'org.springframework.boot', name: 'spring-boot-starter-aop'
