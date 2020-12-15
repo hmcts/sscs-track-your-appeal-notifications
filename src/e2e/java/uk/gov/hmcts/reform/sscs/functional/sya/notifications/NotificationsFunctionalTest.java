@@ -113,9 +113,6 @@ public class NotificationsFunctionalTest extends AbstractFunctionalTest {
     @Value("${notification.english.appealLapsed.appointee.smsId}")
     private String appealLapsedAppointeeSmsTemplateId;
 
-    @Value("${notification.english.appealLapsed.appointee.letterId}")
-    private String appealLapsedAppointeeLetterTemplateId;
-
     @Value("${notification.english.appealWithdrawn.appointee.emailId}")
     private String appointeeAppealWithdrawnEmailId;
 
@@ -367,6 +364,10 @@ public class NotificationsFunctionalTest extends AbstractFunctionalTest {
 
         assertTrue(emailNotification.getBody().contains("Dear Appointee User"));
         assertTrue(emailNotification.getBody().contains("You are receiving this update as the appointee for"));
+
+        List<Notification> notificationLetters = fetchLetters();
+        assertEquals(1, notificationLetters.size());
+        assertEquals("Pre-compiled PDF", notificationLetters.get(0).getSubject().orElse("Unknown Subject"));
     }
 
     @Test

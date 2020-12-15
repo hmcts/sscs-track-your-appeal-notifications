@@ -517,7 +517,7 @@ public class Personalisation<E extends NotificationWrapper> {
         String smsTemplateName = isSendSmsSubscriptionConfirmation() ? SUBSCRIPTION_CREATED_NOTIFICATION.getId() + "." + subscriptionType.toString().toLowerCase() :
                 templateConfig;
 
-        String letterTemplateName = getLetterTemplateName(subscriptionType, notificationWrapper.getNotificationType());
+        String letterTemplateName = getLetterTemplateName(subscriptionType, notificationWrapper.getNotificationType(), notificationWrapper.getNewSscsCaseData().getLanguagePreference());
 
         String docmosisTemplateName = getDocmosisTemplateName(subscriptionType, notificationWrapper.getNotificationType(), notificationWrapper.getNewSscsCaseData());
 
@@ -575,6 +575,9 @@ public class Personalisation<E extends NotificationWrapper> {
         } else if (subscriptionType != null
                 && (APPEAL_RECEIVED_NOTIFICATION.equals(notificationEventType)
                 || DIRECTION_ISSUED.equals(notificationEventType)
+                || APPEAL_LAPSED_NOTIFICATION.equals(notificationEventType)
+                || DWP_APPEAL_LAPSED_NOTIFICATION.equals(notificationEventType)
+                || HMCTS_APPEAL_LAPSED_NOTIFICATION.equals(notificationEventType)
                 || DECISION_ISSUED.equals(notificationEventType)
                 || DIRECTION_ISSUED_WELSH.equals(notificationEventType)
                 || DECISION_ISSUED_WELSH.equals(notificationEventType)
@@ -592,20 +595,21 @@ public class Personalisation<E extends NotificationWrapper> {
     }
 
     private String getLetterTemplateName(SubscriptionType subscriptionType, NotificationEventType
-            notificationEventType) {
+            notificationEventType, LanguagePreference languagePreference) {
 
         String letterTemplateName = notificationEventType.getId();
 
-        if (subscriptionType != null
+        if (null != subscriptionType
                 && ((LETTER_SUBSCRIPTION_TYPES.contains(notificationEventType)
                 || APPEAL_WITHDRAWN_NOTIFICATION.equals(notificationEventType)
                 || ADMIN_APPEAL_WITHDRAWN.equals(notificationEventType)
                 || HEARING_BOOKED_NOTIFICATION.equals(notificationEventType))
                 || JUDGE_DECISION_APPEAL_TO_PROCEED.equals(notificationEventType)
-                || TCW_DECISION_APPEAL_TO_PROCEED.equals(notificationEventType)
-                || APPEAL_LAPSED_NOTIFICATION.equals(notificationEventType)
-                || HMCTS_APPEAL_LAPSED_NOTIFICATION.equals(notificationEventType)
-                || DWP_APPEAL_LAPSED_NOTIFICATION.equals(notificationEventType))) {
+                || TCW_DECISION_APPEAL_TO_PROCEED.equals(notificationEventType))
+                || (LanguagePreference.WELSH.equals(languagePreference)
+                && (null != subscriptionType && APPEAL_LAPSED_NOTIFICATION.equals(notificationEventType)
+                  || HMCTS_APPEAL_LAPSED_NOTIFICATION.equals(notificationEventType)
+                  || DWP_APPEAL_LAPSED_NOTIFICATION.equals(notificationEventType)))) {
             letterTemplateName = letterTemplateName + "." + subscriptionType.name().toLowerCase();
         }
         return letterTemplateName;
