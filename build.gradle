@@ -276,7 +276,7 @@ dependencies {
     compile group: 'io.springfox', name: 'springfox-swagger2', version: versions.springfoxSwagger
     compile group: 'io.springfox', name: 'springfox-swagger2', version: versions.springfoxSwagger
     compile group: 'io.springfox', name: 'springfox-swagger-ui', version: versions.springfoxSwagger
-    compile group: 'com.atlassian.commonmark', name: 'commonmark', version: '0.15.2'
+    compile group: 'com.atlassian.commonmark', name: 'commonmark', version: '0.16.1'
     compile group: 'org.springframework', name: 'spring-jms'
     compile group: 'org.apache.qpid', name: 'qpid-jms-client', version: '0.55.0'
     compile group: 'org.jadira.usertype', name: 'usertype.core', version: '7.0.0.CR1'
