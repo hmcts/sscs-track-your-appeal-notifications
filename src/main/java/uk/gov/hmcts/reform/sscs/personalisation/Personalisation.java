@@ -607,9 +607,9 @@ public class Personalisation<E extends NotificationWrapper> {
                 || JUDGE_DECISION_APPEAL_TO_PROCEED.equals(notificationEventType)
                 || TCW_DECISION_APPEAL_TO_PROCEED.equals(notificationEventType))
                 || (LanguagePreference.WELSH.equals(languagePreference)
-                && (null != subscriptionType && APPEAL_LAPSED_NOTIFICATION.equals(notificationEventType)
+                && (null != subscriptionType && (APPEAL_LAPSED_NOTIFICATION.equals(notificationEventType)
                   || HMCTS_APPEAL_LAPSED_NOTIFICATION.equals(notificationEventType)
-                  || DWP_APPEAL_LAPSED_NOTIFICATION.equals(notificationEventType)))) {
+                  || DWP_APPEAL_LAPSED_NOTIFICATION.equals(notificationEventType))))) {
             letterTemplateName = letterTemplateName + "." + subscriptionType.name().toLowerCase();
         }
         return letterTemplateName;
