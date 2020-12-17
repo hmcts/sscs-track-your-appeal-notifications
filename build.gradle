@@ -95,7 +95,7 @@ dependencyManagement {
         dependency group: 'org.apache.tika', name: 'tika-core', version: '1.25'
 
         // checkstyle needs a certain version and so does spring fox swagger, so can't use latest
-        dependencySet(group: 'com.google.guava', version: '30.0-jre') {
+        dependencySet(group: 'com.google.guava', version: '30.1-jre') {
             entry 'guava'
         }
         // CVE-2019-0232, CVE-2019-0199 - command line injections on windows
@@ -276,7 +276,7 @@ dependencies {
     compile group: 'io.springfox', name: 'springfox-swagger2', version: versions.springfoxSwagger
     compile group: 'io.springfox', name: 'springfox-swagger2', version: versions.springfoxSwagger
     compile group: 'io.springfox', name: 'springfox-swagger-ui', version: versions.springfoxSwagger
-    compile group: 'com.atlassian.commonmark', name: 'commonmark', version: '0.15.2'
+    compile group: 'com.atlassian.commonmark', name: 'commonmark', version: '0.16.1'
     compile group: 'org.springframework', name: 'spring-jms'
     compile group: 'org.apache.qpid', name: 'qpid-jms-client', version: '0.55.0'
     compile group: 'org.jadira.usertype', name: 'usertype.core', version: '7.0.0.CR1'
@@ -290,7 +290,7 @@ dependencies {
     }
     compile group: 'uk.gov.hmcts.reform', name: 'service-auth-provider-client', version: '3.1.2'
     compile group: 'uk.gov.hmcts.reform', name: 'sscs-common', version: '4.1.23-RC-SSCS-8351'
-    compile group: 'uk.gov.hmcts.reform', name: 'sscs-pdf-email-common', version: '1.4.17'
+    compile group: 'uk.gov.hmcts.reform', name: 'sscs-pdf-email-common', version: '1.4.18'
 
     compile group: 'uk.gov.service.notify', name: 'notifications-java-client', version: '3.17.0-RELEASE'
     compile group: 'com.squareup.okhttp3', name: 'okhttp', version: '4.9.0'
@@ -311,7 +311,7 @@ dependencies {
     integrationTestCompileOnly 'org.projectlombok:lombok:1.18.12'
     integrationTestAnnotationProcessor "org.projectlombok:lombok:1.18.14"
 
-    testCompile(group: 'org.springframework.boot', name: 'spring-boot-starter-test', version: '2.4.0') {
+    testCompile(group: 'org.springframework.boot', name: 'spring-boot-starter-test', version: '2.4.1') {
         exclude group: "com.vaadin.external.google", module:"android-json"
     }
     testCompile group: 'org.mockito', name: 'mockito-core', version: '3.6.28'
