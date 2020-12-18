@@ -262,7 +262,7 @@ public class SendNotificationService {
                         );
                 log.info("In sendBundledLetterNotification method notificationSender is available {} ", notificationSender != null);
                 if (ArrayUtils.isNotEmpty(bundledLetter)) {
-                    notificationHandler.sendNotification(wrapper, notification.getLetterTemplate(), NOTIFICATION_TYPE_LETTER, sendNotification);
+                    notificationHandler.sendNotification(wrapper, notification.getDocmosisLetterTemplate(), NOTIFICATION_TYPE_LETTER, sendNotification);
                     return true;
                 }
             }

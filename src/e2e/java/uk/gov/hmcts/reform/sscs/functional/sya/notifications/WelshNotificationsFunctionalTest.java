@@ -455,6 +455,11 @@ public class WelshNotificationsFunctionalTest extends AbstractFunctionalTest {
                 .collect(toList()).get(0);
         assertTrue(jointPartyEmail.getBody().contains("Annwyl Joint Party"));
         assertTrue(jointPartyEmail.getBody().contains("Ysgrifennwyd yr e-bost hwn yn Gymraeg a Saesneg"));
+        List<Notification> letters = fetchLetters();
+        assertEquals(letters.size(), 3);
+        for (int i = 0; i < 3; i++) {
+            assertEquals(notifications.get(i).toString(),"Pre-compiled PDF", notifications.get(i).getSubject().orElse("Unknown Subject"));
+        }
     }
 
     @Test
