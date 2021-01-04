@@ -7,7 +7,13 @@
       "appeal": {
         "appealReasons": {},
         "appellant": {
-          "address": {},
+          "address": {
+            "line1": "36 Dale Street",
+            "line2": "Village",
+            "town": "Liverpool",
+            "county": "Merseyside",
+            "postcode": "TS1 1ST"
+          },
           "contact": {
             "email": "mail@email.com",
             "phone": "01234567890"
@@ -44,7 +50,7 @@
             "line2": "Off Hairy Park",
             "town": "Town",
             "county": "County",
-            "postcode": "TS1 1ST"
+            "postcode": "TS2 2ST"
           },
           "contact": {},
           "organisation": "HP Ltd"

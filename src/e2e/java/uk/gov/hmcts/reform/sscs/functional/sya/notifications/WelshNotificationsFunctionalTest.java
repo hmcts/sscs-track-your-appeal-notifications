@@ -458,7 +458,7 @@ public class WelshNotificationsFunctionalTest extends AbstractFunctionalTest {
         List<Notification> letters = fetchLetters();
         assertEquals(letters.size(), 3);
         for (int i = 0; i < 3; i++) {
-            assertEquals(notifications.get(i).toString(),"Pre-compiled PDF", notifications.get(i).getSubject().orElse("Unknown Subject"));
+            assertEquals(letters.get(i).toString(),"Pre-compiled PDF", letters.get(i).getSubject().orElse("Unknown Subject"));
         }
     }
 
