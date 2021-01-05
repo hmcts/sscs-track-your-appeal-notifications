@@ -138,6 +138,9 @@ public class NotificationService {
             } else if (code.equals(EventType.ISSUE_ADJOURNMENT_NOTICE.getCcdType())) {
                 wrapper.setNotificationType(ISSUE_ADJOURNMENT_NOTICE);
                 wrapper.setNotificationEventTypeOverridden(true);
+            } else if (code.equals(EventType.ISSUE_ADJOURNMENT_NOTICE_WELSH.getCcdType())) {
+                wrapper.setNotificationType(ISSUE_ADJOURNMENT_NOTICE_WELSH);
+                wrapper.setNotificationEventTypeOverridden(true);
             } else if (code.equals(EventType.DECISION_ISSUED_WELSH.getCcdType())) {
                 wrapper.setNotificationType(DECISION_ISSUED_WELSH);
                 wrapper.setNotificationEventTypeOverridden(true);
