@@ -411,12 +411,7 @@ notification:
       joint_party:
         docmosisId: TB-SCS-GNO-ENG-00452.docx
     nonCompliant:
-      appellant:
-        letterId: 114cadaa-7760-4699-9add-d3a252f68909
-      representative:
-        letterId: 5745f77c-6512-4082-8c34-63851f24eab1
-      appointee:
-        letterId: 114cadaa-7760-4699-9add-d3a252f68909
+      docmosisId: TB-SCS-GNO-ENG-00662.docx
     reviewConfidentialityRequest:
       appellant:
         docmosisId: TB-SCS-GNO-ENG-00582.docx
@@ -828,12 +823,7 @@ notification:
       joint_party:
         docmosisId: TB-SCS-GNO-WEL-00589.docx
     nonCompliant:
-      appellant:
-        letterId: dde50680-5215-4688-aca1-7f5a30ad55dc
-      representative:
-        letterId: 4eeb846e-ece3-46e6-86fd-cb62bb5aa444
-      appointee:
-        letterId: dde50680-5215-4688-aca1-7f5a30ad55dc
+      docmosisId: TB-SCS-GNO-WEL-00663.docx
     reviewConfidentialityRequest:
       appellant:
         docmosisId: TB-SCS-GNO-WEL-00602.docx

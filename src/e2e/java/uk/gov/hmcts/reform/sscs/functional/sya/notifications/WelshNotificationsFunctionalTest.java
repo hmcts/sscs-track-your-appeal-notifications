@@ -483,14 +483,13 @@ public class WelshNotificationsFunctionalTest extends AbstractFunctionalTest {
         List<Notification> notifications = fetchLetters();
 
         assertEquals(expectedNumberOfLetters, notifications.size());
-        for (int i = 0; i < expectedNumberOfLetters; i++) {
-            assertEquals("Pre-compiled PDF", notifications.get(i).getSubject().orElse("Unknown Subject"));
-        }
+        notifications.forEach(n -> assertEquals("Pre-compiled PDF", n.getSubject().orElse("Unknown Subject")));
     }
 
     @SuppressWarnings({"Indentation", "unused"})
     private Object[] docmosisTestSetup() {
         return new Object[]{
+            new Object[]{NON_COMPLIANT_NOTIFICATION, Optional.empty(), 2},
             new Object[]{REQUEST_INFO_INCOMPLETE, Optional.empty(), 3},
             new Object[]{STRUCK_OUT, Optional.empty(), 3},
             new Object[]{DIRECTION_ISSUED_WELSH, Optional.of("ProvideInformation"), 3},
