@@ -5,6 +5,7 @@ import static org.junit.Assert.assertEquals;
 import java.io.IOException;
 import java.util.List;
 import junitparams.JUnitParamsRunner;
+import junitparams.Parameters;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import uk.gov.hmcts.reform.sscs.domain.notify.NotificationEventType;
@@ -96,9 +97,8 @@ public class DocmosisWithGovNotifyLetterFunctionalTest extends AbstractFunctiona
     }
 
     @Test
-    public void sendsAdjournmentIssuedLetterToAppellantAndRepresentative() throws IOException, NotificationClientException {
-
-        NotificationEventType notificationEventType = NotificationEventType.ISSUE_ADJOURNMENT_NOTICE;
+    @Parameters({"ISSUE_ADJOURNMENT_NOTICE", "ISSUE_ADJOURNMENT_NOTICE_WELSH"})
+    public void sendsAdjournmentIssuedLetterToAppellantAndRepresentative(NotificationEventType notificationEventType) throws IOException, NotificationClientException {
 
         simulateCcdCallback(notificationEventType,
                 notificationEventType.getId() + "Callback.json");
