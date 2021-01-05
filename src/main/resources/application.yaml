@@ -164,42 +164,42 @@ notification:
       appellant:
         emailId: 8ce8d794-75e8-49a0-b4d2-0c6cd2061c11
         smsId: d2b4394b-d1c9-4d5c-a44e-b382e41c67e5
-        letterId: 85a81e3c-a59f-4ae9-9c99-266dfd5ca95f
+        docmosisId: TB-SCS-GNO-ENG-00656.docx
       representative:
         emailId: e93dd744-84a1-4173-847a-6d023b55637f
         smsId: ee58f7d0-8de7-4bee-acd4-252213db6b7b
       appointee:
         emailId: 8ce8d794-75e8-49a0-b4d2-0c6cd2061c11
         smsId: d2b4394b-d1c9-4d5c-a44e-b382e41c67e5
-        letterId: 85a81e3c-a59f-4ae9-9c99-266dfd5ca95f
+        docmosisId: TB-SCS-GNO-ENG-00656.docx
       joint_party:
         emailId: 8ce8d794-75e8-49a0-b4d2-0c6cd2061c11
         smsId: d2b4394b-d1c9-4d5c-a44e-b382e41c67e5
-        letterId: 85a81e3c-a59f-4ae9-9c99-266dfd5ca95f
+        docmosisId: TB-SCS-GNO-ENG-00656.docx
     confirmLapsed:
       appellant:
         emailId: 8ce8d794-75e8-49a0-b4d2-0c6cd2061c11
         smsId: d2b4394b-d1c9-4d5c-a44e-b382e41c67e5
-        letterId: 85a81e3c-a59f-4ae9-9c99-266dfd5ca95f
+        docmosisId: TB-SCS-GNO-ENG-00656.docx
       representative:
         emailId: e93dd744-84a1-4173-847a-6d023b55637f
         smsId: ee58f7d0-8de7-4bee-acd4-252213db6b7b
       appointee:
         emailId: 8ce8d794-75e8-49a0-b4d2-0c6cd2061c11
         smsId: d2b4394b-d1c9-4d5c-a44e-b382e41c67e5
-        letterId: 85a81e3c-a59f-4ae9-9c99-266dfd5ca95f
+        docmosisId: TB-SCS-GNO-ENG-00656.docx
     hmctsLapseCase:
       appellant:
         emailId: 8ce8d794-75e8-49a0-b4d2-0c6cd2061c11
         smsId: d2b4394b-d1c9-4d5c-a44e-b382e41c67e5
-        letterId: 85a81e3c-a59f-4ae9-9c99-266dfd5ca95f
+        docmosisId: TB-SCS-GNO-ENG-00656.docx
       representative:
         emailId: e93dd744-84a1-4173-847a-6d023b55637f
         smsId: ee58f7d0-8de7-4bee-acd4-252213db6b7b
       appointee:
         emailId: 8ce8d794-75e8-49a0-b4d2-0c6cd2061c11
         smsId: d2b4394b-d1c9-4d5c-a44e-b382e41c67e5
-        letterId: 85a81e3c-a59f-4ae9-9c99-266dfd5ca95f
+        docmosisId: TB-SCS-GNO-ENG-00656.docx
     appealWithdrawn:
       appellant:
         emailId: 8620e023-f663-477e-a771-9cfad50ee30f
@@ -604,42 +604,42 @@ notification:
       appellant:
         emailId: 89302ee1-291f-4a76-b388-5b9d8dbfbd4b
         smsId: a3585b50-7a4e-4b84-9a3a-c1323ef26d3a
-        letterId: 4d7a4cd2-1314-4638-80bc-bc6b1281de30
+        docmosisId: TB-SCS-GNO-WEL-00658.docx
       representative:
         emailId: eb75f528-b2e5-495d-a20d-af74b680150b
         smsId: 3cc24409-b7be-4fea-8cdb-0288d151c265
       appointee:
         emailId: 89302ee1-291f-4a76-b388-5b9d8dbfbd4b
         smsId: a3585b50-7a4e-4b84-9a3a-c1323ef26d3a
-        letterId: 4d7a4cd2-1314-4638-80bc-bc6b1281de30
+        docmosisId: TB-SCS-GNO-WEL-00658.docx
       joint_party:
         emailId: a72272a6-1eaf-41f5-84c8-ec00debbf958
         smsId: 37cddbe4-bd2e-4027-967b-840d1f11bea8
-        letterId: 8b3c63bf-d616-4529-89ea-76357c94c709
+        docmosisId: TB-SCS-GNO-WEL-00658.docx
     confirmLapsed:
       appellant:
         emailId: 89302ee1-291f-4a76-b388-5b9d8dbfbd4b
         smsId: a3585b50-7a4e-4b84-9a3a-c1323ef26d3a
-        letterId: 4d7a4cd2-1314-4638-80bc-bc6b1281de30
+        docmosisId: TB-SCS-GNO-WEL-00658.docx
       representative:
         emailId: eb75f528-b2e5-495d-a20d-af74b680150b
         smsId: 3cc24409-b7be-4fea-8cdb-0288d151c265
       appointee:
         emailId: 89302ee1-291f-4a76-b388-5b9d8dbfbd4b
         smsId: a3585b50-7a4e-4b84-9a3a-c1323ef26d3a
-        letterId: 4d7a4cd2-1314-4638-80bc-bc6b1281de30
+        docmosisId: TB-SCS-GNO-WEL-00658.docx
     hmctsLapseCase:
       appellant:
         emailId: 89302ee1-291f-4a76-b388-5b9d8dbfbd4b
         smsId: a3585b50-7a4e-4b84-9a3a-c1323ef26d3a
-        letterId: 4d7a4cd2-1314-4638-80bc-bc6b1281de30
+        docmosisId: TB-SCS-GNO-WEL-00658.docx
       representative:
         emailId: eb75f528-b2e5-495d-a20d-af74b680150b
         smsId: 3cc24409-b7be-4fea-8cdb-0288d151c265
       appointee:
         emailId: 89302ee1-291f-4a76-b388-5b9d8dbfbd4b
         smsId: a3585b50-7a4e-4b84-9a3a-c1323ef26d3a
-        letterId: 4d7a4cd2-1314-4638-80bc-bc6b1281de30
+        docmosisId: TB-SCS-GNO-WEL-00658.docx
     appealWithdrawn:
       appellant:
         emailId: 74fc911e-2e5f-49db-abc2-c793f3a964a8

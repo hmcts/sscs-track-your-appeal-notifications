@@ -525,48 +525,48 @@ public class NotificationsIt {
                         "paper",
                         Collections.singletonList("8ce8d794-75e8-49a0-b4d2-0c6cd2061c11"),
                         Collections.singletonList("d2b4394b-d1c9-4d5c-a44e-b382e41c67e5"),
-                        Arrays.asList("85a81e3c-a59f-4ae9-9c99-266dfd5ca95f", "85a81e3c-a59f-4ae9-9c99-266dfd5ca95f"),
+                        Arrays.asList("TB-SCS-GNO-ENG-00656.docx", "TB-SCS-GNO-ENG-00656.docx"),
                         "yes",
                         "yes",
                         "1",
                         "1",
-                        "2"
+                        "0"
                 },
                 new Object[]{
                         APPEAL_LAPSED_NOTIFICATION,
                         "oral",
                         Collections.singletonList("8ce8d794-75e8-49a0-b4d2-0c6cd2061c11"),
                         Collections.singletonList("d2b4394b-d1c9-4d5c-a44e-b382e41c67e5"),
-                        Arrays.asList("85a81e3c-a59f-4ae9-9c99-266dfd5ca95f", "85a81e3c-a59f-4ae9-9c99-266dfd5ca95f"),
+                        Arrays.asList("TB-SCS-GNO-ENG-00656.docx", "TB-SCS-GNO-ENG-00656.docx"),
                         "yes",
                         "yes",
                         "1",
                         "1",
-                        "2"
+                        "0"
                 },
                 new Object[]{
                         APPEAL_LAPSED_NOTIFICATION,
                         "paper",
                         Collections.emptyList(),
                         Collections.singletonList("d2b4394b-d1c9-4d5c-a44e-b382e41c67e5"),
-                        Arrays.asList("85a81e3c-a59f-4ae9-9c99-266dfd5ca95f", "85a81e3c-a59f-4ae9-9c99-266dfd5ca95f"),
+                        Arrays.asList("TB-SCS-GNO-ENG-00656.docx", "TB-SCS-GNO-ENG-00656.docx"),
                         "no",
                         "yes",
                         "0",
                         "1",
-                        "2"
+                        "0"
                 },
                 new Object[]{
                         APPEAL_LAPSED_NOTIFICATION,
                         "paper",
                         Collections.emptyList(),
                         Collections.emptyList(),
-                        Arrays.asList("85a81e3c-a59f-4ae9-9c99-266dfd5ca95f", "85a81e3c-a59f-4ae9-9c99-266dfd5ca95f"),
+                        Arrays.asList("TB-SCS-GNO-ENG-00656.docx", "TB-SCS-GNO-ENG-00656.docx"),
                         "no",
                         "no",
                         "0",
                         "0",
-                        "2"
+                        "0"
                 },
                 new Object[]{
                         APPEAL_DORMANT_NOTIFICATION,
@@ -977,56 +977,56 @@ public class NotificationsIt {
                 "paper",
                 Arrays.asList("8ce8d794-75e8-49a0-b4d2-0c6cd2061c11", "e93dd744-84a1-4173-847a-6d023b55637f"),
                 Arrays.asList("d2b4394b-d1c9-4d5c-a44e-b382e41c67e5", "ee58f7d0-8de7-4bee-acd4-252213db6b7b"),
-                Arrays.asList("85a81e3c-a59f-4ae9-9c99-266dfd5ca95f"),
+                Collections.singletonList("TB-SCS-GNO-ENG-00656.docx"),
                 "yes",
                 "yes",
                 "yes",
                 "yes",
                 "2",
                 "2",
-                "2"
+                "0"
             },
             new Object[]{
                 APPEAL_LAPSED_NOTIFICATION,
                 "oral",
                 Arrays.asList("8ce8d794-75e8-49a0-b4d2-0c6cd2061c11", "e93dd744-84a1-4173-847a-6d023b55637f"),
                 Arrays.asList("d2b4394b-d1c9-4d5c-a44e-b382e41c67e5", "ee58f7d0-8de7-4bee-acd4-252213db6b7b"),
-                Arrays.asList("85a81e3c-a59f-4ae9-9c99-266dfd5ca95f"),
+                Collections.singletonList("TB-SCS-GNO-ENG-00656.docx"),
                 "yes",
                 "yes",
                 "yes",
                 "yes",
                 "2",
                 "2",
-                "2"
+                "0"
             },
             new Object[]{
                 APPEAL_LAPSED_NOTIFICATION,
                 "paper",
                 Collections.singletonList("e93dd744-84a1-4173-847a-6d023b55637f"),
                 Arrays.asList("d2b4394b-d1c9-4d5c-a44e-b382e41c67e5", "ee58f7d0-8de7-4bee-acd4-252213db6b7b"),
-                Arrays.asList("85a81e3c-a59f-4ae9-9c99-266dfd5ca95f"),
+                Collections.singletonList("TB-SCS-GNO-ENG-00656.docx"),
                 "no",
                 "yes",
                 "yes",
                 "yes",
                 "1",
                 "2",
-                "1"
+                "0"
             },
             new Object[]{
                 APPEAL_LAPSED_NOTIFICATION,
                 "paper",
                 Collections.emptyList(),
                 Collections.emptyList(),
-                Arrays.asList("85a81e3c-a59f-4ae9-9c99-266dfd5ca95f"),
+                Collections.singletonList("TB-SCS-GNO-ENG-00656.docx"),
                 "no",
                 "no",
                 "no",
                 "no",
                 "0",
                 "0",
-                "1"
+                "0"
             },
             new Object[]{
                 APPEAL_WITHDRAWN_NOTIFICATION,
@@ -1998,56 +1998,56 @@ public class NotificationsIt {
                 "paper",
                 Arrays.asList("8ce8d794-75e8-49a0-b4d2-0c6cd2061c11", "e93dd744-84a1-4173-847a-6d023b55637f"),
                 Arrays.asList("d2b4394b-d1c9-4d5c-a44e-b382e41c67e5", "ee58f7d0-8de7-4bee-acd4-252213db6b7b"),
-                Arrays.asList("85a81e3c-a59f-4ae9-9c99-266dfd5ca95f"),
+                Collections.singletonList("TB-SCS-GNO-ENG-00656.docx"),
                 "yes",
                 "yes",
                 "yes",
                 "yes",
                 "2",
                 "2",
-                "1"
+                "0"
             },
             new Object[]{
                 APPEAL_LAPSED_NOTIFICATION,
                 "oral",
                 Arrays.asList("8ce8d794-75e8-49a0-b4d2-0c6cd2061c11", "e93dd744-84a1-4173-847a-6d023b55637f"),
                 Arrays.asList("d2b4394b-d1c9-4d5c-a44e-b382e41c67e5", "ee58f7d0-8de7-4bee-acd4-252213db6b7b"),
-                Arrays.asList("85a81e3c-a59f-4ae9-9c99-266dfd5ca95f"),
+                Collections.singletonList("TB-SCS-GNO-ENG-00656.docx"),
                 "yes",
                 "yes",
                 "yes",
                 "yes",
                 "2",
                 "2",
-                "1"
+                "0"
             },
             new Object[]{
                 APPEAL_LAPSED_NOTIFICATION,
                 "paper",
                 Collections.singletonList("e93dd744-84a1-4173-847a-6d023b55637f"),
                 Arrays.asList("d2b4394b-d1c9-4d5c-a44e-b382e41c67e5", "ee58f7d0-8de7-4bee-acd4-252213db6b7b"),
-                Arrays.asList("85a81e3c-a59f-4ae9-9c99-266dfd5ca95f"),
+                Collections.singletonList("TB-SCS-GNO-ENG-00656.docx"),
                 "no",
                 "yes",
                 "yes",
                 "yes",
                 "1",
                 "2",
-                "1"
+                "0"
             },
             new Object[]{
                 APPEAL_LAPSED_NOTIFICATION,
                 "paper",
                 Collections.emptyList(),
                 Collections.emptyList(),
-                Arrays.asList("85a81e3c-a59f-4ae9-9c99-266dfd5ca95f"),
+                Collections.singletonList("TB-SCS-GNO-ENG-00656.docx"),
                 "no",
                 "no",
                 "no",
                 "no",
                 "0",
                 "0",
-                "1"
+                "0"
             },
             new Object[]{
                 APPEAL_WITHDRAWN_NOTIFICATION,
@@ -3317,12 +3317,12 @@ public class NotificationsIt {
                 "oral",
                 Collections.singletonList("8ce8d794-75e8-49a0-b4d2-0c6cd2061c11"),
                 Collections.singletonList("d2b4394b-d1c9-4d5c-a44e-b382e41c67e5"),
-                    Arrays.asList("85a81e3c-a59f-4ae9-9c99-266dfd5ca95f"),
+                Collections.singletonList("TB-SCS-GNO-ENG-00656.docx"),
                 "yes",
                 "yes",
                 "1",
                 "1",
-                "1",
+                "0",
                 "Appointee Appointee"
             },
             new Object[]{
