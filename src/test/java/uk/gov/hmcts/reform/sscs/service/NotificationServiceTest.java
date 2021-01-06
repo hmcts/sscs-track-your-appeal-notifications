@@ -1854,7 +1854,7 @@ public class NotificationServiceTest {
 
         getNotificationService().manageNotificationAndSubscription(ccdNotificationWrapper);
 
-        verify(notificationHandler, times(0)).sendNotification(eq(ccdNotificationWrapper), eq(docmosisId), eq(LETTER), any(NotificationHandler.SendNotification.class));
+        verify(notificationHandler, times(1)).sendNotification(eq(ccdNotificationWrapper), eq(docmosisId), eq(LETTER), any(NotificationHandler.SendNotification.class));
 
         verifyNoErrorsLogged(mockAppender, captorLoggingEvent);
     }
