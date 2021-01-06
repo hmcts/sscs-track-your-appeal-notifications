@@ -48,7 +48,7 @@ import uk.gov.hmcts.reform.sscs.personalisation.Personalisation;
 @SpringBootTest
 @ActiveProfiles("integration")
 public class NotificationConfigTest {
-    public static final List<NotificationEventType> BUNDLED_LETTER_EVENT_TYPES = Arrays.asList(STRUCK_OUT, DIRECTION_ISSUED, DECISION_ISSUED, ISSUE_FINAL_DECISION, ISSUE_ADJOURNMENT_NOTICE, JUDGE_DECISION_APPEAL_TO_PROCEED, TCW_DECISION_APPEAL_TO_PROCEED);
+    public static final List<NotificationEventType> BUNDLED_LETTER_EVENT_TYPES = Arrays.asList(STRUCK_OUT, DIRECTION_ISSUED, DECISION_ISSUED, ISSUE_FINAL_DECISION, ISSUE_ADJOURNMENT_NOTICE, ISSUE_ADJOURNMENT_NOTICE_WELSH, JUDGE_DECISION_APPEAL_TO_PROCEED, TCW_DECISION_APPEAL_TO_PROCEED);
 
     // Below rules are needed to use the junitParamsRunner together with SpringRunner
     @ClassRule
@@ -250,16 +250,16 @@ public class NotificationConfigTest {
 
                 new Object[]{"00130f76-f18b-4225-9c04-2aac88544491", Collections.EMPTY_LIST, null, null, PAPER, getTemplateName(POSTPONEMENT_NOTIFICATION, REPRESENTATIVE), null},
                 new Object[]{"00130f76-f18b-4225-9c04-2aac88544491", Collections.EMPTY_LIST, null, null, ORAL, getTemplateName(POSTPONEMENT_NOTIFICATION, REPRESENTATIVE), null},
-                new Object[]{"a72272a6-1eaf-41f5-84c8-ec00debbf958", Arrays.asList("37cddbe4-bd2e-4027-967b-840d1f11bea8", "d2b4394b-d1c9-4d5c-a44e-b382e41c67e5"), "8b3c63bf-d616-4529-89ea-76357c94c709", null, ORAL, getTemplateName(APPEAL_LAPSED_NOTIFICATION, JOINT_PARTY), null},
-                new Object[]{"a72272a6-1eaf-41f5-84c8-ec00debbf958", Arrays.asList("37cddbe4-bd2e-4027-967b-840d1f11bea8", "d2b4394b-d1c9-4d5c-a44e-b382e41c67e5"), "8b3c63bf-d616-4529-89ea-76357c94c709", null, PAPER, getTemplateName(APPEAL_LAPSED_NOTIFICATION, JOINT_PARTY), null},
-                new Object[]{"89302ee1-291f-4a76-b388-5b9d8dbfbd4b", Arrays.asList("a3585b50-7a4e-4b84-9a3a-c1323ef26d3a","d2b4394b-d1c9-4d5c-a44e-b382e41c67e5"), "4d7a4cd2-1314-4638-80bc-bc6b1281de30", null, PAPER, getTemplateName(APPEAL_LAPSED_NOTIFICATION, APPELLANT), null},
-                new Object[]{"89302ee1-291f-4a76-b388-5b9d8dbfbd4b", Arrays.asList("a3585b50-7a4e-4b84-9a3a-c1323ef26d3a","d2b4394b-d1c9-4d5c-a44e-b382e41c67e5"), "4d7a4cd2-1314-4638-80bc-bc6b1281de30", null, ORAL, getTemplateName(APPEAL_LAPSED_NOTIFICATION, APPELLANT), null},
-                new Object[]{"89302ee1-291f-4a76-b388-5b9d8dbfbd4b", Arrays.asList("a3585b50-7a4e-4b84-9a3a-c1323ef26d3a","d2b4394b-d1c9-4d5c-a44e-b382e41c67e5"), "4d7a4cd2-1314-4638-80bc-bc6b1281de30", null, PAPER, getTemplateName(APPEAL_LAPSED_NOTIFICATION, APPOINTEE), null},
-                new Object[]{"89302ee1-291f-4a76-b388-5b9d8dbfbd4b", Arrays.asList("a3585b50-7a4e-4b84-9a3a-c1323ef26d3a","d2b4394b-d1c9-4d5c-a44e-b382e41c67e5"), "4d7a4cd2-1314-4638-80bc-bc6b1281de30", null, ORAL, getTemplateName(APPEAL_LAPSED_NOTIFICATION, APPOINTEE), null},
-                new Object[]{"89302ee1-291f-4a76-b388-5b9d8dbfbd4b", Arrays.asList("a3585b50-7a4e-4b84-9a3a-c1323ef26d3a","d2b4394b-d1c9-4d5c-a44e-b382e41c67e5"), "4d7a4cd2-1314-4638-80bc-bc6b1281de30", null, PAPER, getTemplateName(HMCTS_APPEAL_LAPSED_NOTIFICATION, APPELLANT), null},
-                new Object[]{"89302ee1-291f-4a76-b388-5b9d8dbfbd4b", Arrays.asList("a3585b50-7a4e-4b84-9a3a-c1323ef26d3a","d2b4394b-d1c9-4d5c-a44e-b382e41c67e5"), "4d7a4cd2-1314-4638-80bc-bc6b1281de30", null, ORAL, getTemplateName(HMCTS_APPEAL_LAPSED_NOTIFICATION, APPELLANT), null},
-                new Object[]{"89302ee1-291f-4a76-b388-5b9d8dbfbd4b", Arrays.asList("a3585b50-7a4e-4b84-9a3a-c1323ef26d3a","d2b4394b-d1c9-4d5c-a44e-b382e41c67e5"), "4d7a4cd2-1314-4638-80bc-bc6b1281de30", null, PAPER, getTemplateName(HMCTS_APPEAL_LAPSED_NOTIFICATION, APPOINTEE), null},
-                new Object[]{"89302ee1-291f-4a76-b388-5b9d8dbfbd4b", Arrays.asList("a3585b50-7a4e-4b84-9a3a-c1323ef26d3a","d2b4394b-d1c9-4d5c-a44e-b382e41c67e5"), "4d7a4cd2-1314-4638-80bc-bc6b1281de30", null, ORAL, getTemplateName(HMCTS_APPEAL_LAPSED_NOTIFICATION, APPOINTEE), null},
+                new Object[]{"a72272a6-1eaf-41f5-84c8-ec00debbf958", Arrays.asList("37cddbe4-bd2e-4027-967b-840d1f11bea8", "d2b4394b-d1c9-4d5c-a44e-b382e41c67e5"), null, "TB-SCS-GNO-WEL-00658.docx", ORAL, getTemplateName(APPEAL_LAPSED_NOTIFICATION, JOINT_PARTY), null},
+                new Object[]{"a72272a6-1eaf-41f5-84c8-ec00debbf958", Arrays.asList("37cddbe4-bd2e-4027-967b-840d1f11bea8", "d2b4394b-d1c9-4d5c-a44e-b382e41c67e5"), null, "TB-SCS-GNO-WEL-00658.docx", PAPER, getTemplateName(APPEAL_LAPSED_NOTIFICATION, JOINT_PARTY), null},
+                new Object[]{"89302ee1-291f-4a76-b388-5b9d8dbfbd4b", Arrays.asList("a3585b50-7a4e-4b84-9a3a-c1323ef26d3a","d2b4394b-d1c9-4d5c-a44e-b382e41c67e5"), null, "TB-SCS-GNO-WEL-00658.docx", PAPER, getTemplateName(APPEAL_LAPSED_NOTIFICATION, APPELLANT), null},
+                new Object[]{"89302ee1-291f-4a76-b388-5b9d8dbfbd4b", Arrays.asList("a3585b50-7a4e-4b84-9a3a-c1323ef26d3a","d2b4394b-d1c9-4d5c-a44e-b382e41c67e5"), null, "TB-SCS-GNO-WEL-00658.docx", ORAL, getTemplateName(APPEAL_LAPSED_NOTIFICATION, APPELLANT), null},
+                new Object[]{"89302ee1-291f-4a76-b388-5b9d8dbfbd4b", Arrays.asList("a3585b50-7a4e-4b84-9a3a-c1323ef26d3a","d2b4394b-d1c9-4d5c-a44e-b382e41c67e5"), null, "TB-SCS-GNO-WEL-00658.docx", PAPER, getTemplateName(APPEAL_LAPSED_NOTIFICATION, APPOINTEE), null},
+                new Object[]{"89302ee1-291f-4a76-b388-5b9d8dbfbd4b", Arrays.asList("a3585b50-7a4e-4b84-9a3a-c1323ef26d3a","d2b4394b-d1c9-4d5c-a44e-b382e41c67e5"), null, "TB-SCS-GNO-WEL-00658.docx", ORAL, getTemplateName(APPEAL_LAPSED_NOTIFICATION, APPOINTEE), null},
+                new Object[]{"89302ee1-291f-4a76-b388-5b9d8dbfbd4b", Arrays.asList("a3585b50-7a4e-4b84-9a3a-c1323ef26d3a","d2b4394b-d1c9-4d5c-a44e-b382e41c67e5"), null, "TB-SCS-GNO-WEL-00658.docx", PAPER, getTemplateName(HMCTS_APPEAL_LAPSED_NOTIFICATION, APPELLANT), null},
+                new Object[]{"89302ee1-291f-4a76-b388-5b9d8dbfbd4b", Arrays.asList("a3585b50-7a4e-4b84-9a3a-c1323ef26d3a","d2b4394b-d1c9-4d5c-a44e-b382e41c67e5"), null, "TB-SCS-GNO-WEL-00658.docx", ORAL, getTemplateName(HMCTS_APPEAL_LAPSED_NOTIFICATION, APPELLANT), null},
+                new Object[]{"89302ee1-291f-4a76-b388-5b9d8dbfbd4b", Arrays.asList("a3585b50-7a4e-4b84-9a3a-c1323ef26d3a","d2b4394b-d1c9-4d5c-a44e-b382e41c67e5"), null, "TB-SCS-GNO-WEL-00658.docx", PAPER, getTemplateName(HMCTS_APPEAL_LAPSED_NOTIFICATION, APPOINTEE), null},
+                new Object[]{"89302ee1-291f-4a76-b388-5b9d8dbfbd4b", Arrays.asList("a3585b50-7a4e-4b84-9a3a-c1323ef26d3a","d2b4394b-d1c9-4d5c-a44e-b382e41c67e5"), null, "TB-SCS-GNO-WEL-00658.docx", ORAL, getTemplateName(HMCTS_APPEAL_LAPSED_NOTIFICATION, APPOINTEE), null},
                 new Object[]{"eb75f528-b2e5-495d-a20d-af74b680150b", Arrays.asList("3cc24409-b7be-4fea-8cdb-0288d151c265","ee58f7d0-8de7-4bee-acd4-252213db6b7b"), null, null, PAPER, getTemplateName(APPEAL_LAPSED_NOTIFICATION, REPRESENTATIVE), null},
                 new Object[]{"eb75f528-b2e5-495d-a20d-af74b680150b", Arrays.asList("3cc24409-b7be-4fea-8cdb-0288d151c265","ee58f7d0-8de7-4bee-acd4-252213db6b7b"), null, null, ORAL, getTemplateName(APPEAL_LAPSED_NOTIFICATION, REPRESENTATIVE), null},
                 new Object[]{"eb75f528-b2e5-495d-a20d-af74b680150b", Arrays.asList("3cc24409-b7be-4fea-8cdb-0288d151c265","ee58f7d0-8de7-4bee-acd4-252213db6b7b"), null, null, PAPER, getTemplateName(HMCTS_APPEAL_LAPSED_NOTIFICATION, REPRESENTATIVE), null},
@@ -315,7 +315,12 @@ public class NotificationConfigTest {
                 new Object[]{null, Collections.EMPTY_LIST, null, "TB-SCS-GNO-WEL-00589.docx", PAPER, getTemplateName(REQUEST_INFO_INCOMPLETE, APPOINTEE), null},
                 new Object[]{null, Collections.EMPTY_LIST, null, "TB-SCS-GNO-WEL-00589.docx", PAPER, getTemplateName(REQUEST_INFO_INCOMPLETE, JOINT_PARTY), null},
                 new Object[]{null, Collections.EMPTY_LIST, null, "TB-SCS-GNO-WEL-00629.docx", ORAL, getTemplateName(JOINT_PARTY_ADDED, APPELLANT), null},
-                new Object[]{null, Collections.EMPTY_LIST, null, "TB-SCS-GNO-WEL-00629.docx", PAPER, getTemplateName(JOINT_PARTY_ADDED, JOINT_PARTY), null}
+                new Object[]{null, Collections.EMPTY_LIST, null, "TB-SCS-GNO-WEL-00629.docx", PAPER, getTemplateName(JOINT_PARTY_ADDED, JOINT_PARTY), null},
+                new Object[]{null, Collections.EMPTY_LIST, null, "TB-SCS-GNO-WEL-00649.docx", ORAL, getTemplateName(ISSUE_ADJOURNMENT_NOTICE_WELSH, APPELLANT), null},
+                new Object[]{null, Collections.EMPTY_LIST, null, "TB-SCS-GNO-WEL-00649.docx", PAPER, getTemplateName(ISSUE_ADJOURNMENT_NOTICE_WELSH, APPOINTEE), null},
+                new Object[]{null, Collections.EMPTY_LIST, null, "TB-SCS-GNO-WEL-00649.docx", ORAL, getTemplateName(ISSUE_ADJOURNMENT_NOTICE_WELSH, REPRESENTATIVE), null},
+                new Object[]{null, Collections.EMPTY_LIST, null, "TB-SCS-GNO-WEL-00649.docx", PAPER, getTemplateName(ISSUE_ADJOURNMENT_NOTICE_WELSH, REPRESENTATIVE), null},
+
         };
     }
 
@@ -353,21 +358,21 @@ public class NotificationConfigTest {
                 new Object[]{"e93dd744-84a1-4173-847a-6d023b55637f", Arrays.asList("ee58f7d0-8de7-4bee-acd4-252213db6b7b"), null, null, ORAL, getTemplateName(APPEAL_LAPSED_NOTIFICATION, REPRESENTATIVE), null},
                 new Object[]{"e93dd744-84a1-4173-847a-6d023b55637f", Arrays.asList("ee58f7d0-8de7-4bee-acd4-252213db6b7b"), null, null, PAPER, getTemplateName(HMCTS_APPEAL_LAPSED_NOTIFICATION, REPRESENTATIVE), null},
                 new Object[]{"e93dd744-84a1-4173-847a-6d023b55637f", Arrays.asList("ee58f7d0-8de7-4bee-acd4-252213db6b7b"), null, null, ORAL, getTemplateName(HMCTS_APPEAL_LAPSED_NOTIFICATION, REPRESENTATIVE), null},
-                new Object[]{"8ce8d794-75e8-49a0-b4d2-0c6cd2061c11", Arrays.asList("d2b4394b-d1c9-4d5c-a44e-b382e41c67e5"), "85a81e3c-a59f-4ae9-9c99-266dfd5ca95f", null, PAPER, getTemplateName(APPEAL_LAPSED_NOTIFICATION, JOINT_PARTY), null},
-                new Object[]{"8ce8d794-75e8-49a0-b4d2-0c6cd2061c11", Arrays.asList("d2b4394b-d1c9-4d5c-a44e-b382e41c67e5"), "85a81e3c-a59f-4ae9-9c99-266dfd5ca95f", null, ORAL, getTemplateName(APPEAL_LAPSED_NOTIFICATION, JOINT_PARTY), null},
-                new Object[]{"8ce8d794-75e8-49a0-b4d2-0c6cd2061c11", Arrays.asList("d2b4394b-d1c9-4d5c-a44e-b382e41c67e5"), "85a81e3c-a59f-4ae9-9c99-266dfd5ca95f", null, PAPER, getTemplateName(APPEAL_LAPSED_NOTIFICATION, APPELLANT), null},
-                new Object[]{"8ce8d794-75e8-49a0-b4d2-0c6cd2061c11", Arrays.asList("d2b4394b-d1c9-4d5c-a44e-b382e41c67e5"), "85a81e3c-a59f-4ae9-9c99-266dfd5ca95f", null, ORAL, getTemplateName(APPEAL_LAPSED_NOTIFICATION, APPELLANT), null},
-                new Object[]{"8ce8d794-75e8-49a0-b4d2-0c6cd2061c11", Arrays.asList("d2b4394b-d1c9-4d5c-a44e-b382e41c67e5"), "85a81e3c-a59f-4ae9-9c99-266dfd5ca95f", null, PAPER, getTemplateName(APPEAL_LAPSED_NOTIFICATION, APPOINTEE), null},
-                new Object[]{"8ce8d794-75e8-49a0-b4d2-0c6cd2061c11", Arrays.asList("d2b4394b-d1c9-4d5c-a44e-b382e41c67e5"), "85a81e3c-a59f-4ae9-9c99-266dfd5ca95f", null, ORAL, getTemplateName(APPEAL_LAPSED_NOTIFICATION, APPOINTEE), null},
-                new Object[]{"8ce8d794-75e8-49a0-b4d2-0c6cd2061c11", Arrays.asList("d2b4394b-d1c9-4d5c-a44e-b382e41c67e5"), "85a81e3c-a59f-4ae9-9c99-266dfd5ca95f", null, PAPER, getTemplateName(HMCTS_APPEAL_LAPSED_NOTIFICATION, APPELLANT), null},
-                new Object[]{"8ce8d794-75e8-49a0-b4d2-0c6cd2061c11", Arrays.asList("d2b4394b-d1c9-4d5c-a44e-b382e41c67e5"), "85a81e3c-a59f-4ae9-9c99-266dfd5ca95f", null, ORAL, getTemplateName(HMCTS_APPEAL_LAPSED_NOTIFICATION, APPELLANT), null},
-                new Object[]{"8ce8d794-75e8-49a0-b4d2-0c6cd2061c11", Arrays.asList("d2b4394b-d1c9-4d5c-a44e-b382e41c67e5"), "85a81e3c-a59f-4ae9-9c99-266dfd5ca95f", null, PAPER, getTemplateName(HMCTS_APPEAL_LAPSED_NOTIFICATION, APPOINTEE), null},
-                new Object[]{"8ce8d794-75e8-49a0-b4d2-0c6cd2061c11", Arrays.asList("d2b4394b-d1c9-4d5c-a44e-b382e41c67e5"), "85a81e3c-a59f-4ae9-9c99-266dfd5ca95f", null, ORAL, getTemplateName(HMCTS_APPEAL_LAPSED_NOTIFICATION, APPOINTEE), null},
+                new Object[]{"8ce8d794-75e8-49a0-b4d2-0c6cd2061c11", Arrays.asList("d2b4394b-d1c9-4d5c-a44e-b382e41c67e5"), null, "TB-SCS-GNO-ENG-00656.docx", PAPER, getTemplateName(APPEAL_LAPSED_NOTIFICATION, JOINT_PARTY), null},
+                new Object[]{"8ce8d794-75e8-49a0-b4d2-0c6cd2061c11", Arrays.asList("d2b4394b-d1c9-4d5c-a44e-b382e41c67e5"), null,"TB-SCS-GNO-ENG-00656.docx", ORAL, getTemplateName(APPEAL_LAPSED_NOTIFICATION, JOINT_PARTY), null},
+                new Object[]{"8ce8d794-75e8-49a0-b4d2-0c6cd2061c11", Arrays.asList("d2b4394b-d1c9-4d5c-a44e-b382e41c67e5"), null,"TB-SCS-GNO-ENG-00656.docx", PAPER, getTemplateName(APPEAL_LAPSED_NOTIFICATION, APPELLANT), null},
+                new Object[]{"8ce8d794-75e8-49a0-b4d2-0c6cd2061c11", Arrays.asList("d2b4394b-d1c9-4d5c-a44e-b382e41c67e5"), null,"TB-SCS-GNO-ENG-00656.docx", ORAL, getTemplateName(APPEAL_LAPSED_NOTIFICATION, APPELLANT), null},
+                new Object[]{"8ce8d794-75e8-49a0-b4d2-0c6cd2061c11", Arrays.asList("d2b4394b-d1c9-4d5c-a44e-b382e41c67e5"), null,"TB-SCS-GNO-ENG-00656.docx", PAPER, getTemplateName(APPEAL_LAPSED_NOTIFICATION, APPOINTEE), null},
+                new Object[]{"8ce8d794-75e8-49a0-b4d2-0c6cd2061c11", Arrays.asList("d2b4394b-d1c9-4d5c-a44e-b382e41c67e5"), null,"TB-SCS-GNO-ENG-00656.docx", ORAL, getTemplateName(APPEAL_LAPSED_NOTIFICATION, APPOINTEE), null},
+                new Object[]{"8ce8d794-75e8-49a0-b4d2-0c6cd2061c11", Arrays.asList("d2b4394b-d1c9-4d5c-a44e-b382e41c67e5"), null,"TB-SCS-GNO-ENG-00656.docx", PAPER, getTemplateName(HMCTS_APPEAL_LAPSED_NOTIFICATION, APPELLANT), null},
+                new Object[]{"8ce8d794-75e8-49a0-b4d2-0c6cd2061c11", Arrays.asList("d2b4394b-d1c9-4d5c-a44e-b382e41c67e5"), null, "TB-SCS-GNO-ENG-00656.docx", ORAL, getTemplateName(HMCTS_APPEAL_LAPSED_NOTIFICATION, APPELLANT), null},
+                new Object[]{"8ce8d794-75e8-49a0-b4d2-0c6cd2061c11", Arrays.asList("d2b4394b-d1c9-4d5c-a44e-b382e41c67e5"), null, "TB-SCS-GNO-ENG-00656.docx", PAPER, getTemplateName(HMCTS_APPEAL_LAPSED_NOTIFICATION, APPOINTEE), null},
+                new Object[]{"8ce8d794-75e8-49a0-b4d2-0c6cd2061c11", Arrays.asList("d2b4394b-d1c9-4d5c-a44e-b382e41c67e5"), null, "TB-SCS-GNO-ENG-00656.docx", ORAL, getTemplateName(HMCTS_APPEAL_LAPSED_NOTIFICATION, APPOINTEE), null},
                 new Object[]{"e93dd744-84a1-4173-847a-6d023b55637f", Arrays.asList("ee58f7d0-8de7-4bee-acd4-252213db6b7b"), null, null, PAPER, getTemplateName(DWP_APPEAL_LAPSED_NOTIFICATION, REPRESENTATIVE), null},
                 new Object[]{"e93dd744-84a1-4173-847a-6d023b55637f", Arrays.asList("ee58f7d0-8de7-4bee-acd4-252213db6b7b"), null, null, ORAL, getTemplateName(DWP_APPEAL_LAPSED_NOTIFICATION, REPRESENTATIVE), null},
-                new Object[]{"8ce8d794-75e8-49a0-b4d2-0c6cd2061c11", Arrays.asList("d2b4394b-d1c9-4d5c-a44e-b382e41c67e5"), "85a81e3c-a59f-4ae9-9c99-266dfd5ca95f", null, PAPER, getTemplateName(DWP_APPEAL_LAPSED_NOTIFICATION, APPELLANT), null},
-                new Object[]{"8ce8d794-75e8-49a0-b4d2-0c6cd2061c11", Arrays.asList("d2b4394b-d1c9-4d5c-a44e-b382e41c67e5"), "85a81e3c-a59f-4ae9-9c99-266dfd5ca95f", null, ORAL, getTemplateName(DWP_APPEAL_LAPSED_NOTIFICATION, APPELLANT), null},
-                new Object[]{"8ce8d794-75e8-49a0-b4d2-0c6cd2061c11", Arrays.asList("d2b4394b-d1c9-4d5c-a44e-b382e41c67e5"), "85a81e3c-a59f-4ae9-9c99-266dfd5ca95f", null, ORAL, getTemplateName(DWP_APPEAL_LAPSED_NOTIFICATION, APPOINTEE), null},
+                new Object[]{"8ce8d794-75e8-49a0-b4d2-0c6cd2061c11", Arrays.asList("d2b4394b-d1c9-4d5c-a44e-b382e41c67e5"), null, "TB-SCS-GNO-ENG-00656.docx", PAPER, getTemplateName(DWP_APPEAL_LAPSED_NOTIFICATION, APPELLANT), null},
+                new Object[]{"8ce8d794-75e8-49a0-b4d2-0c6cd2061c11", Arrays.asList("d2b4394b-d1c9-4d5c-a44e-b382e41c67e5"), null, "TB-SCS-GNO-ENG-00656.docx", ORAL, getTemplateName(DWP_APPEAL_LAPSED_NOTIFICATION, APPELLANT), null},
+                new Object[]{"8ce8d794-75e8-49a0-b4d2-0c6cd2061c11", Arrays.asList("d2b4394b-d1c9-4d5c-a44e-b382e41c67e5"), null, "TB-SCS-GNO-ENG-00656.docx", ORAL, getTemplateName(DWP_APPEAL_LAPSED_NOTIFICATION, APPOINTEE), null},
                 new Object[]{"e29a2275-553f-4e70-97f4-2994c095f281", Arrays.asList("f59440ee-19ca-4d47-a702-13e9cecaccbd"), null, "TB-SCS-GNO-ENG-00659.docx", PAPER, getTemplateName(APPEAL_WITHDRAWN_NOTIFICATION, REPRESENTATIVE), null},
                 new Object[]{"e29a2275-553f-4e70-97f4-2994c095f281", Arrays.asList("f59440ee-19ca-4d47-a702-13e9cecaccbd"), null, "TB-SCS-GNO-ENG-00659.docx", ORAL, getTemplateName(APPEAL_WITHDRAWN_NOTIFICATION, REPRESENTATIVE), null},
                 new Object[]{"8620e023-f663-477e-a771-9cfad50ee30f", Arrays.asList("446c7b23-7342-42e1-adff-b4c367e951cb"), null, "TB-SCS-GNO-ENG-00659.docx", PAPER, getTemplateName(APPEAL_WITHDRAWN_NOTIFICATION, APPELLANT), null},
@@ -488,6 +493,7 @@ public class NotificationConfigTest {
                 .filter(f -> !f.equals(DECISION_ISSUED))
                 .filter(f -> !f.equals(ISSUE_FINAL_DECISION))
                 .filter(f -> !f.equals(ISSUE_ADJOURNMENT_NOTICE))
+                .filter(f -> !f.equals(ISSUE_ADJOURNMENT_NOTICE_WELSH))
                 .collect(Collectors.toList())) {
             for (SubscriptionType subscriptionType : subscriptionTypes) {
                 result[i++] = new Object[]{PAPER, getTemplateName(eventType, subscriptionType)};
