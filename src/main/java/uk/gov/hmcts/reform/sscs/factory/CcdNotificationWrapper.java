@@ -202,6 +202,8 @@ public class CcdNotificationWrapper implements NotificationWrapper {
             || APPEAL_WITHDRAWN_NOTIFICATION.equals(getNotificationType())
             || ADMIN_APPEAL_WITHDRAWN.equals(getNotificationType())
             || STRUCK_OUT.equals(getNotificationType())
+            || ISSUE_ADJOURNMENT_NOTICE.equals(getNotificationType())
+            || ISSUE_ADJOURNMENT_NOTICE_WELSH.equals(getNotificationType())
             || DIRECTION_ISSUED.equals(getNotificationType())
             || DIRECTION_ISSUED_WELSH.equals(getNotificationType())
             || DWP_UPLOAD_RESPONSE_NOTIFICATION.equals(getNotificationType())
