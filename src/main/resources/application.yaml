@@ -108,6 +108,11 @@ evidence.address.postcode: CM20 9QF
 evidence.address.telephone: 0300 123 1142
 evidence.address.telephoneWelsh: 0300 303 5170
 
+helpline:
+  telephone: 0300 123 1142
+  telephoneScotland: 0300 790 6234
+
+
 delayEvent.timeInSeconds: 300
 
 job.scheduler:

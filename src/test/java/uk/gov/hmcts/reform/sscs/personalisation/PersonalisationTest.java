@@ -17,56 +17,7 @@ import static uk.gov.hmcts.reform.sscs.ccd.domain.HearingType.ONLINE;
 import static uk.gov.hmcts.reform.sscs.ccd.domain.HearingType.ORAL;
 import static uk.gov.hmcts.reform.sscs.ccd.domain.HearingType.PAPER;
 import static uk.gov.hmcts.reform.sscs.ccd.domain.HearingType.REGULAR;
-import static uk.gov.hmcts.reform.sscs.config.AppConstants.ACCEPT_VIEW_BY_DATE_LITERAL;
-import static uk.gov.hmcts.reform.sscs.config.AppConstants.ADDRESS_LINE_LITERAL;
-import static uk.gov.hmcts.reform.sscs.config.AppConstants.APPEAL_ID_LITERAL;
-import static uk.gov.hmcts.reform.sscs.config.AppConstants.APPEAL_REF;
-import static uk.gov.hmcts.reform.sscs.config.AppConstants.APPEAL_RESPOND_DATE;
-import static uk.gov.hmcts.reform.sscs.config.AppConstants.APPELLANT_NAME;
-import static uk.gov.hmcts.reform.sscs.config.AppConstants.APPOINTEE_DESCRIPTION;
-import static uk.gov.hmcts.reform.sscs.config.AppConstants.BENEFIT_FULL_NAME_LITERAL;
-import static uk.gov.hmcts.reform.sscs.config.AppConstants.BENEFIT_NAME_ACRONYM_LITERAL;
-import static uk.gov.hmcts.reform.sscs.config.AppConstants.CASE_REFERENCE_ID;
-import static uk.gov.hmcts.reform.sscs.config.AppConstants.CCD_ID;
-import static uk.gov.hmcts.reform.sscs.config.AppConstants.CLAIMING_EXPENSES_LINK_LITERAL;
-import static uk.gov.hmcts.reform.sscs.config.AppConstants.CONFIDENTIALITY_OUTCOME;
-import static uk.gov.hmcts.reform.sscs.config.AppConstants.COUNTY_LITERAL;
-import static uk.gov.hmcts.reform.sscs.config.AppConstants.DAYS_TO_HEARING_LITERAL;
-import static uk.gov.hmcts.reform.sscs.config.AppConstants.DECISION_POSTED_RECEIVE_DATE;
-import static uk.gov.hmcts.reform.sscs.config.AppConstants.DWP_ACRONYM;
-import static uk.gov.hmcts.reform.sscs.config.AppConstants.DWP_FUL_NAME;
-import static uk.gov.hmcts.reform.sscs.config.AppConstants.EVIDENCE_RECEIVED_DATE_LITERAL;
-import static uk.gov.hmcts.reform.sscs.config.AppConstants.FIRST_TIER_AGENCY_ACRONYM;
-import static uk.gov.hmcts.reform.sscs.config.AppConstants.FIRST_TIER_AGENCY_FULL_NAME;
-import static uk.gov.hmcts.reform.sscs.config.AppConstants.HEARING_CONTACT_DATE;
-import static uk.gov.hmcts.reform.sscs.config.AppConstants.HEARING_DATE;
-import static uk.gov.hmcts.reform.sscs.config.AppConstants.HEARING_INFO_LINK_LITERAL;
-import static uk.gov.hmcts.reform.sscs.config.AppConstants.HEARING_TIME;
-import static uk.gov.hmcts.reform.sscs.config.AppConstants.JOINT;
-import static uk.gov.hmcts.reform.sscs.config.AppConstants.MANAGE_EMAILS_LINK_LITERAL;
-import static uk.gov.hmcts.reform.sscs.config.AppConstants.MAX_DWP_RESPONSE_DAYS;
-import static uk.gov.hmcts.reform.sscs.config.AppConstants.NAME;
-import static uk.gov.hmcts.reform.sscs.config.AppConstants.OTHER_PARTY_NAME;
-import static uk.gov.hmcts.reform.sscs.config.AppConstants.PANEL_COMPOSITION;
-import static uk.gov.hmcts.reform.sscs.config.AppConstants.PHONE_NUMBER;
-import static uk.gov.hmcts.reform.sscs.config.AppConstants.PHONE_NUMBER_WELSH;
-import static uk.gov.hmcts.reform.sscs.config.AppConstants.POSTCODE_LITERAL;
-import static uk.gov.hmcts.reform.sscs.config.AppConstants.QUESTION_ROUND_EXPIRES_DATE_LITERAL;
-import static uk.gov.hmcts.reform.sscs.config.AppConstants.REGIONAL_OFFICE_NAME_LITERAL;
-import static uk.gov.hmcts.reform.sscs.config.AppConstants.RESPONSE_DATE_FORMAT;
-import static uk.gov.hmcts.reform.sscs.config.AppConstants.SUBMIT_EVIDENCE_INFO_LINK_LITERAL;
-import static uk.gov.hmcts.reform.sscs.config.AppConstants.SUBMIT_EVIDENCE_LINK_LITERAL;
-import static uk.gov.hmcts.reform.sscs.config.AppConstants.SUPPORT_CENTRE_NAME_LITERAL;
-import static uk.gov.hmcts.reform.sscs.config.AppConstants.TOWN_LITERAL;
-import static uk.gov.hmcts.reform.sscs.config.AppConstants.TRACK_APPEAL_LINK_LITERAL;
-import static uk.gov.hmcts.reform.sscs.config.AppConstants.TRIBUNAL_RESPONSE_DATE_LITERAL;
-import static uk.gov.hmcts.reform.sscs.config.AppConstants.VENUE_ADDRESS_LITERAL;
-import static uk.gov.hmcts.reform.sscs.config.AppConstants.VENUE_MAP_LINK_LITERAL;
-import static uk.gov.hmcts.reform.sscs.config.AppConstants.WELSH_APPEAL_RESPOND_DATE;
-import static uk.gov.hmcts.reform.sscs.config.AppConstants.WELSH_CURRENT_DATE;
-import static uk.gov.hmcts.reform.sscs.config.AppConstants.WELSH_DECISION_POSTED_RECEIVE_DATE;
-import static uk.gov.hmcts.reform.sscs.config.AppConstants.WELSH_EVIDENCE_RECEIVED_DATE_LITERAL;
-import static uk.gov.hmcts.reform.sscs.config.AppConstants.WELSH_HEARING_DATE;
+import static uk.gov.hmcts.reform.sscs.config.AppConstants.*;
 import static uk.gov.hmcts.reform.sscs.config.SubscriptionType.APPELLANT;
 import static uk.gov.hmcts.reform.sscs.config.SubscriptionType.APPOINTEE;
 import static uk.gov.hmcts.reform.sscs.config.SubscriptionType.JOINT_PARTY;
@@ -231,6 +182,8 @@ public class PersonalisationTest {
         when(config.getHearingInfoLink()).thenReturn(Link.builder().linkUrl("http://link.com/progress/appeal_id/abouthearing").build());
         when(config.getOnlineHearingLinkWithEmail()).thenReturn(Link.builder().linkUrl("http://link.com/onlineHearing?email={email}").build());
         when(config.getOnlineHearingLink()).thenReturn("http://link.com");
+        when(config.getHelplineTelephone()).thenReturn("0300 123 1142");
+        when(config.getHelplineTelephoneScotland()).thenReturn("0300 790 6234");
         when(notificationDateConverterUtil.toEmailDate(LocalDate.now().plusDays(1))).thenReturn("1 January 2018");
         when(notificationDateConverterUtil.toEmailDate(LocalDate.now().plusDays(7))).thenReturn("1 February 2018");
         when(notificationDateConverterUtil.toEmailDate(LocalDate.now().plusDays(56))).thenReturn("1 February 2019");
@@ -509,15 +462,15 @@ public class PersonalisationTest {
                 new Object[]{ISSUE_ADJOURNMENT_NOTICE_WELSH, APPELLANT, ONLINE, false, false, false, true},
                 new Object[]{ISSUE_ADJOURNMENT_NOTICE_WELSH, APPOINTEE, ONLINE, false, false, false, true},
                 new Object[]{ISSUE_ADJOURNMENT_NOTICE_WELSH, REPRESENTATIVE, ONLINE, false, false, false, true},
-                new Object[]{VALID_APPEAL_CREATED, APPELLANT, PAPER, true, true, true, false},
-                new Object[]{VALID_APPEAL_CREATED, APPELLANT, REGULAR, true, true, true, false},
-                new Object[]{VALID_APPEAL_CREATED, APPELLANT, ONLINE, true, true, true, false},
-                new Object[]{VALID_APPEAL_CREATED, REPRESENTATIVE, PAPER, true, true, true, false},
-                new Object[]{VALID_APPEAL_CREATED, REPRESENTATIVE, REGULAR, true, true, true, false},
-                new Object[]{VALID_APPEAL_CREATED, REPRESENTATIVE, ONLINE, true, true, true, false},
-                new Object[]{VALID_APPEAL_CREATED, APPOINTEE, PAPER, true, true, true, false},
-                new Object[]{VALID_APPEAL_CREATED, APPOINTEE, REGULAR, true, true, true, false},
-                new Object[]{VALID_APPEAL_CREATED, APPOINTEE, ONLINE, true, true, true, false},
+                new Object[]{VALID_APPEAL_CREATED, APPELLANT, PAPER, true, true, true, true},
+                new Object[]{VALID_APPEAL_CREATED, APPELLANT, REGULAR, true, true, true, true},
+                new Object[]{VALID_APPEAL_CREATED, APPELLANT, ONLINE, true, true, true, true},
+                new Object[]{VALID_APPEAL_CREATED, REPRESENTATIVE, PAPER, true, true, true, true},
+                new Object[]{VALID_APPEAL_CREATED, REPRESENTATIVE, REGULAR, true, true, true, true},
+                new Object[]{VALID_APPEAL_CREATED, REPRESENTATIVE, ONLINE, true, true, true, true},
+                new Object[]{VALID_APPEAL_CREATED, APPOINTEE, PAPER, true, true, true, true},
+                new Object[]{VALID_APPEAL_CREATED, APPOINTEE, REGULAR, true, true, true, true},
+                new Object[]{VALID_APPEAL_CREATED, APPOINTEE, ONLINE, true, true, true, true},
                 new Object[]{REQUEST_INFO_INCOMPLETE, APPELLANT, ONLINE, false, false, false, true},
                 new Object[]{REQUEST_INFO_INCOMPLETE, APPOINTEE, ONLINE, false, false, false, true},
                 new Object[]{REQUEST_INFO_INCOMPLETE, REPRESENTATIVE, ONLINE, false, false, false, true},
@@ -1582,6 +1535,23 @@ public class PersonalisationTest {
 
         assertEquals(name.getFullNameNoTitle(), result.get(OTHER_PARTY_NAME));
         assertEquals(requestOutcome.getValue(), result.get(CONFIDENTIALITY_OUTCOME));
+    }
+
+    @Test
+    @Parameters({"yes, 0300 790 6234", "no, 0300 123 1142"})
+    public void setHelplineTelephoneNumber_relevantToTheCaseCountry(String isScottish, String helpLineTelephone) {
+        SscsCaseData response = SscsCaseData.builder()
+                .ccdCaseId(CASE_ID)
+                .appeal(Appeal.builder().benefitType(BenefitType.builder().code("PIP").build())
+                        .appellant(Appellant.builder().name(name).build())
+                        .build())
+                .isScottishCase(isScottish)
+                .build();
+
+        Map<String, String> result = personalisation.create(SscsCaseDataWrapper.builder().newSscsCaseData(response)
+                .notificationEventType(VALID_APPEAL_CREATED).build(), new SubscriptionWithType(subscriptions.getAppellantSubscription(), APPELLANT));
+
+        assertEquals(helpLineTelephone, result.get(HELPLINE_PHONE_NUMBER));
     }
 
     private Hearing createHearing(LocalDate hearingDate) {

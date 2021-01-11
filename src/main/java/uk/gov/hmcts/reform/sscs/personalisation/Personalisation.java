@@ -271,7 +271,17 @@ public class Personalisation<E extends NotificationWrapper> {
 
         setConfidentialFields(ccdResponse, subscriptionWithType, personalisation);
 
+        setHelplineTelephone(ccdResponse, personalisation);
+
         return personalisation;
+    }
+
+    private void setHelplineTelephone(SscsCaseData ccdResponse, Map<String, String> personalisation) {
+        if ("yes".equalsIgnoreCase(ccdResponse.getIsScottishCase())) {
+            personalisation.put(HELPLINE_PHONE_NUMBER, config.getHelplineTelephoneScotland());
+        } else {
+            personalisation.put(HELPLINE_PHONE_NUMBER, config.getHelplineTelephone());
+        }
     }
 
     private void setConfidentialFields(SscsCaseData ccdResponse, SubscriptionWithType subscriptionWithType, Map<String, String> personalisation) {
@@ -589,7 +599,8 @@ public class Personalisation<E extends NotificationWrapper> {
                 || JOINT_PARTY_ADDED.equals(notificationEventType)
                 || ADMIN_APPEAL_WITHDRAWN.equals(notificationEventType)
                 || APPEAL_WITHDRAWN_NOTIFICATION.equals(notificationEventType)
-                || REVIEW_CONFIDENTIALITY_REQUEST.equals(notificationEventType))) {
+                || REVIEW_CONFIDENTIALITY_REQUEST.equals(notificationEventType)
+                || VALID_APPEAL_CREATED.equals(notificationEventType))) {
             letterTemplateName = letterTemplateName + "." + subscriptionType.name().toLowerCase();
 
         }
