@@ -1025,7 +1025,7 @@ feature.covid19: ${COVID_19_NOTIFICATION_FEATURE:false}
 
 letterAsync:
   maxAttempts: ${LETTER_ASYNC_MAX_ATTEMPTS:5}
-  delay: ${LETTER_ASYNC_DELAY:3000}
+  delay: ${LETTER_ASYNC_DELAY:6000}
   multiplier: ${LETTER_ASYNC_MULTIPLIER:10}
 
 retry:
