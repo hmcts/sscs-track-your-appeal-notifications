@@ -83,7 +83,6 @@ gov.uk.notification.api.testRecipients:
   - "TS2 2ST"
   - "TS3 3ST"
   - "TS4 4ST"
-  - "G40 3RE"
 
 subscription.hmac.secret.text: ${EMAIL_MAC_SECRET_TEXT:our-big-secret}
 
