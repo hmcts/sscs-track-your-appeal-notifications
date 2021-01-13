@@ -406,6 +406,8 @@ notification:
         docmosisId: TB-SCS-GNO-ENG-00510.docx
       representative:
         docmosisId: TB-SCS-GNO-ENG-00512.docx
+      joint_party:
+        docmosisId: TB-SCS-GNO-ENG-00510.docx
     requestInfoIncompleteApplication:
       appellant:
         docmosisId: TB-SCS-GNO-ENG-00452.docx
@@ -817,6 +819,8 @@ notification:
       appointee:
         docmosisId: TB-SCS-GNO-WEL-00649.docx
       representative:
+        docmosisId: TB-SCS-GNO-WEL-00649.docx
+      joint_party:
         docmosisId: TB-SCS-GNO-WEL-00649.docx
     issueFinalDecision:
       appellant:

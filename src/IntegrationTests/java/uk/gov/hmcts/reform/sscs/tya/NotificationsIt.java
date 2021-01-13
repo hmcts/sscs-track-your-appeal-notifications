@@ -457,6 +457,9 @@ public class NotificationsIt {
                 "jointPartySubscription", "subscribeSms");
         json = updateEmbeddedJson(json, notificationEventType.getId(), "event_id");
 
+        if (notificationEventType.name().contains("WELSH")) {
+            json = updateEmbeddedJson(json, "Yes", "case_details", "case_data", "languagePreferenceWelsh");
+        }
         if (notificationEventType.equals(REQUEST_INFO_INCOMPLETE)) {
             json = updateEmbeddedJson(json, "Yes", "case_details", "case_data", "informationFromAppellant");
         }
@@ -527,7 +530,7 @@ public class NotificationsIt {
     @SuppressWarnings({"Indentation", "unused"})
     private Object[] generateJointPartyNotificationScenarios() {
         return new Object[]{
-                new Object[]{
+               new Object[]{
                         APPEAL_LAPSED_NOTIFICATION,
                         "paper",
                         Collections.singletonList("8ce8d794-75e8-49a0-b4d2-0c6cd2061c11"),
@@ -869,6 +872,30 @@ public class NotificationsIt {
                     Collections.emptyList(),
                     Collections.emptyList(),
                     Arrays.asList("TB-SCS-GNO-ENG-00579.docx", "TB-SCS-GNO-ENG-00579.docx"),
+                    "yes",
+                    "yes",
+                    "0",
+                    "0",
+                    "0"
+                },
+                new Object[]{
+                    ISSUE_ADJOURNMENT_NOTICE,
+                    "paper",
+                    Collections.emptyList(),
+                    Collections.emptyList(),
+                    Arrays.asList("TB-SCS-GNO-ENG-00510.docx", "TB-SCS-GNO-ENG-00510.docx"),
+                    "yes",
+                    "yes",
+                    "0",
+                    "0",
+                    "0"
+                },
+                new Object[]{
+                    ISSUE_ADJOURNMENT_NOTICE_WELSH,
+                    "oral",
+                    Collections.emptyList(),
+                    Collections.emptyList(),
+                    Arrays.asList("TB-SCS-GNO-WEL-00649.docx", "TB-SCS-GNO-WEL-00649.docx"),
                     "yes",
                     "yes",
                     "0",

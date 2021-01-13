@@ -49,8 +49,8 @@ public class DocmosisWithGovNotifyLetterFunctionalTest extends AbstractFunctiona
         int expectedNumberOfLettersIsThree = 3;
         return new Object[]{
            new Object[]{REQUEST_INFO_INCOMPLETE, expectedNumberOfLettersIsThree},
-            new Object[]{ISSUE_ADJOURNMENT_NOTICE, expectedNumberOfLettersIsTwo},
-            new Object[]{ISSUE_ADJOURNMENT_NOTICE_WELSH, expectedNumberOfLettersIsTwo},
+            new Object[]{ISSUE_ADJOURNMENT_NOTICE, expectedNumberOfLettersIsThree},
+            new Object[]{ISSUE_ADJOURNMENT_NOTICE_WELSH, expectedNumberOfLettersIsThree},
             new Object[]{STRUCK_OUT, expectedNumberOfLettersIsTwo},
             new Object[]{ISSUE_FINAL_DECISION, expectedNumberOfLettersIsTwo},
             new Object[]{DECISION_ISSUED, expectedNumberOfLettersIsTwo},
