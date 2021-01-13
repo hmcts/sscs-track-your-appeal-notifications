@@ -36,6 +36,10 @@ public class NotificationConfig {
     private String myaHearingInfoLink;
     @Value("${mya.claiming.expenses.link}")
     private String myaClaimingExpensesLink;
+    @Value("${helpline.telephone}")
+    private String helplineTelephone;
+    @Value("${helpline.telephoneScotland}")
+    private String helplineTelephoneScotland;
 
     private Environment env;
 
@@ -85,6 +89,14 @@ public class NotificationConfig {
 
     public String getOnlineHearingLink() {
         return onlineHearingLink;
+    }
+
+    public String getHelplineTelephone() {
+        return helplineTelephone;
+    }
+
+    public String getHelplineTelephoneScotland() {
+        return helplineTelephoneScotland;
     }
 
     public Template getTemplate(String emailTemplateName, String smsTemplateName, String letterTemplateName,
