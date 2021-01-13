@@ -176,10 +176,10 @@ public class SendNotificationService {
     }
 
     private boolean sendFallbackLetterNotification(NotificationWrapper wrapper, Subscription subscription, Notification notification, SubscriptionWithType subscriptionWithType, NotificationEventType eventType, Address addressToUse) {
-        if (hasNoSubscriptions(subscription) && hasLetterTemplate(notification) && isFallbackLetterRequired(wrapper, subscriptionWithType, subscription, eventType, notificationValidService)) {
+        if (hasNoSubscriptions(subscription) && isFallbackLetterRequired(wrapper, subscriptionWithType, subscription, eventType, notificationValidService)) {
             if (isBundledLetter(wrapper.getNotificationType()) || (isNotBlank(notification.getDocmosisLetterTemplate()))) {
                 return sendBundledLetterNotification(wrapper, notification, getNameToUseForLetter(wrapper, subscriptionWithType.getSubscriptionType()), subscriptionWithType.getSubscriptionType());
-            } else {
+            } else if (hasLetterTemplate(notification)) {
                 NotificationHandler.SendNotification sendNotification = () ->
                     sendLetterNotificationToAddress(wrapper, notification, addressToUse, subscriptionWithType.getSubscriptionType());
 
