@@ -3,6 +3,8 @@ package uk.gov.hmcts.reform.sscs.service;
 import static org.apache.commons.lang3.StringUtils.*;
 import static uk.gov.hmcts.reform.sscs.ccd.callback.DocumentType.*;
 import static uk.gov.hmcts.reform.sscs.config.AppConstants.*;
+import static uk.gov.hmcts.reform.sscs.config.SubscriptionType.JOINT_PARTY;
+import static uk.gov.hmcts.reform.sscs.config.SubscriptionType.REPRESENTATIVE;
 import static uk.gov.hmcts.reform.sscs.domain.notify.NotificationEventType.*;
 import static uk.gov.hmcts.reform.sscs.service.LetterUtils.*;
 import static uk.gov.hmcts.reform.sscs.service.NotificationUtils.*;
@@ -252,14 +254,8 @@ public class SendNotificationService {
                 }
                 bundledLetter = letter;
 
-                NotificationHandler.SendNotification sendNotification = () ->
-                        notificationSender.sendBundledLetter(
-                                wrapper.getNewSscsCaseData().getAppeal().getAppellant().getAddress().getPostcode(),   // Used for whitelisting only
-                                bundledLetter,
-                                wrapper.getNotificationType(),
-                                nameToUse,
-                                wrapper.getCaseId()
-                        );
+                NotificationHandler.SendNotification sendNotification = selectSender(wrapper, bundledLetter, nameToUse, subscriptionType);
+
                 log.info("In sendBundledLetterNotification method notificationSender is available {} ", notificationSender != null);
                 if (ArrayUtils.isNotEmpty(bundledLetter)) {
                     notificationHandler.sendNotification(wrapper, notification.getDocmosisLetterTemplate(), NOTIFICATION_TYPE_LETTER, sendNotification);
@@ -272,6 +268,22 @@ public class SendNotificationService {
             throw exception;
         }
         return false;
+    }
+
+    private NotificationHandler.SendNotification selectSender(NotificationWrapper wrapper, byte[] bundledLetter, String nameToUse, SubscriptionType subscriptionType) {
+        boolean alternativeLetterFormat = isAlternativeLetterFormatRequired(wrapper, subscriptionType);
+        return  alternativeLetterFormat ?
+                () -> notificationSender.saveBundledLetter(bundledLetter,
+                        wrapper.getNotificationType(),
+                        nameToUse,
+                        wrapper.getCaseId()) :
+                () -> notificationSender.sendBundledLetter(
+                        wrapper.getNewSscsCaseData().getAppeal().getAppellant().getAddress().getPostcode(),   // Used for whitelisting only
+                        bundledLetter,
+                        wrapper.getNotificationType(),
+                        nameToUse,
+                        wrapper.getCaseId()
+                );
     }
 
     private byte[] downloadAssociatedCasePdf(NotificationWrapper wrapper) {

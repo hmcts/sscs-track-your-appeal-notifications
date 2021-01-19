@@ -38,6 +38,16 @@ public class SaveLetterCorrespondenceAsyncService {
         }
     }
 
+    @Async
+    @Retryable(maxAttemptsExpression =  "#{${letterAsync.maxAttempts}}", backoff = @Backoff(delayExpression = "#{${letterAsync.delay}}", multiplierExpression = "#{${letterAsync.multiplier}}", random = true))
+    public void saveLetter(final byte[] pdfForLetter, Correspondence correspondence, String ccdCaseId) {
+        ccdNotificationsPdfService.mergeLetterCorrespondenceIntoCcd(pdfForLetter, Long.valueOf(ccdCaseId), correspondence);
+        //TODO : add new sscs-common method to save the letter and update case data
+        //And an Reasonable Adjustment Outstanding flag is added to the party
+        //And case level field is set to adjustment required
+        //And the status of the letter will be shown as 'Alternative Letter Format' 'Required'
+    }
+
     @Recover
     @SuppressWarnings({"unused"})
     public void getBackendResponseFallback(Throwable e) {

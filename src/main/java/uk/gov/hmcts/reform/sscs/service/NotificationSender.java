@@ -220,6 +220,16 @@ public class NotificationSender {
         }
     }
 
+    public void saveBundledLetter(byte[] pdfForLetter, NotificationEventType notificationEventType, String name, String ccdCaseId) throws NotificationClientException {
+        if (pdfForLetter != null && saveCorrespondence) {
+            //TODO : use resAdjcorrespondence
+            final Correspondence correspondence = getLetterCorrespondence(notificationEventType, name);
+            saveLetterCorrespondenceAsyncService.saveLetter(pdfForLetter, correspondence, ccdCaseId);
+
+            log.info("Letter Notification saved for case id : {}", ccdCaseId);
+        }
+    }
+
     private NotificationClient getLetterNotificationClient(String postcode) {
         NotificationClient client;
         if (notificationBlacklist.getTestRecipients().contains(postcode)) {

@@ -15,6 +15,8 @@ import org.apache.pdfbox.pdmodel.PDPage;
 import org.apache.pdfbox.pdmodel.PDPageContentStream;
 import org.apache.pdfbox.pdmodel.common.PDRectangle;
 import uk.gov.hmcts.reform.sscs.ccd.domain.Address;
+import uk.gov.hmcts.reform.sscs.ccd.domain.Appeal;
+import uk.gov.hmcts.reform.sscs.ccd.domain.YesNo;
 import uk.gov.hmcts.reform.sscs.config.SubscriptionType;
 import uk.gov.hmcts.reform.sscs.exception.NotificationClientRuntimeException;
 import uk.gov.hmcts.reform.sscs.factory.NotificationWrapper;
@@ -96,5 +98,26 @@ public class LetterUtils {
         } else {
             throw new NotificationClientRuntimeException("Can not bundle empty documents");
         }
+    }
+
+    public static boolean isAlternativeLetterFormatRequired(NotificationWrapper wrapper, SubscriptionType subscriptionType) {
+        YesNo wantsReasonableAdjustment = YesNo.NO;
+        Appeal appeal = wrapper.getNewSscsCaseData().getAppeal();
+
+        switch (subscriptionType) {
+            case APPELLANT:
+                wantsReasonableAdjustment = appeal.getAppellant().getWantsReasonableAdjustment();
+                break;
+            case JOINT_PARTY:
+                wantsReasonableAdjustment = wrapper.getNewSscsCaseData().getJointPartyWantsReasonableAdjustment();
+                break;
+            case APPOINTEE:
+                wantsReasonableAdjustment = appeal.getAppellant().getAppointee().getWantsReasonableAdjustment();
+                break;
+            case REPRESENTATIVE:
+                wantsReasonableAdjustment = appeal.getRep().getWantsReasonableAdjustment();
+                break;
+        }
+        return wantsReasonableAdjustment.equals(YesNo.YES);
     }
 }
