@@ -10,11 +10,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
-import uk.gov.hmcts.reform.sscs.ccd.domain.Address;
-import uk.gov.hmcts.reform.sscs.ccd.domain.Correspondence;
-import uk.gov.hmcts.reform.sscs.ccd.domain.CorrespondenceDetails;
-import uk.gov.hmcts.reform.sscs.ccd.domain.CorrespondenceType;
-import uk.gov.hmcts.reform.sscs.ccd.domain.SscsCaseData;
+import uk.gov.hmcts.reform.sscs.ccd.domain.*;
 import uk.gov.hmcts.reform.sscs.config.NotificationBlacklist;
 import uk.gov.hmcts.reform.sscs.domain.NotifyResponse;
 import uk.gov.hmcts.reform.sscs.domain.notify.NotificationEventType;
@@ -167,35 +163,6 @@ public class NotificationSender {
         log.info("Letter Notification send for case id : {}, Gov notify id: {} ", ccdCaseId, sendLetterResponse.getNotificationId());
     }
 
-    private void saveCorrespondence(NotifyResponse response, NotificationEventType notificationEventType,
-                                    SscsCaseData sscsCaseData, CorrespondenceType correspondenceType) {
-        Correspondence correspondence = Correspondence.builder().value(
-                CorrespondenceDetails.builder()
-                        .body(markdownTransformationService.toHtml(response.getBody()))
-                        .subject(response.getSubject())
-                        .from(response.getFrom().orElse(""))
-                        .to(response.getTo())
-                        .eventType(notificationEventType.getId())
-                        .correspondenceType(correspondenceType)
-                        .sentOn(LocalDateTime.now(ZONE_ID_LONDON).format(DATE_TIME_FORMATTER))
-                        .build()
-        ).build();
-
-        ccdNotificationsPdfService.mergeCorrespondenceIntoCcd(sscsCaseData, correspondence);
-        log.info("Uploaded correspondence into ccd for case id {}.", sscsCaseData.getCcdCaseId());
-    }
-
-    private Correspondence getLetterCorrespondence(NotificationEventType notificationEventType, String name) {
-        return Correspondence.builder().value(
-                CorrespondenceDetails.builder()
-                        .eventType(notificationEventType.getId())
-                        .to(name)
-                        .correspondenceType(CorrespondenceType.Letter)
-                        .sentOn(LocalDateTime.now(ZONE_ID_LONDON).format(DATE_TIME_FORMATTER))
-                        .build()
-        ).build();
-    }
-
     public void sendBundledLetter(String appellantPostcode, byte[] directionText, NotificationEventType notificationEventType, String name, String ccdCaseId) throws NotificationClientException {
         if (directionText != null) {
             NotificationClient client = getLetterNotificationClient(appellantPostcode);
@@ -220,14 +187,47 @@ public class NotificationSender {
         }
     }
 
-    public void saveBundledLetter(byte[] pdfForLetter, NotificationEventType notificationEventType, String name, String ccdCaseId) throws NotificationClientException {
-        if (pdfForLetter != null && saveCorrespondence) {
-            //TODO : use resAdjcorrespondence
-            final Correspondence correspondence = getLetterCorrespondence(notificationEventType, name);
+    public void saveLettersToReasonableAdjustment(byte[] pdfForLetter, NotificationEventType notificationEventType, String name, String ccdCaseId) {
+        if (pdfForLetter != null) {
+            final Correspondence correspondence = getLetterCorrespondence(notificationEventType, name, ReasonableAdjustmentStatus.REQUIRED);
             saveLetterCorrespondenceAsyncService.saveLetter(pdfForLetter, correspondence, ccdCaseId);
 
             log.info("Letter Notification saved for case id : {}", ccdCaseId);
         }
+    }
+
+    private void saveCorrespondence(NotifyResponse response, NotificationEventType notificationEventType,
+                                    SscsCaseData sscsCaseData, CorrespondenceType correspondenceType) {
+        Correspondence correspondence = Correspondence.builder().value(
+                CorrespondenceDetails.builder()
+                        .body(markdownTransformationService.toHtml(response.getBody()))
+                        .subject(response.getSubject())
+                        .from(response.getFrom().orElse(""))
+                        .to(response.getTo())
+                        .eventType(notificationEventType.getId())
+                        .correspondenceType(correspondenceType)
+                        .sentOn(LocalDateTime.now(ZONE_ID_LONDON).format(DATE_TIME_FORMATTER))
+                        .build()
+        ).build();
+
+        ccdNotificationsPdfService.mergeCorrespondenceIntoCcd(sscsCaseData, correspondence);
+        log.info("Uploaded correspondence into ccd for case id {}.", sscsCaseData.getCcdCaseId());
+    }
+
+    private Correspondence getLetterCorrespondence(NotificationEventType notificationEventType, String name) {
+        return getLetterCorrespondence(notificationEventType, name, null);
+    }
+
+    private Correspondence getLetterCorrespondence(NotificationEventType notificationEventType, String name, ReasonableAdjustmentStatus status) {
+        return Correspondence.builder().value(
+                CorrespondenceDetails.builder()
+                        .eventType(notificationEventType.getId())
+                        .to(name)
+                        .correspondenceType(CorrespondenceType.Letter)
+                        .sentOn(LocalDateTime.now(ZONE_ID_LONDON).format(DATE_TIME_FORMATTER))
+                        .reasonableAdjustmentStatus(status)
+                        .build()
+        ).build();
     }
 
     private NotificationClient getLetterNotificationClient(String postcode) {

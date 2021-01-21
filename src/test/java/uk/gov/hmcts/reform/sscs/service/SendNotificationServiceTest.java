@@ -4,6 +4,7 @@ import static org.hamcrest.MatcherAssert.assertThat;
 import static org.junit.Assert.*;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.*;
+import static org.mockito.Mockito.verify;
 import static org.mockito.MockitoAnnotations.openMocks;
 import static uk.gov.hmcts.reform.sscs.ccd.domain.State.READY_TO_LIST;
 import static uk.gov.hmcts.reform.sscs.ccd.domain.State.VALID_APPEAL;
@@ -161,6 +162,9 @@ public class SendNotificationServiceTest {
 
     @Captor
     private ArgumentCaptor<String> smsTemplateIdCaptor;
+
+    @Captor
+    private ArgumentCaptor<NotificationHandler.SendNotification> sender;
 
     @Before
     public void setup() {
@@ -589,7 +593,8 @@ public class SendNotificationServiceTest {
         verify(pdfLetterService).generateLetter(any(), any(), any());
         verify(pdfLetterService).buildCoversheet(any(), any());
         verifyNoMoreInteractions(pdfLetterService);
-        verify(notificationHandler, atLeastOnce()).sendNotification(any(), any(), eq("Letter"), any());
+        verify(notificationHandler, atLeastOnce()).sendNotification(any(), any(), eq("Letter"), sender.capture());
+        verifyNotificationIsSent(sender.getValue(), notificationEventType, CASE_ID);
     }
 
     @Test
@@ -597,6 +602,25 @@ public class SendNotificationServiceTest {
         SubscriptionWithType appellantEmptySubscription = new SubscriptionWithType(EMPTY_SUBSCRIPTION, APPELLANT);
         classUnderTest.sendEmailSmsLetterNotification(buildBaseWrapper(APPELLANT_WITH_ADDRESS, NotificationEventType.APPEAL_RECEIVED_NOTIFICATION, State.VALID_APPEAL.getId()), LETTER_NOTIFICATION, appellantEmptySubscription, NotificationEventType.APPEAL_RECEIVED_NOTIFICATION);
         verifyNoInteractions(notificationHandler);
+    }
+
+    private void verifyNotificationIsSaved(NotificationHandler.SendNotification sender, NotificationEventType eventType, String ccdCaseId) {
+        try {
+            sender.send();
+            verify(notificationSender).saveLettersToReasonableAdjustment(any(), eq(eventType), any(), eq(ccdCaseId));
+        } catch (NotificationClientException e) {
+            fail("Not expected exception");
+        }
+
+    }
+
+    private void verifyNotificationIsSent(NotificationHandler.SendNotification sender, NotificationEventType eventType, String ccdCaseId) {
+        try {
+            sender.send();
+            verify(notificationSender).sendBundledLetter(any(), any(), eq(eventType), any(), eq(ccdCaseId));
+        } catch (NotificationClientException e) {
+            fail("Not expected exception");
+        }
     }
 
     private CcdNotificationWrapper buildBaseWrapper(Appellant appellant) {
