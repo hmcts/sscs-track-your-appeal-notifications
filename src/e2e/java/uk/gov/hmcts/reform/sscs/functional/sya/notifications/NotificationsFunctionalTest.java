@@ -486,8 +486,8 @@ public class NotificationsFunctionalTest extends AbstractFunctionalTest {
         SscsCaseData caseData = caseDetails.getData();
 
         assertEquals(YesNo.YES, caseData.getReasonableAdjustmentsOutstanding());
-        assertEquals(1, caseData.getReasonableAdjustmentsLetters().size());
-        assertEquals(ReasonableAdjustmentStatus.REQUIRED, caseData.getReasonableAdjustmentsLetters().get(0).getValue().getReasonableAdjustmentStatus());
+        assertEquals(1, caseData.getReasonableAdjustmentsLetters().getAppellantReasonableAdjustmentsLetters().size());
+        assertEquals(ReasonableAdjustmentStatus.REQUIRED, caseData.getReasonableAdjustmentsLetters().getAppellantReasonableAdjustmentsLetters().get(0).getValue().getReasonableAdjustmentStatus());
     }
 
     @Test
@@ -500,9 +500,10 @@ public class NotificationsFunctionalTest extends AbstractFunctionalTest {
         SscsCaseData caseData = caseDetails.getData();
 
         assertEquals(YesNo.YES, caseData.getReasonableAdjustmentsOutstanding());
-        assertEquals(2, caseData.getReasonableAdjustmentsLetters().size());
-        assertEquals(ReasonableAdjustmentStatus.REQUIRED, caseData.getReasonableAdjustmentsLetters().get(0).getValue().getReasonableAdjustmentStatus());
-        assertEquals(ReasonableAdjustmentStatus.REQUIRED, caseData.getReasonableAdjustmentsLetters().get(1).getValue().getReasonableAdjustmentStatus());
+        assertEquals(1, caseData.getReasonableAdjustmentsLetters().getAppellantReasonableAdjustmentsLetters().size());
+        assertEquals(1, caseData.getReasonableAdjustmentsLetters().getRepresentativeReasonableAdjustmentsLetters().size());
+        assertEquals(ReasonableAdjustmentStatus.REQUIRED, caseData.getReasonableAdjustmentsLetters().getAppellantReasonableAdjustmentsLetters().get(0).getValue().getReasonableAdjustmentStatus());
+        assertEquals(ReasonableAdjustmentStatus.REQUIRED, caseData.getReasonableAdjustmentsLetters().getRepresentativeReasonableAdjustmentsLetters().get(0).getValue().getReasonableAdjustmentStatus());
     }
 
 }

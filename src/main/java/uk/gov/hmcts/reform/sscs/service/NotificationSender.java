@@ -12,6 +12,7 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 import uk.gov.hmcts.reform.sscs.ccd.domain.*;
 import uk.gov.hmcts.reform.sscs.config.NotificationBlacklist;
+import uk.gov.hmcts.reform.sscs.config.SubscriptionType;
 import uk.gov.hmcts.reform.sscs.domain.NotifyResponse;
 import uk.gov.hmcts.reform.sscs.domain.notify.NotificationEventType;
 import uk.gov.service.notify.LetterResponse;
@@ -187,10 +188,10 @@ public class NotificationSender {
         }
     }
 
-    public void saveLettersToReasonableAdjustment(byte[] pdfForLetter, NotificationEventType notificationEventType, String name, String ccdCaseId) {
+    public void saveLettersToReasonableAdjustment(byte[] pdfForLetter, NotificationEventType notificationEventType, String name, String ccdCaseId, SubscriptionType subscriptionType) {
         if (pdfForLetter != null) {
             final Correspondence correspondence = getLetterCorrespondence(notificationEventType, name, ReasonableAdjustmentStatus.REQUIRED);
-            saveLetterCorrespondenceAsyncService.saveLetter(pdfForLetter, correspondence, ccdCaseId);
+            saveLetterCorrespondenceAsyncService.saveLetter(pdfForLetter, correspondence, ccdCaseId, subscriptionType);
 
             log.info("Letter Notification saved for case id : {}", ccdCaseId);
         }

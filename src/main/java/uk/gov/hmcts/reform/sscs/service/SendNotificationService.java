@@ -257,7 +257,8 @@ public class SendNotificationService {
                         ? () -> notificationSender.saveLettersToReasonableAdjustment(bundledLetter,
                                 wrapper.getNotificationType(),
                                 nameToUse,
-                                wrapper.getCaseId())
+                                wrapper.getCaseId(),
+                                subscriptionType)
                         : () -> notificationSender.sendBundledLetter(
                                 wrapper.getNewSscsCaseData().getAppeal().getAppellant().getAddress().getPostcode(),   // Used for whitelisting only
                                 bundledLetter,

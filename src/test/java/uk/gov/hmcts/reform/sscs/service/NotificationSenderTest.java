@@ -25,6 +25,7 @@ import org.mockito.junit.MockitoRule;
 import org.springframework.test.util.ReflectionTestUtils;
 import uk.gov.hmcts.reform.sscs.ccd.domain.*;
 import uk.gov.hmcts.reform.sscs.config.NotificationBlacklist;
+import uk.gov.hmcts.reform.sscs.config.SubscriptionType;
 import uk.gov.hmcts.reform.sscs.domain.notify.NotificationEventType;
 import uk.gov.service.notify.*;
 
@@ -309,9 +310,9 @@ public class NotificationSenderTest {
     @Test
     public void saveLetterCorrespondence() {
         byte[] sampleLetter = "Letter".getBytes();
-        notificationSender.saveLettersToReasonableAdjustment(sampleLetter, NotificationEventType.APPEAL_RECEIVED_NOTIFICATION, "Bob Squires", CCD_CASE_ID);
+        notificationSender.saveLettersToReasonableAdjustment(sampleLetter, NotificationEventType.APPEAL_RECEIVED_NOTIFICATION, "Bob Squires", CCD_CASE_ID, SubscriptionType.APPELLANT);
 
-        verify(saveLetterCorrespondenceAsyncService).saveLetter(eq(sampleLetter), correspondenceArgumentCaptor.capture(), eq(CCD_CASE_ID));
+        verify(saveLetterCorrespondenceAsyncService).saveLetter(eq(sampleLetter), correspondenceArgumentCaptor.capture(), eq(CCD_CASE_ID), eq(SubscriptionType.APPELLANT));
         Correspondence correspondence = correspondenceArgumentCaptor.getValue();
         assertNotNull(correspondence);
         assertEquals(CorrespondenceType.Letter, correspondence.getValue().getCorrespondenceType());
@@ -322,7 +323,7 @@ public class NotificationSenderTest {
 
     @Test
     public void saveLetterCorrespondence_emptyLetter() throws NotificationClientException {
-        notificationSender.saveLettersToReasonableAdjustment(null, NotificationEventType.APPEAL_RECEIVED_NOTIFICATION, "Bob Squires", CCD_CASE_ID);
+        notificationSender.saveLettersToReasonableAdjustment(null, NotificationEventType.APPEAL_RECEIVED_NOTIFICATION, "Bob Squires", CCD_CASE_ID, SubscriptionType.APPELLANT);
         verifyNoInteractions(saveLetterCorrespondenceAsyncService);
     }
 }

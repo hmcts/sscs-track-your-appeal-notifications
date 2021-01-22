@@ -616,7 +616,7 @@ public class SendNotificationServiceTest {
         verify(pdfLetterService).buildCoversheet(any(), any());
         verifyNoMoreInteractions(pdfLetterService);
         verify(notificationHandler, atLeastOnce()).sendNotification(any(), any(), eq("Letter"), sender.capture());
-        verifyNotificationIsSaved(sender.getValue(), notificationEventType, CASE_ID);
+        verifyNotificationIsSaved(sender.getValue(), notificationEventType, CASE_ID, appellantEmptySubscription.getSubscriptionType());
     }
 
     @Test
@@ -629,7 +629,7 @@ public class SendNotificationServiceTest {
         verify(pdfLetterService).buildCoversheet(any(), any());
         verifyNoMoreInteractions(pdfLetterService);
         verify(notificationHandler, atLeastOnce()).sendNotification(any(), any(), eq("Letter"), sender.capture());
-        verifyNotificationIsSaved(sender.getValue(), notificationEventType, CASE_ID);
+        verifyNotificationIsSaved(sender.getValue(), notificationEventType, CASE_ID, repEmptySubscription.getSubscriptionType());
     }
 
     @Test
@@ -642,7 +642,7 @@ public class SendNotificationServiceTest {
         verify(pdfLetterService).buildCoversheet(any(), any());
         verifyNoMoreInteractions(pdfLetterService);
         verify(notificationHandler, atLeastOnce()).sendNotification(any(), any(), eq("Letter"), sender.capture());
-        verifyNotificationIsSaved(sender.getValue(), notificationEventType, CASE_ID);
+        verifyNotificationIsSaved(sender.getValue(), notificationEventType, CASE_ID, appointeeEmptySubscription.getSubscriptionType());
     }
 
     @Test
@@ -655,7 +655,7 @@ public class SendNotificationServiceTest {
         verify(pdfLetterService).buildCoversheet(any(), any());
         verifyNoMoreInteractions(pdfLetterService);
         verify(notificationHandler, atLeastOnce()).sendNotification(any(), any(), eq("Letter"), sender.capture());
-        verifyNotificationIsSaved(sender.getValue(), notificationEventType, CASE_ID);
+        verifyNotificationIsSaved(sender.getValue(), notificationEventType, CASE_ID, jointPartyEmptySubscription.getSubscriptionType());
     }
 
     @Test
@@ -665,10 +665,10 @@ public class SendNotificationServiceTest {
         verifyNoInteractions(notificationHandler);
     }
 
-    private void verifyNotificationIsSaved(NotificationHandler.SendNotification sender, NotificationEventType eventType, String ccdCaseId) {
+    private void verifyNotificationIsSaved(NotificationHandler.SendNotification sender, NotificationEventType eventType, String ccdCaseId, SubscriptionType subscriptionType) {
         try {
             sender.send();
-            verify(notificationSender).saveLettersToReasonableAdjustment(any(), eq(eventType), any(), eq(ccdCaseId));
+            verify(notificationSender).saveLettersToReasonableAdjustment(any(), eq(eventType), any(), eq(ccdCaseId), eq(subscriptionType));
         } catch (NotificationClientException e) {
             fail("Not expected exception");
         }
