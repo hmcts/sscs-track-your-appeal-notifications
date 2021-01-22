@@ -7,7 +7,6 @@ import static uk.gov.hmcts.reform.sscs.domain.notify.NotificationEventType.CASE_
 
 import java.util.List;
 import java.util.UUID;
-import java.util.concurrent.TimeUnit;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 import junitparams.Parameters;
@@ -68,7 +67,7 @@ public class AdminAppealWithdrawnNotificationsTest extends AbstractFunctionalTes
             if (getNumberOfLetterCorrespondence(subscription) == expectedNumLetters) {
                 return true;
             }
-            delayInSeconds();
+            delayInSeconds(5);
         } while (true);
     }
 
@@ -83,14 +82,6 @@ public class AdminAppealWithdrawnNotificationsTest extends AbstractFunctionalTes
         return notifications.stream()
             .filter(notification -> notification.getTemplateId().equals(UUID.fromString(emailId)))
             .count();
-    }
-
-    private void delayInSeconds() {
-        try {
-            TimeUnit.SECONDS.sleep(5);
-        } catch (InterruptedException ie) {
-            Thread.currentThread().interrupt();
-        }
     }
 
     private long getNumberOfLetterCorrespondence(String subscription) {

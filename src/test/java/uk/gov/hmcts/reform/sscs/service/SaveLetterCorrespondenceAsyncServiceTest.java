@@ -65,4 +65,11 @@ public class SaveLetterCorrespondenceAsyncServiceTest {
         service.getBackendResponseFallback(new NotificationClientException("400 BadRequestError"));
     }
 
+    @Test
+    public void willUploadPdfFormatLettersDirectlyIntoCcd() {
+        service.saveLetter(new byte[]{}, correspondence, CCD_ID);
+
+        verify(ccdNotificationsPdfService).mergeReasonableAdjustmentsCorrespondenceIntoCcd(any(byte[].class), eq(Long.valueOf(CCD_ID)), eq(correspondence));
+    }
+
 }
