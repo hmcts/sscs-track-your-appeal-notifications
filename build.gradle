@@ -4,7 +4,7 @@ plugins {
     id 'pmd'
     id 'org.sonarqube' version '3.1'
     id 'jacoco'
-    id 'io.spring.dependency-management' version '1.0.10.RELEASE'
+    id 'io.spring.dependency-management' version '1.0.11.RELEASE'
     id 'org.springframework.boot' version '2.3.5.RELEASE'
     id 'uk.gov.hmcts.java' version '0.12.3'
     id 'org.owasp.dependencycheck' version '6.0.5'
@@ -276,7 +276,7 @@ dependencies {
     compile group: 'io.springfox', name: 'springfox-swagger2', version: versions.springfoxSwagger
     compile group: 'io.springfox', name: 'springfox-swagger2', version: versions.springfoxSwagger
     compile group: 'io.springfox', name: 'springfox-swagger-ui', version: versions.springfoxSwagger
-    compile group: 'com.atlassian.commonmark', name: 'commonmark', version: '0.16.1'
+    compile group: 'com.atlassian.commonmark', name: 'commonmark', version: '0.17.0'
     compile group: 'org.springframework', name: 'spring-jms'
     compile group: 'org.apache.qpid', name: 'qpid-jms-client', version: '0.56.0'
     compile group: 'org.jadira.usertype', name: 'usertype.core', version: '7.0.0.CR1'
@@ -285,9 +285,7 @@ dependencies {
     compile group: 'uk.gov.hmcts.reform', name: 'java-logging-spring', version: versions.reformLogging
     compile group: 'uk.gov.hmcts.reform', name: 'java-logging-httpcomponents', version: versions.reformLogging
     compile group: 'uk.gov.hmcts.reform', name: 'java-logging-appinsights', version: versions.reformLogging
-    compile (group: 'uk.gov.hmcts.reform', name: 'sscs-job-scheduler', version: '1.5.2') {
-        exclude group: "uk.gov.hmcts.reform", module:"http-proxy-spring-boot-autoconfigure"
-    }
+    compile group: 'uk.gov.hmcts.reform', name: 'sscs-job-scheduler', version: '1.5.3'
     compile group: 'uk.gov.hmcts.reform', name: 'service-auth-provider-client', version: '3.1.4'
     compile group: 'uk.gov.hmcts.reform', name: 'sscs-common', version: '4.1.31'
     compile group: 'uk.gov.hmcts.reform', name: 'sscs-pdf-email-common', version: '1.4.18'
