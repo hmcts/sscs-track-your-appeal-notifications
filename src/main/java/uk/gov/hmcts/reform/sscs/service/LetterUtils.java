@@ -107,16 +107,16 @@ public class LetterUtils {
         if (resAdj != null) {
             switch (subscriptionType) {
                 case APPELLANT:
-                    wantsReasonableAdjustment = resAdj.getAppellant() != null ? resAdj.getAppellant().getWantsReasonableAdjustment() : YesNo.NO;
+                    wantsReasonableAdjustment = resAdj.getAppellant().getWantsReasonableAdjustment() != null ? resAdj.getAppellant().getWantsReasonableAdjustment() : YesNo.NO;
                     break;
                 case JOINT_PARTY:
-                    wantsReasonableAdjustment = resAdj.getJointParty() != null ? resAdj.getJointParty().getWantsReasonableAdjustment() : YesNo.NO;
+                    wantsReasonableAdjustment = resAdj.getJointParty().getWantsReasonableAdjustment() != null ? resAdj.getJointParty().getWantsReasonableAdjustment() : YesNo.NO;
                     break;
                 case APPOINTEE:
-                    wantsReasonableAdjustment = resAdj.getAppointee() != null ? resAdj.getAppointee().getWantsReasonableAdjustment() : YesNo.NO;
+                    wantsReasonableAdjustment = resAdj.getAppointee().getWantsReasonableAdjustment() != null ? resAdj.getAppointee().getWantsReasonableAdjustment() : YesNo.NO;
                     break;
                 case REPRESENTATIVE:
-                    wantsReasonableAdjustment = resAdj.getRepresentative() != null ? resAdj.getRepresentative().getWantsReasonableAdjustment() : YesNo.NO;
+                    wantsReasonableAdjustment = resAdj.getRepresentative().getWantsReasonableAdjustment() != null ? resAdj.getRepresentative().getWantsReasonableAdjustment() : YesNo.NO;
                     break;
                 default:
                     wantsReasonableAdjustment = YesNo.NO;
