@@ -4,6 +4,7 @@ import java.net.UnknownHostException;
 import java.time.ZonedDateTime;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Service;
 import uk.gov.hmcts.reform.sscs.exception.NotificationClientRuntimeException;
 import uk.gov.hmcts.reform.sscs.exception.NotificationServiceException;
@@ -45,33 +46,31 @@ public class NotificationHandler {
     }
 
     public void scheduleNotification(NotificationWrapper wrapper) {
-        scheduleNotification(wrapper, outOfHoursCalculator.getStartOfNextInHoursPeriod());
+        scheduleNotification(wrapper.getCaseId(), wrapper.getNotificationType().getId(), outOfHoursCalculator.getStartOfNextInHoursPeriod());
     }
 
-    public void scheduleNotification(NotificationWrapper wrapper, int retry, ZonedDateTime dateTime) {
-        final String caseId = wrapper.getCaseId();
-        String eventId = wrapper.getNotificationType().getId();
+    @Async
+    public void scheduleNotification(final String caseId, final String eventId, int retry, ZonedDateTime dateTime) {
         String jobGroup = jobGroupGenerator.generate(caseId, eventId);
         log.info("Scheduled retry {} - {} for case id: {} @ {}", retry, eventId, caseId, dateTime);
 
         jobScheduler.schedule(new Job<>(
                 jobGroup,
                 eventId,
-                wrapper.getSchedulerPayload() + "," + retry,
+                caseId + "," + retry,
                 dateTime
         ));
     }
 
-    public void scheduleNotification(NotificationWrapper wrapper, ZonedDateTime dateTime) {
-        final String caseId = wrapper.getCaseId();
-        String eventId = wrapper.getNotificationType().getId();
+    @Async
+    public void scheduleNotification(final String caseId, final String eventId, ZonedDateTime dateTime) {
         String jobGroup = jobGroupGenerator.generate(caseId, eventId);
         log.info("Scheduled {} for case id: {} @ {}", eventId, caseId, dateTime);
 
         jobScheduler.schedule(new Job<>(
                 jobGroup,
                 eventId,
-                wrapper.getSchedulerPayload(),
+                caseId,
                 dateTime
         ));
     }

@@ -83,7 +83,7 @@ public class NotificationService {
                     .plusSeconds(notificationType.getDelayInSeconds())
                     .isAfter(LocalDateTime.now())) {
                 log.info("Notification event {} is delayed and scheduled for case id {}", notificationType.getId(), caseId);
-                notificationHandler.scheduleNotification(notificationWrapper, ZonedDateTime.now().plusSeconds(notificationType.getDelayInSeconds()));
+                notificationHandler.scheduleNotification(notificationWrapper.getCaseId(), notificationWrapper.getNotificationType().getId(), ZonedDateTime.now().plusSeconds(notificationType.getDelayInSeconds()));
             } else {
                 sendNotificationPerSubscription(notificationWrapper);
                 reminderService.createReminders(notificationWrapper);

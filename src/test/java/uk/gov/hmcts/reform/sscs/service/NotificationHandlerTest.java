@@ -82,8 +82,6 @@ public class NotificationHandlerTest {
     @Test
     public void canScheduleNotifications() {
         when(notificationWrapper.getNotificationType()).thenReturn(A_NOTIFICATION_THAT_CANNOT_TRIGGER_OUT_OF_HOURS);
-        String payload = "payload";
-        when(notificationWrapper.getSchedulerPayload()).thenReturn(payload);
         String caseId = "caseId";
         when(notificationWrapper.getCaseId()).thenReturn(caseId);
 
@@ -100,22 +98,16 @@ public class NotificationHandlerTest {
         assertThat(value.triggerAt, is(whenToScheduleJob));
         assertThat(value.group, is(group));
         assertThat(value.name, is(A_NOTIFICATION_THAT_CANNOT_TRIGGER_OUT_OF_HOURS.getId()));
-        assertThat(value.payload, is(payload));
+        assertThat(value.payload, is(caseId));
     }
 
     @Test
     public void shouldScheduleNotificationsAtASpecifiedTime() {
-        when(notificationWrapper.getNotificationType()).thenReturn(A_NOTIFICATION_THAT_CANNOT_TRIGGER_OUT_OF_HOURS);
-        String payload = "payload";
-        when(notificationWrapper.getSchedulerPayload()).thenReturn(payload);
         String caseId = "caseId";
-        when(notificationWrapper.getCaseId()).thenReturn(caseId);
-
         ZonedDateTime whenToScheduleJob = ZonedDateTime.now();
         String group = "group";
         when(jobGroupGenerator.generate(caseId, A_NOTIFICATION_THAT_CANNOT_TRIGGER_OUT_OF_HOURS.getId())).thenReturn(group);
-
-        underTest.scheduleNotification(notificationWrapper, whenToScheduleJob);
+        underTest.scheduleNotification(caseId, A_NOTIFICATION_THAT_CANNOT_TRIGGER_OUT_OF_HOURS.getId(), whenToScheduleJob);
         ArgumentCaptor<Job> argument = ArgumentCaptor.forClass(Job.class);
         verify(jobScheduler).schedule(argument.capture());
 
@@ -123,7 +115,7 @@ public class NotificationHandlerTest {
         assertThat(value.triggerAt, is(whenToScheduleJob));
         assertThat(value.group, is(group));
         assertThat(value.name, is(A_NOTIFICATION_THAT_CANNOT_TRIGGER_OUT_OF_HOURS.getId()));
-        assertThat(value.payload, is(payload));
+        assertThat(value.payload, is(caseId));
     }
 
     private void canSendNotification(NotificationEventType notificationEventType, boolean isOutOfHours) throws NotificationClientException {
@@ -135,18 +127,15 @@ public class NotificationHandlerTest {
     @Test
     public void shouldScheduleNotificationsAtASpecifiedTimeWithRetry() {
         final int retry = 1;
-        when(notificationWrapper.getNotificationType()).thenReturn(A_NOTIFICATION_THAT_CANNOT_TRIGGER_OUT_OF_HOURS);
-        final String payload = "payload";
+        final String payload = "caseId";
         final String expectedPayload = payload + "," + retry;
-        when(notificationWrapper.getSchedulerPayload()).thenReturn(payload);
         final String caseId = "caseId";
-        when(notificationWrapper.getCaseId()).thenReturn(caseId);
-
+        //when(notificationWrapper.getCaseId()).thenReturn(caseId);
         final ZonedDateTime whenToScheduleJob = ZonedDateTime.now();
         final String group = "group";
         when(jobGroupGenerator.generate(caseId, A_NOTIFICATION_THAT_CANNOT_TRIGGER_OUT_OF_HOURS.getId())).thenReturn(group);
 
-        underTest.scheduleNotification(notificationWrapper, retry, whenToScheduleJob);
+        underTest.scheduleNotification(caseId, A_NOTIFICATION_THAT_CANNOT_TRIGGER_OUT_OF_HOURS.getId(), retry, whenToScheduleJob);
         final ArgumentCaptor<Job> argument = ArgumentCaptor.forClass(Job.class);
         verify(jobScheduler).schedule(argument.capture());
 

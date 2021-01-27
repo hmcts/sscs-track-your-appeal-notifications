@@ -101,7 +101,7 @@ public class RetryNotificationServiceTest {
         service.rescheduleIfHandledGovNotifyErrorStatus(retry, notificationWrapper, new NotificationServiceException("123", exception));
         ZonedDateTime expectedRescheduledDateTime = ZonedDateTime.now().plusSeconds(delayInSecondsMap.get(retry));
         ArgumentCaptor<ZonedDateTime> argument = ArgumentCaptor.forClass(ZonedDateTime.class);
-        verify(notificationHandler).scheduleNotification(eq(notificationWrapper), eq(retry), argument.capture());
+        verify(notificationHandler).scheduleNotification(eq(notificationWrapper.getCaseId()), eq(notificationWrapper.getNotificationType().getId()), eq(retry), argument.capture());
         assertTrue(argument.getValue().isBefore(expectedRescheduledDateTime) || argument.getValue().isEqual(expectedRescheduledDateTime));
     }
 

@@ -1677,7 +1677,7 @@ public class NotificationServiceTest {
 
         verify(notificationHandler, never()).sendNotification(any(), any(), any(), any());
         ArgumentCaptor<ZonedDateTime> argument = ArgumentCaptor.forClass(ZonedDateTime.class);
-        verify(notificationHandler).scheduleNotification(eq(ccdNotificationWrapper), argument.capture());
+        verify(notificationHandler).scheduleNotification(eq(ccdNotificationWrapper.getCaseId()), eq(ccdNotificationWrapper.getNotificationType().getId()), argument.capture());
         assertThat(argument.getValue().isBefore(ZonedDateTime.now().plusMinutes(6)), is(true));
         verifyNoMoreInteractions(reminderService);
 

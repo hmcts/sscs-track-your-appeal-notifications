@@ -32,7 +32,7 @@ public class RetryNotificationService {
                 Integer delayInSeconds = retryConfig.getDelayInSeconds().get(retry);
                 ZonedDateTime dateTime = ZonedDateTime.now().plusSeconds(delayInSeconds);
                 log.info("Retry {} is rescheduling in {} seconds for case id {} and event id {}", retry, delayInSeconds, notificationWrapper.getCaseId(), notificationWrapper.getNotificationType().getId());
-                notificationHandler.scheduleNotification(notificationWrapper, retry, dateTime);
+                notificationHandler.scheduleNotification(notificationWrapper.getCaseId(), notificationWrapper.getNotificationType().getId(), retry, dateTime);
             }
         }
     }
