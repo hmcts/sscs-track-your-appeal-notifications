@@ -11,6 +11,10 @@ import junitparams.Parameters;
 import org.junit.Ignore;
 import org.junit.Test;
 import org.springframework.beans.factory.annotation.Value;
+import uk.gov.hmcts.reform.sscs.ccd.domain.ReasonableAdjustmentStatus;
+import uk.gov.hmcts.reform.sscs.ccd.domain.SscsCaseData;
+import uk.gov.hmcts.reform.sscs.ccd.domain.SscsCaseDetails;
+import uk.gov.hmcts.reform.sscs.ccd.domain.YesNo;
 import uk.gov.hmcts.reform.sscs.functional.AbstractFunctionalTest;
 import uk.gov.service.notify.Notification;
 import uk.gov.service.notify.NotificationClientException;
@@ -184,7 +188,6 @@ public class NotificationsFunctionalTest extends AbstractFunctionalTest {
 
         tryFetchNotificationsForTestCase(subscriptionCreatedSmsTemplateId);
     }
-
 
     @Test
     public void shouldSendSubscriptionUpdatedNotification() throws NotificationClientException, IOException {
@@ -471,6 +474,36 @@ public class NotificationsFunctionalTest extends AbstractFunctionalTest {
         Notification updateEmailNotification = notifications.stream().filter(f -> f.getTemplateId().toString().equals(paperDwpUploadResponseEmailId)).collect(Collectors.toList()).get(0);
         assertTrue(updateEmailNotification.getBody().contains("DWP has sent a 'Response' to your ESA benefit appeal"));
         assertTrue(updateEmailNotification.getBody().contains("You have told us you do not want to attend the hearing of your appeal"));
+    }
+
+    @Test
+    public void shouldSaveReasonableAdjustmentNotificationForAppellant() throws IOException {
+        simulateCcdCallback(APPEAL_RECEIVED_NOTIFICATION, APPEAL_RECEIVED_NOTIFICATION.getId() + "AppellantReasonableAdjustmentCallback.json");
+
+        delayInSeconds(5);
+
+        SscsCaseDetails caseDetails = findCaseById(caseId);
+        SscsCaseData caseData = caseDetails.getData();
+
+        assertEquals(YesNo.YES, caseData.getReasonableAdjustmentsOutstanding());
+        assertEquals(1, caseData.getReasonableAdjustmentsLetters().getAppellant().size());
+        assertEquals(ReasonableAdjustmentStatus.REQUIRED, caseData.getReasonableAdjustmentsLetters().getAppellant().get(0).getValue().getReasonableAdjustmentStatus());
+    }
+
+    @Test
+    public void shouldSaveReasonableAdjustmentNotificationForAppellantAndRep() throws IOException {
+        simulateCcdCallback(APPEAL_RECEIVED_NOTIFICATION, APPEAL_RECEIVED_NOTIFICATION.getId() + "AppellantRepReasonableAdjustmentCallback.json");
+
+        delayInSeconds(5);
+
+        SscsCaseDetails caseDetails = findCaseById(caseId);
+        SscsCaseData caseData = caseDetails.getData();
+
+        assertEquals(YesNo.YES, caseData.getReasonableAdjustmentsOutstanding());
+        assertEquals(1, caseData.getReasonableAdjustmentsLetters().getAppellant().size());
+        assertEquals(1, caseData.getReasonableAdjustmentsLetters().getRepresentative().size());
+        assertEquals(ReasonableAdjustmentStatus.REQUIRED, caseData.getReasonableAdjustmentsLetters().getAppellant().get(0).getValue().getReasonableAdjustmentStatus());
+        assertEquals(ReasonableAdjustmentStatus.REQUIRED, caseData.getReasonableAdjustmentsLetters().getRepresentative().get(0).getValue().getReasonableAdjustmentStatus());
     }
 
 }

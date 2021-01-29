@@ -15,6 +15,8 @@ import org.apache.pdfbox.pdmodel.PDPage;
 import org.apache.pdfbox.pdmodel.PDPageContentStream;
 import org.apache.pdfbox.pdmodel.common.PDRectangle;
 import uk.gov.hmcts.reform.sscs.ccd.domain.Address;
+import uk.gov.hmcts.reform.sscs.ccd.domain.ReasonableAdjustments;
+import uk.gov.hmcts.reform.sscs.ccd.domain.YesNo;
 import uk.gov.hmcts.reform.sscs.config.SubscriptionType;
 import uk.gov.hmcts.reform.sscs.exception.NotificationClientRuntimeException;
 import uk.gov.hmcts.reform.sscs.factory.NotificationWrapper;
@@ -96,5 +98,30 @@ public class LetterUtils {
         } else {
             throw new NotificationClientRuntimeException("Can not bundle empty documents");
         }
+    }
+
+    public static boolean isAlternativeLetterFormatRequired(NotificationWrapper wrapper, SubscriptionType subscriptionType) {
+        YesNo wantsReasonableAdjustment = YesNo.NO;
+        ReasonableAdjustments resAdj = wrapper.getNewSscsCaseData().getReasonableAdjustments();
+
+        if (resAdj != null) {
+            switch (subscriptionType) {
+                case APPELLANT:
+                    wantsReasonableAdjustment = resAdj.getAppellant() != null && resAdj.getAppellant().getWantsReasonableAdjustment() != null ? resAdj.getAppellant().getWantsReasonableAdjustment() : YesNo.NO;
+                    break;
+                case JOINT_PARTY:
+                    wantsReasonableAdjustment = resAdj.getJointParty() != null && resAdj.getJointParty().getWantsReasonableAdjustment() != null ? resAdj.getJointParty().getWantsReasonableAdjustment() : YesNo.NO;
+                    break;
+                case APPOINTEE:
+                    wantsReasonableAdjustment = resAdj.getAppointee() != null && resAdj.getAppointee().getWantsReasonableAdjustment() != null ? resAdj.getAppointee().getWantsReasonableAdjustment() : YesNo.NO;
+                    break;
+                case REPRESENTATIVE:
+                    wantsReasonableAdjustment = resAdj.getRepresentative() != null && resAdj.getRepresentative().getWantsReasonableAdjustment() != null ? resAdj.getRepresentative().getWantsReasonableAdjustment() : YesNo.NO;
+                    break;
+                default:
+                    wantsReasonableAdjustment = YesNo.NO;
+            }
+        }
+        return wantsReasonableAdjustment.equals(YesNo.YES);
     }
 }

@@ -1,7 +1,6 @@
 package uk.gov.hmcts.reform.sscs.service;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.*;
 import static uk.gov.hmcts.reform.sscs.config.AppConstants.REP_SALUTATION;
 import static uk.gov.hmcts.reform.sscs.config.SubscriptionType.*;
 import static uk.gov.hmcts.reform.sscs.domain.notify.NotificationEventType.*;
@@ -23,6 +22,7 @@ import uk.gov.hmcts.reform.sscs.ccd.domain.Address;
 import uk.gov.hmcts.reform.sscs.ccd.domain.JointPartyName;
 import uk.gov.hmcts.reform.sscs.ccd.domain.Name;
 import uk.gov.hmcts.reform.sscs.ccd.domain.Representative;
+import uk.gov.hmcts.reform.sscs.config.SubscriptionType;
 import uk.gov.hmcts.reform.sscs.exception.NotificationClientRuntimeException;
 import uk.gov.hmcts.reform.sscs.factory.NotificationWrapper;
 
@@ -187,6 +187,13 @@ public class LetterUtilsTest {
         PDDocument newDocument = PDDocument.load(newBytes);
         int expectedPages = (pages % 2 == 0) ? pages : pages + 1;
         assertEquals(expectedPages, newDocument.getNumberOfPages());
+    }
+
+    @Test
+    @Parameters({"APPELLANT", "JOINT_PARTY", "APPOINTEE", "REPRESENTATIVE"})
+    public void isAlternativeLetterFormatRequired(SubscriptionType subscriptionType) {
+        NotificationWrapper wrapper = NotificationServiceTest.buildBaseWrapperWithReasonableAdjustment();
+        assertTrue(LetterUtils.isAlternativeLetterFormatRequired(wrapper, subscriptionType));
     }
 
 }

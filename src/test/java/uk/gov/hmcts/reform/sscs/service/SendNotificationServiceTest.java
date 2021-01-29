@@ -4,6 +4,7 @@ import static org.hamcrest.MatcherAssert.assertThat;
 import static org.junit.Assert.*;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.*;
+import static org.mockito.Mockito.verify;
 import static org.mockito.MockitoAnnotations.openMocks;
 import static uk.gov.hmcts.reform.sscs.ccd.domain.State.READY_TO_LIST;
 import static uk.gov.hmcts.reform.sscs.ccd.domain.State.VALID_APPEAL;
@@ -78,6 +79,7 @@ public class SendNotificationServiceTest {
             .name(Name.builder().firstName("Ap").lastName("Pellant").build())
             .address(Address.builder().line1("Appellant Line 1").town("Appellant Town").county("Appellant County").postcode("AP9 3LL").build())
             .appointee(APPOINTEE_WITH_ADDRESS)
+            .isAppointee("Yes")
             .build();
 
     protected static Representative REP_WITH_ADDRESS = Representative.builder()
@@ -136,6 +138,14 @@ public class SendNotificationServiceTest {
             .template(Template.builder().docmosisTemplateId("AWord.doc").letterTemplateId("someLetterTemplateId").build())
             .placeholders(new HashMap<>())
             .build();
+
+    private static ReasonableAdjustments REASONABLE_ADJUSTMENTS = ReasonableAdjustments.builder()
+            .appellant(ReasonableAdjustmentDetails.builder().wantsReasonableAdjustment(YesNo.YES).build())
+            .representative(ReasonableAdjustmentDetails.builder().wantsReasonableAdjustment(YesNo.YES).build())
+            .jointParty(ReasonableAdjustmentDetails.builder().wantsReasonableAdjustment(YesNo.YES).build())
+            .appointee(ReasonableAdjustmentDetails.builder().wantsReasonableAdjustment(YesNo.YES).build())
+            .build();
+
     @Mock
     private NotificationSender notificationSender;
 
@@ -161,6 +171,9 @@ public class SendNotificationServiceTest {
 
     @Captor
     private ArgumentCaptor<String> smsTemplateIdCaptor;
+
+    @Captor
+    private ArgumentCaptor<NotificationHandler.SendNotification> sender;
 
     @Before
     public void setup() {
@@ -589,7 +602,60 @@ public class SendNotificationServiceTest {
         verify(pdfLetterService).generateLetter(any(), any(), any());
         verify(pdfLetterService).buildCoversheet(any(), any());
         verifyNoMoreInteractions(pdfLetterService);
-        verify(notificationHandler, atLeastOnce()).sendNotification(any(), any(), eq("Letter"), any());
+        verify(notificationHandler, atLeastOnce()).sendNotification(any(), any(), eq("Letter"), sender.capture());
+        verifyNotificationIsSent(sender.getValue(), notificationEventType, CASE_ID);
+    }
+
+    @Test
+    @Parameters({"APPEAL_RECEIVED_NOTIFICATION", "DIRECTION_ISSUED",  "DIRECTION_ISSUED_WELSH", "DECISION_ISSUED", "DECISION_ISSUED_WELSH", "ISSUE_FINAL_DECISION", "ISSUE_ADJOURNMENT_NOTICE", "DWP_UPLOAD_RESPONSE_NOTIFICATION"})
+    public void saveAppellantReasonableAdjustmentLetterForNotificationType(NotificationEventType notificationEventType) {
+        SubscriptionWithType appellantEmptySubscription = new SubscriptionWithType(EMPTY_SUBSCRIPTION, APPELLANT);
+        when(pdfLetterService.generateLetter(any(), any(), any())).thenReturn("PDF".getBytes());
+        classUnderTest.sendEmailSmsLetterNotification(buildBaseWrapper(APPELLANT_WITH_ADDRESS, notificationEventType, REASONABLE_ADJUSTMENTS), DOCMOSIS_LETTER_NOTIFICATION, appellantEmptySubscription, NotificationEventType.APPEAL_RECEIVED_NOTIFICATION);
+        verify(pdfLetterService).generateLetter(any(), any(), any());
+        verify(pdfLetterService).buildCoversheet(any(), any());
+        verifyNoMoreInteractions(pdfLetterService);
+        verify(notificationHandler, atLeastOnce()).sendNotification(any(), any(), eq("Letter"), sender.capture());
+        verifyNotificationIsSaved(sender.getValue(), notificationEventType, CASE_ID, appellantEmptySubscription.getSubscriptionType());
+    }
+
+    @Test
+    @Parameters({"APPEAL_RECEIVED_NOTIFICATION", "DIRECTION_ISSUED",  "DIRECTION_ISSUED_WELSH", "DECISION_ISSUED", "DECISION_ISSUED_WELSH", "ISSUE_FINAL_DECISION", "ISSUE_ADJOURNMENT_NOTICE", "DWP_UPLOAD_RESPONSE_NOTIFICATION"})
+    public void saveRepReasonableAdjustmentLetterForNotificationType(NotificationEventType notificationEventType) {
+        SubscriptionWithType repEmptySubscription = new SubscriptionWithType(EMPTY_SUBSCRIPTION, REPRESENTATIVE);
+        when(pdfLetterService.generateLetter(any(), any(), any())).thenReturn("PDF".getBytes());
+        classUnderTest.sendEmailSmsLetterNotification(buildBaseWrapper(APPELLANT_WITH_ADDRESS, notificationEventType, REASONABLE_ADJUSTMENTS), DOCMOSIS_LETTER_NOTIFICATION, repEmptySubscription, NotificationEventType.APPEAL_RECEIVED_NOTIFICATION);
+        verify(pdfLetterService).generateLetter(any(), any(), any());
+        verify(pdfLetterService).buildCoversheet(any(), any());
+        verifyNoMoreInteractions(pdfLetterService);
+        verify(notificationHandler, atLeastOnce()).sendNotification(any(), any(), eq("Letter"), sender.capture());
+        verifyNotificationIsSaved(sender.getValue(), notificationEventType, CASE_ID, repEmptySubscription.getSubscriptionType());
+    }
+
+    @Test
+    @Parameters({"APPEAL_RECEIVED_NOTIFICATION", "DIRECTION_ISSUED",  "DIRECTION_ISSUED_WELSH", "DECISION_ISSUED", "DECISION_ISSUED_WELSH", "ISSUE_FINAL_DECISION", "ISSUE_ADJOURNMENT_NOTICE", "DWP_UPLOAD_RESPONSE_NOTIFICATION"})
+    public void saveAppointeeReasonableAdjustmentLetterForNotificationType(NotificationEventType notificationEventType) {
+        SubscriptionWithType appointeeEmptySubscription = new SubscriptionWithType(EMPTY_SUBSCRIPTION, APPOINTEE);
+        when(pdfLetterService.generateLetter(any(), any(), any())).thenReturn("PDF".getBytes());
+        classUnderTest.sendEmailSmsLetterNotification(buildBaseWrapper(APPELLANT_WITH_ADDRESS_AND_APPOINTEE, notificationEventType, REASONABLE_ADJUSTMENTS), DOCMOSIS_LETTER_NOTIFICATION, appointeeEmptySubscription, NotificationEventType.APPEAL_RECEIVED_NOTIFICATION);
+        verify(pdfLetterService).generateLetter(any(), any(), any());
+        verify(pdfLetterService).buildCoversheet(any(), any());
+        verifyNoMoreInteractions(pdfLetterService);
+        verify(notificationHandler, atLeastOnce()).sendNotification(any(), any(), eq("Letter"), sender.capture());
+        verifyNotificationIsSaved(sender.getValue(), notificationEventType, CASE_ID, appointeeEmptySubscription.getSubscriptionType());
+    }
+
+    @Test
+    @Parameters({"APPEAL_RECEIVED_NOTIFICATION", "DIRECTION_ISSUED",  "DIRECTION_ISSUED_WELSH", "DECISION_ISSUED", "DECISION_ISSUED_WELSH", "ISSUE_FINAL_DECISION", "ISSUE_ADJOURNMENT_NOTICE", "DWP_UPLOAD_RESPONSE_NOTIFICATION"})
+    public void saveJointPartyReasonableAdjustmentLetterForNotificationType(NotificationEventType notificationEventType) {
+        SubscriptionWithType jointPartyEmptySubscription = new SubscriptionWithType(EMPTY_SUBSCRIPTION, JOINT_PARTY);
+        when(pdfLetterService.generateLetter(any(), any(), any())).thenReturn("PDF".getBytes());
+        classUnderTest.sendEmailSmsLetterNotification(buildBaseWrapper(APPELLANT_WITH_ADDRESS, notificationEventType, REASONABLE_ADJUSTMENTS), DOCMOSIS_LETTER_NOTIFICATION, jointPartyEmptySubscription, NotificationEventType.APPEAL_RECEIVED_NOTIFICATION);
+        verify(pdfLetterService).generateLetter(any(), any(), any());
+        verify(pdfLetterService).buildCoversheet(any(), any());
+        verifyNoMoreInteractions(pdfLetterService);
+        verify(notificationHandler, atLeastOnce()).sendNotification(any(), any(), eq("Letter"), sender.capture());
+        verifyNotificationIsSaved(sender.getValue(), notificationEventType, CASE_ID, jointPartyEmptySubscription.getSubscriptionType());
     }
 
     @Test
@@ -597,6 +663,25 @@ public class SendNotificationServiceTest {
         SubscriptionWithType appellantEmptySubscription = new SubscriptionWithType(EMPTY_SUBSCRIPTION, APPELLANT);
         classUnderTest.sendEmailSmsLetterNotification(buildBaseWrapper(APPELLANT_WITH_ADDRESS, NotificationEventType.APPEAL_RECEIVED_NOTIFICATION, State.VALID_APPEAL.getId()), LETTER_NOTIFICATION, appellantEmptySubscription, NotificationEventType.APPEAL_RECEIVED_NOTIFICATION);
         verifyNoInteractions(notificationHandler);
+    }
+
+    private void verifyNotificationIsSaved(NotificationHandler.SendNotification sender, NotificationEventType eventType, String ccdCaseId, SubscriptionType subscriptionType) {
+        try {
+            sender.send();
+            verify(notificationSender).saveLettersToReasonableAdjustment(any(), eq(eventType), any(), eq(ccdCaseId), eq(subscriptionType));
+        } catch (NotificationClientException e) {
+            fail("Not expected exception");
+        }
+
+    }
+
+    private void verifyNotificationIsSent(NotificationHandler.SendNotification sender, NotificationEventType eventType, String ccdCaseId) {
+        try {
+            sender.send();
+            verify(notificationSender).sendBundledLetter(any(), any(), eq(eventType), any(), eq(ccdCaseId));
+        } catch (NotificationClientException e) {
+            fail("Not expected exception");
+        }
     }
 
     private CcdNotificationWrapper buildBaseWrapper(Appellant appellant) {
@@ -617,6 +702,21 @@ public class SendNotificationServiceTest {
                 .jointPartyName(jointPartyName)
                 .jointPartyAddressSameAsAppellant(jointPartyAddress == null ? YES : NO)
                 .jointPartyAddress(jointPartyAddress).build();
+        SscsCaseDataWrapper wraper = SscsCaseDataWrapper.builder()
+                .newSscsCaseData(sscsCaseData)
+                .oldSscsCaseData(sscsCaseData)
+                .notificationEventType(eventType)
+                .build();
+        return new CcdNotificationWrapper(wraper);
+    }
+
+    private CcdNotificationWrapper buildBaseWrapper(Appellant appellant, NotificationEventType eventType, ReasonableAdjustments reasonableAdjustments) {
+        CcdNotificationWrapper wrapper = buildBaseWrapper(appellant, eventType, REP_WITH_ADDRESS, Benefit.PIP, "Online", READY_TO_LIST.getId());
+        SscsCaseData sscsCaseData = wrapper.getNewSscsCaseData().toBuilder()
+                .reasonableAdjustments(reasonableAdjustments)
+                .jointPartyName(JointPartyName.builder().firstName("J").lastName("Party").build())
+                .jointPartyAddressSameAsAppellant("yes")
+                .build();
         SscsCaseDataWrapper wraper = SscsCaseDataWrapper.builder()
                 .newSscsCaseData(sscsCaseData)
                 .oldSscsCaseData(sscsCaseData)

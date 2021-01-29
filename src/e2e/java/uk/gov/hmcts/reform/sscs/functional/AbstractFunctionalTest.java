@@ -27,6 +27,7 @@ import java.util.Map;
 import java.util.Objects;
 import java.util.Set;
 import java.util.UUID;
+import java.util.concurrent.TimeUnit;
 import java.util.stream.Collectors;
 import junitparams.JUnitParamsRunner;
 import lombok.Getter;
@@ -141,6 +142,10 @@ public abstract class AbstractFunctionalTest {
         return buildSscsCaseDataWelsh(caseReference, "Yes", "Yes", SYA_APPEAL_CREATED, "oral");
     }
 
+    protected SscsCaseDetails findCaseById(Long ccdCaseId) {
+        return ccdService.getByCaseId(ccdCaseId, idamTokens);
+    }
+
     private String generateRandomCaseReference() {
         String epoch = String.valueOf(Instant.now().toEpochMilli());
         Map<String,String> sscCodeMap = regionalProcessingCenterService.getSccodeRegionalProcessingCentermap();
@@ -217,11 +222,7 @@ public abstract class AbstractFunctionalTest {
 
                 secondsLeft -= 5;
 
-                try {
-                    Thread.sleep(5000);
-                } catch (InterruptedException e) {
-                    // noop
-                }
+                delayInSeconds(5);
 
                 allNotifications = client.getNotifications("", "", caseReference, "").getNotifications();
 
@@ -252,11 +253,7 @@ public abstract class AbstractFunctionalTest {
         allNotifications = client.getNotifications("", "letter", caseId.toString(), "").getNotifications();
         int secondsLeft = maxSecondsToWaitForNotification;
         while (allNotifications.size() == 0 && secondsLeft > 0) {
-            try {
-                Thread.sleep(5000);
-            } catch (InterruptedException e) {
-                // noop
-            }
+            delayInSeconds(5);
             secondsLeft -= 5;
             allNotifications = client.getNotifications("", "letter", caseId.toString(), "").getNotifications();
 
@@ -374,5 +371,11 @@ public abstract class AbstractFunctionalTest {
         }
     }
 
-
+    protected void delayInSeconds(int seconds) {
+        try {
+            TimeUnit.SECONDS.sleep(seconds);
+        } catch (InterruptedException ie) {
+            Thread.currentThread().interrupt();
+        }
+    }
 }

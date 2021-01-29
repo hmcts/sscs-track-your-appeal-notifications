@@ -1,6 +1,8 @@
 package uk.gov.hmcts.reform.sscs.service;
 
 import static java.util.Collections.singletonList;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNotNull;
 import static org.mockito.Mockito.*;
 
 import java.io.IOException;
@@ -15,12 +17,15 @@ import org.junit.Before;
 import org.junit.Rule;
 import org.junit.Test;
 import org.junit.runner.RunWith;
+import org.mockito.ArgumentCaptor;
+import org.mockito.Captor;
 import org.mockito.Mock;
 import org.mockito.junit.MockitoJUnit;
 import org.mockito.junit.MockitoRule;
 import org.springframework.test.util.ReflectionTestUtils;
 import uk.gov.hmcts.reform.sscs.ccd.domain.*;
 import uk.gov.hmcts.reform.sscs.config.NotificationBlacklist;
+import uk.gov.hmcts.reform.sscs.config.SubscriptionType;
 import uk.gov.hmcts.reform.sscs.domain.notify.NotificationEventType;
 import uk.gov.service.notify.*;
 
@@ -65,6 +70,9 @@ public class NotificationSenderTest {
 
     @Mock
     private SaveLetterCorrespondenceAsyncService saveLetterCorrespondenceAsyncService;
+
+    @Captor
+    private ArgumentCaptor<Correspondence> correspondenceArgumentCaptor;
 
     @Before
     public void setUp() {
@@ -297,5 +305,25 @@ public class NotificationSenderTest {
         String postcode = "LN8 4DX";
         byte[] sampleDirectionCoversheet = IOUtils.toByteArray(getClass().getClassLoader().getResourceAsStream("pdfs/direction-notice-coversheet-sample.pdf"));
         notificationSender.sendBundledLetter(postcode, sampleDirectionCoversheet, NotificationEventType.APPEAL_RECEIVED_NOTIFICATION, "Bob Squires", CCD_CASE_ID);
+    }
+
+    @Test
+    public void saveLetterCorrespondence() {
+        byte[] sampleLetter = "Letter".getBytes();
+        notificationSender.saveLettersToReasonableAdjustment(sampleLetter, NotificationEventType.APPEAL_RECEIVED_NOTIFICATION, "Bob Squires", CCD_CASE_ID, SubscriptionType.APPELLANT);
+
+        verify(saveLetterCorrespondenceAsyncService).saveLetter(eq(sampleLetter), correspondenceArgumentCaptor.capture(), eq(CCD_CASE_ID), eq(SubscriptionType.APPELLANT));
+        Correspondence correspondence = correspondenceArgumentCaptor.getValue();
+        assertNotNull(correspondence);
+        assertEquals(CorrespondenceType.Letter, correspondence.getValue().getCorrespondenceType());
+        assertEquals("Bob Squires", correspondence.getValue().getTo());
+        assertEquals(NotificationEventType.APPEAL_RECEIVED_NOTIFICATION.getId(), correspondence.getValue().getEventType());
+        assertEquals(ReasonableAdjustmentStatus.REQUIRED, correspondence.getValue().getReasonableAdjustmentStatus());
+    }
+
+    @Test
+    public void saveLetterCorrespondence_emptyLetter() throws NotificationClientException {
+        notificationSender.saveLettersToReasonableAdjustment(null, NotificationEventType.APPEAL_RECEIVED_NOTIFICATION, "Bob Squires", CCD_CASE_ID, SubscriptionType.APPELLANT);
+        verifyNoInteractions(saveLetterCorrespondenceAsyncService);
     }
 }

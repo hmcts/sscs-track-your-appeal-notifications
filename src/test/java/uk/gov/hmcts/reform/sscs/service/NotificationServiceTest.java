@@ -2255,6 +2255,22 @@ public class NotificationServiceTest {
         return new CcdNotificationWrapper(caseDataWrapper);
     }
 
+    public static CcdNotificationWrapper buildBaseWrapperWithReasonableAdjustment() {
+        SscsCaseData caseData = SscsCaseData.builder()
+                .reasonableAdjustments(ReasonableAdjustments.builder()
+                        .appellant(ReasonableAdjustmentDetails.builder().wantsReasonableAdjustment(YesNo.YES).build())
+                        .appointee(ReasonableAdjustmentDetails.builder().wantsReasonableAdjustment(YesNo.YES).build())
+                        .representative(ReasonableAdjustmentDetails.builder().wantsReasonableAdjustment(YesNo.YES).build())
+                        .jointParty(ReasonableAdjustmentDetails.builder().wantsReasonableAdjustment(YesNo.YES).build())
+                        .build()).build();
+        SscsCaseDataWrapper caseDataWrapper = SscsCaseDataWrapper.builder()
+                .newSscsCaseData(caseData)
+                .oldSscsCaseData(caseData)
+                .notificationEventType(APPEAL_RECEIVED_NOTIFICATION)
+                .build();
+        return new CcdNotificationWrapper(caseDataWrapper);
+    }
+
     protected static SscsCaseData.SscsCaseDataBuilder getSscsCaseDataBuilder(Appellant appellant, Representative rep, SscsDocument sscsDocument) {
         return SscsCaseData.builder()
             .appeal(

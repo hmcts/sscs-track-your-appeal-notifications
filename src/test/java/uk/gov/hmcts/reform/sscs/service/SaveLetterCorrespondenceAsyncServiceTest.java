@@ -15,6 +15,8 @@ import org.mockito.Mock;
 import uk.gov.hmcts.reform.sscs.ccd.domain.Correspondence;
 import uk.gov.hmcts.reform.sscs.ccd.domain.CorrespondenceDetails;
 import uk.gov.hmcts.reform.sscs.ccd.domain.SscsCaseData;
+import uk.gov.hmcts.reform.sscs.config.SubscriptionType;
+import uk.gov.hmcts.reform.sscs.model.LetterType;
 import uk.gov.service.notify.NotificationClient;
 import uk.gov.service.notify.NotificationClientException;
 
@@ -63,6 +65,14 @@ public class SaveLetterCorrespondenceAsyncServiceTest {
     public void recoverWillConsumeThrowable() {
 
         service.getBackendResponseFallback(new NotificationClientException("400 BadRequestError"));
+    }
+
+    @Test
+    @Parameters({"APPELLANT, APPELLANT", "REPRESENTATIVE, REPRESENTATIVE", "APPOINTEE, APPOINTEE", "JOINT_PARTY, JOINT_PARTY"})
+    public void willUploadPdfFormatLettersDirectlyIntoCcd(SubscriptionType subscriptionType, LetterType letterType) {
+        service.saveLetter(new byte[]{}, correspondence, CCD_ID, subscriptionType);
+
+        verify(ccdNotificationsPdfService).mergeReasonableAdjustmentsCorrespondenceIntoCcd(any(byte[].class), eq(Long.valueOf(CCD_ID)), eq(correspondence), eq(letterType));
     }
 
 }
