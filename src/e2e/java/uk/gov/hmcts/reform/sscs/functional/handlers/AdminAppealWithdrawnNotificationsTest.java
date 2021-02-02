@@ -30,8 +30,9 @@ public class AdminAppealWithdrawnNotificationsTest extends AbstractFunctionalTes
     @Rule
     public Retry retry = new Retry(0);
 
+    //Test method runs three times and in worst case it needs 90 seconds waiting time.
     @Rule
-    public Timeout globalTimeout = Timeout.seconds(60);
+    public Timeout globalTimeout = Timeout.seconds(100);
 
     @Before
     public void setUp() {
