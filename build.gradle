@@ -7,7 +7,7 @@ plugins {
     id 'io.spring.dependency-management' version '1.0.11.RELEASE'
     id 'org.springframework.boot' version '2.3.5.RELEASE'
     id 'uk.gov.hmcts.java' version '0.12.4'
-    id 'org.owasp.dependencycheck' version '6.0.5'
+    id 'org.owasp.dependencycheck' version '6.1.0'
     id 'com.github.ben-manes.versions' version '0.36.0'
     id 'net.ltgt.apt' version '0.21'
     id "org.flywaydb.flyway" version "7.3.2"
@@ -302,11 +302,11 @@ dependencies {
 
     compileOnly("org.springframework.boot:spring-boot-devtools")
 
-    compile 'org.projectlombok:lombok:1.18.16'
-    annotationProcessor "org.projectlombok:lombok:1.18.14"
+    compile 'org.projectlombok:lombok:1.18.18'
+    annotationProcessor "org.projectlombok:lombok:1.18.18"
     testCompileOnly 'org.projectlombok:lombok:1.18.16'
     testAnnotationProcessor "org.projectlombok:lombok:1.18.14"
-    integrationTestCompileOnly 'org.projectlombok:lombok:1.18.12'
+    integrationTestCompileOnly 'org.projectlombok:lombok:1.18.18'
     integrationTestAnnotationProcessor "org.projectlombok:lombok:1.18.14"
 
     testCompile(group: 'org.springframework.boot', name: 'spring-boot-starter-test', version: '2.4.2') {
