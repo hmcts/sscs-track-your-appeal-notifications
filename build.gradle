@@ -287,7 +287,7 @@ dependencies {
     compile group: 'uk.gov.hmcts.reform', name: 'java-logging-appinsights', version: versions.reformLogging
     compile group: 'uk.gov.hmcts.reform', name: 'sscs-job-scheduler', version: '1.5.3'
     compile group: 'uk.gov.hmcts.reform', name: 'service-auth-provider-client', version: '3.1.4'
-    compile group: 'uk.gov.hmcts.reform', name: 'sscs-common', version: '4.2.12'
+    compile group: 'uk.gov.hmcts.reform', name: 'sscs-common', version: '4.2.13-RC-SSCS-8684-IdamOnly'
     compile group: 'uk.gov.hmcts.reform', name: 'sscs-pdf-email-common', version: '1.4.22'
 
     compile group: 'uk.gov.service.notify', name: 'notifications-java-client', version: '3.17.0-RELEASE'
@@ -304,10 +304,10 @@ dependencies {
 
     compile 'org.projectlombok:lombok:1.18.18'
     annotationProcessor "org.projectlombok:lombok:1.18.18"
-    testCompileOnly 'org.projectlombok:lombok:1.18.16'
-    testAnnotationProcessor "org.projectlombok:lombok:1.18.14"
+    testCompileOnly 'org.projectlombok:lombok:1.18.18'
+    testAnnotationProcessor "org.projectlombok:lombok:1.18.18"
     integrationTestCompileOnly 'org.projectlombok:lombok:1.18.18'
-    integrationTestAnnotationProcessor "org.projectlombok:lombok:1.18.14"
+    integrationTestAnnotationProcessor "org.projectlombok:lombok:1.18.18"
 
     testCompile(group: 'org.springframework.boot', name: 'spring-boot-starter-test', version: '2.4.2') {
         exclude group: "com.vaadin.external.google", module:"android-json"
