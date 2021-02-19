@@ -309,7 +309,7 @@ dependencies {
     integrationTestCompileOnly 'org.projectlombok:lombok:1.18.18'
     integrationTestAnnotationProcessor "org.projectlombok:lombok:1.18.14"
 
-    testCompile(group: 'org.springframework.boot', name: 'spring-boot-starter-test', version: '2.4.2') {
+    testCompile(group: 'org.springframework.boot', name: 'spring-boot-starter-test', version: '2.4.3') {
         exclude group: "com.vaadin.external.google", module:"android-json"
     }
     testCompile group: 'org.mockito', name: 'mockito-core', version: '3.7.7'
