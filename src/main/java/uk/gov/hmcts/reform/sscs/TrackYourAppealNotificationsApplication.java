@@ -49,7 +49,7 @@ import uk.gov.service.notify.NotificationClient;
 @EnableFeignClients(basePackages =
         {
                 "uk.gov.hmcts.reform.sscs.service.coh",
-                "uk.gov.hmcts.reform.idam.client"
+                "uk.gov.hmcts.reform.idam"
         })
 @EnableRetry
 @EnableScheduling
