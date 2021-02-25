@@ -287,8 +287,8 @@ dependencies {
     compile group: 'uk.gov.hmcts.reform', name: 'java-logging-appinsights', version: versions.reformLogging
     compile group: 'uk.gov.hmcts.reform', name: 'sscs-job-scheduler', version: '1.5.3'
     compile group: 'uk.gov.hmcts.reform', name: 'service-auth-provider-client', version: '3.1.4'
-    compile group: 'uk.gov.hmcts.reform', name: 'sscs-common', version: '4.2.16'
-    compile group: 'uk.gov.hmcts.reform', name: 'sscs-pdf-email-common', version: '1.4.23'
+    compile group: 'uk.gov.hmcts.reform', name: 'sscs-common', version: '4.2.17-RC-SSCS-8750'
+    compile group: 'uk.gov.hmcts.reform', name: 'sscs-pdf-email-common', version: '1.4.24-RC-SSCS-8750'
 
     compile group: 'uk.gov.service.notify', name: 'notifications-java-client', version: '3.17.0-RELEASE'
     compile group: 'com.squareup.okhttp3', name: 'okhttp', version: '4.9.1'
