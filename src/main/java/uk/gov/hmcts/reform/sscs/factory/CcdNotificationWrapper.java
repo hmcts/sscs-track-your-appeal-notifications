@@ -1,6 +1,5 @@
 package uk.gov.hmcts.reform.sscs.factory;
 
-import static uk.gov.hmcts.reform.sscs.config.AppealHearingType.ONLINE;
 import static uk.gov.hmcts.reform.sscs.config.AppealHearingType.ORAL;
 import static uk.gov.hmcts.reform.sscs.config.AppealHearingType.PAPER;
 import static uk.gov.hmcts.reform.sscs.config.SubscriptionType.APPELLANT;
@@ -28,7 +27,6 @@ import uk.gov.hmcts.reform.sscs.domain.notify.NotificationEventType;
 import uk.gov.hmcts.reform.sscs.service.scheduler.CcdActionSerializer;
 
 public class CcdNotificationWrapper implements NotificationWrapper {
-    private static final String HEARING_TYPE_ONLINE_RESOLUTION = "cor";
 
     private final SscsCaseDataWrapper responseWrapper;
 
@@ -91,9 +89,7 @@ public class CcdNotificationWrapper implements NotificationWrapper {
     public AppealHearingType getHearingType() {
         final String hearingType = responseWrapper.getNewSscsCaseData().getAppeal().getHearingType();
         AppealHearingType returnHearingType = ORAL;
-        if (StringUtils.equalsAnyIgnoreCase(HEARING_TYPE_ONLINE_RESOLUTION, hearingType)) {
-            returnHearingType = ONLINE;
-        } else if (StringUtils.equalsAnyIgnoreCase(PAPER.name(), hearingType)) {
+        if (StringUtils.equalsAnyIgnoreCase(PAPER.name(), hearingType)) {
             returnHearingType = PAPER;
         }
         return returnHearingType;
