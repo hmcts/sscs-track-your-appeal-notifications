@@ -1180,7 +1180,7 @@ job.scheduler:
           password: ${spring.datasource.password}
       jobStore:
         class: org.quartz.impl.jdbcjobstore.JobStoreTX
-        isClustered: <span class="code-keyword">true</span>
+        isClustered: true
         driverDelegateClass: org.quartz.impl.jdbcjobstore.PostgreSQLDelegate
         dataSource: jobscheduler
       threadPool:
