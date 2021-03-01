@@ -29,6 +29,15 @@ spring:
 
 spring.main.allow-bean-definition-overriding: true  # https://github.com/spring-projects/spring-boot/wiki/Spring-Boot-2.1-Release-Notes#bean-overriding
 
+logging:
+  level:
+    org.springframework.orm.jpa: INFO
+    org.springframework.transaction: INFO
+    org.quartz.impl: INFO
+    org.quartz.plugins: INFO
+    org.quartz.core.QuartzScheduler: INFO
+    org.quartz.QuartzScheduler: INFO
+
 core_case_data:
   api:
     url: ${CORE_CASE_DATA_API_URL:http://localhost:4452}
@@ -996,8 +1005,8 @@ reminder:
   hearingReminder.beforeSecond.seconds: 86400
 
 outOfHours:
-  startHour: ${HOURS_START_TIME:9}
-  endHour: ${HOURS_END_TIME:17}
+  startHour: ${HOURS_START_TIME:08}
+  endHour: ${HOURS_END_TIME:00}
 
 feign:
   client:
@@ -1156,6 +1165,7 @@ spring:
   profiles: default
   profiles.include: ${INFRASTRUCTURE_ENV:aat}-${SLOT:STAGING}-slot
   flyway.enabled: ${RUN_DB_MIGRATION_ON_STARTUP:true}
+
 job.scheduler:
   quartzProperties:
     org.quartz:
@@ -1168,14 +1178,34 @@ job.scheduler:
           URL: ${spring.datasource.url}
           user: ${spring.datasource.username}
           password: ${spring.datasource.password}
+#          maxConnections: 5
+#          validationQuery: select 0 from dual
       jobStore:
         class: org.quartz.impl.jdbcjobstore.JobStoreTX
-        isClustered: true
+        isClustered: <span class="code-keyword">true</span>
         driverDelegateClass: org.quartz.impl.jdbcjobstore.PostgreSQLDelegate
         dataSource: jobscheduler
+#        misfireThreshold: 60000
+#        clusterCheckinInterval: 20000
       threadPool:
         class: org.quartz.simpl.SimpleThreadPool
         threadCount: 8
+      plugin:
+        jobInterruptor:
+          class: org.quartz.plugins.interrupt.JobInterruptMonitorPlugin
+          defaultMaxRunTime: 1000
+        triggHistory:
+          class: org.quartz.plugins.history.LoggingTriggerHistoryPlugin
+          triggerFiredMessage: Trigger [{1}.{0}] fired job [{6}.{5}] at {4, date, HH:mm:ss MM/dd/yyyy}
+          triggerCompleteMessage: Trigger [{1}.{0}] completed firing job [{6}.{5}] at {4, date, HH:mm:ss MM/dd/yyyy}
+          triggerMisfiredMessage: Trigger [{1}.{0}] misfired job [{6}.{5}]. Should have fired at {3, date, dd-MM-yyyy HH:mm:ss.SSS}
+        jobHistory:
+          class: org.quartz.plugins.history.LoggingJobHistoryPlugin
+          jobToBeFiredMessage: Job [{1}.{0}] to be fired by trigger [{4}.{3}], re-fire {7}
+          jobSuccessMessage: Job [{1}.{0}] execution complete and reports {8}
+          jobFailedMessage: Job [{1}.{0}] execution failed with exception {8}
+          jobWasVetoedMessage: Job [{1}.{0}] was vetoed. It was to be fired by trigger [{4}.{3}] at {2, date, dd-MM-yyyy HH:mm:ss.SSS}
+
 
 ---
 # integration & functional profile
