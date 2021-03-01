@@ -1178,22 +1178,15 @@ job.scheduler:
           URL: ${spring.datasource.url}
           user: ${spring.datasource.username}
           password: ${spring.datasource.password}
-#          maxConnections: 5
-#          validationQuery: select 0 from dual
       jobStore:
         class: org.quartz.impl.jdbcjobstore.JobStoreTX
         isClustered: <span class="code-keyword">true</span>
         driverDelegateClass: org.quartz.impl.jdbcjobstore.PostgreSQLDelegate
         dataSource: jobscheduler
-#        misfireThreshold: 60000
-#        clusterCheckinInterval: 20000
       threadPool:
         class: org.quartz.simpl.SimpleThreadPool
         threadCount: 8
       plugin:
-        jobInterruptor:
-          class: org.quartz.plugins.interrupt.JobInterruptMonitorPlugin
-          defaultMaxRunTime: 1000
         triggHistory:
           class: org.quartz.plugins.history.LoggingTriggerHistoryPlugin
           triggerFiredMessage: Trigger [{1}.{0}] fired job [{6}.{5}] at {4, date, HH:mm:ss MM/dd/yyyy}
