@@ -61,7 +61,6 @@ import uk.gov.hmcts.reform.sscs.ccd.domain.SscsCaseData;
 import uk.gov.hmcts.reform.sscs.ccd.domain.State;
 import uk.gov.hmcts.reform.sscs.ccd.domain.Subscription;
 import uk.gov.hmcts.reform.sscs.config.AppConstants;
-import uk.gov.hmcts.reform.sscs.config.AppealHearingType;
 import uk.gov.hmcts.reform.sscs.config.NotificationConfig;
 import uk.gov.hmcts.reform.sscs.config.SubscriptionType;
 import uk.gov.hmcts.reform.sscs.config.properties.EvidenceProperties;
@@ -556,10 +555,8 @@ public class Personalisation<E extends NotificationWrapper> {
                 || HEARING_BOOKED_NOTIFICATION.equals(notificationEventType)
                 || HEARING_REMINDER_NOTIFICATION.equals(notificationEventType)
                 || POSTPONEMENT_NOTIFICATION.equals(notificationEventType)
-                || (DWP_RESPONSE_RECEIVED_NOTIFICATION.equals(notificationEventType)
-                && !notificationWrapper.getHearingType().equals(AppealHearingType.ONLINE))
-                || (DWP_UPLOAD_RESPONSE_NOTIFICATION.equals(notificationEventType)
-                && !notificationWrapper.getHearingType().equals(AppealHearingType.ONLINE))
+                || DWP_RESPONSE_RECEIVED_NOTIFICATION.equals(notificationEventType)
+                || DWP_UPLOAD_RESPONSE_NOTIFICATION.equals(notificationEventType)
                 || RESEND_APPEAL_CREATED_NOTIFICATION.equals(notificationEventType)
                 || VALID_APPEAL_CREATED.equals(notificationEventType)
                 || SYA_APPEAL_CREATED_NOTIFICATION.equals(notificationEventType)) {
