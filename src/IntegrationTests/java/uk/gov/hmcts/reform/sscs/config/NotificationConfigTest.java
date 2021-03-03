@@ -3,7 +3,6 @@ package uk.gov.hmcts.reform.sscs.config;
 import static org.apache.commons.lang3.StringUtils.lowerCase;
 import static org.junit.Assert.*;
 import static uk.gov.hmcts.reform.sscs.ccd.domain.Benefit.PIP;
-import static uk.gov.hmcts.reform.sscs.config.AppealHearingType.ONLINE;
 import static uk.gov.hmcts.reform.sscs.config.AppealHearingType.ORAL;
 import static uk.gov.hmcts.reform.sscs.config.AppealHearingType.PAPER;
 import static uk.gov.hmcts.reform.sscs.config.SubscriptionType.APPELLANT;
@@ -210,7 +209,6 @@ public class NotificationConfigTest {
                 new Object[]{"ebde7b04-7264-4dd0-b569-195ba596dabd", Arrays.asList("7e068c25-fc93-4997-831c-717a319730c1", "b2d187cd-089b-4fe1-b460-a310c0af46fe"), null, null, PAPER, getTemplateName(DWP_UPLOAD_RESPONSE_NOTIFICATION, REPRESENTATIVE), null},
                 new Object[]{"93c0ab9c-7758-431d-8bdf-2411f4c6e2f2", Arrays.asList("cf36c940-b9e1-4d25-aaed-3ea4362706fc", "15cd6837-e998-4bf9-a815-af3e98922d19"), null, null, PAPER, getTemplateName(DWP_UPLOAD_RESPONSE_NOTIFICATION, JOINT_PARTY), null},
 
-                new Object[]{"90f0ed29-a616-4ce0-b4ef-108391f5d90e", Collections.EMPTY_LIST, null, null, ONLINE, getTemplateName(DWP_RESPONSE_RECEIVED_NOTIFICATION), null},
                 new Object[]{"5e7f89cb-e9d2-4830-95f9-944b033f9227", Arrays.asList("8336c537-7cbe-4232-912e-64dd10d20ad1", "e7868511-3a1f-4b8e-8bb3-b36c2bd99799"), null, null, ORAL, getTemplateName(EVIDENCE_RECEIVED_NOTIFICATION, JOINT_PARTY), null},
                 new Object[]{"06ac4203-8d6c-4c5b-a173-57058f5f95a3", Arrays.asList("8336c537-7cbe-4232-912e-64dd10d20ad1", "e7868511-3a1f-4b8e-8bb3-b36c2bd99799"), null, null, PAPER, getTemplateName(EVIDENCE_RECEIVED_NOTIFICATION, JOINT_PARTY), null},
                 new Object[]{"366e5970-cbce-45d2-ba78-fb12e4c2aac1", Collections.EMPTY_LIST, null, null, ORAL, getTemplateName(POSTPONEMENT_NOTIFICATION, JOINT_PARTY), null},
@@ -335,7 +333,6 @@ public class NotificationConfigTest {
                 new Object[]{"2c5644db-1f7b-429b-b10a-8b23a80ed26a", Arrays.asList("f20ffcb1-c5f0-4bff-b2d1-a1094f8014e6"), "8b11f3f4-6452-4a35-93d8-a94996af6499", null, ORAL, getTemplateName(DWP_RESPONSE_RECEIVED_NOTIFICATION, APPOINTEE), null},
                 new Object[]{"0d844af4-b390-42d7-94d5-4fd1ae9388d9", Arrays.asList("9fe3a4f1-b8e2-4aed-aafb-6360d6ba2874"), "419beb1c-4f26-45e7-8db3-69bfe5e9224d", null, ORAL, getTemplateName(DWP_RESPONSE_RECEIVED_NOTIFICATION, REPRESENTATIVE), null},
                 new Object[]{"ffa58120-24e4-44cb-8026-0becf1416684", Arrays.asList("f0444380-a8a4-4805-b9c2-563d1bd199cd"), null, null, ORAL, getTemplateName(DWP_UPLOAD_RESPONSE_NOTIFICATION, JOINT_PARTY), null},
-                new Object[]{"90f0ed29-a616-4ce0-b4ef-108391f5d90e", Collections.EMPTY_LIST, null, null, ONLINE, getTemplateName(DWP_RESPONSE_RECEIVED_NOTIFICATION), null},
                 new Object[]{"c507a630-9e6a-43c9-8e39-dcabdcffaf53", Arrays.asList("56a6c0c8-a251-482d-be83-95a7a1bf528c"), null, null, PAPER, getTemplateName(EVIDENCE_REMINDER_NOTIFICATION, JOINT_PARTY), null},
                 new Object[]{"c507a630-9e6a-43c9-8e39-dcabdcffaf53", Arrays.asList("56a6c0c8-a251-482d-be83-95a7a1bf528c"), null, null, PAPER, getTemplateName(EVIDENCE_REMINDER_NOTIFICATION, APPELLANT), null},
                 new Object[]{"c507a630-9e6a-43c9-8e39-dcabdcffaf53", Arrays.asList("56a6c0c8-a251-482d-be83-95a7a1bf528c"), null, null, PAPER, getTemplateName(EVIDENCE_REMINDER_NOTIFICATION, APPOINTEE), null},

@@ -27,7 +27,7 @@
         <cve>CVE-2020-10663</cve>
         <cve>CVE-2020-7712</cve>
     </suppress>
-    <suppress until="2021-03-01">
+    <suppress until="2021-04-01">
         <notes><![CDATA[
          file name: sscs-pdf-email-common-1.4.14.jar
          Jquery included from SpringCloud. We are on latest release awaiting patch (Hoxton SR8)
@@ -37,14 +37,14 @@
         <cve>CVE-2020-11022</cve>
         <cve>CVE-2020-11023</cve>
     </suppress>
-    <suppress until="2021-03-01">
+    <suppress until="2021-04-01">
         <notes><![CDATA[
          file name: kotlin-stdlib-common-1.4.0.jar
         ]]></notes>
         <gav regex="true">^org\.jetbrains\.kotlin:*:.*$</gav>
         <cve>CVE-2020-15824</cve>
     </suppress>
-   <suppress until="2021-03-01">
+   <suppress until="2021-04-01">
         <notes><![CDATA[
          file name: kotlin-stdlib-*
          Kotlin claim to have fixed in 1.4.21 but CVE not updated yet

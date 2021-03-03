@@ -434,13 +434,6 @@ notification:
         docmosisId: TB-SCS-GNO-ENG-00582.docx
       joint_party:
         docmosisId: TB-SCS-GNO-ENG-00582.docx
-    online:
-      responseReceived:
-        emailId: 90f0ed29-a616-4ce0-b4ef-108391f5d90e
-      dwpUploadResponse:
-        emailId: 90f0ed29-a616-4ce0-b4ef-108391f5d90e
-      evidenceReceived:
-        emailId: 0ac422c2-1585-4364-a6f0-4f42c43f85c5
     paper:
       responseReceived:
         appellant:
@@ -855,13 +848,6 @@ notification:
         docmosisId: TB-SCS-GNO-WEL-00602.docx
       joint_party:
         docmosisId: TB-SCS-GNO-WEL-00602.docx
-    online:
-      responseReceived:
-        emailId: 90f0ed29-a616-4ce0-b4ef-108391f5d90e
-      dwpUploadResponse:
-        emailId: 90f0ed29-a616-4ce0-b4ef-108391f5d90e
-      evidenceReceived:
-        emailId: 0ac422c2-1585-4364-a6f0-4f42c43f85c5
     paper:
       responseReceived:
         appellant:
