@@ -1031,10 +1031,10 @@ retry:
     3: ${RETRY_DELAY_3:1800}
 
 pdf-service:
-  uri: ${PDF_SERVICE_BASE_URL:https://docmosis-development.platform.hmcts.net/rs/render}
+  uri: ${PDF_SERVICE_BASE_URL:https://docmosis.aat.platform.hmcts.net/rs/render}
   accessKey: ${PDF_SERVICE_ACCESS_KEY:}
   health:
-    uri: ${PDF_SERVICE_HEALTH_URL:https://docmosis-development.platform.hmcts.net/rs/status}
+    uri: ${PDF_SERVICE_HEALTH_URL:https://docmosis.aat.platform.hmcts.net/rs/status}
   hmctsImgKey: hmcts2
   hmctsImgVal: "[userImage:hmcts.png]"
   hmctsWelshImgKey: welshhmcts2
