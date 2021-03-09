@@ -310,6 +310,10 @@ public class SendNotificationService {
             return getDocumentForType(newSscsCaseData.getLatestWelshDocumentForDocumentType(DECISION_NOTICE).orElse(null));
         } else if (DIRECTION_ISSUED_WELSH.equals(notificationEventType)) {
             return getDocumentForType(newSscsCaseData.getLatestWelshDocumentForDocumentType(DIRECTION_NOTICE).orElse(null));
+        } else if (PROCESS_AUDIO_VIDEO.equals(notificationEventType)) {
+            return getDocumentForType(newSscsCaseData.getLatestDocumentForDocumentType(AUDIO_VIDEO_NOTICE));
+        } else if (PROCESS_AUDIO_VIDEO_WELSH.equals(notificationEventType)) {
+            return getDocumentForType(newSscsCaseData.getLatestWelshDocumentForDocumentType(AUDIO_VIDEO_NOTICE).orElse(null));
         }
         return null;
     }

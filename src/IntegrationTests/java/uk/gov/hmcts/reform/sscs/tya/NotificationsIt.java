@@ -1770,6 +1770,34 @@ public class NotificationsIt {
     private Object[] generateBundledLetterNotificationScenarios() {
         return new Object[]{
             new Object[]{
+                    PROCESS_AUDIO_VIDEO,
+                    "paper",
+                    false,
+                    false,
+                    "1"
+            },
+            new Object[]{
+                    PROCESS_AUDIO_VIDEO,
+                    "oral",
+                    false,
+                    false,
+                    "1"
+            },
+            new Object[]{
+                    PROCESS_AUDIO_VIDEO_WELSH,
+                    "paper",
+                    false,
+                    false,
+                    "1"
+            },
+            new Object[]{
+                    PROCESS_AUDIO_VIDEO_WELSH,
+                    "oral",
+                    false,
+                    false,
+                    "1"
+            },
+            new Object[]{
                     STRUCK_OUT,
                     "paper",
                     false,
