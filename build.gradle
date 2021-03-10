@@ -7,7 +7,7 @@ plugins {
     id 'io.spring.dependency-management' version '1.0.11.RELEASE'
     id 'org.springframework.boot' version '2.3.5.RELEASE'
     id 'uk.gov.hmcts.java' version '0.12.5'
-    id 'org.owasp.dependencycheck' version '6.1.1'
+    id 'org.owasp.dependencycheck' version '6.1.2'
     id 'com.github.ben-manes.versions' version '0.36.0'
     id 'net.ltgt.apt' version '0.21'
     id "org.flywaydb.flyway" version "7.3.2"
@@ -299,7 +299,7 @@ dependencies {
     compile group: 'uk.gov.hmcts.reform', name: 'sscs-job-scheduler', version: '1.5.3'
     compile group: 'uk.gov.hmcts.reform', name: 'service-auth-provider-client', version: '3.1.4'
     compile group: 'uk.gov.hmcts.reform', name: 'sscs-common', version: '4.2.23-RC-SSCS-8752-3'
-    compile group: 'uk.gov.hmcts.reform', name: 'sscs-pdf-email-common', version: '1.4.24'
+    compile group: 'uk.gov.hmcts.reform', name: 'sscs-pdf-email-common', version: '1.4.25'
 
     compile group: 'uk.gov.service.notify', name: 'notifications-java-client', version: '3.17.0-RELEASE'
     compile group: 'com.squareup.okhttp3', name: 'okhttp', version: '4.9.1'
