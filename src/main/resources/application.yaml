@@ -996,7 +996,7 @@ reminder:
 
 outOfHours:
   startHour: ${HOURS_START_TIME:9}
-  endHour: ${HOURS_END_TIME:17}
+  endHour: ${HOURS_END_TIME:20}
 
 feign:
   client:

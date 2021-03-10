@@ -767,7 +767,7 @@ public class SendNotificationServiceTest {
                 .build());
 
         documents.add(SscsDocument.builder().value(
-                SscsDocumentDetails.builder().documentType(DocumentType.AUDIO_VIDEO_NOTICE.getValue())
+                SscsDocumentDetails.builder().documentType(DocumentType.AUDIO_VIDEO_EVIDENCE_DIRECTION_NOTICE.getValue())
                         .documentLink(DocumentLink.builder().documentUrl("testUrl5").build())
                         .documentDateAdded(LocalDate.now().minusDays(1).toString())
                         .build())
@@ -804,7 +804,7 @@ public class SendNotificationServiceTest {
                 .build());
 
         welshDocuments.add(SscsWelshDocument.builder().value(
-                SscsWelshDocumentDetails.builder().documentType(DocumentType.AUDIO_VIDEO_NOTICE.getValue())
+                SscsWelshDocumentDetails.builder().documentType(DocumentType.AUDIO_VIDEO_EVIDENCE_DIRECTION_NOTICE.getValue())
                         .documentLink(DocumentLink.builder().documentUrl("testUrl5").build())
                         .documentDateAdded(LocalDate.now().minusDays(1).toString())
                         .build())
