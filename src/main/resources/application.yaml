@@ -1170,6 +1170,7 @@ job.scheduler:
           URL: ${spring.datasource.url}
           user: ${spring.datasource.username}
           password: ${spring.datasource.password}
+          maxConnections: 20
       jobStore:
         class: org.quartz.impl.jdbcjobstore.JobStoreTX
         isClustered: true
@@ -1177,7 +1178,7 @@ job.scheduler:
         dataSource: jobscheduler
       threadPool:
         class: org.quartz.simpl.SimpleThreadPool
-        threadCount: 8
+        threadCount: 16
       plugin:
         triggHistory:
           class: org.quartz.plugins.history.LoggingTriggerHistoryPlugin
