@@ -83,7 +83,7 @@ public class NotificationControllerTest {
     @Test
     public void shouldCreateAndSendNotificationForSscsCaseData() {
         notificationController.sendNotification("", json);
-        verify(notificationService).manageNotificationAndSubscription(new CcdNotificationWrapper(any()));
+        verify(notificationService).manageNotificationAndSubscription(new CcdNotificationWrapper(any()), eq(false));
     }
 
     private JsonNode hasFields(String eventType, long caseDetailsId) {

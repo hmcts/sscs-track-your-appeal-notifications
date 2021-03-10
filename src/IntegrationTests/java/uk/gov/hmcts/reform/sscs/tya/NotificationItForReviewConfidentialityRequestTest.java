@@ -14,7 +14,7 @@ import org.junit.Test;
 import uk.gov.hmcts.reform.sscs.ccd.domain.DatedRequestOutcome;
 import uk.gov.hmcts.reform.sscs.ccd.domain.RequestOutcome;
 
-public class NotificationItForReviewConfidentialityRequestTest extends NotificationsIt {
+public class NotificationItForReviewConfidentialityRequestTest extends NotificationsItBase {
 
     @NamedParameters("grantedOrRefused")
     @SuppressWarnings("unused")

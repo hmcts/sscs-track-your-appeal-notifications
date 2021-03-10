@@ -31,7 +31,7 @@ public class NotificationServiceForAdminAppealWithdrawalTest extends Notificatio
         SscsCaseDataWrapper sscsCaseDataWrapper = initTestData();
         sscsCaseDataWrapper.getNewSscsCaseData().setCreatedInGapsFrom(READY_TO_LIST.getId());
         when(getPdfLetterService().generateLetter(any(), any(), any())).thenReturn("%PDF".getBytes());
-        getNotificationService().manageNotificationAndSubscription(new CcdNotificationWrapper(sscsCaseDataWrapper));
+        getNotificationService().manageNotificationAndSubscription(new CcdNotificationWrapper(sscsCaseDataWrapper), false);
 
         verify(getNotificationSender(), times(0)).sendEmail(any(), any(), any(), any(), any(), any());
         verify(getNotificationSender(), times(0))

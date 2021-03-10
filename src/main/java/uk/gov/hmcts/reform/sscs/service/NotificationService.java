@@ -11,7 +11,6 @@ import static uk.gov.hmcts.reform.sscs.service.NotificationUtils.isFallbackLette
 import static uk.gov.hmcts.reform.sscs.service.NotificationUtils.isOkToSendNotification;
 import static uk.gov.hmcts.reform.sscs.service.NotificationValidService.isMandatoryLetterEventType;
 
-import java.time.LocalDateTime;
 import java.time.ZonedDateTime;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -66,7 +65,7 @@ public class NotificationService {
 
     private final boolean covid19Feature;
 
-    public void manageNotificationAndSubscription(NotificationWrapper notificationWrapper) {
+    public void manageNotificationAndSubscription(NotificationWrapper notificationWrapper, boolean fromReminderService) {
         NotificationEventType notificationType = notificationWrapper.getNotificationType();
         final String caseId = notificationWrapper.getCaseId();
 
@@ -78,10 +77,9 @@ public class NotificationService {
         log.info("Notification event triggered {} for case id {}", notificationType.getId(), caseId);
 
         if (notificationType.isAllowOutOfHours() || !outOfHoursCalculator.isItOutOfHours()) {
-            if (notificationType.isToBeDelayed() && nonNull(notificationWrapper.getCreatedDate())
-                    && notificationWrapper.getCreatedDate()
-                    .plusSeconds(notificationType.getDelayInSeconds())
-                    .isAfter(LocalDateTime.now())) {
+            if (notificationType.isToBeDelayed()
+                    && nonNull(notificationWrapper.getNewSscsCaseData().getCaseCreated())
+                    && !fromReminderService) {
                 log.info("Notification event {} is delayed and scheduled for case id {}", notificationType.getId(), caseId);
                 notificationHandler.scheduleNotification(notificationWrapper, ZonedDateTime.now().plusSeconds(notificationType.getDelayInSeconds()));
             } else {
@@ -148,6 +146,10 @@ public class NotificationService {
                 wrapper.setNotificationType(DIRECTION_ISSUED_WELSH);
                 wrapper.setNotificationEventTypeOverridden(true);
             }
+        } else if (DRAFT_TO_VALID_APPEAL_CREATED.equals(wrapper.getNotificationType())) {
+            wrapper.setNotificationType(VALID_APPEAL_CREATED);
+        } else if (DRAFT_TO_NON_COMPLIANT_NOTIFICATION.equals(wrapper.getNotificationType())) {
+            wrapper.setNotificationType(NON_COMPLIANT_NOTIFICATION);
         }
     }
 

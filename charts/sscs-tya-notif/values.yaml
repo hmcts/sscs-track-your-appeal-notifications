@@ -67,3 +67,4 @@ java:
     PDF_SERVICE_HEALTH_URL: https://docmosis.aat.platform.hmcts.net/rs/status
     PDF_SERVICE_BASE_URL: https://docmosis.aat.platform.hmcts.net/rs/render
     RUN_DB_MIGRATION_ON_STARTUP: false
+    CREATE_REMINDER_TEST_ENDPOINT: false

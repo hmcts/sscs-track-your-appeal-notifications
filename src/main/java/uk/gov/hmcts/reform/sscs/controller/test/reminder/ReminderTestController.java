@@ -1,11 +1,13 @@
-package uk.gov.hmcts.reform.sscs.controller;
+package uk.gov.hmcts.reform.sscs.controller.test.reminder;
 
-import static org.springframework.util.MimeTypeUtils.APPLICATION_JSON_VALUE;
 import static uk.gov.hmcts.reform.sscs.domain.notify.NotificationEventType.getNotificationByCcdEvent;
 
+import io.swagger.annotations.ApiOperation;
 import java.time.LocalDateTime;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
+import org.springframework.util.MimeTypeUtils;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestHeader;
@@ -25,7 +27,8 @@ import uk.gov.hmcts.reform.sscs.service.NotificationService;
 
 @RestController
 @Slf4j
-public class NotificationController {
+@ConditionalOnProperty("create_reminder_test_endpoint")
+public class ReminderTestController {
 
     private final NotificationService notificationService;
     private final AuthorisationService authorisationService;
@@ -34,7 +37,7 @@ public class NotificationController {
     private final IdamService idamService;
 
     @Autowired
-    public NotificationController(NotificationService notificationService,
+    public ReminderTestController(NotificationService notificationService,
                                   AuthorisationService authorisationService,
                                   CcdService ccdService,
                                   SscsCaseCallbackDeserializer deserializer,
@@ -46,8 +49,11 @@ public class NotificationController {
         this.idamService = idamService;
     }
 
-    @PostMapping(value = "/send", produces = APPLICATION_JSON_VALUE)
-    public void sendNotification(
+    @ApiOperation(value = "Send reminder notification test endpoint",
+            notes = "Test endpoint to simulate the response that is received when reminder service executes"
+    )
+    @PostMapping(value = "/reminder", produces = MimeTypeUtils.APPLICATION_JSON_VALUE)
+    public void reminder(
             @RequestHeader(AuthorisationService.SERVICE_AUTHORISATION_HEADER) String serviceAuthHeader,
             @RequestBody String message) {
         try {
@@ -56,17 +62,17 @@ public class NotificationController {
             CaseDetails<SscsCaseData> caseDetailsBefore = callback.getCaseDetailsBefore().orElse(null);
 
             SscsCaseDataWrapper sscsCaseDataWrapper = buildSscsCaseDataWrapper(
-                callback.getCaseDetails().getCaseData(),
-                caseDetailsBefore != null ? caseDetailsBefore.getCaseData() : null,
-                getNotificationByCcdEvent(callback.getEvent()),
-                callback.getCaseDetails().getCreatedDate(),
-                callback.getCaseDetails().getState());
+                    callback.getCaseDetails().getCaseData(),
+                    caseDetailsBefore != null ? caseDetailsBefore.getCaseData() : null,
+                    getNotificationByCcdEvent(callback.getEvent()),
+                    callback.getCaseDetails().getCreatedDate(),
+                    callback.getCaseDetails().getState());
 
-            log.info("Ccd Response received for case id: {} , {}", sscsCaseDataWrapper.getNewSscsCaseData().getCcdCaseId(), sscsCaseDataWrapper.getNotificationEventType());
+            log.info("Test endpoint: Ccd Response received for case id: {} , {}", sscsCaseDataWrapper.getNewSscsCaseData().getCcdCaseId(), sscsCaseDataWrapper.getNotificationEventType());
 
             callback.getCaseDetails().getCreatedDate();
             authorisationService.authorise(serviceAuthHeader);
-            notificationService.manageNotificationAndSubscription(new CcdNotificationWrapper(sscsCaseDataWrapper), false);
+            notificationService.manageNotificationAndSubscription(new CcdNotificationWrapper(sscsCaseDataWrapper), true);
         } catch (Exception e) {
             log.info("Exception thrown", e);
             throw e;
@@ -80,5 +86,4 @@ public class NotificationController {
                 .notificationEventType(event)
                 .state(state).build();
     }
-
 }

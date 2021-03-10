@@ -51,15 +51,15 @@ public class FilterNotificationsEventsHandlerTest {
             "DWP_APPEAL_LAPSED_NOTIFICATION", "DWP_RESPONSE_RECEIVED_NOTIFICATION",
             "DWP_UPLOAD_RESPONSE_NOTIFICATION", "EVIDENCE_RECEIVED_NOTIFICATION",
             "HEARING_BOOKED_NOTIFICATION", "ISSUE_ADJOURNMENT_NOTICE", "ISSUE_FINAL_DECISION",
-            "NON_COMPLIANT_NOTIFICATION", "POSTPONEMENT_NOTIFICATION", "REISSUE_DOCUMENT",
+            "NON_COMPLIANT_NOTIFICATION", "DRAFT_TO_NON_COMPLIANT_NOTIFICATION", "POSTPONEMENT_NOTIFICATION", "REISSUE_DOCUMENT",
             "REQUEST_INFO_INCOMPLETE", "RESEND_APPEAL_CREATED_NOTIFICATION", "STRUCK_OUT",
-            "SUBSCRIPTION_UPDATED_NOTIFICATION", "VALID_APPEAL_CREATED", "DIRECTION_ISSUED_WELSH",
+            "SUBSCRIPTION_UPDATED_NOTIFICATION", "VALID_APPEAL_CREATED", "DRAFT_TO_VALID_APPEAL_CREATED", "DIRECTION_ISSUED_WELSH",
             "DECISION_ISSUED_WELSH", "REVIEW_CONFIDENTIALITY_REQUEST", "JOINT_PARTY_ADDED"})
     public void willHandleEvents(NotificationEventType notificationEventType) {
         SscsCaseDataWrapper callback = SscsCaseDataWrapper.builder().notificationEventType(notificationEventType).build();
         assertTrue(handler.canHandle(callback));
         handler.handle(callback);
-        verify(notificationService).manageNotificationAndSubscription(eq(new CcdNotificationWrapper(callback)));
+        verify(notificationService).manageNotificationAndSubscription(eq(new CcdNotificationWrapper(callback)), eq(false));
         verifyNoInteractions(retryNotificationService);
     }
 
@@ -80,7 +80,7 @@ public class FilterNotificationsEventsHandlerTest {
     @Test(expected = NotificationServiceException.class)
     public void shouldCallToRescheduleNotificationWhenErrorIsNotificationServiceExceptionError() {
         SscsCaseDataWrapper callback = SscsCaseDataWrapper.builder().notificationEventType(VALID_APPEAL_CREATED).build();
-        doThrow(new NotificationServiceException("123", new RuntimeException("error"))).when(notificationService).manageNotificationAndSubscription(any());
+        doThrow(new NotificationServiceException("123", new RuntimeException("error"))).when(notificationService).manageNotificationAndSubscription(any(), eq(false));
         try {
             handler.handle(callback);
         } catch (NotificationServiceException e) {
@@ -92,7 +92,7 @@ public class FilterNotificationsEventsHandlerTest {
     @Test(expected = RuntimeException.class)
     public void shouldRescheduleNotificationWhenErrorIsNotANotificationServiceException() {
         SscsCaseDataWrapper callback = SscsCaseDataWrapper.builder().notificationEventType(VALID_APPEAL_CREATED).build();
-        doThrow(new RuntimeException("error")).when(notificationService).manageNotificationAndSubscription(any());
+        doThrow(new RuntimeException("error")).when(notificationService).manageNotificationAndSubscription(any(), eq(false));
         try {
             handler.handle(callback);
         } catch (RuntimeException e) {

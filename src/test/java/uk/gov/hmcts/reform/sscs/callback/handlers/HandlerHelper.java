@@ -1,6 +1,5 @@
 package uk.gov.hmcts.reform.sscs.callback.handlers;
 
-import java.time.LocalDateTime;
 import uk.gov.hmcts.reform.sscs.ccd.domain.SscsCaseData;
 import uk.gov.hmcts.reform.sscs.ccd.domain.State;
 import uk.gov.hmcts.reform.sscs.domain.SscsCaseDataWrapper;
@@ -17,7 +16,6 @@ public class HandlerHelper {
                 .newSscsCaseData(sscsCaseData)
                 .oldSscsCaseData(sscsCaseData)
                 .notificationEventType(eventType)
-                .createdDate(LocalDateTime.now().minusMinutes(10))
                 .state(state).build();
     }
 }

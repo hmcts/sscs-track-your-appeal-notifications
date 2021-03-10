@@ -878,6 +878,42 @@ public class PersonalisationTest {
     }
 
     @Test
+    public void givenCaseWithCreatedDate_thenUseCreatedDate() {
+        SscsCaseData response = SscsCaseData.builder()
+                .ccdCaseId(CASE_ID)
+                .appeal(Appeal.builder().benefitType(BenefitType.builder().code("PIP").build())
+                        .appellant(Appellant.builder().name(name).build())
+                        .build())
+                .subscriptions(subscriptions)
+                .caseCreated(LocalDate.now().minusDays(1).toString())
+                .build();
+
+        Map result = personalisation.create(SscsCaseDataWrapper.builder()
+                        .newSscsCaseData(response).notificationEventType(APPEAL_RECEIVED_NOTIFICATION).build(),
+                new SubscriptionWithType(subscriptions.getAppellantSubscription(), APPELLANT));
+
+        assertEquals(LocalDate.now().minusDays(1).toString(), result.get(CREATED_DATE));
+    }
+
+    @Test
+    public void givenCaseWithCreatedDateSetToNull_thenUseTodaysDateForCreatedDate() {
+        SscsCaseData response = SscsCaseData.builder()
+                .ccdCaseId(CASE_ID)
+                .appeal(Appeal.builder().benefitType(BenefitType.builder().code("PIP").build())
+                        .appellant(Appellant.builder().name(name).build())
+                        .build())
+                .subscriptions(subscriptions)
+                .caseCreated(null)
+                .build();
+
+        Map result = personalisation.create(SscsCaseDataWrapper.builder()
+                        .newSscsCaseData(response).notificationEventType(APPEAL_RECEIVED_NOTIFICATION).build(),
+                new SubscriptionWithType(subscriptions.getAppellantSubscription(), APPELLANT));
+
+        assertEquals(LocalDate.now().toString(), result.get(CREATED_DATE));
+    }
+
+    @Test
     public void setJudgeDecisionAppealToProceedEventData() {
         List<Event> events = new ArrayList<>();
         events.add(Event.builder().value(EventDetails.builder().date(DATE).type(JUDGE_DECISION_APPEAL_TO_PROCEED.getId()).build()).build());

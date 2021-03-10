@@ -33,11 +33,7 @@ import java.time.LocalDateTime;
 import java.time.ZonedDateTime;
 import java.time.format.DateTimeFormatter;
 import java.time.temporal.ChronoUnit;
-import java.util.Arrays;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.Optional;
+import java.util.*;
 import java.util.function.Consumer;
 import java.util.stream.Collectors;
 import lombok.extern.slf4j.Slf4j;
@@ -211,10 +207,12 @@ public class Personalisation<E extends NotificationWrapper> {
 
         personalisation.put(FIRST_TIER_AGENCY_ACRONYM, DWP_ACRONYM);
         personalisation.put(FIRST_TIER_AGENCY_FULL_NAME, DWP_FUL_NAME);
-        personalisation.put(CREATED_DATE, ccdResponse.getCaseCreated());
-        personalisation.put(CREATED_DATE_WELSH, ccdResponse.getCaseCreated());
+
         LocalDate createdDate = LocalDate.parse(Optional.ofNullable(ccdResponse.getCaseCreated()).orElse(LocalDate.now().toString()));
         translateToWelshDate(createdDate, ccdResponse, value -> personalisation.put(CREATED_DATE_WELSH, value));
+
+        personalisation.put(CREATED_DATE, createdDate.toString());
+        personalisation.put(CREATED_DATE_WELSH, createdDate.toString());
 
         personalisation.put(JOINT, subscriptionWithType.getSubscriptionType().equals(JOINT_PARTY) ? JOINT_TEXT_WITH_A_SPACE : EMPTY);
 
