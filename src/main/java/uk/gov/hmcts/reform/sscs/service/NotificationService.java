@@ -1,6 +1,5 @@
 package uk.gov.hmcts.reform.sscs.service;
 
-import static java.util.Objects.nonNull;
 import static uk.gov.hmcts.reform.sscs.ccd.domain.Benefit.getBenefitByCode;
 import static uk.gov.hmcts.reform.sscs.ccd.domain.EventType.SUBSCRIPTION_UPDATED;
 import static uk.gov.hmcts.reform.sscs.config.SubscriptionType.*;
@@ -77,9 +76,7 @@ public class NotificationService {
         log.info("Notification event triggered {} for case id {}", notificationType.getId(), caseId);
 
         if (notificationType.isAllowOutOfHours() || !outOfHoursCalculator.isItOutOfHours()) {
-            if (notificationType.isToBeDelayed()
-                    && nonNull(notificationWrapper.getNewSscsCaseData().getCaseCreated())
-                    && !fromReminderService) {
+            if (notificationType.isToBeDelayed() && !fromReminderService) {
                 log.info("Notification event {} is delayed and scheduled for case id {}", notificationType.getId(), caseId);
                 notificationHandler.scheduleNotification(notificationWrapper, ZonedDateTime.now().plusSeconds(notificationType.getDelayInSeconds()));
             } else {

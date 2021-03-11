@@ -206,7 +206,7 @@ public class NotificationServiceTest {
                 new Reference(),
                 null));
 
-        notificationService.manageNotificationAndSubscription(ccdNotificationWrapper, false);
+        notificationService.manageNotificationAndSubscription(ccdNotificationWrapper, true);
 
         ArgumentCaptor<SubscriptionWithType> subscriptionWithTypeCaptor = ArgumentCaptor.forClass(SubscriptionWithType.class);
         then(factory).should(times(wantedNumberOfFactoryCreateCalls))
@@ -286,7 +286,7 @@ public class NotificationServiceTest {
                 new Reference(),
                 null));
 
-        notificationService.manageNotificationAndSubscription(ccdNotificationWrapper, false);
+        notificationService.manageNotificationAndSubscription(ccdNotificationWrapper, true);
 
         ArgumentCaptor<SubscriptionWithType> subscriptionWithTypeCaptor = ArgumentCaptor.forClass(SubscriptionWithType.class);
         then(factory).should(times(expectedSubscriptionTypes.length))
@@ -340,7 +340,7 @@ public class NotificationServiceTest {
                 new Reference(),
                 null));
 
-        notificationService.manageNotificationAndSubscription(ccdNotificationWrapper, false);
+        notificationService.manageNotificationAndSubscription(ccdNotificationWrapper, true);
 
         ArgumentCaptor<SubscriptionWithType> subscriptionWithTypeCaptor = ArgumentCaptor.forClass(SubscriptionWithType.class);
         then(factory).should(times(expectedSubscriptionTypes.length))
@@ -408,7 +408,7 @@ public class NotificationServiceTest {
                 new Reference(),
                 null));
 
-        notificationService.manageNotificationAndSubscription(ccdNotificationWrapper, false);
+        notificationService.manageNotificationAndSubscription(ccdNotificationWrapper, true);
 
         ArgumentCaptor<SubscriptionWithType> subscriptionWithTypeCaptor = ArgumentCaptor.forClass(SubscriptionWithType.class);
         then(factory).should(times(expectedSubscriptionTypes.length))
@@ -2027,7 +2027,7 @@ public class NotificationServiceTest {
 
         when(factory.create(ccdNotificationWrapper, getSubscriptionWithType(ccdNotificationWrapper))).thenReturn(notification);
 
-        getNotificationService().manageNotificationAndSubscription(ccdNotificationWrapper, false);
+        getNotificationService().manageNotificationAndSubscription(ccdNotificationWrapper, true);
 
         verify(notificationHandler, times(1)).sendNotification(eq(ccdNotificationWrapper), eq(docmosisId), eq(LETTER), any(NotificationHandler.SendNotification.class));
 
@@ -2246,7 +2246,7 @@ public class NotificationServiceTest {
         byte[] sampleDirectionCoversheet = IOUtils.toByteArray(getClass().getClassLoader().getResourceAsStream("pdfs/direction-notice-coversheet-sample.pdf"));
         given(pdfLetterService.generateLetter(any(), any(), any())).willReturn(sampleDirectionCoversheet);
 
-        notificationService.manageNotificationAndSubscription(ccdNotificationWrapper, false);
+        notificationService.manageNotificationAndSubscription(ccdNotificationWrapper, true);
 
         assertEquals(sentNotificationType, ccdNotificationWrapperCaptor.getValue().getNotificationType());
 
