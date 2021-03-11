@@ -1215,5 +1215,3 @@ welsh-months:
   10: "Hydref"
   11: "Tachwedd"
   12: "Rhagfyr"
-
-create_reminder_test_endpoint: ${CREATE_REMINDER_TEST_ENDPOINT:true}

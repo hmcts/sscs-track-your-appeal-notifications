@@ -1,4 +1,4 @@
-package uk.gov.hmcts.reform.sscs.controller.test.reminder;
+package uk.gov.hmcts.reform.sscs.controller;
 
 import static uk.gov.hmcts.reform.sscs.domain.notify.NotificationEventType.getNotificationByCcdEvent;
 
@@ -27,7 +27,6 @@ import uk.gov.hmcts.reform.sscs.service.NotificationService;
 
 @RestController
 @Slf4j
-@ConditionalOnProperty("create_reminder_test_endpoint")
 public class ReminderTestController {
 
     private final NotificationService notificationService;

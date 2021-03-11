@@ -33,6 +33,5 @@ java:
     HOURS_START_TIME: 0
     HOURS_END_TIME: 23
     RUN_DB_MIGRATION_ON_STARTUP: true
-    CREATE_REMINDER_TEST_ENDPOINT: false
   postgresql:
     enabled: true
