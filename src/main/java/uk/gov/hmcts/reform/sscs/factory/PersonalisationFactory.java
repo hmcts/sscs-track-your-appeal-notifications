@@ -25,6 +25,8 @@ import static uk.gov.hmcts.reform.sscs.domain.notify.NotificationEventType.ISSUE
 import static uk.gov.hmcts.reform.sscs.domain.notify.NotificationEventType.ISSUE_FINAL_DECISION_WELSH;
 import static uk.gov.hmcts.reform.sscs.domain.notify.NotificationEventType.NON_COMPLIANT_NOTIFICATION;
 import static uk.gov.hmcts.reform.sscs.domain.notify.NotificationEventType.POSTPONEMENT_NOTIFICATION;
+import static uk.gov.hmcts.reform.sscs.domain.notify.NotificationEventType.PROCESS_AUDIO_VIDEO;
+import static uk.gov.hmcts.reform.sscs.domain.notify.NotificationEventType.PROCESS_AUDIO_VIDEO_WELSH;
 import static uk.gov.hmcts.reform.sscs.domain.notify.NotificationEventType.REQUEST_INFO_INCOMPLETE;
 import static uk.gov.hmcts.reform.sscs.domain.notify.NotificationEventType.RESEND_APPEAL_CREATED_NOTIFICATION;
 import static uk.gov.hmcts.reform.sscs.domain.notify.NotificationEventType.STRUCK_OUT;
@@ -79,6 +81,8 @@ public class PersonalisationFactory implements Function<NotificationEventType, P
                     || POSTPONEMENT_NOTIFICATION.equals(notificationType)
                     || DWP_RESPONSE_RECEIVED_NOTIFICATION.equals(notificationType)
                     || DWP_UPLOAD_RESPONSE_NOTIFICATION.equals(notificationType)
+                    || PROCESS_AUDIO_VIDEO.equals(notificationType)
+                    || PROCESS_AUDIO_VIDEO_WELSH.equals(notificationType)
                     || DIRECTION_ISSUED.equals(notificationType)
                     || DECISION_ISSUED.equals(notificationType)
                     || DIRECTION_ISSUED_WELSH.equals(notificationType)

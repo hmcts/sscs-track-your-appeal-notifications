@@ -1,6 +1,8 @@
 package uk.gov.hmcts.reform.sscs.service;
 
+import static java.util.Arrays.asList;
 import static java.util.Objects.nonNull;
+import static java.util.Optional.ofNullable;
 import static uk.gov.hmcts.reform.sscs.ccd.domain.Benefit.getBenefitByCode;
 import static uk.gov.hmcts.reform.sscs.ccd.domain.EventType.SUBSCRIPTION_UPDATED;
 import static uk.gov.hmcts.reform.sscs.config.SubscriptionType.*;
@@ -13,6 +15,7 @@ import static uk.gov.hmcts.reform.sscs.service.NotificationValidService.isMandat
 
 import java.time.LocalDateTime;
 import java.time.ZonedDateTime;
+import java.util.List;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
@@ -33,6 +36,8 @@ import uk.gov.hmcts.reform.sscs.utility.PhoneNumbersUtil;
 @Service
 @Slf4j
 public class NotificationService {
+    public static final List<String> PROCESS_AUDIO_VIDEO_ACTIONS_THAT_REQUIRES_NOTICE = asList("issueDirectionsNotice", "excludeEvidence", "includeEvidence");
+
     private final NotificationFactory notificationFactory;
     private final ReminderService reminderService;
     private final NotificationValidService notificationValidService;
@@ -301,9 +306,18 @@ public class NotificationService {
                 return false;
             }
         }
-        if (notificationWrapper.getNewSscsCaseData().isLanguagePreferenceWelsh() && (ISSUE_FINAL_DECISION.equals(notificationType) || DECISION_ISSUED.equals(notificationType) || DIRECTION_ISSUED.equals(notificationType) || ISSUE_ADJOURNMENT_NOTICE.equals(notificationType))) {
+        if (notificationWrapper.getNewSscsCaseData().isLanguagePreferenceWelsh() && (ISSUE_FINAL_DECISION.equals(notificationType) || DECISION_ISSUED.equals(notificationType) || DIRECTION_ISSUED.equals(notificationType) || ISSUE_ADJOURNMENT_NOTICE.equals(notificationType) || PROCESS_AUDIO_VIDEO.equals(notificationType))) {
             log.info(String.format("Cannot complete notification %s as the appeal is Welsh  for caseId %s.",
                     notificationType.getId(), notificationWrapper.getCaseId()));
+            return false;
+        }
+        final String processAudioVisualAction = ofNullable(notificationWrapper.getNewSscsCaseData().getProcessAudioVideoAction())
+                        .map(f -> f.getValue().getCode()).orElse(null);
+
+        if (notificationType.equals(PROCESS_AUDIO_VIDEO)
+                && !PROCESS_AUDIO_VIDEO_ACTIONS_THAT_REQUIRES_NOTICE.contains(processAudioVisualAction)) {
+            log.info(String.format("Cannot complete notification %s since the action %s does not require a notice to be sent for caseId %s.",
+                    notificationType.getId(), processAudioVisualAction, notificationWrapper.getCaseId()));
             return false;
         }
 
