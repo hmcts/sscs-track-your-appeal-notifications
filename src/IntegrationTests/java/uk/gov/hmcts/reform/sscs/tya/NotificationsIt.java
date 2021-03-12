@@ -1735,6 +1735,20 @@ public class NotificationsIt {
                 "0"
             },
             new Object[]{
+                ISSUE_FINAL_DECISION_WELSH,
+                "paper",
+                Collections.emptyList(),
+                Collections.emptyList(),
+                Arrays.asList("TB-SCS-GNO-ENG-00067.docx", "TB-SCS-GNO-ENG-00089.docx"),
+                "no",
+                "no",
+                "no",
+                "no",
+                "0",
+                "0",
+                "0"
+            },
+            new Object[]{
                 ISSUE_ADJOURNMENT_NOTICE,
                 "paper",
                 Collections.emptyList(),
@@ -1950,6 +1964,20 @@ public class NotificationsIt {
                 true,
                 true,
                 "2"
+            },
+            new Object[]{
+                ISSUE_FINAL_DECISION_WELSH,
+                "paper",
+                false,
+                false,
+                "1"
+            },
+            new Object[]{
+                ISSUE_FINAL_DECISION_WELSH,
+                "oral",
+                false,
+                false,
+                "1"
             },
             new Object[]{
                 ISSUE_ADJOURNMENT_NOTICE,
@@ -2713,6 +2741,20 @@ public class NotificationsIt {
                 "0",
                 "0"
             },
+                new Object[]{
+                    ISSUE_FINAL_DECISION_WELSH,
+                    "paper",
+                    Collections.emptyList(),
+                    Collections.emptyList(),
+                    Arrays.asList("TB-SCS-GNO-ENG-00067.docx", "TB-SCS-GNO-ENG-00089.docx"),
+                    "no",
+                    "no",
+                    "no",
+                    "no",
+                    "0",
+                    "0",
+                    "0"
+                },
             new Object[]{
                 ISSUE_ADJOURNMENT_NOTICE,
                 "paper",

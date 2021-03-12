@@ -38,6 +38,7 @@ public class FilterNotificationsEventsHandler implements CallbackHandler {
             ISSUE_ADJOURNMENT_NOTICE,
             ISSUE_ADJOURNMENT_NOTICE_WELSH,
             ISSUE_FINAL_DECISION,
+            ISSUE_FINAL_DECISION_WELSH,
             NON_COMPLIANT_NOTIFICATION,
             POSTPONEMENT_NOTIFICATION,
             REISSUE_DOCUMENT,

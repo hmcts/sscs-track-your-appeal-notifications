@@ -22,6 +22,7 @@ import static uk.gov.hmcts.reform.sscs.domain.notify.NotificationEventType.HMCTS
 import static uk.gov.hmcts.reform.sscs.domain.notify.NotificationEventType.ISSUE_ADJOURNMENT_NOTICE;
 import static uk.gov.hmcts.reform.sscs.domain.notify.NotificationEventType.ISSUE_ADJOURNMENT_NOTICE_WELSH;
 import static uk.gov.hmcts.reform.sscs.domain.notify.NotificationEventType.ISSUE_FINAL_DECISION;
+import static uk.gov.hmcts.reform.sscs.domain.notify.NotificationEventType.ISSUE_FINAL_DECISION_WELSH;
 import static uk.gov.hmcts.reform.sscs.domain.notify.NotificationEventType.NON_COMPLIANT_NOTIFICATION;
 import static uk.gov.hmcts.reform.sscs.domain.notify.NotificationEventType.POSTPONEMENT_NOTIFICATION;
 import static uk.gov.hmcts.reform.sscs.domain.notify.NotificationEventType.REQUEST_INFO_INCOMPLETE;
@@ -84,6 +85,7 @@ public class PersonalisationFactory implements Function<NotificationEventType, P
                     || DECISION_ISSUED_WELSH.equals(notificationType)
                     || REQUEST_INFO_INCOMPLETE.equals(notificationType)
                     || ISSUE_FINAL_DECISION.equals(notificationType)
+                    || ISSUE_FINAL_DECISION_WELSH.equals(notificationType)
                     || NON_COMPLIANT_NOTIFICATION.equals(notificationType)
                     || ISSUE_ADJOURNMENT_NOTICE.equals(notificationType)
                     || ISSUE_ADJOURNMENT_NOTICE_WELSH.equals(notificationType)

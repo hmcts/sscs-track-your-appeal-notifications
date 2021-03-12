@@ -825,7 +825,7 @@ notification:
         docmosisId: TB-SCS-GNO-WEL-00649.docx
       joint_party:
         docmosisId: TB-SCS-GNO-WEL-00649.docx
-    issueFinalDecision:
+    issueFinalDecisionWelsh:
       appellant:
         docmosisId: TB-SCS-GNO-ENG-00454.docx
       appointee:
@@ -1057,7 +1057,7 @@ pdf-service:
       decisionIssued: 'TB-SCS-GNO-WEL-00479.docx'
       directionIssuedWelsh: 'TB-SCS-GNO-WEL-00479.docx'
       decisionIssuedWelsh: 'TB-SCS-GNO-WEL-00479.docx'
-      issueFinalDecision: 'TB-SCS-GNO-ENG-00012.docx'
+      issueFinalDecisionWelsh: 'TB-SCS-GNO-WEL-00479.docx'
       issueAdjournmentNotice: 'TB-SCS-GNO-ENG-00012.docx'
       validAppealCreated: 'TB-SCS-GNO-WEL-00479.docx'
       dwpUploadResponse: 'TB-SCS-GNO-WEL-00479.docx'
