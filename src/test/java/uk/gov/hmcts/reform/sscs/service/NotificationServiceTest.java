@@ -8,7 +8,7 @@ import static org.mockito.ArgumentMatchers.anyList;
 import static org.mockito.BDDMockito.given;
 import static org.mockito.BDDMockito.then;
 import static org.mockito.Mockito.*;
-import static org.mockito.MockitoAnnotations.initMocks;
+import static org.mockito.MockitoAnnotations.openMocks;
 import static uk.gov.hmcts.reform.sscs.ccd.domain.State.READY_TO_LIST;
 import static uk.gov.hmcts.reform.sscs.config.SubscriptionType.*;
 import static uk.gov.hmcts.reform.sscs.domain.notify.NotificationEventType.*;
@@ -129,7 +129,7 @@ public class NotificationServiceTest {
 
     @Before
     public void setup() {
-        initMocks(this);
+        openMocks(this);
 
         notificationService = getNotificationService();
 
@@ -2114,7 +2114,7 @@ public class NotificationServiceTest {
 
 
     @Test
-    @Parameters({"DIRECTION_ISSUED, Yes", "DECISION_ISSUED, Yes", "ISSUE_ADJOURNMENT_NOTICE, Yes"})
+    @Parameters({"DIRECTION_ISSUED, Yes", "DECISION_ISSUED, Yes", "ISSUE_ADJOURNMENT_NOTICE, Yes", "PROCESS_AUDIO_VIDEO, Yes"})
     public void givenIssueDocumentEventReceivedAndWelshLanguagePref_thenDoNotSendToNotifications(NotificationEventType notificationEventType, @Nullable String languagePrefWelsh) {
         CcdNotificationWrapper ccdNotificationWrapper = buildBaseWrapper(notificationEventType,  APPELLANT_WITH_ADDRESS, Representative.builder().hasRepresentative("no").build(), SscsDocument.builder().value(SscsDocumentDetails.builder().build()).build());
 
@@ -2124,6 +2124,28 @@ public class NotificationServiceTest {
         notificationService.manageNotificationAndSubscription(ccdNotificationWrapper);
 
         verifyNoInteractions(notificationHandler);
+    }
+
+    @Test
+    @Parameters({"issueDirectionsNotice", "excludeEvidence", "includeEvidence"})
+    public void givenProcessAudioVideo_thenProcessNotificationForCertainActions(String action) {
+        CcdNotificationWrapper ccdNotificationWrapper = buildBaseWrapper(PROCESS_AUDIO_VIDEO,  APPELLANT_WITH_ADDRESS, Representative.builder().hasRepresentative("no").build(), SscsDocument.builder().value(SscsDocumentDetails.builder().build()).build());
+        ccdNotificationWrapper.getNewSscsCaseData().setProcessAudioVideoAction(new DynamicList(new DynamicListItem(action, action), null));
+        when(outOfHoursCalculator.isItOutOfHours()).thenReturn(false);
+        Notification notification = new Notification(Template.builder().docmosisTemplateId(LETTER_TEMPLATE_ID).emailTemplateId(null).smsTemplateId(null).build(), Destination.builder().email("test@testing.com").sms("07823456746").build(), null, new Reference(), null);
+        given(factory.create(ccdNotificationWrapperCaptor.capture(), any())).willReturn(notification);
+        notificationService.manageNotificationAndSubscription(ccdNotificationWrapper);
+        verify(reminderService).createReminders(ccdNotificationWrapper);
+    }
+
+    @Test
+    @Parameters({"sendToJudge", "sendToAdmin"})
+    public void givenProcessAudioVideo_thenDoProcessNotificationForCertainActions(String action) {
+        CcdNotificationWrapper ccdNotificationWrapper = buildBaseWrapper(PROCESS_AUDIO_VIDEO,  APPELLANT_WITH_ADDRESS, Representative.builder().hasRepresentative("no").build(), SscsDocument.builder().value(SscsDocumentDetails.builder().build()).build());
+        ccdNotificationWrapper.getNewSscsCaseData().setProcessAudioVideoAction(new DynamicList(new DynamicListItem(action, action), null));
+        when(outOfHoursCalculator.isItOutOfHours()).thenReturn(false);
+        notificationService.manageNotificationAndSubscription(ccdNotificationWrapper);
+        verifyNoInteractions(reminderService);
     }
 
     @Test
