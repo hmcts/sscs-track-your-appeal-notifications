@@ -129,6 +129,9 @@ public class NotificationService {
             if (code.equals(EventType.ISSUE_FINAL_DECISION.getCcdType())) {
                 wrapper.setNotificationType(ISSUE_FINAL_DECISION);
                 wrapper.setNotificationEventTypeOverridden(true);
+            } else if (code.equals(EventType.ISSUE_FINAL_DECISION_WELSH.getCcdType())) {
+                wrapper.setNotificationType(ISSUE_FINAL_DECISION_WELSH);
+                wrapper.setNotificationEventTypeOverridden(true);
             } else if (code.equals(EventType.DECISION_ISSUED.getCcdType())) {
                 wrapper.setNotificationType(DECISION_ISSUED);
                 wrapper.setNotificationEventTypeOverridden(true);

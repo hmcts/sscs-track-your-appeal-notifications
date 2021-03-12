@@ -641,7 +641,7 @@
         }
       }
     },
-    "state": "appealCreated"
+    "state": "dormantAppealState"
   },
   "event_id": "issueFinalDecisionWelsh"
 }
