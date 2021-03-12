@@ -33,7 +33,7 @@ public class DwpResponseReceivedDateExtractor {
                 return Optional.of(event.getValue().getDateTime());
             }
         }
-        LocalTime time = LocalTime.MIN.plusSeconds(rand.nextInt(60 * 60 * 1000));
+        LocalTime time = LocalTime.MIN.plusSeconds(rand.nextInt(60 * 60 * 24));
         return Optional.ofNullable(caseData.getDwpResponseDate()).map(date -> ZonedDateTime.parse(date + "T" + time.toString() + "Z").toInstant().atZone(ZoneId.of(ZONE_ID)));
     }
 
