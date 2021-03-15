@@ -8,6 +8,8 @@ import static uk.gov.hmcts.reform.sscs.domain.notify.NotificationEventType.ISSUE
 import static uk.gov.hmcts.reform.sscs.domain.notify.NotificationEventType.ISSUE_ADJOURNMENT_NOTICE_WELSH;
 import static uk.gov.hmcts.reform.sscs.domain.notify.NotificationEventType.ISSUE_FINAL_DECISION;
 import static uk.gov.hmcts.reform.sscs.domain.notify.NotificationEventType.NON_COMPLIANT_NOTIFICATION;
+import static uk.gov.hmcts.reform.sscs.domain.notify.NotificationEventType.PROCESS_AUDIO_VIDEO;
+import static uk.gov.hmcts.reform.sscs.domain.notify.NotificationEventType.PROCESS_AUDIO_VIDEO_WELSH;
 import static uk.gov.hmcts.reform.sscs.domain.notify.NotificationEventType.REQUEST_INFO_INCOMPLETE;
 import static uk.gov.hmcts.reform.sscs.domain.notify.NotificationEventType.REVIEW_CONFIDENTIALITY_REQUEST;
 import static uk.gov.hmcts.reform.sscs.domain.notify.NotificationEventType.STRUCK_OUT;
@@ -48,7 +50,9 @@ public class DocmosisWithGovNotifyLetterFunctionalTest extends AbstractFunctiona
         int expectedNumberOfLettersIsTwo = 2;
         int expectedNumberOfLettersIsThree = 3;
         return new Object[]{
-           new Object[]{REQUEST_INFO_INCOMPLETE, expectedNumberOfLettersIsThree},
+            new Object[]{PROCESS_AUDIO_VIDEO, expectedNumberOfLettersIsThree},
+            new Object[]{PROCESS_AUDIO_VIDEO_WELSH, expectedNumberOfLettersIsThree},
+            new Object[]{REQUEST_INFO_INCOMPLETE, expectedNumberOfLettersIsThree},
             new Object[]{ISSUE_ADJOURNMENT_NOTICE, expectedNumberOfLettersIsThree},
             new Object[]{ISSUE_ADJOURNMENT_NOTICE_WELSH, expectedNumberOfLettersIsThree},
             new Object[]{STRUCK_OUT, expectedNumberOfLettersIsTwo},
