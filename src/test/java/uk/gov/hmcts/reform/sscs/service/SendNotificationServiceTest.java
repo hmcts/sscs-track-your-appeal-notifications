@@ -766,6 +766,13 @@ public class SendNotificationServiceTest {
                         .build())
                 .build());
 
+        documents.add(SscsDocument.builder().value(
+                SscsDocumentDetails.builder().documentType(DocumentType.AUDIO_VIDEO_EVIDENCE_DIRECTION_NOTICE.getValue())
+                        .documentLink(DocumentLink.builder().documentUrl("testUrl5").build())
+                        .documentDateAdded(LocalDate.now().minusDays(1).toString())
+                        .build())
+                .build());
+
         List<SscsWelshDocument> welshDocuments = new ArrayList<>();
 
         welshDocuments.add(SscsWelshDocument.builder().value(
@@ -792,6 +799,13 @@ public class SendNotificationServiceTest {
         welshDocuments.add(SscsWelshDocument.builder().value(
                 SscsWelshDocumentDetails.builder().documentType(DocumentType.ADJOURNMENT_NOTICE.getValue())
                         .documentLink(DocumentLink.builder().documentUrl("testUrl4").build())
+                        .documentDateAdded(LocalDate.now().minusDays(1).toString())
+                        .build())
+                .build());
+
+        welshDocuments.add(SscsWelshDocument.builder().value(
+                SscsWelshDocumentDetails.builder().documentType(DocumentType.AUDIO_VIDEO_EVIDENCE_DIRECTION_NOTICE.getValue())
+                        .documentLink(DocumentLink.builder().documentUrl("testUrl5").build())
                         .documentDateAdded(LocalDate.now().minusDays(1).toString())
                         .build())
                 .build());
