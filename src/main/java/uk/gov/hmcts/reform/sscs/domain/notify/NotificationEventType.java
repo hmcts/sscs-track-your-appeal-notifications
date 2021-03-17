@@ -41,6 +41,8 @@ public enum NotificationEventType {
     DRAFT_TO_NON_COMPLIANT_NOTIFICATION("draftToNonCompliant", true, true, true, false, false, 0),
     ADMIN_APPEAL_WITHDRAWN("adminAppealWithdrawn", true, true, true, false, false, 0),
     REVIEW_CONFIDENTIALITY_REQUEST("reviewConfidentialityRequest", true, true, true, false, false, 0),
+    PROCESS_AUDIO_VIDEO("processAudioVideo", true, true, true, false, false, 0),
+    PROCESS_AUDIO_VIDEO_WELSH("processAudioVideoWelsh", true, true, true, false, false, 0),
     JOINT_PARTY_ADDED("jointPartyAdded", true, true, true, true, false, 0),
     // Allow out of hours for this event as we rely on the case data to decide who to send to. It could get out of sync if we wait a few hours to send, for example they could try to reissue to 2 parties so this event would be triggered twice.
     // If the reminder service looks the case up from CCD, the original request for who to send the notification to will be lost and the second party would receive the notification twice.

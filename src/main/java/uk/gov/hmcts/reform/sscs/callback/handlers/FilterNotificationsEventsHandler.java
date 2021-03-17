@@ -49,6 +49,8 @@ public class FilterNotificationsEventsHandler implements CallbackHandler {
             VALID_APPEAL_CREATED,
             DRAFT_TO_VALID_APPEAL_CREATED,
             REVIEW_CONFIDENTIALITY_REQUEST,
+            PROCESS_AUDIO_VIDEO,
+            PROCESS_AUDIO_VIDEO_WELSH,
             JOINT_PARTY_ADDED
     ));
     private final NotificationService notificationService;

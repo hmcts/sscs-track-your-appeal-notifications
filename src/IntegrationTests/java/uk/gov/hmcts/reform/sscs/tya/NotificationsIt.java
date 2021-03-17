@@ -9,10 +9,7 @@ import java.io.File;
 import java.io.IOException;
 import java.nio.charset.StandardCharsets;
 import java.time.LocalDate;
-import java.util.Arrays;
-import java.util.Collections;
-import java.util.List;
-import java.util.Objects;
+import java.util.*;
 import javax.servlet.http.HttpServletResponse;
 import junitparams.NamedParameters;
 import junitparams.Parameters;
@@ -134,9 +131,7 @@ public class NotificationsIt extends NotificationsItBase {
         json = updateEmbeddedJson(json, repsSmsSubs, "case_details", "case_data", "subscriptions",
             "representativeSubscription", "subscribeSms");
         json = updateEmbeddedJson(json, notificationEventType.getId(), "event_id");
-        if (notificationEventType.getId().contains("Welsh")) {
-            json = updateEmbeddedJson(json, "Yes", "case_details", "case_data", "languagePreferenceWelsh");
-        }
+        json = updateCommonJsonData(notificationEventType, json);
         if (notificationEventType.equals(REQUEST_INFO_INCOMPLETE)) {
             json = updateEmbeddedJson(json, "Yes", "case_details", "case_data", "informationFromAppellant");
         }
@@ -193,9 +188,7 @@ public class NotificationsIt extends NotificationsItBase {
         json = updateEmbeddedJson(json, repsSmsSubs, "case_details", "case_data", "subscriptions",
             "representativeSubscription", "subscribeSms");
         json = updateEmbeddedJson(json, notificationEventType.getId(), "event_id");
-        if (notificationEventType.getId().contains("Welsh")) {
-            json = updateEmbeddedJson(json, "Yes", "case_details", "case_data", "languagePreferenceWelsh");
-        }
+        json = updateCommonJsonData(notificationEventType, json);
         if (notificationEventType.equals(REQUEST_INFO_INCOMPLETE)) {
             json = updateEmbeddedJson(json, "Yes", "case_details", "case_data", "informationFromAppellant");
         }
@@ -222,9 +215,7 @@ public class NotificationsIt extends NotificationsItBase {
         String jsonAppointee = FileUtils.readFileToString(new File(path), StandardCharsets.UTF_8.name());
         jsonAppointee = updateEmbeddedJson(jsonAppointee, hearingType, "case_details", "case_data", "appeal", "hearingType");
 
-        if (notificationEventType.getId().contains("Welsh")) {
-            jsonAppointee = updateEmbeddedJson(jsonAppointee, "Yes", "case_details", "case_data", "languagePreferenceWelsh");
-        }
+        jsonAppointee = updateCommonJsonData(notificationEventType, jsonAppointee);
         jsonAppointee = updateEmbeddedJson(jsonAppointee, appointeeEmailSubs, "case_details", "case_data", "subscriptions",
             "appointeeSubscription", "subscribeEmail");
         jsonAppointee = updateEmbeddedJson(jsonAppointee, appointeeSmsSubs, "case_details", "case_data", "subscriptions",
@@ -248,6 +239,29 @@ public class NotificationsIt extends NotificationsItBase {
         validateEmailNotifications(expectedEmailTemplateIds, wantedNumberOfSendEmailInvocations, expectedName);
         validateSmsNotifications(expectedSmsTemplateIds, wantedNumberOfSendSmsInvocations);
         validateLetterNotifications(expectedLetterTemplateIds, wantedNumberOfSendLetterInvocations, expectedName);
+    }
+
+    private String updateCommonJsonData(final NotificationEventType notificationEventType, String json) throws IOException {
+        json = updateJsonDataForWelshNotifications(notificationEventType, json);
+        return updateJsonDataForProcessAudioVideoEvent(notificationEventType, json);
+    }
+
+    private String updateJsonDataForProcessAudioVideoEvent(final NotificationEventType notificationEventType, String json) throws IOException {
+        if (notificationEventType.equals(PROCESS_AUDIO_VIDEO)) {
+            Map<String, Object> map = new HashMap<>();
+            Map<String, String> mapValue = new HashMap<>();
+            mapValue.put("code", "includeEvidence");
+            map.put("value", mapValue);
+            json = updateEmbeddedJson(json, map, "case_details", "case_data", "processAudioVideoAction");
+        }
+        return json;
+    }
+
+    private String updateJsonDataForWelshNotifications(final NotificationEventType notificationEventType, String json) throws IOException {
+        if (notificationEventType.getId().contains("Welsh")) {
+            json = updateEmbeddedJson(json, "Yes", "case_details", "case_data", "languagePreferenceWelsh");
+        }
+        return json;
     }
 
     @Test
@@ -311,9 +325,7 @@ public class NotificationsIt extends NotificationsItBase {
                 "jointPartySubscription", "subscribeSms");
         json = updateEmbeddedJson(json, notificationEventType.getId(), "event_id");
 
-        if (notificationEventType.name().contains("WELSH")) {
-            json = updateEmbeddedJson(json, "Yes", "case_details", "case_data", "languagePreferenceWelsh");
-        }
+        json = updateCommonJsonData(notificationEventType, json);
         if (notificationEventType.equals(REQUEST_INFO_INCOMPLETE)) {
             json = updateEmbeddedJson(json, "Yes", "case_details", "case_data", "informationFromAppellant");
         }
@@ -570,6 +582,30 @@ public class NotificationsIt extends NotificationsItBase {
                         "yes",
                         "1",
                         "1",
+                        "0"
+                },
+                new Object[]{
+                        PROCESS_AUDIO_VIDEO,
+                        "paper",
+                        Collections.emptyList(),
+                        Collections.emptyList(),
+                        Arrays.asList("TB-SCS-GNO-ENG-00677.docx", "TB-SCS-GNO-ENG-00677.docx"),
+                        "yes",
+                        "yes",
+                        "0",
+                        "0",
+                        "0"
+                },
+                new Object[]{
+                        PROCESS_AUDIO_VIDEO_WELSH,
+                        "paper",
+                        Collections.emptyList(),
+                        Collections.emptyList(),
+                        Arrays.asList("TB-SCS-GNO-ENG-00677.docx", "TB-SCS-GNO-ENG-00677.docx"),
+                        "yes",
+                        "yes",
+                        "0",
+                        "0",
                         "0"
                 },
                 new Object[]{
@@ -1411,6 +1447,34 @@ public class NotificationsIt extends NotificationsItBase {
                 "0"
             },
             new Object[]{
+                PROCESS_AUDIO_VIDEO,
+                "paper",
+                Collections.emptyList(),
+                Collections.emptyList(),
+                Arrays.asList("TB-SCS-GNO-ENG-00677.docx", "TB-SCS-GNO-ENG-00677.docx"),
+                "no",
+                "no",
+                "no",
+                "no",
+                "0",
+                "0",
+                "0"
+            },
+            new Object[]{
+                PROCESS_AUDIO_VIDEO_WELSH,
+                "paper",
+                Collections.emptyList(),
+                Collections.emptyList(),
+                Arrays.asList("TB-SCS-GNO-ENG-00677.docx", "TB-SCS-GNO-ENG-00677.docx"),
+                "no",
+                "no",
+                "no",
+                "no",
+                "0",
+                "0",
+                "0"
+            },
+            new Object[]{
                 DIRECTION_ISSUED,
                 "paper",
                 Collections.emptyList(),
@@ -1506,6 +1570,34 @@ public class NotificationsIt extends NotificationsItBase {
     @SuppressWarnings({"Indentation", "unused"})
     private Object[] generateBundledLetterNotificationScenarios() {
         return new Object[]{
+            new Object[]{
+                    PROCESS_AUDIO_VIDEO,
+                    "paper",
+                    false,
+                    false,
+                    "1"
+            },
+            new Object[]{
+                    PROCESS_AUDIO_VIDEO,
+                    "oral",
+                    false,
+                    false,
+                    "1"
+            },
+            new Object[]{
+                    PROCESS_AUDIO_VIDEO_WELSH,
+                    "paper",
+                    false,
+                    false,
+                    "1"
+            },
+            new Object[]{
+                    PROCESS_AUDIO_VIDEO_WELSH,
+                    "oral",
+                    false,
+                    false,
+                    "1"
+            },
             new Object[]{
                     STRUCK_OUT,
                     "paper",
@@ -2339,6 +2431,34 @@ public class NotificationsIt extends NotificationsItBase {
                 "0"
             },
             new Object[]{
+                    PROCESS_AUDIO_VIDEO,
+                    "paper",
+                    Collections.emptyList(),
+                    Collections.emptyList(),
+                    Arrays.asList("TB-SCS-GNO-ENG-00677.docx", "TB-SCS-GNO-ENG-00677.docx"),
+                    "no",
+                    "no",
+                    "no",
+                    "no",
+                    "0",
+                    "0",
+                    "0"
+            },
+            new Object[]{
+                    PROCESS_AUDIO_VIDEO_WELSH,
+                    "paper",
+                    Collections.emptyList(),
+                    Collections.emptyList(),
+                    Arrays.asList("TB-SCS-GNO-ENG-00677.docx", "TB-SCS-GNO-ENG-00677.docx"),
+                    "no",
+                    "no",
+                    "no",
+                    "no",
+                    "0",
+                    "0",
+                    "0"
+            },
+            new Object[]{
                 DIRECTION_ISSUED,
                 "paper",
                 Collections.emptyList(),
@@ -2647,6 +2767,32 @@ public class NotificationsIt extends NotificationsItBase {
                 "0",
                 "0",
                 "Harry Potter"
+            },
+            new Object[]{
+                PROCESS_AUDIO_VIDEO,
+                "paper",
+                Collections.emptyList(),
+                Collections.emptyList(),
+                Collections.singletonList("TB-SCS-GNO-ENG-00677.docx"),
+                "yes",
+                "yes",
+                "0",
+                "0",
+                "0",
+                "Appointee Appointee"
+            },
+            new Object[]{
+                PROCESS_AUDIO_VIDEO_WELSH,
+                "paper",
+                Collections.emptyList(),
+                Collections.emptyList(),
+                Collections.singletonList("TB-SCS-GNO-ENG-00677.docx"),
+                "yes",
+                "yes",
+                "0",
+                "0",
+                "0",
+                "Appointee Appointee"
             },
             new Object[]{
                 DIRECTION_ISSUED,
