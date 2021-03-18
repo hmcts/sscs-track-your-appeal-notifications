@@ -3,6 +3,7 @@ package uk.gov.hmcts.reform.sscs.extractor;
 import static uk.gov.hmcts.reform.sscs.ccd.domain.EventType.DWP_RESPOND;
 import static uk.gov.hmcts.reform.sscs.config.SscsConstants.ZONE_ID;
 
+import java.time.LocalTime;
 import java.time.ZoneId;
 import java.time.ZonedDateTime;
 import java.util.Collections;
@@ -23,8 +24,8 @@ public class DwpResponseReceivedDateExtractor {
                 return Optional.of(event.getValue().getDateTime());
             }
         }
-
-        return Optional.ofNullable(caseData.getDwpResponseDate()).map(date -> ZonedDateTime.parse(date + "T00:00:00Z").toInstant().atZone(ZoneId.of(ZONE_ID)));
+        LocalTime time = LocalTime.now();
+        return Optional.ofNullable(caseData.getDwpResponseDate()).map(date -> ZonedDateTime.parse(date + "T" + time.toString() + "Z").toInstant().atZone(ZoneId.of(ZONE_ID)));
     }
 
 }
