@@ -4,10 +4,12 @@ import static org.junit.Assert.*;
 import static uk.gov.hmcts.reform.sscs.ccd.domain.EventType.DWP_RESPOND;
 import static uk.gov.hmcts.reform.sscs.domain.notify.NotificationEventType.APPEAL_RECEIVED_NOTIFICATION;
 
+import java.security.NoSuchAlgorithmException;
 import java.time.ZonedDateTime;
 import java.util.Optional;
 import junitparams.JUnitParamsRunner;
 import junitparams.Parameters;
+import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import uk.gov.hmcts.reform.sscs.SscsCaseDataUtils;
@@ -17,8 +19,12 @@ import uk.gov.hmcts.reform.sscs.factory.CcdNotificationWrapper;
 @RunWith(JUnitParamsRunner.class)
 public class DwpResponseReceivedDateExtractorTest {
 
-    private final DwpResponseReceivedDateExtractor dwpResponseReceivedDateExtractor =
-        new DwpResponseReceivedDateExtractor();
+    private DwpResponseReceivedDateExtractor dwpResponseReceivedDateExtractor;
+
+    @Before
+    public void setUp() throws NoSuchAlgorithmException {
+        dwpResponseReceivedDateExtractor = new DwpResponseReceivedDateExtractor();
+    }
 
     @Test
     @Parameters({"DWP_RESPONSE_RECEIVED_NOTIFICATION", "DWP_UPLOAD_RESPONSE_NOTIFICATION"})
@@ -63,7 +69,8 @@ public class DwpResponseReceivedDateExtractorTest {
         Optional<ZonedDateTime> dwpResponseReceivedDate = dwpResponseReceivedDateExtractor.extract(ccdResponse.getNewSscsCaseData());
 
         assertTrue(dwpResponseReceivedDate.isPresent());
-        assertEquals(expectedDwpResponseReceivedDate, dwpResponseReceivedDate.get());
+        assertTrue(dwpResponseReceivedDate.get().getHour() > 0 && dwpResponseReceivedDate.get().getHour() <= 24);
+        assertTrue(dwpResponseReceivedDate.get().getMinute() > 0 && dwpResponseReceivedDate.get().getMinute() <= 60);
     }
 
 }
