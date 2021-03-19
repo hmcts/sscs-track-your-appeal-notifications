@@ -108,6 +108,7 @@ public class NotificationsIt extends NotificationsItBase {
         }
 
         json = updateEmbeddedJson(json, notificationEventType.getId(), "event_id");
+        json = updateEmbeddedJson(json, LocalDate.now().toString(), "case_details", "case_data", "caseCreated");
 
         HttpServletResponse response = getResponse(getRequestWithAuthHeader(json));
         assertHttpStatus(response, HttpStatus.OK);

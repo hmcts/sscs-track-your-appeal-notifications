@@ -24,6 +24,8 @@
     ],
     "security_classification": "PUBLIC",
     "case_data": {
+      "createdInGapsFrom": "readyToList",
+      "caseCreated": "2021-02-13",
       "subscriptions": {
         "appellantSubscription": {
           "tya": "appellantTya",
