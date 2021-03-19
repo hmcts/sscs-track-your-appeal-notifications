@@ -50,10 +50,7 @@ import static uk.gov.hmcts.reform.sscs.domain.notify.NotificationEventType.SYA_A
 import static uk.gov.hmcts.reform.sscs.domain.notify.NotificationEventType.TCW_DECISION_APPEAL_TO_PROCEED;
 import static uk.gov.hmcts.reform.sscs.domain.notify.NotificationEventType.VALID_APPEAL_CREATED;
 
-import java.time.Instant;
-import java.time.LocalDate;
-import java.time.ZoneId;
-import java.time.ZonedDateTime;
+import java.time.*;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -878,6 +875,42 @@ public class PersonalisationTest {
         Map result = personalisation.setEventData(new HashMap<>(), response, APPEAL_RECEIVED_NOTIFICATION);
 
         assertEquals(LocalDate.now().plusDays(MAX_DWP_RESPONSE_DAYS).format(DateTimeFormatter.ofPattern(RESPONSE_DATE_FORMAT)), result.get(APPEAL_RESPOND_DATE));
+    }
+
+    @Test
+    public void givenCaseWithCreatedDate_thenUseCreatedDate() {
+        SscsCaseData response = SscsCaseData.builder()
+                .ccdCaseId(CASE_ID)
+                .appeal(Appeal.builder().benefitType(BenefitType.builder().code("PIP").build())
+                        .appellant(Appellant.builder().name(name).build())
+                        .build())
+                .subscriptions(subscriptions)
+                .caseCreated(LocalDate.now().minusDays(1).toString())
+                .build();
+
+        Map result = personalisation.create(SscsCaseDataWrapper.builder()
+                        .newSscsCaseData(response).notificationEventType(APPEAL_RECEIVED_NOTIFICATION).build(),
+                new SubscriptionWithType(subscriptions.getAppellantSubscription(), APPELLANT));
+
+        assertEquals(LocalDate.now().minusDays(1).toString(), result.get(CREATED_DATE));
+    }
+
+    @Test
+    public void givenCaseWithCreatedDateSetToNull_thenUseTodaysDateForCreatedDate() {
+        SscsCaseData response = SscsCaseData.builder()
+                .ccdCaseId(CASE_ID)
+                .appeal(Appeal.builder().benefitType(BenefitType.builder().code("PIP").build())
+                        .appellant(Appellant.builder().name(name).build())
+                        .build())
+                .subscriptions(subscriptions)
+                .caseCreated(null)
+                .build();
+
+        Map result = personalisation.create(SscsCaseDataWrapper.builder()
+                        .newSscsCaseData(response).notificationEventType(APPEAL_RECEIVED_NOTIFICATION).build(),
+                new SubscriptionWithType(subscriptions.getAppellantSubscription(), APPELLANT));
+
+        assertEquals(LocalDate.now().toString(), result.get(CREATED_DATE));
     }
 
     @Test

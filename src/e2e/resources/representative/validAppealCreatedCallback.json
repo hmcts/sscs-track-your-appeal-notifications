@@ -24,6 +24,8 @@
     ],
     "security_classification": "PUBLIC",
     "case_data": {
+      "createdInGapsFrom": "readyToList",
+      "caseCreated": "2021-02-13",
       "dwpTimeExtension": [
       ],
       "generatedNino": "JT 12 34 56 D",

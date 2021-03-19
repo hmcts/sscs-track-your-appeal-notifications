@@ -39,6 +39,7 @@ public class FilterNotificationsEventsHandler implements CallbackHandler {
             ISSUE_ADJOURNMENT_NOTICE_WELSH,
             ISSUE_FINAL_DECISION,
             NON_COMPLIANT_NOTIFICATION,
+            DRAFT_TO_NON_COMPLIANT_NOTIFICATION,
             POSTPONEMENT_NOTIFICATION,
             REISSUE_DOCUMENT,
             REQUEST_INFO_INCOMPLETE,
@@ -46,6 +47,7 @@ public class FilterNotificationsEventsHandler implements CallbackHandler {
             STRUCK_OUT,
             SUBSCRIPTION_UPDATED_NOTIFICATION,
             VALID_APPEAL_CREATED,
+            DRAFT_TO_VALID_APPEAL_CREATED,
             REVIEW_CONFIDENTIALITY_REQUEST,
             PROCESS_AUDIO_VIDEO,
             PROCESS_AUDIO_VIDEO_WELSH,
@@ -73,7 +75,7 @@ public class FilterNotificationsEventsHandler implements CallbackHandler {
         }
         final CcdNotificationWrapper notificationWrapper = new CcdNotificationWrapper(callback);
         try {
-            notificationService.manageNotificationAndSubscription(notificationWrapper);
+            notificationService.manageNotificationAndSubscription(notificationWrapper, false);
         } catch (NotificationServiceException e) {
             retryNotificationService.rescheduleIfHandledGovNotifyErrorStatus(RETRY, notificationWrapper, e);
             throw e;

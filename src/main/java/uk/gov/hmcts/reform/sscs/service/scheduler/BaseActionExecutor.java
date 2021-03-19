@@ -71,7 +71,7 @@ public abstract class BaseActionExecutor<T> implements JobExecutor<T> {
                 NotificationWrapper notificationWrapper = getWrapper(wrapper, payload);
 
                 try {
-                    notificationService.manageNotificationAndSubscription(notificationWrapper);
+                    notificationService.manageNotificationAndSubscription(notificationWrapper, true);
                     if (wrapper.getNotificationEventType().isReminder()) {
                         updateCase(caseId, wrapper, idamTokens);
                     }
@@ -107,7 +107,6 @@ public abstract class BaseActionExecutor<T> implements JobExecutor<T> {
         return SscsCaseDataWrapper.builder()
                 .newSscsCaseData(caseData)
                 .oldSscsCaseData(caseDataBefore)
-                .createdDate(createdDate)
                 .state(state)
                 .notificationEventType(event).build();
     }

@@ -94,7 +94,7 @@ public class CcdActionExecutorTest {
 
         ccdActionExecutor.execute(JOB_ID, JOB_GROUP, EVIDENCE_REMINDER_NOTIFICATION.getId(), "123456");
 
-        verify(notificationService).manageNotificationAndSubscription(new CcdNotificationWrapper(wrapper));
+        verify(notificationService).manageNotificationAndSubscription(eq(new CcdNotificationWrapper(wrapper)), eq(true));
         verify(ccdService).updateCase(any(), any(), any(), any(), any(), any());
     }
 
@@ -105,7 +105,7 @@ public class CcdActionExecutorTest {
 
         ccdActionExecutor.execute(JOB_ID, JOB_GROUP, SYA_APPEAL_CREATED_NOTIFICATION.getId(), "123456");
 
-        verify(notificationService, times(1)).manageNotificationAndSubscription(new CcdNotificationWrapper(wrapper));
+        verify(notificationService, times(1)).manageNotificationAndSubscription(eq(new CcdNotificationWrapper(wrapper)), eq(true));
         verify(ccdService, times(0)).updateCase(any(), any(), any(), any(), any(), any());
     }
 
@@ -125,7 +125,7 @@ public class CcdActionExecutorTest {
         when(ccdService.getByCaseId(eq(123456L), eq(idamTokens))).thenReturn(caseDetails);
         ccdActionExecutor.execute(JOB_ID, JOB_GROUP, SYA_APPEAL_CREATED_NOTIFICATION.getId(), "123456,1");
 
-        verify(notificationService, times(1)).manageNotificationAndSubscription(new CcdNotificationWrapper(wrapper));
+        verify(notificationService, times(1)).manageNotificationAndSubscription(eq(new CcdNotificationWrapper(wrapper)), eq(true));
         verify(ccdService, times(0)).updateCase(any(), eq(123456L), any(), any(), any(), any());
     }
 
@@ -134,7 +134,7 @@ public class CcdActionExecutorTest {
     public void shouldScheduleToRetryAgainWhenNotificationFails(int retry) {
         wrapper = SscsCaseDataWrapper.builder().state(State.APPEAL_CREATED).newSscsCaseData(newSscsCaseData).notificationEventType(SYA_APPEAL_CREATED_NOTIFICATION).build();
         when(ccdService.getByCaseId(eq(123456L), eq(idamTokens))).thenReturn(caseDetails);
-        doThrow(new NotificationServiceException(caseDetails.getId().toString(), new NotificationClientException(new NullPointerException("error")))).when(notificationService).manageNotificationAndSubscription(eq(new CcdNotificationWrapper(wrapper)));
+        doThrow(new NotificationServiceException(caseDetails.getId().toString(), new NotificationClientException(new NullPointerException("error")))).when(notificationService).manageNotificationAndSubscription(eq(new CcdNotificationWrapper(wrapper)), eq(true));
         final String payload = (retry == 0) ? "123456" : "123456," + retry;
         ccdActionExecutor.execute(JOB_ID, JOB_GROUP, SYA_APPEAL_CREATED_NOTIFICATION.getId(), payload);
 

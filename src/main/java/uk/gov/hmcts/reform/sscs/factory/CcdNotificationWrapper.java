@@ -11,7 +11,6 @@ import static uk.gov.hmcts.reform.sscs.service.NotificationUtils.hasAppointeeSub
 import static uk.gov.hmcts.reform.sscs.service.NotificationUtils.hasJointPartySubscription;
 import static uk.gov.hmcts.reform.sscs.service.NotificationUtils.hasRepSubscriptionOrIsMandatoryRepLetter;
 
-import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
@@ -79,11 +78,6 @@ public class CcdNotificationWrapper implements NotificationWrapper {
     @Override
     public String getCaseId() {
         return responseWrapper.getNewSscsCaseData().getCcdCaseId();
-    }
-
-    @Override
-    public LocalDateTime getCreatedDate() {
-        return responseWrapper.getCreatedDate();
     }
 
     public AppealHearingType getHearingType() {
