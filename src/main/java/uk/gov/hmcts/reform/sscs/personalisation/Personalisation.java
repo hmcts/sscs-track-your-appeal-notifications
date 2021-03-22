@@ -378,6 +378,8 @@ public class Personalisation<E extends NotificationWrapper> {
             return JUDGE_DR_EXPERT_PANEL_COMPOSITION;
         } else if (Benefit.ESA.equals(benefit)) {
             return ESA_PANEL_COMPOSITION;
+        } else if (Benefit.DLA.equals(benefit)) {
+            return DLA_PANEL_COMPOSITION;
         } else {
             return UC_PANEL_COMPOSITION;
         }
