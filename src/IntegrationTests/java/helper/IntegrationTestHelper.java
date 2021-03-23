@@ -28,6 +28,12 @@ public class IntegrationTestHelper {
 
     }
 
+    public static MockHttpServletRequestBuilder getRequestWithAuthHeader(String json, String url) {
+
+        return getRequestWithoutAuthHeader(json, url)
+                .header(AuthorisationService.SERVICE_AUTHORISATION_HEADER, "some-auth-header");
+    }
+
     public static MockHttpServletRequestBuilder getRequestWithAuthHeader(String json) {
 
         return getRequestWithoutAuthHeader(json)
@@ -36,9 +42,14 @@ public class IntegrationTestHelper {
 
     public static MockHttpServletRequestBuilder getRequestWithoutAuthHeader(String json) {
 
-        return post("/send")
-            .contentType(APPLICATION_JSON)
-             .content(json);
+        return getRequestWithoutAuthHeader(json, "/send");
+    }
+
+    private static MockHttpServletRequestBuilder getRequestWithoutAuthHeader(String json, String url) {
+
+        return post(url)
+                .contentType(APPLICATION_JSON)
+                .content(json);
     }
 
     public static void assertHttpStatus(HttpServletResponse response, HttpStatus status) {

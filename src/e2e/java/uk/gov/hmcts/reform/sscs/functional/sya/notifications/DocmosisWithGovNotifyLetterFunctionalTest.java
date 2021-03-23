@@ -4,6 +4,7 @@ import static org.junit.Assert.assertEquals;
 import static uk.gov.hmcts.reform.sscs.domain.notify.NotificationEventType.APPEAL_RECEIVED_NOTIFICATION;
 import static uk.gov.hmcts.reform.sscs.domain.notify.NotificationEventType.DECISION_ISSUED;
 import static uk.gov.hmcts.reform.sscs.domain.notify.NotificationEventType.DIRECTION_ISSUED;
+import static uk.gov.hmcts.reform.sscs.domain.notify.NotificationEventType.DRAFT_TO_NON_COMPLIANT_NOTIFICATION;
 import static uk.gov.hmcts.reform.sscs.domain.notify.NotificationEventType.ISSUE_ADJOURNMENT_NOTICE;
 import static uk.gov.hmcts.reform.sscs.domain.notify.NotificationEventType.ISSUE_ADJOURNMENT_NOTICE_WELSH;
 import static uk.gov.hmcts.reform.sscs.domain.notify.NotificationEventType.ISSUE_FINAL_DECISION;
@@ -64,6 +65,7 @@ public class DocmosisWithGovNotifyLetterFunctionalTest extends AbstractFunctiona
             new Object[]{APPEAL_RECEIVED_NOTIFICATION, expectedNumberOfLettersIsTwo},
             new Object[]{REVIEW_CONFIDENTIALITY_REQUEST, expectedNumberOfLettersIsOne},
             new Object[]{NON_COMPLIANT_NOTIFICATION, expectedNumberOfLettersIsTwo},
+            new Object[]{DRAFT_TO_NON_COMPLIANT_NOTIFICATION, expectedNumberOfLettersIsTwo},
         };
     }
 }

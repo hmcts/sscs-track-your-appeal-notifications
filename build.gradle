@@ -119,7 +119,7 @@ dependencyManagement {
         }
 
         // CVE-2019-16869 - brought in by qpid-jms-client
-        dependencySet(group: 'io.netty', version: '4.1.59.Final') {
+        dependencySet(group: 'io.netty', version: '4.1.60.Final') {
             entry 'netty-handler'
             entry 'netty-transport-native-epoll'
             entry 'netty-transport-native-kqueue'
@@ -147,7 +147,7 @@ dependencyManagement {
         }
 
         //CVE-2021-22112
-        dependencySet(group: 'org.springframework.security', version: '5.3.8.RELEASE') {
+        dependencySet(group: 'org.springframework.security', version: '5.4.5') {
             entry 'spring-security-crypto'
         }
     }
@@ -298,7 +298,7 @@ dependencies {
     compile group: 'uk.gov.hmcts.reform', name: 'java-logging-appinsights', version: versions.reformLogging
     compile group: 'uk.gov.hmcts.reform', name: 'sscs-job-scheduler', version: '1.5.3'
     compile group: 'uk.gov.hmcts.reform', name: 'service-auth-provider-client', version: '3.1.4'
-    compile group: 'uk.gov.hmcts.reform', name: 'sscs-common', version: '4.2.27-RC-SSCS-8857'
+    compile group: 'uk.gov.hmcts.reform', name: 'sscs-common', version: '4.2.31-RC-SSCS-8857'
     compile group: 'uk.gov.hmcts.reform', name: 'sscs-pdf-email-common', version: '1.4.25'
 
     compile group: 'uk.gov.service.notify', name: 'notifications-java-client', version: '3.17.0-RELEASE'

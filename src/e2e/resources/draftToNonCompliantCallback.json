@@ -4,7 +4,6 @@
     "callback_response_status": null,
     "callback_response_status_code": null,
     "case_data": {
-      "languagePreferenceWelsh" : "Yes",
       "appeal": {
         "appealReasons": {},
         "appellant": {
@@ -63,7 +62,6 @@
       },
       "caseReference": "SC022/14/12423",
       "createdInGapsFrom": "readyToList",
-      "caseCreated": "2021-02-13",
       "events": [
         {
           "value": {
@@ -339,7 +337,6 @@
     "callback_response_status": null,
     "callback_response_status_code": null,
     "case_data": {
-      "languagePreferenceWelsh" : "Yes",
       "appeal": {
         "appealReasons": {},
         "appellant": {
@@ -626,5 +623,5 @@
     },
     "state": "appealCreated"
   },
-  "event_id": "appealReceived"
+  "event_id": "draftToNonCompliant"
 }
