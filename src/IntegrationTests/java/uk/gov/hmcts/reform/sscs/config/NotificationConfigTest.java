@@ -321,9 +321,9 @@ public class NotificationConfigTest {
                 new Object[]{null, Collections.EMPTY_LIST, null, "TB-SCS-GNO-WEL-00649.docx", PAPER, getTemplateName(ISSUE_ADJOURNMENT_NOTICE_WELSH, JOINT_PARTY), null},
                 new Object[]{null, Collections.EMPTY_LIST, null, "TB-SCS-GNO-WEL-00649.docx", ORAL, getTemplateName(ISSUE_ADJOURNMENT_NOTICE_WELSH, REPRESENTATIVE), null},
                 new Object[]{null, Collections.EMPTY_LIST, null, "TB-SCS-GNO-WEL-00649.docx", PAPER, getTemplateName(ISSUE_ADJOURNMENT_NOTICE_WELSH, REPRESENTATIVE), null},
-                new Object[]{null, Collections.EMPTY_LIST, null, "TB-SCS-GNO-ENG-00455.docx", PAPER, getTemplateName(ISSUE_FINAL_DECISION_WELSH, REPRESENTATIVE), null},
-                new Object[]{null, Collections.EMPTY_LIST, null, "TB-SCS-GNO-ENG-00454.docx", PAPER, getTemplateName(ISSUE_FINAL_DECISION_WELSH, APPELLANT), null},
-                new Object[]{null, Collections.EMPTY_LIST, null, "TB-SCS-GNO-ENG-00454.docx", PAPER, getTemplateName(ISSUE_FINAL_DECISION_WELSH, APPOINTEE), null},
+                new Object[]{null, Collections.EMPTY_LIST, null, "TB-SCS-GNO-WEL-00681.docx", PAPER, getTemplateName(ISSUE_FINAL_DECISION_WELSH, APPELLANT), null},
+                new Object[]{null, Collections.EMPTY_LIST, null, "TB-SCS-GNO-WEL-00681.docx", PAPER, getTemplateName(ISSUE_FINAL_DECISION_WELSH, APPOINTEE), null},
+                new Object[]{null, Collections.EMPTY_LIST, null, "TB-SCS-GNO-WEL-00682.docx", PAPER, getTemplateName(ISSUE_FINAL_DECISION_WELSH, REPRESENTATIVE), null},
         };
     }
 
