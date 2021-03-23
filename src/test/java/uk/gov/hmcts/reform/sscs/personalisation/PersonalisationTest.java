@@ -1597,24 +1597,6 @@ public class PersonalisationTest {
         assertEquals(helpLineTelephone, result.get(HELPLINE_PHONE_NUMBER));
     }
 
-    @Test
-    @Parameters({"PIP", "DLA"})
-    public void testPanelCompositionByBenefit(String benefitType) {
-        assertEquals("judge, doctor and disability expert", personalisation.getPanelCompositionByBenefitType(Benefit.getBenefitByCode(benefitType)));
-    }
-
-    @Test
-    public void testPanelCompositionByBenefitEsa() {
-        assertEquals("judge and a doctor", personalisation.getPanelCompositionByBenefitType(Benefit.getBenefitByCode("ESA")));
-    }
-
-    @Test
-    public void testPanelCompositionByBenefitUc() {
-        assertEquals("judge, doctor and disability expert (if applicable)", personalisation.getPanelCompositionByBenefitType(Benefit.getBenefitByCode("UC")));
-    }
-
-
-
     private Hearing createHearing(LocalDate hearingDate) {
         return Hearing.builder().value(HearingDetails.builder()
                 .hearingDate(hearingDate.format(DateTimeFormatter.ofPattern("yyyy-MM-dd")))
