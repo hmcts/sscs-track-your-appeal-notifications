@@ -162,18 +162,32 @@ public class NotificationHandlerTest {
         doThrow(new NotificationClientException(new UnknownHostException()))
                 .when(sendNotification)
                 .send();
+        stubData();
+        try {
+            underTest.sendNotification(notificationWrapper, "someTemplate", "Email", sendNotification);
+        } catch (NotificationClientRuntimeException e) {
+            verifyExpectedErrorLogMessage(mockAppender, captorLoggingEvent, notificationWrapper.getNewSscsCaseData().getCcdCaseId(), "Could not send notification for case id: 123");
+            throw e;
+        }
+    }
 
-        underTest.sendNotification(notificationWrapper, "someTemplate", "Email", sendNotification);
-
-        verifyExpectedErrorLogMessage(mockAppender, captorLoggingEvent, notificationWrapper.getNewSscsCaseData().getCcdCaseId(), "Could not send notification for case id:");
+    @Test(expected = NotificationServiceException.class)
+    public void shouldLogGovNotifyErrorCodeWhenNotificationClientExceptionIsThrown() throws Exception {
+        doThrow(new NotificationClientException("Should return a 400 error code"))
+                .when(sendNotification)
+                .send();
+        stubData();
+        try {
+            underTest.sendNotification(notificationWrapper, "someTemplate", "Email", sendNotification);
+        } catch (NotificationServiceException ex) {
+            verifyExpectedErrorLogMessage(mockAppender, captorLoggingEvent, notificationWrapper.getNewSscsCaseData().getCcdCaseId(), "Error code 400 on GovUKNotify for case id: 123, template: someTemplate");
+            throw ex;
+        }
     }
 
     @Test(expected = NotificationServiceException.class)
     public void shouldNotContinueWithAGovNotifyException() throws Exception {
-        String caseId = "123";
-        when(notificationWrapper.getCaseId()).thenReturn(caseId);
-        SscsCaseData stubbedCaseData = SscsCaseData.builder().ccdCaseId(caseId).build();
-        when(notificationWrapper.getNewSscsCaseData()).thenReturn(stubbedCaseData);
+        stubData();
         doThrow(new NotificationClientException(new RuntimeException()))
                 .when(sendNotification)
                 .send();
@@ -188,15 +202,19 @@ public class NotificationHandlerTest {
 
     @Test
     public void shouldContinueAndHandleAnyOtherException() throws Exception {
-        String caseId = "123";
-        when(notificationWrapper.getCaseId()).thenReturn(caseId);
-        SscsCaseData stubbedCaseData = SscsCaseData.builder().ccdCaseId(caseId).build();
-        when(notificationWrapper.getNewSscsCaseData()).thenReturn(stubbedCaseData);
+        stubData();
         doThrow(new RuntimeException())
                 .when(sendNotification)
                 .send();
 
         underTest.sendNotification(notificationWrapper, "someTemplate", "Email", sendNotification);
         verifyExpectedErrorLogMessage(mockAppender, captorLoggingEvent, notificationWrapper.getNewSscsCaseData().getCcdCaseId(), "Could not send notification for case id:");
+    }
+
+    private void stubData() {
+        String caseId = "123";
+        when(notificationWrapper.getCaseId()).thenReturn(caseId);
+        SscsCaseData stubbedCaseData = SscsCaseData.builder().ccdCaseId(caseId).build();
+        when(notificationWrapper.getNewSscsCaseData()).thenReturn(stubbedCaseData);
     }
 }
