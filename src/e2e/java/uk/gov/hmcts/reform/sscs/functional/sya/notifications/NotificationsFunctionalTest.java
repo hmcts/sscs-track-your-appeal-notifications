@@ -231,10 +231,12 @@ public class NotificationsFunctionalTest extends AbstractFunctionalTest {
     @Test
     @Parameters({
             "pip,judge\\, doctor and disability expert",
-            "esa,judge and a doctor"
+            "esa,judge and a doctor",
+            "dla,judge\\, doctor and disability expert"
     })
     public void shouldSendPaperDwpResponseReceivedNotification(final String benefit, String expectedPanelComposition)
             throws Exception {
+
         simulateCcdCallback(DWP_RESPONSE_RECEIVED_NOTIFICATION, RESPONSE_RECEIVED_PAPER_PATH + benefit + "-paper-"
                 + DWP_RESPONSE_RECEIVED_NOTIFICATION.getId() + "Callback.json");
         List<Notification> notifications = tryFetchNotificationsForTestCase(

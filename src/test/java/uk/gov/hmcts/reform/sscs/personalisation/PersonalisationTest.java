@@ -486,7 +486,8 @@ public class PersonalisationTest {
     @Parameters({
             "PIP,judge\\, doctor and disability expert, Personal Independence Payment",
             "ESA,judge and a doctor, Employment and Support Allowance",
-            "UC,judge\\, doctor and disability expert (if applicable), Universal Credit"
+            "UC,judge\\, doctor and disability expert (if applicable), Universal Credit",
+            "DLA,judge\\, doctor and disability expert, Disability Living Allowance",
     })
     public void customisePersonalisation(String benefitType, String expectedPanelComposition, String
             expectedBenefitDesc) {
