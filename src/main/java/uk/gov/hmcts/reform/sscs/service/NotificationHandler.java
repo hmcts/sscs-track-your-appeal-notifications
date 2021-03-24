@@ -37,7 +37,7 @@ public class NotificationHandler {
 
             return true;
         } catch (Exception ex) {
-            log.error("Could not send notification for case id: ", wrapper.getCaseId());
+            log.error("Could not send notification for case id: {}", wrapper.getCaseId());
             wrapAndThrowNotificationExceptionIfRequired(caseId, notificationTemplate, ex);
         }
 
@@ -83,7 +83,7 @@ public class NotificationHandler {
             throw exception;
         } else {
             NotificationServiceException exception = new NotificationServiceException(caseId, ex);
-            log.error("Error on GovUKNotify for case id: {}, template: {}", caseId, templateId, exception);
+            log.error("Error code {} on GovUKNotify for case id: {}, template: {}", exception.getGovNotifyErrorCode(), caseId, templateId, exception);
             if (ex instanceof NotificationClientException) {
                 throw exception;
             }
