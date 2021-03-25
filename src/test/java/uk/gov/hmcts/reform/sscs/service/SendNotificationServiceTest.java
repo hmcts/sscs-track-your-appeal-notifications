@@ -594,7 +594,7 @@ public class SendNotificationServiceTest {
     }
 
     @Test
-    @Parameters({"APPEAL_RECEIVED_NOTIFICATION", "DIRECTION_ISSUED",  "DIRECTION_ISSUED_WELSH", "DECISION_ISSUED", "DECISION_ISSUED_WELSH", "ISSUE_FINAL_DECISION", "ISSUE_ADJOURNMENT_NOTICE", "DWP_UPLOAD_RESPONSE_NOTIFICATION"})
+    @Parameters({"APPEAL_RECEIVED_NOTIFICATION", "DIRECTION_ISSUED",  "DIRECTION_ISSUED_WELSH", "DECISION_ISSUED", "DECISION_ISSUED_WELSH", "ISSUE_FINAL_DECISION",  "ISSUE_FINAL_DECISION_WELSH", "ISSUE_ADJOURNMENT_NOTICE", "DWP_UPLOAD_RESPONSE_NOTIFICATION"})
     public void sendLetterForNotificationType(NotificationEventType notificationEventType) {
         SubscriptionWithType appellantEmptySubscription = new SubscriptionWithType(EMPTY_SUBSCRIPTION, APPELLANT);
         when(pdfLetterService.generateLetter(any(), any(), any())).thenReturn("PDF".getBytes());
@@ -633,7 +633,7 @@ public class SendNotificationServiceTest {
     }
 
     @Test
-    @Parameters({"APPEAL_RECEIVED_NOTIFICATION", "DIRECTION_ISSUED",  "DIRECTION_ISSUED_WELSH", "DECISION_ISSUED", "DECISION_ISSUED_WELSH", "ISSUE_FINAL_DECISION", "ISSUE_ADJOURNMENT_NOTICE", "DWP_UPLOAD_RESPONSE_NOTIFICATION"})
+    @Parameters({"APPEAL_RECEIVED_NOTIFICATION", "DIRECTION_ISSUED",  "DIRECTION_ISSUED_WELSH", "DECISION_ISSUED", "DECISION_ISSUED_WELSH", "ISSUE_FINAL_DECISION", "ISSUE_FINAL_DECISION_WELSH", "ISSUE_ADJOURNMENT_NOTICE", "DWP_UPLOAD_RESPONSE_NOTIFICATION"})
     public void saveAppointeeReasonableAdjustmentLetterForNotificationType(NotificationEventType notificationEventType) {
         SubscriptionWithType appointeeEmptySubscription = new SubscriptionWithType(EMPTY_SUBSCRIPTION, APPOINTEE);
         when(pdfLetterService.generateLetter(any(), any(), any())).thenReturn("PDF".getBytes());
@@ -646,7 +646,7 @@ public class SendNotificationServiceTest {
     }
 
     @Test
-    @Parameters({"APPEAL_RECEIVED_NOTIFICATION", "DIRECTION_ISSUED",  "DIRECTION_ISSUED_WELSH", "DECISION_ISSUED", "DECISION_ISSUED_WELSH", "ISSUE_FINAL_DECISION", "ISSUE_ADJOURNMENT_NOTICE", "DWP_UPLOAD_RESPONSE_NOTIFICATION"})
+    @Parameters({"APPEAL_RECEIVED_NOTIFICATION", "DIRECTION_ISSUED",  "DIRECTION_ISSUED_WELSH", "DECISION_ISSUED", "DECISION_ISSUED_WELSH", "ISSUE_FINAL_DECISION", "ISSUE_FINAL_DECISION_WELSH", "ISSUE_ADJOURNMENT_NOTICE", "DWP_UPLOAD_RESPONSE_NOTIFICATION"})
     public void saveJointPartyReasonableAdjustmentLetterForNotificationType(NotificationEventType notificationEventType) {
         SubscriptionWithType jointPartyEmptySubscription = new SubscriptionWithType(EMPTY_SUBSCRIPTION, JOINT_PARTY);
         when(pdfLetterService.generateLetter(any(), any(), any())).thenReturn("PDF".getBytes());
@@ -746,6 +746,13 @@ public class SendNotificationServiceTest {
                 .build());
 
         documents.add(SscsDocument.builder().value(
+                SscsDocumentDetails.builder().documentType(DocumentType.FINAL_DECISION_NOTICE.getValue())
+                        .documentLink(DocumentLink.builder().documentUrl("testUrl").build())
+                        .documentDateAdded(LocalDate.now().minusDays(1).toString())
+                        .build())
+                .build());
+
+        documents.add(SscsDocument.builder().value(
                 SscsDocumentDetails.builder().documentType(DocumentType.DECISION_NOTICE.getValue())
                         .documentLink(DocumentLink.builder().documentUrl("testUrl2").build())
                         .documentDateAdded(LocalDate.now().minusDays(1).toString())
@@ -777,6 +784,13 @@ public class SendNotificationServiceTest {
 
         welshDocuments.add(SscsWelshDocument.builder().value(
                 SscsWelshDocumentDetails.builder().documentType(DocumentType.DIRECTION_NOTICE.getValue())
+                        .documentLink(DocumentLink.builder().documentUrl("testUrl").build())
+                        .documentDateAdded(LocalDate.now().minusDays(1).toString())
+                        .build())
+                .build());
+
+        welshDocuments.add(SscsWelshDocument.builder().value(
+                SscsWelshDocumentDetails.builder().documentType(DocumentType.FINAL_DECISION_NOTICE.getValue())
                         .documentLink(DocumentLink.builder().documentUrl("testUrl").build())
                         .documentDateAdded(LocalDate.now().minusDays(1).toString())
                         .build())

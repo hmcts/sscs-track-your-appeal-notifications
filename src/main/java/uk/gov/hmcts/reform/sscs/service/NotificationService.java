@@ -140,6 +140,9 @@ public class NotificationService {
             if (code.equals(EventType.ISSUE_FINAL_DECISION.getCcdType())) {
                 wrapper.setNotificationType(ISSUE_FINAL_DECISION);
                 wrapper.setNotificationEventTypeOverridden(true);
+            } else if (code.equals(EventType.ISSUE_FINAL_DECISION_WELSH.getCcdType())) {
+                wrapper.setNotificationType(ISSUE_FINAL_DECISION_WELSH);
+                wrapper.setNotificationEventTypeOverridden(true);
             } else if (code.equals(EventType.DECISION_ISSUED.getCcdType())) {
                 wrapper.setNotificationType(DECISION_ISSUED);
                 wrapper.setNotificationEventTypeOverridden(true);
@@ -306,13 +309,14 @@ public class NotificationService {
                     || DECISION_ISSUED_WELSH.equals(notificationType)
                     || DIRECTION_ISSUED_WELSH.equals(notificationType)
                     || ISSUE_FINAL_DECISION.equals(notificationType)
+                    || ISSUE_FINAL_DECISION_WELSH.equals(notificationType)
                     || REISSUE_DOCUMENT.equals(notificationType))) {
                 log.info(String.format("Cannot complete notification %s as the appeal was dormant for caseId %s.",
                         notificationType.getId(), notificationWrapper.getCaseId()));
                 return false;
             }
         }
-        if (notificationWrapper.getNewSscsCaseData().isLanguagePreferenceWelsh() && (DECISION_ISSUED.equals(notificationType) || DIRECTION_ISSUED.equals(notificationType) || ISSUE_ADJOURNMENT_NOTICE.equals(notificationType) || PROCESS_AUDIO_VIDEO.equals(notificationType))) {
+        if (notificationWrapper.getNewSscsCaseData().isLanguagePreferenceWelsh() && (ISSUE_FINAL_DECISION.equals(notificationType) || DECISION_ISSUED.equals(notificationType) || DIRECTION_ISSUED.equals(notificationType) || ISSUE_ADJOURNMENT_NOTICE.equals(notificationType) || PROCESS_AUDIO_VIDEO.equals(notificationType))) {
             log.info(String.format("Cannot complete notification %s as the appeal is Welsh  for caseId %s.",
                     notificationType.getId(), notificationWrapper.getCaseId()));
             return false;

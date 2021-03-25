@@ -30,6 +30,7 @@ public enum NotificationEventType {
     DECISION_ISSUED("decisionIssued", true, true, true, false, false, 0),
     DECISION_ISSUED_WELSH("decisionIssuedWelsh", true, true, true, false, false, 0),
     ISSUE_FINAL_DECISION("issueFinalDecision", true, true, true, false, false, 0),
+    ISSUE_FINAL_DECISION_WELSH("issueFinalDecisionWelsh", true, true, true, false, false, 0),
     ISSUE_ADJOURNMENT_NOTICE("issueAdjournmentNotice", true, true, true, false, false, 0),
     ISSUE_ADJOURNMENT_NOTICE_WELSH("issueAdjournmentNoticeWelsh", true, true, true, false, false, 0),
     VALID_APPEAL_CREATED("validAppealCreated", true, true, false, true, false, 240L),
