@@ -186,7 +186,10 @@ public class Personalisation<E extends NotificationWrapper> {
         }
 
         translateToWelshDate(LocalDate.now(), ccdResponse, value -> personalisation.put(WELSH_CURRENT_DATE, value));
+
         personalisation.put(PANEL_COMPOSITION, getPanelCompositionByBenefitType(benefit));
+        personalisation.put(PANEL_COMPOSITION_WELSH, getPanelCompositionByBenefitTypeWelsh(benefit));
+
         LocalDate decisionPostedReceivedDate = LocalDate.now().plusDays(7);
         personalisation.put(DECISION_POSTED_RECEIVE_DATE, formatLocalDate(decisionPostedReceivedDate));
         translateToWelshDate(decisionPostedReceivedDate, ccdResponse, value -> personalisation.put(WELSH_DECISION_POSTED_RECEIVE_DATE, value));
@@ -371,14 +374,22 @@ public class Personalisation<E extends NotificationWrapper> {
     }
 
     private String getPanelCompositionByBenefitType(Benefit benefit) {
-        if (Benefit.PIP.equals(benefit)) {
-            return PIP_PANEL_COMPOSITION;
+        if (Benefit.PIP.equals(benefit) || Benefit.DLA.equals(benefit) || Benefit.CARERS_ALLOWANCE.equals(benefit)) {
+            return JUDGE_DR_EXPERT_PANEL_COMPOSITION;
         } else if (Benefit.ESA.equals(benefit)) {
             return ESA_PANEL_COMPOSITION;
-        } else if (Benefit.DLA.equals(benefit)) {
-            return DLA_PANEL_COMPOSITION;
         } else {
             return UC_PANEL_COMPOSITION;
+        }
+    }
+
+    private String getPanelCompositionByBenefitTypeWelsh(Benefit benefit) {
+        if (Benefit.PIP.equals(benefit) || Benefit.DLA.equals(benefit) || Benefit.CARERS_ALLOWANCE.equals(benefit)) {
+            return JUDGE_DR_EXPERT_PANEL_COMPOSITION_WELSH;
+        } else if (Benefit.ESA.equals(benefit)) {
+            return ESA_PANEL_COMPOSITION_WELSH;
+        } else {
+            return UC_PANEL_COMPOSITION_WELSH;
         }
     }
 
