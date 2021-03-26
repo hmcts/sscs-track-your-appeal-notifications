@@ -57,7 +57,7 @@ public class PersonalisationFactoryTest {
         "HEARING_REMINDER_NOTIFICATION", "DWP_RESPONSE_RECEIVED_NOTIFICATION", "DWP_UPLOAD_RESPONSE_NOTIFICATION",
         "DIRECTION_ISSUED", "DECISION_ISSUED", "DIRECTION_ISSUED_WELSH", "DECISION_ISSUED_WELSH",
         "PROCESS_AUDIO_VIDEO", "PROCESS_AUDIO_VIDEO_WELSH",
-        "ISSUE_FINAL_DECISION", "ISSUE_ADJOURNMENT_NOTICE", "STRUCK_OUT", "NON_COMPLIANT_NOTIFICATION"})
+        "ISSUE_FINAL_DECISION", "ISSUE_FINAL_DECISION_WELSH", "ISSUE_ADJOURNMENT_NOTICE", "STRUCK_OUT", "NON_COMPLIANT_NOTIFICATION"})
     public void createRepsPersonalisationWhenNotificationApplied(NotificationEventType eventType) {
         Personalisation result = factory.apply(eventType);
         assertEquals(withRepresentativePersonalisation, result);
