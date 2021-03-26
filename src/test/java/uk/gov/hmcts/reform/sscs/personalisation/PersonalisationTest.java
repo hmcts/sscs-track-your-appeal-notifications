@@ -494,7 +494,7 @@ public class PersonalisationTest {
                                          String expectedPanelComposition,
                                          String expectedBenefitDesc,
                                          String welshExpectedPanelComposition,
-                                         String expectedAcronym ) {
+                                         String expectedAcronym) {
         List<Event> events = new ArrayList<>();
         events.add(Event.builder().value(EventDetails.builder().date(DATE).type(APPEAL_RECEIVED.getCcdType()).build()).build());
 
