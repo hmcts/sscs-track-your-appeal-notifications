@@ -302,6 +302,8 @@ public class SendNotificationService {
             return getDocumentForType(newSscsCaseData.getLatestDocumentForDocumentType(DECISION_NOTICE));
         } else if (ISSUE_FINAL_DECISION.equals(notificationEventType)) {
             return getDocumentForType(newSscsCaseData.getLatestDocumentForDocumentType(FINAL_DECISION_NOTICE));
+        } else if (ISSUE_FINAL_DECISION_WELSH.equals(notificationEventType)) {
+            return getDocumentForType(newSscsCaseData.getLatestWelshDocumentForDocumentType(FINAL_DECISION_NOTICE).orElse(null));
         } else if (ISSUE_ADJOURNMENT_NOTICE.equals(notificationEventType)) {
             return getDocumentForType(newSscsCaseData.getLatestDocumentForDocumentType(ADJOURNMENT_NOTICE));
         } else if (ISSUE_ADJOURNMENT_NOTICE_WELSH.equals(notificationEventType)) {

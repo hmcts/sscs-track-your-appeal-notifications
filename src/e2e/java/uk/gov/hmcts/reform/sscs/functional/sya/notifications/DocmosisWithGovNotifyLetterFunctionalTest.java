@@ -8,6 +8,7 @@ import static uk.gov.hmcts.reform.sscs.domain.notify.NotificationEventType.DRAFT
 import static uk.gov.hmcts.reform.sscs.domain.notify.NotificationEventType.ISSUE_ADJOURNMENT_NOTICE;
 import static uk.gov.hmcts.reform.sscs.domain.notify.NotificationEventType.ISSUE_ADJOURNMENT_NOTICE_WELSH;
 import static uk.gov.hmcts.reform.sscs.domain.notify.NotificationEventType.ISSUE_FINAL_DECISION;
+import static uk.gov.hmcts.reform.sscs.domain.notify.NotificationEventType.ISSUE_FINAL_DECISION_WELSH;
 import static uk.gov.hmcts.reform.sscs.domain.notify.NotificationEventType.NON_COMPLIANT_NOTIFICATION;
 import static uk.gov.hmcts.reform.sscs.domain.notify.NotificationEventType.PROCESS_AUDIO_VIDEO;
 import static uk.gov.hmcts.reform.sscs.domain.notify.NotificationEventType.PROCESS_AUDIO_VIDEO_WELSH;
@@ -58,6 +59,7 @@ public class DocmosisWithGovNotifyLetterFunctionalTest extends AbstractFunctiona
             new Object[]{ISSUE_ADJOURNMENT_NOTICE_WELSH, expectedNumberOfLettersIsThree},
             new Object[]{STRUCK_OUT, expectedNumberOfLettersIsTwo},
             new Object[]{ISSUE_FINAL_DECISION, expectedNumberOfLettersIsTwo},
+            new Object[]{ISSUE_FINAL_DECISION_WELSH, expectedNumberOfLettersIsTwo},
             new Object[]{DECISION_ISSUED, expectedNumberOfLettersIsTwo},
             new Object[]{DIRECTION_ISSUED, expectedNumberOfLettersIsTwo},
             new Object[]{APPEAL_RECEIVED_NOTIFICATION, expectedNumberOfLettersIsTwo},

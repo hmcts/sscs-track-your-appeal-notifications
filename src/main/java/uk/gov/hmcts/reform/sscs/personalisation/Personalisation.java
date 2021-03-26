@@ -591,6 +591,7 @@ public class Personalisation<E extends NotificationWrapper> {
                 || STRUCK_OUT.equals(notificationEventType) && caseData.getLanguagePreference().equals(LanguagePreference.WELSH) && subscriptionType.equals(REPRESENTATIVE)
                 || REQUEST_INFO_INCOMPLETE.equals(notificationEventType)
                 || ISSUE_FINAL_DECISION.equals(notificationEventType)
+                || ISSUE_FINAL_DECISION_WELSH.equals(notificationEventType)
                 || ISSUE_ADJOURNMENT_NOTICE.equals(notificationEventType)
                 || ISSUE_ADJOURNMENT_NOTICE_WELSH.equals(notificationEventType)
                 || JOINT_PARTY_ADDED.equals(notificationEventType)

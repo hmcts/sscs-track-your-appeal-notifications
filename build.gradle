@@ -89,7 +89,7 @@ dependencyManagement {
         dependency group: 'commons-beanutils', name: 'commons-beanutils', version: '1.9.4'
 
         dependency group: 'org.apache.logging.log4j', name: 'log4j-api', version: '2.14.0'
-        dependency group: 'org.apache.logging.log4j', name: 'log4j-to-slf4j', version: '2.14.0'
+        dependency group: 'org.apache.logging.log4j', name: 'log4j-to-slf4j', version: '2.14.1'
 
         // resolves: CVE-2020-9489
         dependency group: 'org.apache.tika', name: 'tika-core', version: '1.25'
@@ -149,6 +149,13 @@ dependencyManagement {
         //CVE-2021-22112
         dependencySet(group: 'org.springframework.security', version: '5.4.5') {
             entry 'spring-security-crypto'
+        }
+
+        //CVE-2021-27807
+        dependencySet(group: 'org.apache.pdfbox', version: '2.0.23') {
+            entry 'pdfbox'
+            entry 'pdfbox-tools'
+            entry 'preflight'
         }
     }
 
@@ -298,15 +305,15 @@ dependencies {
     compile group: 'uk.gov.hmcts.reform', name: 'java-logging-appinsights', version: versions.reformLogging
     compile group: 'uk.gov.hmcts.reform', name: 'sscs-job-scheduler', version: '1.5.3'
     compile group: 'uk.gov.hmcts.reform', name: 'service-auth-provider-client', version: '3.1.4'
-    compile group: 'uk.gov.hmcts.reform', name: 'sscs-common', version: '4.2.30'
-    compile group: 'uk.gov.hmcts.reform', name: 'sscs-pdf-email-common', version: '1.4.25'
+    compile group: 'uk.gov.hmcts.reform', name: 'sscs-common', version: '4.2.34'
+    compile group: 'uk.gov.hmcts.reform', name: 'sscs-pdf-email-common', version: '1.4.28'
 
     compile group: 'uk.gov.service.notify', name: 'notifications-java-client', version: '3.17.0-RELEASE'
     compile group: 'com.squareup.okhttp3', name: 'okhttp', version: '4.9.1'
     compile group: 'commons-fileupload', name: 'commons-fileupload', version: '1.4'
     compile group: 'io.github.openfeign.form', name: 'feign-form', version: '3.8.0'
 
-    compile group: 'org.apache.pdfbox', name: 'pdfbox', version: '2.0.22'
+    compile group: 'org.apache.pdfbox', name: 'pdfbox', version: '2.0.23'
 
     compile group: 'com.microsoft.azure', name: 'applicationinsights-logging-logback', version: '2.6.2'
     compile group: 'com.microsoft.azure', name: 'applicationinsights-spring-boot-starter', version: '2.6.2'
