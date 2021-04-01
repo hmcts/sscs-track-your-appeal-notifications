@@ -6,9 +6,9 @@ plugins {
     id 'jacoco'
     id 'io.spring.dependency-management' version '1.0.11.RELEASE'
     id 'org.springframework.boot' version '2.3.5.RELEASE'
-    id 'uk.gov.hmcts.java' version '0.12.5'
+    id 'uk.gov.hmcts.java' version '0.12.6'
     id 'org.owasp.dependencycheck' version '6.1.2'
-    id 'com.github.ben-manes.versions' version '0.36.0'
+    id 'com.github.ben-manes.versions' version '0.38.0'
     id 'net.ltgt.apt' version '0.21'
     id "org.flywaydb.flyway" version "7.7.0"
 }
@@ -106,7 +106,7 @@ dependencyManagement {
         }
 
         // CVE-2020-13954
-        dependencySet(group: 'org.apache.cxf', version: '3.4.2') {
+        dependencySet(group: 'org.apache.cxf', version: '3.4.3') {
             entry 'cxf-core'
             entry 'cxf-rt-frontend-jaxrs'
             entry 'cxf-rt-rs-client'
@@ -254,7 +254,7 @@ def versions = [
         reformLogging   : '5.0.1',
         springHystrix   : '1.4.2.RELEASE',
         springfoxSwagger: '2.8.0',
-        restAssured     : '4.3.0'
+        restAssured     : '4.3.3'
 ]
 
 configurations.all {
@@ -305,8 +305,9 @@ dependencies {
     compile group: 'uk.gov.hmcts.reform', name: 'java-logging-appinsights', version: versions.reformLogging
     compile group: 'uk.gov.hmcts.reform', name: 'sscs-job-scheduler', version: '1.5.3'
     compile group: 'uk.gov.hmcts.reform', name: 'service-auth-provider-client', version: '3.1.4'
-    compile group: 'uk.gov.hmcts.reform', name: 'sscs-common', version: '4.2.34'
-    compile group: 'uk.gov.hmcts.reform', name: 'sscs-pdf-email-common', version: '1.4.28'
+
+    compile group: 'com.github.hmcts', name: 'sscs-common', version: '4.2.39'
+    compile group: 'com.github.hmcts', name: 'sscs-pdf-email-common', version: '1.4.30'
 
     compile group: 'uk.gov.service.notify', name: 'notifications-java-client', version: '3.17.0-RELEASE'
     compile group: 'com.squareup.okhttp3', name: 'okhttp', version: '4.9.1'
