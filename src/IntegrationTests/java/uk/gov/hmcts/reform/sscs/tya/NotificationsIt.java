@@ -850,7 +850,7 @@ public class NotificationsIt extends NotificationsItBase {
                 "paper",
                 Arrays.asList("8ce8d794-75e8-49a0-b4d2-0c6cd2061c11", "e93dd744-84a1-4173-847a-6d023b55637f"),
                 Arrays.asList("d2b4394b-d1c9-4d5c-a44e-b382e41c67e5", "ee58f7d0-8de7-4bee-acd4-252213db6b7b"),
-                Collections.singletonList("TB-SCS-GNO-ENG-00656.docx"),
+                Arrays.asList("TB-SCS-GNO-ENG-00656.docx", "TB-SCS-GNO-ENG-00656.docx"),
                 "yes",
                 "yes",
                 "yes",
@@ -864,7 +864,7 @@ public class NotificationsIt extends NotificationsItBase {
                 "oral",
                 Arrays.asList("8ce8d794-75e8-49a0-b4d2-0c6cd2061c11", "e93dd744-84a1-4173-847a-6d023b55637f"),
                 Arrays.asList("d2b4394b-d1c9-4d5c-a44e-b382e41c67e5", "ee58f7d0-8de7-4bee-acd4-252213db6b7b"),
-                Collections.singletonList("TB-SCS-GNO-ENG-00656.docx"),
+                Arrays.asList("TB-SCS-GNO-ENG-00656.docx", "TB-SCS-GNO-ENG-00656.docx"),
                 "yes",
                 "yes",
                 "yes",
@@ -878,7 +878,7 @@ public class NotificationsIt extends NotificationsItBase {
                 "paper",
                 Collections.singletonList("e93dd744-84a1-4173-847a-6d023b55637f"),
                 Arrays.asList("d2b4394b-d1c9-4d5c-a44e-b382e41c67e5", "ee58f7d0-8de7-4bee-acd4-252213db6b7b"),
-                Collections.singletonList("TB-SCS-GNO-ENG-00656.docx"),
+                Arrays.asList("TB-SCS-GNO-ENG-00656.docx", "TB-SCS-GNO-ENG-00656.docx"),
                 "no",
                 "yes",
                 "yes",
@@ -892,7 +892,7 @@ public class NotificationsIt extends NotificationsItBase {
                 "paper",
                 Collections.emptyList(),
                 Collections.emptyList(),
-                Collections.singletonList("TB-SCS-GNO-ENG-00656.docx"),
+                Arrays.asList("TB-SCS-GNO-ENG-00656.docx", "TB-SCS-GNO-ENG-00656.docx"),
                 "no",
                 "no",
                 "no",
@@ -1960,7 +1960,7 @@ public class NotificationsIt extends NotificationsItBase {
                 "paper",
                 Arrays.asList("8ce8d794-75e8-49a0-b4d2-0c6cd2061c11", "e93dd744-84a1-4173-847a-6d023b55637f"),
                 Arrays.asList("d2b4394b-d1c9-4d5c-a44e-b382e41c67e5", "ee58f7d0-8de7-4bee-acd4-252213db6b7b"),
-                Collections.singletonList("TB-SCS-GNO-ENG-00656.docx"),
+                Arrays.asList("TB-SCS-GNO-ENG-00656.docx", "TB-SCS-GNO-ENG-00656.docx"),
                 "yes",
                 "yes",
                 "yes",
@@ -1974,7 +1974,7 @@ public class NotificationsIt extends NotificationsItBase {
                 "oral",
                 Arrays.asList("8ce8d794-75e8-49a0-b4d2-0c6cd2061c11", "e93dd744-84a1-4173-847a-6d023b55637f"),
                 Arrays.asList("d2b4394b-d1c9-4d5c-a44e-b382e41c67e5", "ee58f7d0-8de7-4bee-acd4-252213db6b7b"),
-                Collections.singletonList("TB-SCS-GNO-ENG-00656.docx"),
+                Arrays.asList("TB-SCS-GNO-ENG-00656.docx", "TB-SCS-GNO-ENG-00656.docx"),
                 "yes",
                 "yes",
                 "yes",
@@ -1988,7 +1988,7 @@ public class NotificationsIt extends NotificationsItBase {
                 "paper",
                 Collections.singletonList("e93dd744-84a1-4173-847a-6d023b55637f"),
                 Arrays.asList("d2b4394b-d1c9-4d5c-a44e-b382e41c67e5", "ee58f7d0-8de7-4bee-acd4-252213db6b7b"),
-                Collections.singletonList("TB-SCS-GNO-ENG-00656.docx"),
+                Arrays.asList("TB-SCS-GNO-ENG-00656.docx", "TB-SCS-GNO-ENG-00656.docx"),
                 "no",
                 "yes",
                 "yes",
@@ -2002,7 +2002,7 @@ public class NotificationsIt extends NotificationsItBase {
                 "paper",
                 Collections.emptyList(),
                 Collections.emptyList(),
-                Collections.singletonList("TB-SCS-GNO-ENG-00656.docx"),
+                Arrays.asList("TB-SCS-GNO-ENG-00656.docx", "TB-SCS-GNO-ENG-00656.docx"),
                 "no",
                 "no",
                 "no",
@@ -3688,10 +3688,11 @@ public class NotificationsIt extends NotificationsItBase {
         assertHttpStatus(response, HttpStatus.OK);
         verify(notificationClient, atMostOnce()).sendEmail(any(), any(), any(), any());
         verify(notificationClient, atMost(2)).sendSms(any(), any(), any(), any(), any());
-        verify(notificationClient, atMostOnce()).sendPrecompiledLetterWithInputStream(any(), any());
 
         if (notificationEventType.equals(APPEAL_LAPSED_NOTIFICATION.getId())) {
-            verify(notificationClient, atMostOnce()).sendLetter(any(), any(), any());
+            verify(notificationClient, atLeast(2)).sendPrecompiledLetterWithInputStream(any(), any());
+        } else {
+            verify(notificationClient, atMostOnce()).sendPrecompiledLetterWithInputStream(any(), any());
         }
         verifyNoMoreInteractions(notificationClient);
     }
