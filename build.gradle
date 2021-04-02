@@ -304,7 +304,7 @@ dependencies {
     compile group: 'uk.gov.hmcts.reform', name: 'java-logging-httpcomponents', version: versions.reformLogging
     compile group: 'uk.gov.hmcts.reform', name: 'java-logging-appinsights', version: versions.reformLogging
     compile group: 'uk.gov.hmcts.reform', name: 'sscs-job-scheduler', version: '1.5.3'
-    compile group: 'uk.gov.hmcts.reform', name: 'service-auth-provider-client', version: '3.1.4'
+    compile group: 'uk.gov.hmcts.reform', name: 'service-auth-provider-client', version: '4.0.0'
 
     compile group: 'com.github.hmcts', name: 'sscs-common', version: '4.2.42'
     compile group: 'com.github.hmcts', name: 'sscs-pdf-email-common', version: '1.4.30'
