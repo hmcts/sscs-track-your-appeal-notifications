@@ -409,7 +409,7 @@ public class WelshNotificationsFunctionalTest extends AbstractFunctionalTest {
     }
 
     @Test
-    public void shouldSendAppointeeAppealLapsedNotification() throws NotificationClientException, IOException {
+    public void shouldSendAppealLapsedNotificationToAppointeeJointPartyAndRep() throws NotificationClientException, IOException {
         simulateCcdCallback(APPEAL_LAPSED_NOTIFICATION,
                 "appointee/" + APPEAL_LAPSED_NOTIFICATION.getId() + "CallbackWelsh.json");
         List<Notification> notifications = tryFetchNotificationsForTestCase(
@@ -425,8 +425,9 @@ public class WelshNotificationsFunctionalTest extends AbstractFunctionalTest {
         Notification emailNotificationJp = notifications.stream().filter(f -> f.getTemplateId().toString().equals(appealLapsedJointPartyEmailTemplateIdWelsh)).collect(toList()).get(0);
         assertTrue(emailNotificationJp.getBody().contains("Rydym felly wedi cau’r apêl hon."));
         List<Notification> letterNotification = fetchLetters();
-        assertEquals(2, letterNotification.size());
+        assertEquals(3, letterNotification.size());
         assertEquals("Pre-compiled PDF", letterNotification.get(0).getSubject().orElse("Unknown Subject"));
+        assertEquals("Pre-compiled PDF", letterNotification.get(1).getSubject().orElse("Unknown Subject"));
         assertEquals("Pre-compiled PDF", letterNotification.get(1).getSubject().orElse("Unknown Subject"));
     }
 

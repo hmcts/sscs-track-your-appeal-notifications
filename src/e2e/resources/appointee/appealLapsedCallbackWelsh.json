@@ -73,7 +73,23 @@
           "wantsToAttend": "Yes"
         },
         "mrnDetails": {},
-        "rep": {},
+        "rep": {
+          "hasRepresentative": "Yes",
+          "name": {
+            "title": "Mr",
+            "firstName": "Harry",
+            "lastName": "Potter"
+          },
+          "address": {
+            "line1": "123 Hairy Lane",
+            "line2": "Off Hairy Park",
+            "town": "Town",
+            "county": "County",
+            "postcode": "CM14 4LQ"
+          },
+          "contact": {},
+          "organisation": "HP Ltd"
+        },
         "signer": null,
         "hearingType": "paper"
       },
@@ -105,6 +121,14 @@
           "subscribeSms": "Yes",
           "wantSmsNotifications": "Yes",
           "tya": "232929249492"
+        },
+        "representativeSubscription": {
+          "email": "sscstest+notify@greencroftconsulting.com",
+          "mobile": "07398785050",
+          "subscribeEmail": "No",
+          "subscribeSms": "No",
+          "wantSmsNotifications": "No",
+          "tya": ""
         }
       }
     },

@@ -6,9 +6,9 @@ plugins {
     id 'jacoco'
     id 'io.spring.dependency-management' version '1.0.11.RELEASE'
     id 'org.springframework.boot' version '2.3.5.RELEASE'
-    id 'uk.gov.hmcts.java' version '0.12.5'
+    id 'uk.gov.hmcts.java' version '0.12.6'
     id 'org.owasp.dependencycheck' version '6.1.2'
-    id 'com.github.ben-manes.versions' version '0.36.0'
+    id 'com.github.ben-manes.versions' version '0.38.0'
     id 'net.ltgt.apt' version '0.21'
     id "org.flywaydb.flyway" version "7.7.0"
 }
@@ -92,7 +92,7 @@ dependencyManagement {
         dependency group: 'org.apache.logging.log4j', name: 'log4j-to-slf4j', version: '2.14.1'
 
         // resolves: CVE-2020-9489
-        dependency group: 'org.apache.tika', name: 'tika-core', version: '1.25'
+        dependency group: 'org.apache.tika', name: 'tika-core', version: '1.26'
 
         // checkstyle needs a certain version and so does spring fox swagger, so can't use latest
         dependencySet(group: 'com.google.guava', version: '30.1-jre') {
@@ -106,7 +106,7 @@ dependencyManagement {
         }
 
         // CVE-2020-13954
-        dependencySet(group: 'org.apache.cxf', version: '3.4.2') {
+        dependencySet(group: 'org.apache.cxf', version: '3.4.3') {
             entry 'cxf-core'
             entry 'cxf-rt-frontend-jaxrs'
             entry 'cxf-rt-rs-client'
@@ -141,7 +141,7 @@ dependencyManagement {
         }
 
         // resolves: CVE-2019-10101, CVE-2019-10102, CVE-2019-10103
-        dependencySet(group: 'org.jetbrains.kotlin', version: '1.4.31') {
+        dependencySet(group: 'org.jetbrains.kotlin', version: '1.4.32') {
             entry 'kotlin-stdlib'
             entry 'kotlin-stdlib-common'
         }
@@ -278,7 +278,7 @@ dependencies {
     compile group: 'org.flywaydb', name: 'flyway-core', version: '6.5.6'
     compile group: 'org.postgresql', name: 'postgresql', version: '42.2.14'
     compile group: 'net.bytebuddy', name: 'byte-buddy', version: '1.10.22'
-    compile group: 'org.elasticsearch', name: 'elasticsearch', version: '7.11.1'
+    compile group: 'org.elasticsearch', name: 'elasticsearch', version: '7.12.0'
 
     compile group: 'org.springframework.boot', name: 'spring-boot-starter-actuator'
     compile group: 'org.springframework.boot', name: 'spring-boot-starter-aop'
@@ -304,9 +304,10 @@ dependencies {
     compile group: 'uk.gov.hmcts.reform', name: 'java-logging-httpcomponents', version: versions.reformLogging
     compile group: 'uk.gov.hmcts.reform', name: 'java-logging-appinsights', version: versions.reformLogging
     compile group: 'uk.gov.hmcts.reform', name: 'sscs-job-scheduler', version: '1.5.3'
-    compile group: 'uk.gov.hmcts.reform', name: 'service-auth-provider-client', version: '3.1.4'
-    compile group: 'uk.gov.hmcts.reform', name: 'sscs-common', version: '4.2.37-RC-SSCS-8855'
-    compile group: 'uk.gov.hmcts.reform', name: 'sscs-pdf-email-common', version: '1.4.29-RC-8855-4'
+    compile group: 'uk.gov.hmcts.reform', name: 'service-auth-provider-client', version: '4.0.0'
+
+    compile group: 'com.github.hmcts', name: 'sscs-common', version: '4.2.43-RC-8855'
+    compile group: 'com.github.hmcts', name: 'sscs-pdf-email-common', version: '1.4.31-RC-SSCS-8855-1'
 
     compile group: 'uk.gov.service.notify', name: 'notifications-java-client', version: '3.17.0-RELEASE'
     compile group: 'com.squareup.okhttp3', name: 'okhttp', version: '4.9.1'
@@ -315,7 +316,7 @@ dependencies {
 
     compile group: 'org.apache.pdfbox', name: 'pdfbox', version: '2.0.23'
 
-    compile group: 'com.microsoft.azure', name: 'applicationinsights-logging-logback', version: '2.6.2'
+    compile group: 'com.microsoft.azure', name: 'applicationinsights-logging-logback', version: '2.6.3'
     compile group: 'com.microsoft.azure', name: 'applicationinsights-spring-boot-starter', version: '2.6.2'
 
     compileOnly("org.springframework.boot:spring-boot-devtools")
@@ -327,7 +328,7 @@ dependencies {
     integrationTestCompileOnly 'org.projectlombok:lombok:1.18.18'
     integrationTestAnnotationProcessor "org.projectlombok:lombok:1.18.18"
 
-    testCompile(group: 'org.springframework.boot', name: 'spring-boot-starter-test', version: '2.4.3') {
+    testCompile(group: 'org.springframework.boot', name: 'spring-boot-starter-test', version: '2.4.4') {
         exclude group: "com.vaadin.external.google", module:"android-json"
     }
     testCompile group: 'org.mockito', name: 'mockito-core', version: '3.8.0'
