@@ -321,7 +321,7 @@ dependencies {
 
     compileOnly("org.springframework.boot:spring-boot-devtools")
 
-    compile 'org.projectlombok:lombok:1.18.18'
+    compile 'org.projectlombok:lombok:1.18.20'
     annotationProcessor "org.projectlombok:lombok:1.18.18"
     testCompileOnly 'org.projectlombok:lombok:1.18.18'
     testAnnotationProcessor "org.projectlombok:lombok:1.18.18"
