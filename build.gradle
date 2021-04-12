@@ -306,8 +306,8 @@ dependencies {
     compile group: 'uk.gov.hmcts.reform', name: 'sscs-job-scheduler', version: '1.5.3'
     compile group: 'uk.gov.hmcts.reform', name: 'service-auth-provider-client', version: '4.0.0'
 
-    compile group: 'com.github.hmcts', name: 'sscs-common', version: '4.2.43-RC-8855'
-    compile group: 'com.github.hmcts', name: 'sscs-pdf-email-common', version: '1.4.31-RC-SSCS-8855-1'
+    compile group: 'com.github.hmcts', name: 'sscs-common', version: '4.2.45'
+    compile group: 'com.github.hmcts', name: 'sscs-pdf-email-common', version: '1.4.32'
 
     compile group: 'uk.gov.service.notify', name: 'notifications-java-client', version: '3.17.0-RELEASE'
     compile group: 'com.squareup.okhttp3', name: 'okhttp', version: '4.9.1'
