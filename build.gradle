@@ -165,9 +165,6 @@ repositories {
 
     mavenLocal()
 
-    maven {
-        url "https://dl.bintray.com/hmcts/hmcts-maven"
-    }
     mavenCentral()
     jcenter()
     maven {
