@@ -488,7 +488,7 @@ public class PersonalisationTest {
             "ESA,judge and a doctor, Employment and Support Allowance, barnwr a meddyg (os yw’n berthnasol), ESA",
             "UC,judge\\, doctor and disability expert (if applicable), Universal Credit, barnwr a meddyg (os yw’n berthnasol), UC",
             "DLA,judge\\, doctor and disability expert, Disability Living Allowance, barnwr\\, meddyg ac arbenigwr anableddau, DLA",
-            "CARERS_ALLOWANCE,judge\\, doctor and disability expert, Carer's Allowance, barnwr\\, meddyg ac arbenigwr anableddau, CARERS_ALLOWANCE",
+            "carersAllowance,judge\\, doctor and disability expert, Carer's Allowance, barnwr\\, meddyg ac arbenigwr anableddau, CARERS_ALLOWANCE",
     })
     public void customisePersonalisation(String benefitType,
                                          String expectedPanelComposition,
