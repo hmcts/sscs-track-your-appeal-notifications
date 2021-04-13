@@ -861,10 +861,10 @@ notification:
     paper:
       responseReceived:
         appellant:
-          emailId: 8666f5a7-afe7-423d-a2a9-af5b7aff79cc
+          emailId: 3f88b27c-60c2-4173-8b7c-ab9a8af3bdc6
           smsId: e4a574f8-dd1e-4c31-8826-88fff5427db3
         appointee:
-          emailId: 8666f5a7-afe7-423d-a2a9-af5b7aff79cc
+          emailId: 3f88b27c-60c2-4173-8b7c-ab9a8af3bdc6
           smsId: e4a574f8-dd1e-4c31-8826-88fff5427db3
         representative:
           emailId: 5abc83d8-f6b8-4385-805b-ffbb0f64b84b
@@ -872,16 +872,16 @@ notification:
       dwpUploadResponse:
         docmosisId: TB-SCS-GNO-WEL-00478.docx
         appellant:
-          emailId: 8666f5a7-afe7-423d-a2a9-af5b7aff79cc
+          emailId: 3f88b27c-60c2-4173-8b7c-ab9a8af3bdc6
           smsId: e4a574f8-dd1e-4c31-8826-88fff5427db3
         appointee:
-          emailId: 8666f5a7-afe7-423d-a2a9-af5b7aff79cc
+          emailId: 3f88b27c-60c2-4173-8b7c-ab9a8af3bdc6
           smsId: e4a574f8-dd1e-4c31-8826-88fff5427db3
         representative:
           emailId: ebde7b04-7264-4dd0-b569-195ba596dabd
           smsId: 7e068c25-fc93-4997-831c-717a319730c1
         joint_party:
-          emailId: 93c0ab9c-7758-431d-8bdf-2411f4c6e2f2
+          emailId: 62f86a22-3c57-49b5-bd16-516ab3d61c32
           smsId: cf36c940-b9e1-4d25-aaed-3ea4362706fc
       appealDormant:
         appellant:

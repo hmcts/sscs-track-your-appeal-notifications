@@ -6,11 +6,11 @@ plugins {
     id 'jacoco'
     id 'io.spring.dependency-management' version '1.0.11.RELEASE'
     id 'org.springframework.boot' version '2.3.5.RELEASE'
-    id 'uk.gov.hmcts.java' version '0.12.6'
-    id 'org.owasp.dependencycheck' version '6.1.2'
+    id 'uk.gov.hmcts.java' version '0.12.8'
+    id 'org.owasp.dependencycheck' version '6.1.5'
     id 'com.github.ben-manes.versions' version '0.38.0'
     id 'net.ltgt.apt' version '0.21'
-    id "org.flywaydb.flyway" version "7.7.0"
+    id "org.flywaydb.flyway" version "7.7.3"
 }
 
 apply plugin: 'org.springframework.boot'
@@ -88,7 +88,7 @@ dependencyManagement {
         // Solves CVE-2019-10086
         dependency group: 'commons-beanutils', name: 'commons-beanutils', version: '1.9.4'
 
-        dependency group: 'org.apache.logging.log4j', name: 'log4j-api', version: '2.14.0'
+        dependency group: 'org.apache.logging.log4j', name: 'log4j-api', version: '2.14.1'
         dependency group: 'org.apache.logging.log4j', name: 'log4j-to-slf4j', version: '2.14.1'
 
         // resolves: CVE-2020-9489
@@ -119,7 +119,7 @@ dependencyManagement {
         }
 
         // CVE-2019-16869 - brought in by qpid-jms-client
-        dependencySet(group: 'io.netty', version: '4.1.60.Final') {
+        dependencySet(group: 'io.netty', version: '4.1.63.Final') {
             entry 'netty-handler'
             entry 'netty-transport-native-epoll'
             entry 'netty-transport-native-kqueue'
@@ -276,7 +276,7 @@ dependencies {
 
     compile group: 'com.mchange', name: 'c3p0', version: '0.9.5.5'
     compile group: 'org.flywaydb', name: 'flyway-core', version: '6.5.6'
-    compile group: 'org.postgresql', name: 'postgresql', version: '42.2.14'
+    compile group: 'org.postgresql', name: 'postgresql', version: '42.2.19'
     compile group: 'net.bytebuddy', name: 'byte-buddy', version: '1.10.22'
     compile group: 'org.elasticsearch', name: 'elasticsearch', version: '7.12.0'
 
@@ -296,7 +296,7 @@ dependencies {
     compile group: 'io.springfox', name: 'springfox-swagger-ui', version: versions.springfoxSwagger
     compile group: 'com.atlassian.commonmark', name: 'commonmark', version: '0.17.0'
     compile group: 'org.springframework', name: 'spring-jms'
-    compile group: 'org.apache.qpid', name: 'qpid-jms-client', version: '0.56.0'
+    compile group: 'org.apache.qpid', name: 'qpid-jms-client', version: '0.57.0'
     compile group: 'org.jadira.usertype', name: 'usertype.core', version: '7.0.0.CR1'
 
     compile group: 'uk.gov.hmcts.reform', name: 'properties-volume-spring-boot-starter', version:'0.1.0'
@@ -306,8 +306,8 @@ dependencies {
     compile group: 'uk.gov.hmcts.reform', name: 'sscs-job-scheduler', version: '1.5.3'
     compile group: 'uk.gov.hmcts.reform', name: 'service-auth-provider-client', version: '4.0.0'
 
-    compile group: 'com.github.hmcts', name: 'sscs-common', version: '4.2.43-RC-SSCS-9037-2'
-    compile group: 'com.github.hmcts', name: 'sscs-pdf-email-common', version: '1.4.31'
+    compile group: 'com.github.hmcts', name: 'sscs-common', version: '4.2.46'
+    compile group: 'com.github.hmcts', name: 'sscs-pdf-email-common', version: '1.4.32'
 
     compile group: 'uk.gov.service.notify', name: 'notifications-java-client', version: '3.17.0-RELEASE'
     compile group: 'com.squareup.okhttp3', name: 'okhttp', version: '4.9.1'
@@ -317,11 +317,11 @@ dependencies {
     compile group: 'org.apache.pdfbox', name: 'pdfbox', version: '2.0.23'
 
     compile group: 'com.microsoft.azure', name: 'applicationinsights-logging-logback', version: '2.6.3'
-    compile group: 'com.microsoft.azure', name: 'applicationinsights-spring-boot-starter', version: '2.6.2'
+    compile group: 'com.microsoft.azure', name: 'applicationinsights-spring-boot-starter', version: '2.6.3'
 
     compileOnly("org.springframework.boot:spring-boot-devtools")
 
-    compile 'org.projectlombok:lombok:1.18.18'
+    compile 'org.projectlombok:lombok:1.18.20'
     annotationProcessor "org.projectlombok:lombok:1.18.18"
     testCompileOnly 'org.projectlombok:lombok:1.18.18'
     testAnnotationProcessor "org.projectlombok:lombok:1.18.18"
@@ -331,7 +331,7 @@ dependencies {
     testCompile(group: 'org.springframework.boot', name: 'spring-boot-starter-test', version: '2.4.4') {
         exclude group: "com.vaadin.external.google", module:"android-json"
     }
-    testCompile group: 'org.mockito', name: 'mockito-core', version: '3.8.0'
+    testCompile group: 'org.mockito', name: 'mockito-core', version: '3.9.0'
     testCompile 'pl.pragmatists:JUnitParams:1.1.1'
 
     runtime "org.springframework.boot:spring-boot-properties-migrator"
