@@ -68,7 +68,8 @@ sonarqube {
         property "sonar.exclusions", "src/main/java/uk/gov/hmcts/reform/sscs/domain/**," +
                 "src/main/java/uk/gov/hmcts/reform/sscs/TrackYourAppealNotificationsApplication.java," +
                 "src/main/java/uk/gov/hmcts/reform/sscs/servicebus/messaging/**," +
-                "src/main/java/uk/gov/hmcts/reform/sscs/config/**,"
+                "src/main/java/uk/gov/hmcts/reform/sscs/config/**," +
+                "src/main/java/uk/gov/hmcts/reform/sscs/utils/GetAllTemplatesFromNotify.java,"
     }
 }
 
