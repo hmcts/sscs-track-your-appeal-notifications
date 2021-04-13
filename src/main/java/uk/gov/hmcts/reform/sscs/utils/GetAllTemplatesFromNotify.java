@@ -1,5 +1,7 @@
 package uk.gov.hmcts.reform.sscs.utils;
 
+import java.util.HashMap;
+import java.util.Map;
 import java.util.Optional;
 import uk.gov.service.notify.NotificationClient;
 import uk.gov.service.notify.NotificationClientException;
@@ -17,7 +19,7 @@ public final class GetAllTemplatesFromNotify {
 
     }
 
-    private static final String testApiKey = "enter test key here";
+    private static final String testApiKey = "";
 
     public static void main(String[] args) {
         String var = "benefit_name_acronym";
@@ -32,7 +34,9 @@ public final class GetAllTemplatesFromNotify {
             int count = 0;
 
             for (Template template: templates.getTemplates()) {
-                if (template.getPersonalisation().isPresent() && template.getPersonalisation().get().keySet().contains(var)) {
+                Map<String, Object> personalisation = template.getPersonalisation().orElse(new HashMap<String, Object>());
+
+                if (personalisation.keySet().contains(var)) {
                     if (template.getName().contains("COR") || template.getName().contains("NOT USED")
                         || template.getName().contains("OLD")) {
                         System.out.println("Excluding: " + template.getName());
