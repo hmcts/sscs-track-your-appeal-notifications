@@ -1,9 +1,5 @@
 package uk.gov.hmcts.reform.sscs.utils;
 
-import org.springframework.beans.factory.annotation.Value;
-import org.springframework.boot.SpringApplication;
-import org.springframework.boot.autoconfigure.EnableAutoConfiguration;
-import org.springframework.context.annotation.ComponentScan;
 import uk.gov.service.notify.NotificationClient;
 import uk.gov.service.notify.NotificationClientException;
 import uk.gov.service.notify.Template;
@@ -36,7 +32,7 @@ public final class GetAllTemplatesFromNotify {
             for (Template template: templates.getTemplates()) {
                 if (template.getPersonalisation().get().keySet().contains(var)) {
                     if (template.getName().contains("COR") || template.getName().contains("NOT USED")
-                    || template.getName().contains("OLD")) {
+                        || template.getName().contains("OLD")) {
                         System.out.println("Excluding: " + template.getName());
                         continue;
                     }
