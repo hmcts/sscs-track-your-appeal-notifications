@@ -1,9 +1,11 @@
 package uk.gov.hmcts.reform.sscs.utils;
 
+import java.util.Optional;
 import uk.gov.service.notify.NotificationClient;
 import uk.gov.service.notify.NotificationClientException;
 import uk.gov.service.notify.Template;
 import uk.gov.service.notify.TemplateList;
+
 
 public final class GetAllTemplatesFromNotify {
 
@@ -30,7 +32,7 @@ public final class GetAllTemplatesFromNotify {
             int count = 0;
 
             for (Template template: templates.getTemplates()) {
-                if (template.getPersonalisation().get().keySet().contains(var)) {
+                if (template.getPersonalisation().isPresent() && template.getPersonalisation().get().keySet().contains(var)) {
                     if (template.getName().contains("COR") || template.getName().contains("NOT USED")
                         || template.getName().contains("OLD")) {
                         System.out.println("Excluding: " + template.getName());
@@ -39,9 +41,8 @@ public final class GetAllTemplatesFromNotify {
                     System.out.println("Name: " + template.getName());
                     System.out.println("ID: " + template.getId());
                     System.out.println("Type: " + template.getTemplateType());
-                    if (template.getSubject().isPresent()) {
-                        System.out.println("Subject for " + template.getSubject().get());
-                    }
+                    Optional subject = template.getSubject();
+                    subject.ifPresent(s -> System.out.println("Subject: " + s));
                     System.out.println("Body is: " + template.getBody());
                     count++;
                     continue;
