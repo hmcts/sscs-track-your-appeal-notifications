@@ -68,7 +68,8 @@ sonarqube {
         property "sonar.exclusions", "src/main/java/uk/gov/hmcts/reform/sscs/domain/**," +
                 "src/main/java/uk/gov/hmcts/reform/sscs/TrackYourAppealNotificationsApplication.java," +
                 "src/main/java/uk/gov/hmcts/reform/sscs/servicebus/messaging/**," +
-                "src/main/java/uk/gov/hmcts/reform/sscs/config/**,"
+                "src/main/java/uk/gov/hmcts/reform/sscs/config/**," +
+                "src/main/java/uk/gov/hmcts/reform/sscs/utils/GetAllTemplatesFromNotify.java,"
     }
 }
 
@@ -147,7 +148,7 @@ dependencyManagement {
         }
 
         //CVE-2021-22112
-        dependencySet(group: 'org.springframework.security', version: '5.4.5') {
+        dependencySet(group: 'org.springframework.security', version: '5.4.6') {
             entry 'spring-security-crypto'
         }
 
@@ -308,6 +309,7 @@ dependencies {
 
     compile group: 'com.github.hmcts', name: 'sscs-common', version: '4.3.1-RC-SSCS-8985'
     compile group: 'com.github.hmcts', name: 'sscs-pdf-email-common', version: '1.4.34-RC-SSCS-8985'
+
 
     compile group: 'uk.gov.service.notify', name: 'notifications-java-client', version: '3.17.0-RELEASE'
     compile group: 'com.squareup.okhttp3', name: 'okhttp', version: '4.9.1'
