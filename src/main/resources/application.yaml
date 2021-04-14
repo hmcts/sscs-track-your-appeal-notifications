@@ -1001,8 +1001,8 @@ reminder:
   hearingReminder.beforeSecond.seconds: 86400
 
 outOfHours:
-  startHour: ${HOURS_START_TIME:9}
-  endHour: ${HOURS_END_TIME:17}
+  startHour: ${HOURS_START_TIME:7}
+  endHour: ${HOURS_END_TIME:23}
 
 feign:
   client:

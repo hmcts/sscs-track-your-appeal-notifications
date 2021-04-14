@@ -8,6 +8,7 @@ import org.springframework.retry.annotation.Retryable;
 import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Component;
 import uk.gov.hmcts.reform.sscs.ccd.domain.Correspondence;
+import uk.gov.hmcts.reform.sscs.ccd.domain.SscsCaseData;
 import uk.gov.hmcts.reform.sscs.config.SubscriptionType;
 import uk.gov.hmcts.reform.sscs.model.LetterType;
 import uk.gov.service.notify.NotificationClient;
@@ -15,12 +16,12 @@ import uk.gov.service.notify.NotificationClientException;
 
 @Slf4j
 @Component
-public class SaveLetterCorrespondenceAsyncService {
+public class SaveCorrespondenceAsyncService {
     private final CcdNotificationsPdfService ccdNotificationsPdfService;
 
 
     @Autowired
-    public SaveLetterCorrespondenceAsyncService(CcdNotificationsPdfService ccdNotificationsPdfService) {
+    public SaveCorrespondenceAsyncService(CcdNotificationsPdfService ccdNotificationsPdfService) {
         this.ccdNotificationsPdfService = ccdNotificationsPdfService;
     }
 
@@ -41,13 +42,21 @@ public class SaveLetterCorrespondenceAsyncService {
     }
 
     @Async
+    @Retryable(maxAttemptsExpression =  "#{${letterAsync.maxAttempts}}", backoff = @Backoff(delayExpression = "#{${letterAsync.delay}}", multiplierExpression = "#{${letterAsync.multiplier}}", random = true))
     public void saveLetter(final byte[] pdfForLetter, Correspondence correspondence, String ccdCaseId, SubscriptionType subscriptionType) {
         ccdNotificationsPdfService.mergeReasonableAdjustmentsCorrespondenceIntoCcd(pdfForLetter, Long.valueOf(ccdCaseId), correspondence, LetterType.findLetterTypeFromSubscription(subscriptionType.name()));
+    }
+
+    @Async
+    @Retryable
+    public void saveEmailOrSms(final Correspondence correspondence, final SscsCaseData sscsCaseData) {
+        ccdNotificationsPdfService.mergeCorrespondenceIntoCcd(sscsCaseData, correspondence);
+        log.info("Uploaded correspondence into ccd for case id {}.", sscsCaseData.getCcdCaseId());
     }
 
     @Recover
     @SuppressWarnings({"unused"})
     public void getBackendResponseFallback(Throwable e) {
-        log.error("Failed saving letter correspondence.", e);
+        log.error("Failed saving correspondence.", e);
     }
 }

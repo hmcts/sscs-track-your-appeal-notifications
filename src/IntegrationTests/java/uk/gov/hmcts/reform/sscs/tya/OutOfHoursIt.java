@@ -124,9 +124,6 @@ public class OutOfHoursIt {
     @Autowired
     private PdfLetterService pdfLetterService;
 
-    @Mock
-    private CcdNotificationsPdfService ccdNotificationsPdfService;
-
     @Autowired
     @Qualifier("scheduler")
     private Scheduler quartzScheduler;
@@ -135,7 +132,7 @@ public class OutOfHoursIt {
     private MarkdownTransformationService markdownTransformationService;
 
     @Mock
-    private SaveLetterCorrespondenceAsyncService saveLetterCorrespondenceAsyncService;
+    private SaveCorrespondenceAsyncService saveCorrespondenceAsyncService;
 
     @Before
     public void setup() throws Exception {
@@ -147,7 +144,7 @@ public class OutOfHoursIt {
 
         notificationHandler = new NotificationHandler(outOfHoursCalculator, jobScheduler, jobGroupGenerator);
 
-        NotificationSender sender = new NotificationSender(notificationClient, null, notificationBlacklist, ccdNotificationsPdfService, markdownTransformationService, saveLetterCorrespondenceAsyncService, false);
+        NotificationSender sender = new NotificationSender(notificationClient, null, notificationBlacklist, markdownTransformationService, saveCorrespondenceAsyncService, false);
         SendNotificationService sendNotificationService = new SendNotificationService(sender, evidenceManagementService, notificationHandler, notificationValidService, pdfLetterService);
         NotificationService service = new NotificationService(factory, reminderService, notificationValidService, notificationHandler, outOfHoursCalculator, notificationConfig, sendNotificationService, false);
         controller = new NotificationController(service, authorisationService, ccdService, deserializer, idamService);

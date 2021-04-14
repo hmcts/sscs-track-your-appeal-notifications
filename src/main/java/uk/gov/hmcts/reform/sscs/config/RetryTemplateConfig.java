@@ -13,6 +13,7 @@ public class RetryTemplateConfig {
 
         FixedBackOffPolicy fixedBackOffPolicy = new FixedBackOffPolicy();
         fixedBackOffPolicy.setBackOffPeriod(2000L);
+        retryTemplate.registerListener(new RetryNotificationListenerSupport());
         retryTemplate.setBackOffPolicy(fixedBackOffPolicy);
 
         return retryTemplate;

@@ -21,11 +21,11 @@ import uk.gov.service.notify.NotificationClient;
 import uk.gov.service.notify.NotificationClientException;
 
 @RunWith(JUnitParamsRunner.class)
-public class SaveLetterCorrespondenceAsyncServiceTest {
+public class SaveCorrespondenceAsyncServiceTest {
     private static final String NOTIFICATION_ID = "123";
     private static final String CCD_ID = "82828";
 
-    private SaveLetterCorrespondenceAsyncService service;
+    private SaveCorrespondenceAsyncService service;
     private Correspondence correspondence;
 
     @Mock
@@ -38,7 +38,7 @@ public class SaveLetterCorrespondenceAsyncServiceTest {
     @Before
     public void setup() throws NotificationClientException {
         initMocks(this);
-        service = new SaveLetterCorrespondenceAsyncService(ccdNotificationsPdfService);
+        service = new SaveCorrespondenceAsyncService(ccdNotificationsPdfService);
         correspondence = Correspondence.builder().value(CorrespondenceDetails.builder().to("Mr Blobby").build()).build();
         SscsCaseData sscsCaseData = SscsCaseData.builder().build();
         byte[] bytes = "%PDF bytes".getBytes();
