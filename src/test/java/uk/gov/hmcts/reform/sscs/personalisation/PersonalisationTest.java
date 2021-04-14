@@ -484,13 +484,17 @@ public class PersonalisationTest {
 
     @Test
     @Parameters({
-            "PIP,judge\\, doctor and disability expert, Personal Independence Payment",
-            "ESA,judge and a doctor, Employment and Support Allowance",
-            "UC,judge\\, doctor and disability expert (if applicable), Universal Credit",
-            "DLA,judge\\, doctor and disability expert, Disability Living Allowance",
+            "PIP,judge\\, doctor and disability expert, Personal Independence Payment, barnwr\\, meddyg ac arbenigwr anableddau, PIP",
+            "ESA,judge and a doctor, Employment and Support Allowance, barnwr a meddyg (os yw’n berthnasol), ESA",
+            "UC,judge\\, doctor and disability expert (if applicable), Universal Credit, barnwr a meddyg (os yw’n berthnasol), UC",
+            "DLA,judge\\, doctor and disability expert, Disability Living Allowance, barnwr\\, meddyg ac arbenigwr anableddau, DLA",
+            "carersAllowance,judge\\, doctor and disability expert, Carer's Allowance, barnwr\\, meddyg ac arbenigwr anableddau, CARERS_ALLOWANCE",
     })
-    public void customisePersonalisation(String benefitType, String expectedPanelComposition, String
-            expectedBenefitDesc) {
+    public void customisePersonalisation(String benefitType,
+                                         String expectedPanelComposition,
+                                         String expectedBenefitDesc,
+                                         String welshExpectedPanelComposition,
+                                         String expectedAcronym) {
         List<Event> events = new ArrayList<>();
         events.add(Event.builder().value(EventDetails.builder().date(DATE).type(APPEAL_RECEIVED.getCcdType()).build()).build());
 
@@ -512,8 +516,9 @@ public class PersonalisationTest {
         assertEquals(expectedDecisionPostedReceiveDate, result.get("decision_posted_receive_date"));
 
         assertEquals(expectedPanelComposition, result.get(PANEL_COMPOSITION));
+        assertEquals(welshExpectedPanelComposition, result.get(PANEL_COMPOSITION_WELSH));
 
-        assertEquals(benefitType, result.get(BENEFIT_NAME_ACRONYM_LITERAL));
+        assertEquals(expectedAcronym, result.get(BENEFIT_NAME_ACRONYM_LITERAL));
         assertEquals(expectedBenefitDesc, result.get(BENEFIT_FULL_NAME_LITERAL));
         assertEquals("SC/1234/5", result.get(APPEAL_REF));
         assertEquals("SC/1234/5", result.get(CASE_REFERENCE_ID));
