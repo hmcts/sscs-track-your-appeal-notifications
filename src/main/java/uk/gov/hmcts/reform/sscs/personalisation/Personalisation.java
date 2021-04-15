@@ -9,6 +9,7 @@ import static org.apache.commons.lang3.StringUtils.isBlank;
 import static org.apache.commons.lang3.StringUtils.isEmpty;
 import static org.apache.commons.lang3.StringUtils.lowerCase;
 import static uk.gov.hmcts.reform.sscs.ccd.domain.Benefit.getBenefitByCode;
+import static uk.gov.hmcts.reform.sscs.ccd.domain.Benefit.getLongBenefitNameDescriptionWithOptionalAcronym;
 import static uk.gov.hmcts.reform.sscs.ccd.domain.EventType.APPEAL_RECEIVED;
 import static uk.gov.hmcts.reform.sscs.ccd.util.CaseDataUtils.YES;
 import static uk.gov.hmcts.reform.sscs.config.AppConstants.*;
@@ -182,6 +183,8 @@ public class Personalisation<E extends NotificationWrapper> {
                 }
                 personalisation.put(BENEFIT_NAME_ACRONYM_SHORT_LITERAL, benefit.name());
                 personalisation.put(BENEFIT_FULL_NAME_LITERAL, benefit.getDescription());
+                personalisation.put(BENEFIT_NAME_AND_OPTIONAL_ACRONYM, getLongBenefitNameDescriptionWithOptionalAcronym(benefit.getShortName(), true));
+                personalisation.put(BENEFIT_NAME_AND_OPTIONAL_ACRONYM_WELSH, getLongBenefitNameDescriptionWithOptionalAcronym(benefit.getShortName(), false));
             } else {
                 log.warn("Proceeding with 'null' benefit type for case !");
             }
