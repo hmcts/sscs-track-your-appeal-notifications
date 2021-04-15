@@ -233,6 +233,24 @@ public class NotificationSenderTest {
     }
 
     @Test
+    public void whenAnEmailIsSentAndEmailResponseIsNullThenWillNotSaveEmailNotificationInCcd() throws NotificationClientException {
+
+        ReflectionTestUtils.setField(notificationSender, "saveCorrespondence", true);
+
+        String emailAddress = "random@example.com";
+        when(notificationClient.sendEmail(templateId, emailAddress, personalisation, reference))
+                .thenReturn(null);
+        when(sendEmailResponse.getNotificationId()).thenReturn(UUID.randomUUID());
+
+        notificationSender.sendEmail(templateId, emailAddress, personalisation, reference, NotificationEventType.APPEAL_RECEIVED_NOTIFICATION, SSCS_CASE_DATA);
+
+        verifyNoInteractions(testNotificationClient);
+        verify(notificationClient).sendEmail(templateId, emailAddress, personalisation, reference);
+        verifyNoMoreInteractions(markdownTransformationService);
+        verifyNoMoreInteractions(saveCorrespondenceAsyncService);
+    }
+
+    @Test
     public void whenAnSmsIsSentWillSaveSmsNotificationInCcd() throws NotificationClientException {
 
         ReflectionTestUtils.setField(notificationSender, "saveCorrespondence", true);
@@ -256,6 +274,23 @@ public class NotificationSenderTest {
                 .sentOn("this field is ignored")
                 .build()).build();
         verify(saveCorrespondenceAsyncService).saveEmailOrSms(argThat((Correspondence arg) -> EqualsBuilder.reflectionEquals(arg.getValue(), expectedCorrespondence.getValue(), "sentOn")), eq(SSCS_CASE_DATA));
+    }
+
+    @Test
+    public void whenAnSmsIsSentAndSmsResponseIsNullThenWillNotSaveSmsNotificationInCcd() throws NotificationClientException {
+
+        ReflectionTestUtils.setField(notificationSender, "saveCorrespondence", true);
+
+        String smsNumber = "07999999000";
+        when(notificationClient.sendSms(templateId, smsNumber, personalisation, reference, "Sender"))
+                .thenReturn(null);
+
+        notificationSender.sendSms(templateId, smsNumber, personalisation, reference, "Sender", NotificationEventType.APPEAL_RECEIVED_NOTIFICATION, SSCS_CASE_DATA);
+
+        verifyNoInteractions(testNotificationClient);
+        verify(notificationClient).sendSms(templateId, smsNumber, personalisation, reference, "Sender");
+        verifyNoMoreInteractions(markdownTransformationService);
+        verifyNoMoreInteractions(saveCorrespondenceAsyncService);
     }
 
     @Test(expected = NotificationClientException.class)
@@ -318,5 +353,10 @@ public class NotificationSenderTest {
     public void saveLetterCorrespondence_emptyLetter() throws NotificationClientException {
         notificationSender.saveLettersToReasonableAdjustment(null, NotificationEventType.APPEAL_RECEIVED_NOTIFICATION, "Bob Squires", CCD_CASE_ID, SubscriptionType.APPELLANT);
         verifyNoInteractions(saveCorrespondenceAsyncService);
+    }
+
+    @Test
+    public void recoverWillConsumeThrowable() {
+        notificationSender.getBackendResponseFallback(new NotificationClientException("400 BadRequestError"));
     }
 }

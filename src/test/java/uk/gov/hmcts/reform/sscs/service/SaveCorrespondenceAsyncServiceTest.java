@@ -74,5 +74,13 @@ public class SaveCorrespondenceAsyncServiceTest {
 
         verify(ccdNotificationsPdfService).mergeReasonableAdjustmentsCorrespondenceIntoCcd(any(byte[].class), eq(Long.valueOf(CCD_ID)), eq(correspondence), eq(letterType));
     }
+    
+    @Test
+    public void willSaveEmailOrSmsDirectlyIntoCcd() {
+        SscsCaseData sscsCaseData = SscsCaseData.builder().build();
+        service.saveEmailOrSms(correspondence, sscsCaseData);
+
+        verify(ccdNotificationsPdfService).mergeCorrespondenceIntoCcd(eq(sscsCaseData), eq(correspondence));
+    }
 
 }
