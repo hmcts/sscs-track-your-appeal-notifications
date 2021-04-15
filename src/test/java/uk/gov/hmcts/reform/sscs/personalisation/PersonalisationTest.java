@@ -12,6 +12,7 @@ import static org.mockito.Mockito.when;
 import static org.mockito.MockitoAnnotations.openMocks;
 import static uk.gov.hmcts.reform.sscs.SscsCaseDataUtils.getWelshDate;
 import static uk.gov.hmcts.reform.sscs.ccd.domain.Benefit.PIP;
+import static uk.gov.hmcts.reform.sscs.ccd.domain.Benefit.getLongBenefitNameDescriptionWithOptionalAcronym;
 import static uk.gov.hmcts.reform.sscs.ccd.domain.EventType.APPEAL_RECEIVED;
 import static uk.gov.hmcts.reform.sscs.ccd.domain.HearingType.ONLINE;
 import static uk.gov.hmcts.reform.sscs.ccd.domain.HearingType.ORAL;
@@ -520,6 +521,8 @@ public class PersonalisationTest {
 
         assertEquals(expectedAcronym, result.get(BENEFIT_NAME_ACRONYM_LITERAL));
         assertEquals(expectedBenefitDesc, result.get(BENEFIT_FULL_NAME_LITERAL));
+        assertEquals(getLongBenefitNameDescriptionWithOptionalAcronym(benefitType, true), result.get(BENEFIT_NAME_AND_OPTIONAL_ACRONYM));
+        assertEquals(getLongBenefitNameDescriptionWithOptionalAcronym(benefitType, false), result.get(BENEFIT_NAME_AND_OPTIONAL_ACRONYM_WELSH));
         assertEquals("SC/1234/5", result.get(APPEAL_REF));
         assertEquals("SC/1234/5", result.get(CASE_REFERENCE_ID));
         assertEquals("GLSCRR", result.get(APPEAL_ID_LITERAL));
@@ -580,6 +583,8 @@ public class PersonalisationTest {
 
         assertNull(result.get(BENEFIT_NAME_ACRONYM_LITERAL));
         assertNull(result.get(BENEFIT_FULL_NAME_LITERAL));
+        assertNull(result.get(BENEFIT_NAME_AND_OPTIONAL_ACRONYM));
+        assertNull(result.get(BENEFIT_NAME_AND_OPTIONAL_ACRONYM_WELSH));
         assertEquals("SC/1234/5", result.get(APPEAL_REF));
         assertEquals("SC/1234/5", result.get(CASE_REFERENCE_ID));
         assertEquals("GLSCRR", result.get(APPEAL_ID_LITERAL));
