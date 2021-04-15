@@ -19,6 +19,8 @@ public final class AppConstants {
     public static final String BENEFIT_FULL_NAME_LITERAL = "benefit_full_name";
     public static final String BENEFIT_NAME_ACRONYM_LITERAL = "benefit_name_acronym";
     public static final String BENEFIT_NAME_ACRONYM_SHORT_LITERAL = "benefit_name_acronym_short";
+    public static final String BENEFIT_NAME_AND_OPTIONAL_ACRONYM = "benefit_name_and_optional_acronym";
+    public static final String BENEFIT_NAME_AND_OPTIONAL_ACRONYM_WELSH = "benefit_name_and_optional_acronym_welsh";
     public static final DateTimeFormatter CC_DATE_FORMAT = DateTimeFormatter.ofPattern("yyyy-MM-dd");
     public static final String CCD_ID = "ccd_id";
     public static final String CASE_REFERENCE_ID = "case_reference_id";   // For when the SC Ref may be empty, so use CCD_ID
