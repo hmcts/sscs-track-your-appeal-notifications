@@ -76,7 +76,7 @@ public class NotificationSender {
         }
 
         log.info("Email Notification send for case id : {}, Gov notify id: {} ", sscsCaseData.getCcdCaseId(),
-                sendEmailResponse.getNotificationId());
+                (sendEmailResponse != null) ? sendEmailResponse.getNotificationId() : null);
     }
 
     @Retryable
@@ -119,7 +119,7 @@ public class NotificationSender {
         }
 
         log.info("Sms Notification send for case id : {}, Gov notify id: {} ", sscsCaseData.getCcdCaseId(),
-                sendSmsResponse.getNotificationId());
+                (sendSmsResponse != null) ? sendSmsResponse.getNotificationId() : null);
     }
 
     @Retryable
@@ -161,7 +161,7 @@ public class NotificationSender {
             saveCorrespondenceAsyncService.saveLetter(client, sendLetterResponse.getNotificationId().toString(), correspondence, ccdCaseId);
         }
 
-        log.info("Letter Notification send for case id : {}, Gov notify id: {} ", ccdCaseId, sendLetterResponse.getNotificationId());
+        log.info("Letter Notification send for case id : {}, Gov notify id: {} ", ccdCaseId, (sendLetterResponse != null) ? sendLetterResponse.getNotificationId() : null);
     }
 
     public void sendBundledLetter(String appellantPostcode, byte[] directionText, NotificationEventType notificationEventType, String name, String ccdCaseId) throws NotificationClientException {
@@ -184,7 +184,7 @@ public class NotificationSender {
                 saveCorrespondenceAsyncService.saveLetter(client, sendLetterResponse.getNotificationId().toString(), correspondence, ccdCaseId);
             }
 
-            log.info("Letter Notification send for case id : {}, Gov notify id: {} ", ccdCaseId, sendLetterResponse.getNotificationId());
+            log.info("Letter Notification send for case id : {}, Gov notify id: {} ", ccdCaseId, (sendLetterResponse != null) ? sendLetterResponse.getNotificationId() : null);
         }
     }
 
