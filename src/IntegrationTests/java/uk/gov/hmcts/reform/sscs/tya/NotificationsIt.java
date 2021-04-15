@@ -1,7 +1,9 @@
 package uk.gov.hmcts.reform.sscs.tya;
 
 import static helper.IntegrationTestHelper.*;
+import static org.junit.Assert.assertEquals;
 import static org.mockito.Mockito.*;
+import static uk.gov.hmcts.reform.sscs.config.AppConstants.BENEFIT_NAME_ACRONYM_LITERAL;
 import static uk.gov.hmcts.reform.sscs.domain.notify.NotificationEventType.*;
 
 import helper.IntegrationTestHelper;
@@ -16,6 +18,7 @@ import junitparams.Parameters;
 import org.apache.commons.io.FileUtils;
 import org.apache.pdfbox.io.IOUtils;
 import org.junit.Test;
+import org.mockito.ArgumentCaptor;
 import org.quartz.SchedulerException;
 import org.springframework.http.HttpStatus;
 import uk.gov.hmcts.reform.sscs.ccd.domain.DatedRequestOutcome;
@@ -144,6 +147,21 @@ public class NotificationsIt extends NotificationsItBase {
         validateEmailNotifications(expectedEmailTemplateIds, wantedNumberOfSendEmailInvocations, expectedName);
         validateSmsNotifications(expectedSmsTemplateIds, wantedNumberOfSendSmsInvocations);
         validateLetterNotifications(expectedLetterTemplateIds, wantedNumberOfSendLetterInvocations, expectedName);
+    }
+
+    @Test
+    public void shouldSetCarersAllowanceDescriptionInAcronymField() throws Exception {
+        json = updateEmbeddedJson(json, "carersAllowance", "case_details", "case_data", "appeal", "benefitType", "code");
+        HttpServletResponse response = getResponse(getRequestWithAuthHeader(json));
+        assertHttpStatus(response, HttpStatus.OK);
+
+        ArgumentCaptor<String> emailTemplateIdCaptor = ArgumentCaptor.forClass(String.class);
+        @SuppressWarnings("unchecked")
+        ArgumentCaptor<Map<String, ?>> emailPersonalisationCaptor = ArgumentCaptor.forClass(Map.class);
+        verify(notificationClient, times(1))
+                .sendEmail(emailTemplateIdCaptor.capture(), any(), emailPersonalisationCaptor.capture(), any());
+        Map<String, ?> personalisation = emailPersonalisationCaptor.getValue();
+        assertEquals("Carer's Allowance", personalisation.get(BENEFIT_NAME_ACRONYM_LITERAL));
     }
 
     @Test
