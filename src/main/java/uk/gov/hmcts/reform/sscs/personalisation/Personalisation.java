@@ -176,7 +176,15 @@ public class Personalisation<E extends NotificationWrapper> {
                 && ccdResponse.getAppeal().getBenefitType() != null
                 && !isEmpty(ccdResponse.getAppeal().getBenefitType().getCode())) {
                 benefit = getBenefitByCode(ccdResponse.getAppeal().getBenefitType().getCode());
-                personalisation.put(BENEFIT_NAME_ACRONYM_LITERAL, benefit.name());
+
+                if (benefit.isHasAcronym()) {
+                    personalisation.put(BENEFIT_NAME_ACRONYM_LITERAL, benefit.name());
+                    personalisation.put(BENEFIT_NAME_ACRONYM_LITERAL_WELSH, benefit.name());
+                } else {
+                    personalisation.put(BENEFIT_NAME_ACRONYM_LITERAL, benefit.getDescription());
+                    personalisation.put(BENEFIT_NAME_ACRONYM_LITERAL_WELSH, benefit.getWelshDescription());
+                }
+
                 personalisation.put(BENEFIT_NAME_ACRONYM_SHORT_LITERAL, benefit.name());
                 personalisation.put(BENEFIT_FULL_NAME_LITERAL, benefit.getDescription());
                 personalisation.put(BENEFIT_NAME_AND_OPTIONAL_ACRONYM, getLongBenefitNameDescriptionWithOptionalAcronym(benefit.getShortName(), true));

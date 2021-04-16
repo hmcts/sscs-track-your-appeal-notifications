@@ -612,7 +612,7 @@ notification:
         emailId: 366e5970-cbce-45d2-ba78-fb12e4c2aac1
     appealLapsed:
       appellant:
-        emailId: 89302ee1-291f-4a76-b388-5b9d8dbfbd4b
+        emailId: 9baea173-35d7-4d7d-b781-5d3dfffbbdba
         smsId: a3585b50-7a4e-4b84-9a3a-c1323ef26d3a
         docmosisId: TB-SCS-GNO-WEL-00658.docx
       representative:
@@ -620,7 +620,7 @@ notification:
         smsId: 3cc24409-b7be-4fea-8cdb-0288d151c265
         docmosisId: TB-SCS-GNO-WEL-00658.docx
       appointee:
-        emailId: 89302ee1-291f-4a76-b388-5b9d8dbfbd4b
+        emailId: 9baea173-35d7-4d7d-b781-5d3dfffbbdba
         smsId: a3585b50-7a4e-4b84-9a3a-c1323ef26d3a
         docmosisId: TB-SCS-GNO-WEL-00658.docx
       joint_party:
@@ -629,7 +629,7 @@ notification:
         docmosisId: TB-SCS-GNO-WEL-00658.docx
     confirmLapsed:
       appellant:
-        emailId: 89302ee1-291f-4a76-b388-5b9d8dbfbd4b
+        emailId: 9baea173-35d7-4d7d-b781-5d3dfffbbdba
         smsId: a3585b50-7a4e-4b84-9a3a-c1323ef26d3a
         docmosisId: TB-SCS-GNO-WEL-00658.docx
       representative:
@@ -637,12 +637,12 @@ notification:
         smsId: 3cc24409-b7be-4fea-8cdb-0288d151c265
         docmosisId: TB-SCS-GNO-WEL-00658.docx
       appointee:
-        emailId: 89302ee1-291f-4a76-b388-5b9d8dbfbd4b
+        emailId: 9baea173-35d7-4d7d-b781-5d3dfffbbdba
         smsId: a3585b50-7a4e-4b84-9a3a-c1323ef26d3a
         docmosisId: TB-SCS-GNO-WEL-00658.docx
     hmctsLapseCase:
       appellant:
-        emailId: 89302ee1-291f-4a76-b388-5b9d8dbfbd4b
+        emailId: 9baea173-35d7-4d7d-b781-5d3dfffbbdba
         smsId: a3585b50-7a4e-4b84-9a3a-c1323ef26d3a
         docmosisId: TB-SCS-GNO-WEL-00658.docx
       representative:
@@ -650,7 +650,7 @@ notification:
         smsId: 3cc24409-b7be-4fea-8cdb-0288d151c265
         docmosisId: TB-SCS-GNO-WEL-00658.docx
       appointee:
-        emailId: 89302ee1-291f-4a76-b388-5b9d8dbfbd4b
+        emailId: 9baea173-35d7-4d7d-b781-5d3dfffbbdba
         smsId: a3585b50-7a4e-4b84-9a3a-c1323ef26d3a
         docmosisId: TB-SCS-GNO-WEL-00658.docx
     appealWithdrawn:

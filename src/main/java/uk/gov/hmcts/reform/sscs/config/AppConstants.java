@@ -18,6 +18,7 @@ public final class AppConstants {
     public static final String APPOINTEE_NAME = "appointee_name";
     public static final String BENEFIT_FULL_NAME_LITERAL = "benefit_full_name";
     public static final String BENEFIT_NAME_ACRONYM_LITERAL = "benefit_name_acronym";
+    public static final String BENEFIT_NAME_ACRONYM_LITERAL_WELSH = "benefit_name_acronym_welsh";
     public static final String BENEFIT_NAME_ACRONYM_SHORT_LITERAL = "benefit_name_acronym_short";
     public static final String BENEFIT_NAME_AND_OPTIONAL_ACRONYM = "benefit_name_and_optional_acronym";
     public static final String BENEFIT_NAME_AND_OPTIONAL_ACRONYM_WELSH = "benefit_name_and_optional_acronym_welsh";
