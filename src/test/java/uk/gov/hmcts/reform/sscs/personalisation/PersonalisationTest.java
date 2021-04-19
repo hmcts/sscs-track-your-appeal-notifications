@@ -485,15 +485,16 @@ public class PersonalisationTest {
 
     @Test
     @Parameters({
-            "PIP,judge\\, doctor and disability expert, Personal Independence Payment, barnwr\\, meddyg ac arbenigwr anableddau, PIP",
-            "ESA,judge and a doctor, Employment and Support Allowance, barnwr a meddyg (os yw’n berthnasol), ESA",
-            "UC,judge\\, doctor and disability expert (if applicable), Universal Credit, barnwr a meddyg (os yw’n berthnasol), UC",
-            "DLA,judge\\, doctor and disability expert, Disability Living Allowance, barnwr\\, meddyg ac arbenigwr anableddau, DLA",
-            "carersAllowance,judge\\, doctor and disability expert, Carer's Allowance, barnwr\\, meddyg ac arbenigwr anableddau, Carer's Allowance",
+            "PIP,judge\\, doctor and disability expert, Personal Independence Payment, Taliad Annibyniaeth Personol, barnwr\\, meddyg ac arbenigwr anableddau, PIP",
+            "ESA,judge and a doctor, Employment and Support Allowance, Lwfans Cyflogaeth a Chymorth, barnwr a meddyg (os yw’n berthnasol), ESA",
+            "UC,judge\\, doctor and disability expert (if applicable), Universal Credit, Credyd Cynhwysol, barnwr a meddyg (os yw’n berthnasol), UC",
+            "DLA,judge\\, doctor and disability expert, Disability Living Allowance, Lwfans Byw i’r Anabl, barnwr\\, meddyg ac arbenigwr anableddau, DLA",
+            "carersAllowance,judge\\, doctor and disability expert, Carer's Allowance, Lwfans Gofalwr, barnwr\\, meddyg ac arbenigwr anableddau, Carer's Allowance",
     })
     public void customisePersonalisation(String benefitType,
                                          String expectedPanelComposition,
                                          String expectedBenefitDesc,
+                                         String welshExpectedBenefitDesc,
                                          String welshExpectedPanelComposition,
                                          String expectedAcronym) {
         List<Event> events = new ArrayList<>();
@@ -521,6 +522,7 @@ public class PersonalisationTest {
 
         assertEquals(expectedAcronym, result.get(BENEFIT_NAME_ACRONYM_LITERAL));
         assertEquals(expectedBenefitDesc, result.get(BENEFIT_FULL_NAME_LITERAL));
+        assertEquals(welshExpectedBenefitDesc, result.get(BENEFIT_FULL_NAME_LITERAL_WELSH));
         assertEquals(getLongBenefitNameDescriptionWithOptionalAcronym(benefitType, true), result.get(BENEFIT_NAME_AND_OPTIONAL_ACRONYM));
         assertEquals(getLongBenefitNameDescriptionWithOptionalAcronym(benefitType, false), result.get(BENEFIT_NAME_AND_OPTIONAL_ACRONYM_WELSH));
         assertEquals("SC/1234/5", result.get(APPEAL_REF));
