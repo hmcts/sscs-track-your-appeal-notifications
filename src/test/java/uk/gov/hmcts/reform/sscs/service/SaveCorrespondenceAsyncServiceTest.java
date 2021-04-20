@@ -14,6 +14,7 @@ import org.junit.runner.RunWith;
 import org.mockito.Mock;
 import uk.gov.hmcts.reform.sscs.ccd.domain.Correspondence;
 import uk.gov.hmcts.reform.sscs.ccd.domain.CorrespondenceDetails;
+import uk.gov.hmcts.reform.sscs.ccd.domain.CorrespondenceType;
 import uk.gov.hmcts.reform.sscs.ccd.domain.SscsCaseData;
 import uk.gov.hmcts.reform.sscs.config.SubscriptionType;
 import uk.gov.hmcts.reform.sscs.model.LetterType;
@@ -78,6 +79,7 @@ public class SaveCorrespondenceAsyncServiceTest {
     @Test
     public void willSaveEmailOrSmsDirectlyIntoCcd() {
         SscsCaseData sscsCaseData = SscsCaseData.builder().build();
+        correspondence = Correspondence.builder().value(CorrespondenceDetails.builder().correspondenceType(CorrespondenceType.Email).to("Mr Blobby").build()).build();
         service.saveEmailOrSms(correspondence, sscsCaseData);
 
         verify(ccdNotificationsPdfService).mergeCorrespondenceIntoCcd(eq(sscsCaseData), eq(correspondence));

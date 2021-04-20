@@ -5,6 +5,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.retry.annotation.Backoff;
 import org.springframework.retry.annotation.Recover;
 import org.springframework.retry.annotation.Retryable;
+import org.springframework.retry.support.RetrySynchronizationManager;
 import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Component;
 import uk.gov.hmcts.reform.sscs.ccd.domain.Correspondence;
@@ -50,8 +51,9 @@ public class SaveCorrespondenceAsyncService {
     @Async
     @Retryable
     public void saveEmailOrSms(final Correspondence correspondence, final SscsCaseData sscsCaseData) {
+        int retry = (RetrySynchronizationManager.getContext() != null) ? RetrySynchronizationManager.getContext().getRetryCount() : 0;
+        log.info("Retry number {} : to upload correspondence for {}", retry, correspondence.getValue().getCorrespondenceType().name());
         ccdNotificationsPdfService.mergeCorrespondenceIntoCcd(sscsCaseData, correspondence);
-        log.info("Uploaded correspondence into ccd for case id {}.", sscsCaseData.getCcdCaseId());
     }
 
     @Recover
