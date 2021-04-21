@@ -114,7 +114,7 @@ public class NotificationSender {
 
         final SendSmsResponse sendSmsResponse = getSendSmsResponse(templateId, phoneNumber, personalisation, reference, smsSender, client);
 
-        if (saveCorrespondence  && sendSmsResponse != null) {
+        if (saveCorrespondence && sendSmsResponse != null) {
             final Correspondence correspondence = getSmsCorrespondence(sendSmsResponse, phoneNumber, notificationEventType);
             saveCorrespondenceAsyncService.saveEmailOrSms(correspondence, sscsCaseData);
             log.info("Uploaded correspondence sms into ccd for case id {}.", sscsCaseData.getCcdCaseId());

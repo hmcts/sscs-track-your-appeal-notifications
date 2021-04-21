@@ -48,10 +48,9 @@ public class SaveCorrespondenceAsyncService {
         ccdNotificationsPdfService.mergeReasonableAdjustmentsCorrespondenceIntoCcd(pdfForLetter, Long.valueOf(ccdCaseId), correspondence, LetterType.findLetterTypeFromSubscription(subscriptionType.name()));
     }
 
-    @Async
     @Retryable
     public void saveEmailOrSms(final Correspondence correspondence, final SscsCaseData sscsCaseData) {
-        int retry = (RetrySynchronizationManager.getContext() != null) ? RetrySynchronizationManager.getContext().getRetryCount() : 0;
+        int retry = (RetrySynchronizationManager.getContext() != null) ? RetrySynchronizationManager.getContext().getRetryCount() + 1 : 1;
         log.info("Retry number {} : to upload correspondence for {}", retry, correspondence.getValue().getCorrespondenceType().name());
         ccdNotificationsPdfService.mergeCorrespondenceIntoCcd(sscsCaseData, correspondence);
     }
