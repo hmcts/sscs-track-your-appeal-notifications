@@ -385,8 +385,10 @@ public class Personalisation<E extends NotificationWrapper> {
         }
     }
 
+    List<Benefit> judgeDrExpertBenefits = Arrays.asList(Benefit.PIP, Benefit.DLA, Benefit.CARERS_ALLOWANCE, Benefit.ATTENDANCE_ALLOWANCE);
+
     private String getPanelCompositionByBenefitType(Benefit benefit) {
-        if (Benefit.PIP.equals(benefit) || Benefit.DLA.equals(benefit) || Benefit.CARERS_ALLOWANCE.equals(benefit)) {
+        if (judgeDrExpertBenefits.contains(benefit)) {
             return JUDGE_DR_EXPERT_PANEL_COMPOSITION;
         } else if (Benefit.ESA.equals(benefit)) {
             return ESA_PANEL_COMPOSITION;
@@ -396,7 +398,7 @@ public class Personalisation<E extends NotificationWrapper> {
     }
 
     private String getPanelCompositionByBenefitTypeWelsh(Benefit benefit) {
-        if (Benefit.PIP.equals(benefit) || Benefit.DLA.equals(benefit) || Benefit.CARERS_ALLOWANCE.equals(benefit)) {
+        if (judgeDrExpertBenefits.contains(benefit)) {
             return JUDGE_DR_EXPERT_PANEL_COMPOSITION_WELSH;
         } else if (Benefit.ESA.equals(benefit)) {
             return ESA_PANEL_COMPOSITION_WELSH;
