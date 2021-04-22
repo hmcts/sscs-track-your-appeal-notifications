@@ -158,7 +158,7 @@ public class NotificationSender {
             throw new NotificationClientException(e);
         }
 
-        if (saveCorrespondence && sendLetterResponse != null) {
+        if (saveCorrespondence) {
             final Correspondence correspondence = getLetterCorrespondence(notificationEventType, name);
             saveCorrespondenceAsyncService.saveLetter(client, sendLetterResponse.getNotificationId().toString(), correspondence, ccdCaseId);
         }
@@ -181,7 +181,7 @@ public class NotificationSender {
                 throw new NotificationClientException(e);
             }
 
-            if (saveCorrespondence && sendLetterResponse != null) {
+            if (saveCorrespondence) {
                 final Correspondence correspondence = getLetterCorrespondence(notificationEventType, name);
                 saveCorrespondenceAsyncService.saveLetter(client, sendLetterResponse.getNotificationId().toString(), correspondence, ccdCaseId);
             }
