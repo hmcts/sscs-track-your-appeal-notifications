@@ -149,14 +149,7 @@ public class NotificationSender {
 
         NotificationClient client = getLetterNotificationClient(address.getPostcode());
 
-        final SendLetterResponse sendLetterResponse;
-        try {
-            sendLetterResponse = client.sendLetter(templateId, personalisation, ccdCaseId);
-        } catch (NotificationClientException e) {
-            throw e;
-        } catch (Exception e) {
-            throw new NotificationClientException(e);
-        }
+        final SendLetterResponse sendLetterResponse = getSendLetterResponse(templateId, personalisation, ccdCaseId, client);
 
         if (saveCorrespondence) {
             final Correspondence correspondence = getLetterCorrespondence(notificationEventType, name);
@@ -166,20 +159,26 @@ public class NotificationSender {
         log.info("Letter Notification send for case id : {}, Gov notify id: {} ", ccdCaseId, (sendLetterResponse != null) ? sendLetterResponse.getNotificationId() : null);
     }
 
+    @Retryable
+    private SendLetterResponse getSendLetterResponse(String templateId, Map<String, String> personalisation, String ccdCaseId, NotificationClient client) throws NotificationClientException {
+        final SendLetterResponse sendLetterResponse;
+        try {
+            sendLetterResponse = client.sendLetter(templateId, personalisation, ccdCaseId);
+        } catch (NotificationClientException e) {
+            throw e;
+        } catch (Exception e) {
+            throw new NotificationClientException(e);
+        }
+        return sendLetterResponse;
+    }
+
     public void sendBundledLetter(String appellantPostcode, byte[] directionText, NotificationEventType notificationEventType, String name, String ccdCaseId) throws NotificationClientException {
         if (directionText != null) {
             NotificationClient client = getLetterNotificationClient(appellantPostcode);
 
             ByteArrayInputStream bis = new ByteArrayInputStream(directionText);
 
-            final LetterResponse sendLetterResponse;
-            try {
-                sendLetterResponse = client.sendPrecompiledLetterWithInputStream(ccdCaseId, bis);
-            } catch (NotificationClientException e) {
-                throw e;
-            } catch (Exception e) {
-                throw new NotificationClientException(e);
-            }
+            final LetterResponse sendLetterResponse = getBundledLetterResponse(ccdCaseId, client, bis);
 
             if (saveCorrespondence) {
                 final Correspondence correspondence = getLetterCorrespondence(notificationEventType, name);
@@ -188,6 +187,19 @@ public class NotificationSender {
 
             log.info("Letter Notification send for case id : {}, Gov notify id: {} ", ccdCaseId, (sendLetterResponse != null) ? sendLetterResponse.getNotificationId() : null);
         }
+    }
+
+    @Retryable
+    private LetterResponse getBundledLetterResponse(String ccdCaseId, NotificationClient client, ByteArrayInputStream bis) throws NotificationClientException {
+        final LetterResponse sendLetterResponse;
+        try {
+            sendLetterResponse = client.sendPrecompiledLetterWithInputStream(ccdCaseId, bis);
+        } catch (NotificationClientException e) {
+            throw e;
+        } catch (Exception e) {
+            throw new NotificationClientException(e);
+        }
+        return sendLetterResponse;
     }
 
     public void saveLettersToReasonableAdjustment(byte[] pdfForLetter, NotificationEventType notificationEventType, String name, String ccdCaseId, SubscriptionType subscriptionType) {
