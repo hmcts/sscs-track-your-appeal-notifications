@@ -490,7 +490,7 @@ public class PersonalisationTest {
             "UC,judge\\, doctor and disability expert (if applicable), Universal Credit, Credyd Cynhwysol, barnwr a meddyg (os yw’n berthnasol), UC",
             "DLA,judge\\, doctor and disability expert, Disability Living Allowance, Lwfans Byw i’r Anabl, barnwr\\, meddyg ac arbenigwr anableddau, DLA",
             "carersAllowance,judge\\, doctor and disability expert, Carer's Allowance, Lwfans Gofalwr, barnwr\\, meddyg ac arbenigwr anableddau, Carer's Allowance",
-            "attendanceAllowance,judge\\, doctor and disability expert, Attendance Allowance, Lwfans Gweini, barnwr\\, meddyg ac arbenigwr anableddau, ATTENDANCE_ALLOWANCE",
+            "attendanceAllowance,judge\\, doctor and disability expert, Attendance Allowance, Lwfans Gweini, barnwr\\, meddyg ac arbenigwr anableddau, Attendance Allowance",
     })
     public void customisePersonalisation(String benefitType,
                                          String expectedPanelComposition,
