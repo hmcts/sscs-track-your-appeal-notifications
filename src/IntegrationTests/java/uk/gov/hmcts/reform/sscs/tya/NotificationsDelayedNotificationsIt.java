@@ -104,7 +104,7 @@ public class NotificationsDelayedNotificationsIt extends NotificationsItBase {
             new Object[]{
                 APPEAL_RECEIVED_NOTIFICATION,
                 "paper",
-                Collections.singletonList("08365e91-9e07-4a5c-bf96-ef56fd0ada63"),
+                Collections.singletonList("78cf9c9c-e2b8-44d7-bcf1-220311f114cb"),
                 Collections.singletonList("ede384aa-0b6e-4311-9f01-ee547573a07b"),
                 Collections.singletonList("TB-SCS-GNO-ENG-00060.doc"),
                 "yes",
@@ -117,7 +117,7 @@ public class NotificationsDelayedNotificationsIt extends NotificationsItBase {
             new Object[]{
                 APPEAL_RECEIVED_NOTIFICATION,
                 "oral",
-                Collections.singletonList("08365e91-9e07-4a5c-bf96-ef56fd0ada63"),
+                Collections.singletonList("78cf9c9c-e2b8-44d7-bcf1-220311f114cb"),
                 Collections.singletonList("ede384aa-0b6e-4311-9f01-ee547573a07b"),
                 Collections.singletonList("TB-SCS-GNO-ENG-00060.doc"),
                 "yes",
@@ -226,7 +226,7 @@ public class NotificationsDelayedNotificationsIt extends NotificationsItBase {
             new Object[]{
                 APPEAL_RECEIVED_NOTIFICATION,
                 "oral",
-                Arrays.asList("b90df52f-c628-409c-8875-4b0b9663a053", "4b1ee55b-abd1-4e7e-b0ed-693d8df1e741"),
+                Arrays.asList("d5fd9f65-1283-4533-a1be-10043dae7af6", "4b1ee55b-abd1-4e7e-b0ed-693d8df1e741"),
                 Arrays.asList("ede384aa-0b6e-4311-9f01-ee547573a07b", "99bd4a56-256c-4de8-b187-d43a8dde466f"),
                 Arrays.asList("TB-SCS-GNO-ENG-00060.doc", "TB-SCS-GNO-ENG-00079.doc"),
                 "yes",
