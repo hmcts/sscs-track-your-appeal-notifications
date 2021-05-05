@@ -9,11 +9,12 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.retry.annotation.Recover;
+import org.springframework.retry.annotation.Retryable;
 import org.springframework.stereotype.Component;
 import uk.gov.hmcts.reform.sscs.ccd.domain.*;
 import uk.gov.hmcts.reform.sscs.config.NotificationBlacklist;
 import uk.gov.hmcts.reform.sscs.config.SubscriptionType;
-import uk.gov.hmcts.reform.sscs.domain.NotifyResponse;
 import uk.gov.hmcts.reform.sscs.domain.notify.NotificationEventType;
 import uk.gov.service.notify.LetterResponse;
 import uk.gov.service.notify.NotificationClient;
@@ -33,27 +34,24 @@ public class NotificationSender {
     private final NotificationClient notificationClient;
     private final NotificationClient testNotificationClient;
     private final NotificationBlacklist notificationBlacklist;
-    private final CcdNotificationsPdfService ccdNotificationsPdfService;
     private final MarkdownTransformationService markdownTransformationService;
-    private final SaveLetterCorrespondenceAsyncService saveLetterCorrespondenceAsyncService;
+    private final SaveCorrespondenceAsyncService saveCorrespondenceAsyncService;
     private final Boolean saveCorrespondence;
 
     @Autowired
     public NotificationSender(@Qualifier("notificationClient") NotificationClient notificationClient,
                               @Qualifier("testNotificationClient") NotificationClient testNotificationClient,
                               NotificationBlacklist notificationBlacklist,
-                              CcdNotificationsPdfService ccdNotificationsPdfService,
                               MarkdownTransformationService markdownTransformationService,
-                              SaveLetterCorrespondenceAsyncService saveLetterCorrespondenceAsyncService,
+                              SaveCorrespondenceAsyncService saveCorrespondenceAsyncService,
                               @Value("${feature.save_correspondence}") Boolean saveCorrespondence
     ) {
         this.notificationClient = notificationClient;
         this.testNotificationClient = testNotificationClient;
         this.notificationBlacklist = notificationBlacklist;
-        this.ccdNotificationsPdfService = ccdNotificationsPdfService;
         this.markdownTransformationService = markdownTransformationService;
         this.saveCorrespondence = saveCorrespondence;
-        this.saveLetterCorrespondenceAsyncService = saveLetterCorrespondenceAsyncService;
+        this.saveCorrespondenceAsyncService = saveCorrespondenceAsyncService;
     }
 
     public void sendEmail(String templateId, String emailAddress, Map<String, String> personalisation, String reference,
@@ -70,6 +68,20 @@ public class NotificationSender {
             client = notificationClient;
         }
 
+        final SendEmailResponse sendEmailResponse = getSendEmailResponse(templateId, emailAddress, personalisation, reference, client);
+
+        if (saveCorrespondence && sendEmailResponse != null) {
+            final Correspondence correspondence = getEmailCorrespondence(sendEmailResponse, emailAddress, notificationEventType);
+            saveCorrespondenceAsyncService.saveEmailOrSms(correspondence, sscsCaseData);
+            log.info("Uploaded correspondence email into ccd for case id {}.", sscsCaseData.getCcdCaseId());
+        }
+
+        log.info("Email Notification send for case id : {}, Gov notify id: {} ", sscsCaseData.getCcdCaseId(),
+                (sendEmailResponse != null) ? sendEmailResponse.getNotificationId() : null);
+    }
+
+    @Retryable
+    private SendEmailResponse getSendEmailResponse(String templateId, String emailAddress, Map<String, String> personalisation, String reference, NotificationClient client) throws NotificationClientException {
         final SendEmailResponse sendEmailResponse;
         try {
             sendEmailResponse = client.sendEmail(templateId, emailAddress, personalisation, reference);
@@ -78,19 +90,7 @@ public class NotificationSender {
         } catch (Exception e) {
             throw new NotificationClientException(e);
         }
-
-        if (saveCorrespondence) {
-            NotifyResponse response = new NotifyResponse(
-                    sendEmailResponse.getBody(),
-                    sendEmailResponse.getSubject(),
-                    sendEmailResponse.getFromEmail(),
-                    emailAddress);
-
-            saveCorrespondence(response, notificationEventType, sscsCaseData, CorrespondenceType.Email);
-        }
-
-        log.info("Email Notification send for case id : {}, Gov notify id: {} ", sscsCaseData.getCcdCaseId(),
-                sendEmailResponse.getNotificationId());
+        return sendEmailResponse;
     }
 
     public void sendSms(
@@ -112,6 +112,20 @@ public class NotificationSender {
             client = notificationClient;
         }
 
+        final SendSmsResponse sendSmsResponse = getSendSmsResponse(templateId, phoneNumber, personalisation, reference, smsSender, client);
+
+        if (saveCorrespondence && sendSmsResponse != null) {
+            final Correspondence correspondence = getSmsCorrespondence(sendSmsResponse, phoneNumber, notificationEventType);
+            saveCorrespondenceAsyncService.saveEmailOrSms(correspondence, sscsCaseData);
+            log.info("Uploaded correspondence sms into ccd for case id {}.", sscsCaseData.getCcdCaseId());
+        }
+
+        log.info("Sms Notification send for case id : {}, Gov notify id: {} ", sscsCaseData.getCcdCaseId(),
+                (sendSmsResponse != null) ? sendSmsResponse.getNotificationId() : null);
+    }
+
+    @Retryable
+    private SendSmsResponse getSendSmsResponse(String templateId, String phoneNumber, Map<String, String> personalisation, String reference, String smsSender, NotificationClient client) throws NotificationClientException {
         final SendSmsResponse sendSmsResponse;
         try {
             sendSmsResponse = client.sendSms(
@@ -126,19 +140,7 @@ public class NotificationSender {
         } catch (Exception e) {
             throw new NotificationClientException(e);
         }
-
-        if (saveCorrespondence) {
-            NotifyResponse response = new NotifyResponse(
-                    sendSmsResponse.getBody(),
-                    "SMS correspondence",
-                    sendSmsResponse.getFromNumber(),
-                    phoneNumber);
-
-            saveCorrespondence(response, notificationEventType, sscsCaseData, CorrespondenceType.Sms);
-        }
-
-        log.info("Sms Notification send for case id : {}, Gov notify id: {} ", sscsCaseData.getCcdCaseId(),
-                sendSmsResponse.getNotificationId());
+        return sendSmsResponse;
     }
 
     public void sendLetter(String templateId, Address address, Map<String, String> personalisation,
@@ -147,6 +149,18 @@ public class NotificationSender {
 
         NotificationClient client = getLetterNotificationClient(address.getPostcode());
 
+        final SendLetterResponse sendLetterResponse = getSendLetterResponse(templateId, personalisation, ccdCaseId, client);
+
+        if (saveCorrespondence) {
+            final Correspondence correspondence = getLetterCorrespondence(notificationEventType, name);
+            saveCorrespondenceAsyncService.saveLetter(client, sendLetterResponse.getNotificationId().toString(), correspondence, ccdCaseId);
+        }
+
+        log.info("Letter Notification send for case id : {}, Gov notify id: {} ", ccdCaseId, (sendLetterResponse != null) ? sendLetterResponse.getNotificationId() : null);
+    }
+
+    @Retryable
+    private SendLetterResponse getSendLetterResponse(String templateId, Map<String, String> personalisation, String ccdCaseId, NotificationClient client) throws NotificationClientException {
         final SendLetterResponse sendLetterResponse;
         try {
             sendLetterResponse = client.sendLetter(templateId, personalisation, ccdCaseId);
@@ -155,13 +169,7 @@ public class NotificationSender {
         } catch (Exception e) {
             throw new NotificationClientException(e);
         }
-
-        if (saveCorrespondence) {
-            final Correspondence correspondence = getLetterCorrespondence(notificationEventType, name);
-            saveLetterCorrespondenceAsyncService.saveLetter(client, sendLetterResponse.getNotificationId().toString(), correspondence, ccdCaseId);
-        }
-
-        log.info("Letter Notification send for case id : {}, Gov notify id: {} ", ccdCaseId, sendLetterResponse.getNotificationId());
+        return sendLetterResponse;
     }
 
     public void sendBundledLetter(String appellantPostcode, byte[] directionText, NotificationEventType notificationEventType, String name, String ccdCaseId) throws NotificationClientException {
@@ -170,49 +178,65 @@ public class NotificationSender {
 
             ByteArrayInputStream bis = new ByteArrayInputStream(directionText);
 
-            final LetterResponse sendLetterResponse;
-            try {
-                sendLetterResponse = client.sendPrecompiledLetterWithInputStream(ccdCaseId, bis);
-            } catch (NotificationClientException e) {
-                throw e;
-            } catch (Exception e) {
-                throw new NotificationClientException(e);
-            }
+            final LetterResponse sendLetterResponse = getBundledLetterResponse(ccdCaseId, client, bis);
 
             if (saveCorrespondence) {
                 final Correspondence correspondence = getLetterCorrespondence(notificationEventType, name);
-                saveLetterCorrespondenceAsyncService.saveLetter(client, sendLetterResponse.getNotificationId().toString(), correspondence, ccdCaseId);
+                saveCorrespondenceAsyncService.saveLetter(client, sendLetterResponse.getNotificationId().toString(), correspondence, ccdCaseId);
             }
 
-            log.info("Letter Notification send for case id : {}, Gov notify id: {} ", ccdCaseId, sendLetterResponse.getNotificationId());
+            log.info("Letter Notification send for case id : {}, Gov notify id: {} ", ccdCaseId, (sendLetterResponse != null) ? sendLetterResponse.getNotificationId() : null);
         }
+    }
+
+    @Retryable
+    private LetterResponse getBundledLetterResponse(String ccdCaseId, NotificationClient client, ByteArrayInputStream bis) throws NotificationClientException {
+        final LetterResponse sendLetterResponse;
+        try {
+            sendLetterResponse = client.sendPrecompiledLetterWithInputStream(ccdCaseId, bis);
+        } catch (NotificationClientException e) {
+            throw e;
+        } catch (Exception e) {
+            throw new NotificationClientException(e);
+        }
+        return sendLetterResponse;
     }
 
     public void saveLettersToReasonableAdjustment(byte[] pdfForLetter, NotificationEventType notificationEventType, String name, String ccdCaseId, SubscriptionType subscriptionType) {
         if (pdfForLetter != null) {
             final Correspondence correspondence = getLetterCorrespondence(notificationEventType, name, ReasonableAdjustmentStatus.REQUIRED);
-            saveLetterCorrespondenceAsyncService.saveLetter(pdfForLetter, correspondence, ccdCaseId, subscriptionType);
+            saveCorrespondenceAsyncService.saveLetter(pdfForLetter, correspondence, ccdCaseId, subscriptionType);
 
             log.info("Letter Notification saved for case id : {}", ccdCaseId);
         }
     }
 
-    private void saveCorrespondence(NotifyResponse response, NotificationEventType notificationEventType,
-                                    SscsCaseData sscsCaseData, CorrespondenceType correspondenceType) {
-        Correspondence correspondence = Correspondence.builder().value(
+    private Correspondence getEmailCorrespondence(final SendEmailResponse sendEmailResponse, final String emailAddress, final NotificationEventType notificationEventType) {
+        return Correspondence.builder().value(
                 CorrespondenceDetails.builder()
-                        .body(markdownTransformationService.toHtml(response.getBody()))
-                        .subject(response.getSubject())
-                        .from(response.getFrom().orElse(""))
-                        .to(response.getTo())
+                        .body(markdownTransformationService.toHtml(sendEmailResponse.getBody()))
+                        .subject(sendEmailResponse.getSubject())
+                        .from(sendEmailResponse.getFromEmail().orElse(""))
+                        .to(emailAddress)
                         .eventType(notificationEventType.getId())
-                        .correspondenceType(correspondenceType)
+                        .correspondenceType(CorrespondenceType.Email)
                         .sentOn(LocalDateTime.now(ZONE_ID_LONDON).format(DATE_TIME_FORMATTER))
                         .build()
         ).build();
+    }
 
-        ccdNotificationsPdfService.mergeCorrespondenceIntoCcd(sscsCaseData, correspondence);
-        log.info("Uploaded correspondence into ccd for case id {}.", sscsCaseData.getCcdCaseId());
+    private Correspondence getSmsCorrespondence(final SendSmsResponse sendSmsResponse, final String phoneNumber, final NotificationEventType notificationEventType) {
+        return Correspondence.builder().value(
+                CorrespondenceDetails.builder()
+                        .body(markdownTransformationService.toHtml(sendSmsResponse.getBody()))
+                        .subject("SMS correspondence")
+                        .from(sendSmsResponse.getFromNumber().orElse(""))
+                        .to(phoneNumber)
+                        .eventType(notificationEventType.getId())
+                        .correspondenceType(CorrespondenceType.Sms)
+                        .sentOn(LocalDateTime.now(ZONE_ID_LONDON).format(DATE_TIME_FORMATTER))
+                        .build()
+        ).build();
     }
 
     private Correspondence getLetterCorrespondence(NotificationEventType notificationEventType, String name) {
@@ -240,5 +264,10 @@ public class NotificationSender {
             client = notificationClient;
         }
         return client;
+    }
+
+    @Recover
+    public void getBackendResponseFallback(Throwable e) {
+        log.error("Failed sending.....", e);
     }
 }

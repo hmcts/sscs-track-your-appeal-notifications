@@ -60,16 +60,13 @@ public class NotificationSenderTest {
     private LetterResponse letterResponse;
 
     @Mock
-    private CcdNotificationsPdfService ccdNotificationsPdfService;
-
-    @Mock
     private SendLetterResponse sendLetterResponse;
 
     @Mock
     private MarkdownTransformationService markdownTransformationService;
 
     @Mock
-    private SaveLetterCorrespondenceAsyncService saveLetterCorrespondenceAsyncService;
+    private SaveCorrespondenceAsyncService saveCorrespondenceAsyncService;
 
     @Captor
     private ArgumentCaptor<Correspondence> correspondenceArgumentCaptor;
@@ -81,7 +78,7 @@ public class NotificationSenderTest {
         reference = "reference";
 
         final Boolean saveCorrespondence = false;
-        notificationSender = new NotificationSender(notificationClient, testNotificationClient, blacklist, ccdNotificationsPdfService, markdownTransformationService, saveLetterCorrespondenceAsyncService, saveCorrespondence);
+        notificationSender = new NotificationSender(notificationClient, testNotificationClient, blacklist, markdownTransformationService, saveCorrespondenceAsyncService, saveCorrespondence);
     }
 
     @Test
@@ -218,7 +215,6 @@ public class NotificationSenderTest {
         when(notificationClient.sendEmail(templateId, emailAddress, personalisation, reference))
                 .thenReturn(sendEmailResponse);
         when(sendEmailResponse.getNotificationId()).thenReturn(UUID.randomUUID());
-        when(ccdNotificationsPdfService.mergeCorrespondenceIntoCcd(any(), any())).thenReturn(SscsCaseData.builder().build());
 
         notificationSender.sendEmail(templateId, emailAddress, personalisation, reference, NotificationEventType.APPEAL_RECEIVED_NOTIFICATION, SSCS_CASE_DATA);
 
@@ -233,8 +229,25 @@ public class NotificationSenderTest {
                 .eventType(NotificationEventType.APPEAL_RECEIVED_NOTIFICATION.getId())
                 .sentOn("this field is ignored")
                 .build()).build();
-        verify(ccdNotificationsPdfService).mergeCorrespondenceIntoCcd(eq(SscsCaseData.builder().build()),
-               argThat(((Correspondence arg) -> EqualsBuilder.reflectionEquals(arg.getValue(), expectedCorrespondence.getValue(), "sentOn"))));
+        verify(saveCorrespondenceAsyncService).saveEmailOrSms(argThat((Correspondence arg) -> EqualsBuilder.reflectionEquals(arg.getValue(), expectedCorrespondence.getValue(), "sentOn")), eq(SSCS_CASE_DATA));
+    }
+
+    @Test
+    public void whenAnEmailIsSentAndEmailResponseIsNullThenWillNotSaveEmailNotificationInCcd() throws NotificationClientException {
+
+        ReflectionTestUtils.setField(notificationSender, "saveCorrespondence", true);
+
+        String emailAddress = "random@example.com";
+        when(notificationClient.sendEmail(templateId, emailAddress, personalisation, reference))
+                .thenReturn(null);
+        when(sendEmailResponse.getNotificationId()).thenReturn(UUID.randomUUID());
+
+        notificationSender.sendEmail(templateId, emailAddress, personalisation, reference, NotificationEventType.APPEAL_RECEIVED_NOTIFICATION, SSCS_CASE_DATA);
+
+        verifyNoInteractions(testNotificationClient);
+        verify(notificationClient).sendEmail(templateId, emailAddress, personalisation, reference);
+        verifyNoMoreInteractions(markdownTransformationService);
+        verifyNoMoreInteractions(saveCorrespondenceAsyncService);
     }
 
     @Test
@@ -245,7 +258,6 @@ public class NotificationSenderTest {
         String smsNumber = "07999999000";
         when(notificationClient.sendSms(templateId, smsNumber, personalisation, reference, "Sender"))
                 .thenReturn(sendSmsResponse);
-        when(ccdNotificationsPdfService.mergeCorrespondenceIntoCcd(any(), any())).thenReturn(SscsCaseData.builder().build());
 
         notificationSender.sendSms(templateId, smsNumber, personalisation, reference, "Sender", NotificationEventType.APPEAL_RECEIVED_NOTIFICATION, SSCS_CASE_DATA);
 
@@ -261,8 +273,24 @@ public class NotificationSenderTest {
                 .eventType(NotificationEventType.APPEAL_RECEIVED_NOTIFICATION.getId())
                 .sentOn("this field is ignored")
                 .build()).build();
-        verify(ccdNotificationsPdfService).mergeCorrespondenceIntoCcd(eq(SscsCaseData.builder().build()),
-                argThat(((Correspondence arg) -> EqualsBuilder.reflectionEquals(arg.getValue(), expectedCorrespondence.getValue(), "sentOn"))));
+        verify(saveCorrespondenceAsyncService).saveEmailOrSms(argThat((Correspondence arg) -> EqualsBuilder.reflectionEquals(arg.getValue(), expectedCorrespondence.getValue(), "sentOn")), eq(SSCS_CASE_DATA));
+    }
+
+    @Test
+    public void whenAnSmsIsSentAndSmsResponseIsNullThenWillNotSaveSmsNotificationInCcd() throws NotificationClientException {
+
+        ReflectionTestUtils.setField(notificationSender, "saveCorrespondence", true);
+
+        String smsNumber = "07999999000";
+        when(notificationClient.sendSms(templateId, smsNumber, personalisation, reference, "Sender"))
+                .thenReturn(null);
+
+        notificationSender.sendSms(templateId, smsNumber, personalisation, reference, "Sender", NotificationEventType.APPEAL_RECEIVED_NOTIFICATION, SSCS_CASE_DATA);
+
+        verifyNoInteractions(testNotificationClient);
+        verify(notificationClient).sendSms(templateId, smsNumber, personalisation, reference, "Sender");
+        verifyNoMoreInteractions(markdownTransformationService);
+        verifyNoMoreInteractions(saveCorrespondenceAsyncService);
     }
 
     @Test(expected = NotificationClientException.class)
@@ -312,7 +340,7 @@ public class NotificationSenderTest {
         byte[] sampleLetter = "Letter".getBytes();
         notificationSender.saveLettersToReasonableAdjustment(sampleLetter, NotificationEventType.APPEAL_RECEIVED_NOTIFICATION, "Bob Squires", CCD_CASE_ID, SubscriptionType.APPELLANT);
 
-        verify(saveLetterCorrespondenceAsyncService).saveLetter(eq(sampleLetter), correspondenceArgumentCaptor.capture(), eq(CCD_CASE_ID), eq(SubscriptionType.APPELLANT));
+        verify(saveCorrespondenceAsyncService).saveLetter(eq(sampleLetter), correspondenceArgumentCaptor.capture(), eq(CCD_CASE_ID), eq(SubscriptionType.APPELLANT));
         Correspondence correspondence = correspondenceArgumentCaptor.getValue();
         assertNotNull(correspondence);
         assertEquals(CorrespondenceType.Letter, correspondence.getValue().getCorrespondenceType());
@@ -324,6 +352,11 @@ public class NotificationSenderTest {
     @Test
     public void saveLetterCorrespondence_emptyLetter() throws NotificationClientException {
         notificationSender.saveLettersToReasonableAdjustment(null, NotificationEventType.APPEAL_RECEIVED_NOTIFICATION, "Bob Squires", CCD_CASE_ID, SubscriptionType.APPELLANT);
-        verifyNoInteractions(saveLetterCorrespondenceAsyncService);
+        verifyNoInteractions(saveCorrespondenceAsyncService);
+    }
+
+    @Test
+    public void recoverWillConsumeThrowable() {
+        notificationSender.getBackendResponseFallback(new NotificationClientException("400 BadRequestError"));
     }
 }

@@ -123,9 +123,6 @@ public class NotificationsItBase {
     @Value("${notification.english.subscriptionUpdated.emailId}")
     private String subscriptionUpdatedEmailId;
 
-    @Mock
-    private CcdNotificationsPdfService ccdNotificationsPdfService;
-
     @Value("${notification.english.subscriptionCreated.appellant.smsId}")
     private String subscriptionCreatedSmsId;
 
@@ -135,7 +132,7 @@ public class NotificationsItBase {
     private MarkdownTransformationService markdownTransformationService;
 
     @Mock
-    private SaveLetterCorrespondenceAsyncService saveLetterCorrespondenceAsyncService;
+    private SaveCorrespondenceAsyncService saveCorrespondenceAsyncService;
 
     @Autowired
     @Qualifier("scheduler")
@@ -145,7 +142,7 @@ public class NotificationsItBase {
 
     @Before
     public void setup() throws Exception {
-        NotificationSender sender = new NotificationSender(notificationClient, null, notificationBlacklist, ccdNotificationsPdfService, markdownTransformationService, saveLetterCorrespondenceAsyncService, saveCorrespondence);
+        NotificationSender sender = new NotificationSender(notificationClient, null, notificationBlacklist, markdownTransformationService, saveCorrespondenceAsyncService, saveCorrespondence);
 
         SendNotificationService sendNotificationService = new SendNotificationService(sender, evidenceManagementService, notificationHandler, notificationValidService, pdfLetterService);
 
