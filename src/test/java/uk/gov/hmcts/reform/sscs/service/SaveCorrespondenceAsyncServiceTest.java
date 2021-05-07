@@ -14,6 +14,7 @@ import org.junit.runner.RunWith;
 import org.mockito.Mock;
 import uk.gov.hmcts.reform.sscs.ccd.domain.Correspondence;
 import uk.gov.hmcts.reform.sscs.ccd.domain.CorrespondenceDetails;
+import uk.gov.hmcts.reform.sscs.ccd.domain.CorrespondenceType;
 import uk.gov.hmcts.reform.sscs.ccd.domain.SscsCaseData;
 import uk.gov.hmcts.reform.sscs.config.SubscriptionType;
 import uk.gov.hmcts.reform.sscs.model.LetterType;
@@ -21,11 +22,11 @@ import uk.gov.service.notify.NotificationClient;
 import uk.gov.service.notify.NotificationClientException;
 
 @RunWith(JUnitParamsRunner.class)
-public class SaveLetterCorrespondenceAsyncServiceTest {
+public class SaveCorrespondenceAsyncServiceTest {
     private static final String NOTIFICATION_ID = "123";
     private static final String CCD_ID = "82828";
 
-    private SaveLetterCorrespondenceAsyncService service;
+    private SaveCorrespondenceAsyncService service;
     private Correspondence correspondence;
 
     @Mock
@@ -38,7 +39,7 @@ public class SaveLetterCorrespondenceAsyncServiceTest {
     @Before
     public void setup() throws NotificationClientException {
         initMocks(this);
-        service = new SaveLetterCorrespondenceAsyncService(ccdNotificationsPdfService);
+        service = new SaveCorrespondenceAsyncService(ccdNotificationsPdfService);
         correspondence = Correspondence.builder().value(CorrespondenceDetails.builder().to("Mr Blobby").build()).build();
         SscsCaseData sscsCaseData = SscsCaseData.builder().build();
         byte[] bytes = "%PDF bytes".getBytes();
@@ -73,6 +74,15 @@ public class SaveLetterCorrespondenceAsyncServiceTest {
         service.saveLetter(new byte[]{}, correspondence, CCD_ID, subscriptionType);
 
         verify(ccdNotificationsPdfService).mergeReasonableAdjustmentsCorrespondenceIntoCcd(any(byte[].class), eq(Long.valueOf(CCD_ID)), eq(correspondence), eq(letterType));
+    }
+    
+    @Test
+    public void willSaveEmailOrSmsDirectlyIntoCcd() {
+        SscsCaseData sscsCaseData = SscsCaseData.builder().build();
+        correspondence = Correspondence.builder().value(CorrespondenceDetails.builder().correspondenceType(CorrespondenceType.Email).to("Mr Blobby").build()).build();
+        service.saveEmailOrSms(correspondence, sscsCaseData);
+
+        verify(ccdNotificationsPdfService).mergeCorrespondenceIntoCcd(eq(sscsCaseData), eq(correspondence));
     }
 
 }
