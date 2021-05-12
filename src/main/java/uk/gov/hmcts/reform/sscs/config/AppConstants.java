@@ -34,13 +34,9 @@ public final class AppConstants {
     public static final String DAYS_STRING = " days";
     public static final String DAYS_TO_HEARING_LITERAL = "days_to_hearing_text";
     public static final String DECISION_POSTED_RECEIVE_DATE = "decision_posted_receive_date";
-    public static final String DLA_PANEL_COMPOSITION = "judge, doctor and disability expert";
-    public static final String DLA_PANEL_COMPOSITION_WELSH = "barnwr, meddyg ac arbenigwr anableddau";
     public static final String WELSH_DECISION_POSTED_RECEIVE_DATE = "welsh_decision_posted_receive_date";
     public static final String DWP_ACRONYM = "DWP";
     public static final String DWP_FUL_NAME = "Department for Work and Pensions";
-    public static final String ESA_PANEL_COMPOSITION = "judge and a doctor";
-    public static final String ESA_PANEL_COMPOSITION_WELSH = "barnwr a meddyg (os yw’n berthnasol)";
     public static final String EVIDENCE_RECEIVED_DATE_LITERAL = "evidence_received_date";
     public static final String WELSH_EVIDENCE_RECEIVED_DATE_LITERAL = "welsh_evidence_received_date";
     public static final String FIRST_TIER_AGENCY_ACRONYM = "first_tier_agency_acronym";
@@ -62,8 +58,6 @@ public final class AppConstants {
     public static final String JOINT = "joint";
     public static final String JOINT_PARTY_APPEAL = "joint_party_appeal";
     public static final String JOINT_PARTY_NAME = "joint_party_name";
-    public static final String JUDGE_DR_EXPERT_PANEL_COMPOSITION = "judge, doctor and disability expert";
-    public static final String JUDGE_DR_EXPERT_PANEL_COMPOSITION_WELSH = "barnwr, meddyg ac arbenigwr anableddau";
     public static final String MAC_ALGO = "HmacSHA256";
     public static final String MAC_LITERAL = "mac";
     public static final String MANAGE_EMAILS_LINK_LITERAL = "manage_emails_link";
@@ -96,8 +90,6 @@ public final class AppConstants {
     public static final String TOWN_LITERAL = "town";
     public static final String TRACK_APPEAL_LINK_LITERAL = "track_appeal_link";
     public static final String TRIBUNAL_RESPONSE_DATE_LITERAL = "tribunal_response_date";
-    public static final String UC_PANEL_COMPOSITION = "judge, doctor and disability expert (if applicable)";
-    public static final String UC_PANEL_COMPOSITION_WELSH = "barnwr a meddyg (os yw’n berthnasol)";
     public static final String VENUE_ADDRESS_LITERAL = "venue_address";
     public static final String VENUE_MAP_LINK_LITERAL = "venue_map_link";
     public static final String YOUR_DETAILS_LITERAL = "your_details";
@@ -121,7 +113,6 @@ public final class AppConstants {
     public static final String LETTER_ADDRESS_LINE_3 = "letter_address_line_3";
     public static final String LETTER_ADDRESS_LINE_4 = "letter_address_line_4";
     public static final String LETTER_ADDRESS_POSTCODE = "letter_address_postcode";
-    public static final String LETTER_NAME = "letter_name";
 
     private AppConstants() {
         //

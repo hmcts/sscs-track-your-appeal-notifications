@@ -2,6 +2,7 @@ package uk.gov.hmcts.reform.sscs.personalisation;
 
 import static com.google.common.collect.Lists.newArrayList;
 import static java.lang.String.format;
+import static java.util.Optional.ofNullable;
 import static org.apache.commons.lang3.StringUtils.EMPTY;
 import static org.apache.commons.lang3.StringUtils.defaultIfBlank;
 import static org.apache.commons.lang3.StringUtils.equalsIgnoreCase;
@@ -11,6 +12,7 @@ import static org.apache.commons.lang3.StringUtils.lowerCase;
 import static uk.gov.hmcts.reform.sscs.ccd.domain.Benefit.getBenefitByCode;
 import static uk.gov.hmcts.reform.sscs.ccd.domain.Benefit.getLongBenefitNameDescriptionWithOptionalAcronym;
 import static uk.gov.hmcts.reform.sscs.ccd.domain.EventType.APPEAL_RECEIVED;
+import static uk.gov.hmcts.reform.sscs.ccd.domain.PanelComposition.JUDGE_DOCTOR_AND_DISABILITY_EXPERT_IF_APPLICABLE;
 import static uk.gov.hmcts.reform.sscs.ccd.util.CaseDataUtils.YES;
 import static uk.gov.hmcts.reform.sscs.config.AppConstants.*;
 import static uk.gov.hmcts.reform.sscs.config.SubscriptionType.APPELLANT;
@@ -53,6 +55,7 @@ import uk.gov.hmcts.reform.sscs.ccd.domain.HearingOptions;
 import uk.gov.hmcts.reform.sscs.ccd.domain.JointPartyName;
 import uk.gov.hmcts.reform.sscs.ccd.domain.LanguagePreference;
 import uk.gov.hmcts.reform.sscs.ccd.domain.Name;
+import uk.gov.hmcts.reform.sscs.ccd.domain.PanelComposition;
 import uk.gov.hmcts.reform.sscs.ccd.domain.RegionalProcessingCenter;
 import uk.gov.hmcts.reform.sscs.ccd.domain.SscsCaseData;
 import uk.gov.hmcts.reform.sscs.ccd.domain.State;
@@ -199,8 +202,9 @@ public class Personalisation<E extends NotificationWrapper> {
 
         translateToWelshDate(LocalDate.now(), ccdResponse, value -> personalisation.put(WELSH_CURRENT_DATE, value));
 
-        personalisation.put(PANEL_COMPOSITION, getPanelCompositionByBenefitType(benefit));
-        personalisation.put(PANEL_COMPOSITION_WELSH, getPanelCompositionByBenefitTypeWelsh(benefit));
+        PanelComposition panelComposition = ofNullable(benefit).map(Benefit::getPanelComposition).orElse(JUDGE_DOCTOR_AND_DISABILITY_EXPERT_IF_APPLICABLE);
+        personalisation.put(PANEL_COMPOSITION, panelComposition.getEnglish());
+        personalisation.put(PANEL_COMPOSITION_WELSH, panelComposition.getWelsh());
 
         LocalDate decisionPostedReceivedDate = LocalDate.now().plusDays(7);
         personalisation.put(DECISION_POSTED_RECEIVE_DATE, formatLocalDate(decisionPostedReceivedDate));
@@ -223,7 +227,7 @@ public class Personalisation<E extends NotificationWrapper> {
         personalisation.put(FIRST_TIER_AGENCY_ACRONYM, DWP_ACRONYM);
         personalisation.put(FIRST_TIER_AGENCY_FULL_NAME, DWP_FUL_NAME);
 
-        LocalDate createdDate = LocalDate.parse(Optional.ofNullable(ccdResponse.getCaseCreated()).orElse(LocalDate.now().toString()));
+        LocalDate createdDate = LocalDate.parse(ofNullable(ccdResponse.getCaseCreated()).orElse(LocalDate.now().toString()));
         translateToWelshDate(createdDate, ccdResponse, value -> personalisation.put(CREATED_DATE_WELSH, value));
 
         personalisation.put(CREATED_DATE, createdDate.toString());
@@ -385,28 +389,6 @@ public class Personalisation<E extends NotificationWrapper> {
         }
     }
 
-    List<Benefit> judgeDrExpertBenefits = Arrays.asList(Benefit.PIP, Benefit.DLA, Benefit.CARERS_ALLOWANCE, Benefit.ATTENDANCE_ALLOWANCE);
-
-    private String getPanelCompositionByBenefitType(Benefit benefit) {
-        if (judgeDrExpertBenefits.contains(benefit)) {
-            return JUDGE_DR_EXPERT_PANEL_COMPOSITION;
-        } else if (Benefit.ESA.equals(benefit)) {
-            return ESA_PANEL_COMPOSITION;
-        } else {
-            return UC_PANEL_COMPOSITION;
-        }
-    }
-
-    private String getPanelCompositionByBenefitTypeWelsh(Benefit benefit) {
-        if (judgeDrExpertBenefits.contains(benefit)) {
-            return JUDGE_DR_EXPERT_PANEL_COMPOSITION_WELSH;
-        } else if (Benefit.ESA.equals(benefit)) {
-            return ESA_PANEL_COMPOSITION_WELSH;
-        } else {
-            return UC_PANEL_COMPOSITION_WELSH;
-        }
-    }
-
     void setHearingContactDate(Map<String, String> personalisation, SscsCaseDataWrapper wrapper) {
         Optional<ZonedDateTime> hearingContactDate = hearingContactDateExtractor.extract(wrapper);
         hearingContactDate.ifPresent(zonedDateTime -> personalisation.put(HEARING_CONTACT_DATE,
@@ -416,7 +398,7 @@ public class Personalisation<E extends NotificationWrapper> {
 
     Map<String, String> setEventData(Map<String, String> personalisation, SscsCaseData ccdResponse, NotificationEventType notificationEventType) {
         if (ccdResponse.getCreatedInGapsFrom() != null && ccdResponse.getCreatedInGapsFrom().equals("readyToList")) {
-            LocalDate localDate = LocalDate.parse(Optional.ofNullable(ccdResponse.getDateSentToDwp()).orElse(LocalDate.now().toString())).plusDays(MAX_DWP_RESPONSE_DAYS);
+            LocalDate localDate = LocalDate.parse(ofNullable(ccdResponse.getDateSentToDwp()).orElse(LocalDate.now().toString())).plusDays(MAX_DWP_RESPONSE_DAYS);
             String dwpResponseDateString = formatLocalDate(localDate);
             personalisation.put(APPEAL_RESPOND_DATE, dwpResponseDateString);
             translateToWelshDate(localDate, ccdResponse, value ->
