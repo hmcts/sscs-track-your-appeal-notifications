@@ -274,7 +274,7 @@ dependencies {
 
     compile group: 'com.mchange', name: 'c3p0', version: '0.9.5.5'
     compile group: 'org.flywaydb', name: 'flyway-core', version: '6.5.6'
-    compile group: 'org.postgresql', name: 'postgresql', version: '42.2.19'
+    compile group: 'org.postgresql', name: 'postgresql', version: '42.2.20'
     compile group: 'net.bytebuddy', name: 'byte-buddy', version: '1.11.0'
     compile group: 'org.elasticsearch', name: 'elasticsearch', version: '7.12.1'
 
@@ -324,7 +324,7 @@ dependencies {
     integrationTestCompileOnly 'org.projectlombok:lombok:1.18.18'
     integrationTestAnnotationProcessor "org.projectlombok:lombok:1.18.18"
 
-    testCompile(group: 'org.springframework.boot', name: 'spring-boot-starter-test', version: '2.4.4') {
+    testCompile(group: 'org.springframework.boot', name: 'spring-boot-starter-test', version: '2.4.5') {
         exclude group: "com.vaadin.external.google", module:"android-json"
     }
     testCompile group: 'org.mockito', name: 'mockito-core', version: '3.9.0'
