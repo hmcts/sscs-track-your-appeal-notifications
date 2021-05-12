@@ -166,9 +166,6 @@ repositories {
 
     mavenLocal()
 
-    maven {
-        url "https://dl.bintray.com/hmcts/hmcts-maven"
-    }
     mavenCentral()
     jcenter()
     maven {
@@ -252,7 +249,7 @@ functional.shouldRunAfter(test)
 
 def versions = [
         logback         : '1.2.3',
-        reformLogging   : '5.0.1',
+        reformLogging   : '5.1.7',
         springHystrix   : '1.4.2.RELEASE',
         springfoxSwagger: '2.8.0',
         restAssured     : '4.3.3'
@@ -301,14 +298,12 @@ dependencies {
     compile group: 'org.jadira.usertype', name: 'usertype.core', version: '7.0.0.CR1'
 
     compile group: 'uk.gov.hmcts.reform', name: 'properties-volume-spring-boot-starter', version:'0.1.0'
-    compile group: 'uk.gov.hmcts.reform', name: 'java-logging-spring', version: versions.reformLogging
-    compile group: 'uk.gov.hmcts.reform', name: 'java-logging-httpcomponents', version: versions.reformLogging
-    compile group: 'uk.gov.hmcts.reform', name: 'java-logging-appinsights', version: versions.reformLogging
+    compile group: 'com.github.hmcts', name: 'java-logging', version: versions.reformLogging
     compile group: 'uk.gov.hmcts.reform', name: 'service-auth-provider-client', version: '4.0.0'
 
     compile group: 'com.github.hmcts', name: 'sscs-common', version: '4.3.14-RC-SSCS-9154'
-    compile group: 'com.github.hmcts', name: 'sscs-pdf-email-common', version: '1.4.34'
-    compile group: 'com.github.hmcts', name: 'sscs-job-scheduler', version: '1.5.6'
+    compile group: 'com.github.hmcts', name: 'sscs-pdf-email-common', version: '1.4.35'
+    compile group: 'com.github.hmcts', name: 'sscs-job-scheduler', version: '1.5.7'
 
     compile group: 'uk.gov.service.notify', name: 'notifications-java-client', version: '3.17.2-RELEASE'
     compile group: 'com.squareup.okhttp3', name: 'okhttp', version: '4.9.1'
