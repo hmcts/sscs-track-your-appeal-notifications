@@ -233,7 +233,7 @@ public class NotificationsFunctionalTest extends AbstractFunctionalTest {
             "pip,judge\\, doctor and disability expert",
             "esa,judge and a doctor",
             "dla,judge\\, doctor and disability expert",
-            "carers-allowance,judge\\, doctor and disability expert"
+            "carers-allowance,judge"
     })
     public void shouldSendPaperDwpResponseReceivedNotification(final String benefit, String expectedPanelComposition)
             throws Exception {
