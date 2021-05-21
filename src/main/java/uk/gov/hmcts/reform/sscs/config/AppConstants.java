@@ -36,11 +36,13 @@ public final class AppConstants {
     public static final String DECISION_POSTED_RECEIVE_DATE = "decision_posted_receive_date";
     public static final String WELSH_DECISION_POSTED_RECEIVE_DATE = "welsh_decision_posted_receive_date";
     public static final String DWP_ACRONYM = "DWP";
-    public static final String DWP_FUL_NAME = "Department for Work and Pensions";
+    public static final String DWP_FULL_NAME = "Department for Work and Pensions";
+    public static final String WELSH_DWP_FULL_NAME = "Adran Gwaith a Phensiynau";
     public static final String EVIDENCE_RECEIVED_DATE_LITERAL = "evidence_received_date";
     public static final String WELSH_EVIDENCE_RECEIVED_DATE_LITERAL = "welsh_evidence_received_date";
     public static final String FIRST_TIER_AGENCY_ACRONYM = "first_tier_agency_acronym";
     public static final String FIRST_TIER_AGENCY_FULL_NAME = "first_tier_agency_full_name";
+    public static final String WELSH_FIRST_TIER_AGENCY_FULL_NAME = "welsh_first_tier_agency_full_name";
     public static final String REPRESENTATIVE = "representative";
     public static final String JOINT_PARTY = "joint_party";
     public static final String HEARING_ARRANGEMENT_DETAILS_LITERAL = "hearing_arrangement_details";

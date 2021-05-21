@@ -536,7 +536,8 @@ public class PersonalisationTest {
         assertEquals("http://link.com/manage-email-notifications/ZYX", result.get(MANAGE_EMAILS_LINK_LITERAL));
         assertEquals("http://tyalink.com/GLSCRR", result.get(TRACK_APPEAL_LINK_LITERAL));
         assertEquals(DWP_ACRONYM, result.get(FIRST_TIER_AGENCY_ACRONYM));
-        assertEquals(DWP_FUL_NAME, result.get(FIRST_TIER_AGENCY_FULL_NAME));
+        assertEquals(DWP_FULL_NAME, result.get(FIRST_TIER_AGENCY_FULL_NAME));
+        assertEquals(WELSH_DWP_FULL_NAME, result.get(WELSH_FIRST_TIER_AGENCY_FULL_NAME));
         assertEquals("5 August 2018", result.get(APPEAL_RESPOND_DATE));
         assertEquals("http://link.com/GLSCRR", result.get(SUBMIT_EVIDENCE_LINK_LITERAL));
         assertEquals("http://link.com/progress/GLSCRR/expenses", result.get(CLAIMING_EXPENSES_LINK_LITERAL));
@@ -598,7 +599,8 @@ public class PersonalisationTest {
         assertNull(result.get(MANAGE_EMAILS_LINK_LITERAL));
         assertEquals("http://tyalink.com/GLSCRR", result.get(TRACK_APPEAL_LINK_LITERAL));
         assertEquals(DWP_ACRONYM, result.get(FIRST_TIER_AGENCY_ACRONYM));
-        assertEquals(DWP_FUL_NAME, result.get(FIRST_TIER_AGENCY_FULL_NAME));
+        assertEquals(DWP_FULL_NAME, result.get(FIRST_TIER_AGENCY_FULL_NAME));
+        assertEquals(WELSH_DWP_FULL_NAME, result.get(WELSH_FIRST_TIER_AGENCY_FULL_NAME));
         assertEquals("5 August 2018", result.get(APPEAL_RESPOND_DATE));
         assertEquals("http://link.com/GLSCRR", result.get(SUBMIT_EVIDENCE_LINK_LITERAL));
         assertEquals("http://link.com/progress/GLSCRR/expenses", result.get(CLAIMING_EXPENSES_LINK_LITERAL));

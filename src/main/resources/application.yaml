@@ -574,7 +574,7 @@ notification:
         docmosisId: TB-SCS-GNO-WEL-00629.docx
     appealReceived:
       appellant:
-        emailId: 155a6c34-2efa-46b2-9fc7-7a626b77bdc4
+        emailId: ba2654d8-3e76-43df-bf7d-f457d4d6819a
         smsId: 53369ca5-75a8-43a7-8e5e-4eda9df04001
         letterId: 830ba7f1-9757-4833-8520-2f872de7be44
         docmosisId: TB-SCS-GNO-WEL-00467.docx
@@ -584,7 +584,7 @@ notification:
         letterId: 89cbb9d8-3b7d-4766-b481-585832e8bd90
         docmosisId: TB-SCS-GNO-WEL-00471.docx
       appointee:
-        emailId: d87e01c6-1e03-47a2-9387-9b06ac536cba
+        emailId: c77d9768-5343-42a5-9333-7b399e3d7199
         smsId: 53369ca5-75a8-43a7-8e5e-4eda9df04001
         letterId: 95b0b0f8-fdf6-450f-b805-6aab46d63bf7
         docmosisId: TB-SCS-GNO-WEL-00467.docx
