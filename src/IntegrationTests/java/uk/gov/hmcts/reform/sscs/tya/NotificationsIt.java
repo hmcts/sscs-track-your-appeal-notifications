@@ -167,6 +167,22 @@ public class NotificationsIt extends NotificationsItBase {
     }
 
     @Test
+    public void shouldSetBereavementBenefitDescriptionInAcronymField() throws Exception {
+        json = updateEmbeddedJson(json, "bereavementBenefit", "case_details", "case_data", "appeal", "benefitType", "code");
+        HttpServletResponse response = getResponse(getRequestWithAuthHeader(json));
+        assertHttpStatus(response, HttpStatus.OK);
+
+        ArgumentCaptor<String> emailTemplateIdCaptor = ArgumentCaptor.forClass(String.class);
+        @SuppressWarnings("unchecked")
+        ArgumentCaptor<Map<String, ?>> emailPersonalisationCaptor = ArgumentCaptor.forClass(Map.class);
+        verify(notificationClient, times(1))
+                .sendEmail(emailTemplateIdCaptor.capture(), any(), emailPersonalisationCaptor.capture(), any());
+        Map<String, ?> personalisation = emailPersonalisationCaptor.getValue();
+        assertEquals("Bereavement Benefit", personalisation.get(BENEFIT_NAME_ACRONYM_LITERAL));
+        assertEquals("Budd-dal Profedigaeth", personalisation.get(BENEFIT_NAME_ACRONYM_LITERAL_WELSH));
+    }
+
+    @Test
     @Parameters(method = "generateBundledLetterNotificationScenarios")
     public void shouldSendRepsBundledLetterNotificationsForAnEventForAnOralOrPaperHearingAndForEachSubscription(
         NotificationEventType notificationEventType, String hearingType, boolean hasRep, boolean hasAppointee, int wantedNumberOfSendLetterInvocations) throws Exception {
