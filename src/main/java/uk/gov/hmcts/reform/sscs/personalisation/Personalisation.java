@@ -225,7 +225,8 @@ public class Personalisation<E extends NotificationWrapper> {
         subscriptionDetails(personalisation, subscription, benefit, ccdResponse);
 
         personalisation.put(FIRST_TIER_AGENCY_ACRONYM, DWP_ACRONYM);
-        personalisation.put(FIRST_TIER_AGENCY_FULL_NAME, DWP_FUL_NAME);
+        personalisation.put(FIRST_TIER_AGENCY_FULL_NAME, DWP_FULL_NAME);
+        personalisation.put(WELSH_FIRST_TIER_AGENCY_FULL_NAME, WELSH_DWP_FULL_NAME);
 
         LocalDate createdDate = LocalDate.parse(ofNullable(ccdResponse.getCaseCreated()).orElse(LocalDate.now().toString()));
         translateToWelshDate(createdDate, ccdResponse, value -> personalisation.put(CREATED_DATE_WELSH, value));
