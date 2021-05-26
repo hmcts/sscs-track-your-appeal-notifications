@@ -54,7 +54,7 @@ public class DocmosisWithGovNotifyLetterFunctionalTest extends AbstractFunctiona
         return new Object[]{
             new Object[]{PROCESS_AUDIO_VIDEO, expectedNumberOfLettersIsThree},
             new Object[]{PROCESS_AUDIO_VIDEO_WELSH, expectedNumberOfLettersIsThree},
-            new Object[]{REQUEST_INFO_INCOMPLETE, expectedNumberOfLettersIsThree},
+            new Object[]{REQUEST_INFO_INCOMPLETE, expectedNumberOfLettersIsOne},
             new Object[]{ISSUE_ADJOURNMENT_NOTICE, expectedNumberOfLettersIsThree},
             new Object[]{ISSUE_ADJOURNMENT_NOTICE_WELSH, expectedNumberOfLettersIsThree},
             new Object[]{STRUCK_OUT, expectedNumberOfLettersIsTwo},

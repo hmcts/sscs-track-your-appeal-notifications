@@ -15,14 +15,12 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
 import org.apache.commons.lang3.StringUtils;
-import uk.gov.hmcts.reform.sscs.ccd.domain.DatedRequestOutcome;
-import uk.gov.hmcts.reform.sscs.ccd.domain.RequestOutcome;
-import uk.gov.hmcts.reform.sscs.ccd.domain.SscsCaseData;
-import uk.gov.hmcts.reform.sscs.ccd.domain.Subscription;
+import uk.gov.hmcts.reform.sscs.ccd.domain.*;
 import uk.gov.hmcts.reform.sscs.config.AppealHearingType;
 import uk.gov.hmcts.reform.sscs.domain.SscsCaseDataWrapper;
 import uk.gov.hmcts.reform.sscs.domain.SubscriptionWithType;
 import uk.gov.hmcts.reform.sscs.domain.notify.NotificationEventType;
+import uk.gov.hmcts.reform.sscs.model.PartyItemList;
 import uk.gov.hmcts.reform.sscs.service.scheduler.CcdActionSerializer;
 
 public class CcdNotificationWrapper implements NotificationWrapper {
@@ -103,6 +101,8 @@ public class CcdNotificationWrapper implements NotificationWrapper {
     public List<SubscriptionWithType> getSubscriptionsBasedOnNotificationType() {
         List<SubscriptionWithType> subscriptionWithTypeList = new ArrayList<>();
 
+        List<NotificationEventType> notificationsMaybeNotForAppellant = List.of(REVIEW_CONFIDENTIALITY_REQUEST, REQUEST_INFO_INCOMPLETE);
+
         if (hasAppointeeSubscriptionOrIsMandatoryAppointeeLetter(responseWrapper)
                 && (SYA_APPEAL_CREATED_NOTIFICATION.equals(getNotificationType())
                 || ADJOURNED_NOTIFICATION.equals(getNotificationType())
@@ -137,13 +137,13 @@ public class CcdNotificationWrapper implements NotificationWrapper {
                 || TCW_DECISION_APPEAL_TO_PROCEED.equals(getNotificationType())
                 || NON_COMPLIANT_NOTIFICATION.equals(getNotificationType())
                 || RESEND_APPEAL_CREATED_NOTIFICATION.equals(getNotificationType())
-                || REQUEST_INFO_INCOMPLETE.equals(getNotificationType())
-                || JOINT_PARTY_ADDED.equals(getNotificationType()))
+                || JOINT_PARTY_ADDED.equals(getNotificationType())
+                || isValidRequestInfoIncompleteEventForParty(PartyItemList.APPELLANT))
         ) {
             subscriptionWithTypeList.add(new SubscriptionWithType(getAppointeeSubscription(), APPOINTEE));
-        } else if (getOldSscsCaseData() != null && isValidReviewConfidentialityRequest(getOldSscsCaseData().getConfidentialityRequestOutcomeAppellant(), getNewSscsCaseData().getConfidentialityRequestOutcomeAppellant())) {
-            subscriptionWithTypeList.add(new SubscriptionWithType(getAppellantSubscription(), APPELLANT));
-        } else if (!REVIEW_CONFIDENTIALITY_REQUEST.equals(getNotificationType())) {
+        } else if (getOldSscsCaseData() != null && isValidReviewConfidentialityRequest(getOldSscsCaseData().getConfidentialityRequestOutcomeAppellant(), getNewSscsCaseData().getConfidentialityRequestOutcomeAppellant())
+                || isValidRequestInfoIncompleteEventForParty(PartyItemList.APPELLANT)
+                || !notificationsMaybeNotForAppellant.contains(getNotificationType())) {
             subscriptionWithTypeList.add(new SubscriptionWithType(getAppellantSubscription(), APPELLANT));
         }
 
@@ -182,7 +182,7 @@ public class CcdNotificationWrapper implements NotificationWrapper {
                 || TCW_DECISION_APPEAL_TO_PROCEED.equals(getNotificationType())
                 || NON_COMPLIANT_NOTIFICATION.equals(getNotificationType())
                 || VALID_APPEAL_CREATED.equals(getNotificationType())
-                || REQUEST_INFO_INCOMPLETE.equals(getNotificationType()))
+                || isValidRequestInfoIncompleteEventForParty(PartyItemList.REPRESENTATIVE))
         ) {
             subscriptionWithTypeList.add(new SubscriptionWithType(getRepresentativeSubscription(), REPRESENTATIVE));
         }
@@ -206,13 +206,21 @@ public class CcdNotificationWrapper implements NotificationWrapper {
             || DIRECTION_ISSUED_WELSH.equals(getNotificationType())
             || DWP_UPLOAD_RESPONSE_NOTIFICATION.equals(getNotificationType())
             || EVIDENCE_REMINDER_NOTIFICATION.equals(getNotificationType())
-            || REQUEST_INFO_INCOMPLETE.equals(getNotificationType())
+            || (REQUEST_INFO_INCOMPLETE.equals(getNotificationType()) && responseWrapper.getNewSscsCaseData().getInformationFromPartySelected() != null && PartyItemList.JOINT_PARTY.getCode().equals(responseWrapper.getNewSscsCaseData().getInformationFromPartySelected().getValue().getCode()))
             || JOINT_PARTY_ADDED.equals(getNotificationType())
+            || isValidRequestInfoIncompleteEventForParty(PartyItemList.JOINT_PARTY)
             || (getOldSscsCaseData() != null && isValidReviewConfidentialityRequest(getOldSscsCaseData().getConfidentialityRequestOutcomeJointParty(), getNewSscsCaseData().getConfidentialityRequestOutcomeJointParty())))
         ) {
             subscriptionWithTypeList.add(new SubscriptionWithType(getJointPartySubscription(), JOINT_PARTY));
         }
         return subscriptionWithTypeList;
+    }
+
+    private boolean isValidRequestInfoIncompleteEventForParty(PartyItemList partyItem) {
+        return REQUEST_INFO_INCOMPLETE.equals(getNotificationType())
+                && responseWrapper.getNewSscsCaseData().getInformationFromPartySelected() != null
+                && responseWrapper.getNewSscsCaseData().getInformationFromPartySelected().getValue() != null
+                && partyItem.getCode().equals(responseWrapper.getNewSscsCaseData().getInformationFromPartySelected().getValue().getCode());
     }
 
     private boolean isValidReviewConfidentialityRequest(DatedRequestOutcome previousRequestOutcome, DatedRequestOutcome latestRequestOutcome) {

@@ -2043,7 +2043,7 @@ public class NotificationServiceTest {
 
         getNotificationService().manageNotificationAndSubscription(wrapper, false);
 
-        verifyExpectedErrorLogMessage(mockAppender, captorLoggingEvent, wrapper.getNewSscsCaseData().getCcdCaseId(), "Request Incomplete Information");
+        verifyExpectedInfoLogMessage(mockAppender, captorLoggingEvent, wrapper.getNewSscsCaseData().getCcdCaseId(), "Request Incomplete Information");
     }
 
     @Test
@@ -2055,7 +2055,7 @@ public class NotificationServiceTest {
 
         getNotificationService().manageNotificationAndSubscription(wrapper, false);
 
-        verifyExpectedErrorLogMessage(mockAppender, captorLoggingEvent, wrapper.getNewSscsCaseData().getCcdCaseId(), "Request Incomplete Information");
+        verifyExpectedInfoLogMessage(mockAppender, captorLoggingEvent, wrapper.getNewSscsCaseData().getCcdCaseId(), "Request Incomplete Information");
     }
 
     @Test
@@ -2601,6 +2601,16 @@ public class NotificationServiceTest {
         );
         List<ILoggingEvent> logEvents = (List<ILoggingEvent>) captorLoggingEvent.getAllValues();
         assertFalse(logEvents.stream().noneMatch(e -> e.getLevel().equals(Level.ERROR)));
+        assertEquals(1, logEvents.stream().filter(logEvent -> logEvent.getFormattedMessage().contains(errorMessage)).count());
+        assertTrue(logEvents.stream().filter(logEvent -> logEvent.getFormattedMessage().contains(ccdCaseId)).count() >= 1);
+    }
+
+    protected static void verifyExpectedInfoLogMessage(Appender<ILoggingEvent> mockAppender, ArgumentCaptor captorLoggingEvent, String ccdCaseId, String errorMessage) {
+        verify(mockAppender, atLeastOnce()).doAppend(
+                (ILoggingEvent) captorLoggingEvent.capture()
+        );
+        List<ILoggingEvent> logEvents = (List<ILoggingEvent>) captorLoggingEvent.getAllValues();
+        assertFalse(logEvents.stream().noneMatch(e -> e.getLevel().equals(Level.INFO)));
         assertEquals(1, logEvents.stream().filter(logEvent -> logEvent.getFormattedMessage().contains(errorMessage)).count());
         assertTrue(logEvents.stream().filter(logEvent -> logEvent.getFormattedMessage().contains(ccdCaseId)).count() >= 1);
     }

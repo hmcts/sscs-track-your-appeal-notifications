@@ -26,6 +26,7 @@ import uk.gov.hmcts.reform.sscs.ccd.domain.DatedRequestOutcome;
 import uk.gov.hmcts.reform.sscs.ccd.domain.RequestOutcome;
 import uk.gov.hmcts.reform.sscs.ccd.domain.State;
 import uk.gov.hmcts.reform.sscs.domain.notify.NotificationEventType;
+import uk.gov.hmcts.reform.sscs.model.PartyItemList;
 
 public class NotificationsIt extends NotificationsItBase {
 
@@ -682,30 +683,6 @@ public class NotificationsIt extends NotificationsItBase {
                         "0"
                 },
                 new Object[]{
-                        REQUEST_INFO_INCOMPLETE,
-                        "paper",
-                        Collections.emptyList(),
-                        Collections.emptyList(),
-                        Arrays.asList("TB-SCS-GNO-ENG-00452.docx", "TB-SCS-GNO-ENG-00452.docx"),
-                        "yes",
-                        "yes",
-                        "0",
-                        "0",
-                        "0"
-                },
-                new Object[]{
-                        REQUEST_INFO_INCOMPLETE,
-                        "oral",
-                        Collections.emptyList(),
-                        Collections.emptyList(),
-                        Arrays.asList("TB-SCS-GNO-ENG-00452.docx", "TB-SCS-GNO-ENG-00452.docx"),
-                        "yes",
-                        "yes",
-                        "0",
-                        "0",
-                        "0"
-                },
-                new Object[]{
                         DWP_UPLOAD_RESPONSE_NOTIFICATION,
                         "paper",
                         Collections.singletonList("8c4770ca-13c9-49ea-9df1-f2952030f95e"),
@@ -1341,34 +1318,6 @@ public class NotificationsIt extends NotificationsItBase {
                 "yes",
                 "1",
                 "1",
-                "0"
-            },
-            new Object[]{
-                REQUEST_INFO_INCOMPLETE,
-                "paper",
-                Collections.emptyList(),
-                Collections.emptyList(),
-                Arrays.asList("TB-SCS-GNO-ENG-00452.docx", "TB-SCS-GNO-ENG-00452.docx"),
-                "yes",
-                "yes",
-                "yes",
-                "yes",
-                "0",
-                "0",
-                "0"
-            },
-            new Object[]{
-                REQUEST_INFO_INCOMPLETE,
-                "paper",
-                Collections.emptyList(),
-                Collections.emptyList(),
-                Arrays.asList("TB-SCS-GNO-ENG-00452.docx", "TB-SCS-GNO-ENG-00452.docx"),
-                "no",
-                "no",
-                "no",
-                "no",
-                "0",
-                "0",
                 "0"
             },
             new Object[]{
@@ -2370,34 +2319,6 @@ public class NotificationsIt extends NotificationsItBase {
                 "0"
             },
             new Object[]{
-                REQUEST_INFO_INCOMPLETE,
-                "paper",
-                Collections.emptyList(),
-                Collections.emptyList(),
-                Arrays.asList("TB-SCS-GNO-ENG-00452.docx", "TB-SCS-GNO-ENG-00452.docx"),
-                "yes",
-                "yes",
-                "yes",
-                "yes",
-                "0",
-                "0",
-                "0"
-            },
-            new Object[]{
-                REQUEST_INFO_INCOMPLETE,
-                "paper",
-                Collections.emptyList(),
-                Collections.emptyList(),
-                Arrays.asList("TB-SCS-GNO-ENG-00452.docx", "TB-SCS-GNO-ENG-00452.docx"),
-                "no",
-                "no",
-                "no",
-                "no",
-                "0",
-                "0",
-                "0"
-            },
-            new Object[]{
                 RESEND_APPEAL_CREATED_NOTIFICATION,
                 "paper",
                 Arrays.asList("01293b93-b23e-40a3-ad78-2c6cd01cd21c", "652753bf-59b4-46eb-9c24-bd762338a098"),
@@ -3004,32 +2925,6 @@ public class NotificationsIt extends NotificationsItBase {
                 ""
             },
             new Object[]{
-                REQUEST_INFO_INCOMPLETE,
-                "oral",
-                Collections.emptyList(),
-                Collections.emptyList(),
-                Collections.singletonList("TB-SCS-GNO-ENG-00452.docx"),
-                "yes",
-                "yes",
-                "0",
-                "0",
-                "0",
-                "Appointee Appointee"
-            },
-            new Object[]{
-                REQUEST_INFO_INCOMPLETE,
-                "oral",
-                Collections.emptyList(),
-                Collections.emptyList(),
-                Collections.singletonList("TB-SCS-GNO-ENG-00452.docx"),
-                "no",
-                "no",
-                "0",
-                "0",
-                "0",
-                "Appointee Appointee"
-            },
-            new Object[]{
                 NON_COMPLIANT_NOTIFICATION,
                 "oral",
                 Collections.emptyList(),
@@ -3411,32 +3306,6 @@ public class NotificationsIt extends NotificationsItBase {
                 "0",
                 "0",
                 "Harry Potter"
-            },
-            new Object[]{
-                REQUEST_INFO_INCOMPLETE,
-                "oral",
-                Collections.emptyList(),
-                Collections.emptyList(),
-                Collections.singletonList("TB-SCS-GNO-ENG-00452.docx"),
-                "yes",
-                "yes",
-                "0",
-                "0",
-                "0",
-                "Appointee Appointee"
-            },
-            new Object[]{
-                REQUEST_INFO_INCOMPLETE,
-                "oral",
-                Collections.emptyList(),
-                Collections.emptyList(),
-                Collections.singletonList("TB-SCS-GNO-ENG-00452.docx"),
-                "no",
-                "no",
-                "0",
-                "0",
-                "0",
-                "Appointee Appointee"
             },
             new Object[]{
                 NON_COMPLIANT_NOTIFICATION,
@@ -3847,6 +3716,48 @@ public class NotificationsIt extends NotificationsItBase {
         verify(notificationClient, times(0)).sendEmail(any(), any(), any(), any());
         verify(notificationClient, times(0)).sendSms(any(), any(), any(), any(), any());
         verify(notificationClient, times(2)).sendPrecompiledLetterWithInputStream(any(), any());
+    }
+
+    @Test
+    @Parameters(method = "generateRequestInfoScenarios")
+    public void givenRequestInfoIncompleteEvent_shouldSendNotificationToSelectedParty(String partySelected, String letterRecipient, boolean sendToAppellant) throws Exception {
+        String jsonPath = sendToAppellant ? "json/ccdResponse_requestInfoIncomplete.json" : "json/ccdResponse_requestInfoIncomplete.json";
+        String path = getClass().getClassLoader().getResource("json/ccdResponse_requestInfoIncomplete.json").getFile();
+        String json = FileUtils.readFileToString(new File(path), StandardCharsets.UTF_8.name());
+        json = updateEmbeddedJson(json, REQUEST_INFO_INCOMPLETE.getId(), "event_id");
+        json = updateEmbeddedJson(json, partySelected, "case_details", "case_data", "informationFromPartySelected", "value", "code");
+
+        getResponse(getRequestWithAuthHeader(json));
+
+        verify(notificationClient, times(0)).sendEmail(any(), any(), any(), any());
+        verify(notificationClient, times(0)).sendSms(any(), any(), any(), any(), any());
+        validateLetterNotifications(Arrays.asList("TB-SCS-GNO-ENG-00452.docx"), 0, letterRecipient);
+    }
+
+    @SuppressWarnings({"Indentation", "unused"})
+    private Object[] generateRequestInfoScenarios() {
+        return new Object[]{
+                new Object[]{
+                        PartyItemList.APPELLANT.getCode(),
+                        "Dexter Vasquez",
+                        true
+                },
+                new Object[]{
+                        PartyItemList.APPELLANT.getCode(),
+                        "Appointee Appointee",
+                        false
+                },
+                new Object[]{
+                        PartyItemList.JOINT_PARTY.getCode(),
+                        "Joint Party",
+                        false
+                },
+                new Object[]{
+                        PartyItemList.REPRESENTATIVE.getCode(),
+                        "Harry Potter",
+                        false
+                },
+        };
     }
 
     private void updateJsonForPaperHearing() throws IOException {

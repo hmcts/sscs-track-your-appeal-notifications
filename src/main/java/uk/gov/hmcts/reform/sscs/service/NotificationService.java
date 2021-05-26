@@ -286,11 +286,12 @@ public class NotificationService {
 
     private boolean isEventAllowedToProceedWithValidData(NotificationWrapper notificationWrapper,
                                                          NotificationEventType notificationType) {
+        //FIXME: Can remove this block??
         if (REQUEST_INFO_INCOMPLETE.equals(notificationType)) {
             if (StringUtils.isEmpty(notificationWrapper.getNewSscsCaseData().getInformationFromAppellant())
                     || "No".equalsIgnoreCase(notificationWrapper.getNewSscsCaseData().getInformationFromAppellant())) {
 
-                log.error("Request Incomplete Information with empty or no Information From Appellant for ccdCaseId {}.", notificationWrapper.getNewSscsCaseData().getCcdCaseId());
+                log.info("Request Incomplete Information with empty or no Information From Appellant for ccdCaseId {}.", notificationWrapper.getNewSscsCaseData().getCcdCaseId());
                 return false;
             }
         }
