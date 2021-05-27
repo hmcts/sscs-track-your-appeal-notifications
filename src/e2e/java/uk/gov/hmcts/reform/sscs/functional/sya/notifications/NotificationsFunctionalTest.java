@@ -462,7 +462,7 @@ public class NotificationsFunctionalTest extends AbstractFunctionalTest {
 
         Notification updateEmailNotification = notifications.stream().filter(f -> f.getTemplateId().toString().equals(oralDwpUploadResponseEmailId)).collect(Collectors.toList()).get(0);
 
-        assertTrue(updateEmailNotification.getBody().contains("DWP has sent a 'Response' to your ESA benefit appeal"));
+        assertTrue(updateEmailNotification.getBody().contains("DWP has sent a 'Response' to your ESA appeal"));
         assertTrue(updateEmailNotification.getBody().contains("We need to book a hearing for your appeal"));
     }
 
@@ -475,7 +475,7 @@ public class NotificationsFunctionalTest extends AbstractFunctionalTest {
                 paperDwpUploadResponseSmsId);
 
         Notification updateEmailNotification = notifications.stream().filter(f -> f.getTemplateId().toString().equals(paperDwpUploadResponseEmailId)).collect(Collectors.toList()).get(0);
-        assertTrue(updateEmailNotification.getBody().contains("DWP has sent a 'Response' to your ESA benefit appeal"));
+        assertTrue(updateEmailNotification.getBody().contains("DWP has sent a 'Response' to your ESA appeal"));
         assertTrue(updateEmailNotification.getBody().contains("You have told us you do not want to attend the hearing of your appeal"));
     }
 
