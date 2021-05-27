@@ -101,9 +101,25 @@ public class CcdNotificationWrapper implements NotificationWrapper {
     public List<SubscriptionWithType> getSubscriptionsBasedOnNotificationType() {
         List<SubscriptionWithType> subscriptionWithTypeList = new ArrayList<>();
 
-        List<NotificationEventType> notificationsMaybeNotForAppellant = List.of(REVIEW_CONFIDENTIALITY_REQUEST, REQUEST_INFO_INCOMPLETE);
+        if (isNotificationEventValidToSendToAppointee()) {
+            subscriptionWithTypeList.add(new SubscriptionWithType(getAppointeeSubscription(), APPOINTEE));
+        } else if (isNotificationEventValidToSendToAppellant()) {
+            subscriptionWithTypeList.add(new SubscriptionWithType(getAppellantSubscription(), APPELLANT));
+        }
 
-        if (hasAppointeeSubscriptionOrIsMandatoryAppointeeLetter(responseWrapper)
+        if (isNotificationEventValidToSendToRep()) {
+            subscriptionWithTypeList.add(new SubscriptionWithType(getRepresentativeSubscription(), REPRESENTATIVE));
+        }
+
+        if (isNotificationEventValidToSendToJointParty()) {
+            subscriptionWithTypeList.add(new SubscriptionWithType(getJointPartySubscription(), JOINT_PARTY));
+        }
+
+        return subscriptionWithTypeList;
+    }
+
+    private boolean isNotificationEventValidToSendToAppointee() {
+        return hasAppointeeSubscriptionOrIsMandatoryAppointeeLetter(responseWrapper)
                 && (SYA_APPEAL_CREATED_NOTIFICATION.equals(getNotificationType())
                 || ADJOURNED_NOTIFICATION.equals(getNotificationType())
                 || APPEAL_RECEIVED_NOTIFICATION.equals(getNotificationType())
@@ -138,16 +154,20 @@ public class CcdNotificationWrapper implements NotificationWrapper {
                 || NON_COMPLIANT_NOTIFICATION.equals(getNotificationType())
                 || RESEND_APPEAL_CREATED_NOTIFICATION.equals(getNotificationType())
                 || JOINT_PARTY_ADDED.equals(getNotificationType())
-                || isValidRequestInfoIncompleteEventForParty(PartyItemList.APPELLANT))
-        ) {
-            subscriptionWithTypeList.add(new SubscriptionWithType(getAppointeeSubscription(), APPOINTEE));
-        } else if (getOldSscsCaseData() != null && isValidReviewConfidentialityRequest(getOldSscsCaseData().getConfidentialityRequestOutcomeAppellant(), getNewSscsCaseData().getConfidentialityRequestOutcomeAppellant())
-                || isValidRequestInfoIncompleteEventForParty(PartyItemList.APPELLANT)
-                || !notificationsMaybeNotForAppellant.contains(getNotificationType())) {
-            subscriptionWithTypeList.add(new SubscriptionWithType(getAppellantSubscription(), APPELLANT));
-        }
+                || isValidRequestInfoIncompleteEventForParty(PartyItemList.APPELLANT));
+    }
 
-        if (hasRepSubscriptionOrIsMandatoryRepLetter(responseWrapper)
+    private boolean isNotificationEventValidToSendToAppellant() {
+        // Special list of notifications that might not be sent to appellant, depending on data set on the case
+        List<NotificationEventType> notificationsMaybeNotForAppellant = List.of(REVIEW_CONFIDENTIALITY_REQUEST, REQUEST_INFO_INCOMPLETE);
+
+        return (getOldSscsCaseData() != null && isValidReviewConfidentialityRequest(getOldSscsCaseData().getConfidentialityRequestOutcomeAppellant(), getNewSscsCaseData().getConfidentialityRequestOutcomeAppellant()))
+                || isValidRequestInfoIncompleteEventForParty(PartyItemList.APPELLANT)
+                || !notificationsMaybeNotForAppellant.contains(getNotificationType());
+    }
+
+    private boolean isNotificationEventValidToSendToRep() {
+        return hasRepSubscriptionOrIsMandatoryRepLetter(responseWrapper)
                 && (APPEAL_LAPSED_NOTIFICATION.equals(getNotificationType())
                 || HMCTS_APPEAL_LAPSED_NOTIFICATION.equals(getNotificationType())
                 || DWP_APPEAL_LAPSED_NOTIFICATION.equals(getNotificationType())
@@ -182,37 +202,32 @@ public class CcdNotificationWrapper implements NotificationWrapper {
                 || TCW_DECISION_APPEAL_TO_PROCEED.equals(getNotificationType())
                 || NON_COMPLIANT_NOTIFICATION.equals(getNotificationType())
                 || VALID_APPEAL_CREATED.equals(getNotificationType())
-                || isValidRequestInfoIncompleteEventForParty(PartyItemList.REPRESENTATIVE))
-        ) {
-            subscriptionWithTypeList.add(new SubscriptionWithType(getRepresentativeSubscription(), REPRESENTATIVE));
-        }
+                || isValidRequestInfoIncompleteEventForParty(PartyItemList.REPRESENTATIVE));
+    }
 
-        if (hasJointPartySubscription(responseWrapper)
-            && (APPEAL_LAPSED_NOTIFICATION.equals(getNotificationType())
-            || APPEAL_DORMANT_NOTIFICATION.equals(getNotificationType())
-            || ADJOURNED_NOTIFICATION.equals(getNotificationType())
-            || HEARING_BOOKED_NOTIFICATION.equals(getNotificationType())
-            || HEARING_REMINDER_NOTIFICATION.equals(getNotificationType())
-            || POSTPONEMENT_NOTIFICATION.equals(getNotificationType())
-            || EVIDENCE_RECEIVED_NOTIFICATION.equals(getNotificationType())
-            || APPEAL_WITHDRAWN_NOTIFICATION.equals(getNotificationType())
-            || ADMIN_APPEAL_WITHDRAWN.equals(getNotificationType())
-            || STRUCK_OUT.equals(getNotificationType())
-            || ISSUE_ADJOURNMENT_NOTICE.equals(getNotificationType())
-            || ISSUE_ADJOURNMENT_NOTICE_WELSH.equals(getNotificationType())
-            || PROCESS_AUDIO_VIDEO.equals(getNotificationType())
-            || PROCESS_AUDIO_VIDEO_WELSH.equals(getNotificationType())
-            || DIRECTION_ISSUED.equals(getNotificationType())
-            || DIRECTION_ISSUED_WELSH.equals(getNotificationType())
-            || DWP_UPLOAD_RESPONSE_NOTIFICATION.equals(getNotificationType())
-            || EVIDENCE_REMINDER_NOTIFICATION.equals(getNotificationType())
-            || JOINT_PARTY_ADDED.equals(getNotificationType())
-            || isValidRequestInfoIncompleteEventForParty(PartyItemList.JOINT_PARTY)
-            || (getOldSscsCaseData() != null && isValidReviewConfidentialityRequest(getOldSscsCaseData().getConfidentialityRequestOutcomeJointParty(), getNewSscsCaseData().getConfidentialityRequestOutcomeJointParty())))
-        ) {
-            subscriptionWithTypeList.add(new SubscriptionWithType(getJointPartySubscription(), JOINT_PARTY));
-        }
-        return subscriptionWithTypeList;
+    private boolean isNotificationEventValidToSendToJointParty() {
+        return hasJointPartySubscription(responseWrapper)
+                && (APPEAL_LAPSED_NOTIFICATION.equals(getNotificationType())
+                || APPEAL_DORMANT_NOTIFICATION.equals(getNotificationType())
+                || ADJOURNED_NOTIFICATION.equals(getNotificationType())
+                || HEARING_BOOKED_NOTIFICATION.equals(getNotificationType())
+                || HEARING_REMINDER_NOTIFICATION.equals(getNotificationType())
+                || POSTPONEMENT_NOTIFICATION.equals(getNotificationType())
+                || EVIDENCE_RECEIVED_NOTIFICATION.equals(getNotificationType())
+                || APPEAL_WITHDRAWN_NOTIFICATION.equals(getNotificationType())
+                || ADMIN_APPEAL_WITHDRAWN.equals(getNotificationType())
+                || STRUCK_OUT.equals(getNotificationType())
+                || ISSUE_ADJOURNMENT_NOTICE.equals(getNotificationType())
+                || ISSUE_ADJOURNMENT_NOTICE_WELSH.equals(getNotificationType())
+                || PROCESS_AUDIO_VIDEO.equals(getNotificationType())
+                || PROCESS_AUDIO_VIDEO_WELSH.equals(getNotificationType())
+                || DIRECTION_ISSUED.equals(getNotificationType())
+                || DIRECTION_ISSUED_WELSH.equals(getNotificationType())
+                || DWP_UPLOAD_RESPONSE_NOTIFICATION.equals(getNotificationType())
+                || EVIDENCE_REMINDER_NOTIFICATION.equals(getNotificationType())
+                || JOINT_PARTY_ADDED.equals(getNotificationType())
+                || isValidRequestInfoIncompleteEventForParty(PartyItemList.JOINT_PARTY)
+                || (getOldSscsCaseData() != null && isValidReviewConfidentialityRequest(getOldSscsCaseData().getConfidentialityRequestOutcomeJointParty(), getNewSscsCaseData().getConfidentialityRequestOutcomeJointParty())));
     }
 
     private boolean isValidRequestInfoIncompleteEventForParty(PartyItemList partyItem) {
