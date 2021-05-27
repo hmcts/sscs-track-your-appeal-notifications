@@ -26,7 +26,6 @@ import uk.gov.hmcts.reform.sscs.ccd.domain.DatedRequestOutcome;
 import uk.gov.hmcts.reform.sscs.ccd.domain.RequestOutcome;
 import uk.gov.hmcts.reform.sscs.ccd.domain.State;
 import uk.gov.hmcts.reform.sscs.domain.notify.NotificationEventType;
-import uk.gov.hmcts.reform.sscs.model.PartyItemList;
 
 public class NotificationsIt extends NotificationsItBase {
 
@@ -3719,10 +3718,15 @@ public class NotificationsIt extends NotificationsItBase {
     }
 
     @Test
-    @Parameters(method = "generateRequestInfoScenarios")
+    @Parameters({
+            "appellant, Dexter Vasquez, true",
+            "appellant, Appointee Appointee, false",
+            "jointParty, Joint Party, false",
+            "representative, Harry Potter, false"
+    })
     public void givenRequestInfoIncompleteEvent_shouldSendNotificationToSelectedParty(String partySelected, String letterRecipient, boolean sendToAppellant) throws Exception {
-        String jsonPath = sendToAppellant ? "json/ccdResponse_requestInfoIncomplete.json" : "json/ccdResponse_requestInfoIncomplete.json";
-        String path = getClass().getClassLoader().getResource("json/ccdResponse_requestInfoIncomplete.json").getFile();
+        String jsonPath = sendToAppellant ? "json/ccdResponse_requestInfoIncompleteAppellant.json" : "json/ccdResponse_requestInfoIncomplete.json";
+        String path = getClass().getClassLoader().getResource(jsonPath).getFile();
         String json = FileUtils.readFileToString(new File(path), StandardCharsets.UTF_8.name());
         json = updateEmbeddedJson(json, REQUEST_INFO_INCOMPLETE.getId(), "event_id");
         json = updateEmbeddedJson(json, partySelected, "case_details", "case_data", "informationFromPartySelected", "value", "code");
@@ -3732,32 +3736,6 @@ public class NotificationsIt extends NotificationsItBase {
         verify(notificationClient, times(0)).sendEmail(any(), any(), any(), any());
         verify(notificationClient, times(0)).sendSms(any(), any(), any(), any(), any());
         validateLetterNotifications(Arrays.asList("TB-SCS-GNO-ENG-00452.docx"), 0, letterRecipient);
-    }
-
-    @SuppressWarnings({"Indentation", "unused"})
-    private Object[] generateRequestInfoScenarios() {
-        return new Object[]{
-                new Object[]{
-                        PartyItemList.APPELLANT.getCode(),
-                        "Dexter Vasquez",
-                        true
-                },
-                new Object[]{
-                        PartyItemList.APPELLANT.getCode(),
-                        "Appointee Appointee",
-                        false
-                },
-                new Object[]{
-                        PartyItemList.JOINT_PARTY.getCode(),
-                        "Joint Party",
-                        false
-                },
-                new Object[]{
-                        PartyItemList.REPRESENTATIVE.getCode(),
-                        "Harry Potter",
-                        false
-                },
-        };
     }
 
     private void updateJsonForPaperHearing() throws IOException {

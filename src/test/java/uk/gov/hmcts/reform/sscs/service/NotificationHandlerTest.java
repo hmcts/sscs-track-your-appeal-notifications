@@ -3,8 +3,9 @@ package uk.gov.hmcts.reform.sscs.service;
 import static org.hamcrest.CoreMatchers.is;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.mockito.Mockito.*;
-import static uk.gov.hmcts.reform.sscs.service.NotificationServiceTest.verifyExpectedErrorLogMessage;
+import static uk.gov.hmcts.reform.sscs.service.NotificationServiceTest.verifyExpectedLogMessage;
 
+import ch.qos.logback.classic.Level;
 import ch.qos.logback.classic.Logger;
 import ch.qos.logback.classic.spi.ILoggingEvent;
 import ch.qos.logback.core.Appender;
@@ -166,7 +167,7 @@ public class NotificationHandlerTest {
         try {
             underTest.sendNotification(notificationWrapper, "someTemplate", "Email", sendNotification);
         } catch (NotificationClientRuntimeException e) {
-            verifyExpectedErrorLogMessage(mockAppender, captorLoggingEvent, notificationWrapper.getNewSscsCaseData().getCcdCaseId(), "Could not send notification for case id: 123");
+            verifyExpectedLogMessage(mockAppender, captorLoggingEvent, notificationWrapper.getNewSscsCaseData().getCcdCaseId(), "Could not send notification for case id: 123", Level.ERROR);
             throw e;
         }
     }
@@ -180,7 +181,7 @@ public class NotificationHandlerTest {
         try {
             underTest.sendNotification(notificationWrapper, "someTemplate", "Email", sendNotification);
         } catch (NotificationServiceException ex) {
-            verifyExpectedErrorLogMessage(mockAppender, captorLoggingEvent, notificationWrapper.getNewSscsCaseData().getCcdCaseId(), "Error code 400 on GovUKNotify for case id: 123, template: someTemplate");
+            verifyExpectedLogMessage(mockAppender, captorLoggingEvent, notificationWrapper.getNewSscsCaseData().getCcdCaseId(), "Error code 400 on GovUKNotify for case id: 123, template: someTemplate", Level.ERROR);
             throw ex;
         }
     }
@@ -195,7 +196,7 @@ public class NotificationHandlerTest {
         try {
             underTest.sendNotification(notificationWrapper, "someTemplate", "Email", sendNotification);
         } catch (Throwable throwable) {
-            verifyExpectedErrorLogMessage(mockAppender, captorLoggingEvent, notificationWrapper.getNewSscsCaseData().getCcdCaseId(), "Could not send notification for case id:");
+            verifyExpectedLogMessage(mockAppender, captorLoggingEvent, notificationWrapper.getNewSscsCaseData().getCcdCaseId(), "Could not send notification for case id:", Level.ERROR);
             throw throwable;
         }
     }
@@ -208,7 +209,7 @@ public class NotificationHandlerTest {
                 .send();
 
         underTest.sendNotification(notificationWrapper, "someTemplate", "Email", sendNotification);
-        verifyExpectedErrorLogMessage(mockAppender, captorLoggingEvent, notificationWrapper.getNewSscsCaseData().getCcdCaseId(), "Could not send notification for case id:");
+        verifyExpectedLogMessage(mockAppender, captorLoggingEvent, notificationWrapper.getNewSscsCaseData().getCcdCaseId(), "Could not send notification for case id:", Level.ERROR);
     }
 
     private void stubData() {

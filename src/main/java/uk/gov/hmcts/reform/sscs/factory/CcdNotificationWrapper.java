@@ -206,7 +206,6 @@ public class CcdNotificationWrapper implements NotificationWrapper {
             || DIRECTION_ISSUED_WELSH.equals(getNotificationType())
             || DWP_UPLOAD_RESPONSE_NOTIFICATION.equals(getNotificationType())
             || EVIDENCE_REMINDER_NOTIFICATION.equals(getNotificationType())
-            || (REQUEST_INFO_INCOMPLETE.equals(getNotificationType()) && responseWrapper.getNewSscsCaseData().getInformationFromPartySelected() != null && PartyItemList.JOINT_PARTY.getCode().equals(responseWrapper.getNewSscsCaseData().getInformationFromPartySelected().getValue().getCode()))
             || JOINT_PARTY_ADDED.equals(getNotificationType())
             || isValidRequestInfoIncompleteEventForParty(PartyItemList.JOINT_PARTY)
             || (getOldSscsCaseData() != null && isValidReviewConfidentialityRequest(getOldSscsCaseData().getConfidentialityRequestOutcomeJointParty(), getNewSscsCaseData().getConfidentialityRequestOutcomeJointParty())))
