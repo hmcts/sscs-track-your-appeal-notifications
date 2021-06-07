@@ -66,8 +66,8 @@ public class FilterNotificationsEventsHandler implements CallbackHandler {
 
     @Override
     public boolean canHandle(SscsCaseDataWrapper callback) {
-        return nonNull(callback.getNotificationEventType()) &&
-                EVENTS_LIST.contains(callback.getNotificationEventType())
+        return nonNull(callback.getNotificationEventType())
+                && EVENTS_LIST.contains(callback.getNotificationEventType())
                 && !TURN_OFF_EVENTS_LIST.contains(callback.getNotificationEventType());
     }
 
