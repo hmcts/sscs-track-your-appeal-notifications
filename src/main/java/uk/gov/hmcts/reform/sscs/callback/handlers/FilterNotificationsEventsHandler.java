@@ -1,5 +1,6 @@
 package uk.gov.hmcts.reform.sscs.callback.handlers;
 
+import static java.util.Objects.nonNull;
 import static uk.gov.hmcts.reform.sscs.domain.notify.NotificationEventType.*;
 
 import java.util.List;
@@ -65,7 +66,9 @@ public class FilterNotificationsEventsHandler implements CallbackHandler {
 
     @Override
     public boolean canHandle(SscsCaseDataWrapper callback) {
-        return EVENTS_LIST.contains(callback.getNotificationEventType()) && !TURN_OFF_EVENTS_LIST.contains(callback.getNotificationEventType());
+        return nonNull(callback.getNotificationEventType()) &&
+                EVENTS_LIST.contains(callback.getNotificationEventType())
+                && !TURN_OFF_EVENTS_LIST.contains(callback.getNotificationEventType());
     }
 
     @Override

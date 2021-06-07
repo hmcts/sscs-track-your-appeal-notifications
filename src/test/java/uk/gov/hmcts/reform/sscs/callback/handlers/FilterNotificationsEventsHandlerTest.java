@@ -11,6 +11,7 @@ import static uk.gov.hmcts.reform.sscs.domain.notify.NotificationEventType.VALID
 
 import junitparams.JUnitParamsRunner;
 import junitparams.Parameters;
+import junitparams.converters.Nullable;
 import org.junit.Before;
 import org.junit.Rule;
 import org.junit.Test;
@@ -65,8 +66,8 @@ public class FilterNotificationsEventsHandlerTest {
     }
 
     @Test
-    @Parameters({"DO_NOT_SEND", "SYA_APPEAL_CREATED_NOTIFICATION", "POSTPONEMENT_NOTIFICATION"})
-    public void willNotHandleEvents(NotificationEventType notificationEventType) {
+    @Parameters({"DO_NOT_SEND", "SYA_APPEAL_CREATED_NOTIFICATION", "POSTPONEMENT_NOTIFICATION", "null"})
+    public void willNotHandleEvents(@Nullable NotificationEventType notificationEventType) {
         SscsCaseDataWrapper callback = SscsCaseDataWrapper.builder().notificationEventType(notificationEventType).build();
         assertFalse(handler.canHandle(callback));
     }
