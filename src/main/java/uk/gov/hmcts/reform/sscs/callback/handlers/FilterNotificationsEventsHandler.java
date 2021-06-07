@@ -1,7 +1,5 @@
 package uk.gov.hmcts.reform.sscs.callback.handlers;
 
-import static java.util.Arrays.asList;
-import static java.util.Collections.unmodifiableList;
 import static uk.gov.hmcts.reform.sscs.domain.notify.NotificationEventType.*;
 
 import java.util.List;
@@ -19,7 +17,8 @@ import uk.gov.hmcts.reform.sscs.service.RetryNotificationService;
 @Service
 public class FilterNotificationsEventsHandler implements CallbackHandler {
 
-    private static final List<NotificationEventType> EVENTS_LIST = unmodifiableList(asList(
+    private static final List<NotificationEventType> TURN_OFF_EVENTS_LIST = List.of(POSTPONEMENT_NOTIFICATION);
+    private static final List<NotificationEventType> EVENTS_LIST = List.of(
             ADJOURNED_NOTIFICATION,
             ADMIN_APPEAL_WITHDRAWN,
             APPEAL_DORMANT_NOTIFICATION,
@@ -53,10 +52,10 @@ public class FilterNotificationsEventsHandler implements CallbackHandler {
             PROCESS_AUDIO_VIDEO,
             PROCESS_AUDIO_VIDEO_WELSH,
             JOINT_PARTY_ADDED
-    ));
+    );
     private final NotificationService notificationService;
     private static final int RETRY = 1;
-    private RetryNotificationService retryNotificationService;
+    private final RetryNotificationService retryNotificationService;
 
     @Autowired
     public FilterNotificationsEventsHandler(NotificationService notificationService, RetryNotificationService retryNotificationService) {
@@ -66,7 +65,7 @@ public class FilterNotificationsEventsHandler implements CallbackHandler {
 
     @Override
     public boolean canHandle(SscsCaseDataWrapper callback) {
-        return EVENTS_LIST.contains(callback.getNotificationEventType());
+        return EVENTS_LIST.contains(callback.getNotificationEventType()) && !TURN_OFF_EVENTS_LIST.contains(callback.getNotificationEventType());
     }
 
     @Override
