@@ -6,8 +6,8 @@ plugins {
     id 'jacoco'
     id 'io.spring.dependency-management' version '1.0.11.RELEASE'
     id 'org.springframework.boot' version '2.3.5.RELEASE'
-    id 'uk.gov.hmcts.java' version '0.12.9'
-    id 'org.owasp.dependencycheck' version '6.1.6'
+    id 'uk.gov.hmcts.java' version '0.12.11'
+    id 'org.owasp.dependencycheck' version '6.2.1'
     id 'com.github.ben-manes.versions' version '0.39.0'
     id 'net.ltgt.apt' version '0.21'
     id "org.flywaydb.flyway" version "7.9.2"
@@ -157,6 +157,32 @@ dependencyManagement {
             entry 'pdfbox'
             entry 'pdfbox-tools'
             entry 'preflight'
+        }
+
+        //CVE-2021-22118
+        dependencySet(group: 'org.springframework', version: '5.2.15.RELEASE') {
+            entry 'spring-aop'
+            entry 'spring-aspects'
+            entry 'spring-beans'
+            entry 'spring-context'
+            entry 'spring-context-support'
+            entry 'spring-core'
+            entry 'spring-expression'
+            entry 'spring-jcl'
+            entry 'spring-jdbc'
+            entry 'spring-jms'
+            entry 'spring-messaging'
+            entry 'spring-orm'
+            entry 'spring-test'
+            entry 'spring-tx'
+            entry 'spring-web'
+            entry 'spring-webmvc'
+        }
+
+        //CVE-2021-27568
+        dependencySet(group: 'net.minidev', version: '2.4.7') {
+            entry 'json-smart'
+            entry 'accessors-smart'
         }
     }
 
