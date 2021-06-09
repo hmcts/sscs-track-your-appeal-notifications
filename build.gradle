@@ -170,10 +170,19 @@ dependencyManagement {
             entry 'spring-expression'
             entry 'spring-jcl'
             entry 'spring-jdbc'
+            entry 'spring-jms'
+            entry 'spring-messaging'
             entry 'spring-orm'
+            entry 'spring-test'
             entry 'spring-tx'
             entry 'spring-web'
             entry 'spring-webmvc'
+        }
+
+        //CVE-2021-27568
+        dependencySet(group: 'net.minidev', version: '2.4.7') {
+            entry 'json-smart'
+            entry 'accessors-smart'
         }
     }
 
