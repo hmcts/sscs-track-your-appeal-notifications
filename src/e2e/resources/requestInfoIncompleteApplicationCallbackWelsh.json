@@ -13,6 +13,14 @@
         "lastName": "Party"
       },
       "informationFromAppellant": "Yes",
+      "informationFromPartySelected": {
+        "value": {
+          "code": "appellant",
+          "label": "Appellant (appointee)"
+        },
+        "list_items": [
+        ]
+      },
       "jointPartyAddressSameAsAppellant": "No",
       "jointPartyAddress": {
         "line1": "30 Dale Street",
