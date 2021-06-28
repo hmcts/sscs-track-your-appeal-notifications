@@ -334,14 +334,9 @@ public class NotificationService {
         }
 
         if (!isDigitalCase(notificationWrapper) && DWP_UPLOAD_RESPONSE_NOTIFICATION.equals(notificationType)) {
-            log.info(format("Cannot complete notification %s as the appeal was dwpUploadResponse for caseId %s.",
-                    notificationType.getId(), notificationWrapper.getCaseId()));
-            return false;
-        }
-
-        if (DWP_RESPONSE_RECEIVED_NOTIFICATION.equals(notificationType) && isDigitalCase(notificationWrapper)) {
-            log.info(format("Cannot complete notification %s as the appeal was digital for caseId %s.",
-                    notificationType.getId(), notificationWrapper.getCaseId()));
+            String digitalOrNotDigital = isDigitalCase(notificationWrapper) ? "digital" : "not digital";
+            log.info(format("Cannot complete notification %s as the appeal was %s for caseId %s.",
+                    notificationType.getId(), digitalOrNotDigital, notificationWrapper.getCaseId()));
             return false;
         }
 

@@ -453,33 +453,6 @@ public class NotificationsFunctionalTest extends AbstractFunctionalTest {
     }
 
     @Test
-    public void shouldSendOralDwpUploadResponseReceivedNotification() throws NotificationClientException, IOException {
-        simulateCcdCallback(DWP_UPLOAD_RESPONSE_NOTIFICATION, "oral-" + DWP_UPLOAD_RESPONSE_NOTIFICATION.getId() + "Callback.json");
-
-        List<Notification> notifications = tryFetchNotificationsForTestCase(
-                oralDwpUploadResponseEmailId,
-                oralDwpUploadResponseSmsId);
-
-        Notification updateEmailNotification = notifications.stream().filter(f -> f.getTemplateId().toString().equals(oralDwpUploadResponseEmailId)).collect(Collectors.toList()).get(0);
-
-        assertTrue(updateEmailNotification.getBody().contains("DWP has sent a 'Response' to your ESA appeal"));
-        assertTrue(updateEmailNotification.getBody().contains("We need to book a hearing for your appeal"));
-    }
-
-    @Test
-    public void shouldSendPaperDwpUploadResponseReceivedNotification() throws NotificationClientException, IOException {
-        simulateCcdCallback(DWP_UPLOAD_RESPONSE_NOTIFICATION, "paper-" + DWP_UPLOAD_RESPONSE_NOTIFICATION.getId() + "Callback.json");
-
-        List<Notification> notifications = tryFetchNotificationsForTestCase(
-                paperDwpUploadResponseEmailId,
-                paperDwpUploadResponseSmsId);
-
-        Notification updateEmailNotification = notifications.stream().filter(f -> f.getTemplateId().toString().equals(paperDwpUploadResponseEmailId)).collect(Collectors.toList()).get(0);
-        assertTrue(updateEmailNotification.getBody().contains("DWP has sent a 'Response' to your ESA appeal"));
-        assertTrue(updateEmailNotification.getBody().contains("You have told us you do not want to attend the hearing of your appeal"));
-    }
-
-    @Test
     public void shouldSaveReasonableAdjustmentNotificationForAppellant() throws IOException {
         simulateCcdCallback(APPEAL_RECEIVED_NOTIFICATION, APPEAL_RECEIVED_NOTIFICATION.getId() + "AppellantReasonableAdjustmentCallback.json");
 
