@@ -2,7 +2,6 @@ package uk.gov.hmcts.reform.sscs.functional.sya.notifications;
 
 import static org.junit.Assert.*;
 import static uk.gov.hmcts.reform.sscs.domain.notify.NotificationEventType.*;
-import static uk.gov.hmcts.reform.sscs.domain.notify.NotificationEventType.DWP_UPLOAD_RESPONSE_NOTIFICATION;
 
 import java.io.IOException;
 import java.util.List;
