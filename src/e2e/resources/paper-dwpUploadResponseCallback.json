@@ -4,7 +4,7 @@
     "callback_response_status": null,
     "callback_response_status_code": null,
     "case_data": {
-      "createdInGapsFrom": "readyToList",
+      "createdInGapsFrom": "validAppeal",
       "languagePreferenceWelsh" : "No",
       "appeal": {
         "appealReasons": {},

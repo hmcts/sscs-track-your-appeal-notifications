@@ -2376,7 +2376,35 @@ public class NotificationServiceTest {
                 any(NotificationHandler.SendNotification.class));
     }
 
+    @Test
+    public void givenDigitalCaseAndResponseReceived_willNotSendNotifications() {
+        CcdNotificationWrapper ccdNotificationWrapper = buildBaseWrapper(DWP_RESPONSE_RECEIVED_NOTIFICATION,  APPELLANT_WITH_ADDRESS, Representative.builder().hasRepresentative("no").build(), SscsDocument.builder().value(SscsDocumentDetails.builder().build()).build());
 
+        ccdNotificationWrapper.getNewSscsCaseData().setState(State.WITH_DWP);
+        ccdNotificationWrapper.getNewSscsCaseData().setCreatedInGapsFrom("readyToList");
+        notificationService.manageNotificationAndSubscription(ccdNotificationWrapper, false);
+
+        verifyNoInteractions(notificationValidService);
+        verifyNoInteractions(notificationHandler);
+    }
+
+    @Test
+    public void givenNonDigitalCaseAndResponseReceived_willSendNotifications() {
+        CcdNotificationWrapper ccdNotificationWrapper = buildBaseWrapper(DWP_RESPONSE_RECEIVED_NOTIFICATION,  APPELLANT_WITH_ADDRESS, Representative.builder().hasRepresentative("no").build(), SscsDocument.builder().value(SscsDocumentDetails.builder().build()).build());
+        Notification notification = new Notification(Template.builder().emailTemplateId("emailTemplateId").smsTemplateId(null).build(), Destination.builder().email("test@testing.com").sms(null).build(), null, new Reference(), null);
+
+        ccdNotificationWrapper.getNewSscsCaseData().setState(State.WITH_DWP);
+        ccdNotificationWrapper.getNewSscsCaseData().setCreatedInGapsFrom("validAppeal");
+        when(notificationValidService.isNotificationStillValidToSend(any(), any())).thenReturn(true);
+        when(notificationValidService.isHearingTypeValidToSendNotification(any(), any())).thenReturn(true);
+        when(factory.create(ccdNotificationWrapper, getSubscriptionWithType(ccdNotificationWrapper))).thenReturn(notification);
+
+        notificationService.manageNotificationAndSubscription(ccdNotificationWrapper, false);
+
+        then(notificationHandler).should(atLeastOnce()).sendNotification(
+                eq(ccdNotificationWrapper), eq("emailTemplateId"), eq("Email"),
+                any(NotificationHandler.SendNotification.class));
+    }
 
     @SuppressWarnings({"Indentation", "UnusedPrivateMethod"})
     private Object[] allEventTypesExceptRequestInfoIncomplete() {

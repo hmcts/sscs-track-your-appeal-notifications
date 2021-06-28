@@ -2614,19 +2614,6 @@ public class NotificationsIt extends NotificationsItBase {
             new Object[]{
                 DWP_RESPONSE_RECEIVED_NOTIFICATION,
                 "oral",
-                Collections.singletonList("2c5644db-1f7b-429b-b10a-8b23a80ed26a"),
-                Collections.singletonList("f20ffcb1-c5f0-4bff-b2d1-a1094f8014e6"),
-                Collections.emptyList(),
-                "yes",
-                "yes",
-                "1",
-                "1",
-                "0",
-                "Appointee Appointee"
-            },
-            new Object[]{
-                DWP_RESPONSE_RECEIVED_NOTIFICATION,
-                "oral",
                 Collections.emptyList(),
                 Collections.emptyList(),
                 Collections.emptyList(),
@@ -3099,32 +3086,6 @@ public class NotificationsIt extends NotificationsItBase {
                 "Appointee Appointee"
             },
             new Object[]{
-                DWP_RESPONSE_RECEIVED_NOTIFICATION,
-                "oral",
-                Collections.singletonList("2c5644db-1f7b-429b-b10a-8b23a80ed26a"),
-                Collections.singletonList("f20ffcb1-c5f0-4bff-b2d1-a1094f8014e6"),
-                Collections.emptyList(),
-                "yes",
-                "yes",
-                "1",
-                "1",
-                "0",
-                "Appointee Appointee"
-            },
-            new Object[]{
-                DWP_RESPONSE_RECEIVED_NOTIFICATION,
-                "oral",
-                Collections.emptyList(),
-                Collections.emptyList(),
-                Collections.singletonList("8b11f3f4-6452-4a35-93d8-a94996af6499"),
-                "no",
-                "no",
-                "0",
-                "0",
-                "1",
-                "Appointee Appointee"
-            },
-            new Object[]{
                 DWP_UPLOAD_RESPONSE_NOTIFICATION,
                 "oral",
                 Collections.singletonList("793b3785-88d6-4994-ba8b-7c2fdc67d88d"),
@@ -3207,19 +3168,6 @@ public class NotificationsIt extends NotificationsItBase {
                 "oral",
                 Collections.singletonList("77ea995b-9744-4167-9250-e627c85e5eda"),
                 Collections.singletonList("7455de19-aa3b-48f0-b765-ab2757ba6a88"),
-                Collections.emptyList(),
-                "yes",
-                "yes",
-                "1",
-                "1",
-                "0",
-                "Appointee Appointee"
-            },
-            new Object[]{
-                DWP_RESPONSE_RECEIVED_NOTIFICATION,
-                "paper",
-                Collections.singletonList("e1084d78-5e2d-45d2-a54f-84339da141c1"),
-                Collections.singletonList("505be856-ceca-4bbc-ba70-29024585056f"),
                 Collections.emptyList(),
                 "yes",
                 "yes",
