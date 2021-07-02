@@ -109,7 +109,8 @@ public class NotificationService {
             try {
                 Thread.sleep(3000);
             } catch (InterruptedException e) {
-                e.printStackTrace();
+                log.info("Thread interrupted: ", e);
+                Thread.currentThread().interrupt();
             }
             sendNotificationPerSubscription(notificationWrapper);
         }
@@ -266,7 +267,6 @@ public class NotificationService {
 
             Benefit benefit = getBenefitByCode(wrapper.getSscsCaseDataWrapper()
                     .getNewSscsCaseData().getAppeal().getBenefitType().getCode());
-            LanguagePreference languagePreference = wrapper.getSscsCaseDataWrapper().getNewSscsCaseData().getLanguagePreference();
 
             Template template = notificationConfig.getTemplate(
                     NotificationEventType.SUBSCRIPTION_OLD_NOTIFICATION.getId(),
