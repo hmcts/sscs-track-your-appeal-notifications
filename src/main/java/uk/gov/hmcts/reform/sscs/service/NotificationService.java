@@ -105,13 +105,6 @@ public class NotificationService {
             // Gov Notify has a limit of 10 pages, so for long notifications (especially Welsh) we need to split the sending into 2 parts
             notificationWrapper.getSscsCaseDataWrapper().setNotificationEventType(ISSUE_FINAL_DECISION);
             notificationWrapper.setSwitchLanguageType(true);
-            // Sleep to try and stop notifications writing back to case all at same time
-            try {
-                Thread.sleep(3000);
-            } catch (InterruptedException e) {
-                log.info("Thread interrupted: ", e);
-                Thread.currentThread().interrupt();
-            }
             sendNotificationPerSubscription(notificationWrapper);
         }
     }
