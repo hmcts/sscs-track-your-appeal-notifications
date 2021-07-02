@@ -1492,7 +1492,7 @@ public class NotificationsIt extends NotificationsItBase {
                 "paper",
                 Collections.emptyList(),
                 Collections.emptyList(),
-                Arrays.asList("TB-SCS-GNO-ENG-00067.docx", "TB-SCS-GNO-ENG-00089.docx"),
+                Arrays.asList("TB-SCS-GNO-ENG-00454.docx", "TB-SCS-GNO-ENG-00455.docx"),
                 "no",
                 "no",
                 "no",
@@ -1506,7 +1506,7 @@ public class NotificationsIt extends NotificationsItBase {
                 "paper",
                 Collections.emptyList(),
                 Collections.emptyList(),
-                Arrays.asList("TB-SCS-GNO-ENG-00067.docx", "TB-SCS-GNO-ENG-00089.docx"),
+                Arrays.asList("TB-SCS-GNO-WEL-00681.docx", "TB-SCS-GNO-WEL-00682.docx", "TB-SCS-GNO-ENG-00454.docx", "TB-SCS-GNO-ENG-00455.docx"),
                 "no",
                 "no",
                 "no",
@@ -1784,14 +1784,28 @@ public class NotificationsIt extends NotificationsItBase {
                 "paper",
                 false,
                 false,
-                "1"
+                "2"
             },
             new Object[]{
                 ISSUE_FINAL_DECISION_WELSH,
                 "oral",
                 false,
                 false,
-                "1"
+                "2"
+            },
+            new Object[]{
+                ISSUE_FINAL_DECISION_WELSH,
+                "paper",
+                true,
+                false,
+                "4"
+            },
+            new Object[]{
+                ISSUE_FINAL_DECISION_WELSH,
+                "oral",
+                true,
+                false,
+                "4"
             },
             new Object[]{
                 ISSUE_ADJOURNMENT_NOTICE,
@@ -2476,7 +2490,7 @@ public class NotificationsIt extends NotificationsItBase {
                 "paper",
                 Collections.emptyList(),
                 Collections.emptyList(),
-                Arrays.asList("TB-SCS-GNO-ENG-00067.docx", "TB-SCS-GNO-ENG-00089.docx"),
+                Arrays.asList("TB-SCS-GNO-ENG-00454.docx", "TB-SCS-GNO-ENG-00455.docx"),
                 "no",
                 "no",
                 "no",
@@ -2486,19 +2500,19 @@ public class NotificationsIt extends NotificationsItBase {
                 "0"
             },
                 new Object[]{
-                    ISSUE_FINAL_DECISION_WELSH,
-                    "paper",
-                    Collections.emptyList(),
-                    Collections.emptyList(),
-                    Arrays.asList("TB-SCS-GNO-ENG-00067.docx", "TB-SCS-GNO-ENG-00089.docx"),
-                    "no",
-                    "no",
-                    "no",
-                    "no",
-                    "0",
-                    "0",
-                    "0"
-                },
+                ISSUE_FINAL_DECISION_WELSH,
+                "paper",
+                Collections.emptyList(),
+                Collections.emptyList(),
+                Arrays.asList("TB-SCS-GNO-WEL-00681.docx", "TB-SCS-GNO-WEL-00682.docx", "TB-SCS-GNO-ENG-00454.docx", "TB-SCS-GNO-ENG-00455.docx"),
+                "no",
+                "no",
+                "no",
+                "no",
+                "0",
+                "0",
+                "0"
+            },
             new Object[]{
                 ISSUE_ADJOURNMENT_NOTICE,
                 "paper",
@@ -2824,7 +2838,20 @@ public class NotificationsIt extends NotificationsItBase {
                 "paper",
                 Collections.emptyList(),
                 Collections.emptyList(),
-                Collections.singletonList("TB-SCS-GNO-ENG-00067.docx"),
+                Collections.singletonList("TB-SCS-GNO-ENG-00454.docx"),
+                "yes",
+                "yes",
+                "0",
+                "0",
+                "0",
+                "Appointee Appointee"
+            },
+            new Object[]{
+                ISSUE_FINAL_DECISION_WELSH,
+                "paper",
+                Collections.emptyList(),
+                Collections.emptyList(),
+                Arrays.asList("TB-SCS-GNO-WEL-00681.docx", "TB-SCS-GNO-ENG-00454.docx"),
                 "yes",
                 "yes",
                 "0",
