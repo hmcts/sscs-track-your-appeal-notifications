@@ -26,6 +26,7 @@ import org.springframework.cloud.openfeign.support.SpringEncoder;
 import org.springframework.context.ApplicationContext;
 import org.springframework.context.MessageSource;
 import org.springframework.context.annotation.Bean;
+import org.springframework.context.annotation.ComponentScan;
 import org.springframework.context.annotation.Primary;
 import org.springframework.context.support.ReloadableResourceBundleMessageSource;
 import org.springframework.mail.javamail.JavaMailSender;
@@ -59,6 +60,7 @@ import uk.gov.service.notify.NotificationClient;
 @EnableRetry
 @EnableScheduling
 @EnableAsync
+@ComponentScan({"uk.gov.hmcts.reform.sscs", "uk.gov.hmcts.reform.ccd.document.am.feign"})
 public class TrackYourAppealNotificationsApplication {
 
     public static final String UTC = "UTC";
@@ -165,10 +167,8 @@ public class TrackYourAppealNotificationsApplication {
     }
 
     @Bean
-    public JobMapper getJobMapper(CohActionDeserializer cohActionDeserializer,
-                                  CcdActionDeserializer ccdActionDeserializer,
+    public JobMapper getJobMapper(CcdActionDeserializer ccdActionDeserializer,
                                   NotificationService notificationService,
-                                  RetryConfig retryConfig,
                                   RetryNotificationService retryNotificationService,
                                   CcdService ccdService,
                                   IdamService idamService,
