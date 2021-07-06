@@ -12,9 +12,12 @@ import junitparams.converters.Nullable;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.core.env.Environment;
+import uk.gov.hmcts.reform.sscs.ccd.domain.Appeal;
 import uk.gov.hmcts.reform.sscs.ccd.domain.Benefit;
-import uk.gov.hmcts.reform.sscs.ccd.domain.LanguagePreference;
+import uk.gov.hmcts.reform.sscs.ccd.domain.SscsCaseData;
+import uk.gov.hmcts.reform.sscs.domain.SscsCaseDataWrapper;
 import uk.gov.hmcts.reform.sscs.domain.notify.Template;
+import uk.gov.hmcts.reform.sscs.factory.CcdNotificationWrapper;
 
 @RunWith(JUnitParamsRunner.class)
 public class NotificationConfigTest {
@@ -39,9 +42,10 @@ public class NotificationConfigTest {
         when(env.getProperty(letterTemplateKey)).thenReturn(letterTemplateId);
         when(env.getProperty(docmosisTemplateKey)).thenReturn(docmosisTemplateId);
         when(env.containsProperty(letterTemplateKey)).thenReturn(true);
-        when(env.getProperty("feature.docmosis_leters.letterTemplateName_on")).thenReturn("true");
 
-        Template template = new NotificationConfig(env).getTemplate(emailTemplateName, smsTemplateName, letterTemplateName, letterTemplateName, Benefit.PIP, ORAL, createdInGapsFrom, LanguagePreference.ENGLISH);
+        CcdNotificationWrapper wrapper = new CcdNotificationWrapper(SscsCaseDataWrapper.builder().newSscsCaseData(SscsCaseData.builder().appeal(Appeal.builder().hearingType(ORAL.name()).build()).build()).build());
+
+        Template template = new NotificationConfig(env).getTemplate(emailTemplateName, smsTemplateName, letterTemplateName, letterTemplateName, Benefit.PIP, wrapper, createdInGapsFrom);
 
         assertThat(template.getEmailTemplateId(), is(emailTemplateId));
         assertThat(template.getSmsTemplateId().size(), is(1));
@@ -69,9 +73,10 @@ public class NotificationConfigTest {
         when(env.getProperty(letterTemplateKey)).thenReturn(letterTemplateId);
         when(env.getProperty(docmosisTemplateKey)).thenReturn(docmosisTemplateId);
         when(env.containsProperty(letterTemplateKey)).thenReturn(true);
-        when(env.getProperty("feature.docmosis_leters.letterTemplateName_on")).thenReturn("true");
 
-        Template template = new NotificationConfig(env).getTemplate(emailTemplateName, smsTemplateName, letterTemplateName, letterTemplateName, Benefit.PIP, ORAL, createdInGapsFrom, LanguagePreference.WELSH);
+        CcdNotificationWrapper wrapper = new CcdNotificationWrapper(SscsCaseDataWrapper.builder().newSscsCaseData(SscsCaseData.builder().languagePreferenceWelsh("Yes").appeal(Appeal.builder().hearingType(ORAL.name()).build()).build()).build());
+
+        Template template = new NotificationConfig(env).getTemplate(emailTemplateName, smsTemplateName, letterTemplateName, letterTemplateName, Benefit.PIP, wrapper, createdInGapsFrom);
 
         assertThat(template.getEmailTemplateId(), is(emailTemplateId));
         assertThat(template.getSmsTemplateId().size(), is(2));
@@ -79,5 +84,25 @@ public class NotificationConfigTest {
         assertThat(template.getSmsTemplateId().get(1), is(englishSmsTemplateId));
         assertThat(template.getLetterTemplateId(), is(letterTemplateId));
         assertThat(template.getDocmosisTemplateId(), is(expectedDocmosisTemplateId));
+    }
+
+    @Test
+    public void switchWelshTemplateToEnglishTemplateWhenSwitchFlagSet() {
+
+        String letterTemplateKey = "notification.welsh.letterTemplateName.letterId";
+        String letterTemplateId = "letterTemplateId";
+        String switchedDocmosisTemplateKey = "notification.english.letterTemplateName.docmosisId";
+        String docmosisTemplateId = "docmosisTemplateId";
+
+        when(env.getProperty(letterTemplateKey)).thenReturn(letterTemplateId);
+        when(env.getProperty(switchedDocmosisTemplateKey)).thenReturn(docmosisTemplateId);
+        when(env.containsProperty(letterTemplateKey)).thenReturn(true);
+
+        CcdNotificationWrapper wrapper = new CcdNotificationWrapper(SscsCaseDataWrapper.builder().newSscsCaseData(SscsCaseData.builder().languagePreferenceWelsh("Yes").appeal(Appeal.builder().hearingType(ORAL.name()).build()).build()).build());
+        wrapper.setSwitchLanguageType(true);
+
+        Template template = new NotificationConfig(env).getTemplate("emailTemplateName", "smsTemplateName", "letterTemplateName", "letterTemplateName", Benefit.PIP, wrapper, "validAppeal");
+
+        assertThat(template.getDocmosisTemplateId(), is(docmosisTemplateId));
     }
 }

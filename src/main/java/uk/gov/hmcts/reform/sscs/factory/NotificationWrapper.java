@@ -38,4 +38,8 @@ public interface NotificationWrapper {
     void setNotificationEventTypeOverridden(boolean notificationEventTypeOverridden);
 
     boolean hasNotificationEventBeenOverridden();
+
+    void setSwitchLanguageType(boolean languageSwitched);
+
+    boolean hasLanguageSwitched();
 }
