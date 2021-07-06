@@ -84,7 +84,6 @@ public class Personalisation<E extends NotificationWrapper> {
             APPEAL_RECEIVED_NOTIFICATION, SYA_APPEAL_CREATED_NOTIFICATION, EVIDENCE_RECEIVED_NOTIFICATION, NON_COMPLIANT_NOTIFICATION, VALID_APPEAL_CREATED);
 
     private static final String CRLF = format("%c%c", (char) 0x0D, (char) 0x0A);
-    private static final String JOINT_TEXT_WITH_A_SPACE = "joint ";
 
     @Autowired
     protected NotificationConfig config;
@@ -235,6 +234,7 @@ public class Personalisation<E extends NotificationWrapper> {
         personalisation.put(CREATED_DATE_WELSH, createdDate.toString());
 
         personalisation.put(JOINT, subscriptionWithType.getSubscriptionType().equals(JOINT_PARTY) ? JOINT_TEXT_WITH_A_SPACE : EMPTY);
+        personalisation.put(JOINT_WELSH, subscriptionWithType.getSubscriptionType().equals(JOINT_PARTY) ? JOINT_WELSH_TEXT_WITH_A_SPACE : EMPTY);
 
         if (StringUtils.equalsIgnoreCase(ccdResponse.getJointParty(), "yes")) {
             personalisation.put(JOINT_PARTY_APPEAL, "Yes");
