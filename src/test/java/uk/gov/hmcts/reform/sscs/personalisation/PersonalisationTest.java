@@ -92,7 +92,6 @@ import uk.gov.hmcts.reform.sscs.ccd.domain.HearingDetails;
 import uk.gov.hmcts.reform.sscs.ccd.domain.HearingType;
 import uk.gov.hmcts.reform.sscs.ccd.domain.InfoRequests;
 import uk.gov.hmcts.reform.sscs.ccd.domain.JointPartyName;
-import uk.gov.hmcts.reform.sscs.ccd.domain.LanguagePreference;
 import uk.gov.hmcts.reform.sscs.ccd.domain.Name;
 import uk.gov.hmcts.reform.sscs.ccd.domain.RegionalProcessingCenter;
 import uk.gov.hmcts.reform.sscs.ccd.domain.Representative;
@@ -102,7 +101,6 @@ import uk.gov.hmcts.reform.sscs.ccd.domain.Subscription;
 import uk.gov.hmcts.reform.sscs.ccd.domain.Subscriptions;
 import uk.gov.hmcts.reform.sscs.ccd.domain.Venue;
 import uk.gov.hmcts.reform.sscs.config.AppConstants;
-import uk.gov.hmcts.reform.sscs.config.AppealHearingType;
 import uk.gov.hmcts.reform.sscs.config.NotificationConfig;
 import uk.gov.hmcts.reform.sscs.config.SubscriptionType;
 import uk.gov.hmcts.reform.sscs.config.properties.EvidenceProperties;
@@ -256,8 +254,7 @@ public class PersonalisationTest {
                 eq(DIRECTION_ISSUED.getId()),
                 eq(DIRECTION_ISSUED.getId()),
                 eq(templateConfig + "." + lowerCase(subscriptionType.toString())),
-                any(Benefit.class), any(AppealHearingType.class), eq(null),
-                eq(LanguagePreference.ENGLISH)
+                any(Benefit.class), any(NotificationWrapper.class), eq(null)
         );
     }
 
@@ -288,8 +285,7 @@ public class PersonalisationTest {
                 eq(DIRECTION_ISSUED.getId()),
                 eq(DIRECTION_ISSUED.getId()),
                 eq("directionIssued.grantUrgentHearing" + "." + lowerCase(subscriptionType.toString())),
-                any(Benefit.class), any(AppealHearingType.class), eq(null),
-                eq(LanguagePreference.ENGLISH)
+                any(Benefit.class), any(NotificationWrapper.class), eq(null)
         );
     }
 
@@ -324,8 +320,7 @@ public class PersonalisationTest {
                 eq(DIRECTION_ISSUED_WELSH.getId()),
                 eq(DIRECTION_ISSUED_WELSH.getId()),
                 eq(templateConfig + "." + lowerCase(subscriptionType.toString())),
-                any(Benefit.class), any(AppealHearingType.class), eq(null),
-                eq(LanguagePreference.WELSH)
+                any(Benefit.class), any(NotificationWrapper.class), eq(null)
         );
     }
 
@@ -351,7 +346,7 @@ public class PersonalisationTest {
                 eq(hasSmsTemplate ? getExpectedTemplateName(notificationEventType, subscriptionType) : notificationEventType.getId()),
                 eq(hasLetterTemplate ? getExpectedTemplateName(notificationEventType, subscriptionType) : notificationEventType.getId()),
                 eq(hasDocmosisTemplate ? getExpectedTemplateName(notificationEventType, subscriptionType) : notificationEventType.getId()),
-                any(Benefit.class), any(AppealHearingType.class), eq(null), eq(LanguagePreference.ENGLISH)
+                any(Benefit.class), any(NotificationWrapper.class), eq(null)
         );
     }
 
