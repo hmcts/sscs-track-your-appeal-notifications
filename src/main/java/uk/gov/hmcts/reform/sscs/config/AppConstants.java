@@ -58,6 +58,9 @@ public final class AppConstants {
     public static final String HEARING_TYPE = "hearing_type";
     public static final String INFO_REQUEST_DETAIL = "info_request_detail";
     public static final String JOINT = "joint";
+    public static final String JOINT_WELSH = "joint_welsh";
+    public static final String JOINT_TEXT_WITH_A_SPACE = "joint ";
+    public static final String JOINT_WELSH_TEXT_WITH_A_SPACE = "ar y cyd ";
     public static final String JOINT_PARTY_APPEAL = "joint_party_appeal";
     public static final String JOINT_PARTY_NAME = "joint_party_name";
     public static final String MAC_ALGO = "HmacSHA256";
