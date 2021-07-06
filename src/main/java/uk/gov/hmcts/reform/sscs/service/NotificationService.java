@@ -92,10 +92,20 @@ public class NotificationService {
             } else {
                 sendNotificationPerSubscription(notificationWrapper);
                 reminderService.createReminders(notificationWrapper);
+                sendSecondNotificationForLongLetters(notificationWrapper);
             }
         } else if (outOfHoursCalculator.isItOutOfHours()) {
             log.info("Notification event {} is out of hours and scheduled for case id {}", notificationType.getId(), caseId);
             notificationHandler.scheduleNotification(notificationWrapper);
+        }
+    }
+
+    private void sendSecondNotificationForLongLetters(NotificationWrapper notificationWrapper) {
+        if (notificationWrapper.getNotificationType().equals(ISSUE_FINAL_DECISION_WELSH)) {
+            // Gov Notify has a limit of 10 pages, so for long notifications (especially Welsh) we need to split the sending into 2 parts
+            notificationWrapper.getSscsCaseDataWrapper().setNotificationEventType(ISSUE_FINAL_DECISION);
+            notificationWrapper.setSwitchLanguageType(true);
+            sendNotificationPerSubscription(notificationWrapper);
         }
     }
 
@@ -250,7 +260,6 @@ public class NotificationService {
 
             Benefit benefit = getBenefitByCode(wrapper.getSscsCaseDataWrapper()
                     .getNewSscsCaseData().getAppeal().getBenefitType().getCode());
-            LanguagePreference languagePreference = wrapper.getSscsCaseDataWrapper().getNewSscsCaseData().getLanguagePreference();
 
             Template template = notificationConfig.getTemplate(
                     NotificationEventType.SUBSCRIPTION_OLD_NOTIFICATION.getId(),
@@ -258,9 +267,8 @@ public class NotificationService {
                     NotificationEventType.SUBSCRIPTION_OLD_NOTIFICATION.getId(),
                     NotificationEventType.SUBSCRIPTION_OLD_NOTIFICATION.getId(),
                     benefit,
-                    wrapper.getHearingType(),
-                    "validAppeal",
-                    languagePreference
+                    wrapper,
+                    "validAppeal"
             );
 
             Notification oldNotification = Notification.builder().template(template).appealNumber(notification.getAppealNumber())

@@ -29,6 +29,8 @@ public class CcdNotificationWrapper implements NotificationWrapper {
 
     private boolean notificationEventTypeOverridden = false;
 
+    private boolean languageSwitched = false;
+
     public CcdNotificationWrapper(SscsCaseDataWrapper responseWrapper) {
         this.responseWrapper = responseWrapper;
     }
@@ -263,6 +265,16 @@ public class CcdNotificationWrapper implements NotificationWrapper {
     @Override
     public boolean hasNotificationEventBeenOverridden() {
         return notificationEventTypeOverridden;
+    }
+
+    @Override
+    public void setSwitchLanguageType(boolean languageSwitched) {
+        this.languageSwitched = languageSwitched;
+    }
+
+    @Override
+    public boolean hasLanguageSwitched() {
+        return languageSwitched;
     }
 
     @Override
