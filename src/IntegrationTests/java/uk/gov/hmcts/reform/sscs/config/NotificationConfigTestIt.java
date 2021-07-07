@@ -34,7 +34,6 @@ import uk.gov.hmcts.reform.sscs.ccd.domain.Benefit;
 import uk.gov.hmcts.reform.sscs.ccd.domain.DirectionType;
 import uk.gov.hmcts.reform.sscs.ccd.domain.DynamicList;
 import uk.gov.hmcts.reform.sscs.ccd.domain.HearingType;
-import uk.gov.hmcts.reform.sscs.ccd.domain.LanguagePreference;
 import uk.gov.hmcts.reform.sscs.ccd.domain.SscsCaseData;
 import uk.gov.hmcts.reform.sscs.domain.SscsCaseDataWrapper;
 import uk.gov.hmcts.reform.sscs.domain.notify.NotificationEventType;
@@ -46,7 +45,7 @@ import uk.gov.hmcts.reform.sscs.personalisation.Personalisation;
 @RunWith(JUnitParamsRunner.class)
 @SpringBootTest
 @ActiveProfiles("integration")
-public class NotificationConfigTest {
+public class NotificationConfigTestIt {
     public static final List<NotificationEventType> BUNDLED_LETTER_EVENT_TYPES = Arrays.asList(STRUCK_OUT, PROCESS_AUDIO_VIDEO, PROCESS_AUDIO_VIDEO_WELSH, DIRECTION_ISSUED, DECISION_ISSUED, ISSUE_FINAL_DECISION, ISSUE_FINAL_DECISION_WELSH, ISSUE_ADJOURNMENT_NOTICE, ISSUE_ADJOURNMENT_NOTICE_WELSH, JUDGE_DECISION_APPEAL_TO_PROCEED, TCW_DECISION_APPEAL_TO_PROCEED);
 
     // Below rules are needed to use the junitParamsRunner together with SpringRunner
@@ -68,7 +67,9 @@ public class NotificationConfigTest {
                                                                             AppealHearingType appealHearingType,
                                                                             String templateName,
                                                                             String createdInGapsFrom) {
-        Template template = notificationConfig.getTemplate(templateName, templateName, templateName, templateName, Benefit.PIP, appealHearingType, createdInGapsFrom, LanguagePreference.ENGLISH);
+        CcdNotificationWrapper wrapper = new CcdNotificationWrapper(SscsCaseDataWrapper.builder().newSscsCaseData(SscsCaseData.builder().appeal(Appeal.builder().hearingType(appealHearingType.name()).build()).build()).build());
+
+        Template template = notificationConfig.getTemplate(templateName, templateName, templateName, templateName, Benefit.PIP, wrapper, createdInGapsFrom);
         assertEquals(expectedEmailTemplateId, template.getEmailTemplateId());
 
         assertEquals(expectedSmsTemplateId, template.getSmsTemplateId());
@@ -85,7 +86,9 @@ public class NotificationConfigTest {
                                                                                   AppealHearingType appealHearingType,
                                                                                   String templateName,
                                                                                   String createdInGapsFrom) {
-        Template template = notificationConfig.getTemplate(templateName, templateName, templateName, templateName, Benefit.PIP, appealHearingType, createdInGapsFrom, LanguagePreference.WELSH);
+        CcdNotificationWrapper wrapper = new CcdNotificationWrapper(SscsCaseDataWrapper.builder().newSscsCaseData(SscsCaseData.builder().languagePreferenceWelsh("Yes").appeal(Appeal.builder().hearingType(appealHearingType.name()).build()).build()).build());
+
+        Template template = notificationConfig.getTemplate(templateName, templateName, templateName, templateName, Benefit.PIP, wrapper, createdInGapsFrom);
         assertEquals(expectedEmailTemplateId, template.getEmailTemplateId());
 
         assertEquals(expectedSmsTemplateId, template.getSmsTemplateId());
@@ -96,7 +99,9 @@ public class NotificationConfigTest {
     @Test
     @Parameters(method = "bundledLetterTemplateNames")
     public void given_bundledLetters_should_notHaveTemplate(AppealHearingType appealHearingType, String templateName) {
-        Template template = notificationConfig.getTemplate(templateName, templateName, templateName, templateName, Benefit.PIP, appealHearingType, null, LanguagePreference.ENGLISH);
+        CcdNotificationWrapper wrapper = new CcdNotificationWrapper(SscsCaseDataWrapper.builder().newSscsCaseData(SscsCaseData.builder().appeal(Appeal.builder().hearingType(appealHearingType.name()).build()).build()).build());
+
+        Template template = notificationConfig.getTemplate(templateName, templateName, templateName, templateName, Benefit.PIP, wrapper, null);
         assertNull(template.getEmailTemplateId());
         assertTrue(template.getSmsTemplateId().isEmpty());
         assertNull(template.getLetterTemplateId());
@@ -107,8 +112,10 @@ public class NotificationConfigTest {
     @Parameters(method = "bundledLetterTemplateNames")
     public void given_bundledLetters_should_notHaveWelshTemplate(AppealHearingType appealHearingType,
                                                               String templateName) {
+        CcdNotificationWrapper wrapper = new CcdNotificationWrapper(SscsCaseDataWrapper.builder().newSscsCaseData(SscsCaseData.builder().languagePreferenceWelsh("Yes").appeal(Appeal.builder().hearingType(appealHearingType.name()).build()).build()).build());
+
         Template template = notificationConfig.getTemplate(templateName, templateName, templateName, templateName,
-                Benefit.PIP, appealHearingType, null, LanguagePreference.WELSH);
+                Benefit.PIP, wrapper, null);
         assertNull(template.getEmailTemplateId());
         assertTrue(template.getSmsTemplateId().isEmpty());
         assertNull(template.getLetterTemplateId());
