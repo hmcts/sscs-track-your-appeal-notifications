@@ -1492,7 +1492,7 @@ public class NotificationsIt extends NotificationsItBase {
                 "paper",
                 Collections.emptyList(),
                 Collections.emptyList(),
-                Arrays.asList("TB-SCS-GNO-ENG-00067.docx", "TB-SCS-GNO-ENG-00089.docx"),
+                Arrays.asList("TB-SCS-GNO-ENG-00454.docx", "TB-SCS-GNO-ENG-00455.docx"),
                 "no",
                 "no",
                 "no",
@@ -1506,7 +1506,7 @@ public class NotificationsIt extends NotificationsItBase {
                 "paper",
                 Collections.emptyList(),
                 Collections.emptyList(),
-                Arrays.asList("TB-SCS-GNO-ENG-00067.docx", "TB-SCS-GNO-ENG-00089.docx"),
+                Arrays.asList("TB-SCS-GNO-WEL-00681.docx", "TB-SCS-GNO-WEL-00682.docx", "TB-SCS-GNO-ENG-00454.docx", "TB-SCS-GNO-ENG-00455.docx"),
                 "no",
                 "no",
                 "no",
@@ -1784,14 +1784,28 @@ public class NotificationsIt extends NotificationsItBase {
                 "paper",
                 false,
                 false,
-                "1"
+                "2"
             },
             new Object[]{
                 ISSUE_FINAL_DECISION_WELSH,
                 "oral",
                 false,
                 false,
-                "1"
+                "2"
+            },
+            new Object[]{
+                ISSUE_FINAL_DECISION_WELSH,
+                "paper",
+                true,
+                false,
+                "4"
+            },
+            new Object[]{
+                ISSUE_FINAL_DECISION_WELSH,
+                "oral",
+                true,
+                false,
+                "4"
             },
             new Object[]{
                 ISSUE_ADJOURNMENT_NOTICE,
@@ -2476,7 +2490,7 @@ public class NotificationsIt extends NotificationsItBase {
                 "paper",
                 Collections.emptyList(),
                 Collections.emptyList(),
-                Arrays.asList("TB-SCS-GNO-ENG-00067.docx", "TB-SCS-GNO-ENG-00089.docx"),
+                Arrays.asList("TB-SCS-GNO-ENG-00454.docx", "TB-SCS-GNO-ENG-00455.docx"),
                 "no",
                 "no",
                 "no",
@@ -2486,19 +2500,19 @@ public class NotificationsIt extends NotificationsItBase {
                 "0"
             },
                 new Object[]{
-                    ISSUE_FINAL_DECISION_WELSH,
-                    "paper",
-                    Collections.emptyList(),
-                    Collections.emptyList(),
-                    Arrays.asList("TB-SCS-GNO-ENG-00067.docx", "TB-SCS-GNO-ENG-00089.docx"),
-                    "no",
-                    "no",
-                    "no",
-                    "no",
-                    "0",
-                    "0",
-                    "0"
-                },
+                ISSUE_FINAL_DECISION_WELSH,
+                "paper",
+                Collections.emptyList(),
+                Collections.emptyList(),
+                Arrays.asList("TB-SCS-GNO-WEL-00681.docx", "TB-SCS-GNO-WEL-00682.docx", "TB-SCS-GNO-ENG-00454.docx", "TB-SCS-GNO-ENG-00455.docx"),
+                "no",
+                "no",
+                "no",
+                "no",
+                "0",
+                "0",
+                "0"
+            },
             new Object[]{
                 ISSUE_ADJOURNMENT_NOTICE,
                 "paper",
@@ -2610,19 +2624,6 @@ public class NotificationsIt extends NotificationsItBase {
                 "0",
                 "0",
                 ""
-            },
-            new Object[]{
-                DWP_RESPONSE_RECEIVED_NOTIFICATION,
-                "oral",
-                Collections.singletonList("2c5644db-1f7b-429b-b10a-8b23a80ed26a"),
-                Collections.singletonList("f20ffcb1-c5f0-4bff-b2d1-a1094f8014e6"),
-                Collections.emptyList(),
-                "yes",
-                "yes",
-                "1",
-                "1",
-                "0",
-                "Appointee Appointee"
             },
             new Object[]{
                 DWP_RESPONSE_RECEIVED_NOTIFICATION,
@@ -2824,7 +2825,20 @@ public class NotificationsIt extends NotificationsItBase {
                 "paper",
                 Collections.emptyList(),
                 Collections.emptyList(),
-                Collections.singletonList("TB-SCS-GNO-ENG-00067.docx"),
+                Collections.singletonList("TB-SCS-GNO-ENG-00454.docx"),
+                "yes",
+                "yes",
+                "0",
+                "0",
+                "0",
+                "Appointee Appointee"
+            },
+            new Object[]{
+                ISSUE_FINAL_DECISION_WELSH,
+                "paper",
+                Collections.emptyList(),
+                Collections.emptyList(),
+                Arrays.asList("TB-SCS-GNO-WEL-00681.docx", "TB-SCS-GNO-ENG-00454.docx"),
                 "yes",
                 "yes",
                 "0",
@@ -3099,32 +3113,6 @@ public class NotificationsIt extends NotificationsItBase {
                 "Appointee Appointee"
             },
             new Object[]{
-                DWP_RESPONSE_RECEIVED_NOTIFICATION,
-                "oral",
-                Collections.singletonList("2c5644db-1f7b-429b-b10a-8b23a80ed26a"),
-                Collections.singletonList("f20ffcb1-c5f0-4bff-b2d1-a1094f8014e6"),
-                Collections.emptyList(),
-                "yes",
-                "yes",
-                "1",
-                "1",
-                "0",
-                "Appointee Appointee"
-            },
-            new Object[]{
-                DWP_RESPONSE_RECEIVED_NOTIFICATION,
-                "oral",
-                Collections.emptyList(),
-                Collections.emptyList(),
-                Collections.singletonList("8b11f3f4-6452-4a35-93d8-a94996af6499"),
-                "no",
-                "no",
-                "0",
-                "0",
-                "1",
-                "Appointee Appointee"
-            },
-            new Object[]{
                 DWP_UPLOAD_RESPONSE_NOTIFICATION,
                 "oral",
                 Collections.singletonList("793b3785-88d6-4994-ba8b-7c2fdc67d88d"),
@@ -3207,19 +3195,6 @@ public class NotificationsIt extends NotificationsItBase {
                 "oral",
                 Collections.singletonList("77ea995b-9744-4167-9250-e627c85e5eda"),
                 Collections.singletonList("7455de19-aa3b-48f0-b765-ab2757ba6a88"),
-                Collections.emptyList(),
-                "yes",
-                "yes",
-                "1",
-                "1",
-                "0",
-                "Appointee Appointee"
-            },
-            new Object[]{
-                DWP_RESPONSE_RECEIVED_NOTIFICATION,
-                "paper",
-                Collections.singletonList("e1084d78-5e2d-45d2-a54f-84339da141c1"),
-                Collections.singletonList("505be856-ceca-4bbc-ba70-29024585056f"),
                 Collections.emptyList(),
                 "yes",
                 "yes",

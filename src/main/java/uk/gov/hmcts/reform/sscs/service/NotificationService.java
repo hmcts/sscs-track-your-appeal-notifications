@@ -1,5 +1,6 @@
 package uk.gov.hmcts.reform.sscs.service;
 
+import static java.lang.String.format;
 import static java.util.Arrays.asList;
 import static java.util.Optional.ofNullable;
 import static uk.gov.hmcts.reform.sscs.ccd.domain.Benefit.getBenefitByCode;
@@ -36,7 +37,8 @@ import uk.gov.hmcts.reform.sscs.utility.PhoneNumbersUtil;
 @Service
 @Slf4j
 public class NotificationService {
-    public static final List<String> PROCESS_AUDIO_VIDEO_ACTIONS_THAT_REQUIRES_NOTICE = asList("issueDirectionsNotice", "excludeEvidence", "includeEvidence");
+    private static final List<String> PROCESS_AUDIO_VIDEO_ACTIONS_THAT_REQUIRES_NOTICE = asList("issueDirectionsNotice", "excludeEvidence", "includeEvidence");
+    private static final String READY_TO_LIST = "readyToList";
 
     private final NotificationFactory notificationFactory;
     private final ReminderService reminderService;
@@ -92,10 +94,20 @@ public class NotificationService {
             } else {
                 sendNotificationPerSubscription(notificationWrapper);
                 reminderService.createReminders(notificationWrapper);
+                sendSecondNotificationForLongLetters(notificationWrapper);
             }
         } else if (outOfHoursCalculator.isItOutOfHours()) {
             log.info("Notification event {} is out of hours and scheduled for case id {}", notificationType.getId(), caseId);
             notificationHandler.scheduleNotification(notificationWrapper);
+        }
+    }
+
+    private void sendSecondNotificationForLongLetters(NotificationWrapper notificationWrapper) {
+        if (notificationWrapper.getNotificationType().equals(ISSUE_FINAL_DECISION_WELSH)) {
+            // Gov Notify has a limit of 10 pages, so for long notifications (especially Welsh) we need to split the sending into 2 parts
+            notificationWrapper.getSscsCaseDataWrapper().setNotificationEventType(ISSUE_FINAL_DECISION);
+            notificationWrapper.setSwitchLanguageType(true);
+            sendNotificationPerSubscription(notificationWrapper);
         }
     }
 
@@ -250,7 +262,6 @@ public class NotificationService {
 
             Benefit benefit = getBenefitByCode(wrapper.getSscsCaseDataWrapper()
                     .getNewSscsCaseData().getAppeal().getBenefitType().getCode());
-            LanguagePreference languagePreference = wrapper.getSscsCaseDataWrapper().getNewSscsCaseData().getLanguagePreference();
 
             Template template = notificationConfig.getTemplate(
                     NotificationEventType.SUBSCRIPTION_OLD_NOTIFICATION.getId(),
@@ -258,9 +269,8 @@ public class NotificationService {
                     NotificationEventType.SUBSCRIPTION_OLD_NOTIFICATION.getId(),
                     NotificationEventType.SUBSCRIPTION_OLD_NOTIFICATION.getId(),
                     benefit,
-                    wrapper.getHearingType(),
-                    "validAppeal",
-                    languagePreference
+                    wrapper,
+                    "validAppeal"
             );
 
             Notification oldNotification = Notification.builder().template(template).appealNumber(notification.getAppealNumber())
@@ -311,13 +321,13 @@ public class NotificationService {
                     || ISSUE_FINAL_DECISION.equals(notificationType)
                     || ISSUE_FINAL_DECISION_WELSH.equals(notificationType)
                     || REISSUE_DOCUMENT.equals(notificationType))) {
-                log.info(String.format("Cannot complete notification %s as the appeal was dormant for caseId %s.",
+                log.info(format("Cannot complete notification %s as the appeal was dormant for caseId %s.",
                         notificationType.getId(), notificationWrapper.getCaseId()));
                 return false;
             }
         }
         if (notificationWrapper.getNewSscsCaseData().isLanguagePreferenceWelsh() && (ISSUE_FINAL_DECISION.equals(notificationType) || DECISION_ISSUED.equals(notificationType) || DIRECTION_ISSUED.equals(notificationType) || ISSUE_ADJOURNMENT_NOTICE.equals(notificationType) || PROCESS_AUDIO_VIDEO.equals(notificationType))) {
-            log.info(String.format("Cannot complete notification %s as the appeal is Welsh  for caseId %s.",
+            log.info(format("Cannot complete notification %s as the appeal is Welsh  for caseId %s.",
                     notificationType.getId(), notificationWrapper.getCaseId()));
             return false;
         }
@@ -326,23 +336,32 @@ public class NotificationService {
 
         if (notificationType.equals(PROCESS_AUDIO_VIDEO)
                 && !PROCESS_AUDIO_VIDEO_ACTIONS_THAT_REQUIRES_NOTICE.contains(processAudioVisualAction)) {
-            log.info(String.format("Cannot complete notification %s since the action %s does not require a notice to be sent for caseId %s.",
+            log.info(format("Cannot complete notification %s since the action %s does not require a notice to be sent for caseId %s.",
                     notificationType.getId(), processAudioVisualAction, notificationWrapper.getCaseId()));
             return false;
         }
 
-        if (!State.READY_TO_LIST.getId().equals(notificationWrapper.getSscsCaseDataWrapper().getNewSscsCaseData().getCreatedInGapsFrom())
-                && DWP_UPLOAD_RESPONSE_NOTIFICATION.equals(notificationType)) {
-            log.info(String.format("Cannot complete notification %s as the appeal was dwpUploadResponse for caseId %s.",
+        if (!isDigitalCase(notificationWrapper) && DWP_UPLOAD_RESPONSE_NOTIFICATION.equals(notificationType)) {
+            log.info(format("Cannot complete notification %s as the appeal was dwpUploadResponse for caseId %s.",
+                    notificationType.getId(), notificationWrapper.getCaseId()));
+            return false;
+        }
+
+        if (DWP_RESPONSE_RECEIVED_NOTIFICATION.equals(notificationType) && isDigitalCase(notificationWrapper)) {
+            log.info(format("Cannot complete notification %s as the appeal was digital for caseId %s.",
                     notificationType.getId(), notificationWrapper.getCaseId()));
             return false;
         }
 
         if (covid19Feature && (HEARING_BOOKED_NOTIFICATION.equals(notificationType) || HEARING_REMINDER_NOTIFICATION.equals(notificationType))) {
-            log.info(String.format("Notification not valid to send as covid 19 feature flag on for case id %s and event %s in state %s", notificationWrapper.getCaseId(), notificationType.getId(), notificationWrapper.getSscsCaseDataWrapper().getState()));
+            log.info(format("Notification not valid to send as covid 19 feature flag on for case id %s and event %s in state %s", notificationWrapper.getCaseId(), notificationType.getId(), notificationWrapper.getSscsCaseDataWrapper().getState()));
             return false;
         }
-        log.info(String.format("Notification valid to send for case id %s and event %s in state %s", notificationWrapper.getCaseId(), notificationType.getId(), notificationWrapper.getSscsCaseDataWrapper().getState()));
+        log.info(format("Notification valid to send for case id %s and event %s in state %s", notificationWrapper.getCaseId(), notificationType.getId(), notificationWrapper.getSscsCaseDataWrapper().getState()));
         return true;
+    }
+
+    private boolean isDigitalCase(final NotificationWrapper notificationWrapper) {
+        return READY_TO_LIST.equals(notificationWrapper.getSscsCaseDataWrapper().getNewSscsCaseData().getCreatedInGapsFrom());
     }
 }
