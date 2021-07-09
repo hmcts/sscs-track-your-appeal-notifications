@@ -77,7 +77,7 @@ public class NotificationServiceBase {
     private OutOfHoursCalculator outOfHoursCalculator;
 
     @Mock
-    private EvidenceManagementService evidenceManagementService;
+    private PdfStoreService pdfStoreService;
 
     @Mock
     private PdfLetterService pdfLetterService;
@@ -111,7 +111,7 @@ public class NotificationServiceBase {
 
     NotificationService initialiseNotificationService() {
         SendNotificationService sendNotificationService = new SendNotificationService(notificationSender,
-            evidenceManagementService, notificationHandler, notificationValidService, pdfLetterService);
+                notificationHandler, notificationValidService, pdfLetterService, pdfStoreService);
         return new NotificationService(notificationFactory, reminderService, notificationValidService,
             notificationHandler, outOfHoursCalculator, notificationConfig, sendNotificationService, false
         );

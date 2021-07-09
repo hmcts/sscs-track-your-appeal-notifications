@@ -118,7 +118,7 @@ public class NotificationsItBase {
     private DocmosisPdfGenerationService docmosisPdfGenerationService;
 
     @Mock
-    protected EvidenceManagementService evidenceManagementService;
+    protected PdfStoreService pdfStoreService;
 
     @Value("${notification.english.subscriptionUpdated.emailId}")
     private String subscriptionUpdatedEmailId;
@@ -144,7 +144,7 @@ public class NotificationsItBase {
     public void setup() throws Exception {
         NotificationSender sender = new NotificationSender(notificationClient, null, notificationBlacklist, markdownTransformationService, saveCorrespondenceAsyncService, saveCorrespondence);
 
-        SendNotificationService sendNotificationService = new SendNotificationService(sender, evidenceManagementService, notificationHandler, notificationValidService, pdfLetterService);
+        SendNotificationService sendNotificationService = new SendNotificationService(sender, notificationHandler, notificationValidService, pdfLetterService, pdfStoreService);
 
         setupNotificationService(sendNotificationService);
 
