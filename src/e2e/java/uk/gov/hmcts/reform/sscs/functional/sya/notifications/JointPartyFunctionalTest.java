@@ -181,7 +181,6 @@ public class JointPartyFunctionalTest extends AbstractFunctionalTest {
             new Object[]{STRUCK_OUT, PAPER, expectedNumberOfLettersIsTwo, isDocmosisLetterTrue},
             new Object[]{APPEAL_WITHDRAWN_NOTIFICATION, NO_HEARING_TYPE, expectedNumberOfLettersIsTwo, isDocmosisLetterTrue},
             new Object[]{DIRECTION_ISSUED, NO_HEARING_TYPE, expectedNumberOfLettersIsTwo, isDocmosisLetterTrue},
-            new Object[]{DWP_UPLOAD_RESPONSE_NOTIFICATION, PAPER, expectedNumberOfLettersIsTwo, isDocmosisLetterTrue},
             new Object[]{REVIEW_CONFIDENTIALITY_REQUEST, NO_HEARING_TYPE, expectedNumberOfLettersIsOne, isDocmosisLetterTrue}
         };
     }
