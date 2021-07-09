@@ -188,7 +188,7 @@ public class NotificationsIt extends NotificationsItBase {
         NotificationEventType notificationEventType, String hearingType, boolean hasRep, boolean hasAppointee, int wantedNumberOfSendLetterInvocations) throws Exception {
 
         byte[] sampleDirectionNotice = IOUtils.toByteArray(getClass().getClassLoader().getResourceAsStream("pdfs/direction-text.pdf"));
-        when(evidenceManagementService.download(any(), any())).thenReturn(sampleDirectionNotice);
+        when(pdfStoreService.download(any())).thenReturn(sampleDirectionNotice);
 
         String filename = "json/ccdResponse_"
             + notificationEventType.getId()
@@ -3601,7 +3601,7 @@ public class NotificationsIt extends NotificationsItBase {
         json = json.replace("appealCreated", State.DORMANT_APPEAL_STATE.toString());
 
         byte[] sampleDirectionNotice = IOUtils.toByteArray(getClass().getClassLoader().getResourceAsStream("pdfs/direction-text.pdf"));
-        when(evidenceManagementService.download(any(), any())).thenReturn(sampleDirectionNotice);
+        when(pdfStoreService.download(any())).thenReturn(sampleDirectionNotice);
 
         HttpServletResponse response = getResponse(getRequestWithAuthHeader(json));
 
@@ -3624,7 +3624,7 @@ public class NotificationsIt extends NotificationsItBase {
         json = json.replace("REISSUE_DOCUMENT", furtherEvidenceType);
 
         byte[] sampleDirectionNotice = IOUtils.toByteArray(getClass().getClassLoader().getResourceAsStream("pdfs/direction-text.pdf"));
-        when(evidenceManagementService.download(any(), any())).thenReturn(sampleDirectionNotice);
+        when(pdfStoreService.download(any())).thenReturn(sampleDirectionNotice);
 
         HttpServletResponse response = getResponse(getRequestWithAuthHeader(json));
 

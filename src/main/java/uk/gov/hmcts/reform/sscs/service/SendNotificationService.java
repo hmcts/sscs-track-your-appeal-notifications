@@ -9,7 +9,6 @@ import static uk.gov.hmcts.reform.sscs.service.NotificationUtils.*;
 import static uk.gov.hmcts.reform.sscs.service.NotificationValidService.*;
 
 import java.io.IOException;
-import java.net.URI;
 import java.time.ZonedDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.*;
@@ -32,31 +31,30 @@ import uk.gov.service.notify.NotificationClientException;
 @Service
 @Slf4j
 public class SendNotificationService {
-    static final String DM_STORE_USER_ID = "sscs";
     private static final String NOTIFICATION_TYPE_LETTER = "Letter";
 
     @Value("${reminder.dwpResponseLateReminder.delay.seconds}")
     private long delay;
 
     private final NotificationSender notificationSender;
-    private final EvidenceManagementService evidenceManagementService;
     private final NotificationHandler notificationHandler;
     private final NotificationValidService notificationValidService;
     private final PdfLetterService pdfLetterService;
+    private final PdfStoreService pdfStoreService;
 
     @Autowired
     public SendNotificationService(
             NotificationSender notificationSender,
-            EvidenceManagementService evidenceManagementService,
             NotificationHandler notificationHandler,
             NotificationValidService notificationValidService,
-            PdfLetterService pdfLetterService
+            PdfLetterService pdfLetterService,
+            PdfStoreService pdfStoreService
     ) {
         this.notificationSender = notificationSender;
-        this.evidenceManagementService = evidenceManagementService;
         this.notificationHandler = notificationHandler;
         this.notificationValidService = notificationValidService;
         this.pdfLetterService = pdfLetterService;
+        this.pdfStoreService = pdfStoreService;
     }
 
     boolean sendEmailSmsLetterNotification(
@@ -288,9 +286,9 @@ public class SendNotificationService {
         byte[] associatedCasePdf = null;
         String documentUrl = getBundledLetterDocumentUrl(notificationEventType, newSscsCaseData);
 
+        log.info("documentUrl: " + documentUrl);
         if (null != documentUrl) {
-            associatedCasePdf = evidenceManagementService.download(URI.create(documentUrl), DM_STORE_USER_ID);
-
+            associatedCasePdf = pdfStoreService.download(documentUrl);
         }
         return associatedCasePdf;
     }
