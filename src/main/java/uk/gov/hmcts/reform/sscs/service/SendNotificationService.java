@@ -285,8 +285,7 @@ public class SendNotificationService {
 
         byte[] associatedCasePdf = null;
         String documentUrl = getBundledLetterDocumentUrl(notificationEventType, newSscsCaseData);
-
-        log.info("documentUrl: " + documentUrl);
+        
         if (null != documentUrl) {
             associatedCasePdf = pdfStoreService.download(documentUrl);
         }
