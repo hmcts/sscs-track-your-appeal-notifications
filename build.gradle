@@ -10,7 +10,7 @@ plugins {
     id 'org.owasp.dependencycheck' version '6.2.2'
     id 'com.github.ben-manes.versions' version '0.39.0'
     id 'net.ltgt.apt' version '0.21'
-    id "org.flywaydb.flyway" version "7.11.0"
+    id "org.flywaydb.flyway" version "7.11.1"
 }
 
 apply plugin: 'org.springframework.boot'
@@ -78,7 +78,7 @@ bootRun {
 }
 
 ext {
-    springCloudVersion = 'Hoxton.SR11'
+    springCloudVersion = 'Hoxton.SR12'
 }
 
 dependencyManagement {
@@ -298,7 +298,7 @@ dependencies {
 
     compile group: 'com.mchange', name: 'c3p0', version: '0.9.5.5'
     compile group: 'org.flywaydb', name: 'flyway-core', version: '6.5.6'
-    compile group: 'org.postgresql', name: 'postgresql', version: '42.2.22'
+    compile group: 'org.postgresql', name: 'postgresql', version: '42.2.23'
     compile group: 'net.bytebuddy', name: 'byte-buddy', version: '1.11.6'
     compile group: 'org.elasticsearch', name: 'elasticsearch', version: '7.13.3'
 
@@ -318,14 +318,14 @@ dependencies {
     compile group: 'io.springfox', name: 'springfox-swagger-ui', version: versions.springfoxSwagger
     compile group: 'com.atlassian.commonmark', name: 'commonmark', version: '0.17.0'
     compile group: 'org.springframework', name: 'spring-jms'
-    compile group: 'org.apache.qpid', name: 'qpid-jms-client', version: '1.0.0'
+    compile group: 'org.apache.qpid', name: 'qpid-jms-client', version: '1.1.0'
     compile group: 'org.jadira.usertype', name: 'usertype.core', version: '7.0.0.CR1'
 
     compile group: 'uk.gov.hmcts.reform', name: 'properties-volume-spring-boot-starter', version:'0.1.0'
     compile group: 'com.github.hmcts', name: 'java-logging', version: versions.reformLogging
     compile group: 'uk.gov.hmcts.reform', name: 'service-auth-provider-client', version: '4.0.0'
 
-    compile group: 'com.github.hmcts', name: 'sscs-common', version: '4.3.43-RC-SSCS-8924'
+    compile group: 'com.github.hmcts', name: 'sscs-common', version: '4.4.45'
     compile group: 'com.github.hmcts', name: 'sscs-pdf-email-common', version: '1.4.36'
     compile group: 'com.github.hmcts', name: 'sscs-job-scheduler', version: '1.5.7'
 
