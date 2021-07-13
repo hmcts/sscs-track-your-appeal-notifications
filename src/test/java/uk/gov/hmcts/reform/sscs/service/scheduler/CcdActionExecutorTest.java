@@ -20,11 +20,7 @@ import org.junit.runner.RunWith;
 import org.mockito.Mock;
 import org.springframework.http.converter.json.Jackson2ObjectMapperBuilder;
 import uk.gov.hmcts.reform.sscs.ccd.deserialisation.SscsCaseCallbackDeserializer;
-import uk.gov.hmcts.reform.sscs.ccd.domain.SscsCaseData;
-import uk.gov.hmcts.reform.sscs.ccd.domain.SscsCaseDetails;
-import uk.gov.hmcts.reform.sscs.ccd.domain.SscsEsaCaseData;
-import uk.gov.hmcts.reform.sscs.ccd.domain.SscsPipCaseData;
-import uk.gov.hmcts.reform.sscs.ccd.domain.State;
+import uk.gov.hmcts.reform.sscs.ccd.domain.*;
 import uk.gov.hmcts.reform.sscs.ccd.service.CcdService;
 import uk.gov.hmcts.reform.sscs.domain.SscsCaseDataWrapper;
 import uk.gov.hmcts.reform.sscs.exception.NotificationServiceException;
@@ -80,7 +76,7 @@ public class CcdActionExecutorTest {
 
         caseDetails = SscsCaseDetails.builder().id(456L).caseTypeId("123").state("appealCreated").build();
 
-        newSscsCaseData = SscsCaseData.builder().ccdCaseId("456").sscsEsaCaseData(SscsEsaCaseData.builder().build()).pipSscsCaseData(SscsPipCaseData.builder().build()).build();
+        newSscsCaseData = SscsCaseData.builder().ccdCaseId("456").sscsDeprecatedFields(SscsDeprecatedFields.builder().build()).sscsEsaCaseData(SscsEsaCaseData.builder().build()).pipSscsCaseData(SscsPipCaseData.builder().build()).build();
         caseDetails.setData(newSscsCaseData);
 
         idamTokens = IdamTokens.builder().build();

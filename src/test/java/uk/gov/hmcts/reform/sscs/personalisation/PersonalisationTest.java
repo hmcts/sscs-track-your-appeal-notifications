@@ -92,7 +92,6 @@ import uk.gov.hmcts.reform.sscs.ccd.domain.HearingDetails;
 import uk.gov.hmcts.reform.sscs.ccd.domain.HearingType;
 import uk.gov.hmcts.reform.sscs.ccd.domain.InfoRequests;
 import uk.gov.hmcts.reform.sscs.ccd.domain.JointPartyName;
-import uk.gov.hmcts.reform.sscs.ccd.domain.LanguagePreference;
 import uk.gov.hmcts.reform.sscs.ccd.domain.Name;
 import uk.gov.hmcts.reform.sscs.ccd.domain.RegionalProcessingCenter;
 import uk.gov.hmcts.reform.sscs.ccd.domain.Representative;
@@ -102,7 +101,6 @@ import uk.gov.hmcts.reform.sscs.ccd.domain.Subscription;
 import uk.gov.hmcts.reform.sscs.ccd.domain.Subscriptions;
 import uk.gov.hmcts.reform.sscs.ccd.domain.Venue;
 import uk.gov.hmcts.reform.sscs.config.AppConstants;
-import uk.gov.hmcts.reform.sscs.config.AppealHearingType;
 import uk.gov.hmcts.reform.sscs.config.NotificationConfig;
 import uk.gov.hmcts.reform.sscs.config.SubscriptionType;
 import uk.gov.hmcts.reform.sscs.config.properties.EvidenceProperties;
@@ -256,8 +254,7 @@ public class PersonalisationTest {
                 eq(DIRECTION_ISSUED.getId()),
                 eq(DIRECTION_ISSUED.getId()),
                 eq(templateConfig + "." + lowerCase(subscriptionType.toString())),
-                any(Benefit.class), any(AppealHearingType.class), eq(null),
-                eq(LanguagePreference.ENGLISH)
+                any(Benefit.class), any(NotificationWrapper.class), eq(null)
         );
     }
 
@@ -288,8 +285,7 @@ public class PersonalisationTest {
                 eq(DIRECTION_ISSUED.getId()),
                 eq(DIRECTION_ISSUED.getId()),
                 eq("directionIssued.grantUrgentHearing" + "." + lowerCase(subscriptionType.toString())),
-                any(Benefit.class), any(AppealHearingType.class), eq(null),
-                eq(LanguagePreference.ENGLISH)
+                any(Benefit.class), any(NotificationWrapper.class), eq(null)
         );
     }
 
@@ -324,8 +320,7 @@ public class PersonalisationTest {
                 eq(DIRECTION_ISSUED_WELSH.getId()),
                 eq(DIRECTION_ISSUED_WELSH.getId()),
                 eq(templateConfig + "." + lowerCase(subscriptionType.toString())),
-                any(Benefit.class), any(AppealHearingType.class), eq(null),
-                eq(LanguagePreference.WELSH)
+                any(Benefit.class), any(NotificationWrapper.class), eq(null)
         );
     }
 
@@ -351,7 +346,7 @@ public class PersonalisationTest {
                 eq(hasSmsTemplate ? getExpectedTemplateName(notificationEventType, subscriptionType) : notificationEventType.getId()),
                 eq(hasLetterTemplate ? getExpectedTemplateName(notificationEventType, subscriptionType) : notificationEventType.getId()),
                 eq(hasDocmosisTemplate ? getExpectedTemplateName(notificationEventType, subscriptionType) : notificationEventType.getId()),
-                any(Benefit.class), any(AppealHearingType.class), eq(null), eq(LanguagePreference.ENGLISH)
+                any(Benefit.class), any(NotificationWrapper.class), eq(null)
         );
     }
 
@@ -545,6 +540,7 @@ public class PersonalisationTest {
         assertEquals("http://link.com/progress/GLSCRR/abouthearing", result.get(HEARING_INFO_LINK_LITERAL));
         assertNull(result.get(EVIDENCE_RECEIVED_DATE_LITERAL));
         assertEquals(EMPTY, result.get(JOINT));
+        assertEquals(EMPTY, result.get(JOINT_WELSH));
         assertNull(result.get(AppConstants.JOINT_PARTY));
 
         assertEquals(ADDRESS1, result.get(REGIONAL_OFFICE_NAME_LITERAL));
@@ -1313,6 +1309,7 @@ public class PersonalisationTest {
         assertEquals(name.getFullNameNoTitle(), result.get(APPELLANT_NAME));
         assertEquals(tyaNumber, result.get(APPEAL_ID_LITERAL));
         assertEquals(EMPTY, result.get(JOINT));
+        assertEquals(EMPTY, result.get(JOINT_WELSH));
         assertEquals("http://link.com/manage-email-notifications/ZYX", result.get(MANAGE_EMAILS_LINK_LITERAL));
         assertEquals("http://tyalink.com/" + tyaNumber, result.get(TRACK_APPEAL_LINK_LITERAL));
         assertEquals("You are receiving this update as the appointee for Harry Kane.\r\n\r\n", result.get(APPOINTEE_DESCRIPTION));
@@ -1362,6 +1359,7 @@ public class PersonalisationTest {
         assertNotNull(result);
         assertEquals(repTyaNumber, result.get(APPEAL_ID_LITERAL));
         assertEquals(EMPTY, result.get(JOINT));
+        assertEquals(EMPTY, result.get(JOINT_WELSH));
         assertEquals("http://link.com/manage-email-notifications/ZYX", result.get(MANAGE_EMAILS_LINK_LITERAL));
         assertEquals("http://tyalink.com/" + repTyaNumber, result.get(TRACK_APPEAL_LINK_LITERAL));
         assertEquals("http://link.com/" + repTyaNumber, result.get(SUBMIT_EVIDENCE_LINK_LITERAL));
@@ -1415,7 +1413,8 @@ public class PersonalisationTest {
         assertNotNull(result);
         assertEquals(jointPartyTyaNumber, result.get(APPEAL_ID_LITERAL));
         assertEquals("Bob Builder", result.get(NAME));
-        assertEquals("joint ", result.get(JOINT));
+        assertEquals(JOINT_TEXT_WITH_A_SPACE, result.get(JOINT));
+        assertEquals(JOINT_WELSH_TEXT_WITH_A_SPACE, result.get(JOINT_WELSH));
         assertEquals("Yes", result.get(AppConstants.JOINT_PARTY));
         assertEquals("http://link.com/manage-email-notifications/ZYX", result.get(MANAGE_EMAILS_LINK_LITERAL));
         assertEquals("http://tyalink.com/" + jointPartyTyaNumber, result.get(TRACK_APPEAL_LINK_LITERAL));

@@ -1,5 +1,8 @@
 package uk.gov.hmcts.reform.sscs.config;
 
+import static uk.gov.hmcts.reform.sscs.ccd.domain.LanguagePreference.ENGLISH;
+import static uk.gov.hmcts.reform.sscs.ccd.domain.LanguagePreference.WELSH;
+
 import java.util.*;
 import javax.validation.constraints.NotNull;
 import org.apache.commons.lang3.StringUtils;
@@ -12,6 +15,7 @@ import uk.gov.hmcts.reform.sscs.ccd.domain.LanguagePreference;
 import uk.gov.hmcts.reform.sscs.ccd.domain.State;
 import uk.gov.hmcts.reform.sscs.domain.notify.Link;
 import uk.gov.hmcts.reform.sscs.domain.notify.Template;
+import uk.gov.hmcts.reform.sscs.factory.NotificationWrapper;
 
 @Component
 public class NotificationConfig {
@@ -100,7 +104,9 @@ public class NotificationConfig {
     }
 
     public Template getTemplate(String emailTemplateName, String smsTemplateName, String letterTemplateName,
-                                String docmosisTemplateName, Benefit benefit, AppealHearingType appealHearingType, String createdInGapsFrom, LanguagePreference languagePreference) {
+                                String docmosisTemplateName, Benefit benefit, NotificationWrapper notificationWrapper, String createdInGapsFrom) {
+        AppealHearingType appealHearingType = notificationWrapper.getHearingType();
+        LanguagePreference languagePreference = shouldSwitchLanguage(notificationWrapper.getNewSscsCaseData().getLanguagePreference(), notificationWrapper.hasLanguageSwitched());
 
         String docmosisTemplateId = getTemplateId(appealHearingType, docmosisTemplateName, "docmosisId", languagePreference);
         if (StringUtils.isNotBlank(docmosisTemplateId)) {
@@ -117,13 +123,20 @@ public class NotificationConfig {
             .build();
     }
 
+    private LanguagePreference shouldSwitchLanguage(LanguagePreference languagePreference, boolean shouldSwitchLanguage) {
+        if (shouldSwitchLanguage) {
+            return languagePreference.equals(WELSH) ? ENGLISH : WELSH;
+        }
+        return languagePreference;
+    }
+
     private List<String> getSmsTemplates(@NotNull AppealHearingType appealHearingType, String smsTemplateName,
                                          final String notificationType, LanguagePreference languagePreference) {
         return Optional.ofNullable(getTemplateId(appealHearingType, smsTemplateName, notificationType, languagePreference)).map(value -> {
             List<String> ids = new ArrayList<>();
             ids.add(value);
             if (LanguagePreference.WELSH.equals(languagePreference)) {
-                ids.add(getTemplateId(appealHearingType, smsTemplateName, notificationType,LanguagePreference.ENGLISH));
+                ids.add(getTemplateId(appealHearingType, smsTemplateName, notificationType, ENGLISH));
             }
             return ids;
         }).orElse(Collections.emptyList());

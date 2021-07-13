@@ -2,7 +2,6 @@ package uk.gov.hmcts.reform.sscs.functional.sya.notifications;
 
 import static org.junit.Assert.*;
 import static uk.gov.hmcts.reform.sscs.domain.notify.NotificationEventType.*;
-import static uk.gov.hmcts.reform.sscs.domain.notify.NotificationEventType.DWP_UPLOAD_RESPONSE_NOTIFICATION;
 
 import java.io.IOException;
 import java.util.List;
@@ -450,33 +449,6 @@ public class NotificationsFunctionalTest extends AbstractFunctionalTest {
 
         assertTrue(emailNotification.getBody().contains("Dear Appointee User"));
         assertTrue(emailNotification.getBody().contains("You will receive another email"));
-    }
-
-    @Test
-    public void shouldSendOralDwpUploadResponseReceivedNotification() throws NotificationClientException, IOException {
-        simulateCcdCallback(DWP_UPLOAD_RESPONSE_NOTIFICATION, "oral-" + DWP_UPLOAD_RESPONSE_NOTIFICATION.getId() + "Callback.json");
-
-        List<Notification> notifications = tryFetchNotificationsForTestCase(
-                oralDwpUploadResponseEmailId,
-                oralDwpUploadResponseSmsId);
-
-        Notification updateEmailNotification = notifications.stream().filter(f -> f.getTemplateId().toString().equals(oralDwpUploadResponseEmailId)).collect(Collectors.toList()).get(0);
-
-        assertTrue(updateEmailNotification.getBody().contains("DWP has sent a 'Response' to your ESA appeal"));
-        assertTrue(updateEmailNotification.getBody().contains("We need to book a hearing for your appeal"));
-    }
-
-    @Test
-    public void shouldSendPaperDwpUploadResponseReceivedNotification() throws NotificationClientException, IOException {
-        simulateCcdCallback(DWP_UPLOAD_RESPONSE_NOTIFICATION, "paper-" + DWP_UPLOAD_RESPONSE_NOTIFICATION.getId() + "Callback.json");
-
-        List<Notification> notifications = tryFetchNotificationsForTestCase(
-                paperDwpUploadResponseEmailId,
-                paperDwpUploadResponseSmsId);
-
-        Notification updateEmailNotification = notifications.stream().filter(f -> f.getTemplateId().toString().equals(paperDwpUploadResponseEmailId)).collect(Collectors.toList()).get(0);
-        assertTrue(updateEmailNotification.getBody().contains("DWP has sent a 'Response' to your ESA appeal"));
-        assertTrue(updateEmailNotification.getBody().contains("You have told us you do not want to attend the hearing of your appeal"));
     }
 
     @Test

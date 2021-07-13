@@ -7,10 +7,10 @@ plugins {
     id 'io.spring.dependency-management' version '1.0.11.RELEASE'
     id 'org.springframework.boot' version '2.3.5.RELEASE'
     id 'uk.gov.hmcts.java' version '0.12.12'
-    id 'org.owasp.dependencycheck' version '6.2.1'
+    id 'org.owasp.dependencycheck' version '6.2.2'
     id 'com.github.ben-manes.versions' version '0.39.0'
     id 'net.ltgt.apt' version '0.21'
-    id "org.flywaydb.flyway" version "7.10.0"
+    id "org.flywaydb.flyway" version "7.11.1"
 }
 
 apply plugin: 'org.springframework.boot'
@@ -78,7 +78,7 @@ bootRun {
 }
 
 ext {
-    springCloudVersion = 'Hoxton.SR11'
+    springCloudVersion = 'Hoxton.SR12'
 }
 
 dependencyManagement {
@@ -93,7 +93,7 @@ dependencyManagement {
         dependency group: 'org.apache.logging.log4j', name: 'log4j-to-slf4j', version: '2.14.1'
 
         // resolves: CVE-2020-9489
-        dependency group: 'org.apache.tika', name: 'tika-core', version: '1.26'
+        dependency group: 'org.apache.tika', name: 'tika-core', version: '1.27'
 
         // checkstyle needs a certain version and so does spring fox swagger, so can't use latest
         dependencySet(group: 'com.google.guava', version: '30.1.1-jre') {
@@ -142,7 +142,7 @@ dependencyManagement {
         }
 
         // resolves: CVE-2019-10101, CVE-2019-10102, CVE-2019-10103
-        dependencySet(group: 'org.jetbrains.kotlin', version: '1.5.10') {
+        dependencySet(group: 'org.jetbrains.kotlin', version: '1.5.20') {
             entry 'kotlin-stdlib'
             entry 'kotlin-stdlib-common'
         }
@@ -153,10 +153,11 @@ dependencyManagement {
         }
 
         //CVE-2021-27807
-        dependencySet(group: 'org.apache.pdfbox', version: '2.0.23') {
+        dependencySet(group: 'org.apache.pdfbox', version: '2.0.24') {
             entry 'pdfbox'
             entry 'pdfbox-tools'
             entry 'preflight'
+            entry 'xmpbox'
         }
 
         //CVE-2021-22118
@@ -297,9 +298,9 @@ dependencies {
 
     compile group: 'com.mchange', name: 'c3p0', version: '0.9.5.5'
     compile group: 'org.flywaydb', name: 'flyway-core', version: '6.5.6'
-    compile group: 'org.postgresql', name: 'postgresql', version: '42.2.22'
-    compile group: 'net.bytebuddy', name: 'byte-buddy', version: '1.11.5'
-    compile group: 'org.elasticsearch', name: 'elasticsearch', version: '7.13.1'
+    compile group: 'org.postgresql', name: 'postgresql', version: '42.2.23'
+    compile group: 'net.bytebuddy', name: 'byte-buddy', version: '1.11.6'
+    compile group: 'org.elasticsearch', name: 'elasticsearch', version: '7.13.3'
 
     compile group: 'org.springframework.boot', name: 'spring-boot-starter-actuator'
     compile group: 'org.springframework.boot', name: 'spring-boot-starter-aop'
@@ -317,15 +318,15 @@ dependencies {
     compile group: 'io.springfox', name: 'springfox-swagger-ui', version: versions.springfoxSwagger
     compile group: 'com.atlassian.commonmark', name: 'commonmark', version: '0.17.0'
     compile group: 'org.springframework', name: 'spring-jms'
-    compile group: 'org.apache.qpid', name: 'qpid-jms-client', version: '1.0.0'
+    compile group: 'org.apache.qpid', name: 'qpid-jms-client', version: '1.1.0'
     compile group: 'org.jadira.usertype', name: 'usertype.core', version: '7.0.0.CR1'
 
     compile group: 'uk.gov.hmcts.reform', name: 'properties-volume-spring-boot-starter', version:'0.1.0'
     compile group: 'com.github.hmcts', name: 'java-logging', version: versions.reformLogging
     compile group: 'uk.gov.hmcts.reform', name: 'service-auth-provider-client', version: '4.0.0'
 
-    compile group: 'com.github.hmcts', name: 'sscs-common', version: '4.3.38-RC-SSCS-9308'
-    compile group: 'com.github.hmcts', name: 'sscs-pdf-email-common', version: '1.4.35'
+    compile group: 'com.github.hmcts', name: 'sscs-common', version: '4.4.43'
+    compile group: 'com.github.hmcts', name: 'sscs-pdf-email-common', version: '1.4.36'
     compile group: 'com.github.hmcts', name: 'sscs-job-scheduler', version: '1.5.7'
 
     compile group: 'uk.gov.service.notify', name: 'notifications-java-client', version: '3.17.2-RELEASE'
@@ -333,7 +334,7 @@ dependencies {
     compile group: 'commons-fileupload', name: 'commons-fileupload', version: '1.4'
     compile group: 'io.github.openfeign.form', name: 'feign-form', version: '3.8.0'
 
-    compile group: 'org.apache.pdfbox', name: 'pdfbox', version: '2.0.23'
+    compile group: 'org.apache.pdfbox', name: 'pdfbox', version: '2.0.24'
 
     compile group: 'com.microsoft.azure', name: 'applicationinsights-logging-logback', version: '2.6.3'
     compile group: 'com.microsoft.azure', name: 'applicationinsights-spring-boot-starter', version: '2.6.3'
@@ -347,10 +348,10 @@ dependencies {
     integrationTestCompileOnly 'org.projectlombok:lombok:1.18.18'
     integrationTestAnnotationProcessor "org.projectlombok:lombok:1.18.18"
 
-    testCompile(group: 'org.springframework.boot', name: 'spring-boot-starter-test', version: '2.5.1') {
+    testCompile(group: 'org.springframework.boot', name: 'spring-boot-starter-test', version: '2.5.2') {
         exclude group: "com.vaadin.external.google", module:"android-json"
     }
-    testCompile group: 'org.mockito', name: 'mockito-core', version: '3.11.1'
+    testCompile group: 'org.mockito', name: 'mockito-core', version: '3.11.2'
     testCompile 'pl.pragmatists:JUnitParams:1.1.1'
 
     runtime "org.springframework.boot:spring-boot-properties-migrator"
