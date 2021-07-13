@@ -3,6 +3,8 @@ package uk.gov.hmcts.reform.sscs;
 import static java.util.Arrays.asList;
 
 import com.microsoft.applicationinsights.web.internal.ApplicationInsightsServletContextListener;
+import feign.codec.Encoder;
+import feign.form.spring.SpringFormEncoder;
 import java.util.Properties;
 import java.util.TimeZone;
 import java.util.concurrent.TimeUnit;
@@ -10,17 +12,21 @@ import javax.annotation.PostConstruct;
 import javax.servlet.ServletContextListener;
 import okhttp3.OkHttpClient;
 import org.quartz.spi.JobFactory;
+import org.springframework.beans.factory.ObjectFactory;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnMissingBean;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 import org.springframework.boot.autoconfigure.flyway.FlywayMigrationInitializer;
+import org.springframework.boot.autoconfigure.http.HttpMessageConverters;
 import org.springframework.boot.web.servlet.ServletListenerRegistrationBean;
 import org.springframework.cloud.openfeign.EnableFeignClients;
+import org.springframework.cloud.openfeign.support.SpringEncoder;
 import org.springframework.context.ApplicationContext;
 import org.springframework.context.MessageSource;
 import org.springframework.context.annotation.Bean;
+import org.springframework.context.annotation.ComponentScan;
 import org.springframework.context.annotation.Primary;
 import org.springframework.context.support.ReloadableResourceBundleMessageSource;
 import org.springframework.mail.javamail.JavaMailSender;
@@ -32,7 +38,6 @@ import org.springframework.web.client.RestTemplate;
 import uk.gov.hmcts.reform.sscs.ccd.config.CcdRequestDetails;
 import uk.gov.hmcts.reform.sscs.ccd.deserialisation.SscsCaseCallbackDeserializer;
 import uk.gov.hmcts.reform.sscs.ccd.service.CcdService;
-import uk.gov.hmcts.reform.sscs.config.RetryConfig;
 import uk.gov.hmcts.reform.sscs.docmosis.service.DocmosisPdfGenerationService;
 import uk.gov.hmcts.reform.sscs.idam.IdamService;
 import uk.gov.hmcts.reform.sscs.jobscheduler.config.QuartzConfiguration;
@@ -54,6 +59,7 @@ import uk.gov.service.notify.NotificationClient;
 @EnableRetry
 @EnableScheduling
 @EnableAsync
+@ComponentScan({"uk.gov.hmcts.reform.sscs", "uk.gov.hmcts.reform.ccd.document.am.feign"})
 public class TrackYourAppealNotificationsApplication {
 
     public static final String UTC = "UTC";
@@ -160,10 +166,8 @@ public class TrackYourAppealNotificationsApplication {
     }
 
     @Bean
-    public JobMapper getJobMapper(CohActionDeserializer cohActionDeserializer,
-                                  CcdActionDeserializer ccdActionDeserializer,
+    public JobMapper getJobMapper(CcdActionDeserializer ccdActionDeserializer,
                                   NotificationService notificationService,
-                                  RetryConfig retryConfig,
                                   RetryNotificationService retryNotificationService,
                                   CcdService ccdService,
                                   IdamService idamService,
@@ -190,5 +194,10 @@ public class TrackYourAppealNotificationsApplication {
             @Value("${pdf-service.accessKey}") String pdfServiceAccessKey,
             RestTemplate restTemplate) {
         return new DocmosisPdfGenerationService(pdfServiceEndpoint, pdfServiceAccessKey, restTemplate);
+    }
+
+    @Bean
+    public Encoder feignFormEncoder(ObjectFactory<HttpMessageConverters> messageConverters) {
+        return new SpringFormEncoder(new SpringEncoder(messageConverters));
     }
 }
