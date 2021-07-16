@@ -3,8 +3,6 @@ package uk.gov.hmcts.reform.sscs;
 import static java.util.Arrays.asList;
 
 import com.microsoft.applicationinsights.web.internal.ApplicationInsightsServletContextListener;
-import feign.codec.Encoder;
-import feign.form.spring.SpringFormEncoder;
 import java.util.Properties;
 import java.util.TimeZone;
 import java.util.concurrent.TimeUnit;
@@ -12,17 +10,14 @@ import javax.annotation.PostConstruct;
 import javax.servlet.ServletContextListener;
 import okhttp3.OkHttpClient;
 import org.quartz.spi.JobFactory;
-import org.springframework.beans.factory.ObjectFactory;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnMissingBean;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 import org.springframework.boot.autoconfigure.flyway.FlywayMigrationInitializer;
-import org.springframework.boot.autoconfigure.http.HttpMessageConverters;
 import org.springframework.boot.web.servlet.ServletListenerRegistrationBean;
 import org.springframework.cloud.openfeign.EnableFeignClients;
-import org.springframework.cloud.openfeign.support.SpringEncoder;
 import org.springframework.context.ApplicationContext;
 import org.springframework.context.MessageSource;
 import org.springframework.context.annotation.Bean;
@@ -59,7 +54,7 @@ import uk.gov.service.notify.NotificationClient;
 @EnableRetry
 @EnableScheduling
 @EnableAsync
-@ComponentScan({"uk.gov.hmcts.reform.sscs", "uk.gov.hmcts.reform.ccd.document.am.feign"})
+@ComponentScan({"uk.gov.hmcts.reform.sscs", "uk.gov.hmcts.reform.ccd.document.am"})
 public class TrackYourAppealNotificationsApplication {
 
     public static final String UTC = "UTC";
@@ -196,8 +191,4 @@ public class TrackYourAppealNotificationsApplication {
         return new DocmosisPdfGenerationService(pdfServiceEndpoint, pdfServiceAccessKey, restTemplate);
     }
 
-    @Bean
-    public Encoder feignFormEncoder(ObjectFactory<HttpMessageConverters> messageConverters) {
-        return new SpringFormEncoder(new SpringEncoder(messageConverters));
-    }
 }
