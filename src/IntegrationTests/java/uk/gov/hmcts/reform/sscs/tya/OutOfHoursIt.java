@@ -113,7 +113,7 @@ public class OutOfHoursIt {
     private NotificationConfig notificationConfig;
 
     @Autowired
-    private EvidenceManagementService evidenceManagementService;
+    private PdfStoreService pdfStoreService;
 
     @Autowired
     private JobScheduler jobScheduler;
@@ -145,7 +145,7 @@ public class OutOfHoursIt {
         notificationHandler = new NotificationHandler(outOfHoursCalculator, jobScheduler, jobGroupGenerator);
 
         NotificationSender sender = new NotificationSender(notificationClient, null, notificationBlacklist, markdownTransformationService, saveCorrespondenceAsyncService, false);
-        SendNotificationService sendNotificationService = new SendNotificationService(sender, evidenceManagementService, notificationHandler, notificationValidService, pdfLetterService);
+        SendNotificationService sendNotificationService = new SendNotificationService(sender, notificationHandler, notificationValidService, pdfLetterService, pdfStoreService);
         NotificationService service = new NotificationService(factory, reminderService, notificationValidService, notificationHandler, outOfHoursCalculator, notificationConfig, sendNotificationService, false);
         controller = new NotificationController(service, authorisationService, ccdService, deserializer, idamService);
         this.mockMvc = MockMvcBuilders.standaloneSetup(controller).build();

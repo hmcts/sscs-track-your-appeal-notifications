@@ -100,7 +100,7 @@ public class NotificationServiceTest {
     private NotificationConfig notificationConfig;
 
     @Mock
-    private EvidenceManagementService evidenceManagementService;
+    private PdfStoreService pdfStoreService;
 
     @Mock
     private IdamService idamService;
@@ -2190,7 +2190,7 @@ public class NotificationServiceTest {
                 .willReturn(true);
         given(notificationValidService.isFallbackLetterRequiredForSubscriptionType(any(), any(), any())).willReturn(true);
 
-        SendNotificationService sendNotificationService = new SendNotificationService(notificationSender, evidenceManagementService, notificationHandler, notificationValidService, pdfLetterService);
+        SendNotificationService sendNotificationService = new SendNotificationService(notificationSender, notificationHandler, notificationValidService, pdfLetterService, pdfStoreService);
 
         final NotificationService notificationService = new NotificationService(factory, reminderService,
                 notificationValidService, notificationHandler, outOfHoursCalculator, notificationConfig, sendNotificationService, true
@@ -2524,7 +2524,7 @@ public class NotificationServiceTest {
     }
 
     private NotificationService getNotificationService() {
-        SendNotificationService sendNotificationService = new SendNotificationService(notificationSender, evidenceManagementService, notificationHandler, notificationValidService, pdfLetterService);
+        SendNotificationService sendNotificationService = new SendNotificationService(notificationSender, notificationHandler, notificationValidService, pdfLetterService,pdfStoreService);
 
         final NotificationService notificationService = new NotificationService(factory, reminderService,
             notificationValidService, notificationHandler, outOfHoursCalculator, notificationConfig, sendNotificationService, false

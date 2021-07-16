@@ -150,7 +150,7 @@ public class SendNotificationServiceTest {
     private NotificationSender notificationSender;
 
     @Mock
-    private EvidenceManagementService evidenceManagementService;
+    private PdfStoreService pdfStoreService;
 
     @Mock
     private NotificationHandler notificationHandler;
@@ -179,7 +179,7 @@ public class SendNotificationServiceTest {
     public void setup() {
         openMocks(this);
 
-        classUnderTest = new SendNotificationService(notificationSender, evidenceManagementService, notificationHandler, notificationValidService, pdfLetterService);
+        classUnderTest = new SendNotificationService(notificationSender, notificationHandler, notificationValidService, pdfLetterService, pdfStoreService);
 
         Logger logger = (Logger) LoggerFactory.getLogger(SendNotificationService.class.getName());
         logger.addAppender(mockAppender);
