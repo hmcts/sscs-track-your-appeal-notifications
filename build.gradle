@@ -100,7 +100,8 @@ dependencyManagement {
             entry 'guava'
         }
         // CVE-2019-0232, CVE-2019-0199 - command line injections on windows
-        dependencySet(group: 'org.apache.tomcat.embed', version: '9.0.43') {
+        // CVE-2021-33037
+        dependencySet(group: 'org.apache.tomcat.embed', version: '9.0.50') {
             entry 'tomcat-embed-core'
             entry 'tomcat-embed-el'
             entry 'tomcat-embed-websocket'
@@ -326,7 +327,7 @@ dependencies {
     compile group: 'uk.gov.hmcts.reform', name: 'service-auth-provider-client', version: '4.0.0'
 
     compile group: 'com.github.hmcts', name: 'sscs-common', version: '4.4.45'
-    compile group: 'com.github.hmcts', name: 'sscs-pdf-email-common', version: '1.4.39-RC-SSCS-9420'
+    compile group: 'com.github.hmcts', name: 'sscs-pdf-email-common', version: '1.4.40'
     compile group: 'com.github.hmcts', name: 'sscs-job-scheduler', version: '1.5.7'
 
     compile group: 'uk.gov.service.notify', name: 'notifications-java-client', version: '3.17.2-RELEASE'
