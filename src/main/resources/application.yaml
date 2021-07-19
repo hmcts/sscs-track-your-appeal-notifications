@@ -37,6 +37,7 @@ logging:
     org.quartz.plugins: INFO
     org.quartz.core.QuartzScheduler: INFO
     org.quartz.QuartzScheduler: INFO
+    uk.gov.hmcts.fortifyclient: INFO
 
 core_case_data:
   api:

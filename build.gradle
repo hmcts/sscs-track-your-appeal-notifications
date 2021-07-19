@@ -119,7 +119,7 @@ dependencyManagement {
         dependencySet(group: 'org.apache.xmlgraphics', version: '1.14') {
             entry 'batik-all'
         }
-        
+
         dependencySet(group: 'org.apache.commons', version: '1.21') {
             entry 'commons-compress'
         }
@@ -256,6 +256,12 @@ task functional(type: Test) {
     exclude("uk/gov/hmcts/reform/sscs/smoke/**", "**/*CohNotificationFunctionalTest*")
 }
 
+task fortifyScan(type: JavaExec)  {
+    main = "uk.gov.hmcts.fortifyclient.FortifyClientMainApp"
+    classpath += sourceSets.test.runtimeClasspath
+    jvmArgs = ['--add-opens=java.base/java.lang.reflect=ALL-UNNAMED']
+}
+
 configurations {
     integrationTestCompile.extendsFrom(testCompile)
     integrationTestRuntime.extendsFrom(testRuntime)
@@ -363,6 +369,7 @@ dependencies {
     }
     testCompile group: 'org.mockito', name: 'mockito-core', version: '3.11.2'
     testCompile 'pl.pragmatists:JUnitParams:1.1.1'
+    testCompile 'com.github.hmcts:fortify-client:1.2.1:all'
 
     runtime "org.springframework.boot:spring-boot-properties-migrator"
 }
