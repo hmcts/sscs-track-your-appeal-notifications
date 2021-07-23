@@ -4,7 +4,7 @@ FROM hmctspublic.azurecr.io/base/java:openjdk-11-distroless-1.4
 COPY lib/AI-Agent.xml /opt/app/
 COPY build/libs/track-your-appeal-notifications.jar /opt/app/
 
-ENV JAVA_TOOL_OPTIONS="-Dhttps.protocols=TLSv1.1,TLSv1.2 -XX:InitialRAMPercentage=45.0 -XX:MaxRAMPercentage=65.0 -XX:MinRAMPercentage=45.0 -XX:+UseConcMarkSweepGC"
+ENV JAVA_TOOL_OPTIONS="-Dhttps.protocols=TLSv1.1,TLSv1.2"
 
 CMD ["track-your-appeal-notifications.jar"]
 EXPOSE 8081
