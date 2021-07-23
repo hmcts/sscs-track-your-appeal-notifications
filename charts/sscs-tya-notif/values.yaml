@@ -23,7 +23,7 @@ java:
       - notification-test-key
       - AppInsightsInstrumentationKey
   environment:
-    JAVA_OPTS=%JAVA_OPTS%;https.protocols=TLSv1.1,TLSv1.2
+    JAVA_OPTS: "https.protocols=TLSv1.1,TLSv1.2"
     REFORM_TEAM: sscs
     REFORM_SERVICE_NAME: tya-notifications
     REFORM_SERVICE_TYPE: java
