@@ -1,7 +1,7 @@
 package uk.gov.hmcts.reform.sscs.factory;
 
 import static com.google.common.collect.Maps.newHashMap;
-import static uk.gov.hmcts.reform.sscs.ccd.domain.Benefit.getBenefitByCode;
+import static uk.gov.hmcts.reform.sscs.ccd.domain.Benefit.getBenefitByCodeOrThrowException;
 
 import java.util.Map;
 import lombok.extern.slf4j.Slf4j;
@@ -43,7 +43,7 @@ public class NotificationFactory {
         Benefit benefit = null;
         if (notificationWrapper.getSscsCaseDataWrapper().getNewSscsCaseData().getAppeal().getBenefitType() != null
                 && !StringUtils.isEmpty(notificationWrapper.getSscsCaseDataWrapper().getNewSscsCaseData().getAppeal().getBenefitType().getCode())) {
-            benefit = getBenefitByCode(notificationWrapper
+            benefit = getBenefitByCodeOrThrowException(notificationWrapper
                 .getSscsCaseDataWrapper().getNewSscsCaseData().getAppeal().getBenefitType().getCode());
         }
         Template template = personalisation.getTemplate(notificationWrapper, benefit, subscriptionWithType.getSubscriptionType());
