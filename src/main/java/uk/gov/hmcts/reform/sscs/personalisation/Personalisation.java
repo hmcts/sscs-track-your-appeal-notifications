@@ -290,7 +290,16 @@ public class Personalisation<E extends NotificationWrapper> {
 
         setHelplineTelephone(ccdResponse, personalisation);
 
+        setExcelaAddress(personalisation, ccdResponse);
+
         return personalisation;
+    }
+
+    private void setExcelaAddress(Map<String, String> personalisation, SscsCaseData ccdResponse) {
+        personalisation.put(EXCELA_ADDRESS_LINE1, evidenceProperties.getAddress().getLine2());
+        personalisation.put(EXCELA_ADDRESS_LINE2, evidenceProperties.getAddress().getLine3(ccdResponse));
+        personalisation.put(EXCELA_ADDRESS_LINE3, evidenceProperties.getAddress().getTown());
+        personalisation.put(EXCELA_ADDRESS_POSTCODE, evidenceProperties.getAddress().getPostcode(ccdResponse));
     }
 
     private void setHelplineTelephone(SscsCaseData ccdResponse, Map<String, String> personalisation) {
@@ -470,10 +479,10 @@ public class Personalisation<E extends NotificationWrapper> {
         if (EventType.READY_TO_LIST.getCcdType().equals(ccdResponse.getCreatedInGapsFrom())) {
             personalisation.put(REGIONAL_OFFICE_NAME_LITERAL, evidenceProperties.getAddress().getLine1());
             personalisation.put(SUPPORT_CENTRE_NAME_LITERAL, evidenceProperties.getAddress().getLine2());
-            personalisation.put(ADDRESS_LINE_LITERAL, evidenceProperties.getAddress().getLine3());
+            personalisation.put(ADDRESS_LINE_LITERAL, evidenceProperties.getAddress().getLine3(ccdResponse));
             personalisation.put(TOWN_LITERAL, evidenceProperties.getAddress().getTown());
             personalisation.put(COUNTY_LITERAL, evidenceProperties.getAddress().getCounty());
-            personalisation.put(POSTCODE_LITERAL, evidenceProperties.getAddress().getPostcode());
+            personalisation.put(POSTCODE_LITERAL, evidenceProperties.getAddress().getPostcode(ccdResponse));
             personalisation.put(REGIONAL_OFFICE_POSTCODE_LITERAL, evidenceProperties.getAddress().getPostcode());
         } else if (rpc != null) {
             personalisation.put(REGIONAL_OFFICE_NAME_LITERAL, rpc.getAddress1());

@@ -117,6 +117,8 @@ evidence.address.line3: PO BOX 12626
 evidence.address.town: Harlow
 evidence.address.county: Essex
 evidence.address.postcode: CM20 9QF
+evidence.address.scottishLine3: PO BOX 13150
+evidence.address.scottishPostcode: CM20 9TT
 evidence.address.telephone: 0300 123 1142
 evidence.address.telephoneWelsh: 0300 303 5170
 

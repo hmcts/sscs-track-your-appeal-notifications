@@ -158,9 +158,11 @@ public class PersonalisationTest {
     private String evidenceAddressLine1;
     private String evidenceAddressLine2;
     private String evidenceAddressLine3;
+    private String evidenceAddressScottishLine3;
     private String evidenceAddressTown;
     private String evidenceAddressCounty;
     private String evidenceAddressPostcode;
+    private String evidenceAddressScottishPostcode;
     private String evidenceAddressTelephone;
     private String evidenceAddressTelephoneWelsh;
     private static DateTimeFormatter dateTimeFormatter = DateTimeFormatter.ofPattern("d MMMM yyyy");
@@ -206,9 +208,11 @@ public class PersonalisationTest {
         evidenceAddressLine1 = "line1";
         evidenceAddressLine2 = "line2";
         evidenceAddressLine3 = "line3";
+        evidenceAddressScottishLine3 = "scottishLine3";
         evidenceAddressTown = "town";
         evidenceAddressCounty = "county";
         evidenceAddressPostcode = "postcode";
+        evidenceAddressScottishPostcode = "scottishPostcode";
         evidenceAddressTelephone = "telephone";
         evidenceAddressTelephoneWelsh = PHONE_WELSH;
 
@@ -216,9 +220,11 @@ public class PersonalisationTest {
         evidenceAddress.setLine1(evidenceAddressLine1);
         evidenceAddress.setLine2(evidenceAddressLine2);
         evidenceAddress.setLine3(evidenceAddressLine3);
+        evidenceAddress.setScottishLine3(evidenceAddressScottishLine3);
         evidenceAddress.setTown(evidenceAddressTown);
         evidenceAddress.setCounty(evidenceAddressCounty);
         evidenceAddress.setPostcode(evidenceAddressPostcode);
+        evidenceAddress.setScottishPostcode(evidenceAddressScottishPostcode);
         evidenceAddress.setTelephone(evidenceAddressTelephone);
         evidenceAddress.setTelephoneWelsh(evidenceAddressTelephoneWelsh);
         when(evidenceProperties.getAddress()).thenReturn(evidenceAddress);
@@ -1200,19 +1206,21 @@ public class PersonalisationTest {
     }
 
     @Test
-    public void shouldPopulateSendEvidenceAddressToDigitalAddressWhenOnTheDigitalJourney() {
+    @Parameters({"yes, scottishLine3, scottishPostcode", "no, line3, postcode"})
+    public void shouldPopulateSendEvidenceAddressToDigitalAddressWhenOnTheDigitalJourney(String isScottish, String expectedLine3, String expectedPostcode) {
         SscsCaseData response = SscsCaseData.builder()
                 .createdInGapsFrom(EventType.READY_TO_LIST.getCcdType())
+                .isScottishCase(isScottish)
                 .build();
 
         Map result = personalisation.setEvidenceProcessingAddress(new HashMap<>(), response);
 
         assertEquals(evidenceAddressLine1, result.get(REGIONAL_OFFICE_NAME_LITERAL));
         assertEquals(evidenceAddressLine2, result.get(SUPPORT_CENTRE_NAME_LITERAL));
-        assertEquals(evidenceAddressLine3, result.get(ADDRESS_LINE_LITERAL));
+        assertEquals(expectedLine3, result.get(ADDRESS_LINE_LITERAL));
         assertEquals(evidenceAddressTown, result.get(TOWN_LITERAL));
         assertEquals(evidenceAddressCounty, result.get(COUNTY_LITERAL));
-        assertEquals(evidenceAddressPostcode, result.get(POSTCODE_LITERAL));
+        assertEquals(expectedPostcode, result.get(POSTCODE_LITERAL));
         assertEquals(evidenceAddressTelephone, result.get(PHONE_NUMBER));
         assertEquals(evidenceAddressTelephoneWelsh, result.get(PHONE_NUMBER_WELSH));
     }
@@ -1605,6 +1613,26 @@ public class PersonalisationTest {
                 .notificationEventType(VALID_APPEAL_CREATED).build(), new SubscriptionWithType(subscriptions.getAppellantSubscription(), APPELLANT));
 
         assertEquals(helpLineTelephone, result.get(HELPLINE_PHONE_NUMBER));
+    }
+
+    @Test
+    @Parameters({"yes, scottishLine3, scottishPostcode", "no, line3, postcode"})
+    public void setExcelaDetails_relevantToTheCaseCountry(String isScottish, String excelaPoBox, String excelaPostcode) {
+        SscsCaseData response = SscsCaseData.builder()
+                .ccdCaseId(CASE_ID)
+                .appeal(Appeal.builder().benefitType(BenefitType.builder().code("PIP").build())
+                        .appellant(Appellant.builder().name(name).build())
+                        .build())
+                .isScottishCase(isScottish)
+                .build();
+
+        Map<String, String> result = personalisation.create(SscsCaseDataWrapper.builder().newSscsCaseData(response)
+                .notificationEventType(VALID_APPEAL_CREATED).build(), new SubscriptionWithType(subscriptions.getAppellantSubscription(), APPELLANT));
+
+        assertEquals("line2", result.get(EXCELA_ADDRESS_LINE1));
+        assertEquals(excelaPoBox, result.get(EXCELA_ADDRESS_LINE2));
+        assertEquals("town", result.get(EXCELA_ADDRESS_LINE3));
+        assertEquals(excelaPostcode, result.get(EXCELA_ADDRESS_POSTCODE));
     }
 
     private Hearing createHearing(LocalDate hearingDate) {
