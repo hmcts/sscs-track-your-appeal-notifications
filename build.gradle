@@ -119,6 +119,10 @@ dependencyManagement {
         dependencySet(group: 'org.apache.xmlgraphics', version: '1.14') {
             entry 'batik-all'
         }
+        
+        dependencySet(group: 'org.apache.commons', version: '1.21') {
+            entry 'commons-compress'
+        }
 
         // CVE-2019-16869 - brought in by qpid-jms-client
         dependencySet(group: 'io.netty', version: '4.1.66.Final') {
@@ -305,7 +309,7 @@ dependencies {
     compile group: 'com.mchange', name: 'c3p0', version: '0.9.5.5'
     compile group: 'org.flywaydb', name: 'flyway-core', version: '6.5.6'
     compile group: 'org.postgresql', name: 'postgresql', version: '42.2.23'
-    compile group: 'net.bytebuddy', name: 'byte-buddy', version: '1.11.8'
+    compile group: 'net.bytebuddy', name: 'byte-buddy', version: '1.11.9'
     compile group: 'org.elasticsearch', name: 'elasticsearch', version: '7.13.4'
 
     compile group: 'org.springframework.boot', name: 'spring-boot-starter-actuator'
@@ -354,7 +358,7 @@ dependencies {
     integrationTestCompileOnly 'org.projectlombok:lombok:1.18.18'
     integrationTestAnnotationProcessor "org.projectlombok:lombok:1.18.18"
 
-    testCompile(group: 'org.springframework.boot', name: 'spring-boot-starter-test', version: '2.5.2') {
+    testCompile(group: 'org.springframework.boot', name: 'spring-boot-starter-test', version: '2.5.3') {
         exclude group: "com.vaadin.external.google", module:"android-json"
     }
     testCompile group: 'org.mockito', name: 'mockito-core', version: '3.11.2'
