@@ -69,7 +69,7 @@ public class PdfLetterServiceTest {
     }
 
     private final PdfLetterService pdfLetterService =
-            new PdfLetterService(docmosisPdfService, DOCMOSIS_TEMPLATES_CONFIG);
+            new PdfLetterService(docmosisPdfService, DOCMOSIS_TEMPLATES_CONFIG, null);
 
     private final Appellant appellant = Appellant.builder()
             .name(Name.builder().firstName("Ap").lastName("pellant").build())
@@ -105,6 +105,10 @@ public class PdfLetterServiceTest {
                 address.getTown(),
                 address.getCounty(),
                 address.getPostcode(),
+                null,
+                null,
+                null,
+                null,
                 DOCMOSIS_TEMPLATES_CONFIG.getHmctsImgVal(),
                 DOCMOSIS_TEMPLATES_CONFIG.getHmctsWelshImgVal());
         verify(docmosisPdfService).createPdf(eq(pdfCoverSheet), eq("my01.doc"));

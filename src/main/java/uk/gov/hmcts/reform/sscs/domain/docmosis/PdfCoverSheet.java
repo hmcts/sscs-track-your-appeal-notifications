@@ -19,6 +19,14 @@ public class PdfCoverSheet {
     private final String addressCounty;
     @JsonProperty("address_postcode")
     private final String addressPostcode;
+    @JsonProperty("excela_address_line1")
+    private final String excelaAddressLine1;
+    @JsonProperty("excela_address_line2")
+    private final String excelaAddressLine2;
+    @JsonProperty("excela_address_line3")
+    private final String excelaAddressLine3;
+    @JsonProperty("excela_address_postcode")
+    private final String excelaAddressPostcode;
     @JsonProperty("hmcts2")
     private final String hmcts;
     @JsonProperty("hmctsWelshImgVal")
@@ -31,6 +39,10 @@ public class PdfCoverSheet {
                          String addressTown,
                          String addressCounty,
                          String addressPostcode,
+                         String excelaAddressLine1,
+                         String excelaAddressLine2,
+                         String excelaAddressLine3,
+                         String excelaAddressPostcode,
                          String hmcts,
                          String hmctsWelshImgVal) {
         this.caseId = caseId;
@@ -40,6 +52,10 @@ public class PdfCoverSheet {
         this.addressTown = addressTown;
         this.addressCounty = addressCounty;
         this.addressPostcode = addressPostcode;
+        this.excelaAddressLine1 = excelaAddressLine1;
+        this.excelaAddressLine2 = excelaAddressLine2;
+        this.excelaAddressLine3 = excelaAddressLine3;
+        this.excelaAddressPostcode = excelaAddressPostcode;
         this.hmcts = hmcts;
         this.hmctsWelshImgVal = hmctsWelshImgVal;
     }
