@@ -4,7 +4,6 @@
     "callback_response_status": null,
     "callback_response_status_code": null,
     "case_data": {
-      "isScottishCase": "Yes",
       "languagePreferenceWelsh" : "Yes",
       "directionTypeDl": "provideInformation",
       "jointParty": "Yes",
@@ -30,7 +29,7 @@
             "line2": "Village",
             "town": "Liverpool",
             "county": "Merseyside",
-            "postcode": "SC1 1CS"
+            "postcode": "TS1 1ST"
           },
           "contact": {
             "email": "mail@email.com",

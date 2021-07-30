@@ -18,6 +18,7 @@ public class EvidenceProperties {
     @Getter
     @Setter
     public static class EvidenceAddress {
+
         private String line1;
         private String line2;
         private String line3;
@@ -28,13 +29,14 @@ public class EvidenceProperties {
         private String scottishPostcode;
         private String telephone;
         private String telephoneWelsh;
+        private boolean scottishPoBoxFeatureEnabled;
 
         public String getLine3(SscsCaseData ccdResponse) {
-            return "Yes".equalsIgnoreCase(ccdResponse.getIsScottishCase()) ? getScottishLine3() : getLine3();
+            return "Yes".equalsIgnoreCase(ccdResponse.getIsScottishCase()) && scottishPoBoxFeatureEnabled ? getScottishLine3() : getLine3();
         }
 
         public String getPostcode(SscsCaseData ccdResponse) {
-            return "Yes".equalsIgnoreCase(ccdResponse.getIsScottishCase()) ? getScottishPostcode() : getPostcode();
+            return "Yes".equalsIgnoreCase(ccdResponse.getIsScottishCase()) && scottishPoBoxFeatureEnabled ? getScottishPostcode() : getPostcode();
         }
     }
 }

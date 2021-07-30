@@ -155,17 +155,19 @@ public class PersonalisationTest {
     private Name name;
 
     private RegionalProcessingCenter rpc;
-    private String evidenceAddressLine1;
-    private String evidenceAddressLine2;
-    private String evidenceAddressLine3;
-    private String evidenceAddressScottishLine3;
-    private String evidenceAddressTown;
-    private String evidenceAddressCounty;
-    private String evidenceAddressPostcode;
-    private String evidenceAddressScottishPostcode;
-    private String evidenceAddressTelephone;
-    private String evidenceAddressTelephoneWelsh;
     private static DateTimeFormatter dateTimeFormatter = DateTimeFormatter.ofPattern("d MMMM yyyy");
+
+    private String evidenceAddressLine1 = "line1";
+    private String evidenceAddressLine2 = "line2";
+    private String evidenceAddressLine3 = "line3";
+    private String evidenceAddressScottishLine3 = "scottishLine3";
+    private String evidenceAddressTown = "town";
+    private String evidenceAddressCounty = "county";
+    private String evidenceAddressPostcode = "postcode";
+    private String evidenceAddressScottishPostcode = "scottishPostcode";
+    private String evidenceAddressTelephone = "telephone";
+    private String evidenceAddressTelephoneWelsh = PHONE_WELSH;
+    private EvidenceProperties.EvidenceAddress evidenceAddress = new EvidenceProperties.EvidenceAddress();
 
     @Before
     public void setup() {
@@ -205,18 +207,6 @@ public class PersonalisationTest {
         subscriptions = Subscriptions.builder().appellantSubscription(subscription).jointPartySubscription(subscription).build();
         name = Name.builder().firstName("Harry").lastName("Kane").title("Mr").build();
 
-        evidenceAddressLine1 = "line1";
-        evidenceAddressLine2 = "line2";
-        evidenceAddressLine3 = "line3";
-        evidenceAddressScottishLine3 = "scottishLine3";
-        evidenceAddressTown = "town";
-        evidenceAddressCounty = "county";
-        evidenceAddressPostcode = "postcode";
-        evidenceAddressScottishPostcode = "scottishPostcode";
-        evidenceAddressTelephone = "telephone";
-        evidenceAddressTelephoneWelsh = PHONE_WELSH;
-
-        EvidenceProperties.EvidenceAddress evidenceAddress = new EvidenceProperties.EvidenceAddress();
         evidenceAddress.setLine1(evidenceAddressLine1);
         evidenceAddress.setLine2(evidenceAddressLine2);
         evidenceAddress.setLine3(evidenceAddressLine3);
@@ -1206,12 +1196,18 @@ public class PersonalisationTest {
     }
 
     @Test
-    @Parameters({"yes, scottishLine3, scottishPostcode", "no, line3, postcode"})
-    public void shouldPopulateSendEvidenceAddressToDigitalAddressWhenOnTheDigitalJourney(String isScottish, String expectedLine3, String expectedPostcode) {
+    @Parameters({"yes, scottishLine3, scottishPostcode, true",
+            "no, line3, postcode, true",
+            "yes, line3, postcode, false",
+            "no, line3, postcode, false"})
+    public void shouldPopulateSendEvidenceAddressToDigitalAddressWhenOnTheDigitalJourney(String isScottish, String expectedLine3, String expectedPostcode, boolean scottishPoBoxFeature) {
+
         SscsCaseData response = SscsCaseData.builder()
                 .createdInGapsFrom(EventType.READY_TO_LIST.getCcdType())
                 .isScottishCase(isScottish)
                 .build();
+
+        evidenceAddress.setScottishPoBoxFeatureEnabled(scottishPoBoxFeature);
 
         Map result = personalisation.setEvidenceProcessingAddress(new HashMap<>(), response);
 

@@ -121,6 +121,7 @@ evidence.address.scottishLine3: PO BOX 13150
 evidence.address.scottishPostcode: CM20 9TT
 evidence.address.telephone: 0300 123 1142
 evidence.address.telephoneWelsh: 0300 303 5170
+evidence.address.scottishPoBoxFeatureEnabled: ${SCOTTISH_PO_BOX_ENABLED:false}
 
 helpline:
   telephone: 0300 123 1142
@@ -1005,8 +1006,8 @@ reminder:
   hearingReminder.beforeSecond.seconds: 86400
 
 outOfHours:
-  startHour: ${HOURS_START_TIME:9}
-  endHour: ${HOURS_END_TIME:17}
+  startHour: ${HOURS_START_TIME:6}
+  endHour: ${HOURS_END_TIME:19}
 
 feign:
   client:

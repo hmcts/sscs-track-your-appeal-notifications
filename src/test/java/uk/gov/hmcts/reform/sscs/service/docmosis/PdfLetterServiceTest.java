@@ -94,8 +94,8 @@ public class PdfLetterServiceTest {
             .build();
 
     @Test
-    @Parameters({"APPELLANT, Yes", "REPRESENTATIVE, No"})
-    public void willCreateAPdfToTheCorrectAddress(final SubscriptionType subscriptionType, String isScottish) {
+    @Parameters({"APPELLANT, Yes, true", "APPELLANT, Yes, false", "REPRESENTATIVE, No, true", "REPRESENTATIVE, No, false"})
+    public void willCreateAPdfToTheCorrectAddress(final SubscriptionType subscriptionType, String isScottish, boolean isScottishPoBoxFeatureEnabled) {
         NotificationWrapper wrapper = NotificationServiceTest.buildBaseWrapper(
                 APPEAL_RECEIVED_NOTIFICATION,
                 appellant,
@@ -103,6 +103,7 @@ public class PdfLetterServiceTest {
                 null
         );
 
+        EVIDENCE_ADDRESS.setScottishPoBoxFeatureEnabled(isScottishPoBoxFeatureEnabled);
         wrapper.getNewSscsCaseData().setIsScottishCase(isScottish);
 
         pdfLetterService.buildCoversheet(wrapper, subscriptionType);
@@ -111,8 +112,8 @@ public class PdfLetterServiceTest {
                 ? appellant.getAddress() : representative.getAddress();
         Name name = subscriptionType.equals(SubscriptionType.APPELLANT)
                 ? appellant.getName() : representative.getName();
-        String expectedLine3 = "Yes".equalsIgnoreCase(isScottish) ? EVIDENCE_ADDRESS.getScottishLine3() : EVIDENCE_ADDRESS.getLine3();
-        String expectedPostcode = "Yes".equalsIgnoreCase(isScottish) ? EVIDENCE_ADDRESS.getScottishPostcode() : EVIDENCE_ADDRESS.getPostcode();
+        String expectedLine3 = "Yes".equalsIgnoreCase(isScottish) && isScottishPoBoxFeatureEnabled ? EVIDENCE_ADDRESS.getScottishLine3() : EVIDENCE_ADDRESS.getLine3();
+        String expectedPostcode = "Yes".equalsIgnoreCase(isScottish) && isScottishPoBoxFeatureEnabled ? EVIDENCE_ADDRESS.getScottishPostcode() : EVIDENCE_ADDRESS.getPostcode();
 
         PdfCoverSheet pdfCoverSheet = new PdfCoverSheet(wrapper.getCaseId(),
                 name.getFullNameNoTitle(),
