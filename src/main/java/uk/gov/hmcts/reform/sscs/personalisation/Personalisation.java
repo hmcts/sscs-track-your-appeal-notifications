@@ -290,16 +290,7 @@ public class Personalisation<E extends NotificationWrapper> {
 
         setHelplineTelephone(ccdResponse, personalisation);
 
-        setExcelaAddress(personalisation, ccdResponse);
-
         return personalisation;
-    }
-
-    private void setExcelaAddress(Map<String, String> personalisation, SscsCaseData ccdResponse) {
-        personalisation.put(EXCELA_ADDRESS_LINE1, evidenceProperties.getAddress().getLine2());
-        personalisation.put(EXCELA_ADDRESS_LINE2, evidenceProperties.getAddress().getLine3(ccdResponse));
-        personalisation.put(EXCELA_ADDRESS_LINE3, evidenceProperties.getAddress().getTown());
-        personalisation.put(EXCELA_ADDRESS_POSTCODE, evidenceProperties.getAddress().getPostcode(ccdResponse));
     }
 
     private void setHelplineTelephone(SscsCaseData ccdResponse, Map<String, String> personalisation) {

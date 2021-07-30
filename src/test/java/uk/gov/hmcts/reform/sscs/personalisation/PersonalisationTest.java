@@ -1615,26 +1615,6 @@ public class PersonalisationTest {
         assertEquals(helpLineTelephone, result.get(HELPLINE_PHONE_NUMBER));
     }
 
-    @Test
-    @Parameters({"yes, scottishLine3, scottishPostcode", "no, line3, postcode"})
-    public void setExcelaDetails_relevantToTheCaseCountry(String isScottish, String excelaPoBox, String excelaPostcode) {
-        SscsCaseData response = SscsCaseData.builder()
-                .ccdCaseId(CASE_ID)
-                .appeal(Appeal.builder().benefitType(BenefitType.builder().code("PIP").build())
-                        .appellant(Appellant.builder().name(name).build())
-                        .build())
-                .isScottishCase(isScottish)
-                .build();
-
-        Map<String, String> result = personalisation.create(SscsCaseDataWrapper.builder().newSscsCaseData(response)
-                .notificationEventType(VALID_APPEAL_CREATED).build(), new SubscriptionWithType(subscriptions.getAppellantSubscription(), APPELLANT));
-
-        assertEquals("line2", result.get(EXCELA_ADDRESS_LINE1));
-        assertEquals(excelaPoBox, result.get(EXCELA_ADDRESS_LINE2));
-        assertEquals("town", result.get(EXCELA_ADDRESS_LINE3));
-        assertEquals(excelaPostcode, result.get(EXCELA_ADDRESS_POSTCODE));
-    }
-
     private Hearing createHearing(LocalDate hearingDate) {
         return Hearing.builder().value(HearingDetails.builder()
                 .hearingDate(hearingDate.format(DateTimeFormatter.ofPattern("yyyy-MM-dd")))

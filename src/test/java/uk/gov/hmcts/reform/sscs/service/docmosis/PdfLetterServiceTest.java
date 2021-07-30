@@ -41,6 +41,7 @@ import org.mockito.Mockito;
 import uk.gov.hmcts.reform.sscs.ccd.domain.*;
 import uk.gov.hmcts.reform.sscs.config.DocmosisTemplatesConfig;
 import uk.gov.hmcts.reform.sscs.config.SubscriptionType;
+import uk.gov.hmcts.reform.sscs.config.properties.EvidenceProperties;
 import uk.gov.hmcts.reform.sscs.domain.docmosis.PdfCoverSheet;
 import uk.gov.hmcts.reform.sscs.domain.notify.Notification;
 import uk.gov.hmcts.reform.sscs.domain.notify.Template;
@@ -56,9 +57,9 @@ public class PdfLetterServiceTest {
 
     private static final Map<LanguagePreference, Map<String, String>> TEMPLATE_NAMES = new ConcurrentHashMap<>();
     private static final DocmosisTemplatesConfig DOCMOSIS_TEMPLATES_CONFIG = new DocmosisTemplatesConfig();
+    private static final EvidenceProperties EVIDENCE_PROPERTIES = new EvidenceProperties();
     private static DateTimeFormatter dateTimeFormatter = DateTimeFormatter.ofPattern("yyyy-MM-d");
-
-
+    private static EvidenceProperties.EvidenceAddress EVIDENCE_ADDRESS = new EvidenceProperties.EvidenceAddress();
 
     static {
         TEMPLATE_NAMES.put(LanguagePreference.ENGLISH, Collections.singletonMap(APPEAL_RECEIVED_NOTIFICATION.getId(), "my01.doc"));
@@ -66,10 +67,20 @@ public class PdfLetterServiceTest {
         DOCMOSIS_TEMPLATES_CONFIG.setCoversheets(TEMPLATE_NAMES);
         DOCMOSIS_TEMPLATES_CONFIG.setHmctsWelshImgKey("welshhmcts");
         DOCMOSIS_TEMPLATES_CONFIG.setHmctsWelshImgVal("welshhmcts.png");
+
+        EVIDENCE_ADDRESS.setLine1("line1");
+        EVIDENCE_ADDRESS.setLine2("line2");
+        EVIDENCE_ADDRESS.setLine3("line3");
+        EVIDENCE_ADDRESS.setScottishLine3("scottishLine1");
+        EVIDENCE_ADDRESS.setTown("town");
+        EVIDENCE_ADDRESS.setCounty("county");
+        EVIDENCE_ADDRESS.setPostcode("postcode");
+        EVIDENCE_ADDRESS.setScottishPostcode("scottishPostcode");
+        EVIDENCE_PROPERTIES.setAddress(EVIDENCE_ADDRESS);
     }
 
     private final PdfLetterService pdfLetterService =
-            new PdfLetterService(docmosisPdfService, DOCMOSIS_TEMPLATES_CONFIG, null);
+            new PdfLetterService(docmosisPdfService, DOCMOSIS_TEMPLATES_CONFIG, EVIDENCE_PROPERTIES);
 
     private final Appellant appellant = Appellant.builder()
             .name(Name.builder().firstName("Ap").lastName("pellant").build())
@@ -83,8 +94,8 @@ public class PdfLetterServiceTest {
             .build();
 
     @Test
-    @Parameters({"APPELLANT", "REPRESENTATIVE"})
-    public void willCreateAPdfToTheCorrectAddress(final SubscriptionType subscriptionType) {
+    @Parameters({"APPELLANT, Yes", "REPRESENTATIVE, No"})
+    public void willCreateAPdfToTheCorrectAddress(final SubscriptionType subscriptionType, String isScottish) {
         NotificationWrapper wrapper = NotificationServiceTest.buildBaseWrapper(
                 APPEAL_RECEIVED_NOTIFICATION,
                 appellant,
@@ -92,12 +103,17 @@ public class PdfLetterServiceTest {
                 null
         );
 
+        wrapper.getNewSscsCaseData().setIsScottishCase(isScottish);
+
         pdfLetterService.buildCoversheet(wrapper, subscriptionType);
 
         Address address = subscriptionType.equals(SubscriptionType.APPELLANT)
                 ? appellant.getAddress() : representative.getAddress();
         Name name = subscriptionType.equals(SubscriptionType.APPELLANT)
                 ? appellant.getName() : representative.getName();
+        String expectedLine3 = "Yes".equalsIgnoreCase(isScottish) ? EVIDENCE_ADDRESS.getScottishLine3() : EVIDENCE_ADDRESS.getLine3();
+        String expectedPostcode = "Yes".equalsIgnoreCase(isScottish) ? EVIDENCE_ADDRESS.getScottishPostcode() : EVIDENCE_ADDRESS.getPostcode();
+
         PdfCoverSheet pdfCoverSheet = new PdfCoverSheet(wrapper.getCaseId(),
                 name.getFullNameNoTitle(),
                 address.getLine1(),
@@ -105,10 +121,10 @@ public class PdfLetterServiceTest {
                 address.getTown(),
                 address.getCounty(),
                 address.getPostcode(),
-                null,
-                null,
-                null,
-                null,
+                EVIDENCE_ADDRESS.getLine2(),
+                expectedLine3,
+                EVIDENCE_ADDRESS.getTown(),
+                expectedPostcode,
                 DOCMOSIS_TEMPLATES_CONFIG.getHmctsImgVal(),
                 DOCMOSIS_TEMPLATES_CONFIG.getHmctsWelshImgVal());
         verify(docmosisPdfService).createPdf(eq(pdfCoverSheet), eq("my01.doc"));
