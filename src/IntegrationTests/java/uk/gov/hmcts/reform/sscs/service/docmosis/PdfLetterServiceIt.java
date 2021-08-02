@@ -22,6 +22,7 @@ import uk.gov.hmcts.reform.sscs.ccd.domain.*;
 import uk.gov.hmcts.reform.sscs.config.AppealHearingType;
 import uk.gov.hmcts.reform.sscs.config.DocmosisTemplatesConfig;
 import uk.gov.hmcts.reform.sscs.config.SubscriptionType;
+import uk.gov.hmcts.reform.sscs.config.properties.EvidenceProperties;
 import uk.gov.hmcts.reform.sscs.domain.SscsCaseDataWrapper;
 import uk.gov.hmcts.reform.sscs.domain.docmosis.PdfCoverSheet;
 import uk.gov.hmcts.reform.sscs.domain.notify.NotificationEventType;
@@ -48,6 +49,9 @@ public class PdfLetterServiceIt {
     @MockBean
     private DocmosisPdfService docmosisPdfService;
 
+    @Autowired
+    private EvidenceProperties evidenceProperties;
+
     @Test
     public void canGenerateACoversheetOnAppealReceived() throws IOException {
         byte[] pdfbytes = IOUtils.toByteArray(getClass().getClassLoader().getResourceAsStream(
@@ -70,6 +74,10 @@ public class PdfLetterServiceIt {
                 wrapper.getNewSscsCaseData().getAppeal().getAppellant().getAddress().getTown(),
                 wrapper.getNewSscsCaseData().getAppeal().getAppellant().getAddress().getCounty(),
                 wrapper.getNewSscsCaseData().getAppeal().getAppellant().getAddress().getPostcode(),
+                evidenceProperties.getAddress().getLine2(),
+                evidenceProperties.getAddress().getLine3(),
+                evidenceProperties.getAddress().getTown(),
+                evidenceProperties.getAddress().getPostcode(),
                 docmosisTemplatesConfig.getHmctsImgVal(),
                 docmosisTemplatesConfig.getHmctsWelshImgVal());
 
