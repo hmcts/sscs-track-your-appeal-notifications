@@ -115,3 +115,7 @@ project using a PostgresSQL database.
 ## Gotchas
 
 PRs that start with _"Bump"_ won't have a preview environment. The decision was made after we realised that most the preview environments were created by Depandabot.
+
+## Search through templates
+
+There is a class GetAllTemplatesFromNotify that will search through all of the Notify templates looking for a value, e.g. variable name. You will need to add the API key to run it on your local.

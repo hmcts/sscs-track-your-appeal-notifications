@@ -155,15 +155,19 @@ public class PersonalisationTest {
     private Name name;
 
     private RegionalProcessingCenter rpc;
-    private String evidenceAddressLine1;
-    private String evidenceAddressLine2;
-    private String evidenceAddressLine3;
-    private String evidenceAddressTown;
-    private String evidenceAddressCounty;
-    private String evidenceAddressPostcode;
-    private String evidenceAddressTelephone;
-    private String evidenceAddressTelephoneWelsh;
     private static DateTimeFormatter dateTimeFormatter = DateTimeFormatter.ofPattern("d MMMM yyyy");
+
+    private String evidenceAddressLine1 = "line1";
+    private String evidenceAddressLine2 = "line2";
+    private String evidenceAddressLine3 = "line3";
+    private String evidenceAddressScottishLine3 = "scottishLine3";
+    private String evidenceAddressTown = "town";
+    private String evidenceAddressCounty = "county";
+    private String evidenceAddressPostcode = "postcode";
+    private String evidenceAddressScottishPostcode = "scottishPostcode";
+    private String evidenceAddressTelephone = "telephone";
+    private String evidenceAddressTelephoneWelsh = PHONE_WELSH;
+    private EvidenceProperties.EvidenceAddress evidenceAddress = new EvidenceProperties.EvidenceAddress();
 
     @Before
     public void setup() {
@@ -203,22 +207,14 @@ public class PersonalisationTest {
         subscriptions = Subscriptions.builder().appellantSubscription(subscription).jointPartySubscription(subscription).build();
         name = Name.builder().firstName("Harry").lastName("Kane").title("Mr").build();
 
-        evidenceAddressLine1 = "line1";
-        evidenceAddressLine2 = "line2";
-        evidenceAddressLine3 = "line3";
-        evidenceAddressTown = "town";
-        evidenceAddressCounty = "county";
-        evidenceAddressPostcode = "postcode";
-        evidenceAddressTelephone = "telephone";
-        evidenceAddressTelephoneWelsh = PHONE_WELSH;
-
-        EvidenceProperties.EvidenceAddress evidenceAddress = new EvidenceProperties.EvidenceAddress();
         evidenceAddress.setLine1(evidenceAddressLine1);
         evidenceAddress.setLine2(evidenceAddressLine2);
         evidenceAddress.setLine3(evidenceAddressLine3);
+        evidenceAddress.setScottishLine3(evidenceAddressScottishLine3);
         evidenceAddress.setTown(evidenceAddressTown);
         evidenceAddress.setCounty(evidenceAddressCounty);
         evidenceAddress.setPostcode(evidenceAddressPostcode);
+        evidenceAddress.setScottishPostcode(evidenceAddressScottishPostcode);
         evidenceAddress.setTelephone(evidenceAddressTelephone);
         evidenceAddress.setTelephoneWelsh(evidenceAddressTelephoneWelsh);
         when(evidenceProperties.getAddress()).thenReturn(evidenceAddress);
@@ -1200,19 +1196,27 @@ public class PersonalisationTest {
     }
 
     @Test
-    public void shouldPopulateSendEvidenceAddressToDigitalAddressWhenOnTheDigitalJourney() {
+    @Parameters({"yes, scottishLine3, scottishPostcode, true",
+            "no, line3, postcode, true",
+            "yes, line3, postcode, false",
+            "no, line3, postcode, false"})
+    public void shouldPopulateSendEvidenceAddressToDigitalAddressWhenOnTheDigitalJourney(String isScottish, String expectedLine3, String expectedPostcode, boolean scottishPoBoxFeature) {
+
         SscsCaseData response = SscsCaseData.builder()
                 .createdInGapsFrom(EventType.READY_TO_LIST.getCcdType())
+                .isScottishCase(isScottish)
                 .build();
+
+        evidenceAddress.setScottishPoBoxFeatureEnabled(scottishPoBoxFeature);
 
         Map result = personalisation.setEvidenceProcessingAddress(new HashMap<>(), response);
 
         assertEquals(evidenceAddressLine1, result.get(REGIONAL_OFFICE_NAME_LITERAL));
         assertEquals(evidenceAddressLine2, result.get(SUPPORT_CENTRE_NAME_LITERAL));
-        assertEquals(evidenceAddressLine3, result.get(ADDRESS_LINE_LITERAL));
+        assertEquals(expectedLine3, result.get(ADDRESS_LINE_LITERAL));
         assertEquals(evidenceAddressTown, result.get(TOWN_LITERAL));
         assertEquals(evidenceAddressCounty, result.get(COUNTY_LITERAL));
-        assertEquals(evidenceAddressPostcode, result.get(POSTCODE_LITERAL));
+        assertEquals(expectedPostcode, result.get(POSTCODE_LITERAL));
         assertEquals(evidenceAddressTelephone, result.get(PHONE_NUMBER));
         assertEquals(evidenceAddressTelephoneWelsh, result.get(PHONE_NUMBER_WELSH));
     }

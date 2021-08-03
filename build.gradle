@@ -10,7 +10,7 @@ plugins {
     id 'org.owasp.dependencycheck' version '6.2.2'
     id 'com.github.ben-manes.versions' version '0.39.0'
     id 'net.ltgt.apt' version '0.21'
-    id "org.flywaydb.flyway" version "7.11.3"
+    id "org.flywaydb.flyway" version "7.12.0"
 }
 
 apply plugin: 'org.springframework.boot'
@@ -119,6 +119,10 @@ dependencyManagement {
         dependencySet(group: 'org.apache.xmlgraphics', version: '1.14') {
             entry 'batik-all'
         }
+        
+        dependencySet(group: 'org.apache.commons', version: '1.21') {
+            entry 'commons-compress'
+        }
 
         // CVE-2019-16869 - brought in by qpid-jms-client
         dependencySet(group: 'io.netty', version: '4.1.66.Final') {
@@ -185,6 +189,11 @@ dependencyManagement {
         dependencySet(group: 'net.minidev', version: '2.4.7') {
             entry 'json-smart'
             entry 'accessors-smart'
+        }
+
+        //CVE-2021-35515, CVE-2021-35516, CVE-2021-35517, CVE-2021-36090
+        dependencySet(group: 'org.apache.commons', version: '1.21') {
+            entry 'commons-compress'
         }
     }
 
@@ -300,7 +309,7 @@ dependencies {
     compile group: 'com.mchange', name: 'c3p0', version: '0.9.5.5'
     compile group: 'org.flywaydb', name: 'flyway-core', version: '6.5.6'
     compile group: 'org.postgresql', name: 'postgresql', version: '42.2.23'
-    compile group: 'net.bytebuddy', name: 'byte-buddy', version: '1.11.8'
+    compile group: 'net.bytebuddy', name: 'byte-buddy', version: '1.11.9'
     compile group: 'org.elasticsearch', name: 'elasticsearch', version: '7.13.4'
 
     compile group: 'org.springframework.boot', name: 'spring-boot-starter-actuator'
@@ -326,8 +335,8 @@ dependencies {
     compile group: 'com.github.hmcts', name: 'java-logging', version: versions.reformLogging
     compile group: 'uk.gov.hmcts.reform', name: 'service-auth-provider-client', version: '4.0.0'
 
-    compile group: 'com.github.hmcts', name: 'sscs-common', version: '4.4.49'
-    compile group: 'com.github.hmcts', name: 'sscs-pdf-email-common', version: '1.4.40'
+    compile group: 'com.github.hmcts', name: 'sscs-common', version: '4.4.53'
+    compile group: 'com.github.hmcts', name: 'sscs-pdf-email-common', version: '1.4.41'
     compile group: 'com.github.hmcts', name: 'sscs-job-scheduler', version: '1.5.7'
 
     compile group: 'uk.gov.service.notify', name: 'notifications-java-client', version: '3.17.2-RELEASE'
@@ -349,7 +358,7 @@ dependencies {
     integrationTestCompileOnly 'org.projectlombok:lombok:1.18.18'
     integrationTestAnnotationProcessor "org.projectlombok:lombok:1.18.18"
 
-    testCompile(group: 'org.springframework.boot', name: 'spring-boot-starter-test', version: '2.5.2') {
+    testCompile(group: 'org.springframework.boot', name: 'spring-boot-starter-test', version: '2.5.3') {
         exclude group: "com.vaadin.external.google", module:"android-json"
     }
     testCompile group: 'org.mockito', name: 'mockito-core', version: '3.11.2'
