@@ -3,7 +3,7 @@ package uk.gov.hmcts.reform.sscs.service;
 import static java.lang.String.format;
 import static java.util.Arrays.asList;
 import static java.util.Optional.ofNullable;
-import static uk.gov.hmcts.reform.sscs.ccd.domain.Benefit.getBenefitByCode;
+import static uk.gov.hmcts.reform.sscs.ccd.domain.Benefit.getBenefitByCodeOrThrowException;
 import static uk.gov.hmcts.reform.sscs.ccd.domain.EventType.SUBSCRIPTION_UPDATED;
 import static uk.gov.hmcts.reform.sscs.config.SubscriptionType.*;
 import static uk.gov.hmcts.reform.sscs.domain.notify.NotificationEventType.*;
@@ -260,7 +260,7 @@ public class NotificationService {
             Destination destination = Destination.builder().email(emailAddress)
                     .sms(PhoneNumbersUtil.cleanPhoneNumber(smsNumber).orElse(smsNumber)).build();
 
-            Benefit benefit = getBenefitByCode(wrapper.getSscsCaseDataWrapper()
+            Benefit benefit = getBenefitByCodeOrThrowException(wrapper.getSscsCaseDataWrapper()
                     .getNewSscsCaseData().getAppeal().getBenefitType().getCode());
 
             Template template = notificationConfig.getTemplate(
