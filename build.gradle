@@ -10,7 +10,7 @@ plugins {
     id 'org.owasp.dependencycheck' version '6.2.2'
     id 'com.github.ben-manes.versions' version '0.39.0'
     id 'net.ltgt.apt' version '0.21'
-    id "org.flywaydb.flyway" version "7.11.3"
+    id "org.flywaydb.flyway" version "7.12.0"
 }
 
 apply plugin: 'org.springframework.boot'
@@ -335,8 +335,8 @@ dependencies {
     compile group: 'com.github.hmcts', name: 'java-logging', version: versions.reformLogging
     compile group: 'uk.gov.hmcts.reform', name: 'service-auth-provider-client', version: '4.0.0'
 
-    compile group: 'com.github.hmcts', name: 'sscs-common', version: '4.3.53-RC-SSCS-9341'
-    compile group: 'com.github.hmcts', name: 'sscs-pdf-email-common', version: '1.4.40'
+    compile group: 'com.github.hmcts', name: 'sscs-common', version: '4.4.55'
+    compile group: 'com.github.hmcts', name: 'sscs-pdf-email-common', version: '1.4.41'
     compile group: 'com.github.hmcts', name: 'sscs-job-scheduler', version: '1.5.7'
 
     compile group: 'uk.gov.service.notify', name: 'notifications-java-client', version: '3.17.2-RELEASE'

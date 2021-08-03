@@ -22,6 +22,7 @@ import uk.gov.hmcts.reform.sscs.ccd.domain.Address;
 import uk.gov.hmcts.reform.sscs.ccd.domain.LanguagePreference;
 import uk.gov.hmcts.reform.sscs.config.DocmosisTemplatesConfig;
 import uk.gov.hmcts.reform.sscs.config.SubscriptionType;
+import uk.gov.hmcts.reform.sscs.config.properties.EvidenceProperties;
 import uk.gov.hmcts.reform.sscs.domain.docmosis.PdfCoverSheet;
 import uk.gov.hmcts.reform.sscs.domain.notify.Notification;
 import uk.gov.hmcts.reform.sscs.domain.notify.NotificationEventType;
@@ -42,11 +43,13 @@ public class PdfLetterService {
 
     private final DocmosisPdfService docmosisPdfService;
     private final DocmosisTemplatesConfig docmosisTemplatesConfig;
+    private final EvidenceProperties evidenceProperties;
 
     @Autowired
-    public PdfLetterService(DocmosisPdfService docmosisPdfService, DocmosisTemplatesConfig docmosisTemplatesConfig) {
+    public PdfLetterService(DocmosisPdfService docmosisPdfService, DocmosisTemplatesConfig docmosisTemplatesConfig, EvidenceProperties evidenceProperties) {
         this.docmosisPdfService = docmosisPdfService;
         this.docmosisTemplatesConfig = docmosisTemplatesConfig;
+        this.evidenceProperties = evidenceProperties;
     }
 
     public byte[] buildCoversheet(NotificationWrapper wrapper, SubscriptionType subscriptionType) {
@@ -77,6 +80,10 @@ public class PdfLetterService {
                 addressToUse.getTown(),
                 addressToUse.getCounty(),
                 addressToUse.getPostcode(),
+                evidenceProperties.getAddress().getLine2(),
+                evidenceProperties.getAddress().getLine3(wrapper.getNewSscsCaseData()),
+                evidenceProperties.getAddress().getTown(),
+                evidenceProperties.getAddress().getPostcode(wrapper.getNewSscsCaseData()),
                 docmosisTemplatesConfig.getHmctsImgVal(),
                 docmosisTemplatesConfig.getHmctsWelshImgVal());
 
