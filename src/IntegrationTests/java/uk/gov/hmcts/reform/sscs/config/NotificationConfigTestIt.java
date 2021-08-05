@@ -132,6 +132,7 @@ public class NotificationConfigTestIt {
             "REFUSE_EXTENSION, TB-SCS-GNO-ENG-00557.docx, TB-SCS-GNO-ENG-00557.docx, TB-SCS-GNO-ENG-00557.docx",
             "GRANT_REINSTATEMENT, TB-SCS-GNO-ENG-00584.docx, TB-SCS-GNO-ENG-00584.docx, null",
             "REFUSE_REINSTATEMENT, TB-SCS-GNO-ENG-00585.docx, TB-SCS-GNO-ENG-00585.docx, null",
+            "REFUSE_HEARING_RECORDING_REQUEST, TB-SCS-GNO-ENG-00067.docx, TB-SCS-GNO-ENG-00089.docx, TB-SCS-GNO-ENG-00067.docx"
     })
     public void shouldGiveCorrectDocmosisIdForDirectionIssued(DirectionType directionType, String configAppellantOrAppointee, String configRep, @Nullable String configJointParty) {
 
@@ -169,6 +170,7 @@ public class NotificationConfigTestIt {
             "PROVIDE_INFORMATION, TB-SCS-GNO-WEL-00468.docx, TB-SCS-GNO-WEL-00472.docx, TB-SCS-GNO-WEL-00468.docx",
             "GRANT_REINSTATEMENT, TB-SCS-GNO-WEL-00586.docx, TB-SCS-GNO-WEL-00586.docx, null",
             "REFUSE_REINSTATEMENT, TB-SCS-GNO-WEL-00587.docx, TB-SCS-GNO-WEL-00587.docx, null",
+            "REFUSE_HEARING_RECORDING_REQUEST, TB-SCS-GNO-WEL-00468.docx, TB-SCS-GNO-WEL-00472.docx, TB-SCS-GNO-WEL-00468.docx"
     })
     public void shouldGiveCorrectDocmosisIdForDirectionIssuedWelsh(DirectionType directionType, String configAppellantOrAppointee, String configRep, @Nullable String configJointParty) {
 
