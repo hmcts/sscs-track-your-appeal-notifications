@@ -119,7 +119,7 @@ dependencyManagement {
         dependencySet(group: 'org.apache.xmlgraphics', version: '1.14') {
             entry 'batik-all'
         }
-        
+
         dependencySet(group: 'org.apache.commons', version: '1.21') {
             entry 'commons-compress'
         }
@@ -335,7 +335,7 @@ dependencies {
     compile group: 'com.github.hmcts', name: 'java-logging', version: versions.reformLogging
     compile group: 'uk.gov.hmcts.reform', name: 'service-auth-provider-client', version: '4.0.0'
 
-    compile group: 'com.github.hmcts', name: 'sscs-common', version: '4.4.55'
+    compile group: 'com.github.hmcts', name: 'sscs-common', version: '4.4.58-RC-SSCS-9502'
     compile group: 'com.github.hmcts', name: 'sscs-pdf-email-common', version: '1.4.41'
     compile group: 'com.github.hmcts', name: 'sscs-job-scheduler', version: '1.5.7'
 
