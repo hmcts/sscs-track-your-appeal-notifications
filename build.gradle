@@ -10,7 +10,7 @@ plugins {
     id 'org.owasp.dependencycheck' version '6.2.2'
     id 'com.github.ben-manes.versions' version '0.39.0'
     id 'net.ltgt.apt' version '0.21'
-    id "org.flywaydb.flyway" version "7.12.0"
+    id "org.flywaydb.flyway" version "7.14.0"
 }
 
 apply plugin: 'org.springframework.boot'
@@ -125,7 +125,7 @@ dependencyManagement {
         }
 
         // CVE-2019-16869 - brought in by qpid-jms-client
-        dependencySet(group: 'io.netty', version: '4.1.66.Final') {
+        dependencySet(group: 'io.netty', version: '4.1.67.Final') {
             entry 'netty-handler'
             entry 'netty-transport-native-epoll'
             entry 'netty-transport-native-kqueue'
@@ -153,7 +153,7 @@ dependencyManagement {
         }
 
         //CVE-2021-22112
-        dependencySet(group: 'org.springframework.security', version: '5.5.0') {
+        dependencySet(group: 'org.springframework.security', version: '5.5.2') {
             entry 'spring-security-crypto'
         }
 
@@ -195,6 +195,8 @@ dependencyManagement {
         dependencySet(group: 'org.apache.commons', version: '1.21') {
             entry 'commons-compress'
         }
+
+        dependency group: 'org.glassfish', name: 'jakarta.el', version: '4.0.1'
     }
 
 }
@@ -256,6 +258,12 @@ task functional(type: Test) {
     exclude("uk/gov/hmcts/reform/sscs/smoke/**", "**/*CohNotificationFunctionalTest*")
 }
 
+task fortifyScan(type: JavaExec)  {
+    main = "uk.gov.hmcts.fortifyclient.FortifyClientMainApp"
+    classpath += sourceSets.test.runtimeClasspath
+    jvmArgs = ['--add-opens=java.base/java.lang.reflect=ALL-UNNAMED']
+}
+
 configurations {
     integrationTestCompile.extendsFrom(testCompile)
     integrationTestRuntime.extendsFrom(testRuntime)
@@ -309,8 +317,8 @@ dependencies {
     compile group: 'com.mchange', name: 'c3p0', version: '0.9.5.5'
     compile group: 'org.flywaydb', name: 'flyway-core', version: '6.5.6'
     compile group: 'org.postgresql', name: 'postgresql', version: '42.2.23'
-    compile group: 'net.bytebuddy', name: 'byte-buddy', version: '1.11.9'
-    compile group: 'org.elasticsearch', name: 'elasticsearch', version: '7.13.4'
+    compile group: 'net.bytebuddy', name: 'byte-buddy', version: '1.11.13'
+    compile group: 'org.elasticsearch', name: 'elasticsearch', version: '7.14.0'
 
     compile group: 'org.springframework.boot', name: 'spring-boot-starter-actuator'
     compile group: 'org.springframework.boot', name: 'spring-boot-starter-aop'
@@ -335,7 +343,7 @@ dependencies {
     compile group: 'com.github.hmcts', name: 'java-logging', version: versions.reformLogging
     compile group: 'uk.gov.hmcts.reform', name: 'service-auth-provider-client', version: '4.0.0'
 
-    compile group: 'com.github.hmcts', name: 'sscs-common', version: '4.4.57-RC-SSCS-9246'
+    compile group: 'com.github.hmcts', name: 'sscs-common', version: '4.4.61'
     compile group: 'com.github.hmcts', name: 'sscs-pdf-email-common', version: '1.4.41'
     compile group: 'com.github.hmcts', name: 'sscs-job-scheduler', version: '1.5.7'
 
@@ -358,11 +366,12 @@ dependencies {
     integrationTestCompileOnly 'org.projectlombok:lombok:1.18.18'
     integrationTestAnnotationProcessor "org.projectlombok:lombok:1.18.18"
 
-    testCompile(group: 'org.springframework.boot', name: 'spring-boot-starter-test', version: '2.5.3') {
+    testCompile(group: 'org.springframework.boot', name: 'spring-boot-starter-test', version: '2.5.4') {
         exclude group: "com.vaadin.external.google", module:"android-json"
     }
     testCompile group: 'org.mockito', name: 'mockito-core', version: '3.11.2'
     testCompile 'pl.pragmatists:JUnitParams:1.1.1'
+    testCompile 'com.github.hmcts:fortify-client:1.2.1:all'
 
     runtime "org.springframework.boot:spring-boot-properties-migrator"
 }
