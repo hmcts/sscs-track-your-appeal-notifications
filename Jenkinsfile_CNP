@@ -48,10 +48,13 @@ static LinkedHashMap<String, Object> secret(String secretName, String envVar) {
   ]
 }
 
+def branchesToSync = ['demo', 'ithc', 'perftest']
+
 withPipeline("java", product, component) {
   loadVaultSecrets(secrets)
   enableSlackNotifications('#sscs-tech')
   enableAksStagingDeployment()
   disableLegacyDeployment()
+  syncBranchesWithMaster(branchesToSync)
 }
 
