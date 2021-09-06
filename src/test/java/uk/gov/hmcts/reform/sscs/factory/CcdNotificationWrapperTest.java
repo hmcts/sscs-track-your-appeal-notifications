@@ -331,11 +331,19 @@ public class CcdNotificationWrapperTest {
     }
 
     @Test
-    public void givenProcessHearingRequestForPartyWithSubscription_shouldSendProcessHearingRequestNotification() {
+    public void givenProcessHearingRequestForRepWithSubscription_shouldSendProcessHearingRequestNotification() {
         ccdNotificationWrapper = buildCcdNotificationWrapperBasedOnEventTypeWithRep(PROCESS_HEARING_RECORDING_REQUEST);
         List<SubscriptionWithType> subsWithTypeList = ccdNotificationWrapper.getSubscriptionsBasedOnNotificationType();
-        Assert.assertEquals(1, subsWithTypeList.size());
-        Assert.assertEquals(SubscriptionType.REPRESENTATIVE, subsWithTypeList.get(0).getSubscriptionType());
+        Assert.assertEquals(2, subsWithTypeList.size());
+        Assert.assertEquals(SubscriptionType.REPRESENTATIVE, subsWithTypeList.get(1).getSubscriptionType());
+    }
+
+    @Test
+    public void givenProcessHearingRequestForJointPartyWithSubscription_shouldSendProcessHearingRequestNotification() {
+        ccdNotificationWrapper = buildCcdNotificationWrapperBasedOnEventTypeWithJointParty(PROCESS_HEARING_RECORDING_REQUEST, null, true);
+        List<SubscriptionWithType> subsWithTypeList = ccdNotificationWrapper.getSubscriptionsBasedOnNotificationType();
+        Assert.assertEquals(2, subsWithTypeList.size());
+        Assert.assertEquals(SubscriptionType.JOINT_PARTY, subsWithTypeList.get(1).getSubscriptionType());
     }
 
     @SuppressWarnings({"unused"})
