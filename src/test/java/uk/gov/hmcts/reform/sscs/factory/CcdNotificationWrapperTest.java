@@ -7,6 +7,8 @@ import static uk.gov.hmcts.reform.sscs.domain.notify.NotificationEventType.*;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
+
+import com.google.common.collect.Lists;
 import junitparams.JUnitParamsRunner;
 import junitparams.Parameters;
 import org.junit.Assert;
@@ -64,6 +66,7 @@ public class CcdNotificationWrapperTest {
 
     private CcdNotificationWrapper buildCcdNotificationWrapperBasedOnEventType(NotificationEventType notificationEventType, Appointee appointee, Representative representative, boolean jointParty) {
         Appellant appellant = Appellant.builder().build();
+        List<HearingRecordingRequest> releasedHearings = new ArrayList<>();
         Subscription appointeeSubscription = null;
         if (null != appointee) {
             appellant.setAppointee(appointee);
@@ -71,6 +74,8 @@ public class CcdNotificationWrapperTest {
                 .email("appointee@test.com")
                 .subscribeEmail("Yes")
                 .build();
+            HearingRecordingRequest appointeeHearingRecordingRequest = HearingRecordingRequest.builder().value(HearingRecordingRequestDetails.builder().requestingParty(PartyItemList.APPELLANT.getCode()).build()).build();
+            releasedHearings.add(appointeeHearingRecordingRequest);
         }
 
         Subscription repSubscription = null;
@@ -84,6 +89,8 @@ public class CcdNotificationWrapperTest {
                 .email("rep@test.com")
                 .subscribeEmail("Yes")
                 .build();
+            HearingRecordingRequest repHearingRecordingRequest = HearingRecordingRequest.builder().value(HearingRecordingRequestDetails.builder().requestingParty(PartyItemList.REPRESENTATIVE.getCode()).build()).build();
+            releasedHearings.add(repHearingRecordingRequest);
         }
 
         Subscription jointPartySubscription = null;
@@ -95,7 +102,9 @@ public class CcdNotificationWrapperTest {
             jointPartySubscription = Subscription.builder()
                     .email("joint@test.com")
                     .subscribeEmail("Yes")
-                    .build();;
+                    .build();
+            HearingRecordingRequest jointPartyHearingRecordingRequest = HearingRecordingRequest.builder().value(HearingRecordingRequestDetails.builder().requestingParty(PartyItemList.JOINT_PARTY.getCode()).build()).build();
+            releasedHearings.add(jointPartyHearingRecordingRequest);
         }
 
         return new CcdNotificationWrapper(
@@ -115,6 +124,7 @@ public class CcdNotificationWrapperTest {
                         .appointeeSubscription(appointeeSubscription)
                         .jointPartySubscription(jointPartySubscription)
                         .build())
+                     .sscsHearingRecordingCaseData(SscsHearingRecordingCaseData.builder().citizenReleasedHearings(releasedHearings).build())
                     .build())
                 .notificationEventType(notificationEventType)
                 .build()
@@ -318,6 +328,14 @@ public class CcdNotificationWrapperTest {
         List<SubscriptionWithType> subsWithTypeList = ccdNotificationWrapper.getSubscriptionsBasedOnNotificationType();
         Assert.assertEquals(1, subsWithTypeList.size());
         Assert.assertEquals(SubscriptionType.JOINT_PARTY, subsWithTypeList.get(0).getSubscriptionType());
+    }
+
+    @Test
+    public void givenProcessHearingRequestForPartyWithSubscription_shouldSendProcessHearingRequestNotification() {
+        ccdNotificationWrapper = buildCcdNotificationWrapperBasedOnEventTypeWithRep(PROCESS_HEARING_RECORDING_REQUEST);
+        List<SubscriptionWithType> subsWithTypeList = ccdNotificationWrapper.getSubscriptionsBasedOnNotificationType();
+        Assert.assertEquals(1, subsWithTypeList.size());
+        Assert.assertEquals(SubscriptionType.REPRESENTATIVE, subsWithTypeList.get(0).getSubscriptionType());
     }
 
     @SuppressWarnings({"unused"})

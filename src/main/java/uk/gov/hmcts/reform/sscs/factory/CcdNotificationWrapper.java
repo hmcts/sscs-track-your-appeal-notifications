@@ -222,7 +222,6 @@ public class CcdNotificationWrapper implements NotificationWrapper {
                 || TCW_DECISION_APPEAL_TO_PROCEED.equals(getNotificationType())
                 || NON_COMPLIANT_NOTIFICATION.equals(getNotificationType())
                 || VALID_APPEAL_CREATED.equals(getNotificationType())
-                || PROCESS_HEARING_RECORDING_REQUEST.equals(getNotificationType())
                 || isProcessHearingRequestValidToSend(PartyItemList.REPRESENTATIVE)
                 || isValidRequestInfoIncompleteEventForParty(PartyItemList.REPRESENTATIVE));
     }
@@ -248,7 +247,6 @@ public class CcdNotificationWrapper implements NotificationWrapper {
                 || DWP_UPLOAD_RESPONSE_NOTIFICATION.equals(getNotificationType())
                 || EVIDENCE_REMINDER_NOTIFICATION.equals(getNotificationType())
                 || JOINT_PARTY_ADDED.equals(getNotificationType())
-                || PROCESS_HEARING_RECORDING_REQUEST.equals(getNotificationType())
                 || isValidRequestInfoIncompleteEventForParty(PartyItemList.JOINT_PARTY)
                 || isProcessHearingRequestValidToSend(PartyItemList.JOINT_PARTY)
                 || (getOldSscsCaseData() != null && isValidReviewConfidentialityRequest(getOldSscsCaseData().getConfidentialityRequestOutcomeJointParty(), getNewSscsCaseData().getConfidentialityRequestOutcomeJointParty())));
