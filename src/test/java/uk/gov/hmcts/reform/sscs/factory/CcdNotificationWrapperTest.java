@@ -7,8 +7,6 @@ import static uk.gov.hmcts.reform.sscs.domain.notify.NotificationEventType.*;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
-
-import com.google.common.collect.Lists;
 import junitparams.JUnitParamsRunner;
 import junitparams.Parameters;
 import org.junit.Assert;
