@@ -45,6 +45,7 @@ public class TopicConsumer {
 
     private void processMessage(String message, String messageId) {
         try {
+            log.info(message);
             Callback<SscsCaseData> callback = sscsDeserializer.deserialize(message);
             requireNonNull(callback, "callback must not be null");
             CaseDetails<SscsCaseData> caseDetailsBefore = callback.getCaseDetailsBefore().orElse(null);
