@@ -344,6 +344,14 @@ public class CcdNotificationWrapperTest {
         Assert.assertEquals(SubscriptionType.JOINT_PARTY, subsWithTypeList.get(1).getSubscriptionType());
     }
 
+    @Test
+    public void givenProcessHearingRequestForNoPartyWithSubscription_shouldNotSendProcessHearingRequestNotification() {
+        ccdNotificationWrapper = buildCcdNotificationWrapperBasedOnEventType(PROCESS_HEARING_RECORDING_REQUEST, null, null, false);
+        List<SubscriptionWithType> subsWithTypeList = ccdNotificationWrapper.getSubscriptionsBasedOnNotificationType();
+        Assert.assertEquals(1, subsWithTypeList.size());
+        Assert.assertEquals(SubscriptionType.APPELLANT, subsWithTypeList.get(0).getSubscriptionType());
+    }
+
     @SuppressWarnings({"unused"})
     private Object[] getEventTypeFilteredWithAppellant() {
         return Arrays.stream(values())
