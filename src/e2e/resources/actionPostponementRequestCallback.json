@@ -369,52 +369,6 @@
         "receivedVia": "Online"
       },
       "evidenceHandled": "Yes",
-      "sscsDocument": [
-        {
-          "value": {
-            "documentType": "postponementRequestDirectionNotice",
-            "documentFileName": "Addition B - Postponement Request direction notice issued on 2021-09-08.pdf",
-            "documentDateAdded": "2021-09-08",
-            "documentLink": {
-              "document_url": "http://dm-store:5005/documents/a7bd87f8-be6d-492e-a71d-6aff5892da8e",
-              "document_binary_url": "http://dm-store:5005/documents/a7bd87f8-be6d-492e-a71d-6aff5892da8e/binary",
-              "document_filename": "dummy.pdf"
-            },
-            "bundleAddition": "B"
-          },
-          "id": "8ec89188-f101-423f-841c-3369a90577ce"
-        },
-        {
-          "value": {
-            "documentType": "sscs1",
-            "documentFileName": "Bloggs_JNO.pdf",
-            "documentDateAdded": "2021-09-08",
-            "documentLink": {
-              "document_url": "http://dm-store:5005/documents/56fb264a-36c4-4d52-922d-c0c5fe6745b0",
-              "document_binary_url": "http://dm-store:5005/documents/56fb264a-36c4-4d52-922d-c0c5fe6745b0/binary",
-              "document_filename": "Bloggs_JNO.pdf"
-            }
-          },
-          "id": "2de1d44a-0a6f-40f7-a00e-2be4177c948b"
-        },
-        {
-          "value": {
-            "documentType": "postponementRequest",
-            "documentFileName": "Addition A - Postponement request received on 12-12-2021",
-            "documentDateAdded": "2021-12-12",
-            "documentLink": {
-              "document_url": "http://dm-store:5005/documents/d1ad7da9-184a-4f17-9f86-6da187faa476",
-              "document_binary_url": "http://dm-store:5005/documents/d1ad7da9-184a-4f17-9f86-6da187faa476/binary",
-              "document_filename": "dummy.pdf"
-            },
-            "controlNumber": "Test",
-            "evidenceIssued": "Yes",
-            "bundleAddition": "A",
-            "originalPartySender": "appellant"
-          },
-          "id": "556580f1-0f09-444e-a85d-96642eb29055"
-        }
-      ],
       "jointPartyName": {
         "title": null,
         "firstName": null,
