@@ -165,20 +165,24 @@ public class CcdNotificationWrapper implements NotificationWrapper {
 
     private boolean isNotificationEventValidToSendToAppellant() {
         // Special list of notifications that might not be sent to appellant, depending on data set on the case
-        List<NotificationEventType> notificationsMaybeNotForAppellant = List.of(REVIEW_CONFIDENTIALITY_REQUEST, REQUEST_INFO_INCOMPLETE);
+        List<NotificationEventType> notificationsMaybeNotForAppellant = List.of(REVIEW_CONFIDENTIALITY_REQUEST, REQUEST_INFO_INCOMPLETE, PROCESS_HEARING_RECORDING_REQUEST);
 
         return (getOldSscsCaseData() != null && isValidReviewConfidentialityRequest(getOldSscsCaseData().getConfidentialityRequestOutcomeAppellant(), getNewSscsCaseData().getConfidentialityRequestOutcomeAppellant()))
+                || isValidProcessHearingRequestEventForParty(PartyItemList.APPELLANT)
                 || isValidRequestInfoIncompleteEventForParty(PartyItemList.APPELLANT)
                 || !notificationsMaybeNotForAppellant.contains(getNotificationType());
     }
 
     private boolean isValidProcessHearingRequestEventForParty(PartyItemList partyItemList) {
-        return PROCESS_HEARING_RECORDING_REQUEST.equals(getNotificationType()) && isValidHearingRecordingRequestsForParty(partyItemList);
+        return PROCESS_HEARING_RECORDING_REQUEST.equals(getNotificationType()) && hasHearingRecordingRequestsForParty(partyItemList);
     }
 
-    private boolean isValidHearingRecordingRequestsForParty(PartyItemList partyItemList) {
-        final List<HearingRecordingRequest> oldReleasedRecordings = Optional.ofNullable(responseWrapper.getOldSscsCaseData().getSscsHearingRecordingCaseData().getCitizenReleasedHearings()).orElse(new ArrayList<>());
-
+    private boolean hasHearingRecordingRequestsForParty(PartyItemList partyItemList) {
+        List<HearingRecordingRequest> oldReleasedRecordings = new ArrayList<>();
+        if (responseWrapper.getOldSscsCaseData() != null && responseWrapper.getOldSscsCaseData().getSscsHearingRecordingCaseData() != null) {
+            oldReleasedRecordings = Optional.ofNullable(responseWrapper.getOldSscsCaseData().getSscsHearingRecordingCaseData().getCitizenReleasedHearings())
+                    .orElse(new ArrayList<>());
+        }
         return hasNewReleasedHearingRecordingForParty(oldReleasedRecordings).stream()
                 .anyMatch(v -> partyItemList.getCode().equals(v.getValue().getRequestingParty()));
     }
