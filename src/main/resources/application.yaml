@@ -893,13 +893,13 @@ notification:
         docmosisId: TB-SCS-GNO-WEL-00602.docx
     processHearingRecordingRequest:
       appellant:
-        docmosisId: TB-SCS-GNO-ENG-00760.docx
+        docmosisId: TB-SCS-GNO-WEL-00765.docx
       representative:
-        docmosisId: TB-SCS-GNO-ENG-00760.docx
+        docmosisId: TB-SCS-GNO-WEL-00765.docx
       appointee:
-        docmosisId: TB-SCS-GNO-ENG-00760.docx
+        docmosisId: TB-SCS-GNO-WEL-00765.docx
       joint_party:
-        docmosisId: TB-SCS-GNO-ENG-00760.docx
+        docmosisId: TB-SCS-GNO-WEL-00765.docx
     paper:
       responseReceived:
         appellant:
