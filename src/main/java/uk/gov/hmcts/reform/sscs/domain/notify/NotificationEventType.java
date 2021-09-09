@@ -49,7 +49,7 @@ public enum NotificationEventType {
     // If the reminder service looks the case up from CCD, the original request for who to send the notification to will be lost and the second party would receive the notification twice.
     REISSUE_DOCUMENT("reissueDocument", true, true, true, true, false, 0),
     ACTION_HEARING_RECORDING_REQUEST("actionHearingRecordingRequest", true, true, true, false, false, 0),
-    ACTION_POSTPONEMENT_REQUEST("actionPostponementRequest", true, true, true, false, false, 0),
+    ACTION_POSTPONEMENT_REQUEST("actionPostponementRequest", true, true, true, true, false, 0),
     DO_NOT_SEND("");
 
     private String id;
