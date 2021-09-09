@@ -2085,7 +2085,7 @@ public class NotificationServiceTest {
     }
 
     @Test
-    @Parameters(method = "allEventTypesExceptRequestInfoIncomplete")
+    @Parameters(method = "allEventTypesExceptRequestInfoIncompleteAndProcessingHearingRequest")
     public void shouldNotLogErrorWhenNotIncompleteInfoRequest(NotificationEventType eventType) {
         CcdNotificationWrapper wrapper = buildBaseWrapperWithCaseData(
             getSscsCaseDataBuilderSettingInformationFromAppellant(APPELLANT_WITH_ADDRESS, null, null, "yes").build(),
@@ -2487,9 +2487,9 @@ public class NotificationServiceTest {
     }
 
     @SuppressWarnings({"Indentation", "UnusedPrivateMethod"})
-    private Object[] allEventTypesExceptRequestInfoIncomplete() {
+    private Object[] allEventTypesExceptRequestInfoIncompleteAndProcessingHearingRequest() {
         return Arrays.stream(NotificationEventType.values()).filter(eventType ->
-            !eventType.equals(REQUEST_INFO_INCOMPLETE)
+                (!eventType.equals(REQUEST_INFO_INCOMPLETE) && !eventType.equals(PROCESS_HEARING_RECORDING_REQUEST))
                 && !BUNDLED_LETTER_EVENT_TYPES.contains(eventType)
         ).toArray();
     }
