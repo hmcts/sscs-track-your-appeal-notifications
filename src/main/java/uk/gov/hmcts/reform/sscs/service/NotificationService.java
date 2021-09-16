@@ -326,7 +326,7 @@ public class NotificationService {
                 return false;
             }
         }
-        if (notificationWrapper.getNewSscsCaseData().isLanguagePreferenceWelsh() && (ISSUE_FINAL_DECISION.equals(notificationType) || DECISION_ISSUED.equals(notificationType) || DIRECTION_ISSUED.equals(notificationType) || ISSUE_ADJOURNMENT_NOTICE.equals(notificationType) || PROCESS_AUDIO_VIDEO.equals(notificationType))) {
+        if (notificationWrapper.getNewSscsCaseData().isLanguagePreferenceWelsh() && (ISSUE_FINAL_DECISION.equals(notificationType) || DECISION_ISSUED.equals(notificationType) || DIRECTION_ISSUED.equals(notificationType) || ISSUE_ADJOURNMENT_NOTICE.equals(notificationType) || PROCESS_AUDIO_VIDEO.equals(notificationType) || ACTION_POSTPONEMENT_REQUEST.equals(notificationType))) {
             log.info(format("Cannot complete notification %s as the appeal is Welsh  for caseId %s.",
                     notificationType.getId(), notificationWrapper.getCaseId()));
             return false;

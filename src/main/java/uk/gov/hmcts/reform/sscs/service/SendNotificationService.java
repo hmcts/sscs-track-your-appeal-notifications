@@ -316,6 +316,8 @@ public class SendNotificationService {
             return getDocumentForType(newSscsCaseData.getLatestWelshDocumentForDocumentType(AUDIO_VIDEO_EVIDENCE_DIRECTION_NOTICE).orElse(null));
         } else if (ACTION_POSTPONEMENT_REQUEST.equals(notificationEventType)) {
             return getDocumentForType(newSscsCaseData.getLatestDocumentForDocumentType(POSTPONEMENT_REQUEST_DIRECTION_NOTICE));
+        } else if (ACTION_POSTPONEMENT_REQUEST_WELSH.equals(notificationEventType)) {
+            return getDocumentForType(newSscsCaseData.getLatestWelshDocumentForDocumentType(POSTPONEMENT_REQUEST_DIRECTION_NOTICE).orElse(null));
         }
         return null;
     }

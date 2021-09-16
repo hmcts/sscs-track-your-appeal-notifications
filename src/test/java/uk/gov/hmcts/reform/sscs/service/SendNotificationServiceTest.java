@@ -831,6 +831,13 @@ public class SendNotificationServiceTest {
                         .build())
                 .build());
 
+        welshDocuments.add(SscsWelshDocument.builder().value(
+                SscsWelshDocumentDetails.builder().documentType(DocumentType.POSTPONEMENT_REQUEST_DIRECTION_NOTICE.getValue())
+                        .documentLink(DocumentLink.builder().documentUrl("testUrl6").build())
+                        .documentDateAdded(LocalDate.now().minusDays(1).toString())
+                        .build())
+                .build());
+
         SscsCaseData sscsCaseDataWithDocuments = SscsCaseData.builder()
             .appeal(
                 Appeal

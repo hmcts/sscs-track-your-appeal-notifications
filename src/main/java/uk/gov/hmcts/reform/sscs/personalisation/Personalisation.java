@@ -607,7 +607,8 @@ public class Personalisation<E extends NotificationWrapper> {
                 || REVIEW_CONFIDENTIALITY_REQUEST.equals(notificationEventType)
                 || ACTION_HEARING_RECORDING_REQUEST.equals(notificationEventType)
                 || VALID_APPEAL_CREATED.equals(notificationEventType)
-                || ACTION_POSTPONEMENT_REQUEST.equals(notificationEventType))) {
+                || ACTION_POSTPONEMENT_REQUEST.equals(notificationEventType)
+                || ACTION_POSTPONEMENT_REQUEST_WELSH.equals(notificationEventType))) {
             letterTemplateName = letterTemplateName + "." + subscriptionType.name().toLowerCase();
 
         }

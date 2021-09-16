@@ -50,6 +50,7 @@ public enum NotificationEventType {
     REISSUE_DOCUMENT("reissueDocument", true, true, true, true, false, 0),
     ACTION_HEARING_RECORDING_REQUEST("actionHearingRecordingRequest", true, true, true, false, false, 0),
     ACTION_POSTPONEMENT_REQUEST("actionPostponementRequest", true, true, true, true, false, 0),
+    ACTION_POSTPONEMENT_REQUEST_WELSH("actionPostponementRequestWelsh", true, true, true, true, false, 0),
     DO_NOT_SEND("");
 
     private String id;
