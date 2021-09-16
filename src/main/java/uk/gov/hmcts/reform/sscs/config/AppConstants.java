@@ -104,6 +104,9 @@ public final class AppConstants {
     public static final String OTHER_PARTY_NAME = "other_party_name";
     public static final String CONFIDENTIALITY_OUTCOME = "confidentiality_outcome";
     public static final String HELPLINE_PHONE_NUMBER = "helpline_phone_number";
+    public static final String SHOW_OTHER_PARTY_DETAILS = "show_other_party_details";
+    public static final String OTHER_PARTY_DETAILS = "other_party_details";
+    public static final String WELSH_OTHER_PARTY_DETAILS = "welsh_other_party_details";
     public static final String EXCELA_ADDRESS_LINE1 = "excela_address_line1";
     public static final String EXCELA_ADDRESS_LINE2 = "excela_address_line2";
     public static final String EXCELA_ADDRESS_LINE3 = "excela_address_line3";
