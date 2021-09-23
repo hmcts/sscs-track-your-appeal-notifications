@@ -150,7 +150,7 @@ notification:
         letterId: 91143b85-dd9d-430c-ba23-e42ec90f44f8
         docmosisId: TB-SCS-GNO-ENG-00060.doc
       representative:
-        emailId: 4b1ee55b-abd1-4e7e-b0ed-693d8df1e741
+        emailId: 3d05393a-e593-400a-963f-a26893a0b672
         smsId: 99bd4a56-256c-4de8-b187-d43a8dde466f
         letterId: 77ea8a2f-06df-4279-9c1f-0f23cb2d9bbf
         docmosisId: TB-SCS-GNO-ENG-00079.doc
@@ -1151,6 +1151,7 @@ text:
       REQUIRED: "Required"
       NOT_REQUIRED: "Not required"
       OTHER: "Other"
+      CHILD_MAINTENANCE_NUMBER: "Child maintenance number: "
     welsh:
       ATTENDING_HEARING: "Ydych chi'n bwriadu mynychu'r gwrandawiad: "
       YESSTRING: "ydw"
@@ -1182,6 +1183,7 @@ text:
       REQUIRED: "Gofynnol"
       NOT_REQUIRED: "Dim yn ofynnol"
       OTHER: "Arall"
+      CHILD_MAINTENANCE_NUMBER: "Child maintenance number: "
 
 
 ---
