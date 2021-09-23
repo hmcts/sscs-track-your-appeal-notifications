@@ -421,7 +421,7 @@ notification:
       appointee:
         docmosisId: TB-SCS-GNO-ENG-00094.docx
       representative:
-        docmosisId: TB-SCS-GNO-ENG-00095.docx
+        docmosisId: TB-SCS-GNO-ENG-00094.docx
     issueFinalDecision:
       appellant:
         docmosisId: TB-SCS-GNO-ENG-00454.docx
@@ -849,7 +849,7 @@ notification:
       appointee:
         docmosisId: TB-SCS-GNO-WEL-00474.docx
       representative:
-        docmosisId: TB-SCS-GNO-WEL-00475.docx
+        docmosisId: TB-SCS-GNO-WEL-00474.docx
     issueAdjournmentNoticeWelsh:
       appellant:
         docmosisId: TB-SCS-GNO-WEL-00649.docx

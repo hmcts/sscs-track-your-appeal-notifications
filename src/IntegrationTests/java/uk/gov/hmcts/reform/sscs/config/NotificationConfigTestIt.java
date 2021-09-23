@@ -343,6 +343,7 @@ public class NotificationConfigTestIt {
                 new Object[]{null, Collections.EMPTY_LIST, null, "TB-SCS-GNO-WEL-00681.docx", PAPER, getTemplateName(ISSUE_FINAL_DECISION_WELSH, APPELLANT), null},
                 new Object[]{null, Collections.EMPTY_LIST, null, "TB-SCS-GNO-WEL-00681.docx", PAPER, getTemplateName(ISSUE_FINAL_DECISION_WELSH, APPOINTEE), null},
                 new Object[]{null, Collections.EMPTY_LIST, null, "TB-SCS-GNO-WEL-00682.docx", PAPER, getTemplateName(ISSUE_FINAL_DECISION_WELSH, REPRESENTATIVE), null},
+                new Object[]{null, Collections.EMPTY_LIST, null, "TB-SCS-GNO-WEL-00474.docx", ORAL, getTemplateName(DECISION_ISSUED_WELSH, REPRESENTATIVE), null},
                 new Object[]{"020c9611-6547-4a66-a05b-eca7e9a415ae", Arrays.asList("c4ecf5b9-2190-4256-a525-0e5f5bee27d0", "7397a76f-14cb-468c-b1a7-0570940ead91"), null, null, ORAL, getTemplateName(SUBSCRIPTION_UPDATED_NOTIFICATION), null}
         };
     }
@@ -484,8 +485,8 @@ public class NotificationConfigTestIt {
                 new Object[]{null, Collections.EMPTY_LIST, null, "TB-SCS-GNO-ENG-00452.docx", PAPER, getTemplateName(REQUEST_INFO_INCOMPLETE, JOINT_PARTY), null},
                 new Object[]{null, Collections.EMPTY_LIST, null, "TB-SCS-GNO-ENG-00094.docx", ORAL, getTemplateName(DECISION_ISSUED, APPELLANT), null},
                 new Object[]{null, Collections.EMPTY_LIST, null, "TB-SCS-GNO-ENG-00094.docx", PAPER, getTemplateName(DECISION_ISSUED, APPOINTEE), null},
-                new Object[]{null, Collections.EMPTY_LIST, null, "TB-SCS-GNO-ENG-00095.docx", ORAL, getTemplateName(DECISION_ISSUED, REPRESENTATIVE), null},
-                new Object[]{null, Collections.EMPTY_LIST, null, "TB-SCS-GNO-ENG-00095.docx", PAPER, getTemplateName(DECISION_ISSUED, REPRESENTATIVE), null},
+                new Object[]{null, Collections.EMPTY_LIST, null, "TB-SCS-GNO-ENG-00094.docx", ORAL, getTemplateName(DECISION_ISSUED, REPRESENTATIVE), null},
+                new Object[]{null, Collections.EMPTY_LIST, null, "TB-SCS-GNO-ENG-00094.docx", PAPER, getTemplateName(DECISION_ISSUED, REPRESENTATIVE), null},
                 new Object[]{null, Collections.EMPTY_LIST, null, "TB-SCS-GNO-ENG-00454.docx", ORAL, getTemplateName(ISSUE_FINAL_DECISION, APPELLANT), null},
                 new Object[]{null, Collections.EMPTY_LIST, null, "TB-SCS-GNO-ENG-00454.docx", PAPER, getTemplateName(ISSUE_FINAL_DECISION, APPOINTEE), null},
                 new Object[]{null, Collections.EMPTY_LIST, null, "TB-SCS-GNO-ENG-00455.docx", ORAL, getTemplateName(ISSUE_FINAL_DECISION, REPRESENTATIVE), null},
