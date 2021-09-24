@@ -1,5 +1,6 @@
 package uk.gov.hmcts.reform.sscs.personalisation;
 
+import static uk.gov.hmcts.reform.sscs.config.AppConstants.*;
 import static uk.gov.hmcts.reform.sscs.config.PersonalisationConfiguration.PersonalisationKey.*;
 import static uk.gov.hmcts.reform.sscs.service.NotificationUtils.hasAppointee;
 
@@ -18,12 +19,14 @@ import uk.gov.hmcts.reform.sscs.ccd.domain.Appeal;
 import uk.gov.hmcts.reform.sscs.ccd.domain.AppealReason;
 import uk.gov.hmcts.reform.sscs.ccd.domain.AppealReasons;
 import uk.gov.hmcts.reform.sscs.ccd.domain.Appointee;
+import uk.gov.hmcts.reform.sscs.ccd.domain.CcdValue;
 import uk.gov.hmcts.reform.sscs.ccd.domain.Contact;
 import uk.gov.hmcts.reform.sscs.ccd.domain.DateRange;
 import uk.gov.hmcts.reform.sscs.ccd.domain.ExcludeDate;
 import uk.gov.hmcts.reform.sscs.ccd.domain.HearingOptions;
 import uk.gov.hmcts.reform.sscs.ccd.domain.LanguagePreference;
 import uk.gov.hmcts.reform.sscs.ccd.domain.MrnDetails;
+import uk.gov.hmcts.reform.sscs.ccd.domain.OtherParty;
 import uk.gov.hmcts.reform.sscs.ccd.domain.Representative;
 import uk.gov.hmcts.reform.sscs.ccd.domain.SscsCaseData;
 import uk.gov.hmcts.reform.sscs.ccd.domain.Subscription;
@@ -59,6 +62,7 @@ public class SyaAppealCreatedAndReceivedPersonalisation extends WithRepresentati
         setAppointeeDetails(personalisation, ccdResponse);
         setTextMessageReminderDetails(personalisation, subscriptionWithType.getSubscription());
         setRepresentativeDetails(personalisation, ccdResponse);
+        setOtherPartyDetails(personalisation, ccdResponse);
         setReasonsForAppealingDetails(personalisation, ccdResponse);
         setHearingDetails(personalisation, ccdResponse);
         setHearingArrangementDetails(personalisation, ccdResponse);
@@ -81,16 +85,18 @@ public class SyaAppealCreatedAndReceivedPersonalisation extends WithRepresentati
 
         List<String> details = new ArrayList<>();
 
-        if (mrnDetails.getMrnDate() != null) {
-            details.add(titleText.get(DATE_OF_MRN.name()) + mrnDate.apply(mrnDetails.getMrnDate()));
-        }
+        if (mrnDetails != null) {
+            if (mrnDetails.getMrnDate() != null) {
+                details.add(titleText.get(DATE_OF_MRN.name()) + mrnDate.apply(mrnDetails.getMrnDate()));
+            }
 
-        if (mrnDetails.getMrnLateReason() != null) {
-            details.add(titleText.get(REASON_FOR_LATE_APPEAL.name()) + mrnDetails.getMrnLateReason());
-        }
+            if (mrnDetails.getMrnLateReason() != null) {
+                details.add(titleText.get(REASON_FOR_LATE_APPEAL.name()) + mrnDetails.getMrnLateReason());
+            }
 
-        if (mrnDetails.getMrnMissingReason() != null) {
-            details.add(titleText.get(REASON_FOR_NO_MRN.name()) + mrnDetails.getMrnMissingReason());
+            if (mrnDetails.getMrnMissingReason() != null) {
+                details.add(titleText.get(REASON_FOR_NO_MRN.name()) + mrnDetails.getMrnMissingReason());
+            }
         }
 
         return StringUtils.join(details.toArray(), TWO_NEW_LINES);
@@ -106,22 +112,28 @@ public class SyaAppealCreatedAndReceivedPersonalisation extends WithRepresentati
 
     public Map<String, String> setYourDetails(Map<String, String> personalisation, SscsCaseData ccdResponse) {
         personalisation.put(AppConstants.YOUR_DETAILS_LITERAL,
-                buildYourDetails(ccdResponse.getAppeal(), personalisationConfiguration.getPersonalisation().get(LanguagePreference.ENGLISH), UnaryOperator.identity()));
+                buildYourDetails(ccdResponse, personalisationConfiguration.getPersonalisation().get(LanguagePreference.ENGLISH), UnaryOperator.identity()));
         if (ccdResponse.isLanguagePreferenceWelsh()) {
             personalisation.put(AppConstants.WELSH_YOUR_DETAILS_LITERAL,
-                    buildYourDetails(ccdResponse.getAppeal(), personalisationConfiguration.getPersonalisation().get(LanguagePreference.WELSH), this::convertLocalDateToWelshDateString));
+                    buildYourDetails(ccdResponse, personalisationConfiguration.getPersonalisation().get(LanguagePreference.WELSH), this::convertLocalDateToWelshDateString));
         }
         return personalisation;
     }
 
-    private String buildYourDetails(Appeal appeal, Map<String, String> titleText, UnaryOperator<String> convertDate) {
+    private String buildYourDetails(SscsCaseData ccdResponse, Map<String, String> titleText, UnaryOperator<String> convertDate) {
+        Appeal appeal = ccdResponse.getAppeal();
 
-        return titleText.get(PersonalisationConfiguration.PersonalisationKey.NAME.name()) + appeal.getAppellant().getName().getFullNameNoTitle() + TWO_NEW_LINES
+        String yourDetails = titleText.get(PersonalisationConfiguration.PersonalisationKey.NAME.name()) + appeal.getAppellant().getName().getFullNameNoTitle() + TWO_NEW_LINES
             + titleText.get(DATE_OF_BIRTH.name()) + convertDate.apply(getOptionalField(appeal.getAppellant().getIdentity().getDob(), NOT_PROVIDED))
             + TWO_NEW_LINES + titleText.get(NINO.name()) + appeal.getAppellant().getIdentity().getNino()
             + TWO_NEW_LINES + titleText.get(PersonalisationConfiguration.PersonalisationKey.ADDRESS.name()) + appeal.getAppellant().getAddress().getFullAddress() + TWO_NEW_LINES
             + titleText.get(PersonalisationConfiguration.PersonalisationKey.EMAIL.name()) + getOptionalField(appeal.getAppellant().getContact().getEmail(), titleText.get(PersonalisationConfiguration.PersonalisationKey.NOT_PROVIDED.name()))
             + TWO_NEW_LINES + titleText.get(PersonalisationConfiguration.PersonalisationKey.PHONE.name()) + getOptionalField(getPhoneOrMobile(appeal.getAppellant().getContact()), titleText.get(PersonalisationConfiguration.PersonalisationKey.NOT_PROVIDED.name()));
+
+        if (ccdResponse.getChildMaintenanceNumber() != null) {
+            yourDetails = yourDetails + TWO_NEW_LINES + titleText.get(PersonalisationConfiguration.PersonalisationKey.CHILD_MAINTENANCE_NUMBER.name()) + ccdResponse.getChildMaintenanceNumber();
+        }
+        return yourDetails;
     }
 
     public Map<String, String> setTextMessageReminderDetails(Map<String, String> personalisation, Subscription subscription) {
@@ -212,6 +224,35 @@ public class SyaAppealCreatedAndReceivedPersonalisation extends WithRepresentati
         return representativeBuilder.toString();
     }
 
+    public Map<String, String> setOtherPartyDetails(Map<String, String> personalisation, SscsCaseData ccdResponse) {
+        if (ccdResponse.getOtherParties() != null && !ccdResponse.getOtherParties().isEmpty()) {
+            personalisation.put(SHOW_OTHER_PARTY_DETAILS, "Yes");
+            personalisation.put(OTHER_PARTY_DETAILS,
+                    buildOtherPartyDetails(ccdResponse.getOtherParties(), personalisationConfiguration.personalisation.get(LanguagePreference.ENGLISH)));
+            if (ccdResponse.isLanguagePreferenceWelsh()) {
+                personalisation.put(WELSH_OTHER_PARTY_DETAILS, buildOtherPartyDetails(ccdResponse.getOtherParties(), personalisationConfiguration.personalisation.get(LanguagePreference.WELSH)));
+            }
+        } else {
+            personalisation.put(SHOW_OTHER_PARTY_DETAILS, "No");
+            personalisation.put(OTHER_PARTY_DETAILS, "");
+            personalisation.put(WELSH_OTHER_PARTY_DETAILS, "");
+        }
+        return personalisation;
+    }
+
+    private String buildOtherPartyDetails(List<CcdValue<OtherParty>> otherParties, Map<String, String> titleText) {
+        StringBuilder otherPartyBuilder = new StringBuilder();
+
+        for (CcdValue<OtherParty> otherParty : otherParties) {
+            if (otherParty != null && otherParty.getValue().getName() != null) {
+                otherPartyBuilder.append(titleText.get(PersonalisationConfiguration.PersonalisationKey.NAME.name())).append(getOptionalField(otherParty.getValue().getName().getFullNameNoTitle(), titleText.get(PersonalisationConfiguration.PersonalisationKey.NOT_PROVIDED.name()))).append(TWO_NEW_LINES)
+                        .append(titleText.get(PersonalisationConfiguration.PersonalisationKey.ADDRESS.name())).append(otherParty.getValue().getAddress().getFullAddress()).append(TWO_NEW_LINES);
+            }
+        }
+
+        return otherPartyBuilder.toString();
+    }
+
     public Map<String, String> setReasonsForAppealingDetails(Map<String, String> personalisation, SscsCaseData ccdResponse) {
         personalisation.put(AppConstants.REASONS_FOR_APPEALING_DETAILS_LITERAL, buildReasonsForAppealingDetails(ccdResponse.getAppeal().getAppealReasons(),personalisationConfiguration.personalisation.get(LanguagePreference.ENGLISH)));
         if (ccdResponse.isLanguagePreferenceWelsh()) {
@@ -223,16 +264,17 @@ public class SyaAppealCreatedAndReceivedPersonalisation extends WithRepresentati
     private String buildReasonsForAppealingDetails(AppealReasons appealReasons,  Map<String, String> titleText) {
         StringBuilder appealReasonsBuilder = new StringBuilder();
 
-        if (appealReasons.getReasons() != null && !appealReasons.getReasons().isEmpty()) {
+        if (appealReasons != null && appealReasons.getReasons() != null && !appealReasons.getReasons().isEmpty()) {
             for (AppealReason reason : appealReasons.getReasons()) {
                 appealReasonsBuilder.append(titleText.get(WHAT_DISAGREE_WITH.name())).append(reason.getValue().getReason()).append(TWO_NEW_LINES)
                     .append(titleText.get(WHY_DISAGREE_WITH.name())).append(reason.getValue().getDescription()).append(TWO_NEW_LINES);
             }
         }
 
-        appealReasonsBuilder.append(titleText.get(ANYTHING.name()))
-            .append(getOptionalField(appealReasons.getOtherReasons(), titleText.get(PersonalisationConfiguration.PersonalisationKey.NOT_PROVIDED.name())));
-
+        if (appealReasons != null) {
+            appealReasonsBuilder.append(titleText.get(ANYTHING.name()))
+                    .append(getOptionalField(appealReasons.getOtherReasons(), titleText.get(PersonalisationConfiguration.PersonalisationKey.NOT_PROVIDED.name())));
+        }
         return appealReasonsBuilder.toString();
     }
 
@@ -248,7 +290,8 @@ public class SyaAppealCreatedAndReceivedPersonalisation extends WithRepresentati
     }
 
     private String buildHearingDetails(HearingOptions hearingOptions, Map<String, String> titleText, UnaryOperator<String> convertor) {
-        String decisionKey = getYesNoKey(hearingOptions.getWantsToAttend().toLowerCase(Locale.ENGLISH));
+        String wantsToAttend = hearingOptions.getWantsToAttend() != null ? hearingOptions.getWantsToAttend() : "No";
+        String decisionKey = getYesNoKey(wantsToAttend.toLowerCase(Locale.ENGLISH));
         StringBuilder hearingOptionsBuilder = new StringBuilder()
             .append(titleText.get(PersonalisationConfiguration.PersonalisationKey.ATTENDING_HEARING.name()))
             .append(titleText.get(decisionKey));
