@@ -28,8 +28,8 @@ import uk.gov.service.notify.SendSmsResponse;
 public class NotificationSender {
 
     private static final String USING_TEST_GOV_NOTIFY_KEY_FOR = "Using test GovNotify key {} for {}";
-    private static final DateTimeFormatter DATE_TIME_FORMATTER = DateTimeFormatter.ofPattern("d MMM Y HH:mm");
-    private static final ZoneId ZONE_ID_LONDON = ZoneId.of("Europe/London");
+    static final DateTimeFormatter DATE_TIME_FORMATTER = DateTimeFormatter.ofPattern("d MMM y HH:mm");
+    static final ZoneId ZONE_ID_LONDON = ZoneId.of("Europe/London");
 
     private final NotificationClient notificationClient;
     private final NotificationClient testNotificationClient;
