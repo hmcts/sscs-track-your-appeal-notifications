@@ -165,7 +165,7 @@ public class CcdNotificationWrapper implements NotificationWrapper {
 
     private boolean isNotificationEventValidToSendToAppellant() {
         // Special list of notifications that might not be sent to appellant, depending on data set on the case
-        List<NotificationEventType> notificationsMaybeNotForAppellant = List.of(REVIEW_CONFIDENTIALITY_REQUEST, REQUEST_INFO_INCOMPLETE, PROCESS_HEARING_RECORDING_REQUEST);
+        List<NotificationEventType> notificationsMaybeNotForAppellant = List.of(REVIEW_CONFIDENTIALITY_REQUEST, REQUEST_INFO_INCOMPLETE, ACTION_HEARING_RECORDING_REQUEST);
 
         return (getOldSscsCaseData() != null && isValidReviewConfidentialityRequest(getOldSscsCaseData().getConfidentialityRequestOutcomeAppellant(), getNewSscsCaseData().getConfidentialityRequestOutcomeAppellant()))
                 || isValidProcessHearingRequestEventForParty(PartyItemList.APPELLANT)
@@ -174,7 +174,7 @@ public class CcdNotificationWrapper implements NotificationWrapper {
     }
 
     private boolean isValidProcessHearingRequestEventForParty(PartyItemList partyItemList) {
-        return PROCESS_HEARING_RECORDING_REQUEST.equals(getNotificationType()) && hasHearingRecordingRequestsForParty(partyItemList);
+        return ACTION_HEARING_RECORDING_REQUEST.equals(getNotificationType()) && hasHearingRecordingRequestsForParty(partyItemList);
     }
 
     private boolean hasHearingRecordingRequestsForParty(PartyItemList partyItemList) {

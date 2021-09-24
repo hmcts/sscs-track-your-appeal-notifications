@@ -2489,7 +2489,7 @@ public class NotificationServiceTest {
     @SuppressWarnings({"Indentation", "UnusedPrivateMethod"})
     private Object[] allEventTypesExceptRequestInfoIncompleteAndProcessingHearingRequest() {
         return Arrays.stream(NotificationEventType.values()).filter(eventType ->
-                (!eventType.equals(REQUEST_INFO_INCOMPLETE) && !eventType.equals(PROCESS_HEARING_RECORDING_REQUEST))
+                (!eventType.equals(REQUEST_INFO_INCOMPLETE) && !eventType.equals(ACTION_HEARING_RECORDING_REQUEST))
                 && !BUNDLED_LETTER_EVENT_TYPES.contains(eventType)
         ).toArray();
     }

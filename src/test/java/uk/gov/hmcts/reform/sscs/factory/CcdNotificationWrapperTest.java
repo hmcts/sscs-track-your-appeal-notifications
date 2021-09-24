@@ -330,7 +330,7 @@ public class CcdNotificationWrapperTest {
 
     @Test
     public void givenProcessHearingRequestForRepWithSubscription_shouldSendProcessHearingRequestNotification() {
-        ccdNotificationWrapper = buildCcdNotificationWrapperBasedOnEventTypeWithRep(PROCESS_HEARING_RECORDING_REQUEST);
+        ccdNotificationWrapper = buildCcdNotificationWrapperBasedOnEventTypeWithRep(ACTION_HEARING_RECORDING_REQUEST);
         List<SubscriptionWithType> subsWithTypeList = ccdNotificationWrapper.getSubscriptionsBasedOnNotificationType();
         Assert.assertEquals(1, subsWithTypeList.size());
         Assert.assertEquals(SubscriptionType.REPRESENTATIVE, subsWithTypeList.get(0).getSubscriptionType());
@@ -338,7 +338,7 @@ public class CcdNotificationWrapperTest {
 
     @Test
     public void givenProcessHearingRequestForJointPartyWithSubscription_shouldSendProcessHearingRequestNotification() {
-        ccdNotificationWrapper = buildCcdNotificationWrapperBasedOnEventTypeWithJointParty(PROCESS_HEARING_RECORDING_REQUEST, null, true);
+        ccdNotificationWrapper = buildCcdNotificationWrapperBasedOnEventTypeWithJointParty(ACTION_HEARING_RECORDING_REQUEST, null, true);
         List<SubscriptionWithType> subsWithTypeList = ccdNotificationWrapper.getSubscriptionsBasedOnNotificationType();
         Assert.assertEquals(1, subsWithTypeList.size());
         Assert.assertEquals(SubscriptionType.JOINT_PARTY, subsWithTypeList.get(0).getSubscriptionType());
@@ -346,7 +346,7 @@ public class CcdNotificationWrapperTest {
 
     @Test
     public void givenProcessHearingRequestForNoPartyWithSubscription_shouldNotSendProcessHearingRequestNotification() {
-        ccdNotificationWrapper = buildCcdNotificationWrapperBasedOnEventType(PROCESS_HEARING_RECORDING_REQUEST, null, null, false);
+        ccdNotificationWrapper = buildCcdNotificationWrapperBasedOnEventType(ACTION_HEARING_RECORDING_REQUEST, null, null, false);
         List<SubscriptionWithType> subsWithTypeList = ccdNotificationWrapper.getSubscriptionsBasedOnNotificationType();
         Assert.assertTrue(subsWithTypeList.isEmpty());
     }
@@ -370,7 +370,7 @@ public class CcdNotificationWrapperTest {
                 || type.equals(REQUEST_INFO_INCOMPLETE)
                 || type.equals(NON_COMPLIANT_NOTIFICATION)
                 || type.equals(REVIEW_CONFIDENTIALITY_REQUEST)
-                || type.equals(PROCESS_HEARING_RECORDING_REQUEST)
+                || type.equals(ACTION_HEARING_RECORDING_REQUEST)
             )).toArray();
     }
 

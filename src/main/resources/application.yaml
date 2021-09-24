@@ -454,7 +454,7 @@ notification:
         docmosisId: TB-SCS-GNO-ENG-00582.docx
       joint_party:
         docmosisId: TB-SCS-GNO-ENG-00582.docx
-    processHearingRecordingRequest:
+    actionHearingRecordingRequest:
       appellant:
         docmosisId: TB-SCS-GNO-ENG-00760.docx
       representative:
@@ -891,7 +891,7 @@ notification:
         docmosisId: TB-SCS-GNO-WEL-00602.docx
       joint_party:
         docmosisId: TB-SCS-GNO-WEL-00602.docx
-    processHearingRecordingRequest:
+    actionHearingRecordingRequest:
       appellant:
         docmosisId: TB-SCS-GNO-WEL-00765.docx
       representative:
