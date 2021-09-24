@@ -26,7 +26,7 @@ public class NotificationEventTypeTest {
         event = "validAppealCreated";
         assertTrue(NotificationEventType.checkEvent(event));
 
-        event = "processHearingRecordingRequest";
+        event = "actionHearingRecordingRequest";
         assertTrue(NotificationEventType.checkEvent(event));
 
 
