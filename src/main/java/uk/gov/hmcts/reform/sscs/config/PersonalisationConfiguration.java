@@ -30,6 +30,7 @@ public class PersonalisationConfiguration {
         ADDRESS,
         EMAIL,
         PHONE,
+        CHILD_MAINTENANCE_NUMBER,
         RECEIVE_TEXT_MESSAGE_REMINDER,
         MOBILE,
         HAVE_AN_APPOINTEE,

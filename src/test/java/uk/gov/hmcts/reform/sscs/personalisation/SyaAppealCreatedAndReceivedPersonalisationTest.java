@@ -1,8 +1,9 @@
 package uk.gov.hmcts.reform.sscs.personalisation;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNull;
-import static org.mockito.MockitoAnnotations.initMocks;
+import static org.junit.Assert.*;
+import static org.mockito.MockitoAnnotations.openMocks;
+import static uk.gov.hmcts.reform.sscs.config.SubscriptionType.REPRESENTATIVE;
+import static uk.gov.hmcts.reform.sscs.domain.notify.NotificationEventType.APPEAL_RECEIVED_NOTIFICATION;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -16,8 +17,10 @@ import org.mockito.Spy;
 import uk.gov.hmcts.reform.sscs.ccd.domain.*;
 import uk.gov.hmcts.reform.sscs.config.AppConstants;
 import uk.gov.hmcts.reform.sscs.config.PersonalisationConfiguration;
+import uk.gov.hmcts.reform.sscs.domain.SscsCaseDataWrapper;
+import uk.gov.hmcts.reform.sscs.domain.SubscriptionWithType;
 
-public class SyaAppealCreatedAndReceivedPersonalisationTest {
+public class SyaAppealCreatedAndReceivedPersonalisationTest extends PersonalisationTest {
 
     private static final String CASE_ID = "54321";
     private static final String YES = "yes";
@@ -33,7 +36,7 @@ public class SyaAppealCreatedAndReceivedPersonalisationTest {
 
     @Before
     public void setup() {
-        initMocks(this);
+        openMocks(this);
         Map<String, String> englishMap = new HashMap<>();
         englishMap.put(PersonalisationConfiguration.PersonalisationKey.ATTENDING_HEARING.name(), "Attending the hearing: ");
         englishMap.put(PersonalisationConfiguration.PersonalisationKey.YESSTRING.name(), "yes");
@@ -65,6 +68,7 @@ public class SyaAppealCreatedAndReceivedPersonalisationTest {
         englishMap.put(PersonalisationConfiguration.PersonalisationKey.REQUIRED.name(), "Required");
         englishMap.put(PersonalisationConfiguration.PersonalisationKey.NOT_REQUIRED.name(), "Not required");
         englishMap.put(PersonalisationConfiguration.PersonalisationKey.OTHER.name(), "Other");
+        englishMap.put(PersonalisationConfiguration.PersonalisationKey.CHILD_MAINTENANCE_NUMBER.name(), "Child maintenance number: ");
 
         Map<String, String> welshMap = new HashMap<>();
         welshMap.put(PersonalisationConfiguration.PersonalisationKey.ATTENDING_HEARING.name(), "Ydych chi'n bwriadu mynychu'r gwrandawiad: ");
@@ -97,10 +101,13 @@ public class SyaAppealCreatedAndReceivedPersonalisationTest {
         welshMap.put(PersonalisationConfiguration.PersonalisationKey.REQUIRED.name(), "Gofynnol");
         welshMap.put(PersonalisationConfiguration.PersonalisationKey.NOT_REQUIRED.name(), "Dim yn ofynnol");
         welshMap.put(PersonalisationConfiguration.PersonalisationKey.OTHER.name(), "Arall");
+        welshMap.put(PersonalisationConfiguration.PersonalisationKey.CHILD_MAINTENANCE_NUMBER.name(), "Child maintenance number placeholder: ");
 
         Map<LanguagePreference, Map<String, String>> personalisations = new HashMap<>();
         personalisations.put(LanguagePreference.ENGLISH, englishMap);
         personalisations.put(LanguagePreference.WELSH, welshMap);
+
+        super.setup();
 
         personalisationConfiguration.setPersonalisation(personalisations);
     }
@@ -472,6 +479,123 @@ public class SyaAppealCreatedAndReceivedPersonalisationTest {
             result.get(AppConstants.REPRESENTATIVE_DETAILS_LITERAL));
 
         assertNull(result.get(AppConstants.WELSH_REPRESENTATIVE_DETAILS_LITERAL));
+    }
+
+    @Test
+    public void givenAnAppealWithRepresentativeAndAppellantHasNoOtherParty_setDefaultOtherPartyDetailsForTemplate() {
+        response = SscsCaseData.builder()
+                .ccdCaseId(CASE_ID).caseReference("SC/1234/5")
+
+                .appeal(Appeal.builder()
+                    .appellant(Appellant.builder()
+                            .name(name)
+                            .address(Address.builder().line1("122 Breach Street").line2("The Village").town("My town").county("Cardiff").postcode("CF11 2HB").build())
+                            .contact(Contact.builder().build())
+                            .identity(Identity.builder().nino("NP 27 28 67 B").dob("12 March 1971").build()).build())
+                    .rep(Representative.builder().hasRepresentative(YES)
+                        .name(Name.builder().firstName("Peter").lastName("Smith").build())
+                        .organisation("Citizens Advice")
+                        .address(Address.builder().line1("Ground Floor").line2("Gazette Buildings").town("168 Corporation Street").county("Cardiff").postcode("CF11 6TF").build())
+                        .contact(Contact.builder().email("peter.smith@cab.org.uk").phone("03444 77 1010").build())
+                        .build())
+                    .hearingOptions(HearingOptions.builder().arrangements(new ArrayList<>()).build()).build())
+                .build();
+
+        Map<String, String> result = syaAppealCreatedAndReceivedPersonalisation.create(SscsCaseDataWrapper.builder().newSscsCaseData(response)
+                .notificationEventType(APPEAL_RECEIVED_NOTIFICATION).build(), new SubscriptionWithType(subscriptions.getRepresentativeSubscription(), REPRESENTATIVE));
+
+        assertNull(result.get(AppConstants.WELSH_REPRESENTATIVE_DETAILS_LITERAL));
+        assertEquals("No", result.get(AppConstants.SHOW_OTHER_PARTY_DETAILS));
+        assertEquals("", result.get(AppConstants.OTHER_PARTY_DETAILS));
+        assertEquals("", result.get(AppConstants.WELSH_OTHER_PARTY_DETAILS));
+        assertFalse(result.get(AppConstants.YOUR_DETAILS_LITERAL).contains("Child maintenance number:"));
+    }
+
+    @Test
+    public void givenAnAppealWithRepresentativeAndAppellantHasOtherParty_setOtherPartyDetailsForTemplate() {
+        List<CcdValue<OtherParty>> otherPartyList = new ArrayList<>();
+        CcdValue<OtherParty> ccdValue = CcdValue.<OtherParty>builder().value(OtherParty.builder()
+                .name(Name.builder().title("Mr").firstName("Harrison").lastName("Kane").build())
+                .address(Address.builder().line1("First Floor").line2("My Building").town("222 Corporation Street").county("Glasgow").postcode("GL11 6TF").build())
+                .build()).build();
+        otherPartyList.add(ccdValue);
+
+        response = SscsCaseData.builder()
+                .ccdCaseId(CASE_ID).caseReference("SC/1234/5")
+                .appeal(Appeal.builder()
+                    .appellant(Appellant.builder()
+                        .name(name)
+                        .address(Address.builder().line1("122 Breach Street").line2("The Village").town("My town").county("Cardiff").postcode("CF11 2HB").build())
+                        .contact(Contact.builder().build())
+                        .identity(Identity.builder().nino("NP 27 28 67 B").dob("12 March 1971").build()).build())
+                    .rep(Representative.builder().hasRepresentative(YES)
+                        .name(Name.builder().firstName("Peter").lastName("Smith").build())
+                        .organisation("Citizens Advice")
+                        .address(Address.builder().line1("Ground Floor").line2("Gazette Buildings").town("168 Corporation Street").county("Cardiff").postcode("CF11 6TF").build())
+                        .contact(Contact.builder().email("peter.smith@cab.org.uk").phone("03444 77 1010").build())
+                        .build())
+                    .hearingOptions(HearingOptions.builder().arrangements(new ArrayList<>()).build()).build())
+                .otherParties(otherPartyList)
+                .childMaintenanceNumber("123456")
+                .build();
+
+        Map<String, String> result = syaAppealCreatedAndReceivedPersonalisation.create(SscsCaseDataWrapper.builder().newSscsCaseData(response)
+                .notificationEventType(APPEAL_RECEIVED_NOTIFICATION).build(), new SubscriptionWithType(subscriptions.getRepresentativeSubscription(), REPRESENTATIVE));
+
+        assertEquals("Yes", result.get(AppConstants.SHOW_OTHER_PARTY_DETAILS));
+
+        assertEquals("Name: Harrison Kane\n"
+                        + "\nAddress: First Floor, My Building, 222 Corporation Street, Glasgow, GL11 6TF\n\n",
+                result.get(AppConstants.OTHER_PARTY_DETAILS));
+        assertNull(result.get(AppConstants.WELSH_OTHER_PARTY_DETAILS));
+        assertTrue(result.get(AppConstants.YOUR_DETAILS_LITERAL).contains("Child maintenance number: 123456"));
+    }
+
+    @Test
+    public void givenAnAppealWithRepresentativeAndAppellantHasTwoOtherParties_setOtherPartiesDetailsForTemplate() {
+        List<CcdValue<OtherParty>> otherPartyList = new ArrayList<>();
+        CcdValue<OtherParty> ccdValue = CcdValue.<OtherParty>builder().value(OtherParty.builder()
+                .name(Name.builder().title("Mr").firstName("Harrison").lastName("Kane").build())
+                .address(Address.builder().line1("First Floor").line2("My Building").town("222 Corporation Street").county("Glasgow").postcode("GL11 6TF").build())
+                .build()).build();
+        CcdValue<OtherParty> ccdValue2 = CcdValue.<OtherParty>builder().value(OtherParty.builder()
+                .name(Name.builder().title("Mr").firstName("Lucas").lastName("Moura").build())
+                .address(Address.builder().line1("Second Floor").line2("My House").town("333 Corporation Street").county("London").postcode("EC1 6TF").build())
+                .build()).build();
+        otherPartyList.add(ccdValue);
+        otherPartyList.add(ccdValue2);
+
+        response = SscsCaseData.builder()
+                .ccdCaseId(CASE_ID).caseReference("SC/1234/5")
+                .appeal(Appeal.builder()
+                    .appellant(Appellant.builder()
+                        .name(name)
+                        .address(Address.builder().line1("122 Breach Street").line2("The Village").town("My town").county("Cardiff").postcode("CF11 2HB").build())
+                        .contact(Contact.builder().build())
+                        .identity(Identity.builder().nino("NP 27 28 67 B").dob("12 March 1971").build()).build())
+                    .rep(Representative.builder().hasRepresentative(YES)
+                        .name(Name.builder().firstName("Peter").lastName("Smith").build())
+                        .organisation("Citizens Advice")
+                        .address(Address.builder().line1("Ground Floor").line2("Gazette Buildings").town("168 Corporation Street").county("Cardiff").postcode("CF11 6TF").build())
+                        .contact(Contact.builder().email("peter.smith@cab.org.uk").phone("03444 77 1010").build())
+                        .build())
+                    .hearingOptions(HearingOptions.builder().arrangements(new ArrayList<>()).build()).build())
+                .otherParties(otherPartyList)
+                .childMaintenanceNumber("123456")
+                .build();
+
+        Map<String, String> result = syaAppealCreatedAndReceivedPersonalisation.create(SscsCaseDataWrapper.builder().newSscsCaseData(response)
+                .notificationEventType(APPEAL_RECEIVED_NOTIFICATION).build(), new SubscriptionWithType(subscriptions.getRepresentativeSubscription(), REPRESENTATIVE));
+
+        assertEquals("Yes", result.get(AppConstants.SHOW_OTHER_PARTY_DETAILS));
+
+        assertEquals("Name: Harrison Kane\n"
+                        + "\nAddress: First Floor, My Building, 222 Corporation Street, Glasgow, GL11 6TF\n\n"
+                        + "Name: Lucas Moura\n"
+                        + "\nAddress: Second Floor, My House, 333 Corporation Street, London, EC1 6TF\n\n",
+                result.get(AppConstants.OTHER_PARTY_DETAILS));
+        assertNull(result.get(AppConstants.WELSH_OTHER_PARTY_DETAILS));
+        assertTrue(result.get(AppConstants.YOUR_DETAILS_LITERAL).contains("Child maintenance number: 123456"));
     }
 
     @Test

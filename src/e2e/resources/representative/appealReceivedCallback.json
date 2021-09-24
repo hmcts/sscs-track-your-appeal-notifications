@@ -45,6 +45,40 @@
         }
       },
       "caseReference": "SC022/14/12423",
+      "otherParties": [
+        {
+          "value": {
+            "name": {
+              "title": "Mrs",
+              "firstName": "Mary",
+              "lastName": "Smith"
+            },
+            "address": {
+              "line1": "My Big Road",
+              "line2": "Near The Lake",
+              "town": "Town",
+              "county": "County",
+              "postcode": "CM11 4RD"
+            }
+          }
+        },
+        {
+          "value": {
+            "name": {
+              "title": "Mr",
+              "firstName": "Alex",
+              "lastName": "Ross"
+            },
+            "address": {
+              "line1": "The Lane",
+              "line2": "146 Lond Road",
+              "town": "Town",
+              "county": "County",
+              "postcode": "CM10 4RD"
+            }
+          }
+        }
+      ],
       "appeal": {
         "mrnDetails": {},
         "appellant": {
