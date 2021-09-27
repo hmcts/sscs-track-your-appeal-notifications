@@ -18,6 +18,7 @@ import uk.gov.hmcts.reform.sscs.service.RetryNotificationService;
 @Service
 public class FilterNotificationsEventsHandler implements CallbackHandler {
 
+    private static final List<NotificationEventType> TURN_OFF_EVENTS_LIST = List.of(POSTPONEMENT_NOTIFICATION);
     private static final List<NotificationEventType> EVENTS_LIST = List.of(
             ADJOURNED_NOTIFICATION,
             ADMIN_APPEAL_WITHDRAWN,
@@ -66,7 +67,8 @@ public class FilterNotificationsEventsHandler implements CallbackHandler {
     @Override
     public boolean canHandle(SscsCaseDataWrapper callback) {
         return nonNull(callback.getNotificationEventType())
-                && EVENTS_LIST.contains(callback.getNotificationEventType());
+                && EVENTS_LIST.contains(callback.getNotificationEventType())
+                && !TURN_OFF_EVENTS_LIST.contains(callback.getNotificationEventType());
     }
 
     @Override
