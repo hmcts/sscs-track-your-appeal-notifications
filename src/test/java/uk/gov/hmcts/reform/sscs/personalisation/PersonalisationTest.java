@@ -150,9 +150,9 @@ public class PersonalisationTest {
     @InjectMocks
     public Personalisation personalisation;
 
-    private Subscriptions subscriptions;
+    protected Subscriptions subscriptions;
 
-    private Name name;
+    protected Name name;
 
     private RegionalProcessingCenter rpc;
     private static DateTimeFormatter dateTimeFormatter = DateTimeFormatter.ofPattern("d MMMM yyyy");

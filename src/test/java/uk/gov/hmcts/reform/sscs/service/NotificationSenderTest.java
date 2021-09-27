@@ -1,11 +1,23 @@
 package uk.gov.hmcts.reform.sscs.service;
 
 import static java.util.Collections.singletonList;
+import static org.hamcrest.MatcherAssert.assertThat;
+import static org.hamcrest.core.Is.is;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
-import static org.mockito.Mockito.*;
+import static org.mockito.Mockito.any;
+import static org.mockito.Mockito.argThat;
+import static org.mockito.Mockito.doThrow;
+import static org.mockito.Mockito.eq;
+import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.verifyNoInteractions;
+import static org.mockito.Mockito.verifyNoMoreInteractions;
+import static org.mockito.Mockito.when;
+import static uk.gov.hmcts.reform.sscs.service.NotificationSender.DATE_TIME_FORMATTER;
+import static uk.gov.hmcts.reform.sscs.service.NotificationSender.ZONE_ID_LONDON;
 
 import java.io.IOException;
+import java.time.LocalDateTime;
 import java.util.Collections;
 import java.util.Map;
 import java.util.UUID;
@@ -358,5 +370,17 @@ public class NotificationSenderTest {
     @Test
     public void recoverWillConsumeThrowable() {
         notificationSender.getBackendResponseFallback(new NotificationClientException("400 BadRequestError"));
+    }
+
+    @Test
+    public void formatter_returnsCorrectYearAtEndOfYear() {
+        final String dateFormat = LocalDateTime.of(2020, 12, 31, 12, 0, 0).atZone(ZONE_ID_LONDON).format(DATE_TIME_FORMATTER);
+        assertThat(dateFormat, is("31 Dec 2020 12:00"));
+    }
+
+    @Test
+    public void formatter_returnsCorrectYearAtStartOfYear() {
+        final String dateFormat = LocalDateTime.of(2021, 1, 1, 12, 0, 0).atZone(ZONE_ID_LONDON).format(DATE_TIME_FORMATTER);
+        assertThat(dateFormat, is("1 Jan 2021 12:00"));
     }
 }
