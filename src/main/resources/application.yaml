@@ -1,6 +1,7 @@
 server.port: ${PORT:8081}
 
 spring:
+  config.use-legacy-processing: true
   application:
     name: TyaNotificationsService
   datasource:
@@ -79,6 +80,8 @@ management:
   endpoint:
     health:
       show-details: always
+      probes:
+        enabled: true
   health:
     case-document-am-api.enabled: ${SECURE_DOC_STORE_FEATURE:false}
 
