@@ -223,7 +223,7 @@ dependencyManagement {
             entry 'commons-compress'
         }
 
-        dependency group: 'org.glassfish', name: 'jakarta.el', version: '4.0.1'
+        dependency group: 'org.glassfish', name: 'jakarta.el', version: '4.0.2'
     }
 
 }
