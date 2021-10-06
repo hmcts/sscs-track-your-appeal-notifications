@@ -42,7 +42,8 @@ public class TopicConsumerTest {
                 "jurisdiction",
                 State.APPEAL_CREATED,
                 SscsCaseData.builder().build(),
-                LocalDateTime.now().minusMinutes(10)
+                LocalDateTime.now().minusMinutes(10),
+                "Benefit"
         );
         Callback<SscsCaseData> callback = new Callback<>(caseDetails, Optional.empty(), EventType.EVIDENCE_RECEIVED, true);
         when(deserializer.deserialize(any())).thenReturn(callback);
