@@ -376,7 +376,7 @@ dependencies {
     compile group: 'com.github.hmcts', name: 'java-logging', version: versions.reformLogging
     compile group: 'uk.gov.hmcts.reform', name: 'service-auth-provider-client', version: '4.0.0'
 
-    compile group: 'com.github.hmcts', name: 'sscs-common', version: '4.5.0'
+    compile group: 'com.github.hmcts', name: 'sscs-common', version: '4.5.1'
     compile group: 'com.github.hmcts', name: 'sscs-pdf-email-common', version: '1.4.41'
     compile group: 'com.github.hmcts', name: 'sscs-job-scheduler', version: '1.5.7'
 
