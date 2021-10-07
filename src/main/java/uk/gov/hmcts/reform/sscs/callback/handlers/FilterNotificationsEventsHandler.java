@@ -52,7 +52,8 @@ public class FilterNotificationsEventsHandler implements CallbackHandler {
             REVIEW_CONFIDENTIALITY_REQUEST,
             PROCESS_AUDIO_VIDEO,
             PROCESS_AUDIO_VIDEO_WELSH,
-            JOINT_PARTY_ADDED
+            JOINT_PARTY_ADDED,
+            ACTION_HEARING_RECORDING_REQUEST
     );
     private final NotificationService notificationService;
     private static final int RETRY = 1;

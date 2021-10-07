@@ -247,6 +247,19 @@ public final class SscsCaseDataUtils {
                 .build());
     }
 
+    public static CcdNotificationWrapper buildBasicCcdNotificationWrapperWithHearingList(
+            NotificationEventType notificationType, List<Hearing> hearings
+    ) {
+        return new CcdNotificationWrapper(SscsCaseDataWrapper.builder()
+                .notificationEventType(notificationType)
+                .newSscsCaseData(SscsCaseData.builder()
+                        .ccdCaseId(CASE_ID)
+                        .events(Collections.emptyList())
+                        .hearings(hearings)
+                        .build())
+                .build());
+    }
+
     public static CcdNotificationWrapper buildBasicCcdNotificationWrapperWithHearingAndHearingType(
             NotificationEventType notificationType,
             HearingType hearingType,

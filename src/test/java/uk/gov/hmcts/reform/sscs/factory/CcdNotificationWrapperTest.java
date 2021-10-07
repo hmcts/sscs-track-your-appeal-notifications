@@ -64,6 +64,7 @@ public class CcdNotificationWrapperTest {
 
     private CcdNotificationWrapper buildCcdNotificationWrapperBasedOnEventType(NotificationEventType notificationEventType, Appointee appointee, Representative representative, boolean jointParty) {
         Appellant appellant = Appellant.builder().build();
+        List<HearingRecordingRequest> releasedHearings = new ArrayList<>();
         Subscription appointeeSubscription = null;
         if (null != appointee) {
             appellant.setAppointee(appointee);
@@ -71,6 +72,8 @@ public class CcdNotificationWrapperTest {
                 .email("appointee@test.com")
                 .subscribeEmail("Yes")
                 .build();
+            HearingRecordingRequest appointeeHearingRecordingRequest = HearingRecordingRequest.builder().value(HearingRecordingRequestDetails.builder().requestingParty(PartyItemList.APPELLANT.getCode()).build()).build();
+            releasedHearings.add(appointeeHearingRecordingRequest);
         }
 
         Subscription repSubscription = null;
@@ -84,6 +87,8 @@ public class CcdNotificationWrapperTest {
                 .email("rep@test.com")
                 .subscribeEmail("Yes")
                 .build();
+            HearingRecordingRequest repHearingRecordingRequest = HearingRecordingRequest.builder().value(HearingRecordingRequestDetails.builder().requestingParty(PartyItemList.REPRESENTATIVE.getCode()).build()).build();
+            releasedHearings.add(repHearingRecordingRequest);
         }
 
         Subscription jointPartySubscription = null;
@@ -95,7 +100,9 @@ public class CcdNotificationWrapperTest {
             jointPartySubscription = Subscription.builder()
                     .email("joint@test.com")
                     .subscribeEmail("Yes")
-                    .build();;
+                    .build();
+            HearingRecordingRequest jointPartyHearingRecordingRequest = HearingRecordingRequest.builder().value(HearingRecordingRequestDetails.builder().requestingParty(PartyItemList.JOINT_PARTY.getCode()).build()).build();
+            releasedHearings.add(jointPartyHearingRecordingRequest);
         }
 
         return new CcdNotificationWrapper(
@@ -115,6 +122,7 @@ public class CcdNotificationWrapperTest {
                         .appointeeSubscription(appointeeSubscription)
                         .jointPartySubscription(jointPartySubscription)
                         .build())
+                     .sscsHearingRecordingCaseData(SscsHearingRecordingCaseData.builder().citizenReleasedHearings(releasedHearings).build())
                     .build())
                 .notificationEventType(notificationEventType)
                 .build()
@@ -320,6 +328,29 @@ public class CcdNotificationWrapperTest {
         Assert.assertEquals(SubscriptionType.JOINT_PARTY, subsWithTypeList.get(0).getSubscriptionType());
     }
 
+    @Test
+    public void givenProcessHearingRequestForRepWithSubscription_shouldSendProcessHearingRequestNotification() {
+        ccdNotificationWrapper = buildCcdNotificationWrapperBasedOnEventTypeWithRep(ACTION_HEARING_RECORDING_REQUEST);
+        List<SubscriptionWithType> subsWithTypeList = ccdNotificationWrapper.getSubscriptionsBasedOnNotificationType();
+        Assert.assertEquals(1, subsWithTypeList.size());
+        Assert.assertEquals(SubscriptionType.REPRESENTATIVE, subsWithTypeList.get(0).getSubscriptionType());
+    }
+
+    @Test
+    public void givenProcessHearingRequestForJointPartyWithSubscription_shouldSendProcessHearingRequestNotification() {
+        ccdNotificationWrapper = buildCcdNotificationWrapperBasedOnEventTypeWithJointParty(ACTION_HEARING_RECORDING_REQUEST, null, true);
+        List<SubscriptionWithType> subsWithTypeList = ccdNotificationWrapper.getSubscriptionsBasedOnNotificationType();
+        Assert.assertEquals(1, subsWithTypeList.size());
+        Assert.assertEquals(SubscriptionType.JOINT_PARTY, subsWithTypeList.get(0).getSubscriptionType());
+    }
+
+    @Test
+    public void givenProcessHearingRequestForNoPartyWithSubscription_shouldNotSendProcessHearingRequestNotification() {
+        ccdNotificationWrapper = buildCcdNotificationWrapperBasedOnEventType(ACTION_HEARING_RECORDING_REQUEST, null, null, false);
+        List<SubscriptionWithType> subsWithTypeList = ccdNotificationWrapper.getSubscriptionsBasedOnNotificationType();
+        Assert.assertTrue(subsWithTypeList.isEmpty());
+    }
+
     @SuppressWarnings({"unused"})
     private Object[] getEventTypeFilteredWithAppellant() {
         return Arrays.stream(values())
@@ -339,6 +370,7 @@ public class CcdNotificationWrapperTest {
                 || type.equals(REQUEST_INFO_INCOMPLETE)
                 || type.equals(NON_COMPLIANT_NOTIFICATION)
                 || type.equals(REVIEW_CONFIDENTIALITY_REQUEST)
+                || type.equals(ACTION_HEARING_RECORDING_REQUEST)
             )).toArray();
     }
 

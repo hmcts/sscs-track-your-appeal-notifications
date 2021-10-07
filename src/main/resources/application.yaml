@@ -454,6 +454,15 @@ notification:
         docmosisId: TB-SCS-GNO-ENG-00582.docx
       joint_party:
         docmosisId: TB-SCS-GNO-ENG-00582.docx
+    actionHearingRecordingRequest:
+      appellant:
+        docmosisId: TB-SCS-GNO-ENG-00760.docx
+      representative:
+        docmosisId: TB-SCS-GNO-ENG-00760.docx
+      appointee:
+        docmosisId: TB-SCS-GNO-ENG-00760.docx
+      joint_party:
+        docmosisId: TB-SCS-GNO-ENG-00760.docx
     paper:
       responseReceived:
         appellant:
@@ -882,6 +891,15 @@ notification:
         docmosisId: TB-SCS-GNO-WEL-00602.docx
       joint_party:
         docmosisId: TB-SCS-GNO-WEL-00602.docx
+    actionHearingRecordingRequest:
+      appellant:
+        docmosisId: TB-SCS-GNO-WEL-00765.docx
+      representative:
+        docmosisId: TB-SCS-GNO-WEL-00765.docx
+      appointee:
+        docmosisId: TB-SCS-GNO-WEL-00765.docx
+      joint_party:
+        docmosisId: TB-SCS-GNO-WEL-00765.docx
     paper:
       responseReceived:
         appellant:

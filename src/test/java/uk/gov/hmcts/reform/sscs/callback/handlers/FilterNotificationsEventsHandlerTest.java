@@ -56,7 +56,7 @@ public class FilterNotificationsEventsHandlerTest {
             "REQUEST_INFO_INCOMPLETE", "RESEND_APPEAL_CREATED_NOTIFICATION", "STRUCK_OUT",
             "SUBSCRIPTION_UPDATED_NOTIFICATION", "VALID_APPEAL_CREATED", "DRAFT_TO_VALID_APPEAL_CREATED", "DIRECTION_ISSUED_WELSH",
             "DECISION_ISSUED_WELSH", "REVIEW_CONFIDENTIALITY_REQUEST", "JOINT_PARTY_ADDED",
-            "PROCESS_AUDIO_VIDEO", "PROCESS_AUDIO_VIDEO_WELSH"})
+            "PROCESS_AUDIO_VIDEO", "PROCESS_AUDIO_VIDEO_WELSH", "ACTION_HEARING_RECORDING_REQUEST"})
     public void willHandleEvents(NotificationEventType notificationEventType) {
         SscsCaseDataWrapper callback = SscsCaseDataWrapper.builder().notificationEventType(notificationEventType).build();
         assertTrue(handler.canHandle(callback));
