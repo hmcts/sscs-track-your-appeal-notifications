@@ -54,7 +54,7 @@ public class DocmosisWithGovNotifyLetterFunctionalTest extends AbstractFunctiona
             new Object[]{REVIEW_CONFIDENTIALITY_REQUEST, expectedNumberOfLettersIsOne},
             new Object[]{NON_COMPLIANT_NOTIFICATION, expectedNumberOfLettersIsTwo},
             new Object[]{DRAFT_TO_NON_COMPLIANT_NOTIFICATION, expectedNumberOfLettersIsTwo},
-            new Object[]{ACTION_POSTPONEMENT_REQUEST, expectedNumberOfLettersIsOne}
+            new Object[]{ACTION_POSTPONEMENT_REQUEST, expectedNumberOfLettersIsTwo}
         };
     }
 }
