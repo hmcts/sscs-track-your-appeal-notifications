@@ -8,6 +8,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import uk.gov.hmcts.reform.sscs.callback.CallbackHandler;
 import uk.gov.hmcts.reform.sscs.ccd.callback.DispatchPriority;
+import uk.gov.hmcts.reform.sscs.ccd.domain.ProcessRequestAction;
 import uk.gov.hmcts.reform.sscs.domain.SscsCaseDataWrapper;
 import uk.gov.hmcts.reform.sscs.domain.notify.NotificationEventType;
 import uk.gov.hmcts.reform.sscs.exception.NotificationServiceException;
@@ -53,7 +54,8 @@ public class FilterNotificationsEventsHandler implements CallbackHandler {
             PROCESS_AUDIO_VIDEO,
             PROCESS_AUDIO_VIDEO_WELSH,
             JOINT_PARTY_ADDED,
-            ACTION_HEARING_RECORDING_REQUEST
+            ACTION_HEARING_RECORDING_REQUEST,
+            ACTION_POSTPONEMENT_REQUEST_WELSH
     );
     private final NotificationService notificationService;
     private static final int RETRY = 1;
@@ -67,9 +69,13 @@ public class FilterNotificationsEventsHandler implements CallbackHandler {
 
     @Override
     public boolean canHandle(SscsCaseDataWrapper callback) {
-        return nonNull(callback.getNotificationEventType())
+        final boolean eventInTheList = nonNull(callback.getNotificationEventType())
                 && EVENTS_LIST.contains(callback.getNotificationEventType())
                 && !TURN_OFF_EVENTS_LIST.contains(callback.getNotificationEventType());
+
+        return eventInTheList || (ACTION_POSTPONEMENT_REQUEST.equals(callback.getNotificationEventType())
+                && !ProcessRequestAction.SEND_TO_JUDGE.getValue().equals(
+                callback.getOldSscsCaseData().getPostponementRequest().getActionPostponementRequestSelected()));
     }
 
     @Override

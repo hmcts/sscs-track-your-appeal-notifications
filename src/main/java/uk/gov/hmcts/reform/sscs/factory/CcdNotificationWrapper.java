@@ -160,6 +160,8 @@ public class CcdNotificationWrapper implements NotificationWrapper {
                 || RESEND_APPEAL_CREATED_NOTIFICATION.equals(getNotificationType())
                 || JOINT_PARTY_ADDED.equals(getNotificationType())
                 || isValidProcessHearingRequestEventForParty(PartyItemList.APPELLANT)
+                || ACTION_POSTPONEMENT_REQUEST.equals(getNotificationType())
+                || ACTION_POSTPONEMENT_REQUEST_WELSH.equals(getNotificationType())
                 || isValidRequestInfoIncompleteEventForParty(PartyItemList.APPELLANT));
     }
 
@@ -231,6 +233,8 @@ public class CcdNotificationWrapper implements NotificationWrapper {
                 || NON_COMPLIANT_NOTIFICATION.equals(getNotificationType())
                 || VALID_APPEAL_CREATED.equals(getNotificationType())
                 || isValidProcessHearingRequestEventForParty(PartyItemList.REPRESENTATIVE)
+                || ACTION_POSTPONEMENT_REQUEST.equals(getNotificationType())
+                || ACTION_POSTPONEMENT_REQUEST_WELSH.equals(getNotificationType())
                 || isValidRequestInfoIncompleteEventForParty(PartyItemList.REPRESENTATIVE));
     }
 
@@ -255,6 +259,8 @@ public class CcdNotificationWrapper implements NotificationWrapper {
                 || DWP_UPLOAD_RESPONSE_NOTIFICATION.equals(getNotificationType())
                 || EVIDENCE_REMINDER_NOTIFICATION.equals(getNotificationType())
                 || JOINT_PARTY_ADDED.equals(getNotificationType())
+                || ACTION_POSTPONEMENT_REQUEST.equals(getNotificationType())
+                || ACTION_POSTPONEMENT_REQUEST_WELSH.equals(getNotificationType())
                 || isValidRequestInfoIncompleteEventForParty(PartyItemList.JOINT_PARTY)
                 || isValidProcessHearingRequestEventForParty(PartyItemList.JOINT_PARTY)
                 || (getOldSscsCaseData() != null && isValidReviewConfidentialityRequest(getOldSscsCaseData().getConfidentialityRequestOutcomeJointParty(), getNewSscsCaseData().getConfidentialityRequestOutcomeJointParty())));
