@@ -37,7 +37,7 @@ import uk.gov.hmcts.reform.sscs.utility.PhoneNumbersUtil;
 @Service
 @Slf4j
 public class NotificationService {
-    private static final List<String> PROCESS_AUDIO_VIDEO_ACTIONS_THAT_REQUIRES_NOTICE = asList("issueDirectionsNotice", "excludeEvidence", "includeEvidence");
+    private static final List<String> PROCESS_AUDIO_VIDEO_ACTIONS_THAT_REQUIRES_NOTICE = asList("issueDirectionsNotice", "excludeEvidence", "admitEvidence");
     private static final String READY_TO_LIST = "readyToList";
 
     private final NotificationFactory notificationFactory;
