@@ -2382,7 +2382,7 @@ public class NotificationServiceTest {
     }
 
     @Test
-    @Parameters({"issueDirectionsNotice", "excludeEvidence", "includeEvidence"})
+    @Parameters({"issueDirectionsNotice", "excludeEvidence", "admitEvidence"})
     public void givenProcessAudioVideo_thenProcessNotificationForCertainActions(String action) {
         CcdNotificationWrapper ccdNotificationWrapper = buildBaseWrapper(PROCESS_AUDIO_VIDEO,  APPELLANT_WITH_ADDRESS, Representative.builder().hasRepresentative("no").build(), SscsDocument.builder().value(SscsDocumentDetails.builder().build()).build());
         ccdNotificationWrapper.getNewSscsCaseData().setProcessAudioVideoAction(new DynamicList(new DynamicListItem(action, action), null));
