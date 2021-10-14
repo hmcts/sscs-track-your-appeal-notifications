@@ -1219,7 +1219,7 @@ text:
       REQUIRED: "Gofynnol"
       NOT_REQUIRED: "Dim yn ofynnol"
       OTHER: "Arall"
-      CHILD_MAINTENANCE_NUMBER: "Rhif cynhaliaeth plant: "
+      CHILD_MAINTENANCE_NUMBER: "Child maintenance number: "
 
 
 ---
