@@ -8,6 +8,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import uk.gov.hmcts.reform.sscs.callback.CallbackHandler;
 import uk.gov.hmcts.reform.sscs.ccd.callback.DispatchPriority;
+import uk.gov.hmcts.reform.sscs.ccd.domain.Appointee;
 import uk.gov.hmcts.reform.sscs.ccd.domain.ProcessRequestAction;
 import uk.gov.hmcts.reform.sscs.domain.SscsCaseDataWrapper;
 import uk.gov.hmcts.reform.sscs.domain.notify.NotificationEventType;
@@ -73,9 +74,9 @@ public class FilterNotificationsEventsHandler implements CallbackHandler {
                 && EVENTS_LIST.contains(callback.getNotificationEventType())
                 && !TURN_OFF_EVENTS_LIST.contains(callback.getNotificationEventType());
 
-        return eventInTheList || (ACTION_POSTPONEMENT_REQUEST.equals(callback.getNotificationEventType())
-                && !ProcessRequestAction.SEND_TO_JUDGE.getValue().equals(
-                callback.getOldSscsCaseData().getPostponementRequest().getActionPostponementRequestSelected()));
+        return eventInTheList
+                || shouldActionPostponementBeNotified(callback)
+                || hasNewAppointeeAddedForAppellantDecesedCase(callback);
     }
 
     @Override
@@ -90,6 +91,29 @@ public class FilterNotificationsEventsHandler implements CallbackHandler {
             retryNotificationService.rescheduleIfHandledGovNotifyErrorStatus(RETRY, notificationWrapper, e);
             throw e;
         }
+    }
+
+    private boolean shouldActionPostponementBeNotified(SscsCaseDataWrapper callback){
+        return ACTION_POSTPONEMENT_REQUEST.equals(callback.getNotificationEventType())
+                && !ProcessRequestAction.SEND_TO_JUDGE.getValue().equals(
+                callback.getOldSscsCaseData().getPostponementRequest().getActionPostponementRequestSelected());
+    }
+
+    private boolean hasNewAppointeeAddedForAppellantDecesedCase(SscsCaseDataWrapper callback) {
+        if (!(DEATH_OF_APPELLANT.equals(callback.getNotificationEventType()) ||
+                PROVIDE_APPOINTEE_DETAILS.equals(callback.getNotificationEventType()))) {
+            return false;
+        }
+
+        Appointee appointeeBefore = null;
+        if (callback.getOldSscsCaseData() != null && callback.getOldSscsCaseData().getAppeal().getAppellant().getAppointee() != null) {
+            appointeeBefore = callback.getOldSscsCaseData().getAppeal().getAppellant().getAppointee();
+        }
+
+        Appointee appointeeAfter = callback.getNewSscsCaseData().getAppeal().getAppellant().getAppointee();
+
+        return ((appointeeBefore == null && appointeeAfter != null)
+                || (appointeeBefore != null && appointeeAfter != null && !appointeeBefore.equals(appointeeAfter)));
     }
 
     @Override
