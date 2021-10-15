@@ -930,14 +930,14 @@ notification:
         docmosisId: TB-SCS-GNO-WEL-00765.docx
     deathOfAppellant:
       representative:
-        docmosisId: TB-SCS-GNO-ENG-00774.docx
+        docmosisId: TB-SCS-GNO-WEL-00774.docx
       appointee:
-        docmosisId: TB-SCS-GNO-ENG-00774.docx
+        docmosisId: TB-SCS-GNO-WEL-00774.docx
     provideAppointeeDetails:
       representative:
-        docmosisId: TB-SCS-GNO-ENG-00774.docx
+        docmosisId: TB-SCS-GNO-WEL-00774.docx
       appointee:
-        docmosisId: TB-SCS-GNO-ENG-00774.docx
+        docmosisId: TB-SCS-GNO-WEL-00774.docx
     paper:
       responseReceived:
         appellant:

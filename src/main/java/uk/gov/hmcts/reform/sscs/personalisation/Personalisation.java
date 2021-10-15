@@ -260,7 +260,7 @@ public class Personalisation<E extends NotificationWrapper> {
         personalisation.put(ONLINE_HEARING_SIGN_IN_LINK_LITERAL, config.getOnlineHearingLink() + "/sign-in");
 
         personalisation.put(APPOINTEE_DESCRIPTION, getAppointeeDescription(subscriptionWithType.getSubscriptionType(), ccdResponse));
-        personalisation.put(APPOINTEE_NAME, getAppointeeName(ccdResponse));
+        personalisation.put(APPOINTEE_NAME, getName(APPOINTEE, ccdResponse, responseWrapper));
 
         personalisation.put(HEARING_TYPE, responseWrapper.getNewSscsCaseData().getAppeal().getHearingType());
 
@@ -342,16 +342,6 @@ public class Personalisation<E extends NotificationWrapper> {
         } else {
             return EMPTY;
         }
-    }
-
-    private String getAppointeeName(SscsCaseData sscsCaseData) {
-        Appointee appointee = sscsCaseData.getAppeal().getAppellant().getAppointee();
-        if (hasAppointee(appointee, sscsCaseData.getAppeal().getAppellant().getIsAppointee())) {
-            return String.format("%s %s",
-                    appointee.getName().getFirstName(),
-                    appointee.getName().getLastName());
-        }
-        return EMPTY;
     }
 
     private void subscriptionDetails(Map<String, String> personalisation, Subscription subscription, Benefit benefit, SscsCaseData sscsCaseData) {

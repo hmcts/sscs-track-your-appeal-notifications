@@ -48,7 +48,7 @@ public class TopicConsumer {
             Callback<SscsCaseData> callback = sscsDeserializer.deserialize(message);
             requireNonNull(callback, "callback must not be null");
             CaseDetails<SscsCaseData> caseDetailsBefore = callback.getCaseDetailsBefore().orElse(null);
-            log.info("Message : {}", message);
+
             SscsCaseDataWrapper sscsCaseDataWrapper = buildSscsCaseDataWrapper(
                     callback.getCaseDetails().getCaseData(),
                     caseDetailsBefore != null ? caseDetailsBefore.getCaseData() : null,
