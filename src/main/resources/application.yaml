@@ -415,6 +415,15 @@ notification:
           docmosisId: TB-SCS-GNO-ENG-00089.docx
         joint_party:
           docmosisId: TB-SCS-GNO-ENG-00067.docx
+    actionPostponementRequest:
+      appellant:
+        docmosisId: TB-SCS-GNO-ENG-00067.docx
+      appointee:
+        docmosisId: TB-SCS-GNO-ENG-00067.docx
+      representative:
+        docmosisId: TB-SCS-GNO-ENG-00089.docx
+      joint_party:
+        docmosisId: TB-SCS-GNO-ENG-00067.docx
     decisionIssued:
       appellant:
         docmosisId: TB-SCS-GNO-ENG-00094.docx
@@ -454,6 +463,15 @@ notification:
         docmosisId: TB-SCS-GNO-ENG-00582.docx
       joint_party:
         docmosisId: TB-SCS-GNO-ENG-00582.docx
+    actionHearingRecordingRequest:
+      appellant:
+        docmosisId: TB-SCS-GNO-ENG-00760.docx
+      representative:
+        docmosisId: TB-SCS-GNO-ENG-00760.docx
+      appointee:
+        docmosisId: TB-SCS-GNO-ENG-00760.docx
+      joint_party:
+        docmosisId: TB-SCS-GNO-ENG-00760.docx
     paper:
       responseReceived:
         appellant:
@@ -843,6 +861,15 @@ notification:
           docmosisId: TB-SCS-GNO-WEL-00472.docx
         joint_party:
           docmosisId: TB-SCS-GNO-WEL-00468.docx
+    actionPostponementRequestWelsh:
+      appellant:
+        docmosisId: TB-SCS-GNO-WEL-00468.docx
+      appointee:
+        docmosisId: TB-SCS-GNO-WEL-00468.docx
+      representative:
+        docmosisId: TB-SCS-GNO-WEL-00472.docx
+      joint_party:
+        docmosisId: TB-SCS-GNO-WEL-00468.docx
     decisionIssuedWelsh:
       appellant:
         docmosisId: TB-SCS-GNO-WEL-00474.docx
@@ -882,6 +909,15 @@ notification:
         docmosisId: TB-SCS-GNO-WEL-00602.docx
       joint_party:
         docmosisId: TB-SCS-GNO-WEL-00602.docx
+    actionHearingRecordingRequest:
+      appellant:
+        docmosisId: TB-SCS-GNO-WEL-00765.docx
+      representative:
+        docmosisId: TB-SCS-GNO-WEL-00765.docx
+      appointee:
+        docmosisId: TB-SCS-GNO-WEL-00765.docx
+      joint_party:
+        docmosisId: TB-SCS-GNO-WEL-00765.docx
     paper:
       responseReceived:
         appellant:

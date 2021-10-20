@@ -14,7 +14,10 @@ import static uk.gov.hmcts.reform.sscs.service.NotificationUtils.hasRepSubscript
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
+import java.util.Optional;
+import java.util.stream.Collectors;
 import org.apache.commons.lang3.StringUtils;
+import org.jetbrains.annotations.NotNull;
 import uk.gov.hmcts.reform.sscs.ccd.domain.*;
 import uk.gov.hmcts.reform.sscs.config.AppealHearingType;
 import uk.gov.hmcts.reform.sscs.domain.SscsCaseDataWrapper;
@@ -156,16 +159,41 @@ public class CcdNotificationWrapper implements NotificationWrapper {
                 || NON_COMPLIANT_NOTIFICATION.equals(getNotificationType())
                 || RESEND_APPEAL_CREATED_NOTIFICATION.equals(getNotificationType())
                 || JOINT_PARTY_ADDED.equals(getNotificationType())
+                || isValidProcessHearingRequestEventForParty(PartyItemList.APPELLANT)
+                || ACTION_POSTPONEMENT_REQUEST.equals(getNotificationType())
+                || ACTION_POSTPONEMENT_REQUEST_WELSH.equals(getNotificationType())
                 || isValidRequestInfoIncompleteEventForParty(PartyItemList.APPELLANT));
     }
 
     private boolean isNotificationEventValidToSendToAppellant() {
         // Special list of notifications that might not be sent to appellant, depending on data set on the case
-        List<NotificationEventType> notificationsMaybeNotForAppellant = List.of(REVIEW_CONFIDENTIALITY_REQUEST, REQUEST_INFO_INCOMPLETE);
+        List<NotificationEventType> notificationsMaybeNotForAppellant = List.of(REVIEW_CONFIDENTIALITY_REQUEST, REQUEST_INFO_INCOMPLETE, ACTION_HEARING_RECORDING_REQUEST);
 
         return (getOldSscsCaseData() != null && isValidReviewConfidentialityRequest(getOldSscsCaseData().getConfidentialityRequestOutcomeAppellant(), getNewSscsCaseData().getConfidentialityRequestOutcomeAppellant()))
+                || isValidProcessHearingRequestEventForParty(PartyItemList.APPELLANT)
                 || isValidRequestInfoIncompleteEventForParty(PartyItemList.APPELLANT)
                 || !notificationsMaybeNotForAppellant.contains(getNotificationType());
+    }
+
+    private boolean isValidProcessHearingRequestEventForParty(PartyItemList partyItemList) {
+        return ACTION_HEARING_RECORDING_REQUEST.equals(getNotificationType()) && hasHearingRecordingRequestsForParty(partyItemList);
+    }
+
+    private boolean hasHearingRecordingRequestsForParty(PartyItemList partyItemList) {
+        List<HearingRecordingRequest> oldReleasedRecordings = new ArrayList<>();
+        if (responseWrapper.getOldSscsCaseData() != null && responseWrapper.getOldSscsCaseData().getSscsHearingRecordingCaseData() != null) {
+            oldReleasedRecordings = Optional.ofNullable(responseWrapper.getOldSscsCaseData().getSscsHearingRecordingCaseData().getCitizenReleasedHearings())
+                    .orElse(new ArrayList<>());
+        }
+        return hasNewReleasedHearingRecordingForParty(oldReleasedRecordings).stream()
+                .anyMatch(v -> partyItemList.getCode().equals(v.getValue().getRequestingParty()));
+    }
+
+    @NotNull
+    private List<HearingRecordingRequest> hasNewReleasedHearingRecordingForParty(List<HearingRecordingRequest> oldReleasedRecordings) {
+        return responseWrapper.getNewSscsCaseData().getSscsHearingRecordingCaseData().getCitizenReleasedHearings().stream()
+                .filter(e -> !oldReleasedRecordings.contains(e))
+                .collect(Collectors.toList());
     }
 
     private boolean isNotificationEventValidToSendToRep() {
@@ -204,6 +232,9 @@ public class CcdNotificationWrapper implements NotificationWrapper {
                 || TCW_DECISION_APPEAL_TO_PROCEED.equals(getNotificationType())
                 || NON_COMPLIANT_NOTIFICATION.equals(getNotificationType())
                 || VALID_APPEAL_CREATED.equals(getNotificationType())
+                || isValidProcessHearingRequestEventForParty(PartyItemList.REPRESENTATIVE)
+                || ACTION_POSTPONEMENT_REQUEST.equals(getNotificationType())
+                || ACTION_POSTPONEMENT_REQUEST_WELSH.equals(getNotificationType())
                 || isValidRequestInfoIncompleteEventForParty(PartyItemList.REPRESENTATIVE));
     }
 
@@ -228,7 +259,10 @@ public class CcdNotificationWrapper implements NotificationWrapper {
                 || DWP_UPLOAD_RESPONSE_NOTIFICATION.equals(getNotificationType())
                 || EVIDENCE_REMINDER_NOTIFICATION.equals(getNotificationType())
                 || JOINT_PARTY_ADDED.equals(getNotificationType())
+                || ACTION_POSTPONEMENT_REQUEST.equals(getNotificationType())
+                || ACTION_POSTPONEMENT_REQUEST_WELSH.equals(getNotificationType())
                 || isValidRequestInfoIncompleteEventForParty(PartyItemList.JOINT_PARTY)
+                || isValidProcessHearingRequestEventForParty(PartyItemList.JOINT_PARTY)
                 || (getOldSscsCaseData() != null && isValidReviewConfidentialityRequest(getOldSscsCaseData().getConfidentialityRequestOutcomeJointParty(), getNewSscsCaseData().getConfidentialityRequestOutcomeJointParty())));
     }
 

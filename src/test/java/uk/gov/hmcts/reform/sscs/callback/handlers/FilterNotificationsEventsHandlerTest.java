@@ -7,6 +7,7 @@ import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.Mockito.doThrow;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.verifyNoInteractions;
+import static uk.gov.hmcts.reform.sscs.domain.notify.NotificationEventType.ACTION_POSTPONEMENT_REQUEST;
 import static uk.gov.hmcts.reform.sscs.domain.notify.NotificationEventType.VALID_APPEAL_CREATED;
 
 import junitparams.JUnitParamsRunner;
@@ -19,6 +20,8 @@ import org.junit.runner.RunWith;
 import org.mockito.Mock;
 import org.mockito.junit.MockitoJUnit;
 import org.mockito.junit.MockitoRule;
+import uk.gov.hmcts.reform.sscs.ccd.domain.PostponementRequest;
+import uk.gov.hmcts.reform.sscs.ccd.domain.SscsCaseData;
 import uk.gov.hmcts.reform.sscs.domain.SscsCaseDataWrapper;
 import uk.gov.hmcts.reform.sscs.domain.notify.NotificationEventType;
 import uk.gov.hmcts.reform.sscs.exception.NotificationServiceException;
@@ -56,7 +59,7 @@ public class FilterNotificationsEventsHandlerTest {
             "REQUEST_INFO_INCOMPLETE", "RESEND_APPEAL_CREATED_NOTIFICATION", "STRUCK_OUT",
             "SUBSCRIPTION_UPDATED_NOTIFICATION", "VALID_APPEAL_CREATED", "DRAFT_TO_VALID_APPEAL_CREATED", "DIRECTION_ISSUED_WELSH",
             "DECISION_ISSUED_WELSH", "REVIEW_CONFIDENTIALITY_REQUEST", "JOINT_PARTY_ADDED",
-            "PROCESS_AUDIO_VIDEO", "PROCESS_AUDIO_VIDEO_WELSH"})
+            "PROCESS_AUDIO_VIDEO", "PROCESS_AUDIO_VIDEO_WELSH", "ACTION_HEARING_RECORDING_REQUEST", "ACTION_POSTPONEMENT_REQUEST_WELSH"})
     public void willHandleEvents(NotificationEventType notificationEventType) {
         SscsCaseDataWrapper callback = SscsCaseDataWrapper.builder().notificationEventType(notificationEventType).build();
         assertTrue(handler.canHandle(callback));
@@ -102,5 +105,37 @@ public class FilterNotificationsEventsHandlerTest {
             throw e;
         }
     }
+
+    @Test
+    @Parameters({"grant", "refuse"})
+    public void willHandleActionPostponementRequestEvents(String actionSelected) {
+        SscsCaseDataWrapper callback = SscsCaseDataWrapper.builder()
+                .notificationEventType(ACTION_POSTPONEMENT_REQUEST)
+                .oldSscsCaseData(SscsCaseData.builder()
+                        .postponementRequest(PostponementRequest.builder()
+                                .actionPostponementRequestSelected(actionSelected)
+                                .build())
+                        .build())
+                .build();
+        assertTrue(handler.canHandle(callback));
+        handler.handle(callback);
+        verify(notificationService).manageNotificationAndSubscription(eq(new CcdNotificationWrapper(callback)), eq(false));
+        verifyNoInteractions(retryNotificationService);
+    }
+
+    @Test
+    @Parameters({"grant", "refuse"})
+    public void willNotHandleActionPostponementRequestEvents_sendToJudgeAction(String actionSelected) {
+        SscsCaseDataWrapper callback = SscsCaseDataWrapper.builder()
+                .notificationEventType(ACTION_POSTPONEMENT_REQUEST)
+                .oldSscsCaseData(SscsCaseData.builder()
+                        .postponementRequest(PostponementRequest.builder()
+                                .actionPostponementRequestSelected("sendToJudge")
+                                .build())
+                        .build())
+                .build();
+        assertFalse(handler.canHandle(callback));
+    }
+
 
 }
