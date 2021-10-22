@@ -797,8 +797,6 @@ notification:
         smsId: 534e7537-3012-42de-a6c3-9036b133c525
     struckOut:
       docmosisId: TB-SCS-GNO-WEL-00593.docx
-      representative:
-        docmosisId: TB-SCS-GNO-ENG-00466.docx
     processAudioVideoWelsh:
       docmosisId: TB-SCS-GNO-WEL-00678.docx
     directionIssuedWelsh:
