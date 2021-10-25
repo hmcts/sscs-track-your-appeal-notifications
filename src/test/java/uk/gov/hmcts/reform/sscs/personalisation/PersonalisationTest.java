@@ -43,38 +43,11 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
-import uk.gov.hmcts.reform.sscs.ccd.domain.Address;
-import uk.gov.hmcts.reform.sscs.ccd.domain.Appeal;
-import uk.gov.hmcts.reform.sscs.ccd.domain.Appellant;
-import uk.gov.hmcts.reform.sscs.ccd.domain.AppellantInfo;
-import uk.gov.hmcts.reform.sscs.ccd.domain.AppellantInfoRequest;
-import uk.gov.hmcts.reform.sscs.ccd.domain.Appointee;
-import uk.gov.hmcts.reform.sscs.ccd.domain.Benefit;
-import uk.gov.hmcts.reform.sscs.ccd.domain.BenefitType;
-import uk.gov.hmcts.reform.sscs.ccd.domain.DatedRequestOutcome;
-import uk.gov.hmcts.reform.sscs.ccd.domain.DirectionType;
-import uk.gov.hmcts.reform.sscs.ccd.domain.Document;
-import uk.gov.hmcts.reform.sscs.ccd.domain.DocumentDetails;
-import uk.gov.hmcts.reform.sscs.ccd.domain.DynamicList;
-import uk.gov.hmcts.reform.sscs.ccd.domain.Event;
-import uk.gov.hmcts.reform.sscs.ccd.domain.EventDetails;
-import uk.gov.hmcts.reform.sscs.ccd.domain.EventType;
-import uk.gov.hmcts.reform.sscs.ccd.domain.Evidence;
-import uk.gov.hmcts.reform.sscs.ccd.domain.Hearing;
-import uk.gov.hmcts.reform.sscs.ccd.domain.HearingDetails;
-import uk.gov.hmcts.reform.sscs.ccd.domain.HearingType;
-import uk.gov.hmcts.reform.sscs.ccd.domain.InfoRequests;
-import uk.gov.hmcts.reform.sscs.ccd.domain.JointPartyName;
-import uk.gov.hmcts.reform.sscs.ccd.domain.Name;
-import uk.gov.hmcts.reform.sscs.ccd.domain.RegionalProcessingCenter;
-import uk.gov.hmcts.reform.sscs.ccd.domain.Representative;
-import uk.gov.hmcts.reform.sscs.ccd.domain.RequestOutcome;
-import uk.gov.hmcts.reform.sscs.ccd.domain.SscsCaseData;
-import uk.gov.hmcts.reform.sscs.ccd.domain.Subscription;
-import uk.gov.hmcts.reform.sscs.ccd.domain.Subscriptions;
-import uk.gov.hmcts.reform.sscs.ccd.domain.Venue;
+import org.mockito.Spy;
+import uk.gov.hmcts.reform.sscs.ccd.domain.*;
 import uk.gov.hmcts.reform.sscs.config.AppConstants;
 import uk.gov.hmcts.reform.sscs.config.NotificationConfig;
+import uk.gov.hmcts.reform.sscs.config.PersonalisationConfiguration;
 import uk.gov.hmcts.reform.sscs.config.SubscriptionType;
 import uk.gov.hmcts.reform.sscs.config.properties.EvidenceProperties;
 import uk.gov.hmcts.reform.sscs.domain.SscsCaseDataWrapper;
@@ -122,6 +95,9 @@ public class PersonalisationTest {
 
     @InjectMocks
     public Personalisation personalisation;
+
+    @Spy
+    private PersonalisationConfiguration personalisationConfiguration;
 
     protected Subscriptions subscriptions;
 
@@ -191,6 +167,29 @@ public class PersonalisationTest {
         evidenceAddress.setTelephone(evidenceAddressTelephone);
         evidenceAddress.setTelephoneWelsh(evidenceAddressTelephoneWelsh);
         when(evidenceProperties.getAddress()).thenReturn(evidenceAddress);
+
+        Map<String, String> englishMap = new HashMap<>();
+        englishMap.put(PersonalisationConfiguration.PersonalisationKey.LANGUAGE_INTERPRETER.name(), "Language interpreter: ");
+        englishMap.put(PersonalisationConfiguration.PersonalisationKey.SIGN_INTERPRETER.name(), "Sign interpreter: ");
+        englishMap.put(PersonalisationConfiguration.PersonalisationKey.HEARING_LOOP.name(), "Hearing loop: ");
+        englishMap.put(PersonalisationConfiguration.PersonalisationKey.DISABLED_ACCESS.name(), "Disabled access: ");
+        englishMap.put(PersonalisationConfiguration.PersonalisationKey.OTHER_ARRANGEMENTS.name(), "Any other arrangements: ");
+        englishMap.put(PersonalisationConfiguration.PersonalisationKey.REQUIRED.name(), "Required");
+        englishMap.put(PersonalisationConfiguration.PersonalisationKey.NOT_REQUIRED.name(), "Not required");
+
+        Map<String, String> welshMap = new HashMap<>();
+        welshMap.put(PersonalisationConfiguration.PersonalisationKey.LANGUAGE_INTERPRETER.name(), "Dehonglydd iaith arwyddion: ");
+        welshMap.put(PersonalisationConfiguration.PersonalisationKey.SIGN_INTERPRETER.name(), "Dehonglydd iaith arwyddion: ");
+        welshMap.put(PersonalisationConfiguration.PersonalisationKey.HEARING_LOOP.name(), "Dolen glyw: ");
+        welshMap.put(PersonalisationConfiguration.PersonalisationKey.DISABLED_ACCESS.name(), "Mynediad i bobl anab: ");
+        welshMap.put(PersonalisationConfiguration.PersonalisationKey.OTHER_ARRANGEMENTS.name(), "Unrhyw drefniadau eraill: ");
+        welshMap.put(PersonalisationConfiguration.PersonalisationKey.REQUIRED.name(), "Gofynnol");
+        welshMap.put(PersonalisationConfiguration.PersonalisationKey.NOT_REQUIRED.name(), "Dim yn ofynnol");
+
+        Map<LanguagePreference, Map<String, String>> personalisations = new HashMap<>();
+        personalisations.put(LanguagePreference.ENGLISH, englishMap);
+        personalisations.put(LanguagePreference.WELSH, welshMap);
+        personalisationConfiguration.setPersonalisation(personalisations);
     }
 
 
@@ -1592,6 +1591,73 @@ public class PersonalisationTest {
                 .notificationEventType(VALID_APPEAL_CREATED).build(), new SubscriptionWithType(subscriptions.getAppellantSubscription(), APPELLANT));
 
         assertEquals(helpLineTelephone, result.get(HELPLINE_PHONE_NUMBER));
+    }
+
+    @Test
+    public void givenASyaAppealWithHearingArrangements_setHearingArrangementsForTemplate() {
+
+        List<String> arrangementList = new ArrayList<>();
+
+        arrangementList.add("signLanguageInterpreter");
+        arrangementList.add("hearingLoop");
+        arrangementList.add("disabledAccess");
+
+        SscsCaseData response = SscsCaseData.builder()
+                .ccdCaseId(CASE_ID).caseReference("SC/1234/5")
+                .appeal(Appeal.builder().hearingOptions(HearingOptions.builder()
+                        .arrangements(arrangementList)
+                        .languageInterpreter("Yes")
+                        .other("Other")
+                        .build()).build())
+                .build();
+
+        Map<String, String> result = personalisation.setHearingArrangementDetails(new HashMap<>(), response);
+
+        assertEquals("Language interpreter: Required\n"
+                        + "\nSign interpreter: Required\n"
+                        + "\nHearing loop: Required\n"
+                        + "\nDisabled access: Required\n"
+                        + "\nAny other arrangements: Other",
+                result.get(AppConstants.HEARING_ARRANGEMENT_DETAILS_LITERAL));
+        assertNull(result.get(AppConstants.WELSH_HEARING_ARRANGEMENT_DETAILS_LITERAL));
+
+    }
+
+    @Test
+    public void givenASyaAppealWithHearingArrangements_setHearingArrangementsForTemplate_Welsh() {
+
+        List<String> arrangementList = new ArrayList<>();
+
+        arrangementList.add("signLanguageInterpreter");
+        arrangementList.add("hearingLoop");
+        arrangementList.add("disabledAccess");
+
+        SscsCaseData response = SscsCaseData.builder()
+                .ccdCaseId(CASE_ID).caseReference("SC/1234/5")
+                .languagePreferenceWelsh("yes")
+                .appeal(Appeal.builder().hearingOptions(HearingOptions.builder()
+                        .arrangements(arrangementList)
+                        .languageInterpreter("Yes")
+                        .other("Other")
+                        .build()).build())
+                .build();
+
+        Map<String, String> result = personalisation.setHearingArrangementDetails(new HashMap<>(), response);
+
+        assertEquals("Language interpreter: Required\n"
+                        + "\nSign interpreter: Required\n"
+                        + "\nHearing loop: Required\n"
+                        + "\nDisabled access: Required\n"
+                        + "\nAny other arrangements: Other",
+                result.get(AppConstants.HEARING_ARRANGEMENT_DETAILS_LITERAL));
+
+        assertEquals("Dehonglydd iaith arwyddion: Gofynnol\n"
+                        + "\nDehonglydd iaith arwyddion: Gofynnol\n"
+                        + "\nDolen glyw: Gofynnol\n"
+                        + "\nMynediad i bobl anab: Gofynnol\n"
+                        + "\nUnrhyw drefniadau eraill: Other",
+                result.get(AppConstants.WELSH_HEARING_ARRANGEMENT_DETAILS_LITERAL));
+
     }
 
     private Hearing createHearing(LocalDate hearingDate) {

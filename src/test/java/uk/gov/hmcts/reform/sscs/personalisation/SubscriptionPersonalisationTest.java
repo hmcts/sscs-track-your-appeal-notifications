@@ -5,7 +5,7 @@ import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.when;
-import static org.mockito.MockitoAnnotations.initMocks;
+import static org.mockito.MockitoAnnotations.openMocks;
 import static uk.gov.hmcts.reform.sscs.ccd.domain.Benefit.PIP;
 import static uk.gov.hmcts.reform.sscs.config.SubscriptionType.APPELLANT;
 import static uk.gov.hmcts.reform.sscs.domain.notify.NotificationEventType.*;
@@ -18,9 +18,11 @@ import org.junit.Before;
 import org.junit.Test;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
+import org.mockito.Spy;
 import uk.gov.hmcts.reform.sscs.ccd.domain.*;
 import uk.gov.hmcts.reform.sscs.config.AppConstants;
 import uk.gov.hmcts.reform.sscs.config.NotificationConfig;
+import uk.gov.hmcts.reform.sscs.config.PersonalisationConfiguration;
 import uk.gov.hmcts.reform.sscs.config.properties.EvidenceProperties;
 import uk.gov.hmcts.reform.sscs.domain.SscsCaseDataWrapper;
 import uk.gov.hmcts.reform.sscs.domain.SubscriptionWithType;
@@ -59,13 +61,16 @@ public class SubscriptionPersonalisationTest {
     @Resource
     SubscriptionPersonalisation personalisation;
 
+    @Spy
+    private PersonalisationConfiguration personalisationConfiguration;
+
     private static final Subscription NEW_SUBSCRIPTION = Subscription.builder()
             .tya("GLSCRR").email("test@email.com")
             .mobile("07983495065").subscribeEmail("Yes").subscribeSms("Yes").wantSmsNotifications("Yes").build();
 
     @Before
     public void setup() {
-        initMocks(this);
+        openMocks(this);
         when(config.getManageEmailsLink()).thenReturn(Link.builder().linkUrl("http://manageemails.com/mac").build());
         when(config.getTrackAppealLink()).thenReturn(Link.builder().linkUrl("http://tyalink.com/appeal_id").build());
         when(config.getEvidenceSubmissionInfoLink()).thenReturn(Link.builder().linkUrl("http://link.com/appeal_id").build());
@@ -83,6 +88,14 @@ public class SubscriptionPersonalisationTest {
 
         when(regionalProcessingCenterService.getByScReferenceCode("1234")).thenReturn(rpc);
 
+        Map<String, String> englishMap = new HashMap<>();
+        Map<String, String> welshMap = new HashMap<>();
+
+        Map<LanguagePreference, Map<String, String>> personalisations = new HashMap<>();
+        personalisations.put(LanguagePreference.ENGLISH, englishMap);
+        personalisations.put(LanguagePreference.WELSH, welshMap);
+
+        personalisationConfiguration.setPersonalisation(personalisations);
     }
 
     @Test
