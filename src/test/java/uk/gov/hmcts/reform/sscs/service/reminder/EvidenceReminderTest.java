@@ -3,7 +3,7 @@ package uk.gov.hmcts.reform.sscs.service.reminder;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.junit.Assert.*;
 import static org.mockito.Mockito.*;
-import static org.mockito.MockitoAnnotations.initMocks;
+import static org.mockito.MockitoAnnotations.openMocks;
 import static uk.gov.hmcts.reform.sscs.ccd.domain.EventType.DWP_RESPOND;
 import static uk.gov.hmcts.reform.sscs.domain.notify.NotificationEventType.DWP_RESPONSE_RECEIVED_NOTIFICATION;
 import static uk.gov.hmcts.reform.sscs.domain.notify.NotificationEventType.DWP_UPLOAD_RESPONSE_NOTIFICATION;
@@ -43,7 +43,7 @@ public class EvidenceReminderTest {
 
     @Before
     public void setup() {
-        initMocks(this);
+        openMocks(this);
         evidenceReminder = new EvidenceReminder(
             dwpResponseReceivedDateExtractor,
             jobGroupGenerator,
