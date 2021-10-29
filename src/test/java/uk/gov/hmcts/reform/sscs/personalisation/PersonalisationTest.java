@@ -1361,7 +1361,7 @@ public class PersonalisationTest {
 
         final SscsCaseData sscsCaseData = SscsCaseData.builder()
                 .ccdCaseId(CASE_ID)
-                .jointParty("yes")
+                .jointParty("Yes")
                 .jointPartyName(JointPartyName.builder().title("Mr").firstName("Bob").lastName("Builder").build())
                 .jointPartyAddressSameAsAppellant("Yes")
                 .caseReference("SC/1234/5")
