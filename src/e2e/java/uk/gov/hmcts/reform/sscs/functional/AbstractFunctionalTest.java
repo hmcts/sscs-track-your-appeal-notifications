@@ -372,7 +372,7 @@ public abstract class AbstractFunctionalTest {
         assertTrue(notification.isPresent());
 
         if (notification.isPresent()) {
-            byte[] binary = pdfStoreService.download(notification.get().getValue().getDocumentLink().getDocumentBinaryUrl());
+            byte[] binary = pdfStoreService.download(notification.get().getValue().getDocumentLink().getDocumentUrl());
             assertNotNull(binary);
             assertTrue(binary.length > 0);
         }
