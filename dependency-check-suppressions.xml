@@ -31,4 +31,9 @@
         <cve>CVE-2020-11022</cve>
         <cve>CVE-2020-11023</cve>
     </suppress>
+    <suppress>
+        <notes>Ignore CVE-2021-22096 for spring 5.2.15-RELEASE</notes>
+        <gav regex="true">^org\.springframework:spring-.+:.*$</gav>
+        <cve>CVE-2021-22096</cve>
+    </suppress>
 </suppressions>
