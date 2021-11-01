@@ -51,6 +51,23 @@ static LinkedHashMap<String, Object> secret(String secretName, String envVar) {
 def branchesToSync = ['demo', 'ithc', 'perftest']
 
 withPipeline("java", product, component) {
+
+  before('functionalTest:preview') {
+    withAksClient('nonprod', product) {
+      // Vars needed for AKS testing
+      env.DOCUMENT_MANAGEMENT_URL = 'http://dm-store-aat.service.core-compute-aat.internal'
+      env.CASE_DOCUMENT_AM_URL = 'http://ccd-case-document-am-api-aat.service.core-compute-aat.internal'
+    }
+  }
+
+  before('functionalTest:aat') {
+    withAksClient('nonprod', product) {
+      // Vars needed for AKS testing
+      env.DOCUMENT_MANAGEMENT_URL = 'http://dm-store-aat.service.core-compute-aat.internal'
+      env.CASE_DOCUMENT_AM_URL = 'http://ccd-case-document-am-api-aat.service.core-compute-aat.internal'
+    }
+  }
+  
   loadVaultSecrets(secrets)
   enableSlackNotifications('#sscs-tech')
   enableAksStagingDeployment()
