@@ -5,15 +5,13 @@ import static uk.gov.hmcts.reform.sscs.domain.notify.NotificationEventType.*;
 
 import java.io.IOException;
 import java.util.List;
+import java.util.Optional;
 import java.util.stream.Collectors;
 import junitparams.Parameters;
 import org.junit.Ignore;
 import org.junit.Test;
 import org.springframework.beans.factory.annotation.Value;
-import uk.gov.hmcts.reform.sscs.ccd.domain.ReasonableAdjustmentStatus;
-import uk.gov.hmcts.reform.sscs.ccd.domain.SscsCaseData;
-import uk.gov.hmcts.reform.sscs.ccd.domain.SscsCaseDetails;
-import uk.gov.hmcts.reform.sscs.ccd.domain.YesNo;
+import uk.gov.hmcts.reform.sscs.ccd.domain.*;
 import uk.gov.hmcts.reform.sscs.functional.AbstractFunctionalTest;
 import uk.gov.service.notify.Notification;
 import uk.gov.service.notify.NotificationClientException;
@@ -161,6 +159,8 @@ public class NotificationsFunctionalTest extends AbstractFunctionalTest {
                 evidenceReceivedEmailTemplateId,
                 evidenceReceivedSmsTemplateId
         );
+
+        fetchNotificationFromCcd(EVIDENCE_RECEIVED_NOTIFICATION.getId());
     }
 
 
@@ -169,6 +169,8 @@ public class NotificationsFunctionalTest extends AbstractFunctionalTest {
         simulateCcdCallback(POSTPONEMENT_NOTIFICATION);
 
         tryFetchNotificationsForTestCase(hearingPostponedEmailTemplateId);
+
+        fetchNotificationFromCcd(POSTPONEMENT_NOTIFICATION.getId());
     }
 
     @Test
@@ -179,6 +181,8 @@ public class NotificationsFunctionalTest extends AbstractFunctionalTest {
                 hearingAdjournedEmailTemplateId,
                 hearingAdjournedSmsTemplateId
         );
+
+        fetchNotificationFromCcd(ADJOURNED_NOTIFICATION.getId());
     }
 
     @Test
@@ -188,11 +192,15 @@ public class NotificationsFunctionalTest extends AbstractFunctionalTest {
         tryFetchNotificationsForTestCase(subscriptionCreatedSmsTemplateId);
     }
 
+
+
     @Test
     public void shouldSendSubscriptionUpdatedNotification() throws NotificationClientException, IOException {
         simulateCcdCallback(SUBSCRIPTION_UPDATED_NOTIFICATION);
 
         tryFetchNotificationsForTestCase(subscriptionUpdatedEmailTemplateId);
+
+        fetchNotificationFromCcd(SUBSCRIPTION_UPDATED_NOTIFICATION.getId());
     }
 
     @Test
@@ -201,6 +209,8 @@ public class NotificationsFunctionalTest extends AbstractFunctionalTest {
         List<Notification> notifications = tryFetchNotificationsForTestCase(appealCreatedAppellantEmailId, appealCreatedAppellantSmsId);
 
         assertNotificationBodyContains(notifications, appealCreatedAppellantEmailId, "appeal has been received");
+
+        fetchNotificationFromCcd(SYA_APPEAL_CREATED_NOTIFICATION.getId());
     }
 
     @Test
@@ -209,6 +219,8 @@ public class NotificationsFunctionalTest extends AbstractFunctionalTest {
         List<Notification> notifications = tryFetchNotificationsForTestCase(appealCreatedAppellantEmailId, appealCreatedAppellantSmsId);
 
         assertNotificationBodyContains(notifications, appealCreatedAppellantEmailId, "appeal has been received");
+
+        fetchNotificationFromCcd(SYA_APPEAL_CREATED_NOTIFICATION.getId());
     }
 
     @Test
@@ -217,6 +229,8 @@ public class NotificationsFunctionalTest extends AbstractFunctionalTest {
         List<Notification> notifications = tryFetchNotificationsForTestCase(appealCreatedAppointeeEmailId, appealCreatedAppointeeSmsId);
 
         assertNotificationBodyContains(notifications, appealCreatedAppointeeEmailId, "appointee");
+
+        fetchNotificationFromCcd(SYA_APPEAL_CREATED_NOTIFICATION.getId());
     }
 
     @Test
@@ -225,6 +239,8 @@ public class NotificationsFunctionalTest extends AbstractFunctionalTest {
         List<Notification> notifications = tryFetchNotificationsForTestCase(appealCreatedAppointeeEmailId, appealCreatedAppointeeSmsId);
 
         assertNotificationBodyContains(notifications, appealCreatedAppointeeEmailId, "appointee");
+
+        fetchNotificationFromCcd(SYA_APPEAL_CREATED_NOTIFICATION.getId());
     }
 
     @Test
@@ -247,6 +263,8 @@ public class NotificationsFunctionalTest extends AbstractFunctionalTest {
         assertNotificationBodyContains(notifications, paperResponseReceivedEmailId, caseData.getCaseReference(),
                 expectedPanelComposition, expectedHearingContactDate, expectedTyaLink);
         assertNotificationBodyContains(notifications, paperResponseReceivedSmsId, expectedHearingContactDate);
+
+        fetchNotificationFromCcd(DWP_RESPONSE_RECEIVED_NOTIFICATION.getId());
     }
 
     @Test
@@ -277,6 +295,8 @@ public class NotificationsFunctionalTest extends AbstractFunctionalTest {
                 AS_APPOINTEE_FOR,
                 "/evidence/" + TYA
         );
+
+        fetchNotificationFromCcd(EVIDENCE_REMINDER_NOTIFICATION.getId());
     }
 
     @Test
@@ -296,6 +316,8 @@ public class NotificationsFunctionalTest extends AbstractFunctionalTest {
                 AS_APPOINTEE_FOR,
                 "/evidence/" + TYA
         );
+
+        fetchNotificationFromCcd(EVIDENCE_REMINDER_NOTIFICATION.getId());
     }
 
     @Test
@@ -313,6 +335,8 @@ public class NotificationsFunctionalTest extends AbstractFunctionalTest {
         Notification updateEmailNotification = notifications.stream().filter(f -> f.getTemplateId().toString().equals(subscriptionUpdatedEmailTemplateId)).collect(Collectors.toList()).get(0);
         assertTrue(updateEmailNotification.getBody().contains("Dear Appellant User\r\n\r\nEmails about your ESA"));
         assertFalse(updateEmailNotification.getBody().contains("You are receiving this update as the appointee for"));
+
+        fetchNotificationFromCcd(SUBSCRIPTION_UPDATED_NOTIFICATION.getId());
     }
 
     @Test
@@ -328,6 +352,8 @@ public class NotificationsFunctionalTest extends AbstractFunctionalTest {
         );
         Notification updateEmailNotification = notifications.stream().filter(f -> f.getTemplateId().toString().equals(subscriptionUpdatedEmailTemplateId)).collect(Collectors.toList()).get(0);
         assertTrue(updateEmailNotification.getBody().contains("Dear Appointee User\r\n\r\nYou are receiving this update as the appointee for Appellant User.\r\n\r\nEmails about your ESA"));
+
+        fetchNotificationFromCcd(SUBSCRIPTION_UPDATED_NOTIFICATION.getId());
     }
 
     @Test
@@ -342,6 +368,8 @@ public class NotificationsFunctionalTest extends AbstractFunctionalTest {
         Notification emailNotification = notifications.stream().filter(f -> f.getTemplateId().toString().equals(paperAppointeeEvidenceReceivedEmailId)).collect(Collectors.toList()).get(0);
         assertTrue(emailNotification.getBody().contains("Dear Appointee User"));
         assertTrue(emailNotification.getBody().contains("You are receiving this update as the appointee for Appellant User."));
+
+        fetchNotificationFromCcd(EVIDENCE_RECEIVED_NOTIFICATION.getId());
     }
 
     @Test
@@ -355,6 +383,7 @@ public class NotificationsFunctionalTest extends AbstractFunctionalTest {
         );
         Notification emailNotification = notifications.stream().filter(f -> f.getTemplateId().toString().equals(hearingAdjournedAppointeeEmailId)).collect(Collectors.toList()).get(0);
         assertTrue(emailNotification.getBody().contains("Dear Appointee User"));
+        fetchNotificationFromCcd(ADJOURNED_NOTIFICATION.getId());
     }
 
     @Test
@@ -373,6 +402,8 @@ public class NotificationsFunctionalTest extends AbstractFunctionalTest {
         List<Notification> notificationLetters = fetchLetters();
         assertEquals(1, notificationLetters.size());
         assertEquals("Pre-compiled PDF", notificationLetters.get(0).getSubject().orElse("Unknown Subject"));
+
+        fetchNotificationFromCcd(APPEAL_LAPSED_NOTIFICATION.getId());
     }
 
     @Test
@@ -387,6 +418,8 @@ public class NotificationsFunctionalTest extends AbstractFunctionalTest {
 
         assertTrue(emailNotification.getBody().contains("Dear Appointee User"));
         assertTrue(emailNotification.getBody().contains("You are receiving this update as the appointee for"));
+
+        fetchNotificationFromCcd(APPEAL_LAPSED_NOTIFICATION.getId());
     }
 
     @Test
@@ -401,6 +434,8 @@ public class NotificationsFunctionalTest extends AbstractFunctionalTest {
         Notification emailNotification = notifications.stream().filter(f -> f.getTemplateId().toString().equals(paperAppointeeResponseReceivedEmailId)).collect(Collectors.toList()).get(0);
         assertTrue(emailNotification.getBody().contains("Dear Appointee User"));
         assertTrue(emailNotification.getBody().contains("You should have received a copy"));
+
+        fetchNotificationFromCcd(DWP_RESPONSE_RECEIVED_NOTIFICATION.getId());
     }
 
     public void shouldSendAppointeeAppealWithdrawnNotification() throws NotificationClientException, IOException {
@@ -413,6 +448,8 @@ public class NotificationsFunctionalTest extends AbstractFunctionalTest {
                 .collect(Collectors.toList()).get(0);
         assertTrue(emailNotification.getBody().contains("Dear Appointee User"));
         assertTrue(emailNotification.getBody().contains("You are receiving this update as the appointee for"));
+
+        fetchNotificationFromCcd(APPEAL_WITHDRAWN_NOTIFICATION.getId());
     }
 
     @Test
@@ -428,6 +465,8 @@ public class NotificationsFunctionalTest extends AbstractFunctionalTest {
         );
         Notification emailNotification = notifications.stream().filter(f -> f.getTemplateId().toString().equals(appointeeHearingBookedEmailId)).collect(Collectors.toList()).get(0);
         assertTrue(emailNotification.getBody().contains("Dear Appointee User\r\n\r\nYou are receiving this update as the appointee for Appellant User.\r\n\r\n"));
+
+        fetchNotificationFromCcd(HEARING_BOOKED_NOTIFICATION.getId());
     }
 
     @Test
@@ -438,6 +477,8 @@ public class NotificationsFunctionalTest extends AbstractFunctionalTest {
         Notification emailNotification = notifications.stream().filter(f -> f.getTemplateId().toString().equals(appointeeEvidenceReceivedEmailId)).collect(Collectors.toList()).get(0);
         assertTrue(emailNotification.getBody().contains("Dear Appointee User"));
         assertTrue(emailNotification.getBody().contains("You are receiving this update as the appointee for"));
+
+        fetchNotificationFromCcd(EVIDENCE_RECEIVED_NOTIFICATION.getId());
     }
 
     @Test
@@ -449,6 +490,8 @@ public class NotificationsFunctionalTest extends AbstractFunctionalTest {
 
         assertTrue(emailNotification.getBody().contains("Dear Appointee User"));
         assertTrue(emailNotification.getBody().contains("You will receive another email"));
+
+        fetchNotificationFromCcd(POSTPONEMENT_NOTIFICATION.getId());
     }
 
     @Test

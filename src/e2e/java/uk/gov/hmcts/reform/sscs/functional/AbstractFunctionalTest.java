@@ -4,8 +4,7 @@ import static helper.EnvironmentProfileValueSource.getEnvOrEmpty;
 import static java.util.Arrays.asList;
 import static java.util.stream.Collectors.toSet;
 import static junit.framework.TestCase.fail;
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.*;
 import static org.slf4j.LoggerFactory.getLogger;
 import static uk.gov.hmcts.reform.sscs.SscsCaseDataUtils.buildSscsCaseData;
 import static uk.gov.hmcts.reform.sscs.SscsCaseDataUtils.buildSscsCaseDataWelsh;
@@ -19,14 +18,7 @@ import java.io.IOException;
 import java.nio.charset.StandardCharsets;
 import java.time.Instant;
 import java.time.LocalDate;
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Map;
-import java.util.Objects;
-import java.util.Set;
-import java.util.UUID;
+import java.util.*;
 import java.util.concurrent.TimeUnit;
 import java.util.stream.Collectors;
 import junitparams.JUnitParamsRunner;
@@ -48,15 +40,13 @@ import org.springframework.test.annotation.ProfileValueSourceConfiguration;
 import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.context.junit4.rules.SpringClassRule;
 import org.springframework.test.context.junit4.rules.SpringMethodRule;
-import uk.gov.hmcts.reform.sscs.ccd.domain.Event;
-import uk.gov.hmcts.reform.sscs.ccd.domain.EventDetails;
-import uk.gov.hmcts.reform.sscs.ccd.domain.SscsCaseData;
-import uk.gov.hmcts.reform.sscs.ccd.domain.SscsCaseDetails;
+import uk.gov.hmcts.reform.sscs.ccd.domain.*;
 import uk.gov.hmcts.reform.sscs.ccd.service.CcdService;
 import uk.gov.hmcts.reform.sscs.domain.notify.NotificationEventType;
 import uk.gov.hmcts.reform.sscs.idam.IdamService;
 import uk.gov.hmcts.reform.sscs.idam.IdamTokens;
 import uk.gov.hmcts.reform.sscs.service.AuthorisationService;
+import uk.gov.hmcts.reform.sscs.service.PdfStoreService;
 import uk.gov.hmcts.reform.sscs.service.RegionalProcessingCenterService;
 import uk.gov.service.notify.Notification;
 import uk.gov.service.notify.NotificationClient;
@@ -105,6 +95,9 @@ public abstract class AbstractFunctionalTest {
 
     @Autowired
     protected CcdService ccdService;
+
+    @Autowired
+    protected PdfStoreService pdfStoreService;
 
     @Before
     public void setup() {
@@ -368,6 +361,20 @@ public abstract class AbstractFunctionalTest {
                         CoreMatchers.containsString(match)
                 );
             }
+        }
+    }
+
+    public void fetchNotificationFromCcd(String eventType) {
+        SscsCaseDetails sscsCaseDetails = ccdService.getByCaseId(caseId,idamTokens);
+        Optional<Correspondence> notification =  sscsCaseDetails.getData().getCorrespondence().stream().filter(c -> c.getValue().getDocumentLink()
+                .getDocumentFilename().indexOf(eventType) != -1).findFirst();
+
+        assertTrue(notification.isPresent());
+
+        if (notification.isPresent()) {
+            byte[] binary = pdfStoreService.download(notification.get().getValue().getDocumentLink().getDocumentBinaryUrl());
+            assertNotNull(binary);
+            assertTrue(binary.length > 0);
         }
     }
 
