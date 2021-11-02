@@ -261,6 +261,7 @@ public class Personalisation<E extends NotificationWrapper> {
         personalisation.put(ONLINE_HEARING_SIGN_IN_LINK_LITERAL, config.getOnlineHearingLink() + "/sign-in");
 
         personalisation.put(APPOINTEE_DESCRIPTION, getAppointeeDescription(subscriptionWithType.getSubscriptionType(), ccdResponse));
+        personalisation.put(APPOINTEE_NAME, getName(APPOINTEE, ccdResponse, responseWrapper));
 
         personalisation.put(HEARING_TYPE, responseWrapper.getNewSscsCaseData().getAppeal().getHearingType());
 
@@ -592,7 +593,9 @@ public class Personalisation<E extends NotificationWrapper> {
                 || ACTION_HEARING_RECORDING_REQUEST.equals(notificationEventType)
                 || VALID_APPEAL_CREATED.equals(notificationEventType)
                 || ACTION_POSTPONEMENT_REQUEST.equals(notificationEventType)
-                || ACTION_POSTPONEMENT_REQUEST_WELSH.equals(notificationEventType))) {
+                || ACTION_POSTPONEMENT_REQUEST_WELSH.equals(notificationEventType)
+                || DEATH_OF_APPELLANT.equals(notificationEventType)
+                || PROVIDE_APPOINTEE_DETAILS.equals(notificationEventType))) {
             letterTemplateName = letterTemplateName + "." + subscriptionType.name().toLowerCase();
 
         }
