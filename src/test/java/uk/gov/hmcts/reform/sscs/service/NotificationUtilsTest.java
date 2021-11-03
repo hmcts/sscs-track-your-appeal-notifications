@@ -26,9 +26,7 @@ import org.junit.runner.RunWith;
 import org.mockito.Mock;
 import uk.gov.hmcts.reform.sscs.ccd.domain.*;
 import uk.gov.hmcts.reform.sscs.config.AppealHearingType;
-import uk.gov.hmcts.reform.sscs.config.SubscriptionType;
 import uk.gov.hmcts.reform.sscs.domain.SscsCaseDataWrapper;
-import uk.gov.hmcts.reform.sscs.domain.SubscriptionWithType;
 import uk.gov.hmcts.reform.sscs.domain.notify.*;
 import uk.gov.hmcts.reform.sscs.factory.CcdNotificationWrapper;
 import uk.gov.hmcts.reform.sscs.factory.NotificationWrapper;
@@ -280,26 +278,6 @@ public class NotificationUtilsTest {
     }
 
     @Test
-    @Parameters(method = "fallbackLetterRequiredScenarios")
-    public void fallbackLetterIsRequired(SubscriptionWithType subscriptionWithType, boolean isFallbackLetterRequiredForSubscriptionTypeResponse, NotificationEventType eventType) {
-        when(notificationValidService.isFallbackLetterRequiredForSubscriptionType(any(), any(), any())).thenReturn(isFallbackLetterRequiredForSubscriptionTypeResponse);
-
-        CcdNotificationWrapper wrapper = buildBaseWrapper(subscriptionWithType.getSubscription(), eventType);
-
-        assertTrue(isFallbackLetterRequired(wrapper, subscriptionWithType, subscriptionWithType.getSubscription(), eventType, notificationValidService));
-    }
-
-    @Test
-    @Parameters(method = "fallbackLetterNotRequiredScenarios")
-    public void fallbackLetterIsNotRequired(SubscriptionWithType subscriptionWithType, Subscription subscription, boolean isFallbackLetterRequiredForSubscriptionTypeResponse, NotificationEventType eventType) {
-        when(notificationValidService.isFallbackLetterRequiredForSubscriptionType(any(), any(), any())).thenReturn(isFallbackLetterRequiredForSubscriptionTypeResponse);
-
-        CcdNotificationWrapper wrapper = buildBaseWrapper(subscription, eventType);
-
-        assertFalse(isFallbackLetterRequired(wrapper, subscriptionWithType, subscription, eventType, notificationValidService));
-    }
-
-    @Test
     public void okToSendSmsNotificationisValid() {
         when(notificationValidService.isNotificationStillValidToSend(any(), any())).thenReturn(true);
         when(notificationValidService.isHearingTypeValidToSendNotification(any(), any())).thenReturn(true);
@@ -483,43 +461,6 @@ public class NotificationUtilsTest {
             .notificationEventType(eventType)
             .build();
         return new CcdNotificationWrapper(sscsCaseDataWrapper);
-    }
-
-    private Object[] fallbackLetterRequiredScenarios() {
-        return new Object[]{
-            new Object[] {
-                new SubscriptionWithType(Subscription.builder().subscribeEmail(YES).build(), SubscriptionType.APPELLANT),
-                true,
-                DO_NOT_SEND
-            },
-            new Object[] {
-                new SubscriptionWithType(Subscription.builder().build(), SubscriptionType.APPELLANT),
-                true,
-                DO_NOT_SEND
-            },
-            new Object[] {
-                new SubscriptionWithType(null, SubscriptionType.APPELLANT),
-                true,
-                DO_NOT_SEND
-            }
-        };
-    }
-
-    private Object[] fallbackLetterNotRequiredScenarios() {
-        return new Object[]{
-            new Object[] {
-                new SubscriptionWithType(Subscription.builder().build(), SubscriptionType.APPELLANT),
-                null,
-                false,
-                DO_NOT_SEND
-            },
-            new Object[] {
-                new SubscriptionWithType(Subscription.builder().build(), SubscriptionType.APPELLANT),
-                Subscription.builder().build(),
-                false,
-                DO_NOT_SEND
-            }
-        };
     }
 
     public Object[] isNotOkToSendSmsNotificationScenarios() {

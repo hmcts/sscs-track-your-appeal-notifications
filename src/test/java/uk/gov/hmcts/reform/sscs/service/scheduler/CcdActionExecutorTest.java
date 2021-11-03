@@ -5,7 +5,7 @@ import static com.fasterxml.jackson.databind.DeserializationFeature.READ_UNKNOWN
 import static com.fasterxml.jackson.databind.SerializationFeature.WRITE_ENUMS_USING_TO_STRING;
 import static org.junit.Assert.assertEquals;
 import static org.mockito.Mockito.*;
-import static org.mockito.MockitoAnnotations.initMocks;
+import static org.mockito.MockitoAnnotations.openMocks;
 import static uk.gov.hmcts.reform.sscs.domain.notify.NotificationEventType.EVIDENCE_REMINDER_NOTIFICATION;
 import static uk.gov.hmcts.reform.sscs.domain.notify.NotificationEventType.SYA_APPEAL_CREATED_NOTIFICATION;
 
@@ -57,7 +57,7 @@ public class CcdActionExecutorTest {
 
     @Before
     public void setup() {
-        initMocks(this);
+        openMocks(this);
 
         Jackson2ObjectMapperBuilder objectMapperBuilder =
                 new Jackson2ObjectMapperBuilder()

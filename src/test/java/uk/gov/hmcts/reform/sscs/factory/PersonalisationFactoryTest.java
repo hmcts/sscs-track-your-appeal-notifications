@@ -2,7 +2,7 @@ package uk.gov.hmcts.reform.sscs.factory;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNull;
-import static org.mockito.MockitoAnnotations.initMocks;
+import static org.mockito.MockitoAnnotations.openMocks;
 import static uk.gov.hmcts.reform.sscs.domain.notify.NotificationEventType.*;
 
 import junitparams.JUnitParamsRunner;
@@ -35,7 +35,7 @@ public class PersonalisationFactoryTest {
 
     @Before
     public void setup() {
-        initMocks(this);
+        openMocks(this);
     }
 
     @Test
