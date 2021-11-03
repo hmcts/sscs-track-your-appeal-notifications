@@ -745,16 +745,16 @@ notification:
       smsId: 093c010c-bc22-4b8a-bd22-c9c55bb40a80
     hearingBooked:
       appellant:
-        emailId: 1b13d247-a866-4dd8-b1a8-157b60b77a18
+        emailId: aca83c9c-05c0-49d5-8ded-e581a0107408
         smsId: a51a7435-dffe-4455-9183-5c6f4f13bee3
       representative:
-        emailId: bca17772-cf41-47e4-aaab-ec839e6d947e
+        emailId: c7047e95-42ac-4d6a-91d9-c8f31f2685b8
         smsId: 5e7444fe-860c-4623-b5c5-b23af1ddbb0b
       appointee:
-        emailId: 1b13d247-a866-4dd8-b1a8-157b60b77a18
+        emailId: aca83c9c-05c0-49d5-8ded-e581a0107408
         smsId: a51a7435-dffe-4455-9183-5c6f4f13bee3
       joint_party:
-        emailId: a0aa060b-78ab-4380-b922-f78b5878515f
+        emailId: 1df83ea1-bdd5-4ce0-901d-769c3a8509cb
         smsId: a11f7576-c44c-40f5-96cf-2920dce41bd5
     appealCreated:
       appellant:
@@ -797,16 +797,16 @@ notification:
         docmosisId: TB-SCS-GNO-WEL-00467.docx
     hearingReminder:
       appellant:
-        emailId: e503b3df-cc95-4d2d-9723-0a4759187eae
+        emailId: 07eb8f5f-3436-4c2e-9676-7ee213239cc5
         smsId: adf60ff5-f83d-4931-9f35-fda2609afb7e
       appointee:
-        emailId: e503b3df-cc95-4d2d-9723-0a4759187eae
+        emailId: 07eb8f5f-3436-4c2e-9676-7ee213239cc5
         smsId: adf60ff5-f83d-4931-9f35-fda2609afb7e
       representative:
-        emailId: 5637c48e-84a0-4c72-841f-c55505c5e703
+        emailId: 351c3d34-c436-4700-92ff-ff2954f5e17c
         smsId: 54f9c139-1c3d-4f4c-ae79-d75e4eafcfec
       joint_party:
-        emailId: 7a652620-de50-47f6-9c53-2d442d083a29
+        emailId: b2f8f063-bb06-494d-a59e-cc037106a9c3
         smsId: 534e7537-3012-42de-a6c3-9036b133c525
     struckOut:
       docmosisId: TB-SCS-GNO-WEL-00593.docx
