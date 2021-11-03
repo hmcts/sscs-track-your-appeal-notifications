@@ -102,7 +102,7 @@ bootRun {
 }
 
 ext {
-    springCloudVersion = '2020.0.4'
+    springCloudVersion = 'Hoxton.SR12'
 }
 
 dependencyManagement {
