@@ -32,7 +32,7 @@ public class SyaAppealCreatedAndReceivedPersonalisationTest extends Personalisat
     SyaAppealCreatedAndReceivedPersonalisation syaAppealCreatedAndReceivedPersonalisation;
 
     @Spy
-    private PersonalisationConfiguration personalisationConfiguration;
+    private PersonalisationConfiguration syaAppealCreatedPersonalisationConfiguration;
 
     @Before
     public void setup() {
@@ -109,7 +109,7 @@ public class SyaAppealCreatedAndReceivedPersonalisationTest extends Personalisat
 
         super.setup();
 
-        personalisationConfiguration.setPersonalisation(personalisations);
+        syaAppealCreatedPersonalisationConfiguration.setPersonalisation(personalisations);
     }
 
     @Test
