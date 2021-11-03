@@ -4,10 +4,11 @@
     "callback_response_status": null,
     "callback_response_status_code": null,
     "case_data": {
+      "languagePreferenceWelsh": "Yes",
       "processAudioVideoAction": {
         "value": {
-          "code": "admitEvidence",
-          "label": "Admit audio/video evidence"
+          "code": "issueDirectionsNotice",
+          "label": "Issue directions notice"
         },
         "list_items": [
         ]
@@ -53,6 +54,30 @@
           "identity": {
             "dob": "1998-07-01",
             "nino": "JT098230B"
+          },
+          "isAppointee": "Yes",
+          "appointee": {
+            "name": {
+              "title": "Mr",
+              "firstName": "John",
+              "lastName": "Lewis"
+            },
+            "address": {
+              "line1": "16, Wheatleys",
+              "line2": "test",
+              "town": "St. Albans",
+              "county": "Hertfordshire",
+              "postcode": "TS1 1ST"
+            },
+            "contact": {
+              "email": "sscs-citizen2@hmcts.net",
+              "phone": "07534744199",
+              "mobile": null
+            },
+            "identity": {
+              "dob": "1990-03-21",
+              "nino": "SK334424A"
+            }
           }
         },
         "rep": {
@@ -135,7 +160,7 @@
         },
         "hearingType": ""
       },
-      "sscsDocument": [],
+      "sscsWelshDocuments": [],
       "evidence": {
         "documents": [
           {
@@ -189,12 +214,12 @@
           "mobile": "07985233301",
           "reason": null,
           "wantSmsNotifications": "No",
-          "subscribeEmail": "Yes",
-          "subscribeSms": "Yes",
+          "subscribeEmail": "No",
+          "subscribeSms": "No",
           "tya": "543212345"
         },
         "representativeSubscription": {
-          "wantSmsNotifications": "Yes",
+          "wantSmsNotifications": "No",
           "tya": "NpmhpYaFLa",
           "email": "sscstest+notify@greencroftconsulting.com",
           "mobile": "07398785050",
@@ -246,7 +271,7 @@
       ]
     },
     "case_type_id": "Benefit",
-    "state": "appealCreated",
+    "state": "dormantAppealState",
     "created_date": [
       2019,
       9,
@@ -290,7 +315,8 @@
           "identity": {
             "dob": "1998-07-01",
             "nino": "JT098230B"
-          }
+          },
+          "isAppointee": "no"
         },
         "benefitType": {
           "code": "ESA"
@@ -397,8 +423,8 @@
       ]
     },
     "case_type_id": "Benefit",
-    "state": "appealCreated",
+    "state": "dormantAppealState",
     "id": "12345656789"
   },
-  "event_id": "processAudioVideo"
+  "event_id": "provideAppointeeDetails"
 }

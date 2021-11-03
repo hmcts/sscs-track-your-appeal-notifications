@@ -4,10 +4,11 @@
     "callback_response_status": null,
     "callback_response_status_code": null,
     "case_data": {
+      "languagePreferenceWelsh": "Yes",
       "processAudioVideoAction": {
         "value": {
-          "code": "admitEvidence",
-          "label": "Admit audio/video evidence"
+          "code": "issueDirectionsNotice",
+          "label": "Issue directions notice"
         },
         "list_items": [
         ]
@@ -53,6 +54,30 @@
           "identity": {
             "dob": "1998-07-01",
             "nino": "JT098230B"
+          },
+          "isAppointee": "Yes",
+          "appointee": {
+            "name": {
+              "title": "Mrs",
+              "firstName": "John",
+              "lastName": "Carry"
+            },
+            "address": {
+              "line1": "12, Highstreet, Test",
+              "line2": "Highstreet",
+              "town": "Camden",
+              "county": "Hertfordshire",
+              "postcode": "TS1 1ST"
+            },
+            "contact": {
+              "email": "sscs-citizen2@hmcts.net",
+              "phone": null,
+              "mobile": "01234567810"
+            },
+            "identity": {
+              "dob": "1991-03-27",
+              "nino": "SK334444A"
+            }
           }
         },
         "rep": {
@@ -135,7 +160,7 @@
         },
         "hearingType": ""
       },
-      "sscsDocument": [],
+      "sscsWelshDocuments": [],
       "evidence": {
         "documents": [
           {
@@ -189,12 +214,12 @@
           "mobile": "07985233301",
           "reason": null,
           "wantSmsNotifications": "No",
-          "subscribeEmail": "Yes",
-          "subscribeSms": "Yes",
+          "subscribeEmail": "No",
+          "subscribeSms": "No",
           "tya": "543212345"
         },
         "representativeSubscription": {
-          "wantSmsNotifications": "Yes",
+          "wantSmsNotifications": "No",
           "tya": "NpmhpYaFLa",
           "email": "sscstest+notify@greencroftconsulting.com",
           "mobile": "07398785050",
@@ -246,7 +271,7 @@
       ]
     },
     "case_type_id": "Benefit",
-    "state": "appealCreated",
+    "state": "validAppeal",
     "created_date": [
       2019,
       9,
@@ -290,7 +315,31 @@
           "identity": {
             "dob": "1998-07-01",
             "nino": "JT098230B"
-          }
+          },
+          "appointee": {
+            "name": {
+              "title": "Mrs",
+              "lastName": "Cena",
+              "firstName": "John"
+            },
+            "address": {
+              "town": "Camden",
+              "line1": "12, Highstreet, Test",
+              "line2": "Highstreet",
+              "county": "Hertfordshire",
+              "postcode": "TS1 1ST"
+            },
+            "contact": {
+              "email": "sscs-citizen2@hmcts.net",
+              "phone": null,
+              "mobile": "01234567810"
+            },
+            "identity": {
+              "dob": "1991-03-26",
+              "nino": "SK334434A"
+            }
+          },
+          "isAppointee": "Yes"
         },
         "benefitType": {
           "code": "ESA"
@@ -397,8 +446,8 @@
       ]
     },
     "case_type_id": "Benefit",
-    "state": "appealCreated",
+    "state": "validAppeal",
     "id": "12345656789"
   },
-  "event_id": "processAudioVideo"
+  "event_id": "deathOfAppellant"
 }

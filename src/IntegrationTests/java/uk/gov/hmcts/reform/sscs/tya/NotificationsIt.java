@@ -287,7 +287,7 @@ public class NotificationsIt extends NotificationsItBase {
         if (notificationEventType.equals(PROCESS_AUDIO_VIDEO)) {
             Map<String, Object> map = new HashMap<>();
             Map<String, String> mapValue = new HashMap<>();
-            mapValue.put("code", "includeEvidence");
+            mapValue.put("code", "admitEvidence");
             map.put("value", mapValue);
             json = updateEmbeddedJson(json, map, "case_details", "case_data", "processAudioVideoAction");
         }

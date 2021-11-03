@@ -299,7 +299,7 @@ notification:
         letterId: 747d026e-1bec-4e96-8a34-28f36e30bba5
     validAppealCreated:
       appellant:
-        emailId: 01293b93-b23e-40a3-ad78-2c6cd01cd21c
+        emailId: 9b5a6ac7-a1ad-4fc2-8e83-b0f32af9ff32
         smsId: f41222ef-c05c-4682-9634-6b034a166368
         docmosisId: TB-SCS-GNO-ENG-00060.doc
       representative:
@@ -418,6 +418,15 @@ notification:
           docmosisId: TB-SCS-GNO-ENG-00089.docx
         joint_party:
           docmosisId: TB-SCS-GNO-ENG-00067.docx
+    actionPostponementRequest:
+      appellant:
+        docmosisId: TB-SCS-GNO-ENG-00067.docx
+      appointee:
+        docmosisId: TB-SCS-GNO-ENG-00067.docx
+      representative:
+        docmosisId: TB-SCS-GNO-ENG-00089.docx
+      joint_party:
+        docmosisId: TB-SCS-GNO-ENG-00067.docx
     decisionIssued:
       appellant:
         docmosisId: TB-SCS-GNO-ENG-00094.docx
@@ -457,6 +466,25 @@ notification:
         docmosisId: TB-SCS-GNO-ENG-00582.docx
       joint_party:
         docmosisId: TB-SCS-GNO-ENG-00582.docx
+    actionHearingRecordingRequest:
+      appellant:
+        docmosisId: TB-SCS-GNO-ENG-00760.docx
+      representative:
+        docmosisId: TB-SCS-GNO-ENG-00760.docx
+      appointee:
+        docmosisId: TB-SCS-GNO-ENG-00760.docx
+      joint_party:
+        docmosisId: TB-SCS-GNO-ENG-00760.docx
+    deathOfAppellant:
+      representative:
+        docmosisId: TB-SCS-GNO-ENG-00773.docx
+      appointee:
+        docmosisId: TB-SCS-GNO-ENG-00773.docx
+    provideAppointeeDetails:
+      representative:
+        docmosisId: TB-SCS-GNO-ENG-00773.docx
+      appointee:
+        docmosisId: TB-SCS-GNO-ENG-00773.docx
     paper:
       responseReceived:
         appellant:
@@ -782,8 +810,6 @@ notification:
         smsId: 534e7537-3012-42de-a6c3-9036b133c525
     struckOut:
       docmosisId: TB-SCS-GNO-WEL-00593.docx
-      representative:
-        docmosisId: TB-SCS-GNO-ENG-00466.docx
     processAudioVideoWelsh:
       docmosisId: TB-SCS-GNO-WEL-00678.docx
     directionIssuedWelsh:
@@ -846,6 +872,15 @@ notification:
           docmosisId: TB-SCS-GNO-WEL-00472.docx
         joint_party:
           docmosisId: TB-SCS-GNO-WEL-00468.docx
+    actionPostponementRequestWelsh:
+      appellant:
+        docmosisId: TB-SCS-GNO-WEL-00468.docx
+      appointee:
+        docmosisId: TB-SCS-GNO-WEL-00468.docx
+      representative:
+        docmosisId: TB-SCS-GNO-WEL-00472.docx
+      joint_party:
+        docmosisId: TB-SCS-GNO-WEL-00468.docx
     decisionIssuedWelsh:
       appellant:
         docmosisId: TB-SCS-GNO-WEL-00474.docx
@@ -885,6 +920,25 @@ notification:
         docmosisId: TB-SCS-GNO-WEL-00602.docx
       joint_party:
         docmosisId: TB-SCS-GNO-WEL-00602.docx
+    actionHearingRecordingRequest:
+      appellant:
+        docmosisId: TB-SCS-GNO-WEL-00765.docx
+      representative:
+        docmosisId: TB-SCS-GNO-WEL-00765.docx
+      appointee:
+        docmosisId: TB-SCS-GNO-WEL-00765.docx
+      joint_party:
+        docmosisId: TB-SCS-GNO-WEL-00765.docx
+    deathOfAppellant:
+      representative:
+        docmosisId: TB-SCS-GNO-WEL-00774.docx
+      appointee:
+        docmosisId: TB-SCS-GNO-WEL-00774.docx
+    provideAppointeeDetails:
+      representative:
+        docmosisId: TB-SCS-GNO-WEL-00774.docx
+      appointee:
+        docmosisId: TB-SCS-GNO-WEL-00774.docx
     paper:
       responseReceived:
         appellant:

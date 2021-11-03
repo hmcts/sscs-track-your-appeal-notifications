@@ -268,7 +268,7 @@ public class NotificationsDelayedNotificationsIt extends NotificationsItBase {
             new Object[]{
                 VALID_APPEAL_CREATED,
                 "paper",
-                Arrays.asList("01293b93-b23e-40a3-ad78-2c6cd01cd21c", "652753bf-59b4-46eb-9c24-bd762338a098"),
+                Arrays.asList("9b5a6ac7-a1ad-4fc2-8e83-b0f32af9ff32", "652753bf-59b4-46eb-9c24-bd762338a098"),
                 Arrays.asList("f41222ef-c05c-4682-9634-6b034a166368", "a6c09fad-6265-4c7c-8b95-36245ffa5352"),
                 Collections.emptyList(),
                 "yes",
@@ -282,7 +282,7 @@ public class NotificationsDelayedNotificationsIt extends NotificationsItBase {
             new Object[]{
                 VALID_APPEAL_CREATED,
                 "oral",
-                Arrays.asList("01293b93-b23e-40a3-ad78-2c6cd01cd21c", "652753bf-59b4-46eb-9c24-bd762338a098"),
+                Arrays.asList("9b5a6ac7-a1ad-4fc2-8e83-b0f32af9ff32", "652753bf-59b4-46eb-9c24-bd762338a098"),
                 Arrays.asList("f41222ef-c05c-4682-9634-6b034a166368", "a6c09fad-6265-4c7c-8b95-36245ffa5352"),
                 Collections.emptyList(),
                 "yes",
@@ -324,7 +324,7 @@ public class NotificationsDelayedNotificationsIt extends NotificationsItBase {
             new Object[]{
                 DRAFT_TO_VALID_APPEAL_CREATED,
                 "paper",
-                Arrays.asList("01293b93-b23e-40a3-ad78-2c6cd01cd21c", "652753bf-59b4-46eb-9c24-bd762338a098"),
+                Arrays.asList("9b5a6ac7-a1ad-4fc2-8e83-b0f32af9ff32", "652753bf-59b4-46eb-9c24-bd762338a098"),
                 Arrays.asList("f41222ef-c05c-4682-9634-6b034a166368", "a6c09fad-6265-4c7c-8b95-36245ffa5352"),
                 Collections.emptyList(),
                 "yes",
@@ -338,7 +338,7 @@ public class NotificationsDelayedNotificationsIt extends NotificationsItBase {
             new Object[]{
                 DRAFT_TO_VALID_APPEAL_CREATED,
                 "oral",
-                Arrays.asList("01293b93-b23e-40a3-ad78-2c6cd01cd21c", "652753bf-59b4-46eb-9c24-bd762338a098"),
+                Arrays.asList("9b5a6ac7-a1ad-4fc2-8e83-b0f32af9ff32", "652753bf-59b4-46eb-9c24-bd762338a098"),
                 Arrays.asList("f41222ef-c05c-4682-9634-6b034a166368", "a6c09fad-6265-4c7c-8b95-36245ffa5352"),
                 Collections.emptyList(),
                 "yes",

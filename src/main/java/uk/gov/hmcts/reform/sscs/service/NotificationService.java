@@ -37,7 +37,7 @@ import uk.gov.hmcts.reform.sscs.utility.PhoneNumbersUtil;
 @Service
 @Slf4j
 public class NotificationService {
-    private static final List<String> PROCESS_AUDIO_VIDEO_ACTIONS_THAT_REQUIRES_NOTICE = asList("issueDirectionsNotice", "excludeEvidence", "includeEvidence");
+    private static final List<String> PROCESS_AUDIO_VIDEO_ACTIONS_THAT_REQUIRES_NOTICE = asList("issueDirectionsNotice", "excludeEvidence", "admitEvidence");
     private static final String READY_TO_LIST = "readyToList";
 
     private final NotificationFactory notificationFactory;
@@ -320,13 +320,14 @@ public class NotificationService {
                     || DIRECTION_ISSUED_WELSH.equals(notificationType)
                     || ISSUE_FINAL_DECISION.equals(notificationType)
                     || ISSUE_FINAL_DECISION_WELSH.equals(notificationType)
-                    || REISSUE_DOCUMENT.equals(notificationType))) {
+                    || REISSUE_DOCUMENT.equals(notificationType)
+                    || PROVIDE_APPOINTEE_DETAILS.equals(notificationType))) {
                 log.info(format("Cannot complete notification %s as the appeal was dormant for caseId %s.",
                         notificationType.getId(), notificationWrapper.getCaseId()));
                 return false;
             }
         }
-        if (notificationWrapper.getNewSscsCaseData().isLanguagePreferenceWelsh() && (ISSUE_FINAL_DECISION.equals(notificationType) || DECISION_ISSUED.equals(notificationType) || DIRECTION_ISSUED.equals(notificationType) || ISSUE_ADJOURNMENT_NOTICE.equals(notificationType) || PROCESS_AUDIO_VIDEO.equals(notificationType))) {
+        if (notificationWrapper.getNewSscsCaseData().isLanguagePreferenceWelsh() && (ISSUE_FINAL_DECISION.equals(notificationType) || DECISION_ISSUED.equals(notificationType) || DIRECTION_ISSUED.equals(notificationType) || ISSUE_ADJOURNMENT_NOTICE.equals(notificationType) || PROCESS_AUDIO_VIDEO.equals(notificationType) || ACTION_POSTPONEMENT_REQUEST.equals(notificationType))) {
             log.info(format("Cannot complete notification %s as the appeal is Welsh  for caseId %s.",
                     notificationType.getId(), notificationWrapper.getCaseId()));
             return false;

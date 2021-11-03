@@ -2,6 +2,7 @@ package uk.gov.hmcts.reform.sscs.service;
 
 import static org.apache.commons.lang3.StringUtils.*;
 import static uk.gov.hmcts.reform.sscs.ccd.callback.DocumentType.*;
+import static uk.gov.hmcts.reform.sscs.ccd.callback.DocumentType.POSTPONEMENT_REQUEST_DIRECTION_NOTICE;
 import static uk.gov.hmcts.reform.sscs.config.AppConstants.*;
 import static uk.gov.hmcts.reform.sscs.domain.notify.NotificationEventType.*;
 import static uk.gov.hmcts.reform.sscs.service.LetterUtils.*;
@@ -285,7 +286,7 @@ public class SendNotificationService {
 
         byte[] associatedCasePdf = null;
         String documentUrl = getBundledLetterDocumentUrl(notificationEventType, newSscsCaseData);
-        
+
         if (null != documentUrl) {
             associatedCasePdf = pdfStoreService.download(documentUrl);
         }
@@ -313,6 +314,10 @@ public class SendNotificationService {
             return getDocumentForType(newSscsCaseData.getLatestDocumentForDocumentType(AUDIO_VIDEO_EVIDENCE_DIRECTION_NOTICE));
         } else if (PROCESS_AUDIO_VIDEO_WELSH.equals(notificationEventType)) {
             return getDocumentForType(newSscsCaseData.getLatestWelshDocumentForDocumentType(AUDIO_VIDEO_EVIDENCE_DIRECTION_NOTICE).orElse(null));
+        } else if (ACTION_POSTPONEMENT_REQUEST.equals(notificationEventType)) {
+            return getDocumentForType(newSscsCaseData.getLatestDocumentForDocumentType(POSTPONEMENT_REQUEST_DIRECTION_NOTICE));
+        } else if (ACTION_POSTPONEMENT_REQUEST_WELSH.equals(notificationEventType)) {
+            return getDocumentForType(newSscsCaseData.getLatestWelshDocumentForDocumentType(POSTPONEMENT_REQUEST_DIRECTION_NOTICE).orElse(null));
         }
         return null;
     }

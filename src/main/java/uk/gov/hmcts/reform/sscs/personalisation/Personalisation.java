@@ -43,23 +43,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
-import uk.gov.hmcts.reform.sscs.ccd.domain.AppellantInfoRequest;
-import uk.gov.hmcts.reform.sscs.ccd.domain.Benefit;
-import uk.gov.hmcts.reform.sscs.ccd.domain.DatedRequestOutcome;
-import uk.gov.hmcts.reform.sscs.ccd.domain.Event;
-import uk.gov.hmcts.reform.sscs.ccd.domain.EventDetails;
-import uk.gov.hmcts.reform.sscs.ccd.domain.EventType;
-import uk.gov.hmcts.reform.sscs.ccd.domain.Hearing;
-import uk.gov.hmcts.reform.sscs.ccd.domain.HearingDetails;
-import uk.gov.hmcts.reform.sscs.ccd.domain.HearingOptions;
-import uk.gov.hmcts.reform.sscs.ccd.domain.JointPartyName;
-import uk.gov.hmcts.reform.sscs.ccd.domain.LanguagePreference;
-import uk.gov.hmcts.reform.sscs.ccd.domain.Name;
-import uk.gov.hmcts.reform.sscs.ccd.domain.PanelComposition;
-import uk.gov.hmcts.reform.sscs.ccd.domain.RegionalProcessingCenter;
-import uk.gov.hmcts.reform.sscs.ccd.domain.SscsCaseData;
-import uk.gov.hmcts.reform.sscs.ccd.domain.State;
-import uk.gov.hmcts.reform.sscs.ccd.domain.Subscription;
+import uk.gov.hmcts.reform.sscs.ccd.domain.*;
 import uk.gov.hmcts.reform.sscs.config.AppConstants;
 import uk.gov.hmcts.reform.sscs.config.NotificationConfig;
 import uk.gov.hmcts.reform.sscs.config.SubscriptionType;
@@ -229,9 +213,7 @@ public class Personalisation<E extends NotificationWrapper> {
 
         LocalDate createdDate = LocalDate.parse(ofNullable(ccdResponse.getCaseCreated()).orElse(LocalDate.now().toString()));
         translateToWelshDate(createdDate, ccdResponse, value -> personalisation.put(CREATED_DATE_WELSH, value));
-
         personalisation.put(CREATED_DATE, createdDate.toString());
-        personalisation.put(CREATED_DATE_WELSH, createdDate.toString());
 
         personalisation.put(JOINT, subscriptionWithType.getSubscriptionType().equals(JOINT_PARTY) ? JOINT_TEXT_WITH_A_SPACE : EMPTY);
         personalisation.put(JOINT_WELSH, subscriptionWithType.getSubscriptionType().equals(JOINT_PARTY) ? JOINT_WELSH_TEXT_WITH_A_SPACE : EMPTY);
@@ -276,6 +258,7 @@ public class Personalisation<E extends NotificationWrapper> {
         personalisation.put(ONLINE_HEARING_SIGN_IN_LINK_LITERAL, config.getOnlineHearingLink() + "/sign-in");
 
         personalisation.put(APPOINTEE_DESCRIPTION, getAppointeeDescription(subscriptionWithType.getSubscriptionType(), ccdResponse));
+        personalisation.put(APPOINTEE_NAME, getName(APPOINTEE, ccdResponse, responseWrapper));
 
         personalisation.put(HEARING_TYPE, responseWrapper.getNewSscsCaseData().getAppeal().getHearingType());
 
@@ -595,7 +578,6 @@ public class Personalisation<E extends NotificationWrapper> {
                 || DECISION_ISSUED.equals(notificationEventType)
                 || DIRECTION_ISSUED_WELSH.equals(notificationEventType)
                 || DECISION_ISSUED_WELSH.equals(notificationEventType)
-                || STRUCK_OUT.equals(notificationEventType) && caseData.getLanguagePreference().equals(LanguagePreference.WELSH) && subscriptionType.equals(REPRESENTATIVE)
                 || REQUEST_INFO_INCOMPLETE.equals(notificationEventType)
                 || ISSUE_FINAL_DECISION.equals(notificationEventType)
                 || ISSUE_FINAL_DECISION_WELSH.equals(notificationEventType)
@@ -605,7 +587,12 @@ public class Personalisation<E extends NotificationWrapper> {
                 || ADMIN_APPEAL_WITHDRAWN.equals(notificationEventType)
                 || APPEAL_WITHDRAWN_NOTIFICATION.equals(notificationEventType)
                 || REVIEW_CONFIDENTIALITY_REQUEST.equals(notificationEventType)
-                || VALID_APPEAL_CREATED.equals(notificationEventType))) {
+                || ACTION_HEARING_RECORDING_REQUEST.equals(notificationEventType)
+                || VALID_APPEAL_CREATED.equals(notificationEventType)
+                || ACTION_POSTPONEMENT_REQUEST.equals(notificationEventType)
+                || ACTION_POSTPONEMENT_REQUEST_WELSH.equals(notificationEventType)
+                || DEATH_OF_APPELLANT.equals(notificationEventType)
+                || PROVIDE_APPOINTEE_DETAILS.equals(notificationEventType))) {
             letterTemplateName = letterTemplateName + "." + subscriptionType.name().toLowerCase();
 
         }
