@@ -299,15 +299,12 @@ notification:
       appellant:
         emailId: 9b5a6ac7-a1ad-4fc2-8e83-b0f32af9ff32
         smsId: f41222ef-c05c-4682-9634-6b034a166368
-        docmosisId: TB-SCS-GNO-ENG-00060.doc
       representative:
         emailId: 652753bf-59b4-46eb-9c24-bd762338a098
         smsId: a6c09fad-6265-4c7c-8b95-36245ffa5352
-        docmosisId: TB-SCS-GNO-ENG-00079.doc
       appointee:
         emailId: 362d9a85-e0e4-412b-b874-020c0464e2b4
         smsId: f41222ef-c05c-4682-9634-6b034a166368
-        docmosisId: TB-SCS-GNO-ENG-00060.doc
     resendAppealCreated:
       appellant:
         emailId: 01293b93-b23e-40a3-ad78-2c6cd01cd21c
@@ -771,15 +768,12 @@ notification:
       appellant:
         emailId: e3fa02fd-87b2-471c-9a99-7020b367eca9
         smsId: 6a39acc9-7a3f-4ed7-a0b1-d30f6594fe82
-        docmosisId: TB-SCS-GNO-WEL-00467.docx
       representative:
         emailId: 364bccc5-ffa6-495d-8035-e642d15114bf
         smsId: f8391d2b-4d80-480e-87a9-816710f5650b
-        docmosisId: TB-SCS-GNO-WEL-00471.docx
       appointee:
         emailId: e0355abd-42a6-4f94-836b-ec7ee22631cc
         smsId: 6a39acc9-7a3f-4ed7-a0b1-d30f6594fe82
-        docmosisId: TB-SCS-GNO-WEL-00467.docx
     resendAppealCreated:
       appellant:
         emailId: e3fa02fd-87b2-471c-9a99-7020b367eca9

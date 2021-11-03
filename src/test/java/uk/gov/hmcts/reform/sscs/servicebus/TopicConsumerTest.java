@@ -3,7 +3,7 @@ package uk.gov.hmcts.reform.sscs.servicebus;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.*;
 import static org.mockito.Mockito.atLeastOnce;
-import static org.mockito.MockitoAnnotations.initMocks;
+import static org.mockito.MockitoAnnotations.openMocks;
 
 import java.time.LocalDateTime;
 import java.util.Optional;
@@ -35,7 +35,7 @@ public class TopicConsumerTest {
 
     @Before
     public void setup() {
-        initMocks(this);
+        openMocks(this);
         topicConsumer = new TopicConsumer(dispatcher, deserializer);
         CaseDetails<SscsCaseData> caseDetails = new CaseDetails<>(
                 123L,
