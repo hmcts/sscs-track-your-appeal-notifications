@@ -18,9 +18,11 @@ import org.junit.Before;
 import org.junit.Test;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
+import org.mockito.Spy;
 import uk.gov.hmcts.reform.sscs.ccd.domain.*;
 import uk.gov.hmcts.reform.sscs.config.AppConstants;
 import uk.gov.hmcts.reform.sscs.config.NotificationConfig;
+import uk.gov.hmcts.reform.sscs.config.PersonalisationConfiguration;
 import uk.gov.hmcts.reform.sscs.config.properties.EvidenceProperties;
 import uk.gov.hmcts.reform.sscs.domain.SscsCaseDataWrapper;
 import uk.gov.hmcts.reform.sscs.domain.SubscriptionWithType;
@@ -59,6 +61,9 @@ public class SubscriptionPersonalisationTest {
     @Resource
     SubscriptionPersonalisation personalisation;
 
+    @Spy
+    private PersonalisationConfiguration personalisationConfiguration;
+
     private static final Subscription NEW_SUBSCRIPTION = Subscription.builder()
             .tya("GLSCRR").email("test@email.com")
             .mobile("07983495065").subscribeEmail("Yes").subscribeSms("Yes").wantSmsNotifications("Yes").build();
@@ -83,6 +88,14 @@ public class SubscriptionPersonalisationTest {
 
         when(regionalProcessingCenterService.getByScReferenceCode("1234")).thenReturn(rpc);
 
+        Map<String, String> englishMap = new HashMap<>();
+        Map<String, String> welshMap = new HashMap<>();
+
+        Map<LanguagePreference, Map<String, String>> personalisations = new HashMap<>();
+        personalisations.put(LanguagePreference.ENGLISH, englishMap);
+        personalisations.put(LanguagePreference.WELSH, welshMap);
+
+        personalisationConfiguration.setPersonalisation(personalisations);
     }
 
     @Test
