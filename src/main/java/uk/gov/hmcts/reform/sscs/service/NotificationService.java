@@ -9,7 +9,6 @@ import static uk.gov.hmcts.reform.sscs.config.SubscriptionType.*;
 import static uk.gov.hmcts.reform.sscs.domain.notify.NotificationEventType.*;
 import static uk.gov.hmcts.reform.sscs.domain.notify.NotificationEventType.getNotificationByCcdEvent;
 import static uk.gov.hmcts.reform.sscs.service.NotificationUtils.getSubscription;
-import static uk.gov.hmcts.reform.sscs.service.NotificationUtils.isFallbackLetterRequired;
 import static uk.gov.hmcts.reform.sscs.service.NotificationUtils.isOkToSendNotification;
 import static uk.gov.hmcts.reform.sscs.service.NotificationValidService.isMandatoryLetterEventType;
 
@@ -235,8 +234,7 @@ public class NotificationService {
         Subscription subscription = subscriptionWithType.getSubscription();
 
         return (isMandatoryLetterEventType(wrapper.getNotificationType())
-                || (isFallbackLetterRequired(wrapper, subscriptionWithType, subscription, wrapper.getNotificationType(), notificationValidService)
-                && isOkToSendNotification(wrapper, wrapper.getNotificationType(), subscription, notificationValidService)));
+                || isOkToSendNotification(wrapper, wrapper.getNotificationType(), subscription, notificationValidService));
     }
 
     private void processOldSubscriptionNotifications(NotificationWrapper wrapper, Notification notification, SubscriptionWithType subscriptionWithType, NotificationEventType eventType) {
@@ -320,7 +318,8 @@ public class NotificationService {
                     || DIRECTION_ISSUED_WELSH.equals(notificationType)
                     || ISSUE_FINAL_DECISION.equals(notificationType)
                     || ISSUE_FINAL_DECISION_WELSH.equals(notificationType)
-                    || REISSUE_DOCUMENT.equals(notificationType))) {
+                    || REISSUE_DOCUMENT.equals(notificationType)
+                    || PROVIDE_APPOINTEE_DETAILS.equals(notificationType))) {
                 log.info(format("Cannot complete notification %s as the appeal was dormant for caseId %s.",
                         notificationType.getId(), notificationWrapper.getCaseId()));
                 return false;

@@ -5,7 +5,7 @@ import static com.fasterxml.jackson.databind.DeserializationFeature.READ_UNKNOWN
 import static com.fasterxml.jackson.databind.SerializationFeature.WRITE_ENUMS_USING_TO_STRING;
 import static org.mockito.ArgumentMatchers.argThat;
 import static org.mockito.Mockito.*;
-import static org.mockito.MockitoAnnotations.initMocks;
+import static org.mockito.MockitoAnnotations.openMocks;
 
 import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.databind.JsonNode;
@@ -58,7 +58,7 @@ public class NotificationControllerTest {
 
     @Before
     public void setUp() throws IOException {
-        initMocks(this);
+        openMocks(this);
 
         Jackson2ObjectMapperBuilder objectMapperBuilder =
                 new Jackson2ObjectMapperBuilder()

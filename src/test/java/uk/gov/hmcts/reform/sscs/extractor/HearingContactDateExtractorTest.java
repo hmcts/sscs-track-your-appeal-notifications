@@ -36,7 +36,7 @@ public class HearingContactDateExtractorTest {
 
     @Before
     public void setup() {
-        MockitoAnnotations.initMocks(this);
+        MockitoAnnotations.openMocks(this);
         hearingContactDateExtractor = new HearingContactDateExtractor(
                 dwpResponseReceivedDateExtractor,
                 60, 3600, 120);
