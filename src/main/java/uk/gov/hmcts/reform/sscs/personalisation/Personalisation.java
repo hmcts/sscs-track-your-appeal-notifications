@@ -498,7 +498,6 @@ public class Personalisation<E extends NotificationWrapper> {
 
     private String calculateDaysToHearingText(LocalDate hearingDate) {
         long daysBetween = ChronoUnit.DAYS.between(LocalDate.now(), hearingDate);
-
         return daysBetween == 1 ? TOMORROW_STRING : "in " + daysBetween + DAYS_STRING;
     }
 
