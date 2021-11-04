@@ -1026,7 +1026,8 @@ public class NotificationServiceTest {
     }
 
     @Test
-    @Parameters({"VALID_APPEAL_CREATED", "DRAFT_TO_VALID_APPEAL_CREATED", "APPEAL_RECEIVED_NOTIFICATION"})
+    @Parameters({"VALID_APPEAL_CREATED", "DRAFT_TO_VALID_APPEAL_CREATED", "APPEAL_RECEIVED_NOTIFICATION",
+            "DWP_UPLOAD_RESPONSE_NOTIFICATION"})
     public void delayScheduleOfEvents(NotificationEventType eventType) {
         sscsCaseData.setCaseCreated(LocalDate.now().toString());
         SscsCaseDataWrapper wrapper = SscsCaseDataWrapper.builder()
@@ -1327,27 +1328,7 @@ public class NotificationServiceTest {
 
         verifyExpectedLogMessage(mockAppender, captorLoggingEvent, wrapper.getNewSscsCaseData().getCcdCaseId(), "Is not a valid notification event", Level.ERROR);
     }
-
-    @Test
-    public void willSendDwpUpload_whenCreatedInGapsFromIsReadyToList() throws NotificationClientException {
-        CcdNotificationWrapper ccdNotificationWrapper = buildBaseWrapper(DWP_UPLOAD_RESPONSE_NOTIFICATION,  APPELLANT_WITH_ADDRESS, null, null);
-        ccdNotificationWrapper.getNewSscsCaseData().setCreatedInGapsFrom(READY_TO_LIST.getId());
-
-        Notification notification = new Notification(Template.builder().emailTemplateId(EMAIL_TEMPLATE_ID).smsTemplateId(null).build(), Destination.builder().email("test@testing.com").sms("07823456746").build(), null, new Reference(), null);
-        given(factory.create(ccdNotificationWrapper, getSubscriptionWithType(ccdNotificationWrapper))).willReturn(notification);
-        given(factory.create(ccdNotificationWrapper, getSubscriptionWithTypeJoint(ccdNotificationWrapper))).willReturn(notification);
-        given(notificationValidService.isHearingTypeValidToSendNotification(
-                any(SscsCaseData.class), eq(DWP_UPLOAD_RESPONSE_NOTIFICATION))).willReturn(true);
-        given(notificationValidService.isNotificationStillValidToSend(anyList(), eq(DWP_UPLOAD_RESPONSE_NOTIFICATION)))
-                .willReturn(true);
-
-        getNotificationService().manageNotificationAndSubscription(ccdNotificationWrapper, false);
-
-        then(notificationHandler).should(atLeastOnce()).sendNotification(
-                eq(ccdNotificationWrapper), eq(EMAIL_TEMPLATE_ID), eq("Email"),
-                any(NotificationHandler.SendNotification.class));
-    }
-
+    
     @Test
     public void willNotSendDwpUpload_whenCreatedInGapsFromIsValidAppeal() {
         CcdNotificationWrapper ccdNotificationWrapper = buildBaseWrapper(DWP_UPLOAD_RESPONSE_NOTIFICATION,  APPELLANT_WITH_ADDRESS, null, null);
