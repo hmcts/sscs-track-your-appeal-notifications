@@ -350,7 +350,7 @@ dependencies {
     compile group: 'com.mchange', name: 'c3p0', version: '0.9.5.5'
     compile group: 'org.flywaydb', name: 'flyway-core', version: '6.5.6'
     compile group: 'org.postgresql', name: 'postgresql', version: '42.3.0'
-    compile group: 'net.bytebuddy', name: 'byte-buddy', version: '1.11.21'
+    compile group: 'net.bytebuddy', name: 'byte-buddy', version: '1.11.22'
     compile group: 'org.elasticsearch', name: 'elasticsearch', version: '7.15.1'
 
     compile group: 'org.springframework.boot', name: 'spring-boot-starter-actuator'
