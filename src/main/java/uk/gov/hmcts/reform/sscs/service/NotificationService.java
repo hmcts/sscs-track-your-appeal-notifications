@@ -86,7 +86,8 @@ public class NotificationService {
         if (notificationType.isAllowOutOfHours() || !outOfHoursCalculator.isItOutOfHours()) {
             if (notificationType.isToBeDelayed()
                     && !fromReminderService
-                    && !skipOldNotifications(notificationWrapper.getNewSscsCaseData().getCaseCreated())) {
+                    && !skipOldNotifications(notificationWrapper.getNewSscsCaseData().getCaseCreated())
+                    && !functionalTest(notificationWrapper.getNewSscsCaseData())) {
 
                 log.info("Notification event {} is delayed and scheduled for case id {}", notificationType.getId(), caseId);
                 notificationHandler.scheduleNotification(notificationWrapper, ZonedDateTime.now().plusSeconds(notificationType.getDelayInSeconds()));
@@ -99,6 +100,10 @@ public class NotificationService {
             log.info("Notification event {} is out of hours and scheduled for case id {}", notificationType.getId(), caseId);
             notificationHandler.scheduleNotification(notificationWrapper);
         }
+    }
+
+    private boolean functionalTest(SscsCaseData newSscsCaseData) {
+        return YesNo.isYes(newSscsCaseData.getFunctionalTest());
     }
 
     private void sendSecondNotificationForLongLetters(NotificationWrapper notificationWrapper) {
