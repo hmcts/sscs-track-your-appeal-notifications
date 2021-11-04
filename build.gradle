@@ -126,13 +126,6 @@ dependencyManagement {
         dependencySet(group: 'com.google.guava', version: '31.0.1-jre') {
             entry 'guava'
         }
-        // CVE-2019-0232, CVE-2019-0199 - command line injections on windows
-        // CVE-2021-33037
-        dependencySet(group: 'org.apache.tomcat.embed', version: '10.1.0-M6') {
-            entry 'tomcat-embed-core'
-            entry 'tomcat-embed-el'
-            entry 'tomcat-embed-websocket'
-        }
 
         // CVE-2020-13954
         dependencySet(group: 'org.apache.cxf', version: '3.4.5') {
