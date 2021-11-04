@@ -3,7 +3,6 @@ server.port: ${PORT:8081}
 spring:
   application:
     name: TyaNotificationsService
-
   config:
     import: optional:configtree:/mnt/secrets/sscs/
   datasource:
