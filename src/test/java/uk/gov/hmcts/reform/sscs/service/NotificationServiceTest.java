@@ -47,7 +47,6 @@ import uk.gov.hmcts.reform.sscs.factory.NotificationWrapper;
 import uk.gov.hmcts.reform.sscs.idam.IdamService;
 import uk.gov.hmcts.reform.sscs.idam.IdamTokens;
 import uk.gov.hmcts.reform.sscs.service.docmosis.PdfLetterService;
-import uk.gov.service.notify.NotificationClientException;
 
 @RunWith(JUnitParamsRunner.class)
 public class NotificationServiceTest {
@@ -1328,7 +1327,7 @@ public class NotificationServiceTest {
 
         verifyExpectedLogMessage(mockAppender, captorLoggingEvent, wrapper.getNewSscsCaseData().getCcdCaseId(), "Is not a valid notification event", Level.ERROR);
     }
-    
+
     @Test
     public void willNotSendDwpUpload_whenCreatedInGapsFromIsValidAppeal() {
         CcdNotificationWrapper ccdNotificationWrapper = buildBaseWrapper(DWP_UPLOAD_RESPONSE_NOTIFICATION,  APPELLANT_WITH_ADDRESS, null, null);
