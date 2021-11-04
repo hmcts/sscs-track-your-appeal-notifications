@@ -3,8 +3,6 @@ server.port: ${PORT:8081}
 spring:
   application:
     name: TyaNotificationsService
-  config.import: application-${INFRASTRUCTURE_ENV:aat}-${SLOT:STAGING}-slot.yaml
-  flyway.enabled: ${RUN_DB_MIGRATION_ON_STARTUP:true}
   datasource:
     driverClassName: org.postgresql.Driver
     url: jdbc:postgresql://${JOB_SCHEDULER_DB_HOST:localhost}:${JOB_SCHEDULER_DB_PORT:5432}/${JOB_SCHEDULER_DB_NAME:sscsjobscheduler}${JOB_SCHEDULER_DB_CONNECTION_OPTIONS:}
@@ -137,38 +135,6 @@ job.scheduler:
   retryPolicy:
     maxNumberOfJobExecutions: 2
     delayBetweenAttemptsInMs: 1000
-  quartzProperties:
-    org.quartz:
-      scheduler:
-        instanceId: AUTO
-        idleWaitTime: ${JOB_SCHEDULER_POLL_INTERVAL:10000}
-      dataSource:
-        jobscheduler:
-          driver: org.postgresql.Driver
-          URL: ${spring.datasource.url}
-          user: ${spring.datasource.username}
-          password: ${spring.datasource.password}
-          maxConnections: 20
-      jobStore:
-        class: org.quartz.impl.jdbcjobstore.JobStoreTX
-        isClustered: true
-        driverDelegateClass: org.quartz.impl.jdbcjobstore.PostgreSQLDelegate
-        dataSource: jobscheduler
-      threadPool:
-        class: org.quartz.simpl.SimpleThreadPool
-        threadCount: 16
-      plugin:
-        triggHistory:
-          class: org.quartz.plugins.history.LoggingTriggerHistoryPlugin
-          triggerFiredMessage: Trigger [{1}.{0}] fired job [{6}.{5}] at {4, date, HH:mm:ss MM/dd/yyyy}
-          triggerCompleteMessage: Trigger [{1}.{0}] completed firing job [{6}.{5}] at {4, date, HH:mm:ss MM/dd/yyyy}
-          triggerMisfiredMessage: Trigger [{1}.{0}] misfired job [{6}.{5}]. Should have fired at {3, date, dd-MM-yyyy HH:mm:ss.SSS}
-        jobHistory:
-          class: org.quartz.plugins.history.LoggingJobHistoryPlugin
-          jobToBeFiredMessage: Job [{1}.{0}] to be fired by trigger [{4}.{3}], re-fire {7}
-          jobSuccessMessage: Job [{1}.{0}] execution complete and reports {8}
-          jobFailedMessage: Job [{1}.{0}] execution failed with exception {8}
-          jobWasVetoedMessage: Job [{1}.{0}] was vetoed. It was to be fired by trigger [{4}.{3}] at {2, date, dd-MM-yyyy HH:mm:ss.SSS}
 
 notification:
   english:
@@ -332,12 +298,15 @@ notification:
       appellant:
         emailId: 9b5a6ac7-a1ad-4fc2-8e83-b0f32af9ff32
         smsId: f41222ef-c05c-4682-9634-6b034a166368
+        docmosisId: TB-SCS-GNO-ENG-00060.doc
       representative:
         emailId: 652753bf-59b4-46eb-9c24-bd762338a098
         smsId: a6c09fad-6265-4c7c-8b95-36245ffa5352
+        docmosisId: TB-SCS-GNO-ENG-00079.doc
       appointee:
         emailId: 362d9a85-e0e4-412b-b874-020c0464e2b4
         smsId: f41222ef-c05c-4682-9634-6b034a166368
+        docmosisId: TB-SCS-GNO-ENG-00060.doc
     resendAppealCreated:
       appellant:
         emailId: 01293b93-b23e-40a3-ad78-2c6cd01cd21c
@@ -801,12 +770,15 @@ notification:
       appellant:
         emailId: e3fa02fd-87b2-471c-9a99-7020b367eca9
         smsId: 6a39acc9-7a3f-4ed7-a0b1-d30f6594fe82
+        docmosisId: TB-SCS-GNO-WEL-00467.docx
       representative:
         emailId: 364bccc5-ffa6-495d-8035-e642d15114bf
         smsId: f8391d2b-4d80-480e-87a9-816710f5650b
+        docmosisId: TB-SCS-GNO-WEL-00471.docx
       appointee:
         emailId: e0355abd-42a6-4f94-836b-ec7ee22631cc
         smsId: 6a39acc9-7a3f-4ed7-a0b1-d30f6594fe82
+        docmosisId: TB-SCS-GNO-WEL-00467.docx
     resendAppealCreated:
       appellant:
         emailId: e3fa02fd-87b2-471c-9a99-7020b367eca9
@@ -1267,12 +1239,53 @@ text:
       OTHER: "Arall"
       CHILD_MAINTENANCE_NUMBER: "Child maintenance number: "
 
+
+---
+# default profile (development, production etc.)
+spring:
+  profiles: default
+  profiles.include: ${INFRASTRUCTURE_ENV:aat}-${SLOT:STAGING}-slot
+  flyway.enabled: ${RUN_DB_MIGRATION_ON_STARTUP:true}
+
+job.scheduler:
+  quartzProperties:
+    org.quartz:
+      scheduler:
+        instanceId: AUTO
+        idleWaitTime: ${JOB_SCHEDULER_POLL_INTERVAL:10000}
+      dataSource:
+        jobscheduler:
+          driver: org.postgresql.Driver
+          URL: ${spring.datasource.url}
+          user: ${spring.datasource.username}
+          password: ${spring.datasource.password}
+          maxConnections: 20
+      jobStore:
+        class: org.quartz.impl.jdbcjobstore.JobStoreTX
+        isClustered: true
+        driverDelegateClass: org.quartz.impl.jdbcjobstore.PostgreSQLDelegate
+        dataSource: jobscheduler
+      threadPool:
+        class: org.quartz.simpl.SimpleThreadPool
+        threadCount: 16
+      plugin:
+        triggHistory:
+          class: org.quartz.plugins.history.LoggingTriggerHistoryPlugin
+          triggerFiredMessage: Trigger [{1}.{0}] fired job [{6}.{5}] at {4, date, HH:mm:ss MM/dd/yyyy}
+          triggerCompleteMessage: Trigger [{1}.{0}] completed firing job [{6}.{5}] at {4, date, HH:mm:ss MM/dd/yyyy}
+          triggerMisfiredMessage: Trigger [{1}.{0}] misfired job [{6}.{5}]. Should have fired at {3, date, dd-MM-yyyy HH:mm:ss.SSS}
+        jobHistory:
+          class: org.quartz.plugins.history.LoggingJobHistoryPlugin
+          jobToBeFiredMessage: Job [{1}.{0}] to be fired by trigger [{4}.{3}], re-fire {7}
+          jobSuccessMessage: Job [{1}.{0}] execution complete and reports {8}
+          jobFailedMessage: Job [{1}.{0}] execution failed with exception {8}
+          jobWasVetoedMessage: Job [{1}.{0}] was vetoed. It was to be fired by trigger [{4}.{3}] at {2, date, dd-MM-yyyy HH:mm:ss.SSS}
+
+
 ---
 # integration & functional profile
 spring:
-  config:
-    activate:
-      on-profile: integration, functional
+  profiles: integration, functional
   autoconfigure.exclude:
     - org.springframework.boot.autoconfigure.jdbc.DataSourceAutoConfiguration
   flyway.enabled: false
