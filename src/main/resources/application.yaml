@@ -3,6 +3,8 @@ server.port: ${PORT:8081}
 spring:
   application:
     name: TyaNotificationsService
+  config.import: application-${INFRASTRUCTURE_ENV:aat}-${SLOT:STAGING}-slot.yaml
+  flyway.enabled: ${RUN_DB_MIGRATION_ON_STARTUP:true}
   datasource:
     driverClassName: org.postgresql.Driver
     url: jdbc:postgresql://${JOB_SCHEDULER_DB_HOST:localhost}:${JOB_SCHEDULER_DB_PORT:5432}/${JOB_SCHEDULER_DB_NAME:sscsjobscheduler}${JOB_SCHEDULER_DB_CONNECTION_OPTIONS:}
@@ -135,6 +137,38 @@ job.scheduler:
   retryPolicy:
     maxNumberOfJobExecutions: 2
     delayBetweenAttemptsInMs: 1000
+  quartzProperties:
+    org.quartz:
+      scheduler:
+        instanceId: AUTO
+        idleWaitTime: ${JOB_SCHEDULER_POLL_INTERVAL:10000}
+      dataSource:
+        jobscheduler:
+          driver: org.postgresql.Driver
+          URL: ${spring.datasource.url}
+          user: ${spring.datasource.username}
+          password: ${spring.datasource.password}
+          maxConnections: 20
+      jobStore:
+        class: org.quartz.impl.jdbcjobstore.JobStoreTX
+        isClustered: true
+        driverDelegateClass: org.quartz.impl.jdbcjobstore.PostgreSQLDelegate
+        dataSource: jobscheduler
+      threadPool:
+        class: org.quartz.simpl.SimpleThreadPool
+        threadCount: 16
+      plugin:
+        triggHistory:
+          class: org.quartz.plugins.history.LoggingTriggerHistoryPlugin
+          triggerFiredMessage: Trigger [{1}.{0}] fired job [{6}.{5}] at {4, date, HH:mm:ss MM/dd/yyyy}
+          triggerCompleteMessage: Trigger [{1}.{0}] completed firing job [{6}.{5}] at {4, date, HH:mm:ss MM/dd/yyyy}
+          triggerMisfiredMessage: Trigger [{1}.{0}] misfired job [{6}.{5}]. Should have fired at {3, date, dd-MM-yyyy HH:mm:ss.SSS}
+        jobHistory:
+          class: org.quartz.plugins.history.LoggingJobHistoryPlugin
+          jobToBeFiredMessage: Job [{1}.{0}] to be fired by trigger [{4}.{3}], re-fire {7}
+          jobSuccessMessage: Job [{1}.{0}] execution complete and reports {8}
+          jobFailedMessage: Job [{1}.{0}] execution failed with exception {8}
+          jobWasVetoedMessage: Job [{1}.{0}] was vetoed. It was to be fired by trigger [{4}.{3}] at {2, date, dd-MM-yyyy HH:mm:ss.SSS}
 
 notification:
   english:
@@ -1232,48 +1266,6 @@ text:
       NOT_REQUIRED: "Dim yn ofynnol"
       OTHER: "Arall"
       CHILD_MAINTENANCE_NUMBER: "Child maintenance number: "
-
-
----
-# default profile (development, production etc.)
-spring:
-  config.import: application-${INFRASTRUCTURE_ENV:aat}-${SLOT:STAGING}-slot.yaml
-  flyway.enabled: ${RUN_DB_MIGRATION_ON_STARTUP:true}
-
-job.scheduler:
-  quartzProperties:
-    org.quartz:
-      scheduler:
-        instanceId: AUTO
-        idleWaitTime: ${JOB_SCHEDULER_POLL_INTERVAL:10000}
-      dataSource:
-        jobscheduler:
-          driver: org.postgresql.Driver
-          URL: ${spring.datasource.url}
-          user: ${spring.datasource.username}
-          password: ${spring.datasource.password}
-          maxConnections: 20
-      jobStore:
-        class: org.quartz.impl.jdbcjobstore.JobStoreTX
-        isClustered: true
-        driverDelegateClass: org.quartz.impl.jdbcjobstore.PostgreSQLDelegate
-        dataSource: jobscheduler
-      threadPool:
-        class: org.quartz.simpl.SimpleThreadPool
-        threadCount: 16
-      plugin:
-        triggHistory:
-          class: org.quartz.plugins.history.LoggingTriggerHistoryPlugin
-          triggerFiredMessage: Trigger [{1}.{0}] fired job [{6}.{5}] at {4, date, HH:mm:ss MM/dd/yyyy}
-          triggerCompleteMessage: Trigger [{1}.{0}] completed firing job [{6}.{5}] at {4, date, HH:mm:ss MM/dd/yyyy}
-          triggerMisfiredMessage: Trigger [{1}.{0}] misfired job [{6}.{5}]. Should have fired at {3, date, dd-MM-yyyy HH:mm:ss.SSS}
-        jobHistory:
-          class: org.quartz.plugins.history.LoggingJobHistoryPlugin
-          jobToBeFiredMessage: Job [{1}.{0}] to be fired by trigger [{4}.{3}], re-fire {7}
-          jobSuccessMessage: Job [{1}.{0}] execution complete and reports {8}
-          jobFailedMessage: Job [{1}.{0}] execution failed with exception {8}
-          jobWasVetoedMessage: Job [{1}.{0}] was vetoed. It was to be fired by trigger [{4}.{3}] at {2, date, dd-MM-yyyy HH:mm:ss.SSS}
-
 
 ---
 # integration & functional profile
