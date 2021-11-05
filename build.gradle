@@ -346,7 +346,6 @@ configurations.all {
 
 dependencies {
     compile group: 'commons-io', name: 'commons-io', version: '2.11.0'
-
     compile group: 'com.mchange', name: 'c3p0', version: '0.9.5.5'
     compile group: 'org.flywaydb', name: 'flyway-core', version: '6.5.6'
     compile group: 'org.postgresql', name: 'postgresql', version: '42.3.0'
