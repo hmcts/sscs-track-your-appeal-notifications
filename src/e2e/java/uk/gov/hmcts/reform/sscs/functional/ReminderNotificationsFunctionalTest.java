@@ -93,6 +93,7 @@ public class ReminderNotificationsFunctionalTest extends AbstractFunctionalTest 
     }
 
     @Test
+    @Ignore
     public void shouldSendNotificationsWhenDwpResponseReceivedEventIsReceivedForOralWithAnAppellantSubscribed() throws IOException, NotificationClientException {
         triggerEventWithHearingType(DWP_RESPONSE_RECEIVED_NOTIFICATION, "oral");
         simulateCcdCallback(DWP_RESPONSE_RECEIVED_NOTIFICATION,"representative/oral-" + DWP_RESPONSE_RECEIVED_NOTIFICATION.getId() + "Callback.json");
@@ -145,6 +146,7 @@ public class ReminderNotificationsFunctionalTest extends AbstractFunctionalTest 
 
 
     @Test
+    @Ignore
     public void shouldSendNotificationsWhenDwpResponseReceivedEventIsReceivedForPaperWithAnAppellantSubscribed() throws IOException, NotificationClientException {
 
         triggerEventWithHearingType(DWP_RESPONSE_RECEIVED_NOTIFICATION, "paper");
@@ -196,6 +198,7 @@ public class ReminderNotificationsFunctionalTest extends AbstractFunctionalTest 
     }
 
     @Test
+    @Ignore
     public void shouldSendNotificationsWhenDwpResponseReceivedEventIsReceivedForOralWithAnRepSubscribed() throws IOException, NotificationClientException {
         subscribeRepresentative();
         triggerEventWithHearingType(DWP_RESPONSE_RECEIVED_NOTIFICATION, "oral");
@@ -246,6 +249,7 @@ public class ReminderNotificationsFunctionalTest extends AbstractFunctionalTest 
 
 
     @Test
+    @Ignore
     public void shouldSendNotificationsWhenDwpResponseReceivedEventIsReceivedForPaperWithAnRepSubscribed() throws IOException, NotificationClientException {
         subscribeRepresentative();
         triggerEventWithHearingType(DWP_RESPONSE_RECEIVED_NOTIFICATION, "paper");
@@ -295,6 +299,7 @@ public class ReminderNotificationsFunctionalTest extends AbstractFunctionalTest 
     }
 
     @Test
+    @Ignore
     public void shouldSendNotificationsWhenHearingBookedEventIsReceivedWhenAnAppellantIsSubscribed() throws IOException, NotificationClientException {
 
         addHearing(caseData, 0);
@@ -338,6 +343,7 @@ public class ReminderNotificationsFunctionalTest extends AbstractFunctionalTest 
     }
 
     @Test
+    @Ignore
     public void shouldSendNotificationsWhenHearingBookedEventIsReceivedWhenARepresentativeIsSubscribed() throws IOException, NotificationClientException {
         subscribeRepresentative();
         addHearing(caseData, 0);
