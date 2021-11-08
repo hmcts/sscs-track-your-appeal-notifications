@@ -12,10 +12,8 @@ import static uk.gov.hmcts.reform.sscs.service.NotificationUtils.getSubscription
 import static uk.gov.hmcts.reform.sscs.service.NotificationUtils.isOkToSendNotification;
 import static uk.gov.hmcts.reform.sscs.service.NotificationValidService.isMandatoryLetterEventType;
 
-import java.time.LocalDate;
 import java.time.ZonedDateTime;
 import java.util.List;
-import java.util.Optional;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
