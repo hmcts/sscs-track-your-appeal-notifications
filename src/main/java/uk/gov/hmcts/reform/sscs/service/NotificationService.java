@@ -86,7 +86,6 @@ public class NotificationService {
         if (notificationType.isAllowOutOfHours() || !outOfHoursCalculator.isItOutOfHours()) {
             if (notificationType.isToBeDelayed()
                     && !fromReminderService
-                    && !skipOldNotifications(notificationWrapper.getNewSscsCaseData().getCaseCreated())
                     && !functionalTest(notificationWrapper.getNewSscsCaseData())) {
 
                 log.info("Notification event {} is delayed and scheduled for case id {}", notificationType.getId(), caseId);
@@ -113,12 +112,6 @@ public class NotificationService {
             notificationWrapper.setSwitchLanguageType(true);
             sendNotificationPerSubscription(notificationWrapper);
         }
-    }
-
-    private boolean skipOldNotifications(String caseCreatedDate) {
-        // No need to write to reminder service if case created is older than 2 days - workaround to stop functional tests timing out for appeal created delayed notifications
-        LocalDate createdDate = LocalDate.parse(Optional.ofNullable(caseCreatedDate).orElse(LocalDate.now().toString()));
-        return createdDate.plusDays(2).isBefore(LocalDate.now());
     }
 
     private void sendNotificationPerSubscription(NotificationWrapper notificationWrapper) {
