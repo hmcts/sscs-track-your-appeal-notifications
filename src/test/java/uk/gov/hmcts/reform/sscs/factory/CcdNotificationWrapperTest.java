@@ -158,8 +158,8 @@ public class CcdNotificationWrapperTest {
         return new CcdNotificationWrapper(
             SscsCaseDataWrapper.builder()
                 .newSscsCaseData(SscsCaseData.builder()
-                        .jointParty("yes")
-                        .jointPartyAddressSameAsAppellant("yes")
+                        .jointParty("Yes")
+                        .jointPartyAddressSameAsAppellant("Yes")
                         .jointPartyName(JointPartyName.builder().title("Madam").firstName("Jon").lastName("Party").build())
                     .appeal(Appeal.builder()
                         .hearingType(hearingType)
