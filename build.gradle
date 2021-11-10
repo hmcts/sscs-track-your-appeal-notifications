@@ -5,12 +5,12 @@ plugins {
     id 'org.sonarqube' version '3.3'
     id 'jacoco'
     id 'io.spring.dependency-management' version '1.0.11.RELEASE'
-    id 'org.springframework.boot' version '2.3.5.RELEASE'
-    id 'uk.gov.hmcts.java' version '0.12.12'
-    id 'org.owasp.dependencycheck' version '6.2.2'
+    id 'org.springframework.boot' version '2.5.6'
+    id 'uk.gov.hmcts.java' version '0.12.13'
+    id 'org.owasp.dependencycheck' version '6.3.1'
     id 'com.github.ben-manes.versions' version '0.39.0'
     id 'net.ltgt.apt' version '0.21'
-    id "org.flywaydb.flyway" version "7.14.0"
+    id "org.flywaydb.flyway" version '7.15.0'
     id "info.solidsoft.pitest" version '1.7.0'
 }
 
@@ -102,7 +102,7 @@ bootRun {
 }
 
 ext {
-    springCloudVersion = 'Hoxton.SR12'
+    springCloudVersion = '2020.0.4'
 }
 
 dependencyManagement {
@@ -125,13 +125,6 @@ dependencyManagement {
         // checkstyle needs a certain version and so does spring fox swagger, so can't use latest
         dependencySet(group: 'com.google.guava', version: '31.0.1-jre') {
             entry 'guava'
-        }
-        // CVE-2019-0232, CVE-2019-0199 - command line injections on windows
-        // CVE-2021-33037
-        dependencySet(group: 'org.apache.tomcat.embed', version: '9.0.54') {
-            entry 'tomcat-embed-core'
-            entry 'tomcat-embed-el'
-            entry 'tomcat-embed-websocket'
         }
 
         // CVE-2020-13954
@@ -193,7 +186,7 @@ dependencyManagement {
         }
 
         //CVE-2021-22118
-        dependencySet(group: 'org.springframework', version: '5.2.15.RELEASE') {
+        dependencySet(group: 'org.springframework', version: '5.3.12') {
             entry 'spring-aop'
             entry 'spring-aspects'
             entry 'spring-beans'
@@ -223,9 +216,14 @@ dependencyManagement {
             entry 'commons-compress'
         }
 
+        //CVE-2021-22044
+        dependencySet(group: 'org.springframework.cloud', version: '3.0.5') {
+            entry 'spring-cloud-starter-openfeign'
+            entry 'spring-cloud-openfeign-core'
+        }
+
         //CVE-2021-40690
         dependency group: 'org.apache.santuario', name: 'xmlsec', version: '2.2.3'
-
         dependency group: 'org.glassfish', name: 'jakarta.el', version: '4.0.2'
     }
 
@@ -322,7 +320,7 @@ functional.shouldRunAfter(test)
 def versions = [
         logback         : '1.2.3',
         reformLogging   : '5.1.7',
-        springHystrix   : '1.4.2.RELEASE',
+        springHystrix   : '2.2.9.RELEASE',
         springfoxSwagger: '2.8.0',
         restAssured     : '4.3.3',
         pitest          : '1.4.2',
@@ -348,7 +346,7 @@ dependencies {
     compile group: 'commons-io', name: 'commons-io', version: '2.11.0'
 
     compile group: 'com.mchange', name: 'c3p0', version: '0.9.5.5'
-    compile group: 'org.flywaydb', name: 'flyway-core', version: '6.5.6'
+    compile group: 'org.flywaydb', name: 'flyway-core', version: '7.15.0'
     compile group: 'org.postgresql', name: 'postgresql', version: '42.3.0'
     compile group: 'net.bytebuddy', name: 'byte-buddy', version: '1.11.21'
     compile group: 'org.elasticsearch', name: 'elasticsearch', version: '7.15.1'
@@ -358,13 +356,13 @@ dependencies {
     compile group: 'org.springframework.boot', name: 'spring-boot-starter-jdbc'
     compile group: 'org.springframework.boot', name: 'spring-boot-starter-validation'
     compile group: 'org.springframework.cloud', name: 'spring-cloud-starter-openfeign'
-    compile group: 'org.springframework.cloud', name: 'spring-cloud-starter-hystrix', version: versions.springHystrix
+    compile group: 'org.springframework.cloud', name: 'spring-cloud-starter-bootstrap'
+    compile group: 'org.springframework.cloud', name: 'spring-cloud-starter-netflix-hystrix', version: versions.springHystrix
     compile group: 'org.springframework.retry', name: 'spring-retry', version: '1.3.1'
 
     compile group: 'io.rest-assured', name: 'rest-assured', version: versions.restAssured
     compile group: 'io.rest-assured', name: 'json-path', version: versions.restAssured
     compile group: 'io.rest-assured', name: 'xml-path', version: versions.restAssured
-    compile group: 'io.springfox', name: 'springfox-swagger2', version: versions.springfoxSwagger
     compile group: 'io.springfox', name: 'springfox-swagger2', version: versions.springfoxSwagger
     compile group: 'io.springfox', name: 'springfox-swagger-ui', version: versions.springfoxSwagger
     compile group: 'com.atlassian.commonmark', name: 'commonmark', version: '0.17.0'
