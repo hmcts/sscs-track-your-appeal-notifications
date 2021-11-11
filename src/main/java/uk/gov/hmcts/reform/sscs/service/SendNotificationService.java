@@ -146,15 +146,9 @@ public class SendNotificationService {
         Address addressToUse = getAddressToUseForLetter(wrapper, subscriptionWithType.getSubscriptionType());
 
         if (isValidLetterAddress(addressToUse)) {
-            // mandatory letters should always be sent
-            // fallback letters are sent only if there's no email or SMS subscription
-            boolean mandatoryLetterSent = sendMandatoryLetterNotification(wrapper, notification, subscriptionWithType.getSubscriptionType(), addressToUse);
-            boolean fallbackLetterSent = sendFallbackLetterNotification(wrapper, subscription, notification, subscriptionWithType, eventType, addressToUse);
-
-            return mandatoryLetterSent || fallbackLetterSent;
+            return sendMandatoryLetterNotification(wrapper, notification, subscriptionWithType.getSubscriptionType(), addressToUse);
         } else {
             log.error("Failed to send letter for event id: {} for case id: {}, no address present", wrapper.getNotificationType().getId(), wrapper.getCaseId());
-
             return false;
         }
     }
@@ -166,21 +160,6 @@ public class SendNotificationService {
             } else if (hasLetterTemplate(notification)) {
                 NotificationHandler.SendNotification sendNotification = () ->
                     sendLetterNotificationToAddress(wrapper, notification, addressToUse, subscriptionType);
-
-                return notificationHandler.sendNotification(wrapper, notification.getLetterTemplate(), NOTIFICATION_TYPE_LETTER, sendNotification);
-            }
-        }
-
-        return false;
-    }
-
-    private boolean sendFallbackLetterNotification(NotificationWrapper wrapper, Subscription subscription, Notification notification, SubscriptionWithType subscriptionWithType, NotificationEventType eventType, Address addressToUse) {
-        if (hasNoSubscriptions(subscription) && isFallbackLetterRequired(wrapper, subscriptionWithType, subscription, eventType, notificationValidService)) {
-            if (isBundledLetter(wrapper.getNotificationType()) || (isNotBlank(notification.getDocmosisLetterTemplate()))) {
-                return sendBundledAndDocmosisLetterNotification(wrapper, notification, getNameToUseForLetter(wrapper, subscriptionWithType.getSubscriptionType()), subscriptionWithType.getSubscriptionType());
-            } else if (hasLetterTemplate(notification)) {
-                NotificationHandler.SendNotification sendNotification = () ->
-                    sendLetterNotificationToAddress(wrapper, notification, addressToUse, subscriptionWithType.getSubscriptionType());
 
                 return notificationHandler.sendNotification(wrapper, notification.getLetterTemplate(), NOTIFICATION_TYPE_LETTER, sendNotification);
             }

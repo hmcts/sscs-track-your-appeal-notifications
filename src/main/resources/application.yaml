@@ -298,15 +298,12 @@ notification:
       appellant:
         emailId: 9b5a6ac7-a1ad-4fc2-8e83-b0f32af9ff32
         smsId: f41222ef-c05c-4682-9634-6b034a166368
-        docmosisId: TB-SCS-GNO-ENG-00060.doc
       representative:
         emailId: 652753bf-59b4-46eb-9c24-bd762338a098
         smsId: a6c09fad-6265-4c7c-8b95-36245ffa5352
-        docmosisId: TB-SCS-GNO-ENG-00079.doc
       appointee:
         emailId: 362d9a85-e0e4-412b-b874-020c0464e2b4
         smsId: f41222ef-c05c-4682-9634-6b034a166368
-        docmosisId: TB-SCS-GNO-ENG-00060.doc
     resendAppealCreated:
       appellant:
         emailId: 01293b93-b23e-40a3-ad78-2c6cd01cd21c
@@ -472,6 +469,16 @@ notification:
         docmosisId: TB-SCS-GNO-ENG-00760.docx
       joint_party:
         docmosisId: TB-SCS-GNO-ENG-00760.docx
+    deathOfAppellant:
+      representative:
+        docmosisId: TB-SCS-GNO-ENG-00773.docx
+      appointee:
+        docmosisId: TB-SCS-GNO-ENG-00773.docx
+    provideAppointeeDetails:
+      representative:
+        docmosisId: TB-SCS-GNO-ENG-00773.docx
+      appointee:
+        docmosisId: TB-SCS-GNO-ENG-00773.docx
     paper:
       responseReceived:
         appellant:
@@ -645,7 +652,7 @@ notification:
         emailId: 862590f1-3b36-4537-84c5-173dccea5db3
     appealLapsed:
       appellant:
-        emailId: 9baea173-35d7-4d7d-b781-5d3dfffbbdba
+        emailId: 542a6346-7039-4eab-8b20-61fa77db33f0
         smsId: 4ab5141a-d6d6-43fe-bdf7-c9a7f99f3338
         docmosisId: TB-SCS-GNO-WEL-00658.docx
       representative:
@@ -653,7 +660,7 @@ notification:
         smsId: 77180ecb-c7e8-407c-8d74-618ae37b47b6
         docmosisId: TB-SCS-GNO-WEL-00658.docx
       appointee:
-        emailId: 9baea173-35d7-4d7d-b781-5d3dfffbbdba
+        emailId: 542a6346-7039-4eab-8b20-61fa77db33f0
         smsId: 4ab5141a-d6d6-43fe-bdf7-c9a7f99f3338
         docmosisId: TB-SCS-GNO-WEL-00658.docx
       joint_party:
@@ -662,7 +669,7 @@ notification:
         docmosisId: TB-SCS-GNO-WEL-00658.docx
     confirmLapsed:
       appellant:
-        emailId: 9baea173-35d7-4d7d-b781-5d3dfffbbdba
+        emailId: 542a6346-7039-4eab-8b20-61fa77db33f0
         smsId: 4ab5141a-d6d6-43fe-bdf7-c9a7f99f3338
         docmosisId: TB-SCS-GNO-WEL-00658.docx
       representative:
@@ -670,12 +677,12 @@ notification:
         smsId: 77180ecb-c7e8-407c-8d74-618ae37b47b6
         docmosisId: TB-SCS-GNO-WEL-00658.docx
       appointee:
-        emailId: 9baea173-35d7-4d7d-b781-5d3dfffbbdba
+        emailId: 542a6346-7039-4eab-8b20-61fa77db33f0
         smsId: 4ab5141a-d6d6-43fe-bdf7-c9a7f99f3338
         docmosisId: TB-SCS-GNO-WEL-00658.docx
     hmctsLapseCase:
       appellant:
-        emailId: 9baea173-35d7-4d7d-b781-5d3dfffbbdba
+        emailId: 542a6346-7039-4eab-8b20-61fa77db33f0
         smsId: 4ab5141a-d6d6-43fe-bdf7-c9a7f99f3338
         docmosisId: TB-SCS-GNO-WEL-00658.docx
       representative:
@@ -683,7 +690,7 @@ notification:
         smsId: 77180ecb-c7e8-407c-8d74-618ae37b47b6
         docmosisId: TB-SCS-GNO-WEL-00658.docx
       appointee:
-        emailId: 9baea173-35d7-4d7d-b781-5d3dfffbbdba
+        emailId: 542a6346-7039-4eab-8b20-61fa77db33f0
         smsId: 4ab5141a-d6d6-43fe-bdf7-c9a7f99f3338
         docmosisId: TB-SCS-GNO-WEL-00658.docx
     appealWithdrawn:
@@ -732,16 +739,16 @@ notification:
       smsId: 093c010c-bc22-4b8a-bd22-c9c55bb40a80
     hearingBooked:
       appellant:
-        emailId: 1b13d247-a866-4dd8-b1a8-157b60b77a18
+        emailId: aca83c9c-05c0-49d5-8ded-e581a0107408
         smsId: a51a7435-dffe-4455-9183-5c6f4f13bee3
       representative:
-        emailId: bca17772-cf41-47e4-aaab-ec839e6d947e
+        emailId: c7047e95-42ac-4d6a-91d9-c8f31f2685b8
         smsId: 5e7444fe-860c-4623-b5c5-b23af1ddbb0b
       appointee:
-        emailId: 1b13d247-a866-4dd8-b1a8-157b60b77a18
+        emailId: aca83c9c-05c0-49d5-8ded-e581a0107408
         smsId: a51a7435-dffe-4455-9183-5c6f4f13bee3
       joint_party:
-        emailId: a0aa060b-78ab-4380-b922-f78b5878515f
+        emailId: 1df83ea1-bdd5-4ce0-901d-769c3a8509cb
         smsId: a11f7576-c44c-40f5-96cf-2920dce41bd5
     appealCreated:
       appellant:
@@ -760,15 +767,12 @@ notification:
       appellant:
         emailId: e3fa02fd-87b2-471c-9a99-7020b367eca9
         smsId: 6a39acc9-7a3f-4ed7-a0b1-d30f6594fe82
-        docmosisId: TB-SCS-GNO-WEL-00467.docx
       representative:
         emailId: 364bccc5-ffa6-495d-8035-e642d15114bf
         smsId: f8391d2b-4d80-480e-87a9-816710f5650b
-        docmosisId: TB-SCS-GNO-WEL-00471.docx
       appointee:
         emailId: e0355abd-42a6-4f94-836b-ec7ee22631cc
         smsId: 6a39acc9-7a3f-4ed7-a0b1-d30f6594fe82
-        docmosisId: TB-SCS-GNO-WEL-00467.docx
     resendAppealCreated:
       appellant:
         emailId: e3fa02fd-87b2-471c-9a99-7020b367eca9
@@ -784,21 +788,19 @@ notification:
         docmosisId: TB-SCS-GNO-WEL-00467.docx
     hearingReminder:
       appellant:
-        emailId: e503b3df-cc95-4d2d-9723-0a4759187eae
+        emailId: 07eb8f5f-3436-4c2e-9676-7ee213239cc5
         smsId: adf60ff5-f83d-4931-9f35-fda2609afb7e
       appointee:
-        emailId: e503b3df-cc95-4d2d-9723-0a4759187eae
+        emailId: 07eb8f5f-3436-4c2e-9676-7ee213239cc5
         smsId: adf60ff5-f83d-4931-9f35-fda2609afb7e
       representative:
-        emailId: 5637c48e-84a0-4c72-841f-c55505c5e703
+        emailId: 351c3d34-c436-4700-92ff-ff2954f5e17c
         smsId: 54f9c139-1c3d-4f4c-ae79-d75e4eafcfec
       joint_party:
-        emailId: 7a652620-de50-47f6-9c53-2d442d083a29
+        emailId: b2f8f063-bb06-494d-a59e-cc037106a9c3
         smsId: 534e7537-3012-42de-a6c3-9036b133c525
     struckOut:
       docmosisId: TB-SCS-GNO-WEL-00593.docx
-      representative:
-        docmosisId: TB-SCS-GNO-ENG-00466.docx
     processAudioVideoWelsh:
       docmosisId: TB-SCS-GNO-WEL-00678.docx
     directionIssuedWelsh:
@@ -918,6 +920,16 @@ notification:
         docmosisId: TB-SCS-GNO-WEL-00765.docx
       joint_party:
         docmosisId: TB-SCS-GNO-WEL-00765.docx
+    deathOfAppellant:
+      representative:
+        docmosisId: TB-SCS-GNO-WEL-00774.docx
+      appointee:
+        docmosisId: TB-SCS-GNO-WEL-00774.docx
+    provideAppointeeDetails:
+      representative:
+        docmosisId: TB-SCS-GNO-WEL-00774.docx
+      appointee:
+        docmosisId: TB-SCS-GNO-WEL-00774.docx
     paper:
       responseReceived:
         appellant:
@@ -1225,8 +1237,10 @@ text:
 ---
 # default profile (development, production etc.)
 spring:
-  profiles: default
-  profiles.include: ${INFRASTRUCTURE_ENV:aat}-${SLOT:STAGING}-slot
+  config:
+    activate:
+      on-profile: default
+    import: application-${INFRASTRUCTURE_ENV:aat}-${SLOT:STAGING}-slot.yaml
   flyway.enabled: ${RUN_DB_MIGRATION_ON_STARTUP:true}
 
 job.scheduler:
@@ -1267,7 +1281,9 @@ job.scheduler:
 ---
 # integration & functional profile
 spring:
-  profiles: integration, functional
+  config:
+    activate:
+      on-profile: integration, functional
   autoconfigure.exclude:
     - org.springframework.boot.autoconfigure.jdbc.DataSourceAutoConfiguration
   flyway.enabled: false

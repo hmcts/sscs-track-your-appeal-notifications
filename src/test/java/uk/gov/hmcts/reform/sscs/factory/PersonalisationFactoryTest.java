@@ -2,7 +2,7 @@ package uk.gov.hmcts.reform.sscs.factory;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNull;
-import static org.mockito.MockitoAnnotations.initMocks;
+import static org.mockito.MockitoAnnotations.openMocks;
 import static uk.gov.hmcts.reform.sscs.domain.notify.NotificationEventType.*;
 
 import junitparams.JUnitParamsRunner;
@@ -35,7 +35,7 @@ public class PersonalisationFactoryTest {
 
     @Before
     public void setup() {
-        initMocks(this);
+        openMocks(this);
     }
 
     @Test
@@ -57,7 +57,8 @@ public class PersonalisationFactoryTest {
         "HEARING_REMINDER_NOTIFICATION", "DWP_RESPONSE_RECEIVED_NOTIFICATION", "DWP_UPLOAD_RESPONSE_NOTIFICATION",
         "DIRECTION_ISSUED", "DECISION_ISSUED", "DIRECTION_ISSUED_WELSH", "DECISION_ISSUED_WELSH",
         "PROCESS_AUDIO_VIDEO", "PROCESS_AUDIO_VIDEO_WELSH", "ACTION_POSTPONEMENT_REQUEST", "ACTION_POSTPONEMENT_REQUEST_WELSH",
-        "ISSUE_FINAL_DECISION", "ISSUE_FINAL_DECISION_WELSH", "ISSUE_ADJOURNMENT_NOTICE", "STRUCK_OUT", "NON_COMPLIANT_NOTIFICATION"})
+        "ISSUE_FINAL_DECISION", "ISSUE_FINAL_DECISION_WELSH", "ISSUE_ADJOURNMENT_NOTICE", "STRUCK_OUT", "NON_COMPLIANT_NOTIFICATION",
+        "DEATH_OF_APPELLANT", "PROVIDE_APPOINTEE_DETAILS"})
     public void createRepsPersonalisationWhenNotificationApplied(NotificationEventType eventType) {
         Personalisation result = factory.apply(eventType);
         assertEquals(withRepresentativePersonalisation, result);

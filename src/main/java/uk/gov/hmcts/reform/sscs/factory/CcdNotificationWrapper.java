@@ -162,6 +162,8 @@ public class CcdNotificationWrapper implements NotificationWrapper {
                 || isValidProcessHearingRequestEventForParty(PartyItemList.APPELLANT)
                 || ACTION_POSTPONEMENT_REQUEST.equals(getNotificationType())
                 || ACTION_POSTPONEMENT_REQUEST_WELSH.equals(getNotificationType())
+                || DEATH_OF_APPELLANT.equals(getNotificationType())
+                || PROVIDE_APPOINTEE_DETAILS.equals(getNotificationType())
                 || isValidRequestInfoIncompleteEventForParty(PartyItemList.APPELLANT));
     }
 
@@ -235,6 +237,8 @@ public class CcdNotificationWrapper implements NotificationWrapper {
                 || isValidProcessHearingRequestEventForParty(PartyItemList.REPRESENTATIVE)
                 || ACTION_POSTPONEMENT_REQUEST.equals(getNotificationType())
                 || ACTION_POSTPONEMENT_REQUEST_WELSH.equals(getNotificationType())
+                || DEATH_OF_APPELLANT.equals(getNotificationType())
+                || PROVIDE_APPOINTEE_DETAILS.equals(getNotificationType())
                 || isValidRequestInfoIncompleteEventForParty(PartyItemList.REPRESENTATIVE));
     }
 

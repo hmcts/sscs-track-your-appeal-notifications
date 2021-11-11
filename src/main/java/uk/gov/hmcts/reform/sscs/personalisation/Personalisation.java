@@ -15,13 +15,12 @@ import static uk.gov.hmcts.reform.sscs.ccd.domain.EventType.APPEAL_RECEIVED;
 import static uk.gov.hmcts.reform.sscs.ccd.domain.PanelComposition.JUDGE_DOCTOR_AND_DISABILITY_EXPERT_IF_APPLICABLE;
 import static uk.gov.hmcts.reform.sscs.ccd.util.CaseDataUtils.YES;
 import static uk.gov.hmcts.reform.sscs.config.AppConstants.*;
+import static uk.gov.hmcts.reform.sscs.config.PersonalisationConfiguration.PersonalisationKey.*;
 import static uk.gov.hmcts.reform.sscs.config.SubscriptionType.APPELLANT;
 import static uk.gov.hmcts.reform.sscs.config.SubscriptionType.APPOINTEE;
 import static uk.gov.hmcts.reform.sscs.config.SubscriptionType.JOINT_PARTY;
 import static uk.gov.hmcts.reform.sscs.config.SubscriptionType.REPRESENTATIVE;
 import static uk.gov.hmcts.reform.sscs.domain.notify.NotificationEventType.*;
-import static uk.gov.hmcts.reform.sscs.personalisation.SyaAppealCreatedAndReceivedPersonalisation.NOT_REQUIRED;
-import static uk.gov.hmcts.reform.sscs.personalisation.SyaAppealCreatedAndReceivedPersonalisation.REQUIRED;
 import static uk.gov.hmcts.reform.sscs.personalisation.SyaAppealCreatedAndReceivedPersonalisation.TWO_NEW_LINES;
 import static uk.gov.hmcts.reform.sscs.personalisation.SyaAppealCreatedAndReceivedPersonalisation.getOptionalField;
 import static uk.gov.hmcts.reform.sscs.service.NotificationUtils.hasAppointee;
@@ -43,25 +42,10 @@ import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
-import uk.gov.hmcts.reform.sscs.ccd.domain.AppellantInfoRequest;
-import uk.gov.hmcts.reform.sscs.ccd.domain.Benefit;
-import uk.gov.hmcts.reform.sscs.ccd.domain.DatedRequestOutcome;
-import uk.gov.hmcts.reform.sscs.ccd.domain.Event;
-import uk.gov.hmcts.reform.sscs.ccd.domain.EventDetails;
-import uk.gov.hmcts.reform.sscs.ccd.domain.EventType;
-import uk.gov.hmcts.reform.sscs.ccd.domain.Hearing;
-import uk.gov.hmcts.reform.sscs.ccd.domain.HearingDetails;
-import uk.gov.hmcts.reform.sscs.ccd.domain.HearingOptions;
-import uk.gov.hmcts.reform.sscs.ccd.domain.JointPartyName;
-import uk.gov.hmcts.reform.sscs.ccd.domain.LanguagePreference;
-import uk.gov.hmcts.reform.sscs.ccd.domain.Name;
-import uk.gov.hmcts.reform.sscs.ccd.domain.PanelComposition;
-import uk.gov.hmcts.reform.sscs.ccd.domain.RegionalProcessingCenter;
-import uk.gov.hmcts.reform.sscs.ccd.domain.SscsCaseData;
-import uk.gov.hmcts.reform.sscs.ccd.domain.State;
-import uk.gov.hmcts.reform.sscs.ccd.domain.Subscription;
+import uk.gov.hmcts.reform.sscs.ccd.domain.*;
 import uk.gov.hmcts.reform.sscs.config.AppConstants;
 import uk.gov.hmcts.reform.sscs.config.NotificationConfig;
+import uk.gov.hmcts.reform.sscs.config.PersonalisationConfiguration;
 import uk.gov.hmcts.reform.sscs.config.SubscriptionType;
 import uk.gov.hmcts.reform.sscs.config.properties.EvidenceProperties;
 import uk.gov.hmcts.reform.sscs.domain.SscsCaseDataWrapper;
@@ -102,6 +86,9 @@ public class Personalisation<E extends NotificationWrapper> {
 
     @Autowired
     private EvidenceProperties evidenceProperties;
+
+    @Autowired
+    private PersonalisationConfiguration personalisationConfiguration;
 
     private static String tya(Subscription subscription) {
         if (subscription != null) {
@@ -211,7 +198,7 @@ public class Personalisation<E extends NotificationWrapper> {
 
         personalisation.put(APPEAL_REF, getAppealReference(ccdResponse));
         personalisation.put(APPELLANT_NAME, ccdResponse.getAppeal().getAppellant().getName().getFullNameNoTitle());
-        personalisation.put(NAME, getName(subscriptionWithType.getSubscriptionType(), ccdResponse, responseWrapper));
+        personalisation.put(AppConstants.NAME, getName(subscriptionWithType.getSubscriptionType(), ccdResponse, responseWrapper));
         personalisation.put(CCD_ID, defaultIfBlank(ccdResponse.getCcdCaseId(), EMPTY));
 
         // Some templates (notably letters) can be sent out before the SC Ref is added to the case
@@ -229,9 +216,7 @@ public class Personalisation<E extends NotificationWrapper> {
 
         LocalDate createdDate = LocalDate.parse(ofNullable(ccdResponse.getCaseCreated()).orElse(LocalDate.now().toString()));
         translateToWelshDate(createdDate, ccdResponse, value -> personalisation.put(CREATED_DATE_WELSH, value));
-
         personalisation.put(CREATED_DATE, createdDate.toString());
-        personalisation.put(CREATED_DATE_WELSH, createdDate.toString());
 
         personalisation.put(JOINT, subscriptionWithType.getSubscriptionType().equals(JOINT_PARTY) ? JOINT_TEXT_WITH_A_SPACE : EMPTY);
         personalisation.put(JOINT_WELSH, subscriptionWithType.getSubscriptionType().equals(JOINT_PARTY) ? JOINT_WELSH_TEXT_WITH_A_SPACE : EMPTY);
@@ -276,6 +261,7 @@ public class Personalisation<E extends NotificationWrapper> {
         personalisation.put(ONLINE_HEARING_SIGN_IN_LINK_LITERAL, config.getOnlineHearingLink() + "/sign-in");
 
         personalisation.put(APPOINTEE_DESCRIPTION, getAppointeeDescription(subscriptionWithType.getSubscriptionType(), ccdResponse));
+        personalisation.put(APPOINTEE_NAME, getName(APPOINTEE, ccdResponse, responseWrapper));
 
         personalisation.put(HEARING_TYPE, responseWrapper.getNewSscsCaseData().getAppeal().getHearingType());
 
@@ -595,7 +581,6 @@ public class Personalisation<E extends NotificationWrapper> {
                 || DECISION_ISSUED.equals(notificationEventType)
                 || DIRECTION_ISSUED_WELSH.equals(notificationEventType)
                 || DECISION_ISSUED_WELSH.equals(notificationEventType)
-                || STRUCK_OUT.equals(notificationEventType) && caseData.getLanguagePreference().equals(LanguagePreference.WELSH) && subscriptionType.equals(REPRESENTATIVE)
                 || REQUEST_INFO_INCOMPLETE.equals(notificationEventType)
                 || ISSUE_FINAL_DECISION.equals(notificationEventType)
                 || ISSUE_FINAL_DECISION_WELSH.equals(notificationEventType)
@@ -608,7 +593,9 @@ public class Personalisation<E extends NotificationWrapper> {
                 || ACTION_HEARING_RECORDING_REQUEST.equals(notificationEventType)
                 || VALID_APPEAL_CREATED.equals(notificationEventType)
                 || ACTION_POSTPONEMENT_REQUEST.equals(notificationEventType)
-                || ACTION_POSTPONEMENT_REQUEST_WELSH.equals(notificationEventType))) {
+                || ACTION_POSTPONEMENT_REQUEST_WELSH.equals(notificationEventType)
+                || DEATH_OF_APPELLANT.equals(notificationEventType)
+                || PROVIDE_APPOINTEE_DETAILS.equals(notificationEventType))) {
             letterTemplateName = letterTemplateName + "." + subscriptionType.name().toLowerCase();
 
         }
@@ -639,29 +626,29 @@ public class Personalisation<E extends NotificationWrapper> {
         this.sendSmsSubscriptionConfirmation = sendSmsSubscriptionConfirmation;
     }
 
-    private Map<String, String> setHearingArrangementDetails(Map<String, String> personalisation, SscsCaseData
-            ccdResponse) {
+    protected Map<String, String> setHearingArrangementDetails(Map<String, String> personalisation, SscsCaseData ccdResponse) {
         if (null != ccdResponse.getAppeal() && null != ccdResponse.getAppeal().getHearingOptions()) {
-            personalisation.put(AppConstants.HEARING_ARRANGEMENT_DETAILS_LITERAL, buildHearingArrangements(ccdResponse.getAppeal().getHearingOptions()));
+            personalisation.put(AppConstants.HEARING_ARRANGEMENT_DETAILS_LITERAL, buildHearingArrangements(ccdResponse.getAppeal().getHearingOptions(), personalisationConfiguration.getPersonalisation().get(LanguagePreference.ENGLISH)));
 
-            return personalisation;
+            if (ccdResponse.isLanguagePreferenceWelsh()) {
+                personalisation.put(AppConstants.WELSH_HEARING_ARRANGEMENT_DETAILS_LITERAL, buildHearingArrangements(ccdResponse.getAppeal().getHearingOptions(), personalisationConfiguration.getPersonalisation().get(LanguagePreference.WELSH)));
+            }
         }
-
         return personalisation;
     }
 
-    private String buildHearingArrangements(HearingOptions hearingOptions) {
+    private String buildHearingArrangements(HearingOptions hearingOptions, Map<String, String> titleText) {
         if (null != hearingOptions) {
+
             String languageInterpreterRequired = convertBooleanToRequiredText(hearingOptions.getLanguageInterpreter() != null
-                && equalsIgnoreCase(YES, hearingOptions.getLanguageInterpreter()));
+                    && StringUtils.equalsIgnoreCase(YES, hearingOptions.getLanguageInterpreter()), titleText);
 
-            return "Language interpreter: " + languageInterpreterRequired + TWO_NEW_LINES + "Sign interpreter: "
-                    + convertBooleanToRequiredText(findHearingArrangement("signLanguageInterpreter", hearingOptions.getArrangements()))
-                    + TWO_NEW_LINES + "Hearing loop: " + convertBooleanToRequiredText(findHearingArrangement("hearingLoop", hearingOptions.getArrangements()))
-                    + TWO_NEW_LINES + "Disabled access: " + convertBooleanToRequiredText(findHearingArrangement("disabledAccess", hearingOptions.getArrangements()))
-                    + TWO_NEW_LINES + "Any other arrangements: " + getOptionalField(hearingOptions.getOther(), NOT_REQUIRED);
+            return titleText.get(LANGUAGE_INTERPRETER.name()) + languageInterpreterRequired + TWO_NEW_LINES + titleText.get(SIGN_INTERPRETER.name())
+                    + convertBooleanToRequiredText(findHearingArrangement("signLanguageInterpreter", hearingOptions.getArrangements()), titleText)
+                    + TWO_NEW_LINES + titleText.get(HEARING_LOOP.name()) + convertBooleanToRequiredText(findHearingArrangement("hearingLoop", hearingOptions.getArrangements()), titleText)
+                    + TWO_NEW_LINES + titleText.get(DISABLED_ACCESS.name()) + convertBooleanToRequiredText(findHearingArrangement("disabledAccess", hearingOptions.getArrangements()), titleText)
+                    + TWO_NEW_LINES + titleText.get(OTHER_ARRANGEMENTS.name()) + getOptionalField(hearingOptions.getOther(), titleText.get(PersonalisationConfiguration.PersonalisationKey.NOT_REQUIRED.name()));
         }
-
         return null;
     }
 
@@ -669,7 +656,7 @@ public class Personalisation<E extends NotificationWrapper> {
         return arrangements != null && arrangements.contains(field);
     }
 
-    private String convertBooleanToRequiredText(Boolean bool) {
-        return bool ? REQUIRED : NOT_REQUIRED;
+    private String convertBooleanToRequiredText(boolean bool, Map<String, String> titleText) {
+        return bool ? titleText.get(PersonalisationConfiguration.PersonalisationKey.REQUIRED.name()) : titleText.get(PersonalisationConfiguration.PersonalisationKey.NOT_REQUIRED.name());
     }
 }
