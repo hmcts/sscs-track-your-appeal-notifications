@@ -1237,8 +1237,10 @@ text:
 ---
 # default profile (development, production etc.)
 spring:
-  profiles: default
-  profiles.include: ${INFRASTRUCTURE_ENV:aat}-${SLOT:STAGING}-slot
+  config:
+    activate:
+      on-profile: default
+    import: application-${INFRASTRUCTURE_ENV:aat}-${SLOT:STAGING}-slot.yaml
   flyway.enabled: ${RUN_DB_MIGRATION_ON_STARTUP:true}
 
 job.scheduler:
@@ -1279,7 +1281,9 @@ job.scheduler:
 ---
 # integration & functional profile
 spring:
-  profiles: integration, functional
+  config:
+    activate:
+      on-profile: integration, functional
   autoconfigure.exclude:
     - org.springframework.boot.autoconfigure.jdbc.DataSourceAutoConfiguration
   flyway.enabled: false
