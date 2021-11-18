@@ -24,6 +24,7 @@
     ],
     "security_classification": "PUBLIC",
     "case_data": {
+      "functionalTest": "Yes",
       "createdInGapsFrom": "readyToList",
       "caseCreated": "2021-02-13",
       "subscriptions": {

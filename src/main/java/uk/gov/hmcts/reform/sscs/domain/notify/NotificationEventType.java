@@ -15,7 +15,7 @@ public enum NotificationEventType {
     APPEAL_DORMANT_NOTIFICATION("appealDormant", true, true, false, false, false, 0),
     EVIDENCE_RECEIVED_NOTIFICATION("evidenceReceived", true, true, true, false, false, 0),
     DWP_RESPONSE_RECEIVED_NOTIFICATION("responseReceived", true, true, true, false, false, 0),
-    DWP_UPLOAD_RESPONSE_NOTIFICATION("dwpUploadResponse", true, true, true, false, false, 0),
+    DWP_UPLOAD_RESPONSE_NOTIFICATION("dwpUploadResponse", true, true, true, false, false, 60L),
     HEARING_BOOKED_NOTIFICATION("hearingBooked", true, false, false, false, false, 0),
     POSTPONEMENT_NOTIFICATION("hearingPostponed", true, false, false, false, false, 0),
     SUBSCRIPTION_CREATED_NOTIFICATION("subscriptionCreated", true, true, false, false, false, 0),
