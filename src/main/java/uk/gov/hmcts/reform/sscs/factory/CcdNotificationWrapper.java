@@ -136,14 +136,14 @@ public class CcdNotificationWrapper implements NotificationWrapper {
 
         if (hasAppointee(otherParty.getAppointee(), otherParty.getIsAppointee())
                 && isNotificationEventValidToSendToOtherPartySubscription(otherParty.getOtherPartyAppointeeSubscription())) {
-            otherPartySubscription.add(new SubscriptionWithType(otherParty.getOtherPartyAppointeeSubscription(), OTHER_PARTY, Integer.parseInt(otherParty.getAppointee().getId())));
+            otherPartySubscription.add(new SubscriptionWithType(otherParty.getOtherPartyAppointeeSubscription(), OTHER_PARTY_APPOINTEE, Integer.parseInt(otherParty.getAppointee().getId())));
         } else if (isNotificationEventValidToSendToOtherPartySubscription(otherParty.getOtherPartySubscription())) {
             otherPartySubscription.add(new SubscriptionWithType(otherParty.getOtherPartySubscription(), OTHER_PARTY, Integer.parseInt(otherParty.getId())));
         }
 
         if (hasRepresentative(otherParty)
                 && isNotificationEventValidToSendToOtherPartySubscription(otherParty.getOtherPartyRepresentativeSubscription())) {
-            otherPartySubscription.add(new SubscriptionWithType(otherParty.getOtherPartyRepresentativeSubscription(), OTHER_PARTY, Integer.parseInt(otherParty.getRep().getId())));
+            otherPartySubscription.add(new SubscriptionWithType(otherParty.getOtherPartyRepresentativeSubscription(), OTHER_PARTY_REPRESENTATIVE, Integer.parseInt(otherParty.getRep().getId())));
         }
 
         return otherPartySubscription;
