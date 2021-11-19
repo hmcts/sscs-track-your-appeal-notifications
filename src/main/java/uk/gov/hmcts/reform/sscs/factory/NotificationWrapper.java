@@ -1,6 +1,8 @@
 package uk.gov.hmcts.reform.sscs.factory;
 
 import java.util.List;
+
+import uk.gov.hmcts.reform.sscs.ccd.domain.OtherParty;
 import uk.gov.hmcts.reform.sscs.ccd.domain.SscsCaseData;
 import uk.gov.hmcts.reform.sscs.ccd.domain.Subscription;
 import uk.gov.hmcts.reform.sscs.config.AppealHearingType;
@@ -24,6 +26,8 @@ public interface NotificationWrapper {
     Subscription getAppointeeSubscription();
 
     Subscription getJointPartySubscription();
+
+    List<SubscriptionWithType> getOtherPartySubscriptions();
 
     SscsCaseDataWrapper getSscsCaseDataWrapper();
 
