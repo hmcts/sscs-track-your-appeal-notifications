@@ -10,7 +10,6 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
 import java.util.Optional;
-import java.util.function.Consumer;
 import java.util.stream.Collectors;
 import org.apache.commons.lang3.StringUtils;
 import org.jetbrains.annotations.NotNull;
@@ -135,14 +134,14 @@ public class CcdNotificationWrapper implements NotificationWrapper {
     private List<SubscriptionWithType> filterOtherPartySubscription(OtherParty otherParty) {
         List<SubscriptionWithType> otherPartySubscription = new ArrayList<>();
 
-        if (YesNo.isYes(otherParty.getIsAppointee())
+        if (hasAppointee(otherParty.getAppointee(), otherParty.getIsAppointee())
                 && isNotificationEventValidToSendToOtherPartySubscription(otherParty.getOtherPartyAppointeeSubscription())) {
             otherPartySubscription.add(new SubscriptionWithType(otherParty.getOtherPartyAppointeeSubscription(), OTHER_PARTY, Integer.parseInt(otherParty.getAppointee().getId())));
         } else if (isNotificationEventValidToSendToOtherPartySubscription(otherParty.getOtherPartySubscription())) {
             otherPartySubscription.add(new SubscriptionWithType(otherParty.getOtherPartySubscription(), OTHER_PARTY, Integer.parseInt(otherParty.getId())));
         }
 
-        if (YesNo.isYes(otherParty.getRep().getHasRepresentative())
+        if (hasRepresentative(otherParty)
                 && isNotificationEventValidToSendToOtherPartySubscription(otherParty.getOtherPartyRepresentativeSubscription())) {
             otherPartySubscription.add(new SubscriptionWithType(otherParty.getOtherPartyRepresentativeSubscription(), OTHER_PARTY, Integer.parseInt(otherParty.getRep().getId())));
         }
