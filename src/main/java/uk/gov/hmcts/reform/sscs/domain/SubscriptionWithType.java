@@ -10,4 +10,10 @@ import uk.gov.hmcts.reform.sscs.config.SubscriptionType;
 public class SubscriptionWithType {
     Subscription subscription;
     SubscriptionType subscriptionType;
+    int partyId;
+
+    public SubscriptionWithType(Subscription subscription, SubscriptionType subscriptionType) {
+        this.subscription = subscription;
+        this.subscriptionType = subscriptionType;
+    }
 }

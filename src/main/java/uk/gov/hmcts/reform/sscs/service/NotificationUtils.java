@@ -84,6 +84,12 @@ public class NotificationUtils {
                 && MANDATORY_LETTER_EVENT_TYPES.contains(wrapper.getNotificationEventType())));
     }
 
+    public static boolean isValidSubscriptionOrIsMandatoryLetter(Subscription subscription, NotificationEventType eventType) {
+        Subscription nullCheckedSubscription = getPopulatedSubscriptionOrNull(subscription);
+        return ((null != nullCheckedSubscription && nullCheckedSubscription.doesCaseHaveSubscriptions())
+                && MANDATORY_LETTER_EVENT_TYPES.contains(eventType));
+    }
+
     public static Subscription getSubscription(SscsCaseData sscsCaseData, SubscriptionType subscriptionType) {
         if (REPRESENTATIVE.equals(subscriptionType)) {
             return getPopulatedSubscriptionOrNull(sscsCaseData.getSubscriptions().getRepresentativeSubscription());
