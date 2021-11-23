@@ -3,7 +3,6 @@ package uk.gov.hmcts.reform.sscs.personalisation;
 import static com.google.common.collect.Lists.newArrayList;
 import static java.lang.String.format;
 import static java.util.Optional.ofNullable;
-import static org.apache.commons.collections4.ListUtils.emptyIfNull;
 import static org.apache.commons.lang3.StringUtils.EMPTY;
 import static org.apache.commons.lang3.StringUtils.defaultIfBlank;
 import static org.apache.commons.lang3.StringUtils.equalsIgnoreCase;
@@ -24,6 +23,7 @@ import static uk.gov.hmcts.reform.sscs.config.SubscriptionType.REPRESENTATIVE;
 import static uk.gov.hmcts.reform.sscs.domain.notify.NotificationEventType.*;
 import static uk.gov.hmcts.reform.sscs.personalisation.SyaAppealCreatedAndReceivedPersonalisation.TWO_NEW_LINES;
 import static uk.gov.hmcts.reform.sscs.personalisation.SyaAppealCreatedAndReceivedPersonalisation.getOptionalField;
+import static uk.gov.hmcts.reform.sscs.service.LetterUtils.getNameForOtherParty;
 import static uk.gov.hmcts.reform.sscs.service.NotificationUtils.hasAppointee;
 import static uk.gov.hmcts.reform.sscs.service.NotificationUtils.hasJointParty;
 import static uk.gov.hmcts.reform.sscs.service.NotificationUtils.hasRepresentative;
@@ -39,10 +39,8 @@ import java.time.temporal.ChronoUnit;
 import java.util.*;
 import java.util.function.Consumer;
 import java.util.stream.Collectors;
-import java.util.stream.Stream;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.StringUtils;
-import org.apache.commons.lang3.tuple.Pair;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 import uk.gov.hmcts.reform.sscs.ccd.domain.*;
@@ -335,22 +333,11 @@ public class Personalisation<E extends NotificationWrapper> {
 
     private String getName(SubscriptionWithType subscriptionWithType, SscsCaseData sscsCaseData, SscsCaseDataWrapper wrapper) {
         if (sscsCaseData.getAppeal() != null && subscriptionWithType.getPartyId() != 0) {
-            return getDefaultName(getNameForOtherParty(sscsCaseData, subscriptionWithType.getPartyId()));
+            return getDefaultName(getNameForOtherParty(sscsCaseData, subscriptionWithType.getPartyId()).orElse(null));
         }
         return getName(subscriptionWithType.getSubscriptionType(), sscsCaseData, wrapper);
     }
 
-    private Name getNameForOtherParty(SscsCaseData sscsCaseData, final int partyId) {
-        return emptyIfNull(sscsCaseData.getOtherParties()).stream()
-                .map(CcdValue::getValue)
-                .flatMap(op -> Stream.of((op.hasAppointee()) ? Pair.of(op.getAppointee().getId(), op.getAppointee().getName()) : Pair.of(op.getId(), op.getName()), (op.hasRepresentative()) ? Pair.of(op.getRep().getId(), op.getRep().getName()) : null))
-                .filter(Objects::nonNull)
-                .filter(p -> p.getLeft() != null && p.getRight() != null)
-                .filter(p -> p.getLeft().equals(String.valueOf(partyId)))
-                .map(Pair::getRight)
-                .findFirst()
-                .orElse(null);
-    }
 
     private String getDefaultName(Name name) {
         return name == null || name.getFirstName() == null || isBlank(name.getFirstName())

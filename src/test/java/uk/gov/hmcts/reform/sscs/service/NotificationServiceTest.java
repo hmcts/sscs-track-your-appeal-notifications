@@ -23,6 +23,7 @@ import java.io.IOException;
 import java.time.LocalDate;
 import java.time.ZonedDateTime;
 import java.util.*;
+import java.util.stream.Collectors;
 import junitparams.JUnitParamsRunner;
 import junitparams.Parameters;
 import junitparams.converters.Nullable;
@@ -1727,6 +1728,37 @@ public class NotificationServiceTest {
 
     public static CcdNotificationWrapper buildBaseWrapper(NotificationEventType eventType, Appellant appellant, Representative rep, SscsDocument sscsDocument) {
         return buildBaseWrapperWithCaseData(getSscsCaseDataBuilder(appellant, rep, sscsDocument).build(), eventType);
+    }
+
+    public static CcdNotificationWrapper buildBaseWrapperOtherParty(NotificationEventType eventType, Appellant appellant, SscsDocument sscsDocument) {
+        final OtherParty otherParty1 = OtherParty.builder()
+                .id("1")
+                .name(Name.builder().firstName("OP").lastName("OP1").build())
+                .address(Address.builder().line1("line 1").postcode("TS1 1ST").build())
+                .rep(Representative.builder()
+                        .id("2")
+                        .hasRepresentative(YES)
+                        .name(Name.builder().firstName("OPRep").lastName("OP2").build())
+                        .address(Address.builder().line1("line 1").postcode("TS2 2ST").build())
+                        .build())
+                .isAppointee(YES)
+                .appointee(Appointee.builder()
+                        .id("3")
+                        .name(Name.builder().firstName("OPAppointee").lastName("OP3").build())
+                        .address(Address.builder().line1("line 1").postcode("TS3 3ST").build())
+                        .build())
+                .build();
+        final OtherParty otherParty2 = OtherParty.builder()
+                .id("4")
+                .name(Name.builder().firstName("OP").lastName("OP4").build())
+                .address(Address.builder().line1("line 1").postcode("TS4 4ST").build())
+                .build();
+        SscsCaseData sscsCaseData = getSscsCaseDataBuilder(appellant, null, sscsDocument)
+                .otherParties(List.of(otherParty1, otherParty2).stream()
+                        .map(CcdValue::new)
+                        .collect(Collectors.toList()))
+                .build();
+        return buildBaseWrapperWithCaseData(sscsCaseData, eventType);
     }
 
     public static CcdNotificationWrapper buildBaseWrapperJointParty(NotificationEventType eventType, Appellant appellant, JointPartyName jointPartyName, Address address, SscsDocument sscsDocument) {
