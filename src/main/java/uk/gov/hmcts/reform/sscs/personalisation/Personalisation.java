@@ -604,7 +604,8 @@ public class Personalisation<E extends NotificationWrapper> {
                 || ACTION_POSTPONEMENT_REQUEST.equals(notificationEventType)
                 || ACTION_POSTPONEMENT_REQUEST_WELSH.equals(notificationEventType)
                 || DEATH_OF_APPELLANT.equals(notificationEventType)
-                || PROVIDE_APPOINTEE_DETAILS.equals(notificationEventType))) {
+                || PROVIDE_APPOINTEE_DETAILS.equals(notificationEventType)
+                || OTHER_PARTY_ADDED.equals(notificationEventType))) {
             letterTemplateName = letterTemplateName + "." + subscriptionType.name().toLowerCase();
 
         }
