@@ -53,6 +53,7 @@ public enum NotificationEventType {
     ACTION_POSTPONEMENT_REQUEST_WELSH("actionPostponementRequestWelsh", true, true, true, true, false, 0),
     DEATH_OF_APPELLANT("deathOfAppellant", true, true, true, true, false, 0),
     PROVIDE_APPOINTEE_DETAILS("provideAppointeeDetails", true, true, true, true, false, 0),
+    OTHER_PARTY_ADDED("otherPartyAdded", true, true, true, true, false, 0),
     DO_NOT_SEND("");
 
     private String id;
