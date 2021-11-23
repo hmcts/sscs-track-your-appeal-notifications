@@ -21,8 +21,8 @@ import org.springframework.stereotype.Service;
 import uk.gov.hmcts.reform.sscs.ccd.domain.Address;
 import uk.gov.hmcts.reform.sscs.ccd.domain.LanguagePreference;
 import uk.gov.hmcts.reform.sscs.config.DocmosisTemplatesConfig;
-import uk.gov.hmcts.reform.sscs.config.SubscriptionType;
 import uk.gov.hmcts.reform.sscs.config.properties.EvidenceProperties;
+import uk.gov.hmcts.reform.sscs.domain.SubscriptionWithType;
 import uk.gov.hmcts.reform.sscs.domain.docmosis.PdfCoverSheet;
 import uk.gov.hmcts.reform.sscs.domain.notify.Notification;
 import uk.gov.hmcts.reform.sscs.domain.notify.NotificationEventType;
@@ -52,9 +52,9 @@ public class PdfLetterService {
         this.evidenceProperties = evidenceProperties;
     }
 
-    public byte[] buildCoversheet(NotificationWrapper wrapper, SubscriptionType subscriptionType) {
+    public byte[] buildCoversheet(NotificationWrapper wrapper, SubscriptionWithType subscriptionWithType) {
         try {
-            byte[] coversheet = generateCoversheet(wrapper, subscriptionType);
+            byte[] coversheet = generateCoversheet(wrapper, subscriptionWithType);
             if (REQUIRES_TWO_COVERSHEET.contains(wrapper.getNotificationType())
                     && ArrayUtils.isNotEmpty(coversheet)) {
                 return buildBundledLetter(addBlankPageAtTheEndIfOddPage(coversheet), coversheet);
@@ -63,15 +63,15 @@ public class PdfLetterService {
         } catch (IOException e) {
             String message = String.format("Cannot '%s' generate evidence coversheet to %s.",
                     wrapper.getNotificationType().getId(),
-                    subscriptionType.name());
+                    subscriptionWithType.getSubscriptionType().name());
             log.error(message, e);
             throw new NotificationClientRuntimeException(message);
         }
     }
 
-    private byte[] generateCoversheet(NotificationWrapper wrapper, SubscriptionType subscriptionType) {
-        Address addressToUse = getAddressToUseForLetter(wrapper, subscriptionType);
-        String name = getNameToUseForLetter(wrapper, subscriptionType);
+    private byte[] generateCoversheet(NotificationWrapper wrapper, SubscriptionWithType subscriptionWithType) {
+        Address addressToUse = getAddressToUseForLetter(wrapper, subscriptionWithType);
+        String name = getNameToUseForLetter(wrapper, subscriptionWithType);
         PdfCoverSheet pdfCoverSheet = new PdfCoverSheet(
                 wrapper.getCaseId(),
                 name,
@@ -102,7 +102,7 @@ public class PdfLetterService {
 
 
     public byte[] generateLetter(NotificationWrapper wrapper, Notification notification,
-                                 SubscriptionType subscriptionType) {
+                                 SubscriptionWithType subscriptionWithType) {
         if (StringUtils.isNotBlank(notification.getDocmosisLetterTemplate())) {
 
             Map<String, Object> placeholders = new HashMap<>(notification.getPlaceholders());
@@ -110,9 +110,9 @@ public class PdfLetterService {
             placeholders.put(GENERATED_DATE_LITERAL, LocalDateTime.now().toLocalDate().toString());
 
             translateToWelshDate(LocalDateTime.now().toLocalDate(), wrapper.getNewSscsCaseData(), value -> placeholders.put(WELSH_GENERATED_DATE_LITERAL, value));
-            placeholders.put(ADDRESS_NAME, truncateAddressLine(getNameToUseForLetter(wrapper, subscriptionType)));
+            placeholders.put(ADDRESS_NAME, truncateAddressLine(getNameToUseForLetter(wrapper, subscriptionWithType)));
 
-            Address addressToUse = getAddressToUseForLetter(wrapper, subscriptionType);
+            Address addressToUse = getAddressToUseForLetter(wrapper, subscriptionWithType);
             buildRecipientAddressPlaceholders(addressToUse, placeholders);
             placeholders.put(docmosisTemplatesConfig.getHmctsImgKey(), docmosisTemplatesConfig.getHmctsImgVal());
             placeholders.put(docmosisTemplatesConfig.getHmctsWelshImgKey(), docmosisTemplatesConfig.getHmctsWelshImgVal());

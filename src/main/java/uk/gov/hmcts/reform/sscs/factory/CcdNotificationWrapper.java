@@ -1,5 +1,6 @@
 package uk.gov.hmcts.reform.sscs.factory;
 
+import static org.apache.commons.collections4.ListUtils.emptyIfNull;
 import static uk.gov.hmcts.reform.sscs.config.AppealHearingType.ORAL;
 import static uk.gov.hmcts.reform.sscs.config.AppealHearingType.PAPER;
 import static uk.gov.hmcts.reform.sscs.config.SubscriptionType.*;
@@ -70,11 +71,8 @@ public class CcdNotificationWrapper implements NotificationWrapper {
 
     @Override
     public List<SubscriptionWithType> getOtherPartySubscriptions() {
-        List<OtherParty> otherParties = responseWrapper.getNewSscsCaseData().getOtherParties().stream()
+        return emptyIfNull(responseWrapper.getNewSscsCaseData().getOtherParties()).stream()
                 .map(CcdValue::getValue)
-                .collect(Collectors.toList());
-
-        return otherParties.stream()
                 .flatMap(o -> filterOtherPartySubscription(o).stream())
                 .collect(Collectors.toList());
     }
