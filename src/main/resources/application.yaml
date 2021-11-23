@@ -479,6 +479,9 @@ notification:
         docmosisId: TB-SCS-GNO-ENG-00773.docx
       appointee:
         docmosisId: TB-SCS-GNO-ENG-00773.docx
+    otherPartyAdded:
+      other_party:
+        docmosisId: TB-SCS-GNO-ENG-00784.docx
     paper:
       responseReceived:
         appellant:
@@ -1136,6 +1139,7 @@ pdf-service:
       resendAppealCreated: 'TB-SCS-GNO-ENG-00012.docx'
       requestInfoIncompleteApplication: 'TB-SCS-GNO-ENG-00012.docx'
       struckOut: 'TB-SCS-GNO-ENG-00012.docx'
+      otherPartyAdded: 'TB-SCS-GNO-ENG-00012.docx'
     welsh:
       appealReceived: 'TB-SCS-GNO-WEL-00479.docx'
       directionIssued: 'TB-SCS-GNO-WEL-00479.docx'
