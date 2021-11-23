@@ -17,7 +17,7 @@ import org.apache.pdfbox.pdmodel.common.PDRectangle;
 import uk.gov.hmcts.reform.sscs.ccd.domain.Address;
 import uk.gov.hmcts.reform.sscs.ccd.domain.ReasonableAdjustments;
 import uk.gov.hmcts.reform.sscs.ccd.domain.YesNo;
-import uk.gov.hmcts.reform.sscs.config.SubscriptionType;
+import uk.gov.hmcts.reform.sscs.domain.SubscriptionWithType;
 import uk.gov.hmcts.reform.sscs.exception.NotificationClientRuntimeException;
 import uk.gov.hmcts.reform.sscs.factory.NotificationWrapper;
 
@@ -27,10 +27,10 @@ public class LetterUtils {
         // Hiding utility class constructor
     }
 
-    public static Address getAddressToUseForLetter(NotificationWrapper wrapper, SubscriptionType subscriptionType) {
-        if (REPRESENTATIVE.equals(subscriptionType)) {
+    public static Address getAddressToUseForLetter(NotificationWrapper wrapper, SubscriptionWithType subscriptionWithType) {
+        if (REPRESENTATIVE.equals(subscriptionWithType.getSubscriptionType())) {
             return wrapper.getNewSscsCaseData().getAppeal().getRep().getAddress();
-        } else if (JOINT_PARTY.equals(subscriptionType)) {
+        } else if (JOINT_PARTY.equals(subscriptionWithType.getSubscriptionType())) {
             if (equalsIgnoreCase("yes",
                     wrapper.getNewSscsCaseData().getJointPartyAddressSameAsAppellant())) {
                 return wrapper.getNewSscsCaseData().getAppeal().getAppellant().getAddress();
@@ -45,10 +45,10 @@ public class LetterUtils {
         }
     }
 
-    public static String getNameToUseForLetter(NotificationWrapper wrapper, SubscriptionType subscriptionType) {
-        if (REPRESENTATIVE.equals(subscriptionType)) {
+    public static String getNameToUseForLetter(NotificationWrapper wrapper, SubscriptionWithType subscriptionWithType) {
+        if (REPRESENTATIVE.equals(subscriptionWithType.getSubscriptionType())) {
             return SendNotificationHelper.getRepSalutation(wrapper.getNewSscsCaseData().getAppeal().getRep(), false);
-        } else if (JOINT_PARTY.equals(subscriptionType)) {
+        } else if (JOINT_PARTY.equals(subscriptionWithType.getSubscriptionType())) {
             return format("%s %s",wrapper.getNewSscsCaseData().getJointPartyName().getFirstName(), wrapper.getNewSscsCaseData().getJointPartyName().getLastName());
         } else {
             if (hasAppointee(wrapper.getSscsCaseDataWrapper())) {
@@ -100,12 +100,12 @@ public class LetterUtils {
         }
     }
 
-    public static boolean isAlternativeLetterFormatRequired(NotificationWrapper wrapper, SubscriptionType subscriptionType) {
+    public static boolean isAlternativeLetterFormatRequired(NotificationWrapper wrapper, SubscriptionWithType subscriptionWithType) {
         YesNo wantsReasonableAdjustment = YesNo.NO;
         ReasonableAdjustments resAdj = wrapper.getNewSscsCaseData().getReasonableAdjustments();
 
         if (resAdj != null) {
-            switch (subscriptionType) {
+            switch (subscriptionWithType.getSubscriptionType()) {
                 case APPELLANT:
                     wantsReasonableAdjustment = resAdj.getAppellant() != null && resAdj.getAppellant().getWantsReasonableAdjustment() != null ? resAdj.getAppellant().getWantsReasonableAdjustment() : YesNo.NO;
                     break;

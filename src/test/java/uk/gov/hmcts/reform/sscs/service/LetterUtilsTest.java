@@ -16,18 +16,23 @@ import junitparams.Parameters;
 import org.apache.pdfbox.io.IOUtils;
 import org.apache.pdfbox.pdmodel.PDDocument;
 import org.apache.pdfbox.pdmodel.PDPage;
+import org.jetbrains.annotations.NotNull;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import uk.gov.hmcts.reform.sscs.ccd.domain.Address;
 import uk.gov.hmcts.reform.sscs.ccd.domain.JointPartyName;
 import uk.gov.hmcts.reform.sscs.ccd.domain.Name;
 import uk.gov.hmcts.reform.sscs.ccd.domain.Representative;
+import uk.gov.hmcts.reform.sscs.ccd.domain.Subscription;
 import uk.gov.hmcts.reform.sscs.config.SubscriptionType;
+import uk.gov.hmcts.reform.sscs.domain.SubscriptionWithType;
 import uk.gov.hmcts.reform.sscs.exception.NotificationClientRuntimeException;
 import uk.gov.hmcts.reform.sscs.factory.NotificationWrapper;
 
 @RunWith(JUnitParamsRunner.class)
 public class LetterUtilsTest {
+    private static final Subscription EMPTY_SUBSCRIPTION = Subscription.builder().build();
+
     @Test
     public void useAppellantAddressForLetter() {
         NotificationWrapper wrapper = NotificationServiceTest.buildBaseWrapper(
@@ -37,7 +42,12 @@ public class LetterUtilsTest {
             null
         );
 
-        assertEquals(APPELLANT_WITH_ADDRESS.getAddress(), getAddressToUseForLetter(wrapper, APPELLANT));
+        assertEquals(APPELLANT_WITH_ADDRESS.getAddress(), getAddressToUseForLetter(wrapper, getSubscriptionWithType(APPELLANT)));
+    }
+
+    @NotNull
+    private SubscriptionWithType getSubscriptionWithType(SubscriptionType subscriptionType) {
+        return new SubscriptionWithType(Subscription.builder().build(), subscriptionType);
     }
 
     @Test
@@ -49,7 +59,7 @@ public class LetterUtilsTest {
             null
         );
 
-        assertEquals(APPELLANT_WITH_ADDRESS_AND_APPOINTEE.getAppointee().getAddress(), getAddressToUseForLetter(wrapper, APPOINTEE));
+        assertEquals(APPELLANT_WITH_ADDRESS_AND_APPOINTEE.getAppointee().getAddress(), getAddressToUseForLetter(wrapper, getSubscriptionWithType(APPOINTEE)));
     }
 
     @Test
@@ -61,7 +71,7 @@ public class LetterUtilsTest {
             null
         );
 
-        assertEquals(REP_WITH_ADDRESS.getAddress(), getAddressToUseForLetter(wrapper, REPRESENTATIVE));
+        assertEquals(REP_WITH_ADDRESS.getAddress(), getAddressToUseForLetter(wrapper, getSubscriptionWithType(REPRESENTATIVE)));
     }
 
     @Test
@@ -73,7 +83,7 @@ public class LetterUtilsTest {
             null
         );
 
-        assertEquals(APPELLANT_WITH_ADDRESS.getName().getFullNameNoTitle(), getNameToUseForLetter(wrapper, APPELLANT));
+        assertEquals(APPELLANT_WITH_ADDRESS.getName().getFullNameNoTitle(), getNameToUseForLetter(wrapper, getSubscriptionWithType(APPELLANT)));
     }
 
     @Test
@@ -85,7 +95,7 @@ public class LetterUtilsTest {
             null
         );
 
-        assertEquals(APPELLANT_WITH_ADDRESS_AND_APPOINTEE.getAppointee().getName().getFullNameNoTitle(), getNameToUseForLetter(wrapper, APPOINTEE));
+        assertEquals(APPELLANT_WITH_ADDRESS_AND_APPOINTEE.getAppointee().getName().getFullNameNoTitle(), getNameToUseForLetter(wrapper, getSubscriptionWithType(APPOINTEE)));
     }
 
     @Test
@@ -98,8 +108,8 @@ public class LetterUtilsTest {
                 jointPartyAddress,
                 null
         );
-        assertEquals(jointPartyAddress, getAddressToUseForLetter(wrapper, JOINT_PARTY));
-        assertEquals("Joint Party", getNameToUseForLetter(wrapper, JOINT_PARTY));
+        assertEquals(jointPartyAddress, getAddressToUseForLetter(wrapper, getSubscriptionWithType(JOINT_PARTY)));
+        assertEquals("Joint Party", getNameToUseForLetter(wrapper, getSubscriptionWithType(JOINT_PARTY)));
     }
 
     @Test
@@ -112,8 +122,8 @@ public class LetterUtilsTest {
                 null
         );
         Address appellantAddress = wrapper.getNewSscsCaseData().getAppeal().getAppellant().getAddress();
-        assertEquals(appellantAddress, getAddressToUseForLetter(wrapper, JOINT_PARTY));
-        assertEquals("Betty Bloom", getNameToUseForLetter(wrapper, JOINT_PARTY));
+        assertEquals(appellantAddress, getAddressToUseForLetter(wrapper, getSubscriptionWithType(JOINT_PARTY)));
+        assertEquals("Betty Bloom", getNameToUseForLetter(wrapper, getSubscriptionWithType(JOINT_PARTY)));
     }
 
     @Test
@@ -131,7 +141,7 @@ public class LetterUtilsTest {
             null
         );
 
-        assertEquals(expectedResult, getNameToUseForLetter(wrapper, REPRESENTATIVE));
+        assertEquals(expectedResult, getNameToUseForLetter(wrapper, getSubscriptionWithType(REPRESENTATIVE)));
     }
 
     private Object[] repNamesForLetters() {
@@ -193,7 +203,7 @@ public class LetterUtilsTest {
     @Parameters({"APPELLANT", "JOINT_PARTY", "APPOINTEE", "REPRESENTATIVE"})
     public void isAlternativeLetterFormatRequired(SubscriptionType subscriptionType) {
         NotificationWrapper wrapper = NotificationServiceTest.buildBaseWrapperWithReasonableAdjustment();
-        assertTrue(LetterUtils.isAlternativeLetterFormatRequired(wrapper, subscriptionType));
+        assertTrue(LetterUtils.isAlternativeLetterFormatRequired(wrapper, new SubscriptionWithType(EMPTY_SUBSCRIPTION, subscriptionType)));
     }
 
 }

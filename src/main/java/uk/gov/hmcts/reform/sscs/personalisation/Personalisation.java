@@ -3,6 +3,7 @@ package uk.gov.hmcts.reform.sscs.personalisation;
 import static com.google.common.collect.Lists.newArrayList;
 import static java.lang.String.format;
 import static java.util.Optional.ofNullable;
+import static org.apache.commons.collections4.ListUtils.emptyIfNull;
 import static org.apache.commons.lang3.StringUtils.EMPTY;
 import static org.apache.commons.lang3.StringUtils.defaultIfBlank;
 import static org.apache.commons.lang3.StringUtils.equalsIgnoreCase;
@@ -38,8 +39,10 @@ import java.time.temporal.ChronoUnit;
 import java.util.*;
 import java.util.function.Consumer;
 import java.util.stream.Collectors;
+import java.util.stream.Stream;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.StringUtils;
+import org.apache.commons.lang3.tuple.Pair;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 import uk.gov.hmcts.reform.sscs.ccd.domain.*;
@@ -198,7 +201,7 @@ public class Personalisation<E extends NotificationWrapper> {
 
         personalisation.put(APPEAL_REF, getAppealReference(ccdResponse));
         personalisation.put(APPELLANT_NAME, ccdResponse.getAppeal().getAppellant().getName().getFullNameNoTitle());
-        personalisation.put(AppConstants.NAME, getName(subscriptionWithType.getSubscriptionType(), ccdResponse, responseWrapper));
+        personalisation.put(AppConstants.NAME, getName(subscriptionWithType, ccdResponse, responseWrapper));
         personalisation.put(CCD_ID, defaultIfBlank(ccdResponse.getCcdCaseId(), EMPTY));
 
         // Some templates (notably letters) can be sent out before the SC Ref is added to the case
@@ -308,26 +311,45 @@ public class Personalisation<E extends NotificationWrapper> {
                 ? ccdResponse.getCcdCaseId() : caseReference;
     }
 
-    private String getName(SubscriptionType subscriptionType, SscsCaseData ccdResponse, SscsCaseDataWrapper wrapper) {
-        if (ccdResponse.getAppeal() == null) {
+    private String getName(SubscriptionType subscriptionType, SscsCaseData sscsCaseData, SscsCaseDataWrapper wrapper) {
+        if (sscsCaseData.getAppeal() == null) {
             return EMPTY;
         }
 
         if (subscriptionType.equals(APPELLANT)
-                && ccdResponse.getAppeal().getAppellant() != null) {
-            return getDefaultName(ccdResponse.getAppeal().getAppellant().getName());
+                && sscsCaseData.getAppeal().getAppellant() != null) {
+            return getDefaultName(sscsCaseData.getAppeal().getAppellant().getName());
         } else if (subscriptionType.equals(REPRESENTATIVE)
                 && hasRepresentative(wrapper)) {
-            return SendNotificationHelper.getRepSalutation(ccdResponse.getAppeal().getRep(), true);
+            return SendNotificationHelper.getRepSalutation(sscsCaseData.getAppeal().getRep(), true);
         } else if (subscriptionType.equals(APPOINTEE)
                 && hasAppointee(wrapper)) {
-            return getDefaultName(ccdResponse.getAppeal().getAppellant().getAppointee().getName());
-        } else if (subscriptionType.equals(JOINT_PARTY) && hasJointParty(ccdResponse)) {
-            JointPartyName partyName = ccdResponse.getJointPartyName();
+            return getDefaultName(sscsCaseData.getAppeal().getAppellant().getAppointee().getName());
+        } else if (subscriptionType.equals(JOINT_PARTY) && hasJointParty(sscsCaseData)) {
+            JointPartyName partyName = sscsCaseData.getJointPartyName();
             return (partyName == null) ? EMPTY :
-               getDefaultName(new Name(partyName.getTitle(), partyName.getFirstName(), partyName.getLastName()));
+                    getDefaultName(new Name(partyName.getTitle(), partyName.getFirstName(), partyName.getLastName()));
         }
         return EMPTY;
+    }
+
+    private String getName(SubscriptionWithType subscriptionWithType, SscsCaseData sscsCaseData, SscsCaseDataWrapper wrapper) {
+        if (sscsCaseData.getAppeal() != null && subscriptionWithType.getPartyId() != 0) {
+            return getDefaultName(getNameForOtherParty(sscsCaseData, subscriptionWithType.getPartyId()));
+        }
+        return getName(subscriptionWithType.getSubscriptionType(), sscsCaseData, wrapper);
+    }
+
+    private Name getNameForOtherParty(SscsCaseData sscsCaseData, final int partyId) {
+        return emptyIfNull(sscsCaseData.getOtherParties()).stream()
+                .map(CcdValue::getValue)
+                .flatMap(op -> Stream.of((op.hasAppointee()) ? Pair.of(op.getAppointee().getId(), op.getAppointee().getName()) : Pair.of(op.getId(), op.getName()), (op.hasRepresentative()) ? Pair.of(op.getRep().getId(), op.getRep().getName()) : null))
+                .filter(Objects::nonNull)
+                .filter(p -> p.getLeft() != null && p.getRight() != null)
+                .filter(p -> p.getLeft().equals(String.valueOf(partyId)))
+                .map(Pair::getRight)
+                .findFirst()
+                .orElse(null);
     }
 
     private String getDefaultName(Name name) {

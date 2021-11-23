@@ -14,7 +14,6 @@ import static uk.gov.hmcts.reform.sscs.service.NotificationValidService.*;
 import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.List;
-
 import uk.gov.hmcts.reform.sscs.ccd.domain.*;
 import uk.gov.hmcts.reform.sscs.config.SubscriptionType;
 import uk.gov.hmcts.reform.sscs.domain.SscsCaseDataWrapper;
