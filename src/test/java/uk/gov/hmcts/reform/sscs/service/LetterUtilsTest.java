@@ -1,6 +1,11 @@
 package uk.gov.hmcts.reform.sscs.service;
 
-import static org.junit.Assert.*;
+import static java.util.Objects.requireNonNull;
+import static org.hamcrest.CoreMatchers.is;
+import static org.hamcrest.MatcherAssert.assertThat;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertTrue;
 import static uk.gov.hmcts.reform.sscs.config.AppConstants.REP_SALUTATION;
 import static uk.gov.hmcts.reform.sscs.config.SubscriptionType.*;
 import static uk.gov.hmcts.reform.sscs.domain.notify.NotificationEventType.*;
@@ -11,8 +16,11 @@ import static uk.gov.hmcts.reform.sscs.service.SendNotificationServiceTest.REP_W
 
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
+import java.util.Objects;
+import java.util.stream.Stream;
 import junitparams.JUnitParamsRunner;
 import junitparams.Parameters;
+import org.apache.commons.lang3.tuple.Pair;
 import org.apache.pdfbox.io.IOUtils;
 import org.apache.pdfbox.pdmodel.PDDocument;
 import org.apache.pdfbox.pdmodel.PDPage;
@@ -20,6 +28,8 @@ import org.jetbrains.annotations.NotNull;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import uk.gov.hmcts.reform.sscs.ccd.domain.Address;
+import uk.gov.hmcts.reform.sscs.ccd.domain.Appellant;
+import uk.gov.hmcts.reform.sscs.ccd.domain.CcdValue;
 import uk.gov.hmcts.reform.sscs.ccd.domain.JointPartyName;
 import uk.gov.hmcts.reform.sscs.ccd.domain.Name;
 import uk.gov.hmcts.reform.sscs.ccd.domain.Representative;
@@ -204,6 +214,45 @@ public class LetterUtilsTest {
     public void isAlternativeLetterFormatRequired(SubscriptionType subscriptionType) {
         NotificationWrapper wrapper = NotificationServiceTest.buildBaseWrapperWithReasonableAdjustment();
         assertTrue(LetterUtils.isAlternativeLetterFormatRequired(wrapper, new SubscriptionWithType(EMPTY_SUBSCRIPTION, subscriptionType)));
+    }
+
+    @Test
+    @Parameters({"OTHER_PARTY, 4", "OTHER_PARTY_APPOINTEE, 3", "OTHER_PARTY_REPRESENTATIVE, 2"})
+    public void useOtherPartyLetterNameAndAddress(SubscriptionType subscriptionType, int otherPartyId) {
+        NotificationWrapper wrapper = NotificationServiceTest.buildBaseWrapperOtherParty(SYA_APPEAL_CREATED_NOTIFICATION, Appellant.builder().build(), null);
+        final Address expectedAddress = getExpectedAddress(otherPartyId, wrapper);
+
+        assertThat(LetterUtils.getAddressToUseForLetter(wrapper,
+                new SubscriptionWithType(EMPTY_SUBSCRIPTION, subscriptionType, otherPartyId)), is(expectedAddress));
+
+        final String expectedName = getExpectedName(otherPartyId, wrapper);
+        assertThat(LetterUtils.getNameToUseForLetter(wrapper,
+                new SubscriptionWithType(EMPTY_SUBSCRIPTION, subscriptionType, otherPartyId)), is(expectedName));
+
+    }
+
+    private Address getExpectedAddress(final int otherPartyId, final NotificationWrapper wrapper) {
+        return requireNonNull(wrapper.getNewSscsCaseData().getOtherParties().stream()
+                .map(CcdValue::getValue)
+                .flatMap(op -> Stream.of((op.hasAppointee()) ? Pair.of(op.getAppointee().getId(), op.getAppointee().getAddress()) : Pair.of(op.getId(), op.getAddress()), (op.hasRepresentative()) ? Pair.of(op.getRep().getId(), op.getRep().getAddress()) : null))
+                .filter(Objects::nonNull)
+                .filter(p -> p.getRight() != null && p.getLeft() != null)
+                .filter(pair -> pair.getLeft().equals(String.valueOf(otherPartyId)))
+                .findFirst()
+                .map(Pair::getRight).orElse(null));
+    }
+
+    private String getExpectedName(final int otherPartyId, final NotificationWrapper wrapper) {
+        return requireNonNull(wrapper.getNewSscsCaseData().getOtherParties().stream()
+                .map(CcdValue::getValue)
+                .flatMap(op -> Stream.of((op.hasAppointee()) ? Pair.of(op.getAppointee().getId(), op.getAppointee().getName()) : Pair.of(op.getId(), op.getName()), (op.hasRepresentative()) ? Pair.of(op.getRep().getId(), op.getRep().getName()) : null))
+                .filter(Objects::nonNull)
+                .filter(p -> p.getRight() != null && p.getLeft() != null)
+                .filter(pair -> pair.getLeft().equals(String.valueOf(otherPartyId)))
+                .findFirst()
+                .map(Pair::getRight)
+                .map(Name::getFullNameNoTitle)
+                .orElse(""));
     }
 
 }
