@@ -109,6 +109,9 @@ public class NotificationService {
             notificationWrapper.getSscsCaseDataWrapper().setNotificationEventType(ISSUE_FINAL_DECISION);
             notificationWrapper.setSwitchLanguageType(true);
             sendNotificationPerSubscription(notificationWrapper);
+        } else if (notificationWrapper.getNotificationType().equals(DWP_UPLOAD_RESPONSE_NOTIFICATION)) {
+            notificationWrapper.getSscsCaseDataWrapper().setNotificationEventType(OTHER_PARTY_ADDED);
+            sendNotificationPerSubscription(notificationWrapper);
         }
     }
 
