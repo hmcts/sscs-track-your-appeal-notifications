@@ -7,22 +7,6 @@
       "functionalTest": "Yes",
       "directionTypeDl": "provideInformation",
       "createdInGapsFrom": "readyToList",
-      "confidentialityRequestOutcomeAppellant": null,
-      "confidentialityRequestOutcomeJointParty": null,
-      "jointParty": "Yes",
-      "jointPartyName": {
-        "title": "Mr",
-        "firstName": "Joint",
-        "lastName": "Party"
-      },
-      "jointPartyAddressSameAsAppellant": "No",
-      "jointPartyAddress": {
-        "line1": "30 Dale Street",
-        "line2": "Village",
-        "town": "Liverpool",
-        "county": "Merseyside",
-        "postcode": "L2 5UZ"
-      },
       "appeal": {
         "mrnDetails": {
           "dwpIssuingOffice": "Birmingham",
@@ -33,8 +17,8 @@
         "appellant": {
           "name": {
             "title": "Mr",
-            "firstName": "Dexter",
-            "lastName": "Vasquez"
+            "lastName": "Vasquez",
+            "firstName": "Dexter"
           },
           "address": {
             "line1": "36 Dale Street",
@@ -50,8 +34,7 @@
           "identity": {
             "dob": "1998-07-01",
             "nino": "JT098230B"
-          },
-          "isAddressSameAsAppointee":"no"
+          }
         },
         "benefitType":{
           "code":"PIP"
@@ -99,7 +82,26 @@
           ],
           "otherReasons": "Another reason"
         },
-        "rep": {},
+        "rep": {
+          "hasRepresentative": "Yes",
+          "name": {
+            "title": "Mr",
+            "firstName": "Harry",
+            "lastName": "Potter"
+          },
+          "address": {
+            "line1": "123 Hairy Lane",
+            "line2": "Off Hairy Park",
+            "town": "Town",
+            "county": "County",
+            "postcode": "CM14 4LQ"
+          },
+          "contact": {
+            "email": "harry.potter@wizards.com",
+            "mobile": "07411999999"
+          },
+          "organisation": "HP Ltd"
+        },
         "signer":"Yes",
         "supporter": {
           "contact": {
@@ -168,16 +170,16 @@
           "email": "sscstest@greencroftconsulting.com",
           "mobile": "07985233301",
           "reason": null,
-          "subscribeEmail": "no",
-          "subscribeSms": "no",
-          "wantSmsNotifications" : "No",
+          "subscribeEmail": "Yes",
+          "subscribeSms": "Yes",
+          "wantSmsNotifications" : "Yes",
           "tya": "543212345"
         },
-        "jointPartySubscription": {
-          "email": "jointParty@hmcts.net",
+        "representativeSubscription": {
+          "email": "supporter@hmcts.net",
           "mobile": "07983469702",
           "reason": null,
-          "subscribeEmail": "Yes",
+          "subscribeEmail": "No",
           "subscribeSms": "Yes",
           "wantSmsNotifications" : "Yes",
           "tya": "232929249492"
@@ -198,7 +200,7 @@
       "hearings": [{
         "id": "1234",
         "value": {
-          "hearingDate": "2048-01-12",
+          "hearingDate": "2018-01-12",
           "time": "11:00",
           "venue": {
             "name": "Prudential House",
@@ -224,20 +226,6 @@
     "callback_response_status": null,
     "callback_response_status_code": null,
     "case_data": {
-      "jointParty": "Yes",
-      "jointPartyName": {
-        "title": "Mr",
-        "firstName": "Joint",
-        "lastName": "Party"
-      },
-      "jointPartyAddressSameAsAppellant": "No",
-      "jointPartyAddress": {
-          "line1": "30 Dale Street",
-          "line2": "Village",
-          "town": "Liverpool",
-          "county": "Merseyside",
-          "postcode": "L2 5UZ"
-      },
       "appeal": {
         "mrnDetails": {
           "dwpIssuingOffice": "Birmingham",
@@ -245,6 +233,7 @@
           "mrnLateReason": "It is late",
           "mrnMissingReason": "It went missing"
         },
+
         "appellant": {
           "name": {
             "title": "Mr",
@@ -265,11 +254,10 @@
           "identity": {
             "dob": "1998-07-01",
             "nino": "JT098230B"
-          },
-          "isAddressSameAsAppointee":"no"
+          }
         },
         "benefitType": {
-          "code": "ESA"
+          "code": "PIP"
         },
         "receivedVia": "Online",
         "hearingOptions": {
@@ -314,7 +302,26 @@
           ],
           "otherReasons": "Another reason"
         },
-        "rep": {},
+        "rep": {
+          "hasRepresentative": "Yes",
+          "name": {
+            "title": "Mr",
+            "firstName": "Harry",
+            "lastName": "Potter"
+          },
+          "address": {
+            "line1": "123 Hairy Lane",
+            "line2": "Off Hairy Park",
+            "town": "Town",
+            "county": "County",
+            "postcode": "CM14 4LQ"
+          },
+          "contact": {
+            "email": "harry.potter@wizards.com",
+            "mobile": "07411999999"
+          },
+          "organisation": "HP Ltd"
+        },
         "signer": "Yes",
         "supporter": {
           "contact": {
@@ -341,11 +348,11 @@
           "wantSmsNotifications" : "No",
           "tya": "543212345"
         },
-        "jointPartySubscription": {
-          "email": "jointParty@hmcts.net",
+        "representativeSubscription": {
+          "email": "supporter@hmcts.net",
           "mobile": "07983469702",
           "reason": null,
-          "subscribeEmail": "Yes",
+          "subscribeEmail": "No",
           "subscribeSms": "Yes",
           "wantSmsNotifications" : "Yes",
           "tya": "232929249492"
@@ -387,5 +394,5 @@
     "state": "appealCreated",
     "id": "12345656789"
   },
-  "event_id": "reviewConfidentialityRequest"
+  "event_id": "appealReceived"
 }

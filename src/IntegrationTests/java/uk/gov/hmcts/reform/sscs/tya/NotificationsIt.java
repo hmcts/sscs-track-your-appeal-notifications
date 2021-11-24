@@ -152,6 +152,9 @@ public class NotificationsIt extends NotificationsItBase {
 
     @Test
     public void shouldSetCarersAllowanceDescriptionInAcronymField() throws Exception {
+        String path = getClass().getClassLoader().getResource("json/ccdResponseTest.json").getFile();
+        json = FileUtils.readFileToString(new File(path), StandardCharsets.UTF_8.name());
+
         json = updateEmbeddedJson(json, "carersAllowance", "case_details", "case_data", "appeal", "benefitType", "code");
         HttpServletResponse response = getResponse(getRequestWithAuthHeader(json));
         assertHttpStatus(response, HttpStatus.OK);
@@ -168,6 +171,9 @@ public class NotificationsIt extends NotificationsItBase {
 
     @Test
     public void shouldSetBereavementBenefitDescriptionInAcronymField() throws Exception {
+        String path = getClass().getClassLoader().getResource("json/ccdResponseTest.json").getFile();
+        json = FileUtils.readFileToString(new File(path), StandardCharsets.UTF_8.name());
+
         json = updateEmbeddedJson(json, "bereavementBenefit", "case_details", "case_data", "appeal", "benefitType", "code");
         HttpServletResponse response = getResponse(getRequestWithAuthHeader(json));
         assertHttpStatus(response, HttpStatus.OK);
