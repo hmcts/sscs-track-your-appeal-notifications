@@ -56,7 +56,8 @@ public class FilterNotificationsEventsHandler implements CallbackHandler {
             PROCESS_AUDIO_VIDEO_WELSH,
             JOINT_PARTY_ADDED,
             ACTION_HEARING_RECORDING_REQUEST,
-            ACTION_POSTPONEMENT_REQUEST_WELSH
+            ACTION_POSTPONEMENT_REQUEST_WELSH,
+            OTHER_PARTY_ADDED
     );
     private final NotificationService notificationService;
     private static final int RETRY = 1;
