@@ -4,8 +4,7 @@ import static java.lang.String.format;
 import static org.apache.commons.collections4.CollectionUtils.isNotEmpty;
 import static org.apache.commons.collections4.ListUtils.emptyIfNull;
 import static org.apache.commons.lang3.StringUtils.equalsIgnoreCase;
-import static uk.gov.hmcts.reform.sscs.config.SubscriptionType.JOINT_PARTY;
-import static uk.gov.hmcts.reform.sscs.config.SubscriptionType.REPRESENTATIVE;
+import static uk.gov.hmcts.reform.sscs.config.SubscriptionType.*;
 import static uk.gov.hmcts.reform.sscs.service.NotificationUtils.hasAppointee;
 
 import java.io.ByteArrayOutputStream;
@@ -45,10 +44,9 @@ public class LetterUtils {
                 return wrapper.getNewSscsCaseData().getAppeal().getAppellant().getAddress();
             }
             return wrapper.getNewSscsCaseData().getJointPartyAddress();
+        } else if (OTHER_PARTY.equals(subscriptionWithType.getSubscriptionType())) {
+            return getAddressForOtherParty(wrapper.getNewSscsCaseData(), subscriptionWithType.getPartyId());
         } else {
-            if (subscriptionWithType.getPartyId() > 0 && isNotEmpty(wrapper.getNewSscsCaseData().getOtherParties())) {
-                return getAddressForOtherParty(wrapper.getNewSscsCaseData(), subscriptionWithType.getPartyId());
-            }
             if (hasAppointee(wrapper.getSscsCaseDataWrapper())) {
                 return wrapper.getNewSscsCaseData().getAppeal().getAppellant().getAppointee().getAddress();
             }

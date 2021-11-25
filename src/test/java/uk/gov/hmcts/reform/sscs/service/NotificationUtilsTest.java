@@ -187,6 +187,30 @@ public class NotificationUtilsTest {
     }
 
     @Test
+    public void falseWhenHasNullPopulatedOtherPartyRep() {
+        OtherParty otherParty = OtherParty.builder().build();
+        assertFalse(hasRepresentative(otherParty));
+    }
+
+    @Test
+    public void falseWhenHasNullOtherPartyRep() {
+        OtherParty otherParty = OtherParty.builder().rep(Representative.builder().build()).build();
+        assertFalse(hasRepresentative(otherParty));
+    }
+
+    @Test
+    public void falseWhenHasNoOtherPartyRep() {
+        OtherParty otherParty = OtherParty.builder().rep(Representative.builder().hasRepresentative("No").build()).build();
+        assertFalse(hasRepresentative(otherParty));
+    }
+
+    @Test
+    public void trueWhenHasYesOtherPartyRep() {
+        OtherParty otherParty = OtherParty.builder().rep(Representative.builder().hasRepresentative("Yes").build()).build();
+        assertTrue(hasRepresentative(otherParty));
+    }
+
+    @Test
     public void shouldBeOkToSendNotificationForValidFutureNotification() {
         NotificationEventType eventType = HEARING_BOOKED_NOTIFICATION;
         NotificationWrapper wrapper = buildNotificationWrapper(eventType);
@@ -379,6 +403,28 @@ public class NotificationUtilsTest {
     @Test
     public void shouldReturntrueWhenThereIsANoJointPartySubscriptionButALetterIsSent() {
         assertTrue(hasJointPartySubscription(buildJointPartyWrapper(null, ISSUE_FINAL_DECISION, YES).getSscsCaseDataWrapper()));
+    }
+
+    @Test
+    public void shouldReturnFalseWhenTheSubscriptionIsNull() {
+        assertFalse(isValidSubscriptionOrIsMandatoryLetter(null, VALID_APPEAL_CREATED));
+    }
+
+    @Test
+    public void shouldReturnFalseWhenTheCaseHasNotSubscribed() {
+        Subscription subscription = Subscription.builder().subscribeSms(YesNo.NO.getValue()).subscribeEmail(YesNo.NO.getValue()).build();
+        assertFalse(isValidSubscriptionOrIsMandatoryLetter(subscription, VALID_APPEAL_CREATED));
+    }
+
+    @Test
+    public void shouldReturnTrueWhenTheCaseHasSubscribed() {
+        Subscription subscription = Subscription.builder().subscribeSms(YES).subscribeEmail(YES).build();
+        assertTrue(isValidSubscriptionOrIsMandatoryLetter(subscription, VALID_APPEAL_CREATED));
+    }
+
+    @Test
+    public void shouldReturntrueWhenThereIsSubscriptionButALetterIsSent() {
+        assertTrue(isValidSubscriptionOrIsMandatoryLetter(null, UPDATE_OTHER_PARTY_DATA));
     }
 
     private Object[] mandatoryNotificationTypes() {
