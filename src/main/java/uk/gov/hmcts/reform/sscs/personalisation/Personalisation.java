@@ -3,7 +3,6 @@ package uk.gov.hmcts.reform.sscs.personalisation;
 import static com.google.common.collect.Lists.newArrayList;
 import static java.lang.String.format;
 import static java.util.Optional.ofNullable;
-import static org.apache.commons.collections4.CollectionUtils.isNotEmpty;
 import static org.apache.commons.lang3.StringUtils.EMPTY;
 import static org.apache.commons.lang3.StringUtils.defaultIfBlank;
 import static org.apache.commons.lang3.StringUtils.equalsIgnoreCase;
@@ -21,8 +20,6 @@ import static uk.gov.hmcts.reform.sscs.config.SubscriptionType.APPELLANT;
 import static uk.gov.hmcts.reform.sscs.config.SubscriptionType.APPOINTEE;
 import static uk.gov.hmcts.reform.sscs.config.SubscriptionType.JOINT_PARTY;
 import static uk.gov.hmcts.reform.sscs.config.SubscriptionType.OTHER_PARTY;
-import static uk.gov.hmcts.reform.sscs.config.SubscriptionType.OTHER_PARTY_APPOINTEE;
-import static uk.gov.hmcts.reform.sscs.config.SubscriptionType.OTHER_PARTY_REPRESENTATIVE;
 import static uk.gov.hmcts.reform.sscs.config.SubscriptionType.REPRESENTATIVE;
 import static uk.gov.hmcts.reform.sscs.domain.notify.NotificationEventType.*;
 import static uk.gov.hmcts.reform.sscs.personalisation.SyaAppealCreatedAndReceivedPersonalisation.TWO_NEW_LINES;
@@ -280,7 +277,7 @@ public class Personalisation<E extends NotificationWrapper> {
         setConfidentialFields(ccdResponse, subscriptionWithType, personalisation);
 
         setHelplineTelephone(ccdResponse, personalisation);
-        if (subscriptionWithType.getPartyId() > 0 && isNotEmpty(ccdResponse.getOtherParties())) {
+        if (subscriptionWithType.getSubscriptionType().equals(OTHER_PARTY)) {
             personalisation.put(AppConstants.OTHER_PARTY, personalisation.get(AppConstants.NAME));
         }
 
@@ -532,14 +529,13 @@ public class Personalisation<E extends NotificationWrapper> {
 
     public Template getTemplate(E notificationWrapper, Benefit benefit, SubscriptionType subscriptionType) {
 
-        final SubscriptionType subscriptionTypeToUse = OTHER_PARTY_APPOINTEE.equals(subscriptionType) || OTHER_PARTY_REPRESENTATIVE.equals(subscriptionType) ? OTHER_PARTY : subscriptionType;
-        String templateConfig = getEmailTemplateName(subscriptionTypeToUse, notificationWrapper);
-        String smsTemplateName = isSendSmsSubscriptionConfirmation() ? SUBSCRIPTION_CREATED_NOTIFICATION.getId() + "." + lowerCase(subscriptionTypeToUse.toString()) :
+        String templateConfig = getEmailTemplateName(subscriptionType, notificationWrapper);
+        String smsTemplateName = isSendSmsSubscriptionConfirmation() ? SUBSCRIPTION_CREATED_NOTIFICATION.getId() + "." + lowerCase(subscriptionType.toString()) :
                 templateConfig;
 
-        String letterTemplateName = getLetterTemplateName(subscriptionTypeToUse, notificationWrapper.getNotificationType());
+        String letterTemplateName = getLetterTemplateName(subscriptionType, notificationWrapper.getNotificationType());
 
-        String docmosisTemplateName = getDocmosisTemplateName(subscriptionTypeToUse, notificationWrapper.getNotificationType(), notificationWrapper.getNewSscsCaseData());
+        String docmosisTemplateName = getDocmosisTemplateName(subscriptionType, notificationWrapper.getNotificationType(), notificationWrapper.getNewSscsCaseData());
 
         return config.getTemplate(templateConfig, smsTemplateName, letterTemplateName, docmosisTemplateName,
                 benefit, notificationWrapper, notificationWrapper.getNewSscsCaseData().getCreatedInGapsFrom());
@@ -613,7 +609,7 @@ public class Personalisation<E extends NotificationWrapper> {
                 || ACTION_POSTPONEMENT_REQUEST_WELSH.equals(notificationEventType)
                 || DEATH_OF_APPELLANT.equals(notificationEventType)
                 || PROVIDE_APPOINTEE_DETAILS.equals(notificationEventType)
-                || OTHER_PARTY_ADDED.equals(notificationEventType))) {
+                || UPDATE_OTHER_PARTY_DATA.equals(notificationEventType))) {
             letterTemplateName = letterTemplateName + "." + lowerCase(subscriptionType.name());
         }
 

@@ -4,6 +4,7 @@ import static org.junit.Assert.assertNotNull;
 import static org.mockito.ArgumentMatchers.*;
 import static org.mockito.Mockito.*;
 import static uk.gov.hmcts.reform.sscs.ccd.domain.EventType.APPEAL_RECEIVED;
+import static uk.gov.hmcts.reform.sscs.ccd.domain.EventType.UPDATE_OTHER_PARTY_DATA;
 
 import java.io.IOException;
 import java.util.ArrayList;
@@ -88,6 +89,39 @@ public class PdfLetterServiceIt {
     }
 
     @Test
+    public void canGenerateACoversheetOnUpdateOtherPartyData() throws IOException {
+        byte[] pdfbytes = IOUtils.toByteArray(getClass().getClassLoader().getResourceAsStream(
+                "pdfs/direction-notice-coversheet-sample.pdf"));
+        when(docmosisPdfService.createPdf(any(Object.class), anyString())).thenReturn(pdfbytes);
+        SscsCaseData sscsCaseData = getSscsCaseData();
+        SscsCaseDataWrapper dataWrapper = SscsCaseDataWrapper.builder()
+                .newSscsCaseData(sscsCaseData)
+                .oldSscsCaseData(sscsCaseData)
+                .notificationEventType(NotificationEventType.UPDATE_OTHER_PARTY_DATA)
+                .build();
+        NotificationWrapper wrapper = new CcdNotificationWrapper(dataWrapper);
+        byte[] bytes = pdfLetterService.buildCoversheet(wrapper, new SubscriptionWithType(EMPTY_SUBSCRIPTION, SubscriptionType.OTHER_PARTY, 1));
+        assertNotNull(bytes);
+        PdfCoverSheet pdfCoverSheet = new PdfCoverSheet(
+                wrapper.getCaseId(),
+                wrapper.getNewSscsCaseData().getOtherParties().get(0).getValue().getName().getFullNameNoTitle(),
+                wrapper.getNewSscsCaseData().getOtherParties().get(0).getValue().getAddress().getLine1(),
+                wrapper.getNewSscsCaseData().getOtherParties().get(0).getValue().getAddress().getLine2(),
+                wrapper.getNewSscsCaseData().getOtherParties().get(0).getValue().getAddress().getTown(),
+                wrapper.getNewSscsCaseData().getOtherParties().get(0).getValue().getAddress().getCounty(),
+                wrapper.getNewSscsCaseData().getOtherParties().get(0).getValue().getAddress().getPostcode(),
+                evidenceProperties.getAddress().getLine2(),
+                evidenceProperties.getAddress().getLine3(),
+                evidenceProperties.getAddress().getTown(),
+                evidenceProperties.getAddress().getPostcode(),
+                docmosisTemplatesConfig.getHmctsImgVal(),
+                docmosisTemplatesConfig.getHmctsWelshImgVal());
+
+        verify(docmosisPdfService).createPdf(eq(pdfCoverSheet), eq(docmosisTemplatesConfig.getCoversheets()
+                .get(LanguagePreference.ENGLISH).get(UPDATE_OTHER_PARTY_DATA.getType())));
+    }
+
+    @Test
     public void willNotGenerateACoversheetOnAppealDormant() {
 
         SscsCaseData sscsCaseData = getSscsCaseData();
@@ -126,6 +160,14 @@ public class PdfLetterServiceIt {
                                 .wantsToAttend(YES)
                                 .build())
                         .build())
+                .otherParties(List.of(CcdValue.<OtherParty>builder()
+                                .value(OtherParty.builder()
+                                        .id("1")
+                                        .sendNewOtherPartyNotification("Yes")
+                                        .name(Name.builder().firstName("Other").lastName("Party").build())
+                                        .address(Address.builder().line1("122 Breach Street").line2("The Village").town("My town").county("Cardiff").postcode("CF11 2HB").build())
+                                        .build())
+                        .build()))
                 .build();
     }
 

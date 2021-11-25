@@ -217,7 +217,7 @@ public class LetterUtilsTest {
     }
 
     @Test
-    @Parameters({"OTHER_PARTY, 4", "OTHER_PARTY_APPOINTEE, 3", "OTHER_PARTY_REPRESENTATIVE, 2"})
+    @Parameters({"OTHER_PARTY, 4", "OTHER_PARTY, 3", "OTHER_PARTY, 2"})
     public void useOtherPartyLetterNameAndAddress(SubscriptionType subscriptionType, int otherPartyId) {
         NotificationWrapper wrapper = NotificationServiceTest.buildBaseWrapperOtherParty(SYA_APPEAL_CREATED_NOTIFICATION, Appellant.builder().build(), null);
         final Address expectedAddress = getExpectedAddress(otherPartyId, wrapper);

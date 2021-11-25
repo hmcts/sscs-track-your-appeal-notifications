@@ -135,14 +135,14 @@ public class CcdNotificationWrapper implements NotificationWrapper {
 
         if (hasAppointee(otherParty.getAppointee(), otherParty.getIsAppointee())
                 && isNotificationEventValidToSendToOtherPartySubscription(otherParty.getOtherPartyAppointeeSubscription(), isSendNewOtherPartyNotification)) {
-            otherPartySubscription.add(new SubscriptionWithType(otherParty.getOtherPartyAppointeeSubscription(), OTHER_PARTY_APPOINTEE, Integer.parseInt(otherParty.getAppointee().getId())));
+            otherPartySubscription.add(new SubscriptionWithType(otherParty.getOtherPartyAppointeeSubscription(), OTHER_PARTY, Integer.parseInt(otherParty.getAppointee().getId())));
         } else if (isNotificationEventValidToSendToOtherPartySubscription(otherParty.getOtherPartySubscription(), isSendNewOtherPartyNotification)) {
             otherPartySubscription.add(new SubscriptionWithType(otherParty.getOtherPartySubscription(), OTHER_PARTY, Integer.parseInt(otherParty.getId())));
         }
 
         if (hasRepresentative(otherParty)
                 && isNotificationEventValidToSendToOtherPartySubscription(otherParty.getOtherPartyRepresentativeSubscription(), isSendNewOtherPartyNotification)) {
-            otherPartySubscription.add(new SubscriptionWithType(otherParty.getOtherPartyRepresentativeSubscription(), OTHER_PARTY_REPRESENTATIVE, Integer.parseInt(otherParty.getRep().getId())));
+            otherPartySubscription.add(new SubscriptionWithType(otherParty.getOtherPartyRepresentativeSubscription(), OTHER_PARTY, Integer.parseInt(otherParty.getRep().getId())));
         }
 
         return otherPartySubscription;
@@ -195,7 +195,7 @@ public class CcdNotificationWrapper implements NotificationWrapper {
 
     private boolean isNotificationEventValidToSendToAppellant() {
         // Special list of notifications that might not be sent to appellant, depending on data set on the case
-        List<NotificationEventType> notificationsMaybeNotForAppellant = List.of(REVIEW_CONFIDENTIALITY_REQUEST, REQUEST_INFO_INCOMPLETE, ACTION_HEARING_RECORDING_REQUEST, OTHER_PARTY_ADDED);
+        List<NotificationEventType> notificationsMaybeNotForAppellant = List.of(REVIEW_CONFIDENTIALITY_REQUEST, REQUEST_INFO_INCOMPLETE, ACTION_HEARING_RECORDING_REQUEST, UPDATE_OTHER_PARTY_DATA);
 
         return (getOldSscsCaseData() != null && isValidReviewConfidentialityRequest(getOldSscsCaseData().getConfidentialityRequestOutcomeAppellant(), getNewSscsCaseData().getConfidentialityRequestOutcomeAppellant()))
                 || isValidProcessHearingRequestEventForParty(PartyItemList.APPELLANT)
@@ -299,7 +299,7 @@ public class CcdNotificationWrapper implements NotificationWrapper {
     private boolean isNotificationEventValidToSendToOtherPartySubscription(Subscription subscription, boolean isSendNewOtherPartyNotification) {
         return isValidSubscriptionOrIsMandatoryLetter(subscription, responseWrapper.getNotificationEventType())
                 && (DWP_UPLOAD_RESPONSE_NOTIFICATION.equals(getNotificationType())
-                || (isSendNewOtherPartyNotification && OTHER_PARTY_ADDED.equals(getNotificationType())));
+                || (isSendNewOtherPartyNotification && UPDATE_OTHER_PARTY_DATA.equals(getNotificationType())));
     }
 
 
