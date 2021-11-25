@@ -93,7 +93,7 @@ public class NotificationService {
             } else {
                 sendNotificationPerSubscription(notificationWrapper);
                 reminderService.createReminders(notificationWrapper);
-                sendSecondNotificationForLongLetters(notificationWrapper);
+                sendSecondNotification(notificationWrapper);
             }
         } else if (outOfHoursCalculator.isItOutOfHours()) {
             log.info("Notification event {} is out of hours and scheduled for case id {}", notificationType.getId(), caseId);
@@ -101,14 +101,14 @@ public class NotificationService {
         }
     }
 
-    private void sendSecondNotificationForLongLetters(NotificationWrapper notificationWrapper) {
+    private void sendSecondNotification(NotificationWrapper notificationWrapper) {
         if (notificationWrapper.getNotificationType().equals(ISSUE_FINAL_DECISION_WELSH)) {
             // Gov Notify has a limit of 10 pages, so for long notifications (especially Welsh) we need to split the sending into 2 parts
             notificationWrapper.getSscsCaseDataWrapper().setNotificationEventType(ISSUE_FINAL_DECISION);
             notificationWrapper.setSwitchLanguageType(true);
             sendNotificationPerSubscription(notificationWrapper);
         } else if (notificationWrapper.getNotificationType().equals(DWP_UPLOAD_RESPONSE_NOTIFICATION)) {
-            notificationWrapper.getSscsCaseDataWrapper().setNotificationEventType(OTHER_PARTY_ADDED);
+            notificationWrapper.getSscsCaseDataWrapper().setNotificationEventType(UPDATE_OTHER_PARTY_DATA);
             sendNotificationPerSubscription(notificationWrapper);
         }
     }
@@ -240,7 +240,7 @@ public class NotificationService {
                 || isOkToSendNotification(wrapper, wrapper.getNotificationType(), subscription, notificationValidService));
     }
 
-    private void processOldSubscriptionNotifications(NotificationWrapper wrapper, Notification notification, SubscriptionWithType subscriptionWithType, NotificationEventType eventType) {
+    private void  processOldSubscriptionNotifications(NotificationWrapper wrapper, Notification notification, SubscriptionWithType subscriptionWithType, NotificationEventType eventType) {
         if (wrapper.getNotificationType() == SUBSCRIPTION_UPDATED_NOTIFICATION) {
             Subscription newSubscription;
             Subscription oldSubscription;
