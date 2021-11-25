@@ -12,10 +12,8 @@ import static uk.gov.hmcts.reform.sscs.service.NotificationUtils.getSubscription
 import static uk.gov.hmcts.reform.sscs.service.NotificationUtils.isOkToSendNotification;
 import static uk.gov.hmcts.reform.sscs.service.NotificationValidService.isMandatoryLetterEventType;
 
-import java.time.LocalDate;
 import java.time.ZonedDateTime;
 import java.util.List;
-import java.util.Optional;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
@@ -86,7 +84,7 @@ public class NotificationService {
         if (notificationType.isAllowOutOfHours() || !outOfHoursCalculator.isItOutOfHours()) {
             if (notificationType.isToBeDelayed()
                     && !fromReminderService
-                    && !skipOldNotifications(notificationWrapper.getNewSscsCaseData().getCaseCreated())) {
+                    && !functionalTest(notificationWrapper.getNewSscsCaseData())) {
 
                 log.info("Notification event {} is delayed and scheduled for case id {}", notificationType.getId(), caseId);
                 notificationHandler.scheduleNotification(notificationWrapper, ZonedDateTime.now().plusSeconds(notificationType.getDelayInSeconds()));
@@ -101,6 +99,10 @@ public class NotificationService {
         }
     }
 
+    private boolean functionalTest(SscsCaseData newSscsCaseData) {
+        return YesNo.isYes(newSscsCaseData.getFunctionalTest());
+    }
+
     private void sendSecondNotification(NotificationWrapper notificationWrapper) {
         if (notificationWrapper.getNotificationType().equals(ISSUE_FINAL_DECISION_WELSH)) {
             // Gov Notify has a limit of 10 pages, so for long notifications (especially Welsh) we need to split the sending into 2 parts
@@ -111,12 +113,6 @@ public class NotificationService {
             notificationWrapper.getSscsCaseDataWrapper().setNotificationEventType(UPDATE_OTHER_PARTY_DATA);
             sendNotificationPerSubscription(notificationWrapper);
         }
-    }
-
-    private boolean skipOldNotifications(String caseCreatedDate) {
-        // No need to write to reminder service if case created is older than 2 days - workaround to stop functional tests timing out for appeal created delayed notifications
-        LocalDate createdDate = LocalDate.parse(Optional.ofNullable(caseCreatedDate).orElse(LocalDate.now().toString()));
-        return createdDate.plusDays(2).isBefore(LocalDate.now());
     }
 
     private void sendNotificationPerSubscription(NotificationWrapper notificationWrapper) {
