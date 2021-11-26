@@ -800,7 +800,7 @@ public class NotificationServiceTest {
                 .build())
             .caseReference(CASE_REFERENCE)
             .otherParties(List.of(CcdValue.<OtherParty>builder().value(OtherParty.builder()
-                    .sendNewOtherPartyNotification(YES)
+                    .sendNewOtherPartyNotification(YesNo.YES)
                     .id("1")
                     .address(Address.builder().line1("Appellant Line 1").town("Appellant Town").county("Appellant County").postcode("AP9 7LL").build())
                     .build()).build()))
@@ -1815,7 +1815,7 @@ public class NotificationServiceTest {
                 .id("1")
                 .name(Name.builder().firstName("OP").lastName("OP1").build())
                 .address(Address.builder().line1("line 1").postcode("TS1 1ST").build())
-                .sendNewOtherPartyNotification(YES)
+                .sendNewOtherPartyNotification(YesNo.YES)
                 .rep(Representative.builder()
                         .id("2")
                         .hasRepresentative(YES)
@@ -1831,7 +1831,7 @@ public class NotificationServiceTest {
                 .build();
         final OtherParty otherParty2 = OtherParty.builder()
                 .id("4")
-                .sendNewOtherPartyNotification(NO)
+                .sendNewOtherPartyNotification(YesNo.NO)
                 .name(Name.builder().firstName("OP").lastName("OP4").build())
                 .address(Address.builder().line1("line 1").postcode("TS4 4ST").build())
                 .build();
