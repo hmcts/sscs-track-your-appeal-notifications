@@ -163,7 +163,7 @@ public class PdfLetterServiceIt {
                 .otherParties(List.of(CcdValue.<OtherParty>builder()
                                 .value(OtherParty.builder()
                                         .id("1")
-                                        .sendNewOtherPartyNotification("Yes")
+                                        .sendNewOtherPartyNotification(YesNo.YES)
                                         .name(Name.builder().firstName("Other").lastName("Party").build())
                                         .address(Address.builder().line1("122 Breach Street").line2("The Village").town("My town").county("Cardiff").postcode("CF11 2HB").build())
                                         .build())
