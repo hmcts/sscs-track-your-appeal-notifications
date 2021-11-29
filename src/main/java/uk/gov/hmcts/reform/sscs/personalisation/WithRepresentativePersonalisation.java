@@ -36,6 +36,8 @@ public class WithRepresentativePersonalisation extends Personalisation<CcdNotifi
     }
 
     private void overrideRepNameIfNotificationIsForAnOtherParty(final Map<String, String> personalisation) {
+        //REPRESENTATIVE_NAME tag in templates is reused to send notification to other parties,
+        //so that we don't need to refactor all the notification templates to accommodate other parties
         if (personalisation.get(OTHER_PARTY) != null) {
             personalisation.put(REPRESENTATIVE_NAME, personalisation.get(OTHER_PARTY));
         }
