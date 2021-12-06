@@ -89,6 +89,7 @@ public class NotificationService {
                 log.info("Notification event {} is delayed and scheduled for case id {}", notificationType.getId(), caseId);
                 notificationHandler.scheduleNotification(notificationWrapper, ZonedDateTime.now().plusSeconds(notificationType.getDelayInSeconds()));
             } else {
+                log.info("Sending notification for Notification event {} and case id {}", notificationType.getId(), caseId);
                 sendNotificationPerSubscription(notificationWrapper);
                 reminderService.createReminders(notificationWrapper);
                 sendSecondNotification(notificationWrapper);
@@ -106,10 +107,12 @@ public class NotificationService {
     private void sendSecondNotification(NotificationWrapper notificationWrapper) {
         if (notificationWrapper.getNotificationType().equals(ISSUE_FINAL_DECISION_WELSH)) {
             // Gov Notify has a limit of 10 pages, so for long notifications (especially Welsh) we need to split the sending into 2 parts
+            log.info("Trigger second notification event for {}", ISSUE_FINAL_DECISION.getId());
             notificationWrapper.getSscsCaseDataWrapper().setNotificationEventType(ISSUE_FINAL_DECISION);
             notificationWrapper.setSwitchLanguageType(true);
             sendNotificationPerSubscription(notificationWrapper);
         } else if (notificationWrapper.getNotificationType().equals(DWP_UPLOAD_RESPONSE_NOTIFICATION)) {
+            log.info("Trigger second notification event for {}", UPDATE_OTHER_PARTY_DATA.getId());
             notificationWrapper.getSscsCaseDataWrapper().setNotificationEventType(UPDATE_OTHER_PARTY_DATA);
             sendNotificationPerSubscription(notificationWrapper);
         }
