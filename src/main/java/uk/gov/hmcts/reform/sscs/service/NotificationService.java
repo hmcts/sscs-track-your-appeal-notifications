@@ -3,6 +3,7 @@ package uk.gov.hmcts.reform.sscs.service;
 import static java.lang.String.format;
 import static java.util.Arrays.asList;
 import static java.util.Optional.ofNullable;
+import static org.apache.commons.collections4.ListUtils.emptyIfNull;
 import static uk.gov.hmcts.reform.sscs.ccd.domain.Benefit.getBenefitByCodeOrThrowException;
 import static uk.gov.hmcts.reform.sscs.ccd.domain.EventType.SUBSCRIPTION_UPDATED;
 import static uk.gov.hmcts.reform.sscs.config.SubscriptionType.*;
@@ -189,8 +190,19 @@ public class NotificationService {
                     && !"Yes".equalsIgnoreCase(wrapper.getNewSscsCaseData().getResendToRepresentative())) {
                 return false;
             }
+            if (OTHER_PARTY.equals(subscriptionWithType.getSubscriptionType()) && !isResendTo(subscriptionWithType.getPartyId(), wrapper.getNewSscsCaseData())) {
+                return false;
+            }
         }
         return true;
+    }
+
+    public static boolean isResendTo(int partyId, SscsCaseData sscsCaseData) {
+        return partyId > 0
+                && emptyIfNull(sscsCaseData.getTransientFields().getReissueDocumentOtherParty()).stream()
+                        .map(CcdValue::getValue)
+                        .filter(f -> String.valueOf(partyId).equals(f.getOtherPartyId()))
+                        .anyMatch(f -> YesNo.isYes(f.getReissue()));
     }
 
     private void scrubEmailAndSmsIfSubscribedBefore(NotificationWrapper notificationWrapper, SubscriptionWithType subscriptionWithType) {
