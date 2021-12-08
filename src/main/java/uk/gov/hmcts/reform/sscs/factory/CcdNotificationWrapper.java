@@ -315,6 +315,20 @@ public class CcdNotificationWrapper implements NotificationWrapper {
                 || APPEAL_DORMANT_NOTIFICATION.equals(getNotificationType())
                 || EVIDENCE_REMINDER_NOTIFICATION.equals(getNotificationType())
                 || EVIDENCE_RECEIVED_NOTIFICATION.equals(getNotificationType())
+                || STRUCK_OUT.equals(getNotificationType())
+                || PROCESS_AUDIO_VIDEO.equals(getNotificationType())
+                || DIRECTION_ISSUED.equals(getNotificationType())
+                || DECISION_ISSUED.equals(getNotificationType())
+                || ADJOURNED_NOTIFICATION.equals(getNotificationType())
+                || ISSUE_ADJOURNMENT_NOTICE.equals(getNotificationType())
+                || REQUEST_INFO_INCOMPLETE.equals(getNotificationType())
+                || NON_COMPLIANT_NOTIFICATION.equals(getNotificationType())
+                || ISSUE_FINAL_DECISION.equals(getNotificationType())
+                || PROCESS_AUDIO_VIDEO_WELSH.equals(getNotificationType())
+                || DIRECTION_ISSUED_WELSH.equals(getNotificationType())
+                || ISSUE_FINAL_DECISION_WELSH.equals(getNotificationType())
+                || DECISION_ISSUED_WELSH.equals(getNotificationType())
+                || ISSUE_ADJOURNMENT_NOTICE_WELSH.equals(getNotificationType())
                 || (UPDATE_OTHER_PARTY_DATA.equals(getNotificationType()) && isSendNewOtherPartyNotification));
     }
 
