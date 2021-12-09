@@ -14,7 +14,6 @@ import java.util.List;
 import java.util.Optional;
 import junitparams.Parameters;
 import junitparams.converters.Nullable;
-import org.junit.Ignore;
 import org.junit.Test;
 import org.springframework.beans.factory.annotation.Value;
 import uk.gov.hmcts.reform.sscs.domain.notify.NotificationEventType;
@@ -81,7 +80,6 @@ public class JointPartyFunctionalTest extends AbstractFunctionalTest {
         super(30);
     }
 
-    @Ignore // Ignored as its keep failing, needs to be fixed
     @Test
     @Parameters(method = "eventTypeAndSubscriptions")
     public void givenEventAndJointPartySubscription_shouldSendNotificationToJointParty(
