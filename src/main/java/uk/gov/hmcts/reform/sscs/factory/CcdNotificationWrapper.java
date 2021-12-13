@@ -319,7 +319,6 @@ public class CcdNotificationWrapper implements NotificationWrapper {
                 || PROCESS_AUDIO_VIDEO.equals(getNotificationType())
                 || DIRECTION_ISSUED.equals(getNotificationType())
                 || DECISION_ISSUED.equals(getNotificationType())
-                || ADJOURNED_NOTIFICATION.equals(getNotificationType())
                 || ISSUE_ADJOURNMENT_NOTICE.equals(getNotificationType())
                 || REQUEST_INFO_INCOMPLETE.equals(getNotificationType())
                 || NON_COMPLIANT_NOTIFICATION.equals(getNotificationType())
