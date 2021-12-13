@@ -207,7 +207,7 @@ public class CcdNotificationWrapperTest {
         return List.of(CcdValue.<OtherParty>builder()
                 .value(OtherParty.builder()
                         .id("1")
-                        .sendNewOtherPartyNotification(sendNewOtherPartyNotification ? YesNo.YES.getValue() : null)
+                        .sendNewOtherPartyNotification(sendNewOtherPartyNotification ? YesNo.YES : null)
                         .isAppointee(hasAppointee ? YesNo.YES.getValue() : YesNo.NO.getValue())
                         .appointee(Appointee.builder()
                                 .id("2")
