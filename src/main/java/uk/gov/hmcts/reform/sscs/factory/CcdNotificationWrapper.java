@@ -12,6 +12,7 @@ import java.util.List;
 import java.util.Objects;
 import java.util.Optional;
 import java.util.stream.Collectors;
+import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.StringUtils;
 import org.jetbrains.annotations.NotNull;
 import uk.gov.hmcts.reform.sscs.ccd.domain.*;
@@ -22,6 +23,7 @@ import uk.gov.hmcts.reform.sscs.domain.notify.NotificationEventType;
 import uk.gov.hmcts.reform.sscs.model.PartyItemList;
 import uk.gov.hmcts.reform.sscs.service.scheduler.CcdActionSerializer;
 
+@Slf4j
 public class CcdNotificationWrapper implements NotificationWrapper {
 
     private final SscsCaseDataWrapper responseWrapper;
@@ -131,6 +133,8 @@ public class CcdNotificationWrapper implements NotificationWrapper {
 
     private List<SubscriptionWithType> filterOtherPartySubscription(OtherParty otherParty) {
         List<SubscriptionWithType> otherPartySubscription = new ArrayList<>();
+        log.info("isSendNewOtherPartyNotification {}", otherParty.getSendNewOtherPartyNotification());
+        log.info("Notification Type {}", getNotificationType());
         boolean isSendNewOtherPartyNotification = YesNo.isYes(otherParty.getSendNewOtherPartyNotification());
 
         if (hasAppointee(otherParty.getAppointee(), otherParty.getIsAppointee())
@@ -145,6 +149,7 @@ public class CcdNotificationWrapper implements NotificationWrapper {
             otherPartySubscription.add(new SubscriptionWithType(otherParty.getOtherPartyRepresentativeSubscription(), OTHER_PARTY, Integer.parseInt(otherParty.getRep().getId())));
         }
 
+        log.info("Number of subscription {}", otherPartySubscription.size());
         return otherPartySubscription;
     }
 
