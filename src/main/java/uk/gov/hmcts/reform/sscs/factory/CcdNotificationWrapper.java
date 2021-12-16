@@ -147,7 +147,6 @@ public class CcdNotificationWrapper implements NotificationWrapper {
                 && isNotificationEventValidToSendToOtherPartySubscription(otherParty.getOtherPartyRepresentativeSubscription(), isSendNewOtherPartyNotification)) {
             otherPartySubscription.add(new SubscriptionWithType(otherParty.getOtherPartyRepresentativeSubscription(), OTHER_PARTY, Integer.parseInt(otherParty.getRep().getId())));
         }
-        log.info("Number of subscription {}", otherPartySubscription.size());
         return otherPartySubscription;
     }
 
