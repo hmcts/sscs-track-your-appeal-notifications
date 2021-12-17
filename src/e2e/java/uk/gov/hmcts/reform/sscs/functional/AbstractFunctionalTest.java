@@ -294,6 +294,8 @@ public abstract class AbstractFunctionalTest {
     private String updateJson(String json, NotificationEventType eventType) {
         json = json.replace("12345656789", caseId.toString());
         json = json.replace("SC022/14/12423", caseReference);
+        json = json.replace("SC022/14/12423", caseReference);
+        json = json.replace("EVENT_TYPE", eventType.getId());
 
         if (eventType.equals(NotificationEventType.HEARING_BOOKED_NOTIFICATION)) {
             json = json.replace("2048-01-01", LocalDate.now().toString());
