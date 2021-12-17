@@ -87,8 +87,7 @@ public class OtherPartyFunctionalTest extends AbstractFunctionalTest {
             "ISSUE_FINAL_DECISION, 2,",
             "REQUEST_INFO_INCOMPLETE, 2,",
             "EVIDENCE_REMINDER_NOTIFICATION, 0, evidenceReminderOtherPartyEmailTemplateId, evidenceReminderOtherPartySmsTemplateId"
-    }
-    )
+    })
     public void willSendEventNotification(NotificationEventType notificationEventType, int expectedNumberOfLetters, @Nullable String... fieldNames) throws Exception {
 
         simulateCcdCallback(notificationEventType,
