@@ -133,7 +133,11 @@ public class CcdNotificationWrapper implements NotificationWrapper {
 
     private List<SubscriptionWithType> filterOtherPartySubscription(OtherParty otherParty) {
         List<SubscriptionWithType> otherPartySubscription = new ArrayList<>();
+
+        log.info("isSendNewOtherPartyNotification {}", otherParty.getSendNewOtherPartyNotification());
+        log.info("Notification Type {}", getNotificationType());
         log.info("Other Party id {} isSendNewOtherPartyNotification {}", otherParty.getId(), otherParty.getSendNewOtherPartyNotification());
+
         boolean isSendNewOtherPartyNotification = YesNo.isYes(otherParty.getSendNewOtherPartyNotification());
 
         if (hasAppointee(otherParty.getAppointee(), otherParty.getIsAppointee())
@@ -147,6 +151,9 @@ public class CcdNotificationWrapper implements NotificationWrapper {
                 && isNotificationEventValidToSendToOtherPartySubscription(otherParty.getOtherPartyRepresentativeSubscription(), isSendNewOtherPartyNotification)) {
             otherPartySubscription.add(new SubscriptionWithType(otherParty.getOtherPartyRepresentativeSubscription(), OTHER_PARTY, Integer.parseInt(otherParty.getRep().getId())));
         }
+
+        log.info("Number of subscription {}", otherPartySubscription.size());
+
         return otherPartySubscription;
     }
 
@@ -301,7 +308,36 @@ public class CcdNotificationWrapper implements NotificationWrapper {
     private boolean isNotificationEventValidToSendToOtherPartySubscription(Subscription subscription, boolean isSendNewOtherPartyNotification) {
         return isValidSubscriptionOrIsMandatoryLetter(subscription, responseWrapper.getNotificationEventType())
                 && (DWP_UPLOAD_RESPONSE_NOTIFICATION.equals(getNotificationType())
-                || (isSendNewOtherPartyNotification && UPDATE_OTHER_PARTY_DATA.equals(getNotificationType())));
+                || ADJOURNED_NOTIFICATION.equals(getNotificationType())
+                || POSTPONEMENT_NOTIFICATION.equals(getNotificationType())
+                || APPEAL_LAPSED_NOTIFICATION.equals(getNotificationType())
+                || DWP_APPEAL_LAPSED_NOTIFICATION.equals(getNotificationType())
+                || HMCTS_APPEAL_LAPSED_NOTIFICATION.equals(getNotificationType())
+                || APPEAL_WITHDRAWN_NOTIFICATION.equals(getNotificationType())
+                || ADMIN_APPEAL_WITHDRAWN.equals(getNotificationType())
+                || SUBSCRIPTION_CREATED_NOTIFICATION.equals(getNotificationType())
+                || SUBSCRIPTION_UPDATED_NOTIFICATION.equals(getNotificationType())
+                || SUBSCRIPTION_OLD_NOTIFICATION.equals(getNotificationType())
+                || HEARING_BOOKED_NOTIFICATION.equals(getNotificationType())
+                || HEARING_REMINDER_NOTIFICATION.equals(getNotificationType())
+                || DWP_RESPONSE_RECEIVED_NOTIFICATION.equals(getNotificationType())
+                || APPEAL_DORMANT_NOTIFICATION.equals(getNotificationType())
+                || EVIDENCE_REMINDER_NOTIFICATION.equals(getNotificationType())
+                || EVIDENCE_RECEIVED_NOTIFICATION.equals(getNotificationType())
+                || STRUCK_OUT.equals(getNotificationType())
+                || PROCESS_AUDIO_VIDEO.equals(getNotificationType())
+                || DIRECTION_ISSUED.equals(getNotificationType())
+                || DECISION_ISSUED.equals(getNotificationType())
+                || ISSUE_ADJOURNMENT_NOTICE.equals(getNotificationType())
+                || REQUEST_INFO_INCOMPLETE.equals(getNotificationType())
+                || NON_COMPLIANT_NOTIFICATION.equals(getNotificationType())
+                || ISSUE_FINAL_DECISION.equals(getNotificationType())
+                || PROCESS_AUDIO_VIDEO_WELSH.equals(getNotificationType())
+                || DIRECTION_ISSUED_WELSH.equals(getNotificationType())
+                || ISSUE_FINAL_DECISION_WELSH.equals(getNotificationType())
+                || DECISION_ISSUED_WELSH.equals(getNotificationType())
+                || ISSUE_ADJOURNMENT_NOTICE_WELSH.equals(getNotificationType())
+                || (UPDATE_OTHER_PARTY_DATA.equals(getNotificationType()) && isSendNewOtherPartyNotification));
     }
 
 
@@ -314,7 +350,7 @@ public class CcdNotificationWrapper implements NotificationWrapper {
 
     private boolean isValidReviewConfidentialityRequest(DatedRequestOutcome previousRequestOutcome, DatedRequestOutcome latestRequestOutcome) {
         return REVIEW_CONFIDENTIALITY_REQUEST.equals(getNotificationType())
-            && checkConfidentialityRequestOutcomeIsValidToSend(previousRequestOutcome, latestRequestOutcome);
+                && checkConfidentialityRequestOutcomeIsValidToSend(previousRequestOutcome, latestRequestOutcome);
     }
 
     private boolean checkConfidentialityRequestOutcomeIsValidToSend(DatedRequestOutcome previousRequestOutcome, DatedRequestOutcome latestRequestOutcome) {
@@ -323,7 +359,7 @@ public class CcdNotificationWrapper implements NotificationWrapper {
 
     private boolean checkConfidentialityRequestOutcomeIsValidToSend(DatedRequestOutcome previousRequestOutcome, RequestOutcome latestRequestOutcome) {
         return (RequestOutcome.GRANTED.equals(latestRequestOutcome) && !isMatchingOutcome(previousRequestOutcome, RequestOutcome.GRANTED))
-            || (RequestOutcome.REFUSED.equals(latestRequestOutcome) && !isMatchingOutcome(previousRequestOutcome, RequestOutcome.REFUSED));
+                || (RequestOutcome.REFUSED.equals(latestRequestOutcome) && !isMatchingOutcome(previousRequestOutcome, RequestOutcome.REFUSED));
     }
 
     private boolean isMatchingOutcome(DatedRequestOutcome datedRequestOutcome, RequestOutcome requestOutcome) {
@@ -367,3 +403,4 @@ public class CcdNotificationWrapper implements NotificationWrapper {
         return Objects.hash(responseWrapper);
     }
 }
+
