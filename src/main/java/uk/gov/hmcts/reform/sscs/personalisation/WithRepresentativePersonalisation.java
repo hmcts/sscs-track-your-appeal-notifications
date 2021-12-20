@@ -3,7 +3,6 @@ package uk.gov.hmcts.reform.sscs.personalisation;
 import static uk.gov.hmcts.reform.sscs.config.AppConstants.OTHER_PARTY;
 import static uk.gov.hmcts.reform.sscs.config.AppConstants.REPRESENTATIVE_NAME;
 
-
 import java.util.Map;
 import org.springframework.stereotype.Component;
 import uk.gov.hmcts.reform.sscs.ccd.domain.SscsCaseData;

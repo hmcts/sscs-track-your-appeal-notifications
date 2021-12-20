@@ -203,7 +203,6 @@ public class CcdNotificationWrapperTest {
                         .build());
     }
 
-
     private CcdNotificationWrapper buildNotificationWrapperWithOtherParty(NotificationEventType notificationEventType, List<CcdValue<OtherParty>> otherParties) {
         Appointee appointee = Appointee.builder()
                 .name(Name.builder().firstName("Ap").lastName("Pointee").build())

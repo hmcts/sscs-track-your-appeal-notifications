@@ -1765,6 +1765,7 @@ public class NotificationServiceTest {
 
         final CcdNotificationWrapper ccdNotificationWrapper = buildBaseWrapperOtherParty(UPDATE_OTHER_PARTY_DATA, APPELLANT_WITH_ADDRESS, SscsDocument.builder().value(SscsDocumentDetails.builder().build()).build());
 
+
         Notification notification = new Notification(Template.builder().docmosisTemplateId(LETTER_TEMPLATE_ID).emailTemplateId(null).smsTemplateId(null).build(), Destination.builder().email("test@testing.com").sms("07823456746").build(), null, new Reference(), null);
         given(factory.create(ccdNotificationWrapperCaptor.capture(), any())).willReturn(notification);
         given(notificationValidService.isHearingTypeValidToSendNotification(
@@ -1935,7 +1936,6 @@ public class NotificationServiceTest {
                         .map(CcdValue::new)
                         .collect(Collectors.toList()))
                 .functionalTest(YesNo.YES)
-
                 .build();
         return buildBaseWrapperWithCaseData(sscsCaseData, eventType);
     }
