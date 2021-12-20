@@ -194,16 +194,6 @@ public class CcdNotificationWrapperTest {
     }
 
     private CcdNotificationWrapper buildNotificationWrapperWithOtherParty(NotificationEventType notificationEventType, List<CcdValue<OtherParty>> otherParties) {
-        return new CcdNotificationWrapper(
-                SscsCaseDataWrapper.builder()
-                        .newSscsCaseData(SscsCaseData.builder()
-                                .otherParties(otherParties)
-                                .build())
-                        .notificationEventType(notificationEventType)
-                        .build());
-    }
-
-    private CcdNotificationWrapper buildNotificationWrapperWithOtherParty(NotificationEventType notificationEventType, List<CcdValue<OtherParty>> otherParties) {
         Appointee appointee = Appointee.builder()
                 .name(Name.builder().firstName("Ap").lastName("Pointee").build())
                 .address(Address.builder().line1("Appointee Line 1").town("Appointee Town").county("Appointee County").postcode("AP9 0IN").build())
