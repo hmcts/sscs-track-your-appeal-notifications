@@ -1,21 +1,18 @@
 package uk.gov.hmcts.reform.sscs.factory;
 
+import static org.apache.commons.collections4.ListUtils.emptyIfNull;
 import static uk.gov.hmcts.reform.sscs.config.AppealHearingType.ORAL;
 import static uk.gov.hmcts.reform.sscs.config.AppealHearingType.PAPER;
-import static uk.gov.hmcts.reform.sscs.config.SubscriptionType.APPELLANT;
-import static uk.gov.hmcts.reform.sscs.config.SubscriptionType.APPOINTEE;
-import static uk.gov.hmcts.reform.sscs.config.SubscriptionType.JOINT_PARTY;
-import static uk.gov.hmcts.reform.sscs.config.SubscriptionType.REPRESENTATIVE;
+import static uk.gov.hmcts.reform.sscs.config.SubscriptionType.*;
 import static uk.gov.hmcts.reform.sscs.domain.notify.NotificationEventType.*;
-import static uk.gov.hmcts.reform.sscs.service.NotificationUtils.hasAppointeeSubscriptionOrIsMandatoryAppointeeLetter;
-import static uk.gov.hmcts.reform.sscs.service.NotificationUtils.hasJointPartySubscription;
-import static uk.gov.hmcts.reform.sscs.service.NotificationUtils.hasRepSubscriptionOrIsMandatoryRepLetter;
+import static uk.gov.hmcts.reform.sscs.service.NotificationUtils.*;
 
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
 import java.util.Optional;
 import java.util.stream.Collectors;
+import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.StringUtils;
 import org.jetbrains.annotations.NotNull;
 import uk.gov.hmcts.reform.sscs.ccd.domain.*;
@@ -26,6 +23,7 @@ import uk.gov.hmcts.reform.sscs.domain.notify.NotificationEventType;
 import uk.gov.hmcts.reform.sscs.model.PartyItemList;
 import uk.gov.hmcts.reform.sscs.service.scheduler.CcdActionSerializer;
 
+@Slf4j
 public class CcdNotificationWrapper implements NotificationWrapper {
 
     private final SscsCaseDataWrapper responseWrapper;
@@ -71,6 +69,14 @@ public class CcdNotificationWrapper implements NotificationWrapper {
     @Override
     public Subscription getJointPartySubscription() {
         return responseWrapper.getNewSscsCaseData().getSubscriptions().getJointPartySubscription();
+    }
+
+    @Override
+    public List<SubscriptionWithType> getOtherPartySubscriptions() {
+        return emptyIfNull(responseWrapper.getNewSscsCaseData().getOtherParties()).stream()
+                .map(CcdValue::getValue)
+                .flatMap(o -> filterOtherPartySubscription(o).stream())
+                .collect(Collectors.toList());
     }
 
     @Override
@@ -120,8 +126,30 @@ public class CcdNotificationWrapper implements NotificationWrapper {
             subscriptionWithTypeList.add(new SubscriptionWithType(getJointPartySubscription(), JOINT_PARTY));
         }
 
+        subscriptionWithTypeList.addAll(getOtherPartySubscriptions());
+
         return subscriptionWithTypeList;
     }
+
+    private List<SubscriptionWithType> filterOtherPartySubscription(OtherParty otherParty) {
+        List<SubscriptionWithType> otherPartySubscription = new ArrayList<>();
+        log.info("Other Party id {} isSendNewOtherPartyNotification {}", otherParty.getId(), otherParty.getSendNewOtherPartyNotification());
+        boolean isSendNewOtherPartyNotification = YesNo.isYes(otherParty.getSendNewOtherPartyNotification());
+
+        if (hasAppointee(otherParty.getAppointee(), otherParty.getIsAppointee())
+                && isNotificationEventValidToSendToOtherPartySubscription(otherParty.getOtherPartyAppointeeSubscription(), isSendNewOtherPartyNotification)) {
+            otherPartySubscription.add(new SubscriptionWithType(otherParty.getOtherPartyAppointeeSubscription(), OTHER_PARTY, Integer.parseInt(otherParty.getAppointee().getId())));
+        } else if (isNotificationEventValidToSendToOtherPartySubscription(otherParty.getOtherPartySubscription(), isSendNewOtherPartyNotification)) {
+            otherPartySubscription.add(new SubscriptionWithType(otherParty.getOtherPartySubscription(), OTHER_PARTY, Integer.parseInt(otherParty.getId())));
+        }
+
+        if (hasRepresentative(otherParty)
+                && isNotificationEventValidToSendToOtherPartySubscription(otherParty.getOtherPartyRepresentativeSubscription(), isSendNewOtherPartyNotification)) {
+            otherPartySubscription.add(new SubscriptionWithType(otherParty.getOtherPartyRepresentativeSubscription(), OTHER_PARTY, Integer.parseInt(otherParty.getRep().getId())));
+        }
+        return otherPartySubscription;
+    }
+
 
     private boolean isNotificationEventValidToSendToAppointee() {
         return hasAppointeeSubscriptionOrIsMandatoryAppointeeLetter(responseWrapper)
@@ -169,7 +197,7 @@ public class CcdNotificationWrapper implements NotificationWrapper {
 
     private boolean isNotificationEventValidToSendToAppellant() {
         // Special list of notifications that might not be sent to appellant, depending on data set on the case
-        List<NotificationEventType> notificationsMaybeNotForAppellant = List.of(REVIEW_CONFIDENTIALITY_REQUEST, REQUEST_INFO_INCOMPLETE, ACTION_HEARING_RECORDING_REQUEST);
+        List<NotificationEventType> notificationsMaybeNotForAppellant = List.of(REVIEW_CONFIDENTIALITY_REQUEST, REQUEST_INFO_INCOMPLETE, ACTION_HEARING_RECORDING_REQUEST, UPDATE_OTHER_PARTY_DATA);
 
         return (getOldSscsCaseData() != null && isValidReviewConfidentialityRequest(getOldSscsCaseData().getConfidentialityRequestOutcomeAppellant(), getNewSscsCaseData().getConfidentialityRequestOutcomeAppellant()))
                 || isValidProcessHearingRequestEventForParty(PartyItemList.APPELLANT)
@@ -269,6 +297,13 @@ public class CcdNotificationWrapper implements NotificationWrapper {
                 || isValidProcessHearingRequestEventForParty(PartyItemList.JOINT_PARTY)
                 || (getOldSscsCaseData() != null && isValidReviewConfidentialityRequest(getOldSscsCaseData().getConfidentialityRequestOutcomeJointParty(), getNewSscsCaseData().getConfidentialityRequestOutcomeJointParty())));
     }
+
+    private boolean isNotificationEventValidToSendToOtherPartySubscription(Subscription subscription, boolean isSendNewOtherPartyNotification) {
+        return isValidSubscriptionOrIsMandatoryLetter(subscription, responseWrapper.getNotificationEventType())
+                && (DWP_UPLOAD_RESPONSE_NOTIFICATION.equals(getNotificationType())
+                || (isSendNewOtherPartyNotification && UPDATE_OTHER_PARTY_DATA.equals(getNotificationType())));
+    }
+
 
     private boolean isValidRequestInfoIncompleteEventForParty(PartyItemList partyItem) {
         return REQUEST_INFO_INCOMPLETE.equals(getNotificationType())

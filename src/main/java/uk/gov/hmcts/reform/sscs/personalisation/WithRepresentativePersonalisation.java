@@ -1,9 +1,11 @@
 package uk.gov.hmcts.reform.sscs.personalisation;
 
+import static uk.gov.hmcts.reform.sscs.config.AppConstants.OTHER_PARTY;
+import static uk.gov.hmcts.reform.sscs.config.AppConstants.REPRESENTATIVE_NAME;
+
 import java.util.Map;
 import org.springframework.stereotype.Component;
 import uk.gov.hmcts.reform.sscs.ccd.domain.SscsCaseData;
-import uk.gov.hmcts.reform.sscs.config.AppConstants;
 import uk.gov.hmcts.reform.sscs.domain.SscsCaseDataWrapper;
 import uk.gov.hmcts.reform.sscs.domain.SubscriptionWithType;
 import uk.gov.hmcts.reform.sscs.factory.CcdNotificationWrapper;
@@ -25,11 +27,20 @@ public class WithRepresentativePersonalisation extends Personalisation<CcdNotifi
 
     public Map<String, String> setRepresentativeName(Map<String, String> personalisation, SscsCaseData sscsCaseData) {
         if (NotificationUtils.hasRepresentative(sscsCaseData.getAppeal())) {
-            personalisation.put(AppConstants.REPRESENTATIVE_NAME,
+            personalisation.put(REPRESENTATIVE_NAME,
                     SendNotificationHelper.getRepSalutation(sscsCaseData.getAppeal().getRep(), true));
         }
+        overrideRepNameIfNotificationIsForAnOtherParty(personalisation);
 
         return personalisation;
+    }
+
+    private void overrideRepNameIfNotificationIsForAnOtherParty(final Map<String, String> personalisation) {
+        //REPRESENTATIVE_NAME tag in templates is reused to send notification to other parties,
+        //so that we don't need to refactor all the notification templates to accommodate other parties
+        if (personalisation.get(OTHER_PARTY) != null) {
+            personalisation.put(REPRESENTATIVE_NAME, personalisation.get(OTHER_PARTY));
+        }
     }
 
 }
