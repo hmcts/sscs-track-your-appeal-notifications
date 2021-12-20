@@ -206,6 +206,10 @@ notification:
       other_party:
         emailId: e93dd744-84a1-4173-847a-6d023b55637f
         smsId: ee58f7d0-8de7-4bee-acd4-252213db6b7b
+        docmosisId: TB-SCS-GNO-ENG-00656.docx
+      other_party:
+        emailId: e93dd744-84a1-4173-847a-6d023b55637f
+        smsId: ee58f7d0-8de7-4bee-acd4-252213db6b7b
     confirmLapsed:
       appellant:
         emailId: 8ce8d794-75e8-49a0-b4d2-0c6cd2061c11
@@ -218,6 +222,10 @@ notification:
       appointee:
         emailId: 8ce8d794-75e8-49a0-b4d2-0c6cd2061c11
         smsId: d2b4394b-d1c9-4d5c-a44e-b382e41c67e5
+        docmosisId: TB-SCS-GNO-ENG-00656.docx
+      other_party:
+        emailId: e93dd744-84a1-4173-847a-6d023b55637f
+        smsId: ee58f7d0-8de7-4bee-acd4-252213db6b7b
         docmosisId: TB-SCS-GNO-ENG-00656.docx
       other_party:
         emailId: e93dd744-84a1-4173-847a-6d023b55637f
@@ -238,6 +246,7 @@ notification:
       other_party:
         emailId: e93dd744-84a1-4173-847a-6d023b55637f
         smsId: ee58f7d0-8de7-4bee-acd4-252213db6b7b
+        docmosisId: TB-SCS-GNO-ENG-00656.docx
     appealWithdrawn:
       appellant:
         emailId: 8620e023-f663-477e-a771-9cfad50ee30f
@@ -258,6 +267,7 @@ notification:
       other_party:
         emailId: e29a2275-553f-4e70-97f4-2994c095f281
         smsId: f59440ee-19ca-4d47-a702-13e9cecaccbd
+        docmosisId: TB-SCS-GNO-ENG-00659.docx
     adminAppealWithdrawn:
       appellant:
         emailId: 8620e023-f663-477e-a771-9cfad50ee30f
@@ -278,6 +288,7 @@ notification:
       other_party:
         emailId: e29a2275-553f-4e70-97f4-2994c095f281
         smsId: f59440ee-19ca-4d47-a702-13e9cecaccbd
+        docmosisId: TB-SCS-GNO-ENG-00659.docx
     subscriptionCreated:
       appellant:
         smsId: 7397a76f-14cb-468c-b1a7-0570940ead91
@@ -375,6 +386,8 @@ notification:
           docmosisId: TB-SCS-GNO-ENG-00551.docx
         joint_party:
           docmosisId: TB-SCS-GNO-ENG-00551.docx
+        other_party:
+          docmosisId: TB-SCS-GNO-ENG-00551.docx
       provideInformation:
         appellant:
           docmosisId: TB-SCS-GNO-ENG-00067.docx
@@ -384,6 +397,8 @@ notification:
           docmosisId: TB-SCS-GNO-ENG-00089.docx
         joint_party:
           docmosisId: TB-SCS-GNO-ENG-00067.docx
+        other_party:
+          docmosisId: TB-SCS-GNO-ENG-00089.docx
       grantExtension:
         appellant:
           docmosisId: TB-SCS-GNO-ENG-00556.docx
@@ -392,6 +407,8 @@ notification:
         representative:
           docmosisId: TB-SCS-GNO-ENG-00556.docx
         joint_party:
+          docmosisId: TB-SCS-GNO-ENG-00556.docx
+        other_party:
           docmosisId: TB-SCS-GNO-ENG-00556.docx
       refuseExtension:
         appellant:
@@ -402,6 +419,8 @@ notification:
           docmosisId: TB-SCS-GNO-ENG-00557.docx
         joint_party:
           docmosisId: TB-SCS-GNO-ENG-00557.docx
+        other_party:
+          docmosisId: TB-SCS-GNO-ENG-00557.docx
       grantReinstatement:
         appellant:
           docmosisId: TB-SCS-GNO-ENG-00584.docx
@@ -409,12 +428,16 @@ notification:
           docmosisId: TB-SCS-GNO-ENG-00584.docx
         representative:
           docmosisId: TB-SCS-GNO-ENG-00584.docx
+        other_party:
+          docmosisId: TB-SCS-GNO-ENG-00584.docx
       refuseReinstatement:
         appellant:
           docmosisId: TB-SCS-GNO-ENG-00585.docx
         appointee:
           docmosisId: TB-SCS-GNO-ENG-00585.docx
         representative:
+          docmosisId: TB-SCS-GNO-ENG-00585.docx
+        other_party:
           docmosisId: TB-SCS-GNO-ENG-00585.docx
       grantUrgentHearing:
         appellant:
@@ -425,6 +448,8 @@ notification:
           docmosisId: TB-SCS-GNO-ENG-00635.docx
         joint_party:
           docmosisId: TB-SCS-GNO-ENG-00635.docx
+        other_party:
+          docmosisId: TB-SCS-GNO-ENG-00635.docx
       refuseUrgentHearing:
         appellant:
           docmosisId: TB-SCS-GNO-ENG-00639.docx
@@ -433,6 +458,8 @@ notification:
         representative:
           docmosisId: TB-SCS-GNO-ENG-00639.docx
         joint_party:
+          docmosisId: TB-SCS-GNO-ENG-00639.docx
+        other_party:
           docmosisId: TB-SCS-GNO-ENG-00639.docx
       refuseHearingRecordingRequest:
         appellant:
@@ -443,6 +470,8 @@ notification:
           docmosisId: TB-SCS-GNO-ENG-00089.docx
         joint_party:
           docmosisId: TB-SCS-GNO-ENG-00067.docx
+        other_party:
+          docmosisId: TB-SCS-GNO-ENG-00089.docx
     actionPostponementRequest:
       appellant:
         docmosisId: TB-SCS-GNO-ENG-00067.docx
@@ -452,12 +481,16 @@ notification:
         docmosisId: TB-SCS-GNO-ENG-00089.docx
       joint_party:
         docmosisId: TB-SCS-GNO-ENG-00067.docx
+      other_party:
+        docmosisId: TB-SCS-GNO-ENG-00089.docx
     decisionIssued:
       appellant:
         docmosisId: TB-SCS-GNO-ENG-00094.docx
       appointee:
         docmosisId: TB-SCS-GNO-ENG-00094.docx
       representative:
+        docmosisId: TB-SCS-GNO-ENG-00094.docx
+      other_party:
         docmosisId: TB-SCS-GNO-ENG-00094.docx
     issueFinalDecision:
       appellant:
@@ -466,6 +499,8 @@ notification:
         docmosisId: TB-SCS-GNO-ENG-00454.docx
       representative:
         docmosisId: TB-SCS-GNO-ENG-00455.docx
+      other_party:
+        docmosisId: TB-SCS-GNO-ENG-00795.docx
     issueAdjournmentNotice:
       appellant:
         docmosisId: TB-SCS-GNO-ENG-00510.docx
@@ -475,6 +510,8 @@ notification:
         docmosisId: TB-SCS-GNO-ENG-00512.docx
       joint_party:
         docmosisId: TB-SCS-GNO-ENG-00510.docx
+      other_party:
+        docmosisId: TB-SCS-GNO-ENG-00512.docx
     requestInfoIncompleteApplication:
       appellant:
         docmosisId: TB-SCS-GNO-ENG-00452.docx
@@ -483,6 +520,8 @@ notification:
       appointee:
         docmosisId: TB-SCS-GNO-ENG-00452.docx
       joint_party:
+        docmosisId: TB-SCS-GNO-ENG-00452.docx
+      other_party:
         docmosisId: TB-SCS-GNO-ENG-00452.docx
     nonCompliant:
       docmosisId: TB-SCS-GNO-ENG-00662.docx
@@ -536,6 +575,9 @@ notification:
           emailId: ddbc7562-f299-4b19-9357-915f08f05da7
           smsId: 5e5cfe8d-b893-4f87-817f-9d05d22d657a
         representative:
+          emailId: 8dc0510c-70d5-4791-9217-87d70361a54c
+          smsId: b2d187cd-089b-4fe1-b460-a310c0af46fe
+        other_party:
           emailId: 8dc0510c-70d5-4791-9217-87d70361a54c
           smsId: b2d187cd-089b-4fe1-b460-a310c0af46fe
         other_party:
@@ -603,6 +645,10 @@ notification:
           smsId: f20ffcb1-c5f0-4bff-b2d1-a1094f8014e6
           letterId: 8b11f3f4-6452-4a35-93d8-a94996af6499
         representative:
+          emailId: 0d844af4-b390-42d7-94d5-4fd1ae9388d9
+          smsId: 9fe3a4f1-b8e2-4aed-aafb-6360d6ba2874
+          letterId: 419beb1c-4f26-45e7-8db3-69bfe5e9224d
+        other_party:
           emailId: 0d844af4-b390-42d7-94d5-4fd1ae9388d9
           smsId: 9fe3a4f1-b8e2-4aed-aafb-6360d6ba2874
           letterId: 419beb1c-4f26-45e7-8db3-69bfe5e9224d
@@ -739,6 +785,10 @@ notification:
       other_party:
         emailId: dc8164a8-b923-4896-9308-3bf8e74d5665
         smsId: 77180ecb-c7e8-407c-8d74-618ae37b47b6
+        docmosisId: TB-SCS-GNO-WEL-00658.docx
+      other_party:
+        emailId: dc8164a8-b923-4896-9308-3bf8e74d5665
+        smsId: 77180ecb-c7e8-407c-8d74-618ae37b47b6
     confirmLapsed:
       appellant:
         emailId: 542a6346-7039-4eab-8b20-61fa77db33f0
@@ -755,6 +805,7 @@ notification:
       other_party:
         emailId: dc8164a8-b923-4896-9308-3bf8e74d5665
         smsId: 77180ecb-c7e8-407c-8d74-618ae37b47b6
+        docmosisId: TB-SCS-GNO-WEL-00658.docx
     hmctsLapseCase:
       appellant:
         emailId: 542a6346-7039-4eab-8b20-61fa77db33f0
@@ -771,6 +822,7 @@ notification:
       other_party:
         emailId: dc8164a8-b923-4896-9308-3bf8e74d5665
         smsId: 77180ecb-c7e8-407c-8d74-618ae37b47b6
+        docmosisId: TB-SCS-GNO-WEL-00658.docx
     appealWithdrawn:
       appellant:
         emailId: 45681209-46d6-4525-89d6-506611e131f9
@@ -791,6 +843,7 @@ notification:
       other_party:
         emailId: 31ed3c24-0fc8-45a7-8071-4f27f4009634
         smsId: 66ff7a2c-7e22-4a2b-9120-00aea140db75
+        docmosisId: TB-SCS-GNO-WEL-00661.docx
     adminAppealWithdrawn:
       appellant:
         emailId: 45681209-46d6-4525-89d6-506611e131f9
@@ -811,6 +864,7 @@ notification:
       other_party:
         emailId: 31ed3c24-0fc8-45a7-8071-4f27f4009634
         smsId: 66ff7a2c-7e22-4a2b-9120-00aea140db75
+        docmosisId: TB-SCS-GNO-WEL-00661.docx
     subscriptionCreated:
       appellant:
         smsId: 7397a76f-14cb-468c-b1a7-0570940ead91
@@ -908,6 +962,8 @@ notification:
           docmosisId: TB-SCS-GNO-WEL-00590.docx
         joint_party:
           docmosisId: TB-SCS-GNO-WEL-00590.docx
+        other_party:
+          docmosisId: TB-SCS-GNO-WEL-00590.docx
       provideInformation:
         appellant:
           docmosisId: TB-SCS-GNO-WEL-00468.docx
@@ -917,6 +973,8 @@ notification:
           docmosisId: TB-SCS-GNO-WEL-00472.docx
         joint_party:
           docmosisId: TB-SCS-GNO-WEL-00468.docx
+        other_party:
+          docmosisId: TB-SCS-GNO-WEL-00472.docx
       grantExtension:
         appellant:
           docmosisId: TB-SCS-GNO-WEL-00591.docx
@@ -925,6 +983,8 @@ notification:
         representative:
           docmosisId: TB-SCS-GNO-WEL-00591.docx
         joint_party:
+          docmosisId: TB-SCS-GNO-WEL-00591.docx
+        other_party:
           docmosisId: TB-SCS-GNO-WEL-00591.docx
       refuseExtension:
         appellant:
@@ -935,6 +995,8 @@ notification:
           docmosisId: TB-SCS-GNO-WEL-00592.docx
         joint_party:
           docmosisId: TB-SCS-GNO-WEL-00592.docx
+        other_party:
+          docmosisId: TB-SCS-GNO-WEL-00592.docx
       grantReinstatement:
         appellant:
           docmosisId: TB-SCS-GNO-WEL-00586.docx
@@ -942,12 +1004,16 @@ notification:
           docmosisId: TB-SCS-GNO-WEL-00586.docx
         representative:
           docmosisId: TB-SCS-GNO-WEL-00586.docx
+        other_party:
+          docmosisId: TB-SCS-GNO-WEL-00586.docx
       refuseReinstatement:
         appellant:
           docmosisId: TB-SCS-GNO-WEL-00587.docx
         appointee:
           docmosisId: TB-SCS-GNO-WEL-00587.docx
         representative:
+          docmosisId: TB-SCS-GNO-WEL-00587.docx
+        other_party:
           docmosisId: TB-SCS-GNO-WEL-00587.docx
       refuseHearingRecordingRequest:
         appellant:
@@ -958,6 +1024,8 @@ notification:
           docmosisId: TB-SCS-GNO-WEL-00472.docx
         joint_party:
           docmosisId: TB-SCS-GNO-WEL-00468.docx
+        other_party:
+          docmosisId: TB-SCS-GNO-WEL-00472.docx
     actionPostponementRequestWelsh:
       appellant:
         docmosisId: TB-SCS-GNO-WEL-00468.docx
@@ -967,12 +1035,16 @@ notification:
         docmosisId: TB-SCS-GNO-WEL-00472.docx
       joint_party:
         docmosisId: TB-SCS-GNO-WEL-00468.docx
+      other_party:
+        docmosisId: TB-SCS-GNO-WEL-00472.docx
     decisionIssuedWelsh:
       appellant:
         docmosisId: TB-SCS-GNO-WEL-00474.docx
       appointee:
         docmosisId: TB-SCS-GNO-WEL-00474.docx
       representative:
+        docmosisId: TB-SCS-GNO-WEL-00474.docx
+      other_party:
         docmosisId: TB-SCS-GNO-WEL-00474.docx
     issueAdjournmentNoticeWelsh:
       appellant:
@@ -983,6 +1055,8 @@ notification:
         docmosisId: TB-SCS-GNO-WEL-00649.docx
       joint_party:
         docmosisId: TB-SCS-GNO-WEL-00649.docx
+      other_party:
+        docmosisId: TB-SCS-GNO-WEL-00649.docx
     issueFinalDecisionWelsh:
       appellant:
         docmosisId: TB-SCS-GNO-WEL-00681.docx
@@ -990,6 +1064,8 @@ notification:
         docmosisId: TB-SCS-GNO-WEL-00681.docx
       representative:
         docmosisId: TB-SCS-GNO-WEL-00682.docx
+      other_party:
+        docmosisId: TB-SCS-GNO-WEL-00796.docx
     requestInfoIncompleteApplication:
       appellant:
         docmosisId: TB-SCS-GNO-WEL-00589.docx
@@ -998,6 +1074,8 @@ notification:
       appointee:
         docmosisId: TB-SCS-GNO-WEL-00589.docx
       joint_party:
+        docmosisId: TB-SCS-GNO-WEL-00589.docx
+      other_party:
         docmosisId: TB-SCS-GNO-WEL-00589.docx
     nonCompliant:
       docmosisId: TB-SCS-GNO-WEL-00663.docx
@@ -1051,6 +1129,9 @@ notification:
           emailId: 974a452f-e5a5-4072-a326-87ad8b0793fb
           smsId: 7257266e-b02f-4091-a360-70e4b231124f
         representative:
+          emailId: 0b7ccdac-0b8e-4f94-8829-77f3a2874485
+          smsId: cca7c565-c907-405f-b778-735b31947b85
+        other_party:
           emailId: 0b7ccdac-0b8e-4f94-8829-77f3a2874485
           smsId: cca7c565-c907-405f-b778-735b31947b85
         other_party:
