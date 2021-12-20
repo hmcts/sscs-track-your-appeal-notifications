@@ -1,6 +1,8 @@
 package uk.gov.hmcts.reform.sscs.personalisation;
 
-import static uk.gov.hmcts.reform.sscs.config.AppConstants.*;
+import static uk.gov.hmcts.reform.sscs.config.AppConstants.OTHER_PARTY;
+import static uk.gov.hmcts.reform.sscs.config.AppConstants.REPRESENTATIVE_NAME;
+
 
 import java.util.Map;
 import org.springframework.stereotype.Component;
@@ -41,6 +43,7 @@ public class WithRepresentativePersonalisation extends Personalisation<CcdNotifi
         if (personalisation.get(OTHER_PARTY) != null) {
             personalisation.put(REPRESENTATIVE_NAME, personalisation.get(OTHER_PARTY));
             personalisation.put(IS_OTHER_PARTY, "Yes");
+
         }
     }
 

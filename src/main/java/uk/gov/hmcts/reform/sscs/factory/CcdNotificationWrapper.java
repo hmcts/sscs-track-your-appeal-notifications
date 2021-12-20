@@ -133,8 +133,11 @@ public class CcdNotificationWrapper implements NotificationWrapper {
 
     private List<SubscriptionWithType> filterOtherPartySubscription(OtherParty otherParty) {
         List<SubscriptionWithType> otherPartySubscription = new ArrayList<>();
+
         log.info("isSendNewOtherPartyNotification {}", otherParty.getSendNewOtherPartyNotification());
         log.info("Notification Type {}", getNotificationType());
+        log.info("Other Party id {} isSendNewOtherPartyNotification {}", otherParty.getId(), otherParty.getSendNewOtherPartyNotification());
+
         boolean isSendNewOtherPartyNotification = YesNo.isYes(otherParty.getSendNewOtherPartyNotification());
 
         if (hasAppointee(otherParty.getAppointee(), otherParty.getIsAppointee())
@@ -150,6 +153,7 @@ public class CcdNotificationWrapper implements NotificationWrapper {
         }
 
         log.info("Number of subscription {}", otherPartySubscription.size());
+
         return otherPartySubscription;
     }
 
