@@ -35,14 +35,6 @@ public class OtherPartyFunctionalTest extends AbstractFunctionalTest {
     private String appealWithdrawnOtherPartyEmailTemplateId;
     @Value("${notification.english.appealWithdrawn.other_party.smsId}")
     private String appealWithdrawnOtherPartySmsTemplateId;
-    @Value("${notification.english.hearingBooked.other_party.emailId}")
-    private String hearingBookedOtherPartyEmailTemplateId;
-    @Value("${notification.english.hearingBooked.other_party.smsId}")
-    private String hearingBookedOtherPartySmsTemplateId;
-    @Value("${notification.english.hearingReminder.other_party.emailId}")
-    private String hearingReminderOtherPartyEmailTemplateId;
-    @Value("${notification.english.hearingReminder.other_party.smsId}")
-    private String hearingReminderOtherPartySmsTemplateId;
     @Value("${notification.english.oral.evidenceReminder.other_party.emailId}")
     private String evidenceReminderOtherPartyEmailTemplateId;
     @Value("${notification.english.oral.evidenceReminder.other_party.smsId}")
@@ -78,14 +70,11 @@ public class OtherPartyFunctionalTest extends AbstractFunctionalTest {
             "POSTPONEMENT_NOTIFICATION, 0, hearingPostponedOtherPartyEmailTemplateId",
             "APPEAL_LAPSED_NOTIFICATION, 2, appealLapsedOtherPartyEmailTemplateId, appealLapsedOtherPartySmsTemplateId",
             "APPEAL_WITHDRAWN_NOTIFICATION, 2, appealWithdrawnOtherPartyEmailTemplateId, appealWithdrawnOtherPartySmsTemplateId",
-            "HEARING_BOOKED_NOTIFICATION, 0, hearingBookedOtherPartyEmailTemplateId, hearingBookedOtherPartySmsTemplateId",
-            "HEARING_REMINDER_NOTIFICATION, 0, hearingReminderOtherPartyEmailTemplateId, hearingReminderOtherPartySmsTemplateId",
             "STRUCK_OUT, 2,",
             "DECISION_ISSUED, 2,",
             "DIRECTION_ISSUED, 2,",
             "ISSUE_ADJOURNMENT_NOTICE, 2,",
             "ISSUE_FINAL_DECISION, 2,",
-            "REQUEST_INFO_INCOMPLETE, 2,",
             "EVIDENCE_REMINDER_NOTIFICATION, 0, evidenceReminderOtherPartyEmailTemplateId, evidenceReminderOtherPartySmsTemplateId"
     })
     public void willSendEventNotification(NotificationEventType notificationEventType, int expectedNumberOfLetters, @Nullable String... fieldNames) throws Exception {
