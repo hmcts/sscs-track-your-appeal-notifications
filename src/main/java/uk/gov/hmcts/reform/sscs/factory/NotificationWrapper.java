@@ -25,6 +25,8 @@ public interface NotificationWrapper {
 
     Subscription getJointPartySubscription();
 
+    List<SubscriptionWithType> getOtherPartySubscriptions();
+
     SscsCaseDataWrapper getSscsCaseDataWrapper();
 
     AppealHearingType getHearingType();

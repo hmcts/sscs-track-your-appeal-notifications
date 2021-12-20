@@ -14,12 +14,7 @@ import static uk.gov.hmcts.reform.sscs.service.NotificationValidService.*;
 import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.List;
-import uk.gov.hmcts.reform.sscs.ccd.domain.Appeal;
-import uk.gov.hmcts.reform.sscs.ccd.domain.Appointee;
-import uk.gov.hmcts.reform.sscs.ccd.domain.Hearing;
-import uk.gov.hmcts.reform.sscs.ccd.domain.HearingDetails;
-import uk.gov.hmcts.reform.sscs.ccd.domain.SscsCaseData;
-import uk.gov.hmcts.reform.sscs.ccd.domain.Subscription;
+import uk.gov.hmcts.reform.sscs.ccd.domain.*;
 import uk.gov.hmcts.reform.sscs.config.SubscriptionType;
 import uk.gov.hmcts.reform.sscs.domain.SscsCaseDataWrapper;
 import uk.gov.hmcts.reform.sscs.domain.notify.Notification;
@@ -57,6 +52,12 @@ public class NotificationUtils {
             && appeal.getRep().getHasRepresentative().equalsIgnoreCase("yes");
     }
 
+    public static boolean hasRepresentative(OtherParty otherParty) {
+        return otherParty.getRep() != null
+                && otherParty.getRep().getHasRepresentative() != null
+                && otherParty.getRep().getHasRepresentative().equalsIgnoreCase("yes");
+    }
+
     public static boolean hasJointParty(SscsCaseData caseData) {
         return caseData.isThereAJointParty()
                 && isNotBlank(trimToNull(caseData.getJointPartyName().getFullName()));
@@ -82,6 +83,12 @@ public class NotificationUtils {
         return ((null != subscription && subscription.doesCaseHaveSubscriptions()  && hasJointParty(wrapper.getNewSscsCaseData()))
                 || (hasJointParty(wrapper.getNewSscsCaseData())
                 && MANDATORY_LETTER_EVENT_TYPES.contains(wrapper.getNotificationEventType())));
+    }
+
+    public static boolean isValidSubscriptionOrIsMandatoryLetter(Subscription subscription, NotificationEventType eventType) {
+        Subscription nullCheckedSubscription = getPopulatedSubscriptionOrNull(subscription);
+        return ((null != nullCheckedSubscription && nullCheckedSubscription.doesCaseHaveSubscriptions())
+                || MANDATORY_LETTER_EVENT_TYPES.contains(eventType));
     }
 
     public static Subscription getSubscription(SscsCaseData sscsCaseData, SubscriptionType subscriptionType) {

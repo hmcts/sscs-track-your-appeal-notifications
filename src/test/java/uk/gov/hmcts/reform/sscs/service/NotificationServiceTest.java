@@ -23,9 +23,12 @@ import java.io.IOException;
 import java.time.LocalDate;
 import java.time.ZonedDateTime;
 import java.util.*;
+import java.util.stream.Collectors;
+import java.util.stream.Stream;
 import junitparams.JUnitParamsRunner;
 import junitparams.Parameters;
 import junitparams.converters.Nullable;
+import org.apache.commons.lang3.tuple.Pair;
 import org.apache.pdfbox.io.IOUtils;
 import org.junit.Before;
 import org.junit.Test;
@@ -551,6 +554,17 @@ public class NotificationServiceTest {
                 null,
                 null,
                 new SubscriptionType[]{APPELLANT}
+            },
+            new Object[]{
+                UPDATE_OTHER_PARTY_DATA,
+                0,
+                0,
+                1,
+                1,
+                null,
+                null,
+                null,
+                new SubscriptionType[]{OTHER_PARTY}
             }
         };
     }
@@ -785,6 +799,11 @@ public class NotificationServiceTest {
                 .appointeeSubscription(appointeeSubscription)
                 .build())
             .caseReference(CASE_REFERENCE)
+            .otherParties(List.of(CcdValue.<OtherParty>builder().value(OtherParty.builder()
+                    .sendNewOtherPartyNotification(YesNo.YES)
+                    .id("1")
+                    .address(Address.builder().line1("Appellant Line 1").town("Appellant Town").county("Appellant County").postcode("AP9 7LL").build())
+                    .build()).build()))
             .hearings(singletonList(Hearing.builder().build()))
             .createdInGapsFrom(READY_TO_LIST.getId())
             .build();
@@ -1649,6 +1668,53 @@ public class NotificationServiceTest {
                 any(NotificationHandler.SendNotification.class));
     }
 
+    @Test
+    public void givenUpdateOtherPartyDataReceivedAndNewOtherPartyHasBeenAdded_thenSendToLetterToOtherParty() throws IOException {
+        final CcdNotificationWrapper ccdNotificationWrapper = buildBaseWrapperOtherParty(UPDATE_OTHER_PARTY_DATA,  APPELLANT_WITH_ADDRESS, SscsDocument.builder().value(SscsDocumentDetails.builder().build()).build());
+
+        Notification notification = new Notification(Template.builder().docmosisTemplateId(LETTER_TEMPLATE_ID).emailTemplateId(null).smsTemplateId(null).build(), Destination.builder().email("test@testing.com").sms("07823456746").build(), null, new Reference(), null);
+        given(factory.create(ccdNotificationWrapperCaptor.capture(), any())).willReturn(notification);
+        given(notificationValidService.isHearingTypeValidToSendNotification(
+                any(SscsCaseData.class), any())).willReturn(true);
+        given(notificationValidService.isNotificationStillValidToSend(anyList(), any()))
+                .willReturn(true);
+
+        byte[] sampleDirectionCoversheet = IOUtils.toByteArray(getClass().getClassLoader().getResourceAsStream("pdfs/direction-notice-coversheet-sample.pdf"));
+        given(pdfLetterService.generateLetter(any(), any(), any())).willReturn(sampleDirectionCoversheet);
+
+        notificationService.manageNotificationAndSubscription(ccdNotificationWrapper, false);
+
+        assertEquals(UPDATE_OTHER_PARTY_DATA, ccdNotificationWrapperCaptor.getValue().getNotificationType());
+
+        then(notificationHandler).should(times(2)).sendNotification(
+                eq(ccdNotificationWrapper), any(), eq("Letter"),
+                any(NotificationHandler.SendNotification.class));
+    }
+
+    @Test
+    public void givenDwpUploadResponseReceivedAndNewOtherPartyHasBeenAdded_thenOverrideNotificationTypeAndSendToLetterToOtherParty() throws IOException {
+        CcdNotificationWrapper ccdNotificationWrapper = buildBaseWrapperOtherParty(DWP_UPLOAD_RESPONSE_NOTIFICATION,  APPELLANT_WITH_ADDRESS, SscsDocument.builder().value(SscsDocumentDetails.builder().build()).build());
+        ccdNotificationWrapper.getSscsCaseDataWrapper().getNewSscsCaseData().setCreatedInGapsFrom(READY_TO_LIST.getId());
+        Notification notification = new Notification(Template.builder().docmosisTemplateId(LETTER_TEMPLATE_ID).emailTemplateId(null).smsTemplateId(null).build(), Destination.builder().email("test@testing.com").sms("07823456746").build(), null, new Reference(), null);
+        given(factory.create(ccdNotificationWrapperCaptor.capture(), any())).willReturn(notification);
+        given(notificationValidService.isHearingTypeValidToSendNotification(
+                any(SscsCaseData.class), any())).willReturn(true);
+        given(notificationValidService.isNotificationStillValidToSend(anyList(), any()))
+                .willReturn(true);
+
+        byte[] sampleDirectionCoversheet = IOUtils.toByteArray(getClass().getClassLoader().getResourceAsStream("pdfs/direction-notice-coversheet-sample.pdf"));
+        given(pdfLetterService.generateLetter(any(), any(), any())).willReturn(sampleDirectionCoversheet);
+
+        notificationService.manageNotificationAndSubscription(ccdNotificationWrapper, false);
+
+        assertEquals(UPDATE_OTHER_PARTY_DATA, ccdNotificationWrapperCaptor.getValue().getNotificationType());
+
+        then(notificationHandler).should(times(6)).sendNotification(
+                eq(ccdNotificationWrapper), any(), eq("Letter"),
+                any(NotificationHandler.SendNotification.class));
+    }
+
+
     @SuppressWarnings({"Indentation", "UnusedPrivateMethod"})
     private Object[] allEventTypesExceptRequestInfoIncompleteAndProcessingHearingRequest() {
         return Arrays.stream(NotificationEventType.values()).filter(eventType ->
@@ -1725,8 +1791,57 @@ public class NotificationServiceTest {
         return new SubscriptionWithType(getSubscription(ccdNotificationWrapper.getNewSscsCaseData(), REPRESENTATIVE), SubscriptionType.REPRESENTATIVE);
     }
 
+    private SubscriptionWithType getSubscriptionWithTypeOtherParty(CcdNotificationWrapper ccdNotificationWrapper, int otherPartyId) {
+        Subscription otherPartySubs = ccdNotificationWrapper.getNewSscsCaseData().getOtherParties().stream()
+                .map(o -> o.getValue())
+                .flatMap(op -> Stream.of(Pair.of(op.getId(), op.getOtherPartySubscription()),
+                        (op.hasAppointee() ? Pair.of(op.getAppointee().getId(), op.getOtherPartyAppointeeSubscription()) : null),
+                        (op.hasRepresentative() ? Pair.of(op.getRep().getId(), op.getOtherPartyRepresentativeSubscription()) : null)))
+                .filter(Objects::nonNull)
+                .filter(p -> p.getLeft() != null && p.getRight() != null)
+                .filter(p -> p.getLeft().equals(String.valueOf(otherPartyId)))
+                .map(Pair::getRight)
+                .findFirst()
+                .orElse(null);
+        return new SubscriptionWithType(otherPartySubs, SubscriptionType.OTHER_PARTY, otherPartyId);
+    }
+
     public static CcdNotificationWrapper buildBaseWrapper(NotificationEventType eventType, Appellant appellant, Representative rep, SscsDocument sscsDocument) {
         return buildBaseWrapperWithCaseData(getSscsCaseDataBuilder(appellant, rep, sscsDocument).build(), eventType);
+    }
+
+    public static CcdNotificationWrapper buildBaseWrapperOtherParty(NotificationEventType eventType, Appellant appellant, SscsDocument sscsDocument) {
+        final OtherParty otherParty1 = OtherParty.builder()
+                .id("1")
+                .name(Name.builder().firstName("OP").lastName("OP1").build())
+                .address(Address.builder().line1("line 1").postcode("TS1 1ST").build())
+                .sendNewOtherPartyNotification(YesNo.YES)
+                .rep(Representative.builder()
+                        .id("2")
+                        .hasRepresentative(YES)
+                        .name(Name.builder().firstName("OPRep").lastName("OP2").build())
+                        .address(Address.builder().line1("line 1").postcode("TS2 2ST").build())
+                        .build())
+                .isAppointee(YES)
+                .appointee(Appointee.builder()
+                        .id("3")
+                        .name(Name.builder().firstName("OPAppointee").lastName("OP3").build())
+                        .address(Address.builder().line1("line 1").postcode("TS3 3ST").build())
+                        .build())
+                .build();
+        final OtherParty otherParty2 = OtherParty.builder()
+                .id("4")
+                .sendNewOtherPartyNotification(YesNo.NO)
+                .name(Name.builder().firstName("OP").lastName("OP4").build())
+                .address(Address.builder().line1("line 1").postcode("TS4 4ST").build())
+                .build();
+        SscsCaseData sscsCaseData = getSscsCaseDataBuilder(appellant, null, sscsDocument)
+                .functionalTest(YesNo.YES)
+                .otherParties(List.of(otherParty1, otherParty2).stream()
+                        .map(CcdValue::new)
+                        .collect(Collectors.toList()))
+                .build();
+        return buildBaseWrapperWithCaseData(sscsCaseData, eventType);
     }
 
     public static CcdNotificationWrapper buildBaseWrapperJointParty(NotificationEventType eventType, Appellant appellant, JointPartyName jointPartyName, Address address, SscsDocument sscsDocument) {
