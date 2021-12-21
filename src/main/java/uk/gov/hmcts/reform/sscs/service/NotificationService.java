@@ -200,7 +200,7 @@ public class NotificationService {
         return true;
     }
 
-    public static boolean isResendTo(int partyId, SscsCaseData sscsCaseData) {
+    private static boolean isResendTo(int partyId, SscsCaseData sscsCaseData) {
         return partyId > 0
                 && emptyIfNull(sscsCaseData.getReissueArtifactUi().getOtherPartyOptions()).stream()
                         .map(OtherPartyOption::getValue)
