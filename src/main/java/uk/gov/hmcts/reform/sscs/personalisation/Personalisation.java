@@ -19,10 +19,12 @@ import static uk.gov.hmcts.reform.sscs.config.PersonalisationConfiguration.Perso
 import static uk.gov.hmcts.reform.sscs.config.SubscriptionType.APPELLANT;
 import static uk.gov.hmcts.reform.sscs.config.SubscriptionType.APPOINTEE;
 import static uk.gov.hmcts.reform.sscs.config.SubscriptionType.JOINT_PARTY;
+import static uk.gov.hmcts.reform.sscs.config.SubscriptionType.OTHER_PARTY;
 import static uk.gov.hmcts.reform.sscs.config.SubscriptionType.REPRESENTATIVE;
 import static uk.gov.hmcts.reform.sscs.domain.notify.NotificationEventType.*;
 import static uk.gov.hmcts.reform.sscs.personalisation.SyaAppealCreatedAndReceivedPersonalisation.TWO_NEW_LINES;
 import static uk.gov.hmcts.reform.sscs.personalisation.SyaAppealCreatedAndReceivedPersonalisation.getOptionalField;
+import static uk.gov.hmcts.reform.sscs.service.LetterUtils.getNameForOtherParty;
 import static uk.gov.hmcts.reform.sscs.service.NotificationUtils.hasAppointee;
 import static uk.gov.hmcts.reform.sscs.service.NotificationUtils.hasJointParty;
 import static uk.gov.hmcts.reform.sscs.service.NotificationUtils.hasRepresentative;
@@ -198,7 +200,7 @@ public class Personalisation<E extends NotificationWrapper> {
 
         personalisation.put(APPEAL_REF, getAppealReference(ccdResponse));
         personalisation.put(APPELLANT_NAME, ccdResponse.getAppeal().getAppellant().getName().getFullNameNoTitle());
-        personalisation.put(AppConstants.NAME, getName(subscriptionWithType.getSubscriptionType(), ccdResponse, responseWrapper));
+        personalisation.put(AppConstants.NAME, getName(subscriptionWithType, ccdResponse, responseWrapper));
         personalisation.put(CCD_ID, defaultIfBlank(ccdResponse.getCcdCaseId(), EMPTY));
 
         // Some templates (notably letters) can be sent out before the SC Ref is added to the case
@@ -275,6 +277,9 @@ public class Personalisation<E extends NotificationWrapper> {
         setConfidentialFields(ccdResponse, subscriptionWithType, personalisation);
 
         setHelplineTelephone(ccdResponse, personalisation);
+        if (subscriptionWithType.getSubscriptionType().equals(OTHER_PARTY)) {
+            personalisation.put(AppConstants.OTHER_PARTY, personalisation.get(AppConstants.NAME));
+        }
 
         return personalisation;
     }
@@ -308,27 +313,35 @@ public class Personalisation<E extends NotificationWrapper> {
                 ? ccdResponse.getCcdCaseId() : caseReference;
     }
 
-    private String getName(SubscriptionType subscriptionType, SscsCaseData ccdResponse, SscsCaseDataWrapper wrapper) {
-        if (ccdResponse.getAppeal() == null) {
+    private String getName(SubscriptionType subscriptionType, SscsCaseData sscsCaseData, SscsCaseDataWrapper wrapper) {
+        if (sscsCaseData.getAppeal() == null) {
             return EMPTY;
         }
 
         if (subscriptionType.equals(APPELLANT)
-                && ccdResponse.getAppeal().getAppellant() != null) {
-            return getDefaultName(ccdResponse.getAppeal().getAppellant().getName());
+                && sscsCaseData.getAppeal().getAppellant() != null) {
+            return getDefaultName(sscsCaseData.getAppeal().getAppellant().getName());
         } else if (subscriptionType.equals(REPRESENTATIVE)
                 && hasRepresentative(wrapper)) {
-            return SendNotificationHelper.getRepSalutation(ccdResponse.getAppeal().getRep(), true);
+            return SendNotificationHelper.getRepSalutation(sscsCaseData.getAppeal().getRep(), true);
         } else if (subscriptionType.equals(APPOINTEE)
                 && hasAppointee(wrapper)) {
-            return getDefaultName(ccdResponse.getAppeal().getAppellant().getAppointee().getName());
-        } else if (subscriptionType.equals(JOINT_PARTY) && hasJointParty(ccdResponse)) {
-            JointPartyName partyName = ccdResponse.getJointPartyName();
+            return getDefaultName(sscsCaseData.getAppeal().getAppellant().getAppointee().getName());
+        } else if (subscriptionType.equals(JOINT_PARTY) && hasJointParty(sscsCaseData)) {
+            JointPartyName partyName = sscsCaseData.getJointPartyName();
             return (partyName == null) ? EMPTY :
-               getDefaultName(new Name(partyName.getTitle(), partyName.getFirstName(), partyName.getLastName()));
+                    getDefaultName(new Name(partyName.getTitle(), partyName.getFirstName(), partyName.getLastName()));
         }
         return EMPTY;
     }
+
+    private String getName(SubscriptionWithType subscriptionWithType, SscsCaseData sscsCaseData, SscsCaseDataWrapper wrapper) {
+        if (sscsCaseData.getAppeal() != null && subscriptionWithType.getPartyId() > 0) {
+            return getDefaultName(getNameForOtherParty(sscsCaseData, subscriptionWithType.getPartyId()).orElse(null));
+        }
+        return getName(subscriptionWithType.getSubscriptionType(), sscsCaseData, wrapper);
+    }
+
 
     private String getDefaultName(Name name) {
         return name == null || name.getFirstName() == null || isBlank(name.getFirstName())
@@ -517,7 +530,7 @@ public class Personalisation<E extends NotificationWrapper> {
     public Template getTemplate(E notificationWrapper, Benefit benefit, SubscriptionType subscriptionType) {
 
         String templateConfig = getEmailTemplateName(subscriptionType, notificationWrapper);
-        String smsTemplateName = isSendSmsSubscriptionConfirmation() ? SUBSCRIPTION_CREATED_NOTIFICATION.getId() + "." + subscriptionType.toString().toLowerCase() :
+        String smsTemplateName = isSendSmsSubscriptionConfirmation() ? SUBSCRIPTION_CREATED_NOTIFICATION.getId() + "." + lowerCase(subscriptionType.toString()) :
                 templateConfig;
 
         String letterTemplateName = getLetterTemplateName(subscriptionType, notificationWrapper.getNotificationType());
@@ -595,9 +608,9 @@ public class Personalisation<E extends NotificationWrapper> {
                 || ACTION_POSTPONEMENT_REQUEST.equals(notificationEventType)
                 || ACTION_POSTPONEMENT_REQUEST_WELSH.equals(notificationEventType)
                 || DEATH_OF_APPELLANT.equals(notificationEventType)
-                || PROVIDE_APPOINTEE_DETAILS.equals(notificationEventType))) {
-            letterTemplateName = letterTemplateName + "." + subscriptionType.name().toLowerCase();
-
+                || PROVIDE_APPOINTEE_DETAILS.equals(notificationEventType)
+                || UPDATE_OTHER_PARTY_DATA.equals(notificationEventType))) {
+            letterTemplateName = letterTemplateName + "." + lowerCase(subscriptionType.name());
         }
 
         return letterTemplateName;
@@ -613,7 +626,7 @@ public class Personalisation<E extends NotificationWrapper> {
                 || HEARING_BOOKED_NOTIFICATION.equals(notificationEventType))
                 || JUDGE_DECISION_APPEAL_TO_PROCEED.equals(notificationEventType)
                 || TCW_DECISION_APPEAL_TO_PROCEED.equals(notificationEventType))) {
-            letterTemplateName = letterTemplateName + "." + subscriptionType.name().toLowerCase();
+            letterTemplateName = letterTemplateName + "." + lowerCase(subscriptionType.name());
         }
         return letterTemplateName;
     }

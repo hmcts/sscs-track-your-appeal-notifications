@@ -56,7 +56,8 @@ public class DocmosisWithGovNotifyLetterFunctionalTest extends AbstractFunctiona
             new Object[]{DRAFT_TO_NON_COMPLIANT_NOTIFICATION, expectedNumberOfLettersIsTwo},
             new Object[]{ACTION_POSTPONEMENT_REQUEST, expectedNumberOfLettersIsTwo},
             new Object[]{DEATH_OF_APPELLANT, expectedNumberOfLettersIsTwo},
-            new Object[]{PROVIDE_APPOINTEE_DETAILS, expectedNumberOfLettersIsTwo}
+            new Object[]{PROVIDE_APPOINTEE_DETAILS, expectedNumberOfLettersIsTwo},
+            new Object[]{UPDATE_OTHER_PARTY_DATA, expectedNumberOfLettersIsOne}
         };
     }
 }

@@ -72,6 +72,8 @@ public final class AppConstants {
     public static final String ONLINE_HEARING_LINK_LITERAL = "online_hearing_link";
     public static final String ONLINE_HEARING_REGISTER_LINK_LITERAL = "online_hearing_register_link";
     public static final String ONLINE_HEARING_SIGN_IN_LINK_LITERAL = "online_hearing_sign_in_link";
+    public static final String OTHER_PARTY = "other_party";
+    public static final String IS_OTHER_PARTY = "is_other_party";
     public static final String PANEL_COMPOSITION = "panel_composition";
     public static final String PANEL_COMPOSITION_WELSH = "panel_composition_welsh";
     public static final String PHONE_NUMBER = "phone_number";
