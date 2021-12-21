@@ -1484,7 +1484,7 @@ public class NotificationServiceTest {
     @Parameters({"DIRECTION_ISSUED", "DECISION_ISSUED", "ISSUE_FINAL_DECISION", "DIRECTION_ISSUED_WELSH", "DECISION_ISSUED_WELSH"})
     public void givenReissueDocumentEventReceivedAndResendToAppellantYes_thenOverrideNotificationTypeAndSendToAppellant(NotificationEventType notificationEventType) throws IOException {
         CcdNotificationWrapper ccdNotificationWrapper = buildBaseWrapper(REISSUE_DOCUMENT, APPELLANT_WITH_ADDRESS, null, SscsDocument.builder().value(SscsDocumentDetails.builder().build()).build());
-        ccdNotificationWrapper.getNewSscsCaseData().getReissueArtifactUi().setResendToAppellant("Yes");
+        ccdNotificationWrapper.getNewSscsCaseData().getReissueArtifactUi().setResendToAppellant(YesNo.YES);
         ccdNotificationWrapper.getNewSscsCaseData().getReissueArtifactUi().setReissueFurtherEvidenceDocument(new DynamicList(notificationEventType.getId()));
         ccdNotificationWrapper.getNewSscsCaseData().setSubscriptions(null);
 
@@ -1510,7 +1510,7 @@ public class NotificationServiceTest {
     @Test
     public void givenReissueDocumentEventReceivedAndResendToAppellantYesAndEventWelshAndLongLetter_thenOverrideNotificationTypeAndSendToAppellantAndSendEnglishAndWelshSeparately() throws IOException {
         CcdNotificationWrapper ccdNotificationWrapper = buildBaseWrapper(REISSUE_DOCUMENT, APPELLANT_WITH_ADDRESS, null, SscsDocument.builder().value(SscsDocumentDetails.builder().build()).build());
-        ccdNotificationWrapper.getNewSscsCaseData().getReissueArtifactUi().setResendToAppellant("Yes");
+        ccdNotificationWrapper.getNewSscsCaseData().getReissueArtifactUi().setResendToAppellant(YesNo.YES);
         ccdNotificationWrapper.getNewSscsCaseData().getReissueArtifactUi().setReissueFurtherEvidenceDocument(new DynamicList(ISSUE_FINAL_DECISION_WELSH.getId()));
         ccdNotificationWrapper.getNewSscsCaseData().setSubscriptions(null);
 
@@ -1564,7 +1564,7 @@ public class NotificationServiceTest {
             "ISSUE_FINAL_DECISION, No", "ISSUE_FINAL_DECISION, null", "ISSUE_FINAL_DECISION_WELSH, No", "ISSUE_FINAL_DECISION_WELSH, null", "ISSUE_ADJOURNMENT_NOTICE, No", "ISSUE_ADJOURNMENT_NOTICE, null"})
     public void givenReissueDocumentEventReceivedAndResendToAppellantNotSet_thenDoNotSendToAppellant(NotificationEventType notificationEventType, @Nullable String resendToAppellant) {
         CcdNotificationWrapper ccdNotificationWrapper = buildBaseWrapper(REISSUE_DOCUMENT, APPELLANT_WITH_ADDRESS, null, SscsDocument.builder().value(SscsDocumentDetails.builder().build()).build());
-        ccdNotificationWrapper.getNewSscsCaseData().getReissueArtifactUi().setResendToAppellant(resendToAppellant);
+        ccdNotificationWrapper.getNewSscsCaseData().getReissueArtifactUi().setResendToAppellant(getYesNoFromString(resendToAppellant));
         ccdNotificationWrapper.getNewSscsCaseData().getReissueArtifactUi().setReissueFurtherEvidenceDocument(new DynamicList(notificationEventType.getId()));
         ccdNotificationWrapper.getNewSscsCaseData().setSubscriptions(null);
 
@@ -1577,7 +1577,7 @@ public class NotificationServiceTest {
     @Parameters({"DIRECTION_ISSUED", "DECISION_ISSUED", "DIRECTION_ISSUED_WELSH", "DECISION_ISSUED_WELSH", "ISSUE_FINAL_DECISION", "ISSUE_ADJOURNMENT_NOTICE"})
     public void givenReissueDocumentEventReceivedAndResendToRepYes_thenOverrideNotificationTypeAndSendToRep(NotificationEventType notificationEventType) throws IOException {
         CcdNotificationWrapper ccdNotificationWrapper = buildBaseWrapper(REISSUE_DOCUMENT, APPELLANT_WITH_ADDRESS, Representative.builder().hasRepresentative("yes").address(Address.builder().line1("test").postcode("Bla").build()).build(), SscsDocument.builder().value(SscsDocumentDetails.builder().build()).build());
-        ccdNotificationWrapper.getNewSscsCaseData().getReissueArtifactUi().setResendToRepresentative("Yes");
+        ccdNotificationWrapper.getNewSscsCaseData().getReissueArtifactUi().setResendToRepresentative(YesNo.YES);
         ccdNotificationWrapper.getNewSscsCaseData().getReissueArtifactUi().setReissueFurtherEvidenceDocument(new DynamicList(notificationEventType.getId()));
         ccdNotificationWrapper.getNewSscsCaseData().setSubscriptions(null);
 
@@ -1603,7 +1603,7 @@ public class NotificationServiceTest {
     @Test
     public void givenReissueDocumentEventReceivedAndResendToRepYesAndEventWelshAndLongLetter_thenOverrideNotificationTypeAndSendToRepAndSendEnglishAndWelshSeparately() throws IOException {
         CcdNotificationWrapper ccdNotificationWrapper = buildBaseWrapper(REISSUE_DOCUMENT, APPELLANT_WITH_ADDRESS, Representative.builder().hasRepresentative("yes").address(Address.builder().line1("test").postcode("Bla").build()).build(), SscsDocument.builder().value(SscsDocumentDetails.builder().build()).build());
-        ccdNotificationWrapper.getNewSscsCaseData().getReissueArtifactUi().setResendToRepresentative("Yes");
+        ccdNotificationWrapper.getNewSscsCaseData().getReissueArtifactUi().setResendToRepresentative(YesNo.YES);
         ccdNotificationWrapper.getNewSscsCaseData().getReissueArtifactUi().setReissueFurtherEvidenceDocument(new DynamicList(ISSUE_FINAL_DECISION_WELSH.getId()));
         ccdNotificationWrapper.getNewSscsCaseData().setSubscriptions(null);
 
@@ -1632,7 +1632,7 @@ public class NotificationServiceTest {
             "ISSUE_FINAL_DECISION, No", "ISSUE_FINAL_DECISION, null", "ISSUE_FINAL_DECISION_WELSH, No", "ISSUE_FINAL_DECISION_WELSH, null", "ISSUE_ADJOURNMENT_NOTICE, No", "ISSUE_ADJOURNMENT_NOTICE, null"})
     public void givenReissueDocumentEventReceivedAndResendToRepNotSet_thenDoNotSendToRep(NotificationEventType notificationEventType, @Nullable String resendToRep) {
         CcdNotificationWrapper ccdNotificationWrapper = buildBaseWrapper(REISSUE_DOCUMENT, APPELLANT_WITH_ADDRESS, Representative.builder().hasRepresentative("yes").build(), SscsDocument.builder().value(SscsDocumentDetails.builder().build()).build());
-        ccdNotificationWrapper.getNewSscsCaseData().getReissueArtifactUi().setResendToRepresentative(resendToRep);
+        ccdNotificationWrapper.getNewSscsCaseData().getReissueArtifactUi().setResendToRepresentative(getYesNoFromString(resendToRep));
         ccdNotificationWrapper.getNewSscsCaseData().getReissueArtifactUi().setReissueFurtherEvidenceDocument(new DynamicList(notificationEventType.getId()));
         ccdNotificationWrapper.getNewSscsCaseData().setSubscriptions(null);
 
