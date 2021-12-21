@@ -202,10 +202,10 @@ public class NotificationService {
 
     public static boolean isResendTo(int partyId, SscsCaseData sscsCaseData) {
         return partyId > 0
-                && emptyIfNull(sscsCaseData.getTransientFields().getReissueDocumentOtherParty()).stream()
-                        .map(CcdValue::getValue)
-                        .filter(f -> String.valueOf(partyId).equals(f.getOtherPartyId()))
-                        .anyMatch(f -> YesNo.isYes(f.getReissue()));
+                && emptyIfNull(sscsCaseData.getReissueArtifactUi().getOtherPartyOptions()).stream()
+                        .map(OtherPartyOption::getValue)
+                        .filter(otherPartyOptionDetails -> String.valueOf(partyId).equals(otherPartyOptionDetails.getOtherPartyOptionId()))
+                        .anyMatch(otherPartyOptionDetails -> YesNo.isYes(otherPartyOptionDetails.getResendToOtherParty()));
     }
 
     private void scrubEmailAndSmsIfSubscribedBefore(NotificationWrapper notificationWrapper, SubscriptionWithType subscriptionWithType) {
