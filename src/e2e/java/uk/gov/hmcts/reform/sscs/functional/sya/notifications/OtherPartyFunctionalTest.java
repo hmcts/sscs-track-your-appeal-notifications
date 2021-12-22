@@ -21,6 +21,24 @@ public class OtherPartyFunctionalTest extends AbstractFunctionalTest {
     private String oralDwpUploadResponseJointPartySmsId;
     @Value("${notification.english.oral.dwpUploadResponse.other_party.emailId}")
     private String oralDwpUploadResponseOtherPartyEmailId;
+    @Value("${notification.english.hearingAdjourned.other_party.emailId}")
+    private String hearingAdjournedOtherPartyEmailTemplateId;
+    @Value("${notification.english.hearingAdjourned.other_party.smsId}")
+    private String hearingAdjournedOtherPartySmsTemplateId;
+    @Value("${notification.english.hearingPostponed.other_party.emailId}")
+    private String hearingPostponedOtherPartyEmailTemplateId;
+    @Value("${notification.english.appealLapsed.other_party.emailId}")
+    private String appealLapsedOtherPartyEmailTemplateId;
+    @Value("${notification.english.appealLapsed.other_party.smsId}")
+    private String appealLapsedOtherPartySmsTemplateId;
+    @Value("${notification.english.appealWithdrawn.other_party.emailId}")
+    private String appealWithdrawnOtherPartyEmailTemplateId;
+    @Value("${notification.english.appealWithdrawn.other_party.smsId}")
+    private String appealWithdrawnOtherPartySmsTemplateId;
+    @Value("${notification.english.oral.evidenceReminder.other_party.emailId}")
+    private String evidenceReminderOtherPartyEmailTemplateId;
+    @Value("${notification.english.oral.evidenceReminder.other_party.smsId}")
+    private String evidenceReminderOtherPartySmsTemplateId;
 
     public OtherPartyFunctionalTest() {
         super(30);
@@ -38,13 +56,38 @@ public class OtherPartyFunctionalTest extends AbstractFunctionalTest {
         assertEquals(2, notifications.size());
         notifications.forEach(n -> assertEquals("Pre-compiled PDF", n.getSubject().orElse("Unknown Subject")));
         tryFetchNotificationsForTestCase(getFieldValue(fieldNames));
-
     }
 
     private String[] getFieldValue(String... fieldNames) {
         return Arrays.stream(fieldNames)
                 .map(this::getValue)
                 .toArray(String[]::new);
+    }
+
+    @Test
+    @Parameters({
+            "ADJOURNED_NOTIFICATION, 0, hearingAdjournedOtherPartyEmailTemplateId, hearingAdjournedOtherPartySmsTemplateId",
+            "POSTPONEMENT_NOTIFICATION, 0, hearingPostponedOtherPartyEmailTemplateId",
+            "APPEAL_LAPSED_NOTIFICATION, 2, appealLapsedOtherPartyEmailTemplateId, appealLapsedOtherPartySmsTemplateId",
+            "APPEAL_WITHDRAWN_NOTIFICATION, 2, appealWithdrawnOtherPartyEmailTemplateId, appealWithdrawnOtherPartySmsTemplateId",
+            "STRUCK_OUT, 2,",
+            "DECISION_ISSUED, 2,",
+            "DIRECTION_ISSUED, 2,",
+            "ISSUE_ADJOURNMENT_NOTICE, 2,",
+            "ISSUE_FINAL_DECISION, 2,",
+            "EVIDENCE_REMINDER_NOTIFICATION, 0, evidenceReminderOtherPartyEmailTemplateId, evidenceReminderOtherPartySmsTemplateId"
+    })
+    public void willSendEventNotification(NotificationEventType notificationEventType, int expectedNumberOfLetters, @Nullable String... fieldNames) throws Exception {
+
+        simulateCcdCallback(notificationEventType,
+                "otherparty/oral-eventTypeCallback.json");
+
+        List<Notification> notifications = fetchLetters();
+        assertEquals(expectedNumberOfLetters, notifications.size());
+        notifications.forEach(n -> assertEquals("Pre-compiled PDF", n.getSubject().orElse("Unknown Subject")));
+        if (fieldNames != null && !fieldNames[0].equals("")) {
+            tryFetchNotificationsForTestCase(getFieldValue(fieldNames));
+        }
     }
 
     private String getValue(String fieldName)  {

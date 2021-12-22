@@ -9,7 +9,6 @@ import java.io.IOException;
 import java.util.List;
 import java.util.Optional;
 import junitparams.Parameters;
-import org.junit.Ignore;
 import org.junit.Test;
 import org.springframework.beans.factory.annotation.Value;
 import uk.gov.hmcts.reform.sscs.domain.notify.NotificationEventType;
@@ -384,7 +383,6 @@ public class WelshNotificationsFunctionalTest extends AbstractFunctionalTest {
         );
     }
 
-    @Ignore // Ignored as its keep failing, needs to be fixed
     @Test
     @Parameters(method = "docmosisTestSetup")
     public void shouldSendDocmosisLettersViaGovNotify(NotificationEventType notificationEventType,
