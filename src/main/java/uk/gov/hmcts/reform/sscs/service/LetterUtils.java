@@ -9,6 +9,8 @@ import static uk.gov.hmcts.reform.sscs.service.NotificationUtils.hasAppointee;
 
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Objects;
 import java.util.Optional;
 import java.util.stream.Stream;
@@ -19,12 +21,7 @@ import org.apache.pdfbox.pdmodel.PDDocument;
 import org.apache.pdfbox.pdmodel.PDPage;
 import org.apache.pdfbox.pdmodel.PDPageContentStream;
 import org.apache.pdfbox.pdmodel.common.PDRectangle;
-import uk.gov.hmcts.reform.sscs.ccd.domain.Address;
-import uk.gov.hmcts.reform.sscs.ccd.domain.CcdValue;
-import uk.gov.hmcts.reform.sscs.ccd.domain.Name;
-import uk.gov.hmcts.reform.sscs.ccd.domain.ReasonableAdjustments;
-import uk.gov.hmcts.reform.sscs.ccd.domain.SscsCaseData;
-import uk.gov.hmcts.reform.sscs.ccd.domain.YesNo;
+import uk.gov.hmcts.reform.sscs.ccd.domain.*;
 import uk.gov.hmcts.reform.sscs.domain.SubscriptionWithType;
 import uk.gov.hmcts.reform.sscs.exception.NotificationClientRuntimeException;
 import uk.gov.hmcts.reform.sscs.factory.NotificationWrapper;
@@ -140,24 +137,56 @@ public class LetterUtils {
         YesNo wantsReasonableAdjustment = YesNo.NO;
         ReasonableAdjustments resAdj = wrapper.getNewSscsCaseData().getReasonableAdjustments();
 
-        if (resAdj != null) {
-            switch (subscriptionWithType.getSubscriptionType()) {
-                case APPELLANT:
+        switch (subscriptionWithType.getSubscriptionType()) {
+            case APPELLANT:
+                if (resAdj != null) {
                     wantsReasonableAdjustment = resAdj.getAppellant() != null && resAdj.getAppellant().getWantsReasonableAdjustment() != null ? resAdj.getAppellant().getWantsReasonableAdjustment() : YesNo.NO;
-                    break;
-                case JOINT_PARTY:
+                }
+                break;
+            case JOINT_PARTY:
+                if (resAdj != null) {
                     wantsReasonableAdjustment = resAdj.getJointParty() != null && resAdj.getJointParty().getWantsReasonableAdjustment() != null ? resAdj.getJointParty().getWantsReasonableAdjustment() : YesNo.NO;
-                    break;
-                case APPOINTEE:
+                }
+                break;
+            case APPOINTEE:
+                if (resAdj != null) {
                     wantsReasonableAdjustment = resAdj.getAppointee() != null && resAdj.getAppointee().getWantsReasonableAdjustment() != null ? resAdj.getAppointee().getWantsReasonableAdjustment() : YesNo.NO;
-                    break;
-                case REPRESENTATIVE:
+                }
+                break;
+            case REPRESENTATIVE:
+                if (resAdj != null) {
                     wantsReasonableAdjustment = resAdj.getRepresentative() != null && resAdj.getRepresentative().getWantsReasonableAdjustment() != null ? resAdj.getRepresentative().getWantsReasonableAdjustment() : YesNo.NO;
-                    break;
-                default:
-                    wantsReasonableAdjustment = YesNo.NO;
-            }
+                }
+                break;
+            case OTHER_PARTY:
+                wantsReasonableAdjustment = emptyIfNull(wrapper.getNewSscsCaseData().getOtherParties()).stream()
+                            .map(CcdValue::getValue)
+                            .flatMap(LetterUtils::buildOtherPartiesForReasonableAdjustment)
+                            .filter(Objects::nonNull)
+                            .filter(p -> p.getLeft() != null && p.getRight() != null)
+                            .filter(p -> p.getLeft().equals(String.valueOf(subscriptionWithType.getPartyId())))
+                            .map(Pair::getRight)
+                            .findFirst()
+                            .orElse(YesNo.NO);
+                break;
+            default:
+                wantsReasonableAdjustment = YesNo.NO;
         }
         return wantsReasonableAdjustment.equals(YesNo.YES);
+    }
+
+    public static Stream<Pair<String, YesNo>> buildOtherPartiesForReasonableAdjustment(OtherParty op) {
+        List<Pair<String, YesNo>> otherPartyReasonableAdjustmentList = new ArrayList<>();
+
+        if (op.hasAppointee() && null != op.getAppointeeReasonableAdjustment()) {
+            otherPartyReasonableAdjustmentList.add(Pair.of(op.getAppointee().getId(), op.getAppointeeReasonableAdjustment().getWantsReasonableAdjustment()));
+        }
+        if (null != op.getReasonableAdjustment()) {
+            otherPartyReasonableAdjustmentList.add(Pair.of(op.getId(), op.getReasonableAdjustment().getWantsReasonableAdjustment()));
+        }
+        if (op.hasRepresentative() && null != op.getRepReasonableAdjustment()) {
+            otherPartyReasonableAdjustmentList.add(Pair.of(op.getRep().getId(), op.getRepReasonableAdjustment().getWantsReasonableAdjustment()));
+        }
+        return otherPartyReasonableAdjustmentList.stream();
     }
 }
