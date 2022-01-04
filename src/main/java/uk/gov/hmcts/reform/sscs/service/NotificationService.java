@@ -3,6 +3,7 @@ package uk.gov.hmcts.reform.sscs.service;
 import static java.lang.String.format;
 import static java.util.Arrays.asList;
 import static java.util.Optional.ofNullable;
+import static org.apache.commons.collections4.ListUtils.emptyIfNull;
 import static uk.gov.hmcts.reform.sscs.ccd.domain.Benefit.getBenefitByCodeOrThrowException;
 import static uk.gov.hmcts.reform.sscs.ccd.domain.EventType.SUBSCRIPTION_UPDATED;
 import static uk.gov.hmcts.reform.sscs.config.SubscriptionType.*;
@@ -148,8 +149,8 @@ public class NotificationService {
 
     private void overrideNotificationType(NotificationWrapper wrapper) {
 
-        if (REISSUE_DOCUMENT.equals(wrapper.getNotificationType()) && null != wrapper.getNewSscsCaseData().getReissueFurtherEvidenceDocument()) {
-            String code = wrapper.getNewSscsCaseData().getReissueFurtherEvidenceDocument().getValue().getCode();
+        if (REISSUE_DOCUMENT.equals(wrapper.getNotificationType()) && null != wrapper.getNewSscsCaseData().getReissueArtifactUi().getReissueFurtherEvidenceDocument()) {
+            String code = wrapper.getNewSscsCaseData().getReissueArtifactUi().getReissueFurtherEvidenceDocument().getValue().getCode();
             if (code.equals(EventType.ISSUE_FINAL_DECISION.getCcdType())) {
                 wrapper.setNotificationType(ISSUE_FINAL_DECISION);
                 wrapper.setNotificationEventTypeOverridden(true);
@@ -185,15 +186,26 @@ public class NotificationService {
     private static boolean isSubscriptionValidToSendAfterOverride(NotificationWrapper wrapper, SubscriptionWithType subscriptionWithType) {
         if (wrapper.hasNotificationEventBeenOverridden()) {
             if ((APPELLANT.equals(subscriptionWithType.getSubscriptionType()) || APPOINTEE.equals(subscriptionWithType.getSubscriptionType()))
-                    && !"Yes".equalsIgnoreCase(wrapper.getNewSscsCaseData().getResendToAppellant())) {
+                    && !YesNo.YES.equals(wrapper.getNewSscsCaseData().getReissueArtifactUi().getResendToAppellant())) {
                 return false;
             }
             if (REPRESENTATIVE.equals(subscriptionWithType.getSubscriptionType())
-                    && !"Yes".equalsIgnoreCase(wrapper.getNewSscsCaseData().getResendToRepresentative())) {
+                    && !YesNo.YES.equals(wrapper.getNewSscsCaseData().getReissueArtifactUi().getResendToRepresentative())) {
+                return false;
+            }
+            if (OTHER_PARTY.equals(subscriptionWithType.getSubscriptionType()) && !isResendTo(subscriptionWithType.getPartyId(), wrapper.getNewSscsCaseData())) {
                 return false;
             }
         }
         return true;
+    }
+
+    private static boolean isResendTo(int partyId, SscsCaseData sscsCaseData) {
+        return partyId > 0
+                && emptyIfNull(sscsCaseData.getReissueArtifactUi().getOtherPartyOptions()).stream()
+                        .map(OtherPartyOption::getValue)
+                        .filter(otherPartyOptionDetails -> String.valueOf(partyId).equals(otherPartyOptionDetails.getOtherPartyOptionId()))
+                        .anyMatch(otherPartyOptionDetails -> YesNo.isYes(otherPartyOptionDetails.getResendToOtherParty()));
     }
 
     private void scrubEmailAndSmsIfSubscribedBefore(NotificationWrapper notificationWrapper, SubscriptionWithType subscriptionWithType) {
