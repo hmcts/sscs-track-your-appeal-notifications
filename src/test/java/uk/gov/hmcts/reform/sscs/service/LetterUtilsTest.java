@@ -1,5 +1,8 @@
 package uk.gov.hmcts.reform.sscs.service;
 
+import static java.util.Objects.requireNonNull;
+import static org.hamcrest.CoreMatchers.is;
+import static org.hamcrest.MatcherAssert.assertThat;
 import static org.junit.Assert.*;
 import static uk.gov.hmcts.reform.sscs.config.AppConstants.REP_SALUTATION;
 import static uk.gov.hmcts.reform.sscs.config.SubscriptionType.*;
@@ -11,23 +14,31 @@ import static uk.gov.hmcts.reform.sscs.service.SendNotificationServiceTest.REP_W
 
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Objects;
+import java.util.stream.Stream;
 import junitparams.JUnitParamsRunner;
 import junitparams.Parameters;
+import org.apache.commons.lang3.tuple.Pair;
 import org.apache.pdfbox.io.IOUtils;
 import org.apache.pdfbox.pdmodel.PDDocument;
 import org.apache.pdfbox.pdmodel.PDPage;
+import org.jetbrains.annotations.NotNull;
 import org.junit.Test;
 import org.junit.runner.RunWith;
-import uk.gov.hmcts.reform.sscs.ccd.domain.Address;
-import uk.gov.hmcts.reform.sscs.ccd.domain.JointPartyName;
-import uk.gov.hmcts.reform.sscs.ccd.domain.Name;
-import uk.gov.hmcts.reform.sscs.ccd.domain.Representative;
+import uk.gov.hmcts.reform.sscs.ccd.domain.*;
 import uk.gov.hmcts.reform.sscs.config.SubscriptionType;
+import uk.gov.hmcts.reform.sscs.domain.SscsCaseDataWrapper;
+import uk.gov.hmcts.reform.sscs.domain.SubscriptionWithType;
 import uk.gov.hmcts.reform.sscs.exception.NotificationClientRuntimeException;
+import uk.gov.hmcts.reform.sscs.factory.CcdNotificationWrapper;
 import uk.gov.hmcts.reform.sscs.factory.NotificationWrapper;
 
 @RunWith(JUnitParamsRunner.class)
 public class LetterUtilsTest {
+    private static final Subscription EMPTY_SUBSCRIPTION = Subscription.builder().build();
+
     @Test
     public void useAppellantAddressForLetter() {
         NotificationWrapper wrapper = NotificationServiceTest.buildBaseWrapper(
@@ -37,7 +48,12 @@ public class LetterUtilsTest {
             null
         );
 
-        assertEquals(APPELLANT_WITH_ADDRESS.getAddress(), getAddressToUseForLetter(wrapper, APPELLANT));
+        assertEquals(APPELLANT_WITH_ADDRESS.getAddress(), getAddressToUseForLetter(wrapper, getSubscriptionWithType(APPELLANT)));
+    }
+
+    @NotNull
+    private SubscriptionWithType getSubscriptionWithType(SubscriptionType subscriptionType) {
+        return new SubscriptionWithType(Subscription.builder().build(), subscriptionType);
     }
 
     @Test
@@ -49,7 +65,7 @@ public class LetterUtilsTest {
             null
         );
 
-        assertEquals(APPELLANT_WITH_ADDRESS_AND_APPOINTEE.getAppointee().getAddress(), getAddressToUseForLetter(wrapper, APPOINTEE));
+        assertEquals(APPELLANT_WITH_ADDRESS_AND_APPOINTEE.getAppointee().getAddress(), getAddressToUseForLetter(wrapper, getSubscriptionWithType(APPOINTEE)));
     }
 
     @Test
@@ -61,7 +77,7 @@ public class LetterUtilsTest {
             null
         );
 
-        assertEquals(REP_WITH_ADDRESS.getAddress(), getAddressToUseForLetter(wrapper, REPRESENTATIVE));
+        assertEquals(REP_WITH_ADDRESS.getAddress(), getAddressToUseForLetter(wrapper, getSubscriptionWithType(REPRESENTATIVE)));
     }
 
     @Test
@@ -73,7 +89,7 @@ public class LetterUtilsTest {
             null
         );
 
-        assertEquals(APPELLANT_WITH_ADDRESS.getName().getFullNameNoTitle(), getNameToUseForLetter(wrapper, APPELLANT));
+        assertEquals(APPELLANT_WITH_ADDRESS.getName().getFullNameNoTitle(), getNameToUseForLetter(wrapper, getSubscriptionWithType(APPELLANT)));
     }
 
     @Test
@@ -85,7 +101,7 @@ public class LetterUtilsTest {
             null
         );
 
-        assertEquals(APPELLANT_WITH_ADDRESS_AND_APPOINTEE.getAppointee().getName().getFullNameNoTitle(), getNameToUseForLetter(wrapper, APPOINTEE));
+        assertEquals(APPELLANT_WITH_ADDRESS_AND_APPOINTEE.getAppointee().getName().getFullNameNoTitle(), getNameToUseForLetter(wrapper, getSubscriptionWithType(APPOINTEE)));
     }
 
     @Test
@@ -98,8 +114,8 @@ public class LetterUtilsTest {
                 jointPartyAddress,
                 null
         );
-        assertEquals(jointPartyAddress, getAddressToUseForLetter(wrapper, JOINT_PARTY));
-        assertEquals("Joint Party", getNameToUseForLetter(wrapper, JOINT_PARTY));
+        assertEquals(jointPartyAddress, getAddressToUseForLetter(wrapper, getSubscriptionWithType(JOINT_PARTY)));
+        assertEquals("Joint Party", getNameToUseForLetter(wrapper, getSubscriptionWithType(JOINT_PARTY)));
     }
 
     @Test
@@ -112,8 +128,8 @@ public class LetterUtilsTest {
                 null
         );
         Address appellantAddress = wrapper.getNewSscsCaseData().getAppeal().getAppellant().getAddress();
-        assertEquals(appellantAddress, getAddressToUseForLetter(wrapper, JOINT_PARTY));
-        assertEquals("Betty Bloom", getNameToUseForLetter(wrapper, JOINT_PARTY));
+        assertEquals(appellantAddress, getAddressToUseForLetter(wrapper, getSubscriptionWithType(JOINT_PARTY)));
+        assertEquals("Betty Bloom", getNameToUseForLetter(wrapper, getSubscriptionWithType(JOINT_PARTY)));
     }
 
     @Test
@@ -131,7 +147,7 @@ public class LetterUtilsTest {
             null
         );
 
-        assertEquals(expectedResult, getNameToUseForLetter(wrapper, REPRESENTATIVE));
+        assertEquals(expectedResult, getNameToUseForLetter(wrapper, getSubscriptionWithType(REPRESENTATIVE)));
     }
 
     private Object[] repNamesForLetters() {
@@ -193,7 +209,161 @@ public class LetterUtilsTest {
     @Parameters({"APPELLANT", "JOINT_PARTY", "APPOINTEE", "REPRESENTATIVE"})
     public void isAlternativeLetterFormatRequired(SubscriptionType subscriptionType) {
         NotificationWrapper wrapper = NotificationServiceTest.buildBaseWrapperWithReasonableAdjustment();
-        assertTrue(LetterUtils.isAlternativeLetterFormatRequired(wrapper, subscriptionType));
+        assertTrue(LetterUtils.isAlternativeLetterFormatRequired(wrapper, new SubscriptionWithType(EMPTY_SUBSCRIPTION, subscriptionType)));
+    }
+
+    @Test
+    public void givenAnOtherParty_thenIsAlternativeLetterFormatRequired() {
+        List<CcdValue<OtherParty>> otherPartyList = new ArrayList<>();
+        CcdValue<OtherParty> ccdValue = CcdValue.<OtherParty>builder().value(OtherParty.builder()
+                .id("1")
+                .reasonableAdjustment(ReasonableAdjustmentDetails.builder().wantsReasonableAdjustment(YesNo.YES).build())
+                .build()).build();
+        otherPartyList.add(ccdValue);
+
+        SscsCaseData caseData = SscsCaseData.builder()
+                .otherParties(otherPartyList).build();
+        SscsCaseDataWrapper caseDataWrapper = SscsCaseDataWrapper.builder()
+                .newSscsCaseData(caseData)
+                .oldSscsCaseData(caseData)
+                .notificationEventType(APPEAL_RECEIVED_NOTIFICATION)
+                .build();
+        NotificationWrapper wrapper = new CcdNotificationWrapper(caseDataWrapper);
+        SubscriptionWithType subscriptionWithType = new SubscriptionWithType(EMPTY_SUBSCRIPTION, OTHER_PARTY);
+        subscriptionWithType.setPartyId(1);
+        assertTrue(LetterUtils.isAlternativeLetterFormatRequired(wrapper, subscriptionWithType));
+    }
+
+    @Test
+    public void givenAnOtherPartyWithAppointeeThatWantsReasonableAdjustment_thenIsAlternativeLetterFormatRequiredForAppointee() {
+        List<CcdValue<OtherParty>> otherPartyList = new ArrayList<>();
+        CcdValue<OtherParty> ccdValue = CcdValue.<OtherParty>builder().value(OtherParty.builder()
+                .id("1")
+                .appointee(Appointee.builder().id("2").build())
+                .isAppointee("Yes")
+                .reasonableAdjustment(ReasonableAdjustmentDetails.builder().wantsReasonableAdjustment(YesNo.NO).build())
+                .appointeeReasonableAdjustment(ReasonableAdjustmentDetails.builder().wantsReasonableAdjustment(YesNo.YES).build())
+                .build()).build();
+        otherPartyList.add(ccdValue);
+
+        SscsCaseData caseData = SscsCaseData.builder()
+                .otherParties(otherPartyList).build();
+        SscsCaseDataWrapper caseDataWrapper = SscsCaseDataWrapper.builder()
+                .newSscsCaseData(caseData)
+                .oldSscsCaseData(caseData)
+                .notificationEventType(APPEAL_RECEIVED_NOTIFICATION)
+                .build();
+        NotificationWrapper wrapper = new CcdNotificationWrapper(caseDataWrapper);
+        SubscriptionWithType subscriptionWithType = new SubscriptionWithType(EMPTY_SUBSCRIPTION, OTHER_PARTY);
+        subscriptionWithType.setPartyId(2);
+        assertTrue(LetterUtils.isAlternativeLetterFormatRequired(wrapper, subscriptionWithType));
+    }
+
+    @Test
+    public void givenAnOtherPartyWithRepThatWantsReasonableAdjustment_thenIsAlternativeLetterFormatRequiredForOtherPartyRep() {
+        List<CcdValue<OtherParty>> otherPartyList = new ArrayList<>();
+        CcdValue<OtherParty> ccdValue = CcdValue.<OtherParty>builder().value(OtherParty.builder()
+                .id("1")
+                .rep(Representative.builder().id("3").hasRepresentative("Yes").build())
+                .reasonableAdjustment(ReasonableAdjustmentDetails.builder().wantsReasonableAdjustment(YesNo.NO).build())
+                .repReasonableAdjustment(ReasonableAdjustmentDetails.builder().wantsReasonableAdjustment(YesNo.YES).build())
+                .build()).build();
+        otherPartyList.add(ccdValue);
+
+        SscsCaseData caseData = SscsCaseData.builder()
+                .otherParties(otherPartyList).build();
+        SscsCaseDataWrapper caseDataWrapper = SscsCaseDataWrapper.builder()
+                .newSscsCaseData(caseData)
+                .oldSscsCaseData(caseData)
+                .notificationEventType(APPEAL_RECEIVED_NOTIFICATION)
+                .build();
+        NotificationWrapper wrapper = new CcdNotificationWrapper(caseDataWrapper);
+        SubscriptionWithType subscriptionWithType = new SubscriptionWithType(EMPTY_SUBSCRIPTION, OTHER_PARTY);
+        subscriptionWithType.setPartyId(3);
+        assertTrue(LetterUtils.isAlternativeLetterFormatRequired(wrapper, subscriptionWithType));
+    }
+
+    @Test
+    public void givenAnOtherPartyWithReasonableAdjustmentAndSubscriptionIsSearchingForDifferentPartyId_thenNoAlternativeLetterFormatRequired() {
+        List<CcdValue<OtherParty>> otherPartyList = new ArrayList<>();
+        CcdValue<OtherParty> ccdValue = CcdValue.<OtherParty>builder().value(OtherParty.builder()
+                .id("1")
+                .reasonableAdjustment(ReasonableAdjustmentDetails.builder().wantsReasonableAdjustment(YesNo.YES).build())
+                .build()).build();
+        otherPartyList.add(ccdValue);
+
+        SscsCaseData caseData = SscsCaseData.builder()
+                .otherParties(otherPartyList).build();
+        SscsCaseDataWrapper caseDataWrapper = SscsCaseDataWrapper.builder()
+                .newSscsCaseData(caseData)
+                .oldSscsCaseData(caseData)
+                .notificationEventType(APPEAL_RECEIVED_NOTIFICATION)
+                .build();
+        NotificationWrapper wrapper = new CcdNotificationWrapper(caseDataWrapper);
+        SubscriptionWithType subscriptionWithType = new SubscriptionWithType(EMPTY_SUBSCRIPTION, OTHER_PARTY);
+        subscriptionWithType.setPartyId(2);
+        assertFalse(LetterUtils.isAlternativeLetterFormatRequired(wrapper, subscriptionWithType));
+    }
+
+    @Test
+    public void givenAnOtherPartyNoReasonableAdjustmentRequired_thenNoAlternativeLetterFormatRequired() {
+        List<CcdValue<OtherParty>> otherPartyList = new ArrayList<>();
+        CcdValue<OtherParty> ccdValue = CcdValue.<OtherParty>builder().value(OtherParty.builder()
+                .id("1")
+                .reasonableAdjustment(ReasonableAdjustmentDetails.builder().wantsReasonableAdjustment(YesNo.NO).build())
+                .build()).build();
+        otherPartyList.add(ccdValue);
+
+        SscsCaseData caseData = SscsCaseData.builder()
+                .otherParties(otherPartyList).build();
+        SscsCaseDataWrapper caseDataWrapper = SscsCaseDataWrapper.builder()
+                .newSscsCaseData(caseData)
+                .oldSscsCaseData(caseData)
+                .notificationEventType(APPEAL_RECEIVED_NOTIFICATION)
+                .build();
+        NotificationWrapper wrapper = new CcdNotificationWrapper(caseDataWrapper);
+        SubscriptionWithType subscriptionWithType = new SubscriptionWithType(EMPTY_SUBSCRIPTION, OTHER_PARTY);
+        subscriptionWithType.setPartyId(1);
+        assertFalse(LetterUtils.isAlternativeLetterFormatRequired(wrapper, subscriptionWithType));
+    }
+
+    @Test
+    @Parameters({"OTHER_PARTY, 4", "OTHER_PARTY, 3", "OTHER_PARTY, 2"})
+    public void useOtherPartyLetterNameAndAddress(SubscriptionType subscriptionType, int otherPartyId) {
+        NotificationWrapper wrapper = NotificationServiceTest.buildBaseWrapperOtherParty(SYA_APPEAL_CREATED_NOTIFICATION, Appellant.builder().build(), null);
+        final Address expectedAddress = getExpectedAddress(otherPartyId, wrapper);
+
+        assertThat(LetterUtils.getAddressToUseForLetter(wrapper,
+                new SubscriptionWithType(EMPTY_SUBSCRIPTION, subscriptionType, otherPartyId)), is(expectedAddress));
+
+        final String expectedName = getExpectedName(otherPartyId, wrapper);
+        assertThat(LetterUtils.getNameToUseForLetter(wrapper,
+                new SubscriptionWithType(EMPTY_SUBSCRIPTION, subscriptionType, otherPartyId)), is(expectedName));
+
+    }
+
+    private Address getExpectedAddress(final int otherPartyId, final NotificationWrapper wrapper) {
+        return requireNonNull(wrapper.getNewSscsCaseData().getOtherParties().stream()
+                .map(CcdValue::getValue)
+                .flatMap(op -> Stream.of((op.hasAppointee()) ? Pair.of(op.getAppointee().getId(), op.getAppointee().getAddress()) : Pair.of(op.getId(), op.getAddress()), (op.hasRepresentative()) ? Pair.of(op.getRep().getId(), op.getRep().getAddress()) : null))
+                .filter(Objects::nonNull)
+                .filter(p -> p.getRight() != null && p.getLeft() != null)
+                .filter(pair -> pair.getLeft().equals(String.valueOf(otherPartyId)))
+                .findFirst()
+                .map(Pair::getRight).orElse(null));
+    }
+
+    private String getExpectedName(final int otherPartyId, final NotificationWrapper wrapper) {
+        return requireNonNull(wrapper.getNewSscsCaseData().getOtherParties().stream()
+                .map(CcdValue::getValue)
+                .flatMap(op -> Stream.of((op.hasAppointee()) ? Pair.of(op.getAppointee().getId(), op.getAppointee().getName()) : Pair.of(op.getId(), op.getName()), (op.hasRepresentative()) ? Pair.of(op.getRep().getId(), op.getRep().getName()) : null))
+                .filter(Objects::nonNull)
+                .filter(p -> p.getRight() != null && p.getLeft() != null)
+                .filter(pair -> pair.getLeft().equals(String.valueOf(otherPartyId)))
+                .findFirst()
+                .map(Pair::getRight)
+                .map(Name::getFullNameNoTitle)
+                .orElse(""));
     }
 
 }

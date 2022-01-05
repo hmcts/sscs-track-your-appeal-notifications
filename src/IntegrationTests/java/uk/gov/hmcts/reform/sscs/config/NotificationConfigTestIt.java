@@ -8,6 +8,7 @@ import static uk.gov.hmcts.reform.sscs.config.AppealHearingType.PAPER;
 import static uk.gov.hmcts.reform.sscs.config.SubscriptionType.APPELLANT;
 import static uk.gov.hmcts.reform.sscs.config.SubscriptionType.APPOINTEE;
 import static uk.gov.hmcts.reform.sscs.config.SubscriptionType.JOINT_PARTY;
+import static uk.gov.hmcts.reform.sscs.config.SubscriptionType.OTHER_PARTY;
 import static uk.gov.hmcts.reform.sscs.config.SubscriptionType.REPRESENTATIVE;
 import static uk.gov.hmcts.reform.sscs.domain.notify.NotificationEventType.*;
 
@@ -227,6 +228,9 @@ public class NotificationConfigTestIt {
                 new Object[]{"974a452f-e5a5-4072-a326-87ad8b0793fb", Arrays.asList("7257266e-b02f-4091-a360-70e4b231124f", "5e5cfe8d-b893-4f87-817f-9d05d22d657a"), null, null, PAPER, getTemplateName(DWP_UPLOAD_RESPONSE_NOTIFICATION, APPOINTEE), null},
                 new Object[]{"0b7ccdac-0b8e-4f94-8829-77f3a2874485", Arrays.asList("cca7c565-c907-405f-b778-735b31947b85", "b2d187cd-089b-4fe1-b460-a310c0af46fe"), null, null, PAPER, getTemplateName(DWP_UPLOAD_RESPONSE_NOTIFICATION, REPRESENTATIVE), null},
                 new Object[]{"253e775f-8324-4242-9dee-7ff15d0b67fc", Arrays.asList("71f667c7-561e-4c06-befd-2a3246f10dcc", "15cd6837-e998-4bf9-a815-af3e98922d19"), null, null, PAPER, getTemplateName(DWP_UPLOAD_RESPONSE_NOTIFICATION, JOINT_PARTY), null},
+
+                new Object[]{"95351d56-4af3-4d54-9941-ab2987d66bf3", Arrays.asList("0f3f501a-8f7b-427a-af61-f2f4ca301a0b", "9fe3a4f1-b8e2-4aed-aafb-6360d6ba2874"), null, null, ORAL, getTemplateName(DWP_UPLOAD_RESPONSE_NOTIFICATION, OTHER_PARTY), null},
+                new Object[]{"95351d56-4af3-4d54-9941-ab2987d66bf3", Arrays.asList("0f3f501a-8f7b-427a-af61-f2f4ca301a0b", "9fe3a4f1-b8e2-4aed-aafb-6360d6ba2874"), null, null, ORAL, getTemplateName(DWP_UPLOAD_RESPONSE_NOTIFICATION, OTHER_PARTY), null},
 
                 new Object[]{"db9fd58c-f206-43d6-82d1-b6a9c0b359e9", Arrays.asList("40f2669c-4389-4ac9-82cf-e98a4a9dd0e2", "e7868511-3a1f-4b8e-8bb3-b36c2bd99799"), null, null, ORAL, getTemplateName(EVIDENCE_RECEIVED_NOTIFICATION, JOINT_PARTY), null},
                 new Object[]{"6e9cfdcc-b4b4-4d72-af40-f676d9be36c4", Arrays.asList("40f2669c-4389-4ac9-82cf-e98a4a9dd0e2", "e7868511-3a1f-4b8e-8bb3-b36c2bd99799"), null, null, PAPER, getTemplateName(EVIDENCE_RECEIVED_NOTIFICATION, JOINT_PARTY), null},
@@ -501,8 +505,10 @@ public class NotificationConfigTestIt {
                 new Object[]{null, Collections.EMPTY_LIST, null, "TB-SCS-GNO-ENG-00510.docx", PAPER, getTemplateName(ISSUE_ADJOURNMENT_NOTICE, JOINT_PARTY), null},
                 new Object[]{null, Collections.EMPTY_LIST, null, "TB-SCS-GNO-ENG-00512.docx", ORAL, getTemplateName(ISSUE_ADJOURNMENT_NOTICE, REPRESENTATIVE), null},
                 new Object[]{null, Collections.EMPTY_LIST, null, "TB-SCS-GNO-ENG-00510.docx", ORAL, getTemplateName(ISSUE_ADJOURNMENT_NOTICE, APPOINTEE), null},
-                new Object[]{"b8b2904f-629d-42cf-acea-1b74bde5b2ff", Arrays.asList("7397a76f-14cb-468c-b1a7-0570940ead91"), null, null, ORAL, getTemplateName(SUBSCRIPTION_UPDATED_NOTIFICATION), null}
-
+                new Object[]{null, Collections.EMPTY_LIST, null, "TB-SCS-GNO-ENG-00784.docx", PAPER, getTemplateName(UPDATE_OTHER_PARTY_DATA, OTHER_PARTY), null},
+                new Object[]{null, Collections.EMPTY_LIST, null, "TB-SCS-GNO-ENG-00784.docx", ORAL, getTemplateName(UPDATE_OTHER_PARTY_DATA, OTHER_PARTY), null},
+                new Object[]{"b8b2904f-629d-42cf-acea-1b74bde5b2ff", Arrays.asList("7397a76f-14cb-468c-b1a7-0570940ead91"), null, null, ORAL, getTemplateName(SUBSCRIPTION_UPDATED_NOTIFICATION), null},
+                new Object[]{"0d844af4-b390-42d7-94d5-4fd1ae9388d9", Arrays.asList("9fe3a4f1-b8e2-4aed-aafb-6360d6ba2874"), null, null, ORAL, getTemplateName(DWP_UPLOAD_RESPONSE_NOTIFICATION, OTHER_PARTY), null}
         };
     }
 
@@ -533,7 +539,7 @@ public class NotificationConfigTestIt {
     }
 
     private String getTemplateName(NotificationEventType notificationEventType, SubscriptionType subscriptionType) {
-        return notificationEventType.getId() + "." + subscriptionType.name().toLowerCase();
+        return notificationEventType.getId() + "." + lowerCase(subscriptionType.name());
     }
 
     private String getTemplateName(NotificationEventType notificationEventType) {

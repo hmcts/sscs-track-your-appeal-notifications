@@ -193,6 +193,58 @@ public class CcdNotificationWrapperTest {
         );
     }
 
+    private CcdNotificationWrapper buildNotificationWrapperWithOtherParty(NotificationEventType notificationEventType, List<CcdValue<OtherParty>> otherParties) {
+        Appointee appointee = Appointee.builder()
+                .name(Name.builder().firstName("Ap").lastName("Pointee").build())
+                .address(Address.builder().line1("Appointee Line 1").town("Appointee Town").county("Appointee County").postcode("AP9 0IN").build())
+                .build();
+        return new CcdNotificationWrapper(
+                SscsCaseDataWrapper.builder()
+                        .newSscsCaseData(SscsCaseData.builder().otherParties(otherParties)
+                                .appeal(Appeal.builder()
+                                        .hearingType("Oral")
+                                        .appellant(Appellant.builder().appointee(appointee).build())
+                                        .build())
+                                .subscriptions(Subscriptions.builder()
+                                        .appellantSubscription(
+                                                Subscription.builder()
+                                                        .email("appellant@test.com")
+                                                        .subscribeEmail("Yes")
+                                                        .build()
+                                        )
+                                        .build())
+                                .build())
+                        .notificationEventType(notificationEventType)
+                        .build());
+
+    }
+
+    private List<CcdValue<OtherParty>> buildOtherPartyData(boolean sendNewOtherPartyNotification, boolean hasAppointee, boolean hasRep) {
+        return List.of(CcdValue.<OtherParty>builder()
+                .value(OtherParty.builder()
+                        .id("1")
+                        .otherPartySubscription(Subscription.builder().email("other@party").subscribeEmail("Yes").build())
+                        .sendNewOtherPartyNotification(sendNewOtherPartyNotification ? YesNo.YES : null)
+                        .isAppointee(hasAppointee ? YesNo.YES.getValue() : YesNo.NO.getValue())
+                        .appointee(Appointee.builder()
+                                .id("2")
+                                .name(Name.builder()
+                                        .firstName("First")
+                                        .lastName("Last")
+                                        .build())
+                                .build())
+                        .rep(Representative.builder()
+                                .id("3")
+                                .hasRepresentative(hasRep ? YesNo.YES.getValue() : YesNo.NO.getValue())
+                                .name(Name.builder()
+                                        .firstName("First")
+                                        .lastName("Last")
+                                        .build())
+                                .build())
+                        .build())
+                .build());
+    }
+
     @Test
     @Parameters({"APPEAL_LAPSED_NOTIFICATION","HMCTS_APPEAL_LAPSED_NOTIFICATION","DWP_APPEAL_LAPSED_NOTIFICATION","APPEAL_WITHDRAWN_NOTIFICATION","EVIDENCE_RECEIVED_NOTIFICATION",
             "POSTPONEMENT_NOTIFICATION","HEARING_BOOKED_NOTIFICATION","SYA_APPEAL_CREATED_NOTIFICATION","VALID_APPEAL_CREATED",
@@ -369,6 +421,58 @@ public class CcdNotificationWrapperTest {
         Assert.assertTrue(subsWithTypeList.isEmpty());
     }
 
+    @Test
+    public void givenNoOtherPartyInTheCase_thenReturnEmptySubscription() {
+        ccdNotificationWrapper = buildNotificationWrapperWithOtherParty(UPDATE_OTHER_PARTY_DATA, null);
+        List<SubscriptionWithType> subsWithTypeList = ccdNotificationWrapper.getOtherPartySubscriptions();
+        Assert.assertTrue(subsWithTypeList.isEmpty());
+    }
+
+    @Test
+    public void givenUpdateOtherPartyDataEventAndSendNotificationFlagIsNotSetInOtherParty_thenReturnEmptySubscription() {
+        ccdNotificationWrapper = buildNotificationWrapperWithOtherParty(UPDATE_OTHER_PARTY_DATA, buildOtherPartyData(false, true, true));
+        List<SubscriptionWithType> subsWithTypeList = ccdNotificationWrapper.getOtherPartySubscriptions();
+        Assert.assertTrue(subsWithTypeList.isEmpty());
+    }
+
+    @Test
+    public void givenUpdateOtherPartyDataEventAndSendNotificationFlagIsSetInOtherPartyWithAppointee_thenReturnAllOtherPartySubscription() {
+        ccdNotificationWrapper = buildNotificationWrapperWithOtherParty(UPDATE_OTHER_PARTY_DATA, buildOtherPartyData(true, true, true));
+        List<SubscriptionWithType> subsWithTypeList = ccdNotificationWrapper.getOtherPartySubscriptions();
+        Assert.assertEquals(2, subsWithTypeList.size());
+        Assert.assertEquals(2, subsWithTypeList.get(0).getPartyId());
+        Assert.assertEquals(3, subsWithTypeList.get(1).getPartyId());
+    }
+
+    @Test
+    public void givenUpdateOtherPartyDataEventAndSendNotificationFlagIsSetInOtherPartyWithNoAppointee_thenReturnAllOtherPartySubscription() {
+
+        ccdNotificationWrapper = buildNotificationWrapperWithOtherParty(UPDATE_OTHER_PARTY_DATA, buildOtherPartyData(true, false, true));
+        List<SubscriptionWithType> subsWithTypeList = ccdNotificationWrapper.getOtherPartySubscriptions();
+        Assert.assertEquals(2, subsWithTypeList.size());
+        Assert.assertEquals(1, subsWithTypeList.get(0).getPartyId());
+        Assert.assertEquals(3, subsWithTypeList.get(1).getPartyId());
+    }
+
+    @Test
+    @Parameters({"DWP_UPLOAD_RESPONSE_NOTIFICATION", "ADJOURNED_NOTIFICATION", "POSTPONEMENT_NOTIFICATION","APPEAL_LAPSED_NOTIFICATION",
+            "DWP_APPEAL_LAPSED_NOTIFICATION", "HMCTS_APPEAL_LAPSED_NOTIFICATION", "APPEAL_WITHDRAWN_NOTIFICATION", "ADMIN_APPEAL_WITHDRAWN",
+            "SUBSCRIPTION_CREATED_NOTIFICATION", "SUBSCRIPTION_UPDATED_NOTIFICATION", "SUBSCRIPTION_OLD_NOTIFICATION", "HEARING_BOOKED_NOTIFICATION",
+            "HEARING_REMINDER_NOTIFICATION", "DWP_RESPONSE_RECEIVED_NOTIFICATION", "APPEAL_DORMANT_NOTIFICATION", "EVIDENCE_REMINDER_NOTIFICATION",
+            "EVIDENCE_RECEIVED_NOTIFICATION", "STRUCK_OUT", "PROCESS_AUDIO_VIDEO", "DIRECTION_ISSUED", "DECISION_ISSUED",
+            "ADJOURNED_NOTIFICATION", "ISSUE_ADJOURNMENT_NOTICE", "REQUEST_INFO_INCOMPLETE", "NON_COMPLIANT_NOTIFICATION", "ISSUE_FINAL_DECISION",
+            "PROCESS_AUDIO_VIDEO_WELSH", "DIRECTION_ISSUED_WELSH", "ISSUE_FINAL_DECISION_WELSH", "DECISION_ISSUED_WELSH",
+            "ISSUE_ADJOURNMENT_NOTICE_WELSH"})
+    public void givenNotificationForOtherParty_thenReturnAllOtherPartySubscription(NotificationEventType notificationEventType) {
+        ccdNotificationWrapper = buildNotificationWrapperWithOtherParty(notificationEventType, buildOtherPartyData(false, false, false));
+
+        ccdNotificationWrapper.getNewSscsCaseData().setInformationFromPartySelected(new DynamicList(new DynamicListItem(PartyItemList.APPELLANT.getCode(), PartyItemList.APPELLANT.getLabel()), new ArrayList<>()));
+
+        List<SubscriptionWithType> subsWithTypeList = ccdNotificationWrapper.getSubscriptionsBasedOnNotificationType();
+        Assert.assertEquals(2, subsWithTypeList.size());
+        Assert.assertEquals(1, subsWithTypeList.get(1).getPartyId());
+    }
+
     @SuppressWarnings({"unused"})
     private Object[] getEventTypeFilteredWithAppellant() {
         return Arrays.stream(values())
@@ -389,6 +493,7 @@ public class CcdNotificationWrapperTest {
                 || type.equals(NON_COMPLIANT_NOTIFICATION)
                 || type.equals(REVIEW_CONFIDENTIALITY_REQUEST)
                 || type.equals(ACTION_HEARING_RECORDING_REQUEST)
+                || type.equals(UPDATE_OTHER_PARTY_DATA)
             )).toArray();
     }
 

@@ -1,23 +1,28 @@
 package uk.gov.hmcts.reform.sscs.service;
 
 import static java.lang.String.format;
+import static org.apache.commons.collections4.CollectionUtils.isNotEmpty;
+import static org.apache.commons.collections4.ListUtils.emptyIfNull;
 import static org.apache.commons.lang3.StringUtils.equalsIgnoreCase;
-import static uk.gov.hmcts.reform.sscs.config.SubscriptionType.JOINT_PARTY;
-import static uk.gov.hmcts.reform.sscs.config.SubscriptionType.REPRESENTATIVE;
+import static uk.gov.hmcts.reform.sscs.config.SubscriptionType.*;
 import static uk.gov.hmcts.reform.sscs.service.NotificationUtils.hasAppointee;
 
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Objects;
+import java.util.Optional;
+import java.util.stream.Stream;
 import org.apache.commons.lang3.ArrayUtils;
+import org.apache.commons.lang3.tuple.Pair;
 import org.apache.pdfbox.multipdf.PDFMergerUtility;
 import org.apache.pdfbox.pdmodel.PDDocument;
 import org.apache.pdfbox.pdmodel.PDPage;
 import org.apache.pdfbox.pdmodel.PDPageContentStream;
 import org.apache.pdfbox.pdmodel.common.PDRectangle;
-import uk.gov.hmcts.reform.sscs.ccd.domain.Address;
-import uk.gov.hmcts.reform.sscs.ccd.domain.ReasonableAdjustments;
-import uk.gov.hmcts.reform.sscs.ccd.domain.YesNo;
-import uk.gov.hmcts.reform.sscs.config.SubscriptionType;
+import uk.gov.hmcts.reform.sscs.ccd.domain.*;
+import uk.gov.hmcts.reform.sscs.domain.SubscriptionWithType;
 import uk.gov.hmcts.reform.sscs.exception.NotificationClientRuntimeException;
 import uk.gov.hmcts.reform.sscs.factory.NotificationWrapper;
 
@@ -27,15 +32,17 @@ public class LetterUtils {
         // Hiding utility class constructor
     }
 
-    public static Address getAddressToUseForLetter(NotificationWrapper wrapper, SubscriptionType subscriptionType) {
-        if (REPRESENTATIVE.equals(subscriptionType)) {
+    public static Address getAddressToUseForLetter(NotificationWrapper wrapper, SubscriptionWithType subscriptionWithType) {
+        if (REPRESENTATIVE.equals(subscriptionWithType.getSubscriptionType())) {
             return wrapper.getNewSscsCaseData().getAppeal().getRep().getAddress();
-        } else if (JOINT_PARTY.equals(subscriptionType)) {
+        } else if (JOINT_PARTY.equals(subscriptionWithType.getSubscriptionType())) {
             if (equalsIgnoreCase("yes",
                     wrapper.getNewSscsCaseData().getJointPartyAddressSameAsAppellant())) {
                 return wrapper.getNewSscsCaseData().getAppeal().getAppellant().getAddress();
             }
             return wrapper.getNewSscsCaseData().getJointPartyAddress();
+        } else if (OTHER_PARTY.equals(subscriptionWithType.getSubscriptionType())) {
+            return getAddressForOtherParty(wrapper.getNewSscsCaseData(), subscriptionWithType.getPartyId());
         } else {
             if (hasAppointee(wrapper.getSscsCaseDataWrapper())) {
                 return wrapper.getNewSscsCaseData().getAppeal().getAppellant().getAppointee().getAddress();
@@ -45,12 +52,38 @@ public class LetterUtils {
         }
     }
 
-    public static String getNameToUseForLetter(NotificationWrapper wrapper, SubscriptionType subscriptionType) {
-        if (REPRESENTATIVE.equals(subscriptionType)) {
+    private static Address getAddressForOtherParty(final SscsCaseData sscsCaseData, final int partyId) {
+        return emptyIfNull(sscsCaseData.getOtherParties()).stream()
+                .map(CcdValue::getValue)
+                .flatMap(op -> Stream.of((op.hasAppointee()) ? Pair.of(op.getAppointee().getId(), op.getAppointee().getAddress()) : Pair.of(op.getId(), op.getAddress()), (op.hasRepresentative()) ? Pair.of(op.getRep().getId(), op.getRep().getAddress()) : null))
+                .filter(Objects::nonNull)
+                .filter(p -> p.getLeft() != null && p.getRight() != null)
+                .filter(p -> p.getLeft().equals(String.valueOf(partyId)))
+                .map(Pair::getRight)
+                .findFirst()
+                .orElse(null);
+    }
+
+    public static Optional<Name> getNameForOtherParty(SscsCaseData sscsCaseData, final int partyId) {
+        return emptyIfNull(sscsCaseData.getOtherParties()).stream()
+                .map(CcdValue::getValue)
+                .flatMap(op -> Stream.of((op.hasAppointee()) ? Pair.of(op.getAppointee().getId(), op.getAppointee().getName()) : Pair.of(op.getId(), op.getName()), (op.hasRepresentative()) ? Pair.of(op.getRep().getId(), op.getRep().getName()) : null))
+                .filter(Objects::nonNull)
+                .filter(p -> p.getLeft() != null && p.getRight() != null)
+                .filter(p -> p.getLeft().equals(String.valueOf(partyId)))
+                .map(Pair::getRight)
+                .findFirst();
+    }
+
+    public static String getNameToUseForLetter(NotificationWrapper wrapper, SubscriptionWithType subscriptionWithType) {
+        if (REPRESENTATIVE.equals(subscriptionWithType.getSubscriptionType())) {
             return SendNotificationHelper.getRepSalutation(wrapper.getNewSscsCaseData().getAppeal().getRep(), false);
-        } else if (JOINT_PARTY.equals(subscriptionType)) {
+        } else if (JOINT_PARTY.equals(subscriptionWithType.getSubscriptionType())) {
             return format("%s %s",wrapper.getNewSscsCaseData().getJointPartyName().getFirstName(), wrapper.getNewSscsCaseData().getJointPartyName().getLastName());
         } else {
+            if (subscriptionWithType.getPartyId() > 0 && isNotEmpty(wrapper.getNewSscsCaseData().getOtherParties())) {
+                return getNameForOtherParty(wrapper.getNewSscsCaseData(), subscriptionWithType.getPartyId()).map(Name::getFullNameNoTitle).orElse("");
+            }
             if (hasAppointee(wrapper.getSscsCaseDataWrapper())) {
                 return wrapper.getNewSscsCaseData().getAppeal().getAppellant().getAppointee().getName().getFullNameNoTitle();
             } else {
@@ -100,28 +133,60 @@ public class LetterUtils {
         }
     }
 
-    public static boolean isAlternativeLetterFormatRequired(NotificationWrapper wrapper, SubscriptionType subscriptionType) {
+    public static boolean isAlternativeLetterFormatRequired(NotificationWrapper wrapper, SubscriptionWithType subscriptionWithType) {
         YesNo wantsReasonableAdjustment = YesNo.NO;
         ReasonableAdjustments resAdj = wrapper.getNewSscsCaseData().getReasonableAdjustments();
 
-        if (resAdj != null) {
-            switch (subscriptionType) {
-                case APPELLANT:
+        switch (subscriptionWithType.getSubscriptionType()) {
+            case APPELLANT:
+                if (resAdj != null) {
                     wantsReasonableAdjustment = resAdj.getAppellant() != null && resAdj.getAppellant().getWantsReasonableAdjustment() != null ? resAdj.getAppellant().getWantsReasonableAdjustment() : YesNo.NO;
-                    break;
-                case JOINT_PARTY:
+                }
+                break;
+            case JOINT_PARTY:
+                if (resAdj != null) {
                     wantsReasonableAdjustment = resAdj.getJointParty() != null && resAdj.getJointParty().getWantsReasonableAdjustment() != null ? resAdj.getJointParty().getWantsReasonableAdjustment() : YesNo.NO;
-                    break;
-                case APPOINTEE:
+                }
+                break;
+            case APPOINTEE:
+                if (resAdj != null) {
                     wantsReasonableAdjustment = resAdj.getAppointee() != null && resAdj.getAppointee().getWantsReasonableAdjustment() != null ? resAdj.getAppointee().getWantsReasonableAdjustment() : YesNo.NO;
-                    break;
-                case REPRESENTATIVE:
+                }
+                break;
+            case REPRESENTATIVE:
+                if (resAdj != null) {
                     wantsReasonableAdjustment = resAdj.getRepresentative() != null && resAdj.getRepresentative().getWantsReasonableAdjustment() != null ? resAdj.getRepresentative().getWantsReasonableAdjustment() : YesNo.NO;
-                    break;
-                default:
-                    wantsReasonableAdjustment = YesNo.NO;
-            }
+                }
+                break;
+            case OTHER_PARTY:
+                wantsReasonableAdjustment = emptyIfNull(wrapper.getNewSscsCaseData().getOtherParties()).stream()
+                            .map(CcdValue::getValue)
+                            .flatMap(LetterUtils::buildOtherPartiesForReasonableAdjustment)
+                            .filter(Objects::nonNull)
+                            .filter(p -> p.getLeft() != null && p.getRight() != null)
+                            .filter(p -> p.getLeft().equals(String.valueOf(subscriptionWithType.getPartyId())))
+                            .map(Pair::getRight)
+                            .findFirst()
+                            .orElse(YesNo.NO);
+                break;
+            default:
+                wantsReasonableAdjustment = YesNo.NO;
         }
         return wantsReasonableAdjustment.equals(YesNo.YES);
+    }
+
+    public static Stream<Pair<String, YesNo>> buildOtherPartiesForReasonableAdjustment(OtherParty op) {
+        List<Pair<String, YesNo>> otherPartyReasonableAdjustmentList = new ArrayList<>();
+
+        if (op.hasAppointee() && null != op.getAppointeeReasonableAdjustment()) {
+            otherPartyReasonableAdjustmentList.add(Pair.of(op.getAppointee().getId(), op.getAppointeeReasonableAdjustment().getWantsReasonableAdjustment()));
+        }
+        if (null != op.getReasonableAdjustment()) {
+            otherPartyReasonableAdjustmentList.add(Pair.of(op.getId(), op.getReasonableAdjustment().getWantsReasonableAdjustment()));
+        }
+        if (op.hasRepresentative() && null != op.getRepReasonableAdjustment()) {
+            otherPartyReasonableAdjustmentList.add(Pair.of(op.getRep().getId(), op.getRepReasonableAdjustment().getWantsReasonableAdjustment()));
+        }
+        return otherPartyReasonableAdjustmentList.stream();
     }
 }

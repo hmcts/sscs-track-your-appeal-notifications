@@ -4,6 +4,7 @@ import static org.junit.Assert.assertNotNull;
 import static org.mockito.ArgumentMatchers.*;
 import static org.mockito.Mockito.*;
 import static uk.gov.hmcts.reform.sscs.ccd.domain.EventType.APPEAL_RECEIVED;
+import static uk.gov.hmcts.reform.sscs.ccd.domain.EventType.UPDATE_OTHER_PARTY_DATA;
 
 import java.io.IOException;
 import java.util.ArrayList;
@@ -24,6 +25,7 @@ import uk.gov.hmcts.reform.sscs.config.DocmosisTemplatesConfig;
 import uk.gov.hmcts.reform.sscs.config.SubscriptionType;
 import uk.gov.hmcts.reform.sscs.config.properties.EvidenceProperties;
 import uk.gov.hmcts.reform.sscs.domain.SscsCaseDataWrapper;
+import uk.gov.hmcts.reform.sscs.domain.SubscriptionWithType;
 import uk.gov.hmcts.reform.sscs.domain.docmosis.PdfCoverSheet;
 import uk.gov.hmcts.reform.sscs.domain.notify.NotificationEventType;
 import uk.gov.hmcts.reform.sscs.factory.CcdNotificationWrapper;
@@ -39,6 +41,7 @@ public class PdfLetterServiceIt {
     private static final String CASE_ID = "1000001";
     private static final String DATE = "2018-01-01T14:01:18.243";
     private static final String YES = "Yes";
+    private static final Subscription EMPTY_SUBSCRIPTION = Subscription.builder().build();
 
     @Autowired
     private PdfLetterService pdfLetterService;
@@ -64,7 +67,7 @@ public class PdfLetterServiceIt {
                 .notificationEventType(NotificationEventType.APPEAL_RECEIVED_NOTIFICATION)
                 .build();
         NotificationWrapper wrapper = new CcdNotificationWrapper(dataWrapper);
-        byte[] bytes = pdfLetterService.buildCoversheet(wrapper, SubscriptionType.APPELLANT);
+        byte[] bytes = pdfLetterService.buildCoversheet(wrapper, new SubscriptionWithType(EMPTY_SUBSCRIPTION, SubscriptionType.APPELLANT));
         assertNotNull(bytes);
         PdfCoverSheet pdfCoverSheet = new PdfCoverSheet(
                 wrapper.getCaseId(),
@@ -86,6 +89,39 @@ public class PdfLetterServiceIt {
     }
 
     @Test
+    public void canGenerateACoversheetOnUpdateOtherPartyData() throws IOException {
+        byte[] pdfbytes = IOUtils.toByteArray(getClass().getClassLoader().getResourceAsStream(
+                "pdfs/direction-notice-coversheet-sample.pdf"));
+        when(docmosisPdfService.createPdf(any(Object.class), anyString())).thenReturn(pdfbytes);
+        SscsCaseData sscsCaseData = getSscsCaseData();
+        SscsCaseDataWrapper dataWrapper = SscsCaseDataWrapper.builder()
+                .newSscsCaseData(sscsCaseData)
+                .oldSscsCaseData(sscsCaseData)
+                .notificationEventType(NotificationEventType.UPDATE_OTHER_PARTY_DATA)
+                .build();
+        NotificationWrapper wrapper = new CcdNotificationWrapper(dataWrapper);
+        byte[] bytes = pdfLetterService.buildCoversheet(wrapper, new SubscriptionWithType(EMPTY_SUBSCRIPTION, SubscriptionType.OTHER_PARTY, 1));
+        assertNotNull(bytes);
+        PdfCoverSheet pdfCoverSheet = new PdfCoverSheet(
+                wrapper.getCaseId(),
+                wrapper.getNewSscsCaseData().getOtherParties().get(0).getValue().getName().getFullNameNoTitle(),
+                wrapper.getNewSscsCaseData().getOtherParties().get(0).getValue().getAddress().getLine1(),
+                wrapper.getNewSscsCaseData().getOtherParties().get(0).getValue().getAddress().getLine2(),
+                wrapper.getNewSscsCaseData().getOtherParties().get(0).getValue().getAddress().getTown(),
+                wrapper.getNewSscsCaseData().getOtherParties().get(0).getValue().getAddress().getCounty(),
+                wrapper.getNewSscsCaseData().getOtherParties().get(0).getValue().getAddress().getPostcode(),
+                evidenceProperties.getAddress().getLine2(),
+                evidenceProperties.getAddress().getLine3(),
+                evidenceProperties.getAddress().getTown(),
+                evidenceProperties.getAddress().getPostcode(),
+                docmosisTemplatesConfig.getHmctsImgVal(),
+                docmosisTemplatesConfig.getHmctsWelshImgVal());
+
+        verify(docmosisPdfService).createPdf(eq(pdfCoverSheet), eq(docmosisTemplatesConfig.getCoversheets()
+                .get(LanguagePreference.ENGLISH).get(UPDATE_OTHER_PARTY_DATA.getType())));
+    }
+
+    @Test
     public void willNotGenerateACoversheetOnAppealDormant() {
 
         SscsCaseData sscsCaseData = getSscsCaseData();
@@ -95,7 +131,7 @@ public class PdfLetterServiceIt {
                 .notificationEventType(NotificationEventType.APPEAL_DORMANT_NOTIFICATION)
                 .build();
         NotificationWrapper wrapper = new CcdNotificationWrapper(dataWrapper);
-        pdfLetterService.buildCoversheet(wrapper, SubscriptionType.APPELLANT);
+        pdfLetterService.buildCoversheet(wrapper, new SubscriptionWithType(EMPTY_SUBSCRIPTION, SubscriptionType.APPELLANT));
         verifyNoInteractions(docmosisPdfService);
     }
 
@@ -124,6 +160,14 @@ public class PdfLetterServiceIt {
                                 .wantsToAttend(YES)
                                 .build())
                         .build())
+                .otherParties(List.of(CcdValue.<OtherParty>builder()
+                                .value(OtherParty.builder()
+                                        .id("1")
+                                        .sendNewOtherPartyNotification(YesNo.YES)
+                                        .name(Name.builder().firstName("Other").lastName("Party").build())
+                                        .address(Address.builder().line1("122 Breach Street").line2("The Village").town("My town").county("Cardiff").postcode("CF11 2HB").build())
+                                        .build())
+                        .build()))
                 .build();
     }
 
