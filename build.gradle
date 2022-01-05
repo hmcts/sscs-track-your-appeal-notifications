@@ -113,7 +113,7 @@ dependencyManagement {
         // Solves CVE-2019-10086
         dependency group: 'commons-beanutils', name: 'commons-beanutils', version: '1.9.4'
 
-        dependency group: 'org.apache.logging.log4j', name: 'log4j-api', version: '2.15.0'
+        dependency group: 'org.apache.logging.log4j', name: 'log4j-api', version: '2.17.1'
         dependency group: 'org.apache.logging.log4j', name: 'log4j-to-slf4j', version: '2.15.0'
 
         // resolves: CVE-2020-9489
@@ -128,7 +128,7 @@ dependencyManagement {
         }
 
         // CVE-2020-13954
-        dependencySet(group: 'org.apache.cxf', version: '3.4.5') {
+        dependencySet(group: 'org.apache.cxf', version: '3.5.0') {
             entry 'cxf-core'
             entry 'cxf-rt-frontend-jaxrs'
             entry 'cxf-rt-rs-client'
@@ -405,7 +405,7 @@ dependencies {
     testCompile(group: 'org.springframework.boot', name: 'spring-boot-starter-test', version: '2.6.2') {
         exclude group: "com.vaadin.external.google", module:"android-json"
     }
-    testCompile group: 'org.mockito', name: 'mockito-core', version: '4.0.0'
+    testCompile group: 'org.mockito', name: 'mockito-core', version: '4.2.0'
     testCompile 'pl.pragmatists:JUnitParams:1.1.1'
     testCompile 'com.github.hmcts:fortify-client:1.2.1:all'
 
