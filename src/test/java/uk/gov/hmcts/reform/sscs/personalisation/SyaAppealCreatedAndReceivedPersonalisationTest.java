@@ -599,6 +599,46 @@ public class SyaAppealCreatedAndReceivedPersonalisationTest extends Personalisat
     }
 
     @Test
+    public void givenAnAppealWithOtherPartyWithEmptyNameAndEmptyAddress_setOtherPartiesDetailsForTemplate() {
+        List<CcdValue<OtherParty>> otherPartyList = new ArrayList<>();
+        CcdValue<OtherParty> ccdValue = CcdValue.<OtherParty>builder().value(OtherParty.builder()
+                .name(null)
+                .address(null)
+                .build()).build();
+        otherPartyList.add(ccdValue);
+
+        response = SscsCaseData.builder()
+                .ccdCaseId(CASE_ID).caseReference("SC/1234/5")
+                .appeal(Appeal.builder()
+                        .appellant(Appellant.builder()
+                                .name(name)
+                                .address(Address.builder().line1("122 Breach Street").line2("The Village").town("My town").county("Cardiff").postcode("CF11 2HB").build())
+                                .contact(Contact.builder().build())
+                                .identity(Identity.builder().nino("NP 27 28 67 B").dob("12 March 1971").build()).build())
+                        .rep(Representative.builder().hasRepresentative(YES)
+                                .name(Name.builder().firstName("Peter").lastName("Smith").build())
+                                .organisation("Citizens Advice")
+                                .address(Address.builder().line1("Ground Floor").line2("Gazette Buildings").town("168 Corporation Street").county("Cardiff").postcode("CF11 6TF").build())
+                                .contact(Contact.builder().email("peter.smith@cab.org.uk").phone("03444 77 1010").build())
+                                .build())
+                        .hearingOptions(HearingOptions.builder().arrangements(new ArrayList<>()).build()).build())
+                .otherParties(otherPartyList)
+                .childMaintenanceNumber("123456")
+                .build();
+
+        Map<String, String> result = syaAppealCreatedAndReceivedPersonalisation.create(SscsCaseDataWrapper.builder().newSscsCaseData(response)
+                .notificationEventType(APPEAL_RECEIVED_NOTIFICATION).build(), new SubscriptionWithType(subscriptions.getRepresentativeSubscription(), REPRESENTATIVE));
+
+        assertEquals("Yes", result.get(AppConstants.SHOW_OTHER_PARTY_DETAILS));
+
+        assertEquals("Name: Not provided\n"
+                        + "\nAddress: Not provided\n\n",
+                result.get(AppConstants.OTHER_PARTY_DETAILS));
+        assertNull(result.get(AppConstants.WELSH_OTHER_PARTY_DETAILS));
+        assertTrue(result.get(AppConstants.YOUR_DETAILS_LITERAL).contains("Child maintenance number: 123456"));
+    }
+
+    @Test
     public void givenAnAppealWithRepresentative_setRepresentativeDetailsForTemplate_Welsh() {
         response = SscsCaseData.builder()
             .ccdCaseId(CASE_ID).caseReference("SC/1234/5")
