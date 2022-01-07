@@ -1087,6 +1087,9 @@ notification:
         docmosisId: TB-SCS-GNO-WEL-00774.docx
       appointee:
         docmosisId: TB-SCS-GNO-WEL-00774.docx
+    updateOtherPartyData:
+      other_party:
+        docmosisId: TB-SCS-GNO-WEL-00787.docx
     paper:
       responseReceived:
         appellant:
@@ -1331,6 +1334,7 @@ pdf-service:
       resendAppealCreated: 'TB-SCS-GNO-WEL-00479.docx'
       requestInfoIncompleteApplication: 'TB-SCS-GNO-WEL-00479.docx'
       struckOut: 'TB-SCS-GNO-WEL-00479.docx'
+      updateOtherPartyData: 'TB-SCS-GNO-WEL-00479.docx'
 
 docmosis:
   accessKey:
