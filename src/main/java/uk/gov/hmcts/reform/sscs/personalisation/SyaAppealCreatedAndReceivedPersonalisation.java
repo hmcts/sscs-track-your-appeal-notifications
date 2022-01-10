@@ -15,21 +15,7 @@ import java.util.function.UnaryOperator;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
-import uk.gov.hmcts.reform.sscs.ccd.domain.Appeal;
-import uk.gov.hmcts.reform.sscs.ccd.domain.AppealReason;
-import uk.gov.hmcts.reform.sscs.ccd.domain.AppealReasons;
-import uk.gov.hmcts.reform.sscs.ccd.domain.Appointee;
-import uk.gov.hmcts.reform.sscs.ccd.domain.CcdValue;
-import uk.gov.hmcts.reform.sscs.ccd.domain.Contact;
-import uk.gov.hmcts.reform.sscs.ccd.domain.DateRange;
-import uk.gov.hmcts.reform.sscs.ccd.domain.ExcludeDate;
-import uk.gov.hmcts.reform.sscs.ccd.domain.HearingOptions;
-import uk.gov.hmcts.reform.sscs.ccd.domain.LanguagePreference;
-import uk.gov.hmcts.reform.sscs.ccd.domain.MrnDetails;
-import uk.gov.hmcts.reform.sscs.ccd.domain.OtherParty;
-import uk.gov.hmcts.reform.sscs.ccd.domain.Representative;
-import uk.gov.hmcts.reform.sscs.ccd.domain.SscsCaseData;
-import uk.gov.hmcts.reform.sscs.ccd.domain.Subscription;
+import uk.gov.hmcts.reform.sscs.ccd.domain.*;
 import uk.gov.hmcts.reform.sscs.config.AppConstants;
 import uk.gov.hmcts.reform.sscs.config.PersonalisationConfiguration;
 import uk.gov.hmcts.reform.sscs.domain.SscsCaseDataWrapper;
@@ -244,9 +230,11 @@ public class SyaAppealCreatedAndReceivedPersonalisation extends WithRepresentati
         StringBuilder otherPartyBuilder = new StringBuilder();
 
         for (CcdValue<OtherParty> otherParty : otherParties) {
-            if (otherParty != null && otherParty.getValue().getName() != null) {
-                otherPartyBuilder.append(titleText.get(PersonalisationConfiguration.PersonalisationKey.NAME.name())).append(getOptionalField(otherParty.getValue().getName().getFullNameNoTitle(), titleText.get(PersonalisationConfiguration.PersonalisationKey.NOT_PROVIDED.name()))).append(TWO_NEW_LINES)
-                        .append(titleText.get(PersonalisationConfiguration.PersonalisationKey.ADDRESS.name())).append(otherParty.getValue().getAddress().getFullAddress()).append(TWO_NEW_LINES);
+            if (otherParty != null) {
+                String name = otherParty.getValue().getName() != null ? otherParty.getValue().getName().getFullNameNoTitle() : null;
+                String address = otherParty.getValue().getAddress() != null ? otherParty.getValue().getAddress().getFullAddress() : null;
+                otherPartyBuilder.append(titleText.get(PersonalisationConfiguration.PersonalisationKey.NAME.name())).append(getOptionalField(name, titleText.get(PersonalisationConfiguration.PersonalisationKey.NOT_PROVIDED.name()))).append(TWO_NEW_LINES)
+                        .append(titleText.get(PersonalisationConfiguration.PersonalisationKey.ADDRESS.name())).append(getOptionalField(address, titleText.get(PersonalisationConfiguration.PersonalisationKey.NOT_PROVIDED.name()))).append(TWO_NEW_LINES);
             }
         }
 
