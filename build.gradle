@@ -119,7 +119,7 @@ dependencyManagement {
         dependency group: 'org.apache.tika', name: 'tika-core', version: '2.2.1'
 
         //CVE-2021-40690
-        dependency group: 'org.apache.santuario', name: 'xmlsec', version: '2.2.3'
+        dependency group: 'org.apache.santuario', name: 'xmlsec', version: '2.3.0'
 
         // checkstyle needs a certain version and so does spring fox swagger, so can't use latest
         dependencySet(group: 'com.google.guava', version: '31.0.1-jre') {
@@ -177,7 +177,7 @@ dependencyManagement {
         }
 
         //CVE-2021-27807
-        dependencySet(group: 'org.apache.pdfbox', version: '2.0.24') {
+        dependencySet(group: 'org.apache.pdfbox', version: '2.0.25') {
             entry 'pdfbox'
             entry 'pdfbox-tools'
             entry 'preflight'
@@ -222,7 +222,7 @@ dependencyManagement {
         }
 
         //CVE-2021-40690
-        dependency group: 'org.apache.santuario', name: 'xmlsec', version: '2.2.3'
+        dependency group: 'org.apache.santuario', name: 'xmlsec', version: '2.3.0'
         dependency group: 'org.glassfish', name: 'jakarta.el', version: '4.0.2'
     }
 
