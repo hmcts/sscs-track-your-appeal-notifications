@@ -470,6 +470,7 @@ public class PersonalisationTest {
             "carersAllowance,judge, Carer's Allowance, Lwfans Gofalwr, barnwr, Carer's Allowance",
             "attendanceAllowance,judge\\, doctor and disability expert, Attendance Allowance, Lwfans Gweini, barnwr\\, meddyg ac arbenigwr anableddau, Attendance Allowance",
             "bereavementBenefit,judge, Bereavement Benefit, Budd-dal Profedigaeth, barnwr, Bereavement Benefit",
+            "taxCredit, judge and Financially Qualified Panel Member (if applicable), Tax Credit, Credyd Treth, Barnwr ac Aelod Panel sydd â chymhwyster i ddelio gyda materion Ariannol (os yw’n berthnasol), Tax Credit",
     })
     public void customisePersonalisation(String benefitType,
                                          String expectedPanelComposition,
@@ -514,9 +515,11 @@ public class PersonalisationTest {
         assertEquals(PHONE_WELSH, result.get(PHONE_NUMBER_WELSH));
         assertEquals("http://link.com/manage-email-notifications/ZYX", result.get(MANAGE_EMAILS_LINK_LITERAL));
         assertEquals("http://tyalink.com/GLSCRR", result.get(TRACK_APPEAL_LINK_LITERAL));
-        assertEquals(DWP_ACRONYM, result.get(FIRST_TIER_AGENCY_ACRONYM));
-        assertEquals(DWP_FULL_NAME, result.get(FIRST_TIER_AGENCY_FULL_NAME));
-        assertEquals(WELSH_DWP_FULL_NAME, result.get(WELSH_FIRST_TIER_AGENCY_FULL_NAME));
+
+        assertEquals(benefitType.equals("taxCredit") ? HMRC_ACRONYM : DWP_ACRONYM, result.get(FIRST_TIER_AGENCY_ACRONYM));
+        assertEquals(benefitType.equals("taxCredit") ? HMRC_FULL_NAME : DWP_FULL_NAME, result.get(FIRST_TIER_AGENCY_FULL_NAME));
+        assertEquals(benefitType.equals("taxCredit") ? WELSH_HMRC_FULL_NAME : WELSH_DWP_FULL_NAME, result.get(WELSH_FIRST_TIER_AGENCY_FULL_NAME));
+
         assertEquals("5 August 2018", result.get(APPEAL_RESPOND_DATE));
         assertEquals("http://link.com/GLSCRR", result.get(SUBMIT_EVIDENCE_LINK_LITERAL));
         assertEquals("http://link.com/progress/GLSCRR/expenses", result.get(CLAIMING_EXPENSES_LINK_LITERAL));
@@ -540,14 +543,15 @@ public class PersonalisationTest {
     }
 
     @Test
-    @Parameters({"null", ""})
-    public void givenNoBenefitType_customisePersonalisation(@Nullable String benefitType) {
+    @Parameters({"null, SSCS1", "null, SSCS2", "null, SSCS5", "null, null", ",null"})
+    public void givenFormTypeWithNoBenefitType_customisePersonalisation(@Nullable String benefitType, @Nullable FormType formType) {
         List<Event> events = new ArrayList<>();
         events.add(Event.builder().value(EventDetails.builder().date(DATE).type(APPEAL_RECEIVED.getCcdType()).build()).build());
 
         SscsCaseData response = SscsCaseData.builder()
             .ccdCaseId(CASE_ID).caseReference("SC/1234/5")
             .regionalProcessingCenter(rpc)
+            .formType(formType)
             .appeal(Appeal.builder()
                 .appellant(Appellant.builder().name(name).build())
                 .benefitType(BenefitType.builder().code(benefitType).build())
@@ -578,9 +582,11 @@ public class PersonalisationTest {
         assertEquals(PHONE_WELSH, result.get(PHONE_NUMBER_WELSH));
         assertNull(result.get(MANAGE_EMAILS_LINK_LITERAL));
         assertEquals("http://tyalink.com/GLSCRR", result.get(TRACK_APPEAL_LINK_LITERAL));
-        assertEquals(DWP_ACRONYM, result.get(FIRST_TIER_AGENCY_ACRONYM));
-        assertEquals(DWP_FULL_NAME, result.get(FIRST_TIER_AGENCY_FULL_NAME));
-        assertEquals(WELSH_DWP_FULL_NAME, result.get(WELSH_FIRST_TIER_AGENCY_FULL_NAME));
+
+        assertEquals(FormType.SSCS5.equals(formType) ? HMRC_ACRONYM : DWP_ACRONYM, result.get(FIRST_TIER_AGENCY_ACRONYM));
+        assertEquals(FormType.SSCS5.equals(formType) ? HMRC_FULL_NAME : DWP_FULL_NAME, result.get(FIRST_TIER_AGENCY_FULL_NAME));
+        assertEquals(FormType.SSCS5.equals(formType) ? WELSH_HMRC_FULL_NAME : WELSH_DWP_FULL_NAME, result.get(WELSH_FIRST_TIER_AGENCY_FULL_NAME));
+
         assertEquals("5 August 2018", result.get(APPEAL_RESPOND_DATE));
         assertEquals("http://link.com/GLSCRR", result.get(SUBMIT_EVIDENCE_LINK_LITERAL));
         assertEquals("http://link.com/progress/GLSCRR/expenses", result.get(CLAIMING_EXPENSES_LINK_LITERAL));

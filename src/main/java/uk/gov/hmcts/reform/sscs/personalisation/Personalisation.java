@@ -212,9 +212,9 @@ public class Personalisation<E extends NotificationWrapper> {
         Subscription subscription = subscriptionWithType.getSubscription();
         subscriptionDetails(personalisation, subscription, benefit, ccdResponse);
 
-        personalisation.put(FIRST_TIER_AGENCY_ACRONYM, DWP_ACRONYM);
-        personalisation.put(FIRST_TIER_AGENCY_FULL_NAME, DWP_FULL_NAME);
-        personalisation.put(WELSH_FIRST_TIER_AGENCY_FULL_NAME, WELSH_DWP_FULL_NAME);
+        personalisation.put(FIRST_TIER_AGENCY_ACRONYM, isHmrcBenefit(benefit, ccdResponse.getFormType()) ? HMRC_ACRONYM : DWP_ACRONYM);
+        personalisation.put(FIRST_TIER_AGENCY_FULL_NAME, isHmrcBenefit(benefit, ccdResponse.getFormType()) ? HMRC_FULL_NAME : DWP_FULL_NAME);
+        personalisation.put(WELSH_FIRST_TIER_AGENCY_FULL_NAME, isHmrcBenefit(benefit, ccdResponse.getFormType()) ? WELSH_HMRC_FULL_NAME : WELSH_DWP_FULL_NAME);
 
         LocalDate createdDate = LocalDate.parse(ofNullable(ccdResponse.getCaseCreated()).orElse(LocalDate.now().toString()));
         translateToWelshDate(createdDate, ccdResponse, value -> personalisation.put(CREATED_DATE_WELSH, value));
@@ -229,7 +229,6 @@ public class Personalisation<E extends NotificationWrapper> {
         } else {
             personalisation.put(JOINT_PARTY_APPEAL, "No");
         }
-
 
         if (ccdResponse.getHearings() != null && !ccdResponse.getHearings().isEmpty()) {
 
@@ -282,6 +281,13 @@ public class Personalisation<E extends NotificationWrapper> {
         }
 
         return personalisation;
+    }
+
+    private boolean isHmrcBenefit(Benefit benefit, FormType formType) {
+        if (benefit == null) {
+            return FormType.SSCS5.equals(formType);
+        }
+        return SscsType.SSCS5.equals(benefit.getSscsType());
     }
 
     private void setHelplineTelephone(SscsCaseData ccdResponse, Map<String, String> personalisation) {
