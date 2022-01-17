@@ -519,6 +519,10 @@ public class PersonalisationTest {
         assertEquals(benefitType.equals("taxCredit") ? HMRC_ACRONYM : DWP_ACRONYM, result.get(FIRST_TIER_AGENCY_ACRONYM));
         assertEquals(benefitType.equals("taxCredit") ? HMRC_FULL_NAME : DWP_FULL_NAME, result.get(FIRST_TIER_AGENCY_FULL_NAME));
         assertEquals(benefitType.equals("taxCredit") ? WELSH_HMRC_FULL_NAME : WELSH_DWP_FULL_NAME, result.get(WELSH_FIRST_TIER_AGENCY_FULL_NAME));
+        assertEquals(benefitType.equals("taxCredit") ? HMRC_ACRONYM : DWP_FIRST_TIER_AGENCY_GROUP, result.get(FIRST_TIER_AGENCY_GROUP));
+        assertEquals(benefitType.equals("taxCredit") ? HMRC_ACRONYM : WELSH_DWP_FIRST_TIER_AGENCY_GROUP, result.get(WELSH_FIRST_TIER_AGENCY_GROUP));
+        assertEquals(benefitType.equals("taxCredit") ? "" : THE_STRING, result.get(WITH_OPTIONAL_THE));
+        assertEquals(benefitType.equals("taxCredit") ? "" : WELSH_THE_STRING, result.get(WELSH_WITH_OPTIONAL_THE));
 
         assertEquals("5 August 2018", result.get(APPEAL_RESPOND_DATE));
         assertEquals("http://link.com/GLSCRR", result.get(SUBMIT_EVIDENCE_LINK_LITERAL));
@@ -586,6 +590,10 @@ public class PersonalisationTest {
         assertEquals(FormType.SSCS5.equals(formType) ? HMRC_ACRONYM : DWP_ACRONYM, result.get(FIRST_TIER_AGENCY_ACRONYM));
         assertEquals(FormType.SSCS5.equals(formType) ? HMRC_FULL_NAME : DWP_FULL_NAME, result.get(FIRST_TIER_AGENCY_FULL_NAME));
         assertEquals(FormType.SSCS5.equals(formType) ? WELSH_HMRC_FULL_NAME : WELSH_DWP_FULL_NAME, result.get(WELSH_FIRST_TIER_AGENCY_FULL_NAME));
+        assertEquals(FormType.SSCS5.equals(formType) ? HMRC_ACRONYM : DWP_FIRST_TIER_AGENCY_GROUP, result.get(FIRST_TIER_AGENCY_GROUP));
+        assertEquals(FormType.SSCS5.equals(formType) ? HMRC_ACRONYM : WELSH_DWP_FIRST_TIER_AGENCY_GROUP, result.get(WELSH_FIRST_TIER_AGENCY_GROUP));
+        assertEquals(FormType.SSCS5.equals(formType) ? "" : THE_STRING, result.get(WITH_OPTIONAL_THE));
+        assertEquals(FormType.SSCS5.equals(formType) ? "" : WELSH_THE_STRING, result.get(WELSH_WITH_OPTIONAL_THE));
 
         assertEquals("5 August 2018", result.get(APPEAL_RESPOND_DATE));
         assertEquals("http://link.com/GLSCRR", result.get(SUBMIT_EVIDENCE_LINK_LITERAL));
