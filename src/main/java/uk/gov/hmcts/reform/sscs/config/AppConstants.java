@@ -38,6 +38,9 @@ public final class AppConstants {
     public static final String DWP_ACRONYM = "DWP";
     public static final String DWP_FULL_NAME = "Department for Work and Pensions";
     public static final String WELSH_DWP_FULL_NAME = "Adran Gwaith a Phensiynau";
+    public static final String HMRC_ACRONYM = "HMRC";
+    public static final String HMRC_FULL_NAME = "Her Majesty's Revenue and Customs";
+    public static final String WELSH_HMRC_FULL_NAME = "Cyllid a Thollau Ei Mawrhydi";
     public static final String EVIDENCE_RECEIVED_DATE_LITERAL = "evidence_received_date";
     public static final String WELSH_EVIDENCE_RECEIVED_DATE_LITERAL = "welsh_evidence_received_date";
     public static final String FIRST_TIER_AGENCY_ACRONYM = "first_tier_agency_acronym";
