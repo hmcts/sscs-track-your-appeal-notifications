@@ -38,6 +38,8 @@ public final class AppConstants {
     public static final String DWP_ACRONYM = "DWP";
     public static final String DWP_FULL_NAME = "Department for Work and Pensions";
     public static final String WELSH_DWP_FULL_NAME = "Adran Gwaith a Phensiynau";
+    public static final String DWP_FIRST_TIER_AGENCY_GROUP = "the Child Maintenance Group";
+    public static final String WELSH_DWP_FIRST_TIER_AGENCY_GROUP = "Grŵp Cynhaliaeth Plant";
     public static final String HMRC_ACRONYM = "HMRC";
     public static final String HMRC_FULL_NAME = "Her Majesty's Revenue and Customs";
     public static final String WELSH_HMRC_FULL_NAME = "Cyllid a Thollau Ei Mawrhydi";
@@ -46,6 +48,12 @@ public final class AppConstants {
     public static final String FIRST_TIER_AGENCY_ACRONYM = "first_tier_agency_acronym";
     public static final String FIRST_TIER_AGENCY_FULL_NAME = "first_tier_agency_full_name";
     public static final String WELSH_FIRST_TIER_AGENCY_FULL_NAME = "welsh_first_tier_agency_full_name";
+    public static final String FIRST_TIER_AGENCY_GROUP = "first_tier_agency_group";
+    public static final String WELSH_FIRST_TIER_AGENCY_GROUP = "welsh_first_tier_agency_group";
+    public static final String WITH_OPTIONAL_THE = "with_optional_the";
+    public static final String WELSH_WITH_OPTIONAL_THE = "welsh_with_optional_the";
+    public static final String THE_STRING = "the ";
+    public static final String WELSH_THE_STRING = "yr ";
     public static final String REPRESENTATIVE = "representative";
     public static final String JOINT_PARTY = "joint_party";
     public static final String HEARING_ARRANGEMENT_DETAILS_LITERAL = "hearing_arrangement_details";
