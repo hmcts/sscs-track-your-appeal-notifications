@@ -1,14 +1,15 @@
 package uk.gov.hmcts.reform.sscs.service;
 
 import static java.util.Objects.nonNull;
-import static org.apache.commons.lang3.StringUtils.equalsIgnoreCase;
 import static org.apache.commons.lang3.StringUtils.isNotBlank;
 import static org.apache.commons.lang3.StringUtils.trimToNull;
+import static uk.gov.hmcts.reform.sscs.ccd.domain.YesNo.isNo;
+import static uk.gov.hmcts.reform.sscs.ccd.domain.YesNo.isYes;
 import static uk.gov.hmcts.reform.sscs.config.SubscriptionType.APPELLANT;
 import static uk.gov.hmcts.reform.sscs.config.SubscriptionType.APPOINTEE;
 import static uk.gov.hmcts.reform.sscs.config.SubscriptionType.JOINT_PARTY;
 import static uk.gov.hmcts.reform.sscs.config.SubscriptionType.REPRESENTATIVE;
-import static uk.gov.hmcts.reform.sscs.service.NotificationValidService.*;
+import static uk.gov.hmcts.reform.sscs.service.NotificationValidService.MANDATORY_LETTER_EVENT_TYPES;
 
 import uk.gov.hmcts.reform.sscs.ccd.domain.*;
 import uk.gov.hmcts.reform.sscs.config.SubscriptionType;
@@ -31,8 +32,8 @@ public class NotificationUtils {
                 wrapper.getNewSscsCaseData().getAppeal().getAppellant().getIsAppointee());
     }
 
-    public static boolean hasAppointee(Appointee appointee, String isAppointee) {
-        return !equalsIgnoreCase(isAppointee, "No") && appointee != null && appointee.getName() != null && appointee.getName().getFirstName() != null
+    public static boolean hasAppointee(Appointee appointee, YesNo isAppointee) {
+        return !isNo(isAppointee) && appointee != null && appointee.getName() != null && appointee.getName().getFirstName() != null
             && appointee.getName().getLastName() != null;
     }
 
@@ -44,14 +45,12 @@ public class NotificationUtils {
 
     public static boolean hasRepresentative(Appeal appeal) {
         return appeal.getRep() != null
-            && appeal.getRep().getHasRepresentative() != null
-            && appeal.getRep().getHasRepresentative().equalsIgnoreCase("yes");
+            && isYes(appeal.getRep().getHasRepresentative());
     }
 
     public static boolean hasRepresentative(OtherParty otherParty) {
         return otherParty.getRep() != null
-                && otherParty.getRep().getHasRepresentative() != null
-                && otherParty.getRep().getHasRepresentative().equalsIgnoreCase("yes");
+                && isYes(otherParty.getRep().getHasRepresentative());
     }
 
     public static boolean hasJointParty(SscsCaseData caseData) {

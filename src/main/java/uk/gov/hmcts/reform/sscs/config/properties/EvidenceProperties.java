@@ -1,5 +1,7 @@
 package uk.gov.hmcts.reform.sscs.config.properties;
 
+import static uk.gov.hmcts.reform.sscs.ccd.domain.YesNo.isYes;
+
 import lombok.Getter;
 import lombok.Setter;
 import org.springframework.boot.context.properties.ConfigurationProperties;
@@ -32,11 +34,12 @@ public class EvidenceProperties {
         private boolean scottishPoBoxFeatureEnabled;
 
         public String getLine3(SscsCaseData ccdResponse) {
-            return "Yes".equalsIgnoreCase(ccdResponse.getIsScottishCase()) && scottishPoBoxFeatureEnabled ? getScottishLine3() : getLine3();
+            return isYes(ccdResponse.getIsScottishCase()) && scottishPoBoxFeatureEnabled ? getScottishLine3() :
+                getLine3();
         }
 
         public String getPostcode(SscsCaseData ccdResponse) {
-            return "Yes".equalsIgnoreCase(ccdResponse.getIsScottishCase()) && scottishPoBoxFeatureEnabled ? getScottishPostcode() : getPostcode();
+            return isYes(ccdResponse.getIsScottishCase()) && scottishPoBoxFeatureEnabled ? getScottishPostcode() : getPostcode();
         }
     }
 }

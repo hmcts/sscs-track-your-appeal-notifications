@@ -14,8 +14,9 @@ import static uk.gov.hmcts.reform.sscs.ccd.domain.Benefit.getBenefitByCodeOrThro
 import static uk.gov.hmcts.reform.sscs.ccd.domain.Benefit.getLongBenefitNameDescriptionWithOptionalAcronym;
 import static uk.gov.hmcts.reform.sscs.ccd.domain.EventType.APPEAL_RECEIVED;
 import static uk.gov.hmcts.reform.sscs.ccd.domain.PanelComposition.JUDGE_DOCTOR_AND_DISABILITY_EXPERT_IF_APPLICABLE;
+import static uk.gov.hmcts.reform.sscs.ccd.domain.YesNo.NO;
+import static uk.gov.hmcts.reform.sscs.ccd.domain.YesNo.YES;
 import static uk.gov.hmcts.reform.sscs.ccd.domain.YesNo.isYes;
-import static uk.gov.hmcts.reform.sscs.ccd.util.CaseDataUtils.YES;
 import static uk.gov.hmcts.reform.sscs.config.AppConstants.*;
 import static uk.gov.hmcts.reform.sscs.config.PersonalisationConfiguration.PersonalisationKey.*;
 import static uk.gov.hmcts.reform.sscs.config.SubscriptionType.APPELLANT;
@@ -224,10 +225,10 @@ public class Personalisation<E extends NotificationWrapper> {
         personalisation.put(JOINT_WELSH, subscriptionWithType.getSubscriptionType() == JOINT_PARTY ? JOINT_WELSH_TEXT_WITH_A_SPACE : EMPTY);
 
         if (isYes(ccdResponse.getJointParty().getHasJointParty())) {
-            personalisation.put(JOINT_PARTY_APPEAL, "Yes");
+            personalisation.put(JOINT_PARTY_APPEAL, YES.getValue());
             personalisation.put(JOINT_PARTY_NAME, ccdResponse.getJointParty().getName().getFullNameNoTitle());
         } else {
-            personalisation.put(JOINT_PARTY_APPEAL, "No");
+            personalisation.put(JOINT_PARTY_APPEAL, NO.getValue());
         }
 
         Hearing latestHearing = ccdResponse.getLatestHearing();
@@ -273,10 +274,10 @@ public class Personalisation<E extends NotificationWrapper> {
         personalisation.put(HEARING_TYPE, responseWrapper.getNewSscsCaseData().getAppeal().getHearingType());
 
         if (subscriptionWithType.getSubscriptionType() == REPRESENTATIVE) {
-            personalisation.put(AppConstants.REPRESENTATIVE, "Yes");
+            personalisation.put(AppConstants.REPRESENTATIVE, YES.getValue());
         }
         if (subscriptionWithType.getSubscriptionType() == JOINT_PARTY) {
-            personalisation.put(AppConstants.JOINT_PARTY, "Yes");
+            personalisation.put(AppConstants.JOINT_PARTY, YES.getValue());
         }
 
         setConfidentialFields(ccdResponse, subscriptionWithType, personalisation);
@@ -310,7 +311,7 @@ public class Personalisation<E extends NotificationWrapper> {
     }
 
     private void setHelplineTelephone(SscsCaseData ccdResponse, Map<String, Object> personalisation) {
-        if ("yes".equalsIgnoreCase(ccdResponse.getIsScottishCase())) {
+        if (isYes(ccdResponse.getIsScottishCase())) {
             personalisation.put(HELPLINE_PHONE_NUMBER, config.getHelplineTelephoneScotland());
         } else {
             personalisation.put(HELPLINE_PHONE_NUMBER, config.getHelplineTelephone());
@@ -680,8 +681,7 @@ public class Personalisation<E extends NotificationWrapper> {
     private String buildHearingArrangements(HearingOptions hearingOptions, Map<String, String> titleText) {
         if (null != hearingOptions) {
 
-            String languageInterpreterRequired = convertBooleanToRequiredText(hearingOptions.getLanguageInterpreter() != null
-                    && StringUtils.equalsIgnoreCase(YES, hearingOptions.getLanguageInterpreter()), titleText);
+            String languageInterpreterRequired = convertBooleanToRequiredText(isYes(hearingOptions.getLanguageInterpreter()), titleText);
 
             return titleText.get(LANGUAGE_INTERPRETER.name()) + languageInterpreterRequired + TWO_NEW_LINES + titleText.get(SIGN_INTERPRETER.name())
                     + convertBooleanToRequiredText(findHearingArrangement("signLanguageInterpreter", hearingOptions.getArrangements()), titleText)

@@ -3,15 +3,16 @@ package uk.gov.hmcts.reform.sscs.service;
 import static org.junit.Assert.*;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.*;
-import static org.mockito.Mockito.verify;
 import static org.mockito.MockitoAnnotations.openMocks;
 import static uk.gov.hmcts.reform.sscs.ccd.domain.State.READY_TO_LIST;
 import static uk.gov.hmcts.reform.sscs.ccd.domain.State.VALID_APPEAL;
+import static uk.gov.hmcts.reform.sscs.ccd.domain.YesNo.YES;
 import static uk.gov.hmcts.reform.sscs.config.AppConstants.REP_SALUTATION;
 import static uk.gov.hmcts.reform.sscs.config.SubscriptionType.*;
 import static uk.gov.hmcts.reform.sscs.domain.notify.NotificationEventType.*;
 import static uk.gov.hmcts.reform.sscs.service.LetterUtils.getAddressToUseForLetter;
-import static uk.gov.hmcts.reform.sscs.service.NotificationServiceTest.*;
+import static uk.gov.hmcts.reform.sscs.service.NotificationServiceTest.verifyExpectedLogMessage;
+import static uk.gov.hmcts.reform.sscs.service.NotificationServiceTest.verifyNoErrorsLogged;
 import static uk.gov.hmcts.reform.sscs.service.NotificationValidService.BUNDLED_LETTER_EVENT_TYPES;
 import static uk.gov.hmcts.reform.sscs.service.SendNotificationHelper.getRepSalutation;
 import static uk.gov.hmcts.reform.sscs.service.SendNotificationService.getBundledLetterDocumentUrl;
@@ -21,7 +22,10 @@ import ch.qos.logback.classic.Logger;
 import ch.qos.logback.classic.spi.ILoggingEvent;
 import ch.qos.logback.core.Appender;
 import java.time.LocalDate;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.HashMap;
+import java.util.List;
 import junitparams.JUnitParamsRunner;
 import junitparams.Parameters;
 import org.junit.Before;
@@ -47,8 +51,6 @@ import uk.gov.service.notify.NotificationClientException;
 
 @RunWith(JUnitParamsRunner.class)
 public class SendNotificationServiceTest {
-    private static final String YES = "Yes";
-    public static final String NO = "No";
     private static final String CASE_REFERENCE = "ABC123";
     private static final String CASE_ID = "1000001";
 
@@ -75,7 +77,7 @@ public class SendNotificationServiceTest {
             .name(Name.builder().firstName("Ap").lastName("Pellant").build())
             .address(Address.builder().line1("Appellant Line 1").town("Appellant Town").county("Appellant County").postcode("AP9 3LL").build())
             .appointee(APPOINTEE_WITH_ADDRESS)
-            .isAppointee("Yes")
+            .isAppointee(YES)
             .build();
 
     protected static Representative REP_WITH_ADDRESS = Representative.builder()
@@ -97,7 +99,7 @@ public class SendNotificationServiceTest {
         .address(Address.builder().line1("Rep Org Line 1").town("Rep Town").county("Rep County").postcode("RE9 3LL").build())
         .build();
 
-    private static Subscription SMS_SUBSCRIPTION = Subscription.builder().mobile("07831292000").subscribeSms("Yes").wantSmsNotifications("Yes").build();
+    private static Subscription SMS_SUBSCRIPTION = Subscription.builder().mobile("07831292000").subscribeSms(YES).wantSmsNotifications(YES).build();
 
     private static Notification SMS_NOTIFICATION = Notification.builder()
         .destination(Destination.builder().sms("07831292000").build())
@@ -109,7 +111,7 @@ public class SendNotificationServiceTest {
             .template(Template.builder().smsTemplateId(Arrays.asList("englishSmsTemplateId", "welshSmsTemplateId")).build())
             .build();
 
-    private static Subscription EMAIL_SUBSCRIPTION = Subscription.builder().email("test@some.com").subscribeEmail("Yes").build();
+    private static Subscription EMAIL_SUBSCRIPTION = Subscription.builder().email("test@some.com").subscribeEmail(YES).build();
 
     private static Notification EMAIL_NOTIFICATION = Notification.builder()
         .destination(Destination.builder().email("test@some.com").build())
@@ -136,10 +138,10 @@ public class SendNotificationServiceTest {
             .build();
 
     private static ReasonableAdjustments REASONABLE_ADJUSTMENTS = ReasonableAdjustments.builder()
-            .appellant(ReasonableAdjustmentDetails.builder().wantsReasonableAdjustment(YesNo.YES).build())
-            .representative(ReasonableAdjustmentDetails.builder().wantsReasonableAdjustment(YesNo.YES).build())
-            .jointParty(ReasonableAdjustmentDetails.builder().wantsReasonableAdjustment(YesNo.YES).build())
-            .appointee(ReasonableAdjustmentDetails.builder().wantsReasonableAdjustment(YesNo.YES).build())
+            .appellant(ReasonableAdjustmentDetails.builder().wantsReasonableAdjustment(YES).build())
+            .representative(ReasonableAdjustmentDetails.builder().wantsReasonableAdjustment(YES).build())
+            .jointParty(ReasonableAdjustmentDetails.builder().wantsReasonableAdjustment(YES).build())
+            .appointee(ReasonableAdjustmentDetails.builder().wantsReasonableAdjustment(YES).build())
             .build();
 
     @Mock

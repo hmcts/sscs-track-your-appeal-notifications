@@ -2,6 +2,8 @@ package uk.gov.hmcts.reform.sscs.service;
 
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
+import static uk.gov.hmcts.reform.sscs.ccd.domain.YesNo.NO;
+import static uk.gov.hmcts.reform.sscs.ccd.domain.YesNo.YES;
 import static uk.gov.hmcts.reform.sscs.domain.notify.NotificationEventType.*;
 
 import org.junit.Before;
@@ -53,14 +55,16 @@ public class NotificationValidServiceTest {
     @Test
     public void givenHearingIsInFutureAdjournedAndEventIsHearingBooked_thenNotificationIsNotValidToSend() {
         assertFalse(
-                notificationValidService.isNotificationStillValidToSend(SscsCaseDataUtils.addHearing(sscsCaseData, 1, "Yes"), HEARING_BOOKED_NOTIFICATION)
+                notificationValidService.isNotificationStillValidToSend(SscsCaseDataUtils.addHearing(sscsCaseData, 1,
+                    YES), HEARING_BOOKED_NOTIFICATION)
         );
     }
 
     @Test
     public void givenHearingIsInFutureAdjournedAndEventIsHearingReminder_thenNotificationIsNotValidToSend() {
         assertFalse(
-                notificationValidService.isNotificationStillValidToSend(SscsCaseDataUtils.addHearing(sscsCaseData, 1, "Yes"), HEARING_REMINDER_NOTIFICATION)
+                notificationValidService.isNotificationStillValidToSend(SscsCaseDataUtils.addHearing(sscsCaseData, 1,
+                    YES), HEARING_REMINDER_NOTIFICATION)
         );
     }
 
@@ -73,7 +77,7 @@ public class NotificationValidServiceTest {
 
     @Test
     public void givenCaseIsOralCaseAndNotificationTypeIsSentForOral_thenReturnTrue() {
-        SscsCaseData caseData = SscsCaseData.builder().appeal(Appeal.builder().hearingOptions(HearingOptions.builder().wantsToAttend("Yes").build()).build()).build();
+        SscsCaseData caseData = SscsCaseData.builder().appeal(Appeal.builder().hearingOptions(HearingOptions.builder().wantsToAttend(YES).build()).build()).build();
 
         assertTrue(
             notificationValidService.isHearingTypeValidToSendNotification(caseData, APPEAL_RECEIVED_NOTIFICATION)
@@ -82,7 +86,7 @@ public class NotificationValidServiceTest {
 
     @Test
     public void givenCaseIsOralCaseAndNotificationTypeIsNotSentForOral_thenReturnFalse() {
-        SscsCaseData caseData = SscsCaseData.builder().appeal(Appeal.builder().hearingOptions(HearingOptions.builder().wantsToAttend("Yes").build()).build()).build();
+        SscsCaseData caseData = SscsCaseData.builder().appeal(Appeal.builder().hearingOptions(HearingOptions.builder().wantsToAttend(YES).build()).build()).build();
 
         assertFalse(
             notificationValidService.isHearingTypeValidToSendNotification(caseData, DO_NOT_SEND)
@@ -91,7 +95,7 @@ public class NotificationValidServiceTest {
 
     @Test
     public void givenCaseIsPaperCaseAndNotificationTypeIsSentForPaper_thenReturnTrue() {
-        SscsCaseData caseData = SscsCaseData.builder().appeal(Appeal.builder().hearingOptions(HearingOptions.builder().wantsToAttend("No").build()).build()).build();
+        SscsCaseData caseData = SscsCaseData.builder().appeal(Appeal.builder().hearingOptions(HearingOptions.builder().wantsToAttend(NO).build()).build()).build();
 
         assertTrue(
             notificationValidService.isHearingTypeValidToSendNotification(caseData, APPEAL_RECEIVED_NOTIFICATION)
@@ -100,7 +104,7 @@ public class NotificationValidServiceTest {
 
     @Test
     public void givenCaseIsPaperCaseAndNotificationTypeIsNotSentForPaper_thenReturnFalse() {
-        SscsCaseData caseData = SscsCaseData.builder().appeal(Appeal.builder().hearingOptions(HearingOptions.builder().wantsToAttend("No").build()).build()).build();
+        SscsCaseData caseData = SscsCaseData.builder().appeal(Appeal.builder().hearingOptions(HearingOptions.builder().wantsToAttend(NO).build()).build()).build();
 
         assertFalse(
             notificationValidService.isHearingTypeValidToSendNotification(caseData, HEARING_BOOKED_NOTIFICATION)
@@ -109,7 +113,7 @@ public class NotificationValidServiceTest {
 
     @Test
     public void givenCaseIsACohCaseAndNotificationTypeIsNotSentForCoh_thenReturnFalse() {
-        SscsCaseData caseData = SscsCaseData.builder().appeal(Appeal.builder().hearingOptions(HearingOptions.builder().wantsToAttend("No").build()).build()).build();
+        SscsCaseData caseData = SscsCaseData.builder().appeal(Appeal.builder().hearingOptions(HearingOptions.builder().wantsToAttend(NO).build()).build()).build();
 
         assertFalse(
                 notificationValidService.isHearingTypeValidToSendNotification(caseData, DO_NOT_SEND)

@@ -1,6 +1,7 @@
 package uk.gov.hmcts.reform.sscs.callback.handlers;
 
 import static java.util.Objects.nonNull;
+import static uk.gov.hmcts.reform.sscs.ccd.domain.YesNo.isYes;
 import static uk.gov.hmcts.reform.sscs.domain.notify.NotificationEventType.*;
 
 import java.util.List;
@@ -108,14 +109,14 @@ public class FilterNotificationsEventsHandler implements CallbackHandler {
 
         Appointee appointeeBefore = null;
         if (callback.getOldSscsCaseData() != null
-                && "yes".equalsIgnoreCase(callback.getOldSscsCaseData().getAppeal().getAppellant().getIsAppointee())
+                && isYes(callback.getOldSscsCaseData().getAppeal().getAppellant().getIsAppointee())
                 && callback.getOldSscsCaseData().getAppeal().getAppellant().getAppointee() != null) {
             appointeeBefore = callback.getOldSscsCaseData().getAppeal().getAppellant().getAppointee();
         }
 
         Appointee appointeeAfter = null;
-        if ("yes".equalsIgnoreCase(callback.getNewSscsCaseData().getAppeal().getAppellant().getIsAppointee())
-                && callback.getNewSscsCaseData().getAppeal().getAppellant().getAppointee() != null) {
+        if (callback.getNewSscsCaseData().getAppeal().getAppellant().getAppointee() != null
+                && isYes(callback.getNewSscsCaseData().getAppeal().getAppellant().getIsAppointee())) {
             appointeeAfter = callback.getNewSscsCaseData().getAppeal().getAppellant().getAppointee();
         }
 

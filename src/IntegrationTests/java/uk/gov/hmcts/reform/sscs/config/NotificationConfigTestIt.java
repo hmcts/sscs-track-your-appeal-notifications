@@ -3,6 +3,7 @@ package uk.gov.hmcts.reform.sscs.config;
 import static org.apache.commons.lang3.StringUtils.lowerCase;
 import static org.junit.Assert.*;
 import static uk.gov.hmcts.reform.sscs.ccd.domain.Benefit.PIP;
+import static uk.gov.hmcts.reform.sscs.ccd.domain.YesNo.YES;
 import static uk.gov.hmcts.reform.sscs.config.AppealHearingType.ORAL;
 import static uk.gov.hmcts.reform.sscs.config.AppealHearingType.PAPER;
 import static uk.gov.hmcts.reform.sscs.config.SubscriptionType.APPELLANT;
@@ -87,7 +88,7 @@ public class NotificationConfigTestIt {
                                                                                   AppealHearingType appealHearingType,
                                                                                   String templateName,
                                                                                   String createdInGapsFrom) {
-        CcdNotificationWrapper wrapper = new CcdNotificationWrapper(SscsCaseDataWrapper.builder().newSscsCaseData(SscsCaseData.builder().languagePreferenceWelsh("Yes").appeal(Appeal.builder().hearingType(appealHearingType.name()).build()).build()).build());
+        CcdNotificationWrapper wrapper = new CcdNotificationWrapper(SscsCaseDataWrapper.builder().newSscsCaseData(SscsCaseData.builder().languagePreferenceWelsh(YES).appeal(Appeal.builder().hearingType(appealHearingType.name()).build()).build()).build());
 
         Template template = notificationConfig.getTemplate(templateName, templateName, templateName, templateName, Benefit.PIP, wrapper, createdInGapsFrom);
         assertEquals(expectedEmailTemplateId, template.getEmailTemplateId());
@@ -113,7 +114,7 @@ public class NotificationConfigTestIt {
     @Parameters(method = "bundledLetterTemplateNames")
     public void given_bundledLetters_should_notHaveWelshTemplate(AppealHearingType appealHearingType,
                                                               String templateName) {
-        CcdNotificationWrapper wrapper = new CcdNotificationWrapper(SscsCaseDataWrapper.builder().newSscsCaseData(SscsCaseData.builder().languagePreferenceWelsh("Yes").appeal(Appeal.builder().hearingType(appealHearingType.name()).build()).build()).build());
+        CcdNotificationWrapper wrapper = new CcdNotificationWrapper(SscsCaseDataWrapper.builder().newSscsCaseData(SscsCaseData.builder().languagePreferenceWelsh(YES).appeal(Appeal.builder().hearingType(appealHearingType.name()).build()).build()).build());
 
         Template template = notificationConfig.getTemplate(templateName, templateName, templateName, templateName,
                 Benefit.PIP, wrapper, null);
@@ -177,7 +178,7 @@ public class NotificationConfigTestIt {
 
         NotificationWrapper wrapper = new CcdNotificationWrapper(SscsCaseDataWrapper.builder()
                 .newSscsCaseData(SscsCaseData.builder()
-                        .languagePreferenceWelsh("Yes")
+                        .languagePreferenceWelsh(YES)
                         .directionTypeDl(new DynamicList(directionType.toString()))
                         .appeal(Appeal.builder()
                                 .hearingType(HearingType.ONLINE.getValue())

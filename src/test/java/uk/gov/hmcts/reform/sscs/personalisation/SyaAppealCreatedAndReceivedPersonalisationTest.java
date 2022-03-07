@@ -4,6 +4,8 @@ import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNull;
 import static org.mockito.MockitoAnnotations.openMocks;
+import static uk.gov.hmcts.reform.sscs.ccd.domain.YesNo.NO;
+import static uk.gov.hmcts.reform.sscs.ccd.domain.YesNo.YES;
 import static uk.gov.hmcts.reform.sscs.config.SubscriptionType.REPRESENTATIVE;
 import static uk.gov.hmcts.reform.sscs.domain.notify.NotificationEventType.APPEAL_RECEIVED_NOTIFICATION;
 
@@ -25,7 +27,6 @@ import uk.gov.hmcts.reform.sscs.domain.SubscriptionWithType;
 public class SyaAppealCreatedAndReceivedPersonalisationTest extends PersonalisationTest {
 
     private static final String CASE_ID = "54321";
-    private static final String YES = "yes";
 
     SscsCaseData response;
 
@@ -155,7 +156,7 @@ public class SyaAppealCreatedAndReceivedPersonalisationTest extends Personalisat
     public void givenAnAppeal_setMrnDetailsForTemplateWhenReasonForNoMrnMissing_welsh() {
         response = SscsCaseData.builder()
                 .ccdCaseId(CASE_ID).caseReference("SC/1234/5")
-                .languagePreferenceWelsh("Yes")
+                .languagePreferenceWelsh(YES)
                 .appeal(Appeal.builder().benefitType(BenefitType.builder().code("PIP").build())
                         .mrnDetails(MrnDetails.builder().mrnDate("2018-05-03").mrnLateReason("My train was cancelled.").build()).build())
                 .build();
@@ -206,7 +207,7 @@ public class SyaAppealCreatedAndReceivedPersonalisationTest extends Personalisat
                                 .address(Address.builder().line1("122 Breach Street").line2("The Village").town("My town").county("Cardiff").postcode("CF11 2HB").build())
                                 .contact(Contact.builder().email("manish.sharma@gmail.com").phone("0797 243 8179").build())
                                 .build()).build())
-                .languagePreferenceWelsh("Yes")
+                .languagePreferenceWelsh(YES)
                 .build();
 
         Map<String, Object> result = syaAppealCreatedAndReceivedPersonalisation.setYourDetails(new HashMap<>(), response);
@@ -263,7 +264,7 @@ public class SyaAppealCreatedAndReceivedPersonalisationTest extends Personalisat
                                 .address(Address.builder().line1("122 Breach Street").town("My town").county("Cardiff").postcode("CF11 2HB").build())
                                 .contact(Contact.builder().build())
                                 .build()).build())
-                .languagePreferenceWelsh("yes")
+                .languagePreferenceWelsh(YES)
                 .build();
 
         Map<String, Object> result = syaAppealCreatedAndReceivedPersonalisation.setYourDetails(new HashMap<>(), response);
@@ -291,7 +292,7 @@ public class SyaAppealCreatedAndReceivedPersonalisationTest extends Personalisat
                 .ccdCaseId(CASE_ID).caseReference("SC/1234/5")
                 .subscriptions(Subscriptions.builder()
                         .appellantSubscription(Subscription.builder()
-                                .subscribeSms("Yes").wantSmsNotifications("Yes")
+                                .subscribeSms(YES).wantSmsNotifications(YES)
                                 .mobile("07955555708").build()).build())
                 .build();
 
@@ -308,7 +309,7 @@ public class SyaAppealCreatedAndReceivedPersonalisationTest extends Personalisat
                 .ccdCaseId(CASE_ID).caseReference("SC/1234/5")
                 .subscriptions(Subscriptions.builder()
                         .appellantSubscription(Subscription.builder()
-                                .subscribeSms("Yes").wantSmsNotifications("Yes")
+                                .subscribeSms(YES).wantSmsNotifications(YES)
                                 .mobile("07955555708").build()).build())
                 .build();
 
@@ -329,7 +330,7 @@ public class SyaAppealCreatedAndReceivedPersonalisationTest extends Personalisat
                 .ccdCaseId(CASE_ID).caseReference("SC/1234/5")
                 .subscriptions(Subscriptions.builder()
                         .appellantSubscription(Subscription.builder()
-                                .subscribeSms("No").build()).build())
+                                .subscribeSms(NO).build()).build())
                 .build();
 
         Map<String, Object> result = syaAppealCreatedAndReceivedPersonalisation.setTextMessageReminderDetails(new HashMap<>(), response.getSubscriptions().getAppellantSubscription());
@@ -344,7 +345,7 @@ public class SyaAppealCreatedAndReceivedPersonalisationTest extends Personalisat
                 .ccdCaseId(CASE_ID).caseReference("SC/1234/5")
                 .subscriptions(Subscriptions.builder()
                         .appellantSubscription(Subscription.builder()
-                                .subscribeSms("No").build()).build())
+                                .subscribeSms(NO).build()).build())
                 .build();
 
         Map<String, Object> result = syaAppealCreatedAndReceivedPersonalisation.setTextMessageReminderDetails(new HashMap<>(), response.getSubscriptions().getAppellantSubscription());
@@ -388,7 +389,7 @@ public class SyaAppealCreatedAndReceivedPersonalisationTest extends Personalisat
     public void givenAnAppealWithAppointee_setAppointeeDetailsForTemplate_Welsh() {
         response = SscsCaseData.builder()
                 .ccdCaseId(CASE_ID).caseReference("SC/1234/5")
-                .languagePreferenceWelsh("yes")
+                .languagePreferenceWelsh(YES)
                 .appeal(Appeal.builder().appellant(Appellant.builder()
                     .name(Name.builder().firstName("Manish").lastName("Sharma").title("Mrs").build())
                     .identity(Identity.builder().nino("NP 27 28 67 B").dob("1971-03-12").build())
@@ -652,7 +653,7 @@ public class SyaAppealCreatedAndReceivedPersonalisationTest extends Personalisat
     public void givenAnAppealWithRepresentative_setRepresentativeDetailsForTemplate_Welsh() {
         response = SscsCaseData.builder()
             .ccdCaseId(CASE_ID).caseReference("SC/1234/5")
-            .languagePreferenceWelsh("yes")
+            .languagePreferenceWelsh(YES)
             .appeal(Appeal.builder().rep(Representative.builder().hasRepresentative(YES)
                 .name(Name.builder().firstName("Peter").lastName("Smith").build())
                 .organisation("Citizens Advice")
@@ -707,7 +708,7 @@ public class SyaAppealCreatedAndReceivedPersonalisationTest extends Personalisat
     public void givenAnAppealWithRepresentativeAndNoEmailOrPhoneOrOrganisationProvided_setRepresentativeDetailsForTemplate_Welsh() {
         response = SscsCaseData.builder()
             .ccdCaseId(CASE_ID).caseReference("SC/1234/5")
-            .languagePreferenceWelsh("yes")
+            .languagePreferenceWelsh(YES)
             .appeal(Appeal.builder().rep(Representative.builder().hasRepresentative(YES)
                 .name(Name.builder().firstName("Peter").lastName("Smith").build())
                 .address(Address.builder().line1("Ground Floor").line2("Gazette Buildings").town("168 Corporation Street").county("Cardiff").postcode("CF11 6TF").build())
@@ -781,7 +782,7 @@ public class SyaAppealCreatedAndReceivedPersonalisationTest extends Personalisat
                 .ccdCaseId(CASE_ID).caseReference("SC/1234/5")
                 .appeal(Appeal.builder().appealReasons(AppealReasons.builder().reasons(appealReasonList).otherReasons("Some other reason").build())
                         .build())
-                .languagePreferenceWelsh("yes")
+                .languagePreferenceWelsh(YES)
                 .build();
 
         Map<String, Object> result = syaAppealCreatedAndReceivedPersonalisation.setReasonsForAppealingDetails(new HashMap<>(), response);
@@ -844,7 +845,7 @@ public class SyaAppealCreatedAndReceivedPersonalisationTest extends Personalisat
                 .ccdCaseId(CASE_ID).caseReference("SC/1234/5")
                 .appeal(Appeal.builder().appealReasons(AppealReasons.builder().build())
                         .build())
-                .languagePreferenceWelsh("yes")
+                .languagePreferenceWelsh(YES)
                 .build();
 
         Map<String, Object> result = syaAppealCreatedAndReceivedPersonalisation.setReasonsForAppealingDetails(new HashMap<>(), response);
@@ -861,7 +862,7 @@ public class SyaAppealCreatedAndReceivedPersonalisationTest extends Personalisat
 
         response = SscsCaseData.builder()
                 .ccdCaseId(CASE_ID).caseReference("SC/1234/5")
-                .appeal(Appeal.builder().hearingOptions(HearingOptions.builder().wantsToAttend("yes")
+                .appeal(Appeal.builder().hearingOptions(HearingOptions.builder().wantsToAttend(YES)
                         .build()).build())
                 .build();
 
@@ -880,7 +881,7 @@ public class SyaAppealCreatedAndReceivedPersonalisationTest extends Personalisat
 
         response = SscsCaseData.builder()
                 .ccdCaseId(CASE_ID).caseReference("SC/1234/5")
-                .appeal(Appeal.builder().hearingOptions(HearingOptions.builder().wantsToAttend("yes")
+                .appeal(Appeal.builder().hearingOptions(HearingOptions.builder().wantsToAttend(YES)
                         .excludeDates(excludeDates)
                         .build()).build())
                 .build();
@@ -902,7 +903,7 @@ public class SyaAppealCreatedAndReceivedPersonalisationTest extends Personalisat
 
         response = SscsCaseData.builder()
                 .ccdCaseId(CASE_ID).caseReference("SC/1234/5")
-                .appeal(Appeal.builder().hearingOptions(HearingOptions.builder().wantsToAttend("yes")
+                .appeal(Appeal.builder().hearingOptions(HearingOptions.builder().wantsToAttend(YES)
                         .excludeDates(excludeDates)
                         .build()).build())
                 .build();
@@ -925,8 +926,8 @@ public class SyaAppealCreatedAndReceivedPersonalisationTest extends Personalisat
 
         response = SscsCaseData.builder()
                 .ccdCaseId(CASE_ID).caseReference("SC/1234/5")
-                .languagePreferenceWelsh("Yes")
-                .appeal(Appeal.builder().hearingOptions(HearingOptions.builder().wantsToAttend("yes")
+                .languagePreferenceWelsh(YES)
+                .appeal(Appeal.builder().hearingOptions(HearingOptions.builder().wantsToAttend(YES)
                         .excludeDates(excludeDates)
                         .build()).build())
                 .build();
@@ -955,7 +956,7 @@ public class SyaAppealCreatedAndReceivedPersonalisationTest extends Personalisat
                 .ccdCaseId(CASE_ID).caseReference("SC/1234/5")
                 .appeal(Appeal.builder().hearingOptions(HearingOptions.builder()
                         .arrangements(arrangementList)
-                        .languageInterpreter("Yes")
+                        .languageInterpreter(YES)
                         .other("Other")
                         .build()).build())
                 .build();
@@ -983,10 +984,10 @@ public class SyaAppealCreatedAndReceivedPersonalisationTest extends Personalisat
 
         response = SscsCaseData.builder()
                 .ccdCaseId(CASE_ID).caseReference("SC/1234/5")
-                .languagePreferenceWelsh("yes")
+                .languagePreferenceWelsh(YES)
                 .appeal(Appeal.builder().hearingOptions(HearingOptions.builder()
                         .arrangements(arrangementList)
-                        .languageInterpreter("Yes")
+                        .languageInterpreter(YES)
                         .other("Other")
                         .build()).build())
                 .build();
@@ -1015,7 +1016,7 @@ public class SyaAppealCreatedAndReceivedPersonalisationTest extends Personalisat
         response = SscsCaseData.builder()
                 .ccdCaseId(CASE_ID).caseReference("SC/1234/5")
                 .appeal(Appeal.builder().hearingOptions(HearingOptions.builder()
-                        .languageInterpreter("No")
+                        .languageInterpreter(NO)
                         .build()).build())
                 .build();
 
@@ -1035,9 +1036,9 @@ public class SyaAppealCreatedAndReceivedPersonalisationTest extends Personalisat
 
         response = SscsCaseData.builder()
                 .ccdCaseId(CASE_ID).caseReference("SC/1234/5")
-                .languagePreferenceWelsh("yes")
+                .languagePreferenceWelsh(YES)
                 .appeal(Appeal.builder().hearingOptions(HearingOptions.builder()
-                        .languageInterpreter("No")
+                        .languageInterpreter(NO)
                         .build()).build())
                 .build();
 

@@ -5,6 +5,7 @@ import static org.mockito.ArgumentMatchers.*;
 import static org.mockito.Mockito.*;
 import static uk.gov.hmcts.reform.sscs.ccd.domain.EventType.APPEAL_RECEIVED;
 import static uk.gov.hmcts.reform.sscs.ccd.domain.EventType.UPDATE_OTHER_PARTY_DATA;
+import static uk.gov.hmcts.reform.sscs.ccd.domain.YesNo.YES;
 
 import java.io.IOException;
 import java.util.ArrayList;
@@ -40,7 +41,6 @@ import uk.gov.hmcts.reform.sscs.service.DocmosisPdfService;
 public class PdfLetterServiceIt {
     private static final String CASE_ID = "1000001";
     private static final String DATE = "2018-01-01T14:01:18.243";
-    private static final String YES = "Yes";
     private static final Subscription EMPTY_SUBSCRIPTION = Subscription.builder().build();
 
     @Autowired
@@ -167,7 +167,7 @@ public class PdfLetterServiceIt {
                 .otherParties(List.of(CcdValue.<OtherParty>builder()
                                 .value(OtherParty.builder()
                                         .id("1")
-                                        .sendNewOtherPartyNotification(YesNo.YES)
+                                        .sendNewOtherPartyNotification(YES)
                                         .name(Name.builder().firstName("Other").lastName("Party").build())
                                         .address(Address.builder().line1("122 Breach Street").line2("The Village").town("My town").county("Cardiff").postcode("CF11 2HB").build())
                                         .build())

@@ -1,5 +1,6 @@
 package uk.gov.hmcts.reform.sscs.callback.handlers;
 
+import static java.util.Objects.nonNull;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
 import static org.mockito.ArgumentMatchers.any;
@@ -7,6 +8,7 @@ import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.Mockito.doThrow;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.verifyNoInteractions;
+import static uk.gov.hmcts.reform.sscs.ccd.domain.YesNo.isYesOrNo;
 import static uk.gov.hmcts.reform.sscs.domain.notify.NotificationEventType.*;
 
 import junitparams.JUnitParamsRunner;
@@ -146,7 +148,7 @@ public class FilterNotificationsEventsHandlerTest {
                         .appeal(Appeal.builder()
                                 .appellant(Appellant.builder()
                                         .appointee(existing)
-                                        .isAppointee(existing != null ? "yes" : "no")
+                                        .isAppointee(isYesOrNo(nonNull(existing)))
                                         .build())
                                 .build())
                         .build())
@@ -154,7 +156,7 @@ public class FilterNotificationsEventsHandlerTest {
                         .appeal(Appeal.builder()
                                 .appellant(Appellant.builder()
                                         .appointee(newlyAdded)
-                                        .isAppointee(newlyAdded != null ? "yes" : "no")
+                                        .isAppointee(isYesOrNo(nonNull(newlyAdded)))
                                         .build())
                                 .build())
                         .build())
@@ -174,7 +176,7 @@ public class FilterNotificationsEventsHandlerTest {
                         .appeal(Appeal.builder()
                                 .appellant(Appellant.builder()
                                         .appointee(existing)
-                                        .isAppointee(existing != null ? "yes" : "no")
+                                        .isAppointee(isYesOrNo(nonNull(existing)))
                                         .build())
                                 .build())
                         .build())
@@ -182,7 +184,7 @@ public class FilterNotificationsEventsHandlerTest {
                         .appeal(Appeal.builder()
                                 .appellant(Appellant.builder()
                                         .appointee(newlyAdded)
-                                        .isAppointee(newlyAdded != null ? "yes" : "no")
+                                        .isAppointee(isYesOrNo(nonNull(newlyAdded)))
                                         .build())
                                 .build())
                         .build())

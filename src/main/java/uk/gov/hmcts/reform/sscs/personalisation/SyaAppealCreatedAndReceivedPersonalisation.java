@@ -1,5 +1,7 @@
 package uk.gov.hmcts.reform.sscs.personalisation;
 
+import static uk.gov.hmcts.reform.sscs.ccd.domain.YesNo.isYes;
+import static uk.gov.hmcts.reform.sscs.ccd.domain.YesNo.isYesOrNo;
 import static uk.gov.hmcts.reform.sscs.config.AppConstants.*;
 import static uk.gov.hmcts.reform.sscs.config.PersonalisationConfiguration.PersonalisationKey.*;
 import static uk.gov.hmcts.reform.sscs.service.NotificationUtils.hasAppointee;
@@ -132,7 +134,8 @@ public class SyaAppealCreatedAndReceivedPersonalisation extends WithRepresentati
         StringBuilder buildTextMessage = new StringBuilder()
             .append(titleText.get(RECEIVE_TEXT_MESSAGE_REMINDER.name()))
             .append(null != subscription && null != subscription.getSubscribeSms()
-                    ? titleText.get(getYesNoKey(subscription.getSubscribeSms().toLowerCase(Locale.ENGLISH))) :  titleText.get(getYesNoKey(NO)));
+                    ? titleText.get(getYesNoKey(subscription.getSubscribeSms().getValue().toLowerCase(Locale.ENGLISH))) :
+                titleText.get(getYesNoKey(NO)));
 
         if (null != subscription && subscription.isSmsSubscribed()) {
             buildTextMessage
@@ -154,17 +157,24 @@ public class SyaAppealCreatedAndReceivedPersonalisation extends WithRepresentati
         return personalisation;
     }
 
-
     public Map<String, Object> setAppointeeDetails(Map<String, Object> personalisation, SscsCaseData ccdResponse) {
-        String isAppointee = ccdResponse.getAppeal().getAppellant().getIsAppointee();
-        personalisation.put(AppConstants.APPOINTEE_DETAILS_LITERAL, buildAppointeeDetails(ccdResponse.getAppeal().getAppellant().getAppointee(), isAppointee, syaAppealCreatedPersonalisationConfiguration.getPersonalisation().get(LanguagePreference.ENGLISH), UnaryOperator.identity()));
+        personalisation.put(AppConstants.APPOINTEE_DETAILS_LITERAL,
+            buildAppointeeDetails(ccdResponse.getAppeal().getAppellant().getAppointee(),
+                ccdResponse.getAppeal().getAppellant().getIsAppointee(),
+                syaAppealCreatedPersonalisationConfiguration.getPersonalisation().get(LanguagePreference.ENGLISH),
+                UnaryOperator.identity()));
         if (ccdResponse.isLanguagePreferenceWelsh()) {
-            personalisation.put(AppConstants.WELSH_APPOINTEE_DETAILS_LITERAL, buildAppointeeDetails(ccdResponse.getAppeal().getAppellant().getAppointee(), isAppointee, syaAppealCreatedPersonalisationConfiguration.getPersonalisation().get(LanguagePreference.WELSH), this::convertLocalDateToWelshDateString));
+            personalisation.put(AppConstants.WELSH_APPOINTEE_DETAILS_LITERAL,
+                buildAppointeeDetails(ccdResponse.getAppeal().getAppellant().getAppointee(),
+                    ccdResponse.getAppeal().getAppellant().getIsAppointee(),
+                    syaAppealCreatedPersonalisationConfiguration.getPersonalisation().get(LanguagePreference.WELSH),
+                    this::convertLocalDateToWelshDateString));
         }
         return personalisation;
     }
 
-    private String buildAppointeeDetails(Appointee appointee, String isAppointee, Map<String, String> titleText, UnaryOperator<String> convertDate) {
+    private String buildAppointeeDetails(Appointee appointee, YesNo isAppointee, Map<String, String> titleText,
+                                         UnaryOperator<String> convertDate) {
         String hasAppointee = hasAppointee(appointee, isAppointee) ? YES : NO;
 
         StringBuilder appointeeBuilder = new StringBuilder()
@@ -193,7 +203,7 @@ public class SyaAppealCreatedAndReceivedPersonalisation extends WithRepresentati
 
     private String buildRepresentativeDetails(Representative representative,  Map<String, String> titleText) {
         String hasRepresentative = (representative != null
-            && StringUtils.equalsIgnoreCase(YES, representative.getHasRepresentative())) ? YES : NO;
+            && isYes(representative.getHasRepresentative())) ? YES : NO;
 
         StringBuilder representativeBuilder = new StringBuilder()
             .append(titleText.get(HAVE_A_REPRESENTATIVE.name()))
@@ -278,13 +288,13 @@ public class SyaAppealCreatedAndReceivedPersonalisation extends WithRepresentati
     }
 
     private String buildHearingDetails(HearingOptions hearingOptions, Map<String, String> titleText, UnaryOperator<String> convertor) {
-        String wantsToAttend = hearingOptions.getWantsToAttend() != null ? hearingOptions.getWantsToAttend() : "No";
-        String decisionKey = getYesNoKey(wantsToAttend.toLowerCase(Locale.ENGLISH));
+        YesNo wantsToAttend = isYesOrNo(isYes(hearingOptions.getWantsToAttend()));
+        String decisionKey = getYesNoKey(wantsToAttend.getValue().toLowerCase(Locale.ENGLISH));
         StringBuilder hearingOptionsBuilder = new StringBuilder()
             .append(titleText.get(PersonalisationConfiguration.PersonalisationKey.ATTENDING_HEARING.name()))
             .append(titleText.get(decisionKey));
 
-        if (StringUtils.equalsIgnoreCase(hearingOptions.getWantsToAttend(), YES) && hearingOptions.getExcludeDates() != null && !hearingOptions.getExcludeDates().isEmpty()) {
+        if (isYes(wantsToAttend) && hearingOptions.getExcludeDates() != null && !hearingOptions.getExcludeDates().isEmpty()) {
             hearingOptionsBuilder.append(TWO_NEW_LINES + titleText.get(PersonalisationConfiguration.PersonalisationKey.DATES_NOT_ATTENDING.name()));
 
             StringJoiner joiner = new StringJoiner(", ");

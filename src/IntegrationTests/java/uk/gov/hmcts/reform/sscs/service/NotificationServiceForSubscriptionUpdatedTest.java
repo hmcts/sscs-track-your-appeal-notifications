@@ -4,6 +4,8 @@ import static org.mockito.Mockito.any;
 import static org.mockito.Mockito.eq;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.verifyNoMoreInteractions;
+import static uk.gov.hmcts.reform.sscs.ccd.domain.YesNo.NO;
+import static uk.gov.hmcts.reform.sscs.ccd.domain.YesNo.YES;
 import static uk.gov.hmcts.reform.sscs.domain.notify.NotificationEventType.SUBSCRIPTION_UPDATED_NOTIFICATION;
 
 import junitparams.Parameters;
@@ -60,8 +62,8 @@ public class NotificationServiceForSubscriptionUpdatedTest extends NotificationS
     @Parameters({"appellant", "representative", "appointee"})
     public void unsubscribeFromSmsAndEmail_doesNotSendAnyEmailsOrSms(String who) {
         Subscription newSubscription = getSubscription().toBuilder()
-            .subscribeEmail(NotificationServiceBase.NO)
-            .subscribeSms(NotificationServiceBase.NO)
+            .subscribeEmail(NO)
+            .subscribeSms(NO)
             .build();
         doUnsubscribeWithAssertions(newSubscription, who);
     }
@@ -69,22 +71,22 @@ public class NotificationServiceForSubscriptionUpdatedTest extends NotificationS
     @Test
     @Parameters({"appellant", "representative", "appointee"})
     public void unsubscribeFromEmail_doesNotSendAnyEmailsOrSms(String who) {
-        Subscription newSubscription = getSubscription().toBuilder().subscribeEmail(NotificationServiceBase.NO).subscribeSms(NotificationServiceBase.YES).build();
+        Subscription newSubscription = getSubscription().toBuilder().subscribeEmail(NO).subscribeSms(YES).build();
         doUnsubscribeWithAssertions(newSubscription, who);
     }
 
     @Test
     @Parameters({"appellant", "representative", "appointee"})
     public void unsubscribeFromSms_doesNotSendAnyEmailsOrSms(String who) {
-        Subscription newSubscription = getSubscription().toBuilder().subscribeEmail(NotificationServiceBase.YES).subscribeSms(NotificationServiceBase.NO).build();
+        Subscription newSubscription = getSubscription().toBuilder().subscribeEmail(YES).subscribeSms(NO).build();
         doUnsubscribeWithAssertions(newSubscription, who);
     }
 
     @Test
     @Parameters({"appellant", "representative", "appointee"})
     public void subscribeEmail_willSendSubscriptionEmail_and_ResendLastEvent(String who) throws NotificationClientException {
-        Subscription newSubscription = getSubscription().toBuilder().email(NotificationServiceBase.EMAIL_TEST_2).subscribeEmail(NotificationServiceBase.YES).subscribeSms(NotificationServiceBase.NO).build();
-        Subscription oldSubscription = getSubscription().toBuilder().subscribeEmail(NotificationServiceBase.NO).subscribeSms(NotificationServiceBase.NO).build();
+        Subscription newSubscription = getSubscription().toBuilder().email(EMAIL_TEST_2).subscribeEmail(YES).subscribeSms(NO).build();
+        Subscription oldSubscription = getSubscription().toBuilder().subscribeEmail(NO).subscribeSms(NO).build();
         SscsCaseData newSscsCaseData = getSscsCaseData(newSubscription, who);
         SscsCaseData oldSscsCaseData = getSscsCaseData(oldSubscription, who);
         SscsCaseDataWrapper wrapper = getSscsCaseDataWrapper(newSscsCaseData, oldSscsCaseData, SUBSCRIPTION_UPDATED_NOTIFICATION);
@@ -98,8 +100,8 @@ public class NotificationServiceForSubscriptionUpdatedTest extends NotificationS
     @Test
     public void subscribeMobileForAppellant_willSendSubscriptionSms_and_ResendLastEvent() throws NotificationClientException {
         String appellant = "appellant";
-        Subscription newSubscription = getSubscription().toBuilder().mobile(NotificationServiceBase.MOBILE_NUMBER_2).subscribeEmail(NotificationServiceBase.NO).subscribeSms(NotificationServiceBase.YES).build();
-        Subscription oldSubscription = getSubscription().toBuilder().subscribeEmail(NotificationServiceBase.NO).subscribeSms(NotificationServiceBase.NO).build();
+        Subscription newSubscription = getSubscription().toBuilder().mobile(MOBILE_NUMBER_2).subscribeEmail(NO).subscribeSms(YES).build();
+        Subscription oldSubscription = getSubscription().toBuilder().subscribeEmail(NO).subscribeSms(NO).build();
         SscsCaseData newSscsCaseData = getSscsCaseData(newSubscription, appellant);
         SscsCaseData oldSscsCaseData = getSscsCaseData(oldSubscription, appellant);
         SscsCaseDataWrapper wrapper = getSscsCaseDataWrapper(newSscsCaseData, oldSscsCaseData, SUBSCRIPTION_UPDATED_NOTIFICATION);
@@ -113,8 +115,8 @@ public class NotificationServiceForSubscriptionUpdatedTest extends NotificationS
     @Test
     public void subscribeMobileForAppointee_willSendSubscriptionSms_and_ResendLastEvent() throws NotificationClientException {
         String appointee = "appointee";
-        Subscription newSubscription = getSubscription().toBuilder().mobile(NotificationServiceBase.MOBILE_NUMBER_2).subscribeEmail(NotificationServiceBase.NO).subscribeSms(NotificationServiceBase.YES).build();
-        Subscription oldSubscription = getSubscription().toBuilder().subscribeEmail(NotificationServiceBase.NO).subscribeSms(NotificationServiceBase.NO).build();
+        Subscription newSubscription = getSubscription().toBuilder().mobile(MOBILE_NUMBER_2).subscribeEmail(NO).subscribeSms(YES).build();
+        Subscription oldSubscription = getSubscription().toBuilder().subscribeEmail(NO).subscribeSms(NO).build();
         SscsCaseData newSscsCaseData = getSscsCaseData(newSubscription, appointee);
         SscsCaseData oldSscsCaseData = getSscsCaseData(oldSubscription, appointee);
         SscsCaseDataWrapper wrapper = getSscsCaseDataWrapper(newSscsCaseData, oldSscsCaseData, SUBSCRIPTION_UPDATED_NOTIFICATION);
@@ -128,8 +130,8 @@ public class NotificationServiceForSubscriptionUpdatedTest extends NotificationS
     @Test
     public void subscribeMobileForRepresentative_willSendSubscriptionSms_and_ResendLastEvent() throws NotificationClientException {
         String representative = "representative";
-        Subscription newSubscription = getSubscription().toBuilder().mobile(NotificationServiceBase.MOBILE_NUMBER_2).subscribeEmail(NotificationServiceBase.NO).subscribeSms(NotificationServiceBase.YES).build();
-        Subscription oldSubscription = getSubscription().toBuilder().subscribeEmail(NotificationServiceBase.NO).subscribeSms(NotificationServiceBase.NO).build();
+        Subscription newSubscription = getSubscription().toBuilder().mobile(MOBILE_NUMBER_2).subscribeEmail(NO).subscribeSms(YES).build();
+        Subscription oldSubscription = getSubscription().toBuilder().subscribeEmail(NO).subscribeSms(NO).build();
         SscsCaseData newSscsCaseData = getSscsCaseData(newSubscription, representative);
         SscsCaseData oldSscsCaseData = getSscsCaseData(oldSubscription, representative);
         SscsCaseDataWrapper wrapper = getSscsCaseDataWrapper(newSscsCaseData, oldSscsCaseData, SUBSCRIPTION_UPDATED_NOTIFICATION);
@@ -143,8 +145,8 @@ public class NotificationServiceForSubscriptionUpdatedTest extends NotificationS
     @Test
     public void subscribeMobileAndEmailForAppellant_willSendSubscriptionEmailAndSms_and_ResendLastEvent() throws NotificationClientException {
         String appellant = "appellant";
-        Subscription newSubscription = getSubscription().toBuilder().email(NotificationServiceBase.EMAIL_TEST_2).mobile(NotificationServiceBase.MOBILE_NUMBER_2).subscribeEmail(NotificationServiceBase.YES).subscribeSms(NotificationServiceBase.YES).build();
-        Subscription oldSubscription = getSubscription().toBuilder().subscribeEmail(NotificationServiceBase.NO).subscribeSms(NotificationServiceBase.NO).build();
+        Subscription newSubscription = getSubscription().toBuilder().email(EMAIL_TEST_2).mobile(MOBILE_NUMBER_2).subscribeEmail(YES).subscribeSms(YES).build();
+        Subscription oldSubscription = getSubscription().toBuilder().subscribeEmail(NO).subscribeSms(NO).build();
         SscsCaseData newSscsCaseData = getSscsCaseData(newSubscription, appellant);
         SscsCaseData oldSscsCaseData = getSscsCaseData(oldSubscription, appellant);
         SscsCaseDataWrapper wrapper = getSscsCaseDataWrapper(newSscsCaseData, oldSscsCaseData, SUBSCRIPTION_UPDATED_NOTIFICATION);
@@ -161,8 +163,8 @@ public class NotificationServiceForSubscriptionUpdatedTest extends NotificationS
     @Test
     public void subscribeMobileAndEmailForAppointee_willSendSubscriptionEmailAndSms_and_ResendLastEvent() throws NotificationClientException {
         String appointee = "appointee";
-        Subscription newSubscription = getSubscription().toBuilder().email(NotificationServiceBase.EMAIL_TEST_2).mobile(NotificationServiceBase.MOBILE_NUMBER_2).subscribeEmail(NotificationServiceBase.YES).subscribeSms(NotificationServiceBase.YES).build();
-        Subscription oldSubscription = getSubscription().toBuilder().subscribeEmail(NotificationServiceBase.NO).subscribeSms(NotificationServiceBase.NO).build();
+        Subscription newSubscription = getSubscription().toBuilder().email(EMAIL_TEST_2).mobile(MOBILE_NUMBER_2).subscribeEmail(YES).subscribeSms(YES).build();
+        Subscription oldSubscription = getSubscription().toBuilder().subscribeEmail(NO).subscribeSms(NO).build();
         SscsCaseData newSscsCaseData = getSscsCaseData(newSubscription, appointee);
         SscsCaseData oldSscsCaseData = getSscsCaseData(oldSubscription, appointee);
         SscsCaseDataWrapper wrapper = getSscsCaseDataWrapper(newSscsCaseData, oldSscsCaseData, SUBSCRIPTION_UPDATED_NOTIFICATION);
@@ -179,8 +181,8 @@ public class NotificationServiceForSubscriptionUpdatedTest extends NotificationS
     @Test
     public void subscribeMobileAndEmailForRepresentative_willSendSubscriptionEmailAndSms_and_ResendLastEvent() throws NotificationClientException {
         String representative = "representative";
-        Subscription newSubscription = getSubscription().toBuilder().email(NotificationServiceBase.EMAIL_TEST_2).mobile(NotificationServiceBase.MOBILE_NUMBER_2).subscribeEmail(NotificationServiceBase.YES).subscribeSms(NotificationServiceBase.YES).build();
-        Subscription oldSubscription = getSubscription().toBuilder().subscribeEmail(NotificationServiceBase.NO).subscribeSms(NotificationServiceBase.NO).build();
+        Subscription newSubscription = getSubscription().toBuilder().email(EMAIL_TEST_2).mobile(MOBILE_NUMBER_2).subscribeEmail(YES).subscribeSms(YES).build();
+        Subscription oldSubscription = getSubscription().toBuilder().subscribeEmail(NO).subscribeSms(NO).build();
         SscsCaseData newSscsCaseData = getSscsCaseData(newSubscription, representative);
         SscsCaseData oldSscsCaseData = getSscsCaseData(oldSubscription, representative);
         SscsCaseDataWrapper wrapper = getSscsCaseDataWrapper(newSscsCaseData, oldSscsCaseData, SUBSCRIPTION_UPDATED_NOTIFICATION);
@@ -199,7 +201,7 @@ public class NotificationServiceForSubscriptionUpdatedTest extends NotificationS
     public void changeEmail_willSendChangeEmailToOldAndNewEmail(String who) throws NotificationClientException {
         SscsCaseData newSscsCaseData = getSscsCaseData(getSubscription(), who);
 
-        Subscription oldSubscription = getSubscription().toBuilder().email(NotificationServiceBase.EMAIL_TEST_2).build();
+        Subscription oldSubscription = getSubscription().toBuilder().email(EMAIL_TEST_2).build();
         SscsCaseData oldSscsCaseData = getSscsCaseData(oldSubscription, who);
 
         SscsCaseDataWrapper wrapper = getSscsCaseDataWrapper(newSscsCaseData, oldSscsCaseData, SUBSCRIPTION_UPDATED_NOTIFICATION);
@@ -217,7 +219,7 @@ public class NotificationServiceForSubscriptionUpdatedTest extends NotificationS
         String appellant = "appellant";
         SscsCaseData newSscsCaseData = getSscsCaseData(getSubscription(), appellant);
 
-        Subscription oldSubscription = getSubscription().toBuilder().mobile(NotificationServiceBase.MOBILE_NUMBER_2).build();
+        Subscription oldSubscription = getSubscription().toBuilder().mobile(MOBILE_NUMBER_2).build();
         SscsCaseData oldSscsCaseData = getSscsCaseData(oldSubscription, appellant);
 
         SscsCaseDataWrapper wrapper = getSscsCaseDataWrapper(newSscsCaseData, oldSscsCaseData, SUBSCRIPTION_UPDATED_NOTIFICATION);
@@ -235,7 +237,7 @@ public class NotificationServiceForSubscriptionUpdatedTest extends NotificationS
         String appointee = "appointee";
         SscsCaseData newSscsCaseData = getSscsCaseData(getSubscription(), appointee);
 
-        Subscription oldSubscription = getSubscription().toBuilder().mobile(NotificationServiceBase.MOBILE_NUMBER_2).build();
+        Subscription oldSubscription = getSubscription().toBuilder().mobile(MOBILE_NUMBER_2).build();
         SscsCaseData oldSscsCaseData = getSscsCaseData(oldSubscription, appointee);
 
         SscsCaseDataWrapper wrapper = getSscsCaseDataWrapper(newSscsCaseData, oldSscsCaseData, SUBSCRIPTION_UPDATED_NOTIFICATION);
@@ -254,7 +256,7 @@ public class NotificationServiceForSubscriptionUpdatedTest extends NotificationS
 
         SscsCaseData newSscsCaseData = getSscsCaseData(getSubscription(), representative);
 
-        Subscription oldSubscription = getSubscription().toBuilder().mobile(NotificationServiceBase.MOBILE_NUMBER_2).build();
+        Subscription oldSubscription = getSubscription().toBuilder().mobile(MOBILE_NUMBER_2).build();
         SscsCaseData oldSscsCaseData = getSscsCaseData(oldSubscription, representative);
 
         SscsCaseDataWrapper wrapper = getSscsCaseDataWrapper(newSscsCaseData, oldSscsCaseData, SUBSCRIPTION_UPDATED_NOTIFICATION);
@@ -272,7 +274,7 @@ public class NotificationServiceForSubscriptionUpdatedTest extends NotificationS
         String appellant = "appellant";
         SscsCaseData newSscsCaseData = getSscsCaseData(getSubscription(), appellant);
 
-        Subscription oldSubscription = getSubscription().toBuilder().mobile(NotificationServiceBase.MOBILE_NUMBER_2).email(NotificationServiceBase.EMAIL_TEST_2).build();
+        Subscription oldSubscription = getSubscription().toBuilder().mobile(MOBILE_NUMBER_2).email(EMAIL_TEST_2).build();
         SscsCaseData oldSscsCaseData = getSscsCaseData(oldSubscription, appellant);
 
         SscsCaseDataWrapper wrapper = getSscsCaseDataWrapper(newSscsCaseData, oldSscsCaseData, SUBSCRIPTION_UPDATED_NOTIFICATION);
@@ -292,7 +294,7 @@ public class NotificationServiceForSubscriptionUpdatedTest extends NotificationS
         String appointee = "appointee";
         SscsCaseData newSscsCaseData = getSscsCaseData(getSubscription(), appointee);
 
-        Subscription oldSubscription = getSubscription().toBuilder().mobile(NotificationServiceBase.MOBILE_NUMBER_2).email(NotificationServiceBase.EMAIL_TEST_2).build();
+        Subscription oldSubscription = getSubscription().toBuilder().mobile(MOBILE_NUMBER_2).email(EMAIL_TEST_2).build();
         SscsCaseData oldSscsCaseData = getSscsCaseData(oldSubscription, appointee);
 
         SscsCaseDataWrapper wrapper = getSscsCaseDataWrapper(newSscsCaseData, oldSscsCaseData, SUBSCRIPTION_UPDATED_NOTIFICATION);
@@ -312,7 +314,7 @@ public class NotificationServiceForSubscriptionUpdatedTest extends NotificationS
         String representative = "representative";
         SscsCaseData newSscsCaseData = getSscsCaseData(getSubscription(), representative);
 
-        Subscription oldSubscription = getSubscription().toBuilder().mobile(NotificationServiceBase.MOBILE_NUMBER_2).email(NotificationServiceBase.EMAIL_TEST_2).build();
+        Subscription oldSubscription = getSubscription().toBuilder().mobile(MOBILE_NUMBER_2).email(EMAIL_TEST_2).build();
         SscsCaseData oldSscsCaseData = getSscsCaseData(oldSubscription, representative);
 
         SscsCaseDataWrapper wrapper = getSscsCaseDataWrapper(newSscsCaseData, oldSscsCaseData, SUBSCRIPTION_UPDATED_NOTIFICATION);

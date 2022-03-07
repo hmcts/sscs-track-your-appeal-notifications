@@ -9,11 +9,7 @@ import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertNull;
 import static org.mockito.ArgumentMatchers.eq;
-import static org.mockito.Mockito.any;
-import static org.mockito.Mockito.anyString;
-import static org.mockito.Mockito.never;
-import static org.mockito.Mockito.verify;
-import static org.mockito.Mockito.when;
+import static org.mockito.Mockito.*;
 import static org.mockito.MockitoAnnotations.openMocks;
 import static uk.gov.hmcts.reform.sscs.SscsCaseDataUtils.getWelshDate;
 import static uk.gov.hmcts.reform.sscs.ccd.domain.Benefit.PIP;
@@ -24,7 +20,9 @@ import static uk.gov.hmcts.reform.sscs.ccd.domain.HearingType.ONLINE;
 import static uk.gov.hmcts.reform.sscs.ccd.domain.HearingType.ORAL;
 import static uk.gov.hmcts.reform.sscs.ccd.domain.HearingType.PAPER;
 import static uk.gov.hmcts.reform.sscs.ccd.domain.HearingType.REGULAR;
+import static uk.gov.hmcts.reform.sscs.ccd.domain.YesNo.NO;
 import static uk.gov.hmcts.reform.sscs.ccd.domain.YesNo.YES;
+import static uk.gov.hmcts.reform.sscs.ccd.domain.YesNo.isYesOrNo;
 import static uk.gov.hmcts.reform.sscs.config.AppConstants.*;
 import static uk.gov.hmcts.reform.sscs.config.SubscriptionType.APPELLANT;
 import static uk.gov.hmcts.reform.sscs.config.SubscriptionType.APPOINTEE;
@@ -33,7 +31,12 @@ import static uk.gov.hmcts.reform.sscs.config.SubscriptionType.OTHER_PARTY;
 import static uk.gov.hmcts.reform.sscs.config.SubscriptionType.REPRESENTATIVE;
 import static uk.gov.hmcts.reform.sscs.domain.notify.NotificationEventType.*;
 
-import java.time.*;
+import java.time.Instant;
+import java.time.LocalDate;
+import java.time.LocalDateTime;
+import java.time.LocalTime;
+import java.time.ZoneId;
+import java.time.ZonedDateTime;
 import java.time.format.DateTimeFormatter;
 import java.time.temporal.ChronoUnit;
 import java.util.ArrayList;
@@ -159,8 +162,8 @@ public class PersonalisationTest {
                 .tya("GLSCRR")
                 .email("test@email.com")
                 .mobile("07983495065")
-                .subscribeEmail("Yes")
-                .subscribeSms("No")
+                .subscribeEmail(YES)
+                .subscribeSms(NO)
                 .build();
 
         subscriptions = Subscriptions.builder().appellantSubscription(subscription).jointPartySubscription(subscription).build();
@@ -286,7 +289,7 @@ public class PersonalisationTest {
         NotificationWrapper notificationWrapper = new CcdNotificationWrapper(SscsCaseDataWrapper.builder()
                 .newSscsCaseData(SscsCaseData.builder()
                         .directionTypeDl(new DynamicList(directionType.toString()))
-                        .languagePreferenceWelsh("Yes")
+                        .languagePreferenceWelsh(YES)
                         .appeal(Appeal.builder()
                                 .hearingType(ONLINE.getValue())
                                 .build())
@@ -756,8 +759,8 @@ public class PersonalisationTest {
                 .tya("GLSCRR")
                 .email("test@email.com")
                 .mobile("07983495065")
-                .subscribeEmail("Yes")
-                .subscribeSms("No")
+                .subscribeEmail(YES)
+                .subscribeSms(NO)
                 .build();
 
         Subscriptions subscriptions = Subscriptions.builder().appellantSubscription(appellantSubscription).build();
@@ -800,8 +803,8 @@ public class PersonalisationTest {
                 .tya("GLSCRR")
                 .email("test@email.com")
                 .mobile("07983495065")
-                .subscribeEmail("Yes")
-                .subscribeSms("No")
+                .subscribeEmail(YES)
+                .subscribeSms(NO)
                 .build();
 
         Subscriptions subscriptions = Subscriptions.builder().appellantSubscription(appellantSubscription).build();
@@ -814,7 +817,7 @@ public class PersonalisationTest {
                 .subscriptions(subscriptions)
                 .events(events)
                 .evidence(evidence)
-                .languagePreferenceWelsh("Yes")
+                .languagePreferenceWelsh(YES)
                 .build();
 
         Map result = personalisation.create(SscsCaseDataWrapper.builder()
@@ -851,7 +854,7 @@ public class PersonalisationTest {
                 .ccdCaseId(CASE_ID).caseReference("SC/1234/5")
                 .appeal(Appeal.builder().benefitType(BenefitType.builder().code("PIP").build()).build())
                 .events(events)
-                .languagePreferenceWelsh("yes")
+                .languagePreferenceWelsh(YES)
                 .build();
 
         Map result = personalisation.setEventData(new HashMap<>(), response, APPEAL_RECEIVED_NOTIFICATION);
@@ -880,7 +883,7 @@ public class PersonalisationTest {
                 .appeal(Appeal.builder().benefitType(BenefitType.builder().code("PIP").build()).build())
                 .createdInGapsFrom("readyToList")
                 .dateSentToDwp("2018-07-01")
-                .languagePreferenceWelsh("yes")
+                .languagePreferenceWelsh(YES)
                 .build();
 
         Map<String, String> result = personalisation.setEventData(new HashMap<>(), response, APPEAL_RECEIVED_NOTIFICATION);
@@ -1062,7 +1065,7 @@ public class PersonalisationTest {
                         .build())
                 .subscriptions(subscriptions)
                 .hearings(hearingList)
-                .languagePreferenceWelsh("Yes")
+                .languagePreferenceWelsh(YES)
                 .build();
 
         Map result = personalisation.create(SscsCaseDataWrapper.builder()
@@ -1128,7 +1131,7 @@ public class PersonalisationTest {
                         .build())
                 .subscriptions(subscriptions)
                 .hearings(hearingList)
-                .languagePreferenceWelsh("Yes")
+                .languagePreferenceWelsh(YES)
                 .build();
 
         Map result = personalisation.create(SscsCaseDataWrapper.builder().newSscsCaseData(response)
@@ -1257,7 +1260,7 @@ public class PersonalisationTest {
 
         SscsCaseData response = SscsCaseData.builder()
                 .createdInGapsFrom(EventType.READY_TO_LIST.getCcdType())
-                .isScottishCase(isScottish)
+                .isScottishCase(isYesOrNo(isScottish))
                 .build();
 
         evidenceAddress.setScottishPoBoxFeatureEnabled(scottishPoBoxFeature);
@@ -1344,12 +1347,12 @@ public class PersonalisationTest {
                 .subscriptions(Subscriptions.builder()
                         .appointeeSubscription(Subscription.builder()
                                 .tya(tyaNumber)
-                                .subscribeEmail("Yes")
+                                .subscribeEmail(YES)
                                 .email("appointee@example.com")
                                 .build())
                         .representativeSubscription(Subscription.builder()
                                 .tya("repTya")
-                                .subscribeEmail("Yes")
+                                .subscribeEmail(YES)
                                 .email("rep@example.com")
                                 .build())
                         .build())
@@ -1396,12 +1399,12 @@ public class PersonalisationTest {
                 .subscriptions(Subscriptions.builder()
                         .appellantSubscription(Subscription.builder()
                                 .tya(tyaNumber)
-                                .subscribeEmail("Yes")
+                                .subscribeEmail(YES)
                                 .email("appointee@example.com")
                                 .build())
                         .representativeSubscription(Subscription.builder()
                                 .tya(repTyaNumber)
-                                .subscribeEmail("Yes")
+                                .subscribeEmail(YES)
                                 .email("rep@example.com")
                                 .build())
                         .build())
@@ -1453,12 +1456,12 @@ public class PersonalisationTest {
                 .subscriptions(Subscriptions.builder()
                         .appellantSubscription(Subscription.builder()
                                 .tya(tyaNumber)
-                                .subscribeEmail("Yes")
+                                .subscribeEmail(YES)
                                 .email("appointee@example.com")
                                 .build())
                         .jointPartySubscription(Subscription.builder()
                                 .tya(jointPartyTyaNumber)
-                                .subscribeEmail("Yes")
+                                .subscribeEmail(YES)
                                 .email("jp@example.com")
                                 .build())
                         .build())
@@ -1498,7 +1501,7 @@ public class PersonalisationTest {
                         .otherPartySubscription(
                                 Subscription.builder()
                                         .tya(otherPartyTyaNumber)
-                                        .subscribeEmail("Yes")
+                                        .subscribeEmail(YES)
                                         .email("op@example.com")
                                         .build()
                         )
@@ -1519,7 +1522,7 @@ public class PersonalisationTest {
                 .subscriptions(Subscriptions.builder()
                         .appellantSubscription(Subscription.builder()
                                 .tya(tyaNumber)
-                                .subscribeEmail("Yes")
+                                .subscribeEmail(YES)
                                 .email("appointee@example.com")
                                 .build())
                         .build())
@@ -1725,7 +1728,7 @@ public class PersonalisationTest {
                 .appeal(Appeal.builder().benefitType(BenefitType.builder().code("PIP").build())
                         .appellant(Appellant.builder().name(name).build())
                         .build())
-                .isScottishCase(isScottish)
+                .isScottishCase(isYesOrNo(isScottish))
                 .build();
 
         Map<String, String> result = personalisation.create(SscsCaseDataWrapper.builder().newSscsCaseData(response)
@@ -1776,7 +1779,7 @@ public class PersonalisationTest {
                 .ccdCaseId(CASE_ID).caseReference("SC/1234/5")
                 .appeal(Appeal.builder().hearingOptions(HearingOptions.builder()
                         .arrangements(arrangementList)
-                        .languageInterpreter("Yes")
+                        .languageInterpreter(YES)
                         .other("Other")
                         .build()).build())
                 .build();
@@ -1804,10 +1807,10 @@ public class PersonalisationTest {
 
         SscsCaseData response = SscsCaseData.builder()
                 .ccdCaseId(CASE_ID).caseReference("SC/1234/5")
-                .languagePreferenceWelsh("yes")
+                .languagePreferenceWelsh(YES)
                 .appeal(Appeal.builder().hearingOptions(HearingOptions.builder()
                         .arrangements(arrangementList)
-                        .languageInterpreter("Yes")
+                        .languageInterpreter(YES)
                         .other("Other")
                         .build()).build())
                 .build();

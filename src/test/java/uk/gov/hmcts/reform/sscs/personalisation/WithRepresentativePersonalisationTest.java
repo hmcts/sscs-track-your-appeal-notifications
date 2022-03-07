@@ -1,6 +1,8 @@
 package uk.gov.hmcts.reform.sscs.personalisation;
 
 import static org.junit.Assert.assertEquals;
+import static uk.gov.hmcts.reform.sscs.ccd.domain.YesNo.NO;
+import static uk.gov.hmcts.reform.sscs.ccd.domain.YesNo.YES;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -34,7 +36,7 @@ public class WithRepresentativePersonalisationTest {
         SscsCaseData sscsCaseDataWithRepsFlagYes = SscsCaseData.builder()
                 .appeal(Appeal.builder()
                         .rep(Representative.builder()
-                                .hasRepresentative("yes")
+                                .hasRepresentative(YES)
                                 .name(Name.builder()
                                         .firstName("Manish")
                                         .lastName("Sharma")
@@ -46,7 +48,7 @@ public class WithRepresentativePersonalisationTest {
         SscsCaseData sscsCaseDataWithRepsFlagNo = SscsCaseData.builder()
                 .appeal(Appeal.builder()
                         .rep(Representative.builder()
-                                .hasRepresentative("no")
+                                .hasRepresentative(NO)
                                 .name(Name.builder()
                                         .firstName("Manish")
                                         .lastName("Sharma")
@@ -58,7 +60,7 @@ public class WithRepresentativePersonalisationTest {
         SscsCaseData sscsCaseDataWithRepsOrgOnlyFlagYes = SscsCaseData.builder()
                 .appeal(Appeal.builder()
                         .rep(Representative.builder()
-                                .hasRepresentative("yes")
+                                .hasRepresentative(YES)
                                 .name(Name.builder().build())
                                 .organisation("organisation")
                                 .build())
@@ -67,7 +69,7 @@ public class WithRepresentativePersonalisationTest {
         SscsCaseData sscsCaseDataWithRepsOrgOnlyFlagNo = SscsCaseData.builder()
                 .appeal(Appeal.builder()
                         .rep(Representative.builder()
-                                .hasRepresentative("no")
+                                .hasRepresentative(NO)
                                 .name(Name.builder().build())
                                 .organisation("organisation")
                                 .build())
@@ -86,7 +88,7 @@ public class WithRepresentativePersonalisationTest {
         SscsCaseData sscsCaseDataWithEmptyRepsAndEmptyNamesFlagYes = SscsCaseData.builder()
                 .appeal(Appeal.builder()
                         .rep(Representative.builder()
-                                .hasRepresentative("yes")
+                                .hasRepresentative(YES)
                                 .name(Name.builder().build())
                                 .build())
                         .build())

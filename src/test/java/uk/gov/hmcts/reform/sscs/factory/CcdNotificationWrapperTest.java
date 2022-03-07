@@ -4,6 +4,7 @@ import static org.hamcrest.CoreMatchers.is;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static uk.gov.hmcts.reform.sscs.ccd.domain.YesNo.NO;
 import static uk.gov.hmcts.reform.sscs.ccd.domain.YesNo.YES;
+import static uk.gov.hmcts.reform.sscs.ccd.domain.YesNo.isYesOrNo;
 import static uk.gov.hmcts.reform.sscs.domain.notify.NotificationEventType.*;
 
 import java.util.ArrayList;
@@ -53,7 +54,8 @@ public class CcdNotificationWrapperTest {
     }
 
     private CcdNotificationWrapper buildCcdNotificationWrapperBasedOnEventTypeWithRep(NotificationEventType notificationEventType) {
-        return buildCcdNotificationWrapperBasedOnEventType(notificationEventType, null, Representative.builder().hasRepresentative("Yes").build(), false);
+        return buildCcdNotificationWrapperBasedOnEventType(notificationEventType, null,
+            Representative.builder().hasRepresentative(YES).build(), false);
     }
 
     private CcdNotificationWrapper buildCcdNotificationWrapperBasedOnEventTypeWithJointParty(NotificationEventType notificationEventType, Representative rep, boolean jointParty) {
@@ -65,7 +67,7 @@ public class CcdNotificationWrapperTest {
                 .name(Name.builder().firstName("Ap").lastName("Pointee").build())
                 .address(Address.builder().line1("Appointee Line 1").town("Appointee Town").county("Appointee County").postcode("AP9 0IN").build())
                 .build();
-        return buildCcdNotificationWrapperBasedOnEventType(notificationEventType, appointee, Representative.builder().hasRepresentative("Yes").build(), true);
+        return buildCcdNotificationWrapperBasedOnEventType(notificationEventType, appointee, Representative.builder().hasRepresentative(YES).build(), true);
     }
 
     private CcdNotificationWrapper buildCcdNotificationWrapperBasedOnEventType(NotificationEventType notificationEventType) {
@@ -80,7 +82,7 @@ public class CcdNotificationWrapperTest {
             appellant.setAppointee(appointee);
             appointeeSubscription = Subscription.builder()
                 .email("appointee@test.com")
-                .subscribeEmail("Yes")
+                .subscribeEmail(YES)
                 .build();
             HearingRecordingRequest appointeeHearingRecordingRequest = HearingRecordingRequest.builder().value(HearingRecordingRequestDetails.builder().requestingParty(PartyItemList.APPELLANT.getCode()).build()).build();
             releasedHearings.add(appointeeHearingRecordingRequest);
@@ -89,13 +91,13 @@ public class CcdNotificationWrapperTest {
         Subscription repSubscription = null;
         if (null != representative) {
             representative = Representative.builder()
-                .hasRepresentative("Yes")
+                .hasRepresentative(YES)
                 .name(Name.builder().firstName("Joe").lastName("Bloggs").build())
                 .address(Address.builder().line1("Rep Line 1").town("Rep Town").county("Rep County").postcode("RE9 7SE").build())
                 .build();
             repSubscription = Subscription.builder()
                 .email("rep@test.com")
-                .subscribeEmail("Yes")
+                .subscribeEmail(YES)
                 .build();
             HearingRecordingRequest repHearingRecordingRequest = HearingRecordingRequest.builder().value(HearingRecordingRequestDetails.builder().requestingParty(PartyItemList.REPRESENTATIVE.getCode()).build()).build();
             releasedHearings.add(repHearingRecordingRequest);
@@ -109,7 +111,7 @@ public class CcdNotificationWrapperTest {
             jointPartyName = Name.builder().title("Madam").firstName("Jon").lastName("Party").build();
             jointPartySubscription = Subscription.builder()
                     .email("joint@test.com")
-                    .subscribeEmail("Yes")
+                    .subscribeEmail(YES)
                     .build();
             HearingRecordingRequest jointPartyHearingRecordingRequest = HearingRecordingRequest.builder().value(HearingRecordingRequestDetails.builder().requestingParty(PartyItemList.JOINT_PARTY.getCode()).build()).build();
             releasedHearings.add(jointPartyHearingRecordingRequest);
@@ -120,9 +122,9 @@ public class CcdNotificationWrapperTest {
                 .oldSscsCaseData(SscsCaseData.builder().build())
                 .newSscsCaseData(SscsCaseData.builder()
                     .jointParty(JointParty.builder()
-                            .hasJointParty(jointPartyYesNo)
-                            .name(jointPartyName)
-                            .build())
+                        .hasJointParty(jointPartyYesNo)
+                        .name(jointPartyName)
+                        .build())
                     .appeal(Appeal.builder()
                         .appellant(appellant)
                         .hearingType("cor")
@@ -175,19 +177,19 @@ public class CcdNotificationWrapperTest {
                         .appellantSubscription(
                             Subscription.builder()
                                 .email("appellant@test.com")
-                                .subscribeEmail("Yes")
+                                .subscribeEmail(YES)
                                 .build()
                         )
                         .appointeeSubscription(
                             Subscription.builder()
                                 .email("appointee@test.com")
-                                .subscribeEmail("Yes")
+                                .subscribeEmail(YES)
                                 .build()
                         )
                             .jointPartySubscription(
                                 Subscription.builder()
                                     .email("jointParty@test.com")
-                                    .subscribeEmail("Yes")
+                                    .subscribeEmail(YES)
                                     .build()
                             )
                         .build())
@@ -215,7 +217,7 @@ public class CcdNotificationWrapperTest {
                                         .appellantSubscription(
                                                 Subscription.builder()
                                                         .email("appellant@test.com")
-                                                        .subscribeEmail("Yes")
+                                                        .subscribeEmail(YES)
                                                         .build()
                                         )
                                         .build())
@@ -229,9 +231,9 @@ public class CcdNotificationWrapperTest {
         return List.of(CcdValue.<OtherParty>builder()
                 .value(OtherParty.builder()
                         .id("1")
-                        .otherPartySubscription(Subscription.builder().email("other@party").subscribeEmail("Yes").build())
-                        .sendNewOtherPartyNotification(sendNewOtherPartyNotification ? YesNo.YES : null)
-                        .isAppointee(hasAppointee ? YesNo.YES.getValue() : YesNo.NO.getValue())
+                        .otherPartySubscription(Subscription.builder().email("other@party").subscribeEmail(YES).build())
+                        .sendNewOtherPartyNotification(sendNewOtherPartyNotification ? YES : null)
+                        .isAppointee(isYesOrNo(hasAppointee))
                         .appointee(Appointee.builder()
                                 .id("2")
                                 .name(Name.builder()
@@ -241,7 +243,7 @@ public class CcdNotificationWrapperTest {
                                 .build())
                         .rep(Representative.builder()
                                 .id("3")
-                                .hasRepresentative(hasRep ? YesNo.YES.getValue() : YesNo.NO.getValue())
+                                .hasRepresentative(isYesOrNo(hasRep))
                                 .name(Name.builder()
                                         .firstName("First")
                                         .lastName("Last")
@@ -305,7 +307,7 @@ public class CcdNotificationWrapperTest {
 
     @Test
     public void givenSubscriptionForAppellantRepAndJointParty_shouldGetSubscriptionTypeListForAppellantAndJointPartyOnlyWhenBothGranted() {
-        ccdNotificationWrapper = buildCcdNotificationWrapperBasedOnEventTypeWithJointParty(REVIEW_CONFIDENTIALITY_REQUEST, Representative.builder().hasRepresentative("Yes").build(), true);
+        ccdNotificationWrapper = buildCcdNotificationWrapperBasedOnEventTypeWithJointParty(REVIEW_CONFIDENTIALITY_REQUEST, Representative.builder().hasRepresentative(YES).build(), true);
         ccdNotificationWrapper.getNewSscsCaseData().setConfidentialityRequestOutcomeAppellant(DatedRequestOutcome.builder().requestOutcome(RequestOutcome.GRANTED).build());
         ccdNotificationWrapper.getNewSscsCaseData().setConfidentialityRequestOutcomeJointParty(DatedRequestOutcome.builder().requestOutcome(RequestOutcome.GRANTED).build());
         List<SubscriptionWithType> subsWithTypeList = ccdNotificationWrapper.getSubscriptionsBasedOnNotificationType();
@@ -316,7 +318,7 @@ public class CcdNotificationWrapperTest {
 
     @Test
     public void givenSubscriptionForAppellantRepAndJointParty_shouldGetSubscriptionTypeListForAppellantOnlyWhenOnlyAppellantGranted() {
-        ccdNotificationWrapper = buildCcdNotificationWrapperBasedOnEventTypeWithJointParty(REVIEW_CONFIDENTIALITY_REQUEST, Representative.builder().hasRepresentative("Yes").build(), true);
+        ccdNotificationWrapper = buildCcdNotificationWrapperBasedOnEventTypeWithJointParty(REVIEW_CONFIDENTIALITY_REQUEST, Representative.builder().hasRepresentative(YES).build(), true);
         ccdNotificationWrapper.getNewSscsCaseData().setConfidentialityRequestOutcomeAppellant(DatedRequestOutcome.builder().requestOutcome(RequestOutcome.GRANTED).build());
         ccdNotificationWrapper.getNewSscsCaseData().setConfidentialityRequestOutcomeJointParty(null);
         List<SubscriptionWithType> subsWithTypeList = ccdNotificationWrapper.getSubscriptionsBasedOnNotificationType();
@@ -326,7 +328,7 @@ public class CcdNotificationWrapperTest {
 
     @Test
     public void givenSubscriptionForAppellantRepAndJointParty_shouldGetSubscriptionTypeListForJointPartyOnlyWhenOnlyJointPartyGranted() {
-        ccdNotificationWrapper = buildCcdNotificationWrapperBasedOnEventTypeWithJointParty(REVIEW_CONFIDENTIALITY_REQUEST, Representative.builder().hasRepresentative("Yes").build(), true);
+        ccdNotificationWrapper = buildCcdNotificationWrapperBasedOnEventTypeWithJointParty(REVIEW_CONFIDENTIALITY_REQUEST, Representative.builder().hasRepresentative(YES).build(), true);
         ccdNotificationWrapper.getNewSscsCaseData().setConfidentialityRequestOutcomeAppellant(null);
         ccdNotificationWrapper.getNewSscsCaseData().setConfidentialityRequestOutcomeJointParty(DatedRequestOutcome.builder().requestOutcome(RequestOutcome.GRANTED).build());
         List<SubscriptionWithType> subsWithTypeList = ccdNotificationWrapper.getSubscriptionsBasedOnNotificationType();
@@ -336,7 +338,7 @@ public class CcdNotificationWrapperTest {
 
     @Test
     public void givenSubscriptionForAppellantRepAndJointParty_shouldGetSubscriptionTypeListForJointPartyOnlyWhenOnlyJointPartyIsNewlyGranted() {
-        ccdNotificationWrapper = buildCcdNotificationWrapperBasedOnEventTypeWithJointParty(REVIEW_CONFIDENTIALITY_REQUEST, Representative.builder().hasRepresentative("Yes").build(), true);
+        ccdNotificationWrapper = buildCcdNotificationWrapperBasedOnEventTypeWithJointParty(REVIEW_CONFIDENTIALITY_REQUEST, Representative.builder().hasRepresentative(YES).build(), true);
         ccdNotificationWrapper.getOldSscsCaseData().setConfidentialityRequestOutcomeAppellant(DatedRequestOutcome.builder().requestOutcome(RequestOutcome.GRANTED).build());
         ccdNotificationWrapper.getOldSscsCaseData().setConfidentialityRequestOutcomeJointParty(null);
         ccdNotificationWrapper.getNewSscsCaseData().setConfidentialityRequestOutcomeAppellant(DatedRequestOutcome.builder().requestOutcome(RequestOutcome.GRANTED).build());
@@ -481,7 +483,7 @@ public class CcdNotificationWrapperTest {
 
     @SuppressWarnings({"unused"})
     private Object[] getEventTypeFilteredWithAppellant() {
-        return Arrays.stream(values())
+        return Arrays.stream(NotificationEventType.values())
             .filter(type -> !(type.equals(APPEAL_LAPSED_NOTIFICATION)
                 || type.equals(HMCTS_APPEAL_LAPSED_NOTIFICATION)
                 || type.equals(DWP_APPEAL_LAPSED_NOTIFICATION)

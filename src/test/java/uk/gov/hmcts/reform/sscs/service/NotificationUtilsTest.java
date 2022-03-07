@@ -10,8 +10,10 @@ import static org.mockito.MockitoAnnotations.openMocks;
 import static uk.gov.hmcts.reform.sscs.SscsCaseDataUtils.CASE_ID;
 import static uk.gov.hmcts.reform.sscs.SscsCaseDataUtils.addHearing;
 import static uk.gov.hmcts.reform.sscs.SscsCaseDataUtils.addHearingOptions;
+import static uk.gov.hmcts.reform.sscs.ccd.domain.YesNo.NO;
+import static uk.gov.hmcts.reform.sscs.ccd.domain.YesNo.YES;
 import static uk.gov.hmcts.reform.sscs.ccd.domain.YesNo.isYes;
-import static uk.gov.hmcts.reform.sscs.ccd.util.CaseDataUtils.YES;
+import static uk.gov.hmcts.reform.sscs.ccd.domain.YesNo.isYesOrNoOrNull;
 import static uk.gov.hmcts.reform.sscs.domain.notify.NotificationEventType.*;
 import static uk.gov.hmcts.reform.sscs.service.NotificationServiceTest.*;
 import static uk.gov.hmcts.reform.sscs.service.NotificationUtils.*;
@@ -86,34 +88,40 @@ public class NotificationUtilsTest {
 
     @Test
     public void falseWhenNoFirstName() {
-        assertFalse(hasAppointee(Appointee.builder().name(Name.builder().lastName("Last").build()).build(), "Yes"));
+        assertFalse(hasAppointee(
+            Appointee.builder().name(Name.builder().lastName("Last").build()).build(), YES));
     }
 
     @Test
     public void falseWhenNoLastName() {
-        assertFalse(hasAppointee(Appointee.builder().name(Name.builder().firstName("First").build()).build(), "Yes"));
+        assertFalse(hasAppointee(
+            Appointee.builder().name(Name.builder().firstName("First").build()).build(), YES));
     }
 
     @Test
     public void trueWhenHasFirstAndLastName() {
-        assertTrue(hasAppointee(Appointee.builder().name(Name.builder().firstName("First").lastName("Last").build()).build(), "Yes"));
+        assertTrue(hasAppointee(
+            Appointee.builder().name(Name.builder().firstName("First").lastName("Last").build()).build(), YES));
     }
 
     @Test
     public void falseWhenIsAppointeeIsNo() {
-        assertFalse(hasAppointee(Appointee.builder().name(Name.builder().firstName("First").lastName("Last").build()).build(), "No"));
+        assertFalse(hasAppointee(
+            Appointee.builder().name(Name.builder().firstName("First").lastName("Last").build()).build(), NO));
     }
 
     @Test
-    @Parameters({"Yes", "", "null"})
+    @Parameters({"Yes", "null"})
     public void trueWhenIsAppointeeIs(@Nullable String value) {
-        assertTrue(hasAppointee(Appointee.builder().name(Name.builder().firstName("First").lastName("Last").build()).build(), value));
+        assertTrue(hasAppointee(
+            Appointee.builder().name(
+                Name.builder().firstName("First").lastName("Last").build()).build(), isYesOrNoOrNull(value)));
     }
 
     @Test
     public void trueWhenHasPopulatedRep() {
         Representative rep = Representative.builder()
-            .hasRepresentative("Yes")
+            .hasRepresentative(YES)
             .name(Name.builder().firstName("Joe").lastName("Bloggs").build())
             .address(Address.builder().line1("Rep Line 1").town("Rep Town").county("Rep County").postcode("RE9 7SE").build())
             .build();
@@ -131,7 +139,7 @@ public class NotificationUtilsTest {
     @Test
     public void falseWhenHasPopulatedRepButHasRepSetToNo() {
         Representative rep = Representative.builder()
-            .hasRepresentative("No")
+            .hasRepresentative(NO)
             .name(Name.builder().firstName("Joe").lastName("Bloggs").build())
             .address(Address.builder().line1("Rep Line 1").town("Rep Town").county("Rep County").postcode("RE9 7SE").build())
             .build();
@@ -201,13 +209,13 @@ public class NotificationUtilsTest {
 
     @Test
     public void falseWhenHasNoOtherPartyRep() {
-        OtherParty otherParty = OtherParty.builder().rep(Representative.builder().hasRepresentative("No").build()).build();
+        OtherParty otherParty = OtherParty.builder().rep(Representative.builder().hasRepresentative(NO).build()).build();
         assertFalse(hasRepresentative(otherParty));
     }
 
     @Test
     public void trueWhenHasYesOtherPartyRep() {
-        OtherParty otherParty = OtherParty.builder().rep(Representative.builder().hasRepresentative("Yes").build()).build();
+        OtherParty otherParty = OtherParty.builder().rep(Representative.builder().hasRepresentative(YES).build()).build();
         assertTrue(hasRepresentative(otherParty));
     }
 
@@ -216,7 +224,7 @@ public class NotificationUtilsTest {
         NotificationEventType eventType = HEARING_BOOKED_NOTIFICATION;
         NotificationWrapper wrapper = buildNotificationWrapper(eventType);
 
-        Subscription subscription = Subscription.builder().subscribeSms("Yes").subscribeEmail("Yes").build();
+        Subscription subscription = Subscription.builder().subscribeSms(YES).subscribeEmail(YES).build();
 
         when(notificationValidService.isNotificationStillValidToSend(wrapper.getNewSscsCaseData().getHearings(), eventType)).thenReturn(true);
         when(notificationValidService.isHearingTypeValidToSendNotification(wrapper.getNewSscsCaseData(), eventType)).thenReturn(true);
@@ -229,7 +237,7 @@ public class NotificationUtilsTest {
         NotificationEventType eventType = HEARING_BOOKED_NOTIFICATION;
         NotificationWrapper wrapper = buildNotificationWrapper(eventType);
 
-        Subscription subscription = Subscription.builder().subscribeSms("Yes").subscribeEmail("Yes").build();
+        Subscription subscription = Subscription.builder().subscribeSms(YES).subscribeEmail(YES).build();
 
         when(notificationValidService.isNotificationStillValidToSend(wrapper.getNewSscsCaseData().getHearings(), eventType)).thenReturn(true);
         when(notificationValidService.isHearingTypeValidToSendNotification(wrapper.getNewSscsCaseData(), eventType)).thenReturn(false);
@@ -242,7 +250,7 @@ public class NotificationUtilsTest {
         NotificationEventType eventType = HEARING_BOOKED_NOTIFICATION;
         NotificationWrapper wrapper = buildNotificationWrapper(eventType);
 
-        Subscription subscription = Subscription.builder().subscribeSms("Yes").subscribeEmail("Yes").build();
+        Subscription subscription = Subscription.builder().subscribeSms(YES).subscribeEmail(YES).build();
 
         when(notificationValidService.isNotificationStillValidToSend(wrapper.getNewSscsCaseData().getHearings(), eventType)).thenReturn(false);
         when(notificationValidService.isHearingTypeValidToSendNotification(wrapper.getNewSscsCaseData(), eventType)).thenReturn(true);
@@ -257,7 +265,7 @@ public class NotificationUtilsTest {
             null
         ).build();
         addHearing(sscsCaseData, 1);
-        addHearingOptions(sscsCaseData, "Yes");
+        addHearingOptions(sscsCaseData, YES);
 
         SscsCaseDataWrapper caseDataWrapper = SscsCaseDataWrapper.builder()
             .newSscsCaseData(sscsCaseData)
@@ -276,7 +284,7 @@ public class NotificationUtilsTest {
             null
         );
 
-        Subscription subscription = Subscription.builder().subscribeEmail("test@test.com").subscribeSms("07800000000").build();
+        Subscription subscription = Subscription.builder().subscribeSms(YES).email("test@test.com").subscribeEmail(YES).mobile("07800000000").build();
 
         when(notificationValidService.isNotificationStillValidToSend(any(), any())).thenReturn(true);
         when(notificationValidService.isHearingTypeValidToSendNotification(any(), any())).thenReturn(true);
@@ -294,7 +302,7 @@ public class NotificationUtilsTest {
             null
         );
 
-        Subscription subscription = Subscription.builder().subscribeEmail("test@test.com").subscribeSms("07800000000").build();
+        Subscription subscription = Subscription.builder().email("test@test.com").mobile("07800000000").build();
 
         when(notificationValidService.isNotificationStillValidToSend(any(), any())).thenReturn(isNotificationStillValidToSendResponse);
         when(notificationValidService.isHearingTypeValidToSendNotification(any(), any())).thenReturn(isHearingTypeValidToSendNotificationResponse);
@@ -309,7 +317,7 @@ public class NotificationUtilsTest {
 
         CcdNotificationWrapper wrapper = buildBaseWrapper(null, null);
 
-        Subscription subscription = Subscription.builder().subscribeSms("Yes").wantSmsNotifications("Yes").build();
+        Subscription subscription = Subscription.builder().subscribeSms(YES).wantSmsNotifications(YES).build();
         Notification notification = Notification.builder()
             .reference(new Reference("someref"))
             .destination(Destination.builder().sms("07800123456").build())
@@ -337,7 +345,7 @@ public class NotificationUtilsTest {
 
         CcdNotificationWrapper wrapper = buildBaseWrapper(null, null);
 
-        Subscription subscription = Subscription.builder().subscribeEmail("Yes").build();
+        Subscription subscription = Subscription.builder().subscribeEmail(YES).build();
         Notification notification = Notification.builder()
             .reference(new Reference("someref"))
             .destination(Destination.builder().email("test@test.com").build())
@@ -360,7 +368,7 @@ public class NotificationUtilsTest {
 
     @Test
     public void hasNoAppointeeSubscriptionsIfAppointeeIsNotSubscribed() {
-        Subscription subscription = Subscription.builder().wantSmsNotifications("No").subscribeSms("No").subscribeEmail("No").build();
+        Subscription subscription = Subscription.builder().wantSmsNotifications(NO).subscribeSms(NO).subscribeEmail(NO).build();
         CcdNotificationWrapper wrapper = buildBaseWrapper(subscription, null);
         wrapper.getSscsCaseDataWrapper().getNewSscsCaseData().setSubscriptions(wrapper.getSscsCaseDataWrapper().getNewSscsCaseData().getSubscriptions().toBuilder().appointeeSubscription(subscription).build());
         assertFalse(hasAppointeeSubscriptionOrIsMandatoryAppointeeLetter(wrapper.getSscsCaseDataWrapper()));
@@ -368,7 +376,7 @@ public class NotificationUtilsTest {
 
     @Test
     public void hasNoRepresentativeSubscriptionsIfRepresentativeIsNotSubscribed() {
-        Subscription subscription = Subscription.builder().wantSmsNotifications("No").subscribeSms("No").subscribeEmail("No").build();
+        Subscription subscription = Subscription.builder().wantSmsNotifications(NO).subscribeSms(NO).subscribeEmail(NO).build();
         CcdNotificationWrapper wrapper = buildBaseWrapper(subscription, null);
         wrapper.getSscsCaseDataWrapper().getNewSscsCaseData().setSubscriptions(wrapper.getSscsCaseDataWrapper().getNewSscsCaseData().getSubscriptions().toBuilder().appointeeSubscription(subscription).build());
         assertFalse(hasRepSubscriptionOrIsMandatoryRepLetter(wrapper.getSscsCaseDataWrapper()));
@@ -393,7 +401,7 @@ public class NotificationUtilsTest {
     @Test
     public void shouldReturnFalseWhenThereIsAJointPartySubscriptionAndJointPartyIsNo() {
         Subscription subscription = Subscription.builder().subscribeSms(YES).subscribeEmail(YES).build();
-        assertFalse(hasJointPartySubscription(buildJointPartyWrapper(subscription, null, "No").getSscsCaseDataWrapper()));
+        assertFalse(hasJointPartySubscription(buildJointPartyWrapper(subscription, null, NO).getSscsCaseDataWrapper()));
     }
 
     @Test
@@ -413,7 +421,7 @@ public class NotificationUtilsTest {
 
     @Test
     public void shouldReturnFalseWhenTheCaseHasNotSubscribed() {
-        Subscription subscription = Subscription.builder().subscribeSms(YesNo.NO.getValue()).subscribeEmail(YesNo.NO.getValue()).build();
+        Subscription subscription = Subscription.builder().subscribeSms(NO).subscribeEmail(NO).build();
         assertFalse(isValidSubscriptionOrIsMandatoryLetter(subscription, VALID_APPEAL_CREATED));
     }
 
@@ -469,7 +477,8 @@ public class NotificationUtilsTest {
         };
     }
 
-    private static CcdNotificationWrapper buildJointPartyWrapper(Subscription subscription, NotificationEventType eventType, String jointParty) {
+    private static CcdNotificationWrapper buildJointPartyWrapper(Subscription subscription,
+                                                                 NotificationEventType eventType, YesNo jointParty) {
         CcdNotificationWrapper ccdNotificationWrapper = buildBaseWrapper(subscription, eventType);
         final SscsCaseData sscsCaseData = ccdNotificationWrapper.getNewSscsCaseData().toBuilder()
                 .jointParty(JointParty.builder()
@@ -530,7 +539,7 @@ public class NotificationUtilsTest {
                     .build()
             },
             new Object[] {
-                Subscription.builder().subscribeSms("Yes").build(),
+                Subscription.builder().subscribeSms(YES).build(),
                 Notification.builder()
                     .reference(new Reference("someref"))
                     .destination(Destination.builder().build())
@@ -538,7 +547,7 @@ public class NotificationUtilsTest {
                     .build()
             },
             new Object[] {
-                Subscription.builder().subscribeSms("Yes").build(),
+                Subscription.builder().subscribeSms(YES).build(),
                 Notification.builder()
                     .reference(new Reference("someref"))
                     .destination(Destination.builder().sms("07800123456").build())
@@ -563,7 +572,7 @@ public class NotificationUtilsTest {
                     .build()
             },
             new Object[] {
-                Subscription.builder().subscribeSms("Yes").build(),
+                Subscription.builder().subscribeSms(YES).build(),
                 Notification.builder()
                     .reference(new Reference("someref"))
                     .destination(Destination.builder().build())
@@ -571,7 +580,7 @@ public class NotificationUtilsTest {
                     .build()
             },
             new Object[] {
-                Subscription.builder().subscribeSms("Yes").build(),
+                Subscription.builder().subscribeSms(YES).build(),
                 Notification.builder()
                     .reference(new Reference("someref"))
                     .destination(Destination.builder().email("test@test.com").build())

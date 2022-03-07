@@ -58,10 +58,21 @@ dependencyUpdates.resolutionStrategy {
 
 // https://jeremylong.github.io/DependencyCheck/dependency-check-gradle/configuration.html
 dependencyCheck {
-  // Specifies if the build should be failed if a CVSS score above a specified level is identified.
-  // range of 7-10 fails the build, anything lower and it doesn't fail the build
-  failBuildOnCVSS = System.getProperty('dependencyCheck.failBuild') == 'true' ? 7.0 : 11
+    // Specifies if the build should be failed if a CVSS score above a specified level is identified.
+    // range of 7-10 fails the build, anything lower and it doesn't fail the build
+    failBuildOnCVSS = System.getProperty('dependencyCheck.failBuild') == 'true' ? 7.0 : 11
     suppressionFile = 'dependency-check-suppressions.xml'
+
+    cveValidForHours = 4 // on Jenkins we have 24, so if you get more vulnerabilities locally, try to normalize this value with Jenkins
+
+    analyzers {
+        retirejs {
+            enabled = false
+        }
+        ossIndex {
+            enabled = false
+        }
+    }
 }
 
 pitest {
@@ -383,12 +394,12 @@ dependencies {
     compile group: 'com.github.hmcts', name: 'java-logging', version: '5.1.7'
     compile group: 'uk.gov.hmcts.reform', name: 'service-auth-provider-client', version: '4.0.0'
 
-    compile group: 'com.github.hmcts', name: 'sscs-common', version: '4.17.1'
+    compile group: 'com.github.hmcts', name: 'sscs-common', version: '4.17.1-RC-SSCS-10240'
     compile group: 'com.github.hmcts', name: 'sscs-pdf-email-common', version: '1.4.56'
 
     compile group: 'com.github.hmcts', name: 'sscs-job-scheduler', version: '1.5.7'
 
-    compile group: 'uk.gov.service.notify', name: 'notifications-java-client', version: '3.17.2-RELEASE'
+    compile group: 'com.github.alphagov', name: 'notifications-java-client', version: '3.17.2-RELEASE'
     compile group: 'com.squareup.okhttp3', name: 'okhttp', version: '4.9.2'
     compile group: 'commons-fileupload', name: 'commons-fileupload', version: '1.4'
     compile group: 'io.github.openfeign.form', name: 'feign-form', version: '3.8.0'
@@ -402,27 +413,27 @@ dependencies {
     compile group:'info.solidsoft.gradle.pitest', name: 'gradle-pitest-plugin', version: versions.gradlePitest
     compile group:'org.codehaus.sonar-plugins', name:'sonar-pitest-plugin', version: versions.sonarPitest
 
-    compileOnly("org.springframework.boot:spring-boot-devtools")
+    compileOnly group: 'org.springframework.boot', name: 'spring-boot-devtools'
 
-    compile 'org.projectlombok:lombok:1.18.22'
-    annotationProcessor "org.projectlombok:lombok:1.18.22"
-    testCompileOnly 'org.projectlombok:lombok:1.18.18'
-    testAnnotationProcessor "org.projectlombok:lombok:1.18.18"
-    integrationTestCompileOnly 'org.projectlombok:lombok:1.18.18'
-    integrationTestAnnotationProcessor "org.projectlombok:lombok:1.18.18"
+    compile group: 'org.projectlombok', name: 'lombok', version: '1.18.18'
+    annotationProcessor group: 'org.projectlombok', name: 'lombok', version: '1.18.18'
+    testCompileOnly group: 'org.projectlombok', name: 'lombok', version: '1.18.18'
+    testAnnotationProcessor group: 'org.projectlombok', name: 'lombok', version: '1.18.18'
+    integrationTestCompileOnly group: 'org.projectlombok', name: 'lombok', version: '1.18.18'
+    integrationTestAnnotationProcessor group: 'org.projectlombok', name: 'lombok', version: '1.18.18'
 
     testCompile(group: 'org.springframework.boot', name: 'spring-boot-starter-test', version: '2.6.2') {
         exclude group: "com.vaadin.external.google", module:"android-json"
     }
     testCompile group: 'org.mockito', name: 'mockito-core', version: '4.2.0'
-    testCompile 'pl.pragmatists:JUnitParams:1.1.1'
+    testCompile group: 'pl.pragmatists', name: 'JUnitParams', version: '1.1.1'
     testCompile group: 'com.github.hmcts', name: 'fortify-client', version: '1.2.2', classifier: 'all', {
         exclude group: 'commons-io', module: 'commons-io'
     }
     compile group: 'commons-io', name: 'commons-io', version: '2.11.0'
     integrationTestCompile group: 'commons-io', name: 'commons-io', version: '2.11.0'
 
-    runtime "org.springframework.boot:spring-boot-properties-migrator"
+    runtime group: 'org.springframework.boot', name: 'spring-boot-properties-migrator'
 }
 
 bootJar {

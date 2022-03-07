@@ -10,6 +10,8 @@ import static org.mockito.BDDMockito.then;
 import static org.mockito.Mockito.when;
 import static org.mockito.MockitoAnnotations.openMocks;
 import static uk.gov.hmcts.reform.sscs.ccd.domain.Benefit.PIP;
+import static uk.gov.hmcts.reform.sscs.ccd.domain.YesNo.NO;
+import static uk.gov.hmcts.reform.sscs.ccd.domain.YesNo.YES;
 import static uk.gov.hmcts.reform.sscs.config.SubscriptionType.APPELLANT;
 import static uk.gov.hmcts.reform.sscs.domain.notify.NotificationEventType.*;
 import static uk.gov.hmcts.reform.sscs.service.NotificationUtils.getSubscription;
@@ -98,7 +100,7 @@ public class NotificationFactoryTest {
 
         subscription = Subscription.builder()
                 .tya("ABC").email("test@testing.com")
-                .mobile("07985858594").subscribeEmail("Yes").subscribeSms("No").build();
+                .mobile("07985858594").subscribeEmail(YES).subscribeSms(NO).build();
 
         ccdResponse = SscsCaseData.builder().ccdCaseId(CASE_ID).caseReference("SC/1234/5").appeal(Appeal.builder()
                 .appellant(Appellant.builder().name(Name.builder().firstName("Ronnie").lastName("Scott").title("Mr").build()).build())
@@ -284,11 +286,11 @@ public class NotificationFactoryTest {
         wrapper = SscsCaseDataWrapper.builder()
                 .newSscsCaseData(
                         ccdResponse.toBuilder()
-                                .subscriptions(Subscriptions.builder().appellantSubscription(subscription.toBuilder().subscribeSms("Yes").wantSmsNotifications("Yes").subscribeEmail("No").build()).build())
+                                .subscriptions(Subscriptions.builder().appellantSubscription(subscription.toBuilder().subscribeSms(YES).wantSmsNotifications(YES).subscribeEmail(NO).build()).build())
                                 .build())
                 .oldSscsCaseData(
                         ccdResponse.toBuilder()
-                                .subscriptions(Subscriptions.builder().appellantSubscription(subscription.toBuilder().subscribeSms("No").wantSmsNotifications("No").subscribeEmail("No").build()).build())
+                                .subscriptions(Subscriptions.builder().appellantSubscription(subscription.toBuilder().subscribeSms(NO).wantSmsNotifications(NO).subscribeEmail(NO).build()).build())
                                 .build())
                 .notificationEventType(SUBSCRIPTION_UPDATED_NOTIFICATION)
                 .build();
@@ -308,11 +310,11 @@ public class NotificationFactoryTest {
         wrapper = SscsCaseDataWrapper.builder()
                 .newSscsCaseData(
                         ccdResponse.toBuilder()
-                                .subscriptions(Subscriptions.builder().appellantSubscription(subscription.toBuilder().subscribeSms("Yes").wantSmsNotifications("Yes").subscribeEmail("No").build()).build())
+                                .subscriptions(Subscriptions.builder().appellantSubscription(subscription.toBuilder().subscribeSms(YES).wantSmsNotifications(YES).subscribeEmail(NO).build()).build())
                                 .build())
                 .oldSscsCaseData(
                         ccdResponse.toBuilder()
-                                .subscriptions(Subscriptions.builder().appellantSubscription(subscription.toBuilder().subscribeSms("Yes").wantSmsNotifications("Yes").subscribeEmail("Yes").build()).build())
+                                .subscriptions(Subscriptions.builder().appellantSubscription(subscription.toBuilder().subscribeSms(YES).wantSmsNotifications(YES).subscribeEmail(YES).build()).build())
                                 .build())
                 .notificationEventType(SUBSCRIPTION_UPDATED_NOTIFICATION)
                 .build();
@@ -335,12 +337,12 @@ public class NotificationFactoryTest {
         SscsCaseDataWrapper wrapper = SscsCaseDataWrapper.builder()
                 .newSscsCaseData(
                         ccdResponse.toBuilder()
-                                .subscriptions(Subscriptions.builder().appellantSubscription(subscription.toBuilder().subscribeSms("Yes").wantSmsNotifications("Yes").subscribeEmail("Yes").build()).build())
+                                .subscriptions(Subscriptions.builder().appellantSubscription(subscription.toBuilder().subscribeSms(YES).wantSmsNotifications(YES).subscribeEmail(YES).build()).build())
                                 .events(event)
                                 .build())
                 .oldSscsCaseData(
                         ccdResponse.toBuilder()
-                                .subscriptions(Subscriptions.builder().appellantSubscription(subscription.toBuilder().subscribeSms("No").wantSmsNotifications("No").subscribeEmail("Yes").build()).build())
+                                .subscriptions(Subscriptions.builder().appellantSubscription(subscription.toBuilder().subscribeSms(NO).wantSmsNotifications(NO).subscribeEmail(YES).build()).build())
                                 .build())
                 .notificationEventType(SUBSCRIPTION_UPDATED_NOTIFICATION)
                 .build();
@@ -367,12 +369,12 @@ public class NotificationFactoryTest {
         SscsCaseDataWrapper wrapper = SscsCaseDataWrapper.builder()
                 .newSscsCaseData(
                         ccdResponse.toBuilder()
-                                .subscriptions(Subscriptions.builder().appellantSubscription(subscription.toBuilder().subscribeSms("Yes").wantSmsNotifications("Yes").subscribeEmail("Yes").build()).build())
+                                .subscriptions(Subscriptions.builder().appellantSubscription(subscription.toBuilder().subscribeSms(YES).wantSmsNotifications(YES).subscribeEmail(YES).build()).build())
                                 .events(events)
                                 .build())
                 .oldSscsCaseData(
                         ccdResponse.toBuilder()
-                                .subscriptions(Subscriptions.builder().appellantSubscription(subscription.toBuilder().subscribeSms("Yes").wantSmsNotifications("Yes").subscribeEmail("Yes").build()).build())
+                                .subscriptions(Subscriptions.builder().appellantSubscription(subscription.toBuilder().subscribeSms(YES).wantSmsNotifications(YES).subscribeEmail(YES).build()).build())
                                 .build())
                 .notificationEventType(SUBSCRIPTION_UPDATED_NOTIFICATION)
                 .build();
@@ -398,12 +400,12 @@ public class NotificationFactoryTest {
         wrapper = SscsCaseDataWrapper.builder()
                 .newSscsCaseData(
                         ccdResponse.toBuilder()
-                                .subscriptions(Subscriptions.builder().appellantSubscription(subscription.toBuilder().email("changed@testing.com").subscribeSms("Yes").wantSmsNotifications("Yes").subscribeEmail("Yes").build()).build())
+                                .subscriptions(Subscriptions.builder().appellantSubscription(subscription.toBuilder().email("changed@testing.com").subscribeSms(YES).wantSmsNotifications(YES).subscribeEmail(YES).build()).build())
                                 .events(events)
                                 .build())
                 .oldSscsCaseData(
                         ccdResponse.toBuilder()
-                                .subscriptions(Subscriptions.builder().appellantSubscription(subscription.toBuilder().subscribeSms("Yes").wantSmsNotifications("Yes").subscribeEmail("Yes").build()).build())
+                                .subscriptions(Subscriptions.builder().appellantSubscription(subscription.toBuilder().subscribeSms(YES).wantSmsNotifications(YES).subscribeEmail(YES).build()).build())
                                 .build())
                 .notificationEventType(SUBSCRIPTION_UPDATED_NOTIFICATION)
                 .build();

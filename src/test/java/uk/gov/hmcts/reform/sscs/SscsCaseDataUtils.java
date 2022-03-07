@@ -6,11 +6,7 @@ import static uk.gov.hmcts.reform.sscs.ccd.domain.YesNo.YES;
 import java.text.SimpleDateFormat;
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.Date;
-import java.util.List;
-import java.util.Optional;
+import java.util.*;
 import java.util.function.BiFunction;
 import uk.gov.hmcts.reform.sscs.ccd.domain.*;
 import uk.gov.hmcts.reform.sscs.domain.SscsCaseDataWrapper;
@@ -25,7 +21,7 @@ public final class SscsCaseDataUtils {
     private SscsCaseDataUtils() {
     }
 
-    public static SscsCaseData buildSscsCaseData(String caseReference, String subscribeEmail, String subscribeSms) {
+    public static SscsCaseData buildSscsCaseData(String caseReference, YesNo subscribeEmail, YesNo subscribeSms) {
         return buildSscsCaseData(
                 caseReference,
                 subscribeEmail,
@@ -36,8 +32,8 @@ public final class SscsCaseDataUtils {
 
     public static SscsCaseData buildSscsCaseData(
             String caseReference,
-            String subscribeEmail,
-            String subscribeSms,
+            YesNo subscribeEmail,
+            YesNo subscribeSms,
             EventType eventType,
             String hearingType
     ) {
@@ -46,21 +42,21 @@ public final class SscsCaseDataUtils {
 
     public static SscsCaseData buildSscsCaseDataWelsh(
             String caseReference,
-            String subscribeEmail,
-            String subscribeSms,
+            YesNo subscribeEmail,
+            YesNo subscribeSms,
             EventType eventType,
             String hearingType
     ) {
         SscsCaseData caseData = builderSscsCaseData(caseReference, subscribeEmail, subscribeSms, eventType, hearingType).build();
-        caseData.setLanguagePreferenceWelsh("Yes");
+        caseData.setLanguagePreferenceWelsh(YES);
         return caseData;
     }
 
 
     public static SscsCaseData.SscsCaseDataBuilder builderSscsCaseData(
             String caseReference,
-            String subscribeEmail,
-            String subscribeSms,
+            YesNo subscribeEmail,
+            YesNo subscribeSms,
             EventType eventType,
             String hearingType
     ) {
@@ -91,9 +87,9 @@ public final class SscsCaseDataUtils {
                 .build();
 
         HearingOptions hearingOptions = HearingOptions.builder()
-                .wantsToAttend("Yes")
-                .wantsSupport("Yes")
-                .languageInterpreter("Yes")
+                .wantsToAttend(YES)
+                .wantsSupport(YES)
+                .languageInterpreter(YES)
                 .other("No")
                 .build();
 
@@ -123,15 +119,15 @@ public final class SscsCaseDataUtils {
                 .tya("")
                 .email("")
                 .mobile("")
-                .subscribeEmail("No")
-                .subscribeSms("No").wantSmsNotifications("No")
+                .subscribeEmail(NO)
+                .subscribeSms(NO).wantSmsNotifications(NO)
                 .build();
         Subscription jointPartySubscription = Subscription.builder()
                 .tya("")
                 .email("")
                 .mobile("")
-                .subscribeEmail("No")
-                .subscribeSms("No").wantSmsNotifications("No")
+                .subscribeEmail(NO)
+                .subscribeSms(NO).wantSmsNotifications(NO)
                 .build();
         Subscriptions subscriptions = Subscriptions.builder()
                 .appellantSubscription(appellantSubscription)
@@ -165,7 +161,7 @@ public final class SscsCaseDataUtils {
 
         Representative rep = Representative.builder()
                 .name(Name.builder().firstName("Harry").lastName("Potter").build())
-                .hasRepresentative("Yes").build();
+                .hasRepresentative(YES).build();
 
         sscsCaseData.getAppeal().setRep(rep);
 
@@ -173,8 +169,8 @@ public final class SscsCaseDataUtils {
                 .tya("")
                 .email("sscstest+notify@greencroftconsulting.com")
                 .mobile("07398785050")
-                .subscribeEmail("Yes")
-                .subscribeSms("Yes").wantSmsNotifications("Yes")
+                .subscribeEmail(YES)
+                .subscribeSms(YES).wantSmsNotifications(YES)
                 .build();
 
         Subscriptions subscriptions = Subscriptions.builder()
@@ -331,7 +327,7 @@ public final class SscsCaseDataUtils {
         return addHearing(response, hearingDaysFromNow, null);
     }
 
-    public static List<Hearing> addHearing(SscsCaseData response, Integer hearingDaysFromNow, String adjourned) {
+    public static List<Hearing> addHearing(SscsCaseData response, Integer hearingDaysFromNow, YesNo adjourned) {
         Hearing hearing = Hearing.builder().value(HearingDetails.builder()
                 .hearingDate(LocalDate.now().plusDays(hearingDaysFromNow).toString())
                 .adjourned(adjourned)
@@ -364,8 +360,8 @@ public final class SscsCaseDataUtils {
         Subscription appointeeSubscription = Subscription.builder()
                 .email("sscstest+notify2@greencroftconsulting.com")
                 .mobile("07398785051")
-                .subscribeEmail("Yes")
-                .subscribeSms("Yes").wantSmsNotifications("Yes")
+                .subscribeEmail(YES)
+                .subscribeSms(YES).wantSmsNotifications(YES)
                 .build();
         Subscriptions subscriptions = response.getSubscriptions().toBuilder()
                 .appointeeSubscription(appointeeSubscription).build();
@@ -374,7 +370,7 @@ public final class SscsCaseDataUtils {
         response.setSubscriptions(subscriptions);
     }
 
-    public static HearingOptions addHearingOptions(SscsCaseData response, String wantsToAttend) {
+    public static HearingOptions addHearingOptions(SscsCaseData response, YesNo wantsToAttend) {
         HearingOptions options = HearingOptions.builder()
             .wantsToAttend(wantsToAttend)
             .build();

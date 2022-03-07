@@ -4,6 +4,7 @@ import static java.util.Objects.requireNonNull;
 import static org.hamcrest.CoreMatchers.is;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.junit.Assert.*;
+import static uk.gov.hmcts.reform.sscs.ccd.domain.YesNo.YES;
 import static uk.gov.hmcts.reform.sscs.config.AppConstants.REP_SALUTATION;
 import static uk.gov.hmcts.reform.sscs.config.SubscriptionType.*;
 import static uk.gov.hmcts.reform.sscs.domain.notify.NotificationEventType.*;
@@ -236,7 +237,7 @@ public class LetterUtilsTest {
         List<CcdValue<OtherParty>> otherPartyList = new ArrayList<>();
         CcdValue<OtherParty> ccdValue = CcdValue.<OtherParty>builder().value(OtherParty.builder()
                 .id("1")
-                .reasonableAdjustment(ReasonableAdjustmentDetails.builder().wantsReasonableAdjustment(YesNo.YES).build())
+                .reasonableAdjustment(ReasonableAdjustmentDetails.builder().wantsReasonableAdjustment(YES).build())
                 .build()).build();
         otherPartyList.add(ccdValue);
 
@@ -260,9 +261,9 @@ public class LetterUtilsTest {
         CcdValue<OtherParty> ccdValue = CcdValue.<OtherParty>builder().value(OtherParty.builder()
                 .id("1")
                 .appointee(Appointee.builder().id("2").build())
-                .isAppointee("Yes")
+                .isAppointee(YES)
                 .reasonableAdjustment(ReasonableAdjustmentDetails.builder().wantsReasonableAdjustment(YesNo.NO).build())
-                .appointeeReasonableAdjustment(ReasonableAdjustmentDetails.builder().wantsReasonableAdjustment(YesNo.YES).build())
+                .appointeeReasonableAdjustment(ReasonableAdjustmentDetails.builder().wantsReasonableAdjustment(YES).build())
                 .build()).build();
         otherPartyList.add(ccdValue);
 
@@ -285,9 +286,9 @@ public class LetterUtilsTest {
         List<CcdValue<OtherParty>> otherPartyList = new ArrayList<>();
         CcdValue<OtherParty> ccdValue = CcdValue.<OtherParty>builder().value(OtherParty.builder()
                 .id("1")
-                .rep(Representative.builder().id("3").hasRepresentative("Yes").build())
+                .rep(Representative.builder().id("3").hasRepresentative(YES).build())
                 .reasonableAdjustment(ReasonableAdjustmentDetails.builder().wantsReasonableAdjustment(YesNo.NO).build())
-                .repReasonableAdjustment(ReasonableAdjustmentDetails.builder().wantsReasonableAdjustment(YesNo.YES).build())
+                .repReasonableAdjustment(ReasonableAdjustmentDetails.builder().wantsReasonableAdjustment(YES).build())
                 .build()).build();
         otherPartyList.add(ccdValue);
 
@@ -310,7 +311,7 @@ public class LetterUtilsTest {
         List<CcdValue<OtherParty>> otherPartyList = new ArrayList<>();
         CcdValue<OtherParty> ccdValue = CcdValue.<OtherParty>builder().value(OtherParty.builder()
                 .id("1")
-                .reasonableAdjustment(ReasonableAdjustmentDetails.builder().wantsReasonableAdjustment(YesNo.YES).build())
+                .reasonableAdjustment(ReasonableAdjustmentDetails.builder().wantsReasonableAdjustment(YES).build())
                 .build()).build();
         otherPartyList.add(ccdValue);
 

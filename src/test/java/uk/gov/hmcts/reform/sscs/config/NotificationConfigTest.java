@@ -4,6 +4,7 @@ import static org.hamcrest.CoreMatchers.is;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
+import static uk.gov.hmcts.reform.sscs.ccd.domain.YesNo.YES;
 import static uk.gov.hmcts.reform.sscs.config.AppealHearingType.ORAL;
 
 import junitparams.JUnitParamsRunner;
@@ -74,7 +75,8 @@ public class NotificationConfigTest {
         when(env.getProperty(docmosisTemplateKey)).thenReturn(docmosisTemplateId);
         when(env.containsProperty(letterTemplateKey)).thenReturn(true);
 
-        CcdNotificationWrapper wrapper = new CcdNotificationWrapper(SscsCaseDataWrapper.builder().newSscsCaseData(SscsCaseData.builder().languagePreferenceWelsh("Yes").appeal(Appeal.builder().hearingType(ORAL.name()).build()).build()).build());
+        CcdNotificationWrapper wrapper =
+            new CcdNotificationWrapper(SscsCaseDataWrapper.builder().newSscsCaseData(SscsCaseData.builder().languagePreferenceWelsh(YES).appeal(Appeal.builder().hearingType(ORAL.name()).build()).build()).build());
 
         Template template = new NotificationConfig(env).getTemplate(emailTemplateName, smsTemplateName, letterTemplateName, letterTemplateName, Benefit.PIP, wrapper, createdInGapsFrom);
 
@@ -98,7 +100,7 @@ public class NotificationConfigTest {
         when(env.getProperty(switchedDocmosisTemplateKey)).thenReturn(docmosisTemplateId);
         when(env.containsProperty(letterTemplateKey)).thenReturn(true);
 
-        CcdNotificationWrapper wrapper = new CcdNotificationWrapper(SscsCaseDataWrapper.builder().newSscsCaseData(SscsCaseData.builder().languagePreferenceWelsh("Yes").appeal(Appeal.builder().hearingType(ORAL.name()).build()).build()).build());
+        CcdNotificationWrapper wrapper = new CcdNotificationWrapper(SscsCaseDataWrapper.builder().newSscsCaseData(SscsCaseData.builder().languagePreferenceWelsh(YES).appeal(Appeal.builder().hearingType(ORAL.name()).build()).build()).build());
         wrapper.setSwitchLanguageType(true);
 
         Template template = new NotificationConfig(env).getTemplate("emailTemplateName", "smsTemplateName", "letterTemplateName", "letterTemplateName", Benefit.PIP, wrapper, "validAppeal");

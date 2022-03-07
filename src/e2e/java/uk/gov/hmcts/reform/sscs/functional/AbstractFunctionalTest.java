@@ -7,10 +7,9 @@ import static junit.framework.TestCase.fail;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNotNull;
 import static org.slf4j.LoggerFactory.getLogger;
-import static uk.gov.hmcts.reform.sscs.SscsCaseDataUtils.buildSscsCaseData;
-import static uk.gov.hmcts.reform.sscs.SscsCaseDataUtils.buildSscsCaseDataWelsh;
-import static uk.gov.hmcts.reform.sscs.SscsCaseDataUtils.subscribeRep;
+import static uk.gov.hmcts.reform.sscs.SscsCaseDataUtils.*;
 import static uk.gov.hmcts.reform.sscs.ccd.domain.EventType.SYA_APPEAL_CREATED;
+import static uk.gov.hmcts.reform.sscs.ccd.domain.YesNo.YES;
 
 import helper.EnvironmentProfileValueSource;
 import io.restassured.RestAssured;
@@ -19,14 +18,7 @@ import java.io.IOException;
 import java.nio.charset.StandardCharsets;
 import java.time.Instant;
 import java.time.LocalDate;
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Map;
-import java.util.Objects;
-import java.util.Set;
-import java.util.UUID;
+import java.util.*;
 import java.util.concurrent.TimeUnit;
 import java.util.stream.Collectors;
 import junitparams.JUnitParamsRunner;
@@ -135,11 +127,11 @@ public abstract class AbstractFunctionalTest {
     }
 
     protected SscsCaseData createCaseData() {
-        return buildSscsCaseData(caseReference, "Yes", "Yes", SYA_APPEAL_CREATED, "oral");
+        return buildSscsCaseData(caseReference, YES, YES, SYA_APPEAL_CREATED, "oral");
     }
 
     protected SscsCaseData createWelshCaseData() {
-        return buildSscsCaseDataWelsh(caseReference, "Yes", "Yes", SYA_APPEAL_CREATED, "oral");
+        return buildSscsCaseDataWelsh(caseReference, YES, YES, SYA_APPEAL_CREATED, "oral");
     }
 
     protected SscsCaseDetails findCaseById(Long ccdCaseId) {

@@ -12,6 +12,9 @@ import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.verifyNoInteractions;
 import static org.mockito.Mockito.when;
 import static uk.gov.hmcts.reform.sscs.SscsCaseDataUtils.getWelshDate;
+import static uk.gov.hmcts.reform.sscs.ccd.domain.YesNo.YES;
+import static uk.gov.hmcts.reform.sscs.ccd.domain.YesNo.isYes;
+import static uk.gov.hmcts.reform.sscs.ccd.domain.YesNo.isYesOrNo;
 import static uk.gov.hmcts.reform.sscs.config.AppConstants.ADDRESS_NAME;
 import static uk.gov.hmcts.reform.sscs.config.AppConstants.LETTER_ADDRESS_LINE_1;
 import static uk.gov.hmcts.reform.sscs.config.AppConstants.LETTER_ADDRESS_LINE_2;
@@ -98,6 +101,9 @@ public class PdfLetterServiceTest {
     @Test
     @Parameters({"APPELLANT, Yes, true", "APPELLANT, Yes, false", "REPRESENTATIVE, No, true", "REPRESENTATIVE, No, false"})
     public void willCreateAPdfToTheCorrectAddress(final SubscriptionType subscriptionType, String isScottish, boolean isScottishPoBoxFeatureEnabled) {
+
+        YesNo yesNoIsScottish = isYesOrNo(isScottish);
+
         NotificationWrapper wrapper = NotificationServiceTest.buildBaseWrapper(
                 APPEAL_RECEIVED_NOTIFICATION,
                 appellant,
@@ -106,7 +112,7 @@ public class PdfLetterServiceTest {
         );
 
         EVIDENCE_ADDRESS.setScottishPoBoxFeatureEnabled(isScottishPoBoxFeatureEnabled);
-        wrapper.getNewSscsCaseData().setIsScottishCase(isScottish);
+        wrapper.getNewSscsCaseData().setIsScottishCase(yesNoIsScottish);
 
         Entity entity = subscriptionType.equals(SubscriptionType.APPELLANT)
             ? appellant : representative;
@@ -117,8 +123,9 @@ public class PdfLetterServiceTest {
                 ? appellant.getAddress() : representative.getAddress();
         Name name = subscriptionType.equals(SubscriptionType.APPELLANT)
                 ? appellant.getName() : representative.getName();
-        String expectedLine3 = "Yes".equalsIgnoreCase(isScottish) && isScottishPoBoxFeatureEnabled ? EVIDENCE_ADDRESS.getScottishLine3() : EVIDENCE_ADDRESS.getLine3();
-        String expectedPostcode = "Yes".equalsIgnoreCase(isScottish) && isScottishPoBoxFeatureEnabled ? EVIDENCE_ADDRESS.getScottishPostcode() : EVIDENCE_ADDRESS.getPostcode();
+        String expectedLine3 = isYes(yesNoIsScottish) && isScottishPoBoxFeatureEnabled ? EVIDENCE_ADDRESS.getScottishLine3() :
+            EVIDENCE_ADDRESS.getLine3();
+        String expectedPostcode = isYes(yesNoIsScottish) && isScottishPoBoxFeatureEnabled ? EVIDENCE_ADDRESS.getScottishPostcode() : EVIDENCE_ADDRESS.getPostcode();
 
         PdfCoverSheet pdfCoverSheet = new PdfCoverSheet(wrapper.getCaseId(),
                 name.getFullNameNoTitle(),
@@ -181,7 +188,7 @@ public class PdfLetterServiceTest {
                 representative,
                 null
          );
-        wrapper.getNewSscsCaseData().setLanguagePreferenceWelsh("Yes");
+        wrapper.getNewSscsCaseData().setLanguagePreferenceWelsh(YES);
         Notification notification = Notification.builder().template(Template.builder().docmosisTemplateId("docmosis.doc").build()).placeholders(new HashMap<>()).build();
         byte[] letter = pdfLetterService.generateLetter(wrapper, notification,
             new SubscriptionWithType(EMPTY_SUBSCRIPTION, SubscriptionType.APPELLANT, appellant, appellant));
@@ -400,7 +407,7 @@ public class PdfLetterServiceTest {
                 representative,
                 null
         );
-        wrapper.getNewSscsCaseData().setLanguagePreferenceWelsh("Yes");
+        wrapper.getNewSscsCaseData().setLanguagePreferenceWelsh(YES);
         Notification notification = Notification.builder().template(Template.builder().docmosisTemplateId("docmosis.doc").build()).placeholders(new HashMap<>()).build();
         byte[] letter = pdfLetterService.generateLetter(wrapper, notification,
             new SubscriptionWithType(EMPTY_SUBSCRIPTION, SubscriptionType.APPELLANT, appellant, appellant));

@@ -7,6 +7,8 @@ import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.when;
 import static org.mockito.MockitoAnnotations.openMocks;
 import static uk.gov.hmcts.reform.sscs.ccd.domain.Benefit.PIP;
+import static uk.gov.hmcts.reform.sscs.ccd.domain.YesNo.NO;
+import static uk.gov.hmcts.reform.sscs.ccd.domain.YesNo.YES;
 import static uk.gov.hmcts.reform.sscs.config.SubscriptionType.APPELLANT;
 import static uk.gov.hmcts.reform.sscs.domain.notify.NotificationEventType.*;
 import static uk.gov.hmcts.reform.sscs.service.NotificationUtils.getSubscription;
@@ -66,7 +68,7 @@ public class SubscriptionPersonalisationTest {
 
     private static final Subscription NEW_SUBSCRIPTION = Subscription.builder()
             .tya("GLSCRR").email("test@email.com")
-            .mobile("07983495065").subscribeEmail("Yes").subscribeSms("Yes").wantSmsNotifications("Yes").build();
+            .mobile("07983495065").subscribeEmail(YES).subscribeSms(YES).wantSmsNotifications(YES).build();
 
     @Before
     public void setup() {
@@ -120,11 +122,11 @@ public class SubscriptionPersonalisationTest {
     public void customisePersonalisationShouldLeaveNotificationTypeAsSubscriptionUpdatedWhenEmailHasChanged() {
         Subscription newAppellantSubscription = Subscription.builder()
                 .tya("GLSCRR").email("changed@test.com")
-                .mobile("07983495065").subscribeEmail("Yes").subscribeSms("Yes").build();
+                .mobile("07983495065").subscribeEmail(YES).subscribeSms(YES).build();
 
         Subscription oldSubscription = Subscription.builder()
                 .tya("GLSCRR").email("test@email.com")
-                .mobile("07983495065").subscribeEmail("Yes").subscribeSms("No").build();
+                .mobile("07983495065").subscribeEmail(YES).subscribeSms(NO).build();
 
         buildNewAndOldCaseData(newAppellantSubscription, oldSubscription);
 
@@ -137,11 +139,11 @@ public class SubscriptionPersonalisationTest {
     public void customisePersonalisationShouldSetSmsConfirmationFlagWhenNumberHasChanged() {
         Subscription newAppellantSubscription = Subscription.builder()
                 .tya("GLSCRR").email("test@email.com")
-                .mobile("07900000000").subscribeEmail("Yes").subscribeSms("Yes").build();
+                .mobile("07900000000").subscribeEmail(YES).subscribeSms(YES).build();
 
         Subscription oldSubscription = Subscription.builder()
                 .tya("GLSCRR").email("test@email.com")
-                .mobile("07983495065").subscribeEmail("Yes").subscribeSms("Yes").build();
+                .mobile("07983495065").subscribeEmail(YES).subscribeSms(YES).build();
 
         buildNewAndOldCaseData(newAppellantSubscription, oldSubscription);
 
@@ -160,7 +162,7 @@ public class SubscriptionPersonalisationTest {
     @Test
     public void checkSubscriptionCreatedNotificationTypeNotChangedWhenSmsSubscribedIsAlreadySet() {
         Subscription oldSubscription = NEW_SUBSCRIPTION.toBuilder()
-                .subscribeEmail("No").subscribeSms("Yes").build();
+                .subscribeEmail(NO).subscribeSms(YES).build();
 
         Boolean result = personalisation.shouldSendSmsSubscriptionConfirmation(NEW_SUBSCRIPTION, oldSubscription);
 
@@ -170,7 +172,7 @@ public class SubscriptionPersonalisationTest {
     @Test
     public void checkSubscriptionCreatedNotificationTypeWhenSmsAlreadySubscribedAndNumberIsChanged() {
         Subscription oldSubscription = NEW_SUBSCRIPTION.toBuilder()
-                .subscribeEmail("No").subscribeSms("Yes").mobile("07900000000").build();
+                .subscribeEmail(NO).subscribeSms(YES).mobile("07900000000").build();
 
         Boolean result = personalisation.shouldSendSmsSubscriptionConfirmation(NEW_SUBSCRIPTION, oldSubscription);
 
@@ -180,9 +182,9 @@ public class SubscriptionPersonalisationTest {
     @Test
     public void checkSubscriptionCreatedNotificationTypeNotChangedWhenSmsSubscribedIsNotSet() {
 
-        Subscription newSubscription = NEW_SUBSCRIPTION.toBuilder().subscribeSms("No").build();
+        Subscription newSubscription = NEW_SUBSCRIPTION.toBuilder().subscribeSms(NO).build();
         Subscription oldSubscription = newSubscription.toBuilder()
-               .subscribeEmail("No").subscribeSms("No").build();
+               .subscribeEmail(NO).subscribeSms(NO).build();
 
         Boolean result = personalisation.shouldSendSmsSubscriptionConfirmation(newSubscription, oldSubscription);
 
@@ -214,7 +216,7 @@ public class SubscriptionPersonalisationTest {
     @Test
     public void willUnsetEmailIfSubscriptionIfSmsIsSubscribed() {
         SubscriptionWithType subscriptionWithType = new SubscriptionWithType(NEW_SUBSCRIPTION, APPELLANT, null, null);
-        Subscription oldSubscription = NEW_SUBSCRIPTION.toBuilder().subscribeSms("No").build();
+        Subscription oldSubscription = NEW_SUBSCRIPTION.toBuilder().subscribeSms(NO).build();
         personalisation.unsetMobileAndEmailIfUnchanged(subscriptionWithType, oldSubscription);
         assertEquals(NEW_SUBSCRIPTION.toBuilder().email(null).build(), subscriptionWithType.getSubscription());
     }
@@ -222,7 +224,7 @@ public class SubscriptionPersonalisationTest {
     @Test
     public void willUnsetMobileIfSubscriptionIfEmailIsSubscribed() {
         SubscriptionWithType subscriptionWithType = new SubscriptionWithType(NEW_SUBSCRIPTION, APPELLANT, null, null);
-        Subscription oldSubscription = NEW_SUBSCRIPTION.toBuilder().subscribeEmail("No").build();
+        Subscription oldSubscription = NEW_SUBSCRIPTION.toBuilder().subscribeEmail(NO).build();
         personalisation.unsetMobileAndEmailIfUnchanged(subscriptionWithType, oldSubscription);
         assertEquals(NEW_SUBSCRIPTION.toBuilder().mobile(null).build(), subscriptionWithType.getSubscription());
     }
@@ -245,7 +247,7 @@ public class SubscriptionPersonalisationTest {
 
 
     private Subscription buildSubscriptionWithNothingSubscribed() {
-        return NEW_SUBSCRIPTION.toBuilder().subscribeEmail("No").subscribeSms("No").wantSmsNotifications("No").build();
+        return NEW_SUBSCRIPTION.toBuilder().subscribeEmail(NO).subscribeSms(NO).wantSmsNotifications(NO).build();
     }
 
     private SubscriptionWithType getSubscriptionWithType(CcdNotificationWrapper ccdNotificationWrapper) {

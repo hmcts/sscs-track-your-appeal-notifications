@@ -1,6 +1,7 @@
 package uk.gov.hmcts.reform.sscs.service;
 
 import static java.util.Objects.isNull;
+import static uk.gov.hmcts.reform.sscs.ccd.domain.YesNo.isNoOrNull;
 import static uk.gov.hmcts.reform.sscs.domain.notify.NotificationEventType.*;
 
 import java.time.LocalDateTime;
@@ -9,6 +10,7 @@ import java.util.List;
 import org.springframework.stereotype.Service;
 import uk.gov.hmcts.reform.sscs.ccd.domain.Hearing;
 import uk.gov.hmcts.reform.sscs.ccd.domain.SscsCaseData;
+import uk.gov.hmcts.reform.sscs.ccd.domain.YesNo;
 import uk.gov.hmcts.reform.sscs.domain.notify.NotificationEventType;
 
 @Service
@@ -148,8 +150,8 @@ public class NotificationValidService {
                 hearingDateTime = latestHearing.getValue().getStart();
             }
 
-            String hearingAdjourned = latestHearing.getValue().getAdjourned();
-            return LocalDateTime.now().isBefore(hearingDateTime) && !"YES".equalsIgnoreCase(hearingAdjourned);
+            YesNo hearingAdjourned = latestHearing.getValue().getAdjourned();
+            return LocalDateTime.now().isBefore(hearingDateTime) && isNoOrNull(hearingAdjourned);
         } else {
             return false;
         }
