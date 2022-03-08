@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <suppressions xmlns="https://jeremylong.github.io/DependencyCheck/dependency-suppression.1.3.xsd">
-    <suppress until="2022-03-01">
+    <suppress until="2022-03-15">
         <notes><![CDATA[
                  https://nvd.nist.gov/vuln/detail/CVE-2021-22053
                  Suppress as we do not use templates
@@ -39,5 +39,11 @@
    file name: tomcat-embed-core-9.0.54.jar
    ]]></notes>
         <cve>CVE-2022-23181</cve>
+    </suppress>
+     <suppress until="2022-03-30">
+        <notes><![CDATA[
+   file name: kotlin-stdlib-1.5.31.jar
+   ]]></notes>
+        <cve>CVE-2022-24329</cve>
     </suppress>
 </suppressions>

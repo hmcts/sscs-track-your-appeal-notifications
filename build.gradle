@@ -166,7 +166,7 @@ dependencyManagement {
         }
 
         // resolves: CVE-2019-10101, CVE-2019-10102, CVE-2019-10103
-        dependencySet(group: 'org.jetbrains.kotlin', version: '1.5.31') {
+        dependencySet(group: 'org.jetbrains.kotlin', version: '1.6.10') {
             entry 'kotlin-stdlib'
             entry 'kotlin-stdlib-common'
         }
@@ -319,7 +319,7 @@ functional.shouldRunAfter(test)
 def versions = [
         logback         : '1.2.3',
         reformLogging   : '5.1.7',
-        springHystrix   : '2.2.9.RELEASE',
+        springHystrix   : '2.2.10.RELEASE',
         springfoxSwagger: '2.8.0',
         restAssured     : '4.3.3',
         pitest          : '1.4.2',
@@ -372,8 +372,8 @@ dependencies {
     compile group: 'uk.gov.hmcts.reform', name: 'properties-volume-spring-boot-starter', version:'0.1.0'
     compile group: 'com.github.hmcts', name: 'java-logging', version: versions.reformLogging
     compile group: 'uk.gov.hmcts.reform', name: 'service-auth-provider-client', version: '4.0.0'
-    compile group: 'com.github.hmcts', name: 'sscs-common', version: '4.6.45-RC-SSCS-10166'
-    compile group: 'com.github.hmcts', name: 'sscs-pdf-email-common', version: '1.4.54-RC-SSCS-10166'
+    compile group: 'com.github.hmcts', name: 'sscs-common', version: '4.6.45'
+    compile group: 'com.github.hmcts', name: 'sscs-pdf-email-common', version: '1.4.54'
 
     compile group: 'com.github.hmcts', name: 'sscs-job-scheduler', version: '1.5.7'
 
