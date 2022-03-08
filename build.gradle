@@ -166,7 +166,7 @@ dependencyManagement {
         }
 
         // resolves: CVE-2019-10101, CVE-2019-10102, CVE-2019-10103
-        dependencySet(group: 'org.jetbrains.kotlin', version: '1.5.31') {
+        dependencySet(group: 'org.jetbrains.kotlin', version: '1.6.10') {
             entry 'kotlin-stdlib'
             entry 'kotlin-stdlib-common'
         }
@@ -346,7 +346,7 @@ dependencies {
 
     compile group: 'com.mchange', name: 'c3p0', version: '0.9.5.5'
     compile group: 'org.flywaydb', name: 'flyway-core', version: '7.15.0'
-    compile group: 'org.postgresql', name: 'postgresql', version: '42.3.1'
+    compile group: 'org.postgresql', name: 'postgresql', version: '42.3.3'
     compile group: 'net.bytebuddy', name: 'byte-buddy', version: '1.12.6'
     compile group: 'org.elasticsearch', name: 'elasticsearch', version: '7.16.2'
 
@@ -372,7 +372,7 @@ dependencies {
     compile group: 'uk.gov.hmcts.reform', name: 'properties-volume-spring-boot-starter', version:'0.1.0'
     compile group: 'com.github.hmcts', name: 'java-logging', version: versions.reformLogging
     compile group: 'uk.gov.hmcts.reform', name: 'service-auth-provider-client', version: '4.0.0'
-    compile group: 'com.github.hmcts', name: 'sscs-common', version: '4.6.38'
+    compile group: 'com.github.hmcts', name: 'sscs-common', version: '4.6.43'
     compile group: 'com.github.hmcts', name: 'sscs-pdf-email-common', version: '1.4.52'
 
     compile group: 'com.github.hmcts', name: 'sscs-job-scheduler', version: '1.5.7'
