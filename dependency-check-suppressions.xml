@@ -7,25 +7,25 @@
                 ]]></notes>
         <cve>CVE-2021-22053</cve>
     </suppress>
-    <suppress until="2022-03-15">
+    <suppress until="2022-04-15">
         <notes><![CDATA[
    file name: logback-classic-1.2.6.jar
    ]]></notes>
         <cve>CVE-2021-42550</cve>
     </suppress>
-    <suppress until="2022-03-15">
+    <suppress until="2022-04-15">
         <notes><![CDATA[
    file name: netty-buffer-4.1.69.Final.jar
    ]]></notes>
         <cve>CVE-2021-43797</cve>
     </suppress>
-    <suppress until="2022-03-15">
+    <suppress until="2022-04-15">
         <notes><![CDATA[
    file name: spring-aop-5.3.12.jar
    ]]></notes>
         <cve>CVE-2021-22060</cve>
     </suppress>
-    <suppress until="2022-03-15">
+    <suppress until="2022-04-15">
         <notes><![CDATA[
    file name: sscs-pdf-email-common-1.4.52.jar
    ]]></notes>
@@ -34,16 +34,16 @@
         <cve>CVE-2020-11022</cve>
         <cve>CVE-2020-11023</cve>
     </suppress>
-    <suppress until="2022-03-15">
+    <suppress until="2022-04-15">
         <notes><![CDATA[
    file name: tomcat-embed-core-9.0.54.jar
    ]]></notes>
         <cve>CVE-2022-23181</cve>
     </suppress>
-     <suppress until="2022-03-30">
+    <suppress until="2022-04-21">
         <notes><![CDATA[
-   file name: kotlin-stdlib-1.5.31.jar
+   file name: jackson-databind-2.11.0.jar
    ]]></notes>
-        <cve>CVE-2022-24329</cve>
+        <cve>CVE-2020-36518</cve>
     </suppress>
 </suppressions>
