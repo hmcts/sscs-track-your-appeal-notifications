@@ -33,6 +33,8 @@
         <cve>CVE-2019-11358</cve>
         <cve>CVE-2020-11022</cve>
         <cve>CVE-2020-11023</cve>
+        <cve>CVE-2022-21724</cve>
+        <cve>CVE-2022-26520</cve>
     </suppress>
     <suppress until="2022-04-15">
         <notes><![CDATA[
