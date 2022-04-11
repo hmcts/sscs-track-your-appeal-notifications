@@ -185,7 +185,7 @@ dependencyManagement {
         }
 
         //CVE-2021-22118
-        dependencySet(group: 'org.springframework', version: '5.3.12') {
+        dependencySet(group: 'org.springframework', version: '5.3.18') {
             entry 'spring-aop'
             entry 'spring-aspects'
             entry 'spring-beans'
@@ -373,7 +373,7 @@ dependencies {
     compile group: 'com.github.hmcts', name: 'java-logging', version: versions.reformLogging
     compile group: 'uk.gov.hmcts.reform', name: 'service-auth-provider-client', version: '4.0.0'
 
-    compile group: 'com.github.hmcts', name: 'sscs-common', version: '4.7.1-RC-SSCS-10220-4'
+    compile group: 'com.github.hmcts', name: 'sscs-common', version: '4.7.1-RC-SSCS-10220-5'
     compile group: 'com.github.hmcts', name: 'sscs-pdf-email-common', version: '1.4.54'
 
 
