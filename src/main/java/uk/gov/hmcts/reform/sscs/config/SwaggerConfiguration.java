@@ -10,7 +10,7 @@ public class SwaggerConfiguration {
     @Bean
     public GroupedOpenApi api() {
         return GroupedOpenApi.builder()
-            .pathsToMatch("*")
+            .pathsToMatch("/**")
             .build();
     }
 
