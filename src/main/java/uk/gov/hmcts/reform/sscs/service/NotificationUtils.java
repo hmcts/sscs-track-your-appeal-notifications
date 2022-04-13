@@ -60,7 +60,7 @@ public class NotificationUtils {
 
     public static boolean hasJointParty(SscsCaseData caseData) {
         return caseData.isThereAJointParty()
-                && isNotBlank(trimToNull(caseData.getJointPartyName().getFullName()));
+                && isNotBlank(trimToNull(caseData.getJointParty().getName().getFullName()));
     }
 
     public static boolean hasAppointeeSubscriptionOrIsMandatoryAppointeeLetter(SscsCaseDataWrapper wrapper) {

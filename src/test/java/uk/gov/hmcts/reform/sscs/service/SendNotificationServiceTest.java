@@ -251,7 +251,7 @@ public class SendNotificationServiceTest {
     @Test
     public void sendLetterNotificationForJointParty() throws NotificationClientException {
         SubscriptionWithType jointPartyEmptySubscription = new SubscriptionWithType(EMPTY_SUBSCRIPTION, JOINT_PARTY);
-        final CcdNotificationWrapper wrapper = buildBaseWrapper(APPELLANT_WITH_ADDRESS, CASE_UPDATED, JointPartyName.builder().firstName("Jp").lastName("Party").build(), JOINT_PARTY_ADDRESS);
+        final CcdNotificationWrapper wrapper = buildBaseWrapper(APPELLANT_WITH_ADDRESS, CASE_UPDATED, Name.builder().firstName("Jp").lastName("Party").build(), JOINT_PARTY_ADDRESS);
         classUnderTest.sendLetterNotificationToAddress(wrapper, LETTER_NOTIFICATION, JOINT_PARTY_ADDRESS, jointPartyEmptySubscription);
 
         verify(notificationSender).sendLetter(eq(LETTER_NOTIFICATION.getLetterTemplate()), eq(JOINT_PARTY_ADDRESS), any(), any(), any(), any());
@@ -495,12 +495,16 @@ public class SendNotificationServiceTest {
         return buildBaseWrapper(appellant, eventType, representative, Benefit.PIP, "Online", READY_TO_LIST.getId());
     }
 
-    private CcdNotificationWrapper buildBaseWrapper(final Appellant appellant, final NotificationEventType eventType, final JointPartyName jointPartyName, final Address jointPartyAddress) {
+    private CcdNotificationWrapper buildBaseWrapper(final Appellant appellant, final NotificationEventType eventType, final Name name, final Address jointPartyAddress) {
         CcdNotificationWrapper wrapper = buildBaseWrapper(appellant, eventType, null, Benefit.PIP, "Online", READY_TO_LIST.getId());
-        SscsCaseData sscsCaseData = wrapper.getNewSscsCaseData().toBuilder().jointParty(YES)
-                .jointPartyName(jointPartyName)
-                .jointPartyAddressSameAsAppellant(jointPartyAddress == null ? YES : NO)
-                .jointPartyAddress(jointPartyAddress).build();
+        SscsCaseData sscsCaseData = wrapper.getNewSscsCaseData().toBuilder()
+                .jointParty(JointParty.builder()
+                        .hasJointParty(YesNo.YES)
+                        .name(name)
+                        .jointPartyAddressSameAsAppellant(jointPartyAddress == null ? YesNo.YES : YesNo.NO)
+                        .address(jointPartyAddress)
+                        .build())
+                .build();
         SscsCaseDataWrapper wraper = SscsCaseDataWrapper.builder()
                 .newSscsCaseData(sscsCaseData)
                 .oldSscsCaseData(sscsCaseData)
@@ -513,8 +517,13 @@ public class SendNotificationServiceTest {
         CcdNotificationWrapper wrapper = buildBaseWrapper(appellant, eventType, REP_WITH_ADDRESS, Benefit.PIP, "Online", READY_TO_LIST.getId());
         SscsCaseData sscsCaseData = wrapper.getNewSscsCaseData().toBuilder()
                 .reasonableAdjustments(reasonableAdjustments)
-                .jointPartyName(JointPartyName.builder().firstName("J").lastName("Party").build())
-                .jointPartyAddressSameAsAppellant("yes")
+                .jointParty(JointParty.builder()
+                        .name(Name.builder()
+                                .firstName("J")
+                                .lastName("Party")
+                                .build())
+                        .jointPartyAddressSameAsAppellant(YesNo.YES)
+                        .build())
                 .build();
         SscsCaseDataWrapper wraper = SscsCaseDataWrapper.builder()
                 .newSscsCaseData(sscsCaseData)

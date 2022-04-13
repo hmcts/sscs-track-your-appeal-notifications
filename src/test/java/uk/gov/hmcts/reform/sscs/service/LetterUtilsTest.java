@@ -110,7 +110,7 @@ public class LetterUtilsTest {
         NotificationWrapper wrapper = NotificationServiceTest.buildBaseWrapperJointParty(
                 SYA_APPEAL_CREATED_NOTIFICATION,
                 APPELLANT_WITH_ADDRESS_AND_APPOINTEE,
-                JointPartyName.builder().title("Mr").firstName("Joint").lastName("Party").build(),
+                Name.builder().title("Mr").firstName("Joint").lastName("Party").build(),
                 jointPartyAddress,
                 null
         );
@@ -123,7 +123,11 @@ public class LetterUtilsTest {
         NotificationWrapper wrapper = NotificationServiceTest.buildBaseWrapperJointParty(
                 SYA_APPEAL_CREATED_NOTIFICATION,
                 APPELLANT_WITH_ADDRESS_AND_APPOINTEE,
-                JointPartyName.builder().title("Mrs").firstName("Betty").lastName("Bloom").build(),
+                Name.builder()
+                        .title("Mrs")
+                        .firstName("Betty")
+                        .lastName("Bloom")
+                        .build(),
                 null,
                 null
         );

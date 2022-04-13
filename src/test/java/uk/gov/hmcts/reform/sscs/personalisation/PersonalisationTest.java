@@ -18,6 +18,7 @@ import static uk.gov.hmcts.reform.sscs.ccd.domain.HearingType.ONLINE;
 import static uk.gov.hmcts.reform.sscs.ccd.domain.HearingType.ORAL;
 import static uk.gov.hmcts.reform.sscs.ccd.domain.HearingType.PAPER;
 import static uk.gov.hmcts.reform.sscs.ccd.domain.HearingType.REGULAR;
+import static uk.gov.hmcts.reform.sscs.ccd.domain.YesNo.YES;
 import static uk.gov.hmcts.reform.sscs.config.AppConstants.*;
 import static uk.gov.hmcts.reform.sscs.config.SubscriptionType.APPELLANT;
 import static uk.gov.hmcts.reform.sscs.config.SubscriptionType.APPOINTEE;
@@ -1380,9 +1381,11 @@ public class PersonalisationTest {
 
         final SscsCaseData sscsCaseData = SscsCaseData.builder()
                 .ccdCaseId(CASE_ID)
-                .jointParty("Yes")
-                .jointPartyName(JointPartyName.builder().title("Mr").firstName("Bob").lastName("Builder").build())
-                .jointPartyAddressSameAsAppellant("Yes")
+                .jointParty(JointParty.builder()
+                        .hasJointParty(YES)
+                        .name(Name.builder().title("Mr").firstName("Bob").lastName("Builder").build())
+                        .jointPartyAddressSameAsAppellant(YES)
+                        .build())
                 .caseReference("SC/1234/5")
                 .appeal(Appeal.builder()
                         .benefitType(BenefitType.builder()
@@ -1622,7 +1625,9 @@ public class PersonalisationTest {
                 .appeal(Appeal.builder().benefitType(BenefitType.builder().code("PIP").build())
                         .appellant(Appellant.builder().name(name).build())
                         .build())
-                .jointPartyName(JointPartyName.builder().firstName("Jeff").lastName("Stelling").build())
+                .jointParty(JointParty.builder()
+                        .name(Name.builder().firstName("Jeff").lastName("Stelling").build())
+                        .build())
                 .confidentialityRequestOutcomeAppellant(DatedRequestOutcome.builder().requestOutcome(requestOutcome).build())
                 .build();
 
@@ -1641,7 +1646,9 @@ public class PersonalisationTest {
                 .appeal(Appeal.builder().benefitType(BenefitType.builder().code("PIP").build())
                         .appellant(Appellant.builder().name(name).build())
                         .build())
-                .jointPartyName(JointPartyName.builder().firstName("Jeff").lastName("Stelling").build())
+                .jointParty(JointParty.builder()
+                        .name(Name.builder().firstName("Jeff").lastName("Stelling").build())
+                        .build())
                 .confidentialityRequestOutcomeJointParty(DatedRequestOutcome.builder().requestOutcome(requestOutcome).build())
                 .build();
 
