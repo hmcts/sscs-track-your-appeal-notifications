@@ -2,7 +2,7 @@ package uk.gov.hmcts.reform.sscs.controller;
 
 import static uk.gov.hmcts.reform.sscs.domain.notify.NotificationEventType.getNotificationByCcdEvent;
 
-import io.swagger.annotations.ApiOperation;
+import io.swagger.v3.oas.annotations.Operation;
 import java.time.LocalDateTime;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -47,8 +47,8 @@ public class ReminderTestController {
         this.idamService = idamService;
     }
 
-    @ApiOperation(value = "Send reminder notification test endpoint",
-            notes = "Test endpoint to simulate the response that is received when reminder service executes"
+    @Operation(summary = "Send reminder notification test endpoint",
+            description = "Test endpoint to simulate the response that is received when reminder service executes"
     )
     @PostMapping(value = "/reminder", produces = MimeTypeUtils.APPLICATION_JSON_VALUE)
     public void reminder(
