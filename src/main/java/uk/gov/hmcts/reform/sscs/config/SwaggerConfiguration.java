@@ -10,7 +10,7 @@ import org.springframework.context.annotation.Configuration;
 public class SwaggerConfiguration {
 
     @Bean
-    public OpenAPI trackYourAppealNotificationsAPI() {
+    public OpenAPI trackYourAppealNotificationsApi() {
         return new OpenAPI()
             .info(new Info().title("Track Your Appeal Notifications")
                 .description("Track Your Appeal Notifications")
