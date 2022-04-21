@@ -12,10 +12,10 @@ public class SwaggerConfiguration {
     @Bean
     public OpenAPI trackYourAppealNotificationsApi() {
         return new OpenAPI()
-                .info(new Info().title("Track Your Appeal Notifications")
-                        .description("Track Your Appeal Notifications")
-                        .version("v0.0.1")
-                        .license(new License().name("Apache 2.0").url("http://springdoc.org")));
+            .info(new Info().title("Track Your Appeal Notifications")
+                .description("Track Your Appeal Notifications")
+                .version("v0.0.1")
+                .license(new License().name("Apache 2.0").url("http://springdoc.org")));
     }
 
 }
