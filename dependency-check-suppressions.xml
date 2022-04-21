@@ -85,6 +85,7 @@
         <cve>CVE-2013-4152</cve>
         <cve>CVE-2013-7315</cve>
         <cve>CVE-2014-0054</cve>
+        <cve>CVE-2016-1000027</cve>
     </suppress>
     <suppress until="2022-06-01">
         <notes><![CDATA[
@@ -106,5 +107,11 @@
                 tomcat-embed-websocket-9.0.54.jar (pkg:maven/org.apache.tomcat.embed/tomcat-embed-websocket@9.0.54, cpe:2.3:a:apache:tomcat:9.0.54:*:*:*:*:*:*:*, cpe:2.3:a:apache_tomcat:apache_tomcat:9.0.54:*:*:*:*:*:*:*)
                 ]]></notes>
         <cve>CVE-2022-23181</cve>
+    </suppress>
+    <suppress until="2022-06-01">
+        <notes><![CDATA[
+                elasticsearch-7.16.2.jar
+                ]]></notes>
+        <cve>CVE-2022-23708</cve>
     </suppress>
 </suppressions>
