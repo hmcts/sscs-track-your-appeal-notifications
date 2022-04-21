@@ -48,6 +48,9 @@
    ]]></notes>
         <cve>CVE-2020-36518</cve>
         <cve>CVE-2016-1000027</cve>
+        <cve>CVE-2022-23708</cve>
+        <cve>CVE-2020-36518</cve>
+        <cve>CVE-2016-1000027</cve>
     </suppress>
     <suppress>
         <notes><![CDATA[
@@ -57,8 +60,5 @@
         <cve>CVE-2013-4152</cve>
         <cve>CVE-2013-7315</cve>
         <cve>CVE-2014-0054</cve>
-        <cve>CVE-2022-23708</cve>
-        <cve>CVE-2020-36518</cve>
-        <cve>CVE-2016-1000027</cve>
     </suppress>
 </suppressions>
