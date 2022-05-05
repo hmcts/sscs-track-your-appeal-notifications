@@ -2,6 +2,8 @@ package uk.gov.hmcts.reform.sscs.factory;
 
 import static org.hamcrest.CoreMatchers.is;
 import static org.hamcrest.MatcherAssert.assertThat;
+import static uk.gov.hmcts.reform.sscs.ccd.domain.YesNo.NO;
+import static uk.gov.hmcts.reform.sscs.ccd.domain.YesNo.YES;
 import static uk.gov.hmcts.reform.sscs.domain.notify.NotificationEventType.*;
 
 import java.util.ArrayList;
@@ -100,11 +102,11 @@ public class CcdNotificationWrapperTest {
         }
 
         Subscription jointPartySubscription = null;
-        String jointPartyYesNo = "No";
-        JointPartyName jointPartyName = null;
+        YesNo jointPartyYesNo = NO;
+        Name jointPartyName = null;
         if (jointParty) {
-            jointPartyYesNo = "Yes";
-            jointPartyName = JointPartyName.builder().title("Madam").firstName("Jon").lastName("Party").build();
+            jointPartyYesNo = YES;
+            jointPartyName = Name.builder().title("Madam").firstName("Jon").lastName("Party").build();
             jointPartySubscription = Subscription.builder()
                     .email("joint@test.com")
                     .subscribeEmail("Yes")
@@ -117,8 +119,10 @@ public class CcdNotificationWrapperTest {
             SscsCaseDataWrapper.builder()
                 .oldSscsCaseData(SscsCaseData.builder().build())
                 .newSscsCaseData(SscsCaseData.builder()
-                    .jointParty(jointPartyYesNo)
-                    .jointPartyName(jointPartyName)
+                    .jointParty(JointParty.builder()
+                            .hasJointParty(jointPartyYesNo)
+                            .name(jointPartyName)
+                            .build())
                     .appeal(Appeal.builder()
                         .appellant(appellant)
                         .hearingType("cor")
@@ -158,9 +162,11 @@ public class CcdNotificationWrapperTest {
         return new CcdNotificationWrapper(
             SscsCaseDataWrapper.builder()
                 .newSscsCaseData(SscsCaseData.builder()
-                        .jointParty("Yes")
-                        .jointPartyAddressSameAsAppellant("Yes")
-                        .jointPartyName(JointPartyName.builder().title("Madam").firstName("Jon").lastName("Party").build())
+                    .jointParty(JointParty.builder()
+                            .hasJointParty(YES)
+                            .jointPartyAddressSameAsAppellant(YES)
+                            .name(Name.builder().title("Madam").firstName("Jon").lastName("Party").build())
+                            .build())
                     .appeal(Appeal.builder()
                         .hearingType(hearingType)
                         .appellant(Appellant.builder().appointee(appointee).build())

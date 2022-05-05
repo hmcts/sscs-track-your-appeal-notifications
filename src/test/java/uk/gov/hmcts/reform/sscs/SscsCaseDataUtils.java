@@ -1,5 +1,8 @@
 package uk.gov.hmcts.reform.sscs;
 
+import static uk.gov.hmcts.reform.sscs.ccd.domain.YesNo.NO;
+import static uk.gov.hmcts.reform.sscs.ccd.domain.YesNo.YES;
+
 import java.text.SimpleDateFormat;
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
@@ -141,14 +144,20 @@ public final class SscsCaseDataUtils {
                 .appeal(appeal)
                 .events(Collections.singletonList(events))
                 .subscriptions(subscriptions)
-                .jointParty("Yes")
-                .jointPartyAddressSameAsAppellant("No")
-                .jointPartyName(JointPartyName.builder().title("mr").firstName("Jon").lastName("Party").build())
-                .jointPartyAddress(Address.builder()
-                        .line1("1 Appellant Ave")
-                        .town("Appellanton")
-                        .county("Appellanty")
-                        .postcode("TS1 1ST")
+                .jointParty(JointParty.builder()
+                        .hasJointParty(YES)
+                        .jointPartyAddressSameAsAppellant(NO)
+                        .name(Name.builder()
+                                .title("mr")
+                                .firstName("Jon")
+                                .lastName("Party")
+                                .build())
+                        .address(Address.builder()
+                                .line1("1 Appellant Ave")
+                                .town("Appellanton")
+                                .county("Appellanty")
+                                .postcode("TS1 1ST")
+                                .build())
                         .build());
     }
 

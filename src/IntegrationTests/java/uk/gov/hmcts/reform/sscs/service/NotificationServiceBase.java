@@ -168,17 +168,14 @@ public class NotificationServiceBase {
 
     public SscsCaseData getSscsCaseDataForAppointee(Subscription subscription) {
         SscsCaseData sscsCaseData = getSscsCaseData(subscription);
+        sscsCaseData.getAppeal().getAppellant().setAppointee(Appointee.builder()
+                .name(Name.builder().firstName("Appoin").lastName("Tee").build())
+                .address(sscsCaseData.getAppeal().getAppellant().getAddress())
+                .contact(sscsCaseData.getAppeal().getAppellant().getContact())
+                .identity(sscsCaseData.getAppeal().getAppellant().getIdentity())
+                .build());
         return sscsCaseData.toBuilder()
-            .appeal(sscsCaseData.getAppeal().toBuilder().appellant(sscsCaseData.getAppeal().getAppellant()
-
-                .toBuilder()
-                .appointee(Appointee.builder()
-                    .name(Name.builder().firstName("Appoin").lastName("Tee").build())
-                    .address(sscsCaseData.getAppeal().getAppellant().getAddress())
-                    .contact(sscsCaseData.getAppeal().getAppellant().getContact())
-                    .identity(sscsCaseData.getAppeal().getAppellant().getIdentity())
-                    .build())
-                .build()).build())
+            .appeal(sscsCaseData.getAppeal().toBuilder().appellant(sscsCaseData.getAppeal().getAppellant()).build())
             .subscriptions(sscsCaseData.getSubscriptions().toBuilder()
                 .appellantSubscription(null)
                 .appointeeSubscription(subscription).build())

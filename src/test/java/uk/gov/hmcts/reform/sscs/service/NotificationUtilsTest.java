@@ -10,6 +10,7 @@ import static org.mockito.MockitoAnnotations.openMocks;
 import static uk.gov.hmcts.reform.sscs.SscsCaseDataUtils.CASE_ID;
 import static uk.gov.hmcts.reform.sscs.SscsCaseDataUtils.addHearing;
 import static uk.gov.hmcts.reform.sscs.SscsCaseDataUtils.addHearingOptions;
+import static uk.gov.hmcts.reform.sscs.ccd.domain.YesNo.isYes;
 import static uk.gov.hmcts.reform.sscs.ccd.util.CaseDataUtils.YES;
 import static uk.gov.hmcts.reform.sscs.domain.notify.NotificationEventType.*;
 import static uk.gov.hmcts.reform.sscs.service.NotificationServiceTest.*;
@@ -471,9 +472,14 @@ public class NotificationUtilsTest {
     private static CcdNotificationWrapper buildJointPartyWrapper(Subscription subscription, NotificationEventType eventType, String jointParty) {
         CcdNotificationWrapper ccdNotificationWrapper = buildBaseWrapper(subscription, eventType);
         final SscsCaseData sscsCaseData = ccdNotificationWrapper.getNewSscsCaseData().toBuilder()
-                .jointParty(jointParty)
-                .jointPartyAddressSameAsAppellant(YES)
-                .jointPartyName(JointPartyName.builder().firstName("Joint").lastName("Party").build())
+                .jointParty(JointParty.builder()
+                        .hasJointParty(isYes(jointParty) ? YesNo.YES : YesNo.NO)
+                        .jointPartyAddressSameAsAppellant(YesNo.YES)
+                        .name(Name.builder()
+                                .firstName("Joint")
+                                .lastName("Party")
+                                .build())
+                        .build())
                 .subscriptions(Subscriptions.builder().appellantSubscription(subscription).jointPartySubscription(subscription).build())
                 .build();
         return new CcdNotificationWrapper(SscsCaseDataWrapper.builder()
