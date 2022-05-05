@@ -1995,12 +1995,14 @@ public class NotificationServiceTest {
         return buildBaseWrapperWithCaseData(sscsCaseData, eventType);
     }
 
-    public static CcdNotificationWrapper buildBaseWrapperJointParty(NotificationEventType eventType, Appellant appellant, JointPartyName jointPartyName, Address address, SscsDocument sscsDocument) {
+    public static CcdNotificationWrapper buildBaseWrapperJointParty(NotificationEventType eventType, Appellant appellant, Name name, Address address, SscsDocument sscsDocument) {
         SscsCaseData sscsCaseData = getSscsCaseDataBuilder(appellant, null, sscsDocument)
-                .jointParty(YES)
-                .jointPartyName(jointPartyName)
-                .jointPartyAddressSameAsAppellant(address == null ? "Yes" : "No")
-                .jointPartyAddress(address)
+                .jointParty(JointParty.builder()
+                        .hasJointParty(YesNo.YES)
+                        .name(name)
+                        .jointPartyAddressSameAsAppellant(address == null ? YesNo.YES : YesNo.NO)
+                        .address(address)
+                        .build())
                 .build();
         CcdNotificationWrapper ccdNotificationWrapper = buildBaseWrapperWithCaseData(sscsCaseData, eventType);
         return ccdNotificationWrapper;

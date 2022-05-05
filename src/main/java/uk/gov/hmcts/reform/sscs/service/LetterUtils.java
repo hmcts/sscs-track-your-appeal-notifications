@@ -3,7 +3,7 @@ package uk.gov.hmcts.reform.sscs.service;
 import static java.lang.String.format;
 import static org.apache.commons.collections4.CollectionUtils.isNotEmpty;
 import static org.apache.commons.collections4.ListUtils.emptyIfNull;
-import static org.apache.commons.lang3.StringUtils.equalsIgnoreCase;
+import static uk.gov.hmcts.reform.sscs.ccd.domain.YesNo.isYes;
 import static uk.gov.hmcts.reform.sscs.config.SubscriptionType.*;
 import static uk.gov.hmcts.reform.sscs.service.NotificationUtils.hasAppointee;
 
@@ -36,11 +36,10 @@ public class LetterUtils {
         if (REPRESENTATIVE.equals(subscriptionWithType.getSubscriptionType())) {
             return wrapper.getNewSscsCaseData().getAppeal().getRep().getAddress();
         } else if (JOINT_PARTY.equals(subscriptionWithType.getSubscriptionType())) {
-            if (equalsIgnoreCase("yes",
-                    wrapper.getNewSscsCaseData().getJointPartyAddressSameAsAppellant())) {
+            if (isYes(wrapper.getNewSscsCaseData().getJointParty().getJointPartyAddressSameAsAppellant())) {
                 return wrapper.getNewSscsCaseData().getAppeal().getAppellant().getAddress();
             }
-            return wrapper.getNewSscsCaseData().getJointPartyAddress();
+            return wrapper.getNewSscsCaseData().getJointParty().getAddress();
         } else if (OTHER_PARTY.equals(subscriptionWithType.getSubscriptionType())) {
             return getAddressForOtherParty(wrapper.getNewSscsCaseData(), subscriptionWithType.getPartyId());
         } else {
@@ -79,7 +78,7 @@ public class LetterUtils {
         if (REPRESENTATIVE.equals(subscriptionWithType.getSubscriptionType())) {
             return SendNotificationHelper.getRepSalutation(wrapper.getNewSscsCaseData().getAppeal().getRep(), false);
         } else if (JOINT_PARTY.equals(subscriptionWithType.getSubscriptionType())) {
-            return format("%s %s",wrapper.getNewSscsCaseData().getJointPartyName().getFirstName(), wrapper.getNewSscsCaseData().getJointPartyName().getLastName());
+            return format("%s %s",wrapper.getNewSscsCaseData().getJointParty().getName().getFirstName(), wrapper.getNewSscsCaseData().getJointParty().getName().getLastName());
         } else {
             if (subscriptionWithType.getPartyId() > 0 && isNotEmpty(wrapper.getNewSscsCaseData().getOtherParties())) {
                 return getNameForOtherParty(wrapper.getNewSscsCaseData(), subscriptionWithType.getPartyId()).map(Name::getFullNameNoTitle).orElse("");

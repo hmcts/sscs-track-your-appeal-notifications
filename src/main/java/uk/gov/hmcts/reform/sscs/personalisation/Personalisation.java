@@ -13,6 +13,7 @@ import static uk.gov.hmcts.reform.sscs.ccd.domain.Benefit.getBenefitByCodeOrThro
 import static uk.gov.hmcts.reform.sscs.ccd.domain.Benefit.getLongBenefitNameDescriptionWithOptionalAcronym;
 import static uk.gov.hmcts.reform.sscs.ccd.domain.EventType.APPEAL_RECEIVED;
 import static uk.gov.hmcts.reform.sscs.ccd.domain.PanelComposition.JUDGE_DOCTOR_AND_DISABILITY_EXPERT_IF_APPLICABLE;
+import static uk.gov.hmcts.reform.sscs.ccd.domain.YesNo.isYes;
 import static uk.gov.hmcts.reform.sscs.ccd.util.CaseDataUtils.YES;
 import static uk.gov.hmcts.reform.sscs.config.AppConstants.*;
 import static uk.gov.hmcts.reform.sscs.config.PersonalisationConfiguration.PersonalisationKey.*;
@@ -221,9 +222,9 @@ public class Personalisation<E extends NotificationWrapper> {
         personalisation.put(JOINT, subscriptionWithType.getSubscriptionType().equals(JOINT_PARTY) ? JOINT_TEXT_WITH_A_SPACE : EMPTY);
         personalisation.put(JOINT_WELSH, subscriptionWithType.getSubscriptionType().equals(JOINT_PARTY) ? JOINT_WELSH_TEXT_WITH_A_SPACE : EMPTY);
 
-        if (StringUtils.equalsIgnoreCase(ccdResponse.getJointParty(), "yes")) {
+        if (isYes(ccdResponse.getJointParty().getHasJointParty())) {
             personalisation.put(JOINT_PARTY_APPEAL, "Yes");
-            personalisation.put(JOINT_PARTY_NAME, ccdResponse.getJointPartyName().getFullNameNoTitle());
+            personalisation.put(JOINT_PARTY_NAME, ccdResponse.getJointParty().getName().getFullNameNoTitle());
         } else {
             personalisation.put(JOINT_PARTY_APPEAL, "No");
         }
@@ -311,8 +312,8 @@ public class Personalisation<E extends NotificationWrapper> {
             personalisation.put(OTHER_PARTY_NAME, ccdResponse.getAppeal().getAppellant().getName().getFullNameNoTitle());
             personalisation.put(CONFIDENTIALITY_OUTCOME, getRequestOutcome(ccdResponse.getConfidentialityRequestOutcomeJointParty()));
 
-        } else if (subscriptionWithType.getSubscriptionType().equals(APPELLANT) && null != ccdResponse.getJointPartyName() && null != ccdResponse.getConfidentialityRequestOutcomeAppellant()) {
-            personalisation.put(OTHER_PARTY_NAME, ccdResponse.getJointPartyName().getFullNameNoTitle());
+        } else if (subscriptionWithType.getSubscriptionType().equals(APPELLANT) && null != ccdResponse.getJointParty().getName() && null != ccdResponse.getConfidentialityRequestOutcomeAppellant()) {
+            personalisation.put(OTHER_PARTY_NAME, ccdResponse.getJointParty().getName().getFullNameNoTitle());
             personalisation.put(CONFIDENTIALITY_OUTCOME, getRequestOutcome(ccdResponse.getConfidentialityRequestOutcomeAppellant()));
         }
     }
@@ -342,7 +343,7 @@ public class Personalisation<E extends NotificationWrapper> {
                 && hasAppointee(wrapper)) {
             return getDefaultName(sscsCaseData.getAppeal().getAppellant().getAppointee().getName());
         } else if (subscriptionType.equals(JOINT_PARTY) && hasJointParty(sscsCaseData)) {
-            JointPartyName partyName = sscsCaseData.getJointPartyName();
+            Name partyName = sscsCaseData.getJointParty().getName();
             return (partyName == null) ? EMPTY :
                     getDefaultName(new Name(partyName.getTitle(), partyName.getFirstName(), partyName.getLastName()));
         }
