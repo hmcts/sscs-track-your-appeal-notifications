@@ -3,7 +3,7 @@ provider "azurerm" {
 }
 
 data "azurerm_key_vault" "sscs_key_vault" {
-  name = "${local.azureVaultName}"
+  name                = local.azureVaultName
   resource_group_name = local.azureVaultName
 }
 
@@ -20,15 +20,15 @@ locals {
 }
 
 module "db-notif" {
-  source          = "git@github.com:hmcts/cnp-module-postgres?ref=master"
-  product         = "${var.product}-${var.component}-postgres-v11-db"
-  location        = var.location
-  env             = var.env
-  postgresql_user = var.postgresql_user
+  source             = "git@github.com:hmcts/cnp-module-postgres?ref=master"
+  product            = "${var.product}-${var.component}-postgres-v11-db"
+  location           = var.location
+  env                = var.env
+  postgresql_user    = var.postgresql_user
   postgresql_version = "11"
-  database_name   = var.database_name
-  common_tags     = var.common_tags
-  subscription    = var.subscription
+  database_name      = var.database_name
+  common_tags        = var.common_tags
+  subscription       = var.subscription
 }
 
 
