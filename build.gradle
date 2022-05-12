@@ -327,7 +327,7 @@ def versions = [
         pitest          : '1.4.2',
         gradlePitest    : '1.3.0',
         sonarPitest     : '0.5',
-        sscsCommon     : '4.8.8',
+        sscsCommon     : '4.8.8-RC-SSCS-10245-test-3',
 ]
 
 configurations.all {
