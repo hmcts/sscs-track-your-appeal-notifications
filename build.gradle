@@ -187,8 +187,8 @@ dependencyManagement {
             entry 'xmpbox'
         }
 
-        //CVE-2021-22118
-        dependencySet(group: 'org.springframework', version: '5.3.18') {
+        //CVE-2021-22118, CVE-2022-22970, CVE-2022-22971
+        dependencySet(group: 'org.springframework', version: '5.3.20') {
             entry 'spring-aop'
             entry 'spring-aspects'
             entry 'spring-beans'
@@ -216,6 +216,11 @@ dependencyManagement {
         //CVE-2021-35515, CVE-2021-35516, CVE-2021-35517, CVE-2021-36090
         dependencySet(group: 'org.apache.commons', version: '1.21') {
             entry 'commons-compress'
+        }
+
+        dependencySet(group: 'org.apache.tomcat.embed', version: '9.0.63') {
+            entry 'tomcat-embed-core'
+            entry 'tomcat-embed-websocket'
         }
 
         //CVE-2021-22044
