@@ -187,8 +187,8 @@ dependencyManagement {
             entry 'xmpbox'
         }
 
-        //CVE-2021-22118
-        dependencySet(group: 'org.springframework', version: '5.3.18') {
+        //CVE-2021-22118, CVE-2022-22970, CVE-2022-22971
+        dependencySet(group: 'org.springframework', version: '5.3.20') {
             entry 'spring-aop'
             entry 'spring-aspects'
             entry 'spring-beans'
