@@ -381,7 +381,7 @@ dependencies {
     compile group: 'uk.gov.hmcts.reform', name: 'service-auth-provider-client', version: '4.0.0'
 
     compile group: 'com.github.hmcts', name: 'sscs-common', version: versions.sscsCommon
-    compile group: 'com.github.hmcts', name: 'sscs-pdf-email-common', version: '1.4.54'
+    compile group: 'com.github.hmcts', name: 'sscs-pdf-email-common', version: '1.4.55'
 
     compile group: 'com.github.hmcts', name: 'sscs-job-scheduler', version: '1.5.7'
 
