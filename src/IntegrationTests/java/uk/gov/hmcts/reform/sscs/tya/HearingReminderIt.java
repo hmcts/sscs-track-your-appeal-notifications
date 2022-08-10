@@ -39,9 +39,11 @@ import uk.gov.hmcts.reform.sscs.jobscheduler.services.JobExecutor;
 import uk.gov.hmcts.reform.sscs.service.AuthorisationService;
 import uk.gov.hmcts.reform.sscs.service.NotificationService;
 import uk.gov.hmcts.reform.sscs.service.OutOfHoursCalculator;
+import uk.gov.hmcts.reform.sscs.service.docmosis.PdfLetterService;
 import uk.gov.service.notify.NotificationClient;
 import uk.gov.service.notify.NotificationClientException;
 import uk.gov.service.notify.SendEmailResponse;
+import uk.gov.service.notify.SendLetterResponse;
 import uk.gov.service.notify.SendSmsResponse;
 
 @RunWith(SpringRunner.class)
@@ -69,11 +71,17 @@ public class HearingReminderIt {
     @Mock
     private SendSmsResponse sendSmsResponse;
 
+    @Mock
+    private SendLetterResponse sendLetterResponse;
+
     @MockBean
     private JobExecutor<String> jobExecutor;
 
     @MockBean
     private OutOfHoursCalculator outOfHoursCalculator;
+
+    @MockBean
+    private PdfLetterService pdfLetterService;
 
     @Autowired
     @Qualifier("scheduler")
@@ -100,6 +108,17 @@ public class HearingReminderIt {
         when(client.sendSms(any(), any(), any(), any(), any()))
                 .thenReturn(sendSmsResponse);
         when(sendSmsResponse.getNotificationId()).thenReturn(UUID.randomUUID());
+
+        when(client.sendLetter(any(), any(), any()))
+            .thenReturn(sendLetterResponse);
+        when(sendLetterResponse.getNotificationId()).thenReturn(UUID.randomUUID());
+
+
+        when(pdfLetterService.generateLetter(any(), any(), any()))
+            .thenReturn(new byte[0]);
+        when(pdfLetterService.buildCoversheet(any(), any()))
+            .thenReturn(new byte[0]);
+
 
         outOfHoursCalculator = mock(OutOfHoursCalculator.class);
         when(outOfHoursCalculator.isItOutOfHours()).thenReturn(false);

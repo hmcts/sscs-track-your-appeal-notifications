@@ -70,9 +70,7 @@ public class SendNotificationService {
         boolean isDocmosisLetter = DOCMOSIS_LETTERS.contains(eventType);
 
         boolean letterSent = false;
-        if (allowNonInterlocLetterToBeSent(notification, isInterlocLetter, wrapper.getSscsCaseDataWrapper().getNewSscsCaseData().getCreatedInGapsFrom())
-                || allowInterlocLetterToBeSent(notification, isInterlocLetter)
-                || allowDocmosisLetterToBeSent(notification, isDocmosisLetter)) {
+        if (shouldSendLetter(wrapper, notification, isInterlocLetter, isDocmosisLetter)) {
             letterSent = sendLetterNotification(wrapper, notification, subscriptionWithType, eventType);
         }
 
@@ -83,6 +81,17 @@ public class SendNotificationService {
         }
 
         return notificationSent;
+    }
+
+    private boolean shouldSendLetter(NotificationWrapper wrapper, Notification notification, boolean isInterlocLetter, boolean isDocmosisLetter) {
+        String createdInGapsFrom = wrapper.getSscsCaseDataWrapper().getNewSscsCaseData().getCreatedInGapsFrom();
+        log.info("isDocmosisLetter: {}, DocmosisLetterTemplate: {}, isInterlocLetter: {}, LetterTemplate: {}, createdInGapsFrom: {}",
+            isDocmosisLetter, notification.getDocmosisLetterTemplate(),
+            isInterlocLetter, notification.getLetterTemplate(),
+            createdInGapsFrom);
+        return allowNonInterlocLetterToBeSent(notification, isInterlocLetter, createdInGapsFrom)
+            || allowInterlocLetterToBeSent(notification, isInterlocLetter)
+            || allowDocmosisLetterToBeSent(notification, isDocmosisLetter);
     }
 
     private boolean allowDocmosisLetterToBeSent(Notification notification, boolean isDocmosisLetter) {
@@ -117,6 +126,9 @@ public class SendNotificationService {
                         wrapper.getNewSscsCaseData()
                 );
         log.info("In sendSmsNotification method notificationSender is available {} ", notificationSender != null);
+
+        notificationLog(notification, "sms", notification.getMobile());
+
         return notificationHandler.sendNotification(wrapper, smsTemplateId, "SMS", sendNotification);
     }
 
@@ -131,9 +143,12 @@ public class SendNotificationService {
                             notification.getReference(),
                             wrapper.getNotificationType(),
                             wrapper.getNewSscsCaseData()
-
                     );
+
             log.info("In sendEmailNotification method notificationSender is available {} ", notificationSender != null);
+
+            notificationLog(notification, "email", notification.getEmail());
+
             return notificationHandler.sendNotification(wrapper, notification.getEmailTemplate(), "Email", sendNotification);
         }
 
@@ -164,13 +179,12 @@ public class SendNotificationService {
                 return notificationHandler.sendNotification(wrapper, notification.getLetterTemplate(), NOTIFICATION_TYPE_LETTER, sendNotification);
             }
         }
-
         return false;
     }
 
     protected void sendLetterNotificationToAddress(NotificationWrapper wrapper, Notification notification, final Address addressToUse, SubscriptionWithType subscriptionWithType) throws NotificationClientException {
         if (addressToUse != null) {
-            Map<String, String> placeholders = notification.getPlaceholders();
+            Map<String, Object> placeholders = notification.getPlaceholders();
             String fullNameNoTitle = getNameToUseForLetter(wrapper, subscriptionWithType);
 
             placeholders.put(ADDRESS_LINE_1, fullNameNoTitle);
@@ -190,13 +204,14 @@ public class SendNotificationService {
 
             placeholders.put(CLAIMANT_NAME, wrapper.getNewSscsCaseData().getAppeal().getAppellant().getName().getFullNameNoTitle());
 
-
             if (!placeholders.containsKey(APPEAL_RESPOND_DATE)) {
                 ZonedDateTime appealReceivedDate = ZonedDateTime.now().plusSeconds(delay);
                 placeholders.put(APPEAL_RESPOND_DATE, appealReceivedDate.format(DateTimeFormatter.ofPattern(RESPONSE_DATE_FORMAT)));
             }
 
             log.info("In sendLetterNotificationToAddress method notificationSender is available {} ", notificationSender != null);
+
+            notificationLog(notification, "letter", addressToUse.getPostcode());
 
             notificationSender.sendLetter(
                     notification.getLetterTemplate(),
@@ -246,6 +261,9 @@ public class SendNotificationService {
                         );
 
                 log.info("In sendBundledAndDocmosisLetterNotification method notificationSender is available {} ", notificationSender != null);
+
+                notificationLog(notification, "letter", "");
+
                 if (ArrayUtils.isNotEmpty(bundledLetter)) {
                     notificationHandler.sendNotification(wrapper, notification.getDocmosisLetterTemplate(), NOTIFICATION_TYPE_LETTER, sendNotification);
                     return true;
@@ -257,6 +275,19 @@ public class SendNotificationService {
             throw exception;
         }
         return false;
+    }
+
+    private void notificationLog(Notification notification, String notificationType, String recipient) {
+        Object partyType = Optional.ofNullable(notification)
+            .map(Notification::getPlaceholders)
+            .map(map -> map.get(PARTY_TYPE))
+            .orElse(null);
+        Object entityType = Optional.ofNullable(notification)
+            .map(Notification::getPlaceholders)
+            .map(map -> map.get(ENTITY_TYPE))
+            .orElse(null);
+        log.info("Sending {} Notification for party type: {} and entity type: {}, contact: {}",
+            notificationType, partyType, entityType, recipient);
     }
 
     private byte[] downloadAssociatedCasePdf(NotificationWrapper wrapper) {

@@ -167,7 +167,7 @@ public class NotificationHandlerTest {
         try {
             underTest.sendNotification(notificationWrapper, "someTemplate", "Email", sendNotification);
         } catch (NotificationClientRuntimeException e) {
-            verifyExpectedLogMessage(mockAppender, captorLoggingEvent, notificationWrapper.getNewSscsCaseData().getCcdCaseId(), "Could not send notification for case id: 123", Level.ERROR);
+            verifyExpectedLogMessage(mockAppender, captorLoggingEvent, notificationWrapper.getNewSscsCaseData().getCcdCaseId(), "Could not send Email notification for case id: 123", Level.ERROR);
             throw e;
         }
     }
@@ -196,7 +196,7 @@ public class NotificationHandlerTest {
         try {
             underTest.sendNotification(notificationWrapper, "someTemplate", "Email", sendNotification);
         } catch (Throwable throwable) {
-            verifyExpectedLogMessage(mockAppender, captorLoggingEvent, notificationWrapper.getNewSscsCaseData().getCcdCaseId(), "Could not send notification for case id:", Level.ERROR);
+            verifyExpectedLogMessage(mockAppender, captorLoggingEvent, notificationWrapper.getNewSscsCaseData().getCcdCaseId(), "Could not send Email notification for case id:", Level.ERROR);
             throw throwable;
         }
     }
@@ -209,7 +209,7 @@ public class NotificationHandlerTest {
                 .send();
 
         underTest.sendNotification(notificationWrapper, "someTemplate", "Email", sendNotification);
-        verifyExpectedLogMessage(mockAppender, captorLoggingEvent, notificationWrapper.getNewSscsCaseData().getCcdCaseId(), "Could not send notification for case id:", Level.ERROR);
+        verifyExpectedLogMessage(mockAppender, captorLoggingEvent, notificationWrapper.getNewSscsCaseData().getCcdCaseId(), "Could not send Email notification for case id:", Level.ERROR);
     }
 
     private void stubData() {

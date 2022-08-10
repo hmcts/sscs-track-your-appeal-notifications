@@ -14,11 +14,11 @@ public class Notification {
 
     private final Template template;
     private final Destination destination;
-    private final Map<String, String> placeholders;
+    private final Map<String, Object> placeholders;
     private final Reference reference;
     private final String appealNumber;
 
-    public Notification(Template template, Destination destination, Map<String, String> placeholders, Reference reference, String appealNumber) {
+    public Notification(Template template, Destination destination, Map<String, Object> placeholders, Reference reference, String appealNumber) {
         this.template = template;
         this.destination = destination;
         this.placeholders = placeholders;
@@ -62,7 +62,7 @@ public class Notification {
         return PhoneNumbersUtil.cleanPhoneNumber(destination.sms).orElse(destination.sms);
     }
 
-    public Map<String, String> getPlaceholders() {
+    public Map<String, Object> getPlaceholders() {
         return placeholders;
     }
 

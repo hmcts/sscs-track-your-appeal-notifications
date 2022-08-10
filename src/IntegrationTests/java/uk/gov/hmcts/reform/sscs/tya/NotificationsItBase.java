@@ -2,9 +2,15 @@ package uk.gov.hmcts.reform.sscs.tya;
 
 import static org.junit.Assert.assertArrayEquals;
 import static org.junit.Assert.assertEquals;
-import static org.mockito.Mockito.*;
-import static uk.gov.hmcts.reform.sscs.config.AppConstants.*;
+import static org.mockito.Mockito.any;
+import static org.mockito.Mockito.atMost;
+import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.times;
+import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.when;
 import static uk.gov.hmcts.reform.sscs.config.AppConstants.APPELLANT_NAME;
+import static uk.gov.hmcts.reform.sscs.config.AppConstants.NAME;
+import static uk.gov.hmcts.reform.sscs.config.AppConstants.REPRESENTATIVE_NAME;
 
 import java.io.File;
 import java.nio.charset.StandardCharsets;
@@ -36,16 +42,31 @@ import org.springframework.test.web.servlet.request.MockHttpServletRequestBuilde
 import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 import uk.gov.hmcts.reform.sscs.ccd.deserialisation.SscsCaseCallbackDeserializer;
 import uk.gov.hmcts.reform.sscs.ccd.service.CcdService;
-import uk.gov.hmcts.reform.sscs.config.NotificationBlacklist;
 import uk.gov.hmcts.reform.sscs.config.NotificationConfig;
+import uk.gov.hmcts.reform.sscs.config.NotificationTestRecipients;
 import uk.gov.hmcts.reform.sscs.controller.NotificationController;
 import uk.gov.hmcts.reform.sscs.controller.ReminderTestController;
 import uk.gov.hmcts.reform.sscs.docmosis.service.DocmosisPdfGenerationService;
 import uk.gov.hmcts.reform.sscs.factory.NotificationFactory;
 import uk.gov.hmcts.reform.sscs.idam.IdamService;
-import uk.gov.hmcts.reform.sscs.service.*;
+import uk.gov.hmcts.reform.sscs.service.AuthorisationService;
+import uk.gov.hmcts.reform.sscs.service.DocmosisPdfService;
+import uk.gov.hmcts.reform.sscs.service.MarkdownTransformationService;
+import uk.gov.hmcts.reform.sscs.service.NotificationHandler;
+import uk.gov.hmcts.reform.sscs.service.NotificationSender;
+import uk.gov.hmcts.reform.sscs.service.NotificationService;
+import uk.gov.hmcts.reform.sscs.service.NotificationValidService;
+import uk.gov.hmcts.reform.sscs.service.OutOfHoursCalculator;
+import uk.gov.hmcts.reform.sscs.service.PdfStoreService;
+import uk.gov.hmcts.reform.sscs.service.ReminderService;
+import uk.gov.hmcts.reform.sscs.service.SaveCorrespondenceAsyncService;
+import uk.gov.hmcts.reform.sscs.service.SendNotificationService;
 import uk.gov.hmcts.reform.sscs.service.docmosis.PdfLetterService;
-import uk.gov.service.notify.*;
+import uk.gov.service.notify.NotificationClient;
+import uk.gov.service.notify.NotificationClientException;
+import uk.gov.service.notify.SendEmailResponse;
+import uk.gov.service.notify.SendLetterResponse;
+import uk.gov.service.notify.SendSmsResponse;
 
 @RunWith(JUnitParamsRunner.class)
 @SpringBootTest
@@ -80,7 +101,7 @@ public class NotificationsItBase {
     protected AuthorisationService authorisationService;
 
     @Mock
-    private NotificationBlacklist notificationBlacklist;
+    private NotificationTestRecipients notificationTestRecipients;
 
     @Autowired
     private NotificationValidService notificationValidService;
@@ -142,7 +163,7 @@ public class NotificationsItBase {
 
     @Before
     public void setup() throws Exception {
-        NotificationSender sender = new NotificationSender(notificationClient, null, notificationBlacklist, markdownTransformationService, saveCorrespondenceAsyncService, saveCorrespondence);
+        NotificationSender sender = new NotificationSender(notificationClient, null, notificationTestRecipients, markdownTransformationService, saveCorrespondenceAsyncService, saveCorrespondence);
 
         SendNotificationService sendNotificationService = new SendNotificationService(sender, notificationHandler, notificationValidService, pdfLetterService, pdfStoreService);
 
@@ -218,7 +239,7 @@ public class NotificationsItBase {
     }
 
     protected void validateLetterNotifications(List<String> expectedLetterTemplateIds, int wantedNumberOfSendLetterInvocations, String expectedName) throws NotificationClientException {
-        ArgumentCaptor<Map<String, String>> letterPersonalisationCaptor = ArgumentCaptor.forClass(Map.class);
+        ArgumentCaptor<Map<String, Object>> letterPersonalisationCaptor = ArgumentCaptor.forClass(Map.class);
         ArgumentCaptor<String> letterTemplateIdCaptor = ArgumentCaptor.forClass(String.class);
         verify(notificationClient, atMost(wantedNumberOfSendLetterInvocations))
                 .sendLetter(letterTemplateIdCaptor.capture(), letterPersonalisationCaptor.capture(), any());
@@ -232,7 +253,7 @@ public class NotificationsItBase {
         }
 
         if (0 < wantedNumberOfSendLetterInvocations) {
-            Map<String, String> personalisation = letterPersonalisationCaptor.getValue();
+            Map<String, Object> personalisation = letterPersonalisationCaptor.getValue();
             if (null != personalisation.get(REPRESENTATIVE_NAME)) {
                 assertEquals(expectedName, personalisation.get(REPRESENTATIVE_NAME));
             } else {

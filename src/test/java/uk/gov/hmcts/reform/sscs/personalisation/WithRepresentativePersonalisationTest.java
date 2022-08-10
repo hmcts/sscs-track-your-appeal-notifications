@@ -24,7 +24,7 @@ public class WithRepresentativePersonalisationTest {
     @Parameters(method = "generateSscsCaseDataForTest")
     public void givenSscsCaseData_shouldSetRepresentativeNameIfPresent(
             SscsCaseData sscsCaseData, String expected) {
-        Map<String, String> personalisation = withRepresentativePersonalisation.setRepresentativeName(
+        Map<String, Object> personalisation = withRepresentativePersonalisation.setRepresentativeName(
                 new HashMap<>(), sscsCaseData);
         assertEquals(expected, personalisation.get(AppConstants.REPRESENTATIVE_NAME));
     }

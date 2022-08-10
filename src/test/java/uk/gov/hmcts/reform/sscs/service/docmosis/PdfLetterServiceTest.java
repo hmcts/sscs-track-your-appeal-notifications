@@ -108,7 +108,10 @@ public class PdfLetterServiceTest {
         EVIDENCE_ADDRESS.setScottishPoBoxFeatureEnabled(isScottishPoBoxFeatureEnabled);
         wrapper.getNewSscsCaseData().setIsScottishCase(isScottish);
 
-        pdfLetterService.buildCoversheet(wrapper, new SubscriptionWithType(EMPTY_SUBSCRIPTION, subscriptionType));
+        Entity entity = subscriptionType.equals(SubscriptionType.APPELLANT)
+            ? appellant : representative;
+        pdfLetterService.buildCoversheet(wrapper, new SubscriptionWithType(EMPTY_SUBSCRIPTION, subscriptionType,
+            appellant, entity));
 
         Address address = subscriptionType.equals(SubscriptionType.APPELLANT)
                 ? appellant.getAddress() : representative.getAddress();
@@ -151,8 +154,10 @@ public class PdfLetterServiceTest {
                 null
         );
         Notification notification = Notification.builder().template(Template.builder().docmosisTemplateId("docmosis.doc").build()).placeholders(new HashMap<>()).build();
-        byte[] letter = pdfLetterService.generateLetter(wrapper, notification, new SubscriptionWithType(EMPTY_SUBSCRIPTION, SubscriptionType.APPELLANT));
-        byte[] coversheet = pdfLetterService.buildCoversheet(wrapper, new SubscriptionWithType(EMPTY_SUBSCRIPTION, SubscriptionType.APPELLANT));
+        byte[] letter = pdfLetterService.generateLetter(wrapper, notification,
+            new SubscriptionWithType(EMPTY_SUBSCRIPTION, SubscriptionType.APPELLANT, appellant, appellant));
+        byte[] coversheet = pdfLetterService.buildCoversheet(wrapper,
+            new SubscriptionWithType(EMPTY_SUBSCRIPTION, SubscriptionType.APPELLANT, appellant, appellant));
         assertTrue(ArrayUtils.isNotEmpty(letter));
         assertTrue(ArrayUtils.isNotEmpty(coversheet));
         verify(docmosisPdfService).createPdfFromMap(any(), eq(notification.getDocmosisLetterTemplate()));
@@ -178,8 +183,10 @@ public class PdfLetterServiceTest {
          );
         wrapper.getNewSscsCaseData().setLanguagePreferenceWelsh("Yes");
         Notification notification = Notification.builder().template(Template.builder().docmosisTemplateId("docmosis.doc").build()).placeholders(new HashMap<>()).build();
-        byte[] letter = pdfLetterService.generateLetter(wrapper, notification, new SubscriptionWithType(EMPTY_SUBSCRIPTION, SubscriptionType.APPELLANT));
-        byte[] coversheet = pdfLetterService.buildCoversheet(wrapper, new SubscriptionWithType(EMPTY_SUBSCRIPTION, SubscriptionType.APPELLANT));
+        byte[] letter = pdfLetterService.generateLetter(wrapper, notification,
+            new SubscriptionWithType(EMPTY_SUBSCRIPTION, SubscriptionType.APPELLANT, appellant, appellant));
+        byte[] coversheet = pdfLetterService.buildCoversheet(wrapper,
+            new SubscriptionWithType(EMPTY_SUBSCRIPTION, SubscriptionType.APPELLANT, appellant, appellant));
         assertTrue(ArrayUtils.isNotEmpty(letter));
         assertTrue(ArrayUtils.isNotEmpty(coversheet));
         ArgumentCaptor<Map<String, Object>> placeholderCaptor = ArgumentCaptor.forClass(Map.class);
@@ -223,7 +230,8 @@ public class PdfLetterServiceTest {
                 null
         );
         Notification notification = Notification.builder().template(Template.builder().docmosisTemplateId("docmosis.doc").build()).placeholders(new HashMap<>()).build();
-        byte[] letter = pdfLetterService.generateLetter(wrapper, notification, new SubscriptionWithType(EMPTY_SUBSCRIPTION, SubscriptionType.APPELLANT));
+        byte[] letter = pdfLetterService.generateLetter(wrapper, notification,
+            new SubscriptionWithType(EMPTY_SUBSCRIPTION, SubscriptionType.APPELLANT, appellant, appellant));
         assertTrue(ArrayUtils.isNotEmpty(letter));
 
         ArgumentCaptor<Map<String, Object>> placeholderCaptor = ArgumentCaptor.forClass(Map.class);
@@ -268,7 +276,8 @@ public class PdfLetterServiceTest {
                 null
         );
         Notification notification = Notification.builder().template(Template.builder().docmosisTemplateId("docmosis.doc").build()).placeholders(new HashMap<>()).build();
-        byte[] letter = pdfLetterService.generateLetter(wrapper, notification, new SubscriptionWithType(EMPTY_SUBSCRIPTION, SubscriptionType.REPRESENTATIVE));
+        byte[] letter = pdfLetterService.generateLetter(wrapper, notification,
+            new SubscriptionWithType(EMPTY_SUBSCRIPTION, SubscriptionType.REPRESENTATIVE, appellant, representative));
         assertTrue(ArrayUtils.isNotEmpty(letter));
 
         ArgumentCaptor<Map<String, Object>> placeholderCaptor = ArgumentCaptor.forClass(Map.class);
@@ -312,7 +321,8 @@ public class PdfLetterServiceTest {
                 null
         );
         Notification notification = Notification.builder().template(Template.builder().docmosisTemplateId("docmosis.doc").build()).placeholders(new HashMap<>()).build();
-        byte[] letter = pdfLetterService.generateLetter(wrapper, notification, new SubscriptionWithType(EMPTY_SUBSCRIPTION, SubscriptionType.REPRESENTATIVE));
+        byte[] letter = pdfLetterService.generateLetter(wrapper, notification,
+            new SubscriptionWithType(EMPTY_SUBSCRIPTION, SubscriptionType.REPRESENTATIVE, appellant, representative));
         assertTrue(ArrayUtils.isNotEmpty(letter));
 
         ArgumentCaptor<Map<String, Object>> placeholderCaptor = ArgumentCaptor.forClass(Map.class);
@@ -336,7 +346,8 @@ public class PdfLetterServiceTest {
         );
         Notification notification = Notification.builder().template(Template.builder().docmosisTemplateId(null).build()).placeholders(new HashMap<>()).build();
 
-        byte[] bytes = pdfLetterService.generateLetter(wrapper, notification, new SubscriptionWithType(EMPTY_SUBSCRIPTION, SubscriptionType.REPRESENTATIVE));
+        byte[] bytes = pdfLetterService.generateLetter(wrapper, notification,
+            new SubscriptionWithType(EMPTY_SUBSCRIPTION, SubscriptionType.REPRESENTATIVE, appellant, representative));
         verifyNoInteractions(docmosisPdfService);
         assertTrue(ArrayUtils.isEmpty(bytes));
     }
@@ -353,8 +364,10 @@ public class PdfLetterServiceTest {
 
         when(docmosisPdfService.createPdfFromMap(any(), anyString())).thenReturn("Invalid PDF".getBytes());
         when(docmosisPdfService.createPdf(any(), anyString())).thenReturn("Invalid PDF".getBytes());
-        pdfLetterService.generateLetter(wrapper, notification, new SubscriptionWithType(EMPTY_SUBSCRIPTION, SubscriptionType.REPRESENTATIVE));
-        pdfLetterService.buildCoversheet(wrapper, new SubscriptionWithType(EMPTY_SUBSCRIPTION, SubscriptionType.REPRESENTATIVE));
+        pdfLetterService.generateLetter(wrapper, notification,
+            new SubscriptionWithType(EMPTY_SUBSCRIPTION, SubscriptionType.REPRESENTATIVE, appellant, representative));
+        pdfLetterService.buildCoversheet(wrapper,
+            new SubscriptionWithType(EMPTY_SUBSCRIPTION, SubscriptionType.REPRESENTATIVE, appellant, representative));
     }
 
     @Test
@@ -389,7 +402,8 @@ public class PdfLetterServiceTest {
         );
         wrapper.getNewSscsCaseData().setLanguagePreferenceWelsh("Yes");
         Notification notification = Notification.builder().template(Template.builder().docmosisTemplateId("docmosis.doc").build()).placeholders(new HashMap<>()).build();
-        byte[] letter = pdfLetterService.generateLetter(wrapper, notification, new SubscriptionWithType(EMPTY_SUBSCRIPTION, SubscriptionType.APPELLANT));
+        byte[] letter = pdfLetterService.generateLetter(wrapper, notification,
+            new SubscriptionWithType(EMPTY_SUBSCRIPTION, SubscriptionType.APPELLANT, appellant, appellant));
         assertTrue(ArrayUtils.isNotEmpty(letter));
 
         ArgumentCaptor<Map<String, Object>> placeholderCaptor = ArgumentCaptor.forClass(Map.class);

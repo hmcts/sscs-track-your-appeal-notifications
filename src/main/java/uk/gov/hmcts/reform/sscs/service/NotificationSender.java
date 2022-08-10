@@ -13,7 +13,7 @@ import org.springframework.retry.annotation.Recover;
 import org.springframework.retry.annotation.Retryable;
 import org.springframework.stereotype.Component;
 import uk.gov.hmcts.reform.sscs.ccd.domain.*;
-import uk.gov.hmcts.reform.sscs.config.NotificationBlacklist;
+import uk.gov.hmcts.reform.sscs.config.NotificationTestRecipients;
 import uk.gov.hmcts.reform.sscs.config.SubscriptionType;
 import uk.gov.hmcts.reform.sscs.domain.notify.NotificationEventType;
 import uk.gov.service.notify.LetterResponse;
@@ -33,7 +33,7 @@ public class NotificationSender {
 
     private final NotificationClient notificationClient;
     private final NotificationClient testNotificationClient;
-    private final NotificationBlacklist notificationBlacklist;
+    private final NotificationTestRecipients notificationTestRecipients;
     private final MarkdownTransformationService markdownTransformationService;
     private final SaveCorrespondenceAsyncService saveCorrespondenceAsyncService;
     private final Boolean saveCorrespondence;
@@ -41,26 +41,26 @@ public class NotificationSender {
     @Autowired
     public NotificationSender(@Qualifier("notificationClient") NotificationClient notificationClient,
                               @Qualifier("testNotificationClient") NotificationClient testNotificationClient,
-                              NotificationBlacklist notificationBlacklist,
+                              NotificationTestRecipients notificationTestRecipients,
                               MarkdownTransformationService markdownTransformationService,
                               SaveCorrespondenceAsyncService saveCorrespondenceAsyncService,
                               @Value("${feature.save_correspondence}") Boolean saveCorrespondence
     ) {
         this.notificationClient = notificationClient;
         this.testNotificationClient = testNotificationClient;
-        this.notificationBlacklist = notificationBlacklist;
+        this.notificationTestRecipients = notificationTestRecipients;
         this.markdownTransformationService = markdownTransformationService;
         this.saveCorrespondence = saveCorrespondence;
         this.saveCorrespondenceAsyncService = saveCorrespondenceAsyncService;
     }
 
-    public void sendEmail(String templateId, String emailAddress, Map<String, String> personalisation, String reference,
+    public void sendEmail(String templateId, String emailAddress, Map<String, Object> personalisation, String reference,
                           NotificationEventType notificationEventType,
                           SscsCaseData sscsCaseData) throws NotificationClientException {
 
         NotificationClient client;
 
-        if (notificationBlacklist.getTestRecipients().contains(emailAddress)
+        if (notificationTestRecipients.getEmails().contains(emailAddress)
                 || emailAddress.matches("test[\\d]+@hmcts.net")) {
             log.info(USING_TEST_GOV_NOTIFY_KEY_FOR, testNotificationClient.getApiKey(), emailAddress);
             client = testNotificationClient;
@@ -81,7 +81,7 @@ public class NotificationSender {
     }
 
     @Retryable
-    private SendEmailResponse getSendEmailResponse(String templateId, String emailAddress, Map<String, String> personalisation, String reference, NotificationClient client) throws NotificationClientException {
+    private SendEmailResponse getSendEmailResponse(String templateId, String emailAddress, Map<String, Object> personalisation, String reference, NotificationClient client) throws NotificationClientException {
         final SendEmailResponse sendEmailResponse;
         try {
             sendEmailResponse = client.sendEmail(templateId, emailAddress, personalisation, reference);
@@ -96,7 +96,7 @@ public class NotificationSender {
     public void sendSms(
             String templateId,
             String phoneNumber,
-            Map<String, String> personalisation,
+            Map<String, Object> personalisation,
             String reference,
             String smsSender,
             NotificationEventType notificationEventType,
@@ -105,7 +105,7 @@ public class NotificationSender {
 
         NotificationClient client;
 
-        if (notificationBlacklist.getTestRecipients().contains(phoneNumber)) {
+        if (notificationTestRecipients.getSms().contains(phoneNumber)) {
             log.info(USING_TEST_GOV_NOTIFY_KEY_FOR, testNotificationClient.getApiKey(), phoneNumber);
             client = testNotificationClient;
         } else {
@@ -125,7 +125,7 @@ public class NotificationSender {
     }
 
     @Retryable
-    private SendSmsResponse getSendSmsResponse(String templateId, String phoneNumber, Map<String, String> personalisation, String reference, String smsSender, NotificationClient client) throws NotificationClientException {
+    private SendSmsResponse getSendSmsResponse(String templateId, String phoneNumber, Map<String, Object> personalisation, String reference, String smsSender, NotificationClient client) throws NotificationClientException {
         final SendSmsResponse sendSmsResponse;
         try {
             sendSmsResponse = client.sendSms(
@@ -143,7 +143,7 @@ public class NotificationSender {
         return sendSmsResponse;
     }
 
-    public void sendLetter(String templateId, Address address, Map<String, String> personalisation,
+    public void sendLetter(String templateId, Address address, Map<String, Object> personalisation,
                            NotificationEventType notificationEventType,
                            String name, String ccdCaseId) throws NotificationClientException {
 
@@ -160,7 +160,7 @@ public class NotificationSender {
     }
 
     @Retryable
-    private SendLetterResponse getSendLetterResponse(String templateId, Map<String, String> personalisation, String ccdCaseId, NotificationClient client) throws NotificationClientException {
+    private SendLetterResponse getSendLetterResponse(String templateId, Map<String, Object> personalisation, String ccdCaseId, NotificationClient client) throws NotificationClientException {
         final SendLetterResponse sendLetterResponse;
         try {
             sendLetterResponse = client.sendLetter(templateId, personalisation, ccdCaseId);
@@ -257,7 +257,8 @@ public class NotificationSender {
 
     private NotificationClient getLetterNotificationClient(String postcode) {
         NotificationClient client;
-        if (notificationBlacklist.getTestRecipients().contains(postcode)) {
+        if (notificationTestRecipients.getPostcodes().contains("*")
+            || notificationTestRecipients.getPostcodes().contains(postcode)) {
             log.info(USING_TEST_GOV_NOTIFY_KEY_FOR, testNotificationClient.getApiKey(), postcode);
             client = testNotificationClient;
         } else {

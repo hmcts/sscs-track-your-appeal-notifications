@@ -1919,15 +1919,22 @@ public class NotificationServiceTest {
     }
 
     private SubscriptionWithType getSubscriptionWithType(CcdNotificationWrapper ccdNotificationWrapper) {
-        return new SubscriptionWithType(getSubscription(ccdNotificationWrapper.getNewSscsCaseData(), SubscriptionType.APPELLANT), SubscriptionType.APPELLANT);
+        return new SubscriptionWithType(getSubscription(ccdNotificationWrapper.getNewSscsCaseData(),
+            SubscriptionType.APPELLANT), SubscriptionType.APPELLANT,
+            ccdNotificationWrapper.getNewSscsCaseData().getAppeal().getAppellant(),
+            ccdNotificationWrapper.getNewSscsCaseData().getAppeal().getAppellant());
     }
 
     private SubscriptionWithType getSubscriptionWithTypeJoint(CcdNotificationWrapper ccdNotificationWrapper) {
-        return new SubscriptionWithType(getSubscription(ccdNotificationWrapper.getNewSscsCaseData(), JOINT_PARTY), JOINT_PARTY);
+        return new SubscriptionWithType(getSubscription(ccdNotificationWrapper.getNewSscsCaseData(), JOINT_PARTY),
+            JOINT_PARTY, ccdNotificationWrapper.getNewSscsCaseData().getJointParty(),
+            ccdNotificationWrapper.getNewSscsCaseData().getJointParty());
     }
 
     private SubscriptionWithType getSubscriptionWithTypeRep(CcdNotificationWrapper ccdNotificationWrapper) {
-        return new SubscriptionWithType(getSubscription(ccdNotificationWrapper.getNewSscsCaseData(), REPRESENTATIVE), SubscriptionType.REPRESENTATIVE);
+        return new SubscriptionWithType(getSubscription(ccdNotificationWrapper.getNewSscsCaseData(), REPRESENTATIVE),
+            SubscriptionType.REPRESENTATIVE, ccdNotificationWrapper.getNewSscsCaseData().getAppeal().getAppellant(),
+            ccdNotificationWrapper.getNewSscsCaseData().getAppeal().getRep());
     }
 
     private SubscriptionWithType getSubscriptionWithTypeOtherParty(CcdNotificationWrapper ccdNotificationWrapper, int otherPartyId) {
@@ -1942,7 +1949,8 @@ public class NotificationServiceTest {
                 .map(Pair::getRight)
                 .findFirst()
                 .orElse(null);
-        return new SubscriptionWithType(otherPartySubs, SubscriptionType.OTHER_PARTY, otherPartyId);
+        OtherParty otherParty = ccdNotificationWrapper.getNewSscsCaseData().getOtherParties().get(0).getValue();
+        return new SubscriptionWithType(otherPartySubs, SubscriptionType.OTHER_PARTY, otherParty, otherParty, otherPartyId);
     }
 
     public static CcdNotificationWrapper buildBaseWrapper(NotificationEventType eventType, Appellant appellant, Representative rep, SscsDocument sscsDocument) {

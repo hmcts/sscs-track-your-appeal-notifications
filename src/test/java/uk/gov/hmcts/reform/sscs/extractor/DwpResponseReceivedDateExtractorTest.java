@@ -1,10 +1,14 @@
 package uk.gov.hmcts.reform.sscs.extractor;
 
-import static org.junit.Assert.*;
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertTrue;
 import static uk.gov.hmcts.reform.sscs.ccd.domain.EventType.DWP_RESPOND;
 import static uk.gov.hmcts.reform.sscs.domain.notify.NotificationEventType.APPEAL_RECEIVED_NOTIFICATION;
 
 import java.security.NoSuchAlgorithmException;
+import java.time.LocalTime;
 import java.time.ZonedDateTime;
 import java.util.Optional;
 import junitparams.JUnitParamsRunner;
@@ -68,9 +72,8 @@ public class DwpResponseReceivedDateExtractorTest {
 
         Optional<ZonedDateTime> dwpResponseReceivedDate = dwpResponseReceivedDateExtractor.extract(ccdResponse.getNewSscsCaseData());
 
-        assertTrue(dwpResponseReceivedDate.isPresent());
-        assertTrue(dwpResponseReceivedDate.get().getHour() > 0 && dwpResponseReceivedDate.get().getHour() <= 24);
-        assertTrue(dwpResponseReceivedDate.get().getMinute() > 0 && dwpResponseReceivedDate.get().getMinute() <= 60);
+        assertThat(dwpResponseReceivedDate).isPresent();
+        assertThat(dwpResponseReceivedDate.get().toLocalTime()).isBetween(LocalTime.MIN,LocalTime.MAX);
     }
 
 }

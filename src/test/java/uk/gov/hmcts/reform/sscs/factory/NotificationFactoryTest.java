@@ -152,7 +152,8 @@ public class NotificationFactoryTest {
         given(personalisationFactory.apply(any(NotificationEventType.class)))
                 .willReturn(withRepresentativePersonalisation);
 
-        Notification notification = factory.create(notificationWrapper, getSubscriptionWithType(sscsCaseDataWrapper, subscriptionType));
+        Notification notification = factory.create(notificationWrapper, getSubscriptionWithType(sscsCaseDataWrapper, subscriptionType,
+            wrapper.getNewSscsCaseData().getAppeal().getAppellant(), wrapper.getNewSscsCaseData().getAppeal().getAppellant()));
         assertEquals(expectedEmail, notification.getEmail());
 
         then(withRepresentativePersonalisation).should()
@@ -187,7 +188,8 @@ public class NotificationFactoryTest {
         given(personalisationFactory.apply(any(NotificationEventType.class)))
                 .willReturn(withRepresentativePersonalisation);
 
-        Notification notification = factory.create(notificationWrapper, getSubscriptionWithType(sscsCaseDataWrapper, subscriptionType));
+        Notification notification = factory.create(notificationWrapper, getSubscriptionWithType(sscsCaseDataWrapper, subscriptionType,
+            wrapper.getNewSscsCaseData().getAppeal().getAppellant(), wrapper.getNewSscsCaseData().getAppeal().getAppellant()));
         assertEquals(expectedEmail, notification.getEmail());
 
         then(withRepresentativePersonalisation).should()
@@ -225,7 +227,8 @@ public class NotificationFactoryTest {
         given(personalisationFactory.apply(any(NotificationEventType.class)))
             .willReturn(withRepresentativePersonalisation);
 
-        Notification notification = factory.create(notificationWrapper, getSubscriptionWithType(wrapper, subscriptionType));
+        Notification notification = factory.create(notificationWrapper, getSubscriptionWithType(wrapper, subscriptionType,
+            wrapper.getNewSscsCaseData().getAppeal().getAppellant(), wrapper.getNewSscsCaseData().getAppeal().getAppellant()));
         assertEquals(expectedEmail, notification.getEmail());
 
         then(withRepresentativePersonalisation).should()
@@ -263,7 +266,8 @@ public class NotificationFactoryTest {
         given(personalisationFactory.apply(any(NotificationEventType.class)))
                 .willReturn(withRepresentativePersonalisation);
 
-        Notification notification = factory.create(notificationWrapper, getSubscriptionWithType(wrapper, subscriptionType));
+        Notification notification = factory.create(notificationWrapper, getSubscriptionWithType(wrapper, subscriptionType,
+            wrapper.getNewSscsCaseData().getAppeal().getAppellant(), wrapper.getNewSscsCaseData().getAppeal().getAppellant()));
         assertEquals(expectedEmail, notification.getEmail());
 
         then(withRepresentativePersonalisation).should()
@@ -289,7 +293,8 @@ public class NotificationFactoryTest {
                 .notificationEventType(SUBSCRIPTION_UPDATED_NOTIFICATION)
                 .build();
 
-        Notification result = factory.create(new CcdNotificationWrapper(wrapper), getSubscriptionWithType(wrapper, APPELLANT));
+        Notification result = factory.create(new CcdNotificationWrapper(wrapper), getSubscriptionWithType(wrapper, APPELLANT,
+            wrapper.getNewSscsCaseData().getAppeal().getAppellant(), wrapper.getNewSscsCaseData().getAppeal().getAppellant()));
 
         assertEquals("123", result.getSmsTemplate().get(0));
     }
@@ -312,7 +317,8 @@ public class NotificationFactoryTest {
                 .notificationEventType(SUBSCRIPTION_UPDATED_NOTIFICATION)
                 .build();
 
-        Notification result = factory.create(new CcdNotificationWrapper(wrapper), getSubscriptionWithType(wrapper, APPELLANT));
+        Notification result = factory.create(new CcdNotificationWrapper(wrapper), getSubscriptionWithType(wrapper, APPELLANT,
+            wrapper.getNewSscsCaseData().getAppeal().getAppellant(), wrapper.getNewSscsCaseData().getAppeal().getAppellant()));
 
         assertEquals("123", result.getSmsTemplate().get(0));
     }
@@ -339,7 +345,8 @@ public class NotificationFactoryTest {
                 .notificationEventType(SUBSCRIPTION_UPDATED_NOTIFICATION)
                 .build();
 
-        Notification result = factory.create(new CcdNotificationWrapper(wrapper), getSubscriptionWithType(wrapper, APPELLANT));
+        Notification result = factory.create(new CcdNotificationWrapper(wrapper), getSubscriptionWithType(wrapper, APPELLANT,
+            wrapper.getNewSscsCaseData().getAppeal().getAppellant(), wrapper.getNewSscsCaseData().getAppeal().getAppellant()));
 
         assertNull(result.getDestination().email);
         assertNotNull(subscription.getMobile());
@@ -370,7 +377,8 @@ public class NotificationFactoryTest {
                 .notificationEventType(SUBSCRIPTION_UPDATED_NOTIFICATION)
                 .build();
 
-        Notification result = factory.create(new CcdNotificationWrapper(wrapper), getSubscriptionWithType(wrapper, APPELLANT));
+        Notification result = factory.create(new CcdNotificationWrapper(wrapper), getSubscriptionWithType(wrapper, APPELLANT,
+            wrapper.getNewSscsCaseData().getAppeal().getAppellant(), wrapper.getNewSscsCaseData().getAppeal().getAppellant()));
 
         assertEquals("123", result.getEmailTemplate());
         assertEquals("123", result.getSmsTemplate().get(0));
@@ -400,7 +408,8 @@ public class NotificationFactoryTest {
                 .notificationEventType(SUBSCRIPTION_UPDATED_NOTIFICATION)
                 .build();
 
-        Notification result = factory.create(new CcdNotificationWrapper(wrapper), getSubscriptionWithType(wrapper, APPELLANT));
+        Notification result = factory.create(new CcdNotificationWrapper(wrapper), getSubscriptionWithType(wrapper, APPELLANT,
+            wrapper.getNewSscsCaseData().getAppeal().getAppellant(), wrapper.getNewSscsCaseData().getAppeal().getAppellant()));
 
         assertEquals("123", result.getEmailTemplate());
         assertEquals("123", result.getSmsTemplate().get(0));
@@ -411,7 +420,8 @@ public class NotificationFactoryTest {
     @Test
     public void returnNullIfPersonalisationNotFound() {
         when(personalisationFactory.apply(APPEAL_RECEIVED_NOTIFICATION)).thenReturn(null);
-        Notification result = factory.create(new CcdNotificationWrapper(wrapper), getSubscriptionWithType(wrapper, APPELLANT));
+        Notification result = factory.create(new CcdNotificationWrapper(wrapper), getSubscriptionWithType(wrapper, APPELLANT,
+            wrapper.getNewSscsCaseData().getAppeal().getAppellant(), wrapper.getNewSscsCaseData().getAppeal().getAppellant()));
 
         assertNull(result);
     }
@@ -436,7 +446,7 @@ public class NotificationFactoryTest {
 
         CcdNotificationWrapper notificationWrapper = new CcdNotificationWrapper(sscsCaseDataWrapper);
 
-        factory.create(notificationWrapper, new SubscriptionWithType(null, APPELLANT));
+        factory.create(notificationWrapper, new SubscriptionWithType(null, APPELLANT, null, null));
 
         then(withRepresentativePersonalisation).should()
                 .getTemplate(eq(notificationWrapper), eq(null), eq(APPELLANT));
@@ -459,13 +469,16 @@ public class NotificationFactoryTest {
         given(personalisationFactory.apply(any(NotificationEventType.class)))
                 .willReturn(withRepresentativePersonalisation);
 
-        Notification notification = factory.create(notificationWrapper, new SubscriptionWithType(null, APPELLANT));
+        Notification notification = factory.create(notificationWrapper, new SubscriptionWithType(null, APPELLANT,
+            null, null));
 
         assertEquals(StringUtils.EMPTY, notification.getAppealNumber());
         assertEquals(Destination.builder().build(), notification.getDestination());
     }
 
-    private SubscriptionWithType getSubscriptionWithType(SscsCaseDataWrapper sscsCaseDataWrapper, SubscriptionType subscriptionType) {
-        return new SubscriptionWithType(getSubscription(sscsCaseDataWrapper.getNewSscsCaseData(), subscriptionType), subscriptionType);
+    private SubscriptionWithType getSubscriptionWithType(SscsCaseDataWrapper sscsCaseDataWrapper, SubscriptionType subscriptionType,
+                                                         Party party, Entity entity) {
+        return new SubscriptionWithType(getSubscription(sscsCaseDataWrapper.getNewSscsCaseData(), subscriptionType),
+            subscriptionType, party, entity);
     }
 }

@@ -16,8 +16,8 @@ import uk.gov.hmcts.reform.sscs.service.SendNotificationHelper;
 public class WithRepresentativePersonalisation extends Personalisation<CcdNotificationWrapper> {
 
     @Override
-    protected Map<String, String> create(SscsCaseDataWrapper responseWrapper, SubscriptionWithType subscriptionWithType) {
-        Map<String, String> personalisation = super.create(responseWrapper, subscriptionWithType);
+    protected Map<String, Object> create(SscsCaseDataWrapper responseWrapper, SubscriptionWithType subscriptionWithType) {
+        Map<String, Object> personalisation = super.create(responseWrapper, subscriptionWithType);
         SscsCaseData ccdResponse = responseWrapper.getNewSscsCaseData();
 
         setRepresentativeName(personalisation, ccdResponse);
@@ -25,7 +25,7 @@ public class WithRepresentativePersonalisation extends Personalisation<CcdNotifi
         return personalisation;
     }
 
-    public Map<String, String> setRepresentativeName(Map<String, String> personalisation, SscsCaseData sscsCaseData) {
+    public Map<String, Object> setRepresentativeName(Map<String, Object> personalisation, SscsCaseData sscsCaseData) {
         if (NotificationUtils.hasRepresentative(sscsCaseData.getAppeal())) {
             personalisation.put(REPRESENTATIVE_NAME,
                     SendNotificationHelper.getRepSalutation(sscsCaseData.getAppeal().getRep(), true));
@@ -35,7 +35,7 @@ public class WithRepresentativePersonalisation extends Personalisation<CcdNotifi
         return personalisation;
     }
 
-    private void overrideRepNameIfNotificationIsForAnOtherParty(final Map<String, String> personalisation) {
+    private void overrideRepNameIfNotificationIsForAnOtherParty(final Map<String, Object> personalisation) {
         //REPRESENTATIVE_NAME tag in templates is reused to send notification to other parties,
         //so that we don't need to refactor all the notification templates to accommodate other parties
         if (personalisation.get(OTHER_PARTY) != null) {

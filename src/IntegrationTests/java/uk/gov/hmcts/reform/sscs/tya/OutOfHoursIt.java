@@ -1,7 +1,11 @@
 package uk.gov.hmcts.reform.sscs.tya;
 
-import static helper.IntegrationTestHelper.*;
-import static org.mockito.Mockito.*;
+import static helper.IntegrationTestHelper.assertHttpStatus;
+import static helper.IntegrationTestHelper.getRequestWithAuthHeader;
+import static helper.IntegrationTestHelper.updateEmbeddedJson;
+import static org.mockito.Mockito.any;
+import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.when;
 
 import helper.IntegrationTestHelper;
 import java.io.File;
@@ -37,13 +41,23 @@ import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 import uk.gov.hmcts.reform.sscs.ccd.deserialisation.SscsCaseCallbackDeserializer;
 import uk.gov.hmcts.reform.sscs.ccd.service.CcdService;
 import uk.gov.hmcts.reform.sscs.config.AppConstants;
-import uk.gov.hmcts.reform.sscs.config.NotificationBlacklist;
 import uk.gov.hmcts.reform.sscs.config.NotificationConfig;
+import uk.gov.hmcts.reform.sscs.config.NotificationTestRecipients;
 import uk.gov.hmcts.reform.sscs.controller.NotificationController;
 import uk.gov.hmcts.reform.sscs.factory.NotificationFactory;
 import uk.gov.hmcts.reform.sscs.idam.IdamService;
 import uk.gov.hmcts.reform.sscs.jobscheduler.services.JobScheduler;
-import uk.gov.hmcts.reform.sscs.service.*;
+import uk.gov.hmcts.reform.sscs.service.AuthorisationService;
+import uk.gov.hmcts.reform.sscs.service.MarkdownTransformationService;
+import uk.gov.hmcts.reform.sscs.service.NotificationHandler;
+import uk.gov.hmcts.reform.sscs.service.NotificationSender;
+import uk.gov.hmcts.reform.sscs.service.NotificationService;
+import uk.gov.hmcts.reform.sscs.service.NotificationValidService;
+import uk.gov.hmcts.reform.sscs.service.OutOfHoursCalculator;
+import uk.gov.hmcts.reform.sscs.service.PdfStoreService;
+import uk.gov.hmcts.reform.sscs.service.ReminderService;
+import uk.gov.hmcts.reform.sscs.service.SaveCorrespondenceAsyncService;
+import uk.gov.hmcts.reform.sscs.service.SendNotificationService;
 import uk.gov.hmcts.reform.sscs.service.docmosis.PdfLetterService;
 import uk.gov.hmcts.reform.sscs.service.reminder.JobGroupGenerator;
 import uk.gov.service.notify.NotificationClient;
@@ -87,7 +101,7 @@ public class OutOfHoursIt {
     private AuthorisationService authorisationService;
 
     @Mock
-    NotificationBlacklist notificationBlacklist;
+    NotificationTestRecipients notificationTestRecipients;
 
     @Autowired
     NotificationFactory factory;
@@ -144,7 +158,7 @@ public class OutOfHoursIt {
 
         notificationHandler = new NotificationHandler(outOfHoursCalculator, jobScheduler, jobGroupGenerator);
 
-        NotificationSender sender = new NotificationSender(notificationClient, null, notificationBlacklist, markdownTransformationService, saveCorrespondenceAsyncService, false);
+        NotificationSender sender = new NotificationSender(notificationClient, null, notificationTestRecipients, markdownTransformationService, saveCorrespondenceAsyncService, false);
         SendNotificationService sendNotificationService = new SendNotificationService(sender, notificationHandler, notificationValidService, pdfLetterService, pdfStoreService);
         NotificationService service = new NotificationService(factory, reminderService, notificationValidService, notificationHandler, outOfHoursCalculator, notificationConfig, sendNotificationService, false);
         controller = new NotificationController(service, authorisationService, ccdService, deserializer, idamService);

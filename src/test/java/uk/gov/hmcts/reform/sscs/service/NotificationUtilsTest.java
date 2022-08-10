@@ -584,17 +584,17 @@ public class NotificationUtilsTest {
     @Test
     @Parameters(method = "getLatestHearingScenarios")
     public void getLatestHearingTest(
-            SscsCaseData sscsCaseData, String expectedHearingId, String expectedDate, String exptectedTime) {
-        Hearing hearing = NotificationUtils.getLatestHearing(sscsCaseData);
+            SscsCaseData sscsCaseData, String expectedHearingId, String expectedDate, String expectedTime) {
+        Hearing hearing = sscsCaseData.getLatestHearing();
         assertEquals(expectedHearingId, hearing.getValue().getHearingId());
         assertEquals(expectedDate, hearing.getValue().getHearingDate());
-        assertEquals(exptectedTime, hearing.getValue().getTime());
+        assertEquals(expectedTime, hearing.getValue().getTime());
     }
 
     @Test
     public void whenGettingLatestHearing_shouldReturnNullIfNoHearings() {
         SscsCaseData sscsCaseData = SscsCaseData.builder().build();
-        Hearing hearing = NotificationUtils.getLatestHearing(sscsCaseData);
+        Hearing hearing = sscsCaseData.getLatestHearing();
         assertNull(hearing);
     }
 
