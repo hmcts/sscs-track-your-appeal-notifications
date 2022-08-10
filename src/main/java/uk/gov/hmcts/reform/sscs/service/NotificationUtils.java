@@ -2,7 +2,6 @@ package uk.gov.hmcts.reform.sscs.service;
 
 import static java.util.Objects.nonNull;
 import static org.apache.commons.lang3.StringUtils.equalsIgnoreCase;
-import static org.apache.commons.lang3.StringUtils.isEmpty;
 import static org.apache.commons.lang3.StringUtils.isNotBlank;
 import static org.apache.commons.lang3.StringUtils.trimToNull;
 import static uk.gov.hmcts.reform.sscs.config.SubscriptionType.APPELLANT;
@@ -11,9 +10,6 @@ import static uk.gov.hmcts.reform.sscs.config.SubscriptionType.JOINT_PARTY;
 import static uk.gov.hmcts.reform.sscs.config.SubscriptionType.REPRESENTATIVE;
 import static uk.gov.hmcts.reform.sscs.service.NotificationValidService.*;
 
-import java.util.ArrayList;
-import java.util.Comparator;
-import java.util.List;
 import uk.gov.hmcts.reform.sscs.ccd.domain.*;
 import uk.gov.hmcts.reform.sscs.config.SubscriptionType;
 import uk.gov.hmcts.reform.sscs.domain.SscsCaseDataWrapper;
@@ -163,33 +159,5 @@ public class NotificationUtils {
             || APPOINTEE.equals(subscriptionType)
             || JOINT_PARTY.equals(subscriptionType)
             || (REPRESENTATIVE.equals(subscriptionType) && null != wrapper.getNewSscsCaseData().getAppeal().getRep());
-    }
-
-    public static Hearing getLatestHearing(SscsCaseData sscsCaseData) {
-
-        if (sscsCaseData.getHearings() == null || sscsCaseData.getHearings().isEmpty()) {
-            return null;
-        }
-
-        List<Hearing> hearings = new ArrayList<>(sscsCaseData.getHearings());
-
-        Comparator<Hearing> compareByIdAndDate = (o1, o2) -> {
-            HearingDetails hearingDetails = o1.getValue();
-            HearingDetails nextHearingDetails = o2.getValue();
-            int idCompare = 0;
-
-            if (!isEmpty(hearingDetails.getHearingId()) && !isEmpty(nextHearingDetails.getHearingId())) {
-                idCompare = hearingDetails.getHearingId().compareTo(nextHearingDetails.getHearingId());
-            }
-
-            if (idCompare != 0) {
-                return -1 * idCompare;
-            }
-            return -1 * hearingDetails.getHearingDateTime().compareTo(nextHearingDetails.getHearingDateTime());
-        };
-
-        hearings.sort(compareByIdAndDate);
-
-        return hearings.get(0);
     }
 }

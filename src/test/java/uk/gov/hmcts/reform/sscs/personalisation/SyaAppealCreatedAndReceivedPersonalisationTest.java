@@ -502,7 +502,9 @@ public class SyaAppealCreatedAndReceivedPersonalisationTest extends Personalisat
                 .build();
 
         Map<String, String> result = syaAppealCreatedAndReceivedPersonalisation.create(SscsCaseDataWrapper.builder().newSscsCaseData(response)
-                .notificationEventType(APPEAL_RECEIVED_NOTIFICATION).build(), new SubscriptionWithType(subscriptions.getRepresentativeSubscription(), REPRESENTATIVE));
+                .notificationEventType(APPEAL_RECEIVED_NOTIFICATION).build(),
+            new SubscriptionWithType(subscriptions.getRepresentativeSubscription(), REPRESENTATIVE,
+                response.getAppeal().getAppellant(), response.getAppeal().getRep()));
 
         assertNull(result.get(AppConstants.WELSH_REPRESENTATIVE_DETAILS_LITERAL));
         assertEquals("No", result.get(AppConstants.SHOW_OTHER_PARTY_DETAILS));
@@ -540,7 +542,9 @@ public class SyaAppealCreatedAndReceivedPersonalisationTest extends Personalisat
                 .build();
 
         Map<String, String> result = syaAppealCreatedAndReceivedPersonalisation.create(SscsCaseDataWrapper.builder().newSscsCaseData(response)
-                .notificationEventType(APPEAL_RECEIVED_NOTIFICATION).build(), new SubscriptionWithType(subscriptions.getRepresentativeSubscription(), REPRESENTATIVE));
+                .notificationEventType(APPEAL_RECEIVED_NOTIFICATION).build(),
+            new SubscriptionWithType(subscriptions.getRepresentativeSubscription(), REPRESENTATIVE,
+                response.getAppeal().getAppellant(), response.getAppeal().getRep()));
 
         assertEquals("Yes", result.get(AppConstants.SHOW_OTHER_PARTY_DETAILS));
 
@@ -585,7 +589,9 @@ public class SyaAppealCreatedAndReceivedPersonalisationTest extends Personalisat
                 .build();
 
         Map<String, String> result = syaAppealCreatedAndReceivedPersonalisation.create(SscsCaseDataWrapper.builder().newSscsCaseData(response)
-                .notificationEventType(APPEAL_RECEIVED_NOTIFICATION).build(), new SubscriptionWithType(subscriptions.getRepresentativeSubscription(), REPRESENTATIVE));
+                .notificationEventType(APPEAL_RECEIVED_NOTIFICATION).build(),
+            new SubscriptionWithType(subscriptions.getRepresentativeSubscription(), REPRESENTATIVE,
+                response.getAppeal().getAppellant(), response.getAppeal().getRep()));
 
         assertEquals("Yes", result.get(AppConstants.SHOW_OTHER_PARTY_DETAILS));
 
@@ -627,7 +633,9 @@ public class SyaAppealCreatedAndReceivedPersonalisationTest extends Personalisat
                 .build();
 
         Map<String, String> result = syaAppealCreatedAndReceivedPersonalisation.create(SscsCaseDataWrapper.builder().newSscsCaseData(response)
-                .notificationEventType(APPEAL_RECEIVED_NOTIFICATION).build(), new SubscriptionWithType(subscriptions.getRepresentativeSubscription(), REPRESENTATIVE));
+                .notificationEventType(APPEAL_RECEIVED_NOTIFICATION).build(),
+            new SubscriptionWithType(subscriptions.getRepresentativeSubscription(), REPRESENTATIVE,
+                response.getAppeal().getAppellant(), response.getAppeal().getRep()));
 
         assertEquals("Yes", result.get(AppConstants.SHOW_OTHER_PARTY_DETAILS));
 

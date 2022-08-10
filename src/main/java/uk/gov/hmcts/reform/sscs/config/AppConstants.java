@@ -59,6 +59,7 @@ public final class AppConstants {
     public static final String HEARING_ARRANGEMENT_DETAILS_LITERAL = "hearing_arrangement_details";
     public static final String WELSH_HEARING_ARRANGEMENT_DETAILS_LITERAL = "welsh_hearing_arrangement_details";
     public static final String HEARING_CONTACT_DATE = "hearing_contact_date";
+    public static final String HEARING = "hearing";
     public static final String HEARING_DATE = "hearing_date";
     public static final String WELSH_HEARING_DATE = "welsh_hearing_date";
     public static final String HEARING_DETAILS_LITERAL = "hearing_details";
@@ -138,6 +139,9 @@ public final class AppConstants {
     public static final String LETTER_ADDRESS_LINE_3 = "letter_address_line_3";
     public static final String LETTER_ADDRESS_LINE_4 = "letter_address_line_4";
     public static final String LETTER_ADDRESS_POSTCODE = "letter_address_postcode";
+    public static final String PARTY_TYPE = "partyType";
+    public static final String ENTITY_TYPE = "entityType";
+    public static final String REPRESENTEE_NAME = "representeeName";
 
     private AppConstants() {
         //

@@ -2,6 +2,7 @@ package uk.gov.hmcts.reform.sscs.personalisation;
 
 import static com.google.common.collect.Lists.newArrayList;
 import static java.lang.String.format;
+import static java.util.Objects.nonNull;
 import static java.util.Optional.ofNullable;
 import static org.apache.commons.lang3.StringUtils.EMPTY;
 import static org.apache.commons.lang3.StringUtils.defaultIfBlank;
@@ -30,6 +31,9 @@ import static uk.gov.hmcts.reform.sscs.service.NotificationUtils.hasAppointee;
 import static uk.gov.hmcts.reform.sscs.service.NotificationUtils.hasJointParty;
 import static uk.gov.hmcts.reform.sscs.service.NotificationUtils.hasRepresentative;
 
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
 import java.io.UnsupportedEncodingException;
 import java.net.URLEncoder;
 import java.nio.charset.StandardCharsets;
@@ -59,7 +63,6 @@ import uk.gov.hmcts.reform.sscs.exception.BenefitMappingException;
 import uk.gov.hmcts.reform.sscs.extractor.HearingContactDateExtractor;
 import uk.gov.hmcts.reform.sscs.factory.NotificationWrapper;
 import uk.gov.hmcts.reform.sscs.service.MessageAuthenticationServiceImpl;
-import uk.gov.hmcts.reform.sscs.service.NotificationUtils;
 import uk.gov.hmcts.reform.sscs.service.RegionalProcessingCenterService;
 import uk.gov.hmcts.reform.sscs.service.SendNotificationHelper;
 import uk.gov.hmcts.reform.sscs.service.conversion.LocalDateToWelshStringConverter;
@@ -92,6 +95,8 @@ public class Personalisation<E extends NotificationWrapper> {
 
     @Autowired
     private PersonalisationConfiguration personalisationConfiguration;
+
+    private ObjectMapper mapper = new ObjectMapper();
 
     private static String tya(Subscription subscription) {
         if (subscription != null) {
@@ -203,6 +208,7 @@ public class Personalisation<E extends NotificationWrapper> {
         personalisation.put(APPELLANT_NAME, ccdResponse.getAppeal().getAppellant().getName().getFullNameNoTitle());
         personalisation.put(AppConstants.NAME, getName(subscriptionWithType, ccdResponse, responseWrapper));
         personalisation.put(CCD_ID, defaultIfBlank(ccdResponse.getCcdCaseId(), EMPTY));
+        personalisation.put(REPRESENTEE_NAME, subscriptionWithType.getParty().getName().getFullNameNoTitle());
 
         // Some templates (notably letters) can be sent out before the SC Ref is added to the case
         // this allows those templates to be populated with either the CCD Id or SC Ref
@@ -229,19 +235,38 @@ public class Personalisation<E extends NotificationWrapper> {
             personalisation.put(JOINT_PARTY_APPEAL, "No");
         }
 
-        if (ccdResponse.getHearings() != null && !ccdResponse.getHearings().isEmpty()) {
+        Hearing latestHearing = ccdResponse.getLatestHearing();
 
-            Hearing latestHearing = NotificationUtils.getLatestHearing(ccdResponse);
-            if (latestHearing != null) {
-                HearingDetails latestHearingValue = latestHearing.getValue();
-                LocalDateTime hearingDateTime = latestHearingValue.getHearingDateTime();
-                personalisation.put(HEARING_DATE, formatLocalDate(hearingDateTime.toLocalDate()));
-                translateToWelshDate(hearingDateTime.toLocalDate(), ccdResponse, value -> personalisation.put(WELSH_HEARING_DATE, value));
-                personalisation.put(HEARING_TIME, formatLocalTime(hearingDateTime));
-                personalisation.put(VENUE_ADDRESS_LITERAL, formatAddress(latestHearing));
-                personalisation.put(VENUE_MAP_LINK_LITERAL, latestHearingValue.getVenue().getGoogleMapLink());
-                personalisation.put(DAYS_TO_HEARING_LITERAL, calculateDaysToHearingText(hearingDateTime.toLocalDate()));
+        HearingRoute hearingRoute = ccdResponse.getSchedulingAndListingFields().getHearingRoute();
+        if (HearingRoute.LIST_ASSIST == hearingRoute) {
+            latestHearing = ofNullable(ccdResponse.getHearings())
+                .orElse(Collections.emptyList()).stream()
+                .filter(hearing -> nonNull(hearing.getValue().getEpimsId()))
+                .max(Comparator.naturalOrder())
+                .orElse(null);
+        }
+
+        if (latestHearing != null) {
+            HearingDetails latestHearingValue = latestHearing.getValue();
+            LocalDateTime hearingDateTime = latestHearingValue.getHearingDateTime();
+            if (HearingRoute.LIST_ASSIST == hearingRoute) {
+                hearingDateTime = latestHearingValue.getStart();
             }
+
+            try {
+                mapper.registerModule(new JavaTimeModule());
+                personalisation.put(HEARING, mapper.writeValueAsString(latestHearing.getValue()));
+            } catch (JsonProcessingException e) {
+                log.warn("Failed serialisation of hearing for case {} with error: {}", ccdResponse.getCcdCaseId(),
+                    e.getMessage());
+            }
+
+            personalisation.put(HEARING_DATE, formatLocalDate(hearingDateTime.toLocalDate()));
+            translateToWelshDate(hearingDateTime.toLocalDate(), ccdResponse, value -> personalisation.put(WELSH_HEARING_DATE, value));
+            personalisation.put(HEARING_TIME, formatLocalTime(hearingDateTime));
+            personalisation.put(VENUE_ADDRESS_LITERAL, formatAddress(latestHearing));
+            personalisation.put(VENUE_MAP_LINK_LITERAL, latestHearingValue.getVenue().getGoogleMapLink());
+            personalisation.put(DAYS_TO_HEARING_LITERAL, calculateDaysToHearingText(hearingDateTime.toLocalDate()));
         }
 
         setEvidenceProcessingAddress(personalisation, ccdResponse);
@@ -278,6 +303,9 @@ public class Personalisation<E extends NotificationWrapper> {
         if (subscriptionWithType.getSubscriptionType().equals(OTHER_PARTY)) {
             personalisation.put(AppConstants.OTHER_PARTY, personalisation.get(AppConstants.NAME));
         }
+
+        personalisation.put(PARTY_TYPE, subscriptionWithType.getParty().getClass().getSimpleName());
+        personalisation.put(ENTITY_TYPE, subscriptionWithType.getEntity().getClass().getSimpleName());
 
         return personalisation;
     }
@@ -539,7 +567,7 @@ public class Personalisation<E extends NotificationWrapper> {
     }
 
     private String formatLocalTime(LocalDateTime date) {
-        return date.format(DateTimeFormatter.ofPattern(HEARING_TIME_FORMAT)).toUpperCase();
+        return date.format(DateTimeFormatter.ofPattern(HEARING_TIME_FORMAT, Locale.ENGLISH)).toUpperCase();
     }
 
     public Template getTemplate(E notificationWrapper, Benefit benefit, SubscriptionType subscriptionType) {

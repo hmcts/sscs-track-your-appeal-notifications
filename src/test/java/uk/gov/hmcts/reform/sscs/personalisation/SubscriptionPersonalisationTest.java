@@ -205,7 +205,7 @@ public class SubscriptionPersonalisationTest {
 
     @Test
     public void willUnsetMobileAndSmsIfSubscriptionIsUnchanged() {
-        SubscriptionWithType subscriptionWithType = new SubscriptionWithType(NEW_SUBSCRIPTION, APPELLANT);
+        SubscriptionWithType subscriptionWithType = new SubscriptionWithType(NEW_SUBSCRIPTION, APPELLANT, null, null);
         personalisation.unsetMobileAndEmailIfUnchanged(subscriptionWithType, NEW_SUBSCRIPTION);
         assertEquals(NEW_SUBSCRIPTION.toBuilder().mobile(null).email(null).build(),
                 subscriptionWithType.getSubscription());
@@ -213,7 +213,7 @@ public class SubscriptionPersonalisationTest {
 
     @Test
     public void willUnsetEmailIfSubscriptionIfSmsIsSubscribed() {
-        SubscriptionWithType subscriptionWithType = new SubscriptionWithType(NEW_SUBSCRIPTION, APPELLANT);
+        SubscriptionWithType subscriptionWithType = new SubscriptionWithType(NEW_SUBSCRIPTION, APPELLANT, null, null);
         Subscription oldSubscription = NEW_SUBSCRIPTION.toBuilder().subscribeSms("No").build();
         personalisation.unsetMobileAndEmailIfUnchanged(subscriptionWithType, oldSubscription);
         assertEquals(NEW_SUBSCRIPTION.toBuilder().email(null).build(), subscriptionWithType.getSubscription());
@@ -221,7 +221,7 @@ public class SubscriptionPersonalisationTest {
 
     @Test
     public void willUnsetMobileIfSubscriptionIfEmailIsSubscribed() {
-        SubscriptionWithType subscriptionWithType = new SubscriptionWithType(NEW_SUBSCRIPTION, APPELLANT);
+        SubscriptionWithType subscriptionWithType = new SubscriptionWithType(NEW_SUBSCRIPTION, APPELLANT, null, null);
         Subscription oldSubscription = NEW_SUBSCRIPTION.toBuilder().subscribeEmail("No").build();
         personalisation.unsetMobileAndEmailIfUnchanged(subscriptionWithType, oldSubscription);
         assertEquals(NEW_SUBSCRIPTION.toBuilder().mobile(null).build(), subscriptionWithType.getSubscription());
@@ -229,7 +229,7 @@ public class SubscriptionPersonalisationTest {
 
     @Test
     public void willUnsetMobileIfSubscriptionIfEmailIsChanged() {
-        SubscriptionWithType subscriptionWithType = new SubscriptionWithType(NEW_SUBSCRIPTION, APPELLANT);
+        SubscriptionWithType subscriptionWithType = new SubscriptionWithType(NEW_SUBSCRIPTION, APPELLANT, null, null);
         Subscription oldSubscription = NEW_SUBSCRIPTION.toBuilder().email("test2@email.com").build();
         personalisation.unsetMobileAndEmailIfUnchanged(subscriptionWithType, oldSubscription);
         assertEquals(NEW_SUBSCRIPTION.toBuilder().mobile(null).build(), subscriptionWithType.getSubscription());
@@ -237,7 +237,7 @@ public class SubscriptionPersonalisationTest {
 
     @Test
     public void willUnsetEmailIfSubscriptionIfMobileIsChanged() {
-        SubscriptionWithType subscriptionWithType = new SubscriptionWithType(NEW_SUBSCRIPTION, APPELLANT);
+        SubscriptionWithType subscriptionWithType = new SubscriptionWithType(NEW_SUBSCRIPTION, APPELLANT, null, null);
         Subscription oldSubscription = NEW_SUBSCRIPTION.toBuilder().mobile("07983495060").build();
         personalisation.unsetMobileAndEmailIfUnchanged(subscriptionWithType, oldSubscription);
         assertEquals(NEW_SUBSCRIPTION.toBuilder().email(null).build(), subscriptionWithType.getSubscription());
@@ -249,7 +249,9 @@ public class SubscriptionPersonalisationTest {
     }
 
     private SubscriptionWithType getSubscriptionWithType(CcdNotificationWrapper ccdNotificationWrapper) {
-        return new SubscriptionWithType(getSubscription(ccdNotificationWrapper.getNewSscsCaseData(), APPELLANT), APPELLANT);
+        return new SubscriptionWithType(getSubscription(ccdNotificationWrapper.getNewSscsCaseData(), APPELLANT),
+            APPELLANT, ccdNotificationWrapper.getNewSscsCaseData().getAppeal().getAppellant(),
+            ccdNotificationWrapper.getNewSscsCaseData().getAppeal().getAppellant());
     }
 
     private void buildNewAndOldCaseData(Subscription newAppellantSubscription, Subscription oldSubscription) {

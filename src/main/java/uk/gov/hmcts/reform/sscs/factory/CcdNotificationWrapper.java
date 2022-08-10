@@ -112,18 +112,27 @@ public class CcdNotificationWrapper implements NotificationWrapper {
     public List<SubscriptionWithType> getSubscriptionsBasedOnNotificationType() {
         List<SubscriptionWithType> subscriptionWithTypeList = new ArrayList<>();
 
+        Appeal appeal = responseWrapper.getNewSscsCaseData().getAppeal();
+        Appellant appellant = appeal.getAppellant();
+        JointParty jointParty = responseWrapper.getNewSscsCaseData().getJointParty();
+
         if (isNotificationEventValidToSendToAppointee()) {
-            subscriptionWithTypeList.add(new SubscriptionWithType(getAppointeeSubscription(), APPOINTEE));
+
+            subscriptionWithTypeList.add(new SubscriptionWithType(getAppointeeSubscription(), APPOINTEE,
+                appellant, appellant.getAppointee()));
         } else if (isNotificationEventValidToSendToAppellant()) {
-            subscriptionWithTypeList.add(new SubscriptionWithType(getAppellantSubscription(), APPELLANT));
+            subscriptionWithTypeList.add(new SubscriptionWithType(getAppellantSubscription(), APPELLANT,
+                appellant, appellant));
         }
 
         if (isNotificationEventValidToSendToRep()) {
-            subscriptionWithTypeList.add(new SubscriptionWithType(getRepresentativeSubscription(), REPRESENTATIVE));
+            subscriptionWithTypeList.add(new SubscriptionWithType(getRepresentativeSubscription(), REPRESENTATIVE,
+                appellant, appeal.getRep()));
         }
 
         if (isNotificationEventValidToSendToJointParty()) {
-            subscriptionWithTypeList.add(new SubscriptionWithType(getJointPartySubscription(), JOINT_PARTY));
+            subscriptionWithTypeList.add(new SubscriptionWithType(getJointPartySubscription(), JOINT_PARTY,
+                jointParty, jointParty));
         }
 
         subscriptionWithTypeList.addAll(getOtherPartySubscriptions());
@@ -142,14 +151,17 @@ public class CcdNotificationWrapper implements NotificationWrapper {
 
         if (hasAppointee(otherParty.getAppointee(), otherParty.getIsAppointee())
                 && isNotificationEventValidToSendToOtherPartySubscription(otherParty.getOtherPartyAppointeeSubscription(), isSendNewOtherPartyNotification)) {
-            otherPartySubscription.add(new SubscriptionWithType(otherParty.getOtherPartyAppointeeSubscription(), OTHER_PARTY, Integer.parseInt(otherParty.getAppointee().getId())));
+            otherPartySubscription.add(new SubscriptionWithType(otherParty.getOtherPartyAppointeeSubscription(),
+                OTHER_PARTY, otherParty, otherParty.getAppointee(), Integer.parseInt(otherParty.getAppointee().getId())));
         } else if (isNotificationEventValidToSendToOtherPartySubscription(otherParty.getOtherPartySubscription(), isSendNewOtherPartyNotification)) {
-            otherPartySubscription.add(new SubscriptionWithType(otherParty.getOtherPartySubscription(), OTHER_PARTY, Integer.parseInt(otherParty.getId())));
+            otherPartySubscription.add(new SubscriptionWithType(otherParty.getOtherPartySubscription(), OTHER_PARTY,
+                otherParty, otherParty, Integer.parseInt(otherParty.getId())));
         }
 
         if (hasRepresentative(otherParty)
                 && isNotificationEventValidToSendToOtherPartySubscription(otherParty.getOtherPartyRepresentativeSubscription(), isSendNewOtherPartyNotification)) {
-            otherPartySubscription.add(new SubscriptionWithType(otherParty.getOtherPartyRepresentativeSubscription(), OTHER_PARTY, Integer.parseInt(otherParty.getRep().getId())));
+            otherPartySubscription.add(new SubscriptionWithType(otherParty.getOtherPartyRepresentativeSubscription(),
+                OTHER_PARTY, otherParty, otherParty.getRep(), Integer.parseInt(otherParty.getRep().getId())));
         }
 
         log.info("Number of subscription {}", otherPartySubscription.size());
