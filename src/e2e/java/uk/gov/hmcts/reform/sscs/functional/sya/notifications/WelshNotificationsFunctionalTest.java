@@ -278,8 +278,8 @@ public class WelshNotificationsFunctionalTest extends AbstractFunctionalTest {
 
     @Test
     public void shouldSendAppointeeEvidenceReminderForPaperCaseNotification() throws NotificationClientException, IOException {
-        simulateCcdCallback(EVIDENCE_REMINDER_NOTIFICATION,
-                "appointee/paper-" + EVIDENCE_REMINDER_NOTIFICATION.getId() + "CallbackWelsh.json");
+//        simulateCcdCallback(EVIDENCE_REMINDER_NOTIFICATION,
+//                "appointee/paper-" + EVIDENCE_REMINDER_NOTIFICATION.getId() + "CallbackWelsh.json");
 
         List<Notification> notifications = tryFetchNotificationsForTestCase(
                 paperAppointeeEvidenceReminderEmailIdWelsh,
