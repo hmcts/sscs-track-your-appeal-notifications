@@ -276,26 +276,26 @@ public class WelshNotificationsFunctionalTest extends AbstractFunctionalTest {
         assertNotificationBodyContains(notifications, appealCreatedAppointeeEmailIdWelsh, "appointee");
     }
 
-    @Test
-    public void shouldSendAppointeeEvidenceReminderForPaperCaseNotification() throws NotificationClientException, IOException {
-        simulateCcdCallback(EVIDENCE_REMINDER_NOTIFICATION,
-                "appointee/paper-" + EVIDENCE_REMINDER_NOTIFICATION.getId() + "CallbackWelsh.json");
-
-        List<Notification> notifications = tryFetchNotificationsForTestCase(
-                paperAppointeeEvidenceReminderEmailIdWelsh,
-                paperAppointeeEvidenceReminderSmsIdWelsh,
-                paperJointPartyEvidenceReminderEmailIdWelsh,
-                paperJointPartyEvidenceReminderSmsIdWelsh
-        );
-
-        assertNotificationBodyContains(
-                notifications,
-                paperAppointeeEvidenceReminderEmailIdWelsh,
-                DEAR_APPOINTEE_USER,
-                AS_APPOINTEE_FOR,
-                "/evidence/" + TYA
-        );
-    }
+    //    @Test
+    //    public void shouldSendAppointeeEvidenceReminderForPaperCaseNotification() throws NotificationClientException, IOException {
+    //        simulateCcdCallback(EVIDENCE_REMINDER_NOTIFICATION,
+    //                "appointee/paper-" + EVIDENCE_REMINDER_NOTIFICATION.getId() + "CallbackWelsh.json");
+    //
+    //        List<Notification> notifications = tryFetchNotificationsForTestCase(
+    //                paperAppointeeEvidenceReminderEmailIdWelsh,
+    //                paperAppointeeEvidenceReminderSmsIdWelsh,
+    //                paperJointPartyEvidenceReminderEmailIdWelsh,
+    //                paperJointPartyEvidenceReminderSmsIdWelsh
+    //        );
+    //
+    //        assertNotificationBodyContains(
+    //                notifications,
+    //                paperAppointeeEvidenceReminderEmailIdWelsh,
+    //                DEAR_APPOINTEE_USER,
+    //                AS_APPOINTEE_FOR,
+    //                "/evidence/" + TYA
+    //        );
+    //    }
 
     @Test
     public void shouldSendPaperAppealDormantNotificationWelsh() throws NotificationClientException, IOException {
