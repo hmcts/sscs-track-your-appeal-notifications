@@ -176,4 +176,12 @@
         <packageUrl regex="true">^pkg:maven/jakarta\.annotation/jakarta\.annotation\-api@.*$</packageUrl>
         <cve>CVE-2022-31569</cve>
     </suppress>
+    <suppress until="2022-10-01">
+        <notes><![CDATA[
+    snakeyaml:1.31
+    https://nvd.nist.gov/vuln/detail/CVE-2022-38752 - Undergoing Analysis - not yet confirmed an actual vulnerability
+     ]]></notes>
+        <packageUrl regex="true">^pkg:maven/org.yaml/snakeyaml@1\.31$</packageUrl>
+        <vulnerabilityName>CVE-2022-38752</vulnerabilityName>
+    </suppress>
 </suppressions>
