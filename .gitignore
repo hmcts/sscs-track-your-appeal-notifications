@@ -26,5 +26,5 @@ build
 .settings
 
 #visual code
-bin/
 .vscode
+build/renders
