@@ -191,24 +191,23 @@ public class FilterNotificationsEventsHandlerTest {
     }
 
     private Object[] eventTypeAndNewAppointees() {
+        Appointee appointeeBefore = Appointee.builder().name(Name.builder().firstName("John").build()).build();
+        Appointee appointeeAfter = Appointee.builder().name(Name.builder().firstName("Harry").build()).build();
         return new Object[]{
             new Object[]{DEATH_OF_APPELLANT, null, Appointee.builder().build()},
-            new Object[]{DEATH_OF_APPELLANT, Appointee.builder().name(Name.builder().firstName("John").build()).build(),
-                    Appointee.builder().name(Name.builder().firstName("Harry").build()).build()},
+            new Object[]{DEATH_OF_APPELLANT, appointeeBefore, appointeeAfter},
             new Object[]{PROVIDE_APPOINTEE_DETAILS, null, Appointee.builder().build()},
-            new Object[]{PROVIDE_APPOINTEE_DETAILS, Appointee.builder().name(Name.builder().firstName("John").build()).build(),
-                    Appointee.builder().name(Name.builder().firstName("Harry").build()).build()},
+            new Object[]{PROVIDE_APPOINTEE_DETAILS, appointeeBefore, appointeeAfter},
         };
     }
 
     private Object[] eventTypeAndNoNewAppointees() {
+        Appointee appointee = Appointee.builder().name(Name.builder().firstName("John").build()).build();
         return new Object[]{
             new Object[]{DEATH_OF_APPELLANT, null, null},
-            new Object[]{DEATH_OF_APPELLANT, Appointee.builder().name(Name.builder().firstName("John").build()).build(),
-                    Appointee.builder().name(Name.builder().firstName("John").build()).build()},
+            new Object[]{DEATH_OF_APPELLANT, appointee, appointee},
             new Object[]{PROVIDE_APPOINTEE_DETAILS, null, null},
-            new Object[]{PROVIDE_APPOINTEE_DETAILS, Appointee.builder().name(Name.builder().firstName("John").build()).build(),
-                    Appointee.builder().name(Name.builder().firstName("John").build()).build()},
+            new Object[]{PROVIDE_APPOINTEE_DETAILS, appointee, appointee},
         };
     }
 }
