@@ -67,7 +67,8 @@ public class PdfLetterServiceIt {
                 .notificationEventType(NotificationEventType.APPEAL_RECEIVED_NOTIFICATION)
                 .build();
         NotificationWrapper wrapper = new CcdNotificationWrapper(dataWrapper);
-        byte[] bytes = pdfLetterService.buildCoversheet(wrapper, new SubscriptionWithType(EMPTY_SUBSCRIPTION, SubscriptionType.APPELLANT));
+        byte[] bytes = pdfLetterService.buildCoversheet(wrapper, new SubscriptionWithType(EMPTY_SUBSCRIPTION,
+            SubscriptionType.APPELLANT, sscsCaseData.getAppeal().getAppellant(), sscsCaseData.getAppeal().getAppellant()));
         assertNotNull(bytes);
         PdfCoverSheet pdfCoverSheet = new PdfCoverSheet(
                 wrapper.getCaseId(),
@@ -100,7 +101,9 @@ public class PdfLetterServiceIt {
                 .notificationEventType(NotificationEventType.UPDATE_OTHER_PARTY_DATA)
                 .build();
         NotificationWrapper wrapper = new CcdNotificationWrapper(dataWrapper);
-        byte[] bytes = pdfLetterService.buildCoversheet(wrapper, new SubscriptionWithType(EMPTY_SUBSCRIPTION, SubscriptionType.OTHER_PARTY, 1));
+        byte[] bytes = pdfLetterService.buildCoversheet(wrapper, new SubscriptionWithType(EMPTY_SUBSCRIPTION,
+            SubscriptionType.OTHER_PARTY, sscsCaseData.getOtherParties().get(0).getValue(),
+            sscsCaseData.getOtherParties().get(0).getValue(),1));
         assertNotNull(bytes);
         PdfCoverSheet pdfCoverSheet = new PdfCoverSheet(
                 wrapper.getCaseId(),
@@ -131,7 +134,8 @@ public class PdfLetterServiceIt {
                 .notificationEventType(NotificationEventType.APPEAL_DORMANT_NOTIFICATION)
                 .build();
         NotificationWrapper wrapper = new CcdNotificationWrapper(dataWrapper);
-        pdfLetterService.buildCoversheet(wrapper, new SubscriptionWithType(EMPTY_SUBSCRIPTION, SubscriptionType.APPELLANT));
+        pdfLetterService.buildCoversheet(wrapper, new SubscriptionWithType(EMPTY_SUBSCRIPTION,
+            SubscriptionType.APPELLANT, sscsCaseData.getAppeal().getAppellant(), sscsCaseData.getAppeal().getAppellant()));
         verifyNoInteractions(docmosisPdfService);
     }
 

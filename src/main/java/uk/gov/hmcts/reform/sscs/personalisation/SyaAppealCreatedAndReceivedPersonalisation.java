@@ -38,8 +38,8 @@ public class SyaAppealCreatedAndReceivedPersonalisation extends WithRepresentati
     private PersonalisationConfiguration syaAppealCreatedPersonalisationConfiguration;
 
     @Override
-    protected Map<String, String> create(SscsCaseDataWrapper responseWrapper, SubscriptionWithType subscriptionWithType) {
-        Map<String, String> personalisation = super.create(responseWrapper, subscriptionWithType);
+    protected Map<String, Object> create(SscsCaseDataWrapper responseWrapper, SubscriptionWithType subscriptionWithType) {
+        Map<String, Object> personalisation = super.create(responseWrapper, subscriptionWithType);
         SscsCaseData ccdResponse = responseWrapper.getNewSscsCaseData();
 
         setMrnDetails(personalisation, ccdResponse);
@@ -56,7 +56,7 @@ public class SyaAppealCreatedAndReceivedPersonalisation extends WithRepresentati
         return personalisation;
     }
 
-    public Map<String, String> setMrnDetails(Map<String, String> personalisation, SscsCaseData ccdResponse) {
+    public Map<String, Object> setMrnDetails(Map<String, Object> personalisation, SscsCaseData ccdResponse) {
         personalisation.put(AppConstants.MRN_DETAILS_LITERAL,
                 buildMrnDetails(ccdResponse.getAppeal().getMrnDetails(), syaAppealCreatedPersonalisationConfiguration.getPersonalisation().get(LanguagePreference.ENGLISH),  UnaryOperator.identity()));
 
@@ -96,7 +96,7 @@ public class SyaAppealCreatedAndReceivedPersonalisation extends WithRepresentati
         return LocalDateToWelshStringConverter.convert(localDate);
     }
 
-    public Map<String, String> setYourDetails(Map<String, String> personalisation, SscsCaseData ccdResponse) {
+    public Map<String, Object> setYourDetails(Map<String, Object> personalisation, SscsCaseData ccdResponse) {
         personalisation.put(AppConstants.YOUR_DETAILS_LITERAL,
                 buildYourDetails(ccdResponse, syaAppealCreatedPersonalisationConfiguration.getPersonalisation().get(LanguagePreference.ENGLISH), UnaryOperator.identity()));
         if (ccdResponse.isLanguagePreferenceWelsh()) {
@@ -122,7 +122,7 @@ public class SyaAppealCreatedAndReceivedPersonalisation extends WithRepresentati
         return yourDetails;
     }
 
-    public Map<String, String> setTextMessageReminderDetails(Map<String, String> personalisation, Subscription subscription) {
+    public Map<String, Object> setTextMessageReminderDetails(Map<String, Object> personalisation, Subscription subscription) {
         personalisation.put(AppConstants.TEXT_MESSAGE_REMINDER_DETAILS_LITERAL, buildTextMessageDetails(subscription, syaAppealCreatedPersonalisationConfiguration.getPersonalisation().get(LanguagePreference.ENGLISH)));
         personalisation.put(AppConstants.WELSH_TEXT_MESSAGE_REMINDER_DETAILS_LITERAL, buildTextMessageDetails(subscription, syaAppealCreatedPersonalisationConfiguration.getPersonalisation().get(LanguagePreference.WELSH)));
         return personalisation;
@@ -144,7 +144,7 @@ public class SyaAppealCreatedAndReceivedPersonalisation extends WithRepresentati
         return buildTextMessage.toString();
     }
 
-    private Map<String, String> setAppointeeName(Map<String, String> personalisation, SscsCaseData sscsCaseData) {
+    private Map<String, Object> setAppointeeName(Map<String, Object> personalisation, SscsCaseData sscsCaseData) {
         Appointee appointee = sscsCaseData.getAppeal().getAppellant().getAppointee();
         if (hasAppointee(appointee, sscsCaseData.getAppeal().getAppellant().getIsAppointee())) {
             personalisation.put(AppConstants.APPOINTEE_NAME, String.format("%s %s",
@@ -155,7 +155,7 @@ public class SyaAppealCreatedAndReceivedPersonalisation extends WithRepresentati
     }
 
 
-    public Map<String, String> setAppointeeDetails(Map<String, String> personalisation, SscsCaseData ccdResponse) {
+    public Map<String, Object> setAppointeeDetails(Map<String, Object> personalisation, SscsCaseData ccdResponse) {
         String isAppointee = ccdResponse.getAppeal().getAppellant().getIsAppointee();
         personalisation.put(AppConstants.APPOINTEE_DETAILS_LITERAL, buildAppointeeDetails(ccdResponse.getAppeal().getAppellant().getAppointee(), isAppointee, syaAppealCreatedPersonalisationConfiguration.getPersonalisation().get(LanguagePreference.ENGLISH), UnaryOperator.identity()));
         if (ccdResponse.isLanguagePreferenceWelsh()) {
@@ -183,7 +183,7 @@ public class SyaAppealCreatedAndReceivedPersonalisation extends WithRepresentati
         return appointeeBuilder.toString();
     }
 
-    public Map<String, String> setRepresentativeDetails(Map<String, String> personalisation, SscsCaseData ccdResponse) {
+    public Map<String, Object> setRepresentativeDetails(Map<String, Object> personalisation, SscsCaseData ccdResponse) {
         personalisation.put(AppConstants.REPRESENTATIVE_DETAILS_LITERAL, buildRepresentativeDetails(ccdResponse.getAppeal().getRep(), syaAppealCreatedPersonalisationConfiguration.personalisation.get(LanguagePreference.ENGLISH)));
         if (ccdResponse.isLanguagePreferenceWelsh()) {
             personalisation.put(AppConstants.WELSH_REPRESENTATIVE_DETAILS_LITERAL, buildRepresentativeDetails(ccdResponse.getAppeal().getRep(), syaAppealCreatedPersonalisationConfiguration.personalisation.get(LanguagePreference.WELSH)));
@@ -210,7 +210,7 @@ public class SyaAppealCreatedAndReceivedPersonalisation extends WithRepresentati
         return representativeBuilder.toString();
     }
 
-    public Map<String, String> setOtherPartyDetails(Map<String, String> personalisation, SscsCaseData ccdResponse) {
+    public Map<String, Object> setOtherPartyDetails(Map<String, Object> personalisation, SscsCaseData ccdResponse) {
         if (ccdResponse.getOtherParties() != null && !ccdResponse.getOtherParties().isEmpty()) {
             personalisation.put(SHOW_OTHER_PARTY_DETAILS, "Yes");
             personalisation.put(OTHER_PARTY_DETAILS,
@@ -241,7 +241,7 @@ public class SyaAppealCreatedAndReceivedPersonalisation extends WithRepresentati
         return otherPartyBuilder.toString();
     }
 
-    public Map<String, String> setReasonsForAppealingDetails(Map<String, String> personalisation, SscsCaseData ccdResponse) {
+    public Map<String, Object> setReasonsForAppealingDetails(Map<String, Object> personalisation, SscsCaseData ccdResponse) {
         personalisation.put(AppConstants.REASONS_FOR_APPEALING_DETAILS_LITERAL, buildReasonsForAppealingDetails(ccdResponse.getAppeal().getAppealReasons(), syaAppealCreatedPersonalisationConfiguration.personalisation.get(LanguagePreference.ENGLISH)));
         if (ccdResponse.isLanguagePreferenceWelsh()) {
             personalisation.put(AppConstants.WELSH_REASONS_FOR_APPEALING_DETAILS_LITERAL, buildReasonsForAppealingDetails(ccdResponse.getAppeal().getAppealReasons(), syaAppealCreatedPersonalisationConfiguration.personalisation.get(LanguagePreference.WELSH)));
@@ -266,7 +266,7 @@ public class SyaAppealCreatedAndReceivedPersonalisation extends WithRepresentati
         return appealReasonsBuilder.toString();
     }
 
-    public Map<String, String> setHearingDetails(Map<String, String> personalisation, SscsCaseData ccdResponse) {
+    public Map<String, Object> setHearingDetails(Map<String, Object> personalisation, SscsCaseData ccdResponse) {
         HearingOptions hearingOptions = ccdResponse.getAppeal().getHearingOptions();
         personalisation.put(AppConstants.HEARING_DETAILS_LITERAL,
                 buildHearingDetails(hearingOptions, syaAppealCreatedPersonalisationConfiguration.getPersonalisation().get(LanguagePreference.ENGLISH), this::convertLocalDateToLongDateString));

@@ -1,6 +1,5 @@
 package uk.gov.hmcts.reform.sscs.service;
 
-import static java.util.Collections.singletonList;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.core.Is.is;
 import static org.junit.Assert.assertEquals;
@@ -36,7 +35,7 @@ import org.mockito.junit.MockitoJUnit;
 import org.mockito.junit.MockitoRule;
 import org.springframework.test.util.ReflectionTestUtils;
 import uk.gov.hmcts.reform.sscs.ccd.domain.*;
-import uk.gov.hmcts.reform.sscs.config.NotificationBlacklist;
+import uk.gov.hmcts.reform.sscs.config.NotificationTestRecipients;
 import uk.gov.hmcts.reform.sscs.config.SubscriptionType;
 import uk.gov.hmcts.reform.sscs.domain.notify.NotificationEventType;
 import uk.gov.service.notify.*;
@@ -50,7 +49,7 @@ public class NotificationSenderTest {
     public static final String SMS_SENDER = "sms-sender";
     private NotificationSender notificationSender;
     private String templateId;
-    private Map<String, String> personalisation;
+    private Map<String, Object> personalisation;
     private String reference;
 
     @Mock
@@ -60,7 +59,7 @@ public class NotificationSenderTest {
     private NotificationClient testNotificationClient;
 
     @Mock
-    private NotificationBlacklist blacklist;
+    private NotificationTestRecipients blacklist;
 
     @Mock
     private SendEmailResponse sendEmailResponse;
@@ -122,7 +121,7 @@ public class NotificationSenderTest {
     @Test
     public void sendEmailToTestSenderIfOnBlacklist() throws NotificationClientException {
         String emailAddress = "random@example.com";
-        when(blacklist.getTestRecipients()).thenReturn(singletonList(emailAddress));
+        when(blacklist.getEmails()).thenReturn(Collections.singletonList(emailAddress));
         when(testNotificationClient.sendEmail(templateId, emailAddress, personalisation, reference))
                 .thenReturn(sendEmailResponse);
         when(sendEmailResponse.getNotificationId()).thenReturn(UUID.randomUUID());
@@ -149,7 +148,7 @@ public class NotificationSenderTest {
     @Test
     public void sendSmsToTestSenderIfOnBlacklist() throws NotificationClientException {
         String phoneNumber = "07777777777";
-        when(blacklist.getTestRecipients()).thenReturn(singletonList(phoneNumber));
+        when(blacklist.getSms()).thenReturn(Collections.singletonList(phoneNumber));
         when(testNotificationClient.sendSms(templateId, phoneNumber, personalisation, reference, SMS_SENDER))
                 .thenReturn(sendSmsResponse);
         when(sendSmsResponse.getNotificationId()).thenReturn(UUID.randomUUID());
@@ -178,7 +177,7 @@ public class NotificationSenderTest {
     public void sendBundledLetterToSenderIfOnBlacklist() throws IOException, NotificationClientException {
         String postcode = "TS1 1ST";
 
-        when(blacklist.getTestRecipients()).thenReturn(singletonList(postcode));
+        when(blacklist.getPostcodes()).thenReturn(Collections.singletonList(postcode));
         when(testNotificationClient.sendPrecompiledLetterWithInputStream(any(), any())).thenReturn(letterResponse);
         when(letterResponse.getNotificationId()).thenReturn(UUID.randomUUID());
 
@@ -207,7 +206,7 @@ public class NotificationSenderTest {
     public void sendLetterToSenderIfOnBlacklist() throws IOException, NotificationClientException {
         String postcode = "TS1 1ST";
 
-        when(blacklist.getTestRecipients()).thenReturn(singletonList(postcode));
+        when(blacklist.getPostcodes()).thenReturn(Collections.singletonList(postcode));
         when(testNotificationClient.sendLetter(any(), any(), any())).thenReturn(sendLetterResponse);
         when(sendLetterResponse.getNotificationId()).thenReturn(UUID.randomUUID());
 

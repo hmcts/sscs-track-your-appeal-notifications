@@ -5,6 +5,7 @@ import java.time.ZonedDateTime;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import uk.gov.hmcts.reform.sscs.domain.notify.NotificationEventType;
 import uk.gov.hmcts.reform.sscs.exception.NotificationClientRuntimeException;
 import uk.gov.hmcts.reform.sscs.exception.NotificationServiceException;
 import uk.gov.hmcts.reform.sscs.factory.NotificationWrapper;
@@ -34,11 +35,10 @@ public class NotificationHandler {
             log.info("Sending {} template {} for case id: {}", notificationType, notificationTemplate, caseId);
             sendNotification.send();
             log.info("{} template {} sent for case id: {}", notificationType, notificationTemplate, caseId);
-
             return true;
         } catch (Exception ex) {
-            log.error("Could not send notification for case id: {}", wrapper.getCaseId());
-            wrapAndThrowNotificationExceptionIfRequired(caseId, notificationTemplate, ex);
+            log.error("Could not send {} notification for case id: {}", notificationType, wrapper.getCaseId());
+            wrapAndThrowNotificationExceptionIfRequired(wrapper, notificationTemplate, ex);
         }
 
         return false;
@@ -76,14 +76,18 @@ public class NotificationHandler {
         ));
     }
 
-    private void wrapAndThrowNotificationExceptionIfRequired(String caseId, String templateId, Exception ex) {
+    private void wrapAndThrowNotificationExceptionIfRequired(NotificationWrapper wrapper, String templateId, Exception ex) {
+        String caseId = wrapper.getCaseId();
+        NotificationEventType notificationType = wrapper.getNotificationType();
         if (ex.getCause() instanceof UnknownHostException) {
             NotificationClientRuntimeException exception = new NotificationClientRuntimeException(caseId, ex);
-            log.error("Runtime error on GovUKNotify for case id: {}, template: {}", caseId, templateId, exception);
+            log.error("Runtime error on GovUKNotify for case id: {}, template: {}, notification type: {}", caseId, templateId, notificationType);
+            log.error("Exception for case id {}", caseId, exception);
             throw exception;
         } else {
             NotificationServiceException exception = new NotificationServiceException(caseId, ex);
-            log.error("Error code {} on GovUKNotify for case id: {}, template: {}", exception.getGovNotifyErrorCode(), caseId, templateId, exception);
+            log.error("Error code {} on GovUKNotify for case id: {}, template: {}, notification type: {}", exception.getGovNotifyErrorCode(), caseId, templateId, notificationType);
+            log.error("Exception for case id {}", caseId, exception);
             if (ex instanceof NotificationClientException) {
                 throw exception;
             }

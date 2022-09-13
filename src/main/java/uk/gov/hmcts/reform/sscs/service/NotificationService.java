@@ -291,7 +291,8 @@ public class NotificationService {
                     .appealNumber(notification.getAppealNumber())
                     .placeholders(notification.getPlaceholders()).build();
 
-            SubscriptionWithType updatedSubscriptionWithType = new SubscriptionWithType(oldSubscription, subscriptionWithType.getSubscriptionType());
+            SubscriptionWithType updatedSubscriptionWithType = new SubscriptionWithType(oldSubscription,
+                subscriptionWithType.getSubscriptionType(), subscriptionWithType.getParty(), subscriptionWithType.getEntity());
             sendNotificationService.sendEmailSmsLetterNotification(wrapper, oldNotification, updatedSubscriptionWithType, eventType);
         }
     }

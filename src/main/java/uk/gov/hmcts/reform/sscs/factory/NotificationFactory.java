@@ -35,7 +35,7 @@ public class NotificationFactory {
             return null;
         }
 
-        Map<String, String> placeholders = personalisation.create(notificationWrapper, subscriptionWithType);
+        Map<String, Object> placeholders = personalisation.create(notificationWrapper, subscriptionWithType);
         if (null == placeholders) {
             return null;
         }

@@ -15,7 +15,7 @@ import uk.gov.hmcts.reform.sscs.domain.SubscriptionWithType;
 public class SubscriptionPersonalisation extends WithRepresentativePersonalisation {
 
     @Override
-    protected Map<String, String> create(SscsCaseDataWrapper responseWrapper, SubscriptionWithType subscriptionWithType) {
+    protected Map<String, Object> create(SscsCaseDataWrapper responseWrapper, SubscriptionWithType subscriptionWithType) {
         Subscription newSubscription = subscriptionWithType.getSubscription();
         Subscription oldSubscription = getSubscription(responseWrapper.getOldSscsCaseData(), subscriptionWithType.getSubscriptionType());
         setSendSmsSubscriptionConfirmation(shouldSendSmsSubscriptionConfirmation(newSubscription, oldSubscription));

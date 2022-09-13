@@ -1,84 +1,84 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <suppressions xmlns="https://jeremylong.github.io/DependencyCheck/dependency-suppression.1.3.xsd">
-    <suppress until="2022-09-01">
+    <suppress until="2022-10-01">
         <notes><![CDATA[
                  jackson-databind-2.11.0.jar (pkg:maven/com.fasterxml.jackson.core/jackson-databind@2.11.0, cpe:2.3:a:fasterxml:jackson-databind:2.11.0:*:*:*:*:*:*:*)
                 ]]></notes>
         <cve>CVE-2020-36518</cve>
     </suppress>
-    <suppress until="2022-09-01">
+    <suppress until="2022-10-01">
         <notes><![CDATA[
                 logback-classic-1.2.6.jar (pkg:maven/ch.qos.logback/logback-classic@1.2.6, cpe:2.3:a:qos:logback:1.2.6:*:*:*:*:*:*:*)
                 ]]></notes>
         <cve>CVE-2021-42550</cve>
     </suppress>
-    <suppress until="2022-09-01">
+    <suppress until="2022-10-01">
         <notes><![CDATA[
                 logback-core-1.2.6.jar (pkg:maven/ch.qos.logback/logback-core@1.2.6, cpe:2.3:a:qos:logback:1.2.6:*:*:*:*:*:*:*)
                 ]]></notes>
         <cve>CVE-2021-42550</cve>
     </suppress>
-    <suppress until="2022-09-01">
+    <suppress until="2022-10-01">
         <notes><![CDATA[
                 netty-buffer-4.1.69.Final.jar (pkg:maven/io.netty/netty-buffer@4.1.69.Final, cpe:2.3:a:netty:netty:4.1.69:*:*:*:*:*:*:*)
                 ]]></notes>
         <cve>CVE-2021-43797</cve>
     </suppress>
-    <suppress until="2022-09-01">
+    <suppress until="2022-10-01">
         <notes><![CDATA[
                 netty-codec-4.1.69.Final.jar (pkg:maven/io.netty/netty-codec@4.1.69.Final, cpe:2.3:a:netty:netty:4.1.69:*:*:*:*:*:*:*)
                 ]]></notes>
         <cve>CVE-2021-43797</cve>
     </suppress>
-    <suppress until="2022-09-01">
+    <suppress until="2022-10-01">
         <notes><![CDATA[
                 netty-codec-http-4.1.69.Final.jar (pkg:maven/io.netty/netty-codec-http@4.1.69.Final, cpe:2.3:a:netty:netty:4.1.69:*:*:*:*:*:*:*)
                 ]]></notes>
         <cve>CVE-2021-43797</cve>
     </suppress>
-    <suppress until="2022-09-01">
+    <suppress until="2022-10-01">
         <notes><![CDATA[
                 netty-common-4.1.69.Final.jar (pkg:maven/io.netty/netty-common@4.1.69.Final, cpe:2.3:a:netty:netty:4.1.69:*:*:*:*:*:*:*)
                 ]]></notes>
         <cve>CVE-2021-43797</cve>
     </suppress>
-    <suppress until="2022-09-01">
+    <suppress until="2022-10-01">
         <notes><![CDATA[
                 netty-handler-4.1.69.Final.jar (pkg:maven/io.netty/netty-handler@4.1.69.Final, cpe:2.3:a:netty:netty:4.1.69:*:*:*:*:*:*:*)
                 ]]></notes>
         <cve>CVE-2021-43797</cve>
     </suppress>
-    <suppress until="2022-09-01">
+    <suppress until="2022-10-01">
         <notes><![CDATA[
                 netty-resolver-4.1.69.Final.jar (pkg:maven/io.netty/netty-resolver@4.1.69.Final, cpe:2.3:a:netty:netty:4.1.69:*:*:*:*:*:*:*)
                 ]]></notes>
         <cve>CVE-2021-43797</cve>
     </suppress>
-    <suppress until="2022-09-01">
+    <suppress until="2022-10-01">
         <notes><![CDATA[
                 netty-transport-4.1.69.Final.jar (pkg:maven/io.netty/netty-transport@4.1.69.Final, cpe:2.3:a:netty:netty:4.1.69:*:*:*:*:*:*:*)
                 ]]></notes>
         <cve>CVE-2021-43797</cve>
     </suppress>
-    <suppress until="2022-09-01">
+    <suppress until="2022-10-01">
         <notes><![CDATA[
                 netty-transport-native-epoll-4.1.69.Final-linux-x86_64.jar (pkg:maven/io.netty/netty-transport-native-epoll@4.1.69.Final, cpe:2.3:a:netty:netty:4.1.69:*:*:*:*:*:*:*)
                 ]]></notes>
         <cve>CVE-2021-43797</cve>
     </suppress>
-    <suppress until="2022-09-01">
+    <suppress until="2022-10-01">
         <notes><![CDATA[
                 netty-transport-native-kqueue-4.1.69.Final-osx-x86_64.jar (pkg:maven/io.netty/netty-transport-native-kqueue@4.1.69.Final, cpe:2.3:a:netty:netty:4.1.69:*:*:*:*:*:*:*)
                 ]]></notes>
         <cve>CVE-2021-43797</cve>
     </suppress>
-    <suppress until="2022-09-01">
+    <suppress until="2022-10-01">
         <notes><![CDATA[
                 netty-transport-native-unix-common-4.1.69.Final.jar (pkg:maven/io.netty/netty-transport-native-unix-common@4.1.69.Final, cpe:2.3:a:netty:netty:4.1.69:*:*:*:*:*:*:*)
                 ]]></notes>
         <cve>CVE-2021-43797</cve>
     </suppress>
-    <suppress until="2022-09-01">
+    <suppress until="2022-10-01">
         <notes><![CDATA[
                 cpe:2.3:a:vmware:spring_framework:1.3.1
                 ]]></notes>
@@ -89,7 +89,7 @@
         <cve>CVE-2022-22965</cve>
         <cve>CVE-2022-22968</cve>
     </suppress>
-    <suppress until="2022-09-01">
+    <suppress until="2022-10-01">
         <notes><![CDATA[
                 sscs-pdf-email-common-1.4.54.jar: jquery-1.11.3.js (pkg:javascript/jquery@1.11.3)
                 ]]></notes>
@@ -98,14 +98,14 @@
         <cve>CVE-2020-11022</cve>
         <cve>CVE-2020-11023</cve>
     </suppress>
-    <suppress until="2022-09-01">
+    <suppress until="2022-10-01">
         <notes><![CDATA[
                 elasticsearch-7.16.3.jar
         ]]></notes>
         <packageUrl regex="true">^pkg:maven/org.elasticsearch/elasticsearch@.*$</packageUrl>
         <cve>CVE-2022-23708</cve>
     </suppress>
-    <suppress until="2022-09-01">
+    <suppress until="2022-10-01">
         <notes><![CDATA[
           springframework packages
         ]]>    </notes>
@@ -135,14 +135,14 @@
             <cve>CVE-2022-22968</cve>
             <cve>CVE-2022-22970</cve>
     </suppress>
-    <suppress until="2022-09-01">
+    <suppress until="2022-10-01">
         <notes><![CDATA[
    file name: gson-2.8.6.jar
    ]]></notes>
         <packageUrl regex="true">^pkg:maven/com\.google\.code\.gson/gson@.*$</packageUrl>
         <cve>CVE-2022-25647</cve>
     </suppress>
-    <suppress until="2022-09-01">
+    <suppress until="2022-10-01">
         <notes><![CDATA[
                 tika-core-2.2.1.jar
         ]]></notes>
@@ -150,7 +150,7 @@
         <cve>CVE-2022-25169</cve>
         <cve>CVE-2022-30126</cve>
     </suppress>
-    <suppress until="2022-09-01">
+    <suppress until="2022-10-01">
         <notes><![CDATA[
                 spring-security-crypto-5.5.3.jar
         ]]></notes>
@@ -159,7 +159,7 @@
         <cve>CVE-2022-22976</cve>
         <cve>CVE-2022-22978</cve>
         </suppress>
-    <suppress until="2022-09-01">
+    <suppress until="2022-10-01">
         <notes><![CDATA[
                 spring-security-rsa
         ]]></notes>
@@ -167,7 +167,7 @@
         <cve>CVE-2022-22976</cve>
         <cve>CVE-2022-22978</cve>
     </suppress>
-    <suppress until="2022-09-01">
+    <suppress until="2022-10-01">
         <notes><![CDATA[
    file name: jakarta.annotation-api-1.3.5.jar
    ]]></notes>
