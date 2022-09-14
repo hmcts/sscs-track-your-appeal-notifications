@@ -130,7 +130,7 @@ Run the following, replacing `<template-name>` with the template name, e.g. TB-S
 
 Using Powershell:
 ```
- ./bin/render-docmosis-template.sh -t TB-SCS-LET-ENG-Hearing-Booked.docx
+ ./bin/render-docmosis-template.sh -t <template-name>
 ```
 
 Using Shell:
