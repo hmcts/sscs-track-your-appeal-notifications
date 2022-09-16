@@ -331,13 +331,11 @@ functional.shouldRunAfter(test)
 
 def versions = [
         logback: '1.2.3',
-        reformLogging: '5.1.7',
         springHystrix: '2.2.10.RELEASE',
         restAssured: '4.3.3',
         pitest: '1.4.2',
         gradlePitest: '1.3.0',
         sonarPitest: '0.5',
-        sscsCommon: '4.15.5',
 ]
 
 configurations.all {
@@ -382,10 +380,10 @@ dependencies {
     compile group: 'org.jadira.usertype', name: 'usertype.core', version: '7.0.0.CR1'
 
     compile group: 'uk.gov.hmcts.reform', name: 'properties-volume-spring-boot-starter', version:'0.1.0'
-    compile group: 'com.github.hmcts', name: 'java-logging', version: versions.reformLogging
+    compile group: 'com.github.hmcts', name: 'java-logging', version: '5.1.7'
     compile group: 'uk.gov.hmcts.reform', name: 'service-auth-provider-client', version: '4.0.0'
 
-    compile group: 'com.github.hmcts', name: 'sscs-common', version: '4.15.6'
+    compile group: 'com.github.hmcts', name: 'sscs-common', version: '4.17.0'
     compile group: 'com.github.hmcts', name: 'sscs-pdf-email-common', version: '1.4.56'
 
     compile group: 'com.github.hmcts', name: 'sscs-job-scheduler', version: '1.5.7'
