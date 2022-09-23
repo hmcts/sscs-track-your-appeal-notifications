@@ -16,7 +16,7 @@ java:
       - idam-sscs-oauth2-client-secret
       - sscs-s2s-secret
       - s2s-micro
-      - sscs-asb-primary-send-and-listen-shared-access-key
+      - sscs-servicebus-shared-access-key
       - docmosis-api-key
       - notification-job-scheduler-db-password
       - notification-key
