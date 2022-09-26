@@ -360,7 +360,7 @@ public class NotificationServiceTest {
                     POSTPONEMENT,
                         2,
                         1,
-                        0,
+                        2,
                         2,
                         Subscription.builder()
                                 .tya(APPEAL_NUMBER)
