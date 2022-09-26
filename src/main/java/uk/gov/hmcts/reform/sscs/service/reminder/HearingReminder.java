@@ -1,8 +1,8 @@
 package uk.gov.hmcts.reform.sscs.service.reminder;
 
 import static org.slf4j.LoggerFactory.getLogger;
-import static uk.gov.hmcts.reform.sscs.domain.notify.NotificationEventType.HEARING_BOOKED_NOTIFICATION;
-import static uk.gov.hmcts.reform.sscs.domain.notify.NotificationEventType.HEARING_REMINDER_NOTIFICATION;
+import static uk.gov.hmcts.reform.sscs.domain.notify.NotificationEventType.HEARING_BOOKED;
+import static uk.gov.hmcts.reform.sscs.domain.notify.NotificationEventType.HEARING_REMINDER;
 
 import java.time.LocalDateTime;
 import java.time.ZoneId;
@@ -45,12 +45,12 @@ public class HearingReminder implements ReminderHandler {
     public boolean canHandle(NotificationWrapper wrapper) {
         return wrapper
             .getNotificationType()
-            .equals(HEARING_BOOKED_NOTIFICATION) && isAllowedForHearingType(wrapper.getHearingType());
+            .equals(HEARING_BOOKED) && isAllowedForHearingType(wrapper.getHearingType());
     }
 
     private boolean isAllowedForHearingType(AppealHearingType hearingType) {
-        return ((AppealHearingType.PAPER.equals(hearingType) && HEARING_REMINDER_NOTIFICATION.isSendForPaperCase())
-                || (AppealHearingType.ORAL.equals(hearingType) && HEARING_REMINDER_NOTIFICATION.isSendForOralCase()));
+        return ((AppealHearingType.PAPER.equals(hearingType) && HEARING_REMINDER.isSendForPaperCase())
+                || (AppealHearingType.ORAL.equals(hearingType) && HEARING_REMINDER.isSendForOralCase()));
     }
 
     public boolean canSchedule(NotificationWrapper wrapper) {
@@ -79,7 +79,7 @@ public class HearingReminder implements ReminderHandler {
     private void scheduleReminder(SscsCaseData ccdResponse, long secondsBeforeHearing) {
 
         String caseId = ccdResponse.getCcdCaseId();
-        String eventId = HEARING_REMINDER_NOTIFICATION.getId();
+        String eventId = HEARING_REMINDER.getId();
         String jobGroup = jobGroupGenerator.generate(caseId, eventId);
         ZonedDateTime reminderDate = calculateReminderDate(ccdResponse, secondsBeforeHearing);
 

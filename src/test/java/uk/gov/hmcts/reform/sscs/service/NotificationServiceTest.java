@@ -1,19 +1,37 @@
 package uk.gov.hmcts.reform.sscs.service;
 
-import static java.util.Collections.*;
+import static java.util.Collections.emptyList;
+import static java.util.Collections.singletonList;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.is;
-import static org.junit.Assert.*;
+import static org.junit.Assert.assertArrayEquals;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertTrue;
 import static org.mockito.ArgumentMatchers.anyList;
 import static org.mockito.BDDMockito.given;
 import static org.mockito.BDDMockito.then;
-import static org.mockito.Mockito.*;
+import static org.mockito.Mockito.any;
+import static org.mockito.Mockito.anyString;
+import static org.mockito.Mockito.atLeast;
+import static org.mockito.Mockito.atLeastOnce;
+import static org.mockito.Mockito.eq;
+import static org.mockito.Mockito.never;
+import static org.mockito.Mockito.times;
+import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.verifyNoInteractions;
+import static org.mockito.Mockito.verifyNoMoreInteractions;
+import static org.mockito.Mockito.when;
 import static org.mockito.MockitoAnnotations.openMocks;
 import static uk.gov.hmcts.reform.sscs.ccd.domain.State.READY_TO_LIST;
-import static uk.gov.hmcts.reform.sscs.config.SubscriptionType.*;
+import static uk.gov.hmcts.reform.sscs.config.NotificationEventTypeLists.EVENT_TYPES_FOR_BUNDLED_LETTER;
+import static uk.gov.hmcts.reform.sscs.config.SubscriptionType.APPELLANT;
+import static uk.gov.hmcts.reform.sscs.config.SubscriptionType.APPOINTEE;
+import static uk.gov.hmcts.reform.sscs.config.SubscriptionType.JOINT_PARTY;
+import static uk.gov.hmcts.reform.sscs.config.SubscriptionType.OTHER_PARTY;
+import static uk.gov.hmcts.reform.sscs.config.SubscriptionType.REPRESENTATIVE;
 import static uk.gov.hmcts.reform.sscs.domain.notify.NotificationEventType.*;
 import static uk.gov.hmcts.reform.sscs.service.NotificationUtils.getSubscription;
-import static uk.gov.hmcts.reform.sscs.service.NotificationValidService.BUNDLED_LETTER_EVENT_TYPES;
 
 import ch.qos.logback.classic.Level;
 import ch.qos.logback.classic.Logger;
@@ -22,7 +40,12 @@ import ch.qos.logback.core.Appender;
 import java.io.IOException;
 import java.time.LocalDate;
 import java.time.ZonedDateTime;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Collections;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Objects;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 import junitparams.JUnitParamsRunner;
@@ -44,7 +67,11 @@ import uk.gov.hmcts.reform.sscs.config.NotificationConfig;
 import uk.gov.hmcts.reform.sscs.config.SubscriptionType;
 import uk.gov.hmcts.reform.sscs.domain.SscsCaseDataWrapper;
 import uk.gov.hmcts.reform.sscs.domain.SubscriptionWithType;
-import uk.gov.hmcts.reform.sscs.domain.notify.*;
+import uk.gov.hmcts.reform.sscs.domain.notify.Destination;
+import uk.gov.hmcts.reform.sscs.domain.notify.Notification;
+import uk.gov.hmcts.reform.sscs.domain.notify.NotificationEventType;
+import uk.gov.hmcts.reform.sscs.domain.notify.Reference;
+import uk.gov.hmcts.reform.sscs.domain.notify.Template;
 import uk.gov.hmcts.reform.sscs.factory.CcdNotificationWrapper;
 import uk.gov.hmcts.reform.sscs.factory.NotificationFactory;
 import uk.gov.hmcts.reform.sscs.factory.NotificationWrapper;
@@ -148,7 +175,7 @@ public class NotificationServiceTest {
                 .caseReference(CASE_REFERENCE)
                 .createdInGapsFrom(READY_TO_LIST.getId())
                 .build();
-        sscsCaseDataWrapper = SscsCaseDataWrapper.builder().newSscsCaseData(sscsCaseData).oldSscsCaseData(sscsCaseData).notificationEventType(APPEAL_WITHDRAWN_NOTIFICATION).build();
+        sscsCaseDataWrapper = SscsCaseDataWrapper.builder().newSscsCaseData(sscsCaseData).oldSscsCaseData(sscsCaseData).notificationEventType(APPEAL_WITHDRAWN).build();
         ccdNotificationWrapper = new CcdNotificationWrapper(sscsCaseDataWrapper);
         when(outOfHoursCalculator.isItOutOfHours()).thenReturn(false);
 
@@ -289,7 +316,7 @@ public class NotificationServiceTest {
     private Object[] generateNotificationTypeAndSubscriptionsScenarios() {
         return new Object[]{
                 new Object[]{
-                        APPEAL_LAPSED_NOTIFICATION,
+                    APPEAL_LAPSED,
                         1,
                         1,
                         1,
@@ -306,7 +333,7 @@ public class NotificationServiceTest {
                         new SubscriptionType[]{APPELLANT}, null
                 },
                 new Object[]{
-                        DWP_UPLOAD_RESPONSE_NOTIFICATION,
+                    DWP_UPLOAD_RESPONSE,
                         2,
                         2,
                         2,
@@ -330,7 +357,7 @@ public class NotificationServiceTest {
                                 .build())
                 },
                 new Object[]{
-                        POSTPONEMENT_NOTIFICATION,
+                    POSTPONEMENT,
                         2,
                         1,
                         0,
@@ -352,7 +379,7 @@ public class NotificationServiceTest {
                                 .build())
                 },
                 new Object[]{
-                        APPEAL_LAPSED_NOTIFICATION,
+                    APPEAL_LAPSED,
                         2,
                         2,
                         2,
@@ -428,7 +455,7 @@ public class NotificationServiceTest {
                         null
                 },
                 new Object[]{
-                        APPEAL_LAPSED_NOTIFICATION,
+                    APPEAL_LAPSED,
                         2,
                         1,
                         2,
@@ -450,7 +477,7 @@ public class NotificationServiceTest {
                         null
                 },
                 new Object[]{
-                        APPEAL_LAPSED_NOTIFICATION,
+                    APPEAL_LAPSED,
                         2,
                         2,
                         2,
@@ -474,7 +501,7 @@ public class NotificationServiceTest {
                         null
                 },
                 new Object[]{
-                        APPEAL_RECEIVED_NOTIFICATION,
+                    APPEAL_RECEIVED,
                         1,
                         1,
                         1,
@@ -492,7 +519,7 @@ public class NotificationServiceTest {
                         null
                 },
                 new Object[]{
-                        APPEAL_RECEIVED_NOTIFICATION,
+                    APPEAL_RECEIVED,
                         2,
                         1,
                         2,
@@ -514,7 +541,7 @@ public class NotificationServiceTest {
                         null
                 },
                 new Object[]{
-                        APPEAL_RECEIVED_NOTIFICATION,
+                    APPEAL_RECEIVED,
                         2,
                         2,
                         2,
@@ -538,7 +565,7 @@ public class NotificationServiceTest {
                         null
                 },
                 new Object[]{
-                        SYA_APPEAL_CREATED_NOTIFICATION,
+                    SYA_APPEAL_CREATED,
                         1,
                         0,
                         0,
@@ -554,7 +581,7 @@ public class NotificationServiceTest {
                         null
                 },
                 new Object[]{
-                        SYA_APPEAL_CREATED_NOTIFICATION,
+                    SYA_APPEAL_CREATED,
                         1,
                         1,
                         0,
@@ -658,7 +685,7 @@ public class NotificationServiceTest {
     private Object[] generateNotificationTypeAndSubscriptionsAppointeeScenarios() {
         return new Object[]{
                 new Object[]{
-                        SYA_APPEAL_CREATED_NOTIFICATION,
+                    SYA_APPEAL_CREATED,
                         1,
                         0,
                         Subscription.builder()
@@ -670,7 +697,7 @@ public class NotificationServiceTest {
                         new SubscriptionType[]{APPOINTEE},
                 },
                 new Object[]{
-                        APPEAL_RECEIVED_NOTIFICATION,
+                    APPEAL_RECEIVED,
                         1,
                         1,
                         Subscription.builder()
@@ -684,7 +711,7 @@ public class NotificationServiceTest {
                         new SubscriptionType[]{APPOINTEE},
                 },
                 new Object[]{
-                        APPEAL_RECEIVED_NOTIFICATION,
+                    APPEAL_RECEIVED,
                         2,
                         1,
                         Subscription.builder()
@@ -702,7 +729,7 @@ public class NotificationServiceTest {
                         new SubscriptionType[]{APPOINTEE, REPRESENTATIVE},
                 },
                 new Object[]{
-                        APPEAL_RECEIVED_NOTIFICATION,
+                    APPEAL_RECEIVED,
                         2,
                         2,
                         Subscription.builder()
@@ -722,7 +749,7 @@ public class NotificationServiceTest {
                         new SubscriptionType[]{APPOINTEE, REPRESENTATIVE},
                 },
                 new Object[]{
-                        SYA_APPEAL_CREATED_NOTIFICATION,
+                    SYA_APPEAL_CREATED,
                         1,
                         0,
                         Subscription.builder()
@@ -734,7 +761,7 @@ public class NotificationServiceTest {
                         new SubscriptionType[]{APPOINTEE},
                 },
                 new Object[]{
-                        SYA_APPEAL_CREATED_NOTIFICATION,
+                    SYA_APPEAL_CREATED,
                         1,
                         1,
                         Subscription.builder()
@@ -748,7 +775,7 @@ public class NotificationServiceTest {
                         new SubscriptionType[]{APPOINTEE},
                 },
                 new Object[]{
-                        HEARING_REMINDER_NOTIFICATION,
+                    HEARING_REMINDER,
                         1,
                         1,
                         Subscription.builder()
@@ -762,7 +789,7 @@ public class NotificationServiceTest {
                         new SubscriptionType[]{APPOINTEE},
                 },
                 new Object[]{
-                        HEARING_REMINDER_NOTIFICATION,
+                    HEARING_REMINDER,
                         1,
                         0,
                         Subscription.builder()
@@ -774,7 +801,7 @@ public class NotificationServiceTest {
                         new SubscriptionType[]{APPOINTEE},
                 },
                 new Object[]{
-                        HEARING_REMINDER_NOTIFICATION,
+                    HEARING_REMINDER,
                         0,
                         1,
                         Subscription.builder()
@@ -1060,7 +1087,7 @@ public class NotificationServiceTest {
                 .mobile(MOBILE_NUMBER_1).subscribeEmail("No").subscribeSms("No").build();
 
         sscsCaseData = SscsCaseData.builder().appeal(appeal).subscriptions(Subscriptions.builder().appellantSubscription(appellantSubscription).build()).caseReference(CASE_REFERENCE).build();
-        SscsCaseDataWrapper wrapper = SscsCaseDataWrapper.builder().newSscsCaseData(sscsCaseData).oldSscsCaseData(sscsCaseData).notificationEventType(APPEAL_WITHDRAWN_NOTIFICATION).build();
+        SscsCaseDataWrapper wrapper = SscsCaseDataWrapper.builder().newSscsCaseData(sscsCaseData).oldSscsCaseData(sscsCaseData).notificationEventType(APPEAL_WITHDRAWN).build();
         ccdNotificationWrapper = new CcdNotificationWrapper(wrapper);
 
         Notification notification = new Notification(Template.builder().emailTemplateId(null).smsTemplateId(Arrays.asList("123")).build(), Destination.builder().email(null).sms("07823456746").build(), null, new Reference(), null);
@@ -1118,7 +1145,7 @@ public class NotificationServiceTest {
 
     @Test
     public void doNotSendNotificationsOutOfHours() {
-        SscsCaseDataWrapper wrapper = SscsCaseDataWrapper.builder().newSscsCaseData(sscsCaseData).oldSscsCaseData(sscsCaseData).notificationEventType(HEARING_REMINDER_NOTIFICATION).build();
+        SscsCaseDataWrapper wrapper = SscsCaseDataWrapper.builder().newSscsCaseData(sscsCaseData).oldSscsCaseData(sscsCaseData).notificationEventType(HEARING_REMINDER).build();
         ccdNotificationWrapper = new CcdNotificationWrapper(wrapper);
         when(notificationValidService.isNotificationStillValidToSend(any(), any())).thenReturn(true);
         when(notificationValidService.isHearingTypeValidToSendNotification(any(), any())).thenReturn(true);
@@ -1136,8 +1163,8 @@ public class NotificationServiceTest {
     }
 
     @Test
-    @Parameters({"VALID_APPEAL_CREATED", "DRAFT_TO_VALID_APPEAL_CREATED", "APPEAL_RECEIVED_NOTIFICATION",
-        "DWP_UPLOAD_RESPONSE_NOTIFICATION"})
+    @Parameters({"VALID_APPEAL_CREATED", "DRAFT_TO_VALID_APPEAL_CREATED", "APPEAL_RECEIVED",
+        "DWP_UPLOAD_RESPONSE"})
     public void delayScheduleOfEvents(NotificationEventType eventType) {
         sscsCaseData.setCaseCreated(LocalDate.now().toString());
         SscsCaseDataWrapper wrapper = SscsCaseDataWrapper.builder()
@@ -1180,7 +1207,7 @@ public class NotificationServiceTest {
                 .subscriptions(Subscriptions.builder().appellantSubscription(appellantOldSubscription).build())
                 .caseReference(CASE_REFERENCE).build();
 
-        SscsCaseDataWrapper wrapper = SscsCaseDataWrapper.builder().newSscsCaseData(newSscsCaseData).oldSscsCaseData(oldSscsCaseData).notificationEventType(SUBSCRIPTION_UPDATED_NOTIFICATION).build();
+        SscsCaseDataWrapper wrapper = SscsCaseDataWrapper.builder().newSscsCaseData(newSscsCaseData).oldSscsCaseData(oldSscsCaseData).notificationEventType(SUBSCRIPTION_UPDATED).build();
         ccdNotificationWrapper = new CcdNotificationWrapper(wrapper);
 
         Notification notification = new Notification(
@@ -1221,7 +1248,7 @@ public class NotificationServiceTest {
                 .caseReference(CASE_REFERENCE).build();
 
         SscsCaseDataWrapper wrapper = SscsCaseDataWrapper.builder().newSscsCaseData(newSscsCaseData)
-                .oldSscsCaseData(oldSscsCaseData).notificationEventType(SUBSCRIPTION_UPDATED_NOTIFICATION).build();
+                .oldSscsCaseData(oldSscsCaseData).notificationEventType(SUBSCRIPTION_UPDATED).build();
         ccdNotificationWrapper = new CcdNotificationWrapper(wrapper);
 
         Notification notification = new Notification(
@@ -1283,7 +1310,7 @@ public class NotificationServiceTest {
         SscsCaseDataWrapper wrapper = SscsCaseDataWrapper.builder()
                 .newSscsCaseData(newSscsCaseData)
                 .oldSscsCaseData(oldSscsCaseData)
-                .notificationEventType(SUBSCRIPTION_UPDATED_NOTIFICATION)
+                .notificationEventType(SUBSCRIPTION_UPDATED)
                 .build();
         ccdNotificationWrapper = new CcdNotificationWrapper(wrapper);
 
@@ -1318,7 +1345,7 @@ public class NotificationServiceTest {
     public void sendAppellantLetterOnAppealReceived() throws IOException {
         String fileUrl = "http://dm-store:4506/documents/1e1eb3d2-5b6c-430d-8dad-ebcea1ad7ecf";
         String docmosisId = "docmosis-id.doc";
-        CcdNotificationWrapper ccdNotificationWrapper = buildWrapperWithDocuments(APPEAL_RECEIVED_NOTIFICATION, fileUrl, APPELLANT_WITH_ADDRESS, null, "");
+        CcdNotificationWrapper ccdNotificationWrapper = buildWrapperWithDocuments(APPEAL_RECEIVED, fileUrl, APPELLANT_WITH_ADDRESS, null, "");
         Notification notification = new Notification(Template.builder().docmosisTemplateId(docmosisId).build(), Destination.builder().build(), new HashMap<>(), new Reference(), null);
 
         byte[] sampleDirectionCoversheet = IOUtils.toByteArray(getClass().getClassLoader().getResourceAsStream("pdfs/direction-notice-coversheet-sample.pdf"));
@@ -1417,7 +1444,7 @@ public class NotificationServiceTest {
     public void shouldLogErrorWhenNotValidationNotification() {
         CcdNotificationWrapper wrapper = buildBaseWrapperWithCaseData(
                 getSscsCaseDataBuilderSettingInformationFromAppellant(APPELLANT_WITH_ADDRESS, null, null, "yes").build(),
-                ADJOURNED_NOTIFICATION
+            ADJOURNED
         );
 
         given(factory.create(any(NotificationWrapper.class), any(SubscriptionWithType.class)))
@@ -1441,14 +1468,14 @@ public class NotificationServiceTest {
 
     @Test
     public void willNotSendDwpUpload_whenCreatedInGapsFromIsValidAppeal() {
-        CcdNotificationWrapper ccdNotificationWrapper = buildBaseWrapper(DWP_UPLOAD_RESPONSE_NOTIFICATION, APPELLANT_WITH_ADDRESS, null, null);
+        CcdNotificationWrapper ccdNotificationWrapper = buildBaseWrapper(DWP_UPLOAD_RESPONSE, APPELLANT_WITH_ADDRESS, null, null);
         ccdNotificationWrapper.getNewSscsCaseData().setCreatedInGapsFrom(State.VALID_APPEAL.getId());
 
         Notification notification = new Notification(Template.builder().emailTemplateId(EMAIL_TEMPLATE_ID).smsTemplateId(null).build(), Destination.builder().email("test@testing.com").sms("07823456746").build(), null, new Reference(), null);
         given(factory.create(ccdNotificationWrapper, getSubscriptionWithType(ccdNotificationWrapper))).willReturn(notification);
         given(notificationValidService.isHearingTypeValidToSendNotification(
-                any(SscsCaseData.class), eq(DWP_UPLOAD_RESPONSE_NOTIFICATION))).willReturn(true);
-        given(notificationValidService.isNotificationStillValidToSend(anyList(), eq(DWP_UPLOAD_RESPONSE_NOTIFICATION)))
+                any(SscsCaseData.class), eq(DWP_UPLOAD_RESPONSE))).willReturn(true);
+        given(notificationValidService.isNotificationStillValidToSend(anyList(), eq(DWP_UPLOAD_RESPONSE)))
                 .willReturn(true);
 
         getNotificationService().manageNotificationAndSubscription(ccdNotificationWrapper, false);
@@ -1457,7 +1484,7 @@ public class NotificationServiceTest {
     }
 
     @Test
-    @Parameters({"HEARING_BOOKED_NOTIFICATION", "HEARING_REMINDER_NOTIFICATION"})
+    @Parameters({"HEARING_BOOKED", "HEARING_REMINDER"})
     public void willNotSendHearingNotifications_whenCovid19FeatureTrue(NotificationEventType notificationEventType) {
         CcdNotificationWrapper ccdNotificationWrapper = buildBaseWrapper(notificationEventType, APPELLANT_WITH_ADDRESS, null, null);
         ccdNotificationWrapper.getNewSscsCaseData().setCreatedInGapsFrom(State.VALID_APPEAL.getId());
@@ -1577,7 +1604,7 @@ public class NotificationServiceTest {
     }
 
     @Test
-    @Parameters({"DRAFT_TO_NON_COMPLIANT_NOTIFICATION, NON_COMPLIANT_NOTIFICATION"})
+    @Parameters({"DRAFT_TO_NON_COMPLIANT, NON_COMPLIANT"})
     public void givenNotificationTypeToBeOverriden_thenOverrideNotificationTypeAndSend(NotificationEventType receivedNotificationType, NotificationEventType sentNotificationType) throws IOException {
         CcdNotificationWrapper ccdNotificationWrapper = buildBaseWrapper(receivedNotificationType, APPELLANT_WITH_ADDRESS, null, SscsDocument.builder().value(SscsDocumentDetails.builder().build()).build());
         ccdNotificationWrapper.getNewSscsCaseData().setSubscriptions(null);
@@ -1775,7 +1802,7 @@ public class NotificationServiceTest {
 
     @Test
     public void givenDigitalCaseAndResponseReceived_willNotSendNotifications() {
-        CcdNotificationWrapper ccdNotificationWrapper = buildBaseWrapper(DWP_RESPONSE_RECEIVED_NOTIFICATION, APPELLANT_WITH_ADDRESS, Representative.builder().hasRepresentative("no").build(), SscsDocument.builder().value(SscsDocumentDetails.builder().build()).build());
+        CcdNotificationWrapper ccdNotificationWrapper = buildBaseWrapper(DWP_RESPONSE_RECEIVED, APPELLANT_WITH_ADDRESS, Representative.builder().hasRepresentative("no").build(), SscsDocument.builder().value(SscsDocumentDetails.builder().build()).build());
 
         ccdNotificationWrapper.getNewSscsCaseData().setState(State.WITH_DWP);
         ccdNotificationWrapper.getNewSscsCaseData().setCreatedInGapsFrom("readyToList");
@@ -1787,7 +1814,7 @@ public class NotificationServiceTest {
 
     @Test
     public void givenNonDigitalCaseAndResponseReceived_willSendNotifications() {
-        CcdNotificationWrapper ccdNotificationWrapper = buildBaseWrapper(DWP_RESPONSE_RECEIVED_NOTIFICATION, APPELLANT_WITH_ADDRESS, Representative.builder().hasRepresentative("no").build(), SscsDocument.builder().value(SscsDocumentDetails.builder().build()).build());
+        CcdNotificationWrapper ccdNotificationWrapper = buildBaseWrapper(DWP_RESPONSE_RECEIVED, APPELLANT_WITH_ADDRESS, Representative.builder().hasRepresentative("no").build(), SscsDocument.builder().value(SscsDocumentDetails.builder().build()).build());
         Notification notification = new Notification(Template.builder().emailTemplateId("emailTemplateId").smsTemplateId(null).build(), Destination.builder().email("test@testing.com").sms(null).build(), null, new Reference(), null);
 
         ccdNotificationWrapper.getNewSscsCaseData().setState(State.WITH_DWP);
@@ -1831,7 +1858,7 @@ public class NotificationServiceTest {
     @Test
     public void givenDwpUploadResponseReceivedAndNewOtherPartyHasBeenAdded_thenOverrideNotificationTypeAndSendToLetterToOtherParty() throws IOException {
 
-        CcdNotificationWrapper ccdNotificationWrapper = buildBaseWrapperOtherParty(DWP_UPLOAD_RESPONSE_NOTIFICATION, APPELLANT_WITH_ADDRESS, SscsDocument.builder().value(SscsDocumentDetails.builder().build()).build());
+        CcdNotificationWrapper ccdNotificationWrapper = buildBaseWrapperOtherParty(DWP_UPLOAD_RESPONSE, APPELLANT_WITH_ADDRESS, SscsDocument.builder().value(SscsDocumentDetails.builder().build()).build());
 
         ccdNotificationWrapper.getSscsCaseDataWrapper().getNewSscsCaseData().setCreatedInGapsFrom(READY_TO_LIST.getId());
         Notification notification = new Notification(Template.builder().docmosisTemplateId(LETTER_TEMPLATE_ID).emailTemplateId(null).smsTemplateId(null).build(), Destination.builder().email("test@testing.com").sms("07823456746").build(), null, new Reference(), null);
@@ -1858,7 +1885,7 @@ public class NotificationServiceTest {
     private Object[] allEventTypesExceptRequestInfoIncompleteAndProcessingHearingRequest() {
         return Arrays.stream(NotificationEventType.values()).filter(eventType ->
                 (!eventType.equals(REQUEST_INFO_INCOMPLETE) && !eventType.equals(ACTION_HEARING_RECORDING_REQUEST))
-                        && !BUNDLED_LETTER_EVENT_TYPES.contains(eventType)
+                        && !EVENT_TYPES_FOR_BUNDLED_LETTER.contains(eventType)
         ).toArray();
     }
 
@@ -2036,7 +2063,7 @@ public class NotificationServiceTest {
         SscsCaseDataWrapper caseDataWrapper = SscsCaseDataWrapper.builder()
                 .newSscsCaseData(caseData)
                 .oldSscsCaseData(caseData)
-                .notificationEventType(APPEAL_RECEIVED_NOTIFICATION)
+                .notificationEventType(APPEAL_RECEIVED)
                 .build();
         return new CcdNotificationWrapper(caseDataWrapper);
     }

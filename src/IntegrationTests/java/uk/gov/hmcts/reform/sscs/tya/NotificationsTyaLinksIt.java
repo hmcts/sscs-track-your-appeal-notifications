@@ -1,7 +1,6 @@
 package uk.gov.hmcts.reform.sscs.tya;
 
-import static org.hamcrest.Matchers.equalTo;
-import static org.junit.Assert.assertThat;
+import static org.assertj.core.api.Assertions.assertThat;
 
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -14,7 +13,6 @@ import org.springframework.test.context.junit4.SpringRunner;
 @SpringBootTest
 @ActiveProfiles("integration")
 public class NotificationsTyaLinksIt {
-
     @Value("${manage.emails.link}")
     private String manageEmailsLink;
     @Value("${track.appeal.link}")
@@ -28,10 +26,10 @@ public class NotificationsTyaLinksIt {
 
     @Test
     public void shouldVerifyTyaLinksAreInValidFormat() {
-        assertThat(manageEmailsLink.endsWith("/manage-email-notifications/mac"), equalTo(true));
-        assertThat(trackAppealLink.endsWith("/trackyourappeal/appeal_id"), equalTo(true));
-        assertThat(evidenceSubmissionInfoLink.endsWith("/evidence/appeal_id"), equalTo(true));
-        assertThat(claimingExpensesLink.endsWith("/expenses/appeal_id"), equalTo(true));
-        assertThat(hearingInfoLink.endsWith("/abouthearing/appeal_id"), equalTo(true));
+        assertThat(manageEmailsLink).endsWith("/manage-email-notifications/mac");
+        assertThat(trackAppealLink).endsWith("/trackyourappeal/appeal_id");
+        assertThat(evidenceSubmissionInfoLink).endsWith("/evidence/appeal_id");
+        assertThat(claimingExpensesLink).endsWith("/expenses/appeal_id");
+        assertThat(hearingInfoLink).endsWith("/abouthearing/appeal_id");
     }
 }

@@ -46,7 +46,7 @@ public class NotificationsDelayedNotificationsIt extends NotificationsItBase {
         jsonAppointee = updateEmbeddedJson(jsonAppointee, appointeeSmsSubs, "case_details", "case_data", "subscriptions",
                 "appointeeSubscription", "subscribeSms");
 
-        if (notificationEventType.equals(HEARING_BOOKED_NOTIFICATION)) {
+        if (notificationEventType.equals(HEARING_BOOKED)) {
             jsonAppointee = jsonAppointee.replace("appealReceived", "hearingBooked");
             jsonAppointee = jsonAppointee.replace("2018-01-12", LocalDate.now().plusDays(2).toString());
         }
@@ -102,7 +102,7 @@ public class NotificationsDelayedNotificationsIt extends NotificationsItBase {
     private Object[] generateAppointeeNotificationScenariosForDelayedNotifications() {
         return new Object[]{
             new Object[]{
-                APPEAL_RECEIVED_NOTIFICATION,
+                APPEAL_RECEIVED,
                 "paper",
                 Collections.singletonList("78cf9c9c-e2b8-44d7-bcf1-220311f114cb"),
                 Collections.singletonList("ede384aa-0b6e-4311-9f01-ee547573a07b"),
@@ -115,7 +115,7 @@ public class NotificationsDelayedNotificationsIt extends NotificationsItBase {
                 "Appointee Appointee"
             },
             new Object[]{
-                APPEAL_RECEIVED_NOTIFICATION,
+                APPEAL_RECEIVED,
                 "oral",
                 Collections.singletonList("78cf9c9c-e2b8-44d7-bcf1-220311f114cb"),
                 Collections.singletonList("ede384aa-0b6e-4311-9f01-ee547573a07b"),
@@ -128,7 +128,7 @@ public class NotificationsDelayedNotificationsIt extends NotificationsItBase {
                 "Appointee Appointee"
             },
             new Object[]{
-                APPEAL_RECEIVED_NOTIFICATION,
+                APPEAL_RECEIVED,
                 "paper",
                 Collections.emptyList(),
                 Collections.emptyList(),
@@ -224,7 +224,7 @@ public class NotificationsDelayedNotificationsIt extends NotificationsItBase {
     private Object[] generateRepsNotificationScenariosForDelayedNotifications() {
         return new Object[]{
             new Object[]{
-                APPEAL_RECEIVED_NOTIFICATION,
+                APPEAL_RECEIVED,
                 "oral",
                 Arrays.asList("d5fd9f65-1283-4533-a1be-10043dae7af6", "3d05393a-e593-400a-963f-a26893a0b672"),
                 Arrays.asList("ede384aa-0b6e-4311-9f01-ee547573a07b", "99bd4a56-256c-4de8-b187-d43a8dde466f"),
@@ -238,7 +238,7 @@ public class NotificationsDelayedNotificationsIt extends NotificationsItBase {
                 "0"
             },
             new Object[]{
-                APPEAL_RECEIVED_NOTIFICATION,
+                APPEAL_RECEIVED,
                 "paper",
                 Collections.singletonList("3d05393a-e593-400a-963f-a26893a0b672"),
                 Arrays.asList("ede384aa-0b6e-4311-9f01-ee547573a07b", "99bd4a56-256c-4de8-b187-d43a8dde466f"),
@@ -252,7 +252,7 @@ public class NotificationsDelayedNotificationsIt extends NotificationsItBase {
                 "0"
             },
             new Object[]{
-                APPEAL_RECEIVED_NOTIFICATION,
+                APPEAL_RECEIVED,
                 "paper",
                 Collections.emptyList(),
                 Collections.emptyList(),

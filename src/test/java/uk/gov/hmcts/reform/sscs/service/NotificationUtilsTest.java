@@ -45,7 +45,7 @@ public class NotificationUtilsTest {
     @Test
     public void trueWhenHasPopulatedAppointee() {
         NotificationWrapper wrapper = NotificationServiceTest.buildBaseWrapper(
-            SYA_APPEAL_CREATED_NOTIFICATION,
+            SYA_APPEAL_CREATED,
             APPELLANT_WITH_ADDRESS_AND_APPOINTEE,
             null,
             null
@@ -63,7 +63,7 @@ public class NotificationUtilsTest {
             .build();
 
         NotificationWrapper wrapper = NotificationServiceTest.buildBaseWrapper(
-            SYA_APPEAL_CREATED_NOTIFICATION,
+            SYA_APPEAL_CREATED,
             appellant,
             null,
             null
@@ -75,7 +75,7 @@ public class NotificationUtilsTest {
     @Test
     public void falseWhenHasNullAppointee() {
         NotificationWrapper wrapper = NotificationServiceTest.buildBaseWrapper(
-            SYA_APPEAL_CREATED_NOTIFICATION,
+            SYA_APPEAL_CREATED,
             APPELLANT_WITH_ADDRESS,
             null,
             null
@@ -119,7 +119,7 @@ public class NotificationUtilsTest {
             .build();
 
         NotificationWrapper wrapper = NotificationServiceTest.buildBaseWrapper(
-            SYA_APPEAL_CREATED_NOTIFICATION,
+            SYA_APPEAL_CREATED,
             APPELLANT_WITH_ADDRESS,
             rep,
             null
@@ -137,7 +137,7 @@ public class NotificationUtilsTest {
             .build();
 
         NotificationWrapper wrapper = NotificationServiceTest.buildBaseWrapper(
-            SYA_APPEAL_CREATED_NOTIFICATION,
+            SYA_APPEAL_CREATED,
             APPELLANT_WITH_ADDRESS,
             rep,
             null
@@ -154,7 +154,7 @@ public class NotificationUtilsTest {
             .build();
 
         NotificationWrapper wrapper = NotificationServiceTest.buildBaseWrapper(
-            SYA_APPEAL_CREATED_NOTIFICATION,
+            SYA_APPEAL_CREATED,
             APPELLANT_WITH_ADDRESS,
             rep,
             null
@@ -166,7 +166,7 @@ public class NotificationUtilsTest {
     @Test
     public void falseWhenHasNullPopulatedRep() {
         NotificationWrapper wrapper = NotificationServiceTest.buildBaseWrapper(
-            SYA_APPEAL_CREATED_NOTIFICATION,
+            SYA_APPEAL_CREATED,
             APPELLANT_WITH_ADDRESS,
             Representative.builder().build(),
             null
@@ -178,7 +178,7 @@ public class NotificationUtilsTest {
     @Test
     public void falseWhenHasNullRep() {
         NotificationWrapper wrapper = NotificationServiceTest.buildBaseWrapper(
-            SYA_APPEAL_CREATED_NOTIFICATION,
+            SYA_APPEAL_CREATED,
             APPELLANT_WITH_ADDRESS,
             null,
             null
@@ -213,7 +213,7 @@ public class NotificationUtilsTest {
 
     @Test
     public void shouldBeOkToSendNotificationForValidFutureNotification() {
-        NotificationEventType eventType = HEARING_BOOKED_NOTIFICATION;
+        NotificationEventType eventType = HEARING_BOOKED;
         NotificationWrapper wrapper = buildNotificationWrapper(eventType);
 
         Subscription subscription = Subscription.builder().subscribeSms("Yes").subscribeEmail("Yes").build();
@@ -226,7 +226,7 @@ public class NotificationUtilsTest {
 
     @Test
     public void shouldNotBeOkToSendNotificationValidPastNotification() {
-        NotificationEventType eventType = HEARING_BOOKED_NOTIFICATION;
+        NotificationEventType eventType = HEARING_BOOKED;
         NotificationWrapper wrapper = buildNotificationWrapper(eventType);
 
         Subscription subscription = Subscription.builder().subscribeSms("Yes").subscribeEmail("Yes").build();
@@ -239,7 +239,7 @@ public class NotificationUtilsTest {
 
     @Test
     public void shouldNotBeOkToSendNotificationInvalidNotification() {
-        NotificationEventType eventType = HEARING_BOOKED_NOTIFICATION;
+        NotificationEventType eventType = HEARING_BOOKED;
         NotificationWrapper wrapper = buildNotificationWrapper(eventType);
 
         Subscription subscription = Subscription.builder().subscribeSms("Yes").subscribeEmail("Yes").build();
@@ -270,7 +270,7 @@ public class NotificationUtilsTest {
     @Test
     public void itIsOkToSendNotification() {
         NotificationWrapper wrapper = NotificationServiceTest.buildBaseWrapper(
-            SYA_APPEAL_CREATED_NOTIFICATION,
+            SYA_APPEAL_CREATED,
             APPELLANT_WITH_ADDRESS,
             null,
             null
@@ -281,14 +281,14 @@ public class NotificationUtilsTest {
         when(notificationValidService.isNotificationStillValidToSend(any(), any())).thenReturn(true);
         when(notificationValidService.isHearingTypeValidToSendNotification(any(), any())).thenReturn(true);
 
-        assertTrue(NotificationUtils.isOkToSendNotification(wrapper, HEARING_BOOKED_NOTIFICATION, subscription, notificationValidService));
+        assertTrue(NotificationUtils.isOkToSendNotification(wrapper, HEARING_BOOKED, subscription, notificationValidService));
     }
 
     @Test
     @Parameters(method = "isNotOkToSendNotificationResponses")
     public void isNotOkToSendNotification(boolean isNotificationStillValidToSendResponse, boolean isHearingTypeValidToSendNotificationResponse) {
         NotificationWrapper wrapper = NotificationServiceTest.buildBaseWrapper(
-            SYA_APPEAL_CREATED_NOTIFICATION,
+            SYA_APPEAL_CREATED,
             APPELLANT_WITH_ADDRESS,
             null,
             null
@@ -299,7 +299,7 @@ public class NotificationUtilsTest {
         when(notificationValidService.isNotificationStillValidToSend(any(), any())).thenReturn(isNotificationStillValidToSendResponse);
         when(notificationValidService.isHearingTypeValidToSendNotification(any(), any())).thenReturn(isHearingTypeValidToSendNotificationResponse);
 
-        assertFalse(NotificationUtils.isOkToSendNotification(wrapper, HEARING_BOOKED_NOTIFICATION, subscription, notificationValidService));
+        assertFalse(NotificationUtils.isOkToSendNotification(wrapper, HEARING_BOOKED, subscription, notificationValidService));
     }
 
     @Test
@@ -431,25 +431,25 @@ public class NotificationUtilsTest {
     private Object[] mandatoryNotificationTypes() {
         return new Object[]{
             STRUCK_OUT,
-            HEARING_BOOKED_NOTIFICATION,
-            DWP_UPLOAD_RESPONSE_NOTIFICATION
+            HEARING_BOOKED,
+            DWP_UPLOAD_RESPONSE
         };
     }
 
     private Object[] nonMandatoryNotificationTypes() {
         return new Object[]{
-            ADJOURNED_NOTIFICATION,
-            SYA_APPEAL_CREATED_NOTIFICATION,
-            RESEND_APPEAL_CREATED_NOTIFICATION,
-            APPEAL_DORMANT_NOTIFICATION,
-            EVIDENCE_RECEIVED_NOTIFICATION,
-            DWP_RESPONSE_RECEIVED_NOTIFICATION,
-            POSTPONEMENT_NOTIFICATION,
-            SUBSCRIPTION_CREATED_NOTIFICATION,
-            SUBSCRIPTION_UPDATED_NOTIFICATION,
-            SUBSCRIPTION_OLD_NOTIFICATION,
-            EVIDENCE_REMINDER_NOTIFICATION,
-            HEARING_REMINDER_NOTIFICATION,
+            ADJOURNED,
+            SYA_APPEAL_CREATED,
+            RESEND_APPEAL_CREATED,
+            APPEAL_DORMANT,
+            EVIDENCE_RECEIVED,
+            DWP_RESPONSE_RECEIVED,
+            POSTPONEMENT,
+            SUBSCRIPTION_CREATED,
+            SUBSCRIPTION_UPDATED,
+            SUBSCRIPTION_OLD,
+            EVIDENCE_REMINDER,
+            HEARING_REMINDER,
             CASE_UPDATED,
             DO_NOT_SEND
         };

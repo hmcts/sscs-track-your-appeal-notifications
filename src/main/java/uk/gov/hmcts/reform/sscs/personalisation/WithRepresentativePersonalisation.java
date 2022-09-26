@@ -1,6 +1,8 @@
 package uk.gov.hmcts.reform.sscs.personalisation;
 
-import static uk.gov.hmcts.reform.sscs.config.AppConstants.*;
+import static uk.gov.hmcts.reform.sscs.config.PersonalisationMappingConstants.IS_OTHER_PARTY;
+import static uk.gov.hmcts.reform.sscs.config.PersonalisationMappingConstants.OTHER_PARTY;
+import static uk.gov.hmcts.reform.sscs.config.PersonalisationMappingConstants.REPRESENTATIVE_NAME;
 
 import java.util.Map;
 import org.springframework.stereotype.Component;

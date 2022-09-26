@@ -1,6 +1,9 @@
 package uk.gov.hmcts.reform.sscs.factory;
 
-import static uk.gov.hmcts.reform.sscs.domain.notify.NotificationEventType.*;
+import static java.util.Objects.isNull;
+import static uk.gov.hmcts.reform.sscs.config.NotificationEventTypeLists.EVENTS_FOR_REPRESENTATIVE_PERSONALISATION;
+import static uk.gov.hmcts.reform.sscs.config.NotificationEventTypeLists.EVENTS_FOR_SYA_PERSONALISATION;
+import static uk.gov.hmcts.reform.sscs.domain.notify.NotificationEventType.SUBSCRIPTION_UPDATED;
 
 import java.util.function.Function;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -28,54 +31,18 @@ public class PersonalisationFactory implements Function<NotificationEventType, P
 
     @Override
     public Personalisation apply(NotificationEventType notificationType) {
-        Personalisation selectedPersonalisation = null;
-        if (notificationType != null) {
-            if (SYA_APPEAL_CREATED_NOTIFICATION.equals(notificationType)
-                    || RESEND_APPEAL_CREATED_NOTIFICATION.equals(notificationType)
-                    || APPEAL_RECEIVED_NOTIFICATION.equals(notificationType)
-                    || CASE_UPDATED.equals(notificationType)
-                    || VALID_APPEAL_CREATED.equals(notificationType)) {
-                selectedPersonalisation = syaAppealCreatedAndReceivedPersonalisation;
-            } else if (APPEAL_LAPSED_NOTIFICATION.equals(notificationType)
-                    || HMCTS_APPEAL_LAPSED_NOTIFICATION.equals(notificationType)
-                    || DWP_APPEAL_LAPSED_NOTIFICATION.equals(notificationType)
-                    || APPEAL_WITHDRAWN_NOTIFICATION.equals(notificationType)
-                    || ADMIN_APPEAL_WITHDRAWN.equals(notificationType)
-                    || EVIDENCE_RECEIVED_NOTIFICATION.equals(notificationType)
-                    || EVIDENCE_REMINDER_NOTIFICATION.equals(notificationType)
-                    || HEARING_REMINDER_NOTIFICATION.equals(notificationType)
-                    || APPEAL_DORMANT_NOTIFICATION.equals(notificationType)
-                    || ADJOURNED_NOTIFICATION.equals(notificationType)
-                    || POSTPONEMENT_NOTIFICATION.equals(notificationType)
-                    || DWP_RESPONSE_RECEIVED_NOTIFICATION.equals(notificationType)
-                    || DWP_UPLOAD_RESPONSE_NOTIFICATION.equals(notificationType)
-                    || PROCESS_AUDIO_VIDEO.equals(notificationType)
-                    || PROCESS_AUDIO_VIDEO_WELSH.equals(notificationType)
-                    || DIRECTION_ISSUED.equals(notificationType)
-                    || DECISION_ISSUED.equals(notificationType)
-                    || DIRECTION_ISSUED_WELSH.equals(notificationType)
-                    || DECISION_ISSUED_WELSH.equals(notificationType)
-                    || REQUEST_INFO_INCOMPLETE.equals(notificationType)
-                    || ISSUE_FINAL_DECISION.equals(notificationType)
-                    || ISSUE_FINAL_DECISION_WELSH.equals(notificationType)
-                    || NON_COMPLIANT_NOTIFICATION.equals(notificationType)
-                    || ISSUE_ADJOURNMENT_NOTICE.equals(notificationType)
-                    || ISSUE_ADJOURNMENT_NOTICE_WELSH.equals(notificationType)
-                    || STRUCK_OUT.equals(notificationType)
-                    || ACTION_HEARING_RECORDING_REQUEST.equals(notificationType)
-                    || HEARING_BOOKED_NOTIFICATION.equals(notificationType)
-                    || ACTION_POSTPONEMENT_REQUEST.equals(notificationType)
-                    || ACTION_POSTPONEMENT_REQUEST_WELSH.equals(notificationType)
-                    || DEATH_OF_APPELLANT.equals(notificationType)
-                    || PROVIDE_APPOINTEE_DETAILS.equals(notificationType)
-            ) {
-                selectedPersonalisation = withRepresentativePersonalisation;
-            } else if (SUBSCRIPTION_UPDATED_NOTIFICATION.equals(notificationType)) {
-                selectedPersonalisation = subscriptionPersonalisation;
-            } else {
-                selectedPersonalisation = this.personalisation;
-            }
+        if (isNull(notificationType)) {
+            return null;
         }
-        return selectedPersonalisation;
+
+        if (EVENTS_FOR_SYA_PERSONALISATION.contains(notificationType)) {
+            return syaAppealCreatedAndReceivedPersonalisation;
+        } else if (EVENTS_FOR_REPRESENTATIVE_PERSONALISATION.contains(notificationType)) {
+            return withRepresentativePersonalisation;
+        } else if (SUBSCRIPTION_UPDATED.equals(notificationType)) {
+            return subscriptionPersonalisation;
+        } else {
+            return this.personalisation;
+        }
     }
 }

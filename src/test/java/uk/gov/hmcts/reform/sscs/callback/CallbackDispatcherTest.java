@@ -57,7 +57,7 @@ public class CallbackDispatcherTest {
         List<CallbackHandler> handlers = Arrays.asList(
                 roboticsHandler, sendToBulkPrintHandler, issueAppellantAppointeeFurtherEvidenceHandler);
         CallbackDispatcher callbackDispatcher = new CallbackDispatcher(handlers);
-        callbackDispatcher.handle(buildTestCallbackForGivenData(SscsCaseData.builder().build(), INTERLOCUTORY_REVIEW_STATE, NotificationEventType.APPEAL_LAPSED_NOTIFICATION));
+        callbackDispatcher.handle(buildTestCallbackForGivenData(SscsCaseData.builder().build(), INTERLOCUTORY_REVIEW_STATE, NotificationEventType.APPEAL_LAPSED));
         verifyMethodsAreCalledCorrectNumberOfTimes();
         verifyHandlersAreExecutedInPriorityOrder(handlers);
     }

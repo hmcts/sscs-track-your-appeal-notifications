@@ -343,7 +343,7 @@ public final class SscsCaseDataUtils {
                                 .line2("Village")
                                 .town("Aberdeen")
                                 .county("Aberdeenshire")
-                                .postcode("AB12 0HN").build())
+                                .postcode("TS3 3ST").build())
                         .googleMapLink("http://www.googlemaps.com/aberdeenvenue")
                         .build()).build()).build();
 

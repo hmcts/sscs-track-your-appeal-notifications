@@ -4,8 +4,8 @@ import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
 import static org.mockito.Mockito.*;
-import static uk.gov.hmcts.reform.sscs.domain.notify.NotificationEventType.HEARING_REMINDER_NOTIFICATION;
-import static uk.gov.hmcts.reform.sscs.domain.notify.NotificationEventType.POSTPONEMENT_NOTIFICATION;
+import static uk.gov.hmcts.reform.sscs.domain.notify.NotificationEventType.HEARING_REMINDER;
+import static uk.gov.hmcts.reform.sscs.domain.notify.NotificationEventType.POSTPONEMENT;
 
 import org.junit.Before;
 import org.junit.Test;
@@ -43,7 +43,7 @@ public class HearingReminderRemoverTest {
 
             CcdNotificationWrapper wrapper = SscsCaseDataUtils.buildBasicCcdNotificationWrapper(eventType);
 
-            if (eventType == POSTPONEMENT_NOTIFICATION) {
+            if (eventType == POSTPONEMENT) {
                 assertTrue(hearingReminderRemoverTest.canHandle(wrapper));
             } else {
 
@@ -64,12 +64,12 @@ public class HearingReminderRemoverTest {
         String hearingTime = "14:01:18";
 
         CcdNotificationWrapper wrapper = SscsCaseDataUtils.buildBasicCcdNotificationWrapperWithHearing(
-            POSTPONEMENT_NOTIFICATION,
+            POSTPONEMENT,
             hearingDate,
             hearingTime
         );
 
-        when(jobGroupGenerator.generate(wrapper.getCaseId(), HEARING_REMINDER_NOTIFICATION.getId())).thenReturn(expectedJobGroup);
+        when(jobGroupGenerator.generate(wrapper.getCaseId(), HEARING_REMINDER.getId())).thenReturn(expectedJobGroup);
 
         hearingReminderRemoverTest.handle(wrapper);
 
@@ -87,12 +87,12 @@ public class HearingReminderRemoverTest {
         String hearingTime = "14:01:18";
 
         CcdNotificationWrapper wrapper = SscsCaseDataUtils.buildBasicCcdNotificationWrapperWithHearing(
-            POSTPONEMENT_NOTIFICATION,
+            POSTPONEMENT,
             hearingDate,
             hearingTime
         );
 
-        when(jobGroupGenerator.generate(wrapper.getCaseId(), HEARING_REMINDER_NOTIFICATION.getId())).thenReturn(expectedJobGroup);
+        when(jobGroupGenerator.generate(wrapper.getCaseId(), HEARING_REMINDER.getId())).thenReturn(expectedJobGroup);
 
         doThrow(JobNotFoundException.class)
             .when(jobRemover)
@@ -108,7 +108,7 @@ public class HearingReminderRemoverTest {
     @Test
     public void canScheduleReturnAlwaysTrue() {
 
-        CcdNotificationWrapper wrapper = SscsCaseDataUtils.buildBasicCcdNotificationWrapper(HEARING_REMINDER_NOTIFICATION);
+        CcdNotificationWrapper wrapper = SscsCaseDataUtils.buildBasicCcdNotificationWrapper(HEARING_REMINDER);
 
         assertTrue(hearingReminderRemoverTest.canSchedule(wrapper));
     }

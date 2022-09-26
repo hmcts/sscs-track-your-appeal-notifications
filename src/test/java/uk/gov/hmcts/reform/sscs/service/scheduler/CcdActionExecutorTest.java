@@ -6,8 +6,8 @@ import static com.fasterxml.jackson.databind.SerializationFeature.WRITE_ENUMS_US
 import static org.junit.Assert.assertEquals;
 import static org.mockito.Mockito.*;
 import static org.mockito.MockitoAnnotations.openMocks;
-import static uk.gov.hmcts.reform.sscs.domain.notify.NotificationEventType.EVIDENCE_REMINDER_NOTIFICATION;
-import static uk.gov.hmcts.reform.sscs.domain.notify.NotificationEventType.SYA_APPEAL_CREATED_NOTIFICATION;
+import static uk.gov.hmcts.reform.sscs.domain.notify.NotificationEventType.EVIDENCE_REMINDER;
+import static uk.gov.hmcts.reform.sscs.domain.notify.NotificationEventType.SYA_APPEAL_CREATED;
 
 import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -86,7 +86,7 @@ public class CcdActionExecutorTest {
     public void givenAReminderIsTriggered_thenActionExecutorShouldProcessTheJob() {
         when(ccdService.getByCaseId(eq(123456L), eq(idamTokens))).thenReturn(caseDetails);
 
-        ccdActionExecutor.execute(JOB_ID, JOB_GROUP, EVIDENCE_REMINDER_NOTIFICATION.getId(), "123456");
+        ccdActionExecutor.execute(JOB_ID, JOB_GROUP, EVIDENCE_REMINDER.getId(), "123456");
 
         verify(notificationService).manageNotificationAndSubscription(any(), eq(true));
         verify(ccdService).updateCase(any(), any(), any(), any(), any(), any());
@@ -94,10 +94,10 @@ public class CcdActionExecutorTest {
 
     @Test
     public void givenAReminderIsTriggeredAndNotificationIsNotAReminderType_thenActionExecutorShouldProcessTheJobButNotWriteBackToCcd() {
-        wrapper = SscsCaseDataWrapper.builder().state(State.APPEAL_CREATED).newSscsCaseData(newSscsCaseData).notificationEventType(SYA_APPEAL_CREATED_NOTIFICATION).build();
+        wrapper = SscsCaseDataWrapper.builder().state(State.APPEAL_CREATED).newSscsCaseData(newSscsCaseData).notificationEventType(SYA_APPEAL_CREATED).build();
         when(ccdService.getByCaseId(eq(123456L), eq(idamTokens))).thenReturn(caseDetails);
 
-        ccdActionExecutor.execute(JOB_ID, JOB_GROUP, SYA_APPEAL_CREATED_NOTIFICATION.getId(), "123456");
+        ccdActionExecutor.execute(JOB_ID, JOB_GROUP, SYA_APPEAL_CREATED.getId(), "123456");
 
         verify(notificationService, times(1)).manageNotificationAndSubscription(any(), eq(true));
         verify(ccdService, times(0)).updateCase(any(), any(), any(), any(), any(), any());
@@ -116,7 +116,7 @@ public class CcdActionExecutorTest {
     @Test
     public void shouldHandlePayloadWhenAlreadyRetriedOnceToSendNotification() {
         when(ccdService.getByCaseId(eq(123456L), eq(idamTokens))).thenReturn(caseDetails);
-        ccdActionExecutor.execute(JOB_ID, JOB_GROUP, SYA_APPEAL_CREATED_NOTIFICATION.getId(), "123456,1");
+        ccdActionExecutor.execute(JOB_ID, JOB_GROUP, SYA_APPEAL_CREATED.getId(), "123456,1");
 
         verify(notificationService, times(1)).manageNotificationAndSubscription(any(), eq(true));
         verify(ccdService, times(0)).updateCase(any(), eq(123456L), any(), any(), any(), any());
@@ -128,7 +128,7 @@ public class CcdActionExecutorTest {
         when(ccdService.getByCaseId(eq(123456L), eq(idamTokens))).thenReturn(caseDetails);
         doThrow(new NotificationServiceException(caseDetails.getId().toString(), new NotificationClientException(new NullPointerException("error")))).when(notificationService).manageNotificationAndSubscription(any(), eq(true));
         final String payload = (retry == 0) ? "123456" : "123456," + retry;
-        ccdActionExecutor.execute(JOB_ID, JOB_GROUP, SYA_APPEAL_CREATED_NOTIFICATION.getId(), payload);
+        ccdActionExecutor.execute(JOB_ID, JOB_GROUP, SYA_APPEAL_CREATED.getId(), payload);
 
         verify(retryNotificationService).rescheduleIfHandledGovNotifyErrorStatus(eq(retry + 1), any(), any(NotificationServiceException.class));
         verify(ccdService, times(0)).updateCase(any(), any(), any(), any(), any(), any());

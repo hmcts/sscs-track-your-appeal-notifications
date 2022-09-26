@@ -1,14 +1,18 @@
 package uk.gov.hmcts.reform.sscs.service;
 
-import static java.lang.String.format;
 import static java.util.Arrays.asList;
 import static java.util.Optional.ofNullable;
 import static org.apache.commons.collections4.ListUtils.emptyIfNull;
 import static uk.gov.hmcts.reform.sscs.ccd.domain.Benefit.getBenefitByCodeOrThrowException;
 import static uk.gov.hmcts.reform.sscs.ccd.domain.EventType.SUBSCRIPTION_UPDATED;
-import static uk.gov.hmcts.reform.sscs.config.SubscriptionType.*;
+import static uk.gov.hmcts.reform.sscs.ccd.domain.YesNo.isYes;
+import static uk.gov.hmcts.reform.sscs.config.NotificationEventTypeLists.EVENT_TYPES_NOT_FOR_DORMANT_CASES;
+import static uk.gov.hmcts.reform.sscs.config.NotificationEventTypeLists.EVENT_TYPES_NOT_FOR_WELSH_CASES;
+import static uk.gov.hmcts.reform.sscs.config.SubscriptionType.APPELLANT;
+import static uk.gov.hmcts.reform.sscs.config.SubscriptionType.APPOINTEE;
+import static uk.gov.hmcts.reform.sscs.config.SubscriptionType.OTHER_PARTY;
+import static uk.gov.hmcts.reform.sscs.config.SubscriptionType.REPRESENTATIVE;
 import static uk.gov.hmcts.reform.sscs.domain.notify.NotificationEventType.*;
-import static uk.gov.hmcts.reform.sscs.domain.notify.NotificationEventType.getNotificationByCcdEvent;
 import static uk.gov.hmcts.reform.sscs.service.NotificationUtils.getSubscription;
 import static uk.gov.hmcts.reform.sscs.service.NotificationUtils.isOkToSendNotification;
 import static uk.gov.hmcts.reform.sscs.service.NotificationValidService.isMandatoryLetterEventType;
@@ -19,8 +23,13 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
-import org.springframework.util.StringUtils;
-import uk.gov.hmcts.reform.sscs.ccd.domain.*;
+import uk.gov.hmcts.reform.sscs.ccd.domain.Benefit;
+import uk.gov.hmcts.reform.sscs.ccd.domain.EventType;
+import uk.gov.hmcts.reform.sscs.ccd.domain.OtherPartyOption;
+import uk.gov.hmcts.reform.sscs.ccd.domain.SscsCaseData;
+import uk.gov.hmcts.reform.sscs.ccd.domain.State;
+import uk.gov.hmcts.reform.sscs.ccd.domain.Subscription;
+import uk.gov.hmcts.reform.sscs.ccd.domain.YesNo;
 import uk.gov.hmcts.reform.sscs.config.NotificationConfig;
 import uk.gov.hmcts.reform.sscs.domain.SubscriptionWithType;
 import uk.gov.hmcts.reform.sscs.domain.notify.Destination;
@@ -112,7 +121,7 @@ public class NotificationService {
             notificationWrapper.getSscsCaseDataWrapper().setNotificationEventType(ISSUE_FINAL_DECISION);
             notificationWrapper.setSwitchLanguageType(true);
             sendNotificationPerSubscription(notificationWrapper);
-        } else if (notificationWrapper.getNotificationType().equals(DWP_UPLOAD_RESPONSE_NOTIFICATION)) {
+        } else if (notificationWrapper.getNotificationType().equals(DWP_UPLOAD_RESPONSE)) {
             log.info("Trigger second notification event for {}", UPDATE_OTHER_PARTY_DATA.getId());
             notificationWrapper.getSscsCaseDataWrapper().setNotificationEventType(UPDATE_OTHER_PARTY_DATA);
             sendNotificationPerSubscription(notificationWrapper);
@@ -137,13 +146,13 @@ public class NotificationService {
 
     private void resendLastNotification(NotificationWrapper notificationWrapper, SubscriptionWithType subscriptionWithType) {
         if (subscriptionWithType.getSubscription() != null && shouldProcessLastNotification(notificationWrapper, subscriptionWithType)) {
-            NotificationEventType lastEvent = getNotificationByCcdEvent(notificationWrapper.getNewSscsCaseData().getEvents().get(0)
+            NotificationEventType lastEvent = NotificationEventType.getNotificationByCcdEvent(notificationWrapper.getNewSscsCaseData().getEvents().get(0)
                     .getValue().getEventType());
             log.info("Resending the last notification for event {} and case id {}.", lastEvent.getId(), notificationWrapper.getCaseId());
             scrubEmailAndSmsIfSubscribedBefore(notificationWrapper, subscriptionWithType);
             notificationWrapper.getSscsCaseDataWrapper().setNotificationEventType(lastEvent);
             sendNotification(notificationWrapper, subscriptionWithType);
-            notificationWrapper.getSscsCaseDataWrapper().setNotificationEventType(SUBSCRIPTION_UPDATED_NOTIFICATION);
+            notificationWrapper.getSscsCaseDataWrapper().setNotificationEventType(NotificationEventType.SUBSCRIPTION_UPDATED);
         }
     }
 
@@ -178,8 +187,8 @@ public class NotificationService {
             }
         } else if (DRAFT_TO_VALID_APPEAL_CREATED.equals(wrapper.getNotificationType())) {
             wrapper.setNotificationType(VALID_APPEAL_CREATED);
-        } else if (DRAFT_TO_NON_COMPLIANT_NOTIFICATION.equals(wrapper.getNotificationType())) {
-            wrapper.setNotificationType(NON_COMPLIANT_NOTIFICATION);
+        } else if (DRAFT_TO_NON_COMPLIANT.equals(wrapper.getNotificationType())) {
+            wrapper.setNotificationType(NON_COMPLIANT);
         }
     }
 
@@ -217,7 +226,7 @@ public class NotificationService {
     }
 
     private boolean shouldProcessLastNotification(NotificationWrapper notificationWrapper, SubscriptionWithType subscriptionWithType) {
-        return SUBSCRIPTION_UPDATED_NOTIFICATION.equals(notificationWrapper.getSscsCaseDataWrapper().getNotificationEventType())
+        return NotificationEventType.SUBSCRIPTION_UPDATED.equals(notificationWrapper.getSscsCaseDataWrapper().getNotificationEventType())
                 && hasCaseJustSubscribed(subscriptionWithType.getSubscription(), getSubscription(notificationWrapper.getOldSscsCaseData(), subscriptionWithType.getSubscriptionType()))
                 && thereIsALastEventThatIsNotSubscriptionUpdated(notificationWrapper.getNewSscsCaseData());
     }
@@ -252,7 +261,7 @@ public class NotificationService {
     }
 
     private void  processOldSubscriptionNotifications(NotificationWrapper wrapper, Notification notification, SubscriptionWithType subscriptionWithType, NotificationEventType eventType) {
-        if (wrapper.getNotificationType() == SUBSCRIPTION_UPDATED_NOTIFICATION) {
+        if (wrapper.getNotificationType() == NotificationEventType.SUBSCRIPTION_UPDATED) {
             Subscription newSubscription;
             Subscription oldSubscription;
             if (REPRESENTATIVE.equals(subscriptionWithType.getSubscriptionType())) {
@@ -276,14 +285,8 @@ public class NotificationService {
                     .getNewSscsCaseData().getAppeal().getBenefitType().getCode());
 
             Template template = notificationConfig.getTemplate(
-                    NotificationEventType.SUBSCRIPTION_OLD_NOTIFICATION.getId(),
-                    NotificationEventType.SUBSCRIPTION_OLD_NOTIFICATION.getId(),
-                    NotificationEventType.SUBSCRIPTION_OLD_NOTIFICATION.getId(),
-                    NotificationEventType.SUBSCRIPTION_OLD_NOTIFICATION.getId(),
-                    benefit,
-                    wrapper,
-                    "validAppeal"
-            );
+                SUBSCRIPTION_OLD_ID, SUBSCRIPTION_OLD_ID, SUBSCRIPTION_OLD_ID, SUBSCRIPTION_OLD_ID,
+                benefit, wrapper, "validAppeal");
 
             Notification oldNotification = Notification.builder().template(template).appealNumber(notification.getAppealNumber())
                     .destination(destination)
@@ -309,40 +312,25 @@ public class NotificationService {
 
     private boolean isEventAllowedToProceedWithValidData(NotificationWrapper notificationWrapper,
                                                          NotificationEventType notificationType) {
-        if (REQUEST_INFO_INCOMPLETE.equals(notificationType)) {
-            if (StringUtils.isEmpty(notificationWrapper.getNewSscsCaseData().getInformationFromAppellant())
-                    || "No".equalsIgnoreCase(notificationWrapper.getNewSscsCaseData().getInformationFromAppellant())) {
-
-                log.info("Request Incomplete Information with empty or no Information From Appellant for ccdCaseId {}.", notificationWrapper.getNewSscsCaseData().getCcdCaseId());
-                return false;
-            }
+        if (REQUEST_INFO_INCOMPLETE.equals(notificationType)
+            && !isYes(notificationWrapper.getNewSscsCaseData().getInformationFromAppellant())) {
+            log.info("Request Incomplete Information with empty or no Information From Appellant for ccdCaseId {}.",
+                notificationWrapper.getNewSscsCaseData().getCcdCaseId());
+            return false;
         }
 
         if (notificationWrapper.getSscsCaseDataWrapper().getState() != null
-                && notificationWrapper.getSscsCaseDataWrapper().getState().equals(State.DORMANT_APPEAL_STATE)) {
-            if (!(NotificationEventType.APPEAL_DORMANT_NOTIFICATION.equals(notificationType)
-                    || NotificationEventType.APPEAL_LAPSED_NOTIFICATION.equals(notificationType)
-                    || NotificationEventType.HMCTS_APPEAL_LAPSED_NOTIFICATION.equals(notificationType)
-                    || NotificationEventType.DWP_APPEAL_LAPSED_NOTIFICATION.equals(notificationType)
-                    || ADMIN_APPEAL_WITHDRAWN.equals(notificationType)
-                    || APPEAL_WITHDRAWN_NOTIFICATION.equals(notificationType)
-                    || STRUCK_OUT.equals(notificationType)
-                    || DECISION_ISSUED.equals(notificationType)
-                    || DIRECTION_ISSUED.equals(notificationType)
-                    || DECISION_ISSUED_WELSH.equals(notificationType)
-                    || DIRECTION_ISSUED_WELSH.equals(notificationType)
-                    || ISSUE_FINAL_DECISION.equals(notificationType)
-                    || ISSUE_FINAL_DECISION_WELSH.equals(notificationType)
-                    || REISSUE_DOCUMENT.equals(notificationType)
-                    || PROVIDE_APPOINTEE_DETAILS.equals(notificationType))) {
-                log.info(format("Cannot complete notification %s as the appeal was dormant for caseId %s.",
-                        notificationType.getId(), notificationWrapper.getCaseId()));
-                return false;
-            }
+            && notificationWrapper.getSscsCaseDataWrapper().getState().equals(State.DORMANT_APPEAL_STATE)
+            && !EVENT_TYPES_NOT_FOR_DORMANT_CASES.contains(notificationType)) {
+            log.info("Cannot complete notification {} as the appeal was dormant for caseId {}.",
+                notificationType.getId(), notificationWrapper.getCaseId());
+            return false;
         }
-        if (notificationWrapper.getNewSscsCaseData().isLanguagePreferenceWelsh() && (ISSUE_FINAL_DECISION.equals(notificationType) || DECISION_ISSUED.equals(notificationType) || DIRECTION_ISSUED.equals(notificationType) || ISSUE_ADJOURNMENT_NOTICE.equals(notificationType) || PROCESS_AUDIO_VIDEO.equals(notificationType) || ACTION_POSTPONEMENT_REQUEST.equals(notificationType))) {
-            log.info(format("Cannot complete notification %s as the appeal is Welsh  for caseId %s.",
-                    notificationType.getId(), notificationWrapper.getCaseId()));
+
+        if (notificationWrapper.getNewSscsCaseData().isLanguagePreferenceWelsh()
+            && (EVENT_TYPES_NOT_FOR_WELSH_CASES.contains(notificationType))) {
+            log.info("Cannot complete notification {} as the appeal is Welsh for caseId {}.",
+                    notificationType.getId(), notificationWrapper.getCaseId());
             return false;
         }
         final String processAudioVisualAction = ofNullable(notificationWrapper.getNewSscsCaseData().getProcessAudioVideoAction())
@@ -350,32 +338,43 @@ public class NotificationService {
 
         if (notificationType.equals(PROCESS_AUDIO_VIDEO)
                 && !PROCESS_AUDIO_VIDEO_ACTIONS_THAT_REQUIRES_NOTICE.contains(processAudioVisualAction)) {
-            log.info(format("Cannot complete notification %s since the action %s does not require a notice to be sent for caseId %s.",
-                    notificationType.getId(), processAudioVisualAction, notificationWrapper.getCaseId()));
+            log.info("Cannot complete notification {} since the action {} does not require a notice to be sent for caseId {}.",
+                    notificationType.getId(), processAudioVisualAction, notificationWrapper.getCaseId());
             return false;
         }
 
-        if (!isDigitalCase(notificationWrapper) && DWP_UPLOAD_RESPONSE_NOTIFICATION.equals(notificationType)) {
-            log.info(format("Cannot complete notification %s as the appeal was dwpUploadResponse for caseId %s.",
-                    notificationType.getId(), notificationWrapper.getCaseId()));
+        if (!isDigitalCase(notificationWrapper)
+            && DWP_UPLOAD_RESPONSE.equals(notificationType)) {
+            log.info("Cannot complete notification {} as the appeal was dwpUploadResponse for caseId {}.",
+                    notificationType.getId(), notificationWrapper.getCaseId());
             return false;
         }
 
-        if (DWP_RESPONSE_RECEIVED_NOTIFICATION.equals(notificationType) && isDigitalCase(notificationWrapper)) {
-            log.info(format("Cannot complete notification %s as the appeal was digital for caseId %s.",
-                    notificationType.getId(), notificationWrapper.getCaseId()));
+        if (DWP_RESPONSE_RECEIVED.equals(notificationType)
+            && isDigitalCase(notificationWrapper)) {
+            log.info("Cannot complete notification {} as the appeal was digital for caseId {}.",
+                    notificationType.getId(), notificationWrapper.getCaseId());
             return false;
         }
 
-        if (covid19Feature && (HEARING_BOOKED_NOTIFICATION.equals(notificationType) || HEARING_REMINDER_NOTIFICATION.equals(notificationType))) {
-            log.info(format("Notification not valid to send as covid 19 feature flag on for case id %s and event %s in state %s", notificationWrapper.getCaseId(), notificationType.getId(), notificationWrapper.getSscsCaseDataWrapper().getState()));
+        if (covid19Feature
+            && (HEARING_BOOKED.equals(notificationType)
+            || HEARING_REMINDER.equals(notificationType))) {
+            log.info("Notification not valid to send as covid 19 feature flag on for case id {} and event {} in state {}",
+                notificationWrapper.getCaseId(),
+                notificationType.getId(),
+                notificationWrapper.getSscsCaseDataWrapper().getState());
             return false;
         }
-        log.info(format("Notification valid to send for case id %s and event %s in state %s", notificationWrapper.getCaseId(), notificationType.getId(), notificationWrapper.getSscsCaseDataWrapper().getState()));
+        log.info("Notification valid to send for case id {} and event {} in state {}",
+            notificationWrapper.getCaseId(),
+            notificationType.getId(),
+            notificationWrapper.getSscsCaseDataWrapper().getState());
         return true;
     }
 
     private boolean isDigitalCase(final NotificationWrapper notificationWrapper) {
-        return READY_TO_LIST.equals(notificationWrapper.getSscsCaseDataWrapper().getNewSscsCaseData().getCreatedInGapsFrom());
+        return READY_TO_LIST
+            .equals(notificationWrapper.getSscsCaseDataWrapper().getNewSscsCaseData().getCreatedInGapsFrom());
     }
 }

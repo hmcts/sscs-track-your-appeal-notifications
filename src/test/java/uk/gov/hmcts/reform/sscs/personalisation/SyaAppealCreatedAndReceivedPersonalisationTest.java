@@ -4,8 +4,28 @@ import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNull;
 import static org.mockito.MockitoAnnotations.openMocks;
+import static uk.gov.hmcts.reform.sscs.config.PersonalisationConfiguration.PersonalisationKey.*;
+import static uk.gov.hmcts.reform.sscs.config.PersonalisationMappingConstants.APPOINTEE_DETAILS_LITERAL;
+import static uk.gov.hmcts.reform.sscs.config.PersonalisationMappingConstants.APPOINTEE_DETAILS_LITERAL_WELSH;
+import static uk.gov.hmcts.reform.sscs.config.PersonalisationMappingConstants.HEARING_ARRANGEMENT_DETAILS_LITERAL;
+import static uk.gov.hmcts.reform.sscs.config.PersonalisationMappingConstants.HEARING_ARRANGEMENT_DETAILS_LITERAL_WELSH;
+import static uk.gov.hmcts.reform.sscs.config.PersonalisationMappingConstants.HEARING_DETAILS_LITERAL;
+import static uk.gov.hmcts.reform.sscs.config.PersonalisationMappingConstants.HEARING_DETAILS_LITERAL_WELSH;
+import static uk.gov.hmcts.reform.sscs.config.PersonalisationMappingConstants.MRN_DETAILS_LITERAL;
+import static uk.gov.hmcts.reform.sscs.config.PersonalisationMappingConstants.MRN_DETAILS_LITERAL_WELSH;
+import static uk.gov.hmcts.reform.sscs.config.PersonalisationMappingConstants.OTHER_PARTY_DETAILS;
+import static uk.gov.hmcts.reform.sscs.config.PersonalisationMappingConstants.OTHER_PARTY_DETAILS_WELSH;
+import static uk.gov.hmcts.reform.sscs.config.PersonalisationMappingConstants.REASONS_FOR_APPEALING_DETAILS_LITERAL;
+import static uk.gov.hmcts.reform.sscs.config.PersonalisationMappingConstants.REASONS_FOR_APPEALING_DETAILS_LITERAL_WELSH;
+import static uk.gov.hmcts.reform.sscs.config.PersonalisationMappingConstants.REPRESENTATIVE_DETAILS_LITERAL;
+import static uk.gov.hmcts.reform.sscs.config.PersonalisationMappingConstants.REPRESENTATIVE_DETAILS_LITERAL_WELSH;
+import static uk.gov.hmcts.reform.sscs.config.PersonalisationMappingConstants.SHOW_OTHER_PARTY_DETAILS;
+import static uk.gov.hmcts.reform.sscs.config.PersonalisationMappingConstants.TEXT_MESSAGE_REMINDER_DETAILS_LITERAL;
+import static uk.gov.hmcts.reform.sscs.config.PersonalisationMappingConstants.TEXT_MESSAGE_REMINDER_DETAILS_LITERAL_WELSH;
+import static uk.gov.hmcts.reform.sscs.config.PersonalisationMappingConstants.YOUR_DETAILS_LITERAL;
+import static uk.gov.hmcts.reform.sscs.config.PersonalisationMappingConstants.YOUR_DETAILS_LITERAL_WELSH;
 import static uk.gov.hmcts.reform.sscs.config.SubscriptionType.REPRESENTATIVE;
-import static uk.gov.hmcts.reform.sscs.domain.notify.NotificationEventType.APPEAL_RECEIVED_NOTIFICATION;
+import static uk.gov.hmcts.reform.sscs.domain.notify.NotificationEventType.APPEAL_RECEIVED;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -17,7 +37,6 @@ import org.junit.Test;
 import org.mockito.InjectMocks;
 import org.mockito.Spy;
 import uk.gov.hmcts.reform.sscs.ccd.domain.*;
-import uk.gov.hmcts.reform.sscs.config.AppConstants;
 import uk.gov.hmcts.reform.sscs.config.PersonalisationConfiguration;
 import uk.gov.hmcts.reform.sscs.domain.SscsCaseDataWrapper;
 import uk.gov.hmcts.reform.sscs.domain.SubscriptionWithType;
@@ -40,70 +59,70 @@ public class SyaAppealCreatedAndReceivedPersonalisationTest extends Personalisat
     public void setup() {
         openMocks(this);
         Map<String, String> englishMap = new HashMap<>();
-        englishMap.put(PersonalisationConfiguration.PersonalisationKey.ATTENDING_HEARING.name(), "Attending the hearing: ");
-        englishMap.put(PersonalisationConfiguration.PersonalisationKey.YESSTRING.name(), "yes");
-        englishMap.put(PersonalisationConfiguration.PersonalisationKey.NOSTRING.name(), "no");
-        englishMap.put(PersonalisationConfiguration.PersonalisationKey.DATES_NOT_ATTENDING.name(), "Dates you can't attend: ");
-        englishMap.put(PersonalisationConfiguration.PersonalisationKey.DATE_OF_MRN.name(), "Date of MRN: ");
-        englishMap.put(PersonalisationConfiguration.PersonalisationKey.REASON_FOR_LATE_APPEAL.name(), "Reason for late appeal: ");
-        englishMap.put(PersonalisationConfiguration.PersonalisationKey.REASON_FOR_NO_MRN.name(), "Reason for no MRN: ");
-        englishMap.put(PersonalisationConfiguration.PersonalisationKey.NAME.name(), "Name: ");
-        englishMap.put(PersonalisationConfiguration.PersonalisationKey.DATE_OF_BIRTH.name(), "Date of birth: ");
-        englishMap.put(PersonalisationConfiguration.PersonalisationKey.NINO.name(), "National Insurance number: ");
-        englishMap.put(PersonalisationConfiguration.PersonalisationKey.ADDRESS.name(), "Address: ");
-        englishMap.put(PersonalisationConfiguration.PersonalisationKey.EMAIL.name(), "Email: ");
-        englishMap.put(PersonalisationConfiguration.PersonalisationKey.PHONE.name(), "Phone: ");
-        englishMap.put(PersonalisationConfiguration.PersonalisationKey.RECEIVE_TEXT_MESSAGE_REMINDER.name(), "Receive text message reminders: ");
-        englishMap.put(PersonalisationConfiguration.PersonalisationKey.MOBILE.name(), "Mobile number: ");
-        englishMap.put(PersonalisationConfiguration.PersonalisationKey.HAVE_AN_APPOINTEE.name(), "Have an appointee: ");
-        englishMap.put(PersonalisationConfiguration.PersonalisationKey.NOT_PROVIDED.name(), "Not provided");
-        englishMap.put(PersonalisationConfiguration.PersonalisationKey.HAVE_A_REPRESENTATIVE.name(), "Have a representative: ");
-        englishMap.put(PersonalisationConfiguration.PersonalisationKey.ORGANISATION.name(), "Organisation: ");
-        englishMap.put(PersonalisationConfiguration.PersonalisationKey.WHAT_DISAGREE_WITH.name(), "What you disagree with: ");
-        englishMap.put(PersonalisationConfiguration.PersonalisationKey.WHY_DISAGREE_WITH.name(), "Why you disagree with it: ");
-        englishMap.put(PersonalisationConfiguration.PersonalisationKey.ANYTHING.name(), "Anything else you want to tell the tribunal: ");
-        englishMap.put(PersonalisationConfiguration.PersonalisationKey.LANGUAGE_INTERPRETER.name(), "Language interpreter: ");
-        englishMap.put(PersonalisationConfiguration.PersonalisationKey.SIGN_INTERPRETER.name(), "Sign interpreter: ");
-        englishMap.put(PersonalisationConfiguration.PersonalisationKey.HEARING_LOOP.name(), "Hearing loop: ");
-        englishMap.put(PersonalisationConfiguration.PersonalisationKey.DISABLED_ACCESS.name(), "Disabled access: ");
-        englishMap.put(PersonalisationConfiguration.PersonalisationKey.OTHER_ARRANGEMENTS.name(), "Any other arrangements: ");
-        englishMap.put(PersonalisationConfiguration.PersonalisationKey.REQUIRED.name(), "Required");
-        englishMap.put(PersonalisationConfiguration.PersonalisationKey.NOT_REQUIRED.name(), "Not required");
-        englishMap.put(PersonalisationConfiguration.PersonalisationKey.OTHER.name(), "Other");
-        englishMap.put(PersonalisationConfiguration.PersonalisationKey.CHILD_MAINTENANCE_NUMBER.name(), "Child maintenance number: ");
+        englishMap.put(ATTENDING_HEARING.name(), "Attending the hearing: ");
+        englishMap.put(YESSTRING.name(), "yes");
+        englishMap.put(NOSTRING.name(), "no");
+        englishMap.put(DATES_NOT_ATTENDING.name(), "Dates you can't attend: ");
+        englishMap.put(DATE_OF_MRN.name(), "Date of MRN: ");
+        englishMap.put(REASON_FOR_LATE_APPEAL.name(), "Reason for late appeal: ");
+        englishMap.put(REASON_FOR_NO_MRN.name(), "Reason for no MRN: ");
+        englishMap.put(NAME.name(), "Name: ");
+        englishMap.put(DATE_OF_BIRTH.name(), "Date of birth: ");
+        englishMap.put(NINO.name(), "National Insurance number: ");
+        englishMap.put(ADDRESS.name(), "Address: ");
+        englishMap.put(EMAIL.name(), "Email: ");
+        englishMap.put(PHONE.name(), "Phone: ");
+        englishMap.put(RECEIVE_TEXT_MESSAGE_REMINDER.name(), "Receive text message reminders: ");
+        englishMap.put(MOBILE.name(), "Mobile number: ");
+        englishMap.put(HAVE_AN_APPOINTEE.name(), "Have an appointee: ");
+        englishMap.put(NOT_PROVIDED.name(), "Not provided");
+        englishMap.put(HAVE_A_REPRESENTATIVE.name(), "Have a representative: ");
+        englishMap.put(ORGANISATION.name(), "Organisation: ");
+        englishMap.put(WHAT_DISAGREE_WITH.name(), "What you disagree with: ");
+        englishMap.put(WHY_DISAGREE_WITH.name(), "Why you disagree with it: ");
+        englishMap.put(ANYTHING.name(), "Anything else you want to tell the tribunal: ");
+        englishMap.put(LANGUAGE_INTERPRETER.name(), "Language interpreter: ");
+        englishMap.put(SIGN_INTERPRETER.name(), "Sign interpreter: ");
+        englishMap.put(HEARING_LOOP.name(), "Hearing loop: ");
+        englishMap.put(DISABLED_ACCESS.name(), "Disabled access: ");
+        englishMap.put(OTHER_ARRANGEMENTS.name(), "Any other arrangements: ");
+        englishMap.put(REQUIRED.name(), "Required");
+        englishMap.put(NOT_REQUIRED.name(), "Not required");
+        englishMap.put(OTHER.name(), "Other");
+        englishMap.put(CHILD_MAINTENANCE_NUMBER.name(), "Child maintenance number: ");
 
         Map<String, String> welshMap = new HashMap<>();
-        welshMap.put(PersonalisationConfiguration.PersonalisationKey.ATTENDING_HEARING.name(), "Ydych chi'n bwriadu mynychu'r gwrandawiad: ");
-        welshMap.put(PersonalisationConfiguration.PersonalisationKey.YESSTRING.name(), "ydw");
-        welshMap.put(PersonalisationConfiguration.PersonalisationKey.NOSTRING.name(), "nac ydw");
-        welshMap.put(PersonalisationConfiguration.PersonalisationKey.DATES_NOT_ATTENDING.name(), "Dyddiadau na allwch fynychu: ");
-        welshMap.put(PersonalisationConfiguration.PersonalisationKey.DATE_OF_MRN.name(), "Dyddiad yr MRN: ");
-        welshMap.put(PersonalisationConfiguration.PersonalisationKey.REASON_FOR_LATE_APPEAL.name(), "Rheswm dros apêl hwyr: ");
-        welshMap.put(PersonalisationConfiguration.PersonalisationKey.REASON_FOR_NO_MRN.name(), "Rheswm dros ddim MRN: ");
-        welshMap.put(PersonalisationConfiguration.PersonalisationKey.NAME.name(), "Enw: ");
-        welshMap.put(PersonalisationConfiguration.PersonalisationKey.DATE_OF_BIRTH.name(), "Dyddiad geni: ");
-        welshMap.put(PersonalisationConfiguration.PersonalisationKey.NINO.name(), "Rhif Yswiriant Gwladol: ");
-        welshMap.put(PersonalisationConfiguration.PersonalisationKey.ADDRESS.name(), "Cyfeiriad: ");
-        welshMap.put(PersonalisationConfiguration.PersonalisationKey.EMAIL.name(), "E-bost: ");
-        welshMap.put(PersonalisationConfiguration.PersonalisationKey.PHONE.name(), "Rhif ffôn: ");
-        welshMap.put(PersonalisationConfiguration.PersonalisationKey.RECEIVE_TEXT_MESSAGE_REMINDER.name(), "Eisiau negeseuon testun atgoffa: ");
-        welshMap.put(PersonalisationConfiguration.PersonalisationKey.MOBILE.name(), "Rhif ffôn symudol: ");
-        welshMap.put(PersonalisationConfiguration.PersonalisationKey.HAVE_AN_APPOINTEE.name(), "A oes gennych chi benodai: ");
-        welshMap.put(PersonalisationConfiguration.PersonalisationKey.NOT_PROVIDED.name(), "Nis ddarparwyd");
-        welshMap.put(PersonalisationConfiguration.PersonalisationKey.HAVE_A_REPRESENTATIVE.name(), "A oes gennych chi gynrychiolydd: ");
-        welshMap.put(PersonalisationConfiguration.PersonalisationKey.ORGANISATION.name(), "Sefydliad: ");
-        welshMap.put(PersonalisationConfiguration.PersonalisationKey.WHAT_DISAGREE_WITH.name(), "Beth ydych chi’n anghytuno ag o: ");
-        welshMap.put(PersonalisationConfiguration.PersonalisationKey.WHY_DISAGREE_WITH.name(), "Pam ydych chi’n anghytuno ag o: ");
-        welshMap.put(PersonalisationConfiguration.PersonalisationKey.ANYTHING.name(), "Unrhyw beth arall yr hoffech ddweud wrth y tribiwnlys: ");
-        welshMap.put(PersonalisationConfiguration.PersonalisationKey.LANGUAGE_INTERPRETER.name(), "Dehonglydd iaith arwyddion: ");
-        welshMap.put(PersonalisationConfiguration.PersonalisationKey.SIGN_INTERPRETER.name(), "Dehonglydd iaith arwyddion: ");
-        welshMap.put(PersonalisationConfiguration.PersonalisationKey.HEARING_LOOP.name(), "Dolen glyw: ");
-        welshMap.put(PersonalisationConfiguration.PersonalisationKey.DISABLED_ACCESS.name(), "Mynediad i bobl anab: ");
-        welshMap.put(PersonalisationConfiguration.PersonalisationKey.OTHER_ARRANGEMENTS.name(), "Unrhyw drefniadau eraill: ");
-        welshMap.put(PersonalisationConfiguration.PersonalisationKey.REQUIRED.name(), "Gofynnol");
-        welshMap.put(PersonalisationConfiguration.PersonalisationKey.NOT_REQUIRED.name(), "Dim yn ofynnol");
-        welshMap.put(PersonalisationConfiguration.PersonalisationKey.OTHER.name(), "Arall");
-        welshMap.put(PersonalisationConfiguration.PersonalisationKey.CHILD_MAINTENANCE_NUMBER.name(), "Child maintenance number placeholder: ");
+        welshMap.put(ATTENDING_HEARING.name(), "Ydych chi'n bwriadu mynychu'r gwrandawiad: ");
+        welshMap.put(YESSTRING.name(), "ydw");
+        welshMap.put(NOSTRING.name(), "nac ydw");
+        welshMap.put(DATES_NOT_ATTENDING.name(), "Dyddiadau na allwch fynychu: ");
+        welshMap.put(DATE_OF_MRN.name(), "Dyddiad yr MRN: ");
+        welshMap.put(REASON_FOR_LATE_APPEAL.name(), "Rheswm dros apêl hwyr: ");
+        welshMap.put(REASON_FOR_NO_MRN.name(), "Rheswm dros ddim MRN: ");
+        welshMap.put(NAME.name(), "Enw: ");
+        welshMap.put(DATE_OF_BIRTH.name(), "Dyddiad geni: ");
+        welshMap.put(NINO.name(), "Rhif Yswiriant Gwladol: ");
+        welshMap.put(ADDRESS.name(), "Cyfeiriad: ");
+        welshMap.put(EMAIL.name(), "E-bost: ");
+        welshMap.put(PHONE.name(), "Rhif ffôn: ");
+        welshMap.put(RECEIVE_TEXT_MESSAGE_REMINDER.name(), "Eisiau negeseuon testun atgoffa: ");
+        welshMap.put(MOBILE.name(), "Rhif ffôn symudol: ");
+        welshMap.put(HAVE_AN_APPOINTEE.name(), "A oes gennych chi benodai: ");
+        welshMap.put(NOT_PROVIDED.name(), "Nis ddarparwyd");
+        welshMap.put(HAVE_A_REPRESENTATIVE.name(), "A oes gennych chi gynrychiolydd: ");
+        welshMap.put(ORGANISATION.name(), "Sefydliad: ");
+        welshMap.put(WHAT_DISAGREE_WITH.name(), "Beth ydych chi’n anghytuno ag o: ");
+        welshMap.put(WHY_DISAGREE_WITH.name(), "Pam ydych chi’n anghytuno ag o: ");
+        welshMap.put(ANYTHING.name(), "Unrhyw beth arall yr hoffech ddweud wrth y tribiwnlys: ");
+        welshMap.put(LANGUAGE_INTERPRETER.name(), "Dehonglydd iaith arwyddion: ");
+        welshMap.put(SIGN_INTERPRETER.name(), "Dehonglydd iaith arwyddion: ");
+        welshMap.put(HEARING_LOOP.name(), "Dolen glyw: ");
+        welshMap.put(DISABLED_ACCESS.name(), "Mynediad i bobl anab: ");
+        welshMap.put(OTHER_ARRANGEMENTS.name(), "Unrhyw drefniadau eraill: ");
+        welshMap.put(REQUIRED.name(), "Gofynnol");
+        welshMap.put(NOT_REQUIRED.name(), "Dim yn ofynnol");
+        welshMap.put(OTHER.name(), "Arall");
+        welshMap.put(CHILD_MAINTENANCE_NUMBER.name(), "Child maintenance number placeholder: ");
 
         Map<LanguagePreference, Map<String, String>> personalisations = new HashMap<>();
         personalisations.put(LanguagePreference.ENGLISH, englishMap);
@@ -132,7 +151,7 @@ public class SyaAppealCreatedAndReceivedPersonalisationTest extends Personalisat
         assertEquals("Date of MRN: 3 May 2018\n"
                         + "\nReason for late appeal: My train was cancelled.\n"
                         + "\nReason for no MRN: My dog ate my homework.",
-                result.get(AppConstants.MRN_DETAILS_LITERAL));
+                result.get(MRN_DETAILS_LITERAL));
     }
 
     @Test
@@ -147,8 +166,8 @@ public class SyaAppealCreatedAndReceivedPersonalisationTest extends Personalisat
 
         assertEquals("Date of MRN: 3 May 2018\n"
                         + "\nReason for late appeal: My train was cancelled.",
-                result.get(AppConstants.MRN_DETAILS_LITERAL));
-        assertNull("Welsh mrn details should be set", result.get(AppConstants.WELSH_HEARING_DETAILS_LITERAL));
+                result.get(MRN_DETAILS_LITERAL));
+        assertNull("Welsh mrn details should be set", result.get(HEARING_DETAILS_LITERAL_WELSH));
     }
 
     @Test
@@ -164,11 +183,11 @@ public class SyaAppealCreatedAndReceivedPersonalisationTest extends Personalisat
 
         assertEquals("Date of MRN: 2018-05-03\n"
                         + "\nReason for late appeal: My train was cancelled.",
-                result.get(AppConstants.MRN_DETAILS_LITERAL));
+                result.get(MRN_DETAILS_LITERAL));
 
         assertEquals("Dyddiad yr MRN: 3 Mai 2018\n"
                         + "\nRheswm dros apêl hwyr: My train was cancelled.",
-                result.get(AppConstants.WELSH_MRN_DETAILS_LITERAL));
+                result.get(MRN_DETAILS_LITERAL_WELSH));
     }
 
     @Test
@@ -192,7 +211,7 @@ public class SyaAppealCreatedAndReceivedPersonalisationTest extends Personalisat
                         + "\nAddress: 122 Breach Street, The Village, My town, Cardiff, CF11 2HB\n"
                         + "\nEmail: manish.sharma@gmail.com\n"
                         + "\nPhone: 0797 243 8179",
-                result.get(AppConstants.YOUR_DETAILS_LITERAL));
+                result.get(YOUR_DETAILS_LITERAL));
     }
 
     @Test
@@ -217,7 +236,7 @@ public class SyaAppealCreatedAndReceivedPersonalisationTest extends Personalisat
                       + "\nAddress: 122 Breach Street, The Village, My town, Cardiff, CF11 2HB\n"
                       + "\nEmail: manish.sharma@gmail.com\n"
                       + "\nPhone: 0797 243 8179",
-              result.get(AppConstants.YOUR_DETAILS_LITERAL));
+              result.get(YOUR_DETAILS_LITERAL));
 
         assertEquals("Enw: Manish Sharma\n"
                         + "\nDyddiad geni: 12 Mawrth 1971\n"
@@ -225,7 +244,7 @@ public class SyaAppealCreatedAndReceivedPersonalisationTest extends Personalisat
                         + "\nCyfeiriad: 122 Breach Street, The Village, My town, Cardiff, CF11 2HB\n"
                         + "\nE-bost: manish.sharma@gmail.com\n"
                         + "\nRhif ffôn: 0797 243 8179",
-                result.get(AppConstants.WELSH_YOUR_DETAILS_LITERAL));
+                result.get(YOUR_DETAILS_LITERAL_WELSH));
     }
 
     @Test
@@ -249,7 +268,7 @@ public class SyaAppealCreatedAndReceivedPersonalisationTest extends Personalisat
                         + "\nAddress: 122 Breach Street, My town, Cardiff, CF11 2HB\n"
                         + "\nEmail: Not provided\n"
                         + "\nPhone: Not provided",
-                result.get(AppConstants.YOUR_DETAILS_LITERAL));
+                result.get(YOUR_DETAILS_LITERAL));
     }
 
     @Test
@@ -274,7 +293,7 @@ public class SyaAppealCreatedAndReceivedPersonalisationTest extends Personalisat
                         + "\nAddress: 122 Breach Street, My town, Cardiff, CF11 2HB\n"
                         + "\nEmail: Not provided\n"
                         + "\nPhone: Not provided",
-                result.get(AppConstants.YOUR_DETAILS_LITERAL));
+                result.get(YOUR_DETAILS_LITERAL));
 
         assertEquals("Enw: Manish Sharma\n"
                         + "\nDyddiad geni: 12 Mawrth 1971\n"
@@ -282,7 +301,7 @@ public class SyaAppealCreatedAndReceivedPersonalisationTest extends Personalisat
                         + "\nCyfeiriad: 122 Breach Street, My town, Cardiff, CF11 2HB\n"
                         + "\nE-bost: Nis ddarparwyd\n"
                         + "\nRhif ffôn: Nis ddarparwyd",
-                result.get(AppConstants.WELSH_YOUR_DETAILS_LITERAL));
+                result.get(YOUR_DETAILS_LITERAL_WELSH));
     }
 
     @Test
@@ -299,7 +318,7 @@ public class SyaAppealCreatedAndReceivedPersonalisationTest extends Personalisat
 
         assertEquals("Receive text message reminders: yes\n"
                         + "\nMobile number: 07955555708",
-                result.get(AppConstants.TEXT_MESSAGE_REMINDER_DETAILS_LITERAL));
+                result.get(TEXT_MESSAGE_REMINDER_DETAILS_LITERAL));
     }
 
     @Test
@@ -316,11 +335,11 @@ public class SyaAppealCreatedAndReceivedPersonalisationTest extends Personalisat
 
         assertEquals("Receive text message reminders: yes\n"
                         + "\nMobile number: 07955555708",
-                result.get(AppConstants.TEXT_MESSAGE_REMINDER_DETAILS_LITERAL));
+                result.get(TEXT_MESSAGE_REMINDER_DETAILS_LITERAL));
 
         assertEquals("Eisiau negeseuon testun atgoffa: ydw\n"
                         + "\nRhif ffôn symudol: 07955555708",
-                result.get(AppConstants.WELSH_TEXT_MESSAGE_REMINDER_DETAILS_LITERAL));
+                result.get(TEXT_MESSAGE_REMINDER_DETAILS_LITERAL_WELSH));
     }
 
     @Test
@@ -335,7 +354,7 @@ public class SyaAppealCreatedAndReceivedPersonalisationTest extends Personalisat
         Map<String, Object> result = syaAppealCreatedAndReceivedPersonalisation.setTextMessageReminderDetails(new HashMap<>(), response.getSubscriptions().getAppellantSubscription());
 
         assertEquals("Receive text message reminders: no",
-                result.get(AppConstants.TEXT_MESSAGE_REMINDER_DETAILS_LITERAL));
+                result.get(TEXT_MESSAGE_REMINDER_DETAILS_LITERAL));
     }
 
     @Test
@@ -350,10 +369,10 @@ public class SyaAppealCreatedAndReceivedPersonalisationTest extends Personalisat
         Map<String, Object> result = syaAppealCreatedAndReceivedPersonalisation.setTextMessageReminderDetails(new HashMap<>(), response.getSubscriptions().getAppellantSubscription());
 
         assertEquals("Receive text message reminders: no",
-                result.get(AppConstants.TEXT_MESSAGE_REMINDER_DETAILS_LITERAL));
+                result.get(TEXT_MESSAGE_REMINDER_DETAILS_LITERAL));
 
         assertEquals("Eisiau negeseuon testun atgoffa: nac ydw",
-                result.get(AppConstants.WELSH_TEXT_MESSAGE_REMINDER_DETAILS_LITERAL));
+                result.get(TEXT_MESSAGE_REMINDER_DETAILS_LITERAL_WELSH));
     }
 
     @Test
@@ -379,9 +398,9 @@ public class SyaAppealCreatedAndReceivedPersonalisationTest extends Personalisat
                         + "\nAddress: Ground Floor, Gazette Buildings, 168 Corporation Street, Cardiff, CF11 6TF\n"
                         + "\nEmail: peter.smith@cab.org.uk\n"
                         + "\nPhone: 03444 77 1010",
-                result.get(AppConstants.APPOINTEE_DETAILS_LITERAL));
+                result.get(APPOINTEE_DETAILS_LITERAL));
 
-        assertNull(result.get(AppConstants.WELSH_APPOINTEE_DETAILS_LITERAL));
+        assertNull(result.get(APPOINTEE_DETAILS_LITERAL_WELSH));
     }
 
     @Test
@@ -408,7 +427,7 @@ public class SyaAppealCreatedAndReceivedPersonalisationTest extends Personalisat
                         + "\nAddress: Ground Floor, Gazette Buildings, 168 Corporation Street, Cardiff, CF11 6TF\n"
                         + "\nEmail: peter.smith@cab.org.uk\n"
                         + "\nPhone: 03444 77 1010",
-                result.get(AppConstants.APPOINTEE_DETAILS_LITERAL));
+                result.get(APPOINTEE_DETAILS_LITERAL));
 
         assertEquals("A oes gennych chi benodai: ydw\n"
                         + "\nEnw: Peter Smith\n"
@@ -416,7 +435,7 @@ public class SyaAppealCreatedAndReceivedPersonalisationTest extends Personalisat
                         + "\nCyfeiriad: Ground Floor, Gazette Buildings, 168 Corporation Street, Cardiff, CF11 6TF\n"
                         + "\nE-bost: peter.smith@cab.org.uk\n"
                         + "\nRhif ffôn: 03444 77 1010",
-                result.get(AppConstants.WELSH_APPOINTEE_DETAILS_LITERAL));
+                result.get(APPOINTEE_DETAILS_LITERAL_WELSH));
     }
 
     @Test
@@ -439,7 +458,7 @@ public class SyaAppealCreatedAndReceivedPersonalisationTest extends Personalisat
                         + "\nAddress: Ground Floor, Gazette Buildings, 168 Corporation Street, Cardiff, CF11 6TF\n"
                         + "\nEmail: Not provided\n"
                         + "\nPhone: Not provided",
-                result.get(AppConstants.APPOINTEE_DETAILS_LITERAL));
+                result.get(APPOINTEE_DETAILS_LITERAL));
     }
 
     @Test
@@ -455,7 +474,7 @@ public class SyaAppealCreatedAndReceivedPersonalisationTest extends Personalisat
         Map<String, Object> result = syaAppealCreatedAndReceivedPersonalisation.setAppointeeDetails(new HashMap<>(), response);
 
         assertEquals("Have an appointee: no",
-                result.get(AppConstants.APPOINTEE_DETAILS_LITERAL));
+                result.get(APPOINTEE_DETAILS_LITERAL));
     }
 
     @Test
@@ -478,9 +497,9 @@ public class SyaAppealCreatedAndReceivedPersonalisationTest extends Personalisat
                 + "\nAddress: Ground Floor, Gazette Buildings, 168 Corporation Street, Cardiff, CF11 6TF\n"
                 + "\nEmail: peter.smith@cab.org.uk\n"
                 + "\nPhone: 03444 77 1010",
-            result.get(AppConstants.REPRESENTATIVE_DETAILS_LITERAL));
+            result.get(REPRESENTATIVE_DETAILS_LITERAL));
 
-        assertNull(result.get(AppConstants.WELSH_REPRESENTATIVE_DETAILS_LITERAL));
+        assertNull(result.get(REPRESENTATIVE_DETAILS_LITERAL_WELSH));
     }
 
     @Test
@@ -504,15 +523,15 @@ public class SyaAppealCreatedAndReceivedPersonalisationTest extends Personalisat
                 .build();
 
         Map<String, Object> result = syaAppealCreatedAndReceivedPersonalisation.create(SscsCaseDataWrapper.builder().newSscsCaseData(response)
-                .notificationEventType(APPEAL_RECEIVED_NOTIFICATION).build(),
+                .notificationEventType(APPEAL_RECEIVED).build(),
             new SubscriptionWithType(subscriptions.getRepresentativeSubscription(), REPRESENTATIVE,
                 response.getAppeal().getAppellant(), response.getAppeal().getRep()));
 
-        assertNull(result.get(AppConstants.WELSH_REPRESENTATIVE_DETAILS_LITERAL));
-        assertEquals("No", result.get(AppConstants.SHOW_OTHER_PARTY_DETAILS));
-        assertEquals("", result.get(AppConstants.OTHER_PARTY_DETAILS));
-        assertEquals("", result.get(AppConstants.WELSH_OTHER_PARTY_DETAILS));
-        assertThat(result.get(AppConstants.YOUR_DETAILS_LITERAL).toString()).doesNotContain("Child maintenance number:");
+        assertNull(result.get(REPRESENTATIVE_DETAILS_LITERAL_WELSH));
+        assertEquals("No", result.get(SHOW_OTHER_PARTY_DETAILS));
+        assertEquals("", result.get(OTHER_PARTY_DETAILS));
+        assertEquals("", result.get(OTHER_PARTY_DETAILS_WELSH));
+        assertThat(result.get(YOUR_DETAILS_LITERAL).toString()).doesNotContain("Child maintenance number:");
     }
 
     @Test
@@ -544,17 +563,17 @@ public class SyaAppealCreatedAndReceivedPersonalisationTest extends Personalisat
                 .build();
 
         Map<String, Object> result = syaAppealCreatedAndReceivedPersonalisation.create(SscsCaseDataWrapper.builder().newSscsCaseData(response)
-                .notificationEventType(APPEAL_RECEIVED_NOTIFICATION).build(),
+                .notificationEventType(APPEAL_RECEIVED).build(),
             new SubscriptionWithType(subscriptions.getRepresentativeSubscription(), REPRESENTATIVE,
                 response.getAppeal().getAppellant(), response.getAppeal().getRep()));
 
-        assertEquals("Yes", result.get(AppConstants.SHOW_OTHER_PARTY_DETAILS));
+        assertEquals("Yes", result.get(SHOW_OTHER_PARTY_DETAILS));
 
         assertEquals("Name: Harrison Kane\n"
                         + "\nAddress: First Floor, My Building, 222 Corporation Street, Glasgow, GL11 6TF\n\n",
-                result.get(AppConstants.OTHER_PARTY_DETAILS));
-        assertNull(result.get(AppConstants.WELSH_OTHER_PARTY_DETAILS));
-        assertThat(result.get(AppConstants.YOUR_DETAILS_LITERAL).toString()).contains("Child maintenance number: 123456");
+                result.get(OTHER_PARTY_DETAILS));
+        assertNull(result.get(OTHER_PARTY_DETAILS_WELSH));
+        assertThat(result.get(YOUR_DETAILS_LITERAL).toString()).contains("Child maintenance number: 123456");
     }
 
     @Test
@@ -591,19 +610,19 @@ public class SyaAppealCreatedAndReceivedPersonalisationTest extends Personalisat
                 .build();
 
         Map<String, Object> result = syaAppealCreatedAndReceivedPersonalisation.create(SscsCaseDataWrapper.builder().newSscsCaseData(response)
-                .notificationEventType(APPEAL_RECEIVED_NOTIFICATION).build(),
+                .notificationEventType(APPEAL_RECEIVED).build(),
             new SubscriptionWithType(subscriptions.getRepresentativeSubscription(), REPRESENTATIVE,
                 response.getAppeal().getAppellant(), response.getAppeal().getRep()));
 
-        assertEquals("Yes", result.get(AppConstants.SHOW_OTHER_PARTY_DETAILS));
+        assertEquals("Yes", result.get(SHOW_OTHER_PARTY_DETAILS));
 
         assertEquals("Name: Harrison Kane\n"
                         + "\nAddress: First Floor, My Building, 222 Corporation Street, Glasgow, GL11 6TF\n\n"
                         + "Name: Lucas Moura\n"
                         + "\nAddress: Second Floor, My House, 333 Corporation Street, London, EC1 6TF\n\n",
-                result.get(AppConstants.OTHER_PARTY_DETAILS));
-        assertNull(result.get(AppConstants.WELSH_OTHER_PARTY_DETAILS));
-        assertThat(result.get(AppConstants.YOUR_DETAILS_LITERAL).toString()).contains("Child maintenance number: 123456");
+                result.get(OTHER_PARTY_DETAILS));
+        assertNull(result.get(OTHER_PARTY_DETAILS_WELSH));
+        assertThat(result.get(YOUR_DETAILS_LITERAL).toString()).contains("Child maintenance number: 123456");
     }
 
     @Test
@@ -635,17 +654,17 @@ public class SyaAppealCreatedAndReceivedPersonalisationTest extends Personalisat
                 .build();
 
         Map<String, Object> result = syaAppealCreatedAndReceivedPersonalisation.create(SscsCaseDataWrapper.builder().newSscsCaseData(response)
-                .notificationEventType(APPEAL_RECEIVED_NOTIFICATION).build(),
+                .notificationEventType(APPEAL_RECEIVED).build(),
             new SubscriptionWithType(subscriptions.getRepresentativeSubscription(), REPRESENTATIVE,
                 response.getAppeal().getAppellant(), response.getAppeal().getRep()));
 
-        assertEquals("Yes", result.get(AppConstants.SHOW_OTHER_PARTY_DETAILS));
+        assertEquals("Yes", result.get(SHOW_OTHER_PARTY_DETAILS));
 
         assertEquals("Name: Not provided\n"
                         + "\nAddress: Not provided\n\n",
-                result.get(AppConstants.OTHER_PARTY_DETAILS));
-        assertNull(result.get(AppConstants.WELSH_OTHER_PARTY_DETAILS));
-        assertThat(result.get(AppConstants.YOUR_DETAILS_LITERAL).toString()).contains("Child maintenance number: 123456");
+                result.get(OTHER_PARTY_DETAILS));
+        assertNull(result.get(OTHER_PARTY_DETAILS_WELSH));
+        assertThat(result.get(YOUR_DETAILS_LITERAL).toString()).contains("Child maintenance number: 123456");
     }
 
     @Test
@@ -669,7 +688,7 @@ public class SyaAppealCreatedAndReceivedPersonalisationTest extends Personalisat
                 + "\nAddress: Ground Floor, Gazette Buildings, 168 Corporation Street, Cardiff, CF11 6TF\n"
                 + "\nEmail: peter.smith@cab.org.uk\n"
                 + "\nPhone: 03444 77 1010",
-            result.get(AppConstants.REPRESENTATIVE_DETAILS_LITERAL));
+            result.get(REPRESENTATIVE_DETAILS_LITERAL));
 
         assertEquals("A oes gennych chi gynrychiolydd: ydw\n"
                 + "\nEnw: Peter Smith\n"
@@ -677,7 +696,7 @@ public class SyaAppealCreatedAndReceivedPersonalisationTest extends Personalisat
                 + "\nCyfeiriad: Ground Floor, Gazette Buildings, 168 Corporation Street, Cardiff, CF11 6TF\n"
                 + "\nE-bost: peter.smith@cab.org.uk\n"
                 + "\nRhif ffôn: 03444 77 1010",
-            result.get(AppConstants.WELSH_REPRESENTATIVE_DETAILS_LITERAL));
+            result.get(REPRESENTATIVE_DETAILS_LITERAL_WELSH));
     }
 
     @Test
@@ -699,8 +718,8 @@ public class SyaAppealCreatedAndReceivedPersonalisationTest extends Personalisat
                 + "\nAddress: Ground Floor, Gazette Buildings, 168 Corporation Street, Cardiff, CF11 6TF\n"
                 + "\nEmail: Not provided\n"
                 + "\nPhone: Not provided",
-            result.get(AppConstants.REPRESENTATIVE_DETAILS_LITERAL));
-        assertNull(result.get(AppConstants.WELSH_REPRESENTATIVE_DETAILS_LITERAL));
+            result.get(REPRESENTATIVE_DETAILS_LITERAL));
+        assertNull(result.get(REPRESENTATIVE_DETAILS_LITERAL_WELSH));
     }
 
     @Test
@@ -723,7 +742,7 @@ public class SyaAppealCreatedAndReceivedPersonalisationTest extends Personalisat
                         + "\nAddress: Ground Floor, Gazette Buildings, 168 Corporation Street, Cardiff, CF11 6TF\n"
                         + "\nEmail: Not provided\n"
                         + "\nPhone: Not provided",
-                result.get(AppConstants.REPRESENTATIVE_DETAILS_LITERAL));
+                result.get(REPRESENTATIVE_DETAILS_LITERAL));
 
         assertEquals("A oes gennych chi gynrychiolydd: ydw\n"
                 + "\nEnw: Peter Smith\n"
@@ -731,7 +750,7 @@ public class SyaAppealCreatedAndReceivedPersonalisationTest extends Personalisat
                 + "\nCyfeiriad: Ground Floor, Gazette Buildings, 168 Corporation Street, Cardiff, CF11 6TF\n"
                 + "\nE-bost: Nis ddarparwyd\n"
                 + "\nRhif ffôn: Nis ddarparwyd",
-            result.get(AppConstants.WELSH_REPRESENTATIVE_DETAILS_LITERAL));
+            result.get(REPRESENTATIVE_DETAILS_LITERAL_WELSH));
 
 
     }
@@ -747,7 +766,7 @@ public class SyaAppealCreatedAndReceivedPersonalisationTest extends Personalisat
         Map<String, Object> result = syaAppealCreatedAndReceivedPersonalisation.setRepresentativeDetails(new HashMap<>(), response);
 
         assertEquals("Have a representative: no",
-            result.get(AppConstants.REPRESENTATIVE_DETAILS_LITERAL));
+            result.get(REPRESENTATIVE_DETAILS_LITERAL));
     }
 
     @Test
@@ -767,8 +786,8 @@ public class SyaAppealCreatedAndReceivedPersonalisationTest extends Personalisat
         assertEquals("What you disagree with: I want to appeal\n"
                         + "\nWhy you disagree with it: Because I do\n"
                         + "\nAnything else you want to tell the tribunal: Some other reason",
-                result.get(AppConstants.REASONS_FOR_APPEALING_DETAILS_LITERAL));
-        assertNull(result.get(AppConstants.WELSH_REASONS_FOR_APPEALING_DETAILS_LITERAL));
+                result.get(REASONS_FOR_APPEALING_DETAILS_LITERAL));
+        assertNull(result.get(REASONS_FOR_APPEALING_DETAILS_LITERAL_WELSH));
     }
 
     @Test
@@ -789,12 +808,12 @@ public class SyaAppealCreatedAndReceivedPersonalisationTest extends Personalisat
         assertEquals("What you disagree with: I want to appeal\n"
                         + "\nWhy you disagree with it: Because I do\n"
                         + "\nAnything else you want to tell the tribunal: Some other reason",
-                result.get(AppConstants.REASONS_FOR_APPEALING_DETAILS_LITERAL));
+                result.get(REASONS_FOR_APPEALING_DETAILS_LITERAL));
 
         assertEquals("Beth ydych chi’n anghytuno ag o: I want to appeal\n"
                         + "\nPam ydych chi’n anghytuno ag o: Because I do\n"
                         + "\nUnrhyw beth arall yr hoffech ddweud wrth y tribiwnlys: Some other reason",
-                result.get(AppConstants.WELSH_REASONS_FOR_APPEALING_DETAILS_LITERAL));
+                result.get(REASONS_FOR_APPEALING_DETAILS_LITERAL_WELSH));
 
     }
 
@@ -819,7 +838,7 @@ public class SyaAppealCreatedAndReceivedPersonalisationTest extends Personalisat
                         + "\nWhat you disagree with: I want to appeal again\n"
                         + "\nWhy you disagree with it: I'm in the mood\n"
                         + "\nAnything else you want to tell the tribunal: Some other reason",
-                result.get(AppConstants.REASONS_FOR_APPEALING_DETAILS_LITERAL));
+                result.get(REASONS_FOR_APPEALING_DETAILS_LITERAL));
     }
 
     @Test
@@ -834,7 +853,7 @@ public class SyaAppealCreatedAndReceivedPersonalisationTest extends Personalisat
         Map<String, Object> result = syaAppealCreatedAndReceivedPersonalisation.setReasonsForAppealingDetails(new HashMap<>(), response);
 
         assertEquals("Anything else you want to tell the tribunal: Not provided",
-                result.get(AppConstants.REASONS_FOR_APPEALING_DETAILS_LITERAL));
+                result.get(REASONS_FOR_APPEALING_DETAILS_LITERAL));
     }
 
     @Test
@@ -850,10 +869,10 @@ public class SyaAppealCreatedAndReceivedPersonalisationTest extends Personalisat
         Map<String, Object> result = syaAppealCreatedAndReceivedPersonalisation.setReasonsForAppealingDetails(new HashMap<>(), response);
 
         assertEquals("Anything else you want to tell the tribunal: Not provided",
-                result.get(AppConstants.REASONS_FOR_APPEALING_DETAILS_LITERAL));
+                result.get(REASONS_FOR_APPEALING_DETAILS_LITERAL));
 
         assertEquals("Unrhyw beth arall yr hoffech ddweud wrth y tribiwnlys: Nis ddarparwyd",
-                result.get(AppConstants.WELSH_REASONS_FOR_APPEALING_DETAILS_LITERAL));
+                result.get(REASONS_FOR_APPEALING_DETAILS_LITERAL_WELSH));
     }
 
     @Test
@@ -868,7 +887,7 @@ public class SyaAppealCreatedAndReceivedPersonalisationTest extends Personalisat
         Map<String, Object> result = syaAppealCreatedAndReceivedPersonalisation.setHearingDetails(new HashMap<>(), response);
 
         assertEquals("Attending the hearing: yes",
-                result.get(AppConstants.HEARING_DETAILS_LITERAL));
+                result.get(HEARING_DETAILS_LITERAL));
     }
 
     @Test
@@ -889,7 +908,7 @@ public class SyaAppealCreatedAndReceivedPersonalisationTest extends Personalisat
 
         assertEquals("Attending the hearing: yes\n"
                         + "\nDates you can't attend: 3 January 2018",
-                result.get(AppConstants.HEARING_DETAILS_LITERAL));
+                result.get(HEARING_DETAILS_LITERAL));
     }
 
     @Test
@@ -911,8 +930,8 @@ public class SyaAppealCreatedAndReceivedPersonalisationTest extends Personalisat
 
         assertEquals("Attending the hearing: yes\n"
                         + "\nDates you can't attend: 3 January 2018, 5 January 2018",
-                result.get(AppConstants.HEARING_DETAILS_LITERAL));
-        assertNull("Welsh details not be set ", result.get(AppConstants.WELSH_HEARING_DETAILS_LITERAL));
+                result.get(HEARING_DETAILS_LITERAL));
+        assertNull("Welsh details not be set ", result.get(HEARING_DETAILS_LITERAL_WELSH));
     }
 
     @Test
@@ -935,11 +954,11 @@ public class SyaAppealCreatedAndReceivedPersonalisationTest extends Personalisat
 
         assertEquals("Attending the hearing: yes\n"
                         + "\nDates you can't attend: 3 January 2018, 5 January 2018",
-                result.get(AppConstants.HEARING_DETAILS_LITERAL));
+                result.get(HEARING_DETAILS_LITERAL));
 
         assertEquals("Ydych chi'n bwriadu mynychu'r gwrandawiad: ydw\n"
                         + "\nDyddiadau na allwch fynychu: 3 Ionawr 2018, 5 Ionawr 2018",
-                result.get(AppConstants.WELSH_HEARING_DETAILS_LITERAL));
+                result.get(HEARING_DETAILS_LITERAL_WELSH));
     }
 
     @Test
@@ -967,8 +986,8 @@ public class SyaAppealCreatedAndReceivedPersonalisationTest extends Personalisat
                         + "\nHearing loop: Required\n"
                         + "\nDisabled access: Required\n"
                         + "\nAny other arrangements: Other",
-                result.get(AppConstants.HEARING_ARRANGEMENT_DETAILS_LITERAL));
-        assertNull(result.get(AppConstants.WELSH_HEARING_ARRANGEMENT_DETAILS_LITERAL));
+                result.get(HEARING_ARRANGEMENT_DETAILS_LITERAL));
+        assertNull(result.get(HEARING_ARRANGEMENT_DETAILS_LITERAL_WELSH));
 
     }
 
@@ -998,14 +1017,14 @@ public class SyaAppealCreatedAndReceivedPersonalisationTest extends Personalisat
                         + "\nHearing loop: Required\n"
                         + "\nDisabled access: Required\n"
                         + "\nAny other arrangements: Other",
-                result.get(AppConstants.HEARING_ARRANGEMENT_DETAILS_LITERAL));
+                result.get(HEARING_ARRANGEMENT_DETAILS_LITERAL));
 
         assertEquals("Dehonglydd iaith arwyddion: Gofynnol\n"
                         + "\nDehonglydd iaith arwyddion: Gofynnol\n"
                         + "\nDolen glyw: Gofynnol\n"
                         + "\nMynediad i bobl anab: Gofynnol\n"
                         + "\nUnrhyw drefniadau eraill: Other",
-                result.get(AppConstants.WELSH_HEARING_ARRANGEMENT_DETAILS_LITERAL));
+                result.get(HEARING_ARRANGEMENT_DETAILS_LITERAL_WELSH));
 
     }
 
@@ -1026,8 +1045,8 @@ public class SyaAppealCreatedAndReceivedPersonalisationTest extends Personalisat
                         + "\nHearing loop: Not required\n"
                         + "\nDisabled access: Not required\n"
                         + "\nAny other arrangements: Not required",
-                result.get(AppConstants.HEARING_ARRANGEMENT_DETAILS_LITERAL));
-        assertNull(result.get(AppConstants.WELSH_HEARING_ARRANGEMENT_DETAILS_LITERAL));
+                result.get(HEARING_ARRANGEMENT_DETAILS_LITERAL));
+        assertNull(result.get(HEARING_ARRANGEMENT_DETAILS_LITERAL_WELSH));
     }
 
     @Test
@@ -1048,14 +1067,14 @@ public class SyaAppealCreatedAndReceivedPersonalisationTest extends Personalisat
                         + "\nHearing loop: Not required\n"
                         + "\nDisabled access: Not required\n"
                         + "\nAny other arrangements: Not required",
-                result.get(AppConstants.HEARING_ARRANGEMENT_DETAILS_LITERAL));
+                result.get(HEARING_ARRANGEMENT_DETAILS_LITERAL));
 
         assertEquals("Dehonglydd iaith arwyddion: Dim yn ofynnol\n"
                         + "\nDehonglydd iaith arwyddion: Dim yn ofynnol\n"
                         + "\nDolen glyw: Dim yn ofynnol\n"
                         + "\nMynediad i bobl anab: Dim yn ofynnol\n"
                         + "\nUnrhyw drefniadau eraill: Dim yn ofynnol",
-                result.get(AppConstants.WELSH_HEARING_ARRANGEMENT_DETAILS_LITERAL));
+                result.get(HEARING_ARRANGEMENT_DETAILS_LITERAL_WELSH));
 
     }
 
@@ -1075,7 +1094,7 @@ public class SyaAppealCreatedAndReceivedPersonalisationTest extends Personalisat
                         + "\nHearing loop: Not required\n"
                         + "\nDisabled access: Not required\n"
                         + "\nAny other arrangements: Not required",
-                result.get(AppConstants.HEARING_ARRANGEMENT_DETAILS_LITERAL));
+                result.get(HEARING_ARRANGEMENT_DETAILS_LITERAL));
     }
 
     @Test public void getOptionalFieldTest() {

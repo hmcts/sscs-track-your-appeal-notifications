@@ -110,10 +110,10 @@ public class WithRepresentativePersonalisationTest extends AbstractFunctionalTes
     public void givenHearingPostponedEventAndRepsSubscription_shouldSendEmailOnlyNotificationToReps()
             throws Exception {
 
-        final String repsEmailId = getFieldValue(POSTPONEMENT_NOTIFICATION, "RepsEmailId");
+        final String repsEmailId = getFieldValue(POSTPONEMENT, "RepsEmailId");
 
-        simulateCcdCallback(POSTPONEMENT_NOTIFICATION,
-                "representative/" + POSTPONEMENT_NOTIFICATION.getId()
+        simulateCcdCallback(POSTPONEMENT,
+                "representative/" + POSTPONEMENT.getId()
                         + "Callback.json");
 
         List<Notification> notifications = tryFetchNotificationsForTestCase(repsEmailId);
@@ -137,13 +137,13 @@ public class WithRepresentativePersonalisationTest extends AbstractFunctionalTes
     @SuppressWarnings({"Indentation", "unused"})
     private Object[] eventTypeAndSubscriptions() {
         return new Object[]{
-            new Object[]{APPEAL_LAPSED_NOTIFICATION},
-            new Object[]{APPEAL_WITHDRAWN_NOTIFICATION},
-            new Object[]{SYA_APPEAL_CREATED_NOTIFICATION},
-            new Object[]{APPEAL_DORMANT_NOTIFICATION},
-            new Object[]{ADJOURNED_NOTIFICATION},
-            new Object[]{APPEAL_RECEIVED_NOTIFICATION},
-            // Put back when covid19 feature turned off: new Object[]{HEARING_BOOKED_NOTIFICATION},
+            new Object[]{APPEAL_LAPSED},
+            new Object[]{APPEAL_WITHDRAWN},
+            new Object[]{SYA_APPEAL_CREATED},
+            new Object[]{APPEAL_DORMANT},
+            new Object[]{ADJOURNED},
+            new Object[]{APPEAL_RECEIVED},
+            // Put back when covid19 feature turned off: new Object[]{HEARING_BOOKED},
             new Object[]{VALID_APPEAL_CREATED}
         };
     }

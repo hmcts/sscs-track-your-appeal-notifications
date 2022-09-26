@@ -46,7 +46,7 @@ public class OtherPartyFunctionalTest extends AbstractFunctionalTest {
 
 
     @Test
-    @Parameters({"oral-,DWP_UPLOAD_RESPONSE_NOTIFICATION, oralDwpUploadResponseJointPartySmsId, oralDwpUploadResponseOtherPartyEmailId"})
+    @Parameters({"oral-,DWP_UPLOAD_RESPONSE, oralDwpUploadResponseJointPartySmsId, oralDwpUploadResponseOtherPartyEmailId"})
     public void willSendDwpUploadResponse(@Nullable String prefix, NotificationEventType notificationEventType, String... fieldNames) throws Exception {
 
         simulateCcdCallback(notificationEventType,
@@ -66,16 +66,16 @@ public class OtherPartyFunctionalTest extends AbstractFunctionalTest {
 
     @Test
     @Parameters({
-        "ADJOURNED_NOTIFICATION, 0, hearingAdjournedOtherPartyEmailTemplateId, hearingAdjournedOtherPartySmsTemplateId",
-        "POSTPONEMENT_NOTIFICATION, 0, hearingPostponedOtherPartyEmailTemplateId",
-        "APPEAL_LAPSED_NOTIFICATION, 2, appealLapsedOtherPartyEmailTemplateId, appealLapsedOtherPartySmsTemplateId",
-        "APPEAL_WITHDRAWN_NOTIFICATION, 2, appealWithdrawnOtherPartyEmailTemplateId, appealWithdrawnOtherPartySmsTemplateId",
+        "ADJOURNED, 0, hearingAdjournedOtherPartyEmailTemplateId, hearingAdjournedOtherPartySmsTemplateId",
+        "POSTPONEMENT, 0, hearingPostponedOtherPartyEmailTemplateId",
+        "APPEAL_LAPSED, 2, appealLapsedOtherPartyEmailTemplateId, appealLapsedOtherPartySmsTemplateId",
+        "APPEAL_WITHDRAWN, 2, appealWithdrawnOtherPartyEmailTemplateId, appealWithdrawnOtherPartySmsTemplateId",
         "STRUCK_OUT, 2,",
         "DECISION_ISSUED, 2,",
         "DIRECTION_ISSUED, 2,",
         "ISSUE_ADJOURNMENT_NOTICE, 2,",
         "ISSUE_FINAL_DECISION, 2,",
-        "EVIDENCE_REMINDER_NOTIFICATION, 0, evidenceReminderOtherPartyEmailTemplateId, evidenceReminderOtherPartySmsTemplateId"
+        "EVIDENCE_REMINDER, 0, evidenceReminderOtherPartyEmailTemplateId, evidenceReminderOtherPartySmsTemplateId"
     })
     public void willSendEventNotification(NotificationEventType notificationEventType, int expectedNumberOfLetters, @Nullable String... fieldNames) throws Exception {
 

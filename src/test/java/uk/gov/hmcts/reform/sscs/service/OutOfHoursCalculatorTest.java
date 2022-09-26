@@ -1,12 +1,12 @@
 package uk.gov.hmcts.reform.sscs.service;
 
-import static org.hamcrest.CoreMatchers.is;
-import static org.hamcrest.MatcherAssert.assertThat;
-import static org.hamcrest.Matchers.closeTo;
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.within;
 
 import java.security.NoSuchAlgorithmException;
 import java.time.ZoneId;
 import java.time.ZonedDateTime;
+import java.time.temporal.ChronoUnit;
 import org.junit.Test;
 
 public class OutOfHoursCalculatorTest {
@@ -19,7 +19,7 @@ public class OutOfHoursCalculatorTest {
         ZonedDateTime now = nowAtHour(12);
         boolean isOutOfHours = new OutOfHoursCalculator(new FixedDateTimeProvider(now), START_HOUR, END_HOUR).isItOutOfHours();
 
-        assertThat(isOutOfHours, is(false));
+        assertThat(isOutOfHours).isFalse();
     }
 
     @Test
@@ -27,7 +27,7 @@ public class OutOfHoursCalculatorTest {
         ZonedDateTime now = nowAtHour(9);
         boolean isOutOfHours = new OutOfHoursCalculator(new FixedDateTimeProvider(now), START_HOUR, END_HOUR).isItOutOfHours();
 
-        assertThat(isOutOfHours, is(false));
+        assertThat(isOutOfHours).isFalse();
     }
 
     @Test
@@ -35,7 +35,7 @@ public class OutOfHoursCalculatorTest {
         ZonedDateTime now = nowAtHour(20);
         boolean isOutOfHours = new OutOfHoursCalculator(new FixedDateTimeProvider(now), START_HOUR, END_HOUR).isItOutOfHours();
 
-        assertThat(isOutOfHours, is(true));
+        assertThat(isOutOfHours).isTrue();
     }
 
     @Test
@@ -43,7 +43,7 @@ public class OutOfHoursCalculatorTest {
         ZonedDateTime now = nowAtHour(17);
         boolean isOutOfHours = new OutOfHoursCalculator(new FixedDateTimeProvider(now), START_HOUR, END_HOUR).isItOutOfHours();
 
-        assertThat(isOutOfHours, is(true));
+        assertThat(isOutOfHours).isTrue();
     }
 
     @Test
@@ -51,11 +51,9 @@ public class OutOfHoursCalculatorTest {
         ZonedDateTime now = nowAtHour(END_HOUR);
         ZonedDateTime nextInHoursTime = new OutOfHoursCalculator(new FixedDateTimeProvider(now), START_HOUR, END_HOUR).getStartOfNextInHoursPeriod();
 
-        assertThat(nextInHoursTime.getYear(), is(2018));
-        assertThat(nextInHoursTime.getMonthValue(), is(9));
-        assertThat(nextInHoursTime.getDayOfMonth(), is(19));
-        assertThat(nextInHoursTime.getHour(), is(START_HOUR));
-        assertThat(new Double(nextInHoursTime.getMinute()), closeTo(0, 59));
+
+        ZonedDateTime expected = ZonedDateTime.of(2018, 9, 19, START_HOUR, 30, 0, 0, ZoneId.of("Europe/London"));
+        assertThat(nextInHoursTime).isCloseTo(expected, within(30, ChronoUnit.MINUTES));
     }
 
     @Test
@@ -63,11 +61,8 @@ public class OutOfHoursCalculatorTest {
         ZonedDateTime now = nowAtHour(1);
         ZonedDateTime nextInHoursTime = new OutOfHoursCalculator(new FixedDateTimeProvider(now), START_HOUR, END_HOUR).getStartOfNextInHoursPeriod();
 
-        assertThat(nextInHoursTime.getYear(), is(2018));
-        assertThat(nextInHoursTime.getMonthValue(), is(9));
-        assertThat(nextInHoursTime.getDayOfMonth(), is(18));
-        assertThat(nextInHoursTime.getHour(), is(START_HOUR));
-        assertThat(new Double(nextInHoursTime.getMinute()), closeTo(0, 59));
+        ZonedDateTime expected = ZonedDateTime.of(2018, 9, 18, START_HOUR, 30, 0, 0, ZoneId.of("Europe/London"));
+        assertThat(nextInHoursTime).isCloseTo(expected, within(30, ChronoUnit.MINUTES));
     }
 
 
@@ -77,7 +72,7 @@ public class OutOfHoursCalculatorTest {
         ZonedDateTime timeInUtc = ZonedDateTime.of(2018, 10, 5, endHour - 1, 1, 1, 1, ZoneId.of("UTC"));
         boolean isOutOfHours = new OutOfHoursCalculator(new FixedDateTimeProvider(timeInUtc), 9, endHour).isItOutOfHours();
 
-        assertThat(isOutOfHours, is(true));
+        assertThat(isOutOfHours).isTrue();
     }
 
     @Test
@@ -86,7 +81,7 @@ public class OutOfHoursCalculatorTest {
         ZonedDateTime timeInUtc = ZonedDateTime.of(2018, 12, 5, endHour - 1, 1, 1, 1, ZoneId.of("UTC"));
         boolean isOutOfHours = new OutOfHoursCalculator(new FixedDateTimeProvider(timeInUtc), 9, endHour).isItOutOfHours();
 
-        assertThat(isOutOfHours, is(false));
+        assertThat(isOutOfHours).isFalse();
     }
 
     @Test
@@ -95,7 +90,7 @@ public class OutOfHoursCalculatorTest {
         ZonedDateTime timeInUtc = ZonedDateTime.of(2018, 10, 5, startHour - 1, 1, 1, 1, ZoneId.of("UTC"));
         boolean isOutOfHours = new OutOfHoursCalculator(new FixedDateTimeProvider(timeInUtc), startHour, 17).isItOutOfHours();
 
-        assertThat(isOutOfHours, is(false));
+        assertThat(isOutOfHours).isFalse();
     }
 
     @Test
@@ -104,7 +99,7 @@ public class OutOfHoursCalculatorTest {
         ZonedDateTime timeInUtc = ZonedDateTime.of(2018, 12, 5, startHour - 1, 1, 1, 1, ZoneId.of("UTC"));
         boolean isOutOfHours = new OutOfHoursCalculator(new FixedDateTimeProvider(timeInUtc), startHour, 17).isItOutOfHours();
 
-        assertThat(isOutOfHours, is(true));
+        assertThat(isOutOfHours).isTrue();
     }
 
     @Test
@@ -115,7 +110,7 @@ public class OutOfHoursCalculatorTest {
         int startHourUtc = startHour - 1;
         ZonedDateTime startOfNextInHoursPeriod = new OutOfHoursCalculator(new FixedDateTimeProvider(timeInUtc), startHour, endHour).getStartOfNextInHoursPeriod();
 
-        assertThat(startOfNextInHoursPeriod.getHour(), is(startHourUtc));
+        assertThat(startOfNextInHoursPeriod.getHour()).isEqualTo(startHourUtc);
     }
 
     private ZonedDateTime nowAtHour(int hour) {

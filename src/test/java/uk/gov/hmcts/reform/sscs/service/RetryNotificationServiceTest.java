@@ -6,7 +6,7 @@ import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.verifyNoInteractions;
 import static org.mockito.Mockito.when;
-import static uk.gov.hmcts.reform.sscs.domain.notify.NotificationEventType.SYA_APPEAL_CREATED_NOTIFICATION;
+import static uk.gov.hmcts.reform.sscs.domain.notify.NotificationEventType.SYA_APPEAL_CREATED;
 
 import java.time.ZonedDateTime;
 import java.util.HashMap;
@@ -43,7 +43,7 @@ public class RetryNotificationServiceTest {
         }};
     private final RetryConfig retryConfig = new RetryConfig();
     private SscsCaseData newSscsCaseData = SscsCaseData.builder().ccdCaseId("456").build();
-    private final SscsCaseDataWrapper wrapper = SscsCaseDataWrapper.builder().state(State.APPEAL_CREATED).newSscsCaseData(newSscsCaseData).notificationEventType(SYA_APPEAL_CREATED_NOTIFICATION).build();
+    private final SscsCaseDataWrapper wrapper = SscsCaseDataWrapper.builder().state(State.APPEAL_CREATED).newSscsCaseData(newSscsCaseData).notificationEventType(SYA_APPEAL_CREATED).build();
     private final NotificationWrapper notificationWrapper = new CcdNotificationWrapper(wrapper);
     @Mock
     private NotificationHandler notificationHandler;

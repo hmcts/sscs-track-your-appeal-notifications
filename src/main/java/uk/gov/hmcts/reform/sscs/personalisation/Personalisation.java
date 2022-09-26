@@ -2,6 +2,7 @@ package uk.gov.hmcts.reform.sscs.personalisation;
 
 import static com.google.common.collect.Lists.newArrayList;
 import static java.lang.String.format;
+import static java.util.Objects.isNull;
 import static java.util.Objects.nonNull;
 import static java.util.Optional.ofNullable;
 import static org.apache.commons.lang3.StringUtils.EMPTY;
@@ -9,21 +10,52 @@ import static org.apache.commons.lang3.StringUtils.defaultIfBlank;
 import static org.apache.commons.lang3.StringUtils.equalsIgnoreCase;
 import static org.apache.commons.lang3.StringUtils.isBlank;
 import static org.apache.commons.lang3.StringUtils.isEmpty;
-import static org.apache.commons.lang3.StringUtils.lowerCase;
 import static uk.gov.hmcts.reform.sscs.ccd.domain.Benefit.getBenefitByCodeOrThrowException;
 import static uk.gov.hmcts.reform.sscs.ccd.domain.Benefit.getLongBenefitNameDescriptionWithOptionalAcronym;
-import static uk.gov.hmcts.reform.sscs.ccd.domain.EventType.APPEAL_RECEIVED;
 import static uk.gov.hmcts.reform.sscs.ccd.domain.PanelComposition.JUDGE_DOCTOR_AND_DISABILITY_EXPERT_IF_APPLICABLE;
 import static uk.gov.hmcts.reform.sscs.ccd.domain.YesNo.isYes;
 import static uk.gov.hmcts.reform.sscs.ccd.util.CaseDataUtils.YES;
-import static uk.gov.hmcts.reform.sscs.config.AppConstants.*;
-import static uk.gov.hmcts.reform.sscs.config.PersonalisationConfiguration.PersonalisationKey.*;
+import static uk.gov.hmcts.reform.sscs.config.AppConstants.CC_DATE_FORMAT;
+import static uk.gov.hmcts.reform.sscs.config.AppConstants.DAYS_STRING;
+import static uk.gov.hmcts.reform.sscs.config.AppConstants.DWP_ACRONYM;
+import static uk.gov.hmcts.reform.sscs.config.AppConstants.DWP_ACRONYM_WELSH;
+import static uk.gov.hmcts.reform.sscs.config.AppConstants.DWP_FIRST_TIER_AGENCY_GROUP;
+import static uk.gov.hmcts.reform.sscs.config.AppConstants.DWP_FIRST_TIER_AGENCY_GROUP_WELSH;
+import static uk.gov.hmcts.reform.sscs.config.AppConstants.DWP_FULL_NAME;
+import static uk.gov.hmcts.reform.sscs.config.AppConstants.DWP_FULL_NAME_WELSH;
+import static uk.gov.hmcts.reform.sscs.config.AppConstants.HEARING_TIME_FORMAT;
+import static uk.gov.hmcts.reform.sscs.config.AppConstants.HMRC_ACRONYM;
+import static uk.gov.hmcts.reform.sscs.config.AppConstants.HMRC_ACRONYM_WELSH;
+import static uk.gov.hmcts.reform.sscs.config.AppConstants.HMRC_FULL_NAME;
+import static uk.gov.hmcts.reform.sscs.config.AppConstants.HMRC_FULL_NAME_WELSH;
+import static uk.gov.hmcts.reform.sscs.config.AppConstants.JOINT_TEXT_WITH_A_SPACE;
+import static uk.gov.hmcts.reform.sscs.config.AppConstants.JOINT_TEXT_WITH_A_SPACE_WELSH;
+import static uk.gov.hmcts.reform.sscs.config.AppConstants.MAC_LITERAL;
+import static uk.gov.hmcts.reform.sscs.config.AppConstants.MAX_DWP_RESPONSE_DAYS;
+import static uk.gov.hmcts.reform.sscs.config.AppConstants.RESPONSE_DATE_FORMAT;
+import static uk.gov.hmcts.reform.sscs.config.AppConstants.THE_STRING;
+import static uk.gov.hmcts.reform.sscs.config.AppConstants.THE_STRING_WELSH;
+import static uk.gov.hmcts.reform.sscs.config.AppConstants.TOMORROW_STRING;
+import static uk.gov.hmcts.reform.sscs.config.NotificationEventTypeLists.EVENTS_WITH_SUBSCRIPTION_TYPE_DOCMOSIS_TEMPLATES;
+import static uk.gov.hmcts.reform.sscs.config.NotificationEventTypeLists.EVENTS_WITH_SUBSCRIPTION_TYPE_EMAIL_TEMPLATES;
+import static uk.gov.hmcts.reform.sscs.config.PersonalisationConfiguration.PersonalisationKey.DISABLED_ACCESS;
+import static uk.gov.hmcts.reform.sscs.config.PersonalisationConfiguration.PersonalisationKey.HEARING_LOOP;
+import static uk.gov.hmcts.reform.sscs.config.PersonalisationConfiguration.PersonalisationKey.LANGUAGE_INTERPRETER;
+import static uk.gov.hmcts.reform.sscs.config.PersonalisationConfiguration.PersonalisationKey.OTHER_ARRANGEMENTS;
+import static uk.gov.hmcts.reform.sscs.config.PersonalisationConfiguration.PersonalisationKey.SIGN_INTERPRETER;
+import static uk.gov.hmcts.reform.sscs.config.PersonalisationMappingConstants.*;
 import static uk.gov.hmcts.reform.sscs.config.SubscriptionType.APPELLANT;
 import static uk.gov.hmcts.reform.sscs.config.SubscriptionType.APPOINTEE;
 import static uk.gov.hmcts.reform.sscs.config.SubscriptionType.JOINT_PARTY;
 import static uk.gov.hmcts.reform.sscs.config.SubscriptionType.OTHER_PARTY;
 import static uk.gov.hmcts.reform.sscs.config.SubscriptionType.REPRESENTATIVE;
-import static uk.gov.hmcts.reform.sscs.domain.notify.NotificationEventType.*;
+import static uk.gov.hmcts.reform.sscs.domain.notify.NotificationEventType.CASE_UPDATED;
+import static uk.gov.hmcts.reform.sscs.domain.notify.NotificationEventType.DIRECTION_ISSUED;
+import static uk.gov.hmcts.reform.sscs.domain.notify.NotificationEventType.DIRECTION_ISSUED_WELSH;
+import static uk.gov.hmcts.reform.sscs.domain.notify.NotificationEventType.EVIDENCE_RECEIVED;
+import static uk.gov.hmcts.reform.sscs.domain.notify.NotificationEventType.JUDGE_DECISION_APPEAL_TO_PROCEED;
+import static uk.gov.hmcts.reform.sscs.domain.notify.NotificationEventType.SUBSCRIPTION_CREATED;
+import static uk.gov.hmcts.reform.sscs.domain.notify.NotificationEventType.TCW_DECISION_APPEAL_TO_PROCEED;
 import static uk.gov.hmcts.reform.sscs.personalisation.SyaAppealCreatedAndReceivedPersonalisation.TWO_NEW_LINES;
 import static uk.gov.hmcts.reform.sscs.personalisation.SyaAppealCreatedAndReceivedPersonalisation.getOptionalField;
 import static uk.gov.hmcts.reform.sscs.service.LetterUtils.getNameForOtherParty;
@@ -31,7 +63,6 @@ import static uk.gov.hmcts.reform.sscs.service.NotificationUtils.hasAppointee;
 import static uk.gov.hmcts.reform.sscs.service.NotificationUtils.hasJointParty;
 import static uk.gov.hmcts.reform.sscs.service.NotificationUtils.hasRepresentative;
 
-import java.io.UnsupportedEncodingException;
 import java.net.URLEncoder;
 import java.nio.charset.StandardCharsets;
 import java.time.LocalDate;
@@ -39,7 +70,11 @@ import java.time.LocalDateTime;
 import java.time.ZonedDateTime;
 import java.time.format.DateTimeFormatter;
 import java.time.temporal.ChronoUnit;
-import java.util.*;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Locale;
+import java.util.Map;
+import java.util.Optional;
 import java.util.function.Consumer;
 import java.util.stream.Collectors;
 import lombok.extern.slf4j.Slf4j;
@@ -47,9 +82,10 @@ import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 import uk.gov.hmcts.reform.sscs.ccd.domain.*;
-import uk.gov.hmcts.reform.sscs.config.AppConstants;
 import uk.gov.hmcts.reform.sscs.config.NotificationConfig;
+import uk.gov.hmcts.reform.sscs.config.NotificationEventTypeLists;
 import uk.gov.hmcts.reform.sscs.config.PersonalisationConfiguration;
+import uk.gov.hmcts.reform.sscs.config.PersonalisationMappingConstants;
 import uk.gov.hmcts.reform.sscs.config.SubscriptionType;
 import uk.gov.hmcts.reform.sscs.config.properties.EvidenceProperties;
 import uk.gov.hmcts.reform.sscs.domain.SscsCaseDataWrapper;
@@ -67,10 +103,10 @@ import uk.gov.hmcts.reform.sscs.service.conversion.LocalDateToWelshStringConvert
 @Component
 @Slf4j
 public class Personalisation<E extends NotificationWrapper> {
-    private static final List<NotificationEventType> LETTER_SUBSCRIPTION_TYPES = Arrays.asList(DWP_RESPONSE_RECEIVED_NOTIFICATION, DWP_UPLOAD_RESPONSE_NOTIFICATION,
-            APPEAL_RECEIVED_NOTIFICATION, SYA_APPEAL_CREATED_NOTIFICATION, EVIDENCE_RECEIVED_NOTIFICATION, NON_COMPLIANT_NOTIFICATION, VALID_APPEAL_CREATED);
 
     private static final String CRLF = format("%c%c", (char) 0x0D, (char) 0x0A);
+    public static final String TEMPLATE_NAME_TEMPLATE_WITH_DIRECTION_TYPE = "%s.%s.%s";
+    public static final String TEMPLATE_NAME_TEMPLATE = "%s.%s";
 
     @Autowired
     protected NotificationConfig config;
@@ -189,7 +225,7 @@ public class Personalisation<E extends NotificationWrapper> {
             log.warn("Proceeding with 'null' benefit type for case !");
         }
 
-        translateToWelshDate(LocalDate.now(), ccdResponse, value -> personalisation.put(WELSH_CURRENT_DATE, value));
+        translateToWelshDate(LocalDate.now(), ccdResponse, value -> personalisation.put(CURRENT_DATE_WELSH, value));
 
         PanelComposition panelComposition = ofNullable(benefit).map(Benefit::getPanelComposition).orElse(JUDGE_DOCTOR_AND_DISABILITY_EXPERT_IF_APPLICABLE);
         personalisation.put(PANEL_COMPOSITION, panelComposition.getEnglish());
@@ -197,11 +233,11 @@ public class Personalisation<E extends NotificationWrapper> {
 
         LocalDate decisionPostedReceivedDate = LocalDate.now().plusDays(7);
         personalisation.put(DECISION_POSTED_RECEIVE_DATE, formatLocalDate(decisionPostedReceivedDate));
-        translateToWelshDate(decisionPostedReceivedDate, ccdResponse, value -> personalisation.put(WELSH_DECISION_POSTED_RECEIVE_DATE, value));
+        translateToWelshDate(decisionPostedReceivedDate, ccdResponse, value -> personalisation.put(DECISION_POSTED_RECEIVE_DATE_WELSH, value));
 
         personalisation.put(APPEAL_REF, getAppealReference(ccdResponse));
         personalisation.put(APPELLANT_NAME, ccdResponse.getAppeal().getAppellant().getName().getFullNameNoTitle());
-        personalisation.put(AppConstants.NAME, getName(subscriptionWithType, ccdResponse, responseWrapper));
+        personalisation.put(NAME, getName(subscriptionWithType, ccdResponse, responseWrapper));
         personalisation.put(CCD_ID, defaultIfBlank(ccdResponse.getCcdCaseId(), EMPTY));
         personalisation.put(REPRESENTEE_NAME, subscriptionWithType.getParty().getName().getFullNameNoTitle());
 
@@ -221,7 +257,7 @@ public class Personalisation<E extends NotificationWrapper> {
         personalisation.put(CREATED_DATE, createdDate.toString());
 
         personalisation.put(JOINT, subscriptionWithType.getSubscriptionType() == JOINT_PARTY ? JOINT_TEXT_WITH_A_SPACE : EMPTY);
-        personalisation.put(JOINT_WELSH, subscriptionWithType.getSubscriptionType() == JOINT_PARTY ? JOINT_WELSH_TEXT_WITH_A_SPACE : EMPTY);
+        personalisation.put(JOINT_WELSH, subscriptionWithType.getSubscriptionType() == JOINT_PARTY ? JOINT_TEXT_WITH_A_SPACE_WELSH : EMPTY);
 
         if (isYes(ccdResponse.getJointParty().getHasJointParty())) {
             personalisation.put(JOINT_PARTY_APPEAL, "Yes");
@@ -243,7 +279,7 @@ public class Personalisation<E extends NotificationWrapper> {
 
             if (nonNull(hearingDateTime) && nonNull(latestHearingValue.getVenue())) {
                 personalisation.put(HEARING_DATE, formatLocalDate(hearingDateTime.toLocalDate()));
-                translateToWelshDate(hearingDateTime.toLocalDate(), ccdResponse, value -> personalisation.put(WELSH_HEARING_DATE, value));
+                translateToWelshDate(hearingDateTime.toLocalDate(), ccdResponse, value -> personalisation.put(HEARING_DATE_WELSH, value));
                 personalisation.put(HEARING_TIME, formatLocalTime(hearingDateTime));
                 personalisation.put(DAYS_TO_HEARING_LITERAL, calculateDaysToHearingText(hearingDateTime.toLocalDate()));
                 personalisation.put(VENUE_ADDRESS_LITERAL, formatAddress(latestHearing));
@@ -273,17 +309,17 @@ public class Personalisation<E extends NotificationWrapper> {
         personalisation.put(HEARING_TYPE, responseWrapper.getNewSscsCaseData().getAppeal().getHearingType());
 
         if (subscriptionWithType.getSubscriptionType() == REPRESENTATIVE) {
-            personalisation.put(AppConstants.REPRESENTATIVE, "Yes");
+            personalisation.put(PersonalisationMappingConstants.REPRESENTATIVE, "Yes");
         }
         if (subscriptionWithType.getSubscriptionType() == JOINT_PARTY) {
-            personalisation.put(AppConstants.JOINT_PARTY, "Yes");
+            personalisation.put(PersonalisationMappingConstants.JOINT_PARTY, "Yes");
         }
 
         setConfidentialFields(ccdResponse, subscriptionWithType, personalisation);
 
         setHelplineTelephone(ccdResponse, personalisation);
         if (subscriptionWithType.getSubscriptionType() == OTHER_PARTY) {
-            personalisation.put(AppConstants.OTHER_PARTY, personalisation.get(AppConstants.NAME));
+            personalisation.put(PersonalisationMappingConstants.OTHER_PARTY, personalisation.get(NAME));
         }
 
         personalisation.put(PARTY_TYPE, subscriptionWithType.getParty().getClass().getSimpleName());
@@ -294,12 +330,13 @@ public class Personalisation<E extends NotificationWrapper> {
 
     private void addFirstTierAgencyFields(Map<String, Object> personalisation, Benefit benefit, SscsCaseData ccdResponse) {
         personalisation.put(FIRST_TIER_AGENCY_ACRONYM, isHmrcBenefit(benefit, ccdResponse.getFormType()) ? HMRC_ACRONYM : DWP_ACRONYM);
+        personalisation.put(FIRST_TIER_AGENCY_ACRONYM_WELSH, isHmrcBenefit(benefit, ccdResponse.getFormType()) ? HMRC_ACRONYM_WELSH : DWP_ACRONYM_WELSH);
         personalisation.put(FIRST_TIER_AGENCY_FULL_NAME, isHmrcBenefit(benefit, ccdResponse.getFormType()) ? HMRC_FULL_NAME : DWP_FULL_NAME);
-        personalisation.put(WELSH_FIRST_TIER_AGENCY_FULL_NAME, isHmrcBenefit(benefit, ccdResponse.getFormType()) ? WELSH_HMRC_FULL_NAME : WELSH_DWP_FULL_NAME);
+        personalisation.put(FIRST_TIER_AGENCY_FULL_NAME_WELSH, isHmrcBenefit(benefit, ccdResponse.getFormType()) ? HMRC_FULL_NAME_WELSH : DWP_FULL_NAME_WELSH);
         personalisation.put(FIRST_TIER_AGENCY_GROUP, isHmrcBenefit(benefit, ccdResponse.getFormType()) ? HMRC_ACRONYM : DWP_FIRST_TIER_AGENCY_GROUP);
-        personalisation.put(WELSH_FIRST_TIER_AGENCY_GROUP, isHmrcBenefit(benefit, ccdResponse.getFormType()) ? HMRC_ACRONYM : WELSH_DWP_FIRST_TIER_AGENCY_GROUP);
+        personalisation.put(FIRST_TIER_AGENCY_GROUP_WELSH, isHmrcBenefit(benefit, ccdResponse.getFormType()) ? HMRC_ACRONYM : DWP_FIRST_TIER_AGENCY_GROUP_WELSH);
         personalisation.put(WITH_OPTIONAL_THE, isHmrcBenefit(benefit, ccdResponse.getFormType()) ? "" : THE_STRING);
-        personalisation.put(WELSH_WITH_OPTIONAL_THE, isHmrcBenefit(benefit, ccdResponse.getFormType()) ? "" : WELSH_THE_STRING);
+        personalisation.put(WITH_OPTIONAL_THE_WELSH, isHmrcBenefit(benefit, ccdResponse.getFormType()) ? "" : THE_STRING_WELSH);
     }
 
     private boolean isHmrcBenefit(Benefit benefit, FormType formType) {
@@ -405,12 +442,8 @@ public class Personalisation<E extends NotificationWrapper> {
 
         String email = email(subscription);
         if (email != null) {
-            try {
-                String encodedEmail = URLEncoder.encode(email, StandardCharsets.UTF_8.name());
-                personalisation.put(ONLINE_HEARING_LINK_LITERAL, config.getOnlineHearingLinkWithEmail().replace("{email}", encodedEmail));
-            } catch (UnsupportedEncodingException e) {
-                throw new RuntimeException(e);
-            }
+            String encodedEmail = URLEncoder.encode(email, StandardCharsets.UTF_8);
+            personalisation.put(ONLINE_HEARING_LINK_LITERAL, config.getOnlineHearingLinkWithEmail().replace("{email}", encodedEmail));
         }
     }
 
@@ -427,7 +460,7 @@ public class Personalisation<E extends NotificationWrapper> {
             String dwpResponseDateString = formatLocalDate(localDate);
             personalisation.put(APPEAL_RESPOND_DATE, dwpResponseDateString);
             translateToWelshDate(localDate, ccdResponse, value ->
-                    personalisation.put(WELSH_APPEAL_RESPOND_DATE, value)
+                    personalisation.put(APPEAL_RESPOND_DATE_WELSH, value)
             );
 
             return personalisation;
@@ -436,8 +469,9 @@ public class Personalisation<E extends NotificationWrapper> {
 
             for (Event event : ccdResponse.getEvents()) {
                 if ((event.getValue() != null) && isAppealReceivedAndUpdated(notificationEventType, event)
-                        || notificationEventType.equals(CASE_UPDATED) || JUDGE_DECISION_APPEAL_TO_PROCEED.equals(notificationEventType)
-                        || TCW_DECISION_APPEAL_TO_PROCEED.equals(notificationEventType)) {
+                    || notificationEventType.equals(CASE_UPDATED)
+                    || JUDGE_DECISION_APPEAL_TO_PROCEED.equals(notificationEventType)
+                    || TCW_DECISION_APPEAL_TO_PROCEED.equals(notificationEventType)) {
                     return setAppealReceivedDetails(personalisation, event.getValue(), ccdResponse);
                 }
             }
@@ -446,13 +480,14 @@ public class Personalisation<E extends NotificationWrapper> {
     }
 
     private boolean isAppealReceivedAndUpdated(NotificationEventType notificationEventType, Event event) {
-        return notificationEventType.equals(APPEAL_RECEIVED_NOTIFICATION) && event.getValue().getEventType().equals(APPEAL_RECEIVED);
+        return NotificationEventType.APPEAL_RECEIVED == notificationEventType
+            && EventType.APPEAL_RECEIVED == event.getValue().getEventType();
     }
 
     Map<String, Object> setEvidenceReceivedNotificationData(Map<String, Object> personalisation,
                                                             SscsCaseData ccdResponse,
                                                             NotificationEventType notificationEventType) {
-        if (notificationEventType == EVIDENCE_RECEIVED_NOTIFICATION) {
+        if (notificationEventType == EVIDENCE_RECEIVED) {
             if (ccdResponse.getEvidence() != null && ccdResponse.getEvidence().getDocuments() != null
                     && !ccdResponse.getEvidence().getDocuments().isEmpty()) {
                 LocalDate evidenceDateTimeFormatted = ccdResponse.getEvidence().getDocuments().get(0).getValue()
@@ -460,11 +495,11 @@ public class Personalisation<E extends NotificationWrapper> {
                 personalisation.put(EVIDENCE_RECEIVED_DATE_LITERAL,
                         formatLocalDate(evidenceDateTimeFormatted));
                 translateToWelshDate(evidenceDateTimeFormatted, ccdResponse, value ->
-                        personalisation.put(WELSH_EVIDENCE_RECEIVED_DATE_LITERAL, value)
+                        personalisation.put(EVIDENCE_RECEIVED_DATE_LITERAL_WELSH, value)
                 );
             } else {
                 personalisation.put(EVIDENCE_RECEIVED_DATE_LITERAL, EMPTY);
-                personalisation.put(WELSH_EVIDENCE_RECEIVED_DATE_LITERAL, EMPTY);
+                personalisation.put(EVIDENCE_RECEIVED_DATE_LITERAL_WELSH, EMPTY);
             }
         }
         return personalisation;
@@ -476,7 +511,7 @@ public class Personalisation<E extends NotificationWrapper> {
         String dwpResponseDateString = formatLocalDate(localDate);
         personalisation.put(APPEAL_RESPOND_DATE, dwpResponseDateString);
         translateToWelshDate(localDate, ccdResponse, value ->
-                personalisation.put(WELSH_APPEAL_RESPOND_DATE, value)
+                personalisation.put(APPEAL_RESPOND_DATE_WELSH, value)
         );
         return personalisation;
     }
@@ -557,7 +592,7 @@ public class Personalisation<E extends NotificationWrapper> {
         String templateConfig = getEmailTemplateName(subscriptionType, notificationWrapper);
         String smsTemplateName = templateConfig;
         if (isSendSmsSubscriptionConfirmation()) {
-            smsTemplateName = SUBSCRIPTION_CREATED_NOTIFICATION.getId() + "." + lowerCase(subscriptionType.toString());
+            smsTemplateName = getSubscriptionTemplateName(SUBSCRIPTION_CREATED, subscriptionType);
         }
 
         String letterTemplateName = getLetterTemplateName(subscriptionType, notificationWrapper.getNotificationType());
@@ -572,93 +607,48 @@ public class Personalisation<E extends NotificationWrapper> {
                                         NotificationWrapper notificationWrapper) {
 
         NotificationEventType notificationEventType = notificationWrapper.getNotificationType();
-        String emailTemplateName = notificationEventType.getId();
 
-        if (ADJOURNED_NOTIFICATION.equals(notificationEventType)
-                || APPEAL_DORMANT_NOTIFICATION.equals(notificationEventType)
-                || APPEAL_LAPSED_NOTIFICATION.equals(notificationEventType)
-                || HMCTS_APPEAL_LAPSED_NOTIFICATION.equals(notificationEventType)
-                || DWP_APPEAL_LAPSED_NOTIFICATION.equals(notificationEventType)
-                || APPEAL_RECEIVED_NOTIFICATION.equals(notificationEventType)
-                || APPEAL_WITHDRAWN_NOTIFICATION.equals(notificationEventType)
-                || ADMIN_APPEAL_WITHDRAWN.equals(notificationEventType)
-                || CASE_UPDATED.equals(notificationEventType)
-                || EVIDENCE_RECEIVED_NOTIFICATION.equals(notificationEventType)
-                || EVIDENCE_REMINDER_NOTIFICATION.equals(notificationEventType)
-                || HEARING_BOOKED_NOTIFICATION.equals(notificationEventType)
-                || HEARING_REMINDER_NOTIFICATION.equals(notificationEventType)
-                || POSTPONEMENT_NOTIFICATION.equals(notificationEventType)
-                || DWP_RESPONSE_RECEIVED_NOTIFICATION.equals(notificationEventType)
-                || DWP_UPLOAD_RESPONSE_NOTIFICATION.equals(notificationEventType)
-                || RESEND_APPEAL_CREATED_NOTIFICATION.equals(notificationEventType)
-                || VALID_APPEAL_CREATED.equals(notificationEventType)
-                || SYA_APPEAL_CREATED_NOTIFICATION.equals(notificationEventType)) {
-
-            emailTemplateName = emailTemplateName + "." + lowerCase(subscriptionType.name());
+        if (EVENTS_WITH_SUBSCRIPTION_TYPE_EMAIL_TEMPLATES.contains(notificationEventType)) {
+            return getSubscriptionTemplateName(notificationEventType, subscriptionType);
         }
 
-
-        return emailTemplateName;
+        return notificationEventType.getId();
     }
 
     private String getDocmosisTemplateName(SubscriptionType subscriptionType, NotificationEventType notificationEventType, SscsCaseData caseData) {
 
-        String letterTemplateName = notificationEventType.getId();
-
-        if (subscriptionType != null
-                && (DIRECTION_ISSUED.equals(notificationEventType) || DIRECTION_ISSUED_WELSH.equals(notificationEventType))
-                && caseData.getDirectionTypeDl() != null
-                && caseData.getDirectionTypeDl().getValue() != null) {
-
-            letterTemplateName = letterTemplateName + "." + caseData.getDirectionTypeDl().getValue().getCode() + "." + subscriptionType.name().toLowerCase();
-
-        } else if (subscriptionType != null
-            && (ACTION_HEARING_RECORDING_REQUEST.equals(notificationEventType)
-            || ACTION_POSTPONEMENT_REQUEST.equals(notificationEventType)
-            || ACTION_POSTPONEMENT_REQUEST_WELSH.equals(notificationEventType)
-            || ADMIN_APPEAL_WITHDRAWN.equals(notificationEventType)
-            || APPEAL_LAPSED_NOTIFICATION.equals(notificationEventType)
-            || APPEAL_RECEIVED_NOTIFICATION.equals(notificationEventType)
-            || APPEAL_WITHDRAWN_NOTIFICATION.equals(notificationEventType)
-            || DEATH_OF_APPELLANT.equals(notificationEventType)
-            || DECISION_ISSUED.equals(notificationEventType)
-            || DECISION_ISSUED_WELSH.equals(notificationEventType)
-            || DIRECTION_ISSUED.equals(notificationEventType)
-            || DIRECTION_ISSUED_WELSH.equals(notificationEventType)
-            || DWP_APPEAL_LAPSED_NOTIFICATION.equals(notificationEventType)
-            || HEARING_BOOKED_NOTIFICATION.equals(notificationEventType)
-            || HMCTS_APPEAL_LAPSED_NOTIFICATION.equals(notificationEventType)
-            || ISSUE_ADJOURNMENT_NOTICE.equals(notificationEventType)
-            || ISSUE_ADJOURNMENT_NOTICE_WELSH.equals(notificationEventType)
-            || ISSUE_FINAL_DECISION.equals(notificationEventType)
-            || ISSUE_FINAL_DECISION_WELSH.equals(notificationEventType)
-            || JOINT_PARTY_ADDED.equals(notificationEventType)
-            || PROVIDE_APPOINTEE_DETAILS.equals(notificationEventType)
-            || REQUEST_INFO_INCOMPLETE.equals(notificationEventType)
-            || REVIEW_CONFIDENTIALITY_REQUEST.equals(notificationEventType)
-            || UPDATE_OTHER_PARTY_DATA.equals(notificationEventType)
-            || VALID_APPEAL_CREATED.equals(notificationEventType))) {
-            letterTemplateName = letterTemplateName + "." + lowerCase(subscriptionType.name());
+        if (isNull(subscriptionType)) {
+            return notificationEventType.getId();
         }
 
-        return letterTemplateName;
-    }
+        String directionType = Optional.ofNullable(caseData.getDirectionTypeDl())
+            .map(DynamicList::getValue)
+            .map(DynamicListItem::getCode)
+            .orElse(null);
 
-    private String getLetterTemplateName(SubscriptionType subscriptionType, NotificationEventType
-            notificationEventType) {
-
-        String letterTemplateName = notificationEventType.getId();
-
-        if (null != subscriptionType
-                && (LETTER_SUBSCRIPTION_TYPES.contains(notificationEventType)
-                || JUDGE_DECISION_APPEAL_TO_PROCEED.equals(notificationEventType)
-                || TCW_DECISION_APPEAL_TO_PROCEED.equals(notificationEventType))) {
-            letterTemplateName = letterTemplateName + "." + lowerCase(subscriptionType.name());
+        if (nonNull(directionType)
+            && (DIRECTION_ISSUED.equals(notificationEventType)
+            || DIRECTION_ISSUED_WELSH.equals(notificationEventType))) {
+            return getSubscriptionTemplateNameWithDirection(notificationEventType, directionType, subscriptionType);
         }
-        return letterTemplateName;
+
+        if (EVENTS_WITH_SUBSCRIPTION_TYPE_DOCMOSIS_TEMPLATES.contains(notificationEventType)) {
+            return getSubscriptionTemplateName(notificationEventType, subscriptionType);
+        }
+
+        return notificationEventType.getId();
     }
 
-    Boolean isSendSmsSubscriptionConfirmation() {
+    private String getLetterTemplateName(SubscriptionType subscriptionType,
+                                         NotificationEventType notificationEventType) {
+        if (nonNull(subscriptionType)
+            && NotificationEventTypeLists.EVENT_TYPES_FOR_NOTIFY_LETTERS.contains(notificationEventType)) {
+            return getSubscriptionTemplateName(notificationEventType, subscriptionType);
+        }
+        return notificationEventType.getId();
+    }
+
+    boolean isSendSmsSubscriptionConfirmation() {
         return sendSmsSubscriptionConfirmation;
     }
 
@@ -668,10 +658,10 @@ public class Personalisation<E extends NotificationWrapper> {
 
     protected Map<String, Object> setHearingArrangementDetails(Map<String, Object> personalisation, SscsCaseData ccdResponse) {
         if (null != ccdResponse.getAppeal() && null != ccdResponse.getAppeal().getHearingOptions()) {
-            personalisation.put(AppConstants.HEARING_ARRANGEMENT_DETAILS_LITERAL, buildHearingArrangements(ccdResponse.getAppeal().getHearingOptions(), personalisationConfiguration.getPersonalisation().get(LanguagePreference.ENGLISH)));
+            personalisation.put(HEARING_ARRANGEMENT_DETAILS_LITERAL, buildHearingArrangements(ccdResponse.getAppeal().getHearingOptions(), personalisationConfiguration.getPersonalisation().get(LanguagePreference.ENGLISH)));
 
             if (ccdResponse.isLanguagePreferenceWelsh()) {
-                personalisation.put(AppConstants.WELSH_HEARING_ARRANGEMENT_DETAILS_LITERAL, buildHearingArrangements(ccdResponse.getAppeal().getHearingOptions(), personalisationConfiguration.getPersonalisation().get(LanguagePreference.WELSH)));
+                personalisation.put(HEARING_ARRANGEMENT_DETAILS_LITERAL_WELSH, buildHearingArrangements(ccdResponse.getAppeal().getHearingOptions(), personalisationConfiguration.getPersonalisation().get(LanguagePreference.WELSH)));
             }
         }
         return personalisation;
@@ -698,5 +688,21 @@ public class Personalisation<E extends NotificationWrapper> {
 
     private String convertBooleanToRequiredText(boolean bool, Map<String, String> titleText) {
         return bool ? titleText.get(PersonalisationConfiguration.PersonalisationKey.REQUIRED.name()) : titleText.get(PersonalisationConfiguration.PersonalisationKey.NOT_REQUIRED.name());
+    }
+
+    private static String getSubscriptionTemplateName(NotificationEventType notificationEventType,
+                                                      SubscriptionType subscriptionType) {
+        return String.format(TEMPLATE_NAME_TEMPLATE,
+            notificationEventType.getId(),
+            subscriptionType.name().toLowerCase());
+    }
+
+    private static String getSubscriptionTemplateNameWithDirection(NotificationEventType notificationEventType,
+                                                                   String directionType,
+                                                                   SubscriptionType subscriptionType) {
+        return String.format(TEMPLATE_NAME_TEMPLATE_WITH_DIRECTION_TYPE,
+            notificationEventType.getId(),
+            directionType,
+            subscriptionType.name().toLowerCase());
     }
 }

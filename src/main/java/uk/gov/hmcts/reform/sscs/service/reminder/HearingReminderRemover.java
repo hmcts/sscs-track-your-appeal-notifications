@@ -1,8 +1,8 @@
 package uk.gov.hmcts.reform.sscs.service.reminder;
 
 import static org.slf4j.LoggerFactory.getLogger;
-import static uk.gov.hmcts.reform.sscs.domain.notify.NotificationEventType.HEARING_REMINDER_NOTIFICATION;
-import static uk.gov.hmcts.reform.sscs.domain.notify.NotificationEventType.POSTPONEMENT_NOTIFICATION;
+import static uk.gov.hmcts.reform.sscs.domain.notify.NotificationEventType.HEARING_REMINDER;
+import static uk.gov.hmcts.reform.sscs.domain.notify.NotificationEventType.POSTPONEMENT;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
@@ -30,7 +30,7 @@ public class HearingReminderRemover implements ReminderHandler {
     public boolean canHandle(NotificationWrapper wrapper) {
         return wrapper
             .getNotificationType()
-            .equals(POSTPONEMENT_NOTIFICATION);
+            .equals(POSTPONEMENT);
     }
 
     public boolean canSchedule(NotificationWrapper wrapper) {
@@ -43,7 +43,7 @@ public class HearingReminderRemover implements ReminderHandler {
         }
 
         String caseId = wrapper.getCaseId();
-        String jobGroup = jobGroupGenerator.generate(caseId, HEARING_REMINDER_NOTIFICATION.getId());
+        String jobGroup = jobGroupGenerator.generate(caseId, HEARING_REMINDER.getId());
 
         try {
 

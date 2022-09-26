@@ -5,7 +5,7 @@ import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
 import static uk.gov.hmcts.reform.sscs.ccd.domain.EventType.DWP_RESPOND;
-import static uk.gov.hmcts.reform.sscs.domain.notify.NotificationEventType.APPEAL_RECEIVED_NOTIFICATION;
+import static uk.gov.hmcts.reform.sscs.domain.notify.NotificationEventType.APPEAL_RECEIVED;
 
 import java.security.NoSuchAlgorithmException;
 import java.time.LocalTime;
@@ -31,7 +31,7 @@ public class DwpResponseReceivedDateExtractorTest {
     }
 
     @Test
-    @Parameters({"DWP_RESPONSE_RECEIVED_NOTIFICATION", "DWP_UPLOAD_RESPONSE_NOTIFICATION"})
+    @Parameters({"DWP_RESPONSE_RECEIVED", "DWP_UPLOAD_RESPONSE"})
     public void extractsDwpResponseReceivedDate(NotificationEventType eventType) {
 
         String ccdEventDate = "2018-01-01T14:01:18";
@@ -53,7 +53,7 @@ public class DwpResponseReceivedDateExtractorTest {
     public void returnsEmptyOptionalWhenDateNotPresent() {
 
         CcdNotificationWrapper ccdResponse = SscsCaseDataUtils.buildBasicCcdNotificationWrapper(
-            APPEAL_RECEIVED_NOTIFICATION
+            APPEAL_RECEIVED
         );
 
         Optional<ZonedDateTime> dwpResponseReceivedDate = dwpResponseReceivedDateExtractor.extract(ccdResponse.getNewSscsCaseData());
@@ -66,7 +66,7 @@ public class DwpResponseReceivedDateExtractorTest {
         ZonedDateTime expectedDwpResponseReceivedDate = ZonedDateTime.parse("2018-01-25T00:00:00Z[Europe/London]");
 
         CcdNotificationWrapper ccdResponse = SscsCaseDataUtils.buildBasicCcdNotificationWrapper(
-                APPEAL_RECEIVED_NOTIFICATION
+            APPEAL_RECEIVED
         );
         ccdResponse.getSscsCaseDataWrapper().getNewSscsCaseData().setDwpResponseDate("2018-01-25");
 

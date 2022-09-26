@@ -99,7 +99,7 @@ public class NotificationSenderTest {
                 .thenReturn(sendEmailResponse);
         when(sendEmailResponse.getNotificationId()).thenReturn(UUID.randomUUID());
 
-        notificationSender.sendEmail(templateId, emailAddress, personalisation, reference, NotificationEventType.APPEAL_RECEIVED_NOTIFICATION, SSCS_CASE_DATA);
+        notificationSender.sendEmail(templateId, emailAddress, personalisation, reference, NotificationEventType.APPEAL_RECEIVED, SSCS_CASE_DATA);
 
         verifyNoInteractions(notificationClient);
         verify(testNotificationClient).sendEmail(templateId, emailAddress, personalisation, reference);
@@ -112,7 +112,7 @@ public class NotificationSenderTest {
                 .thenReturn(sendEmailResponse);
         when(sendEmailResponse.getNotificationId()).thenReturn(UUID.randomUUID());
 
-        notificationSender.sendEmail(templateId, emailAddress, personalisation, reference, NotificationEventType.APPEAL_RECEIVED_NOTIFICATION, SSCS_CASE_DATA);
+        notificationSender.sendEmail(templateId, emailAddress, personalisation, reference, NotificationEventType.APPEAL_RECEIVED, SSCS_CASE_DATA);
 
         verifyNoInteractions(testNotificationClient);
         verify(notificationClient).sendEmail(templateId, emailAddress, personalisation, reference);
@@ -126,7 +126,7 @@ public class NotificationSenderTest {
                 .thenReturn(sendEmailResponse);
         when(sendEmailResponse.getNotificationId()).thenReturn(UUID.randomUUID());
 
-        notificationSender.sendEmail(templateId, emailAddress, personalisation, reference, NotificationEventType.APPEAL_RECEIVED_NOTIFICATION, SSCS_CASE_DATA);
+        notificationSender.sendEmail(templateId, emailAddress, personalisation, reference, NotificationEventType.APPEAL_RECEIVED, SSCS_CASE_DATA);
 
         verifyNoInteractions(notificationClient);
         verify(testNotificationClient).sendEmail(templateId, emailAddress, personalisation, reference);
@@ -139,7 +139,7 @@ public class NotificationSenderTest {
                 .thenReturn(sendSmsResponse);
         when(sendSmsResponse.getNotificationId()).thenReturn(UUID.randomUUID());
 
-        notificationSender.sendSms(templateId, phoneNumber, personalisation, reference, SMS_SENDER, NotificationEventType.APPEAL_RECEIVED_NOTIFICATION, SSCS_CASE_DATA);
+        notificationSender.sendSms(templateId, phoneNumber, personalisation, reference, SMS_SENDER, NotificationEventType.APPEAL_RECEIVED, SSCS_CASE_DATA);
 
         verifyNoInteractions(testNotificationClient);
         verify(notificationClient).sendSms(templateId, phoneNumber, personalisation, reference, SMS_SENDER);
@@ -153,7 +153,7 @@ public class NotificationSenderTest {
                 .thenReturn(sendSmsResponse);
         when(sendSmsResponse.getNotificationId()).thenReturn(UUID.randomUUID());
 
-        notificationSender.sendSms(templateId, phoneNumber, personalisation, reference, SMS_SENDER, NotificationEventType.APPEAL_RECEIVED_NOTIFICATION, SSCS_CASE_DATA);
+        notificationSender.sendSms(templateId, phoneNumber, personalisation, reference, SMS_SENDER, NotificationEventType.APPEAL_RECEIVED, SSCS_CASE_DATA);
 
         verifyNoInteractions(notificationClient);
         verify(testNotificationClient).sendSms(templateId, phoneNumber, personalisation, reference, SMS_SENDER);
@@ -167,7 +167,7 @@ public class NotificationSenderTest {
         when(letterResponse.getNotificationId()).thenReturn(UUID.randomUUID());
 
         byte[] sampleDirectionCoversheet = IOUtils.toByteArray(getClass().getClassLoader().getResourceAsStream("pdfs/direction-notice-coversheet-sample.pdf"));
-        notificationSender.sendBundledLetter(postcode, sampleDirectionCoversheet, NotificationEventType.APPEAL_RECEIVED_NOTIFICATION, "Bob Squires", CCD_CASE_ID);
+        notificationSender.sendBundledLetter(postcode, sampleDirectionCoversheet, NotificationEventType.APPEAL_RECEIVED, "Bob Squires", CCD_CASE_ID);
 
         verifyNoInteractions(testNotificationClient);
         verify(notificationClient).sendPrecompiledLetterWithInputStream(any(), any());
@@ -182,7 +182,7 @@ public class NotificationSenderTest {
         when(letterResponse.getNotificationId()).thenReturn(UUID.randomUUID());
 
         byte[] sampleDirectionCoversheet = IOUtils.toByteArray(getClass().getClassLoader().getResourceAsStream("pdfs/direction-notice-coversheet-sample.pdf"));
-        notificationSender.sendBundledLetter(postcode, sampleDirectionCoversheet, NotificationEventType.APPEAL_RECEIVED_NOTIFICATION, "Bob Squires", CCD_CASE_ID);
+        notificationSender.sendBundledLetter(postcode, sampleDirectionCoversheet, NotificationEventType.APPEAL_RECEIVED, "Bob Squires", CCD_CASE_ID);
 
         verifyNoInteractions(notificationClient);
         verify(testNotificationClient).sendPrecompiledLetterWithInputStream(any(), any());
@@ -196,7 +196,7 @@ public class NotificationSenderTest {
         when(sendLetterResponse.getNotificationId()).thenReturn(UUID.randomUUID());
 
         Address address = Address.builder().line1("1 Appellant Ave").town("Sometown").county("Somecounty").postcode(postcode).build();
-        notificationSender.sendLetter(templateId, address, personalisation, NotificationEventType.APPEAL_RECEIVED_NOTIFICATION, "Bob Squires", CCD_CASE_ID);
+        notificationSender.sendLetter(templateId, address, personalisation, NotificationEventType.APPEAL_RECEIVED, "Bob Squires", CCD_CASE_ID);
 
         verifyNoInteractions(testNotificationClient);
         verify(notificationClient).sendLetter(any(), any(), any());
@@ -211,7 +211,7 @@ public class NotificationSenderTest {
         when(sendLetterResponse.getNotificationId()).thenReturn(UUID.randomUUID());
 
         Address address = Address.builder().line1("1 Appellant Ave").town("Sometown").county("Somecounty").postcode(postcode).build();
-        notificationSender.sendLetter(templateId, address, personalisation, NotificationEventType.APPEAL_RECEIVED_NOTIFICATION, "Bob Squires", CCD_CASE_ID);
+        notificationSender.sendLetter(templateId, address, personalisation, NotificationEventType.APPEAL_RECEIVED, "Bob Squires", CCD_CASE_ID);
 
         verifyNoInteractions(notificationClient);
         verify(testNotificationClient).sendLetter(any(), any(), any());
@@ -227,7 +227,7 @@ public class NotificationSenderTest {
                 .thenReturn(sendEmailResponse);
         when(sendEmailResponse.getNotificationId()).thenReturn(UUID.randomUUID());
 
-        notificationSender.sendEmail(templateId, emailAddress, personalisation, reference, NotificationEventType.APPEAL_RECEIVED_NOTIFICATION, SSCS_CASE_DATA);
+        notificationSender.sendEmail(templateId, emailAddress, personalisation, reference, NotificationEventType.APPEAL_RECEIVED, SSCS_CASE_DATA);
 
         verifyNoInteractions(testNotificationClient);
         verify(notificationClient).sendEmail(templateId, emailAddress, personalisation, reference);
@@ -237,7 +237,7 @@ public class NotificationSenderTest {
                 .to(emailAddress)
                 .from("")
                 .correspondenceType(CorrespondenceType.Email)
-                .eventType(NotificationEventType.APPEAL_RECEIVED_NOTIFICATION.getId())
+                .eventType(NotificationEventType.APPEAL_RECEIVED.getId())
                 .sentOn("this field is ignored")
                 .build()).build();
         verify(saveCorrespondenceAsyncService).saveEmailOrSms(argThat((Correspondence arg) -> EqualsBuilder.reflectionEquals(arg.getValue(), expectedCorrespondence.getValue(), "sentOn")), eq(SSCS_CASE_DATA));
@@ -253,7 +253,7 @@ public class NotificationSenderTest {
                 .thenReturn(null);
         when(sendEmailResponse.getNotificationId()).thenReturn(UUID.randomUUID());
 
-        notificationSender.sendEmail(templateId, emailAddress, personalisation, reference, NotificationEventType.APPEAL_RECEIVED_NOTIFICATION, SSCS_CASE_DATA);
+        notificationSender.sendEmail(templateId, emailAddress, personalisation, reference, NotificationEventType.APPEAL_RECEIVED, SSCS_CASE_DATA);
 
         verifyNoInteractions(testNotificationClient);
         verify(notificationClient).sendEmail(templateId, emailAddress, personalisation, reference);
@@ -270,7 +270,7 @@ public class NotificationSenderTest {
         when(notificationClient.sendSms(templateId, smsNumber, personalisation, reference, "Sender"))
                 .thenReturn(sendSmsResponse);
 
-        notificationSender.sendSms(templateId, smsNumber, personalisation, reference, "Sender", NotificationEventType.APPEAL_RECEIVED_NOTIFICATION, SSCS_CASE_DATA);
+        notificationSender.sendSms(templateId, smsNumber, personalisation, reference, "Sender", NotificationEventType.APPEAL_RECEIVED, SSCS_CASE_DATA);
 
         verifyNoInteractions(testNotificationClient);
         verify(notificationClient).sendSms(templateId, smsNumber, personalisation, reference, "Sender");
@@ -281,7 +281,7 @@ public class NotificationSenderTest {
                 .from("")
                 .subject("SMS correspondence")
                 .correspondenceType(CorrespondenceType.Sms)
-                .eventType(NotificationEventType.APPEAL_RECEIVED_NOTIFICATION.getId())
+                .eventType(NotificationEventType.APPEAL_RECEIVED.getId())
                 .sentOn("this field is ignored")
                 .build()).build();
         verify(saveCorrespondenceAsyncService).saveEmailOrSms(argThat((Correspondence arg) -> EqualsBuilder.reflectionEquals(arg.getValue(), expectedCorrespondence.getValue(), "sentOn")), eq(SSCS_CASE_DATA));
@@ -296,7 +296,7 @@ public class NotificationSenderTest {
         when(notificationClient.sendSms(templateId, smsNumber, personalisation, reference, "Sender"))
                 .thenReturn(null);
 
-        notificationSender.sendSms(templateId, smsNumber, personalisation, reference, "Sender", NotificationEventType.APPEAL_RECEIVED_NOTIFICATION, SSCS_CASE_DATA);
+        notificationSender.sendSms(templateId, smsNumber, personalisation, reference, "Sender", NotificationEventType.APPEAL_RECEIVED, SSCS_CASE_DATA);
 
         verifyNoInteractions(testNotificationClient);
         verify(notificationClient).sendSms(templateId, smsNumber, personalisation, reference, "Sender");
@@ -311,7 +311,7 @@ public class NotificationSenderTest {
         Exception exception = (error.equals("null")) ? new NullPointerException(error) : new NotificationClientException(error);
         doThrow(exception).when(testNotificationClient).sendEmail(templateId, emailAddress, personalisation, reference);
 
-        notificationSender.sendEmail(templateId, emailAddress, personalisation, reference, NotificationEventType.APPEAL_RECEIVED_NOTIFICATION, SSCS_CASE_DATA);
+        notificationSender.sendEmail(templateId, emailAddress, personalisation, reference, NotificationEventType.APPEAL_RECEIVED, SSCS_CASE_DATA);
     }
 
     @Test(expected = NotificationClientException.class)
@@ -321,7 +321,7 @@ public class NotificationSenderTest {
         Exception exception = (error.equals("null")) ? new NullPointerException(error) : new NotificationClientException(error);
         doThrow(exception).when(notificationClient).sendSms(templateId, smsNumber, personalisation, reference, "Sender");
 
-        notificationSender.sendSms(templateId, smsNumber, personalisation, reference, "Sender", NotificationEventType.APPEAL_RECEIVED_NOTIFICATION, SSCS_CASE_DATA);
+        notificationSender.sendSms(templateId, smsNumber, personalisation, reference, "Sender", NotificationEventType.APPEAL_RECEIVED, SSCS_CASE_DATA);
     }
 
     @Test(expected = NotificationClientException.class)
@@ -332,7 +332,7 @@ public class NotificationSenderTest {
         Exception exception = (error.equals("null")) ? new NullPointerException(error) : new NotificationClientException(error);
         doThrow(exception).when(notificationClient).sendLetter(any(), any(), any());
 
-        notificationSender.sendLetter(templateId, address, personalisation, NotificationEventType.APPEAL_RECEIVED_NOTIFICATION, "Bob Squires", CCD_CASE_ID);
+        notificationSender.sendLetter(templateId, address, personalisation, NotificationEventType.APPEAL_RECEIVED, "Bob Squires", CCD_CASE_ID);
     }
 
     @Test(expected = NotificationClientException.class)
@@ -343,26 +343,26 @@ public class NotificationSenderTest {
 
         String postcode = "LN8 4DX";
         byte[] sampleDirectionCoversheet = IOUtils.toByteArray(getClass().getClassLoader().getResourceAsStream("pdfs/direction-notice-coversheet-sample.pdf"));
-        notificationSender.sendBundledLetter(postcode, sampleDirectionCoversheet, NotificationEventType.APPEAL_RECEIVED_NOTIFICATION, "Bob Squires", CCD_CASE_ID);
+        notificationSender.sendBundledLetter(postcode, sampleDirectionCoversheet, NotificationEventType.APPEAL_RECEIVED, "Bob Squires", CCD_CASE_ID);
     }
 
     @Test
     public void saveLetterCorrespondence() {
         byte[] sampleLetter = "Letter".getBytes();
-        notificationSender.saveLettersToReasonableAdjustment(sampleLetter, NotificationEventType.APPEAL_RECEIVED_NOTIFICATION, "Bob Squires", CCD_CASE_ID, SubscriptionType.APPELLANT);
+        notificationSender.saveLettersToReasonableAdjustment(sampleLetter, NotificationEventType.APPEAL_RECEIVED, "Bob Squires", CCD_CASE_ID, SubscriptionType.APPELLANT);
 
         verify(saveCorrespondenceAsyncService).saveLetter(eq(sampleLetter), correspondenceArgumentCaptor.capture(), eq(CCD_CASE_ID), eq(SubscriptionType.APPELLANT));
         Correspondence correspondence = correspondenceArgumentCaptor.getValue();
         assertNotNull(correspondence);
         assertEquals(CorrespondenceType.Letter, correspondence.getValue().getCorrespondenceType());
         assertEquals("Bob Squires", correspondence.getValue().getTo());
-        assertEquals(NotificationEventType.APPEAL_RECEIVED_NOTIFICATION.getId(), correspondence.getValue().getEventType());
+        assertEquals(NotificationEventType.APPEAL_RECEIVED.getId(), correspondence.getValue().getEventType());
         assertEquals(ReasonableAdjustmentStatus.REQUIRED, correspondence.getValue().getReasonableAdjustmentStatus());
     }
 
     @Test
     public void saveLetterCorrespondence_emptyLetter() throws NotificationClientException {
-        notificationSender.saveLettersToReasonableAdjustment(null, NotificationEventType.APPEAL_RECEIVED_NOTIFICATION, "Bob Squires", CCD_CASE_ID, SubscriptionType.APPELLANT);
+        notificationSender.saveLettersToReasonableAdjustment(null, NotificationEventType.APPEAL_RECEIVED, "Bob Squires", CCD_CASE_ID, SubscriptionType.APPELLANT);
         verifyNoInteractions(saveCorrespondenceAsyncService);
     }
 

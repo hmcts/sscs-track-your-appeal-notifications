@@ -47,18 +47,43 @@ public class FilterNotificationsEventsHandlerTest {
     }
 
     @Test
-    @Parameters({"ADJOURNED_NOTIFICATION", "ADMIN_APPEAL_WITHDRAWN", "APPEAL_DORMANT_NOTIFICATION",
-        "APPEAL_LAPSED_NOTIFICATION", "APPEAL_RECEIVED_NOTIFICATION",
-        "APPEAL_WITHDRAWN_NOTIFICATION", "DECISION_ISSUED", "DIRECTION_ISSUED", "DIRECTION_ISSUED_WELSH",
-        "DWP_APPEAL_LAPSED_NOTIFICATION", "DWP_RESPONSE_RECEIVED_NOTIFICATION",
-        "DWP_UPLOAD_RESPONSE_NOTIFICATION", "EVIDENCE_RECEIVED_NOTIFICATION",
-        "HEARING_BOOKED_NOTIFICATION", "ISSUE_ADJOURNMENT_NOTICE", "ISSUE_FINAL_DECISION", "ISSUE_FINAL_DECISION_WELSH",
-        "NON_COMPLIANT_NOTIFICATION", "DRAFT_TO_NON_COMPLIANT_NOTIFICATION", "REISSUE_DOCUMENT",
-        "REQUEST_INFO_INCOMPLETE", "RESEND_APPEAL_CREATED_NOTIFICATION", "STRUCK_OUT",
-        "SUBSCRIPTION_UPDATED_NOTIFICATION", "VALID_APPEAL_CREATED", "DRAFT_TO_VALID_APPEAL_CREATED", "DIRECTION_ISSUED_WELSH",
-        "DECISION_ISSUED_WELSH", "REVIEW_CONFIDENTIALITY_REQUEST", "JOINT_PARTY_ADDED",
-        "PROCESS_AUDIO_VIDEO", "PROCESS_AUDIO_VIDEO_WELSH", "ACTION_HEARING_RECORDING_REQUEST", "ACTION_POSTPONEMENT_REQUEST_WELSH",
-        "UPDATE_OTHER_PARTY_DATA"
+    @Parameters({
+        "ACTION_HEARING_RECORDING_REQUEST",
+        "ACTION_POSTPONEMENT_REQUEST_WELSH",
+        "ADJOURNED",
+        "ADMIN_APPEAL_WITHDRAWN",
+        "APPEAL_DORMANT",
+        "APPEAL_LAPSED",
+        "APPEAL_RECEIVED",
+        "APPEAL_WITHDRAWN",
+        "DECISION_ISSUED",
+        "DECISION_ISSUED_WELSH",
+        "DIRECTION_ISSUED",
+        "DIRECTION_ISSUED_WELSH",
+        "DIRECTION_ISSUED_WELSH",
+        "DRAFT_TO_NON_COMPLIANT",
+        "DRAFT_TO_VALID_APPEAL_CREATED",
+        "DWP_APPEAL_LAPSED",
+        "DWP_RESPONSE_RECEIVED",
+        "DWP_UPLOAD_RESPONSE",
+        "EVIDENCE_RECEIVED",
+        "HEARING_BOOKED",
+        "ISSUE_ADJOURNMENT_NOTICE",
+        "ISSUE_FINAL_DECISION",
+        "ISSUE_FINAL_DECISION_WELSH",
+        "JOINT_PARTY_ADDED",
+        "NON_COMPLIANT",
+        "POSTPONEMENT",
+        "PROCESS_AUDIO_VIDEO",
+        "PROCESS_AUDIO_VIDEO_WELSH",
+        "REISSUE_DOCUMENT",
+        "REQUEST_INFO_INCOMPLETE",
+        "RESEND_APPEAL_CREATED",
+        "REVIEW_CONFIDENTIALITY_REQUEST",
+        "STRUCK_OUT",
+        "SUBSCRIPTION_UPDATED",
+        "UPDATE_OTHER_PARTY_DATA",
+        "VALID_APPEAL_CREATED"
     })
     public void willHandleEvents(NotificationEventType notificationEventType) {
         SscsCaseDataWrapper callback = SscsCaseDataWrapper.builder().notificationEventType(notificationEventType).build();
@@ -69,14 +94,17 @@ public class FilterNotificationsEventsHandlerTest {
     }
 
     @Test
-    @Parameters({"DO_NOT_SEND", "SYA_APPEAL_CREATED_NOTIFICATION", "POSTPONEMENT_NOTIFICATION", "null"})
+    @Parameters({
+        "DO_NOT_SEND",
+        "SYA_APPEAL_CREATED",
+        "null"})
     public void willNotHandleEvents(@Nullable NotificationEventType notificationEventType) {
         SscsCaseDataWrapper callback = SscsCaseDataWrapper.builder().notificationEventType(notificationEventType).build();
         assertFalse(handler.canHandle(callback));
     }
 
     @Test(expected = IllegalStateException.class)
-    @Parameters({"DO_NOT_SEND", "SYA_APPEAL_CREATED_NOTIFICATION"})
+    @Parameters({"DO_NOT_SEND", "SYA_APPEAL_CREATED"})
     public void willThrowExceptionIfTriesToHandleEvents(NotificationEventType notificationEventType) {
         SscsCaseDataWrapper callback = SscsCaseDataWrapper.builder().notificationEventType(notificationEventType).build();
         handler.handle(callback);

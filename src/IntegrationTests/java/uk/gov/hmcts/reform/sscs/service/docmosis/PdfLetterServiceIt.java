@@ -64,7 +64,7 @@ public class PdfLetterServiceIt {
         SscsCaseDataWrapper dataWrapper = SscsCaseDataWrapper.builder()
                 .newSscsCaseData(sscsCaseData)
                 .oldSscsCaseData(sscsCaseData)
-                .notificationEventType(NotificationEventType.APPEAL_RECEIVED_NOTIFICATION)
+                .notificationEventType(NotificationEventType.APPEAL_RECEIVED)
                 .build();
         NotificationWrapper wrapper = new CcdNotificationWrapper(dataWrapper);
         byte[] bytes = pdfLetterService.buildCoversheet(wrapper, new SubscriptionWithType(EMPTY_SUBSCRIPTION,
@@ -131,7 +131,7 @@ public class PdfLetterServiceIt {
         SscsCaseDataWrapper dataWrapper = SscsCaseDataWrapper.builder()
                 .newSscsCaseData(sscsCaseData)
                 .oldSscsCaseData(sscsCaseData)
-                .notificationEventType(NotificationEventType.APPEAL_DORMANT_NOTIFICATION)
+                .notificationEventType(NotificationEventType.APPEAL_DORMANT)
                 .build();
         NotificationWrapper wrapper = new CcdNotificationWrapper(dataWrapper);
         pdfLetterService.buildCoversheet(wrapper, new SubscriptionWithType(EMPTY_SUBSCRIPTION,
