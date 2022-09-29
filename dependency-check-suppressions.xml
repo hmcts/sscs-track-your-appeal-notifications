@@ -174,9 +174,4 @@
         <packageUrl regex="true">^pkg:maven/jakarta\.annotation/jakarta\.annotation\-api@.*$</packageUrl>
         <cve>CVE-2022-31569</cve>
     </suppress>
-    <suppress until="2022-11-30">
-        <notes><![CDATA[ Temporary suppression for snakeyaml. Shouldn't be a problem for us so can be postponed,
-    but fix is easy and should be handled in PET ]]></notes>
-        <cve>CVE-2022-38752</cve>
-    </suppress>
 </suppressions>
