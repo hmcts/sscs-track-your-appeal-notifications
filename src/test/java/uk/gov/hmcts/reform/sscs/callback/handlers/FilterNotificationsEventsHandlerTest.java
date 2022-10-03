@@ -1,24 +1,29 @@
 package uk.gov.hmcts.reform.sscs.callback.handlers;
 
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertTrue;
+import static java.util.Objects.nonNull;
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.assertThatExceptionOfType;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.Mockito.doThrow;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.verifyNoInteractions;
+import static org.mockito.MockitoAnnotations.openMocks;
+import static uk.gov.hmcts.reform.sscs.ccd.domain.HearingRoute.GAPS;
+import static uk.gov.hmcts.reform.sscs.ccd.domain.HearingRoute.LIST_ASSIST;
+import static uk.gov.hmcts.reform.sscs.ccd.domain.YesNo.NO;
+import static uk.gov.hmcts.reform.sscs.ccd.domain.YesNo.YES;
 import static uk.gov.hmcts.reform.sscs.domain.notify.NotificationEventType.*;
 
 import junitparams.JUnitParamsRunner;
 import junitparams.Parameters;
 import junitparams.converters.Nullable;
+import org.junit.After;
 import org.junit.Before;
-import org.junit.Rule;
 import org.junit.Test;
 import org.junit.runner.RunWith;
+import org.mockito.InjectMocks;
 import org.mockito.Mock;
-import org.mockito.junit.MockitoJUnit;
-import org.mockito.junit.MockitoRule;
 import uk.gov.hmcts.reform.sscs.ccd.domain.*;
 import uk.gov.hmcts.reform.sscs.domain.SscsCaseDataWrapper;
 import uk.gov.hmcts.reform.sscs.domain.notify.NotificationEventType;
@@ -29,21 +34,47 @@ import uk.gov.hmcts.reform.sscs.service.RetryNotificationService;
 
 @RunWith(JUnitParamsRunner.class)
 public class FilterNotificationsEventsHandlerTest {
-
-    @Rule
-    public MockitoRule rule = MockitoJUnit.rule();
-
     @Mock
     private NotificationService notificationService;
 
     @Mock
     private RetryNotificationService retryNotificationService;
 
+    @InjectMocks
     private FilterNotificationsEventsHandler handler;
+
+    private SscsCaseDataWrapper callback;
+    private SscsCaseData newCaseData;
+    private SscsCaseData oldCaseData;
+    private AutoCloseable autoCloseable;
 
     @Before
     public void setUp() {
-        handler = new FilterNotificationsEventsHandler(notificationService, retryNotificationService);
+        autoCloseable = openMocks(this);
+
+        oldCaseData = SscsCaseData.builder()
+            .appeal(Appeal.builder()
+                .appellant(Appellant.builder().build())
+                .build())
+            .postponementRequest(PostponementRequest.builder().build())
+            .build();
+
+        newCaseData = SscsCaseData.builder()
+            .appeal(Appeal.builder()
+                .appellant(Appellant.builder().build())
+                .build())
+            .build();
+
+        callback = SscsCaseDataWrapper.builder()
+            .notificationEventType(VALID_APPEAL_CREATED)
+            .oldSscsCaseData(oldCaseData)
+            .newSscsCaseData(newCaseData)
+            .build();
+    }
+
+    @After
+    public void after() throws Exception {
+        autoCloseable.close();
     }
 
     @Test
@@ -86,11 +117,9 @@ public class FilterNotificationsEventsHandlerTest {
         "VALID_APPEAL_CREATED"
     })
     public void willHandleEvents(NotificationEventType notificationEventType) {
-        SscsCaseDataWrapper callback = SscsCaseDataWrapper.builder().notificationEventType(notificationEventType).build();
-        assertTrue(handler.canHandle(callback));
-        handler.handle(callback);
-        verify(notificationService).manageNotificationAndSubscription(eq(new CcdNotificationWrapper(callback)), eq(false));
-        verifyNoInteractions(retryNotificationService);
+        callback.setNotificationEventType(notificationEventType);
+
+        willHandle(callback);
     }
 
     @Test
@@ -99,123 +128,128 @@ public class FilterNotificationsEventsHandlerTest {
         "SYA_APPEAL_CREATED",
         "null"})
     public void willNotHandleEvents(@Nullable NotificationEventType notificationEventType) {
-        SscsCaseDataWrapper callback = SscsCaseDataWrapper.builder().notificationEventType(notificationEventType).build();
-        assertFalse(handler.canHandle(callback));
+        callback.setNotificationEventType(notificationEventType);
+
+        wontHandle(callback);
     }
 
-    @Test(expected = IllegalStateException.class)
     @Parameters({"DO_NOT_SEND", "SYA_APPEAL_CREATED"})
     public void willThrowExceptionIfTriesToHandleEvents(NotificationEventType notificationEventType) {
-        SscsCaseDataWrapper callback = SscsCaseDataWrapper.builder().notificationEventType(notificationEventType).build();
-        handler.handle(callback);
-    }
+        callback.setNotificationEventType(notificationEventType);
 
-    @Test(expected = NotificationServiceException.class)
-    public void shouldCallToRescheduleNotificationWhenErrorIsNotificationServiceExceptionError() {
-        SscsCaseDataWrapper callback = SscsCaseDataWrapper.builder().notificationEventType(VALID_APPEAL_CREATED).build();
-        doThrow(new NotificationServiceException("123", new RuntimeException("error"))).when(notificationService).manageNotificationAndSubscription(any(), eq(false));
-        try {
-            handler.handle(callback);
-        } catch (NotificationServiceException e) {
-            verify(retryNotificationService).rescheduleIfHandledGovNotifyErrorStatus(eq(1), eq(new CcdNotificationWrapper(callback)), any());
-            throw e;
-        }
-    }
-
-    @Test(expected = RuntimeException.class)
-    public void shouldRescheduleNotificationWhenErrorIsNotANotificationServiceException() {
-        SscsCaseDataWrapper callback = SscsCaseDataWrapper.builder().notificationEventType(VALID_APPEAL_CREATED).build();
-        doThrow(new RuntimeException("error")).when(notificationService).manageNotificationAndSubscription(any(), eq(false));
-        try {
-            handler.handle(callback);
-        } catch (RuntimeException e) {
-            verifyNoInteractions(retryNotificationService);
-            throw e;
-        }
+        wontHandle(callback);
     }
 
     @Test
     @Parameters({"grant", "refuse"})
     public void willHandleActionPostponementRequestEvents(String actionSelected) {
-        SscsCaseDataWrapper callback = SscsCaseDataWrapper.builder()
-                .notificationEventType(ACTION_POSTPONEMENT_REQUEST)
-                .oldSscsCaseData(SscsCaseData.builder()
-                        .postponementRequest(PostponementRequest.builder()
-                                .actionPostponementRequestSelected(actionSelected)
-                                .build())
-                        .build())
-                .build();
-        assertTrue(handler.canHandle(callback));
-        handler.handle(callback);
-        verify(notificationService).manageNotificationAndSubscription(eq(new CcdNotificationWrapper(callback)), eq(false));
-        verifyNoInteractions(retryNotificationService);
+        callback.setNotificationEventType(ACTION_POSTPONEMENT_REQUEST);
+        oldCaseData.getPostponementRequest().setActionPostponementRequestSelected(actionSelected);
+
+        willHandle(callback);
     }
 
     @Test
-    @Parameters({"grant", "refuse"})
-    public void willNotHandleActionPostponementRequestEvents_sendToJudgeAction(String actionSelected) {
-        SscsCaseDataWrapper callback = SscsCaseDataWrapper.builder()
-                .notificationEventType(ACTION_POSTPONEMENT_REQUEST)
-                .oldSscsCaseData(SscsCaseData.builder()
-                        .postponementRequest(PostponementRequest.builder()
-                                .actionPostponementRequestSelected("sendToJudge")
-                                .build())
-                        .build())
-                .build();
-        assertFalse(handler.canHandle(callback));
+    public void willNotHandleActionPostponementRequestEvents_sendToJudgeAction() {
+        callback.setNotificationEventType(ACTION_POSTPONEMENT_REQUEST);
+        oldCaseData.getPostponementRequest().setActionPostponementRequestSelected("sendToJudge");
+
+        wontHandle(callback);
+    }
+
+    @Test
+    public void willHandleForNonGapsHearingRoutes() {
+        callback.setNotificationEventType(HEARING_BOOKED);
+        newCaseData.getSchedulingAndListingFields().setHearingRoute(LIST_ASSIST);
+
+        willHandle(callback);
+    }
+
+    @Test
+    public void wontHandleForGapsHearingRoutes() {
+        callback.setNotificationEventType(HEARING_BOOKED);
+        newCaseData.getSchedulingAndListingFields().setHearingRoute(GAPS);
+
+        wontHandle(callback);
     }
 
     @Test
     @Parameters(method = "eventTypeAndNewAppointees")
     public void willHandleDeathOfAppellantEventsWithNewAppointee(NotificationEventType notificationEventType, Appointee existing, Appointee newlyAdded) {
-        SscsCaseDataWrapper callback = SscsCaseDataWrapper.builder()
-                .notificationEventType(notificationEventType)
-                .oldSscsCaseData(SscsCaseData.builder()
-                        .appeal(Appeal.builder()
-                                .appellant(Appellant.builder()
-                                        .appointee(existing)
-                                        .isAppointee(existing != null ? "yes" : "no")
-                                        .build())
-                                .build())
-                        .build())
-                .newSscsCaseData(SscsCaseData.builder()
-                        .appeal(Appeal.builder()
-                                .appellant(Appellant.builder()
-                                        .appointee(newlyAdded)
-                                        .isAppointee(newlyAdded != null ? "yes" : "no")
-                                        .build())
-                                .build())
-                        .build())
-                .build();
-        assertTrue(handler.canHandle(callback));
-        handler.handle(callback);
-        verify(notificationService).manageNotificationAndSubscription(eq(new CcdNotificationWrapper(callback)), eq(false));
-        verifyNoInteractions(retryNotificationService);
+        callback.setNotificationEventType(notificationEventType);
+
+        String isAppointeeExisting = getIsAppointee(nonNull(existing));
+        oldCaseData.getAppeal().getAppellant().setIsAppointee(isAppointeeExisting);
+        oldCaseData.getAppeal().getAppellant().setAppointee(existing);
+
+        String isAppointeeNew = getIsAppointee(nonNull(newlyAdded));
+        newCaseData.getAppeal().getAppellant().setIsAppointee(isAppointeeNew);
+        newCaseData.getAppeal().getAppellant().setAppointee(newlyAdded);
+
+        willHandle(callback);
     }
 
     @Test
     @Parameters(method = "eventTypeAndNoNewAppointees")
     public void willNotHandleDeathOfAppellantEventsWithoutNewAppointee(NotificationEventType notificationEventType, Appointee existing, Appointee newlyAdded) {
-        SscsCaseDataWrapper callback = SscsCaseDataWrapper.builder()
-                .notificationEventType(notificationEventType)
-                .oldSscsCaseData(SscsCaseData.builder()
-                        .appeal(Appeal.builder()
-                                .appellant(Appellant.builder()
-                                        .appointee(existing)
-                                        .isAppointee(existing != null ? "yes" : "no")
-                                        .build())
-                                .build())
-                        .build())
-                .newSscsCaseData(SscsCaseData.builder()
-                        .appeal(Appeal.builder()
-                                .appellant(Appellant.builder()
-                                        .appointee(newlyAdded)
-                                        .isAppointee(newlyAdded != null ? "yes" : "no")
-                                        .build())
-                                .build())
-                        .build())
-                .build();
-        assertFalse(handler.canHandle(callback));
+        callback.setNotificationEventType(notificationEventType);
+
+        String isAppointeeExisting = getIsAppointee(nonNull(existing));
+        oldCaseData.getAppeal().getAppellant().setIsAppointee(isAppointeeExisting);
+        oldCaseData.getAppeal().getAppellant().setAppointee(existing);
+
+        String isAppointeeNew = getIsAppointee(nonNull(newlyAdded));
+        newCaseData.getAppeal().getAppellant().setIsAppointee(isAppointeeNew);
+        newCaseData.getAppeal().getAppellant().setAppointee(newlyAdded);
+
+        wontHandle(callback);
+    }
+
+    @Test
+    public void shouldCallToRescheduleNotificationWhenErrorIsNotificationServiceExceptionError() {
+        doThrow(new NotificationServiceException("error msg test", new RuntimeException("error")))
+            .when(notificationService)
+            .manageNotificationAndSubscription(new CcdNotificationWrapper(callback), false);
+
+        assertThatExceptionOfType(NotificationServiceException.class)
+            .isThrownBy(() -> handler.handle(callback))
+            .withMessageContaining("error msg test");
+
+        verify(retryNotificationService).rescheduleIfHandledGovNotifyErrorStatus(
+            eq(1), eq(new CcdNotificationWrapper(callback)), any(NotificationServiceException.class));
+    }
+
+    @Test
+    public void shouldRescheduleNotificationWhenErrorIsNotANotificationServiceException() {
+        doThrow(new RuntimeException("error msg test"))
+            .when(notificationService)
+            .manageNotificationAndSubscription(new CcdNotificationWrapper(callback), false);
+
+        assertThatExceptionOfType(RuntimeException.class)
+            .isThrownBy(() -> handler.handle(callback))
+            .withMessageContaining("error msg test");
+
+        verifyNoInteractions(retryNotificationService);
+    }
+
+    private void willHandle(SscsCaseDataWrapper callback) {
+        assertThat(handler.canHandle(callback)).isTrue();
+        handler.handle(callback);
+        verify(notificationService).manageNotificationAndSubscription(new CcdNotificationWrapper(callback), false);
+        verifyNoInteractions(retryNotificationService);
+    }
+
+    private void wontHandle(SscsCaseDataWrapper callback) {
+        assertThat(handler.canHandle(callback)).isFalse();
+        assertThatExceptionOfType(IllegalStateException.class)
+            .isThrownBy(() -> handler.handle(callback))
+            .withMessage("Cannot handle callback");
+        verifyNoInteractions(notificationService);
+        verifyNoInteractions(retryNotificationService);
+    }
+
+    private static String getIsAppointee(boolean appointee) {
+        return appointee ? YES.getValue() : NO.getValue();
     }
 
     private Object[] eventTypeAndNewAppointees() {
