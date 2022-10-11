@@ -37,10 +37,13 @@ import java.nio.charset.StandardCharsets;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.ZonedDateTime;
-import java.time.format.DateTimeFormatter;
 import java.time.temporal.ChronoUnit;
-import java.util.*;
-import java.util.function.Consumer;
+import java.util.Arrays;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Locale;
+import java.util.Map;
+import java.util.Optional;
 import java.util.stream.Collectors;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.StringUtils;
@@ -62,7 +65,6 @@ import uk.gov.hmcts.reform.sscs.factory.NotificationWrapper;
 import uk.gov.hmcts.reform.sscs.service.MessageAuthenticationServiceImpl;
 import uk.gov.hmcts.reform.sscs.service.RegionalProcessingCenterService;
 import uk.gov.hmcts.reform.sscs.service.SendNotificationHelper;
-import uk.gov.hmcts.reform.sscs.service.conversion.LocalDateToWelshStringConverter;
 
 @Component
 @Slf4j
@@ -83,9 +85,6 @@ public class Personalisation<E extends NotificationWrapper> {
 
     @Autowired
     private RegionalProcessingCenterService regionalProcessingCenterService;
-
-    @Autowired
-    private NotificationDateConverterUtil notificationDateConverterUtil;
 
     @Autowired
     private EvidenceProperties evidenceProperties;
@@ -136,8 +135,8 @@ public class Personalisation<E extends NotificationWrapper> {
         if (latestAppellantInfoRequest == null) {
             latestAppellantInfoRequest = infoRequest;
         } else {
-            LocalDate latestDate = LocalDate.parse(latestAppellantInfoRequest.getAppellantInfo().getRequestDate(), CC_DATE_FORMAT);
-            LocalDate currentDate = LocalDate.parse(infoRequest.getAppellantInfo().getRequestDate(), CC_DATE_FORMAT);
+            LocalDate latestDate = LocalDate.parse(latestAppellantInfoRequest.getAppellantInfo().getRequestDate(), CCD_DATE_FORMAT);
+            LocalDate currentDate = LocalDate.parse(infoRequest.getAppellantInfo().getRequestDate(), CCD_DATE_FORMAT);
             if (currentDate.isAfter(latestDate)) {
                 latestAppellantInfoRequest = infoRequest;
             }
@@ -145,12 +144,7 @@ public class Personalisation<E extends NotificationWrapper> {
         return latestAppellantInfoRequest;
     }
 
-    public static void translateToWelshDate(LocalDate localDate, SscsCaseData sscsCaseData, Consumer<? super String> placeholders) {
-        if (sscsCaseData.isLanguagePreferenceWelsh()) {
-            String translatedDate = LocalDateToWelshStringConverter.convert(localDate);
-            placeholders.accept(translatedDate);
-        }
-    }
+
 
 
     public Map<String, Object> create(final E notificationWrapper, final SubscriptionWithType subscriptionWithType) {
@@ -189,15 +183,16 @@ public class Personalisation<E extends NotificationWrapper> {
             log.warn("Proceeding with 'null' benefit type for case !");
         }
 
-        translateToWelshDate(LocalDate.now(), ccdResponse, value -> personalisation.put(WELSH_CURRENT_DATE, value));
+        personalisation.put(WELSH_CURRENT_DATE, formatLocalDate(LocalDate.now(), LOCALE_WELSH));
 
         PanelComposition panelComposition = ofNullable(benefit).map(Benefit::getPanelComposition).orElse(JUDGE_DOCTOR_AND_DISABILITY_EXPERT_IF_APPLICABLE);
         personalisation.put(PANEL_COMPOSITION, panelComposition.getEnglish());
         personalisation.put(PANEL_COMPOSITION_WELSH, panelComposition.getWelsh());
 
         LocalDate decisionPostedReceivedDate = LocalDate.now().plusDays(7);
-        personalisation.put(DECISION_POSTED_RECEIVE_DATE, formatLocalDate(decisionPostedReceivedDate));
-        translateToWelshDate(decisionPostedReceivedDate, ccdResponse, value -> personalisation.put(WELSH_DECISION_POSTED_RECEIVE_DATE, value));
+        personalisation.put(DECISION_POSTED_RECEIVE_DATE, formatLocalDate(decisionPostedReceivedDate, LOCALE_UK));
+
+        personalisation.put(WELSH_DECISION_POSTED_RECEIVE_DATE, formatLocalDate(decisionPostedReceivedDate, LOCALE_WELSH));
 
         personalisation.put(APPEAL_REF, getAppealReference(ccdResponse));
         personalisation.put(APPELLANT_NAME, ccdResponse.getAppeal().getAppellant().getName().getFullNameNoTitle());
@@ -217,8 +212,8 @@ public class Personalisation<E extends NotificationWrapper> {
         addFirstTierAgencyFields(personalisation, benefit, ccdResponse);
 
         LocalDate createdDate = LocalDate.parse(ofNullable(ccdResponse.getCaseCreated()).orElse(LocalDate.now().toString()));
-        translateToWelshDate(createdDate, ccdResponse, value -> personalisation.put(CREATED_DATE_WELSH, value));
-        personalisation.put(CREATED_DATE, createdDate.toString());
+        personalisation.put(CREATED_DATE, formatLocalDate(createdDate, LOCALE_UK));
+        personalisation.put(CREATED_DATE_WELSH, formatLocalDate(createdDate, LOCALE_WELSH));
 
         personalisation.put(JOINT, subscriptionWithType.getSubscriptionType() == JOINT_PARTY ? JOINT_TEXT_WITH_A_SPACE : EMPTY);
         personalisation.put(JOINT_WELSH, subscriptionWithType.getSubscriptionType() == JOINT_PARTY ? JOINT_WELSH_TEXT_WITH_A_SPACE : EMPTY);
@@ -242,9 +237,9 @@ public class Personalisation<E extends NotificationWrapper> {
             personalisation.put(HEARING, latestHearing.getValue());
 
             if (nonNull(hearingDateTime) && nonNull(latestHearingValue.getVenue())) {
-                personalisation.put(HEARING_DATE, formatLocalDate(hearingDateTime.toLocalDate()));
-                translateToWelshDate(hearingDateTime.toLocalDate(), ccdResponse, value -> personalisation.put(WELSH_HEARING_DATE, value));
-                personalisation.put(HEARING_TIME, formatLocalTime(hearingDateTime));
+                personalisation.put(HEARING_DATE, formatLocalDate(hearingDateTime.toLocalDate(), LOCALE_UK));
+                personalisation.put(WELSH_HEARING_DATE, formatLocalDate(hearingDateTime.toLocalDate(), LOCALE_WELSH));
+                personalisation.put(HEARING_TIME, hearingDateTime.format(TIME_FORMAT_SHORT.localizedBy(LOCALE_ENGLISH_TIME)));
                 personalisation.put(DAYS_TO_HEARING_LITERAL, calculateDaysToHearingText(hearingDateTime.toLocalDate()));
                 personalisation.put(VENUE_ADDRESS_LITERAL, formatAddress(latestHearing));
                 personalisation.put(VENUE_MAP_LINK_LITERAL, latestHearingValue.getVenue().getGoogleMapLink());
@@ -259,9 +254,9 @@ public class Personalisation<E extends NotificationWrapper> {
         setHearingContactDate(personalisation, responseWrapper);
 
         LocalDate today = LocalDate.now();
-        personalisation.put(TRIBUNAL_RESPONSE_DATE_LITERAL, notificationDateConverterUtil.toEmailDate(today.plusDays(56)));
-        personalisation.put(ACCEPT_VIEW_BY_DATE_LITERAL, notificationDateConverterUtil.toEmailDate(today.plusDays(7)));
-        personalisation.put(QUESTION_ROUND_EXPIRES_DATE_LITERAL, notificationDateConverterUtil.toEmailDate(today.plusDays(1)));
+        personalisation.put(TRIBUNAL_RESPONSE_DATE_LITERAL, today.plusDays(56).format(DATE_FORMAT_LONG.localizedBy(LOCALE_UK)));
+        personalisation.put(ACCEPT_VIEW_BY_DATE_LITERAL, today.plusDays(7).format(DATE_FORMAT_LONG.localizedBy(LOCALE_UK)));
+        personalisation.put(QUESTION_ROUND_EXPIRES_DATE_LITERAL, today.plusDays(1).format(DATE_FORMAT_LONG.localizedBy(LOCALE_UK)));
 
         final String tya = tya(subscription);
         personalisation.put(ONLINE_HEARING_REGISTER_LINK_LITERAL, config.getOnlineHearingLink() + "/register?tya=" + tya);
@@ -417,18 +412,15 @@ public class Personalisation<E extends NotificationWrapper> {
     void setHearingContactDate(Map<String, Object> personalisation, SscsCaseDataWrapper wrapper) {
         Optional<ZonedDateTime> hearingContactDate = hearingContactDateExtractor.extract(wrapper);
         hearingContactDate.ifPresent(zonedDateTime -> personalisation.put(HEARING_CONTACT_DATE,
-                formatLocalDate(zonedDateTime.toLocalDate())
+                formatLocalDate(zonedDateTime.toLocalDate(), LOCALE_UK)
         ));
     }
 
     Map<String, Object> setEventData(Map<String, Object> personalisation, SscsCaseData ccdResponse, NotificationEventType notificationEventType) {
         if (ccdResponse.getCreatedInGapsFrom() != null && ccdResponse.getCreatedInGapsFrom().equals("readyToList")) {
             LocalDate localDate = LocalDate.parse(ofNullable(ccdResponse.getDateSentToDwp()).orElse(LocalDate.now().toString())).plusDays(MAX_DWP_RESPONSE_DAYS);
-            String dwpResponseDateString = formatLocalDate(localDate);
-            personalisation.put(APPEAL_RESPOND_DATE, dwpResponseDateString);
-            translateToWelshDate(localDate, ccdResponse, value ->
-                    personalisation.put(WELSH_APPEAL_RESPOND_DATE, value)
-            );
+            personalisation.put(APPEAL_RESPOND_DATE, formatLocalDate(localDate, LOCALE_UK));
+            personalisation.put(WELSH_APPEAL_RESPOND_DATE, formatLocalDate(localDate, LOCALE_WELSH));
 
             return personalisation;
         } else if (ccdResponse.getEvents() != null) {
@@ -455,13 +447,9 @@ public class Personalisation<E extends NotificationWrapper> {
         if (notificationEventType == EVIDENCE_RECEIVED_NOTIFICATION) {
             if (ccdResponse.getEvidence() != null && ccdResponse.getEvidence().getDocuments() != null
                     && !ccdResponse.getEvidence().getDocuments().isEmpty()) {
-                LocalDate evidenceDateTimeFormatted = ccdResponse.getEvidence().getDocuments().get(0).getValue()
-                        .getEvidenceDateTimeFormatted();
-                personalisation.put(EVIDENCE_RECEIVED_DATE_LITERAL,
-                        formatLocalDate(evidenceDateTimeFormatted));
-                translateToWelshDate(evidenceDateTimeFormatted, ccdResponse, value ->
-                        personalisation.put(WELSH_EVIDENCE_RECEIVED_DATE_LITERAL, value)
-                );
+                LocalDate evidenceDateTimeFormatted = ccdResponse.getEvidence().getDocuments().get(0).getValue().getEvidenceDateTimeFormatted();
+                personalisation.put(EVIDENCE_RECEIVED_DATE_LITERAL, formatLocalDate(evidenceDateTimeFormatted, LOCALE_UK));
+                personalisation.put(WELSH_EVIDENCE_RECEIVED_DATE_LITERAL, formatLocalDate(evidenceDateTimeFormatted, LOCALE_WELSH));
             } else {
                 personalisation.put(EVIDENCE_RECEIVED_DATE_LITERAL, EMPTY);
                 personalisation.put(WELSH_EVIDENCE_RECEIVED_DATE_LITERAL, EMPTY);
@@ -473,11 +461,8 @@ public class Personalisation<E extends NotificationWrapper> {
 
     private Map<String, Object> setAppealReceivedDetails(Map<String, Object> personalisation, EventDetails eventDetails, SscsCaseData ccdResponse) {
         LocalDate localDate = eventDetails.getDateTime().plusDays(MAX_DWP_RESPONSE_DAYS).toLocalDate();
-        String dwpResponseDateString = formatLocalDate(localDate);
-        personalisation.put(APPEAL_RESPOND_DATE, dwpResponseDateString);
-        translateToWelshDate(localDate, ccdResponse, value ->
-                personalisation.put(WELSH_APPEAL_RESPOND_DATE, value)
-        );
+        personalisation.put(APPEAL_RESPOND_DATE, formatLocalDate(localDate, LOCALE_UK));
+        personalisation.put(WELSH_APPEAL_RESPOND_DATE, formatLocalDate(localDate, LOCALE_WELSH));
         return personalisation;
     }
 
@@ -544,12 +529,8 @@ public class Personalisation<E extends NotificationWrapper> {
         return macService.generateToken(id, benefitType);
     }
 
-    private String formatLocalDate(LocalDate date) {
-        return date.format(DateTimeFormatter.ofPattern(RESPONSE_DATE_FORMAT));
-    }
-
-    private String formatLocalTime(LocalDateTime date) {
-        return date.format(DateTimeFormatter.ofPattern(HEARING_TIME_FORMAT, Locale.ENGLISH)).toUpperCase();
+    private String formatLocalDate(LocalDate date, Locale locale) {
+        return date.format(DATE_FORMAT_LONG.localizedBy(locale));
     }
 
     public Template getTemplate(E notificationWrapper, Benefit benefit, SubscriptionType subscriptionType) {

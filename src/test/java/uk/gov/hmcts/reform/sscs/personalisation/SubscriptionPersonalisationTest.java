@@ -11,8 +11,9 @@ import static uk.gov.hmcts.reform.sscs.config.SubscriptionType.APPELLANT;
 import static uk.gov.hmcts.reform.sscs.domain.notify.NotificationEventType.*;
 import static uk.gov.hmcts.reform.sscs.service.NotificationUtils.getSubscription;
 
-import java.time.LocalDate;
-import java.util.*;
+import java.util.HashMap;
+import java.util.Map;
+import java.util.Optional;
 import javax.annotation.Resource;
 import org.junit.Before;
 import org.junit.Test;
@@ -54,9 +55,6 @@ public class SubscriptionPersonalisationTest {
     @Mock
     private EvidenceProperties.EvidenceAddress evidencePropertiesAddress;
 
-    @Mock
-    private NotificationDateConverterUtil notificationDateConverterUtil;
-
     @InjectMocks
     @Resource
     SubscriptionPersonalisation personalisation;
@@ -78,7 +76,6 @@ public class SubscriptionPersonalisationTest {
         when(config.getClaimingExpensesLink()).thenReturn(Link.builder().linkUrl("http://link.com/progress/appeal_id/expenses").build());
         when(config.getHearingInfoLink()).thenReturn(Link.builder().linkUrl("http://link.com/progress/appeal_id/abouthearing").build());
         when(config.getOnlineHearingLinkWithEmail()).thenReturn(Link.builder().linkUrl("http://link.com/onlineHearing?email={email}").build());
-        when(notificationDateConverterUtil.toEmailDate(any(LocalDate.class))).thenReturn("1 January 2018");
         when(macService.generateToken("GLSCRR", PIP.name())).thenReturn("ZYX");
         when(hearingContactDateExtractor.extract(any())).thenReturn(Optional.empty());
         when(evidenceProperties.getAddress()).thenReturn(evidencePropertiesAddress);

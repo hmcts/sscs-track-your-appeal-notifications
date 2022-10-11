@@ -1,8 +1,23 @@
 package uk.gov.hmcts.reform.sscs.config;
 
+import java.time.ZoneId;
 import java.time.format.DateTimeFormatter;
+import java.time.format.FormatStyle;
+import java.util.Locale;
 
 public final class AppConstants {
+    public static final ZoneId ZONE_LONDON = ZoneId.of("Europe/London");
+    public static final Locale LOCALE_WELSH = Locale.forLanguageTag("cy-GB");
+    public static final Locale LOCALE_UK = Locale.UK;
+    public static final Locale LOCALE_ENGLISH_TIME = Locale.ENGLISH;
+
+    public static final DateTimeFormatter DATE_FORMAT_LONG = DateTimeFormatter.ofLocalizedDate(FormatStyle.LONG);
+    public static final DateTimeFormatter DATE_TIME_FORMAT_MEDIUM = DateTimeFormatter.ofLocalizedDateTime(FormatStyle.MEDIUM);
+    public static final DateTimeFormatter TIME_FORMAT_SHORT = DateTimeFormatter.ofLocalizedTime(FormatStyle.SHORT);
+    public static final DateTimeFormatter CCD_DATE_FORMAT = DateTimeFormatter.ofPattern("yyyy-MM-dd");
+    public static final DateTimeFormatter CCD_TIME_FORMAT = DateTimeFormatter.ofPattern("HH:mm:ss.SSS");
+    public static final DateTimeFormatter CCD_DATE_TIME_FORMAT = DateTimeFormatter.ofPattern("yyyy-MM-dd'T'HH:mm:ss.SSS");
+    public static final String USING_TEST_GOV_NOTIFY_KEY_FOR_TEMPLATE = "Using test GovNotify key {} for {}";
 
     public static final int MAX_DWP_RESPONSE_DAYS = 35;
     public static final String ACCEPT_VIEW_BY_DATE_LITERAL = "accept_view_by_date";
@@ -23,7 +38,6 @@ public final class AppConstants {
     public static final String BENEFIT_NAME_ACRONYM_SHORT_LITERAL = "benefit_name_acronym_short";
     public static final String BENEFIT_NAME_AND_OPTIONAL_ACRONYM = "benefit_name_and_optional_acronym";
     public static final String BENEFIT_NAME_AND_OPTIONAL_ACRONYM_WELSH = "benefit_name_and_optional_acronym_welsh";
-    public static final DateTimeFormatter CC_DATE_FORMAT = DateTimeFormatter.ofPattern("yyyy-MM-dd");
     public static final String CCD_ID = "ccd_id";
     public static final String CASE_REFERENCE_ID = "case_reference_id";   // For when the SC Ref may be empty, so use CCD_ID
     public static final String CLAIMING_EXPENSES_LINK_LITERAL = "claiming_expenses_link";
@@ -66,7 +80,6 @@ public final class AppConstants {
     public static final String WELSH_HEARING_DETAILS_LITERAL = "welsh_hearing_details";
     public static final String HEARING_INFO_LINK_LITERAL = "hearing_info_link";
     public static final String HEARING_TIME = "hearing_time";
-    public static final String HEARING_TIME_FORMAT = "hh:mm a";
     public static final String HEARING_TYPE = "hearing_type";
     public static final String INFO_REQUEST_DETAIL = "info_request_detail";
     public static final String JOINT = "joint";
@@ -99,7 +112,6 @@ public final class AppConstants {
     public static final String REPRESENTATIVE_DETAILS_LITERAL = "representative_details";
     public static final String WELSH_REPRESENTATIVE_DETAILS_LITERAL = "welsh_representative_details";
     public static final String REPRESENTATIVE_NAME = "representative_name";
-    public static final String RESPONSE_DATE_FORMAT = "d MMMM yyyy";
     public static final String SUBMIT_EVIDENCE_INFO_LINK_LITERAL = "submit_evidence_info_link";
     public static final String SUBMIT_EVIDENCE_LINK_LITERAL = "submit_evidence_link";
     public static final String SUPPORT_CENTRE_NAME_LITERAL = "support_centre_name";
@@ -113,7 +125,6 @@ public final class AppConstants {
     public static final String VENUE_MAP_LINK_LITERAL = "venue_map_link";
     public static final String YOUR_DETAILS_LITERAL = "your_details";
     public static final String WELSH_YOUR_DETAILS_LITERAL = "welsh_your_details";
-    public static final String ZONE_ID = "Europe/London";
     public static final String WELSH_CURRENT_DATE = "welsh_current_date";
     public static final String OTHER_PARTY_NAME = "other_party_name";
     public static final String CONFIDENTIALITY_OUTCOME = "confidentiality_outcome";

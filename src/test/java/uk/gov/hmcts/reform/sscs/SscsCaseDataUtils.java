@@ -5,18 +5,14 @@ import static uk.gov.hmcts.reform.sscs.ccd.domain.YesNo.YES;
 
 import java.text.SimpleDateFormat;
 import java.time.LocalDate;
-import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Date;
 import java.util.List;
-import java.util.Optional;
-import java.util.function.BiFunction;
 import uk.gov.hmcts.reform.sscs.ccd.domain.*;
 import uk.gov.hmcts.reform.sscs.domain.SscsCaseDataWrapper;
 import uk.gov.hmcts.reform.sscs.domain.notify.NotificationEventType;
 import uk.gov.hmcts.reform.sscs.factory.CcdNotificationWrapper;
-import uk.gov.hmcts.reform.sscs.service.conversion.LocalDateToWelshStringConverter;
 
 public final class SscsCaseDataUtils {
 
@@ -380,13 +376,6 @@ public final class SscsCaseDataUtils {
             .build();
 
         return options;
-    }
-
-    public static BiFunction<Object, DateTimeFormatter, String> getWelshDate() {
-        return (date, dateTimeFormatter) -> Optional.ofNullable(date).map(data -> {
-            LocalDate localDate = LocalDate.parse((String) data, dateTimeFormatter);
-            return LocalDateToWelshStringConverter.convert(localDate);
-        }).orElse("No date present for translation");
     }
 }
 

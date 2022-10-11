@@ -15,7 +15,6 @@ import static org.mockito.Mockito.never;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 import static org.mockito.MockitoAnnotations.openMocks;
-import static uk.gov.hmcts.reform.sscs.SscsCaseDataUtils.getWelshDate;
 import static uk.gov.hmcts.reform.sscs.ccd.domain.Benefit.PIP;
 import static uk.gov.hmcts.reform.sscs.ccd.domain.Benefit.getLongBenefitNameDescriptionWithOptionalAcronym;
 import static uk.gov.hmcts.reform.sscs.ccd.domain.EventType.APPEAL_RECEIVED;
@@ -69,11 +68,13 @@ import uk.gov.hmcts.reform.sscs.factory.NotificationWrapper;
 import uk.gov.hmcts.reform.sscs.reference.data.model.HearingChannel;
 import uk.gov.hmcts.reform.sscs.service.MessageAuthenticationServiceImpl;
 import uk.gov.hmcts.reform.sscs.service.RegionalProcessingCenterService;
-import uk.gov.hmcts.reform.sscs.service.conversion.LocalDateToWelshStringConverter;
 
 @RunWith(JUnitParamsRunner.class)
 public class PersonalisationTest {
 
+    public static final String TWO_MONTHS = LocalDate.now().plusDays(56).format(DATE_FORMAT_LONG.localizedBy(LOCALE_UK));
+    public static final String NEXT_WEEK = LocalDate.now().plusDays(7).format(DATE_FORMAT_LONG.localizedBy(LOCALE_UK));
+    public static final String TOMORROW = LocalDate.now().plusDays(1).format(DATE_FORMAT_LONG.localizedBy(LOCALE_UK));
     private static final String CASE_ID = "54321";
     private static final String ADDRESS1 = "HM Courts & Tribunals Service";
     private static final String ADDRESS2 = "Social Security & Child Support Appeals";
@@ -96,9 +97,6 @@ public class PersonalisationTest {
 
     @Mock
     private RegionalProcessingCenterService regionalProcessingCenterService;
-
-    @Mock
-    private NotificationDateConverterUtil notificationDateConverterUtil;
 
     @Mock
     private EvidenceProperties evidenceProperties;
@@ -144,9 +142,6 @@ public class PersonalisationTest {
         when(config.getOnlineHearingLink()).thenReturn("http://link.com");
         when(config.getHelplineTelephone()).thenReturn("0300 123 1142");
         when(config.getHelplineTelephoneScotland()).thenReturn("0300 790 6234");
-        when(notificationDateConverterUtil.toEmailDate(LocalDate.now().plusDays(1))).thenReturn("1 January 2018");
-        when(notificationDateConverterUtil.toEmailDate(LocalDate.now().plusDays(7))).thenReturn("1 February 2018");
-        when(notificationDateConverterUtil.toEmailDate(LocalDate.now().plusDays(56))).thenReturn("1 February 2019");
         when(macService.generateToken(eq("GLSCRR"), any())).thenReturn("ZYX");
         when(hearingContactDateExtractor.extract(any())).thenReturn(Optional.empty());
 
@@ -505,9 +500,7 @@ public class PersonalisationTest {
             new SubscriptionWithType(subscriptions.getAppellantSubscription(), APPELLANT,
                 response.getAppeal().getAppellant(), response.getAppeal().getAppellant()));
 
-        DateTimeFormatter dateFormatter = DateTimeFormatter.ofPattern("d MMMM yyyy");
-        String expectedDecisionPostedReceiveDate = dateFormatter.format(LocalDate.now().plusDays(7));
-        assertEquals(expectedDecisionPostedReceiveDate, result.get("decision_posted_receive_date"));
+        assertEquals(LocalDate.now().plusDays(7).format(DateTimeFormatter.ofPattern("d MMMM yyyy")), result.get("decision_posted_receive_date"));
 
         assertEquals(expectedPanelComposition, result.get(PANEL_COMPOSITION));
         assertEquals(welshExpectedPanelComposition, result.get(PANEL_COMPOSITION_WELSH));
@@ -551,9 +544,9 @@ public class PersonalisationTest {
         assertEquals(CITY, result.get(COUNTY_LITERAL));
         assertEquals(POSTCODE, result.get(POSTCODE_LITERAL));
         assertEquals(CASE_ID, result.get(CCD_ID));
-        assertEquals("1 February 2019", result.get(TRIBUNAL_RESPONSE_DATE_LITERAL));
-        assertEquals("1 February 2018", result.get(ACCEPT_VIEW_BY_DATE_LITERAL));
-        assertEquals("1 January 2018", result.get(QUESTION_ROUND_EXPIRES_DATE_LITERAL));
+        assertEquals(TWO_MONTHS, result.get(TRIBUNAL_RESPONSE_DATE_LITERAL));
+        assertEquals(NEXT_WEEK, result.get(ACCEPT_VIEW_BY_DATE_LITERAL));
+        assertEquals(TOMORROW, result.get(QUESTION_ROUND_EXPIRES_DATE_LITERAL));
         assertEquals("", result.get(APPOINTEE_DESCRIPTION));
     }
 
@@ -578,9 +571,7 @@ public class PersonalisationTest {
         Map result = personalisation.create(SscsCaseDataWrapper.builder().newSscsCaseData(response)
             .notificationEventType(APPEAL_RECEIVED_NOTIFICATION).build(), new SubscriptionWithType(subscriptions.getAppellantSubscription(), APPELLANT, response.getAppeal().getAppellant(), response.getAppeal().getAppellant()));
 
-        DateTimeFormatter dateFormatter = DateTimeFormatter.ofPattern("d MMMM yyyy");
-        String expectedDecisionPostedReceiveDate = dateFormatter.format(LocalDate.now().plusDays(7));
-        assertEquals(expectedDecisionPostedReceiveDate, result.get("decision_posted_receive_date"));
+        assertEquals(LocalDate.now().plusDays(7).format(DateTimeFormatter.ofPattern("d MMMM yyyy")), result.get("decision_posted_receive_date"));
 
         assertEquals("judge, doctor and disability expert (if applicable)", result.get(PANEL_COMPOSITION));
 
@@ -619,9 +610,9 @@ public class PersonalisationTest {
         assertEquals(CITY, result.get(COUNTY_LITERAL));
         assertEquals(POSTCODE, result.get(POSTCODE_LITERAL));
         assertEquals(CASE_ID, result.get(CCD_ID));
-        assertEquals("1 February 2019", result.get(TRIBUNAL_RESPONSE_DATE_LITERAL));
-        assertEquals("1 February 2018", result.get(ACCEPT_VIEW_BY_DATE_LITERAL));
-        assertEquals("1 January 2018", result.get(QUESTION_ROUND_EXPIRES_DATE_LITERAL));
+        assertEquals(TWO_MONTHS, result.get(TRIBUNAL_RESPONSE_DATE_LITERAL));
+        assertEquals(NEXT_WEEK, result.get(ACCEPT_VIEW_BY_DATE_LITERAL));
+        assertEquals(TOMORROW, result.get(QUESTION_ROUND_EXPIRES_DATE_LITERAL));
         assertEquals("", result.get(APPOINTEE_DESCRIPTION));
     }
 
@@ -770,50 +761,6 @@ public class PersonalisationTest {
                 .subscriptions(subscriptions)
                 .events(events)
                 .evidence(evidence)
-                .build();
-
-        Map result = personalisation.create(SscsCaseDataWrapper.builder()
-                .newSscsCaseData(response).notificationEventType(EVIDENCE_RECEIVED_NOTIFICATION).build(), new SubscriptionWithType(subscriptions.getAppellantSubscription(), APPELLANT, response.getAppeal().getAppellant(), response.getAppeal().getAppellant()));
-
-        assertEquals("1 July 2018", result.get(EVIDENCE_RECEIVED_DATE_LITERAL));
-        assertNull("Welsh evidence received date not set", result.get(WELSH_EVIDENCE_RECEIVED_DATE_LITERAL));
-    }
-
-
-    @Test
-    public void givenEvidenceReceivedNotification_customisePersonalisation_welsh() {
-        List<Event> events = new ArrayList<>();
-        events.add(Event.builder().value(EventDetails.builder().date(DATE).type(APPEAL_RECEIVED.getCcdType()).build()).build());
-
-        List<Document> documents = new ArrayList<>();
-
-        Document doc = Document.builder().value(DocumentDetails.builder()
-                .dateReceived("2018-07-01")
-                .evidenceType("Medical")
-                .evidenceProvidedBy("Caseworker").build()).build();
-
-        documents.add(doc);
-
-        Evidence evidence = Evidence.builder().documents(documents).build();
-
-        Subscription appellantSubscription = Subscription.builder()
-                .tya("GLSCRR")
-                .email("test@email.com")
-                .mobile("07983495065")
-                .subscribeEmail("Yes")
-                .subscribeSms("No")
-                .build();
-
-        Subscriptions subscriptions = Subscriptions.builder().appellantSubscription(appellantSubscription).build();
-
-        SscsCaseData response = SscsCaseData.builder()
-                .ccdCaseId(CASE_ID).caseReference("SC/1234/5")
-                .appeal(Appeal.builder().benefitType(BenefitType.builder().code("PIP").build())
-                        .appellant(Appellant.builder().name(name).build())
-                        .build())
-                .subscriptions(subscriptions)
-                .events(events)
-                .evidence(evidence)
                 .languagePreferenceWelsh("Yes")
                 .build();
 
@@ -821,7 +768,7 @@ public class PersonalisationTest {
                 .newSscsCaseData(response).notificationEventType(EVIDENCE_RECEIVED_NOTIFICATION).build(), new SubscriptionWithType(subscriptions.getAppellantSubscription(), APPELLANT, response.getAppeal().getAppellant(), response.getAppeal().getAppellant()));
 
         assertEquals("1 July 2018", result.get(EVIDENCE_RECEIVED_DATE_LITERAL));
-        assertEquals("Welsh evidence received date not set", getWelshDate().apply(result.get(EVIDENCE_RECEIVED_DATE_LITERAL), dateTimeFormatter), result.get(WELSH_EVIDENCE_RECEIVED_DATE_LITERAL));
+        assertEquals("Welsh evidence received date not set", "1 Gorffennaf 2018", result.get(WELSH_EVIDENCE_RECEIVED_DATE_LITERAL));
     }
 
     @Test
@@ -831,31 +778,16 @@ public class PersonalisationTest {
 
         SscsCaseData response = SscsCaseData.builder()
                 .ccdCaseId(CASE_ID).caseReference("SC/1234/5")
-                .appeal(Appeal.builder().benefitType(BenefitType.builder().code("PIP").build()).build())
+                .appeal(Appeal.builder()
+                    .benefitType(BenefitType.builder()
+                        .code("PIP")
+                        .build())
+                    .build())
                 .events(events)
                 .build();
 
         Map result = personalisation.setEventData(new HashMap<>(), response, APPEAL_RECEIVED_NOTIFICATION);
-
-        assertNull("Welsh date is not set ",  result.get(WELSH_APPEAL_RESPOND_DATE));
-        assertEquals("5 August 2018", result.get(APPEAL_RESPOND_DATE));
-    }
-
-
-    @Test
-    public void setAppealReceivedEventData_Welsh() {
-        List<Event> events = new ArrayList<>();
-        events.add(Event.builder().value(EventDetails.builder().date(DATE).type(APPEAL_RECEIVED.getCcdType()).build()).build());
-
-        SscsCaseData response = SscsCaseData.builder()
-                .ccdCaseId(CASE_ID).caseReference("SC/1234/5")
-                .appeal(Appeal.builder().benefitType(BenefitType.builder().code("PIP").build()).build())
-                .events(events)
-                .languagePreferenceWelsh("yes")
-                .build();
-
-        Map result = personalisation.setEventData(new HashMap<>(), response, APPEAL_RECEIVED_NOTIFICATION);
-        assertEquals("Welsh date is set ", getWelshDate().apply(result.get(APPEAL_RESPOND_DATE), dateTimeFormatter), result.get(WELSH_APPEAL_RESPOND_DATE));
+        assertEquals("Welsh date is set ", "5 Awst 2018", result.get(WELSH_APPEAL_RESPOND_DATE));
         assertEquals("5 August 2018", result.get(APPEAL_RESPOND_DATE));
     }
 
@@ -869,23 +801,8 @@ public class PersonalisationTest {
                 .build();
 
         Map<String, String> result = personalisation.setEventData(new HashMap<>(), response, APPEAL_RECEIVED_NOTIFICATION);
-        assertNull("Welsh date is set ", result.get(WELSH_APPEAL_RESPOND_DATE));
-        assertEquals("5 August 2018", result.get(APPEAL_RESPOND_DATE));
-    }
 
-    @Test
-    public void givenDigitalCaseWithDateSentToDwp_thenUseCaseSentToDwpDateForAppealRespondDate_Welsh() {
-        SscsCaseData response = SscsCaseData.builder()
-                .ccdCaseId(CASE_ID).caseReference("SC/1234/5")
-                .appeal(Appeal.builder().benefitType(BenefitType.builder().code("PIP").build()).build())
-                .createdInGapsFrom("readyToList")
-                .dateSentToDwp("2018-07-01")
-                .languagePreferenceWelsh("yes")
-                .build();
-
-        Map<String, String> result = personalisation.setEventData(new HashMap<>(), response, APPEAL_RECEIVED_NOTIFICATION);
-
-        assertEquals("Welsh date is set ", getWelshDate().apply(result.get(APPEAL_RESPOND_DATE), dateTimeFormatter), result.get(WELSH_APPEAL_RESPOND_DATE));
+        assertEquals("Welsh date is set ", "5 Awst 2018", result.get(WELSH_APPEAL_RESPOND_DATE));
         assertEquals("5 August 2018", result.get(APPEAL_RESPOND_DATE));
     }
 
@@ -899,25 +816,27 @@ public class PersonalisationTest {
 
         Map result = personalisation.setEventData(new HashMap<>(), response, APPEAL_RECEIVED_NOTIFICATION);
 
-        assertEquals(LocalDate.now().plusDays(MAX_DWP_RESPONSE_DAYS).format(DateTimeFormatter.ofPattern(RESPONSE_DATE_FORMAT)), result.get(APPEAL_RESPOND_DATE));
+        assertEquals(LocalDate.now().plusDays(MAX_DWP_RESPONSE_DAYS).format(DATE_FORMAT_LONG.localizedBy(LOCALE_UK)), result.get(APPEAL_RESPOND_DATE));
     }
 
     @Test
     public void givenCaseWithCreatedDate_thenUseCreatedDate() {
+        LocalDate createdDate = LocalDate.now().minusDays(1);
         SscsCaseData response = SscsCaseData.builder()
                 .ccdCaseId(CASE_ID)
                 .appeal(Appeal.builder().benefitType(BenefitType.builder().code("PIP").build())
                         .appellant(Appellant.builder().name(name).build())
                         .build())
                 .subscriptions(subscriptions)
-                .caseCreated(LocalDate.now().minusDays(1).toString())
+                .caseCreated(createdDate.toString())
                 .build();
 
         Map result = personalisation.create(SscsCaseDataWrapper.builder()
                         .newSscsCaseData(response).notificationEventType(APPEAL_RECEIVED_NOTIFICATION).build(),
                 new SubscriptionWithType(subscriptions.getAppellantSubscription(), APPELLANT, response.getAppeal().getAppellant(), response.getAppeal().getAppellant()));
 
-        assertEquals(LocalDate.now().minusDays(1).toString(), result.get(CREATED_DATE));
+        assertEquals(createdDate.format(DATE_FORMAT_LONG.localizedBy(LOCALE_UK)), result.get(CREATED_DATE));
+        assertEquals(createdDate.format(DATE_FORMAT_LONG.localizedBy(LOCALE_WELSH)), result.get(CREATED_DATE_WELSH));
     }
 
     @Test
@@ -935,7 +854,8 @@ public class PersonalisationTest {
                         .newSscsCaseData(response).notificationEventType(APPEAL_RECEIVED_NOTIFICATION).build(),
                 new SubscriptionWithType(subscriptions.getAppellantSubscription(), APPELLANT, response.getAppeal().getAppellant(), response.getAppeal().getAppellant()));
 
-        assertEquals(LocalDate.now().toString(), result.get(CREATED_DATE));
+        assertEquals(LocalDate.now().format(DATE_FORMAT_LONG.localizedBy(LOCALE_UK)), result.get(CREATED_DATE));
+        assertEquals(LocalDate.now().format(DATE_FORMAT_LONG.localizedBy(LOCALE_WELSH)), result.get(CREATED_DATE_WELSH));
     }
 
     @Test
@@ -1036,12 +956,11 @@ public class PersonalisationTest {
                 .newSscsCaseData(response).notificationEventType(hearingNotificationEventType).build(),
                 new SubscriptionWithType(subscriptions.getAppellantSubscription(), subscriptionType, response.getAppeal().getAppellant(), response.getAppeal().getAppellant()));
 
-        assertEquals(hearingDate.format(DateTimeFormatter.ofPattern(RESPONSE_DATE_FORMAT)), result.get(HEARING_DATE));
+        assertEquals(hearingDate.format(DATE_FORMAT_LONG.localizedBy(LOCALE_UK)), result.get(HEARING_DATE));
         assertEquals("12:00 PM", result.get(HEARING_TIME).toString());
         assertEquals("The venue, 12 The Road Avenue, Village, Aberdeen, Aberdeenshire, AB12 0HN", result.get(VENUE_ADDRESS_LITERAL));
         assertEquals("http://www.googlemaps.com/aberdeenvenue", result.get(VENUE_MAP_LINK_LITERAL));
         assertEquals("in 7 days", result.get(DAYS_TO_HEARING_LITERAL));
-        assertNull("Welsh hearing date should not be set", result.get(WELSH_HEARING_DATE));
     }
 
     @Test
@@ -1069,8 +988,8 @@ public class PersonalisationTest {
                 .newSscsCaseData(response).notificationEventType(hearingNotificationEventType).build(),
                 new SubscriptionWithType(subscriptions.getAppellantSubscription(), subscriptionType, response.getAppeal().getAppellant(), response.getAppeal().getAppellant()));
 
-        assertEquals("Welsh hearing date is not set", LocalDateToWelshStringConverter.convert(hearingDate), result.get(WELSH_HEARING_DATE));
-        assertEquals(hearingDate.format(DateTimeFormatter.ofPattern(RESPONSE_DATE_FORMAT)), result.get(HEARING_DATE));
+        assertEquals("Welsh hearing date is not set", hearingDate.format(DATE_FORMAT_LONG.localizedBy(LOCALE_WELSH)), result.get(WELSH_HEARING_DATE));
+        assertEquals(hearingDate.format(DATE_FORMAT_LONG.localizedBy(LOCALE_UK)), result.get(HEARING_DATE));
         assertEquals("12:00 PM", result.get(HEARING_TIME).toString().toUpperCase(Locale.getDefault()));
         assertEquals("The venue, 12 The Road Avenue, Village, Aberdeen, Aberdeenshire, AB12 0HN", result.get(VENUE_ADDRESS_LITERAL));
         assertEquals("http://www.googlemaps.com/aberdeenvenue", result.get(VENUE_MAP_LINK_LITERAL));
@@ -1122,44 +1041,23 @@ public class PersonalisationTest {
         hearingList.add(hearing);
 
         SscsCaseData response = SscsCaseData.builder()
-                .ccdCaseId(CASE_ID).caseReference("SC/1234/5")
-                .appeal(Appeal.builder().benefitType(BenefitType.builder().code("PIP").build())
-                        .appellant(Appellant.builder().name(name).build())
-                        .build())
-                .subscriptions(subscriptions)
-                .hearings(hearingList)
-                .languagePreferenceWelsh("Yes")
-                .build();
+            .ccdCaseId(CASE_ID).caseReference("SC/1234/5")
+            .appeal(Appeal.builder()
+                .benefitType(BenefitType.builder()
+                    .code("PIP")
+                    .build())
+                .appellant(Appellant.builder()
+                    .name(name)
+                    .build())
+                .build())
+            .subscriptions(subscriptions)
+            .hearings(hearingList)
+            .build();
 
         Map result = personalisation.create(SscsCaseDataWrapper.builder().newSscsCaseData(response)
                 .notificationEventType(HEARING_BOOKED_NOTIFICATION).build(), new SubscriptionWithType(subscriptions.getAppellantSubscription(), APPELLANT, response.getAppeal().getAppellant(), response.getAppeal().getAppellant()));
-        assertEquals("Welsh current date is set", LocalDateToWelshStringConverter.convert(LocalDate.now()), result.get(WELSH_CURRENT_DATE));
-        assertEquals("Welsh decision posted receive date", getWelshDate().apply(result.get(DECISION_POSTED_RECEIVE_DATE), dateTimeFormatter), result.get(WELSH_DECISION_POSTED_RECEIVE_DATE));
-        assertEquals("tomorrow", result.get(DAYS_TO_HEARING_LITERAL));
-    }
-
-    @Test
-    public void checkWelshDataAreNotSet() {
-        LocalDate hearingDate = LocalDate.now().plusDays(1);
-
-        Hearing hearing = createHearing(hearingDate);
-
-        List<Hearing> hearingList = new ArrayList<>();
-        hearingList.add(hearing);
-
-        SscsCaseData response = SscsCaseData.builder()
-                .ccdCaseId(CASE_ID).caseReference("SC/1234/5")
-                .appeal(Appeal.builder().benefitType(BenefitType.builder().code("PIP").build())
-                        .appellant(Appellant.builder().name(name).build())
-                        .build())
-                .subscriptions(subscriptions)
-                .hearings(hearingList)
-                .build();
-
-        Map result = personalisation.create(SscsCaseDataWrapper.builder().newSscsCaseData(response)
-                .notificationEventType(HEARING_BOOKED_NOTIFICATION).build(), new SubscriptionWithType(subscriptions.getAppellantSubscription(), APPELLANT, response.getAppeal().getAppellant(), response.getAppeal().getAppellant()));
-        assertNull("Welsh current date is not set", result.get(WELSH_CURRENT_DATE));
-        assertNull("Welsh decision posted receive date is not set", result.get(WELSH_DECISION_POSTED_RECEIVE_DATE));
+        assertEquals("Welsh current date is set", LocalDate.now().format(DATE_FORMAT_LONG.localizedBy(LOCALE_WELSH)), result.get(WELSH_CURRENT_DATE));
+        assertEquals("Welsh decision posted receive date", LocalDate.now().plusDays(7).format(DATE_FORMAT_LONG.localizedBy(LOCALE_WELSH)), result.get(WELSH_DECISION_POSTED_RECEIVE_DATE));
         assertEquals("tomorrow", result.get(DAYS_TO_HEARING_LITERAL));
     }
 
@@ -1198,9 +1096,9 @@ public class PersonalisationTest {
         assertThat(hearingDetails.getHearingStatus()).isEqualTo(hearing.getValue().getHearingStatus());
         assertThat(hearingDetails.getVenue()).isEqualTo(hearing.getValue().getVenue());
 
-        LocalDate dateParsed = LocalDate.parse(result.get(HEARING_DATE).toString(), DateTimeFormatter.ofPattern(RESPONSE_DATE_FORMAT));
+        LocalDate dateParsed = LocalDate.parse(result.get(HEARING_DATE).toString(), DATE_FORMAT_LONG.localizedBy(LOCALE_UK));
         assertThat(dateParsed).isEqualTo(hearing.getValue().getStart().toLocalDate());
-        LocalTime time = LocalTime.parse(result.get(HEARING_TIME).toString(), DateTimeFormatter.ofPattern(HEARING_TIME_FORMAT, Locale.ENGLISH));
+        LocalTime time = LocalTime.parse(result.get(HEARING_TIME).toString(), TIME_FORMAT_SHORT.localizedBy(LOCALE_ENGLISH_TIME));
         assertThat(time).isCloseTo(hearing.getValue().getStart().toLocalTime(), within(1, ChronoUnit.MINUTES));
     }
 

@@ -1,15 +1,16 @@
 package uk.gov.hmcts.reform.sscs.functional;
 
 import static uk.gov.hmcts.reform.sscs.SscsCaseDataUtils.addHearing;
-import static uk.gov.hmcts.reform.sscs.domain.notify.NotificationEventType.*;
+import static uk.gov.hmcts.reform.sscs.config.AppConstants.DATE_FORMAT_LONG;
+import static uk.gov.hmcts.reform.sscs.config.AppConstants.LOCALE_UK;
+import static uk.gov.hmcts.reform.sscs.domain.notify.NotificationEventType.DWP_RESPONSE_RECEIVED_NOTIFICATION;
+import static uk.gov.hmcts.reform.sscs.domain.notify.NotificationEventType.HEARING_BOOKED_NOTIFICATION;
 
 import java.io.IOException;
 import java.time.LocalDate;
-import java.time.format.DateTimeFormatter;
 import java.util.List;
 import org.junit.Test;
 import org.springframework.beans.factory.annotation.Value;
-import uk.gov.hmcts.reform.sscs.config.AppConstants;
 import uk.gov.service.notify.Notification;
 import uk.gov.service.notify.NotificationClientException;
 
@@ -300,7 +301,7 @@ public class ReminderNotificationsFunctionalTest extends AbstractFunctionalTest 
         triggerEvent(HEARING_BOOKED_NOTIFICATION);
         simulateCcdCallback(HEARING_BOOKED_NOTIFICATION, "appointee/" + HEARING_BOOKED_NOTIFICATION.getId() + "Callback.json");
 
-        String formattedString = LocalDate.now().format(DateTimeFormatter.ofPattern(AppConstants.RESPONSE_DATE_FORMAT));
+        String formattedString = LocalDate.now().format(DATE_FORMAT_LONG.localizedBy(LOCALE_UK));
 
         List<Notification> notifications =
             tryFetchNotificationsForTestCaseWithExpectedText(formattedString,
@@ -353,7 +354,7 @@ public class ReminderNotificationsFunctionalTest extends AbstractFunctionalTest 
 
         assertNotificationSubjectContains(notifications, hearingReminderRepresentativeEmailTemplateId, "ESA");
 
-        String formattedString = LocalDate.now().format(DateTimeFormatter.ofPattern(AppConstants.RESPONSE_DATE_FORMAT));
+        String formattedString = LocalDate.now().format(DATE_FORMAT_LONG.localizedBy(LOCALE_UK));
 
         assertNotificationBodyContains(
                 notifications,
@@ -386,7 +387,7 @@ public class ReminderNotificationsFunctionalTest extends AbstractFunctionalTest 
         triggerEvent(HEARING_BOOKED_NOTIFICATION);
         simulateCcdCallback(HEARING_BOOKED_NOTIFICATION, "appointee/" + HEARING_BOOKED_NOTIFICATION.getId() + "CallbackWelsh.json");
 
-        String formattedString = LocalDate.now().format(DateTimeFormatter.ofPattern(AppConstants.RESPONSE_DATE_FORMAT));
+        String formattedString = LocalDate.now().format(DATE_FORMAT_LONG.localizedBy(LOCALE_UK));
 
         List<Notification> notifications =
                 tryFetchNotificationsForTestCaseWithExpectedText(formattedString,

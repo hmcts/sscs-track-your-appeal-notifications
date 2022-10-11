@@ -6,12 +6,12 @@ import static helper.IntegrationTestHelper.updateEmbeddedJson;
 import static org.mockito.Mockito.any;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
+import static uk.gov.hmcts.reform.sscs.config.AppConstants.ZONE_LONDON;
 
 import helper.IntegrationTestHelper;
 import java.io.File;
 import java.nio.charset.StandardCharsets;
 import java.time.LocalDateTime;
-import java.time.ZoneId;
 import java.time.ZonedDateTime;
 import java.util.UUID;
 import javax.servlet.http.HttpServletResponse;
@@ -40,7 +40,6 @@ import org.springframework.test.web.servlet.request.MockHttpServletRequestBuilde
 import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 import uk.gov.hmcts.reform.sscs.ccd.deserialisation.SscsCaseCallbackDeserializer;
 import uk.gov.hmcts.reform.sscs.ccd.service.CcdService;
-import uk.gov.hmcts.reform.sscs.config.AppConstants;
 import uk.gov.hmcts.reform.sscs.config.NotificationConfig;
 import uk.gov.hmcts.reform.sscs.config.NotificationTestRecipients;
 import uk.gov.hmcts.reform.sscs.controller.NotificationController;
@@ -152,7 +151,7 @@ public class OutOfHoursIt {
     public void setup() throws Exception {
         outOfHoursCalculator = mock(OutOfHoursCalculator.class);
         LocalDateTime dateBefore = LocalDateTime.now();
-        ZonedDateTime zoned = ZonedDateTime.ofLocal(dateBefore, ZoneId.of(AppConstants.ZONE_ID), null);
+        ZonedDateTime zoned = ZonedDateTime.ofLocal(dateBefore, ZONE_LONDON, null);
         when(outOfHoursCalculator.getStartOfNextInHoursPeriod()).thenReturn(zoned);
         when(outOfHoursCalculator.isItOutOfHours()).thenReturn(true);
 

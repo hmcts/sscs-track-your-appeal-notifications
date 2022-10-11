@@ -1,7 +1,12 @@
 package uk.gov.hmcts.reform.sscs.service;
 
-import static org.apache.commons.lang3.StringUtils.*;
-import static uk.gov.hmcts.reform.sscs.ccd.callback.DocumentType.*;
+import static org.apache.commons.lang3.StringUtils.isEmpty;
+import static org.apache.commons.lang3.StringUtils.isNotBlank;
+import static uk.gov.hmcts.reform.sscs.ccd.callback.DocumentType.ADJOURNMENT_NOTICE;
+import static uk.gov.hmcts.reform.sscs.ccd.callback.DocumentType.AUDIO_VIDEO_EVIDENCE_DIRECTION_NOTICE;
+import static uk.gov.hmcts.reform.sscs.ccd.callback.DocumentType.DECISION_NOTICE;
+import static uk.gov.hmcts.reform.sscs.ccd.callback.DocumentType.DIRECTION_NOTICE;
+import static uk.gov.hmcts.reform.sscs.ccd.callback.DocumentType.FINAL_DECISION_NOTICE;
 import static uk.gov.hmcts.reform.sscs.ccd.callback.DocumentType.POSTPONEMENT_REQUEST_DIRECTION_NOTICE;
 import static uk.gov.hmcts.reform.sscs.config.AppConstants.*;
 import static uk.gov.hmcts.reform.sscs.domain.notify.NotificationEventType.*;
@@ -11,8 +16,9 @@ import static uk.gov.hmcts.reform.sscs.service.NotificationValidService.*;
 
 import java.io.IOException;
 import java.time.ZonedDateTime;
-import java.time.format.DateTimeFormatter;
-import java.util.*;
+import java.util.Collection;
+import java.util.Map;
+import java.util.Optional;
 import java.util.stream.Stream;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.ArrayUtils;
@@ -206,7 +212,7 @@ public class SendNotificationService {
 
             if (!placeholders.containsKey(APPEAL_RESPOND_DATE)) {
                 ZonedDateTime appealReceivedDate = ZonedDateTime.now().plusSeconds(delay);
-                placeholders.put(APPEAL_RESPOND_DATE, appealReceivedDate.format(DateTimeFormatter.ofPattern(RESPONSE_DATE_FORMAT)));
+                placeholders.put(APPEAL_RESPOND_DATE, appealReceivedDate.format(DATE_FORMAT_LONG.localizedBy(LOCALE_UK)));
             }
 
             log.info("In sendLetterNotificationToAddress method notificationSender is available {} ", notificationSender != null);

@@ -1,18 +1,17 @@
 package uk.gov.hmcts.reform.sscs.service.reminder;
 
 import static org.slf4j.LoggerFactory.getLogger;
+import static uk.gov.hmcts.reform.sscs.config.AppConstants.ZONE_LONDON;
 import static uk.gov.hmcts.reform.sscs.domain.notify.NotificationEventType.HEARING_BOOKED_NOTIFICATION;
 import static uk.gov.hmcts.reform.sscs.domain.notify.NotificationEventType.HEARING_REMINDER_NOTIFICATION;
 
 import java.time.LocalDateTime;
-import java.time.ZoneId;
 import java.time.ZonedDateTime;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 import uk.gov.hmcts.reform.sscs.ccd.domain.Hearing;
 import uk.gov.hmcts.reform.sscs.ccd.domain.SscsCaseData;
-import uk.gov.hmcts.reform.sscs.config.AppConstants;
 import uk.gov.hmcts.reform.sscs.config.AppealHearingType;
 import uk.gov.hmcts.reform.sscs.factory.NotificationWrapper;
 import uk.gov.hmcts.reform.sscs.jobscheduler.model.Job;
@@ -103,7 +102,7 @@ public class HearingReminder implements ReminderHandler {
         if (!ccdResponse.getHearings().isEmpty()) {
             Hearing hearing = ccdResponse.getHearings().get(0);
             LocalDateTime dateBefore = hearing.getValue().getHearingDateTime().minusSeconds(secondsBeforeHearing);
-            return ZonedDateTime.ofLocal(dateBefore, ZoneId.of(AppConstants.ZONE_ID), null);
+            return ZonedDateTime.ofLocal(dateBefore, ZONE_LONDON, null);
         }
 
         return null;

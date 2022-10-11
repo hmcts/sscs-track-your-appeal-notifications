@@ -14,7 +14,6 @@ import static uk.gov.hmcts.reform.sscs.config.SubscriptionType.APPELLANT;
 import static uk.gov.hmcts.reform.sscs.domain.notify.NotificationEventType.*;
 import static uk.gov.hmcts.reform.sscs.service.NotificationUtils.getSubscription;
 
-import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
@@ -76,9 +75,6 @@ public class NotificationFactoryTest {
     @Mock
     private NotificationConfig config;
 
-    @Mock
-    private NotificationDateConverterUtil notificationDateConverterUtil;
-
     @InjectMocks
     @Resource
     private SubscriptionPersonalisation subscriptionPersonalisation;
@@ -120,7 +116,6 @@ public class NotificationFactoryTest {
                 .name("Venue").address1("HMCTS").address2("The Road").address3("Town").address4("City").city("Birmingham").postcode("B23 1EH").build();
         when(regionalProcessingCenterService.getByScReferenceCode("SC/1234/5")).thenReturn(rpc);
         when(hearingContactDateExtractor.extract(any())).thenReturn(Optional.empty());
-        when(notificationDateConverterUtil.toEmailDate(any(LocalDate.class))).thenReturn("1 January 2018");
 
         when(evidenceProperties.getAddress()).thenReturn(evidencePropertiesAddress);
     }

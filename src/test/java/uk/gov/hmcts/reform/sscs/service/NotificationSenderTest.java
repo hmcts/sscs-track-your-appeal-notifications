@@ -12,8 +12,9 @@ import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.verifyNoInteractions;
 import static org.mockito.Mockito.verifyNoMoreInteractions;
 import static org.mockito.Mockito.when;
-import static uk.gov.hmcts.reform.sscs.service.NotificationSender.DATE_TIME_FORMATTER;
-import static uk.gov.hmcts.reform.sscs.service.NotificationSender.ZONE_ID_LONDON;
+import static uk.gov.hmcts.reform.sscs.config.AppConstants.DATE_TIME_FORMAT_MEDIUM;
+import static uk.gov.hmcts.reform.sscs.config.AppConstants.LOCALE_UK;
+import static uk.gov.hmcts.reform.sscs.config.AppConstants.ZONE_LONDON;
 
 import java.io.IOException;
 import java.time.LocalDateTime;
@@ -34,11 +35,21 @@ import org.mockito.Mock;
 import org.mockito.junit.MockitoJUnit;
 import org.mockito.junit.MockitoRule;
 import org.springframework.test.util.ReflectionTestUtils;
-import uk.gov.hmcts.reform.sscs.ccd.domain.*;
+import uk.gov.hmcts.reform.sscs.ccd.domain.Address;
+import uk.gov.hmcts.reform.sscs.ccd.domain.Correspondence;
+import uk.gov.hmcts.reform.sscs.ccd.domain.CorrespondenceDetails;
+import uk.gov.hmcts.reform.sscs.ccd.domain.CorrespondenceType;
+import uk.gov.hmcts.reform.sscs.ccd.domain.ReasonableAdjustmentStatus;
+import uk.gov.hmcts.reform.sscs.ccd.domain.SscsCaseData;
 import uk.gov.hmcts.reform.sscs.config.NotificationTestRecipients;
 import uk.gov.hmcts.reform.sscs.config.SubscriptionType;
 import uk.gov.hmcts.reform.sscs.domain.notify.NotificationEventType;
-import uk.gov.service.notify.*;
+import uk.gov.service.notify.LetterResponse;
+import uk.gov.service.notify.NotificationClient;
+import uk.gov.service.notify.NotificationClientException;
+import uk.gov.service.notify.SendEmailResponse;
+import uk.gov.service.notify.SendLetterResponse;
+import uk.gov.service.notify.SendSmsResponse;
 
 @RunWith(JUnitParamsRunner.class)
 public class NotificationSenderTest {
@@ -361,7 +372,7 @@ public class NotificationSenderTest {
     }
 
     @Test
-    public void saveLetterCorrespondence_emptyLetter() throws NotificationClientException {
+    public void saveLetterCorrespondence_emptyLetter() {
         notificationSender.saveLettersToReasonableAdjustment(null, NotificationEventType.APPEAL_RECEIVED_NOTIFICATION, "Bob Squires", CCD_CASE_ID, SubscriptionType.APPELLANT);
         verifyNoInteractions(saveCorrespondenceAsyncService);
     }
@@ -373,13 +384,17 @@ public class NotificationSenderTest {
 
     @Test
     public void formatter_returnsCorrectYearAtEndOfYear() {
-        final String dateFormat = LocalDateTime.of(2020, 12, 31, 12, 0, 0).atZone(ZONE_ID_LONDON).format(DATE_TIME_FORMATTER);
-        assertThat(dateFormat, is("31 Dec 2020 12:00"));
+        final String dateFormat = LocalDateTime.of(2020, 12, 31, 12, 0, 0)
+            .atZone(ZONE_LONDON)
+            .format(DATE_TIME_FORMAT_MEDIUM.localizedBy(LOCALE_UK));
+        assertThat(dateFormat, is("31 Dec 2020, 12:00:00"));
     }
 
     @Test
     public void formatter_returnsCorrectYearAtStartOfYear() {
-        final String dateFormat = LocalDateTime.of(2021, 1, 1, 12, 0, 0).atZone(ZONE_ID_LONDON).format(DATE_TIME_FORMATTER);
-        assertThat(dateFormat, is("1 Jan 2021 12:00"));
+        final String dateFormat = LocalDateTime.of(2021, 1, 1, 12, 0, 0)
+            .atZone(ZONE_LONDON)
+            .format(DATE_TIME_FORMAT_MEDIUM.localizedBy(LOCALE_UK));
+        assertThat(dateFormat, is("1 Jan 2021, 12:00:00"));
     }
 }

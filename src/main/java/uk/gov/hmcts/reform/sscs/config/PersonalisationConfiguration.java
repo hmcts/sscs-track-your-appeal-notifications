@@ -1,7 +1,8 @@
 package uk.gov.hmcts.reform.sscs.config;
 
+import static uk.gov.hmcts.reform.sscs.ccd.domain.YesNo.isYes;
+
 import java.util.Map;
-import java.util.Optional;
 import lombok.Getter;
 import lombok.Setter;
 import org.springframework.boot.context.properties.ConfigurationProperties;
@@ -50,7 +51,13 @@ public class PersonalisationConfiguration {
         OTHER;
 
         public static String getYesNoKey(String value) {
-            return Optional.ofNullable(value).filter(data -> "YES".equals(data.toUpperCase())).map(data -> YESSTRING.name()).orElse(NOSTRING.name());
+            return getYesNoKey(isYes(value));
         }
+
+        public static String getYesNoKey(boolean value) {
+            return value ? YESSTRING.name() : NOSTRING.name();
+        }
+
+
     }
 }

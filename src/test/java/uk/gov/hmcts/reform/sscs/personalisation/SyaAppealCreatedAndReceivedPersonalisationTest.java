@@ -4,6 +4,7 @@ import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNull;
 import static org.mockito.MockitoAnnotations.openMocks;
+import static uk.gov.hmcts.reform.sscs.config.PersonalisationConfiguration.PersonalisationKey.*;
 import static uk.gov.hmcts.reform.sscs.config.SubscriptionType.REPRESENTATIVE;
 import static uk.gov.hmcts.reform.sscs.domain.notify.NotificationEventType.APPEAL_RECEIVED_NOTIFICATION;
 
@@ -34,84 +35,84 @@ public class SyaAppealCreatedAndReceivedPersonalisationTest extends Personalisat
     SyaAppealCreatedAndReceivedPersonalisation syaAppealCreatedAndReceivedPersonalisation;
 
     @Spy
-    private PersonalisationConfiguration syaAppealCreatedPersonalisationConfiguration;
+    private PersonalisationConfiguration syaPersonalisationConfig;
 
     @Before
     public void setup() {
         openMocks(this);
         Map<String, String> englishMap = new HashMap<>();
-        englishMap.put(PersonalisationConfiguration.PersonalisationKey.ATTENDING_HEARING.name(), "Attending the hearing: ");
-        englishMap.put(PersonalisationConfiguration.PersonalisationKey.YESSTRING.name(), "yes");
-        englishMap.put(PersonalisationConfiguration.PersonalisationKey.NOSTRING.name(), "no");
-        englishMap.put(PersonalisationConfiguration.PersonalisationKey.DATES_NOT_ATTENDING.name(), "Dates you can't attend: ");
-        englishMap.put(PersonalisationConfiguration.PersonalisationKey.DATE_OF_MRN.name(), "Date of MRN: ");
-        englishMap.put(PersonalisationConfiguration.PersonalisationKey.REASON_FOR_LATE_APPEAL.name(), "Reason for late appeal: ");
-        englishMap.put(PersonalisationConfiguration.PersonalisationKey.REASON_FOR_NO_MRN.name(), "Reason for no MRN: ");
-        englishMap.put(PersonalisationConfiguration.PersonalisationKey.NAME.name(), "Name: ");
-        englishMap.put(PersonalisationConfiguration.PersonalisationKey.DATE_OF_BIRTH.name(), "Date of birth: ");
-        englishMap.put(PersonalisationConfiguration.PersonalisationKey.NINO.name(), "National Insurance number: ");
-        englishMap.put(PersonalisationConfiguration.PersonalisationKey.ADDRESS.name(), "Address: ");
-        englishMap.put(PersonalisationConfiguration.PersonalisationKey.EMAIL.name(), "Email: ");
-        englishMap.put(PersonalisationConfiguration.PersonalisationKey.PHONE.name(), "Phone: ");
-        englishMap.put(PersonalisationConfiguration.PersonalisationKey.RECEIVE_TEXT_MESSAGE_REMINDER.name(), "Receive text message reminders: ");
-        englishMap.put(PersonalisationConfiguration.PersonalisationKey.MOBILE.name(), "Mobile number: ");
-        englishMap.put(PersonalisationConfiguration.PersonalisationKey.HAVE_AN_APPOINTEE.name(), "Have an appointee: ");
-        englishMap.put(PersonalisationConfiguration.PersonalisationKey.NOT_PROVIDED.name(), "Not provided");
-        englishMap.put(PersonalisationConfiguration.PersonalisationKey.HAVE_A_REPRESENTATIVE.name(), "Have a representative: ");
-        englishMap.put(PersonalisationConfiguration.PersonalisationKey.ORGANISATION.name(), "Organisation: ");
-        englishMap.put(PersonalisationConfiguration.PersonalisationKey.WHAT_DISAGREE_WITH.name(), "What you disagree with: ");
-        englishMap.put(PersonalisationConfiguration.PersonalisationKey.WHY_DISAGREE_WITH.name(), "Why you disagree with it: ");
-        englishMap.put(PersonalisationConfiguration.PersonalisationKey.ANYTHING.name(), "Anything else you want to tell the tribunal: ");
-        englishMap.put(PersonalisationConfiguration.PersonalisationKey.LANGUAGE_INTERPRETER.name(), "Language interpreter: ");
-        englishMap.put(PersonalisationConfiguration.PersonalisationKey.SIGN_INTERPRETER.name(), "Sign interpreter: ");
-        englishMap.put(PersonalisationConfiguration.PersonalisationKey.HEARING_LOOP.name(), "Hearing loop: ");
-        englishMap.put(PersonalisationConfiguration.PersonalisationKey.DISABLED_ACCESS.name(), "Disabled access: ");
-        englishMap.put(PersonalisationConfiguration.PersonalisationKey.OTHER_ARRANGEMENTS.name(), "Any other arrangements: ");
-        englishMap.put(PersonalisationConfiguration.PersonalisationKey.REQUIRED.name(), "Required");
-        englishMap.put(PersonalisationConfiguration.PersonalisationKey.NOT_REQUIRED.name(), "Not required");
-        englishMap.put(PersonalisationConfiguration.PersonalisationKey.OTHER.name(), "Other");
-        englishMap.put(PersonalisationConfiguration.PersonalisationKey.CHILD_MAINTENANCE_NUMBER.name(), "Child maintenance number: ");
+        englishMap.put(ATTENDING_HEARING.name(), "Attending the hearing: ");
+        englishMap.put(YESSTRING.name(), "yes");
+        englishMap.put(NOSTRING.name(), "no");
+        englishMap.put(DATES_NOT_ATTENDING.name(), "Dates you can't attend: ");
+        englishMap.put(DATE_OF_MRN.name(), "Date of MRN: ");
+        englishMap.put(REASON_FOR_LATE_APPEAL.name(), "Reason for late appeal: ");
+        englishMap.put(REASON_FOR_NO_MRN.name(), "Reason for no MRN: ");
+        englishMap.put(NAME.name(), "Name: ");
+        englishMap.put(DATE_OF_BIRTH.name(), "Date of birth: ");
+        englishMap.put(NINO.name(), "National Insurance number: ");
+        englishMap.put(ADDRESS.name(), "Address: ");
+        englishMap.put(EMAIL.name(), "Email: ");
+        englishMap.put(PHONE.name(), "Phone: ");
+        englishMap.put(RECEIVE_TEXT_MESSAGE_REMINDER.name(), "Receive text message reminders: ");
+        englishMap.put(MOBILE.name(), "Mobile number: ");
+        englishMap.put(HAVE_AN_APPOINTEE.name(), "Have an appointee: ");
+        englishMap.put(NOT_PROVIDED.name(), "Not provided");
+        englishMap.put(HAVE_A_REPRESENTATIVE.name(), "Have a representative: ");
+        englishMap.put(ORGANISATION.name(), "Organisation: ");
+        englishMap.put(WHAT_DISAGREE_WITH.name(), "What you disagree with: ");
+        englishMap.put(WHY_DISAGREE_WITH.name(), "Why you disagree with it: ");
+        englishMap.put(ANYTHING.name(), "Anything else you want to tell the tribunal: ");
+        englishMap.put(LANGUAGE_INTERPRETER.name(), "Language interpreter: ");
+        englishMap.put(SIGN_INTERPRETER.name(), "Sign interpreter: ");
+        englishMap.put(HEARING_LOOP.name(), "Hearing loop: ");
+        englishMap.put(DISABLED_ACCESS.name(), "Disabled access: ");
+        englishMap.put(OTHER_ARRANGEMENTS.name(), "Any other arrangements: ");
+        englishMap.put(REQUIRED.name(), "Required");
+        englishMap.put(NOT_REQUIRED.name(), "Not required");
+        englishMap.put(OTHER.name(), "Other");
+        englishMap.put(CHILD_MAINTENANCE_NUMBER.name(), "Child maintenance number: ");
 
         Map<String, String> welshMap = new HashMap<>();
-        welshMap.put(PersonalisationConfiguration.PersonalisationKey.ATTENDING_HEARING.name(), "Ydych chi'n bwriadu mynychu'r gwrandawiad: ");
-        welshMap.put(PersonalisationConfiguration.PersonalisationKey.YESSTRING.name(), "ydw");
-        welshMap.put(PersonalisationConfiguration.PersonalisationKey.NOSTRING.name(), "nac ydw");
-        welshMap.put(PersonalisationConfiguration.PersonalisationKey.DATES_NOT_ATTENDING.name(), "Dyddiadau na allwch fynychu: ");
-        welshMap.put(PersonalisationConfiguration.PersonalisationKey.DATE_OF_MRN.name(), "Dyddiad yr MRN: ");
-        welshMap.put(PersonalisationConfiguration.PersonalisationKey.REASON_FOR_LATE_APPEAL.name(), "Rheswm dros apêl hwyr: ");
-        welshMap.put(PersonalisationConfiguration.PersonalisationKey.REASON_FOR_NO_MRN.name(), "Rheswm dros ddim MRN: ");
-        welshMap.put(PersonalisationConfiguration.PersonalisationKey.NAME.name(), "Enw: ");
-        welshMap.put(PersonalisationConfiguration.PersonalisationKey.DATE_OF_BIRTH.name(), "Dyddiad geni: ");
-        welshMap.put(PersonalisationConfiguration.PersonalisationKey.NINO.name(), "Rhif Yswiriant Gwladol: ");
-        welshMap.put(PersonalisationConfiguration.PersonalisationKey.ADDRESS.name(), "Cyfeiriad: ");
-        welshMap.put(PersonalisationConfiguration.PersonalisationKey.EMAIL.name(), "E-bost: ");
-        welshMap.put(PersonalisationConfiguration.PersonalisationKey.PHONE.name(), "Rhif ffôn: ");
-        welshMap.put(PersonalisationConfiguration.PersonalisationKey.RECEIVE_TEXT_MESSAGE_REMINDER.name(), "Eisiau negeseuon testun atgoffa: ");
-        welshMap.put(PersonalisationConfiguration.PersonalisationKey.MOBILE.name(), "Rhif ffôn symudol: ");
-        welshMap.put(PersonalisationConfiguration.PersonalisationKey.HAVE_AN_APPOINTEE.name(), "A oes gennych chi benodai: ");
-        welshMap.put(PersonalisationConfiguration.PersonalisationKey.NOT_PROVIDED.name(), "Nis ddarparwyd");
-        welshMap.put(PersonalisationConfiguration.PersonalisationKey.HAVE_A_REPRESENTATIVE.name(), "A oes gennych chi gynrychiolydd: ");
-        welshMap.put(PersonalisationConfiguration.PersonalisationKey.ORGANISATION.name(), "Sefydliad: ");
-        welshMap.put(PersonalisationConfiguration.PersonalisationKey.WHAT_DISAGREE_WITH.name(), "Beth ydych chi’n anghytuno ag o: ");
-        welshMap.put(PersonalisationConfiguration.PersonalisationKey.WHY_DISAGREE_WITH.name(), "Pam ydych chi’n anghytuno ag o: ");
-        welshMap.put(PersonalisationConfiguration.PersonalisationKey.ANYTHING.name(), "Unrhyw beth arall yr hoffech ddweud wrth y tribiwnlys: ");
-        welshMap.put(PersonalisationConfiguration.PersonalisationKey.LANGUAGE_INTERPRETER.name(), "Dehonglydd iaith arwyddion: ");
-        welshMap.put(PersonalisationConfiguration.PersonalisationKey.SIGN_INTERPRETER.name(), "Dehonglydd iaith arwyddion: ");
-        welshMap.put(PersonalisationConfiguration.PersonalisationKey.HEARING_LOOP.name(), "Dolen glyw: ");
-        welshMap.put(PersonalisationConfiguration.PersonalisationKey.DISABLED_ACCESS.name(), "Mynediad i bobl anab: ");
-        welshMap.put(PersonalisationConfiguration.PersonalisationKey.OTHER_ARRANGEMENTS.name(), "Unrhyw drefniadau eraill: ");
-        welshMap.put(PersonalisationConfiguration.PersonalisationKey.REQUIRED.name(), "Gofynnol");
-        welshMap.put(PersonalisationConfiguration.PersonalisationKey.NOT_REQUIRED.name(), "Dim yn ofynnol");
-        welshMap.put(PersonalisationConfiguration.PersonalisationKey.OTHER.name(), "Arall");
-        welshMap.put(PersonalisationConfiguration.PersonalisationKey.CHILD_MAINTENANCE_NUMBER.name(), "Child maintenance number placeholder: ");
+        welshMap.put(ATTENDING_HEARING.name(), "Ydych chi'n bwriadu mynychu'r gwrandawiad: ");
+        welshMap.put(YESSTRING.name(), "ydw");
+        welshMap.put(NOSTRING.name(), "nac ydw");
+        welshMap.put(DATES_NOT_ATTENDING.name(), "Dyddiadau na allwch fynychu: ");
+        welshMap.put(DATE_OF_MRN.name(), "Dyddiad yr MRN: ");
+        welshMap.put(REASON_FOR_LATE_APPEAL.name(), "Rheswm dros apêl hwyr: ");
+        welshMap.put(REASON_FOR_NO_MRN.name(), "Rheswm dros ddim MRN: ");
+        welshMap.put(NAME.name(), "Enw: ");
+        welshMap.put(DATE_OF_BIRTH.name(), "Dyddiad geni: ");
+        welshMap.put(NINO.name(), "Rhif Yswiriant Gwladol: ");
+        welshMap.put(ADDRESS.name(), "Cyfeiriad: ");
+        welshMap.put(EMAIL.name(), "E-bost: ");
+        welshMap.put(PHONE.name(), "Rhif ffôn: ");
+        welshMap.put(RECEIVE_TEXT_MESSAGE_REMINDER.name(), "Eisiau negeseuon testun atgoffa: ");
+        welshMap.put(MOBILE.name(), "Rhif ffôn symudol: ");
+        welshMap.put(HAVE_AN_APPOINTEE.name(), "A oes gennych chi benodai: ");
+        welshMap.put(NOT_PROVIDED.name(), "Nis ddarparwyd");
+        welshMap.put(HAVE_A_REPRESENTATIVE.name(), "A oes gennych chi gynrychiolydd: ");
+        welshMap.put(ORGANISATION.name(), "Sefydliad: ");
+        welshMap.put(WHAT_DISAGREE_WITH.name(), "Beth ydych chi’n anghytuno ag o: ");
+        welshMap.put(WHY_DISAGREE_WITH.name(), "Pam ydych chi’n anghytuno ag o: ");
+        welshMap.put(ANYTHING.name(), "Unrhyw beth arall yr hoffech ddweud wrth y tribiwnlys: ");
+        welshMap.put(LANGUAGE_INTERPRETER.name(), "Dehonglydd iaith arwyddion: ");
+        welshMap.put(SIGN_INTERPRETER.name(), "Dehonglydd iaith arwyddion: ");
+        welshMap.put(HEARING_LOOP.name(), "Dolen glyw: ");
+        welshMap.put(DISABLED_ACCESS.name(), "Mynediad i bobl anab: ");
+        welshMap.put(OTHER_ARRANGEMENTS.name(), "Unrhyw drefniadau eraill: ");
+        welshMap.put(REQUIRED.name(), "Gofynnol");
+        welshMap.put(NOT_REQUIRED.name(), "Dim yn ofynnol");
+        welshMap.put(OTHER.name(), "Arall");
+        welshMap.put(CHILD_MAINTENANCE_NUMBER.name(), "Child maintenance number placeholder: ");
 
         Map<LanguagePreference, Map<String, String>> personalisations = new HashMap<>();
         personalisations.put(LanguagePreference.ENGLISH, englishMap);
         personalisations.put(LanguagePreference.WELSH, welshMap);
 
-        super.setup();
+        syaPersonalisationConfig.setPersonalisation(personalisations);
 
-        syaAppealCreatedPersonalisationConfiguration.setPersonalisation(personalisations);
+        super.setup();
     }
 
     @Test
@@ -120,7 +121,7 @@ public class SyaAppealCreatedAndReceivedPersonalisationTest extends Personalisat
                 .ccdCaseId(CASE_ID).caseReference("SC/1234/5")
                 .appeal(Appeal.builder().benefitType(BenefitType.builder().code("PIP").build())
                         .mrnDetails(MrnDetails.builder()
-                                .mrnDate("3 May 2018")
+                                .mrnDate("2018-05-03")
                                 .mrnLateReason("My train was cancelled.")
                                 .mrnMissingReason("My dog ate my homework.")
                                 .build())
@@ -140,7 +141,7 @@ public class SyaAppealCreatedAndReceivedPersonalisationTest extends Personalisat
         response = SscsCaseData.builder()
                 .ccdCaseId(CASE_ID).caseReference("SC/1234/5")
                 .appeal(Appeal.builder().benefitType(BenefitType.builder().code("PIP").build())
-                        .mrnDetails(MrnDetails.builder().mrnDate("3 May 2018").mrnLateReason("My train was cancelled.").build()).build())
+                        .mrnDetails(MrnDetails.builder().mrnDate("2018-05-03").mrnLateReason("My train was cancelled.").build()).build())
                 .build();
 
         Map<String, Object> result = syaAppealCreatedAndReceivedPersonalisation.setMrnDetails(new HashMap<>(), response);
@@ -162,7 +163,7 @@ public class SyaAppealCreatedAndReceivedPersonalisationTest extends Personalisat
 
         Map<String, Object> result = syaAppealCreatedAndReceivedPersonalisation.setMrnDetails(new HashMap<>(), response);
 
-        assertEquals("Date of MRN: 2018-05-03\n"
+        assertEquals("Date of MRN: 3 May 2018\n"
                         + "\nReason for late appeal: My train was cancelled.",
                 result.get(AppConstants.MRN_DETAILS_LITERAL));
 
@@ -178,7 +179,7 @@ public class SyaAppealCreatedAndReceivedPersonalisationTest extends Personalisat
                 .appeal(Appeal.builder().benefitType(BenefitType.builder().code("PIP").build())
                         .appellant(Appellant.builder()
                                 .name(Name.builder().firstName("Manish").lastName("Sharma").title("Mrs").build())
-                                .identity(Identity.builder().nino("NP 27 28 67 B").dob("12 March 1971").build())
+                                .identity(Identity.builder().nino("NP 27 28 67 B").dob("1971-03-12").build())
                                 .address(Address.builder().line1("122 Breach Street").line2("The Village").town("My town").county("Cardiff").postcode("CF11 2HB").build())
                                 .contact(Contact.builder().email("manish.sharma@gmail.com").phone("0797 243 8179").build())
                                 .build()).build())
@@ -212,7 +213,7 @@ public class SyaAppealCreatedAndReceivedPersonalisationTest extends Personalisat
         Map<String, Object> result = syaAppealCreatedAndReceivedPersonalisation.setYourDetails(new HashMap<>(), response);
 
         assertEquals("Name: Manish Sharma\n"
-                      + "\nDate of birth: 1971-03-12\n"
+                      + "\nDate of birth: 12 March 1971\n"
                       + "\nNational Insurance number: NP 27 28 67 B\n"
                       + "\nAddress: 122 Breach Street, The Village, My town, Cardiff, CF11 2HB\n"
                       + "\nEmail: manish.sharma@gmail.com\n"
@@ -235,7 +236,7 @@ public class SyaAppealCreatedAndReceivedPersonalisationTest extends Personalisat
                 .appeal(Appeal.builder().benefitType(BenefitType.builder().code("PIP").build())
                         .appellant(Appellant.builder()
                                 .name(Name.builder().firstName("Manish").lastName("Sharma").title("Mrs").build())
-                                .identity(Identity.builder().nino("NP 27 28 67 B").dob("12 March 1971").build())
+                                .identity(Identity.builder().nino("NP 27 28 67 B").dob("1971-03-12").build())
                                 .address(Address.builder().line1("122 Breach Street").town("My town").county("Cardiff").postcode("CF11 2HB").build())
                                 .contact(Contact.builder().build())
                                 .build()).build())
@@ -269,7 +270,7 @@ public class SyaAppealCreatedAndReceivedPersonalisationTest extends Personalisat
         Map<String, Object> result = syaAppealCreatedAndReceivedPersonalisation.setYourDetails(new HashMap<>(), response);
 
         assertEquals("Name: Manish Sharma\n"
-                        + "\nDate of birth: 1971-03-12\n"
+                        + "\nDate of birth: 12 March 1971\n"
                         + "\nNational Insurance number: NP 27 28 67 B\n"
                         + "\nAddress: 122 Breach Street, My town, Cardiff, CF11 2HB\n"
                         + "\nEmail: Not provided\n"
@@ -362,12 +363,12 @@ public class SyaAppealCreatedAndReceivedPersonalisationTest extends Personalisat
                 .ccdCaseId(CASE_ID).caseReference("SC/1234/5")
                 .appeal(Appeal.builder().appellant(Appellant.builder()
                     .name(Name.builder().firstName("Manish").lastName("Sharma").title("Mrs").build())
-                    .identity(Identity.builder().nino("NP 27 28 67 B").dob("12 March 1971").build())
+                    .identity(Identity.builder().nino("NP 27 28 67 B").dob("1971-03-12").build())
                     .address(Address.builder().line1("122 Breach Street").town("My town").county("Cardiff").postcode("CF11 2HB").build())
                     .appointee(Appointee.builder().name(Name.builder().firstName("Peter").lastName("Smith").build())
                         .address(Address.builder().line1("Ground Floor").line2("Gazette Buildings").town("168 Corporation Street").county("Cardiff").postcode("CF11 6TF").build())
                         .contact(Contact.builder().email("peter.smith@cab.org.uk").phone("03444 77 1010").build())
-                        .identity(Identity.builder().dob("12 March 1981").build())
+                        .identity(Identity.builder().dob("1981-03-12").build())
                         .build())
                     .contact(Contact.builder().build()).build()).build()).build();
 
@@ -404,7 +405,7 @@ public class SyaAppealCreatedAndReceivedPersonalisationTest extends Personalisat
 
         assertEquals("Have an appointee: yes\n"
                         + "\nName: Peter Smith\n"
-                        + "\nDate of birth: 1971-03-12\n"
+                        + "\nDate of birth: 12 March 1971\n"
                         + "\nAddress: Ground Floor, Gazette Buildings, 168 Corporation Street, Cardiff, CF11 6TF\n"
                         + "\nEmail: peter.smith@cab.org.uk\n"
                         + "\nPhone: 03444 77 1010",
@@ -425,7 +426,7 @@ public class SyaAppealCreatedAndReceivedPersonalisationTest extends Personalisat
                 .ccdCaseId(CASE_ID).caseReference("SC/1234/5")
                 .appeal(Appeal.builder().appellant(Appellant.builder().appointee(Appointee.builder()
                         .name(Name.builder().firstName("Peter").lastName("Smith").build())
-                        .identity(Identity.builder().dob("12 March 1981").build())
+                        .identity(Identity.builder().dob("1981-03-12").build())
                         .address(Address.builder().line1("Ground Floor").line2("Gazette Buildings").town("168 Corporation Street").county("Cardiff").postcode("CF11 6TF").build())
                         .contact(Contact.builder().build())
                         .build()).build())
@@ -493,7 +494,7 @@ public class SyaAppealCreatedAndReceivedPersonalisationTest extends Personalisat
                             .name(name)
                             .address(Address.builder().line1("122 Breach Street").line2("The Village").town("My town").county("Cardiff").postcode("CF11 2HB").build())
                             .contact(Contact.builder().build())
-                            .identity(Identity.builder().nino("NP 27 28 67 B").dob("12 March 1971").build()).build())
+                            .identity(Identity.builder().nino("NP 27 28 67 B").dob("1971-03-12").build()).build())
                     .rep(Representative.builder().hasRepresentative(YES)
                         .name(Name.builder().firstName("Peter").lastName("Smith").build())
                         .organisation("Citizens Advice")
@@ -531,7 +532,7 @@ public class SyaAppealCreatedAndReceivedPersonalisationTest extends Personalisat
                         .name(name)
                         .address(Address.builder().line1("122 Breach Street").line2("The Village").town("My town").county("Cardiff").postcode("CF11 2HB").build())
                         .contact(Contact.builder().build())
-                        .identity(Identity.builder().nino("NP 27 28 67 B").dob("12 March 1971").build()).build())
+                        .identity(Identity.builder().nino("NP 27 28 67 B").dob("1971-03-12").build()).build())
                     .rep(Representative.builder().hasRepresentative(YES)
                         .name(Name.builder().firstName("Peter").lastName("Smith").build())
                         .organisation("Citizens Advice")
@@ -578,7 +579,7 @@ public class SyaAppealCreatedAndReceivedPersonalisationTest extends Personalisat
                         .name(name)
                         .address(Address.builder().line1("122 Breach Street").line2("The Village").town("My town").county("Cardiff").postcode("CF11 2HB").build())
                         .contact(Contact.builder().build())
-                        .identity(Identity.builder().nino("NP 27 28 67 B").dob("12 March 1971").build()).build())
+                        .identity(Identity.builder().nino("NP 27 28 67 B").dob("1971-03-12").build()).build())
                     .rep(Representative.builder().hasRepresentative(YES)
                         .name(Name.builder().firstName("Peter").lastName("Smith").build())
                         .organisation("Citizens Advice")
@@ -622,7 +623,7 @@ public class SyaAppealCreatedAndReceivedPersonalisationTest extends Personalisat
                                 .name(name)
                                 .address(Address.builder().line1("122 Breach Street").line2("The Village").town("My town").county("Cardiff").postcode("CF11 2HB").build())
                                 .contact(Contact.builder().build())
-                                .identity(Identity.builder().nino("NP 27 28 67 B").dob("12 March 1971").build()).build())
+                                .identity(Identity.builder().nino("NP 27 28 67 B").dob("1971-03-12").build()).build())
                         .rep(Representative.builder().hasRepresentative(YES)
                                 .name(Name.builder().firstName("Peter").lastName("Smith").build())
                                 .organisation("Citizens Advice")

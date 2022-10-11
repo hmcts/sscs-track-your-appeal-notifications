@@ -1,13 +1,22 @@
 package uk.gov.hmcts.reform.sscs.service.docmosis;
 
-import static uk.gov.hmcts.reform.sscs.config.AppConstants.*;
+import static uk.gov.hmcts.reform.sscs.config.AppConstants.ADDRESS_NAME;
+import static uk.gov.hmcts.reform.sscs.config.AppConstants.DATE_FORMAT_LONG;
+import static uk.gov.hmcts.reform.sscs.config.AppConstants.LETTER_ADDRESS_LINE_1;
+import static uk.gov.hmcts.reform.sscs.config.AppConstants.LETTER_ADDRESS_LINE_2;
+import static uk.gov.hmcts.reform.sscs.config.AppConstants.LETTER_ADDRESS_LINE_3;
+import static uk.gov.hmcts.reform.sscs.config.AppConstants.LETTER_ADDRESS_LINE_4;
+import static uk.gov.hmcts.reform.sscs.config.AppConstants.LETTER_ADDRESS_POSTCODE;
+import static uk.gov.hmcts.reform.sscs.config.AppConstants.LOCALE_UK;
+import static uk.gov.hmcts.reform.sscs.config.AppConstants.LOCALE_WELSH;
 import static uk.gov.hmcts.reform.sscs.domain.notify.NotificationEventType.APPEAL_RECEIVED_NOTIFICATION;
-import static uk.gov.hmcts.reform.sscs.personalisation.Personalisation.translateToWelshDate;
-import static uk.gov.hmcts.reform.sscs.service.LetterUtils.*;
+import static uk.gov.hmcts.reform.sscs.service.LetterUtils.addBlankPageAtTheEndIfOddPage;
+import static uk.gov.hmcts.reform.sscs.service.LetterUtils.buildBundledLetter;
+import static uk.gov.hmcts.reform.sscs.service.LetterUtils.getAddressToUseForLetter;
+import static uk.gov.hmcts.reform.sscs.service.LetterUtils.getNameToUseForLetter;
 
 import java.io.IOException;
 import java.time.LocalDate;
-import java.time.LocalDateTime;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
@@ -29,7 +38,6 @@ import uk.gov.hmcts.reform.sscs.domain.notify.NotificationEventType;
 import uk.gov.hmcts.reform.sscs.exception.NotificationClientRuntimeException;
 import uk.gov.hmcts.reform.sscs.factory.NotificationWrapper;
 import uk.gov.hmcts.reform.sscs.service.DocmosisPdfService;
-import uk.gov.hmcts.reform.sscs.service.conversion.LocalDateToWelshStringConverter;
 
 @Service
 @Slf4j
@@ -107,9 +115,8 @@ public class PdfLetterService {
 
             Map<String, Object> placeholders = new HashMap<>(notification.getPlaceholders());
             placeholders.put(SSCS_URL_LITERAL, SSCS_URL);
-            placeholders.put(GENERATED_DATE_LITERAL, LocalDateTime.now().toLocalDate().toString());
-
-            translateToWelshDate(LocalDateTime.now().toLocalDate(), wrapper.getNewSscsCaseData(), value -> placeholders.put(WELSH_GENERATED_DATE_LITERAL, value));
+            placeholders.put(GENERATED_DATE_LITERAL, LocalDate.now().format(DATE_FORMAT_LONG.localizedBy(LOCALE_UK)));
+            placeholders.put(WELSH_GENERATED_DATE_LITERAL, LocalDate.now().format(DATE_FORMAT_LONG.localizedBy(LOCALE_WELSH)));
             placeholders.put(ADDRESS_NAME, truncateAddressLine(getNameToUseForLetter(wrapper, subscriptionWithType)));
 
             Address addressToUse = getAddressToUseForLetter(wrapper, subscriptionWithType);
@@ -118,9 +125,8 @@ public class PdfLetterService {
             placeholders.put(docmosisTemplatesConfig.getHmctsWelshImgKey(), docmosisTemplatesConfig.getHmctsWelshImgVal());
 
             if (wrapper.getNewSscsCaseData().isLanguagePreferenceWelsh()) {
-                placeholders.put(docmosisTemplatesConfig.getHmctsWelshImgKey(),
-                        docmosisTemplatesConfig.getHmctsWelshImgVal());
-                placeholders.put(WELSH_GENERATED_DATE_LITERAL, LocalDateToWelshStringConverter.convert(LocalDate.now()));
+                placeholders.put(docmosisTemplatesConfig.getHmctsWelshImgKey(), docmosisTemplatesConfig.getHmctsWelshImgVal());
+                placeholders.put(WELSH_GENERATED_DATE_LITERAL, LocalDate.now().format(DATE_FORMAT_LONG.localizedBy(LOCALE_WELSH)));
             }
             return docmosisPdfService.createPdfFromMap(placeholders, notification.getDocmosisLetterTemplate());
         }

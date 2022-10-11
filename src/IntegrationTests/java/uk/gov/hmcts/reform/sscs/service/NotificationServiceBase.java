@@ -41,7 +41,8 @@ public class NotificationServiceBase {
     public static final SpringClassRule SPRING_CLASS_RULE = new SpringClassRule();
     @Rule
     public final SpringMethodRule springMethodRule = new SpringMethodRule();
-    static final String DATE = "2018-01-01T14:01:18.243";
+    static final String DATE_TIME = "2018-01-01T14:01:18.243";
+    static final String DATE = "2018-01-01";
     private static final String APPEAL_NUMBER = "GLSCRR";
     static final String YES = "Yes";
     static final String NO = "No";
@@ -128,7 +129,7 @@ public class NotificationServiceBase {
 
     public SscsCaseData getSscsCaseData(Subscription subscription) {
         List<Event> events = new ArrayList<>();
-        events.add(Event.builder().value(EventDetails.builder().date(NotificationServiceBase.DATE).type(APPEAL_RECEIVED.getCcdType()).build()).build());
+        events.add(Event.builder().value(EventDetails.builder().date(NotificationServiceBase.DATE_TIME).type(APPEAL_RECEIVED.getCcdType()).build()).build());
 
         return SscsCaseData.builder().ccdCaseId(NotificationServiceBase.CASE_ID).events(events)
             .appeal(Appeal.builder()
@@ -144,7 +145,7 @@ public class NotificationServiceBase {
                     .name(Name.builder().firstName("firstName").lastName("lastName").build())
                     .address(Address.builder().line1("122 Breach Street").line2("The Village").town("My town").county("Cardiff").postcode("CF11 2HB").build())
                     .contact(Contact.builder().email(NotificationServiceBase.EMAIL_TEST_1).phone(NotificationServiceBase.MOBILE_NUMBER_1).build())
-                    .identity(Identity.builder().nino("NP 27 28 67 B").dob("12 March 1971").build()).build())
+                    .identity(Identity.builder().nino("NP 27 28 67 B").dob("1971-03-12").build()).build())
                 .hearingType(AppealHearingType.ORAL.name())
                 .benefitType(BenefitType.builder().code(Benefit.PIP.name()).build())
                 .hearingOptions(HearingOptions.builder()

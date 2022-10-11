@@ -2,7 +2,6 @@ package uk.gov.hmcts.reform.sscs.service.docmosis;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertTrue;
 import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.Mockito.any;
@@ -11,19 +10,20 @@ import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.verifyNoInteractions;
 import static org.mockito.Mockito.when;
-import static uk.gov.hmcts.reform.sscs.SscsCaseDataUtils.getWelshDate;
 import static uk.gov.hmcts.reform.sscs.config.AppConstants.ADDRESS_NAME;
+import static uk.gov.hmcts.reform.sscs.config.AppConstants.DATE_FORMAT_LONG;
 import static uk.gov.hmcts.reform.sscs.config.AppConstants.LETTER_ADDRESS_LINE_1;
 import static uk.gov.hmcts.reform.sscs.config.AppConstants.LETTER_ADDRESS_LINE_2;
 import static uk.gov.hmcts.reform.sscs.config.AppConstants.LETTER_ADDRESS_LINE_3;
 import static uk.gov.hmcts.reform.sscs.config.AppConstants.LETTER_ADDRESS_LINE_4;
 import static uk.gov.hmcts.reform.sscs.config.AppConstants.LETTER_ADDRESS_POSTCODE;
+import static uk.gov.hmcts.reform.sscs.config.AppConstants.LOCALE_WELSH;
 import static uk.gov.hmcts.reform.sscs.domain.notify.NotificationEventType.APPEAL_RECEIVED_NOTIFICATION;
-import static uk.gov.hmcts.reform.sscs.service.docmosis.PdfLetterService.GENERATED_DATE_LITERAL;
 import static uk.gov.hmcts.reform.sscs.service.docmosis.PdfLetterService.WELSH_GENERATED_DATE_LITERAL;
 
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
+import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
 import java.util.Collections;
 import java.util.HashMap;
@@ -193,8 +193,7 @@ public class PdfLetterServiceTest {
         verify(docmosisPdfService).createPdfFromMap(placeholderCaptor.capture(), eq(notification.getDocmosisLetterTemplate()));
         verify(docmosisPdfService).createPdf(any(), anyString());
         Map<String, Object> placeholderCaptorValue = placeholderCaptor.getValue();
-        assertEquals("Welsh generated date", getWelshDate().apply(placeholderCaptorValue.get(GENERATED_DATE_LITERAL),
-                dateTimeFormatter),placeholderCaptorValue.get(WELSH_GENERATED_DATE_LITERAL));
+        assertEquals("Welsh generated date", LocalDate.now().format(DATE_FORMAT_LONG.localizedBy(LOCALE_WELSH)),placeholderCaptorValue.get(WELSH_GENERATED_DATE_LITERAL));
     }
 
 
@@ -243,7 +242,7 @@ public class PdfLetterServiceTest {
         assertEquals("MyTownVeryVeryLongAddressLineWithLotsOfCharac", placeholderCaptor.getValue().get(LETTER_ADDRESS_LINE_3));
         assertEquals("MyCountyVeryVeryLongAddressLineWithLotsOfChar", placeholderCaptor.getValue().get(LETTER_ADDRESS_LINE_4));
         assertEquals("L2 5UZ", placeholderCaptor.getValue().get(LETTER_ADDRESS_POSTCODE));
-        assertNull(placeholderCaptor.getValue().get(WELSH_GENERATED_DATE_LITERAL));
+        assertEquals("Welsh generated date", LocalDate.now().format(DATE_FORMAT_LONG.localizedBy(LOCALE_WELSH)),placeholderCaptor.getValue().get(WELSH_GENERATED_DATE_LITERAL));
     }
 
     @Test

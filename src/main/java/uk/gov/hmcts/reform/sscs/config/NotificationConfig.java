@@ -2,6 +2,7 @@ package uk.gov.hmcts.reform.sscs.config;
 
 import static uk.gov.hmcts.reform.sscs.ccd.domain.LanguagePreference.ENGLISH;
 import static uk.gov.hmcts.reform.sscs.ccd.domain.LanguagePreference.WELSH;
+import static uk.gov.hmcts.reform.sscs.config.AppConstants.LOCALE_UK;
 
 import java.util.*;
 import javax.validation.constraints.NotNull;
@@ -117,7 +118,7 @@ public class NotificationConfig {
         return Template.builder()
             .emailTemplateId(getTemplateId(appealHearingType, emailTemplateName, "emailId", languagePreference))
             .smsTemplateId(getSmsTemplates(appealHearingType, smsTemplateName, "smsId",languagePreference))
-            .smsSenderTemplateId(benefit == null ? "" : env.getProperty("smsSender." + benefit.toString().toLowerCase(Locale.ENGLISH)))
+            .smsSenderTemplateId(benefit == null ? "" : env.getProperty("smsSender." + benefit.toString().toLowerCase(LOCALE_UK)))
             .letterTemplateId(getTemplateId(appealHearingType, letterTemplateName, "letterId",languagePreference))
             .docmosisTemplateId(docmosisTemplateId)
             .build();
@@ -144,7 +145,7 @@ public class NotificationConfig {
 
     private String getTemplateId(@NotNull AppealHearingType appealHearingType, String templateName,
                                  final String notificationType, LanguagePreference languagePreference) {
-        String hearingTypeName = appealHearingType.name().toLowerCase(Locale.ENGLISH);
+        String hearingTypeName = appealHearingType.name().toLowerCase(LOCALE_UK);
         String name = "notification." + languagePreference.getCode() + "." + hearingTypeName + "." + templateName + "."
             + notificationType;
         String templateId = env.getProperty(name);

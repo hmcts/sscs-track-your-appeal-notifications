@@ -179,8 +179,16 @@ public class NotificationServiceForSubscriptionUpdatedTest extends NotificationS
     @Test
     public void subscribeMobileAndEmailForRepresentative_willSendSubscriptionEmailAndSms_and_ResendLastEvent() throws NotificationClientException {
         String representative = "representative";
-        Subscription newSubscription = getSubscription().toBuilder().email(NotificationServiceBase.EMAIL_TEST_2).mobile(NotificationServiceBase.MOBILE_NUMBER_2).subscribeEmail(NotificationServiceBase.YES).subscribeSms(NotificationServiceBase.YES).build();
-        Subscription oldSubscription = getSubscription().toBuilder().subscribeEmail(NotificationServiceBase.NO).subscribeSms(NotificationServiceBase.NO).build();
+        Subscription newSubscription = getSubscription().toBuilder()
+            .email(NotificationServiceBase.EMAIL_TEST_2)
+            .mobile(NotificationServiceBase.MOBILE_NUMBER_2)
+            .subscribeEmail(NotificationServiceBase.YES)
+            .subscribeSms(NotificationServiceBase.YES)
+            .build();
+        Subscription oldSubscription = getSubscription().toBuilder()
+            .subscribeEmail(NotificationServiceBase.NO)
+            .subscribeSms(NotificationServiceBase.NO)
+            .build();
         SscsCaseData newSscsCaseData = getSscsCaseData(newSubscription, representative);
         SscsCaseData oldSscsCaseData = getSscsCaseData(oldSubscription, representative);
         SscsCaseDataWrapper wrapper = getSscsCaseDataWrapper(newSscsCaseData, oldSscsCaseData, SUBSCRIPTION_UPDATED_NOTIFICATION);

@@ -1,9 +1,10 @@
 package uk.gov.hmcts.reform.sscs.service;
 
+import static uk.gov.hmcts.reform.sscs.config.AppConstants.DATE_TIME_FORMAT_MEDIUM;
+import static uk.gov.hmcts.reform.sscs.config.AppConstants.LOCALE_UK;
+
 import java.io.ByteArrayInputStream;
 import java.time.LocalDateTime;
-import java.time.ZoneId;
-import java.time.format.DateTimeFormatter;
 import java.util.Map;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -12,7 +13,13 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.retry.annotation.Recover;
 import org.springframework.retry.annotation.Retryable;
 import org.springframework.stereotype.Component;
-import uk.gov.hmcts.reform.sscs.ccd.domain.*;
+import uk.gov.hmcts.reform.sscs.ccd.domain.Address;
+import uk.gov.hmcts.reform.sscs.ccd.domain.Correspondence;
+import uk.gov.hmcts.reform.sscs.ccd.domain.CorrespondenceDetails;
+import uk.gov.hmcts.reform.sscs.ccd.domain.CorrespondenceType;
+import uk.gov.hmcts.reform.sscs.ccd.domain.ReasonableAdjustmentStatus;
+import uk.gov.hmcts.reform.sscs.ccd.domain.SscsCaseData;
+import uk.gov.hmcts.reform.sscs.config.AppConstants;
 import uk.gov.hmcts.reform.sscs.config.NotificationTestRecipients;
 import uk.gov.hmcts.reform.sscs.config.SubscriptionType;
 import uk.gov.hmcts.reform.sscs.domain.notify.NotificationEventType;
@@ -26,11 +33,6 @@ import uk.gov.service.notify.SendSmsResponse;
 @Component
 @Slf4j
 public class NotificationSender {
-
-    private static final String USING_TEST_GOV_NOTIFY_KEY_FOR = "Using test GovNotify key {} for {}";
-    static final DateTimeFormatter DATE_TIME_FORMATTER = DateTimeFormatter.ofPattern("d MMM y HH:mm");
-    static final ZoneId ZONE_ID_LONDON = ZoneId.of("Europe/London");
-
     private final NotificationClient notificationClient;
     private final NotificationClient testNotificationClient;
     private final NotificationTestRecipients notificationTestRecipients;
@@ -62,7 +64,7 @@ public class NotificationSender {
 
         if (notificationTestRecipients.getEmails().contains(emailAddress)
                 || emailAddress.matches("test[\\d]+@hmcts.net")) {
-            log.info(USING_TEST_GOV_NOTIFY_KEY_FOR, testNotificationClient.getApiKey(), emailAddress);
+            log.info(AppConstants.USING_TEST_GOV_NOTIFY_KEY_FOR_TEMPLATE, testNotificationClient.getApiKey(), emailAddress);
             client = testNotificationClient;
         } else {
             client = notificationClient;
@@ -106,7 +108,7 @@ public class NotificationSender {
         NotificationClient client;
 
         if (notificationTestRecipients.getSms().contains(phoneNumber)) {
-            log.info(USING_TEST_GOV_NOTIFY_KEY_FOR, testNotificationClient.getApiKey(), phoneNumber);
+            log.info(AppConstants.USING_TEST_GOV_NOTIFY_KEY_FOR_TEMPLATE, testNotificationClient.getApiKey(), phoneNumber);
             client = testNotificationClient;
         } else {
             client = notificationClient;
@@ -220,7 +222,7 @@ public class NotificationSender {
                         .to(emailAddress)
                         .eventType(notificationEventType.getId())
                         .correspondenceType(CorrespondenceType.Email)
-                        .sentOn(LocalDateTime.now(ZONE_ID_LONDON).format(DATE_TIME_FORMATTER))
+                        .sentOn(LocalDateTime.now(AppConstants.ZONE_LONDON).format(DATE_TIME_FORMAT_MEDIUM.localizedBy(LOCALE_UK)))
                         .build()
         ).build();
     }
@@ -234,7 +236,7 @@ public class NotificationSender {
                         .to(phoneNumber)
                         .eventType(notificationEventType.getId())
                         .correspondenceType(CorrespondenceType.Sms)
-                        .sentOn(LocalDateTime.now(ZONE_ID_LONDON).format(DATE_TIME_FORMATTER))
+                        .sentOn(LocalDateTime.now(AppConstants.ZONE_LONDON).format(DATE_TIME_FORMAT_MEDIUM.localizedBy(LOCALE_UK)))
                         .build()
         ).build();
     }
@@ -249,7 +251,7 @@ public class NotificationSender {
                         .eventType(notificationEventType.getId())
                         .to(name)
                         .correspondenceType(CorrespondenceType.Letter)
-                        .sentOn(LocalDateTime.now(ZONE_ID_LONDON).format(DATE_TIME_FORMATTER))
+                        .sentOn(LocalDateTime.now(AppConstants.ZONE_LONDON).format(DATE_TIME_FORMAT_MEDIUM.localizedBy(LOCALE_UK)))
                         .reasonableAdjustmentStatus(status)
                         .build()
         ).build();
@@ -259,7 +261,7 @@ public class NotificationSender {
         NotificationClient client;
         if (notificationTestRecipients.getPostcodes().contains("*")
             || notificationTestRecipients.getPostcodes().contains(postcode)) {
-            log.info(USING_TEST_GOV_NOTIFY_KEY_FOR, testNotificationClient.getApiKey(), postcode);
+            log.info(AppConstants.USING_TEST_GOV_NOTIFY_KEY_FOR_TEMPLATE, testNotificationClient.getApiKey(), postcode);
             client = testNotificationClient;
         } else {
             client = notificationClient;
