@@ -119,3 +119,23 @@ PRs that start with _"Bump"_ won't have a preview environment. The decision was 
 ## Search through templates
 
 There is a class GetAllTemplatesFromNotify that will search through all of the Notify templates looking for a value, e.g. variable name. You will need to add the API key to run it on your local.
+
+## Docmosis Rendering Tool
+
+When wanting to test a template for different types of entity and party, you can use this tool to quickly generate renders for each.
+
+Before you can use the tool you must first add the environment variable `DOCMOSIS_ACCESS_KEY` with an api key.
+
+Run the following, replacing `<template-name>` with the template name, e.g. TB-SCS-LET-ENG-Hearing-Booked.docx
+
+Using Powershell:
+```
+ ./bin/render-docmosis-template.sh -t <template-name>
+```
+
+Using Shell:
+```
+ ./bin/render-docmosis-template.sh -t <template-name>
+```
+
+The output will be located in the folder build\renders.
