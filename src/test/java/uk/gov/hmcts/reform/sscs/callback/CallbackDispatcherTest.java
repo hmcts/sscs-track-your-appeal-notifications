@@ -43,13 +43,13 @@ public class CallbackDispatcherTest {
 
     @Test
     @Parameters({
-            "EARLIEST,LATE,LATEST",
-            "LATE,LATEST,EARLIEST",
-            "LATEST,EARLIEST,LATE",
-            "LATEST,EARLIEST,EARLY",
-            "EARLY,EARLIEST,LATEST",
-            "EARLY,EARLY,LATEST",
-            "EARLIEST,LATEST,LATEST"
+        "EARLIEST,LATE,LATEST",
+        "LATE,LATEST,EARLIEST",
+        "LATEST,EARLIEST,LATE",
+        "LATEST,EARLIEST,EARLY",
+        "EARLY,EARLIEST,LATEST",
+        "EARLY,EARLY,LATEST",
+        "EARLIEST,LATEST,LATEST"
     })
     public void givenHandlers_shouldBeHandledInDispatchPriority(DispatchPriority p1, DispatchPriority p2,
                                                                 DispatchPriority p3) {

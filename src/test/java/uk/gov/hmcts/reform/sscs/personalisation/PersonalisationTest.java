@@ -205,13 +205,13 @@ public class PersonalisationTest {
 
     @Test
     @Parameters({"APPEAL_TO_PROCEED, directionIssued.appealToProceed, APPELLANT",
-            "APPEAL_TO_PROCEED, directionIssued.appealToProceed, JOINT_PARTY",
-            "PROVIDE_INFORMATION, directionIssued.provideInformation, REPRESENTATIVE",
-            "GRANT_EXTENSION, directionIssued.grantExtension, APPOINTEE",
-            "REFUSE_EXTENSION, directionIssued.refuseExtension, APPELLANT",
-            "GRANT_REINSTATEMENT, directionIssued.grantReinstatement, APPELLANT",
-            "REFUSE_REINSTATEMENT, directionIssued.refuseReinstatement, APPOINTEE",
-            "REFUSE_HEARING_RECORDING_REQUEST, directionIssued.refuseHearingRecordingRequest, APPOINTEE"
+        "APPEAL_TO_PROCEED, directionIssued.appealToProceed, JOINT_PARTY",
+        "PROVIDE_INFORMATION, directionIssued.provideInformation, REPRESENTATIVE",
+        "GRANT_EXTENSION, directionIssued.grantExtension, APPOINTEE",
+        "REFUSE_EXTENSION, directionIssued.refuseExtension, APPELLANT",
+        "GRANT_REINSTATEMENT, directionIssued.grantReinstatement, APPELLANT",
+        "REFUSE_REINSTATEMENT, directionIssued.refuseReinstatement, APPOINTEE",
+        "REFUSE_HEARING_RECORDING_REQUEST, directionIssued.refuseHearingRecordingRequest, APPOINTEE"
     })
     public void whenDirectionIssuedAndDirectionTypeShouldGenerateCorrectTemplate(DirectionType directionType,
                                                                                  String templateConfig,
@@ -239,13 +239,13 @@ public class PersonalisationTest {
 
     @Test
     @Parameters({"APPELLANT, grantUrgentHearing, directionIssued.grantUrgentHearing",
-            "JOINT_PARTY, grantUrgentHearing, directionIssued.grantUrgentHearing",
-            "REPRESENTATIVE, grantUrgentHearing, directionIssued.grantUrgentHearing",
-            "APPOINTEE, grantUrgentHearing, directionIssued.grantUrgentHearing",
-            "APPELLANT, refuseUrgentHearing, directionIssued.refuseUrgentHearing",
-            "JOINT_PARTY, refuseUrgentHearing, directionIssued.refuseUrgentHearing",
-            "REPRESENTATIVE, refuseUrgentHearing, directionIssued.refuseUrgentHearing",
-            "APPOINTEE, refuseUrgentHearing, directionIssued.refuseUrgentHearing"})
+        "JOINT_PARTY, grantUrgentHearing, directionIssued.grantUrgentHearing",
+        "REPRESENTATIVE, grantUrgentHearing, directionIssued.grantUrgentHearing",
+        "APPOINTEE, grantUrgentHearing, directionIssued.grantUrgentHearing",
+        "APPELLANT, refuseUrgentHearing, directionIssued.refuseUrgentHearing",
+        "JOINT_PARTY, refuseUrgentHearing, directionIssued.refuseUrgentHearing",
+        "REPRESENTATIVE, refuseUrgentHearing, directionIssued.refuseUrgentHearing",
+        "APPOINTEE, refuseUrgentHearing, directionIssued.refuseUrgentHearing"})
     public void whenDirectionIssuedAndGrantOrRefuseUrgentHearingShouldGenerateCorrectTemplate(SubscriptionType subscriptionType, String directionTypeString, String templateConfig) {
 
         NotificationWrapper notificationWrapper = new CcdNotificationWrapper(SscsCaseDataWrapper.builder()
@@ -271,13 +271,13 @@ public class PersonalisationTest {
 
     @Test
     @Parameters({"APPEAL_TO_PROCEED, directionIssuedWelsh.appealToProceed, APPELLANT",
-            "APPEAL_TO_PROCEED, directionIssuedWelsh.appealToProceed, JOINT_PARTY",
-            "PROVIDE_INFORMATION, directionIssuedWelsh.provideInformation, REPRESENTATIVE",
-            "GRANT_EXTENSION, directionIssuedWelsh.grantExtension, APPOINTEE",
-            "REFUSE_EXTENSION, directionIssuedWelsh.refuseExtension, APPELLANT",
-            "GRANT_REINSTATEMENT, directionIssuedWelsh.grantReinstatement, APPELLANT",
-            "REFUSE_REINSTATEMENT, directionIssuedWelsh.refuseReinstatement, APPOINTEE",
-            "REFUSE_HEARING_RECORDING_REQUEST, directionIssuedWelsh.refuseHearingRecordingRequest, APPOINTEE"
+        "APPEAL_TO_PROCEED, directionIssuedWelsh.appealToProceed, JOINT_PARTY",
+        "PROVIDE_INFORMATION, directionIssuedWelsh.provideInformation, REPRESENTATIVE",
+        "GRANT_EXTENSION, directionIssuedWelsh.grantExtension, APPOINTEE",
+        "REFUSE_EXTENSION, directionIssuedWelsh.refuseExtension, APPELLANT",
+        "GRANT_REINSTATEMENT, directionIssuedWelsh.grantReinstatement, APPELLANT",
+        "REFUSE_REINSTATEMENT, directionIssuedWelsh.refuseReinstatement, APPOINTEE",
+        "REFUSE_HEARING_RECORDING_REQUEST, directionIssuedWelsh.refuseHearingRecordingRequest, APPOINTEE"
     })
     public void whenDirectionIssuedWelshAndDirectionTypeShouldGenerateCorrectTemplate(DirectionType directionType,
                                                                                  String templateConfig,
@@ -472,14 +472,14 @@ public class PersonalisationTest {
 
     @Test
     @Parameters({
-            "PIP,judge\\, doctor and disability expert, Personal Independence Payment, Taliad Annibyniaeth Personol, barnwr\\, meddyg ac arbenigwr anableddau, PIP",
-            "ESA,judge and a doctor, Employment and Support Allowance, Lwfans Cyflogaeth a Chymorth, barnwr a meddyg, ESA",
-            "UC,judge\\, doctor and disability expert (if applicable), Universal Credit, Credyd Cynhwysol, barnwr\\, meddyg ac arbenigwr anabledd (os yw’n berthnasol), UC",
-            "DLA,judge\\, doctor and disability expert, Disability Living Allowance, Lwfans Byw i’r Anabl, barnwr\\, meddyg ac arbenigwr anableddau, DLA",
-            "carersAllowance,judge, Carer's Allowance, Lwfans Gofalwr, barnwr, Carer's Allowance",
-            "attendanceAllowance,judge\\, doctor and disability expert, Attendance Allowance, Lwfans Gweini, barnwr\\, meddyg ac arbenigwr anableddau, Attendance Allowance",
-            "bereavementBenefit,judge, Bereavement Benefit, Budd-dal Profedigaeth, barnwr, Bereavement Benefit",
-            "taxCredit, judge and Financially Qualified Panel Member (if applicable), Tax Credit, Credyd Treth, Barnwr ac Aelod Panel sydd â chymhwyster i ddelio gyda materion Ariannol (os yw’n berthnasol), Tax Credit",
+        "PIP,judge\\, doctor and disability expert, Personal Independence Payment, Taliad Annibyniaeth Personol, barnwr\\, meddyg ac arbenigwr anableddau, PIP",
+        "ESA,judge and a doctor, Employment and Support Allowance, Lwfans Cyflogaeth a Chymorth, barnwr a meddyg, ESA",
+        "UC,judge\\, doctor and disability expert (if applicable), Universal Credit, Credyd Cynhwysol, barnwr\\, meddyg ac arbenigwr anabledd (os yw’n berthnasol), UC",
+        "DLA,judge\\, doctor and disability expert, Disability Living Allowance, Lwfans Byw i’r Anabl, barnwr\\, meddyg ac arbenigwr anableddau, DLA",
+        "carersAllowance,judge, Carer's Allowance, Lwfans Gofalwr, barnwr, Carer's Allowance",
+        "attendanceAllowance,judge\\, doctor and disability expert, Attendance Allowance, Lwfans Gweini, barnwr\\, meddyg ac arbenigwr anableddau, Attendance Allowance",
+        "bereavementBenefit,judge, Bereavement Benefit, Budd-dal Profedigaeth, barnwr, Bereavement Benefit",
+        "taxCredit, judge and Financially Qualified Panel Member (if applicable), Tax Credit, Credyd Treth, Barnwr ac Aelod Panel sydd â chymhwyster i ddelio gyda materion Ariannol (os yw’n berthnasol), Tax Credit",
     })
     public void customisePersonalisation(String benefitType,
                                          String expectedPanelComposition,
@@ -1250,9 +1250,9 @@ public class PersonalisationTest {
 
     @Test
     @Parameters({"yes, scottishLine3, scottishPostcode, true",
-            "no, line3, postcode, true",
-            "yes, line3, postcode, false",
-            "no, line3, postcode, false"})
+        "no, line3, postcode, true",
+        "yes, line3, postcode, false",
+        "no, line3, postcode, false"})
     public void shouldPopulateSendEvidenceAddressToDigitalAddressWhenOnTheDigitalJourney(String isScottish, String expectedLine3, String expectedPostcode, boolean scottishPoBoxFeature) {
 
         SscsCaseData response = SscsCaseData.builder()

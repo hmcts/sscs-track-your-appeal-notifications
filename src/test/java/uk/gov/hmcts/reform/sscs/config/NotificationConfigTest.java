@@ -26,9 +26,9 @@ public class NotificationConfigTest {
 
     @Test
     @Parameters({
-            "emailTemplateName, notification.english.emailTemplateName.emailId, emailTemplateId, smsTemplateName, notification.english.smsTemplateName.smsId, smsTemplateId, letterTemplateName, notification.english.letterTemplateName.letterId, letterTemplateId, notification.english.letterTemplateName.docmosisId, docmosisTemplateId, docmosisTemplateId, validAppeal",
-            "emailTemplateName, notification.english.oral.emailTemplateName.emailId, onlineEmailTemplateId, smsTemplateName, notification.english.oral.smsTemplateName.smsId, onlineSmsTemplateId, appealReceived, notification.english.oral.appealReceived.letterId, onlineLetterTemplateId, notification.english.oral.appealReceived.docmosisId, docmosisTemplateId, docmosisTemplateId, readyToList",
-            "emailTemplateName, notification.english.oral.emailTemplateName.emailId, onlineEmailTemplateId, smsTemplateName, notification.english.oral.smsTemplateName.smsId, onlineSmsTemplateId, appealReceived, notification.english.oral.appealReceived.letterId, onlineLetterTemplateId, notification.english.oral.appealReceived.docmosisId, docmosisTemplateId, null, validAppeal"
+        "emailTemplateName, notification.english.emailTemplateName.emailId, emailTemplateId, smsTemplateName, notification.english.smsTemplateName.smsId, smsTemplateId, letterTemplateName, notification.english.letterTemplateName.letterId, letterTemplateId, notification.english.letterTemplateName.docmosisId, docmosisTemplateId, docmosisTemplateId, validAppeal",
+        "emailTemplateName, notification.english.oral.emailTemplateName.emailId, onlineEmailTemplateId, smsTemplateName, notification.english.oral.smsTemplateName.smsId, onlineSmsTemplateId, appealReceived, notification.english.oral.appealReceived.letterId, onlineLetterTemplateId, notification.english.oral.appealReceived.docmosisId, docmosisTemplateId, docmosisTemplateId, readyToList",
+        "emailTemplateName, notification.english.oral.emailTemplateName.emailId, onlineEmailTemplateId, smsTemplateName, notification.english.oral.smsTemplateName.smsId, onlineSmsTemplateId, appealReceived, notification.english.oral.appealReceived.letterId, onlineLetterTemplateId, notification.english.oral.appealReceived.docmosisId, docmosisTemplateId, null, validAppeal"
     })
     public void getDefaultTemplate(String emailTemplateName, String emailTemplateKey, String emailTemplateId,
                                    String smsTemplateName, String smsTemplateKey, String smsTemplateId,
@@ -56,9 +56,9 @@ public class NotificationConfigTest {
 
     @Test
     @Parameters({
-            "emailTemplateName, notification.welsh.emailTemplateName.emailId, emailTemplateId, smsTemplateName, notification.welsh.smsTemplateName.smsId, smsTemplateId, letterTemplateName, notification.welsh.letterTemplateName.letterId, letterTemplateId, notification.welsh.letterTemplateName.docmosisId, docmosisTemplateId, docmosisTemplateId, validAppeal",
-            "emailTemplateName, notification.welsh.oral.emailTemplateName.emailId, onlineEmailTemplateId, smsTemplateName, notification.welsh.oral.smsTemplateName.smsId, onlineSmsTemplateId, appealReceived, notification.welsh.oral.appealReceived.letterId, onlineLetterTemplateId, notification.welsh.oral.appealReceived.docmosisId, docmosisTemplateId, docmosisTemplateId, readyToList",
-            "emailTemplateName, notification.welsh.oral.emailTemplateName.emailId, onlineEmailTemplateId, smsTemplateName, notification.welsh.oral.smsTemplateName.smsId, onlineSmsTemplateId, appealReceived, notification.welsh.oral.appealReceived.letterId, onlineLetterTemplateId, notification.welsh.oral.appealReceived.docmosisId, docmosisTemplateId, null, validAppeal"
+        "emailTemplateName, notification.welsh.emailTemplateName.emailId, emailTemplateId, smsTemplateName, notification.welsh.smsTemplateName.smsId, smsTemplateId, letterTemplateName, notification.welsh.letterTemplateName.letterId, letterTemplateId, notification.welsh.letterTemplateName.docmosisId, docmosisTemplateId, docmosisTemplateId, validAppeal",
+        "emailTemplateName, notification.welsh.oral.emailTemplateName.emailId, onlineEmailTemplateId, smsTemplateName, notification.welsh.oral.smsTemplateName.smsId, onlineSmsTemplateId, appealReceived, notification.welsh.oral.appealReceived.letterId, onlineLetterTemplateId, notification.welsh.oral.appealReceived.docmosisId, docmosisTemplateId, docmosisTemplateId, readyToList",
+        "emailTemplateName, notification.welsh.oral.emailTemplateName.emailId, onlineEmailTemplateId, smsTemplateName, notification.welsh.oral.smsTemplateName.smsId, onlineSmsTemplateId, appealReceived, notification.welsh.oral.appealReceived.letterId, onlineLetterTemplateId, notification.welsh.oral.appealReceived.docmosisId, docmosisTemplateId, null, validAppeal"
     })
     public void getWelshTemplate(String emailTemplateName, String emailTemplateKey, String emailTemplateId,
                                    String smsTemplateName, String smsTemplateKey, String smsTemplateId,
