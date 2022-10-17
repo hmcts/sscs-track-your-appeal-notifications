@@ -9,7 +9,6 @@ plugins {
     id 'uk.gov.hmcts.java' version '0.12.16'
     id 'org.owasp.dependencycheck' version '7.2.1'
     id 'com.github.ben-manes.versions' version '0.39.0'
-    id 'net.ltgt.apt' version '0.21'
     id "org.flywaydb.flyway" version '7.15.0'
     id "info.solidsoft.pitest" version '1.7.0'
 }
@@ -334,6 +333,8 @@ jacocoTestReport {
         xml.destination file("${project.buildDir}/reports/jacoco/test/jacocoTestReport.xml")
     }
 }
+
+tasks.withType(Copy).all { duplicatesStrategy 'warn' }
 
 project.tasks['sonarqube'].dependsOn test, integration, jacocoTestReport
 check.dependsOn integration

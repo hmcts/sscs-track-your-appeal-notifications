@@ -229,10 +229,10 @@ public class NotificationsFunctionalTest extends AbstractFunctionalTest {
 
     @Test
     @Parameters({
-            "pip,judge\\, doctor and disability expert",
-            "esa,judge and a doctor",
-            "dla,judge\\, doctor and disability expert",
-            "carers-allowance,judge"
+        "pip,judge\\, doctor and disability expert",
+        "esa,judge and a doctor",
+        "dla,judge\\, doctor and disability expert",
+        "carers-allowance,judge"
     })
     public void shouldSendPaperDwpResponseReceivedNotification(final String benefit, String expectedPanelComposition)
             throws Exception {

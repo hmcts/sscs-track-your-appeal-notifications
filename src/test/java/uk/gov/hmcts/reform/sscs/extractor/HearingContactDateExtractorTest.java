@@ -44,9 +44,9 @@ public class HearingContactDateExtractorTest {
 
     @Test
     @Parameters({
-            "DWP_RESPONSE_RECEIVED_NOTIFICATION, oral, 2018-01-01T14:02:18Z[Europe/London]",
-            "DWP_RESPONSE_RECEIVED_NOTIFICATION, paper, 2018-01-01T14:03:18Z[Europe/London]",
-            "POSTPONEMENT_NOTIFICATION, oral, 2018-01-01T14:02:18Z[Europe/London]"
+        "DWP_RESPONSE_RECEIVED_NOTIFICATION, oral, 2018-01-01T14:02:18Z[Europe/London]",
+        "DWP_RESPONSE_RECEIVED_NOTIFICATION, paper, 2018-01-01T14:03:18Z[Europe/London]",
+        "POSTPONEMENT_NOTIFICATION, oral, 2018-01-01T14:02:18Z[Europe/London]"
     })
     public void extractsFirstHearingContactDate(NotificationEventType notificationEventType, String hearingType,
                                                 String expectedHearingContactDate) {

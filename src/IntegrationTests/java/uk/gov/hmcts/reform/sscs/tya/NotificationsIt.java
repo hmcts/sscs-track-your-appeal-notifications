@@ -2725,10 +2725,10 @@ public class NotificationsIt extends NotificationsItBase {
 
     @Test
     @Parameters({
-            "appellant, Dexter Vasquez, true",
-            "appellant, Appointee Appointee, false",
-            "jointParty, Joint Party, false",
-            "representative, Harry Potter, false"
+        "appellant, Dexter Vasquez, true",
+        "appellant, Appointee Appointee, false",
+        "jointParty, Joint Party, false",
+        "representative, Harry Potter, false"
     })
     public void givenRequestInfoIncompleteEvent_shouldSendNotificationToSelectedParty(String partySelected, String letterRecipient, boolean sendToAppellant) throws Exception {
         String jsonPath = sendToAppellant ? "json/ccdResponse_requestInfoIncompleteAppellant.json" : "json/ccdResponse_requestInfoIncomplete.json";
