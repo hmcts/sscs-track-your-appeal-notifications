@@ -388,9 +388,12 @@ dependencies {
     implementation group: 'com.github.hmcts', name: 'properties-volume-spring-boot-starter', version: '0.1.0'
     implementation group: 'com.github.hmcts', name: 'java-logging', version: '5.1.7'
     implementation group: 'com.github.hmcts', name: 'service-auth-provider-java-client', version: '4.0.3'
+    implementation group: 'com.github.hmcts', name: 'ccd-client', version: '4.8.6'
 
-    implementation group: 'com.github.hmcts', name: 'sscs-common', version: '4.18.0-RC-CVE-Fix-3'
-    implementation group: 'com.github.hmcts', name: 'sscs-pdf-email-common', version: '1.4.56-RC-CVE-Fix'
+    implementation group: 'com.github.hmcts', name: 'cmc-pdf-service-client', version: '7.0.1'
+
+    implementation group: 'com.github.hmcts', name: 'sscs-common', version: '4.19.0'
+    implementation group: 'com.github.hmcts', name: 'sscs-pdf-email-common', version: '1.5.0'
 
     implementation group: 'com.github.hmcts', name: 'sscs-job-scheduler', version: '1.5.7', {
         exclude group: "uk.gov.hmcts.reform", module:"properties-volume-spring-boot-starter"
@@ -415,6 +418,7 @@ dependencies {
     implementation group: 'org.projectlombok', name: 'lombok', version: '1.18.22'
 
     implementation group: 'commons-io', name: 'commons-io', version: '2.11.0'
+    implementation group: 'org.apache.commons', name: 'commons-collections4', version: '4.4'
 
     annotationProcessor group: 'org.projectlombok', name: 'lombok', version: '1.18.22'
     testImplementation group: 'org.projectlombok', name: 'lombok', version: '1.18.22'
