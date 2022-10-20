@@ -28,3 +28,8 @@ build
 #visual code
 .vscode
 build/renders
+
+# Terraform
+infrastructure/.terraform/**
+infrastructure/.terraform.lock.hcl
+infrastructure/override.tf
