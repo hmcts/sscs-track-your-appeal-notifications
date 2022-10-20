@@ -12,7 +12,10 @@ resource "azurerm_key_vault_secret" "notification_job_scheduler_db_password" {
   value        = module.db-notif.postgresql_password
   key_vault_id = data.azurerm_key_vault.sscs_key_vault.id
 
-  tags = var.common_tags
+  content_type = "secret"
+  tags = merge(var.common_tags, {
+    "source" : "database ${module.db-notif.postgresql_database}"
+  })
 }
 
 locals {
