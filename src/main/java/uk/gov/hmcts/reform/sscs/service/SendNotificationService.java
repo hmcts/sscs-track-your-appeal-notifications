@@ -1,25 +1,44 @@
 package uk.gov.hmcts.reform.sscs.service;
 
-import static org.apache.commons.lang3.StringUtils.*;
-import static uk.gov.hmcts.reform.sscs.ccd.callback.DocumentType.*;
+import static org.apache.commons.lang3.StringUtils.isEmpty;
+import static org.apache.commons.lang3.StringUtils.isNotBlank;
+import static uk.gov.hmcts.reform.sscs.ccd.callback.DocumentType.ADJOURNMENT_NOTICE;
+import static uk.gov.hmcts.reform.sscs.ccd.callback.DocumentType.AUDIO_VIDEO_EVIDENCE_DIRECTION_NOTICE;
+import static uk.gov.hmcts.reform.sscs.ccd.callback.DocumentType.DECISION_NOTICE;
+import static uk.gov.hmcts.reform.sscs.ccd.callback.DocumentType.DIRECTION_NOTICE;
+import static uk.gov.hmcts.reform.sscs.ccd.callback.DocumentType.FINAL_DECISION_NOTICE;
 import static uk.gov.hmcts.reform.sscs.ccd.callback.DocumentType.POSTPONEMENT_REQUEST_DIRECTION_NOTICE;
-import static uk.gov.hmcts.reform.sscs.config.AppConstants.*;
+import static uk.gov.hmcts.reform.sscs.config.PersonalisationMappingConstants.*;
 import static uk.gov.hmcts.reform.sscs.domain.notify.NotificationEventType.*;
-import static uk.gov.hmcts.reform.sscs.service.LetterUtils.*;
-import static uk.gov.hmcts.reform.sscs.service.NotificationUtils.*;
-import static uk.gov.hmcts.reform.sscs.service.NotificationValidService.*;
+import static uk.gov.hmcts.reform.sscs.service.LetterUtils.addBlankPageAtTheEndIfOddPage;
+import static uk.gov.hmcts.reform.sscs.service.LetterUtils.buildBundledLetter;
+import static uk.gov.hmcts.reform.sscs.service.LetterUtils.getAddressToUseForLetter;
+import static uk.gov.hmcts.reform.sscs.service.LetterUtils.getNameToUseForLetter;
+import static uk.gov.hmcts.reform.sscs.service.LetterUtils.isAlternativeLetterFormatRequired;
+import static uk.gov.hmcts.reform.sscs.service.NotificationUtils.hasLetterTemplate;
+import static uk.gov.hmcts.reform.sscs.service.NotificationUtils.isOkToSendEmailNotification;
+import static uk.gov.hmcts.reform.sscs.service.NotificationUtils.isOkToSendSmsNotification;
+import static uk.gov.hmcts.reform.sscs.service.NotificationValidService.isBundledLetter;
 
 import java.io.IOException;
 import java.time.ZonedDateTime;
 import java.time.format.DateTimeFormatter;
-import java.util.*;
+import java.util.Collection;
+import java.util.Map;
+import java.util.Optional;
 import java.util.stream.Stream;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.ArrayUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
-import uk.gov.hmcts.reform.sscs.ccd.domain.*;
+import uk.gov.hmcts.reform.sscs.ccd.domain.AbstractDocument;
+import uk.gov.hmcts.reform.sscs.ccd.domain.Address;
+import uk.gov.hmcts.reform.sscs.ccd.domain.SscsCaseData;
+import uk.gov.hmcts.reform.sscs.ccd.domain.State;
+import uk.gov.hmcts.reform.sscs.ccd.domain.Subscription;
+import uk.gov.hmcts.reform.sscs.config.AppConstants;
+import uk.gov.hmcts.reform.sscs.config.NotificationEventTypeLists;
 import uk.gov.hmcts.reform.sscs.config.SubscriptionType;
 import uk.gov.hmcts.reform.sscs.domain.SubscriptionWithType;
 import uk.gov.hmcts.reform.sscs.domain.notify.Notification;
@@ -66,8 +85,8 @@ public class SendNotificationService {
         boolean emailSent = sendEmailNotification(wrapper, subscriptionWithType.getSubscription(), notification);
         boolean smsSent = sendSmsNotification(wrapper, subscriptionWithType.getSubscription(), notification, eventType);
 
-        boolean isInterlocLetter = INTERLOC_LETTERS.contains(eventType);
-        boolean isDocmosisLetter = DOCMOSIS_LETTERS.contains(eventType);
+        boolean isInterlocLetter = NotificationEventTypeLists.EVENT_TYPES_FOR_INTERLOC_LETTERS.contains(eventType);
+        boolean isDocmosisLetter = NotificationEventTypeLists.DOCMOSIS_LETTERS.contains(eventType);
 
         boolean letterSent = false;
         if (shouldSendLetter(wrapper, notification, isInterlocLetter, isDocmosisLetter)) {
@@ -169,7 +188,7 @@ public class SendNotificationService {
     }
 
     private boolean sendMandatoryLetterNotification(NotificationWrapper wrapper, Notification notification, SubscriptionWithType subscriptionWithType, Address addressToUse) {
-        if (MANDATORY_LETTER_EVENT_TYPES.contains(wrapper.getNotificationType())) {
+        if (NotificationEventTypeLists.EVENT_TYPES_FOR_MANDATORY_LETTERS.contains(wrapper.getNotificationType())) {
             if (isBundledLetter(wrapper.getNotificationType()) || (isNotBlank(notification.getDocmosisLetterTemplate()))) {
                 return sendBundledAndDocmosisLetterNotification(wrapper, notification, getNameToUseForLetter(wrapper, subscriptionWithType), subscriptionWithType);
             } else if (hasLetterTemplate(notification)) {
@@ -206,7 +225,7 @@ public class SendNotificationService {
 
             if (!placeholders.containsKey(APPEAL_RESPOND_DATE)) {
                 ZonedDateTime appealReceivedDate = ZonedDateTime.now().plusSeconds(delay);
-                placeholders.put(APPEAL_RESPOND_DATE, appealReceivedDate.format(DateTimeFormatter.ofPattern(RESPONSE_DATE_FORMAT)));
+                placeholders.put(APPEAL_RESPOND_DATE, appealReceivedDate.format(DateTimeFormatter.ofPattern(AppConstants.RESPONSE_DATE_FORMAT)));
             }
 
             log.info("In sendLetterNotificationToAddress method notificationSender is available {} ", notificationSender != null);

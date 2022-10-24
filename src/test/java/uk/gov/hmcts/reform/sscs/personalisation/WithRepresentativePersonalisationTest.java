@@ -1,6 +1,7 @@
 package uk.gov.hmcts.reform.sscs.personalisation;
 
 import static org.junit.Assert.assertEquals;
+import static uk.gov.hmcts.reform.sscs.config.PersonalisationMappingConstants.*;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -26,7 +27,7 @@ public class WithRepresentativePersonalisationTest {
             SscsCaseData sscsCaseData, String expected) {
         Map<String, Object> personalisation = withRepresentativePersonalisation.setRepresentativeName(
                 new HashMap<>(), sscsCaseData);
-        assertEquals(expected, personalisation.get(AppConstants.REPRESENTATIVE_NAME));
+        assertEquals(expected, personalisation.get(REPRESENTATIVE_NAME));
     }
 
     @SuppressWarnings({"unused"})

@@ -174,7 +174,7 @@ public class WelshNotificationsFunctionalTest extends AbstractFunctionalTest {
 
     @Test
     public void shouldSendEvidenceReceivedNotificationWelsh() throws NotificationClientException, IOException {
-        simulateWelshCcdCallback(EVIDENCE_RECEIVED_NOTIFICATION);
+        simulateWelshCcdCallback(EVIDENCE_RECEIVED);
         tryFetchNotificationsForTestCase(
                 oralEvidenceReceivedEmailTemplateIdWelsh,
                 oralEvidenceReceivedSmsTemplateIdWelsh,
@@ -185,7 +185,7 @@ public class WelshNotificationsFunctionalTest extends AbstractFunctionalTest {
 
     @Test
     public void shouldSendPaperEvidenceReceivedNotificationWelsh() throws NotificationClientException, IOException {
-        simulateCcdCallback(EVIDENCE_RECEIVED_NOTIFICATION, "paper-" + EVIDENCE_RECEIVED_NOTIFICATION.getId() + "CallbackWelsh.json");
+        simulateCcdCallback(EVIDENCE_RECEIVED, "paper-" + EVIDENCE_RECEIVED.getId() + "CallbackWelsh.json");
         tryFetchNotificationsForTestCase(
             paperEvidenceReceivedEmailTemplateIdWelsh,
             paperEvidenceReceivedSmsTemplateIdWelsh,
@@ -197,14 +197,14 @@ public class WelshNotificationsFunctionalTest extends AbstractFunctionalTest {
 
     @Test
     public void shouldSendHearingPostponedNotificationWelsh() throws NotificationClientException, IOException {
-        simulateWelshCcdCallback(POSTPONEMENT_NOTIFICATION);
+        simulateWelshCcdCallback(POSTPONEMENT);
 
         tryFetchNotificationsForTestCase(hearingPostponedEmailTemplateIdWelsh, hearingPostponedEmailTemplateIdJointPartyWelsh);
     }
 
     @Test
     public void shouldSendHearingBookedNotificationWelsh() throws NotificationClientException, IOException {
-        simulateCcdCallback(HEARING_BOOKED_NOTIFICATION, "appointee/" + HEARING_BOOKED_NOTIFICATION.getId() + "CallbackWelsh.json");
+        simulateCcdCallback(HEARING_BOOKED, "appointee/" + HEARING_BOOKED.getId() + "CallbackWelsh.json");
 
         tryFetchNotificationsForTestCase(
                 appointeeHearingBookedEmailIdWelsh,
@@ -216,7 +216,7 @@ public class WelshNotificationsFunctionalTest extends AbstractFunctionalTest {
 
     @Test
     public void shouldSendHearingAdjournedNotificationWelsh() throws NotificationClientException, IOException {
-        simulateWelshCcdCallback(ADJOURNED_NOTIFICATION);
+        simulateWelshCcdCallback(ADJOURNED);
 
         tryFetchNotificationsForTestCase(
                 hearingAdjournedEmailTemplateIdWelsh,
@@ -229,7 +229,7 @@ public class WelshNotificationsFunctionalTest extends AbstractFunctionalTest {
     @Test
     public void shouldSendSubscriptionCreatedNotificationWelsh() throws NotificationClientException, IOException {
 
-        simulateWelshCcdCallback(SUBSCRIPTION_CREATED_NOTIFICATION);
+        simulateWelshCcdCallback(SUBSCRIPTION_CREATED);
 
         tryFetchNotificationsForTestCase(subscriptionCreatedSmsTemplateIdWelsh);
     }
@@ -237,14 +237,14 @@ public class WelshNotificationsFunctionalTest extends AbstractFunctionalTest {
 
     @Test
     public void shouldSendSubscriptionUpdatedNotificationWelsh() throws NotificationClientException, IOException {
-        simulateWelshCcdCallback(SUBSCRIPTION_UPDATED_NOTIFICATION);
+        simulateWelshCcdCallback(SUBSCRIPTION_UPDATED);
 
         tryFetchNotificationsForTestCase(subscriptionUpdatedEmailTemplateIdWelsh);
     }
 
     @Test
     public void shouldSendAppealCreatedAppellantNotificationWelsh() throws NotificationClientException, IOException {
-        simulateCcdCallback(SYA_APPEAL_CREATED_NOTIFICATION, SYA_APPEAL_CREATED_NOTIFICATION.getId() + "CallbackWelsh.json");
+        simulateCcdCallback(SYA_APPEAL_CREATED, SYA_APPEAL_CREATED.getId() + "CallbackWelsh.json");
         List<Notification> notifications = tryFetchNotificationsForTestCase(appealCreatedAppellantEmailIdWelsh, appealCreatedAppellantSmsIdWelsh);
 
         assertNotificationBodyContains(notifications, appealCreatedAppellantEmailIdWelsh, "appeal has been received");
@@ -253,7 +253,7 @@ public class WelshNotificationsFunctionalTest extends AbstractFunctionalTest {
 
     @Test
     public void shouldSendValidAppealCreatedAppellantNotificationWelsh() throws NotificationClientException, IOException {
-        simulateCcdCallback(VALID_APPEAL_CREATED, SYA_APPEAL_CREATED_NOTIFICATION.getId() + "CallbackWelsh.json");
+        simulateCcdCallback(VALID_APPEAL_CREATED, SYA_APPEAL_CREATED.getId() + "CallbackWelsh.json");
         List<Notification> notifications = tryFetchNotificationsForTestCase(appealCreatedAppellantEmailIdWelsh, appealCreatedAppellantSmsIdWelsh);
 
         assertNotificationBodyContains(notifications, appealCreatedAppellantEmailIdWelsh, "appeal has been received");
@@ -261,7 +261,7 @@ public class WelshNotificationsFunctionalTest extends AbstractFunctionalTest {
 
     @Test
     public void shouldSendAppealCreatedAppointeeNotificationWelsh() throws NotificationClientException, IOException {
-        simulateCcdCallback(SYA_APPEAL_CREATED_NOTIFICATION, SYA_APPEAL_CREATED_NOTIFICATION.getId() + "AppointeeCallbackWelsh.json");
+        simulateCcdCallback(SYA_APPEAL_CREATED, SYA_APPEAL_CREATED.getId() + "AppointeeCallbackWelsh.json");
         List<Notification> notifications = tryFetchNotificationsForTestCase(appealCreatedAppointeeEmailIdWelsh, appealCreatedAppointeeSmsIdWelsh);
 
         assertNotificationBodyContains(notifications, appealCreatedAppointeeEmailIdWelsh, "appointee");
@@ -270,7 +270,7 @@ public class WelshNotificationsFunctionalTest extends AbstractFunctionalTest {
 
     @Test
     public void shouldSendValidAppealCreatedAppointeeNotificationWelsh() throws NotificationClientException, IOException {
-        simulateCcdCallback(VALID_APPEAL_CREATED, SYA_APPEAL_CREATED_NOTIFICATION.getId() + "AppointeeCallbackWelsh.json");
+        simulateCcdCallback(VALID_APPEAL_CREATED, SYA_APPEAL_CREATED.getId() + "AppointeeCallbackWelsh.json");
         List<Notification> notifications = tryFetchNotificationsForTestCase(appealCreatedAppointeeEmailIdWelsh, appealCreatedAppointeeSmsIdWelsh);
 
         assertNotificationBodyContains(notifications, appealCreatedAppointeeEmailIdWelsh, "appointee");
@@ -278,8 +278,8 @@ public class WelshNotificationsFunctionalTest extends AbstractFunctionalTest {
 
     @Test
     public void shouldSendAppointeeEvidenceReminderForPaperCaseNotification() throws NotificationClientException, IOException {
-        simulateCcdCallback(EVIDENCE_REMINDER_NOTIFICATION,
-                "appointee/paper-" + EVIDENCE_REMINDER_NOTIFICATION.getId() + "CallbackWelsh.json");
+        simulateCcdCallback(EVIDENCE_REMINDER,
+                "appointee/paper-" + EVIDENCE_REMINDER.getId() + "CallbackWelsh.json");
 
         List<Notification> notifications = tryFetchNotificationsForTestCase(
                 paperAppointeeEvidenceReminderEmailIdWelsh,
@@ -299,7 +299,7 @@ public class WelshNotificationsFunctionalTest extends AbstractFunctionalTest {
 
     @Test
     public void shouldSendPaperAppealDormantNotificationWelsh() throws NotificationClientException, IOException {
-        simulateCcdCallback(APPEAL_DORMANT_NOTIFICATION, "paper-" + APPEAL_DORMANT_NOTIFICATION.getId() + "CallbackWelsh.json");
+        simulateCcdCallback(APPEAL_DORMANT, "paper-" + APPEAL_DORMANT.getId() + "CallbackWelsh.json");
         tryFetchNotificationsForTestCase(
                 appealDormantPaperJointPartyEmailTemplateIdWelsh,
                 appealDormantPaperAppellantSmsTemplateIdWelsh,
@@ -309,14 +309,14 @@ public class WelshNotificationsFunctionalTest extends AbstractFunctionalTest {
 
     @Test
     public void shouldSendOralAppealDormantNotificationWelsh() throws NotificationClientException, IOException {
-        simulateCcdCallback(APPEAL_DORMANT_NOTIFICATION, "oral-" + APPEAL_DORMANT_NOTIFICATION.getId() + "CallbackWelsh.json");
+        simulateCcdCallback(APPEAL_DORMANT, "oral-" + APPEAL_DORMANT.getId() + "CallbackWelsh.json");
         tryFetchNotificationsForTestCase(appealDormantOralJointPartyEmailTemplateIdWelsh, appealDormantOralAppellantEmailTemplateIdWelsh);
     }
 
     @Test
     public void shouldSendAppealLapsedNotificationToAppointeeJointPartyAndRep() throws NotificationClientException, IOException {
-        simulateCcdCallback(APPEAL_LAPSED_NOTIFICATION,
-                "appointee/" + APPEAL_LAPSED_NOTIFICATION.getId() + "CallbackWelsh.json");
+        simulateCcdCallback(APPEAL_LAPSED,
+                "appointee/" + APPEAL_LAPSED.getId() + "CallbackWelsh.json");
         List<Notification> notifications = tryFetchNotificationsForTestCase(
                 appealLapsedAppointeeEmailTemplateIdWelsh,
                 appealLapsedAppointeeSmsTemplateIdWelsh,
@@ -338,8 +338,8 @@ public class WelshNotificationsFunctionalTest extends AbstractFunctionalTest {
 
     @Test
     public void shouldSendAppointeeAppealWithdrawnNotification() throws NotificationClientException, IOException {
-        simulateCcdCallback(APPEAL_WITHDRAWN_NOTIFICATION,
-                "appointee/" + APPEAL_WITHDRAWN_NOTIFICATION.getId() + "CallbackWelsh.json");
+        simulateCcdCallback(APPEAL_WITHDRAWN,
+                "appointee/" + APPEAL_WITHDRAWN.getId() + "CallbackWelsh.json");
         List<Notification> notifications = tryFetchNotificationsForTestCase(
                 appointeeAppealWithdrawnEmailIdWelsh,
                 appointeeAppealWithdrawnSmsIdWelsh,
@@ -364,8 +364,8 @@ public class WelshNotificationsFunctionalTest extends AbstractFunctionalTest {
 
     @Test
     public void shouldSendAppointeeEvidenceReminderForOralCaseNotification() throws NotificationClientException, IOException {
-        simulateCcdCallback(EVIDENCE_REMINDER_NOTIFICATION,
-                "appointee/oral-" + EVIDENCE_REMINDER_NOTIFICATION.getId() + "CallbackWelsh.json");
+        simulateCcdCallback(EVIDENCE_REMINDER,
+                "appointee/oral-" + EVIDENCE_REMINDER.getId() + "CallbackWelsh.json");
 
         List<Notification> notifications = tryFetchNotificationsForTestCase(
                 oralAppointeeEvidenceReminderEmailIdWelsh,
@@ -400,8 +400,8 @@ public class WelshNotificationsFunctionalTest extends AbstractFunctionalTest {
     @SuppressWarnings({"Indentation", "unused"})
     private Object[] docmosisTestSetup() {
         return new Object[]{
-            new Object[]{NON_COMPLIANT_NOTIFICATION, Optional.empty(), 2},
-            new Object[]{DRAFT_TO_NON_COMPLIANT_NOTIFICATION, Optional.empty(), 2},
+            new Object[]{NON_COMPLIANT, Optional.empty(), 2},
+            new Object[]{DRAFT_TO_NON_COMPLIANT, Optional.empty(), 2},
             new Object[]{REQUEST_INFO_INCOMPLETE, Optional.empty(), 1},
             new Object[]{STRUCK_OUT, Optional.empty(), 3},
             new Object[]{DIRECTION_ISSUED_WELSH, Optional.of("ProvideInformation"), 3},

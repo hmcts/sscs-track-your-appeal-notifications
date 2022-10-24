@@ -8,9 +8,9 @@ import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
-import static uk.gov.hmcts.reform.sscs.config.AppConstants.APPELLANT_NAME;
-import static uk.gov.hmcts.reform.sscs.config.AppConstants.NAME;
-import static uk.gov.hmcts.reform.sscs.config.AppConstants.REPRESENTATIVE_NAME;
+import static uk.gov.hmcts.reform.sscs.config.PersonalisationMappingConstants.APPELLANT_NAME;
+import static uk.gov.hmcts.reform.sscs.config.PersonalisationMappingConstants.NAME;
+import static uk.gov.hmcts.reform.sscs.config.PersonalisationMappingConstants.REPRESENTATIVE_NAME;
 
 import java.io.File;
 import java.nio.charset.StandardCharsets;

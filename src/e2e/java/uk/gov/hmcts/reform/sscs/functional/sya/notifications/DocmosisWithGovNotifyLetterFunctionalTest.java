@@ -1,10 +1,14 @@
 package uk.gov.hmcts.reform.sscs.functional.sya.notifications;
 
-import static org.junit.Assert.assertEquals;
+import static org.assertj.core.api.Assertions.assertThat;
+import static uk.gov.hmcts.reform.sscs.config.NotificationEventTypeLists.DOCMOSIS_LETTERS;
 import static uk.gov.hmcts.reform.sscs.domain.notify.NotificationEventType.*;
 
 import java.io.IOException;
+import java.util.EnumSet;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 import junitparams.JUnitParamsRunner;
 import junitparams.Parameters;
 import org.junit.Test;
@@ -17,24 +21,70 @@ import uk.gov.service.notify.NotificationClientException;
 @RunWith(JUnitParamsRunner.class)
 public class DocmosisWithGovNotifyLetterFunctionalTest extends AbstractFunctionalTest {
 
+    public static final String EXPECTED_LETTER_SUBJECT = "Pre-compiled PDF";
+    //TODO: Add callback jsons for these letters to test them functionally
+    private static final Set<NotificationEventType> DOCMOSIS_LETTERS_WITH_NO_TEST_CALLBACK = EnumSet.of(
+        ACTION_HEARING_RECORDING_REQUEST,
+        ACTION_POSTPONEMENT_REQUEST_WELSH,
+        ADMIN_APPEAL_WITHDRAWN,
+        APPEAL_LAPSED,
+        APPEAL_WITHDRAWN,
+        DECISION_ISSUED_WELSH,
+        DIRECTION_ISSUED_WELSH,
+        DWP_APPEAL_LAPSED,
+        DWP_UPLOAD_RESPONSE,
+        HMCTS_APPEAL_LAPSED,
+        JOINT_PARTY_ADDED,
+        POSTPONEMENT,
+        RESEND_APPEAL_CREATED,
+        VALID_APPEAL_CREATED
+    );
+
     public DocmosisWithGovNotifyLetterFunctionalTest() {
         super(30);
     }
 
     @Test
     @Parameters(method = "eventTypes")
-    public void shouldSendDocmosisLetters(NotificationEventType notificationEventType, int expectedNumberOfLetters) throws IOException, NotificationClientException {
-
-        simulateCcdCallback(notificationEventType,
-                notificationEventType.getId() + "Callback.json");
+    public void shouldSendDocmosisLetters(NotificationEventType notificationEventType)
+        throws IOException, NotificationClientException {
+        simulateCcdCallback(notificationEventType);
 
         List<Notification> notifications = fetchLetters();
-        assertEquals(expectedNumberOfLetters, notifications.size());
-        notifications.forEach(n -> assertEquals("Pre-compiled PDF", n.getSubject().orElse("Unknown Subject")));
+        assertThat(notifications)
+            .extracting(Notification::getSubject)
+            .allSatisfy(subject ->
+                assertThat(subject)
+                    .isPresent()
+                    .hasValue(EXPECTED_LETTER_SUBJECT)
+            );
     }
 
-    @SuppressWarnings({"Indentation", "unused"})
+    @Test
+    @Parameters(method = "expectedNumberOfLetters")
+    public void shouldSendCorrectNumberOfDocmosisLetters(NotificationEventType notificationEventType,
+                                                         int expectedNumberOfLetters)
+        throws IOException, NotificationClientException {
+        simulateCcdCallback(notificationEventType);
+
+        List<Notification> notifications = fetchLetters();
+        assertThat(notifications)
+            .hasSize(expectedNumberOfLetters)
+            .extracting(Notification::getSubject)
+            .allSatisfy(subject ->
+                assertThat(subject)
+                    .isPresent()
+                    .hasValue(EXPECTED_LETTER_SUBJECT)
+            );
+    }
+
     private Object[] eventTypes() {
+        Set<NotificationEventType> docmosisLetters = new HashSet<>(DOCMOSIS_LETTERS);
+        docmosisLetters.removeAll(DOCMOSIS_LETTERS_WITH_NO_TEST_CALLBACK);
+        return docmosisLetters.toArray();
+    }
+
+    private Object[] expectedNumberOfLetters() {
         int expectedNumberOfLettersIsOne = 1;
         int expectedNumberOfLettersIsTwo = 2;
         int expectedNumberOfLettersIsThree = 3;
@@ -50,10 +100,10 @@ public class DocmosisWithGovNotifyLetterFunctionalTest extends AbstractFunctiona
             new Object[]{ISSUE_FINAL_DECISION_WELSH, expectedNumberOfLettersIsFour},
             new Object[]{DECISION_ISSUED, expectedNumberOfLettersIsTwo},
             new Object[]{DIRECTION_ISSUED, expectedNumberOfLettersIsTwo},
-            new Object[]{APPEAL_RECEIVED_NOTIFICATION, expectedNumberOfLettersIsTwo},
+            new Object[]{APPEAL_RECEIVED, expectedNumberOfLettersIsTwo},
             new Object[]{REVIEW_CONFIDENTIALITY_REQUEST, expectedNumberOfLettersIsOne},
-            new Object[]{NON_COMPLIANT_NOTIFICATION, expectedNumberOfLettersIsTwo},
-            new Object[]{DRAFT_TO_NON_COMPLIANT_NOTIFICATION, expectedNumberOfLettersIsTwo},
+            new Object[]{NON_COMPLIANT, expectedNumberOfLettersIsTwo},
+            new Object[]{DRAFT_TO_NON_COMPLIANT, expectedNumberOfLettersIsTwo},
             new Object[]{ACTION_POSTPONEMENT_REQUEST, expectedNumberOfLettersIsTwo},
             new Object[]{DEATH_OF_APPELLANT, expectedNumberOfLettersIsTwo},
             new Object[]{PROVIDE_APPOINTEE_DETAILS, expectedNumberOfLettersIsTwo},

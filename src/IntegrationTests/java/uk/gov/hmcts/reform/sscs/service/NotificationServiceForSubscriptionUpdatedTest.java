@@ -4,7 +4,7 @@ import static org.mockito.Mockito.any;
 import static org.mockito.Mockito.eq;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.verifyNoMoreInteractions;
-import static uk.gov.hmcts.reform.sscs.domain.notify.NotificationEventType.SUBSCRIPTION_UPDATED_NOTIFICATION;
+import static uk.gov.hmcts.reform.sscs.domain.notify.NotificationEventType.SUBSCRIPTION_UPDATED;
 
 import junitparams.Parameters;
 import org.junit.Test;
@@ -87,7 +87,7 @@ public class NotificationServiceForSubscriptionUpdatedTest extends NotificationS
         Subscription oldSubscription = getSubscription().toBuilder().subscribeEmail(NotificationServiceBase.NO).subscribeSms(NotificationServiceBase.NO).build();
         SscsCaseData newSscsCaseData = getSscsCaseData(newSubscription, who);
         SscsCaseData oldSscsCaseData = getSscsCaseData(oldSubscription, who);
-        SscsCaseDataWrapper wrapper = getSscsCaseDataWrapper(newSscsCaseData, oldSscsCaseData, SUBSCRIPTION_UPDATED_NOTIFICATION);
+        SscsCaseDataWrapper wrapper = getSscsCaseDataWrapper(newSscsCaseData, oldSscsCaseData, SUBSCRIPTION_UPDATED);
 
         getNotificationService().manageNotificationAndSubscription(new CcdNotificationWrapper(wrapper), false);
         verify(getNotificationSender()).sendEmail(eq(subscriptionUpdatedEmailId), eq(newSubscription.getEmail()), any(), any(), any(), any());
@@ -102,7 +102,7 @@ public class NotificationServiceForSubscriptionUpdatedTest extends NotificationS
         Subscription oldSubscription = getSubscription().toBuilder().subscribeEmail(NotificationServiceBase.NO).subscribeSms(NotificationServiceBase.NO).build();
         SscsCaseData newSscsCaseData = getSscsCaseData(newSubscription, appellant);
         SscsCaseData oldSscsCaseData = getSscsCaseData(oldSubscription, appellant);
-        SscsCaseDataWrapper wrapper = getSscsCaseDataWrapper(newSscsCaseData, oldSscsCaseData, SUBSCRIPTION_UPDATED_NOTIFICATION);
+        SscsCaseDataWrapper wrapper = getSscsCaseDataWrapper(newSscsCaseData, oldSscsCaseData, SUBSCRIPTION_UPDATED);
 
         getNotificationService().manageNotificationAndSubscription(new CcdNotificationWrapper(wrapper), false);
         verify(getNotificationSender()).sendSms(eq(subscriptionUpdatedSmsId), eq(newSubscription.getMobile()), any(), any(), any(), any(), any());
@@ -117,7 +117,7 @@ public class NotificationServiceForSubscriptionUpdatedTest extends NotificationS
         Subscription oldSubscription = getSubscription().toBuilder().subscribeEmail(NotificationServiceBase.NO).subscribeSms(NotificationServiceBase.NO).build();
         SscsCaseData newSscsCaseData = getSscsCaseData(newSubscription, appointee);
         SscsCaseData oldSscsCaseData = getSscsCaseData(oldSubscription, appointee);
-        SscsCaseDataWrapper wrapper = getSscsCaseDataWrapper(newSscsCaseData, oldSscsCaseData, SUBSCRIPTION_UPDATED_NOTIFICATION);
+        SscsCaseDataWrapper wrapper = getSscsCaseDataWrapper(newSscsCaseData, oldSscsCaseData, SUBSCRIPTION_UPDATED);
 
         getNotificationService().manageNotificationAndSubscription(new CcdNotificationWrapper(wrapper), false);
         verify(getNotificationSender()).sendSms(eq(subscriptionUpdatedSmsId), eq(newSubscription.getMobile()), any(), any(), any(), any(), any());
@@ -132,7 +132,7 @@ public class NotificationServiceForSubscriptionUpdatedTest extends NotificationS
         Subscription oldSubscription = getSubscription().toBuilder().subscribeEmail(NotificationServiceBase.NO).subscribeSms(NotificationServiceBase.NO).build();
         SscsCaseData newSscsCaseData = getSscsCaseData(newSubscription, representative);
         SscsCaseData oldSscsCaseData = getSscsCaseData(oldSubscription, representative);
-        SscsCaseDataWrapper wrapper = getSscsCaseDataWrapper(newSscsCaseData, oldSscsCaseData, SUBSCRIPTION_UPDATED_NOTIFICATION);
+        SscsCaseDataWrapper wrapper = getSscsCaseDataWrapper(newSscsCaseData, oldSscsCaseData, SUBSCRIPTION_UPDATED);
 
         getNotificationService().manageNotificationAndSubscription(new CcdNotificationWrapper(wrapper), false);
         verify(getNotificationSender()).sendSms(eq(subscriptionCreatedRepresentativeSmsId), eq(newSubscription.getMobile()), any(), any(), any(), any(), any());
@@ -147,7 +147,7 @@ public class NotificationServiceForSubscriptionUpdatedTest extends NotificationS
         Subscription oldSubscription = getSubscription().toBuilder().subscribeEmail(NotificationServiceBase.NO).subscribeSms(NotificationServiceBase.NO).build();
         SscsCaseData newSscsCaseData = getSscsCaseData(newSubscription, appellant);
         SscsCaseData oldSscsCaseData = getSscsCaseData(oldSubscription, appellant);
-        SscsCaseDataWrapper wrapper = getSscsCaseDataWrapper(newSscsCaseData, oldSscsCaseData, SUBSCRIPTION_UPDATED_NOTIFICATION);
+        SscsCaseDataWrapper wrapper = getSscsCaseDataWrapper(newSscsCaseData, oldSscsCaseData, SUBSCRIPTION_UPDATED);
 
         getNotificationService().manageNotificationAndSubscription(new CcdNotificationWrapper(wrapper), false);
         verify(getNotificationSender()).sendEmail(eq(subscriptionUpdatedEmailId), eq(newSubscription.getEmail()), any(), any(), any(), any());
@@ -165,7 +165,7 @@ public class NotificationServiceForSubscriptionUpdatedTest extends NotificationS
         Subscription oldSubscription = getSubscription().toBuilder().subscribeEmail(NotificationServiceBase.NO).subscribeSms(NotificationServiceBase.NO).build();
         SscsCaseData newSscsCaseData = getSscsCaseData(newSubscription, appointee);
         SscsCaseData oldSscsCaseData = getSscsCaseData(oldSubscription, appointee);
-        SscsCaseDataWrapper wrapper = getSscsCaseDataWrapper(newSscsCaseData, oldSscsCaseData, SUBSCRIPTION_UPDATED_NOTIFICATION);
+        SscsCaseDataWrapper wrapper = getSscsCaseDataWrapper(newSscsCaseData, oldSscsCaseData, SUBSCRIPTION_UPDATED);
 
         getNotificationService().manageNotificationAndSubscription(new CcdNotificationWrapper(wrapper), false);
         verify(getNotificationSender()).sendEmail(eq(subscriptionUpdatedEmailId), eq(newSubscription.getEmail()), any(), any(), any(), any());
@@ -183,7 +183,7 @@ public class NotificationServiceForSubscriptionUpdatedTest extends NotificationS
         Subscription oldSubscription = getSubscription().toBuilder().subscribeEmail(NotificationServiceBase.NO).subscribeSms(NotificationServiceBase.NO).build();
         SscsCaseData newSscsCaseData = getSscsCaseData(newSubscription, representative);
         SscsCaseData oldSscsCaseData = getSscsCaseData(oldSubscription, representative);
-        SscsCaseDataWrapper wrapper = getSscsCaseDataWrapper(newSscsCaseData, oldSscsCaseData, SUBSCRIPTION_UPDATED_NOTIFICATION);
+        SscsCaseDataWrapper wrapper = getSscsCaseDataWrapper(newSscsCaseData, oldSscsCaseData, SUBSCRIPTION_UPDATED);
 
         getNotificationService().manageNotificationAndSubscription(new CcdNotificationWrapper(wrapper), false);
         verify(getNotificationSender()).sendEmail(eq(subscriptionUpdatedEmailId), eq(newSubscription.getEmail()), any(), any(), any(), any());
@@ -202,7 +202,7 @@ public class NotificationServiceForSubscriptionUpdatedTest extends NotificationS
         Subscription oldSubscription = getSubscription().toBuilder().email(NotificationServiceBase.EMAIL_TEST_2).build();
         SscsCaseData oldSscsCaseData = getSscsCaseData(oldSubscription, who);
 
-        SscsCaseDataWrapper wrapper = getSscsCaseDataWrapper(newSscsCaseData, oldSscsCaseData, SUBSCRIPTION_UPDATED_NOTIFICATION);
+        SscsCaseDataWrapper wrapper = getSscsCaseDataWrapper(newSscsCaseData, oldSscsCaseData, SUBSCRIPTION_UPDATED);
 
         getNotificationService().manageNotificationAndSubscription(new CcdNotificationWrapper(wrapper), false);
 
@@ -220,7 +220,7 @@ public class NotificationServiceForSubscriptionUpdatedTest extends NotificationS
         Subscription oldSubscription = getSubscription().toBuilder().mobile(NotificationServiceBase.MOBILE_NUMBER_2).build();
         SscsCaseData oldSscsCaseData = getSscsCaseData(oldSubscription, appellant);
 
-        SscsCaseDataWrapper wrapper = getSscsCaseDataWrapper(newSscsCaseData, oldSscsCaseData, SUBSCRIPTION_UPDATED_NOTIFICATION);
+        SscsCaseDataWrapper wrapper = getSscsCaseDataWrapper(newSscsCaseData, oldSscsCaseData, SUBSCRIPTION_UPDATED);
 
         getNotificationService().manageNotificationAndSubscription(new CcdNotificationWrapper(wrapper), false);
 
@@ -238,7 +238,7 @@ public class NotificationServiceForSubscriptionUpdatedTest extends NotificationS
         Subscription oldSubscription = getSubscription().toBuilder().mobile(NotificationServiceBase.MOBILE_NUMBER_2).build();
         SscsCaseData oldSscsCaseData = getSscsCaseData(oldSubscription, appointee);
 
-        SscsCaseDataWrapper wrapper = getSscsCaseDataWrapper(newSscsCaseData, oldSscsCaseData, SUBSCRIPTION_UPDATED_NOTIFICATION);
+        SscsCaseDataWrapper wrapper = getSscsCaseDataWrapper(newSscsCaseData, oldSscsCaseData, SUBSCRIPTION_UPDATED);
 
         getNotificationService().manageNotificationAndSubscription(new CcdNotificationWrapper(wrapper), false);
 
@@ -257,7 +257,7 @@ public class NotificationServiceForSubscriptionUpdatedTest extends NotificationS
         Subscription oldSubscription = getSubscription().toBuilder().mobile(NotificationServiceBase.MOBILE_NUMBER_2).build();
         SscsCaseData oldSscsCaseData = getSscsCaseData(oldSubscription, representative);
 
-        SscsCaseDataWrapper wrapper = getSscsCaseDataWrapper(newSscsCaseData, oldSscsCaseData, SUBSCRIPTION_UPDATED_NOTIFICATION);
+        SscsCaseDataWrapper wrapper = getSscsCaseDataWrapper(newSscsCaseData, oldSscsCaseData, SUBSCRIPTION_UPDATED);
 
         getNotificationService().manageNotificationAndSubscription(new CcdNotificationWrapper(wrapper), false);
 
@@ -275,7 +275,7 @@ public class NotificationServiceForSubscriptionUpdatedTest extends NotificationS
         Subscription oldSubscription = getSubscription().toBuilder().mobile(NotificationServiceBase.MOBILE_NUMBER_2).email(NotificationServiceBase.EMAIL_TEST_2).build();
         SscsCaseData oldSscsCaseData = getSscsCaseData(oldSubscription, appellant);
 
-        SscsCaseDataWrapper wrapper = getSscsCaseDataWrapper(newSscsCaseData, oldSscsCaseData, SUBSCRIPTION_UPDATED_NOTIFICATION);
+        SscsCaseDataWrapper wrapper = getSscsCaseDataWrapper(newSscsCaseData, oldSscsCaseData, SUBSCRIPTION_UPDATED);
 
         getNotificationService().manageNotificationAndSubscription(new CcdNotificationWrapper(wrapper), false);
 
@@ -295,7 +295,7 @@ public class NotificationServiceForSubscriptionUpdatedTest extends NotificationS
         Subscription oldSubscription = getSubscription().toBuilder().mobile(NotificationServiceBase.MOBILE_NUMBER_2).email(NotificationServiceBase.EMAIL_TEST_2).build();
         SscsCaseData oldSscsCaseData = getSscsCaseData(oldSubscription, appointee);
 
-        SscsCaseDataWrapper wrapper = getSscsCaseDataWrapper(newSscsCaseData, oldSscsCaseData, SUBSCRIPTION_UPDATED_NOTIFICATION);
+        SscsCaseDataWrapper wrapper = getSscsCaseDataWrapper(newSscsCaseData, oldSscsCaseData, SUBSCRIPTION_UPDATED);
 
         getNotificationService().manageNotificationAndSubscription(new CcdNotificationWrapper(wrapper), false);
 
@@ -315,7 +315,7 @@ public class NotificationServiceForSubscriptionUpdatedTest extends NotificationS
         Subscription oldSubscription = getSubscription().toBuilder().mobile(NotificationServiceBase.MOBILE_NUMBER_2).email(NotificationServiceBase.EMAIL_TEST_2).build();
         SscsCaseData oldSscsCaseData = getSscsCaseData(oldSubscription, representative);
 
-        SscsCaseDataWrapper wrapper = getSscsCaseDataWrapper(newSscsCaseData, oldSscsCaseData, SUBSCRIPTION_UPDATED_NOTIFICATION);
+        SscsCaseDataWrapper wrapper = getSscsCaseDataWrapper(newSscsCaseData, oldSscsCaseData, SUBSCRIPTION_UPDATED);
 
         getNotificationService().manageNotificationAndSubscription(new CcdNotificationWrapper(wrapper), false);
 
@@ -331,7 +331,7 @@ public class NotificationServiceForSubscriptionUpdatedTest extends NotificationS
         SscsCaseData newSscsCaseData = getSscsCaseData(newSubscription, who);
         SscsCaseData oldSscsCaseData = getSscsCaseData(getSubscription(), who);
 
-        SscsCaseDataWrapper wrapper = getSscsCaseDataWrapper(newSscsCaseData, oldSscsCaseData, SUBSCRIPTION_UPDATED_NOTIFICATION);
+        SscsCaseDataWrapper wrapper = getSscsCaseDataWrapper(newSscsCaseData, oldSscsCaseData, SUBSCRIPTION_UPDATED);
 
         getNotificationService().manageNotificationAndSubscription(new CcdNotificationWrapper(wrapper), false);
 

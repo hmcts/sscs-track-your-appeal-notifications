@@ -5,9 +5,9 @@ import static org.junit.Assert.*;
 import static org.mockito.Mockito.*;
 import static org.mockito.MockitoAnnotations.openMocks;
 import static uk.gov.hmcts.reform.sscs.ccd.domain.EventType.DWP_RESPOND;
-import static uk.gov.hmcts.reform.sscs.domain.notify.NotificationEventType.DWP_RESPONSE_RECEIVED_NOTIFICATION;
-import static uk.gov.hmcts.reform.sscs.domain.notify.NotificationEventType.DWP_UPLOAD_RESPONSE_NOTIFICATION;
-import static uk.gov.hmcts.reform.sscs.domain.notify.NotificationEventType.EVIDENCE_REMINDER_NOTIFICATION;
+import static uk.gov.hmcts.reform.sscs.domain.notify.NotificationEventType.DWP_RESPONSE_RECEIVED;
+import static uk.gov.hmcts.reform.sscs.domain.notify.NotificationEventType.DWP_UPLOAD_RESPONSE;
+import static uk.gov.hmcts.reform.sscs.domain.notify.NotificationEventType.EVIDENCE_REMINDER;
 
 import java.time.ZonedDateTime;
 import java.util.Arrays;
@@ -54,7 +54,7 @@ public class EvidenceReminderTest {
 
     @Test
     public void canHandleEvent() {
-        final List<NotificationEventType> handledEventTypes = Arrays.asList(DWP_RESPONSE_RECEIVED_NOTIFICATION, DWP_UPLOAD_RESPONSE_NOTIFICATION);
+        final List<NotificationEventType> handledEventTypes = Arrays.asList(DWP_RESPONSE_RECEIVED, DWP_UPLOAD_RESPONSE);
 
         for (NotificationEventType eventType : NotificationEventType.values()) {
 
@@ -73,7 +73,7 @@ public class EvidenceReminderTest {
     }
 
     @Test
-    @Parameters({"DWP_RESPONSE_RECEIVED_NOTIFICATION", "DWP_UPLOAD_RESPONSE_NOTIFICATION"})
+    @Parameters({"DWP_RESPONSE_RECEIVED", "DWP_UPLOAD_RESPONSE"})
     public void schedulesReminder(NotificationEventType eventType) {
 
         final String expectedJobGroup = "ID_EVENT";
@@ -88,7 +88,7 @@ public class EvidenceReminderTest {
         );
 
         when(dwpResponseReceivedDateExtractor.extract(wrapper.getNewSscsCaseData())).thenReturn(Optional.of(dwpResponseReceivedDate));
-        when(jobGroupGenerator.generate(wrapper.getCaseId(), EVIDENCE_REMINDER_NOTIFICATION.getId())).thenReturn(expectedJobGroup);
+        when(jobGroupGenerator.generate(wrapper.getCaseId(), EVIDENCE_REMINDER.getId())).thenReturn(expectedJobGroup);
 
         evidenceReminder.handle(wrapper);
 
@@ -100,7 +100,7 @@ public class EvidenceReminderTest {
 
         Job<String> job = jobCaptor.getValue();
         assertEquals(expectedJobGroup, job.group);
-        assertEquals(EVIDENCE_REMINDER_NOTIFICATION.getId(), job.name);
+        assertEquals(EVIDENCE_REMINDER.getId(), job.name);
         assertEquals(SscsCaseDataUtils.CASE_ID, job.payload);
         assertEquals(expectedTriggerAt, job.triggerAt.toString());
     }
@@ -113,13 +113,13 @@ public class EvidenceReminderTest {
         ZonedDateTime dwpResponseReceivedDate = ZonedDateTime.parse("2018-01-01T14:01:18Z[Europe/London]");
 
         CcdNotificationWrapper wrapper = SscsCaseDataUtils.buildBasicCcdNotificationWrapperWithEvent(
-                DWP_RESPONSE_RECEIVED_NOTIFICATION,
+            DWP_RESPONSE_RECEIVED,
                 DWP_RESPOND,
                 dwpResponseReceivedDate.toString()
         );
 
         when(dwpResponseReceivedDateExtractor.extract(wrapper.getNewSscsCaseData())).thenReturn(Optional.empty());
-        when(jobGroupGenerator.generate(wrapper.getCaseId(), EVIDENCE_REMINDER_NOTIFICATION.getId())).thenReturn(expectedJobGroup);
+        when(jobGroupGenerator.generate(wrapper.getCaseId(), EVIDENCE_REMINDER.getId())).thenReturn(expectedJobGroup);
 
         evidenceReminder.handle(wrapper);
 
@@ -143,7 +143,7 @@ public class EvidenceReminderTest {
     @Test
     public void canScheduleReturnFalseWhenDwpResponseReceivedDateNotPresent() {
 
-        CcdNotificationWrapper wrapper = SscsCaseDataUtils.buildBasicCcdNotificationWrapper(DWP_RESPONSE_RECEIVED_NOTIFICATION);
+        CcdNotificationWrapper wrapper = SscsCaseDataUtils.buildBasicCcdNotificationWrapper(DWP_RESPONSE_RECEIVED);
 
         when(dwpResponseReceivedDateExtractor.extract(wrapper.getNewSscsCaseData())).thenReturn(Optional.empty());
 

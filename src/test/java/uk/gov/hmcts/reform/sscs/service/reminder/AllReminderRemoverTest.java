@@ -30,9 +30,9 @@ public class AllReminderRemoverTest {
     private AllReminderRemover allReminderRemover;
     private static final List<NotificationEventType> ALL_UNHANDLED_EVENTS =
             Arrays.stream(NotificationEventType.values())
-                    .filter(f -> (!f.equals(APPEAL_LAPSED_NOTIFICATION) && !f.equals(DWP_APPEAL_LAPSED_NOTIFICATION)
-                            && !f.equals(HMCTS_APPEAL_LAPSED_NOTIFICATION) && !f.equals(APPEAL_WITHDRAWN_NOTIFICATION)
-                            && !f.equals(ADMIN_APPEAL_WITHDRAWN) && !f.equals(APPEAL_DORMANT_NOTIFICATION)
+                    .filter(f -> (!f.equals(APPEAL_LAPSED) && !f.equals(DWP_APPEAL_LAPSED)
+                            && !f.equals(HMCTS_APPEAL_LAPSED) && !f.equals(APPEAL_WITHDRAWN)
+                            && !f.equals(ADMIN_APPEAL_WITHDRAWN) && !f.equals(APPEAL_DORMANT)
                             && !f.equals(DECISION_ISSUED)
                             && !f.equals(ISSUE_FINAL_DECISION)))
                     .collect(Collectors.toCollection(ArrayList::new));
@@ -73,14 +73,14 @@ public class AllReminderRemoverTest {
         String hearingTime = "14:01:18";
 
         CcdNotificationWrapper wrapper = SscsCaseDataUtils.buildBasicCcdNotificationWrapperWithHearing(
-            APPEAL_LAPSED_NOTIFICATION,
+            APPEAL_LAPSED,
             hearingDate,
             hearingTime
         );
 
-        when(jobGroupGenerator.generate(wrapper.getCaseId(), HEARING_REMINDER_NOTIFICATION.getId())).thenReturn(expectedHearingJobGroup);
+        when(jobGroupGenerator.generate(wrapper.getCaseId(), HEARING_REMINDER.getId())).thenReturn(expectedHearingJobGroup);
 
-        when(jobGroupGenerator.generate(wrapper.getCaseId(), EVIDENCE_RECEIVED_NOTIFICATION.getId())).thenReturn(expectedEvidenceJobGroup);
+        when(jobGroupGenerator.generate(wrapper.getCaseId(), EVIDENCE_RECEIVED.getId())).thenReturn(expectedEvidenceJobGroup);
 
         allReminderRemover.handle(wrapper);
 
@@ -98,14 +98,14 @@ public class AllReminderRemoverTest {
         String hearingTime = "14:01:18";
 
         CcdNotificationWrapper wrapper = SscsCaseDataUtils.buildBasicCcdNotificationWrapperWithHearing(
-                DWP_APPEAL_LAPSED_NOTIFICATION,
+            DWP_APPEAL_LAPSED,
                 hearingDate,
                 hearingTime
         );
 
-        when(jobGroupGenerator.generate(wrapper.getCaseId(), HEARING_REMINDER_NOTIFICATION.getId())).thenReturn(expectedHearingJobGroup);
+        when(jobGroupGenerator.generate(wrapper.getCaseId(), HEARING_REMINDER.getId())).thenReturn(expectedHearingJobGroup);
 
-        when(jobGroupGenerator.generate(wrapper.getCaseId(), EVIDENCE_RECEIVED_NOTIFICATION.getId())).thenReturn(expectedEvidenceJobGroup);
+        when(jobGroupGenerator.generate(wrapper.getCaseId(), EVIDENCE_RECEIVED.getId())).thenReturn(expectedEvidenceJobGroup);
 
         allReminderRemover.handle(wrapper);
 
@@ -122,13 +122,13 @@ public class AllReminderRemoverTest {
         String hearingTime = "14:01:18";
 
         CcdNotificationWrapper wrapper = SscsCaseDataUtils.buildBasicCcdNotificationWrapperWithHearing(
-            APPEAL_LAPSED_NOTIFICATION,
+            APPEAL_LAPSED,
             hearingDate,
             hearingTime
         );
 
-        when(jobGroupGenerator.generate(wrapper.getCaseId(), HEARING_REMINDER_NOTIFICATION.getId())).thenReturn(expectedJobGroup);
-        when(jobGroupGenerator.generate(wrapper.getCaseId(), EVIDENCE_RECEIVED_NOTIFICATION.getId())).thenReturn(expectedJobGroup);
+        when(jobGroupGenerator.generate(wrapper.getCaseId(), HEARING_REMINDER.getId())).thenReturn(expectedJobGroup);
+        when(jobGroupGenerator.generate(wrapper.getCaseId(), EVIDENCE_RECEIVED.getId())).thenReturn(expectedJobGroup);
 
         doThrow(JobNotFoundException.class)
             .when(jobRemover)
@@ -144,7 +144,7 @@ public class AllReminderRemoverTest {
     @Test
     public void canScheduleReturnAlwaysTrue() {
 
-        CcdNotificationWrapper wrapper = SscsCaseDataUtils.buildBasicCcdNotificationWrapper(HEARING_REMINDER_NOTIFICATION);
+        CcdNotificationWrapper wrapper = SscsCaseDataUtils.buildBasicCcdNotificationWrapper(HEARING_REMINDER);
 
         assertTrue(allReminderRemover.canSchedule(wrapper));
     }

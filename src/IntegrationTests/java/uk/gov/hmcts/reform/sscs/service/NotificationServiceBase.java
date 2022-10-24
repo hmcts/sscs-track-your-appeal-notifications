@@ -1,5 +1,6 @@
 package uk.gov.hmcts.reform.sscs.service;
 
+import static org.mockito.MockitoAnnotations.openMocks;
 import static uk.gov.hmcts.reform.sscs.ccd.domain.EventType.APPEAL_RECEIVED;
 
 import java.util.ArrayList;
@@ -13,7 +14,6 @@ import org.junit.Rule;
 import org.junit.runner.RunWith;
 import org.mockito.Mock;
 import org.mockito.Mockito;
-import org.mockito.MockitoAnnotations;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.context.SpringBootTest;
@@ -97,7 +97,7 @@ public class NotificationServiceBase {
 
     @Before
     public void setup() {
-        MockitoAnnotations.initMocks(this);
+        openMocks(this);
         notificationService = initialiseNotificationService();
 
         Mockito.when(outOfHoursCalculator.isItOutOfHours()).thenReturn(false);

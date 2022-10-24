@@ -25,49 +25,49 @@ public class NotificationValidServiceTest {
     @Test
     public void givenHearingIsInFutureAndEventIsHearingBooked_thenNotificationIsStillValidToSend() {
         assertTrue(
-            notificationValidService.isNotificationStillValidToSend(SscsCaseDataUtils.addHearing(sscsCaseData, 1), HEARING_BOOKED_NOTIFICATION)
+            notificationValidService.isNotificationStillValidToSend(SscsCaseDataUtils.addHearing(sscsCaseData, 1), HEARING_BOOKED)
         );
     }
 
     @Test
     public void givenHearingIsInFutureAndEventIsHearingReminder_thenNotificationIsStillValidToSend() {
         assertTrue(
-            notificationValidService.isNotificationStillValidToSend(SscsCaseDataUtils.addHearing(sscsCaseData, 1), HEARING_REMINDER_NOTIFICATION)
+            notificationValidService.isNotificationStillValidToSend(SscsCaseDataUtils.addHearing(sscsCaseData, 1), HEARING_REMINDER)
         );
     }
 
     @Test
     public void givenHearingIsInPastAndEventIsHearingBooked_thenNotificationIsNotValidToSend() {
         assertFalse(
-            notificationValidService.isNotificationStillValidToSend(SscsCaseDataUtils.addHearing(sscsCaseData, -1), HEARING_BOOKED_NOTIFICATION)
+            notificationValidService.isNotificationStillValidToSend(SscsCaseDataUtils.addHearing(sscsCaseData, -1), HEARING_BOOKED)
         );
     }
 
     @Test
     public void givenHearingIsInPastAndEventIsHearingReminder_thenNotificationIsNotValidToSend() {
         assertFalse(
-            notificationValidService.isNotificationStillValidToSend(SscsCaseDataUtils.addHearing(sscsCaseData, -1), HEARING_REMINDER_NOTIFICATION)
+            notificationValidService.isNotificationStillValidToSend(SscsCaseDataUtils.addHearing(sscsCaseData, -1), HEARING_REMINDER)
         );
     }
 
     @Test
     public void givenHearingIsInFutureAdjournedAndEventIsHearingBooked_thenNotificationIsNotValidToSend() {
         assertFalse(
-                notificationValidService.isNotificationStillValidToSend(SscsCaseDataUtils.addHearing(sscsCaseData, 1, "Yes"), HEARING_BOOKED_NOTIFICATION)
+                notificationValidService.isNotificationStillValidToSend(SscsCaseDataUtils.addHearing(sscsCaseData, 1, "Yes"), HEARING_BOOKED)
         );
     }
 
     @Test
     public void givenHearingIsInFutureAdjournedAndEventIsHearingReminder_thenNotificationIsNotValidToSend() {
         assertFalse(
-                notificationValidService.isNotificationStillValidToSend(SscsCaseDataUtils.addHearing(sscsCaseData, 1, "Yes"), HEARING_REMINDER_NOTIFICATION)
+                notificationValidService.isNotificationStillValidToSend(SscsCaseDataUtils.addHearing(sscsCaseData, 1, "Yes"), HEARING_REMINDER)
         );
     }
 
     @Test
     public void givenCaseDoesNotContainHearingAndEventIsHearingBooked_thenNotificationIsNotValidToSend() {
         assertFalse(
-            notificationValidService.isNotificationStillValidToSend(null, HEARING_BOOKED_NOTIFICATION)
+            notificationValidService.isNotificationStillValidToSend(null, HEARING_BOOKED)
         );
     }
 
@@ -76,7 +76,7 @@ public class NotificationValidServiceTest {
         SscsCaseData caseData = SscsCaseData.builder().appeal(Appeal.builder().hearingOptions(HearingOptions.builder().wantsToAttend("Yes").build()).build()).build();
 
         assertTrue(
-            notificationValidService.isHearingTypeValidToSendNotification(caseData, APPEAL_RECEIVED_NOTIFICATION)
+            notificationValidService.isHearingTypeValidToSendNotification(caseData, APPEAL_RECEIVED)
         );
     }
 
@@ -94,7 +94,7 @@ public class NotificationValidServiceTest {
         SscsCaseData caseData = SscsCaseData.builder().appeal(Appeal.builder().hearingOptions(HearingOptions.builder().wantsToAttend("No").build()).build()).build();
 
         assertTrue(
-            notificationValidService.isHearingTypeValidToSendNotification(caseData, APPEAL_RECEIVED_NOTIFICATION)
+            notificationValidService.isHearingTypeValidToSendNotification(caseData, APPEAL_RECEIVED)
         );
     }
 
@@ -103,7 +103,7 @@ public class NotificationValidServiceTest {
         SscsCaseData caseData = SscsCaseData.builder().appeal(Appeal.builder().hearingOptions(HearingOptions.builder().wantsToAttend("No").build()).build()).build();
 
         assertFalse(
-            notificationValidService.isHearingTypeValidToSendNotification(caseData, HEARING_BOOKED_NOTIFICATION)
+            notificationValidService.isHearingTypeValidToSendNotification(caseData, HEARING_BOOKED)
         );
     }
 

@@ -4,13 +4,17 @@ import static java.util.Objects.nonNull;
 import static org.apache.commons.lang3.StringUtils.equalsIgnoreCase;
 import static org.apache.commons.lang3.StringUtils.isNotBlank;
 import static org.apache.commons.lang3.StringUtils.trimToNull;
+import static uk.gov.hmcts.reform.sscs.config.NotificationEventTypeLists.EVENT_TYPES_FOR_MANDATORY_LETTERS;
 import static uk.gov.hmcts.reform.sscs.config.SubscriptionType.APPELLANT;
 import static uk.gov.hmcts.reform.sscs.config.SubscriptionType.APPOINTEE;
 import static uk.gov.hmcts.reform.sscs.config.SubscriptionType.JOINT_PARTY;
 import static uk.gov.hmcts.reform.sscs.config.SubscriptionType.REPRESENTATIVE;
-import static uk.gov.hmcts.reform.sscs.service.NotificationValidService.*;
 
-import uk.gov.hmcts.reform.sscs.ccd.domain.*;
+import uk.gov.hmcts.reform.sscs.ccd.domain.Appeal;
+import uk.gov.hmcts.reform.sscs.ccd.domain.Appointee;
+import uk.gov.hmcts.reform.sscs.ccd.domain.OtherParty;
+import uk.gov.hmcts.reform.sscs.ccd.domain.SscsCaseData;
+import uk.gov.hmcts.reform.sscs.ccd.domain.Subscription;
 import uk.gov.hmcts.reform.sscs.config.SubscriptionType;
 import uk.gov.hmcts.reform.sscs.domain.SscsCaseDataWrapper;
 import uk.gov.hmcts.reform.sscs.domain.notify.Notification;
@@ -62,29 +66,29 @@ public class NotificationUtils {
     public static boolean hasAppointeeSubscriptionOrIsMandatoryAppointeeLetter(SscsCaseDataWrapper wrapper) {
         Subscription subscription = getSubscription(wrapper.getNewSscsCaseData(), APPOINTEE);
         return hasAppointee(wrapper.getNewSscsCaseData().getAppeal().getAppellant().getAppointee(),
-                wrapper.getNewSscsCaseData().getAppeal().getAppellant().getIsAppointee())
-                && ((nonNull(subscription) && subscription.doesCaseHaveSubscriptions())
-                || MANDATORY_LETTER_EVENT_TYPES.contains(wrapper.getNotificationEventType()));
+            wrapper.getNewSscsCaseData().getAppeal().getAppellant().getIsAppointee())
+            && ((nonNull(subscription) && subscription.doesCaseHaveSubscriptions())
+            || EVENT_TYPES_FOR_MANDATORY_LETTERS.contains(wrapper.getNotificationEventType()));
     }
 
     public static boolean hasRepSubscriptionOrIsMandatoryRepLetter(SscsCaseDataWrapper wrapper) {
         Subscription subscription = getSubscription(wrapper.getNewSscsCaseData(), REPRESENTATIVE);
         return ((null != subscription && subscription.doesCaseHaveSubscriptions())
             || (hasRepresentative(wrapper.getNewSscsCaseData().getAppeal())
-            && MANDATORY_LETTER_EVENT_TYPES.contains(wrapper.getNotificationEventType())));
+            && EVENT_TYPES_FOR_MANDATORY_LETTERS.contains(wrapper.getNotificationEventType())));
     }
 
     public static boolean hasJointPartySubscription(SscsCaseDataWrapper wrapper) {
         Subscription subscription = getSubscription(wrapper.getNewSscsCaseData(), JOINT_PARTY);
         return ((null != subscription && subscription.doesCaseHaveSubscriptions()  && hasJointParty(wrapper.getNewSscsCaseData()))
-                || (hasJointParty(wrapper.getNewSscsCaseData())
-                && MANDATORY_LETTER_EVENT_TYPES.contains(wrapper.getNotificationEventType())));
+            || (hasJointParty(wrapper.getNewSscsCaseData())
+            && EVENT_TYPES_FOR_MANDATORY_LETTERS.contains(wrapper.getNotificationEventType())));
     }
 
     public static boolean isValidSubscriptionOrIsMandatoryLetter(Subscription subscription, NotificationEventType eventType) {
         Subscription nullCheckedSubscription = getPopulatedSubscriptionOrNull(subscription);
         return ((null != nullCheckedSubscription && nullCheckedSubscription.doesCaseHaveSubscriptions())
-                || MANDATORY_LETTER_EVENT_TYPES.contains(eventType));
+            || EVENT_TYPES_FOR_MANDATORY_LETTERS.contains(eventType));
     }
 
     public static Subscription getSubscription(SscsCaseData sscsCaseData, SubscriptionType subscriptionType) {

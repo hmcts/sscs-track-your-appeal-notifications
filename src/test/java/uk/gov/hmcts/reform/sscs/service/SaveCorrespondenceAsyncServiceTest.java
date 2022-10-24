@@ -4,7 +4,7 @@ import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
-import static org.mockito.MockitoAnnotations.initMocks;
+import static org.mockito.MockitoAnnotations.openMocks;
 
 import junitparams.JUnitParamsRunner;
 import junitparams.Parameters;
@@ -38,7 +38,7 @@ public class SaveCorrespondenceAsyncServiceTest {
 
     @Before
     public void setup() throws NotificationClientException {
-        initMocks(this);
+        openMocks(this);
         service = new SaveCorrespondenceAsyncService(ccdNotificationsPdfService);
         correspondence = Correspondence.builder().value(CorrespondenceDetails.builder().to("Mr Blobby").build()).build();
         SscsCaseData sscsCaseData = SscsCaseData.builder().build();

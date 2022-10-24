@@ -93,8 +93,8 @@ public class ReminderNotificationsFunctionalTest extends AbstractFunctionalTest 
 
     @Test
     public void shouldSendNotificationsWhenDwpResponseReceivedEventIsReceivedForOralWithAnAppellantSubscribed() throws IOException, NotificationClientException {
-        triggerEventWithHearingType(DWP_RESPONSE_RECEIVED_NOTIFICATION, "oral");
-        simulateCcdCallback(DWP_RESPONSE_RECEIVED_NOTIFICATION,"representative/oral-" + DWP_RESPONSE_RECEIVED_NOTIFICATION.getId() + "Callback.json");
+        triggerEventWithHearingType(DWP_RESPONSE_RECEIVED, "oral");
+        simulateCcdCallback(DWP_RESPONSE_RECEIVED,"representative/oral-" + DWP_RESPONSE_RECEIVED.getId() + "Callback.json");
 
         List<Notification> notifications =
             tryFetchNotificationsForTestCase(
@@ -146,8 +146,8 @@ public class ReminderNotificationsFunctionalTest extends AbstractFunctionalTest 
     @Test
     public void shouldSendNotificationsWhenDwpResponseReceivedEventIsReceivedForPaperWithAnAppellantSubscribed() throws IOException, NotificationClientException {
 
-        triggerEventWithHearingType(DWP_RESPONSE_RECEIVED_NOTIFICATION, "paper");
-        simulateCcdCallback(DWP_RESPONSE_RECEIVED_NOTIFICATION,"representative/paper-" + DWP_RESPONSE_RECEIVED_NOTIFICATION.getId() + "Callback.json");
+        triggerEventWithHearingType(DWP_RESPONSE_RECEIVED, "paper");
+        simulateCcdCallback(DWP_RESPONSE_RECEIVED,"representative/paper-" + DWP_RESPONSE_RECEIVED.getId() + "Callback.json");
 
         List<Notification> notifications =
             tryFetchNotificationsForTestCase(
@@ -197,8 +197,8 @@ public class ReminderNotificationsFunctionalTest extends AbstractFunctionalTest 
     @Test
     public void shouldSendNotificationsWhenDwpResponseReceivedEventIsReceivedForOralWithAnRepSubscribed() throws IOException, NotificationClientException {
         subscribeRepresentative();
-        triggerEventWithHearingType(DWP_RESPONSE_RECEIVED_NOTIFICATION, "oral");
-        simulateCcdCallback(DWP_RESPONSE_RECEIVED_NOTIFICATION,"representative/oral-" + DWP_RESPONSE_RECEIVED_NOTIFICATION.getId() + "Callback.json");
+        triggerEventWithHearingType(DWP_RESPONSE_RECEIVED, "oral");
+        simulateCcdCallback(DWP_RESPONSE_RECEIVED,"representative/oral-" + DWP_RESPONSE_RECEIVED.getId() + "Callback.json");
 
         List<Notification> notifications =
                 tryFetchNotificationsForTestCase(
@@ -247,8 +247,8 @@ public class ReminderNotificationsFunctionalTest extends AbstractFunctionalTest 
     @Test
     public void shouldSendNotificationsWhenDwpResponseReceivedEventIsReceivedForPaperWithAnRepSubscribed() throws IOException, NotificationClientException {
         subscribeRepresentative();
-        triggerEventWithHearingType(DWP_RESPONSE_RECEIVED_NOTIFICATION, "paper");
-        simulateCcdCallback(DWP_RESPONSE_RECEIVED_NOTIFICATION,"representative/paper-" + DWP_RESPONSE_RECEIVED_NOTIFICATION.getId() + "Callback.json");
+        triggerEventWithHearingType(DWP_RESPONSE_RECEIVED, "paper");
+        simulateCcdCallback(DWP_RESPONSE_RECEIVED,"representative/paper-" + DWP_RESPONSE_RECEIVED.getId() + "Callback.json");
 
         List<Notification> notifications =
                 tryFetchNotificationsForTestCase(
@@ -297,8 +297,8 @@ public class ReminderNotificationsFunctionalTest extends AbstractFunctionalTest 
     public void shouldSendNotificationsWhenHearingBookedEventIsReceivedWhenAnAppellantIsSubscribed() throws IOException, NotificationClientException {
 
         addHearing(caseData, 0);
-        triggerEvent(HEARING_BOOKED_NOTIFICATION);
-        simulateCcdCallback(HEARING_BOOKED_NOTIFICATION, "appointee/" + HEARING_BOOKED_NOTIFICATION.getId() + "Callback.json");
+        triggerEvent(HEARING_BOOKED);
+        simulateCcdCallback(HEARING_BOOKED, "appointee/" + HEARING_BOOKED.getId() + "Callback.json");
 
         String formattedString = LocalDate.now().format(DateTimeFormatter.ofPattern(AppConstants.RESPONSE_DATE_FORMAT));
 
@@ -320,7 +320,7 @@ public class ReminderNotificationsFunctionalTest extends AbstractFunctionalTest 
             "reminder",
             formattedString,
             "11:59 PM",
-            "AB12 0HN",
+            "TS3 3ST",
             "/abouthearing"
         );
 
@@ -331,7 +331,7 @@ public class ReminderNotificationsFunctionalTest extends AbstractFunctionalTest 
             "reminder",
             formattedString,
             "11:59 PM",
-            "AB12 0HN",
+            "TS3 3ST",
             "/abouthearing"
         );
     }
@@ -340,8 +340,8 @@ public class ReminderNotificationsFunctionalTest extends AbstractFunctionalTest 
     public void shouldSendNotificationsWhenHearingBookedEventIsReceivedWhenARepresentativeIsSubscribed() throws IOException, NotificationClientException {
         subscribeRepresentative();
         addHearing(caseData, 0);
-        triggerEvent(HEARING_BOOKED_NOTIFICATION);
-        simulateCcdCallback(HEARING_BOOKED_NOTIFICATION,"representative/" + HEARING_BOOKED_NOTIFICATION.getId() + "Callback.json");
+        triggerEvent(HEARING_BOOKED);
+        simulateCcdCallback(HEARING_BOOKED,"representative/" + HEARING_BOOKED.getId() + "Callback.json");
 
         List<Notification> notifications =
                 tryFetchNotificationsForTestCase(
@@ -363,7 +363,7 @@ public class ReminderNotificationsFunctionalTest extends AbstractFunctionalTest 
                 "reminder",
                 formattedString,
                 "11:59 PM",
-                "AB12 0HN",
+                "TS3 3ST",
                 "/abouthearing"
         );
 
@@ -374,7 +374,7 @@ public class ReminderNotificationsFunctionalTest extends AbstractFunctionalTest 
                 "reminder",
                 formattedString,
                 "11:59 PM",
-                "AB12 0HN",
+                "TS3 3ST",
                 "/abouthearing"
         );
     }
@@ -383,8 +383,8 @@ public class ReminderNotificationsFunctionalTest extends AbstractFunctionalTest 
     public void shouldSendNotificationsWhenHearingBookedEventIsReceivedWhenAnAppellantAndJointPartyIsSubscribed() throws IOException, NotificationClientException {
 
         addHearing(caseData, 0);
-        triggerEvent(HEARING_BOOKED_NOTIFICATION);
-        simulateCcdCallback(HEARING_BOOKED_NOTIFICATION, "appointee/" + HEARING_BOOKED_NOTIFICATION.getId() + "CallbackWelsh.json");
+        triggerEvent(HEARING_BOOKED);
+        simulateCcdCallback(HEARING_BOOKED, "appointee/" + HEARING_BOOKED.getId() + "CallbackWelsh.json");
 
         String formattedString = LocalDate.now().format(DateTimeFormatter.ofPattern(AppConstants.RESPONSE_DATE_FORMAT));
 
@@ -408,7 +408,7 @@ public class ReminderNotificationsFunctionalTest extends AbstractFunctionalTest 
                 "atgoffa",
                 formattedString,
                 "11:59 PM",
-                "AB12 0HN",
+                "TS3 3ST",
                 "/abouthearing"
         );
 
@@ -419,7 +419,7 @@ public class ReminderNotificationsFunctionalTest extends AbstractFunctionalTest 
                 "atgoffa",
                 formattedString,
                 "11:59 PM",
-                "AB12 0HN",
+                "TS3 3ST",
                 "/abouthearing"
         );
     }

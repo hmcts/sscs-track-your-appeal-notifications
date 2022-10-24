@@ -2,7 +2,7 @@ package uk.gov.hmcts.reform.sscs.functional.sya.notifications;
 
 import static uk.gov.hmcts.reform.sscs.config.AppealHearingType.ORAL;
 import static uk.gov.hmcts.reform.sscs.config.AppealHearingType.PAPER;
-import static uk.gov.hmcts.reform.sscs.domain.notify.NotificationEventType.EVIDENCE_RECEIVED_NOTIFICATION;
+import static uk.gov.hmcts.reform.sscs.domain.notify.NotificationEventType.EVIDENCE_RECEIVED;
 
 import java.lang.reflect.Field;
 import java.util.List;
@@ -47,10 +47,10 @@ public class EvidenceReceivedFunctionalTest extends AbstractFunctionalTest {
         final String repsEmailId = getFieldValue(appealHearingType, "RepsEmailId");
         final String repsSmsId = getFieldValue(appealHearingType, "RepsSmsId");
 
-        simulateCcdCallback(EVIDENCE_RECEIVED_NOTIFICATION,
+        simulateCcdCallback(EVIDENCE_RECEIVED,
                 "representative/"
                         + (appealHearingType != null ? (appealHearingType.name().toLowerCase() + "-") : "")
-                        + EVIDENCE_RECEIVED_NOTIFICATION.getId() + "Callback.json");
+                        + EVIDENCE_RECEIVED.getId() + "Callback.json");
 
         final List<Notification> notifications = (StringUtils.isBlank(appellantSmsId))
                 ? tryFetchNotificationsForTestCase(appellantEmailId, repsEmailId, repsSmsId)
@@ -74,7 +74,7 @@ public class EvidenceReceivedFunctionalTest extends AbstractFunctionalTest {
         }
 
         if (field == null) {
-            field = this.getClass().getDeclaredField(EVIDENCE_RECEIVED_NOTIFICATION.getId() + fieldName);
+            field = this.getClass().getDeclaredField(EVIDENCE_RECEIVED.getId() + fieldName);
         }
 
         field.setAccessible(true);
@@ -84,7 +84,7 @@ public class EvidenceReceivedFunctionalTest extends AbstractFunctionalTest {
     @SuppressWarnings("unused")
     private Field getField(AppealHearingType appealHearingType, String fieldName) throws NoSuchFieldException {
         try {
-            return this.getClass().getDeclaredField(appealHearingType.name().toLowerCase() + StringUtils.capitalize(EVIDENCE_RECEIVED_NOTIFICATION.getId()) + fieldName);
+            return this.getClass().getDeclaredField(appealHearingType.name().toLowerCase() + StringUtils.capitalize(EVIDENCE_RECEIVED.getId()) + fieldName);
         } catch (NoSuchFieldException e) {
             return null;
         }

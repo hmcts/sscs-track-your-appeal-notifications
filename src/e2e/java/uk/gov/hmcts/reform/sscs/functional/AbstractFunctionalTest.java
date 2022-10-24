@@ -4,6 +4,7 @@ import static helper.EnvironmentProfileValueSource.getEnvOrEmpty;
 import static java.util.Arrays.asList;
 import static java.util.stream.Collectors.toSet;
 import static junit.framework.TestCase.fail;
+import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNotNull;
 import static org.slf4j.LoggerFactory.getLogger;
@@ -25,6 +26,7 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
+import java.util.Optional;
 import java.util.Set;
 import java.util.UUID;
 import java.util.concurrent.TimeUnit;
@@ -33,8 +35,6 @@ import junitparams.JUnitParamsRunner;
 import lombok.Getter;
 import org.apache.commons.io.FileUtils;
 import org.apache.commons.lang.StringUtils;
-import org.hamcrest.CoreMatchers;
-import org.junit.Assert;
 import org.junit.Before;
 import org.junit.ClassRule;
 import org.junit.Rule;
@@ -262,33 +262,40 @@ public abstract class AbstractFunctionalTest {
     }
 
     protected void simulateWelshCcdCallback(NotificationEventType eventType) throws IOException {
-        String resource = eventType.getId() + "CallbackWelsh.json";
-        simulateCcdCallback(eventType, resource);
+        String callbackJsonName = eventType.getId() + "CallbackWelsh.json";
+        simulateCcdCallback(eventType, callbackJsonName);
     }
 
     protected void simulateCcdCallback(NotificationEventType eventType) throws IOException {
-        String resource = eventType.getId() + "Callback.json";
-        simulateCcdCallback(eventType, resource);
+        String callbackJsonName = eventType.getId() + "Callback.json";
+        simulateCcdCallback(eventType, callbackJsonName);
     }
 
     public void simulateCcdCallback(NotificationEventType eventType, String resource) throws IOException {
         final String callbackUrl = getEnvOrEmpty("TEST_URL") + "/send";
 
-        String path = Objects.requireNonNull(getClass().getClassLoader().getResource(resource)).getFile();
-        String json = FileUtils.readFileToString(new File(path), StandardCharsets.UTF_8.name());
+        String json;
+        try {
+            String path = Objects.requireNonNull(getClass().getClassLoader().getResource(resource)).getFile();
+            json = FileUtils.readFileToString(new File(path), StandardCharsets.UTF_8.name());
+        } catch (IOException | NullPointerException e) {
+            log.error("Callback file for the event {} is missing: {}", eventType, resource, e);
+            throw e;
+        }
 
         json = updateJson(json, eventType);
 
         RestAssured.useRelaxedHTTPSValidation();
         RestAssured
-                .given()
-                .header("ServiceAuthorization", "" + idamTokens.getServiceAuthorization())
-                .contentType("application/json")
-                .body(json)
-                .when()
-                .post(callbackUrl)
-                .then()
-                .statusCode(HttpStatus.OK.value());
+            .given()
+            .header("ServiceAuthorization", "" + idamTokens.getServiceAuthorization())
+            .contentType("application/json")
+            .body(json)
+            .when()
+            .post(callbackUrl)
+            .then()
+            .log().all(true)
+            .statusCode(HttpStatus.OK.value());
     }
 
     private String updateJson(String json, NotificationEventType eventType) {
@@ -297,7 +304,7 @@ public abstract class AbstractFunctionalTest {
         json = json.replace("SC022/14/12423", caseReference);
         json = json.replace("EVENT_TYPE", eventType.getId());
 
-        if (eventType.equals(NotificationEventType.HEARING_BOOKED_NOTIFICATION)) {
+        if (eventType.equals(NotificationEventType.HEARING_BOOKED)) {
             json = json.replace("2048-01-01", LocalDate.now().toString());
             json = json.replace("2016-01-01", LocalDate.now().toString());
         }
@@ -334,42 +341,33 @@ public abstract class AbstractFunctionalTest {
     }
 
     void assertNotificationSubjectContains(List<Notification> notifications, String templateId, String... matches) {
-        String bodies =
-                notifications
-                        .stream()
-                        .filter(notification -> notification.getTemplateId().equals(UUID.fromString(templateId)))
-                        .filter(notification -> notification.getSubject().isPresent())
-                        .map(notification -> notification.getSubject().get())
-                        .collect(Collectors.joining("\n--\n"));
+        Set<String> subjects = notifications.stream()
+            .filter(notification -> UUID.fromString(templateId).equals(notification.getTemplateId()))
+            .map(Notification::getSubject)
+            .filter(Optional::isPresent)
+            .map(Optional::get)
+            .collect(Collectors.toSet());
 
-        for (String match : matches) {
-
-            Assert.assertThat(
-                    "Notification template " + templateId + " [subject] contains '" + match + "'",
-                    bodies,
-                    CoreMatchers.containsString(match)
-            );
-        }
+        assertThat(matches).allSatisfy(match ->
+            assertThat(subjects)
+                .as("Notification template %s [subject] contains '%s'", templateId, match)
+                .anySatisfy(body -> assertThat(body).contains(match))
+        );
     }
 
-    protected void assertNotificationBodyContains(List<Notification> notifications, String templateId, String... matches) {
-
+    protected void assertNotificationBodyContains(List<Notification> notifications, String templateId,
+                                                  String... matches) {
         if (templateId != null) {
-            String bodies =
-                    notifications
-                            .stream()
-                            .filter(notification -> notification.getTemplateId().equals(UUID.fromString(templateId)))
-                            .map(Notification::getBody)
-                            .collect(Collectors.joining("\n--\n"));
+            Set<String> bodies = notifications.stream()
+                .filter(notification -> UUID.fromString(templateId).equals(notification.getTemplateId()))
+                .map(Notification::getBody)
+                .collect(Collectors.toSet());
 
-            for (String match : matches) {
-
-                Assert.assertThat(
-                        "Notification template " + templateId + " [body] contains '" + match + "'",
-                        bodies,
-                        CoreMatchers.containsString(match)
-                );
-            }
+            assertThat(matches).allSatisfy(match ->
+                assertThat(bodies)
+                    .as("Notification template %s [body] contains '%s'", templateId, match)
+                    .anySatisfy(body -> assertThat(body).contains(match))
+            );
         }
     }
 

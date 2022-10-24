@@ -1,9 +1,17 @@
 package uk.gov.hmcts.reform.sscs.service.docmosis;
 
-import static uk.gov.hmcts.reform.sscs.config.AppConstants.*;
-import static uk.gov.hmcts.reform.sscs.domain.notify.NotificationEventType.APPEAL_RECEIVED_NOTIFICATION;
+import static uk.gov.hmcts.reform.sscs.config.PersonalisationMappingConstants.ADDRESS_NAME;
+import static uk.gov.hmcts.reform.sscs.config.PersonalisationMappingConstants.LETTER_ADDRESS_LINE_1;
+import static uk.gov.hmcts.reform.sscs.config.PersonalisationMappingConstants.LETTER_ADDRESS_LINE_2;
+import static uk.gov.hmcts.reform.sscs.config.PersonalisationMappingConstants.LETTER_ADDRESS_LINE_3;
+import static uk.gov.hmcts.reform.sscs.config.PersonalisationMappingConstants.LETTER_ADDRESS_LINE_4;
+import static uk.gov.hmcts.reform.sscs.config.PersonalisationMappingConstants.LETTER_ADDRESS_POSTCODE;
+import static uk.gov.hmcts.reform.sscs.domain.notify.NotificationEventType.APPEAL_RECEIVED;
 import static uk.gov.hmcts.reform.sscs.personalisation.Personalisation.translateToWelshDate;
-import static uk.gov.hmcts.reform.sscs.service.LetterUtils.*;
+import static uk.gov.hmcts.reform.sscs.service.LetterUtils.addBlankPageAtTheEndIfOddPage;
+import static uk.gov.hmcts.reform.sscs.service.LetterUtils.buildBundledLetter;
+import static uk.gov.hmcts.reform.sscs.service.LetterUtils.getAddressToUseForLetter;
+import static uk.gov.hmcts.reform.sscs.service.LetterUtils.getNameToUseForLetter;
 
 import java.io.IOException;
 import java.time.LocalDate;
@@ -39,7 +47,7 @@ public class PdfLetterService {
     protected static final String GENERATED_DATE_LITERAL = "generated_date";
     protected static final String WELSH_GENERATED_DATE_LITERAL = "welsh_generated_date";
     private static final List<NotificationEventType> REQUIRES_TWO_COVERSHEET =
-            Collections.singletonList(APPEAL_RECEIVED_NOTIFICATION);
+            Collections.singletonList(APPEAL_RECEIVED);
 
     private final DocmosisPdfService docmosisPdfService;
     private final DocmosisTemplatesConfig docmosisTemplatesConfig;

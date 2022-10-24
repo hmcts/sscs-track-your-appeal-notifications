@@ -3,8 +3,8 @@ package uk.gov.hmcts.reform.sscs.service.reminder;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.junit.Assert.*;
 import static org.mockito.Mockito.*;
-import static uk.gov.hmcts.reform.sscs.domain.notify.NotificationEventType.HEARING_BOOKED_NOTIFICATION;
-import static uk.gov.hmcts.reform.sscs.domain.notify.NotificationEventType.HEARING_REMINDER_NOTIFICATION;
+import static uk.gov.hmcts.reform.sscs.domain.notify.NotificationEventType.HEARING_BOOKED;
+import static uk.gov.hmcts.reform.sscs.domain.notify.NotificationEventType.HEARING_REMINDER;
 
 import com.google.common.collect.Lists;
 import org.junit.Before;
@@ -49,7 +49,7 @@ public class HearingReminderTest {
             CcdNotificationWrapper wrapper = SscsCaseDataUtils.buildBasicCcdNotificationWrapper(eventType,
                     AppealHearingType.ORAL.name());
 
-            if (eventType == HEARING_BOOKED_NOTIFICATION) {
+            if (eventType == HEARING_BOOKED) {
                 assertTrue(hearingReminder.canHandle(wrapper));
             } else {
 
@@ -88,13 +88,13 @@ public class HearingReminderTest {
         String hearingTime = "14:01:18";
 
         CcdNotificationWrapper wrapper = SscsCaseDataUtils.buildBasicCcdNotificationWrapperWithHearingAndHearingType(
-            HEARING_BOOKED_NOTIFICATION,
+            HEARING_BOOKED,
             HearingType.ORAL,
             hearingDate,
             hearingTime
         );
 
-        when(jobGroupGenerator.generate(wrapper.getCaseId(), HEARING_REMINDER_NOTIFICATION.getId())).thenReturn(expectedJobGroup);
+        when(jobGroupGenerator.generate(wrapper.getCaseId(), HEARING_REMINDER.getId())).thenReturn(expectedJobGroup);
 
         hearingReminder.handle(wrapper);
 
@@ -106,13 +106,13 @@ public class HearingReminderTest {
 
         Job<String> firstJob = jobCaptor.getAllValues().get(0);
         assertEquals(expectedJobGroup, firstJob.group);
-        assertEquals(HEARING_REMINDER_NOTIFICATION.getId(), firstJob.name);
+        assertEquals(HEARING_REMINDER.getId(), firstJob.name);
         assertEquals(SscsCaseDataUtils.CASE_ID, firstJob.payload);
         assertEquals(expectedFirstTriggerAt, firstJob.triggerAt.toString());
 
         Job<String> secondJob = jobCaptor.getAllValues().get(1);
         assertEquals(expectedJobGroup, secondJob.group);
-        assertEquals(HEARING_REMINDER_NOTIFICATION.getId(), secondJob.name);
+        assertEquals(HEARING_REMINDER.getId(), secondJob.name);
         assertEquals(SscsCaseDataUtils.CASE_ID, secondJob.payload);
         assertEquals(expectedSecondTriggerAt, secondJob.triggerAt.toString());
     }
@@ -126,7 +126,7 @@ public class HearingReminderTest {
         String hearingTime = "14:01:18";
 
         CcdNotificationWrapper wrapper = SscsCaseDataUtils.buildBasicCcdNotificationWrapperWithHearingAndHearingType(
-                HEARING_BOOKED_NOTIFICATION,
+            HEARING_BOOKED,
                 HearingType.ORAL,
                 hearingDate,
                 hearingTime
@@ -134,7 +134,7 @@ public class HearingReminderTest {
 
         wrapper.getNewSscsCaseData().setHearings(Lists.newArrayList());
 
-        when(jobGroupGenerator.generate(wrapper.getCaseId(), HEARING_REMINDER_NOTIFICATION.getId())).thenReturn(expectedJobGroup);
+        when(jobGroupGenerator.generate(wrapper.getCaseId(), HEARING_REMINDER.getId())).thenReturn(expectedJobGroup);
 
         hearingReminder.handle(wrapper);
 
@@ -158,7 +158,7 @@ public class HearingReminderTest {
     @Test
     public void canScheduleReturnFalseWhenCannotFindHearingDate() {
 
-        CcdNotificationWrapper ccdResponse = SscsCaseDataUtils.buildBasicCcdNotificationWrapper(HEARING_BOOKED_NOTIFICATION);
+        CcdNotificationWrapper ccdResponse = SscsCaseDataUtils.buildBasicCcdNotificationWrapper(HEARING_BOOKED);
 
         assertFalse(hearingReminder.canSchedule(ccdResponse));
     }

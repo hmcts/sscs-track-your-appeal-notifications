@@ -7,6 +7,7 @@ import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.when;
 import static org.mockito.MockitoAnnotations.openMocks;
 import static uk.gov.hmcts.reform.sscs.ccd.domain.Benefit.PIP;
+import static uk.gov.hmcts.reform.sscs.config.PersonalisationMappingConstants.*;
 import static uk.gov.hmcts.reform.sscs.config.SubscriptionType.APPELLANT;
 import static uk.gov.hmcts.reform.sscs.domain.notify.NotificationEventType.*;
 import static uk.gov.hmcts.reform.sscs.service.NotificationUtils.getSubscription;
@@ -103,17 +104,17 @@ public class SubscriptionPersonalisationTest {
         buildNewAndOldCaseData(NEW_SUBSCRIPTION, buildSubscriptionWithNothingSubscribed());
         Map<String, Object> result = personalisation.create(wrapper, getSubscriptionWithType(new CcdNotificationWrapper(wrapper)));
 
-        assertEquals("PIP", result.get(AppConstants.BENEFIT_NAME_ACRONYM_LITERAL));
-        assertEquals("Personal Independence Payment", result.get(AppConstants.BENEFIT_FULL_NAME_LITERAL));
-        assertEquals("1234", result.get(AppConstants.APPEAL_REF));
-        assertEquals("GLSCRR", result.get(AppConstants.APPEAL_ID_LITERAL));
-        assertEquals("Harry Kane", result.get(AppConstants.NAME));
-        assertEquals("01234543225", result.get(AppConstants.PHONE_NUMBER));
-        assertEquals("http://link.com/manage-email-notifications/ZYX", result.get(AppConstants.MANAGE_EMAILS_LINK_LITERAL));
-        assertEquals("http://tyalink.com/GLSCRR", result.get(AppConstants.TRACK_APPEAL_LINK_LITERAL));
-        assertEquals(AppConstants.DWP_ACRONYM, result.get(AppConstants.FIRST_TIER_AGENCY_ACRONYM));
-        assertEquals(AppConstants.DWP_FULL_NAME, result.get(AppConstants.FIRST_TIER_AGENCY_FULL_NAME));
-        assertEquals("http://link.com/GLSCRR", result.get(AppConstants.SUBMIT_EVIDENCE_LINK_LITERAL));
+        assertEquals("PIP", result.get(BENEFIT_NAME_ACRONYM_LITERAL));
+        assertEquals("Personal Independence Payment", result.get(BENEFIT_FULL_NAME_LITERAL));
+        assertEquals("1234", result.get(APPEAL_REF));
+        assertEquals("GLSCRR", result.get(APPEAL_ID_LITERAL));
+        assertEquals("Harry Kane", result.get(NAME));
+        assertEquals("01234543225", result.get(PHONE_NUMBER));
+        assertEquals("http://link.com/manage-email-notifications/ZYX", result.get(MANAGE_EMAILS_LINK_LITERAL));
+        assertEquals("http://tyalink.com/GLSCRR", result.get(TRACK_APPEAL_LINK_LITERAL));
+        assertEquals(AppConstants.DWP_ACRONYM, result.get(FIRST_TIER_AGENCY_ACRONYM));
+        assertEquals(AppConstants.DWP_FULL_NAME, result.get(FIRST_TIER_AGENCY_FULL_NAME));
+        assertEquals("http://link.com/GLSCRR", result.get(SUBMIT_EVIDENCE_LINK_LITERAL));
     }
 
     @Test
@@ -130,7 +131,7 @@ public class SubscriptionPersonalisationTest {
 
         personalisation.create(wrapper, getSubscriptionWithType(new CcdNotificationWrapper(wrapper)));
 
-        assertEquals(SUBSCRIPTION_UPDATED_NOTIFICATION, wrapper.getNotificationEventType());
+        assertEquals(SUBSCRIPTION_UPDATED, wrapper.getNotificationEventType());
     }
 
     @Test
@@ -269,6 +270,6 @@ public class SubscriptionPersonalisationTest {
                 .caseReference("5432")
                 .subscriptions(Subscriptions.builder().appellantSubscription(oldSubscription).build()).build();
 
-        wrapper = SscsCaseDataWrapper.builder().newSscsCaseData(newSscsCaseData).oldSscsCaseData(oldSscsCaseData).notificationEventType(SUBSCRIPTION_UPDATED_NOTIFICATION).build();
+        wrapper = SscsCaseDataWrapper.builder().newSscsCaseData(newSscsCaseData).oldSscsCaseData(oldSscsCaseData).notificationEventType(SUBSCRIPTION_UPDATED).build();
     }
 }

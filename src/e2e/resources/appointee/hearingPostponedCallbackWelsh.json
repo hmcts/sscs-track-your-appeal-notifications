@@ -8,7 +8,12 @@
       "appeal": {
         "appealReasons": {},
         "appellant": {
-        "address": {},
+        "address": {
+            "line1": "1 Appellant Ave",
+            "town": "Appellanton",
+            "county": "Appellanty",
+            "postcode": "TS1 1ST"
+          },
         "contact": {
           "email": "mail@email.com",
           "phone": "01234567890"
@@ -38,7 +43,7 @@
             "line2": "Newcastle",
             "town": "Newcastle",
             "county": "Tyne and Wear",
-            "postcode": "NE1 1AW"
+            "postcode": "TS2 2ST"
           },
           "identity": {
             "dob": "1998-07-01",
@@ -384,7 +389,12 @@
       "appeal": {
         "appealReasons": {},
         "appellant": {
-          "address": {},
+          "address": {
+            "line1": "1 Appellant Ave",
+            "town": "Appellanton",
+            "county": "Appellanty",
+            "postcode": "TS1 1ST"
+          },
           "contact": {
             "email": "mail@email.com",
             "phone": "01234567890"
@@ -414,7 +424,7 @@
               "line2": "Newcastle",
               "town": "Newcastle",
               "county": "Tyne and Wear",
-              "postcode": "NE1 1AW"
+              "postcode": "TS2 2ST"
             },
             "identity": {
               "dob": "1998-07-01",

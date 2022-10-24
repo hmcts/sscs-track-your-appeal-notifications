@@ -12,13 +12,13 @@ import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.verifyNoInteractions;
 import static org.mockito.Mockito.when;
 import static uk.gov.hmcts.reform.sscs.SscsCaseDataUtils.getWelshDate;
-import static uk.gov.hmcts.reform.sscs.config.AppConstants.ADDRESS_NAME;
-import static uk.gov.hmcts.reform.sscs.config.AppConstants.LETTER_ADDRESS_LINE_1;
-import static uk.gov.hmcts.reform.sscs.config.AppConstants.LETTER_ADDRESS_LINE_2;
-import static uk.gov.hmcts.reform.sscs.config.AppConstants.LETTER_ADDRESS_LINE_3;
-import static uk.gov.hmcts.reform.sscs.config.AppConstants.LETTER_ADDRESS_LINE_4;
-import static uk.gov.hmcts.reform.sscs.config.AppConstants.LETTER_ADDRESS_POSTCODE;
-import static uk.gov.hmcts.reform.sscs.domain.notify.NotificationEventType.APPEAL_RECEIVED_NOTIFICATION;
+import static uk.gov.hmcts.reform.sscs.config.PersonalisationMappingConstants.ADDRESS_NAME;
+import static uk.gov.hmcts.reform.sscs.config.PersonalisationMappingConstants.LETTER_ADDRESS_LINE_1;
+import static uk.gov.hmcts.reform.sscs.config.PersonalisationMappingConstants.LETTER_ADDRESS_LINE_2;
+import static uk.gov.hmcts.reform.sscs.config.PersonalisationMappingConstants.LETTER_ADDRESS_LINE_3;
+import static uk.gov.hmcts.reform.sscs.config.PersonalisationMappingConstants.LETTER_ADDRESS_LINE_4;
+import static uk.gov.hmcts.reform.sscs.config.PersonalisationMappingConstants.LETTER_ADDRESS_POSTCODE;
+import static uk.gov.hmcts.reform.sscs.domain.notify.NotificationEventType.APPEAL_RECEIVED;
 import static uk.gov.hmcts.reform.sscs.service.docmosis.PdfLetterService.GENERATED_DATE_LITERAL;
 import static uk.gov.hmcts.reform.sscs.service.docmosis.PdfLetterService.WELSH_GENERATED_DATE_LITERAL;
 
@@ -64,8 +64,8 @@ public class PdfLetterServiceTest {
     private static final Subscription EMPTY_SUBSCRIPTION = Subscription.builder().build();
 
     static {
-        TEMPLATE_NAMES.put(LanguagePreference.ENGLISH, Collections.singletonMap(APPEAL_RECEIVED_NOTIFICATION.getId(), "my01.doc"));
-        TEMPLATE_NAMES.put(LanguagePreference.WELSH, Collections.singletonMap(APPEAL_RECEIVED_NOTIFICATION.getId(), "my01.doc"));
+        TEMPLATE_NAMES.put(LanguagePreference.ENGLISH, Collections.singletonMap(APPEAL_RECEIVED.getId(), "my01.doc"));
+        TEMPLATE_NAMES.put(LanguagePreference.WELSH, Collections.singletonMap(APPEAL_RECEIVED.getId(), "my01.doc"));
         DOCMOSIS_TEMPLATES_CONFIG.setCoversheets(TEMPLATE_NAMES);
         DOCMOSIS_TEMPLATES_CONFIG.setHmctsWelshImgKey("welshhmcts");
         DOCMOSIS_TEMPLATES_CONFIG.setHmctsWelshImgVal("welshhmcts.png");
@@ -99,7 +99,7 @@ public class PdfLetterServiceTest {
     @Parameters({"APPELLANT, Yes, true", "APPELLANT, Yes, false", "REPRESENTATIVE, No, true", "REPRESENTATIVE, No, false"})
     public void willCreateAPdfToTheCorrectAddress(final SubscriptionType subscriptionType, String isScottish, boolean isScottishPoBoxFeatureEnabled) {
         NotificationWrapper wrapper = NotificationServiceTest.buildBaseWrapper(
-                APPEAL_RECEIVED_NOTIFICATION,
+            APPEAL_RECEIVED,
                 appellant,
                 representative,
                 null
@@ -148,7 +148,7 @@ public class PdfLetterServiceTest {
         baos.close();
         doc.close();
         NotificationWrapper wrapper = NotificationServiceTest.buildBaseWrapper(
-                APPEAL_RECEIVED_NOTIFICATION,
+            APPEAL_RECEIVED,
                 appellant,
                 representative,
                 null
@@ -176,7 +176,7 @@ public class PdfLetterServiceTest {
         baos.close();
         doc.close();
         NotificationWrapper wrapper = NotificationServiceTest.buildBaseWrapper(
-                APPEAL_RECEIVED_NOTIFICATION,
+            APPEAL_RECEIVED,
                 appellant,
                 representative,
                 null
@@ -224,7 +224,7 @@ public class PdfLetterServiceTest {
         appellant.setAddress(address);
 
         NotificationWrapper wrapper = NotificationServiceTest.buildBaseWrapper(
-                APPEAL_RECEIVED_NOTIFICATION,
+            APPEAL_RECEIVED,
                 appellant,
                 representative,
                 null
@@ -270,7 +270,7 @@ public class PdfLetterServiceTest {
         representative.setOrganisation("My Company");
 
         NotificationWrapper wrapper = NotificationServiceTest.buildBaseWrapper(
-                APPEAL_RECEIVED_NOTIFICATION,
+            APPEAL_RECEIVED,
                 appellant,
                 representative,
                 null
@@ -315,7 +315,7 @@ public class PdfLetterServiceTest {
         representative.setOrganisation(null);
 
         NotificationWrapper wrapper = NotificationServiceTest.buildBaseWrapper(
-                APPEAL_RECEIVED_NOTIFICATION,
+            APPEAL_RECEIVED,
                 appellant,
                 representative,
                 null
@@ -339,7 +339,7 @@ public class PdfLetterServiceTest {
     @Test
     public void willNotGenerateALetterIfNoDocmosisTemplateExists() {
         NotificationWrapper wrapper = NotificationServiceTest.buildBaseWrapper(
-                APPEAL_RECEIVED_NOTIFICATION,
+            APPEAL_RECEIVED,
                 appellant,
                 representative,
                 null
@@ -355,7 +355,7 @@ public class PdfLetterServiceTest {
     @Test(expected = NotificationClientRuntimeException.class)
     public void willHandleLoadingAnInvalidPdf() {
         NotificationWrapper wrapper = NotificationServiceTest.buildBaseWrapper(
-                APPEAL_RECEIVED_NOTIFICATION,
+            APPEAL_RECEIVED,
                 appellant,
                 representative,
                 null
@@ -395,7 +395,7 @@ public class PdfLetterServiceTest {
         appellant.setAddress(address);
 
         NotificationWrapper wrapper = NotificationServiceTest.buildBaseWrapper(
-                APPEAL_RECEIVED_NOTIFICATION,
+            APPEAL_RECEIVED,
                 appellant,
                 representative,
                 null

@@ -252,11 +252,11 @@ public class CcdNotificationWrapperTest {
     }
 
     @Test
-    @Parameters({"APPEAL_LAPSED_NOTIFICATION","HMCTS_APPEAL_LAPSED_NOTIFICATION","DWP_APPEAL_LAPSED_NOTIFICATION","APPEAL_WITHDRAWN_NOTIFICATION","EVIDENCE_RECEIVED_NOTIFICATION",
-        "POSTPONEMENT_NOTIFICATION","HEARING_BOOKED_NOTIFICATION","SYA_APPEAL_CREATED_NOTIFICATION","VALID_APPEAL_CREATED",
-        "RESEND_APPEAL_CREATED_NOTIFICATION", "APPEAL_RECEIVED_NOTIFICATION", "ADJOURNED_NOTIFICATION", "ISSUE_FINAL_DECISION_WELSH",
+    @Parameters({"APPEAL_LAPSED","HMCTS_APPEAL_LAPSED","DWP_APPEAL_LAPSED","APPEAL_WITHDRAWN","EVIDENCE_RECEIVED",
+        "POSTPONEMENT","HEARING_BOOKED","SYA_APPEAL_CREATED","VALID_APPEAL_CREATED",
+        "RESEND_APPEAL_CREATED", "APPEAL_RECEIVED", "ADJOURNED", "ISSUE_FINAL_DECISION_WELSH",
         "PROCESS_AUDIO_VIDEO", "PROCESS_AUDIO_VIDEO_WELSH", "ACTION_POSTPONEMENT_REQUEST", "ACTION_POSTPONEMENT_REQUEST_WELSH",
-        "APPEAL_DORMANT_NOTIFICATION", "DWP_RESPONSE_RECEIVED_NOTIFICATION", "STRUCK_OUT", "DECISION_ISSUED", "DECISION_ISSUED_WELSH", "DIRECTION_ISSUED", "DIRECTION_ISSUED_WELSH"})
+        "APPEAL_DORMANT", "DWP_RESPONSE_RECEIVED", "STRUCK_OUT", "DECISION_ISSUED", "DECISION_ISSUED_WELSH", "DIRECTION_ISSUED", "DIRECTION_ISSUED_WELSH"})
     public void givenSubscriptions_shouldGetAppellantAndRepSubscriptionTypeList(NotificationEventType notificationEventType) {
         ccdNotificationWrapper = buildCcdNotificationWrapperBasedOnEventTypeWithRep(notificationEventType);
         List<SubscriptionWithType> subsWithTypeList = ccdNotificationWrapper.getSubscriptionsBasedOnNotificationType();
@@ -276,10 +276,10 @@ public class CcdNotificationWrapperTest {
     }
 
     @Test
-    @Parameters({"SYA_APPEAL_CREATED_NOTIFICATION, cor", "DWP_RESPONSE_RECEIVED_NOTIFICATION, oral",
-        "DWP_RESPONSE_RECEIVED_NOTIFICATION, paper", "HMCTS_APPEAL_LAPSED_NOTIFICATION, paper", "HMCTS_APPEAL_LAPSED_NOTIFICATION, oral",
-        "DWP_APPEAL_LAPSED_NOTIFICATION, paper", "DWP_APPEAL_LAPSED_NOTIFICATION, oral", "SUBSCRIPTION_UPDATED_NOTIFICATION, paper",
-        "VALID_APPEAL_CREATED, cor", "RESEND_APPEAL_CREATED_NOTIFICATION, cor"})
+    @Parameters({"SYA_APPEAL_CREATED, cor", "DWP_RESPONSE_RECEIVED, oral",
+        "DWP_RESPONSE_RECEIVED, paper", "HMCTS_APPEAL_LAPSED, paper", "HMCTS_APPEAL_LAPSED, oral",
+        "DWP_APPEAL_LAPSED, paper", "DWP_APPEAL_LAPSED, oral", "SUBSCRIPTION_UPDATED, paper",
+        "VALID_APPEAL_CREATED, cor", "RESEND_APPEAL_CREATED, cor"})
     public void givenSubscriptions_shouldGetSubscriptionTypeListWithAppointee(NotificationEventType notificationEventType, String hearingType) {
         ccdNotificationWrapper = buildCcdNotificationWrapperBasedOnEventTypeWithAppointeeAndJointParty(notificationEventType, hearingType);
         List<SubscriptionWithType> subsWithTypeList = ccdNotificationWrapper.getSubscriptionsBasedOnNotificationType();
@@ -288,12 +288,12 @@ public class CcdNotificationWrapperTest {
     }
 
     @Test
-    @Parameters({"APPEAL_LAPSED_NOTIFICATION, paper", "APPEAL_LAPSED_NOTIFICATION, oral", "EVIDENCE_REMINDER_NOTIFICATION, oral", "EVIDENCE_REMINDER_NOTIFICATION, paper",
-        "APPEAL_DORMANT_NOTIFICATION, paper", "APPEAL_DORMANT_NOTIFICATION, oral", "ADJOURNED_NOTIFICATION, paper", "ADJOURNED_NOTIFICATION, oral", "POSTPONEMENT_NOTIFICATION, paper", "POSTPONEMENT_NOTIFICATION, oral",
-        "EVIDENCE_RECEIVED_NOTIFICATION, paper", "EVIDENCE_RECEIVED_NOTIFICATION, oral", "APPEAL_WITHDRAWN_NOTIFICATION, paper", "STRUCK_OUT, oral", "STRUCK_OUT, paper", "DIRECTION_ISSUED, oral", "DIRECTION_ISSUED, paper",
-        "DIRECTION_ISSUED_WELSH, oral", "DIRECTION_ISSUED_WELSH, paper", "DWP_UPLOAD_RESPONSE_NOTIFICATION, paper",
+    @Parameters({"APPEAL_LAPSED, paper", "APPEAL_LAPSED, oral", "EVIDENCE_REMINDER, oral", "EVIDENCE_REMINDER, paper",
+        "APPEAL_DORMANT, paper", "APPEAL_DORMANT, oral", "ADJOURNED, paper", "ADJOURNED, oral", "POSTPONEMENT, paper", "POSTPONEMENT, oral",
+        "EVIDENCE_RECEIVED, paper", "EVIDENCE_RECEIVED, oral", "APPEAL_WITHDRAWN, paper", "STRUCK_OUT, oral", "STRUCK_OUT, paper", "DIRECTION_ISSUED, oral", "DIRECTION_ISSUED, paper",
+        "DIRECTION_ISSUED_WELSH, oral", "DIRECTION_ISSUED_WELSH, paper", "DWP_UPLOAD_RESPONSE, paper",
         "PROCESS_AUDIO_VIDEO, oral", "PROCESS_AUDIO_VIDEO_WELSH, paper", "ACTION_POSTPONEMENT_REQUEST, paper", "ACTION_POSTPONEMENT_REQUEST_WELSH, paper",
-        "DWP_UPLOAD_RESPONSE_NOTIFICATION, oral", "HEARING_BOOKED_NOTIFICATION, oral", "HEARING_BOOKED_NOTIFICATION, paper",  "HEARING_REMINDER_NOTIFICATION, oral", "HEARING_REMINDER_NOTIFICATION, paper",
+        "DWP_UPLOAD_RESPONSE, oral", "HEARING_BOOKED, oral", "HEARING_BOOKED, paper",  "HEARING_REMINDER, oral", "HEARING_REMINDER, paper",
         "ISSUE_ADJOURNMENT_NOTICE, paper", "ISSUE_ADJOURNMENT_NOTICE_WELSH, oral"})
     public void givenSubscriptions_shouldGetSubscriptionTypeListWithAppointeeAndJointParty(NotificationEventType notificationEventType, String hearingType) {
         ccdNotificationWrapper = buildCcdNotificationWrapperBasedOnEventTypeWithAppointeeAndJointParty(notificationEventType, hearingType);
@@ -461,14 +461,38 @@ public class CcdNotificationWrapperTest {
     }
 
     @Test
-    @Parameters({"DWP_UPLOAD_RESPONSE_NOTIFICATION", "ADJOURNED_NOTIFICATION", "POSTPONEMENT_NOTIFICATION","APPEAL_LAPSED_NOTIFICATION",
-        "DWP_APPEAL_LAPSED_NOTIFICATION", "HMCTS_APPEAL_LAPSED_NOTIFICATION", "APPEAL_WITHDRAWN_NOTIFICATION", "ADMIN_APPEAL_WITHDRAWN",
-        "SUBSCRIPTION_CREATED_NOTIFICATION", "SUBSCRIPTION_UPDATED_NOTIFICATION", "SUBSCRIPTION_OLD_NOTIFICATION", "HEARING_BOOKED_NOTIFICATION",
-        "HEARING_REMINDER_NOTIFICATION", "DWP_RESPONSE_RECEIVED_NOTIFICATION", "APPEAL_DORMANT_NOTIFICATION", "EVIDENCE_REMINDER_NOTIFICATION",
-        "EVIDENCE_RECEIVED_NOTIFICATION", "STRUCK_OUT", "PROCESS_AUDIO_VIDEO", "DIRECTION_ISSUED", "DECISION_ISSUED",
-        "ADJOURNED_NOTIFICATION", "ISSUE_ADJOURNMENT_NOTICE", "REQUEST_INFO_INCOMPLETE", "NON_COMPLIANT_NOTIFICATION", "ISSUE_FINAL_DECISION",
-        "PROCESS_AUDIO_VIDEO_WELSH", "DIRECTION_ISSUED_WELSH", "ISSUE_FINAL_DECISION_WELSH", "DECISION_ISSUED_WELSH",
-        "ISSUE_ADJOURNMENT_NOTICE_WELSH"})
+    @Parameters({
+        "ADJOURNED",
+        "ADJOURNED",
+        "ADMIN_APPEAL_WITHDRAWN",
+        "APPEAL_DORMANT",
+        "APPEAL_LAPSED",
+        "APPEAL_WITHDRAWN",
+        "DECISION_ISSUED",
+        "DECISION_ISSUED_WELSH",
+        "DIRECTION_ISSUED",
+        "DIRECTION_ISSUED_WELSH",
+        "DWP_APPEAL_LAPSED",
+        "DWP_RESPONSE_RECEIVED",
+        "DWP_UPLOAD_RESPONSE",
+        "EVIDENCE_RECEIVED",
+        "EVIDENCE_REMINDER",
+        "HEARING_BOOKED",
+        "HEARING_REMINDER",
+        "HMCTS_APPEAL_LAPSED",
+        "ISSUE_ADJOURNMENT_NOTICE",
+        "ISSUE_ADJOURNMENT_NOTICE_WELSH",
+        "ISSUE_FINAL_DECISION",
+        "ISSUE_FINAL_DECISION_WELSH",
+        "NON_COMPLIANT",
+        "POSTPONEMENT",
+        "PROCESS_AUDIO_VIDEO",
+        "PROCESS_AUDIO_VIDEO_WELSH",
+        "REQUEST_INFO_INCOMPLETE",
+        "STRUCK_OUT",
+        "SUBSCRIPTION_CREATED",
+        "SUBSCRIPTION_OLD",
+        "SUBSCRIPTION_UPDATED"})
     public void givenNotificationForOtherParty_thenReturnAllOtherPartySubscription(NotificationEventType notificationEventType) {
         ccdNotificationWrapper = buildNotificationWrapperWithOtherParty(notificationEventType, buildOtherPartyData(false, false, false));
 
@@ -482,21 +506,21 @@ public class CcdNotificationWrapperTest {
     @SuppressWarnings({"unused"})
     private Object[] getEventTypeFilteredWithAppellant() {
         return Arrays.stream(values())
-            .filter(type -> !(type.equals(APPEAL_LAPSED_NOTIFICATION)
-                || type.equals(HMCTS_APPEAL_LAPSED_NOTIFICATION)
-                || type.equals(DWP_APPEAL_LAPSED_NOTIFICATION)
-                || type.equals(APPEAL_WITHDRAWN_NOTIFICATION)
-                || type.equals(EVIDENCE_RECEIVED_NOTIFICATION)
+            .filter(type -> !(type.equals(APPEAL_LAPSED)
+                || type.equals(HMCTS_APPEAL_LAPSED)
+                || type.equals(DWP_APPEAL_LAPSED)
+                || type.equals(APPEAL_WITHDRAWN)
+                || type.equals(EVIDENCE_RECEIVED)
                 || type.equals(CASE_UPDATED)
-                || type.equals(APPEAL_DORMANT_NOTIFICATION)
-                || type.equals(ADJOURNED_NOTIFICATION)
-                || type.equals(APPEAL_RECEIVED_NOTIFICATION)
-                || type.equals(POSTPONEMENT_NOTIFICATION)
-                || type.equals(SUBSCRIPTION_UPDATED_NOTIFICATION)
-                || type.equals(HEARING_BOOKED_NOTIFICATION)
+                || type.equals(APPEAL_DORMANT)
+                || type.equals(ADJOURNED)
+                || type.equals(APPEAL_RECEIVED)
+                || type.equals(POSTPONEMENT)
+                || type.equals(SUBSCRIPTION_UPDATED)
+                || type.equals(HEARING_BOOKED)
                 || type.equals(STRUCK_OUT)
                 || type.equals(REQUEST_INFO_INCOMPLETE)
-                || type.equals(NON_COMPLIANT_NOTIFICATION)
+                || type.equals(NON_COMPLIANT)
                 || type.equals(REVIEW_CONFIDENTIALITY_REQUEST)
                 || type.equals(ACTION_HEARING_RECORDING_REQUEST)
                 || type.equals(UPDATE_OTHER_PARTY_DATA)

@@ -42,7 +42,7 @@ public class LetterUtilsTest {
     @Test
     public void useAppellantAddressForLetter() {
         NotificationWrapper wrapper = NotificationServiceTest.buildBaseWrapper(
-            SYA_APPEAL_CREATED_NOTIFICATION,
+            SYA_APPEAL_CREATED,
             APPELLANT_WITH_ADDRESS,
             null,
             null
@@ -60,7 +60,7 @@ public class LetterUtilsTest {
     @Test
     public void useAppointeeAddressForLetter() {
         NotificationWrapper wrapper = NotificationServiceTest.buildBaseWrapper(
-            SYA_APPEAL_CREATED_NOTIFICATION,
+            SYA_APPEAL_CREATED,
             APPELLANT_WITH_ADDRESS_AND_APPOINTEE,
             null,
             null
@@ -74,7 +74,7 @@ public class LetterUtilsTest {
     @Test
     public void useRepAddressForLetter() {
         NotificationWrapper wrapper = NotificationServiceTest.buildBaseWrapper(
-            SYA_APPEAL_CREATED_NOTIFICATION,
+            SYA_APPEAL_CREATED,
             APPELLANT_WITH_ADDRESS_AND_APPOINTEE,
             REP_WITH_ADDRESS,
             null
@@ -87,7 +87,7 @@ public class LetterUtilsTest {
     @Test
     public void useAppellantNameForLetter() {
         NotificationWrapper wrapper = NotificationServiceTest.buildBaseWrapper(
-            SYA_APPEAL_CREATED_NOTIFICATION,
+            SYA_APPEAL_CREATED,
             APPELLANT_WITH_ADDRESS,
             null,
             null
@@ -101,7 +101,7 @@ public class LetterUtilsTest {
     @Test
     public void useAppointeeNameForLetter() {
         NotificationWrapper wrapper = NotificationServiceTest.buildBaseWrapper(
-            SYA_APPEAL_CREATED_NOTIFICATION,
+            SYA_APPEAL_CREATED,
             APPELLANT_WITH_ADDRESS_AND_APPOINTEE,
             null,
             null
@@ -117,7 +117,7 @@ public class LetterUtilsTest {
     public void useJointPartyAddressForLetter() {
         Address jointPartyAddress = Address.builder().county("county").line1("line1").line2("line2").postcode("EN1 1AF").build();
         NotificationWrapper wrapper = NotificationServiceTest.buildBaseWrapperJointParty(
-                SYA_APPEAL_CREATED_NOTIFICATION,
+            SYA_APPEAL_CREATED,
                 APPELLANT_WITH_ADDRESS_AND_APPOINTEE,
                 Name.builder().title("Mr").firstName("Joint").lastName("Party").build(),
                 jointPartyAddress,
@@ -132,7 +132,7 @@ public class LetterUtilsTest {
     @Test
     public void useAppellantAddressForJointPartyIfSameAsAppellantLetter() {
         NotificationWrapper wrapper = NotificationServiceTest.buildBaseWrapperJointParty(
-                SYA_APPEAL_CREATED_NOTIFICATION,
+            SYA_APPEAL_CREATED,
                 APPELLANT_WITH_ADDRESS_AND_APPOINTEE,
                 Name.builder()
                         .title("Mrs")
@@ -158,7 +158,7 @@ public class LetterUtilsTest {
                 .build();
 
         NotificationWrapper wrapper = NotificationServiceTest.buildBaseWrapper(
-            SYA_APPEAL_CREATED_NOTIFICATION,
+            SYA_APPEAL_CREATED,
             APPELLANT_WITH_ADDRESS_AND_APPOINTEE,
             rep,
             null
@@ -245,7 +245,7 @@ public class LetterUtilsTest {
         SscsCaseDataWrapper caseDataWrapper = SscsCaseDataWrapper.builder()
                 .newSscsCaseData(caseData)
                 .oldSscsCaseData(caseData)
-                .notificationEventType(APPEAL_RECEIVED_NOTIFICATION)
+                .notificationEventType(APPEAL_RECEIVED)
                 .build();
         NotificationWrapper wrapper = new CcdNotificationWrapper(caseDataWrapper);
         SubscriptionWithType subscriptionWithType = new SubscriptionWithType(EMPTY_SUBSCRIPTION, OTHER_PARTY,
@@ -271,7 +271,7 @@ public class LetterUtilsTest {
         SscsCaseDataWrapper caseDataWrapper = SscsCaseDataWrapper.builder()
                 .newSscsCaseData(caseData)
                 .oldSscsCaseData(caseData)
-                .notificationEventType(APPEAL_RECEIVED_NOTIFICATION)
+                .notificationEventType(APPEAL_RECEIVED)
                 .build();
         NotificationWrapper wrapper = new CcdNotificationWrapper(caseDataWrapper);
         SubscriptionWithType subscriptionWithType = new SubscriptionWithType(EMPTY_SUBSCRIPTION, OTHER_PARTY,
@@ -296,7 +296,7 @@ public class LetterUtilsTest {
         SscsCaseDataWrapper caseDataWrapper = SscsCaseDataWrapper.builder()
                 .newSscsCaseData(caseData)
                 .oldSscsCaseData(caseData)
-                .notificationEventType(APPEAL_RECEIVED_NOTIFICATION)
+                .notificationEventType(APPEAL_RECEIVED)
                 .build();
         NotificationWrapper wrapper = new CcdNotificationWrapper(caseDataWrapper);
         SubscriptionWithType subscriptionWithType = new SubscriptionWithType(EMPTY_SUBSCRIPTION, OTHER_PARTY,
@@ -319,7 +319,7 @@ public class LetterUtilsTest {
         SscsCaseDataWrapper caseDataWrapper = SscsCaseDataWrapper.builder()
                 .newSscsCaseData(caseData)
                 .oldSscsCaseData(caseData)
-                .notificationEventType(APPEAL_RECEIVED_NOTIFICATION)
+                .notificationEventType(APPEAL_RECEIVED)
                 .build();
         NotificationWrapper wrapper = new CcdNotificationWrapper(caseDataWrapper);
         SubscriptionWithType subscriptionWithType = new SubscriptionWithType(EMPTY_SUBSCRIPTION, OTHER_PARTY,
@@ -342,7 +342,7 @@ public class LetterUtilsTest {
         SscsCaseDataWrapper caseDataWrapper = SscsCaseDataWrapper.builder()
                 .newSscsCaseData(caseData)
                 .oldSscsCaseData(caseData)
-                .notificationEventType(APPEAL_RECEIVED_NOTIFICATION)
+                .notificationEventType(APPEAL_RECEIVED)
                 .build();
         NotificationWrapper wrapper = new CcdNotificationWrapper(caseDataWrapper);
         SubscriptionWithType subscriptionWithType = new SubscriptionWithType(EMPTY_SUBSCRIPTION, OTHER_PARTY,
@@ -354,7 +354,7 @@ public class LetterUtilsTest {
     @Test
     @Parameters({"OTHER_PARTY, 4", "OTHER_PARTY, 3", "OTHER_PARTY, 2"})
     public void useOtherPartyLetterNameAndAddress(SubscriptionType subscriptionType, int otherPartyId) {
-        NotificationWrapper wrapper = NotificationServiceTest.buildBaseWrapperOtherParty(SYA_APPEAL_CREATED_NOTIFICATION, Appellant.builder().build(), null);
+        NotificationWrapper wrapper = NotificationServiceTest.buildBaseWrapperOtherParty(SYA_APPEAL_CREATED, Appellant.builder().build(), null);
         final Address expectedAddress = getExpectedAddress(otherPartyId, wrapper);
 
         assertThat(LetterUtils.getAddressToUseForLetter(wrapper,

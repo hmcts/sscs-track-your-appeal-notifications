@@ -1,7 +1,7 @@
 package uk.gov.hmcts.reform.sscs.service.scheduler;
 
 import static org.slf4j.LoggerFactory.getLogger;
-import static uk.gov.hmcts.reform.sscs.domain.notify.NotificationEventType.getNotificationById;
+import static uk.gov.hmcts.reform.sscs.domain.notify.NotificationEventType.getNotificationByEvent;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.JsonNode;
@@ -64,7 +64,7 @@ public abstract class BaseActionExecutor<T> implements JobExecutor<T> {
                 SscsCaseDataWrapper wrapper = buildSscsCaseDataWrapper(
                         callback.getCaseDetails().getCaseData(),
                         null,
-                        getNotificationById(eventId),
+                        getNotificationByEvent(eventId),
                         caseDetails.getCreatedDate(),
                         callback.getCaseDetails().getState());
 

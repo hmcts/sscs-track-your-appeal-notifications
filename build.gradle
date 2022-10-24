@@ -239,7 +239,7 @@ dependencyManagement {
             entry 'spring-cloud-openfeign-core'
         }
 
-        //CVE-2022-25857
+        //CVE-2022-25857, CVE-2022-38751
         dependencySet(group: 'org.yaml', version: '1.33') {
             entry 'snakeyaml'
         }

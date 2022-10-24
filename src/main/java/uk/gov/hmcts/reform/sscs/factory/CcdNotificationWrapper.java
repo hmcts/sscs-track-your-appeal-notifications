@@ -3,9 +3,27 @@ package uk.gov.hmcts.reform.sscs.factory;
 import static org.apache.commons.collections4.ListUtils.emptyIfNull;
 import static uk.gov.hmcts.reform.sscs.config.AppealHearingType.ORAL;
 import static uk.gov.hmcts.reform.sscs.config.AppealHearingType.PAPER;
-import static uk.gov.hmcts.reform.sscs.config.SubscriptionType.*;
-import static uk.gov.hmcts.reform.sscs.domain.notify.NotificationEventType.*;
-import static uk.gov.hmcts.reform.sscs.service.NotificationUtils.*;
+import static uk.gov.hmcts.reform.sscs.config.NotificationEventTypeLists.EVENTS_MAYBE_INVALID_FOR_APPELLANT;
+import static uk.gov.hmcts.reform.sscs.config.NotificationEventTypeLists.EVENTS_VALID_FOR_ALL_ENTITIES;
+import static uk.gov.hmcts.reform.sscs.config.NotificationEventTypeLists.EVENTS_VALID_FOR_APPOINTEE;
+import static uk.gov.hmcts.reform.sscs.config.NotificationEventTypeLists.EVENTS_VALID_FOR_JOINT_PARTY;
+import static uk.gov.hmcts.reform.sscs.config.NotificationEventTypeLists.EVENTS_VALID_FOR_OTHER_PARTY;
+import static uk.gov.hmcts.reform.sscs.config.NotificationEventTypeLists.EVENTS_VALID_FOR_REP;
+import static uk.gov.hmcts.reform.sscs.config.SubscriptionType.APPELLANT;
+import static uk.gov.hmcts.reform.sscs.config.SubscriptionType.APPOINTEE;
+import static uk.gov.hmcts.reform.sscs.config.SubscriptionType.JOINT_PARTY;
+import static uk.gov.hmcts.reform.sscs.config.SubscriptionType.OTHER_PARTY;
+import static uk.gov.hmcts.reform.sscs.config.SubscriptionType.REPRESENTATIVE;
+import static uk.gov.hmcts.reform.sscs.domain.notify.NotificationEventType.ACTION_HEARING_RECORDING_REQUEST;
+import static uk.gov.hmcts.reform.sscs.domain.notify.NotificationEventType.REQUEST_INFO_INCOMPLETE;
+import static uk.gov.hmcts.reform.sscs.domain.notify.NotificationEventType.REVIEW_CONFIDENTIALITY_REQUEST;
+import static uk.gov.hmcts.reform.sscs.domain.notify.NotificationEventType.UPDATE_OTHER_PARTY_DATA;
+import static uk.gov.hmcts.reform.sscs.service.NotificationUtils.hasAppointee;
+import static uk.gov.hmcts.reform.sscs.service.NotificationUtils.hasAppointeeSubscriptionOrIsMandatoryAppointeeLetter;
+import static uk.gov.hmcts.reform.sscs.service.NotificationUtils.hasJointPartySubscription;
+import static uk.gov.hmcts.reform.sscs.service.NotificationUtils.hasRepSubscriptionOrIsMandatoryRepLetter;
+import static uk.gov.hmcts.reform.sscs.service.NotificationUtils.hasRepresentative;
+import static uk.gov.hmcts.reform.sscs.service.NotificationUtils.isValidSubscriptionOrIsMandatoryLetter;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -15,7 +33,17 @@ import java.util.stream.Collectors;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.StringUtils;
 import org.jetbrains.annotations.NotNull;
-import uk.gov.hmcts.reform.sscs.ccd.domain.*;
+import uk.gov.hmcts.reform.sscs.ccd.domain.Appeal;
+import uk.gov.hmcts.reform.sscs.ccd.domain.Appellant;
+import uk.gov.hmcts.reform.sscs.ccd.domain.CcdValue;
+import uk.gov.hmcts.reform.sscs.ccd.domain.DatedRequestOutcome;
+import uk.gov.hmcts.reform.sscs.ccd.domain.HearingRecordingRequest;
+import uk.gov.hmcts.reform.sscs.ccd.domain.JointParty;
+import uk.gov.hmcts.reform.sscs.ccd.domain.OtherParty;
+import uk.gov.hmcts.reform.sscs.ccd.domain.RequestOutcome;
+import uk.gov.hmcts.reform.sscs.ccd.domain.SscsCaseData;
+import uk.gov.hmcts.reform.sscs.ccd.domain.Subscription;
+import uk.gov.hmcts.reform.sscs.ccd.domain.YesNo;
 import uk.gov.hmcts.reform.sscs.config.AppealHearingType;
 import uk.gov.hmcts.reform.sscs.domain.SscsCaseDataWrapper;
 import uk.gov.hmcts.reform.sscs.domain.SubscriptionWithType;
@@ -171,56 +199,17 @@ public class CcdNotificationWrapper implements NotificationWrapper {
 
     private boolean isNotificationEventValidToSendToAppointee() {
         return hasAppointeeSubscriptionOrIsMandatoryAppointeeLetter(responseWrapper)
-                && (SYA_APPEAL_CREATED_NOTIFICATION.equals(getNotificationType())
-                || ADJOURNED_NOTIFICATION.equals(getNotificationType())
-                || APPEAL_RECEIVED_NOTIFICATION.equals(getNotificationType())
-                || APPEAL_DORMANT_NOTIFICATION.equals(getNotificationType())
-                || APPEAL_LAPSED_NOTIFICATION.equals(getNotificationType())
-                || HMCTS_APPEAL_LAPSED_NOTIFICATION.equals(getNotificationType())
-                || DWP_APPEAL_LAPSED_NOTIFICATION.equals(getNotificationType())
-                || DWP_RESPONSE_RECEIVED_NOTIFICATION.equals(getNotificationType())
-                || DWP_UPLOAD_RESPONSE_NOTIFICATION.equals(getNotificationType())
-                || APPEAL_WITHDRAWN_NOTIFICATION.equals(getNotificationType())
-                || ADMIN_APPEAL_WITHDRAWN.equals(getNotificationType())
-                || EVIDENCE_RECEIVED_NOTIFICATION.equals(getNotificationType())
-                || HEARING_BOOKED_NOTIFICATION.equals(getNotificationType())
-                || POSTPONEMENT_NOTIFICATION.equals(getNotificationType())
-                || SUBSCRIPTION_UPDATED_NOTIFICATION.equals(getNotificationType())
-                || EVIDENCE_REMINDER_NOTIFICATION.equals(getNotificationType())
-                || HEARING_REMINDER_NOTIFICATION.equals(getNotificationType())
-                || STRUCK_OUT.equals(getNotificationType())
-                || VALID_APPEAL_CREATED.equals(getNotificationType())
-                || PROCESS_AUDIO_VIDEO.equals(getNotificationType())
-                || PROCESS_AUDIO_VIDEO_WELSH.equals(getNotificationType())
-                || DIRECTION_ISSUED.equals(getNotificationType())
-                || DECISION_ISSUED.equals(getNotificationType())
-                || DIRECTION_ISSUED_WELSH.equals(getNotificationType())
-                || DECISION_ISSUED_WELSH.equals(getNotificationType())
-                || ISSUE_FINAL_DECISION.equals(getNotificationType())
-                || ISSUE_FINAL_DECISION_WELSH.equals(getNotificationType())
-                || ISSUE_ADJOURNMENT_NOTICE.equals(getNotificationType())
-                || ISSUE_ADJOURNMENT_NOTICE_WELSH.equals(getNotificationType())
-                || JUDGE_DECISION_APPEAL_TO_PROCEED.equals(getNotificationType())
-                || TCW_DECISION_APPEAL_TO_PROCEED.equals(getNotificationType())
-                || NON_COMPLIANT_NOTIFICATION.equals(getNotificationType())
-                || RESEND_APPEAL_CREATED_NOTIFICATION.equals(getNotificationType())
-                || JOINT_PARTY_ADDED.equals(getNotificationType())
-                || isValidProcessHearingRequestEventForParty(PartyItemList.APPELLANT)
-                || ACTION_POSTPONEMENT_REQUEST.equals(getNotificationType())
-                || ACTION_POSTPONEMENT_REQUEST_WELSH.equals(getNotificationType())
-                || DEATH_OF_APPELLANT.equals(getNotificationType())
-                || PROVIDE_APPOINTEE_DETAILS.equals(getNotificationType())
-                || isValidRequestInfoIncompleteEventForParty(PartyItemList.APPELLANT));
+            && (EVENTS_VALID_FOR_ALL_ENTITIES.contains(getNotificationType())
+            || EVENTS_VALID_FOR_APPOINTEE.contains(getNotificationType())
+            || isValidProcessHearingRequestEventForParty(PartyItemList.APPELLANT)
+            || isValidRequestInfoIncompleteEventForParty(PartyItemList.APPELLANT));
     }
 
     private boolean isNotificationEventValidToSendToAppellant() {
-        // Special list of notifications that might not be sent to appellant, depending on data set on the case
-        List<NotificationEventType> notificationsMaybeNotForAppellant = List.of(REVIEW_CONFIDENTIALITY_REQUEST, REQUEST_INFO_INCOMPLETE, ACTION_HEARING_RECORDING_REQUEST, UPDATE_OTHER_PARTY_DATA);
-
         return (getOldSscsCaseData() != null && isValidReviewConfidentialityRequest(getOldSscsCaseData().getConfidentialityRequestOutcomeAppellant(), getNewSscsCaseData().getConfidentialityRequestOutcomeAppellant()))
-                || isValidProcessHearingRequestEventForParty(PartyItemList.APPELLANT)
-                || isValidRequestInfoIncompleteEventForParty(PartyItemList.APPELLANT)
-                || !notificationsMaybeNotForAppellant.contains(getNotificationType());
+            || isValidProcessHearingRequestEventForParty(PartyItemList.APPELLANT)
+            || isValidRequestInfoIncompleteEventForParty(PartyItemList.APPELLANT)
+            || !EVENTS_MAYBE_INVALID_FOR_APPELLANT.contains(getNotificationType());
     }
 
     private boolean isValidProcessHearingRequestEventForParty(PartyItemList partyItemList) {
@@ -246,109 +235,26 @@ public class CcdNotificationWrapper implements NotificationWrapper {
 
     private boolean isNotificationEventValidToSendToRep() {
         return hasRepSubscriptionOrIsMandatoryRepLetter(responseWrapper)
-                && (APPEAL_LAPSED_NOTIFICATION.equals(getNotificationType())
-                || HMCTS_APPEAL_LAPSED_NOTIFICATION.equals(getNotificationType())
-                || DWP_APPEAL_LAPSED_NOTIFICATION.equals(getNotificationType())
-                || APPEAL_WITHDRAWN_NOTIFICATION.equals(getNotificationType())
-                || ADMIN_APPEAL_WITHDRAWN.equals(getNotificationType())
-                || EVIDENCE_RECEIVED_NOTIFICATION.equals(getNotificationType())
-                || SYA_APPEAL_CREATED_NOTIFICATION.equals(getNotificationType())
-                || RESEND_APPEAL_CREATED_NOTIFICATION.equals(getNotificationType())
-                || APPEAL_DORMANT_NOTIFICATION.equals(getNotificationType())
-                || ADJOURNED_NOTIFICATION.equals(getNotificationType())
-                || APPEAL_RECEIVED_NOTIFICATION.equals(getNotificationType())
-                || DWP_RESPONSE_RECEIVED_NOTIFICATION.equals(getNotificationType())
-                || DWP_UPLOAD_RESPONSE_NOTIFICATION.equals(getNotificationType())
-                || POSTPONEMENT_NOTIFICATION.equals(getNotificationType())
-                || HEARING_BOOKED_NOTIFICATION.equals(getNotificationType())
-                || SUBSCRIPTION_UPDATED_NOTIFICATION.equals(getNotificationType())
-                || CASE_UPDATED.equals(getNotificationType())
-                || EVIDENCE_REMINDER_NOTIFICATION.equals(getNotificationType())
-                || HEARING_REMINDER_NOTIFICATION.equals(getNotificationType())
-                || STRUCK_OUT.equals(getNotificationType())
-                || PROCESS_AUDIO_VIDEO.equals(getNotificationType())
-                || PROCESS_AUDIO_VIDEO_WELSH.equals(getNotificationType())
-                || DIRECTION_ISSUED.equals(getNotificationType())
-                || DECISION_ISSUED.equals(getNotificationType())
-                || DIRECTION_ISSUED_WELSH.equals(getNotificationType())
-                || DECISION_ISSUED_WELSH.equals(getNotificationType())
-                || ISSUE_FINAL_DECISION.equals(getNotificationType())
-                || ISSUE_FINAL_DECISION_WELSH.equals(getNotificationType())
-                || ISSUE_ADJOURNMENT_NOTICE.equals(getNotificationType())
-                || ISSUE_ADJOURNMENT_NOTICE_WELSH.equals(getNotificationType())
-                || JUDGE_DECISION_APPEAL_TO_PROCEED.equals(getNotificationType())
-                || TCW_DECISION_APPEAL_TO_PROCEED.equals(getNotificationType())
-                || NON_COMPLIANT_NOTIFICATION.equals(getNotificationType())
-                || VALID_APPEAL_CREATED.equals(getNotificationType())
-                || isValidProcessHearingRequestEventForParty(PartyItemList.REPRESENTATIVE)
-                || ACTION_POSTPONEMENT_REQUEST.equals(getNotificationType())
-                || ACTION_POSTPONEMENT_REQUEST_WELSH.equals(getNotificationType())
-                || DEATH_OF_APPELLANT.equals(getNotificationType())
-                || PROVIDE_APPOINTEE_DETAILS.equals(getNotificationType())
-                || isValidRequestInfoIncompleteEventForParty(PartyItemList.REPRESENTATIVE));
+            && (EVENTS_VALID_FOR_ALL_ENTITIES.contains(getNotificationType())
+            || EVENTS_VALID_FOR_REP.contains(getNotificationType())
+            || isValidProcessHearingRequestEventForParty(PartyItemList.REPRESENTATIVE)
+            || isValidRequestInfoIncompleteEventForParty(PartyItemList.REPRESENTATIVE));
     }
 
     private boolean isNotificationEventValidToSendToJointParty() {
         return hasJointPartySubscription(responseWrapper)
-                && (APPEAL_LAPSED_NOTIFICATION.equals(getNotificationType())
-                || APPEAL_DORMANT_NOTIFICATION.equals(getNotificationType())
-                || ADJOURNED_NOTIFICATION.equals(getNotificationType())
-                || HEARING_BOOKED_NOTIFICATION.equals(getNotificationType())
-                || HEARING_REMINDER_NOTIFICATION.equals(getNotificationType())
-                || POSTPONEMENT_NOTIFICATION.equals(getNotificationType())
-                || EVIDENCE_RECEIVED_NOTIFICATION.equals(getNotificationType())
-                || APPEAL_WITHDRAWN_NOTIFICATION.equals(getNotificationType())
-                || ADMIN_APPEAL_WITHDRAWN.equals(getNotificationType())
-                || STRUCK_OUT.equals(getNotificationType())
-                || ISSUE_ADJOURNMENT_NOTICE.equals(getNotificationType())
-                || ISSUE_ADJOURNMENT_NOTICE_WELSH.equals(getNotificationType())
-                || PROCESS_AUDIO_VIDEO.equals(getNotificationType())
-                || PROCESS_AUDIO_VIDEO_WELSH.equals(getNotificationType())
-                || DIRECTION_ISSUED.equals(getNotificationType())
-                || DIRECTION_ISSUED_WELSH.equals(getNotificationType())
-                || DWP_UPLOAD_RESPONSE_NOTIFICATION.equals(getNotificationType())
-                || EVIDENCE_REMINDER_NOTIFICATION.equals(getNotificationType())
-                || JOINT_PARTY_ADDED.equals(getNotificationType())
-                || ACTION_POSTPONEMENT_REQUEST.equals(getNotificationType())
-                || ACTION_POSTPONEMENT_REQUEST_WELSH.equals(getNotificationType())
-                || isValidRequestInfoIncompleteEventForParty(PartyItemList.JOINT_PARTY)
-                || isValidProcessHearingRequestEventForParty(PartyItemList.JOINT_PARTY)
-                || (getOldSscsCaseData() != null && isValidReviewConfidentialityRequest(getOldSscsCaseData().getConfidentialityRequestOutcomeJointParty(), getNewSscsCaseData().getConfidentialityRequestOutcomeJointParty())));
+            && (EVENTS_VALID_FOR_ALL_ENTITIES.contains(getNotificationType())
+            || EVENTS_VALID_FOR_JOINT_PARTY.contains(getNotificationType())
+            || isValidRequestInfoIncompleteEventForParty(PartyItemList.JOINT_PARTY)
+            || isValidProcessHearingRequestEventForParty(PartyItemList.JOINT_PARTY)
+            || (getOldSscsCaseData() != null && isValidReviewConfidentialityRequest(getOldSscsCaseData().getConfidentialityRequestOutcomeJointParty(), getNewSscsCaseData().getConfidentialityRequestOutcomeJointParty())));
     }
 
     private boolean isNotificationEventValidToSendToOtherPartySubscription(Subscription subscription, boolean isSendNewOtherPartyNotification) {
         return isValidSubscriptionOrIsMandatoryLetter(subscription, responseWrapper.getNotificationEventType())
-                && (DWP_UPLOAD_RESPONSE_NOTIFICATION.equals(getNotificationType())
-                || ADJOURNED_NOTIFICATION.equals(getNotificationType())
-                || POSTPONEMENT_NOTIFICATION.equals(getNotificationType())
-                || APPEAL_LAPSED_NOTIFICATION.equals(getNotificationType())
-                || DWP_APPEAL_LAPSED_NOTIFICATION.equals(getNotificationType())
-                || HMCTS_APPEAL_LAPSED_NOTIFICATION.equals(getNotificationType())
-                || APPEAL_WITHDRAWN_NOTIFICATION.equals(getNotificationType())
-                || ADMIN_APPEAL_WITHDRAWN.equals(getNotificationType())
-                || SUBSCRIPTION_CREATED_NOTIFICATION.equals(getNotificationType())
-                || SUBSCRIPTION_UPDATED_NOTIFICATION.equals(getNotificationType())
-                || SUBSCRIPTION_OLD_NOTIFICATION.equals(getNotificationType())
-                || HEARING_BOOKED_NOTIFICATION.equals(getNotificationType())
-                || HEARING_REMINDER_NOTIFICATION.equals(getNotificationType())
-                || DWP_RESPONSE_RECEIVED_NOTIFICATION.equals(getNotificationType())
-                || APPEAL_DORMANT_NOTIFICATION.equals(getNotificationType())
-                || EVIDENCE_REMINDER_NOTIFICATION.equals(getNotificationType())
-                || EVIDENCE_RECEIVED_NOTIFICATION.equals(getNotificationType())
-                || STRUCK_OUT.equals(getNotificationType())
-                || PROCESS_AUDIO_VIDEO.equals(getNotificationType())
-                || DIRECTION_ISSUED.equals(getNotificationType())
-                || DECISION_ISSUED.equals(getNotificationType())
-                || ISSUE_ADJOURNMENT_NOTICE.equals(getNotificationType())
-                || REQUEST_INFO_INCOMPLETE.equals(getNotificationType())
-                || NON_COMPLIANT_NOTIFICATION.equals(getNotificationType())
-                || ISSUE_FINAL_DECISION.equals(getNotificationType())
-                || PROCESS_AUDIO_VIDEO_WELSH.equals(getNotificationType())
-                || DIRECTION_ISSUED_WELSH.equals(getNotificationType())
-                || ISSUE_FINAL_DECISION_WELSH.equals(getNotificationType())
-                || DECISION_ISSUED_WELSH.equals(getNotificationType())
-                || ISSUE_ADJOURNMENT_NOTICE_WELSH.equals(getNotificationType())
-                || (UPDATE_OTHER_PARTY_DATA.equals(getNotificationType()) && isSendNewOtherPartyNotification));
+            && (EVENTS_VALID_FOR_ALL_ENTITIES.contains(getNotificationType())
+            || EVENTS_VALID_FOR_OTHER_PARTY.contains(getNotificationType())
+            || (UPDATE_OTHER_PARTY_DATA.equals(getNotificationType()) && isSendNewOtherPartyNotification));
     }
 
 

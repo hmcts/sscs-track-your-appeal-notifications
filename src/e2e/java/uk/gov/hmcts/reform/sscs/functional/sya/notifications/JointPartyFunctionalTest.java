@@ -167,19 +167,19 @@ public class JointPartyFunctionalTest extends AbstractFunctionalTest {
         final boolean isDocmosisLetterTrue = true;
         final boolean isDocmosisLetterFalse = false;
         return new Object[]{
-            new Object[]{APPEAL_LAPSED_NOTIFICATION, NO_HEARING_TYPE, expectedNumberOfLettersIsThree, isDocmosisLetterTrue},
-            new Object[]{APPEAL_DORMANT_NOTIFICATION, ORAL, expectedNumberOfLettersIsZero, isDocmosisLetterFalse},
-            new Object[]{APPEAL_DORMANT_NOTIFICATION, PAPER, expectedNumberOfLettersIsZero, isDocmosisLetterFalse},
-            new Object[]{ADJOURNED_NOTIFICATION, NO_HEARING_TYPE, expectedNumberOfLettersIsZero, isDocmosisLetterFalse},
-            new Object[]{POSTPONEMENT_NOTIFICATION, NO_HEARING_TYPE, expectedNumberOfLettersIsZero, isDocmosisLetterFalse},
-            new Object[]{EVIDENCE_REMINDER_NOTIFICATION, ORAL, expectedNumberOfLettersIsZero, isDocmosisLetterFalse},
-            new Object[]{HEARING_BOOKED_NOTIFICATION, NO_HEARING_TYPE, expectedNumberOfLettersIsZero, isDocmosisLetterFalse},
-            new Object[]{HEARING_REMINDER_NOTIFICATION, NO_HEARING_TYPE, expectedNumberOfLettersIsZero, isDocmosisLetterFalse},
-            new Object[]{EVIDENCE_RECEIVED_NOTIFICATION, ORAL, expectedNumberOfLettersIsZero, isDocmosisLetterFalse},
-            new Object[]{EVIDENCE_REMINDER_NOTIFICATION, PAPER, expectedNumberOfLettersIsZero, isDocmosisLetterFalse},
-            new Object[]{DWP_UPLOAD_RESPONSE_NOTIFICATION, ORAL, expectedNumberOfLettersIsTwo, isDocmosisLetterTrue},
+            new Object[]{APPEAL_LAPSED, NO_HEARING_TYPE, expectedNumberOfLettersIsThree, isDocmosisLetterTrue},
+            new Object[]{APPEAL_DORMANT, ORAL, expectedNumberOfLettersIsZero, isDocmosisLetterFalse},
+            new Object[]{APPEAL_DORMANT, PAPER, expectedNumberOfLettersIsZero, isDocmosisLetterFalse},
+            new Object[]{ADJOURNED, NO_HEARING_TYPE, expectedNumberOfLettersIsZero, isDocmosisLetterFalse},
+            new Object[]{POSTPONEMENT, NO_HEARING_TYPE, expectedNumberOfLettersIsZero, isDocmosisLetterFalse},
+            new Object[]{EVIDENCE_REMINDER, ORAL, expectedNumberOfLettersIsZero, isDocmosisLetterFalse},
+            new Object[]{HEARING_BOOKED, NO_HEARING_TYPE, expectedNumberOfLettersIsZero, isDocmosisLetterFalse},
+            new Object[]{HEARING_REMINDER, NO_HEARING_TYPE, expectedNumberOfLettersIsZero, isDocmosisLetterFalse},
+            new Object[]{EVIDENCE_RECEIVED, ORAL, expectedNumberOfLettersIsZero, isDocmosisLetterFalse},
+            new Object[]{EVIDENCE_REMINDER, PAPER, expectedNumberOfLettersIsZero, isDocmosisLetterFalse},
+            new Object[]{DWP_UPLOAD_RESPONSE, ORAL, expectedNumberOfLettersIsTwo, isDocmosisLetterTrue},
             new Object[]{STRUCK_OUT, PAPER, expectedNumberOfLettersIsTwo, isDocmosisLetterTrue},
-            new Object[]{APPEAL_WITHDRAWN_NOTIFICATION, NO_HEARING_TYPE, expectedNumberOfLettersIsTwo, isDocmosisLetterTrue},
+            new Object[]{APPEAL_WITHDRAWN, NO_HEARING_TYPE, expectedNumberOfLettersIsTwo, isDocmosisLetterTrue},
             new Object[]{DIRECTION_ISSUED, NO_HEARING_TYPE, expectedNumberOfLettersIsTwo, isDocmosisLetterTrue},
             new Object[]{REVIEW_CONFIDENTIALITY_REQUEST, NO_HEARING_TYPE, expectedNumberOfLettersIsOne, isDocmosisLetterTrue}
         };

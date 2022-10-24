@@ -32,8 +32,8 @@ import uk.gov.service.notify.NotificationClientException;
 @RunWith(MockitoJUnitRunner.class)
 public class NotificationHandlerTest {
 
-    private static final NotificationEventType A_NOTIFICATION_THAT_CAN_TRIGGER_OUT_OF_HOURS = NotificationEventType.SYA_APPEAL_CREATED_NOTIFICATION;
-    private static final NotificationEventType A_NOTIFICATION_THAT_CANNOT_TRIGGER_OUT_OF_HOURS = NotificationEventType.HEARING_REMINDER_NOTIFICATION;
+    private static final NotificationEventType A_NOTIFICATION_THAT_CAN_TRIGGER_OUT_OF_HOURS = NotificationEventType.SYA_APPEAL_CREATED;
+    private static final NotificationEventType A_NOTIFICATION_THAT_CANNOT_TRIGGER_OUT_OF_HOURS = NotificationEventType.HEARING_REMINDER;
     @Mock
     private OutOfHoursCalculator outOfHoursCalculator;
     @Mock
