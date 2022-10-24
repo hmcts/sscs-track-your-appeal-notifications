@@ -13,7 +13,11 @@ import static uk.gov.hmcts.reform.sscs.ccd.domain.HearingRoute.GAPS;
 import static uk.gov.hmcts.reform.sscs.ccd.domain.HearingRoute.LIST_ASSIST;
 import static uk.gov.hmcts.reform.sscs.ccd.domain.YesNo.NO;
 import static uk.gov.hmcts.reform.sscs.ccd.domain.YesNo.YES;
-import static uk.gov.hmcts.reform.sscs.domain.notify.NotificationEventType.*;
+import static uk.gov.hmcts.reform.sscs.domain.notify.NotificationEventType.ACTION_POSTPONEMENT_REQUEST;
+import static uk.gov.hmcts.reform.sscs.domain.notify.NotificationEventType.DEATH_OF_APPELLANT;
+import static uk.gov.hmcts.reform.sscs.domain.notify.NotificationEventType.HEARING_BOOKED;
+import static uk.gov.hmcts.reform.sscs.domain.notify.NotificationEventType.PROVIDE_APPOINTEE_DETAILS;
+import static uk.gov.hmcts.reform.sscs.domain.notify.NotificationEventType.VALID_APPEAL_CREATED;
 
 import junitparams.JUnitParamsRunner;
 import junitparams.Parameters;
@@ -24,7 +28,12 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
-import uk.gov.hmcts.reform.sscs.ccd.domain.*;
+import uk.gov.hmcts.reform.sscs.ccd.domain.Appeal;
+import uk.gov.hmcts.reform.sscs.ccd.domain.Appellant;
+import uk.gov.hmcts.reform.sscs.ccd.domain.Appointee;
+import uk.gov.hmcts.reform.sscs.ccd.domain.Name;
+import uk.gov.hmcts.reform.sscs.ccd.domain.PostponementRequest;
+import uk.gov.hmcts.reform.sscs.ccd.domain.SscsCaseData;
 import uk.gov.hmcts.reform.sscs.domain.SscsCaseDataWrapper;
 import uk.gov.hmcts.reform.sscs.domain.notify.NotificationEventType;
 import uk.gov.hmcts.reform.sscs.exception.NotificationServiceException;
@@ -130,14 +139,14 @@ public class FilterNotificationsEventsHandlerTest {
     public void willNotHandleEvents(@Nullable NotificationEventType notificationEventType) {
         callback.setNotificationEventType(notificationEventType);
 
-        wontHandle(callback);
+        willNotHandle(callback);
     }
 
     @Parameters({"DO_NOT_SEND", "SYA_APPEAL_CREATED"})
     public void willThrowExceptionIfTriesToHandleEvents(NotificationEventType notificationEventType) {
         callback.setNotificationEventType(notificationEventType);
 
-        wontHandle(callback);
+        willNotHandle(callback);
     }
 
     @Test
@@ -154,7 +163,7 @@ public class FilterNotificationsEventsHandlerTest {
         callback.setNotificationEventType(ACTION_POSTPONEMENT_REQUEST);
         oldCaseData.getPostponementRequest().setActionPostponementRequestSelected("sendToJudge");
 
-        wontHandle(callback);
+        willNotHandle(callback);
     }
 
     @Test
@@ -170,12 +179,13 @@ public class FilterNotificationsEventsHandlerTest {
         callback.setNotificationEventType(HEARING_BOOKED);
         newCaseData.getSchedulingAndListingFields().setHearingRoute(GAPS);
 
-        wontHandle(callback);
+        willNotHandle(callback);
     }
 
     @Test
     @Parameters(method = "eventTypeAndNewAppointees")
-    public void willHandleDeathOfAppellantEventsWithNewAppointee(NotificationEventType notificationEventType, Appointee existing, Appointee newlyAdded) {
+    public void willHandleDeathOfAppellantEventsWithNewAppointee(NotificationEventType notificationEventType,
+                                                                 Appointee existing, Appointee newlyAdded) {
         callback.setNotificationEventType(notificationEventType);
 
         String isAppointeeExisting = getIsAppointee(nonNull(existing));
@@ -191,7 +201,8 @@ public class FilterNotificationsEventsHandlerTest {
 
     @Test
     @Parameters(method = "eventTypeAndNoNewAppointees")
-    public void willNotHandleDeathOfAppellantEventsWithoutNewAppointee(NotificationEventType notificationEventType, Appointee existing, Appointee newlyAdded) {
+    public void willNotHandleDeathOfAppellantEventsWithoutNewAppointee(NotificationEventType notificationEventType,
+                                                                       Appointee existing, Appointee newlyAdded) {
         callback.setNotificationEventType(notificationEventType);
 
         String isAppointeeExisting = getIsAppointee(nonNull(existing));
@@ -202,7 +213,7 @@ public class FilterNotificationsEventsHandlerTest {
         newCaseData.getAppeal().getAppellant().setIsAppointee(isAppointeeNew);
         newCaseData.getAppeal().getAppellant().setAppointee(newlyAdded);
 
-        wontHandle(callback);
+        willNotHandle(callback);
     }
 
     @Test
@@ -239,7 +250,7 @@ public class FilterNotificationsEventsHandlerTest {
         verifyNoInteractions(retryNotificationService);
     }
 
-    private void wontHandle(SscsCaseDataWrapper callback) {
+    private void willNotHandle(SscsCaseDataWrapper callback) {
         assertThat(handler.canHandle(callback)).isFalse();
         assertThatExceptionOfType(IllegalStateException.class)
             .isThrownBy(() -> handler.handle(callback))

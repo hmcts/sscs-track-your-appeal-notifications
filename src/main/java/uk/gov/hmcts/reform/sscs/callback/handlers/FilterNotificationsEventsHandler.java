@@ -3,7 +3,6 @@ package uk.gov.hmcts.reform.sscs.callback.handlers;
 import static java.util.Objects.nonNull;
 import static uk.gov.hmcts.reform.sscs.ccd.domain.HearingRoute.GAPS;
 import static uk.gov.hmcts.reform.sscs.config.NotificationEventTypeLists.EVENTS_TO_HANDLE;
-import static uk.gov.hmcts.reform.sscs.config.NotificationEventTypeLists.EVENTS_TO_NOT_HANDLE;
 import static uk.gov.hmcts.reform.sscs.domain.notify.NotificationEventType.ACTION_POSTPONEMENT_REQUEST;
 import static uk.gov.hmcts.reform.sscs.domain.notify.NotificationEventType.DEATH_OF_APPELLANT;
 import static uk.gov.hmcts.reform.sscs.domain.notify.NotificationEventType.HEARING_BOOKED;
@@ -34,17 +33,12 @@ public class FilterNotificationsEventsHandler implements CallbackHandler {
 
     @Override
     public boolean canHandle(SscsCaseDataWrapper callback) {
-        final boolean eventInTheList = nonNull(callback.getNotificationEventType())
+        return nonNull(callback.getNotificationEventType())
             && EVENTS_TO_HANDLE.contains(callback.getNotificationEventType())
-            && !EVENTS_TO_NOT_HANDLE.contains(callback.getNotificationEventType());
-
-        return eventInTheList
             || shouldActionPostponementBeNotified(callback)
             || hasNewAppointeeAddedForAppellantDecesedCase(callback)
             || shouldHandleForHearingRoute(callback);
     }
-
-
 
     @Override
     public void handle(SscsCaseDataWrapper callback) {
