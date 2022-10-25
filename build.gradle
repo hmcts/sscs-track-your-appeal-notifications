@@ -115,7 +115,7 @@ bootRun {
 }
 
 ext {
-    springCloudVersion = '2020.0.4'
+    springCloudVersion = '2020.0.6'
 }
 
 dependencyManagement {
