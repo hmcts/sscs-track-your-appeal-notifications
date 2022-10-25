@@ -4,20 +4,7 @@
     ":dependencyDashboard",
     ":semanticPrefixChore",
     ":rebaseStalePrs",
-    ":prConcurrentLimit10"
-  ],
-  "packageRules": [
-    {
-      "matchPackageNames": ["com.github.hmcts:sscs-common"],
-      "prPriority": 100
-    }
-  ],
-  "helm-requirements": {
-    "fileMatch": ["\\Chart.yaml$"],
-    "aliases": {
-      "hmctspublic": "https://hmctspublic.azurecr.io/helm/v1/repo/"
-    }
-  },
-  "labels": ["dependencies"],
-  "$schema": "https://docs.renovatebot.com/renovate-schema.json"
+    ":prConcurrentLimit10",
+    "github>hmcts/sscs-common//.github/sscs-renovate.json"
+  ]
 }
