@@ -416,16 +416,16 @@ dependencies {
 
     implementation group: 'org.springframework.boot', name: 'spring-boot-devtools'
 
-    implementation group: 'org.projectlombok', name: 'lombok', version: '1.18.22'
+    implementation group: 'org.projectlombok', name: 'lombok', version: '1.18.24'
 
     implementation group: 'commons-io', name: 'commons-io', version: '2.11.0'
     implementation group: 'org.apache.commons', name: 'commons-collections4', version: '4.4'
 
-    annotationProcessor group: 'org.projectlombok', name: 'lombok', version: '1.18.22'
-    testImplementation group: 'org.projectlombok', name: 'lombok', version: '1.18.22'
-    testAnnotationProcessor group: 'org.projectlombok', name: 'lombok', version: '1.18.22'
-    integrationTestImplementation group: 'org.projectlombok', name: 'lombok', version: '1.18.22'
-    integrationTestAnnotationProcessor group: 'org.projectlombok', name: 'lombok', version: '1.18.22'
+    annotationProcessor group: 'org.projectlombok', name: 'lombok', version: '1.18.24'
+    testImplementation group: 'org.projectlombok', name: 'lombok', version: '1.18.24'
+    testAnnotationProcessor group: 'org.projectlombok', name: 'lombok', version: '1.18.24'
+    integrationTestImplementation group: 'org.projectlombok', name: 'lombok', version: '1.18.24'
+    integrationTestAnnotationProcessor group: 'org.projectlombok', name: 'lombok', version: '1.18.24'
 
     testImplementation(group: 'org.springframework.boot', name: 'spring-boot-starter-test', version: '2.6.2') {
         exclude group: "com.vaadin.external.google", module:"android-json"
