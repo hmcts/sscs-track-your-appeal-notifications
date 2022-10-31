@@ -3,7 +3,6 @@ package uk.gov.hmcts.reform.sscs.config;
 import java.util.Set;
 import javax.sql.DataSource;
 import org.flywaydb.core.Flyway;
-import org.springframework.beans.factory.ObjectProvider;
 import org.springframework.beans.factory.config.ConfigurableListableBeanFactory;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnBean;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnClass;
@@ -23,7 +22,7 @@ public class LegacyFlywayAutoConfiguration {
 
     @Bean
     @Primary
-    public SchemaManagementProvider flywayDefaultDdlModeProvider(ObjectProvider<Flyway> flyways) {
+    public SchemaManagementProvider flywayDefaultDdlModeProvider() {
         return dataSource -> SchemaManagement.MANAGED;
     }
 

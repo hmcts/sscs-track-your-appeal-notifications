@@ -50,12 +50,6 @@ public class NotificationControllerTest {
     @Mock
     private IdamService idamService;
 
-    private SscsCaseCallbackDeserializer deserializer;
-
-    private IdamTokens idamTokens;
-
-    private ObjectMapper mapper;
-
     @Before
     public void setUp() throws IOException {
         openMocks(this);
@@ -67,16 +61,16 @@ public class NotificationControllerTest {
                         .featuresToEnable(WRITE_ENUMS_USING_TO_STRING)
                         .serializationInclusion(JsonInclude.Include.NON_ABSENT);
 
-        mapper = objectMapperBuilder.createXmlMapper(false).build();
+        ObjectMapper mapper = objectMapperBuilder.createXmlMapper(false).build();
         mapper.registerModule(new JavaTimeModule());
 
-        deserializer = new SscsCaseCallbackDeserializer(mapper);
+        SscsCaseCallbackDeserializer deserializer = new SscsCaseCallbackDeserializer(mapper);
 
         notificationController = new NotificationController(notificationService, authorisationService, ccdService, deserializer, idamService);
         String path = getClass().getClassLoader().getResource("json/ccdResponse.json").getFile();
         json = FileUtils.readFileToString(new File(path), StandardCharsets.UTF_8.name());
 
-        idamTokens = IdamTokens.builder().build();
+        IdamTokens idamTokens = IdamTokens.builder().build();
         when(idamService.getIdamTokens()).thenReturn(idamTokens);
     }
 
