@@ -11,7 +11,6 @@ plugins {
     id 'com.github.ben-manes.versions' version '0.43.0'
     id "org.flywaydb.flyway" version '7.15.0'
     id "info.solidsoft.pitest" version '1.7.0'
-    id 'nebula.lint' version '16.9.0'
 }
 
 apply plugin: 'org.springframework.boot'
@@ -289,13 +288,13 @@ dependencies {
     implementation group: 'javax.jms', name: 'javax.jms-api', version: '2.0.1'
 
     implementation group: 'com.microsoft.azure', name: 'applicationinsights-logging-logback', version: '2.6.3'
-    implementation group: 'com.microsoft.azure', name: 'applicationinsights-spring-boot-starter', version: '2.6.3'
+    implementation group: 'com.microsoft.azure', name: 'applicationinsights-spring-boot-starter', version: '2.6.4'
 
     implementation group: 'org.pitest', name: 'pitest', version: '1.9.9'
     implementation group:'info.solidsoft.gradle.pitest', name: 'gradle-pitest-plugin', version: '1.9.0'
     implementation group:'org.codehaus.sonar-plugins', name:'sonar-pitest-plugin', version: '0.5'
 
-    implementation group: 'org.springframework.boot', name: 'spring-boot-devtools'
+    implementation group: 'org.springframework.boot', name: 'spring-boot-devtools', version: '2.7.5'
 
     implementation group: 'org.projectlombok', name: 'lombok', version: '1.18.24'
 
@@ -311,7 +310,7 @@ dependencies {
     testImplementation(group: 'org.springframework.boot', name: 'spring-boot-starter-test', version: '2.7.5') {
         exclude group: "com.vaadin.external.google", module:"android-json"
     }
-    testImplementation group: 'org.mockito', name: 'mockito-core', version: '4.8.0'
+    testImplementation group: 'org.mockito', name: 'mockito-core', version: '4.8.1'
     testImplementation 'pl.pragmatists:JUnitParams:1.1.1'
     testImplementation group: 'com.github.hmcts', name: 'fortify-client', version: '1.2.2', classifier: 'all', {
         exclude group: 'commons-io', module: 'commons-io'
@@ -319,7 +318,7 @@ dependencies {
 
     integrationTestImplementation group: 'commons-io', name: 'commons-io', version: '2.11.0'
 
-    runtimeOnly group: 'org.springframework.boot', name: 'spring-boot-properties-migrator'
+    runtimeOnly group: 'org.springframework.boot', name: 'spring-boot-properties-migrator', version: '2.7.5'
 }
 
 bootJar {
