@@ -228,7 +228,7 @@ dependencyManagement {
             entry 'commons-compress'
         }
 
-        dependencySet(group: 'org.apache.tomcat.embed', version: '9.0.65') {
+        dependencySet(group: 'org.apache.tomcat.embed', version: '9.0.68') {
             entry 'tomcat-embed-core'
             entry 'tomcat-embed-websocket'
         }
