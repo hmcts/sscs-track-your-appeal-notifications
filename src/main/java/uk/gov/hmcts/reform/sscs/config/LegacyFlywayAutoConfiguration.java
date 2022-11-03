@@ -2,6 +2,7 @@ package uk.gov.hmcts.reform.sscs.config;
 
 import javax.sql.DataSource;
 import org.flywaydb.core.Flyway;
+import org.springframework.beans.factory.ObjectProvider;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnBean;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnClass;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
@@ -20,8 +21,14 @@ public class LegacyFlywayAutoConfiguration {
 
     @Bean
     @Primary
-    public SchemaManagementProvider flywayDefaultDdlModeProvider() {
-        return dataSource -> SchemaManagement.MANAGED;
+    public SchemaManagementProvider flywayDefaultDdlModeProvider(ObjectProvider<Flyway> flyways) {
+        return new SchemaManagementProvider() {
+
+            @Override
+            public SchemaManagement getSchemaManagement(DataSource dataSource) {
+                return SchemaManagement.MANAGED;
+            }
+        };
     }
 
     @Bean(initMethod = "migrate")
@@ -43,10 +50,10 @@ public class LegacyFlywayAutoConfiguration {
     @Configuration
     @ConditionalOnClass(JdbcOperations.class)
     @ConditionalOnBean(JdbcOperations.class)
-    protected static class FlywayInitializerDependsOnDatabaseInitializationDetector
+    protected static class FlywayInitializerJdbcOperationsDependencyConfiguration
         extends EntityManagerFactoryDependsOnPostProcessor {
 
-        public FlywayInitializerDependsOnDatabaseInitializationDetector() {
+        public FlywayInitializerJdbcOperationsDependencyConfiguration() {
             super("flywayInitializer");
         }
     }
