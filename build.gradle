@@ -124,27 +124,7 @@ dependencyManagement {
         mavenBom "org.springframework.cloud:spring-cloud-dependencies:${springCloudVersion}"
     }
     dependencies {
-        //CVE-2021-22118, CVE-2022-22970, CVE-2022-22971
-        dependencySet(group: 'org.springframework', version: '5.3.23') {
-            entry 'spring-aop'
-            entry 'spring-aspects'
-            entry 'spring-beans'
-            entry 'spring-context'
-            entry 'spring-context-support'
-            entry 'spring-core'
-            entry 'spring-expression'
-            entry 'spring-jcl'
-            entry 'spring-jdbc'
-            entry 'spring-jms'
-            entry 'spring-messaging'
-            entry 'spring-orm'
-            entry 'spring-test'
-            entry 'spring-tx'
-            entry 'spring-web'
-            entry 'spring-webmvc'
-        }
-
-        //CVE-2022-38752, CVE-2022-38751, CVE-2022-38750, CVE-2022-25857, CVE-2022-38749=
+        //CVE-2022-38752, CVE-2022-38751, CVE-2022-38750, CVE-2022-25857, CVE-2022-38749
         dependencySet(group: 'org.yaml', version: '1.33') {
             entry 'snakeyaml'
         }
