@@ -14,12 +14,16 @@ import org.springframework.boot.jdbc.SchemaManagement;
 import org.springframework.boot.jdbc.SchemaManagementProvider;
 import org.springframework.boot.sql.init.dependency.AbstractBeansOfTypeDependsOnDatabaseInitializationDetector;
 import org.springframework.context.annotation.Bean;
+import org.springframework.context.annotation.ComponentScan;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Primary;
 import org.springframework.jdbc.core.JdbcOperations;
+import org.springframework.stereotype.Repository;
 
 @Configuration
 @ConditionalOnProperty(prefix = "spring.flyway", name = "enabled", matchIfMissing = true)
+@ComponentScan(basePackages = {"org.springframework.boot.sql.init.dependency"})
+@Repository
 public class LegacyFlywayAutoConfiguration {
 
     @Bean
@@ -46,10 +50,6 @@ public class LegacyFlywayAutoConfiguration {
         return new FlywayMigrationInitializer(flyway, null);
     }
 
-    /**
-     * Additional configuration to ensure that {@link JdbcOperations} beans depend
-     * on the {@code flywayInitializer} bean.
-     */
     @Configuration
     @ConditionalOnClass(JdbcOperations.class)
     @ConditionalOnBean(JdbcOperations.class)
