@@ -13,6 +13,7 @@ import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 import org.springframework.boot.autoconfigure.flyway.FlywayMigrationInitializer;
 import org.springframework.boot.jdbc.SchemaManagement;
 import org.springframework.boot.jdbc.SchemaManagementProvider;
+import org.springframework.boot.sql.init.dependency.AbstractBeansOfTypeDependsOnDatabaseInitializationDetector;
 import org.springframework.boot.sql.init.dependency.DependsOnDatabaseInitializationDetector;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -55,15 +56,15 @@ public class LegacyFlywayAutoConfiguration {
     @ConditionalOnClass(JdbcOperations.class)
     @ConditionalOnBean(JdbcOperations.class)
     protected static class FlywayInitializerJdbcOperationsDependencyConfiguration
-        implements DependsOnDatabaseInitializationDetector {
+        extends AbstractBeansOfTypeDependsOnDatabaseInitializationDetector {
 
         public FlywayInitializerJdbcOperationsDependencyConfiguration() {
             super();
         }
 
         @Override
-        public Set<String> detect(ConfigurableListableBeanFactory beanFactory) {
-            return new HashSet<>(List.of("flywayInitializer"));
+        protected Set<Class<?>> getDependsOnDatabaseInitializationBeanTypes() {
+            return new HashSet<>(List.of(Flyway.class));
         }
     }
 }
