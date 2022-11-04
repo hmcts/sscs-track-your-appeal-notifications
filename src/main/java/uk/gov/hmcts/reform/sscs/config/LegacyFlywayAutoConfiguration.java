@@ -62,7 +62,7 @@ public class LegacyFlywayAutoConfiguration {
 
         @Override
         protected Set<Class<?>> getDependsOnDatabaseInitializationBeanTypes() {
-            return new HashSet<>(List.of(Flyway.class));
+            return new HashSet<>(List.of(JdbcOperations.class));
         }
     }
 }
