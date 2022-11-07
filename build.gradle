@@ -263,7 +263,7 @@ task functional(type: Test) {
 }
 
 task fortifyScan(type: JavaExec)  {
-    main = "uk.gov.hmcts.fortifyclient.FortifyClientMainApp"
+    mainClass = "uk.gov.hmcts.fortifyclient.FortifyClientMainApp"
     classpath += sourceSets.test.runtimeClasspath
     jvmArgs = ['--add-opens=java.base/java.lang.reflect=ALL-UNNAMED']
 }
@@ -278,8 +278,8 @@ configurations {
 jacocoTestReport {
     executionData(test, integration)
     reports {
-        xml.enabled = true
-        csv.enabled = false
+        xml.required = true
+        csv.required = false
         xml.destination file("${project.buildDir}/reports/jacoco/test/jacocoTestReport.xml")
     }
 }
@@ -298,7 +298,9 @@ functional.shouldRunAfter(test)
 configurations.all {
     resolutionStrategy {
         eachDependency { DependencyResolveDetails details ->
-            if (details.requested.group in ['com.fasterxml.jackson.core', 'com.fasterxml.jackson.module', 'com.fasterxml.jackson.datatype']) {
+            if (details.requested.group in ['com.fasterxml.jackson.core',
+                                            'com.fasterxml.jackson.module',
+                                            'com.fasterxml.jackson.datatype']) {
                 details.useVersion '2.11.0'
             }
             if (details.requested.group == 'org.codehaus.groovy') {
@@ -392,7 +394,7 @@ dependencies {
 }
 
 bootJar {
-    archiveName 'track-your-appeal-notifications.jar'
+    archiveFileName = 'track-your-appeal-notifications.jar'
     manifest {
         attributes 'Implementation-Title': project.name,
                 'Implementation-Version': project.version

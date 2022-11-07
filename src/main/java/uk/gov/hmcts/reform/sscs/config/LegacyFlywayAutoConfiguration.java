@@ -25,13 +25,7 @@ public class LegacyFlywayAutoConfiguration {
     @Bean
     @Primary
     public SchemaManagementProvider flywayDefaultDdlModeProvider(ObjectProvider<Flyway> flyways) {
-        return new SchemaManagementProvider() {
-
-            @Override
-            public SchemaManagement getSchemaManagement(DataSource dataSource) {
-                return SchemaManagement.MANAGED;
-            }
-        };
+        return dataSource -> SchemaManagement.MANAGED;
     }
 
     @Bean(initMethod = "migrate")
