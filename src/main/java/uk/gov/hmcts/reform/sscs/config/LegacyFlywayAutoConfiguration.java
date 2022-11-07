@@ -46,6 +46,10 @@ public class LegacyFlywayAutoConfiguration {
         return new FlywayMigrationInitializer(flyway, null);
     }
 
+    /**
+     * Additional configuration to ensure that {@link JdbcOperations} beans depend
+     * on the {@code flywayInitializer} bean.
+     */
     @Configuration
     @ConditionalOnClass(JdbcOperations.class)
     @ConditionalOnBean(JdbcOperations.class)
