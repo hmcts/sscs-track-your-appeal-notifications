@@ -234,14 +234,14 @@ sourceSets {
             srcDir('src/IntegrationTests/java')
         }
     }
-    e2e {
+    functionalTest {
         java {
             compileClasspath += main.output + test.output
             runtimeClasspath += main.output + test.output
-            srcDir('src/e2e/java')
+            srcDir('src/functionalTest/java')
         }
         resources {
-            srcDir('src/e2e/resources')
+            srcDir('src/functionalTest/resources')
         }
     }
 
@@ -256,8 +256,8 @@ task integration(type: Test) {
 task smoke(type: Test) {
     group = 'verification'
     description = 'Executes non-destructive smoke tests against a running CCD and notification service'
-    setTestClassesDirs(sourceSets.e2e.output.classesDirs)
-    setClasspath(sourceSets.e2e.runtimeClasspath)
+    setTestClassesDirs(sourceSets.functionalTest.output.classesDirs)
+    setClasspath(sourceSets.functionalTest.runtimeClasspath)
     include "uk/gov/hmcts/reform/sscs/smoke/**"
     exclude "uk/gov/hmcts/reform/sscs/functional/**"
 }
@@ -265,8 +265,8 @@ task smoke(type: Test) {
 task functional(type: Test) {
     group = 'verification'
     description = 'Executes non-destructive functional tests in AAT against a running CCD and notification service'
-    setTestClassesDirs(sourceSets.e2e.output.classesDirs)
-    setClasspath(sourceSets.e2e.runtimeClasspath)
+    setTestClassesDirs(sourceSets.functionalTest.output.classesDirs)
+    setClasspath(sourceSets.functionalTest.runtimeClasspath)
     include "uk/gov/hmcts/reform/sscs/functional/**"
     exclude("uk/gov/hmcts/reform/sscs/smoke/**", "**/*CohNotificationFunctionalTest*")
 }
@@ -280,8 +280,8 @@ task fortifyScan(type: JavaExec)  {
 configurations {
     integrationTestImplementation.extendsFrom(testImplementation)
     integrationTestRuntimeOnly.extendsFrom(testRuntimeOnly)
-    e2eImplementation.extendsFrom(testImplementation)
-    e2eRuntimeOnly.extendsFrom(testRuntimeOnly)
+    functionalTestImplementation.extendsFrom(testImplementation)
+    functionalTestRuntimeOnly.extendsFrom(testRuntimeOnly)
 }
 
 jacocoTestReport {
