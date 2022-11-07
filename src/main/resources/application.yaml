@@ -3,6 +3,8 @@ server.port: ${PORT:8081}
 spring:
   application:
     name: TyaNotificationsService
+  config:
+    import: optional:configtree:/mnt/secrets/sscs/
   datasource:
     driverClassName: org.postgresql.Driver
     url: jdbc:postgresql://${JOB_SCHEDULER_DB_HOST:localhost}:${JOB_SCHEDULER_DB_PORT:5432}/${JOB_SCHEDULER_DB_NAME:sscsjobscheduler}${JOB_SCHEDULER_DB_CONNECTION_OPTIONS:}
@@ -26,8 +28,8 @@ spring:
       remove-abandoned-timeout: 60
       log-abandoned: true
       abandon-when-percentage-full: 0
-
-spring.main.allow-bean-definition-overriding: true  # https://github.com/spring-projects/spring-boot/wiki/Spring-Boot-2.1-Release-Notes#bean-overriding
+  main:
+    allow-bean-definition-overriding: true  # https://github.com/spring-projects/spring-boot/wiki/Spring-Boot-2.1-Release-Notes#bean-overriding
 
 springdoc:
   packagesToScan: "uk.gov.hmcts.sscs.controllers"
@@ -1527,3 +1529,6 @@ welsh-months:
   11: "Tachwedd"
   12: "Rhagfyr"
 
+azure:
+  application-insights:
+    instrumentation-key: {APP_INSIGHTS_INSTRUMENTATION_KEY}

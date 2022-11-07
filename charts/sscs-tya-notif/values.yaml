@@ -7,21 +7,36 @@ java:
   keyVaults:
     sscs:
       secrets:
-      - idam-api
-      - idam-oauth-user
-      - idam-redirect
-      - idam-sscs-systemupdate-user
-      - idam-sscs-systemupdate-password
-      - sscs-email-mac-secret-text
-      - idam-sscs-oauth2-client-secret
-      - sscs-s2s-secret
-      - s2s-micro
-      - evidence-share-topic-shared-access-key
-      - docmosis-api-key
-      - notification-job-scheduler-db-password
-      - notification-key
-      - notification-test-key
-      - AppInsightsInstrumentationKey
+      - name: idam-api
+        alias: IDAM_URL
+      - name: idam-sscs-systemupdate-user
+        alias: IDAM_SSCS_SYSTEMUPDATE_USER
+      - name: idam-sscs-systemupdate-password
+        alias: IDAM_SSCS_SYSTEMUPDATE_PASSWORD
+      - name: notification-job-scheduler-db-password
+        alias: JOB_SCHEDULER_DB_PASSWORD
+      - name: sscs-email-mac-secret-text
+        alias: EMAIL_MAC_SECRET_TEXT
+      - name: idam-sscs-oauth2-client-secret
+        alias: IDAM_OAUTH2_CLIENT_SECRET
+      - name: idam-oauth-user
+        alias: IDAM_OAUTH2_CLIENT_ID
+      - name: idam-redirect
+        alias: IDAM_OAUTH2_REDIRECT_URL
+      - name: sscs-s2s-secret
+        alias: IDAM_S2S_AUTH_TOTP_SECRET
+      - name: evidence-share-topic-shared-access-key
+        alias: AMQP_PASSWORD
+      - name: docmosis-api-key
+        alias: PDF_SERVICE_ACCESS_KEY
+      - name: notification-key
+        alias: NOTIFICATION_API_KEY
+      - name: notification-test-key
+        alias: NOTIFICATION_API_TEST_KEY
+      - name: AppInsightsInstrumentationKey
+        alias: APP_INSIGHTS_INSTRUMENTATION_KEY
+      - name: s2s-micro
+        alias: IDAM.S2S-AUTH.MICROSERVICE
   environment:
     REFORM_TEAM: sscs
     REFORM_SERVICE_NAME: tya-notifications

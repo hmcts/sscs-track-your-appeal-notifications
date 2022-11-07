@@ -5,7 +5,7 @@ plugins {
     id 'org.sonarqube' version '3.3'
     id 'jacoco'
     id 'io.spring.dependency-management' version '1.1.0'
-    id 'org.springframework.boot' version '2.5.6'
+    id 'org.springframework.boot' version '2.7.4'
     id 'uk.gov.hmcts.java' version '0.12.32'
     id 'org.owasp.dependencycheck' version '7.2.1'
     id 'com.github.ben-manes.versions' version '0.43.0'
@@ -13,7 +13,6 @@ plugins {
     id "info.solidsoft.pitest" version '1.7.0'
 }
 
-apply plugin: 'org.springframework.boot'
 apply plugin: 'io.spring.dependency-management'
 
 group = 'uk.gov.hmcts.reform'
@@ -114,13 +113,9 @@ bootRun {
     systemProperty 'server.port', '8081'
 }
 
-ext {
-    springCloudVersion = '2020.0.6'
-}
-
 dependencyManagement {
     imports {
-        mavenBom "org.springframework.cloud:spring-cloud-dependencies:${springCloudVersion}"
+        mavenBom "org.springframework.cloud:spring-cloud-dependencies:2021.0.4"
     }
     dependencies {
         // Solves CVE-2019-10086
@@ -133,11 +128,6 @@ dependencyManagement {
 
         //CVE-2021-40690
         dependency group: 'org.apache.santuario', name: 'xmlsec', version: '2.3.2'
-
-        // checkstyle needs a certain version and so does spring fox swagger, so can't use latest
-        dependencySet(group: 'com.google.guava', version: '31.0.1-jre') {
-            entry 'guava'
-        }
 
         // CVE-2020-13954
         dependencySet(group: 'org.apache.cxf', version: '3.5.0') {
@@ -184,37 +174,12 @@ dependencyManagement {
             entry 'kotlin-stdlib-common'
         }
 
-        //CVE-2021-22112
-        dependencySet(group: 'org.springframework.security', version: '5.5.3') {
-            entry 'spring-security-crypto'
-        }
-
         //CVE-2021-27807
         dependencySet(group: 'org.apache.pdfbox', version: '2.0.25') {
             entry 'pdfbox'
             entry 'pdfbox-tools'
             entry 'preflight'
             entry 'xmpbox'
-        }
-
-        //CVE-2021-22118, CVE-2022-22970, CVE-2022-22971
-        dependencySet(group: 'org.springframework', version: '5.3.20') {
-            entry 'spring-aop'
-            entry 'spring-aspects'
-            entry 'spring-beans'
-            entry 'spring-context'
-            entry 'spring-context-support'
-            entry 'spring-core'
-            entry 'spring-expression'
-            entry 'spring-jcl'
-            entry 'spring-jdbc'
-            entry 'spring-jms'
-            entry 'spring-messaging'
-            entry 'spring-orm'
-            entry 'spring-test'
-            entry 'spring-tx'
-            entry 'spring-web'
-            entry 'spring-webmvc'
         }
 
         //CVE-2021-27568
@@ -231,12 +196,6 @@ dependencyManagement {
         dependencySet(group: 'org.apache.tomcat.embed', version: '9.0.68') {
             entry 'tomcat-embed-core'
             entry 'tomcat-embed-websocket'
-        }
-
-        //CVE-2021-22044
-        dependencySet(group: 'org.springframework.cloud', version: '3.0.5') {
-            entry 'spring-cloud-starter-openfeign'
-            entry 'spring-cloud-openfeign-core'
         }
 
         //CVE-2022-25857, CVE-2022-38751
@@ -377,9 +336,9 @@ dependencies {
     implementation group: 'org.springframework.cloud', name: 'spring-cloud-starter-netflix-hystrix', version: '2.2.10.RELEASE'
     implementation group: 'org.springframework.retry', name: 'spring-retry', version: '1.3.4'
     implementation group: 'org.springdoc', name: 'springdoc-openapi-ui', version: '1.6.12'
-    implementation group: 'io.rest-assured', name: 'rest-assured', version: '4.3.3'
-    implementation group: 'io.rest-assured', name: 'json-path', version: '4.3.3'
-    implementation group: 'io.rest-assured', name: 'xml-path', version: '4.3.3'
+    implementation group: 'io.rest-assured', name: 'rest-assured', version: '5.2.0'
+    implementation group: 'io.rest-assured', name: 'json-path', version: '5.2.0'
+    implementation group: 'io.rest-assured', name: 'xml-path', version: '5.2.0'
 
     implementation group: 'com.atlassian.commonmark', name: 'commonmark', version: '0.17.0'
     implementation group: 'org.springframework', name: 'spring-jms'
