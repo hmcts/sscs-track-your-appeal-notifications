@@ -234,6 +234,8 @@ public final class NotificationEventTypeLists {
     );
 
     public static final Set<NotificationEventType> EVENTS_VALID_FOR_ALL_ENTITIES = EnumSet.of(
+        ACTION_POSTPONEMENT_REQUEST,
+        ACTION_POSTPONEMENT_REQUEST_WELSH,
         ADJOURNED,
         ADMIN_APPEAL_WITHDRAWN,
         APPEAL_DORMANT,
@@ -255,8 +257,6 @@ public final class NotificationEventTypeLists {
     );
 
     public static final Set<NotificationEventType> EVENTS_VALID_FOR_APPOINTEE = EnumSet.of(
-        ACTION_POSTPONEMENT_REQUEST,
-        ACTION_POSTPONEMENT_REQUEST_WELSH,
         APPEAL_RECEIVED,
         DEATH_OF_APPELLANT,
         DECISION_ISSUED,
@@ -278,8 +278,6 @@ public final class NotificationEventTypeLists {
     );
 
     public static final Set<NotificationEventType> EVENTS_VALID_FOR_REP = EnumSet.of(
-        ACTION_POSTPONEMENT_REQUEST,
-        ACTION_POSTPONEMENT_REQUEST_WELSH,
         APPEAL_RECEIVED,
         CASE_UPDATED,
         DEATH_OF_APPELLANT,
@@ -301,8 +299,6 @@ public final class NotificationEventTypeLists {
     );
 
     public static final Set<NotificationEventType> EVENTS_VALID_FOR_JOINT_PARTY = EnumSet.of(
-        ACTION_POSTPONEMENT_REQUEST,
-        ACTION_POSTPONEMENT_REQUEST_WELSH,
         JOINT_PARTY_ADDED
     );
 
