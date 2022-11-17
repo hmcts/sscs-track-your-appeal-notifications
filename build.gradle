@@ -180,6 +180,11 @@ dependencyManagement {
             entry 'kotlin-stdlib-common'
         }
 
+        //CVE-2021-22112
+        dependencySet(group: 'org.springframework.security', version: '5.7.3') {
+            entry 'spring-security-crypto'
+        }
+
         //CVE-2022-25857, CVE-2022-38751
         dependencySet(group: 'org.yaml', version: '1.33') {
             entry 'snakeyaml'
