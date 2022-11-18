@@ -166,14 +166,6 @@ dependencyManagement {
             entry 'netty-common'
         }
 
-        // solves CVE-2019-13990
-        dependencySet(
-                group: 'org.quartz-scheduler',
-                version: '2.3.2'
-        ) {
-            entry 'quartz'
-        }
-
         // resolves: CVE-2019-10101, CVE-2019-10102, CVE-2019-10103
         dependencySet(group: 'org.jetbrains.kotlin', version: '1.6.10') {
             entry 'kotlin-stdlib'
