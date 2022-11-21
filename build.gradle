@@ -310,7 +310,7 @@ dependencies {
     }
 
     implementation group: 'uk.gov.service.notify', name: 'notifications-java-client', version: '3.19.0-RELEASE'
-    implementation group: 'com.squareup.okhttp3', name: 'okhttp', version: '4.9.2'
+    implementation group: 'com.squareup.okhttp3', name: 'okhttp', version: '4.10.0'
     implementation group: 'commons-fileupload', name: 'commons-fileupload', version: '1.4'
     implementation group: 'io.github.openfeign.form', name: 'feign-form', version: '3.8.0'
 
