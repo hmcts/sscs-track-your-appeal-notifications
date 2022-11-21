@@ -40,6 +40,8 @@ import static uk.gov.hmcts.reform.sscs.service.NotificationValidService.isMandat
 
 import java.time.ZonedDateTime;
 import java.util.List;
+import java.util.Optional;
+import java.util.stream.Collectors;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
@@ -151,6 +153,19 @@ public class NotificationService {
 
     private void sendNotificationPerSubscription(NotificationWrapper notificationWrapper) {
         overrideNotificationType(notificationWrapper);
+        String subscriptionTypes = notificationWrapper.getSubscriptionsBasedOnNotificationType().stream()
+            .map(sub -> String.format("Party: %s, Entity %s, Party Id %s, Subscription Type %s, Subscription %s",
+                Optional.ofNullable(sub.getParty()).map(Object::getClass).orElse(null),
+                Optional.ofNullable(sub.getEntity()).map(Object::getClass).orElse(null),
+                sub.getPartyId(),
+                sub.getSubscriptionType(),
+                sub.getSubscription()))
+            .collect(Collectors.joining("\n", "\n", ""));
+        log.info("Processing for the Notification Type {} and Case Id {} the following subscriptions: {}",
+            notificationWrapper.getNotificationType(),
+            notificationWrapper.getCaseId(),
+            subscriptionTypes);
+
         for (SubscriptionWithType subscriptionWithType : notificationWrapper.getSubscriptionsBasedOnNotificationType()) {
             if (isSubscriptionValidToSendAfterOverride(notificationWrapper, subscriptionWithType)
                     && isValidNotification(notificationWrapper, subscriptionWithType)) {

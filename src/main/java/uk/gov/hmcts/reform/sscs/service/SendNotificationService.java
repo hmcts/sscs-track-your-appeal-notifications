@@ -1,5 +1,6 @@
 package uk.gov.hmcts.reform.sscs.service;
 
+import static java.util.Objects.nonNull;
 import static org.apache.commons.lang3.StringUtils.isEmpty;
 import static org.apache.commons.lang3.StringUtils.isNotBlank;
 import static uk.gov.hmcts.reform.sscs.ccd.callback.DocumentType.ADJOURNMENT_NOTICE;
@@ -83,7 +84,12 @@ public class SendNotificationService {
             SubscriptionWithType subscriptionWithType,
             NotificationEventType eventType) {
         boolean emailSent = sendEmailNotification(wrapper, subscriptionWithType.getSubscription(), notification);
+        notificationSuccessLog(wrapper, "Email", notification, notification.getEmailTemplate(), emailSent);
+
         boolean smsSent = sendSmsNotification(wrapper, subscriptionWithType.getSubscription(), notification, eventType);
+        if (nonNull(notification.getSmsTemplate())) {
+            notificationSuccessLog(wrapper, "SMS", notification, String.join(", ", notification.getSmsTemplate()), smsSent);
+        }
 
         boolean isInterlocLetter = NotificationEventTypeLists.EVENT_TYPES_FOR_INTERLOC_LETTERS.contains(eventType);
         boolean isDocmosisLetter = NotificationEventTypeLists.DOCMOSIS_LETTERS.contains(eventType);
@@ -91,6 +97,11 @@ public class SendNotificationService {
         boolean letterSent = false;
         if (shouldSendLetter(wrapper, notification, isInterlocLetter, isDocmosisLetter)) {
             letterSent = sendLetterNotification(wrapper, notification, subscriptionWithType, eventType);
+            if (isDocmosisLetter) {
+                notificationSuccessLog(wrapper, "Docmosis Letter", notification, notification.getDocmosisLetterTemplate(), letterSent);
+            } else {
+                notificationSuccessLog(wrapper, "Gov Notify Letter", notification, notification.getLetterTemplate(), letterSent);
+            }
         }
 
         boolean notificationSent = emailSent || smsSent || letterSent;
@@ -100,6 +111,26 @@ public class SendNotificationService {
         }
 
         return notificationSent;
+    }
+
+    private static void notificationSuccessLog(NotificationWrapper wrapper, String notificationType,
+                                               Notification notification, String templates, boolean wasSuccessful) {
+        Object partyType = Optional.ofNullable(notification)
+            .map(Notification::getPlaceholders)
+            .map(map -> map.get(PARTY_TYPE))
+            .orElse(null);
+        Object entityType = Optional.ofNullable(notification)
+            .map(Notification::getPlaceholders)
+            .map(map -> map.get(ENTITY_TYPE))
+            .orElse(null);
+        log.info("{} {} with template/s {} was {} for party {}, entity {} and Case Id {}",
+            wrapper.getNotificationType(),
+            notificationType,
+            templates,
+            wasSuccessful ? "sent successfully" : "was unsuccessful in sending",
+            partyType,
+            entityType,
+            wrapper.getCaseId());
     }
 
     private boolean shouldSendLetter(NotificationWrapper wrapper, Notification notification, boolean isInterlocLetter, boolean isDocmosisLetter) {
@@ -146,7 +177,7 @@ public class SendNotificationService {
                 );
         log.info("In sendSmsNotification method notificationSender is available {} ", notificationSender != null);
 
-        notificationLog(notification, "sms", notification.getMobile());
+        notificationLog(notification, "sms", notification.getMobile(), wrapper);
 
         return notificationHandler.sendNotification(wrapper, smsTemplateId, "SMS", sendNotification);
     }
@@ -166,7 +197,7 @@ public class SendNotificationService {
 
             log.info("In sendEmailNotification method notificationSender is available {} ", notificationSender != null);
 
-            notificationLog(notification, "email", notification.getEmail());
+            notificationLog(notification, "email", notification.getEmail(), wrapper);
 
             return notificationHandler.sendNotification(wrapper, notification.getEmailTemplate(), "Email", sendNotification);
         }
@@ -228,7 +259,7 @@ public class SendNotificationService {
 
             log.info("In sendLetterNotificationToAddress method notificationSender is available {} ", notificationSender != null);
 
-            notificationLog(notification, "letter", addressToUse.getPostcode());
+            notificationLog(notification, "GovNotify letter", addressToUse.getPostcode(), wrapper);
 
             notificationSender.sendLetter(
                     notification.getLetterTemplate(),
@@ -279,7 +310,7 @@ public class SendNotificationService {
 
                 log.info("In sendBundledAndDocmosisLetterNotification method notificationSender is available {} ", notificationSender != null);
 
-                notificationLog(notification, "letter", "");
+                notificationLog(notification, "Docmosis Letter", nameToUse, wrapper);
 
                 if (ArrayUtils.isNotEmpty(bundledLetter)) {
                     notificationHandler.sendNotification(wrapper, notification.getDocmosisLetterTemplate(), NOTIFICATION_TYPE_LETTER, sendNotification);
@@ -294,7 +325,7 @@ public class SendNotificationService {
         return false;
     }
 
-    private void notificationLog(Notification notification, String notificationType, String recipient) {
+    private void notificationLog(Notification notification, String notificationType, String recipient, NotificationWrapper wrapper) {
         Object partyType = Optional.ofNullable(notification)
             .map(Notification::getPlaceholders)
             .map(map -> map.get(PARTY_TYPE))
@@ -303,8 +334,8 @@ public class SendNotificationService {
             .map(Notification::getPlaceholders)
             .map(map -> map.get(ENTITY_TYPE))
             .orElse(null);
-        log.info("Sending {} Notification for party type: {} and entity type: {}, contact: {}",
-            notificationType, partyType, entityType, recipient);
+        log.info("Sending {} Notification for Party {}, Entity {}, Contact {} and Notification Type {}",
+            notificationType, partyType, entityType, recipient, wrapper.getNotificationType());
     }
 
     private byte[] downloadAssociatedCasePdf(NotificationWrapper wrapper) {
