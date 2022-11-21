@@ -336,7 +336,7 @@ dependencies {
     integrationTestImplementation group: 'org.projectlombok', name: 'lombok', version: '1.18.24'
     integrationTestAnnotationProcessor group: 'org.projectlombok', name: 'lombok', version: '1.18.24'
 
-    testImplementation(group: 'org.springframework.boot', name: 'spring-boot-starter-test', version: '2.6.2') {
+    testImplementation(group: 'org.springframework.boot', name: 'spring-boot-starter-test', version: '2.7.5') {
         exclude group: "com.vaadin.external.google", module:"android-json"
     }
     testImplementation group: 'org.mockito', name: 'mockito-core', version: '4.2.0'
