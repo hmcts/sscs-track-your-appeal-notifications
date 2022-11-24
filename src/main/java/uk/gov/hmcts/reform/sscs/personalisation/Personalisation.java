@@ -398,7 +398,7 @@ public class Personalisation<E extends NotificationWrapper> {
     }
 
     private String getName(SubscriptionWithType subscriptionWithType, SscsCaseData sscsCaseData, SscsCaseDataWrapper wrapper) {
-        if (sscsCaseData.getAppeal() != null && subscriptionWithType.getPartyId() > 0) {
+        if (nonNull(sscsCaseData.getAppeal()) && nonNull(subscriptionWithType.getPartyId())) {
             return getDefaultName(getNameForOtherParty(sscsCaseData, subscriptionWithType.getPartyId()).orElse(null));
         }
         return getName(subscriptionWithType.getSubscriptionType(), sscsCaseData, wrapper);

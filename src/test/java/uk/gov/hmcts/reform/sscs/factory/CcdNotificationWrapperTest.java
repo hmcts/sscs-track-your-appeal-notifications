@@ -4,17 +4,56 @@ import static org.hamcrest.CoreMatchers.is;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static uk.gov.hmcts.reform.sscs.ccd.domain.YesNo.NO;
 import static uk.gov.hmcts.reform.sscs.ccd.domain.YesNo.YES;
-import static uk.gov.hmcts.reform.sscs.domain.notify.NotificationEventType.*;
+import static uk.gov.hmcts.reform.sscs.domain.notify.NotificationEventType.ACTION_HEARING_RECORDING_REQUEST;
+import static uk.gov.hmcts.reform.sscs.domain.notify.NotificationEventType.ADJOURNED;
+import static uk.gov.hmcts.reform.sscs.domain.notify.NotificationEventType.APPEAL_DORMANT;
+import static uk.gov.hmcts.reform.sscs.domain.notify.NotificationEventType.APPEAL_LAPSED;
+import static uk.gov.hmcts.reform.sscs.domain.notify.NotificationEventType.APPEAL_RECEIVED;
+import static uk.gov.hmcts.reform.sscs.domain.notify.NotificationEventType.APPEAL_WITHDRAWN;
+import static uk.gov.hmcts.reform.sscs.domain.notify.NotificationEventType.CASE_UPDATED;
+import static uk.gov.hmcts.reform.sscs.domain.notify.NotificationEventType.DWP_APPEAL_LAPSED;
+import static uk.gov.hmcts.reform.sscs.domain.notify.NotificationEventType.EVIDENCE_RECEIVED;
+import static uk.gov.hmcts.reform.sscs.domain.notify.NotificationEventType.HEARING_BOOKED;
+import static uk.gov.hmcts.reform.sscs.domain.notify.NotificationEventType.HMCTS_APPEAL_LAPSED;
+import static uk.gov.hmcts.reform.sscs.domain.notify.NotificationEventType.NON_COMPLIANT;
+import static uk.gov.hmcts.reform.sscs.domain.notify.NotificationEventType.POSTPONEMENT;
+import static uk.gov.hmcts.reform.sscs.domain.notify.NotificationEventType.REQUEST_INFO_INCOMPLETE;
+import static uk.gov.hmcts.reform.sscs.domain.notify.NotificationEventType.REVIEW_CONFIDENTIALITY_REQUEST;
+import static uk.gov.hmcts.reform.sscs.domain.notify.NotificationEventType.STRUCK_OUT;
+import static uk.gov.hmcts.reform.sscs.domain.notify.NotificationEventType.SUBSCRIPTION_UPDATED;
+import static uk.gov.hmcts.reform.sscs.domain.notify.NotificationEventType.UPDATE_OTHER_PARTY_DATA;
+import static uk.gov.hmcts.reform.sscs.domain.notify.NotificationEventType.values;
 
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import junitparams.JUnitParamsRunner;
 import junitparams.Parameters;
+import org.assertj.core.api.Assertions;
 import org.junit.Assert;
 import org.junit.Test;
 import org.junit.runner.RunWith;
-import uk.gov.hmcts.reform.sscs.ccd.domain.*;
+import uk.gov.hmcts.reform.sscs.ccd.domain.Address;
+import uk.gov.hmcts.reform.sscs.ccd.domain.Appeal;
+import uk.gov.hmcts.reform.sscs.ccd.domain.Appellant;
+import uk.gov.hmcts.reform.sscs.ccd.domain.Appointee;
+import uk.gov.hmcts.reform.sscs.ccd.domain.CcdValue;
+import uk.gov.hmcts.reform.sscs.ccd.domain.DatedRequestOutcome;
+import uk.gov.hmcts.reform.sscs.ccd.domain.DirectionType;
+import uk.gov.hmcts.reform.sscs.ccd.domain.DynamicList;
+import uk.gov.hmcts.reform.sscs.ccd.domain.DynamicListItem;
+import uk.gov.hmcts.reform.sscs.ccd.domain.HearingRecordingRequest;
+import uk.gov.hmcts.reform.sscs.ccd.domain.HearingRecordingRequestDetails;
+import uk.gov.hmcts.reform.sscs.ccd.domain.JointParty;
+import uk.gov.hmcts.reform.sscs.ccd.domain.Name;
+import uk.gov.hmcts.reform.sscs.ccd.domain.OtherParty;
+import uk.gov.hmcts.reform.sscs.ccd.domain.Representative;
+import uk.gov.hmcts.reform.sscs.ccd.domain.RequestOutcome;
+import uk.gov.hmcts.reform.sscs.ccd.domain.SscsCaseData;
+import uk.gov.hmcts.reform.sscs.ccd.domain.SscsHearingRecordingCaseData;
+import uk.gov.hmcts.reform.sscs.ccd.domain.Subscription;
+import uk.gov.hmcts.reform.sscs.ccd.domain.Subscriptions;
+import uk.gov.hmcts.reform.sscs.ccd.domain.YesNo;
 import uk.gov.hmcts.reform.sscs.config.AppealHearingType;
 import uk.gov.hmcts.reform.sscs.config.SubscriptionType;
 import uk.gov.hmcts.reform.sscs.domain.SscsCaseDataWrapper;
@@ -445,9 +484,10 @@ public class CcdNotificationWrapperTest {
     public void givenUpdateOtherPartyDataEventAndSendNotificationFlagIsSetInOtherPartyWithAppointee_thenReturnAllOtherPartySubscription() {
         ccdNotificationWrapper = buildNotificationWrapperWithOtherParty(UPDATE_OTHER_PARTY_DATA, buildOtherPartyData(true, true, true));
         List<SubscriptionWithType> subsWithTypeList = ccdNotificationWrapper.getOtherPartySubscriptions();
-        Assert.assertEquals(2, subsWithTypeList.size());
-        Assert.assertEquals(2, subsWithTypeList.get(0).getPartyId());
-        Assert.assertEquals(3, subsWithTypeList.get(1).getPartyId());
+        Assertions.assertThat(subsWithTypeList)
+            .hasSize(2)
+            .extracting(SubscriptionWithType::getPartyId)
+            .containsOnly("2","3");
     }
 
     @Test
@@ -455,9 +495,10 @@ public class CcdNotificationWrapperTest {
 
         ccdNotificationWrapper = buildNotificationWrapperWithOtherParty(UPDATE_OTHER_PARTY_DATA, buildOtherPartyData(true, false, true));
         List<SubscriptionWithType> subsWithTypeList = ccdNotificationWrapper.getOtherPartySubscriptions();
-        Assert.assertEquals(2, subsWithTypeList.size());
-        Assert.assertEquals(1, subsWithTypeList.get(0).getPartyId());
-        Assert.assertEquals(3, subsWithTypeList.get(1).getPartyId());
+        Assertions.assertThat(subsWithTypeList)
+            .hasSize(2)
+            .extracting(SubscriptionWithType::getPartyId)
+            .containsOnly("1","3");
     }
 
     @Test
@@ -499,8 +540,10 @@ public class CcdNotificationWrapperTest {
         ccdNotificationWrapper.getNewSscsCaseData().setInformationFromPartySelected(new DynamicList(new DynamicListItem(PartyItemList.APPELLANT.getCode(), PartyItemList.APPELLANT.getLabel()), new ArrayList<>()));
 
         List<SubscriptionWithType> subsWithTypeList = ccdNotificationWrapper.getSubscriptionsBasedOnNotificationType();
-        Assert.assertEquals(2, subsWithTypeList.size());
-        Assert.assertEquals(1, subsWithTypeList.get(1).getPartyId());
+        Assertions.assertThat(subsWithTypeList)
+            .hasSize(2)
+            .extracting(SubscriptionWithType::getPartyId)
+            .contains("1");
     }
 
     @SuppressWarnings({"unused"})

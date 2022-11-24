@@ -16,7 +16,7 @@ public class SubscriptionWithType {
     private SubscriptionType subscriptionType;
     private Party party;
     private Entity entity;
-    private int partyId;
+    private String partyId;
 
     public SubscriptionWithType(Subscription subscription, SubscriptionType subscriptionType,
                                 Party party, Entity entity) {

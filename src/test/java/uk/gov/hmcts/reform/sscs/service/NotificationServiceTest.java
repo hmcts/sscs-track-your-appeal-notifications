@@ -30,7 +30,26 @@ import static uk.gov.hmcts.reform.sscs.config.SubscriptionType.APPOINTEE;
 import static uk.gov.hmcts.reform.sscs.config.SubscriptionType.JOINT_PARTY;
 import static uk.gov.hmcts.reform.sscs.config.SubscriptionType.OTHER_PARTY;
 import static uk.gov.hmcts.reform.sscs.config.SubscriptionType.REPRESENTATIVE;
-import static uk.gov.hmcts.reform.sscs.domain.notify.NotificationEventType.*;
+import static uk.gov.hmcts.reform.sscs.domain.notify.NotificationEventType.ACTION_HEARING_RECORDING_REQUEST;
+import static uk.gov.hmcts.reform.sscs.domain.notify.NotificationEventType.ADJOURNED;
+import static uk.gov.hmcts.reform.sscs.domain.notify.NotificationEventType.ADMIN_APPEAL_WITHDRAWN;
+import static uk.gov.hmcts.reform.sscs.domain.notify.NotificationEventType.APPEAL_LAPSED;
+import static uk.gov.hmcts.reform.sscs.domain.notify.NotificationEventType.APPEAL_RECEIVED;
+import static uk.gov.hmcts.reform.sscs.domain.notify.NotificationEventType.APPEAL_WITHDRAWN;
+import static uk.gov.hmcts.reform.sscs.domain.notify.NotificationEventType.DRAFT_TO_VALID_APPEAL_CREATED;
+import static uk.gov.hmcts.reform.sscs.domain.notify.NotificationEventType.DWP_RESPONSE_RECEIVED;
+import static uk.gov.hmcts.reform.sscs.domain.notify.NotificationEventType.DWP_UPLOAD_RESPONSE;
+import static uk.gov.hmcts.reform.sscs.domain.notify.NotificationEventType.HEARING_REMINDER;
+import static uk.gov.hmcts.reform.sscs.domain.notify.NotificationEventType.ISSUE_FINAL_DECISION;
+import static uk.gov.hmcts.reform.sscs.domain.notify.NotificationEventType.ISSUE_FINAL_DECISION_WELSH;
+import static uk.gov.hmcts.reform.sscs.domain.notify.NotificationEventType.POSTPONEMENT;
+import static uk.gov.hmcts.reform.sscs.domain.notify.NotificationEventType.PROCESS_AUDIO_VIDEO;
+import static uk.gov.hmcts.reform.sscs.domain.notify.NotificationEventType.REISSUE_DOCUMENT;
+import static uk.gov.hmcts.reform.sscs.domain.notify.NotificationEventType.REQUEST_INFO_INCOMPLETE;
+import static uk.gov.hmcts.reform.sscs.domain.notify.NotificationEventType.SUBSCRIPTION_UPDATED;
+import static uk.gov.hmcts.reform.sscs.domain.notify.NotificationEventType.SYA_APPEAL_CREATED;
+import static uk.gov.hmcts.reform.sscs.domain.notify.NotificationEventType.UPDATE_OTHER_PARTY_DATA;
+import static uk.gov.hmcts.reform.sscs.domain.notify.NotificationEventType.VALID_APPEAL_CREATED;
 import static uk.gov.hmcts.reform.sscs.service.NotificationUtils.getSubscription;
 
 import ch.qos.logback.classic.Level;
@@ -360,7 +379,7 @@ public class NotificationServiceTest {
                     POSTPONEMENT,
                         2,
                         1,
-                        0,
+                        2,
                         2,
                         Subscription.builder()
                                 .tya(APPEAL_NUMBER)
@@ -1964,7 +1983,7 @@ public class NotificationServiceTest {
             ccdNotificationWrapper.getNewSscsCaseData().getAppeal().getRep());
     }
 
-    private SubscriptionWithType getSubscriptionWithTypeOtherParty(CcdNotificationWrapper ccdNotificationWrapper, int otherPartyId) {
+    private SubscriptionWithType getSubscriptionWithTypeOtherParty(CcdNotificationWrapper ccdNotificationWrapper, String otherPartyId) {
         Subscription otherPartySubs = ccdNotificationWrapper.getNewSscsCaseData().getOtherParties().stream()
                 .map(o -> o.getValue())
                 .flatMap(op -> Stream.of(Pair.of(op.getId(), op.getOtherPartySubscription()),

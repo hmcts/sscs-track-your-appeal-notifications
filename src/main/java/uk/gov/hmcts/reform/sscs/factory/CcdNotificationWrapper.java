@@ -179,16 +179,16 @@ public class CcdNotificationWrapper implements NotificationWrapper {
         if (hasAppointee(otherParty.getAppointee(), otherParty.getIsAppointee())
                 && isNotificationEventValidToSendToOtherPartySubscription(otherParty.getOtherPartyAppointeeSubscription(), isSendNewOtherPartyNotification)) {
             otherPartySubscription.add(new SubscriptionWithType(otherParty.getOtherPartyAppointeeSubscription(),
-                OTHER_PARTY, otherParty, otherParty.getAppointee(), Integer.parseInt(otherParty.getAppointee().getId())));
+                OTHER_PARTY, otherParty, otherParty.getAppointee(), otherParty.getAppointee().getId()));
         } else if (isNotificationEventValidToSendToOtherPartySubscription(otherParty.getOtherPartySubscription(), isSendNewOtherPartyNotification)) {
             otherPartySubscription.add(new SubscriptionWithType(otherParty.getOtherPartySubscription(), OTHER_PARTY,
-                otherParty, otherParty, Integer.parseInt(otherParty.getId())));
+                otherParty, otherParty, otherParty.getId()));
         }
 
         if (hasRepresentative(otherParty)
                 && isNotificationEventValidToSendToOtherPartySubscription(otherParty.getOtherPartyRepresentativeSubscription(), isSendNewOtherPartyNotification)) {
             otherPartySubscription.add(new SubscriptionWithType(otherParty.getOtherPartyRepresentativeSubscription(),
-                OTHER_PARTY, otherParty, otherParty.getRep(), Integer.parseInt(otherParty.getRep().getId())));
+                OTHER_PARTY, otherParty, otherParty.getRep(), otherParty.getRep().getId()));
         }
 
         log.info("Number of subscription {}", otherPartySubscription.size());
