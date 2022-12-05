@@ -17,7 +17,7 @@ import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 @SpringBootTest
 @ActiveProfiles("integration")
 @AutoConfigureMockMvc
-public class RootControllerTest {
+public class RootControllerTestIT {
 
     MockMvc mockMvc;
     RootController controller;

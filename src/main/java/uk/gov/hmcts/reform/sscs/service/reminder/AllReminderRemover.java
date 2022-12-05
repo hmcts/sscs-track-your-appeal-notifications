@@ -8,9 +8,9 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 import uk.gov.hmcts.reform.sscs.domain.notify.NotificationEventType;
+import uk.gov.hmcts.reform.sscs.exception.JobNotFoundException;
 import uk.gov.hmcts.reform.sscs.factory.NotificationWrapper;
-import uk.gov.hmcts.reform.sscs.jobscheduler.services.JobNotFoundException;
-import uk.gov.hmcts.reform.sscs.jobscheduler.services.JobRemover;
+import uk.gov.hmcts.reform.sscs.model.jobs.JobRemover;
 
 @Component
 @Slf4j

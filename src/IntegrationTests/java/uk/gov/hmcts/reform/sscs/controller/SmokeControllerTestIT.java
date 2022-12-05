@@ -22,7 +22,7 @@ import uk.gov.hmcts.reform.sscs.idam.IdamTokens;
 @SpringBootTest
 @ActiveProfiles("integration")
 @AutoConfigureMockMvc
-public class SmokeControllerTest {
+public class SmokeControllerTestIT {
 
     @MockBean
     private CcdService ccdService;

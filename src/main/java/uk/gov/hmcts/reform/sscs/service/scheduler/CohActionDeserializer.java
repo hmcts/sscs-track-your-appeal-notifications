@@ -3,7 +3,7 @@ package uk.gov.hmcts.reform.sscs.service.scheduler;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import java.io.IOException;
 import org.springframework.stereotype.Component;
-import uk.gov.hmcts.reform.sscs.jobscheduler.services.JobPayloadDeserializer;
+import uk.gov.hmcts.reform.sscs.model.jobs.JobPayloadDeserializer;
 
 @Component
 public class CohActionDeserializer implements JobPayloadDeserializer<CohJobPayload> {

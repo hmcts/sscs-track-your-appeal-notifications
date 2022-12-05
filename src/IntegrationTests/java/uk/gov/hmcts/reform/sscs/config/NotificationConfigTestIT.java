@@ -17,7 +17,7 @@ import org.junit.Test;
 import uk.gov.hmcts.reform.sscs.domain.notify.NotificationEventType;
 import uk.gov.hmcts.reform.sscs.domain.notify.Template;
 
-public class NotificationConfigTestIt extends AbstractNotificationConfigTest {
+public class NotificationConfigTestIT extends AbstractNotificationConfigTestIT {
     @Test
     @Parameters(method = "templateIdsWithHearingAndEventTypes")
     public void given_templateNamesAndHearingType_should_getCorrectTemplate(

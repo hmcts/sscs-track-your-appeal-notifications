@@ -2,7 +2,9 @@ package uk.gov.hmcts.reform.sscs.service;
 
 import static org.hamcrest.CoreMatchers.is;
 import static org.hamcrest.MatcherAssert.assertThat;
-import static org.mockito.Mockito.*;
+import static org.mockito.Mockito.doThrow;
+import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.when;
 import static uk.gov.hmcts.reform.sscs.service.NotificationServiceTest.verifyExpectedLogMessage;
 
 import ch.qos.logback.classic.Level;
@@ -24,8 +26,8 @@ import uk.gov.hmcts.reform.sscs.domain.notify.NotificationEventType;
 import uk.gov.hmcts.reform.sscs.exception.NotificationClientRuntimeException;
 import uk.gov.hmcts.reform.sscs.exception.NotificationServiceException;
 import uk.gov.hmcts.reform.sscs.factory.NotificationWrapper;
-import uk.gov.hmcts.reform.sscs.jobscheduler.model.Job;
-import uk.gov.hmcts.reform.sscs.jobscheduler.services.JobScheduler;
+import uk.gov.hmcts.reform.sscs.model.jobs.Job;
+import uk.gov.hmcts.reform.sscs.model.jobs.JobScheduler;
 import uk.gov.hmcts.reform.sscs.service.reminder.JobGroupGenerator;
 import uk.gov.service.notify.NotificationClientException;
 

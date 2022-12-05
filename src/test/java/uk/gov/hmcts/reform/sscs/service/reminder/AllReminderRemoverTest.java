@@ -3,8 +3,21 @@ package uk.gov.hmcts.reform.sscs.service.reminder;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
-import static org.mockito.Mockito.*;
-import static uk.gov.hmcts.reform.sscs.domain.notify.NotificationEventType.*;
+import static org.mockito.Mockito.doThrow;
+import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.times;
+import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.when;
+import static uk.gov.hmcts.reform.sscs.domain.notify.NotificationEventType.ADMIN_APPEAL_WITHDRAWN;
+import static uk.gov.hmcts.reform.sscs.domain.notify.NotificationEventType.APPEAL_DORMANT;
+import static uk.gov.hmcts.reform.sscs.domain.notify.NotificationEventType.APPEAL_LAPSED;
+import static uk.gov.hmcts.reform.sscs.domain.notify.NotificationEventType.APPEAL_WITHDRAWN;
+import static uk.gov.hmcts.reform.sscs.domain.notify.NotificationEventType.DECISION_ISSUED;
+import static uk.gov.hmcts.reform.sscs.domain.notify.NotificationEventType.DWP_APPEAL_LAPSED;
+import static uk.gov.hmcts.reform.sscs.domain.notify.NotificationEventType.EVIDENCE_RECEIVED;
+import static uk.gov.hmcts.reform.sscs.domain.notify.NotificationEventType.HEARING_REMINDER;
+import static uk.gov.hmcts.reform.sscs.domain.notify.NotificationEventType.HMCTS_APPEAL_LAPSED;
+import static uk.gov.hmcts.reform.sscs.domain.notify.NotificationEventType.ISSUE_FINAL_DECISION;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -17,9 +30,9 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 import uk.gov.hmcts.reform.sscs.SscsCaseDataUtils;
 import uk.gov.hmcts.reform.sscs.domain.notify.NotificationEventType;
+import uk.gov.hmcts.reform.sscs.exception.JobNotFoundException;
 import uk.gov.hmcts.reform.sscs.factory.CcdNotificationWrapper;
-import uk.gov.hmcts.reform.sscs.jobscheduler.services.JobNotFoundException;
-import uk.gov.hmcts.reform.sscs.jobscheduler.services.JobRemover;
+import uk.gov.hmcts.reform.sscs.model.jobs.JobRemover;
 
 @RunWith(JUnitParamsRunner.class)
 public class AllReminderRemoverTest {

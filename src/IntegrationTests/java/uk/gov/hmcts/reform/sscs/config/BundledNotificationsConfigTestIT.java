@@ -24,7 +24,7 @@ import org.junit.Test;
 import uk.gov.hmcts.reform.sscs.domain.notify.NotificationEventType;
 import uk.gov.hmcts.reform.sscs.domain.notify.Template;
 
-public class BundledNotificationsConfigTestIt extends AbstractNotificationConfigTest {
+public class BundledNotificationsConfigTestIT extends AbstractNotificationConfigTestIT {
     private static final Set<NotificationEventType> BUNDLED_LETTER_EVENT_TYPES_IGNORED = EnumSet.of(
         ACTION_POSTPONEMENT_REQUEST,
         ACTION_POSTPONEMENT_REQUEST_WELSH,

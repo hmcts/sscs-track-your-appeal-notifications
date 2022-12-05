@@ -18,8 +18,8 @@ import uk.gov.hmcts.reform.sscs.ccd.domain.HearingType;
 import uk.gov.hmcts.reform.sscs.config.AppealHearingType;
 import uk.gov.hmcts.reform.sscs.domain.notify.NotificationEventType;
 import uk.gov.hmcts.reform.sscs.factory.CcdNotificationWrapper;
-import uk.gov.hmcts.reform.sscs.jobscheduler.model.Job;
-import uk.gov.hmcts.reform.sscs.jobscheduler.services.JobScheduler;
+import uk.gov.hmcts.reform.sscs.model.jobs.Job;
+import uk.gov.hmcts.reform.sscs.model.jobs.JobScheduler;
 
 @RunWith(MockitoJUnitRunner.class)
 public class HearingReminderTest {

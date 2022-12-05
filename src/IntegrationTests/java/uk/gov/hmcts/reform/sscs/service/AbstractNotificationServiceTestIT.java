@@ -36,7 +36,7 @@ import uk.gov.hmcts.reform.sscs.service.docmosis.PdfLetterService;
 @ActiveProfiles("integration")
 @AutoConfigureMockMvc
 @Getter
-public class NotificationServiceBase {
+public class AbstractNotificationServiceTestIT {
     @ClassRule
     public static final SpringClassRule SPRING_CLASS_RULE = new SpringClassRule();
     @Rule
@@ -86,12 +86,12 @@ public class NotificationServiceBase {
     private IdamService idamService;
 
     private final Subscription subscription = Subscription.builder()
-        .tya(NotificationServiceBase.APPEAL_NUMBER)
-        .email(NotificationServiceBase.EMAIL_TEST_1)
-        .mobile(NotificationServiceBase.MOBILE_NUMBER_1)
-        .subscribeEmail(NotificationServiceBase.YES)
-        .subscribeSms(NotificationServiceBase.YES)
-        .wantSmsNotifications(NotificationServiceBase.YES)
+        .tya(AbstractNotificationServiceTestIT.APPEAL_NUMBER)
+        .email(AbstractNotificationServiceTestIT.EMAIL_TEST_1)
+        .mobile(AbstractNotificationServiceTestIT.MOBILE_NUMBER_1)
+        .subscribeEmail(AbstractNotificationServiceTestIT.YES)
+        .subscribeSms(AbstractNotificationServiceTestIT.YES)
+        .wantSmsNotifications(AbstractNotificationServiceTestIT.YES)
         .build();
 
 
@@ -128,34 +128,34 @@ public class NotificationServiceBase {
 
     public SscsCaseData getSscsCaseData(Subscription subscription) {
         List<Event> events = new ArrayList<>();
-        events.add(Event.builder().value(EventDetails.builder().date(NotificationServiceBase.DATE).type(APPEAL_RECEIVED.getCcdType()).build()).build());
+        events.add(Event.builder().value(EventDetails.builder().date(AbstractNotificationServiceTestIT.DATE).type(APPEAL_RECEIVED.getCcdType()).build()).build());
 
-        return SscsCaseData.builder().ccdCaseId(NotificationServiceBase.CASE_ID).events(events)
+        return SscsCaseData.builder().ccdCaseId(AbstractNotificationServiceTestIT.CASE_ID).events(events)
             .appeal(Appeal.builder()
-                .mrnDetails(MrnDetails.builder().mrnDate(NotificationServiceBase.DATE).dwpIssuingOffice("office").build())
+                .mrnDetails(MrnDetails.builder().mrnDate(AbstractNotificationServiceTestIT.DATE).dwpIssuingOffice("office").build())
                 .appealReasons(AppealReasons.builder().build())
                 .rep(Representative.builder()
-                    .hasRepresentative(NotificationServiceBase.YES)
+                    .hasRepresentative(AbstractNotificationServiceTestIT.YES)
                     .name(Name.builder().firstName("Rep").lastName("lastName").build())
-                    .contact(Contact.builder().email(NotificationServiceBase.EMAIL_TEST_2).phone(NotificationServiceBase.MOBILE_NUMBER_2).build())
+                    .contact(Contact.builder().email(AbstractNotificationServiceTestIT.EMAIL_TEST_2).phone(AbstractNotificationServiceTestIT.MOBILE_NUMBER_2).build())
                     .address(Address.builder().line1("Rep Line 1").town("Rep Town").county("Rep County").postcode("RE9 7SE").build())
                     .build())
                 .appellant(Appellant.builder()
                     .name(Name.builder().firstName("firstName").lastName("lastName").build())
                     .address(Address.builder().line1("122 Breach Street").line2("The Village").town("My town").county("Cardiff").postcode("CF11 2HB").build())
-                    .contact(Contact.builder().email(NotificationServiceBase.EMAIL_TEST_1).phone(NotificationServiceBase.MOBILE_NUMBER_1).build())
+                    .contact(Contact.builder().email(AbstractNotificationServiceTestIT.EMAIL_TEST_1).phone(AbstractNotificationServiceTestIT.MOBILE_NUMBER_1).build())
                     .identity(Identity.builder().nino("NP 27 28 67 B").dob("12 March 1971").build()).build())
                 .hearingType(AppealHearingType.ORAL.name())
                 .benefitType(BenefitType.builder().code(Benefit.PIP.name()).build())
                 .hearingOptions(HearingOptions.builder()
-                    .wantsToAttend(NotificationServiceBase.YES)
+                    .wantsToAttend(AbstractNotificationServiceTestIT.YES)
                     .build())
                 .build())
             .subscriptions(Subscriptions.builder()
                 .appellantSubscription(subscription)
                 .representativeSubscription(getSubscription().toBuilder().tya("REP_TYA").build())
                 .build())
-            .caseReference(NotificationServiceBase.CASE_REFERENCE).build();
+            .caseReference(AbstractNotificationServiceTestIT.CASE_REFERENCE).build();
     }
 
     public SscsCaseData getSscsCaseDataForRep(Subscription subscription) {

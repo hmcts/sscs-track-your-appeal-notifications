@@ -1,8 +1,12 @@
 package uk.gov.hmcts.reform.sscs.service.reminder;
 
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
-import static org.junit.Assert.*;
-import static org.mockito.Mockito.*;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertTrue;
+import static org.mockito.Mockito.times;
+import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.when;
 import static org.mockito.MockitoAnnotations.openMocks;
 import static uk.gov.hmcts.reform.sscs.ccd.domain.EventType.DWP_RESPOND;
 import static uk.gov.hmcts.reform.sscs.domain.notify.NotificationEventType.DWP_RESPONSE_RECEIVED;
@@ -24,8 +28,8 @@ import uk.gov.hmcts.reform.sscs.SscsCaseDataUtils;
 import uk.gov.hmcts.reform.sscs.domain.notify.NotificationEventType;
 import uk.gov.hmcts.reform.sscs.extractor.DwpResponseReceivedDateExtractor;
 import uk.gov.hmcts.reform.sscs.factory.CcdNotificationWrapper;
-import uk.gov.hmcts.reform.sscs.jobscheduler.model.Job;
-import uk.gov.hmcts.reform.sscs.jobscheduler.services.JobScheduler;
+import uk.gov.hmcts.reform.sscs.model.jobs.Job;
+import uk.gov.hmcts.reform.sscs.model.jobs.JobScheduler;
 
 @RunWith(JUnitParamsRunner.class)
 public class EvidenceReminderTest {

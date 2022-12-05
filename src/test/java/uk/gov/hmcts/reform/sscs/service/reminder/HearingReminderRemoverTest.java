@@ -14,9 +14,9 @@ import org.mockito.Mock;
 import org.mockito.junit.MockitoJUnitRunner;
 import uk.gov.hmcts.reform.sscs.SscsCaseDataUtils;
 import uk.gov.hmcts.reform.sscs.domain.notify.NotificationEventType;
+import uk.gov.hmcts.reform.sscs.exception.JobNotFoundException;
 import uk.gov.hmcts.reform.sscs.factory.CcdNotificationWrapper;
-import uk.gov.hmcts.reform.sscs.jobscheduler.services.JobNotFoundException;
-import uk.gov.hmcts.reform.sscs.jobscheduler.services.JobRemover;
+import uk.gov.hmcts.reform.sscs.model.jobs.JobRemover;
 
 @RunWith(MockitoJUnitRunner.class)
 public class HearingReminderRemoverTest {

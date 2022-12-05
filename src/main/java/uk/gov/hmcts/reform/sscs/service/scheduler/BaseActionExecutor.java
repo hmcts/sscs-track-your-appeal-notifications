@@ -22,7 +22,7 @@ import uk.gov.hmcts.reform.sscs.exception.NotificationServiceException;
 import uk.gov.hmcts.reform.sscs.factory.NotificationWrapper;
 import uk.gov.hmcts.reform.sscs.idam.IdamService;
 import uk.gov.hmcts.reform.sscs.idam.IdamTokens;
-import uk.gov.hmcts.reform.sscs.jobscheduler.services.JobExecutor;
+import uk.gov.hmcts.reform.sscs.model.jobs.JobExecutor;
 import uk.gov.hmcts.reform.sscs.service.NotificationService;
 import uk.gov.hmcts.reform.sscs.service.RetryNotificationService;
 

@@ -16,7 +16,7 @@ import uk.gov.hmcts.reform.sscs.domain.SscsCaseDataWrapper;
 import uk.gov.hmcts.reform.sscs.factory.CcdNotificationWrapper;
 import uk.gov.hmcts.reform.sscs.factory.NotificationWrapper;
 
-public class NotificationServiceForAdminAppealWithdrawalTest extends NotificationServiceBase {
+public class AbstractNotificationServiceForAdminAppealWithdrawalTestIT extends AbstractNotificationServiceTestIT {
 
     @Value("${notification.english.appealWithdrawn.appellant.docmosisId}")
     private String adminAppealWithdrawalDocmosisId;

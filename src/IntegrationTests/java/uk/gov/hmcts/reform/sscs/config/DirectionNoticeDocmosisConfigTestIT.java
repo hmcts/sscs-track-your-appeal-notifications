@@ -25,7 +25,7 @@ import uk.gov.hmcts.reform.sscs.factory.CcdNotificationWrapper;
 import uk.gov.hmcts.reform.sscs.factory.NotificationWrapper;
 import uk.gov.hmcts.reform.sscs.personalisation.Personalisation;
 
-public class DirectionNoticeDocmosisConfigTestIt extends AbstractNotificationConfigTest {
+public class DirectionNoticeDocmosisConfigTestIT extends AbstractNotificationConfigTestIT {
 
     @Test
     @Parameters({

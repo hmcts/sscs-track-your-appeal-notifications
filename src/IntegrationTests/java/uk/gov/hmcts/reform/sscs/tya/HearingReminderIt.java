@@ -35,7 +35,7 @@ import uk.gov.hmcts.reform.sscs.ccd.deserialisation.SscsCaseCallbackDeserializer
 import uk.gov.hmcts.reform.sscs.ccd.service.CcdService;
 import uk.gov.hmcts.reform.sscs.controller.NotificationController;
 import uk.gov.hmcts.reform.sscs.idam.IdamService;
-import uk.gov.hmcts.reform.sscs.jobscheduler.services.JobExecutor;
+import uk.gov.hmcts.reform.sscs.model.jobs.JobExecutor;
 import uk.gov.hmcts.reform.sscs.service.AuthorisationService;
 import uk.gov.hmcts.reform.sscs.service.NotificationService;
 import uk.gov.hmcts.reform.sscs.service.OutOfHoursCalculator;

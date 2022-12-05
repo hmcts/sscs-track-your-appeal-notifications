@@ -9,8 +9,8 @@ import uk.gov.hmcts.reform.sscs.domain.notify.NotificationEventType;
 import uk.gov.hmcts.reform.sscs.exception.NotificationClientRuntimeException;
 import uk.gov.hmcts.reform.sscs.exception.NotificationServiceException;
 import uk.gov.hmcts.reform.sscs.factory.NotificationWrapper;
-import uk.gov.hmcts.reform.sscs.jobscheduler.model.Job;
-import uk.gov.hmcts.reform.sscs.jobscheduler.services.JobScheduler;
+import uk.gov.hmcts.reform.sscs.model.jobs.Job;
+import uk.gov.hmcts.reform.sscs.model.jobs.JobScheduler;
 import uk.gov.hmcts.reform.sscs.service.reminder.JobGroupGenerator;
 import uk.gov.service.notify.NotificationClientException;
 

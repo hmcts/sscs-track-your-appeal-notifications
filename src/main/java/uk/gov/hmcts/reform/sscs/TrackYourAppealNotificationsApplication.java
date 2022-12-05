@@ -3,6 +3,7 @@ package uk.gov.hmcts.reform.sscs;
 import static java.util.Arrays.asList;
 
 import com.microsoft.applicationinsights.web.internal.ApplicationInsightsServletContextListener;
+import java.util.List;
 import java.util.Properties;
 import java.util.TimeZone;
 import java.util.concurrent.TimeUnit;
@@ -33,16 +34,20 @@ import org.springframework.web.client.RestTemplate;
 import uk.gov.hmcts.reform.sscs.ccd.config.CcdRequestDetails;
 import uk.gov.hmcts.reform.sscs.ccd.deserialisation.SscsCaseCallbackDeserializer;
 import uk.gov.hmcts.reform.sscs.ccd.service.CcdService;
+import uk.gov.hmcts.reform.sscs.config.QuartzConfiguration;
 import uk.gov.hmcts.reform.sscs.docmosis.service.DocmosisPdfGenerationService;
 import uk.gov.hmcts.reform.sscs.idam.IdamService;
-import uk.gov.hmcts.reform.sscs.jobscheduler.config.QuartzConfiguration;
-import uk.gov.hmcts.reform.sscs.jobscheduler.services.quartz.JobClassMapper;
-import uk.gov.hmcts.reform.sscs.jobscheduler.services.quartz.JobClassMapping;
-import uk.gov.hmcts.reform.sscs.jobscheduler.services.quartz.JobMapper;
-import uk.gov.hmcts.reform.sscs.jobscheduler.services.quartz.JobMapping;
+import uk.gov.hmcts.reform.sscs.model.jobs.JobClassMapper;
+import uk.gov.hmcts.reform.sscs.model.jobs.JobClassMapping;
+import uk.gov.hmcts.reform.sscs.model.jobs.JobMapper;
+import uk.gov.hmcts.reform.sscs.model.jobs.JobMapping;
 import uk.gov.hmcts.reform.sscs.service.NotificationService;
 import uk.gov.hmcts.reform.sscs.service.RetryNotificationService;
-import uk.gov.hmcts.reform.sscs.service.scheduler.*;
+import uk.gov.hmcts.reform.sscs.service.scheduler.CcdActionDeserializer;
+import uk.gov.hmcts.reform.sscs.service.scheduler.CcdActionExecutor;
+import uk.gov.hmcts.reform.sscs.service.scheduler.CcdActionSerializer;
+import uk.gov.hmcts.reform.sscs.service.scheduler.CohActionSerializer;
+import uk.gov.hmcts.reform.sscs.service.scheduler.CohJobPayload;
 import uk.gov.service.notify.NotificationClient;
 
 @SpringBootApplication
@@ -168,8 +173,8 @@ public class TrackYourAppealNotificationsApplication {
                                   SscsCaseCallbackDeserializer deserializer) {
         // Had to wire these up like this Spring will not wire up CcdActionExecutor otherwise.
         CcdActionExecutor ccdActionExecutor = new CcdActionExecutor(notificationService, retryNotificationService, ccdService, idamService, deserializer);
-        return new JobMapper(asList(
-                new JobMapping<>(payload -> !payload.contains("onlineHearingId"), ccdActionDeserializer, ccdActionExecutor)
+        return new JobMapper(List.of(
+            new JobMapping<>(payload -> !payload.contains("onlineHearingId"), ccdActionDeserializer, ccdActionExecutor)
         ));
     }
 

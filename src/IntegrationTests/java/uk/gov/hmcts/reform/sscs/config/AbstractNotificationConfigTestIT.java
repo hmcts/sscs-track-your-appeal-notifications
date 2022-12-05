@@ -23,7 +23,7 @@ import uk.gov.hmcts.reform.sscs.factory.CcdNotificationWrapper;
 @RunWith(JUnitParamsRunner.class)
 @SpringBootTest
 @ActiveProfiles("integration")
-public abstract class AbstractNotificationConfigTest {
+public abstract class AbstractNotificationConfigTestIT {
 
     // Below rules are needed to use the junitParamsRunner together with SpringRunner
     @ClassRule

@@ -46,7 +46,7 @@ import uk.gov.hmcts.reform.sscs.config.NotificationTestRecipients;
 import uk.gov.hmcts.reform.sscs.controller.NotificationController;
 import uk.gov.hmcts.reform.sscs.factory.NotificationFactory;
 import uk.gov.hmcts.reform.sscs.idam.IdamService;
-import uk.gov.hmcts.reform.sscs.jobscheduler.services.JobScheduler;
+import uk.gov.hmcts.reform.sscs.model.jobs.JobScheduler;
 import uk.gov.hmcts.reform.sscs.service.AuthorisationService;
 import uk.gov.hmcts.reform.sscs.service.MarkdownTransformationService;
 import uk.gov.hmcts.reform.sscs.service.NotificationHandler;

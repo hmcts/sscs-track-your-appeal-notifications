@@ -60,7 +60,7 @@ import uk.gov.hmcts.reform.sscs.service.DocmosisPdfService;
 @ActiveProfiles("integration")
 @AutoConfigureMockMvc
 @Slf4j
-public class PdfLetterServiceIt {
+public class PdfLetterServiceTestIT {
     private static final String CASE_ID = "1000001";
     private static final String DATE = "2018-01-01T14:01:18.243";
     private static final String YES = "Yes";
