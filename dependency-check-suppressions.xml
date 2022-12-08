@@ -31,4 +31,11 @@
         <packageUrl regex="true">^pkg:maven/org\.postgresql/postgresql@.*$</packageUrl>
         <cpe>cpe:/a:postgresql:postgresql_jdbc_driver</cpe>
     </suppress>
+    <suppress until="2022-12-11">
+        <notes><![CDATA[
+   file name: commons-beanutils-1.9.4.jar
+   ]]></notes>
+        <packageUrl regex="true">^pkg:maven/commons\-beanutils/commons\-beanutils@.*$</packageUrl>
+        <cve>CVE-2021-37533</cve>
+    </suppress>
 </suppressions>
