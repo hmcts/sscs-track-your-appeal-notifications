@@ -1,10 +1,13 @@
 package uk.gov.hmcts.reform.sscs.service;
 
 import static java.lang.String.format;
+import static java.util.Objects.nonNull;
 import static org.apache.commons.collections4.CollectionUtils.isNotEmpty;
 import static org.apache.commons.collections4.ListUtils.emptyIfNull;
 import static uk.gov.hmcts.reform.sscs.ccd.domain.YesNo.isYes;
-import static uk.gov.hmcts.reform.sscs.config.SubscriptionType.*;
+import static uk.gov.hmcts.reform.sscs.config.SubscriptionType.JOINT_PARTY;
+import static uk.gov.hmcts.reform.sscs.config.SubscriptionType.OTHER_PARTY;
+import static uk.gov.hmcts.reform.sscs.config.SubscriptionType.REPRESENTATIVE;
 import static uk.gov.hmcts.reform.sscs.service.NotificationUtils.hasAppointee;
 
 import java.io.ByteArrayOutputStream;
@@ -21,7 +24,13 @@ import org.apache.pdfbox.pdmodel.PDDocument;
 import org.apache.pdfbox.pdmodel.PDPage;
 import org.apache.pdfbox.pdmodel.PDPageContentStream;
 import org.apache.pdfbox.pdmodel.common.PDRectangle;
-import uk.gov.hmcts.reform.sscs.ccd.domain.*;
+import uk.gov.hmcts.reform.sscs.ccd.domain.Address;
+import uk.gov.hmcts.reform.sscs.ccd.domain.CcdValue;
+import uk.gov.hmcts.reform.sscs.ccd.domain.Name;
+import uk.gov.hmcts.reform.sscs.ccd.domain.OtherParty;
+import uk.gov.hmcts.reform.sscs.ccd.domain.ReasonableAdjustments;
+import uk.gov.hmcts.reform.sscs.ccd.domain.SscsCaseData;
+import uk.gov.hmcts.reform.sscs.ccd.domain.YesNo;
 import uk.gov.hmcts.reform.sscs.domain.SubscriptionWithType;
 import uk.gov.hmcts.reform.sscs.exception.NotificationClientRuntimeException;
 import uk.gov.hmcts.reform.sscs.factory.NotificationWrapper;
@@ -51,7 +60,7 @@ public class LetterUtils {
         }
     }
 
-    private static Address getAddressForOtherParty(final SscsCaseData sscsCaseData, final int partyId) {
+    private static Address getAddressForOtherParty(final SscsCaseData sscsCaseData, final String partyId) {
         return emptyIfNull(sscsCaseData.getOtherParties()).stream()
                 .map(CcdValue::getValue)
                 .flatMap(op -> Stream.of((op.hasAppointee()) ? Pair.of(op.getAppointee().getId(), op.getAppointee().getAddress()) : Pair.of(op.getId(), op.getAddress()), (op.hasRepresentative()) ? Pair.of(op.getRep().getId(), op.getRep().getAddress()) : null))
@@ -63,13 +72,13 @@ public class LetterUtils {
                 .orElse(null);
     }
 
-    public static Optional<Name> getNameForOtherParty(SscsCaseData sscsCaseData, final int partyId) {
+    public static Optional<Name> getNameForOtherParty(SscsCaseData sscsCaseData, final String partyId) {
         return emptyIfNull(sscsCaseData.getOtherParties()).stream()
                 .map(CcdValue::getValue)
                 .flatMap(op -> Stream.of((op.hasAppointee()) ? Pair.of(op.getAppointee().getId(), op.getAppointee().getName()) : Pair.of(op.getId(), op.getName()), (op.hasRepresentative()) ? Pair.of(op.getRep().getId(), op.getRep().getName()) : null))
                 .filter(Objects::nonNull)
                 .filter(p -> p.getLeft() != null && p.getRight() != null)
-                .filter(p -> p.getLeft().equals(String.valueOf(partyId)))
+                .filter(p -> p.getLeft().equals(partyId.toString()))
                 .map(Pair::getRight)
                 .findFirst();
     }
@@ -80,7 +89,7 @@ public class LetterUtils {
         } else if (JOINT_PARTY.equals(subscriptionWithType.getSubscriptionType())) {
             return format("%s %s",wrapper.getNewSscsCaseData().getJointParty().getName().getFirstName(), wrapper.getNewSscsCaseData().getJointParty().getName().getLastName());
         } else {
-            if (subscriptionWithType.getPartyId() > 0 && isNotEmpty(wrapper.getNewSscsCaseData().getOtherParties())) {
+            if (nonNull(subscriptionWithType.getPartyId()) && isNotEmpty(wrapper.getNewSscsCaseData().getOtherParties())) {
                 return getNameForOtherParty(wrapper.getNewSscsCaseData(), subscriptionWithType.getPartyId()).map(Name::getFullNameNoTitle).orElse("");
             }
             if (hasAppointee(wrapper.getSscsCaseDataWrapper())) {

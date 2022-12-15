@@ -24,8 +24,22 @@ import static uk.gov.hmcts.reform.sscs.ccd.domain.HearingType.ORAL;
 import static uk.gov.hmcts.reform.sscs.ccd.domain.HearingType.PAPER;
 import static uk.gov.hmcts.reform.sscs.ccd.domain.HearingType.REGULAR;
 import static uk.gov.hmcts.reform.sscs.ccd.domain.YesNo.YES;
-import static uk.gov.hmcts.reform.sscs.config.AppConstants.*;
-import static uk.gov.hmcts.reform.sscs.config.PersonalisationConfiguration.*;
+import static uk.gov.hmcts.reform.sscs.config.AppConstants.DWP_ACRONYM;
+import static uk.gov.hmcts.reform.sscs.config.AppConstants.DWP_FIRST_TIER_AGENCY_GROUP;
+import static uk.gov.hmcts.reform.sscs.config.AppConstants.DWP_FIRST_TIER_AGENCY_GROUP_WELSH;
+import static uk.gov.hmcts.reform.sscs.config.AppConstants.DWP_FULL_NAME;
+import static uk.gov.hmcts.reform.sscs.config.AppConstants.DWP_FULL_NAME_WELSH;
+import static uk.gov.hmcts.reform.sscs.config.AppConstants.HEARING_TIME_FORMAT;
+import static uk.gov.hmcts.reform.sscs.config.AppConstants.HMRC_ACRONYM;
+import static uk.gov.hmcts.reform.sscs.config.AppConstants.HMRC_FULL_NAME;
+import static uk.gov.hmcts.reform.sscs.config.AppConstants.HMRC_FULL_NAME_WELSH;
+import static uk.gov.hmcts.reform.sscs.config.AppConstants.JOINT_TEXT_WITH_A_SPACE;
+import static uk.gov.hmcts.reform.sscs.config.AppConstants.JOINT_TEXT_WITH_A_SPACE_WELSH;
+import static uk.gov.hmcts.reform.sscs.config.AppConstants.MAX_DWP_RESPONSE_DAYS;
+import static uk.gov.hmcts.reform.sscs.config.AppConstants.RESPONSE_DATE_FORMAT;
+import static uk.gov.hmcts.reform.sscs.config.AppConstants.THE_STRING;
+import static uk.gov.hmcts.reform.sscs.config.AppConstants.THE_STRING_WELSH;
+import static uk.gov.hmcts.reform.sscs.config.PersonalisationConfiguration.PersonalisationKey;
 import static uk.gov.hmcts.reform.sscs.config.PersonalisationMappingConstants.*;
 import static uk.gov.hmcts.reform.sscs.config.SubscriptionType.APPELLANT;
 import static uk.gov.hmcts.reform.sscs.config.SubscriptionType.APPOINTEE;
@@ -34,7 +48,12 @@ import static uk.gov.hmcts.reform.sscs.config.SubscriptionType.OTHER_PARTY;
 import static uk.gov.hmcts.reform.sscs.config.SubscriptionType.REPRESENTATIVE;
 import static uk.gov.hmcts.reform.sscs.domain.notify.NotificationEventType.*;
 
-import java.time.*;
+import java.time.Instant;
+import java.time.LocalDate;
+import java.time.LocalDateTime;
+import java.time.LocalTime;
+import java.time.ZoneId;
+import java.time.ZonedDateTime;
 import java.time.format.DateTimeFormatter;
 import java.time.temporal.ChronoUnit;
 import java.util.ArrayList;
@@ -1533,7 +1552,7 @@ public class PersonalisationTest {
                         .build(),
                 new SubscriptionWithType(otherParty
                         .getOtherPartySubscription(), OTHER_PARTY, otherParty, otherParty,
-                    1));
+                    "1"));
 
         assertNotNull(result);
         assertEquals(otherPartyTyaNumber, result.get(APPEAL_ID_LITERAL));
