@@ -6,7 +6,9 @@ import static uk.gov.hmcts.reform.sscs.domain.notify.NotificationEventType.*;
 import java.io.IOException;
 import java.util.List;
 import java.util.stream.Collectors;
+
 import junitparams.Parameters;
+import lombok.extern.slf4j.Slf4j;
 import org.junit.Ignore;
 import org.junit.Test;
 import org.springframework.beans.factory.annotation.Value;
@@ -18,6 +20,7 @@ import uk.gov.hmcts.reform.sscs.functional.AbstractFunctionalTest;
 import uk.gov.service.notify.Notification;
 import uk.gov.service.notify.NotificationClientException;
 
+@Slf4j
 public class NotificationsFunctionalTest extends AbstractFunctionalTest {
 
     private static final String AS_APPOINTEE_FOR = "You are receiving this update as the appointee for";
@@ -229,10 +232,10 @@ public class NotificationsFunctionalTest extends AbstractFunctionalTest {
 
     @Test
     @Parameters({
-        "pip,judge\\, doctor and disability expert",
-        "esa,judge and a doctor",
-        "dla,judge\\, doctor and disability expert",
-        "carers-allowance,judge"
+            "pip,judge\\, doctor and disability expert",
+            "esa,judge and a doctor",
+            "dla,judge\\, doctor and disability expert",
+            "carers-allowance,judge"
     })
     public void shouldSendPaperDwpResponseReceivedNotification(final String benefit, String expectedPanelComposition)
             throws Exception {
@@ -398,7 +401,15 @@ public class NotificationsFunctionalTest extends AbstractFunctionalTest {
                 paperAppointeeResponseReceivedEmailId,
                 paperAppointeeResponseReceivedSmsId
         );
-        Notification emailNotification = notifications.stream().filter(f -> f.getTemplateId().toString().equals(paperAppointeeResponseReceivedEmailId)).collect(Collectors.toList()).get(0);
+        Notification emailNotification = notifications.stream().filter(f -> {
+            String tID = f.getTemplateId().toString();
+
+            log.debug("This is Template ID: "+tID+" Paper Appointee Email ID: "+paperAppointeeResponseReceivedEmailId);
+            assertEquals(tID, paperAppointeeResponseReceivedEmailId);
+
+            return tID.equals(paperAppointeeResponseReceivedEmailId);
+        }).collect(Collectors.toList()).get(0);
+
         assertTrue(emailNotification.getBody().contains("Dear Appointee User"));
         assertTrue(emailNotification.getBody().contains("You should have received a copy"));
     }
