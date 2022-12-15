@@ -404,7 +404,7 @@ public class NotificationsFunctionalTest extends AbstractFunctionalTest {
         Notification emailNotification = notifications.stream().filter(f -> {
             String tID = f.getTemplateId().toString();
 
-            log.debug("This is Template ID: "+tID+" Paper Appointee Email ID: "+paperAppointeeResponseReceivedEmailId);
+            log.info("This is Template ID: "+tID+" Paper Appointee Email ID: "+paperAppointeeResponseReceivedEmailId);
             assertEquals(tID, paperAppointeeResponseReceivedEmailId);
 
             return tID.equals(paperAppointeeResponseReceivedEmailId);
