@@ -404,7 +404,7 @@ public class NotificationsFunctionalTest extends AbstractFunctionalTest {
         );
         assertThat(notifications)
             .hasSize(2)
-            .anySatisfy((notification)->{
+            .anySatisfy((notification) -> {
                 assertThat(notification.getId().toString()).isEqualTo(paperAppointeeResponseReceivedEmailId);
                 assertThat(notification.getBody())
                     .contains("Dear Appointee User")
