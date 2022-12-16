@@ -1,10 +1,12 @@
 package uk.gov.hmcts.reform.sscs.functional.sya.notifications;
 
-import static org.junit.Assert.*;
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.junit.jupiter.api.Assertions.*;
 import static uk.gov.hmcts.reform.sscs.domain.notify.NotificationEventType.*;
 
 import java.io.IOException;
 import java.util.List;
+import java.util.UUID;
 import java.util.stream.Collectors;
 import junitparams.Parameters;
 import lombok.extern.slf4j.Slf4j;
@@ -400,17 +402,17 @@ public class NotificationsFunctionalTest extends AbstractFunctionalTest {
                 paperAppointeeResponseReceivedEmailId,
                 paperAppointeeResponseReceivedSmsId
         );
-        Notification emailNotification = notifications.stream().filter(f -> {
-            String templateId = f.getTemplateId().toString();
-
-            log.info("This is Template ID: " + templateId + " Paper Appointee Email ID: " + paperAppointeeResponseReceivedEmailId);
-            assertEquals(templateId, paperAppointeeResponseReceivedEmailId);
-
-            return templateId.equals(paperAppointeeResponseReceivedEmailId);
-        }).collect(Collectors.toList()).get(0);
-
-        assertTrue(emailNotification.getBody().contains("Dear Appointee User"));
-        assertTrue(emailNotification.getBody().contains("You should have received a copy"));
+        assertThat(notifications)
+            .hasSize(2)
+            .anySatisfy((notification)->{
+                assertThat(notification.getId().toString()).isEqualTo(paperAppointeeResponseReceivedEmailId);
+                assertThat(notification.getBody())
+                    .contains("Dear Appointee User")
+                    .contains("You are receiving this update as the appointee for");
+            })
+            .extracting(Notification::getTemplateId)
+            .extracting(UUID::toString)
+            .contains(paperAppointeeResponseReceivedSmsId);
     }
 
     public void shouldSendAppointeeAppealWithdrawnNotification() throws NotificationClientException, IOException {
