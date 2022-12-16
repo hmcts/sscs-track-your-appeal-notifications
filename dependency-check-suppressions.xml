@@ -24,4 +24,11 @@
         <cve>CVE-2022-42003</cve>
         <cve>CVE-2022-42004</cve>
     </suppress>
+    <suppress until = "2023-01-01">
+        <notes><![CDATA[
+   file name: commons-beanutils-1.9.4.jar
+   ]]></notes>
+        <packageUrl regex="true">^pkg:maven/commons\-beanutils/commons\-beanutils@.*$</packageUrl>
+        <cve>CVE-2021-37533</cve>
+    </suppress>
 </suppressions>
