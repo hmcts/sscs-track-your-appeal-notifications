@@ -6,7 +6,6 @@ import static uk.gov.hmcts.reform.sscs.domain.notify.NotificationEventType.*;
 import java.io.IOException;
 import java.util.List;
 import java.util.stream.Collectors;
-
 import junitparams.Parameters;
 import lombok.extern.slf4j.Slf4j;
 import org.junit.Ignore;
@@ -402,12 +401,12 @@ public class NotificationsFunctionalTest extends AbstractFunctionalTest {
                 paperAppointeeResponseReceivedSmsId
         );
         Notification emailNotification = notifications.stream().filter(f -> {
-            String tID = f.getTemplateId().toString();
+            String tId = f.getTemplateId().toString();
 
-            log.info("This is Template ID: "+tID+" Paper Appointee Email ID: "+paperAppointeeResponseReceivedEmailId);
-            assertEquals(tID, paperAppointeeResponseReceivedEmailId);
+            log.info("This is Template ID: " + tId + " Paper Appointee Email ID: " + paperAppointeeResponseReceivedEmailId);
+            assertEquals(tId, paperAppointeeResponseReceivedEmailId);
 
-            return tID.equals(paperAppointeeResponseReceivedEmailId);
+            return tId.equals(paperAppointeeResponseReceivedEmailId);
         }).collect(Collectors.toList()).get(0);
 
         assertTrue(emailNotification.getBody().contains("Dear Appointee User"));
