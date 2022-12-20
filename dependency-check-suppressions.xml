@@ -37,4 +37,10 @@
         <packageUrl regex="true">^pkg:maven/org\.apache\.qpid/qpid\-jms\-client@.*$</packageUrl>
         <cve>CVE-2016-3094</cve>
     </suppress>
+    <suppress until = "2023-01-01">
+        <notes><![CDATA[
+   file name: netty-buffer-4.1.86.Final.jar
+   ]]></notes>
+        <cve>CVE-2022-41915</cve>
+    </suppress>
 </suppressions>
