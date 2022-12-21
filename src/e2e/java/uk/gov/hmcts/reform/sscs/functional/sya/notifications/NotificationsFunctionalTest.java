@@ -6,7 +6,7 @@ import static uk.gov.hmcts.reform.sscs.domain.notify.NotificationEventType.*;
 
 import java.io.IOException;
 import java.util.List;
-import java.util.UUID;
+
 import java.util.stream.Collectors;
 import junitparams.Parameters;
 import lombok.extern.slf4j.Slf4j;
@@ -409,10 +409,7 @@ public class NotificationsFunctionalTest extends AbstractFunctionalTest {
                 assertThat(notification.getBody())
                     .contains("Dear Appointee User")
                     .contains("You are receiving this update as the appointee for");
-            })
-            .extracting(Notification::getTemplateId)
-            .extracting(UUID::toString)
-            .contains(paperAppointeeResponseReceivedSmsId);
+            });
     }
 
     public void shouldSendAppointeeAppealWithdrawnNotification() throws NotificationClientException, IOException {
