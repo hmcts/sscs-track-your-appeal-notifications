@@ -401,6 +401,7 @@ public class NotificationsFunctionalTest extends AbstractFunctionalTest {
                 paperAppointeeResponseReceivedEmailId,
                 paperAppointeeResponseReceivedSmsId
         );
+        
         assertThat(notifications)
             .hasSize(2)
             .anySatisfy((notification) -> {
