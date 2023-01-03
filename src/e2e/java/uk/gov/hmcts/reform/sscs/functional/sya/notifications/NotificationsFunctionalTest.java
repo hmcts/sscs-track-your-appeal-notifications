@@ -1,6 +1,5 @@
 package uk.gov.hmcts.reform.sscs.functional.sya.notifications;
 
-import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.*;
 import static uk.gov.hmcts.reform.sscs.domain.notify.NotificationEventType.*;
 
