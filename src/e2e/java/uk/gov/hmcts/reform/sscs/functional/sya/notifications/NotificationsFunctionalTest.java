@@ -406,6 +406,7 @@ public class NotificationsFunctionalTest extends AbstractFunctionalTest {
 
         log.info("This is the body of the template:         " + emailNotification.getBody());
         assertTrue(emailNotification.getBody().contains("Dear Appointee User"));
+        assertTrue(emailNotification.getBody().contains("You are receiving this update as the appointee for"));
     }
 
     public void shouldSendAppointeeAppealWithdrawnNotification() throws NotificationClientException, IOException {
