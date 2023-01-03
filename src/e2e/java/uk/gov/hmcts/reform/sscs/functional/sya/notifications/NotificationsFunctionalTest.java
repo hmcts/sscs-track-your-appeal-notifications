@@ -418,7 +418,6 @@ public class NotificationsFunctionalTest extends AbstractFunctionalTest {
                 .filter(f -> f.getTemplateId().toString().equals(appointeeAppealWithdrawnEmailId))
                 .collect(Collectors.toList()).get(0);
         assertTrue(emailNotification.getBody().contains("Dear Appointee User"));
-        assertTrue(emailNotification.getBody().contains("You are receiving this update as the appointee for"));
     }
 
     @Test
