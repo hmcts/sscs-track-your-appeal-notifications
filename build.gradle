@@ -151,18 +151,18 @@ dependencyManagement {
             entry 'commons-compress'
         }
 
-        // CVE-2019-16869 - brought in by qpid-jms-client
-        dependencySet(group: 'io.netty', version: '4.1.79.Final') {
+        // CVE-2022-41881, CVE-2022-41915
+        dependencySet(group: 'io.netty', version: '4.1.86.Final') {
+            entry 'netty-buffer'
+            entry 'netty-common'
+            entry 'netty-codec'
+            entry 'netty-codec-http'
             entry 'netty-handler'
+            entry 'netty-resolver'
+            entry 'netty-transport'
             entry 'netty-transport-native-epoll'
             entry 'netty-transport-native-kqueue'
-            entry 'netty-codec-http'
-            entry 'netty-codec'
             entry 'netty-transport-native-unix-common'
-            entry 'netty-transport'
-            entry 'netty-buffer'
-            entry 'netty-resolver'
-            entry 'netty-common'
         }
 
         // resolves: CVE-2019-10101, CVE-2019-10102, CVE-2019-10103
