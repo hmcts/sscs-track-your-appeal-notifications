@@ -209,11 +209,7 @@ dependencyManagement {
             entry 'json-smart'
             entry 'accessors-smart'
         }
-
-        //CVE-2021-35515, CVE-2021-35516, CVE-2021-35517, CVE-2021-36090
-        dependencySet(group: 'org.apache.commons', version: '1.21') {
-            entry 'commons-compress'
-        }
+        
 
         dependencySet(group: 'org.apache.tomcat.embed', version: '9.0.68') {
             entry 'tomcat-embed-core'
