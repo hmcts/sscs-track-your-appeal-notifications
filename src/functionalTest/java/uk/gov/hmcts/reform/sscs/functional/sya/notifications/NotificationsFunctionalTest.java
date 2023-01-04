@@ -1,7 +1,6 @@
 package uk.gov.hmcts.reform.sscs.functional.sya.notifications;
 
 import static org.junit.Assert.*;
-import static org.slf4j.LoggerFactory.getLogger;
 import static uk.gov.hmcts.reform.sscs.domain.notify.NotificationEventType.*;
 
 import java.io.IOException;
@@ -10,20 +9,16 @@ import java.util.stream.Collectors;
 import junitparams.Parameters;
 import org.junit.Ignore;
 import org.junit.Test;
-import org.slf4j.Logger;
 import org.springframework.beans.factory.annotation.Value;
 import uk.gov.hmcts.reform.sscs.ccd.domain.ReasonableAdjustmentStatus;
 import uk.gov.hmcts.reform.sscs.ccd.domain.SscsCaseData;
 import uk.gov.hmcts.reform.sscs.ccd.domain.SscsCaseDetails;
 import uk.gov.hmcts.reform.sscs.ccd.domain.YesNo;
 import uk.gov.hmcts.reform.sscs.functional.AbstractFunctionalTest;
-import uk.gov.hmcts.reform.sscs.service.AuthorisationService;
 import uk.gov.service.notify.Notification;
 import uk.gov.service.notify.NotificationClientException;
 
 public class NotificationsFunctionalTest extends AbstractFunctionalTest {
-
-    private static final Logger log = getLogger(AuthorisationService.class);
 
     private static final String AS_APPOINTEE_FOR = "You are receiving this update as the appointee for";
     private static final String RESPONSE_RECEIVED_PAPER_PATH = "paper/responseReceived/";
@@ -403,11 +398,7 @@ public class NotificationsFunctionalTest extends AbstractFunctionalTest {
                 paperAppointeeResponseReceivedEmailId,
                 paperAppointeeResponseReceivedSmsId
         );
-
         Notification emailNotification = notifications.stream().filter(f -> f.getTemplateId().toString().equals(paperAppointeeResponseReceivedEmailId)).collect(Collectors.toList()).get(0);
-
-        log.info(emailNotification.getBody());
-
         assertTrue(emailNotification.getBody().contains("Dear Appointee User"));
         assertTrue(emailNotification.getBody().contains("They should have sent you a copy in the post and you should receive this shortly"));
     }
