@@ -3,11 +3,11 @@ package uk.gov.hmcts.reform.sscs.config;
 import javax.sql.DataSource;
 import org.flywaydb.core.Flyway;
 import org.springframework.beans.factory.ObjectProvider;
-import org.springframework.boot.autoconfigure.AbstractDependsOnBeanFactoryPostProcessor;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnBean;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnClass;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 import org.springframework.boot.autoconfigure.flyway.FlywayMigrationInitializer;
+import org.springframework.boot.autoconfigure.jdbc.JdbcOperationsDependsOnPostProcessor;
 import org.springframework.boot.jdbc.SchemaManagement;
 import org.springframework.boot.jdbc.SchemaManagementProvider;
 import org.springframework.context.annotation.Bean;
@@ -22,7 +22,13 @@ public class LegacyFlywayAutoConfiguration {
     @Bean
     @Primary
     public SchemaManagementProvider flywayDefaultDdlModeProvider(ObjectProvider<Flyway> flyways) {
-        return dataSource -> SchemaManagement.MANAGED;
+        return new SchemaManagementProvider() {
+
+            @Override
+            public SchemaManagement getSchemaManagement(DataSource dataSource) {
+                return SchemaManagement.MANAGED;
+            }
+        };
     }
 
     @Bean(initMethod = "migrate")
@@ -45,10 +51,11 @@ public class LegacyFlywayAutoConfiguration {
     @ConditionalOnClass(JdbcOperations.class)
     @ConditionalOnBean(JdbcOperations.class)
     protected static class FlywayInitializerJdbcOperationsDependencyConfiguration
-        extends AbstractDependsOnBeanFactoryPostProcessor {
+        extends JdbcOperationsDependsOnPostProcessor {
 
         public FlywayInitializerJdbcOperationsDependencyConfiguration() {
-            super(JdbcOperations.class, "flywayInitializer");
+            super("flywayInitializer");
         }
+
     }
 }
