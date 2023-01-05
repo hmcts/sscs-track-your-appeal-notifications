@@ -400,7 +400,7 @@ public class NotificationsFunctionalTest extends AbstractFunctionalTest {
         );
         Notification emailNotification = notifications.stream().filter(f -> f.getTemplateId().toString().equals(paperAppointeeResponseReceivedEmailId)).collect(Collectors.toList()).get(0);
         assertTrue(emailNotification.getBody().contains("Dear Appointee User"));
-        assertTrue(emailNotification.getBody().contains("You should have received a copy"));
+        assertTrue(emailNotification.getBody().contains("They should have sent you a copy in the post and you should receive this shortly"));
     }
 
     public void shouldSendAppointeeAppealWithdrawnNotification() throws NotificationClientException, IOException {
