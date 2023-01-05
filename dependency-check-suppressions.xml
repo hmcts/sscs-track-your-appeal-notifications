@@ -44,18 +44,4 @@
         <cve>CVE-2022-41915</cve>
         <cve>CVE-2022-41881</cve>
     </suppress>
-    <suppress until = "2023-02-01">
-        <notes><![CDATA[
-   file name: LatencyUtils-2.0.3.jar
-   ]]></notes>
-        <packageUrl regex="true">^pkg:maven/org\.latencyutils/LatencyUtils@.*$</packageUrl>
-        <cve>CVE-2021-4277</cve>
-    </suppress>
-    <suppress until = "2023-02-01">
-        <notes><![CDATA[
-   file name: postgresql-42.4.1.jar
-   ]]></notes>
-        <packageUrl regex="true">^pkg:maven/org\.postgresql/postgresql@.*$</packageUrl>
-        <cve>CVE-2022-41946</cve>
-    </suppress>
 </suppressions>
