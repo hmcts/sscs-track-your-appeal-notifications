@@ -40,6 +40,23 @@ pmd {
     ruleSetFiles = files("config/pmd/ruleset.xml")
 }
 
+task installLocalGitHook(type: Copy) {
+    from new File(rootProject.rootDir, 'config/git/pre-commit')
+    into { new File(rootProject.rootDir, '.git/hooks')}
+    fileMode 0775
+}
+
+compileJava.dependsOn installLocalGitHook
+
+task runGitPreCommitTasks {
+    dependsOn 'test'
+    dependsOn 'pmdMain'
+    dependsOn 'pmdTest'
+    dependsOn 'dependencyCheckAggregate'
+    dependsOn 'checkstyleMain'
+    dependsOn 'checkstyleTest'
+}
+
 dependencyUpdates.resolutionStrategy {
     componentSelection { rules ->
         rules.all {
@@ -393,7 +410,7 @@ dependencies {
 
     implementation group: 'com.github.hmcts', name: 'cmc-pdf-service-client', version: '7.0.1'
 
-    implementation group: 'com.github.hmcts', name: 'sscs-common', version: '4.21.1'
+    implementation group: 'com.github.hmcts', name: 'sscs-common', version: '4.24.1'
     implementation group: 'com.github.hmcts', name: 'sscs-pdf-email-common', version: '1.6.0'
 
     implementation group: 'com.github.hmcts', name: 'sscs-job-scheduler', version: '1.5.7', {
