@@ -68,7 +68,7 @@ import uk.gov.service.notify.NotificationClientException;
 @ProfileValueSourceConfiguration(EnvironmentProfileValueSource.class)
 public abstract class AbstractFunctionalTest {
 
-    protected static final Logger log = getLogger(AuthorisationService.class);
+    private static final Logger log = getLogger(AuthorisationService.class);
 
     // Below rules are needed to use the junitParamsRunner together with SpringRunner
     @ClassRule
