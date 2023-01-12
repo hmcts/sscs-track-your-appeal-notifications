@@ -58,4 +58,32 @@
         <packageUrl regex="true">^pkg:maven/org\.postgresql/postgresql@.*$</packageUrl>
         <cve>CVE-2022-41946</cve>
     </suppress>
+    <suppress until = "2023-02-01">
+        <notes><![CDATA[
+   file name: snakeyaml-1.33.jar
+   ]]></notes>
+        <packageUrl regex="true">^pkg:maven/org\.yaml/snakeyaml@.*$</packageUrl>
+        <cve>CVE-2022-3064</cve>
+    </suppress>
+    <suppress until = "2023-02-01">
+        <notes><![CDATA[
+   file name: snakeyaml-1.33.jar
+   ]]></notes>
+        <packageUrl regex="true">^pkg:maven/org\.yaml/snakeyaml@.*$</packageUrl>
+        <cve>CVE-2021-4235</cve>
+    </suppress>
+    <suppress until = "2023-02-01">
+        <notes><![CDATA[
+   file name: tomcat-embed-core-9.0.68.jar
+   ]]></notes>
+        <packageUrl regex="true">^pkg:maven/org\.apache\.tomcat\.embed/tomcat\-embed\-core@.*$</packageUrl>
+        <cve>CVE-2022-45143</cve>
+    </suppress>
+    <suppress until = "2023-02-01">
+        <notes><![CDATA[
+   file name: tomcat-embed-websocket-9.0.68.jar
+   ]]></notes>
+        <packageUrl regex="true">^pkg:maven/org\.apache\.tomcat\.embed/tomcat\-embed\-websocket@.*$</packageUrl>
+        <cve>CVE-2022-45143</cve>
+    </suppress>
 </suppressions>
