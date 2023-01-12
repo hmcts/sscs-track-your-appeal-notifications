@@ -8,7 +8,7 @@ plugins {
     id 'org.springframework.boot' version '2.5.6'
     id 'uk.gov.hmcts.java' version '0.12.32'
     id 'org.owasp.dependencycheck' version '7.2.1'
-    id 'com.github.ben-manes.versions' version '0.43.0'
+    id 'com.github.ben-manes.versions' version '0.44.0'
     id "org.flywaydb.flyway" version '7.15.0'
     id "info.solidsoft.pitest" version '1.7.0'
 }
@@ -447,7 +447,7 @@ dependencies {
     testImplementation(group: 'org.springframework.boot', name: 'spring-boot-starter-test', version: '2.6.2') {
         exclude group: "com.vaadin.external.google", module:"android-json"
     }
-    testImplementation group: 'org.mockito', name: 'mockito-core', version: '4.2.0'
+    testImplementation group: 'org.mockito', name: 'mockito-core', version: '4.11.0'
     testImplementation 'pl.pragmatists:JUnitParams:1.1.1'
     testImplementation group: 'com.github.hmcts', name: 'fortify-client', version: '1.2.2', classifier: 'all', {
         exclude group: 'commons-io', module: 'commons-io'
