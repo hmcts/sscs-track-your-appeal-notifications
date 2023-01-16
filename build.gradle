@@ -381,9 +381,9 @@ dependencies {
 
     implementation group: 'com.mchange', name: 'c3p0', version: '0.9.5.5'
     implementation group: 'org.flywaydb', name: 'flyway-core', version: '7.15.0'
-    implementation group: 'org.postgresql', name: 'postgresql', version: '42.4.1'
+    implementation group: 'org.postgresql', name: 'postgresql', version: '42.5.1'
     implementation group: 'net.bytebuddy', name: 'byte-buddy', version: '1.12.18'
-    implementation group: 'org.elasticsearch', name: 'elasticsearch', version: '7.17.7'
+    implementation group: 'org.elasticsearch', name: 'elasticsearch', version: '7.17.8'
 
     implementation group: 'org.springframework.boot', name: 'spring-boot-starter-actuator'
     implementation group: 'org.springframework.boot', name: 'spring-boot-starter-aop'
