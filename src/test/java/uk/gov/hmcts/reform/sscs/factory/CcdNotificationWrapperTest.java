@@ -33,7 +33,6 @@ import junitparams.Parameters;
 import org.assertj.core.api.Assertions;
 import org.junit.Assert;
 import org.junit.Test;
-import org.junit.jupiter.api.Disabled;
 import org.junit.runner.RunWith;
 import uk.gov.hmcts.reform.sscs.ccd.domain.Address;
 import uk.gov.hmcts.reform.sscs.ccd.domain.Appeal;
@@ -508,7 +507,6 @@ public class CcdNotificationWrapperTest {
     }
 
     @Test
-    @Disabled
     public void givenSendAllPartiesWasSelectedForGenericLetter_shouldGetSubscriptionTypeListWithAllCaseParties() {
         ccdNotificationWrapper = buildCcdNotificationWrapperForGenericLetter(true,true, false, true, false);
 
