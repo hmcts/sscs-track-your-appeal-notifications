@@ -42,7 +42,6 @@ import uk.gov.hmcts.reform.sscs.ccd.domain.DatedRequestOutcome;
 import uk.gov.hmcts.reform.sscs.ccd.domain.HearingRecordingRequest;
 import uk.gov.hmcts.reform.sscs.ccd.domain.JointParty;
 import uk.gov.hmcts.reform.sscs.ccd.domain.OtherParty;
-import uk.gov.hmcts.reform.sscs.ccd.domain.OtherPartySelectionDetails;
 import uk.gov.hmcts.reform.sscs.ccd.domain.RequestOutcome;
 import uk.gov.hmcts.reform.sscs.ccd.domain.SscsCaseData;
 import uk.gov.hmcts.reform.sscs.ccd.domain.Subscription;
@@ -52,7 +51,6 @@ import uk.gov.hmcts.reform.sscs.domain.SscsCaseDataWrapper;
 import uk.gov.hmcts.reform.sscs.domain.SubscriptionWithType;
 import uk.gov.hmcts.reform.sscs.domain.notify.NotificationEventType;
 import uk.gov.hmcts.reform.sscs.model.PartyItemList;
-import uk.gov.hmcts.reform.sscs.service.NotificationUtils;
 import uk.gov.hmcts.reform.sscs.service.scheduler.CcdActionSerializer;
 
 @Slf4j
@@ -205,7 +203,7 @@ public class CcdNotificationWrapper implements NotificationWrapper {
                         OTHER_PARTY, otherParty, otherParty, otherParty.getId()));
             }
 
-             if (hasRepresentative(otherParty)) {
+            if (hasRepresentative(otherParty)) {
                 otherPartySubscription.add(new SubscriptionWithType(otherParty.getOtherPartyRepresentativeSubscription(),
                         OTHER_PARTY, otherParty, otherParty.getRep(), otherParty.getRep().getId()));
             }

@@ -15,6 +15,7 @@ import static uk.gov.hmcts.reform.sscs.domain.notify.NotificationEventType.DWP_A
 import static uk.gov.hmcts.reform.sscs.domain.notify.NotificationEventType.EVIDENCE_RECEIVED;
 import static uk.gov.hmcts.reform.sscs.domain.notify.NotificationEventType.HEARING_BOOKED;
 import static uk.gov.hmcts.reform.sscs.domain.notify.NotificationEventType.HMCTS_APPEAL_LAPSED;
+import static uk.gov.hmcts.reform.sscs.domain.notify.NotificationEventType.ISSUE_GENERIC_LETTER;
 import static uk.gov.hmcts.reform.sscs.domain.notify.NotificationEventType.NON_COMPLIANT;
 import static uk.gov.hmcts.reform.sscs.domain.notify.NotificationEventType.POSTPONEMENT;
 import static uk.gov.hmcts.reform.sscs.domain.notify.NotificationEventType.REQUEST_INFO_INCOMPLETE;
@@ -32,6 +33,7 @@ import junitparams.Parameters;
 import org.assertj.core.api.Assertions;
 import org.junit.Assert;
 import org.junit.Test;
+import org.junit.jupiter.api.Disabled;
 import org.junit.runner.RunWith;
 import uk.gov.hmcts.reform.sscs.ccd.domain.Address;
 import uk.gov.hmcts.reform.sscs.ccd.domain.Appeal;
@@ -47,6 +49,7 @@ import uk.gov.hmcts.reform.sscs.ccd.domain.HearingRecordingRequestDetails;
 import uk.gov.hmcts.reform.sscs.ccd.domain.JointParty;
 import uk.gov.hmcts.reform.sscs.ccd.domain.Name;
 import uk.gov.hmcts.reform.sscs.ccd.domain.OtherParty;
+import uk.gov.hmcts.reform.sscs.ccd.domain.OtherPartySelectionDetails;
 import uk.gov.hmcts.reform.sscs.ccd.domain.Representative;
 import uk.gov.hmcts.reform.sscs.ccd.domain.RequestOutcome;
 import uk.gov.hmcts.reform.sscs.ccd.domain.SscsCaseData;
@@ -177,7 +180,79 @@ public class CcdNotificationWrapperTest {
                     .build())
                 .notificationEventType(notificationEventType)
                 .build()
+        );
+    }
 
+    private CcdNotificationWrapper buildCcdNotificationWrapperForGenericLetter(boolean allParties,
+                                                                               boolean hasAppellant,
+                                                                               boolean hasJointParty,
+                                                                               boolean hasOtherParty,
+                                                                               boolean hasRepresentative) {
+
+        var appellant = Appellant.builder().build();
+        var appeal = Appeal.builder()
+                .appellant(appellant)
+                .hearingType("cor");
+
+        var sscsCaseData = SscsCaseData.builder();
+
+        var otherParties = OtherParty.builder()
+                .id("other_party_id_1")
+                .name(Name.builder().firstName("1").lastName("2").build());
+
+        var representative = Representative.builder()
+                .hasRepresentative(YES.getValue())
+                .name(Name.builder()
+                        .firstName("Ivan")
+                        .lastName("Ivanov")
+                        .title("Mr")
+                        .build())
+                .build();
+
+        if (allParties) {
+            sscsCaseData.sendToAllParties(YES);
+        }
+
+        if (hasAppellant) {
+            sscsCaseData.sendToApellant(YES);
+        }
+
+        if (hasRepresentative) {
+            sscsCaseData.hasRepresentative(YES);
+            sscsCaseData.sendToRepresentative(YES);
+            appeal.rep(representative);
+        }
+
+        if (hasJointParty) {
+            sscsCaseData.hasJointParty(YES);
+            sscsCaseData.sendToJointParty(YES);
+        }
+
+        if (hasOtherParty) {
+            sscsCaseData.hasOtherParties(YES);
+            sscsCaseData.sendToOtherParties(YES);
+            sscsCaseData.otherParties(List.of(new CcdValue<>(otherParties
+                    .appointee(Appointee.builder()
+                            .id("appointee")
+                            .name(Name.builder().firstName("Ivan").lastName("Ivanov")
+                                    .title("Mr")
+                                    .build())
+                            .build())
+                    .build())));
+            sscsCaseData.otherPartySelection(List.of(new CcdValue<>((OtherPartySelectionDetails
+                    .builder()
+                    .otherPartiesList(new DynamicList(new DynamicListItem("other_party_id_1", "label"), List.of()))
+                    .build()))));
+        }
+
+        sscsCaseData.appeal(appeal.build());
+
+        return new CcdNotificationWrapper(
+                SscsCaseDataWrapper.builder()
+                        .oldSscsCaseData(SscsCaseData.builder().build())
+                        .newSscsCaseData(sscsCaseData.build())
+                        .notificationEventType(ISSUE_GENERIC_LETTER)
+                        .build()
         );
     }
 
@@ -395,6 +470,56 @@ public class CcdNotificationWrapperTest {
     }
 
     @Test
+    public void givenAppellantWasSelectedForGenericLetter_shouldGetSubscriptionTypeListWithAppellant() {
+        ccdNotificationWrapper = buildCcdNotificationWrapperForGenericLetter(false,true, false, false, false);
+
+        List<SubscriptionWithType> subsWithTypeList = ccdNotificationWrapper.getSubscriptionsBasedOnNotificationType();
+        Assert.assertEquals(1, subsWithTypeList.size());
+        Assert.assertEquals(SubscriptionType.APPELLANT, subsWithTypeList.get(0).getSubscriptionType());
+    }
+
+    @Test
+    public void givenOtherPartyWasSelectedAndItHasAppointee_shouldGetSubscriptionTypeListWithOtherPartyAppointee() {
+        ccdNotificationWrapper = buildCcdNotificationWrapperForGenericLetter(false,false, false, true, false);
+
+        List<SubscriptionWithType> subsWithTypeList = ccdNotificationWrapper.getSubscriptionsBasedOnNotificationType();
+
+        Assert.assertEquals(1, subsWithTypeList.size());
+        Assert.assertEquals(SubscriptionType.OTHER_PARTY, subsWithTypeList.get(0).getSubscriptionType());
+        Assert.assertEquals("appointee", subsWithTypeList.get(0).getPartyId());
+    }
+
+    @Test
+    public void givenRepresentativeWasSelectedForGenericLetter_shouldGetSubscriptionTypeListWithRepresentative() {
+        ccdNotificationWrapper = buildCcdNotificationWrapperForGenericLetter(false,false, false, false, true);
+
+        List<SubscriptionWithType> subsWithTypeList = ccdNotificationWrapper.getSubscriptionsBasedOnNotificationType();
+        Assert.assertEquals(1, subsWithTypeList.size());
+        Assert.assertEquals(SubscriptionType.REPRESENTATIVE, subsWithTypeList.get(0).getSubscriptionType());
+    }
+
+    @Test
+    public void givenJointPartyWasSelectedForGenericLetter_shouldGetSubscriptionTypeListWithJointParty() {
+        ccdNotificationWrapper = buildCcdNotificationWrapperForGenericLetter(false,false, true, false, false);
+
+        List<SubscriptionWithType> subsWithTypeList = ccdNotificationWrapper.getSubscriptionsBasedOnNotificationType();
+        Assert.assertEquals(1, subsWithTypeList.size());
+        Assert.assertEquals(SubscriptionType.JOINT_PARTY, subsWithTypeList.get(0).getSubscriptionType());
+    }
+
+    @Test
+    @Disabled
+    public void givenSendAllPartiesWasSelectedForGenericLetter_shouldGetSubscriptionTypeListWithAllCaseParties() {
+        ccdNotificationWrapper = buildCcdNotificationWrapperForGenericLetter(true,true, false, true, false);
+
+        List<SubscriptionWithType> subsWithTypeList = ccdNotificationWrapper.getSubscriptionsBasedOnNotificationType();
+        Assert.assertEquals(2, subsWithTypeList.size());
+        Assert.assertEquals(SubscriptionType.APPELLANT, subsWithTypeList.get(0).getSubscriptionType());
+        Assert.assertEquals(SubscriptionType.OTHER_PARTY, subsWithTypeList.get(1).getSubscriptionType());
+    }
+
+
+    @Test
     @Parameters({"DIRECTION_ISSUED, paper, PROVIDE_INFORMATION", "DIRECTION_ISSUED, oral, PROVIDE_INFORMATION",
         "DIRECTION_ISSUED, paper, APPEAL_TO_PROCEED", "DIRECTION_ISSUED, oral, APPEAL_TO_PROCEED",
         "DIRECTION_ISSUED, paper, GRANT_EXTENSION", "DIRECTION_ISSUED, oral, GRANT_EXTENSION",
@@ -567,6 +692,7 @@ public class CcdNotificationWrapperTest {
                 || type.equals(REVIEW_CONFIDENTIALITY_REQUEST)
                 || type.equals(ACTION_HEARING_RECORDING_REQUEST)
                 || type.equals(UPDATE_OTHER_PARTY_DATA)
+                || type.equals(ISSUE_GENERIC_LETTER)
             )).toArray();
     }
 

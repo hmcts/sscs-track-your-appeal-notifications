@@ -1,15 +1,5 @@
 package uk.gov.hmcts.reform.sscs.personalisation;
 
-import lombok.extern.slf4j.Slf4j;
-import org.springframework.stereotype.Component;
-import uk.gov.hmcts.reform.sscs.config.SubscriptionType;
-import uk.gov.hmcts.reform.sscs.domain.SscsCaseDataWrapper;
-import uk.gov.hmcts.reform.sscs.domain.SubscriptionWithType;
-import uk.gov.hmcts.reform.sscs.factory.CcdNotificationWrapper;
-import uk.gov.hmcts.reform.sscs.service.NotificationUtils;
-
-import java.util.Map;
-
 import static uk.gov.hmcts.reform.sscs.config.PersonalisationMappingConstants.APPELLANT_NAME;
 import static uk.gov.hmcts.reform.sscs.config.PersonalisationMappingConstants.INFO_REQUEST_DETAIL;
 import static uk.gov.hmcts.reform.sscs.config.PersonalisationMappingConstants.IS_OTHER_PARTY;
@@ -17,6 +7,15 @@ import static uk.gov.hmcts.reform.sscs.config.PersonalisationMappingConstants.JO
 import static uk.gov.hmcts.reform.sscs.config.PersonalisationMappingConstants.NAME;
 import static uk.gov.hmcts.reform.sscs.config.PersonalisationMappingConstants.REPRESENTATIVE;
 import static uk.gov.hmcts.reform.sscs.config.PersonalisationMappingConstants.REPRESENTATIVE_NAME;
+
+import java.util.Map;
+import lombok.extern.slf4j.Slf4j;
+import org.springframework.stereotype.Component;
+import uk.gov.hmcts.reform.sscs.config.SubscriptionType;
+import uk.gov.hmcts.reform.sscs.domain.SscsCaseDataWrapper;
+import uk.gov.hmcts.reform.sscs.domain.SubscriptionWithType;
+import uk.gov.hmcts.reform.sscs.factory.CcdNotificationWrapper;
+import uk.gov.hmcts.reform.sscs.service.NotificationUtils;
 
 @Slf4j
 @Component
