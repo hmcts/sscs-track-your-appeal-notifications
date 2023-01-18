@@ -30,6 +30,9 @@ public class PersonalisationFactoryTest {
     @Mock
     private SyaAppealCreatedAndReceivedPersonalisation syaAppealCreatedAndReceivedPersonalisation;
 
+    @Mock
+    private GenericLetterPersonalisation genericLetterPersonalisation;
+
     @InjectMocks
     private PersonalisationFactory factory;
 
@@ -70,6 +73,12 @@ public class PersonalisationFactoryTest {
     public void createSyaAppealCreatedPersonalisationWhenNotificationApplied(NotificationEventType eventType) {
         Personalisation result = factory.apply(eventType);
         assertEquals(syaAppealCreatedAndReceivedPersonalisation, result);
+    }
+
+    @Test
+    public void createGenericLetterPesonalisationWhenNotificationApplied() {
+        Personalisation result = factory.apply(ISSUE_GENERIC_LETTER);
+        assertEquals(genericLetterPersonalisation, result);
     }
 
     @Test
