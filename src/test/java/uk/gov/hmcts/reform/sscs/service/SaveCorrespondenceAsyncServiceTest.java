@@ -17,6 +17,8 @@ import uk.gov.hmcts.reform.sscs.ccd.domain.CorrespondenceDetails;
 import uk.gov.hmcts.reform.sscs.ccd.domain.CorrespondenceType;
 import uk.gov.hmcts.reform.sscs.ccd.domain.SscsCaseData;
 import uk.gov.hmcts.reform.sscs.config.SubscriptionType;
+import uk.gov.hmcts.reform.sscs.idam.IdamService;
+import uk.gov.hmcts.reform.sscs.idam.IdamTokens;
 import uk.gov.hmcts.reform.sscs.model.LetterType;
 import uk.gov.service.notify.NotificationClient;
 import uk.gov.service.notify.NotificationClientException;
@@ -33,13 +35,19 @@ public class SaveCorrespondenceAsyncServiceTest {
     private CcdNotificationsPdfService ccdNotificationsPdfService;
 
     @Mock
+    private CcdPdfService ccdPdfService;
+
+    @Mock
     private NotificationClient notificationClient;
+
+    @Mock
+    private IdamService idamService;
 
 
     @Before
     public void setup() throws NotificationClientException {
         openMocks(this);
-        service = new SaveCorrespondenceAsyncService(ccdNotificationsPdfService);
+        service = new SaveCorrespondenceAsyncService(ccdNotificationsPdfService, ccdPdfService, idamService);
         correspondence = Correspondence.builder().value(CorrespondenceDetails.builder().to("Mr Blobby").build()).build();
         SscsCaseData sscsCaseData = SscsCaseData.builder().build();
         byte[] bytes = "%PDF bytes".getBytes();
