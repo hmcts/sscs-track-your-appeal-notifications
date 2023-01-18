@@ -1,8 +1,10 @@
 package uk.gov.hmcts.reform.sscs.service;
 
 import static java.util.Objects.nonNull;
+import static org.apache.commons.collections4.CollectionUtils.isNotEmpty;
 import static org.apache.commons.lang3.StringUtils.isEmpty;
 import static org.apache.commons.lang3.StringUtils.isNotBlank;
+import static org.apache.commons.lang3.StringUtils.wrap;
 import static uk.gov.hmcts.reform.sscs.ccd.callback.DocumentType.ADJOURNMENT_NOTICE;
 import static uk.gov.hmcts.reform.sscs.ccd.callback.DocumentType.AUDIO_VIDEO_EVIDENCE_DIRECTION_NOTICE;
 import static uk.gov.hmcts.reform.sscs.ccd.callback.DocumentType.DECISION_NOTICE;
@@ -22,6 +24,7 @@ import static uk.gov.hmcts.reform.sscs.service.NotificationUtils.isOkToSendSmsNo
 import static uk.gov.hmcts.reform.sscs.service.NotificationValidService.isBundledLetter;
 
 import java.io.IOException;
+import java.time.LocalDateTime;
 import java.time.ZonedDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.Collection;
@@ -35,9 +38,13 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 import uk.gov.hmcts.reform.sscs.ccd.domain.AbstractDocument;
 import uk.gov.hmcts.reform.sscs.ccd.domain.Address;
+import uk.gov.hmcts.reform.sscs.ccd.domain.CcdValue;
+import uk.gov.hmcts.reform.sscs.ccd.domain.DocumentLink;
+import uk.gov.hmcts.reform.sscs.ccd.domain.DocumentSelectionDetails;
 import uk.gov.hmcts.reform.sscs.ccd.domain.SscsCaseData;
 import uk.gov.hmcts.reform.sscs.ccd.domain.State;
 import uk.gov.hmcts.reform.sscs.ccd.domain.Subscription;
+import uk.gov.hmcts.reform.sscs.ccd.domain.YesNo;
 import uk.gov.hmcts.reform.sscs.config.AppConstants;
 import uk.gov.hmcts.reform.sscs.config.NotificationEventTypeLists;
 import uk.gov.hmcts.reform.sscs.config.SubscriptionType;
@@ -291,6 +298,12 @@ public class SendNotificationService {
                 if (ArrayUtils.isNotEmpty(coversheet)) {
                     letter = buildBundledLetter(addBlankPageAtTheEndIfOddPage(letter), coversheet);
                 }
+
+                if (YesNo.YES.equals(wrapper.getNewSscsCaseData().getAddDocuments())
+                        && isNotEmpty(wrapper.getNewSscsCaseData().getDocumentSelection())) {
+                    letter = buildGenericLetter(letter, wrapper.getNewSscsCaseData());
+                }
+
                 bundledLetter = letter;
 
                 boolean alternativeLetterFormat = isAlternativeLetterFormatRequired(wrapper, subscriptionWithType);
@@ -312,6 +325,14 @@ public class SendNotificationService {
 
                 notificationLog(notification, "Docmosis Letter", nameToUse, wrapper);
 
+                if (ISSUE_GENERIC_LETTER.equals(wrapper.getNotificationType())) {
+                    String letterName = "Generic Letter " + LocalDateTime.now() + ".pdf";
+
+                    log.info("Saving Generic Letter into ccd for case {} Letter name is {}", wrapper.getCaseId(), letterName);
+
+                    notificationSender.saveGenericLetter(bundledLetter, letterName, wrapper.getNewSscsCaseData());
+                }
+
                 if (ArrayUtils.isNotEmpty(bundledLetter)) {
                     notificationHandler.sendNotification(wrapper, notification.getDocmosisLetterTemplate(), NOTIFICATION_TYPE_LETTER, sendNotification);
                     return true;
@@ -324,6 +345,50 @@ public class SendNotificationService {
         }
         return false;
     }
+
+    private byte[] buildGenericLetter(byte[] letter, SscsCaseData sscsCaseData) throws IOException {
+        for (CcdValue<DocumentSelectionDetails> d : sscsCaseData.getDocumentSelection()) {
+            var documentLink = findDocumentByFileName(d.getValue().getDocumentsList().getValue().getCode(), sscsCaseData);
+
+            byte[] pdf = null;
+
+            if (documentLink != null) {
+                pdf = pdfStoreService.download(documentLink.getDocumentUrl());
+            }
+
+            if (pdf != null) {
+                letter = buildBundledLetter(letter, pdf);
+            }
+        }
+
+        return letter;
+    }
+
+    private DocumentLink findDocumentByFileName(String fileName, SscsCaseData sscsCaseData) {
+        if (isNotEmpty(sscsCaseData.getDwpDocuments())) {
+            var result = sscsCaseData.getDwpDocuments().stream()
+                    .filter(document -> fileName.equals(document.getValue().getDocumentFileName()))
+                    .findAny()
+                    .orElse(null);
+
+            if (result != null) {
+                return result.getValue().getDocumentLink();
+            }
+        }
+
+        if (isNotEmpty(sscsCaseData.getSscsDocument())) {
+            var doc = sscsCaseData.getSscsDocument().stream()
+                    .filter(d -> fileName.equals(d.getValue().getDocumentFileName()))
+                    .findAny()
+                    .orElse(null);
+            if (doc != null) {
+                return doc.getValue().getDocumentLink();
+            }
+        }
+
+        return null;
+    }
+
 
     private void notificationLog(Notification notification, String notificationType, String recipient, NotificationWrapper wrapper) {
         Object partyType = Optional.ofNullable(notification)

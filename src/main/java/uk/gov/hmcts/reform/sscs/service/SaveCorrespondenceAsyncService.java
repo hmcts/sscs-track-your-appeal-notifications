@@ -11,6 +11,8 @@ import org.springframework.stereotype.Component;
 import uk.gov.hmcts.reform.sscs.ccd.domain.Correspondence;
 import uk.gov.hmcts.reform.sscs.ccd.domain.SscsCaseData;
 import uk.gov.hmcts.reform.sscs.config.SubscriptionType;
+import uk.gov.hmcts.reform.sscs.idam.IdamService;
+import uk.gov.hmcts.reform.sscs.idam.IdamTokens;
 import uk.gov.hmcts.reform.sscs.model.LetterType;
 import uk.gov.service.notify.NotificationClient;
 import uk.gov.service.notify.NotificationClientException;
@@ -20,10 +22,18 @@ import uk.gov.service.notify.NotificationClientException;
 public class SaveCorrespondenceAsyncService {
     private final CcdNotificationsPdfService ccdNotificationsPdfService;
 
+    private final CcdPdfService ccdPdfService;
+
+    private final IdamService idamService;
+
 
     @Autowired
-    public SaveCorrespondenceAsyncService(CcdNotificationsPdfService ccdNotificationsPdfService) {
+    public SaveCorrespondenceAsyncService(CcdNotificationsPdfService ccdNotificationsPdfService,
+                                          CcdPdfService ccdPdfService,
+                                          IdamService idamService) {
         this.ccdNotificationsPdfService = ccdNotificationsPdfService;
+        this.ccdPdfService = ccdPdfService;
+        this.idamService = idamService;
     }
 
     @Async
@@ -46,6 +56,13 @@ public class SaveCorrespondenceAsyncService {
     @Retryable(maxAttemptsExpression =  "#{${letterAsync.maxAttempts}}", backoff = @Backoff(delayExpression = "#{${letterAsync.delay}}", multiplierExpression = "#{${letterAsync.multiplier}}", random = true))
     public void saveLetter(final byte[] pdfForLetter, Correspondence correspondence, String ccdCaseId, SubscriptionType subscriptionType) {
         ccdNotificationsPdfService.mergeReasonableAdjustmentsCorrespondenceIntoCcd(pdfForLetter, Long.valueOf(ccdCaseId), correspondence, LetterType.findLetterTypeFromSubscription(subscriptionType.name()));
+    }
+
+
+    @Async
+    @Retryable(maxAttemptsExpression =  "#{${letterAsync.maxAttempts}}", backoff = @Backoff(delayExpression = "#{${letterAsync.delay}}", multiplierExpression = "#{${letterAsync.multiplier}}", random = true))
+    public void saveGenericLetter(String fileName, final byte[] pdfForLetter, SscsCaseData caseData, String documentType) {
+            ccdPdfService.mergeDocIntoCcd(fileName, pdfForLetter, Long.valueOf(caseData.getCcdCaseId()), caseData, idamService.getIdamTokens(), documentType);
     }
 
     @Retryable

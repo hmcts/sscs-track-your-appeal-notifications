@@ -15,11 +15,13 @@ import static uk.gov.hmcts.reform.sscs.config.SubscriptionType.JOINT_PARTY;
 import static uk.gov.hmcts.reform.sscs.config.SubscriptionType.OTHER_PARTY;
 import static uk.gov.hmcts.reform.sscs.config.SubscriptionType.REPRESENTATIVE;
 import static uk.gov.hmcts.reform.sscs.domain.notify.NotificationEventType.ACTION_HEARING_RECORDING_REQUEST;
+import static uk.gov.hmcts.reform.sscs.domain.notify.NotificationEventType.ISSUE_GENERIC_LETTER;
 import static uk.gov.hmcts.reform.sscs.domain.notify.NotificationEventType.REQUEST_INFO_INCOMPLETE;
 import static uk.gov.hmcts.reform.sscs.domain.notify.NotificationEventType.REVIEW_CONFIDENTIALITY_REQUEST;
 import static uk.gov.hmcts.reform.sscs.domain.notify.NotificationEventType.UPDATE_OTHER_PARTY_DATA;
 import static uk.gov.hmcts.reform.sscs.service.NotificationUtils.hasAppointee;
 import static uk.gov.hmcts.reform.sscs.service.NotificationUtils.hasAppointeeSubscriptionOrIsMandatoryAppointeeLetter;
+import static uk.gov.hmcts.reform.sscs.service.NotificationUtils.hasJointParty;
 import static uk.gov.hmcts.reform.sscs.service.NotificationUtils.hasJointPartySubscription;
 import static uk.gov.hmcts.reform.sscs.service.NotificationUtils.hasRepSubscriptionOrIsMandatoryRepLetter;
 import static uk.gov.hmcts.reform.sscs.service.NotificationUtils.hasRepresentative;
@@ -40,6 +42,7 @@ import uk.gov.hmcts.reform.sscs.ccd.domain.DatedRequestOutcome;
 import uk.gov.hmcts.reform.sscs.ccd.domain.HearingRecordingRequest;
 import uk.gov.hmcts.reform.sscs.ccd.domain.JointParty;
 import uk.gov.hmcts.reform.sscs.ccd.domain.OtherParty;
+import uk.gov.hmcts.reform.sscs.ccd.domain.OtherPartySelectionDetails;
 import uk.gov.hmcts.reform.sscs.ccd.domain.RequestOutcome;
 import uk.gov.hmcts.reform.sscs.ccd.domain.SscsCaseData;
 import uk.gov.hmcts.reform.sscs.ccd.domain.Subscription;
@@ -49,6 +52,7 @@ import uk.gov.hmcts.reform.sscs.domain.SscsCaseDataWrapper;
 import uk.gov.hmcts.reform.sscs.domain.SubscriptionWithType;
 import uk.gov.hmcts.reform.sscs.domain.notify.NotificationEventType;
 import uk.gov.hmcts.reform.sscs.model.PartyItemList;
+import uk.gov.hmcts.reform.sscs.service.NotificationUtils;
 import uk.gov.hmcts.reform.sscs.service.scheduler.CcdActionSerializer;
 
 @Slf4j
@@ -191,25 +195,73 @@ public class CcdNotificationWrapper implements NotificationWrapper {
                 OTHER_PARTY, otherParty, otherParty.getRep(), otherParty.getRep().getId()));
         }
 
+        if (ISSUE_GENERIC_LETTER.equals(getNotificationType()) && (hasOtherPartySelected(otherParty)
+                || YesNo.YES.equals(getNewSscsCaseData().getSendToAllParties()))) {
+            if (hasAppointee(otherParty.getAppointee(), otherParty.getIsAppointee())) {
+                otherPartySubscription.add(new SubscriptionWithType(otherParty.getOtherPartyAppointeeSubscription(),
+                        OTHER_PARTY, otherParty, otherParty.getAppointee(), otherParty.getAppointee().getId()));
+            } else {
+                otherPartySubscription.add(new SubscriptionWithType(otherParty.getOtherPartySubscription(),
+                        OTHER_PARTY, otherParty, otherParty, otherParty.getId()));
+            }
+
+             if (hasRepresentative(otherParty)) {
+                otherPartySubscription.add(new SubscriptionWithType(otherParty.getOtherPartyRepresentativeSubscription(),
+                        OTHER_PARTY, otherParty, otherParty.getRep(), otherParty.getRep().getId()));
+            }
+        }
+
         log.info("Number of subscription {}", otherPartySubscription.size());
 
         return otherPartySubscription;
     }
 
+    private boolean hasOtherPartySelected(OtherParty otherParty) {
+        for (var party : getNewSscsCaseData().getOtherPartySelection()) {
+            if (otherParty.hasAppointee()
+                    && party.getValue().getOtherPartiesList().getValue().getCode().contains(otherParty.getAppointee().getId())) {
+                return true;
+            }
+
+            if (party.getValue().getOtherPartiesList().getValue().getCode().contains(otherParty.getId())) {
+                return true;
+            }
+
+            if (otherParty.hasRepresentative()
+                    && party.getValue().getOtherPartiesList().getValue().getCode().contains(otherParty.getRep().getId())) {
+                return true;
+            }
+        }
+
+        return false;
+    }
+
 
     private boolean isNotificationEventValidToSendToAppointee() {
-        return hasAppointeeSubscriptionOrIsMandatoryAppointeeLetter(responseWrapper)
+        return (hasAppointeeSubscriptionOrIsMandatoryAppointeeLetter(responseWrapper)
             && (EVENTS_VALID_FOR_ALL_ENTITIES.contains(getNotificationType())
             || EVENTS_VALID_FOR_APPOINTEE.contains(getNotificationType())
             || isValidProcessHearingRequestEventForParty(PartyItemList.APPELLANT)
-            || isValidRequestInfoIncompleteEventForParty(PartyItemList.APPELLANT));
+            || isValidRequestInfoIncompleteEventForParty(PartyItemList.APPELLANT)))
+            || (ISSUE_GENERIC_LETTER.equals(getNotificationType()) && hasAppointeeSelected());
+    }
+
+    private boolean hasAppointeeSelected() {
+        return (YesNo.YES.equals(getNewSscsCaseData().getSendToAllParties()) && hasAppointee(getSscsCaseDataWrapper()))
+            || (YesNo.YES.equals(getNewSscsCaseData().getSendToApellant()) && hasAppointee(getSscsCaseDataWrapper()));
     }
 
     private boolean isNotificationEventValidToSendToAppellant() {
-        return (getOldSscsCaseData() != null && isValidReviewConfidentialityRequest(getOldSscsCaseData().getConfidentialityRequestOutcomeAppellant(), getNewSscsCaseData().getConfidentialityRequestOutcomeAppellant()))
+        return ((getOldSscsCaseData() != null && isValidReviewConfidentialityRequest(getOldSscsCaseData().getConfidentialityRequestOutcomeAppellant(), getNewSscsCaseData().getConfidentialityRequestOutcomeAppellant()))
             || isValidProcessHearingRequestEventForParty(PartyItemList.APPELLANT)
             || isValidRequestInfoIncompleteEventForParty(PartyItemList.APPELLANT)
-            || !EVENTS_MAYBE_INVALID_FOR_APPELLANT.contains(getNotificationType());
+            || !EVENTS_MAYBE_INVALID_FOR_APPELLANT.contains(getNotificationType()))
+            || (ISSUE_GENERIC_LETTER.equals(getNotificationType()) && hasAppellantSelected());
+    }
+
+    private boolean hasAppellantSelected() {
+        return YesNo.YES.equals(getNewSscsCaseData().getSendToAllParties())
+            || YesNo.YES.equals(getNewSscsCaseData().getSendToApellant());
     }
 
     private boolean isValidProcessHearingRequestEventForParty(PartyItemList partyItemList) {
@@ -234,20 +286,34 @@ public class CcdNotificationWrapper implements NotificationWrapper {
     }
 
     private boolean isNotificationEventValidToSendToRep() {
-        return hasRepSubscriptionOrIsMandatoryRepLetter(responseWrapper)
+        return (hasRepSubscriptionOrIsMandatoryRepLetter(responseWrapper)
             && (EVENTS_VALID_FOR_ALL_ENTITIES.contains(getNotificationType())
             || EVENTS_VALID_FOR_REP.contains(getNotificationType())
             || isValidProcessHearingRequestEventForParty(PartyItemList.REPRESENTATIVE)
-            || isValidRequestInfoIncompleteEventForParty(PartyItemList.REPRESENTATIVE));
+            || isValidRequestInfoIncompleteEventForParty(PartyItemList.REPRESENTATIVE)))
+            || (ISSUE_GENERIC_LETTER.equals(getNotificationType()) && hasRepSelected());
+    }
+
+    private boolean hasRepSelected() {
+        return (YesNo.YES.equals(getNewSscsCaseData().getSendToAllParties())
+                && hasRepresentative(responseWrapper))
+                || YesNo.YES.equals(getNewSscsCaseData().getSendToRepresentative());
     }
 
     private boolean isNotificationEventValidToSendToJointParty() {
-        return hasJointPartySubscription(responseWrapper)
+        return (hasJointPartySubscription(responseWrapper)
             && (EVENTS_VALID_FOR_ALL_ENTITIES.contains(getNotificationType())
             || EVENTS_VALID_FOR_JOINT_PARTY.contains(getNotificationType())
             || isValidRequestInfoIncompleteEventForParty(PartyItemList.JOINT_PARTY)
             || isValidProcessHearingRequestEventForParty(PartyItemList.JOINT_PARTY)
-            || (getOldSscsCaseData() != null && isValidReviewConfidentialityRequest(getOldSscsCaseData().getConfidentialityRequestOutcomeJointParty(), getNewSscsCaseData().getConfidentialityRequestOutcomeJointParty())));
+            || (getOldSscsCaseData() != null && isValidReviewConfidentialityRequest(getOldSscsCaseData().getConfidentialityRequestOutcomeJointParty(), getNewSscsCaseData().getConfidentialityRequestOutcomeJointParty()))))
+            || (ISSUE_GENERIC_LETTER.equals(getNotificationType()) && hasJointPartySelected());
+    }
+
+    private boolean hasJointPartySelected() {
+        return (YesNo.YES.equals(getNewSscsCaseData().getSendToAllParties())
+                && hasJointParty(getNewSscsCaseData()))
+                || YesNo.YES.equals(getNewSscsCaseData().getSendToJointParty());
     }
 
     private boolean isNotificationEventValidToSendToOtherPartySubscription(Subscription subscription, boolean isSendNewOtherPartyNotification) {

@@ -29,6 +29,7 @@ import static uk.gov.hmcts.reform.sscs.domain.notify.NotificationEventType.ISSUE
 import static uk.gov.hmcts.reform.sscs.domain.notify.NotificationEventType.ISSUE_ADJOURNMENT_NOTICE_WELSH;
 import static uk.gov.hmcts.reform.sscs.domain.notify.NotificationEventType.ISSUE_FINAL_DECISION;
 import static uk.gov.hmcts.reform.sscs.domain.notify.NotificationEventType.ISSUE_FINAL_DECISION_WELSH;
+import static uk.gov.hmcts.reform.sscs.domain.notify.NotificationEventType.ISSUE_GENERIC_LETTER;
 import static uk.gov.hmcts.reform.sscs.domain.notify.NotificationEventType.JOINT_PARTY_ADDED;
 import static uk.gov.hmcts.reform.sscs.domain.notify.NotificationEventType.JUDGE_DECISION_APPEAL_TO_PROCEED;
 import static uk.gov.hmcts.reform.sscs.domain.notify.NotificationEventType.NON_COMPLIANT;
@@ -146,6 +147,7 @@ public final class NotificationEventTypeLists {
         ISSUE_ADJOURNMENT_NOTICE_WELSH,
         ISSUE_FINAL_DECISION,
         ISSUE_FINAL_DECISION_WELSH,
+        ISSUE_GENERIC_LETTER,
         JOINT_PARTY_ADDED,
         NON_COMPLIANT,
         POSTPONEMENT,
@@ -207,6 +209,7 @@ public final class NotificationEventTypeLists {
         ISSUE_ADJOURNMENT_NOTICE_WELSH,
         ISSUE_FINAL_DECISION,
         ISSUE_FINAL_DECISION_WELSH,
+        ISSUE_GENERIC_LETTER,
         JOINT_PARTY_ADDED,
         NON_COMPLIANT,
         POSTPONEMENT,
@@ -322,7 +325,8 @@ public final class NotificationEventTypeLists {
         ACTION_HEARING_RECORDING_REQUEST,
         REQUEST_INFO_INCOMPLETE,
         REVIEW_CONFIDENTIALITY_REQUEST,
-        UPDATE_OTHER_PARTY_DATA
+        UPDATE_OTHER_PARTY_DATA,
+        ISSUE_GENERIC_LETTER
     );
 
     public static final Set<NotificationEventType> EVENTS_WITH_SUBSCRIPTION_TYPE_EMAIL_TEMPLATES = EnumSet.of(

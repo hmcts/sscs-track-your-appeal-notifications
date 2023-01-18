@@ -12,6 +12,7 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.retry.annotation.Recover;
 import org.springframework.retry.annotation.Retryable;
 import org.springframework.stereotype.Component;
+import uk.gov.hmcts.reform.sscs.ccd.callback.DocumentType;
 import uk.gov.hmcts.reform.sscs.ccd.domain.*;
 import uk.gov.hmcts.reform.sscs.config.NotificationTestRecipients;
 import uk.gov.hmcts.reform.sscs.config.SubscriptionType;
@@ -208,6 +209,13 @@ public class NotificationSender {
             saveCorrespondenceAsyncService.saveLetter(pdfForLetter, correspondence, ccdCaseId, subscriptionType);
 
             log.info("Letter Notification saved for case id : {}", ccdCaseId);
+        }
+    }
+
+    public void saveGenericLetter(byte[] pdfForLetter, String name, SscsCaseData caseData) {
+        if (pdfForLetter != null) {
+            saveCorrespondenceAsyncService.saveGenericLetter(name, pdfForLetter, caseData, DocumentType.OTHER_DOCUMENT.getValue());
+            log.info("Letter Notification saved for case id : {}", caseData.getCcdCaseId());
         }
     }
 

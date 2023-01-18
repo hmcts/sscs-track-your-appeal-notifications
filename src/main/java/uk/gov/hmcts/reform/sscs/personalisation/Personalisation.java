@@ -375,7 +375,7 @@ public class Personalisation<E extends NotificationWrapper> {
                 ? ccdResponse.getCcdCaseId() : caseReference;
     }
 
-    private String getName(SubscriptionType subscriptionType, SscsCaseData sscsCaseData, SscsCaseDataWrapper wrapper) {
+    protected String getName(SubscriptionType subscriptionType, SscsCaseData sscsCaseData, SscsCaseDataWrapper wrapper) {
         if (sscsCaseData.getAppeal() == null) {
             return EMPTY;
         }

@@ -25,7 +25,7 @@ java:
     TOPIC_NAME: "sscs-evidenceshare-topic-aat"
     AMQP_HOST: "sscs-servicebus-aat.servicebus.windows.net"
     AMQP_USERNAME: "SendAndListenSharedAccessKey"
-    JOB_SCHEDULER_DB_PASSWORD:  "{{ .Values.postgresql.auth.password}}"
+    JOB_SCHEDULER_DB_PASSWORD: "{{ .Values.postgresql.auth.password}}"
     JOB_SCHEDULER_DB_USERNAME: "{{ .Values.postgresql.auth.username}}"
     JOB_SCHEDULER_DB_NAME: "{{ .Values.postgresql.auth.database}}"
     JOB_SCHEDULER_DB_HOST: "{{ .Release.Name }}-postgresql"

@@ -395,6 +395,8 @@ notification:
       docmosisId: TB-SCS-GNO-ENG-00466.docx
     processAudioVideo:
       docmosisId: TB-SCS-GNO-ENG-00677.docx
+    issueGenericLetter:
+      docmosisId: TB-SCS-LET-ENG-Issue-Generic-Letter.docx
     directionIssued:
       appealToProceed:
         appellant:
@@ -1354,6 +1356,7 @@ pdf-service:
       requestInfoIncompleteApplication: 'TB-SCS-GNO-ENG-00012.docx'
       struckOut: 'TB-SCS-GNO-ENG-00012.docx'
       updateOtherPartyData: 'TB-SCS-GNO-ENG-00012.docx'
+      issueGenericLetter: 'TB-SCS-GNO-ENG-00012.docx'
     welsh:
       appealReceived: 'TB-SCS-GNO-WEL-00479.docx'
       directionIssued: 'TB-SCS-GNO-WEL-00479.docx'
@@ -1370,6 +1373,7 @@ pdf-service:
       requestInfoIncompleteApplication: 'TB-SCS-GNO-WEL-00479.docx'
       struckOut: 'TB-SCS-GNO-WEL-00479.docx'
       updateOtherPartyData: 'TB-SCS-GNO-WEL-00479.docx'
+      issueGenericLetter: 'TB-SCS-GNO-WEL-00479.docx'
 
 docmosis:
   accessKey:
