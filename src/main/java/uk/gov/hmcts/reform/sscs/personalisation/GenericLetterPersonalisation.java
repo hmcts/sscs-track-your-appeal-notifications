@@ -39,7 +39,6 @@ public class GenericLetterPersonalisation extends Personalisation<CcdNotificatio
             if (SubscriptionType.OTHER_PARTY.equals(subscriptionWithType.getSubscriptionType())) {
                 personalisation.put(IS_OTHER_PARTY, "Yes");
             }
-
         } else {
             personalisation.put(REPRESENTATIVE, "No");
         }

@@ -1,5 +1,6 @@
 package uk.gov.hmcts.reform.sscs.factory;
 
+import static org.apache.commons.collections4.CollectionUtils.isEmpty;
 import static org.apache.commons.collections4.ListUtils.emptyIfNull;
 import static uk.gov.hmcts.reform.sscs.config.AppealHearingType.ORAL;
 import static uk.gov.hmcts.reform.sscs.config.AppealHearingType.PAPER;
@@ -175,38 +176,20 @@ public class CcdNotificationWrapper implements NotificationWrapper {
         log.info("isSendNewOtherPartyNotification {}", otherParty.getSendNewOtherPartyNotification());
         log.info("Notification Type {}", getNotificationType());
         log.info("Other Party id {} isSendNewOtherPartyNotification {}", otherParty.getId(), otherParty.getSendNewOtherPartyNotification());
+        log.info("Can send to Other party {} {}", isNotificationEventValidToSendToOtherPartySubscription(otherParty.getOtherPartySubscription(),
+                YesNo.isYes(otherParty.getSendNewOtherPartyNotification())), otherParty.getSendNewOtherPartyNotification());
 
-        boolean isSendNewOtherPartyNotification = YesNo.isYes(otherParty.getSendNewOtherPartyNotification());
-
-        if (hasAppointee(otherParty.getAppointee(), otherParty.getIsAppointee())
-                && isNotificationEventValidToSendToOtherPartySubscription(otherParty.getOtherPartyAppointeeSubscription(), isSendNewOtherPartyNotification)) {
+        if (canSendToOtherPartyAppointee(otherParty)) {
             otherPartySubscription.add(new SubscriptionWithType(otherParty.getOtherPartyAppointeeSubscription(),
                 OTHER_PARTY, otherParty, otherParty.getAppointee(), otherParty.getAppointee().getId()));
-        } else if (isNotificationEventValidToSendToOtherPartySubscription(otherParty.getOtherPartySubscription(), isSendNewOtherPartyNotification)) {
+        } else if (canSendToOtherParty(otherParty)) {
             otherPartySubscription.add(new SubscriptionWithType(otherParty.getOtherPartySubscription(), OTHER_PARTY,
                 otherParty, otherParty, otherParty.getId()));
         }
 
-        if (hasRepresentative(otherParty)
-                && isNotificationEventValidToSendToOtherPartySubscription(otherParty.getOtherPartyRepresentativeSubscription(), isSendNewOtherPartyNotification)) {
+        if (canSendToOtherPartyRepresentative(otherParty)) {
             otherPartySubscription.add(new SubscriptionWithType(otherParty.getOtherPartyRepresentativeSubscription(),
                 OTHER_PARTY, otherParty, otherParty.getRep(), otherParty.getRep().getId()));
-        }
-
-        if (ISSUE_GENERIC_LETTER.equals(getNotificationType()) && (hasOtherPartySelected(otherParty)
-                || YesNo.YES.equals(getNewSscsCaseData().getSendToAllParties()))) {
-            if (hasAppointee(otherParty.getAppointee(), otherParty.getIsAppointee())) {
-                otherPartySubscription.add(new SubscriptionWithType(otherParty.getOtherPartyAppointeeSubscription(),
-                        OTHER_PARTY, otherParty, otherParty.getAppointee(), otherParty.getAppointee().getId()));
-            } else {
-                otherPartySubscription.add(new SubscriptionWithType(otherParty.getOtherPartySubscription(),
-                        OTHER_PARTY, otherParty, otherParty, otherParty.getId()));
-            }
-
-            if (hasRepresentative(otherParty)) {
-                otherPartySubscription.add(new SubscriptionWithType(otherParty.getOtherPartyRepresentativeSubscription(),
-                        OTHER_PARTY, otherParty, otherParty.getRep(), otherParty.getRep().getId()));
-            }
         }
 
         log.info("Number of subscription {}", otherPartySubscription.size());
@@ -214,26 +197,45 @@ public class CcdNotificationWrapper implements NotificationWrapper {
         return otherPartySubscription;
     }
 
-    private boolean hasOtherPartySelected(OtherParty otherParty) {
+    private boolean canSendToOtherParty(OtherParty otherParty) {
+        boolean isSendNewOtherPartyNotification = YesNo.isYes(otherParty.getSendNewOtherPartyNotification());
+
+        return isNotificationEventValidToSendToOtherPartySubscription(otherParty.getOtherPartySubscription(), isSendNewOtherPartyNotification)
+                || hasGenericLetterOtherPartySelected(otherParty.getId());
+    }
+
+    private boolean canSendToOtherPartyRepresentative(OtherParty otherParty) {
+        boolean isSendNewOtherPartyNotification = YesNo.isYes(otherParty.getSendNewOtherPartyNotification());
+
+        return hasRepresentative(otherParty)
+                && (isNotificationEventValidToSendToOtherPartySubscription(otherParty.getOtherPartyRepresentativeSubscription(), isSendNewOtherPartyNotification)
+                || hasGenericLetterOtherPartySelected(otherParty.getRep().getId()));
+    }
+
+    private boolean canSendToOtherPartyAppointee(OtherParty otherParty) {
+        boolean isSendNewOtherPartyNotification = YesNo.isYes(otherParty.getSendNewOtherPartyNotification());
+
+        return hasAppointee(otherParty.getAppointee(), otherParty.getIsAppointee())
+                && (isNotificationEventValidToSendToOtherPartySubscription(otherParty.getOtherPartyAppointeeSubscription(), isSendNewOtherPartyNotification)
+                || hasGenericLetterOtherPartySelected(otherParty.getAppointee().getId()));
+    }
+
+    private boolean hasGenericLetterOtherPartySelected(String entityId) {
+        if (YesNo.isYes(getNewSscsCaseData().getSendToAllParties())) {
+            return true;
+        }
+
+        if (isEmpty(getNewSscsCaseData().getOtherPartySelection())) {
+            return false;
+        }
+
         for (var party : getNewSscsCaseData().getOtherPartySelection()) {
-            if (otherParty.hasAppointee()
-                    && party.getValue().getOtherPartiesList().getValue().getCode().contains(otherParty.getAppointee().getId())) {
-                return true;
-            }
-
-            if (party.getValue().getOtherPartiesList().getValue().getCode().contains(otherParty.getId())) {
-                return true;
-            }
-
-            if (otherParty.hasRepresentative()
-                    && party.getValue().getOtherPartiesList().getValue().getCode().contains(otherParty.getRep().getId())) {
+            if (party.getValue().getOtherPartiesList().getValue().getCode().contains(entityId)) {
                 return true;
             }
         }
-
         return false;
     }
-
 
     private boolean isNotificationEventValidToSendToAppointee() {
         return (hasAppointeeSubscriptionOrIsMandatoryAppointeeLetter(responseWrapper)
