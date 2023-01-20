@@ -37,7 +37,8 @@ public class DocmosisWithGovNotifyLetterFunctionalTest extends AbstractFunctiona
         JOINT_PARTY_ADDED,
         POSTPONEMENT,
         RESEND_APPEAL_CREATED,
-        VALID_APPEAL_CREATED
+        VALID_APPEAL_CREATED,
+        ISSUE_GENERIC_LETTER
     );
 
     public DocmosisWithGovNotifyLetterFunctionalTest() {
