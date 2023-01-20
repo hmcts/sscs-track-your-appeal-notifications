@@ -367,6 +367,7 @@ public class NotificationSenderTest {
         verifyNoInteractions(saveCorrespondenceAsyncService);
     }
 
+    @Test
     public void saveGenericLetter() {
         byte[] sampleLetter = "Letter".getBytes();
         notificationSender.saveGenericLetter(sampleLetter, "Name", SSCS_CASE_DATA);
