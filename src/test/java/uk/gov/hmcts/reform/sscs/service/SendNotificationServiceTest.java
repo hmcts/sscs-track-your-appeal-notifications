@@ -1,12 +1,15 @@
 package uk.gov.hmcts.reform.sscs.service;
 
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertNull;
 import static org.junit.Assert.fail;
 import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.ArgumentMatchers.isNull;
 import static org.mockito.Mockito.atLeastOnce;
 import static org.mockito.Mockito.eq;
+import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.verifyNoInteractions;
 import static org.mockito.Mockito.verifyNoMoreInteractions;
@@ -22,6 +25,7 @@ import static uk.gov.hmcts.reform.sscs.config.SubscriptionType.JOINT_PARTY;
 import static uk.gov.hmcts.reform.sscs.config.SubscriptionType.REPRESENTATIVE;
 import static uk.gov.hmcts.reform.sscs.domain.notify.NotificationEventType.APPEAL_RECEIVED;
 import static uk.gov.hmcts.reform.sscs.domain.notify.NotificationEventType.CASE_UPDATED;
+import static uk.gov.hmcts.reform.sscs.domain.notify.NotificationEventType.ISSUE_GENERIC_LETTER;
 import static uk.gov.hmcts.reform.sscs.domain.notify.NotificationEventType.STRUCK_OUT;
 import static uk.gov.hmcts.reform.sscs.service.LetterUtils.getAddressToUseForLetter;
 import static uk.gov.hmcts.reform.sscs.service.NotificationServiceTest.verifyExpectedLogMessage;
@@ -33,6 +37,7 @@ import ch.qos.logback.classic.Level;
 import ch.qos.logback.classic.Logger;
 import ch.qos.logback.classic.spi.ILoggingEvent;
 import ch.qos.logback.core.Appender;
+import java.io.IOException;
 import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -40,6 +45,7 @@ import java.util.HashMap;
 import java.util.List;
 import junitparams.JUnitParamsRunner;
 import junitparams.Parameters;
+import org.apache.pdfbox.io.IOUtils;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -422,7 +428,88 @@ public class SendNotificationServiceTest {
     }
 
     @Test
-    @Parameters({"APPEAL_RECEIVED", "DIRECTION_ISSUED",  "DIRECTION_ISSUED_WELSH", "DECISION_ISSUED", "DECISION_ISSUED_WELSH", "ISSUE_FINAL_DECISION",  "ISSUE_FINAL_DECISION_WELSH", "ISSUE_ADJOURNMENT_NOTICE", "DWP_UPLOAD_RESPONSE", "DWP_RESPONSE_RECEIVED"})
+    public void givenDocumentsExist_whenProduceLetterWithBothIncluded() throws IOException {
+        SubscriptionWithType appellantEmptySubscription = new SubscriptionWithType(EMPTY_SUBSCRIPTION, APPELLANT,
+                null, null);
+
+        byte[] samplePdf = IOUtils.toByteArray(getClass().getClassLoader().getResourceAsStream("pdfs/direction-text.pdf"));
+
+        when(pdfLetterService.generateLetter(any(), any(), any())).thenReturn(samplePdf);
+        when(pdfStoreService.download(any())).thenReturn(samplePdf);
+
+        classUnderTest.sendEmailSmsLetterNotification(buildGenericLetterBaseWrapper(APPELLANT_WITH_ADDRESS, ISSUE_GENERIC_LETTER, REP_WITH_ADDRESS,
+                        buildDocumentsSelection(), true, true),
+                DOCMOSIS_LETTER, appellantEmptySubscription, ISSUE_GENERIC_LETTER);
+
+        verify(pdfStoreService, times(1)).download("sscs_url");
+        verify(pdfStoreService, times(1)).download("dwp_url");
+        verify(pdfLetterService).generateLetter(any(), any(), any());
+        verify(pdfLetterService).buildCoversheet(any(), any());
+        verifyNoMoreInteractions(pdfLetterService);
+        verify(notificationHandler, atLeastOnce()).sendNotification(any(), any(), eq("Letter"), sender.capture());
+        verifyNotificationIsSent(sender.getValue(), ISSUE_GENERIC_LETTER, CASE_ID);
+    }
+
+    @Test
+    public void givenNoDocumentsProvided_whenProduceLetterWithoutAnyIncluded() {
+        SubscriptionWithType appellantEmptySubscription = new SubscriptionWithType(EMPTY_SUBSCRIPTION, APPELLANT,
+                null, null);
+
+        var item = new DynamicListItem("test", "test");
+        var list = new DynamicList(item, List.of());
+
+        when(pdfLetterService.generateLetter(any(), any(), any())).thenReturn("PDF".getBytes());
+
+        classUnderTest.sendEmailSmsLetterNotification(buildGenericLetterBaseWrapper(APPELLANT_WITH_ADDRESS, ISSUE_GENERIC_LETTER, REP_WITH_ADDRESS,
+                        List.of(new CcdValue<>(new DocumentSelectionDetails(list))), false, false),
+                DOCMOSIS_LETTER, appellantEmptySubscription, ISSUE_GENERIC_LETTER);
+        verify(pdfLetterService).generateLetter(any(), any(), any());
+        verify(pdfLetterService).buildCoversheet(any(), any());
+        verifyNoMoreInteractions(pdfLetterService);
+        verifyNoInteractions(pdfStoreService);
+        verify(notificationHandler, atLeastOnce()).sendNotification(any(), any(), eq("Letter"), sender.capture());
+        verifyNotificationIsSent(sender.getValue(), ISSUE_GENERIC_LETTER, CASE_ID);
+    }
+
+    @Test
+    public void givenPdfIsNull_whenShouldNotSentLetter() {
+        SubscriptionWithType appellantEmptySubscription = new SubscriptionWithType(EMPTY_SUBSCRIPTION, APPELLANT,
+                null, null);
+
+        when(pdfLetterService.generateLetter(any(), any(), any())).thenReturn(null);
+        var result = classUnderTest.sendEmailSmsLetterNotification(buildGenericLetterBaseWrapper(APPELLANT_WITH_ADDRESS, ISSUE_GENERIC_LETTER, REP_WITH_ADDRESS, List.of(), false, false),
+                DOCMOSIS_LETTER, appellantEmptySubscription, ISSUE_GENERIC_LETTER);
+
+        verify(notificationSender).saveGenericLetter(isNull(), any(), any());
+        verifyNoMoreInteractions(notificationSender);
+        assertFalse(result);
+    }
+
+    private List<CcdValue<DocumentSelectionDetails>> buildDocumentsSelection() {
+        var itemDwp = new DynamicListItem("dwpDocument", "test");
+        var itemSscs = new DynamicListItem("sscsDocument", "test");
+        var itemDummy = new DynamicListItem("dummyDocument", "dummyTest");
+        var listDwp = new DynamicList(itemDwp, List.of());
+        var listSscs = new DynamicList(itemSscs, List.of());
+        var listDummy = new DynamicList(itemDummy, List.of());
+
+        var documentsDwp = new CcdValue<>(DocumentSelectionDetails.builder()
+                .documentsList(listDwp)
+                .build());
+
+        var documentsSscs = new CcdValue<>(DocumentSelectionDetails.builder()
+                .documentsList(listSscs)
+                .build());
+
+        var documentsDummy = new CcdValue<>(DocumentSelectionDetails.builder()
+                .documentsList(listDummy)
+                .build());
+
+        return List.of(documentsDwp, documentsSscs, documentsDummy);
+    }
+
+    @Test
+    @Parameters({"APPEAL_RECEIVED", "DIRECTION_ISSUED",  "DIRECTION_ISSUED_WELSH", "DECISION_ISSUED", "DECISION_ISSUED_WELSH", "ISSUE_FINAL_DECISION",  "ISSUE_FINAL_DECISION_WELSH", "ISSUE_ADJOURNMENT_NOTICE", "DWP_UPLOAD_RESPONSE", "DWP_RESPONSE_RECEIVED", "ISSUE_GENERIC_LETTER"})
     public void sendLetterForNotificationType(NotificationEventType notificationEventType) {
         SubscriptionWithType appellantEmptySubscription = new SubscriptionWithType(EMPTY_SUBSCRIPTION, APPELLANT,
             null, null);
@@ -516,6 +603,38 @@ public class SendNotificationServiceTest {
         } catch (NotificationClientException e) {
             fail("Not expected exception");
         }
+    }
+
+    private CcdNotificationWrapper buildGenericLetterBaseWrapper(Appellant appellant, NotificationEventType eventType, Representative representative,
+                                                                 List<CcdValue<DocumentSelectionDetails>> documentsSelection, boolean sscsDocument, boolean dwpDocument) {
+        var wrapper = buildBaseWrapper(appellant, eventType, representative, Benefit.PIP, "Online", READY_TO_LIST.getId());
+
+        if (documentsSelection != null) {
+            wrapper.getNewSscsCaseData().setDocumentSelection(documentsSelection);
+
+            var sscsLink = DocumentLink.builder().documentUrl("sscs_url").documentFilename("sscs").build();
+            var dwpLink = DocumentLink.builder().documentUrl("dwp_url").documentFilename("dwp").build();
+
+            if (sscsDocument) {
+                wrapper.getNewSscsCaseData().getSscsDocument().add(SscsDocument.builder()
+                        .value(SscsDocumentDetails.builder().documentLink(sscsLink).documentFileName("sscsDocument").build())
+                        .build());
+            } else {
+                wrapper.getNewSscsCaseData().getSscsDocument().clear();
+            }
+
+            if (dwpDocument) {
+                wrapper.getNewSscsCaseData().setDwpDocuments(List.of(DwpDocument.builder()
+                        .value(DwpDocumentDetails.builder().documentLink(dwpLink).documentFileName("dwpDocument").build())
+                        .build()));
+            } else {
+                wrapper.getNewSscsCaseData().getSscsDocument().clear();
+            }
+        }
+
+        wrapper.getNewSscsCaseData().setAddDocuments(YesNo.YES);
+
+        return wrapper;
     }
 
     private CcdNotificationWrapper buildBaseWrapper(Appellant appellant) {
