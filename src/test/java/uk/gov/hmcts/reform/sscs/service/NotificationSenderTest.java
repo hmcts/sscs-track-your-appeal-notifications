@@ -367,6 +367,12 @@ public class NotificationSenderTest {
     }
 
     @Test
+    public void saveGenericLetter_emptyLetter() throws NotificationClientException {
+        notificationSender.saveGenericLetter(null, "Name", SSCS_CASE_DATA);
+        verifyNoInteractions(saveCorrespondenceAsyncService);
+    }
+
+    @Test
     public void recoverWillConsumeThrowable() {
         notificationSender.getBackendResponseFallback(new NotificationClientException("400 BadRequestError"));
     }
