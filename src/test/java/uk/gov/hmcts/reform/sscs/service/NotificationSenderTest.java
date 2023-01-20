@@ -34,6 +34,7 @@ import org.mockito.Mock;
 import org.mockito.junit.MockitoJUnit;
 import org.mockito.junit.MockitoRule;
 import org.springframework.test.util.ReflectionTestUtils;
+import uk.gov.hmcts.reform.sscs.ccd.callback.DocumentType;
 import uk.gov.hmcts.reform.sscs.ccd.domain.*;
 import uk.gov.hmcts.reform.sscs.config.NotificationTestRecipients;
 import uk.gov.hmcts.reform.sscs.config.SubscriptionType;
@@ -364,6 +365,13 @@ public class NotificationSenderTest {
     public void saveLetterCorrespondence_emptyLetter() throws NotificationClientException {
         notificationSender.saveLettersToReasonableAdjustment(null, NotificationEventType.APPEAL_RECEIVED, "Bob Squires", CCD_CASE_ID, SubscriptionType.APPELLANT);
         verifyNoInteractions(saveCorrespondenceAsyncService);
+    }
+
+    public void saveGenericLetter() {
+        byte[] sampleLetter = "Letter".getBytes();
+        notificationSender.saveGenericLetter(sampleLetter, "Name", SSCS_CASE_DATA);
+
+        verify(saveCorrespondenceAsyncService).saveGenericLetter(eq("Name"), eq(sampleLetter), eq(SSCS_CASE_DATA), eq(DocumentType.OTHER_DOCUMENT.getValue()));
     }
 
     @Test
