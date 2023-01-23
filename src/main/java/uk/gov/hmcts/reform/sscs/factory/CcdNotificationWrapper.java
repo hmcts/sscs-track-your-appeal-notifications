@@ -38,11 +38,13 @@ import org.apache.commons.lang3.StringUtils;
 import org.jetbrains.annotations.NotNull;
 import uk.gov.hmcts.reform.sscs.ccd.domain.Appeal;
 import uk.gov.hmcts.reform.sscs.ccd.domain.Appellant;
+import uk.gov.hmcts.reform.sscs.ccd.domain.Appointee;
 import uk.gov.hmcts.reform.sscs.ccd.domain.CcdValue;
 import uk.gov.hmcts.reform.sscs.ccd.domain.DatedRequestOutcome;
 import uk.gov.hmcts.reform.sscs.ccd.domain.HearingRecordingRequest;
 import uk.gov.hmcts.reform.sscs.ccd.domain.JointParty;
 import uk.gov.hmcts.reform.sscs.ccd.domain.OtherParty;
+import uk.gov.hmcts.reform.sscs.ccd.domain.OtherPartySelectionDetails;
 import uk.gov.hmcts.reform.sscs.ccd.domain.RequestOutcome;
 import uk.gov.hmcts.reform.sscs.ccd.domain.SscsCaseData;
 import uk.gov.hmcts.reform.sscs.ccd.domain.Subscription;
@@ -214,23 +216,29 @@ public class CcdNotificationWrapper implements NotificationWrapper {
 
     private boolean canSendToOtherPartyAppointee(OtherParty otherParty) {
         boolean isSendNewOtherPartyNotification = YesNo.isYes(otherParty.getSendNewOtherPartyNotification());
+        Appointee appointee = otherParty.getAppointee();
 
-        return hasAppointee(otherParty.getAppointee(), otherParty.getIsAppointee())
+        return hasAppointee(appointee, otherParty.getIsAppointee())
                 && (isNotificationEventValidToSendToOtherPartySubscription(otherParty.getOtherPartyAppointeeSubscription(), isSendNewOtherPartyNotification)
-                || hasGenericLetterOtherPartySelected(otherParty.getAppointee().getId()));
+                || hasGenericLetterOtherPartySelected(appointee.getId()));
     }
 
     private boolean hasGenericLetterOtherPartySelected(String entityId) {
-        if (YesNo.isYes(getNewSscsCaseData().getSendToAllParties())) {
+        SscsCaseData newSscsCaseData = getNewSscsCaseData();
+        List<CcdValue<OtherPartySelectionDetails>> otherPartySelection = newSscsCaseData.getOtherPartySelection();
+
+        if (YesNo.isYes(newSscsCaseData.getSendToAllParties())) {
             return true;
         }
 
-        if (isEmpty(getNewSscsCaseData().getOtherPartySelection())) {
+        if (isEmpty(otherPartySelection)) {
             return false;
         }
 
-        for (var party : getNewSscsCaseData().getOtherPartySelection()) {
-            if (party.getValue().getOtherPartiesList().getValue().getCode().contains(entityId)) {
+        for (var party : otherPartySelection) {
+            String otherPartyId = party.getValue().getOtherPartiesList().getValue().getCode();
+
+            if (otherPartyId.contains(entityId)) {
                 return true;
             }
         }
@@ -301,13 +309,25 @@ public class CcdNotificationWrapper implements NotificationWrapper {
     }
 
     private boolean isNotificationEventValidToSendToJointParty() {
+
         return (hasJointPartySubscription(responseWrapper)
             && (EVENTS_VALID_FOR_ALL_ENTITIES.contains(getNotificationType())
             || EVENTS_VALID_FOR_JOINT_PARTY.contains(getNotificationType())
             || isValidRequestInfoIncompleteEventForParty(PartyItemList.JOINT_PARTY)
             || isValidProcessHearingRequestEventForParty(PartyItemList.JOINT_PARTY)
-            || (getOldSscsCaseData() != null && isValidReviewConfidentialityRequest(getOldSscsCaseData().getConfidentialityRequestOutcomeJointParty(), getNewSscsCaseData().getConfidentialityRequestOutcomeJointParty()))))
+            || hasValidRequestOutcomeJointParty()))
             || (ISSUE_GENERIC_LETTER.equals(getNotificationType()) && hasJointPartySelected());
+    }
+
+    private boolean hasValidRequestOutcomeJointParty() {
+        if (getOldSscsCaseData() == null) {
+            return false;
+        }
+
+        DatedRequestOutcome newConfidentialityRequestOutcomeJointParty = getNewSscsCaseData().getConfidentialityRequestOutcomeJointParty();
+        DatedRequestOutcome oldConfidentialityRequestOutcomeJointParty = getOldSscsCaseData().getConfidentialityRequestOutcomeJointParty();
+
+        return isValidReviewConfidentialityRequest(oldConfidentialityRequestOutcomeJointParty, newConfidentialityRequestOutcomeJointParty);
     }
 
     private boolean hasJointPartySelected() {

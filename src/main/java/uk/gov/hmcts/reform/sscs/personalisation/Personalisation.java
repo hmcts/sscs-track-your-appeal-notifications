@@ -309,7 +309,7 @@ public class Personalisation<E extends NotificationWrapper> {
         personalisation.put(HEARING_TYPE, responseWrapper.getNewSscsCaseData().getAppeal().getHearingType());
 
         if (subscriptionWithType.getSubscriptionType() == REPRESENTATIVE) {
-            personalisation.put(PersonalisationMappingConstants.REPRESENTATIVE, "Yes");
+            personalisation.put(PersonalisationMappingConstants.IS_REPRESENTATIVE, "Yes");
         }
         if (subscriptionWithType.getSubscriptionType() == JOINT_PARTY) {
             personalisation.put(PersonalisationMappingConstants.JOINT_PARTY, "Yes");

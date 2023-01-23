@@ -97,7 +97,7 @@ public final class PersonalisationMappingConstants {
     public static final String REASONS_FOR_APPEALING_DETAILS_LITERAL_WELSH = "welsh_reasons_for_appealing_details";
     public static final String REGIONAL_OFFICE_NAME_LITERAL = "regional_office_name";
     public static final String REGIONAL_OFFICE_POSTCODE_LITERAL = "regional_office_postcode";
-    public static final String REPRESENTATIVE = "representative";
+    public static final String IS_REPRESENTATIVE = "representative";
     public static final String REPRESENTATIVE_DETAILS_LITERAL = "representative_details";
     public static final String REPRESENTATIVE_DETAILS_LITERAL_WELSH = "welsh_representative_details";
     public static final String REPRESENTATIVE_NAME = "representative_name";

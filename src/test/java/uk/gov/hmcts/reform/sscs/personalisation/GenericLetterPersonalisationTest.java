@@ -112,34 +112,41 @@ public class GenericLetterPersonalisationTest {
                 .representativeSubscription(subscription)
                 .build();
 
+        Name appellantName = buildName("Appellant", "Name", "Mr");
+        Address appellantAddress = Address.builder().build();
+        Appointee appointee = Appointee.builder().name(Name.builder().build()).build();
+        Appellant appellant = Appellant.builder().name(appellantName).address(appellantAddress).appointee(appointee)
+                .build();
+
+        BenefitType benefitType = BenefitType.builder().code(PIP.name()).build();
+        Name representativeName = buildName("Representative", "Name", "Mr");
+        Representative representative = Representative.builder().name(representativeName).build();
+        Appeal appeal = Appeal.builder().appellant(appellant).rep(representative).benefitType(benefitType).build();
+
+        Name otherPartyName = buildName("Other", "Party", "Mr");
+        OtherParty otherParty = OtherParty.builder().name(otherPartyName).build();
+        List<CcdValue<OtherParty>> otherParties = List.of(new CcdValue<>(otherParty));
+
         data = SscsCaseData.builder()
-                .appeal(Appeal.builder()
-                        .appellant(Appellant.builder()
-                                .name(Name.builder().firstName("Appellant").lastName("Name").title("Mr").build())
-                                .address(Address.builder().build())
-                                .appointee(Appointee.builder().name(Name.builder().build()).build())
-                                .build())
-                        .rep(Representative.builder()
-                                .name(Name.builder().firstName("Representative").lastName("Name").title("Mr").build())
-                                .build())
-                        .benefitType(BenefitType.builder().code(PIP.name()).build())
-                        .build())
-                .otherParties(List.of(new CcdValue<>(OtherParty
-                        .builder()
-                        .name(Name.builder().firstName("Other").lastName("Party").title("Mr").build())
-                        .build())))
+                .appeal(appeal)
+                .otherParties(otherParties)
                 .subscriptions(subscriptions)
                 .build();
+    }
+
+    private static Name buildName(String firstName, String lastName, String title) {
+        return Name.builder().firstName(firstName).lastName(lastName).title(title).build();
     }
 
     @Test
     public void givenSubscriberIsAppellant_shouldReturnCorrectAppellantFields() {
         var wrapper = SscsCaseDataWrapper.builder().newSscsCaseData(data).notificationEventType(APPEAL_RECEIVED).build();
 
+        Appellant appellant = data.getAppeal().getAppellant();
         var subscriptionWithType = new SubscriptionWithType(subscriptions.getAppellantSubscription(),
                 APPELLANT,
-                data.getAppeal().getAppellant(),
-                data.getAppeal().getAppellant().getAppointee());
+                appellant,
+                appellant.getAppointee());
 
         var result = genericLetterPersonalisation.create(wrapper, subscriptionWithType);
 
@@ -151,15 +158,16 @@ public class GenericLetterPersonalisationTest {
     public void givenThereIsAJointParty_shouldReturnCorrectJointField() {
         data.setJointParty(JointParty.builder()
                 .hasJointParty(YesNo.YES)
-                .name(Name.builder().firstName("Joint").lastName("Party").title("Mr").build())
+                .name(buildName("Joint", "Party", "Mr"))
                 .build());
 
         var wrapper = SscsCaseDataWrapper.builder().newSscsCaseData(data).notificationEventType(APPEAL_RECEIVED).build();
 
+        Appellant appellant = data.getAppeal().getAppellant();
         var subscriptionWithType = new SubscriptionWithType(subscriptions.getAppellantSubscription(),
                 APPELLANT,
-                data.getAppeal().getAppellant(),
-                data.getAppeal().getAppellant().getAppointee());
+                appellant,
+                appellant.getAppointee());
 
         var result = genericLetterPersonalisation.create(wrapper, subscriptionWithType);
 
@@ -178,24 +186,21 @@ public class GenericLetterPersonalisationTest {
         var result = genericLetterPersonalisation.create(wrapper, subscriptionWithType);
 
         Assert.assertEquals("Representative Name", result.get(REPRESENTATIVE_NAME));
-        Assert.assertEquals("Yes", result.get(PersonalisationMappingConstants.REPRESENTATIVE));
+        Assert.assertEquals("Yes", result.get(PersonalisationMappingConstants.IS_REPRESENTATIVE));
     }
 
     @Test
     public void givenSubscriberIsOtherParrty_shouldReturnCorrectOtherPartyFields() {
         var wrapper = SscsCaseDataWrapper.builder().newSscsCaseData(data).notificationEventType(APPEAL_RECEIVED).build();
 
+        OtherParty party = data.getOtherParties().get(0).getValue();
         var subscriptionWithType = new SubscriptionWithType(subscriptions.getRepresentativeSubscription(),
-                OTHER_PARTY,
-                data.getOtherParties().get(0).getValue(),
-                data.getOtherParties().get(0).getValue());
+                OTHER_PARTY, party, party);
 
         var result = genericLetterPersonalisation.create(wrapper, subscriptionWithType);
 
         Assert.assertEquals("Other Party", result.get(REPRESENTATIVE_NAME));
-        Assert.assertEquals("Yes", result.get(PersonalisationMappingConstants.REPRESENTATIVE));
+        Assert.assertEquals("Yes", result.get(PersonalisationMappingConstants.IS_REPRESENTATIVE));
         Assert.assertEquals("Yes", result.get(IS_OTHER_PARTY));
     }
-
-
 }

@@ -27,6 +27,7 @@ import java.time.LocalDateTime;
 import java.time.ZonedDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.Collection;
+import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 import java.util.stream.Stream;
@@ -40,7 +41,9 @@ import uk.gov.hmcts.reform.sscs.ccd.domain.Address;
 import uk.gov.hmcts.reform.sscs.ccd.domain.CcdValue;
 import uk.gov.hmcts.reform.sscs.ccd.domain.DocumentLink;
 import uk.gov.hmcts.reform.sscs.ccd.domain.DocumentSelectionDetails;
+import uk.gov.hmcts.reform.sscs.ccd.domain.DwpDocument;
 import uk.gov.hmcts.reform.sscs.ccd.domain.SscsCaseData;
+import uk.gov.hmcts.reform.sscs.ccd.domain.SscsDocument;
 import uk.gov.hmcts.reform.sscs.ccd.domain.State;
 import uk.gov.hmcts.reform.sscs.ccd.domain.Subscription;
 import uk.gov.hmcts.reform.sscs.ccd.domain.YesNo;
@@ -212,7 +215,6 @@ public class SendNotificationService {
     }
 
     protected boolean sendLetterNotification(NotificationWrapper wrapper, Notification notification, SubscriptionWithType subscriptionWithType, NotificationEventType eventType) {
-
         log.info("Sending the letter for event {} and case id {}.", eventType.getId(), wrapper.getCaseId());
         Address addressToUse = getAddressToUseForLetter(wrapper, subscriptionWithType);
 
@@ -288,8 +290,10 @@ public class SendNotificationService {
         try {
             byte[] bundledLetter;
             if (isNotBlank(notification.getDocmosisLetterTemplate())) {
+                SscsCaseData newSscsCaseData = wrapper.getNewSscsCaseData();
                 byte[] letter = pdfLetterService.generateLetter(wrapper, notification, subscriptionWithType);
                 final byte[] associatedCasePdf = downloadAssociatedCasePdf(wrapper);
+
                 if (ArrayUtils.isNotEmpty(associatedCasePdf)) {
                     letter = buildBundledLetter(addBlankPageAtTheEndIfOddPage(letter), associatedCasePdf);
                 }
@@ -298,9 +302,10 @@ public class SendNotificationService {
                     letter = buildBundledLetter(addBlankPageAtTheEndIfOddPage(letter), coversheet);
                 }
 
-                if (YesNo.YES.equals(wrapper.getNewSscsCaseData().getAddDocuments())
-                        && isNotEmpty(wrapper.getNewSscsCaseData().getDocumentSelection())) {
-                    letter = buildGenericLetter(letter, wrapper.getNewSscsCaseData());
+                boolean hasDocumentsSelected = YesNo.isYes(newSscsCaseData.getAddDocuments())
+                        && isNotEmpty(newSscsCaseData.getDocumentSelection());
+                if (hasDocumentsSelected) {
+                    letter = buildGenericLetter(letter, newSscsCaseData);
                 }
 
                 bundledLetter = letter;
@@ -313,7 +318,7 @@ public class SendNotificationService {
                                 wrapper.getCaseId(),
                                 subscriptionWithType.getSubscriptionType())
                         : () -> notificationSender.sendBundledLetter(
-                                wrapper.getNewSscsCaseData().getAppeal().getAppellant().getAddress().getPostcode(),   // Used for whitelisting only
+                                newSscsCaseData.getAppeal().getAppellant().getAddress().getPostcode(),   // Used for whitelisting only
                                 bundledLetter,
                                 wrapper.getNotificationType(),
                                 nameToUse,
@@ -329,7 +334,7 @@ public class SendNotificationService {
 
                     log.info("Saving Generic Letter into ccd for case {} Letter name is {}", wrapper.getCaseId(), letterName);
 
-                    notificationSender.saveGenericLetter(bundledLetter, letterName, wrapper.getNewSscsCaseData());
+                    notificationSender.saveGenericLetter(bundledLetter, letterName, newSscsCaseData);
                 }
 
                 if (ArrayUtils.isNotEmpty(bundledLetter)) {
@@ -364,8 +369,10 @@ public class SendNotificationService {
     }
 
     private DocumentLink findDocumentByFileName(String fileName, SscsCaseData sscsCaseData) {
-        if (isNotEmpty(sscsCaseData.getDwpDocuments())) {
-            var result = sscsCaseData.getDwpDocuments().stream()
+        List<DwpDocument> dwpDocuments = sscsCaseData.getDwpDocuments();
+
+        if (isNotEmpty(dwpDocuments)) {
+            var result = dwpDocuments.stream()
                     .filter(document -> fileName.equals(document.getValue().getDocumentFileName()))
                     .findAny()
                     .orElse(null);
@@ -375,11 +382,14 @@ public class SendNotificationService {
             }
         }
 
-        if (isNotEmpty(sscsCaseData.getSscsDocument())) {
-            var doc = sscsCaseData.getSscsDocument().stream()
+        List<SscsDocument> sscsDocuments = sscsCaseData.getSscsDocument();
+
+        if (isNotEmpty(sscsDocuments)) {
+            var doc = sscsDocuments.stream()
                     .filter(d -> fileName.equals(d.getValue().getDocumentFileName()))
                     .findAny()
                     .orElse(null);
+
             if (doc != null) {
                 return doc.getValue().getDocumentLink();
             }

@@ -1,7 +1,6 @@
 package uk.gov.hmcts.reform.sscs.service;
 
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.retry.annotation.Backoff;
 import org.springframework.retry.annotation.Recover;
 import org.springframework.retry.annotation.Retryable;
@@ -26,7 +25,6 @@ public class SaveCorrespondenceAsyncService {
     private final IdamService idamService;
 
 
-    @Autowired
     public SaveCorrespondenceAsyncService(CcdNotificationsPdfService ccdNotificationsPdfService,
                                           CcdPdfService ccdPdfService,
                                           IdamService idamService) {
