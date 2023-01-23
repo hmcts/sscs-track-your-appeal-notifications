@@ -606,33 +606,34 @@ public class SendNotificationServiceTest {
     }
 
     private CcdNotificationWrapper buildGenericLetterBaseWrapper(Appellant appellant, NotificationEventType eventType, Representative representative,
-                                                                 List<CcdValue<DocumentSelectionDetails>> documentsSelection, boolean sscsDocument, boolean dwpDocument) {
+                                                                 List<CcdValue<DocumentSelectionDetails>> documentsSelection, boolean hasSscsDocument, boolean hasDwpDocument) {
         var wrapper = buildBaseWrapper(appellant, eventType, representative, Benefit.PIP, "Online", READY_TO_LIST.getId());
+        var newSscsCaseData = wrapper.getNewSscsCaseData();
 
         if (documentsSelection != null) {
-            wrapper.getNewSscsCaseData().setDocumentSelection(documentsSelection);
+            newSscsCaseData.setDocumentSelection(documentsSelection);
 
             var sscsLink = DocumentLink.builder().documentUrl("sscs_url").documentFilename("sscs").build();
             var dwpLink = DocumentLink.builder().documentUrl("dwp_url").documentFilename("dwp").build();
 
-            if (sscsDocument) {
-                wrapper.getNewSscsCaseData().getSscsDocument().add(SscsDocument.builder()
-                        .value(SscsDocumentDetails.builder().documentLink(sscsLink).documentFileName("sscsDocument").build())
-                        .build());
+            if (hasSscsDocument) {
+                var sscsDocumentDetails = SscsDocumentDetails.builder().documentLink(sscsLink).documentFileName("sscsDocument").build();
+                var sscsDocument = SscsDocument.builder().value(sscsDocumentDetails).build();
+                newSscsCaseData.getSscsDocument().add(sscsDocument);
             } else {
-                wrapper.getNewSscsCaseData().getSscsDocument().clear();
+                newSscsCaseData.getSscsDocument().clear();
             }
 
-            if (dwpDocument) {
-                wrapper.getNewSscsCaseData().setDwpDocuments(List.of(DwpDocument.builder()
-                        .value(DwpDocumentDetails.builder().documentLink(dwpLink).documentFileName("dwpDocument").build())
-                        .build()));
+            if (hasDwpDocument) {
+                var dwpDocumentDetails = DwpDocumentDetails.builder().documentLink(dwpLink).documentFileName("dwpDocument").build();
+                var dwpDocument = DwpDocument.builder().value(dwpDocumentDetails).build();
+                newSscsCaseData.setDwpDocuments(List.of(dwpDocument));
             } else {
-                wrapper.getNewSscsCaseData().getSscsDocument().clear();
+                newSscsCaseData.getSscsDocument().clear();
             }
         }
 
-        wrapper.getNewSscsCaseData().setAddDocuments(YesNo.YES);
+        newSscsCaseData.setAddDocuments(YesNo.YES);
 
         return wrapper;
     }
