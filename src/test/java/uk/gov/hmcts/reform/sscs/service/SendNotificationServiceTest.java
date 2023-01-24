@@ -437,8 +437,8 @@ public class SendNotificationServiceTest {
         when(pdfLetterService.generateLetter(any(), any(), any())).thenReturn(samplePdf);
         when(pdfStoreService.download(any())).thenReturn(samplePdf);
 
-        classUnderTest.sendEmailSmsLetterNotification(buildGenericLetterBaseWrapper(APPELLANT_WITH_ADDRESS, ISSUE_GENERIC_LETTER, REP_WITH_ADDRESS,
-                        buildDocumentsSelection(), true, true),
+        classUnderTest.sendEmailSmsLetterNotification(buildGenericLetterBaseWrapper(
+                buildDocumentsSelection(), true, true),
                 DOCMOSIS_LETTER, appellantEmptySubscription, ISSUE_GENERIC_LETTER);
 
         verify(pdfStoreService, times(1)).download("sscs_url");
@@ -460,9 +460,10 @@ public class SendNotificationServiceTest {
 
         when(pdfLetterService.generateLetter(any(), any(), any())).thenReturn("PDF".getBytes());
 
-        classUnderTest.sendEmailSmsLetterNotification(buildGenericLetterBaseWrapper(APPELLANT_WITH_ADDRESS, ISSUE_GENERIC_LETTER, REP_WITH_ADDRESS,
-                        List.of(new CcdValue<>(new DocumentSelectionDetails(list))), false, false),
-                DOCMOSIS_LETTER, appellantEmptySubscription, ISSUE_GENERIC_LETTER);
+        CcdValue<DocumentSelectionDetails> documentSelectionDetails = new CcdValue<>(new DocumentSelectionDetails(list));
+        classUnderTest.sendEmailSmsLetterNotification(buildGenericLetterBaseWrapper(List.of(documentSelectionDetails),
+                        false, false), DOCMOSIS_LETTER, appellantEmptySubscription, ISSUE_GENERIC_LETTER);
+
         verify(pdfLetterService).generateLetter(any(), any(), any());
         verify(pdfLetterService).buildCoversheet(any(), any());
         verifyNoMoreInteractions(pdfLetterService);
@@ -477,7 +478,7 @@ public class SendNotificationServiceTest {
                 null, null);
 
         when(pdfLetterService.generateLetter(any(), any(), any())).thenReturn(null);
-        var result = classUnderTest.sendEmailSmsLetterNotification(buildGenericLetterBaseWrapper(APPELLANT_WITH_ADDRESS, ISSUE_GENERIC_LETTER, REP_WITH_ADDRESS, List.of(), false, false),
+        var result = classUnderTest.sendEmailSmsLetterNotification(buildGenericLetterBaseWrapper(List.of(), false, false),
                 DOCMOSIS_LETTER, appellantEmptySubscription, ISSUE_GENERIC_LETTER);
 
         verify(notificationSender).saveGenericLetter(isNull(), any(), any());
@@ -605,9 +606,9 @@ public class SendNotificationServiceTest {
         }
     }
 
-    private CcdNotificationWrapper buildGenericLetterBaseWrapper(Appellant appellant, NotificationEventType eventType, Representative representative,
-                                                                 List<CcdValue<DocumentSelectionDetails>> documentsSelection, boolean hasSscsDocument, boolean hasDwpDocument) {
-        var wrapper = buildBaseWrapper(appellant, eventType, representative, Benefit.PIP, "Online", READY_TO_LIST.getId());
+    private CcdNotificationWrapper buildGenericLetterBaseWrapper(List<CcdValue<DocumentSelectionDetails>> documentsSelection,
+                                                                 boolean hasSscsDocument, boolean hasDwpDocument) {
+        var wrapper = buildBaseWrapper(APPELLANT_WITH_ADDRESS, ISSUE_GENERIC_LETTER, REP_WITH_ADDRESS, Benefit.PIP, "Online", READY_TO_LIST.getId());
         var newSscsCaseData = wrapper.getNewSscsCaseData();
 
         if (documentsSelection != null) {
