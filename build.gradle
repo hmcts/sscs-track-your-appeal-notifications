@@ -7,8 +7,8 @@ plugins {
     id 'io.spring.dependency-management' version '1.1.0'
     id 'org.springframework.boot' version '2.7.5'
     id 'uk.gov.hmcts.java' version '0.12.32'
-    id 'org.owasp.dependencycheck' version '7.3.0'
-    id 'com.github.ben-manes.versions' version '0.43.0'
+    id 'org.owasp.dependencycheck' version '7.2.1'
+    id 'com.github.ben-manes.versions' version '0.44.0'
     id "org.flywaydb.flyway" version '7.15.0'
     id "info.solidsoft.pitest" version '1.7.0'
 }
@@ -38,6 +38,23 @@ pmd {
     sourceSets = [sourceSets.main, sourceSets.test]
     reportsDir = file("$project.buildDir/reports/pmd")
     ruleSetFiles = files("config/pmd/ruleset.xml")
+}
+
+task installLocalGitHook(type: Copy) {
+    from new File(rootProject.rootDir, 'config/git/pre-commit')
+    into { new File(rootProject.rootDir, '.git/hooks')}
+    fileMode 0775
+}
+
+compileJava.dependsOn installLocalGitHook
+
+task runGitPreCommitTasks {
+    dependsOn 'test'
+    dependsOn 'pmdMain'
+    dependsOn 'pmdTest'
+    dependsOn 'dependencyCheckAggregate'
+    dependsOn 'checkstyleMain'
+    dependsOn 'checkstyleTest'
 }
 
 dependencyUpdates.resolutionStrategy {
@@ -136,7 +153,7 @@ dependencyManagement {
         }
 
         // CVE-2020-13954
-        dependencySet(group: 'org.apache.cxf', version: '3.5.0') {
+        dependencySet(group: 'org.apache.cxf', version: '3.5.5') {
             entry 'cxf-core'
             entry 'cxf-rt-frontend-jaxrs'
             entry 'cxf-rt-rs-client'
@@ -169,7 +186,7 @@ dependencyManagement {
         }
 
         // resolves: CVE-2019-10101, CVE-2019-10102, CVE-2019-10103
-        dependencySet(group: 'org.jetbrains.kotlin', version: '1.6.10') {
+        dependencySet(group: 'org.jetbrains.kotlin', version: '1.8.0') {
             entry 'kotlin-stdlib'
             entry 'kotlin-stdlib-common'
         }
@@ -328,7 +345,7 @@ dependencies {
     implementation group: 'org.flywaydb', name: 'flyway-core', version: '7.15.0'
     implementation group: 'org.postgresql', name: 'postgresql', version: '42.5.1'
     implementation group: 'net.bytebuddy', name: 'byte-buddy', version: '1.12.18'
-    implementation group: 'org.elasticsearch', name: 'elasticsearch', version: '7.17.7'
+    implementation group: 'org.elasticsearch', name: 'elasticsearch', version: '7.17.8'
 
     implementation group: 'org.springframework.boot', name: 'spring-boot-starter-actuator'
     implementation group: 'org.springframework.boot', name: 'spring-boot-starter-aop'
@@ -355,7 +372,7 @@ dependencies {
 
     implementation group: 'com.github.hmcts', name: 'cmc-pdf-service-client', version: '7.0.1'
 
-    implementation group: 'com.github.hmcts', name: 'sscs-common', version: '4.24.1'
+    implementation group: 'com.github.hmcts', name: 'sscs-common', version: '4.24.5'
     implementation group: 'com.github.hmcts', name: 'sscs-pdf-email-common', version: '1.6.0'
 
     implementation group: 'com.github.hmcts', name: 'sscs-job-scheduler', version: '1.5.7', {
@@ -392,7 +409,8 @@ dependencies {
     testImplementation(group: 'org.springframework.boot', name: 'spring-boot-starter-test', version: '2.7.5') {
         exclude group: "com.vaadin.external.google", module:"android-json"
     }
-    testImplementation group: 'org.mockito', name: 'mockito-core', version: '4.8.1'
+    
+    testImplementation group: 'org.mockito', name: 'mockito-core', version: '4.11.0'
     testImplementation 'pl.pragmatists:JUnitParams:1.1.1'
     testImplementation group: 'com.github.hmcts', name: 'fortify-client', version: '1.2.2', classifier: 'all', {
         exclude group: 'commons-io', module: 'commons-io'
