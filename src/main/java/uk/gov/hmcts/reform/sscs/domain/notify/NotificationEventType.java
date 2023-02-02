@@ -33,7 +33,7 @@ public enum NotificationEventType {
     DRAFT_TO_VALID_APPEAL_CREATED(EventType.DRAFT_TO_VALID_APPEAL_CREATED, true, true, false, true, false, 240L),
     DWP_APPEAL_LAPSED(EventType.CONFIRM_LAPSED, true, true, false, false, false, 0),
     DWP_RESPONSE_RECEIVED(EventType.DWP_RESPOND, true, true, true, false, false, 0),
-    DWP_UPLOAD_RESPONSE(EventType.DWP_UPLOAD_RESPONSE, true, true, true, false, false, 60L),
+    DWP_UPLOAD_RESPONSE(EventType.DWP_UPLOAD_RESPONSE, true, true, true, false, false, 0),
     EVIDENCE_RECEIVED(EventType.EVIDENCE_RECEIVED, true, true, true, false, false, 0),
     EVIDENCE_REMINDER(EventType.EVIDENCE_REMINDER, true, true, false, false, true, 0),
     HEARING_BOOKED(EventType.HEARING_BOOKED, true, false, false, false, false, 0),
