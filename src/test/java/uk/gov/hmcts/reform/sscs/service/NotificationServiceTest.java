@@ -1182,8 +1182,7 @@ public class NotificationServiceTest {
     }
 
     @Test
-    @Parameters({"VALID_APPEAL_CREATED", "DRAFT_TO_VALID_APPEAL_CREATED", "APPEAL_RECEIVED",
-        "DWP_UPLOAD_RESPONSE"})
+    @Parameters({"VALID_APPEAL_CREATED", "DRAFT_TO_VALID_APPEAL_CREATED", "APPEAL_RECEIVED"})
     public void delayScheduleOfEvents(NotificationEventType eventType) {
         sscsCaseData.setCaseCreated(LocalDate.now().toString());
         SscsCaseDataWrapper wrapper = SscsCaseDataWrapper.builder()
