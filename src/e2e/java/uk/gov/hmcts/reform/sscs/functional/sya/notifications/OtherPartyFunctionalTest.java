@@ -46,7 +46,7 @@ public class OtherPartyFunctionalTest extends AbstractFunctionalTest {
 
 
     @Test
-    @Parameters({"oral-,DWP_UPLOAD_RESPONSE, oralDwpUploadResponseJointPartySmsId, oralDwpUploadResponseOtherPartyEmailId"})
+    @Parameters({"oral-, oralDwpUploadResponseJointPartySmsId, oralDwpUploadResponseOtherPartyEmailId"})
     public void willSendDwpUploadResponse(@Nullable String prefix, NotificationEventType notificationEventType, String... fieldNames) throws Exception {
 
         simulateCcdCallback(notificationEventType,
