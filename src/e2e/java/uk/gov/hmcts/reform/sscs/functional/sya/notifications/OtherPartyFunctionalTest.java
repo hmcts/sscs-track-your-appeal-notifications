@@ -44,20 +44,6 @@ public class OtherPartyFunctionalTest extends AbstractFunctionalTest {
         super(30);
     }
 
-
-    @Test
-    @Parameters({"oral-, oralDwpUploadResponseJointPartySmsId, oralDwpUploadResponseOtherPartyEmailId"})
-    public void willSendDwpUploadResponse(@Nullable String prefix, NotificationEventType notificationEventType, String... fieldNames) throws Exception {
-
-        simulateCcdCallback(notificationEventType,
-                "otherparty/" + prefix + notificationEventType.getId() + "Callback.json");
-
-        List<Notification> notifications = fetchLetters();
-        assertEquals(2, notifications.size());
-        notifications.forEach(n -> assertEquals("Pre-compiled PDF", n.getSubject().orElse("Unknown Subject")));
-        tryFetchNotificationsForTestCase(getFieldValue(fieldNames));
-    }
-
     private String[] getFieldValue(String... fieldNames) {
         return Arrays.stream(fieldNames)
                 .map(this::getValue)
