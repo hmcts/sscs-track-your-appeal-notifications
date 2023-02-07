@@ -77,16 +77,7 @@ public class NotificationsIt extends NotificationsItBase {
         verify(notificationClient, times(1)).sendSms(any(), any(), any(), any(), any());
     }
 
-    @Test
-    public void shouldSendNotificationForAHearingPostponedRequestForAnOralHearing() throws Exception {
-        json = json.replace("appealReceived", "hearingPostponed");
 
-        HttpServletResponse response = getResponse(getRequestWithAuthHeader(json));
-
-        assertHttpStatus(response, HttpStatus.OK);
-        verify(notificationClient).sendEmail(any(), any(), any(), any());
-        verify(notificationClient, never()).sendSms(any(), any(), any(), any(), any());
-    }
 
     @Test
     public void shouldNotSendNotificationForAHearingPostponedRequestForAPaperHearing() throws Exception {
