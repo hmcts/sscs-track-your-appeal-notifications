@@ -84,8 +84,8 @@ public class NotificationsIt extends NotificationsItBase {
         HttpServletResponse response = getResponse(getRequestWithAuthHeader(json));
 
         assertHttpStatus(response, HttpStatus.OK);
-        verify(notificationClient, never()).sendEmail(any(), any(), any(), any());
-        verify(notificationClient, never()).sendSms(any(), any(), any(), any(), any());
+        verify(notificationClient).sendEmail(any(), any(), any(), any());
+        verify(notificationClient).sendSms(any(), any(), any(), any(), any());
     }
 
     @Test
