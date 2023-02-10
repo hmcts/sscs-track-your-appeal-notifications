@@ -79,6 +79,7 @@ public final class NotificationEventTypeLists {
         ISSUE_ADJOURNMENT_NOTICE_WELSH,
         ISSUE_FINAL_DECISION,
         ISSUE_FINAL_DECISION_WELSH,
+        ISSUE_GENERIC_LETTER,
         NON_COMPLIANT,
         DRAFT_TO_NON_COMPLIANT,
         POSTPONEMENT,
