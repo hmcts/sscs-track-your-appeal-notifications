@@ -85,7 +85,7 @@ public class NotificationsIt extends NotificationsItBase {
 
         assertHttpStatus(response, HttpStatus.OK);
         verify(notificationClient).sendEmail(any(), any(), any(), any());
-        verify(notificationClient).sendSms(any(), any(), any(), any(), any());
+        verify(notificationClient, never()).sendSms(any(), any(), any(), any(), any());
     }
 
     @Test
