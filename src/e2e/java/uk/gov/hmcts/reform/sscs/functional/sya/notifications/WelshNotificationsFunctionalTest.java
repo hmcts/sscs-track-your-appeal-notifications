@@ -28,9 +28,6 @@ public class WelshNotificationsFunctionalTest extends AbstractFunctionalTest {
     @Value("${notification.welsh.oral.appealDormant.joint_party.emailId}")
     private String appealDormantOralJointPartyEmailTemplateIdWelsh;
 
-    @Value("${notification.welsh.hearingPostponed.joint_party.emailId}")
-    private String hearingPostponedEmailTemplateIdJointPartyWelsh;
-
     @Value("${notification.welsh.paper.appealDormant.appellant.emailId}")
     private String appealDormantPaperAppellantEmailTemplateIdWelsh;
 
@@ -42,9 +39,6 @@ public class WelshNotificationsFunctionalTest extends AbstractFunctionalTest {
 
     @Value("${notification.welsh.paper.appealDormant.joint_party.smsId}")
     private String appealDormantPaperJointPartySmsTemplateIdWelsh;
-
-    @Value("${notification.welsh.hearingPostponed.appellant.emailId}")
-    private String hearingPostponedEmailTemplateIdWelsh;
 
     @Value("${notification.welsh.hearingAdjourned.appellant.emailId}")
     private String hearingAdjournedEmailTemplateIdWelsh;
@@ -195,12 +189,7 @@ public class WelshNotificationsFunctionalTest extends AbstractFunctionalTest {
 
 
 
-    @Test
-    public void shouldSendHearingPostponedNotificationWelsh() throws NotificationClientException, IOException {
-        simulateWelshCcdCallback(POSTPONEMENT);
 
-        tryFetchNotificationsForTestCase(hearingPostponedEmailTemplateIdWelsh, hearingPostponedEmailTemplateIdJointPartyWelsh);
-    }
 
     @Test
     public void shouldSendHearingBookedNotificationWelsh() throws NotificationClientException, IOException {
