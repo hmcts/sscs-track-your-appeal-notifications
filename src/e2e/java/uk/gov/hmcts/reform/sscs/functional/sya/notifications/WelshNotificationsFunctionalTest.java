@@ -187,10 +187,6 @@ public class WelshNotificationsFunctionalTest extends AbstractFunctionalTest {
             paperJointPartyEvidenceReceivedSmsIdWelsh);
     }
 
-
-
-
-
     @Test
     public void shouldSendHearingBookedNotificationWelsh() throws NotificationClientException, IOException {
         simulateCcdCallback(HEARING_BOOKED, "appointee/" + HEARING_BOOKED.getId() + "CallbackWelsh.json");
