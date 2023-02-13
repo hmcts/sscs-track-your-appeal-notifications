@@ -70,11 +70,6 @@ public class WithRepresentativePersonalisationTest extends AbstractFunctionalTes
     @Value("${notification.english.appealReceived.representative.smsId}")
     private String appealReceivedRepsSmsId;
 
-    @Value("${notification.english.hearingPostponed.appellant.emailId}")
-    private String hearingPostponedAppellantEmailId;
-    @Value("${notification.english.hearingPostponed.representative.emailId}")
-    private String hearingPostponedRepsEmailId;
-
     @Value("${notification.english.validAppealCreated.appellant.emailId}")
     private String validAppealCreatedAppellantEmailId;
     @Value("${notification.english.validAppealCreated.appellant.smsId}")
