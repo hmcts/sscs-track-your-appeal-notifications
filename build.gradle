@@ -8,7 +8,7 @@ plugins {
     id 'org.springframework.boot' version '2.7.5'
     id 'uk.gov.hmcts.java' version '0.12.32'
     id 'org.owasp.dependencycheck' version '8.0.2'
-    id 'com.github.ben-manes.versions' version '0.44.0'
+    id 'com.github.ben-manes.versions' version '0.45.0'
     id "org.flywaydb.flyway" version '7.15.0'
     id "info.solidsoft.pitest" version '1.7.0'
 }
@@ -153,7 +153,7 @@ dependencyManagement {
         }
 
         // CVE-2020-13954
-        dependencySet(group: 'org.apache.cxf', version: '3.5.5') {
+        dependencySet(group: 'org.apache.cxf', version: '4.0.0') {
             entry 'cxf-core'
             entry 'cxf-rt-frontend-jaxrs'
             entry 'cxf-rt-rs-client'
