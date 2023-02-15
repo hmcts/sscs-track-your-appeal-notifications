@@ -137,7 +137,6 @@
           }
         ]
       },
-      "reservedToJudge": "Test",
       "regionalProcessingCenter": {
         "faxNumber": "0870 739 4331",
         "address4": "31 York Place",
@@ -508,7 +507,6 @@
       "bodyContent": "PUBLIC",
       "benefitCode": "PUBLIC",
       "furtherEvidenceAction": "PUBLIC",
-      "reservedToJudge": "PUBLIC",
       "regionalProcessingCenter": {
         "classification": "PUBLIC",
         "value": {
@@ -971,7 +969,6 @@
       "bodyContent": "PUBLIC",
       "benefitCode": "PUBLIC",
       "furtherEvidenceAction": "PUBLIC",
-      "reservedToJudge": "PUBLIC",
       "regionalProcessingCenter": {
         "classification": "PUBLIC",
         "value": {
