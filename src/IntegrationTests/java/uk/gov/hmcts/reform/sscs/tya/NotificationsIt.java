@@ -2734,6 +2734,7 @@ public class NotificationsIt extends NotificationsItBase {
         String jsonPath = sendToAppellant ? "json/ccdResponse_requestInfoIncompleteAppellant.json" : "json/ccdResponse_requestInfoIncomplete.json";
         String path = getClass().getClassLoader().getResource(jsonPath).getFile();
         String json = FileUtils.readFileToString(new File(path), StandardCharsets.UTF_8.name());
+
         json = updateEmbeddedJson(json, REQUEST_INFO_INCOMPLETE.getId(), "event_id");
         json = updateEmbeddedJson(json, partySelected, "case_details", "case_data", "informationFromPartySelected", "value", "code");
 
@@ -2741,7 +2742,7 @@ public class NotificationsIt extends NotificationsItBase {
 
         verify(notificationClient, times(0)).sendEmail(any(), any(), any(), any());
         verify(notificationClient, times(0)).sendSms(any(), any(), any(), any(), any());
-        validateLetterNotifications(Arrays.asList("TB-SCS-LET-ENG-Request-for-Information.docx"), 0, letterRecipient);
+        validateLetterNotifications(Arrays.asList("TB-SCS-GNO-ENG-00452.docx"), 0, letterRecipient);
     }
 
     private void updateJsonForPaperHearing() throws IOException {
