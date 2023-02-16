@@ -166,10 +166,21 @@ public class NotificationService {
             notificationWrapper.getCaseId(),
             subscriptionTypes);
 
-        for (SubscriptionWithType subscriptionWithType : notificationWrapper.getSubscriptionsBasedOnNotificationType()) {
-            if (isSubscriptionValidToSendAfterOverride(notificationWrapper, subscriptionWithType)
-                    && isValidNotification(notificationWrapper, subscriptionWithType)) {
+        log.info("Length of SubscriptionWithType for Notification Type {} and Case Id {} is {}",
+                notificationWrapper.getNotificationType(),
+                notificationWrapper.getCaseId(),
+                notificationWrapper.getSubscriptionsBasedOnNotificationType().size());
 
+        for (SubscriptionWithType subscriptionWithType : notificationWrapper.getSubscriptionsBasedOnNotificationType()) {
+            boolean isValid1 = isSubscriptionValidToSendAfterOverride(notificationWrapper, subscriptionWithType);
+            boolean isValid2 = isValidNotification(notificationWrapper, subscriptionWithType);
+
+            log.info("For Notification Type {} and Case Id {}, isSubscriptionValidToSendAfterOverride is {} and isValidNotification is {}",
+                    notificationWrapper.getNotificationType(),
+                    notificationWrapper.getCaseId(),
+                    isValid1,
+                    isValid2);
+            if (isValid1 && isValid2) {
                 sendNotification(notificationWrapper, subscriptionWithType);
                 resendLastNotification(notificationWrapper, subscriptionWithType);
 
