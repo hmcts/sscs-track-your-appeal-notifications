@@ -83,6 +83,7 @@ public class SendNotificationService {
             Notification notification,
             SubscriptionWithType subscriptionWithType,
             NotificationEventType eventType) {
+        log.info("sendEmailSmsLetterNotification triggred for event {} for case id {}.", eventType.getId(), wrapper.getCaseId());
         boolean emailSent = sendEmailNotification(wrapper, subscriptionWithType.getSubscription(), notification);
         notificationSuccessLog(wrapper, "Email", notification, notification.getEmailTemplate(), emailSent);
 
