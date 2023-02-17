@@ -158,7 +158,7 @@ public class NotificationConfigTestIt extends AbstractNotificationConfigTest {
             new Object[]{DWP_RESPONSE_RECEIVED, true, REPRESENTATIVE, PAPER, null, "5abc83d8-f6b8-4385-805b-ffbb0f64b84b", List.of("cca7c565-c907-405f-b778-735b31947b85", "b2d187cd-089b-4fe1-b460-a310c0af46fe"), null, null},
 
             new Object[]{DWP_UPLOAD_RESPONSE, false, JOINT_PARTY, ORAL, null, "ffa58120-24e4-44cb-8026-0becf1416684", List.of("f0444380-a8a4-4805-b9c2-563d1bd199cd"), null, null},
-            new Object[]{DWP_UPLOAD_RESPONSE, false, OTHER_PARTY, ORAL, null, "0d844af4-b390-42d7-94d5-4fd1ae9388d9", List.of("9fe3a4f1-b8e2-4aed-aafb-6360d6ba2874"), null, null},
+            new Object[]{DWP_UPLOAD_RESPONSE, false, OTHER_PARTY, ORAL, null, "0d844af4-b390-42d7-94d5-4fd1ae9388d9", List.of("9fe3a4f1-b8e2-4aed-aafb-6360d6ba2874"), null, "TB-SCS-GNO-ENG-00784"},
             new Object[]{DWP_UPLOAD_RESPONSE, true, APPELLANT, ORAL, null, "c35a367c-ad53-4c6a-899b-554763945894", List.of("4cd7a59c-fd8f-464a-86a5-0c2a701b88f0", "f0444380-a8a4-4805-b9c2-563d1bd199cd"), null, null},
             new Object[]{DWP_UPLOAD_RESPONSE, true, APPELLANT, PAPER, null, "974a452f-e5a5-4072-a326-87ad8b0793fb", List.of("7257266e-b02f-4091-a360-70e4b231124f", "5e5cfe8d-b893-4f87-817f-9d05d22d657a"), null, null},
             new Object[]{DWP_UPLOAD_RESPONSE, true, APPOINTEE, ORAL, null, "c35a367c-ad53-4c6a-899b-554763945894", List.of("4cd7a59c-fd8f-464a-86a5-0c2a701b88f0", "f0444380-a8a4-4805-b9c2-563d1bd199cd"), null, null},
