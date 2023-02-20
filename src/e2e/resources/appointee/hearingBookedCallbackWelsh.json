@@ -219,7 +219,8 @@
             "classification": "PUBLIC",
             "value": {}
           },
-          "signer": "PUBLIC"
+          "signer": "PUBLIC",
+          "hearingType": "PUBLIC"
         }
       },
       "caseReference": "PUBLIC",
@@ -289,7 +290,8 @@
             }
           }
         }
-      }
+      },
+      "hearingRoute" : "PUBLIC"
     },
     "id": 12345656789,
     "jurisdiction": "SSCS",
@@ -366,7 +368,8 @@
             "classification": "PUBLIC",
             "value": {}
           },
-          "signer": "PUBLIC"
+          "signer": "PUBLIC",
+          "hearingType": "PUBLIC"
         }
       },
       "caseReference": "PUBLIC",
@@ -436,7 +439,8 @@
             }
           }
         }
-      }
+      },
+      "hearingRoute" : "PUBLIC"
     },
     "state": "appealCreated"
   },
@@ -504,7 +508,8 @@
           "wantSmsNotifications": "Yes",
           "tya": ""
         }
-      }
+      },
+      "hearingRoute" : "listAssist"
     },
     "case_type_id": "Benefit",
     "created_date": [
@@ -579,7 +584,8 @@
             "classification": "PUBLIC",
             "value": {}
           },
-          "signer": "PUBLIC"
+          "signer": "PUBLIC",
+          "hearingType": "PUBLIC"
         }
       },
       "caseReference": "PUBLIC",
@@ -611,7 +617,8 @@
             }
           }
         }
-      }
+      },
+      "hearingRoute" : "PUBLIC"
     },
     "id": 12345656789,
     "jurisdiction": "SSCS",
@@ -688,7 +695,8 @@
             "classification": "PUBLIC",
             "value": {}
           },
-          "signer": "PUBLIC"
+          "signer": "PUBLIC",
+          "hearingType": "PUBLIC"
         }
       },
       "caseReference": "PUBLIC",
@@ -720,7 +728,8 @@
             }
           }
         }
-      }
+      },
+      "hearingRoute" : "PUBLIC"
     },
     "state": "appealCreated"
   },

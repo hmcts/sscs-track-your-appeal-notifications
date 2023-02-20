@@ -201,7 +201,8 @@
             "contact": {},
             "organisation": "PUBLIC"
           },
-          "signer": "PUBLIC"
+          "signer": "PUBLIC",
+          "hearingType" : "PUBLIC"
         }
       },
       "caseReference": "PUBLIC",
@@ -282,7 +283,8 @@
             }
           }
         }
-      }
+      },
+      "hearingRoute" : "PUBLIC"
     },
     "id": 12345656789,
     "jurisdiction": "SSCS",
@@ -358,7 +360,8 @@
             "classification": "PUBLIC",
             "value": {}
           },
-          "signer": "PUBLIC"
+          "signer": "PUBLIC",
+          "hearingType": "PUBLIC"
         }
       },
       "caseReference": "PUBLIC",
@@ -439,7 +442,8 @@
             }
           }
         }
-      }
+      },
+      "hearingRoute" : "PUBLIC"
     },
     "state": "appealCreated"
   },
@@ -493,7 +497,8 @@
           "contact": {},
           "organisation": "HP Ltd"
         },
-        "signer": null
+        "signer": null,
+        "hearingType": "oral"
       },
       "caseReference": "SC022/14/12423",
       "events": [
@@ -523,7 +528,8 @@
           "wantSmsNotifications": "Yes",
           "tya": ""
         }
-      }
+      },
+      "hearingRoute" : "listAssist"
     },
     "case_type_id": "Benefit",
     "created_date": [
@@ -597,7 +603,8 @@
             "classification": "PUBLIC",
             "value": {}
           },
-          "signer": "PUBLIC"
+          "signer": "PUBLIC",
+          "hearingType": "PUBLIC"
         }
       },
       "caseReference": "PUBLIC",
@@ -640,7 +647,8 @@
             }
           }
         }
-      }
+      },
+      "hearingRoute" : "PUBLIC"
     },
     "id": 12345656789,
     "jurisdiction": "SSCS",
@@ -716,7 +724,8 @@
             "classification": "PUBLIC",
             "value": {}
           },
-          "signer": "PUBLIC"
+          "signer": "PUBLIC",
+          "hearingType": "PUBLIC"
         }
       },
       "caseReference": "PUBLIC",
@@ -759,7 +768,8 @@
             }
           }
         }
-      }
+      },
+      "hearingRoute" : "PUBLIC"
     },
     "state": "appealCreated"
   },
