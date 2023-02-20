@@ -175,6 +175,11 @@ public class NotificationService {
             boolean isValid1 = isSubscriptionValidToSendAfterOverride(notificationWrapper, subscriptionWithType);
             boolean isValid2 = isValidNotification(notificationWrapper, subscriptionWithType);
 
+            if (!subscriptionWithType.getSubscriptionType().name().equals("OTHER_PARTY"))
+                continue;
+
+            log.info("Only OP is allowed");
+
             log.info(
                 " Case Id: {}, NotificationEventType: {}, full log msg: Subscription Obj:\n"
                     + "wantSmsNotifications: '{}'\n"
