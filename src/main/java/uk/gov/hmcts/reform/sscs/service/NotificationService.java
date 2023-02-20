@@ -39,7 +39,6 @@ import static uk.gov.hmcts.reform.sscs.service.NotificationUtils.isOkToSendNotif
 import static uk.gov.hmcts.reform.sscs.service.NotificationValidService.isMandatoryLetterEventType;
 
 import java.time.ZonedDateTime;
-
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
