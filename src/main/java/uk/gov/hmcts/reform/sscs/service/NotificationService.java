@@ -187,14 +187,14 @@ public class NotificationService {
                     + "SubscriptionType Obj: {}",
                 notificationWrapper.getCaseId(),
                 notificationWrapper.getNotificationType(),
-                subscriptionWithType.getSubscription().getWantSmsNotifications(),
-                subscriptionWithType.getSubscription().getTya(),
-                subscriptionWithType.getSubscription().getEmail(),
-                subscriptionWithType.getSubscription().getMobile(),
-                subscriptionWithType.getSubscription().getSubscribeEmail(),
-                subscriptionWithType.getSubscription().getSubscribeSms(),
-                subscriptionWithType.getSubscription().getReason(),
-                subscriptionWithType.getSubscriptionType().toString()
+                subscriptionWithType.getSubscription() != null ? subscriptionWithType.getSubscription().getWantSmsNotifications() : "",
+                subscriptionWithType.getSubscription() != null ? subscriptionWithType.getSubscription().getTya() : "",
+                subscriptionWithType.getSubscription() != null ? subscriptionWithType.getSubscription().getEmail() : "",
+                subscriptionWithType.getSubscription() != null ? subscriptionWithType.getSubscription().getMobile() : "",
+                subscriptionWithType.getSubscription() != null ? subscriptionWithType.getSubscription().getSubscribeEmail() : "",
+                subscriptionWithType.getSubscription() != null ? subscriptionWithType.getSubscription().getSubscribeSms() : "",
+                subscriptionWithType.getSubscription() != null ? subscriptionWithType.getSubscription().getReason() : "",
+                subscriptionWithType.getSubscriptionType() != null ? subscriptionWithType.getSubscriptionType() : ""
             );
 
             log.info("For Notification Type {} and Case Id {}, isSubscriptionValidToSendAfterOverride is {} and isValidNotification is {}",
