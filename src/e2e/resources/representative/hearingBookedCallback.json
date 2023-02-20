@@ -53,7 +53,8 @@
           "contact": {},
           "organisation": "HP Ltd"
         },
-        "signer": null
+        "signer": null,
+        "hearingType": "oral"
       },
       "caseReference": "SC022/14/12423",
       "events": [

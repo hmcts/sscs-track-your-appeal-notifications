@@ -201,7 +201,8 @@
             "organisation": "PUBLIC"
           },
           "signer": "PUBLIC"
-        }
+        },
+        "hearingType": "oral"
       },
       "caseReference": "PUBLIC",
       "events": {
