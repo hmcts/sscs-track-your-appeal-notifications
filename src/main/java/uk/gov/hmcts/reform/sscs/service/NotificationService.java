@@ -39,6 +39,7 @@ import static uk.gov.hmcts.reform.sscs.service.NotificationUtils.isOkToSendNotif
 import static uk.gov.hmcts.reform.sscs.service.NotificationValidService.isMandatoryLetterEventType;
 
 import java.time.ZonedDateTime;
+import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
@@ -174,6 +175,28 @@ public class NotificationService {
         for (SubscriptionWithType subscriptionWithType : notificationWrapper.getSubscriptionsBasedOnNotificationType()) {
             boolean isValid1 = isSubscriptionValidToSendAfterOverride(notificationWrapper, subscriptionWithType);
             boolean isValid2 = isValidNotification(notificationWrapper, subscriptionWithType);
+
+            log.info(
+                    " Case Id: {}, NotificationEventType: {}, full log msg: Subscription Obj:\n"
+                            + "wantSmsNotifications: '{}'\n"
+                            + "tya: '{}'\n"
+                            + "email: '{}'\n"
+                            + "mobile: '{}'\n"
+                            + "subscribeEmail: '{}'\n"
+                            + "subscribeSms: '{}'\n"
+                            + "reason: '{}'\n" +
+                    "SubscriptionType Obj: {}",
+                    notificationWrapper.getCaseId(),
+                    notificationWrapper.getNotificationType(),
+                    subscriptionWithType.getSubscription().getWantSmsNotifications(),
+                    subscriptionWithType.getSubscription().getTya(),
+                    subscriptionWithType.getSubscription().getEmail(),
+                    subscriptionWithType.getSubscription().getMobile(),
+                    subscriptionWithType.getSubscription().getSubscribeEmail(),
+                    subscriptionWithType.getSubscription().getSubscribeSms(),
+                    subscriptionWithType.getSubscription().getReason(),
+                    subscriptionWithType.getSubscriptionType().toString()
+            );
 
             log.info("For Notification Type {} and Case Id {}, isSubscriptionValidToSendAfterOverride is {} and isValidNotification is {}",
                     notificationWrapper.getNotificationType(),
