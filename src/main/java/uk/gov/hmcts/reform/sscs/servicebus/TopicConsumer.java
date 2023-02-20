@@ -55,10 +55,11 @@ public class TopicConsumer {
                     getNotificationByCcdEvent(callback.getEvent()),
                     callback.getCaseDetails().getState());
 
-            log.info("Ccd2 Response received for case id: {}, {} with message id {}",
+            log.info("Ccd2 Response received for case id: {}, {} with message id {} and the message is: {}",
                 sscsCaseDataWrapper.getNewSscsCaseData().getCcdCaseId(),
                 sscsCaseDataWrapper.getNotificationEventType(),
-                messageId);
+                message,
+                message);
             dispatcher.handle(sscsCaseDataWrapper);
             log.info("Sscs1 Case CCD callback `{}` handled for Case ID `{}` with message id {}", callback.getEvent(),
                 callback.getCaseDetails().getId(),
