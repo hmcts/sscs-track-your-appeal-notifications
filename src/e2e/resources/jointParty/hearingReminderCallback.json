@@ -137,7 +137,8 @@
           "wantSmsNotifications" : "Yes",
           "tya": "232929249492"
         }
-      }
+      },
+      "hearingRoute" : "listAssist"
     },
     "case_type_id": "Benefit",
     "created_date": [

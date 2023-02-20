@@ -143,7 +143,8 @@
           "wantSmsNotifications": "Yes",
           "tya": ""
         }
-      }
+      },
+      "hearingRoute" : "listAssist"
     },
     "case_type_id": "Benefit",
     "created_date": [
