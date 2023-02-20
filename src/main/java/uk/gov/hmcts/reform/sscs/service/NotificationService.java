@@ -172,14 +172,11 @@ public class NotificationService {
                 notificationWrapper.getSubscriptionsBasedOnNotificationType().size());
 
         for (SubscriptionWithType subscriptionWithType : notificationWrapper.getSubscriptionsBasedOnNotificationType()) {
-            boolean isValid1 = isSubscriptionValidToSendAfterOverride(notificationWrapper, subscriptionWithType);
-            boolean isValid2 = isValidNotification(notificationWrapper, subscriptionWithType);
-
-            if (!subscriptionWithType.getSubscriptionType().name().equals("OTHER_PARTY"))
+            if (!subscriptionWithType.getSubscriptionType().name().equals("OTHER_PARTY")) {
                 continue;
+            }
 
             log.info("Only OP is allowed");
-
             log.info(
                 " Case Id: {}, NotificationEventType: {}, full log msg: Subscription Obj:\n"
                     + "wantSmsNotifications: '{}'\n"
@@ -201,6 +198,9 @@ public class NotificationService {
                 subscriptionWithType.getSubscription() != null ? subscriptionWithType.getSubscription().getReason() : "",
                 subscriptionWithType.getSubscriptionType() != null ? subscriptionWithType.getSubscriptionType() : ""
             );
+
+            boolean isValid1 = isSubscriptionValidToSendAfterOverride(notificationWrapper, subscriptionWithType);
+            boolean isValid2 = isValidNotification(notificationWrapper, subscriptionWithType);
 
             log.info("For Notification Type {} and Case Id {}, isSubscriptionValidToSendAfterOverride is {} and isValidNotification is {}",
                     notificationWrapper.getNotificationType(),
