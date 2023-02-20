@@ -1,15 +1,11 @@
 package uk.gov.hmcts.reform.sscs.config;
 
 import static org.assertj.core.api.Assertions.assertThat;
-import static uk.gov.hmcts.reform.sscs.config.AppealHearingType.ORAL;
-import static uk.gov.hmcts.reform.sscs.config.AppealHearingType.PAPER;
-import static uk.gov.hmcts.reform.sscs.config.SubscriptionType.APPELLANT;
-import static uk.gov.hmcts.reform.sscs.config.SubscriptionType.APPOINTEE;
-import static uk.gov.hmcts.reform.sscs.config.SubscriptionType.JOINT_PARTY;
-import static uk.gov.hmcts.reform.sscs.config.SubscriptionType.OTHER_PARTY;
-import static uk.gov.hmcts.reform.sscs.config.SubscriptionType.REPRESENTATIVE;
 import static uk.gov.hmcts.reform.sscs.ccd.domain.HearingRoute.GAPS;
 import static uk.gov.hmcts.reform.sscs.ccd.domain.HearingRoute.LIST_ASSIST;
+import static uk.gov.hmcts.reform.sscs.config.AppealHearingType.ORAL;
+import static uk.gov.hmcts.reform.sscs.config.AppealHearingType.PAPER;
+import static uk.gov.hmcts.reform.sscs.config.SubscriptionType.*;
 import static uk.gov.hmcts.reform.sscs.domain.notify.NotificationEventType.*;
 
 import java.util.Collections;
