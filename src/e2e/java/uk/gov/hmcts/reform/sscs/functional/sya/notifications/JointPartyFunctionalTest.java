@@ -47,13 +47,13 @@ public class JointPartyFunctionalTest extends AbstractFunctionalTest {
     private String oralEvidenceReceivedJointPartyEmailId;
     @Value("${notification.english.oral.evidenceReceived.joint_party.smsId}")
     private String oralEvidenceReceivedJointPartySmsId;
-    @Value("${notification.english.hearingBooked.joint_party.emailId}")
+    @Value("${notification.english.listAssist.oral.hearingBooked.joint_party.emailId}")
     private String hearingBookedJointPartyEmailId;
-    @Value("${notification.english.hearingBooked.joint_party.smsId}")
+    @Value("${notification.english.listAssist.oral.hearingBooked.joint_party.smsId}")
     private String hearingBookedJointPartySmsId;
-    @Value("${notification.english.hearingReminder.joint_party.emailId}")
+    @Value("${notification.english.listAssist.oral.hearingReminder.joint_party.emailId}")
     private String hearingReminderJointPartyEmailId;
-    @Value("${notification.english.hearingReminder.joint_party.smsId}")
+    @Value("${notification.english.listAssist.oral.hearingReminder.joint_party.smsId}")
     private String hearingReminderJointPartySmsId;
     @Value("${notification.english.appealWithdrawn.joint_party.emailId}")
     private String appealWithdrawnJointPartyEmailId;
