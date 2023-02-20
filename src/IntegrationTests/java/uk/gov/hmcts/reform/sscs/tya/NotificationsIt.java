@@ -2679,7 +2679,7 @@ public class NotificationsIt extends NotificationsItBase {
 
         verify(notificationClient, times(0)).sendEmail(any(), any(), any(), any());
         verify(notificationClient, times(0)).sendSms(any(), any(), any(), any(), any());
-        validateLetterNotifications(Arrays.asList("TB-SCS-GNO-ENG-00452.docx"), 0, letterRecipient);
+        validateLetterNotifications(Arrays.asList("TB-SCS-LET-ENG-Request-for-Information.docx"), 0, letterRecipient);
     }
 
     private void updateJsonForPaperHearing() throws IOException {

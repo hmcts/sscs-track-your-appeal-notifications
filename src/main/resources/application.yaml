@@ -533,15 +533,15 @@ notification:
         docmosisId: TB-SCS-GNO-ENG-00512.docx
     requestInfoIncompleteApplication:
       appellant:
-        docmosisId: TB-SCS-GNO-ENG-00452.docx
+        docmosisId: TB-SCS-LET-ENG-Request-for-Information.docx
       representative:
-        docmosisId: TB-SCS-GNO-ENG-00452.docx
+        docmosisId: TB-SCS-LET-ENG-Request-for-Information.docx
       appointee:
-        docmosisId: TB-SCS-GNO-ENG-00452.docx
+        docmosisId: TB-SCS-LET-ENG-Request-for-Information.docx
       joint_party:
-        docmosisId: TB-SCS-GNO-ENG-00452.docx
+        docmosisId: TB-SCS-LET-ENG-Request-for-Information.docx
       other_party:
-        docmosisId: TB-SCS-GNO-ENG-00452.docx
+        docmosisId: TB-SCS-LET-ENG-Request-for-Information.docx
     nonCompliant:
       docmosisId: TB-SCS-GNO-ENG-00662.docx
     reviewConfidentialityRequest:
