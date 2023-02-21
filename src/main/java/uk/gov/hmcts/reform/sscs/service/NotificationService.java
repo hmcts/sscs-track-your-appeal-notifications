@@ -172,11 +172,8 @@ public class NotificationService {
                 notificationWrapper.getSubscriptionsBasedOnNotificationType().size());
 
         for (SubscriptionWithType subscriptionWithType : notificationWrapper.getSubscriptionsBasedOnNotificationType()) {
-            if (!subscriptionWithType.getSubscriptionType().name().equals("OTHER_PARTY")) {
-                continue;
-            }
 
-            log.info("Only OP is allowed");
+            log.info("Everyone is allowed");
             log.info(
                 " Case Id: {}, NotificationEventType: {}, full log msg: Subscription Obj:\n"
                     + "wantSmsNotifications: '{}'\n"
