@@ -166,45 +166,10 @@ public class NotificationService {
             notificationWrapper.getCaseId(),
             subscriptionTypes);
 
-        log.info("Length of SubscriptionWithType for Notification Type {} and Case Id {} is {}",
-                notificationWrapper.getNotificationType(),
-                notificationWrapper.getCaseId(),
-                notificationWrapper.getSubscriptionsBasedOnNotificationType().size());
-
         for (SubscriptionWithType subscriptionWithType : notificationWrapper.getSubscriptionsBasedOnNotificationType()) {
+            if (isSubscriptionValidToSendAfterOverride(notificationWrapper, subscriptionWithType)
+                    && isValidNotification(notificationWrapper, subscriptionWithType)) {
 
-            log.info("Everyone is allowed");
-            log.info(
-                " Case Id: {}, NotificationEventType: {}, full log msg: Subscription Obj:\n"
-                    + "wantSmsNotifications: '{}'\n"
-                    + "tya: '{}'\n"
-                    + "email: '{}'\n"
-                    + "mobile: '{}'\n"
-                    + "subscribeEmail: '{}'\n"
-                    + "subscribeSms: '{}'\n"
-                    + "reason: '{}'\n"
-                    + "SubscriptionType Obj: {}",
-                notificationWrapper.getCaseId(),
-                notificationWrapper.getNotificationType(),
-                subscriptionWithType.getSubscription() != null ? subscriptionWithType.getSubscription().getWantSmsNotifications() : "",
-                subscriptionWithType.getSubscription() != null ? subscriptionWithType.getSubscription().getTya() : "",
-                subscriptionWithType.getSubscription() != null ? subscriptionWithType.getSubscription().getEmail() : "",
-                subscriptionWithType.getSubscription() != null ? subscriptionWithType.getSubscription().getMobile() : "",
-                subscriptionWithType.getSubscription() != null ? subscriptionWithType.getSubscription().getSubscribeEmail() : "",
-                subscriptionWithType.getSubscription() != null ? subscriptionWithType.getSubscription().getSubscribeSms() : "",
-                subscriptionWithType.getSubscription() != null ? subscriptionWithType.getSubscription().getReason() : "",
-                subscriptionWithType.getSubscriptionType() != null ? subscriptionWithType.getSubscriptionType() : ""
-            );
-
-            boolean isValid1 = isSubscriptionValidToSendAfterOverride(notificationWrapper, subscriptionWithType);
-            boolean isValid2 = isValidNotification(notificationWrapper, subscriptionWithType);
-
-            log.info("For Notification Type {} and Case Id {}, isSubscriptionValidToSendAfterOverride is {} and isValidNotification is {}",
-                    notificationWrapper.getNotificationType(),
-                    notificationWrapper.getCaseId(),
-                    isValid1,
-                    isValid2);
-            if (isValid1 && isValid2) {
                 sendNotification(notificationWrapper, subscriptionWithType);
                 resendLastNotification(notificationWrapper, subscriptionWithType);
 

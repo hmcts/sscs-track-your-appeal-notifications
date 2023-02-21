@@ -62,7 +62,7 @@ public class NotificationController {
                 callback.getCaseDetails().getCreatedDate(),
                 callback.getCaseDetails().getState());
 
-            log.info("Ccd1 Response received for case id: {} , {}", sscsCaseDataWrapper.getNewSscsCaseData().getCcdCaseId(), sscsCaseDataWrapper.getNotificationEventType());
+            log.info("Ccd Response received for case id: {} , {}", sscsCaseDataWrapper.getNewSscsCaseData().getCcdCaseId(), sscsCaseDataWrapper.getNotificationEventType());
 
             callback.getCaseDetails().getCreatedDate();
             authorisationService.authorise(serviceAuthHeader);

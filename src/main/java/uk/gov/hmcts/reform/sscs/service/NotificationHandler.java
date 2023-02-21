@@ -38,7 +38,7 @@ public class NotificationHandler {
             return true;
         } catch (Exception ex) {
             log.error("Could not send {} notification for case id: {}", notificationType, wrapper.getCaseId());
-            // wrapAndThrowNotificationExceptionIfRequired(wrapper, notificationTemplate, ex);
+            wrapAndThrowNotificationExceptionIfRequired(wrapper, notificationTemplate, ex);
         }
 
         return false;
