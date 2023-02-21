@@ -686,11 +686,9 @@ notification:
           emailId: 0d844af4-b390-42d7-94d5-4fd1ae9388d9
           smsId: 9fe3a4f1-b8e2-4aed-aafb-6360d6ba2874
         other_party:
-          docmosisId: TB-SCS-LET-ENG-Response-Received-AppellantRep.docx
           emailId: 0d844af4-b390-42d7-94d5-4fd1ae9388d9
           smsId: 9fe3a4f1-b8e2-4aed-aafb-6360d6ba2874
         joint_party:
-          docmosisId: TB-SCS-LET-ENG-Response-Received-AppellantRep.docx
           emailId: ffa58120-24e4-44cb-8026-0becf1416684
           smsId: f0444380-a8a4-4805-b9c2-563d1bd199cd
       evidenceReminder:
