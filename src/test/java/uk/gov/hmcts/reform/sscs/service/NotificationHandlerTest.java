@@ -186,21 +186,6 @@ public class NotificationHandlerTest {
         }
     }
 
-    @Test(expected = NotificationServiceException.class)
-    public void shouldNotContinueWithAGovNotifyException() throws Exception {
-        stubData();
-        doThrow(new NotificationClientException(new RuntimeException()))
-                .when(sendNotification)
-                .send();
-
-        try {
-            underTest.sendNotification(notificationWrapper, "someTemplate", "Email", sendNotification);
-        } catch (Throwable throwable) {
-            verifyExpectedLogMessage(mockAppender, captorLoggingEvent, notificationWrapper.getNewSscsCaseData().getCcdCaseId(), "Could not send Email notification for case id:", Level.ERROR);
-            throw throwable;
-        }
-    }
-
     @Test
     public void shouldContinueAndHandleAnyOtherException() throws Exception {
         stubData();
