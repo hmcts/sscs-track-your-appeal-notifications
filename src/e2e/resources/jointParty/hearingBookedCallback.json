@@ -138,7 +138,7 @@
           "tya": "232929249492"
         }
       },
-      "hearingRoute" : "listAssist"
+      "hearingRoute" : "gaps"
     },
     "case_type_id": "Benefit",
     "created_date": [
@@ -505,7 +505,7 @@
           "tya": "232929249492"
         }
       },
-      "hearingRoute" : "listAssist"
+      "hearingRoute" : "gaps"
     },
     "case_type_id": "Benefit",
     "created_date": [

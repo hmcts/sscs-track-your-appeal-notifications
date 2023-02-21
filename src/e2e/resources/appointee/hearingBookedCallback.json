@@ -113,7 +113,7 @@
           "tya": ""
         }
       },
-      "hearingRoute" : "listAssist"
+      "hearingRoute" : "gaps"
     },
     "case_type_id": "Benefit",
     "created_date": [
@@ -476,7 +476,7 @@
           "tya": ""
         }
       },
-      "hearingRoute" : "listAssist"
+      "hearingRoute" : "gaps"
     },
     "case_type_id": "Benefit",
     "created_date": [
