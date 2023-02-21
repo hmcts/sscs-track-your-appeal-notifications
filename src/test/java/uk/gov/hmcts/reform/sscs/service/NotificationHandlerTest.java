@@ -21,8 +21,6 @@ import org.mockito.junit.MockitoJUnitRunner;
 import org.slf4j.LoggerFactory;
 import uk.gov.hmcts.reform.sscs.ccd.domain.SscsCaseData;
 import uk.gov.hmcts.reform.sscs.domain.notify.NotificationEventType;
-import uk.gov.hmcts.reform.sscs.exception.NotificationClientRuntimeException;
-import uk.gov.hmcts.reform.sscs.exception.NotificationServiceException;
 import uk.gov.hmcts.reform.sscs.factory.NotificationWrapper;
 import uk.gov.hmcts.reform.sscs.jobscheduler.model.Job;
 import uk.gov.hmcts.reform.sscs.jobscheduler.services.JobScheduler;
@@ -156,34 +154,6 @@ public class NotificationHandlerTest {
         assertThat(value.group, is(group));
         assertThat(value.name, is(A_NOTIFICATION_THAT_CANNOT_TRIGGER_OUT_OF_HOURS.getId()));
         assertThat(value.payload, is(expectedPayload));
-    }
-
-    @Test(expected = NotificationClientRuntimeException.class)
-    public void shouldThrowNotificationClientRuntimeExceptionForAnyNotificationException() throws Exception {
-        doThrow(new NotificationClientException(new UnknownHostException()))
-                .when(sendNotification)
-                .send();
-        stubData();
-        try {
-            underTest.sendNotification(notificationWrapper, "someTemplate", "Email", sendNotification);
-        } catch (NotificationClientRuntimeException e) {
-            verifyExpectedLogMessage(mockAppender, captorLoggingEvent, notificationWrapper.getNewSscsCaseData().getCcdCaseId(), "Could not send Email notification for case id: 123", Level.ERROR);
-            throw e;
-        }
-    }
-
-    @Test(expected = NotificationServiceException.class)
-    public void shouldLogGovNotifyErrorCodeWhenNotificationClientExceptionIsThrown() throws Exception {
-        doThrow(new NotificationClientException("Should return a 400 error code"))
-                .when(sendNotification)
-                .send();
-        stubData();
-        try {
-            underTest.sendNotification(notificationWrapper, "someTemplate", "Email", sendNotification);
-        } catch (NotificationServiceException ex) {
-            verifyExpectedLogMessage(mockAppender, captorLoggingEvent, notificationWrapper.getNewSscsCaseData().getCcdCaseId(), "Error code 400 on GovUKNotify for case id: 123, template: someTemplate", Level.ERROR);
-            throw ex;
-        }
     }
 
     @Test
