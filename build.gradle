@@ -146,7 +146,7 @@ dependencyManagement {
         dependency group: 'org.apache.logging.log4j', name: 'log4j-api', version: '2.17.1'
 
         // resolves: CVE-2020-9489
-        dependency group: 'org.apache.tika', name: 'tika-core', version: '2.6.0'
+        dependency group: 'org.apache.tika', name: 'tika-core', version: '2.7.0'
 
         //CVE-2021-40690
         dependency group: 'org.apache.santuario', name: 'xmlsec', version: '3.0.1'
@@ -207,7 +207,7 @@ dependencyManagement {
         }
 
         //CVE-2021-27807
-        dependencySet(group: 'org.apache.pdfbox', version: '2.0.25') {
+        dependencySet(group: 'org.apache.pdfbox', version: '2.0.27') {
             entry 'pdfbox'
             entry 'pdfbox-tools'
             entry 'preflight'
