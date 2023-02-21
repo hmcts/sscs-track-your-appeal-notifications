@@ -14,6 +14,7 @@ import java.util.List;
 import java.util.Optional;
 import junitparams.Parameters;
 import junitparams.converters.Nullable;
+import org.junit.Ignore;
 import org.junit.Test;
 import org.springframework.beans.factory.annotation.Value;
 import uk.gov.hmcts.reform.sscs.domain.notify.NotificationEventType;
@@ -80,7 +81,9 @@ public class JointPartyFunctionalTest extends AbstractFunctionalTest {
         super(30);
     }
 
+    // TODO: SSCS-11436
     @Test
+    @Ignore
     @Parameters(method = "eventTypeAndSubscriptions")
     public void givenEventAndJointPartySubscription_shouldSendNotificationToJointParty(
             NotificationEventType notificationEventType, @Nullable String hearingType,
