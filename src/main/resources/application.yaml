@@ -594,12 +594,14 @@ notification:
           smsId: 5e5cfe8d-b893-4f87-817f-9d05d22d657a
           docmosisId: TB-SCS-LET-ENG-Response-Received-AppellantRep.docx
         appointee:
+          docmosisId: TB-SCS-LET-ENG-Response-Received-AppellantRep.docx
           emailId: ddbc7562-f299-4b19-9357-915f08f05da7
           smsId: 5e5cfe8d-b893-4f87-817f-9d05d22d657a
         representative:
           emailId: 8dc0510c-70d5-4791-9217-87d70361a54c
           smsId: b2d187cd-089b-4fe1-b460-a310c0af46fe
         other_party:
+          docmosisId: TB-SCS-LET-ENG-Response-Received-AppellantRep.docx
           emailId: 8dc0510c-70d5-4791-9217-87d70361a54c
           smsId: b2d187cd-089b-4fe1-b460-a310c0af46fe
         joint_party:
@@ -674,7 +676,6 @@ notification:
           letterId: 419beb1c-4f26-45e7-8db3-69bfe5e9224d
       dwpUploadResponse:
         appellant:
-          docmosisId: TB-SCS-LET-ENG-Response-Received-AppellantRep.docx
           emailId: 793b3785-88d6-4994-ba8b-7c2fdc67d88d
           smsId: f0444380-a8a4-4805-b9c2-563d1bd199cd
         appointee:
@@ -1146,7 +1147,6 @@ notification:
           emailId: 5abc83d8-f6b8-4385-805b-ffbb0f64b84b
           smsId: cca7c565-c907-405f-b778-735b31947b85
       dwpUploadResponse:
-        docmosisId: TB-SCS-LET-WEL-Response-Received-AppelantRep.docx
         appellant:
           emailId: 974a452f-e5a5-4072-a326-87ad8b0793fb
           smsId: 7257266e-b02f-4091-a360-70e4b231124f
@@ -1157,6 +1157,7 @@ notification:
           emailId: 0b7ccdac-0b8e-4f94-8829-77f3a2874485
           smsId: cca7c565-c907-405f-b778-735b31947b85
         other_party:
+          docmosisId: TB-SCS-LET-WEL-Response-Received-AppelantRep.docx
           emailId: 0b7ccdac-0b8e-4f94-8829-77f3a2874485
           smsId: cca7c565-c907-405f-b778-735b31947b85
         joint_party:
@@ -1229,7 +1230,6 @@ notification:
           smsId: 0f3f501a-8f7b-427a-af61-f2f4ca301a0b
           letterId: 419beb1c-4f26-45e7-8db3-69bfe5e9224d
       dwpUploadResponse:
-        docmosisId: TB-SCS-LET-WEL-Response-Received-AppelantRep.docx
         appellant:
           emailId: c35a367c-ad53-4c6a-899b-554763945894
           smsId: 4cd7a59c-fd8f-464a-86a5-0c2a701b88f0
