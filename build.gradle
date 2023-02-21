@@ -165,7 +165,7 @@ dependencyManagement {
             entry 'cxf-rt-transports-http'
         }
 
-        dependencySet(group: 'org.apache.xmlgraphics', version: '1.14') {
+        dependencySet(group: 'org.apache.xmlgraphics', version: '1.16') {
             entry 'batik-all'
         }
 
