@@ -475,6 +475,17 @@ notification:
           docmosisId: TB-SCS-GNO-ENG-00067.docx
         other_party:
           docmosisId: TB-SCS-GNO-ENG-00089.docx
+    actionPostponementRequest:
+      appellant:
+        docmosisId: TB-SCS-GNO-ENG-00067.docx
+      appointee:
+        docmosisId: TB-SCS-GNO-ENG-00067.docx
+      representative:
+        docmosisId: TB-SCS-GNO-ENG-00089.docx
+      joint_party:
+        docmosisId: TB-SCS-GNO-ENG-00067.docx
+      other_party:
+        docmosisId: TB-SCS-GNO-ENG-00089.docx
     decisionIssued:
       appellant:
         docmosisId: TB-SCS-GNO-ENG-00094.docx
