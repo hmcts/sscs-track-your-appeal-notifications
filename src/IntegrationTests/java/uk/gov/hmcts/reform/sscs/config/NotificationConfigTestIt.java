@@ -283,15 +283,6 @@ public class NotificationConfigTestIt extends AbstractNotificationConfigTest {
             new Object[]{NON_COMPLIANT, true, null, ORAL, null, null, Collections.emptyList(), null, "TB-SCS-GNO-WEL-00663.docx"},
             new Object[]{NON_COMPLIANT, true, null, PAPER, null, null, Collections.emptyList(), null, "TB-SCS-GNO-WEL-00663.docx"},
 
-            new Object[]{REQUEST_INFO_INCOMPLETE, false, APPELLANT, ORAL, null, null, Collections.emptyList(), null, "TB-SCS-GNO-ENG-00452.docx"},
-            new Object[]{REQUEST_INFO_INCOMPLETE, false, APPELLANT, PAPER, null, null, Collections.emptyList(), null, "TB-SCS-GNO-ENG-00452.docx"},
-            new Object[]{REQUEST_INFO_INCOMPLETE, false, APPOINTEE, ORAL, null, null, Collections.emptyList(), null, "TB-SCS-GNO-ENG-00452.docx"},
-            new Object[]{REQUEST_INFO_INCOMPLETE, false, APPOINTEE, PAPER, null, null, Collections.emptyList(), null, "TB-SCS-GNO-ENG-00452.docx"},
-            new Object[]{REQUEST_INFO_INCOMPLETE, false, JOINT_PARTY, ORAL, null, null, Collections.emptyList(), null, "TB-SCS-GNO-ENG-00452.docx"},
-            new Object[]{REQUEST_INFO_INCOMPLETE, false, JOINT_PARTY, PAPER, null, null, Collections.emptyList(), null, "TB-SCS-GNO-ENG-00452.docx"},
-            new Object[]{REQUEST_INFO_INCOMPLETE, false, REPRESENTATIVE, ORAL, null, null, Collections.emptyList(), null, "TB-SCS-GNO-ENG-00452.docx"},
-            new Object[]{REQUEST_INFO_INCOMPLETE, false, REPRESENTATIVE, PAPER, null, null, Collections.emptyList(), null, "TB-SCS-GNO-ENG-00452.docx"},
-
             new Object[]{REQUEST_INFO_INCOMPLETE, false, APPELLANT, ORAL, null, null, Collections.emptyList(), null, "TB-SCS-LET-ENG-Request-for-Information.docx"},
             new Object[]{REQUEST_INFO_INCOMPLETE, false, APPELLANT, PAPER, null, null, Collections.emptyList(), null, "TB-SCS-LET-ENG-Request-for-Information.docx"},
             new Object[]{REQUEST_INFO_INCOMPLETE, false, APPOINTEE, ORAL, null, null, Collections.emptyList(), null, "TB-SCS-LET-ENG-Request-for-Information.docx"},
