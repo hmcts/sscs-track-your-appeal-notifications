@@ -69,6 +69,7 @@ public class NotificationControllerTest {
         notificationController = new NotificationController(notificationService, authorisationService, ccdService, deserializer, idamService);
         String path = getClass().getClassLoader().getResource("json/ccdResponse.json").getFile();
         json = FileUtils.readFileToString(new File(path), StandardCharsets.UTF_8.name());
+        json = json.replace("hearingRouteReplace", "gaps");
 
         IdamTokens idamTokens = IdamTokens.builder().build();
         when(idamService.getIdamTokens()).thenReturn(idamTokens);
