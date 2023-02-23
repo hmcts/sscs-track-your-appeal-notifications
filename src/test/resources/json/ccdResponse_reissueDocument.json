@@ -182,7 +182,8 @@
             "googleMapLink": "https://www.google.com/theAddress"
           }
         }
-      }]
+      }],
+      "hearingRoute" : "hearingRouteReplace"
     },
     "case_type_id": "Benefit",
     "state": "appealCreated",
