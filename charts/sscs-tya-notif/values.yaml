@@ -13,8 +13,8 @@ java:
         alias: IDAM_SSCS_SYSTEMUPDATE_USER
       - name: idam-sscs-systemupdate-password
         alias: IDAM_SSCS_SYSTEMUPDATE_PASSWORD
-      - name: notification-job-scheduler-db-password
-        alias: JOB_SCHEDULER_DB_PASSWORD
+#      - name: notification-job-scheduler-db-password
+#        alias: JOB_SCHEDULER_DB_PASSWORD
       - name: sscs-email-mac-secret-text
         alias: EMAIL_MAC_SECRET_TEXT
       - name: idam-sscs-oauth2-client-secret
@@ -51,7 +51,7 @@ java:
     JOB_SCHEDULER_POLL_INTERVAL: "30000"
     JOB_SCHEDULER_DB_PORT: "5432"
     JOB_SCHEDULER_DB_USERNAME: "notification@sscs-tya-notif-postgres-v11-db-{{ .Values.global.environment }}"
-    JOB_SCHEDULER_DB_PASSWORD: "{{ .Values.postgresql.auth.password}}"
+    JOB_SCHEDULER_DB_PASSWORD: "sscsjobscheduler"
     JOB_SCHEDULER_DB_NAME: "notification"
     JOB_SCHEDULER_DB_HOST: "sscs-tya-notif-postgres-v11-db-{{ .Values.global.environment }}.postgres.database.azure.com"
     IDAM_OAUTH2_REDIRECT_URL: "https://evidence-sharing-preprod.sscs.reform.hmcts.net"
