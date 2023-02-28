@@ -7,6 +7,41 @@
         <packageUrl regex="true">^pkg:maven/com\.fasterxml\.jackson\.core/jackson\-core@.*$</packageUrl>
         <cve>CVE-2022-45688</cve>
     </suppress>
+    <suppress until="2023-03-06">
+        <notes><![CDATA[
+   file name: android-json-0.0.20131108.vaadin1.jar
+   ]]></notes>
+        <packageUrl regex="true">^pkg:maven/com\.vaadin\.external\.google/android\-json@.*$</packageUrl>
+        <cve>CVE-2022-45688</cve>
+    </suppress>
+    <suppress until="2023-03-06">
+        <notes><![CDATA[
+   file name: groovy-json-3.0.7.jar
+   ]]></notes>
+        <packageUrl regex="true">^pkg:maven/org\.codehaus\.groovy/groovy\-json@.*$</packageUrl>
+        <cve>CVE-2022-45688</cve>
+    </suppress>
+    <suppress until="2023-03-06">
+        <notes><![CDATA[
+   file name: json-20220320.jar
+   ]]></notes>
+        <packageUrl regex="true">^pkg:maven/org\.json/json@.*$</packageUrl>
+        <cve>CVE-2022-45688</cve>
+    </suppress>
+    <suppress until="2023-03-06">
+        <notes><![CDATA[
+   file name: json-path-2.7.0.jar
+   ]]></notes>
+        <packageUrl regex="true">^pkg:maven/com\.jayway\.jsonpath/json\-path@.*$</packageUrl>
+        <cve>CVE-2022-45688</cve>
+    </suppress>
+    <suppress until="2023-03-06">
+        <notes><![CDATA[
+   file name: json-smart-2.4.8.jar
+   ]]></notes>
+        <packageUrl regex="true">^pkg:maven/net\.minidev/json\-smart@.*$</packageUrl>
+        <cve>CVE-2022-45688</cve>
+    </suppress>
     <suppress until="2023-03-01">
         <notes><![CDATA[
    file name: spring-web-5.3.20.jar
