@@ -33,7 +33,7 @@ compileTestJava {
 mainClassName = 'uk.gov.hmcts.reform.sscs.TrackYourAppealNotificationsApplication'
 
 pmd {
-    toolVersion = "6.5.0"
+    toolVersion = "6.55.0"
     ignoreFailures = true
     sourceSets = [sourceSets.main, sourceSets.test]
     reportsDir = file("$project.buildDir/reports/pmd")
