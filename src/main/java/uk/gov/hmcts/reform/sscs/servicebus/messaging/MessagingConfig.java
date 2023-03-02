@@ -25,7 +25,7 @@ public class MessagingConfig {
 
     @Bean
     public String jmsUrlString(@Value("${amqp.host}") final String host) {
-        return String.format("amqps://%1s?amqp.idleTimeout=3600000", host);
+        return String.format("amqp://%1s?amqp.idleTimeout=3600000", host);
     }
 
     @Bean

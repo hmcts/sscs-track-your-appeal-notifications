@@ -5,9 +5,9 @@ spring:
     name: TyaNotificationsService
   datasource:
     driverClassName: org.postgresql.Driver
-    url: jdbc:postgresql://${JOB_SCHEDULER_DB_HOST:localhost}:${JOB_SCHEDULER_DB_PORT:5432}/${JOB_SCHEDULER_DB_NAME:sscsjobscheduler}${JOB_SCHEDULER_DB_CONNECTION_OPTIONS:}
-    username: ${JOB_SCHEDULER_DB_USERNAME:sscsjobscheduler}
-    password: ${JOB_SCHEDULER_DB_PASSWORD:sscsjobscheduler}
+    url: jdbc:postgresql://${JOB_SCHEDULER_DB_HOST:localhost}:${JOB_SCHEDULER_DB_PORT:6432}/${JOB_SCHEDULER_DB_NAME:sscsjobscheduler}${JOB_SCHEDULER_DB_CONNECTION_OPTIONS:}
+    username: ${JOB_SCHEDULER_DB_USERNAME:postgres}
+    password: ${JOB_SCHEDULER_DB_PASSWORD:}
     properties:
       charSet: UTF-8
     tomcat:
@@ -153,6 +153,17 @@ job.scheduler:
 
 notification:
   english:
+    actionFurtherEvidence:
+      appellant:
+        docmosisId: TB-SCS-LET-ENG-Post-Hearing-Acknowledgement.docx
+      appointee:
+        docmosisId: TB-SCS-LET-ENG-Post-Hearing-Acknowledgement.docx
+      otherParty:
+        docmosisId: TB-SCS-LET-ENG-Post-Hearing-Acknowledgement.docx
+      jointParty:
+        docmosisId: TB-SCS-LET-ENG-Post-Hearing-Acknowledgement.docx
+      representative:
+        docmosisId: TB-SCS-LET-ENG-Post-Hearing-Acknowledgement-Representative.docx
     jointPartyAdded:
       appellant:
         docmosisId: TB-SCS-GNO-ENG-00579.docx
@@ -731,6 +742,17 @@ notification:
             emailId: 97c58e23-c11f-40b3-b981-2d4cfa38b8fd
             smsId: bb3df0ea-8259-43c4-95de-9eef96206575
   welsh:
+    actionFurtherEvidence:
+      appellant:
+        docmosisId: TB-SCS-LET-WEL-Post-Hearing-Acknowledgement.docx
+      appointee:
+        docmosisId: TB-SCS-LET-WEL-Post-Hearing-Acknowledgement.docx
+      otherParty:
+        docmosisId: TB-SCS-LET-WEL-Post-Hearing-Acknowledgement.docx
+      jointParty:
+        docmosisId: TB-SCS-LET-WEL-Post-Hearing-Acknowledgement.docx
+      representative:
+        docmosisId: TB-SCS-LET-WEL-Post-Hearing-Acknowledgement-Representative.docx
     jointPartyAdded:
       appellant:
         docmosisId: TB-SCS-GNO-WEL-00629.docx

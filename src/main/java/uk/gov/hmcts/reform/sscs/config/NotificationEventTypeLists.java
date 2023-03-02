@@ -1,5 +1,6 @@
 package uk.gov.hmcts.reform.sscs.config;
 
+import static uk.gov.hmcts.reform.sscs.domain.notify.NotificationEventType.ACTION_FURTHER_EVIDENCE;
 import static uk.gov.hmcts.reform.sscs.domain.notify.NotificationEventType.ACTION_HEARING_RECORDING_REQUEST;
 import static uk.gov.hmcts.reform.sscs.domain.notify.NotificationEventType.ACTION_POSTPONEMENT_REQUEST;
 import static uk.gov.hmcts.reform.sscs.domain.notify.NotificationEventType.ACTION_POSTPONEMENT_REQUEST_WELSH;
@@ -60,6 +61,7 @@ public final class NotificationEventTypeLists {
     }
 
     public static final Set<NotificationEventType> EVENTS_TO_HANDLE = EnumSet.of(
+        ACTION_FURTHER_EVIDENCE,
         ADJOURNED,
         ADMIN_APPEAL_WITHDRAWN,
         APPEAL_DORMANT,
@@ -125,6 +127,7 @@ public final class NotificationEventTypeLists {
     );
 
     public static final Set<NotificationEventType> EVENT_TYPES_FOR_MANDATORY_LETTERS = EnumSet.of(
+        ACTION_FURTHER_EVIDENCE,
         ACTION_HEARING_RECORDING_REQUEST,
         ACTION_POSTPONEMENT_REQUEST,
         ACTION_POSTPONEMENT_REQUEST_WELSH,
@@ -159,6 +162,7 @@ public final class NotificationEventTypeLists {
     );
 
     public static final Set<NotificationEventType> EVENT_TYPES_FOR_BUNDLED_LETTER = EnumSet.of(
+        ACTION_FURTHER_EVIDENCE,
         ACTION_POSTPONEMENT_REQUEST,
         ACTION_POSTPONEMENT_REQUEST_WELSH,
         DECISION_ISSUED,
@@ -187,6 +191,7 @@ public final class NotificationEventTypeLists {
     );
 
     public static final Set<NotificationEventType> DOCMOSIS_LETTERS = EnumSet.of(
+        ACTION_FURTHER_EVIDENCE,
         ACTION_HEARING_RECORDING_REQUEST,
         ACTION_POSTPONEMENT_REQUEST,
         ACTION_POSTPONEMENT_REQUEST_WELSH,
@@ -234,6 +239,7 @@ public final class NotificationEventTypeLists {
     );
 
     public static final Set<NotificationEventType> EVENTS_VALID_FOR_ALL_ENTITIES = EnumSet.of(
+        ACTION_FURTHER_EVIDENCE,
         ACTION_POSTPONEMENT_REQUEST,
         ACTION_POSTPONEMENT_REQUEST_WELSH,
         ADJOURNED,
@@ -326,6 +332,7 @@ public final class NotificationEventTypeLists {
     );
 
     public static final Set<NotificationEventType> EVENTS_WITH_SUBSCRIPTION_TYPE_EMAIL_TEMPLATES = EnumSet.of(
+        ACTION_FURTHER_EVIDENCE,
         ADJOURNED,
         ADMIN_APPEAL_WITHDRAWN,
         APPEAL_DORMANT,
@@ -348,6 +355,7 @@ public final class NotificationEventTypeLists {
     );
 
     public static final Set<NotificationEventType> EVENTS_WITH_SUBSCRIPTION_TYPE_DOCMOSIS_TEMPLATES = EnumSet.of(
+        ACTION_FURTHER_EVIDENCE,
         ACTION_HEARING_RECORDING_REQUEST,
         ACTION_POSTPONEMENT_REQUEST,
         ACTION_POSTPONEMENT_REQUEST_WELSH,
@@ -385,6 +393,7 @@ public final class NotificationEventTypeLists {
     );
 
     public static final Set<NotificationEventType> EVENTS_FOR_REPRESENTATIVE_PERSONALISATION = EnumSet.of(
+        ACTION_FURTHER_EVIDENCE,
         ACTION_HEARING_RECORDING_REQUEST,
         ACTION_POSTPONEMENT_REQUEST,
         ACTION_POSTPONEMENT_REQUEST_WELSH,

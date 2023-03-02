@@ -168,11 +168,10 @@ public class NotificationService {
 
         for (SubscriptionWithType subscriptionWithType : notificationWrapper.getSubscriptionsBasedOnNotificationType()) {
             if (isSubscriptionValidToSendAfterOverride(notificationWrapper, subscriptionWithType)
-                    && isValidNotification(notificationWrapper, subscriptionWithType)) {
+                && isValidNotification(notificationWrapper, subscriptionWithType)) {
 
                 sendNotification(notificationWrapper, subscriptionWithType);
                 resendLastNotification(notificationWrapper, subscriptionWithType);
-
             } else {
                 log.error("Is not a valid notification event {} for case id {}, not sending notification.",
                         notificationWrapper.getNotificationType().getId(), notificationWrapper.getCaseId());
@@ -238,9 +237,7 @@ public class NotificationService {
                     && !YesNo.YES.equals(wrapper.getNewSscsCaseData().getReissueArtifactUi().getResendToRepresentative())) {
                 return false;
             }
-            if (OTHER_PARTY.equals(subscriptionWithType.getSubscriptionType()) && !isResendTo(subscriptionWithType.getPartyId(), wrapper.getNewSscsCaseData())) {
-                return false;
-            }
+            return !OTHER_PARTY.equals(subscriptionWithType.getSubscriptionType()) || isResendTo(subscriptionWithType.getPartyId(), wrapper.getNewSscsCaseData());
         }
         return true;
     }

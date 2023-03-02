@@ -1,25 +1,25 @@
 package uk.gov.hmcts.reform.sscs.controller;
 
+import static org.apache.commons.collections4.CollectionUtils.emptyIfNull;
 import static org.springframework.util.MimeTypeUtils.APPLICATION_JSON_VALUE;
 import static uk.gov.hmcts.reform.sscs.domain.notify.NotificationEventType.getNotificationByCcdEvent;
 
-import java.time.LocalDateTime;
 import lombok.extern.slf4j.Slf4j;
+import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestHeader;
 import org.springframework.web.bind.annotation.RestController;
 import uk.gov.hmcts.reform.sscs.ccd.callback.Callback;
+import uk.gov.hmcts.reform.sscs.ccd.callback.DocumentType;
 import uk.gov.hmcts.reform.sscs.ccd.deserialisation.SscsCaseCallbackDeserializer;
 import uk.gov.hmcts.reform.sscs.ccd.domain.CaseDetails;
 import uk.gov.hmcts.reform.sscs.ccd.domain.SscsCaseData;
 import uk.gov.hmcts.reform.sscs.ccd.domain.State;
-import uk.gov.hmcts.reform.sscs.ccd.service.CcdService;
 import uk.gov.hmcts.reform.sscs.domain.SscsCaseDataWrapper;
 import uk.gov.hmcts.reform.sscs.domain.notify.NotificationEventType;
 import uk.gov.hmcts.reform.sscs.factory.CcdNotificationWrapper;
-import uk.gov.hmcts.reform.sscs.idam.IdamService;
 import uk.gov.hmcts.reform.sscs.service.AuthorisationService;
 import uk.gov.hmcts.reform.sscs.service.NotificationService;
 
@@ -29,21 +29,15 @@ public class NotificationController {
 
     private final NotificationService notificationService;
     private final AuthorisationService authorisationService;
-    private final CcdService ccdService;
     private final SscsCaseCallbackDeserializer deserializer;
-    private final IdamService idamService;
 
     @Autowired
     public NotificationController(NotificationService notificationService,
                                   AuthorisationService authorisationService,
-                                  CcdService ccdService,
-                                  SscsCaseCallbackDeserializer deserializer,
-                                  IdamService idamService) {
+                                  SscsCaseCallbackDeserializer deserializer) {
         this.notificationService = notificationService;
         this.authorisationService = authorisationService;
-        this.ccdService = ccdService;
         this.deserializer = deserializer;
-        this.idamService = idamService;
     }
 
     @PostMapping(value = "/send", produces = APPLICATION_JSON_VALUE)
@@ -59,8 +53,14 @@ public class NotificationController {
                 callback.getCaseDetails().getCaseData(),
                 caseDetailsBefore != null ? caseDetailsBefore.getCaseData() : null,
                 getNotificationByCcdEvent(callback.getEvent()),
-                callback.getCaseDetails().getCreatedDate(),
                 callback.getCaseDetails().getState());
+
+            if (NotificationEventType.ACTION_FURTHER_EVIDENCE.equals(sscsCaseDataWrapper.getNotificationEventType())
+                && emptyIfNull(callback.getCaseDetails().getCaseData().getScannedDocuments()).stream()
+                .noneMatch(doc -> doc.getValue() != null && StringUtils.isNotBlank(doc.getValue().getType())
+                    && DocumentType.SET_ASIDE_APPLICATION.getValue().equals(doc.getValue().getType()))) {
+                log.info("hi");
+            }
 
             log.info("Ccd Response received for case id: {} , {}", sscsCaseDataWrapper.getNewSscsCaseData().getCcdCaseId(), sscsCaseDataWrapper.getNotificationEventType());
 
@@ -73,7 +73,7 @@ public class NotificationController {
         }
     }
 
-    private SscsCaseDataWrapper buildSscsCaseDataWrapper(SscsCaseData caseData, SscsCaseData caseDataBefore, NotificationEventType event, LocalDateTime createdDate, State state) {
+    private SscsCaseDataWrapper buildSscsCaseDataWrapper(SscsCaseData caseData, SscsCaseData caseDataBefore, NotificationEventType event, State state) {
         return SscsCaseDataWrapper.builder()
                 .newSscsCaseData(caseData)
                 .oldSscsCaseData(caseDataBefore)

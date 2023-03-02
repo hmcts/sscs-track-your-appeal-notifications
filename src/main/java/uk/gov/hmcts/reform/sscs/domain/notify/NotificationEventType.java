@@ -14,6 +14,7 @@ import uk.gov.hmcts.reform.sscs.ccd.domain.EventType;
 @AllArgsConstructor
 public enum NotificationEventType {
 
+    ACTION_FURTHER_EVIDENCE(EventType.ACTION_FURTHER_EVIDENCE, true, true, true, true, false, 0),
     ACTION_HEARING_RECORDING_REQUEST(EventType.ACTION_HEARING_RECORDING_REQUEST, true, true, true, false, false, 0),
     ACTION_POSTPONEMENT_REQUEST(EventType.ACTION_POSTPONEMENT_REQUEST, true, true, true, true, false, 0),
     ACTION_POSTPONEMENT_REQUEST_WELSH(EventType.ACTION_POSTPONEMENT_REQUEST_WELSH, true, true, true, true, false, 0),
@@ -93,7 +94,7 @@ public enum NotificationEventType {
         return Arrays.stream(NotificationEventType.values())
             .filter(notification -> notification.getEvent() == eventType)
             .findFirst()
-            .orElse(DO_NOT_SEND);
+            .orElse(ACTION_FURTHER_EVIDENCE);
     }
 
     public static boolean checkEvent(String eventId) {
