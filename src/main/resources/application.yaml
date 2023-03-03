@@ -1367,6 +1367,7 @@ pdf-service:
   hmctsWelshImgVal: "[userImage:welshhmcts.png]"
   coverSheets:
     english:
+      actionFurtherEvidence: 'TB-SCS-GNO-ENG-00012.docx'
       appealReceived: 'TB-SCS-GNO-ENG-00012.docx'
       directionIssued: 'TB-SCS-GNO-ENG-00012.docx'
       processAudioVideo: 'TB-SCS-GNO-ENG-00012.docx'
@@ -1380,6 +1381,7 @@ pdf-service:
       struckOut: 'TB-SCS-GNO-ENG-00012.docx'
       updateOtherPartyData: 'TB-SCS-GNO-ENG-00012.docx'
     welsh:
+      actionFurtherEvidence: 'TB-SCS-GNO-WEL-00479.docx'
       appealReceived: 'TB-SCS-GNO-WEL-00479.docx'
       directionIssued: 'TB-SCS-GNO-WEL-00479.docx'
       decisionIssued: 'TB-SCS-GNO-WEL-00479.docx'
