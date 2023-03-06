@@ -24,13 +24,7 @@ import org.apache.pdfbox.pdmodel.PDDocument;
 import org.apache.pdfbox.pdmodel.PDPage;
 import org.apache.pdfbox.pdmodel.PDPageContentStream;
 import org.apache.pdfbox.pdmodel.common.PDRectangle;
-import uk.gov.hmcts.reform.sscs.ccd.domain.Address;
-import uk.gov.hmcts.reform.sscs.ccd.domain.CcdValue;
-import uk.gov.hmcts.reform.sscs.ccd.domain.Name;
-import uk.gov.hmcts.reform.sscs.ccd.domain.OtherParty;
-import uk.gov.hmcts.reform.sscs.ccd.domain.ReasonableAdjustments;
-import uk.gov.hmcts.reform.sscs.ccd.domain.SscsCaseData;
-import uk.gov.hmcts.reform.sscs.ccd.domain.YesNo;
+import uk.gov.hmcts.reform.sscs.ccd.domain.*;
 import uk.gov.hmcts.reform.sscs.domain.SubscriptionWithType;
 import uk.gov.hmcts.reform.sscs.exception.NotificationClientRuntimeException;
 import uk.gov.hmcts.reform.sscs.factory.NotificationWrapper;
@@ -196,5 +190,41 @@ public class LetterUtils {
             otherPartyReasonableAdjustmentList.add(Pair.of(op.getRep().getId(), op.getRepReasonableAdjustment().getWantsReasonableAdjustment()));
         }
         return otherPartyReasonableAdjustmentList.stream();
+    }
+
+    public static String getNameForSender(SscsCaseData sscsCaseData) {
+        if (nonNull(sscsCaseData.getOriginalSender())) {
+            final String originalSenderCode = sscsCaseData.getOriginalSender().getValue().getCode();
+            if (originalSenderCode.equalsIgnoreCase("appellant")) {
+                return sscsCaseData.getAppeal().getAppellant().getName().getFullName();
+            } else if (originalSenderCode.equalsIgnoreCase("representative")) {
+                return SendNotificationHelper.getRepSalutation(sscsCaseData.getAppeal().getRep(), false);
+            } else if (originalSenderCode.equalsIgnoreCase("jointParty")) {
+                return sscsCaseData.getJointParty().getName().getFullName();
+            } else {
+                return getOtherPartyName(sscsCaseData)
+                        .map(Name::getFullNameNoTitle).orElse("");
+            }
+        }
+        return "";
+    }
+
+    private static Representative getRepresentativeOfOtherParty(SscsCaseData sscsCaseData) {
+        for (CcdValue<OtherParty> op : sscsCaseData.getOtherParties()) {
+            if (op.getValue().hasRepresentative() && sscsCaseData.getOriginalSender().getValue().getCode().contains(op.getValue().getRep().getId())) {
+                return op.getValue().getRep();
+            }
+        }
+        return null;
+    }
+
+    public static Optional<Name> getOtherPartyName(SscsCaseData sscsCaseData) {
+        if (sscsCaseData.getOriginalSender().getValue().getCode().contains("otherPartyRep")) {
+            return nonNull(getRepresentativeOfOtherParty(sscsCaseData)) ? Optional.of(getRepresentativeOfOtherParty(sscsCaseData).getName()) : Optional.empty();
+        }
+        return sscsCaseData.getOtherParties().stream()
+            .filter(op -> sscsCaseData.getOriginalSender().getValue().getCode().contains(op.getValue().getId()))
+            .findFirst()
+            .map(op -> op.getValue().getName());
     }
 }

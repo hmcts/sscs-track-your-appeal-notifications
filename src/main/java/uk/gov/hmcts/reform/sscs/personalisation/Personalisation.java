@@ -81,6 +81,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
+import uk.gov.hmcts.reform.sscs.ccd.callback.DocumentType;
 import uk.gov.hmcts.reform.sscs.ccd.domain.*;
 import uk.gov.hmcts.reform.sscs.config.NotificationConfig;
 import uk.gov.hmcts.reform.sscs.config.NotificationEventTypeLists;
@@ -95,6 +96,7 @@ import uk.gov.hmcts.reform.sscs.domain.notify.Template;
 import uk.gov.hmcts.reform.sscs.exception.BenefitMappingException;
 import uk.gov.hmcts.reform.sscs.extractor.HearingContactDateExtractor;
 import uk.gov.hmcts.reform.sscs.factory.NotificationWrapper;
+import uk.gov.hmcts.reform.sscs.service.LetterUtils;
 import uk.gov.hmcts.reform.sscs.service.MessageAuthenticationServiceImpl;
 import uk.gov.hmcts.reform.sscs.service.RegionalProcessingCenterService;
 import uk.gov.hmcts.reform.sscs.service.SendNotificationHelper;
@@ -324,6 +326,9 @@ public class Personalisation<E extends NotificationWrapper> {
 
         personalisation.put(PARTY_TYPE, subscriptionWithType.getParty().getClass().getSimpleName());
         personalisation.put(ENTITY_TYPE, subscriptionWithType.getEntity().getClass().getSimpleName());
+
+        personalisation.put(DOCUMENT_TYPE_NAME, DocumentType.SET_ASIDE_APPLICATION.getLabel());
+        personalisation.put(SENDER_NAME, LetterUtils.getNameForSender(ccdResponse));
 
         return personalisation;
     }

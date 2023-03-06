@@ -64,6 +64,7 @@ public enum NotificationEventType {
     TCW_DECISION_APPEAL_TO_PROCEED(EventType.TCW_DECISION_APPEAL_TO_PROCEED, true, true, true, false, false, 0),
     UPDATE_OTHER_PARTY_DATA(EventType.UPDATE_OTHER_PARTY_DATA, true, true, true, true, false, 0),
     VALID_APPEAL_CREATED(EventType.VALID_APPEAL_CREATED, true, true, false, true, false, 240L),
+    ACTION_FURTHER_EVIDENCE(EventType.ACTION_FURTHER_EVIDENCE, true, true, false, true, false, 0),
     @JsonEnumDefaultValue
     DO_NOT_SEND(null);
 

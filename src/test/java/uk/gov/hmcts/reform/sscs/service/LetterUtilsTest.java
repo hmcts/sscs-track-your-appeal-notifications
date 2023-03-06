@@ -28,6 +28,7 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
+import java.util.Optional;
 import java.util.stream.Stream;
 import junitparams.JUnitParamsRunner;
 import junitparams.Parameters;
@@ -37,20 +38,9 @@ import org.apache.pdfbox.pdmodel.PDDocument;
 import org.apache.pdfbox.pdmodel.PDPage;
 import org.jetbrains.annotations.NotNull;
 import org.junit.Test;
+import org.junit.jupiter.api.DisplayName;
 import org.junit.runner.RunWith;
-import uk.gov.hmcts.reform.sscs.ccd.domain.Address;
-import uk.gov.hmcts.reform.sscs.ccd.domain.Appellant;
-import uk.gov.hmcts.reform.sscs.ccd.domain.Appointee;
-import uk.gov.hmcts.reform.sscs.ccd.domain.CcdValue;
-import uk.gov.hmcts.reform.sscs.ccd.domain.Entity;
-import uk.gov.hmcts.reform.sscs.ccd.domain.Name;
-import uk.gov.hmcts.reform.sscs.ccd.domain.OtherParty;
-import uk.gov.hmcts.reform.sscs.ccd.domain.Party;
-import uk.gov.hmcts.reform.sscs.ccd.domain.ReasonableAdjustmentDetails;
-import uk.gov.hmcts.reform.sscs.ccd.domain.Representative;
-import uk.gov.hmcts.reform.sscs.ccd.domain.SscsCaseData;
-import uk.gov.hmcts.reform.sscs.ccd.domain.Subscription;
-import uk.gov.hmcts.reform.sscs.ccd.domain.YesNo;
+import uk.gov.hmcts.reform.sscs.ccd.domain.*;
 import uk.gov.hmcts.reform.sscs.config.SubscriptionType;
 import uk.gov.hmcts.reform.sscs.domain.SscsCaseDataWrapper;
 import uk.gov.hmcts.reform.sscs.domain.SubscriptionWithType;
@@ -415,4 +405,124 @@ public class LetterUtilsTest {
                 .orElse(""));
     }
 
+    private SscsCaseData setupTestData(DynamicList sender) {
+        return SscsCaseData.builder()
+                .originalSender(sender)
+                .jointParty(JointParty.builder()
+                        .name(Name.builder()
+                                .title("Mr.")
+                                .firstName("Joint")
+                                .lastName("Party")
+                                .build())
+                        .build())
+                .otherParties(buildOtherPartyData())
+                .appeal(Appeal.builder()
+                        .appellant(Appellant.builder()
+                                .name(Name.builder()
+                                        .title("Mr.")
+                                        .firstName("Appellant")
+                                        .lastName("Case")
+                                        .build())
+                                .build())
+                        .rep(Representative.builder()
+                                .name(Name.builder()
+                                        .title("Mr.")
+                                        .firstName("Representative")
+                                        .lastName("Appellant")
+                                        .build())
+                                .build())
+                        .build())
+                .build();
+    }
+
+    private List<CcdValue<OtherParty>> buildOtherPartyData() {
+        return List.of(CcdValue.<OtherParty>builder()
+                .value(OtherParty.builder()
+                        .id("dedf975f")
+                        .name(Name.builder()
+                                .firstName("Other")
+                                .lastName("Party")
+                                .build())
+                        .otherPartySubscription(Subscription.builder().email("other@party").subscribeEmail("Yes").build())
+                        .rep(Representative.builder()
+                                .id("b9186faf")
+                                .name(Name.builder()
+                                        .firstName("OtherParty")
+                                        .lastName("Representative")
+                                        .build())
+                                .hasRepresentative(YesNo.YES.getValue())
+                                .build())
+                        .build())
+                .build());
+    }
+
+    @DisplayName("When sender is appellant then return name of case Appellant")
+    @Test
+    public void testGetNameForSenderAppellant() {
+        DynamicList sender = new DynamicList(new DynamicListItem("appellant", "Appellant"), new ArrayList<>());
+        SscsCaseData caseData = setupTestData(sender);
+        assertEquals("Mr. Appellant Case", LetterUtils.getNameForSender(caseData));
+    }
+
+    @DisplayName("When sender is representative then return name of representative")
+    @Test
+    public void testGetNameForSenderRepresentative() {
+        DynamicList sender = new DynamicList(new DynamicListItem("representative", "Representative"), new ArrayList<>());
+        SscsCaseData caseData = setupTestData(sender);
+        assertEquals("Representative Appellant", LetterUtils.getNameForSender(caseData));
+    }
+
+    @DisplayName("When sender is Joint Party then return name of the joint party")
+    @Test
+    public void testGetNameForSenderJointParty() {
+        DynamicList sender = new DynamicList(new DynamicListItem("jointParty", "jointParty"), new ArrayList<>());
+        SscsCaseData caseData = setupTestData(sender);
+        assertEquals("Mr. Joint Party", LetterUtils.getNameForSender(caseData));
+    }
+
+    @DisplayName("When sender is Joint Party then return name of the joint party")
+    @Test
+    public void testGetNameForSenderOtherParty() {
+        DynamicList sender = new DynamicList(new DynamicListItem("jointParty1", "jointParty1"), new ArrayList<>());
+        SscsCaseData caseData = setupTestData(sender);
+        assertEquals("", LetterUtils.getNameForSender(caseData));
+    }
+
+    @DisplayName("When sender is an Other Party then return name of Other Party")
+    @Test
+    public void testGetOtherPartyName() {
+        DynamicList sender = new DynamicList(new DynamicListItem("otherPartydedf975f", "Other Party 1"), new ArrayList<>());
+        SscsCaseData caseData = setupTestData(sender);
+        assertEquals(Optional.of(Name.builder()
+            .firstName("Other")
+            .lastName("Party")
+            .build()), LetterUtils.getOtherPartyName(caseData));
+    }
+
+    @DisplayName("When sender is an Other Party then return detail of other party")
+    @Test
+    public void testGetOtherPartyName1() {
+        DynamicList sender = new DynamicList(new DynamicListItem("otherPartyded", "Other Party 1"), new ArrayList<>());
+        SscsCaseData caseData = setupTestData(sender);
+        assertEquals(Optional.empty(), LetterUtils.getOtherPartyName(caseData));
+    }
+
+    @DisplayName("When sender is an Other Party Representative then return detail of other party representative")
+    @Test
+    public void testGetOtherPartyNameRE() {
+        DynamicList sender = new DynamicList(new DynamicListItem("otherPartyRepb9186faf", "Other party 1 - Representative - R Basker R Nadar"), new ArrayList<>());
+        SscsCaseData caseData = setupTestData(sender);
+        assertEquals(Optional.of(Name.builder()
+            .firstName("OtherParty")
+            .lastName("Representative")
+            .build()), LetterUtils.getOtherPartyName(caseData));
+    }
+
+    @DisplayName("When sender is an Other Party Representative is not found then return empty")
+    @Test
+    public void testGetOtherPartyNameRE1() {
+        DynamicList sender = new DynamicList(new DynamicListItem("otherPartyRep34554", "Other party 1 - Representative - R Basker R Nadar"), new ArrayList<>());
+        SscsCaseData caseData = setupTestData(sender);
+        assertEquals(Optional.empty(), LetterUtils.getOtherPartyName(caseData));
+    }
 }

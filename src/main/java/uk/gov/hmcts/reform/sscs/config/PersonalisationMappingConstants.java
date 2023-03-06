@@ -117,6 +117,8 @@ public final class PersonalisationMappingConstants {
     public static final String WITH_OPTIONAL_THE_WELSH = "welsh_with_optional_the";
     public static final String YOUR_DETAILS_LITERAL = "your_details";
     public static final String YOUR_DETAILS_LITERAL_WELSH = "welsh_your_details";
+    public static final String DOCUMENT_TYPE_NAME = "document_type_name";
+    public static final String SENDER_NAME = "sender_name";
 
     private PersonalisationMappingConstants() {
         //

@@ -153,6 +153,17 @@ job.scheduler:
 
 notification:
   english:
+    actionFurtherEvidence:
+      appellant:
+        docmosisId: TB-SCS-LET-ENG-representation_letter.docx
+      representative:
+        docmosisId: TB-SCS-LET-ENG-representation_letter.docx
+      appointee:
+        docmosisId: TB-SCS-LET-ENG-representation_letter.docx
+      other_party:
+        docmosisId: TB-SCS-LET-ENG-representation_letter.docx
+      joint_party:
+        docmosisId: TB-SCS-LET-ENG-representation_letter.docx
     jointPartyAdded:
       appellant:
         docmosisId: TB-SCS-GNO-ENG-00579.docx
@@ -731,6 +742,17 @@ notification:
             emailId: 97c58e23-c11f-40b3-b981-2d4cfa38b8fd
             smsId: bb3df0ea-8259-43c4-95de-9eef96206575
   welsh:
+    actionFurtherEvidence:
+      appellant:
+        docmosisId: TB-SCS-LET-WEL-representation_letter.docx
+      representative:
+        docmosisId: TB-SCS-LET-WEL-representation_letter.docx
+      appointee:
+        docmosisId: TB-SCS-LET-WEL-representation_letter.docx
+      other_party:
+        docmosisId: TB-SCS-LET-WEL-representation_letter.docx
+      joint_party:
+        docmosisId: TB-SCS-LET-WEL-representation_letter.docx
     jointPartyAdded:
       appellant:
         docmosisId: TB-SCS-GNO-WEL-00629.docx
@@ -1357,6 +1379,7 @@ pdf-service:
       requestInfoIncompleteApplication: 'TB-SCS-GNO-ENG-00012.docx'
       struckOut: 'TB-SCS-GNO-ENG-00012.docx'
       updateOtherPartyData: 'TB-SCS-GNO-ENG-00012.docx'
+      actionFurtherEvidence: 'TB-SCS-GNO-ENG-00012.docx'
     welsh:
       appealReceived: 'TB-SCS-GNO-WEL-00479.docx'
       directionIssued: 'TB-SCS-GNO-WEL-00479.docx'
@@ -1373,6 +1396,7 @@ pdf-service:
       requestInfoIncompleteApplication: 'TB-SCS-GNO-WEL-00479.docx'
       struckOut: 'TB-SCS-GNO-WEL-00479.docx'
       updateOtherPartyData: 'TB-SCS-GNO-WEL-00479.docx'
+      actionFurtherEvidence: 'TB-SCS-GNO-WEL-00479.docx'
 
 docmosis:
   accessKey:

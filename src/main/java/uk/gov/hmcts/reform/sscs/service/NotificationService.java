@@ -168,7 +168,8 @@ public class NotificationService {
 
         for (SubscriptionWithType subscriptionWithType : notificationWrapper.getSubscriptionsBasedOnNotificationType()) {
             if (isSubscriptionValidToSendAfterOverride(notificationWrapper, subscriptionWithType)
-                    && isValidNotification(notificationWrapper, subscriptionWithType)) {
+                    && isValidNotification(notificationWrapper, subscriptionWithType)
+                    && notificationValidService.isNotificationValidForActionFurtherEvidence(notificationWrapper, subscriptionWithType)) {
 
                 sendNotification(notificationWrapper, subscriptionWithType);
                 resendLastNotification(notificationWrapper, subscriptionWithType);

@@ -203,6 +203,10 @@ public class NotificationServiceTest {
         IdamTokens idamTokens = IdamTokens.builder().idamOauth2Token(authHeader).serviceAuthorization(serviceAuthHeader).build();
 
         when(idamService.getIdamTokens()).thenReturn(idamTokens);
+        given(notificationValidService.isNotificationValidForActionFurtherEvidence(null, null))
+                .willReturn(true);
+        given(notificationValidService.isNotificationValidForActionFurtherEvidence(any(NotificationWrapper.class), any(SubscriptionWithType.class)))
+                .willReturn(true);
 
         Logger logger = (Logger) LoggerFactory.getLogger(NotificationService.class.getName());
         logger.addAppender(mockAppender);
