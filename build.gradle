@@ -411,7 +411,7 @@ dependencies {
     implementation group: 'com.github.hmcts', name: 'cmc-pdf-service-client', version: '7.0.1'
 
     implementation group: 'com.github.hmcts', name: 'sscs-common', version: '4.25.1'
-    implementation group: 'com.github.hmcts', name: 'sscs-pdf-email-common', version: '1.6.0'
+    implementation group: 'com.github.hmcts', name: 'sscs-pdf-email-common', version: '1.8.1'
 
     implementation group: 'com.github.hmcts', name: 'sscs-job-scheduler', version: '1.5.7', {
         exclude group: "uk.gov.hmcts.reform", module:"properties-volume-spring-boot-starter"
