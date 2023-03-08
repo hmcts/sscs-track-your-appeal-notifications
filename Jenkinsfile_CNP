@@ -35,7 +35,7 @@ def secrets = [
 
     // Used by Kubernetes
     secret('idam-s2s-api', 'IDAM_S2S_AUTH'),
-    secret('sscs-s2s-secret', 'IDAM_S2S_AUTH_TOTP_SECRET'),
+    secret('sscs-s2s-secret', 'IDAM_S2S_AUTH_TOTP_SECRET')
   ]
 ]
 
