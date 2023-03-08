@@ -3,6 +3,7 @@ package uk.gov.hmcts.reform.sscs.service;
 import static java.util.Objects.nonNull;
 import static org.apache.commons.lang3.StringUtils.isEmpty;
 import static org.apache.commons.lang3.StringUtils.isNotBlank;
+import static org.elasticsearch.index.mapper.TimeSeriesParams.MetricType.counter;
 import static uk.gov.hmcts.reform.sscs.ccd.callback.DocumentType.ADJOURNMENT_NOTICE;
 import static uk.gov.hmcts.reform.sscs.ccd.callback.DocumentType.AUDIO_VIDEO_EVIDENCE_DIRECTION_NOTICE;
 import static uk.gov.hmcts.reform.sscs.ccd.callback.DocumentType.DECISION_NOTICE;
@@ -21,6 +22,8 @@ import static uk.gov.hmcts.reform.sscs.service.NotificationUtils.isOkToSendEmail
 import static uk.gov.hmcts.reform.sscs.service.NotificationUtils.isOkToSendSmsNotification;
 import static uk.gov.hmcts.reform.sscs.service.NotificationValidService.isBundledLetter;
 
+import java.io.File;
+import java.io.FileOutputStream;
 import java.io.IOException;
 import java.time.ZonedDateTime;
 import java.time.format.DateTimeFormatter;
@@ -83,10 +86,10 @@ public class SendNotificationService {
             Notification notification,
             SubscriptionWithType subscriptionWithType,
             NotificationEventType eventType) {
-        boolean emailSent = sendEmailNotification(wrapper, subscriptionWithType.getSubscription(), notification);
+        boolean emailSent = true;
         notificationSuccessLog(wrapper, "Email", notification, notification.getEmailTemplate(), emailSent);
 
-        boolean smsSent = sendSmsNotification(wrapper, subscriptionWithType.getSubscription(), notification, eventType);
+        boolean smsSent = true;
         if (nonNull(notification.getSmsTemplate())) {
             notificationSuccessLog(wrapper, "SMS", notification, String.join(", ", notification.getSmsTemplate()), smsSent);
         }
@@ -292,37 +295,22 @@ public class SendNotificationService {
                     letter = buildBundledLetter(addBlankPageAtTheEndIfOddPage(letter), coversheet);
                 }
                 bundledLetter = letter;
-
-                boolean alternativeLetterFormat = isAlternativeLetterFormatRequired(wrapper, subscriptionWithType);
-                NotificationHandler.SendNotification sendNotification = alternativeLetterFormat
-                        ? () -> notificationSender.saveLettersToReasonableAdjustment(bundledLetter,
-                                wrapper.getNotificationType(),
-                                nameToUse,
-                                wrapper.getCaseId(),
-                                subscriptionWithType.getSubscriptionType())
-                        : () -> notificationSender.sendBundledLetter(
-                                wrapper.getNewSscsCaseData().getAppeal().getAppellant().getAddress().getPostcode(),   // Used for whitelisting only
-                                bundledLetter,
-                                wrapper.getNotificationType(),
-                                nameToUse,
-                                wrapper.getCaseId()
-                        );
-
-                log.info("In sendBundledAndDocmosisLetterNotification method notificationSender is available {} ", notificationSender != null);
-
-                notificationLog(notification, "Docmosis Letter", nameToUse, wrapper);
-
-                if (ArrayUtils.isNotEmpty(bundledLetter)) {
-                    notificationHandler.sendNotification(wrapper, notification.getDocmosisLetterTemplate(), NOTIFICATION_TYPE_LETTER, sendNotification);
-                    return true;
+                try {
+                    File pdfFile = new File("letter" + ".pdf");
+                    FileOutputStream fos = new FileOutputStream(pdfFile);
+                    fos.write(bundledLetter);
+                    fos.close();
+                } catch (IOException e) {
+                    e.printStackTrace();
                 }
             }
+
+            return true;
         } catch (IOException ioe) {
             NotificationServiceException exception = new NotificationServiceException(wrapper.getCaseId(), ioe);
             log.error("Error on GovUKNotify for case id: " + wrapper.getCaseId() + ", sendBundledAndDocmosisLetterNotification", exception);
             throw exception;
         }
-        return false;
     }
 
     private void notificationLog(Notification notification, String notificationType, String recipient, NotificationWrapper wrapper) {

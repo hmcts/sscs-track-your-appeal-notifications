@@ -1358,7 +1358,7 @@ retry:
 
 pdf-service:
   uri: ${PDF_SERVICE_BASE_URL:https://docmosis.aat.platform.hmcts.net/rs/render}
-  accessKey: ${PDF_SERVICE_ACCESS_KEY:}
+  accessKey: ${PDF_SERVICE_ACCESS_KEY:dyVv8pXwQ03RRyJZQIPX2RWP9LgJJGTU08kc9dA8ATJoA9EZXQEWe7L1Uwe}
   health:
     uri: ${PDF_SERVICE_HEALTH_URL:https://docmosis.aat.platform.hmcts.net/rs/status}
   hmctsImgKey: hmcts2
