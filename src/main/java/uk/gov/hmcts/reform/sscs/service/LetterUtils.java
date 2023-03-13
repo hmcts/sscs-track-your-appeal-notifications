@@ -209,18 +209,18 @@ public class LetterUtils {
         return "";
     }
 
-    private static Representative getRepresentativeOfOtherParty(SscsCaseData sscsCaseData) {
+    private static Optional<Representative> getRepresentativeOfOtherParty(SscsCaseData sscsCaseData) {
         for (CcdValue<OtherParty> op : sscsCaseData.getOtherParties()) {
             if (op.getValue().hasRepresentative() && sscsCaseData.getOriginalSender().getValue().getCode().contains(op.getValue().getRep().getId())) {
-                return op.getValue().getRep();
+                return Optional.of(op.getValue().getRep());
             }
         }
-        return null;
+        return Optional.empty();
     }
 
     public static Optional<Name> getOtherPartyName(SscsCaseData sscsCaseData) {
         if (sscsCaseData.getOriginalSender().getValue().getCode().contains("otherPartyRep")) {
-            return nonNull(getRepresentativeOfOtherParty(sscsCaseData)) ? Optional.of(getRepresentativeOfOtherParty(sscsCaseData).getName()) : Optional.empty();
+            return getRepresentativeOfOtherParty(sscsCaseData).isEmpty() ? Optional.empty() : Optional.of(getRepresentativeOfOtherParty(sscsCaseData).get().getName());
         }
         return sscsCaseData.getOtherParties().stream()
             .filter(op -> sscsCaseData.getOriginalSender().getValue().getCode().contains(op.getValue().getId()))

@@ -2206,13 +2206,30 @@ public class NotificationServiceTest {
     }
 
     @Test
-    public void givenNotificationEventTypeAndSenderIsNull_shouldManageNotificationAndSubscriptionAccordingly() {
+    public void isNotificationStillValidToSendSetAsideRequestIsNull() {
         SscsCaseData caseData = SscsCaseData.builder().ccdCaseId("1234").originalSender(null).build();
-        CcdNotificationWrapper notificationWrapper = new CcdNotificationWrapper(
-                SscsCaseDataWrapper.builder().notificationEventType(ACTION_FURTHER_EVIDENCE).newSscsCaseData(caseData).build());
-
-        notificationService.manageNotificationAndSubscription(notificationWrapper, false);
-        verifyExpectedLogMessage(mockAppender, captorLoggingEvent, notificationWrapper.getNewSscsCaseData().getCcdCaseId(),
-                "Incomplete Information with empty or no Information regarding sender for event", Level.INFO);
+        assertFalse(notificationService.isNotificationStillValidToSendSetAsideRequest(caseData, ACTION_FURTHER_EVIDENCE));
     }
+
+    @Test
+    public void isNotificationStillValidToSendSetAsideRequestIsNotNull() {
+        DynamicList sender = new DynamicList(new DynamicListItem("dwp", "dwp"), new ArrayList<>());
+        SscsCaseData caseData = SscsCaseData.builder().ccdCaseId("1234").originalSender(sender).build();
+        assertFalse(notificationService.isNotificationStillValidToSendSetAsideRequest(caseData, ACTION_FURTHER_EVIDENCE));
+    }
+
+    @Test
+    public void isNotificationStillValidToSendSetAsideRequestIsNotNull1() {
+        DynamicList sender = new DynamicList(new DynamicListItem("dwp1", "dwp1"), new ArrayList<>());
+        SscsCaseData caseData = SscsCaseData.builder().ccdCaseId("1234").originalSender(sender).build();
+        assertTrue(notificationService.isNotificationStillValidToSendSetAsideRequest(caseData, ACTION_FURTHER_EVIDENCE));
+    }
+
+    @Test
+    public void isNotificationStillValidToSendSetAsideRequestIsNotNull2() {
+        DynamicList sender = new DynamicList(new DynamicListItem("dwp1", "dwp1"), new ArrayList<>());
+        SscsCaseData caseData = SscsCaseData.builder().ccdCaseId("1234").originalSender(sender).build();
+        assertTrue(notificationService.isNotificationStillValidToSendSetAsideRequest(caseData, ADJOURNED));
+    }
+
 }
