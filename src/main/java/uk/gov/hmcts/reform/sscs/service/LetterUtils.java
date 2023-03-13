@@ -220,7 +220,8 @@ public class LetterUtils {
 
     public static Optional<Name> getOtherPartyName(SscsCaseData sscsCaseData) {
         if (sscsCaseData.getOriginalSender().getValue().getCode().contains("otherPartyRep")) {
-            return getRepresentativeOfOtherParty(sscsCaseData).isPresent() ? Optional.of(getRepresentativeOfOtherParty(sscsCaseData).get().getName()) : Optional.empty();
+            return getRepresentativeOfOtherParty(sscsCaseData).isPresent() ? Optional.of(getRepresentativeOfOtherParty(sscsCaseData).get().getName())
+                    : Optional.empty();
         }
         return sscsCaseData.getOtherParties().stream()
             .filter(op -> sscsCaseData.getOriginalSender().getValue().getCode().contains(op.getValue().getId()))
