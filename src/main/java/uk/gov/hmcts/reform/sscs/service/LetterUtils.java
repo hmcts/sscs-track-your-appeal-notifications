@@ -220,7 +220,8 @@ public class LetterUtils {
 
     public static Optional<Name> getOtherPartyName(SscsCaseData sscsCaseData) {
         if (sscsCaseData.getOriginalSender().getValue().getCode().contains("otherPartyRep")) {
-            return getRepresentativeOfOtherParty(sscsCaseData).isPresent() ? Optional.of(getRepresentativeOfOtherParty(sscsCaseData).get().getName())
+            Optional<Representative> representative = getRepresentativeOfOtherParty(sscsCaseData);
+            return representative.isPresent() ? Optional.of(representative.get().getName())
                     : Optional.empty();
         }
         return sscsCaseData.getOtherParties().stream()
@@ -266,29 +267,43 @@ public class LetterUtils {
                 && subscriptionWithType.getParty().getId().equalsIgnoreCase(notificationWrapper.getNewSscsCaseData().getJointParty().getId()));
     }
 
-    private static boolean isValidOtherParty(NotificationWrapper notificationWrapper, SubscriptionWithType subscriptionWithType) {
+    static boolean isValidOtherParty(NotificationWrapper notificationWrapper, SubscriptionWithType subscriptionWithType) {
         String subscriptionPartyId = subscriptionWithType.getPartyId();
         String requesterId = notificationWrapper.getNewSscsCaseData().getOriginalSender().getValue().getCode();
 
         if (nonNull(subscriptionPartyId) && requesterId.contains("otherParty")) {
             List<CcdValue<OtherParty>> otherParties = notificationWrapper.getNewSscsCaseData().getOtherParties();
             if (nonNull(otherParties)) {
-                for (CcdValue<OtherParty> op : otherParties) {
-                    if (subscriptionPartyId.equals(op.getValue().getId()) && requesterId.contains(op.getValue().getId())) {
-                        return true;
-                    }
-                    if (op.getValue().hasRepresentative()) {
-                        if (subscriptionPartyId.contains(op.getValue().getRep().getId())
-                                && requesterId.contains(op.getValue().getId())) {
-                            return true;
-                        }
-                        if (requesterId.contains(op.getValue().getRep().getId())
-                                && (subscriptionPartyId.equals(op.getValue().getRep().getId())
-                                    || subscriptionPartyId.contains(op.getValue().getId()))) {
-                            return true;
-                        }
-                    }
+                if (isValidOtherPartyForSubscription(subscriptionPartyId, requesterId, otherParties)) {
+                    return true;
                 }
+            }
+        }
+        return false;
+    }
+
+    private static boolean isValidOtherPartyForSubscription(String subscriptionPartyId, String requesterId, List<CcdValue<OtherParty>> otherParties) {
+        for (CcdValue<OtherParty> op : otherParties) {
+            if (subscriptionPartyId.equals(op.getValue().getId()) && requesterId.contains(op.getValue().getId())) {
+                return true;
+            }
+            if (isValidOtherPartyRepresentative(subscriptionPartyId, requesterId, op)) {
+                return true;
+            }
+        }
+        return false;
+    }
+
+    static boolean isValidOtherPartyRepresentative(String subscriptionPartyId, String requesterId, CcdValue<OtherParty> op) {
+        if (op.getValue().hasRepresentative()) {
+            if (subscriptionPartyId.contains(op.getValue().getRep().getId())
+                    && requesterId.contains(op.getValue().getId())) {
+                return true;
+            }
+            if (requesterId.contains(op.getValue().getRep().getId())
+                    && (subscriptionPartyId.equals(op.getValue().getRep().getId())
+                        || subscriptionPartyId.contains(op.getValue().getId()))) {
+                return true;
             }
         }
         return false;

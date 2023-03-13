@@ -668,6 +668,26 @@ public class LetterUtilsTest {
         assertEquals("confirmation", LetterUtils.getNotificationTypeForActionFurtherEvidence(wrapper, type));
     }
 
+    @DisplayName("When sender is an other party and subscriber is his representative then return true")
+    @Test
+    public void testisValidOtherPartyRepresentative() {
+        String senderId = "OPREP123456";
+        String subscriptionId = "OPREP123456";
+        List<CcdValue<OtherParty>>  otherParties = buildOtherPartyData();
+        assertTrue(LetterUtils.isValidOtherPartyRepresentative(subscriptionId,
+                senderId, otherParties.get(0)));
+    }
+
+    @DisplayName("When sender is an other party representative and subscriber is party then return confirmation")
+    @Test
+    public void testisValidOtherPartyRepresentative1() {
+        String senderId = "OPREP123456";
+        String subscriptionId = "OP123456";
+        List<CcdValue<OtherParty>>  otherParties = buildOtherPartyData();
+        assertTrue(LetterUtils.isValidOtherPartyRepresentative(subscriptionId,
+                senderId, otherParties.get(0)));
+    }
+
     public CcdNotificationWrapper buildBaseWrapperWithCaseData(SscsCaseData caseData, NotificationEventType type) {
         SscsCaseDataWrapper caseDataWrapper = SscsCaseDataWrapper.builder()
                 .newSscsCaseData(caseData)
