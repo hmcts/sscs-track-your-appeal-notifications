@@ -245,11 +245,10 @@ public class LetterUtils {
     }
 
     private static boolean isValidAppellantRepresentativeForSetAsideRequest(NotificationWrapper notificationWrapper, SubscriptionWithType subscriptionWithType) {
-        if (notificationWrapper.getNewSscsCaseData().getOriginalSender().getValue().getCode().equalsIgnoreCase("representative")) {
-            if (subscriptionWithType.getParty().getId().equalsIgnoreCase(notificationWrapper.getNewSscsCaseData().getAppeal().getAppellant().getId())
-                    || subscriptionWithType.getParty().getId().equalsIgnoreCase(notificationWrapper.getNewSscsCaseData().getAppeal().getRep().getId())) {
-                return true;
-            }
+        if (notificationWrapper.getNewSscsCaseData().getOriginalSender().getValue().getCode().equalsIgnoreCase("representative")
+                && (subscriptionWithType.getParty().getId().equalsIgnoreCase(notificationWrapper.getNewSscsCaseData().getAppeal().getAppellant().getId())
+                    || subscriptionWithType.getParty().getId().equalsIgnoreCase(notificationWrapper.getNewSscsCaseData().getAppeal().getRep().getId()))) {
+            return true;
         }
         return false;
     }
@@ -273,10 +272,8 @@ public class LetterUtils {
 
         if (nonNull(subscriptionPartyId) && requesterId.contains("otherParty")) {
             List<CcdValue<OtherParty>> otherParties = notificationWrapper.getNewSscsCaseData().getOtherParties();
-            if (nonNull(otherParties)) {
-                if (isValidOtherPartyForSubscription(subscriptionPartyId, requesterId, otherParties)) {
-                    return true;
-                }
+            if (nonNull(otherParties) && isValidOtherPartyForSubscription(subscriptionPartyId, requesterId, otherParties)) {
+                return true;
             }
         }
         return false;

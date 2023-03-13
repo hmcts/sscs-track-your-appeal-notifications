@@ -574,10 +574,10 @@ public class LetterUtilsTest {
         assertEquals("confirmation", LetterUtils.getNotificationTypeForActionFurtherEvidence(wrapper, type));
     }
 
-    @DisplayName("When sender is an appellant and subscriber is not appellant then return notification.")
     @Test
-    public void testGetNotificationTypeForActionFurtherEvidence2() {
-        DynamicList sender = new DynamicList(new DynamicListItem("appellant", "Appellant"), new ArrayList<>());
+    @Parameters({"appellant", "representative", "jointParty"})
+    public void testGetNotificationTypeForActionFurtherEvidence2(String requester) {
+        DynamicList sender = new DynamicList(new DynamicListItem(requester, requester), new ArrayList<>());
         NotificationWrapper wrapper = buildBaseWrapperWithCaseData(setupTestData(sender), ACTION_FURTHER_EVIDENCE);
         SubscriptionWithType type = SubscriptionWithType.builder().party(APPELLANT_WITHOUT_ID).partyId(APPELLANT_WITHOUT_ID.getId()).build();
         assertEquals("notice", LetterUtils.getNotificationTypeForActionFurtherEvidence(wrapper, type));
@@ -590,25 +590,6 @@ public class LetterUtilsTest {
         DynamicList sender = new DynamicList(new DynamicListItem("representative", "Representative"), new ArrayList<>());
         NotificationWrapper wrapper = buildBaseWrapperWithCaseData(setupTestData(sender), ACTION_FURTHER_EVIDENCE);
         SubscriptionWithType type = SubscriptionWithType.builder().party(APPELLANT_WITHOUT_ID).partyId(APPELLANT_WITH_ID.getId()).build();
-        assertEquals("notice", LetterUtils.getNotificationTypeForActionFurtherEvidence(wrapper, type));
-    }
-
-    @DisplayName("When sender is an representative, subscriber is appellant and appellant is represented "
-            + "then return confirmation.")
-    @Test
-    public void testGetNotificationTypeForActionFurtherEvidence4() {
-        DynamicList sender = new DynamicList(new DynamicListItem("representative", "Representative"), new ArrayList<>());
-        NotificationWrapper wrapper = buildBaseWrapperWithCaseData(setupTestData(sender), ACTION_FURTHER_EVIDENCE);
-        SubscriptionWithType type = SubscriptionWithType.builder().party(APPELLANT_WITH_ID).build();
-        assertEquals("confirmation", LetterUtils.getNotificationTypeForActionFurtherEvidence(wrapper, type));
-    }
-
-    @DisplayName("When sender is a Joint party and subscriber is appellant then return notification.")
-    @Test
-    public void testGetNotificationTypeForActionFurtherEvidence5() {
-        DynamicList sender = new DynamicList(new DynamicListItem("jointParty", "jointParty"), new ArrayList<>());
-        NotificationWrapper wrapper = buildBaseWrapperWithCaseData(setupTestData(sender), ACTION_FURTHER_EVIDENCE);
-        SubscriptionWithType type = SubscriptionWithType.builder().party(APPELLANT_WITH_ID).build();
         assertEquals("notice", LetterUtils.getNotificationTypeForActionFurtherEvidence(wrapper, type));
     }
 
