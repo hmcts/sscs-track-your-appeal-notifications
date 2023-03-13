@@ -65,6 +65,8 @@ public enum NotificationEventType {
     UPDATE_OTHER_PARTY_DATA(EventType.UPDATE_OTHER_PARTY_DATA, true, true, true, true, false, 0),
     VALID_APPEAL_CREATED(EventType.VALID_APPEAL_CREATED, true, true, false, true, false, 240L),
     ACTION_FURTHER_EVIDENCE(EventType.ACTION_FURTHER_EVIDENCE, true, true, false, true, false, 0),
+    POST_HEARING_REQUEST(EventType.POST_HEARING_REQUEST, true, true, false, true, false, 0),
+
     @JsonEnumDefaultValue
     DO_NOT_SEND(null);
 
