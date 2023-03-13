@@ -334,8 +334,8 @@ public class NotificationService {
         switch (eventType) {
             case ACTION_FURTHER_EVIDENCE:
             case POST_HEARING_REQUEST:
-                return isNull(caseData.getOriginalSender())
-                        || originalSenders.contains(caseData.getOriginalSender().getValue().getCode()) ? false : true;
+                return !(isNull(caseData.getOriginalSender())
+                    || originalSenders.contains(caseData.getOriginalSender().getValue().getCode()));
 
             default:
                 return true;
