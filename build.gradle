@@ -174,7 +174,7 @@ dependencyManagement {
         }
 
         // CVE-2019-16869 - brought in by qpid-jms-client
-        dependencySet(group: 'io.netty', version: '4.1.89.Final') {
+        dependencySet(group: 'io.netty', version: '4.1.90.Final') {
             entry 'netty-handler'
             entry 'netty-transport-native-epoll'
             entry 'netty-transport-native-kqueue'
@@ -235,7 +235,7 @@ dependencyManagement {
         }
 
         //CVE-2021-27568
-        dependencySet(group: 'net.minidev', version: '2.4.8') {
+        dependencySet(group: 'net.minidev', version: '2.4.9') {
             entry 'json-smart'
             entry 'accessors-smart'
         }
@@ -380,9 +380,9 @@ dependencies {
     implementation group: 'commons-io', name: 'commons-io', version: '2.11.0'
 
     implementation group: 'com.mchange', name: 'c3p0', version: '0.9.5.5'
-    implementation group: 'org.flywaydb', name: 'flyway-core', version: '9.15.1'
+    implementation group: 'org.flywaydb', name: 'flyway-core', version: '9.15.2'
     implementation group: 'org.postgresql', name: 'postgresql', version: '42.5.4'
-    implementation group: 'net.bytebuddy', name: 'byte-buddy', version: '1.14.0'
+    implementation group: 'net.bytebuddy', name: 'byte-buddy', version: '1.14.2'
     implementation group: 'org.elasticsearch', name: 'elasticsearch', version: '7.17.9'
 
     implementation group: 'org.springframework.boot', name: 'spring-boot-starter-actuator'
