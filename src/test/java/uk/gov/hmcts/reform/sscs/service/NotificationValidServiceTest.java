@@ -7,8 +7,9 @@ import static uk.gov.hmcts.reform.sscs.domain.notify.NotificationEventType.*;
 import org.junit.Before;
 import org.junit.Test;
 import uk.gov.hmcts.reform.sscs.SscsCaseDataUtils;
-import uk.gov.hmcts.reform.sscs.ccd.domain.*;
-
+import uk.gov.hmcts.reform.sscs.ccd.domain.Appeal;
+import uk.gov.hmcts.reform.sscs.ccd.domain.HearingOptions;
+import uk.gov.hmcts.reform.sscs.ccd.domain.SscsCaseData;
 
 public class NotificationValidServiceTest {
 
@@ -114,4 +115,5 @@ public class NotificationValidServiceTest {
                 notificationValidService.isHearingTypeValidToSendNotification(caseData, DO_NOT_SEND)
         );
     }
+
 }

@@ -477,71 +477,48 @@ public class LetterUtilsTest {
             );
     }
 
-    @DisplayName("When sender is appellant then return name of case Appellant")
-    @Test
-    public void testGetNameForSenderAppellant() {
-        DynamicList sender = new DynamicList(new DynamicListItem("appellant", "Appellant"), new ArrayList<>());
-        SscsCaseData caseData = setupTestData(sender);
-        assertEquals("Tom Cat", LetterUtils.getNameForSender(caseData));
-    }
-
-    @DisplayName("When sender is representative, Joint party or invalid joint party"
+    @DisplayName("When sender is appellant, representative or Joint party"
             + " then return name of corresponding party")
     @Test
-    @Parameters({"representative,Representative Appellant", "jointParty,Joint Party", "jointParty1, "})
+    @Parameters({"appellant,Tom Cat","representative,Representative Appellant", "jointParty,Joint Party", "jointParty1, "})
     public void testGetNameForSenderRepresentative(String senderType, String senderName) {
         DynamicList sender = new DynamicList(new DynamicListItem(senderType, senderType), new ArrayList<>());
         SscsCaseData caseData = setupTestData(sender);
         assertEquals(senderName, LetterUtils.getNameForSender(caseData));
     }
 
-    @DisplayName("When sender is appellant then return name of case Appellant")
+    @DisplayName("When sender is null then return name of case Appellant")
     @Test
     public void testGetNameForSenderEmpty() {
-        DynamicList sender = new DynamicList(new DynamicListItem("appellant", "Appellant"), new ArrayList<>());
         SscsCaseData caseData = setupTestData(null);
         assertEquals("", LetterUtils.getNameForSender(caseData));
     }
 
-    @DisplayName("When sender is an Other Party then return name of Other Party")
+    @DisplayName("When sender is an Other Party or his representative "
+            + "then return name of respective other party or his representative.")
     @Test
-    public void testGetOtherPartyName() {
-        DynamicList sender = new DynamicList(new DynamicListItem("otherPartyOP123456", "Other Party 1"), new ArrayList<>());
+    @Parameters({"otherPartyOP123456,Other,Party","otherPartyRepOPREP123456,OtherParty,Representative"})
+    public void testGetOtherPartyName(String senderId, String firstName, String lastName) {
+        DynamicList sender = new DynamicList(new DynamicListItem(senderId, senderId), new ArrayList<>());
         SscsCaseData caseData = setupTestData(sender);
         assertEquals(Optional.of(Name.builder()
-            .firstName("Other")
-            .lastName("Party")
+            .firstName(firstName)
+            .lastName(lastName)
             .build()), LetterUtils.getOtherPartyName(caseData));
     }
 
-    @DisplayName("When sender is an invalid Other Party then return empty.")
+    @DisplayName("When sender is an invalid Other Party or his representative "
+            + "then return empty.")
     @Test
-    public void testGetOtherPartyNameWithInvalidOtherParty() {
-        DynamicList sender = new DynamicList(new DynamicListItem("otherPartyded", "Other Party 1"), new ArrayList<>());
+    @Parameters({"otherPartyInvalid","otherPartyRepInvalid"})
+    public void testGetOtherPartyNameWithInvalidSender(String senderId) {
+        DynamicList sender = new DynamicList(new DynamicListItem(senderId, senderId), new ArrayList<>());
         SscsCaseData caseData = setupTestData(sender);
         assertEquals(Optional.empty(), LetterUtils.getOtherPartyName(caseData));
     }
 
-    @DisplayName("When sender is an Other Party Representative then return detail of other party representative")
-    @Test
-    public void testGetOtherPartyNameRE() {
-        DynamicList sender = new DynamicList(new DynamicListItem("otherPartyRepOPREP123456", "Other party 1 - Representative - R Basker R Nadar"), new ArrayList<>());
-        SscsCaseData caseData = setupTestData(sender);
-        assertEquals(Optional.of(Name.builder()
-            .firstName("OtherParty")
-            .lastName("Representative")
-            .build()), LetterUtils.getOtherPartyName(caseData));
-    }
-
-    @DisplayName("When sender is an Other Party Representative is not found then return empty")
-    @Test
-    public void testGetOtherPartyNameRE1() {
-        DynamicList sender = new DynamicList(new DynamicListItem("otherPartyRep34554", "Other party 1 - Representative - R Basker R Nadar"), new ArrayList<>());
-        SscsCaseData caseData = setupTestData(sender);
-        assertEquals(Optional.empty(), LetterUtils.getOtherPartyName(caseData));
-    }
-
-    @DisplayName("When sender is an Other Party Representative is not found then return empty")
+    @DisplayName("When the notification event type is other than ACTION_FURTHER_EVIDENCE or POST_HEARING_REQUEST "
+            + "then return empty string.")
     @Test
     public void testGetNotificationTypeForActionFurtherEvidence() {
         DynamicList sender = new DynamicList(new DynamicListItem("appellant", "Other party 1 - Representative - R Basker R Nadar"), new ArrayList<>());
@@ -551,7 +528,7 @@ public class LetterUtilsTest {
         assertEquals("", LetterUtils.getNotificationTypeForActionFurtherEvidence(wrapper, SubscriptionWithType.builder().build()));
     }
 
-    @DisplayName("When sender is an appellant and subscriber is appellant then return confirmation")
+    @DisplayName("When sender and subscriber is appellant then return confirmation")
     @Test
     public void testGetNotificationTypeForActionFurtherEvidence1() {
         DynamicList sender = new DynamicList(new DynamicListItem("appellant", "Appellant"), new ArrayList<>());
@@ -560,6 +537,8 @@ public class LetterUtilsTest {
         assertEquals("confirmation", LetterUtils.getNotificationTypeForActionFurtherEvidence(wrapper, type));
     }
 
+    @DisplayName("When sender is an appellant, representative or joint party and subscriber is other then sender "
+            + "then return notification.")
     @Test
     @Parameters({"appellant", "representative", "jointParty"})
     public void testGetNotificationTypeForActionFurtherEvidence2(String requester) {
@@ -569,19 +548,9 @@ public class LetterUtilsTest {
         assertEquals("notice", LetterUtils.getNotificationTypeForActionFurtherEvidence(wrapper, type));
     }
 
-    @DisplayName("When sender is an representative, subscriber is appellant and appellant is not the represented "
-            + "then return notification.")
+    @DisplayName("When sender and subscriber is a Joint party then return confirmation.")
     @Test
     public void testGetNotificationTypeForActionFurtherEvidence3() {
-        DynamicList sender = new DynamicList(new DynamicListItem("representative", "Representative"), new ArrayList<>());
-        NotificationWrapper wrapper = buildBaseWrapperWithCaseData(setupTestData(sender), ACTION_FURTHER_EVIDENCE);
-        SubscriptionWithType type = SubscriptionWithType.builder().party(APPELLANT_WITHOUT_ID).partyId(APPELLANT_WITH_ID.getId()).build();
-        assertEquals("notice", LetterUtils.getNotificationTypeForActionFurtherEvidence(wrapper, type));
-    }
-
-    @DisplayName("When sender is a Joint party and subscriber is joint party then return confirmation.")
-    @Test
-    public void testGetNotificationTypeForActionFurtherEvidence6() {
         DynamicList sender = new DynamicList(new DynamicListItem("jointParty", "jointParty"), new ArrayList<>());
         NotificationWrapper wrapper = buildBaseWrapperWithCaseData(setupTestData(sender), ACTION_FURTHER_EVIDENCE);
         SubscriptionWithType type = SubscriptionWithType.builder().party(JOINT_PARTY_WITH_ID).build();
@@ -590,10 +559,10 @@ public class LetterUtilsTest {
 
     @DisplayName("When sender is an other party and subscriber is other than sender then return notification.")
     @Test
-    public void testGetNotificationTypeForActionFurtherEvidence7() {
-        DynamicList sender = new DynamicList(new DynamicListItem("otherParty", "Other party 1 - Representative - R Basker R Nadar"), new ArrayList<>());
+    public void testGetNotificationTypeForActionFurtherEvidence4() {
+        DynamicList sender = new DynamicList(new DynamicListItem("otherParty", "otherParty"), new ArrayList<>());
         NotificationWrapper wrapper = buildBaseWrapperWithCaseData(setupTestData(sender), ACTION_FURTHER_EVIDENCE);
-        SubscriptionWithType type = SubscriptionWithType.builder().partyId("asdfsd").build();
+        SubscriptionWithType type = SubscriptionWithType.builder().partyId("Invalid").build();
 
         assertEquals("notice", LetterUtils.getNotificationTypeForActionFurtherEvidence(wrapper, type));
     }

@@ -7,9 +7,9 @@ import static uk.gov.hmcts.reform.sscs.config.NotificationEventTypeLists.EVENT_T
 import java.time.LocalDateTime;
 import java.util.List;
 import org.springframework.stereotype.Service;
-import uk.gov.hmcts.reform.sscs.ccd.domain.*;
+import uk.gov.hmcts.reform.sscs.ccd.domain.Hearing;
+import uk.gov.hmcts.reform.sscs.ccd.domain.SscsCaseData;
 import uk.gov.hmcts.reform.sscs.domain.notify.NotificationEventType;
-
 
 @Service
 public class NotificationValidService {

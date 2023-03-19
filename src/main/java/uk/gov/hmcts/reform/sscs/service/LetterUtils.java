@@ -211,7 +211,8 @@ public class LetterUtils {
 
     private static Optional<Representative> getRepresentativeOfOtherParty(SscsCaseData sscsCaseData) {
         for (CcdValue<OtherParty> op : sscsCaseData.getOtherParties()) {
-            if (op.getValue().hasRepresentative() && sscsCaseData.getOriginalSender().getValue().getCode().contains(op.getValue().getRep().getId())) {
+            boolean isValidRepresentative = sscsCaseData.getOriginalSender().getValue().getCode().contains(op.getValue().getRep().getId());
+            if (op.getValue().hasRepresentative() && isValidRepresentative) {
                 return Optional.of(op.getValue().getRep());
             }
         }
@@ -223,19 +224,19 @@ public class LetterUtils {
             Optional<Representative> representative = getRepresentativeOfOtherParty(sscsCaseData);
             return representative.isPresent() ? Optional.of(representative.get().getName())
                     : Optional.empty();
+        } else {
+            return sscsCaseData.getOtherParties().stream()
+                    .filter(op -> sscsCaseData.getOriginalSender().getValue().getCode().contains(op.getValue().getId()))
+                    .findFirst()
+                    .map(op -> op.getValue().getName());
         }
-        return sscsCaseData.getOtherParties().stream()
-            .filter(op -> sscsCaseData.getOriginalSender().getValue().getCode().contains(op.getValue().getId()))
-            .findFirst()
-            .map(op -> op.getValue().getName());
     }
 
     public static String getNotificationTypeForActionFurtherEvidence(NotificationWrapper notificationWrapper, SubscriptionWithType subscriptionWithType) {
-        if (notificationWrapper.getNotificationType().getEvent().equals(EventType.ACTION_FURTHER_EVIDENCE)) {
-            if (isValidAppellantForSetAsideRequest(notificationWrapper, subscriptionWithType)
-                    || isValidAppellantRepresentativeForSetAsideRequest(notificationWrapper, subscriptionWithType)
-                    || isValidJointPartyForSetAsideRequest(notificationWrapper, subscriptionWithType)
-                    || isValidOtherParty(notificationWrapper, subscriptionWithType)) {
+        boolean isValidActionForNotification = notificationWrapper.getNotificationType().getEvent().equals(EventType.ACTION_FURTHER_EVIDENCE)
+            || notificationWrapper.getNotificationType().getEvent().equals(EventType.POST_HEARING_REQUEST);
+        if (isValidActionForNotification) {
+            if (isValidForSetAsideRequest(notificationWrapper, subscriptionWithType)) {
                 return "confirmation";
             } else {
                 return "notice";
@@ -244,15 +245,24 @@ public class LetterUtils {
         return "";
     }
 
+    static boolean isValidForSetAsideRequest(NotificationWrapper notificationWrapper, SubscriptionWithType subscriptionWithType) {
+        return isValidAppellantForSetAsideRequest(notificationWrapper, subscriptionWithType)
+                || isValidAppellantRepresentativeForSetAsideRequest(notificationWrapper, subscriptionWithType)
+                || isValidJointPartyForSetAsideRequest(notificationWrapper, subscriptionWithType)
+                || isValidOtherParty(notificationWrapper, subscriptionWithType);
+    }
+
     static boolean isValidAppellantRepresentativeForSetAsideRequest(NotificationWrapper notificationWrapper, SubscriptionWithType subscriptionWithType) {
-        return  (notificationWrapper.getNewSscsCaseData().getOriginalSender().getValue().getCode().equalsIgnoreCase("representative")
-                && (subscriptionWithType.getParty().getId().equalsIgnoreCase(notificationWrapper.getNewSscsCaseData().getAppeal().getAppellant().getId())
-                    || subscriptionWithType.getParty().getId().equalsIgnoreCase(notificationWrapper.getNewSscsCaseData().getAppeal().getRep().getId())));
+        boolean senderIsRepresentative = notificationWrapper.getNewSscsCaseData().getOriginalSender().getValue().getCode().equalsIgnoreCase("representative");
+
+        return  (senderIsRepresentative && (subscriptionWithType.getParty().getId().equalsIgnoreCase(notificationWrapper.getNewSscsCaseData().getAppeal().getAppellant().getId())
+                || subscriptionWithType.getParty().getId().equalsIgnoreCase(notificationWrapper.getNewSscsCaseData().getAppeal().getRep().getId())));
     }
 
     private static boolean isValidAppellantForSetAsideRequest(NotificationWrapper notificationWrapper, SubscriptionWithType subscriptionWithType) {
-        return notificationWrapper.getNewSscsCaseData().getOriginalSender().getValue().getCode().equalsIgnoreCase("appellant")
-                && subscriptionWithType.getParty().getId().equalsIgnoreCase(notificationWrapper.getNewSscsCaseData().getAppeal().getAppellant().getId());
+        boolean senderIsAppellant = notificationWrapper.getNewSscsCaseData().getOriginalSender().getValue().getCode().equalsIgnoreCase("appellant");
+
+        return senderIsAppellant && subscriptionWithType.getParty().getId().equalsIgnoreCase(notificationWrapper.getNewSscsCaseData().getAppeal().getAppellant().getId());
     }
 
     private static boolean isValidJointPartyForSetAsideRequest(NotificationWrapper notificationWrapper, SubscriptionWithType subscriptionWithType) {
@@ -287,12 +297,13 @@ public class LetterUtils {
 
     static boolean isValidOtherPartyRepresentative(String subscriptionPartyId, String requesterId, CcdValue<OtherParty> op) {
         if (op.getValue().hasRepresentative()) {
-            if (subscriptionPartyId.contains(op.getValue().getRep().getId())
+            String representativeId = op.getValue().getRep().getId();
+            if (subscriptionPartyId.contains(representativeId)
                     && requesterId.contains(op.getValue().getId())) {
                 return true;
             }
-            if (requesterId.contains(op.getValue().getRep().getId())
-                    && (subscriptionPartyId.equals(op.getValue().getRep().getId())
+            if (requesterId.contains(representativeId)
+                    && (subscriptionPartyId.equals(representativeId)
                         || subscriptionPartyId.contains(op.getValue().getId()))) {
                 return true;
             }
