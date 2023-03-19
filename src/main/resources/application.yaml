@@ -1592,3 +1592,6 @@ welsh-months:
   11: "Tachwedd"
   12: "Rhagfyr"
 
+judicial-ref:
+  api:
+    url: ${JUDICIAL_REF_API_URL:http://localhost:5555}
