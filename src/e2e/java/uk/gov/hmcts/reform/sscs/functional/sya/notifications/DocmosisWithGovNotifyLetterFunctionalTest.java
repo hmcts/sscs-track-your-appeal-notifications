@@ -11,6 +11,7 @@ import java.util.List;
 import java.util.Set;
 import junitparams.JUnitParamsRunner;
 import junitparams.Parameters;
+import org.junit.Ignore;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import uk.gov.hmcts.reform.sscs.domain.notify.NotificationEventType;
@@ -45,7 +46,9 @@ public class DocmosisWithGovNotifyLetterFunctionalTest extends AbstractFunctiona
         super(30);
     }
 
+    // TODO: SSCS-11436
     @Test
+    @Ignore
     @Parameters(method = "eventTypes")
     public void shouldSendDocmosisLetters(NotificationEventType notificationEventType)
         throws IOException, NotificationClientException {

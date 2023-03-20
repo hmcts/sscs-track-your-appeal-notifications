@@ -10,9 +10,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.core.env.Environment;
 import org.springframework.stereotype.Component;
-import uk.gov.hmcts.reform.sscs.ccd.domain.Benefit;
-import uk.gov.hmcts.reform.sscs.ccd.domain.LanguagePreference;
-import uk.gov.hmcts.reform.sscs.ccd.domain.State;
+import uk.gov.hmcts.reform.sscs.ccd.domain.*;
 import uk.gov.hmcts.reform.sscs.domain.notify.Link;
 import uk.gov.hmcts.reform.sscs.domain.notify.Template;
 import uk.gov.hmcts.reform.sscs.factory.NotificationWrapper;
@@ -107,18 +105,22 @@ public class NotificationConfig {
                                 String docmosisTemplateName, Benefit benefit, NotificationWrapper notificationWrapper, String createdInGapsFrom) {
         AppealHearingType appealHearingType = notificationWrapper.getHearingType();
         LanguagePreference languagePreference = shouldSwitchLanguage(notificationWrapper.getNewSscsCaseData().getLanguagePreference(), notificationWrapper.hasLanguageSwitched());
+        HearingRoute hearingRoute = Optional.ofNullable(notificationWrapper.getNewSscsCaseData())
+            .map(SscsCaseData::getSchedulingAndListingFields)
+            .map(SchedulingAndListingFields::getHearingRoute)
+            .orElse(null);
 
-        String docmosisTemplateId = getTemplateId(appealHearingType, docmosisTemplateName, "docmosisId", languagePreference);
+        String docmosisTemplateId = getTemplateId(appealHearingType, hearingRoute, docmosisTemplateName, "docmosisId", languagePreference);
         if (StringUtils.isNotBlank(docmosisTemplateId)) {
             if (docmosisTemplateName.split("\\.")[0].equals("appealReceived") && !State.READY_TO_LIST.getId().equals(createdInGapsFrom)) {
                 docmosisTemplateId = null;
             }
         }
         return Template.builder()
-            .emailTemplateId(getTemplateId(appealHearingType, emailTemplateName, "emailId", languagePreference))
-            .smsTemplateId(getSmsTemplates(appealHearingType, smsTemplateName, "smsId",languagePreference))
+            .emailTemplateId(getTemplateId(appealHearingType, hearingRoute, emailTemplateName, "emailId", languagePreference))
+            .smsTemplateId(getSmsTemplates(appealHearingType, hearingRoute, smsTemplateName, "smsId",languagePreference))
             .smsSenderTemplateId(benefit == null ? "" : env.getProperty("smsSender." + benefit.toString().toLowerCase(Locale.ENGLISH)))
-            .letterTemplateId(getTemplateId(appealHearingType, letterTemplateName, "letterId",languagePreference))
+            .letterTemplateId(getTemplateId(appealHearingType, hearingRoute, letterTemplateName, "letterId",languagePreference))
             .docmosisTemplateId(docmosisTemplateId)
             .build();
     }
@@ -130,26 +132,38 @@ public class NotificationConfig {
         return languagePreference;
     }
 
-    private List<String> getSmsTemplates(@NotNull AppealHearingType appealHearingType, String smsTemplateName,
+    private List<String> getSmsTemplates(@NotNull AppealHearingType appealHearingType, HearingRoute hearingRoute, String smsTemplateName,
                                          final String notificationType, LanguagePreference languagePreference) {
-        return Optional.ofNullable(getTemplateId(appealHearingType, smsTemplateName, notificationType, languagePreference)).map(value -> {
+        return Optional.ofNullable(getTemplateId(appealHearingType, hearingRoute, smsTemplateName, notificationType, languagePreference)).map(value -> {
             List<String> ids = new ArrayList<>();
             ids.add(value);
             if (LanguagePreference.WELSH.equals(languagePreference)) {
-                ids.add(getTemplateId(appealHearingType, smsTemplateName, notificationType, ENGLISH));
+                ids.add(getTemplateId(appealHearingType, hearingRoute, smsTemplateName, notificationType, ENGLISH));
             }
             return ids;
         }).orElse(Collections.emptyList());
     }
 
-    private String getTemplateId(@NotNull AppealHearingType appealHearingType, String templateName,
+    private String getTemplateId(@NotNull AppealHearingType appealHearingType, HearingRoute hearingRoute, String templateName,
                                  final String notificationType, LanguagePreference languagePreference) {
         String hearingTypeName = appealHearingType.name().toLowerCase(Locale.ENGLISH);
-        String name = "notification." + languagePreference.getCode() + "." + hearingTypeName + "." + templateName + "."
-            + notificationType;
-        String templateId = env.getProperty(name);
+        String hearingRouteName = hearingRoute == null ? "" : hearingRoute.toString();
+
+        String name;
+        String templateId = null;
+
+        if (!hearingRouteName.isEmpty()) {
+            name = "notification." + languagePreference.getCode() + "." + hearingRouteName + "." + hearingTypeName + "." + templateName + "."
+                + notificationType;
+            templateId = env.getProperty(name);
+        }
         if (templateId == null) {
-            name = "notification." + languagePreference.getCode() + "."  + templateName + "." + notificationType;
+            name = "notification." + languagePreference.getCode() + "." + hearingTypeName + "." + templateName + "."
+                + notificationType;
+            templateId = env.getProperty(name);
+        }
+        if (templateId == null) {
+            name = "notification." + languagePreference.getCode() + "." + templateName + "." + notificationType;
             templateId = env.getProperty(name);
         }
         return StringUtils.stripToNull(templateId);
