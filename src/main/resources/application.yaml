@@ -1543,6 +1543,11 @@ welsh-months:
   11: "Tachwedd"
   12: "Rhagfyr"
 
+
 azure:
   application-insights:
     instrumentation-key: {APP_INSIGHTS_INSTRUMENTATION_KEY}
+
+judicial-ref:
+  api:
+    url: ${JUDICIAL_REF_API_URL:http://localhost:5555}
