@@ -46,4 +46,11 @@
         <packageUrl regex="true">^pkg:maven/commons\-fileupload/commons\-fileupload@.*$</packageUrl>
         <cve>CVE-2023-24998</cve>
     </suppress>
+    <suppress until = "2023-04-08">
+        <notes><![CDATA[
+       file name: snakeyaml-1.33.jar
+       ]]></notes>
+        <packageUrl regex="true">^pkg:maven/org\.yaml/snakeyaml@.*$</packageUrl>
+        <cve>CVE-2022-1471</cve>
+    </suppress>
 </suppressions>

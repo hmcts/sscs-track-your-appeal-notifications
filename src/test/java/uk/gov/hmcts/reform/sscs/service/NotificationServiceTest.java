@@ -51,6 +51,7 @@ import org.apache.pdfbox.io.IOUtils;
 import org.jetbrains.annotations.NotNull;
 import org.junit.Before;
 import org.junit.Test;
+import org.junit.jupiter.api.DisplayName;
 import org.junit.runner.RunWith;
 import org.mockito.ArgumentCaptor;
 import org.mockito.Captor;
@@ -2205,31 +2206,36 @@ public class NotificationServiceTest {
                 "Incomplete Information with empty or no Information regarding sender for event", Level.INFO);
     }
 
+    @DisplayName("When the original sender is null and Event type is ACTION_FURTHER_EVIDENCE then return false.")
     @Test
-    public void isNotificationStillValidToSendSetAsideRequestIsNull() {
+    public void isNotificationStillValidToSendSetAsideRequest_senderIsNull_returnFalse() {
         SscsCaseData caseData = SscsCaseData.builder().ccdCaseId("1234").originalSender(null).build();
         assertFalse(notificationService.isNotificationStillValidToSendSetAsideRequest(caseData, ACTION_FURTHER_EVIDENCE));
     }
 
+    @DisplayName("When the original sender is not null and sender is dwp then return false.")
     @Test
-    public void isNotificationStillValidToSendSetAsideRequestIsNotNull() {
+    public void isNotificationStillValidToSendSetAsideRequest_senderIsInValid_returnFalse() {
         DynamicList sender = new DynamicList(new DynamicListItem("dwp", "dwp"), new ArrayList<>());
         SscsCaseData caseData = SscsCaseData.builder().ccdCaseId("1234").originalSender(sender).build();
         assertFalse(notificationService.isNotificationStillValidToSendSetAsideRequest(caseData, ACTION_FURTHER_EVIDENCE));
     }
 
+    @DisplayName("When the original sender is not null, Event type is ACTION_FURTHER_EVIDENCE and sender is other than dwp "
+            + "then return true.")
     @Test
-    public void isNotificationStillValidToSendSetAsideRequestIsNotNull1() {
-        DynamicList sender = new DynamicList(new DynamicListItem("dwp1", "dwp1"), new ArrayList<>());
+    public void isNotificationStillValidToSendSetAsideRequest_senderIsValid_returnFalse() {
+        DynamicList sender = new DynamicList(new DynamicListItem("appellant", "appellant"), new ArrayList<>());
         SscsCaseData caseData = SscsCaseData.builder().ccdCaseId("1234").originalSender(sender).build();
         assertTrue(notificationService.isNotificationStillValidToSendSetAsideRequest(caseData, ACTION_FURTHER_EVIDENCE));
     }
 
+    @DisplayName("When the original sender is not null, Event type is other than ACTION_FURTHER_EVIDENCE and sender is other than dwp "
+            + " then return true.")
     @Test
-    public void isNotificationStillValidToSendSetAsideRequestIsNotNull2() {
+    public void isNotificationStillValidToSendSetAsideRequest_InValidEventType_returnTrue() {
         DynamicList sender = new DynamicList(new DynamicListItem("dwp1", "dwp1"), new ArrayList<>());
         SscsCaseData caseData = SscsCaseData.builder().ccdCaseId("1234").originalSender(sender).build();
         assertTrue(notificationService.isNotificationStillValidToSendSetAsideRequest(caseData, ADJOURNED));
     }
-
 }
