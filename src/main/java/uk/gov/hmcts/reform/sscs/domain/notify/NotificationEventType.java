@@ -24,6 +24,7 @@ public enum NotificationEventType {
     APPEAL_RECEIVED(EventType.APPEAL_RECEIVED, true, true, false, false, false, 300L),
     APPEAL_WITHDRAWN(EventType.WITHDRAWN, true, true, false, false, false, 0),
     CASE_UPDATED(EventType.CASE_UPDATED, false, false, false, false, false, 0),
+    CORRECTION_REQUEST(EventType.CORRECTION_REQUEST, false, false, false, true, false, 0),
     DEATH_OF_APPELLANT(EventType.DEATH_OF_APPELLANT, true, true, true, true, false, 0),
     DECISION_ISSUED(EventType.DECISION_ISSUED, true, true, true, false, false, 0),
     DECISION_ISSUED_WELSH(EventType.DECISION_ISSUED_WELSH, true, true, true, false, false, 0),

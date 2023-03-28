@@ -47,7 +47,9 @@ public final class NotificationEventTypeLists {
         JOINT_PARTY_ADDED,
         ACTION_HEARING_RECORDING_REQUEST,
         ACTION_POSTPONEMENT_REQUEST_WELSH,
-        UPDATE_OTHER_PARTY_DATA
+        UPDATE_OTHER_PARTY_DATA,
+        ACTION_FURTHER_EVIDENCE,
+        CORRECTION_REQUEST
     );
 
     public static final Set<NotificationEventType> EVENT_TYPES_NOT_FOR_DORMANT_CASES = EnumSet.of(
@@ -109,7 +111,8 @@ public final class NotificationEventTypeLists {
         REVIEW_CONFIDENTIALITY_REQUEST,
         STRUCK_OUT,
         UPDATE_OTHER_PARTY_DATA,
-        ACTION_FURTHER_EVIDENCE
+        ACTION_FURTHER_EVIDENCE,
+        CORRECTION_REQUEST
     );
 
     public static final Set<NotificationEventType> EVENT_TYPES_FOR_BUNDLED_LETTER = EnumSet.of(
@@ -173,7 +176,8 @@ public final class NotificationEventTypeLists {
         STRUCK_OUT,
         UPDATE_OTHER_PARTY_DATA,
         VALID_APPEAL_CREATED,
-        ACTION_FURTHER_EVIDENCE
+        ACTION_FURTHER_EVIDENCE,
+        CORRECTION_REQUEST
     );
 
     public static final Set<NotificationEventType> EVENT_TYPES_FOR_NOTIFY_LETTERS = EnumSet.of(
@@ -209,7 +213,8 @@ public final class NotificationEventTypeLists {
         PROCESS_AUDIO_VIDEO,
         PROCESS_AUDIO_VIDEO_WELSH,
         STRUCK_OUT,
-        ACTION_FURTHER_EVIDENCE
+        ACTION_FURTHER_EVIDENCE,
+        CORRECTION_REQUEST
     );
 
     public static final Set<NotificationEventType> EVENTS_VALID_FOR_APPOINTEE = EnumSet.of(
@@ -342,6 +347,10 @@ public final class NotificationEventTypeLists {
         RESEND_APPEAL_CREATED,
         SYA_APPEAL_CREATED,
         VALID_APPEAL_CREATED
+    );
+
+    public static final Set<NotificationEventType> EVENTS_TO_STORE_IN_CCD = EnumSet.of(
+            CORRECTION_REQUEST
     );
 
     public static final Set<NotificationEventType> EVENTS_FOR_REPRESENTATIVE_PERSONALISATION = EnumSet.of(

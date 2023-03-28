@@ -202,9 +202,7 @@ public class Personalisation<E extends NotificationWrapper> {
         Benefit benefit = null;
 
         try {
-            if (ccdResponse.getAppeal() != null
-                && ccdResponse.getAppeal().getBenefitType() != null
-                && !isEmpty(ccdResponse.getAppeal().getBenefitType().getCode())) {
+            if (hasBenefitType(ccdResponse)) {
                 benefit = getBenefitByCodeOrThrowException(ccdResponse.getAppeal().getBenefitType().getCode());
 
                 if (benefit.isHasAcronym()) {
@@ -327,10 +325,24 @@ public class Personalisation<E extends NotificationWrapper> {
         personalisation.put(PARTY_TYPE, subscriptionWithType.getParty().getClass().getSimpleName());
         personalisation.put(ENTITY_TYPE, subscriptionWithType.getEntity().getClass().getSimpleName());
 
-        personalisation.put(DOCUMENT_TYPE_NAME, DocumentType.SET_ASIDE_APPLICATION.getLabel());
+        personalisation.put(DOCUMENT_TYPE_NAME, getDocumentType(notificationEventType));
         personalisation.put(SENDER_NAME, LetterUtils.getNameForSender(ccdResponse));
 
         return personalisation;
+    }
+
+    private static String getDocumentType(NotificationEventType eventType) {
+        if (NotificationEventType.CORRECTION_REQUEST.equals(eventType)) {
+            return DocumentType.CORRECTION_APPLICATION.getLabel();
+        }
+
+        return DocumentType.SET_ASIDE_APPLICATION.getLabel();
+    }
+
+    private static boolean hasBenefitType(SscsCaseData ccdResponse) {
+        return ccdResponse.getAppeal() != null
+                && ccdResponse.getAppeal().getBenefitType() != null
+                && !isEmpty(ccdResponse.getAppeal().getBenefitType().getCode());
     }
 
     private void addFirstTierAgencyFields(Map<String, Object> personalisation, Benefit benefit, SscsCaseData ccdResponse) {

@@ -165,6 +165,8 @@ notification:
           docmosisId: TB-SCS-LET-ENG-representation-letter.docx
       joint_party:
           docmosisId: TB-SCS-LET-ENG-representation-letter.docx
+    correctionRequest:
+      docmosisId: TB-SCS-LET-ENG-Correction-Request-Received.docx
     jointPartyAdded:
       appellant:
         docmosisId: TB-SCS-GNO-ENG-00579.docx
@@ -1507,6 +1509,9 @@ text:
       OTHER: "Arall"
       CHILD_MAINTENANCE_NUMBER: "Child maintenance number: "
 
+judicial-ref:
+  api:
+    url: ${JUDICIAL_REF_API_URL:http://localhost:5555}
 
 ---
 # default profile (development, production etc.)
@@ -1591,7 +1596,3 @@ welsh-months:
   10: "Hydref"
   11: "Tachwedd"
   12: "Rhagfyr"
-
-judicial-ref:
-  api:
-    url: ${JUDICIAL_REF_API_URL:http://localhost:5555}

@@ -94,6 +94,7 @@ public class SendNotificationService {
         boolean isInterlocLetter = NotificationEventTypeLists.EVENT_TYPES_FOR_INTERLOC_LETTERS.contains(eventType);
         boolean isDocmosisLetter = NotificationEventTypeLists.DOCMOSIS_LETTERS.contains(eventType);
 
+
         boolean letterSent = false;
         if (shouldSendLetter(wrapper, notification, isInterlocLetter, isDocmosisLetter)) {
             letterSent = sendLetterNotification(wrapper, notification, subscriptionWithType, eventType);
@@ -314,6 +315,14 @@ public class SendNotificationService {
 
                 if (ArrayUtils.isNotEmpty(bundledLetter)) {
                     notificationHandler.sendNotification(wrapper, notification.getDocmosisLetterTemplate(), NOTIFICATION_TYPE_LETTER, sendNotification);
+
+                    if (NotificationEventTypeLists.EVENTS_TO_STORE_IN_CCD.contains(wrapper.getNotificationType())) {
+                        log.info("Saving {} letter into ccd for case {}", wrapper.getNotificationType(), wrapper.getCaseId());
+
+                        notificationSender.saveLetter(bundledLetter, notification.getPlaceholders().get(NAME).toString(),
+                                wrapper.getNewSscsCaseData(), wrapper.getNotificationType());
+                    }
+
                     return true;
                 }
             }
