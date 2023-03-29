@@ -26,6 +26,7 @@ import static uk.gov.hmcts.reform.sscs.service.NotificationUtils.hasRepresentati
 import static uk.gov.hmcts.reform.sscs.service.NotificationUtils.isValidSubscriptionOrIsMandatoryLetter;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 import java.util.Objects;
 import java.util.Optional;
@@ -101,6 +102,9 @@ public class CcdNotificationWrapper implements NotificationWrapper {
 
     @Override
     public List<SubscriptionWithType> getOtherPartySubscriptions() {
+        if (!canSendBasedOnConfidentiality("otherParty")) {
+            return Collections.emptyList();
+        }
         return emptyIfNull(responseWrapper.getNewSscsCaseData().getOtherParties()).stream()
                 .map(CcdValue::getValue)
                 .flatMap(o -> filterOtherPartySubscription(o).stream())
@@ -186,6 +190,7 @@ public class CcdNotificationWrapper implements NotificationWrapper {
         }
 
         if (hasRepresentative(otherParty)
+                && canSendBasedOnConfidentiality("otherPartyRep")
                 && isNotificationEventValidToSendToOtherPartySubscription(otherParty.getOtherPartyRepresentativeSubscription(), isSendNewOtherPartyNotification)) {
             otherPartySubscription.add(new SubscriptionWithType(otherParty.getOtherPartyRepresentativeSubscription(),
                 OTHER_PARTY, otherParty, otherParty.getRep(), otherParty.getRep().getId()));
@@ -196,9 +201,18 @@ public class CcdNotificationWrapper implements NotificationWrapper {
         return otherPartySubscription;
     }
 
+    private boolean canSendBasedOnConfidentiality(String partyMember) {
+        if (Objects.equals(responseWrapper.getNewSscsCaseData().getConfidentialityType(), "general")) {
+            return true;
+        }
+        boolean isAllParties = responseWrapper.getNewSscsCaseData().getConfidentialityPartyMembers().contains("allParties");
+        return responseWrapper.getNewSscsCaseData().getConfidentialityPartyMembers().contains(partyMember) || isAllParties;
+    }
+
 
     private boolean isNotificationEventValidToSendToAppointee() {
         return hasAppointeeSubscriptionOrIsMandatoryAppointeeLetter(responseWrapper)
+                && canSendBasedOnConfidentiality("appellantOrAppointee")
             && (EVENTS_VALID_FOR_ALL_ENTITIES.contains(getNotificationType())
             || EVENTS_VALID_FOR_APPOINTEE.contains(getNotificationType())
             || isValidProcessHearingRequestEventForParty(PartyItemList.APPELLANT)
@@ -206,7 +220,9 @@ public class CcdNotificationWrapper implements NotificationWrapper {
     }
 
     private boolean isNotificationEventValidToSendToAppellant() {
-        return (getOldSscsCaseData() != null && isValidReviewConfidentialityRequest(getOldSscsCaseData().getConfidentialityRequestOutcomeAppellant(), getNewSscsCaseData().getConfidentialityRequestOutcomeAppellant()))
+        return (getOldSscsCaseData() != null
+            && isValidReviewConfidentialityRequest(getOldSscsCaseData().getConfidentialityRequestOutcomeAppellant(), getNewSscsCaseData().getConfidentialityRequestOutcomeAppellant()))
+            && canSendBasedOnConfidentiality("appellantOrAppointee")
             || isValidProcessHearingRequestEventForParty(PartyItemList.APPELLANT)
             || isValidRequestInfoIncompleteEventForParty(PartyItemList.APPELLANT)
             || !EVENTS_MAYBE_INVALID_FOR_APPELLANT.contains(getNotificationType());
@@ -236,6 +252,7 @@ public class CcdNotificationWrapper implements NotificationWrapper {
     private boolean isNotificationEventValidToSendToRep() {
         return hasRepSubscriptionOrIsMandatoryRepLetter(responseWrapper)
             && (EVENTS_VALID_FOR_ALL_ENTITIES.contains(getNotificationType())
+            && canSendBasedOnConfidentiality("representative")
             || EVENTS_VALID_FOR_REP.contains(getNotificationType())
             || isValidProcessHearingRequestEventForParty(PartyItemList.REPRESENTATIVE)
             || isValidRequestInfoIncompleteEventForParty(PartyItemList.REPRESENTATIVE));
@@ -244,6 +261,7 @@ public class CcdNotificationWrapper implements NotificationWrapper {
     private boolean isNotificationEventValidToSendToJointParty() {
         return hasJointPartySubscription(responseWrapper)
             && (EVENTS_VALID_FOR_ALL_ENTITIES.contains(getNotificationType())
+            && canSendBasedOnConfidentiality("jointParty")
             || EVENTS_VALID_FOR_JOINT_PARTY.contains(getNotificationType())
             || isValidRequestInfoIncompleteEventForParty(PartyItemList.JOINT_PARTY)
             || isValidProcessHearingRequestEventForParty(PartyItemList.JOINT_PARTY)
@@ -320,4 +338,3 @@ public class CcdNotificationWrapper implements NotificationWrapper {
         return Objects.hash(responseWrapper);
     }
 }
-
