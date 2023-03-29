@@ -1,5 +1,6 @@
 package uk.gov.hmcts.reform.sscs.factory;
 
+import static java.util.Objects.isNull;
 import static org.apache.commons.collections4.ListUtils.emptyIfNull;
 import static uk.gov.hmcts.reform.sscs.config.AppealHearingType.ORAL;
 import static uk.gov.hmcts.reform.sscs.config.AppealHearingType.PAPER;
@@ -202,11 +203,17 @@ public class CcdNotificationWrapper implements NotificationWrapper {
     }
 
     private boolean canSendBasedOnConfidentiality(String partyMember) {
-        if (Objects.equals(responseWrapper.getNewSscsCaseData().getConfidentialityType(), "general")) {
+        String confidentialityType = responseWrapper.getNewSscsCaseData().getConfidentialityType();
+        List<String> confidentialityPartyMembers = responseWrapper.getNewSscsCaseData().getConfidentialityPartyMembers();
+
+        if(isNull(confidentialityType) || isNull(confidentialityPartyMembers)) {
             return true;
         }
-        boolean isAllParties = responseWrapper.getNewSscsCaseData().getConfidentialityPartyMembers().contains("allParties");
-        return responseWrapper.getNewSscsCaseData().getConfidentialityPartyMembers().contains(partyMember) || isAllParties;
+
+        if (Objects.equals(confidentialityType, "general")) {
+            return true;
+        }
+        return confidentialityType.contains(partyMember) || confidentialityType.contains("allParties");
     }
 
 
