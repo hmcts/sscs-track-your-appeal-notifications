@@ -178,9 +178,6 @@ public class NotificationService {
                         notificationWrapper.getNotificationType().getId(), notificationWrapper.getCaseId());
             }
         }
-
-        notificationWrapper.getNewSscsCaseData().setConfidentialityType(null);
-        notificationWrapper.getNewSscsCaseData().setConfidentialityPartyMembers(null);
     }
 
     private void resendLastNotification(NotificationWrapper notificationWrapper, SubscriptionWithType subscriptionWithType) {
