@@ -21,6 +21,7 @@ import java.util.Set;
 import junitparams.Parameters;
 import org.jetbrains.annotations.NotNull;
 import org.junit.Test;
+import uk.gov.hmcts.reform.sscs.ccd.domain.HearingRoute;
 import uk.gov.hmcts.reform.sscs.domain.notify.NotificationEventType;
 import uk.gov.hmcts.reform.sscs.domain.notify.Template;
 
@@ -36,6 +37,7 @@ public class BundledNotificationsConfigTestIt extends AbstractNotificationConfig
         ISSUE_ADJOURNMENT_NOTICE_WELSH
     );
     private static final Set<AppealHearingType> APPEAL_HEARING_TYPES = Set.of(PAPER, ORAL);
+    private static final Set<HearingRoute> HEARING_ROUTE_TYPES = Set.of(HearingRoute.GAPS, HearingRoute.LIST_ASSIST);
 
     @Test
     @Parameters(method = "bundledLetterTemplateNames")
@@ -57,8 +59,10 @@ public class BundledNotificationsConfigTestIt extends AbstractNotificationConfig
         List<Template> templates = new ArrayList<>();
         for (SubscriptionType subscriptionType : SubscriptionType.values()) {
             for (AppealHearingType appealHearingType : APPEAL_HEARING_TYPES) {
-                templates.add(getTemplate(eventType, subscriptionType, appealHearingType, true, null));
-                templates.add(getTemplate(eventType, subscriptionType, appealHearingType, false, null));
+                for (HearingRoute hearingRoute : HEARING_ROUTE_TYPES) {
+                    templates.add(getTemplate(eventType, subscriptionType, appealHearingType, hearingRoute, true, null));
+                    templates.add(getTemplate(eventType, subscriptionType, appealHearingType, hearingRoute, false, null));
+                }
             }
         }
         return templates;

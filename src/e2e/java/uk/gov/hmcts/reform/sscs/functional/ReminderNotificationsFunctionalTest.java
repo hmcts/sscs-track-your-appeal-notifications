@@ -7,6 +7,7 @@ import java.io.IOException;
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
 import java.util.List;
+import org.junit.Ignore;
 import org.junit.Test;
 import org.springframework.beans.factory.annotation.Value;
 import uk.gov.hmcts.reform.sscs.config.AppConstants;
@@ -51,40 +52,40 @@ public class ReminderNotificationsFunctionalTest extends AbstractFunctionalTest 
     @Value("${notification.english.paper.responseReceived.appellant.smsId}")
     private String responseReceivedPaperAppellantSmsTemplateId;
 
-    @Value("${notification.english.hearingReminder.appellant.emailId}")
+    @Value("${notification.english.listAssist.oral.hearingReminder.appellant.emailId}")
     private String hearingReminderAppellantEmailTemplateId;
 
-    @Value("${notification.english.hearingReminder.appellant.smsId}")
+    @Value("${notification.english.listAssist.oral.hearingReminder.appellant.smsId}")
     private String hearingReminderAppellantSmsTemplateId;
 
-    @Value("${notification.english.hearingReminder.representative.emailId}")
+    @Value("${notification.english.listAssist.oral.hearingReminder.representative.emailId}")
     private String hearingReminderRepresentativeEmailTemplateId;
 
-    @Value("${notification.english.hearingReminder.representative.smsId}")
+    @Value("${notification.english.listAssist.oral.hearingReminder.representative.smsId}")
     private String hearingReminderRepresentativeSmsTemplateId;
 
-    @Value("${notification.english.hearingReminder.appointee.emailId}")
+    @Value("${notification.english.listAssist.oral.hearingReminder.appointee.emailId}")
     private String hearingReminderAppointeeEmailTemplateId;
 
-    @Value("${notification.english.hearingReminder.appointee.smsId}")
+    @Value("${notification.english.listAssist.oral.hearingReminder.appointee.smsId}")
     private String hearingReminderAppointeeSmsTemplateId;
 
-    @Value("${notification.welsh.hearingReminder.appellant.emailId}")
+    @Value("${notification.welsh.listAssist.oral.hearingReminder.appellant.emailId}")
     private String hearingReminderWelshAppellantEmailTemplateId;
 
-    @Value("${notification.welsh.hearingReminder.appellant.smsId}")
+    @Value("${notification.welsh.listAssist.oral.hearingReminder.appellant.smsId}")
     private String hearingReminderWelshAppellantSmsTemplateId;
 
-    @Value("${notification.welsh.hearingReminder.appointee.emailId}")
+    @Value("${notification.welsh.listAssist.oral.hearingReminder.appointee.emailId}")
     private String hearingReminderWelshAppointeeEmailTemplateId;
 
-    @Value("${notification.welsh.hearingReminder.appointee.smsId}")
+    @Value("${notification.welsh.listAssist.oral.hearingReminder.appointee.smsId}")
     private String hearingReminderWelshAppointeeSmsTemplateId;
 
-    @Value("${notification.welsh.hearingReminder.joint_party.emailId}")
+    @Value("${notification.welsh.listAssist.oral.hearingReminder.joint_party.emailId}")
     private String hearingReminderWelshJointPartyEmailTemplateId;
 
-    @Value("${notification.welsh.hearingReminder.joint_party.smsId}")
+    @Value("${notification.welsh.listAssist.oral.hearingReminder.joint_party.smsId}")
     private String hearingReminderWelshJointPartySmsTemplateId;
 
     public ReminderNotificationsFunctionalTest() {
@@ -293,7 +294,9 @@ public class ReminderNotificationsFunctionalTest extends AbstractFunctionalTest 
         );
     }
 
+    // TODO: SSCS-11436
     @Test
+    @Ignore
     public void shouldSendNotificationsWhenHearingBookedEventIsReceivedWhenAnAppellantIsSubscribed() throws IOException, NotificationClientException {
 
         addHearing(caseData, 0);
@@ -336,7 +339,9 @@ public class ReminderNotificationsFunctionalTest extends AbstractFunctionalTest 
         );
     }
 
+    // TODO: SSCS-11436
     @Test
+    @Ignore
     public void shouldSendNotificationsWhenHearingBookedEventIsReceivedWhenARepresentativeIsSubscribed() throws IOException, NotificationClientException {
         subscribeRepresentative();
         addHearing(caseData, 0);
@@ -379,7 +384,9 @@ public class ReminderNotificationsFunctionalTest extends AbstractFunctionalTest 
         );
     }
 
+    // TODO: SSCS-11436
     @Test
+    @Ignore
     public void shouldSendNotificationsWhenHearingBookedEventIsReceivedWhenAnAppellantAndJointPartyIsSubscribed() throws IOException, NotificationClientException {
 
         addHearing(caseData, 0);

@@ -14,6 +14,8 @@ import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.context.junit4.rules.SpringClassRule;
 import org.springframework.test.context.junit4.rules.SpringMethodRule;
 import uk.gov.hmcts.reform.sscs.ccd.domain.Appeal;
+import uk.gov.hmcts.reform.sscs.ccd.domain.HearingRoute;
+import uk.gov.hmcts.reform.sscs.ccd.domain.SchedulingAndListingFields;
 import uk.gov.hmcts.reform.sscs.ccd.domain.SscsCaseData;
 import uk.gov.hmcts.reform.sscs.domain.SscsCaseDataWrapper;
 import uk.gov.hmcts.reform.sscs.domain.notify.NotificationEventType;
@@ -47,12 +49,15 @@ public abstract class AbstractNotificationConfigTest {
     }
 
     protected Template getTemplate(NotificationEventType eventType, SubscriptionType subscriptionType,
-                                   AppealHearingType appealHearingType, boolean welsh, String createdInGapsFrom) {
+                                   AppealHearingType appealHearingType, HearingRoute hearingRoute, boolean welsh, String createdInGapsFrom) {
         SscsCaseDataWrapper caseDataWrapper = SscsCaseDataWrapper.builder()
             .newSscsCaseData(SscsCaseData.builder()
                 .languagePreferenceWelsh(welsh ? YES.getValue() : null)
                 .appeal(Appeal.builder()
                     .hearingType(appealHearingType.name())
+                    .build())
+                .schedulingAndListingFields(SchedulingAndListingFields.builder()
+                    .hearingRoute(hearingRoute)
                     .build())
                 .build())
             .build();
