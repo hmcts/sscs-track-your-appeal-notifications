@@ -218,21 +218,21 @@ public class CcdNotificationWrapper implements NotificationWrapper {
     }
 
     private boolean isNotificationEventValidToSendToAppointee() {
-        return hasAppointeeSubscriptionOrIsMandatoryAppointeeLetter(responseWrapper)
-            && canSendBasedOnConfidentiality("appellantOrAppointee")
+        boolean isValid = hasAppointeeSubscriptionOrIsMandatoryAppointeeLetter(responseWrapper)
             && (EVENTS_VALID_FOR_ALL_ENTITIES.contains(getNotificationType())
             || EVENTS_VALID_FOR_APPOINTEE.contains(getNotificationType())
             || isValidProcessHearingRequestEventForParty(PartyItemList.APPELLANT)
             || isValidRequestInfoIncompleteEventForParty(PartyItemList.APPELLANT));
+        return isValid && canSendBasedOnConfidentiality("appellantOrAppointee");
     }
 
     private boolean isNotificationEventValidToSendToAppellant() {
-        return (getOldSscsCaseData() != null
+        boolean isValid =  (getOldSscsCaseData() != null
             && isValidReviewConfidentialityRequest(getOldSscsCaseData().getConfidentialityRequestOutcomeAppellant(), getNewSscsCaseData().getConfidentialityRequestOutcomeAppellant()))
-            && canSendBasedOnConfidentiality("appellantOrAppointee")
             || isValidProcessHearingRequestEventForParty(PartyItemList.APPELLANT)
             || isValidRequestInfoIncompleteEventForParty(PartyItemList.APPELLANT)
             || !EVENTS_MAYBE_INVALID_FOR_APPELLANT.contains(getNotificationType());
+        return isValid && canSendBasedOnConfidentiality("appellantOrAppointee");
     }
 
     private boolean isValidProcessHearingRequestEventForParty(PartyItemList partyItemList) {
@@ -257,30 +257,30 @@ public class CcdNotificationWrapper implements NotificationWrapper {
     }
 
     private boolean isNotificationEventValidToSendToRep() {
-        return hasRepSubscriptionOrIsMandatoryRepLetter(responseWrapper)
+        boolean isValid =  hasRepSubscriptionOrIsMandatoryRepLetter(responseWrapper)
             && (EVENTS_VALID_FOR_ALL_ENTITIES.contains(getNotificationType())
-            && canSendBasedOnConfidentiality("representative")
             || EVENTS_VALID_FOR_REP.contains(getNotificationType())
             || isValidProcessHearingRequestEventForParty(PartyItemList.REPRESENTATIVE)
             || isValidRequestInfoIncompleteEventForParty(PartyItemList.REPRESENTATIVE));
+        return isValid && canSendBasedOnConfidentiality("representative");
     }
 
     private boolean isNotificationEventValidToSendToJointParty() {
-        return hasJointPartySubscription(responseWrapper)
+        boolean isValid = hasJointPartySubscription(responseWrapper)
             && (EVENTS_VALID_FOR_ALL_ENTITIES.contains(getNotificationType())
-            && canSendBasedOnConfidentiality("jointParty")
             || EVENTS_VALID_FOR_JOINT_PARTY.contains(getNotificationType())
             || isValidRequestInfoIncompleteEventForParty(PartyItemList.JOINT_PARTY)
             || isValidProcessHearingRequestEventForParty(PartyItemList.JOINT_PARTY)
             || (getOldSscsCaseData() != null && isValidReviewConfidentialityRequest(getOldSscsCaseData().getConfidentialityRequestOutcomeJointParty(), getNewSscsCaseData().getConfidentialityRequestOutcomeJointParty())));
+        return isValid && canSendBasedOnConfidentiality("jointParty");
     }
 
     private boolean isNotificationEventValidToSendToOtherPartySubscription(Subscription subscription, boolean isSendNewOtherPartyNotification, String partyMember) {
-        return isValidSubscriptionOrIsMandatoryLetter(subscription, responseWrapper.getNotificationEventType())
-            && canSendBasedOnConfidentiality(partyMember)
+        boolean isValid = isValidSubscriptionOrIsMandatoryLetter(subscription, responseWrapper.getNotificationEventType())
             && (EVENTS_VALID_FOR_ALL_ENTITIES.contains(getNotificationType())
             || EVENTS_VALID_FOR_OTHER_PARTY.contains(getNotificationType())
             || (UPDATE_OTHER_PARTY_DATA.equals(getNotificationType()) && isSendNewOtherPartyNotification));
+        return isValid && canSendBasedOnConfidentiality(partyMember);
     }
 
 
