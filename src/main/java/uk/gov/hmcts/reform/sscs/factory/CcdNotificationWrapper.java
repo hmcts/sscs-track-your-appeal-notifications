@@ -29,7 +29,6 @@ import static uk.gov.hmcts.reform.sscs.service.NotificationUtils.hasRepresentati
 import static uk.gov.hmcts.reform.sscs.service.NotificationUtils.isValidSubscriptionOrIsMandatoryLetter;
 
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.List;
 import java.util.Objects;
 import java.util.Optional;
