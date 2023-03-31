@@ -214,7 +214,7 @@ public class CcdNotificationWrapper implements NotificationWrapper {
         if (Objects.equals(confidentialityType, "general")) {
             return true;
         }
-        return confidentialityPartyMembers.contains(partyMember) || confidentialityPartyMembers.contains("allParties");
+        return confidentialityPartyMembers.contains(partyMember);
     }
 
     private boolean isNotificationEventValidToSendToAppointee() {
