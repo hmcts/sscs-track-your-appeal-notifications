@@ -200,7 +200,7 @@ public class CcdNotificationWrapper implements NotificationWrapper {
     }
 
     private boolean canSendBasedOnConfidentiality(String partyMember) {
-        if (!DIRECTION_ISSUED.equals(getNotificationType()) || !DIRECTION_ISSUED_WELSH.equals(getNotificationType())) {
+        if (!(DIRECTION_ISSUED.equals(getNotificationType()) || DIRECTION_ISSUED_WELSH.equals(getNotificationType()))) {
             return true;
         }
 
@@ -214,7 +214,7 @@ public class CcdNotificationWrapper implements NotificationWrapper {
         if (Objects.equals(confidentialityType, "general")) {
             return true;
         }
-        return confidentialityType.contains(partyMember) || confidentialityType.contains("allParties");
+        return confidentialityPartyMembers.contains(partyMember) || confidentialityPartyMembers.contains("allParties");
     }
 
     private boolean isNotificationEventValidToSendToAppointee() {

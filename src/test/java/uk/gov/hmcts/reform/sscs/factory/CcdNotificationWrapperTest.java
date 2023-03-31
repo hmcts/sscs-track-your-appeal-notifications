@@ -11,6 +11,8 @@ import static uk.gov.hmcts.reform.sscs.domain.notify.NotificationEventType.APPEA
 import static uk.gov.hmcts.reform.sscs.domain.notify.NotificationEventType.APPEAL_RECEIVED;
 import static uk.gov.hmcts.reform.sscs.domain.notify.NotificationEventType.APPEAL_WITHDRAWN;
 import static uk.gov.hmcts.reform.sscs.domain.notify.NotificationEventType.CASE_UPDATED;
+import static uk.gov.hmcts.reform.sscs.domain.notify.NotificationEventType.DIRECTION_ISSUED;
+import static uk.gov.hmcts.reform.sscs.domain.notify.NotificationEventType.DIRECTION_ISSUED_WELSH;
 import static uk.gov.hmcts.reform.sscs.domain.notify.NotificationEventType.DWP_APPEAL_LAPSED;
 import static uk.gov.hmcts.reform.sscs.domain.notify.NotificationEventType.EVIDENCE_RECEIVED;
 import static uk.gov.hmcts.reform.sscs.domain.notify.NotificationEventType.HEARING_BOOKED;
@@ -343,6 +345,30 @@ public class CcdNotificationWrapperTest {
     }
 
     @Test
+    @Parameters(method = "getDirectionIssuedSubscriptionBasedOnConfidentialityForAppellantAndRepresentative")
+    public void givenSubscriptions_shouldGetAppellantAndRepSubscriptionTypeWhenConfidentialIsSelected(NotificationEventType notificationEventType, String confidentialityType, List<String> chosenMembers, List<SubscriptionType> requiredMembers) {
+        ccdNotificationWrapper = buildCcdNotificationWrapperBasedOnEventTypeWithRep(notificationEventType);
+        ccdNotificationWrapper.getNewSscsCaseData().setConfidentialityType(confidentialityType);
+        ccdNotificationWrapper.getNewSscsCaseData().setConfidentialityPartyMembers(chosenMembers);
+
+        List<SubscriptionWithType> subsWithTypeList = ccdNotificationWrapper.getSubscriptionsBasedOnNotificationType();
+        Assert.assertEquals(requiredMembers.size(), subsWithTypeList.size());
+        subsWithTypeList.forEach(o -> Assert.assertTrue(requiredMembers.contains(o.getSubscriptionType())));
+    }
+
+    @Test
+    @Parameters(method = "getDirectionIssuedSubscriptionBasedOnConfidentialityForAppointeeAndAndJointParty")
+    public void givenSubscriptions_shouldGetAppointeeAndJointPartyTypeWhenConfidentialIsSelected(NotificationEventType notificationEventType, String confidentialityType, List<String> chosenMembers, List<SubscriptionType> requiredMembers, String hearingType) {
+        ccdNotificationWrapper = buildCcdNotificationWrapperBasedOnEventTypeWithAppointeeAndJointParty(notificationEventType, hearingType);
+        ccdNotificationWrapper.getNewSscsCaseData().setConfidentialityType(confidentialityType);
+        ccdNotificationWrapper.getNewSscsCaseData().setConfidentialityPartyMembers(chosenMembers);
+
+        List<SubscriptionWithType> subsWithTypeList = ccdNotificationWrapper.getSubscriptionsBasedOnNotificationType();
+        Assert.assertEquals(requiredMembers.size(), subsWithTypeList.size());
+        subsWithTypeList.forEach(o -> Assert.assertTrue(requiredMembers.contains(o.getSubscriptionType())));
+    }
+
+    @Test
     public void givenSubscriptionForAppellantRepAndJointParty_shouldGetSubscriptionTypeListForAppellantAndJointPartyOnlyWhenBothGranted() {
         ccdNotificationWrapper = buildCcdNotificationWrapperBasedOnEventTypeWithJointParty(REVIEW_CONFIDENTIALITY_REQUEST, Representative.builder().hasRepresentative("Yes").build(), true);
         ccdNotificationWrapper.getNewSscsCaseData().setConfidentialityRequestOutcomeAppellant(DatedRequestOutcome.builder().requestOutcome(RequestOutcome.GRANTED).build());
@@ -570,4 +596,39 @@ public class CcdNotificationWrapperTest {
             )).toArray();
     }
 
+    @SuppressWarnings({"Indentation", "unused"})
+    private Object[] getDirectionIssuedSubscriptionBasedOnConfidentialityForAppellantAndRepresentative() {
+        return new Object[]{
+                new Object[]{DIRECTION_ISSUED, "general", null, List.of(SubscriptionType.APPELLANT, SubscriptionType.REPRESENTATIVE)},
+                new Object[]{DIRECTION_ISSUED, "confidential", List.of("appellantOrAppointee"), List.of(SubscriptionType.APPELLANT)},
+                new Object[]{DIRECTION_ISSUED, "confidential", List.of("representative"), List.of(SubscriptionType.REPRESENTATIVE)},
+                new Object[]{DIRECTION_ISSUED, "confidential", List.of("appellantOrAppointee", "representative"), List.of(SubscriptionType.APPELLANT, SubscriptionType.REPRESENTATIVE)},
+                new Object[]{DIRECTION_ISSUED_WELSH, "general", null, List.of(SubscriptionType.APPELLANT, SubscriptionType.REPRESENTATIVE)},
+                new Object[]{DIRECTION_ISSUED_WELSH, "confidential", List.of("appellantOrAppointee"), List.of(SubscriptionType.APPELLANT)},
+                new Object[]{DIRECTION_ISSUED_WELSH, "confidential", List.of("representative"), List.of(SubscriptionType.REPRESENTATIVE)},
+                new Object[]{DIRECTION_ISSUED_WELSH, "confidential", List.of("appellantOrAppointee", "representative"), List.of(SubscriptionType.APPELLANT, SubscriptionType.REPRESENTATIVE)},
+        };
+    }
+
+    @SuppressWarnings({"Indentation", "unused"})
+    private Object[] getDirectionIssuedSubscriptionBasedOnConfidentialityForAppointeeAndAndJointParty() {
+        return new Object[]{
+                new Object[]{DIRECTION_ISSUED, "general", null, List.of(SubscriptionType.APPOINTEE, SubscriptionType.JOINT_PARTY), "paper"},
+                new Object[]{DIRECTION_ISSUED, "general", null, List.of(SubscriptionType.APPOINTEE, SubscriptionType.JOINT_PARTY), "oral"},
+                new Object[]{DIRECTION_ISSUED, "confidential", List.of("appellantOrAppointee"), List.of(SubscriptionType.APPOINTEE), "paper"},
+                new Object[]{DIRECTION_ISSUED, "confidential", List.of("appellantOrAppointee"), List.of(SubscriptionType.APPOINTEE), "oral"},
+                new Object[]{DIRECTION_ISSUED, "confidential", List.of("jointParty"), List.of(SubscriptionType.JOINT_PARTY), "paper"},
+                new Object[]{DIRECTION_ISSUED, "confidential", List.of("jointParty"), List.of(SubscriptionType.JOINT_PARTY), "oral"},
+                new Object[]{DIRECTION_ISSUED, "confidential", List.of("appellantOrAppointee", "jointParty"), List.of(SubscriptionType.APPOINTEE, SubscriptionType.JOINT_PARTY), "paper"},
+                new Object[]{DIRECTION_ISSUED, "confidential", List.of("appellantOrAppointee", "jointParty"), List.of(SubscriptionType.APPOINTEE, SubscriptionType.JOINT_PARTY), "oral"},
+                new Object[]{DIRECTION_ISSUED_WELSH, "general", null, List.of(SubscriptionType.APPOINTEE, SubscriptionType.JOINT_PARTY), "paper"},
+                new Object[]{DIRECTION_ISSUED_WELSH, "general", null, List.of(SubscriptionType.APPOINTEE, SubscriptionType.JOINT_PARTY), "oral"},
+                new Object[]{DIRECTION_ISSUED_WELSH, "confidential", List.of("appellantOrAppointee"), List.of(SubscriptionType.APPOINTEE), "paper"},
+                new Object[]{DIRECTION_ISSUED_WELSH, "confidential", List.of("appellantOrAppointee"), List.of(SubscriptionType.APPOINTEE), "oral"},
+                new Object[]{DIRECTION_ISSUED_WELSH, "confidential", List.of("jointParty"), List.of(SubscriptionType.JOINT_PARTY), "paper"},
+                new Object[]{DIRECTION_ISSUED_WELSH, "confidential", List.of("jointParty"), List.of(SubscriptionType.JOINT_PARTY), "oral"},
+                new Object[]{DIRECTION_ISSUED_WELSH, "confidential", List.of("appellantOrAppointee", "jointParty"), List.of(SubscriptionType.APPOINTEE, SubscriptionType.JOINT_PARTY), "paper"},
+                new Object[]{DIRECTION_ISSUED_WELSH, "confidential", List.of("appellantOrAppointee", "jointParty"), List.of(SubscriptionType.APPOINTEE, SubscriptionType.JOINT_PARTY), "oral"},
+        };
+    }
 }
