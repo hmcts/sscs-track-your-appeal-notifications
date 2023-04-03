@@ -207,13 +207,12 @@ public class CcdNotificationWrapper implements NotificationWrapper {
         String confidentialityType = responseWrapper.getNewSscsCaseData().getConfidentialityType();
         List<String> confidentialityPartyMembers = responseWrapper.getNewSscsCaseData().getConfidentialityPartyMembers();
 
-        if (isNull(confidentialityType) || isNull(confidentialityPartyMembers)) {
+        if (isNull(confidentialityType)
+                || isNull(confidentialityPartyMembers)
+                || "general".equalsIgnoreCase(confidentialityType)) {
             return true;
         }
 
-        if (Objects.equals(confidentialityType, "general")) {
-            return true;
-        }
         return confidentialityPartyMembers.contains(partyMember);
     }
 
