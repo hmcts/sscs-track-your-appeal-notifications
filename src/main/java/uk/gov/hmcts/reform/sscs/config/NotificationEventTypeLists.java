@@ -361,6 +361,7 @@ public final class NotificationEventTypeLists {
         DIRECTION_ISSUED,
         DIRECTION_ISSUED_WELSH,
         DWP_APPEAL_LAPSED,
+        DWP_UPLOAD_RESPONSE,
         HEARING_BOOKED,
         HMCTS_APPEAL_LAPSED,
         POSTPONEMENT,
