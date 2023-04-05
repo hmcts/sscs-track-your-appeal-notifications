@@ -149,7 +149,7 @@ dependencyManagement {
         dependency group: 'org.apache.tika', name: 'tika-core', version: '2.7.0'
 
         //CVE-2021-40690
-        dependency group: 'org.apache.santuario', name: 'xmlsec', version: '3.0.1'
+        dependency group: 'org.apache.santuario', name: 'xmlsec', version: '3.0.2'
 
         // checkstyle needs a certain version and so does spring fox swagger, so can't use latest
         dependencySet(group: 'com.google.guava', version: '31.1-jre') {
@@ -256,7 +256,7 @@ dependencyManagement {
         }
 
         //CVE-2021-40690
-        dependency group: 'org.apache.santuario', name: 'xmlsec', version: '3.0.1'
+        dependency group: 'org.apache.santuario', name: 'xmlsec', version: '3.0.2'
         dependency group: 'org.glassfish', name: 'jakarta.el', version: '4.0.2'
 
         dependencySet(group: 'ch.qos.logback', version: '1.2.11') {
