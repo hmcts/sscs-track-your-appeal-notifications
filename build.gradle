@@ -9,7 +9,7 @@ plugins {
     id 'uk.gov.hmcts.java' version '0.12.42'
     id 'org.owasp.dependencycheck' version '8.2.1'
     id 'com.github.ben-manes.versions' version '0.46.0'
-    id "org.flywaydb.flyway" version '9.16.1'
+    id "org.flywaydb.flyway" version '9.16.3'
     id "info.solidsoft.pitest" version '1.9.11'
 }
 
