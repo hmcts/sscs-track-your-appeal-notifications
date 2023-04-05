@@ -334,8 +334,8 @@ public class SendNotificationService {
             .map(Notification::getPlaceholders)
             .map(map -> map.get(ENTITY_TYPE))
             .orElse(null);
-        log.info("Sending {} Notification for Party {}, Entity {}, Contact {} and Notification Type {}",
-            notificationType, partyType, entityType, recipient, wrapper.getNotificationType());
+        log.info("Sending {} Notification for Party {}, Entity {}, Contact {} and Notification Type {} for case Id {}",
+            notificationType, partyType, entityType, recipient, wrapper.getNotificationType(), wrapper.getCaseId());
     }
 
     private byte[] downloadAssociatedCasePdf(NotificationWrapper wrapper) {
