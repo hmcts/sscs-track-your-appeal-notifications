@@ -34,4 +34,13 @@
         <packageUrl regex="true">^pkg:maven/org\.yaml/snakeyaml@.*$</packageUrl>
         <cve>CVE-2022-1471</cve>
     </suppress>
+    <suppress until="2023-09-01">
+        <!-- 2022-09: Not applicable to us. We don't use HTTP Invoker nor do we communicate through native java bean serialization.
+        We use JSON instead. Suppressed for a year to allow re-assessing in the unlikely event we decide to introduce it. -->
+        <notes><![CDATA[
+https://nvd.nist.gov/vuln/detail/CVE-2016-1000027
+]]></notes>
+        <packageUrl regex="true">^pkg:maven/org\.springframework/spring\-web@.*$</packageUrl>
+        <cve>CVE-2016-1000027</cve>
+    </suppress>
 </suppressions>
