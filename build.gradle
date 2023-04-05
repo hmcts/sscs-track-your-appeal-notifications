@@ -9,7 +9,7 @@ plugins {
     id 'uk.gov.hmcts.java' version '0.12.42'
     id 'org.owasp.dependencycheck' version '8.2.1'
     id 'com.github.ben-manes.versions' version '0.46.0'
-    id "org.flywaydb.flyway" version '9.16.1'
+    id "org.flywaydb.flyway" version '9.16.3'
     id "info.solidsoft.pitest" version '1.9.11'
 }
 
@@ -215,7 +215,7 @@ dependencyManagement {
         }
 
         //CVE-2021-22118, CVE-2022-22970, CVE-2022-22971
-        dependencySet(group: 'org.springframework', version: '5.3.20') {
+        dependencySet(group: 'org.springframework', version: '5.3.26') {
             entry 'spring-aop'
             entry 'spring-aspects'
             entry 'spring-beans'
@@ -232,12 +232,6 @@ dependencyManagement {
             entry 'spring-tx'
             entry 'spring-web'
             entry 'spring-webmvc'
-        }
-
-        //CVE-2021-27568
-        dependencySet(group: 'net.minidev', version: '2.4.9') {
-            entry 'json-smart'
-            entry 'accessors-smart'
         }
 
         //CVE-2021-35515, CVE-2021-35516, CVE-2021-35517, CVE-2021-36090
@@ -380,7 +374,7 @@ dependencies {
     implementation group: 'commons-io', name: 'commons-io', version: '2.11.0'
 
     implementation group: 'com.mchange', name: 'c3p0', version: '0.9.5.5'
-    implementation group: 'org.flywaydb', name: 'flyway-core', version: '9.16.1'
+    implementation group: 'org.flywaydb', name: 'flyway-core', version: '9.16.3'
     implementation group: 'org.postgresql', name: 'postgresql', version: '42.6.0'
     implementation group: 'net.bytebuddy', name: 'byte-buddy', version: '1.14.2'
     implementation group: 'org.elasticsearch', name: 'elasticsearch', version: '7.17.9'
@@ -437,6 +431,9 @@ dependencies {
 
     implementation group: 'commons-io', name: 'commons-io', version: '2.11.0'
     implementation group: 'org.apache.commons', name: 'commons-collections4', version: '4.4'
+
+    implementation group: 'net.minidev', name: 'accessors-smart', version: '2.4.9'
+    implementation group: 'net.minidev', name: 'json-smart', version: '2.4.10'
 
     annotationProcessor group: 'org.projectlombok', name: 'lombok', version: '1.18.26'
     testImplementation group: 'org.projectlombok', name: 'lombok', version: '1.18.26'
