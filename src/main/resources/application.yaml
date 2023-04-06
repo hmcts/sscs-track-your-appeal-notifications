@@ -534,9 +534,6 @@ notification:
     updateOtherPartyData:
       other_party:
         docmosisId: TB-SCS-GNO-ENG-00784.docx
-    dwpUploadResponse:
-      other_party:
-        docmosisId: TB-SCS-GNO-ENG-00784.docx
     paper:
       responseReceived:
         appellant:
@@ -1099,9 +1096,6 @@ notification:
       appointee:
         docmosisId: TB-SCS-GNO-WEL-00774.docx
     updateOtherPartyData:
-      other_party:
-        docmosisId: TB-SCS-GNO-WEL-00787.docx
-    dwpUploadResponse:
       other_party:
         docmosisId: TB-SCS-GNO-WEL-00787.docx
     paper:
