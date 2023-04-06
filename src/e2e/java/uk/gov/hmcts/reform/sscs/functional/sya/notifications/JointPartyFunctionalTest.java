@@ -26,6 +26,9 @@ public class JointPartyFunctionalTest extends AbstractFunctionalTest {
     private static final String NO_HEARING_TYPE = null;
     private static final String ORAL = "oral";
     private static final String PAPER = "paper";
+
+    /* // SSCS-11586
+
     @Value("${notification.english.appealLapsed.joint_party.emailId}")
     private String appealLapsedJointPartyEmailId;
     @Value("${notification.english.appealLapsed.joint_party.smsId}")
@@ -76,6 +79,8 @@ public class JointPartyFunctionalTest extends AbstractFunctionalTest {
     private String paperDwpUploadResponseJointPartySmsId;
     @Value("${notification.english.reviewConfidentialityRequest.joint_party.docmosisId}")
     private String reviewConfidentialityRequestJointPartyLetterId;
+
+    */
 
     public JointPartyFunctionalTest() {
         super(30);
