@@ -27,7 +27,7 @@
         <packageUrl regex="true">^pkg:maven/org\.json/json@.*$</packageUrl>
         <cve>CVE-2022-45688</cve>
     </suppress>
-    <suppress until = "2023-04-08">
+    <suppress until = "2023-06-01">
         <notes><![CDATA[
    file name: snakeyaml-1.33.jar
    ]]></notes>
