@@ -16,5 +16,6 @@
   "90033_Loosely Scoped Cookie_http://sscs-tya-notif-aat.service.core-compute-aat.internal_GET" : "ignore",
   "90033_Loosely Scoped Cookie_http://sscs-tya-notif-aat.service.core-compute-aat.internal/_GET" : "ignore",
   "90033_Loosely Scoped Cookie_http://sscs-tya-notif-aat.service.core-compute-aat.internal/robots.txt_GET" : "ignore",
-  "10096_Timestamp Disclosure - Unix_http://sscs-tya-notif-aat.service.core-compute-aat.internal_GET" : "ignore"
+  "10096_Timestamp Disclosure - Unix_http://sscs-tya-notif-aat.service.core-compute-aat.internal_GET" : "ignore",
+  "10096_Timestamp Disclosure - Unix_http://sscs-tya-notif-aat.service.core-compute-aat.internal/_GET" : "ignore"
 }
