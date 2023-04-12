@@ -6,6 +6,15 @@
   "10096_Timestamp Disclosure - Unix_http://sscs-tya-notif-aat.service.core-compute-aat.internal/v2/api-docs_GET" : "ignore",
   "10054_Cookie without SameSite Attribute_http://sscs-tya-notif-aat.service.core-compute-aat.internal/v2/api-docs_GET" : "ignore",
   "100000_A Client Error response code was returned by the server_http://sscs-tya-notif-aat.service.core-compute-aat.internal/v2/api-docs_GET" : "ignore",
-  "10010_Cookie No HttpOnly Flag_http://sscs-tya-notif-aat.service.core-compute-aat.internal_GET": "ignore",
+  "10010_Cookie No HttpOnly Flag_http://sscs-tya-notif-aat.service.core-compute-aat.internal_GET" : "ignore",
+  "10010_Cookie No HttpOnly Flag_http://sscs-tya-notif-aat.service.core-compute-aat.internal/_GET" : "ignore",
+  "10010_Cookie No HttpOnly Flag_http://sscs-tya-notif-aat.service.core-compute-aat.internal/robots.txt_GET" : "ignore",
+  "10054_Cookie without SameSite Attribute_http://sscs-tya-notif-aat.service.core-compute-aat.internal_GET" : "ignore",
+  "10054_Cookie without SameSite Attribute_http://sscs-tya-notif-aat.service.core-compute-aat.internal/_GET" : "ignore",
+  "10054_Cookie without SameSite Attribute_http://sscs-tya-notif-aat.service.core-compute-aat.internal/robots.txt_GET" : "ignore",
+  "10096_Timestamp Disclosure - Unix_http://sscs-tya-notif-aat.service.core-compute-aat.internal/robots.txt_GET" : "ignore",
+  "90033_Loosely Scoped Cookie_http://sscs-tya-notif-aat.service.core-compute-aat.internal_GET" : "ignore",
+  "90033_Loosely Scoped Cookie_http://sscs-tya-notif-aat.service.core-compute-aat.internal/_GET" : "ignore",
+  "90033_Loosely Scoped Cookie_http://sscs-tya-notif-aat.service.core-compute-aat.internal/robots.txt_GET" : "ignore",
   "10096_Timestamp Disclosure - Unix_http://sscs-tya-notif-aat.service.core-compute-aat.internal_GET" : "ignore"
 }
