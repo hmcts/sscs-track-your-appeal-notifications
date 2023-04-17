@@ -27,14 +27,7 @@
         <packageUrl regex="true">^pkg:maven/org\.json/json@.*$</packageUrl>
         <cve>CVE-2022-45688</cve>
     </suppress>
-    <suppress until = "2023-04-01">
-        <notes><![CDATA[
-   file name: json-path-2.5.0.jar
-   ]]></notes>
-        <packageUrl regex="true">^pkg:maven/com\.jayway\.jsonpath/json\-path@.*$</packageUrl>
-        <cve>CVE-2022-45688</cve>
-    </suppress>
-    <suppress until = "2023-04-01">
+    <suppress until = "2023-06-01">
         <notes><![CDATA[
    file name: json-smart-2.4.8.jar
    ]]></notes>
