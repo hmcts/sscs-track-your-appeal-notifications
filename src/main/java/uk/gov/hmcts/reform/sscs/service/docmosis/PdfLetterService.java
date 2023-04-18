@@ -141,16 +141,16 @@ public class PdfLetterService {
         if (lines.length >= 1) {
             placeholders.put(LETTER_ADDRESS_LINE_1, truncateAddressLine(defaultToEmptyStringIfNull(lines[0])));
         }
-        if (lines.length >= 2) {
+        if (lines.length >= 5) {
             placeholders.put(LETTER_ADDRESS_LINE_2, truncateAddressLine(defaultToEmptyStringIfNull(lines[1])));
         }
-        if (lines.length >= 3) {
+        if (lines.length >= 2) {
             placeholders.put(LETTER_ADDRESS_LINE_3, truncateAddressLine(defaultToEmptyStringIfNull(lines[2])));
         }
-        if (lines.length >= 4) {
+        if (lines.length >= 3) {
             placeholders.put(LETTER_ADDRESS_LINE_4, truncateAddressLine(defaultToEmptyStringIfNull(lines[3])));
         }
-        if (lines.length >= 5) {
+        if (lines.length >= 4) {
             placeholders.put(LETTER_ADDRESS_POSTCODE, truncateAddressLine(defaultToEmptyStringIfNull(lines[4])));
         }
     }
