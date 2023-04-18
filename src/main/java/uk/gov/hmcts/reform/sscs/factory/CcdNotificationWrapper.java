@@ -15,7 +15,7 @@ import static uk.gov.hmcts.reform.sscs.config.SubscriptionType.JOINT_PARTY;
 import static uk.gov.hmcts.reform.sscs.config.SubscriptionType.OTHER_PARTY;
 import static uk.gov.hmcts.reform.sscs.config.SubscriptionType.REPRESENTATIVE;
 import static uk.gov.hmcts.reform.sscs.domain.notify.NotificationEventType.ACTION_HEARING_RECORDING_REQUEST;
-import static uk.gov.hmcts.reform.sscs.domain.notify.NotificationEventType.REQUEST_INFO_INCOMPLETE;
+import static uk.gov.hmcts.reform.sscs.domain.notify.NotificationEventType.REQUEST_FOR_INFORMATION;
 import static uk.gov.hmcts.reform.sscs.domain.notify.NotificationEventType.REVIEW_CONFIDENTIALITY_REQUEST;
 import static uk.gov.hmcts.reform.sscs.domain.notify.NotificationEventType.UPDATE_OTHER_PARTY_DATA;
 import static uk.gov.hmcts.reform.sscs.service.NotificationUtils.hasAppointee;
@@ -202,13 +202,13 @@ public class CcdNotificationWrapper implements NotificationWrapper {
             && (EVENTS_VALID_FOR_ALL_ENTITIES.contains(getNotificationType())
             || EVENTS_VALID_FOR_APPOINTEE.contains(getNotificationType())
             || isValidProcessHearingRequestEventForParty(PartyItemList.APPELLANT)
-            || isValidRequestInfoIncompleteEventForParty(PartyItemList.APPELLANT));
+            || isValidRequesForInformationEventForParty(PartyItemList.APPELLANT));
     }
 
     private boolean isNotificationEventValidToSendToAppellant() {
         return (getOldSscsCaseData() != null && isValidReviewConfidentialityRequest(getOldSscsCaseData().getConfidentialityRequestOutcomeAppellant(), getNewSscsCaseData().getConfidentialityRequestOutcomeAppellant()))
             || isValidProcessHearingRequestEventForParty(PartyItemList.APPELLANT)
-            || isValidRequestInfoIncompleteEventForParty(PartyItemList.APPELLANT)
+            || isValidRequesForInformationEventForParty(PartyItemList.APPELLANT)
             || !EVENTS_MAYBE_INVALID_FOR_APPELLANT.contains(getNotificationType());
     }
 
@@ -238,14 +238,14 @@ public class CcdNotificationWrapper implements NotificationWrapper {
             && (EVENTS_VALID_FOR_ALL_ENTITIES.contains(getNotificationType())
             || EVENTS_VALID_FOR_REP.contains(getNotificationType())
             || isValidProcessHearingRequestEventForParty(PartyItemList.REPRESENTATIVE)
-            || isValidRequestInfoIncompleteEventForParty(PartyItemList.REPRESENTATIVE));
+            || isValidRequesForInformationEventForParty(PartyItemList.REPRESENTATIVE));
     }
 
     private boolean isNotificationEventValidToSendToJointParty() {
         return hasJointPartySubscription(responseWrapper)
             && (EVENTS_VALID_FOR_ALL_ENTITIES.contains(getNotificationType())
             || EVENTS_VALID_FOR_JOINT_PARTY.contains(getNotificationType())
-            || isValidRequestInfoIncompleteEventForParty(PartyItemList.JOINT_PARTY)
+            || isValidRequesForInformationEventForParty(PartyItemList.JOINT_PARTY)
             || isValidProcessHearingRequestEventForParty(PartyItemList.JOINT_PARTY)
             || (getOldSscsCaseData() != null && isValidReviewConfidentialityRequest(getOldSscsCaseData().getConfidentialityRequestOutcomeJointParty(), getNewSscsCaseData().getConfidentialityRequestOutcomeJointParty())));
     }
@@ -258,8 +258,8 @@ public class CcdNotificationWrapper implements NotificationWrapper {
     }
 
 
-    private boolean isValidRequestInfoIncompleteEventForParty(PartyItemList partyItem) {
-        return REQUEST_INFO_INCOMPLETE.equals(getNotificationType())
+    private boolean isValidRequesForInformationEventForParty(PartyItemList partyItem) {
+        return REQUEST_FOR_INFORMATION.equals(getNotificationType())
                 && responseWrapper.getNewSscsCaseData().getInformationFromPartySelected() != null
                 && responseWrapper.getNewSscsCaseData().getInformationFromPartySelected().getValue() != null
                 && partyItem.getCode().equals(responseWrapper.getNewSscsCaseData().getInformationFromPartySelected().getValue().getCode());

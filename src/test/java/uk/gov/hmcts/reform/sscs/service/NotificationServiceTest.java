@@ -45,7 +45,7 @@ import static uk.gov.hmcts.reform.sscs.domain.notify.NotificationEventType.ISSUE
 import static uk.gov.hmcts.reform.sscs.domain.notify.NotificationEventType.POSTPONEMENT;
 import static uk.gov.hmcts.reform.sscs.domain.notify.NotificationEventType.PROCESS_AUDIO_VIDEO;
 import static uk.gov.hmcts.reform.sscs.domain.notify.NotificationEventType.REISSUE_DOCUMENT;
-import static uk.gov.hmcts.reform.sscs.domain.notify.NotificationEventType.REQUEST_INFO_INCOMPLETE;
+import static uk.gov.hmcts.reform.sscs.domain.notify.NotificationEventType.REQUEST_FOR_INFORMATION;
 import static uk.gov.hmcts.reform.sscs.domain.notify.NotificationEventType.SUBSCRIPTION_UPDATED;
 import static uk.gov.hmcts.reform.sscs.domain.notify.NotificationEventType.SYA_APPEAL_CREATED;
 import static uk.gov.hmcts.reform.sscs.domain.notify.NotificationEventType.UPDATE_OTHER_PARTY_DATA;
@@ -1386,7 +1386,7 @@ public class NotificationServiceTest {
     public void shouldLogErrorWhenIncompleteInfoRequestWithEmptyInfoFromAppellant() {
         CcdNotificationWrapper wrapper = buildBaseWrapperWithCaseData(
                 getSscsCaseDataBuilderSettingInformationFromAppellant(APPELLANT_WITH_ADDRESS, null, null, null).build(),
-                REQUEST_INFO_INCOMPLETE
+                REQUEST_FOR_INFORMATION
         );
 
         getNotificationService().manageNotificationAndSubscription(wrapper, false);
@@ -1398,7 +1398,7 @@ public class NotificationServiceTest {
     public void shouldLogErrorWhenIncompleteInfoRequestWithNoInfoFromAppellant() {
         CcdNotificationWrapper wrapper = buildBaseWrapperWithCaseData(
                 getSscsCaseDataBuilderSettingInformationFromAppellant(APPELLANT_WITH_ADDRESS, null, null, "no").build(),
-                REQUEST_INFO_INCOMPLETE
+                REQUEST_FOR_INFORMATION
         );
 
         getNotificationService().manageNotificationAndSubscription(wrapper, false);
@@ -1410,7 +1410,7 @@ public class NotificationServiceTest {
     public void shouldNotLogErrorWhenIncompleteInfoRequestWithInfoFromAppellant() {
         CcdNotificationWrapper wrapper = buildBaseWrapperWithCaseData(
                 getSscsCaseDataBuilderSettingInformationFromAppellant(APPELLANT_WITH_ADDRESS, null, null, "yes").build(),
-                REQUEST_INFO_INCOMPLETE
+                REQUEST_FOR_INFORMATION
         );
 
         given(factory.create(any(NotificationWrapper.class), any(SubscriptionWithType.class)))
@@ -1433,7 +1433,7 @@ public class NotificationServiceTest {
     }
 
     @Test
-    @Parameters(method = "allEventTypesExceptRequestInfoIncompleteAndProcessingHearingRequest")
+    @Parameters(method = "allEventTypesExceptRequesForInformationAndProcessingHearingRequest")
     public void shouldNotLogErrorWhenNotIncompleteInfoRequest(NotificationEventType eventType) {
         CcdNotificationWrapper wrapper = buildBaseWrapperWithCaseData(
                 getSscsCaseDataBuilderSettingInformationFromAppellant(APPELLANT_WITH_ADDRESS, null, null, "yes").build(),
@@ -1901,9 +1901,9 @@ public class NotificationServiceTest {
 
 
     @SuppressWarnings({"Indentation", "UnusedPrivateMethod"})
-    private Object[] allEventTypesExceptRequestInfoIncompleteAndProcessingHearingRequest() {
+    private Object[] allEventTypesExceptRequesForInformationAndProcessingHearingRequest() {
         return Arrays.stream(NotificationEventType.values()).filter(eventType ->
-                (!eventType.equals(REQUEST_INFO_INCOMPLETE) && !eventType.equals(ACTION_HEARING_RECORDING_REQUEST))
+                (!eventType.equals(REQUEST_FOR_INFORMATION) && !eventType.equals(ACTION_HEARING_RECORDING_REQUEST))
                         && !EVENT_TYPES_FOR_BUNDLED_LETTER.contains(eventType)
         ).toArray();
     }

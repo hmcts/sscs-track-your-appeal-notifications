@@ -142,7 +142,7 @@ public class NotificationsIt extends NotificationsItBase {
         json = updateEmbeddedJson(json, notificationEventType.getId(), "event_id");
         json = json.replace(HEARING_ROUTE_FIELD, hearingRoute);
         json = updateCommonJsonData(notificationEventType, json);
-        if (notificationEventType.equals(REQUEST_INFO_INCOMPLETE)) {
+        if (notificationEventType.equals(REQUEST_FOR_INFORMATION)) {
             json = updateEmbeddedJson(json, "Yes", "case_details", "case_data", "informationFromAppellant");
         }
 
@@ -242,7 +242,7 @@ public class NotificationsIt extends NotificationsItBase {
             jsonAppointee = jsonAppointee.replace("2018-01-12", LocalDate.now().plusDays(2).toString());
         }
 
-        if (notificationEventType.equals(REQUEST_INFO_INCOMPLETE)) {
+        if (notificationEventType.equals(REQUEST_FOR_INFORMATION)) {
             jsonAppointee = updateEmbeddedJson(jsonAppointee, "Yes", "case_details", "case_data", "informationFromAppellant");
         }
 
@@ -302,7 +302,7 @@ public class NotificationsIt extends NotificationsItBase {
         json = updateEmbeddedJson(json, notificationEventType.getId(), "event_id");
 
         json = updateCommonJsonData(notificationEventType, json);
-        if (notificationEventType.equals(REQUEST_INFO_INCOMPLETE)) {
+        if (notificationEventType.equals(REQUEST_FOR_INFORMATION)) {
             json = updateEmbeddedJson(json, "Yes", "case_details", "case_data", "informationFromAppellant");
         }
 
@@ -5114,11 +5114,11 @@ public class NotificationsIt extends NotificationsItBase {
         "jointParty, Joint Party, false",
         "representative, Harry Potter, false"
     })
-    public void givenRequestInfoIncompleteEvent_shouldSendNotificationToSelectedParty(String partySelected, String letterRecipient, boolean sendToAppellant) throws Exception {
-        String jsonPath = sendToAppellant ? "json/ccdResponse_requestInfoIncompleteAppellant.json" : "json/ccdResponse_requestInfoIncomplete.json";
+    public void givenRequesForInformationEvent_shouldSendNotificationToSelectedParty(String partySelected, String letterRecipient, boolean sendToAppellant) throws Exception {
+        String jsonPath = sendToAppellant ? "json/ccdResponse_requesForInformationAppellant.json" : "json/ccdResponse_requesForInformation.json";
         String path = getClass().getClassLoader().getResource(jsonPath).getFile();
         String json = FileUtils.readFileToString(new File(path), StandardCharsets.UTF_8.name());
-        json = updateEmbeddedJson(json, REQUEST_INFO_INCOMPLETE.getId(), "event_id");
+        json = updateEmbeddedJson(json, REQUEST_FOR_INFORMATION.getId(), "event_id");
         json = updateEmbeddedJson(json, partySelected, "case_details", "case_data", "informationFromPartySelected", "value", "code");
 
         getResponse(getRequestWithAuthHeader(json));

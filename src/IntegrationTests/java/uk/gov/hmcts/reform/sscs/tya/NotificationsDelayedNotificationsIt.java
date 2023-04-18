@@ -51,7 +51,7 @@ public class NotificationsDelayedNotificationsIt extends NotificationsItBase {
             jsonAppointee = jsonAppointee.replace("2018-01-12", LocalDate.now().plusDays(2).toString());
         }
 
-        if (notificationEventType.equals(REQUEST_INFO_INCOMPLETE)) {
+        if (notificationEventType.equals(REQUEST_FOR_INFORMATION)) {
             jsonAppointee = updateEmbeddedJson(jsonAppointee, "Yes", "case_details", "case_data", "informationFromAppellant");
         }
 
@@ -85,7 +85,7 @@ public class NotificationsDelayedNotificationsIt extends NotificationsItBase {
         if (notificationEventType.getId().contains("Welsh")) {
             json = updateEmbeddedJson(json, "Yes", "case_details", "case_data", "languagePreferenceWelsh");
         }
-        if (notificationEventType.equals(REQUEST_INFO_INCOMPLETE)) {
+        if (notificationEventType.equals(REQUEST_FOR_INFORMATION)) {
             json = updateEmbeddedJson(json, "Yes", "case_details", "case_data", "informationFromAppellant");
         }
 
