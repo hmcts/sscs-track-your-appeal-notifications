@@ -5115,7 +5115,7 @@ public class NotificationsIt extends NotificationsItBase {
         "representative, Harry Potter, false"
     })
     public void givenRequesForInformationEvent_shouldSendNotificationToSelectedParty(String partySelected, String letterRecipient, boolean sendToAppellant) throws Exception {
-        String jsonPath = sendToAppellant ? "json/ccdResponse_requesForInformationAppellant.json" : "json/ccdResponse_requesForInformation.json";
+        String jsonPath = sendToAppellant ? "json/ccdResponse_requestForInformationAppellant.json" : "json/ccdResponse_requestForInformation.json";
         String path = getClass().getClassLoader().getResource(jsonPath).getFile();
         String json = FileUtils.readFileToString(new File(path), StandardCharsets.UTF_8.name());
         json = updateEmbeddedJson(json, REQUEST_FOR_INFORMATION.getId(), "event_id");
