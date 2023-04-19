@@ -2206,7 +2206,7 @@ public class NotificationServiceTest {
                 "Incomplete Information with empty or no Information regarding sender for event", Level.INFO);
     }
 
-    @DisplayName("When the original sender is null and Event type is ACTION_FURTHER_EVIDENCE then return false.")
+    @DisplayName("When the original sender is null and Event type is VALID_SEND_TO_INTERLOC then return false.")
     @Test
     public void isNotificationStillValidToSendSetAsideRequest_senderIsNull_returnFalse() {
         SscsCaseData caseData = SscsCaseData.builder().ccdCaseId("1234").originalSender(null).build();
@@ -2221,7 +2221,7 @@ public class NotificationServiceTest {
         assertFalse(notificationService.isNotificationStillValidToSendSetAsideRequest(caseData, VALID_SEND_TO_INTERLOC));
     }
 
-    @DisplayName("When the original sender is not null, Event type is ACTION_FURTHER_EVIDENCE and sender is other than dwp "
+    @DisplayName("When the original sender is not null, Event type is VALID_SEND_TO_INTERLOC and sender is other than dwp "
             + "then return true.")
     @Test
     public void isNotificationStillValidToSendSetAsideRequest_senderIsValid_returnFalse() {
@@ -2230,7 +2230,7 @@ public class NotificationServiceTest {
         assertTrue(notificationService.isNotificationStillValidToSendSetAsideRequest(caseData, VALID_SEND_TO_INTERLOC));
     }
 
-    @DisplayName("When the original sender is not null, Event type is other than ACTION_FURTHER_EVIDENCE and sender is other than dwp "
+    @DisplayName("When the original sender is not null, Event type is other than VALID_SEND_TO_INTERLOC and sender is other than dwp "
             + " then return true.")
     @Test
     public void isNotificationStillValidToSendSetAsideRequest_InValidEventType_returnTrue() {

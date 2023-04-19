@@ -126,7 +126,7 @@ class ActionFurtherEvidencePersonalisationTest {
 
     @ParameterizedTest
     @MethodSource("furtherEvidenceVariations")
-    void test1(NotificationEventType notificationEventType, PostHearingRequestType postHearingRequestType,
+    void whenEventIsActionFurtherEvidence_shouldProvideCorrectPersionalisationOptions(NotificationEventType notificationEventType, PostHearingRequestType postHearingRequestType,
                DocumentType documentType) {
         PostHearing postHearing = PostHearing.builder().requestType(postHearingRequestType).build();
         responseWrapper.getNewSscsCaseData().setPostHearing(postHearing);
