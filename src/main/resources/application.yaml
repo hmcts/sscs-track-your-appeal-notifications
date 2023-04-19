@@ -153,20 +153,10 @@ job.scheduler:
 
 notification:
   english:
-    actionFurtherEvidence:
-      docmosisId: TB-SCS-LET-ENG-representation-letter.docx
-      appellant:
-          docmosisId: TB-SCS-LET-ENG-representation-letter.docx
-      representative:
-          docmosisId: TB-SCS-LET-ENG-representation-letter.docx
-      appointee:
-          docmosisId: TB-SCS-LET-ENG-representation-letter.docx
-      other_party:
-          docmosisId: TB-SCS-LET-ENG-representation-letter.docx
-      joint_party:
-          docmosisId: TB-SCS-LET-ENG-representation-letter.docx
     correctionRequest:
-      docmosisId: TB-SCS-LET-ENG-Correction-Request-Received.docx
+      docmosisId: TB-SCS-LET-ENG-Further-Evidence.docx
+    validSendToInterloc:
+      docmosisId: TB-SCS-LET-ENG-Further-Evidence.docx
     jointPartyAdded:
       appellant:
         docmosisId: TB-SCS-GNO-ENG-00579.docx
@@ -757,30 +747,10 @@ notification:
             emailId: 97c58e23-c11f-40b3-b981-2d4cfa38b8fd
             smsId: bb3df0ea-8259-43c4-95de-9eef96206575
   welsh:
-    actionFurtherEvidence:
-      docmosisId: TB-SCS-LET-WEL-representation-letter.docx
-      appellant:
-        docmosisId: TB-SCS-LET-WEL-representation-letter.docx
-      representative:
-        docmosisId: TB-SCS-LET-WEL-representation-letter.docx
-      appointee:
-        docmosisId: TB-SCS-LET-WEL-representation-letter.docx
-      other_party:
-        docmosisId: TB-SCS-LET-WEL-representation-letter.docx
-      joint_party:
-        docmosisId: TB-SCS-LET-WEL-representation-letter.docx
-    postHearingRequest:
-      docmosisId: TB-SCS-LET-WEL-representation-letter.docx
-      appellant:
-        docmosisId: TB-SCS-LET-WEL-representation-letter.docx
-      representative:
-        docmosisId: TB-SCS-LET-WEL-representation-letter.docx
-      appointee:
-        docmosisId: TB-SCS-LET-WEL-representation-letter.docx
-      other_party:
-        docmosisId: TB-SCS-LET-WEL-representation-letter.docx
-      joint_party:
-        docmosisId: TB-SCS-LET-WEL-representation-letter.docx
+    correctionRequest:
+      docmosisId: TB-SCS-LET-WEL-Further-Evidence.docx
+    validSendToInterloc:
+      docmosisId: TB-SCS-LET-WEL-Further-Evidence.docx
     jointPartyAdded:
       appellant:
         docmosisId: TB-SCS-GNO-WEL-00629.docx
@@ -1407,8 +1377,8 @@ pdf-service:
       requestInfoIncompleteApplication: 'TB-SCS-GNO-ENG-00012.docx'
       struckOut: 'TB-SCS-GNO-ENG-00012.docx'
       updateOtherPartyData: 'TB-SCS-GNO-ENG-00012.docx'
-      actionFurtherEvidence: 'TB-SCS-GNO-ENG-00012.docx'
-      postHearingRequest: 'TB-SCS-GNO-ENG-00012.docx'
+      correctionRequest: 'TB-SCS-GNO-ENG-00012.docx'
+      validSendToInterloc: 'TB-SCS-GNO-ENG-00012.docx'
     welsh:
       appealReceived: 'TB-SCS-GNO-WEL-00479.docx'
       directionIssued: 'TB-SCS-GNO-WEL-00479.docx'
@@ -1425,8 +1395,8 @@ pdf-service:
       requestInfoIncompleteApplication: 'TB-SCS-GNO-WEL-00479.docx'
       struckOut: 'TB-SCS-GNO-WEL-00479.docx'
       updateOtherPartyData: 'TB-SCS-GNO-WEL-00479.docx'
-      actionFurtherEvidence: 'TB-SCS-GNO-WEL-00479.docx'
-      postHearingRequest: 'TB-SCS-GNO-WEL-00479.docx'
+      correctionRequest: 'TB-SCS-GNO-WEL-00479.docx'
+      validSendToInterloc: 'TB-SCS-GNO-WEL-00479.docx'
 
 docmosis:
   accessKey:

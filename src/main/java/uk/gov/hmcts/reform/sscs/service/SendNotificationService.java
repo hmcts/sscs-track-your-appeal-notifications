@@ -94,7 +94,6 @@ public class SendNotificationService {
         boolean isInterlocLetter = NotificationEventTypeLists.EVENT_TYPES_FOR_INTERLOC_LETTERS.contains(eventType);
         boolean isDocmosisLetter = NotificationEventTypeLists.DOCMOSIS_LETTERS.contains(eventType);
 
-
         boolean letterSent = false;
         if (shouldSendLetter(wrapper, notification, isInterlocLetter, isDocmosisLetter)) {
             letterSent = sendLetterNotification(wrapper, notification, subscriptionWithType, eventType);

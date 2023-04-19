@@ -1881,7 +1881,7 @@ public class NotificationServiceTest {
     private Object[] allEventTypesExceptRequestInfoIncompleteAndProcessingHearingRequest() {
         return Arrays.stream(NotificationEventType.values()).filter(eventType ->
                 (!eventType.equals(REQUEST_INFO_INCOMPLETE) && !eventType.equals(ACTION_HEARING_RECORDING_REQUEST)
-                && !eventType.equals(ACTION_FURTHER_EVIDENCE))
+                && !eventType.equals(VALID_SEND_TO_INTERLOC))
                         && !EVENT_TYPES_FOR_BUNDLED_LETTER.contains(eventType)
         ).toArray();
     }
@@ -2199,7 +2199,7 @@ public class NotificationServiceTest {
         DynamicList sender = new DynamicList(new DynamicListItem("dwp", "dwp"), new ArrayList<>());
         SscsCaseData caseData = SscsCaseData.builder().ccdCaseId("1234").originalSender(sender).build();
         CcdNotificationWrapper notificationWrapper = new CcdNotificationWrapper(
-                SscsCaseDataWrapper.builder().notificationEventType(ACTION_FURTHER_EVIDENCE).newSscsCaseData(caseData).build());
+                SscsCaseDataWrapper.builder().notificationEventType(VALID_SEND_TO_INTERLOC).newSscsCaseData(caseData).build());
 
         notificationService.manageNotificationAndSubscription(notificationWrapper, false);
         verifyExpectedLogMessage(mockAppender, captorLoggingEvent, notificationWrapper.getNewSscsCaseData().getCcdCaseId(),
@@ -2210,7 +2210,7 @@ public class NotificationServiceTest {
     @Test
     public void isNotificationStillValidToSendSetAsideRequest_senderIsNull_returnFalse() {
         SscsCaseData caseData = SscsCaseData.builder().ccdCaseId("1234").originalSender(null).build();
-        assertFalse(notificationService.isNotificationStillValidToSendSetAsideRequest(caseData, ACTION_FURTHER_EVIDENCE));
+        assertFalse(notificationService.isNotificationStillValidToSendSetAsideRequest(caseData, VALID_SEND_TO_INTERLOC));
     }
 
     @DisplayName("When the original sender is not null and sender is dwp then return false.")
@@ -2218,7 +2218,7 @@ public class NotificationServiceTest {
     public void isNotificationStillValidToSendSetAsideRequest_senderIsInValid_returnFalse() {
         DynamicList sender = new DynamicList(new DynamicListItem("dwp", "dwp"), new ArrayList<>());
         SscsCaseData caseData = SscsCaseData.builder().ccdCaseId("1234").originalSender(sender).build();
-        assertFalse(notificationService.isNotificationStillValidToSendSetAsideRequest(caseData, ACTION_FURTHER_EVIDENCE));
+        assertFalse(notificationService.isNotificationStillValidToSendSetAsideRequest(caseData, VALID_SEND_TO_INTERLOC));
     }
 
     @DisplayName("When the original sender is not null, Event type is ACTION_FURTHER_EVIDENCE and sender is other than dwp "
@@ -2227,7 +2227,7 @@ public class NotificationServiceTest {
     public void isNotificationStillValidToSendSetAsideRequest_senderIsValid_returnFalse() {
         DynamicList sender = new DynamicList(new DynamicListItem("appellant", "appellant"), new ArrayList<>());
         SscsCaseData caseData = SscsCaseData.builder().ccdCaseId("1234").originalSender(sender).build();
-        assertTrue(notificationService.isNotificationStillValidToSendSetAsideRequest(caseData, ACTION_FURTHER_EVIDENCE));
+        assertTrue(notificationService.isNotificationStillValidToSendSetAsideRequest(caseData, VALID_SEND_TO_INTERLOC));
     }
 
     @DisplayName("When the original sender is not null, Event type is other than ACTION_FURTHER_EVIDENCE and sender is other than dwp "

@@ -1,6 +1,55 @@
 package uk.gov.hmcts.reform.sscs.config;
 
-import static uk.gov.hmcts.reform.sscs.domain.notify.NotificationEventType.*;
+import static uk.gov.hmcts.reform.sscs.domain.notify.NotificationEventType.ACTION_HEARING_RECORDING_REQUEST;
+import static uk.gov.hmcts.reform.sscs.domain.notify.NotificationEventType.ACTION_POSTPONEMENT_REQUEST;
+import static uk.gov.hmcts.reform.sscs.domain.notify.NotificationEventType.ACTION_POSTPONEMENT_REQUEST_WELSH;
+import static uk.gov.hmcts.reform.sscs.domain.notify.NotificationEventType.ADJOURNED;
+import static uk.gov.hmcts.reform.sscs.domain.notify.NotificationEventType.ADMIN_APPEAL_WITHDRAWN;
+import static uk.gov.hmcts.reform.sscs.domain.notify.NotificationEventType.APPEAL_DORMANT;
+import static uk.gov.hmcts.reform.sscs.domain.notify.NotificationEventType.APPEAL_LAPSED;
+import static uk.gov.hmcts.reform.sscs.domain.notify.NotificationEventType.APPEAL_RECEIVED;
+import static uk.gov.hmcts.reform.sscs.domain.notify.NotificationEventType.APPEAL_WITHDRAWN;
+import static uk.gov.hmcts.reform.sscs.domain.notify.NotificationEventType.CASE_UPDATED;
+import static uk.gov.hmcts.reform.sscs.domain.notify.NotificationEventType.CORRECTION_REQUEST;
+import static uk.gov.hmcts.reform.sscs.domain.notify.NotificationEventType.DEATH_OF_APPELLANT;
+import static uk.gov.hmcts.reform.sscs.domain.notify.NotificationEventType.DECISION_ISSUED;
+import static uk.gov.hmcts.reform.sscs.domain.notify.NotificationEventType.DECISION_ISSUED_WELSH;
+import static uk.gov.hmcts.reform.sscs.domain.notify.NotificationEventType.DIRECTION_ISSUED;
+import static uk.gov.hmcts.reform.sscs.domain.notify.NotificationEventType.DIRECTION_ISSUED_WELSH;
+import static uk.gov.hmcts.reform.sscs.domain.notify.NotificationEventType.DRAFT_TO_NON_COMPLIANT;
+import static uk.gov.hmcts.reform.sscs.domain.notify.NotificationEventType.DRAFT_TO_VALID_APPEAL_CREATED;
+import static uk.gov.hmcts.reform.sscs.domain.notify.NotificationEventType.DWP_APPEAL_LAPSED;
+import static uk.gov.hmcts.reform.sscs.domain.notify.NotificationEventType.DWP_RESPONSE_RECEIVED;
+import static uk.gov.hmcts.reform.sscs.domain.notify.NotificationEventType.DWP_UPLOAD_RESPONSE;
+import static uk.gov.hmcts.reform.sscs.domain.notify.NotificationEventType.EVIDENCE_RECEIVED;
+import static uk.gov.hmcts.reform.sscs.domain.notify.NotificationEventType.EVIDENCE_REMINDER;
+import static uk.gov.hmcts.reform.sscs.domain.notify.NotificationEventType.HEARING_BOOKED;
+import static uk.gov.hmcts.reform.sscs.domain.notify.NotificationEventType.HEARING_REMINDER;
+import static uk.gov.hmcts.reform.sscs.domain.notify.NotificationEventType.HMCTS_APPEAL_LAPSED;
+import static uk.gov.hmcts.reform.sscs.domain.notify.NotificationEventType.ISSUE_ADJOURNMENT_NOTICE;
+import static uk.gov.hmcts.reform.sscs.domain.notify.NotificationEventType.ISSUE_ADJOURNMENT_NOTICE_WELSH;
+import static uk.gov.hmcts.reform.sscs.domain.notify.NotificationEventType.ISSUE_FINAL_DECISION;
+import static uk.gov.hmcts.reform.sscs.domain.notify.NotificationEventType.ISSUE_FINAL_DECISION_WELSH;
+import static uk.gov.hmcts.reform.sscs.domain.notify.NotificationEventType.JOINT_PARTY_ADDED;
+import static uk.gov.hmcts.reform.sscs.domain.notify.NotificationEventType.JUDGE_DECISION_APPEAL_TO_PROCEED;
+import static uk.gov.hmcts.reform.sscs.domain.notify.NotificationEventType.NON_COMPLIANT;
+import static uk.gov.hmcts.reform.sscs.domain.notify.NotificationEventType.POSTPONEMENT;
+import static uk.gov.hmcts.reform.sscs.domain.notify.NotificationEventType.PROCESS_AUDIO_VIDEO;
+import static uk.gov.hmcts.reform.sscs.domain.notify.NotificationEventType.PROCESS_AUDIO_VIDEO_WELSH;
+import static uk.gov.hmcts.reform.sscs.domain.notify.NotificationEventType.PROVIDE_APPOINTEE_DETAILS;
+import static uk.gov.hmcts.reform.sscs.domain.notify.NotificationEventType.REISSUE_DOCUMENT;
+import static uk.gov.hmcts.reform.sscs.domain.notify.NotificationEventType.REQUEST_INFO_INCOMPLETE;
+import static uk.gov.hmcts.reform.sscs.domain.notify.NotificationEventType.RESEND_APPEAL_CREATED;
+import static uk.gov.hmcts.reform.sscs.domain.notify.NotificationEventType.REVIEW_CONFIDENTIALITY_REQUEST;
+import static uk.gov.hmcts.reform.sscs.domain.notify.NotificationEventType.STRUCK_OUT;
+import static uk.gov.hmcts.reform.sscs.domain.notify.NotificationEventType.SUBSCRIPTION_CREATED;
+import static uk.gov.hmcts.reform.sscs.domain.notify.NotificationEventType.SUBSCRIPTION_OLD;
+import static uk.gov.hmcts.reform.sscs.domain.notify.NotificationEventType.SUBSCRIPTION_UPDATED;
+import static uk.gov.hmcts.reform.sscs.domain.notify.NotificationEventType.SYA_APPEAL_CREATED;
+import static uk.gov.hmcts.reform.sscs.domain.notify.NotificationEventType.TCW_DECISION_APPEAL_TO_PROCEED;
+import static uk.gov.hmcts.reform.sscs.domain.notify.NotificationEventType.UPDATE_OTHER_PARTY_DATA;
+import static uk.gov.hmcts.reform.sscs.domain.notify.NotificationEventType.VALID_APPEAL_CREATED;
+import static uk.gov.hmcts.reform.sscs.domain.notify.NotificationEventType.VALID_SEND_TO_INTERLOC;
 
 import java.util.EnumSet;
 import java.util.Set;
@@ -48,8 +97,8 @@ public final class NotificationEventTypeLists {
         ACTION_HEARING_RECORDING_REQUEST,
         ACTION_POSTPONEMENT_REQUEST_WELSH,
         UPDATE_OTHER_PARTY_DATA,
-        ACTION_FURTHER_EVIDENCE,
-        CORRECTION_REQUEST
+        CORRECTION_REQUEST,
+        VALID_SEND_TO_INTERLOC
     );
 
     public static final Set<NotificationEventType> EVENT_TYPES_NOT_FOR_DORMANT_CASES = EnumSet.of(
@@ -111,8 +160,8 @@ public final class NotificationEventTypeLists {
         REVIEW_CONFIDENTIALITY_REQUEST,
         STRUCK_OUT,
         UPDATE_OTHER_PARTY_DATA,
-        ACTION_FURTHER_EVIDENCE,
-        CORRECTION_REQUEST
+        CORRECTION_REQUEST,
+        VALID_SEND_TO_INTERLOC
     );
 
     public static final Set<NotificationEventType> EVENT_TYPES_FOR_BUNDLED_LETTER = EnumSet.of(
@@ -176,8 +225,8 @@ public final class NotificationEventTypeLists {
         STRUCK_OUT,
         UPDATE_OTHER_PARTY_DATA,
         VALID_APPEAL_CREATED,
-        ACTION_FURTHER_EVIDENCE,
-        CORRECTION_REQUEST
+        CORRECTION_REQUEST,
+        VALID_SEND_TO_INTERLOC
     );
 
     public static final Set<NotificationEventType> EVENT_TYPES_FOR_NOTIFY_LETTERS = EnumSet.of(
@@ -213,8 +262,8 @@ public final class NotificationEventTypeLists {
         PROCESS_AUDIO_VIDEO,
         PROCESS_AUDIO_VIDEO_WELSH,
         STRUCK_OUT,
-        ACTION_FURTHER_EVIDENCE,
-        CORRECTION_REQUEST
+        CORRECTION_REQUEST,
+        VALID_SEND_TO_INTERLOC
     );
 
     public static final Set<NotificationEventType> EVENTS_VALID_FOR_APPOINTEE = EnumSet.of(
@@ -235,8 +284,7 @@ public final class NotificationEventTypeLists {
         SYA_APPEAL_CREATED,
         SUBSCRIPTION_UPDATED,
         TCW_DECISION_APPEAL_TO_PROCEED,
-        VALID_APPEAL_CREATED,
-        ACTION_FURTHER_EVIDENCE
+        VALID_APPEAL_CREATED
     );
 
     public static final Set<NotificationEventType> EVENTS_VALID_FOR_REP = EnumSet.of(
@@ -257,13 +305,11 @@ public final class NotificationEventTypeLists {
         SUBSCRIPTION_UPDATED,
         SYA_APPEAL_CREATED,
         TCW_DECISION_APPEAL_TO_PROCEED,
-        VALID_APPEAL_CREATED,
-        ACTION_FURTHER_EVIDENCE
+        VALID_APPEAL_CREATED
     );
 
     public static final Set<NotificationEventType> EVENTS_VALID_FOR_JOINT_PARTY = EnumSet.of(
-        JOINT_PARTY_ADDED,
-        ACTION_FURTHER_EVIDENCE
+        JOINT_PARTY_ADDED
     );
 
     public static final Set<NotificationEventType> EVENTS_VALID_FOR_OTHER_PARTY = EnumSet.of(
@@ -278,8 +324,7 @@ public final class NotificationEventTypeLists {
         REQUEST_INFO_INCOMPLETE,
         SUBSCRIPTION_CREATED,
         SUBSCRIPTION_OLD,
-        SUBSCRIPTION_UPDATED,
-        ACTION_FURTHER_EVIDENCE
+        SUBSCRIPTION_UPDATED
     );
 
     // Special list of notifications that might not be sent to appellant, depending on data set on the case
@@ -350,7 +395,13 @@ public final class NotificationEventTypeLists {
     );
 
     public static final Set<NotificationEventType> EVENTS_TO_STORE_IN_CCD = EnumSet.of(
-            CORRECTION_REQUEST
+        CORRECTION_REQUEST,
+        VALID_SEND_TO_INTERLOC
+    );
+
+    public static final Set<NotificationEventType> EVENTS_FOR_ACTION_FURTHER_EVIDENCE = EnumSet.of(
+        CORRECTION_REQUEST,
+        VALID_SEND_TO_INTERLOC
     );
 
     public static final Set<NotificationEventType> EVENTS_FOR_REPRESENTATIVE_PERSONALISATION = EnumSet.of(
@@ -387,5 +438,4 @@ public final class NotificationEventTypeLists {
         REQUEST_INFO_INCOMPLETE,
         STRUCK_OUT
     );
-
 }

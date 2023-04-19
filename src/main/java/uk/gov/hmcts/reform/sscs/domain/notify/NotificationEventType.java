@@ -25,6 +25,7 @@ public enum NotificationEventType {
     APPEAL_WITHDRAWN(EventType.WITHDRAWN, true, true, false, false, false, 0),
     CASE_UPDATED(EventType.CASE_UPDATED, false, false, false, false, false, 0),
     CORRECTION_REQUEST(EventType.CORRECTION_REQUEST, false, false, false, true, false, 0),
+    VALID_SEND_TO_INTERLOC(EventType.VALID_SEND_TO_INTERLOC, false, false, false, true, false, 0),
     DEATH_OF_APPELLANT(EventType.DEATH_OF_APPELLANT, true, true, true, true, false, 0),
     DECISION_ISSUED(EventType.DECISION_ISSUED, true, true, true, false, false, 0),
     DECISION_ISSUED_WELSH(EventType.DECISION_ISSUED_WELSH, true, true, true, false, false, 0),
@@ -65,8 +66,6 @@ public enum NotificationEventType {
     TCW_DECISION_APPEAL_TO_PROCEED(EventType.TCW_DECISION_APPEAL_TO_PROCEED, true, true, true, false, false, 0),
     UPDATE_OTHER_PARTY_DATA(EventType.UPDATE_OTHER_PARTY_DATA, true, true, true, true, false, 0),
     VALID_APPEAL_CREATED(EventType.VALID_APPEAL_CREATED, true, true, false, true, false, 240L),
-    ACTION_FURTHER_EVIDENCE(EventType.ACTION_FURTHER_EVIDENCE, true, true, false, true, false, 0),
-    POST_HEARING_REQUEST(EventType.POST_HEARING_REQUEST, true, true, false, true, false, 0),
 
     @JsonEnumDefaultValue
     DO_NOT_SEND(null);

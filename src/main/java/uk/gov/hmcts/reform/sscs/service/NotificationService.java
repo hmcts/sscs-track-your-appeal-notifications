@@ -8,6 +8,7 @@ import static org.apache.commons.collections4.ListUtils.emptyIfNull;
 import static uk.gov.hmcts.reform.sscs.ccd.domain.Benefit.getBenefitByCodeOrThrowException;
 import static uk.gov.hmcts.reform.sscs.ccd.domain.EventType.SUBSCRIPTION_UPDATED;
 import static uk.gov.hmcts.reform.sscs.ccd.domain.YesNo.isYes;
+import static uk.gov.hmcts.reform.sscs.config.NotificationEventTypeLists.EVENTS_FOR_ACTION_FURTHER_EVIDENCE;
 import static uk.gov.hmcts.reform.sscs.config.NotificationEventTypeLists.EVENT_TYPES_NOT_FOR_DORMANT_CASES;
 import static uk.gov.hmcts.reform.sscs.config.NotificationEventTypeLists.EVENT_TYPES_NOT_FOR_WELSH_CASES;
 import static uk.gov.hmcts.reform.sscs.config.SubscriptionType.APPELLANT;
@@ -36,7 +37,6 @@ import uk.gov.hmcts.reform.sscs.ccd.domain.State;
 import uk.gov.hmcts.reform.sscs.ccd.domain.Subscription;
 import uk.gov.hmcts.reform.sscs.ccd.domain.YesNo;
 import uk.gov.hmcts.reform.sscs.config.NotificationConfig;
-import uk.gov.hmcts.reform.sscs.config.PersonalisationMappingConstants;
 import uk.gov.hmcts.reform.sscs.domain.SubscriptionWithType;
 import uk.gov.hmcts.reform.sscs.domain.notify.Destination;
 import uk.gov.hmcts.reform.sscs.domain.notify.Notification;
@@ -266,7 +266,6 @@ public class NotificationService {
 
     private void sendNotification(NotificationWrapper notificationWrapper, SubscriptionWithType subscriptionWithType) {
         Notification notification = notificationFactory.create(notificationWrapper, subscriptionWithType);
-        notification.getPlaceholders().put(PersonalisationMappingConstants.LETTER_CONTENT_TYPE, LetterUtils.getNotificationTypeForActionFurtherEvidence(notificationWrapper, subscriptionWithType));
         sendNotificationService.sendEmailSmsLetterNotification(notificationWrapper, notification, subscriptionWithType, notificationWrapper.getNotificationType());
         processOldSubscriptionNotifications(notificationWrapper, notification, subscriptionWithType, notificationWrapper.getNotificationType());
     }
@@ -330,15 +329,11 @@ public class NotificationService {
 
     boolean isNotificationStillValidToSendSetAsideRequest(SscsCaseData caseData, NotificationEventType eventType) {
         List<String> originalSenders = Arrays.asList("dwp", "hmcts");
-        switch (eventType) {
-            case ACTION_FURTHER_EVIDENCE:
-            case POST_HEARING_REQUEST:
-                return !(isNull(caseData.getOriginalSender())
+        if (EVENTS_FOR_ACTION_FURTHER_EVIDENCE.contains(eventType)) {
+            return !(isNull(caseData.getOriginalSender())
                     || originalSenders.contains(caseData.getOriginalSender().getValue().getCode()));
-
-            default:
-                return true;
         }
+        return true;
     }
 
     private boolean isEventAllowedToProceedWithValidData(NotificationWrapper notificationWrapper,
