@@ -1341,6 +1341,7 @@ case_document_am.url: ${CASE_DOCUMENT_AM_URL:http://localhost:4455}
 feature.save_correspondence: ${SAVE_CORRESPONDENCE:true}
 feature.covid19: ${COVID_19_NOTIFICATION_FEATURE:false}
 feature.secure-doc-store.enabled: ${SECURE_DOC_STORE_FEATURE:false}
+feature.postHearings.enabled: ${POST_HEARINGS_FEATURE:false}
 
 letterAsync:
   maxAttempts: ${LETTER_ASYNC_MAX_ATTEMPTS:5}

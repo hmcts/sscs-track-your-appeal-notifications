@@ -7,7 +7,9 @@ import static uk.gov.hmcts.reform.sscs.config.NotificationEventTypeLists.EVENTS_
 import static uk.gov.hmcts.reform.sscs.domain.notify.NotificationEventType.SUBSCRIPTION_UPDATED;
 
 import java.util.function.Function;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 import uk.gov.hmcts.reform.sscs.domain.notify.NotificationEventType;
 import uk.gov.hmcts.reform.sscs.personalisation.ActionFurtherEvidencePersonalisation;
@@ -17,6 +19,7 @@ import uk.gov.hmcts.reform.sscs.personalisation.SyaAppealCreatedAndReceivedPerso
 import uk.gov.hmcts.reform.sscs.personalisation.WithRepresentativePersonalisation;
 
 @Component
+@Slf4j
 public class PersonalisationFactory implements Function<NotificationEventType, Personalisation> {
 
     @Autowired
@@ -34,6 +37,9 @@ public class PersonalisationFactory implements Function<NotificationEventType, P
     @Autowired
     private Personalisation personalisation;
 
+    @Value("${feature.postHearings.enabled}")
+    private boolean isPostHearingsEnabled;
+
     @Override
     public Personalisation apply(NotificationEventType notificationType) {
         if (isNull(notificationType)) {
@@ -46,7 +52,7 @@ public class PersonalisationFactory implements Function<NotificationEventType, P
             return withRepresentativePersonalisation;
         } else if (SUBSCRIPTION_UPDATED.equals(notificationType)) {
             return subscriptionPersonalisation;
-        } else if (EVENTS_FOR_ACTION_FURTHER_EVIDENCE.contains(notificationType)) {
+        } else if (EVENTS_FOR_ACTION_FURTHER_EVIDENCE.contains(notificationType) && isPostHearingsEnabled) {
             return actionFurtherEvidencePersonalisation;
         } else {
             return this.personalisation;
