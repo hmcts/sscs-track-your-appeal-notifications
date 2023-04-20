@@ -212,15 +212,12 @@ public class LetterUtils {
     }
 
     private static Optional<Representative> getRepresentativeOfOtherParty(SscsCaseData sscsCaseData) {
-        for (CcdValue<OtherParty> op : sscsCaseData.getOtherParties()) {
-            if (op.getValue().hasRepresentative()) {
-                boolean isValidRepresentative = sscsCaseData.getOriginalSender().getValue().getCode().contains(op.getValue().getRep().getId());
-                if (isValidRepresentative) {
-                    return Optional.of(op.getValue().getRep());
-                }
-            }
-        }
-        return Optional.empty();
+        return sscsCaseData.getOtherParties().stream()
+                .map(CcdValue::getValue)
+                .filter(OtherParty::hasRepresentative)
+                .map(OtherParty::getRep)
+                .filter(rep -> sscsCaseData.getOriginalSender().getValue().getCode().contains(rep.getId()))
+                .findFirst();
     }
 
     public static Optional<Name> getOtherPartyName(SscsCaseData sscsCaseData) {
