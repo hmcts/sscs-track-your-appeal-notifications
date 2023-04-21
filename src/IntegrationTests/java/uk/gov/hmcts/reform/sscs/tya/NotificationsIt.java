@@ -82,6 +82,29 @@ public class NotificationsIt extends NotificationsItBase {
     }
 
     @Test
+    public void shouldSendNotificationForAHearingPostponedRequestForAnOralHearing() throws Exception {
+        json = json.replace("appealReceived", "hearingPostponed");
+
+        HttpServletResponse response = getResponse(getRequestWithAuthHeader(json));
+
+        assertHttpStatus(response, HttpStatus.OK);
+        verify(notificationClient).sendEmail(any(), any(), any(), any());
+        verify(notificationClient, never()).sendSms(any(), any(), any(), any(), any());
+    }
+
+    @Test
+    public void shouldNotSendNotificationForAHearingPostponedRequestForAPaperHearing() throws Exception {
+        updateJsonForPaperHearing();
+        json = json.replace("appealReceived", "hearingPostponed");
+
+        HttpServletResponse response = getResponse(getRequestWithAuthHeader(json));
+
+        assertHttpStatus(response, HttpStatus.OK);
+        verify(notificationClient, never()).sendEmail(any(), any(), any(), any());
+        verify(notificationClient, never()).sendSms(any(), any(), any(), any(), any());
+    }
+
+    @Test
     @Parameters(method = "generateDelayedNotificationScenarios")
     public void shouldScheduleDelayedNotificationsForAnEvent(
         NotificationEventType notificationEventType, String message, int expectedValue) throws Exception {
@@ -805,6 +828,32 @@ public class NotificationsIt extends NotificationsItBase {
                 "yes",
                 "1",
                 "1",
+                "0"
+            },
+            new Object[] {
+                POSTPONEMENT,
+                "paper",
+                LIST_ASSIST_ROUTE,
+                Collections.singletonList("732ec1a2-243f-4047-b963-e8427cb007b8"),
+                Collections.emptyList(),
+                Arrays.asList("TB-SCS-LET-ENG-Hearing-Postponed.docx", "TB-SCS-LET-ENG-Hearing-Postponed.docx"),
+                "yes",
+                "yes",
+                "1",
+                "0",
+                "0"
+            },
+            new Object[] {
+                POSTPONEMENT,
+                "oral",
+                LIST_ASSIST_ROUTE,
+                Collections.singletonList("732ec1a2-243f-4047-b963-e8427cb007b8"),
+                Collections.emptyList(),
+                Arrays.asList("TB-SCS-LET-ENG-Hearing-Postponed.docx", "TB-SCS-LET-ENG-Hearing-Postponed.docx"),
+                "yes",
+                "yes",
+                "1",
+                "0",
                 "0"
             },
             new Object[] {
