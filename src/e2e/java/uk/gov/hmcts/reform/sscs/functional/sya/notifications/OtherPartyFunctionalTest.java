@@ -25,6 +25,8 @@ public class OtherPartyFunctionalTest extends AbstractFunctionalTest {
     private String hearingAdjournedOtherPartyEmailTemplateId;
     @Value("${notification.english.hearingAdjourned.other_party.smsId}")
     private String hearingAdjournedOtherPartySmsTemplateId;
+    @Value("${notification.english.hearingPostponed.other_party.emailId}")
+    private String hearingPostponedOtherPartyEmailTemplateId;
     @Value("${notification.english.appealLapsed.other_party.emailId}")
     private String appealLapsedOtherPartyEmailTemplateId;
     @Value("${notification.english.appealLapsed.other_party.smsId}")
@@ -65,6 +67,7 @@ public class OtherPartyFunctionalTest extends AbstractFunctionalTest {
     @Test
     @Parameters({
         "ADJOURNED, 0, hearingAdjournedOtherPartyEmailTemplateId, hearingAdjournedOtherPartySmsTemplateId",
+        "POSTPONEMENT, 2, hearingPostponedOtherPartyEmailTemplateId",
         "APPEAL_LAPSED, 2, appealLapsedOtherPartyEmailTemplateId, appealLapsedOtherPartySmsTemplateId",
         "APPEAL_WITHDRAWN, 2, appealWithdrawnOtherPartyEmailTemplateId, appealWithdrawnOtherPartySmsTemplateId",
         "STRUCK_OUT, 2,",
