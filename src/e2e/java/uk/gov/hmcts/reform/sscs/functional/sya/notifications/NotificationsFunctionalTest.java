@@ -35,6 +35,9 @@ public class NotificationsFunctionalTest extends AbstractFunctionalTest {
     @Value("${notification.english.oral.evidenceReceived.appellant.smsId}")
     private String evidenceReceivedSmsTemplateId;
 
+    @Value("${notification.english.hearingPostponed.appellant.emailId}")
+    private String hearingPostponedEmailTemplateId;
+
     @Value("${notification.english.hearingAdjourned.appellant.emailId}")
     private String hearingAdjournedEmailTemplateId;
 
@@ -131,6 +134,9 @@ public class NotificationsFunctionalTest extends AbstractFunctionalTest {
     @Value("${notification.english.oral.evidenceReceived.appellant.smsId}")
     private String appointeeEvidenceReceivedSmsId;
 
+    @Value("${notification.english.hearingPostponed.appointee.emailId}")
+    private String appointeeHearingPostponedEmailId;
+
     @Value("${notification.english.oral.dwpUploadResponse.appellant.emailId}")
     private String oralDwpUploadResponseEmailId;
 
@@ -157,6 +163,13 @@ public class NotificationsFunctionalTest extends AbstractFunctionalTest {
         );
     }
 
+
+    @Test
+    public void shouldSendHearingPostponedNotification() throws NotificationClientException, IOException {
+        simulateCcdCallback(POSTPONEMENT);
+
+        tryFetchNotificationsForTestCase(hearingPostponedEmailTemplateId);
+    }
 
     @Test
     public void shouldSendHearingAdjournedNotification() throws NotificationClientException, IOException {
@@ -425,6 +438,17 @@ public class NotificationsFunctionalTest extends AbstractFunctionalTest {
         Notification emailNotification = notifications.stream().filter(f -> f.getTemplateId().toString().equals(appointeeEvidenceReceivedEmailId)).collect(Collectors.toList()).get(0);
         assertTrue(emailNotification.getBody().contains("Dear Appointee User"));
         assertTrue(emailNotification.getBody().contains("You are receiving this update as the appointee for"));
+    }
+
+    @Test
+    public void shouldSendAppointeeHearingPostponedNotification() throws NotificationClientException, IOException {
+        simulateCcdCallback(POSTPONEMENT,
+                "appointee/" + POSTPONEMENT.getId() + "Callback.json");
+        List<Notification> notifications = tryFetchNotificationsForTestCase(appointeeHearingPostponedEmailId);
+        Notification emailNotification = notifications.get(0);
+
+        assertTrue(emailNotification.getBody().contains("Dear Appointee User"));
+        assertTrue(emailNotification.getBody().contains("You will receive another email"));
     }
 
     @Test
