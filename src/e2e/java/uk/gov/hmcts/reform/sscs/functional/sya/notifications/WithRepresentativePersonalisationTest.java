@@ -70,6 +70,11 @@ public class WithRepresentativePersonalisationTest extends AbstractFunctionalTes
     @Value("${notification.english.appealReceived.representative.smsId}")
     private String appealReceivedRepsSmsId;
 
+    @Value("${notification.english.hearingPostponed.appellant.emailId}")
+    private String hearingPostponedAppellantEmailId;
+    @Value("${notification.english.hearingPostponed.representative.emailId}")
+    private String hearingPostponedRepsEmailId;
+
     @Value("${notification.english.validAppealCreated.appellant.emailId}")
     private String validAppealCreatedAppellantEmailId;
     @Value("${notification.english.validAppealCreated.appellant.smsId}")
@@ -99,6 +104,22 @@ public class WithRepresentativePersonalisationTest extends AbstractFunctionalTes
         String representativeName = "Harry Potter";
         assertNotificationBodyContains(notifications, repsEmailId, representativeName);
         assertNotificationBodyContains(notifications, repsSmsId);
+    }
+
+    @Test
+    public void givenHearingPostponedEventAndRepsSubscription_shouldSendEmailOnlyNotificationToReps()
+            throws Exception {
+
+        final String repsEmailId = getFieldValue(POSTPONEMENT, "RepsEmailId");
+
+        simulateCcdCallback(POSTPONEMENT,
+                "representative/" + POSTPONEMENT.getId()
+                        + "Callback.json");
+
+        List<Notification> notifications = tryFetchNotificationsForTestCase(repsEmailId);
+
+        String representativeName = "Harry Potter";
+        assertNotificationBodyContains(notifications, repsEmailId, representativeName);
     }
 
     private String getFieldValue(NotificationEventType notificationEventType, String fieldName) throws Exception {
