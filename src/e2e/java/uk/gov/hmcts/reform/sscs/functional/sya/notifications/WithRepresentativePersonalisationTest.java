@@ -28,6 +28,8 @@ public class WithRepresentativePersonalisationTest extends AbstractFunctionalTes
     private String appealWithdrawnRepsEmailId;
     @Value("${notification.english.appealWithdrawn.representative.smsId}")
     private String appealWithdrawnRepsSmsId;
+    /*
+    // SSCS-11586
     @Value("${notification.english.listAssist.oral.hearingBooked.appellant.emailId}")
     private String hearingBookedAppellantEmailId;
     @Value("${notification.english.listAssist.oral.hearingBooked.appellant.smsId}")
@@ -36,6 +38,8 @@ public class WithRepresentativePersonalisationTest extends AbstractFunctionalTes
     private String hearingBookedRepsEmailId;
     @Value("${notification.english.listAssist.oral.hearingBooked.representative.smsId}")
     private String hearingBookedRepsSmsId;
+
+     */
     @Value("${notification.english.appealCreated.appellant.emailId}")
     private String appealCreatedAppellantEmailId;
     @Value("${notification.english.appealCreated.appellant.smsId}")
