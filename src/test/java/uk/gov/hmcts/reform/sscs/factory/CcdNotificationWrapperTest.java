@@ -352,8 +352,9 @@ public class CcdNotificationWrapperTest {
     @Parameters(method = "getDirectionIssuedSubscriptionBasedOnConfidentialityForAppellantAndRepresentative")
     public void givenSubscriptions_shouldGetAppellantAndRepSubscriptionTypeWhenConfidentialIsSelected(NotificationEventType notificationEventType, String confidentialityType, List<String> chosenMembers, List<SubscriptionType> requiredMembers) {
         ccdNotificationWrapper = buildCcdNotificationWrapperBasedOnEventTypeWithRep(notificationEventType);
-        ccdNotificationWrapper.getNewSscsCaseData().setConfidentialityType(confidentialityType);
-        ccdNotificationWrapper.getNewSscsCaseData().setConfidentialityPartyMembers(chosenMembers);
+        SscsCaseData newSscsCaseData = ccdNotificationWrapper.getNewSscsCaseData();
+        newSscsCaseData.setConfidentialityType(confidentialityType);
+        newSscsCaseData.setConfidentialityPartyMembers(chosenMembers);
 
         List<SubscriptionWithType> subsWithTypeList = ccdNotificationWrapper.getSubscriptionsBasedOnNotificationType();
         Assert.assertEquals(requiredMembers.size(), subsWithTypeList.size());
@@ -364,8 +365,9 @@ public class CcdNotificationWrapperTest {
     @Parameters(method = "getDirectionIssuedSubscriptionBasedOnConfidentialityForAppointeeAndAndJointParty")
     public void givenSubscriptions_shouldGetAppointeeAndJointPartyTypeWhenConfidentialIsSelected(NotificationEventType notificationEventType, String confidentialityType, List<String> chosenMembers, List<SubscriptionType> requiredMembers, String hearingType) {
         ccdNotificationWrapper = buildCcdNotificationWrapperBasedOnEventTypeWithAppointeeAndJointParty(notificationEventType, hearingType);
-        ccdNotificationWrapper.getNewSscsCaseData().setConfidentialityType(confidentialityType);
-        ccdNotificationWrapper.getNewSscsCaseData().setConfidentialityPartyMembers(chosenMembers);
+        SscsCaseData newSscsCaseData = ccdNotificationWrapper.getNewSscsCaseData();
+        newSscsCaseData.setConfidentialityType(confidentialityType);
+        newSscsCaseData.setConfidentialityPartyMembers(chosenMembers);
 
         List<SubscriptionWithType> subsWithTypeList = ccdNotificationWrapper.getSubscriptionsBasedOnNotificationType();
         Assert.assertEquals(requiredMembers.size(), subsWithTypeList.size());
