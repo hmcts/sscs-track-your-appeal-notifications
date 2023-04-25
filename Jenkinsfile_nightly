@@ -67,7 +67,7 @@ withNightlyPipeline(type, product, component) {
     enableFullFunctionalTest()
     enableSlackNotifications('#sscs-tech')
 
-    after('fortify-scan') {
+    afterSuccess('fortify-scan') {
         steps.archiveArtifacts allowEmptyArchive: true, artifacts: '**/Fortify Scan/**/*'
     }
 }
