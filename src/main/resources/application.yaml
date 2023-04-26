@@ -358,6 +358,10 @@ notification:
       docmosisId: TB-SCS-GNO-ENG-00466.docx
     processAudioVideo:
       docmosisId: TB-SCS-GNO-ENG-00677.docx
+    setAsideGranted:
+      docmosisId: TB-SCS-GNO-ENG-grant-refuse-set-aside.docx
+    setAsideRefused:
+      docmosisId: TB-SCS-GNO-ENG-grant-refuse-set-aside.docx
     directionIssued:
       appealToProceed:
         appellant:
@@ -936,6 +940,10 @@ notification:
       docmosisId: TB-SCS-GNO-WEL-00593.docx
     processAudioVideoWelsh:
       docmosisId: TB-SCS-GNO-WEL-00678.docx
+    setAsideGranted:
+      docmosisId: TB-SCS-GNO-WEL-grant-refuse-set-aside.docx
+    setAsideRefused:
+      docmosisId: TB-SCS-GNO-WEL-grant-refuse-set-aside.docx
     directionIssuedWelsh:
       appealToProceed:
         appellant:
@@ -1357,6 +1365,8 @@ pdf-service:
       requestInfoIncompleteApplication: 'TB-SCS-GNO-ENG-00012.docx'
       struckOut: 'TB-SCS-GNO-ENG-00012.docx'
       updateOtherPartyData: 'TB-SCS-GNO-ENG-00012.docx'
+      setAsideGranted: 'TB-SCS-GNO-ENG-00012.docx'
+      setAsideRefused: 'TB-SCS-GNO-ENG-00012.docx'
     welsh:
       appealReceived: 'TB-SCS-GNO-WEL-00479.docx'
       directionIssued: 'TB-SCS-GNO-WEL-00479.docx'
@@ -1373,6 +1383,8 @@ pdf-service:
       requestInfoIncompleteApplication: 'TB-SCS-GNO-WEL-00479.docx'
       struckOut: 'TB-SCS-GNO-WEL-00479.docx'
       updateOtherPartyData: 'TB-SCS-GNO-WEL-00479.docx'
+      setAsideGranted: 'TB-SCS-GNO-WEL-00479.docx'
+      setAsideRefused: 'TB-SCS-GNO-WEL-00479.docx'
 
 docmosis:
   accessKey:
