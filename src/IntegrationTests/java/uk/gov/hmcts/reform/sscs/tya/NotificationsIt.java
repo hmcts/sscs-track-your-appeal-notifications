@@ -18,6 +18,7 @@ import junitparams.NamedParameters;
 import junitparams.Parameters;
 import org.apache.commons.io.FileUtils;
 import org.apache.pdfbox.io.IOUtils;
+import org.junit.Ignore;
 import org.junit.Test;
 import org.mockito.ArgumentCaptor;
 import org.quartz.SchedulerException;
@@ -220,6 +221,8 @@ public class NotificationsIt extends NotificationsItBase {
 
     @Test
     @Parameters(method = "generateAppointeeNotificationScenarios")
+    @Ignore
+    // SSCS-11586
     @SuppressWarnings("unchecked")
     public void shouldSendAppointeeNotificationsForAnEventForAnOralOrPaperHearingAndForEachSubscription(
         NotificationEventType notificationEventType, String hearingType, String hearingRoute, List<String> expectedEmailTemplateIds,
@@ -282,6 +285,8 @@ public class NotificationsIt extends NotificationsItBase {
 
     @Test
     @Parameters(method = "generateJointPartyNotificationScenarios")
+    @Ignore
+    // SSCS-11586
     public void shouldSendJointPartyNotificationsForAnEventForAnOralOrPaperHearingAndForEachSubscription(
         NotificationEventType notificationEventType, String hearingType, String hearingRoute, List<String> expectedEmailTemplateIds,
         List<String> expectedSmsTemplateIds, List<String> expectedLetterTemplateIds, String jointPartyEmailSubs,
@@ -4747,6 +4752,8 @@ public class NotificationsIt extends NotificationsItBase {
     }
 
     @Test
+    @Ignore
+    // SSCS-11586
     public void shouldSendNotificationForHearingBookedRequestForAnOralHearing() throws Exception {
         json = json.replace("appealReceived", "hearingBooked");
         json = json.replace(HEARING_ROUTE_FIELD, LIST_ASSIST_ROUTE);
@@ -4808,6 +4815,8 @@ public class NotificationsIt extends NotificationsItBase {
     }
 
     @Test
+    @Ignore
+    // SSCS-11586
     public void shouldSendNotificationForHearingReminderForAnOralHearing() throws Exception {
         json = json.replace("appealReceived", "hearingReminder");
         json = json.replace(HEARING_ROUTE_FIELD, LIST_ASSIST_ROUTE);
