@@ -33,10 +33,10 @@ public class NotificationConfigTestIt extends AbstractNotificationConfigTest {
         assertThat(expectedDocmosisTemplateId).isEqualTo(template.getDocmosisTemplateId());
     }
 
+
     @SuppressWarnings({"unused"})
     private Object[] templateIdsWithHearingAndEventTypes() {
         return new Object[]{
-          
             // ------------------- GAPS -----------------------
             new Object[]{ADJOURNED, false, APPELLANT, ORAL, GAPS, null, "77ea995b-9744-4167-9250-e627c85e5eda", List.of("7455de19-aa3b-48f0-b765-ab2757ba6a88"), null, null},
             new Object[]{ADJOURNED, false, APPELLANT, PAPER, GAPS, null, "77ea995b-9744-4167-9250-e627c85e5eda", List.of("7455de19-aa3b-48f0-b765-ab2757ba6a88"), null, null},
@@ -283,6 +283,23 @@ public class NotificationConfigTestIt extends AbstractNotificationConfigTest {
             new Object[]{NON_COMPLIANT, false, null, PAPER, GAPS, null, null, Collections.emptyList(), null, "TB-SCS-GNO-ENG-00662.docx"},
             new Object[]{NON_COMPLIANT, true, null, ORAL, GAPS, null, null, Collections.emptyList(), null, "TB-SCS-GNO-WEL-00663.docx"},
             new Object[]{NON_COMPLIANT, true, null, PAPER, GAPS, null, null, Collections.emptyList(), null, "TB-SCS-GNO-WEL-00663.docx"},
+
+            new Object[]{POSTPONEMENT, false, APPELLANT, ORAL, GAPS, null, null, Collections.emptyList(), null, null},
+            new Object[]{POSTPONEMENT, false, APPELLANT, PAPER, GAPS, null, null, Collections.emptyList(), null, null},
+            new Object[]{POSTPONEMENT, false, APPOINTEE, ORAL, GAPS, null, null, Collections.emptyList(), null, null},
+            new Object[]{POSTPONEMENT, false, APPOINTEE, PAPER, GAPS, null, null, Collections.emptyList(), null, null},
+            new Object[]{POSTPONEMENT, false, JOINT_PARTY, ORAL, GAPS, null, null, Collections.emptyList(), null, null},
+            new Object[]{POSTPONEMENT, false, JOINT_PARTY, PAPER, GAPS, null, null, Collections.emptyList(), null, null},
+            new Object[]{POSTPONEMENT, false, REPRESENTATIVE, ORAL, GAPS, null, null, Collections.emptyList(), null, null},
+            new Object[]{POSTPONEMENT, false, REPRESENTATIVE, PAPER, GAPS, null, null, Collections.emptyList(), null, null},
+            new Object[]{POSTPONEMENT, true, APPELLANT, ORAL, GAPS, null, null, Collections.emptyList(), null, null},
+            new Object[]{POSTPONEMENT, true, APPELLANT, PAPER, GAPS, null, null, Collections.emptyList(), null, null},
+            new Object[]{POSTPONEMENT, true, APPOINTEE, ORAL, GAPS, null, null, Collections.emptyList(), null, null},
+            new Object[]{POSTPONEMENT, true, APPOINTEE, PAPER, GAPS, null, null, Collections.emptyList(), null, null},
+            new Object[]{POSTPONEMENT, true, JOINT_PARTY, ORAL, GAPS, null, null, Collections.emptyList(), null, null},
+            new Object[]{POSTPONEMENT, true, JOINT_PARTY, PAPER, GAPS, null, null, Collections.emptyList(), null, null},
+            new Object[]{POSTPONEMENT, true, REPRESENTATIVE, ORAL, GAPS, null, null, Collections.emptyList(), null, null},
+            new Object[]{POSTPONEMENT, true, REPRESENTATIVE, PAPER, GAPS, null, null, Collections.emptyList(), null, null},
 
             new Object[]{REQUEST_INFO_INCOMPLETE, false, APPELLANT, ORAL, GAPS, null, null, Collections.emptyList(), null, "TB-SCS-LET-ENG-Request-for-Information.docx"},
             new Object[]{REQUEST_INFO_INCOMPLETE, false, APPELLANT, PAPER, GAPS, null, null, Collections.emptyList(), null, "TB-SCS-LET-ENG-Request-for-Information.docx"},

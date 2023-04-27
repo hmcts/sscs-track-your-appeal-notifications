@@ -190,22 +190,6 @@ notification:
       other_party:
         emailId: ecf7db7d-a257-4496-a2bf-768e560c80e7
         smsId: 259b8e81-b44a-4271-a57b-ba7f8bdfcb33
-    hearingPostponed:
-      appellant:
-        emailId: 732ec1a2-243f-4047-b963-e8427cb007b8
-        docmosisId: TB-SCS-LET-ENG-Hearing-Postponed.docx
-      representative:
-        emailId: e07b7dba-f383-49ca-a0ba-b5b61be27da6
-        docmosisId: TB-SCS-LET-ENG-Hearing-Postponed.docx
-      appointee:
-        emailId: 732ec1a2-243f-4047-b963-e8427cb007b8
-        docmosisId: TB-SCS-LET-ENG-Hearing-Postponed.docx
-      joint_party:
-        emailId: 732ec1a2-243f-4047-b963-e8427cb007b8
-        docmosisId: TB-SCS-LET-ENG-Hearing-Postponed.docx
-      other_party:
-        emailId: e07b7dba-f383-49ca-a0ba-b5b61be27da6
-        docmosisId: TB-SCS-LET-ENG-Hearing-Postponed.docx
     appealLapsed:
       appellant:
         emailId: 8ce8d794-75e8-49a0-b4d2-0c6cd2061c11
@@ -693,6 +677,22 @@ notification:
           emailId: e2ee8609-7d56-4857-b3f8-79028e8960aa
     listAssist:
       oral:
+        hearingPostponed:
+          appellant:
+            emailId: 732ec1a2-243f-4047-b963-e8427cb007b8
+            docmosisId: TB-SCS-LET-ENG-Hearing-Postponed.docx
+          representative:
+            emailId: e07b7dba-f383-49ca-a0ba-b5b61be27da6
+            docmosisId: TB-SCS-LET-ENG-Hearing-Postponed.docx
+          appointee:
+            emailId: 732ec1a2-243f-4047-b963-e8427cb007b8
+            docmosisId: TB-SCS-LET-ENG-Hearing-Postponed.docx
+          joint_party:
+            emailId: 732ec1a2-243f-4047-b963-e8427cb007b8
+            docmosisId: TB-SCS-LET-ENG-Hearing-Postponed.docx
+          other_party:
+            emailId: e07b7dba-f383-49ca-a0ba-b5b61be27da6
+            docmosisId: TB-SCS-LET-ENG-Hearing-Postponed.docx
         hearingBooked:
           appellant:
             # SSCS-11586 emailId: aa0930a3-e1bd-4b50-ac6b-34df73ec8378
@@ -730,6 +730,23 @@ notification:
             # SSCS-11586 other_party:
             # SSCS-11586 emailId: 97c58e23-c11f-40b3-b981-2d4cfa38b8fd
             # SSCS-11586 smsId: bb3df0ea-8259-43c4-95de-9eef96206575
+      paper:
+        hearingPostponed:
+          appellant:
+            emailId: 732ec1a2-243f-4047-b963-e8427cb007b8
+            docmosisId: TB-SCS-LET-ENG-Hearing-Postponed.docx
+          representative:
+            emailId: e07b7dba-f383-49ca-a0ba-b5b61be27da6
+            docmosisId: TB-SCS-LET-ENG-Hearing-Postponed.docx
+          appointee:
+            emailId: 732ec1a2-243f-4047-b963-e8427cb007b8
+            docmosisId: TB-SCS-LET-ENG-Hearing-Postponed.docx
+          joint_party:
+            emailId: 732ec1a2-243f-4047-b963-e8427cb007b8
+            docmosisId: TB-SCS-LET-ENG-Hearing-Postponed.docx
+          other_party:
+            emailId: e07b7dba-f383-49ca-a0ba-b5b61be27da6
+            docmosisId: TB-SCS-LET-ENG-Hearing-Postponed.docx
   welsh:
     jointPartyAdded:
       appellant:
@@ -768,22 +785,6 @@ notification:
       other_party:
         emailId: 6b1b836a-a7a2-4a0f-b5de-6988ac2a9e34
         smsId: 5afa93bf-8c72-45da-a7db-e23f8e32906e
-    hearingPostponed:
-      appellant:
-        emailId: ab60afc3-7ad4-4de4-84da-e095e90d6f37
-        docmosisId: TB-SCS-LET-WEL-Hearing-Postponed.docx
-      representative:
-        emailId: d5bc541b-78c8-4a65-8e55-cfb20ccfed43
-        docmosisId: TB-SCS-LET-WEL-Hearing-Postponed.docx
-      appointee:
-        emailId: ab60afc3-7ad4-4de4-84da-e095e90d6f37
-        docmosisId: TB-SCS-LET-WEL-Hearing-Postponed.docx
-      joint_party:
-        emailId: 862590f1-3b36-4537-84c5-173dccea5db3
-        docmosisId: TB-SCS-LET-WEL-Hearing-Postponed.docx
-      other_party:
-        emailId: d5bc541b-78c8-4a65-8e55-cfb20ccfed43
-        docmosisId: TB-SCS-LET-WEL-Hearing-Postponed.docx
     appealLapsed:
       appellant:
         emailId: 542a6346-7039-4eab-8b20-61fa77db33f0
@@ -1169,6 +1170,23 @@ notification:
         other_party:
           emailId: 7fd05871-f37b-410e-bcf4-1cb5f806ebd9
           smsId: e163e9c2-10a9-4426-9eb8-f83df490d6d4
+      listAssist:
+        hearingPostponed:
+          appellant:
+            emailId: ab60afc3-7ad4-4de4-84da-e095e90d6f37
+            docmosisId: TB-SCS-LET-WEL-Hearing-Postponed.docx
+          representative:
+            emailId: d5bc541b-78c8-4a65-8e55-cfb20ccfed43
+            docmosisId: TB-SCS-LET-WEL-Hearing-Postponed.docx
+          appointee:
+            emailId: ab60afc3-7ad4-4de4-84da-e095e90d6f37
+            docmosisId: TB-SCS-LET-WEL-Hearing-Postponed.docx
+          joint_party:
+            emailId: 862590f1-3b36-4537-84c5-173dccea5db3
+            docmosisId: TB-SCS-LET-WEL-Hearing-Postponed.docx
+          other_party:
+            emailId: d5bc541b-78c8-4a65-8e55-cfb20ccfed43
+            docmosisId: TB-SCS-LET-WEL-Hearing-Postponed.docx
     oral:
       responseReceived:
         appellant:
@@ -1239,8 +1257,23 @@ notification:
           emailId: 10e958ff-4ff4-4a38-b79c-298e89aa8079
         joint_party:
           emailId: a3c3ace2-6b88-4557-b18a-7df1923a50f5
-    listAssist:
-      oral:
+      listAssist:
+        hearingPostponed:
+          appellant:
+            emailId: ab60afc3-7ad4-4de4-84da-e095e90d6f37
+            docmosisId: TB-SCS-LET-WEL-Hearing-Postponed.docx
+          representative:
+            emailId: d5bc541b-78c8-4a65-8e55-cfb20ccfed43
+            docmosisId: TB-SCS-LET-WEL-Hearing-Postponed.docx
+          appointee:
+            emailId: ab60afc3-7ad4-4de4-84da-e095e90d6f37
+            docmosisId: TB-SCS-LET-WEL-Hearing-Postponed.docx
+          joint_party:
+            emailId: 862590f1-3b36-4537-84c5-173dccea5db3
+            docmosisId: TB-SCS-LET-WEL-Hearing-Postponed.docx
+          other_party:
+            emailId: d5bc541b-78c8-4a65-8e55-cfb20ccfed43
+            docmosisId: TB-SCS-LET-WEL-Hearing-Postponed.docx
         hearingBooked:
           appellant:
             # SSCS-11586 emailId: aca83c9c-05c0-49d5-8ded-e581a0107408
