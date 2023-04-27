@@ -1170,23 +1170,6 @@ notification:
         other_party:
           emailId: 7fd05871-f37b-410e-bcf4-1cb5f806ebd9
           smsId: e163e9c2-10a9-4426-9eb8-f83df490d6d4
-      listAssist:
-        hearingPostponed:
-          appellant:
-            emailId: ab60afc3-7ad4-4de4-84da-e095e90d6f37
-            docmosisId: TB-SCS-LET-WEL-Hearing-Postponed.docx
-          representative:
-            emailId: d5bc541b-78c8-4a65-8e55-cfb20ccfed43
-            docmosisId: TB-SCS-LET-WEL-Hearing-Postponed.docx
-          appointee:
-            emailId: ab60afc3-7ad4-4de4-84da-e095e90d6f37
-            docmosisId: TB-SCS-LET-WEL-Hearing-Postponed.docx
-          joint_party:
-            emailId: 862590f1-3b36-4537-84c5-173dccea5db3
-            docmosisId: TB-SCS-LET-WEL-Hearing-Postponed.docx
-          other_party:
-            emailId: d5bc541b-78c8-4a65-8e55-cfb20ccfed43
-            docmosisId: TB-SCS-LET-WEL-Hearing-Postponed.docx
     oral:
       responseReceived:
         appellant:
@@ -1257,7 +1240,25 @@ notification:
           emailId: 10e958ff-4ff4-4a38-b79c-298e89aa8079
         joint_party:
           emailId: a3c3ace2-6b88-4557-b18a-7df1923a50f5
-      listAssist:
+    listAssist:
+      paper:
+        hearingPostponed:
+          appellant:
+            emailId: ab60afc3-7ad4-4de4-84da-e095e90d6f37
+            docmosisId: TB-SCS-LET-WEL-Hearing-Postponed.docx
+          representative:
+            emailId: d5bc541b-78c8-4a65-8e55-cfb20ccfed43
+            docmosisId: TB-SCS-LET-WEL-Hearing-Postponed.docx
+          appointee:
+            emailId: ab60afc3-7ad4-4de4-84da-e095e90d6f37
+            docmosisId: TB-SCS-LET-WEL-Hearing-Postponed.docx
+          joint_party:
+            emailId: 862590f1-3b36-4537-84c5-173dccea5db3
+            docmosisId: TB-SCS-LET-WEL-Hearing-Postponed.docx
+          other_party:
+            emailId: d5bc541b-78c8-4a65-8e55-cfb20ccfed43
+            docmosisId: TB-SCS-LET-WEL-Hearing-Postponed.docx
+      oral:
         hearingPostponed:
           appellant:
             emailId: ab60afc3-7ad4-4de4-84da-e095e90d6f37

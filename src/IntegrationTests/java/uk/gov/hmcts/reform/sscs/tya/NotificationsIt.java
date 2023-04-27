@@ -323,9 +323,7 @@ public class NotificationsIt extends NotificationsItBase {
 
     @SuppressWarnings({"Indentation", "unused"})
     private Object[] generateJointPartyNotificationScenarios() {
-
         return new Object[] {
-          
             // GAPS
             new Object[] {
                 APPEAL_LAPSED,
@@ -455,6 +453,32 @@ public class NotificationsIt extends NotificationsItBase {
                 "yes",
                 "1",
                 "1",
+                "0"
+            },
+            new Object[] {
+                POSTPONEMENT,
+                "paper",
+                GAPS_ROUTE,
+                Collections.singletonList("732ec1a2-243f-4047-b963-e8427cb007b8"),
+                Collections.emptyList(),
+                Arrays.asList("TB-SCS-LET-ENG-Hearing-Postponed.docx", "TB-SCS-LET-ENG-Hearing-Postponed.docx"),
+                "yes",
+                "yes",
+                "1",
+                "0",
+                "0"
+            },
+            new Object[] {
+                POSTPONEMENT,
+                "oral",
+                GAPS_ROUTE,
+                Collections.singletonList("732ec1a2-243f-4047-b963-e8427cb007b8"),
+                Collections.emptyList(),
+                Arrays.asList("TB-SCS-LET-ENG-Hearing-Postponed.docx", "TB-SCS-LET-ENG-Hearing-Postponed.docx"),
+                "yes",
+                "yes",
+                "1",
+                "0",
                 "0"
             },
             new Object[] {
@@ -1542,6 +1566,66 @@ public class NotificationsIt extends NotificationsItBase {
                 Collections.emptyList(),
                 Collections.emptyList(),
                 Collections.emptyList(),
+                "no",
+                "no",
+                "no",
+                "no",
+                "0",
+                "0",
+                "0"
+            },
+            new Object[] {
+                POSTPONEMENT,
+                "paper",
+                GAPS_ROUTE,
+                Arrays.asList("732ec1a2-243f-4047-b963-e8427cb007b8", "e07b7dba-f383-49ca-a0ba-b5b61be27da6"),
+                Collections.emptyList(),
+                Arrays.asList("TB-SCS-LET-ENG-Hearing-Postponed.docx", "TB-SCS-LET-ENG-Hearing-Postponed.docx"),
+                "yes",
+                "no",
+                "yes",
+                "no",
+                "2",
+                "0",
+                "0"
+            },
+            new Object[] {
+                POSTPONEMENT,
+                "oral",
+                GAPS_ROUTE,
+                Arrays.asList("732ec1a2-243f-4047-b963-e8427cb007b8", "e07b7dba-f383-49ca-a0ba-b5b61be27da6"),
+                Collections.emptyList(),
+                Arrays.asList("TB-SCS-LET-ENG-Hearing-Postponed.docx", "TB-SCS-LET-ENG-Hearing-Postponed.docx"),
+                "yes",
+                "no",
+                "Yes",
+                "no",
+                "2",
+                "0",
+                "0"
+            },
+            new Object[] {
+                POSTPONEMENT,
+                "paper",
+                GAPS_ROUTE,
+                Collections.singletonList("e07b7dba-f383-49ca-a0ba-b5b61be27da6"),
+                Collections.emptyList(),
+                Arrays.asList("TB-SCS-LET-ENG-Hearing-Postponed.docx", "TB-SCS-LET-ENG-Hearing-Postponed.docx"),
+                "no",
+                "no",
+                "yes",
+                "no",
+                "1",
+                "0",
+                "0"
+            },
+            new Object[] {
+                POSTPONEMENT,
+                "paper",
+                GAPS_ROUTE,
+                Collections.emptyList(),
+                Collections.emptyList(),
+                Arrays.asList("TB-SCS-LET-ENG-Hearing-Postponed.docx", "TB-SCS-LET-ENG-Hearing-Postponed.docx"),
                 "no",
                 "no",
                 "no",
