@@ -46,7 +46,7 @@ public enum NotificationEventType {
     JOINT_PARTY_ADDED(EventType.JOINT_PARTY_ADDED, true, true, true, true, false, 0),
     JUDGE_DECISION_APPEAL_TO_PROCEED(EventType.JUDGE_DECISION_APPEAL_TO_PROCEED, true, true, true, false, false, 0),
     NON_COMPLIANT(EventType.NON_COMPLIANT, true, true, true, false, false, 0),
-    POSTPONEMENT(EventType.POSTPONED, true, false, false, false, false, 0),
+    POSTPONEMENT(EventType.POSTPONED, true, true, false, false, false, 0),
     PROCESS_AUDIO_VIDEO(EventType.PROCESS_AUDIO_VIDEO, true, true, true, false, false, 0),
     PROCESS_AUDIO_VIDEO_WELSH(EventType.PROCESS_AUDIO_VIDEO_WELSH, true, true, true, false, false, 0),
     PROVIDE_APPOINTEE_DETAILS(EventType.PROVIDE_APPOINTEE_DETAILS, true, true, true, true, false, 0),
