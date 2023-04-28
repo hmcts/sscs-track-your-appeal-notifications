@@ -83,14 +83,19 @@ public class NotificationsIt extends NotificationsItBase {
     }
 
     @Test
-    public void shouldSendNotificationForAHearingPostponedRequestForAnOralHearing() throws Exception {
+    public void shouldSendNotificationForAHearingPostponedRequestForAnOralHearingForListAssit() throws Exception {
         json = json.replace("appealReceived", "hearingPostponed");
-
+        json = json.replace(HEARING_ROUTE_FIELD, LIST_ASSIST_ROUTE);
         HttpServletResponse response = getResponse(getRequestWithAuthHeader(json));
 
         assertHttpStatus(response, HttpStatus.OK);
-        verify(notificationClient).sendEmail(any(), any(), any(), any());
-        verify(notificationClient, never()).sendSms(any(), any(), any(), any(), any());
+        if (json.contains(LIST_ASSIST_ROUTE)) {
+            verify(notificationClient).sendEmail(any(), any(), any(), any());
+            verify(notificationClient, never()).sendSms(any(), any(), any(), any(), any());
+        } else {
+            verify(notificationClient, never()).sendEmail(any(), any(), any(), any());
+            verify(notificationClient, never()).sendSms(any(), any(), any(), any(), any());
+        }
     }
 
     @Test
