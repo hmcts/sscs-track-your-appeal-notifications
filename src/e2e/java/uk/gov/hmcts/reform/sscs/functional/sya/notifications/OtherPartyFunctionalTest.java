@@ -67,7 +67,7 @@ public class OtherPartyFunctionalTest extends AbstractFunctionalTest {
     @Test
     @Parameters({
         "ADJOURNED, 0, hearingAdjournedOtherPartyEmailTemplateId, hearingAdjournedOtherPartySmsTemplateId",
-        "POSTPONEMENT, 2, hearingPostponedOtherPartyEmailTemplateId",
+        "POSTPONEMENT, 1, hearingPostponedOtherPartyEmailTemplateId",
         "APPEAL_LAPSED, 2, appealLapsedOtherPartyEmailTemplateId, appealLapsedOtherPartySmsTemplateId",
         "APPEAL_WITHDRAWN, 2, appealWithdrawnOtherPartyEmailTemplateId, appealWithdrawnOtherPartySmsTemplateId",
         "STRUCK_OUT, 2,",
