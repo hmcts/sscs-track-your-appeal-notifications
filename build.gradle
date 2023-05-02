@@ -215,7 +215,7 @@ dependencyManagement {
         }
 
         //CVE-2021-22118, CVE-2022-22970, CVE-2022-22971
-        dependencySet(group: 'org.springframework', version: '5.3.26') {
+        dependencySet(group: 'org.springframework', version: '5.3.27') {
             entry 'spring-aop'
             entry 'spring-aspects'
             entry 'spring-beans'
@@ -405,6 +405,7 @@ dependencies {
     implementation group: 'com.github.hmcts', name: 'cmc-pdf-service-client', version: '7.0.1'
 
     implementation group: 'com.github.hmcts', name: 'sscs-common', version: 'SSCS-10973-v1-SNAPSHOT'
+    implementation group: 'com.github.hmcts', name: 'sscs-common', version: '4.25.22'
     implementation group: 'com.github.hmcts', name: 'sscs-pdf-email-common', version: '1.8.2'
 
     implementation group: 'com.github.hmcts', name: 'sscs-job-scheduler', version: '1.5.7', {

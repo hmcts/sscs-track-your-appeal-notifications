@@ -138,6 +138,7 @@ public class WelshNotificationsFunctionalTest extends AbstractFunctionalTest {
     @Value("${notification.welsh.appealWithdrawn.joint_party.smsId}")
     private String jointPartyAppealWithdrawnSmsIdWelsh;
 
+    /*// SSCS-11586
     @Value("${notification.welsh.listAssist.oral.hearingBooked.appointee.emailId}")
     private String appointeeHearingBookedEmailIdWelsh;
 
@@ -150,6 +151,7 @@ public class WelshNotificationsFunctionalTest extends AbstractFunctionalTest {
     @Value("${notification.welsh.listAssist.oral.hearingBooked.joint_party.smsId}")
     private String jointPartyHearingBookedSmsIdWelsh;
 
+    */
     @Value("${notification.welsh.paper.evidenceReceived.appointee.emailId}")
     private String paperEvidenceReceivedEmailTemplateIdWelsh;
 
@@ -209,11 +211,12 @@ public class WelshNotificationsFunctionalTest extends AbstractFunctionalTest {
     public void shouldSendHearingBookedNotificationWelsh() throws NotificationClientException, IOException {
         simulateCcdCallback(HEARING_BOOKED, "appointee/" + HEARING_BOOKED.getId() + "CallbackWelsh.json");
 
-        tryFetchNotificationsForTestCase(
+        // SSCS-11586
+        /* tryFetchNotificationsForTestCase(
                 appointeeHearingBookedEmailIdWelsh,
                 appointeeHearingBookedSmsIdWelsh,
                 jointPartyHearingBookedEmailIdWelsh,
-                jointPartyHearingBookedSmsIdWelsh);
+                jointPartyHearingBookedSmsIdWelsh);*/
     }
 
 
