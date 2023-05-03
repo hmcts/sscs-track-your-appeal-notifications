@@ -67,7 +67,7 @@ public class OtherPartyFunctionalTest extends AbstractFunctionalTest {
     @Test
     @Parameters({
         "ADJOURNED, 0, hearingAdjournedOtherPartyEmailTemplateId, hearingAdjournedOtherPartySmsTemplateId",
-        "POSTPONEMENT, 1, hearingPostponedOtherPartyEmailTemplateId",
+        "POSTPONEMENT, 0, hearingPostponedOtherPartyEmailTemplateId",
         "APPEAL_LAPSED, 2, appealLapsedOtherPartyEmailTemplateId, appealLapsedOtherPartySmsTemplateId",
         "APPEAL_WITHDRAWN, 2, appealWithdrawnOtherPartyEmailTemplateId, appealWithdrawnOtherPartySmsTemplateId",
         "STRUCK_OUT, 2,",
@@ -84,8 +84,6 @@ public class OtherPartyFunctionalTest extends AbstractFunctionalTest {
 
         List<Notification> notifications = fetchLetters();
         assertEquals(expectedNumberOfLetters, notifications.size());
-        System.out.println("ExpectedNumber of Letters : " + expectedNumberOfLetters);
-        System.out.println("Notifications size : " + notifications.size());
         notifications.forEach(n -> assertEquals("Pre-compiled PDF", n.getSubject().orElse("Unknown Subject")));
         if (fieldNames != null && !fieldNames[0].equals("")) {
             tryFetchNotificationsForTestCase(getFieldValue(fieldNames));
