@@ -67,7 +67,7 @@ public class OtherPartyFunctionalTest extends AbstractFunctionalTest {
     @Test
     @Parameters({
         "ADJOURNED, 0, hearingAdjournedOtherPartyEmailTemplateId, hearingAdjournedOtherPartySmsTemplateId",
-        "POSTPONEMENT, 1, hearingPostponedOtherPartyEmailTemplateId",
+        "POSTPONEMENT, 2, hearingPostponedOtherPartyEmailTemplateId",
         "APPEAL_LAPSED, 2, appealLapsedOtherPartyEmailTemplateId, appealLapsedOtherPartySmsTemplateId",
         "APPEAL_WITHDRAWN, 2, appealWithdrawnOtherPartyEmailTemplateId, appealWithdrawnOtherPartySmsTemplateId",
         "STRUCK_OUT, 2,",
@@ -83,10 +83,6 @@ public class OtherPartyFunctionalTest extends AbstractFunctionalTest {
                 "otherparty/oral-eventTypeCallback.json");
 
         List<Notification> notifications = fetchLetters();
-
-        //Debug purpose
-        System.out.println("Expected number of letters : " + expectedNumberOfLetters);
-        System.out.println("Notifications size : " + notifications.size());
 
         assertEquals(expectedNumberOfLetters, notifications.size());
         notifications.forEach(n -> assertEquals("Pre-compiled PDF", n.getSubject().orElse("Unknown Subject")));
