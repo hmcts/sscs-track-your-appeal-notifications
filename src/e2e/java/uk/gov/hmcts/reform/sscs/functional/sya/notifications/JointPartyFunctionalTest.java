@@ -87,7 +87,6 @@ public class JointPartyFunctionalTest extends AbstractFunctionalTest {
 
     // TODO: SSCS-11436
     @Test
-    @Ignore
     @Parameters(method = "eventTypeAndSubscriptions")
     public void givenEventAndJointPartySubscription_shouldSendNotificationToJointParty(
             NotificationEventType notificationEventType, @Nullable String hearingType,
