@@ -14,7 +14,6 @@ import java.util.List;
 import java.util.Optional;
 import junitparams.Parameters;
 import junitparams.converters.Nullable;
-import org.junit.Ignore;
 import org.junit.Test;
 import uk.gov.hmcts.reform.sscs.domain.notify.NotificationEventType;
 import uk.gov.hmcts.reform.sscs.functional.AbstractFunctionalTest;
