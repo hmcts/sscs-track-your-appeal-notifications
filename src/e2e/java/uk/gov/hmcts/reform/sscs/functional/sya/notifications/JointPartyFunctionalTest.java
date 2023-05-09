@@ -15,6 +15,7 @@ import java.util.Optional;
 import junitparams.Parameters;
 import junitparams.converters.Nullable;
 import org.junit.Test;
+import org.springframework.beans.factory.annotation.Value;
 import uk.gov.hmcts.reform.sscs.domain.notify.NotificationEventType;
 import uk.gov.hmcts.reform.sscs.functional.AbstractFunctionalTest;
 import uk.gov.service.notify.Notification;
@@ -79,6 +80,15 @@ public class JointPartyFunctionalTest extends AbstractFunctionalTest {
     private String reviewConfidentialityRequestJointPartyLetterId;
 
     */
+
+    @Value("${notification.english.listAssist.oral.hearingBooked.joint_party.emailId}")
+    private String hearingBookedJointPartyEmailId;
+    @Value("${notification.english.listAssist.oral.hearingBooked.joint_party.smsId}")
+    private String hearingBookedJointPartySmsId;
+    @Value("${notification.english.listAssist.oral.hearingReminder.joint_party.emailId}")
+    private String hearingReminderJointPartyEmailId;
+    @Value("${notification.english.listAssist.oral.hearingReminder.joint_party.smsId}")
+    private String hearingReminderJointPartySmsId;
 
     public JointPartyFunctionalTest() {
         super(30);

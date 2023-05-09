@@ -695,8 +695,8 @@ notification:
             docmosisId: TB-SCS-LET-ENG-Hearing-Postponed.docx
         hearingBooked:
           appellant:
-            # SSCS-11586 emailId: aa0930a3-e1bd-4b50-ac6b-34df73ec8378
-            # SSCS-11586 smsId: 8aa77a9c-9bc6-424d-8716-1c948681270e
+#            SSCS-11586 emailId: aa0930a3-e1bd-4b50-ac6b-34df73ec8378
+#            SSCS-11586 smsId: 8aa77a9c-9bc6-424d-8716-1c948681270e
             docmosisId: TB-SCS-LET-ENG-Hearing-Booked.docx
           representative:
             # SSCS-11586 emailId: a56e67cb-6b4b-41e3-8f4c-cd1cdb6809c1
@@ -707,14 +707,14 @@ notification:
             # SSCS-11586 smsId: 8aa77a9c-9bc6-424d-8716-1c948681270e
             docmosisId: TB-SCS-LET-ENG-Hearing-Booked.docx
           joint_party:
-            # SSCS-11586 emailId: aa0930a3-e1bd-4b50-ac6b-34df73ec8378
-            # SSCS-11586 smsId: 8aa77a9c-9bc6-424d-8716-1c948681270e
+            emailId: aa0930a3-e1bd-4b50-ac6b-34df73ec8378
+            smsId: 8aa77a9c-9bc6-424d-8716-1c948681270e
             docmosisId: TB-SCS-LET-ENG-Hearing-Booked.docx
           other_party:
             # SSCS-11586 emailId: a56e67cb-6b4b-41e3-8f4c-cd1cdb6809c1
             # SSCS-11586 smsId: e04c548d-1ba9-40b5-bf9b-ea5e7bbadbac
             docmosisId: TB-SCS-LET-ENG-Hearing-Booked.docx
-          # SSCS-11586 hearingReminder:
+        hearingReminder:
             # SSCS-11586 appellant:
             # SSCS-11586 emailId: 07bebee4-f07a-4a0d-9c50-65be30dc72a5
             # SSCS-11586 smsId: 18960596-1983-4da8-8b5c-dc1c851bb19b
@@ -724,9 +724,9 @@ notification:
             # SSCS-11586 representative:
             # SSCS-11586 emailId: 97c58e23-c11f-40b3-b981-2d4cfa38b8fd
             # SSCS-11586 smsId: bb3df0ea-8259-43c4-95de-9eef96206575
-            # SSCS-11586 joint_party:
-            # SSCS-11586 emailId: 07bebee4-f07a-4a0d-9c50-65be30dc72a5
-            # SSCS-11586 smsId: 18960596-1983-4da8-8b5c-dc1c851bb19b
+          joint_party:
+            emailId: 07bebee4-f07a-4a0d-9c50-65be30dc72a5
+            smsId: 18960596-1983-4da8-8b5c-dc1c851bb19b
             # SSCS-11586 other_party:
             # SSCS-11586 emailId: 97c58e23-c11f-40b3-b981-2d4cfa38b8fd
             # SSCS-11586 smsId: bb3df0ea-8259-43c4-95de-9eef96206575
