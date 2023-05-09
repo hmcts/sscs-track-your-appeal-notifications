@@ -11,7 +11,6 @@ import java.util.List;
 import java.util.Set;
 import junitparams.JUnitParamsRunner;
 import junitparams.Parameters;
-import org.junit.Ignore;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import uk.gov.hmcts.reform.sscs.domain.notify.NotificationEventType;
