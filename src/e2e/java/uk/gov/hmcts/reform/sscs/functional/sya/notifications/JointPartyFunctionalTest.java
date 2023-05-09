@@ -100,7 +100,6 @@ public class JointPartyFunctionalTest extends AbstractFunctionalTest {
 
         List<String> expectedIds = new ArrayList<>();
 
-
         if (jointPartyEmailId != null) {
             expectedIds.add(jointPartyEmailId);
         }
