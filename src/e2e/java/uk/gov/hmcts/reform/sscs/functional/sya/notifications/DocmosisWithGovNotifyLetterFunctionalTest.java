@@ -47,7 +47,6 @@ public class DocmosisWithGovNotifyLetterFunctionalTest extends AbstractFunctiona
 
     // TODO: SSCS-11436
     @Test
-    @Ignore
     @Parameters(method = "eventTypes")
     public void shouldSendDocmosisLetters(NotificationEventType notificationEventType)
         throws IOException, NotificationClientException {

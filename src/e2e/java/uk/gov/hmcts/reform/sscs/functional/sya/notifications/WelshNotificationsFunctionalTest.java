@@ -207,7 +207,6 @@ public class WelshNotificationsFunctionalTest extends AbstractFunctionalTest {
 
     // TODO: SSCS-11436
     @Test
-    @Ignore
     public void shouldSendHearingBookedNotificationWelsh() throws NotificationClientException, IOException {
         simulateCcdCallback(HEARING_BOOKED, "appointee/" + HEARING_BOOKED.getId() + "CallbackWelsh.json");
 
