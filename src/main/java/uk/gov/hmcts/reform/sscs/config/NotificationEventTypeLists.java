@@ -48,6 +48,7 @@ import static uk.gov.hmcts.reform.sscs.domain.notify.NotificationEventType.SYA_A
 import static uk.gov.hmcts.reform.sscs.domain.notify.NotificationEventType.TCW_DECISION_APPEAL_TO_PROCEED;
 import static uk.gov.hmcts.reform.sscs.domain.notify.NotificationEventType.UPDATE_OTHER_PARTY_DATA;
 import static uk.gov.hmcts.reform.sscs.domain.notify.NotificationEventType.VALID_APPEAL_CREATED;
+import static uk.gov.hmcts.reform.sscs.domain.notify.NotificationEventType.SOR_REQUEST;
 
 import java.util.EnumSet;
 import java.util.Set;

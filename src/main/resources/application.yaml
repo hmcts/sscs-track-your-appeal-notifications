@@ -153,6 +153,8 @@ job.scheduler:
 
 notification:
   english:
+    sORRequest:
+      docmosisId: TB-SCS-LET-ENG-Further-Evidence.docx
     jointPartyAdded:
       appellant:
         docmosisId: TB-SCS-GNO-ENG-00579.docx
@@ -731,6 +733,8 @@ notification:
             # SSCS-11586 emailId: 97c58e23-c11f-40b3-b981-2d4cfa38b8fd
             # SSCS-11586 smsId: bb3df0ea-8259-43c4-95de-9eef96206575
   welsh:
+    sORRequest:
+      docmosisId: TB-SCS-LET-WEL-Further-Evidence.docx
     jointPartyAdded:
       appellant:
         docmosisId: TB-SCS-GNO-WEL-00629.docx
