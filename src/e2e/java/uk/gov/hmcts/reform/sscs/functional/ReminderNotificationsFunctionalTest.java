@@ -1,5 +1,18 @@
 package uk.gov.hmcts.reform.sscs.functional;
 
+import static uk.gov.hmcts.reform.sscs.SscsCaseDataUtils.addHearing;
+import static uk.gov.hmcts.reform.sscs.domain.notify.NotificationEventType.*;
+
+import java.io.IOException;
+import java.time.LocalDate;
+import java.time.format.DateTimeFormatter;
+import java.util.List;
+import org.junit.Test;
+import org.springframework.beans.factory.annotation.Value;
+import uk.gov.hmcts.reform.sscs.config.AppConstants;
+import uk.gov.service.notify.Notification;
+import uk.gov.service.notify.NotificationClientException;
+
 public class ReminderNotificationsFunctionalTest extends AbstractFunctionalTest {
 
     public ReminderNotificationsFunctionalTest() {
@@ -41,7 +54,7 @@ public class ReminderNotificationsFunctionalTest extends AbstractFunctionalTest 
 
     @Value("${notification.english.paper.responseReceived.appellant.smsId}")
     private String responseReceivedPaperAppellantSmsTemplateId;
-
+*/
     @Value("${notification.english.listAssist.oral.hearingReminder.appellant.emailId}")
     private String hearingReminderAppellantEmailTemplateId;
 
@@ -79,7 +92,7 @@ public class ReminderNotificationsFunctionalTest extends AbstractFunctionalTest 
     private String hearingReminderWelshJointPartySmsTemplateId;
 
 
-
+    /*
     @Test
     public void shouldSendNotificationsWhenDwpResponseReceivedEventIsReceivedForOralWithAnAppellantSubscribed() throws IOException, NotificationClientException {
         triggerEventWithHearingType(DWP_RESPONSE_RECEIVED, "oral");
@@ -281,10 +294,10 @@ public class ReminderNotificationsFunctionalTest extends AbstractFunctionalTest 
                 "how long"
         );
     }
+    */
 
     // TODO: SSCS-11436
     @Test
-    @Ignore
     public void shouldSendNotificationsWhenHearingBookedEventIsReceivedWhenAnAppellantIsSubscribed() throws IOException, NotificationClientException {
 
         addHearing(caseData, 0);
@@ -329,7 +342,6 @@ public class ReminderNotificationsFunctionalTest extends AbstractFunctionalTest 
 
     // TODO: SSCS-11436
     @Test
-    @Ignore
     public void shouldSendNotificationsWhenHearingBookedEventIsReceivedWhenARepresentativeIsSubscribed() throws IOException, NotificationClientException {
         subscribeRepresentative();
         addHearing(caseData, 0);
@@ -374,7 +386,6 @@ public class ReminderNotificationsFunctionalTest extends AbstractFunctionalTest 
 
     // TODO: SSCS-11436
     @Test
-    @Ignore
     public void shouldSendNotificationsWhenHearingBookedEventIsReceivedWhenAnAppellantAndJointPartyIsSubscribed() throws IOException, NotificationClientException {
 
         addHearing(caseData, 0);
@@ -419,5 +430,4 @@ public class ReminderNotificationsFunctionalTest extends AbstractFunctionalTest 
         );
     }
 
-    */
 }
