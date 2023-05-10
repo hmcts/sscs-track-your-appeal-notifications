@@ -9,7 +9,7 @@ plugins {
     id 'uk.gov.hmcts.java' version '0.12.43'
     id 'org.owasp.dependencycheck' version '8.2.1'
     id 'com.github.ben-manes.versions' version '0.46.0'
-    id "org.flywaydb.flyway" version '9.16.3'
+    id "org.flywaydb.flyway" version '9.17.0'
     id "info.solidsoft.pitest" version '1.9.11'
 }
 
@@ -142,7 +142,7 @@ dependencyManagement {
     dependencies {
         // Solves CVE-2019-10086
         dependency group: 'commons-beanutils', name: 'commons-beanutils', version: '1.9.4'
-        dependency group: 'org.apache.logging.log4j', name: 'log4j-to-slf4j', version: '2.16.0'
+        dependency group: 'org.apache.logging.log4j', name: 'log4j-to-slf4j', version: '2.20.0'
         dependency group: 'org.apache.logging.log4j', name: 'log4j-api', version: '2.17.1'
 
         // resolves: CVE-2020-9489
@@ -157,7 +157,7 @@ dependencyManagement {
         }
 
         // CVE-2020-13954
-        dependencySet(group: 'org.apache.cxf', version: '4.0.0') {
+        dependencySet(group: 'org.apache.cxf', version: '4.0.1') {
             entry 'cxf-core'
             entry 'cxf-rt-frontend-jaxrs'
             entry 'cxf-rt-rs-client'
@@ -174,7 +174,7 @@ dependencyManagement {
         }
 
         // CVE-2019-16869 - brought in by qpid-jms-client
-        dependencySet(group: 'io.netty', version: '4.1.91.Final') {
+        dependencySet(group: 'io.netty', version: '4.1.92.Final') {
             entry 'netty-handler'
             entry 'netty-transport-native-epoll'
             entry 'netty-transport-native-kqueue'
@@ -196,7 +196,7 @@ dependencyManagement {
         }
 
         // resolves: CVE-2019-10101, CVE-2019-10102, CVE-2019-10103
-        dependencySet(group: 'org.jetbrains.kotlin', version: '1.8.20') {
+        dependencySet(group: 'org.jetbrains.kotlin', version: '1.8.21') {
             entry 'kotlin-stdlib'
             entry 'kotlin-stdlib-common'
         }
@@ -207,7 +207,7 @@ dependencyManagement {
         }
 
         //CVE-2021-27807
-        dependencySet(group: 'org.apache.pdfbox', version: '2.0.27') {
+        dependencySet(group: 'org.apache.pdfbox', version: '2.0.28') {
             entry 'pdfbox'
             entry 'pdfbox-tools'
             entry 'preflight'
@@ -239,7 +239,7 @@ dependencyManagement {
             entry 'commons-compress'
         }
 
-        dependencySet(group: 'org.apache.tomcat.embed', version: '9.0.73') {
+        dependencySet(group: 'org.apache.tomcat.embed', version: '10.1.8') {
             entry 'tomcat-embed-core'
             entry 'tomcat-embed-websocket'
         }
@@ -374,10 +374,10 @@ dependencies {
     implementation group: 'commons-io', name: 'commons-io', version: '2.11.0'
 
     implementation group: 'com.mchange', name: 'c3p0', version: '0.9.5.5'
-    implementation group: 'org.flywaydb', name: 'flyway-core', version: '9.16.3'
+    implementation group: 'org.flywaydb', name: 'flyway-core', version: '9.17.0'
     implementation group: 'org.postgresql', name: 'postgresql', version: '42.6.0'
     implementation group: 'net.bytebuddy', name: 'byte-buddy', version: '1.14.4'
-    implementation group: 'org.elasticsearch', name: 'elasticsearch', version: '7.17.9'
+    implementation group: 'org.elasticsearch', name: 'elasticsearch', version: '7.17.10'
 
     implementation group: 'org.springframework.boot', name: 'spring-boot-starter-actuator'
     implementation group: 'org.springframework.boot', name: 'spring-boot-starter-aop'
@@ -398,30 +398,30 @@ dependencies {
     implementation group: 'org.jadira.usertype', name: 'usertype.core', version: '7.0.0.CR1'
 
     implementation group: 'com.github.hmcts', name: 'properties-volume-spring-boot-starter', version: '0.1.1'
-    implementation group: 'com.github.hmcts', name: 'java-logging', version: '5.1.7'
+    implementation group: 'com.github.hmcts', name: 'java-logging', version: '5.1.9'
     implementation group: 'com.github.hmcts', name: 'service-auth-provider-java-client', version: '4.1.2'
-    implementation group: 'com.github.hmcts', name: 'ccd-client', version: '4.9.1'
+    implementation group: 'com.github.hmcts', name: 'ccd-client', version: '4.9.2'
 
     implementation group: 'com.github.hmcts', name: 'cmc-pdf-service-client', version: '7.0.1'
 
-    implementation group: 'com.github.hmcts', name: 'sscs-common', version: '4.25.22'
-    implementation group: 'com.github.hmcts', name: 'sscs-pdf-email-common', version: '1.8.2'
+    implementation group: 'com.github.hmcts', name: 'sscs-common', version: '4.25.25'
+    implementation group: 'com.github.hmcts', name: 'sscs-pdf-email-common', version: '1.8.4'
 
     implementation group: 'com.github.hmcts', name: 'sscs-job-scheduler', version: '1.5.7', {
         exclude group: "uk.gov.hmcts.reform", module:"properties-volume-spring-boot-starter"
     }
 
     implementation group: 'uk.gov.service.notify', name: 'notifications-java-client', version: '3.19.1-RELEASE'
-    implementation group: 'com.squareup.okhttp3', name: 'okhttp', version: '4.10.0'
+    implementation group: 'com.squareup.okhttp3', name: 'okhttp', version: '4.11.0'
     implementation group: 'commons-fileupload', name: 'commons-fileupload', version: '1.5'
     implementation group: 'io.github.openfeign.form', name: 'feign-form', version: '3.8.0'
 
-    implementation group: 'org.apache.pdfbox', name: 'pdfbox', version: '2.0.27'
+    implementation group: 'org.apache.pdfbox', name: 'pdfbox', version: '2.0.28'
 
     implementation group: 'com.microsoft.azure', name: 'applicationinsights-logging-logback', version: '2.6.4'
     implementation group: 'com.microsoft.azure', name: 'applicationinsights-spring-boot-starter', version: '2.6.4'
 
-    implementation group: 'org.pitest', name: 'pitest', version: '1.12.0'
+    implementation group: 'org.pitest', name: 'pitest', version: '1.13.1'
     implementation group:'info.solidsoft.gradle.pitest', name: 'gradle-pitest-plugin', version: '1.9.11'
     implementation group:'org.codehaus.sonar-plugins', name:'sonar-pitest-plugin', version: '0.5'
 
