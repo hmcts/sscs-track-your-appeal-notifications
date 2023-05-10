@@ -266,7 +266,7 @@
           }
         }
       },
-      "hearingRoute" : "PUBLIC"
+      "hearingRoute" : "listAssist"
     },
     "id": 12345656789,
     "jurisdiction": "SSCS",
@@ -655,7 +655,7 @@
           }
         }
       },
-      "hearingRoute" : "PUBLIC"
+      "hearingRoute" : "listAssist"
     },
     "id": 12345656789,
     "jurisdiction": "SSCS",
