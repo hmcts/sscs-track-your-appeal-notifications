@@ -126,6 +126,10 @@ public class JointPartyFunctionalTest extends AbstractFunctionalTest {
         assertNotificationBodyContains(notifications, jointPartyEmailId, jointPartyName);
         assertNotificationBodyContains(notifications, jointPartySmsId);
 
+        System.out.println("Hearing Type: " + hearingType);
+        System.out.println("Notification event Type: " + notificationEventType.getId());
+        System.out.println("Expected ids size: " + expectedIds.size());
+        System.out.println("Notifications size: " + notifications.size());
 
         if (expectedNumberOfLetters > 0) {
             List<Notification> notificationLetters = fetchLetters();
