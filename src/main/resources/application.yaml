@@ -1251,8 +1251,8 @@ notification:
             # SSCS-11586 smsId: 5e7444fe-860c-4623-b5c5-b23af1ddbb0b
             docmosisId: TB-SCS-LET-WEL-Hearing-Booked.docx
           appointee:
-            # SSCS-11586 emailId: aca83c9c-05c0-49d5-8ded-e581a0107408
-            # SSCS-11586 smsId: a51a7435-dffe-4455-9183-5c6f4f13bee3
+            emailId: aca83c9c-05c0-49d5-8ded-e581a0107408
+            smsId: a51a7435-dffe-4455-9183-5c6f4f13bee3
             docmosisId: TB-SCS-LET-WEL-Hearing-Booked.docx
           joint_party:
             # SSCS-11586 emailId: 1df83ea1-bdd5-4ce0-901d-769c3a8509cb
