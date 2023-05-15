@@ -396,7 +396,7 @@
           }
         }
       },
-      "hearingRoute" : "PUBLIC"
+      "hearingRoute" : "listAssist"
     },
     "state": "readyToList"
   },
@@ -807,7 +807,7 @@
           }
         }
       },
-      "hearingRoute" : "PUBLIC"
+      "hearingRoute" : "listAssist"
     },
     "state": "readyToList"
   },
