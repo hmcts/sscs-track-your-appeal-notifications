@@ -25,7 +25,7 @@ public class OtherPartyFunctionalTest extends AbstractFunctionalTest {
     private String hearingAdjournedOtherPartyEmailTemplateId;
     @Value("${notification.english.hearingAdjourned.other_party.smsId}")
     private String hearingAdjournedOtherPartySmsTemplateId;
-    @Value("${notification.english.hearingPostponed.other_party.emailId}")
+    @Value("${notification.english.listAssist.oral.hearingPostponed.other_party.emailId}")
     private String hearingPostponedOtherPartyEmailTemplateId;
     @Value("${notification.english.appealLapsed.other_party.emailId}")
     private String appealLapsedOtherPartyEmailTemplateId;
@@ -83,6 +83,7 @@ public class OtherPartyFunctionalTest extends AbstractFunctionalTest {
                 "otherparty/oral-eventTypeCallback.json");
 
         List<Notification> notifications = fetchLetters();
+
         assertEquals(expectedNumberOfLetters, notifications.size());
         notifications.forEach(n -> assertEquals("Pre-compiled PDF", n.getSubject().orElse("Unknown Subject")));
         if (fieldNames != null && !fieldNames[0].equals("")) {
