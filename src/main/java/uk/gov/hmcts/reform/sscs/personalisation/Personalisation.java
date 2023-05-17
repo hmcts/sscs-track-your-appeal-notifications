@@ -20,6 +20,7 @@ import static uk.gov.hmcts.reform.sscs.config.AppConstants.DAYS_STRING;
 import static uk.gov.hmcts.reform.sscs.config.AppConstants.DWP_ACRONYM;
 import static uk.gov.hmcts.reform.sscs.config.AppConstants.DWP_ACRONYM_WELSH;
 import static uk.gov.hmcts.reform.sscs.config.AppConstants.DWP_FIRST_TIER_AGENCY_GROUP;
+import static uk.gov.hmcts.reform.sscs.config.AppConstants.DWP_FIRST_TIER_AGENCY_GROUP_TITLE;
 import static uk.gov.hmcts.reform.sscs.config.AppConstants.DWP_FIRST_TIER_AGENCY_GROUP_WELSH;
 import static uk.gov.hmcts.reform.sscs.config.AppConstants.DWP_FULL_NAME;
 import static uk.gov.hmcts.reform.sscs.config.AppConstants.DWP_FULL_NAME_WELSH;
@@ -334,6 +335,7 @@ public class Personalisation<E extends NotificationWrapper> {
         personalisation.put(FIRST_TIER_AGENCY_FULL_NAME, isHmrcBenefit(benefit, ccdResponse.getFormType()) ? HMRC_FULL_NAME : DWP_FULL_NAME);
         personalisation.put(FIRST_TIER_AGENCY_FULL_NAME_WELSH, isHmrcBenefit(benefit, ccdResponse.getFormType()) ? HMRC_FULL_NAME_WELSH : DWP_FULL_NAME_WELSH);
         personalisation.put(FIRST_TIER_AGENCY_GROUP, isHmrcBenefit(benefit, ccdResponse.getFormType()) ? HMRC_ACRONYM : DWP_FIRST_TIER_AGENCY_GROUP);
+        personalisation.put(FIRST_TIER_AGENCY_GROUP_TITLE, isHmrcBenefit(benefit, ccdResponse.getFormType()) ? HMRC_ACRONYM : DWP_FIRST_TIER_AGENCY_GROUP_TITLE);
         personalisation.put(FIRST_TIER_AGENCY_GROUP_WELSH, isHmrcBenefit(benefit, ccdResponse.getFormType()) ? HMRC_ACRONYM : DWP_FIRST_TIER_AGENCY_GROUP_WELSH);
         personalisation.put(WITH_OPTIONAL_THE, isHmrcBenefit(benefit, ccdResponse.getFormType()) ? "" : THE_STRING);
         personalisation.put(WITH_OPTIONAL_THE_WELSH, isHmrcBenefit(benefit, ccdResponse.getFormType()) ? "" : THE_STRING_WELSH);
