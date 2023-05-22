@@ -16,5 +16,5 @@ spring:
         evidence-share-topic-shared-access-key: AMQP_PASSWORD
         docmosis-api-key: PDF_SERVICE_ACCESS_KEY
         notification-key: NOTIFICATION_API_KEY
-        notification-test-key: NOTIFICATION_API_TEST_KEY
+        notification-test2-key: NOTIFICATION_API_TEST_KEY
         AppInsightsInstrumentationKey: azure.application-insights.instrumentation-key
