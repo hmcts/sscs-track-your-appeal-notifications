@@ -204,22 +204,42 @@ public class CcdNotificationWrapper implements NotificationWrapper {
         return otherPartySubscription;
     }
 
-    private boolean canSendBasedOnConfidentiality(NotificationEventType notificationType, String partyMember) {
+    private boolean canSendBasedOnConfidentiality(SscsCaseData caseData, NotificationEventType notificationType, String partyMember) {
         if (!(DIRECTION_ISSUED.equals(notificationType)
             || DIRECTION_ISSUED_WELSH.equals(notificationType))) {
             return true;
         }
 
-        String confidentialityType = responseWrapper.getNewSscsCaseData().getConfidentialityType();
-        List<String> confidentialityPartyMembers = responseWrapper.getNewSscsCaseData().getConfidentialityPartyMembers();
-
+        String confidentialityType = caseData.getConfidentialityType();
         if (isNull(confidentialityType)
-                || isNull(confidentialityPartyMembers)
-                || ConfidentialityType.GENERAL.getCode().equalsIgnoreCase(confidentialityType)) {
+            || ConfidentialityType.GENERAL.getCode().equalsIgnoreCase(confidentialityType)) {
             return true;
         }
 
-        return confidentialityPartyMembers.contains(partyMember);
+        List<String> eligiblePartyMembers =  new ArrayList<>();
+
+        if (YesNo.isYes(caseData.getSendDirectionNoticeToAppellantOrAppointee())) {
+            eligiblePartyMembers.add(ConfidentialityPartyMembers.APPELLANT_OR_APPOINTEE.getCode());
+        }
+        if (YesNo.isYes(caseData.getSendDirectionNoticeToJointParty()) && YesNo.isYes(caseData.getHasJointParty())) {
+            eligiblePartyMembers.add(ConfidentialityPartyMembers.JOINT_PARTY.getCode());
+        }
+        if (YesNo.isYes(caseData.getSendDirectionNoticeToOtherParty()) && YesNo.isYes(caseData.getHasOtherParties())) {
+            eligiblePartyMembers.add(ConfidentialityPartyMembers.OTHER_PARTY.getCode());
+        }
+        if (YesNo.isYes(caseData.getSendDirectionNoticeToOtherPartyAppointee()) && YesNo.isYes(caseData.getHasOtherPartyAppointee())) {
+            eligiblePartyMembers.add(ConfidentialityPartyMembers.OTHER_PARTY_APPOINTEE.getCode());
+        }
+        if (YesNo.isYes(caseData.getSendDirectionNoticeToOtherPartyRep()) && YesNo.isYes(caseData.getHasOtherPartyRep())) {
+            eligiblePartyMembers.add(ConfidentialityPartyMembers.OTHER_PARTY_REP.getCode());
+        }
+        if (YesNo.isYes(caseData.getSendDirectionNoticeToRepresentative()) && YesNo.isYes(caseData.getHasRepresentative())) {
+            eligiblePartyMembers.add(ConfidentialityPartyMembers.REPRESENTATIVE.getCode());
+        }
+        if (YesNo.isYes(caseData.getSendDirectionNoticeToFTA())) {
+            eligiblePartyMembers.add(ConfidentialityPartyMembers.FTA.getCode());
+        }
+        return eligiblePartyMembers.contains(partyMember);
     }
 
     private boolean isNotificationEventValidToSendToAppointee(SscsCaseData oldSscsCaseData, NotificationEventType notificationType) {
@@ -228,7 +248,7 @@ public class CcdNotificationWrapper implements NotificationWrapper {
             || EVENTS_VALID_FOR_APPOINTEE.contains(notificationType)
             || isValidProcessHearingRequestEventForParty(oldSscsCaseData, notificationType, PartyItemList.APPELLANT)
             || isValidRequestInfoIncompleteEventForParty(notificationType, PartyItemList.APPELLANT));
-        return isValid && canSendBasedOnConfidentiality(notificationType, ConfidentialityPartyMembers.APPELLANT_OR_APPOINTEE.getCode());
+        return isValid && canSendBasedOnConfidentiality(oldSscsCaseData, notificationType, ConfidentialityPartyMembers.APPELLANT_OR_APPOINTEE.getCode());
     }
 
     private boolean isNotificationEventValidToSendToAppellant(SscsCaseData oldSscsCaseData, NotificationEventType notificationType) {
@@ -237,7 +257,7 @@ public class CcdNotificationWrapper implements NotificationWrapper {
             || isValidProcessHearingRequestEventForParty(oldSscsCaseData, notificationType, PartyItemList.APPELLANT)
             || isValidRequestInfoIncompleteEventForParty(notificationType, PartyItemList.APPELLANT)
             || !EVENTS_MAYBE_INVALID_FOR_APPELLANT.contains(notificationType);
-        return isValid && canSendBasedOnConfidentiality(notificationType, ConfidentialityPartyMembers.APPELLANT_OR_APPOINTEE.getCode());
+        return isValid && canSendBasedOnConfidentiality(oldSscsCaseData, notificationType, ConfidentialityPartyMembers.APPELLANT_OR_APPOINTEE.getCode());
     }
 
     private boolean isValidProcessHearingRequestEventForParty(SscsCaseData oldSscsCaseData, NotificationEventType notificationType, PartyItemList partyItemList) {
@@ -267,7 +287,7 @@ public class CcdNotificationWrapper implements NotificationWrapper {
             || EVENTS_VALID_FOR_REP.contains(notificationType)
             || isValidProcessHearingRequestEventForParty(oldSscsCaseData, notificationType, PartyItemList.REPRESENTATIVE)
             || isValidRequestInfoIncompleteEventForParty(notificationType, PartyItemList.REPRESENTATIVE));
-        return isValid && canSendBasedOnConfidentiality(notificationType, ConfidentialityPartyMembers.REPRESENTATIVE.getCode());
+        return isValid && canSendBasedOnConfidentiality(oldSscsCaseData, notificationType, ConfidentialityPartyMembers.REPRESENTATIVE.getCode());
     }
 
     private boolean isNotificationEventValidToSendToJointParty(SscsCaseData oldSscsCaseData, NotificationEventType notificationType) {
@@ -277,7 +297,7 @@ public class CcdNotificationWrapper implements NotificationWrapper {
             || isValidRequestInfoIncompleteEventForParty(notificationType, PartyItemList.JOINT_PARTY)
             || isValidProcessHearingRequestEventForParty(oldSscsCaseData, notificationType, PartyItemList.JOINT_PARTY)
             || (oldSscsCaseData != null && isValidReviewConfidentialityRequest(notificationType, oldSscsCaseData.getConfidentialityRequestOutcomeJointParty(), getNewSscsCaseData().getConfidentialityRequestOutcomeJointParty())));
-        return isValid && canSendBasedOnConfidentiality(notificationType, ConfidentialityPartyMembers.JOINT_PARTY.getCode());
+        return isValid && canSendBasedOnConfidentiality(oldSscsCaseData, notificationType, ConfidentialityPartyMembers.JOINT_PARTY.getCode());
     }
 
     private boolean isNotificationEventValidToSendToOtherPartySubscription(NotificationEventType notificationType, Subscription subscription, boolean isSendNewOtherPartyNotification, String partyMember) {
@@ -285,7 +305,7 @@ public class CcdNotificationWrapper implements NotificationWrapper {
             && (EVENTS_VALID_FOR_ALL_ENTITIES.contains(notificationType)
             || EVENTS_VALID_FOR_OTHER_PARTY.contains(notificationType)
             || (UPDATE_OTHER_PARTY_DATA.equals(notificationType) && isSendNewOtherPartyNotification));
-        return isValid && canSendBasedOnConfidentiality(notificationType, partyMember);
+        return isValid && canSendBasedOnConfidentiality(getOldSscsCaseData(), notificationType, partyMember);
     }
 
 
