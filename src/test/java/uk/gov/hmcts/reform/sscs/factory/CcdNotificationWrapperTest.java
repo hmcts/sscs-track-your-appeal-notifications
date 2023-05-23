@@ -348,31 +348,75 @@ public class CcdNotificationWrapperTest {
         Assert.assertEquals(SubscriptionType.JOINT_PARTY, subsWithTypeList.get(1).getSubscriptionType());
     }
 
-//    @Test
-//    @Parameters(method = "getDirectionIssuedSubscriptionBasedOnConfidentialityForAppellantAndRepresentative")
-//    public void givenSubscriptions_shouldGetAppellantAndRepSubscriptionTypeWhenConfidentialIsSelected(NotificationEventType notificationEventType, String confidentialityType, List<String> chosenMembers, List<SubscriptionType> requiredMembers) {
-//        ccdNotificationWrapper = buildCcdNotificationWrapperBasedOnEventTypeWithRep(notificationEventType);
-//        SscsCaseData newSscsCaseData = ccdNotificationWrapper.getNewSscsCaseData();
-//        newSscsCaseData.setConfidentialityType(confidentialityType);
-//        newSscsCaseData.setConfidentialityPartyMembers(chosenMembers);
-//
-//        List<SubscriptionWithType> subsWithTypeList = ccdNotificationWrapper.getSubscriptionsBasedOnNotificationType();
-//        Assert.assertEquals(requiredMembers.size(), subsWithTypeList.size());
-//        subsWithTypeList.forEach(o -> Assert.assertTrue(requiredMembers.contains(o.getSubscriptionType())));
-//    }
-//
-//    @Test
-//    @Parameters(method = "getDirectionIssuedSubscriptionBasedOnConfidentialityForAppointeeAndAndJointParty")
-//    public void givenSubscriptions_shouldGetAppointeeAndJointPartyTypeWhenConfidentialIsSelected(NotificationEventType notificationEventType, String confidentialityType, List<String> chosenMembers, List<SubscriptionType> requiredMembers, String hearingType) {
-//        ccdNotificationWrapper = buildCcdNotificationWrapperBasedOnEventTypeWithAppointeeAndJointParty(notificationEventType, hearingType);
-//        SscsCaseData newSscsCaseData = ccdNotificationWrapper.getNewSscsCaseData();
-//        newSscsCaseData.setConfidentialityType(confidentialityType);
-//        newSscsCaseData.setConfidentialityPartyMembers(chosenMembers);
-//
-//        List<SubscriptionWithType> subsWithTypeList = ccdNotificationWrapper.getSubscriptionsBasedOnNotificationType();
-//        Assert.assertEquals(requiredMembers.size(), subsWithTypeList.size());
-//        subsWithTypeList.forEach(o -> Assert.assertTrue(requiredMembers.contains(o.getSubscriptionType())));
-//    }
+    @Test
+    @Parameters(method = "getDirectionIssuedSubscriptionBasedOnConfidentialityForAppellantAndRepresentative")
+    public void givenSubscriptions_shouldGetAppellantAndRepSubscriptionTypeWhenConfidentialIsSelected(NotificationEventType notificationEventType, String confidentialityType, List<String> chosenMembers, List<SubscriptionType> requiredMembers) {
+        ccdNotificationWrapper = buildCcdNotificationWrapperBasedOnEventTypeWithRep(notificationEventType);
+        SscsCaseData sscsCaseData = ccdNotificationWrapper.getNewSscsCaseData();
+        sscsCaseData.setConfidentialityType(confidentialityType);
+
+        sscsCaseData.setSendDirectionNoticeToAppellantOrAppointee(chosenMembers.contains(ConfidentialityPartyMembers.APPELLANT_OR_APPOINTEE.getCode()) ? YesNo.YES : YesNo.NO);
+        sscsCaseData.setSendDirectionNoticeToFTA(chosenMembers.contains(ConfidentialityPartyMembers.FTA.getCode()) ? YesNo.YES : YesNo.NO);
+
+        YesNo hasRepresentative = chosenMembers.contains(ConfidentialityPartyMembers.REPRESENTATIVE.getCode()) ? YesNo.YES : YesNo.NO;
+        sscsCaseData.setSendDirectionNoticeToRepresentative(hasRepresentative);
+        sscsCaseData.setHasRepresentative(hasRepresentative);
+
+        YesNo hasOtherPartyRep = chosenMembers.contains(ConfidentialityPartyMembers.OTHER_PARTY_REP.getCode()) ? YesNo.YES : YesNo.NO;
+        sscsCaseData.setSendDirectionNoticeToOtherPartyRep(hasOtherPartyRep);
+        sscsCaseData.setHasOtherPartyRep(hasOtherPartyRep);
+
+        YesNo hasOtherPartyAppointee = chosenMembers.contains(ConfidentialityPartyMembers.OTHER_PARTY_APPOINTEE.getCode()) ? YesNo.YES : YesNo.NO;
+        sscsCaseData.setSendDirectionNoticeToOtherPartyAppointee(hasOtherPartyAppointee);
+        sscsCaseData.setHasOtherPartyAppointee(hasOtherPartyAppointee);
+
+        YesNo hasOtherParties = chosenMembers.contains(ConfidentialityPartyMembers.OTHER_PARTY.getCode()) ? YesNo.YES : YesNo.NO;
+        sscsCaseData.setSendDirectionNoticeToOtherParty(hasOtherParties);
+        sscsCaseData.setHasOtherParties(hasOtherParties);
+
+        YesNo hasJointParty = chosenMembers.contains(ConfidentialityPartyMembers.JOINT_PARTY.getCode()) ? YesNo.YES : YesNo.NO;
+        sscsCaseData.setSendDirectionNoticeToJointParty(hasJointParty);
+        sscsCaseData.setHasJointParty(hasJointParty);
+
+        List<SubscriptionWithType> subsWithTypeList = ccdNotificationWrapper.getSubscriptionsBasedOnNotificationType();
+        Assert.assertEquals(requiredMembers.size(), subsWithTypeList.size());
+        subsWithTypeList.forEach(o -> Assert.assertTrue(requiredMembers.contains(o.getSubscriptionType())));
+    }
+
+    @Test
+    @Parameters(method = "getDirectionIssuedSubscriptionBasedOnConfidentialityForAppointeeAndAndJointParty")
+    public void givenSubscriptions_shouldGetAppointeeAndJointPartyTypeWhenConfidentialIsSelected(NotificationEventType notificationEventType, String confidentialityType, List<String> chosenMembers, List<SubscriptionType> requiredMembers, String hearingType) {
+        ccdNotificationWrapper = buildCcdNotificationWrapperBasedOnEventTypeWithAppointeeAndJointParty(notificationEventType, hearingType);
+        SscsCaseData sscsCaseData = ccdNotificationWrapper.getNewSscsCaseData();
+        sscsCaseData.setConfidentialityType(confidentialityType);
+
+        sscsCaseData.setSendDirectionNoticeToAppellantOrAppointee(chosenMembers.contains(ConfidentialityPartyMembers.APPELLANT_OR_APPOINTEE.getCode()) ? YesNo.YES : YesNo.NO);
+        sscsCaseData.setSendDirectionNoticeToFTA(chosenMembers.contains(ConfidentialityPartyMembers.FTA.getCode()) ? YesNo.YES : YesNo.NO);
+
+        YesNo hasRepresentative = chosenMembers.contains(ConfidentialityPartyMembers.REPRESENTATIVE.getCode()) ? YesNo.YES : YesNo.NO;
+        sscsCaseData.setSendDirectionNoticeToRepresentative(hasRepresentative);
+        sscsCaseData.setHasRepresentative(hasRepresentative);
+
+        YesNo hasOtherPartyRep = chosenMembers.contains(ConfidentialityPartyMembers.OTHER_PARTY_REP.getCode()) ? YesNo.YES : YesNo.NO;
+        sscsCaseData.setSendDirectionNoticeToOtherPartyRep(hasOtherPartyRep);
+        sscsCaseData.setHasOtherPartyRep(hasOtherPartyRep);
+
+        YesNo hasOtherPartyAppointee = chosenMembers.contains(ConfidentialityPartyMembers.OTHER_PARTY_APPOINTEE.getCode()) ? YesNo.YES : YesNo.NO;
+        sscsCaseData.setSendDirectionNoticeToOtherPartyAppointee(hasOtherPartyAppointee);
+        sscsCaseData.setHasOtherPartyAppointee(hasOtherPartyAppointee);
+
+        YesNo hasOtherParties = chosenMembers.contains(ConfidentialityPartyMembers.OTHER_PARTY.getCode()) ? YesNo.YES : YesNo.NO;
+        sscsCaseData.setSendDirectionNoticeToOtherParty(hasOtherParties);
+        sscsCaseData.setHasOtherParties(hasOtherParties);
+
+        YesNo hasJointParty = chosenMembers.contains(ConfidentialityPartyMembers.JOINT_PARTY.getCode()) ? YesNo.YES : YesNo.NO;
+        sscsCaseData.setSendDirectionNoticeToJointParty(hasJointParty);
+        sscsCaseData.setHasJointParty(hasJointParty);
+
+        List<SubscriptionWithType> subsWithTypeList = ccdNotificationWrapper.getSubscriptionsBasedOnNotificationType();
+        Assert.assertEquals(requiredMembers.size(), subsWithTypeList.size());
+        subsWithTypeList.forEach(o -> Assert.assertTrue(requiredMembers.contains(o.getSubscriptionType())));
+    }
 
     @Test
     public void givenSubscriptionForAppellantRepAndJointParty_shouldGetSubscriptionTypeListForAppellantAndJointPartyOnlyWhenBothGranted() {
@@ -605,11 +649,11 @@ public class CcdNotificationWrapperTest {
     @SuppressWarnings({"Indentation", "unused"})
     private Object[] getDirectionIssuedSubscriptionBasedOnConfidentialityForAppellantAndRepresentative() {
         return new Object[]{
-                new Object[]{DIRECTION_ISSUED, ConfidentialityType.GENERAL.getCode(), null, List.of(SubscriptionType.APPELLANT, SubscriptionType.REPRESENTATIVE)},
+                new Object[]{DIRECTION_ISSUED, ConfidentialityType.GENERAL.getCode(), List.of(), List.of(SubscriptionType.APPELLANT, SubscriptionType.REPRESENTATIVE)},
                 new Object[]{DIRECTION_ISSUED, ConfidentialityType.CONFIDENTIAL.getCode(), List.of(ConfidentialityPartyMembers.APPELLANT_OR_APPOINTEE.getCode()), List.of(SubscriptionType.APPELLANT)},
                 new Object[]{DIRECTION_ISSUED, ConfidentialityType.CONFIDENTIAL.getCode(), List.of(ConfidentialityPartyMembers.REPRESENTATIVE.getCode()), List.of(SubscriptionType.REPRESENTATIVE)},
                 new Object[]{DIRECTION_ISSUED, ConfidentialityType.CONFIDENTIAL.getCode(), List.of(ConfidentialityPartyMembers.APPELLANT_OR_APPOINTEE.getCode(), ConfidentialityPartyMembers.REPRESENTATIVE.getCode()), List.of(SubscriptionType.APPELLANT, SubscriptionType.REPRESENTATIVE)},
-                new Object[]{DIRECTION_ISSUED_WELSH, ConfidentialityType.GENERAL.getCode(), null, List.of(SubscriptionType.APPELLANT, SubscriptionType.REPRESENTATIVE)},
+                new Object[]{DIRECTION_ISSUED_WELSH, ConfidentialityType.GENERAL.getCode(), List.of(), List.of(SubscriptionType.APPELLANT, SubscriptionType.REPRESENTATIVE)},
                 new Object[]{DIRECTION_ISSUED_WELSH, ConfidentialityType.CONFIDENTIAL.getCode(), List.of(ConfidentialityPartyMembers.APPELLANT_OR_APPOINTEE.getCode()), List.of(SubscriptionType.APPELLANT)},
                 new Object[]{DIRECTION_ISSUED_WELSH, ConfidentialityType.CONFIDENTIAL.getCode(), List.of(ConfidentialityPartyMembers.REPRESENTATIVE.getCode()), List.of(SubscriptionType.REPRESENTATIVE)},
                 new Object[]{DIRECTION_ISSUED_WELSH, ConfidentialityType.CONFIDENTIAL.getCode(), List.of(ConfidentialityPartyMembers.APPELLANT_OR_APPOINTEE.getCode(), ConfidentialityPartyMembers.REPRESENTATIVE.getCode()), List.of(SubscriptionType.APPELLANT, SubscriptionType.REPRESENTATIVE)},
@@ -619,16 +663,16 @@ public class CcdNotificationWrapperTest {
     @SuppressWarnings({"Indentation", "unused"})
     private Object[] getDirectionIssuedSubscriptionBasedOnConfidentialityForAppointeeAndAndJointParty() {
         return new Object[]{
-                new Object[]{DIRECTION_ISSUED, ConfidentialityType.GENERAL.getCode(), null, List.of(SubscriptionType.APPOINTEE, SubscriptionType.JOINT_PARTY), PAPER},
-                new Object[]{DIRECTION_ISSUED, ConfidentialityType.GENERAL.getCode(), null, List.of(SubscriptionType.APPOINTEE, SubscriptionType.JOINT_PARTY), ORAL},
+                new Object[]{DIRECTION_ISSUED, ConfidentialityType.GENERAL.getCode(), List.of(), List.of(SubscriptionType.APPOINTEE, SubscriptionType.JOINT_PARTY), PAPER},
+                new Object[]{DIRECTION_ISSUED, ConfidentialityType.GENERAL.getCode(), List.of(), List.of(SubscriptionType.APPOINTEE, SubscriptionType.JOINT_PARTY), ORAL},
                 new Object[]{DIRECTION_ISSUED, ConfidentialityType.CONFIDENTIAL.getCode(), List.of(ConfidentialityPartyMembers.APPELLANT_OR_APPOINTEE.getCode()), List.of(SubscriptionType.APPOINTEE), PAPER},
                 new Object[]{DIRECTION_ISSUED, ConfidentialityType.CONFIDENTIAL.getCode(), List.of(ConfidentialityPartyMembers.APPELLANT_OR_APPOINTEE.getCode()), List.of(SubscriptionType.APPOINTEE), ORAL},
                 new Object[]{DIRECTION_ISSUED, ConfidentialityType.CONFIDENTIAL.getCode(), List.of(ConfidentialityPartyMembers.JOINT_PARTY.getCode()), List.of(SubscriptionType.JOINT_PARTY), PAPER},
                 new Object[]{DIRECTION_ISSUED, ConfidentialityType.CONFIDENTIAL.getCode(), List.of(ConfidentialityPartyMembers.JOINT_PARTY.getCode()), List.of(SubscriptionType.JOINT_PARTY), ORAL},
                 new Object[]{DIRECTION_ISSUED, ConfidentialityType.CONFIDENTIAL.getCode(), List.of(ConfidentialityPartyMembers.APPELLANT_OR_APPOINTEE.getCode(), ConfidentialityPartyMembers.JOINT_PARTY.getCode()), List.of(SubscriptionType.APPOINTEE, SubscriptionType.JOINT_PARTY), PAPER},
                 new Object[]{DIRECTION_ISSUED, ConfidentialityType.CONFIDENTIAL.getCode(), List.of(ConfidentialityPartyMembers.APPELLANT_OR_APPOINTEE.getCode(), ConfidentialityPartyMembers.JOINT_PARTY.getCode()), List.of(SubscriptionType.APPOINTEE, SubscriptionType.JOINT_PARTY), ORAL},
-                new Object[]{DIRECTION_ISSUED_WELSH, ConfidentialityType.GENERAL.getCode(), null, List.of(SubscriptionType.APPOINTEE, SubscriptionType.JOINT_PARTY), PAPER},
-                new Object[]{DIRECTION_ISSUED_WELSH, ConfidentialityType.GENERAL.getCode(), null, List.of(SubscriptionType.APPOINTEE, SubscriptionType.JOINT_PARTY), ORAL},
+                new Object[]{DIRECTION_ISSUED_WELSH, ConfidentialityType.GENERAL.getCode(), List.of(), List.of(SubscriptionType.APPOINTEE, SubscriptionType.JOINT_PARTY), PAPER},
+                new Object[]{DIRECTION_ISSUED_WELSH, ConfidentialityType.GENERAL.getCode(), List.of(), List.of(SubscriptionType.APPOINTEE, SubscriptionType.JOINT_PARTY), ORAL},
                 new Object[]{DIRECTION_ISSUED_WELSH, ConfidentialityType.CONFIDENTIAL.getCode(), List.of(ConfidentialityPartyMembers.APPELLANT_OR_APPOINTEE.getCode()), List.of(SubscriptionType.APPOINTEE), PAPER},
                 new Object[]{DIRECTION_ISSUED_WELSH, ConfidentialityType.CONFIDENTIAL.getCode(), List.of(ConfidentialityPartyMembers.APPELLANT_OR_APPOINTEE.getCode()), List.of(SubscriptionType.APPOINTEE), ORAL},
                 new Object[]{DIRECTION_ISSUED_WELSH, ConfidentialityType.CONFIDENTIAL.getCode(), List.of(ConfidentialityPartyMembers.JOINT_PARTY.getCode()), List.of(SubscriptionType.JOINT_PARTY), PAPER},
