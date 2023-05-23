@@ -17,6 +17,7 @@ java:
         - evidence-share-topic-shared-access-key
         - docmosis-api-key
         - notification-key
+        - notification-test-key
         - notification-test2-key
   environment:
     COH_URL: "http://coh-cor-aat.service.core-compute-aat.internal"
