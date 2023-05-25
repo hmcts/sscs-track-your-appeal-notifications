@@ -108,7 +108,8 @@
           "wantSmsNotifications": "No",
           "tya": ""
         }
-      }
+      },
+      "hearingRoute" : "listAssist"
     },
     "case_type_id": "Benefit",
     "created_date": [
@@ -450,7 +451,8 @@
           "wantSmsNotifications": "No",
           "tya": ""
         }
-      }
+      },
+      "hearingRoute" : "listAssist"
     },
     "case_type_id": "Benefit",
     "created_date": [

@@ -29,7 +29,7 @@ public class WelshNotificationsFunctionalTest extends AbstractFunctionalTest {
     @Value("${notification.welsh.oral.appealDormant.joint_party.emailId}")
     private String appealDormantOralJointPartyEmailTemplateIdWelsh;
 
-    @Value("${notification.welsh.hearingPostponed.joint_party.emailId}")
+    @Value("${notification.welsh.listAssist.oral.hearingPostponed.joint_party.emailId}")
     private String hearingPostponedEmailTemplateIdJointPartyWelsh;
 
     @Value("${notification.welsh.paper.appealDormant.appellant.emailId}")
@@ -44,7 +44,7 @@ public class WelshNotificationsFunctionalTest extends AbstractFunctionalTest {
     @Value("${notification.welsh.paper.appealDormant.joint_party.smsId}")
     private String appealDormantPaperJointPartySmsTemplateIdWelsh;
 
-    @Value("${notification.welsh.hearingPostponed.appellant.emailId}")
+    @Value("${notification.welsh.listAssist.oral.hearingPostponed.appellant.emailId}")
     private String hearingPostponedEmailTemplateIdWelsh;
 
     @Value("${notification.welsh.hearingAdjourned.appellant.emailId}")
