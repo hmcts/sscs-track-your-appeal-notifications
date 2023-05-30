@@ -9,6 +9,7 @@ public final class AppConstants {
     public static final String DWP_ACRONYM = "DWP";
     public static final String DWP_ACRONYM_WELSH = "AGP";
     public static final String DWP_FIRST_TIER_AGENCY_GROUP = "the Child Maintenance Group";
+    public static final String DWP_FIRST_TIER_AGENCY_GROUP_TITLE = "Child Maintenance Group";
     public static final String DWP_FIRST_TIER_AGENCY_GROUP_WELSH = "Grŵp Cynhaliaeth Plant";
     public static final String DWP_FULL_NAME = "Department for Work and Pensions";
     public static final String DWP_FULL_NAME_WELSH = "Adran Gwaith a Phensiynau";
