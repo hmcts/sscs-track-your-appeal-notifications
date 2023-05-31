@@ -239,7 +239,7 @@ dependencyManagement {
             entry 'commons-compress'
         }
 
-        dependencySet(group: 'org.apache.tomcat.embed', version: '9.0.73') {
+        dependencySet(group: 'org.apache.tomcat.embed', version: '9.0.75') {
             entry 'tomcat-embed-core'
             entry 'tomcat-embed-websocket'
         }
@@ -404,7 +404,7 @@ dependencies {
 
     implementation group: 'com.github.hmcts', name: 'cmc-pdf-service-client', version: '7.0.1'
 
-    implementation group: 'com.github.hmcts', name: 'sscs-common', version: '319ec4c'
+    implementation group: 'com.github.hmcts', name: 'sscs-common', version: 'SSCS-11213-SNAPSHOT'
     implementation group: 'com.github.hmcts', name: 'sscs-pdf-email-common', version: '1.8.2'
 
     implementation group: 'com.github.hmcts', name: 'sscs-job-scheduler', version: '1.5.7', {

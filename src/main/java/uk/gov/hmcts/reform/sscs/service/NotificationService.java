@@ -13,6 +13,7 @@ import static uk.gov.hmcts.reform.sscs.config.SubscriptionType.APPELLANT;
 import static uk.gov.hmcts.reform.sscs.config.SubscriptionType.APPOINTEE;
 import static uk.gov.hmcts.reform.sscs.config.SubscriptionType.OTHER_PARTY;
 import static uk.gov.hmcts.reform.sscs.config.SubscriptionType.REPRESENTATIVE;
+import static uk.gov.hmcts.reform.sscs.domain.notify.NotificationEventType.ACTION_POSTPONEMENT_REQUEST;
 import static uk.gov.hmcts.reform.sscs.domain.notify.NotificationEventType.DECISION_ISSUED;
 import static uk.gov.hmcts.reform.sscs.domain.notify.NotificationEventType.DECISION_ISSUED_WELSH;
 import static uk.gov.hmcts.reform.sscs.domain.notify.NotificationEventType.DIRECTION_ISSUED;
@@ -46,13 +47,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
-import uk.gov.hmcts.reform.sscs.ccd.domain.Benefit;
-import uk.gov.hmcts.reform.sscs.ccd.domain.EventType;
-import uk.gov.hmcts.reform.sscs.ccd.domain.OtherPartyOption;
-import uk.gov.hmcts.reform.sscs.ccd.domain.SscsCaseData;
-import uk.gov.hmcts.reform.sscs.ccd.domain.State;
-import uk.gov.hmcts.reform.sscs.ccd.domain.Subscription;
-import uk.gov.hmcts.reform.sscs.ccd.domain.YesNo;
+import uk.gov.hmcts.reform.sscs.ccd.domain.*;
 import uk.gov.hmcts.reform.sscs.config.NotificationConfig;
 import uk.gov.hmcts.reform.sscs.domain.SubscriptionWithType;
 import uk.gov.hmcts.reform.sscs.domain.notify.Destination;
@@ -402,6 +397,15 @@ public class NotificationService {
                 notificationWrapper.getSscsCaseDataWrapper().getState());
             return false;
         }
+
+        String actionPostponementRequestSelected = notificationWrapper.getNewSscsCaseData().getPostponementRequest().getActionPostponementRequestSelected();
+        if (ACTION_POSTPONEMENT_REQUEST.equals(notificationType)
+                && ProcessRequestAction.REFUSE_ON_THE_DAY.getValue().equals(actionPostponementRequestSelected)) {
+            log.info("Notification not triggered because Action postponement request with refuse on the day selected for case id {}",
+                    notificationWrapper.getCaseId());
+            return false;
+        }
+
         log.info("Notification valid to send for case id {} and event {} in state {}",
             notificationWrapper.getCaseId(),
             notificationType.getId(),
