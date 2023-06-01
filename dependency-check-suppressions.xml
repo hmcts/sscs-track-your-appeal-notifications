@@ -3,6 +3,7 @@
     <suppress until="2023-07-01">
         <cve>CVE-2022-24329</cve>
         <cve>CVE-2021-46877</cve>
+        <cve>CVE-2023-28709</cve>
     </suppress>
     <suppress until="2023-07-01">
         <notes><![CDATA[
