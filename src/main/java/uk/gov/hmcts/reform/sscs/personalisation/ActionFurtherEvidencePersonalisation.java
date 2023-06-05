@@ -5,8 +5,7 @@ import static uk.gov.hmcts.reform.sscs.config.PersonalisationMappingConstants.FU
 import static uk.gov.hmcts.reform.sscs.config.PersonalisationMappingConstants.LETTER_CONTENT_TYPE;
 import static uk.gov.hmcts.reform.sscs.config.PersonalisationMappingConstants.SENDER_NAME;
 import static uk.gov.hmcts.reform.sscs.domain.notify.NotificationEventType.CORRECTION_REQUEST;
-import static uk.gov.hmcts.reform.sscs.domain.notify.NotificationEventType.LIBERTY_TO_APPLY_REQUEST;
-import static uk.gov.hmcts.reform.sscs.domain.notify.NotificationEventType.STATEMENT_OF_REASONS_REQUEST;
+import static uk.gov.hmcts.reform.sscs.domain.notify.NotificationEventType.VALID_SEND_TO_INTERLOC;
 
 import java.util.Map;
 import lombok.extern.slf4j.Slf4j;
@@ -39,14 +38,15 @@ public class ActionFurtherEvidencePersonalisation extends Personalisation<CcdNot
     }
 
     private static String getPostHearingDocumentType(NotificationEventType eventType, PostHearingRequestType requestType) {
-        if (CORRECTION_REQUEST.equals(eventType)) {
+        if (isCorrectionApplication(eventType, requestType)) {
             return DocumentType.CORRECTION_APPLICATION.getLabel();
-        } else if (LIBERTY_TO_APPLY_REQUEST.equals(eventType)) {
-            return DocumentType.LIBERTY_TO_APPLY_APPLICATION.getLabel();
-        } else if (STATEMENT_OF_REASONS_REQUEST.equals(eventType)) {
-            return DocumentType.STATEMENT_OF_REASONS_APPLICATION.getLabel();
         }
 
         return DocumentType.SET_ASIDE_APPLICATION.getLabel();
+    }
+
+    private static boolean isCorrectionApplication(NotificationEventType eventType, PostHearingRequestType requestType) {
+        return CORRECTION_REQUEST.equals(eventType)
+                || (VALID_SEND_TO_INTERLOC.equals(eventType) && PostHearingRequestType.CORRECTION.equals(requestType));
     }
 }

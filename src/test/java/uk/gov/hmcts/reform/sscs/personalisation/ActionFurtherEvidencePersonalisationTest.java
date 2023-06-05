@@ -144,9 +144,8 @@ class ActionFurtherEvidencePersonalisationTest {
     private static Stream<Arguments> furtherEvidenceVariations() {
         return Stream.of(
                 arguments(NotificationEventType.CORRECTION_REQUEST, PostHearingRequestType.CORRECTION, DocumentType.CORRECTION_APPLICATION),
-                arguments(NotificationEventType.LIBERTY_TO_APPLY_REQUEST, PostHearingRequestType.LIBERTY_TO_APPLY, DocumentType.LIBERTY_TO_APPLY_APPLICATION),
-                arguments(NotificationEventType.SET_ASIDE_REQUEST, PostHearingRequestType.SET_ASIDE, DocumentType.SET_ASIDE_APPLICATION),
-                arguments(NotificationEventType.STATEMENT_OF_REASONS_REQUEST, PostHearingRequestType.STATEMENT_OF_REASONS, DocumentType.STATEMENT_OF_REASONS_APPLICATION)
+                arguments(NotificationEventType.VALID_SEND_TO_INTERLOC, PostHearingRequestType.CORRECTION, DocumentType.CORRECTION_APPLICATION),
+                arguments(NotificationEventType.VALID_SEND_TO_INTERLOC, PostHearingRequestType.SET_ASIDE, DocumentType.SET_ASIDE_APPLICATION)
         );
     }
 }
