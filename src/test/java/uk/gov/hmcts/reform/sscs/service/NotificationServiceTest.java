@@ -24,6 +24,7 @@ import static org.mockito.Mockito.verifyNoMoreInteractions;
 import static org.mockito.Mockito.when;
 import static org.mockito.MockitoAnnotations.openMocks;
 import static uk.gov.hmcts.reform.sscs.ccd.domain.State.READY_TO_LIST;
+import static uk.gov.hmcts.reform.sscs.config.NotificationEventTypeLists.EVENTS_FOR_ACTION_FURTHER_EVIDENCE;
 import static uk.gov.hmcts.reform.sscs.config.NotificationEventTypeLists.EVENT_TYPES_FOR_BUNDLED_LETTER;
 import static uk.gov.hmcts.reform.sscs.config.SubscriptionType.APPELLANT;
 import static uk.gov.hmcts.reform.sscs.config.SubscriptionType.APPOINTEE;
@@ -1879,10 +1880,11 @@ public class NotificationServiceTest {
 
     @SuppressWarnings({"Indentation", "UnusedPrivateMethod"})
     private Object[] allEventTypesExceptRequestInfoIncompleteAndProcessingHearingRequest() {
-        return Arrays.stream(NotificationEventType.values()).filter(eventType ->
-                (!eventType.equals(REQUEST_INFO_INCOMPLETE) && !eventType.equals(ACTION_HEARING_RECORDING_REQUEST)
-                && !eventType.equals(VALID_SEND_TO_INTERLOC))
-                        && !EVENT_TYPES_FOR_BUNDLED_LETTER.contains(eventType)
+        return Arrays.stream(NotificationEventType.values()).filter(eventType -> (
+                !REQUEST_INFO_INCOMPLETE.equals(eventType)
+                && !ACTION_HEARING_RECORDING_REQUEST.equals(eventType)
+                && !EVENTS_FOR_ACTION_FURTHER_EVIDENCE.contains(eventType)
+                && !EVENT_TYPES_FOR_BUNDLED_LETTER.contains(eventType))
         ).toArray();
     }
 
@@ -2195,11 +2197,12 @@ public class NotificationServiceTest {
     }
 
     @Test
-    public void givenNotificationEventTypeAndSenderIsInValid_shouldManageNotificationAndSubscriptionAccordingly() {
+    @Parameters({"CORRECTION_REQUEST", "LIBERTY_TO_APPLY_REQUEST", "STATEMENT_OF_REASONS_REQUEST", "SET_ASIDE_REQUEST"})
+    public void givenNotificationEventTypeAndSenderIsInValid_shouldManageNotificationAndSubscriptionAccordingly(NotificationEventType eventType) {
         DynamicList sender = new DynamicList(new DynamicListItem("dwp", "dwp"), new ArrayList<>());
         SscsCaseData caseData = SscsCaseData.builder().ccdCaseId("1234").originalSender(sender).build();
         CcdNotificationWrapper notificationWrapper = new CcdNotificationWrapper(
-                SscsCaseDataWrapper.builder().notificationEventType(VALID_SEND_TO_INTERLOC).newSscsCaseData(caseData).build());
+                SscsCaseDataWrapper.builder().notificationEventType(eventType).newSscsCaseData(caseData).build());
 
         notificationService.manageNotificationAndSubscription(notificationWrapper, false);
         verifyExpectedLogMessage(mockAppender, captorLoggingEvent, notificationWrapper.getNewSscsCaseData().getCcdCaseId(),
@@ -2208,26 +2211,29 @@ public class NotificationServiceTest {
 
     @DisplayName("When the original sender is null and Event type is VALID_SEND_TO_INTERLOC then return false.")
     @Test
-    public void isNotificationStillValidToSendSetAsideRequest_senderIsNull_returnFalse() {
+    @Parameters({"CORRECTION_REQUEST", "LIBERTY_TO_APPLY_REQUEST", "STATEMENT_OF_REASONS_REQUEST", "SET_ASIDE_REQUEST"})
+    public void isNotificationStillValidToSendSetAsideRequest_senderIsNull_returnFalse(NotificationEventType eventType) {
         SscsCaseData caseData = SscsCaseData.builder().ccdCaseId("1234").originalSender(null).build();
-        assertFalse(notificationService.isNotificationStillValidToSendSetAsideRequest(caseData, VALID_SEND_TO_INTERLOC));
+        assertFalse(notificationService.isNotificationStillValidToSendSetAsideRequest(caseData, eventType));
     }
 
     @DisplayName("When the original sender is not null and sender is dwp then return false.")
     @Test
-    public void isNotificationStillValidToSendSetAsideRequest_senderIsInValid_returnFalse() {
+    @Parameters({"CORRECTION_REQUEST", "LIBERTY_TO_APPLY_REQUEST", "STATEMENT_OF_REASONS_REQUEST", "SET_ASIDE_REQUEST"})
+    public void isNotificationStillValidToSendSetAsideRequest_senderIsInValid_returnFalse(NotificationEventType eventType) {
         DynamicList sender = new DynamicList(new DynamicListItem("dwp", "dwp"), new ArrayList<>());
         SscsCaseData caseData = SscsCaseData.builder().ccdCaseId("1234").originalSender(sender).build();
-        assertFalse(notificationService.isNotificationStillValidToSendSetAsideRequest(caseData, VALID_SEND_TO_INTERLOC));
+        assertFalse(notificationService.isNotificationStillValidToSendSetAsideRequest(caseData, eventType));
     }
 
     @DisplayName("When the original sender is not null, Event type is VALID_SEND_TO_INTERLOC and sender is other than dwp "
             + "then return true.")
     @Test
-    public void isNotificationStillValidToSendSetAsideRequest_senderIsValid_returnFalse() {
+    @Parameters({"CORRECTION_REQUEST", "LIBERTY_TO_APPLY_REQUEST", "STATEMENT_OF_REASONS_REQUEST", "SET_ASIDE_REQUEST"})
+    public void isNotificationStillValidToSendSetAsideRequest_senderIsValid_returnFalse(NotificationEventType eventType) {
         DynamicList sender = new DynamicList(new DynamicListItem("appellant", "appellant"), new ArrayList<>());
         SscsCaseData caseData = SscsCaseData.builder().ccdCaseId("1234").originalSender(sender).build();
-        assertTrue(notificationService.isNotificationStillValidToSendSetAsideRequest(caseData, VALID_SEND_TO_INTERLOC));
+        assertTrue(notificationService.isNotificationStillValidToSendSetAsideRequest(caseData, eventType));
     }
 
     @DisplayName("When the original sender is not null, Event type is other than VALID_SEND_TO_INTERLOC and sender is other than dwp "

@@ -155,7 +155,11 @@ notification:
   english:
     correctionRequest:
       docmosisId: TB-SCS-LET-ENG-Further-Evidence.docx
-    validSendToInterloc:
+    setAsideRequest:
+      docmosisId: TB-SCS-LET-ENG-Further-Evidence.docx
+    libertyToApplyRequest:
+      docmosisId: TB-SCS-LET-ENG-Further-Evidence.docx
+    sORRequest:
       docmosisId: TB-SCS-LET-ENG-Further-Evidence.docx
     jointPartyAdded:
       appellant:
@@ -749,7 +753,11 @@ notification:
   welsh:
     correctionRequest:
       docmosisId: TB-SCS-LET-WEL-Further-Evidence.docx
-    validSendToInterloc:
+    setAsideRequest:
+      docmosisId: TB-SCS-LET-WEL-Further-Evidence.docx
+    libertyToApplyRequest:
+      docmosisId: TB-SCS-LET-WEL-Further-Evidence.docx
+    sORRequest:
       docmosisId: TB-SCS-LET-WEL-Further-Evidence.docx
     jointPartyAdded:
       appellant:
@@ -1379,7 +1387,9 @@ pdf-service:
       struckOut: 'TB-SCS-GNO-ENG-00012.docx'
       updateOtherPartyData: 'TB-SCS-GNO-ENG-00012.docx'
       correctionRequest: 'TB-SCS-GNO-ENG-00012.docx'
-      validSendToInterloc: 'TB-SCS-GNO-ENG-00012.docx'
+      sORRequest: 'TB-SCS-GNO-ENG-00012.docx'
+      setAsideRequest: 'TB-SCS-GNO-ENG-00012.docx'
+      libertyToApplyRequest: 'TB-SCS-GNO-ENG-00012.docx'
     welsh:
       appealReceived: 'TB-SCS-GNO-WEL-00479.docx'
       directionIssued: 'TB-SCS-GNO-WEL-00479.docx'
@@ -1397,7 +1407,9 @@ pdf-service:
       struckOut: 'TB-SCS-GNO-WEL-00479.docx'
       updateOtherPartyData: 'TB-SCS-GNO-WEL-00479.docx'
       correctionRequest: 'TB-SCS-GNO-WEL-00479.docx'
-      validSendToInterloc: 'TB-SCS-GNO-WEL-00479.docx'
+      sORRequest: 'TB-SCS-GNO-WEL-00479.docx'
+      setAsideRequest: 'TB-SCS-GNO-WEL-00479.docx'
+      libertyToApplyRequest: 'TB-SCS-GNO-WEL-00479.docx'
 
 docmosis:
   accessKey:
