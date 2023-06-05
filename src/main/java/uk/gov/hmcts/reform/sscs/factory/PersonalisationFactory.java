@@ -7,7 +7,6 @@ import static uk.gov.hmcts.reform.sscs.config.NotificationEventTypeLists.EVENTS_
 import static uk.gov.hmcts.reform.sscs.domain.notify.NotificationEventType.SUBSCRIPTION_UPDATED;
 
 import java.util.function.Function;
-import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
@@ -19,7 +18,6 @@ import uk.gov.hmcts.reform.sscs.personalisation.SyaAppealCreatedAndReceivedPerso
 import uk.gov.hmcts.reform.sscs.personalisation.WithRepresentativePersonalisation;
 
 @Component
-@Slf4j
 public class PersonalisationFactory implements Function<NotificationEventType, Personalisation> {
 
     @Autowired
