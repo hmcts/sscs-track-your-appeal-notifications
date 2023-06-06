@@ -245,6 +245,7 @@ public class CcdNotificationWrapper implements NotificationWrapper {
         }
 
         List<String> eligiblePartyMembers =  getEligiblePartyMembersInTheCaseToSendNotification(newSscsCaseData);
+        log.info("For caseID: {}, canSendNotificationBasedOnConfidentiality, notificationEventType: {}, partyMember: {}, eligiblePartyMembers: {}", newSscsCaseData.getCcdCaseId(), notificationEventType.getId(), partyMember,  String.join(", ", eligiblePartyMembers));
         return eligiblePartyMembers.contains(partyMember);
     }
 
