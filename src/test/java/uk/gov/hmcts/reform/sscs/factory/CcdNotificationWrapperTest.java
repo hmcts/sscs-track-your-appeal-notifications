@@ -358,25 +358,22 @@ public class CcdNotificationWrapperTest {
         sscsCaseData.setSendDirectionNoticeToAppellantOrAppointee(chosenMembers.contains(ConfidentialityPartyMembers.APPELLANT_OR_APPOINTEE.getCode()) ? YesNo.YES : YesNo.NO);
         sscsCaseData.setSendDirectionNoticeToFTA(chosenMembers.contains(ConfidentialityPartyMembers.FTA.getCode()) ? YesNo.YES : YesNo.NO);
 
+        chosenMembers.forEach(o -> createPartiesOnTheCase(sscsCaseData, o));
+
         YesNo hasRepresentative = chosenMembers.contains(ConfidentialityPartyMembers.REPRESENTATIVE.getCode()) ? YesNo.YES : YesNo.NO;
         sscsCaseData.setSendDirectionNoticeToRepresentative(hasRepresentative);
-        sscsCaseData.setHasRepresentative(hasRepresentative);
 
         YesNo hasOtherPartyRep = chosenMembers.contains(ConfidentialityPartyMembers.OTHER_PARTY_REP.getCode()) ? YesNo.YES : YesNo.NO;
         sscsCaseData.setSendDirectionNoticeToOtherPartyRep(hasOtherPartyRep);
-        sscsCaseData.setHasOtherPartyRep(hasOtherPartyRep);
 
         YesNo hasOtherPartyAppointee = chosenMembers.contains(ConfidentialityPartyMembers.OTHER_PARTY_APPOINTEE.getCode()) ? YesNo.YES : YesNo.NO;
         sscsCaseData.setSendDirectionNoticeToOtherPartyAppointee(hasOtherPartyAppointee);
-        sscsCaseData.setHasOtherPartyAppointee(hasOtherPartyAppointee);
 
         YesNo hasOtherParties = chosenMembers.contains(ConfidentialityPartyMembers.OTHER_PARTY.getCode()) ? YesNo.YES : YesNo.NO;
         sscsCaseData.setSendDirectionNoticeToOtherParty(hasOtherParties);
-        sscsCaseData.setHasOtherParties(hasOtherParties);
 
         YesNo hasJointParty = chosenMembers.contains(ConfidentialityPartyMembers.JOINT_PARTY.getCode()) ? YesNo.YES : YesNo.NO;
         sscsCaseData.setSendDirectionNoticeToJointParty(hasJointParty);
-        sscsCaseData.setHasJointParty(hasJointParty);
 
         List<SubscriptionWithType> subsWithTypeList = ccdNotificationWrapper.getSubscriptionsBasedOnNotificationType();
         Assert.assertEquals(requiredMembers.size(), subsWithTypeList.size());
@@ -393,29 +390,67 @@ public class CcdNotificationWrapperTest {
         sscsCaseData.setSendDirectionNoticeToAppellantOrAppointee(chosenMembers.contains(ConfidentialityPartyMembers.APPELLANT_OR_APPOINTEE.getCode()) ? YesNo.YES : YesNo.NO);
         sscsCaseData.setSendDirectionNoticeToFTA(chosenMembers.contains(ConfidentialityPartyMembers.FTA.getCode()) ? YesNo.YES : YesNo.NO);
 
+        chosenMembers.forEach(o -> createPartiesOnTheCase(sscsCaseData, o));
+
         YesNo hasRepresentative = chosenMembers.contains(ConfidentialityPartyMembers.REPRESENTATIVE.getCode()) ? YesNo.YES : YesNo.NO;
         sscsCaseData.setSendDirectionNoticeToRepresentative(hasRepresentative);
-        sscsCaseData.setHasRepresentative(hasRepresentative);
 
         YesNo hasOtherPartyRep = chosenMembers.contains(ConfidentialityPartyMembers.OTHER_PARTY_REP.getCode()) ? YesNo.YES : YesNo.NO;
         sscsCaseData.setSendDirectionNoticeToOtherPartyRep(hasOtherPartyRep);
-        sscsCaseData.setHasOtherPartyRep(hasOtherPartyRep);
 
         YesNo hasOtherPartyAppointee = chosenMembers.contains(ConfidentialityPartyMembers.OTHER_PARTY_APPOINTEE.getCode()) ? YesNo.YES : YesNo.NO;
         sscsCaseData.setSendDirectionNoticeToOtherPartyAppointee(hasOtherPartyAppointee);
-        sscsCaseData.setHasOtherPartyAppointee(hasOtherPartyAppointee);
 
         YesNo hasOtherParties = chosenMembers.contains(ConfidentialityPartyMembers.OTHER_PARTY.getCode()) ? YesNo.YES : YesNo.NO;
         sscsCaseData.setSendDirectionNoticeToOtherParty(hasOtherParties);
-        sscsCaseData.setHasOtherParties(hasOtherParties);
 
         YesNo hasJointParty = chosenMembers.contains(ConfidentialityPartyMembers.JOINT_PARTY.getCode()) ? YesNo.YES : YesNo.NO;
         sscsCaseData.setSendDirectionNoticeToJointParty(hasJointParty);
-        sscsCaseData.setHasJointParty(hasJointParty);
 
         List<SubscriptionWithType> subsWithTypeList = ccdNotificationWrapper.getSubscriptionsBasedOnNotificationType();
         Assert.assertEquals(requiredMembers.size(), subsWithTypeList.size());
         subsWithTypeList.forEach(o -> Assert.assertTrue(requiredMembers.contains(o.getSubscriptionType())));
+    }
+
+    private void createPartiesOnTheCase(SscsCaseData sscsCaseData, String partyMember) {
+        CcdValue<OtherParty> otherParty = CcdValue.<OtherParty>builder().value(OtherParty.builder()
+                .name(Name.builder().title("Mr").firstName("Harrison").lastName("Kane").build())
+                .address(Address.builder()
+                        .line1("First Floor")
+                        .line2("My Building")
+                        .town("222 Corporation Street")
+                        .county("Glasgow")
+                        .postcode("GL11 6TF")
+                        .build())
+                .build()).build();
+        Representative rep = Representative.builder()
+                .name(Name.builder().firstName("Harry").lastName("Potter").build())
+                .hasRepresentative("Yes").build();
+
+        if (ConfidentialityPartyMembers.REPRESENTATIVE.getCode().equals(partyMember)) {
+            sscsCaseData.getAppeal().setRep(Representative.builder().hasRepresentative("yes").build());
+
+        } else if (ConfidentialityPartyMembers.OTHER_PARTY_REP.getCode().equals(partyMember)) {
+            otherParty.getValue().setRep(rep);
+            sscsCaseData.setOtherParties(List.of(otherParty));
+
+        } else if (ConfidentialityPartyMembers.OTHER_PARTY_APPOINTEE.getCode().equals(partyMember)) {
+            Appointee appointee = Appointee.builder()
+                    .name(Name.builder().firstName("APPOINTEE").lastName("Test").build())
+                    .build();
+            otherParty.getValue().setAppointee(appointee);
+            sscsCaseData.setOtherParties(List.of(otherParty));
+
+        } else if (ConfidentialityPartyMembers.OTHER_PARTY.getCode().equals(partyMember)) {
+            sscsCaseData.setOtherParties(List.of(otherParty));
+
+        } else if (ConfidentialityPartyMembers.JOINT_PARTY.getCode().equals(partyMember)) {
+            JointParty jointParty = JointParty.builder()
+                    .hasJointParty(YES)
+                    .name(Name.builder().firstName("Joint").lastName("Party").build())
+                    .build();
+            sscsCaseData.setJointParty(jointParty);
+        }
     }
 
     @Test

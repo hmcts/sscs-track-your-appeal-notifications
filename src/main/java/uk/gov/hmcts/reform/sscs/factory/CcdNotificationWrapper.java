@@ -28,10 +28,7 @@ import static uk.gov.hmcts.reform.sscs.service.NotificationUtils.hasRepSubscript
 import static uk.gov.hmcts.reform.sscs.service.NotificationUtils.hasRepresentative;
 import static uk.gov.hmcts.reform.sscs.service.NotificationUtils.isValidSubscriptionOrIsMandatoryLetter;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Objects;
-import java.util.Optional;
+import java.util.*;
 import java.util.stream.Collectors;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.StringUtils;
@@ -204,25 +201,31 @@ public class CcdNotificationWrapper implements NotificationWrapper {
         return otherPartySubscription;
     }
 
+    private boolean isOtherPartyPresent(SscsCaseData sscsCaseData) {
+        return sscsCaseData.getOtherParties() != null && sscsCaseData.getOtherParties().size() > 0;
+    }
+
     private List<String> getEligiblePartyMembersInTheCaseToSendNotification(SscsCaseData caseData) {
         List<String> eligiblePartyMembers =  new ArrayList<>();
         // the party members must exist in the case and the user has selected to send the notification via the radio button in issue direction notice.
         if (YesNo.isYes(caseData.getSendDirectionNoticeToAppellantOrAppointee())) {
             eligiblePartyMembers.add(ConfidentialityPartyMembers.APPELLANT_OR_APPOINTEE.getCode());
         }
-        if (YesNo.isYes(caseData.getSendDirectionNoticeToJointParty()) && YesNo.isYes(caseData.getHasJointParty())) {
+        if (YesNo.isYes(caseData.getSendDirectionNoticeToJointParty()) && caseData.isThereAJointParty()) {
             eligiblePartyMembers.add(ConfidentialityPartyMembers.JOINT_PARTY.getCode());
         }
-        if (YesNo.isYes(caseData.getSendDirectionNoticeToOtherParty()) && YesNo.isYes(caseData.getHasOtherParties())) {
+        if (YesNo.isYes(caseData.getSendDirectionNoticeToOtherParty()) && isOtherPartyPresent(caseData)) {
             eligiblePartyMembers.add(ConfidentialityPartyMembers.OTHER_PARTY.getCode());
         }
-        if (YesNo.isYes(caseData.getSendDirectionNoticeToOtherPartyAppointee()) && YesNo.isYes(caseData.getHasOtherPartyAppointee())) {
+        boolean hasOtherPartyAppointee = Optional.ofNullable(caseData.getOtherParties()).orElse(Collections.emptyList()).stream().map(CcdValue::getValue).anyMatch(OtherParty::hasAppointee);
+        if (YesNo.isYes(caseData.getSendDirectionNoticeToOtherPartyAppointee()) && hasOtherPartyAppointee) {
             eligiblePartyMembers.add(ConfidentialityPartyMembers.OTHER_PARTY_APPOINTEE.getCode());
         }
-        if (YesNo.isYes(caseData.getSendDirectionNoticeToOtherPartyRep()) && YesNo.isYes(caseData.getHasOtherPartyRep())) {
+        boolean hasOtherPartyRep = Optional.ofNullable(caseData.getOtherParties()).orElse(Collections.emptyList()).stream().map(CcdValue::getValue).anyMatch(OtherParty::hasRepresentative);
+        if (YesNo.isYes(caseData.getSendDirectionNoticeToOtherPartyRep()) && hasOtherPartyRep) {
             eligiblePartyMembers.add(ConfidentialityPartyMembers.OTHER_PARTY_REP.getCode());
         }
-        if (YesNo.isYes(caseData.getSendDirectionNoticeToRepresentative()) && YesNo.isYes(caseData.getHasRepresentative())) {
+        if (YesNo.isYes(caseData.getSendDirectionNoticeToRepresentative()) && caseData.isThereARepresentative()) {
             eligiblePartyMembers.add(ConfidentialityPartyMembers.REPRESENTATIVE.getCode());
         }
         if (YesNo.isYes(caseData.getSendDirectionNoticeToFTA())) {
