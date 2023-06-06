@@ -439,6 +439,7 @@ public class CcdNotificationWrapperTest {
                     .name(Name.builder().firstName("APPOINTEE").lastName("Test").build())
                     .build();
             otherParty.getValue().setAppointee(appointee);
+            otherParty.getValue().setIsAppointee("Yes");
             sscsCaseData.setOtherParties(List.of(otherParty));
 
         } else if (ConfidentialityPartyMembers.OTHER_PARTY.getCode().equals(partyMember)) {
@@ -706,6 +707,12 @@ public class CcdNotificationWrapperTest {
                 new Object[]{DIRECTION_ISSUED, ConfidentialityType.CONFIDENTIAL.getCode(), List.of(ConfidentialityPartyMembers.JOINT_PARTY.getCode()), List.of(SubscriptionType.JOINT_PARTY), ORAL},
                 new Object[]{DIRECTION_ISSUED, ConfidentialityType.CONFIDENTIAL.getCode(), List.of(ConfidentialityPartyMembers.APPELLANT_OR_APPOINTEE.getCode(), ConfidentialityPartyMembers.JOINT_PARTY.getCode()), List.of(SubscriptionType.APPOINTEE, SubscriptionType.JOINT_PARTY), PAPER},
                 new Object[]{DIRECTION_ISSUED, ConfidentialityType.CONFIDENTIAL.getCode(), List.of(ConfidentialityPartyMembers.APPELLANT_OR_APPOINTEE.getCode(), ConfidentialityPartyMembers.JOINT_PARTY.getCode()), List.of(SubscriptionType.APPOINTEE, SubscriptionType.JOINT_PARTY), ORAL},
+                new Object[]{DIRECTION_ISSUED, ConfidentialityType.CONFIDENTIAL.getCode(), List.of(ConfidentialityPartyMembers.OTHER_PARTY_REP.getCode(), ConfidentialityPartyMembers.JOINT_PARTY.getCode()), List.of(SubscriptionType.OTHER_PARTY, SubscriptionType.JOINT_PARTY), PAPER},
+                new Object[]{DIRECTION_ISSUED, ConfidentialityType.CONFIDENTIAL.getCode(), List.of(ConfidentialityPartyMembers.OTHER_PARTY_REP.getCode(), ConfidentialityPartyMembers.JOINT_PARTY.getCode()), List.of(SubscriptionType.OTHER_PARTY, SubscriptionType.JOINT_PARTY), ORAL},
+                new Object[]{DIRECTION_ISSUED, ConfidentialityType.CONFIDENTIAL.getCode(), List.of(ConfidentialityPartyMembers.OTHER_PARTY.getCode(), ConfidentialityPartyMembers.OTHER_PARTY.getCode()), List.of(SubscriptionType.OTHER_PARTY), PAPER},
+                new Object[]{DIRECTION_ISSUED, ConfidentialityType.CONFIDENTIAL.getCode(), List.of(ConfidentialityPartyMembers.OTHER_PARTY.getCode(), ConfidentialityPartyMembers.OTHER_PARTY.getCode()), List.of(SubscriptionType.OTHER_PARTY), ORAL},
+                new Object[]{DIRECTION_ISSUED, ConfidentialityType.CONFIDENTIAL.getCode(), List.of(ConfidentialityPartyMembers.OTHER_PARTY_APPOINTEE.getCode()), List.of(SubscriptionType.OTHER_PARTY), PAPER},
+                new Object[]{DIRECTION_ISSUED, ConfidentialityType.CONFIDENTIAL.getCode(), List.of(ConfidentialityPartyMembers.OTHER_PARTY_APPOINTEE.getCode()), List.of(SubscriptionType.OTHER_PARTY), ORAL},
                 new Object[]{DIRECTION_ISSUED_WELSH, ConfidentialityType.GENERAL.getCode(), List.of(), List.of(SubscriptionType.APPOINTEE, SubscriptionType.JOINT_PARTY), PAPER},
                 new Object[]{DIRECTION_ISSUED_WELSH, ConfidentialityType.GENERAL.getCode(), List.of(), List.of(SubscriptionType.APPOINTEE, SubscriptionType.JOINT_PARTY), ORAL},
                 new Object[]{DIRECTION_ISSUED_WELSH, ConfidentialityType.CONFIDENTIAL.getCode(), List.of(ConfidentialityPartyMembers.APPELLANT_OR_APPOINTEE.getCode()), List.of(SubscriptionType.APPOINTEE), PAPER},
