@@ -63,7 +63,7 @@ public class LetterUtils {
     private static Address getAddressForOtherParty(final SscsCaseData sscsCaseData, final String partyId) {
         return emptyIfNull(sscsCaseData.getOtherParties()).stream()
                 .map(CcdValue::getValue)
-                .flatMap(op -> Stream.of((op.hasAppointee()) ? Pair.of(op.getAppointee().getId(), op.getAppointee().getAddress()) : Pair.of(op.getId(), op.getAddress()), (op.hasRepresentative()) ? Pair.of(op.getRep().getId(), op.getRep().getAddress()) : null))
+                .flatMap(op -> Stream.of((op.hasAppointee()) ? Pair.of(op.getAppointee().getId(), op.getAppointee().getAddress()) : null, Pair.of(op.getId(), op.getAddress()), (op.hasRepresentative()) ? Pair.of(op.getRep().getId(), op.getRep().getAddress()) : null))
                 .filter(Objects::nonNull)
                 .filter(p -> p.getLeft() != null && p.getRight() != null)
                 .filter(p -> p.getLeft().equals(String.valueOf(partyId)))
