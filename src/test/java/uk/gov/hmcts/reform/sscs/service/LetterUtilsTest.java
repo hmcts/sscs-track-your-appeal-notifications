@@ -394,7 +394,7 @@ public class LetterUtilsTest {
     private Address getExpectedAddress(final String otherPartyId, final NotificationWrapper wrapper) {
         return requireNonNull(wrapper.getNewSscsCaseData().getOtherParties().stream()
                 .map(CcdValue::getValue)
-                .flatMap(op -> Stream.of((op.hasAppointee()) ? Pair.of(op.getAppointee().getId(), op.getAppointee().getAddress()) : Pair.of(op.getId(), op.getAddress()), (op.hasRepresentative()) ? Pair.of(op.getRep().getId(), op.getRep().getAddress()) : null))
+                .flatMap(op -> Stream.of((op.hasAppointee()) ? Pair.of(op.getAppointee().getId(), op.getAppointee().getAddress()) : null, Pair.of(op.getId(), op.getAddress()), (op.hasRepresentative()) ? Pair.of(op.getRep().getId(), op.getRep().getAddress()) : null))
                 .filter(Objects::nonNull)
                 .filter(p -> p.getRight() != null && p.getLeft() != null)
                 .filter(pair -> pair.getLeft().equals(String.valueOf(otherPartyId)))
@@ -405,7 +405,7 @@ public class LetterUtilsTest {
     private String getExpectedName(final String otherPartyId, final NotificationWrapper wrapper) {
         return requireNonNull(wrapper.getNewSscsCaseData().getOtherParties().stream()
                 .map(CcdValue::getValue)
-                .flatMap(op -> Stream.of((op.hasAppointee()) ? Pair.of(op.getAppointee().getId(), op.getAppointee().getName()) : Pair.of(op.getId(), op.getName()), (op.hasRepresentative()) ? Pair.of(op.getRep().getId(), op.getRep().getName()) : null))
+                .flatMap(op -> Stream.of((op.hasAppointee()) ? Pair.of(op.getAppointee().getId(), op.getAppointee().getName()) : null, Pair.of(op.getId(), op.getName()), (op.hasRepresentative()) ? Pair.of(op.getRep().getId(), op.getRep().getName()) : null))
                 .filter(Objects::nonNull)
                 .filter(p -> p.getRight() != null && p.getLeft() != null)
                 .filter(pair -> pair.getLeft().equals(String.valueOf(otherPartyId)))
