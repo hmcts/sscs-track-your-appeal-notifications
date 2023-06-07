@@ -82,15 +82,12 @@ public final class NotificationEventTypeLists {
         ISSUE_ADJOURNMENT_NOTICE_WELSH,
         ISSUE_FINAL_DECISION,
         ISSUE_FINAL_DECISION_WELSH,
-        LIBERTY_TO_APPLY_REQUEST,
         NON_COMPLIANT,
         DRAFT_TO_NON_COMPLIANT,
         POSTPONEMENT,
         REISSUE_DOCUMENT,
         REQUEST_INFO_INCOMPLETE,
         RESEND_APPEAL_CREATED,
-        SET_ASIDE_REQUEST,
-        STATEMENT_OF_REASONS_REQUEST,
         STRUCK_OUT,
         SUBSCRIPTION_UPDATED,
         VALID_APPEAL_CREATED,
@@ -101,8 +98,20 @@ public final class NotificationEventTypeLists {
         JOINT_PARTY_ADDED,
         ACTION_HEARING_RECORDING_REQUEST,
         ACTION_POSTPONEMENT_REQUEST_WELSH,
-        UPDATE_OTHER_PARTY_DATA,
-        CORRECTION_REQUEST
+        UPDATE_OTHER_PARTY_DATA
+    );
+
+    // TODO move to EVENTS_TO_HANDLE when feature.postHearings.enabled removed
+    public static final Set<NotificationEventType> EVENTS_TO_HANDLE_POSTHEARINGS_A = EnumSet.of(
+        CORRECTION_REQUEST,
+        SET_ASIDE_REQUEST,
+        STATEMENT_OF_REASONS_REQUEST
+    );
+
+    // move to EVENTS_TO_HANDLE when feature.postHearingsB.enabled removed
+    public static final Set<NotificationEventType> EVENTS_TO_HANDLE_POSTHEARINGS_B = EnumSet.of(
+        LIBERTY_TO_APPLY_REQUEST
+        // TODO put permission to appeal, share with upper Tribunal and remit to lower tribunal events here when setting notification
     );
 
     public static final Set<NotificationEventType> EVENT_TYPES_NOT_FOR_DORMANT_CASES = EnumSet.of(

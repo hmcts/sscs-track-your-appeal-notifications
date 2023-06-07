@@ -3,6 +3,8 @@ package uk.gov.hmcts.reform.sscs.callback.handlers;
 import static java.util.Objects.nonNull;
 import static uk.gov.hmcts.reform.sscs.ccd.domain.HearingRoute.GAPS;
 import static uk.gov.hmcts.reform.sscs.config.NotificationEventTypeLists.EVENTS_TO_HANDLE;
+import static uk.gov.hmcts.reform.sscs.config.NotificationEventTypeLists.EVENTS_TO_HANDLE_POSTHEARINGS_A;
+import static uk.gov.hmcts.reform.sscs.config.NotificationEventTypeLists.EVENTS_TO_HANDLE_POSTHEARINGS_B;
 import static uk.gov.hmcts.reform.sscs.domain.notify.NotificationEventType.ACTION_POSTPONEMENT_REQUEST;
 import static uk.gov.hmcts.reform.sscs.domain.notify.NotificationEventType.DEATH_OF_APPELLANT;
 import static uk.gov.hmcts.reform.sscs.domain.notify.NotificationEventType.HEARING_BOOKED;
@@ -11,6 +13,8 @@ import static uk.gov.hmcts.reform.sscs.domain.notify.NotificationEventType.PROVI
 import java.util.Optional;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 import uk.gov.hmcts.reform.sscs.callback.CallbackHandler;
 import uk.gov.hmcts.reform.sscs.ccd.callback.DispatchPriority;
@@ -31,10 +35,18 @@ public class FilterNotificationsEventsHandler implements CallbackHandler {
     private static final int RETRY = 1;
     private final RetryNotificationService retryNotificationService;
 
+    @Value("${feature.postHearings.enabled}")
+    private boolean isPostHearingsEnabled;
+
+    @Value("${feature.postHearingsB.enabled}")
+    private boolean isPostHearingsBEnabled;
+
     @Override
     public boolean canHandle(SscsCaseDataWrapper callback) {
         return nonNull(callback.getNotificationEventType())
             && EVENTS_TO_HANDLE.contains(callback.getNotificationEventType())
+            || (isPostHearingsEnabled && EVENTS_TO_HANDLE_POSTHEARINGS_A.contains(callback.getNotificationEventType()))
+            || (isPostHearingsBEnabled && EVENTS_TO_HANDLE_POSTHEARINGS_B.contains(callback.getNotificationEventType()))
             || shouldActionPostponementBeNotified(callback)
             || hasNewAppointeeAddedForAppellantDecesedCase(callback)
             || shouldHandleForHearingRoute(callback);
