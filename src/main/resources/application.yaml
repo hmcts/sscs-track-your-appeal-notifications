@@ -154,13 +154,13 @@ job.scheduler:
 notification:
   english:
     correctionRequest:
-      docmosisId: TB-SCS-LET-ENG-Further-Evidence.docx
+      docmosisId: TB-SCS-LET-ENG-Action-Further-Evidence.docx
     setAsideRequest:
-      docmosisId: TB-SCS-LET-ENG-Further-Evidence.docx
+      docmosisId: TB-SCS-LET-ENG-Action-Further-Evidence.docx
     libertyToApplyRequest:
-      docmosisId: TB-SCS-LET-ENG-Further-Evidence.docx
+      docmosisId: TB-SCS-LET-ENG-Action-Further-Evidence.docx
     sORRequest:
-      docmosisId: TB-SCS-LET-ENG-Further-Evidence.docx
+      docmosisId: TB-SCS-LET-ENG-Action-Further-Evidence.docx
     jointPartyAdded:
       appellant:
         docmosisId: TB-SCS-GNO-ENG-00579.docx
@@ -752,13 +752,13 @@ notification:
             # SSCS-11586 smsId: bb3df0ea-8259-43c4-95de-9eef96206575
   welsh:
     correctionRequest:
-      docmosisId: TB-SCS-LET-WEL-Further-Evidence.docx
+      docmosisId: TB-SCS-LET-WEL-Action-Further-Evidence.docx
     setAsideRequest:
-      docmosisId: TB-SCS-LET-WEL-Further-Evidence.docx
+      docmosisId: TB-SCS-LET-WEL-Action-Further-Evidence.docx
     libertyToApplyRequest:
-      docmosisId: TB-SCS-LET-WEL-Further-Evidence.docx
+      docmosisId: TB-SCS-LET-WEL-Action-Further-Evidence.docx
     sORRequest:
-      docmosisId: TB-SCS-LET-WEL-Further-Evidence.docx
+      docmosisId: TB-SCS-LET-WEL-Action-Further-Evidence.docx
     jointPartyAdded:
       appellant:
         docmosisId: TB-SCS-GNO-WEL-00629.docx
