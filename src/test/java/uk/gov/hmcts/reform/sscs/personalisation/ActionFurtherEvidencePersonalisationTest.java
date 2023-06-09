@@ -1,10 +1,9 @@
 package uk.gov.hmcts.reform.sscs.personalisation;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.params.provider.Arguments.arguments;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.when;
-import static org.mockito.MockitoAnnotations.openMocks;
 import static uk.gov.hmcts.reform.sscs.ccd.domain.Benefit.PIP;
 import static uk.gov.hmcts.reform.sscs.ccd.util.CaseDataUtils.buildCaseData;
 import static uk.gov.hmcts.reform.sscs.config.PersonalisationMappingConstants.DOCUMENT_TYPE_NAME;
@@ -19,12 +18,14 @@ import java.util.Map;
 import java.util.Optional;
 import java.util.stream.Stream;
 import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.extension.ExtendWith;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.Arguments;
 import org.junit.jupiter.params.provider.MethodSource;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.Spy;
+import org.mockito.junit.jupiter.MockitoExtension;
 import uk.gov.hmcts.reform.sscs.ccd.callback.DocumentType;
 import uk.gov.hmcts.reform.sscs.ccd.domain.DynamicList;
 import uk.gov.hmcts.reform.sscs.ccd.domain.DynamicListItem;
@@ -44,6 +45,7 @@ import uk.gov.hmcts.reform.sscs.domain.notify.NotificationEventType;
 import uk.gov.hmcts.reform.sscs.extractor.HearingContactDateExtractor;
 import uk.gov.hmcts.reform.sscs.service.MessageAuthenticationServiceImpl;
 
+@ExtendWith(MockitoExtension.class)
 class ActionFurtherEvidencePersonalisationTest {
 
     @Mock
@@ -78,8 +80,6 @@ class ActionFurtherEvidencePersonalisationTest {
 
     @BeforeEach
     void setUp() {
-        openMocks(this);
-
         when(config.getManageEmailsLink()).thenReturn(Link.builder().linkUrl("http://manageemails.com/mac").build());
         when(config.getTrackAppealLink()).thenReturn(Link.builder().linkUrl("http://tyalink.com/appeal_id").build());
         when(config.getEvidenceSubmissionInfoLink()).thenReturn(Link.builder().linkUrl("http://link.com/appeal_id").build());
@@ -136,9 +136,9 @@ class ActionFurtherEvidencePersonalisationTest {
 
         var senderName = responseWrapper.getNewSscsCaseData().getAppeal().getAppellant().getName().getFullNameNoTitle();
 
-        assertEquals(documentType.getLabel(), result.get(DOCUMENT_TYPE_NAME));
-        assertEquals(senderName, result.get(SENDER_NAME));
-        assertEquals(postHearingRequestType, result.get(FURTHER_EVIDENCE_ACTION));
+        assertThat(documentType.getLabel()).isEqualTo(result.get(DOCUMENT_TYPE_NAME));
+        assertThat(senderName).isEqualTo(result.get(SENDER_NAME));
+        assertThat(postHearingRequestType).isEqualTo(result.get(FURTHER_EVIDENCE_ACTION));
     }
 
     private static Stream<Arguments> furtherEvidenceVariations() {

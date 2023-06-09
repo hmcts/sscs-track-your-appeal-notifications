@@ -1,7 +1,6 @@
 package uk.gov.hmcts.reform.sscs.service;
 
 import static java.util.Arrays.asList;
-import static java.util.Objects.isNull;
 import static java.util.Objects.nonNull;
 import static java.util.Optional.ofNullable;
 import static org.apache.commons.collections4.ListUtils.emptyIfNull;
@@ -330,8 +329,8 @@ public class NotificationService {
     boolean isNotificationStillValidToSendSetAsideRequest(SscsCaseData caseData, NotificationEventType eventType) {
         List<String> originalSenders = Arrays.asList("dwp", "hmcts");
         if (EVENTS_FOR_ACTION_FURTHER_EVIDENCE.contains(eventType)) {
-            return !(isNull(caseData.getOriginalSender())
-                    || originalSenders.contains(caseData.getOriginalSender().getValue().getCode()));
+            return nonNull(caseData.getOriginalSender())
+                    && !originalSenders.contains(caseData.getOriginalSender().getValue().getCode());
         }
         return true;
     }

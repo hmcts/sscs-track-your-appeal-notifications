@@ -488,7 +488,7 @@ public class LetterUtilsTest {
         assertEquals(senderName, LetterUtils.getNameForSender(caseData));
     }
 
-    @DisplayName("When sender is null then return name of case Appellant")
+    @DisplayName("When sender is null then return empty string")
     @Test
     public void getNameForSender_senderIsNull_returnEmpty() {
         caseData.setOriginalSender(null);

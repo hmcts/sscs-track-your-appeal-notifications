@@ -166,18 +166,6 @@ notification:
         docmosisId: TB-SCS-GNO-ENG-00579.docx
       joint_party:
         docmosisId: TB-SCS-GNO-ENG-00579.docx
-    postHearingRequest:
-      docmosisId: TB-SCS-LET-ENG-representation-letter.docx
-      appellant:
-        docmosisId: TB-SCS-LET-ENG-representation-letter.docx
-      representative:
-        docmosisId: TB-SCS-LET-ENG-representation-letter.docx
-      appointee:
-        docmosisId: TB-SCS-LET-ENG-representation-letter.docx
-      other_party:
-        docmosisId: TB-SCS-LET-ENG-representation-letter.docx
-      joint_party:
-        docmosisId: TB-SCS-LET-ENG-representation-letter.docx
     appealReceived:
       appellant:
         emailId: d5fd9f65-1283-4533-a1be-10043dae7af6
