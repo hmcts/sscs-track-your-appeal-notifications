@@ -540,7 +540,7 @@ public class LetterUtilsTest {
         assertEquals("confirmation", LetterUtils.getNotificationTypeForActionFurtherEvidence(wrapper, type));
     }
 
-    @DisplayName("When sender is an appellant, representative or joint party and subscriber is other then sender "
+    @DisplayName("When sender is an appellant, representative or joint party and subscriber is other than sender "
             + "then return notification.")
     @Test
     @Parameters({"appellant", "representative", "jointParty"})
