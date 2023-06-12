@@ -518,6 +518,10 @@ notification:
     updateOtherPartyData:
       other_party:
         docmosisId: TB-SCS-GNO-ENG-00784.docx
+    sORExtendTime:
+      docmosisId: TB-SCS-LET-ENG-Statement-Of-Reasons-Outcome.docx
+    sORRefused:
+      docmosisId: TB-SCS-LET-ENG-Statement-Of-Reasons-Outcome.docx
     paper:
       responseReceived:
         appellant:
@@ -1074,6 +1078,10 @@ notification:
     updateOtherPartyData:
       other_party:
         docmosisId: TB-SCS-GNO-WEL-00787.docx
+    sORExtendTime:
+      docmosisId: TB-SCS-LET-WEL-Statement-Of-Reasons-Outcome.docx
+    sORRefused:
+      docmosisId: TB-SCS-LET-WEL-Statement-Of-Reasons-Outcome.docx
     paper:
       responseReceived:
         appellant:
@@ -1321,6 +1329,7 @@ case_document_am.url: ${CASE_DOCUMENT_AM_URL:http://localhost:4455}
 feature.save_correspondence: ${SAVE_CORRESPONDENCE:true}
 feature.covid19: ${COVID_19_NOTIFICATION_FEATURE:false}
 feature.secure-doc-store.enabled: ${SECURE_DOC_STORE_FEATURE:false}
+feature.postHearings.enabled: ${POST_HEARINGS_FEATURE:false}
 
 letterAsync:
   maxAttempts: ${LETTER_ASYNC_MAX_ATTEMPTS:5}
@@ -1357,6 +1366,8 @@ pdf-service:
       requestInfoIncompleteApplication: 'TB-SCS-GNO-ENG-00012.docx'
       struckOut: 'TB-SCS-GNO-ENG-00012.docx'
       updateOtherPartyData: 'TB-SCS-GNO-ENG-00012.docx'
+      sORExtendTime: 'TB-SCS-GNO-ENG-00012.docx'
+      sORRefused: 'TB-SCS-GNO-ENG-00012.docx'
     welsh:
       appealReceived: 'TB-SCS-GNO-WEL-00479.docx'
       directionIssued: 'TB-SCS-GNO-WEL-00479.docx'
@@ -1373,6 +1384,8 @@ pdf-service:
       requestInfoIncompleteApplication: 'TB-SCS-GNO-WEL-00479.docx'
       struckOut: 'TB-SCS-GNO-WEL-00479.docx'
       updateOtherPartyData: 'TB-SCS-GNO-WEL-00479.docx'
+      sORExtendTime: 'TB-SCS-GNO-WEL-00479.docx'
+      sORRefused: 'TB-SCS-GNO-WEL-00479.docx'
 
 docmosis:
   accessKey:
