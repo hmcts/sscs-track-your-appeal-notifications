@@ -37,4 +37,8 @@
         <packageUrl regex="true">^pkg:maven/org\.yaml/snakeyaml@.*$</packageUrl>
         <cve>CVE-2022-1471</cve>
     </suppress>
+    <suppress>
+        <notes>spring-boot-2.5.6.jar</notes>
+        <cve>CVE-2023-20883</cve>
+    </suppress>
 </suppressions>
