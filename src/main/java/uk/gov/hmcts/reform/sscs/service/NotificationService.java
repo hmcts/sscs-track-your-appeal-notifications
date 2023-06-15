@@ -30,7 +30,7 @@ import static uk.gov.hmcts.reform.sscs.domain.notify.NotificationEventType.ISSUE
 import static uk.gov.hmcts.reform.sscs.domain.notify.NotificationEventType.NON_COMPLIANT;
 import static uk.gov.hmcts.reform.sscs.domain.notify.NotificationEventType.PROCESS_AUDIO_VIDEO;
 import static uk.gov.hmcts.reform.sscs.domain.notify.NotificationEventType.REISSUE_DOCUMENT;
-import static uk.gov.hmcts.reform.sscs.domain.notify.NotificationEventType.REQUEST_INFO_INCOMPLETE;
+import static uk.gov.hmcts.reform.sscs.domain.notify.NotificationEventType.REQUEST_FOR_INFORMATION;
 import static uk.gov.hmcts.reform.sscs.domain.notify.NotificationEventType.SUBSCRIPTION_OLD_ID;
 import static uk.gov.hmcts.reform.sscs.domain.notify.NotificationEventType.UPDATE_OTHER_PARTY_DATA;
 import static uk.gov.hmcts.reform.sscs.domain.notify.NotificationEventType.VALID_APPEAL_CREATED;
@@ -348,9 +348,9 @@ public class NotificationService {
 
     private boolean isEventAllowedToProceedWithValidData(NotificationWrapper notificationWrapper,
                                                          NotificationEventType notificationType) {
-        if (REQUEST_INFO_INCOMPLETE.equals(notificationType)
+        if (REQUEST_FOR_INFORMATION.equals(notificationType)
             && !isYes(notificationWrapper.getNewSscsCaseData().getInformationFromAppellant())) {
-            log.info("Request Incomplete Information with empty or no Information From Appellant for ccdCaseId {}.",
+            log.info("Request for Information with empty or no Information From Appellant for ccdCaseId {}.",
                 notificationWrapper.getNewSscsCaseData().getCcdCaseId());
             return false;
         }

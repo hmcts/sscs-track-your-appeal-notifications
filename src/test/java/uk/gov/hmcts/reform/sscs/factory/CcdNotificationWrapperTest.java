@@ -19,7 +19,7 @@ import static uk.gov.hmcts.reform.sscs.domain.notify.NotificationEventType.HEARI
 import static uk.gov.hmcts.reform.sscs.domain.notify.NotificationEventType.HMCTS_APPEAL_LAPSED;
 import static uk.gov.hmcts.reform.sscs.domain.notify.NotificationEventType.NON_COMPLIANT;
 import static uk.gov.hmcts.reform.sscs.domain.notify.NotificationEventType.POSTPONEMENT;
-import static uk.gov.hmcts.reform.sscs.domain.notify.NotificationEventType.REQUEST_INFO_INCOMPLETE;
+import static uk.gov.hmcts.reform.sscs.domain.notify.NotificationEventType.REQUEST_FOR_INFORMATION;
 import static uk.gov.hmcts.reform.sscs.domain.notify.NotificationEventType.REVIEW_CONFIDENTIALITY_REQUEST;
 import static uk.gov.hmcts.reform.sscs.domain.notify.NotificationEventType.STRUCK_OUT;
 import static uk.gov.hmcts.reform.sscs.domain.notify.NotificationEventType.SUBSCRIPTION_UPDATED;
@@ -500,8 +500,8 @@ public class CcdNotificationWrapperTest {
     }
 
     @Test
-    public void givenRequestInfoIncompleteForAppointeeWithSubscription_shouldSendRequestInfoNotification() {
-        ccdNotificationWrapper = buildCcdNotificationWrapperBasedOnEventTypeWithAppointeeAndJointParty(REQUEST_INFO_INCOMPLETE, ORAL);
+    public void givenRequestForInformationForAppointeeWithSubscription_shouldSendRequestInfoNotification() {
+        ccdNotificationWrapper = buildCcdNotificationWrapperBasedOnEventTypeWithAppointeeAndJointParty(REQUEST_FOR_INFORMATION, ORAL);
         ccdNotificationWrapper.getNewSscsCaseData().setInformationFromPartySelected(new DynamicList(new DynamicListItem(PartyItemList.APPELLANT.getCode(), PartyItemList.APPELLANT.getLabel()), new ArrayList<>()));
         List<SubscriptionWithType> subsWithTypeList = ccdNotificationWrapper.getSubscriptionsBasedOnNotificationType();
         Assert.assertEquals(1, subsWithTypeList.size());
@@ -509,8 +509,8 @@ public class CcdNotificationWrapperTest {
     }
 
     @Test
-    public void givenRequestInfoIncompleteForAppellantWithSubscription_shouldSendRequestInfoNotification() {
-        ccdNotificationWrapper = buildCcdNotificationWrapperBasedOnEventType(REQUEST_INFO_INCOMPLETE);
+    public void givenRequestForInformationForAppellantWithSubscription_shouldSendRequestInfoNotification() {
+        ccdNotificationWrapper = buildCcdNotificationWrapperBasedOnEventType(REQUEST_FOR_INFORMATION);
         ccdNotificationWrapper.getNewSscsCaseData().setInformationFromPartySelected(new DynamicList(new DynamicListItem(PartyItemList.APPELLANT.getCode(), PartyItemList.APPELLANT.getLabel()), new ArrayList<>()));
         List<SubscriptionWithType> subsWithTypeList = ccdNotificationWrapper.getSubscriptionsBasedOnNotificationType();
         Assert.assertEquals(1, subsWithTypeList.size());
@@ -518,8 +518,8 @@ public class CcdNotificationWrapperTest {
     }
 
     @Test
-    public void givenRequestInfoIncompleteForRepWithSubscription_shouldSendRequestInfoNotification() {
-        ccdNotificationWrapper = buildCcdNotificationWrapperBasedOnEventTypeWithRep(REQUEST_INFO_INCOMPLETE);
+    public void givenRequestForInformationForRepWithSubscription_shouldSendRequestInfoNotification() {
+        ccdNotificationWrapper = buildCcdNotificationWrapperBasedOnEventTypeWithRep(REQUEST_FOR_INFORMATION);
         ccdNotificationWrapper.getNewSscsCaseData().setInformationFromPartySelected(new DynamicList(new DynamicListItem(PartyItemList.REPRESENTATIVE.getCode(), PartyItemList.REPRESENTATIVE.getLabel()), new ArrayList<>()));
         List<SubscriptionWithType> subsWithTypeList = ccdNotificationWrapper.getSubscriptionsBasedOnNotificationType();
         Assert.assertEquals(1, subsWithTypeList.size());
@@ -527,8 +527,8 @@ public class CcdNotificationWrapperTest {
     }
 
     @Test
-    public void givenRequestInfoIncompleteForJointPartyWithSubscription_shouldSendRequestInfoNotification() {
-        ccdNotificationWrapper = buildCcdNotificationWrapperBasedOnEventTypeWithAppointeeAndJointParty(REQUEST_INFO_INCOMPLETE, PAPER);
+    public void givenRequestForInformationForJointPartyWithSubscription_shouldSendRequestInfoNotification() {
+        ccdNotificationWrapper = buildCcdNotificationWrapperBasedOnEventTypeWithAppointeeAndJointParty(REQUEST_FOR_INFORMATION, PAPER);
         ccdNotificationWrapper.getNewSscsCaseData().setInformationFromPartySelected(new DynamicList(new DynamicListItem(PartyItemList.JOINT_PARTY.getCode(), PartyItemList.JOINT_PARTY.getLabel()), new ArrayList<>()));
         List<SubscriptionWithType> subsWithTypeList = ccdNotificationWrapper.getSubscriptionsBasedOnNotificationType();
         Assert.assertEquals(1, subsWithTypeList.size());
@@ -621,7 +621,7 @@ public class CcdNotificationWrapperTest {
         "POSTPONEMENT",
         "PROCESS_AUDIO_VIDEO",
         "PROCESS_AUDIO_VIDEO_WELSH",
-        "REQUEST_INFO_INCOMPLETE",
+        "REQUEST_FOR_INFORMATION",
         "STRUCK_OUT",
         "SUBSCRIPTION_CREATED",
         "SUBSCRIPTION_OLD",
@@ -654,7 +654,7 @@ public class CcdNotificationWrapperTest {
                 || type.equals(SUBSCRIPTION_UPDATED)
                 || type.equals(HEARING_BOOKED)
                 || type.equals(STRUCK_OUT)
-                || type.equals(REQUEST_INFO_INCOMPLETE)
+                || type.equals(REQUEST_FOR_INFORMATION)
                 || type.equals(NON_COMPLIANT)
                 || type.equals(REVIEW_CONFIDENTIALITY_REQUEST)
                 || type.equals(ACTION_HEARING_RECORDING_REQUEST)
