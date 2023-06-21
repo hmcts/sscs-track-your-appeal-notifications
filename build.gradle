@@ -5,7 +5,7 @@ plugins {
     id 'org.sonarqube' version '4.0.0.2929'
     id 'jacoco'
     id 'io.spring.dependency-management' version '1.1.0'
-    id 'org.springframework.boot' version '2.5.15'
+    id 'org.springframework.boot' version '2.7.12'
     id 'uk.gov.hmcts.java' version '0.12.43'
     id 'org.owasp.dependencycheck' version '8.2.1'
     id 'com.github.ben-manes.versions' version '0.47.0'
@@ -135,7 +135,7 @@ bootRun {
 }
 
 ext {
-    springCloudVersion = '2020.0.6'
+    springCloudVersion = '2021.0.4'
 }
 
 dependencyManagement {
