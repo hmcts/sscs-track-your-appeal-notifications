@@ -8,6 +8,7 @@ spring:
     url: jdbc:postgresql://${JOB_SCHEDULER_DB_HOST:localhost}:${JOB_SCHEDULER_DB_PORT:5432}/${JOB_SCHEDULER_DB_NAME:sscsjobscheduler}${JOB_SCHEDULER_DB_CONNECTION_OPTIONS:}
     username: ${JOB_SCHEDULER_DB_USERNAME:sscsjobscheduler}
     password: ${JOB_SCHEDULER_DB_PASSWORD:sscsjobscheduler}
+
     properties:
       charSet: UTF-8
     tomcat:
@@ -1468,6 +1469,9 @@ text:
       OTHER: "Arall"
       CHILD_MAINTENANCE_NUMBER: "Child maintenance number: "
 
+judicial-ref:
+  api:
+    url: ${JUDICIAL_REF_API_URL:http://localhost:5555}
 
 ---
 # default profile (development, production etc.)
@@ -1552,7 +1556,3 @@ welsh-months:
   10: "Hydref"
   11: "Tachwedd"
   12: "Rhagfyr"
-
-judicial-ref:
-  api:
-    url: ${JUDICIAL_REF_API_URL:http://localhost:5555}

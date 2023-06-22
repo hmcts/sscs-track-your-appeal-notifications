@@ -9,6 +9,8 @@ import static uk.gov.hmcts.reform.sscs.ccd.callback.DocumentType.DECISION_NOTICE
 import static uk.gov.hmcts.reform.sscs.ccd.callback.DocumentType.DIRECTION_NOTICE;
 import static uk.gov.hmcts.reform.sscs.ccd.callback.DocumentType.FINAL_DECISION_NOTICE;
 import static uk.gov.hmcts.reform.sscs.ccd.callback.DocumentType.POSTPONEMENT_REQUEST_DIRECTION_NOTICE;
+import static uk.gov.hmcts.reform.sscs.ccd.callback.DocumentType.STATEMENT_OF_REASONS_GRANTED;
+import static uk.gov.hmcts.reform.sscs.ccd.callback.DocumentType.STATEMENT_OF_REASONS_REFUSED;
 import static uk.gov.hmcts.reform.sscs.config.PersonalisationMappingConstants.*;
 import static uk.gov.hmcts.reform.sscs.domain.notify.NotificationEventType.*;
 import static uk.gov.hmcts.reform.sscs.service.LetterUtils.addBlankPageAtTheEndIfOddPage;
@@ -287,6 +289,7 @@ public class SendNotificationService {
                 if (ArrayUtils.isNotEmpty(associatedCasePdf)) {
                     letter = buildBundledLetter(addBlankPageAtTheEndIfOddPage(letter), associatedCasePdf);
                 }
+
                 byte[] coversheet = pdfLetterService.buildCoversheet(wrapper, subscriptionWithType);
                 if (ArrayUtils.isNotEmpty(coversheet)) {
                     letter = buildBundledLetter(addBlankPageAtTheEndIfOddPage(letter), coversheet);
@@ -296,17 +299,17 @@ public class SendNotificationService {
                 boolean alternativeLetterFormat = isAlternativeLetterFormatRequired(wrapper, subscriptionWithType);
                 NotificationHandler.SendNotification sendNotification = alternativeLetterFormat
                         ? () -> notificationSender.saveLettersToReasonableAdjustment(bundledLetter,
-                                wrapper.getNotificationType(),
-                                nameToUse,
-                                wrapper.getCaseId(),
-                                subscriptionWithType.getSubscriptionType())
+                        wrapper.getNotificationType(),
+                        nameToUse,
+                        wrapper.getCaseId(),
+                        subscriptionWithType.getSubscriptionType())
                         : () -> notificationSender.sendBundledLetter(
-                                wrapper.getNewSscsCaseData().getAppeal().getAppellant().getAddress().getPostcode(),   // Used for whitelisting only
-                                bundledLetter,
-                                wrapper.getNotificationType(),
-                                nameToUse,
-                                wrapper.getCaseId()
-                        );
+                        wrapper.getNewSscsCaseData().getAppeal().getAppellant().getAddress().getPostcode(),   // Used for whitelisting only
+                        bundledLetter,
+                        wrapper.getNotificationType(),
+                        nameToUse,
+                        wrapper.getCaseId()
+                );
 
                 log.info("In sendBundledAndDocmosisLetterNotification method notificationSender is available {} ", notificationSender != null);
 
@@ -376,7 +379,12 @@ public class SendNotificationService {
             return getDocumentForType(newSscsCaseData.getLatestDocumentForDocumentType(POSTPONEMENT_REQUEST_DIRECTION_NOTICE));
         } else if (ACTION_POSTPONEMENT_REQUEST_WELSH.equals(notificationEventType)) {
             return getDocumentForType(newSscsCaseData.getLatestWelshDocumentForDocumentType(POSTPONEMENT_REQUEST_DIRECTION_NOTICE).orElse(null));
+        } else if (SOR_EXTEND_TIME.equals(notificationEventType)) {
+            return getDocumentForType(newSscsCaseData.getLatestDocumentForDocumentType(STATEMENT_OF_REASONS_GRANTED));
+        } else if (SOR_REFUSED.equals(notificationEventType)) {
+            return getDocumentForType(newSscsCaseData.getLatestDocumentForDocumentType(STATEMENT_OF_REASONS_REFUSED));
         }
+
         return null;
     }
 
