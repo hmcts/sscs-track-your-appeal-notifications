@@ -61,9 +61,10 @@ public class FilterNotificationsEventsHandler implements CallbackHandler {
     }
 
     private boolean shouldActionPostponementBeNotified(SscsCaseDataWrapper callback) {
+        String actionPostponementRequestSelected = callback.getOldSscsCaseData().getPostponementRequest().getActionPostponementRequestSelected();
         return ACTION_POSTPONEMENT_REQUEST.equals(callback.getNotificationEventType())
-                && !ProcessRequestAction.SEND_TO_JUDGE.getValue().equals(
-                callback.getOldSscsCaseData().getPostponementRequest().getActionPostponementRequestSelected());
+                && (!ProcessRequestAction.SEND_TO_JUDGE.getValue().equals(actionPostponementRequestSelected)
+                && !ProcessRequestAction.REFUSE_ON_THE_DAY.getValue().equals(actionPostponementRequestSelected));
     }
 
     private boolean hasNewAppointeeAddedForAppellantDecesedCase(SscsCaseDataWrapper callback) {
