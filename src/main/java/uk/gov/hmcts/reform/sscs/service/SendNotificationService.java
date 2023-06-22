@@ -308,8 +308,7 @@ public class SendNotificationService {
                         bundledLetter,
                         wrapper.getNotificationType(),
                         nameToUse,
-                        wrapper.getCaseId()
-                );
+                        wrapper.getCaseId());
 
                 log.info("In sendBundledAndDocmosisLetterNotification method notificationSender is available {} ", notificationSender != null);
 
