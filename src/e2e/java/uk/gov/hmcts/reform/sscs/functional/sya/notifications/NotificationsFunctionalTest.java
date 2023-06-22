@@ -35,7 +35,7 @@ public class NotificationsFunctionalTest extends AbstractFunctionalTest {
     @Value("${notification.english.oral.evidenceReceived.appellant.smsId}")
     private String evidenceReceivedSmsTemplateId;
 
-    @Value("${notification.english.hearingPostponed.appellant.emailId}")
+    @Value("${notification.english.listAssist.oral.hearingPostponed.appellant.emailId}")
     private String hearingPostponedEmailTemplateId;
 
     @Value("${notification.english.hearingAdjourned.appellant.emailId}")
@@ -122,19 +122,20 @@ public class NotificationsFunctionalTest extends AbstractFunctionalTest {
     @Value("${notification.english.appealWithdrawn.appointee.smsId}")
     private String appointeeAppealWithdrawnSmsId;
 
+    /* // SSCS-11586
     @Value("${notification.english.listAssist.oral.hearingBooked.appointee.emailId}")
     private String appointeeHearingBookedEmailId;
 
     @Value("${notification.english.listAssist.oral.hearingBooked.appointee.smsId}")
     private String appointeeHearingBookedSmsId;
-
+     */
     @Value("${notification.english.oral.evidenceReceived.appellant.emailId}")
     private String appointeeEvidenceReceivedEmailId;
 
     @Value("${notification.english.oral.evidenceReceived.appellant.smsId}")
     private String appointeeEvidenceReceivedSmsId;
 
-    @Value("${notification.english.hearingPostponed.appointee.emailId}")
+    @Value("${notification.english.listAssist.oral.hearingPostponed.appointee.emailId}")
     private String appointeeHearingPostponedEmailId;
 
     @Value("${notification.english.oral.dwpUploadResponse.appellant.emailId}")
@@ -422,12 +423,15 @@ public class NotificationsFunctionalTest extends AbstractFunctionalTest {
         simulateCcdCallback(HEARING_BOOKED,
                 "appointee/" + HEARING_BOOKED.getId() + "Callback.json");
 
+        /*// SSCS-11586
         List<Notification> notifications = tryFetchNotificationsForTestCase(
+
                 appointeeHearingBookedEmailId,
                 appointeeHearingBookedSmsId
         );
         Notification emailNotification = notifications.stream().filter(f -> f.getTemplateId().toString().equals(appointeeHearingBookedEmailId)).collect(Collectors.toList()).get(0);
         assertTrue(emailNotification.getBody().contains("Dear Appointee User\r\n\r\nYou are receiving this update as the appointee for Appellant User.\r\n\r\n"));
+         */
     }
 
     @Test

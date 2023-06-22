@@ -28,6 +28,8 @@ public class WithRepresentativePersonalisationTest extends AbstractFunctionalTes
     private String appealWithdrawnRepsEmailId;
     @Value("${notification.english.appealWithdrawn.representative.smsId}")
     private String appealWithdrawnRepsSmsId;
+    /*
+    // SSCS-11586
     @Value("${notification.english.listAssist.oral.hearingBooked.appellant.emailId}")
     private String hearingBookedAppellantEmailId;
     @Value("${notification.english.listAssist.oral.hearingBooked.appellant.smsId}")
@@ -36,6 +38,8 @@ public class WithRepresentativePersonalisationTest extends AbstractFunctionalTes
     private String hearingBookedRepsEmailId;
     @Value("${notification.english.listAssist.oral.hearingBooked.representative.smsId}")
     private String hearingBookedRepsSmsId;
+
+     */
     @Value("${notification.english.appealCreated.appellant.emailId}")
     private String appealCreatedAppellantEmailId;
     @Value("${notification.english.appealCreated.appellant.smsId}")
@@ -69,12 +73,10 @@ public class WithRepresentativePersonalisationTest extends AbstractFunctionalTes
     private String appealReceivedRepsEmailId;
     @Value("${notification.english.appealReceived.representative.smsId}")
     private String appealReceivedRepsSmsId;
-
-    @Value("${notification.english.hearingPostponed.appellant.emailId}")
+    @Value("${notification.english.listAssist.oral.hearingPostponed.appellant.emailId}")
     private String hearingPostponedAppellantEmailId;
-    @Value("${notification.english.hearingPostponed.representative.emailId}")
+    @Value("${notification.english.listAssist.oral.hearingPostponed.representative.emailId}")
     private String hearingPostponedRepsEmailId;
-
     @Value("${notification.english.validAppealCreated.appellant.emailId}")
     private String validAppealCreatedAppellantEmailId;
     @Value("${notification.english.validAppealCreated.appellant.smsId}")

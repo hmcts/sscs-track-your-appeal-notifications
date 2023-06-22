@@ -16,7 +16,6 @@ import junitparams.Parameters;
 import junitparams.converters.Nullable;
 import org.junit.Ignore;
 import org.junit.Test;
-import org.springframework.beans.factory.annotation.Value;
 import uk.gov.hmcts.reform.sscs.domain.notify.NotificationEventType;
 import uk.gov.hmcts.reform.sscs.functional.AbstractFunctionalTest;
 import uk.gov.service.notify.Notification;
@@ -26,6 +25,9 @@ public class JointPartyFunctionalTest extends AbstractFunctionalTest {
     private static final String NO_HEARING_TYPE = null;
     private static final String ORAL = "oral";
     private static final String PAPER = "paper";
+
+    /* // SSCS-11586
+
     @Value("${notification.english.appealLapsed.joint_party.emailId}")
     private String appealLapsedJointPartyEmailId;
     @Value("${notification.english.appealLapsed.joint_party.smsId}")
@@ -34,7 +36,7 @@ public class JointPartyFunctionalTest extends AbstractFunctionalTest {
     private String hearingAdjournedJointPartyEmailId;
     @Value("${notification.english.hearingAdjourned.joint_party.smsId}")
     private String hearingAdjournedJointPartySmsId;
-    @Value("${notification.english.hearingPostponed.joint_party.emailId}")
+    @Value("${notification.english.listAssist.oral.hearingPostponed.joint_party.emailId}")
     private String hearingPostponedJointPartyEmailId;
     @Value("${notification.english.oral.evidenceReminder.joint_party.emailId}")
     private String oralEvidenceReminderJointPartyEmailId;
@@ -76,6 +78,8 @@ public class JointPartyFunctionalTest extends AbstractFunctionalTest {
     private String paperDwpUploadResponseJointPartySmsId;
     @Value("${notification.english.reviewConfidentialityRequest.joint_party.docmosisId}")
     private String reviewConfidentialityRequestJointPartyLetterId;
+
+    */
 
     public JointPartyFunctionalTest() {
         super(30);

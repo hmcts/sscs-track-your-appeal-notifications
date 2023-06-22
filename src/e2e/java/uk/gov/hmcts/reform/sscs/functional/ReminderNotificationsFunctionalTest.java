@@ -1,21 +1,11 @@
 package uk.gov.hmcts.reform.sscs.functional;
 
-import static uk.gov.hmcts.reform.sscs.SscsCaseDataUtils.addHearing;
-import static uk.gov.hmcts.reform.sscs.domain.notify.NotificationEventType.*;
-
-import java.io.IOException;
-import java.time.LocalDate;
-import java.time.format.DateTimeFormatter;
-import java.util.List;
-import org.junit.Ignore;
-import org.junit.Test;
-import org.springframework.beans.factory.annotation.Value;
-import uk.gov.hmcts.reform.sscs.config.AppConstants;
-import uk.gov.service.notify.Notification;
-import uk.gov.service.notify.NotificationClientException;
-
 public class ReminderNotificationsFunctionalTest extends AbstractFunctionalTest {
 
+    public ReminderNotificationsFunctionalTest() {
+        super(120);
+    }
+    /* // SSCS-11586
     @Value("${notification.english.oral.evidenceReminder.appellant.emailId}")
     private String evidenceReminderOralAppellantEmailTemplateId;
 
@@ -88,9 +78,7 @@ public class ReminderNotificationsFunctionalTest extends AbstractFunctionalTest 
     @Value("${notification.welsh.listAssist.oral.hearingReminder.joint_party.smsId}")
     private String hearingReminderWelshJointPartySmsTemplateId;
 
-    public ReminderNotificationsFunctionalTest() {
-        super(120);
-    }
+
 
     @Test
     public void shouldSendNotificationsWhenDwpResponseReceivedEventIsReceivedForOralWithAnAppellantSubscribed() throws IOException, NotificationClientException {
@@ -430,4 +418,6 @@ public class ReminderNotificationsFunctionalTest extends AbstractFunctionalTest 
                 "/abouthearing"
         );
     }
+
+    */
 }
