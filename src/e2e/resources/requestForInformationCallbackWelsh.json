@@ -653,5 +653,5 @@
     },
     "state": "appealCreated"
   },
-  "event_id": "requestInfoIncompleteApplication"
+  "event_id": "requestForInformation"
 }

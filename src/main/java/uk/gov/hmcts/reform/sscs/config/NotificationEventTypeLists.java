@@ -39,7 +39,7 @@ import static uk.gov.hmcts.reform.sscs.domain.notify.NotificationEventType.PROCE
 import static uk.gov.hmcts.reform.sscs.domain.notify.NotificationEventType.PROCESS_AUDIO_VIDEO_WELSH;
 import static uk.gov.hmcts.reform.sscs.domain.notify.NotificationEventType.PROVIDE_APPOINTEE_DETAILS;
 import static uk.gov.hmcts.reform.sscs.domain.notify.NotificationEventType.REISSUE_DOCUMENT;
-import static uk.gov.hmcts.reform.sscs.domain.notify.NotificationEventType.REQUEST_INFO_INCOMPLETE;
+import static uk.gov.hmcts.reform.sscs.domain.notify.NotificationEventType.REQUEST_FOR_INFORMATION;
 import static uk.gov.hmcts.reform.sscs.domain.notify.NotificationEventType.RESEND_APPEAL_CREATED;
 import static uk.gov.hmcts.reform.sscs.domain.notify.NotificationEventType.REVIEW_CONFIDENTIALITY_REQUEST;
 import static uk.gov.hmcts.reform.sscs.domain.notify.NotificationEventType.SET_ASIDE_REQUEST;
@@ -86,7 +86,7 @@ public final class NotificationEventTypeLists {
         DRAFT_TO_NON_COMPLIANT,
         POSTPONEMENT,
         REISSUE_DOCUMENT,
-        REQUEST_INFO_INCOMPLETE,
+        REQUEST_FOR_INFORMATION,
         RESEND_APPEAL_CREATED,
         STRUCK_OUT,
         SUBSCRIPTION_UPDATED,
@@ -171,7 +171,7 @@ public final class NotificationEventTypeLists {
         PROCESS_AUDIO_VIDEO,
         PROCESS_AUDIO_VIDEO_WELSH,
         PROVIDE_APPOINTEE_DETAILS,
-        REQUEST_INFO_INCOMPLETE,
+        REQUEST_FOR_INFORMATION,
         REVIEW_CONFIDENTIALITY_REQUEST,
         STRUCK_OUT,
         SET_ASIDE_REQUEST,
@@ -202,7 +202,7 @@ public final class NotificationEventTypeLists {
         ISSUE_FINAL_DECISION,
         ISSUE_FINAL_DECISION_WELSH,
         NON_COMPLIANT,
-        REQUEST_INFO_INCOMPLETE,
+        REQUEST_FOR_INFORMATION,
         RESEND_APPEAL_CREATED,
         VALID_APPEAL_CREATED
     );
@@ -236,7 +236,7 @@ public final class NotificationEventTypeLists {
         PROCESS_AUDIO_VIDEO,
         PROCESS_AUDIO_VIDEO_WELSH,
         PROVIDE_APPOINTEE_DETAILS,
-        REQUEST_INFO_INCOMPLETE,
+        REQUEST_FOR_INFORMATION,
         RESEND_APPEAL_CREATED,
         REVIEW_CONFIDENTIALITY_REQUEST,
         SET_ASIDE_REQUEST,
@@ -340,7 +340,7 @@ public final class NotificationEventTypeLists {
         ISSUE_FINAL_DECISION,
         ISSUE_FINAL_DECISION_WELSH,
         NON_COMPLIANT,
-        REQUEST_INFO_INCOMPLETE,
+        REQUEST_FOR_INFORMATION,
         SUBSCRIPTION_CREATED,
         SUBSCRIPTION_OLD,
         SUBSCRIPTION_UPDATED
@@ -349,7 +349,7 @@ public final class NotificationEventTypeLists {
     // Special list of notifications that might not be sent to appellant, depending on data set on the case
     public static final Set<NotificationEventType> EVENTS_MAYBE_INVALID_FOR_APPELLANT = EnumSet.of(
         ACTION_HEARING_RECORDING_REQUEST,
-        REQUEST_INFO_INCOMPLETE,
+        REQUEST_FOR_INFORMATION,
         REVIEW_CONFIDENTIALITY_REQUEST,
         UPDATE_OTHER_PARTY_DATA
     );
@@ -399,7 +399,7 @@ public final class NotificationEventTypeLists {
         ISSUE_FINAL_DECISION_WELSH,
         JOINT_PARTY_ADDED,
         PROVIDE_APPOINTEE_DETAILS,
-        REQUEST_INFO_INCOMPLETE,
+        REQUEST_FOR_INFORMATION,
         REVIEW_CONFIDENTIALITY_REQUEST,
         UPDATE_OTHER_PARTY_DATA,
         VALID_APPEAL_CREATED
@@ -458,7 +458,7 @@ public final class NotificationEventTypeLists {
         PROCESS_AUDIO_VIDEO,
         PROCESS_AUDIO_VIDEO_WELSH,
         PROVIDE_APPOINTEE_DETAILS,
-        REQUEST_INFO_INCOMPLETE,
+        REQUEST_FOR_INFORMATION,
         STRUCK_OUT
     );
 }
