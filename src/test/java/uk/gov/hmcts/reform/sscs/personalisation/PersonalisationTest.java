@@ -24,21 +24,7 @@ import static uk.gov.hmcts.reform.sscs.ccd.domain.HearingType.ORAL;
 import static uk.gov.hmcts.reform.sscs.ccd.domain.HearingType.PAPER;
 import static uk.gov.hmcts.reform.sscs.ccd.domain.HearingType.REGULAR;
 import static uk.gov.hmcts.reform.sscs.ccd.domain.YesNo.YES;
-import static uk.gov.hmcts.reform.sscs.config.AppConstants.DWP_ACRONYM;
-import static uk.gov.hmcts.reform.sscs.config.AppConstants.DWP_FIRST_TIER_AGENCY_GROUP;
-import static uk.gov.hmcts.reform.sscs.config.AppConstants.DWP_FIRST_TIER_AGENCY_GROUP_WELSH;
-import static uk.gov.hmcts.reform.sscs.config.AppConstants.DWP_FULL_NAME;
-import static uk.gov.hmcts.reform.sscs.config.AppConstants.DWP_FULL_NAME_WELSH;
-import static uk.gov.hmcts.reform.sscs.config.AppConstants.HEARING_TIME_FORMAT;
-import static uk.gov.hmcts.reform.sscs.config.AppConstants.HMRC_ACRONYM;
-import static uk.gov.hmcts.reform.sscs.config.AppConstants.HMRC_FULL_NAME;
-import static uk.gov.hmcts.reform.sscs.config.AppConstants.HMRC_FULL_NAME_WELSH;
-import static uk.gov.hmcts.reform.sscs.config.AppConstants.JOINT_TEXT_WITH_A_SPACE;
-import static uk.gov.hmcts.reform.sscs.config.AppConstants.JOINT_TEXT_WITH_A_SPACE_WELSH;
-import static uk.gov.hmcts.reform.sscs.config.AppConstants.MAX_DWP_RESPONSE_DAYS;
-import static uk.gov.hmcts.reform.sscs.config.AppConstants.RESPONSE_DATE_FORMAT;
-import static uk.gov.hmcts.reform.sscs.config.AppConstants.THE_STRING;
-import static uk.gov.hmcts.reform.sscs.config.AppConstants.THE_STRING_WELSH;
+import static uk.gov.hmcts.reform.sscs.config.AppConstants.*;
 import static uk.gov.hmcts.reform.sscs.config.PersonalisationConfiguration.PersonalisationKey;
 import static uk.gov.hmcts.reform.sscs.config.PersonalisationMappingConstants.*;
 import static uk.gov.hmcts.reform.sscs.config.SubscriptionType.APPELLANT;
@@ -1056,7 +1042,7 @@ public class PersonalisationTest {
                 .newSscsCaseData(response).notificationEventType(hearingNotificationEventType).build(),
                 new SubscriptionWithType(subscriptions.getAppellantSubscription(), subscriptionType, response.getAppeal().getAppellant(), response.getAppeal().getAppellant()));
 
-        assertEquals(hearingDate.format(DateTimeFormatter.ofPattern(RESPONSE_DATE_FORMAT)), result.get(HEARING_DATE_LITERAL));
+        assertEquals(hearingDate.toString(), result.get(HEARING_DATE_LITERAL));
         assertEquals("12:00 PM", result.get(HEARING_TIME).toString());
         assertEquals("The venue, 12 The Road Avenue, Village, Aberdeen, Aberdeenshire, TS3 3ST", result.get(VENUE_ADDRESS_LITERAL));
         assertEquals("http://www.googlemaps.com/aberdeenvenue", result.get(VENUE_MAP_LINK_LITERAL));
@@ -1088,7 +1074,7 @@ public class PersonalisationTest {
                 .newSscsCaseData(response).notificationEventType(hearingNotificationEventType).build(),
                 new SubscriptionWithType(subscriptions.getAppellantSubscription(), subscriptionType, response.getAppeal().getAppellant(), response.getAppeal().getAppellant()));
 
-        assertEquals(hearingDate.format(DateTimeFormatter.ofPattern(RESPONSE_DATE_FORMAT)), result.get(HEARING_DATE_LITERAL));
+        assertEquals(hearingDate.toString(), result.get(HEARING_DATE_LITERAL));
         assertEquals("12:00 PM", result.get(HEARING_TIME).toString().toUpperCase(Locale.getDefault()));
         assertEquals("The venue, 12 The Road Avenue, Village, Aberdeen, Aberdeenshire, TS3 3ST", result.get(VENUE_ADDRESS_LITERAL));
         assertEquals("http://www.googlemaps.com/aberdeenvenue", result.get(VENUE_MAP_LINK_LITERAL));
@@ -1216,7 +1202,7 @@ public class PersonalisationTest {
         assertThat(hearingDetails.getHearingStatus()).isEqualTo(hearing.getValue().getHearingStatus());
         assertThat(hearingDetails.getVenue()).isEqualTo(hearing.getValue().getVenue());
 
-        LocalDate dateParsed = LocalDate.parse(result.get(HEARING_DATE_LITERAL).toString(), DateTimeFormatter.ofPattern(RESPONSE_DATE_FORMAT));
+        LocalDate dateParsed = LocalDate.parse(result.get(HEARING_DATE_LITERAL).toString(), CC_DATE_FORMAT);
         assertThat(dateParsed).isEqualTo(hearing.getValue().getStart().toLocalDate());
         LocalTime time = LocalTime.parse(result.get(HEARING_TIME).toString(), DateTimeFormatter.ofPattern(HEARING_TIME_FORMAT, Locale.ENGLISH));
         assertThat(time).isCloseTo(hearing.getValue().getStart().toLocalTime(), within(1, ChronoUnit.MINUTES));
