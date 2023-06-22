@@ -11,13 +11,15 @@ import static uk.gov.hmcts.reform.sscs.domain.notify.NotificationEventType.APPEA
 import static uk.gov.hmcts.reform.sscs.domain.notify.NotificationEventType.APPEAL_RECEIVED;
 import static uk.gov.hmcts.reform.sscs.domain.notify.NotificationEventType.APPEAL_WITHDRAWN;
 import static uk.gov.hmcts.reform.sscs.domain.notify.NotificationEventType.CASE_UPDATED;
+import static uk.gov.hmcts.reform.sscs.domain.notify.NotificationEventType.DIRECTION_ISSUED;
+import static uk.gov.hmcts.reform.sscs.domain.notify.NotificationEventType.DIRECTION_ISSUED_WELSH;
 import static uk.gov.hmcts.reform.sscs.domain.notify.NotificationEventType.DWP_APPEAL_LAPSED;
 import static uk.gov.hmcts.reform.sscs.domain.notify.NotificationEventType.EVIDENCE_RECEIVED;
 import static uk.gov.hmcts.reform.sscs.domain.notify.NotificationEventType.HEARING_BOOKED;
 import static uk.gov.hmcts.reform.sscs.domain.notify.NotificationEventType.HMCTS_APPEAL_LAPSED;
 import static uk.gov.hmcts.reform.sscs.domain.notify.NotificationEventType.NON_COMPLIANT;
 import static uk.gov.hmcts.reform.sscs.domain.notify.NotificationEventType.POSTPONEMENT;
-import static uk.gov.hmcts.reform.sscs.domain.notify.NotificationEventType.REQUEST_INFO_INCOMPLETE;
+import static uk.gov.hmcts.reform.sscs.domain.notify.NotificationEventType.REQUEST_FOR_INFORMATION;
 import static uk.gov.hmcts.reform.sscs.domain.notify.NotificationEventType.REVIEW_CONFIDENTIALITY_REQUEST;
 import static uk.gov.hmcts.reform.sscs.domain.notify.NotificationEventType.STRUCK_OUT;
 import static uk.gov.hmcts.reform.sscs.domain.notify.NotificationEventType.SUBSCRIPTION_UPDATED;
@@ -60,11 +62,15 @@ import uk.gov.hmcts.reform.sscs.domain.SscsCaseDataWrapper;
 import uk.gov.hmcts.reform.sscs.domain.SubscriptionWithType;
 import uk.gov.hmcts.reform.sscs.domain.notify.NotificationEventType;
 import uk.gov.hmcts.reform.sscs.model.PartyItemList;
+import uk.gov.hmcts.reform.sscs.reference.data.model.ConfidentialityPartyMembers;
+import uk.gov.hmcts.reform.sscs.reference.data.model.ConfidentialityType;
 
 @RunWith(JUnitParamsRunner.class)
 public class CcdNotificationWrapperTest {
 
     private CcdNotificationWrapper ccdNotificationWrapper;
+    private static final String PAPER = "paper";
+    private static final String ORAL = "oral";
 
     @Test
     @Parameters({"paper, PAPER", "oral, ORAL"})
@@ -247,7 +253,7 @@ public class CcdNotificationWrapperTest {
                 SscsCaseDataWrapper.builder()
                         .newSscsCaseData(SscsCaseData.builder().otherParties(otherParties)
                                 .appeal(Appeal.builder()
-                                        .hearingType("Oral")
+                                        .hearingType(ORAL)
                                         .appellant(Appellant.builder().appointee(appointee).build())
                                         .build())
                                 .subscriptions(Subscriptions.builder()
@@ -343,6 +349,92 @@ public class CcdNotificationWrapperTest {
     }
 
     @Test
+    @Parameters(method = "getDirectionIssuedSubscriptionBasedOnConfidentialityForAppellantAndRepresentative")
+    public void givenSubscriptions_shouldGetAppellantAndRepSubscriptionTypeWhenConfidentialIsSelected(NotificationEventType notificationEventType, String confidentialityType, List<String> chosenMembers, List<SubscriptionType> requiredMembers) {
+        ccdNotificationWrapper = buildCcdNotificationWrapperBasedOnEventTypeWithRep(notificationEventType);
+        SscsCaseData sscsCaseData = ccdNotificationWrapper.getNewSscsCaseData();
+        sscsCaseData.setConfidentialityType(confidentialityType);
+        chosenMembers.forEach(o -> createPartiesOnTheCase(sscsCaseData, o));
+
+        assertDirectionsNoticeConfidentiality(sscsCaseData, chosenMembers, requiredMembers);
+    }
+
+    @Test
+    @Parameters(method = "getDirectionIssuedSubscriptionBasedOnConfidentialityForRestOfTheOtherParties")
+    public void givenSubscriptions_shouldGetAppointeeAndJointPartyTypeWhenConfidentialIsSelected(NotificationEventType notificationEventType, String confidentialityType, List<String> chosenMembers, List<SubscriptionType> requiredMembers, String hearingType) {
+        ccdNotificationWrapper = buildCcdNotificationWrapperBasedOnEventTypeWithAppointeeAndJointParty(notificationEventType, hearingType);
+        SscsCaseData sscsCaseData = ccdNotificationWrapper.getNewSscsCaseData();
+        sscsCaseData.setConfidentialityType(confidentialityType);
+        chosenMembers.forEach(o -> createPartiesOnTheCase(sscsCaseData, o));
+        assertDirectionsNoticeConfidentiality(sscsCaseData, chosenMembers, requiredMembers);
+    }
+
+    public void assertDirectionsNoticeConfidentiality(SscsCaseData sscsCaseData, List<String> chosenMembers, List<SubscriptionType> requiredMembers) {
+        sscsCaseData.setSendDirectionNoticeToAppellantOrAppointee(chosenMembers.contains(ConfidentialityPartyMembers.APPELLANT_OR_APPOINTEE.getCode()) ? YesNo.YES : YesNo.NO);
+        sscsCaseData.setSendDirectionNoticeToFTA(chosenMembers.contains(ConfidentialityPartyMembers.FTA.getCode()) ? YesNo.YES : YesNo.NO);
+
+        YesNo hasRepresentative = chosenMembers.contains(ConfidentialityPartyMembers.REPRESENTATIVE.getCode()) ? YesNo.YES : YesNo.NO;
+        sscsCaseData.setSendDirectionNoticeToRepresentative(hasRepresentative);
+
+        YesNo hasOtherPartyRep = chosenMembers.contains(ConfidentialityPartyMembers.OTHER_PARTY_REP.getCode()) ? YesNo.YES : YesNo.NO;
+        sscsCaseData.setSendDirectionNoticeToOtherPartyRep(hasOtherPartyRep);
+        YesNo hasOtherPartyAppointee = chosenMembers.contains(ConfidentialityPartyMembers.OTHER_PARTY_APPOINTEE.getCode()) ? YesNo.YES : YesNo.NO;
+        sscsCaseData.setSendDirectionNoticeToOtherPartyAppointee(hasOtherPartyAppointee);
+
+        YesNo hasOtherParties = chosenMembers.contains(ConfidentialityPartyMembers.OTHER_PARTY.getCode()) ? YesNo.YES : YesNo.NO;
+        sscsCaseData.setSendDirectionNoticeToOtherParty(hasOtherParties);
+
+        YesNo hasJointParty = chosenMembers.contains(ConfidentialityPartyMembers.JOINT_PARTY.getCode()) ? YesNo.YES : YesNo.NO;
+        sscsCaseData.setSendDirectionNoticeToJointParty(hasJointParty);
+
+        List<SubscriptionWithType> subsWithTypeList = ccdNotificationWrapper.getSubscriptionsBasedOnNotificationType();
+        Assert.assertEquals(requiredMembers.size(), subsWithTypeList.size());
+        subsWithTypeList.forEach(o -> Assert.assertTrue(requiredMembers.contains(o.getSubscriptionType())));
+    }
+
+    private void createPartiesOnTheCase(SscsCaseData sscsCaseData, String partyMember) {
+        CcdValue<OtherParty> otherParty = CcdValue.<OtherParty>builder().value(OtherParty.builder()
+                .name(Name.builder().title("Mr").firstName("Harrison").lastName("Kane").build())
+                .address(Address.builder()
+                        .line1("First Floor")
+                        .line2("My Building")
+                        .town("222 Corporation Street")
+                        .county("Glasgow")
+                        .postcode("GL11 6TF")
+                        .build())
+                .build()).build();
+        Representative rep = Representative.builder()
+                .name(Name.builder().firstName("Harry").lastName("Potter").build())
+                .hasRepresentative("Yes").build();
+
+        if (ConfidentialityPartyMembers.REPRESENTATIVE.getCode().equals(partyMember)) {
+            sscsCaseData.getAppeal().setRep(Representative.builder().hasRepresentative("yes").build());
+
+        } else if (ConfidentialityPartyMembers.OTHER_PARTY_REP.getCode().equals(partyMember)) {
+            otherParty.getValue().setRep(rep);
+            sscsCaseData.setOtherParties(List.of(otherParty));
+
+        } else if (ConfidentialityPartyMembers.OTHER_PARTY_APPOINTEE.getCode().equals(partyMember)) {
+            Appointee appointee = Appointee.builder()
+                    .name(Name.builder().firstName("APPOINTEE").lastName("Test").build())
+                    .build();
+            otherParty.getValue().setAppointee(appointee);
+            otherParty.getValue().setIsAppointee("Yes");
+            sscsCaseData.setOtherParties(List.of(otherParty));
+
+        } else if (ConfidentialityPartyMembers.OTHER_PARTY.getCode().equals(partyMember)) {
+            sscsCaseData.setOtherParties(List.of(otherParty));
+
+        } else if (ConfidentialityPartyMembers.JOINT_PARTY.getCode().equals(partyMember)) {
+            JointParty jointParty = JointParty.builder()
+                    .hasJointParty(YES)
+                    .name(Name.builder().firstName("Joint").lastName("Party").build())
+                    .build();
+            sscsCaseData.setJointParty(jointParty);
+        }
+    }
+
+    @Test
     public void givenSubscriptionForAppellantRepAndJointParty_shouldGetSubscriptionTypeListForAppellantAndJointPartyOnlyWhenBothGranted() {
         ccdNotificationWrapper = buildCcdNotificationWrapperBasedOnEventTypeWithJointParty(REVIEW_CONFIDENTIALITY_REQUEST, Representative.builder().hasRepresentative("Yes").build(), true);
         ccdNotificationWrapper.getNewSscsCaseData().setConfidentialityRequestOutcomeAppellant(DatedRequestOutcome.builder().requestOutcome(RequestOutcome.GRANTED).build());
@@ -408,8 +500,8 @@ public class CcdNotificationWrapperTest {
     }
 
     @Test
-    public void givenRequestInfoIncompleteForAppointeeWithSubscription_shouldSendRequestInfoNotification() {
-        ccdNotificationWrapper = buildCcdNotificationWrapperBasedOnEventTypeWithAppointeeAndJointParty(REQUEST_INFO_INCOMPLETE, "oral");
+    public void givenRequestForInformationForAppointeeWithSubscription_shouldSendRequestInfoNotification() {
+        ccdNotificationWrapper = buildCcdNotificationWrapperBasedOnEventTypeWithAppointeeAndJointParty(REQUEST_FOR_INFORMATION, ORAL);
         ccdNotificationWrapper.getNewSscsCaseData().setInformationFromPartySelected(new DynamicList(new DynamicListItem(PartyItemList.APPELLANT.getCode(), PartyItemList.APPELLANT.getLabel()), new ArrayList<>()));
         List<SubscriptionWithType> subsWithTypeList = ccdNotificationWrapper.getSubscriptionsBasedOnNotificationType();
         Assert.assertEquals(1, subsWithTypeList.size());
@@ -417,8 +509,8 @@ public class CcdNotificationWrapperTest {
     }
 
     @Test
-    public void givenRequestInfoIncompleteForAppellantWithSubscription_shouldSendRequestInfoNotification() {
-        ccdNotificationWrapper = buildCcdNotificationWrapperBasedOnEventType(REQUEST_INFO_INCOMPLETE);
+    public void givenRequestForInformationForAppellantWithSubscription_shouldSendRequestInfoNotification() {
+        ccdNotificationWrapper = buildCcdNotificationWrapperBasedOnEventType(REQUEST_FOR_INFORMATION);
         ccdNotificationWrapper.getNewSscsCaseData().setInformationFromPartySelected(new DynamicList(new DynamicListItem(PartyItemList.APPELLANT.getCode(), PartyItemList.APPELLANT.getLabel()), new ArrayList<>()));
         List<SubscriptionWithType> subsWithTypeList = ccdNotificationWrapper.getSubscriptionsBasedOnNotificationType();
         Assert.assertEquals(1, subsWithTypeList.size());
@@ -426,8 +518,8 @@ public class CcdNotificationWrapperTest {
     }
 
     @Test
-    public void givenRequestInfoIncompleteForRepWithSubscription_shouldSendRequestInfoNotification() {
-        ccdNotificationWrapper = buildCcdNotificationWrapperBasedOnEventTypeWithRep(REQUEST_INFO_INCOMPLETE);
+    public void givenRequestForInformationForRepWithSubscription_shouldSendRequestInfoNotification() {
+        ccdNotificationWrapper = buildCcdNotificationWrapperBasedOnEventTypeWithRep(REQUEST_FOR_INFORMATION);
         ccdNotificationWrapper.getNewSscsCaseData().setInformationFromPartySelected(new DynamicList(new DynamicListItem(PartyItemList.REPRESENTATIVE.getCode(), PartyItemList.REPRESENTATIVE.getLabel()), new ArrayList<>()));
         List<SubscriptionWithType> subsWithTypeList = ccdNotificationWrapper.getSubscriptionsBasedOnNotificationType();
         Assert.assertEquals(1, subsWithTypeList.size());
@@ -435,8 +527,8 @@ public class CcdNotificationWrapperTest {
     }
 
     @Test
-    public void givenRequestInfoIncompleteForJointPartyWithSubscription_shouldSendRequestInfoNotification() {
-        ccdNotificationWrapper = buildCcdNotificationWrapperBasedOnEventTypeWithAppointeeAndJointParty(REQUEST_INFO_INCOMPLETE, "paper");
+    public void givenRequestForInformationForJointPartyWithSubscription_shouldSendRequestInfoNotification() {
+        ccdNotificationWrapper = buildCcdNotificationWrapperBasedOnEventTypeWithAppointeeAndJointParty(REQUEST_FOR_INFORMATION, PAPER);
         ccdNotificationWrapper.getNewSscsCaseData().setInformationFromPartySelected(new DynamicList(new DynamicListItem(PartyItemList.JOINT_PARTY.getCode(), PartyItemList.JOINT_PARTY.getLabel()), new ArrayList<>()));
         List<SubscriptionWithType> subsWithTypeList = ccdNotificationWrapper.getSubscriptionsBasedOnNotificationType();
         Assert.assertEquals(1, subsWithTypeList.size());
@@ -469,21 +561,21 @@ public class CcdNotificationWrapperTest {
     @Test
     public void givenNoOtherPartyInTheCase_thenReturnEmptySubscription() {
         ccdNotificationWrapper = buildNotificationWrapperWithOtherParty(UPDATE_OTHER_PARTY_DATA, null);
-        List<SubscriptionWithType> subsWithTypeList = ccdNotificationWrapper.getOtherPartySubscriptions();
+        List<SubscriptionWithType> subsWithTypeList = ccdNotificationWrapper.getOtherPartySubscriptions(ccdNotificationWrapper.getNewSscsCaseData(), ccdNotificationWrapper.getNotificationType());
         Assert.assertTrue(subsWithTypeList.isEmpty());
     }
 
     @Test
     public void givenUpdateOtherPartyDataEventAndSendNotificationFlagIsNotSetInOtherParty_thenReturnEmptySubscription() {
         ccdNotificationWrapper = buildNotificationWrapperWithOtherParty(UPDATE_OTHER_PARTY_DATA, buildOtherPartyData(false, true, true));
-        List<SubscriptionWithType> subsWithTypeList = ccdNotificationWrapper.getOtherPartySubscriptions();
+        List<SubscriptionWithType> subsWithTypeList = ccdNotificationWrapper.getOtherPartySubscriptions(ccdNotificationWrapper.getNewSscsCaseData(), ccdNotificationWrapper.getNotificationType());
         Assert.assertTrue(subsWithTypeList.isEmpty());
     }
 
     @Test
     public void givenUpdateOtherPartyDataEventAndSendNotificationFlagIsSetInOtherPartyWithAppointee_thenReturnAllOtherPartySubscription() {
         ccdNotificationWrapper = buildNotificationWrapperWithOtherParty(UPDATE_OTHER_PARTY_DATA, buildOtherPartyData(true, true, true));
-        List<SubscriptionWithType> subsWithTypeList = ccdNotificationWrapper.getOtherPartySubscriptions();
+        List<SubscriptionWithType> subsWithTypeList = ccdNotificationWrapper.getOtherPartySubscriptions(ccdNotificationWrapper.getNewSscsCaseData(), ccdNotificationWrapper.getNotificationType());
         Assertions.assertThat(subsWithTypeList)
             .hasSize(2)
             .extracting(SubscriptionWithType::getPartyId)
@@ -494,7 +586,7 @@ public class CcdNotificationWrapperTest {
     public void givenUpdateOtherPartyDataEventAndSendNotificationFlagIsSetInOtherPartyWithNoAppointee_thenReturnAllOtherPartySubscription() {
 
         ccdNotificationWrapper = buildNotificationWrapperWithOtherParty(UPDATE_OTHER_PARTY_DATA, buildOtherPartyData(true, false, true));
-        List<SubscriptionWithType> subsWithTypeList = ccdNotificationWrapper.getOtherPartySubscriptions();
+        List<SubscriptionWithType> subsWithTypeList = ccdNotificationWrapper.getOtherPartySubscriptions(ccdNotificationWrapper.getNewSscsCaseData(), ccdNotificationWrapper.getNotificationType());
         Assertions.assertThat(subsWithTypeList)
             .hasSize(2)
             .extracting(SubscriptionWithType::getPartyId)
@@ -529,7 +621,7 @@ public class CcdNotificationWrapperTest {
         "POSTPONEMENT",
         "PROCESS_AUDIO_VIDEO",
         "PROCESS_AUDIO_VIDEO_WELSH",
-        "REQUEST_INFO_INCOMPLETE",
+        "REQUEST_FOR_INFORMATION",
         "STRUCK_OUT",
         "SUBSCRIPTION_CREATED",
         "SUBSCRIPTION_OLD",
@@ -562,7 +654,7 @@ public class CcdNotificationWrapperTest {
                 || type.equals(SUBSCRIPTION_UPDATED)
                 || type.equals(HEARING_BOOKED)
                 || type.equals(STRUCK_OUT)
-                || type.equals(REQUEST_INFO_INCOMPLETE)
+                || type.equals(REQUEST_FOR_INFORMATION)
                 || type.equals(NON_COMPLIANT)
                 || type.equals(REVIEW_CONFIDENTIALITY_REQUEST)
                 || type.equals(ACTION_HEARING_RECORDING_REQUEST)
@@ -570,4 +662,52 @@ public class CcdNotificationWrapperTest {
             )).toArray();
     }
 
+    @SuppressWarnings({"Indentation", "unused"})
+    private Object[] getDirectionIssuedSubscriptionBasedOnConfidentialityForAppellantAndRepresentative() {
+        return new Object[]{
+                new Object[]{UPDATE_OTHER_PARTY_DATA, null, List.of(), List.of()},
+                new Object[]{DIRECTION_ISSUED, ConfidentialityType.GENERAL.getCode(), List.of(), List.of(SubscriptionType.APPELLANT, SubscriptionType.REPRESENTATIVE)},
+                new Object[]{DIRECTION_ISSUED, ConfidentialityType.CONFIDENTIAL.getCode(), List.of(ConfidentialityPartyMembers.APPELLANT_OR_APPOINTEE.getCode()), List.of(SubscriptionType.APPELLANT)},
+                new Object[]{DIRECTION_ISSUED, ConfidentialityType.CONFIDENTIAL.getCode(), List.of(ConfidentialityPartyMembers.REPRESENTATIVE.getCode()), List.of(SubscriptionType.REPRESENTATIVE)},
+                new Object[]{DIRECTION_ISSUED, ConfidentialityType.CONFIDENTIAL.getCode(), List.of(ConfidentialityPartyMembers.APPELLANT_OR_APPOINTEE.getCode(), ConfidentialityPartyMembers.REPRESENTATIVE.getCode()), List.of(SubscriptionType.APPELLANT, SubscriptionType.REPRESENTATIVE)},
+                new Object[]{DIRECTION_ISSUED_WELSH, ConfidentialityType.GENERAL.getCode(), List.of(), List.of(SubscriptionType.APPELLANT, SubscriptionType.REPRESENTATIVE)},
+                new Object[]{DIRECTION_ISSUED_WELSH, ConfidentialityType.CONFIDENTIAL.getCode(), List.of(ConfidentialityPartyMembers.APPELLANT_OR_APPOINTEE.getCode()), List.of(SubscriptionType.APPELLANT)},
+                new Object[]{DIRECTION_ISSUED_WELSH, ConfidentialityType.CONFIDENTIAL.getCode(), List.of(ConfidentialityPartyMembers.REPRESENTATIVE.getCode()), List.of(SubscriptionType.REPRESENTATIVE)},
+                new Object[]{DIRECTION_ISSUED_WELSH, ConfidentialityType.CONFIDENTIAL.getCode(), List.of(ConfidentialityPartyMembers.APPELLANT_OR_APPOINTEE.getCode(), ConfidentialityPartyMembers.REPRESENTATIVE.getCode()), List.of(SubscriptionType.APPELLANT, SubscriptionType.REPRESENTATIVE)},
+        };
+    }
+
+    @SuppressWarnings({"Indentation", "unused"})
+    private Object[] getDirectionIssuedSubscriptionBasedOnConfidentialityForRestOfTheOtherParties() {
+        return new Object[]{
+                new Object[]{DIRECTION_ISSUED, ConfidentialityType.GENERAL.getCode(), List.of(), List.of(SubscriptionType.APPOINTEE, SubscriptionType.JOINT_PARTY), PAPER},
+                new Object[]{DIRECTION_ISSUED, ConfidentialityType.GENERAL.getCode(), List.of(), List.of(SubscriptionType.APPOINTEE, SubscriptionType.JOINT_PARTY), ORAL},
+                new Object[]{DIRECTION_ISSUED, ConfidentialityType.CONFIDENTIAL.getCode(), List.of(ConfidentialityPartyMembers.APPELLANT_OR_APPOINTEE.getCode()), List.of(SubscriptionType.APPOINTEE), PAPER},
+                new Object[]{DIRECTION_ISSUED, ConfidentialityType.CONFIDENTIAL.getCode(), List.of(ConfidentialityPartyMembers.APPELLANT_OR_APPOINTEE.getCode()), List.of(SubscriptionType.APPOINTEE), ORAL},
+                new Object[]{DIRECTION_ISSUED, ConfidentialityType.CONFIDENTIAL.getCode(), List.of(ConfidentialityPartyMembers.JOINT_PARTY.getCode()), List.of(SubscriptionType.JOINT_PARTY), PAPER},
+                new Object[]{DIRECTION_ISSUED, ConfidentialityType.CONFIDENTIAL.getCode(), List.of(ConfidentialityPartyMembers.JOINT_PARTY.getCode()), List.of(SubscriptionType.JOINT_PARTY), ORAL},
+                new Object[]{DIRECTION_ISSUED, ConfidentialityType.CONFIDENTIAL.getCode(), List.of(ConfidentialityPartyMembers.APPELLANT_OR_APPOINTEE.getCode(), ConfidentialityPartyMembers.JOINT_PARTY.getCode()), List.of(SubscriptionType.APPOINTEE, SubscriptionType.JOINT_PARTY), PAPER},
+                new Object[]{DIRECTION_ISSUED, ConfidentialityType.CONFIDENTIAL.getCode(), List.of(ConfidentialityPartyMembers.APPELLANT_OR_APPOINTEE.getCode(), ConfidentialityPartyMembers.JOINT_PARTY.getCode()), List.of(SubscriptionType.APPOINTEE, SubscriptionType.JOINT_PARTY), ORAL},
+                new Object[]{DIRECTION_ISSUED, ConfidentialityType.CONFIDENTIAL.getCode(), List.of(ConfidentialityPartyMembers.OTHER_PARTY_REP.getCode(), ConfidentialityPartyMembers.JOINT_PARTY.getCode()), List.of(SubscriptionType.OTHER_PARTY, SubscriptionType.JOINT_PARTY), PAPER},
+                new Object[]{DIRECTION_ISSUED, ConfidentialityType.CONFIDENTIAL.getCode(), List.of(ConfidentialityPartyMembers.OTHER_PARTY_REP.getCode(), ConfidentialityPartyMembers.JOINT_PARTY.getCode()), List.of(SubscriptionType.OTHER_PARTY, SubscriptionType.JOINT_PARTY), ORAL},
+                new Object[]{DIRECTION_ISSUED, ConfidentialityType.CONFIDENTIAL.getCode(), List.of(ConfidentialityPartyMembers.OTHER_PARTY.getCode(), ConfidentialityPartyMembers.OTHER_PARTY.getCode()), List.of(SubscriptionType.OTHER_PARTY), PAPER},
+                new Object[]{DIRECTION_ISSUED, ConfidentialityType.CONFIDENTIAL.getCode(), List.of(ConfidentialityPartyMembers.OTHER_PARTY.getCode(), ConfidentialityPartyMembers.OTHER_PARTY.getCode()), List.of(SubscriptionType.OTHER_PARTY), ORAL},
+                new Object[]{DIRECTION_ISSUED, ConfidentialityType.CONFIDENTIAL.getCode(), List.of(ConfidentialityPartyMembers.OTHER_PARTY_APPOINTEE.getCode()), List.of(SubscriptionType.OTHER_PARTY), PAPER},
+                new Object[]{DIRECTION_ISSUED, ConfidentialityType.CONFIDENTIAL.getCode(), List.of(ConfidentialityPartyMembers.OTHER_PARTY_APPOINTEE.getCode()), List.of(SubscriptionType.OTHER_PARTY), ORAL},
+                new Object[]{DIRECTION_ISSUED_WELSH, ConfidentialityType.GENERAL.getCode(), List.of(), List.of(SubscriptionType.APPOINTEE, SubscriptionType.JOINT_PARTY), PAPER},
+                new Object[]{DIRECTION_ISSUED_WELSH, ConfidentialityType.GENERAL.getCode(), List.of(), List.of(SubscriptionType.APPOINTEE, SubscriptionType.JOINT_PARTY), ORAL},
+                new Object[]{DIRECTION_ISSUED_WELSH, ConfidentialityType.CONFIDENTIAL.getCode(), List.of(ConfidentialityPartyMembers.APPELLANT_OR_APPOINTEE.getCode()), List.of(SubscriptionType.APPOINTEE), PAPER},
+                new Object[]{DIRECTION_ISSUED_WELSH, ConfidentialityType.CONFIDENTIAL.getCode(), List.of(ConfidentialityPartyMembers.APPELLANT_OR_APPOINTEE.getCode()), List.of(SubscriptionType.APPOINTEE), ORAL},
+                new Object[]{DIRECTION_ISSUED_WELSH, ConfidentialityType.CONFIDENTIAL.getCode(), List.of(ConfidentialityPartyMembers.JOINT_PARTY.getCode()), List.of(SubscriptionType.JOINT_PARTY), PAPER},
+                new Object[]{DIRECTION_ISSUED_WELSH, ConfidentialityType.CONFIDENTIAL.getCode(), List.of(ConfidentialityPartyMembers.JOINT_PARTY.getCode()), List.of(SubscriptionType.JOINT_PARTY), ORAL},
+                new Object[]{DIRECTION_ISSUED_WELSH, ConfidentialityType.CONFIDENTIAL.getCode(), List.of(ConfidentialityPartyMembers.APPELLANT_OR_APPOINTEE.getCode(), ConfidentialityPartyMembers.JOINT_PARTY.getCode()), List.of(SubscriptionType.APPOINTEE, SubscriptionType.JOINT_PARTY), PAPER},
+                new Object[]{DIRECTION_ISSUED_WELSH, ConfidentialityType.CONFIDENTIAL.getCode(), List.of(ConfidentialityPartyMembers.APPELLANT_OR_APPOINTEE.getCode(), ConfidentialityPartyMembers.JOINT_PARTY.getCode()), List.of(SubscriptionType.APPOINTEE, SubscriptionType.JOINT_PARTY), ORAL},
+                new Object[]{DIRECTION_ISSUED_WELSH, ConfidentialityType.CONFIDENTIAL.getCode(), List.of(ConfidentialityPartyMembers.OTHER_PARTY_REP.getCode(), ConfidentialityPartyMembers.JOINT_PARTY.getCode()), List.of(SubscriptionType.OTHER_PARTY, SubscriptionType.JOINT_PARTY), PAPER},
+                new Object[]{DIRECTION_ISSUED_WELSH, ConfidentialityType.CONFIDENTIAL.getCode(), List.of(ConfidentialityPartyMembers.OTHER_PARTY_REP.getCode(), ConfidentialityPartyMembers.JOINT_PARTY.getCode()), List.of(SubscriptionType.OTHER_PARTY, SubscriptionType.JOINT_PARTY), ORAL},
+                new Object[]{DIRECTION_ISSUED_WELSH, ConfidentialityType.CONFIDENTIAL.getCode(), List.of(ConfidentialityPartyMembers.OTHER_PARTY.getCode(), ConfidentialityPartyMembers.OTHER_PARTY.getCode()), List.of(SubscriptionType.OTHER_PARTY), PAPER},
+                new Object[]{DIRECTION_ISSUED_WELSH, ConfidentialityType.CONFIDENTIAL.getCode(), List.of(ConfidentialityPartyMembers.OTHER_PARTY.getCode(), ConfidentialityPartyMembers.OTHER_PARTY.getCode()), List.of(SubscriptionType.OTHER_PARTY), ORAL},
+                new Object[]{DIRECTION_ISSUED_WELSH, ConfidentialityType.CONFIDENTIAL.getCode(), List.of(ConfidentialityPartyMembers.OTHER_PARTY_APPOINTEE.getCode()), List.of(SubscriptionType.OTHER_PARTY), PAPER},
+                new Object[]{DIRECTION_ISSUED_WELSH, ConfidentialityType.CONFIDENTIAL.getCode(), List.of(ConfidentialityPartyMembers.OTHER_PARTY_APPOINTEE.getCode()), List.of(SubscriptionType.OTHER_PARTY), ORAL},
+        };
+    }
 }

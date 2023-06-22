@@ -25,7 +25,7 @@ public interface NotificationWrapper {
 
     Subscription getJointPartySubscription();
 
-    List<SubscriptionWithType> getOtherPartySubscriptions();
+    List<SubscriptionWithType> getOtherPartySubscriptions(SscsCaseData sscsCaseData, NotificationEventType notificationEventType);
 
     SscsCaseDataWrapper getSscsCaseDataWrapper();
 
