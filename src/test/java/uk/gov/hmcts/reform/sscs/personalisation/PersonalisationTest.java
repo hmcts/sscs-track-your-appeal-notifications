@@ -1074,6 +1074,7 @@ public class PersonalisationTest {
                 .newSscsCaseData(response).notificationEventType(hearingNotificationEventType).build(),
                 new SubscriptionWithType(subscriptions.getAppellantSubscription(), subscriptionType, response.getAppeal().getAppellant(), response.getAppeal().getAppellant()));
 
+        assertEquals("Welsh hearing date is not set", LocalDateToWelshStringConverter.convert(hearingDate), result.get(HEARING_DATE_WELSH));
         assertEquals(hearingDate.toString(), result.get(HEARING_DATE_LITERAL));
         assertEquals("12:00 PM", result.get(HEARING_TIME).toString().toUpperCase(Locale.getDefault()));
         assertEquals("The venue, 12 The Road Avenue, Village, Aberdeen, Aberdeenshire, TS3 3ST", result.get(VENUE_ADDRESS_LITERAL));

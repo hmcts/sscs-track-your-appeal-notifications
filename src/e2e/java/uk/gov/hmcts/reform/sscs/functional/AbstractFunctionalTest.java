@@ -285,8 +285,6 @@ public abstract class AbstractFunctionalTest {
 
         json = updateJson(json, eventType);
 
-        log.info("#2222 {},      {}\n\n\n{}", json, eventType, callbackUrl);
-
         RestAssured.useRelaxedHTTPSValidation();
         RestAssured
             .given()
