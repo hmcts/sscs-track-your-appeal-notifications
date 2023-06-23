@@ -30,7 +30,7 @@ spring:
 spring.main.allow-bean-definition-overriding: true  # https://github.com/spring-projects/spring-boot/wiki/Spring-Boot-2.1-Release-Notes#bean-overriding
 
 springdoc:
-  packagesToScan: "uk.gov.hmcts.sscs.controllers"
+  packagesToScan: "uk.gov.hmcts.reform.sscs.controller"
 
 logging:
   level:
@@ -1638,3 +1638,10 @@ welsh-months:
   10: "Hydref"
   11: "Tachwedd"
   12: "Rhagfyr"
+<<<<<<< HEAD
+=======
+
+judicial-ref:
+  api:
+    url: ${JUDICIAL_REF_API_URL:http://localhost:5555}
+>>>>>>> ec1eb34b (SSCS-11053: use correct pkg for springdoc)
