@@ -1468,10 +1468,6 @@ text:
       OTHER: "Arall"
       CHILD_MAINTENANCE_NUMBER: "Child maintenance number: "
 
-judicial-ref:
-  api:
-    url: ${JUDICIAL_REF_API_URL:http://localhost:5555}
-
 ---
 # default profile (development, production etc.)
 spring:
@@ -1555,3 +1551,7 @@ welsh-months:
   10: "Hydref"
   11: "Tachwedd"
   12: "Rhagfyr"
+
+judicial-ref:
+  api:
+    url: ${JUDICIAL_REF_API_URL:http://localhost:5555}
