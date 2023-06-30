@@ -152,7 +152,7 @@ dependencyManagement {
         dependency group: 'org.apache.santuario', name: 'xmlsec', version: '3.0.2'
 
         // checkstyle needs a certain version and so does spring fox swagger, so can't use latest
-        dependencySet(group: 'com.google.guava', version: '31.1-jre') {
+        dependencySet(group: 'com.google.guava', version: '32.0.1-jre') {
             entry 'guava'
         }
 
