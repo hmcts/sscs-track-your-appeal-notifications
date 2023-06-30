@@ -413,13 +413,6 @@ public final class NotificationEventTypeLists {
         VALID_APPEAL_CREATED
     );
 
-    public static final Set<NotificationEventType> EVENTS_TO_STORE_IN_CCD = EnumSet.of(
-        CORRECTION_REQUEST,
-        LIBERTY_TO_APPLY_REQUEST,
-        SET_ASIDE_REQUEST,
-        STATEMENT_OF_REASONS_REQUEST
-    );
-
     public static final Set<NotificationEventType> EVENTS_FOR_ACTION_FURTHER_EVIDENCE = EnumSet.of(
         CORRECTION_REQUEST,
         LIBERTY_TO_APPLY_REQUEST,

@@ -120,7 +120,6 @@ public class NotificationService {
             if (notificationType.isToBeDelayed()
                     && !fromReminderService
                     && !functionalTest(notificationWrapper.getNewSscsCaseData())) {
-
                 log.info("Notification event {} is delayed and scheduled for case id {}", notificationType.getId(), caseId);
                 notificationHandler.scheduleNotification(notificationWrapper, ZonedDateTime.now().plusSeconds(notificationType.getDelayInSeconds()));
             } else {

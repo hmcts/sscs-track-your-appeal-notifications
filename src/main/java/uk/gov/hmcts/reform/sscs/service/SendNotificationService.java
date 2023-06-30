@@ -314,14 +314,6 @@ public class SendNotificationService {
 
                 if (ArrayUtils.isNotEmpty(bundledLetter)) {
                     notificationHandler.sendNotification(wrapper, notification.getDocmosisLetterTemplate(), NOTIFICATION_TYPE_LETTER, sendNotification);
-
-                    if (NotificationEventTypeLists.EVENTS_TO_STORE_IN_CCD.contains(wrapper.getNotificationType())) {
-                        log.info("Saving {} letter into ccd for case {}", wrapper.getNotificationType(), wrapper.getCaseId());
-
-                        notificationSender.saveLetter(bundledLetter, notification.getPlaceholders().get(NAME).toString(),
-                                wrapper.getNewSscsCaseData(), wrapper.getNotificationType());
-                    }
-
                     return true;
                 }
             }
