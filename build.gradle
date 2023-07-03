@@ -174,7 +174,7 @@ dependencyManagement {
         }
 
         // CVE-2019-16869 - brought in by qpid-jms-client
-        dependencySet(group: 'io.netty', version: '4.1.91.Final') {
+        dependencySet(group: 'io.netty', version: '4.1.94.Final') {
             entry 'netty-handler'
             entry 'netty-transport-native-epoll'
             entry 'netty-transport-native-kqueue'
@@ -196,13 +196,13 @@ dependencyManagement {
         }
 
         // resolves: CVE-2019-10101, CVE-2019-10102, CVE-2019-10103
-        dependencySet(group: 'org.jetbrains.kotlin', version: '1.8.20') {
+        dependencySet(group: 'org.jetbrains.kotlin', version: '1.8.22') {
             entry 'kotlin-stdlib'
             entry 'kotlin-stdlib-common'
         }
 
         //CVE-2021-22112
-        dependencySet(group: 'org.springframework.security', version: '5.5.3') {
+        dependencySet(group: 'org.springframework.security', version: '5.5.8') {
             entry 'spring-security-crypto'
         }
 
@@ -411,8 +411,10 @@ dependencies {
         exclude group: "uk.gov.hmcts.reform", module:"properties-volume-spring-boot-starter"
     }
 
-    implementation group: 'uk.gov.service.notify', name: 'notifications-java-client', version: '3.19.1-RELEASE'
-    implementation group: 'com.squareup.okhttp3', name: 'okhttp', version: '4.10.0'
+    implementation group: 'org.json', name: 'json', version: '20230618'
+
+    implementation group: 'uk.gov.service.notify', name: 'notifications-java-client', version: '4.1.0-RELEASE'
+    implementation group: 'com.squareup.okhttp3', name: 'okhttp', version: '4.11.0'
     implementation group: 'commons-fileupload', name: 'commons-fileupload', version: '1.5'
     implementation group: 'io.github.openfeign.form', name: 'feign-form', version: '3.8.0'
 
