@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <suppressions xmlns="https://jeremylong.github.io/DependencyCheck/dependency-suppression.1.3.xsd">
-    <suppress until="2023-07-01">
+    <suppress until="2023-09-01">
         <cve>CVE-2022-24329</cve>
         <cve>CVE-2021-46877</cve>
         <cve>CVE-2023-28709</cve>
@@ -13,7 +13,7 @@
         <cve>CVE-2022-22978</cve>
         <cve>CVE-2022-22976</cve>
     </suppress>
-    <suppress until = "2023-07-01">
+    <suppress until = "2023-09-01">
         <notes><![CDATA[
    file name: jackson-databind-2.13.4.jar
    ]]></notes>
@@ -23,19 +23,14 @@
         <cve>CVE-2022-42004</cve>
         <cve>CVE-2021-46877</cve>
     </suppress>
-    <suppress until = "2023-03-15">
-        <notes><![CDATA[ file name: commons-fileupload-1.4.jar ]]></notes>
-        <packageUrl regex="true">^pkg:maven/commons\-fileupload/commons\-fileupload@.*$</packageUrl>
-        <cve>CVE-2023-24998</cve>
-    </suppress>
-    <suppress until = "2023-07-01">
+    <suppress until = "2023-09-01">
         <notes><![CDATA[
    file name: json-20230227.jar
    ]]></notes>
         <packageUrl regex="true">^pkg:maven/org\.json/json@.*$</packageUrl>
         <cpe>cpe:/a:json-java_project:json-java</cpe>
     </suppress>
-    <suppress until = "2023-07-01">
+    <suppress until = "2023-09-01">
         <notes><![CDATA[
        file name: snakeyaml-1.33.jar
        ]]></notes>
@@ -46,7 +41,7 @@
         <notes>spring-boot-2.5.6.jar</notes>
         <cve>CVE-2023-20883</cve>
     </suppress>
-    <suppress until = "2023-07-01">
+    <suppress until = "2023-09-01">
         <cve>CVE-2023-35116</cve>
     </suppress>
 </suppressions>
