@@ -152,7 +152,7 @@ dependencyManagement {
         dependency group: 'org.apache.santuario', name: 'xmlsec', version: '3.0.2'
 
         // checkstyle needs a certain version and so does spring fox swagger, so can't use latest
-        dependencySet(group: 'com.google.guava', version: '31.1-jre') {
+        dependencySet(group: 'com.google.guava', version: '32.0.1-jre') {
             entry 'guava'
         }
 
@@ -239,7 +239,7 @@ dependencyManagement {
             entry 'commons-compress'
         }
 
-        dependencySet(group: 'org.apache.tomcat.embed', version: '9.0.73') {
+        dependencySet(group: 'org.apache.tomcat.embed', version: '9.0.75') {
             entry 'tomcat-embed-core'
             entry 'tomcat-embed-websocket'
         }
@@ -404,7 +404,7 @@ dependencies {
 
     implementation group: 'com.github.hmcts', name: 'cmc-pdf-service-client', version: '7.0.1'
 
-    implementation group: 'com.github.hmcts', name: 'sscs-common', version: '4.25.19'
+    implementation group: 'com.github.hmcts', name: 'sscs-common', version: '4.26.0'
     implementation group: 'com.github.hmcts', name: 'sscs-pdf-email-common', version: '1.8.2'
 
     implementation group: 'com.github.hmcts', name: 'sscs-job-scheduler', version: '1.5.7', {

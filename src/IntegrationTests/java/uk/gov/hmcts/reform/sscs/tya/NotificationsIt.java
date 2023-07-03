@@ -83,14 +83,19 @@ public class NotificationsIt extends NotificationsItBase {
     }
 
     @Test
-    public void shouldSendNotificationForAHearingPostponedRequestForAnOralHearing() throws Exception {
+    public void shouldSendNotificationForAHearingPostponedRequestForAnOralHearingForListAssist() throws Exception {
         json = json.replace("appealReceived", "hearingPostponed");
-
+        json = json.replace(HEARING_ROUTE_FIELD, LIST_ASSIST_ROUTE);
         HttpServletResponse response = getResponse(getRequestWithAuthHeader(json));
 
         assertHttpStatus(response, HttpStatus.OK);
-        verify(notificationClient).sendEmail(any(), any(), any(), any());
-        verify(notificationClient, never()).sendSms(any(), any(), any(), any(), any());
+        if (json.contains(LIST_ASSIST_ROUTE)) {
+            verify(notificationClient).sendEmail(any(), any(), any(), any());
+            verify(notificationClient, never()).sendSms(any(), any(), any(), any(), any());
+        } else {
+            verify(notificationClient, never()).sendEmail(any(), any(), any(), any());
+            verify(notificationClient, never()).sendSms(any(), any(), any(), any(), any());
+        }
     }
 
     @Test
@@ -143,7 +148,7 @@ public class NotificationsIt extends NotificationsItBase {
         json = updateEmbeddedJson(json, notificationEventType.getId(), "event_id");
         json = json.replace(HEARING_ROUTE_FIELD, hearingRoute);
         json = updateCommonJsonData(notificationEventType, json);
-        if (notificationEventType.equals(REQUEST_INFO_INCOMPLETE)) {
+        if (notificationEventType.equals(REQUEST_FOR_INFORMATION)) {
             json = updateEmbeddedJson(json, "Yes", "case_details", "case_data", "informationFromAppellant");
         }
 
@@ -245,7 +250,7 @@ public class NotificationsIt extends NotificationsItBase {
             jsonAppointee = jsonAppointee.replace("2018-01-12", LocalDate.now().plusDays(2).toString());
         }
 
-        if (notificationEventType.equals(REQUEST_INFO_INCOMPLETE)) {
+        if (notificationEventType.equals(REQUEST_FOR_INFORMATION)) {
             jsonAppointee = updateEmbeddedJson(jsonAppointee, "Yes", "case_details", "case_data", "informationFromAppellant");
         }
 
@@ -307,7 +312,7 @@ public class NotificationsIt extends NotificationsItBase {
         json = updateEmbeddedJson(json, notificationEventType.getId(), "event_id");
 
         json = updateCommonJsonData(notificationEventType, json);
-        if (notificationEventType.equals(REQUEST_INFO_INCOMPLETE)) {
+        if (notificationEventType.equals(REQUEST_FOR_INFORMATION)) {
             json = updateEmbeddedJson(json, "Yes", "case_details", "case_data", "informationFromAppellant");
         }
 
@@ -464,7 +469,7 @@ public class NotificationsIt extends NotificationsItBase {
                 Arrays.asList("TB-SCS-LET-ENG-Hearing-Postponed.docx", "TB-SCS-LET-ENG-Hearing-Postponed.docx"),
                 "yes",
                 "yes",
-                "1",
+                "0",
                 "0",
                 "0"
             },
@@ -477,7 +482,7 @@ public class NotificationsIt extends NotificationsItBase {
                 Arrays.asList("TB-SCS-LET-ENG-Hearing-Postponed.docx", "TB-SCS-LET-ENG-Hearing-Postponed.docx"),
                 "yes",
                 "yes",
-                "1",
+                "0",
                 "0",
                 "0"
             },
@@ -863,12 +868,12 @@ public class NotificationsIt extends NotificationsItBase {
                 POSTPONEMENT,
                 "paper",
                 LIST_ASSIST_ROUTE,
-                Collections.singletonList("732ec1a2-243f-4047-b963-e8427cb007b8"),
                 Collections.emptyList(),
-                Arrays.asList("TB-SCS-LET-ENG-Hearing-Postponed.docx", "TB-SCS-LET-ENG-Hearing-Postponed.docx"),
+                Collections.emptyList(),
+                Collections.emptyList(),
                 "yes",
                 "yes",
-                "1",
+                "0",
                 "0",
                 "0"
             },
@@ -1578,14 +1583,14 @@ public class NotificationsIt extends NotificationsItBase {
                 POSTPONEMENT,
                 "paper",
                 GAPS_ROUTE,
-                Arrays.asList("732ec1a2-243f-4047-b963-e8427cb007b8", "e07b7dba-f383-49ca-a0ba-b5b61be27da6"),
                 Collections.emptyList(),
-                Arrays.asList("TB-SCS-LET-ENG-Hearing-Postponed.docx", "TB-SCS-LET-ENG-Hearing-Postponed.docx"),
+                Collections.emptyList(),
+                Collections.emptyList(),
                 "yes",
                 "no",
                 "yes",
                 "no",
-                "2",
+                "0",
                 "0",
                 "0"
             },
@@ -1593,29 +1598,14 @@ public class NotificationsIt extends NotificationsItBase {
                 POSTPONEMENT,
                 "oral",
                 GAPS_ROUTE,
-                Arrays.asList("732ec1a2-243f-4047-b963-e8427cb007b8", "e07b7dba-f383-49ca-a0ba-b5b61be27da6"),
                 Collections.emptyList(),
-                Arrays.asList("TB-SCS-LET-ENG-Hearing-Postponed.docx", "TB-SCS-LET-ENG-Hearing-Postponed.docx"),
+                Collections.emptyList(),
+                Collections.emptyList(),
                 "yes",
                 "no",
-                "Yes",
+                "yes",
                 "no",
-                "2",
                 "0",
-                "0"
-            },
-            new Object[] {
-                POSTPONEMENT,
-                "paper",
-                GAPS_ROUTE,
-                Collections.singletonList("e07b7dba-f383-49ca-a0ba-b5b61be27da6"),
-                Collections.emptyList(),
-                Arrays.asList("TB-SCS-LET-ENG-Hearing-Postponed.docx", "TB-SCS-LET-ENG-Hearing-Postponed.docx"),
-                "no",
-                "no",
-                "yes",
-                "no",
-                "1",
                 "0",
                 "0"
             },
@@ -1625,7 +1615,22 @@ public class NotificationsIt extends NotificationsItBase {
                 GAPS_ROUTE,
                 Collections.emptyList(),
                 Collections.emptyList(),
-                Arrays.asList("TB-SCS-LET-ENG-Hearing-Postponed.docx", "TB-SCS-LET-ENG-Hearing-Postponed.docx"),
+                Collections.emptyList(),
+                "no",
+                "no",
+                "yes",
+                "no",
+                "0",
+                "0",
+                "0"
+            },
+            new Object[] {
+                POSTPONEMENT,
+                "paper",
+                GAPS_ROUTE,
+                Collections.emptyList(),
+                Collections.emptyList(),
+                Collections.emptyList(),
                 "no",
                 "no",
                 "no",
@@ -2419,14 +2424,14 @@ public class NotificationsIt extends NotificationsItBase {
                 POSTPONEMENT,
                 "paper",
                 LIST_ASSIST_ROUTE,
-                Arrays.asList("732ec1a2-243f-4047-b963-e8427cb007b8", "e07b7dba-f383-49ca-a0ba-b5b61be27da6"),
                 Collections.emptyList(),
-                Arrays.asList("TB-SCS-LET-ENG-Hearing-Postponed.docx", "TB-SCS-LET-ENG-Hearing-Postponed.docx"),
+                Collections.emptyList(),
+                Collections.emptyList(),
                 "yes",
                 "no",
                 "yes",
                 "no",
-                "2",
+                "0",
                 "0",
                 "0"
             },
@@ -2449,14 +2454,14 @@ public class NotificationsIt extends NotificationsItBase {
                 POSTPONEMENT,
                 "paper",
                 LIST_ASSIST_ROUTE,
-                Collections.singletonList("e07b7dba-f383-49ca-a0ba-b5b61be27da6"),
                 Collections.emptyList(),
-                Arrays.asList("TB-SCS-LET-ENG-Hearing-Postponed.docx", "TB-SCS-LET-ENG-Hearing-Postponed.docx"),
+                Collections.emptyList(),
+                Collections.emptyList(),
                 "no",
                 "no",
                 "yes",
                 "no",
-                "1",
+                "0",
                 "0",
                 "0"
             },
@@ -2466,7 +2471,7 @@ public class NotificationsIt extends NotificationsItBase {
                 LIST_ASSIST_ROUTE,
                 Collections.emptyList(),
                 Collections.emptyList(),
-                Arrays.asList("TB-SCS-LET-ENG-Hearing-Postponed.docx", "TB-SCS-LET-ENG-Hearing-Postponed.docx"),
+                Collections.emptyList(),
                 "no",
                 "no",
                 "no",
@@ -5123,11 +5128,11 @@ public class NotificationsIt extends NotificationsItBase {
         "jointParty, Joint Party, false",
         "representative, Harry Potter, false"
     })
-    public void givenRequestInfoIncompleteEvent_shouldSendNotificationToSelectedParty(String partySelected, String letterRecipient, boolean sendToAppellant) throws Exception {
-        String jsonPath = sendToAppellant ? "json/ccdResponse_requestInfoIncompleteAppellant.json" : "json/ccdResponse_requestInfoIncomplete.json";
+    public void givenRequestForInformationEvent_shouldSendNotificationToSelectedParty(String partySelected, String letterRecipient, boolean sendToAppellant) throws Exception {
+        String jsonPath = sendToAppellant ? "json/ccdResponse_requestForInformationAppellant.json" : "json/ccdResponse_requestForInformation.json";
         String path = getClass().getClassLoader().getResource(jsonPath).getFile();
         String json = FileUtils.readFileToString(new File(path), StandardCharsets.UTF_8.name());
-        json = updateEmbeddedJson(json, REQUEST_INFO_INCOMPLETE.getId(), "event_id");
+        json = updateEmbeddedJson(json, REQUEST_FOR_INFORMATION.getId(), "event_id");
         json = updateEmbeddedJson(json, partySelected, "case_details", "case_data", "informationFromPartySelected", "value", "code");
 
         getResponse(getRequestWithAuthHeader(json));
