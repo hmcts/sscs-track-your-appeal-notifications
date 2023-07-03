@@ -117,7 +117,7 @@ public class FilterNotificationsEventsHandlerTest {
         "PROCESS_AUDIO_VIDEO",
         "PROCESS_AUDIO_VIDEO_WELSH",
         "REISSUE_DOCUMENT",
-        "REQUEST_INFO_INCOMPLETE",
+        "REQUEST_FOR_INFORMATION",
         "RESEND_APPEAL_CREATED",
         "REVIEW_CONFIDENTIALITY_REQUEST",
         "STRUCK_OUT",

@@ -55,7 +55,7 @@ public enum NotificationEventType {
     // Allow out of hours for this event as we rely on the case data to decide who to send to. It could get out of sync if we wait a few hours to send, for example they could try to reissue to 2 parties so this event would be triggered twice.
     // If the reminder service looks the case up from CCD, the original request for whom to send the notification to will be lost and the second party would receive the notification twice.
     REISSUE_DOCUMENT(EventType.REISSUE_DOCUMENT, true, true, true, true, false, 0),
-    REQUEST_INFO_INCOMPLETE(EventType.REQUEST_INFO_INCOMPLETE, true, true, true, false, false, 0),
+    REQUEST_FOR_INFORMATION(EventType.REQUEST_FOR_INFORMATION, true, true, true, false, false, 0),
     RESEND_APPEAL_CREATED(EventType.RESEND_APPEAL_CREATED, true, true, false, true, false, 0),
     REVIEW_CONFIDENTIALITY_REQUEST(EventType.REVIEW_CONFIDENTIALITY_REQUEST, true, true, true, false, false, 0),
     STRUCK_OUT(EventType.STRUCK_OUT, true, true, false, false, false, 0),
