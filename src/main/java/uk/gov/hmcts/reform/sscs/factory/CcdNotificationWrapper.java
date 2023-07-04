@@ -18,7 +18,7 @@ import static uk.gov.hmcts.reform.sscs.config.SubscriptionType.REPRESENTATIVE;
 import static uk.gov.hmcts.reform.sscs.domain.notify.NotificationEventType.ACTION_HEARING_RECORDING_REQUEST;
 import static uk.gov.hmcts.reform.sscs.domain.notify.NotificationEventType.DIRECTION_ISSUED;
 import static uk.gov.hmcts.reform.sscs.domain.notify.NotificationEventType.DIRECTION_ISSUED_WELSH;
-import static uk.gov.hmcts.reform.sscs.domain.notify.NotificationEventType.REQUEST_INFO_INCOMPLETE;
+import static uk.gov.hmcts.reform.sscs.domain.notify.NotificationEventType.REQUEST_FOR_INFORMATION;
 import static uk.gov.hmcts.reform.sscs.domain.notify.NotificationEventType.REVIEW_CONFIDENTIALITY_REQUEST;
 import static uk.gov.hmcts.reform.sscs.domain.notify.NotificationEventType.UPDATE_OTHER_PARTY_DATA;
 import static uk.gov.hmcts.reform.sscs.service.NotificationUtils.hasAppointee;
@@ -257,14 +257,14 @@ public class CcdNotificationWrapper implements NotificationWrapper {
             && (EVENTS_VALID_FOR_ALL_ENTITIES.contains(notificationEventType)
             || EVENTS_VALID_FOR_APPOINTEE.contains(notificationEventType)
             || isValidProcessHearingRequestEventForParty(newSscsCaseData, oldSscsCaseData, notificationEventType, PartyItemList.APPELLANT)
-            || isValidRequestInfoIncompleteEventForParty(newSscsCaseData, notificationEventType, PartyItemList.APPELLANT));
+            || isValidRequestForInformationEventForParty(newSscsCaseData, notificationEventType, PartyItemList.APPELLANT));
         return canSendBasedOnConfidentiality(newSscsCaseData, notificationEventType, ConfidentialityPartyMembers.APPELLANT_OR_APPOINTEE.getCode()) && isValid;
     }
 
     private boolean isNotificationEventValidToSendToAppellant(SscsCaseData newSscsCaseData, SscsCaseData oldSscsCaseData, NotificationEventType notificationEventType) {
         boolean isValid =  (oldSscsCaseData != null && isValidReviewConfidentialityRequest(notificationEventType, oldSscsCaseData.getConfidentialityRequestOutcomeAppellant(), newSscsCaseData.getConfidentialityRequestOutcomeAppellant()))
             || isValidProcessHearingRequestEventForParty(newSscsCaseData, oldSscsCaseData, notificationEventType, PartyItemList.APPELLANT)
-            || isValidRequestInfoIncompleteEventForParty(newSscsCaseData, notificationEventType, PartyItemList.APPELLANT)
+            || isValidRequestForInformationEventForParty(newSscsCaseData, notificationEventType, PartyItemList.APPELLANT)
             || !EVENTS_MAYBE_INVALID_FOR_APPELLANT.contains(notificationEventType);
         return canSendBasedOnConfidentiality(newSscsCaseData, notificationEventType, ConfidentialityPartyMembers.APPELLANT_OR_APPOINTEE.getCode()) && isValid;
     }
@@ -295,7 +295,7 @@ public class CcdNotificationWrapper implements NotificationWrapper {
             && (EVENTS_VALID_FOR_ALL_ENTITIES.contains(notificationEventType)
             || EVENTS_VALID_FOR_REP.contains(notificationEventType)
             || isValidProcessHearingRequestEventForParty(newSscsCaseData, oldSscsCaseData, notificationEventType, PartyItemList.REPRESENTATIVE)
-            || isValidRequestInfoIncompleteEventForParty(newSscsCaseData, notificationEventType, PartyItemList.REPRESENTATIVE));
+            || isValidRequestForInformationEventForParty(newSscsCaseData, notificationEventType, PartyItemList.REPRESENTATIVE));
         return canSendBasedOnConfidentiality(newSscsCaseData, notificationEventType, ConfidentialityPartyMembers.REPRESENTATIVE.getCode()) && isValid;
     }
 
@@ -303,7 +303,7 @@ public class CcdNotificationWrapper implements NotificationWrapper {
         boolean isValid = hasJointPartySubscription(responseWrapper)
             && (EVENTS_VALID_FOR_ALL_ENTITIES.contains(notificationEventType)
             || EVENTS_VALID_FOR_JOINT_PARTY.contains(notificationEventType)
-            || isValidRequestInfoIncompleteEventForParty(newSscsCaseData, notificationEventType, PartyItemList.JOINT_PARTY)
+            || isValidRequestForInformationEventForParty(newSscsCaseData, notificationEventType, PartyItemList.JOINT_PARTY)
             || isValidProcessHearingRequestEventForParty(newSscsCaseData, oldSscsCaseData, notificationEventType, PartyItemList.JOINT_PARTY)
             || (oldSscsCaseData != null && isValidReviewConfidentialityRequest(notificationEventType, oldSscsCaseData.getConfidentialityRequestOutcomeJointParty(), newSscsCaseData.getConfidentialityRequestOutcomeJointParty())));
         return canSendBasedOnConfidentiality(newSscsCaseData, notificationEventType, ConfidentialityPartyMembers.JOINT_PARTY.getCode()) && isValid;
@@ -318,8 +318,8 @@ public class CcdNotificationWrapper implements NotificationWrapper {
     }
 
 
-    private boolean isValidRequestInfoIncompleteEventForParty(SscsCaseData newSscsCaseData, NotificationEventType notificationEventType, PartyItemList partyItem) {
-        return REQUEST_INFO_INCOMPLETE.equals(notificationEventType)
+    private boolean isValidRequestForInformationEventForParty(SscsCaseData newSscsCaseData, NotificationEventType notificationEventType, PartyItemList partyItem) {
+        return REQUEST_FOR_INFORMATION.equals(notificationEventType)
                 && newSscsCaseData.getInformationFromPartySelected() != null
                 && newSscsCaseData.getInformationFromPartySelected().getValue() != null
                 && partyItem.getCode().equals(newSscsCaseData.getInformationFromPartySelected().getValue().getCode());
