@@ -30,7 +30,28 @@ import static uk.gov.hmcts.reform.sscs.config.SubscriptionType.APPOINTEE;
 import static uk.gov.hmcts.reform.sscs.config.SubscriptionType.JOINT_PARTY;
 import static uk.gov.hmcts.reform.sscs.config.SubscriptionType.OTHER_PARTY;
 import static uk.gov.hmcts.reform.sscs.config.SubscriptionType.REPRESENTATIVE;
-import static uk.gov.hmcts.reform.sscs.domain.notify.NotificationEventType.*;
+
+import static uk.gov.hmcts.reform.sscs.domain.notify.NotificationEventType.ACTION_HEARING_RECORDING_REQUEST;
+import static uk.gov.hmcts.reform.sscs.domain.notify.NotificationEventType.ADJOURNED;
+import static uk.gov.hmcts.reform.sscs.domain.notify.NotificationEventType.ADMIN_APPEAL_WITHDRAWN;
+import static uk.gov.hmcts.reform.sscs.domain.notify.NotificationEventType.APPEAL_LAPSED;
+import static uk.gov.hmcts.reform.sscs.domain.notify.NotificationEventType.APPEAL_RECEIVED;
+import static uk.gov.hmcts.reform.sscs.domain.notify.NotificationEventType.APPEAL_WITHDRAWN;
+import static uk.gov.hmcts.reform.sscs.domain.notify.NotificationEventType.DRAFT_TO_VALID_APPEAL_CREATED;
+import static uk.gov.hmcts.reform.sscs.domain.notify.NotificationEventType.DWP_RESPONSE_RECEIVED;
+import static uk.gov.hmcts.reform.sscs.domain.notify.NotificationEventType.DWP_UPLOAD_RESPONSE;
+import static uk.gov.hmcts.reform.sscs.domain.notify.NotificationEventType.HEARING_REMINDER;
+import static uk.gov.hmcts.reform.sscs.domain.notify.NotificationEventType.ISSUE_FINAL_DECISION;
+import static uk.gov.hmcts.reform.sscs.domain.notify.NotificationEventType.ISSUE_FINAL_DECISION_WELSH;
+import static uk.gov.hmcts.reform.sscs.domain.notify.NotificationEventType.POSTPONEMENT;
+import static uk.gov.hmcts.reform.sscs.domain.notify.NotificationEventType.PROCESS_AUDIO_VIDEO;
+import static uk.gov.hmcts.reform.sscs.domain.notify.NotificationEventType.REISSUE_DOCUMENT;
+import static uk.gov.hmcts.reform.sscs.domain.notify.NotificationEventType.REQUEST_FOR_INFORMATION;
+import static uk.gov.hmcts.reform.sscs.domain.notify.NotificationEventType.SUBSCRIPTION_UPDATED;
+import static uk.gov.hmcts.reform.sscs.domain.notify.NotificationEventType.SYA_APPEAL_CREATED;
+import static uk.gov.hmcts.reform.sscs.domain.notify.NotificationEventType.UPDATE_OTHER_PARTY_DATA;
+import static uk.gov.hmcts.reform.sscs.domain.notify.NotificationEventType.VALID_APPEAL_CREATED;
+
 import static uk.gov.hmcts.reform.sscs.service.NotificationUtils.getSubscription;
 
 import ch.qos.logback.classic.Level;
@@ -1360,34 +1381,34 @@ public class NotificationServiceTest {
     }
 
     @Test
-    public void shouldLogErrorWhenIncompleteInfoRequestWithEmptyInfoFromAppellant() {
+    public void shouldLogErrorWhenRequestForInformationWithEmptyInfoFromAppellant() {
         CcdNotificationWrapper wrapper = buildBaseWrapperWithCaseData(
                 getSscsCaseDataBuilderSettingInformationFromAppellant(APPELLANT_WITH_ADDRESS, null, null, null).build(),
-                REQUEST_INFO_INCOMPLETE
+                REQUEST_FOR_INFORMATION
         );
 
         getNotificationService().manageNotificationAndSubscription(wrapper, false);
 
-        verifyExpectedLogMessage(mockAppender, captorLoggingEvent, wrapper.getNewSscsCaseData().getCcdCaseId(), "Request Incomplete Information", Level.INFO);
+        verifyExpectedLogMessage(mockAppender, captorLoggingEvent, wrapper.getNewSscsCaseData().getCcdCaseId(), "Request for Information", Level.INFO);
     }
 
     @Test
-    public void shouldLogErrorWhenIncompleteInfoRequestWithNoInfoFromAppellant() {
+    public void shouldLogErrorWhenRequestForInformationWithNoInfoFromAppellant() {
         CcdNotificationWrapper wrapper = buildBaseWrapperWithCaseData(
                 getSscsCaseDataBuilderSettingInformationFromAppellant(APPELLANT_WITH_ADDRESS, null, null, "no").build(),
-                REQUEST_INFO_INCOMPLETE
+                REQUEST_FOR_INFORMATION
         );
 
         getNotificationService().manageNotificationAndSubscription(wrapper, false);
 
-        verifyExpectedLogMessage(mockAppender, captorLoggingEvent, wrapper.getNewSscsCaseData().getCcdCaseId(), "Request Incomplete Information", Level.INFO);
+        verifyExpectedLogMessage(mockAppender, captorLoggingEvent, wrapper.getNewSscsCaseData().getCcdCaseId(), "Request for Information", Level.INFO);
     }
 
     @Test
-    public void shouldNotLogErrorWhenIncompleteInfoRequestWithInfoFromAppellant() {
+    public void shouldNotLogErrorWhenRequestForInformationWithInfoFromAppellant() {
         CcdNotificationWrapper wrapper = buildBaseWrapperWithCaseData(
                 getSscsCaseDataBuilderSettingInformationFromAppellant(APPELLANT_WITH_ADDRESS, null, null, "yes").build(),
-                REQUEST_INFO_INCOMPLETE
+                REQUEST_FOR_INFORMATION
         );
 
         given(factory.create(any(NotificationWrapper.class), any(SubscriptionWithType.class)))
@@ -1410,8 +1431,8 @@ public class NotificationServiceTest {
     }
 
     @Test
-    @Parameters(method = "allEventTypesExceptRequestInfoIncompleteAndProcessingHearingRequest")
-    public void shouldNotLogErrorWhenNotIncompleteInfoRequest(NotificationEventType eventType) {
+    @Parameters(method = "allEventTypesExceptRequestForInformationAndProcessingHearingRequest")
+    public void shouldNotLogErrorWhenNotRequestForInformation(NotificationEventType eventType) {
         CcdNotificationWrapper wrapper = buildBaseWrapperWithCaseData(
                 getSscsCaseDataBuilderSettingInformationFromAppellant(APPELLANT_WITH_ADDRESS, null, null, "yes").build(),
                 eventType
@@ -1433,7 +1454,7 @@ public class NotificationServiceTest {
 
         getNotificationService().manageNotificationAndSubscription(wrapper, false);
 
-        verifyErrorLogMessageNotLogged(mockAppender, captorLoggingEvent, "Request Incomplete Information");
+        verifyErrorLogMessageNotLogged(mockAppender, captorLoggingEvent, "Request For Information");
     }
 
     @Test
@@ -1878,7 +1899,7 @@ public class NotificationServiceTest {
 
 
     @SuppressWarnings({"Indentation", "UnusedPrivateMethod"})
-    private Object[] allEventTypesExceptRequestInfoIncompleteAndProcessingHearingRequest() {
+    private Object[] allEventTypesExceptRequestForInformationAndProcessingHearingRequest() {
         return Arrays.stream(NotificationEventType.values()).filter(eventType ->
                 (!eventType.equals(REQUEST_INFO_INCOMPLETE) && !eventType.equals(ACTION_HEARING_RECORDING_REQUEST)
                 && !eventType.equals(ACTION_FURTHER_EVIDENCE))
