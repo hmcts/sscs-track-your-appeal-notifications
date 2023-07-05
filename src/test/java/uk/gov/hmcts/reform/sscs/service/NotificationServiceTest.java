@@ -50,6 +50,7 @@ import static uk.gov.hmcts.reform.sscs.domain.notify.NotificationEventType.SUBSC
 import static uk.gov.hmcts.reform.sscs.domain.notify.NotificationEventType.SYA_APPEAL_CREATED;
 import static uk.gov.hmcts.reform.sscs.domain.notify.NotificationEventType.UPDATE_OTHER_PARTY_DATA;
 import static uk.gov.hmcts.reform.sscs.domain.notify.NotificationEventType.VALID_APPEAL_CREATED;
+import static uk.gov.hmcts.reform.sscs.domain.notify.NotificationEventType.VALID_SEND_TO_INTERLOC;
 import static uk.gov.hmcts.reform.sscs.service.NotificationUtils.getSubscription;
 
 import ch.qos.logback.classic.Level;
