@@ -810,8 +810,6 @@ notification:
         emailId: dc8164a8-b923-4896-9308-3bf8e74d5665
         smsId: 77180ecb-c7e8-407c-8d74-618ae37b47b6
         docmosisId: TB-SCS-GNO-WEL-00658.docx
-    correctionGranted:
-      docmosisId: TB-SCS-LET-WEL-Correction-Granted-Refused.docx
     hmctsLapseCase:
       appellant:
         emailId: 542a6346-7039-4eab-8b20-61fa77db33f0
@@ -1032,6 +1030,10 @@ notification:
       other_party:
         docmosisId: TB-SCS-GNO-WEL-00649.docx
     issueFinalDecisionWelsh:
+      correctionGranted:
+        docmosisId: TB-SCS-LET-WEL-Correction-Granted-Refused.docx
+      correctionRefused:
+        docmosisId: TB-SCS-LET-WEL-Correction-Granted-Refused.docx
       appellant:
         docmosisId: TB-SCS-GNO-WEL-00681.docx
       appointee:
