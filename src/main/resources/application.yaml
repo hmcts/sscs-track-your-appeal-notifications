@@ -518,6 +518,8 @@ notification:
     updateOtherPartyData:
       other_party:
         docmosisId: TB-SCS-GNO-ENG-00784.docx
+    postHearingAppSorWritten:
+      docmosisId: TB-SCS-LET-ENG-Statement-Of-Reasons-Outcome.docx
     paper:
       responseReceived:
         appellant:
@@ -1074,6 +1076,8 @@ notification:
     updateOtherPartyData:
       other_party:
         docmosisId: TB-SCS-GNO-WEL-00787.docx
+    postHearingAppSorWritten:
+      docmosisId: TB-SCS-LET-WEL-Statement-Of-Reasons-Outcome.docx
     paper:
       responseReceived:
         appellant:
@@ -1351,6 +1355,7 @@ pdf-service:
       decisionIssued: 'TB-SCS-GNO-ENG-00012.docx'
       issueFinalDecision: 'TB-SCS-GNO-ENG-00012.docx'
       issueAdjournmentNotice: 'TB-SCS-GNO-ENG-00012.docx'
+      postHearingAppSorWritten: 'TB-SCS-GNO-ENG-00012.docx'
       validAppealCreated: 'TB-SCS-GNO-ENG-00012.docx'
       dwpUploadResponse: 'TB-SCS-GNO-ENG-00012.docx'
       resendAppealCreated: 'TB-SCS-GNO-ENG-00012.docx'
@@ -1367,6 +1372,7 @@ pdf-service:
       issueFinalDecision: 'TB-SCS-GNO-ENG-00012.docx'
       issueFinalDecisionWelsh: 'TB-SCS-GNO-WEL-00733.docx'
       issueAdjournmentNoticeWelsh: 'TB-SCS-GNO-WEL-00479.docx'
+      postHearingAppSorWritten: 'TB-SCS-GNO-WEL-00479.docx'
       validAppealCreated: 'TB-SCS-GNO-WEL-00479.docx'
       dwpUploadResponse: 'TB-SCS-GNO-WEL-00479.docx'
       resendAppealCreated: 'TB-SCS-GNO-WEL-00479.docx'

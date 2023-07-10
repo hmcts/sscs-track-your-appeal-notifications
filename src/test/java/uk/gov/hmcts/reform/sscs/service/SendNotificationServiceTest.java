@@ -630,6 +630,13 @@ public class SendNotificationServiceTest {
                         .build())
                 .build());
 
+        documents.add(SscsDocument.builder().value(
+                        SscsDocumentDetails.builder().documentType(DocumentType.STATEMENT_OF_REASONS.getValue())
+                                .documentLink(DocumentLink.builder().documentUrl("testUrl6").build())
+                                .documentDateAdded(LocalDate.now().minusDays(1).toString())
+                                .build())
+                .build());
+
         List<SscsWelshDocument> welshDocuments = new ArrayList<>();
 
         welshDocuments.add(SscsWelshDocument.builder().value(
