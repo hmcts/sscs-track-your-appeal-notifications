@@ -459,6 +459,10 @@ notification:
       other_party:
         docmosisId: TB-SCS-GNO-ENG-00094.docx
     issueFinalDecision:
+      correctionGranted:
+        docmosisId: TB-SCS-LET-ENG-Correction-Granted-Refused.docx
+      correctionRefused:
+        docmosisId: TB-SCS-LET-ENG-Correction-Granted-Refused.docx
       appellant:
         docmosisId: TB-SCS-GNO-ENG-00454.docx
       appointee:
@@ -806,6 +810,8 @@ notification:
         emailId: dc8164a8-b923-4896-9308-3bf8e74d5665
         smsId: 77180ecb-c7e8-407c-8d74-618ae37b47b6
         docmosisId: TB-SCS-GNO-WEL-00658.docx
+    correctionGranted:
+      docmosisId: TB-SCS-LET-WEL-Correction-Granted-Refused.docx
     hmctsLapseCase:
       appellant:
         emailId: 542a6346-7039-4eab-8b20-61fa77db33f0
@@ -1506,7 +1512,9 @@ job.scheduler:
           jobSuccessMessage: Job [{1}.{0}] execution complete and reports {8}
           jobFailedMessage: Job [{1}.{0}] execution failed with exception {8}
           jobWasVetoedMessage: Job [{1}.{0}] was vetoed. It was to be fired by trigger [{4}.{3}] at {2, date, dd-MM-yyyy HH:mm:ss.SSS}
-
+judicial-ref:
+  api:
+    url: ${JUDICIAL_REF_API_URL:http://localhost:5555}
 
 ---
 # integration & functional profile

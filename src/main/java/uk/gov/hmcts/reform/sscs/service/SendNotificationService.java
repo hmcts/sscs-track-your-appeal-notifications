@@ -33,11 +33,8 @@ import org.apache.commons.lang3.ArrayUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
-import uk.gov.hmcts.reform.sscs.ccd.domain.AbstractDocument;
-import uk.gov.hmcts.reform.sscs.ccd.domain.Address;
-import uk.gov.hmcts.reform.sscs.ccd.domain.SscsCaseData;
-import uk.gov.hmcts.reform.sscs.ccd.domain.State;
-import uk.gov.hmcts.reform.sscs.ccd.domain.Subscription;
+import uk.gov.hmcts.reform.sscs.ccd.callback.DocumentType;
+import uk.gov.hmcts.reform.sscs.ccd.domain.*;
 import uk.gov.hmcts.reform.sscs.config.AppConstants;
 import uk.gov.hmcts.reform.sscs.config.NotificationEventTypeLists;
 import uk.gov.hmcts.reform.sscs.config.SubscriptionType;
@@ -224,7 +221,7 @@ public class SendNotificationService {
                 return sendBundledAndDocmosisLetterNotification(wrapper, notification, getNameToUseForLetter(wrapper, subscriptionWithType), subscriptionWithType);
             } else if (hasLetterTemplate(notification)) {
                 NotificationHandler.SendNotification sendNotification = () ->
-                    sendLetterNotificationToAddress(wrapper, notification, addressToUse, subscriptionWithType);
+                        sendLetterNotificationToAddress(wrapper, notification, addressToUse, subscriptionWithType);
 
                 return notificationHandler.sendNotification(wrapper, notification.getLetterTemplate(), NOTIFICATION_TYPE_LETTER, sendNotification);
             }
@@ -296,17 +293,17 @@ public class SendNotificationService {
                 boolean alternativeLetterFormat = isAlternativeLetterFormatRequired(wrapper, subscriptionWithType);
                 NotificationHandler.SendNotification sendNotification = alternativeLetterFormat
                         ? () -> notificationSender.saveLettersToReasonableAdjustment(bundledLetter,
-                                wrapper.getNotificationType(),
-                                nameToUse,
-                                wrapper.getCaseId(),
-                                subscriptionWithType.getSubscriptionType())
+                        wrapper.getNotificationType(),
+                        nameToUse,
+                        wrapper.getCaseId(),
+                        subscriptionWithType.getSubscriptionType())
                         : () -> notificationSender.sendBundledLetter(
-                                wrapper.getNewSscsCaseData().getAppeal().getAppellant().getAddress().getPostcode(),   // Used for whitelisting only
-                                bundledLetter,
-                                wrapper.getNotificationType(),
-                                nameToUse,
-                                wrapper.getCaseId()
-                        );
+                        wrapper.getNewSscsCaseData().getAppeal().getAppellant().getAddress().getPostcode(),   // Used for whitelisting only
+                        bundledLetter,
+                        wrapper.getNotificationType(),
+                        nameToUse,
+                        wrapper.getCaseId()
+                );
 
                 log.info("In sendBundledAndDocmosisLetterNotification method notificationSender is available {} ", notificationSender != null);
 
@@ -356,6 +353,10 @@ public class SendNotificationService {
             return getDocumentForType(newSscsCaseData.getLatestDocumentForDocumentType(DIRECTION_NOTICE));
         } else if (DECISION_ISSUED.equals(notificationEventType)) {
             return getDocumentForType(newSscsCaseData.getLatestDocumentForDocumentType(DECISION_NOTICE));
+        } else if (isCorrectionGranted(notificationEventType, newSscsCaseData)) {
+            return getDocumentForType(newSscsCaseData.getLatestDocumentForDocumentType(DocumentType.CORRECTION_GRANTED));
+        } else if (isCorrectionRefused(notificationEventType, newSscsCaseData)) {
+            return getDocumentForType(newSscsCaseData.getLatestDocumentForDocumentType(DocumentType.CORRECTION_REFUSED));
         } else if (ISSUE_FINAL_DECISION.equals(notificationEventType)) {
             return getDocumentForType(newSscsCaseData.getLatestDocumentForDocumentType(FINAL_DECISION_NOTICE));
         } else if (ISSUE_FINAL_DECISION_WELSH.equals(notificationEventType)) {
@@ -378,6 +379,14 @@ public class SendNotificationService {
             return getDocumentForType(newSscsCaseData.getLatestWelshDocumentForDocumentType(POSTPONEMENT_REQUEST_DIRECTION_NOTICE).orElse(null));
         }
         return null;
+    }
+
+    private static boolean isCorrectionRefused(NotificationEventType notificationEventType, SscsCaseData newSscsCaseData) {
+        return ISSUE_FINAL_DECISION.equals(notificationEventType) && DwpState.CORRECTION_REFUSED.equals(newSscsCaseData.getDwpState());
+    }
+
+    private static boolean isCorrectionGranted(NotificationEventType notificationEventType, SscsCaseData newSscsCaseData) {
+        return ISSUE_FINAL_DECISION.equals(notificationEventType) && DwpState.CORRECTION_GRANTED.equals(newSscsCaseData.getDwpState());
     }
 
     private static String getDocumentForType(AbstractDocument sscsDocument) {

@@ -54,6 +54,8 @@ import static uk.gov.hmcts.reform.sscs.domain.notify.NotificationEventType.CASE_
 import static uk.gov.hmcts.reform.sscs.domain.notify.NotificationEventType.DIRECTION_ISSUED;
 import static uk.gov.hmcts.reform.sscs.domain.notify.NotificationEventType.DIRECTION_ISSUED_WELSH;
 import static uk.gov.hmcts.reform.sscs.domain.notify.NotificationEventType.EVIDENCE_RECEIVED;
+import static uk.gov.hmcts.reform.sscs.domain.notify.NotificationEventType.ISSUE_FINAL_DECISION;
+import static uk.gov.hmcts.reform.sscs.domain.notify.NotificationEventType.ISSUE_FINAL_DECISION_WELSH;
 import static uk.gov.hmcts.reform.sscs.domain.notify.NotificationEventType.JUDGE_DECISION_APPEAL_TO_PROCEED;
 import static uk.gov.hmcts.reform.sscs.domain.notify.NotificationEventType.SUBSCRIPTION_CREATED;
 import static uk.gov.hmcts.reform.sscs.domain.notify.NotificationEventType.TCW_DECISION_APPEAL_TO_PROCEED;
@@ -279,7 +281,7 @@ public class Personalisation<E extends NotificationWrapper> {
             personalisation.put(HEARING, latestHearing.getValue());
 
             if (nonNull(hearingDateTime) && nonNull(latestHearingValue.getVenue())) {
-                personalisation.put(HEARING_DATE, formatLocalDate(hearingDateTime.toLocalDate()));
+                personalisation.put(HEARING_DATE, hearingDateTime.toLocalDate().toString());
                 translateToWelshDate(hearingDateTime.toLocalDate(), ccdResponse, value -> personalisation.put(HEARING_DATE_WELSH, value));
                 personalisation.put(HEARING_TIME, formatLocalTime(hearingDateTime));
                 personalisation.put(DAYS_TO_HEARING_LITERAL, calculateDaysToHearingText(hearingDateTime.toLocalDate()));
@@ -325,6 +327,8 @@ public class Personalisation<E extends NotificationWrapper> {
 
         personalisation.put(PARTY_TYPE, subscriptionWithType.getParty().getClass().getSimpleName());
         personalisation.put(ENTITY_TYPE, subscriptionWithType.getEntity().getClass().getSimpleName());
+        personalisation.put(FIRST_TIER_AGENCY_OFFICE, ccdResponse.getDwpRegionalCentre());
+        personalisation.put(IS_GRANTED, DwpState.CORRECTION_GRANTED.equals(ccdResponse.getDwpState()));
 
         return personalisation;
     }
@@ -634,11 +638,21 @@ public class Personalisation<E extends NotificationWrapper> {
             return getSubscriptionTemplateNameWithDirection(notificationEventType, directionType, subscriptionType);
         }
 
+        DwpState dwpState = caseData.getDwpState();
+        if (isCorrectionState(notificationEventType, dwpState)) {
+            return getSubscriptionTemplateNameWithCorrection(notificationEventType, dwpState);
+        }
+
         if (EVENTS_WITH_SUBSCRIPTION_TYPE_DOCMOSIS_TEMPLATES.contains(notificationEventType)) {
             return getSubscriptionTemplateName(notificationEventType, subscriptionType);
         }
 
         return notificationEventType.getId();
+    }
+
+    private static boolean isCorrectionState(NotificationEventType notificationEventType, DwpState dwpState) {
+        return (ISSUE_FINAL_DECISION.equals(notificationEventType) || ISSUE_FINAL_DECISION_WELSH.equals(notificationEventType))
+                && (DwpState.CORRECTION_GRANTED.equals(dwpState) || DwpState.CORRECTION_REFUSED.equals(dwpState));
     }
 
     private String getLetterTemplateName(SubscriptionType subscriptionType,
@@ -706,5 +720,9 @@ public class Personalisation<E extends NotificationWrapper> {
             notificationEventType.getId(),
             directionType,
             subscriptionType.name().toLowerCase());
+    }
+
+    private String getSubscriptionTemplateNameWithCorrection(NotificationEventType notificationEventType, DwpState dwpState) {
+        return String.format(TEMPLATE_NAME_TEMPLATE, notificationEventType.getId(), dwpState.getCcdDefinition());
     }
 }

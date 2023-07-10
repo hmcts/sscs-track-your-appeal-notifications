@@ -418,5 +418,4 @@ public final class NotificationEventTypeLists {
         REQUEST_FOR_INFORMATION,
         STRUCK_OUT
     );
-
 }
