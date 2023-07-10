@@ -328,7 +328,14 @@ public class Personalisation<E extends NotificationWrapper> {
         personalisation.put(PARTY_TYPE, subscriptionWithType.getParty().getClass().getSimpleName());
         personalisation.put(ENTITY_TYPE, subscriptionWithType.getEntity().getClass().getSimpleName());
         personalisation.put(FIRST_TIER_AGENCY_OFFICE, ccdResponse.getDwpRegionalCentre());
-        personalisation.put(IS_GRANTED, DwpState.CORRECTION_GRANTED.equals(ccdResponse.getDwpState()));
+
+        if (DwpState.CORRECTION_GRANTED.equals(ccdResponse.getDwpState())) {
+            personalisation.put(IS_GRANTED, true);
+        }
+
+        if (DwpState.CORRECTION_REFUSED.equals(ccdResponse.getDwpState())) {
+            personalisation.put(IS_GRANTED, false);
+        }
 
         return personalisation;
     }

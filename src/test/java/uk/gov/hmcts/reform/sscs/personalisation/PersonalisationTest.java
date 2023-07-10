@@ -257,6 +257,29 @@ public class PersonalisationTest {
         );
     }
 
+    @Parameters({"CORRECTION_GRANTED, issueFinalDecision.correctionGranted, APPELLANT",
+                 "CORRECTION_REFUSED, issueFinalDecision.correctionRefused, JOINT_PARTY"})
+    @Test
+    public void test(DwpState state, String templateConfig, SubscriptionType subscriptionType) {
+        NotificationWrapper notificationWrapper = new CcdNotificationWrapper(SscsCaseDataWrapper.builder()
+                .newSscsCaseData(SscsCaseData.builder()
+                        .dwpState(state)
+                        .appeal(Appeal.builder()
+                                .hearingType(ONLINE.getValue())
+                                .build())
+                        .build())
+                .notificationEventType(ISSUE_FINAL_DECISION)
+                .build());
+
+        personalisation.getTemplate(notificationWrapper, PIP, subscriptionType);
+
+        verify(config).getTemplate(eq(ISSUE_FINAL_DECISION.getId()),
+                eq(ISSUE_FINAL_DECISION.getId()),
+                eq(ISSUE_FINAL_DECISION.getId()),
+                eq(templateConfig),
+                any(Benefit.class), any(NotificationWrapper.class), eq(null));
+    }
+
     @Test
     @Parameters({"APPELLANT, grantUrgentHearing, directionIssued.grantUrgentHearing",
         "JOINT_PARTY, grantUrgentHearing, directionIssued.grantUrgentHearing",
@@ -714,6 +737,40 @@ public class PersonalisationTest {
 
         assertEquals(CASE_ID, result.get(APPEAL_REF));
         assertEquals(CASE_ID, result.get(CASE_REFERENCE_ID));
+    }
+
+    @Test
+    public void testCorrectionGrantedDwpState() {
+        SscsCaseData response = SscsCaseData.builder()
+                .ccdCaseId(CASE_ID).caseReference(null)
+                .dwpState(DwpState.CORRECTION_GRANTED)
+                .appeal(Appeal.builder().benefitType(BenefitType.builder().code("PIP").build())
+                        .appellant(Appellant.builder().name(name).build())
+                        .build())
+                .subscriptions(subscriptions)
+                .build();
+
+        Map result = personalisation.create(SscsCaseDataWrapper.builder().newSscsCaseData(response)
+                .notificationEventType(APPEAL_RECEIVED).build(), new SubscriptionWithType(subscriptions.getAppellantSubscription(), APPELLANT, response.getAppeal().getAppellant(), response.getAppeal().getAppellant()));
+
+        assertEquals(true, result.get(IS_GRANTED));
+    }
+
+    @Test
+    public void testCorrectionRefusedDwpState() {
+        SscsCaseData response = SscsCaseData.builder()
+                .ccdCaseId(CASE_ID).caseReference(null)
+                .dwpState(DwpState.CORRECTION_REFUSED)
+                .appeal(Appeal.builder().benefitType(BenefitType.builder().code("PIP").build())
+                        .appellant(Appellant.builder().name(name).build())
+                        .build())
+                .subscriptions(subscriptions)
+                .build();
+
+        Map result = personalisation.create(SscsCaseDataWrapper.builder().newSscsCaseData(response)
+                .notificationEventType(APPEAL_RECEIVED).build(), new SubscriptionWithType(subscriptions.getAppellantSubscription(), APPELLANT, response.getAppeal().getAppellant(), response.getAppeal().getAppellant()));
+
+        assertEquals(false, result.get(IS_GRANTED));
     }
 
     @Test
