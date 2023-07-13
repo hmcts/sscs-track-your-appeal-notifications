@@ -10,6 +10,7 @@ import static uk.gov.hmcts.reform.sscs.domain.notify.NotificationEventType.APPEA
 import static uk.gov.hmcts.reform.sscs.domain.notify.NotificationEventType.APPEAL_RECEIVED;
 import static uk.gov.hmcts.reform.sscs.domain.notify.NotificationEventType.APPEAL_WITHDRAWN;
 import static uk.gov.hmcts.reform.sscs.domain.notify.NotificationEventType.CASE_UPDATED;
+import static uk.gov.hmcts.reform.sscs.domain.notify.NotificationEventType.CORRECTION_REFUSED;
 import static uk.gov.hmcts.reform.sscs.domain.notify.NotificationEventType.DEATH_OF_APPELLANT;
 import static uk.gov.hmcts.reform.sscs.domain.notify.NotificationEventType.DECISION_ISSUED;
 import static uk.gov.hmcts.reform.sscs.domain.notify.NotificationEventType.DECISION_ISSUED_WELSH;
@@ -66,6 +67,7 @@ public final class NotificationEventTypeLists {
         APPEAL_LAPSED,
         APPEAL_RECEIVED,
         APPEAL_WITHDRAWN,
+        CORRECTION_REFUSED,
         DECISION_ISSUED,
         DIRECTION_ISSUED,
         DECISION_ISSUED_WELSH,
@@ -102,6 +104,7 @@ public final class NotificationEventTypeLists {
         APPEAL_DORMANT,
         APPEAL_LAPSED,
         APPEAL_WITHDRAWN,
+        CORRECTION_REFUSED,
         DECISION_ISSUED,
         DECISION_ISSUED_WELSH,
         DIRECTION_ISSUED,
@@ -132,6 +135,7 @@ public final class NotificationEventTypeLists {
         APPEAL_LAPSED,
         APPEAL_RECEIVED,
         APPEAL_WITHDRAWN,
+        CORRECTION_REFUSED,
         DEATH_OF_APPELLANT,
         DECISION_ISSUED,
         DECISION_ISSUED_WELSH,
@@ -194,6 +198,7 @@ public final class NotificationEventTypeLists {
         APPEAL_LAPSED,
         APPEAL_RECEIVED,
         APPEAL_WITHDRAWN,
+        CORRECTION_REFUSED,
         DEATH_OF_APPELLANT,
         DECISION_ISSUED,
         DECISION_ISSUED_WELSH,
@@ -258,6 +263,7 @@ public final class NotificationEventTypeLists {
 
     public static final Set<NotificationEventType> EVENTS_VALID_FOR_APPOINTEE = EnumSet.of(
         APPEAL_RECEIVED,
+        CORRECTION_REFUSED,
         DEATH_OF_APPELLANT,
         DECISION_ISSUED,
         DECISION_ISSUED_WELSH,
@@ -280,6 +286,7 @@ public final class NotificationEventTypeLists {
     public static final Set<NotificationEventType> EVENTS_VALID_FOR_REP = EnumSet.of(
         APPEAL_RECEIVED,
         CASE_UPDATED,
+        CORRECTION_REFUSED,
         DEATH_OF_APPELLANT,
         DECISION_ISSUED,
         DECISION_ISSUED_WELSH,
@@ -303,6 +310,7 @@ public final class NotificationEventTypeLists {
     );
 
     public static final Set<NotificationEventType> EVENTS_VALID_FOR_OTHER_PARTY = EnumSet.of(
+        CORRECTION_REFUSED,
         DECISION_ISSUED,
         DECISION_ISSUED_WELSH,
         DWP_APPEAL_LAPSED,
@@ -355,6 +363,7 @@ public final class NotificationEventTypeLists {
         APPEAL_LAPSED,
         APPEAL_RECEIVED,
         APPEAL_WITHDRAWN,
+        CORRECTION_REFUSED,
         DEATH_OF_APPELLANT,
         DECISION_ISSUED,
         DECISION_ISSUED_WELSH,

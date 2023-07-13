@@ -46,6 +46,7 @@ public final class PersonalisationMappingConstants {
     public static final String EXCELA_ADDRESS_LINE3 = "excela_address_line3";
     public static final String EXCELA_ADDRESS_POSTCODE = "excela_address_postcode";
     public static final String FIRST_TIER_AGENCY_ACRONYM = "first_tier_agency_acronym";
+    public static final String FINAL_DECISION_DATE = "final_decision_date";
     public static final String FIRST_TIER_AGENCY_ACRONYM_WELSH = "welsh_first_tier_agency_acronym";
     public static final String FIRST_TIER_AGENCY_FULL_NAME = "first_tier_agency_full_name";
     public static final String FIRST_TIER_AGENCY_FULL_NAME_WELSH = "welsh_first_tier_agency_full_name";

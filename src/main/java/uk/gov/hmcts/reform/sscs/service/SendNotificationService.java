@@ -355,8 +355,6 @@ public class SendNotificationService {
             return getDocumentForType(newSscsCaseData.getLatestDocumentForDocumentType(DECISION_NOTICE));
         } else if (isCorrectionGranted(notificationEventType, newSscsCaseData)) {
             return getDocumentForType(newSscsCaseData.getLatestDocumentForDocumentType(DocumentType.CORRECTION_GRANTED));
-        } else if (isCorrectionRefused(notificationEventType, newSscsCaseData)) {
-            return getDocumentForType(newSscsCaseData.getLatestDocumentForDocumentType(DocumentType.CORRECTION_REFUSED));
         } else if (ISSUE_FINAL_DECISION.equals(notificationEventType)) {
             return getDocumentForType(newSscsCaseData.getLatestDocumentForDocumentType(FINAL_DECISION_NOTICE));
         } else if (ISSUE_FINAL_DECISION_WELSH.equals(notificationEventType)) {
@@ -377,12 +375,10 @@ public class SendNotificationService {
             return getDocumentForType(newSscsCaseData.getLatestDocumentForDocumentType(POSTPONEMENT_REQUEST_DIRECTION_NOTICE));
         } else if (ACTION_POSTPONEMENT_REQUEST_WELSH.equals(notificationEventType)) {
             return getDocumentForType(newSscsCaseData.getLatestWelshDocumentForDocumentType(POSTPONEMENT_REQUEST_DIRECTION_NOTICE).orElse(null));
+        } else if (CORRECTION_REFUSED.equals(notificationEventType)) {
+            return getDocumentForType(newSscsCaseData.getLatestDocumentForDocumentType(DocumentType.CORRECTION_REFUSED));
         }
         return null;
-    }
-
-    private static boolean isCorrectionRefused(NotificationEventType notificationEventType, SscsCaseData newSscsCaseData) {
-        return ISSUE_FINAL_DECISION.equals(notificationEventType) && DwpState.CORRECTION_REFUSED.equals(newSscsCaseData.getDwpState());
     }
 
     private static boolean isCorrectionGranted(NotificationEventType notificationEventType, SscsCaseData newSscsCaseData) {

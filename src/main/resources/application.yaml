@@ -340,6 +340,18 @@ notification:
         docmosisId: TB-SCS-LET-ENG-Appeal-Lodged-Appellant.docx
     struckOut:
       docmosisId: TB-SCS-GNO-ENG-00466.docx
+    correctionRefused:
+      appellant:
+        docmosisId: TB-SCS-LET-ENG-Correction-Granted-Refused.docx
+      appointee:
+        docmosisId: TB-SCS-LET-ENG-Correction-Granted-Refused.docx
+      representative:
+        docmosisId: TB-SCS-LET-ENG-Correction-Granted-Refused.docx
+      joint_party:
+        docmosisId: TB-SCS-LET-ENG-Correction-Granted-Refused.docx
+      other_party:
+        docmosisId: TB-SCS-LET-ENG-Correction-Granted-Refused.docx
+      docmosisId:
     processAudioVideo:
       docmosisId: TB-SCS-GNO-ENG-00677.docx
     directionIssued:
@@ -460,8 +472,6 @@ notification:
         docmosisId: TB-SCS-GNO-ENG-00094.docx
     issueFinalDecision:
       correctionGranted:
-        docmosisId: TB-SCS-LET-ENG-Correction-Granted-Refused.docx
-      correctionRefused:
         docmosisId: TB-SCS-LET-ENG-Correction-Granted-Refused.docx
       appellant:
         docmosisId: TB-SCS-GNO-ENG-00454.docx
@@ -756,6 +766,17 @@ notification:
         smsId: 53369ca5-75a8-43a7-8e5e-4eda9df04001
         letterId: 95b0b0f8-fdf6-450f-b805-6aab46d63bf7
         docmosisId: TB-SCS-LET-WEL-Appeal-Lodged-Appellant.docx
+    correctionRefused:
+      appellant:
+        docmosisId: TB-SCS-LET-WEL-Correction-Granted-Refused.docx
+      appointee:
+        docmosisId: TB-SCS-LET-WEL-Correction-Granted-Refused.docx
+      representative:
+        docmosisId: TB-SCS-LET-WEL-Correction-Granted-Refused.docx
+      joint_party:
+        docmosisId: TB-SCS-LET-WEL-Correction-Granted-Refused.docx
+      other_party:
+        docmosisId: TB-SCS-LET-WEL-Correction-Granted-Refused.docx
     hearingAdjourned:
       appellant:
         emailId: 06c91850-a81f-44bb-9577-1bc528913850
@@ -1031,8 +1052,6 @@ notification:
         docmosisId: TB-SCS-GNO-WEL-00649.docx
     issueFinalDecisionWelsh:
       correctionGranted:
-        docmosisId: TB-SCS-LET-WEL-Correction-Granted-Refused.docx
-      correctionRefused:
         docmosisId: TB-SCS-LET-WEL-Correction-Granted-Refused.docx
       appellant:
         docmosisId: TB-SCS-GNO-WEL-00681.docx

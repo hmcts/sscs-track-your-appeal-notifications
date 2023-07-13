@@ -327,7 +327,6 @@ public class Personalisation<E extends NotificationWrapper> {
 
         personalisation.put(PARTY_TYPE, subscriptionWithType.getParty().getClass().getSimpleName());
         personalisation.put(ENTITY_TYPE, subscriptionWithType.getEntity().getClass().getSimpleName());
-        personalisation.put(FIRST_TIER_AGENCY_OFFICE, ccdResponse.getDwpRegionalCentre());
 
         if (DwpState.CORRECTION_GRANTED.equals(ccdResponse.getDwpState())) {
             personalisation.put(IS_GRANTED, true);
@@ -337,7 +336,27 @@ public class Personalisation<E extends NotificationWrapper> {
             personalisation.put(IS_GRANTED, false);
         }
 
+        if (ccdResponse.getIssueFinalDecisionDate() != null) {
+            personalisation.put(FINAL_DECISION_DATE, ccdResponse.getIssueFinalDecisionDate());
+        }
+
         return personalisation;
+    }
+
+    private static String getDwpRegionalCentre(SscsCaseData caseData) {
+        Optional<Benefit> benefit = Benefit.findBenefitOptionalByBenefitCode(caseData.getBenefitCode());
+        String dwpRegionalCentre = caseData.getDwpRegionalCentre();
+        String benefitShortName = "";
+
+        if (benefit.isPresent()) {
+            benefitShortName = benefit.get().getShortName();
+        }
+
+        if (isEmpty(dwpRegionalCentre)) {
+            return benefitShortName;
+        }
+
+        return (benefitShortName + " " + dwpRegionalCentre).trim();
     }
 
     private void addFirstTierAgencyFields(Map<String, Object> personalisation, Benefit benefit, SscsCaseData ccdResponse) {
@@ -348,6 +367,7 @@ public class Personalisation<E extends NotificationWrapper> {
         personalisation.put(FIRST_TIER_AGENCY_GROUP, isHmrcBenefit(benefit, ccdResponse.getFormType()) ? HMRC_ACRONYM : DWP_FIRST_TIER_AGENCY_GROUP);
         personalisation.put(FIRST_TIER_AGENCY_GROUP_TITLE, isHmrcBenefit(benefit, ccdResponse.getFormType()) ? HMRC_ACRONYM : DWP_FIRST_TIER_AGENCY_GROUP_TITLE);
         personalisation.put(FIRST_TIER_AGENCY_GROUP_WELSH, isHmrcBenefit(benefit, ccdResponse.getFormType()) ? HMRC_ACRONYM : DWP_FIRST_TIER_AGENCY_GROUP_WELSH);
+        personalisation.put(FIRST_TIER_AGENCY_OFFICE, getDwpRegionalCentre(ccdResponse));
         personalisation.put(WITH_OPTIONAL_THE, isHmrcBenefit(benefit, ccdResponse.getFormType()) ? "" : THE_STRING);
         personalisation.put(WITH_OPTIONAL_THE_WELSH, isHmrcBenefit(benefit, ccdResponse.getFormType()) ? "" : THE_STRING_WELSH);
     }
