@@ -165,6 +165,7 @@ public final class NotificationEventTypeLists {
     public static final Set<NotificationEventType> EVENT_TYPES_FOR_BUNDLED_LETTER = EnumSet.of(
         ACTION_POSTPONEMENT_REQUEST,
         ACTION_POSTPONEMENT_REQUEST_WELSH,
+        CORRECTION_REFUSED,
         DECISION_ISSUED,
         DECISION_ISSUED_WELSH,
         DIRECTION_ISSUED,

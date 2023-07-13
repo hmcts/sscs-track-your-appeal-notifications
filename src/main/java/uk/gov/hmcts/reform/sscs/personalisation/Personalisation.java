@@ -24,6 +24,7 @@ import static uk.gov.hmcts.reform.sscs.config.AppConstants.DWP_FIRST_TIER_AGENCY
 import static uk.gov.hmcts.reform.sscs.config.AppConstants.DWP_FIRST_TIER_AGENCY_GROUP_WELSH;
 import static uk.gov.hmcts.reform.sscs.config.AppConstants.DWP_FULL_NAME;
 import static uk.gov.hmcts.reform.sscs.config.AppConstants.DWP_FULL_NAME_WELSH;
+import static uk.gov.hmcts.reform.sscs.config.AppConstants.FINAL_DECISION_DATE_FORMAT;
 import static uk.gov.hmcts.reform.sscs.config.AppConstants.HEARING_TIME_FORMAT;
 import static uk.gov.hmcts.reform.sscs.config.AppConstants.HMRC_ACRONYM;
 import static uk.gov.hmcts.reform.sscs.config.AppConstants.HMRC_ACRONYM_WELSH;
@@ -337,7 +338,9 @@ public class Personalisation<E extends NotificationWrapper> {
         }
 
         if (ccdResponse.getIssueFinalDecisionDate() != null) {
-            personalisation.put(FINAL_DECISION_DATE, ccdResponse.getIssueFinalDecisionDate());
+            String formattedDate = ccdResponse.getIssueFinalDecisionDate()
+                    .format(DateTimeFormatter.ofPattern(FINAL_DECISION_DATE_FORMAT));
+            personalisation.put(FINAL_DECISION_DATE, formattedDate);
         }
 
         return personalisation;
