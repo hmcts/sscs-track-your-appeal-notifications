@@ -34,6 +34,7 @@ import static uk.gov.hmcts.reform.sscs.domain.notify.NotificationEventType.JOINT
 import static uk.gov.hmcts.reform.sscs.domain.notify.NotificationEventType.JUDGE_DECISION_APPEAL_TO_PROCEED;
 import static uk.gov.hmcts.reform.sscs.domain.notify.NotificationEventType.LIBERTY_TO_APPLY_REQUEST;
 import static uk.gov.hmcts.reform.sscs.domain.notify.NotificationEventType.NON_COMPLIANT;
+import static uk.gov.hmcts.reform.sscs.domain.notify.NotificationEventType.PERMISSION_TO_APPEAL_REQUEST;
 import static uk.gov.hmcts.reform.sscs.domain.notify.NotificationEventType.POSTPONEMENT;
 import static uk.gov.hmcts.reform.sscs.domain.notify.NotificationEventType.PROCESS_AUDIO_VIDEO;
 import static uk.gov.hmcts.reform.sscs.domain.notify.NotificationEventType.PROCESS_AUDIO_VIDEO_WELSH;
@@ -110,7 +111,8 @@ public final class NotificationEventTypeLists {
 
     // move to EVENTS_TO_HANDLE when feature.postHearingsB.enabled removed
     public static final Set<NotificationEventType> EVENTS_TO_HANDLE_POSTHEARINGS_B = EnumSet.of(
-        LIBERTY_TO_APPLY_REQUEST
+        LIBERTY_TO_APPLY_REQUEST,
+        PERMISSION_TO_APPEAL_REQUEST
         // TODO put permission to appeal, share with upper Tribunal and remit to lower tribunal events here when setting notification
     );
 
@@ -167,6 +169,7 @@ public final class NotificationEventTypeLists {
         JOINT_PARTY_ADDED,
         LIBERTY_TO_APPLY_REQUEST,
         NON_COMPLIANT,
+        PERMISSION_TO_APPEAL_REQUEST,
         POSTPONEMENT,
         PROCESS_AUDIO_VIDEO,
         PROCESS_AUDIO_VIDEO_WELSH,
@@ -232,6 +235,7 @@ public final class NotificationEventTypeLists {
         JOINT_PARTY_ADDED,
         LIBERTY_TO_APPLY_REQUEST,
         NON_COMPLIANT,
+        PERMISSION_TO_APPEAL_REQUEST,
         POSTPONEMENT,
         PROCESS_AUDIO_VIDEO,
         PROCESS_AUDIO_VIDEO_WELSH,
@@ -277,6 +281,7 @@ public final class NotificationEventTypeLists {
         ISSUE_ADJOURNMENT_NOTICE,
         ISSUE_ADJOURNMENT_NOTICE_WELSH,
         LIBERTY_TO_APPLY_REQUEST,
+        PERMISSION_TO_APPEAL_REQUEST,
         POSTPONEMENT,
         PROCESS_AUDIO_VIDEO,
         PROCESS_AUDIO_VIDEO_WELSH,
@@ -416,6 +421,7 @@ public final class NotificationEventTypeLists {
     public static final Set<NotificationEventType> EVENTS_FOR_ACTION_FURTHER_EVIDENCE = EnumSet.of(
         CORRECTION_REQUEST,
         LIBERTY_TO_APPLY_REQUEST,
+        PERMISSION_TO_APPEAL_REQUEST,
         SET_ASIDE_REQUEST,
         STATEMENT_OF_REASONS_REQUEST
     );
