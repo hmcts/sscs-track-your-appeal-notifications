@@ -140,40 +140,7 @@ dependencyManagement {
         mavenBom "org.springframework.cloud:spring-cloud-dependencies:${springCloudVersion}"
     }
     dependencies {
-        // Solves CVE-2019-10086
-        dependency group: 'commons-beanutils', name: 'commons-beanutils', version: '1.9.4'
-        dependency group: 'org.apache.logging.log4j', name: 'log4j-to-slf4j', version: '2.16.0'
-        dependency group: 'org.apache.logging.log4j', name: 'log4j-api', version: '2.17.1'
-
-        // resolves: CVE-2020-9489
-        dependency group: 'org.apache.tika', name: 'tika-core', version: '2.7.0'
-
-        //CVE-2021-40690
-        dependency group: 'org.apache.santuario', name: 'xmlsec', version: '3.0.2'
-
-        // checkstyle needs a certain version and so does spring fox swagger, so can't use latest
-        dependencySet(group: 'com.google.guava', version: '32.0.1-jre') {
-            entry 'guava'
-        }
-
-        // CVE-2020-13954
-        dependencySet(group: 'org.apache.cxf', version: '4.0.0') {
-            entry 'cxf-core'
-            entry 'cxf-rt-frontend-jaxrs'
-            entry 'cxf-rt-rs-client'
-            entry 'cxf-rt-security'
-            entry 'cxf-rt-transports-http'
-        }
-
-        dependencySet(group: 'org.apache.xmlgraphics', version: '1.16') {
-            entry 'batik-all'
-        }
-
-        dependencySet(group: 'org.apache.commons', version: '1.23.0') {
-            entry 'commons-compress'
-        }
-
-        // CVE-2019-16869 - brought in by qpid-jms-client
+        //CVE-2022-41881, CVE-2021-43797, CVE-2023-34462, CVE-2022-24823 - brought in by qpid-jms-client
         dependencySet(group: 'io.netty', version: '4.1.94.Final') {
             entry 'netty-handler'
             entry 'netty-transport-native-epoll'
@@ -187,31 +154,17 @@ dependencyManagement {
             entry 'netty-common'
         }
 
-        // solves CVE-2019-13990
-        dependencySet(
-                group: 'org.quartz-scheduler',
-                version: '2.3.2'
-        ) {
-            entry 'quartz'
-        }
-
         // resolves: CVE-2019-10101, CVE-2019-10102, CVE-2019-10103
         dependencySet(group: 'org.jetbrains.kotlin', version: '1.8.22') {
             entry 'kotlin-stdlib'
             entry 'kotlin-stdlib-common'
+            entry 'kotlin-stdlib-jdk7'
+            entry 'kotlin-stdlib-jdk8'
         }
 
-        //CVE-2021-22112
+        //CVE-2022-22978, CVE-2022-22976
         dependencySet(group: 'org.springframework.security', version: '5.5.8') {
             entry 'spring-security-crypto'
-        }
-
-        //CVE-2021-27807
-        dependencySet(group: 'org.apache.pdfbox', version: '2.0.27') {
-            entry 'pdfbox'
-            entry 'pdfbox-tools'
-            entry 'preflight'
-            entry 'xmpbox'
         }
 
         //CVE-2021-22118, CVE-2022-22970, CVE-2022-22971
@@ -234,11 +187,7 @@ dependencyManagement {
             entry 'spring-webmvc'
         }
 
-        //CVE-2021-35515, CVE-2021-35516, CVE-2021-35517, CVE-2021-36090
-        dependencySet(group: 'org.apache.commons', version: '1.23.0') {
-            entry 'commons-compress'
-        }
-
+        //CVE-2022-29885, CVE-2022-42252, CVE-2022-45143, CVE-2022-23181, CVE-2022-34305, CVE-2023-28708, CVE-2021-43980
         dependencySet(group: 'org.apache.tomcat.embed', version: '9.0.75') {
             entry 'tomcat-embed-core'
             entry 'tomcat-embed-websocket'
@@ -250,15 +199,12 @@ dependencyManagement {
             entry 'spring-cloud-openfeign-core'
         }
 
-        //CVE-2022-25857, CVE-2022-38751
+        //CVE-2022-25857
         dependencySet(group: 'org.yaml', version: '1.33') {
             entry 'snakeyaml'
         }
 
-        //CVE-2021-40690
-        dependency group: 'org.apache.santuario', name: 'xmlsec', version: '3.0.2'
-        dependency group: 'org.glassfish', name: 'jakarta.el', version: '4.0.2'
-
+        //CVE-2021-42550
         dependencySet(group: 'ch.qos.logback', version: '1.2.11') {
             entry 'logback-core'
             entry 'logback-classic'
@@ -369,10 +315,6 @@ configurations.all {
         eachDependency { DependencyResolveDetails details ->
             if (details.requested.group in ['com.fasterxml.jackson.core', 'com.fasterxml.jackson.module', 'com.fasterxml.jackson.datatype']) {
                 details.useVersion '2.11.0'
-            }
-            if (details.requested.group == 'org.codehaus.groovy') {
-                details.useVersion "3.0.7"
-                details.because "needed by rest-assured>=4.3"
             }
         }
     }
