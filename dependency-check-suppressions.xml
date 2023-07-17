@@ -7,16 +7,22 @@
       <cve>CVE-2021-46877</cve>
     </suppress>
     <suppress until = "2023-09-01">
-        <notes><![CDATA[
-   file name: json-20220320.jar
-   ]]></notes>
-        <packageUrl regex="true">^pkg:maven/org\.json/json@.*$</packageUrl>
-        <cve>CVE-2022-45688</cve>
+      <cve>CVE-2022-42004</cve>
+      <cve>CVE-2020-36518</cve>
+      <cve>CVE-2022-42003</cve>
+      <cve>CVE-2021-46877</cve>
     </suppress>
     <suppress until = "2023-09-01">
         <notes><![CDATA[
-   file name: snakeyaml-1.33.jar
+   file name: json-20230227.jar
    ]]></notes>
+        <packageUrl regex="true">^pkg:maven/org\.json/json@.*$</packageUrl>
+        <cpe>cpe:/a:json-java_project:json-java</cpe>
+    </suppress>
+    <suppress until = "2023-09-01">
+        <notes><![CDATA[
+       file name: snakeyaml-1.33.jar
+       ]]></notes>
         <packageUrl regex="true">^pkg:maven/org\.yaml/snakeyaml@.*$</packageUrl>
         <cve>CVE-2022-1471</cve>
     </suppress>

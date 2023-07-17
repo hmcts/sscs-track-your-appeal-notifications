@@ -245,6 +245,14 @@ sourceSets {
 
 }
 
+tasks.withType(Test) {
+    useJUnitPlatform()
+
+    testLogging {
+        exceptionFormat = 'full'
+    }
+}
+
 task integration(type: Test) {
     group = 'verification'
     setTestClassesDirs(sourceSets.integrationTest.output.classesDirs)
@@ -285,8 +293,8 @@ configurations {
 jacocoTestReport {
     executionData(test, integration)
     reports {
-        xml.enabled = true
-        csv.enabled = false
+        xml.required = true
+        csv.required = false
         xml.destination file("${project.buildDir}/reports/jacoco/test/jacocoTestReport.xml")
     }
 }
@@ -388,6 +396,9 @@ dependencies {
     testImplementation(group: 'org.springframework.boot', name: 'spring-boot-starter-test', version: '2.6.2') {
         exclude group: "com.vaadin.external.google", module:"android-json"
     }
+    testImplementation platform(group: 'org.junit', name: 'junit-bom', version: '5.9.2')
+    testImplementation group: 'org.junit.jupiter', name: 'junit-jupiter'
+    testRuntimeOnly group: 'org.junit.vintage', name: 'junit-vintage-engine'
     testImplementation group: 'org.mockito', name: 'mockito-core', version: '4.11.0'
     testImplementation 'pl.pragmatists:JUnitParams:1.1.1'
     testImplementation group: 'com.github.hmcts', name: 'fortify-client', version: '1.3.0', classifier: 'all', {
