@@ -358,6 +358,7 @@ public class Personalisation<E extends NotificationWrapper> {
         }
 
         return (benefitShortName + " " + dwpRegionalCentre).trim();
+    }
 
     private static boolean hasBenefitType(SscsCaseData ccdResponse) {
         return ccdResponse.getAppeal() != null
