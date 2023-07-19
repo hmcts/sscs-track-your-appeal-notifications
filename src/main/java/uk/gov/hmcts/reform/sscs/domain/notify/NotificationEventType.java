@@ -24,6 +24,7 @@ public enum NotificationEventType {
     APPEAL_RECEIVED(EventType.APPEAL_RECEIVED, true, true, false, false, false, 300L),
     APPEAL_WITHDRAWN(EventType.WITHDRAWN, true, true, false, false, false, 0),
     CASE_UPDATED(EventType.CASE_UPDATED, false, false, false, false, false, 0),
+    CORRECTION_REQUEST(EventType.CORRECTION_REQUEST, false, false, false, true, false, 0),
     DEATH_OF_APPELLANT(EventType.DEATH_OF_APPELLANT, true, true, true, true, false, 0),
     DECISION_ISSUED(EventType.DECISION_ISSUED, true, true, true, false, false, 0),
     DECISION_ISSUED_WELSH(EventType.DECISION_ISSUED_WELSH, true, true, true, false, false, 0),
@@ -45,6 +46,7 @@ public enum NotificationEventType {
     ISSUE_FINAL_DECISION_WELSH(EventType.ISSUE_FINAL_DECISION_WELSH, true, true, true, false, false, 0),
     JOINT_PARTY_ADDED(EventType.JOINT_PARTY_ADDED, true, true, true, true, false, 0),
     JUDGE_DECISION_APPEAL_TO_PROCEED(EventType.JUDGE_DECISION_APPEAL_TO_PROCEED, true, true, true, false, false, 0),
+    LIBERTY_TO_APPLY_REQUEST(EventType.LIBERTY_TO_APPLY_REQUEST, false, false, false, false, false, 0),
     NON_COMPLIANT(EventType.NON_COMPLIANT, true, true, true, false, false, 0),
     POSTPONEMENT(EventType.POSTPONED, true, false, false, false, false, 0),
     PROCESS_AUDIO_VIDEO(EventType.PROCESS_AUDIO_VIDEO, true, true, true, false, false, 0),
@@ -58,6 +60,8 @@ public enum NotificationEventType {
     REVIEW_CONFIDENTIALITY_REQUEST(EventType.REVIEW_CONFIDENTIALITY_REQUEST, true, true, true, false, false, 0),
     SOR_EXTEND_TIME(EventType.SOR_EXTEND_TIME, true, true, true, true, false, 0),
     SOR_REFUSED(EventType.SOR_REFUSED, true, true, true, true, false, 0),
+    SET_ASIDE_REQUEST(EventType.SET_ASIDE_REQUEST, false, false, false, false, false, 0),
+    STATEMENT_OF_REASONS_REQUEST(EventType.SOR_REQUEST, false, false, false, false, false, 0),
     STRUCK_OUT(EventType.STRUCK_OUT, true, true, false, false, false, 0),
     SUBSCRIPTION_CREATED(EventType.SUBSCRIPTION_CREATED, true, true, false, false, false, 0),
     SUBSCRIPTION_OLD(null, false, true, false, true, false, 0),
@@ -66,6 +70,7 @@ public enum NotificationEventType {
     TCW_DECISION_APPEAL_TO_PROCEED(EventType.TCW_DECISION_APPEAL_TO_PROCEED, true, true, true, false, false, 0),
     UPDATE_OTHER_PARTY_DATA(EventType.UPDATE_OTHER_PARTY_DATA, true, true, true, true, false, 0),
     VALID_APPEAL_CREATED(EventType.VALID_APPEAL_CREATED, true, true, false, true, false, 240L),
+
     @JsonEnumDefaultValue
     DO_NOT_SEND(null);
 
