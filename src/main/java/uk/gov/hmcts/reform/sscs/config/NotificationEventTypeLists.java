@@ -43,6 +43,7 @@ import static uk.gov.hmcts.reform.sscs.domain.notify.NotificationEventType.REQUE
 import static uk.gov.hmcts.reform.sscs.domain.notify.NotificationEventType.RESEND_APPEAL_CREATED;
 import static uk.gov.hmcts.reform.sscs.domain.notify.NotificationEventType.REVIEW_CONFIDENTIALITY_REQUEST;
 import static uk.gov.hmcts.reform.sscs.domain.notify.NotificationEventType.SET_ASIDE_REQUEST;
+import static uk.gov.hmcts.reform.sscs.domain.notify.NotificationEventType.SET_ASIDE_REVIEW;
 import static uk.gov.hmcts.reform.sscs.domain.notify.NotificationEventType.STATEMENT_OF_REASONS_REQUEST;
 import static uk.gov.hmcts.reform.sscs.domain.notify.NotificationEventType.STRUCK_OUT;
 import static uk.gov.hmcts.reform.sscs.domain.notify.NotificationEventType.SUBSCRIPTION_CREATED;
@@ -110,7 +111,8 @@ public final class NotificationEventTypeLists {
 
     // move to EVENTS_TO_HANDLE when feature.postHearingsB.enabled removed
     public static final Set<NotificationEventType> EVENTS_TO_HANDLE_POSTHEARINGS_B = EnumSet.of(
-        LIBERTY_TO_APPLY_REQUEST
+        LIBERTY_TO_APPLY_REQUEST,
+        SET_ASIDE_REVIEW
         // TODO put permission to appeal, share with upper Tribunal and remit to lower tribunal events here when setting notification
     );
 
@@ -129,6 +131,7 @@ public final class NotificationEventTypeLists {
         ISSUE_FINAL_DECISION_WELSH,
         PROVIDE_APPOINTEE_DETAILS,
         REISSUE_DOCUMENT,
+        SET_ASIDE_REVIEW,
         STRUCK_OUT
     );
 
@@ -175,6 +178,7 @@ public final class NotificationEventTypeLists {
         REVIEW_CONFIDENTIALITY_REQUEST,
         STRUCK_OUT,
         SET_ASIDE_REQUEST,
+        SET_ASIDE_REVIEW,
         STATEMENT_OF_REASONS_REQUEST,
         UPDATE_OTHER_PARTY_DATA
     );
@@ -240,6 +244,7 @@ public final class NotificationEventTypeLists {
         RESEND_APPEAL_CREATED,
         REVIEW_CONFIDENTIALITY_REQUEST,
         SET_ASIDE_REQUEST,
+        SET_ASIDE_REVIEW,
         STATEMENT_OF_REASONS_REQUEST,
         STRUCK_OUT,
         UPDATE_OTHER_PARTY_DATA,
@@ -281,6 +286,7 @@ public final class NotificationEventTypeLists {
         PROCESS_AUDIO_VIDEO,
         PROCESS_AUDIO_VIDEO_WELSH,
         SET_ASIDE_REQUEST,
+        SET_ASIDE_REVIEW,
         STATEMENT_OF_REASONS_REQUEST,
         STRUCK_OUT
     );

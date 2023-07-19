@@ -59,6 +59,7 @@ public enum NotificationEventType {
     RESEND_APPEAL_CREATED(EventType.RESEND_APPEAL_CREATED, true, true, false, true, false, 0),
     REVIEW_CONFIDENTIALITY_REQUEST(EventType.REVIEW_CONFIDENTIALITY_REQUEST, true, true, true, false, false, 0),
     SET_ASIDE_REQUEST(EventType.SET_ASIDE_REQUEST, false, false, false, false, false, 0),
+    SET_ASIDE_REVIEW(EventType.SET_ASIDE_REVIEW, false, false, false, false, false, 0),
     STATEMENT_OF_REASONS_REQUEST(EventType.SOR_REQUEST, false, false, false, false, false, 0),
     STRUCK_OUT(EventType.STRUCK_OUT, true, true, false, false, false, 0),
     SUBSCRIPTION_CREATED(EventType.SUBSCRIPTION_CREATED, true, true, false, false, false, 0),
