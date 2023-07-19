@@ -336,7 +336,8 @@ public final class NotificationEventTypeLists {
     );
 
     public static final Set<NotificationEventType> EVENTS_VALID_FOR_JOINT_PARTY = EnumSet.of(
-        JOINT_PARTY_ADDED
+        JOINT_PARTY_ADDED,
+        ISSUE_FINAL_DECISION
     );
 
     public static final Set<NotificationEventType> EVENTS_VALID_FOR_OTHER_PARTY = EnumSet.of(
