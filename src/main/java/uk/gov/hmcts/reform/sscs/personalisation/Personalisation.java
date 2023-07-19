@@ -204,9 +204,7 @@ public class Personalisation<E extends NotificationWrapper> {
         Benefit benefit = null;
 
         try {
-            if (ccdResponse.getAppeal() != null
-                && ccdResponse.getAppeal().getBenefitType() != null
-                && !isEmpty(ccdResponse.getAppeal().getBenefitType().getCode())) {
+            if (hasBenefitType(ccdResponse)) {
                 benefit = getBenefitByCodeOrThrowException(ccdResponse.getAppeal().getBenefitType().getCode());
 
                 if (benefit.isHasAcronym()) {
@@ -360,6 +358,11 @@ public class Personalisation<E extends NotificationWrapper> {
         }
 
         return (benefitShortName + " " + dwpRegionalCentre).trim();
+
+    private static boolean hasBenefitType(SscsCaseData ccdResponse) {
+        return ccdResponse.getAppeal() != null
+                && ccdResponse.getAppeal().getBenefitType() != null
+                && !isEmpty(ccdResponse.getAppeal().getBenefitType().getCode());
     }
 
     private void addFirstTierAgencyFields(Map<String, Object> personalisation, Benefit benefit, SscsCaseData ccdResponse) {

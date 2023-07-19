@@ -13,8 +13,7 @@ import static uk.gov.hmcts.reform.sscs.config.SubscriptionType.APPOINTEE;
 import static uk.gov.hmcts.reform.sscs.config.SubscriptionType.JOINT_PARTY;
 import static uk.gov.hmcts.reform.sscs.config.SubscriptionType.OTHER_PARTY;
 import static uk.gov.hmcts.reform.sscs.config.SubscriptionType.REPRESENTATIVE;
-import static uk.gov.hmcts.reform.sscs.domain.notify.NotificationEventType.APPEAL_RECEIVED;
-import static uk.gov.hmcts.reform.sscs.domain.notify.NotificationEventType.SYA_APPEAL_CREATED;
+import static uk.gov.hmcts.reform.sscs.domain.notify.NotificationEventType.*;
 import static uk.gov.hmcts.reform.sscs.service.LetterUtils.addBlankPageAtTheEndIfOddPage;
 import static uk.gov.hmcts.reform.sscs.service.LetterUtils.buildBundledLetter;
 import static uk.gov.hmcts.reform.sscs.service.LetterUtils.getAddressToUseForLetter;
@@ -28,6 +27,7 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
+import java.util.Optional;
 import java.util.stream.Stream;
 import junitparams.JUnitParamsRunner;
 import junitparams.Parameters;
@@ -36,24 +36,15 @@ import org.apache.pdfbox.io.IOUtils;
 import org.apache.pdfbox.pdmodel.PDDocument;
 import org.apache.pdfbox.pdmodel.PDPage;
 import org.jetbrains.annotations.NotNull;
+import org.junit.Before;
 import org.junit.Test;
+import org.junit.jupiter.api.DisplayName;
 import org.junit.runner.RunWith;
-import uk.gov.hmcts.reform.sscs.ccd.domain.Address;
-import uk.gov.hmcts.reform.sscs.ccd.domain.Appellant;
-import uk.gov.hmcts.reform.sscs.ccd.domain.Appointee;
-import uk.gov.hmcts.reform.sscs.ccd.domain.CcdValue;
-import uk.gov.hmcts.reform.sscs.ccd.domain.Entity;
-import uk.gov.hmcts.reform.sscs.ccd.domain.Name;
-import uk.gov.hmcts.reform.sscs.ccd.domain.OtherParty;
-import uk.gov.hmcts.reform.sscs.ccd.domain.Party;
-import uk.gov.hmcts.reform.sscs.ccd.domain.ReasonableAdjustmentDetails;
-import uk.gov.hmcts.reform.sscs.ccd.domain.Representative;
-import uk.gov.hmcts.reform.sscs.ccd.domain.SscsCaseData;
-import uk.gov.hmcts.reform.sscs.ccd.domain.Subscription;
-import uk.gov.hmcts.reform.sscs.ccd.domain.YesNo;
+import uk.gov.hmcts.reform.sscs.ccd.domain.*;
 import uk.gov.hmcts.reform.sscs.config.SubscriptionType;
 import uk.gov.hmcts.reform.sscs.domain.SscsCaseDataWrapper;
 import uk.gov.hmcts.reform.sscs.domain.SubscriptionWithType;
+import uk.gov.hmcts.reform.sscs.domain.notify.NotificationEventType;
 import uk.gov.hmcts.reform.sscs.exception.NotificationClientRuntimeException;
 import uk.gov.hmcts.reform.sscs.factory.CcdNotificationWrapper;
 import uk.gov.hmcts.reform.sscs.factory.NotificationWrapper;
@@ -61,6 +52,10 @@ import uk.gov.hmcts.reform.sscs.factory.NotificationWrapper;
 @RunWith(JUnitParamsRunner.class)
 public class LetterUtilsTest {
     private static final Subscription EMPTY_SUBSCRIPTION = Subscription.builder().build();
+
+    private Appellant appellantWithId;
+    private JointParty jointPartyWithId;
+    private SscsCaseData caseData;
 
     @Test
     public void useAppellantAddressForLetter() {
@@ -415,4 +410,260 @@ public class LetterUtilsTest {
                 .orElse(""));
     }
 
+    @Before
+    public void setup() {
+        appellantWithId = Appellant.builder()
+                .id("APP123456")
+                .name(Name.builder().firstName("Tom").lastName("Cat").build())
+                .address(Address.builder().line1("Appellant Line 1").town("Appellant Town").county("Appellant County").postcode("AP9 3LL").build())
+                .build();
+
+        jointPartyWithId = JointParty.builder()
+                .id("JP123456")
+                .name(Name.builder().firstName("Joint").lastName("Party").build())
+                .address(Address.builder().line1("Appellant Line 1").town("Appellant Town").county("Appellant County").postcode("AP9 3LL").build())
+                .build();
+
+        Representative representative = Representative.builder()
+            .id("REP123456")
+            .name(Name.builder()
+                .title("Mr.")
+                .firstName("Representative")
+                .lastName("Appellant")
+                .build())
+            .build();
+
+        caseData = SscsCaseData.builder()
+                .jointParty(jointPartyWithId)
+                .otherParties(buildOtherPartyData())
+                .appeal(Appeal.builder()
+                    .appellant(appellantWithId)
+                    .rep(representative)
+                    .build())
+                .build();
+    }
+
+    private List<CcdValue<OtherParty>> buildOtherPartyData() {
+        return List.of(CcdValue.<OtherParty>builder()
+            .value(OtherParty.builder()
+                .id("OP123456")
+                .name(Name.builder()
+                    .firstName("Other")
+                    .lastName("Party")
+                    .build())
+                .otherPartySubscription(Subscription.builder().email("other@party").subscribeEmail("Yes").build())
+                .rep(Representative.builder()
+                    .id("OPREP123456")
+                    .name(Name.builder()
+                        .firstName("OtherParty")
+                        .lastName("Representative")
+                        .build())
+                    .hasRepresentative(YesNo.YES.getValue())
+                    .build())
+                .build())
+            .build(),
+            CcdValue.<OtherParty>builder()
+                .value(OtherParty.builder()
+                    .id("OP7890123")
+                    .name(Name.builder()
+                        .firstName("Other 1")
+                        .lastName("Party 1")
+                        .build())
+                    .otherPartySubscription(Subscription.builder().email("other@party").subscribeEmail("Yes").build())
+                    .rep(Representative.builder()
+                        .hasRepresentative(YesNo.NO.getValue())
+                        .build())
+                    .build())
+                .build()
+            );
+    }
+
+    @DisplayName("When sender is appellant, representative or Joint party"
+            + " then return name of corresponding party")
+    @Test
+    @Parameters({"appellant,Tom Cat","representative,Representative Appellant", "jointParty,Joint Party", "jointParty1, "})
+    public void testGetNameForSenderRepresentative(String senderType, String senderName) {
+        DynamicList sender = new DynamicList(new DynamicListItem(senderType, senderType), new ArrayList<>());
+        caseData.setOriginalSender(sender);
+        assertEquals(senderName, LetterUtils.getNameForSender(caseData));
+    }
+
+    @DisplayName("When sender is null then return empty string")
+    @Test
+    public void getNameForSender_senderIsNull_returnEmpty() {
+        caseData.setOriginalSender(null);
+        assertEquals("", LetterUtils.getNameForSender(caseData));
+    }
+
+    @DisplayName("When sender is an Other Party or his representative "
+            + "then return name of respective other party or his representative.")
+    @Test
+    @Parameters({"otherPartyOP123456,Other,Party","otherPartyRepOPREP123456,OtherParty,Representative"})
+    public void getOtherPartyName_senderIsValid_returnName(String senderId, String firstName, String lastName) {
+        DynamicList sender = new DynamicList(new DynamicListItem(senderId, senderId), new ArrayList<>());
+        caseData.setOriginalSender(sender);
+        assertEquals(Optional.of(Name.builder()
+            .firstName(firstName)
+            .lastName(lastName)
+            .build()), LetterUtils.getOtherPartyName(caseData));
+    }
+
+    @DisplayName("When sender is an invalid Other Party or his representative "
+            + "then return empty.")
+    @Test
+    @Parameters({"otherPartyInvalid","otherPartyRepInvalid"})
+    public void getOtherPartyName_senderIsInValid_returnEmpty(String senderId) {
+        DynamicList sender = new DynamicList(new DynamicListItem(senderId, senderId), new ArrayList<>());
+        caseData.setOriginalSender(sender);
+        assertEquals(Optional.empty(), LetterUtils.getOtherPartyName(caseData));
+    }
+
+    @DisplayName("When the notification event type is other than ACTION_FURTHER_EVIDENCE or POST_HEARING_REQUEST "
+            + "then return empty string.")
+    @Test
+    public void getNotificationTypeForActionFurtherEvidence_InvalidActionType_returnEmpty() {
+        DynamicList sender = new DynamicList(new DynamicListItem("appellant", "Other party 1 - Representative - R Basker R Nadar"), new ArrayList<>());
+        caseData.setOriginalSender(sender);
+        SscsCaseDataWrapper wrapper = buildBaseWrapperWithCaseData(caseData, SYA_APPEAL_CREATED);
+
+        assertEquals("", LetterUtils.getNotificationTypeForActionFurtherEvidence(wrapper, SubscriptionWithType.builder().build()));
+    }
+
+    @DisplayName("When sender and subscriber is appellant then return confirmation")
+    @Test
+    @Parameters({"CORRECTION_REQUEST", "LIBERTY_TO_APPLY_REQUEST", "STATEMENT_OF_REASONS_REQUEST", "SET_ASIDE_REQUEST"})
+    public void getNotificationTypeForActionFurtherEvidence_ValidActionTypeAndValidSubscriber_returnConfirmation(NotificationEventType eventType) {
+        DynamicList sender = new DynamicList(new DynamicListItem("appellant", "Appellant"), new ArrayList<>());
+        caseData.setOriginalSender(sender);
+        SscsCaseDataWrapper wrapper = buildBaseWrapperWithCaseData(caseData, eventType);
+        SubscriptionWithType type = SubscriptionWithType.builder().party(appellantWithId).build();
+        assertEquals("confirmation", LetterUtils.getNotificationTypeForActionFurtherEvidence(wrapper, type));
+    }
+
+    @DisplayName("When sender is an appellant, representative or joint party and subscriber is other than sender "
+            + "then return notification.")
+    @Test
+    @Parameters({"appellant", "representative", "jointParty"})
+    public void getNotificationTypeForActionFurtherEvidence_ValidActionTypeAndInValidSubscriber_returnNotice(String requester) {
+        DynamicList sender = new DynamicList(new DynamicListItem(requester, requester), new ArrayList<>());
+        caseData.setOriginalSender(sender);
+        SscsCaseDataWrapper wrapper = buildBaseWrapperWithCaseData(caseData, LIBERTY_TO_APPLY_REQUEST);
+        Appellant appellant = Appellant.builder()
+                .name(Name.builder().firstName("Tom").lastName("Cat").build())
+                .address(Address.builder().line1("Appellant Line 1")
+                    .town("Appellant Town")
+                    .county("Appellant County")
+                    .postcode("AP9 3LL").build())
+                .build();
+
+        SubscriptionWithType type = SubscriptionWithType.builder().party(appellant).partyId(appellant.getId()).build();
+        assertEquals("notice", LetterUtils.getNotificationTypeForActionFurtherEvidence(wrapper, type));
+    }
+
+    @DisplayName("When sender and subscriber is a Joint party then return confirmation.")
+    @Test
+    @Parameters({"CORRECTION_REQUEST", "LIBERTY_TO_APPLY_REQUEST", "STATEMENT_OF_REASONS_REQUEST", "SET_ASIDE_REQUEST"})
+    public void getNotificationTypeForActionFurtherEvidence_ValidJointPartySub_returnConfirmation(NotificationEventType eventType) {
+        DynamicList sender = new DynamicList(new DynamicListItem("jointParty", "jointParty"), new ArrayList<>());
+        caseData.setOriginalSender(sender);
+        SscsCaseDataWrapper wrapper = buildBaseWrapperWithCaseData(caseData, eventType);
+        SubscriptionWithType type = SubscriptionWithType.builder().party(jointPartyWithId).build();
+        assertEquals("confirmation", LetterUtils.getNotificationTypeForActionFurtherEvidence(wrapper, type));
+    }
+
+    @DisplayName("When sender is an other party and subscriber is other than sender then return notification.")
+    @Test
+    @Parameters({"CORRECTION_REQUEST", "LIBERTY_TO_APPLY_REQUEST", "STATEMENT_OF_REASONS_REQUEST", "SET_ASIDE_REQUEST"})
+    public void getNotificationTypeForActionFurtherEvidence_InValidOtherPartySubscriber_returnNotice(NotificationEventType eventType) {
+        DynamicList sender = new DynamicList(new DynamicListItem("otherParty", "otherParty"), new ArrayList<>());
+        caseData.setOriginalSender(sender);
+        SscsCaseDataWrapper wrapper = buildBaseWrapperWithCaseData(caseData, eventType);
+        SubscriptionWithType type = SubscriptionWithType.builder().partyId("Invalid").build();
+
+        assertEquals("notice", LetterUtils.getNotificationTypeForActionFurtherEvidence(wrapper, type));
+    }
+
+    @DisplayName("When other party or his representative send the request "
+            + "then other party and his representative should receive confirmation.")
+    @Test
+    @Parameters({"otherPartyOP123456,OP123456","otherPartyOP123456,otherPartyOPREP123456", "otherPartyOPREP123456,OPREP123456","otherPartyOPREP123456,OP123456"})
+    public void getNotificationTypeForActionFurtherEvidence_ValidOtherPartyAndRepSub_returnConfirmation(String senderType, String subscriber) {
+        DynamicList sender = new DynamicList(new DynamicListItem(senderType, senderType), new ArrayList<>());
+        caseData.setOriginalSender(sender);
+        SscsCaseDataWrapper wrapper = buildBaseWrapperWithCaseData(caseData, LIBERTY_TO_APPLY_REQUEST);
+        SubscriptionWithType type = SubscriptionWithType.builder().partyId(subscriber).build();
+        assertEquals("confirmation", LetterUtils.getNotificationTypeForActionFurtherEvidence(wrapper, type));
+    }
+
+    @DisplayName("When sender and subscriber is an other party or his representative then return true")
+    @Test
+    @Parameters({"OPREP123456,OPREP123456","OPREP123456,OP123456"})
+    public void isValidOtherPartyRepresentative_ValidOtherPartyAndRep_returnTrue(String senderId, String subscriptionId) {
+        List<CcdValue<OtherParty>>  otherParties = buildOtherPartyData();
+        assertTrue(LetterUtils.isValidOtherPartyRepresentative(subscriptionId,
+                senderId, otherParties.get(0)));
+    }
+
+    @DisplayName("When the sender/original requester is other than representative then return false.")
+    @Test
+    @Parameters({"CORRECTION_REQUEST", "LIBERTY_TO_APPLY_REQUEST", "STATEMENT_OF_REASONS_REQUEST", "SET_ASIDE_REQUEST"})
+    public void isValidAppellantRepresentativeForSetAsideRequest_givenNonRepresentative_thenReturnFalse(NotificationEventType eventType) {
+        DynamicList sender = new DynamicList(new DynamicListItem("otherPartyOP123456", "OPREP123456"), new ArrayList<>());
+        caseData.setOriginalSender(sender);
+        SscsCaseDataWrapper wrapper = buildBaseWrapperWithCaseData(caseData, eventType);
+        SubscriptionWithType type = SubscriptionWithType.builder().partyId("otherPartyOPREP123456").build();
+        assertFalse(LetterUtils.isValidAppellantRepresentativeForSetAsideRequest(wrapper, type));
+    }
+
+    @DisplayName("When the sender/original requester is representative and subscriber is appellant or representative"
+            + " then return true.")
+    @Test
+    @Parameters({"APP123456", "REP123456"})
+    public void isValidAppellantRepresentativeForSetAsideRequest_givenValidRepresentative_thenReturnTrue(String partyId) {
+        DynamicList sender = new DynamicList(new DynamicListItem("representative", "representative"), new ArrayList<>());
+        caseData.setOriginalSender(sender);
+        SscsCaseDataWrapper wrapper = buildBaseWrapperWithCaseData(caseData, LIBERTY_TO_APPLY_REQUEST);
+        Appellant party = Appellant.builder().id(partyId).build();
+        SubscriptionWithType type = SubscriptionWithType.builder().party(party).build();
+        assertTrue(LetterUtils.isValidAppellantRepresentativeForSetAsideRequest(wrapper, type));
+    }
+
+    @DisplayName("When the subscription id is null then return false.")
+    @Test
+    public void isValidOtherParty_givenSubscriberIsNull_thenReturnFalse() {
+        DynamicList sender = new DynamicList(new DynamicListItem("otherPartyOPREP123456", "OPREP123456"), new ArrayList<>());
+        caseData.setOriginalSender(sender);
+        SscsCaseDataWrapper wrapper = buildBaseWrapperWithCaseData(caseData, LIBERTY_TO_APPLY_REQUEST);
+        SubscriptionWithType type = SubscriptionWithType.builder().build();
+        assertFalse(LetterUtils.isValidOtherParty(wrapper, type));
+    }
+
+    @DisplayName("When the subscription id is invalid then return false.")
+    @Test
+    @Parameters({"jointParty", "otherParty"})
+    public void isValidOtherParty_givenSubscriberIsInValid_thenReturnFalse(String senderType) {
+        DynamicList sender = new DynamicList(new DynamicListItem(senderType, senderType), new ArrayList<>());
+        caseData.setOriginalSender(sender);
+        SscsCaseDataWrapper wrapper = buildBaseWrapperWithCaseData(caseData, LIBERTY_TO_APPLY_REQUEST);
+        SubscriptionWithType type = SubscriptionWithType.builder().partyId("test").build();
+        assertFalse(LetterUtils.isValidOtherParty(wrapper, type));
+    }
+
+    @DisplayName("When the other party data present and valid then return true.")
+    @Test
+    public void isValidOtherParty_givenSubscriberIsValid_thenReturnTrue() {
+        DynamicList sender = new DynamicList(new DynamicListItem("otherPartyOP123456", "otherParty"), new ArrayList<>());
+        caseData.setOriginalSender(sender);
+        SscsCaseDataWrapper wrapper = buildBaseWrapperWithCaseData(caseData, LIBERTY_TO_APPLY_REQUEST);
+        SubscriptionWithType type = SubscriptionWithType.builder().partyId("OP123456").build();
+        assertTrue(LetterUtils.isValidOtherParty(wrapper, type));
+    }
+
+    public SscsCaseDataWrapper buildBaseWrapperWithCaseData(SscsCaseData caseData, NotificationEventType type) {
+        SscsCaseDataWrapper caseDataWrapper = SscsCaseDataWrapper.builder()
+                .newSscsCaseData(caseData)
+                .notificationEventType(type)
+                .build();
+        return caseDataWrapper;
+    }
 }

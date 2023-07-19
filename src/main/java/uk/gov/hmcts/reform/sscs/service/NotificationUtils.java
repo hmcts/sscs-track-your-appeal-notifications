@@ -10,6 +10,7 @@ import static uk.gov.hmcts.reform.sscs.config.SubscriptionType.APPOINTEE;
 import static uk.gov.hmcts.reform.sscs.config.SubscriptionType.JOINT_PARTY;
 import static uk.gov.hmcts.reform.sscs.config.SubscriptionType.REPRESENTATIVE;
 
+import lombok.extern.slf4j.Slf4j;
 import uk.gov.hmcts.reform.sscs.ccd.domain.Appeal;
 import uk.gov.hmcts.reform.sscs.ccd.domain.Appointee;
 import uk.gov.hmcts.reform.sscs.ccd.domain.OtherParty;
@@ -21,6 +22,7 @@ import uk.gov.hmcts.reform.sscs.domain.notify.Notification;
 import uk.gov.hmcts.reform.sscs.domain.notify.NotificationEventType;
 import uk.gov.hmcts.reform.sscs.factory.NotificationWrapper;
 
+@Slf4j
 public class NotificationUtils {
 
     private NotificationUtils() {
@@ -73,9 +75,12 @@ public class NotificationUtils {
 
     public static boolean hasRepSubscriptionOrIsMandatoryRepLetter(SscsCaseDataWrapper wrapper) {
         Subscription subscription = getSubscription(wrapper.getNewSscsCaseData(), REPRESENTATIVE);
-        return ((null != subscription && subscription.doesCaseHaveSubscriptions())
-            || (hasRepresentative(wrapper.getNewSscsCaseData().getAppeal())
-            && EVENT_TYPES_FOR_MANDATORY_LETTERS.contains(wrapper.getNotificationEventType())));
+        boolean hasRepresentative = hasRepresentative(wrapper.getNewSscsCaseData().getAppeal());
+        boolean hasRepSubscription = hasRepresentative && (null != subscription && subscription.doesCaseHaveSubscriptions());
+        boolean hasMandatoryLetter = (hasRepresentative(wrapper.getNewSscsCaseData().getAppeal())
+            && EVENT_TYPES_FOR_MANDATORY_LETTERS.contains(wrapper.getNotificationEventType()));
+
+        return (hasRepSubscription || hasMandatoryLetter);
     }
 
     public static boolean hasJointPartySubscription(SscsCaseDataWrapper wrapper) {
