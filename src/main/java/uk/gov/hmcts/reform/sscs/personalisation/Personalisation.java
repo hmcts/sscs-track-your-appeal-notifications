@@ -327,12 +327,12 @@ public class Personalisation<E extends NotificationWrapper> {
     }
 
     private boolean isPtaSetAsideReview(NotificationEventType notificationEventType) {
-        return SET_ASIDE_REVIEW.equals(notificationEventType);
+        return REVIEW_AND_SET_ASIDE.equals(notificationEventType);
     }
 
     private void setDecisionDateForPtaSetAside(Map<String, Object> personalisation, SscsCaseData ccdResponse) {
         ccdResponse.getSscsDocument().stream()
-                .filter(d -> d.getValue().getDocumentType().equals(DocumentType.SET_ASIDE_REVIEW.getValue()))
+                .filter(d -> d.getValue().getDocumentType().equals(DocumentType.REVIEW_AND_SET_ASIDE.getValue()))
                 .findFirst().ifPresent(document -> {
                     personalisation.put(DECISION_DATE, document.getValue().getDocumentDateAdded());
                 });

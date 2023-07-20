@@ -161,7 +161,7 @@ notification:
       docmosisId: TB-SCS-LET-ENG-Action-Further-Evidence.docx
     sORRequest:
       docmosisId: TB-SCS-LET-ENG-Action-Further-Evidence.docx
-    setAsideReview:
+    reviewAndSetAside:
       docmosisId: TB-SCS-LET-ENG-Permission-to-Appeal-Review.docx
     jointPartyAdded:
       appellant:
@@ -749,7 +749,7 @@ notification:
       docmosisId: TB-SCS-LET-WEL-Action-Further-Evidence.docx
     sORRequest:
       docmosisId: TB-SCS-LET-WEL-Action-Further-Evidence.docx
-    setAsideReview:
+    reviewAndSetAside:
       docmosisId: TB-SCS-LET-WEL-Permission-to-Appeal-Review.docx
     jointPartyAdded:
       appellant:
@@ -1382,7 +1382,7 @@ pdf-service:
       correctionRequest: 'TB-SCS-GNO-ENG-00012.docx'
       sORRequest: 'TB-SCS-GNO-ENG-00012.docx'
       setAsideRequest: 'TB-SCS-GNO-ENG-00012.docx'
-      setAsideReview: 'TB-SCS-GNO-ENG-00012.docx'
+      reviewAndSetAside: 'TB-SCS-GNO-ENG-00012.docx'
       libertyToApplyRequest: 'TB-SCS-GNO-ENG-00012.docx'
     welsh:
       appealReceived: 'TB-SCS-GNO-WEL-00479.docx'
@@ -1403,7 +1403,7 @@ pdf-service:
       correctionRequest: 'TB-SCS-GNO-WEL-00479.docx'
       sORRequest: 'TB-SCS-GNO-WEL-00479.docx'
       setAsideRequest: 'TB-SCS-GNO-WEL-00479.docx'
-      setAsideReview: 'TB-SCS-GNO-WEL-00479.docx'
+      reviewAndSetAside: 'TB-SCS-GNO-WEL-00479.docx'
       libertyToApplyRequest: 'TB-SCS-GNO-WEL-00479.docx'
 
 docmosis:

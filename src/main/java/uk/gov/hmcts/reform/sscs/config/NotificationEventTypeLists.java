@@ -41,9 +41,9 @@ import static uk.gov.hmcts.reform.sscs.domain.notify.NotificationEventType.PROVI
 import static uk.gov.hmcts.reform.sscs.domain.notify.NotificationEventType.REISSUE_DOCUMENT;
 import static uk.gov.hmcts.reform.sscs.domain.notify.NotificationEventType.REQUEST_FOR_INFORMATION;
 import static uk.gov.hmcts.reform.sscs.domain.notify.NotificationEventType.RESEND_APPEAL_CREATED;
+import static uk.gov.hmcts.reform.sscs.domain.notify.NotificationEventType.REVIEW_AND_SET_ASIDE;
 import static uk.gov.hmcts.reform.sscs.domain.notify.NotificationEventType.REVIEW_CONFIDENTIALITY_REQUEST;
 import static uk.gov.hmcts.reform.sscs.domain.notify.NotificationEventType.SET_ASIDE_REQUEST;
-import static uk.gov.hmcts.reform.sscs.domain.notify.NotificationEventType.SET_ASIDE_REVIEW;
 import static uk.gov.hmcts.reform.sscs.domain.notify.NotificationEventType.STATEMENT_OF_REASONS_REQUEST;
 import static uk.gov.hmcts.reform.sscs.domain.notify.NotificationEventType.STRUCK_OUT;
 import static uk.gov.hmcts.reform.sscs.domain.notify.NotificationEventType.SUBSCRIPTION_CREATED;
@@ -112,7 +112,7 @@ public final class NotificationEventTypeLists {
     // move to EVENTS_TO_HANDLE when feature.postHearingsB.enabled removed
     public static final Set<NotificationEventType> EVENTS_TO_HANDLE_POSTHEARINGS_B = EnumSet.of(
         LIBERTY_TO_APPLY_REQUEST,
-        SET_ASIDE_REVIEW
+        REVIEW_AND_SET_ASIDE
         // TODO put permission to appeal, share with upper Tribunal and remit to lower tribunal events here when setting notification
     );
 
@@ -131,7 +131,7 @@ public final class NotificationEventTypeLists {
         ISSUE_FINAL_DECISION_WELSH,
         PROVIDE_APPOINTEE_DETAILS,
         REISSUE_DOCUMENT,
-        SET_ASIDE_REVIEW,
+        REVIEW_AND_SET_ASIDE,
         STRUCK_OUT
     );
 
@@ -175,10 +175,10 @@ public final class NotificationEventTypeLists {
         PROCESS_AUDIO_VIDEO_WELSH,
         PROVIDE_APPOINTEE_DETAILS,
         REQUEST_FOR_INFORMATION,
+        REVIEW_AND_SET_ASIDE,
         REVIEW_CONFIDENTIALITY_REQUEST,
         STRUCK_OUT,
         SET_ASIDE_REQUEST,
-        SET_ASIDE_REVIEW,
         STATEMENT_OF_REASONS_REQUEST,
         UPDATE_OTHER_PARTY_DATA
     );
@@ -242,9 +242,9 @@ public final class NotificationEventTypeLists {
         PROVIDE_APPOINTEE_DETAILS,
         REQUEST_FOR_INFORMATION,
         RESEND_APPEAL_CREATED,
+        REVIEW_AND_SET_ASIDE,
         REVIEW_CONFIDENTIALITY_REQUEST,
         SET_ASIDE_REQUEST,
-        SET_ASIDE_REVIEW,
         STATEMENT_OF_REASONS_REQUEST,
         STRUCK_OUT,
         UPDATE_OTHER_PARTY_DATA,
@@ -285,8 +285,8 @@ public final class NotificationEventTypeLists {
         POSTPONEMENT,
         PROCESS_AUDIO_VIDEO,
         PROCESS_AUDIO_VIDEO_WELSH,
+        REVIEW_AND_SET_ASIDE,
         SET_ASIDE_REQUEST,
-        SET_ASIDE_REVIEW,
         STATEMENT_OF_REASONS_REQUEST,
         STRUCK_OUT
     );
