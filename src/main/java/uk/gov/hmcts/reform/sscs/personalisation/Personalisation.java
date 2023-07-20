@@ -65,6 +65,7 @@ import java.time.LocalDateTime;
 import java.time.ZonedDateTime;
 import java.time.format.DateTimeFormatter;
 import java.time.temporal.ChronoUnit;
+import java.util.Comparator;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Locale;
@@ -332,10 +333,15 @@ public class Personalisation<E extends NotificationWrapper> {
 
     private void setDecisionDateForPtaSetAside(Map<String, Object> personalisation, SscsCaseData ccdResponse) {
         ccdResponse.getSscsDocument().stream()
-                .filter(d -> d.getValue().getDocumentType().equals(DocumentType.REVIEW_AND_SET_ASIDE.getValue()))
-                .findFirst().ifPresent(document -> {
+                .filter(Personalisation::hasReviewAndSetAsideDocumentType)
+                .max(Comparator.comparing(d -> LocalDate.parse(d.getValue().getDocumentDateAdded())))
+                .ifPresent(document -> {
                     personalisation.put(DECISION_DATE, document.getValue().getDocumentDateAdded());
                 });
+    }
+
+    private static boolean hasReviewAndSetAsideDocumentType(SscsDocument document) {
+        return DocumentType.REVIEW_AND_SET_ASIDE.getValue().equals(document.getValue().getDocumentType());
     }
 
     private static boolean hasBenefitType(SscsCaseData ccdResponse) {

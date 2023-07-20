@@ -73,6 +73,7 @@ import org.junit.runner.RunWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.Spy;
+import uk.gov.hmcts.reform.sscs.ccd.callback.DocumentType;
 import uk.gov.hmcts.reform.sscs.ccd.domain.*;
 import uk.gov.hmcts.reform.sscs.config.NotificationConfig;
 import uk.gov.hmcts.reform.sscs.config.PersonalisationConfiguration;
@@ -1849,6 +1850,76 @@ public class PersonalisationTest {
                 result.get(HEARING_ARRANGEMENT_DETAILS_LITERAL_WELSH));
 
     }
+
+    @Test
+    public void givenReviewAndSetAside_setCorrectPtaDecisionDate() {
+        String date = LocalDate.now().toString();
+        String date2 = LocalDate.now().minusDays(20).toString();
+        SscsDocumentDetails document1 = SscsDocumentDetails.builder()
+                .documentType(DocumentType.REVIEW_AND_SET_ASIDE.getValue())
+                .documentDateAdded(date)
+                .build();
+        SscsDocumentDetails document2 = SscsDocumentDetails.builder()
+                .documentType(DocumentType.REVIEW_AND_SET_ASIDE.getValue())
+                .documentDateAdded(date2)
+                .build();
+        SscsDocument sscsDocument1 = SscsDocument.builder().value(document1).build();
+        SscsDocument sscsDocument2 = SscsDocument.builder().value(document2).build();
+        List<SscsDocument> sscsDocuments = new ArrayList<>();
+        sscsDocuments.add(sscsDocument2);
+        sscsDocuments.add(sscsDocument1);
+
+        SscsCaseData response = SscsCaseData.builder()
+                .ccdCaseId(CASE_ID)
+                .sscsDocument(sscsDocuments)
+                .appeal(Appeal.builder().benefitType(BenefitType.builder().code("PIP").build())
+                        .appellant(Appellant.builder()
+                                .name(name)
+                                .appointee(Appointee.builder()
+                                        .name(Name.builder()
+                                                .firstName("Appointee")
+                                                .lastName("Name")
+                                                .build())
+                                        .build())
+                                .build())
+                        .build())
+                .build();
+
+        Map<String, String> result = personalisation.create(SscsCaseDataWrapper.builder().newSscsCaseData(response)
+                        .notificationEventType(REVIEW_AND_SET_ASIDE).build(),
+                new SubscriptionWithType(subscriptions.getAppellantSubscription(), APPOINTEE,
+                        response.getAppeal().getAppellant(), response.getAppeal().getAppellant().getAppointee()));
+
+        assertThat(result)
+                .containsEntry(DECISION_DATE, date);
+    }
+
+    @Test
+    public void givenReviewAndSetAside_setCorrectPtaDecisionDateAndNoReviewAndSetAsideDocument_shouldNotHaveDecisionDate() {
+        SscsCaseData response = SscsCaseData.builder()
+                .ccdCaseId(CASE_ID)
+                .appeal(Appeal.builder().benefitType(BenefitType.builder().code("PIP").build())
+                        .appellant(Appellant.builder()
+                                .name(name)
+                                .appointee(Appointee.builder()
+                                        .name(Name.builder()
+                                                .firstName("Appointee")
+                                                .lastName("Name")
+                                                .build())
+                                        .build())
+                                .build())
+                        .build())
+                .build();
+
+        Map<String, String> result = personalisation.create(SscsCaseDataWrapper.builder().newSscsCaseData(response)
+                        .notificationEventType(REVIEW_AND_SET_ASIDE).build(),
+                new SubscriptionWithType(subscriptions.getAppellantSubscription(), APPOINTEE,
+                        response.getAppeal().getAppellant(), response.getAppeal().getAppellant().getAppointee()));
+
+        assertThat(result)
+                .doesNotContainKey(DECISION_DATE);
+    }
+
 
     private Hearing createHearing(LocalDate hearingDate) {
         return Hearing.builder().value(HearingDetails.builder()
