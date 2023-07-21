@@ -161,6 +161,10 @@ notification:
       docmosisId: TB-SCS-LET-ENG-Action-Further-Evidence.docx
     sORRequest:
       docmosisId: TB-SCS-LET-ENG-Action-Further-Evidence.docx
+    permissionToAppealRefused:
+      docmosisId: TB-SCS-LET-ENG-Permission-to-Appeal-Granted-Refused.docx
+    permissionToAppealGranted:
+      docmosisId: TB-SCS-LET-ENG-Permission-to-Appeal-Granted-Refused.docx
     jointPartyAdded:
       appellant:
         docmosisId: TB-SCS-GNO-ENG-00579.docx
@@ -747,6 +751,10 @@ notification:
       docmosisId: TB-SCS-LET-WEL-Action-Further-Evidence.docx
     sORRequest:
       docmosisId: TB-SCS-LET-WEL-Action-Further-Evidence.docx
+    permissionToAppealRefused:
+      docmosisId: TB-SCS-LET-WEL-Permission-to-Appeal-Granted-Refused.docx
+    permissionToAppealGranted:
+      docmosisId: TB-SCS-LET-WEL-Permission-to-Appeal-Granted-Refused.docx
     jointPartyAdded:
       appellant:
         docmosisId: TB-SCS-GNO-WEL-00629.docx
@@ -1379,6 +1387,8 @@ pdf-service:
       sORRequest: 'TB-SCS-GNO-ENG-00012.docx'
       setAsideRequest: 'TB-SCS-GNO-ENG-00012.docx'
       libertyToApplyRequest: 'TB-SCS-GNO-ENG-00012.docx'
+      permissionToAppealRefused: 'TB-SCS-GNO-ENG-00012.docx'
+      permissionToAppealGranted: 'TB-SCS-GNO-ENG-00012.docx'
     welsh:
       appealReceived: 'TB-SCS-GNO-WEL-00479.docx'
       directionIssued: 'TB-SCS-GNO-WEL-00479.docx'
@@ -1399,6 +1409,8 @@ pdf-service:
       sORRequest: 'TB-SCS-GNO-WEL-00479.docx'
       setAsideRequest: 'TB-SCS-GNO-WEL-00479.docx'
       libertyToApplyRequest: 'TB-SCS-GNO-WEL-00479.docx'
+      permissionToAppealRefused: 'TB-SCS-GNO-WEL-00479.docx'
+      permissionToAppealGranted: 'TB-SCS-GNO-WEL-00479.docx'
 
 docmosis:
   accessKey:

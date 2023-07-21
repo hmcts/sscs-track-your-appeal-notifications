@@ -55,6 +55,8 @@ import static uk.gov.hmcts.reform.sscs.domain.notify.NotificationEventType.DIREC
 import static uk.gov.hmcts.reform.sscs.domain.notify.NotificationEventType.DIRECTION_ISSUED_WELSH;
 import static uk.gov.hmcts.reform.sscs.domain.notify.NotificationEventType.EVIDENCE_RECEIVED;
 import static uk.gov.hmcts.reform.sscs.domain.notify.NotificationEventType.JUDGE_DECISION_APPEAL_TO_PROCEED;
+import static uk.gov.hmcts.reform.sscs.domain.notify.NotificationEventType.PERMISSION_TO_APPEAL_GRANTED;
+import static uk.gov.hmcts.reform.sscs.domain.notify.NotificationEventType.PERMISSION_TO_APPEAL_REFUSED;
 import static uk.gov.hmcts.reform.sscs.domain.notify.NotificationEventType.SUBSCRIPTION_CREATED;
 import static uk.gov.hmcts.reform.sscs.domain.notify.NotificationEventType.TCW_DECISION_APPEAL_TO_PROCEED;
 import static uk.gov.hmcts.reform.sscs.personalisation.SyaAppealCreatedAndReceivedPersonalisation.TWO_NEW_LINES;
@@ -71,6 +73,7 @@ import java.time.LocalDateTime;
 import java.time.ZonedDateTime;
 import java.time.format.DateTimeFormatter;
 import java.time.temporal.ChronoUnit;
+import java.util.Comparator;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Locale;
@@ -82,6 +85,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
+import uk.gov.hmcts.reform.sscs.ccd.callback.DocumentType;
 import uk.gov.hmcts.reform.sscs.ccd.domain.*;
 import uk.gov.hmcts.reform.sscs.config.NotificationConfig;
 import uk.gov.hmcts.reform.sscs.config.NotificationEventTypeLists;
@@ -96,6 +100,7 @@ import uk.gov.hmcts.reform.sscs.domain.notify.Template;
 import uk.gov.hmcts.reform.sscs.exception.BenefitMappingException;
 import uk.gov.hmcts.reform.sscs.extractor.HearingContactDateExtractor;
 import uk.gov.hmcts.reform.sscs.factory.NotificationWrapper;
+import uk.gov.hmcts.reform.sscs.service.LetterUtils;
 import uk.gov.hmcts.reform.sscs.service.MessageAuthenticationServiceImpl;
 import uk.gov.hmcts.reform.sscs.service.RegionalProcessingCenterService;
 import uk.gov.hmcts.reform.sscs.service.SendNotificationHelper;
@@ -324,7 +329,32 @@ public class Personalisation<E extends NotificationWrapper> {
         personalisation.put(PARTY_TYPE, subscriptionWithType.getParty().getClass().getSimpleName());
         personalisation.put(ENTITY_TYPE, subscriptionWithType.getEntity().getClass().getSimpleName());
 
+        if (PERMISSION_TO_APPEAL_REFUSED.equals(notificationEventType)) {
+            personalisation.put(IS_GRANTED, false);
+            personalisation.put(SENDER_NAME, LetterUtils.getNameForSender(ccdResponse));
+            setDecisionDate(personalisation, ccdResponse, DocumentType.FINAL_DECISION_NOTICE);
+        }
+
+        if (PERMISSION_TO_APPEAL_GRANTED.equals(notificationEventType)) {
+            personalisation.put(IS_GRANTED, true);
+            personalisation.put(SENDER_NAME, LetterUtils.getNameForSender(ccdResponse));
+            setDecisionDate(personalisation, ccdResponse, DocumentType.FINAL_DECISION_NOTICE);
+        }
+
         return personalisation;
+    }
+
+    private void setDecisionDate(Map<String, Object> personalisation, SscsCaseData ccdResponse, DocumentType documentType) {
+        ccdResponse.getSscsDocument().stream()
+                .filter(document -> hasReviewAndSetAsideDocumentType(document, documentType))
+                .max(Comparator.comparing(d -> LocalDate.parse(d.getValue().getDocumentDateAdded())))
+                .ifPresent(document -> {
+                    personalisation.put(DECISION_DATE, document.getValue().getDocumentDateAdded());
+                });
+    }
+
+    private static boolean hasReviewAndSetAsideDocumentType(SscsDocument document, DocumentType documentType) {
+        return documentType.getValue().equals(document.getValue().getDocumentType());
     }
 
     private static boolean hasBenefitType(SscsCaseData ccdResponse) {
