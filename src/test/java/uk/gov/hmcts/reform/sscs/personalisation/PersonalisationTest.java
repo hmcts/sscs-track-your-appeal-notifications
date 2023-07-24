@@ -1833,18 +1833,33 @@ public class PersonalisationTest {
     @SuppressWarnings("unchecked")
     @Test
     public void shouldProvideCorrectValuesForPtaRefusedValues() {
+        String date = LocalDate.now().toString();
+        SscsDocumentDetails document1 = SscsDocumentDetails.builder()
+                .documentType(DocumentType.FINAL_DECISION_NOTICE.getValue())
+                .documentDateAdded(date)
+                .build();
+        SscsDocument sscsDocument = SscsDocument.builder().value(document1).build();
+
+        DynamicListItem item = new DynamicListItem("appellant", "");
+        DynamicList originalSender = new DynamicList(item, List.of());
+
         Appellant appellant = Appellant.builder().name(name).build();
         Appeal appeal = Appeal.builder().benefitType(BenefitType.builder().code("PIP").build()).appellant(appellant).build();
-        SscsCaseData response = SscsCaseData.builder().ccdCaseId(CASE_ID).appeal(appeal).build();
+        SscsCaseData response = SscsCaseData.builder()
+                .ccdCaseId(CASE_ID).appeal(appeal)
+                .sscsDocument(List.of(sscsDocument))
+                .originalSender(originalSender)
+                .build();
         SubscriptionWithType subscription = new SubscriptionWithType(subscriptions.getAppellantSubscription(), APPELLANT,
                 appellant, appellant);
         SscsCaseDataWrapper caseDataWrapper = SscsCaseDataWrapper.builder().newSscsCaseData(response)
-                .notificationEventType(PERMISSION_TO_APPEAL_GRANTED).build();
+                .notificationEventType(PERMISSION_TO_APPEAL_REFUSED).build();
         var result = personalisation.create(caseDataWrapper, subscription);
 
         assertThat(result)
                 .containsEntry(IS_GRANTED, false)
-                .containsEntry(SENDER_NAME, name.getFullNameNoTitle());
+                .containsEntry(SENDER_NAME, name.getFullNameNoTitle())
+                .containsEntry(DECISION_DATE, date);
     }
 
     @Test

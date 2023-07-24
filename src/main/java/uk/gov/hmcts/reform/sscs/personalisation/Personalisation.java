@@ -345,6 +345,10 @@ public class Personalisation<E extends NotificationWrapper> {
     }
 
     private void setDecisionDate(Map<String, Object> personalisation, SscsCaseData ccdResponse, DocumentType documentType) {
+        if (isNull(ccdResponse.getSscsDocument())) {
+            return;
+        }
+
         ccdResponse.getSscsDocument().stream()
                 .filter(document -> hasReviewAndSetAsideDocumentType(document, documentType))
                 .max(Comparator.comparing(d -> LocalDate.parse(d.getValue().getDocumentDateAdded())))
