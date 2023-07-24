@@ -96,6 +96,7 @@ import uk.gov.hmcts.reform.sscs.domain.notify.Template;
 import uk.gov.hmcts.reform.sscs.exception.BenefitMappingException;
 import uk.gov.hmcts.reform.sscs.extractor.HearingContactDateExtractor;
 import uk.gov.hmcts.reform.sscs.factory.NotificationWrapper;
+import uk.gov.hmcts.reform.sscs.service.LetterUtils;
 import uk.gov.hmcts.reform.sscs.service.MessageAuthenticationServiceImpl;
 import uk.gov.hmcts.reform.sscs.service.RegionalProcessingCenterService;
 import uk.gov.hmcts.reform.sscs.service.SendNotificationHelper;
@@ -323,6 +324,16 @@ public class Personalisation<E extends NotificationWrapper> {
 
         personalisation.put(PARTY_TYPE, subscriptionWithType.getParty().getClass().getSimpleName());
         personalisation.put(ENTITY_TYPE, subscriptionWithType.getEntity().getClass().getSimpleName());
+
+        if (DwpState.LIBERTY_TO_APPLY_GRANTED.equals(ccdResponse.getDwpState())) {
+            personalisation.put(IS_GRANTED, true);
+        }
+
+        if (DwpState.LIBERTY_TO_APPLY_REFUSED.equals(ccdResponse.getDwpState())) {
+            personalisation.put(IS_GRANTED, false);
+        }
+
+        personalisation.put(SENDER_NAME, LetterUtils.getNameForSender(ccdResponse));
 
         return personalisation;
     }

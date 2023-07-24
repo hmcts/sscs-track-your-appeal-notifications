@@ -1409,8 +1409,8 @@ pdf-service:
       sORRequest: 'TB-SCS-GNO-WEL-00479.docx'
       setAsideRequest: 'TB-SCS-GNO-WEL-00479.docx'
       libertyToApplyRequest: 'TB-SCS-GNO-WEL-00479.docx'
-      libertyToApplyGranted: 'TB-SCS-GNO-ENG-00012.docx'
-      libertyToApplyRefused: 'TB-SCS-GNO-ENG-00012.docx'
+      libertyToApplyGranted: 'TB-SCS-GNO-WEL-00479.docx'
+      libertyToApplyRefused: 'TB-SCS-GNO-WEL-00479.docx'
 
 docmosis:
   accessKey:
