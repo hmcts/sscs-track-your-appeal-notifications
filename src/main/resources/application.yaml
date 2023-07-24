@@ -526,6 +526,10 @@ notification:
     updateOtherPartyData:
       other_party:
         docmosisId: TB-SCS-GNO-ENG-00784.docx
+    libertyToApplyGranted:
+      docmosisId: TB-SCS-LET-ENG-Liberty-to-Apply-Granted-Refused.docx
+    libertyToApplyRefused:
+      docmosisId: TB-SCS-LET-ENG-Liberty-to-Apply-Granted-Refused.docx
     paper:
       responseReceived:
         appellant:
@@ -1090,6 +1094,10 @@ notification:
     updateOtherPartyData:
       other_party:
         docmosisId: TB-SCS-GNO-WEL-00787.docx
+    libertyToApplyGranted:
+      docmosisId: TB-SCS-LET-ENG-Liberty-to-Apply-Granted-Refused.docx
+    libertyToApplyRefused:
+      docmosisId: TB-SCS-LET-ENG-Liberty-to-Apply-Granted-Refused.docx
     paper:
       responseReceived:
         appellant:
@@ -1379,6 +1387,8 @@ pdf-service:
       sORRequest: 'TB-SCS-GNO-ENG-00012.docx'
       setAsideRequest: 'TB-SCS-GNO-ENG-00012.docx'
       libertyToApplyRequest: 'TB-SCS-GNO-ENG-00012.docx'
+      libertyToApplyGranted: 'TB-SCS-GNO-ENG-00012.docx'
+      libertyToApplyRefused: 'TB-SCS-GNO-ENG-00012.docx'
     welsh:
       appealReceived: 'TB-SCS-GNO-WEL-00479.docx'
       directionIssued: 'TB-SCS-GNO-WEL-00479.docx'
@@ -1399,6 +1409,8 @@ pdf-service:
       sORRequest: 'TB-SCS-GNO-WEL-00479.docx'
       setAsideRequest: 'TB-SCS-GNO-WEL-00479.docx'
       libertyToApplyRequest: 'TB-SCS-GNO-WEL-00479.docx'
+      libertyToApplyGranted: 'TB-SCS-GNO-ENG-00012.docx'
+      libertyToApplyRefused: 'TB-SCS-GNO-ENG-00012.docx'
 
 docmosis:
   accessKey:

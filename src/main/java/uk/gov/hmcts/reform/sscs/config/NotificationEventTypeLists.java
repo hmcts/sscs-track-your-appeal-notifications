@@ -1,57 +1,6 @@
 package uk.gov.hmcts.reform.sscs.config;
 
-import static uk.gov.hmcts.reform.sscs.domain.notify.NotificationEventType.ACTION_HEARING_RECORDING_REQUEST;
-import static uk.gov.hmcts.reform.sscs.domain.notify.NotificationEventType.ACTION_POSTPONEMENT_REQUEST;
-import static uk.gov.hmcts.reform.sscs.domain.notify.NotificationEventType.ACTION_POSTPONEMENT_REQUEST_WELSH;
-import static uk.gov.hmcts.reform.sscs.domain.notify.NotificationEventType.ADJOURNED;
-import static uk.gov.hmcts.reform.sscs.domain.notify.NotificationEventType.ADMIN_APPEAL_WITHDRAWN;
-import static uk.gov.hmcts.reform.sscs.domain.notify.NotificationEventType.APPEAL_DORMANT;
-import static uk.gov.hmcts.reform.sscs.domain.notify.NotificationEventType.APPEAL_LAPSED;
-import static uk.gov.hmcts.reform.sscs.domain.notify.NotificationEventType.APPEAL_RECEIVED;
-import static uk.gov.hmcts.reform.sscs.domain.notify.NotificationEventType.APPEAL_WITHDRAWN;
-import static uk.gov.hmcts.reform.sscs.domain.notify.NotificationEventType.CASE_UPDATED;
-import static uk.gov.hmcts.reform.sscs.domain.notify.NotificationEventType.CORRECTION_REQUEST;
-import static uk.gov.hmcts.reform.sscs.domain.notify.NotificationEventType.DEATH_OF_APPELLANT;
-import static uk.gov.hmcts.reform.sscs.domain.notify.NotificationEventType.DECISION_ISSUED;
-import static uk.gov.hmcts.reform.sscs.domain.notify.NotificationEventType.DECISION_ISSUED_WELSH;
-import static uk.gov.hmcts.reform.sscs.domain.notify.NotificationEventType.DIRECTION_ISSUED;
-import static uk.gov.hmcts.reform.sscs.domain.notify.NotificationEventType.DIRECTION_ISSUED_WELSH;
-import static uk.gov.hmcts.reform.sscs.domain.notify.NotificationEventType.DRAFT_TO_NON_COMPLIANT;
-import static uk.gov.hmcts.reform.sscs.domain.notify.NotificationEventType.DRAFT_TO_VALID_APPEAL_CREATED;
-import static uk.gov.hmcts.reform.sscs.domain.notify.NotificationEventType.DWP_APPEAL_LAPSED;
-import static uk.gov.hmcts.reform.sscs.domain.notify.NotificationEventType.DWP_RESPONSE_RECEIVED;
-import static uk.gov.hmcts.reform.sscs.domain.notify.NotificationEventType.DWP_UPLOAD_RESPONSE;
-import static uk.gov.hmcts.reform.sscs.domain.notify.NotificationEventType.EVIDENCE_RECEIVED;
-import static uk.gov.hmcts.reform.sscs.domain.notify.NotificationEventType.EVIDENCE_REMINDER;
-import static uk.gov.hmcts.reform.sscs.domain.notify.NotificationEventType.HEARING_BOOKED;
-import static uk.gov.hmcts.reform.sscs.domain.notify.NotificationEventType.HEARING_REMINDER;
-import static uk.gov.hmcts.reform.sscs.domain.notify.NotificationEventType.HMCTS_APPEAL_LAPSED;
-import static uk.gov.hmcts.reform.sscs.domain.notify.NotificationEventType.ISSUE_ADJOURNMENT_NOTICE;
-import static uk.gov.hmcts.reform.sscs.domain.notify.NotificationEventType.ISSUE_ADJOURNMENT_NOTICE_WELSH;
-import static uk.gov.hmcts.reform.sscs.domain.notify.NotificationEventType.ISSUE_FINAL_DECISION;
-import static uk.gov.hmcts.reform.sscs.domain.notify.NotificationEventType.ISSUE_FINAL_DECISION_WELSH;
-import static uk.gov.hmcts.reform.sscs.domain.notify.NotificationEventType.JOINT_PARTY_ADDED;
-import static uk.gov.hmcts.reform.sscs.domain.notify.NotificationEventType.JUDGE_DECISION_APPEAL_TO_PROCEED;
-import static uk.gov.hmcts.reform.sscs.domain.notify.NotificationEventType.LIBERTY_TO_APPLY_REQUEST;
-import static uk.gov.hmcts.reform.sscs.domain.notify.NotificationEventType.NON_COMPLIANT;
-import static uk.gov.hmcts.reform.sscs.domain.notify.NotificationEventType.POSTPONEMENT;
-import static uk.gov.hmcts.reform.sscs.domain.notify.NotificationEventType.PROCESS_AUDIO_VIDEO;
-import static uk.gov.hmcts.reform.sscs.domain.notify.NotificationEventType.PROCESS_AUDIO_VIDEO_WELSH;
-import static uk.gov.hmcts.reform.sscs.domain.notify.NotificationEventType.PROVIDE_APPOINTEE_DETAILS;
-import static uk.gov.hmcts.reform.sscs.domain.notify.NotificationEventType.REISSUE_DOCUMENT;
-import static uk.gov.hmcts.reform.sscs.domain.notify.NotificationEventType.REQUEST_FOR_INFORMATION;
-import static uk.gov.hmcts.reform.sscs.domain.notify.NotificationEventType.RESEND_APPEAL_CREATED;
-import static uk.gov.hmcts.reform.sscs.domain.notify.NotificationEventType.REVIEW_CONFIDENTIALITY_REQUEST;
-import static uk.gov.hmcts.reform.sscs.domain.notify.NotificationEventType.SET_ASIDE_REQUEST;
-import static uk.gov.hmcts.reform.sscs.domain.notify.NotificationEventType.STATEMENT_OF_REASONS_REQUEST;
-import static uk.gov.hmcts.reform.sscs.domain.notify.NotificationEventType.STRUCK_OUT;
-import static uk.gov.hmcts.reform.sscs.domain.notify.NotificationEventType.SUBSCRIPTION_CREATED;
-import static uk.gov.hmcts.reform.sscs.domain.notify.NotificationEventType.SUBSCRIPTION_OLD;
-import static uk.gov.hmcts.reform.sscs.domain.notify.NotificationEventType.SUBSCRIPTION_UPDATED;
-import static uk.gov.hmcts.reform.sscs.domain.notify.NotificationEventType.SYA_APPEAL_CREATED;
-import static uk.gov.hmcts.reform.sscs.domain.notify.NotificationEventType.TCW_DECISION_APPEAL_TO_PROCEED;
-import static uk.gov.hmcts.reform.sscs.domain.notify.NotificationEventType.UPDATE_OTHER_PARTY_DATA;
-import static uk.gov.hmcts.reform.sscs.domain.notify.NotificationEventType.VALID_APPEAL_CREATED;
+import static uk.gov.hmcts.reform.sscs.domain.notify.NotificationEventType.*;
 
 import java.util.EnumSet;
 import java.util.Set;
@@ -82,6 +31,8 @@ public final class NotificationEventTypeLists {
         ISSUE_ADJOURNMENT_NOTICE_WELSH,
         ISSUE_FINAL_DECISION,
         ISSUE_FINAL_DECISION_WELSH,
+        LIBERTY_TO_APPLY_GRANTED,
+        LIBERTY_TO_APPLY_REFUSED,
         NON_COMPLIANT,
         DRAFT_TO_NON_COMPLIANT,
         POSTPONEMENT,
@@ -164,6 +115,8 @@ public final class NotificationEventTypeLists {
         ISSUE_ADJOURNMENT_NOTICE_WELSH,
         ISSUE_FINAL_DECISION,
         ISSUE_FINAL_DECISION_WELSH,
+        LIBERTY_TO_APPLY_GRANTED,
+        LIBERTY_TO_APPLY_REFUSED,
         JOINT_PARTY_ADDED,
         LIBERTY_TO_APPLY_REQUEST,
         NON_COMPLIANT,
@@ -190,6 +143,8 @@ public final class NotificationEventTypeLists {
         ISSUE_ADJOURNMENT_NOTICE_WELSH,
         ISSUE_FINAL_DECISION,
         ISSUE_FINAL_DECISION_WELSH,
+        LIBERTY_TO_APPLY_GRANTED,
+        LIBERTY_TO_APPLY_REFUSED,
         PROCESS_AUDIO_VIDEO,
         PROCESS_AUDIO_VIDEO_WELSH
     );
@@ -229,6 +184,8 @@ public final class NotificationEventTypeLists {
         ISSUE_ADJOURNMENT_NOTICE_WELSH,
         ISSUE_FINAL_DECISION,
         ISSUE_FINAL_DECISION_WELSH,
+        LIBERTY_TO_APPLY_GRANTED,
+        LIBERTY_TO_APPLY_REFUSED,
         JOINT_PARTY_ADDED,
         LIBERTY_TO_APPLY_REQUEST,
         NON_COMPLIANT,
@@ -277,6 +234,8 @@ public final class NotificationEventTypeLists {
         ISSUE_ADJOURNMENT_NOTICE,
         ISSUE_ADJOURNMENT_NOTICE_WELSH,
         LIBERTY_TO_APPLY_REQUEST,
+        LIBERTY_TO_APPLY_GRANTED,
+        LIBERTY_TO_APPLY_REFUSED,
         POSTPONEMENT,
         PROCESS_AUDIO_VIDEO,
         PROCESS_AUDIO_VIDEO_WELSH,
@@ -295,6 +254,8 @@ public final class NotificationEventTypeLists {
         HMCTS_APPEAL_LAPSED,
         ISSUE_FINAL_DECISION,
         ISSUE_FINAL_DECISION_WELSH,
+        LIBERTY_TO_APPLY_GRANTED,
+        LIBERTY_TO_APPLY_REFUSED,
         JOINT_PARTY_ADDED,
         JUDGE_DECISION_APPEAL_TO_PROCEED,
         NON_COMPLIANT,
@@ -317,6 +278,8 @@ public final class NotificationEventTypeLists {
         HMCTS_APPEAL_LAPSED,
         ISSUE_FINAL_DECISION,
         ISSUE_FINAL_DECISION_WELSH,
+        LIBERTY_TO_APPLY_GRANTED,
+        LIBERTY_TO_APPLY_REFUSED,
         JUDGE_DECISION_APPEAL_TO_PROCEED,
         NON_COMPLIANT,
         PROVIDE_APPOINTEE_DETAILS,
@@ -328,7 +291,9 @@ public final class NotificationEventTypeLists {
     );
 
     public static final Set<NotificationEventType> EVENTS_VALID_FOR_JOINT_PARTY = EnumSet.of(
-        JOINT_PARTY_ADDED
+        JOINT_PARTY_ADDED,
+        LIBERTY_TO_APPLY_GRANTED,
+        LIBERTY_TO_APPLY_REFUSED
     );
 
     public static final Set<NotificationEventType> EVENTS_VALID_FOR_OTHER_PARTY = EnumSet.of(
@@ -339,6 +304,8 @@ public final class NotificationEventTypeLists {
         HMCTS_APPEAL_LAPSED,
         ISSUE_FINAL_DECISION,
         ISSUE_FINAL_DECISION_WELSH,
+        LIBERTY_TO_APPLY_GRANTED,
+        LIBERTY_TO_APPLY_REFUSED,
         NON_COMPLIANT,
         REQUEST_FOR_INFORMATION,
         SUBSCRIPTION_CREATED,
@@ -446,6 +413,8 @@ public final class NotificationEventTypeLists {
         ISSUE_ADJOURNMENT_NOTICE_WELSH,
         ISSUE_FINAL_DECISION,
         ISSUE_FINAL_DECISION_WELSH,
+        LIBERTY_TO_APPLY_GRANTED,
+        LIBERTY_TO_APPLY_REFUSED,
         NON_COMPLIANT,
         POSTPONEMENT,
         PROCESS_AUDIO_VIDEO,
