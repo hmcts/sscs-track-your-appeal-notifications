@@ -320,28 +320,28 @@ public class Personalisation<E extends NotificationWrapper> {
         personalisation.put(PARTY_TYPE, subscriptionWithType.getParty().getClass().getSimpleName());
         personalisation.put(ENTITY_TYPE, subscriptionWithType.getEntity().getClass().getSimpleName());
 
-        if (isPtaSetAsideReview(notificationEventType) && ccdResponse.getSscsDocument() != null) {
-            setDecisionDateForPtaSetAside(personalisation, ccdResponse);
+        if (REVIEW_AND_SET_ASIDE.equals(notificationEventType) && ccdResponse.getSscsDocument() != null) {
+            setDecisionDate(personalisation, ccdResponse, DocumentType.FINAL_DECISION_NOTICE);
         }
 
         return personalisation;
     }
 
-    private boolean isPtaSetAsideReview(NotificationEventType notificationEventType) {
-        return REVIEW_AND_SET_ASIDE.equals(notificationEventType);
-    }
+    private void setDecisionDate(Map<String, Object> personalisation, SscsCaseData ccdResponse, DocumentType documentType) {
+        if (isNull(ccdResponse.getSscsDocument())) {
+            return;
+        }
 
-    private void setDecisionDateForPtaSetAside(Map<String, Object> personalisation, SscsCaseData ccdResponse) {
         ccdResponse.getSscsDocument().stream()
-                .filter(Personalisation::hasReviewAndSetAsideDocumentType)
+                .filter(document -> hasReviewAndSetAsideDocumentType(document, documentType))
                 .max(Comparator.comparing(d -> LocalDate.parse(d.getValue().getDocumentDateAdded())))
                 .ifPresent(document -> {
                     personalisation.put(DECISION_DATE, document.getValue().getDocumentDateAdded());
                 });
     }
 
-    private static boolean hasReviewAndSetAsideDocumentType(SscsDocument document) {
-        return DocumentType.REVIEW_AND_SET_ASIDE.getValue().equals(document.getValue().getDocumentType());
+    private static boolean hasReviewAndSetAsideDocumentType(SscsDocument document, DocumentType documentType) {
+        return documentType.getValue().equals(document.getValue().getDocumentType());
     }
 
     private static boolean hasBenefitType(SscsCaseData ccdResponse) {

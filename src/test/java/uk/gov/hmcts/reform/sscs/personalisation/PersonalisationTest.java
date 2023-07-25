@@ -1856,11 +1856,11 @@ public class PersonalisationTest {
         String date = LocalDate.now().toString();
         String date2 = LocalDate.now().minusDays(20).toString();
         SscsDocumentDetails document1 = SscsDocumentDetails.builder()
-                .documentType(DocumentType.REVIEW_AND_SET_ASIDE.getValue())
+                .documentType(DocumentType.FINAL_DECISION_NOTICE.getValue())
                 .documentDateAdded(date)
                 .build();
         SscsDocumentDetails document2 = SscsDocumentDetails.builder()
-                .documentType(DocumentType.REVIEW_AND_SET_ASIDE.getValue())
+                .documentType(DocumentType.FINAL_DECISION_NOTICE.getValue())
                 .documentDateAdded(date2)
                 .build();
         SscsDocument sscsDocument1 = SscsDocument.builder().value(document1).build();
