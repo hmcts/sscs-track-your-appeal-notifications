@@ -321,19 +321,19 @@ public class Personalisation<E extends NotificationWrapper> {
         personalisation.put(ENTITY_TYPE, subscriptionWithType.getEntity().getClass().getSimpleName());
 
         if (REVIEW_AND_SET_ASIDE.equals(notificationEventType) && ccdResponse.getSscsDocument() != null) {
-            setDecisionDate(personalisation, ccdResponse, DocumentType.FINAL_DECISION_NOTICE);
+            setDecisionDate(personalisation, ccdResponse);
         }
 
         return personalisation;
     }
 
-    private void setDecisionDate(Map<String, Object> personalisation, SscsCaseData ccdResponse, DocumentType documentType) {
+    private void setDecisionDate(Map<String, Object> personalisation, SscsCaseData ccdResponse) {
         if (isNull(ccdResponse.getSscsDocument())) {
             return;
         }
 
         ccdResponse.getSscsDocument().stream()
-                .filter(document -> hasReviewAndSetAsideDocumentType(document, documentType))
+                .filter(document -> hasReviewAndSetAsideDocumentType(document, DocumentType.FINAL_DECISION_NOTICE))
                 .max(Comparator.comparing(d -> LocalDate.parse(d.getValue().getDocumentDateAdded())))
                 .ifPresent(document -> {
                     personalisation.put(DECISION_DATE, document.getValue().getDocumentDateAdded());
