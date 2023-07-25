@@ -329,36 +329,31 @@ public class Personalisation<E extends NotificationWrapper> {
         personalisation.put(PARTY_TYPE, subscriptionWithType.getParty().getClass().getSimpleName());
         personalisation.put(ENTITY_TYPE, subscriptionWithType.getEntity().getClass().getSimpleName());
 
-        if (PERMISSION_TO_APPEAL_REFUSED.equals(notificationEventType)) {
-            personalisation.put(IS_GRANTED, false);
+        boolean isGranted = PERMISSION_TO_APPEAL_GRANTED.equals(notificationEventType);
+        if (PERMISSION_TO_APPEAL_REFUSED.equals(notificationEventType) || isGranted) {
+            personalisation.put(IS_GRANTED, isGranted);
             personalisation.put(SENDER_NAME, LetterUtils.getNameForSender(ccdResponse));
-            setDecisionDate(personalisation, ccdResponse, DocumentType.FINAL_DECISION_NOTICE);
-        }
-
-        if (PERMISSION_TO_APPEAL_GRANTED.equals(notificationEventType)) {
-            personalisation.put(IS_GRANTED, true);
-            personalisation.put(SENDER_NAME, LetterUtils.getNameForSender(ccdResponse));
-            setDecisionDate(personalisation, ccdResponse, DocumentType.FINAL_DECISION_NOTICE);
+            setDecisionDate(personalisation, ccdResponse);
         }
 
         return personalisation;
     }
 
-    private void setDecisionDate(Map<String, Object> personalisation, SscsCaseData ccdResponse, DocumentType documentType) {
+    private void setDecisionDate(Map<String, Object> personalisation, SscsCaseData ccdResponse) {
         if (isNull(ccdResponse.getSscsDocument())) {
             return;
         }
 
         ccdResponse.getSscsDocument().stream()
-                .filter(document -> hasReviewAndSetAsideDocumentType(document, documentType))
+                .filter(Personalisation::hasReviewAndSetAsideDocumentType)
                 .max(Comparator.comparing(d -> LocalDate.parse(d.getValue().getDocumentDateAdded())))
                 .ifPresent(document -> {
                     personalisation.put(DECISION_DATE, document.getValue().getDocumentDateAdded());
                 });
     }
 
-    private static boolean hasReviewAndSetAsideDocumentType(SscsDocument document, DocumentType documentType) {
-        return documentType.getValue().equals(document.getValue().getDocumentType());
+    private static boolean hasReviewAndSetAsideDocumentType(SscsDocument document) {
+        return DocumentType.FINAL_DECISION_NOTICE.getValue().equals(document.getValue().getDocumentType());
     }
 
     private static boolean hasBenefitType(SscsCaseData ccdResponse) {
