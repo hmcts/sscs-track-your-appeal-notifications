@@ -333,15 +333,15 @@ public class Personalisation<E extends NotificationWrapper> {
         }
 
         ccdResponse.getSscsDocument().stream()
-                .filter(document -> hasReviewAndSetAsideDocumentType(document, DocumentType.FINAL_DECISION_NOTICE))
+                .filter(Personalisation::hasFinalDecisionNoticeDocumentType)
                 .max(Comparator.comparing(d -> LocalDate.parse(d.getValue().getDocumentDateAdded())))
                 .ifPresent(document -> {
                     personalisation.put(DECISION_DATE, document.getValue().getDocumentDateAdded());
                 });
     }
 
-    private static boolean hasReviewAndSetAsideDocumentType(SscsDocument document, DocumentType documentType) {
-        return documentType.getValue().equals(document.getValue().getDocumentType());
+    private static boolean hasFinalDecisionNoticeDocumentType(SscsDocument document) {
+        return DocumentType.FINAL_DECISION_NOTICE.getValue().equals(document.getValue().getDocumentType());
     }
 
     private static boolean hasBenefitType(SscsCaseData ccdResponse) {
