@@ -153,6 +153,14 @@ job.scheduler:
 
 notification:
   english:
+    correctionRequest:
+      docmosisId: TB-SCS-LET-ENG-Action-Further-Evidence.docx
+    setAsideRequest:
+      docmosisId: TB-SCS-LET-ENG-Action-Further-Evidence.docx
+    libertyToApplyRequest:
+      docmosisId: TB-SCS-LET-ENG-Action-Further-Evidence.docx
+    sORRequest:
+      docmosisId: TB-SCS-LET-ENG-Action-Further-Evidence.docx
     jointPartyAdded:
       appellant:
         docmosisId: TB-SCS-GNO-ENG-00579.docx
@@ -731,6 +739,14 @@ notification:
             # SSCS-11586 emailId: 97c58e23-c11f-40b3-b981-2d4cfa38b8fd
             # SSCS-11586 smsId: bb3df0ea-8259-43c4-95de-9eef96206575
   welsh:
+    correctionRequest:
+      docmosisId: TB-SCS-LET-WEL-Action-Further-Evidence.docx
+    setAsideRequest:
+      docmosisId: TB-SCS-LET-WEL-Action-Further-Evidence.docx
+    libertyToApplyRequest:
+      docmosisId: TB-SCS-LET-WEL-Action-Further-Evidence.docx
+    sORRequest:
+      docmosisId: TB-SCS-LET-WEL-Action-Further-Evidence.docx
     jointPartyAdded:
       appellant:
         docmosisId: TB-SCS-GNO-WEL-00629.docx
@@ -1321,6 +1337,8 @@ case_document_am.url: ${CASE_DOCUMENT_AM_URL:http://localhost:4455}
 feature.save_correspondence: ${SAVE_CORRESPONDENCE:true}
 feature.covid19: ${COVID_19_NOTIFICATION_FEATURE:false}
 feature.secure-doc-store.enabled: ${SECURE_DOC_STORE_FEATURE:false}
+feature.postHearings.enabled: ${POST_HEARINGS_FEATURE:false}
+feature.postHearingsB.enabled: ${POST_HEARINGS_B_FEATURE:false}
 
 letterAsync:
   maxAttempts: ${LETTER_ASYNC_MAX_ATTEMPTS:5}
@@ -1357,6 +1375,10 @@ pdf-service:
       requestForInformation: 'TB-SCS-GNO-ENG-00012.docx'
       struckOut: 'TB-SCS-GNO-ENG-00012.docx'
       updateOtherPartyData: 'TB-SCS-GNO-ENG-00012.docx'
+      correctionRequest: 'TB-SCS-GNO-ENG-00012.docx'
+      sORRequest: 'TB-SCS-GNO-ENG-00012.docx'
+      setAsideRequest: 'TB-SCS-GNO-ENG-00012.docx'
+      libertyToApplyRequest: 'TB-SCS-GNO-ENG-00012.docx'
     welsh:
       appealReceived: 'TB-SCS-GNO-WEL-00479.docx'
       directionIssued: 'TB-SCS-GNO-WEL-00479.docx'
@@ -1373,6 +1395,10 @@ pdf-service:
       requestForInformation: 'TB-SCS-GNO-WEL-00479.docx'
       struckOut: 'TB-SCS-GNO-WEL-00479.docx'
       updateOtherPartyData: 'TB-SCS-GNO-WEL-00479.docx'
+      correctionRequest: 'TB-SCS-GNO-WEL-00479.docx'
+      sORRequest: 'TB-SCS-GNO-WEL-00479.docx'
+      setAsideRequest: 'TB-SCS-GNO-WEL-00479.docx'
+      libertyToApplyRequest: 'TB-SCS-GNO-WEL-00479.docx'
 
 docmosis:
   accessKey:
@@ -1455,6 +1481,9 @@ text:
       OTHER: "Arall"
       CHILD_MAINTENANCE_NUMBER: "Child maintenance number: "
 
+judicial-ref:
+  api:
+    url: ${JUDICIAL_REF_API_URL:http://localhost:5555}
 
 ---
 # default profile (development, production etc.)
@@ -1539,7 +1568,3 @@ welsh-months:
   10: "Hydref"
   11: "Tachwedd"
   12: "Rhagfyr"
-
-judicial-ref:
-  api:
-    url: ${JUDICIAL_REF_API_URL:http://localhost:5555}

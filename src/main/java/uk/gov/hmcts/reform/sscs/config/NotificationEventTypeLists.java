@@ -10,6 +10,7 @@ import static uk.gov.hmcts.reform.sscs.domain.notify.NotificationEventType.APPEA
 import static uk.gov.hmcts.reform.sscs.domain.notify.NotificationEventType.APPEAL_RECEIVED;
 import static uk.gov.hmcts.reform.sscs.domain.notify.NotificationEventType.APPEAL_WITHDRAWN;
 import static uk.gov.hmcts.reform.sscs.domain.notify.NotificationEventType.CASE_UPDATED;
+import static uk.gov.hmcts.reform.sscs.domain.notify.NotificationEventType.CORRECTION_REQUEST;
 import static uk.gov.hmcts.reform.sscs.domain.notify.NotificationEventType.DEATH_OF_APPELLANT;
 import static uk.gov.hmcts.reform.sscs.domain.notify.NotificationEventType.DECISION_ISSUED;
 import static uk.gov.hmcts.reform.sscs.domain.notify.NotificationEventType.DECISION_ISSUED_WELSH;
@@ -31,6 +32,7 @@ import static uk.gov.hmcts.reform.sscs.domain.notify.NotificationEventType.ISSUE
 import static uk.gov.hmcts.reform.sscs.domain.notify.NotificationEventType.ISSUE_FINAL_DECISION_WELSH;
 import static uk.gov.hmcts.reform.sscs.domain.notify.NotificationEventType.JOINT_PARTY_ADDED;
 import static uk.gov.hmcts.reform.sscs.domain.notify.NotificationEventType.JUDGE_DECISION_APPEAL_TO_PROCEED;
+import static uk.gov.hmcts.reform.sscs.domain.notify.NotificationEventType.LIBERTY_TO_APPLY_REQUEST;
 import static uk.gov.hmcts.reform.sscs.domain.notify.NotificationEventType.NON_COMPLIANT;
 import static uk.gov.hmcts.reform.sscs.domain.notify.NotificationEventType.POSTPONEMENT;
 import static uk.gov.hmcts.reform.sscs.domain.notify.NotificationEventType.PROCESS_AUDIO_VIDEO;
@@ -40,6 +42,8 @@ import static uk.gov.hmcts.reform.sscs.domain.notify.NotificationEventType.REISS
 import static uk.gov.hmcts.reform.sscs.domain.notify.NotificationEventType.REQUEST_FOR_INFORMATION;
 import static uk.gov.hmcts.reform.sscs.domain.notify.NotificationEventType.RESEND_APPEAL_CREATED;
 import static uk.gov.hmcts.reform.sscs.domain.notify.NotificationEventType.REVIEW_CONFIDENTIALITY_REQUEST;
+import static uk.gov.hmcts.reform.sscs.domain.notify.NotificationEventType.SET_ASIDE_REQUEST;
+import static uk.gov.hmcts.reform.sscs.domain.notify.NotificationEventType.STATEMENT_OF_REASONS_REQUEST;
 import static uk.gov.hmcts.reform.sscs.domain.notify.NotificationEventType.STRUCK_OUT;
 import static uk.gov.hmcts.reform.sscs.domain.notify.NotificationEventType.SUBSCRIPTION_CREATED;
 import static uk.gov.hmcts.reform.sscs.domain.notify.NotificationEventType.SUBSCRIPTION_OLD;
@@ -97,6 +101,19 @@ public final class NotificationEventTypeLists {
         UPDATE_OTHER_PARTY_DATA
     );
 
+    // TODO move to EVENTS_TO_HANDLE when feature.postHearings.enabled removed
+    public static final Set<NotificationEventType> EVENTS_TO_HANDLE_POSTHEARINGS_A = EnumSet.of(
+        CORRECTION_REQUEST,
+        SET_ASIDE_REQUEST,
+        STATEMENT_OF_REASONS_REQUEST
+    );
+
+    // move to EVENTS_TO_HANDLE when feature.postHearingsB.enabled removed
+    public static final Set<NotificationEventType> EVENTS_TO_HANDLE_POSTHEARINGS_B = EnumSet.of(
+        LIBERTY_TO_APPLY_REQUEST
+        // TODO put permission to appeal, share with upper Tribunal and remit to lower tribunal events here when setting notification
+    );
+
     public static final Set<NotificationEventType> EVENT_TYPES_NOT_FOR_DORMANT_CASES = EnumSet.of(
         ADMIN_APPEAL_WITHDRAWN,
         APPEAL_DORMANT,
@@ -132,6 +149,7 @@ public final class NotificationEventTypeLists {
         APPEAL_LAPSED,
         APPEAL_RECEIVED,
         APPEAL_WITHDRAWN,
+        CORRECTION_REQUEST,
         DEATH_OF_APPELLANT,
         DECISION_ISSUED,
         DECISION_ISSUED_WELSH,
@@ -147,6 +165,7 @@ public final class NotificationEventTypeLists {
         ISSUE_FINAL_DECISION,
         ISSUE_FINAL_DECISION_WELSH,
         JOINT_PARTY_ADDED,
+        LIBERTY_TO_APPLY_REQUEST,
         NON_COMPLIANT,
         POSTPONEMENT,
         PROCESS_AUDIO_VIDEO,
@@ -155,6 +174,8 @@ public final class NotificationEventTypeLists {
         REQUEST_FOR_INFORMATION,
         REVIEW_CONFIDENTIALITY_REQUEST,
         STRUCK_OUT,
+        SET_ASIDE_REQUEST,
+        STATEMENT_OF_REASONS_REQUEST,
         UPDATE_OTHER_PARTY_DATA
     );
 
@@ -194,6 +215,7 @@ public final class NotificationEventTypeLists {
         APPEAL_LAPSED,
         APPEAL_RECEIVED,
         APPEAL_WITHDRAWN,
+        CORRECTION_REQUEST,
         DEATH_OF_APPELLANT,
         DECISION_ISSUED,
         DECISION_ISSUED_WELSH,
@@ -208,6 +230,7 @@ public final class NotificationEventTypeLists {
         ISSUE_FINAL_DECISION,
         ISSUE_FINAL_DECISION_WELSH,
         JOINT_PARTY_ADDED,
+        LIBERTY_TO_APPLY_REQUEST,
         NON_COMPLIANT,
         POSTPONEMENT,
         PROCESS_AUDIO_VIDEO,
@@ -216,6 +239,8 @@ public final class NotificationEventTypeLists {
         REQUEST_FOR_INFORMATION,
         RESEND_APPEAL_CREATED,
         REVIEW_CONFIDENTIALITY_REQUEST,
+        SET_ASIDE_REQUEST,
+        STATEMENT_OF_REASONS_REQUEST,
         STRUCK_OUT,
         UPDATE_OTHER_PARTY_DATA,
         VALID_APPEAL_CREATED
@@ -241,6 +266,7 @@ public final class NotificationEventTypeLists {
         APPEAL_DORMANT,
         APPEAL_LAPSED,
         APPEAL_WITHDRAWN,
+        CORRECTION_REQUEST,
         DIRECTION_ISSUED,
         DIRECTION_ISSUED_WELSH,
         DWP_UPLOAD_RESPONSE,
@@ -250,9 +276,12 @@ public final class NotificationEventTypeLists {
         HEARING_REMINDER,
         ISSUE_ADJOURNMENT_NOTICE,
         ISSUE_ADJOURNMENT_NOTICE_WELSH,
+        LIBERTY_TO_APPLY_REQUEST,
         POSTPONEMENT,
         PROCESS_AUDIO_VIDEO,
         PROCESS_AUDIO_VIDEO_WELSH,
+        SET_ASIDE_REQUEST,
+        STATEMENT_OF_REASONS_REQUEST,
         STRUCK_OUT
     );
 
@@ -384,6 +413,13 @@ public final class NotificationEventTypeLists {
         VALID_APPEAL_CREATED
     );
 
+    public static final Set<NotificationEventType> EVENTS_FOR_ACTION_FURTHER_EVIDENCE = EnumSet.of(
+        CORRECTION_REQUEST,
+        LIBERTY_TO_APPLY_REQUEST,
+        SET_ASIDE_REQUEST,
+        STATEMENT_OF_REASONS_REQUEST
+    );
+
     public static final Set<NotificationEventType> EVENTS_FOR_REPRESENTATIVE_PERSONALISATION = EnumSet.of(
         ACTION_HEARING_RECORDING_REQUEST,
         ACTION_POSTPONEMENT_REQUEST,
@@ -418,5 +454,4 @@ public final class NotificationEventTypeLists {
         REQUEST_FOR_INFORMATION,
         STRUCK_OUT
     );
-
 }
