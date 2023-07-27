@@ -42,9 +42,9 @@ import static uk.gov.hmcts.reform.sscs.domain.notify.NotificationEventType.REISS
 import static uk.gov.hmcts.reform.sscs.domain.notify.NotificationEventType.REQUEST_FOR_INFORMATION;
 import static uk.gov.hmcts.reform.sscs.domain.notify.NotificationEventType.RESEND_APPEAL_CREATED;
 import static uk.gov.hmcts.reform.sscs.domain.notify.NotificationEventType.REVIEW_CONFIDENTIALITY_REQUEST;
+import static uk.gov.hmcts.reform.sscs.domain.notify.NotificationEventType.SET_ASIDE_REQUEST;
 import static uk.gov.hmcts.reform.sscs.domain.notify.NotificationEventType.SOR_EXTEND_TIME;
 import static uk.gov.hmcts.reform.sscs.domain.notify.NotificationEventType.SOR_REFUSED;
-import static uk.gov.hmcts.reform.sscs.domain.notify.NotificationEventType.SET_ASIDE_REQUEST;
 import static uk.gov.hmcts.reform.sscs.domain.notify.NotificationEventType.STATEMENT_OF_REASONS_REQUEST;
 import static uk.gov.hmcts.reform.sscs.domain.notify.NotificationEventType.STRUCK_OUT;
 import static uk.gov.hmcts.reform.sscs.domain.notify.NotificationEventType.SUBSCRIPTION_CREATED;
@@ -133,6 +133,7 @@ public final class NotificationEventTypeLists {
         ISSUE_FINAL_DECISION_WELSH,
         PROVIDE_APPOINTEE_DETAILS,
         REISSUE_DOCUMENT,
+        SOR_REFUSED,
         STRUCK_OUT
     );
 
