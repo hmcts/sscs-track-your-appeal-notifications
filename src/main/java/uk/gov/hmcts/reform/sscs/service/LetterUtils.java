@@ -5,6 +5,7 @@ import static java.util.Objects.nonNull;
 import static org.apache.commons.collections4.CollectionUtils.isNotEmpty;
 import static org.apache.commons.collections4.ListUtils.emptyIfNull;
 import static uk.gov.hmcts.reform.sscs.ccd.domain.YesNo.isYes;
+import static uk.gov.hmcts.reform.sscs.config.NotificationEventTypeLists.EVENTS_FOR_ACTION_FURTHER_EVIDENCE;
 import static uk.gov.hmcts.reform.sscs.config.SubscriptionType.JOINT_PARTY;
 import static uk.gov.hmcts.reform.sscs.config.SubscriptionType.OTHER_PARTY;
 import static uk.gov.hmcts.reform.sscs.config.SubscriptionType.REPRESENTATIVE;
@@ -24,13 +25,8 @@ import org.apache.pdfbox.pdmodel.PDDocument;
 import org.apache.pdfbox.pdmodel.PDPage;
 import org.apache.pdfbox.pdmodel.PDPageContentStream;
 import org.apache.pdfbox.pdmodel.common.PDRectangle;
-import uk.gov.hmcts.reform.sscs.ccd.domain.Address;
-import uk.gov.hmcts.reform.sscs.ccd.domain.CcdValue;
-import uk.gov.hmcts.reform.sscs.ccd.domain.Name;
-import uk.gov.hmcts.reform.sscs.ccd.domain.OtherParty;
-import uk.gov.hmcts.reform.sscs.ccd.domain.ReasonableAdjustments;
-import uk.gov.hmcts.reform.sscs.ccd.domain.SscsCaseData;
-import uk.gov.hmcts.reform.sscs.ccd.domain.YesNo;
+import uk.gov.hmcts.reform.sscs.ccd.domain.*;
+import uk.gov.hmcts.reform.sscs.domain.SscsCaseDataWrapper;
 import uk.gov.hmcts.reform.sscs.domain.SubscriptionWithType;
 import uk.gov.hmcts.reform.sscs.exception.NotificationClientRuntimeException;
 import uk.gov.hmcts.reform.sscs.factory.NotificationWrapper;
@@ -196,5 +192,130 @@ public class LetterUtils {
             otherPartyReasonableAdjustmentList.add(Pair.of(op.getRep().getId(), op.getRepReasonableAdjustment().getWantsReasonableAdjustment()));
         }
         return otherPartyReasonableAdjustmentList.stream();
+    }
+
+    public static String getNameForSender(SscsCaseData sscsCaseData) {
+        if (nonNull(sscsCaseData.getOriginalSender())) {
+            final String originalSenderCode = sscsCaseData.getOriginalSender().getValue().getCode();
+            if (originalSenderCode.equalsIgnoreCase("appellant")) {
+                return sscsCaseData.getAppeal().getAppellant().getName().getFullNameNoTitle();
+            } else if (originalSenderCode.equalsIgnoreCase("representative")) {
+                return SendNotificationHelper.getRepSalutation(sscsCaseData.getAppeal().getRep(), false);
+            } else if (originalSenderCode.equalsIgnoreCase("jointParty")) {
+                return sscsCaseData.getJointParty().getName().getFullNameNoTitle();
+            } else {
+                return getOtherPartyName(sscsCaseData)
+                        .map(Name::getFullNameNoTitle).orElse("");
+            }
+        }
+        return "";
+    }
+
+    private static Optional<Representative> getRepresentativeOfOtherParty(SscsCaseData sscsCaseData) {
+        return sscsCaseData.getOtherParties().stream()
+                .map(CcdValue::getValue)
+                .filter(OtherParty::hasRepresentative)
+                .map(OtherParty::getRep)
+                .filter(rep -> sscsCaseData.getOriginalSender().getValue().getCode().contains(rep.getId()))
+                .findFirst();
+    }
+
+    public static Optional<Name> getOtherPartyName(SscsCaseData sscsCaseData) {
+        String originalSenderCode = sscsCaseData.getOriginalSender().getValue().getCode();
+        boolean otherPartyRep = originalSenderCode.contains("otherPartyRep");
+
+        if (otherPartyRep) {
+            Optional<Representative> representative = getRepresentativeOfOtherParty(sscsCaseData);
+            return representative.map(Representative::getName);
+        } else {
+            return sscsCaseData.getOtherParties().stream()
+                    .filter(op -> originalSenderCode.contains(op.getValue().getId()))
+                    .findFirst()
+                    .map(op -> op.getValue().getName());
+        }
+    }
+
+    public static String getNotificationTypeForActionFurtherEvidence(SscsCaseDataWrapper caseDataWrapper, SubscriptionWithType subscriptionWithType) {
+        boolean isValidActionForNotification = EVENTS_FOR_ACTION_FURTHER_EVIDENCE.contains(caseDataWrapper.getNotificationEventType());
+        if (isValidActionForNotification) {
+            if (isValidForSetAsideRequest(caseDataWrapper, subscriptionWithType)) {
+                return "confirmation";
+            } else {
+                return "notice";
+            }
+        }
+        return "";
+    }
+
+    static boolean isValidForSetAsideRequest(SscsCaseDataWrapper caseDataWrapper, SubscriptionWithType subscriptionWithType) {
+        return isValidAppellantForSetAsideRequest(caseDataWrapper, subscriptionWithType)
+                || isValidAppellantRepresentativeForSetAsideRequest(caseDataWrapper, subscriptionWithType)
+                || isValidJointPartyForSetAsideRequest(caseDataWrapper, subscriptionWithType)
+                || isValidOtherParty(caseDataWrapper, subscriptionWithType);
+    }
+
+    static boolean isValidAppellantRepresentativeForSetAsideRequest(SscsCaseDataWrapper caseDataWrapper, SubscriptionWithType subscriptionWithType) {
+        boolean senderIsRepresentative = caseDataWrapper.getNewSscsCaseData().getOriginalSender().getValue().getCode().equalsIgnoreCase("representative");
+        if (senderIsRepresentative) {
+            boolean isValidAppellant = subscriptionWithType.getParty().getId().equalsIgnoreCase(caseDataWrapper.getNewSscsCaseData().getAppeal().getAppellant().getId());
+            boolean isValidRepresentative = subscriptionWithType.getParty().getId().equalsIgnoreCase(caseDataWrapper.getNewSscsCaseData().getAppeal().getRep().getId());
+            return  isValidAppellant || isValidRepresentative;
+        }
+        return false;
+    }
+
+    private static boolean isValidAppellantForSetAsideRequest(SscsCaseDataWrapper caseDataWrapper, SubscriptionWithType subscriptionWithType) {
+        boolean senderIsAppellant = caseDataWrapper.getNewSscsCaseData().getOriginalSender().getValue().getCode().equalsIgnoreCase("appellant");
+        if (senderIsAppellant) {
+            return subscriptionWithType.getParty().getId().equalsIgnoreCase(caseDataWrapper.getNewSscsCaseData().getAppeal().getAppellant().getId());
+        }
+        return false;
+    }
+
+    private static boolean isValidJointPartyForSetAsideRequest(SscsCaseDataWrapper caseDataWrapper, SubscriptionWithType subscriptionWithType) {
+        boolean isJointParty = caseDataWrapper.getNewSscsCaseData().getOriginalSender().getValue().getCode().equalsIgnoreCase("jointParty");
+        if (isJointParty) {
+            return subscriptionWithType.getParty().getId().equalsIgnoreCase(caseDataWrapper.getNewSscsCaseData().getJointParty().getId());
+        }
+        return false;
+    }
+
+    static boolean isValidOtherParty(SscsCaseDataWrapper caseDataWrapper, SubscriptionWithType subscriptionWithType) {
+        String subscriptionPartyId = subscriptionWithType.getPartyId();
+        String requesterId = caseDataWrapper.getNewSscsCaseData().getOriginalSender().getValue().getCode();
+
+        if (nonNull(subscriptionPartyId) && requesterId.contains("otherParty")) {
+            List<CcdValue<OtherParty>> otherParties = caseDataWrapper.getNewSscsCaseData().getOtherParties();
+            return nonNull(otherParties) && isValidOtherPartyForSubscription(subscriptionPartyId, requesterId, otherParties);
+        }
+        return false;
+    }
+
+    private static boolean isValidOtherPartyForSubscription(String subscriptionPartyId, String requesterId, List<CcdValue<OtherParty>> otherParties) {
+        for (CcdValue<OtherParty> op : otherParties) {
+            if (subscriptionPartyId.equals(op.getValue().getId()) && requesterId.contains(op.getValue().getId())) {
+                return true;
+            }
+            if (isValidOtherPartyRepresentative(subscriptionPartyId, requesterId, op)) {
+                return true;
+            }
+        }
+        return false;
+    }
+
+    static boolean isValidOtherPartyRepresentative(String subscriptionPartyId, String requesterId, CcdValue<OtherParty> op) {
+        if (op.getValue().hasRepresentative()) {
+            String representativeId = op.getValue().getRep().getId();
+            if (subscriptionPartyId.contains(representativeId)
+                    && requesterId.contains(op.getValue().getId())) {
+                return true;
+            }
+            if (requesterId.contains(representativeId)
+                    && (subscriptionPartyId.equals(representativeId)
+                        || subscriptionPartyId.contains(op.getValue().getId()))) {
+                return true;
+            }
+        }
+        return false;
     }
 }

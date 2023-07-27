@@ -7,6 +7,7 @@ import static org.apache.commons.collections4.ListUtils.emptyIfNull;
 import static uk.gov.hmcts.reform.sscs.ccd.domain.Benefit.getBenefitByCodeOrThrowException;
 import static uk.gov.hmcts.reform.sscs.ccd.domain.EventType.SUBSCRIPTION_UPDATED;
 import static uk.gov.hmcts.reform.sscs.ccd.domain.YesNo.isYes;
+import static uk.gov.hmcts.reform.sscs.config.NotificationEventTypeLists.EVENTS_FOR_ACTION_FURTHER_EVIDENCE;
 import static uk.gov.hmcts.reform.sscs.config.NotificationEventTypeLists.EVENT_TYPES_NOT_FOR_DORMANT_CASES;
 import static uk.gov.hmcts.reform.sscs.config.NotificationEventTypeLists.EVENT_TYPES_NOT_FOR_WELSH_CASES;
 import static uk.gov.hmcts.reform.sscs.config.SubscriptionType.APPELLANT;
@@ -39,6 +40,7 @@ import static uk.gov.hmcts.reform.sscs.service.NotificationUtils.isOkToSendNotif
 import static uk.gov.hmcts.reform.sscs.service.NotificationValidService.isMandatoryLetterEventType;
 
 import java.time.ZonedDateTime;
+import java.util.Arrays;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
@@ -118,7 +120,6 @@ public class NotificationService {
             if (notificationType.isToBeDelayed()
                     && !fromReminderService
                     && !functionalTest(notificationWrapper.getNewSscsCaseData())) {
-
                 log.info("Notification event {} is delayed and scheduled for case id {}", notificationType.getId(), caseId);
                 notificationHandler.scheduleNotification(notificationWrapper, ZonedDateTime.now().plusSeconds(notificationType.getDelayInSeconds()));
             } else {
@@ -169,10 +170,8 @@ public class NotificationService {
         for (SubscriptionWithType subscriptionWithType : notificationWrapper.getSubscriptionsBasedOnNotificationType()) {
             if (isSubscriptionValidToSendAfterOverride(notificationWrapper, subscriptionWithType)
                     && isValidNotification(notificationWrapper, subscriptionWithType)) {
-
                 sendNotification(notificationWrapper, subscriptionWithType);
                 resendLastNotification(notificationWrapper, subscriptionWithType);
-
             } else {
                 log.error("Is not a valid notification event {} for case id {}, not sending notification.",
                         notificationWrapper.getNotificationType().getId(), notificationWrapper.getCaseId());
@@ -346,12 +345,27 @@ public class NotificationService {
         return subscription;
     }
 
+    boolean isNotificationStillValidToSendSetAsideRequest(SscsCaseData caseData, NotificationEventType eventType) {
+        List<String> originalSenders = Arrays.asList("dwp", "hmcts");
+        if (EVENTS_FOR_ACTION_FURTHER_EVIDENCE.contains(eventType)) {
+            return nonNull(caseData.getOriginalSender())
+                    && !originalSenders.contains(caseData.getOriginalSender().getValue().getCode());
+        }
+        return true;
+    }
+
     private boolean isEventAllowedToProceedWithValidData(NotificationWrapper notificationWrapper,
                                                          NotificationEventType notificationType) {
         if (REQUEST_FOR_INFORMATION.equals(notificationType)
             && !isYes(notificationWrapper.getNewSscsCaseData().getInformationFromAppellant())) {
             log.info("Request for Information with empty or no Information From Appellant for ccdCaseId {}.",
                 notificationWrapper.getNewSscsCaseData().getCcdCaseId());
+            return false;
+        }
+
+        if (!isNotificationStillValidToSendSetAsideRequest(notificationWrapper.getNewSscsCaseData(), notificationType)) {
+            log.info("Incomplete Information with empty or no Information regarding sender for event {}.",
+                    notificationType.getId());
             return false;
         }
 
