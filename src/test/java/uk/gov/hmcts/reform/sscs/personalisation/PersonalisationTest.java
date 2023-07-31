@@ -1833,7 +1833,7 @@ public class PersonalisationTest {
     }
 
     @Test
-    public void WhenDwpStateIsLtaGranted_SetIsGrantedToTrue() {
+    public void whenDwpStateIsLtaGranted_setIsGrantedToTrue() {
         RegionalProcessingCenter rpc = regionalProcessingCenterService.getByScReferenceCode("SC/1234/5");
         SscsCaseData response = SscsCaseData.builder()
                 .ccdCaseId(CASE_ID).caseReference("SC/1234/5")
@@ -1853,7 +1853,7 @@ public class PersonalisationTest {
     }
 
     @Test
-    public void WhenDwpStateIsLtaRefused_SetIsGrantedToFalse() {
+    public void whenDwpStateIsLtaRefused_setIsGrantedToFalse() {
         RegionalProcessingCenter rpc = regionalProcessingCenterService.getByScReferenceCode("SC/1234/5");
         SscsCaseData response = SscsCaseData.builder()
                 .ccdCaseId(CASE_ID).caseReference("SC/1234/5")
