@@ -11,6 +11,8 @@
       <cve>CVE-2020-36518</cve>
       <cve>CVE-2022-42003</cve>
       <cve>CVE-2021-46877</cve>
+      <cve>CVE-2023-3782</cve>
+      <cve>CVE-2023-3635</cve>
     </suppress>
     <suppress until = "2023-09-01">
         <notes><![CDATA[
@@ -34,17 +36,7 @@
         <cve>CVE-2023-35116</cve>
     </suppress>
     <suppress until = "2023-09-01">
-       <notes><![CDATA[
-       file name: okhttp-4.11.0.jar
-       ]]></notes>
-       <packageUrl regex="true">^pkg:maven/com\.squareup\.okhttp3/okhttp@.*$</packageUrl>
-       <cve>CVE-2023-3782</cve>
-    </suppress>
-    <suppress until = "2023-09-01">
-       <notes><![CDATA[
-       file name: okio-jvm-3.2.0.jar
-       ]]></notes>
-       <packageUrl regex="true">^pkg:maven/com\.squareup\.okio/okio\-jvm@.*$</packageUrl>
-       <cve>CVE-2023-3635</cve>
+        <cve>CVE-2023-3782</cve>
+        <cve>CVE-2023-3635</cve>
     </suppress>
 </suppressions>
