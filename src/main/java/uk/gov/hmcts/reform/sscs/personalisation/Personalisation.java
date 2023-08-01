@@ -84,6 +84,7 @@ import java.util.stream.Collectors;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 import uk.gov.hmcts.reform.sscs.ccd.domain.*;
 import uk.gov.hmcts.reform.sscs.config.NotificationConfig;
@@ -132,6 +133,9 @@ public class Personalisation<E extends NotificationWrapper> {
 
     @Autowired
     private PersonalisationConfiguration personalisationConfiguration;
+
+    @Value("${feature.postHearings.enabled}")
+    private boolean isPostHearingsEnabled;
 
     private static String tya(Subscription subscription) {
         if (subscription != null) {
@@ -336,10 +340,13 @@ public class Personalisation<E extends NotificationWrapper> {
             personalisation.put(IS_GRANTED, false);
         }
 
-        if (ccdResponse.getIssueFinalDecisionDate() != null) {
-            String formattedDate = ccdResponse.getIssueFinalDecisionDate()
-                    .format(DateTimeFormatter.ofPattern(FINAL_DECISION_DATE_FORMAT));
-            personalisation.put(FINAL_DECISION_DATE, formattedDate);
+        if (isPostHearingsEnabled) {
+            LocalDate finalDecisionDate = ccdResponse.getSscsFinalDecisionCaseData().getFinalDecisionIssuedDate();
+
+            if (nonNull(finalDecisionDate)) {
+                String formattedDate = finalDecisionDate.format(DateTimeFormatter.ofPattern(FINAL_DECISION_DATE_FORMAT));
+                personalisation.put(FINAL_DECISION_DATE, formattedDate);
+            }
         }
 
         return personalisation;
