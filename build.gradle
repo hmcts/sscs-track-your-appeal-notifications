@@ -19,8 +19,11 @@ apply plugin: 'io.spring.dependency-management'
 group = 'uk.gov.hmcts.reform'
 version = '1.0.0'
 
-sourceCompatibility = 11
-targetCompatibility = 11
+java {
+    toolchain {
+        languageVersion = JavaLanguageVersion.of(17)
+    }
+}
 
 compileJava {
     options.compilerArgs << '-parameters' << '-Xlint:deprecation'
@@ -355,7 +358,7 @@ dependencies {
     implementation group: 'com.github.hmcts', name: 'cmc-pdf-service-client', version: '7.0.1'
 
     implementation group: 'com.github.hmcts', name: 'sscs-common', version: '3322cc74b9'
-    implementation group: 'com.github.hmcts', name: 'sscs-pdf-email-common', version: '1.8.7'
+    implementation group: 'com.github.hmcts', name: 'sscs-pdf-email-common', version: '1.8.10'
 
     implementation group: 'com.github.hmcts', name: 'sscs-job-scheduler', version: '1.5.7', {
         exclude group: "uk.gov.hmcts.reform", module:"properties-volume-spring-boot-starter"
