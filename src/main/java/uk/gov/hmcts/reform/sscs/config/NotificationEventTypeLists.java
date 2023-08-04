@@ -67,7 +67,7 @@ public final class NotificationEventTypeLists {
         // TODO put permission to appeal, share with upper Tribunal and remit to lower tribunal events here when setting notification
     );
 
-    public static final Set<NotificationEventType> EVENT_TYPES_NOT_FOR_DORMANT_CASES = EnumSet.of(
+    public static final Set<NotificationEventType> EVENT_TYPES_FOR_DORMANT_CASES = EnumSet.of(
         ADMIN_APPEAL_WITHDRAWN,
         APPEAL_DORMANT,
         APPEAL_LAPSED,
@@ -83,7 +83,9 @@ public final class NotificationEventTypeLists {
         PROVIDE_APPOINTEE_DETAILS,
         REISSUE_DOCUMENT,
         SOR_REFUSED,
-        STRUCK_OUT
+        STRUCK_OUT,
+        SET_ASIDE_GRANTED,
+        SET_ASIDE_REFUSED
     );
 
     public static final Set<NotificationEventType> EVENT_TYPES_NOT_FOR_WELSH_CASES = EnumSet.of(
