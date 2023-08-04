@@ -152,7 +152,7 @@ public final class NotificationEventTypeLists {
         PROCESS_AUDIO_VIDEO,
         PROCESS_AUDIO_VIDEO_WELSH,
         SET_ASIDE_GRANTED,
-        SET_ASIDE_REFUSED
+        SET_ASIDE_REFUSED,
         SOR_EXTEND_TIME,
         SOR_REFUSED
     );
@@ -309,7 +309,7 @@ public final class NotificationEventTypeLists {
     public static final Set<NotificationEventType> EVENTS_VALID_FOR_JOINT_PARTY = EnumSet.of(
         JOINT_PARTY_ADDED,
         SET_ASIDE_GRANTED,
-        SET_ASIDE_REFUSED
+        SET_ASIDE_REFUSED,
         SOR_EXTEND_TIME,
         SOR_REFUSED
     );
