@@ -84,7 +84,6 @@ public final class NotificationEventTypeLists {
         REISSUE_DOCUMENT,
         SOR_REFUSED,
         STRUCK_OUT,
-        SET_ASIDE_GRANTED,
         SET_ASIDE_REFUSED
     );
 
