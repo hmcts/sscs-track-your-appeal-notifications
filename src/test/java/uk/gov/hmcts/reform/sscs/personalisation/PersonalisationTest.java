@@ -1099,7 +1099,6 @@ public class PersonalisationTest {
                 .newSscsCaseData(response).notificationEventType(hearingNotificationEventType).build(),
                 new SubscriptionWithType(subscriptions.getAppellantSubscription(), subscriptionType, response.getAppeal().getAppellant(), response.getAppeal().getAppellant()));
 
-        assertEquals(hearingDate.toString(), result.get(HEARING_DATE));
         assertEquals(hearingDate.toString(), result.get(HEARING_DATE_LITERAL));
         assertEquals("12:00 PM", result.get(HEARING_TIME).toString());
         assertEquals("The venue, 12 The Road Avenue, Village, Aberdeen, Aberdeenshire, TS3 3ST", result.get(VENUE_ADDRESS_LITERAL));
@@ -1133,7 +1132,6 @@ public class PersonalisationTest {
                 new SubscriptionWithType(subscriptions.getAppellantSubscription(), subscriptionType, response.getAppeal().getAppellant(), response.getAppeal().getAppellant()));
 
         assertEquals("Welsh hearing date is not set", LocalDateToWelshStringConverter.convert(hearingDate), result.get(HEARING_DATE_WELSH));
-        assertEquals(hearingDate.toString(), result.get(HEARING_DATE));
         assertEquals(hearingDate.toString(), result.get(HEARING_DATE_LITERAL));
         assertEquals("12:00 PM", result.get(HEARING_TIME).toString().toUpperCase(Locale.getDefault()));
         assertEquals("The venue, 12 The Road Avenue, Village, Aberdeen, Aberdeenshire, TS3 3ST", result.get(VENUE_ADDRESS_LITERAL));
@@ -1262,7 +1260,6 @@ public class PersonalisationTest {
         assertThat(hearingDetails.getHearingStatus()).isEqualTo(hearing.getValue().getHearingStatus());
         assertThat(hearingDetails.getVenue()).isEqualTo(hearing.getValue().getVenue());
 
-        LocalDate dateParsed = LocalDate.parse(result.get(HEARING_DATE).toString());
         LocalDate dateParsed = LocalDate.parse(result.get(HEARING_DATE_LITERAL).toString(), CC_DATE_FORMAT);
         assertThat(dateParsed).isEqualTo(hearing.getValue().getStart().toLocalDate());
         LocalTime time = LocalTime.parse(result.get(HEARING_TIME).toString(), DateTimeFormatter.ofPattern(HEARING_TIME_FORMAT, Locale.ENGLISH));

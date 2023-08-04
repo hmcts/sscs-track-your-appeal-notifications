@@ -284,7 +284,6 @@ public class Personalisation<E extends NotificationWrapper> {
             personalisation.put(HEARING, latestHearing.getValue());
 
             if (nonNull(hearingDateTime) && nonNull(latestHearingValue.getVenue())) {
-                personalisation.put(HEARING_DATE, hearingDateTime.toLocalDate().toString());
                 personalisation.put(HEARING_DATE_LITERAL, hearingDateTime.toLocalDate().toString());
                 translateToWelshDate(hearingDateTime.toLocalDate(), ccdResponse, value -> personalisation.put(HEARING_DATE_WELSH, value));
                 personalisation.put(HEARING_TIME, formatLocalTime(hearingDateTime));
