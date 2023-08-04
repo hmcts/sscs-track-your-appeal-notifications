@@ -39,6 +39,8 @@ public final class NotificationEventTypeLists {
         RESEND_APPEAL_CREATED,
         SET_ASIDE_GRANTED,
         SET_ASIDE_REFUSED,
+        SOR_EXTEND_TIME,
+        SOR_REFUSED,
         STRUCK_OUT,
         SUBSCRIPTION_UPDATED,
         VALID_APPEAL_CREATED,
@@ -80,6 +82,7 @@ public final class NotificationEventTypeLists {
         ISSUE_FINAL_DECISION_WELSH,
         PROVIDE_APPOINTEE_DETAILS,
         REISSUE_DOCUMENT,
+        SOR_REFUSED,
         STRUCK_OUT
     );
 
@@ -126,6 +129,9 @@ public final class NotificationEventTypeLists {
         REVIEW_CONFIDENTIALITY_REQUEST,
         SET_ASIDE_GRANTED,
         SET_ASIDE_REFUSED,
+        SOR_EXTEND_TIME,
+        SOR_REFUSED,
+        STRUCK_OUT,
         SET_ASIDE_REQUEST,
         STRUCK_OUT,
         STATEMENT_OF_REASONS_REQUEST,
@@ -147,6 +153,8 @@ public final class NotificationEventTypeLists {
         PROCESS_AUDIO_VIDEO_WELSH,
         SET_ASIDE_GRANTED,
         SET_ASIDE_REFUSED
+        SOR_EXTEND_TIME,
+        SOR_REFUSED
     );
 
     public static final Set<NotificationEventType> EVENT_TYPES_FOR_INTERLOC_LETTERS = EnumSet.of(
@@ -196,6 +204,8 @@ public final class NotificationEventTypeLists {
         REVIEW_CONFIDENTIALITY_REQUEST,
         SET_ASIDE_GRANTED,
         SET_ASIDE_REFUSED,
+        SOR_EXTEND_TIME,
+        SOR_REFUSED,
         SET_ASIDE_REQUEST,
         STATEMENT_OF_REASONS_REQUEST,
         STRUCK_OUT,
@@ -239,6 +249,8 @@ public final class NotificationEventTypeLists {
         PROCESS_AUDIO_VIDEO_WELSH,
         SET_ASIDE_GRANTED,
         SET_ASIDE_REFUSED,
+        SOR_EXTEND_TIME,
+        SOR_REFUSED,
         SET_ASIDE_REQUEST,
         STATEMENT_OF_REASONS_REQUEST,
         STRUCK_OUT
@@ -261,6 +273,8 @@ public final class NotificationEventTypeLists {
         RESEND_APPEAL_CREATED,
         SET_ASIDE_GRANTED,
         SET_ASIDE_REFUSED,
+        SOR_EXTEND_TIME,
+        SOR_REFUSED,
         SYA_APPEAL_CREATED,
         SUBSCRIPTION_UPDATED,
         TCW_DECISION_APPEAL_TO_PROCEED,
@@ -284,6 +298,8 @@ public final class NotificationEventTypeLists {
         RESEND_APPEAL_CREATED,
         SET_ASIDE_GRANTED,
         SET_ASIDE_REFUSED,
+        SOR_EXTEND_TIME,
+        SOR_REFUSED,
         SUBSCRIPTION_UPDATED,
         SYA_APPEAL_CREATED,
         TCW_DECISION_APPEAL_TO_PROCEED,
@@ -294,6 +310,8 @@ public final class NotificationEventTypeLists {
         JOINT_PARTY_ADDED,
         SET_ASIDE_GRANTED,
         SET_ASIDE_REFUSED
+        SOR_EXTEND_TIME,
+        SOR_REFUSED
     );
 
     public static final Set<NotificationEventType> EVENTS_VALID_FOR_OTHER_PARTY = EnumSet.of(
@@ -308,6 +326,8 @@ public final class NotificationEventTypeLists {
         REQUEST_FOR_INFORMATION,
         SET_ASIDE_GRANTED,
         SET_ASIDE_REFUSED,
+        SOR_EXTEND_TIME,
+        SOR_REFUSED,
         SUBSCRIPTION_CREATED,
         SUBSCRIPTION_OLD,
         SUBSCRIPTION_UPDATED
@@ -421,6 +441,8 @@ public final class NotificationEventTypeLists {
         REQUEST_FOR_INFORMATION,
         SET_ASIDE_GRANTED,
         SET_ASIDE_REFUSED,
+        SOR_EXTEND_TIME,
+        SOR_REFUSED,
         STRUCK_OUT
     );
 }
