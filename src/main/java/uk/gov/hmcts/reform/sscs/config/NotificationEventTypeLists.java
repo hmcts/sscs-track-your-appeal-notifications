@@ -45,6 +45,8 @@ import static uk.gov.hmcts.reform.sscs.domain.notify.NotificationEventType.REQUE
 import static uk.gov.hmcts.reform.sscs.domain.notify.NotificationEventType.RESEND_APPEAL_CREATED;
 import static uk.gov.hmcts.reform.sscs.domain.notify.NotificationEventType.REVIEW_CONFIDENTIALITY_REQUEST;
 import static uk.gov.hmcts.reform.sscs.domain.notify.NotificationEventType.SET_ASIDE_REQUEST;
+import static uk.gov.hmcts.reform.sscs.domain.notify.NotificationEventType.SOR_EXTEND_TIME;
+import static uk.gov.hmcts.reform.sscs.domain.notify.NotificationEventType.SOR_REFUSED;
 import static uk.gov.hmcts.reform.sscs.domain.notify.NotificationEventType.STATEMENT_OF_REASONS_REQUEST;
 import static uk.gov.hmcts.reform.sscs.domain.notify.NotificationEventType.STRUCK_OUT;
 import static uk.gov.hmcts.reform.sscs.domain.notify.NotificationEventType.SUBSCRIPTION_CREATED;
@@ -92,6 +94,8 @@ public final class NotificationEventTypeLists {
         REISSUE_DOCUMENT,
         REQUEST_FOR_INFORMATION,
         RESEND_APPEAL_CREATED,
+        SOR_EXTEND_TIME,
+        SOR_REFUSED,
         STRUCK_OUT,
         SUBSCRIPTION_UPDATED,
         VALID_APPEAL_CREATED,
@@ -137,6 +141,7 @@ public final class NotificationEventTypeLists {
         PERMISSION_TO_APPEAL_REFUSED,
         PROVIDE_APPOINTEE_DETAILS,
         REISSUE_DOCUMENT,
+        SOR_REFUSED,
         STRUCK_OUT
     );
 
@@ -183,6 +188,8 @@ public final class NotificationEventTypeLists {
         PROVIDE_APPOINTEE_DETAILS,
         REQUEST_FOR_INFORMATION,
         REVIEW_CONFIDENTIALITY_REQUEST,
+        SOR_EXTEND_TIME,
+        SOR_REFUSED,
         STRUCK_OUT,
         SET_ASIDE_REQUEST,
         STATEMENT_OF_REASONS_REQUEST,
@@ -201,7 +208,9 @@ public final class NotificationEventTypeLists {
         ISSUE_FINAL_DECISION,
         ISSUE_FINAL_DECISION_WELSH,
         PROCESS_AUDIO_VIDEO,
-        PROCESS_AUDIO_VIDEO_WELSH
+        PROCESS_AUDIO_VIDEO_WELSH,
+        SOR_EXTEND_TIME,
+        SOR_REFUSED
     );
 
     public static final Set<NotificationEventType> EVENT_TYPES_FOR_INTERLOC_LETTERS = EnumSet.of(
@@ -251,6 +260,8 @@ public final class NotificationEventTypeLists {
         REQUEST_FOR_INFORMATION,
         RESEND_APPEAL_CREATED,
         REVIEW_CONFIDENTIALITY_REQUEST,
+        SOR_EXTEND_TIME,
+        SOR_REFUSED,
         SET_ASIDE_REQUEST,
         STATEMENT_OF_REASONS_REQUEST,
         STRUCK_OUT,
@@ -294,6 +305,8 @@ public final class NotificationEventTypeLists {
         POSTPONEMENT,
         PROCESS_AUDIO_VIDEO,
         PROCESS_AUDIO_VIDEO_WELSH,
+        SOR_EXTEND_TIME,
+        SOR_REFUSED,
         SET_ASIDE_REQUEST,
         STATEMENT_OF_REASONS_REQUEST,
         STRUCK_OUT
@@ -314,6 +327,8 @@ public final class NotificationEventTypeLists {
         NON_COMPLIANT,
         PROVIDE_APPOINTEE_DETAILS,
         RESEND_APPEAL_CREATED,
+        SOR_EXTEND_TIME,
+        SOR_REFUSED,
         SYA_APPEAL_CREATED,
         SUBSCRIPTION_UPDATED,
         TCW_DECISION_APPEAL_TO_PROCEED,
@@ -335,6 +350,8 @@ public final class NotificationEventTypeLists {
         NON_COMPLIANT,
         PROVIDE_APPOINTEE_DETAILS,
         RESEND_APPEAL_CREATED,
+        SOR_EXTEND_TIME,
+        SOR_REFUSED,
         SUBSCRIPTION_UPDATED,
         SYA_APPEAL_CREATED,
         TCW_DECISION_APPEAL_TO_PROCEED,
@@ -342,7 +359,9 @@ public final class NotificationEventTypeLists {
     );
 
     public static final Set<NotificationEventType> EVENTS_VALID_FOR_JOINT_PARTY = EnumSet.of(
-        JOINT_PARTY_ADDED
+        JOINT_PARTY_ADDED,
+        SOR_EXTEND_TIME,
+        SOR_REFUSED
     );
 
     public static final Set<NotificationEventType> EVENTS_VALID_FOR_OTHER_PARTY = EnumSet.of(
@@ -355,6 +374,8 @@ public final class NotificationEventTypeLists {
         ISSUE_FINAL_DECISION_WELSH,
         NON_COMPLIANT,
         REQUEST_FOR_INFORMATION,
+        SOR_EXTEND_TIME,
+        SOR_REFUSED,
         SUBSCRIPTION_CREATED,
         SUBSCRIPTION_OLD,
         SUBSCRIPTION_UPDATED
@@ -466,6 +487,8 @@ public final class NotificationEventTypeLists {
         PROCESS_AUDIO_VIDEO_WELSH,
         PROVIDE_APPOINTEE_DETAILS,
         REQUEST_FOR_INFORMATION,
+        SOR_EXTEND_TIME,
+        SOR_REFUSED,
         STRUCK_OUT
     );
 }
