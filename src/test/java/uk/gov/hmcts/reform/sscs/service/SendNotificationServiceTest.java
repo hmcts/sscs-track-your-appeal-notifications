@@ -636,6 +636,20 @@ public class SendNotificationServiceTest {
                                 .documentDateAdded(LocalDate.now().minusDays(1).toString())
                                 .build())
                 .build());
+      
+        documents.add(SscsDocument.builder().value(
+                        SscsDocumentDetails.builder().documentType(DocumentType.STATEMENT_OF_REASONS_GRANTED.getValue())
+                                .documentLink(DocumentLink.builder().documentUrl("testUrl7").build())
+                                .documentDateAdded(LocalDate.now().minusDays(1).toString())
+                                .build())
+                .build());
+
+        documents.add(SscsDocument.builder().value(
+                        SscsDocumentDetails.builder().documentType(DocumentType.STATEMENT_OF_REASONS_REFUSED.getValue())
+                                .documentLink(DocumentLink.builder().documentUrl("testUrl8").build())
+                                .documentDateAdded(LocalDate.now().minusDays(1).toString())
+                                .build())
+                .build());
 
         List<SscsWelshDocument> welshDocuments = new ArrayList<>();
 
