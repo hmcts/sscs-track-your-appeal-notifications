@@ -491,14 +491,14 @@ public class LetterUtilsTest {
     }
 
     @Test
-    public void testGetNameForDWPSender() {
+    public void testGetNameForDwpSender() {
         DynamicList sender = new DynamicList(new DynamicListItem(DWP.getCode(), DWP.getCode()), new ArrayList<>());
         caseData.setOriginalSender(sender);
         assertEquals(DWP.getLabel(), LetterUtils.getNameForSender(caseData));
     }
 
     @Test
-    public void testGetNameForHMCTSSender() {
+    public void testGetNameForHmctsSender() {
         DynamicList sender = new DynamicList(new DynamicListItem(HMCTS.getCode(), HMCTS.getCode()), new ArrayList<>());
         caseData.setOriginalSender(sender);
         assertEquals(HMCTS.getLabel(), LetterUtils.getNameForSender(caseData));
