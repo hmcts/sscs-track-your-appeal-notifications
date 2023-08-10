@@ -348,7 +348,7 @@ public class Personalisation<E extends NotificationWrapper> {
                 .filter(Personalisation::hasFinalDecisionNoticeDocumentType)
                 .max(Comparator.comparing(d -> LocalDate.parse(d.getValue().getDocumentDateAdded())))
                 .ifPresent(document -> {
-                    personalisation.put(DECISION_DATE, document.getValue().getDocumentDateAdded());
+                    personalisation.put(DECISION_DATE_LITERAL, document.getValue().getDocumentDateAdded());
                 });
     }
 

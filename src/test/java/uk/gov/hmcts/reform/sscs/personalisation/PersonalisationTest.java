@@ -1812,7 +1812,7 @@ public class PersonalisationTest {
         assertThat(result)
                 .containsEntry(IS_GRANTED, true)
                 .containsEntry(SENDER_NAME, name.getFullNameNoTitle())
-                .containsEntry(DECISION_DATE, date1);
+                .containsEntry(DECISION_DATE_LITERAL, date1);
     }
 
     @SuppressWarnings("unchecked")
@@ -1844,7 +1844,7 @@ public class PersonalisationTest {
         assertThat(result)
                 .containsEntry(IS_GRANTED, false)
                 .containsEntry(SENDER_NAME, name.getFullNameNoTitle())
-                .containsEntry(DECISION_DATE, date);
+                .containsEntry(DECISION_DATE_LITERAL, date);
     }
 
     @Test
