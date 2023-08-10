@@ -59,6 +59,7 @@ import org.junit.runner.RunWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.Spy;
+import uk.gov.hmcts.reform.sscs.ccd.callback.DocumentType;
 import uk.gov.hmcts.reform.sscs.ccd.domain.*;
 import uk.gov.hmcts.reform.sscs.config.NotificationConfig;
 import uk.gov.hmcts.reform.sscs.config.PersonalisationConfiguration;
@@ -1833,6 +1834,38 @@ public class PersonalisationTest {
                         + "\nUnrhyw drefniadau eraill: Other",
                 result.get(HEARING_ARRANGEMENT_DETAILS_LITERAL_WELSH));
 
+    }
+
+    @SuppressWarnings("unchecked")
+    @Test
+    public void shouldProvideCorrectValuesForBundleCreatedForUT() {
+        String date = LocalDate.now().toString();
+        SscsDocumentDetails document1 = SscsDocumentDetails.builder()
+                .documentType(DocumentType.FINAL_DECISION_NOTICE.getValue())
+                .documentDateAdded(date)
+                .build();
+        SscsDocument sscsDocument = SscsDocument.builder().value(document1).build();
+
+        DynamicListItem item = new DynamicListItem("appellant", "");
+        DynamicList originalSender = new DynamicList(item, List.of());
+
+        Appellant appellant = Appellant.builder().name(name).build();
+        Appeal appeal = Appeal.builder().benefitType(BenefitType.builder().code("PIP").build()).appellant(appellant).build();
+        SscsCaseData response = SscsCaseData.builder()
+                .ccdCaseId(CASE_ID).appeal(appeal)
+                .sscsDocument(List.of(sscsDocument))
+                .originalSender(originalSender)
+                .build();
+        SubscriptionWithType subscription = new SubscriptionWithType(subscriptions.getAppellantSubscription(), APPELLANT,
+                appellant, appellant);
+        SscsCaseDataWrapper caseDataWrapper = SscsCaseDataWrapper.builder().newSscsCaseData(response)
+                .notificationEventType(BUNDLE_CREATED_FOR_UPPER_TRIBUNAL).build();
+        var result = personalisation.create(caseDataWrapper, subscription);
+
+        assertThat(result)
+                .containsEntry(APPELLANT_NAME, name.getFullNameNoTitle())
+                .containsEntry(ENTITY_TYPE, "Appellant")
+                .containsEntry(DECISION_DATE_LITERAL, date);
     }
 
     private Hearing createHearing(LocalDate hearingDate) {

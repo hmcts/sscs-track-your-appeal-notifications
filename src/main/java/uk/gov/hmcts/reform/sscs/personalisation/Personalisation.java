@@ -50,6 +50,7 @@ import static uk.gov.hmcts.reform.sscs.config.SubscriptionType.APPOINTEE;
 import static uk.gov.hmcts.reform.sscs.config.SubscriptionType.JOINT_PARTY;
 import static uk.gov.hmcts.reform.sscs.config.SubscriptionType.OTHER_PARTY;
 import static uk.gov.hmcts.reform.sscs.config.SubscriptionType.REPRESENTATIVE;
+import static uk.gov.hmcts.reform.sscs.domain.notify.NotificationEventType.BUNDLE_CREATED_FOR_UPPER_TRIBUNAL;
 import static uk.gov.hmcts.reform.sscs.domain.notify.NotificationEventType.CASE_UPDATED;
 import static uk.gov.hmcts.reform.sscs.domain.notify.NotificationEventType.DIRECTION_ISSUED;
 import static uk.gov.hmcts.reform.sscs.domain.notify.NotificationEventType.DIRECTION_ISSUED_WELSH;
@@ -71,6 +72,7 @@ import java.time.LocalDateTime;
 import java.time.ZonedDateTime;
 import java.time.format.DateTimeFormatter;
 import java.time.temporal.ChronoUnit;
+import java.util.Comparator;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Locale;
@@ -82,6 +84,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
+import uk.gov.hmcts.reform.sscs.ccd.callback.DocumentType;
 import uk.gov.hmcts.reform.sscs.ccd.domain.*;
 import uk.gov.hmcts.reform.sscs.config.NotificationConfig;
 import uk.gov.hmcts.reform.sscs.config.NotificationEventTypeLists;
@@ -324,7 +327,28 @@ public class Personalisation<E extends NotificationWrapper> {
         personalisation.put(PARTY_TYPE, subscriptionWithType.getParty().getClass().getSimpleName());
         personalisation.put(ENTITY_TYPE, subscriptionWithType.getEntity().getClass().getSimpleName());
 
+        if (BUNDLE_CREATED_FOR_UPPER_TRIBUNAL.equals(notificationEventType)) {
+            setDecisionDate(personalisation, ccdResponse);
+        }
+
         return personalisation;
+    }
+
+    private void setDecisionDate(Map<String, Object> personalisation, SscsCaseData ccdResponse) {
+        if (isNull(ccdResponse.getSscsDocument())) {
+            return;
+        }
+
+        ccdResponse.getSscsDocument().stream()
+                .filter(Personalisation::hasFinalDecisionNoticeDocumentType)
+                .max(Comparator.comparing(d -> LocalDate.parse(d.getValue().getDocumentDateAdded())))
+                .ifPresent(document -> {
+                    personalisation.put(DECISION_DATE_LITERAL, document.getValue().getDocumentDateAdded());
+                });
+    }
+
+    private static boolean hasFinalDecisionNoticeDocumentType(SscsDocument document) {
+        return DocumentType.FINAL_DECISION_NOTICE.getValue().equals(document.getValue().getDocumentType());
     }
 
     private static boolean hasBenefitType(SscsCaseData ccdResponse) {
