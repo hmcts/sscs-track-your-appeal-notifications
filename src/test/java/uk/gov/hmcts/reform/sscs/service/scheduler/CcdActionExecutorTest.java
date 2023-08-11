@@ -12,6 +12,7 @@ import static uk.gov.hmcts.reform.sscs.domain.notify.NotificationEventType.SYA_A
 import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
+import java.time.LocalDateTime;
 import junitparams.JUnitParamsRunner;
 import junitparams.Parameters;
 import org.junit.Before;
@@ -134,4 +135,15 @@ public class CcdActionExecutorTest {
         verify(ccdService, times(0)).updateCase(any(), any(), any(), any(), any(), any());
     }
 
+    @Test
+    public void shouldWorkWithLocalDateTime() {
+        caseDetails.setCreatedDate(LocalDateTime.now());
+        when(ccdService.getByCaseId(eq(123456L), eq(idamTokens))).thenReturn(caseDetails);
+
+        ccdActionExecutor.execute(JOB_ID, JOB_GROUP, SYA_APPEAL_CREATED.getId(), "123456");
+
+        verify(notificationService, times(1)).manageNotificationAndSubscription(any(), eq(true));
+        verify(ccdService, times(0)).updateCase(any(), eq(123456L), any(), any(), any(), any());
+
+    }
 }

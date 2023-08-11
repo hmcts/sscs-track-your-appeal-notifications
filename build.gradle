@@ -5,7 +5,7 @@ plugins {
     id 'org.sonarqube' version '4.0.0.2929'
     id 'jacoco'
     id 'io.spring.dependency-management' version '1.1.0'
-    id 'org.springframework.boot' version '2.5.6'
+    id 'org.springframework.boot' version '2.5.15'
     id 'uk.gov.hmcts.java' version '0.12.43'
     id 'org.owasp.dependencycheck' version '8.2.1'
     id 'com.github.ben-manes.versions' version '0.47.0'
@@ -19,8 +19,11 @@ apply plugin: 'io.spring.dependency-management'
 group = 'uk.gov.hmcts.reform'
 version = '1.0.0'
 
-sourceCompatibility = 11
-targetCompatibility = 11
+java {
+    toolchain {
+        languageVersion = JavaLanguageVersion.of(17)
+    }
+}
 
 compileJava {
     options.compilerArgs << '-parameters' << '-Xlint:deprecation'
@@ -141,7 +144,7 @@ dependencyManagement {
     }
     dependencies {
         //CVE-2022-41881, CVE-2021-43797, CVE-2023-34462, CVE-2022-24823 - brought in by qpid-jms-client
-        dependencySet(group: 'io.netty', version: '4.1.94.Final') {
+        dependencySet(group: 'io.netty', version: '4.1.96.Final') {
             entry 'netty-handler'
             entry 'netty-transport-native-epoll'
             entry 'netty-transport-native-kqueue'
@@ -354,8 +357,8 @@ dependencies {
 
     implementation group: 'com.github.hmcts', name: 'cmc-pdf-service-client', version: '7.0.1'
 
-    implementation group: 'com.github.hmcts', name: 'sscs-common', version: '4.26.2'
-    implementation group: 'com.github.hmcts', name: 'sscs-pdf-email-common', version: '1.8.7'
+    implementation group: 'com.github.hmcts', name: 'sscs-common', version: '4.26.9'
+    implementation group: 'com.github.hmcts', name: 'sscs-pdf-email-common', version: '1.8.10'
 
     implementation group: 'com.github.hmcts', name: 'sscs-job-scheduler', version: '1.5.7', {
         exclude group: "uk.gov.hmcts.reform", module:"properties-volume-spring-boot-starter"
