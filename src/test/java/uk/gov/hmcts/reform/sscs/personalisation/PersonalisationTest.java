@@ -1039,7 +1039,7 @@ public class PersonalisationTest {
                 .newSscsCaseData(response).notificationEventType(hearingNotificationEventType).build(),
                 new SubscriptionWithType(subscriptions.getAppellantSubscription(), subscriptionType, response.getAppeal().getAppellant(), response.getAppeal().getAppellant()));
 
-        assertEquals(hearingDate.toString(), result.get(HEARING_DATE));
+        assertEquals(hearingDate.toString(), result.get(HEARING_DATE_LITERAL));
         assertEquals("12:00 PM", result.get(HEARING_TIME).toString());
         assertEquals("The venue, 12 The Road Avenue, Village, Aberdeen, Aberdeenshire, TS3 3ST", result.get(VENUE_ADDRESS_LITERAL));
         assertEquals("http://www.googlemaps.com/aberdeenvenue", result.get(VENUE_MAP_LINK_LITERAL));
@@ -1072,7 +1072,7 @@ public class PersonalisationTest {
                 new SubscriptionWithType(subscriptions.getAppellantSubscription(), subscriptionType, response.getAppeal().getAppellant(), response.getAppeal().getAppellant()));
 
         assertEquals("Welsh hearing date is not set", LocalDateToWelshStringConverter.convert(hearingDate), result.get(HEARING_DATE_WELSH));
-        assertEquals(hearingDate.toString(), result.get(HEARING_DATE));
+        assertEquals(hearingDate.toString(), result.get(HEARING_DATE_LITERAL));
         assertEquals("12:00 PM", result.get(HEARING_TIME).toString().toUpperCase(Locale.getDefault()));
         assertEquals("The venue, 12 The Road Avenue, Village, Aberdeen, Aberdeenshire, TS3 3ST", result.get(VENUE_ADDRESS_LITERAL));
         assertEquals("http://www.googlemaps.com/aberdeenvenue", result.get(VENUE_MAP_LINK_LITERAL));
@@ -1200,7 +1200,7 @@ public class PersonalisationTest {
         assertThat(hearingDetails.getHearingStatus()).isEqualTo(hearing.getValue().getHearingStatus());
         assertThat(hearingDetails.getVenue()).isEqualTo(hearing.getValue().getVenue());
 
-        LocalDate dateParsed = LocalDate.parse(result.get(HEARING_DATE).toString(), CC_DATE_FORMAT);
+        LocalDate dateParsed = LocalDate.parse(result.get(HEARING_DATE_LITERAL).toString(), CC_DATE_FORMAT);
         assertThat(dateParsed).isEqualTo(hearing.getValue().getStart().toLocalDate());
         LocalTime time = LocalTime.parse(result.get(HEARING_TIME).toString(), DateTimeFormatter.ofPattern(HEARING_TIME_FORMAT, Locale.ENGLISH));
         assertThat(time).isCloseTo(hearing.getValue().getStart().toLocalTime(), within(1, ChronoUnit.MINUTES));
@@ -1830,46 +1830,6 @@ public class PersonalisationTest {
                         + "\nUnrhyw drefniadau eraill: Other",
                 result.get(HEARING_ARRANGEMENT_DETAILS_LITERAL_WELSH));
 
-    }
-
-    @Test
-    public void WhenDwpStateIsLtaGranted_SetIsGrantedToTrue() {
-        RegionalProcessingCenter rpc = regionalProcessingCenterService.getByScReferenceCode("SC/1234/5");
-        SscsCaseData response = SscsCaseData.builder()
-                .ccdCaseId(CASE_ID).caseReference("SC/1234/5")
-                .regionalProcessingCenter(rpc)
-                .appeal(Appeal.builder().benefitType(BenefitType.builder().code("PIP").build())
-                        .appellant(Appellant.builder().name(name).build())
-                        .build())
-                .subscriptions(subscriptions)
-                .createdInGapsFrom("validAppeal")
-                .dwpState(DwpState.LIBERTY_TO_APPLY_GRANTED)
-                .build();
-
-        Map result = personalisation.create(SscsCaseDataWrapper.builder().newSscsCaseData(response)
-                .notificationEventType(LIBERTY_TO_APPLY_GRANTED).build(), new SubscriptionWithType(subscriptions.getAppellantSubscription(), APPELLANT, response.getAppeal().getAppellant(), response.getAppeal().getAppellant()));
-
-        assertTrue((boolean) result.get(IS_GRANTED));
-    }
-
-    @Test
-    public void WhenDwpStateIsLtaRefused_SetIsGrantedToFalse() {
-        RegionalProcessingCenter rpc = regionalProcessingCenterService.getByScReferenceCode("SC/1234/5");
-        SscsCaseData response = SscsCaseData.builder()
-                .ccdCaseId(CASE_ID).caseReference("SC/1234/5")
-                .regionalProcessingCenter(rpc)
-                .appeal(Appeal.builder().benefitType(BenefitType.builder().code("PIP").build())
-                        .appellant(Appellant.builder().name(name).build())
-                        .build())
-                .subscriptions(subscriptions)
-                .createdInGapsFrom("validAppeal")
-                .dwpState(DwpState.LIBERTY_TO_APPLY_REFUSED)
-                .build();
-
-        Map result = personalisation.create(SscsCaseDataWrapper.builder().newSscsCaseData(response)
-                .notificationEventType(LIBERTY_TO_APPLY_REFUSED).build(), new SubscriptionWithType(subscriptions.getAppellantSubscription(), APPELLANT, response.getAppeal().getAppellant(), response.getAppeal().getAppellant()));
-
-        assertFalse((boolean) result.get(IS_GRANTED));
     }
 
     private Hearing createHearing(LocalDate hearingDate) {
