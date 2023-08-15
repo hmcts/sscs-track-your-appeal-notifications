@@ -28,6 +28,7 @@ import org.apache.commons.lang3.ArrayUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
+import uk.gov.hmcts.reform.sscs.ccd.callback.DocumentType;
 import uk.gov.hmcts.reform.sscs.ccd.domain.AbstractDocument;
 import uk.gov.hmcts.reform.sscs.ccd.domain.Address;
 import uk.gov.hmcts.reform.sscs.ccd.domain.SscsCaseData;
@@ -373,6 +374,10 @@ public class SendNotificationService {
             return getDocumentForType(newSscsCaseData.getLatestWelshDocumentForDocumentType(POSTPONEMENT_REQUEST_DIRECTION_NOTICE).orElse(null));
         } else if (POST_HEARING_APP_SOR_WRITTEN.equals(notificationEventType)) {
             return getDocumentForType(newSscsCaseData.getLatestDocumentForDocumentType(STATEMENT_OF_REASONS));
+        } else if (SET_ASIDE_GRANTED.equals(notificationEventType)) {
+            return getDocumentForType(newSscsCaseData.getLatestDocumentForDocumentType(DocumentType.SET_ASIDE_GRANTED));
+        } else if (SET_ASIDE_REFUSED.equals(notificationEventType)) {
+            return getDocumentForType(newSscsCaseData.getLatestDocumentForDocumentType(DocumentType.SET_ASIDE_REFUSED));
         } else if (SOR_EXTEND_TIME.equals(notificationEventType)) {
             return getDocumentForType(newSscsCaseData.getLatestDocumentForDocumentType(STATEMENT_OF_REASONS_GRANTED));
         } else if (SOR_REFUSED.equals(notificationEventType)) {

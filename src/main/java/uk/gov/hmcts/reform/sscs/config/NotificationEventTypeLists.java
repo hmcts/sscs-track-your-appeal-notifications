@@ -38,6 +38,8 @@ public final class NotificationEventTypeLists {
         REISSUE_DOCUMENT,
         REQUEST_FOR_INFORMATION,
         RESEND_APPEAL_CREATED,
+        SET_ASIDE_GRANTED,
+        SET_ASIDE_REFUSED,
         SOR_EXTEND_TIME,
         SOR_REFUSED,
         STRUCK_OUT,
@@ -66,7 +68,7 @@ public final class NotificationEventTypeLists {
         // TODO put permission to appeal, share with upper Tribunal and remit to lower tribunal events here when setting notification
     );
 
-    public static final Set<NotificationEventType> EVENT_TYPES_NOT_FOR_DORMANT_CASES = EnumSet.of(
+    public static final Set<NotificationEventType> EVENT_TYPES_FOR_DORMANT_CASES = EnumSet.of(
         ADMIN_APPEAL_WITHDRAWN,
         APPEAL_DORMANT,
         APPEAL_LAPSED,
@@ -82,7 +84,8 @@ public final class NotificationEventTypeLists {
         PROVIDE_APPOINTEE_DETAILS,
         REISSUE_DOCUMENT,
         SOR_REFUSED,
-        STRUCK_OUT
+        STRUCK_OUT,
+        SET_ASIDE_REFUSED
     );
 
     public static final Set<NotificationEventType> EVENT_TYPES_NOT_FOR_WELSH_CASES = EnumSet.of(
@@ -127,10 +130,13 @@ public final class NotificationEventTypeLists {
         PROVIDE_APPOINTEE_DETAILS,
         REQUEST_FOR_INFORMATION,
         REVIEW_CONFIDENTIALITY_REQUEST,
+        SET_ASIDE_GRANTED,
+        SET_ASIDE_REFUSED,
         SOR_EXTEND_TIME,
         SOR_REFUSED,
         STRUCK_OUT,
         SET_ASIDE_REQUEST,
+        STRUCK_OUT,
         STATEMENT_OF_REASONS_REQUEST,
         UPDATE_OTHER_PARTY_DATA
     );
@@ -149,6 +155,8 @@ public final class NotificationEventTypeLists {
         POST_HEARING_APP_SOR_WRITTEN,
         PROCESS_AUDIO_VIDEO,
         PROCESS_AUDIO_VIDEO_WELSH,
+        SET_ASIDE_GRANTED,
+        SET_ASIDE_REFUSED,
         SOR_EXTEND_TIME,
         SOR_REFUSED
     );
@@ -199,6 +207,8 @@ public final class NotificationEventTypeLists {
         REQUEST_FOR_INFORMATION,
         RESEND_APPEAL_CREATED,
         REVIEW_CONFIDENTIALITY_REQUEST,
+        SET_ASIDE_GRANTED,
+        SET_ASIDE_REFUSED,
         SOR_EXTEND_TIME,
         SOR_REFUSED,
         SET_ASIDE_REQUEST,
@@ -243,6 +253,8 @@ public final class NotificationEventTypeLists {
         POSTPONEMENT,
         PROCESS_AUDIO_VIDEO,
         PROCESS_AUDIO_VIDEO_WELSH,
+        SET_ASIDE_GRANTED,
+        SET_ASIDE_REFUSED,
         SOR_EXTEND_TIME,
         SOR_REFUSED,
         SET_ASIDE_REQUEST,
@@ -266,6 +278,8 @@ public final class NotificationEventTypeLists {
         POST_HEARING_APP_SOR_WRITTEN,
         PROVIDE_APPOINTEE_DETAILS,
         RESEND_APPEAL_CREATED,
+        SET_ASIDE_GRANTED,
+        SET_ASIDE_REFUSED,
         SOR_EXTEND_TIME,
         SOR_REFUSED,
         SYA_APPEAL_CREATED,
@@ -290,6 +304,8 @@ public final class NotificationEventTypeLists {
         POST_HEARING_APP_SOR_WRITTEN,
         PROVIDE_APPOINTEE_DETAILS,
         RESEND_APPEAL_CREATED,
+        SET_ASIDE_GRANTED,
+        SET_ASIDE_REFUSED,
         SOR_EXTEND_TIME,
         SOR_REFUSED,
         SUBSCRIPTION_UPDATED,
@@ -301,6 +317,8 @@ public final class NotificationEventTypeLists {
     public static final Set<NotificationEventType> EVENTS_VALID_FOR_JOINT_PARTY = EnumSet.of(
         JOINT_PARTY_ADDED,
         POST_HEARING_APP_SOR_WRITTEN,
+        SET_ASIDE_GRANTED,
+        SET_ASIDE_REFUSED,
         SOR_EXTEND_TIME,
         SOR_REFUSED
     );
@@ -316,6 +334,8 @@ public final class NotificationEventTypeLists {
         NON_COMPLIANT,
         POST_HEARING_APP_SOR_WRITTEN,
         REQUEST_FOR_INFORMATION,
+        SET_ASIDE_GRANTED,
+        SET_ASIDE_REFUSED,
         SOR_EXTEND_TIME,
         SOR_REFUSED,
         SUBSCRIPTION_CREATED,
@@ -430,6 +450,8 @@ public final class NotificationEventTypeLists {
         PROCESS_AUDIO_VIDEO_WELSH,
         PROVIDE_APPOINTEE_DETAILS,
         REQUEST_FOR_INFORMATION,
+        SET_ASIDE_GRANTED,
+        SET_ASIDE_REFUSED,
         SOR_EXTEND_TIME,
         SOR_REFUSED,
         STRUCK_OUT

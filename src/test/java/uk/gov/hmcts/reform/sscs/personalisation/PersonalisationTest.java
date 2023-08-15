@@ -1832,7 +1832,23 @@ public class PersonalisationTest {
                         + "\nMynediad i bobl anab: Gofynnol\n"
                         + "\nUnrhyw drefniadau eraill: Other",
                 result.get(HEARING_ARRANGEMENT_DETAILS_LITERAL_WELSH));
+    }
 
+    @Test
+    public void testSetAsideGrantedDwpState() {
+        SscsCaseData response = SscsCaseData.builder()
+                .ccdCaseId(CASE_ID).caseReference(null)
+                .dwpState(DwpState.SET_ASIDE_GRANTED)
+                .appeal(Appeal.builder().benefitType(BenefitType.builder().code("PIP").build())
+                        .appellant(Appellant.builder().name(name).build())
+                        .build())
+                .subscriptions(subscriptions)
+                .build();
+
+        Map result = personalisation.create(SscsCaseDataWrapper.builder().newSscsCaseData(response)
+                .notificationEventType(APPEAL_RECEIVED).build(), new SubscriptionWithType(subscriptions.getAppellantSubscription(), APPELLANT, response.getAppeal().getAppellant(), response.getAppeal().getAppellant()));
+
+        assertEquals(true, result.get(IS_GRANTED));
     }
 
     private Hearing createHearing(LocalDate hearingDate) {
