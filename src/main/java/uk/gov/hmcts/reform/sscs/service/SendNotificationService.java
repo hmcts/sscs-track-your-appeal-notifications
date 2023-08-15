@@ -379,6 +379,10 @@ public class SendNotificationService {
             return getDocumentForType(newSscsCaseData.getLatestDocumentForDocumentType(POSTPONEMENT_REQUEST_DIRECTION_NOTICE));
         } else if (ACTION_POSTPONEMENT_REQUEST_WELSH.equals(notificationEventType)) {
             return getDocumentForType(newSscsCaseData.getLatestWelshDocumentForDocumentType(POSTPONEMENT_REQUEST_DIRECTION_NOTICE).orElse(null));
+        } else if (SET_ASIDE_GRANTED.equals(notificationEventType)) {
+            return getDocumentForType(newSscsCaseData.getLatestDocumentForDocumentType(DocumentType.SET_ASIDE_GRANTED));
+        } else if (SET_ASIDE_REFUSED.equals(notificationEventType)) {
+            return getDocumentForType(newSscsCaseData.getLatestDocumentForDocumentType(DocumentType.SET_ASIDE_REFUSED));
         } else if (SOR_EXTEND_TIME.equals(notificationEventType)) {
             return getDocumentForType(newSscsCaseData.getLatestDocumentForDocumentType(STATEMENT_OF_REASONS_GRANTED));
         } else if (SOR_REFUSED.equals(notificationEventType)) {

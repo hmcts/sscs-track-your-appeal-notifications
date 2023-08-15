@@ -335,7 +335,13 @@ public class Personalisation<E extends NotificationWrapper> {
 
         personalisation.put(SENDER_NAME, LetterUtils.getNameForSender(ccdResponse));
 
+        personalisation.put(IS_GRANTED, isGranted(ccdResponse.getDwpState()));
+
         return personalisation;
+    }
+
+    private static boolean isGranted(DwpState dwpState) {
+        return DwpState.SET_ASIDE_GRANTED.equals(dwpState);
     }
 
     private static boolean hasBenefitType(SscsCaseData ccdResponse) {
