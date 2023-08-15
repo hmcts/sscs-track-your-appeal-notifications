@@ -83,6 +83,7 @@ public final class NotificationEventTypeLists {
         PROVIDE_APPOINTEE_DETAILS,
         REISSUE_DOCUMENT,
         SOR_REFUSED,
+        LIBERTY_TO_APPLY_REFUSED,
         STRUCK_OUT
     );
 
