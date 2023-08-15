@@ -323,7 +323,7 @@ public class Personalisation<E extends NotificationWrapper> {
         if (REVIEW_AND_SET_ASIDE.equals(notificationEventType) && ccdResponse.getSscsDocument() != null) {
             setDecisionDate(personalisation, ccdResponse);
         }
-        //TODO rework
+
         personalisation.put(IS_GRANTED, isGranted(ccdResponse.getDwpState()));
 
         return personalisation;
