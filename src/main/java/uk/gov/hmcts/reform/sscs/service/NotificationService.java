@@ -8,7 +8,7 @@ import static uk.gov.hmcts.reform.sscs.ccd.domain.Benefit.getBenefitByCodeOrThro
 import static uk.gov.hmcts.reform.sscs.ccd.domain.EventType.SUBSCRIPTION_UPDATED;
 import static uk.gov.hmcts.reform.sscs.ccd.domain.YesNo.isYes;
 import static uk.gov.hmcts.reform.sscs.config.NotificationEventTypeLists.EVENTS_FOR_ACTION_FURTHER_EVIDENCE;
-import static uk.gov.hmcts.reform.sscs.config.NotificationEventTypeLists.EVENT_TYPES_NOT_FOR_DORMANT_CASES;
+import static uk.gov.hmcts.reform.sscs.config.NotificationEventTypeLists.EVENT_TYPES_FOR_DORMANT_CASES;
 import static uk.gov.hmcts.reform.sscs.config.NotificationEventTypeLists.EVENT_TYPES_NOT_FOR_WELSH_CASES;
 import static uk.gov.hmcts.reform.sscs.config.SubscriptionType.APPELLANT;
 import static uk.gov.hmcts.reform.sscs.config.SubscriptionType.APPOINTEE;
@@ -371,7 +371,7 @@ public class NotificationService {
 
         if (notificationWrapper.getSscsCaseDataWrapper().getState() != null
             && notificationWrapper.getSscsCaseDataWrapper().getState().equals(State.DORMANT_APPEAL_STATE)
-            && !EVENT_TYPES_NOT_FOR_DORMANT_CASES.contains(notificationType)) {
+            && !EVENT_TYPES_FOR_DORMANT_CASES.contains(notificationType)) {
             log.info("Cannot complete notification {} as the appeal was dormant for caseId {}.",
                 notificationType.getId(), notificationWrapper.getCaseId());
             return false;
