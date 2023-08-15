@@ -324,24 +324,15 @@ public class Personalisation<E extends NotificationWrapper> {
 
         personalisation.put(PARTY_TYPE, subscriptionWithType.getParty().getClass().getSimpleName());
         personalisation.put(ENTITY_TYPE, subscriptionWithType.getEntity().getClass().getSimpleName());
-
-        if (DwpState.LIBERTY_TO_APPLY_GRANTED.equals(ccdResponse.getDwpState())) {
-            personalisation.put(IS_GRANTED, true);
-        }
-
-        if (DwpState.LIBERTY_TO_APPLY_REFUSED.equals(ccdResponse.getDwpState())) {
-            personalisation.put(IS_GRANTED, false);
-        }
-
-        personalisation.put(SENDER_NAME, LetterUtils.getNameForSender(ccdResponse));
-
         personalisation.put(IS_GRANTED, isGranted(ccdResponse.getDwpState()));
+        personalisation.put(SENDER_NAME, LetterUtils.getNameForSender(ccdResponse));
 
         return personalisation;
     }
 
     private static boolean isGranted(DwpState dwpState) {
-        return DwpState.SET_ASIDE_GRANTED.equals(dwpState);
+        return DwpState.SET_ASIDE_GRANTED.equals(dwpState)
+            || DwpState.LIBERTY_TO_APPLY_GRANTED.equals(dwpState);
     }
 
     private static boolean hasBenefitType(SscsCaseData ccdResponse) {
