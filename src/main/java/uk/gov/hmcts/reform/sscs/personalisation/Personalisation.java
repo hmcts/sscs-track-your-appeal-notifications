@@ -347,6 +347,8 @@ public class Personalisation<E extends NotificationWrapper> {
                 personalisation.put(FINAL_DECISION_DATE, formattedDate);
             }
         }
+        //TODO rework
+        personalisation.put(IS_GRANTED, isGranted(ccdResponse.getDwpState()));
 
         return personalisation;
     }
@@ -365,6 +367,9 @@ public class Personalisation<E extends NotificationWrapper> {
         }
 
         return (benefitShortName + " " + dwpRegionalCentre).trim();
+
+    private static boolean isGranted(DwpState dwpState) {
+        return DwpState.SET_ASIDE_GRANTED.equals(dwpState);
     }
 
     private static boolean hasBenefitType(SscsCaseData ccdResponse) {
