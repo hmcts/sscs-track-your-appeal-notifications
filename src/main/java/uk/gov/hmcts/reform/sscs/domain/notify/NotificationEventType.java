@@ -60,6 +60,8 @@ public enum NotificationEventType {
     REQUEST_FOR_INFORMATION(EventType.REQUEST_FOR_INFORMATION, true, true, true, false, false, 0),
     RESEND_APPEAL_CREATED(EventType.RESEND_APPEAL_CREATED, true, true, false, true, false, 0),
     REVIEW_CONFIDENTIALITY_REQUEST(EventType.REVIEW_CONFIDENTIALITY_REQUEST, true, true, true, false, false, 0),
+    SET_ASIDE_GRANTED(EventType.SET_ASIDE_GRANTED, true, true, true, true, false, 0),
+    SET_ASIDE_REFUSED(EventType.SET_ASIDE_REFUSED, true, true, true, true, false, 0),
     SOR_EXTEND_TIME(EventType.SOR_EXTEND_TIME, true, true, true, true, false, 0),
     SOR_REFUSED(EventType.SOR_REFUSED, true, true, true, true, false, 0),
     SET_ASIDE_REQUEST(EventType.SET_ASIDE_REQUEST, false, false, false, false, false, 0),

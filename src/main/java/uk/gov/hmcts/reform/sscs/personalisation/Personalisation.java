@@ -335,6 +335,8 @@ public class Personalisation<E extends NotificationWrapper> {
             personalisation.put(SENDER_NAME, LetterUtils.getNameForSender(ccdResponse));
             setDecisionDate(personalisation, ccdResponse);
         }
+        //TODO
+        personalisation.put(IS_GRANTED, isGranted(ccdResponse.getDwpState()));
 
         return personalisation;
     }
@@ -354,6 +356,10 @@ public class Personalisation<E extends NotificationWrapper> {
 
     private static boolean hasFinalDecisionNoticeDocumentType(SscsDocument document) {
         return DocumentType.FINAL_DECISION_NOTICE.getValue().equals(document.getValue().getDocumentType());
+    }
+
+    private static boolean isGranted(DwpState dwpState) {
+        return DwpState.SET_ASIDE_GRANTED.equals(dwpState);
     }
 
     private static boolean hasBenefitType(SscsCaseData ccdResponse) {
