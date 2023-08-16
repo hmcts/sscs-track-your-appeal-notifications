@@ -324,7 +324,13 @@ public class Personalisation<E extends NotificationWrapper> {
         personalisation.put(PARTY_TYPE, subscriptionWithType.getParty().getClass().getSimpleName());
         personalisation.put(ENTITY_TYPE, subscriptionWithType.getEntity().getClass().getSimpleName());
 
+        personalisation.put(IS_GRANTED, isGranted(ccdResponse.getDwpState()));
+
         return personalisation;
+    }
+
+    private static boolean isGranted(DwpState dwpState) {
+        return DwpState.SET_ASIDE_GRANTED.equals(dwpState);
     }
 
     private static boolean hasBenefitType(SscsCaseData ccdResponse) {
