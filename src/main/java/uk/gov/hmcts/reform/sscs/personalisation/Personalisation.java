@@ -330,6 +330,8 @@ public class Personalisation<E extends NotificationWrapper> {
         if (BUNDLE_CREATED_FOR_UPPER_TRIBUNAL.equals(notificationEventType)) {
             setDecisionDate(personalisation, ccdResponse);
         }
+      
+        personalisation.put(IS_GRANTED, isGranted(ccdResponse.getDwpState()));
 
         return personalisation;
     }
@@ -349,6 +351,10 @@ public class Personalisation<E extends NotificationWrapper> {
 
     private static boolean hasFinalDecisionNoticeDocumentType(SscsDocument document) {
         return DocumentType.FINAL_DECISION_NOTICE.getValue().equals(document.getValue().getDocumentType());
+    }
+
+    private static boolean isGranted(DwpState dwpState) {
+        return DwpState.SET_ASIDE_GRANTED.equals(dwpState);
     }
 
     private static boolean hasBenefitType(SscsCaseData ccdResponse) {
