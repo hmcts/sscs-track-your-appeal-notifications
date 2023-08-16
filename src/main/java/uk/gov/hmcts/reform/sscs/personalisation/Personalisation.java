@@ -331,14 +331,6 @@ public class Personalisation<E extends NotificationWrapper> {
         personalisation.put(PARTY_TYPE, subscriptionWithType.getParty().getClass().getSimpleName());
         personalisation.put(ENTITY_TYPE, subscriptionWithType.getEntity().getClass().getSimpleName());
 
-        if (DwpState.CORRECTION_GRANTED.equals(ccdResponse.getDwpState())) {
-            personalisation.put(IS_GRANTED, true);
-        }
-
-        if (DwpState.CORRECTION_REFUSED.equals(ccdResponse.getDwpState())) {
-            personalisation.put(IS_GRANTED, false);
-        }
-
         if (isPostHearingsEnabled) {
             LocalDate finalDecisionDate = ccdResponse.getSscsFinalDecisionCaseData().getFinalDecisionIssuedDate();
 
@@ -346,9 +338,9 @@ public class Personalisation<E extends NotificationWrapper> {
                 String formattedDate = finalDecisionDate.format(DateTimeFormatter.ofPattern(FINAL_DECISION_DATE_FORMAT));
                 personalisation.put(FINAL_DECISION_DATE, formattedDate);
             }
+
+            personalisation.put(IS_GRANTED, isGranted(ccdResponse.getDwpState()));
         }
-        //TODO rework
-        personalisation.put(IS_GRANTED, isGranted(ccdResponse.getDwpState()));
 
         return personalisation;
     }
@@ -367,12 +359,14 @@ public class Personalisation<E extends NotificationWrapper> {
         }
 
         return (benefitShortName + " " + dwpRegionalCentre).trim();
-
-    private static boolean isGranted(DwpState dwpState) {
-        return DwpState.SET_ASIDE_GRANTED.equals(dwpState);
     }
 
-    private static boolean hasBenefitType(SscsCaseData ccdResponse) {
+    private boolean isGranted(DwpState dwpState) {
+        return DwpState.SET_ASIDE_GRANTED.equals(dwpState)
+                || DwpState.CORRECTION_GRANTED.equals(dwpState);
+    }
+
+    private boolean hasBenefitType(SscsCaseData ccdResponse) {
         return ccdResponse.getAppeal() != null
                 && ccdResponse.getAppeal().getBenefitType() != null
                 && !isEmpty(ccdResponse.getAppeal().getBenefitType().getCode());
