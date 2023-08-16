@@ -636,6 +636,7 @@ public class SendNotificationServiceTest {
                                 .documentDateAdded(LocalDate.now().minusDays(1).toString())
                                 .build())
                 .build());
+
       
         documents.add(SscsDocument.builder().value(
                         SscsDocumentDetails.builder().documentType(DocumentType.STATEMENT_OF_REASONS_GRANTED.getValue())
