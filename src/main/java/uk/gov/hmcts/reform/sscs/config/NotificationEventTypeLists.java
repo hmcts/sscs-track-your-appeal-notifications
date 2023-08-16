@@ -81,6 +81,7 @@ public final class NotificationEventTypeLists {
         HMCTS_APPEAL_LAPSED,
         ISSUE_FINAL_DECISION,
         ISSUE_FINAL_DECISION_WELSH,
+        POST_HEARING_APP_SOR_WRITTEN,
         PROVIDE_APPOINTEE_DETAILS,
         REISSUE_DOCUMENT,
         SOR_REFUSED,
