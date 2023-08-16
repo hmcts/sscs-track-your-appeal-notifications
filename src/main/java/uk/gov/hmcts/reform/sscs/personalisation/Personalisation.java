@@ -338,9 +338,9 @@ public class Personalisation<E extends NotificationWrapper> {
                 String formattedDate = finalDecisionDate.format(DateTimeFormatter.ofPattern(FINAL_DECISION_DATE_FORMAT));
                 personalisation.put(FINAL_DECISION_DATE, formattedDate);
             }
-
-            personalisation.put(IS_GRANTED, isGranted(ccdResponse.getDwpState()));
         }
+
+        personalisation.put(IS_GRANTED, isGranted(ccdResponse.getDwpState()));
 
         return personalisation;
     }

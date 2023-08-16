@@ -36,11 +36,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 import uk.gov.hmcts.reform.sscs.ccd.callback.DocumentType;
-import uk.gov.hmcts.reform.sscs.ccd.domain.AbstractDocument;
-import uk.gov.hmcts.reform.sscs.ccd.domain.Address;
-import uk.gov.hmcts.reform.sscs.ccd.domain.SscsCaseData;
-import uk.gov.hmcts.reform.sscs.ccd.domain.State;
-import uk.gov.hmcts.reform.sscs.ccd.domain.Subscription;
+import uk.gov.hmcts.reform.sscs.ccd.domain.*;
 import uk.gov.hmcts.reform.sscs.config.AppConstants;
 import uk.gov.hmcts.reform.sscs.config.NotificationEventTypeLists;
 import uk.gov.hmcts.reform.sscs.config.SubscriptionType;
@@ -397,7 +393,8 @@ public class SendNotificationService {
     }
 
     private static boolean isCorrectionGranted(NotificationEventType notificationEventType, SscsCaseData newSscsCaseData) {
-        return ISSUE_FINAL_DECISION.equals(notificationEventType) && DwpState.CORRECTION_GRANTED.equals(newSscsCaseData.getDwpState());
+        return ISSUE_FINAL_DECISION.equals(notificationEventType)
+                && DwpState.CORRECTION_GRANTED.equals(newSscsCaseData.getDwpState());
     }
 
     private static String getDocumentForType(AbstractDocument sscsDocument) {
