@@ -345,22 +345,6 @@ public class Personalisation<E extends NotificationWrapper> {
         return personalisation;
     }
 
-    private static String getDwpRegionalCentre(SscsCaseData caseData) {
-        Optional<Benefit> benefit = Benefit.findBenefitOptionalByBenefitCode(caseData.getBenefitCode());
-        String dwpRegionalCentre = caseData.getDwpRegionalCentre();
-        String benefitShortName = "";
-
-        if (benefit.isPresent()) {
-            benefitShortName = benefit.get().getShortName();
-        }
-
-        if (isEmpty(dwpRegionalCentre)) {
-            return benefitShortName;
-        }
-
-        return (benefitShortName + " " + dwpRegionalCentre).trim();
-    }
-
     private boolean isGranted(DwpState dwpState) {
         return DwpState.SET_ASIDE_GRANTED.equals(dwpState)
                 || DwpState.CORRECTION_GRANTED.equals(dwpState);
@@ -380,7 +364,7 @@ public class Personalisation<E extends NotificationWrapper> {
         personalisation.put(FIRST_TIER_AGENCY_GROUP, isHmrcBenefit(benefit, ccdResponse.getFormType()) ? HMRC_ACRONYM : DWP_FIRST_TIER_AGENCY_GROUP);
         personalisation.put(FIRST_TIER_AGENCY_GROUP_TITLE, isHmrcBenefit(benefit, ccdResponse.getFormType()) ? HMRC_ACRONYM : DWP_FIRST_TIER_AGENCY_GROUP_TITLE);
         personalisation.put(FIRST_TIER_AGENCY_GROUP_WELSH, isHmrcBenefit(benefit, ccdResponse.getFormType()) ? HMRC_ACRONYM : DWP_FIRST_TIER_AGENCY_GROUP_WELSH);
-        personalisation.put(FIRST_TIER_AGENCY_OFFICE, getDwpRegionalCentre(ccdResponse));
+        personalisation.put(FIRST_TIER_AGENCY_OFFICE, ccdResponse.getDwpRegionalCentre());
         personalisation.put(WITH_OPTIONAL_THE, isHmrcBenefit(benefit, ccdResponse.getFormType()) ? "" : THE_STRING);
         personalisation.put(WITH_OPTIONAL_THE_WELSH, isHmrcBenefit(benefit, ccdResponse.getFormType()) ? "" : THE_STRING_WELSH);
     }
