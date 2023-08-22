@@ -66,6 +66,7 @@ public final class NotificationEventTypeLists {
 
     // move to EVENTS_TO_HANDLE when feature.postHearingsB.enabled removed
     public static final Set<NotificationEventType> EVENTS_TO_HANDLE_POSTHEARINGS_B = EnumSet.of(
+        BUNDLE_CREATED_FOR_UPPER_TRIBUNAL,
         LIBERTY_TO_APPLY_REQUEST
         // TODO put permission to appeal, share with upper Tribunal and remit to lower tribunal events here when setting notification
     );
@@ -75,6 +76,7 @@ public final class NotificationEventTypeLists {
         APPEAL_DORMANT,
         APPEAL_LAPSED,
         APPEAL_WITHDRAWN,
+        BUNDLE_CREATED_FOR_UPPER_TRIBUNAL,
         DECISION_ISSUED,
         DECISION_ISSUED_WELSH,
         DIRECTION_ISSUED,
@@ -109,6 +111,7 @@ public final class NotificationEventTypeLists {
         APPEAL_LAPSED,
         APPEAL_RECEIVED,
         APPEAL_WITHDRAWN,
+        BUNDLE_CREATED_FOR_UPPER_TRIBUNAL,
         CORRECTION_REQUEST,
         DEATH_OF_APPELLANT,
         DECISION_ISSUED,
@@ -190,6 +193,7 @@ public final class NotificationEventTypeLists {
         APPEAL_LAPSED,
         APPEAL_RECEIVED,
         APPEAL_WITHDRAWN,
+        BUNDLE_CREATED_FOR_UPPER_TRIBUNAL,
         CORRECTION_REQUEST,
         DEATH_OF_APPELLANT,
         DECISION_ISSUED,
@@ -248,6 +252,7 @@ public final class NotificationEventTypeLists {
         APPEAL_DORMANT,
         APPEAL_LAPSED,
         APPEAL_WITHDRAWN,
+        BUNDLE_CREATED_FOR_UPPER_TRIBUNAL,
         CORRECTION_REQUEST,
         DIRECTION_ISSUED,
         DIRECTION_ISSUED_WELSH,
