@@ -47,6 +47,8 @@ public enum NotificationEventType {
     JOINT_PARTY_ADDED(EventType.JOINT_PARTY_ADDED, true, true, true, true, false, 0),
     JUDGE_DECISION_APPEAL_TO_PROCEED(EventType.JUDGE_DECISION_APPEAL_TO_PROCEED, true, true, true, false, false, 0),
     LIBERTY_TO_APPLY_REQUEST(EventType.LIBERTY_TO_APPLY_REQUEST, false, false, false, false, false, 0),
+    LIBERTY_TO_APPLY_GRANTED(EventType.LIBERTY_TO_APPLY_GRANTED, true, true, true, true, false, 0),
+    LIBERTY_TO_APPLY_REFUSED(EventType.LIBERTY_TO_APPLY_REFUSED, true, true, true, true, false, 0),
     NON_COMPLIANT(EventType.NON_COMPLIANT, true, true, true, false, false, 0),
     POST_HEARING_APP_SOR_WRITTEN(EventType.POST_HEARING_APP_SOR_WRITTEN, true, true, true, true, false, 0),
     POSTPONEMENT(EventType.POSTPONED, true, false, false, false, false, 0),

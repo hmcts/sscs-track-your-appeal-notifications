@@ -532,6 +532,10 @@ notification:
         docmosisId: TB-SCS-GNO-ENG-00784.docx
     postHearingAppSorWritten:
       docmosisId: TB-SCS-LET-ENG-Statement-Of-Reasons-Outcome.docx
+    libertyToApplyGranted:
+      docmosisId: TB-SCS-LET-ENG-Liberty-to-Apply-Granted-Refused.docx
+    libertyToApplyRefused:
+      docmosisId: TB-SCS-LET-ENG-Liberty-to-Apply-Granted-Refused.docx
     sORExtendTime:
       docmosisId: TB-SCS-LET-ENG-Statement-Of-Reasons-Outcome.docx
     sORRefused:
@@ -1106,6 +1110,10 @@ notification:
         docmosisId: TB-SCS-GNO-WEL-00787.docx
     postHearingAppSorWritten:
       docmosisId: TB-SCS-LET-WEL-Statement-Of-Reasons-Outcome.docx
+    libertyToApplyGranted:
+      docmosisId: TB-SCS-LET-WEL-Liberty-to-Apply-Granted-Refused.docx
+    libertyToApplyRefused:
+      docmosisId: TB-SCS-LET-WEL-Liberty-to-Apply-Granted-Refused.docx
     sORExtendTime:
       docmosisId: TB-SCS-LET-WEL-Statement-Of-Reasons-Outcome.docx
     sORRefused:
@@ -1404,6 +1412,8 @@ pdf-service:
       sORRequest: 'TB-SCS-GNO-ENG-00012.docx'
       setAsideRequest: 'TB-SCS-GNO-ENG-00012.docx'
       libertyToApplyRequest: 'TB-SCS-GNO-ENG-00012.docx'
+      libertyToApplyGranted: 'TB-SCS-GNO-ENG-00012.docx'
+      libertyToApplyRefused: 'TB-SCS-GNO-ENG-00012.docx'
     welsh:
       appealReceived: 'TB-SCS-GNO-WEL-00479.docx'
       directionIssued: 'TB-SCS-GNO-WEL-00479.docx'
@@ -1429,6 +1439,8 @@ pdf-service:
       sORRequest: 'TB-SCS-GNO-WEL-00479.docx'
       setAsideRequest: 'TB-SCS-GNO-WEL-00479.docx'
       libertyToApplyRequest: 'TB-SCS-GNO-WEL-00479.docx'
+      libertyToApplyGranted: 'TB-SCS-GNO-WEL-00479.docx'
+      libertyToApplyRefused: 'TB-SCS-GNO-WEL-00479.docx'
 
 docmosis:
   accessKey:
