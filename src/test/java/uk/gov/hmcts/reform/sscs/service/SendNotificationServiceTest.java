@@ -631,6 +631,14 @@ public class SendNotificationServiceTest {
                 .build());
 
         documents.add(SscsDocument.builder().value(
+                        SscsDocumentDetails.builder().documentType(DocumentType.STATEMENT_OF_REASONS.getValue())
+                                .documentLink(DocumentLink.builder().documentUrl("testUrl6").build())
+                                .documentDateAdded(LocalDate.now().minusDays(1).toString())
+                                .build())
+                .build());
+
+      
+        documents.add(SscsDocument.builder().value(
                         SscsDocumentDetails.builder().documentType(DocumentType.STATEMENT_OF_REASONS_GRANTED.getValue())
                                 .documentLink(DocumentLink.builder().documentUrl("testUrl7").build())
                                 .documentDateAdded(LocalDate.now().minusDays(1).toString())

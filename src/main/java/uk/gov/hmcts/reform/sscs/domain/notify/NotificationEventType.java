@@ -50,6 +50,7 @@ public enum NotificationEventType {
     LIBERTY_TO_APPLY_GRANTED(EventType.LIBERTY_TO_APPLY_GRANTED, true, true, true, true, false, 0),
     LIBERTY_TO_APPLY_REFUSED(EventType.LIBERTY_TO_APPLY_REFUSED, true, true, true, true, false, 0),
     NON_COMPLIANT(EventType.NON_COMPLIANT, true, true, true, false, false, 0),
+    POST_HEARING_APP_SOR_WRITTEN(EventType.POST_HEARING_APP_SOR_WRITTEN, true, true, true, true, false, 0),
     POSTPONEMENT(EventType.POSTPONED, true, false, false, false, false, 0),
     PROCESS_AUDIO_VIDEO(EventType.PROCESS_AUDIO_VIDEO, true, true, true, false, false, 0),
     PROCESS_AUDIO_VIDEO_WELSH(EventType.PROCESS_AUDIO_VIDEO_WELSH, true, true, true, false, false, 0),
