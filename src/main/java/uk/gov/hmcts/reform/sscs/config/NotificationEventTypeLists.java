@@ -66,9 +66,10 @@ public final class NotificationEventTypeLists {
 
     // move to EVENTS_TO_HANDLE when feature.postHearingsB.enabled removed
     public static final Set<NotificationEventType> EVENTS_TO_HANDLE_POSTHEARINGS_B = EnumSet.of(
+        PERMISSION_TO_APPEAL_REQUEST,
         BUNDLE_CREATED_FOR_UPPER_TRIBUNAL,
         LIBERTY_TO_APPLY_REQUEST
-        // TODO put permission to appeal, share with upper Tribunal and remit to lower tribunal events here when setting notification
+        // TODO put share with upper Tribunal and remit to lower tribunal events here when setting notification
     );
 
     public static final Set<NotificationEventType> EVENT_TYPES_FOR_DORMANT_CASES = EnumSet.of(
@@ -132,6 +133,7 @@ public final class NotificationEventTypeLists {
         JOINT_PARTY_ADDED,
         LIBERTY_TO_APPLY_REQUEST,
         NON_COMPLIANT,
+        PERMISSION_TO_APPEAL_REQUEST,
         POST_HEARING_APP_SOR_WRITTEN,
         POSTPONEMENT,
         PROCESS_AUDIO_VIDEO,
@@ -213,6 +215,7 @@ public final class NotificationEventTypeLists {
         JOINT_PARTY_ADDED,
         LIBERTY_TO_APPLY_REQUEST,
         NON_COMPLIANT,
+        PERMISSION_TO_APPEAL_REQUEST,
         POST_HEARING_APP_SOR_WRITTEN,
         POSTPONEMENT,
         PROCESS_AUDIO_VIDEO,
@@ -265,6 +268,7 @@ public final class NotificationEventTypeLists {
         ISSUE_ADJOURNMENT_NOTICE_WELSH,
         POST_HEARING_APP_SOR_WRITTEN,
         LIBERTY_TO_APPLY_REQUEST,
+        PERMISSION_TO_APPEAL_REQUEST,
         LIBERTY_TO_APPLY_GRANTED,
         LIBERTY_TO_APPLY_REFUSED,
         POSTPONEMENT,
@@ -438,6 +442,7 @@ public final class NotificationEventTypeLists {
     public static final Set<NotificationEventType> EVENTS_FOR_ACTION_FURTHER_EVIDENCE = EnumSet.of(
         CORRECTION_REQUEST,
         LIBERTY_TO_APPLY_REQUEST,
+        PERMISSION_TO_APPEAL_REQUEST,
         SET_ASIDE_REQUEST,
         STATEMENT_OF_REASONS_REQUEST
     );
