@@ -1880,6 +1880,7 @@ public class PersonalisationTest {
                 .containsEntry(ENTITY_TYPE, "Appellant")
                 .containsEntry(DECISION_DATE_LITERAL, date);
     }
+
     @Test
     public void whenDwpStateIsLtaGranted_setIsGrantedToTrue() {
         RegionalProcessingCenter rpc = regionalProcessingCenterService.getByScReferenceCode("SC/1234/5");
