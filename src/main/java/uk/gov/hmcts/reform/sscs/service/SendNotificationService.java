@@ -387,6 +387,10 @@ public class SendNotificationService {
             return getDocumentForType(newSscsCaseData.getLatestDocumentForDocumentType(STATEMENT_OF_REASONS_GRANTED));
         } else if (SOR_REFUSED.equals(notificationEventType)) {
             return getDocumentForType(newSscsCaseData.getLatestDocumentForDocumentType(STATEMENT_OF_REASONS_REFUSED));
+        } else if (LIBERTY_TO_APPLY_GRANTED.equals(notificationEventType)) {
+            return getDocumentForType(newSscsCaseData.getLatestDocumentForDocumentType(DocumentType.LIBERTY_TO_APPLY_GRANTED));
+        } else if (LIBERTY_TO_APPLY_REFUSED.equals(notificationEventType)) {
+            return getDocumentForType(newSscsCaseData.getLatestDocumentForDocumentType(DocumentType.LIBERTY_TO_APPLY_REFUSED));
         }
 
         return null;
