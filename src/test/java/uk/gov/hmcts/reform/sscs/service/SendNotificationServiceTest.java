@@ -653,6 +653,14 @@ public class SendNotificationServiceTest {
                 .build());
 
         documents.add(SscsDocument.builder().value(
+                        SscsDocumentDetails.builder().documentType(DocumentType.STATEMENT_OF_REASONS.getValue())
+                                .documentLink(DocumentLink.builder().documentUrl("testUrl6").build())
+                                .documentDateAdded(LocalDate.now().minusDays(1).toString())
+                                .build())
+                .build());
+
+      
+        documents.add(SscsDocument.builder().value(
                         SscsDocumentDetails.builder().documentType(DocumentType.STATEMENT_OF_REASONS_GRANTED.getValue())
                                 .documentLink(DocumentLink.builder().documentUrl("testUrl7").build())
                                 .documentDateAdded(LocalDate.now().minusDays(1).toString())
@@ -678,6 +686,20 @@ public class SendNotificationServiceTest {
                         .documentLink(DocumentLink.builder().documentUrl("testUrl20").build())
                         .documentDateAdded(LocalDate.now().minusDays(1).toString())
                         .build())
+                .build());
+
+        documents.add(SscsDocument.builder().value(
+                        SscsDocumentDetails.builder().documentType(DocumentType.LIBERTY_TO_APPLY_GRANTED.getValue())
+                                .documentLink(DocumentLink.builder().documentUrl("testUrl7").build())
+                                .documentDateAdded(LocalDate.now().minusDays(1).toString())
+                                .build())
+                .build());
+
+        documents.add(SscsDocument.builder().value(
+                        SscsDocumentDetails.builder().documentType(DocumentType.LIBERTY_TO_APPLY_REFUSED.getValue())
+                                .documentLink(DocumentLink.builder().documentUrl("testUrl8").build())
+                                .documentDateAdded(LocalDate.now().minusDays(1).toString())
+                                .build())
                 .build());
 
         List<SscsWelshDocument> welshDocuments = new ArrayList<>();
