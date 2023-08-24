@@ -1921,7 +1921,7 @@ public class PersonalisationTest {
                         response.getAppeal().getAppellant(), response.getAppeal().getAppellant().getAppointee()));
 
         assertThat(result)
-                .containsEntry(DECISION_DATE, date);
+                .containsEntry(DECISION_DATE_LITERAL, date);
     }
 
     @Test
@@ -1947,7 +1947,7 @@ public class PersonalisationTest {
                         response.getAppeal().getAppellant(), response.getAppeal().getAppellant().getAppointee()));
 
         assertThat(result)
-                .doesNotContainKey(DECISION_DATE);
+                .doesNotContainKey(DECISION_DATE_LITERAL);
     }
 
     @Test
