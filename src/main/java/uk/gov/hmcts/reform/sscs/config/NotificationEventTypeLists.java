@@ -31,8 +31,11 @@ public final class NotificationEventTypeLists {
         ISSUE_ADJOURNMENT_NOTICE_WELSH,
         ISSUE_FINAL_DECISION,
         ISSUE_FINAL_DECISION_WELSH,
+        LIBERTY_TO_APPLY_GRANTED,
+        LIBERTY_TO_APPLY_REFUSED,
         NON_COMPLIANT,
         DRAFT_TO_NON_COMPLIANT,
+        POST_HEARING_APP_SOR_WRITTEN,
         POSTPONEMENT,
         REISSUE_DOCUMENT,
         REQUEST_FOR_INFORMATION,
@@ -64,8 +67,10 @@ public final class NotificationEventTypeLists {
     // move to EVENTS_TO_HANDLE when feature.postHearingsB.enabled removed
     public static final Set<NotificationEventType> EVENTS_TO_HANDLE_POSTHEARINGS_B = EnumSet.of(
         LIBERTY_TO_APPLY_REQUEST,
-        REVIEW_AND_SET_ASIDE
-        // TODO put permission to appeal, share with upper Tribunal and remit to lower tribunal events here when setting notification
+        REVIEW_AND_SET_ASIDE,
+        PERMISSION_TO_APPEAL_REQUEST,
+        BUNDLE_CREATED_FOR_UPPER_TRIBUNAL,
+        LIBERTY_TO_APPLY_REQUEST
     );
 
     public static final Set<NotificationEventType> EVENT_TYPES_FOR_DORMANT_CASES = EnumSet.of(
@@ -73,6 +78,7 @@ public final class NotificationEventTypeLists {
         APPEAL_DORMANT,
         APPEAL_LAPSED,
         APPEAL_WITHDRAWN,
+        BUNDLE_CREATED_FOR_UPPER_TRIBUNAL,
         DECISION_ISSUED,
         DECISION_ISSUED_WELSH,
         DIRECTION_ISSUED,
@@ -81,13 +87,16 @@ public final class NotificationEventTypeLists {
         HMCTS_APPEAL_LAPSED,
         ISSUE_FINAL_DECISION,
         ISSUE_FINAL_DECISION_WELSH,
+        POST_HEARING_APP_SOR_WRITTEN,
         PROVIDE_APPOINTEE_DETAILS,
         REISSUE_DOCUMENT,
         REVIEW_AND_SET_ASIDE,
         SOR_REFUSED,
         STRUCK_OUT,
-        SET_ASIDE_REFUSED
-    );
+        LIBERTY_TO_APPLY_REFUSED,
+        SET_ASIDE_REFUSED,
+        SOR_REFUSED
+        );
 
     public static final Set<NotificationEventType> EVENT_TYPES_NOT_FOR_WELSH_CASES = EnumSet.of(
         ACTION_POSTPONEMENT_REQUEST,
@@ -106,6 +115,7 @@ public final class NotificationEventTypeLists {
         APPEAL_LAPSED,
         APPEAL_RECEIVED,
         APPEAL_WITHDRAWN,
+        BUNDLE_CREATED_FOR_UPPER_TRIBUNAL,
         CORRECTION_REQUEST,
         DEATH_OF_APPELLANT,
         DECISION_ISSUED,
@@ -121,9 +131,13 @@ public final class NotificationEventTypeLists {
         ISSUE_ADJOURNMENT_NOTICE_WELSH,
         ISSUE_FINAL_DECISION,
         ISSUE_FINAL_DECISION_WELSH,
+        LIBERTY_TO_APPLY_GRANTED,
+        LIBERTY_TO_APPLY_REFUSED,
         JOINT_PARTY_ADDED,
         LIBERTY_TO_APPLY_REQUEST,
         NON_COMPLIANT,
+        PERMISSION_TO_APPEAL_REQUEST,
+        POST_HEARING_APP_SOR_WRITTEN,
         POSTPONEMENT,
         PROCESS_AUDIO_VIDEO,
         PROCESS_AUDIO_VIDEO_WELSH,
@@ -153,6 +167,9 @@ public final class NotificationEventTypeLists {
         ISSUE_ADJOURNMENT_NOTICE_WELSH,
         ISSUE_FINAL_DECISION,
         ISSUE_FINAL_DECISION_WELSH,
+        POST_HEARING_APP_SOR_WRITTEN,
+        LIBERTY_TO_APPLY_GRANTED,
+        LIBERTY_TO_APPLY_REFUSED,
         PROCESS_AUDIO_VIDEO,
         PROCESS_AUDIO_VIDEO_WELSH,
         SET_ASIDE_GRANTED,
@@ -182,6 +199,7 @@ public final class NotificationEventTypeLists {
         APPEAL_LAPSED,
         APPEAL_RECEIVED,
         APPEAL_WITHDRAWN,
+        BUNDLE_CREATED_FOR_UPPER_TRIBUNAL,
         CORRECTION_REQUEST,
         DEATH_OF_APPELLANT,
         DECISION_ISSUED,
@@ -196,9 +214,13 @@ public final class NotificationEventTypeLists {
         ISSUE_ADJOURNMENT_NOTICE_WELSH,
         ISSUE_FINAL_DECISION,
         ISSUE_FINAL_DECISION_WELSH,
+        LIBERTY_TO_APPLY_GRANTED,
+        LIBERTY_TO_APPLY_REFUSED,
         JOINT_PARTY_ADDED,
         LIBERTY_TO_APPLY_REQUEST,
         NON_COMPLIANT,
+        PERMISSION_TO_APPEAL_REQUEST,
+        POST_HEARING_APP_SOR_WRITTEN,
         POSTPONEMENT,
         PROCESS_AUDIO_VIDEO,
         PROCESS_AUDIO_VIDEO_WELSH,
@@ -238,6 +260,7 @@ public final class NotificationEventTypeLists {
         APPEAL_DORMANT,
         APPEAL_LAPSED,
         APPEAL_WITHDRAWN,
+        BUNDLE_CREATED_FOR_UPPER_TRIBUNAL,
         CORRECTION_REQUEST,
         DIRECTION_ISSUED,
         DIRECTION_ISSUED_WELSH,
@@ -248,7 +271,11 @@ public final class NotificationEventTypeLists {
         HEARING_REMINDER,
         ISSUE_ADJOURNMENT_NOTICE,
         ISSUE_ADJOURNMENT_NOTICE_WELSH,
+        POST_HEARING_APP_SOR_WRITTEN,
         LIBERTY_TO_APPLY_REQUEST,
+        PERMISSION_TO_APPEAL_REQUEST,
+        LIBERTY_TO_APPLY_GRANTED,
+        LIBERTY_TO_APPLY_REFUSED,
         POSTPONEMENT,
         PROCESS_AUDIO_VIDEO,
         PROCESS_AUDIO_VIDEO_WELSH,
@@ -272,9 +299,12 @@ public final class NotificationEventTypeLists {
         HMCTS_APPEAL_LAPSED,
         ISSUE_FINAL_DECISION,
         ISSUE_FINAL_DECISION_WELSH,
+        LIBERTY_TO_APPLY_GRANTED,
+        LIBERTY_TO_APPLY_REFUSED,
         JOINT_PARTY_ADDED,
         JUDGE_DECISION_APPEAL_TO_PROCEED,
         NON_COMPLIANT,
+        POST_HEARING_APP_SOR_WRITTEN,
         PROVIDE_APPOINTEE_DETAILS,
         RESEND_APPEAL_CREATED,
         SET_ASIDE_GRANTED,
@@ -298,8 +328,11 @@ public final class NotificationEventTypeLists {
         HMCTS_APPEAL_LAPSED,
         ISSUE_FINAL_DECISION,
         ISSUE_FINAL_DECISION_WELSH,
+        LIBERTY_TO_APPLY_GRANTED,
+        LIBERTY_TO_APPLY_REFUSED,
         JUDGE_DECISION_APPEAL_TO_PROCEED,
         NON_COMPLIANT,
+        POST_HEARING_APP_SOR_WRITTEN,
         PROVIDE_APPOINTEE_DETAILS,
         RESEND_APPEAL_CREATED,
         SET_ASIDE_GRANTED,
@@ -314,8 +347,11 @@ public final class NotificationEventTypeLists {
 
     public static final Set<NotificationEventType> EVENTS_VALID_FOR_JOINT_PARTY = EnumSet.of(
         JOINT_PARTY_ADDED,
+        POST_HEARING_APP_SOR_WRITTEN,
         SET_ASIDE_GRANTED,
         SET_ASIDE_REFUSED,
+        LIBERTY_TO_APPLY_GRANTED,
+        LIBERTY_TO_APPLY_REFUSED,
         SOR_EXTEND_TIME,
         SOR_REFUSED
     );
@@ -328,7 +364,10 @@ public final class NotificationEventTypeLists {
         HMCTS_APPEAL_LAPSED,
         ISSUE_FINAL_DECISION,
         ISSUE_FINAL_DECISION_WELSH,
+        LIBERTY_TO_APPLY_GRANTED,
+        LIBERTY_TO_APPLY_REFUSED,
         NON_COMPLIANT,
+        POST_HEARING_APP_SOR_WRITTEN,
         REQUEST_FOR_INFORMATION,
         SET_ASIDE_GRANTED,
         SET_ASIDE_REFUSED,
@@ -409,6 +448,7 @@ public final class NotificationEventTypeLists {
     public static final Set<NotificationEventType> EVENTS_FOR_ACTION_FURTHER_EVIDENCE = EnumSet.of(
         CORRECTION_REQUEST,
         LIBERTY_TO_APPLY_REQUEST,
+        PERMISSION_TO_APPEAL_REQUEST,
         SET_ASIDE_REQUEST,
         STATEMENT_OF_REASONS_REQUEST
     );
@@ -439,7 +479,10 @@ public final class NotificationEventTypeLists {
         ISSUE_ADJOURNMENT_NOTICE_WELSH,
         ISSUE_FINAL_DECISION,
         ISSUE_FINAL_DECISION_WELSH,
+        LIBERTY_TO_APPLY_GRANTED,
+        LIBERTY_TO_APPLY_REFUSED,
         NON_COMPLIANT,
+        POST_HEARING_APP_SOR_WRITTEN,
         POSTPONEMENT,
         PROCESS_AUDIO_VIDEO,
         PROCESS_AUDIO_VIDEO_WELSH,

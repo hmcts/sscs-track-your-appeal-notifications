@@ -92,6 +92,7 @@ import uk.gov.hmcts.reform.sscs.domain.notify.Template;
 import uk.gov.hmcts.reform.sscs.exception.BenefitMappingException;
 import uk.gov.hmcts.reform.sscs.extractor.HearingContactDateExtractor;
 import uk.gov.hmcts.reform.sscs.factory.NotificationWrapper;
+import uk.gov.hmcts.reform.sscs.service.LetterUtils;
 import uk.gov.hmcts.reform.sscs.service.MessageAuthenticationServiceImpl;
 import uk.gov.hmcts.reform.sscs.service.RegionalProcessingCenterService;
 import uk.gov.hmcts.reform.sscs.service.SendNotificationHelper;
@@ -324,7 +325,12 @@ public class Personalisation<E extends NotificationWrapper> {
             setDecisionDate(personalisation, ccdResponse);
         }
 
+        if (BUNDLE_CREATED_FOR_UPPER_TRIBUNAL.equals(notificationEventType)) {
+            setDecisionDate(personalisation, ccdResponse);
+        }
+      
         personalisation.put(IS_GRANTED, isGranted(ccdResponse.getDwpState()));
+        personalisation.put(SENDER_NAME, LetterUtils.getNameForSender(ccdResponse));
 
         return personalisation;
     }
@@ -338,7 +344,7 @@ public class Personalisation<E extends NotificationWrapper> {
                 .filter(Personalisation::hasFinalDecisionNoticeDocumentType)
                 .max(Comparator.comparing(d -> LocalDate.parse(d.getValue().getDocumentDateAdded())))
                 .ifPresent(document -> {
-                    personalisation.put(DECISION_DATE, document.getValue().getDocumentDateAdded());
+                    personalisation.put(DECISION_DATE_LITERAL, document.getValue().getDocumentDateAdded());
                 });
     }
 
@@ -347,7 +353,8 @@ public class Personalisation<E extends NotificationWrapper> {
     }
   
     private static boolean isGranted(DwpState dwpState) {
-        return DwpState.SET_ASIDE_GRANTED.equals(dwpState);
+        return DwpState.SET_ASIDE_GRANTED.equals(dwpState)
+            || DwpState.LIBERTY_TO_APPLY_GRANTED.equals(dwpState);
     }
 
     private static boolean hasBenefitType(SscsCaseData ccdResponse) {
