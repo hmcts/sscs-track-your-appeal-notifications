@@ -1797,6 +1797,7 @@ public class PersonalisationTest {
                 .sscsDocument(List.of(sscsDocument1, sscsDocument2))
                 .originalSender(originalSender)
                 .appeal(appeal)
+                .dwpState(DwpState.PERMISSION_TO_APPEAL_GRANTED)
                 .build();
 
         SubscriptionWithType subscription = new SubscriptionWithType(subscriptions.getAppellantSubscription(), APPELLANT,

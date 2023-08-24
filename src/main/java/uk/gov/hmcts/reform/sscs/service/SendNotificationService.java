@@ -8,6 +8,8 @@ import static uk.gov.hmcts.reform.sscs.config.PersonalisationMappingConstants.*;
 import static uk.gov.hmcts.reform.sscs.domain.notify.NotificationEventType.*;
 import static uk.gov.hmcts.reform.sscs.domain.notify.NotificationEventType.LIBERTY_TO_APPLY_GRANTED;
 import static uk.gov.hmcts.reform.sscs.domain.notify.NotificationEventType.LIBERTY_TO_APPLY_REFUSED;
+import static uk.gov.hmcts.reform.sscs.domain.notify.NotificationEventType.PERMISSION_TO_APPEAL_GRANTED;
+import static uk.gov.hmcts.reform.sscs.domain.notify.NotificationEventType.PERMISSION_TO_APPEAL_REFUSED;
 import static uk.gov.hmcts.reform.sscs.domain.notify.NotificationEventType.SET_ASIDE_GRANTED;
 import static uk.gov.hmcts.reform.sscs.domain.notify.NotificationEventType.SET_ASIDE_REFUSED;
 import static uk.gov.hmcts.reform.sscs.service.LetterUtils.addBlankPageAtTheEndIfOddPage;
@@ -381,7 +383,7 @@ public class SendNotificationService {
         } else if (PERMISSION_TO_APPEAL_REFUSED.equals(notificationEventType)) {
             return getDocumentForType(newSscsCaseData.getLatestDocumentForDocumentType(DocumentType.PERMISSION_TO_APPEAL_REFUSED));
         } else if (POST_HEARING_APP_SOR_WRITTEN.equals(notificationEventType)) {
-            return getDocumentForType(newSscsCaseData.getLatestDocumentForDocumentType(STATEMENT_OF_REASONS));
+            return getDocumentForType(newSscsCaseData.getLatestDocumentForDocumentType(DocumentType.STATEMENT_OF_REASONS));
         } else if (SET_ASIDE_GRANTED.equals(notificationEventType)) {
             return getDocumentForType(newSscsCaseData.getLatestDocumentForDocumentType(DocumentType.SET_ASIDE_GRANTED));
         } else if (SET_ASIDE_REFUSED.equals(notificationEventType)) {
