@@ -165,6 +165,10 @@ notification:
       docmosisId: TB-SCS-LET-ENG-Permission-to-Appeal-Granted-Refused.docx
     permissionToAppealGranted:
       docmosisId: TB-SCS-LET-ENG-Permission-to-Appeal-Granted-Refused.docx
+    permissionToAppealRequest:
+      docmosisId: TB-SCS-LET-ENG-Action-Further-Evidence.docx
+    bundleCreatedForUpperTribunal:
+      docmosisId: TB-SCS-LET-ENG-Share-with-Upper-Tribunal.docx
     jointPartyAdded:
       appellant:
         docmosisId: TB-SCS-GNO-ENG-00579.docx
@@ -534,6 +538,12 @@ notification:
     updateOtherPartyData:
       other_party:
         docmosisId: TB-SCS-GNO-ENG-00784.docx
+    postHearingAppSorWritten:
+      docmosisId: TB-SCS-LET-ENG-Statement-Of-Reasons-Outcome.docx
+    libertyToApplyGranted:
+      docmosisId: TB-SCS-LET-ENG-Liberty-to-Apply-Granted-Refused.docx
+    libertyToApplyRefused:
+      docmosisId: TB-SCS-LET-ENG-Liberty-to-Apply-Granted-Refused.docx
     sORExtendTime:
       docmosisId: TB-SCS-LET-ENG-Statement-Of-Reasons-Outcome.docx
     sORRefused:
@@ -763,6 +773,10 @@ notification:
       docmosisId: TB-SCS-LET-WEL-Permission-to-Appeal-Granted-Refused.docx
     permissionToAppealGranted:
       docmosisId: TB-SCS-LET-WEL-Permission-to-Appeal-Granted-Refused.docx
+    permissionToAppealRequest:
+      docmosisId: TB-SCS-LET-WEL-Action-Further-Evidence.docx
+    bundleCreatedForUpperTribunal:
+      docmosisId: TB-SCS-LET-WEL-Share-with-Upper-Tribunal.docx
     jointPartyAdded:
       appellant:
         docmosisId: TB-SCS-GNO-WEL-00629.docx
@@ -1110,6 +1124,12 @@ notification:
     updateOtherPartyData:
       other_party:
         docmosisId: TB-SCS-GNO-WEL-00787.docx
+    postHearingAppSorWritten:
+      docmosisId: TB-SCS-LET-WEL-Statement-Of-Reasons-Outcome.docx
+    libertyToApplyGranted:
+      docmosisId: TB-SCS-LET-WEL-Liberty-to-Apply-Granted-Refused.docx
+    libertyToApplyRefused:
+      docmosisId: TB-SCS-LET-WEL-Liberty-to-Apply-Granted-Refused.docx
     sORExtendTime:
       docmosisId: TB-SCS-LET-WEL-Statement-Of-Reasons-Outcome.docx
     sORRefused:
@@ -1393,6 +1413,7 @@ pdf-service:
       decisionIssued: 'TB-SCS-GNO-ENG-00012.docx'
       issueFinalDecision: 'TB-SCS-GNO-ENG-00012.docx'
       issueAdjournmentNotice: 'TB-SCS-GNO-ENG-00012.docx'
+      postHearingAppSorWritten: 'TB-SCS-GNO-ENG-00012.docx'
       validAppealCreated: 'TB-SCS-GNO-ENG-00012.docx'
       dwpUploadResponse: 'TB-SCS-GNO-ENG-00012.docx'
       resendAppealCreated: 'TB-SCS-GNO-ENG-00012.docx'
@@ -1404,11 +1425,14 @@ pdf-service:
       setAsideRefused: 'TB-SCS-GNO-ENG-00012.docx'
       updateOtherPartyData: 'TB-SCS-GNO-ENG-00012.docx'
       correctionRequest: 'TB-SCS-GNO-ENG-00012.docx'
+      permissionToAppealRequest: 'TB-SCS-GNO-ENG-00012.docx'
       sORRequest: 'TB-SCS-GNO-ENG-00012.docx'
       setAsideRequest: 'TB-SCS-GNO-ENG-00012.docx'
       libertyToApplyRequest: 'TB-SCS-GNO-ENG-00012.docx'
       permissionToAppealRefused: 'TB-SCS-GNO-ENG-00012.docx'
       permissionToAppealGranted: 'TB-SCS-GNO-ENG-00012.docx'
+      libertyToApplyGranted: 'TB-SCS-GNO-ENG-00012.docx'
+      libertyToApplyRefused: 'TB-SCS-GNO-ENG-00012.docx'
     welsh:
       appealReceived: 'TB-SCS-GNO-WEL-00479.docx'
       directionIssued: 'TB-SCS-GNO-WEL-00479.docx'
@@ -1419,6 +1443,7 @@ pdf-service:
       issueFinalDecision: 'TB-SCS-GNO-ENG-00012.docx'
       issueFinalDecisionWelsh: 'TB-SCS-GNO-WEL-00733.docx'
       issueAdjournmentNoticeWelsh: 'TB-SCS-GNO-WEL-00479.docx'
+      postHearingAppSorWritten: 'TB-SCS-GNO-WEL-00479.docx'
       validAppealCreated: 'TB-SCS-GNO-WEL-00479.docx'
       dwpUploadResponse: 'TB-SCS-GNO-WEL-00479.docx'
       resendAppealCreated: 'TB-SCS-GNO-WEL-00479.docx'
@@ -1430,11 +1455,14 @@ pdf-service:
       setAsideGranted: 'TB-SCS-GNO-WEL-00479.docx'
       setAsideRefused: 'TB-SCS-GNO-WEL-00479.docx'
       correctionRequest: 'TB-SCS-GNO-WEL-00479.docx'
+      permissionToAppealRequest: 'TB-SCS-GNO-WEL-00479.docx'
       sORRequest: 'TB-SCS-GNO-WEL-00479.docx'
       setAsideRequest: 'TB-SCS-GNO-WEL-00479.docx'
       libertyToApplyRequest: 'TB-SCS-GNO-WEL-00479.docx'
       permissionToAppealRefused: 'TB-SCS-GNO-WEL-00479.docx'
       permissionToAppealGranted: 'TB-SCS-GNO-WEL-00479.docx'
+      libertyToApplyGranted: 'TB-SCS-GNO-WEL-00479.docx'
+      libertyToApplyRefused: 'TB-SCS-GNO-WEL-00479.docx'
 
 docmosis:
   accessKey:
