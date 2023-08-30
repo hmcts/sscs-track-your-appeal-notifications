@@ -196,13 +196,15 @@ dependencyManagement {
         }
 
         // resolves: CVE-2019-10101, CVE-2019-10102, CVE-2019-10103
-        dependencySet(group: 'org.jetbrains.kotlin', version: '1.8.20') {
+        dependencySet(group: 'org.jetbrains.kotlin', version: '1.8.22') {
             entry 'kotlin-stdlib'
             entry 'kotlin-stdlib-common'
+            entry 'kotlin-stdlib-jdk7'
+            entry 'kotlin-stdlib-jdk8'
         }
 
         //CVE-2021-22112
-        dependencySet(group: 'org.springframework.security', version: '5.5.3') {
+        dependencySet(group: 'org.springframework.security', version: '5.5.8') {
             entry 'spring-security-crypto'
         }
 
@@ -239,7 +241,7 @@ dependencyManagement {
             entry 'commons-compress'
         }
 
-        dependencySet(group: 'org.apache.tomcat.embed', version: '9.0.73') {
+        dependencySet(group: 'org.apache.tomcat.embed', version: '9.0.75') {
             entry 'tomcat-embed-core'
             entry 'tomcat-embed-websocket'
         }

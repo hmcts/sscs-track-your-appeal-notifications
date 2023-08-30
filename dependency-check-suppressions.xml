@@ -47,11 +47,5 @@
    ]]></notes>
         <cve>CVE-2023-20873</cve>
     </suppress>
-    <suppress until = "2023-09-01">
-        <cve>CVE-2022-22978</cve>
-        <cve>CVE-2023-28709</cve>
-        <cve>CVE-2022-22976</cve>
-        <cve>CVE-2022-24329</cve>
-    </suppress>
 
 </suppressions>
