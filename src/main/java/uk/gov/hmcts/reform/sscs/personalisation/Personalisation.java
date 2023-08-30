@@ -56,6 +56,7 @@ import static uk.gov.hmcts.reform.sscs.domain.notify.NotificationEventType.DIREC
 import static uk.gov.hmcts.reform.sscs.domain.notify.NotificationEventType.DIRECTION_ISSUED_WELSH;
 import static uk.gov.hmcts.reform.sscs.domain.notify.NotificationEventType.EVIDENCE_RECEIVED;
 import static uk.gov.hmcts.reform.sscs.domain.notify.NotificationEventType.JUDGE_DECISION_APPEAL_TO_PROCEED;
+import static uk.gov.hmcts.reform.sscs.domain.notify.NotificationEventType.PERMISSION_TO_APPEAL_REFUSED;
 import static uk.gov.hmcts.reform.sscs.domain.notify.NotificationEventType.SUBSCRIPTION_CREATED;
 import static uk.gov.hmcts.reform.sscs.domain.notify.NotificationEventType.TCW_DECISION_APPEAL_TO_PROCEED;
 import static uk.gov.hmcts.reform.sscs.personalisation.SyaAppealCreatedAndReceivedPersonalisation.TWO_NEW_LINES;
@@ -328,11 +329,19 @@ public class Personalisation<E extends NotificationWrapper> {
         personalisation.put(PARTY_TYPE, subscriptionWithType.getParty().getClass().getSimpleName());
         personalisation.put(ENTITY_TYPE, subscriptionWithType.getEntity().getClass().getSimpleName());
 
+        boolean isGranted = isGranted(ccdResponse.getDwpState());
+      
+        if (PERMISSION_TO_APPEAL_REFUSED.equals(notificationEventType) || isGranted) {
+            personalisation.put(IS_GRANTED, isGranted);
+            personalisation.put(SENDER_NAME, LetterUtils.getNameForSender(ccdResponse));
+            setDecisionDate(personalisation, ccdResponse);
+        }
+
         if (BUNDLE_CREATED_FOR_UPPER_TRIBUNAL.equals(notificationEventType)) {
             setDecisionDate(personalisation, ccdResponse);
         }
       
-        personalisation.put(IS_GRANTED, isGranted(ccdResponse.getDwpState()));
+        personalisation.put(IS_GRANTED, isGranted);
         personalisation.put(SENDER_NAME, LetterUtils.getNameForSender(ccdResponse));
 
         return personalisation;
@@ -357,7 +366,8 @@ public class Personalisation<E extends NotificationWrapper> {
 
     private static boolean isGranted(DwpState dwpState) {
         return DwpState.SET_ASIDE_GRANTED.equals(dwpState)
-            || DwpState.LIBERTY_TO_APPLY_GRANTED.equals(dwpState);
+            || DwpState.LIBERTY_TO_APPLY_GRANTED.equals(dwpState)
+            || DwpState.PERMISSION_TO_APPEAL_GRANTED.equals(dwpState);
     }
 
     private static boolean hasBenefitType(SscsCaseData ccdResponse) {

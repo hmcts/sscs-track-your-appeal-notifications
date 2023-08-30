@@ -35,6 +35,8 @@ public final class NotificationEventTypeLists {
         LIBERTY_TO_APPLY_REFUSED,
         NON_COMPLIANT,
         DRAFT_TO_NON_COMPLIANT,
+        PERMISSION_TO_APPEAL_GRANTED,
+        PERMISSION_TO_APPEAL_REFUSED,
         POST_HEARING_APP_SOR_WRITTEN,
         POSTPONEMENT,
         REISSUE_DOCUMENT,
@@ -66,10 +68,12 @@ public final class NotificationEventTypeLists {
 
     // move to EVENTS_TO_HANDLE when feature.postHearingsB.enabled removed
     public static final Set<NotificationEventType> EVENTS_TO_HANDLE_POSTHEARINGS_B = EnumSet.of(
+        LIBERTY_TO_APPLY_REQUEST,
+        PERMISSION_TO_APPEAL_GRANTED,
+        PERMISSION_TO_APPEAL_REFUSED,
         PERMISSION_TO_APPEAL_REQUEST,
         BUNDLE_CREATED_FOR_UPPER_TRIBUNAL,
         LIBERTY_TO_APPLY_REQUEST
-        // TODO put share with upper Tribunal and remit to lower tribunal events here when setting notification
     );
 
     public static final Set<NotificationEventType> EVENT_TYPES_FOR_DORMANT_CASES = EnumSet.of(
@@ -86,6 +90,8 @@ public final class NotificationEventTypeLists {
         HMCTS_APPEAL_LAPSED,
         ISSUE_FINAL_DECISION,
         ISSUE_FINAL_DECISION_WELSH,
+        PERMISSION_TO_APPEAL_GRANTED,
+        PERMISSION_TO_APPEAL_REFUSED,
         POST_HEARING_APP_SOR_WRITTEN,
         PROVIDE_APPOINTEE_DETAILS,
         REISSUE_DOCUMENT,
@@ -133,6 +139,8 @@ public final class NotificationEventTypeLists {
         JOINT_PARTY_ADDED,
         LIBERTY_TO_APPLY_REQUEST,
         NON_COMPLIANT,
+        PERMISSION_TO_APPEAL_GRANTED,
+        PERMISSION_TO_APPEAL_REFUSED,
         PERMISSION_TO_APPEAL_REQUEST,
         POST_HEARING_APP_SOR_WRITTEN,
         POSTPONEMENT,
@@ -215,6 +223,8 @@ public final class NotificationEventTypeLists {
         JOINT_PARTY_ADDED,
         LIBERTY_TO_APPLY_REQUEST,
         NON_COMPLIANT,
+        PERMISSION_TO_APPEAL_GRANTED,
+        PERMISSION_TO_APPEAL_REFUSED,
         PERMISSION_TO_APPEAL_REQUEST,
         POST_HEARING_APP_SOR_WRITTEN,
         POSTPONEMENT,
@@ -268,6 +278,8 @@ public final class NotificationEventTypeLists {
         ISSUE_ADJOURNMENT_NOTICE_WELSH,
         POST_HEARING_APP_SOR_WRITTEN,
         LIBERTY_TO_APPLY_REQUEST,
+        PERMISSION_TO_APPEAL_GRANTED,
+        PERMISSION_TO_APPEAL_REFUSED,
         PERMISSION_TO_APPEAL_REQUEST,
         LIBERTY_TO_APPLY_GRANTED,
         LIBERTY_TO_APPLY_REFUSED,
