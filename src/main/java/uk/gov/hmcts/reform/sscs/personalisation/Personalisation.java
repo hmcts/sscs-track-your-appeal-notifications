@@ -321,6 +321,7 @@ public class Personalisation<E extends NotificationWrapper> {
         if (subscriptionWithType.getSubscriptionType() == REPRESENTATIVE) {
             personalisation.put(PersonalisationMappingConstants.REPRESENTATIVE, "Yes");
         }
+
         if (subscriptionWithType.getSubscriptionType() == JOINT_PARTY) {
             personalisation.put(PersonalisationMappingConstants.JOINT_PARTY, "Yes");
         }
