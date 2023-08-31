@@ -155,6 +155,10 @@ notification:
   english:
     correctionRequest:
       docmosisId: TB-SCS-LET-ENG-Action-Further-Evidence.docx
+    correctionGranted:
+      docmosisId: TB-SCS-LET-ENG-Correction-Granted-Refused.docx
+    correctionRefused:
+      docmosisId: TB-SCS-LET-ENG-Correction-Granted-Refused.docx
     setAsideRequest:
       docmosisId: TB-SCS-LET-ENG-Action-Further-Evidence.docx
     libertyToApplyRequest:
@@ -356,10 +360,6 @@ notification:
         docmosisId: TB-SCS-LET-ENG-Appeal-Lodged-Appellant.docx
     struckOut:
       docmosisId: TB-SCS-GNO-ENG-00466.docx
-    correctionGranted:
-      docmosisId: TB-SCS-LET-ENG-Correction-Granted-Refused.docx
-    correctionRefused:
-      docmosisId: TB-SCS-LET-ENG-Correction-Granted-Refused.docx
     processAudioVideo:
       docmosisId: TB-SCS-GNO-ENG-00677.docx
     setAsideGranted:
@@ -767,6 +767,10 @@ notification:
   welsh:
     correctionRequest:
       docmosisId: TB-SCS-LET-WEL-Action-Further-Evidence.docx
+    correctionGranted:
+      docmosisId: TB-SCS-LET-WEL-Correction-Granted-Refused.docx
+    correctionRefused:
+      docmosisId: TB-SCS-LET-WEL-Correction-Granted-Refused.docx
     setAsideRequest:
       docmosisId: TB-SCS-LET-WEL-Action-Further-Evidence.docx
     libertyToApplyRequest:
@@ -802,10 +806,6 @@ notification:
         smsId: 53369ca5-75a8-43a7-8e5e-4eda9df04001
         letterId: 95b0b0f8-fdf6-450f-b805-6aab46d63bf7
         docmosisId: TB-SCS-LET-WEL-Appeal-Lodged-Appellant.docx
-    correctionGranted:
-      docmosisId: TB-SCS-LET-WEL-Correction-Granted-Refused.docx
-    correctionRefused:
-      docmosisId: TB-SCS-LET-WEL-Correction-Granted-Refused.docx
     hearingAdjourned:
       appellant:
         emailId: 06c91850-a81f-44bb-9577-1bc528913850
