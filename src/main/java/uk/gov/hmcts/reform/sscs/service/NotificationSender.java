@@ -23,6 +23,9 @@ import uk.gov.service.notify.SendEmailResponse;
 import uk.gov.service.notify.SendLetterResponse;
 import uk.gov.service.notify.SendSmsResponse;
 
+import static uk.gov.hmcts.reform.sscs.domain.notify.NotificationEventType.CORRECTION_GRANTED;
+import static uk.gov.hmcts.reform.sscs.domain.notify.NotificationEventType.ISSUE_FINAL_DECISION;
+
 @Component
 @Slf4j
 public class NotificationSender {
@@ -200,14 +203,6 @@ public class NotificationSender {
             throw new NotificationClientException(e);
         }
         return sendLetterResponse;
-    }
-
-    public void saveLetter(byte[] pdfForLetter, String name, SscsCaseData caseData, NotificationEventType notificationEventType) {
-        if (pdfForLetter != null) {
-            final Correspondence correspondence = getLetterCorrespondence(notificationEventType, name);
-            saveCorrespondenceAsyncService.saveLetter(correspondence, pdfForLetter, caseData.getCcdCaseId());
-            log.info("Letter Notification saved for case id : {}", caseData.getCcdCaseId());
-        }
     }
 
     public void saveLettersToReasonableAdjustment(byte[] pdfForLetter, NotificationEventType notificationEventType, String name, String ccdCaseId, SubscriptionType subscriptionType) {
