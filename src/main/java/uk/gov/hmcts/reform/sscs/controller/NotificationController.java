@@ -1,7 +1,7 @@
 package uk.gov.hmcts.reform.sscs.controller;
 
 import static org.springframework.util.MimeTypeUtils.APPLICATION_JSON_VALUE;
-import static uk.gov.hmcts.reform.sscs.domain.notify.NotificationEventType.getNotificationByCcdEvent;
+import static uk.gov.hmcts.reform.sscs.domain.notify.NotificationEventType.*;
 
 import java.time.LocalDateTime;
 import lombok.extern.slf4j.Slf4j;
@@ -13,6 +13,7 @@ import org.springframework.web.bind.annotation.RestController;
 import uk.gov.hmcts.reform.sscs.ccd.callback.Callback;
 import uk.gov.hmcts.reform.sscs.ccd.deserialisation.SscsCaseCallbackDeserializer;
 import uk.gov.hmcts.reform.sscs.ccd.domain.CaseDetails;
+import uk.gov.hmcts.reform.sscs.ccd.domain.DwpState;
 import uk.gov.hmcts.reform.sscs.ccd.domain.SscsCaseData;
 import uk.gov.hmcts.reform.sscs.ccd.domain.State;
 import uk.gov.hmcts.reform.sscs.ccd.service.CcdService;
@@ -74,6 +75,12 @@ public class NotificationController {
     }
 
     private SscsCaseDataWrapper buildSscsCaseDataWrapper(SscsCaseData caseData, SscsCaseData caseDataBefore, NotificationEventType event, LocalDateTime createdDate, State state) {
+        if (ISSUE_FINAL_DECISION.equals(event) && DwpState.CORRECTION_GRANTED.equals(caseData.getDwpState())) {
+            event = CORRECTION_GRANTED;
+
+            log.info("Setting event to {}", CORRECTION_GRANTED.getEvent().name());
+        }
+
         return SscsCaseDataWrapper.builder()
                 .newSscsCaseData(caseData)
                 .oldSscsCaseData(caseDataBefore)

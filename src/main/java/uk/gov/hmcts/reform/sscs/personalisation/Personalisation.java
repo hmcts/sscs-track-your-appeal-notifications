@@ -331,6 +331,8 @@ public class Personalisation<E extends NotificationWrapper> {
 
             if (nonNull(finalDecisionDate)) {
                 String formattedDate = finalDecisionDate.format(CC_DATE_FORMAT);
+
+                log.info("Setting final decision date from {} to {}", finalDecisionDate, formattedDate);
                 personalisation.put(FINAL_DECISION_DATE, formattedDate);
             }
         }

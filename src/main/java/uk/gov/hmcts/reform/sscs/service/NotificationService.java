@@ -88,10 +88,6 @@ public class NotificationService {
             return;
         }
 
-        if (DwpState.CORRECTION_GRANTED.equals(notificationWrapper.getNewSscsCaseData().getDwpState())) {
-            notificationWrapper.setNotificationType(CORRECTION_GRANTED);
-        }
-
         log.info("Notification event triggered {} for case id {}", notificationType.getId(), caseId);
 
         if (notificationType.isAllowOutOfHours() || !outOfHoursCalculator.isItOutOfHours()) {
