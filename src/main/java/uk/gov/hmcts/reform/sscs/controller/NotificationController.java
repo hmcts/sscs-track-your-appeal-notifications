@@ -75,12 +75,6 @@ public class NotificationController {
     }
 
     private SscsCaseDataWrapper buildSscsCaseDataWrapper(SscsCaseData caseData, SscsCaseData caseDataBefore, NotificationEventType event, LocalDateTime createdDate, State state) {
-        if (ISSUE_FINAL_DECISION.equals(event) && DwpState.CORRECTION_GRANTED.equals(caseData.getDwpState())) {
-            event = CORRECTION_GRANTED;
-
-            log.info("Setting event to {}", CORRECTION_GRANTED.getEvent().name());
-        }
-
         return SscsCaseDataWrapper.builder()
                 .newSscsCaseData(caseData)
                 .oldSscsCaseData(caseDataBefore)
