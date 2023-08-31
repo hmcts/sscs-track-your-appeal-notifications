@@ -3,7 +3,6 @@ package uk.gov.hmcts.reform.sscs.servicebus;
 import static java.lang.String.format;
 import static java.util.Objects.requireNonNull;
 import static uk.gov.hmcts.reform.sscs.domain.notify.NotificationEventType.*;
-import static uk.gov.hmcts.reform.sscs.domain.notify.NotificationEventType.CORRECTION_GRANTED;
 
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.context.annotation.Lazy;
@@ -15,7 +14,6 @@ import uk.gov.hmcts.reform.sscs.callback.CallbackDispatcher;
 import uk.gov.hmcts.reform.sscs.ccd.callback.Callback;
 import uk.gov.hmcts.reform.sscs.ccd.deserialisation.SscsCaseCallbackDeserializer;
 import uk.gov.hmcts.reform.sscs.ccd.domain.CaseDetails;
-import uk.gov.hmcts.reform.sscs.ccd.domain.DwpState;
 import uk.gov.hmcts.reform.sscs.ccd.domain.SscsCaseData;
 import uk.gov.hmcts.reform.sscs.ccd.domain.State;
 import uk.gov.hmcts.reform.sscs.domain.SscsCaseDataWrapper;
