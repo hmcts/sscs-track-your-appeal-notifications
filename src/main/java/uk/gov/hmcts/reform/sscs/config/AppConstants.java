@@ -24,7 +24,6 @@ public final class AppConstants {
     public static final String MAC_LITERAL = "mac";
     public static final String REP_SALUTATION = "Sir / Madam";
     public static final String RESPONSE_DATE_FORMAT = "d MMMM yyyy";
-    public static final String FINAL_DECISION_DATE_FORMAT = "dd-MM-yyyy";
     public static final String THE_STRING = "the ";
     public static final String THE_STRING_WELSH = "yr ";
     public static final String TOMORROW_STRING = "tomorrow";

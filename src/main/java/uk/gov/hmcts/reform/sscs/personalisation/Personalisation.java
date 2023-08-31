@@ -24,7 +24,6 @@ import static uk.gov.hmcts.reform.sscs.config.AppConstants.DWP_FIRST_TIER_AGENCY
 import static uk.gov.hmcts.reform.sscs.config.AppConstants.DWP_FIRST_TIER_AGENCY_GROUP_WELSH;
 import static uk.gov.hmcts.reform.sscs.config.AppConstants.DWP_FULL_NAME;
 import static uk.gov.hmcts.reform.sscs.config.AppConstants.DWP_FULL_NAME_WELSH;
-import static uk.gov.hmcts.reform.sscs.config.AppConstants.FINAL_DECISION_DATE_FORMAT;
 import static uk.gov.hmcts.reform.sscs.config.AppConstants.HEARING_TIME_FORMAT;
 import static uk.gov.hmcts.reform.sscs.config.AppConstants.HMRC_ACRONYM;
 import static uk.gov.hmcts.reform.sscs.config.AppConstants.HMRC_ACRONYM_WELSH;
@@ -51,17 +50,7 @@ import static uk.gov.hmcts.reform.sscs.config.SubscriptionType.APPOINTEE;
 import static uk.gov.hmcts.reform.sscs.config.SubscriptionType.JOINT_PARTY;
 import static uk.gov.hmcts.reform.sscs.config.SubscriptionType.OTHER_PARTY;
 import static uk.gov.hmcts.reform.sscs.config.SubscriptionType.REPRESENTATIVE;
-import static uk.gov.hmcts.reform.sscs.domain.notify.NotificationEventType.BUNDLE_CREATED_FOR_UPPER_TRIBUNAL;
-import static uk.gov.hmcts.reform.sscs.domain.notify.NotificationEventType.CASE_UPDATED;
-import static uk.gov.hmcts.reform.sscs.domain.notify.NotificationEventType.DIRECTION_ISSUED;
-import static uk.gov.hmcts.reform.sscs.domain.notify.NotificationEventType.DIRECTION_ISSUED_WELSH;
-import static uk.gov.hmcts.reform.sscs.domain.notify.NotificationEventType.EVIDENCE_RECEIVED;
-import static uk.gov.hmcts.reform.sscs.domain.notify.NotificationEventType.ISSUE_FINAL_DECISION;
-import static uk.gov.hmcts.reform.sscs.domain.notify.NotificationEventType.ISSUE_FINAL_DECISION_WELSH;
-import static uk.gov.hmcts.reform.sscs.domain.notify.NotificationEventType.JUDGE_DECISION_APPEAL_TO_PROCEED;
-import static uk.gov.hmcts.reform.sscs.domain.notify.NotificationEventType.PERMISSION_TO_APPEAL_REFUSED;
-import static uk.gov.hmcts.reform.sscs.domain.notify.NotificationEventType.SUBSCRIPTION_CREATED;
-import static uk.gov.hmcts.reform.sscs.domain.notify.NotificationEventType.TCW_DECISION_APPEAL_TO_PROCEED;
+import static uk.gov.hmcts.reform.sscs.domain.notify.NotificationEventType.*;
 import static uk.gov.hmcts.reform.sscs.personalisation.SyaAppealCreatedAndReceivedPersonalisation.TWO_NEW_LINES;
 import static uk.gov.hmcts.reform.sscs.personalisation.SyaAppealCreatedAndReceivedPersonalisation.getOptionalField;
 import static uk.gov.hmcts.reform.sscs.service.LetterUtils.getNameForOtherParty;
@@ -341,7 +330,7 @@ public class Personalisation<E extends NotificationWrapper> {
             LocalDate finalDecisionDate = ccdResponse.getSscsFinalDecisionCaseData().getFinalDecisionIssuedDate();
 
             if (nonNull(finalDecisionDate)) {
-                String formattedDate = finalDecisionDate.format(DateTimeFormatter.ofPattern(FINAL_DECISION_DATE_FORMAT));
+                String formattedDate = finalDecisionDate.format(CC_DATE_FORMAT);
                 personalisation.put(FINAL_DECISION_DATE, formattedDate);
             }
         }
@@ -707,7 +696,9 @@ public class Personalisation<E extends NotificationWrapper> {
     }
 
     private static boolean isCorrectionState(NotificationEventType notificationEventType, DwpState dwpState) {
-        return (ISSUE_FINAL_DECISION.equals(notificationEventType) || ISSUE_FINAL_DECISION_WELSH.equals(notificationEventType))
+        return (ISSUE_FINAL_DECISION.equals(notificationEventType)
+                || ISSUE_FINAL_DECISION_WELSH.equals(notificationEventType)
+                || CORRECTION_GRANTED.equals(notificationEventType))
                 && (DwpState.CORRECTION_GRANTED.equals(dwpState) || DwpState.CORRECTION_REFUSED.equals(dwpState));
     }
 

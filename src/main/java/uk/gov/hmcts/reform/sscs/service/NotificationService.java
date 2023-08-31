@@ -88,6 +88,10 @@ public class NotificationService {
             return;
         }
 
+        if (DwpState.CORRECTION_GRANTED.equals(notificationWrapper.getNewSscsCaseData().getDwpState())) {
+            notificationWrapper.setNotificationType(CORRECTION_GRANTED);
+        }
+
         log.info("Notification event triggered {} for case id {}", notificationType.getId(), caseId);
 
         if (notificationType.isAllowOutOfHours() || !outOfHoursCalculator.isItOutOfHours()) {
@@ -170,12 +174,7 @@ public class NotificationService {
         if (REISSUE_DOCUMENT.equals(wrapper.getNotificationType()) && null != wrapper.getNewSscsCaseData().getReissueArtifactUi().getReissueFurtherEvidenceDocument()) {
             String code = wrapper.getNewSscsCaseData().getReissueArtifactUi().getReissueFurtherEvidenceDocument().getValue().getCode();
             if (code.equals(EventType.ISSUE_FINAL_DECISION.getCcdType())) {
-                if (DwpState.CORRECTION_GRANTED.equals(wrapper.getNewSscsCaseData().getDwpState())) {
-                    wrapper.setNotificationType(CORRECTION_GRANTED);
-                } else {
-                    wrapper.setNotificationType(ISSUE_FINAL_DECISION);
-                }
-
+                wrapper.setNotificationType(ISSUE_FINAL_DECISION);
                 wrapper.setNotificationEventTypeOverridden(true);
             } else if (code.equals(EventType.ISSUE_FINAL_DECISION_WELSH.getCcdType())) {
                 wrapper.setNotificationType(ISSUE_FINAL_DECISION_WELSH);
