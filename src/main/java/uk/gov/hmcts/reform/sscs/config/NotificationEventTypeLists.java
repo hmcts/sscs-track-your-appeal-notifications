@@ -19,6 +19,7 @@ public final class NotificationEventTypeLists {
         APPEAL_LAPSED,
         APPEAL_RECEIVED,
         APPEAL_WITHDRAWN,
+        CORRECTION_GRANTED,
         CORRECTION_REFUSED,
         DECISION_ISSUED,
         DIRECTION_ISSUED,
@@ -82,6 +83,7 @@ public final class NotificationEventTypeLists {
         APPEAL_DORMANT,
         APPEAL_LAPSED,
         APPEAL_WITHDRAWN,
+        CORRECTION_GRANTED,
         CORRECTION_REFUSED,
         BUNDLE_CREATED_FOR_UPPER_TRIBUNAL,
         DECISION_ISSUED,
@@ -120,6 +122,7 @@ public final class NotificationEventTypeLists {
         APPEAL_LAPSED,
         APPEAL_RECEIVED,
         APPEAL_WITHDRAWN,
+        CORRECTION_GRANTED,
         CORRECTION_REFUSED,
         BUNDLE_CREATED_FOR_UPPER_TRIBUNAL,
         CORRECTION_REQUEST,
@@ -156,7 +159,6 @@ public final class NotificationEventTypeLists {
         SET_ASIDE_REFUSED,
         SOR_EXTEND_TIME,
         SOR_REFUSED,
-        STRUCK_OUT,
         SET_ASIDE_REQUEST,
         STRUCK_OUT,
         STATEMENT_OF_REASONS_REQUEST,
@@ -166,6 +168,7 @@ public final class NotificationEventTypeLists {
     public static final Set<NotificationEventType> EVENT_TYPES_FOR_BUNDLED_LETTER = EnumSet.of(
         ACTION_POSTPONEMENT_REQUEST,
         ACTION_POSTPONEMENT_REQUEST_WELSH,
+        CORRECTION_GRANTED,
         CORRECTION_REFUSED,
         DECISION_ISSUED,
         DECISION_ISSUED_WELSH,
@@ -207,6 +210,7 @@ public final class NotificationEventTypeLists {
         APPEAL_LAPSED,
         APPEAL_RECEIVED,
         APPEAL_WITHDRAWN,
+        CORRECTION_GRANTED,
         CORRECTION_REFUSED,
         BUNDLE_CREATED_FOR_UPPER_TRIBUNAL,
         CORRECTION_REQUEST,
@@ -302,6 +306,7 @@ public final class NotificationEventTypeLists {
 
     public static final Set<NotificationEventType> EVENTS_VALID_FOR_APPOINTEE = EnumSet.of(
         APPEAL_RECEIVED,
+        CORRECTION_GRANTED,
         CORRECTION_REFUSED,
         DEATH_OF_APPELLANT,
         DECISION_ISSUED,
@@ -332,6 +337,7 @@ public final class NotificationEventTypeLists {
     public static final Set<NotificationEventType> EVENTS_VALID_FOR_REP = EnumSet.of(
         APPEAL_RECEIVED,
         CASE_UPDATED,
+        CORRECTION_GRANTED,
         CORRECTION_REFUSED,
         DEATH_OF_APPELLANT,
         DECISION_ISSUED,
@@ -367,10 +373,13 @@ public final class NotificationEventTypeLists {
         LIBERTY_TO_APPLY_GRANTED,
         LIBERTY_TO_APPLY_REFUSED,
         SOR_EXTEND_TIME,
+        CORRECTION_GRANTED,
+        CORRECTION_REFUSED,
         SOR_REFUSED
     );
 
     public static final Set<NotificationEventType> EVENTS_VALID_FOR_OTHER_PARTY = EnumSet.of(
+        CORRECTION_GRANTED,
         CORRECTION_REFUSED,
         DECISION_ISSUED,
         DECISION_ISSUED_WELSH,
@@ -431,6 +440,7 @@ public final class NotificationEventTypeLists {
         APPEAL_LAPSED,
         APPEAL_RECEIVED,
         APPEAL_WITHDRAWN,
+        CORRECTION_GRANTED,
         CORRECTION_REFUSED,
         DEATH_OF_APPELLANT,
         DECISION_ISSUED,
@@ -478,6 +488,8 @@ public final class NotificationEventTypeLists {
         APPEAL_DORMANT,
         APPEAL_LAPSED,
         APPEAL_WITHDRAWN,
+        CORRECTION_GRANTED,
+        CORRECTION_REFUSED,
         DEATH_OF_APPELLANT,
         DECISION_ISSUED,
         DECISION_ISSUED_WELSH,

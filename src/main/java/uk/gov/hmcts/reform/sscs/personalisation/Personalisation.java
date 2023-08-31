@@ -327,14 +327,7 @@ public class Personalisation<E extends NotificationWrapper> {
         personalisation.put(ENTITY_TYPE, subscriptionWithType.getEntity().getClass().getSimpleName());
 
         if (isPostHearingsEnabled) {
-            LocalDate finalDecisionDate = ccdResponse.getSscsFinalDecisionCaseData().getFinalDecisionIssuedDate();
-
-            if (nonNull(finalDecisionDate)) {
-                String formattedDate = finalDecisionDate.format(CC_DATE_FORMAT);
-
-                log.info("Setting final decision date from {} to {}", finalDecisionDate, formattedDate);
-                personalisation.put(FINAL_DECISION_DATE, formattedDate);
-            }
+            personalisation.put(FINAL_DECISION_DATE, ccdResponse.getSscsFinalDecisionCaseData().getFinalDecisionIssuedDate());
         }
       
         boolean isGranted = isGranted(ccdResponse.getDwpState());

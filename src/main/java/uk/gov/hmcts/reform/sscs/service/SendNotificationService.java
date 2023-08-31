@@ -206,13 +206,6 @@ public class SendNotificationService {
     }
 
     protected boolean sendLetterNotification(NotificationWrapper wrapper, Notification notification, SubscriptionWithType subscriptionWithType, NotificationEventType eventType) {
-        if (ISSUE_FINAL_DECISION.equals(wrapper.getNotificationType()) && DwpState.CORRECTION_GRANTED.equals(wrapper.getNewSscsCaseData().getDwpState())) {
-            wrapper.setNotificationType(CORRECTION_GRANTED);
-            eventType = CORRECTION_GRANTED;
-
-            log.info("Setting event to {}", CORRECTION_GRANTED.getEvent().name());
-        }
-
         log.info("Sending the letter for event {} and case id {}.", eventType.getId(), wrapper.getCaseId());
         Address addressToUse = getAddressToUseForLetter(wrapper, subscriptionWithType);
 
@@ -362,8 +355,6 @@ public class SendNotificationService {
             return getDocumentForType(newSscsCaseData.getLatestDocumentForDocumentType(DIRECTION_NOTICE));
         } else if (DECISION_ISSUED.equals(notificationEventType)) {
             return getDocumentForType(newSscsCaseData.getLatestDocumentForDocumentType(DECISION_NOTICE));
-        } else if (isCorrectionGranted(notificationEventType, newSscsCaseData)) {
-            return getDocumentForType(newSscsCaseData.getLatestDocumentForDocumentType(DocumentType.CORRECTION_GRANTED));
         } else if (ISSUE_FINAL_DECISION.equals(notificationEventType)) {
             return getDocumentForType(newSscsCaseData.getLatestDocumentForDocumentType(FINAL_DECISION_NOTICE));
         } else if (ISSUE_FINAL_DECISION_WELSH.equals(notificationEventType)) {
@@ -384,6 +375,8 @@ public class SendNotificationService {
             return getDocumentForType(newSscsCaseData.getLatestDocumentForDocumentType(POSTPONEMENT_REQUEST_DIRECTION_NOTICE));
         } else if (ACTION_POSTPONEMENT_REQUEST_WELSH.equals(notificationEventType)) {
             return getDocumentForType(newSscsCaseData.getLatestWelshDocumentForDocumentType(POSTPONEMENT_REQUEST_DIRECTION_NOTICE).orElse(null));
+        } else if (CORRECTION_GRANTED.equals(notificationEventType)) {
+            return getDocumentForType(newSscsCaseData.getLatestDocumentForDocumentType(DocumentType.CORRECTION_GRANTED));
         } else if (CORRECTION_REFUSED.equals(notificationEventType)) {
             return getDocumentForType(newSscsCaseData.getLatestDocumentForDocumentType(DocumentType.CORRECTION_REFUSED));
         } else if (PERMISSION_TO_APPEAL_GRANTED.equals(notificationEventType)) {
@@ -407,11 +400,6 @@ public class SendNotificationService {
         }
 
         return null;
-    }
-
-    private static boolean isCorrectionGranted(NotificationEventType notificationEventType, SscsCaseData newSscsCaseData) {
-        return ISSUE_FINAL_DECISION.equals(notificationEventType)
-                && DwpState.CORRECTION_GRANTED.equals(newSscsCaseData.getDwpState());
     }
 
     private static String getDocumentForType(AbstractDocument sscsDocument) {

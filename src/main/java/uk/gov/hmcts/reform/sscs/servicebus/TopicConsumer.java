@@ -14,6 +14,7 @@ import uk.gov.hmcts.reform.sscs.callback.CallbackDispatcher;
 import uk.gov.hmcts.reform.sscs.ccd.callback.Callback;
 import uk.gov.hmcts.reform.sscs.ccd.deserialisation.SscsCaseCallbackDeserializer;
 import uk.gov.hmcts.reform.sscs.ccd.domain.CaseDetails;
+import uk.gov.hmcts.reform.sscs.ccd.domain.DwpState;
 import uk.gov.hmcts.reform.sscs.ccd.domain.SscsCaseData;
 import uk.gov.hmcts.reform.sscs.ccd.domain.State;
 import uk.gov.hmcts.reform.sscs.domain.SscsCaseDataWrapper;
@@ -49,10 +50,20 @@ public class TopicConsumer {
             requireNonNull(callback, "callback must not be null");
             CaseDetails<SscsCaseData> caseDetailsBefore = callback.getCaseDetailsBefore().orElse(null);
 
+            NotificationEventType event = getNotificationByCcdEvent(callback.getEvent());
+            SscsCaseData caseData = callback.getCaseDetails().getCaseData();
+
+            log.info("Event {} and dwp state of {}", event, caseData.getDwpState());
+
+            if (ISSUE_FINAL_DECISION.equals(event) && DwpState.CORRECTION_GRANTED.equals(caseData.getDwpState())) {
+                event = CORRECTION_GRANTED;
+                log.info("Setting event to {}", CORRECTION_GRANTED.getEvent().name());
+            }
+
             SscsCaseDataWrapper sscsCaseDataWrapper = buildSscsCaseDataWrapper(
-                    callback.getCaseDetails().getCaseData(),
+                    caseData,
                     caseDetailsBefore != null ? caseDetailsBefore.getCaseData() : null,
-                    getNotificationByCcdEvent(callback.getEvent()),
+                    event,
                     callback.getCaseDetails().getState());
 
             log.info("Ccd Response received for case id: {}, {} with message id {}",
