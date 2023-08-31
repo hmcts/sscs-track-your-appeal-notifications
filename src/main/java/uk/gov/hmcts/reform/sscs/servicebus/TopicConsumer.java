@@ -15,6 +15,7 @@ import uk.gov.hmcts.reform.sscs.callback.CallbackDispatcher;
 import uk.gov.hmcts.reform.sscs.ccd.callback.Callback;
 import uk.gov.hmcts.reform.sscs.ccd.deserialisation.SscsCaseCallbackDeserializer;
 import uk.gov.hmcts.reform.sscs.ccd.domain.CaseDetails;
+import uk.gov.hmcts.reform.sscs.ccd.domain.DwpState;
 import uk.gov.hmcts.reform.sscs.ccd.domain.SscsCaseData;
 import uk.gov.hmcts.reform.sscs.domain.SscsCaseDataWrapper;
 import uk.gov.hmcts.reform.sscs.domain.notify.NotificationEventType;
@@ -51,6 +52,11 @@ public class TopicConsumer {
 
             NotificationEventType event = getNotificationByCcdEvent(callback.getEvent());
             SscsCaseData caseData = callback.getCaseDetails().getCaseData();
+
+            if (ISSUE_FINAL_DECISION.equals(event)
+                    && DwpState.CORRECTION_GRANTED.equals(caseData.getDwpState())) {
+                return;
+            }
 
             SscsCaseDataWrapper sscsCaseDataWrapper = buildSscsCaseDataWrapper(
                     caseData,

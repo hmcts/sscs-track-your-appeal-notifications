@@ -169,11 +169,6 @@ public class NotificationUtils {
     }
 
     public static SscsCaseDataWrapper buildSscsCaseDataWrapper(SscsCaseData caseData, SscsCaseData caseDataBefore, NotificationEventType event, State state) {
-        if (ISSUE_FINAL_DECISION.equals(event) && DwpState.CORRECTION_GRANTED.equals(caseData.getDwpState())) {
-            event = CORRECTION_GRANTED;
-            log.info("Setting event to {}", CORRECTION_GRANTED.getEvent().name());
-        }
-
         return SscsCaseDataWrapper.builder()
                 .newSscsCaseData(caseData)
                 .oldSscsCaseData(caseDataBefore)

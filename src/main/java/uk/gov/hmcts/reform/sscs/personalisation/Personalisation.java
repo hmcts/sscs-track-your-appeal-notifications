@@ -15,28 +15,7 @@ import static uk.gov.hmcts.reform.sscs.ccd.domain.Benefit.getLongBenefitNameDesc
 import static uk.gov.hmcts.reform.sscs.ccd.domain.PanelComposition.JUDGE_DOCTOR_AND_DISABILITY_EXPERT_IF_APPLICABLE;
 import static uk.gov.hmcts.reform.sscs.ccd.domain.YesNo.isYes;
 import static uk.gov.hmcts.reform.sscs.ccd.util.CaseDataUtils.YES;
-import static uk.gov.hmcts.reform.sscs.config.AppConstants.CC_DATE_FORMAT;
-import static uk.gov.hmcts.reform.sscs.config.AppConstants.DAYS_STRING;
-import static uk.gov.hmcts.reform.sscs.config.AppConstants.DWP_ACRONYM;
-import static uk.gov.hmcts.reform.sscs.config.AppConstants.DWP_ACRONYM_WELSH;
-import static uk.gov.hmcts.reform.sscs.config.AppConstants.DWP_FIRST_TIER_AGENCY_GROUP;
-import static uk.gov.hmcts.reform.sscs.config.AppConstants.DWP_FIRST_TIER_AGENCY_GROUP_TITLE;
-import static uk.gov.hmcts.reform.sscs.config.AppConstants.DWP_FIRST_TIER_AGENCY_GROUP_WELSH;
-import static uk.gov.hmcts.reform.sscs.config.AppConstants.DWP_FULL_NAME;
-import static uk.gov.hmcts.reform.sscs.config.AppConstants.DWP_FULL_NAME_WELSH;
-import static uk.gov.hmcts.reform.sscs.config.AppConstants.HEARING_TIME_FORMAT;
-import static uk.gov.hmcts.reform.sscs.config.AppConstants.HMRC_ACRONYM;
-import static uk.gov.hmcts.reform.sscs.config.AppConstants.HMRC_ACRONYM_WELSH;
-import static uk.gov.hmcts.reform.sscs.config.AppConstants.HMRC_FULL_NAME;
-import static uk.gov.hmcts.reform.sscs.config.AppConstants.HMRC_FULL_NAME_WELSH;
-import static uk.gov.hmcts.reform.sscs.config.AppConstants.JOINT_TEXT_WITH_A_SPACE;
-import static uk.gov.hmcts.reform.sscs.config.AppConstants.JOINT_TEXT_WITH_A_SPACE_WELSH;
-import static uk.gov.hmcts.reform.sscs.config.AppConstants.MAC_LITERAL;
-import static uk.gov.hmcts.reform.sscs.config.AppConstants.MAX_DWP_RESPONSE_DAYS;
-import static uk.gov.hmcts.reform.sscs.config.AppConstants.RESPONSE_DATE_FORMAT;
-import static uk.gov.hmcts.reform.sscs.config.AppConstants.THE_STRING;
-import static uk.gov.hmcts.reform.sscs.config.AppConstants.THE_STRING_WELSH;
-import static uk.gov.hmcts.reform.sscs.config.AppConstants.TOMORROW_STRING;
+import static uk.gov.hmcts.reform.sscs.config.AppConstants.*;
 import static uk.gov.hmcts.reform.sscs.config.NotificationEventTypeLists.EVENTS_WITH_SUBSCRIPTION_TYPE_DOCMOSIS_TEMPLATES;
 import static uk.gov.hmcts.reform.sscs.config.NotificationEventTypeLists.EVENTS_WITH_SUBSCRIPTION_TYPE_EMAIL_TEMPLATES;
 import static uk.gov.hmcts.reform.sscs.config.PersonalisationConfiguration.PersonalisationKey.DISABLED_ACCESS;
@@ -327,7 +306,12 @@ public class Personalisation<E extends NotificationWrapper> {
         personalisation.put(ENTITY_TYPE, subscriptionWithType.getEntity().getClass().getSimpleName());
 
         if (isPostHearingsEnabled) {
-            personalisation.put(FINAL_DECISION_DATE, ccdResponse.getSscsFinalDecisionCaseData().getFinalDecisionIssuedDate());
+            LocalDate finalDecisionDate = ccdResponse.getSscsFinalDecisionCaseData().getFinalDecisionIssuedDate();
+
+            if (nonNull(finalDecisionDate)) {
+                String formattedDate = finalDecisionDate.format(DateTimeFormatter.ofPattern(FINAL_DECISION_DATE_FORMAT));
+                personalisation.put(FINAL_DECISION_DATE, formattedDate);
+            }
         }
       
         boolean isGranted = isGranted(ccdResponse.getDwpState());
